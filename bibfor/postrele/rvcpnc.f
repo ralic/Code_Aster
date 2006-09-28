@@ -1,5 +1,5 @@
       SUBROUTINE RVCPNC(MCF,IOCC,NCH19,GD,TYPEGD,NBCPC,NLSCPC,
-     +                  NOMOJB,REPERE,OPTION,QUANT,CODIR,DIR,IRET)
+     &                  NOMOJB,REPERE,OPTION,QUANT,CODIR,DIR,IRET)
       IMPLICIT   NONE
 C
       CHARACTER*(*) MCF
@@ -13,22 +13,22 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C     ------------------------------------------------------------------
@@ -131,7 +131,7 @@ C           --- REPERE TRAITE DANS "EXTCHE" OU "EXTCHN" ---
          CALL DISMOI('F','Z_CST',MAILLA,'MAILLAGE',IBID,K8B,IER)
          IF ( K8B(1:3) .EQ. 'NON' ) THEN
             CALL UTDEBM('F','RVCPNC','LES NOEUDS DU MAILLAGE '//
-     +                  'NE SONT PAS TOUS DANS UN MEME PLAN Z = CST')
+     &                  'NE SONT PAS TOUS DANS UN MEME PLAN Z = CST')
             CALL UTIMPK('S','OPTION TRAC_NOR NON TRAITE',0,' ')
             CALL UTIMPK('L','UTILISER L''OPTION ',1,'TRAC_DIR')
             CALL UTFINM
@@ -162,7 +162,7 @@ C           CALL UTFINM
 C        ELSE
             NOMOB1 = '&&OP0051.NOMCMP.USER'
             CALL UTNCMP ( NCH19, NBC, NOMOB1 )
-            IF (NBC.EQ.0) CALL UTMESS('F','RVCPNC','Y A UN BUG')
+            IF (NBC.EQ.0) CALL U2MESS('F','MODELISA2_91')
             CALL JEVEUO ( NOMOB1, 'L', ANCPU )
             CALL WKVECT(NOMOJB,'V V K8',NBC,AVK8)
             DO 10, I = 1, NBC, 1
@@ -172,30 +172,30 @@ C        ELSE
 C        ENDIF
       ELSE IF ( (NIN .NE. 0) .OR. (NEP .NE. 0) ) THEN
          IF  ((OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
-     +        (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'SIGM_NOEU_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'SIEF_NOEU_ELGA') .OR.
-     +        (OPTION(1:14) .EQ. 'EPSI_NOEU_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'EPSG_NOEU_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'EPME_NOEU_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'EPMG_NOEU_DEPL')) THEN
+     &        (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
+     &        (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
+     &        (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
+     &        (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
+     &        (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
+     &        (OPTION(1:14) .EQ. 'SIGM_NOEU_DEPL') .OR.
+     &        (OPTION(1:14) .EQ. 'SIEF_NOEU_ELGA') .OR.
+     &        (OPTION(1:14) .EQ. 'EPSI_NOEU_DEPL') .OR.
+     &        (OPTION(1:14) .EQ. 'EPSG_NOEU_DEPL') .OR.
+     &        (OPTION(1:14) .EQ. 'EPME_NOEU_DEPL') .OR.
+     &        (OPTION(1:14) .EQ. 'EPMG_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 20, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I-1)
 20          CONTINUE
          ELSE IF  ((OPTION(1:14) .EQ. 'EFGE_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EFGE_NOEU_DEPL')) THEN
+     &             (OPTION(1:14) .EQ. 'EFGE_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 21, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + 13 + I-1)
 21          CONTINUE
             IRET = 0
          ELSE IF ((OPTION(1:14) .EQ. 'DEGE_ELNO_DEPL') .OR.
-     +            (OPTION(1:14) .EQ. 'DEGE_NOEU_DEPL')) THEN
+     &            (OPTION(1:14) .EQ. 'DEGE_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 22, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + 6 + I-1)
@@ -207,7 +207,7 @@ C        ENDIF
             CALL UTIMPK('S',' : ',1,OPTION)
             CALL UTIMPI('L','POST-TRAITEMENT ',1,IOCC)
             CALL UTIMPK('L','LES INVARIANTS TENSORIELS NE SONT '//
-     +                  'CALCULES QUE POUR LES OPTIONS : ',0,' ')
+     &                  'CALCULES QUE POUR LES OPTIONS : ',0,' ')
             CALL UTIMPK('L','      ',1,'SIGM_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'SIEF_ELNO_ELGA')
             CALL UTIMPK('L','      ',1,'EPSI_ELNO_DEPL')
@@ -234,23 +234,23 @@ C
 C      /* LA NORMALE N' EST CALCULEE QUE POUR (X,Y) */
 C
          IF ((OPTION(1:14) .EQ. 'FLUX_ELNO_TEMP') .OR.
-     +       (OPTION(1:14) .EQ. 'FLUX_NOEU_DEPL')) THEN
+     &       (OPTION(1:14) .EQ. 'FLUX_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',3,AVK8)
             DO 32, I = 1, 3, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I-1)
 32          CONTINUE
          ELSE IF  ((OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'SIGM_NOEU_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'SIEF_NOEU_ELGA') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSI_NOEU_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSG_NOEU_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPME_NOEU_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPMG_NOEU_DEPL')) THEN
+     &             (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
+     &             (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'SIGM_NOEU_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'SIEF_NOEU_ELGA') .OR.
+     &             (OPTION(1:14) .EQ. 'EPSI_NOEU_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPSG_NOEU_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPME_NOEU_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPMG_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',5,AVK8)
             ZK8(AVK8 + 1-1) = ZK8(ACPGD + 1-1)
             ZK8(AVK8 + 2-1) = ZK8(ACPGD + 2-1)
@@ -258,14 +258,14 @@ C
             ZK8(AVK8 + 4-1) = ZK8(ACPGD + 5-1)
             ZK8(AVK8 + 5-1) = ZK8(ACPGD + 6-1)
          ELSE IF  ((OPTION(1:14) .EQ. 'DEGE_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'DEGE_NOEU_DEPL')) THEN
+     &             (OPTION(1:14) .EQ. 'DEGE_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 40, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I+6-1)
 40          CONTINUE
             IRET = 0
          ELSE IF  ((OPTION(1:14) .EQ. 'EFGE_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EFGE_NOEU_DEPL')) THEN
+     &             (OPTION(1:14) .EQ. 'EFGE_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 41, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I+13-1)
@@ -277,7 +277,7 @@ C
             CALL UTIMPK('S',' : ',1,OPTION)
             CALL UTIMPI('L','POST-TRAITEMENT : ',1,IOCC)
             CALL UTIMPK('L','LES TRACES NORMALES SONT CALCULEES '//
-     +                  'POUR LES OPTIONS : ',0,' ')
+     &                  'POUR LES OPTIONS : ',0,' ')
             CALL UTIMPK('L','      ',1,'SIGM_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'SIEF_ELNO_ELGA')
             CALL UTIMPK('L','      ',1,'EPSI_ELNO_DEPL')
@@ -338,7 +338,7 @@ C
          ENDIF
          PT = 1
          IF ( (OPTION(1:14) .EQ. 'DEPL_NOEU_DEPL') .OR.
-     +        (OPTION(1:14) .EQ. 'FORC_NOEU_FORC') ) THEN
+     &        (OPTION(1:14) .EQ. 'FORC_NOEU_FORC') ) THEN
             IF ( DIRX ) THEN
                ZI(AVICP + PT-1) = 1
                PT = PT + 1
@@ -352,17 +352,17 @@ C
                PT = PT + 1
             ENDIF
          ELSE IF ( (OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'SIGM_NOEU_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'SIEF_NOEU_ELGA') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSI_NOEU_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPSG_NOEU_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPME_NOEU_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EPMG_NOEU_DEPL')) THEN
+     &             (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
+     &             (OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPME_ELNO_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'SIGM_NOEU_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'SIEF_NOEU_ELGA') .OR.
+     &             (OPTION(1:14) .EQ. 'EPSI_NOEU_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPSG_NOEU_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPME_NOEU_DEPL') .OR.
+     &             (OPTION(1:14) .EQ. 'EPMG_NOEU_DEPL')) THEN
             CALL WKVECT(NOMNEW,'V V I',3,AVINEW)
             IF ( DIRX ) THEN
                ZI(AVINEW + 1-1) = 1
@@ -384,7 +384,7 @@ C
             ENDIF
             CALL JEDETR(NOMNEW)
          ELSE IF  ((OPTION(1:14) .EQ. 'EFGE_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'EFGE_NOEU_DEPL')) THEN
+     &             (OPTION(1:14) .EQ. 'EFGE_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 42, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + 13 + I-1)
@@ -407,7 +407,7 @@ C
             ENDIF
             CALL JEDETR(NOMNEW)
          ELSE IF  ((OPTION(1:14) .EQ. 'DEGE_ELNO_DEPL') .OR.
-     +             (OPTION(1:14) .EQ. 'DEGE_NOEU_DEPL')) THEN
+     &             (OPTION(1:14) .EQ. 'DEGE_NOEU_DEPL')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 43, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + 6 + I-1)
@@ -435,7 +435,7 @@ C
             CALL UTIMPK('S',' : ',1,OPTION)
             CALL UTIMPI('L','POST-TRAITEMENT ',1,IOCC)
             CALL UTIMPK('L','LES TRACES DIRECTIONNELLES SONT '//
-     +                  'CALCULEES POUR LES OPTIONS : ',0,' ')
+     &                  'CALCULEES POUR LES OPTIONS : ',0,' ')
             CALL UTIMPK('L','      ',1,'SIGM_ELNO_DEPL')
             CALL UTIMPK('L','      ',1,'SIEF_ELNO_ELGA')
             CALL UTIMPK('L','      ',1,'EPSI_ELNO_DEPL')
@@ -510,7 +510,7 @@ CJMP       CALL WKVECT('&&RVCPNC.LISTE.IS','V V I',12,ALSI)
            IF ( (NOMGD(1:6).EQ.'SIEF_R').OR.(NOMGD.EQ.'EPSI_R') ) THEN
 C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
            CALL NUM2K8(NOMGD,ZK8(ALSCPC),ZK8(ACPGD),NBCPGD,
-     +                    ZI(ALSI))
+     &                    ZI(ALSI))
               DO 63, I = 1, 6, 1
                  N1 = N1 + ZI(ALSI + I-1)
 63            CONTINUE
@@ -559,7 +559,7 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
                  CALL UTDEBM('I','RVCPNC','ATTENTION')
                  CALL UTIMPI('L','POST-TRAITEMENT ',1,IOCC)
                  CALL UTIMPK('L','SEULES LES COMPOSANTES DU TENSEUR '//
-     +                       'DES CONTRAINTES SONT TRAITEES',1,' ')
+     &                       'DES CONTRAINTES SONT TRAITEES',1,' ')
                  CALL UTFINM
               ELSE
                  IF ( (N2 + N3) .NE. 0 ) THEN
@@ -585,13 +585,13 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
                  ELSE
                     IRET = 0
                     CALL UTDEBM('F','RVCPNC','CMP NON TRAITEE '//
-     +                          'DANS UN CHANGEMENT DE REPERE')
+     &                          'DANS UN CHANGEMENT DE REPERE')
                     CALL UTIMPI('L','POST-TRAITEMENT ',1,IOCC)
                     CALL UTFINM
                  ENDIF
               ENDIF
            ELSE IF ( (NOMGD(1:6) .EQ. 'DEPL_R') .OR.
-     +               (NOMGD(1:6) .EQ. 'FORC_R') ) THEN
+     &               (NOMGD(1:6) .EQ. 'FORC_R') ) THEN
               CALL NUMEK8(ZK8(ALSCPC),ZK8(ACPGD),NBCPC,NBCPGD,ZI(ALSI))
               DO 64, I = 1, 6, 1
                  N1 = N1 + ZI(ALSI + I-1)
@@ -651,7 +651,7 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
               ELSE
                  IRET = 0
                  CALL UTDEBM('F','RVCPNC','CMP NON TRAITEE DANS UN '//
-     +                       'CHANGEMENT DE REPERE')
+     &                       'CHANGEMENT DE REPERE')
                  CALL UTIMPI('L','POST-TRAITEMENT ',1,IOCC)
                  CALL UTFINM
               ENDIF
@@ -698,7 +698,7 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
               ELSE
                  IRET = 0
                  CALL UTDEBM('F','RVCPNC','CMP NON TRAITEE DANS UN '//
-     +                       'CHANGEMENT DE REPERE')
+     &                       'CHANGEMENT DE REPERE')
                  CALL UTIMPI('L','POST-TRAITEMENT ',1,IOCC)
                  CALL UTFINM
               ENDIF
@@ -709,16 +709,16 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
            ELSE
               IRET = 0
               CALL UTDEBM('F','RVCPNC','GRANDEUR NON TRAITEE DANS '//
-     +                    'UN CHANGEMENT DE REPERE')
+     &                    'UN CHANGEMENT DE REPERE')
               CALL UTIMPI('L','POST-TRAITEMENT ',1,IOCC)
               CALL UTIMPK('L','LES CHANGEMENTS DE REPERES SONT '//
-     +                  'POSSIBLES POUR LES GRANDEURS : ',0,' ')
+     &                  'POSSIBLES POUR LES GRANDEURS : ',0,' ')
               CALL UTIMPK('L','    ',1,'SIEF_R ')
               CALL UTIMPK('S','OPTION : ',1,'SIGM_ELNO_DEPL')
               CALL UTIMPK('L','    ',1,'EPSI_R ')
               CALL UTIMPK('S','OPTION : ',1,'EP.._ELNO_DEPL')
               CALL UTIMPK('L','                     ',1,
-     +                    'DEGE_ELNO_DEPL')
+     &                    'DEGE_ELNO_DEPL')
               CALL UTIMPK('L','OU POUR LES GRANDEURS',0,' ')
               CALL UTIMPK('L','    ',1,'DEPL_R')
               CALL UTIMPK('L','    ',1,'FORC_R')

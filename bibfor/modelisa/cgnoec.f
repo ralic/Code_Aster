@@ -1,6 +1,6 @@
       SUBROUTINE CGNOEC (MOFAZ, IOCC, NOMAZ, LISNOZ, NBNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,9 +105,7 @@ C     ----------------------------------------
       ENDIF
 C
       IF (NDIM.NE.3) THEN
-          CALL UTMESS('F','CGNOEC','L''OPTION ENV_CYLINDRE '//
-     +                   'DE CREA_GROUP_NO N''EST UTILISABLE'//
-     +                   ' QU''EN 3D.')
+          CALL U2MESS('F','MODELISA3_84')
       ENDIF
 C
 C --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
@@ -125,15 +123,11 @@ C --- RECUPERATION DU RAYON DU CYLINDRE :
 C     ---------------------------------
       CALL GETVR8(MOTFAC,'RAYON',IOCC,1,0,RAYON,NRAYON)
       IF (NRAYON.EQ.0) THEN
-          CALL UTMESS('F','CGNOEC','ON DOIT UTILISER '//
-     +                'OBLIGATOIREMENT LE MOT-CLE RAYON '//
-     +                'POUR DEFINIR LE RAYON DU CYLINDRE. ')
+          CALL U2MESS('F','MODELISA3_74')
       ELSE
          CALL GETVR8(MOTFAC,'RAYON',IOCC,1,1,RAYON,NB)
          IF (RAYON.LE.ZERO) THEN
-             CALL UTMESS('F','CGNOEC','ON DOIT DONNER '//
-     +                   'UN RAYON STRICTEMENT POSITIF POUR '//
-     +                   'DEFINIR LA CYLINDRE. ')
+             CALL U2MESS('F','MODELISA3_75')
          ENDIF
       ENDIF
 C
@@ -143,18 +137,11 @@ C     ----------------------------------------------------------
       IF (NANGLE.EQ.0) THEN
           CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,0,R8BID,NVECT)
           IF (NVECT.EQ.0) THEN
-              CALL UTMESS('F','CGNOEC','ON DOIT UTILISER '//
-     +                    'OBLIGATOIREMENT LE MOT-CLE ANGL_NAUT '//
-     +                   'OU LE MOT-CLE VECT_NORMALE POUR L''OPTION '//
-     +                   'ENV_CYLINDRE DE CREA_GROUP_NO')
+              CALL U2MESS('F','MODELISA3_85')
           ELSE
               NVECT = -NVECT
               IF (NVECT.NE.3) THEN
-                  CALL UTMESS('F','CGNOEC','POUR L''OPTION '//
-     +                        'ENV_CYLINDRE DE CREA_GROUP_NO, IL FAUT'//
-     +                        ' DEFINIR LES 3 COMPOSANTES DU VECTEUR'//
-     +                        ' ORIENTANT L''AXE DU CYLINDRE QUAND'//
-     +                        ' ON UTILISE LE MOT CLE "VECT_NORMALE".')
+                  CALL U2MESS('F','MODELISA3_86')
               ELSE
                   CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,NVECT,AXE,NV)
               ENDIF
@@ -162,10 +149,7 @@ C     ----------------------------------------------------------
       ELSE
           NANGLE = -NANGLE
           IF (NANGLE.NE.2) THEN
-             CALL UTMESS('F','CGNOEC','POUR L''OPTION '//
-     +                     'ENV_CYLINDRE DE CREA_GROUP_NO, IL FAUT '//
-     +                     'DEFINIR LES 2 ANGLES NAUTIQUES QUAND '//
-     +                     'ON UTILISE LE MOT CLE "ANGL_NAUT".')
+             CALL U2MESS('F','MODELISA3_87')
           ENDIF
           CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,NANGLE,ANGLE,NV)
 C
@@ -180,9 +164,7 @@ C
       XNORM2 = AXE(1)*AXE(1) + AXE(2)*AXE(2) + AXE(3)*AXE(3)
 C
       IF (XNORM2.EQ.ZERO) THEN
-          CALL UTMESS('F','CGNOEC','ERREUR DANS LA DONNEE DU '//
-     +                   'VECTEUR ORIENTANT L''AXE DU CYLINDRE,'//
-     +                   'CE VECTEUR EST NUL.')
+          CALL U2MESS('F','MODELISA3_79')
       ENDIF
 C
       XNORM = SQRT(XNORM2)
@@ -195,18 +177,11 @@ C --- RECUPERATION DE LA DEMI-EPAISSEUR DE L'ENVELOPPE :
 C     ------------------------------------------------
       CALL GETVR8(MOTFAC,'PRECISION',IOCC,1,0,PREC,NPREC)
       IF (NPREC.EQ.0) THEN
-             CALL UTMESS('F','CGNOEC','LE MOT-CLE PRECISION '//
-     +                   'EST OBLIGATOIRE APRES LE MOT-CLE '//
-     +                   'ENV_CYLI POUR DEFINIR LA TOLERANCE '//
-     +                   '(I.E. LA DISTANCE DU POINT A L''ENVELOPPE '//
-     +                   'DU CYLINDRE) ACCEPTEE POUR DECLARER '//
-     +                   'L''APPARTENANCE DU POINT A CETTE ENVELOPPE.')
+             CALL U2MESS('F','MODELISA3_88')
       ELSE
          CALL GETVR8(MOTFAC,'PRECISION',IOCC,1,1,PREC,NB)
          IF (PREC.LE.ZERO) THEN
-             CALL UTMESS('F','CGNOEC','ON DOIT DONNER '//
-     +                   'UNE DEMI-EPAISSEUR STRICTEMENT POSITIVE '//
-     +                   'DEFINIR L''ENVELOPPE DU CYLINDRE. ')
+             CALL U2MESS('F','MODELISA3_89')
          ENDIF
       ENDIF
 C
@@ -257,8 +232,8 @@ C ---         CALCUL DE LA DISTANCE DU NOEUD COURANT A L'AXE
 C ---         DU CYLINDRE :
 C             -----------
                D2  =  ((X(1)-X0(1))*(X(1)-X0(1))
-     +               + (X(2)-X0(2))*(X(2)-X0(2))
-     +               + (X(3)-X0(3))*(X(3)-X0(3)))*SIN(ANG)*SIN(ANG)
+     &               + (X(2)-X0(2))*(X(2)-X0(2))
+     &               + (X(3)-X0(3))*(X(3)-X0(3)))*SIN(ANG)*SIN(ANG)
 C
 C ---         SI LE NOEUD COURANT APPARTIENT A L'ENVELOPPE DU
 C ---         CYLINDRE, ON L'AFFECTE A LA LISTE DE NOEUDS QUI

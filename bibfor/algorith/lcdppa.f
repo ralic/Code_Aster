@@ -2,7 +2,7 @@
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,13 +60,13 @@ C =====================================================================
       PMOINS = VIM(1)
       IRET   = 0
       RESI   = OPTION(1:9).EQ.'FULL_MECA' .OR.
-     +         OPTION     .EQ.'RAPH_MECA'
+     &         OPTION     .EQ.'RAPH_MECA'
       RIGI   = OPTION(1:9).EQ.'FULL_MECA' .OR.
-     +         OPTION(1:9).EQ.'RIGI_MECA'
+     &         OPTION(1:9).EQ.'RIGI_MECA'
       IF ( (OPTION(1:9).NE.'RIGI_MECA') .AND.
-     +     (OPTION(1:9).NE.'FULL_MECA') .AND.
-     +     (OPTION     .NE.'RAPH_MECA') )  THEN
-         CALL UTMESS('F','LCDPPA','PROBLEME SUR LE TYPE D OPTION')
+     &     (OPTION(1:9).NE.'FULL_MECA') .AND.
+     &     (OPTION     .NE.'RAPH_MECA') )  THEN
+         CALL U2MESS('F','ALGORITH4_47')
       ENDIF
 C =====================================================================
 C --- AFFECTATION DES VARIABLES ---------------------------------------
@@ -129,7 +129,7 @@ C =====================================================================
             CALL LCEQMA(HOOKF, DSIDEP)
          ELSE
             CALL DPMATA( MOD, MATERF, ALPHA, DP, DPDENO, PPLUS,
-     +                                           SE, SEQ, PLAS, DSIDEP)
+     &                                           SE, SEQ, PLAS, DSIDEP)
          ENDIF
       ENDIF
 C =====================================================================

@@ -1,22 +1,22 @@
       SUBROUTINE FETSCA(NBI,VI,VO,SCALIN,INFOFE,NBI2,IFETI,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL DE LA PHASE DE MISE A L'ECHELLE
@@ -58,13 +58,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      
+
 C DECLARATION VARIABLES LOCALES
       INTEGER      I,IAUX,IMULT,NBDDL,NBDDLC,IAUXJ,J
       REAL*8       RMULT
-      
+
 C ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT
-            
+
 C MONITORING
       IF (INFOFE(1:1).EQ.'T') THEN
         IF (SCALIN(1:4).EQ.'SANS') THEN
@@ -79,43 +79,42 @@ C ----------------------------------------------------------------------
 C ----  PAS DE SCALING
 C ----------------------------------------------------------------------
         CALL DCOPY(NBI,VI,1,VO,1)
-         
+
       ELSE IF (SCALIN(1:4).EQ.'MULT') THEN
 C ----------------------------------------------------------------------
 C ----  SCALING PAR MULTPLICITE
 C ----------------------------------------------------------------------
-              
+
         IAUX=IFETI+1
 C ---------------------------------------------------
 C BOUCLE SUR LES NOEUDS D'INTERFACE
-C ---------------------------------------------------   
+C ---------------------------------------------------
         DO 20 I=1,NBI2
-        
-C MULTIPLICITE DU IEME NOEUD D'INTERFACE        
+
+C MULTIPLICITE DU IEME NOEUD D'INTERFACE
           IMULT=ZI(IAUX)
           IF (IMULT.EQ.0) THEN
-            CALL UTMESS('F','FETSCA',
-     &       'DONNEE ERRONNEE, MULTIPLICITE NULLE !')
+            CALL U2MESS('F','ALGORITH3_72')
           ELSE
 C NOMBRE DE DDLS CUMULES AVANT LE IEME NOEUD D'INTERFACE (NBDDLC)
 C NOMBRE DE DDLS DU IEME NOEUD D'INTERFACE (NBDDL)
-            NBDDLC=ZI(IAUX+1)     
+            NBDDLC=ZI(IAUX+1)
             IF (I.EQ.1) THEN
               NBDDL=NBDDLC
             ELSE
               NBDDL=NBDDLC-ZI(IAUX-3)
             ENDIF
             NBDDLC=NBDDLC-NBDDL
-            RMULT=1.D0/IMULT        
+            RMULT=1.D0/IMULT
             DO 15 J=1,NBDDL
-              IAUXJ=NBDDLC+J                      
+              IAUXJ=NBDDLC+J
               VO(IAUXJ)=VI(IAUXJ)*RMULT
-   15       CONTINUE                
+   15       CONTINUE
           ENDIF
-          IAUX=IAUX+4     
+          IAUX=IAUX+4
    20   CONTINUE
       ELSE
-        CALL UTMESS('F','FETSCA','OPTION DE CALCUL NON PREVUE !')
+        CALL U2MESS('F','ALGELINE_40')
       ENDIF
 C ---------------------------------------------------
 C FIN BOUCLE SUR LES NOEUDS D'INTERFACE
@@ -123,13 +122,13 @@ C ---------------------------------------------------
 
 C MONITORING
 C      IF (INFOFE(4:4).EQ.'T') THEN
-C        WRITE(IFM,*)'<FETI/FETSCA> INPUT I VI(I)'      
+C        WRITE(IFM,*)'<FETI/FETSCA> INPUT I VI(I)'
 C        DO 30 I=1,NBI
 C          WRITE(IFM,*)I,'  ',VI(I)
 C   30   CONTINUE
-C        WRITE(IFM,*)'OUTPUT I VO(I)'         
+C        WRITE(IFM,*)'OUTPUT I VO(I)'
 C        DO 31 I=1,NBI
 C          WRITE(IFM,*)I,'  ',VO(I)
-C   31   CONTINUE          
-C      ENDIF          
+C   31   CONTINUE
+C      ENDIF
       END

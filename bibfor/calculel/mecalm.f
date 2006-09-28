@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -162,7 +162,7 @@ C               12   345678   9012345678901234
       KCHAD  = '&&'//NOMPRO//'.CHARGESD  '
       NH = 0
       NCHARP = 0
-      NCHARD = 0 
+      NCHARD = 0
       CHAMGD = BLAN24
       CHGEOM = BLAN24
       CHTEMP = BLAN24
@@ -247,9 +247,7 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
         IOCC = 0
         CALL COCHRE(ZK8(JCHA),NCHAR,NBCHRE,IOCC)
         IF (NBCHRE.GT.1) THEN
-          CALL UTMESS('A',NOMPRO,'VOTRE CHARGEMENT CONTIENT PLUS '//
-     &                'D''UNE CHARGE REPARTIE. LE CALCUL N''EST PAS '//
-     &                'POSSIBLE POUR LES MODELES DE POUTRE.')
+          CALL U2MESS('A','CALCULEL2_92')
           GO TO 530
         END IF
         DO 10 III = 1,NCHAR
@@ -262,14 +260,7 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
           IF (L1.NE.0 .OR. L2.NE.0 .OR. L3.NE.0 .OR. L4.NE.0 .OR.
      &        L5.NE.0 .OR. L6.NE.0) THEN
             IF (NBCHRE.EQ.0) THEN
-              CALL UTMESS('A',NOMPRO,
-     &                    'VOUS AVEZ RENSEIGNE UN DES MOTS-CLES'//
-     &                ' FONC_MULT_*, COEF_MULT_*, PHAS_DEG, PUIS_PULS, '
-     &                    //
-     &              'OR VOTRE CHARGE NE CONTIENT PAS D''EFFORT REPARTI '
-     &                    //
-     &              'SUR DES POUTRES. CES MOTS-CLES SERONT DONC IGNORES'
-     &                    )
+              CALL U2MESS('A','CALCULEL2_93')
             END IF
           END IF
    10   CONTINUE
@@ -290,9 +281,7 @@ C=======================================================================
         CALL GETVIS(' ','NUME_COUCHE',1,1,1,IBID,N2)
         CALL GETVTX(' ','NIVE_COUCHE',1,1,1,K8B,N3)
         IF (N1.EQ.0.AND.CARA.EQ.' ') THEN
-          CALL UTMESS('A',NOMPRO,'POUR UN MODELE COMPORTANT DES '//
-     &          'ELEMENTS DE PLAQUE OU DE COQUE, IL FAUT LE "CARA_ELEM"'
-     &                )
+          CALL U2MESS('A','CALCULEL2_94')
           GO TO 530
         END IF
       END IF
@@ -370,8 +359,7 @@ C EN OUTPUT --> INFCHA ET INPSCO
               CALL NMDOME(MODEL2,MATE2,CARA2,INFCHA,NBPASE,INPSCO,
      &                    RESUCO,1)
             ELSE
-              CALL UTMESS('A',NOMPRO,'IMPOSSIBLE DE CALCULER'//
-     &                    ' UN RESULTAT DERIVE POUR LE TYPE '//TYSD)
+              CALL U2MESK('A','CALCULEL2_95',1,TYSD)
               GO TO 490
             END IF
             CHARGE = INFCHA//'.LCHA'
@@ -385,6 +373,7 @@ C DETERMINATION DU CHAMP DERIVE LERES0 ASSOCIE A (RESUCO,NOPASE)
             CALL UTMESS('A',NOMPRO,
      &   'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      &                  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+C        CALL U2MESK('A','CALCULEL2_96', 2 ,VALK)
             GO TO 490
           END IF
 
@@ -397,9 +386,7 @@ C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
           ELSE IF (TYSD.EQ.'EVOL_NOLI') THEN
             CALL METYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           ELSE
-            CALL UTMESS('A',NOMPRO,
-     &         'IMPOSSIBLE DE CALCULER UN RESULTAT DERIVE POUR LE TYPE '
-     &                  //TYSD)
+            CALL U2MESK('A','CALCULEL2_95',1,TYSD)
             GO TO 490
           END IF
 
@@ -476,17 +463,13 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
               IF (OPTION.EQ.'DEGE_ELNO_DEPL' .OR.
      &            OPTION.EQ.'SIEF_ELGA_DEPL') THEN
                 IF (RPLAN.NE.DBLE(0)) THEN
-                  CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//
-     &                 'NON LICITE POUR UN CALCUL HORS PLAN DU MAILLAGE'
-     &                        )
+                  CALL U2MESK('A','CALCULEL2_97',1,OPTION)
                   GO TO 440
                 END IF
               END IF
             END IF
             IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
-              CALL UTMESS('A',NOMPRO,
-     &              'ERREUR: LA CHARGE DOIT ETRE UNE CHARGE MECANIQUE !'
-     &                    )
+              CALL U2MESS('A','CALCULEL2_98')
               GO TO 440
             END IF
             IF (CONCEP.EQ.'DYNA_HARMO') THEN
@@ -520,8 +503,7 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
      &            OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
      &            OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
      &            OPTION.EQ.'EFGE_ELNO_DEPL') THEN
-                CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//
-     &                      'NON LICITE POUR UN CALCUL NON LINEAIRE.')
+                CALL U2MESK('A','CALCULEL2_99',1,OPTION)
                 GO TO 440
               END IF
               OPTIO2 = OPTION
@@ -585,7 +567,7 @@ C=======================================================================
    30               CONTINUE
                     CALL JELIBE(CHACCE//'.VALE')
                   ELSE
-                    CALL UTMESS('A',NOMPRO,'MANQUE LES ACCELERATIONS')
+                    CALL U2MESS('A','CALCULEL3_1')
                     DO 40 II = 0,NEQ - 1
                       ZR(LVALE+II) = ZERO
    40               CONTINUE
@@ -599,7 +581,7 @@ C=======================================================================
    50               CONTINUE
                     CALL JELIBE(CHACCE//'.VALE')
                   ELSE
-                    CALL UTMESS('A',NOMPRO,'MANQUE LES ACCELERATIONS')
+                    CALL U2MESS('A','CALCULEL3_1')
                     DO 60 II = 0,NEQ - 1
                       ZC(LVALE+II) = CZERO
    60               CONTINUE
@@ -652,10 +634,7 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
                       ELSE IF (L3.NE.0) THEN
                         ALPHA = COEF
                       ELSE
-                        CALL UTMESS('A',NOMPRO,
-     &                              'POUR UNE SD RESULTAT DE TYPE '//
-     &                      ' DYNA_TRANS, SEULS LES MOTS_CLES FONC_MULT'
-     &                              //' ET COEF_MULT SONT AUTORISES')
+                        CALL U2MESS('A','CALCULEL3_2')
                         CALL JEDEMA
                         GO TO 440
                       END IF
@@ -664,19 +643,12 @@ C          * UTILISATION DU MOT-CLE FACTEUR EXCIT
                       IF (L1.NE.0) THEN
                         CALL FOINTE('F ',K8B,1,'INST',INST,ALPHA,IER)
                       ELSE
-                        CALL UTMESS('A',NOMPRO,
-     &                              'POUR UN SD RESULTAT DE TYPE '//
-     &                       ' EVOL_ELAS,SEUL LE MOT-CLE FONC_MULT EST '
-     &                              //' AUTORISE')
+                        CALL U2MESS('A','CALCULEL3_3')
                         CALL JEDEMA
                         GO TO 440
                       END IF
                     ELSE
-                      CALL UTMESS('A',NOMPRO,
-     &                            'L''UTILISATION D MOT-CLE FONC_MULT'//
-     &                      ' N''EST LICITE QUE POUR LES SD RESULTATS: '
-     &                            //' EVOL_ELAS, DYNA_TRANS, DYNA_HARMO'
-     &                            )
+                      CALL U2MESS('A','CALCULEL3_4')
                       CALL JEDEMA
                       GO TO 440
                     END IF
@@ -712,9 +684,7 @@ C=======================================================================
                 CALL RSEXC2(2,2,RESUCO,'EFGE_ELNO_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET2)
                 IF ((IRET1.GT.0) .AND. (IRET2.GT.0)) THEN
-                  CALL UTMESS('A',NOMPRO,' POUR CALCULER '//OPTION//
-     &                       ' IL FAUT SIEF_ELNO_ELGA OU EFGE_ELNO_DEPL'
-     &                        )
+                  CALL U2MESK('A','CALCULEL3_5',1,OPTION)
                   CALL JEDEMA
                   GO TO 440
                 END IF
@@ -722,7 +692,7 @@ C=======================================================================
               IF (TYPESE.NE.0) THEN
                 CHTESE = '&&'//NOMPRO//'.TEMP_SENSI'
                 CALL NMDETE(MODEL2,MATE2,CHARGE,INFOCH,TIME,
-     >                      TYPESE, STYPSE, NOPASE,
+     &                      TYPESE, STYPSE, NOPASE,
      &                      CHTESE,LBID)
               END IF
               CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
@@ -748,9 +718,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             IF (NPLAN.NE.0) THEN
               IF (RPLAN.NE.DBLE(0)) THEN
-                CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//
-     &                 'NON LICITE POUR UN CALCUL HORS PLAN DU MAILLAGE'
-     &                      )
+                CALL U2MESK('A','CALCULEL2_97',1,OPTION)
                 GO TO 440
               END IF
             END IF
@@ -810,8 +778,7 @@ C ---- VERIF SENSIBILITE
             IF(CODSEN.NE.0) GO TO 900
 C ---- VERIF SENSIBILITE FIN
             IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
-              CALL UTMESS('A',NOMPRO,'ERREUR: LA CHARGE DOIT '//
-     &                    'ETRE UNE CHARGE MECANIQUE !')
+              CALL U2MESS('A','CALCULEL2_98')
               GO TO 440
             END IF
             IF (TYSD.EQ.'MODE_MECA') THEN
@@ -825,6 +792,7 @@ C ---- VERIF SENSIBILITE FIN
             ELSE
               CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//' NON '//
      &                    'TRAITEE POUR UN RESULTAT DE TYPE '//TYSD)
+C        CALL U2MESK('A','CALCULEL3_6', 2 ,VALK)
               GO TO 440
             END IF
             CHMASS = '&&'//NOMPRO//'.MASD'
@@ -902,8 +870,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTMESS('A',NOMPRO,'CALCUL DE '//OPTION//
-     &                      ' IMPOSSIBLE.')
+                CALL U2MESK('A','CALCULEL3_7',1,OPTION)
                 CALL JEDEMA
                 GO TO 440
               END IF
@@ -997,8 +964,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTMESS('A',NOMPRO,'CALCUL DE '//OPTION//
-     &                      ' IMPOSSIBLE.')
+                CALL U2MESK('A','CALCULEL3_7',1,OPTION)
                 CALL JEDEMA
                 GO TO 440
               END IF
@@ -1088,8 +1054,7 @@ C ---- VERIF SENSIBILITE FIN
                 CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET)
                 IF (IRET.GT.0) THEN
-                  CALL UTMESS('A',NOMPRO,'CALCUL DE '//OPTION//
-     &                        ' IMPOSSIBLE.')
+                  CALL U2MESK('A','CALCULEL3_7',1,OPTION)
                   CALL JEDEMA
                   GO TO 440
                 END IF
@@ -1114,6 +1079,7 @@ C
      &                 'SIGM_ELNO_DEPL '        //
      &                'SONT ABSENTS : ON NE PEUT PAS CALCULER L''OPTION'
      &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
+C        CALL U2MESK('A','CALCULEL3_8', 2 ,VALK)
                   CALL JEDEMA
                   GO TO 440
                 END IF
@@ -1131,6 +1097,7 @@ C          CHAMP D'ENTREE POUR COQUES
      &                 ' SIGM_ELNO_DEPL EST ABSENT : '        //
      &                ' ON NE PEUT PAS CALCULER L''OPTION'
      &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
+C        CALL U2MESK('A','CALCULEL3_9', 2 ,VALK)
                       CALL JEDEMA
                       GO TO 440
                     ELSE
@@ -1147,6 +1114,7 @@ C          CHAMP D'ENTREE POUR COQUES
      &                 ' SIGM_ELNO_COQU EST ABSENT : '        //
      &                ' ON NE PEUT PAS CALCULER L''OPTION'
      &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
+C        CALL U2MESK('A','CALCULEL3_10', 2 ,VALK)
                       CALL JEDEMA
                       GO TO 440
                     ELSE
@@ -1349,6 +1317,7 @@ C           ---------------------------------------------------------
                   CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                      ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
      &                      'AU NUMERO D''ORDRE '//KIORD//' .')
+C        CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
                   GO TO 192
                 ENDIF
               ENDIF
@@ -1440,7 +1409,7 @@ C--- BOUCLE SUR LES NUMEROS D'ORDRE
               CALL JEMARQ()
               IORDR = ZI(JORDR+IAUX-1)
 C--- CALCULE LE COEFFICIENT S
-C----- RECUPERE ERRE_ABSO DANS LA TABLE A PARTIR DU NUMERO D'ORDRE 
+C----- RECUPERE ERRE_ABSO DANS LA TABLE A PARTIR DU NUMERO D'ORDRE
             CALL TBLIVA (TABP,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
      &                   0.D0,'ERRE_ABSO',CTYPE,VALI,ERP,VALC,VALK,IRET)
             CALL TBLIVA (TABD,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
@@ -1631,14 +1600,10 @@ C    ------------------------------------------------------------------
 
             CALL GETVR8(' ','PREC_ERR',1,1,1,PREC,IRET1)
             IF(IRET1.NE.1) THEN
-              CALL UTMESS('F',NOMPRO,'LE MOT CLE PREC_ERR EST'//
-     &                    ' OBLIGATOIRE AVEC'//
-     &                    ' L''OPTION SING_ELEM')
+              CALL U2MESS('F','CALCULEL3_12')
             ELSE
-              IF(PREC.LE.0.D0.OR.PREC.GT.1.D0) CALL UTMESS('F',NOMPRO,
-     &                    'LE MOT CLE PREC_ERR DOIT'//
-     &                    ' ETRE STRICTEMENT SUPERIEUR A ZERO'//
-     &                    ' ET INFERIEUR OU EGAL A 1')
+              IF(PREC.LE.0.D0.OR.PREC.GT.1.D0) CALL U2MESS('F','CALCULEL
+     &3_13')
 
             ENDIF
 
@@ -1697,8 +1662,7 @@ C       ERZ2_ELEM_SIGM PAR RAPPORT A ERZ1_ELEM_SIGM
               CALL RSEXCH(RESUCO,'ERZ2_ELEM_SIGM',IORDR,CHERR3,IRET3)
 
               IF (IRET1.GT.0.AND.IRET2.GT.0.AND.IRET3.GT.0) THEN
-                CALL UTMESS('A',NOMPRO,'PAS D INDICATEUR D ERREUR-'//
-     &                    ' ON NE CALCULE PAS L''OPTION SING_ELEM')
+                CALL U2MESS('A','CALCULEL3_14')
                 IRET=1
               ENDIF
 
@@ -1718,12 +1682,11 @@ C 3.2 - TRANSFORMATION DE CES DEUX CARTES EN CHAM_ELEM_S
 
               IF (IRET1.EQ.0) THEN
                 CALL CELCES(CHERR1(1:19),'V',CHERRS)
-                IF (IRET2.EQ.0.OR.IRET3.EQ.0) CALL UTMESS('A',NOMPRO,
-     &           'PAR DEFAUT ON UTILISE ERRE_ELEM_SIGM')
+                IF (IRET2.EQ.0.OR.IRET3.EQ.0) CALL U2MESS('A','CALCULEL3
+     &_15')
               ELSE IF (IRET3.EQ.0) THEN
                 CALL CELCES(CHERR3(1:19),'V',CHERRS)
-                IF (IRET2.EQ.0) CALL UTMESS('A',NOMPRO,
-     &           'PAR DEFAUT ON UTILISE ERZ2_ELEM_SIGM')
+                IF (IRET2.EQ.0) CALL U2MESS('A','CALCULEL3_16')
               ELSE
                 CALL CELCES(CHERR2(1:19),'V',CHERRS)
               ENDIF
@@ -1854,9 +1817,7 @@ C ---- VERIF SENSIBILITE
             IF(CODSEN.NE.0) GO TO 900
 C ---- VERIF SENSIBILITE FIN
             IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
-              CALL UTMESS('A',NOMPRO,
-     &              'ERREUR: LA CHARGE DOIT ETRE UNE CHARGE MECANIQUE !'
-     &                    )
+              CALL U2MESS('A','CALCULEL2_98')
               GO TO 440
             END IF
             DO 250,IAUX = 1,NBORDR
@@ -2009,6 +1970,7 @@ C           -------------------------------------------------
                     CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                      ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
      &                      'AU NUMERO D''ORDRE '//KIORD//' .')
+C        CALL U2MESK('A','CALCULEL3_17', 2 ,VALK)
                     GO TO 321
                  END IF
               ENDIF
@@ -2025,6 +1987,7 @@ C           -----------------------------------------------
                   CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                        ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '
      &                        //'AU NUMERO D''ORDRE '//KIORDM//' .')
+C        CALL U2MESK('A','CALCULEL3_17', 2 ,VALK)
                   GO TO 321
                 END IF
               END IF
@@ -2037,6 +2000,7 @@ C           ---------------------------------------------------------
                 CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                      ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
      &                      'AU NUMERO D''ORDRE '//KIORD//' .')
+C        CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
                 GO TO 321
               END IF
 
@@ -2051,6 +2015,7 @@ C           ------------------------------------------------
                   CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
      &                        ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '
      &                        //'AU NUMERO D''ORDRE '//KIORDM//' .')
+C        CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
                   GO TO 321
                 END IF
               END IF
@@ -2097,8 +2062,7 @@ C ---- VERIF SENSIBILITE FIN
                 CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET)
                 IF (IRET.GT.0) THEN
-                   CALL UTMESS('A',NOMPRO,'PAS DE CHAMP'//
-     &                  ' DE CONTRAINTES POUR CALCULER '//OPTION)
+                   CALL U2MESK('A','CALCULEL3_18',1,OPTION)
                    GO TO 342
                 ENDIF
               ELSE
@@ -2156,9 +2120,7 @@ C          -> CHSIG[1,2] A T- ET T+
                   CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR1,CHSIG1,
      &                        OPTION,IRET1)
                   IF (IRET1.GT.0) THEN
-                     CALL UTMESS('A',NOMPRO,'PAS DE CHAMP'//
-     &                           ' DE CONTRAINTES POUR CALCULER '
-     &                             //OPTION)
+                     CALL U2MESK('A','CALCULEL3_18',1,OPTION)
                      GO TO 341
                   ENDIF
 
@@ -2167,9 +2129,7 @@ C          -> CHSIG[1,2] A T- ET T+
                   CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR2,CHSIG2,
      &                        OPTION,IRET2)
                   IF (IRET2.GT.0) THEN
-                     CALL UTMESS('A',NOMPRO,'PAS DE CHAMP'//
-     &                           ' DE CONTRAINTES POUR CALCULER '//
-     &                             OPTION)
+                     CALL U2MESK('A','CALCULEL3_18',1,OPTION)
                      GO TO 341
                   ENDIF
 C
@@ -2193,9 +2153,7 @@ C --- A21/ INITIALISATION DES VARIABLES A L'ORDRE IORDR1
                      CALL ALCHML(LIGREL,'ENDO_ELGA','PTRIAGM',
      &                          'G',CHELE1,IRET,' ')
                      IF (IRET.GT.0) THEN
-                        CALL UTMESS('A',NOMPRO,'PROBLEME'//
-     &                              ' A L''APPEL DE ALCHML POUR '//
-     &                              OPTION)
+                        CALL U2MESK('A','CALCULEL3_19',1,OPTION)
                         GO TO 341
                      ENDIF
                      CALL RSNOCH(LERES1,OPTION,IORDR1,' ')
@@ -2205,9 +2163,7 @@ C --- A22/ RECUPERATION DES VAR. ENDOMMAGEMENT @T
                      CALL RSEXC2(1,1,RESUCO,'ENDO_ELGA',IORDR1,CHELE1,
      &                           OPTION,IRET1)
                      IF (IRET1.GT.0) THEN
-                        CALL UTMESS('A',NOMPRO,'PAS DE CHAMP'//
-     &                              ' ENDOMMAGEMENT POUR CALCULER '//
-     &                              OPTION)
+                        CALL U2MESK('A','CALCULEL3_20',1,OPTION)
                         GO TO 341
                      ENDIF
                   ENDIF
@@ -2260,10 +2216,7 @@ C     ----------------------------------------
                   CALL RSEXC2(1,1,RESUCO,'ENDO_ELGA',IORDR2,CHEND2,
      &                        OPTION,IRET1)
                   IF (IRET1.GT.0) THEN
-                     CALL UTMESS('F',NOMPRO,'LE CALCUL AVEC'//
-     &                       ' L''OPTION ENDO_ELNO_ELGA NECESSITE'//
-     &                       ' AU PREALABLE UN CALCUL AVEC'//
-     &                       ' L''OPTION ENDO_ELGA')
+                     CALL U2MESS('F','CALCULEL3_21')
                   ENDIF
                   CALL RSEXC1(LERES1,OPTION,IORDR2,CHELE2)
                   CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,
@@ -2612,8 +2565,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTMESS('A',NOMPRO,'PAS DE CHAMP DE CONTRAINTE'//
-     &                      'POUR CALCULER '//OPTION)
+                CALL U2MESK('A','CALCULEL3_18',1,OPTION)
                 GO TO 432
               END IF
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -2784,7 +2736,7 @@ C ---- VERIF SENSIBILITE FIN
 C      -----------------------------------------------------------------
 
          ELSE
-            CALL UTMESS('A',NOMPRO,' OPTION INEXISTANTE:'//OPTION)
+            CALL U2MESK('A','CALCULEL3_22',1,OPTION)
          ENDIF
 
 C     ------------------------------------------------------------------
@@ -2792,15 +2744,14 @@ C     -- ERREUR SENSIBILITE
 C     ------------------------------------------------------------------
   900     CONTINUE
           IF ( CODSEN.NE.0 ) THEN
-            CALL UTMESS ( 'A', NOMPRO, 'OPTION : '//OPTION )
+            CALL U2MESK('A','CALCULEL3_23',1,OPTION)
             IF ( NOPASE.NE.' ' ) THEN
-             CALL UTMESS ('A', NOMPRO, 'PARAMETRE SENSIBLE '//NOPASE)
+             CALL U2MESK('A','CALCULEL3_24',1,NOPASE)
             ENDIF
             IF ( CODSEN.EQ.1 ) THEN
-               CALL UTMESS ('A', NOMPRO, 'CALCUL NON DISPONIBLE' )
+               CALL U2MESS('A','CALCULEL3_25')
             ELSEIF ( CODSEN.EQ.2 ) THEN
-               CALL UTMESS ( 'A', NOMPRO,
-     >         'LE PARAMETRE DE SENSIBILITE DOIT ETRE UN CHAMP THETA' )
+               CALL U2MESS('A','CALCULEL3_26')
             ENDIF
           ENDIF
   440   CONTINUE
@@ -2847,6 +2798,7 @@ C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
   520 CONTINUE
       CALL UTMESS('A',NOMPRO,'TYPE : '//TYSD//
      &            ' INCOMPATIBLE AVEC L''OPTION : '//OPTION)
+C        CALL U2MESK('A','CALCULEL3_27', 2 ,VALK)
   530 CONTINUE
       CALL JEDEMA()
       END

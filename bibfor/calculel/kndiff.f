@@ -4,7 +4,7 @@
       CHARACTER*(*)       LK1(L1), LK2(L2), LK3(L3)
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C----------------------------------------------------------------------
 C DEB
 
       IF ((LONG.NE.8) .AND. (LONG.NE.16) .AND.
-     &    (LONG.NE.24)) CALL UTMESS('F','KNDIFF','LONG=8,16 OU 24')
+     &    (LONG.NE.24)) CALL U2MESS('F','CALCULEL2_75')
 
       NBK3=L3
       L3 = 0
@@ -70,8 +70,7 @@ C          -- ON VERIFIE QUE LK1(K1) SE TROUVE DANS LK2 :
          K2 = KNINDI ( LONG, LK1(K1), LK2, L2 )
          IF ( K2 .EQ. 0 ) THEN
             L3 = L3 + 1
-            IF (L3.GT.NBK3) CALL UTMESS('F','KNDIFF','ERREUR PGMEUR'//
-     &              ': LK3 PAS ASSEZ GRAND.')
+            IF (L3.GT.NBK3) CALL U2MESS('F','CALCULEL2_76')
             LK3(L3) = LK1(K1)
          ENDIF
 

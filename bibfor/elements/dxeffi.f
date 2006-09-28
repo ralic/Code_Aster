@@ -5,22 +5,22 @@
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     IN  NOMTE  : NOM DE L'ELEMENT TRAITE
@@ -46,20 +46,20 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                       ZK80
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-C 
+C
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  NBCON, NBCOU, NPGH, K, INO, IPG, ICOU, IGAUH, ICPG, 
-     +         ICACOQ, JNBSPI, JDEPL, IMATE, IADZI, IAZK24
-      REAL*8   HIC, H, ZIC, ZMIN, COEF, ZERO, DEUX, DISTN, 
-     +         CDF, KHI(3), N(3), M(3), BF(3,9), MG(3), DH(9), DMF(9),
-     +         UF(3,3), UL(6,3), ROT(9)
+      INTEGER  NBCON, NBCOU, NPGH, K, INO, IPG, ICOU, IGAUH, ICPG,
+     &         ICACOQ, JNBSPI, JDEPL, IMATE, IADZI, IAZK24
+      REAL*8   HIC, H, ZIC, ZMIN, COEF, ZERO, DEUX, DISTN,
+     &         CDF, KHI(3), N(3), M(3), BF(3,9), MG(3), DH(9), DMF(9),
+     &         UF(3,3), UL(6,3), ROT(9)
       REAL*8   QSI, ETA, CARAT3(21)
       LOGICAL  GRILLE
       CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
-     +                                         IVF,IDFDX,IDFD2,JGANO)
+     &                                         IVF,IDFDX,IDFD2,JGANO)
 C
       ZERO = 0.0D0
       DEUX = 2.0D0
@@ -77,18 +77,17 @@ C     --------------------------------------------------------
             UF(3,INO) = -UL(4,INO)
  10      CONTINUE
       ELSEIF (NOMTE(1:8).NE.'MEDKTR3 ' .AND.
-     +        NOMTE(1:8).NE.'MEDSTR3 ' .AND.
-     +        NOMTE(1:8).NE.'MEDKQU4 ' .AND.
-     +        NOMTE(1:8).NE.'MEDSQU4 ' .AND.
-     +        NOMTE(1:8).NE.'MEQ4QU4 ' ) THEN
-         CALL UTMESS('F','DXEFFI','ELEMENT NON TRAITE '//NOMTE)
+     &        NOMTE(1:8).NE.'MEDSTR3 ' .AND.
+     &        NOMTE(1:8).NE.'MEDKQU4 ' .AND.
+     &        NOMTE(1:8).NE.'MEDSQU4 ' .AND.
+     &        NOMTE(1:8).NE.'MEQ4QU4 ' ) THEN
+         CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
 
       CALL JEVECH ( 'PNBSP_I', 'L', JNBSPI )
       NBCON = 6
       NBCOU = ZI(JNBSPI-1+1)
-      IF (NBCOU.LE.0) CALL UTMESS('F','DXEFFI',
-     +                            'NOMBRE DE COUCHES NEGATIF OU NUL')
+      IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
 
 C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
@@ -109,8 +108,7 @@ C     ---------------------------
          IF (DISTN.NE.0.D0) THEN
             CALL TECAEL(IADZI, IAZK24)
             NOMELE=ZK24(IAZK24-1+3)
-            CALL UTMESS('F','DXEFFI',
-     &              'PAS D EXCENTREMENT AVEC FORC_NODA MAILLE '//NOMELE)
+            CALL U2MESK('F','ELEMENTS_47',1,NOMELE)
          ENDIF
          DISTN = ZERO
          ZMIN = -H/DEUX
@@ -135,7 +133,7 @@ C     -------------------------------------------------
          DO 110, ICOU = 1,NBCOU
             DO 120, IGAUH = 1,NPGH
                ICPG = NBCON*NPGH*NBCOU*(IPG-1) + NBCON*NPGH*(ICOU-1) +
-     +                                           NBCON*(IGAUH-1)
+     &                                           NBCON*(IGAUH-1)
                IF (IGAUH.EQ.1) THEN
                   IF ( GRILLE ) THEN
                      ZIC = ZMIN + (ICOU-1)*HIC

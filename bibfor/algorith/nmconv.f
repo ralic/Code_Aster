@@ -8,22 +8,22 @@
      &                   ZFON, FONACT, MAXREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C TOLE CRP_20
@@ -94,7 +94,7 @@ C                  = 0 OK
 C                  = 1 MATRICE SINGULIERE
 C IN  FOINER  : FORCES D'INERTIE EN DYNA
 C IN  PARTPS  : LISTE D'INSTANT
-C IN  PARMET  : PARAMETRES DE LA METHODE DE RESOLUTION 
+C IN  PARMET  : PARAMETRES DE LA METHODE DE RESOLUTION
 C                       3 - PAS_MINI_ELAS
 C IN  ZFON    : LONGUEUR MAXI DU VECTEUR FONACT
 C IN  FONACT  : FONCTIONNALITES ACTIVEES
@@ -120,11 +120,11 @@ C                             ON UTILISE RESI_GLOB_MAXI
 C IN   MAILLA : NOM DU MAILLAGE
 C IN   DEFICO : SD DE TRAITEMENT DU CONTACT (ISSU D'AFFE_CHAR_MECA)
 C IN   RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-C IN   MATASS : MATRICE DU PREMIER MEMBRE ASSEMBLEE 
+C IN   MATASS : MATRICE DU PREMIER MEMBRE ASSEMBLEE
 C IN   IMPRCO : SD AFFICHAGE
 C IN   NUMEDD : NUMEROTATION NUME_DDL
-C IN/JXOUT CRITNL : SYNTHESE DES RESULTATS DE CONVERGENCE POUR 
-C                   ARCHIVAGE 
+C IN/JXOUT CRITNL : SYNTHESE DES RESULTATS DE CONVERGENCE POUR
+C                   ARCHIVAGE
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -200,7 +200,7 @@ C
 C ======================================================================
 C
 C --- LOI DE COMPORTEMENT
-C 
+C
       ECHLDC = (LICCVG(2).EQ.1)
       IF (ECHLDC) THEN
         ERROR  = .TRUE.
@@ -283,12 +283,12 @@ C
       CALL IMPCMP(IREFE,NUMEDD,ZK16(JIMPCL-1+3))
       ZK16(JIMPCT-1+3) = 'RESI_GLOB_REFE'
       ZR(JIMPCV-1+3)   = VREFE
- 
+
       ZK16(JIMPCL-1+4) = 'INCONNU        '
       ZK16(JIMPCT-1+4) = 'RESI_DUAL_ABSO'
       ZR(JIMPCV-1+4)   = CONV(1)
-   
-      ZK16(JIMPCL-1+5) = 'INCONNU        ' 
+
+      ZK16(JIMPCL-1+5) = 'INCONNU        '
       ZK16(JIMPCT-1+5) = 'RESI_PRIM_ABSO'
       ZR(JIMPCV-1+5)   = CONV(2)
 C
@@ -305,9 +305,7 @@ C
            VINIT = VINIT/VCHAR
          ENDIF
          IF (VINIT.GT.PARCRI(2)) THEN
-            CALL UTMESS('A','OP0070',
-     &                  'LES VARIABLES DE COMMANDES INITIALES'//
-     &                  ' INDUISENT DES CONTRAINTES INCOMPATIBLES')
+            CALL U2MESS('A','ALGORITH6_97')
          ENDIF
       ENDIF
 C
@@ -353,7 +351,7 @@ C
 C
 C --- CRITERES RECHERCHE LINEAIRE
 C
-      IF (ITERAT.EQ.0) THEN 
+      IF (ITERAT.EQ.0) THEN
         CONV(10) = 0
       ENDIF
       CALL IMPSDR(IMPRCO(1:14),
@@ -397,11 +395,11 @@ C
         CALL IMPSDM(IMPRCO(1:14),'PILO_PARA','B')
         FINPAS  = .TRUE.
       ELSE
-        CALL IMPSDM(IMPRCO(1:14),'PILO_PARA',' ')      
-      END IF      
-C 
+        CALL IMPSDM(IMPRCO(1:14),'PILO_PARA',' ')
+      END IF
+C
 C --- EXAMEN DU NOMBRE D'ITERATIONS
-C 
+C
       PASMIN = PARMET(3)
       IF (ABS(INSTAP-INSTAM) .LT. PASMIN) THEN
         ITEMAX = ITERAT .GE. PARCRI(5)
@@ -467,7 +465,7 @@ C
         ENDIF
       ENDIF
 C
-C --- SI CRITERE RESI_GLOB_RELA ET CHARGEMENT = 0, 
+C --- SI CRITERE RESI_GLOB_RELA ET CHARGEMENT = 0,
 C --- ON UTILISE RESI_GLOB_MAXI
 C
       MAXREL = .FALSE.
@@ -481,9 +479,7 @@ C
                CALL IMPSDM(IMPRCO(1:14),'RESI_MAXI',' ')
                CONVER = .TRUE.
                MAXREL = .TRUE.
-               CALL UTMESS('I','NMCONV',
-     &                     'CONVERGENCE ATTEINTE AVEC RESI_GLOB_MAXI'//
-     &                     ' POUR CAUSE DE CHARGEMENT PRESQUE NUL')
+               CALL U2MESS('I','ALGORITH6_98')
            ENDIF
          ENDIF
       ENDIF
@@ -509,9 +505,9 @@ C
 C --- TRAITEMENT DE LA REACTUALISATION GEOMETRIQUE POUR LE CONTACT
 C
          IF (CONVER) THEN
-          
+
            CTCFIX = LREAC(2)
-         
+
            CALL CFCONV(MAILLA,NEQ,DEPDEL,AUTOC1,AUTOC2,
      &                 VECONT,CTCGEO,CTCFIX,
      &                 GEONOE,GEOVAL,GEOERR)
@@ -547,18 +543,16 @@ C
                  CALL IMPSDR(IMPRCO(1:14),
      &                       'CTCD_INFO',' ALGO.          ',R8BID,IBID)
                ENDIF
-      
-                       
+
+
              ENDIF
              IF (GEOERR) THEN
-               CALL UTMESS('A',
-     &                'NMCONV',
-     &                'REAC. GEOM. DU CONTACT SUPERIEURE A 5%')     
-               
+               CALL U2MESS('A','ALGORITH6_99')
+
                CALL IMPSDR(IMPRCO(1:14),
      &                     'CTCD_NOEU',GEONOE,R8BID,IBID)
                CALL IMPSDR(IMPRCO(1:14),
-     &                     'CTCD_GEOM',' ',GEOVAL,IBID)  
+     &                     'CTCD_GEOM',' ',GEOVAL,IBID)
                CALL IMPSDR(IMPRCO(1:14),
      &                     'CTCD_INFO',' ALGO/ALARM_GEOM',R8BID,IBID)
              ELSE
@@ -574,7 +568,7 @@ C
            CTCFIX = .FALSE.
            IF (ITERAT.EQ.0) THEN
              CALL IMPSDR(IMPRCO(1:14),
-     &                   'CTCD_INFO',' INIT_GEOM/ALGO  ',R8BID,IBID)   
+     &                   'CTCD_INFO',' INIT_GEOM/ALGO  ',R8BID,IBID)
            ELSE
              CALL IMPSDR(IMPRCO(1:14),
      &                   'CTCD_INFO',' ALGO.          ',R8BID,IBID)
@@ -586,17 +580,17 @@ C
          ELSE
             CALL IMPSDM(IMPRCO(1:14),'CTCD_ITER','X')
          ENDIF
-         
+
          LREAC(1) = CTCGEO
          LREAC(2) = CTCFIX
-         
+
       ELSE
         CTCCVG = .TRUE.
       ENDIF
-      
+
 C
 C ======================================================================
-C --- CONVERGENCE ADAPTEE A LA METHODE DE DE BORST 
+C --- CONVERGENCE ADAPTEE A LA METHODE DE DE BORST
 C ======================================================================
 C
       IF (CBORST) THEN
@@ -611,7 +605,7 @@ C
       ENDIF
 C
 C ======================================================================
-C --- CONVERGENCE FINALE 
+C --- CONVERGENCE FINALE
 C ======================================================================
 C
       CONVER = CONVER.AND.CTCCVG.AND.BORCVG
@@ -625,10 +619,10 @@ C --- AFFICHAGE TABLEAU CONVERGENCE
 C --- SAUF POUR METHODE CONTINUE: VOIR NMTBLE
 C
       IF (.NOT.FONACT(5)) THEN
-        CALL NMIMPR('IMPR','ETAT_CONV',' ',0.D0,0)      
+        CALL NMIMPR('IMPR','ETAT_CONV',' ',0.D0,0)
       ENDIF
       IF (FONACT(5).AND.(.NOT.(CONVER))) THEN
-        CALL NMIMPR('IMPR','ETAT_CONV',' ',0.D0,0)      
+        CALL NMIMPR('IMPR','ETAT_CONV',' ',0.D0,0)
       ENDIF
 C
 C --- AFFICHAGE INFORMATIONS FINALES DE CONVERGENCE
@@ -662,7 +656,7 @@ C --- S'AGIT PAS D'UNE _RE_ ACTUALISATION GEOMETRIQUE
              CTCINT(2) = CTCITE
 
              CALL NMIMPR('IMPR','CONV_CONT',GEONOE,GEOVAL,CTCINT)
-           
+
            ENDIF
 
          ENDIF
@@ -673,11 +667,11 @@ C --- S'AGIT PAS D'UNE _RE_ ACTUALISATION GEOMETRIQUE
       ENDIF
 C
 C ======================================================================
-C --- SAUVEGARDES INFOS CONVERGENCE 
+C --- SAUVEGARDES INFOS CONVERGENCE
 C ======================================================================
 C
 C ======================================================================
-C --- PREPARATION DES PARAMETRES ARCHIVES 
+C --- PREPARATION DES PARAMETRES ARCHIVES
 C ---   NOMBRE ITERATIONS NEWTON
 C ---   NOMBRE ITERATIONS RECHERCHE LINEAIRE
 C ---   RESI_GLOB_RELA
@@ -690,7 +684,7 @@ C ======================================================================
       ZR(JCRR+2) = VRELA
       ZR(JCRR+3) = VMAXI
       ZR(JCRR+4) = ETA
-      IF ((NUMINS.EQ.1) .AND. (ITERAT.EQ.0)) THEN 
+      IF ((NUMINS.EQ.1) .AND. (ITERAT.EQ.0)) THEN
          ZR(JCRR+5) = VCHAR
       ELSE
          IF ((CONVER).AND.(.NOT.MAXREL)) THEN

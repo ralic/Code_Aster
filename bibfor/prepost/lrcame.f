@@ -1,29 +1,29 @@
       SUBROUTINE LRCAME ( NROFIC, NOCHMD, NOMAMD, NOMAAS,
-     >                    NBVATO, TYPECH,
-     >                    NBCMPV, NCMPVA, NCMPVM,
-     >                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     >                    NOMGD, NCMPRF, JNOCMP, ADSL, ADSV, ADSD,
-     >                    CODRET )
+     &                    NBVATO, TYPECH,
+     &                    NBCMPV, NCMPVA, NCMPVM,
+     &                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
+     &                    NOMGD, NCMPRF, JNOCMP, ADSL, ADSV, ADSD,
+     &                    CODRET )
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
@@ -36,7 +36,7 @@ C        NROFIC : UNITE LOGIQUE DU FICHIER MED
 C        NOCHMD : NOM MED DU CHAMP A LIRE
 C        NOMAMD : NOM MED DU MAILLAGE LIE AU CHAMP A LIRE
 C                  SI ' ' : ON SUPPOSE QUE C'EST LE PREMIER MAILLAGE
-C                          DU FICHIER 
+C                          DU FICHIER
 C        NOMAAS : NOM ASTER DU MAILLAGE
 C        NBVATO : NOMBRE DE VALEURS TOTAL
 C        TYPECH : TYPE DE CHAMP AUX ELEMENTS : ELEM/ELGA/ELNO/NOEU
@@ -195,8 +195,7 @@ C
         CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
         CALL UTIMPI ( 'L', 'ERREUR EFFOCO NUMERO ', 1, CODRET )
         CALL UTFINM ()
-        CALL UTMESS ( 'F', NOMPRO, 'SOIT LE FICHIER N''EXISTE PAS, '//
-     >    'SOIT C''EST UNE MAUVAISE VERSION DE HDF (UTILISE PAR MED).')
+        CALL U2MESS('F','PREPOST3_10')
       ENDIF
 C
 C 1.4.2. ==> VERIFICATION DE LA VERSION MED
@@ -204,29 +203,29 @@ C
       CALL EFVECO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
         CALL UTDEBM ( 'F', NOMPRO, 'LE FICHIER N''A PAS ETE CONSTRUIT'//
-     >             ' AVEC LA MEME VERSION DE MED.' )
+     &             ' AVEC LA MEME VERSION DE MED.' )
         CALL UTIMPI ( 'L', 'ERREUR EFVECO NUMERO ', 1, CODRET )
         CALL EFVEDO(VLIB(1),VLIB(2),VLIB(3),IRET)
         IF( IRET.EQ.0) THEN
           CALL UTIMPI ( 'L', 'VERSION DE LA BIBLIOTHEQUE MED '//
-     >                       'UTILISEE PAR CODE_ASTER : ', 3, VLIB )
+     &                       'UTILISEE PAR CODE_ASTER : ', 3, VLIB )
         ENDIF
         CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET )
         CALL EFVELI ( IDFIMD, VFIC(1),VFIC(2),VFIC(3), IRET )
         IF( IRET.EQ.0) THEN
           IF ( VFIC(2).EQ.-1 .OR. VFIC(3).EQ.-1) THEN
             CALL UTIMPI ( 'L', 'VERSION DE LA BIBLIOTHEQUE MED '//
-     >                    'QUI A CREE LE FICHIER   : < 2.1.5', 0, IAUX )
+     &                    'QUI A CREE LE FICHIER   : < 2.1.5', 0, IAUX )
           ELSE
             CALL UTIMPI ( 'L', 'VERSION DE LA BIBLIOTHEQUE MED '//
-     >                       'POUR CREER LE FICHIER   : ', 3, VFIC )
+     &                       'POUR CREER LE FICHIER   : ', 3, VFIC )
           ENDIF
           IF (     VFIC(1).LT.VLIB(1)
-     >      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).LT.VLIB(2) )
-     >      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).EQ.VLIB(2) .AND.
-     >             VFIC(3).EQ.VLIB(3) ) ) THEN
+     &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).LT.VLIB(2) )
+     &      .OR. ( VFIC(1).EQ.VLIB(1) .AND. VFIC(2).EQ.VLIB(2) .AND.
+     &             VFIC(3).EQ.VLIB(3) ) ) THEN
             CALL UTIMPI ( 'L', 'UN UTILITAIRE VOUS PERMET PEUT-ETRE '
-     >         //'DE CONVERTIR VOTRE FICHIER (medimport)', 0, IAUX )
+     &         //'DE CONVERTIR VOTRE FICHIER (medimport)', 0, IAUX )
           ENDIF
         ENDIF
         CALL EFFERM ( IDFIMD, CODRET )
@@ -242,7 +241,7 @@ C
 C
         CALL MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
         IF ( .NOT.EXISTM ) THEN
-          CALL UTMESS ( 'F', NOMPRO, 'PAS DE MAILLAGE DANS '//NOFIMD )
+          CALL U2MESK('F','PREPOST3_11',1,NOFIMD)
         ENDIF
 C
 C 1.5.2. ==> C'EST UN MAILLAGE DESIGNE PAR UN NOM
@@ -254,7 +253,8 @@ C
         CALL MDEXMA ( NOFIMD, NOMAMD, IAUX, EXISTM, NDIM, CODRET )
         IF ( .NOT.EXISTM ) THEN
           CALL UTMESS ( 'F', NOMPRO,
-     >   'MAILLAGE '//NOMAMD//' INCONNU DANS '//NOFIMD )
+     &   'MAILLAGE '//NOMAMD//' INCONNU DANS '//NOFIMD )
+C        CALL U2MESK('F','PREPOST3_12', 2 ,VALK)
         ENDIF
 C
       ENDIF
@@ -273,8 +273,8 @@ C
       ENDIF
 C
       CALL UTLICM ( NBCMPV, ZK8(IAUX),
-     >              NOMGD, NCMPRF, ZK8(JNOCMP),
-     >              NCMPUT, NUMCMP, NTNCMP, NTUCMP )
+     &              NOMGD, NCMPRF, ZK8(JNOCMP),
+     &              NCMPUT, NUMCMP, NTNCMP, NTUCMP )
 C
 C====
 C 2. OUVERTURE DU FICHIER EN LECTURE
@@ -287,7 +287,7 @@ C
         CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
         CALL UTIMPI ( 'L', 'ERREUR EFOUVR NUMERO ', 1, CODRET )
         CALL UTFINM ()
-        CALL UTMESS ( 'F', NOMPRO, 'PROBLEME A L OUVERTURE DU FICHIER' )
+        CALL U2MESS('F','PREPOST_69')
       ENDIF
 C
 C 2.1. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
@@ -296,8 +296,8 @@ C          . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 C          . VERIF COHERENCE AVEC LE CATALOGUE
 C
       CALL LRMTYP ( NBTYP, NOMTYP,
-     >              NNOTYP, TYPGEO, RENUMD,
-     >              MODNUM, NUANOM, NUMNOA )
+     &              NNOTYP, TYPGEO, RENUMD,
+     &              MODNUM, NUANOM, NUMNOA )
 C
 C 2.1.1 ==> LE CHAMP EXISTE-T-IL DANS LE FICHIER ?
 C          AU BON NUMERO D'ORDRE ?
@@ -343,7 +343,7 @@ C
 C
 C       RECUPERE LE NOMBRE DE MAILLES DE TYPE TYGEOM
         CALL EFNEMA ( IDFIMD, NOMAMD, EDCONN, EDMAIL, TYGEOM, EDNODA,
-     >                NMATYP, CODRE2 )
+     &                NMATYP, CODRE2 )
 C
         IF ( CODRET.EQ.0 ) THEN
 C
@@ -353,7 +353,7 @@ C
         IF ( IINST.NE.0 ) THEN
 C
           CALL MDCHIN ( NOFIMD, NOCHMD, TYPENT, TYGEOM, PREFIX,
-     >                  NPAS, CODRET )
+     &                  NPAS, CODRET )
 C
           IF ( NPAS.NE.0 ) THEN
             CALL JEVEUO(PREFIX//'.INST','L',ADINST)
@@ -382,9 +382,7 @@ C
             CALL UTIMPI ( 'L', 'TYPENT : ', 1, TYPENT )
             CALL UTIMPI ( 'L', 'TYPGEO : ', 1, TYPGEO )
             CALL UTFINM ()
-            CALL UTMESS ( 'A', NOMPRO,
-     >             'INSTANT INCONNU POUR CE CHAMP ET CES SUPPORTS '//
-     >             'DANS LE FICHIER.' )
+            CALL U2MESS('A','PREPOST3_13')
             GOTO 22
  2221       CONTINUE
 C
@@ -396,7 +394,7 @@ C
               CALL UTIMPR ( 'L', 'INSTANT VOULU : ', 1, INST )
               CALL UTIMPI ( 'L', '--> NUMERO D ORDRE : ', 1, NUMORD )
               CALL UTIMPI ( 'L',
-     >                   '--> NUMERO DE PAS DE TEMPS : ', 1, NUMPT )
+     &                   '--> NUMERO DE PAS DE TEMPS : ', 1, NUMPT )
               CALL UTFINM ()
             ENDIF
             CALL JEDETC ( 'V', PREFIX, 1 )
@@ -411,14 +409,14 @@ C
         NMCMFL = '&&'//NOMPRO//'.NOMCMP_FICHIE'//K2BID
 
         CALL MDEXCH ( NOFIMD,
-     >                NOCHMD, NUMPT, NUMORD, NBCMPV, NCMPVM,
-     >                NBVATO, TYPENT, TYGEOM,
-     >                EXISTC, NBCMFI, NMCMFL, NBVAL, CODRET )
-        IF ( EXISTC.GE.3 ) THEN 
+     &                NOCHMD, NUMPT, NUMORD, NBCMPV, NCMPVM,
+     &                NBVATO, TYPENT, TYGEOM,
+     &                EXISTC, NBCMFI, NMCMFL, NBVAL, CODRET )
+        IF ( EXISTC.GE.3 ) THEN
           EXISTT = .TRUE.
           NBTYLU = NBTYLU + 1
           NMCMFI(NBTYLU) = NMCMFL
-          IF ( TYPECH(1:4).NE.'NOEU' ) THEN 
+          IF ( TYPECH(1:4).NE.'NOEU' ) THEN
             LYPENT(NBTYLU) = TYPENT
             LYGEOM(NBTYLU) = TYGEOM
             NLYVAL(NBTYLU) = NBVAL
@@ -450,20 +448,20 @@ C
           CALL UTIMPI ( 'L', 'NUMERO DE PAS DE TEMPS : ', 1, NUMPT )
         ENDIF
         CALL UTFINM ()
-        IF ( EXISTC.EQ.0 ) THEN 
-         CALL UTMESS ( 'A', NOMPRO, 'CHAMP INCONNU.' )
-        ELSEIF ( EXISTC.EQ.1 ) THEN 
-         CALL UTMESS ( 'A', NOMPRO, 'IL MANQUE DES COMPOSANTES.' )
-        ELSEIF ( EXISTC.EQ.2 ) THEN 
+        IF ( EXISTC.EQ.0 ) THEN
+         CALL U2MESS('A','PREPOST3_14')
+        ELSEIF ( EXISTC.EQ.1 ) THEN
+         CALL U2MESS('A','PREPOST3_15')
+        ELSEIF ( EXISTC.EQ.2 ) THEN
          IF ( IINST.NE.0 ) THEN
-          CALL UTMESS ( 'A', NOMPRO, 'AUCUNE VALEUR A CET INSTANT.' )
+          CALL U2MESS('A','PREPOST3_16')
          ELSE
-          CALL UTMESS ( 'A', NOMPRO, 'AUCUNE VALEUR A CE NRO D ORDRE.' )
+          CALL U2MESS('A','PREPOST3_17')
          ENDIF
-        ELSEIF ( EXISTC.EQ.4 ) THEN 
-         CALL UTMESS ( 'A', NOMPRO, 'MAUVAIS NOMBRE DE VALEURS.' )
+        ELSEIF ( EXISTC.EQ.4 ) THEN
+         CALL U2MESS('A','PREPOST3_18')
         ENDIF
-        CALL UTMESS ( 'F', NOMPRO, 'LECTURE IMPOSSIBLE.' )
+        CALL U2MESS('F','PREPOST3_19')
       ENDIF
 C
 C=====================================================================
@@ -479,10 +477,10 @@ C
       TYPENT = EDNOEU
       TYGEOM = TYPNOE
       CALL LRCMLE ( IDFIMD, NOCHMD, NOMAMD,
-     >              NBCMFI, NBVATO, NUMPT, NUMORD,
-     >              TYPENT, TYGEOM,
-     >              NTVALE, NOMPRF,
-     >              CODRET )
+     &              NBCMFI, NBVATO, NUMPT, NUMORD,
+     &              TYPENT, TYGEOM,
+     &              NTVALE, NOMPRF,
+     &              CODRET )
 C
 C====
 C 3.2 LECTURE DU PROFIL
@@ -499,11 +497,11 @@ C 3.3 TRANFERT DES VALEURS
 C====
 C
       CALL LRCMVA ( NTVALE, NBVATO, NTPROA, LGPROA,
-     >              NCMPRF, ZK8(JNOCMP),
-     >              NBCMFI, NMCMFI(1), NBCMPV, NCMPVM, NUMCMP,
-     >              NOCHMD,
-     >              ADSL, ADSV,
-     >              CODRET )
+     &              NCMPRF, ZK8(JNOCMP),
+     &              NBCMFI, NMCMFI(1), NBCMPV, NCMPVM, NUMCMP,
+     &              NOCHMD,
+     &              ADSL, ADSV,
+     &              CODRET )
 C
       ELSE
 C
@@ -515,7 +513,7 @@ C  ON BOUCLE (71) SUR LES TYPES DE MAILLE LUES DANS LE CHAMP MED. LE
 C  NOMBRE DE MAILLES RELATIF A CE TYPE EST NMATYP RENVOYE PAR EFNEMA.
 C  LES VALEURS NUMERIQUES SONT SAUVEES DANS LE TABLEAU D ADRESSE ADSV
 C  CE TABLEAU A ETE DIMENSIONNE PAR CESCRE A :
-C  NB DE TYPE DE MAIL * NB DE VALEURS PAR MAILLE * NB DE COMPOSANTES 
+C  NB DE TYPE DE MAIL * NB DE VALEURS PAR MAILLE * NB DE COMPOSANTES
 C  * NB DE MAILLES DU TYPE
 C  LE NB DE VALEURS PAR MAILLE :
 C       - POUR UN ELNO : NB DE NOEUDS (NBNOMA DONNE PAR CONNECTIVITE)
@@ -529,7 +527,7 @@ C
 C  RECUPERATION DE NMATYP : NOMBRE TOTAL DE MAILLES DANS LE TYPE LYGEOM
 C
          CALL EFNEMA ( IDFIMD, NOMAMD, 1, 0, LYGEOM(LETYPE), 0,
-     >                 NMATYP, CODRET )
+     &                 NMATYP, CODRET )
          IF     (TYPECH(1:4).EQ.'ELNO') THEN
             NBNOMA = NNOTYP(LTYP(LETYPE))
          ELSEIF (TYPECH(1:4).EQ.'ELEM') THEN
@@ -545,17 +543,15 @@ C        C'EST ICI QUE L'ORDRE DE PARCOURS DES TYPES PREND TOUT
 C        SON SENS
 C
          CALL WKVECT ('&&'//NOMPRO//'.NUM.'//NOMTYP(LTYP(LETYPE)),
-     >                  'V V I',NMATYP,JNUMTY)
+     &                  'V V I',NMATYP,JNUMTY)
          CALL EFNUML ( IDFIMD, NOMAMD, ZI(JNUMTY), NMATYP,
-     >                 EDMAIL, TYPGEO(LTYP(LETYPE)), CODRET )
+     &                 EDMAIL, TYPGEO(LTYP(LETYPE)), CODRET )
 C
          NROMAI = NMATY0(LETYPE)
          IF ( CODRET.EQ.0 ) THEN
             NROMAI = NROMAI + NMATYP
          ELSE
-            CALL UTMESS ('I',NOMPRO,'ABSENCE DE NUMEROTATION '//
-     >             'DES MAILLES '//NOMTYP(LTYP(LETYPE))//
-     >             ' DANS LE FICHIER MED')
+            CALL U2MESK('I','PREPOST3_20',1,NOMTYP(LTYP(LETYPE)))
             DO 211 , JAUX = 1 , NMATYP
               ZI(JNUMTY+JAUX-1) = NROMAI
               NROMAI = NROMAI + 1
@@ -569,10 +565,10 @@ C====
 C
          CALL JEDETC ('V',NTVALE,1)
          CALL LRCMLE ( IDFIMD, NOCHMD, NOMAMD,
-     >                 NBCMFI, NLYVAL(LETYPE), NUMPT, NUMORD,
-     >                 LYPENT(LETYPE), LYGEOM(LETYPE),
-     >                 NTVALE, NOMPRF,
-     >                 CODRET )
+     &                 NBCMFI, NLYVAL(LETYPE), NUMPT, NUMORD,
+     &                 LYPENT(LETYPE), LYGEOM(LETYPE),
+     &                 NTVALE, NOMPRF,
+     &                 CODRET )
 C
 C====
 C 4.2 LECTURE DU PROFIL
@@ -583,8 +579,8 @@ C
          ELSE
              CALL JEDETC ('V',NTPROA,1)
              CALL LRCMPR ( IDFIMD, NOMPRF,
-     >                     NTPROA, LGPROA,
-     >                     CODRET )
+     &                     NTPROA, LGPROA,
+     &                     CODRET )
          ENDIF
 C
 C====
@@ -592,11 +588,11 @@ C 4.3 TRANFERT DES VALEURS
 C====
 C
          CALL LRCMVE ( NTVALE, NMATYP, NBNOMA, NTPROA, LGPROA,
-     >                 NCMPRF, ZK8(JNOCMP),
-     >                 NBCMFI, NMCMFI(LETYPE), NBCMPV, NCMPVM, NUMCMP,
-     >                 JNUMTY, NOCHMD,
-     >                 ADSL, ADSV, ADSD,
-     >                 CODRET )
+     &                 NCMPRF, ZK8(JNOCMP),
+     &                 NBCMFI, NMCMFI(LETYPE), NBCMPV, NCMPVM, NUMCMP,
+     &                 JNUMTY, NOCHMD,
+     &                 ADSL, ADSV, ADSD,
+     &                 CODRET )
 C
    71 CONTINUE
       ENDIF
@@ -614,7 +610,7 @@ C
         CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
         CALL UTIMPI ( 'L', 'ERREUR EFFERM NUMERO ', 1, CODRET )
         CALL UTFINM ()
-        CALL UTMESS ( 'F', NOMPRO, 'PROBLEME A LA FERMETURE DU FICHIER')
+        CALL U2MESS('F','PREPOST_70')
       ENDIF
 C
 C 5.2. ==> MENAGE

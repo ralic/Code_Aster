@@ -4,22 +4,22 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C     AFFE_CARA_ELEM
@@ -81,14 +81,12 @@ C
 C --- ON INTERDIT SUR UN MAILLAGE 2D D'AVOIR DES ELEMENTS DISCRETS
 C --- 2D ET 3D
       IF (I2D.EQ.1.AND.I3D.EQ.1.AND.NDIM1.EQ.2) THEN
-          CALL UTMESS('F','ACEADI','ON INTERDIT D''AVOIR SUR UN '
-     +              //'MAILLAGE 2D DES ELEMENTS DISCRETS 2D ET 3D .')
+          CALL U2MESS('F','MODELISA_8')
       ENDIF
 C
 C --- ON INTERDIT SUR UN MAILLAGE 3D D'AVOIR DES ELEMENTS DISCRET_2D
       IF (I2D.EQ.1.AND.NDIM1.EQ.3) THEN
-          CALL UTMESS('F','ACEADI','ON INTERDIT D''AVOIR SUR UN '
-     +              //'MAILLAGE 3D DES ELEMENTS DISCRETS 2D .')
+          CALL U2MESS('F','MODELISA_9')
       ENDIF
 C
 C --- DIMENSION DU PROBLEME
@@ -113,11 +111,11 @@ C
 C --- BOUCLE SUR LES OCCURENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          CALL GETVEM(NOMA,'GROUP_MA',MCF,'GROUP_MA',
-     +                                 IOC,1,LMAX,ZK8(JDLS),NG)
+     &                                 IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',MCF,'MAILLE',
-     +                                 IOC,1,LMAX,ZK8(JDLS),NM)
+     &                                 IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVEM(NOMA,'GROUP_NO',MCF,'GROUP_NO',
-     +                                 IOC,1,LMAX,ZK8(JDLS),NJ)
+     &                                 IOC,1,LMAX,ZK8(JDLS),NJ)
          CALL GETVEM(NOMA,'NOEUD',MCF,'NOEUD',IOC,1,LMAX,ZK8(JDLS),NN)
          CALL GETVTX(MCF,'CARA'     ,IOC,1,NBCAR,CAR      ,NCAR)
 C
@@ -150,9 +148,9 @@ C                                                  DE GROUPES DE NOEUDS
                DO 42 I = 1 , NJ
                   CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
                   CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONMAX',
-     +                                                  NBNOGR,K1BID)
+     &                                                  NBNOGR,K1BID)
                   CALL CRLINU ( 'NUM', MLGNNO, NBNOGR, ZI(JDGN), K8B,
-     +                           NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+     &                           NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                   IF (KK.GT.0) THEN
                        CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(JDDI),KK,NDIM)
                   ENDIF
@@ -161,7 +159,7 @@ C                                                  DE GROUPES DE NOEUDS
 C ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
             IF (NN.GT.0) THEN
                CALL CRLINU ( 'NOM', MLGNNO, NN, IBID, ZK8(JDLS),
-     +                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+     &                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                IF (KK.GT.0) THEN
                        CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(JDDI),KK,NDIM)
                ENDIF

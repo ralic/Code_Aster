@@ -4,7 +4,7 @@
      &             ELGEOM,IBORNE,ICTAU)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C TOLE CRP_21
        IMPLICIT NONE
 
        INTEGER       NDIM, NNO, NPG, IMATE, LGPG, IBORNE, ICTAU,
-     +               IPOIDS, IVF, IDFDE
+     &               IPOIDS, IVF, IDFDE
        CHARACTER*8   TYPMOD(*)
        CHARACTER*16  PILO, COMPOR(4)
        REAL*8        GEOM(NDIM,*), DEPLM(*)
@@ -190,7 +190,7 @@ C        CONTRAINTES AVEC SQRT(2)
      &                EPSP, EPSD, COPILO(1,KPG), COPILO(2,KPG),
      &                COPILO(3,KPG), COPILO(4,KPG),COPILO(5,KPG))
             ELSE
-              CALL UTMESS('F','PIPEPE','LDC NON DISPO POUR PILOTAGE')
+              CALL U2MESS('F','ALGORITH9_88')
             END IF
 
           ELSE
@@ -206,9 +206,7 @@ C        CONTRAINTES AVEC SQRT(2)
               ETAMIN=ZR(IBORNE+1)
               ETAMAX=ZR(IBORNE)
               IF (ETAMIN.EQ.R8VIDE() .OR. ETAMAX.EQ.R8VIDE())
-     &          CALL UTMESS('F','PIPEPE','LE PILOTAGE PRED_ELAS '
-     &         // 'NECESSITE ETA_PILO_MIN ET ETA_PILO_MAX '
-     &         // 'POUR LA LOI ENDO_ISOT_BETON')
+     &          CALL U2MESS('F','ALGORITH9_89')
 
               CALL PIPEDS(NDIM,TYPMOD,TAU,IMATE,
      &                SIGMA,VIM(1,KPG),EPSM,EPSP, EPSD,
@@ -220,9 +218,7 @@ C        CONTRAINTES AVEC SQRT(2)
               ETAMIN=ZR(IBORNE+1)
               ETAMAX=ZR(IBORNE)
               IF (ETAMIN.EQ.R8VIDE() .OR. ETAMAX.EQ.R8VIDE())
-     &          CALL UTMESS('F','PIPEPE','LE PILOTAGE PRED_ELAS '
-     &         // 'NECESSITE ETA_PILO_MIN ET ETA_PILO_MAX '
-     &         // 'POUR LA LOI ENDO_ORTH_BETON')
+     &          CALL U2MESS('F','ALGORITH9_90')
 
               CALL PIPEDO(NDIM,TYPMOD,TAU,IMATE,
      &                SIGMA,VIM(1,KPG),
@@ -240,7 +236,7 @@ C        CONTRAINTES AVEC SQRT(2)
      &                ELGEOM(1,KPG),COPILO(1,KPG), COPILO(2,KPG))
 
             ELSE
-              CALL UTMESS('F','PIPEPE','LDC NON DISPO POUR PILOTAGE')
+              CALL U2MESS('F','ALGORITH9_88')
             END IF
           END IF
         ENDIF

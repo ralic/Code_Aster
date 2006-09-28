@@ -1,26 +1,26 @@
-      SUBROUTINE RCSN01 ( NBM, ADRM, IPT, SN3, SN4, ALPHAA, ALPHAB,  
-     +                    NBTH, IOCS,SN6 )
+      SUBROUTINE RCSN01 ( NBM, ADRM, IPT, SN3, SN4, ALPHAA, ALPHAB,
+     &                    NBTH, IOCS,SN6 )
       IMPLICIT   NONE
       INTEGER             NBM, ADRM(*), IPT, NBTH, IOCS
       REAL*8              SN3, SN4, ALPHAA, ALPHAB, SN6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C
@@ -46,9 +46,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IOCC, JCHTH, IAD, ICMP, NBCMP, DECAL, JCESD, JCESV,
-     +             JCESL, NBINST, JINST, I, IBID, IRET, ITH
+     &             JCESL, NBINST, JINST, I, IBID, IRET, ITH
       REAL*8       INST, EPSI, TMOY(2), VMOY, TA, TB, TAB,
-     +             DT1, DT1MAX, TABMAX
+     &             DT1, DT1MAX, TABMAX
       COMPLEX*16   CBID
       LOGICAL      EXIST
       CHARACTER*8  K8B, TBMOYE(2)
@@ -104,8 +104,7 @@ C ------ ON RECUPERE LES INSTANTS DANS UNE TABLE
 C
          CALL TBEXIP ( TBMOYE(1), 'INST', EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
-            CALL UTMESS('F','RCSN01','ABSENCE DU PARAMETRE INST POUR'//
-     +                               ' LA TABLE TABL_MOYE_THER')
+            CALL U2MESS('F','POSTRELE_43')
          ENDIF
          NOMOBJ = '&&RCSN01.INSTANT'
          CALL TBEXV1 ( TBMOYE(1), 'INST', NOMOBJ, 'V', NBINST, K8B )
@@ -123,8 +122,8 @@ C
 C --------- ON RECUPERE LES MOYENNES
 C
             CALL TBLIVA ( TBMOYE(1), 2, NOPARA, IBID, INST, CBID,
-     +                    'MOMENT_0', 'RELATIF', EPSI, 'TEMP', K8B,
-     +                    IBID, TMOY(1), CBID, K8B, IRET )
+     &                    'MOMENT_0', 'RELATIF', EPSI, 'TEMP', K8B,
+     &                    IBID, TMOY(1), CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
                CALL UTDEBM('F','RCSN01','PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(1))
@@ -134,8 +133,8 @@ C
             ENDIF
             IF ( NBM .GT. 1 ) THEN
                CALL TBLIVA ( TBMOYE(2), 2, NOPARA, IBID, INST, CBID,
-     +                    'MOMENT_0', 'RELATIF', EPSI, 'TEMP', K8B,
-     +                    IBID, TMOY(2), CBID, K8B, IRET )
+     &                    'MOMENT_0', 'RELATIF', EPSI, 'TEMP', K8B,
+     &                    IBID, TMOY(2), CBID, K8B, IRET )
                IF (IRET.NE.0) THEN
                   CALL UTDEBM('F','RCSN01','PROBLEME POUR RECUPERER ')
                   CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(2))
@@ -145,8 +144,8 @@ C
                ENDIF
             ENDIF
             CALL TBLIVA ( TBMOYE(1), 2, NOPARA, IBID, INST, CBID,
-     +                    'MOMENT_1', 'RELATIF', EPSI, 'TEMP', K8B,
-     +                    IBID, VMOY, CBID, K8B, IRET )
+     &                    'MOMENT_1', 'RELATIF', EPSI, 'TEMP', K8B,
+     &                    IBID, VMOY, CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
                CALL UTDEBM('F','RCSN01','PROBLEME POUR RECUPERER ')
                CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(1))
@@ -158,8 +157,8 @@ C
 C
 C --------- DT1: AMPLITUDE DE LA VARIATION ENTRE LES 2 ETATS STABILISES
 C                DE LA DIFFERENCE DE TEMPERATURE ENTRE LES PAROIS
-C                INTERNE ET EXTERNE 
-C 
+C                INTERNE ET EXTERNE
+C
             DT1 = VMOY
 C
 C --------- TA : AMPLITUDE DE VARIATION ENTRE LES 2 ETATS STABILISES

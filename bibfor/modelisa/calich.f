@@ -1,6 +1,6 @@
       SUBROUTINE CALICH(CHARGZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,10 +129,7 @@ C ---   RECUPERATION DU CHAMNO
 C       ----------------------
         CALL GETVID(MOTFAC,'CHAM_NO',IOCC,1,1,CHAMNO,NB)
         IF (NB.EQ.0) THEN
-          CALL UTMESS('F','CALICH','ON DOIT UTILISER LE MOT CLE CHAM_NO'
-     &                //' POUR DONNER LE CHAM_NO DONT LES COMPOSANTES'//
-     &                ' SERONT LES COEFFICIENTS DE LA RELATION '//
-     &                'LINEAIRE.')
+          CALL U2MESS('F','MODELISA2_98')
         END IF
 
         CHAM19(1:8) = CHAMNO
@@ -141,10 +138,7 @@ C ---   VERIFICATION DE L'EXISTENCE DU CHAMNO
 C       -------------------------------------
         CALL JEEXIN(CHAM19//'.VALE',IRET)
         IF (IRET.EQ.0) THEN
-          CALL UTMESS('F','CALICH',
-     &                'IL FAUT QUE LE CHAM_NO DONT LES TERMES '//
-     &                ' SERVENT DE COEFFICIENTS A LA RELATION'//
-     &                ' LINEAIRE A ECRIRE AIT ETE DEFINI. ')
+          CALL U2MESS('F','MODELISA2_99')
         END IF
 
 C ---   VERIFICATION DU TYPE DU CHAMP
@@ -152,10 +146,7 @@ C       -----------------------------
         CALL DISMOI('F','TYPE_CHAMP',CHAMNO,'CHAM_NO',IBID,TYCH,IER)
 
         IF (TYCH.NE.'NOEU') THEN
-          CALL UTMESS('F','CALICH',
-     &                'ON DOIT DONNER UN CHAM_NO APRES LE MOT CLE'//
-     &                ' CHAM_NO DERRIERE LE MOT FACTEUR '//
-     &                'LIAISON_CHAMNO .')
+          CALL U2MESS('F','MODELISA3_1')
         END IF
 
 C ---   RECUPERATION DE LA VALEUR DU SECOND MEMBRE DE LA RELATION
@@ -163,11 +154,7 @@ C ---   LINEAIRE
 C       --------
         CALL GETVR8(MOTFAC,'COEF_IMPO',IOCC,1,1,BETA,NB)
         IF (NB.EQ.0) THEN
-          CALL UTMESS('F','CALICH',
-     &                'IL FAUT DEFINIR LA VALEUR DU SECOND MEMBRE'//
-     &                ' DE LA RELATION LINEAIRE APRES LE MOT CLE'//
-     &                ' COEF_IMPO DERRIERE LE MOT FACTEUR '//
-     &                'LIAISON_CHAMNO .')
+          CALL U2MESS('F','MODELISA3_2')
         END IF
 
 C ---   RECUPERATION DE LA GRANDEUR ASSOCIEE AU CHAMNO :
@@ -179,10 +166,7 @@ C ---   LES INCONNUES ASSOCIEES A LA GRANDEUR DE NOM NOMGD
 C       --------------------------------------------------
         CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NBEC,K8BID,IER)
         IF (NBEC.GT.10) THEN
-          CALL UTMESS('F','CALICH',
-     &                'LE DESCRIPTEUR_GRANDEUR DE LA GRANDEUR'//
-     &                ' DE NOM '//NOMGD//
-     &                ' NE TIENT PAS SUR DIX ENTIERS CODES')
+          CALL U2MESK('F','MODELISA2_87',1,NOMGD)
         END IF
 
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU CHAM_NO

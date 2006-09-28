@@ -1,7 +1,7 @@
       SUBROUTINE RESGRA(SOL,MAT,SMBR,VCINE,MATF,BASE,IREP,
      &                  NITER,EPSI,CRITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,9 +92,7 @@ C     -----------------------------
       IF (VCINE.NE.' ') THEN
         VCIN19 = VCINE
         CALL JEEXIN(VCIN19//'.VALE',IRET)
-        IF (IRET.EQ.0) CALL UTMESS('F','RESGRA',
-     &                             'LE CHAM_NO : '//VCIN19//
-     &                             ' N"EXISTE PAS')
+        IF (IRET.EQ.0) CALL U2MESK('F','ALGELINE3_34',1,VCIN19)
         CALL JEVEUO(VCIN19//'.VALE','L',LVCINE)
         CALL CSMBG1(MATAS,ZR(IDB),ZR(LVCINE))
       END IF
@@ -111,22 +109,16 @@ C     ------------------------------------------------
       CALL JEVEUO(MATAS//'.REFA','L',JREFA)
       KSTOC = ZK24(JREFA-1+2)(1:14)//'.SMOS'
       CALL JEEXIN(KSTOC//'.SMDI',IRET)
-      IF (IRET.EQ.0) CALL UTMESS('F','RESGRA',
-     &  'LA MATR_ASSE '//MATAS//' N"EST '//
-     &              'PAS STOCKEE "MORSE"')
+      IF (IRET.EQ.0) CALL U2MESK('F','ALGELINE3_35',1,MATAS)
       CALL JEVEUO(KSTOC//'.SMDI','L',IDIN)
       CALL JEVEUO(KSTOC//'.SMHC','L',IDIP)
       CALL JEVEUO(KSTOC//'.SMDE','L',JSMDE)
       NEQ = ZI(JSMDE-1+1)
       IF (NITER.EQ.0) NITER = NEQ/2
       NBLC = ZI(JSMDE-1+3)
-        IF (NBLC.NE.1)  CALL UTMESS('F','RESGRA',
-     &    'CONFLIT UNE MATRICE'//
-     &                ' STOCKEE MORSE NE PEUT AVOIR Q''UN SEUL BLOC')
+        IF (NBLC.NE.1)  CALL U2MESS('F','ALGELINE3_36')
         CALL JELIRA(JEXNUM(MATAS//'.VALM',1),'TYPE',IBID,CBID)
-        IF (CBID(1:1).EQ.'C')  CALL UTMESS('F','RESGRA_5',
-     &    ' GCPC N"EST '//
-     &                'PAS PREVU POUR UNE MATRICE COMPLEXE')
+        IF (CBID(1:1).EQ.'C')  CALL U2MESS('F','ALGELINE3_37')
 
         CALL JEVEUO(JEXNUM(MATAS//'.VALM',1),'L',IDAC)
 
@@ -134,8 +126,7 @@ C     ------------------------------------------------
 C     6- RECUPERATION DE LA MATRICE DE PRECONDITIONNEMENT:
 C     -----------------------------------------------------
       CALL JEEXIN(MATFAC//'.REFA',IRET)
-      IF (IRET.EQ.0) CALL UTMESS('F','RESGRA',
-     &  'PAS DE MATRICE DE PRECONDITIONNEMENT : ON S''ARRETE')
+      IF (IRET.EQ.0) CALL U2MESS('F','ALGELINE3_38')
 
       CALL JEVEUO(MATFAC//'.REFA','L',JREFAF)
 
@@ -164,9 +155,7 @@ C     ------------------------------------------------
       CALL JEEXIN(X19//'.REFE',IRET)
       IF (IRET.EQ.0) THEN
         IF (IREP.EQ.1) THEN
-          CALL UTMESS('A','RESGRA_14',' LE CHAM_NO :'//X19//
-     &         ' N"EXISTE PAS ==> REPRISE IMPOSSIBLE ==> INITIALISATION'
-     &                //' PAR LE VECTEUR NUL')
+          CALL U2MESK('A','ALGELINE3_39',1,X19)
         END IF
         IREP = 0
         ICRE = 1

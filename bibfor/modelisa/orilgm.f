@@ -4,22 +4,22 @@ C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
-      CHARACTER*8    NOMA      
+      CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -50,9 +50,9 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C -----  VARIABLES LOCALES
-      INTEGER       IBID, IFM , NIV, NBF1, NBF2, NBF3, IRET, NBPAR, 
-     +              JNOMA, JJJ, JGRO, N1, N2, N3, NOEUD, IOCC,
-     +              IER, NDIM, IGR, NG, NBMAIL, NORIT, NORIEN, NTRAIT
+      INTEGER       IBID, IFM , NIV, NBF1, NBF2, NBF3, IRET, NBPAR,
+     &              JNOMA, JJJ, JGRO, N1, N2, N3, NOEUD, IOCC,
+     &              IER, NDIM, IGR, NG, NBMAIL, NORIT, NORIEN, NTRAIT
       REAL*8        VECT(3), R8B, PREC, ARMIN
       COMPLEX*16    CBID
       LOGICAL       REORIE, ORIVEC
@@ -93,19 +93,17 @@ C     -------------------------------------------
          NBPAR = 0
          PARA = 'AR_MIN                  '
          CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, CBID, K8B,
-     +                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
-     +                K8B, IRET )
+     &                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
+     &                K8B, IRET )
          IF ( IRET .EQ. 0 ) THEN
             PREC = ARMIN*1.D-06
          ELSEIF ( IRET .EQ. 1 ) THEN
             PREC = 1.D-10
          ELSE
-            CALL UTMESS('F','ORILGM',
-     + 'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+            CALL U2MESS('F','MODELISA2_13')
          ENDIF
       ELSE
-         CALL UTMESS('F','ORILGM',
-     +            'LA TABLE "CARA_GEOM" N''EXISTE PAS DANS LE MAILLAGE')
+         CALL U2MESS('F','MODELISA3_18')
       ENDIF
 C
 C --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
@@ -119,15 +117,11 @@ C     -------------------------------------------------
 C
 C --- COMPATIBILITE DU PROBLEME AVEC LES MOTS CLES FACTEUR :
 C     ----------------------------------------------------
-      IF ( ( NBF1 .GT. 0 ) .AND. ( NDIM .EQ. 3 ) ) THEN     
-         CALL UTMESS ( 'F',MOFA2D,'VOUS AVEZ UTILISE LE MOT CLE'//
-     &   ' ORIE_PEAU_2D ALORS QUE LE PROBLEME EST 3D.'//
-     &   ' UTILISEZ ORIE_PEAU_3D' )
+      IF ( ( NBF1 .GT. 0 ) .AND. ( NDIM .EQ. 3 ) ) THEN
+         CALL U2MESS('F','MODELISA5_95')
       ENDIF
       IF ( ( NBF2 .GT. 0 ) .AND. ( NDIM .EQ. 2 ) ) THEN
-         CALL UTMESS ( 'F',MOFA3D,'VOUS AVEZ UTILISE LE MOT CLE'//
-     &   ' ORIE_PEAU_3D ALORS QUE LE PROBLEME EST 2D.'//
-     &   ' UTILISEZ ORIE_PEAU_2D' )
+         CALL U2MESS('F','MODELISA5_96')
       ENDIF
 C
 C --- TRAITEMENT DE 'ORIE_PEAU_2D' :
@@ -135,11 +129,11 @@ C     ----------------------------
 C
       DO 100 IOCC = 1 , NBF1
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA',
-     +                                           IOCC, 1, 0, K8B, NG )
+     &                                           IOCC, 1, 0, K8B, NG )
          NG = -NG
          CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA2D, 'GROUP_MA',
-     +                                     IOCC, 1, NG, ZK8(JJJ), NG )
+     &                                     IOCC, 1, NG, ZK8(JJJ), NG )
          DO 110 IGR = 1, NG
             GMAT = ZK8(JJJ+IGR-1)
             CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL, K8B )
@@ -147,7 +141,7 @@ C
             WRITE(IFM,1000) GMAT, NBMAIL
             NORIEN=0
             CALL ORILMA ( NOMA, NDIM,  ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
-     +                    REORIE, PREC )
+     &                    REORIE, PREC )
             NORIT = NORIT + NORIEN
             WRITE(IFM,1100) NORIEN
             IF (NTRAIT.NE.0) WRITE(IFM,1110) NTRAIT
@@ -160,11 +154,11 @@ C     ----------------------------
 C
       DO 200 IOCC = 1 , NBF2
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA3D, 'GROUP_MA',
-     +                                           IOCC, 1, 0, K8B, NG )
+     &                                           IOCC, 1, 0, K8B, NG )
          NG = -NG
          CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFA3D, 'GROUP_MA',
-     +                                     IOCC, 1, NG, ZK8(JJJ), NG )
+     &                                     IOCC, 1, NG, ZK8(JJJ), NG )
          DO 210 IGR = 1, NG
             GMAT = ZK8(JJJ+IGR-1)
             CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL, K8B )
@@ -172,7 +166,7 @@ C
             WRITE(IFM,1000) GMAT,  NBMAIL
             NORIEN=0
             CALL ORILMA ( NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
-     +                    REORIE, PREC )
+     &                    REORIE, PREC )
             NORIT = NORIT + NORIEN
             WRITE(IFM,1100) NORIEN
             IF (NTRAIT.NE.0) WRITE(IFM,1110) NTRAIT
@@ -193,19 +187,18 @@ C
             IF (N2.NE.0)THEN
                CALL GETVID ( MOFB3D, 'NOEUD', IOCC,1,1, NNOEUD, N2 )
                CALL JENONU (JEXNOM(NOMNOE,NNOEUD),NOEUD)
-               IF(NOEUD.EQ.0)CALL UTMESS('F',MOFB3D,
-     .         'ERREUR DONNEES : LE NOEUD '//NNOEUD//' N''EXISTE PAS')
+               IF(NOEUD.EQ.0)CALL U2MESK('F','MODELISA5_97',1,NNOEUD)
             ELSE
                CALL GETVID(MOFB3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
                CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
                IF ( IER .EQ. 10 ) THEN
                   CALL UTDEBM('F',MOFB3D,'ERREUR DONNEES')
                   CALL UTIMPK('L','LE GROUP_NO N''EXISTE PAS '
-     +                                                      ,1,NNOEUD)
+     &                                                      ,1,NNOEUD)
                   CALL UTFINM()
                ELSEIF ( IER .EQ. 1 ) THEN
                   CALL UTDEBM('A',MOFB3D,'TROP DE NOEUDS '//
-     .                                             'DANS LE GROUP_NO')
+     &                                             'DANS LE GROUP_NO')
                   CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
                   CALL UTFINM( )
                ENDIF
@@ -213,11 +206,11 @@ C
             ENDIF
          ENDIF
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFB3D, 'GROUP_MA',
-     +                                           IOCC, 1, 0, K8B, NG )
+     &                                           IOCC, 1, 0, K8B, NG )
          NG = -NG
          CALL WKVECT ( '&&ORILGM.WORK', 'V V K8', NG, JJJ )
          CALL GETVEM ( NOMA, 'GROUP_MA', MOFB3D, 'GROUP_MA',
-     +                                     IOCC, 1, NG, ZK8(JJJ), NG )
+     &                                     IOCC, 1, NG, ZK8(JJJ), NG )
          IF ( ORIVEC ) THEN
             DO 310 IGR = 1, NG
                GMAT = ZK8(JJJ+IGR-1)
@@ -226,7 +219,7 @@ C
                WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0
                CALL ORVLMA ( NOMA, ZI(JGRO), NBMAIL, NORIEN,
-     +                                             VECT, NOEUD, PREC )
+     &                                             VECT, NOEUD, PREC )
                NORIT = NORIT + NORIEN
                WRITE(IFM,1100) NORIEN
  310        CONTINUE

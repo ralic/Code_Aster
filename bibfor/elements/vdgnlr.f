@@ -1,7 +1,7 @@
       SUBROUTINE VDGNLR ( OPTION , NOMTE )
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
-C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,12 +173,10 @@ C
       NBCOU=ZI(JNBSPI-1+1)
 C
       IF ( NBCOU . LE . 0 )
-     &   CALL UTMESS ( 'F' , 'VDGNLR' ,
-     &        'NOMBRE DE COUCHES OBLIGATOIREMENT SUPERIEUR A 0' )
+     &   CALL U2MESS('F','ELEMENTS_12')
 C
       IF ( NBCOU . GT . 10 )
-     &   CALL UTMESS ( 'F' , 'VDGNLR' ,
-     &        'NOMBRE DE COUCHES LIMITE A 10 POUR LES COQUES 3D' )
+     &   CALL U2MESS('F','ELEMENTS_13')
 C______________________________________________________________________
 C
 C---- RECUPERATION DES POINTEURS ( L : LECTURE )
@@ -678,9 +676,9 @@ C             TXPG1 = MOY , TXPG2 = INF , TXPG3 = SUP
   362           CONTINUE
 C
                  TMC = 2* (TMPG2+TMPG3-2*TMPG1)* (ZIC/EPTOT)*
-     +              (ZIC/EPTOT) + (TMPG3-TMPG2)* (ZIC/EPTOT) + TMPG1
+     &              (ZIC/EPTOT) + (TMPG3-TMPG2)* (ZIC/EPTOT) + TMPG1
                  TPC = 2* (TPPG2+TPPG3-2*TPPG1)* (ZIC/EPTOT)*
-     +              (ZIC/EPTOT) +(TPPG3-TPPG2)* (ZIC/EPTOT) + TPPG1
+     &              (ZIC/EPTOT) +(TPPG3-TPPG2)* (ZIC/EPTOT) + TPPG1
                ELSE
 C
                 VALPU(2) = ZIC
@@ -695,7 +693,7 @@ C
                NBV = 1
                NOMRES  = 'ALPHA'
                CALL RCVALA(ZI(JMATE),' ' , PHENOM , NBPAR , NOMPAR,
-     +             VALPAR,  NBV , NOMRES , VALRES , CODRET , '  ' )
+     &             VALPAR,  NBV , NOMRES , VALRES , CODRET , '  ' )
                IF (CODRET.NE.'OK') VALRES = ZERO
                ALPHA = VALRES
 C

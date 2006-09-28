@@ -4,22 +4,22 @@
 
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C       ----------------------------------------------------------------
 C       CJS        : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
@@ -28,7 +28,7 @@ C                    MATER(*,1) = E , NU , ALPHA
 C                    MATER(*,2) = BETA_CJS, RM, N_CJS, KP, RC, A_CJS,
 C                                 B_CJS, C_CJS , GAMMA_CJS, MU_CJS,
 C                                 PCO, PA
-C                    VARIABLES INTERNES : Q, R, X, SIGNE, ETAT 
+C                    VARIABLES INTERNES : Q, R, X, SIGNE, ETAT
 C               ( SIGNE = SIGNE(S:DEPSDP) )
 C                (ETAT: ELASTIC = 0, ISOTRO = 1, DEVIAT = 2, ISODEV = 3)
 C       ----------------------------------------------------------------
@@ -52,7 +52,7 @@ C       ----------------------------------------------------------------
 C
 C -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
 C
-        CALL CJSNVI( MOD, NDT, NDI, NVI )   
+        CALL CJSNVI( MOD, NDT, NDI, NVI )
 C
 C -     RECUPERATION MATERIAU -----------------------------------------
 C
@@ -81,12 +81,12 @@ C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
         CALL RCVALA(IMAT,' ', 'ELAS', 1, 'TEMP', TEMPF, 3,
-     1                 NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
+     &                 NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
         IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
         CALL RCVALA(IMAT,' ', 'CJS', 1, 'TEMP', TEMPF, 12,
-     1                 NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
+     &                 NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
         CALL RCVALA(IMAT,' ', 'CJS', 1, 'TEMP', TEMPF, 2,
-     1                 NOMC(16),  MATERF(13,2),  CERR(16), BL2 )
+     &                 NOMC(16),  MATERF(13,2),  CERR(16), BL2 )
         IF ( CERR(16).EQ.'NO') THEN
          MATERF(13,2) = 0.D0
         ENDIF
@@ -96,24 +96,23 @@ C
 
         IF( MATERF(3,2) .EQ. 0.D0 ) THEN
             NIVCJS='CJS1'
-C - POUR CJS1, PAR DEFAUT RC=RM/2  
-C   ET POUR EVITER DES NAN DANS LES LOG ON PREND PC0 = 1. 
-         
-            MATERF(5,2) = MATERF(2,2) / 2.D0           
+C - POUR CJS1, PAR DEFAUT RC=RM/2
+C   ET POUR EVITER DES NAN DANS LES LOG ON PREND PC0 = 1.
+
+            MATERF(5,2) = MATERF(2,2) / 2.D0
             MATERF(11,2) = 1.D0
-            
+
         ELSE IF(MATERF(3,2) .NE. 0.D0 .AND. MATERF(6,2) .NE. 0.D0) THEN
-            NIVCJS='CJS2'    
-C - POUR CJS2  POUR EVITER DES NAN DANS LES LOG 
-C   ON PREND PC0 = 1         
+            NIVCJS='CJS2'
+C - POUR CJS2  POUR EVITER DES NAN DANS LES LOG
+C   ON PREND PC0 = 1
             MATERF(11,2) = 1.D0
-            
+
         ELSE IF(MATERF(3,2) .NE. 0.D0 .AND. MATERF(6,2) .EQ. 0.D0) THEN
             NIVCJS='CJS3'
-            
+
         ELSE
-            CALL UTMESS('F','CJS','LE CHOIX DES PARAMETRES NE'//
-     &            ' CORRESPOND PAS A L UN DES MODELES CJS')
+            CALL U2MESS('F','ALGORITH2_16')
         ENDIF
 
         END

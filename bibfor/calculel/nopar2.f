@@ -1,7 +1,7 @@
       CHARACTER*8 FUNCTION NOPAR2(NOMOPT,NOMGD,STATUT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,10 +127,12 @@ C DEB-------------------------------------------------------------------
      &      'DE PARAMETRE '//STATU2//' ASSOCIE A LA GRANDEUR:'
      &                             //NOMGD2//' DANS '//'L OPTION:'//
      &                             NOMOP2)
+C        CALL U2MESK('F','CALCULEL3_84', 3 ,VALK)
       IF (NBTROU.GT.1) CALL UTMESS('F','NOPAR2','IL Y A PLUSIEURS '//
      &       'PARAMETRES '//STATU2//' ASSOCIES A LA GRANDEUR:'
      &                             //NOMGD2//' DANS '//'L OPTION:'//
      &                             NOMOP2)
+C        CALL U2MESK('F','CALCULEL3_85', 3 ,VALK)
 
       IF (OUTROU.EQ.'OUT') THEN
         NOPAR2=ZK8(IAOPPA-1+NBIN+ITROU)

@@ -2,22 +2,22 @@
       IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2003   AUTEUR CIBHHBC R.FERNANDES 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     LOI CJS :  MECANISME DEVIATOIRE
@@ -133,9 +133,8 @@ C ======================================================================
 C --- CP/1D ------------------------------------------------------------
 C ======================================================================
         ELSE IF ( MOD(1:6) .EQ. 'C_PLAN' .OR.
-     +            MOD(1:2) .EQ. '1D' )THEN
-             CALL UTMESS('F','CJS','LES MODELISATIONS AUTORISEES'//
-     +                       ' SONT 3D ET D_PLAN ET AXIS')
+     &            MOD(1:2) .EQ. '1D' )THEN
+             CALL U2MESS('F','ALGORITH2_15')
         ENDIF
 C ======================================================================
 C --- LOIS D ECROUISSAGE : GR ET GX ------------------------------------
@@ -154,8 +153,8 @@ C ======================================================================
 C --- CALCUL DE S, SII, COS3TS, .... -----------------------------------
 C ======================================================================
         CALL CJSQCO( GAMMA, SIGD, XD, PREF, EPSSIG, I1D,
-     +               S, SII, SIIREL, COS3TS, HTS, DETS,
-     +               Q, QII, QIIREL, COS3TQ, HTQ, DETQ )
+     &               S, SII, SIIREL, COS3TS, HTS, DETS,
+     &               Q, QII, QIIREL, COS3TQ, HTQ, DETQ )
 C ======================================================================
 C --- ON CALCULE DE TOUTES FACONS UNE PREDICTION ELASTIQUE -------------
 C ======================================================================
@@ -167,8 +166,8 @@ C ======================================================================
         ENDIF
 C
         CALL CJSQCO ( GAMMA, SIGE, XD, PREF, EPSSIG, I1E,
-     +                SE, SIIE, SIIERE, CO3TSE, HTSE, DETSE,
-     +                QE, QIIE, QIIERE, CO3TQE, HTQE, DETQE )
+     &                SE, SIIE, SIIERE, CO3TSE, HTSE, DETSE,
+     &                QE, QIIE, QIIERE, CO3TQE, HTQE, DETQE )
 
 C ======================================================================
 C --- SI QII EST QUASI-NULL, IL N'Y A PAS DE DEVIATEUR. ----------------

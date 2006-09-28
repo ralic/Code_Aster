@@ -3,7 +3,7 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,13 +65,11 @@ C
       NOGRN2 = 'BORD2   '
       CALL JEEXIN ( JEXNOM(GRPNOE,NOGRN1), IRET )
       IF ( IRET .EQ. 0 ) THEN
-         CALL UTMESS('F','ASCELI','GROUP_NO : '//NOGRN1//
-     +                                      ' INCONNU DANS LE MAILLAGE')
+         CALL U2MESK('F','PREPOST_1',1,NOGRN1)
       ENDIF
       CALL JEEXIN ( JEXNOM(GRPNOE,NOGRN2), IRET )
       IF ( IRET .EQ. 0 ) THEN
-         CALL UTMESS('F','ASCELI','GROUP_NO : '//NOGRN2//
-     +                                      ' INCONNU DANS LE MAILLAGE')
+         CALL U2MESK('F','PREPOST_1',1,NOGRN2)
       ENDIF
       CALL JELIRA ( JEXNOM(GRPNOE,NOGRN1), 'LONMAX', NBNO, K8B )
       CALL JEVEUO ( JEXNOM(GRPNOE,NOGRN1), 'L', JGRN1 )
@@ -124,7 +122,7 @@ C     --------------------------------------------------------
  202     CONTINUE
  200  CONTINUE
 
-C     OBJETS .NOMNOE, .COORDO.VALE : ON ACTUALISE CES OBJETS EN 
+C     OBJETS .NOMNOE, .COORDO.VALE : ON ACTUALISE CES OBJETS EN
 C     SUPPRIMANT LES NOEUDS DOUBLES SUITE AU RECOLLEMENT DES BORDS
 C     ------------------------------------------------------------
       TMP='TMP'
@@ -135,7 +133,7 @@ C
       CALL JEDUP1(MAILLA//'.CONNEX','V',TMP//'.CONNEX')
       CALL JEDUP1(MAILLA//'.GROUPENO','V',TMP//'.GROUPENO')
       CALL COPICH('V',MAILLA//'.COORDO',TMP//'.COORDO')
-C     
+C
       CALL JEDETR(MAILLA//'.NOMNOE')
       CALL JECREO(MAILLA//'.NOMNOE','G N K8')
       CALL JEECRA(MAILLA//'.NOMNOE','NOMMAX',NBNO2,K8B)
@@ -177,7 +175,7 @@ C       SD MAILLAGE PORTERA LE NUMERO I-J
       CALL ASSERT(K.EQ.NBNO2)
 
 
-C     ON ACTUALISE LES OBJETS .GROUPENO ET .CONNEX 
+C     ON ACTUALISE LES OBJETS .GROUPENO ET .CONNEX
 C     CAR LES NOMS DES NOEUDS ONT CHANGE
 C     ----------------------------------
       DO 210 INUMA = 1, NBMAT

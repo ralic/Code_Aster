@@ -4,22 +4,22 @@ C TOLE CRS_505 CRS_507
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C       ----------------------------------------------------------------
 C       MODELE VISCOPLASTIQUE DE BESANCON EN VITESSE
@@ -88,10 +88,7 @@ C
         IF ( DSIG . GE . 10000.D0 ) THEN
                 IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1) THEN
                 CALL CODENT(INTG,'G',CINTG)
-                CALL UTMESS('I','LMARC','ERREUR D INTEGRATION '//
-     1          '- ESSAI D INTEGRATION  NUMERO '//CINTG//
-     2          '- DIVERGENCE DE L INTEGRATION LOCALE '//
-     3          '- REDECOUPAGE DU PAS DE TEMPS')
+                CALL U2MESK('I','ALGORITH5_13',1,CINTG)
                 IRTETI = 3
                 GOTO 9999
                 ELSE
@@ -115,8 +112,7 @@ C -             SI -DV < 1.E-10 ET ERR < TOLER
 C
                 IF ( ABS(DV) .LT. DVLIM .AND. ERR .LT. TOLER ) THEN
                 CALL CODREE(ABS(DV),'E',CDV)
-                CALL UTMESS('A','LMARC',
-     1          ' INCREMENT DE DEFORMATION CUMULEE (DV) = -'//CDV )
+                CALL U2MESK('A','ALGORITH5_14',1,CDV)
                 IRTETI = 0
                 GOTO 9999
                 ENDIF
@@ -153,10 +149,11 @@ C
                 CALL CODENT(INTG,'G',CINTG)
                 CALL CODREE(ABS(DV),'E',CDV)
                 CALL UTMESS('I','LMARC','ERREUR D INTEGRATION '//
-     1          '- ESSAI D INTEGRATION  NUMERO '//CINTG//
-     2          '- CONVERGENCE VERS  UNE SOLUTION NON CONFORME '//
-     3          '- INCREMENT DE DEFORMATION CUMULEE NEGATIVE = -'//CDV//
-     4          '- REDECOUPAGE DU PAS DE TEMPS')
+     &          '- ESSAI D INTEGRATION  NUMERO '//CINTG//
+     &          '- CONVERGENCE VERS  UNE SOLUTION NON CONFORME '//
+     &          '- INCREMENT DE DEFORMATION CUMULEE NEGATIVE = -'//CDV//
+     &          '- REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('I','ALGORITH2_55', 2 ,VALK)
                 IRTETI = 3
                 GOTO 9999
                 ELSE
@@ -222,14 +219,14 @@ C
 C -                 CONVERGENCE REGULIERE SUR LES 5 DERNIERES ITERATIONS
 C
                     IF ( ( TER(ITER)   .LT. TER(ITER-1) .AND.
-     1                     TER(ITER-1) .LT. TER(ITER-2) .AND.
-     2                     TER(ITER-2) .LT. TER(ITER-3) .AND.
-     3                     TER(ITER-3) .LT. TER(ITER-4) .AND.
-     4                     TER(ITER-4) .LT. TER(ITER-5)     ) .OR.
-     5                   ( DER(1)      .LT. DER(2)      .AND.
-     6                     DER(2)      .LT. DER(3)      .AND.
-     7                     DER(3)      .LT. DER(4)      .AND.
-     8                     DER(4)      .LT. DER(5)          )  )  THEN
+     &                     TER(ITER-1) .LT. TER(ITER-2) .AND.
+     &                     TER(ITER-2) .LT. TER(ITER-3) .AND.
+     &                     TER(ITER-3) .LT. TER(ITER-4) .AND.
+     &                     TER(ITER-4) .LT. TER(ITER-5)     ) .OR.
+     &                   ( DER(1)      .LT. DER(2)      .AND.
+     &                     DER(2)      .LT. DER(3)      .AND.
+     &                     DER(3)      .LT. DER(4)      .AND.
+     &                     DER(4)      .LT. DER(5)          )  )  THEN
 C
                     ITSUP = ITSUP + 1
 C
@@ -252,10 +249,11 @@ C
                         CALL CODENT(ITER,'G',CITER)
                         CALL CODREE(TOLER,'E',CTOL)
                         CALL UTMESS ('I','LMARC',' ERREUR'//
-     1                  ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2                  ' - CONVERGENCE REGULIERE MAIS TROP LENTE'//
-     3                  ' - ERREUR > '//CTOL//
-     4                  ' - REDECOUPAGE DU PAS DE TEMPS')
+     &                  ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &                  ' - CONVERGENCE REGULIERE MAIS TROP LENTE'//
+     &                  ' - ERREUR > '//CTOL//
+     &                  ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('I','ALGORITH2_56', 2 ,VALK)
                         IRTETI = 3
                         GOTO 9999
                         ELSE
@@ -275,9 +273,10 @@ C
                     CALL CODENT(ITER,'G',CITER)
                     CALL CODREE(TOLER,'E',CTOL)
                     CALL UTMESS ('I','LMARC',' ERREUR'//
-     1              ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2              ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     4              ' - REDECOUPAGE DU PAS DE TEMPS')
+     &              ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &              ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
+     &              ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
                     IRTETI = 3
                     GOTO 9999
                     ELSE
@@ -297,9 +296,10 @@ C
                   CALL CODENT(ITER,'G',CITER)
                   CALL CODREE(TOLER,'E',CTOL)
                   CALL UTMESS ('I','LMARC',' ERREUR'//
-     1            ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2            ' - ERREUR > '//CTOL//
-     4            ' - REDECOUPAGE DU PAS DE TEMPS')
+     &            ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &            ' - ERREUR > '//CTOL//
+     &            ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('I','ALGORITH2_58', 2 ,VALK)
                   IRTETI = 3
                   GOTO 9999
                   ELSE

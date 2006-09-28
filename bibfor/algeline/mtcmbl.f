@@ -8,7 +8,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,9 +118,7 @@ C       CALL VERISD('MATR_ASSE',MATI)
         SYMI = ZK24(JREFAI-1+9) .EQ. 'MS'
         CALL ASSERT(NBLOC.EQ.1.OR.NBLOC.EQ.2)
         IF (SYMI) CALL ASSERT(NBLOC.EQ.1)
-        IF ((.NOT.SYMI).AND.SYMR) CALL UTMESS('F','MTCMBL',
-     &   'ON NE PEUT PAS COMBINER UNE MATRICE NON SYMETRIQUE '
-     &   //'DANS UNE MATRICE SYMETRIQUE.')
+        IF ((.NOT.SYMI).AND.SYMR) CALL U2MESS('F','ALGELINE2_8')
         IF (MATI.EQ.MATRES) REUTIL=.TRUE.
 C       CALL VERISD('MATRICE',MATI)
    10 CONTINUE
@@ -148,11 +146,10 @@ C     ------------------------------------------------------------------
         IF (ZK24(JREFA1-1+2).NE.ZK24(JREFAI-1+2)) IER1 = 1
         IF (ZK24(JREFA1-1+2).NE.ZK24(JREFAI-1+2)) IER1 = 1
         IF (ZK24(JREFA1-1+1).NE.ZK24(JREFAI-1+1)) THEN
-          CALL UTMESS('F','MTCMBL','LES MATRICES A COMBINER NE '//
-     &                'SONT PAS CONSTRUITES SUR LE MEME MAILLAGE')
+          CALL U2MESS('F','ALGELINE2_9')
         END IF
         IF (.NOT.IDENOB(MAT1//'.CCID',MATI//'.CCID'))
-     &     CALL UTMESS('F','MTCMBL','CHARGES CINEMATIQUES DIFFERENTES.')
+     &     CALL U2MESS('F','ALGELINE2_10')
    20 CONTINUE
 
 

@@ -1,21 +1,21 @@
       SUBROUTINE CONORI(MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C  ROUTINE CONORI
@@ -122,7 +122,7 @@ C     RECHERCHE DU NOMBRE DE GROUP_MA_CONTACT DANS .COMM
 C     ------------------------------------------------------------------
       IC = 1
       CALL GETVEM(MA,'GROUP_MA','ORIE_FISSURE','GROUP_MA',
-     +               IC,1,0,KBID,NBGCO)
+     &               IC,1,0,KBID,NBGCO)
       NBGCO = -NBGCO
 C
 C     ==================================================================
@@ -154,7 +154,7 @@ C     ------------------------------------------------------------------
 C     RECHERCHE DES NOMS DES GROUP_MA_FISSURE DANS .COMM
 C     ------------------------------------------------------------------
          CALL GETVEM(MA,'GROUP_MA','ORIE_FISSURE','GROUP_MA',
-     +                  IC,1,NBGCO,ZK8(IO8GCO),IDUM)
+     &                  IC,1,NBGCO,ZK8(IO8GCO),IDUM)
          IF (NIV.EQ.2) THEN
          WRITE(IFM,*) ' '
          WRITE(IFM,*) ' LA LISTE DES ORIE_FISSURE'
@@ -176,8 +176,8 @@ C
       CALL WKVECT('&&OP0154.IMI','V V I',NBMAR,JMIC)
       CALL WKVECT('&&OP0154.MBL','V V I',NBMAR,JMB)
       CALL CONINI(MA,ZI(INOE),ZI(IMAI),ZI(IMAZ),NBMAR,NBNOE,NBMARC,
-     .            ZK8(IKMAR),ZI(JMIC),ZI(JMB),ZK8(IKTYR),
-     .            NBGCO,IO8GCO)
+     &            ZK8(IKMAR),ZI(JMIC),ZI(JMB),ZK8(IKTYR),
+     &            NBGCO,IO8GCO)
       WRITE(IFM,*) 'NOMBRE DE MAILLES DE REFERENCE TESTEES : ', NBMARC
 C
 C     ==================================================================
@@ -193,15 +193,14 @@ C
             IF (NIV.EQ.2) THEN
             WRITE(IFM,*) ' '
             WRITE(IFM,*) ' TRAITEMENT DE ',
-     +                 ZK8(IO8GCO+IGCO-1)
+     &                 ZK8(IO8GCO+IGCO-1)
             WRITE(IFM,*) ' '
             ENDIF
             IF ( IGMA.EQ.0) THEN
 C     ------------------------------------------------------------------
 C     TRAITEMENT DU CAS DE NON-EXISTENCE
 C     ------------------------------------------------------------------
-               CALL UTMESS('I','CONORI',ZK8(IO8GCO+IGCO-1)//
-     +         ' GROUPE INEXISTANT')
+               CALL U2MESK('I','ALGORITH2_26',1,ZK8(IO8GCO+IGCO-1))
 C
             ELSE
 C     ------------------------------------------------------------------
@@ -216,7 +215,7 @@ C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE MAILLE DU GROUP_MA
 C     ------------------------------------------------------------------
                CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGMA),
-     +                     'LONMAX',NBMAG,K1BID)
+     &                     'LONMAX',NBMAG,K1BID)
                IF (NIV.EQ.2) THEN
                WRITE(IFM,*) '   LA LISTE DES MAILLES DU GROUPE '
                WRITE(IFM,*) ' '
@@ -243,10 +242,10 @@ C     ------------------------------------------------------------------
                   CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYC),KTYC)
                   IF (NIV.EQ.2) THEN
                   WRITE(IFM,*) '     MAILLE NU : ',IMAG,
-     +                                 ' NOM : ',KMAC,
-     +                               ' ORDRE : ',IMAC,
-     +                                ' TYPE : ',ITYC,
-     +                                ' TYPE : ',KTYC
+     &                                 ' NOM : ',KMAC,
+     &                               ' ORDRE : ',IMAC,
+     &                                ' TYPE : ',ITYC,
+     &                                ' TYPE : ',KTYC
                   ENDIF
                   MACOC(1) = KMAC
                   MACOC(2) = KTYC
@@ -259,7 +258,7 @@ C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
                   CALL JELIRA(JEXNUM(MA//'.CONNEX',IMAC),
-     +                        'LONMAX',NBCOC,K1BID)
+     &                        'LONMAX',NBCOC,K1BID)
 C
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
@@ -329,17 +328,17 @@ C     ------------------------------------------------------------------
        LOMOD0=.FALSE.
        LOCOR0=.FALSE.
                         CALL CONTAC(MACOR,NBCOR,
-     +                              MACOC,NBCOC,
-     +                              LFACE0,LOMOD0,LOCOR0,LOREO0,MA)
+     &                              MACOC,NBCOC,
+     &                              LFACE0,LOMOD0,LOCOR0,LOREO0,MA)
       IF (LOREO0) LFACE0=.NOT.LFACE0
       IF (LOCOR0.OR.LOMOD0) THEN
         NBMAC=NBMAC+1
         IF (NIV.EQ.2) THEN
           WRITE(IFM,*) 'LA MAILLE DE FISSURE   ',
-     .                 MACOC(1),' DE TYPE ',MACOC(2)
+     &                 MACOC(1),' DE TYPE ',MACOC(2)
           WRITE(IFM,*) (MACOC(I+2),I=1,NBCOC)
           WRITE(IFM,*) 'S''APPUIE SUR LA MAILLE ',
-     .                 MACOR(1),' DE TYPE ',MACOR(2)
+     &                 MACOR(1),' DE TYPE ',MACOR(2)
           WRITE(IFM,*) (MACOR(I+2),I=1,NBCOR)
           IF (LFACE0) THEN
             WRITE(IFM,*) 'PAR SA FACE INFERIEURE'
@@ -355,20 +354,19 @@ C     ------------------------------------------------------------------
           WRITE(IFM,*)
         ENDIF
         IF (NBMAC.EQ.3)
-     .      CALL UTMESS('F',' ','TROIS ELEMENTS')
+     &      CALL U2MESS('F','ALGORITH2_30')
         IF (NBMAC.EQ.2.AND.(LFACE0.EQV.LFACE))
-     .      CALL UTMESS('F',' ','DEUX ELEMENTS SUR LA MEME FACE')
+     &      CALL U2MESS('F','ALGORITH2_31')
         LFACE=LFACE0
         IF (LOMOD0) LOMODI=.TRUE.
         IF (LOREO0) LOREOR=.TRUE.
-        IF ((LOMOD0.OR.LOREO0).AND.NBMAC.EQ.2) CALL UTMESS('F',' ',
-     .             'UNE REORIENTATION A EU LIEU POUR LE DEUXIEME APPUI')
+        IF ((LOMOD0.OR.LOREO0).AND.NBMAC.EQ.2) CALL U2MESS('F','ALGORITH
+     &2_32')
       ENDIF
-      
+
 C     ==================================================================
 302               CONTINUE
-      IF (NBMAC.EQ.0) CALL UTMESS('E',' ',
-     .               'PAS DE MAILLE DE REFERENCE TROUVEE')
+      IF (NBMAC.EQ.0) CALL U2MESS('E','ALGORITH2_33')
 C
                   IF (LOMODI.OR.LOREOR) THEN
 C     ------------------------------------------------------------------

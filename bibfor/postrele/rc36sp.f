@@ -1,29 +1,29 @@
-      SUBROUTINE RC36SP ( NBM, IMA, IPT, C, K, CARA, MATI, PI, MI,  
-     +    MATJ, PJ, MJ, MSE, NBTHP, NBTHQ,IOC1,IOC2,SPIJ
-     +                  ,TYPEKE,SPMECA,SPTHER )
+      SUBROUTINE RC36SP ( NBM, IMA, IPT, C, K, CARA, MATI, PI, MI,
+     &    MATJ, PJ, MJ, MSE, NBTHP, NBTHQ,IOC1,IOC2,SPIJ
+     &                  ,TYPEKE,SPMECA,SPTHER )
       IMPLICIT   NONE
       INTEGER             NBM,IMA(*),IPT,NBTHP,NBTHQ
       REAL*8              C(*), K(*), CARA(*), MATI(*), MATJ(*), PI,
-     +           MI(*), PJ, MJ(*), MSE(*), SPIJ,TYPEKE, SPMECA, SPTHER
+     &           MI(*), PJ, MJ(*), MSE(*), SPIJ,TYPEKE, SPMECA, SPTHER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C
@@ -51,8 +51,8 @@ C OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
 C     ------------------------------------------------------------------
 C
       INTEGER    ICMP,IOC1,IOC2
-      REAL*8     PIJ, D0, EP, INERT, NU, E, ALPHA, MIJ, EAB, XX, 
-     +           ALPHAA, ALPHAB, SP1, SP2, SP3, SP4, SP5, SP6, SPP, SPQ
+      REAL*8     PIJ, D0, EP, INERT, NU, E, ALPHA, MIJ, EAB, XX,
+     &           ALPHAA, ALPHAB, SP1, SP2, SP3, SP4, SP5, SP6, SPP, SPQ
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -67,7 +67,7 @@ C
          XX = MSE(ICMP) + ABS( MI(ICMP) - MJ(ICMP) )
          MIJ = MIJ + XX**2
  10   CONTINUE
-      MIJ = SQRT( MIJ ) 
+      MIJ = SQRT( MIJ )
 C
 C --- LE MATERIAU
 C
@@ -83,15 +83,15 @@ C
       INERT = CARA(1)
       D0    = CARA(2)
       EP    = CARA(3)
-      
+
 C CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
-      
+
       IF (TYPEKE.LT.0.D0) THEN
-      
-      
+
+
 C
 C --- CALCUL DU SP:
-C     ------------- 
+C     -------------
       SP1 = K(1)*C(1)*PIJ*D0 / 2 / EP
       SP2 = K(2)*C(2)*D0*MIJ / 2 / INERT
       SP3 = K(3)*E*ALPHA / 2 / (1.D0-NU)
@@ -101,16 +101,16 @@ C
 C
 C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 C
-      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB, 
-     +              NBTHP, IOC1, SP6 )
+      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
+     &              NBTHP, IOC1, SP6 )
 C
       SPP = SP1 + SP2 + SP6
 C
 C
 C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
 C
-      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB, 
-     +              NBTHQ, IOC2, SP6 )
+      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
+     &              NBTHQ, IOC2, SP6 )
 C
       SPQ = SP1 + SP2 + SP6
 C
@@ -119,15 +119,15 @@ C
 
 
 C CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
-      
-      
-      
+
+
+
       ELSEIF (TYPEKE.GT.0.D0) THEN
-      
-      
+
+
 C
 C --- CALCUL DU SP:
-C     ------------- 
+C     -------------
       SP1 = K(1)*C(1)*PIJ*D0 / 2 / EP
       SP2 = K(2)*C(2)*D0*MIJ / 2 / INERT
 
@@ -139,8 +139,8 @@ C     -------------
 C
 C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 C
-      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB, 
-     +              NBTHP, IOC1, SP6 )
+      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
+     &              NBTHP, IOC1, SP6 )
 C
       SPP = SP6
       SPTHER=MAX(SPTHER,SPP)
@@ -148,15 +148,15 @@ C
 C
 C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
 C
-      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB, 
-     +              NBTHQ, IOC2, SP6 )
+      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
+     &              NBTHQ, IOC2, SP6 )
 C
       SPQ = SP6
       SPTHER=MAX(SPTHER,SPQ)
-      
+
       ELSE
-      CALL UTMESS('F','RC32SP','PB AVEC TYPEKE')
-      
+      CALL U2MESS('F','POSTRELE_40')
+
       END IF
 
       CALL JEDEMA( )

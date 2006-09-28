@@ -1,24 +1,24 @@
-      SUBROUTINE CAARLE ( CHARGE ) 
+      SUBROUTINE CAARLE ( CHARGE )
       IMPLICIT NONE
       CHARACTER*8   CHARGE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C              CREATION D'UN CHARGEMENT DE TYPE ARLEQUIN
@@ -26,7 +26,7 @@ C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE
 C CHARACTER*8   CHARGE  : SD CHARGE
 C
-C SD DE SORTIE 
+C SD DE SORTIE
 C CHARGE.POIDS_MAILLE   : VECTEUR DE PONDERATION DES MAILLES DU MAILLAGE
 C                           (P1, P2, ...) AVEC P* POIDS DE LA MAILLE *
 C
@@ -97,7 +97,7 @@ C ----------------------------------------------------------------------
       NBOIT1 = NOM1//'.BOITE'
       NBOIT2 = NOM2//'.BOITE'
 
-C --- VECTEUR NOM TYPE DE MAILLES 
+C --- VECTEUR NOM TYPE DE MAILLES
 
       CALL JELIRA('&CATA.TM.NOMTM','NOMMAX',NC,K8B)
       CALL WKVECT ( '&&ARL.NOMTM', 'V V K8', NC, JTYPM )
@@ -149,7 +149,7 @@ C ----- LECTURE ET VERIFICATION DES MAILLES DES MODELES
 
         CALL GETVID('ARLEQUIN','GROUP_MA_1',IOC,1,-N1,ZK8(JGRM1),N1)
         CALL GETVID('ARLEQUIN','GROUP_MA_2',IOC,1,-N2,ZK8(JGRM2),N2)
- 
+
         CALL ARLVER(MOD,ZK8(JGRM1),N1,NOMA,MODEL(1),CINE(1),DM1)
         CALL ARLVER(MOD,ZK8(JGRM2),N2,NOMB,MODEL(2),CINE(2),DM2)
 
@@ -157,8 +157,7 @@ C ----- LECTURE ET VERIFICATION DES MAILLES DES MODELES
         CALL JEDETR('&&CAARLE.GMA2')
 
         IF (MODEL(1).NE.MODEL(2))
-     &    CALL UTMESS('F','CAARLE','LES MODELISATIONS DE GROUP'
-     &   //'_MA_1 ET GROUP_MA_2 DOIVENT ETRE LES MEMES')
+     &    CALL U2MESS('F','MODELISA2_33')
 
 C ----- DIMENSION
 
@@ -169,17 +168,16 @@ C ----- DIMENSION
         ENDIF
 
 C ----- LISSAGE DES NORMALES
-      
+
         IF ((CINE(1).EQ.'COQUE   ').OR.(CINE(2).EQ.'COQUE   ')) THEN
-        
+
           CALL JEEXIN(NOMN,I)
 
           IF (I.EQ.0) THEN
 
             CALL GETVID('ARLEQUIN','CARA_ELEM',IOC,1,1,CARA,I)
 
-            IF (I.EQ.0) CALL UTMESS('F','CAARLE','IL FAUT LE '
-     &    //'MOT-CLEF CARA_ELEM LORSQU''ON UTILISE DES ELEMENTS COQUES')
+            IF (I.EQ.0) CALL U2MESS('F','MODELISA2_34')
             CALL LISNOR(CARA,DIME,NOMN,NOMT)
 
           ENDIF
@@ -192,7 +190,7 @@ C ----- MISE EN BOITES DES MAILLES DES MODELES
         CALL BOITE(MAIL,NOMB//'.GROUPEMA',NOMN,DIME,ZK8(JTYPM),NBOITB)
 
 C ----- BOITE DE LA ZONE DE SUPERPOSITION (BS)
-        
+
         L = 1.D0
         CALL JEVEUO ( NOMA//'.BOITE.MMGLOB', 'L', JBOITA )
         CALL JEVEUO ( NOMB//'.BOITE.MMGLOB', 'L', JBOITB )
@@ -207,10 +205,10 @@ C ----- BOITE DE LA ZONE DE SUPERPOSITION (BS)
           JBOITA = JBOITA + 1
           JBOITB = JBOITB + 1
 
-          IF (R1.GE.R2) 
-     &    CALL UTMESS('F','CAARLE','LES DOMAINES NE SE RECOUVRENT PAS')
+          IF (R1.GE.R2)
+     &    CALL U2MESS('F','MODELISA2_35')
 
-          BC(1,I) = R1         
+          BC(1,I) = R1
           BC(2,I) = R2
           L = L * (R2-R1)
 
@@ -238,7 +236,7 @@ C ----- LECTURE ET VERIFICATION PONDERATION
         ENDIF
 
         IFIN = ARLFG(NBOIT1,NBOIT2)
-        
+
         CALL GETVR8('ARLEQUIN','POIDS_FIN',IOC,1,1,A1,I)
         IF (I.NE.0) THEN
           IF (IFIN.EQ.1) THEN
@@ -282,14 +280,14 @@ C ----- CHOIX DU MEDIATEUR
 C ----- MAILLES DE LA ZONE DE COLLAGE
 
         CALL GETVID('ARLEQUIN','GROUP_MA_COLL',IOC,1,0,K8B,NC)
- 
+
         IF (NC.NE.0) THEN
 
 C ------- LECTURE ET FILTRAGE DES MAILLES DE LA ZONE DE COLLAGE
 
           CALL WKVECT('&&CAARLE.GMAC','V V K8',-NC,JGRMC)
           CALL GETVID('ARLEQUIN','GROUP_MA_COLL',IOC,1,-NC,
-     +                                                 ZK8(JGRMC),NC)
+     &                                                 ZK8(JGRMC),NC)
           CALL ARLVER(MOD,ZK8(JGRMC),NC,NOMA,MODEL(3),CINE(3),I)
           CALL JEDETR('&&CAARLE.GMAC')
 
@@ -301,14 +299,13 @@ C ------- VERIFICATION DES MAILLES DE LA ZONE DE COLLAGE
           CALL JEVEUO ( NOM1//'.GROUPEMA', 'E', JCHM1 )
           CALL JEVEUO ( NOM2//'.GROUPEMA', 'E', JCHM2 )
           CALL JEVEUO ( NOMB//'.GROUPEMA', 'E', JCHMB )
-          
+
           IF (ARLCOL(ZI(JCHMB),NC,ZI(JCHM1),N1,ZL(JCOLM))) THEN
             ICOL = 1
           ELSEIF(ARLCOL(ZI(JCHMB),NC,ZI(JCHM2),N2,ZL(JCOLM))) THEN
             ICOL = 2
           ELSE
-            CALL UTMESS('F','CAARLE','GROUP_MA_COLL DOIT ETRE'
-     &              //' UN SOUS-ENSEMBLE DE GROUP_MA_1 OU GROUP_MA_2')
+            CALL U2MESS('F','MODELISA2_36')
           ENDIF
 
           CALL JEDETR(NOMB//'.GROUPEMA')
@@ -340,7 +337,7 @@ C ------- ZONE DE COLLAGE EST IDENTIQUE A LA ZONE DE SUPERPOSITION
         ID = ICOL.EQ.IMED
         CINE(3) = CINE(IMED)
 
-C ----- CALCUL DU DEGRE MAXIMAL DES GRAPHES NOEUDS -> MAILLES 
+C ----- CALCUL DU DEGRE MAXIMAL DES GRAPHES NOEUDS -> MAILLES
 
         CALL JEVEUO ( NOM1//'.GROUPEMA', 'L', JCHM1 )
         CALL CNCINV(MAIL,ZI(JCHM1),N1,'V',NOM1//'.CNCINV')
@@ -374,32 +371,32 @@ C ----- APPARIEMENT DES MAILLES ET FAMILLES D'INTEGRALES
 
           CALL BISSEC(NBOIT2)
           CALL ARLAPP(MAIL,NOM1,NOM2,NOMN,NMAX,ZK8(JTYPM),ZL(JCOLM),
-     +                                                         NC,NAPP)
+     &                                                         NC,NAPP)
           CALL JEDETR(NOM2//'.ARBRE.CELL')
           CALL JEDETR(NOM2//'.ARBRE.LIMA')
           CALL ARLFAM(MAIL,NOM1,NOM2,NAPP,ZK8(JTYPM),ZL(JCOLM),ID,QUAD)
           IF (ID) THEN
             CALL ARLFC1(MAIL,DIME,NOM1,CINE(1),NOM2,CINE(2),NOMC,
-     +                                                       ZL(JCOLM))
+     &                                                       ZL(JCOLM))
           ELSE
             CALL ARLFC2(MAIL,DIME,NOM1,CINE(1),NOM2,CINE(2),NOMC,
-     +                                                       ZL(JCOLM))
+     &                                                       ZL(JCOLM))
           ENDIF
 
         ELSE
 
           CALL BISSEC(NBOIT1)
           CALL ARLAPP(MAIL,NOM2,NOM1,NOMN,NMAX,ZK8(JTYPM),ZL(JCOLM),
-     +                                                         NC,NAPP)
+     &                                                         NC,NAPP)
           CALL JEDETR(NOM1//'.ARBRE.CELL')
           CALL JEDETR(NOM1//'.ARBRE.LIMA')
           CALL ARLFAM(MAIL,NOM2,NOM1,NAPP,ZK8(JTYPM),ZL(JCOLM),ID,QUAD)
           IF (ID) THEN
             CALL ARLFC1(MAIL,DIME,NOM2,CINE(2),NOM1,CINE(1),NOMC,
-     +                                                       ZL(JCOLM))
+     &                                                       ZL(JCOLM))
           ELSE
             CALL ARLFC2(MAIL,DIME,NOM2,CINE(2),NOM1,CINE(1),NOMC,
-     +                                                       ZL(JCOLM))
+     &                                                       ZL(JCOLM))
           ENDIF
 
         ENDIF
@@ -429,9 +426,8 @@ C ----- CALCUL DES EQUATIONS DE COUPLAGE
      &                CINE(2),ZK8(JTYPM),NOMN,NOMT,L,ZL(JCOLM))
         ELSE
           CALL ARLCPL(MAIL,QUAD,NOMC,NOM2,CINE(2),NOM1,
-     &                CINE(1),ZK8(JTYPM),NOMN,NOMT,L,ZL(JCOLM)) 
+     &                CINE(1),ZK8(JTYPM),NOMN,NOMT,L,ZL(JCOLM))
         ENDIF
-     
         CALL JEDETR(QUAD//'.LIMAMA')
         CALL JEDETR(QUAD//'.MAMA')
         CALL JEDETR(QUAD//'.NUMERO')
@@ -468,7 +464,7 @@ C ----- DESALLOCATION DOMAINES 1 ET 2
         CALL JEDETR(NBOIT2//'.MMGLOB')
         CALL JEDETR(NBOIT2//'.PAN')
         CALL JEDETR(NBOIT2//'.H')
-        
+
         CALL JEDETR(NOMC)
 
 C ----- ASSEMBLAGE EN CHARGE .CHME
@@ -485,11 +481,11 @@ C ----- ASSEMBLAGE EN CHARGE .CHME
 
         CALL JEDETR(NOMC//'.INO')
         CALL JEDETR('&&ARL.EQ')
-         
+
  30   CONTINUE
 
 C --- DESALLOCATION
-      
+
       CALL JEDETR('&&ARL.ZR')
       CALL JEDETR('&&ARL.ZI')
       CALL JEDETR('&&ARL.ZL')
@@ -499,7 +495,7 @@ C --- DESALLOCATION
       CALL JEDETR(NOMC)
 
       CALL JEEXIN(NOMN,I)
-      IF (I.NE.0) THEN 
+      IF (I.NE.0) THEN
         CALL JEDETR(NOMN)
         CALL JEDETR(NOMT)
       ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE TURIGI(NOMTE,NBRDDL,K)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,8 +125,7 @@ C     --- RECUPERATION DES ORIENTATIONS ---
         ICOUDE = ICOUD2 - 10
         MMT = 0
         IF (H/A.GT. (0.25D0)) THEN
-          CALL UTMESS('A','TUYAU',
-     &                'EP/R > 0.2 MODI_METRIQUE=NON PAS ADAPTE.')
+          CALL U2MESS('A','ELEMENTS4_54')
         END IF
       ELSE
         ICOUDE = ICOUD2

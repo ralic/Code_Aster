@@ -1,21 +1,21 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CRP_18 CRS_508
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -32,11 +32,11 @@ C ----------------------------------------------------------------------
      &                 (IDOCU,DOCU),(IORIG,ORIG),(IRNOM,RNOM)
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -46,11 +46,11 @@ C
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
-     +                 IITLEC    , IITECR    , NITECR    , KMARQ
+     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
-     +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
+     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
@@ -100,7 +100,7 @@ C
         IF ( HCOD(JCOD-1+I) .EQ. 0 ) THEN
           IF ( NUTI .GE. NRMAX ) THEN
             CMESS = ' LE NOUVEAU REPERTOIRE EST SATURE'
-            CALL JVMESS ( 'F' , 'JJAREP01' , CMESS )
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ELSE
             IDATIN = NUTI + 1
             IIN    = I
@@ -110,7 +110,7 @@ C
           CLE  = RNOM(JNOM-1+ABS(J))
           IF ( CLE .EQ. CLEL ) THEN
             CMESS = ' LE NOM DEMANDE EXISTE DEJA DANS LE REPERTOIRE '
-            CALL JVMESS ( 'S' , 'JJAREP02' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ELSE
             IF ( NE .EQ. 1 ) IN = JXHCOD (CLEL,LOREP-2)
             NE = NE + 1
@@ -119,7 +119,7 @@ C
               GOTO 5
             ELSE
               CMESS = ' LE REPERTOIRE EST SATURE'
-              CALL JVMESS ( 'F' , 'JJAREP03' , CMESS )
+              CALL U2MESK('F','JEVEUX_01',1,CMESS)
             END IF
           END IF
         END IF

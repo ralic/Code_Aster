@@ -1,25 +1,25 @@
         SUBROUTINE CFCMAT ( IMAT,   NMAT,   TEMPD, TEMPF,
-     1                      MATERD, MATERF, MATCST, NDT,   NDI,
-     2                      NR , NVI , BZ )
+     &                      MATERD, MATERF, MATCST, NDT,   NDI,
+     &                      NR , NVI , BZ )
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C       ----------------------------------------------------------------
 C       POLY_CFC  : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
@@ -93,16 +93,17 @@ C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
           CALL RCVALA(IMAT,' ',    'ELAS',  1,  'TEMP', TEMPD, 3,
-     1                   NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
+     &                   NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
           CALL RCVALA(IMAT,' ',    'POLY_CFC', 1, 'TEMP', TEMPD, 13,
-     1                   NOMC(4),  MATERD(1,2),  CERR(4), BL2 )
+     &                   NOMC(4),  MATERD(1,2),  CERR(4), BL2 )
           IF (CERR(4).EQ.'OK'.AND.CERR(5).EQ.'OK') THEN
           BZ=.TRUE.
           DO 10 I = 1 , 16
             IF ( CERR(I) . NE. 'OK' .AND. I .NE. 2 .AND. I .NE. 3 ) THEN
             CALL CODREE ( TEMPD , 'E' , NOM )
             CALL UTMESS ('F','POLY_CFC','VALEUR DE '//NOMC(I)//
-     1      ' A LA TEMPERATURE '//NOM//' NON TROUVEE')
+     &      ' A LA TEMPERATURE '//NOM//' NON TROUVEE')
+C        CALL U2MESK('F','ALGORITH_80', 2 ,VALK)
             ENDIF
             IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
  10       CONTINUE
@@ -113,16 +114,17 @@ C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
           CALL RCVALA(IMAT,' ', 'ELAS',  1,  'TEMP', TEMPF, 3,
-     1                   NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
+     &                   NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
           CALL RCVALA(IMAT,' ', 'POLY_CFC',1,  'TEMP', TEMPF, 13,
-     1                   NOMC(4),  MATERF(1,2),  CERR(4), BL2 )
+     &                   NOMC(4),  MATERF(1,2),  CERR(4), BL2 )
           IF (CERR(4).EQ.'OK'.AND.CERR(5).EQ.'OK') THEN
           BZ=.TRUE.
           DO 20 I = 1 , 16
             IF ( CERR(I) . NE. 'OK' .AND. I .NE. 2 .AND. I .NE. 3 ) THEN
             CALL CODREE ( TEMPF , 'E' , NOM )
             CALL UTMESS ('F','POLY_CFC','VALEUR DE '//NOMC(I)//
-     1      ' A LA TEMPERATURE '//NOM//' NON TROUVEE')
+     &      ' A LA TEMPERATURE '//NOM//' NON TROUVEE')
+C        CALL U2MESK('F','ALGORITH_80', 2 ,VALK)
             ENDIF
             IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
  20       CONTINUE

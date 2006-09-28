@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,CUMUL,
      &                  BASE,TYPE,MATAZ)
-C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -163,9 +163,7 @@ C     ================================
           CALL ASSMAM(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
      &              CUMUL,  TYPE)
         ELSE IF (TYPSYM.EQ.'N') THEN
-          CALL UTMESS('F','ASMATR',' LE TYPE  : '//TYPSYM//
-     &                '  DE LA MATRICE EST INCORRECT. ON ATTEND : "S"'//
-     &                'POUR UNE RESOLUTION PAR METHODE ITERATIVE')
+          CALL U2MESK('F','ASSEMBLA_1',1,TYPSYM)
         END IF
 
 
@@ -185,9 +183,7 @@ C     ====
      &              CUMUL,  TYPE)
         ELSE IF (TYPSYM.EQ.'N' .OR. INDSYM.EQ.1) THEN
           IF (METRES.EQ.'FETI')
-     &      CALL UTMESS('F','ASMATR',
-     &      'MATRICE NON SYMETRIQUE POUR L''INSTANT PROSCRITE'//
-     &      '  AVEC FETI')
+     &      CALL U2MESS('F','ASSEMBLA_2')
           CALL JEEXIN(MATAS//'.REFA',IRET)
           IF (IRET.NE.0) THEN
             CALL JEVEUO(MATAS//'.REFA','L',JREFA)

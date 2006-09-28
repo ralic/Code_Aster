@@ -3,22 +3,22 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     OPERATEUR "RECU_FONCTION"  MOT CLE "RESU_GENE"
@@ -98,8 +98,7 @@ C
 C
       CALL JEEXIN(RESU//'.'//NOMCHA(1:4),IRET)
       IF (IRET.EQ.0)  THEN
-         CALL UTMESS('F','RFRGEN','LE CHAMP '//NOMCHA//' N''EXISTE'//
-     +                                       ' PAS DANS LE RESU_GENE.')
+         CALL U2MESK('F','UTILITAI4_23',1,NOMCHA)
       ENDIF
       CALL JEVEUO(RESU//'.'//NOMCHA(1:4),'L',ITRESU)
 C
@@ -108,8 +107,7 @@ C
       KINST = '&&RFRGEN.INSTANT'
       CALL RSTRAN (INTRES,RESU,' ',1,KINST,KNUME,NBORDR,IE)
       IF (IE.NE.0) THEN
-         CALL UTMESS('F','RFRGEN','PROBLEME(S) RENCONTRE(S) LORS'//
-     +                                ' DE LA LECTURE DES INSTANTS.' )
+         CALL U2MESS('F','UTILITAI4_24')
       ENDIF
       CALL JEEXIN(KINST,IRET)
       IF (IRET.GT.0) THEN
@@ -134,8 +132,7 @@ C
          CALL JEVEUO(RESU//'.PTEM','L',IPAS)
          CALL JELIRA(RESU//'.PTEM','LONMAX',NBPAS,K8B)
          IF (NBPAS.LE.1) THEN
-            CALL UTMESS('F','RFRGEN','PROBLEME RECUP DE PTEM'//
-     +                           ' UNIQUEMENT POUR METHODE ADAPT' )
+            CALL U2MESS('F','UTILITAI4_25')
          ENDIF
          CALL WKVECT('&&RFRGEN.DT','V V R',NBPAS,LPAS)
          DO 58 IP = 1,NBPAS
@@ -149,7 +146,7 @@ C
             CALL JELIRA(RESU//'.INST','LONMAX',NBINSG,K8B)
             DO 54 IORDR = 0, NBORDR-1
                CALL EXTRAC ( INTRES,EPSI,CRIT,NBINSG-2,ZR(IDINSG),
-     +                       ZR(JINST+IORDR),ZR(LPAS),1,REP,IERD)
+     &                       ZR(JINST+IORDR),ZR(LPAS),1,REP,IERD)
                ZR(LVAR+IORDR) = ZR(JINST+IORDR)
                ZR(LFON+IORDR) = REP
  54         CONTINUE
@@ -176,18 +173,17 @@ C
          NOMSY = 'DEPL'
          IF (MATRAS.NE.' ') THEN
            CALL VPRECU ( BASEMO, NOMSY,-1,IBID, '&&RFRGEN.VECT.PROPRE',
-     +                   0, K8B, K8B,  K8B, K8B,
-     +                   NEQ, MXMODE, TYPE, NBPARI, NBPARR, NBPARK )
+     &                   0, K8B, K8B,  K8B, K8B,
+     &                   NEQ, MXMODE, TYPE, NBPARI, NBPARR, NBPARK )
            CALL JEVEUO('&&RFRGEN.VECT.PROPRE','L',IDBASE)
            IF ( TYPE .NE. 'R' ) THEN
-              CALL UTMESS('F','RFRGEN',
-     +               ' ON NE TRAITE PAS LE TYPE DE MODES "'//TYPE//'".')
+              CALL U2MESK('F','UTILITAI4_16',1,TYPE)
            ENDIF
 C
            CALL DISMOI('F','NOM_NUME_DDL',MATRAS,'MATR_ASSE',IBID,NUME,
-     +                 IE)
+     &                 IE)
            CALL DISMOI('F','NOM_MAILLA'  ,MATRAS,'MATR_ASSE',IBID,NOMA,
-     +                 IE)
+     &                 IE)
          ELSE
            NUME = ZK24(LREFE2+3)(1:14)
            CALL DISMOI('F','NOM_MAILLA',NUME,'NUME_DDL',IBID,NOMA,IE)
@@ -198,8 +194,7 @@ C
          CALL GETVID(' ','GROUP_NO',0,1,1,NOGNO,NGN)
          IF (NGN.NE.0) THEN
            CALL JENONU(JEXNOM(NOMA//'.GROUPENO',NOGNO),IGN2)
-           IF (IGN2.LE.0)  CALL UTMESS('F','RFRGEN','LE GROUP_NO : '//
-     +                                        NOGNO//'N''EXISTE PAS.')
+           IF (IGN2.LE.0)  CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
            CALL JEVEUO(JEXNUM(NOMA//'.GROUPENO',IGN2),'L',IAGNO)
 
            INO = ZI(IAGNO)
@@ -208,13 +203,13 @@ C
          CALL POSDDL('NUME_DDL',NUME,NOEUD,CMP,INOEUD,IDDL)
          IF ( INOEUD .EQ. 0 ) THEN
             LG1 = LXLGUT(NOEUD)
-            CALL UTMESS('F','RFRGEN',
-     +                  'LE NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
+            CALL U2MESK('F','UTILITAI_92',1,NOEUD(1:LG1))
          ELSEIF ( IDDL .EQ. 0 ) THEN
             LG1 = LXLGUT(NOEUD)
             LG2 = LXLGUT(CMP)
           CALL UTMESS('F','RFRGEN','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
-     +                  'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
+     &                  'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
+C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
          ENDIF
 C
 C        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
@@ -223,8 +218,7 @@ C        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---
          IF (NFONCT.NE.0) THEN
             IF (NOMCHA(1:4).NE.'ACCE') THEN
 C           --- ACCE_MONO_APPUI COMPATIBLE UNIQUEMENT AVEC ACCELERATION
-            CALL UTMESS('F','RFRGEN','ACCE_MONO_APPUI EST COMPATIBLE '//
-     +                    'UNIQUEMENT AVEC UN CHAMP DE TYPE : ACCE ')
+            CALL U2MESS('F','UTILITAI4_26')
                GOTO 9999
             ENDIF
             ZK16(LPRO+3)(5:8) = '_ABS'
@@ -238,7 +232,7 @@ C        --------------------------------------------------------------
             CALL WKVECT('&&RFRGEN.VECTGENE','V V R',NBMODE,IDVECG)
             DO 50 IORDR = 0, NBORDR-1
                CALL EXTRAC ( INTRES,EPSI,CRIT,NBINSG,ZR(IDINSG),
-     +               ZR(JINST+IORDR),ZR(ITRESU),NBMODE,ZR(IDVECG),IERD)
+     &               ZR(JINST+IORDR),ZR(ITRESU),NBMODE,ZR(IDVECG),IERD)
                CALL MDGEP2(NEQ,NBMODE,ZR(IDBASE),ZR(IDVECG),IDDL,REP)
                ZR(LVAR+IORDR) = ZR(JINST+IORDR)
                ZR(LFON+IORDR) = REP
@@ -249,7 +243,7 @@ C
             DO 52 IORDR = 0, NBORDR-1
                II = ZI(LORDR+IORDR)
                CALL MDGEP2(NEQ,NBMODE,ZR(IDBASE),
-     +                      ZR(ITRESU+NBMODE*(II-1)),IDDL,REP)
+     &                      ZR(ITRESU+NBMODE*(II-1)),IDDL,REP)
                ZR(LVAR+IORDR) = ZR(JINST+IORDR)
                ZR(LFON+IORDR) = REP
  52         CONTINUE
@@ -267,7 +261,7 @@ C
             NBEXCI = NBEXCI / 2
             DO 100 IORDR = 0, NBORDR-1
                CALL MDGEP4 (NEQ, NBEXCI, ZR(IPSDEL), ZR(LVAR+IORDR),
-     +                                   ZK8(JFON), IDDL, REP)
+     &                                   ZK8(JFON), IDDL, REP)
                ZR(LFON+IORDR) = ZR(LFON+IORDR) + REP
  100        CONTINUE
          ENDIF
@@ -293,7 +287,7 @@ C
 C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
       CALL ORDONN(NOMFON,NOMCMD,0)
-C 
+C
       CALL TITRE
       IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)
 

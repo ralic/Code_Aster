@@ -1,5 +1,5 @@
       SUBROUTINE I3IFTS(EPSI,K,F,DESC,DESCTM,CONEXK,COORDO,
-     +                  SGT,NBPT,LSTPT,FINK)
+     &                  SGT,NBPT,LSTPT,FINK)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER K,DESC(*),DESCTM(*),CONEXK(*),NBPT,LSTPT(*),F
@@ -8,22 +8,22 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     INTERSECTION FACE TRIANGLE F SGT (AB)
@@ -187,10 +187,10 @@ C        DONC ACTION = VIDE
          ENDIF
          CALL I3PTRV(EPS,LSTPT,NBPT,T,DJALA1,IPOS)
          IF (  (R .LE. (UN+EPSI)) .AND. (R .GE. -EPSI) .AND.
-     +         (S .LE. (UN+EPSI)) .AND. (S .GE. -EPSI) .AND.
-     +         ((R+S-UN) .LE.  EPSI                   ).AND.
-     +         (T .LE. (UN+EPSI)) .AND. (T .GE. -EPSI) .AND.
-     +         ( .NOT. DJALA1 )                       ) THEN
+     &         (S .LE. (UN+EPSI)) .AND. (S .GE. -EPSI) .AND.
+     &         ((R+S-UN) .LE.  EPSI                   ).AND.
+     &         (T .LE. (UN+EPSI)) .AND. (T .GE. -EPSI) .AND.
+     &         ( .NOT. DJALA1 )                       ) THEN
             IF ( ABS(S) .LT. EPSI ) THEN
                ARETE = 1
                S     = ZERO
@@ -221,7 +221,7 @@ C        DONC ACTION = VIDE
                CALL I3CRTP(EPSI,CS,SGT,ZR(LSTPT(5)),IRET)
                IF ( IRET .NE. 0 ) THEN
                   CALL UTDEBM('F','I3IFTS',
-     +                        'UNE FACE DEGENEREE EST DETECTEE')
+     &                        'UNE FACE DEGENEREE EST DETECTEE')
                   CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                   CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                   CALL UTFINM()
@@ -234,7 +234,7 @@ C        DONC ACTION = VIDE
                CALL I3CRTP(EPSI,CS,SGT(4),ZR(LSTPT(5)+2),IRET)
                IF ( IRET .NE. 0 ) THEN
                   CALL UTDEBM('F','I3IFTS',
-     +                        'UNE FACE DEGENEREE EST DETECTEE')
+     &                        'UNE FACE DEGENEREE EST DETECTEE')
                   CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                   CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                   CALL UTFINM()
@@ -264,7 +264,7 @@ C        DONC ACTION = VIDE
                   CALL I3CRTP(EPSI,CS,SGT(I),ZR(LSTPT(5)+2),IRET)
                   IF ( IRET .EQ. -1 ) THEN
                       CALL UTDEBM('F','I3IQPS',
-     +                            'UNE FACE DEGENEREE EST DETECTEE')
+     &                            'UNE FACE DEGENEREE EST DETECTEE')
                       CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                       CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                       CALL UTFINM()
@@ -282,7 +282,7 @@ C        DONC ACTION = VIDE
                   CALL I3CRTP(EPSI,CS,SGT,ZR(LSTPT(5)+2),IRET)
                   IF ( IRET .EQ. -1 ) THEN
                      CALL UTDEBM('F','I3IQPS',
-     +                               'UNE FACE DEGENEREE EST DETECTEE')
+     &                               'UNE FACE DEGENEREE EST DETECTEE')
                      CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                      CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                      CALL UTFINM()
@@ -297,10 +297,10 @@ C        DONC ACTION = VIDE
                   CALL I3PDM2(EPSI,E3,CS,NBA,SGT(4),DJALA1)
                   IF ( DJALA1 ) THEN
                      CALL I3CRTP(EPSI,CS,SGT(4),ZR(LSTPT(5)+2),
-     +                           IRET)
+     &                           IRET)
                      IF ( IRET .EQ. -1 ) THEN
                          CALL UTDEBM('F','I3IQPS',
-     +                               'UNE FACE DEGENEREE EST DETECTEE')
+     &                               'UNE FACE DEGENEREE EST DETECTEE')
                          CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                          CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                         CALL UTFINM()
@@ -326,8 +326,8 @@ C        DONC ACTION = VIDE
             S    =  ZR(LSTPT(1)+1)
          ELSE IF ( NBPT .GT. 2 ) THEN
                   CALL UTDEBM('F','I3IFTS',
-     +                        'SEGMENT ET FACE COPLANAIRE, '//
-     +                        'INTERSECTION : TROP DE POINT')
+     &                        'SEGMENT ET FACE COPLANAIRE, '//
+     &                        'INTERSECTION : TROP DE POINT')
                   CALL UTIMPI('L','MAILLE : ',1,K)
                   CALL UTIMPI('S','FACE : ',1,F)
                   CALL UTIMPI('S','NOMBRE DE POINT : ',1,NBPT)
@@ -335,6 +335,6 @@ C        DONC ACTION = VIDE
          ELSE
          ENDIF
       ELSE
-         CALL UTMESS('F','I3IFTS','INTERSECTION DE TYPE INCONNU')
+         CALL U2MESS('F','POSTRELE_20')
       ENDIF
       END

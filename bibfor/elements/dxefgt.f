@@ -3,22 +3,22 @@
       REAL*8        XYZL(3,1),PGL(3,1),TSUP(1),TINF(1),TMOY(1),SIGT(1)
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C --- EFFORTS GENERALISES N, M, V D'ORIGINE THERMIQUE AUX POINTS
@@ -69,7 +69,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
-     +                                         IVF,IDFDX,IDFD2,JGANO)
+     &                                         IVF,IDFDX,IDFD2,JGANO)
 C
       CALL R8INIR(32,0.D0,SIGT,1)
 C
@@ -87,12 +87,11 @@ C     --------------------------
       IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
          GRILLE = .TRUE.
       ELSEIF (NOMTE(1:8).NE.'MEDKTR3 ' .AND.
-     +        NOMTE(1:8).NE.'MEDSTR3 ' .AND.
-     +        NOMTE(1:8).NE.'MEDKQU4 ' .AND.
-     +        NOMTE(1:8).NE.'MEDSQU4 ' .AND.
-     +        NOMTE(1:8).NE.'MEQ4QU4 ' ) THEN
-        CALL UTMESS('F','DXEFGT','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
-     +              'N''EST PAS PREVU.')
+     &        NOMTE(1:8).NE.'MEDSTR3 ' .AND.
+     &        NOMTE(1:8).NE.'MEDKQU4 ' .AND.
+     &        NOMTE(1:8).NE.'MEDSQU4 ' .AND.
+     &        NOMTE(1:8).NE.'MEQ4QU4 ' ) THEN
+        CALL U2MESK('F','ELEMENTS_14',1,NOMTE(1:8))
       END IF
 C
       CALL JEVECH('PCACOQU','L',JCARA)
@@ -105,7 +104,7 @@ C --- MEMBRANE, MEMBRANE-FLEXION
 C     ----------------------------------------------------
 
       CALL DXMATH(EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,INDITH,GRILLE,
-     +                                           T2EV,T2VE,T1VE)
+     &                                           T2EV,T2VE,T1VE)
       IF (INDITH.EQ.-1) GO TO 30
 
 C --- BOUCLE SUR LES POINTS D'INTEGRATION
@@ -143,17 +142,17 @@ C          ----------------------------------------
         COE2 = (TSUPPG(IGAU)-TINFPG(IGAU))/EPAIS
 
         SIGT(1+8* (IGAU-1)) = COE1* (DM(1,1)+DM(1,2)) +
-     +                        COE2* (DMF(1,1)+DMF(1,2))
+     &                        COE2* (DMF(1,1)+DMF(1,2))
         SIGT(2+8* (IGAU-1)) = COE1* (DM(2,1)+DM(2,2)) +
-     +                        COE2* (DMF(2,1)+DMF(2,2))
+     &                        COE2* (DMF(2,1)+DMF(2,2))
         SIGT(3+8* (IGAU-1)) = COE1* (DM(3,1)+DM(3,2)) +
-     +                        COE2* (DMF(3,1)+DMF(3,2))
+     &                        COE2* (DMF(3,1)+DMF(3,2))
         SIGT(4+8* (IGAU-1)) = COE2* (DF(1,1)+DF(1,2)) +
-     +                        COE1* (DMF(1,1)+DMF(1,2))
+     &                        COE1* (DMF(1,1)+DMF(1,2))
         SIGT(5+8* (IGAU-1)) = COE2* (DF(2,1)+DF(2,2)) +
-     +                        COE1* (DMF(2,1)+DMF(2,2))
+     &                        COE1* (DMF(2,1)+DMF(2,2))
         SIGT(6+8* (IGAU-1)) = COE2* (DF(3,1)+DF(3,2)) +
-     +                        COE1* (DMF(3,1)+DMF(3,2))
+     &                        COE1* (DMF(3,1)+DMF(3,2))
    20 CONTINUE
 C
    30 CONTINUE

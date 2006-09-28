@@ -2,22 +2,22 @@
      &                  TITRE,FORMA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
@@ -37,12 +37,12 @@ C  - LE TITRE DE LA COLONNE (SUR 3 LIGNES)
 C  - LE TYPE DE LA COLONNE
 C
 C IN  ICOD   : CODE DE LA COLONNE
-C IN  SUIVCO : NOM DE LA SD POUR SUIVI DDL 
+C IN  SUIVCO : NOM DE LA SD POUR SUIVI DDL
 C OUT TITRE  : TITRES STANDARDS DE LA COLONNE
 C OUT FORMA  : TYPE DE LA COLONNE
 C              1: ENTIER
 C              2: REEL
-C              3: CHAINE 
+C              3: CHAINE
 C
 C ----------------------------------------------------------------------
 C
@@ -79,7 +79,7 @@ C
      &                          '  PAR REFERENCE ',
      &                          '  CONTRAINTES   '/
       DATA FORCOL(5) /2/
- 
+
 
       DATA (TITCOL(J,6),J=1,3)/ ' RESIDU RELATIF ',
      &                          '     MAXIMUM    ',
@@ -216,7 +216,7 @@ C
      &                           '     FETI       ',
      &                           '                '/
       DATA FORCOL(28) /1/
- 
+
 
       DATA (TITCOL(J,29),J=1,3)/ '&&&&&&&&&&&&&&&&',
      &'                ',
@@ -234,17 +234,14 @@ C ----------------------------------------------------------------------
 C
 
       IF (ZTIT.NE.3) THEN
-         CALL UTMESS('F','IMPREF',
-     &               'NOMBRE LIGNES TITRE INCORRECTE (DVLP)')
+         CALL U2MESS('F','ALGORITH4_17')
       ENDIF
       IF (ZDEF.NE.30) THEN
-         CALL UTMESS('F','IMPREF',
-     &               'NOMBRE COLONNES INCORRECTE (DVLP)')
+         CALL U2MESS('F','ALGORITH4_18')
       ENDIF
       IF ((ICOD.LE.0).OR.(ICOD.GT.28)) THEN
          WRITE(6,*) 'ICOD:',ICOD
-         CALL UTMESS('F','IMPREF',
-     &               'CODE COLONNE INCORRECT (DVLP)')
+         CALL U2MESS('F','ALGORITH4_19')
       ENDIF
 
       FORMA    = FORCOL(ICOD)
@@ -253,11 +250,11 @@ C
       IF ((ICOD.GE.24).AND.(ICOD.LE.27)) THEN
         ISUIV = (ICOD-23)
         CALL SUIIMP(SUIVCO,ISUIV,ZTIT,
-     &              TITRE)      
+     &              TITRE)
       ELSE
         DO 10 J = 1,ZTIT
           TITRE(J) = TITCOL(J,ICOD)
-  10    CONTINUE         
+  10    CONTINUE
       ENDIF
 
       END

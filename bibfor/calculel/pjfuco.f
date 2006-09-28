@@ -4,7 +4,7 @@
       CHARACTER*1 BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,9 @@ C     ----------------------
         MA1 = ZK8(I1-1+K)
         MA2 = ZK8(I2-1+K)
         IF (MA1.NE.MA2) CALL UTMESS('F','PJFUCO',
-     +                              ' MAILLAGES NON IDENTIQUES : '//
-     +                              MA1//' ET '//MA2)
+     &                              ' MAILLAGES NON IDENTIQUES : '//
+     &                              MA1//' ET '//MA2)
+C        CALL U2MESK('F','CALCULEL4_65', 2 ,VALK)
    10 CONTINUE
       CALL JEDUPO(C1//'.PJEF_NO',BASE,C3//'.PJEF_NO',.FALSE.)
 

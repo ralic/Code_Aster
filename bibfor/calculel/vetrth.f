@@ -2,7 +2,7 @@
      &                  CHLAPM,CHLAPP,VERES)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,15 +129,12 @@ C --- TERME VOLUMIQUE PROVENANT DU COMPORTEMENT
         CALL JEEXIN(CONVCH,IRET)
         IF (IRET.GT.0) THEN
           ICONV = ICONV + 1
-          IF (ICONV.GT.1) CALL UTMESS('F','VETRTH',' IL NE FAUT PAS'//
-     &                            ' DEFINIR PLUS D"UN CHAMP DE VITESSE '
-     &                                )
+          IF (ICONV.GT.1) CALL U2MESS('F','CALCULEL3_72')
           CALL JEVEUO(CONVCH,'L',JVITES)
           CHVITE = ZK8(JVITES)
         END IF
    10 CONTINUE
-      IF (ICONV.EQ.0) CALL UTMESS('F','VETRTH',' IL FAUT '//
-     &                            'DEFINIR UN CHAMP DE VITESSE ')
+      IF (ICONV.EQ.0) CALL U2MESS('F','CALCULEL5_38')
       LCHIN(7) = CHVITE
 
       ILIRES = 1

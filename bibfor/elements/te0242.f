@@ -1,6 +1,6 @@
       SUBROUTINE TE0242 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/09/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,9 +61,9 @@ C DEB ------------------------------------------------------------------
       IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
 C
       CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
-     +            JGANO)
+     &            JGANO)
       CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     +            JGANO)
+     &            JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM )
       CALL JEVECH('PMATERC','L',IMATE )
@@ -74,8 +74,7 @@ C
 C
 C
       IF ( (ZK16(ICOMP)(1:9).EQ.'THER_HYDR')) THEN
-         CALL UTMESS('F','TE0243','PAS D ELEMENTS LUMPES POUR'//
-     &               'HYDRATATION ')
+         CALL U2MESS('F','ELEMENTS3_57')
       ENDIF
 C
       IF ( (ZK16(ICOMP)(1:5).EQ.'SECH_')) THEN

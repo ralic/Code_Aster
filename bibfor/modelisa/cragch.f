@@ -1,7 +1,7 @@
       SUBROUTINE CRAGCH (LONG, TYPCOE, TYPVAL, LIGRCH)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,9 +67,7 @@ C --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 C
       CALL JEMARQ()
       IF (LONG.LE.0) THEN
-               CALL UTMESS('F','CRAGCH','ON ESSAIE DE CREER OU '//
-     +                   'D''AGRANDIR LE LIGREL DE CHARGE AVEC '//
-     +                   'UN NOMBRE DE TERMES NEGATIF OU NUL')
+               CALL U2MESS('F','MODELISA4_37')
       ENDIF
 C
 C --- CARTES DE LA CHARGE ---
@@ -94,7 +92,7 @@ C
 C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
 C
          CALL DISMOI('F','NOM_MODELE',LIGRCH(1:8),'CHARGE',IBID,
-     +                MOD,IER)
+     &                MOD,IER)
 C
 C --- MAILLAGE ASSOCIE AU MODELE ---
 C
@@ -106,7 +104,7 @@ C
          ELSE IF (TYPCOE.EQ.'COMP') THEN
              CALL ALCART('G',CA1, NOMA, 'DDLM_C')
          ELSE
-            CALL UTMESS('F','CRAGCH','VALEUR INATTENDUE: '//TYPCOE )
+            CALL U2MESK('F','MODELISA2_37',1,TYPCOE)
          ENDIF
 C
          IF (TYPVAL.EQ.'REEL') THEN
@@ -116,7 +114,7 @@ C
          ELSE IF (TYPVAL.EQ.'COMP') THEN
             CALL ALCART('G',CA2, NOMA, 'DDLI_C')
          ELSE
-            CALL UTMESS('F','CRAGCH','VALEUR INATTENDUE: '//TYPVAL )
+            CALL U2MESK('F','MODELISA2_37',1,TYPVAL)
          END IF
       END IF
 

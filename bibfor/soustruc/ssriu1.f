@@ -1,6 +1,6 @@
       SUBROUTINE SSRIU1(NOMU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,9 +112,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       NU = NU(1:14)//'.NUME'
 
       CALL DISMOI('F','NOM_GD',NU(1:14),'NUME_DDL',IBID,NOGDSI,IERD)
-      IF (NOGDSI.NE.'DEPL_R') CALL UTMESS('F','SSRIU1',
-     &          'LA SOUS-STRUCTURATION N''EST POSSIBLE QU''EN MECANIQUE'
-     &                             )
+      IF (NOGDSI.NE.'DEPL_R') CALL U2MESS('F','SOUSTRUC_70')
       CALL DISMOI('F','NU_CMP_LAGR','DEPL_R','GRANDEUR',NULAG,KBID,IED)
       CALL DISMOI('F','NB_EC',NOGDSI,'GRANDEUR',NEC,KBID,IERD)
       CALL JEVEUO(NU//'.DEEQ','E',IADEEQ)
@@ -144,7 +142,7 @@ C     -------------------------------------------------
       NLAGE = 0
 
       DO 10,I = 1,NDDLT
-        IF (ZI(IANUEQ-1+I).NE.I) CALL UTMESS('F','SSRIU1','STOP 1')
+        IF (ZI(IANUEQ-1+I).NE.I) CALL U2MESS('F','CALCULEL_2')
 
         NUNO = ZI(IADEEQ-1+2* (I-1)+1)
         NUDDL = ZI(IADEEQ-1+2* (I-1)+2)
@@ -179,8 +177,7 @@ C           -- ON COMPTE LES NOEUDS INTERNES ET EXTERNES:
               ICOI = ICOI + 1
             ELSE
               ICOE = ICOE + 1
-              IF (ICOE.GT.NBNOE) CALL UTMESS('F','SSRIU1',
-     &                                'MESSAGE VIDE    ')
+              IF (ICOE.GT.NBNOE) CALL U2MESS('F','ASSEMBLA_17')
             END IF
           END IF
         ELSE
@@ -188,9 +185,8 @@ C           -- ON COMPTE LES NOEUDS INTERNES ET EXTERNES:
         END IF
    10 CONTINUE
 
-      IF (NBNOE.NE.ICOE) CALL UTMESS('F','SSRIU1','STOP 2')
-      IF (ICOI.EQ.0) CALL UTMESS('F','SSRIU1',
-     &                           'NOMBRE DE NOEUDS '//'INTERNES : 0')
+      IF (NBNOE.NE.ICOE) CALL U2MESS('F','CALCULEL_8')
+      IF (ICOI.EQ.0) CALL U2MESS('F','SOUSTRUC_71')
       ZI(IADESM-1+3) = ICOI
       NDDLE = NDDLT - NDDLI
       ZI(IADESM-1+4) = NDDLE
@@ -253,8 +249,7 @@ C           -- TYPE LAGRANGE DES NOEUDS SUPPLEMENTAIRES:
               ICO = ICO + 1
               ZI(IACONX-1+3* (ICO-1)+3) = ITYLAG
               IEQN = ZI(IANUEQ-1+I)
-              IF (IEQN.LE.NDDLI) CALL UTMESS('F','SSRIU1',
-     &                                'MESSAGE VIDE    ')
+              IF (IEQN.LE.NDDLI) CALL U2MESS('F','ASSEMBLA_17')
               ZI(IAWRK1-1+IEQN) = ICO
             END IF
           END IF
@@ -266,8 +261,7 @@ C           -- NOEUDS LAGRANGES DU MAILLAGE :
             ZI(IACONX-1+3* (ICO-1)+2) = NUNO
             ZI(IACONX-1+3* (ICO-1)+3) = ITYLAG
             IEQN = ZI(IANUEQ-1+I)
-            IF (IEQN.LE.NDDLI) CALL UTMESS('F','SSRIU1',
-     &                              'MESSAGE VIDE    ')
+            IF (IEQN.LE.NDDLI) CALL U2MESS('F','ASSEMBLA_17')
             ZI(IAWRK1-1+IEQN) = ICO
           END IF
 
@@ -286,8 +280,7 @@ C           -- NOEUDS LAGRANGE DES LIAISONS DDL :
           ICO = ICO + 1
           ZI(IACONX-1+3* (ICO-1)+3) = ITYLAG
           IEQN = ZI(IANUEQ-1+I)
-          IF (IEQN.LE.NDDLI) CALL UTMESS('F','SSRIU1',
-     &                            'MESSAGE VIDE    ')
+          IF (IEQN.LE.NDDLI) CALL U2MESS('F','ASSEMBLA_17')
           ZI(IAWRK1-1+IEQN) = ICO
         END IF
    40 CONTINUE

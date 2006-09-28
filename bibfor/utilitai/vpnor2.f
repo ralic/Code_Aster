@@ -5,22 +5,22 @@
       CHARACTER*(*)       NOMCON
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/08/1999   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     NORMALISATION DE TOUS LES CHAMPS D'UN MODE_MECA
 C
@@ -80,24 +80,23 @@ C
 
                CALL JELIRA ( VALE, 'TYPE', IBID, TYPMOD )
                IF     ( NOMSYM(1:4) .EQ. 'EFGE' .OR.
-     +                  NOMSYM(1:4) .EQ. 'SIGM' .OR.
-     +                  NOMSYM(1:4) .EQ. 'EPSI' .OR.
-     +                  NOMSYM(1:4) .EQ. 'SIEF' .OR.
-     +                  NOMSYM(1:4) .EQ. 'FORC' .OR.
-     +                  NOMSYM(1:4) .EQ. 'REAC' .OR.
-     +                  NOMSYM(1:4) .EQ. 'DEGE' ) THEN
+     &                  NOMSYM(1:4) .EQ. 'SIGM' .OR.
+     &                  NOMSYM(1:4) .EQ. 'EPSI' .OR.
+     &                  NOMSYM(1:4) .EQ. 'SIEF' .OR.
+     &                  NOMSYM(1:4) .EQ. 'FORC' .OR.
+     &                  NOMSYM(1:4) .EQ. 'REAC' .OR.
+     &                  NOMSYM(1:4) .EQ. 'DEGE' ) THEN
                   RCOEF = COEF(IM)
                ELSEIF ( NOMSYM(1:4) .EQ. 'EQUI' ) THEN
-                  CALL UTMESS('A','VPNOR2',
-     +                        'OPTION "'//NOMSYM//'" A RECALCULER')
+                  CALL U2MESK('A','UTILITAI5_88',1,NOMSYM)
                   GOTO 12
                ELSEIF ( NOMSYM(1:4) .EQ. 'EPOT' .OR.
-     +                  NOMSYM(1:4) .EQ. 'ECIN' ) THEN
+     &                  NOMSYM(1:4) .EQ. 'ECIN' ) THEN
                   RCOEF = COEF(IM) * COEF(IM)
                   IF ( TYPMOD(1:1) .EQ. 'R' ) THEN
                      CALL PEENC2 ( VALE(1:19), RCOEF )
                   ELSE
-                     CALL UTMESS('F','VPNOR2','CONTACTER L''ASSISTANCE')
+                     CALL U2MESS('F','UTILITAI5_89')
                   ENDIF
                   GOTO 12
                ELSE
@@ -110,7 +109,7 @@ C
                      ZR(LVALE+IEQ) = ZR(LVALE+IEQ) * RCOEF
  20               CONTINUE
                ELSE
-                  CALL UTMESS('F','VPNOR2','CONTACTER L''ASSISTANCE')
+                  CALL U2MESS('F','UTILITAI5_89')
                ENDIF
             ENDIF
  12      CONTINUE

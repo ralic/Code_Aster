@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*16    OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,9 +119,7 @@ C
       CALL TECACH ( 'NNN', 'PCOMPOR', 1, ICOMPO,IRET )
       IF ( ICOMPO .NE. 0 ) THEN
          IF ( ZK16(ICOMPO+2)(1:8) .EQ. 'GREEN_GR' ) THEN
-            CALL UTMESS('F','TE0406',' CALCUL DE LA MASSE NON '//
-     &                  'IMPLANTE POUR LES ELEMENTS COQUE_3D EN '//
-     &                  'GRANDES ROTATIONS, DEFORMATION : GREEN_GR' )
+            CALL U2MESS('F','ELEMENTS3_91')
         ENDIF
       ENDIF
 C
@@ -409,7 +407,7 @@ C
 C---------------------------------------------
       ELSE
 C---------------------------------------------
-         CALL UTMESS ('F' , 'TE0406' , 'OPTION NON TRAITEE')
+         CALL U2MESS('F','ELEMENTS2_67')
 C
 C---------------------------------------------
       ENDIF

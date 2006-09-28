@@ -1,6 +1,6 @@
       SUBROUTINE CESCES(CESA,TYPCES,CESMOZ,MNOGAZ,BASE,CESB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C        NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 C        ILCNX1,IACNX1   : ADRESSES DE LA CONNECTIVITE DU MAILLAGE
 C     --------------------------------------------------------------
       CALL EXISD('CHAM_ELEM_S',CES1,IRET)
-      IF (IRET.LE.0) CALL UTMESS('F','CESCES','CHAMP 1 INEXISTANT')
+      IF (IRET.LE.0) CALL U2MESS('F','CALCULEL_59')
       CALL JEVEUO(CES1//'.CESK','L',JCES1K)
       CALL JEVEUO(CES1//'.CESC','L',JCES1C)
       CALL JEVEUO(CES1//'.CESD','L',JCES1D)
@@ -118,16 +118,16 @@ C     ------------------------------------------------
       END IF
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      IF (TSCA.NE.'R') CALL UTMESS('F','CESCES','A FAIRE ...')
+      IF (TSCA.NE.'R') CALL U2MESS('F','CALCULEL_46')
 
 C     2. QUELQUES VERIFICATIONS :
 C     ---------------------------
       IF ((TYPCE1.EQ.'ELNO') .AND. (TYPCES.EQ.'ELGA')) THEN
 C     --------------------------------------------------
         CALL EXISD('CHAM_ELEM_S',MNOGA,IRET)
-        IF (IRET.LE.0) CALL UTMESS('F','CESCES','MAT NO->GA NECESSAIRE')
+        IF (IRET.LE.0) CALL U2MESS('F','CALCULEL_60')
         CALL JEVEUO(MNOGA//'.CESK','L',JBREF)
-        IF (MA.NE.ZK8(JBREF-1+1)) CALL UTMESS('F','CESCES','STOP')
+        IF (MA.NE.ZK8(JBREF-1+1)) CALL U2MESS('F','CALCULEL_13')
       END IF
 
 
@@ -154,7 +154,7 @@ C     -----------------------------------------------------------------
 
       ELSE IF (TYPCES.EQ.'ELGA') THEN
         CALL EXISD('CHAM_ELEM_S',CESMOD,IRET)
-        IF (IRET.LE.0) CALL UTMESS('F','CESCES','CESMOD OBLIGATOIRE')
+        IF (IRET.LE.0) CALL U2MESS('F','CALCULEL_61')
         CALL JEVEUO(CESMOD//'.CESD','L',JCEMD)
         DO 30,IMA = 1,NBMA
           ZI(JNBPT-1+IMA) = ZI(JCEMD-1+5+4* (IMA-1)+1)
@@ -163,7 +163,7 @@ C     -----------------------------------------------------------------
    30   CONTINUE
 
       ELSE
-        CALL UTMESS('F','CESCES','IMPOSSIBLE')
+        CALL U2MESS('F','ALGORITH_15')
       END IF
 
 
@@ -189,7 +189,7 @@ C     ------------------------------------------------------
         CALL JEVEUO(MNOGA//'.CESD','L',MNOGAD)
         CALL JEVEUO(MNOGA//'.CESL','L',MNOGAL)
         CALL JEVEUO(MNOGA//'.CESV','L',MNOGAV)
-        IF (ZK8(MNOGAK).NE.MA) CALL UTMESS('F','CESCES','STOP1')
+        IF (ZK8(MNOGAK).NE.MA) CALL U2MESS('F','CALCULEL_2')
 
         DO 90,IMA = 1,NBMA
           CALL CESEXI('C',MNOGAD,MNOGAL,IMA,1,1,1,IAD)
@@ -204,9 +204,9 @@ C     ------------------------------------------------------
 
           NBNO1 = ZI(JCES1D-1+5+4* (IMA-1)+1)
 
-          IF (NBNO.NE.NBNO1) CALL UTMESS('F','CESCES','STOP1')
-          IF (NBNO.NE.NBNO2) CALL UTMESS('F','CESCES','STOP1')
-          IF (NBPG.NE.NBPG2) CALL UTMESS('F','CESCES','STOP1')
+          IF (NBNO.NE.NBNO1) CALL U2MESS('F','CALCULEL_2')
+          IF (NBNO.NE.NBNO2) CALL U2MESS('F','CALCULEL_2')
+          IF (NBPG.NE.NBPG2) CALL U2MESS('F','CALCULEL_2')
 
           DO 80 ICMP = 1,NCMP
             DO 70,ISP = 1,NBSP
@@ -228,7 +228,7 @@ C             - ON VERIFIE QUE TOUS LES NOEUDS PORTENT BIEN LA CMP :
    50           CONTINUE
 
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPG,ISP,ICMP,IAD1)
-                IF (IAD1.GE.0) CALL UTMESS('F','CESCES','STOP 3')
+                IF (IAD1.GE.0) CALL U2MESS('F','ALGORITH_19')
                 ZL(JCESL-1-IAD1) = .TRUE.
                 ZR(JCESV-1-IAD1) = V
    60         CONTINUE
@@ -251,7 +251,7 @@ C     ------------------------------------------------------
 
               DO 100,IPT = 1,NBPT
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
-                IF (IAD.GE.0) CALL UTMESS('F','CESCES','STOP 3')
+                IF (IAD.GE.0) CALL U2MESS('F','ALGORITH_19')
                 ZL(JCESL-1-IAD) = .TRUE.
                 ZR(JCESV-1-IAD) = ZR(JCES1V-1+IAD1)
   100         CONTINUE
@@ -279,7 +279,7 @@ C     ------------------------------------------------------
   140         CONTINUE
               IF (NBV.GT.0) THEN
                 CALL CESEXI('C',JCESD,JCESL,IMA,1,ISP,ICMP,IAD)
-                IF (IAD.GE.0) CALL UTMESS('F','CESCES','STOP 3')
+                IF (IAD.GE.0) CALL U2MESS('F','ALGORITH_19')
                 ZL(JCESL-1-IAD) = .TRUE.
                 ZR(JCESV-1-IAD) = V/DBLE(NBV)
               END IF
@@ -288,7 +288,7 @@ C     ------------------------------------------------------
   170   CONTINUE
 
       ELSE
-        CALL UTMESS('F','CESCES','A FAIRE ...')
+        CALL U2MESS('F','CALCULEL_46')
       END IF
 
 

@@ -11,22 +11,22 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE  CRP_21
 C        ECRITURE D'UN CHAMELEM SUR FICHIER CASTEM
@@ -118,18 +118,16 @@ C
             ELSE
               CALL CODENT ( NUCMPV(I), 'G', K8B )
               NOMCO = 'V'//K8B
-              CALL UTMESS('A','IMPR_RESU',
-     +                      'LA VARIABLE '//NOMCO//' N''EXISTE PAS' )
+              CALL U2MESK('A','PREPOST_74',1,NOMCO)
             ENDIF
  14       CONTINUE
           IF ( NCMP .EQ. 0 ) THEN
-             CALL UTMESS('A','IMPR_RESU','PAS D''IMPRESSION DU CHAMP')
+             CALL U2MESS('A','PREPOST_75')
              GOTO 9999
           ENDIF
           ICOMAX = NCMP
         ENDIF
-        IF (ICOMAX.GT.999) CALL UTMESS('F','IRCECA',
-     +          'ON NE PEUT PAS TRAITER PLUS DE 999 VARIABLES INTERNES')
+        IF (ICOMAX.GT.999) CALL U2MESS('F','PREPOST_76')
         DO 16 IGR = 1 , NBGR
           IGRE  = ZI(JLI+(ISO-1)*(4+NBGREL)+4+IGR)
           ICOEF=MAX(1,CELD(4))
@@ -137,13 +135,13 @@ C
           IF ( MODE .EQ. 0 ) GO TO 16
           MODSAV = MODE
           IF (MODE.NE.MODSAV.AND.MODE.NE.0) THEN
-             CALL UTMESS('A','IRCECA','INCOMPATIBILITE ENTRE LES GRELS')
+             CALL U2MESS('A','PREPOST_77')
              GOTO 10
           ENDIF
           LMODE = .TRUE.
           CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',MODE),'L',JMOD)
           NEC = NBEC (ZI(JMOD-1+2))
-          IF ( NEC .GT. 10 ) CALL UTMESS('F','IRCECA','NEC TROP GRAND')
+          IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')
           CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
           IF ( NBCPUT .NE. 0 ) THEN
             DO 18 ICM = 1,NBCPUT
@@ -168,7 +166,7 @@ C
  22         CONTINUE
           ENDIF
           IF ( NBVAR .EQ. 0 ) THEN
-             CALL UTMESS('A','IMPR_RESU','PAS D''IMPRESSION DU CHAMP')
+             CALL U2MESS('A','PREPOST_75')
              GOTO 9999
           ENDIF
  16     CONTINUE
@@ -218,14 +216,14 @@ C
                 DO 54 ISP = 1 , NCMPV
                   CALL CODENT(NUCMPV(ISP),'G',TOTO)
                   ZK8(JNOM-1+(ISO-1)*NCMPMX*ICOMAX+NBVA-1+ISP) =
-     +                                                       'V'//TOTO
+     &                                                       'V'//TOTO
                   ZI(JPOS-1+(ISO-1)*NCMPMX*ICOMAX+NBVA-1+ISP) = I
  54             CONTINUE
               ELSE
                 DO 56 ISP = 1 , ICOMA2
                   CALL CODENT(ISP,'G',TOTO)
                   ZK8(JNOM-1+(ISO-1)*NCMPMX*ICOMAX+NBVA-1+ISP) =
-     +                                                       'V'//TOTO
+     &                                                       'V'//TOTO
                   ZI(JPOS-1+(ISO-1)*NCMPMX*ICOMAX+NBVA-1+ISP) = I
  56             CONTINUE
               ENDIF
@@ -235,7 +233,7 @@ C
                 ZK8(JNOM-1+(ISO-1)*NCMPMX*ICOMAX+NBVA) = NOMCO
               ELSE
                 ZK8(JNOM-1+(ISO-1)*NCMPMX*ICOMAX+NBVA) =
-     +                              NOMCO(1:2)//NOMCO((IUTIL-1):IUTIL)
+     &                              NOMCO(1:2)//NOMCO((IUTIL-1):IUTIL)
               ENDIF
               ZI(JPOS-1+(ISO-1)*NCMPMX*ICOMAX+NBVA) = I
             ENDIF
@@ -254,20 +252,20 @@ C
       IF ( LRESU ) THEN
        IF(NIVE.EQ.3) THEN
         WRITE (IFI,'(A,I4,A,I4,A,I4)')  ' PILE NUMERO',ITYPE,
-     +                  'NBRE OBJETS NOMMES ',IZERO,'NBRE OBJETS ',IUN
+     &                  'NBRE OBJETS NOMMES ',IZERO,'NBRE OBJETS ',IUN
        ELSEIF (NIVE.EQ.10) THEN
         WRITE (IFI,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',ITYPE,
-     +                  'NBRE OBJETS NOMMES',IZERO,'NBRE OBJET ',IUN
+     &                  'NBRE OBJETS NOMMES',IZERO,'NBRE OBJET ',IUN
        ENDIF
       ELSE
        IF(NIVE.EQ.3) THEN
         WRITE (IFI,'(A,I4,A,I4,A,I4)')  ' PILE NUMERO',ITYPE,
-     +                  'NBRE OBJETS NOMMES ',IUN,'NBRE OBJETS ',IUN
+     &                  'NBRE OBJETS NOMMES ',IUN,'NBRE OBJETS ',IUN
         WRITE(IFI,'(1X,A8)') NOMSYM
         WRITE(IFI,'(I5)') INUM
        ELSEIF (NIVE.EQ.10) THEN
         WRITE (IFI,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',ITYPE,
-     +                  'NBRE OBJETS NOMMES',IUN,'NBRE OBJETS',IUN
+     &                  'NBRE OBJETS NOMMES',IUN,'NBRE OBJETS',IUN
         WRITE(IFI,'(1X,A8)') NOMSYM
         WRITE(IFI,'(I8)') INUM
        ENDIF
@@ -347,7 +345,7 @@ C
             ENDIF
             JMOD = IMODEL+ZI(ILONG-1+MODE)-1
             NEC = NBEC (ZI(JMOD-1+2))
-            IF (NEC .GT. 10) CALL UTMESS('F','IRCECA','NEC TROP GRAND')
+            IF (NEC .GT. 10) CALL U2MESS('F','PREPOST_78')
             CALL DGMODE ( MODE,IMODEL, ILONG, NEC, TABEC )
             IAD=CELD(CELD(4+IGREL)+8)
             NSCAL = DIGDEL(MODE)
@@ -370,7 +368,7 @@ C
 C
             IF (FIRST) THEN
               CALL WKVECT('&&IRCECA.VALE','V V R',
-     +                                  NBELT*NPCALC*NBVAR*ICOMAX,JVALE)
+     &                                  NBELT*NPCALC*NBVAR*ICOMAX,JVALE)
               FIRST=.FALSE.
             ENDIF
 C
@@ -378,7 +376,7 @@ C -- ECRITURE DE L'EN-TETE DE CHAQUE SOUS OBJETS ----
 C
             CALL IRMAC2 ( KTYPE, ITYCA, GTYPE, IBID )
             CALL JEVEUO(JEXNOM('&&GILIRE.CORR_ASTER_GIBI',GTYPE),'L',
-     +                                                           IACORR)
+     &                                                           IACORR)
             DO 206 IELG = 1 , NBELGR
              IEL = LIGREL(IPOIN1+IELG-1)
              IF (IEL.LE.0) GO TO 206
@@ -396,16 +394,16 @@ C
                 LNOCEN=.TRUE.
              ENDIF
              IF (KTYPE.EQ.'SEG4') NNOE = NNOE-2
-             
+
              IF(NPCALC.NE.NNOE) THEN
-               CALL UTMESS('F','IRCECA',' NOMBRE DE COUCHES > 1 ')
+               CALL U2MESS('F','PREPOST_79')
              ENDIF
              ITYPE = TYPMA(IEL)
              DO 214 INOS = 1 , NNOE
                IJ   = ZI(IACORR-1+INOS)
                J    = IACHML-1+NCMPP*ICOMA2*(IJ-1)
                JADR = JVALE-1+(IELT-1)*NBVAR*NPCALC*ICOMAX
-     +                       +(INOS-1)*NBVAR*ICOMAX
+     &                       +(INOS-1)*NBVAR*ICOMAX
                IC = 0
                DO 208 ICMP = 1 , NCMPMX
                  IF ( EXISDG(TABEC,ICMP) ) THEN
@@ -416,7 +414,7 @@ C
                        IF ( NCMPV .GT. 0 ) THEN
                          DO 211 ISPV = 1 , NCMPV
                            IF ( NUCMPV(ISPV) .LE. ICOMA2 )
-     +                ZR(JADR+ICMC-1+ISPV)=VALE(J+IC-1+NUCMPV(ISPV))
+     &                ZR(JADR+ICMC-1+ISPV)=VALE(J+IC-1+NUCMPV(ISPV))
  211                     CONTINUE
                        ELSE
                          DO 212 ISP = 1 , ICOMA2
@@ -439,7 +437,7 @@ C
          WRITE(IFI,'(10I8)') (ZI(JBID-1+I),I=1,NBVAR*ICOMAX)
          ENDIF
          WRITE(IFI,'(8(1X,A8))') (ZK8(JNOM-1+(ISO-1)*NCMPMX*ICOMAX+I),
-     +                                                 I=1,NBVAR*ICOMAX)
+     &                                                 I=1,NBVAR*ICOMAX)
          WRITE(IFI,'(8(1X,A8))') ('REAL*8  ',' ',I=1,NBVAR*ICOMAX)
          ZI(JBID-1+1) = NPCALC
          ZI(JBID-1+2) = NBELT
@@ -453,15 +451,14 @@ C
               WRITE(IFI,'(10I8)')    (ZI(JBID-1+I),I=1,4)
              ENDIF
              WRITE(IFI,'(1P,3E22.13E3))') (ZR(JVALE-1+I),
-     +                  I=JV*ISP,NBELT*NPCALC*NBVAR*ICOMAX,NBVAR*ICOMAX)
+     &                  I=JV*ISP,NBELT*NPCALC*NBVAR*ICOMAX,NBVAR*ICOMAX)
  224       CONTINUE
  222     CONTINUE
          CALL JEDETR('&&IRCECA.VALE')
         ENDIF
  200  CONTINUE
       IF(LNOCEN)THEN
-        CALL UTMESS('A','IRCECA','ON TRAITE LES TRIA7 '//
-     +      'QUAD9 EN OUBLIANT LE NOEUD CENTRE')
+        CALL U2MESS('A','PREPOST_80')
       ENDIF
 C     ------------------------------------------------------------------
  9999 CONTINUE

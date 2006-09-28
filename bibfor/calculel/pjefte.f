@@ -1,7 +1,7 @@
       SUBROUTINE PJEFTE (RESU1, RESU2 )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,18 +134,18 @@ C       ------------------------
 
         IF (NCAS.EQ.'2D') THEN
           CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
-     +                 LDMAX,DISTMA)
+     &                 LDMAX,DISTMA)
         ELSE IF (NCAS.EQ.'3D') THEN
           CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
-     +                 LDMAX,DISTMA)
+     &                 LDMAX,DISTMA)
         ELSE IF (NCAS.EQ.'2.5D') THEN
           CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
-     +                 LDMAX,DISTMA)
+     &                 LDMAX,DISTMA)
         ELSE IF (NCAS.EQ.'1.5D') THEN
           CALL PJ6DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',GEOM2,CORRES,
-     +                 LDMAX,DISTMA)
+     &                 LDMAX,DISTMA)
         ELSE
-          CALL UTMESS('F','PJEFTE','STOP 4')
+          CALL U2MESS('F','CALCULEL_9')
         END IF
 
       ELSE
@@ -164,7 +164,7 @@ C        ----------------------------------------------
           MOTCLE(3) = 'TOUT_1'
           TYMOCL(3) = 'TOUT'
           CALL RELIEM(MODEL1,NOMA1,'NU_MAILLE','VIS_A_VIS',IOCC,3,
-     +                MOTCLE,TYMOCL,'&&PJEFTE.LIMANU1',NBMA1)
+     &                MOTCLE,TYMOCL,'&&PJEFTE.LIMANU1',NBMA1)
           CALL JEVEUO('&&PJEFTE.LIMANU1','L',IAGMA1)
 
 
@@ -181,7 +181,7 @@ C        ----------------------------------------------
           MOTCLE(5) = 'TOUT_2'
           TYMOCL(5) = 'TOUT'
           CALL RELIEM(MODEL2,NOMA2,'NU_NOEUD','VIS_A_VIS',IOCC,5,MOTCLE,
-     +                TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
+     &                TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
           CALL JEVEUO('&&PJEFTE.LINONU2','L',IAGNO2)
 
 
@@ -196,18 +196,18 @@ C        ----------------------------------------------
           CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
           IF (NCAS.EQ.'2D') THEN
             CALL PJ2DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
+     &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE IF (NCAS.EQ.'3D') THEN
             CALL PJ3DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
+     &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE IF (NCAS.EQ.'2.5D') THEN
             CALL PJ4DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
+     &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE IF (NCAS.EQ.'1.5D') THEN
             CALL PJ6DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
-     +                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
+     &                  ZI(IAGNO2),' ',GEOM2,CORRE1,LDMAX,DISTMA)
           ELSE
-            CALL UTMESS('F','PJEFTE','STOP 5')
+            CALL U2MESS('F','CALCULEL_10')
           END IF
 
 

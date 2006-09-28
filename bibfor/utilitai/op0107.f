@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/03/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR   POST_ELEM
 C     ------------------------------------------------------------------
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NH, IRET, JCHA, JORDR, N1, N2, NBOCC,
-     +             NBORDR, NC, NCHAR, NP, NR, JPARA, ICHA
+     &             NBORDR, NC, NCHAR, NP, NR, JPARA, ICHA
       REAL*8       PREC
       CHARACTER*4  CTYP
       CHARACTER*8  K8B, MODELE, CARA, DEFORM, RESUCO, CRIT
@@ -54,7 +54,7 @@ C
       CALL GETRES ( RESU, CONCEP, NOMCMD )
 C
       CALL GETVID ( ' ', 'RESULTAT' , 0,1,1, RESUCO, NR )
-C                         
+C
       IF(NR.EQ.0) RESUCO='        '
 C
       CALL INFMAJ
@@ -62,7 +62,7 @@ C
       KCHA = '&&OP0107.CHARGES'
 
       CALL GETFAC ( 'TRAV_EXT' , NBOCC )
-C                   ----------        
+C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
 
          CALL PEWEXT ( RESU )
@@ -71,7 +71,7 @@ C                   ----------
 
 
       CALL GETFAC ( 'CHAR_LIMITE' , NBOCC )
-C                   -------------        
+C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
         CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
 
@@ -81,7 +81,7 @@ C                   -------------
 
 
       CALL GETFAC ( 'AIRE_INTERNE' , NBOCC )
-C                   --------------        
+C                   --------------
       IF ( NBOCC .NE. 0 ) THEN
          CALL GETVID ( ' ', 'MODELE', 1,1,1, MODELE, N1 )
          IF(N1.EQ.0)THEN
@@ -97,7 +97,7 @@ C                   --------------
       ENDIF
 
       CALL GETFAC ( 'MASS_INER' , NBOCC )
-C                   -----------        
+C                   -----------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
@@ -119,50 +119,49 @@ C                   -----------
                CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , NC )
                CALL RSUTNU ( RESUCO,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
                IF ( NBORDR .NE. 1 ) THEN
-                  CALL UTMESS('F','OP0107','UN SEUL NUME_ORDRE !!!')
+                  CALL U2MESS('F','UTILITAI2_80')
                ENDIF
                IF ( IRET .NE. 0 ) GOTO 9999
                CALL JEVEUO ( KNUM, 'L', JORDR )
                CALL RSEXCH ( RESUCO, 'DEPL', ZI(JORDR), CHDEF, IRET )
-               IF ( IRET .GT. 0 ) CALL UTMESS('F','OP0107','Y A UN BUG')
+               IF ( IRET .GT. 0 ) CALL U2MESS('F','MODELISA2_91')
             ENDIF
          ENDIF
 
          CALL PEMAIN ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA), NH,
-     +                 NBOCC, CHDEF )
+     &                 NBOCC, CHDEF )
 
       ENDIF
 
       CALL GETFAC ( 'ENER_POT' , NBOCC )
-C                   ----------        
+C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
-     
          NH = 0
          CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
          CALL PEEPOT ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA),
-     +                 NH, NBOCC )
+     &                 NH, NBOCC )
 
       ENDIF
 
       CALL GETFAC ( 'ENER_CIN' , NBOCC )
-C                   ----------        
+C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
-      
+
          NH = 0
          CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
          CALL PEECIN ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA),
-     +                 NH, NBOCC )
+     &                 NH, NBOCC )
 
       ENDIF
 
       CALL GETFAC ( 'INTEGRALE' , NBOCC )
-C                   ----------        
+C                   ----------
       IF ( NBOCC .NE. 0 ) THEN
 
          CALL GETVID ( ' ', 'MODELE', 1,1,1, MODELE, N1 )
@@ -180,7 +179,7 @@ C                   ----------
       ENDIF
 
       CALL GETFAC ( 'WEIBULL' , NBOCC )
-C                   ---------        
+C                   ---------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
@@ -189,13 +188,13 @@ C                   ---------
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
          CALL PEWEIB ( RESU, MODELE, MATE, CARA, K8B, NCHAR, ZK8(JCHA),
-     +                 NH, NBOCC, 0, NOMCMD )
+     &                 NH, NBOCC, 0, NOMCMD )
 
 
       ENDIF
 
       CALL GETFAC ( 'RICE_TRACEY' , NBOCC )
-C                   -------------        
+C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
@@ -208,7 +207,7 @@ C                   -------------
       ENDIF
 
       CALL GETFAC ( 'CARA_GEOM' , NBOCC )
-C                   -----------        
+C                   -----------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
@@ -221,7 +220,7 @@ C                   -----------
       ENDIF
 
       CALL GETFAC ( 'CARA_POUTRE' , NBOCC )
-C                   -------------        
+C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
@@ -234,7 +233,7 @@ C                   -------------
       ENDIF
 
       CALL GETFAC ( 'INDIC_ENER' , NBOCC )
-C                   ------------        
+C                   ------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
@@ -243,12 +242,12 @@ C                   ------------
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
          CALL PEINGL ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA), NH,
-     +                 NBOCC, 'INDIC_ENER' )
+     &                 NBOCC, 'INDIC_ENER' )
 
       ENDIF
 
       CALL GETFAC ( 'INDIC_SEUIL' , NBOCC )
-C                   -------------        
+C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
@@ -257,12 +256,12 @@ C                   -------------
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
          CALL PEINGL ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA), NH,
-     +                 NBOCC, 'INDIC_SEUIL' )
+     &                 NBOCC, 'INDIC_SEUIL' )
 
       ENDIF
 
       CALL GETFAC ( 'ENER_ELAS' , NBOCC )
-C                   -----------        
+C                   -----------
       IF ( NBOCC .NE. 0 ) THEN
 
          NH = 0
@@ -271,21 +270,21 @@ C                   -----------
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
          CALL PEINGL ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA), NH,
-     +                 NBOCC, 'ENER_ELAS' )
+     &                 NBOCC, 'ENER_ELAS' )
 
       ENDIF
 
       CALL GETFAC ( 'ENER_TOTALE' , NBOCC )
-C                   -------------        
+C                   -------------
       IF ( NBOCC .NE. 0 ) THEN
-       
+
          NH = 0
          CALL GETVIS ( ' ', 'MODE_FOURIER', 1,1,1, NH, N1 )
          CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
          CALL JEVEUO ( KCHA, 'L', JCHA )
 
          CALL PEINGL ( RESU, MODELE, MATE, CARA, NCHAR, ZK8(JCHA), NH,
-     +                 NBOCC, 'ENER_TOTALE' )
+     &                 NBOCC, 'ENER_TOTALE' )
 
       ENDIF
 C

@@ -1,28 +1,28 @@
       SUBROUTINE IRCAM1 ( NOFIMD, NOCHMD,
-     >                    EXISTC, NCMPRF,
-     >                    NUMPT, INSTAN, UNIINS, NUMORD,
-     >                    ADSD, ADSV, ADSL,
-     >                    NCMPVE, NTLCMP, NTNCMP, NTUCMP, NTPROA,
-     >                    NBIMPR, CAIMPI, CAIMPK,
-     >                    NOMAMD, NOMTYP, MODNUM, NUANOM,
-     >                    CODRET )
+     &                    EXISTC, NCMPRF,
+     &                    NUMPT, INSTAN, UNIINS, NUMORD,
+     &                    ADSD, ADSV, ADSL,
+     &                    NCMPVE, NTLCMP, NTNCMP, NTUCMP, NTPROA,
+     &                    NBIMPR, CAIMPI, CAIMPK,
+     &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
+     &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GNICOLAS G.NICOLAS
 C TOLE CRP_21
@@ -178,7 +178,7 @@ C
         CALL UTIMPK ( 'L', 'MAILLAGE : ', 1, NOMAMD )
         CALL UTIMPI ( 'L', 'ERREUR EFOUVR NUMERO ', 1, CODRET )
         CALL UTFINM ()
-        CALL UTMESS ( 'F', NOMPRO, 'PROBLEME A L OUVERTURE DU FICHIER' )
+        CALL U2MESS('F','PREPOST_69')
       ENDIF
 C
 C====
@@ -186,9 +186,9 @@ C 3. CREATION DU CHAMP
 C====
 C
       CALL IRCMCC ( IDFIMD,
-     >              NOCHMD, EXISTC,
-     >              NCMPVE, NTNCMP, NTUCMP,
-     >              CODRET )
+     &              NOCHMD, EXISTC,
+     &              NCMPVE, NTNCMP, NTUCMP,
+     &              CODRET )
 C
 C====
 C 4. ECRITURE POUR CHAQUE IMPRESSION SELECTIONNEE
@@ -249,10 +249,10 @@ C
           CALL WKVECT ( NTVALE, 'V V R', IAUX, ADVALE )
 C
           CALL IRCMVA ( ZI(ADNUCM), NCMPVE, NCMPRF,
-     >                  NVALEC, NBPG, NBSP, NOLOPG,
-     >                  ADSV, ADSD, ADSL,
-     >                  TYMAST, MODNUM, NUANOM,
-     >                  ZR(ADVALE), ZI(ADPROA), IDEB, IFIN )
+     &                  NVALEC, NBPG, NBSP, NOLOPG,
+     &                  ADSV, ADSD, ADSL,
+     &                  TYMAST, MODNUM, NUANOM,
+     &                  ZR(ADVALE), ZI(ADPROA), IDEB, IFIN )
 C
           ENDIF
 C
@@ -271,12 +271,12 @@ C
           ENDIF
 C
           CALL IRCMEC ( IDFIMD, NOMAMD,
-     >                  NOCHMD, NOMPRF, NOLOPG,
-     >                  NUMPT, INSTAN, UNIINS, NUMORD,
-     >                  ZR(ADVALE),
-     >                  NCMPVE, NBENTY, NBREPG, NVALEC,
-     >                  TYPENT, TYGEOM,
-     >                  CODRET )
+     &                  NOCHMD, NOMPRF, NOLOPG,
+     &                  NUMPT, INSTAN, UNIINS, NUMORD,
+     &                  ZR(ADVALE),
+     &                  NCMPVE, NBENTY, NBREPG, NVALEC,
+     &                  TYPENT, TYGEOM,
+     &                  CODRET )
 C
           CALL JEDETC('V',NTVALE,1)
 C
@@ -296,10 +296,10 @@ C
  4000 FORMAT(/,80('-'),/)
  4001 FORMAT('  * VALEURS AUX NOEUDS',/)
  4002 FORMAT(
-     >/,'  * VALEURS SUR LES MAILLES DE TYPE ASTER ',A,' ET MED',I4)
+     &/,'  * VALEURS SUR LES MAILLES DE TYPE ASTER ',A,' ET MED',I4)
 C
 C====
-C 5. FERMETURE DU FICHIER MED  
+C 5. FERMETURE DU FICHIER MED
 C====
 C
       CALL EFFERM ( IDFIMD, CODRET )
@@ -309,7 +309,7 @@ C
         CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
         CALL UTIMPI ( 'L', 'ERREUR EFFERM NUMERO ', 1, CODRET )
         CALL UTFINM ()
-        CALL UTMESS ( 'F', NOMPRO, 'PROBLEME A LA FERMETURE DU FICHIER')
+        CALL U2MESS('F','PREPOST_70')
       ENDIF
 C
 C====

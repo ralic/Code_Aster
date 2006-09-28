@@ -1,9 +1,9 @@
         SUBROUTINE NMCOUP(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
-     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,EPSDT,DEPST,
-     2                      SIGD,VIND,OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
+     &                      TIMED,TIMEF, TEMPD,TEMPF,TREF,EPSDT,DEPST,
+     &                      SIGD,VIND,OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C               NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
 C               TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
 C               COMP    COMPORTEMENT DE L ELEMENT
-C                       COMP(1) = RELATION DE COMPORTEMENT 
+C                       COMP(1) = RELATION DE COMPORTEMENT
 C                       COMP(2) = NB DE VARIABLES INTERNES
 C                       COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
 C               OPT     OPTION DE CALCUL A FAIRE
@@ -114,9 +114,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CMP3(1:16) = COMP(10)
       OPTION(1)(1:16) = OPT
       IF (CMP3(1:8).NE.'        ') THEN
-          CALL UTMESS('F','NMCOUP_1',
-     &        'COUPLAGE FLUAGE/FISSURATION : IL FAUT DEFINIR DEUX '
-     &        // 'LOIS DE COMPORTEMENT EXACTEMENT. ')
+          CALL U2MESS('F','ALGORITH7_1')
       ENDIF
 
 
@@ -131,9 +129,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &       CMP2(1:7) .EQ. 'NADAI_B'              ) THEN
 
            CALL NMCPLA (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
-     2                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,
-     3                      SIGF,VINF,DSDE,IRET)
+     &                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
+     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,
+     &                      SIGF,VINF,DSDE,IRET)
            IF(IRET.EQ.1) GOTO 9999
          ELSE IF (CMP2(1:10) .EQ. 'ENDO_ISOT_BETON' .OR.
      &            CMP2(1:6)  .EQ. 'MAZARS') THEN
@@ -142,12 +140,10 @@ C          CALL NMGRAN ( NDIM, TYPMOD, IMAT, COMP, CRIT,
 C     1                  TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
 C     &                  HYDRF,SECHD,SECHF,SREF,TEMPD,TEMPF,EPSDT,
 C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
-           CALL UTMESS('F','NMCOUP_2','GRANGER ET ENDO_ISOT_BETON'
-     &      // 'OU MAZARS NON ENCORE DEVELOPPE')
+           CALL U2MESS('F','ALGORITH7_2')
 
          ELSE
-           CALL UTMESS('F','NMCOUP_3','LOI DE COMPORTEMENT NON '
-     &      // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')
+           CALL U2MESS('F','ALGORITH7_3')
          ENDIF
 
       ELSE IF (CMP1(1:13).EQ.'BETON_UMLV_FP') THEN
@@ -157,27 +153,23 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
      &      CMP2(1:6)  .EQ. 'MAZARS') THEN
 
           IF (CMP2(1:6).EQ.'MAZARS') THEN
-            CALL UTMESS('F','NMCOUP_2','UMLV_FP ET '
-     &      // 'MAZARS NON ENCORE DEVELOPPE')
+            CALL U2MESS('F','ALGORITH7_4')
           ELSE
             OPTION(2)(1:16) = CMP2(1:16)
             IF ((TYPMOD(1).EQ.'C_PLAN').AND.(.NOT.LCPDB)) THEN
-              CALL UTMESS('F','NMCOUP','PAS DE C_PLAN POUR EIB '//
-     &                     'UTILISER C_PLAN_DEBORST')
+              CALL U2MESS('F','ALGORITH7_5')
             ENDIF
             CALL LCUMFP ( FAMI,KPG,KSP,NDIM, TYPMOD, IMAT, COMP,
-     1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
-     2                      EPSDT,DEPST,SIGD, VIND, OPTION,SIGF,
-     3                      VINF,DSDE)
+     &                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
+     &                      EPSDT,DEPST,SIGD, VIND, OPTION,SIGF,
+     &                      VINF,DSDE)
           ENDIF
         ELSE
-          CALL UTMESS('F','NMCOUP_5','LOI DE COMPORTEMENT NON '
-     &     // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')
+          CALL U2MESS('F','ALGORITH7_3')
         ENDIF
 
       ELSE
-        CALL UTMESS('F','NMCOUP_6','LOI DE FLUAGE NON '
-     &   // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')
+        CALL U2MESS('F','ALGORITH7_6')
       ENDIF
 
 9999  CONTINUE

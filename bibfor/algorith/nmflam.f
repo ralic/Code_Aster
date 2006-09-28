@@ -7,7 +7,7 @@
      &           OPTFLA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2006   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C ----------------------------------------------------------------------
           SAUVMT = METHOD(5)
           METHOD(5) = 'ELASTIQUE'
         ELSE IF ( MRIG(1:4) .EQ. 'TANG' ) THEN
-          SAUVMT = METHOD(5) 
+          SAUVMT = METHOD(5)
           METHOD(5) = 'TANGENTE'
         ENDIF
       ELSE
@@ -136,8 +136,8 @@ C
      &           K16BID,DEFICO,STADYN,PREMIE,CMD,DEPENT,VITENT,RIGID,
      &           LAMORT,MEMASS,MASSE,AMORT,1.D0,0.D0,0.D0,LICCVG(5))
       ENDIF
-      
-      IF ( (MRIG(1:4) .EQ. 'ELAS') .OR. (MRIG(1:4) .EQ. 'TANG')) 
+
+      IF ( (MRIG(1:4) .EQ. 'ELAS') .OR. (MRIG(1:4) .EQ. 'TANG'))
      &                 METHOD(5) = SAUVMT
 
 C     ON RETABLIT LA SYMETRIE ORIGINELLE
@@ -175,17 +175,17 @@ C   CALCUL DE LA RIGIDITE GEOMETRIQUE DANS LE CAS HPP
          MATGEO = '&&NMFLAM.RIGIGEOM'
          CALL ASMATR(1,MATEL,' ',NUMEDD,SOLVEU,' ','ZERO','V',1,MATGEO)
 
-         CALL UTMESS('I','NMFLAM','CALCUL FLAMBEMENT NON LINEAIRE HPP')
+         CALL U2MESS('I','ALGORITH7_84')
          OPTION = 'BANDE'
 
       ELSE
 
-         CALL UTMESS('I','NMFLAM','FLAMBEMENT NON LINEAIRE GREEN')
+         CALL U2MESS('I','ALGORITH7_85')
          MATGEO=MATASS
          OPTION = 'PLUS_PETITE'
 
       ENDIF
-      
+
       IF ( MOD45 .EQ. 'VIBR' ) THEN
          MATGEO = '&&NMFLAM.MASSE'
          CALL ASMATR(1,MEMASS,' ',NUMEDD,SOLVEU,' ','ZERO','V',1,MATGEO)

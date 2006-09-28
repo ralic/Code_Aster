@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
         IF (NCHAR.GT.0) THEN
           CALL DISMOI('F','NOM_MODELE',LCHAR(1),'CHARGE',IBID,NOMO,IED)
         ELSE
-          CALL UTMESS('F','MERILA','IL FAUT UN MODELE OU DES CHARGES.')
+          CALL U2MESS('F','CALCULEL3_30')
         END IF
       ELSE
         EXIMOD = .TRUE.
@@ -118,13 +118,12 @@ C         -- BOUCLE SUR LES (SUPER)MAILLES
               CALL JEEXIN(NOMACR//'.KP_EE',IRET)
               IF (IRET.EQ.0) THEN
                 IER = IER + 1
-                CALL UTMESS('E','MERILA','LA RIGIDITE DU MACR_ELEM :'//
-     &                      NOMACR//' N A PAS ENCORE ETE CALCULEE.')
+                CALL U2MESK('E','CALCULEL3_68',1,NOMACR)
               END IF
             END IF
    10     CONTINUE
           IF (IER.GT.0) THEN
-            CALL UTMESS('F','MERILA','IL MANQUE DES RIGIDITES.')
+            CALL U2MESS('F','CALCULEL3_34')
           END IF
         END IF
       END IF
@@ -133,8 +132,8 @@ C         -- BOUCLE SUR LES (SUPER)MAILLES
 C     -- ON REGARDE S'IL Y A 1 LIGREL DANS LE MODELE
 C     ----------------------------------------------
       CALL DISMOI('F','EXI_ELEM',NOMO,'MODELE',IBID,EXIELE,IED)
-      IF ((EXIELE(1:3).EQ.'NON') .AND. (NBSS.EQ.0)) CALL UTMESS('F',
-     &    'MERILA','IL N Y A NI ELEMENTS NI SOUS-STRUC')
+      IF ((EXIELE(1:3).EQ.'NON') .AND. (NBSS.EQ.0)) CALL U2MESS('F','CAL
+     &CULEL3_69')
 
       LPAOUT(1) = 'PMATUUR'
       LCHOUT(1) = MATEL//'.ME001'
@@ -171,10 +170,7 @@ C     ---------------------------------------------------------
       CALL DISMOI('F','ELAS_F_TEMP',MATE,'CHAM_MATER',IBID,REPK,IERD)
       IF (REPK.EQ.'OUI') THEN
         IF (.NOT.EXITHE) THEN
-          CALL UTMESS('F','MERILA',
-     &                'LE MATERIAU DEPEND DE LA TEMPERATURE'//
-     &                '! IL N''Y A PAS DE CHAMP DE TEMPERATURE '//
-     &                '! LE CALCUL EST IMPOSSIBLE ')
+          CALL U2MESS('F','ALGORITH_57')
         END IF
       END IF
 

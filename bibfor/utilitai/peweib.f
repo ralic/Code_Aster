@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,NOMCMD,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,10 +115,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
           CALL GETVTX(MOTCL1,'OPTION',I,1,1,TOPTCA(1),N1)
           CALL GETVTX(MOTCL1,'CORR_PLAST',I,1,1,TOPTCA(2),N2)
           IF ((TOPTCA(1).NE.OPTCAL(1)) .OR.
-     &        (TOPTCA(2).NE.OPTCAL(2))) CALL UTMESS('F','PEWEIB',
-     &        'ERREUR: LES OPTIONS DE '//
-     &        'CALCUL DOIVENT ETRE IDENTIQUES POUR TOUTES LES '//
-     &        'OCCURRENCES DU MOT CLEF FACTEUR')
+     &        (TOPTCA(2).NE.OPTCAL(2))) CALL U2MESS('F','UTILITAI3_83')
    10   CONTINUE
       END IF
       IF (NI.NE.0) EXITIM = .TRUE.
@@ -151,7 +148,7 @@ C     CREATION CARTE CONSTANTE ET NULLE SUR TOUT LE MAILLAGE
       ELSE
         CALL GETTCO(RESUL,TYPRES)
         IF (TYPRES(1:9).NE.'EVOL_NOLI') THEN
-          CALL UTMESS('F','PEWEIB','ON ATTEND UN CONCEPT "EVOL_NOLI"')
+          CALL U2MESS('F','UTILITAI3_84')
         END IF
 
         NP = 0
@@ -251,18 +248,15 @@ C CAS WEIBULL
         IF (NR.NE.0) THEN
           CALL RSEXCH(RESUL,'SIEF_ELGA',NUMORD,CONTG,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PEWEIB','ERREUR: LE CHAMP '//
-     &                  'SIEF_ELGA N''EXISTE PAS')
+            CALL U2MESS('F','UTILITAI3_85')
           END IF
           CALL RSEXCH(RESUL,'VARI_ELGA',NUMORD,VARIG,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PEWEIB','ERREUR: LE CHAMP '//
-     &                  'VARI_ELGA N''EXISTE PAS')
+            CALL U2MESS('F','UTILITAI3_86')
           END IF
           CALL RSEXCH(RESUL,'DEPL',NUMORD,DEPLA,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PEWEIB','ERREUR: LE CHAMP '//
-     &                  'DEPL_ELNO N''EXISTE PAS')
+            CALL U2MESS('F','UTILITAI3_87')
           END IF
         END IF
 
@@ -272,8 +266,7 @@ C            RECUPERATION DES DEFORMATIONS DE GREEN LAGRANGE ---
         IF (OPTCAL(2).EQ.'OUI') THEN
           CALL RSEXCH(RESUL,'EPSG_ELGA_DEPL',NUMORD,DEFOG,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PEWEIB','ERREUR: LE CHAMP '//
-     &                  'EPSG_ELGA_DEPL N''EXISTE PAS')
+            CALL U2MESS('F','UTILITAI3_88')
           END IF
         ELSE
           DEFOG = '&&PEWEIB.EPSG'
@@ -368,14 +361,12 @@ C        --- IMPRESSION DU CHAMELEM ---
               NOMMAI = ZK8(JGR+IG-1)
               CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A','PEWEIB','LE GROUPE DE MAILLE "'//
-     &                      NOMMAI//'" N''EXISTE PAS.')
+                CALL U2MESK('A','UTILITAI3_46',1,NOMMAI)
                 GO TO 50
               END IF
               CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONMAX',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL UTMESS('A','PEWEIB','LE GROUPE "'//NOMMAI//
-     &                      '" NE CONTIENT AUCUNE MAILLE.')
+                CALL U2MESK('A','UTILITAI3_74',1,NOMMAI)
                 GO TO 50
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
@@ -412,8 +403,7 @@ C        --- IMPRESSION DU CHAMELEM ---
               NOMMAI = ZK8(JMA+IM-1)
               CALL JEEXIN(JEXNOM(MLGNMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A','PEWEIB','LA MAILLE "'//NOMMAI//
-     &                      '" N''EXISTE PAS.')
+                CALL U2MESK('A','UTILITAI3_49',1,NOMMAI)
                 GO TO 60
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)

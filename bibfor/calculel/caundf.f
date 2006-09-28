@@ -1,7 +1,7 @@
       SUBROUTINE CAUNDF(CODE,OPT,TE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C      OPT : OPTION
 C      TE  : TYPE_ELEMENT
 C ----------------------------------------------------------------------
       COMMON /CAII02/IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,
-     +       IAOPPA,NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
+     &       IAOPPA,NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
       INTEGER        IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
       COMMON /CAII06/IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
       COMMON /CAII04/IACHII,IACHIK,IACHIX
@@ -107,9 +107,7 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'I') THEN
             ZI(IACHLO-1+LGGREL+1) = INNEM
           ELSE
-            CALL UTMESS('F','CAUNDF',
-     +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//
-     +                  TYPSCA//' NON AUTORISE(I/R OU C),')
+            CALL U2MESK('F','CALCULEL_40',1,TYPSCA)
           END IF
    10   CONTINUE
 
@@ -147,9 +145,7 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'K24') THEN
             ZK24(IACHLO-1+LGGREL+1) = KNNEM
           ELSE
-            CALL UTMESS('F','CAUNDF',
-     +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//
-     +                  TYPSCA//' NON AUTORISE(I/R/C/K8/K16/K24),')
+            CALL U2MESK('F','CALCULEL_41',1,TYPSCA)
           END IF
    20   CONTINUE
 
@@ -189,9 +185,7 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           ELSE IF (TYPSCA.EQ.'I') THEN
             IF (ZI(IACHLO-1+LGGREL+1).NE.INNEM) ECRAS=.TRUE.
           ELSE
-            CALL UTMESS('F','CAUNDF',
-     +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//
-     +                  TYPSCA//' NON AUTORISE(I/R OU C),')
+            CALL U2MESK('F','CALCULEL_40',1,TYPSCA)
           END IF
 
           IF (ECRAS) THEN
@@ -199,8 +193,9 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
             CALL JENUNO(JEXNUM('&CATA.OP.NOMOPT',OPT),NOMOPT)
             CALL UTMESS('E','CAUNDF','INCOHERENCE FORTRAN/CATALOGUE'//
-     +                  ' TYPE_ELEMENT: '//NOMTE//' OPTION: '//NOMOPT//
-     +                  ' PARAMETRE: '//NOMPAR)
+     &                  ' TYPE_ELEMENT: '//NOMTE//' OPTION: '//NOMOPT//
+     &                  ' PARAMETRE: '//NOMPAR)
+C        CALL U2MESK('E','CALCULEL_42', 3 ,VALK)
 
           END IF
 
@@ -208,11 +203,10 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
 
    30   CONTINUE
 
-        IF (ARRET) CALL UTMESS('F','CAUNDF',
-     +                         'ARRET DU AUX ERREURS PRECEDENTES.')
+        IF (ARRET) CALL U2MESS('F','CALCULEL_43')
 
       ELSE
-        CALL UTMESS('F','CAUNDF','CODE INTERDIT: '//CODE)
+        CALL U2MESK('F','CALCULEL_44',1,CODE)
       END IF
 
 

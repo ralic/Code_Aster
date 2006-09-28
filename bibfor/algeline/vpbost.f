@@ -3,7 +3,7 @@
      &   PRECDC, METHOD, OMECOR, STURM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2006   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,8 +145,7 @@ C
              IF(VPMAX .GT. R8PREM()) THEN
                 TOLE=(ABS(VPINF2-VPINF)/VPINF)
                 IF (TOLE .LT. PRECDC) THEN
-                    CALL UTMESS ('A','VPBOST.01','IL Y A DES '//
-     +                           'VALEURS PROPRES TRES PROCHES')
+                    CALL U2MESS('A','ALGELINE3_58')
                     CALL UTDEBM ('A','VPBOST.01','LA VAL. PRO. EST: ')
                     CALL UTIMPR ('S',' ',1,FREQOM(VPINF2))
                     CALL UTFINM()
@@ -155,8 +154,7 @@ C
              ELSE
                 TOLE=ABS(VPINF2-VPINF)
                 IF (TOLE .LT. PRECDC) THEN
-                  CALL UTMESS ('A','VPBOST.01','IL Y A DES '//
-     +                         'VALEURS PROPRES TRES PROCHES')
+                  CALL U2MESS('A','ALGELINE3_58')
                  CALL UTDEBM ('A','VPBOST.01','LA VAL. PRO. EST: ')
                  CALL UTIMPR ('S',' ',1,FREQOM(VPINF2))
                  CALL UTFINM()
@@ -178,8 +176,7 @@ C
             IF(VPINF .GT. R8PREM()) THEN
                TOLE=(ABS(VPMAX2-VPMAX)/VPMAX)
                IF (TOLE .LT. PRECDC) THEN
-                  CALL UTMESS ('A','VPBOST.02','IL Y A DES VP '//
-     +                                         'TRES PROCHES')
+                  CALL U2MESS('A','ALGELINE3_59')
                   CALL UTDEBM ('A','VPBOST.01','LA VP EST: ')
                   CALL UTIMPR ('S',' ',1,FREQOM(VPMAX2))
                   CALL UTFINM()
@@ -188,8 +185,7 @@ C
             ELSE
                TOLE=ABS(VPMAX2-VPMAX)
                IF (TOLE .LT. PRECDC) THEN
-                   CALL UTMESS ('A','VPBOST.02','IL Y A DES VP '//
-     +                                          'TRES PROCHES')
+                   CALL U2MESS('A','ALGELINE3_59')
                    CALL UTDEBM ('A','VPBOST.01','LA VP EST: ')
                    CALL UTIMPR ('S',' ',1,FREQOM(VPMAX2))
                    CALL UTFINM()
@@ -246,16 +242,16 @@ C
  1200 FORMAT (6X,'FREQ_INF : ',1PE12.5)
  1300 FORMAT (6X,'FREQ_SUP : ',1PE12.5)
  1400 FORMAT (3X,'LA PREMIERE FREQUENCE INFERIEURE NON RETENUE EST: ',
-     +        1PE12.5)
+     &        1PE12.5)
  1500 FORMAT (3X,'LA PREMIERE FREQUENCE SUPERIEURE NON RETENUE EST: ',
-     +        1PE12.5)
+     &        1PE12.5)
  1600 FORMAT (72('-'))
  1101 FORMAT (3X,'LES CHARGES CRITIQUES CALCULEES INF. ET SUP. SONT: ')
  1201 FORMAT (6X,'CHARGE_CRITIQUE_INF : ',1PE12.5)
  1301 FORMAT (6X,'CHARGE_CRITIQUE_SUP : ',1PE12.5)
  1401 FORMAT (3X,'LA PREMIERE CHARGE CRITIQUE INFERIEURE NON RETENUE'//
-     +         'EST: ',1PE12.5)
+     &         'EST: ',1PE12.5)
  1501 FORMAT (3X,'LA PREMIERE CHARGE CRITIQUE SUPERIEURE NON RETENUE'//
-     +        'EST: ',1PE12.5)
+     &        'EST: ',1PE12.5)
 
       END

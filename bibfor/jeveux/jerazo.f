@@ -1,6 +1,6 @@
       SUBROUTINE JERAZO ( NOMLU , NI , I1 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,11 +38,11 @@ C ----------------------------------------------------------------------
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -76,11 +76,11 @@ C -------------------------------------------------
       CHARACTER *1     TYPEI , GENRI
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       NOML32 = NOMLU
       NOML8  = NOML32(25:32)
@@ -93,7 +93,7 @@ C
 C ----     IRET = 0
  1010    CONTINUE
          CMESS = 'OBJET INEXISTANT DANS LES BASES OUVERTES'
-         CALL JVMESS ( 'S' , 'JERAZO01' , CMESS )
+         CALL U2MESK('S','JEVEUX_01',1,CMESS)
          GOTO 100
 C ----     IRET = 1
  1020    CONTINUE
@@ -102,7 +102,7 @@ C ----     IRET = 1
          LTYPI =  LTYP( JLTYP(ICLAOS) + IDATOS )
          IF ( GENRI .EQ. 'N' ) THEN
             CMESS = 'ACCES A UN REPERTOIRE NON AUTORISE'
-            CALL JVMESS ( 'S' , 'JERAZO02' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
          ENDIF
          GOTO 100
 C ----     IRET = 2
@@ -117,7 +117,7 @@ C ----     IRET = 2
             LTYPI  = LTYP ( JLTYP(ICLACO) + IXLONO )
             LONOI  = LONO ( JLONO(ICLACO) + IXLONO ) * LTYPI
             CALL JXLOCS ( ZI, GENRI, LTYPI, LONOI, IBLONO, .FALSE.,
-     +                    JCTAB)
+     &                    JCTAB)
             GOTO 1000
          ELSE
            IF ( NOML8 .NE. '        ') THEN
@@ -129,7 +129,7 @@ C            ------ CAS D'UN OBJET DE COLLECTION  ------
              IF ( IXIADD .NE. 0 ) THEN
 C            ----------- COLLECTION DISPERSEE
                 CMESS = 'COLLECTION DISPERSEE NON ACCESSIBLE EN BLOC'
-                CALL JVMESS ( 'S' , 'JERAZO03' , CMESS )
+                CALL U2MESK('S','JEVEUX_01',1,CMESS)
              ENDIF
            ENDIF
            GENRI =  GENR( JGENR(ICLACO) + IXDESO )
@@ -143,12 +143,12 @@ C            ----------- COLLECTION DISPERSEE
         IF ( IXLONO .GT. 0 ) THEN
           IBLONO = IADM  ( JIADM(ICLACO) + IXLONO )
           LONOI  = ISZON(JISZON+IBLONO-1+IDATOC+1) -
-     +                      ISZON(JISZON+IBLONO-1+IDATOC  )
+     &                      ISZON(JISZON+IBLONO-1+IDATOC  )
           IF ( LONOI .GT. 0 ) THEN
             JCTAB  = JCTAB +  (ISZON(JISZON+IBLONO-1+IDATOC) - 1)
           ELSE
             CMESS = 'OBJET DE COLLECTION CONTIG DE LONGUEUR NULLE'
-            CALL JVMESS ( 'S' , 'JERAZO04' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
         ELSE
           JCTAB = JCTAB + LONG(JLONG(ICLACO)+IXDESO) * (IDATOC-1)

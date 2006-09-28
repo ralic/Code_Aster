@@ -2,7 +2,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,8 +74,7 @@ C     ------------------------------------------------------------------
       NCMP  = ZI(JCNSD-1+2)
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      IF (TSCA.NE.'R') CALL UTMESS('F','CNOCRE',
-     &    'SEULEMENT REEL SVP')
+      IF (TSCA.NE.'R') CALL U2MESS('F','CALCULEL2_11')
 
       DO 30,K = 1,NCMP
         DO 10,INO = 1,NBNO

@@ -1,6 +1,6 @@
       SUBROUTINE DISMGD(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,16 +96,14 @@ C
             IGDLI=ZI(IADGD-1+4)
             IGDCO=ZI(IADGD-1+5)
             IF (IGDLI.NE.IGDCO) THEN
-              CALL UTMESS(CODMES,'DISMGD',
-     +          ' LA QUESTION N''A PAS DE REPONSE SUR UNE GRANDEUR'
-     +                //' DE TYPE MATRICE GD_1 X GD_2')
+              CALL U2MESS(CODMES,'UTILITAI_57')
               IERD=1
               GO TO 9999
             ELSE
               REPI=IGDLI
             END IF
          ELSE
-            CALL UTMESS('F','DISMGD','SITUATION IMPREVUE.')
+            CALL U2MESS('F','UTILITAI_58')
          END IF
 C
       ELSE IF (QUESTI(1:9).EQ.'NOM_GD_SI') THEN
@@ -113,9 +111,7 @@ C
             IGDLI=ZI(IADGD-1+4)
             IGDCO=ZI(IADGD-1+5)
             IF (IGDLI.NE.IGDCO) THEN
-              CALL UTMESS(CODMES,'DISMGD',
-     +                  ' LA QUESTION N''A PAS DE SENS SUR UNE GRANDEUR'
-     +                //' DE TYPE MATRICE GD_1 X GD_2')
+              CALL U2MESS(CODMES,'UTILITAI_59')
              IERD=1
              GO TO 9999
             ELSE
@@ -131,20 +127,16 @@ C
 C
       ELSE IF (QUESTI.EQ.'NB_EC') THEN
          IF (ICODE.GE.3) THEN
-           CALL UTMESS(CODMES,'DISMGD',
-     +                  ' LA QUESTION N''A PAS DE SENS SUR UNE GRANDEUR'
-     +                //' DE TYPE COMPOSEE')
+           CALL U2MESS(CODMES,'UTILITAI_60')
            IERD=1
            GO TO 9999
          END IF
          REPI= ZI(IADGD-1+3)
 C
       ELSE IF    ((QUESTI.EQ.'NB_CMP_MAX')
-     +        .OR.(QUESTI.EQ.'NU_CMP_LAGR')) THEN
+     &        .OR.(QUESTI.EQ.'NU_CMP_LAGR')) THEN
          IF (ICODE.GE.3) THEN
-           CALL UTMESS(CODMES,'DISMGD',
-     +                  ' LA QUESTION N''A PAS DE SENS SUR UNE GRANDEUR'
-     +                //' DE TYPE COMPOSEE')
+           CALL U2MESS(CODMES,'UTILITAI_60')
            IERD=1
            GO TO 9999
          END IF
@@ -155,7 +147,7 @@ C
            CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMOB),'L',IANCMP)
            REPI=INDIK8(ZK8(IANCMP),'LAGR',1,NMAX)
          ELSE
-           CALL UTMESS('F','DISMGD','IMPREVU')
+           CALL U2MESS('F','UTILITAI_61')
          END IF
 C
       ELSE IF (QUESTI.EQ.'TYPE_SCA') THEN
@@ -164,8 +156,7 @@ C
          REPK= ZK8(IATYPE-1+NUMGD)
       ELSE
          REPK = QUESTI
-         CALL UTMESS(CODMES,'DISMGD',
-     +                  'LA QUESTION : "'//REPK//'" EST INCONNUE')
+         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD=1
          GO TO 9999
       END IF

@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -426,9 +426,7 @@ C     ------------------------------------------------------------------
 
 
       IF (DIMF.LT.NNO) THEN
-        CALL UTMESS('F','ELRFVF',' ERREUR PROGRAMMEUR: '//
-     &            'ECRASEMENT DE FF, DIMF EST INFERIEUR AU NB DE NOEUDS'
-     &              )
+        CALL U2MESS('F','ELEMENTS_57')
       END IF
 
       END

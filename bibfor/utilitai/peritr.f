@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,10 +89,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
           CALL GETVTX('RICE_TRACEY','OPTION',I,1,1,TOPTCA(1),N1)
           CALL GETVTX('RICE_TRACEY','LOCAL',I,1,1,TOPTCA(2),N2)
           IF ((TOPTCA(1).NE.OPTCAL(1)) .OR.
-     &        (TOPTCA(2).NE.OPTCAL(2))) CALL UTMESS('F','PERITR',
-     &        'ERREUR: LES OPTIONS DE '//
-     &        'CALCUL DOIVENT ETRE IDENTIQUES POUR TOUTES LES '//
-     &        'OCCURRENCES DU MOT CLEF FACTEUR')
+     &        (TOPTCA(2).NE.OPTCAL(2))) CALL U2MESS('F','UTILITAI3_83')
    10   CONTINUE
       END IF
 
@@ -123,7 +120,7 @@ C     IL FAUT FAIRE LE CALCUL SUR TOUT LE MODELE
       ELSE
         CALL GETTCO(RESUL,TYPRES)
         IF (TYPRES(1:9).NE.'EVOL_NOLI') THEN
-          CALL UTMESS('F','PERITR','ON ATTEND UN CONCEPT "EVOL_NOLI"')
+          CALL U2MESS('F','UTILITAI3_84')
         END IF
         CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)
         CALL GETVTX(' ','CRITERE',1,1,1,CRIT,NC)
@@ -163,20 +160,17 @@ C      VARIPG = '&&PERITR.VARIPG'
         IF (NR.NE.0) THEN
           CALL RSEXCH(RESUL,'SIEF_ELGA',NUMORD,CONTG,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PERITR','ERREUR: LE CHAMP '//
-     &                  'SIEF_ELGA N''EXISTE PAS')
+            CALL U2MESS('F','UTILITAI3_85')
           END IF
           CALL RSEXCH(RESUL,'VARI_ELGA',NUMORD,VARIPG,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PERITR','ERREUR: LE CHAMP '//
-     &                  'VARI_ELGA N''EXISTE PAS')
+            CALL U2MESS('F','UTILITAI3_86')
           END IF
           IF (IORD.GE.2) THEN
             NUMOMU = ZI(JORD+IORD-2)
             CALL RSEXCH(RESUL,'VARI_ELGA',NUMOMU,VARIMG,IRET)
             IF (IRET.GT.0) THEN
-              CALL UTMESS('F','PERITR','ERREUR: LE CHAMP '//
-     &                    'VARI_ELGA N''EXISTE PAS')
+              CALL U2MESS('F','UTILITAI3_86')
             END IF
           ELSE
             CALL COPISD('CHAMP_GD','V',VARIPG,VARNUL)
@@ -185,8 +179,7 @@ C      VARIPG = '&&PERITR.VARIPG'
           END IF
           CALL RSEXCH(RESUL,'DEPL',NUMORD,DEPLA,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PERITR','ERREUR: LE CHAMP '//
-     &                  'DEPL_ELNO N''EXISTE PAS')
+            CALL U2MESS('F','UTILITAI3_87')
           END IF
         END IF
 
@@ -285,14 +278,12 @@ C        --- IMPRESSION DU CHAMELEM ---
               NOMMAI = ZK8(JGR+IG-1)
               CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A','PERITR','LE GROUPE DE MAILLE "'//
-     &                      NOMMAI//'" N''EXISTE PAS.')
+                CALL U2MESK('A','UTILITAI3_46',1,NOMMAI)
                 GO TO 50
               END IF
               CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONMAX',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL UTMESS('A','PERITR','LE GROUPE "'//NOMMAI//
-     &                      '" NE CONTIENT AUCUNE MAILLE.')
+                CALL U2MESK('A','UTILITAI3_74',1,NOMMAI)
                 GO TO 50
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
@@ -349,8 +340,7 @@ C        --- IMPRESSION DU CHAMELEM ---
               NOMMAI = ZK8(JMA+IM-1)
               CALL JEEXIN(JEXNOM(MLGNMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A','PERITR','LA MAILLE "'//NOMMAI//
-     &                      '" N''EXISTE PAS.')
+                CALL U2MESK('A','UTILITAI3_49',1,NOMMAI)
                 GO TO 70
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)

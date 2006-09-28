@@ -1,7 +1,7 @@
       SUBROUTINE RAPO3D(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C -------------------------------------------------------
       MOTFAC = 'LIAISON_ELEM'
       CALL GETVTX(MOTFAC,'OPTION',IOCC,1,1,OPTION,IOP)
       IF ((OPTION.NE.'3D_POU') .AND. (OPTION.NE.'3D_TUYAU')) THEN
-        CALL UTMESS('F','RAPO3D','OPTION '//OPTION//' INVALIDE')
+        CALL U2MESK('F','MODELISA6_39',1,OPTION)
       END IF
 
       CALL GETFAC(MOTFAC,NLIAI)
@@ -209,9 +209,7 @@ C --- ACCES A L'OBJET .PRNM
 C     ----------------------
 
       IF (NBEC.GT.10) THEN
-        CALL UTMESS('F','RAPO3D',
-     &              'LE DESCRIPTEUR_GRANDEUR DES DEPLACEMENTS'//
-     &              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+        CALL U2MESS('F','MODELISA_94')
       ELSE
         CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
       END IF
@@ -229,8 +227,7 @@ C     -----------------------------------------
    30 CONTINUE
 
       IF (K.EQ.0) THEN
-        CALL UTMESS('F','RAPO3D',
-     &              'ERREUR DANS LA RECUPERATION DU NUME.PRNO')
+        CALL U2MESS('F','PREPOST_61')
       END IF
 
       CALL JEVEUO(JEXNUM(NUMDDL//'.NUME.PRNO',K),'L',IAPRNO)
@@ -274,18 +271,14 @@ C     -----------------------------------------------
         CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO_2',IOCC,1,0,K8BID,
      &              NBGNO)
         IF (NBGNO.EQ.0) THEN
-          CALL UTMESS('F','RAPO3D','IL FAUT INDIQUER LE MOT-CLE '//
-     &                '''NOEUD_2'' OU ''GROUP_NO_2'''//
-     &                ' APRES LE MOT-FACTEUR '//MOTFAC//
-     &                ' POUR L''OPTION ''3D_POU''.')
+          CALL U2MESK('F','MODELISA6_40',1,MOTFAC)
         END IF
       END IF
 
       IF (NBNO.NE.0) THEN
         NBNO = -NBNO
         IF (NBNO.NE.1) THEN
-          CALL UTMESS('F','RAPO3D','IL NE FAUT DONNER QU''UN '//
-     &                'SEUL NOEUD DE POUTRE A RACCORDER AU MASSIF.')
+          CALL U2MESS('F','MODELISA6_41')
         END IF
         CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD_2',IOCC,1,NBNO,NOEPOU,
      &              NNO)
@@ -294,16 +287,13 @@ C     -----------------------------------------------
       IF (NBGNO.NE.0) THEN
         NBGNO = -NBGNO
         IF (NBGNO.NE.1) THEN
-          CALL UTMESS('F','RAPO3D','IL NE FAUT DONNER QU''UN '//
-     &                'UN SEUL GROUP_NO A UN NOEUD A RACCORDER'//
-     &                ' AU MASSIF.')
+          CALL U2MESS('F','MODELISA6_42')
         END IF
         CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO_2',IOCC,1,NBGNO,
      &              NOGRNO,NNO)
         CALL JELIRA(JEXNOM(GRNOMA,NOGRNO),'LONMAX',N1,K1BID)
         IF (N1.NE.1) THEN
-          CALL UTMESS('F','RAPO3D','IL NE FAUT DONNER '//
-     &                'Q"UN  SEUL NOEUD DANS LE GROUP_NO : '//NOGRNO)
+          CALL U2MESK('F','MODELISA6_43',1,NOGRNO)
         ELSE
           CALL JEVEUO(JEXNOM(GRNOMA,NOGRNO),'L',JGRO)
           IN = ZI(JGRO+1-1)
@@ -337,6 +327,7 @@ C ---     NUMERO DU NOEUD COURANT DE LA LISTE
             CALL UTMESS('F','RAPO3D','IMPOSSIBILITE,LE NOEUD '//
      &                  ZK8(ILISNO+I-1)//'PORTE LE DDL DE ROTATION '//
      &                  CMP(J))
+C        CALL U2MESK('F','MODELISA6_44', 2 ,VALK)
           END IF
    40   CONTINUE
    50 CONTINUE
@@ -351,6 +342,7 @@ C     ----------------------------------------------------------
         IF (.NOT.EXISDG(DG,ICMP(J))) THEN
           CALL UTMESS('F','RAPO3D','IMPOSSIBILITE,LE NOEUD POUTRE '//
      &                NOEPOU//' DEVRAIT PORTER LE DDL '//CMP(J))
+C        CALL U2MESK('F','MODELISA6_45', 2 ,VALK)
         END IF
    60 CONTINUE
 
@@ -392,8 +384,7 @@ C     -------------------------------------------------
       AYZ = ZR(IDINER+10-1)
 
       IF (ABS(S).LT.R8PREM()) THEN
-        CALL UTMESS('F','RAPO3D','IMPOSSIBILITE, LA SURFACE '//
-     &              'DE RACCORD DU MASSIF EST NULLE ')
+        CALL U2MESS('F','MODELISA6_46')
       END IF
       S1 = 1.0D0/S
 
@@ -745,8 +736,7 @@ C       -----------------------------------------------------
       IF ((OPTION.EQ.'3D_TUYAU')) THEN
         CALL GETVID(MOTFAC,'CARA_ELEM',IOCC,1,1,CARA,NCARA)
         IF (NCARA.EQ.0) THEN
-          CALL UTMESS('F','RAPO3D','IL FAUT DONNER UN CARA_ELEM '//
-     &                'POUR RECUPERER LES CARACTERISTIQUES DE TUYAU.')
+          CALL U2MESS('F','MODELISA6_47')
         END IF
         CALL RATU3D(ZI(IAPRNO),LONLIS,ZK8(ILISNO),NOEPOU,NOMA,LIGREL,
      &              MOD,CARA,NUMDDL,TYPLAG,LISREL,COORIG,S)

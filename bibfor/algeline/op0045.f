@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,16 +142,16 @@ C     ------------------------------------------------------------------
       DATA CBORFR / '&&OP0045.BORNE.FREQ.USR ' /
       DATA CBORCR / '&&OP0045.BORNE.CRIT.USR ' /
       DATA  NOPARA /
-     +  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
-     +  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
-     +  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     +  'NORME'           , 'METHODE'         ,
-     +  'FREQ'            ,
-     +  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
-     +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
-     +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
-     +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
-     +  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
+     &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
+     &  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
+     &  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
+     &  'NORME'           , 'METHODE'         ,
+     &  'FREQ'            ,
+     &  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
+     &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
+     &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
+     &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
+     &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
 C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
@@ -277,56 +277,45 @@ C     --- VALIDITE DES DONNEES ---
       IF (METHOD.EQ.'SORENSEN') THEN
         RAUX = R8PREM()
         IF ((ALPHA.LT.1.2D0*RAUX).OR.(ALPHA.GT.0.83D0-RAUX)) THEN
-            CALL UTMESS('E','OP0045.17','LE NOMBRE '//
-     +      'PARAM_ORTHO_SOREN N''EST PAS VALIDE. ')
+            CALL U2MESS('E','ALGELINE2_64')
          ENDIF
       ENDIF
 
 C     --- REGLES D'EXCLUSION ---
 
       IF ((MODRIG.EQ.'MODE_RIGIDE').AND.(METHOD.NE.'TRI_DIAG')) THEN
-        CALL UTMESS('F','OP0045.05','DETECTION DES MODES '//
-     +  'DE CORPS RIGIDE N''EST UTILISEE QU''AVEC TRI_DIAG')
+        CALL U2MESS('F','ALGELINE2_65')
       ENDIF
 
       IF (LAMOR.NE.0) THEN
          IF (OPTIOF.EQ.'BANDE') THEN
-            CALL UTMESS('F','OP0045.18','OPTION BANDE NON AUTORISEE'
-     +                // ' POUR UN PROBLEME AVEC AMORTISSEMENT')
+            CALL U2MESS('F','ALGELINE2_66')
          ENDIF
          IF (((APPR.EQ.'I').OR.(APPR.EQ.'C')).AND.(ZR(LBORFR).EQ.0.D0))
-     +    THEN
-            CALL UTMESS('F','OP0045.19','APPROCHE IMAGINAIRE OU'//
-     +      ' COMPLEXE ET FREQUENCE NULLE INCOMPATIBLE')
+     &    THEN
+            CALL U2MESS('F','ALGELINE2_67')
          ENDIF
          IF (MODRIG.EQ.'MODE_RIGIDE') THEN
-           CALL UTMESS('F','OP0045.06',' OPTION MODES DE CORPS '//
-     +     'RIGIDE NON UTILISEE AVEC AMORTISSEMENT')
+           CALL U2MESS('F','ALGELINE2_68')
          ENDIF
          IF (TYPRES.NE.'DYNAMIQUE') THEN
-           CALL UTMESS('F','OP0045.04','CALCUL DE FLAMBEMENT ET '//
-     +            'MATRICE D''AMORTISSEMENT NE SONT PAS COMPATIBLES')
+           CALL U2MESS('F','ALGELINE2_46')
          ENDIF
       ENDIF
       IF (KTYP.EQ.'C') THEN
         IF (METHOD .NE. 'SORENSEN') THEN
-           CALL UTMESS('F','OP0045.21','POUR LE PROBLEME'//
-     +    ' GENERALISE OU QUADRATIQUE COMPLEXE'//
-     +    ' ON UTILISE SEULEMENT L''ALGORITHME DE SORENSEN')
+           CALL U2MESS('F','ALGELINE2_69')
         ENDIF
         IF (OPTIOF.EQ.'BANDE') THEN
-            CALL UTMESS('F','OP0045.18','OPTION BANDE NON AUTORISEE'
-     +                // ' POUR UN PROBLEME AVEC AMORTISSEMENT')
+            CALL U2MESS('F','ALGELINE2_66')
         ENDIF
          IF (ZR(LBORFR).EQ.0.D0) THEN
-            CALL UTMESS('F','OP0045.19','PROBLEME COMPLEXE ET '//
-     +                  'FREQUENCE NULLE INCOMPATIBLE')
+            CALL U2MESS('F','ALGELINE2_70')
          ENDIF
       ENDIF
       IF ((METHOD.EQ.'SORENSEN').AND.(ZR(LBORFR).EQ.0.D0).AND.
-     +   (LAMOR.NE.0)) THEN
-            CALL UTMESS('F','OP0045.19','CALCUL QUADRATIQUE PAR '//
-     +       'LA METHODE DE SORENSEN ET FREQUENCE NULLE INCOMPATIBLE')
+     &   (LAMOR.NE.0)) THEN
+            CALL U2MESS('F','ALGELINE2_71')
          ENDIF
 
 
@@ -352,16 +341,18 @@ C     --- VERIFICATION DES "REFE" ---
 
       IF (IRET.GT.0) THEN
          CALL UTMESS('F','OP0045.21',
-     +               'LES MATRICES "'//RAIDE//'"  ET  "'//MASSE//
-     +               ' " SONT INCOMPATIBLES ENTRE ELLES')
+     &               'LES MATRICES "'//RAIDE//'"  ET  "'//MASSE//
+     &               ' " SONT INCOMPATIBLES ENTRE ELLES')
+C        CALL U2MESK('F','ALGELINE2_58', 2 ,VALK)
       ENDIF
 
       IF (LAMOR.NE.0) THEN
          CALL VRREFE(RAIDE,AMOR,IRET)
          IF (IRET.GT.0) THEN
             CALL UTMESS('F','OP0045.22',
-     +                  'LES MATRICES "'//RAIDE//'"  ET  "'//AMOR//
-     +                  '" SONT INCOMPATIBLES ENTRE ELLES')
+     &                  'LES MATRICES "'//RAIDE//'"  ET  "'//AMOR//
+     &                  '" SONT INCOMPATIBLES ENTRE ELLES')
+C        CALL U2MESK('F','ALGELINE2_58', 2 ,VALK)
          ENDIF
       ENDIF
 
@@ -409,8 +400,8 @@ C     --- VERIFICATION DES FREQUENCES MIN ET MAX, PASSAGE EN OMEGA2
           IF (NIV .GE. 1) THEN
              WRITE(IFM,*)'PROBLEME QUADRATIQUE'
              WRITE(IFM,*)'FREQUENCE DE DECALAGE EST NEGATIVE',
-     +               'LES VALEURS PROPRES ETANT CONJUGUEES 2 A 2 '//
-     +               'ON PEUT LA PRENDRE POSITIVE. ON LE FAIT !!!'
+     &               'LES VALEURS PROPRES ETANT CONJUGUEES 2 A 2 '//
+     &               'ON PEUT LA PRENDRE POSITIVE. ON LE FAIT !!!'
              WRITE(IFM,*)
            ENDIF
         ENDIF
@@ -460,8 +451,8 @@ C      - CAS REEL
          CALL MTDSCR(MATOPA)
          CALL JEVEUO(MATOPA(1:19)//'.&INT','E',LMATRA)
          CALL VPFOPR(OPTIOF,TYPRES,LMASSE,LRAIDE,LMATRA,OMEMIN,OMEMAX,
-     +               OMESHI,NFREQ,NPIVOT,OMECOR,PRECSH,NPREC,NBRSS,
-     +               NBLAGR)
+     &               OMESHI,NFREQ,NPIVOT,OMECOR,PRECSH,NPREC,NBRSS,
+     &               NBLAGR)
          IF (NFREQ.LE.0) THEN
             IF ( ARRET(1:3) .EQ. 'OUI' ) THEN
                CALL UTEXCP(24,'OP0045','PAS DE MODE PROPRE DANS LA '//
@@ -476,7 +467,7 @@ C      - CAS REEL
         ELSE
 C     - CAS COMPLEXE
          CALL VPFOPC(LMASSE,LRAIDE,FMIN,SIGMA,
-     +               MATOPA,RAIDE,NPREC)
+     &               MATOPA,RAIDE,NPREC)
          CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
         ENDIF
       ELSE
@@ -485,7 +476,7 @@ C     --- PROBLEME QUADRATIQUE  ---
 C     - CAS REEL
         IF (KTYP.EQ.'R') THEN
          CALL WPFOPR(LMASSE,LAMOR,LRAIDE,APPR,FMIN,SIGMA,
-     +               MATOPA,MATPSC,RAIDE,NPREC)
+     &               MATOPA,MATPSC,RAIDE,NPREC)
          CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
          CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
          IF (IEXIN .EQ. 0) THEN
@@ -496,7 +487,7 @@ C     - CAS REEL
 C     - CAS COMPLEXE
         ELSE
          CALL WPFOPC(LMASSE,LAMOR,LRAIDE,FMIN,SIGMA,
-     +               MATOPA,RAIDE,NPREC)
+     &               MATOPA,RAIDE,NPREC)
          CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
          CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
          LMTPSC = 0
@@ -520,8 +511,8 @@ C         DE NEQACT
          IF (NIV .GE. 1) THEN
            WRITE(IFM,*) 'INFORMATIONS SUR LE CALCUL DEMANDE:'
            WRITE(IFM,*) 'TROP DE MODES DEMANDES POUR LE NOMBRE '//
-     +               'DE DDL ACTIFS, ON EN CALCULERA LE MAXIMUM '//
-     +               'A SAVOIR: ',NFREQ
+     &               'DE DDL ACTIFS, ON EN CALCULERA LE MAXIMUM '//
+     &               'A SAVOIR: ',NFREQ
          ENDIF
       ENDIF
 
@@ -553,7 +544,7 @@ C     --- DETERMINATION DE NBVECT (DIMENSION DU SOUS ESPACE) ---
          ENDIF
          IF (NIV .GE. 1) THEN
            WRITE(IFM,*)'ELLE EST INFERIEURE AU NOMBRE '//
-     +                      'DE MODES, ON LA PREND EGALE A ',NBVECT
+     &                      'DE MODES, ON LA PREND EGALE A ',NBVECT
            WRITE(IFM,*)
          ENDIF
       ELSE
@@ -561,7 +552,7 @@ C     --- DETERMINATION DE NBVECT (DIMENSION DU SOUS ESPACE) ---
             NBVECT = NEQACT
             IF (NIV .GE. 1) THEN
                WRITE(IFM,*) 'ELLE EST SUPERIEURE AU'//
-     +       ' NOMBRE DE DDL ACTIFS, ON LA RAMENE A CE NOMBRE ',NBVECT
+     &       ' NOMBRE DE DDL ACTIFS, ON LA RAMENE A CE NOMBRE ',NBVECT
                WRITE(IFM,*)
             ENDIF
          ENDIF
@@ -585,7 +576,7 @@ C     --- CORRECTION DE NBVECT DANS LE CAS QUADRATIQUE
          NFREQ = 2*NFREQ
 C         IF (NIV .GE. 1) THEN
             WRITE(IFM,*)' LE PROBLEME TRAITE ETANT '//
-     +      'QUADRATIQUE, ON DOUBLE L''ESPACE DE RECHERCHE'
+     &      'QUADRATIQUE, ON DOUBLE L''ESPACE DE RECHERCHE'
             WRITE(IFM,*)
 C         ENDIF
       ENDIF
@@ -625,12 +616,12 @@ C     --- CAS COMPLEXE OU QUADRATIQUE ---
 
          IF (LAMOR.EQ.0) THEN
              CALL WKVECT('&&OP0045.MAT.MOD.REDUITE','V V R',
-     +                   NBVECT*NBVECT,IADZ)
+     &                   NBVECT*NBVECT,IADZ)
          ELSE
             CALL WKVECT('&&OP0045.VECT.LANCZOS','V V R',NEQ*NBVECT,IADX)
             CALL WKVECT('&&OP0045.VECTY   ','V V R',NEQ*NBVECT,IADY)
             CALL WKVECT('&&OP0045.MAT.MOD.REDUITE','V V R',
-     +                  2*NBVECT*NBVECT,IADZ)
+     &                  2*NBVECT*NBVECT,IADZ)
             CALL WKVECT('&&OP0045.VECT_DEP.H','V V R',NEQ,IADRH)
             CALL WKVECT('&&OP0045.VECT_DEP.B','V V R',NEQ,IADRB)
          ENDIF
@@ -717,16 +708,16 @@ C        --- CAS SANS AMORTISSEMENT : PROBLEME GENERALISE ---
 
          IF (METHOD.EQ.'JACOBI') THEN
             CALL SSPACE(LMTPSC,LMATRA,LMASSE,NEQ,NBVECT,NFREQ,ZI(LPROD),
-     +             ITEMAX,NPERM,TOL,TOLDYN,ZR(LVEC),ZR(LVALPR),
-     +             NITJAC,NITBAT)
+     &             ITEMAX,NPERM,TOL,TOLDYN,ZR(LVEC),ZR(LVALPR),
+     &             NITJAC,NITBAT)
             CALL RECTFR(NFREQ,NBVECT,OMESHI,NPIVOT,NBLAGR,
-     +                  ZR(LVALPR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
+     &                  ZR(LVALPR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
             CALL VPBOST(TYPRES,NFREQ,NBVECT,OMESHI,ZR(LVALPR),NBVECT,
-     +                  VPINF, VPMAX,PRECDC,METHOD,OMECOR,STURM)
+     &                  VPINF, VPMAX,PRECDC,METHOD,OMECOR,STURM)
 C          tri par valeur absolule
            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
              CALL VPORDI (1,0,NFREQ,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
-     +                  ZI(LRESUI))
+     &                  ZI(LRESUI))
            ENDIF
             DO 30 IMET = 1,NFREQ
                 ZI(LRESUI-1+2*MXRESF+IMET) = NITBAT
@@ -739,7 +730,7 @@ C          tri par valeur absolule
               ITYP = 0
               IORDRE = 0
               CALL VPORDO (ITYP,IORDRE,NFREQ,ZR(LRESUR+MXRESF),
-     +                     ZR(LVEC),NEQ)
+     &                     ZR(LVEC),NEQ)
               DO 31 IMET = 1,NFREQ
                  ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
                  ZI(LRESUI-1+IMET) = IMET
@@ -750,8 +741,7 @@ C NOMBRE DE MODES CONVERGES
 
          ELSE IF (METHOD.EQ.'TRI_DIAG') THEN
             IF (NSTOC .GE. NBVECT) THEN
-              CALL UTMESS('A','OP0045','LA DIMENSION DU SOUS '//
-     + 'ESPACE DE TRAVAIL EST INFERIEURE AU NOMBRE DE MODES RIGIDES')
+              CALL U2MESS('A','ALGELINE2_72')
             ENDIF
             IF (NSTOC .NE. 0) THEN
               DO 26 I =1, NEQ * NSTOC
@@ -759,19 +749,19 @@ C NOMBRE DE MODES CONVERGES
  26           CONTINUE
             ENDIF
             CALL VP2INI(LMTPSC,LMASSE,LMATRA,NEQ,NBVECT,NBORTO,PRORTO,
-     +                  ZI(LPROD),ZI(LDDL),ZR(LDIAGR),ZR(LSURDR),
-     +                  ZR(LSIGN),ZR(LVEC),PRSUDG,NSTOC,OMESHI)
+     &                  ZI(LPROD),ZI(LDDL),ZR(LDIAGR),ZR(LSURDR),
+     &                  ZR(LSIGN),ZR(LVEC),PRSUDG,NSTOC,OMESHI)
             CALL VP2TRD('G',NBVECT,ZR(LDIAGR),ZR(LSURDR),ZR(LSIGN),
-     +                  ZR(IADZ),NITV,NITQRM)
+     &                  ZR(IADZ),NITV,NITQRM)
             CALL VPRECO(NBVECT,NEQ,ZR(IADZ),ZR(LVEC))
             CALL RECTFR(NFREQ,NBVECT,OMESHI,NPIVOT,NBLAGR,
-     +                  ZR(LDIAGR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
+     &                  ZR(LDIAGR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
             CALL VPBOST(TYPRES,NFREQ,NBVECT,OMESHI,ZR(LDIAGR),NBVECT,
-     +                  VPINF, VPMAX,PRECDC,METHOD,OMECOR,STURM)
+     &                  VPINF, VPMAX,PRECDC,METHOD,OMECOR,STURM)
 C          tri par valeur absolule
            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
              CALL VPORDI (1,0,NFREQ,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
-     +                  ZI(LRESUI))
+     &                  ZI(LRESUI))
            ENDIF
             DO 32 IMET = 1,NFREQ
                  ZI(LRESUI-1+  MXRESF+IMET) = NITQRM
@@ -783,7 +773,7 @@ C          tri par valeur absolule
               ITYP = 0
               IORDRE = 0
               CALL VPORDO (ITYP,IORDRE,NFREQ,ZR(LRESUR+MXRESF),
-     +                     ZR(LVEC),NEQ)
+     &                     ZR(LVEC),NEQ)
               DO 33 IMET = 1,NFREQ
                  ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
                  ZI(LRESUI-1+IMET) = IMET
@@ -797,11 +787,11 @@ C NOMBRE DE MODES CONVERGES
 C        --- CAS AVEC AMORTISSEMENT : PROBLEME QUADRATIQUE ---
 
          CALL WP2INI(APPR,LMASSE,LAMOR,LRAIDE,LMATRA,LMTPSC,SIGMA,
-     +                  ZR(IADRH),ZR(IADRB),OPTIOF,PRORTO,NBORTO,NBVECT,
-     +                  NEQ,ZI(LPROD),ZI(LDDL),ZR(LDIAGR),ZR(LSURDR),
-     +                  ZR(LSIGN),ZR(IADX),ZR(IADY))
+     &                  ZR(IADRH),ZR(IADRB),OPTIOF,PRORTO,NBORTO,NBVECT,
+     &                  NEQ,ZI(LPROD),ZI(LDDL),ZR(LDIAGR),ZR(LSURDR),
+     &                  ZR(LSIGN),ZR(IADX),ZR(IADY))
          CALL VP2TRD('Q',NBVECT,ZR(LDIAGR),ZR(LSURDR),ZR(LSIGN),
-     +                  ZR(IADZ),NITV,NITQRM)
+     &                  ZR(IADZ),NITV,NITQRM)
          NPIVOT = NBLAGR
          NFREQ  = NFREQ / 2
          CALL WP2VEC(APPR,OPTIOF,NFREQ,NBVECT,NEQ,SIGMA,ZR(IADX),
@@ -955,13 +945,12 @@ C     --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
       IF (OPTIOF.EQ.'BANDE') THEN
          DO 110 IFREQ = MFREQ - 1,0
             IF (ZR(LRESUR+MXRESF+IFREQ).GT.OMEMAX .OR.
-     +          ZR(LRESUR+MXRESF+IFREQ).LT.OMEMIN ) THEN
+     &          ZR(LRESUR+MXRESF+IFREQ).LT.OMEMIN ) THEN
                 NCONV = NCONV - 1
             ENDIF
 110      CONTINUE
          IF (MFREQ.NE.NCONV) THEN
-            CALL UTMESS('I','OP0045.20','AU MOINS UNE FREQUENCE '//
-     +                  'CALCULEE EXTERIEURE A LA BANDE DEMANDEE')
+            CALL U2MESS('I','ALGELINE2_17')
          ENDIF
       ENDIF
 
@@ -1016,8 +1005,7 @@ C     ------------------------------------------------------------------
          OPTIOV = OPTIOF
          IF ((LAMOR.NE.0).OR.(KTYP.EQ.'C')) THEN
             OPTIOV = ' '
-            CALL UTMESS('I','OP0045.23','PAS DE VERIFICATION PAR '//
-     +                  'STURM POUR LE PROBLEME QUADRATIQUE')
+            CALL U2MESS('I','ALGELINE2_73')
          ENDIF
       ENDIF
 
@@ -1032,11 +1020,11 @@ C     ------------------------------------------------------------------
       CALL GETVTX('VERI_MODE','STOP_ERREUR',1,1,1,OPTIOV,LMF)
 
       IF ((OPTIOV.EQ.'OUI').AND.(IERX.NE.0)) THEN
-         CALL UTMESS('F','OP0045',' ERREUR DE VERIFICATION ')
+         CALL U2MESS('F','ALGELINE2_74')
       ENDIF
 
       IF (FLAGE)
-     &  CALL UTMESS('F','VPSORN','CONCLUSION DU UTMESS-E PRECEDENT')
+     &  CALL U2MESS('F','ALGELINE2_75')
 
 C     ------------------------------------------------------------------
 C     ----------- DESTRUCTION DES AUXILLIAIRES DE CALCUL  --------------

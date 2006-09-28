@@ -1,6 +1,6 @@
       SUBROUTINE PCLDLT(MATF,MAT,NIREMP,BAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,10 +94,7 @@ C     ------------------------------------------
       NU = ZK24(JREFA-1+2)
 
       CALL JEEXIN(NU//'.SMOS.SMDI',IRET)
-      IF (IRET.EQ.0) CALL UTMESS('F','PCLDLT',
-     &                           'LA MATR_ASSE '//MATAS//' N"EST '//
-     &                           'PAS STOCKEE "MORSE" LE GCPC'//
-     &                           ' EST DONC IMPOSSIBLE.')
+      IF (IRET.EQ.0) CALL U2MESK('F','ALGELINE3_21',1,MATAS)
 
       CALL JEVEUO(NU//'.SMOS.SMDI','L',JSMDI)
       CALL JEVEUO(NU//'.SMOS.SMHC','L',JSMHC)
@@ -106,15 +103,10 @@ C     ------------------------------------------
       NCOEF = ZI(JSMDE-1+2)
 
       NBLC = ZI(JSMDE-1+3)
-      IF (NBLC.NE.1) CALL UTMESS('F','PCLDLT','CONFLIT UNE MATRICE'//
-     &                         ' STOCKEE MORSE NE PEUT AVOIR QU"UN BLOC'
-     &                           )
+      IF (NBLC.NE.1) CALL U2MESS('F','ALGELINE3_22')
 
       CALL JELIRA(JEXNUM(MATAS//'.VALM',1),'TYPE',IBID,TYSCA)
-      IF (TYSCA.EQ.'C') CALL UTMESS('F','PCLDLT',
-     &                              ' LE PRECONDITIONNEMENT '//
-     &            'LDLT_INC D"UNE MATRICE COMPLEXE N"EST PAS IMPLEMENTE'
-     &                              )
+      IF (TYSCA.EQ.'C') CALL U2MESS('F','ALGELINE3_23')
 
 
 
@@ -173,7 +165,7 @@ C     ------------------------------------------------
         IF (IER.EQ.0) GO TO 7779
         NZMAX=IER
 7778  CONTINUE
-      CALL UTMESS('F','PLDLT','STOP 1:ERREUR PROGRAMATION.')
+      CALL U2MESS('F','ALGELINE3_24')
 7779  CONTINUE
 
 

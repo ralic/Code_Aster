@@ -1,5 +1,5 @@
       SUBROUTINE OPTIMW(METHOD,NRUPT,X,Y,PROB,SIGW,NT,NUR,NBRES,CALM,
-     +                  CALS,MK,SK,MKP,SKP,IMPR,IFM,DEPT,INDTP,NBTP)
+     &                  CALS,MK,SK,MKP,SKP,IMPR,IFM,DEPT,INDTP,NBTP)
       IMPLICIT NONE
       INTEGER       NRUPT,NT(*),NBRES,NUR(*),IR,INDTP(*),NBTP,IFM
       REAL*8        X(*),Y(*),SIGW(*),MK,SK(*),MKP,SKP(*),PROB(*)
@@ -7,37 +7,37 @@
       LOGICAL       CALM,CALS,IMPR,DEPT
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/06/2001   AUTEUR T2BAXJM R.MASSON 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ----------------------------------------------------------------
 C     AUTEUR : M. BONNAMY
 C     ----------------------------------------------------------------
 C
-C     BUT: CALCUL DE RECALAGE DES PARAMETRES DE WEIBULL 
+C     BUT: CALCUL DE RECALAGE DES PARAMETRES DE WEIBULL
 C
 C     ----------------------------------------------------------------
 C
 C     METHOD       /IN/:METHODE DE CALAGE
 C     NRUPT        /IN/:NOMBRE TOTAL DE CONTRAINTES DE WEIBULL
 C     SIGW         /IN/:CONTRAINTES DE WEIBULL AUX INSTANTS DE RUPTURE
-C     NT           /IN/:DIMENSION DE LA SOUS-BASE CORRESPONDANT A LA 
+C     NT           /IN/:DIMENSION DE LA SOUS-BASE CORRESPONDANT A LA
 C                       TEMPERATURE T
-C     NUR          /IN/:NUMERO DE RESULTAT ASSOCIEE A 
+C     NUR          /IN/:NUMERO DE RESULTAT ASSOCIEE A
 C                       LA CONTRAINTE SIGW(I)
 C     NBRES        /IN/:NOMBRE DE BASES DE RESULTATS
 C     MK           /IN/:PARAMETRE M(K)DE WEIBULL
@@ -94,9 +94,9 @@ C
           SXIXJ = 0.D0
 C
           DO 20 I=1,NRUPT
-C        
+C
            DO 30 J=1,NRUPT
-C  
+C
              SXIYJ = SXIYJ + X(I)*Y(J)
              SXIXJ = SXIXJ + X(I)*X(J)
 C
@@ -109,7 +109,7 @@ C
 C
           IF ((.NOT.CALM).AND.(.NOT.CALS)) THEN
             MKP = (UNSURN*SXIYJ-SXIYI) /
-     +               ( UNSURN*SXIXJ-SXIXI )
+     &               ( UNSURN*SXIXJ-SXIXI )
             SKP(1) = EXP ( UNSURN*(SXI- (1.D0/MKP)*SYI) )
           ELSE IF (CALM) THEN
             MKP = MK
@@ -122,14 +122,14 @@ C
 C
           SXI =0.D0
           DO 40 J=1,NRUPT
-C  
+C
              PROV = (1.D0-EXP(-(SIGW(J)/SK(1))**MK))
              IF (PROV.NE.1.D0) PROV = LOG ( LOG (1.D0/(1.D0-PROV) ) )
              SXI = SXI + (Y(J)- PROV)**2
 C
 40        CONTINUE
           IF (IMPR) WRITE(IFM,*)
-     +     'ECART THEORIE-EXPERIENCE AU DEBUT DE L''ITERATION : ',SXI
+     &     'ECART THEORIE-EXPERIENCE AU DEBUT DE L''ITERATION : ',SXI
 C
         ELSE
 C
@@ -147,9 +147,9 @@ C
             IF (INDTP(IR).EQ.ITP) SNT = SNT + NT(IR)
 C
  120      CONTINUE
-C                 
+C
             DO 130 I=1,NRUPT
-C      
+C
             IRG = 1
             DO 140 K=1,I-1
                IF (INDTP(NUR(K)).EQ.ITP) THEN
@@ -158,19 +158,19 @@ C
 140         CONTINUE
 
                IF (INDTP(NUR(I)).EQ.ITP) THEN
-C 
-                 PROB(I) = IRG               
+C
+                 PROB(I) = IRG
                  PROB(I) = PROB(I) / (SNT+1.D0)
                  Y(I) = LOG ( LOG ( 1.D0 / ( 1.D0-PROB(I)) ) )
-                 X(I) = LOG ( SIGW(I) )     
+                 X(I) = LOG ( SIGW(I) )
                  SXIXI = SXIXI + X(I)*X(I)
                  SXIYI = SXIYI + X(I)*Y(I)
 
                END IF
 C
 130         CONTINUE
-C  
- 110      CONTINUE    
+C
+ 110      CONTINUE
 C
           S1 = 0.D0
           S2 = 0.D0
@@ -188,9 +188,9 @@ C
  200      CONTINUE
 C
           DO 300 I=1,NRUPT
-C                 
+C
             DO 400 J=1,NRUPT
-C  
+C
                IF (INDTP(NUR(I)).EQ.ITP.AND.INDTP(NUR(J)).EQ.ITP) THEN
                  SXIYJ = SXIYJ + X(I)*Y(J)
                  SXIXJ = SXIXJ + X(I)*X(J)
@@ -198,11 +198,11 @@ C
 C
 400         CONTINUE
 C
-300       CONTINUE      
-          S1 = S1 + SXIYJ/SNT 
+300       CONTINUE
+          S1 = S1 + SXIYJ/SNT
           S2 = S2 + SXIXJ/SNT
-C  
- 210      CONTINUE               
+C
+ 210      CONTINUE
 C
           IF ((.NOT.CALM)) THEN
            MKP = (S1-SXIYI) / ( S2-SXIXI )
@@ -213,8 +213,8 @@ C
           IF (IMPR) WRITE(IFM,*) 'M(K) =',MKP
 C
           IF ( ((.NOT.CALM).AND.(.NOT.CALS)) .OR. CALM) THEN
-C 
-C          (M ET SIGMA-U) OU (SIGMA-U) SONT A RECALER 
+C
+C          (M ET SIGMA-U) OU (SIGMA-U) SONT A RECALER
 C
            DO 211 ITP=1,NBTP
 C
@@ -247,7 +247,7 @@ C
 
            DO 301 IR = 1, NBTP
 
-             SKP(IR) = SK(IR)       
+             SKP(IR) = SK(IR)
              IF (IMPR) WRITE(IFM,*) 'S(K) (',IR,')=',SKP(IR)
 
  301       CONTINUE
@@ -261,8 +261,8 @@ C
 C        METHODE DU MAXIMUM DE VRAISSEMBLANCE
 C
          IF ((.NOT.CALM).AND.(.NOT.CALS)) THEN
-C 
-C        M ET SIGMA-U SONT A RECALER 
+C
+C        M ET SIGMA-U SONT A RECALER
 C
            PREC = 1.D-8
            MG = 1.D0
@@ -275,7 +275,7 @@ C
 C          RESOLUTION DE L'EQUATION NON LINEAIRE F(M)=0
 C
            CALL NTWEIB(NRUPT,CALS,SK,SIGW,NUR,NT,NBRES,MG,MD,PREC,MKP,
-     +                 IMPR,IFM,INDTP,NBTP)
+     &                 IMPR,IFM,INDTP,NBTP)
 C
            UNSURM = 1.D0/MKP
 C
@@ -285,27 +285,27 @@ C
 C
              SNT = 0.D0
              DO 11 IR=1 , NBRES
-C     
+C
              IF (INDTP(IR).EQ.ITP) SNT = SNT + NT(IR)
 C
  11          CONTINUE
 C
              SWM   = 0.D0
              DO 31 I=1,NRUPT
-C  
+C
                IF (INDTP(NUR(I)).EQ.ITP) THEN
                 SWM = SWM +  SIGW(I) ** MKP
                END IF
 C
- 31         CONTINUE 
-C       
+ 31         CONTINUE
+C
             SKP(ITP) = ( SWM / SNT ) ** ( UNSURM )
 C
  12        CONTINUE
 C
          ELSE IF (CALM) THEN
 C
-C        M EST CALE 
+C        M EST CALE
 C
            MKP = MK
            UNSURM = 1.D0/MKP
@@ -319,23 +319,23 @@ C
 C
              SWM   = 0.D0
              DO 41 I=1,NRUPT
-C  
+C
                IF (INDTP(NUR(I)).EQ.ITP) THEN
                 SWM = SWM +  SIGW(I) ** MKP
                END IF
 C
- 41          CONTINUE 
-C       
+ 41          CONTINUE
+C
              SKP(ITP) = ( SWM / SNT ) ** ( UNSURM )
 C
  52        CONTINUE
-C 
+C
          ELSE IF (CALS) THEN
 C
-C        SIGMA-U EST CALE 
+C        SIGMA-U EST CALE
 C
           DO 71 IR = 1, NBTP
-             SKP(IR) = SK(IR)       
+             SKP(IR) = SK(IR)
  71        CONTINUE
            PREC = 1.D-8
            MG = 1.D0
@@ -345,7 +345,7 @@ C          RESOLUTION DE L'EQUATION NON LINEAIRE F(M)=0
 C
            IF (IMPR) WRITE(IFM,*) 'RESOLUTION F(M)=0 PAR NEWTON'
            CALL NTWEIB(NRUPT,CALS,SK,SIGW,NUR,NT,NBRES,
-     +                 MG,MD,PREC,MKP,IMPR,IFM,INDTP,NBTP)
+     &                 MG,MD,PREC,MKP,IMPR,IFM,INDTP,NBTP)
 C
          END IF
 C
@@ -359,9 +359,7 @@ C
       END IF
 C
       IF (MKP.LT.1.D0) THEN
-        CALL UTMESS('S','OPTIMW','ARRET DE LA PROCEDURE DE RECALAGE : '
-     +   // 'LE PARAMETRE M EST DEVENU TROP PETIT (M<1) , VERIFIEZ '
-     +   // 'VOS LISTES D''INSTANTS DE RUPTURE')
-      END IF            
-C 
+        CALL U2MESS('S','UTILITAI3_36')
+      END IF
+C
       END

@@ -1,6 +1,6 @@
       SUBROUTINE JELIRA ( NOMLU , CATR , IVAL , CVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,11 +33,11 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -52,7 +52,7 @@ C     ------------------------------------------------------------------
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
 C
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
@@ -61,11 +61,11 @@ C
       COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       CHARACTER*75     CMESS
       CHARACTER*32     NOM32 , NOML32
@@ -89,7 +89,7 @@ C
       IC = ICLAS
       IF ( IRET .EQ. 0 ) THEN
         CMESS = 'OBJET INEXISTANT DANS LES BASES OUVERTES'
-        CALL JVMESS( 'S' , 'JELIRA01' , CMESS)
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE IF ( IRET .EQ. 1 ) THEN
         LCOL = .FALSE.
         IC = ICLAOS
@@ -99,7 +99,7 @@ C
         IF ( NOML32(25:32) .NE. '        ' ) THEN
           CMESS = 'APPEL INVALIDE POUR L''OBJET SIMPLE >'//NOML32(1:24)
      &            //'<'
-          CALL JVMESS ( 'S' , 'JELIRA02' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ENDIF
       ELSE
         LCOL = .TRUE.
@@ -111,7 +111,7 @@ C
            CALL JJCROC ( NOML32(25:32) , ICRE )
            IF ( IDATOC .EQ. 0 ) THEN
              CMESS = ' OBJET DE COLLECTION INEXISTANT : '
-             CALL JVMESS ( 'S', 'JELIRA03', CMESS )
+             CALL U2MESK('S','JEVEUX_01',1,CMESS)
            ENDIF
         ENDIF
         IXDESO  = ISZON ( JISZON + IBACOL + IDDESO )
@@ -188,13 +188,13 @@ C
       LLONG = ( CATRLU(4:6) .EQ. 'MAX' )
       LLUTI = ( CATRLU(4:6) .EQ. 'UTI' )
       IF( (GENRI .NE. 'N'          .AND. CATRLU(1:3).EQ. 'NOM')  .OR.
-     +    (INDEX('CRS',GENRI).EQ.0 .AND. CATRLU(1:3).EQ. 'NOL')  .OR.
-     +    (GENRI .NE. 'R'          .AND. CATRLU(1:3).EQ. 'NOC')  .OR.
-     +    (INDEX('EV' ,GENRI).EQ.0 .AND. CATRLU(1:4).EQ. 'LONM') .OR.
-     +    (INDEX('EV' ,GENRI).EQ.0 .AND. CATRLU(1:4).EQ. 'LONU') ) THEN
+     &    (INDEX('CRS',GENRI).EQ.0 .AND. CATRLU(1:3).EQ. 'NOL')  .OR.
+     &    (GENRI .NE. 'R'          .AND. CATRLU(1:3).EQ. 'NOC')  .OR.
+     &    (INDEX('EV' ,GENRI).EQ.0 .AND. CATRLU(1:4).EQ. 'LONM') .OR.
+     &    (INDEX('EV' ,GENRI).EQ.0 .AND. CATRLU(1:4).EQ. 'LONU') ) THEN
         CMESS= 'NOM D''ATTRIBUT >'//CATRLU//
-     +         '< INCOMPATIBLE AVEC LE GENRE '//GENRI
-        CALL JVMESS ( 'S' , 'JELIRA04' , CMESS )
+     &         '< INCOMPATIBLE AVEC LE GENRE '//GENRI
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
 C
       IF      ( CATRLU .EQ. 'CLAS    ' ) THEN
@@ -304,7 +304,7 @@ C
           ENDIF
         ELSE
           CMESS=' ATTRIBUT >'//CATRLU//'< ERRONE OU NON ACCESSIBLE'
-          CALL JVMESS ( 'S' , 'JELIRA05' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ENDIF
       ENDIF
  100  CONTINUE

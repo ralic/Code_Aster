@@ -1,30 +1,30 @@
       SUBROUTINE JJLCHD (ID, IC, IDFIC, IDTS, NGRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/11/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C LECTURE SUR FICHIER HDF D'UNE COLLECTION PUIS LIBERATION
 C
 C IN  ID    : IDENTIFICATEUR DE COLLECTION
-C IN  IC    : CLASSE ASSOCIEE 
+C IN  IC    : CLASSE ASSOCIEE
 C IN  IDFIC : IDENTIFICATEUR DU FICHIER HDF
-C IN  IDTS  : IDENTIFICATEUR DU DATASET ASSOCIE A LA COLLECTION 
-C IN  NGRP  : NOM DU GROUPE CONTENANT LE DATASET IDTS 
+C IN  IDTS  : IDENTIFICATEUR DU DATASET ASSOCIE A LA COLLECTION
+C IN  NGRP  : NOM DU GROUPE CONTENANT LE DATASET IDTS
 C
 C ----------------------------------------------------------------------
 C TOLE CRP_18 CRS_508 CRS_512 CRS_513
@@ -41,19 +41,19 @@ C ----------------------------------------------------------------------
       INTEGER          N
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       INTEGER          JLTYP   , JLONG   , JDATE   , JIADD   , JIADM   ,
-     +                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ  
+     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
       CHARACTER*8      ORIG
       CHARACTER*32     RNOM
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
-      INTEGER          JGENR   , JTYPE   , JDOCU   , JORIG   , JRNOM   
+      INTEGER          JGENR   , JTYPE   , JDOCU   , JORIG   , JRNOM
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
@@ -74,11 +74,11 @@ C
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
@@ -105,7 +105,7 @@ C DEB ------------------------------------------------------------------
       GENRI  = GENR (JGENR(IC) + ID)
       TYPEI  = TYPE (JTYPE(IC) + ID)
       LTYPI  = LTYP (JLTYP(IC) + ID)
-      LON    = LONO (JLONO(IC) + ID) 
+      LON    = LONO (JLONO(IC) + ID)
       LONOI  = LON * LTYPI
       IADM (JIADM(IC) + ID) = 0
       IADD (JIADD(IC) + 2*ID-1) = 0
@@ -123,7 +123,7 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
           NOMO  = RNOM (JRNOM(IC) + IX)
           TYPEI = TYPE (JTYPE(IC) + IX)
           LTYPI = LTYP (JLTYP(IC) + IX)
-          LON   = LONO (JLONO(IC) + IX)  
+          LON   = LONO (JLONO(IC) + IX)
           LONOI = LON  * LTYPI
           IADD (JIADD(IC) + 2*IX-1) = 0
           IADD (JIADD(IC) + 2*IX  ) = 0
@@ -131,7 +131,7 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
             IDA = HDFOPD(IDFIC,NGRP,NOMO)
             IF ( IDA .LT. 0 ) THEN
               CMESS='IMPOSSIBLE D''ACCEDER AU DATASET ASSOCIE A'//NOMO
-              CALL JVMESS('F','JJLCHD01',CMESS)
+              CALL U2MESK('F','JEVEUX_01',1,CMESS)
             ENDIF
             IADMI = 0
             IF (K.EQ.IDIADM .OR. K.EQ.IDMARQ .OR. K.EQ.IDIADD) THEN
@@ -139,7 +139,7 @@ C --------- MISE EN MEMOIRE SANS LECTURE SUR FICHIER HDF
               CALL JJALLS(LONOI, GENRI, TYPEI, LTYPI, 'INIT',
      &                    ITAB, JCTAB, IADMI )
               CALL JJECRS (IADMI,IC,IX,0,'E',IMARQ(JMARQ(IC)+2*IX-1))
-            ELSE 
+            ELSE
 C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE SUR FICHIER HDF
               CALL JJLIHD (IDA,LON,LONOI,GENRI,TYPEI,LTYPI,
      &                     IC,IX,0,IMARQ(JMARQ(IC)+2*IX-1),IADMI)
@@ -147,7 +147,7 @@ C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE SUR FICHIER HDF
             IADM(JIADM(IC)+IX) = IADMI
             IRET = HDFCLD(IDA)
           ELSE
-C-------- ON TRAITE UN REPERTOIRE DE NOMS           
+C-------- ON TRAITE UN REPERTOIRE DE NOMS
             IDGR=HDFOPG(IDFIC,NOMO)
             IDT1=HDFOPD(IDFIC,NOMO,NREP(1))
             IDT2=HDFOPD(IDFIC,NOMO,NREP(2))
@@ -179,7 +179,7 @@ C       RELECTURE DU $$DESO
         GENRI = GENR(JGENR(IC) + IXDESO)
         TYPEI = TYPE(JTYPE(IC) + IXDESO)
         LTYPI = LTYP(JLTYP(IC) + IXDESO)
-        LON   = LONO(JLONO(IC) + IXDESO)  
+        LON   = LONO(JLONO(IC) + IXDESO)
         LONOI = LON  * LTYPI
         NOMO  = RNOM(JRNOM(IC) + IXDESO)
         IDA = HDFOPD(IDFIC,NGRP,NOMO)
@@ -189,7 +189,7 @@ C       RELECTURE DU $$DESO
         IRET = HDFCLD(IDA)
       ELSE
 C       COLLECTION DISPERSEE, IL FAUT RELIRE LES OBJETS STOCKES SUR LE
-C       FICHIER HDF DANS LE GROUPE ASSOCIE ET UNIQUEMENT ACTUALISER LES 
+C       FICHIER HDF DANS LE GROUPE ASSOCIE ET UNIQUEMENT ACTUALISER LES
 C       ADRESSES MEMOIRE DANS L'OBJET SYSTEME $$IADM
         IBIADM = IADM(JIADM(IC)+IXIADM)
         IBMARQ = IADM(JIADM(IC)+IXMARQ)
@@ -209,7 +209,7 @@ C       ADRESSES MEMOIRE DANS L'OBJET SYSTEME $$IADM
             IBLONO = IADM  (JIADM(IC) + IXLONO)
             LONOI  = ISZON (JISZON + IBLONO - 1 + K) * LTYPI
           ENDIF
-          IF (LONOI .GT. 0) THEN 
+          IF (LONOI .GT. 0) THEN
             IDO=HDFOPD(IDFIC,NGRC,NOMO)
             IRET=HDFTSD(IDO,TYPEB,LTYPB,LON)
             CALL JJLIHD (IDO,LON,LONOI,GENRI,TYPEI,LTYPI,
@@ -219,7 +219,7 @@ C       ADRESSES MEMOIRE DANS L'OBJET SYSTEME $$IADM
             CALL JJLIDE ('JELIBE' , RNOM(JRNOM(IC)+ID)//'$$XNUM  ' , 2)
             IRET = HDFCLD(IDO)
           ENDIF
-30      CONTINUE          
+30      CONTINUE
         IRET = HDFCLG(IDGC)
       ENDIF
       CALL JJLIDE ('JELIBE',RNOM(JRNOM(IC)+ID),2)

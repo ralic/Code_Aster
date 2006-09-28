@@ -2,27 +2,27 @@
      &                    THVRAI, CHTEMP )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/03/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C     BUT:
 C     ON CONSTRUIT UN CHAMP DE TEMPERATURE OU SA DERIVEE LAGRANGIENNE
-C     AVEC LE CONCEPT : TEMPE ET LE TEMPS TIME, 
+C     AVEC LE CONCEPT : TEMPE ET LE TEMPS TIME,
 C     SOIT PAR INTERPOLATION, SOIT PAR SIMPLE RECOPIE
 C     SI L'INSTANT EST VOISIN D'UN PAS DE TEMPS CALCULE.
 C
@@ -83,11 +83,11 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'MTEMP2' )
 C
-      INTEGER NBCHAM,IERD,ICORET,IRET,IBID      
+      INTEGER NBCHAM,IERD,ICORET,IRET,IBID
       CHARACTER*1 BASE
       CHARACTER*19 CHTRE2,CH19
       CHARACTER*16 NOMCHA,TABTYP(4)
-      
+
 
       BASE   = 'V'
       CHTRE2 = CHTREF
@@ -109,8 +109,7 @@ C
           K8BID = TEMPE
           CALL PSRENC ( K8BID, NOPASE, TEMPE, IRET )
           IF ( IRET.NE.0 ) THEN
-            CALL UTMESS('F', NOMPRO,' ON NE TROUVE PAS LE RESULTAT '//
-     >                 'DERIVE ASSOCIE A '//K8BID)
+            CALL U2MESK('F','CALCULEL3_80',1,K8BID)
           ENDIF
         ENDIF
 
@@ -121,27 +120,22 @@ C           ----------------------------
      &                  K8BID,IERD)
             IF (NBCHAM.GT.0) THEN
                IF ( .NOT.EXITIM ) THEN
-                 CALL UTMESS('I',NOMPRO,
-     &                        'L''INSTANT DU CALCUL EST PRIS '//
-     &                        ' ARBITRAIREMENT A 0.0 ')
+                 CALL U2MESS('I','CALCULEL3_64')
                   TIME2 = 0.0D0
                   IF (NBCHAM.GT.1) THEN
-                     CALL UTMESS('F',NOMPRO,
-     &                           ' ON N''ACCEPTE UN INSTANT ARBITRAIRE'
-     &                           //' QUE SI LE CONCEPT TEMPERATURE N''A'
-     &                           //' QU''1 CHAMP.')
+                     CALL U2MESS('F','CALCULEL3_75')
                   END IF
                ELSE
                   TIME2 = TIME
                END IF
-               
+
 C DETERMINATION DU TYPE DE CHAMP A RECUPERER
                NOMCHA = 'TEMP'
 
 C              RECUPERATION DU CHAMP DE TEMPERATURE DANS TEMPE:
 C              ------------------------------------------------
                CALL RSINCH(TEMPE(1:8),NOMCHA,'INST',TIME2,CHTEMP(1:19),
-     &                     'CONSTANT','CONSTANT',1,BASE,ICORET) 
+     &                     'CONSTANT','CONSTANT',1,BASE,ICORET)
                IF (ICORET.GE.10) THEN
                  CALL UTDEBM('F',NOMPRO,'INTERPOLATION TEMPERATURE:')
                   CALL UTIMPK('L','EVOL_THER:',1,TEMPE(1:8))
@@ -152,9 +146,7 @@ C              ------------------------------------------------
                END IF
 
             ELSE
-              CALL UTMESS('F',NOMPRO,' LE CONCEPT EVOL_THER : '//
-     &                     TEMPE(1:8)//
-     &                     ' NE CONTIENT AUCUN CHAMP DE TEMPERATURE.')
+              CALL U2MESK('F','CALCULEL3_76',1,TEMPE(1:8))
             END IF
 
          ELSE IF ((TYSD(1:5).EQ.'CHAM_') .OR.
@@ -170,7 +162,7 @@ C           -----------------------------------
             CALL JEDETR(CHTEMP(1:19)//'.TITR')
 
          ELSE
-           CALL UTMESS('F',NOMPRO,'2')
+           CALL U2MESS('F','UTILITAI_67')
          END IF
       ELSE
          THVRAI = .FALSE.
@@ -181,8 +173,7 @@ C        ------------------------------------------------------------
          IF (CHTRE2(1:1).NE.' ') THEN
             CALL EXISD('CHAMP_GD',CHTRE2,IRET)
             IF (IRET.EQ.0) THEN
-              CALL UTMESS ('F',NOMPRO,
-     &            'TEMPERATURE DE REFERENCE A PROBLEME.')
+              CALL U2MESS('F','CALCULEL3_78')
             END IF
             CALL COPISD('CHAMP_GD','V',CHTRE2(1:19),CHTEMP(1:19))
          ELSE

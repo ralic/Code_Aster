@@ -4,22 +4,22 @@
       LOGICAL       GRILLE
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C --- EFFORTS GENERALISES D'ORIGINE THERMIQUE AUX NOEUDS
@@ -78,23 +78,22 @@ C     -----------------
       IF (NOMTE(1:8).EQ.'MEGRDKT ') GRILLE = .TRUE.
 
       IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
-     +    NOMTE(1:8).EQ.'MEGRDKT ' .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
+     &    NOMTE(1:8).EQ.'MEGRDKT ' .OR. NOMTE(1:8).EQ.'MEDKTG3 ') THEN
          NNO = 3
       ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+     &         NOMTE(1:8).EQ.'MEDKQG4 ' .OR.
+     &         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     &         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
          NNO = 4
       ELSE
-         CALL UTMESS('F','DXEFNT','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
-     +                'N''EST PAS PREVU.')
+         CALL U2MESK('F','ELEMENTS_14',1,NOMTE(1:8))
       END IF
 
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
 
       IF ((PHENOM.EQ.'ELAS') .OR. (PHENOM.EQ.'ELAS_COQUE') .OR.
-     +    (PHENOM.EQ.'ELAS_COQMU')) THEN
+     &    (PHENOM.EQ.'ELAS_COQMU')) THEN
 
 C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
 C --- DE L'EPAISSEUR DE LA COQUE
@@ -109,7 +108,7 @@ C --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 C --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 C     ----------------------------------------------------
         CALL DXMATH(EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,INDITH,GRILLE,
-     +                                             T2EV,T2VE,T1VE)
+     &                                             T2EV,T2VE,T1VE)
         IF (INDITH.EQ.-1) GO TO 30
 
 C --- BOUCLE SUR LES NOEUDS
@@ -126,17 +125,17 @@ C          ----------------------------------------
           COE2 = (TSUP(INO)-TINF(INO))/EPAIS
 
           SIGT(1+8* (INO-1)) = COE1* (DM(1,1)+DM(1,2)) +
-     +                         COE2* (DMF(1,1)+DMF(1,2))
+     &                         COE2* (DMF(1,1)+DMF(1,2))
           SIGT(2+8* (INO-1)) = COE1* (DM(2,1)+DM(2,2)) +
-     +                         COE2* (DMF(2,1)+DMF(2,2))
+     &                         COE2* (DMF(2,1)+DMF(2,2))
           SIGT(3+8* (INO-1)) = COE1* (DM(3,1)+DM(3,2)) +
-     +                         COE2* (DMF(3,1)+DMF(3,2))
+     &                         COE2* (DMF(3,1)+DMF(3,2))
           SIGT(4+8* (INO-1)) = COE2* (DF(1,1)+DF(1,2)) +
-     +                         COE1* (DMF(1,1)+DMF(1,2))
+     &                         COE1* (DMF(1,1)+DMF(1,2))
           SIGT(5+8* (INO-1)) = COE2* (DF(2,1)+DF(2,2)) +
-     +                         COE1* (DMF(2,1)+DMF(2,2))
+     &                         COE1* (DMF(2,1)+DMF(2,2))
           SIGT(6+8* (INO-1)) = COE2* (DF(3,1)+DF(3,2)) +
-     +                         COE1* (DMF(3,1)+DMF(3,2))
+     &                         COE1* (DMF(3,1)+DMF(3,2))
    20   CONTINUE
 
       END IF

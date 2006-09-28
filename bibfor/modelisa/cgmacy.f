@@ -1,21 +1,21 @@
       SUBROUTINE CGMACY (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
 C.======================================================================
@@ -114,9 +114,7 @@ C     ----------------------------------------
       ENDIF
 C
       IF (NDIM.NE.3) THEN
-          CALL UTMESS('F','CGMACY','L''OPTION CYLINDRE '//
-     +                   'DE CREA_GROUP_MA N''EST UTILISABLE'//
-     +                   ' QU''EN 3D.')
+          CALL U2MESS('F','MODELISA3_73')
       ENDIF
 C
 C --- RECUPERATION DES COORDONNES DES NOEUDS DU MAILLAGE :
@@ -134,15 +132,11 @@ C --- RECUPERATION DU RAYON DU CYLINDRE :
 C     ---------------------------------
       CALL GETVR8(MOTFAC,'RAYON',IOCC,1,0,RAYON,NRAYON)
       IF (NRAYON.EQ.0) THEN
-          CALL UTMESS('F','CGMACY','ON DOIT UTILISER '//
-     +                'OBLIGATOIREMENT LE MOT-CLE RAYON '//
-     +                'POUR DEFINIR LE RAYON DU CYLINDRE. ')
+          CALL U2MESS('F','MODELISA3_74')
       ELSE
          CALL GETVR8(MOTFAC,'RAYON',IOCC,1,1,RAYON,NB)
          IF (RAYON.LE.ZERO) THEN
-             CALL UTMESS('F','CGMACY','ON DOIT DONNER '//
-     +                   'UN RAYON STRICTEMENT POSITIF POUR '//
-     +                   'DEFINIR LA CYLINDRE. ')
+             CALL U2MESS('F','MODELISA3_75')
          ENDIF
       ENDIF
 C
@@ -152,18 +146,11 @@ C     ----------------------------------------------------------
       IF (NANGLE.EQ.0) THEN
           CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,0,R8BID,NVECT)
           IF (NVECT.EQ.0) THEN
-              CALL UTMESS('F','CGMACY','ON DOIT UTILISER '//
-     +                    'OBLIGATOIREMENT LE MOT-CLE ANGL_NAUT '//
-     +                   'OU LE MOT-CLE VECT_NORMALE POUR L''OPTION '//
-     +                   'CYLINDRE DE CREA_GROUP_MA')
+              CALL U2MESS('F','MODELISA3_76')
           ELSE
              NVECT = -NVECT
              IF (NVECT.NE.3) THEN
-                CALL UTMESS('F','CGMACY','POUR L''OPTION '//
-     +                        'CYLINDRE DE CREA_GROUP_MA, IL FAUT '//
-     +                        ' DEFINIR LES 3 COMPOSANTES DU VECTEUR'//
-     +                        ' ORIENTANT L''AXE DU CYLINDRE QUAND'//
-     +                        ' ON UTILISE LE MOT CLE VECT_NORMALE.')
+                CALL U2MESS('F','MODELISA3_77')
               ELSE
                  CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,NVECT,AXE,NV)
               ENDIF
@@ -171,10 +158,7 @@ C     ----------------------------------------------------------
       ELSE
           NANGLE = -NANGLE
           IF (NANGLE.NE.2) THEN
-             CALL UTMESS('F','CGMACY','POUR L''OPTION '//
-     +                     'CYLINDRE DE CREA_GROUP_MA, IL FAUT '//
-     +                     'DEFINIR LES 2 ANGLES NAUTIQUES QUAND '//
-     +                     'ON UTILISE LE MOT CLE "ANGL_NAUT".')
+             CALL U2MESS('F','MODELISA3_78')
           ENDIF
           CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,NANGLE,ANGLE,NV)
 C
@@ -189,9 +173,7 @@ C
       XNORM2 = AXE(1)*AXE(1) + AXE(2)*AXE(2) + AXE(3)*AXE(3)
 C
       IF (XNORM2.EQ.ZERO) THEN
-          CALL UTMESS('F','CGMACY','ERREUR DANS LA DONNEE DU '//
-     +                   'VECTEUR ORIENTANT L''AXE DU CYLINDRE,'//
-     +                   'CE VECTEUR EST NUL.')
+          CALL U2MESS('F','MODELISA3_79')
       ENDIF
 C
       XNORM = SQRT(XNORM2)
@@ -226,7 +208,7 @@ C ---     RECUPERATION DU NOMBRE DE CONNECTIVITES DE LA MAILLE :
 C         ----------------------------------------------------
            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',NOMAIL),IBID)
            CALL JELIRA (JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',NBNO,
-     +                  K1BID)
+     &                  K1BID)
 C
 C ---     BOUCLE SUR LES CONNECTIVITES DE LA MAILLE :
 C         -----------------------------------------
@@ -268,7 +250,7 @@ C ---         CALCUL DE L'ANGLE FORME PAR L'AXE DU CYLINDRE
 C ---         AVEC LE VECTEUR POSITION COURANT XX0 :
 C             ------------------------------------
                     PSCA = ABS(XX0(1)*AXE(1) + XX0(2)*AXE(2) +
-     +                         XX0(3)*AXE(3))
+     &                         XX0(3)*AXE(3))
                     IF (PSCA .GT.UN) THEN
                         PSCA = PSCA - EPS
                     ENDIF
@@ -278,8 +260,8 @@ C ---         CALCUL DE LA DISTANCE DU NOEUD COURANT A L'AXE
 C ---         DU CYLINDRE :
 C             -----------
                     D2 =  ((X(1)-X0(1))*(X(1)-X0(1))
-     +                   + (X(2)-X0(2))*(X(2)-X0(2))
-     +                   + (X(3)-X0(3))*(X(3)-X0(3)))*SIN(ANG)*SIN(ANG)
+     &                   + (X(2)-X0(2))*(X(2)-X0(2))
+     &                   + (X(3)-X0(3))*(X(3)-X0(3)))*SIN(ANG)*SIN(ANG)
 C
 C ---         SI LE NOEUD COURANT EST DANS LE CYLINDRE, ON AFFECTE
 C ---         LA MAILLE COURANTE A LA LISTE DE MAILLES QUI SERA

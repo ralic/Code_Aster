@@ -1,6 +1,6 @@
       SUBROUTINE TE0236(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,9 +59,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      CHARACTER*6 NOMPRO
 
-      PARAMETER (NOMPRO='TE0236')
       CHARACTER*2 CODRET
       REAL*8 BETA,DBETA,LAMBDA,THETA,DELTAT,TPG,CHAL,R8BID,DFDX(27),
      &       DFDY(27),DFDZ(27),POIDS,DTPGDX,DTPGDY,DTPGDZ,DIFF,TPSEC,
@@ -83,7 +81,7 @@ C====
       ELSE IF (OPTION(6:9).EQ.'THER') THEN
         LSENS = .FALSE.
       ELSE
-        CALL UTMESS('F','TE0236','OPTION DE CALCUL INVALIDE')
+        CALL U2MESS('F','ELEMENTS2_95')
       END IF
 
 C====
@@ -147,8 +145,7 @@ C SENSIBILITE PAR RAPPORT A RHO_CP
 C SENSIBILITE PAR RAPPORT A LAMBDA
           TETYPS = 1
         ELSE
-          CALL UTMESS('F',NOMPRO,'PB DETERMINATION '//
-     &                'SENSIBILITE MATERIAU THER_NL')
+          CALL U2MESS('F','ELEMENTS3_52')
         END IF
         IF (NIV.EQ.2) THEN
           WRITE (IFM,*) '   CPS/LAMBS :',CPS,LAMBS
@@ -160,9 +157,7 @@ C 2. CALCUL DE L'OPTION SI SECHAGE
 C====
 
       IF (ZK16(ICOMP) (1:5).EQ.'SECH_') THEN
-        IF (LSENS) CALL UTMESS('F',NOMPRO,
-     &                    'OPTION SENSIBILITE NON DEVELOPPEE EN SECHAGE'
-     &                         )
+        IF (LSENS) CALL U2MESS('F','ALGORITH9_67')
         IF (ZK16(ICOMP) (1:12).EQ.'SECH_GRANGER' .OR.
      &      ZK16(ICOMP) (1:10).EQ.'SECH_NAPPE') THEN
           CALL JEVECH('PTMPCHI','L',ISECHI)
@@ -175,7 +170,7 @@ C          ISECHI ET ISECHF SONT FICTIFS
         END IF
         DO 30 KP = 1,NPG1
           L = NNO*(KP-1)
-          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE, 
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
           TPG = 0.D0
           DTPGDX = 0.D0
@@ -208,9 +203,7 @@ C====
         CALL NTFCMA(ZI(IMATE),IFON)
         IF (ZK16(ICOMP) (1:9).EQ.'THER_HYDR') THEN
           LHYD = .TRUE.
-          IF (LSENS) CALL UTMESS('F',NOMPRO,
-     &                'OPTION SENSIBILITE NON DEVELOPPEE EN HYDRATATION'
-     &                           )
+          IF (LSENS) CALL U2MESS('F','ELEMENTS3_51')
           CALL JEVECH('PHYDRPM','L',IHYDR)
           DO 150 KP = 1,NPG1
              L = NNO*(KP-1)
@@ -219,7 +212,7 @@ C====
                 HYDRPG(KP)=HYDRPG(KP)+ZR(IHYDR)*ZR(IVF+L+I-1)
  160         CONTINUE
  150      CONTINUE
- 
+
           CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,
      &               'CHALHYDR', CHAL,CODRET,'FM')
         ELSE

@@ -1,5 +1,5 @@
       SUBROUTINE PMFD00()
-C MODIF MODELISA  DATE 15/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -143,14 +143,14 @@ C --- POUR LES AFFE_SECT
 
 C ---   RECHERCHE DE LONGUEUR MAXI
         CALL GETVEM(NOMA,'GROUP_MA','AFFE_SECT','GROUP_MA',IOC,1,0,K8B,
-     +              NGM)
+     &              NGM)
         CALL GETVEM(NOMA,'MAILLE','AFFE_SECT','MAILLE',IOC,1,0,K8B,NMA)
         NDGM = MAX(NDGM,-NGM)
         NDMA = MAX(NDMA,-NMA)
         CALL GETVEM(NOMA,'GROUP_MA_SECT','AFFE_SECT','GROUP_MA_SECT',
-     +              IOC,1,0,K8B,NGMS)
+     &              IOC,1,0,K8B,NGMS)
         CALL GETVEM(NOMA,'MAILLE_SECT','AFFE_SECT','MAILLE_SECT',IOC,1,
-     +              0,K8B,NMAS)
+     &              0,K8B,NMAS)
         NDGMS = MAX(NDGMS,-NGMS)
         NDMAS = MAX(NDMAS,-NMAS)
    10 CONTINUE
@@ -175,11 +175,12 @@ C ---     ON RECUPERE LE NOM EVENTUEL DE LA SECTION POUR LES MESSAGES
           ENDIF
           CALL CODENT(NBV,'G',KNBV)
           CALL UTMESS('F',CMD,'AFFE_FIBRE POUR "'//KNS//
-     +          '": IL Y A '//KNBV//' VALEURS POUR "VALE",'//
-     +          ' CE DEVRAIT ETRE UN MULTIPLE DE 3')
+     &          '": IL Y A '//KNBV//' VALEURS POUR "VALE",'//
+     &          ' CE DEVRAIT ETRE UN MULTIPLE DE 3')
+C        CALL U2MESK('F','MODELISA6_26', 2 ,VALK)
         END IF
         CALL GETVEM(NOMA,'GROUP_MA','AFFE_FIBRE','GROUP_MA',IOC,1,0,K8B,
-     +              NGM)
+     &              NGM)
         CALL GETVEM(NOMA,'MAILLE','AFFE_FIBRE','MAILLE',IOC,1,0,K8B,NMA)
         NDGM = MAX(NDGM,-NGM)
         NDMA = MAX(NDMA,-NMA)
@@ -208,7 +209,7 @@ C ---   VERIFICATION MAILLES TRIA3 ET QUAD4 UNIQUEMENT
         CALL JEVEUO(MLGTMS,'L',JDTM)
 C ---   NOMBRE DE FIBRES = NOMBRE DE MAILLES CONCERNEES
         CALL RELIEM(' ',NOMAS,'NU_MAILLE','AFFE_SECT',IOC,3,LIMCLS,
-     +              LTYMCL,'&&PMFD00.MAILLSEC',NMAILS)
+     &              LTYMCL,'&&PMFD00.MAILLSEC',NMAILS)
         NBFIB = NBFIB + NMAILS
         CALL JEVEUO('&&PMFD00.MAILLSEC','L',JMS)
         DO 30 J = 1,NMAILS
@@ -219,8 +220,9 @@ C ---   NOMBRE DE FIBRES = NOMBRE DE MAILLES CONCERNEES
               CALL CODENT(NUMMAI,'G',KNUMAI)
               CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),KTYMA)
               CALL UTMESS('F',CMD,'DANS LE MAILLAGE "'//NOMAS//
-     +                    '" LA MAILLE "'//KNUMAI//'" EST DE TYPE "'//
-     +                    KTYMA//'" (NI TRIA3 NI QUAD4)')
+     &                    '" LA MAILLE "'//KNUMAI//'" EST DE TYPE "'//
+     &                    KTYMA//'" (NI TRIA3 NI QUAD4)')
+C        CALL U2MESK('F','MODELISA6_27', 3 ,VALK)
             END IF
           ELSE
 C ---        ON DEDUIT LES SEG2 DU NB DE FIBRES
@@ -283,7 +285,7 @@ C --- RECUPERATION DES ADRESSES JEVEUX UTILES
 
 C ---  ON RECUPERE LES MAILLES DE LA SECTION CONCERNEES
         CALL RELIEM(' ',NOMAS,'NU_MAILLE','AFFE_SECT',IOC,3,LIMCLS,
-     +              LTYMCL,'&&PMFD00.MAILLSEC',NMAILS)
+     &              LTYMCL,'&&PMFD00.MAILLSEC',NMAILS)
         CALL JEVEUO('&&PMFD00.MAILLSEC','L',JMS)
         NBFIB = 0
         DO 70 J = 1,NMAILS
@@ -321,7 +323,7 @@ C ---   STOCKAGE DE DONNEES POUR DES VERIFICATIONS ULTERIEURES (2)
 
 C       ON RECUPERE LE NUMERO DE LA PREMIERE MAILLE
         CALL RELIEM(NOMO,NOMA,'NU_MAILLE','AFFE_SECT',IOC,2,LTYMCL,
-     +              LTYMCL,'&&PMFD00.MAILLSEP',NMAILP)
+     &              LTYMCL,'&&PMFD00.MAILLSEP',NMAILP)
         CALL JEVEUO('&&PMFD00.MAILLSEP','L',JMP)
         NUMMAI=ZI(JMP)
         ZI(IMASEC+IOC-1)=NUMMAI
@@ -343,7 +345,7 @@ C       DE LA MAILLE NUMMAI
  72           CONTINUE
             ENDIF
  71     CONTINUE
-         CALL UTMESS('F','PMFD00','STOP')
+         CALL U2MESS('F','CALCULEL_13')
  73     CONTINUE
 C       STOCKAGE DU NUMERO DE LA ZONE
         ZI(INZSEC+IOC-1)=IZONE
@@ -354,7 +356,7 @@ C       STOCKAGE DE L'AIRE ET DES INERTIES
         ZR(IDASEC+3*(IOC-1)+2)=CASECT(4)
 
 C  ---  VERIFICATIONS: CAS 'AFFE_SECT' EMPLOYE SANS 'AFFE_FIBRE' (3)
-       IF(NBOCCP.EQ.0)THEN      
+       IF(NBOCCP.EQ.0)THEN
 C       ON RECUPERE LES COMPOSANTES : A1 , IY1 , IZ1
         CALL JEVEUO(CARELE//'.CARGENPO  .VALE','L',IVALE)
         NBCOMA=31
@@ -375,7 +377,7 @@ C
      &                //' SUIVANT OZ EST NULLE')
         ENDIF
 C
-C       COMPARAISON DE LA SOMME DES AIRES DES FIBRES A L'AIRE DE 
+C       COMPARAISON DE LA SOMME DES AIRES DES FIBRES A L'AIRE DE
 C       LA SECTION DE LA POUTRE
         CALL GETVR8('POUTRE','PREC_AIRE',IOC,1,1,EPSA,IRET)
         ERRE=ABS(AIRPOU-CASECT(1))/AIRPOU
@@ -406,7 +408,7 @@ C       COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
      &                             1,CASECT(5))
                  CALL UTIMPR('L',' - ERREUR RELATIVE              : ',
      &                             1,ERRE)
-                 CALL UTFINM()   
+                 CALL UTFINM()
         ENDIF
         ERRE=ABS(MOINOZ-CASECT(4))/MOINOZ
         IF (ERRE.GT.EPSI)THEN
@@ -421,11 +423,11 @@ C       COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
      &                               1,CASECT(4))
                  CALL UTIMPR('L',' - ERREUR RELATIVE              : ',
      &                               1,ERRE)
-                 CALL UTFINM()   
+                 CALL UTFINM()
         ENDIF
 
         ENDIF
-C        
+C
 C --- ON AFFECTE LES ELEMENTS POUTRES CONCERNES PAR CE PAQUET DE FIBRES
 C --- POUR L'INSTANT : UN POINTEUR (SUR CARFIB) ET UN NB DE FIBRE POUR
 C     CHAQUE EL
@@ -499,7 +501,7 @@ C ---   STOCKAGE POUR UNE VERIFICATIONS ULTERIEURES(5)
 
 C       ON RECUPERE LE NUMERO DE LA PREMIERE MAILLE
         CALL RELIEM(NOMO,NOMA,'NU_MAILLE','AFFE_FIBRE',IOC,2,LTYMCL,
-     +              LTYMCL,'&&PMFD00.MAILLSEP',NMAILP)
+     &              LTYMCL,'&&PMFD00.MAILLSEP',NMAILP)
         CALL JEVEUO('&&PMFD00.MAILLSEP','L',JMP)
         NUMMAI=ZI(JMP)
 
@@ -520,7 +522,7 @@ C       DE LA MAILLE NUMMAI
  791           CONTINUE
             ENDIF
  790     CONTINUE
-         CALL UTMESS('F','PMFD00','STOP')
+         CALL U2MESS('F','CALCULEL_13')
  792     CONTINUE
 
 C       STOCKAGE DU NUMERO DE LA ZONE
@@ -529,7 +531,7 @@ C       STOCKAGE DU NUMERO DE LA ZONE
 C       STOCKAGE DE L'AIRE ET DES INERTIES
         ZR(IDAFIB+3*(IOC-1))=CASECT(1)
         ZR(IDAFIB+3*(IOC-1)+1)=CASECT(5)
-        ZR(IDAFIB+3*(IOC-1)+2)=CASECT(4)  
+        ZR(IDAFIB+3*(IOC-1)+2)=CASECT(4)
 
 C  ---  VERIFICATIONS: CAS 'AFFE_FIBRE' EMPLOYE SANS 'AFFE_SECT' (6)
         IF(NBOCCS.EQ.0)THEN
@@ -553,7 +555,7 @@ C
      &                 //' SUIVANT OZ EST NULLE')
          ENDIF
 C
-C       COMPARAISON DE LA SOMME DES AIRES DES FIBRES A L'AIRE DE 
+C       COMPARAISON DE LA SOMME DES AIRES DES FIBRES A L'AIRE DE
 C       LA SECTION DE LA POUTRE
         CALL GETVR8('POUTRE','PREC_AIRE',IOC,1,1,EPSA,IRET)
         ERRE=ABS(AIRPOU-CASECT(1))/AIRPOU
@@ -584,7 +586,7 @@ C       COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
      &                             1,CASECT(5))
                  CALL UTIMPR('L',' - ERREUR RELATIVE              : ',
      &                             1,ERRE)
-                 CALL UTFINM()   
+                 CALL UTFINM()
         ENDIF
         ERRE=ABS(MOINOZ-CASECT(4))/MOINOZ
         IF (ERRE.GT.EPSI)THEN
@@ -599,7 +601,7 @@ C       COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
      &                               1,CASECT(4))
                  CALL UTIMPR('L',' - ERREUR RELATIVE              : ',
      &                             1,ERRE)
-                 CALL UTFINM()   
+                 CALL UTFINM()
         ENDIF
         ENDIF
 
@@ -673,7 +675,7 @@ C     COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
      &                             1,VALCAL)
                  CALL UTIMPR('L',' - ERREUR RELATIVE              : ',
      &                             1,ERRE)
-                 CALL UTFINM()   
+                 CALL UTFINM()
               ENDIF
               VALCAL=ZR(IDASEC+3*(J-1)+2)+ZR(IDAFIB+3*(I-1)+2)
               ERRE=ABS(MOINOZ-VALCAL)/MOINOZ
@@ -689,9 +691,9 @@ C     COMPARAISON DES MOMENTS D'INERTIES : IY, IZ
      &                             1,VALCAL)
                  CALL UTIMPR('L',' - ERREUR RELATIVE              : ',
      &                             1,ERRE)
-                 CALL UTFINM()   
-              ENDIF    
-           ENDIF         
+                 CALL UTFINM()
+              ENDIF
+           ENDIF
  778    CONTINUE
  777  CONTINUE
       ENDIF
@@ -732,17 +734,17 @@ C     ----------------------------------------------------------
 
 
  1000 FORMAT(//,'DETAIL DES FIBRES SURFACIQUES DE LA SECTION "',A8,
-     +     '"',/,'NUMF       Y           Z         SURF')
+     &     '"',/,'NUMF       Y           Z         SURF')
  1001 FORMAT(I4,3(2X,D10.4))
  1002 FORMAT(/,'CARACTERISTIQUES GLOBALES DE LA SECTION "',A8,
-     +      '"',/,'(DANS LE REPERE LOCAL)',/,
-     +     '   AIRE        MS/0Z       MS/OY       MQ/OZ',
-     +     '       MQ/OY       MP/OYZ',/,D10.4,5(2X,D10.4))
+     &      '"',/,'(DANS LE REPERE LOCAL)',/,
+     &     '   AIRE        MS/0Z       MS/OY       MQ/OZ',
+     &     '       MQ/OY       MP/OYZ',/,D10.4,5(2X,D10.4))
  1003 FORMAT('POSITION DU CENTRE DE GRAVITE DE LA SECTION "',A8,'"',
-     +     /,'(PAR RAPPORT A L''AXE DEFINI POUR LA POUTRE)',/,
-     +     'CGY : ',D18.12,'    CGZ : ',D18.12)
+     &     /,'(PAR RAPPORT A L''AXE DEFINI POUR LA POUTRE)',/,
+     &     'CGY : ',D18.12,'    CGZ : ',D18.12)
  2000 FORMAT(//,'DETAIL DES FIBRES PONCTUELLES DE LA SECTION "',A8,
-     +     '"',/,'NUMF       Y           Z         SURF')
+     &     '"',/,'NUMF       Y           Z         SURF')
 
       CALL JEDEMA()
       END

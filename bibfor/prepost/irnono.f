@@ -1,7 +1,7 @@
       SUBROUTINE IRNONO(NOMA,NBNOE,NBNO,NONOE,NBGR,NOGRN,
      &                  NUMNO,NBNOT,INDNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/09/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,9 +82,7 @@ C     --- RECUPERATION DU NUMERO DE NOEUD ----
             ZI(JTOPO-1+2) = ZI(JTOPO-1+2) + 1
             NBNOT = NBNOT + 1
             IF (NBNOT.GT.LNUNO) THEN
-              CALL UTMESS('A','IRNONO',' LE NOMBRE DE NOEUDS '
-     & //'SELECTIONNES EST SUPERIEUR AU NOMBRE DE NOEUDS DU MAILLAGE. '
-     & //'ON VA TRONQUER LA LISTE.')
+              CALL U2MESS('A','PREPOST3_4')
               NBNOT=NBNOT-1
               GO TO 9999
 C             LNUNO=2*LNUNO
@@ -108,7 +106,7 @@ C     --- RECUPERATION DU NUMERO DE NOEUD ----
             NOGRN(IGR) = ' '
           ELSE
             CALL JELIRA(JEXNOM(NOMMA//'.GROUPENO',NOGRN(IGR)),
-     +                       'LONMAX',NBN,K8BID)
+     &                       'LONMAX',NBN,K8BID)
             IF(NBN.EQ.0) THEN
             CALL UTDEBM('A','IRNONO',' LE GROUPE')
             CALL UTIMPK('S',' ',1,NOGRN(IGR))
@@ -121,9 +119,7 @@ C     --- RECUPERATION DU NUMERO DE NOEUD ----
               DO 14 IN=1,NBN
                 NBNOT=NBNOT+1
                 IF (NBNOT.GT.LNUNO) THEN
-                  CALL UTMESS('A','IRNONO',' LE NOMBRE DE NOEUDS '
-     & //'SELECTIONNES EST SUPERIEUR AU NOMBRE DE NOEUDS DU MAILLAGE. '
-     & //'ON VA TRONQUER LA LISTE.')
+                  CALL U2MESS('A','PREPOST3_4')
                   NBNOT=NBNOT-1
                   GO TO 9999
 C                 LNUNO=2*LNUNO

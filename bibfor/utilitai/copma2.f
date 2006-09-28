@@ -1,6 +1,6 @@
       SUBROUTINE COPMA2(MATR,MAT1,MAT2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,9 +67,7 @@ C-----------------------------------------------------------------------
       NUMDDL=ZK24(JREFA-1+2)(1:14)
 
       IF (NUMDDL(1:8).EQ.KBID) THEN
-          CALL UTMESS('F','COPMA2',
-     +                'NUMEROTATION ABSENTE '
-     +                //' PROBLEME DANS LA MATRICE '//MATR )
+          CALL U2MESK('F','UTILITAI_43',1,MATR)
 
       ELSE
         CALL JEVEUO(NUMDDL(1:14)//'.SMOS.SMDE','L',JSMDE)

@@ -5,22 +5,22 @@
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/09/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     IMPRESSION D'UN "VECT_ASSE_GENE"
 C
@@ -108,12 +108,12 @@ C
                CMP    = ZK16(JNOEU+IMODE-1)(9:16)
                IF ( TYPVAL(1:1).EQ. 'R' ) THEN
                  WRITE(IFI,1012) IM, ZR(JVALE+I-1), MODE,
-     +                           TYPMOD, ZR(JFREQ), NOEU, CMP
+     &                           TYPMOD, ZR(JFREQ), NOEU, CMP
                ELSEIF ( TYPVAL(1:1).EQ. 'C' ) THEN
                  XREAL =  DBLE( ZC(JVALE+I-1) )
                  XIMAG = DIMAG( ZC(JVALE+I-1) )
                  WRITE(IFI,1042) IM, XREAL, XIMAG, MODE,
-     +                           TYPMOD, ZR(JFREQ), NOEU, CMP
+     &                           TYPMOD, ZR(JFREQ), NOEU, CMP
                ENDIF
             ELSE
                IF ( TYPVAL(1:1).EQ. 'R' ) THEN
@@ -132,8 +132,8 @@ C
 C      --- CALCUL TRADITIONNEL ---
 C
           CALL GETTCO ( MODE , TYPREM )
-          IF ( TYPREM .EQ. 'MODE_MECA' 
-     +         .OR. TYPREM .EQ. 'MODE_GENE' ) THEN
+          IF ( TYPREM .EQ. 'MODE_MECA'
+     &         .OR. TYPREM .EQ. 'MODE_GENE' ) THEN
              TYPMOD = '  PROPRE  '
              NOEU = ' '
              CMP  = ' '
@@ -153,7 +153,7 @@ C             NBMODE = ZI(JDESC+1)
              LBASE = .FALSE.
              CALL JELIRA(GENE//'.VALE','LONMAX',NBMODE,K8B)
           ELSE
-           CALL UTMESS('A','IRVGEN','TYPE DE BASE INCONNU: '//TYPREM)
+           CALL U2MESK('A','PREPOST3_9',1,TYPREM)
              TYPMOD = '  PROPRE  '
              NOEU = ' '
              CMP  = ' '
@@ -196,24 +196,24 @@ C             NBMODE = ZI(JDESC+1)
                IF (TYPREM(1:9) .EQ. 'MODE_STAT') THEN
                  IF ( TYPVAL(1:1).EQ. 'R' ) THEN
                    WRITE(IFI,1013) I, ZR(JVALE+I-1), MODE,
-     +                        TYPMOD, ZK16(JFREQ), NOEU, CMP
+     &                        TYPMOD, ZK16(JFREQ), NOEU, CMP
                  ELSEIF ( TYPVAL(1:1).EQ. 'C' ) THEN
                    XREAL =  DBLE( ZC(JVALE+I-1) )
                    XIMAG = DIMAG( ZC(JVALE+I-1) )
                    WRITE(IFI,1043) I, XREAL, XIMAG, MODE,
-     +                        TYPMOD, ZK16(JFREQ), NOEU, CMP
+     &                        TYPMOD, ZK16(JFREQ), NOEU, CMP
                  ENDIF
               ELSE
                 IF ( TYPVAL(1:1).EQ. 'R' ) THEN
                   WRITE(IFI,1012) I, ZR(JVALE+I-1), MODE,
-     +                        TYPMOD, ZR(JFREQ), NOEU, CMP
+     &                        TYPMOD, ZR(JFREQ), NOEU, CMP
                 ELSEIF ( TYPVAL(1:1).EQ. 'C' ) THEN
                   XREAL =  DBLE( ZC(JVALE+I-1) )
                   XIMAG = DIMAG( ZC(JVALE+I-1) )
                   WRITE(IFI,1042) I, XREAL, XIMAG, MODE,
-     +                        TYPMOD, ZR(JFREQ), NOEU, CMP
+     &                        TYPMOD, ZR(JFREQ), NOEU, CMP
                 ENDIF
-               ENDIF  
+               ENDIF
              ELSE
                IF ( TYPVAL(1:1).EQ. 'R' ) THEN
                  WRITE(IFI,1022) I, ZR(JVALE+I-1)
@@ -232,9 +232,9 @@ C
 C
  1000 FORMAT(/,80('-'))
  1010 FORMAT(/,' NUME_CMP   VALEUR        BASE_MODALE  ',
-     +         'TYPE_MODE     FREQUENCE    APPLICATION')
+     &         'TYPE_MODE     FREQUENCE    APPLICATION')
  1040 FORMAT(/,' NUME_CMP          VALEUR              BASE_MODALE  ',
-     +         'TYPE_MODE     FREQUENCE    APPLICATION')
+     &         'TYPE_MODE     FREQUENCE    APPLICATION')
  1012 FORMAT(1P,3X,I5,3X,D12.5,4X,A8,4X,A9,3X,D12.5,3X,A8,A8)
  1013 FORMAT(1P,3X,I5,3X,D12.5,4X,A8,4X,A9,3X,3X,A8,3X,A8,A8)
  1042 FORMAT(1P,3X,I5,3X,D12.5,1X,D12.5,4X,A8,4X,A9,3X,D12.5,3X,A8,A8)

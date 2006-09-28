@@ -3,22 +3,22 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR DEFI_NAPPE
 C     STOCKAGE DANS UN OBJET DE TYPE FONCTION
@@ -67,7 +67,7 @@ C
          CALL UTDEBM('F','OP0004'//'(ERREUR.01)',' ')
          CALL UTIMPI('L','LE NOMBRE DE PARAMETRES ',1,NBPARA)
          CALL UTIMPI('S',' EST DIFFERENT DU NOMBRE DE FONCTIONS ',
-     +                                                     1,NBFONC)
+     &                                                     1,NBFONC)
          CALL UTFINM()
       ENDIF
 C
@@ -79,7 +79,7 @@ C        VERIF QUE LES PARA SONT STRICT CROISSANTS
          IRET=2
          CALL FOVERF(ZR(LPARC),NBPARA,IRET)
          IF(IRET.NE.2)THEN
-            CALL UTMESS('F','OP0004','PARAMETRES NON CROISSANTS')
+            CALL U2MESS('F','UTILITAI2_72')
          ENDIF
          CALL JEDETR('&&OP0004.TEMP.PARA')
       ENDIF
@@ -90,7 +90,7 @@ C
             NV = -NV
             IF (MOD(NV,2) .NE. 0 ) THEN
                CALL UTDEBM('F','OP0004'//'(ERREUR.04)',
-     +                  'IL N''Y A PAS UN NOMBRE PAIR DE VALEURS')
+     &                  'IL N''Y A PAS UN NOMBRE PAIR DE VALEURS')
                CALL UTIMPI('S',', "DEFI_FONCTION" OCCURENCE ',1,IOCC)
                CALL UTFINM()
             ENDIF
@@ -99,7 +99,7 @@ C
                CALL WKVECT('&&OP0004.TEMP.PARA','V V R',NV,LPARA)
                CALL WKVECT('&&OP0004.TEMP.PAR2','V V R',NBCOUP,LPAR2)
                CALL GETVR8('DEFI_FONCTION','VALE',IOCC,1,NV,
-     +                                                ZR(LPARA),NBVAL)
+     &                                                ZR(LPARA),NBVAL)
                DO 12 I = 0,NBCOUP-1
                   ZR(LPAR2+I) = ZR(LPARA+2*I)
  12            CONTINUE
@@ -107,7 +107,7 @@ C              VERIF QUE LES PARA SONT STRICT CROISSANTS
                IRET=2
                CALL FOVERF(ZR(LPAR2),NBCOUP,IRET)
                IF(IRET.NE.2) THEN
-                  CALL UTMESS('F','OP0004','PARAMETRES NON CROISSANTS')
+                  CALL U2MESS('F','UTILITAI2_72')
                ENDIF
                CALL JEDETR('&&OP0004.TEMP.PARA')
                CALL JEDETR('&&OP0004.TEMP.PAR2')
@@ -151,7 +151,7 @@ C
             CALL CODENT(IFONC,'G',ZK24(LNOMF+IFONC-1)(11:19))
             ZK24(LNOMF+IFONC-1)(20:24) = '.VALE'
             CALL GETVR8('DEFI_FONCTION','VALE',IFONC,1,MXVA,
-     +                                                ZR(JVAL),NBVAL)
+     &                                                ZR(JVAL),NBVAL)
             CALL WKVECT(ZK24(LNOMF+IFONC-1),'V V R',NBVAL,LVAL)
             ZI(LADRF+IFONC-1) = LVAL
             NBCOUP = NBVAL / 2
@@ -170,14 +170,14 @@ C           CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
                   TYPFON='FONCTION'
                   CALL UTTRIF(ZR(LVAL),NBCOUP,TYPFON)
                   CALL UTDEBM('A','OP0004',
-     +                            'LES ABSCISSES DE LA FONCTION')
+     &                            'LES ABSCISSES DE LA FONCTION')
                   CALL UTIMPK('S',' ',1,NOMFON)
                   CALL UTIMPK('L','ONT ETE REORDONNEES.',0,K8B)
                   CALL UTFINM()
                ELSEIF(IRET2.LT.0)THEN
                   CALL ORDON1(ZR(LVAL),NBCOUP)
                   CALL UTDEBM('A','OP0004',
-     +                        'L ORDRE DES ABSCISSES DE LA FONCTION')
+     &                        'L ORDRE DES ABSCISSES DE LA FONCTION')
                   CALL UTIMPI('S',' NUMERO ',1,IFONC)
                   CALL UTIMPK('L','A ETE INVERSE .',0,K8B)
                   CALL UTFINM()
@@ -185,13 +185,13 @@ C           CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
             ENDIF
 C
             CALL GETVTX('DEFI_FONCTION','INTERPOL'   ,IFONC,1,2,
-     +                                                INTERP,L1)
+     &                                                INTERP,L1)
             IF ( L1 .EQ. 1 ) INTERP(2) = INTERP(1)
             ZK16(LPRO+5+2*IFONC-1) = INTERP(1)//INTERP(2)
             CALL GETVTX('DEFI_FONCTION','PROL_GAUCHE',IFONC,1,1,
-     +                                   ZK16(LPRO+5+2*IFONC)(1:1),L)
+     &                                   ZK16(LPRO+5+2*IFONC)(1:1),L)
             CALL GETVTX('DEFI_FONCTION','PROL_DROITE',IFONC,1,1,
-     +                                   ZK16(LPRO+5+2*IFONC)(2:2),L)
+     &                                   ZK16(LPRO+5+2*IFONC)(2:2),L)
  30      CONTINUE
       ELSE
          CALL GETVID(' ','FONCTION',0,1,NBFONC,ZK24(LNOMF),N)
@@ -203,19 +203,15 @@ C     --- ON ORDONNE LA NAPPE SUIVANT LES PARAMETRES CROISSANTS ---
           IRET=0
           CALL FOORDN(ZR(LPAR),ZK24(LNOMF),NBPARA,NBFONC,IRET)
           IF (IRET.NE.0 .AND. .NOT. DEFONC) THEN
-             CALL UTMESS('F','OP0004'//'(ERREUR.05)',
-     +                       'DEUX FONCTIONS DIFFERENTES '//
-     +                       'AFFECTEE A LA MEME VALEUR DE PARAMETRE.')
+             CALL U2MESS('F','UTILITAI2_73')
           ELSEIF (IRET.NE.0 ) THEN
-             CALL UTMESS('F','OP0004'//'(ERREUR.06)',
-     +                       'DEUX LISTES DE VALEURS DIFFERENTES '//
-     +                       'AFFECTEE A LA MEME VALEUR DE PARAMETRE.')
+             CALL U2MESS('F','UTILITAI2_74')
           ENDIF
       ENDIF
 C
 C     --- CREATION ET REMPLISSAGE DE LA COLLECTION NOMFON.VALE ---
       CALL JECREC(NOMFON//'.VALE','G V R',
-     +                            'NU','CONTIG','VARIABLE',NBFONC)
+     &                            'NU','CONTIG','VARIABLE',NBFONC)
       CALL FOSTON(NOMFON//'.VALE',ZK24(LNOMF),NBFONC)
 C
 C     --- CREATION D'UN TITRE ---

@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,12 +83,10 @@ C      CESMOD: CHAM_ELEM_S EQUIVALENT A CELMOD (SI CHAM_ELEM)
 
 C     ------------------------------------------------------------------
 
-      IF (MA.EQ.' ') CALL UTMESS('F','CHPASS',
-     &                           'IL FAUT DONNER UN MAILLAGE.')
+      IF (MA.EQ.' ') CALL U2MESS('F','UTILITAI_27')
 
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMGD),GD)
-      IF (GD.EQ.0) CALL UTMESS('F','CHPASS','GRANDEUR: '//NOMGD//
-     &                         ' INCONNUE AU CATALOGUE.')
+      IF (GD.EQ.0) CALL U2MESK('F','CALCULEL_67',1,NOMGD)
       CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',JCMPGD)
 
       IF (TYCHR(1:2).EQ.'EL') THEN
@@ -124,26 +122,21 @@ C       ------------------------------------------------
 
 
         IF (TYCHR.EQ.'NOEU') THEN
-          IF (TYCH2.NE.'NOEU') CALL UTMESS('F',
-     &      'CHPASS','CHAMP NON-ASSEMBLABLE EN CHAM_NO: '//CHAMP)
+          IF (TYCH2.NE.'NOEU') CALL U2MESK('F','UTILITAI_28',1,CHAMP)
 
         ELSE IF (TYCHR.EQ.'ELGA') THEN
           IF ((TYCH2.NE.'CART').AND.(TYCH2.NE.'ELEM').AND.
-     &      (TYCH2.NE.'ELGA')) CALL UTMESS('F','CHPASS',
-     &                     'CHAMP NON-ASSEMBLABLE EN CHAM_ELEM (ELGA): '
-     &                              //CHAMP)
+     &      (TYCH2.NE.'ELGA')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
 
         ELSE IF (TYCHR.EQ.'ELNO') THEN
           IF ((TYCH2.NE.'CART').AND.
-     &      (TYCH2.NE.'ELNO')) CALL UTMESS('F','CHPASS',
-     &                     'CHAMP NON-ASSEMBLABLE EN CHAM_ELEM (ELGA): '
-     &                              //CHAMP)
+     &      (TYCH2.NE.'ELNO')) CALL U2MESK('F','UTILITAI_29',1,CHAMP)
 
         ELSE IF (TYCHR.EQ.'ELEM') THEN
-          CALL UTMESS('F','CHPASS','A FAIRE ??')
+          CALL U2MESS('F','UTILITAI_30')
 
         ELSE
-          CALL UTMESS('F','CHPASS','STOP')
+          CALL U2MESS('F','CALCULEL_13')
         END IF
 
    10 CONTINUE
@@ -198,9 +191,7 @@ C       ---------------------------------------------------------------
           IF (N1.LT.0) THEN
             CHGCMP = .TRUE.
             NCHG=NCHG+1
-            IF (N1.NE.-NCMP) CALL UTMESS('F','CHPASS',
-     &                    'NOM_CMP2 ET NOM_CMP DE LONGUEUR DIFFERENTES.'
-     &                                   )
+            IF (N1.NE.-NCMP) CALL U2MESS('F','UTILITAI_31')
             CALL WKVECT('&&CHPASS.LICMP2','V V K8',NCMP,JLICM2)
             CALL GETVTX('ASSE','NOM_CMP_RESU',IOCC,1,NCMP,ZK8(JLICM2),
      &                  IB)
@@ -213,15 +204,14 @@ C       ---------------------------------------------------------------
 C       4.1 VERIFICATION DE LA GRANDEUR ASSOCIEE AU CHAMP
 C       ------------------------------------------------------
         CALL DISMOI('F','NOM_GD',CHAMP,'CHAMP',IB,NOMGD2,IB)
-        IF ((.NOT.CHGCMP) .AND. (NOMGD2.NE.NOMGD)) CALL UTMESS('F',
-     &      'CHPASS','GRANDEUR INCORRECTE POUR:'//CHAMP)
+        IF ((.NOT.CHGCMP) .AND. (NOMGD2.NE.NOMGD)) CALL U2MESK('F','UTIL
+     &ITAI_32',1,CHAMP)
 
         CALL DISMOI('F','TYPE_SCA',NOMGD2,'GRANDEUR',IB,TSCA,IB)
         CALL GETVC8('ASSE','COEF_C',IOCC,1,1,COEFC,IRET)
         IF(IRET.NE.0)THEN
            IF(TSCA.NE.'C')THEN
-             CALL UTMESS('F','CHPASS','LE MOT-CLE ''COEF_C'' N''EST '//
-     &       'APPLICABLE QUE POUR UN CHAMP DE TYPE COMPLEXE')
+             CALL U2MESS('F','UTILITAI_33')
            ENDIF
            LCOC=.TRUE.
         ELSE
@@ -248,7 +238,7 @@ C       ------------------------------------------
           CALL CARCES(CHAMP,TYCHR,CESMOD,'V',CHS1,IB)
           CALL CESRED(CHS1,NBTROU,ZI(JNUTRO),NCMP,ZK8(JLICMP),'V',CHS2)
         ELSE
-          CALL UTMESS('F','CHPASS','STOP 1')
+          CALL U2MESS('F','CALCULEL_2')
         END IF
 
 

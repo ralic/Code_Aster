@@ -3,7 +3,7 @@
       CHARACTER*(*) MODELE,LIGREL,MATEZ,CHTEMP,SIGMA,SIGNO,RESU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,9 +51,9 @@ C DEB-------------------------------------------------------------------
       MATE = MATEZ
       LCHAR = ' '
       CALL MEGEOM(MODELE,LCHAR,EXIGEO,CHGEOM)
-      IF (.NOT.EXIGEO) CALL UTMESS('F','ZZLOCA','PAS DE CHGEOM')
+      IF (.NOT.EXIGEO) CALL U2MESS('F','CALCULEL2_81')
 
-      IF (MATE.EQ.' ') CALL UTMESS('F','ZZLOCA','PAS DE CHMATE')
+      IF (MATE.EQ.' ') CALL U2MESS('F','CALCULEL4_66')
 
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = CHGEOM

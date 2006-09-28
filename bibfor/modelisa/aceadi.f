@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,15 +88,13 @@ C
 C --- ON INTERDIT SUR UN MAILLAGE 2D D'AVOIR DES ELEMENTS DISCRETS
 C --- 2D ET 3D
       IF (I2D.EQ.1.AND.I3D.EQ.1.AND.NDIM1.EQ.2) THEN
-          CALL UTMESS('F','ACEADI','ON INTERDIT D''AVOIR SUR UN '
-     +              //'MAILLAGE 2D DES ELEMENTS DISCRETS 2D ET 3D .')
+          CALL U2MESS('F','MODELISA_8')
       ENDIF
 C
 C --- ON INTERDIT SUR UN MAILLAGE 3D D'AVOIR DES ELEMENTS DISCRETS
 C --- 2D
       IF (I2D.EQ.1.AND.NDIM1.EQ.3) THEN
-          CALL UTMESS('F','ACEADI','ON INTERDIT D''AVOIR SUR UN '
-     +              //'MAILLAGE 3D DES ELEMENTS DISCRETS 2D .')
+          CALL U2MESS('F','MODELISA_9')
       ENDIF
 C
 C --- DIMENSION DU PROBLEME
@@ -174,13 +172,13 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
             VAL(I) = 0.0D0
  31      CONTINUE
          CALL GETVEM(NOMA,'GROUP_MA',MCF,'GROUP_MA',
-     +                                     IOC,1,LMAX,ZK8(JDLS),NG)
+     &                                     IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE'  ,MCF,'MAILLE',
-     +                                     IOC,1,LMAX,ZK8(JDLS),NM)
+     &                                     IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVEM(NOMA,'GROUP_NO',MCF,'GROUP_NO',
-     +                                     IOC,1,LMAX,ZK8(JDLS),NJ)
+     &                                     IOC,1,LMAX,ZK8(JDLS),NJ)
          CALL GETVEM(NOMA,'NOEUD'   ,MCF,'NOEUD',
-     +                                     IOC,1,LMAX,ZK8(JDLS),NN)
+     &                                     IOC,1,LMAX,ZK8(JDLS),NN)
          CALL GETVTX(MCF,'CARA'     ,IOC,1,NBCAR,CAR      ,NCAR)
          CALL GETVR8(MCF,'VALE'     ,IOC,1,NBVAL,VAL      ,NVAL)
 
@@ -208,8 +206,8 @@ C ET POUR LES PARA_SENSI
          IF ( IVR(3) .EQ. 1 ) THEN
             WRITE(IFM,1000) REP,IOC
  1000       FORMAT(/,3X,
-     +             '<DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
-     +                                '(REPERE ',A6,'), OCCURENCE ',I4)
+     &             '<DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
+     &                                '(REPERE ',A6,'), OCCURENCE ',I4)
          ENDIF
 C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
@@ -217,7 +215,7 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
            IV = 1
             DO 36 I = 1,NCARAC
               CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,IVR,IV,KMA,
-     +                    NCMP,L,IFM)
+     &                    NCMP,L,IFM)
                DO 38 II = 1 , NG
               CALL NOCART(CART(L),2,ZK8(JDLS+II-1),' ',0,' ',0,' ',NCMP)
  38            CONTINUE
@@ -229,7 +227,7 @@ C ---   "MAILLE" = TOUTES LES MAILLES  DE LA LISTE DE MAILLES
             IV = 1
             DO 40 I = 1,NCARAC
               CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,IVR,IV,KMA,
-     +                    NCMP,L,IFM)
+     &                    NCMP,L,IFM)
                CALL NOCART(CART(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',NCMP)
  40         CONTINUE
          ENDIF
@@ -242,16 +240,16 @@ C                                                  DE GROUPES DE NOEUDS
                DO 42 I = 1 , NJ
                   CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
                   CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONMAX',
-     +                                                  NBNOGR,K1BID)
+     &                                                  NBNOGR,K1BID)
                   CALL CRLINU ( 'NUM', MLGNNO, NBNOGR, ZI(JDGN), K8B,
-     +                           NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+     &                           NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                   IF (KK.GT.0) THEN
                      IV = 1
                      DO 44 II = 1,NCARAC
                         CALL AFFDIS(NDIM,IREP,ETA,CAR(II),VAL,JDC,JDV,
-     +                              IVR,IV,KMA,NCMP,L,IFM)
+     &                              IVR,IV,KMA,NCMP,L,IFM)
                        CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
-     +                                                       LIGMO,NCMP)
+     &                                                       LIGMO,NCMP)
  44                  CONTINUE
                   ENDIF
  42            CONTINUE
@@ -259,14 +257,14 @@ C                                                  DE GROUPES DE NOEUDS
 C ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
             IF (NN.GT.0) THEN
                CALL CRLINU ( 'NOM', MLGNNO, NN, IBID, ZK8(JDLS),
-     +                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+     &                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                IF (KK.GT.0) THEN
                   IV = 1
                   DO 46 I = 1,NCARAC
                      CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,
-     +                           IVR,IV,KMA,NCMP,L,IFM)
+     &                           IVR,IV,KMA,NCMP,L,IFM)
                      CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
-     +                                                       LIGMO,NCMP)
+     &                                                       LIGMO,NCMP)
  46               CONTINUE
                ENDIF
             ENDIF

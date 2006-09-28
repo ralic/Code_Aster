@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -98,7 +98,7 @@ C     --- ON RECUPERE FREQ ET NUME_ORDRE DE LA TABLE ---
 C
       NOMOB2 = '&&OP0172.NUME'
       CALL TBEXVE ( ENERPO, 'NUME_ORDRE', NOMOB2, 'V', NBMOD2, K8B )
-      IF ( NBMOD2 .EQ. 0 ) CALL UTMESS('F','OP0172','Y A UN BUG')
+      IF ( NBMOD2 .EQ. 0 ) CALL U2MESS('F','MODELISA2_91')
       CALL JEVEUO ( NOMOB2, 'L', JNUOR )
       CALL ORDIS  ( ZI(JNUOR) , NBMOD2 )
 C     --- ON ELIMINE LES DOUBLONS ---
@@ -115,12 +115,12 @@ C
       CALL WKVECT ( NOMOB1, 'V V R', NBMODE, JFREQ )
       DO 12 I = 1 , NBMODE
          CALL TBLIVA ( ENERPO, 1, 'NUME_ORDRE', ZI(JNUME+I-1), R8B,
-     +                 C16B, K8B, K8B, R8B, 'FREQ',
-     +                 CTYPE, IBID, ZR(JFREQ+I-1), C16B, K8B, IRET )
+     &                 C16B, K8B, K8B, R8B, 'FREQ',
+     &                 CTYPE, IBID, ZR(JFREQ+I-1), C16B, K8B, IRET )
          IF ( IRET .EQ. 0 ) THEN
          ELSEIF ( IRET .EQ. 3 ) THEN
          ELSE
-            CALL UTMESS('F','OP0172','Y A UN BUG: RECUP FREQUENCES')
+            CALL U2MESS('F','PREPOST4_18')
          ENDIF
  12   CONTINUE
 C
@@ -165,12 +165,12 @@ C
 C
 C        --- ON RECUPERE UNE LISTE DE GROUP_NO ---
       CALL GETVEM(NOMA,'GROUP_NO', 'ENER_SOL','GROUP_NO_RADIER',
-     +                   1,1,0,K8B,NBGR)
+     &                   1,1,0,K8B,NBGR)
       IF ( NBGR.EQ.0 ) GOTO 114
       NBGR = -NBGR
       CALL WKVECT ( '&&OP0172.GROUP_NO', 'V V K8', NBGR, IDGN )
       CALL GETVEM(NOMA,'GROUP_NO','ENER_SOL','GROUP_NO_RADIER',
-     +                  1,1,NBGR,ZK8(IDGN),NBV)
+     &                  1,1,NBGR,ZK8(IDGN),NBV)
 C
 C        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
       CALL COMPNO ( NOMA, NBGR, ZK8(IDGN), NBNO )
@@ -187,15 +187,15 @@ C        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
       GOTO 111
  114  CONTINUE
       CALL GETVEM(NOMA,'GROUP_MA', 'ENER_SOL','GROUP_MA_RADIER',
-     +                   1,1,0,K8B,NBGR)
+     &                   1,1,0,K8B,NBGR)
       IF ( NBGR.EQ.0 )
-     + CALL UTMESS('F','OP0172','IL FAUT AU MOINS UN GROUP_MA_RADIER')
+     & CALL U2MESS('F','PREPOST4_19')
       NBGR = -NBGR
       CALL WKVECT ( '&&OP0172.GROUP_MA', 'V V K8', NBGR, IDGM )
       CALL WKVECT ( '&&OP0172.NOEUD', 'V V I', NBNOEU, IDNO )
       CALL WKVECT ( '&&OP0172.PARNO','V V I',NBNOEU,IDN2)
       CALL GETVEM(NOMA,'GROUP_MA','ENER_SOL','GROUP_MA_RADIER',
-     +                  1,1,NBGR,ZK8(IDGM),NBV)
+     &                  1,1,NBGR,ZK8(IDGM),NBV)
       DO 21 I = 1,NBGR
          CALL JELIRA(JEXNOM(MAGRMA,ZK8(IDGM+I-1)),'LONMAX',NB,K8B)
          CALL JEVEUO(JEXNOM(MAGRMA,ZK8(IDGM+I-1)),'L',LDGM)
@@ -221,29 +221,29 @@ C        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
       ZRIG = MIN(ABS(RIGI(1)),ABS(RIGI(2)))
       ZRIG = MIN(ZRIG,ABS(RIGI(3)))
       IF ( ZRIG.LE.R8PREM( ) )
-     + CALL UTMESS('F','OP0172','RIGIDITE DE TRANSLATION NON NULLE')
+     & CALL U2MESS('F','PREPOST4_20')
       CALL GETVEM(NOMA,'GROUP_MA', 'ENER_SOL','GROUP_MA_RADIER',
-     +                   1,1,0,K8B,NBGR)
+     &                   1,1,0,K8B,NBGR)
       IF ( NBGR.EQ.0 )
-     + CALL UTMESS('F','OP0172','IL FAUT AU MOINS UN GROUP_MA_RADIER')
+     & CALL U2MESS('F','PREPOST4_19')
       NBGR = -NBGR
       CALL WKVECT ( '&&OP0172.GROUP_MA', 'V V K8', NBGR, IDGM )
       CALL WKVECT ( '&&OP0172.NOEUD', 'V V I', NBNOEU, IDNO )
       CALL GETVEM(NOMA,'GROUP_MA','ENER_SOL','GROUP_MA_RADIER',
-     +                  1,1,NBGR,ZK8(IDGM),NBV)
+     &                  1,1,NBGR,ZK8(IDGM),NBV)
       CALL RAIRE2(NOMA,RIGI,NBGR,ZK8(IDGM),NBNOEU,NBNO,ZI(IDNO),
-     +            ZR(IRIGNO))
+     &            ZR(IRIGNO))
  112  CONTINUE
       IF (METHOD.NE.'RIGI_PARASOL'.OR.NCOMPO.NE.6) GOTO 113
       ZRIG = MIN(ABS(RIGI(4)),ABS(RIGI(5)))
       ZRIG = MIN(ZRIG,ABS(RIGI(6)))
       IF ( ZRIG.LE.R8PREM( ) )
-     + CALL UTMESS('F','OP0172','RIGIDITE DE ROTATION NON NULLE')
+     & CALL U2MESS('F','PREPOST4_21')
       CALL GETVR8('ENER_SOL','COOR_CENTRE',1,1,0,R8B,NCG)
       CALL GETVEM(NOMA,'NOEUD','ENER_SOL','NOEUD_CENTRE',
-     +               1,1,0,K8B,NNO)
+     &               1,1,0,K8B,NNO)
       CALL GETVEM(NOMA,'GROUP_NO','ENER_SOL','GROUP_NO_CENTRE',
-     +                  1,1,0,K8B,NGN)
+     &                  1,1,0,K8B,NGN)
       IF (NCG.NE.0) THEN
         CALL GETVR8('ENER_SOL','COOR_CENTRE',1,1,3,C,NCG)
         XG = C(1)
@@ -251,14 +251,14 @@ C        --- ON ECLATE LE GROUP_NO EN NOEUDS ---
         ZG = C(3)
       ELSEIF (NNO.NE.0) THEN
         CALL GETVEM(NOMA,'NOEUD','ENER_SOL','NOEUD_CENTRE',
-     +                 1,1,1,NOMNOE,NNO)
+     &                 1,1,1,NOMNOE,NNO)
         CALL JENONU(JEXNOM(MANONO,NOMNOE),INOE)
         XG = ZR(JCOOR+3*(INOE-1)+1-1)
         YG = ZR(JCOOR+3*(INOE-1)+2-1)
         ZG = ZR(JCOOR+3*(INOE-1)+3-1)
       ELSEIF (NGN.NE.0) THEN
         CALL GETVEM(NOMA,'GROUP_NO','ENER_SOL','GROUP_NO_CENTRE',
-     +                    1,1,1,NOMGR,NGN)
+     &                    1,1,1,NOMGR,NGN)
         CALL JEVEUO(JEXNOM(MAGRNO,NOMGR),'L',LDGN)
         INOE = ZI(LDGN)
 C        CALL JENUNO(JEXNUM(MANONO,INOE),NOMNOE)
@@ -272,7 +272,7 @@ C
       DO 51 I = 1 , NBMODE
         IF (METHOD.EQ.'DEPL') THEN
          CALL RSEXCH ( MECA, 'DEPL', ZI(JNUME+I-1), NOMCH1, IRET )
-         IF ( IRET .NE. 0 ) CALL UTMESS('F','OP0172','Y A UN BUG 1')
+         IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
          NOMCH1 = NOMCH1(1:19)//'.VALE'
          CALL JEVEUO ( NOMCH1, 'L', IADMO1 )
          DO 52 INO = 1 , NBNO
@@ -280,17 +280,16 @@ C
             IDDL = ZI( APRNO + (NEC+2)*(INOE-1) + 1 - 1 ) - 1
             NCMP = ZI( APRNO + (NEC+2)*(INOE-1) + 2 - 1 )
             IF (NCMP.NE.NCOMPO) THEN
-               CALL UTMESS('F','OP0172.01',
-     +             'NOMBRES DE COMPOSANTES RAIDEURS ET MODE DIFFERENTS')
+               CALL U2MESS('F','PREPOST4_22')
             ENDIF
             DO 53 IC = 1,NCMP
                ZR(IDEPMO+(IC-1)*NBMODE+I-1) =
-     +               ZR(IDEPMO+(IC-1)*NBMODE+I-1) + ZR(IADMO1+IDDL+IC-1)
+     &               ZR(IDEPMO+(IC-1)*NBMODE+I-1) + ZR(IADMO1+IDDL+IC-1)
  53         CONTINUE
  52      CONTINUE
         ELSEIF (METHOD.EQ.'RIGI_PARASOL') THEN
          CALL RSEXCH( MECA,'DEPL',ZI(JNUME+I-1),NOMCH1,IRET )
-         IF ( IRET .NE. 0 ) CALL UTMESS('F','OP0172','Y A UN BUG 2')
+         IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
          NOMCH1 = NOMCH1(1:19)//'.VALE'
          CALL JEVEUO ( NOMCH1, 'L', IADMO1 )
          DO 72 INO = 1 , NBNO
@@ -299,13 +298,12 @@ C            CALL JENUNO(JEXNUM(MANONO,INOE),NOMNOE)
             IDDL = ZI( APRNO + (NEC+2)*(INOE-1) + 1 - 1 ) - 1
             NCMP = ZI( APRNO + (NEC+2)*(INOE-1) + 2 - 1 )
             IF (NCMP.NE.NCOMPO) THEN
-               CALL UTMESS('F','OP0172.01',
-     +             'NOMBRES DE COMPOSANTES RAIDEURS ET MODE DIFFERENTS')
+               CALL U2MESS('F','PREPOST4_22')
             ENDIF
             DO 73 IC = 1,NCMP
               VALR(IC) = ZR(IADMO1+IDDL+IC-1)*ZR(IRIGNO+6*(INO-1)+IC-1)
               ZR(IDEPMO+(IC-1)*NBMODE+I-1) =
-     +              ZR(IDEPMO+(IC-1)*NBMODE+I-1) + VALR(IC)
+     &              ZR(IDEPMO+(IC-1)*NBMODE+I-1) + VALR(IC)
  73         CONTINUE
             A(1) = ZR(JCOOR+3*(INOE-1)+1-1) - XG
             A(2) = ZR(JCOOR+3*(INOE-1)+2-1) - YG
@@ -316,7 +314,7 @@ C            CALL JENUNO(JEXNUM(MANONO,INOE),NOMNOE)
             CALL PROVEC(A,B,C)
             DO 75 IC = 4,NCMP
                ZR(IDEPMO+(IC-1)*NBMODE+I-1) =
-     +               ZR(IDEPMO+(IC-1)*NBMODE+I-1) + C(IC-3)
+     &               ZR(IDEPMO+(IC-1)*NBMODE+I-1) + C(IC-3)
  75         CONTINUE
  72      CONTINUE
         ENDIF
@@ -328,46 +326,44 @@ C
         IF (METHOD.EQ.'DEPL') THEN
          DO 55 IC = 1,NCMP
             ZR(IDEPMO+(IC-1)*NBMODE+I-1) =
-     +                              ZR(IDEPMO+(IC-1)*NBMODE+I-1)/NBNO
+     &                              ZR(IDEPMO+(IC-1)*NBMODE+I-1)/NBNO
             ZR(IENEMO+(IC-1)*NBMODE+I-1) = 0.5D0*
-     +                        RIGI(IC)*ZR(IDEPMO+(IC-1)*NBMODE+I-1)**2
+     &                        RIGI(IC)*ZR(IDEPMO+(IC-1)*NBMODE+I-1)**2
             ZR(IENMOT+I-1) =
-     +                   ZR(IENEMO+(IC-1)*NBMODE+I-1) + ZR(IENMOT+I-1)
+     &                   ZR(IENEMO+(IC-1)*NBMODE+I-1) + ZR(IENMOT+I-1)
  55      CONTINUE
         ELSEIF (METHOD.EQ.'RIGI_PARASOL') THEN
          DO 76 IC = 1,NCMP
             ZR(IENEMO+(IC-1)*NBMODE+I-1) = 0.5D0*
-     +                        ZR(IDEPMO+(IC-1)*NBMODE+I-1)**2/RIGI(IC)
+     &                        ZR(IDEPMO+(IC-1)*NBMODE+I-1)**2/RIGI(IC)
             ZR(IENMOT+I-1) =
-     +                   ZR(IENEMO+(IC-1)*NBMODE+I-1) + ZR(IENMOT+I-1)
+     &                   ZR(IENEMO+(IC-1)*NBMODE+I-1) + ZR(IENMOT+I-1)
  76      CONTINUE
         ENDIF
         F = ZR(JFREQ+I-1)
         WRITE(IFR,1001) F,(ZR(IENEMO+(IC-1)*NBMODE+I-1),IC=1,NCMP),
-     +                                 ZR(IENMOT+I-1)
+     &                                 ZR(IENMOT+I-1)
  54   CONTINUE
 C
 C        --- ON RECUPERE LES SOUS_STRUC ET LEURS AMOR ---
 C
       CALL GETVEM(NOMA,'GROUP_MA', 'AMOR_INTERNE','GROUP_MA',
-     +                1,1,0,K8B,NBGA)
+     &                1,1,0,K8B,NBGA)
       NBGA= -NBGA
       CALL WKVECT ('&&OP0172.GAMOR','V V K8',NBGA,IDGA)
       CALL GETVEM(NOMA,'GROUP_MA','AMOR_INTERNE','GROUP_MA',
-     +               1,1,NBGA,ZK8(IDGA),NBG)
+     &               1,1,NBGA,ZK8(IDGA),NBG)
       CALL WKVECT ('&&OP0172.AMINT','V V R',NBGA,IDAM)
       CALL GETVR8 ( 'AMOR_INTERNE', 'AMOR_REDUIT', 1,1,0, R8B, NBA )
       NBA = -NBA
-      IF ( NBGA .NE. NBA ) CALL UTMESS('F','OP0172.02',
-     +                 'NOMBRES DE GROUP_MA ET AMOR_INTERNE DIFFERENTS')
+      IF ( NBGA .NE. NBA ) CALL U2MESS('F','PREPOST4_23')
 C
       CALL GETVR8 ('AMOR_INTERNE','AMOR_REDUIT',1,1,NBGA,ZR(IDAM),NBA)
       CALL GETVR8 ('AMOR_SOL','AMOR_REDUIT'  ,1,1,1,AMOSOL,NBA)
       CALL GETVR8 ('AMOR_SOL','SEUIL'        ,1,1,1,SEUIL ,NBS)
       CALL GETVID('AMOR_SOL','FONC_AMOR_GEO',1,1,0,K8B,NCO)
       NCO = -NCO
-      IF (NCMP.NE.NCO)  CALL UTMESS('F','OP0172.03',
-     +       'NOMBRES DE COMPOSANTES AMORTISSEMENTS ET MODE DIFFERENTS')
+      IF (NCMP.NE.NCO)  CALL U2MESS('F','PREPOST4_24')
       CALL GETVID('AMOR_SOL','FONC_AMOR_GEO',1,1,NCMP,AMOGEO,NBA)
       CALL GETVTX ('AMOR_SOL','HOMOGENE'     ,1,1,1   ,REP   ,NRP)
 C
@@ -383,11 +379,11 @@ C
 C
             VALEK(2) = 'LIEU'
             CALL TBLIVA (ENERPO, 2, VALEK, IBID, F, C16B, ZK8(IDGA+I-1),
-     +                   'RELA', 1.D-03, 'POUR_CENT',
-     +                           K8B, IBID, POUCEN , C16B, K8B, IRET )
+     &                   'RELA', 1.D-03, 'POUR_CENT',
+     &                           K8B, IBID, POUCEN , C16B, K8B, IRET )
 C
             ZR(IAMOMO+IMOD-1) = ZR(IAMOMO+IMOD-1) +
-     +                          1.0D-2*POUCEN*ZR(IDAM+I-1)
+     &                          1.0D-2*POUCEN*ZR(IDAM+I-1)
             ENESOL = ENESOL + POUCEN
  61      CONTINUE
 C
@@ -399,16 +395,16 @@ C
             CALL FOINTE ( 'F ', AMOGEO(IC), 1, 'FREQ', F, AMOGE, IRE )
             IF ( REP .EQ. 'OUI' ) AMOGE = AMOGE / 2.D0
             IF ( ABS(ZR(IENMOT+IMOD-1)).GT.R8PREM( ) )
-     +       ZR(IAMOMO+IMOD-1) = ZR(IAMOMO+IMOD-1) +
-     +       AMOGE*ZR(IENEMO+(IC-1)*NBMODE+IMOD-1)
-     +                                   *ENESOL/ZR(IENMOT+IMOD-1)
+     &       ZR(IAMOMO+IMOD-1) = ZR(IAMOMO+IMOD-1) +
+     &       AMOGE*ZR(IENEMO+(IC-1)*NBMODE+IMOD-1)
+     &                                   *ENESOL/ZR(IENMOT+IMOD-1)
  62      CONTINUE
 C
          AMOMO = ZR(IAMOMO+IMOD-1)
          IF ( AMOMO .GT. SEUIL ) THEN
             ZR(IAMOMO+IMOD-1) = SEUIL
             CALL UTDEBM('I','OP0172',
-     +              'LA VALEUR D''AMORTISSEMENT REDUIT EST TROP GRANDE')
+     &              'LA VALEUR D''AMORTISSEMENT REDUIT EST TROP GRANDE')
             CALL UTIMPR('L','LA VALEUR D''AMORTISSEMENT : ',1,AMOMO)
             CALL UTIMPI('L',' DU MODE PROPRE ',1,IMOD)
             CALL UTIMPR('L',' EST TRONQUEE AU SEUIL : ',1,SEUIL)
@@ -449,9 +445,9 @@ C
 C
 C
  1000 FORMAT(4X,'FREQUENCE',10X,'ETX',10X,'ETY',10X,'ETZ',10X,'ERX'
-     + ,10X,'ERY',10X,'ERZ',6X,'ETOTALE')
+     & ,10X,'ERY',10X,'ERZ',6X,'ETOTALE')
  2000 FORMAT(4X,'FREQUENCE',10X,'ETX',10X,'ETY',10X,'ETZ',
-     + 6X,'ETOTALE')
+     & 6X,'ETOTALE')
  1001 FORMAT(8(1X,1PE12.5))
  1002 FORMAT(2X,'MODE',4X,'FREQUENCE',9X,'AMOR')
  1003 FORMAT(1X,I5,2(1X,1PE12.5))

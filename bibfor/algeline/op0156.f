@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
       ELSEIF ( ZI(LMAT+3) .EQ. 2 ) THEN
          TYPMAT = 'C'
       ELSE
-         CALL UTMESS('F','OP0156','TYPE DE MATRICE INCONNU ')
+         CALL U2MESS('F','ALGELINE2_86')
       ENDIF
       CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,NUMEM,IRET)
 C
@@ -104,8 +104,7 @@ C     --- CREATION DU CHAM_NO RESULTAT ---
 C
       CALL JEEXIN ( RESU//'.VALE', IRET )
       IF ( IRET .NE. 0 ) THEN
-         CALL UTMESS('F','OP0156',' PAS DE PRODUIT CAR LE CHAM_NO '//
-     +                              RESU(1:8)//' EXISTE DEJA.' )
+         CALL U2MESK('F','ALGELINE2_87',1,RESU(1:8))
       ENDIF
       CALL VTCREB ( RESU, NUMEM, 'G', TYPRES, NEQ )
       CALL JEVEUO ( RESU//'.VALE', 'E', JCHOUT )

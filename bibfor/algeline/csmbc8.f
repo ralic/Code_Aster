@@ -5,7 +5,7 @@
       INTEGER CCLL(*),CCJJ(*),NEQ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,8 +92,8 @@ C-----------------------------------------------------------------------
         IF (ZI(JCCID-1+IEQ).EQ.1) THEN
           VSMB(IEQ) = VCINE(IEQ)
         ELSE
-          IF (VCINE(IEQ).NE.DCMPLX(0.D0,0.D0)) CALL UTMESS('F',
-     & 'CSMBC8','CHAM_CINE /= O. SUR DES DDLS NON ELIMINES.')
+          IF (VCINE(IEQ).NE.DCMPLX(0.D0,0.D0)) CALL U2MESS('F','ALGELINE
+     &_32')
         END IF
 
    30 CONTINUE

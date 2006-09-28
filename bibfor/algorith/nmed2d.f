@@ -2,29 +2,28 @@
      &                   OPTION,IMATE,COMPOR,LGPG,CRIT,
      &                   DEPLM,DDEPL,SIGM,VIM,DFDI,DEF,SIGP,VIP,
      &                   MATUU,VECTU,CODRET)
-     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 
       IMPLICIT NONE
-      
+
       INTEGER       NNO, NPG, IMATE, LGPG, CODRET,COD(9)
       INTEGER       IPOIDS,IVF,IDFDE
       CHARACTER*8   TYPMOD(*)
@@ -94,48 +93,48 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  S(2),Q(2,2),DSDU(2,8),SG(2),QG(2,2),DSDUG(2,8),D(4,2)
       REAL*8  DDA,XA,XB,YA,YB
       REAL*8  ROT(2,2),COTMP,SITMP,CO,SI,DROT ,RTEMP(4,2)
-      REAL*8  DALFU(2,8),DH(4,8),H(2,2),DALFS(2,2),DET            
-                    
+      REAL*8  DALFU(2,8),DH(4,8),H(2,2),DALFS(2,2),DET
+
 C - INITIALISATIONS
 C------------------
 
       RESI = OPTION.EQ.'RAPH_MECA' .OR. OPTION.EQ.'FULL_MECA'
       RIGI = OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RIGI_MECA_TANG'
-      
-      IF (.NOT. RESI .AND. .NOT. RIGI) 
-     &  CALL UTMESS('F','NMED2D','OPTION '//OPTION//' NON TRAITEE')
+
+      IF (.NOT. RESI .AND. .NOT. RIGI)
+     &  CALL U2MESK('F','ALGORITH7_61',1,OPTION)
 
       CALL R8INIR(2,  0.D0, S,1)
       CALL R8INIR(4,  0.D0, Q,1)
       CALL R8INIR(16, 0.D0, DSDU,1)
-      
+
       RAC2   = SQRT(2.D0)
       GRAND  = .FALSE.
-      AXI    = TYPMOD(1) .EQ. 'AXIS' 
-      
+      AXI    = TYPMOD(1) .EQ. 'AXIS'
+
 C     INITIALISATION CODES RETOURS
       DO 1955 KPG=1,NPG
          COD(KPG)=0
 1955  CONTINUE
 
 
-C MATRICE DE CHANGEMENT DE REPERE : DU GLOBAL AU LOCAL  : 
+C MATRICE DE CHANGEMENT DE REPERE : DU GLOBAL AU LOCAL  :
 C    ROT X = XLOC
-C SOIT A ET B LES MILIEUX DES COTES [14] ET [23]  
+C SOIT A ET B LES MILIEUX DES COTES [14] ET [23]
 C t TANGENT AU COTE [AB]
-    
+
       XA = ( GEOM(1,1) + GEOM(1,4) ) / 2
       YA = ( GEOM(2,1) + GEOM(2,4) ) / 2
-      
+
       XB = ( GEOM(1,2) + GEOM(1,3) ) / 2
-      YB = ( GEOM(2,2) + GEOM(2,3) ) / 2      
+      YB = ( GEOM(2,2) + GEOM(2,3) ) / 2
 
       COTMP = (YB - YA)
       SITMP = (XA - XB)
-      
+
       CO = COTMP / SQRT(COTMP*COTMP + SITMP*SITMP)
-      SI = SITMP / SQRT(COTMP*COTMP + SITMP*SITMP)  
-            
+      SI = SITMP / SQRT(COTMP*COTMP + SITMP*SITMP)
+
       ROT(1,1) =  CO
       ROT(2,1) = -SI
       ROT(1,2) =  SI
@@ -155,24 +154,23 @@ C       CALCUL DE DFDI,F,EPS (BUM),DEPS (BDU),R(EN AXI) ET POIDS
 
         CALL NMGEOM(2,NNO,AXI,GRAND,GEOM,KPG,IPOIDS,
      &              IVF,IDFDE,DEPLM,POIDS,DFDI,F,BUM,R)
-     
         CALL NMGEOM(2,NNO,AXI,GRAND,GEOM,KPG,IPOIDS,
-     &              IVF,IDFDE,DDEPL,POIDS,DFDI,F,BDU,R)        
-        
-        
-C       CALCUL DE D (LES AUTRES TERMES SONT NULS):  
+     &              IVF,IDFDE,DDEPL,POIDS,DFDI,F,BDU,R)
+
+
+C       CALCUL DE D (LES AUTRES TERMES SONT NULS):
 
         CALL R8INIR(8, 0.D0, D,1)
-   
-        D(1,1) = - (DFDI(1,1) + DFDI(2,1))   
-        D(4,1) = - RAC2*(DFDI(1,2) + DFDI(2,2))/2      
+
+        D(1,1) = - (DFDI(1,1) + DFDI(2,1))
+        D(4,1) = - RAC2*(DFDI(1,2) + DFDI(2,2))/2
         D(2,2) = - (DFDI(1,2) + DFDI(2,2))
-        D(4,2) = - RAC2*(DFDI(1,1) + DFDI(2,1))/2   
-                
-C       CHANGEMENT DE REPERE DANS D : ON REMPLACE D PAR DRt : 
+        D(4,2) = - RAC2*(DFDI(1,1) + DFDI(2,1))/2
+
+C       CHANGEMENT DE REPERE DANS D : ON REMPLACE D PAR DRt :
 
         CALL R8INIR(8, 0.D0, RTEMP,1)
-       
+
         DO 32 I=1,4
           DO 33 J=1,2
             DROT = 0.D0
@@ -180,15 +178,15 @@ C       CHANGEMENT DE REPERE DANS D : ON REMPLACE D PAR DRt :
               DROT = DROT + D(I,K)*ROT(J,K)
   34        CONTINUE
             RTEMP(I,J) = DROT
-  33      CONTINUE         
-  32    CONTINUE 
-  
+  33      CONTINUE
+  32    CONTINUE
+
         DO 38 I=1,4
-          DO 39 J=1,2                         
+          DO 39 J=1,2
             D(I,J) = RTEMP(I,J)
   39      CONTINUE
-  38    CONTINUE   
-                                        
+  38    CONTINUE
+
 C       CALCUL DES PRODUITS SYMETR. DE F PAR N,
 
         CALL R8INIR(32, 0.D0, DEF,1)
@@ -205,7 +203,7 @@ C       TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
 
         IF (AXI) THEN
           DO 50 N=1,NNO
-            DEF(3,N,1) = F(3,3)*ZR(IVF+N+(KPG-1)*NNO-1)/R            
+            DEF(3,N,1) = F(3,3)*ZR(IVF+N+(KPG-1)*NNO-1)/R
  50       CONTINUE
         ENDIF
 
@@ -217,61 +215,60 @@ C       TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
 C       CALCUL DE S ET Q AU POINT DE GAUSS COURANT I.E. SG ET QG :
 
         CALL NMEDSQ(SG,QG,DSDUG,D,NPG,TYPMOD,IMATE,BUM,BDU,
-     &              SIGN,VIM,OPTION,GEOM,NNO,LGPG,KPG,DEF)     
+     &              SIGN,VIM,OPTION,GEOM,NNO,LGPG,KPG,DEF)
 
 C       CALCUL DES S ET Q POUR L'ELEMENT :
 
-        DO 64 I=1,2              
-          S(I) = S(I) + POIDS*SG(I)        
+        DO 64 I=1,2
+          S(I) = S(I) + POIDS*SG(I)
           DO 65 J=1,2
             Q(I,J) = Q(I,J) + POIDS*QG(I,J)
-   65     CONTINUE      
+   65     CONTINUE
           DO 66 J=1,8
             DSDU(I,J) = DSDU(I,J)  + POIDS*DSDUG(I,J)
-   66     CONTINUE      
-   64   CONTINUE  
-                 
+   66     CONTINUE
+   64   CONTINUE
+
   800 CONTINUE
- 
-  
-C - APPEL DU COMPORTEMENT : 
+
+
+C - APPEL DU COMPORTEMENT :
 C--------------------------
- 
+
       CALL NMEDCO(COMPOR,OPTION,IMATE,NPG,LGPG,S,Q,VIM,VIP,ALPHAP,DALFS)
 
 
-C - 2ND BOUCLE SUR LES POINTS DE GAUSS 
-C ------------------------------------------------- 
+C - 2ND BOUCLE SUR LES POINTS DE GAUSS
+C -------------------------------------------------
 C   (CALCUL DE LA CONTRAINTE , FORCE INT ET MATRICE TANGENTE)
 
       DO 801 KPG=1,NPG
-  
+
 C       CALCUL DE DFDI,F,BUM, BDU ,R(EN AXI) ET POIDS
 
         CALL R8INIR(6, 0.D0, BUM,1)
         CALL R8INIR(6, 0.D0, BDU,1)
-  
+
         CALL NMGEOM(2,NNO,AXI,GRAND,GEOM,KPG,IPOIDS,
      &              IVF,IDFDE,DEPLM,POIDS,DFDI,F,BUM,R)
-     
 
         CALL NMGEOM(2,NNO,AXI,GRAND,GEOM,KPG,IPOIDS,
      &              IVF,IDFDE,DDEPL,POIDS,DFDI,F,BDU,R)
-  
-                  
-C       CALCUL DE D (LES AUTRES TERMES SONT NULS):  
-   
+
+
+C       CALCUL DE D (LES AUTRES TERMES SONT NULS):
+
         CALL R8INIR(8, 0.D0, D,1)
-   
-        D(1,1) = - (DFDI(1,1) + DFDI(2,1))   
-        D(4,1) = - RAC2*(DFDI(1,2) + DFDI(2,2))/2      
+
+        D(1,1) = - (DFDI(1,1) + DFDI(2,1))
+        D(4,1) = - RAC2*(DFDI(1,2) + DFDI(2,2))/2
         D(2,2) = - (DFDI(1,2) + DFDI(2,2))
         D(4,2) = - RAC2*(DFDI(1,1) + DFDI(2,1))/2
-        
-C       CHANGEMENT DE REPERE DANS D : ON REMPLACE D PAR DRt : 
+
+C       CHANGEMENT DE REPERE DANS D : ON REMPLACE D PAR DRt :
 
         CALL R8INIR(8, 0.D0, RTEMP,1)
-       
+
         DO 35 I=1,4
           DO 36 J=1,2
             DROT = 0.D0
@@ -279,15 +276,15 @@ C       CHANGEMENT DE REPERE DANS D : ON REMPLACE D PAR DRt :
               DROT = DROT + D(I,K)*ROT(J,K)
   37        CONTINUE
             RTEMP(I,J) = DROT
-  36      CONTINUE         
-  35    CONTINUE 
-   
+  36      CONTINUE
+  35    CONTINUE
+
         DO 52 I=1,4
-          DO 53 J=1,2                         
+          DO 53 J=1,2
             D(I,J) = RTEMP(I,J)
   53      CONTINUE
   52    CONTINUE
-                 
+
 C       CALCUL DES PRODUITS SYMETR. DE F PAR N,
 
         CALL R8INIR(32, 0.D0, DEF,1)
@@ -312,7 +309,7 @@ C
           SIGN(I) = SIGM(I,KPG)
  61     CONTINUE
         SIGN(4) = SIGM(4,KPG)*RAC2
-             
+
 C       LA VARIATION DE DEF DEPS : DEVIENT LA SOMME DES VARIATION
 C       DE DEF LIEE AU DEPL : 'BDU' PLUS CELLE LIEE AU SAUT : 'DDA'
 
@@ -320,7 +317,7 @@ C       DE DEF LIEE AU DEPL : 'BDU' PLUS CELLE LIEE AU SAUT : 'DDA'
         ALPHAM(2) = VIM(2,KPG)
         DO 80 I=1,4
           DDA = 0.D0
-          DO 70 J=1,2 
+          DO 70 J=1,2
             DDA = DDA + D(I,J)*(ALPHAP(J)-ALPHAM(J))
  70       CONTINUE
           DEPS(I) =  BDU(I) + DDA
@@ -329,29 +326,28 @@ C       DE DEF LIEE AU DEPL : 'BDU' PLUS CELLE LIEE AU SAUT : 'DDA'
 C CALCUL DE LA CONTRAINTE
 C------------------------
 
-C       APPEL DE LA LDC ELASTIQUE : SIGMA=A.EPS AVEC EPS=BU-DA 
+C       APPEL DE LA LDC ELASTIQUE : SIGMA=A.EPS AVEC EPS=BU-DA
 C       ON PASSE EN ARG LA VARIATION DE DEF 'DEPS' ET LA CONTRAINTE -
 C       'SIGN' ET ON SORT LA CONTAINTE + 'SIGMA'
         CALL NMEDEL(2,TYPMOD,IMATE,DEPS,SIGN,OPTION,SIGMA,DSIDEP)
-    
-     
+
 C CALCUL DES EFFORTS INTERIEURS ET MATRICE TANGENTE :
 C ---------------------------------------------------
 
         IF (RIGI) THEN
 
-C CALCUL DE DH : TERME MANQUANT DANS LA MATRICE TANGENTE :   
- 
+C CALCUL DE DH : TERME MANQUANT DANS LA MATRICE TANGENTE :
+
           IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
             ELAS=(NINT(VIM(4,KPG)).EQ.0)
           ELSE
             ELAS=(NINT(VIP(4,KPG)).EQ.0)
           ENDIF
-        
-          IF ( (ELAS) .AND. (VIM(3,KPG).EQ.0.D0) ) THEN   
-                 
+
+          IF ( (ELAS) .AND. (VIM(3,KPG).EQ.0.D0) ) THEN
+
             CALL R8INIR(32, 0.D0,DH,1)
-            
+
           ELSE
 
 C CALCUL DE LA DERIVE DE ALPHA PAR RAPPORT A U : 'DALFU' EN UTILISANT LA
@@ -363,7 +359,7 @@ C CF NMEDCO.F) ET DE LA DERIVEE DE S PAR RAPPORT A U : 'DSDU'.
               DO 74 J=1,8
                 DO 75 K=1,2
                   DALFU(I,J) = DALFU(I,J) + DALFS(I,K)*DSDU(K,J)
-   75           CONTINUE          
+   75           CONTINUE
    74         CONTINUE
    73       CONTINUE
 
@@ -377,10 +373,10 @@ C 4x8 = 4x2  2x8
               DO 77 J=1,8
                 DO 78 K=1,2
                   DH(I,J) = DH(I,J) + D(I,K)*DALFU(K,J)
-   78           CONTINUE            
+   78           CONTINUE
    77         CONTINUE
    76       CONTINUE
-   
+
           ENDIF
 
 C - CALCUL DE LA MATRICE DE RIGIDITE
@@ -402,10 +398,10 @@ C - CALCUL DE LA MATRICE DE RIGIDITE
                     J1 = 2
                   ENDIF
 
-C                 RIGIDITE ELASTIQUE + TERME LIE AU SAUT : 
+C                 RIGIDITE ELASTIQUE + TERME LIE AU SAUT :
 C                 TMP = Bt E (B + DH)
 
-                  TMP=0.D0 
+                  TMP=0.D0
                   TMP=TMP + SIG(1)*( DEF(1,M,J) + DH(1, 2*(M-1)+J) )
                   TMP=TMP + SIG(2)*( DEF(2,M,J) + DH(2, 2*(M-1)+J) )
                   TMP=TMP + SIG(3)*( DEF(3,M,J) + DH(3, 2*(M-1)+J) )
@@ -422,7 +418,7 @@ C
  140          CONTINUE
  150        CONTINUE
  160      CONTINUE
- 
+
         ENDIF
 
 C - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
@@ -443,7 +439,7 @@ C
           SIGP(4,KPG) = SIGMA(4)/RAC2
 C
         ENDIF
-        
+
  801  CONTINUE
 
 
@@ -451,5 +447,5 @@ C
 
 C - SYNTHESE DES CODES RETOURS
       CALL CODERE(COD,NPG,CODRET)
-      
+
       END

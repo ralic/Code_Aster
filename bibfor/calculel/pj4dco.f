@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/09/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C     ----------------------------
         ELSE IF (ZI(IALIM1-1+I).EQ.2) THEN
           ZI(IALIM1-1+I)=1
         ELSE IF (ZI(IALIM1-1+I).GT.2) THEN
-          CALL UTMESS('F','PJ4DCO','STOP 1')
+          CALL U2MESS('F','CALCULEL_2')
         END IF
 12    CONTINUE
 
@@ -191,8 +191,7 @@ C     ------------------------------------------------
       DO 43,K=1,NNO2
         IF (ZI(IALIN2-1+K).GT.0) KK=KK+1
 43    CONTINUE
-      IF (KK.EQ.0) CALL UTMESS('F','PJ4DCO',
-     &  'AUCUNS NOEUDS SUR LESQUELS PROJETER.')
+      IF (KK.EQ.0) CALL U2MESS('F','CALCULEL4_54')
 
 
 
@@ -224,9 +223,9 @@ C           V(1+4(I-1)+4) : NUMERO DE LA MAILLE MERE DU IEME TRIA3
         ELSE IF (ITYPM.EQ.NUTM(6)) THEN
           ICO=ICO+2
         ELSE
-          CALL UTMESS('F','PJ4DCO','STOP 3')
+          CALL U2MESS('F','ALGORITH_19')
       IF (ICO.EQ.0)
-     &  CALL UTMESS('F','PJ4DCO','PAS DE MAILLES A PROJETER.')
+     &  CALL U2MESS('F','CALCULEL4_55')
         END IF
 51    CONTINUE
       CALL WKVECT('&&PJXXCO.TRIA3','V V I',1+4*ICO,IATR3)
@@ -358,7 +357,7 @@ C     ------------------------------------------------
 
         IF (NBTROU.EQ.0) THEN
           CALL JENUNO(JEXNUM(M2//'.NOMNOE',INO2),NONO2)
-          CALL UTMESS('F','PJ4DCO',NONO2//' PAS TROUVE.')
+          CALL U2MESK('F','CALCULEL4_56',1,NONO2)
         END IF
 
         ZI(IACONB-1+INO2)=3

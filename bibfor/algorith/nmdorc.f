@@ -21,7 +21,7 @@ C TOLE CRP_20
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -123,7 +123,7 @@ C                           1234567890123
 C    -----------------------------------------------------------
 C     POUR LA COMMANDE CALC_G
 C     SI AUCUN DES DEUX COMPORTEMENTS COMP_ELAS ET COMP_INCR N'EST
-C     SPECIFIE PAR L'UTILISATEUR, ON CREE UNE CARTE PAR DEFAUT 
+C     SPECIFIE PAR L'UTILISATEUR, ON CREE UNE CARTE PAR DEFAUT
 C     AVEC LES CARACTERISTIQUES SUIVANTES :
 C          COMP_ELAS ( RELATION    : ELAS
 C                      DEFORMATION : PETIT
@@ -269,7 +269,7 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
    80   CONTINUE
         IF (BUG) THEN
           CALL UTFINM()
-          CALL UTMESS('F','NMDORC','ARRET SUR ERREURS')
+          CALL U2MESS('F','MODELISA4_1')
         END IF
         CALL ALCART('V',COMPOR,NOMA,NOMGRD)
         CALL JEVEUO(COMPOR//'.NCMP','E',JNCMP)
@@ -324,10 +324,9 @@ C  POUR COMPORTEMENT KIT_
               CALL GETVTX(MOCLEF(I),'RELATION_KIT',K,1,DIMAKI,COMEL(1),
      &                    N1)
               IF (N1.EQ.0) THEN
-                CALL UTMESS('F','NMDORC','LISTE RELATION_KIT VIDE')
+                CALL U2MESS('F','ALGORITH7_56')
               ELSE IF (N1.GT.DIMAKI) THEN
-                CALL UTMESS('F','NMDORC',
-     &                      'LISTE RELATION_KIT TROP LONGUE')
+                CALL U2MESS('F','ALGORITH7_57')
               ELSE
                 NCOMEL = N1
                 DO 110 II = NCOMEL + 1,DIMAKI
@@ -353,7 +352,7 @@ C  POUR COMPORTEMENT KIT_
                 CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
                 IF (TX1D.EQ.'DEBORST') THEN
                    IF(TXCP.EQ.'DEBORST')THEN
-                      CALL UTMESS('F','NMDORC','1D OU C_PLAN ?')
+                      CALL U2MESS('F','ALGORITH7_58')
                    ELSE
                       NBVARI = NBVARI + 4
                       TXCP=TX1D
@@ -376,9 +375,9 @@ C  POUR COMPORTEMENT KIT_
                 CALL GETVTX(MOCLEF(I),'RELATION_KIT',K,1,DIMAKI,
      &                      COMEL(1),N1)
                 IF (N1.EQ.0) THEN
-                  CALL UTMESS('F','NMDORC','LISTE RELATION_KIT VIDE')
+                  CALL U2MESS('F','ALGORITH7_56')
                 ELSE IF (N1.GT.1) THEN
-                  CALL UTMESS('F','NMDORC','LISTE RELATION_KIT TROP')
+                  CALL U2MESS('F','ALGORITH7_59')
                 ELSE
                   NCOMEL = N1
                   DO 130 II = NCOMEL + 1,DIMAKI
@@ -430,7 +429,7 @@ C   CPLAN DEBORST  ET COMP1D DEBORST
                    CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
                    IF (TX1D.EQ.'DEBORST') THEN
                       IF(TXCP.EQ.'DEBORST')THEN
-                          CALL UTMESS('F','NMDORC','1D OU C_PLAN ?')
+                          CALL U2MESS('F','ALGORITH7_58')
                       ELSE
                          NBVARI = NBVARI + 4
                          TXCP=TX1D
@@ -438,7 +437,7 @@ C   CPLAN DEBORST  ET COMP1D DEBORST
                    ENDIF
                 END IF
             END IF
-            
+
 C RELATION SIMO_MIEHE POUR VMIS_ISOT_XXX ET META_XXX_IL
 C ET META_XXX_INL
 
@@ -510,9 +509,7 @@ C ======================================================================
 
 
                 IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
-     &            CALL UTMESS('A','NMDOCN','CRITERE DE CONVERGENCE '//
-     &               'POUR INTEGRER LE COMPORTEMENT RESI_INTE_RELA '//
-     &               'LACHE')
+     &            CALL U2MESS('A','ALGORITH7_60')
 
                 ITEPAS = 0
                 CALL GETVIS('COMP_INCR','ITER_INTE_PAS' ,1,1,1,ITEPAS,
@@ -543,9 +540,7 @@ C    LECTURE DES PARAMETRES
 
 
                 IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
-     &            CALL UTMESS('A','NMDORC','CRITERE DE CONVERGENCE '//
-     &               'POUR INTEGRER LE COMPORTEMENT RESI_INTE_RELA '//
-     &               'LACHE')
+     &            CALL U2MESS('A','ALGORITH7_60')
 
                 CALL GETVIS(MOCLEF(I),'ITER_INTE_PAS' ,K,1,1,ITEPAS,
      &                       IRET)

@@ -4,7 +4,7 @@
       CHARACTER*(*) MATR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C     ------------------------------------------------------------------
       CALL DISMOI('F','NOM_NUME_DDL',MATR,'MATR_ASSE',IBID,NUME,IE)
       CALL JEVEUO(MATR(1:8)//'           .&INT','E',LMAT)
       IF (LMAT.EQ.0) THEN
-        CALL UTMESS('F','IRMAID','ERREUR : LMAT EST NUL.')
+        CALL U2MESS('F','UTILITAI2_40')
       END IF
 
       NEQ = ZI(LMAT+2)
@@ -84,12 +84,10 @@ C     --- MATRICE SYMETRIQUE REELLE ---
           CALL MATRPL(MATR,ZI(JSMHC),ZI(JSMDI),NEQ,
      &                ZI(LDDL),ZR(JMATR),NBDDL)
         ELSE
-          CALL UTMESS('F','IRMAID',
-     &                'ON NE TRAITE QUE LES MATRICES SYMETRIQUES.')
+          CALL U2MESS('F','UTILITAI2_41')
         END IF
       ELSE
-        CALL UTMESS('F','IRMAID',
-     &              'ON NE TRAITE QUE LES MATRICES REELLES.')
+        CALL U2MESS('F','UTILITAI2_42')
       END IF
 
       CALL DISMOI('F','SUR_OPTION',MATR,'MATR_ASSE',IBD,OPTION,IE)
@@ -100,7 +98,7 @@ C     --- MATRICE SYMETRIQUE REELLE ---
       ELSE IF (OPTION.EQ.'AMOR_MECA') THEN
         IMAT = 7
       ELSE
-        CALL UTMESS('F','IRMAID','OPTION INCONNUE.')
+        CALL U2MESS('F','UTILITAI2_43')
       END IF
 
       M2 = NBDDL*NBDDL

@@ -9,7 +9,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/01/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,8 +66,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM,ARGU
 C DEB-------------------------------------------------------------------
       CALL JEMARQ()
-      IF (MODELE(1:1).EQ.' ') CALL UTMESS('F','MEAMME',
-     &                             'IL FAUT UN MODELE.')
+      IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
 
       OPTIO2 = OPTION
       NH = 0
@@ -90,8 +89,7 @@ C     ---------------------------------------------------------------
      &                  LIGRE1,IED)
             IF (LIGRE1(1:8).EQ.MODELE(1:8)) GO TO 20
    10     CONTINUE
-          CALL UTMESS('F','MEAMME','IL N''Y A PAS DE RIGIDITE '//
-     &                'SUR LE MODELE.')
+          CALL U2MESS('F','CALCULEL2_83')
    20     CONTINUE
         END IF
       END IF
@@ -108,8 +106,7 @@ C     ---------------------------------------------------------------
      &                  LIGRE1,IED)
             IF (LIGRE1(1:8).EQ.MODELE(1:8)) GO TO 40
    30     CONTINUE
-          CALL UTMESS('F','MEAMME','IL N''Y A PAS DE MASSE '//
-     &                'SUR LE MODELE.')
+          CALL U2MESS('F','CALCULEL2_84')
    40     CONTINUE
         END IF
       END IF
@@ -127,7 +124,7 @@ C     ---------------------------------------------------------------
       ELSE IF (OPTIO2.EQ.'RIGI_MECA_HYST') THEN
         LPAOUT(1) = 'PMATUUC'
       ELSE
-        CALL UTMESS('F','MEMAME','MESSAGE VIDE    ')
+        CALL U2MESS('F','ASSEMBLA_17')
       END IF
       LPAOUT(2) = 'PMATUUR'
 
@@ -157,7 +154,7 @@ C     ---------------------------------------------------------------
       LPAIN(10) = 'PCADISK'
       LCHIN(10) = CHCARA(2)
       IF (OPTIO2.EQ.'AMOR_MECA_ABSO') THEN
-        NOP = 2      
+        NOP = 2
       ELSE
         NOP = 10
       ENDIF

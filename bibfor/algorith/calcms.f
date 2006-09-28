@@ -2,29 +2,29 @@
      &                     COEFT,ANGMAS,TOUTMS )
         IMPLICIT NONE
         INTEGER NMAT,NBCOMM(NMAT,3),NBFSYM,NBPHAS
-        REAL*8 PGL(3,3),TOUTMS(NBPHAS,NBFSYM,24,6),COEFT(NMAT)  
+        REAL*8 PGL(3,3),TOUTMS(NBPHAS,NBFSYM,24,6),COEFT(NMAT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
-C       IN 
+C       IN
 C         NBCOMM :  NOMBRE DE COEF COEFTIAU PAR FAMILLE
 C         CPMONO :  NOMS DES LOIS COEFTIAU PAR FAMILLE
 C   PGL2   : MATRICE DE PASSAGE GLOBAL LOCAL DU POLYCRSTAL (a faire)
@@ -45,7 +45,7 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
 
 C         CALCUl DES TENSEURS MS POUR GAGNER DU TEMPS
-      DO 1 IPHAS=1,NBPHAS         
+      DO 1 IPHAS=1,NBPHAS
 C        INDPHA indice debut phase IPHAS dans NBCOMM
          INDPHA=NBCOMM(1+IPHAS,1)
 C         recuperer l'orientation de la phase et la proportion
@@ -57,19 +57,18 @@ C         recuperer l'orientation de la phase et la proportion
          CALL MATROT(ANGMAS,PGL2)
          CALL PROMAT(PGL1,3,3,3,PGL2,3,3,3,PGL)
          NBFSYS=NBCOMM(INDPHA,1)
-         INDCP=NBCOMM(1+IPHAS,2)     
+         INDCP=NBCOMM(1+IPHAS,2)
          IF (NBFSYS.GT.NBFSYM) THEN
-            CALL UTMESS('F','CALCMS','TROP DE FAMILLES DE SYSTEMES'//
-     &                  ' DE GLISSEMENT. MODIFIER GERPAS')            
+            CALL U2MESS('F','ALGORITH_69')
          ENDIF
-C        Nombre de variables internes de la phase (=monocristal)        
-         DO 2 IFA=1,NBFSYS            
+C        Nombre de variables internes de la phase (=monocristal)
+         DO 2 IFA=1,NBFSYS
             NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
-            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)         
-            IF (NBSYS.EQ.0) CALL UTMESS('F','LCMMON','NBSYS=0')
-C           indice de la famille IFA            
+            CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
+            IF (NBSYS.EQ.0) CALL U2MESS('F','ALGORITH_70')
+C           indice de la famille IFA
 C            INDFA=INDPHA+IFA
-            
+
             DO 3 IS=1,NBSYS
 C              CALCUL DE LA SCISSION REDUITE =
 C              PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT

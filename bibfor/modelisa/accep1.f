@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,11 +127,7 @@ C CREATION D UN .LIEL BASE SUR LE GROUP-MA UTILISATEUR
    30       CONTINUE
    40     CONTINUE
           ZI(INWMOD+NBELMA+1-1) = ZI(ILIEL+NBELMA+1-1)
-          IF (TEMOIN.EQ.0) CALL UTMESS('F','PROJ_SPEC_BASE',
-     &                                 ' LE GROUPE DE MAILLE QUE   '//
-     &                                 ' VOUS DONNEZ NE CORRESPOND   '//
-     &                  ' PAS AU MODELE DE STRUCTURE QUE VOUS ETUDIEZ  '
-     &                                 )
+          IF (TEMOIN.EQ.0) CALL U2MESS('F','MODELISA_5')
           CALL WKVECT(GRMA//'.MODELE    .NOMA','V V K8',1,JNOMA)
           ZK8(JNOMA) = MAILLA
           CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .NBNO','L',IVRAI)
@@ -250,9 +246,7 @@ C AINSI QUE LA VALEUR DU MODE
                   II = II + 1
                   RAYON2 = W1*W1 + W2*W2 + W3*W3
                   IF (RAYON2.LE.0.D0) THEN
-                    CALL UTMESS('F','ACCEP1',
-     &                          'METHODE AU-YANG : LA GEOMETRIE DOIT '//
-     &                          'ETRE CYLINDRIQUE')
+                    CALL U2MESS('F','MODELISA_6')
                   END IF
                   IF (II.EQ.6) THEN
                     REFER = RAYON2
@@ -265,9 +259,7 @@ C AINSI QUE LA VALEUR DU MODE
                     II = 7
                   ELSE
                     IF (ABS(RAYON2-REFER).GT.1.D-3) THEN
-                      CALL UTMESS('F','ACCEP1',
-     &                            'METHODE AU-YANG : LA GEOMETRIE '//
-     &                            'DOIT ETRE CYLINDRIQUE')
+                      CALL U2MESS('F','MODELISA_6')
                     END IF
                     RAP1 = (REF2*W3-REF3*W2)*DIR(1,1) +
      &                     (REF3*W1-REF1*W3)*DIR(2,1) +

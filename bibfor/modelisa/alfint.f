@@ -1,7 +1,7 @@
       SUBROUTINE ALFINT (CHMATZ, IMATE, NOMMAZ, TDEF, NOPARZ, NUMMAT,
-     +                    PREC, CH19,EOUN)
+     &                    PREC, CH19,EOUN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C
 C --- CALCUL DE ALPHA A LA TEMPERATURE DE REFERENCE :
 C     ---------------------------------------------
       CALL RCVALE(NOMMAT, PHENOM, 1, 'TEMP    ', TREF, 1, NOPARA,
-     +            ALFREF, CODRET, 'F ')
+     &            ALFREF, CODRET, 'F ')
 C
 C --- CREATION DE LA NOUVELLE FONCTION DEVANT CONTENIR LES VALEURS
 C --- INTERPOLEES DE ALPHA :
@@ -158,7 +158,7 @@ C                    -----------
         IF (ABS(TI-TREF).GE.PREC) THEN
 C
            ZR(IDVALW+I+NBPTS-1) = (ALPHAI*(TI-TDEF)- ALFREF*(TREF-TDEF))
-     +                           /(TI-TREF)
+     &                           /(TI-TREF)
 C
 C --- DANS LE CAS OU ABS(TI-TREF) < PREC :
 C --- IL FAUT D'ABORD CALCULER LA DERIVEE DE ALPHA PAR RAPPORT
@@ -176,13 +176,11 @@ C
              TIP1     = ZR(IDVALE+I+1-1)
              ALFIM1   = ZR(IDVALE+I+NBPTS-1-1)
              ALFIP1   = ZR(IDVALE+I+NBPTS+1-1)
-             IF ( TIP1 .EQ. TREF ) CALL UTMESS('F','ALFINT',
-     +       'RESSERRER LE MOT CLE PRECISION POUR LE MATERIAU ELAS_FO')
-             IF ( TIM1 .EQ. TREF ) CALL UTMESS('F','ALFINT',
-     +       'RESSERRER LE MOT CLE PRECISION POUR LE MATERIAU ELAS_FO')
+             IF ( TIP1 .EQ. TREF ) CALL U2MESS('F','MODELISA2_2')
+             IF ( TIM1 .EQ. TREF ) CALL U2MESS('F','MODELISA2_2')
 C
              DALREF = UNDEMI*((ALFIP1-ALFREF)/(TIP1-TREF)
-     +                       +(ALFREF-ALFIM1)/(TREF-TIM1))
+     &                       +(ALFREF-ALFIM1)/(TREF-TIM1))
 C
 C ---   DANS LE CAS OU I = NBPTS :
 C ---   D(ALPHA)/DT( TREF) = (ALPHA(TREF)-ALPHA(TI-1))/(TREF-TI-1) :
@@ -191,8 +189,7 @@ C       ----------------------------------------------------------
 C
              TIM1     = ZR(IDVALE+I-1-1)
              ALFIM1   = ZR(IDVALE+I+NBPTS-1-1)
-             IF ( TIM1 .EQ. TREF ) CALL UTMESS('F','ALFINT',
-     +       'RESSERRER LE MOT CLE PRECISION POUR LE MATERIAU ELAS_FO')
+             IF ( TIM1 .EQ. TREF ) CALL U2MESS('F','MODELISA2_2')
 C
              DALREF   = (ALFREF-ALFIM1)/(TREF-TIM1)
 C
@@ -203,8 +200,7 @@ C       ----------------------------------------------------------
 C
              TIP1     = ZR(IDVALE+I+1-1)
              ALFIP1   = ZR(IDVALE+I+NBPTS+1-1)
-             IF ( TIP1 .EQ. TREF ) CALL UTMESS('F','ALFINT',
-     +       'RESSERRER LE MOT CLE PRECISION POUR LE MATERIAU ELAS_FO')
+             IF ( TIP1 .EQ. TREF ) CALL U2MESS('F','MODELISA2_2')
 C
              DALREF   = (ALFIP1-ALFREF)/(TIP1-TREF)
 C

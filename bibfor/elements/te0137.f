@@ -1,6 +1,6 @@
       SUBROUTINE TE0137(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
       TZ0 = R8T0()
-      
+
       LAXI = .FALSE.
       IF (LTEATT(' ','AXIS','OUI')) LAXI = .TRUE.
 
@@ -112,8 +112,7 @@ C BOUCLE SUR LES SOUS-ELEMENTS
           IF (OPTION(11:14).EQ.'COEF') THEN
             CALL FOINTE('A',ZK8(IECH),3,NOMPAR,VALPAR,COENP1,ICODE)
             IF (ICODE.NE.0) THEN
-              CALL UTMESS('F','TE0137',
-     &                    'ERREUR LORS DE L''APPEL A FOINTE')
+              CALL U2MESS('F','ELEMENTS3_23')
             END IF
             DO 50 I = 1,NNO
               LI = IVF + (KP-1)*NNO + I - 1
@@ -123,13 +122,11 @@ C BOUCLE SUR LES SOUS-ELEMENTS
           ELSE IF (OPTION(11:14).EQ.'RAYO') THEN
             CALL FOINTE('A',ZK8(IRAY),4,NOMPAR,VALPAR,SIGMA,IER)
             IF (IER.NE.0) THEN
-              CALL UTMESS('F','TE0137','ERREUR LORS DE L APPEL A FOINTE'
-     &                    )
+              CALL U2MESS('F','ELEMENTS3_21')
             END IF
             CALL FOINTE('A',ZK8(IRAY+1),4,NOMPAR,VALPAR,EPSIL,IER)
             IF (IER.NE.0) THEN
-              CALL UTMESS('F','TE0137','ERREUR LORS DE L APPEL A FOINTE'
-     &                    )
+              CALL U2MESS('F','ELEMENTS3_21')
             END IF
             DO 60 I = 1,NNO
               LI = IVF + (KP-1)*NNO + I - 1

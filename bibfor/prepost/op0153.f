@@ -2,22 +2,22 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     OPERATEUR  "POST_USURE"
@@ -40,7 +40,7 @@ C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       PARAMETER    ( NBPAR = 16, NBPAR2 = 12, NBPMR = 5 )
-      REAL*8       PMOYE, INSDEB, EPSIL, DINST   
+      REAL*8       PMOYE, INSDEB, EPSIL, DINST
       CHARACTER*8  K8B
       CHARACTER*8  TYPAR(NBPAR), TYPPMR(NBPMR)
       REAL*8       VALER(NBPAR)
@@ -69,7 +69,7 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
      &             'INST','V_USUR_TUBE','V_USUR_OBST','P_USUR_TUBE'/
       DATA TYPPMR /'R','R','R','R','R'/
 C     ------------------------------------------------------------------
-C 
+C
       CALL JEMARQ()
       CALL INFMAJ()
 C
@@ -89,24 +89,22 @@ C
       IF ( NTN .NE. 0 ) THEN
          CALL EXISD ( 'TABLE', RESU, IRET )
          IF ( IRET .EQ. 0 ) THEN
-            CALL UTMESS('F','USURE','"TUBE_NEUF" N''A DE SENS QUE '//
-     +                             'POUR UNE TABLE D''USURE EXISTANTE')
+            CALL U2MESS('F','PREPOST4_7')
          ENDIF
          CALL GETVID ( ' ', 'TABL_USURE', 1,1,1, K8B, N1 )
          IF ( K8B .NE. RESU(1:8) ) THEN
-            CALL UTMESS('F','USURE','"TUBE_NEUF" N''A DE SENS QUE '//
-     +                             'POUR UNE TABLE D''USURE EXISTANTE')
+            CALL U2MESS('F','PREPOST4_7')
          ENDIF
          CALL GETVR8 ( ' ', 'INST', 1,1,1, DINST, NIS )
          IF ( NIS .EQ. 0 ) THEN
             CALL TBEXV1 ( RESU, 'INST', '&&OP0153.INST','V',NBV,K8B)
             CALL JEVEUO ('&&OP0153.INST', 'L', JINST )
-            DINST = ZR(JINST+NBV-1) 
+            DINST = ZR(JINST+NBV-1)
          ENDIF
          CALL TBEXV1 ( RESU, 'SECTEUR', '&&OP0153.SECT','V',NBV,K8B)
          CALL JEVEUO ('&&OP0153.SECT', 'L', JSECT )
          NBSECT = ZI(JSECT+NBV-1)
-         CALL JEDETR ( '&&OP0153.SECT' ) 
+         CALL JEDETR ( '&&OP0153.SECT' )
          CALL MOTUBN ( RESU, DINST, NBSECT )
          GOTO 888
       ENDIF
@@ -178,28 +176,26 @@ C
 C              LES ANGLES SONT CROISSANTS ENTRE -180. ET +180. :
 C              -----------------------------------------------
                IF ( (ZR(IDANGT).LT.(-180.D0-EPSIL)) .OR.
-     +              (ZR(IDANGT).GT.(-180.D0+EPSIL)) ) THEN
-                  CALL UTMESS('F','OP0153','ANGLE INITIAL DIFFERENT '//
-     +                                    'DE -180. DEGRES.')
+     &              (ZR(IDANGT).GT.(-180.D0+EPSIL)) ) THEN
+                  CALL U2MESS('F','PREPOST4_8')
                ENDIF
             ENDIF
             CALL GETVR8('SECTEUR','ANGL_FIN',I,1,1,ZR(IDANGT+I),NA)
             IF ( ZR(IDANGT+I) .LT. ZR(IDANGT+I-1) ) THEN
-         CALL UTMESS('F','OP0153','LES ANGLES NE SONT PAS CROISSANTS.')
+         CALL U2MESS('F','PREPOST4_9')
             ENDIF
             IF ( I .EQ. NBSECT ) THEN
                IF ( (ZR(IDANGT+I).LT.(180.D0-EPSIL)) .OR.
-     +              (ZR(IDANGT+I).GT.(180.D0+EPSIL)) ) THEN
-                  CALL UTMESS('F','USURE','ANGLE FINAL DIFFERENT '//
-     +                                    'DE 180. DEGRES.')
+     &              (ZR(IDANGT+I).GT.(180.D0+EPSIL)) ) THEN
+                  CALL U2MESS('F','PREPOST4_10')
                ENDIF
             ENDIF
             CALL GETVR8('SECTEUR','COEF_USUR_MOBILE',I,1,1,
-     +                                             ZR(IDVCTU+I-1),N5)
+     &                                             ZR(IDVCTU+I-1),N5)
             CALL GETVR8('SECTEUR','COEF_USUR_OBST'  ,I,1,1,
-     +                                             ZR(IDVCOB+I-1),N5)
+     &                                             ZR(IDVCOB+I-1),N5)
             CALL GETVTX('SECTEUR','CONTACT'         ,I,1,1,
-     +                                             ZK16(IDCOTU+I-1),N5)
+     &                                             ZK16(IDCOTU+I-1),N5)
  14      CONTINUE
       ELSE
          INDIC = 1
@@ -212,12 +208,12 @@ C     --- CALCUL DU VOLUME D'USURE TUBE ---
 C
       IF (INDIC.EQ.0) THEN
          CALL USUVU2 ( PUUSUR, ZR(JUSUT), NBINST, ZR(JINS2), ITUBE,
-     +                 NBPT, NBSECT, ZR(IDVCTU), ZR(IDANGT), ZR(JFN),
-     +                 ZR(JVG), IRET, ZR(IVUSTU), ZR(IVUSOB),
-     +                 ZR(IPUS), PMOYE, ZR(IPOURP), ZR(IPOUPR) )
+     &                 NBPT, NBSECT, ZR(IDVCTU), ZR(IDANGT), ZR(JFN),
+     &                 ZR(JVG), IRET, ZR(IVUSTU), ZR(IVUSOB),
+     &                 ZR(IPUS), PMOYE, ZR(IPOURP), ZR(IPOUPR) )
       ELSEIF (INDIC.EQ.1) THEN
          CALL USUVUS ( PUUSUR, ZR(JUSUT), NBINST, ZR(JINS2), ITUBE,
-     +                 NBPT, ZR(JFN), ZR(JVG), IRET )
+     &                 NBPT, ZR(JFN), ZR(JVG), IRET )
       ENDIF
       IF ( IRET .NE. 0 ) GOTO 9999
 C
@@ -226,12 +222,12 @@ C     --- CALCUL DU VOLUME D'USURE OBSTABLE ---
 C
       IF (INDIC.EQ.0) THEN
          CALL USUVU2 ( PUUSUR, ZR(JUSUO), NBINST, ZR(JINS2), IOBST,
-     +                 NBPT, NBSECT, ZR(IDVCOB), ZR(IDANGT), ZR(JFN),
-     +                 ZR(JVG), IRET, ZR(IVUSTU), ZR(IVUSOB),
-     +                 ZR(IPUS), PMOYE, ZR(IPOURP), ZR(IPOUPR) )
+     &                 NBPT, NBSECT, ZR(IDVCOB), ZR(IDANGT), ZR(JFN),
+     &                 ZR(JVG), IRET, ZR(IVUSTU), ZR(IVUSOB),
+     &                 ZR(IPUS), PMOYE, ZR(IPOURP), ZR(IPOUPR) )
       ELSEIF (INDIC.EQ.1) THEN
          CALL USUVUS ( PUUSUR, ZR(JUSUO), NBINST, ZR(JINS2), IOBST,
-     +                 NBPT, ZR(JFN), ZR(JVG), IRET )
+     &                 NBPT, ZR(JFN), ZR(JVG), IRET )
       ENDIF
       IF ( IRET .NE. 0 ) GOTO 9999
 C
@@ -243,26 +239,24 @@ C
          IF (INFO.GT.1) WRITE(IFIRES,1130)
          CALL GETVR8(' ','RAYON_MOBILE',1,1,1,RAYOT,N1)
          IF (N1.EQ.0) THEN
-           CALL UTMESS('F','USURE','RAYON MOBILE OBLIGATOIRE AVEC
-     +      SECTEUR.')
+           CALL U2MESS('F','PREPOST4_11')
          ENDIF
          DO 24 I=1,NBSECT
             DO 22 K=1,NBINST
-               ZR(IPRFUT+(K-1)*NBSECT+I-1) = RAYOT - 
-     +          SQRT(RAYOT*RAYOT-2.D0*ZR(IVUSTU+(K-1)*NBSECT+I-1)/
-     +         (HAUT*(ZR(IDANGT+I)-ZR(IDANGT+I-1))) )
+               ZR(IPRFUT+(K-1)*NBSECT+I-1) = RAYOT -
+     &          SQRT(RAYOT*RAYOT-2.D0*ZR(IVUSTU+(K-1)*NBSECT+I-1)/
+     &         (HAUT*(ZR(IDANGT+I)-ZR(IDANGT+I-1))) )
  22         CONTINUE
  24      CONTINUE
          CALL GETVR8(' ','RAYON_OBST',1,1,1,RAYOO,N1)
          IF (N1.EQ.0) THEN
-           CALL UTMESS('F','USURE','RAYON OBSTACLE OBLIGATOIRE AVEC
-     +      SECTEUR.')
+           CALL U2MESS('F','PREPOST4_12')
          ENDIF
          DO 20 I=1,NBSECT
             DO 23 K=1,NBINST
-               ZR(IPRFUO+(K-1)*NBSECT+I-1) = RAYOO - 
-     +          SQRT(RAYOO*RAYOO-2.D0*ZR(IVUSOB+(K-1)*NBSECT+I-1)/
-     +         (HAUT*(ZR(IDANGT+I)-ZR(IDANGT+I-1))) )
+               ZR(IPRFUO+(K-1)*NBSECT+I-1) = RAYOO -
+     &          SQRT(RAYOO*RAYOO-2.D0*ZR(IVUSOB+(K-1)*NBSECT+I-1)/
+     &         (HAUT*(ZR(IDANGT+I)-ZR(IDANGT+I-1))) )
  23      CONTINUE
  20      CONTINUE
       ENDIF
@@ -276,23 +270,23 @@ C
          WRITE(IFIRES,*)
          WRITE(IFIRES,*)
          WRITE(IFIRES,1090) 'SECTEUR : ',ZR(IDANGT+I-1),' / ',
-     +    ZR(IDANGT+I)
+     &    ZR(IDANGT+I)
          WRITE(IFIRES,*)
          WRITE(IFIRES,1120) 'TYPE DE CONTACT     ',':',
-     +    ZK16(IDCOTU+I-1)
+     &    ZK16(IDCOTU+I-1)
          WRITE(IFIRES,1040) 'COEF USURE TUBE     ',':',
-     +    ZR(IDVCTU+I-1)
+     &    ZR(IDVCTU+I-1)
          WRITE(IFIRES,1040) 'COEF USURE OBSTACLE ',':',
-     +    ZR(IDVCOB+I-1)
+     &    ZR(IDVCOB+I-1)
          WRITE(IFIRES,1030) 'PRESENCE DU CRAYON  ',':',
-     +                       ZR(IPOUPR+I-1)*100.D0,'%'
+     &                       ZR(IPOUPR+I-1)*100.D0,'%'
          WRITE(IFIRES,1060) 'PUISSANCE D USURE   ',':',
-     +    ZR(IPUS+I-1),'W'
+     &    ZR(IPUS+I-1),'W'
          WRITE(IFIRES,1030) '% PU DANS CE SECTEUR',':',
-     +    ZR(IPOURP+I-1),'%'
+     &    ZR(IPOURP+I-1),'%'
          WRITE(IFIRES,*)
          WRITE(IFIRES,1010) 'ANNEES','V_USUR_TUBE','V_USUR_OBST',
-     +                     'P_USUR_TUBE','P_USUR_OBST'
+     &                     'P_USUR_TUBE','P_USUR_OBST'
         ENDIF
        DO 27 K=1,NBINST
         IF (INFO.GT.1) WRITE(IFIRES,1080) (ZR(JINS2+K-1) / COINST),
@@ -316,7 +310,7 @@ C        --- CREATION DE LA TABLE ---
             VALER(2) = ZR(JUSUT+K-1)
             VALER(3) = ZR(JUSUO+K-1)
             VALER(4) = ZR(JPRUT+K-1)
-            CALL TBAJLI ( RESU, 4,NOMPMR(2), IBID,VALER,C16B,K8B, 0)  
+            CALL TBAJLI ( RESU, 4,NOMPMR(2), IBID,VALER,C16B,K8B, 0)
  30      CONTINUE
          GOTO 888
       ENDIF
@@ -331,8 +325,7 @@ C
          CALL TBAJPA(RESU,NBPAR,NOPAR,TYPAR)
       ELSE
          IF (TABPUS.NE.RESU) THEN
-            CALL UTMESS('F','OP0153','LA TABLE USURE EN SORTIE EST '//
-     &                             'DIFFERENTE DE CELLE EN ENTREE')
+            CALL U2MESS('F','PREPOST4_13')
          ENDIF
 C   ON REPREND UNE TABLE EXISTANTE
          NOMTA = TABPUS
@@ -347,8 +340,7 @@ C   ON REPREND UNE TABLE EXISTANTE
          CALL JEVEUO('&&OP0153.SECT','L',JSECT)
          NBSEC2 = ZI(JSECT+NBVPU-1)
          IF (NBSEC2.NE.NBSECT) THEN
-          CALL UTMESS('F','OP0153','LE NOMBRE DE SECTEURS EN SORTIE '//
-     &               'EST DIFFERENT DE CELUI EN ENTREE')
+          CALL U2MESS('F','PREPOST4_14')
          ENDIF
          CALL GETVR8 ( 'ETAT_INIT', 'INST_INIT', 1,1,1, DINST, NIS )
          IF (NIS.EQ.0) THEN
@@ -365,8 +357,8 @@ C   ON REPREND UNE TABLE EXISTANTE
             CALL TBEXVE(NOMTA,'INST','&&OP0153.INS5','V',NBVPU,TYPE)
             CALL JEVEUO('&&OP0153.INS5','L',JINST5)
             DINST = ZR(JINST5+NBVPU-1)
-         ENDIF   
-C      
+         ENDIF
+C
 C        DETERMINATION PAR SECTEUR DES VOLUS PAR TUBE ET OBST A DINST
 C        ------------------------------------------------------------
 C
@@ -378,8 +370,7 @@ C
             CALL TBLIVA(NOMTA,2,VALEK,I,DINST,C16B,K8B,'RELA',1.D-03,
      &         'V_USUR_OBST_CUMU',K8B,IBID,ZR(IVUSO+I-1),C16B,K8B,IRE2)
             IF ((IRE1+IRE2).GT.0) THEN
-               CALL UTMESS('F','OP0153','PROBLEME EXTRACTION POUR '//
-     &                                'LA TABLE '//NOMTA)
+               CALL U2MESK('F','PREPOST4_15',1,NOMTA)
             ENDIF
  1       CONTINUE
       ENDIF
@@ -392,19 +383,19 @@ C        -INST-
 C        -DUREE-
          VALER(2) = ZR(JINS2+K-1) / COINST
 C        -ORIG_INST-
-         VALER(3) = DINST 
+         VALER(3) = DINST
 C        -V_USUR_TUBE-
          VALER(4) = ZR(JUSUT+K-1)
 C        -V_USUR_OBST-
          VALER(5) = ZR(JUSUO+K-1)
 C        -P_USUR_TUBE-
          VALER(6) = ZR(JPRUT+K-1)
-         CALL TBAJLI ( RESU, 6,NOPAR(2), IBID,VALER,C16B,K8B, 0)  
+         CALL TBAJLI ( RESU, 6,NOPAR(2), IBID,VALER,C16B,K8B, 0)
          DO 28 I=1,NBSECT
 C           -ANGLE_DEBUT-
-            VALER(4) = ZR(IDANGT+I-1) 
+            VALER(4) = ZR(IDANGT+I-1)
 C           -ANGLE_FIN-
-            VALER(5) = ZR(IDANGT+I) 
+            VALER(5) = ZR(IDANGT+I)
 C           -V_USUR_TUBE_SECT-
             VALER(6) = ZR(IVUSTU+(K-1)*NBSECT+I-1)
 C           -V_USUR_OBST_SECT-
@@ -433,7 +424,7 @@ C
  1000 FORMAT(/,80('-'))
  1010 FORMAT(A11,2X,A15,2X,A15,2X,A15,2X,A15)
  1020 FORMAT(E11.5,1X,A1)
- 1030 FORMAT(A20,1X,A1,1X,F6.2,1X,A1) 
+ 1030 FORMAT(A20,1X,A1,1X,F6.2,1X,A1)
  1040 FORMAT(A20,1X,A1,1X,E10.4)
  1060 FORMAT(A20,1X,A1,1X,E11.5,1X,A1)
  1080 FORMAT(1P E11.5,2X,E15.9,2X,E15.9,2X,E15.9,2X,E15.9)
@@ -442,7 +433,7 @@ C
  1100 FORMAT(1P E11.5,3X,E15.9)
  1120 FORMAT(A20,1X,A1,1X,A14)
  1130 FORMAT(
-     +'LES PROFONDEURS USEES PAR SECTEUR SONT DES APPROXIMATIONS')
+     &'LES PROFONDEURS USEES PAR SECTEUR SONT DES APPROXIMATIONS')
 C
  9999 CONTINUE
       CALL JEDEMA()

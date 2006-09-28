@@ -1,7 +1,7 @@
       SUBROUTINE DRZ03D(LISNOZ,LONLIS,CHARGZ,TYPLAZ,LISREZ,DMIN)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,9 +161,7 @@ C --- D'ELEMENTS DE LAGRANGE ASSOCIES
       CALL DISMOI('F','NB_EC',NOMG,'GRANDEUR',NBEC,K8BID,IERD)
 
       IF (NBEC.GT.10) THEN
-        CALL UTMESS('F','DRZ03D',
-     &              'LE DESCRIPTEUR_GRANDEUR DES DEPLACEMENTS'//
-     &              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+        CALL U2MESS('F','MODELISA_94')
       END IF
 
 C --- CREATION DES TABLEAUX DE TRAVAIL NECESSAIRES A L'AFFECTATION
@@ -632,12 +630,7 @@ C ---                ON FAIT UN AUTRE ESSAI AVEC N1 = J X B
               N1(3) = -B(1)
 
               IF (SQRT(B(3)*B(3)+B(1)*B(1)).LT.RPETIT) THEN
-                CALL UTMESS('F','DRZ03D',
-     &                      'PROBLEME DANS LE CAS 3D OU LES NOEUDS SONT'
-     &                      //' ALIGNES, LA DISTANCE SEPARANT 2 NOEUDS'
-     &                      //
-     &                     ' NON-IDENTIQUES DE LA LISTE EST TROP PETITE'
-     &                      )
+                CALL U2MESS('F','MODELISA4_41')
               END IF
             END IF
 
@@ -684,12 +677,7 @@ C ---                 DEFINITION DU VECTEUR ABM = AB X AM
 
               IF (SQRT(ABM(1)*ABM(1)+ABM(2)*ABM(2)+ABM(3)*ABM(3)).GT.
      &            RPETIT) THEN
-                CALL UTMESS('F','DRZ03D',
-     &                      'PROBLEME DANS LE CAS 3D OU LES NOEUDS SONT'
-     &                      //
-     &                     ' ALIGNES ET OU POURTANT ON ARRIVE A TROUVER'
-     &                      //' 3 NOEUDS FORMANT UN TRIANGLE DE SURFACE'
-     &                      //' NON-NULLE')
+                CALL U2MESS('F','MODELISA4_42')
               END IF
   270       CONTINUE
 

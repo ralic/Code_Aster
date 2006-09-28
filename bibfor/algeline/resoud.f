@@ -1,8 +1,8 @@
       SUBROUTINE RESOUD ( MATASS, MATPRE, CHSECZ, SOLVEU, CHCINE, BASE,
-     +                    CHASOL, CRITEZ)
+     &                    CHASOL, CRITEZ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,12 +210,10 @@ C     ----------------------------------
          EPSI   = ZR(ISLVR+1)
          IREP=1
          CALL RESGRA ( CHSOL, MATAS, CHSECM, CHCINE, MAPREC,
-     +                 BASE, IREP, NITER, EPSI, CRITER )
+     &                 BASE, IREP, NITER, EPSI, CRITER )
 
       ELSE
-          CALL UTMESS('F','RESOUD',' LA METHODE DE RESOLUTION: '//
-     +                     METRES//' EST INCONNUE. ON ATTEND LDLT'//
-     +                             ',GCPC, MULT_FRO OU FETI')
+          CALL U2MESK('F','ALGELINE3_44',1,METRES)
       ENDIF
       IF ((NIV.GE.2).OR.(LFETIC)) THEN
         CALL UTTCPU(53,'FIN  ',6,TEMPS)

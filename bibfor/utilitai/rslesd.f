@@ -6,22 +6,22 @@
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     BUT:
@@ -77,7 +77,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24 EXCISD
 
       PARAMETER(NOMPRO='RSLESD')
-      
+
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -89,15 +89,15 @@ C               123456789012345678901234
       KFON   = '&&'//NOMPRO//'.FONC_MULT '
       IEXCIT = 0
       N4     = 0
-C      
+C
       CALL GETRES(K8B,TYPE,NOMCMD)
 C
 C==========================================================
 C
-C     T R A I T E M E N T  DU  M O D E L E 
+C     T R A I T E M E N T  DU  M O D E L E
 C
-C========================================================== 
-C     
+C==========================================================
+C
 
 C      WRITE(6,*)'rslesd01'
 
@@ -112,26 +112,24 @@ C      WRITE(6,*)'rslesd01-MODELE=',MODELE
 C      WRITE(6,*)'rslesd01-RESULT=',RESULT
 C      WRITE(6,*)'rslesd01-NOMSD=',NOMSD
 
-C 
+C
 C--- VERIFICATIONS ET AFFECTATIONS
 C
       IF (NOMSD.NE.' ')THEN
         IF (N1.EQ.0) THEN
-           MODELE = NOMSD 
+           MODELE = NOMSD
         ELSEIF (NOMSD.EQ.NOMLU) THEN
            MODELE = NOMLU
         ELSE
-          CALL UTMESS('F',NOMPRO,
-     &         ' LE MODELE FOURNI PAR L''UTILISATEUR EST'
-     &       //' DIFFERENT DE CELUI PRESENT DANS LA SD RESULTAT.')
+          CALL U2MESS('F','UTILITAI4_37')
         ENDIF
       ELSE
         IF (N1.NE.0) THEN
-           MODELE = NOMLU 
+           MODELE = NOMLU
         ELSE
            MODELE = BLAN8
         ENDIF
-      ENDIF        
+      ENDIF
 
 C      WRITE(6,*)'rslesd02'
 
@@ -147,12 +145,12 @@ C
 
 C      WRITE(6,*)'rslesd03'
 C      WRITE(6,*)'rslesd02-MODELE=',MODELE
-C      
+C
 C==========================================================
 C
 C     T R A I T E M E N T   D U   C A R A _ E L E M
 C
-C========================================================== 
+C==========================================================
 C
 C--- RECUPERATION DU NOM DU CARA_ELEM
 C
@@ -165,33 +163,29 @@ C      WRITE(6,*)'rslesd04'
 C
         CALL RSADPA(RESULT,'L',1,'CARAELEM',NUORD,0,JPARA,K8B)
         NOMSD=ZK8(JPARA)
-C 
+C
 C--- VERIFICATIONS ET AFFECTATIONS
 C
         IF (NOMSD.NE.' ')THEN
 C      WRITE(6,*)'rslesd-IF01=',CARELE
           IF (N2.EQ.0) THEN
 C      WRITE(6,*)'rslesd-IF02=',CARELE
-             CARELE = NOMSD 
+             CARELE = NOMSD
 C      WRITE(6,*)'rslesd-IF03=',CARELE
           ELSEIF (NOMSD.EQ.NOMLU) THEN
              CARELE = NOMLU
 C      WRITE(6,*)'rslesd-IF04=',CARELE
           ELSE
 C      WRITE(6,*)'rslesd-IF05=',CARELE
-             CALL UTMESS('A',NOMPRO,
-     &            ' LE CARA_ELEM FOURNI PAR L''UTILISATEUR'
-     &          //' EST DIFFERENT DE CELUI PRESENT DANS LA SD RESULTAT,'
-     &          //' ON POURSUIT LES CALCULS AVEC LE CARA_ELEM FOURNI'
-     &          //' PAR L''UTILISATEUR.')
+             CALL U2MESS('A','UTILITAI4_38')
              CARELE = NOMLU
           ENDIF
         ELSE
           IF (N2.NE.0) THEN
 C      WRITE(6,*)'rslesd-IF06=',CARELE
-             CARELE = NOMLU 
+             CARELE = NOMLU
           ELSE
-C      WRITE(6,*)'rslesd-IF07=',CARELE         
+C      WRITE(6,*)'rslesd-IF07=',CARELE
              CARELE = BLAN8
           ENDIF
         ENDIF
@@ -200,7 +194,7 @@ C      WRITE(6,*)'rslesd-IF08=',CARELE
 C
 C--- SI LE CARA_ELEM EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
 C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
-C  
+C
 
 C      WRITE(6,*)'rslesd05'
 
@@ -212,12 +206,12 @@ C      WRITE(6,*)'rslesd06'
 
         ENDIF
       ENDIF
-C            
+C
 C==========================================================
 C
 C     T R A I T E M E N T   D U   M A T E R I A U
 C
-C========================================================== 
+C==========================================================
 
 C      WRITE(6,*)'rslesd04'
 C
@@ -227,25 +221,21 @@ C
 C
       CALL RSADPA(RESULT,'L',1,'CHAMPMAT',NUORD,0,JPARA,K8B)
       NOMSD=ZK8(JPARA)
-C 
+C
 C--- VERIFICATIONS ET AFFECTATIONS
 C
       IF (NOMSD.NE.' ')THEN
         IF (N3.EQ.0) THEN
-           MATERI = NOMSD 
+           MATERI = NOMSD
         ELSEIF (NOMSD.EQ.NOMLU) THEN
            MATERI = NOMLU
         ELSE
-           CALL UTMESS('A',NOMPRO,
-     &           ' LE MATERIAU FOURNI PAR L''UTILISATEUR'
-     &         //' EST DIFFERENT DE CELUI PRESENT DANS LA SD RESULTAT,'
-     &         //' ON POURSUIT LES CALCULS AVEC LE MATERIAU FOURNI PAR'
-     &         //' L''UTILISATEUR.')        
+           CALL U2MESS('A','UTILITAI4_39')
           MATERI = NOMLU
         ENDIF
       ELSE
         IF (N3.NE.0) THEN
-           MATERI = NOMLU 
+           MATERI = NOMLU
         ELSE
            MATERI = BLAN8
         ENDIF
@@ -261,13 +251,13 @@ C
 
 C      WRITE(6,*)'rslesd05'
 
-C            
+C
 C==========================================================
 C
 C     T R A I T E M E N T   D E S    C H A R G E M E N T S
 C
-C========================================================== 
-C      
+C==========================================================
+C
 C--- RECUPERATION DES CHARGEMENTS 'EXCIT'
 C
 C--- LECTURE DES INFORMATIONS UTILISATEUR
@@ -278,7 +268,7 @@ C      WRITE(6,*)'rslesd06'
 
          CALL GETFAC('EXCIT',NCHALU)
 C
-        IF ( NCHALU .NE. 0 ) THEN 
+        IF ( NCHALU .NE. 0 ) THEN
           CALL WKVECT(KCHA,'V V K8',NCHALU,LCHALU)
           CALL WKVECT(KFON,'V V K8',NCHALU,FCHALU)
 C      WRITE(6,*)'rslesd07'
@@ -286,16 +276,16 @@ C      WRITE(6,*)'rslesd07'
             CALL GETVID('EXCIT','CHARGE',IEX,1,1,
      &                   ZK8(LCHALU+IEX-1),N1)
 C      WRITE(6,*)'rslesd08'
-            IF(NOMCMD.NE.'CALC_ERREUR') THEN 
+            IF(NOMCMD.NE.'CALC_ERREUR') THEN
               CALL GETVID('EXCIT','FONC_MULT',IEX,1,1,FONCLU,N2)
-      
+
 C      WRITE(6,*)'FONCLU=',FONCLU
 C      WRITE(6,*)'rslesd09'
 
               IF (N2.NE.0) THEN
                 ZK8(FCHALU+IEX-1) = FONCLU
               ENDIF
-            ENDIF  
+            ENDIF
   10      CONTINUE
         ENDIF
       ELSE
@@ -312,7 +302,7 @@ C
 C      WRITE(6,*)'rslesd-02'
       CALL RSADPA(RESULT,'L',1,'EXCIT',NUORD,0,JPARA,K8B)
       EXCISD=ZK24(JPARA)
-C 
+C
 C--- VERIFICATIONS ET AFFECTATIONS
 C
 C     IEXCIT = 0 SD RESULTAT
@@ -330,12 +320,12 @@ C            = 1 UTILISATEUR
       ENDIF
 
       IF (NCHALU.EQ.0.AND.EXCISD(1:1).EQ.' ') IEXCIT = 1
-                    
-      IF (EXCISD.NE.' ') THEN 
+
+      IF (EXCISD.NE.' ') THEN
         EXCIT = EXCISD
         CALL JEVEUO(EXCIT(1:19)//'.LCHA','L',JLCHA)
         CALL JEVEUO(EXCIT(1:19)//'.INFC','L',JINFC)
-        CALL JEVEUO(EXCIT(1:19)//'.FCHA','L',JFCHA)          
+        CALL JEVEUO(EXCIT(1:19)//'.FCHA','L',JFCHA)
         NCHASD = ZI(JINFC)
       ENDIF
 C
@@ -343,8 +333,8 @@ C--- VERIFICATIONS DES CHARGEMENTS
 C
       IF( (NCHALU.NE.0) .AND. (EXCISD.NE.' ')) THEN
 C
-C--- VERIFICATION DE LA COHERENCE DU NOMBRE DE CHARGES ENTRE 
-C    CELLES PRESENTES DANS LA SD RESULTAT ET CELLES FOURNIES 
+C--- VERIFICATION DE LA COHERENCE DU NOMBRE DE CHARGES ENTRE
+C    CELLES PRESENTES DANS LA SD RESULTAT ET CELLES FOURNIES
 C    PAR L'UTILISATEUR
 
       IF(NCHALU.NE.NCHASD) THEN
@@ -366,11 +356,7 @@ C
           DO 20 ISD = 1,NCHASD
             IF(ZK8(LCHALU-1+ILU).EQ.ZK24(JLCHA-1+ISD)(1:8)) GOTO 30
  20       CONTINUE
-          CALL UTMESS('A',NOMPRO,
-     &        ' LE CHARGEMENT (MOT CLE: CHARGE) FOURNI PAR'
-     &      //' L''UTILISATEUR EST DIFFERENT DE CELUI PRESENT DANS'
-     &      //' LA SD RESULTAT,ON POURSUIT LES CALCULS AVEC LE'
-     &      //' CHARGEMENT FOURNI PAR L''UTILISATEUR.')
+          CALL U2MESS('A','UTILITAI4_40')
  30       CONTINUE
  40     CONTINUE
 C
@@ -383,12 +369,7 @@ C
               IF(FONCSD(1:2).EQ.'&&') FONCSD = BLAN8
               IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 60
  50         CONTINUE
-              CALL UTMESS('A',NOMPRO,
-     &          ' LES FONCTIONS MULTIPLICATRICES DU CHARGEMENT'
-     &        //' (MOT CLE: FONC_MULT) FOURNI PAR L''UTILISATEUR '
-     &        //' SONT DIFFERENTES DE CELLES PRESENTES DANS LA SD '
-     &        //' RESULTAT, ON POURSUIT LES CALCULS AVEC LES FONCTIONS' 
-     &        //' MULTIPLICATRICES FOURNIES PAR L''UTILISATEUR.')
+              CALL U2MESS('A','UTILITAI4_41')
  60         CONTINUE
  70       CONTINUE
          ENDIF
@@ -418,17 +399,17 @@ C
      &                     1, FONCSD)
               CALL UTFINM()
            ENDIF
- 90       CONTINUE 
+ 90       CONTINUE
  95     CONTINUE
  80     CONTINUE
         ENDIF
        ENDIF
 C
-C SI LE TYPE DE RESULTAT EST EVOL_THER ET CALC_NO ON NE PREND PAS 
+C SI LE TYPE DE RESULTAT EST EVOL_THER ET CALC_NO ON NE PREND PAS
 C LA CHARGE CONTENUE DANS LA SD RESULTAT
 C
        IF(TYPE(1:9).EQ.'EVOL_THER'.AND.NOMCMD.EQ.'CALC_NO') IEXCIT = 1
-C 
+C
 C--- MENAGE
 C
       CALL JEDETR(KCHA)

@@ -3,22 +3,22 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C   CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE POUR LA MODELISATION DKGT
@@ -26,9 +26,9 @@ C     -----------------------------------------------------------------
 C                            TRIANGLE  QUADRANGLE
 C        KIRCHOFF  (MINCE)      DKT       DKQ
 C
-C        OPTIONS     RIGI_MECA       RIGI_MECA_TANG  
-C                    FULL_MECA       RAPH_MECA  
-C                    MASS_MECA       MASS_INER 
+C        OPTIONS     RIGI_MECA       RIGI_MECA_TANG
+C                    FULL_MECA       RAPH_MECA
+C                    MASS_MECA       MASS_INER
 C                    EPOT_ELEM_DEPL  ECIN_ELEM_DEPL
 C                    FORCE_NODA
 C                    SIEF_ELNO_ELGA  VARI_ELNO_ELGA
@@ -56,7 +56,7 @@ C
       INTEGER ICONTP, IPG,     NPG
       INTEGER ICHG,   ICHN,    NCMP,   NBVAR, NBCOU, K, IAD,  K1
       INTEGER ICONTM, JCRET
-      INTEGER JMATE,  LZI,     NNO,    JGEOM, JMATR 
+      INTEGER JMATE,  LZI,     NNO,    JGEOM, JMATR
       INTEGER JENER,  I,      JFREQ,   IACCE
       INTEGER IVECT,  NDDL,    NVEC,   NDIM,  IRET, N1, NI
       LOGICAL LCOELA
@@ -86,8 +86,8 @@ C
       LCOELA = .FALSE.
 C
       IF ((OPTION.EQ.'FULL_MECA').OR.
-     +    (OPTION.EQ.'RAPH_MECA').OR.
-     +    (OPTION.EQ.'RIGI_MECA_TANG')) THEN
+     &    (OPTION.EQ.'RAPH_MECA').OR.
+     &    (OPTION.EQ.'RIGI_MECA_TANG')) THEN
 C
 C ---   RECUPERATION DU MATERIAU :
 C       ------------------------
@@ -100,7 +100,7 @@ C       ----------------------------------
       ENDIF
 C
       IF ((OPTION.NE.'SIEF_ELNO_ELGA') .AND.
-     +    (OPTION.NE.'VARI_ELNO_ELGA')) THEN
+     &    (OPTION.NE.'VARI_ELNO_ELGA')) THEN
 C
         CALL JEVECH('PGEOMER','L',JGEOM)
 C
@@ -134,9 +134,9 @@ C
         END IF
 C
       ELSE IF (OPTION.EQ.'MASS_MECA' .OR.
-     +         OPTION.EQ.'MASS_MECA_DIAG' .OR. 
-     +         OPTION.EQ.'M_GAMMA' .OR.
-     +         OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+     &         OPTION.EQ.'MASS_MECA_DIAG' .OR.
+     &         OPTION.EQ.'M_GAMMA' .OR.
+     &         OPTION.EQ.'ECIN_ELEM_DEPL') THEN
 C     --------------------------------------
         IF (NOMTE.EQ.'MEDKTG3') THEN
           CALL DKTMAS(XYZL,OPTION,PGL,MATLOC,ENER,MULTIC,.FALSE.)
@@ -167,21 +167,21 @@ C     --------------------------------------
           DO 30 I = 1,NDIM
             ZR(JMATR-1+I) = MATLOC(I)
    30     CONTINUE
-   
-   
-C     CORRECTION DES TERMES CORRESPONDANT AU DDL 6, 
-C     NON PREVU PAR LA THEORIE DKT ON RAJOUTE 
-C     UN TERME DIAGONAL NON ZERO, EGAL AU CELUI DU DDL 5 
+
+
+C     CORRECTION DES TERMES CORRESPONDANT AU DDL 6,
+C     NON PREVU PAR LA THEORIE DKT ON RAJOUTE
+C     UN TERME DIAGONAL NON ZERO, EGAL AU CELUI DU DDL 5
 C     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
 
-          COEF = 1.0D0 
+          COEF = 1.0D0
           DO 35 J = 1,NNO
             N1 = 6*(J-1) + 5
             NI = 6*J
-            NDIM = (NI + 1)*NI/2 
-            N1   = (N1 + 1)*N1/2 
-            ZR(JMATR-1+ NDIM) = ZR(JMATR-1+ N1) * COEF 
-   35     CONTINUE        
+            NDIM = (NI + 1)*NI/2
+            N1   = (N1 + 1)*N1/2
+            ZR(JMATR-1+ NDIM) = ZR(JMATR-1+ N1) * COEF
+   35     CONTINUE
 
 
         END IF
@@ -190,37 +190,34 @@ C     --------------------------------------
         CALL JEVECH('PMASSINE','E',JMATR)
         CALL DXROEP(RHO,EPAIS)
         CALL DXINER(NNO,ZR(JGEOM),RHO,EPAIS,ZR(JMATR),ZR(JMATR+1),
-     +              ZR(JMATR+4))
+     &              ZR(JMATR+4))
 C
 C     -- OPTIONS NON-LINEAIRES :
 C     --------------------------
       ELSE IF ((OPTION.EQ.'FULL_MECA') .OR. (OPTION.EQ.'RAPH_MECA') .OR.
-     +         (OPTION.EQ.'RIGI_MECA_TANG')) THEN
+     &         (OPTION.EQ.'RIGI_MECA_TANG')) THEN
 C
         CALL JEVECH('PDEPLMR','L',JDEPM)
         CALL JEVECH('PDEPLPR','L',JDEPR)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
            IF (.NOT.LCOELA) THEN
-             CALL UTMESS('F','TE0409','COMP_ELAS NON VALIDE')
+             CALL U2MESS('F','ELEMENTS2_90')
            ENDIF
         ENDIF
         IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
 C
-          CALL UTMESS('A','TE0409',' LA REACTUALISATION DE LA '//
-     +                'GEOMETRIE (DEFORMATION : PETIT_REAC '//
-     +                'SOUS LE MOT CLE COMP_INCR) '//
-     +                'EST DECONSEILLEE POUR LES ELEMENTS DE PLAQUE.')
+          CALL U2MESS('A','ELEMENTS2_72')
 C
           DO 40 I = 1,NNO
             I1 = 3* (I-1)
             I2 = 6* (I-1)
-            ZR(JGEOM+I1)   = ZR(JGEOM+I1)   + ZR(JDEPM+I2) 
-     +                                      + ZR(JDEPR+I2)
+            ZR(JGEOM+I1)   = ZR(JGEOM+I1)   + ZR(JDEPM+I2)
+     &                                      + ZR(JDEPR+I2)
             ZR(JGEOM+I1+1) = ZR(JGEOM+I1+1) + ZR(JDEPM+I2+1) +
-     +                       ZR(JDEPR+I2+1)
+     &                       ZR(JDEPR+I2+1)
             ZR(JGEOM+I1+2) = ZR(JGEOM+I1+2) + ZR(JDEPM+I2+2) +
-     +                       ZR(JDEPR+I2+2)
+     &                       ZR(JDEPR+I2+2)
    40     CONTINUE
 C
           IF (NNO.EQ.3) THEN
@@ -239,23 +236,19 @@ C
         IF (NOMTE.EQ.'MEDKTG3') THEN
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DXGLRC(NOMTE,OPTION,ZK16(ICOMPO),XYZL,UML,DUL,VECLOC,
-     +                  MATLOC,EFFINT,PGL,CODRET)
+     &                  MATLOC,EFFINT,PGL,CODRET)
           ELSEIF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_ELAS') THEN
-          CALL UTMESS('F','TE0409','LES COMPORTEMENTS ELASTIQUES '// 
-     &                'DE TYPE COMP_ELAS NE SONT PAS DISPONIBLES '//
-     &                'POUR LA MODELISATION DKTG.')
+          CALL U2MESS('F','ELEMENTS3_92')
          ENDIF
         ELSE IF (NOMTE.EQ.'MEDKQG4') THEN
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DXGLRC(NOMTE,OPTION,ZK16(ICOMPO),XYZL,UML,DUL,VECLOC,
-     +                  MATLOC,EFFINT,PGL,CODRET)
+     &                  MATLOC,EFFINT,PGL,CODRET)
           ELSEIF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_ELAS') THEN
-          CALL UTMESS('F','TE0409','LES COMPORTEMENTS ELASTIQUES '// 
-     &                'DE TYPE COMP_ELAS NE SONT PAS DISPONIBLES '//
-     &                'POUR LA MODELISATION DKTG.')
+          CALL U2MESS('F','ELEMENTS3_92')
           ENDIF
         ELSE
-          CALL UTMESS('F','TE0409',NOMTE//' NON IMPLANTE.')
+          CALL U2MESK('F','ELEMENTS2_74',1,NOMTE)
         END IF
 C
         IF (OPTION.EQ.'FULL_MECA') THEN
@@ -277,8 +270,7 @@ C     ---------------------------------------
           CALL JEVECH('PGEOMER','L',JGEOM)
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
           IF (ZK16(ICOMPO+2)(1:8).EQ.'GREEN_GR') THEN
-             CALL UTMESS('F','TE0409','OPTION "SIEF_ELNO_ELGA" NON '//
-     +                    'IMPLANTEE POUR LA DEFORMATION "GREEN_GR"')
+             CALL U2MESS('F','ELEMENTS2_75')
           ENDIF
 
           IF (NNO.EQ.3) THEN
@@ -337,12 +329,12 @@ C     ------------------------------------------------------
    80     CONTINUE
    90   CONTINUE
       ELSE
-        CALL UTMESS('E','TE0409','OPTION NON TRAITEE')
+        CALL U2MESS('E','ELEMENTS2_67')
       END IF
 C
       CODRET = 0
       IF ( OPTION(1:9).EQ.'FULL_MECA'  .OR.
-     +     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
+     &     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
          CALL JEVECH ( 'PCODRET', 'E', JCRET )
          ZI(JCRET) = CODRET
       ENDIF

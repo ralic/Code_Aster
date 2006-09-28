@@ -2,22 +2,22 @@
       IMPLICIT NONE
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/01/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C     OPERATEUR: ASSE_MAILLAGE / CAS DE L ASSEMBLAGE DE MAILLAGES
@@ -76,16 +76,14 @@ CCC   ------------------------------------------------------------------
          NBPAR = 0
          PARA = 'AR_MIN                  '
          CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8B,
-     +                K8B, R8B , PARA, K8B, IBID, ARMIN, C16B,
-     +                K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL UTMESS('F','ASMACO',
-     +'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+     &                K8B, R8B , PARA, K8B, IBID, ARMIN, C16B,
+     &                K8B, IRET )
+          IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_13')
          PREC1 = ARMIN*1.D-06
       ELSE
          PREC1 = 1.D-10
       ENDIF
-      IF ( PREC1 .LE. 0.D0 ) CALL UTMESS('F','ASMACO',
-     +'PLUS PETITE TAILLE DE MAILLE NEGATIVE OU NULLE')
+      IF ( PREC1 .LE. 0.D0 ) CALL U2MESS('F','MODELISA2_14')
 CCC   ------------------------------------------------------------------
       CALL JEEXIN ( MA2//'           .LTNT', IRET )
       IF ( IRET .NE. 0 ) THEN
@@ -93,16 +91,14 @@ CCC   ------------------------------------------------------------------
          NBPAR = 0
          PARA = 'AR_MIN                  '
          CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8B,
-     +                K8B, R8B , PARA, K8B, IBID, ARMIN, C16B,
-     +                K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL UTMESS('F','ASMACO',
-     +'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+     &                K8B, R8B , PARA, K8B, IBID, ARMIN, C16B,
+     &                K8B, IRET )
+          IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_13')
          PREC2 = ARMIN*1.D-06
       ELSE
          PREC2 = 1.D-10
       ENDIF
-      IF ( PREC2 .LE. 0.D0 ) CALL UTMESS('F','ASMACO',
-     +'PLUS PETITE TAILLE DE MAILLE NEGATIVE OU NULLE')
+      IF ( PREC2 .LE. 0.D0 ) CALL U2MESS('F','MODELISA2_14')
       PREC=MIN(PREC1,PREC2)
 CCC   ------------------------------------------------------------------
 CCC RECUPERATION DES 2 GROUP_MA A COLLER
@@ -111,12 +107,14 @@ CCC   ------------------------------------------------------------------
       CALL GETVTX('COLLAGE','GROUP_MA_2',1,1,1,CGPM2,IBID)
       CALL JEEXIN(JEXNOM(MA1//'.GROUPEMA',CGPM1),IRET1)
       IF(IRET1.EQ.0) CALL UTMESS('F','OP0105',
-     +      'GROUPE DE MAILLE GROUP_MA_1='//CGPM1//' INEXISTANT DANS'
-     +       //' LE MAILLAGE '//MA1)
+     &      'GROUPE DE MAILLE GROUP_MA_1='//CGPM1//' INEXISTANT DANS'
+     &       //' LE MAILLAGE '//MA1)
+C        CALL U2MESK('F','MODELISA2_15', 2 ,VALK)
       CALL JEEXIN(JEXNOM(MA2//'.GROUPEMA',CGPM2),IRET2)
       IF(IRET2.EQ.0) CALL UTMESS('F','OP0105',
-     +      'GROUPE DE MAILLE GROUP_MA_2='//CGPM2//' INEXISTANT DANS'
-     +       //' LE MAILLAGE '//MA2)
+     &      'GROUPE DE MAILLE GROUP_MA_2='//CGPM2//' INEXISTANT DANS'
+     &       //' LE MAILLAGE '//MA2)
+C        CALL U2MESK('F','MODELISA2_16', 2 ,VALK)
 CCC   ------------------------------------------------------------------
 CCC VERIFICATION QUE LES 2 GROUP_MA A COLLER ONT LE MM NOMBRE DE MAILLES
 CCC   ------------------------------------------------------------------
@@ -124,8 +122,9 @@ CCC   ------------------------------------------------------------------
       CALL JELIRA(JEXNOM(MA2//'.GROUPEMA',CGPM2),'LONMAX',NBNGM2,K8B)
       NBNGM=NBNGM1
       IF(NBNGM1.NE.NBNGM2) CALL UTMESS('F','OP0105',
-     +      'LES GROUPES DE MAILLES GROUP_MA_1='//CGPM1//' ET'
-     +       //' GROUP_MA_2='//CGPM2//' ONT DES CARDINAUX DIFFERENTS')
+     &      'LES GROUPES DE MAILLES GROUP_MA_1='//CGPM1//' ET'
+     &       //' GROUP_MA_2='//CGPM2//' ONT DES CARDINAUX DIFFERENTS')
+C        CALL U2MESK('F','MODELISA2_17', 2 ,VALK)
       CALL JEVEUO(JEXNOM(MA1//'.GROUPEMA',CGPM1),'L',IAGMA1)
       CALL JEVEUO(JEXNOM(MA2//'.GROUPEMA',CGPM2),'L',IAGMA2)
 CCC   ------------------------------------------------------------------
@@ -137,19 +136,18 @@ CCC   ------------------------------------------------------------------
       NNO2=0
       DO 1000 I=1,NBNGM
          CALL JELIRA(JEXNUM(MA1//'.CONNEX',ZI(IAGMA1+I-1)),'LONMAX',
-     +               II,K8B)
+     &               II,K8B)
          CALL JELIRA(JEXNUM(MA2//'.CONNEX',ZI(IAGMA2+I-1)),'LONMAX',
-     +               JJ,K8B)
+     &               JJ,K8B)
          NNO1=NNO1+II
          NNO2=NNO2+JJ
 1000  CONTINUE
-      IF(NNO1.NE.NNO2) CALL UTMESS('F','OP0105',
-     +      'NOMBRE DE NOEUDS INCOHERENT SOUS LES 2 GROUP_MA A COLLER')
+      IF(NNO1.NE.NNO2) CALL U2MESS('F','MODELISA2_18')
       CALL WKVECT('&&ASMACO'//'.NODE','V V I',NNO1*2  ,IANODE)
       NNO1=0
       DO 1010 I=1,NBNGM
          CALL JELIRA(JEXNUM(MA1//'.CONNEX',ZI(IAGMA1+I-1)),'LONMAX',
-     +               II,K8B)
+     &               II,K8B)
          CALL JEVEUO(JEXNUM(MA1//'.CONNEX',ZI(IAGMA1+I-1)),'L',IAGNO1)
          DO 1020 J=1,II
             NNO1=NNO1+1
@@ -176,7 +174,7 @@ CCC   ------------------------------------------------------------------
          MATCH=.FALSE.
          DO 1030 I=1,NBNGM
            CALL JELIRA(JEXNUM(MA2//'.CONNEX',ZI(IAGMA2+I-1)),'LONMAX',
-     +                 II,K8B)
+     &                 II,K8B)
            CALL JEVEUO(JEXNUM(MA2//'.CONNEX',ZI(IAGMA2+I-1)),'L',IAGNO2)
            DO 1040 J=1,II
               NNO2=NNO2+1
@@ -190,9 +188,7 @@ CCC   ------------------------------------------------------------------
               ENDIF
 1040       CONTINUE
 1030     CONTINUE
-         IF(.NOT.MATCH) CALL UTMESS('F','OP0105',
-     +   'UN NOEUD DE GROUP_MA_2 N EST GEOMETRIQUEMENT APPARIABLE'
-     +    //' AVEC AUCUN DE GROUP_MA_1')
+         IF(.NOT.MATCH) CALL U2MESS('F','MODELISA2_19')
 1060     CONTINUE
          ZI(IANODE+K-1)=ZI(IAGNO2+J-1)
 1050  CONTINUE
@@ -215,8 +211,8 @@ CCC              5       DU MAJORANT DE SUPER MAILLES
       ZI(IADIME-1+4)=ZI(IADIM1-1+4)+ZI(IADIM2-1+4)
       ZI(IADIME-1+5)=ZI(IADIM1-1+5)+ZI(IADIM2-1+5)
 C
-      IF(ZI(IADIM1-1+6).NE.ZI(IADIM2-1+6)) CALL UTMESS('F','OP0105',
-     +      'LES 2 MAILLAGES DOIVENT ETRE DU MEME TYPE : 2D (OU 3D).')
+      IF(ZI(IADIM1-1+6).NE.ZI(IADIM2-1+6)) CALL U2MESS('F','MODELISA2_20
+     &')
 C
       NCOOR=ZI(IADIM1-1+6)
       ZI(IADIME-1+6)=NCOOR
@@ -271,12 +267,12 @@ CCC   ------------------------------------------------------------------
 CCC   --OBJET .CONNEX :
 CCC   ON NE RETIENT QUE LES MAILLES HORS DES 2 GROUP_MA CGPM1 ET CGPM2
 CCC   POUR LES MAILLES DU MAILLAGE 2 CONTENANT DES NOEUDS DE CGPM2,
-CCC   ON SUBSTITUE DANS LEUR CONNECTIVITE LES NOMS DE NOEUDS DU 
+CCC   ON SUBSTITUE DANS LEUR CONNECTIVITE LES NOMS DE NOEUDS DU
 CCC   MAILLAGE 1 QUI LEUR ONT ETE APPARIES
 CCC   ------------------------------------------------------------------
       IF (NBMA.GT.0) THEN
         CALL JECREC(MAG//'.CONNEX','G V I','NU'
-     +            ,'CONTIG','VARIABLE',NBMA)
+     &            ,'CONTIG','VARIABLE',NBMA)
         CALL WKVECT('&&ASMACO'//'.MAM1','V V I',NBM1*2 ,IAMAM1)
         CALL WKVECT('&&ASMACO'//'.MAM2','V V I',NBM2*2 ,IAMAM2)
         DO 31,I=1,NBM1
@@ -291,7 +287,7 @@ CCC   ------------------------------------------------------------------
  33     CONTINUE
         II=0
         DO 34,I=1,NBM1
-           IF (ZI(IAMAM1+I-1).EQ.0) THEN 
+           IF (ZI(IAMAM1+I-1).EQ.0) THEN
                ZI(IAMAM1+NBM1+I-1)=0
            ELSE
                II=II+1
@@ -300,7 +296,7 @@ CCC   ------------------------------------------------------------------
  34     CONTINUE
         II=0
         DO 35,I=1,NBM2
-           IF (ZI(IAMAM2+I-1).EQ.0) THEN 
+           IF (ZI(IAMAM2+I-1).EQ.0) THEN
                ZI(IAMAM2+NBM2+I-1)=0
            ELSE
                II=II+1
@@ -404,9 +400,9 @@ CCC   ------------------------------------------------------------------
       END IF
 CCC   ------------------------------------------------------------------
 CCC   --OBJET .GROUPEMA:
-CCC   ON RECREE TOUS LES GROUP_MA DANS LE NOUVEAU MAILLAGE, SAUF LES 2 
+CCC   ON RECREE TOUS LES GROUP_MA DANS LE NOUVEAU MAILLAGE, SAUF LES 2
 CCC   QUI ON SERVI A REALISER LE COLLAGE. IL FAUDRAIT VERIFIER
-CCC   (PAS FAIT) QU AUCUNE DES MAILLES SUPPRIMEES NE FIGURE DANS UN 
+CCC   (PAS FAIT) QU AUCUNE DES MAILLES SUPPRIMEES NE FIGURE DANS UN
 CCC   AUTRE GROUP_MA QUE CELUI QUI A SERVI AU COLLAGE, ET DONC SUPPRIME
 CCC   ------------------------------------------------------------------
       CALL JEEXIN(MA1//'.GROUPEMA',IRET1)
@@ -418,7 +414,7 @@ CCC   ------------------------------------------------------------------
       NBGMA = NBGM1 - 1 + NBGM2 - 1
       IF ( NBGMA .GT. 0 ) THEN
         CALL JECREC(MAG//'.GROUPEMA','G V I','NO',
-     +                               'DISPERSE','VARIABLE',NBGMA)
+     &                               'DISPERSE','VARIABLE',NBGMA)
         ICOMPT=0
         DO 71,I=1,NBGM1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPEMA',I),'L',IAGMA1)
@@ -442,9 +438,7 @@ CCC   ------------------------------------------------------------------
           IF (NOGMA.NE.CGPM2) THEN
             CALL JEEXIN(JEXNOM(MAG//'.GROUPEMA',NOGMA),IRET)
             IF (IRET.GT.0) THEN
-              CALL UTMESS('A','OP0105',
-     +             'LE GROUP_MA : '//NOGMA//' EST PRESENT DANS LES 2'
-     +             //' MAILLAGES. CONFLIT DE NOMS.')
+              CALL U2MESK('A','MODELISA2_21',1,NOGMA)
               NOGMAB=NOGMA
               II = LXLGUT(NOGMAB(1:7))
               DO 724,K=II+1,7
@@ -458,7 +452,7 @@ CCC   ------------------------------------------------------------------
  722          CONTINUE
  723          CONTINUE
               WRITE (IFM,*) ' LE GROUP_MA '//NOGMA//' DU MAILLAGE '
-     +             //MA2//' EST RENOMME '//NOGMAB//' DANS '//MAG
+     &             //MA2//' EST RENOMME '//NOGMAB//' DANS '//MAG
               NOGMA=NOGMAB
             END IF
             ICOMPT = ICOMPT + 1
@@ -475,8 +469,8 @@ CCC   ------------------------------------------------------------------
       END IF
 CCC   ------------------------------------------------------------------
 CCC   --OBJET .GROUPENO:
-CCC   LES GROUP_NO SONT CONSERVES TELS QUELS, DANS LA MESURE OU ON NE 
-CCC   SUPPRIME PAS DE NOEUDS. POUR LES GROUP_NO DU MAILLAGE 2, SI DES 
+CCC   LES GROUP_NO SONT CONSERVES TELS QUELS, DANS LA MESURE OU ON NE
+CCC   SUPPRIME PAS DE NOEUDS. POUR LES GROUP_NO DU MAILLAGE 2, SI DES
 CCC   NOEUDS FONT PARTI DE CEUX APPARIES, ON LES SUBSTITUE PAR LEUR
 CCC   HOMOLOGUE DU MAILLAGE 1, PLUTOT QUE DE LAISSER LE(S) NOEUD
 CCC   DESORMAIS ORPHELIN DANS LE GROUPE.
@@ -486,13 +480,13 @@ CCC   ------------------------------------------------------------------
       NBGN1 = 0
       NBGN2 = 0
       IF (IRET1.GT.0) CALL JELIRA(MA1//'.GROUPENO','NUTIOC',
-     +                            NBGN1,K8B)
+     &                            NBGN1,K8B)
       IF (IRET2.GT.0) CALL JELIRA(MA2//'.GROUPENO','NUTIOC',
-     +                            NBGN2,K8B)
+     &                            NBGN2,K8B)
       NBGNO = NBGN1 + NBGN2
       IF ( NBGNO .GT. 0 ) THEN
         CALL JECREC(MAG//'.GROUPENO','G V I','NO',
-     +                               'DISPERSE','VARIABLE',NBGNO)
+     &                               'DISPERSE','VARIABLE',NBGNO)
         DO 81,I=1,NBGN1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPENO',I),'L',IAGNO1)
           CALL JELIRA(JEXNUM(MA1//'.GROUPENO',I),'LONMAX',N,K8B)
@@ -511,9 +505,7 @@ CCC   ------------------------------------------------------------------
           CALL JENUNO(JEXNUM(MA2//'.GROUPENO',I),NOGNO)
           CALL JEEXIN(JEXNOM(MAG//'.GROUPENO',NOGNO),IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('A','OP0105',
-     +           'LE GROUP_NO : '//NOGNO//' EST PRESENT DANS LES 2'
-     +           //' MAILLAGES. CONFLIT DE NOMS.')
+            CALL U2MESK('A','MODELISA2_22',1,NOGNO)
             NOGNOB=NOGNO
             II = LXLGUT(NOGNOB(1:7))
             DO 821,K=II+1,7
@@ -527,7 +519,7 @@ CCC   ------------------------------------------------------------------
  822        CONTINUE
  823        CONTINUE
             WRITE (IFM,*) ' LE GROUP_NO '//NOGNO//' DU MAILLAGE '
-     +           //MA2//' EST RENOMME '//NOGNOB//' DANS '//MAG
+     &           //MA2//' EST RENOMME '//NOGNOB//' DANS '//MAG
             NOGNO=NOGNOB
           END IF
           ICOMPT = ICOMPT + 1

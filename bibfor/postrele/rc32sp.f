@@ -1,5 +1,5 @@
       SUBROUTINE RC32SP(TYPZ,LIEU,NUMSIP,PI,MI,NUMSIQ,PJ,MJ,SEISME,MSE,
-     +                  SPIJ,TYPEKE,SPMECA,SPTHER)
+     &                  SPIJ,TYPEKE,SPMECA,SPTHER)
       IMPLICIT   NONE
       INTEGER           NUMSIP,NUMSIQ
       REAL*8         PI,MI(*),PJ,MJ(*),MSE(*),SPIJ,TYPEKE,SPMECA,SPTHER
@@ -8,7 +8,7 @@
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,7 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
               TYP2 = 'SITU'
             ENDIF
             IF ( SEISME ) THEN
-               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST,
      &                                                   ZR(JTHUN), SP )
             ELSE
                CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
@@ -145,7 +145,7 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
                  TYP2 = 'SITU'
               ENDIF
               IF ( SEISME ) THEN
-                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST,
      &                                                   ZR(JTHUN), SP )
               ELSE
                  CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
@@ -172,7 +172,7 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
               TYP2 = 'SITU'
             ENDIF
             IF ( SEISME ) THEN
-              CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+              CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST,
      &                                                   ZR(JTHUN), SP )
             ELSE
               CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
@@ -196,7 +196,7 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
                 TYP2 = 'SITU'
               ENDIF
               IF ( SEISME ) THEN
-                CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+                CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST,
      &                                                   ZR(JTHUN), SP )
               ELSE
                 CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
@@ -227,7 +227,7 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
             TYP2 = 'SITU'
           ENDIF
           IF ( SEISME ) THEN
-            CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+            CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST,
      &                                                   ZR(JTHUN), SP )
           ELSE
             CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )

@@ -6,33 +6,33 @@
       CHARACTER*16        INTERP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       REAL*8    LINLIN, LINLOG, LOGLOG, LOGLIN, X0, X1, Y1, X2, Y2
       REAL*8    EPSI, TOLE, R8PREM
 C ----------------------------------------------------------------------
       LINLIN(X0,X1,Y1,X2,Y2)= Y1+(X0-X1)*(Y2-Y1)/(X2-X1)
       LINLOG(X0,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(X0-X1)*(LOG(Y2)-LOG(Y1))
-     +                                        /(X2-X1))
+     &                                        /(X2-X1))
       LOGLOG(X0,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(LOG(X0)-LOG(X1))*(LOG(Y2)
-     +                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
+     &                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
       LOGLIN(X0,X1,Y1,X2,Y2)=Y1+(LOG(X0)-LOG(X1))*(Y2-Y1)
-     +                                         /(LOG(X2)-LOG(X1))
+     &                                         /(LOG(X2)-LOG(X1))
 C ----------------------------------------------------------------------
 C
 C     --- PAS D'INTERPOLATION ---
@@ -73,8 +73,7 @@ C
 C
          ELSE
             IER = 230
-            CALL UTMESS('A','FOCOLI','INTERPOLATION '//INTERP//
-     +                                           ' NON IMPLANTEE')
+            CALL U2MESK('A','UTILITAI_84',1,INTERP)
          ENDIF
 C
 C     --- EXTRAPOLATION ---
@@ -84,7 +83,7 @@ C
 C
       ELSE
          IER = 240
-         CALL UTMESS('A','FOCOLI','RECHERCHE "'//COLI//'" INCONNUE')
+         CALL U2MESK('A','UTILITAI_85',1,COLI)
       ENDIF
 C
       END

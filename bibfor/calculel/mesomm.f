@@ -6,7 +6,7 @@
       COMPLEX*16 VC(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,8 +84,7 @@ C     -----------------------------------------
 
       CALL JEEXIN(CHAMP2//'.CELD',IER1)
       CALL JEEXIN(CHAMP2//'.RESL',IER2)
-      IF (IER1+IER2.EQ.0) CALL UTMESS('F','MESOMM',
-     + 'LE CHAMP: '//CHAMP2//' N''EST NI UN CHAM_ELEM NI UN RESUELEM')
+      IF (IER1+IER2.EQ.0) CALL U2MESK('F','CALCULEL3_73',1,CHAMP2)
 
 
       IF (IER1.GT.0) THEN
@@ -120,8 +119,7 @@ C     ----------------------------
           LONGT = NCMPEL
         ELSE
           IF (LONGT.NE.NCMPEL) THEN
-            CALL UTMESS('F','MESOMM','LONGUEURS DES MODES LOCAUX '//
-     &                  'IMCOMPATIBLES ENTRE EUX.')
+            CALL U2MESS('F','CALCULEL3_54')
           END IF
         END IF
         FIRST = .FALSE.
@@ -130,7 +128,7 @@ C     ----------------------------
 C     -- ON MET A ZERO LE VECTEUR "VSCAL":
 C     ------------------------------------
       IF (LONGT.GT.LONG) THEN
-        CALL UTMESS('F','MESOMM','LA LONGUEUR:LONG EST TROP PETITE.')
+        CALL U2MESS('F','CALCULEL3_55')
       END IF
       DO 20,I = 1,LONGT
         IF (SCAL(1:1).EQ.'I') THEN
@@ -140,7 +138,7 @@ C     ------------------------------------
         ELSE IF (SCAL(1:1).EQ.'C') THEN
           VC(I) = DCMPLX(RZERO,RZERO)
         ELSE
-          CALL UTMESS('F','MESOMM','TYPE SCALAIRE INTERDIT :'//SCAL)
+          CALL U2MESK('F','CALCULEL3_74',1,SCAL)
         END IF
    20 CONTINUE
 

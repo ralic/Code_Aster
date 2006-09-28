@@ -1,6 +1,6 @@
       SUBROUTINE CESEVA(CESF,NPARA,LPARA,CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/07/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,8 +90,7 @@ C     ------------------------------------------------------------
       NCMPMX = ZI(JFD-1+5)
 
       CALL DISMOI('F','TYPE_SCA',NOMGDF,'GRANDEUR',IB,TSCA,IB)
-      IF (TSCA.NE.'K8') CALL UTMESS('F','CESEVA',
-     &                              'IL FAUT CHAMP DE FONCTIONS SVP')
+      IF (TSCA.NE.'K8') CALL U2MESS('F','UTILITAI_16')
 
 C     2- ALLOCATION DU CHAM_ELEM_S RESULTAT ET RECUPERATION
 C        DES ADRESSES DE SES OBJETS   :
@@ -121,10 +120,8 @@ C     --------------------------------------------------------------
         NOMGD2 = ZK8(JPK-1+2)
 
         CALL DISMOI('F','TYPE_SCA',NOMGD2,'GRANDEUR',IB,TSCA,IB)
-        IF (TSCA.NE.'R') CALL UTMESS('F','CESEVA',
-     &                               'LES PARAMETRES DOIVENT ETRE REELS'
-     &                               )
-        IF (MA2.NE.MA) CALL UTMESS('F','CESEVA','MAILLAGES DIFF.')
+        IF (TSCA.NE.'R') CALL U2MESS('F','UTILITAI_17')
+        IF (MA2.NE.MA) CALL U2MESS('F','UTILITAI_18')
         ZI(JAD1-1+4* (IPARA-1)+1) = JPC
         ZI(JAD1-1+4* (IPARA-1)+2) = JPD
         ZI(JAD1-1+4* (IPARA-1)+3) = JPL
@@ -148,7 +145,7 @@ C     DE FAIRE PLUSIEURS FOINTE SUCCESSIFS AVEC LA MEME FONCTION.
               FO = ZK8(JFV-1+IADF)
 
               CALL CESEXI('C',JRD,JRL,IMA,IPT,ISP,K,IADR)
-              IF (IADR.GE.0) CALL UTMESS('F','CESEVA','STOP1')
+              IF (IADR.GE.0) CALL U2MESS('F','CALCULEL_2')
               ZL(JRL-1-IADR) = .TRUE.
 
               IF (FO.EQ.' ') GO TO 40
@@ -166,9 +163,7 @@ C           -------------------------------------------------------
                   CALL CESEXI('C',JPD,JPL,IMA,IPT,ISP,K2,IADP)
                   IF (IADP.LE.0) GO TO 20
                   NBPU = NBPU + 1
-                  IF (NBPU.GT.NBPUMX) CALL UTMESS('F','CESEVA',
-     &                                'ERREUR PGMEUR: AUGMENTER NBPUMX.'
-     &                                     )
+                  IF (NBPU.GT.NBPUMX) CALL U2MESS('F','UTILITAI_19')
                   NOMPU(NBPU) = ZK8(JPC-1+K2)
                   VALPU(NBPU) = ZR(JPV-1+IADP)
    20           CONTINUE
@@ -178,7 +173,7 @@ C           -------------------------------------------------------
 C           4.2 APPEL A FOINTE :
 C           --------------------
               CALL FOINTE('F',FO,NBPU,NOMPU,VALPU,X,IER)
-              IF (IER.NE.0) CALL UTMESS('F','CESEVA','STOP1')
+              IF (IER.NE.0) CALL U2MESS('F','CALCULEL_2')
 
 C           4.3 STOCKAGE DU RESULTAT :
 C           --------------------------

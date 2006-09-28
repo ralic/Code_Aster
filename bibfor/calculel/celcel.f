@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TRANSF,CEL1,BASE,CEL2
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,7 +105,7 @@ C     -------------------------------------------
 
         NCMPG = ZI(JCESD1-1+2)
         NBVAMX = ZI(JCESD1-1+5)
-        IF (NCMPG.NE.NBVAMX) CALL UTMESS('F','CELCEL','STOP 1')
+        IF (NCMPG.NE.NBVAMX) CALL U2MESS('F','CALCULEL_2')
 
 C     2.1 : CALCUL DE 2 VECTEURS CONTENANT LE NOMBRE DE
 C           POINTS DE SOUS-POINTS DES MAILLES
@@ -141,7 +141,7 @@ C     ---------------------------------------------
               DO 20,ICMP = 1,NCMP2
                 CALL CESEXI('C',JCESD1,JCESL1,IMA,IPT,ISPT,ICMP,IAD1)
                 CALL CESEXI('C',JCESD2,JCESL2,IMA,IPT,ISPT,ICMP,IAD2)
-                IF (IAD2.GE.0) CALL UTMESS('F','CELCEL','STOP 3')
+                IF (IAD2.GE.0) CALL U2MESS('F','ALGORITH_19')
                 ZL(JCESL2-1-IAD2) = .TRUE.
                 IF (IAD1.GT.0) THEN
                   ZR(JCESV2-1-IAD2) = ZR(JCESV1-1+IAD1)
@@ -199,7 +199,7 @@ C     SOUS-POINTS :
 
 
       ELSE
-        CALL UTMESS('F','CELCEL','TRANSF. NON PROGRAMMEE:')
+        CALL U2MESS('F','CALCULEL_45')
       END IF
 
    60 CONTINUE

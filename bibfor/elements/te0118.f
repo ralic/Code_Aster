@@ -1,24 +1,24 @@
       SUBROUTINE TE0118(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
-C  FONCTION REALISEE:  
+C  FONCTION REALISEE:
 C     DANS LE CADRE X-FEM, PROPAGATION :
 C    * CALCUL DES CONDITIONS CFL
 C    * CALCULS ELEMENTAIRES NECESSAIRES AUX PHASES DE REINITIALISATION
@@ -48,7 +48,7 @@ C     L'ELEMENT, ET LE CHAM_ELNO DES DIRECTIONS NI (CF DOC R)
 C        IN :  'PGEOMR'    GEOMETRIE
 C        OUT : 'PMEAST'    CHAM_ELEM
 C              'PNIELNO'   CHAM_ELNO
-C                     
+C
 C     'XFEM_SMPLX_REAC'
 C      ---------------
 C     METHODE 'SIMPLEXE' :  CALCULE LE CHAM_ELEM DELTA_PHI,
@@ -94,7 +94,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &            ZJ,VTI,VTMAX,SIGMNI(3),NORM12,NORM14,NORM15,R8PREM,
      &            TOLENI
       CHARACTER*8 TYPMA,NOMAIL
-      
+
       PARAMETER   (TOLENI=1.D-6)
 
 C DEBUT ----------------------------------------------------------------
@@ -104,11 +104,10 @@ C  VERIFICATION DU TYPE D'ELEMENT
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
       NOMAIL= ZK24(IAZK24-1+3)(1:8)
-      
+
 C-----------------------------------------------------------------------
       IF (OPTION.EQ.'CFL_XFEM') THEN
 C-----------------------------------------------------------------------
-     
 C  --------------------------------
 C  RECUPERATION DES ENTREES/SORTIES
 C  --------------------------------
@@ -116,50 +115,51 @@ C  --------------------------------
          CALL JEVECH('PVTNO','L',IVTNO)
          CALL JEVECH('PLONCAR','E',ILC)
          CALL JEVECH('PCFLVT','E',ICFL)
-         
+
          CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &               JGANO)
-      
+
 C  ----------------------------------------------------------
 C  CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
 C  ----------------------------------------------------------
          DMIN = SQRT((ZR(IGEOM-1+NDIM*(2-1)+1)-ZR(IGEOM-1+1))**2
      &              +(ZR(IGEOM-1+NDIM*(2-1)+2)-ZR(IGEOM-1+2))**2
      &              +(ZR(IGEOM-1+NDIM*(2-1)+3)-ZR(IGEOM-1+3))**2)
-      
+
          VTMAX = 0.D0
-      
+
 C     BOUCLE SUR LES NOEUDS SOMMETS
          DO 10 I=1,NNOS-1
             XI = ZR(IGEOM-1+NDIM*(I-1)+1)
             YI = ZR(IGEOM-1+NDIM*(I-1)+2)
             ZPTI = ZR(IGEOM-1+NDIM*(I-1)+3)
-         
+
 C     ON CHERCHE LE NOEUDS SOMMET LE PLUS PROCHE
             DO 20 J=I+1,NNOS
                XJ = ZR(IGEOM-1+NDIM*(J-1)+1)
                YJ = ZR(IGEOM-1+NDIM*(J-1)+2)
                ZJ = ZR(IGEOM-1+NDIM*(J-1)+3)
-         
+
                DISTIJ = SQRT((XJ-XI)**2+(YJ-YI)**2+(ZJ-ZPTI)**2)
                IF ((DISTIJ.LE.DMIN).AND.(DISTIJ.NE.0))  DMIN = DISTIJ
-            
+
  20         CONTINUE
 
 C     ON CHERCHE LE NOEUDS SOMMET OU VT EST MAXIMALE
             VTI = ABS(ZR(IVTNO+I-1))
             VTMAX = MAX(VTI,VTMAX)
-         
+
  10      CONTINUE
- 
+
          ZR(ILC) = DMIN
          ZR(ICFL) = DMIN / VTMAX
-      
+
       ELSE
          IF (TYPMA(1:5).NE.'TETRA'.AND.TYPMA(1:4).NE.'HEXA')
      &    CALL UTMESS('F','TE0118','L''OPTION '//OPTION//' N''EST '
      &    //'DISPONIBLE QU''AVEC DES ELEMENTS TETRA OU HEXA. OR, '
      &    //'LA MAILLE '//NOMAIL//' EST DE TYPE '//TYPMA//'.')
+C        CALL U2MESK('F','ELEMENTS3_19', 3 ,VALK)
       ENDIF
 
 C-----------------------------------------------------------------------
@@ -182,7 +182,7 @@ C  --------------------------
          DO 50 INO=1,NNO
             NEUTR = NEUTR + ZR(INEUTR-1+INO)
  50      CONTINUE
- 
+
          NEUTR = NEUTR / NNO
 
          ZR(IMOYEL) = NEUTR
@@ -190,7 +190,7 @@ C  --------------------------
 C-----------------------------------------------------------------------
       ELSEIF (OPTION.EQ.'XFEM_SMPLX_INIT') THEN
 C-----------------------------------------------------------------------
-            
+
 C  --------------------------------
 C  RECUPERATION DES ENTREES/SORTIES
 C  --------------------------------
@@ -199,11 +199,11 @@ C  --------------------------------
          CALL JEVECH('PNIELNO','E',INI)
 
          CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     &               JGANO)     
+     &               JGANO)
          CALL ASSERT(NNO.LE.8)
 
 C  --------------
-C  CALCUL DE |T| 
+C  CALCUL DE |T|
 C  --------------
          IF (TYPMA(1:5).EQ.'TETRA') THEN
             CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
@@ -212,7 +212,7 @@ C  --------------
             CALL DFDM3D(NNO,1,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,DFDZ,
      &                  MEAST)
             CALL ELREF4(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     &                  JGANO)     
+     &                  JGANO)
 
          ELSEIF (TYPMA(1:4).EQ.'HEXA') THEN
                NORM12=0.D0
@@ -229,9 +229,9 @@ C  --------------
                NORM12=NORM12**.5D0
                NORM14=NORM14**.5D0
                NORM15=NORM15**.5D0
-               
+
                MEAST = NORM12 * NORM14 * NORM15
-       
+
          ENDIF
 
 C  -----------------------
@@ -253,9 +253,9 @@ C  -----------------------
                ZR(INI-1+(INO-1)*3+3) = NDIM * MEAST * DFDZ(INO)/4.D0
 
             ENDIF
-            
+
  100     CONTINUE
- 
+
 C  VERIFICATION SIGMA(NI)=0
          IF (TYPMA(1:4).EQ.'HEXA') THEN
             DO 120 I=1,3
@@ -264,9 +264,7 @@ C  VERIFICATION SIGMA(NI)=0
                   SIGMNI(I)=SIGMNI(I)+ZR(INI-1+(INO-1)*3+I)
  130           CONTINUE
                IF (ABS(SIGMNI(I)).GT.TOLENI) THEN
-                  CALL UTMESS('F','TE0118','LA MAILLE '//NOMAIL//' NE '
-     &            //'REPOND PAS AU CRITERE GEOMETRIQUE SUR LES MAILLES '
-     &            //'HEXA : LES COTES OPPOSES DOIVENT ETRE PARALLELES')
+                  CALL U2MESK('F','ELEMENTS3_20',1,NOMAIL)
                ENDIF
  120        CONTINUE
          ENDIF
@@ -296,7 +294,7 @@ C  ------------------------------------------
          DO 200 INO=1,NNO
             ALPHA(INO)=0.D0
  200     CONTINUE
-         
+
 C  ---------------------
 C  TRAITEMENT DU CAS F=0
 C  ---------------------
@@ -317,12 +315,12 @@ C  --------------------------------------
             IF (NDIM.EQ.3)
      &         GRADZ = GRADZ+ZR(IGRLS-1+(INO-1)*NDIM+3)/(NNO*4.D0)
  300     CONTINUE
-         
+
 C  CALCUL DE LA NORME DU GRADIENT
          NORMGR = (GRADX**2.D0 + GRADY**2.D0 + GRADZ**2.D0 )**0.5D0
-         
+
          IF (ABS(NORMGR).LT.R8PREM()) GOTO 850
-         
+
 C  -----------------------
 C  CALCUL DE KI AUX NOEUDS
 C  -----------------------
@@ -345,7 +343,7 @@ C  ----------------------
          DO 500 INO=1,NNO
             SIGMAK = SIGMAK + MIN(0.D0,K(INO))
  500     CONTINUE
- 
+
          IF (ABS(SIGMAK).LT.R8PREM()) GOTO 850
 
 C  ------------------------------------------------------
@@ -366,9 +364,9 @@ C  CALCUL DE SIGKFI = SIGMA( K(I)(-)*(LS(INO)-LS(I)) ) AUX NOEUDS
             DELPHI = DELPHI + K(INO)*ZR(ILSNO+INO-1)
 
  600     CONTINUE
- 
+
          IF (ABS(DELPHI).LT.R8PREM()) GOTO 850
- 
+
 C  --------------------------------------------------------
 C  CALCUL DE SIGMA( MAX(0,DPHI(I)/DELPHI) ) SUR LES NOEUDS
 C  --------------------------------------------------------
@@ -376,7 +374,7 @@ C  --------------------------------------------------------
          DO 700 INO=1,NNO
             SMXDFI = SMXDFI + MAX(0.D0,DPHI(INO)/DELPHI)
  700     CONTINUE
- 
+
          IF (ABS(SMXDFI).LT.R8PREM()) GOTO 850
 
 C  --------------------------
@@ -385,15 +383,15 @@ C  --------------------------
          DO 800 INO=1,NNO
             ALPHA(INO) = MAX(0.D0,DPHI(INO)/DELPHI) / SMXDFI
  800     CONTINUE
- 
+
  850     CONTINUE
- 
+
 C  --------------------
 C  STOCKAGE DES SORTIES
 C  --------------------
          CALL JEVECH('PDPHI','E',IDPHI)
          CALL JEVECH('PALPHA','E',IALPHA)
-         
+
          ZR(IDPHI) = DELPHI
          DO 900 INO=1,NNO
             ZR(IALPHA-1+INO) = ALPHA(INO)

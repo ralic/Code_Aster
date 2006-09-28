@@ -1,6 +1,6 @@
       SUBROUTINE PTMTFV(M,RHO,E,ROF,CE,A1,A2,AI1,AI2,XL,XIY1,XIY2,
-     +                  XIZ1,XIZ2,G,ALFAY1,ALFAY2,ALFAZ1,ALFAZ2,EY,EZ,
-     +                  ITYPE,ISECT)
+     &                  XIZ1,XIZ2,G,ALFAY1,ALFAY2,ALFAZ1,ALFAZ2,EY,EZ,
+     &                  ITYPE,ISECT)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER ITYPE, ISECT
       REAL*8 M(*)
@@ -8,22 +8,22 @@
       REAL*8 G,ALFAY1,ALFAY2,ALFAZ1,ALFAZ2,EY,EZ
 C    -------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C    * CE SOUS PROGRAMME CALCULERA LA MATRICE DE MASSE DES ELEMENTS
@@ -129,12 +129,12 @@ C     -- SI G  ET E SONT NULS : ON FAIT G=1.
         IF (ABS(E).LT.1.D0/R8GAEM())  THEN
           G=1.D0
         ELSE
-          CALL UTMESS ('F','PTMTFV','G EST NUL MAIS PAS E')
+          CALL U2MESS('F','ELEMENTS2_54')
         END IF
       END IF
 C
       IF ( ISECT .NE. 2 ) THEN
-         CALL UTMESS('F','PTMTFV','SECTION CIRCULAIRE UNIQUEMENT')
+         CALL U2MESS('F','ELEMENTS2_55')
       ENDIF
       IF ( ITYPE .EQ. 2 ) THEN
          AS = ( A1 + A2 + SQRT(A1*A2) ) / C3
@@ -159,7 +159,7 @@ C
 C
 C     CALCUL DES COEFFICIENTS INDUIT PAR LE CISAILLEMENT
       IF ( ALFAZ1 .NE. ZERO .AND. ALFAZ2 .NE. ZERO   .AND.
-     +     ALFAY1 .NE. ZERO .AND. ALFAY2 .NE. ZERO )  THEN
+     &     ALFAY1 .NE. ZERO .AND. ALFAY2 .NE. ZERO )  THEN
 C        1/ AIRE REDUITE EN Y
          ASY1 = A1 / ALFAZ1
          ASY2 = A2 / ALFAZ2
@@ -186,30 +186,30 @@ C
       ZIAL  = XIZ / ( AS * XL2 )
 C
       M(IP( 2)+ 2) = CY * (C13/C35 + PHIY*C7/C10 + PHIY2/C3
-     +               + ZIAL*C6/C5)
+     &               + ZIAL*C6/C5)
       M(IP( 3)+ 3) = CZ * (C13/C35 + PHIZ*C7/C10 + PHIZ2/C3
-     +               + YIAL*C6/C5)
+     &               + YIAL*C6/C5)
       M(IP( 4)+ 4) = ROSF * XL * (XIY + XIZ) / C3
       M(IP( 6)+ 2) = CY * XL * (C11/C210 + PHIY*C11/C120
-     +               + PHIY2/C24 + ZIAL*(C1/C10 -PHIY/C2))
+     &               + PHIY2/C24 + ZIAL*(C1/C10 -PHIY/C2))
       M(IP( 5)+ 3) = -CZ * XL * (C11/C210 + PHIZ*C11/C120
-     +               + PHIZ2/C24 + YIAL*(C1/C10 -PHIZ/C2))
+     &               + PHIZ2/C24 + YIAL*(C1/C10 -PHIZ/C2))
       M(IP( 6)+ 6) = CY * XL2 * (C1/C105 + PHIY/C60 + PHIY2/C120
-     +               + ZIAL*(C2/C15 + PHIY/C6 + PHIY2/C3))
+     &               + ZIAL*(C2/C15 + PHIY/C6 + PHIY2/C3))
       M(IP( 5)+ 5) = CZ * XL2 * (C1/C105 + PHIZ/C60 + PHIZ2/C120
-     +               + YIAL*(C2/C15 + PHIZ/C6 + PHIZ2/C3))
+     &               + YIAL*(C2/C15 + PHIZ/C6 + PHIZ2/C3))
       M(IP(10)+ 2) = CY * (C9/C70 + C3*PHIY/C10 + PHIY2/C6
-     +               - ZIAL*C6/C5)
+     &               - ZIAL*C6/C5)
       M(IP(11)+ 3) = CZ * (C9/C70 + C3*PHIZ/C10 + PHIZ2/C6
-     +               - YIAL*C6/C5)
+     &               - YIAL*C6/C5)
       M(IP(10)+ 6) = CY * XL *(C13/C420 + C3*PHIY/C40 + PHIY2/C24
-     +               - ZIAL*(C1/C10 -PHIY/C2))
+     &               - ZIAL*(C1/C10 -PHIY/C2))
       M(IP(13)+ 3) = CZ * XL *(C13/C420 + C3*PHIZ/C40 + PHIZ2/C24
-     +               - YIAL*(C1/C10 -PHIZ/C2))
+     &               - YIAL*(C1/C10 -PHIZ/C2))
       M(IP(14)+ 6) = -CY * XL2 * (C1/C140 + PHIY/C60 + PHIY2/C120
-     +               + ZIAL*(C1/C30 + PHIY/C6 - PHIY2/C6))
+     &               + ZIAL*(C1/C30 + PHIY/C6 - PHIY2/C6))
       M(IP(13)+ 5) = -CZ * XL2 * (C1/C140 + PHIZ/C60 + PHIZ2/C120
-     +               + YIAL*(C1/C30 + PHIZ/C6 - PHIZ2/C6))
+     &               + YIAL*(C1/C30 + PHIZ/C6 - PHIZ2/C6))
       M(IP(12)+ 4) =   M(IP( 4)+ 4) / C2
       M(IP(14)+ 2) = - M(IP(10)+ 6)
       M(IP(14)+10) = - M(IP( 6)+ 2)
@@ -227,13 +227,13 @@ C
          M(IP( 4)+ 3) =   EY * M(IP( 3)+ 3)
          M(IP(12)+ 3) =   EY * M(IP(11)+ 3)
          M(IP( 4)+ 4) =   M(IP( 4)+ 4) + EZ * EZ * M(IP( 2)+ 2) +
-     +                    EY * EY * M(IP( 3)+ 3)
+     &                    EY * EY * M(IP( 3)+ 3)
          M(IP( 5)+ 4) =   EY * M(IP( 5)+ 3)
          M(IP( 6)+ 4) = - EZ * M(IP( 6)+ 2)
          M(IP(10)+ 4) =   M(IP(12)+ 2)
          M(IP(11)+ 4) =   M(IP(12)+ 3)
          M(IP(12)+ 4) =   M(IP(12)+ 4) + EZ * EZ * M(IP(10)+ 3) +
-     +                    EY * EY * M(IP(11)+ 3)
+     &                    EY * EY * M(IP(11)+ 3)
          M(IP(13)+ 4) =   EY * M(IP(13)+ 3)
          M(IP(14)+ 4) = - EZ * M(IP(14)+ 2)
          M(IP(12)+ 5) = - M(IP(14)+ 4)

@@ -1,5 +1,5 @@
       SUBROUTINE DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,GRILLE,
-     +                  T2EV,T2VE,T1VE)
+     &                  T2EV,T2VE,T1VE)
       IMPLICIT   NONE
       INTEGER NNO,MULTIC,ICOU
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
@@ -7,23 +7,23 @@
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -96,8 +96,7 @@ C     ------------------------------------------------
 
       IF (PHENOM.EQ.'ELAS_COQMU') THEN
         IF (NORM.LE.R8PREM()) THEN
-          CALL UTMESS('F','DMATEL','L''AXE DE REFERENCE EST NORMAL A'//
-     +                ' UN ELEMENT DE PLAQUE ANISOTROPE')
+          CALL U2MESS('F','ELEMENTS_39')
         END IF
 C          CALCUL DES MATRICE T1VE ET T2VE DE PASSAGE D'UNE MATRICE
 C          (3,3) ET (2,2) DU REPERE DE LA VARIETE AU REPERE ELEMENT
@@ -137,9 +136,7 @@ C          ET T2VE INVERSE DE T2EV
 
       ELSE IF (PHENOM.EQ.'ELAS') THEN
         IF (NORM.LE.R8PREM()) THEN
-          CALL UTMESS('A','DMATEL','L''AXE DE REFERENCE EST NORMAL A'//
-     +            ' UN ELEMENT DE PLAQUE. VOUS NE POURREZ CALCULER LES '
-     +                //' LES CONTRAINTES.')
+          CALL U2MESS('A','ELEMENTS_40')
         END IF
         IF (ICOU.GT.1) THEN
            CALL TECAEL(IADZI,IAZK24)
@@ -147,7 +144,7 @@ C          ET T2VE INVERSE DE T2EV
            CALL UTDEBM ('F','DMATEL','NUMERO DE')
            CALL UTIMPI ( 'S', ' COUCHE ', 1, ICOU )
            CALL UTIMPK ( 'S', ' TROP GRAND PAR RAPPORT AU NOMBRE '//
-     +               'DE COUCHES AUTORISE POUR LA MAILLE ', 1, NOMAIL )
+     &               'DE COUCHES AUTORISE POUR LA MAILLE ', 1, NOMAIL )
            CALL UTFINM ()
         ENDIF
         NBV = 2
@@ -157,9 +154,7 @@ CCC        CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         IF (NORM.LE.R8PREM()) THEN
-          CALL UTMESS('A','DMATEL','L''AXE DE REFERENCE EST NORMAL A'//
-     +            ' UN ELEMENT DE PLAQUE. VOUS NE POURREZ CALCULER LES '
-     +                //' LES CONTRAINTES.')
+          CALL U2MESS('A','ELEMENTS_40')
         END IF
         IF (ICOU.GT.1) THEN
            CALL TECAEL(IADZI,IAZK24)
@@ -167,7 +162,7 @@ CCC        CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
            CALL UTDEBM ('F','DMATEL','NUMERO DE')
            CALL UTIMPI ( 'S', ' COUCHE ', 1, ICOU )
            CALL UTIMPK ( 'S', ' TROP GRAND PAR RAPPORT AU NOMBRE '//
-     +               'DE COUCHES AUTORISE POUR LA MAILLE ', 1, NOMAIL )
+     &               'DE COUCHES AUTORISE POUR LA MAILLE ', 1, NOMAIL )
            CALL UTFINM ()
         ENDIF
 
@@ -198,15 +193,12 @@ C        ET T2VE INVERSE DE T2EV
         T1VE(9) =  T1VE(1) - T1VE(4)
 C
         CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',ZERO,1,'MEMB_L  ',
-     +              VALRES(1),CODRET,' ')
+     &              VALRES(1),CODRET,' ')
         IF (CODRET(1).EQ.'NO') THEN
           CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',ZERO,1,'M_LLLL  ',
-     +                VALRES(1),CODRET,' ')
+     &                VALRES(1),CODRET,' ')
           IF (CODRET(1).EQ.'NO') THEN
-            CALL UTMESS('F','DMATEL','IMPOSSIBILITE : VOUS AVEZ UN '//
-     +      'MATERIAU DE TYPE "ELAS_COQUE" ET VOUS N''AVEZ PAS '//
-     +      'DEFINI LA RAIDEUR DE MEMBRANE, NI SOUS LA FORME '//
-     +      '"MEMB_L", NI SOUS LA FORME "M_LLLL".')
+            CALL U2MESS('F','ELEMENTS_41')
           ELSE
             ELASCO = 2
           ENDIF
@@ -263,7 +255,7 @@ CCC          MULTIC     =  2
           NOMRES(33) = 'C_TZTZ  '
         ENDIF
       ELSE
-        CALL UTMESS('F','DMATEL','COMPORTEMENT MATERIAU NON ADMIS')
+        CALL U2MESS('F','ELEMENTS_42')
       END IF
 
 C===============================================================
@@ -309,7 +301,7 @@ C===============================================================
 
       IF (PHENOM.EQ.'ELAS') THEN
         CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     +              NOMRES,VALRES,CODRET,'FM')
+     &              NOMRES,VALRES,CODRET,'FM')
 
         MULTIC = 0
 
@@ -391,11 +383,11 @@ C        --- CALCUL DE SON INVERSE ------------------------------------
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
-     +              VALRES,CODRET,'FM')
+     &              VALRES,CODRET,'FM')
 
         IF (ELASCO.EQ.1) THEN
           MULTIC = 0
-          IF (GRILLE) CALL UTMESS('F','DMATEL','STOP 1')
+          IF (GRILLE) CALL U2MESS('F','CALCULEL_2')
 
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
           DM(1,1) = VALRES(1)
@@ -497,10 +489,7 @@ C        --- CALCUL DE SON INVERSE -------------------------------------
             DCI(2,1) = -DC(2,1)/DET
             DCI(2,2) =  DC(1,1)/DET
           ELSE
-            CALL UTMESS('F','DMATEL','IMPOSSIBILITE : VOUS AVEZ UN '//
-     +      'MATERIAU DE TYPE "ELAS_COQUE" ET LE DETERMINANT '//
-     +      'DE LA SOUS-MATRICE DE HOOKE RELATIVE AU CISAILLEMENT '//
-     +      'EST NUL.')
+            CALL U2MESS('F','ELEMENTS_43')
           ENDIF
         ENDIF
 C
@@ -517,7 +506,7 @@ C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
         CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,18,
-     +             NOMRES(1), VALRES(1),CODRET(1),'  ')
+     &             NOMRES(1), VALRES(1),CODRET(1),'  ')
         DM(1,1) = VALRES(1)
         DM(1,2) = VALRES(2)
         DM(1,3) = VALRES(3)
@@ -546,7 +535,7 @@ C        ------ MATERIAU MULTICOUCHE -----------------------------------
         DF(3,1) = DF(1,3)
         DF(3,2) = DF(2,3)
         CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,6,
-     +            NOMRES(21),  VALRES(21),CODRET(21),'FM')
+     &            NOMRES(21),  VALRES(21),CODRET(21),'FM')
         DCI(1,1) = VALRES(21)
         DCI(2,2) = VALRES(22)
         DCI(1,2) = VALRES(23)

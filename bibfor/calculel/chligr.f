@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/11/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,10 +97,9 @@ C     ------------------
 
       IF (TYCH.EQ.'CHML') THEN
       ELSE IF (TYCH.EQ.'RESL') THEN
-        CALL UTMESS('F','CHLIGR',
-     +              'ON NE SAIT PAS ENCORE TRAITER LES RESUELEM')
+        CALL U2MESS('F','CALCULEL_89')
       ELSE
-        CALL UTMESS('F','CHLIGR','TYPE DE CHAMP INTERDIT:'//TYCH)
+        CALL U2MESK('F','CALCULEL_90',1,TYCH)
       END IF
 
 
@@ -132,6 +131,7 @@ C     ------------------------------------------------------------
               CALL UTMESS('F','CHLIGR','INCOHERENCE DES'
      &        //' FAMILLES DE POINTS DE GAUSS POUR LA MAILLE '
      &        //NOMA//' ('//FPG1//'/'//FPG2//')')
+C        CALL U2MESK('F','CALCULEL_91', 3 ,VALK)
            END IF
 20       CONTINUE
          CALL JEDETR('&&CHLIGR.CHEL2')

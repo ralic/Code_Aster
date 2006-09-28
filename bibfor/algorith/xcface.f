@@ -8,7 +8,7 @@
       CHARACTER*24  PINTER,AINTER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,11 +72,11 @@ C
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-      
+
       EPS=-1.0D-10
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,IBID,IBID,IBID,IBID,IBID,IBID)
-      
+
       IF (NDIM .EQ. 3) THEN
          PTMAX=6
       ELSEIF (NDIM .EQ. 2) THEN
@@ -248,8 +248,7 @@ C       TRI SUIVANT THETA CROISSANT
  500    CONTINUE
 
         IF (NINTER.GT.6) THEN
-         CALL UTMESS('F','XCFACE','NOMBRE DE POINTS D''INTERSECTION '//
-     &                                               'IMPOSSIBLE.')
+         CALL U2MESS('F','ALGORITH11_42')
         ELSEIF (NINTER.EQ.6) THEN
           NFACE=4
           CFACE(1,1)=1
@@ -308,16 +307,16 @@ C       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
            ND(J)=ND(J)+ZR(JGRLSN-1+2*(I-1)+J)/NNO
  811     CONTINUE
  810    CONTINUE
-       
+
         DO 841 J=1,2
            A(J)=ZR(JPTINT-1+J)
            B(J)=ZR(JPTINT-1+2+J)
            AB(J)=B(J)-A(J)
  841    CONTINUE
-       
+
         ABPRIM(1)=-AB(2)
         ABPRIM(2)=AB(1)
-       
+
         IF (DDOT(2,ABPRIM,1,ND,1) .LT. 0.D0) THEN
         DO 852 K=1,2
            TAMPOR(K)=ZR(JPTINT-1+K)
@@ -338,7 +337,7 @@ C       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
         ENDIF
 
       ELSE
-        CALL UTMESS('F','XCFACE','PROBLEME DE DIMENSION :NI 2D, NI 3D')
+        CALL U2MESS('F','ALGORITH11_43')
       ENDIF
 
       IF (0.EQ.1) THEN

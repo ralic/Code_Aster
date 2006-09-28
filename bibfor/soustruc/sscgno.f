@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 22/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C TOLE  CRP_20
 C ----------------------------------------------------------------------
 C     BUT: TRAITER LE MOT CLEF CREA_GROUP_NO
 C          DE L'OPERATEUR: DEFI_GROUP
-C     
+C
 C     IN:  MA    : NOM DU MAILLAGE
 C          NBGNP : NOMBRE DE GROUP_NO A CREER
 C     ------------------------------------------------------------------
@@ -118,8 +118,7 @@ C ----------------------------------------------------------------------
         CALL JENONU ( JEXNOM(GRPNOE,NOGNO), IRET )
         IF (IRET.GT.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGNO','LE GROUP_NO :'//NOGNO//
-     &                  ' EXISTE DEJA, ON NE LE MODIFIE PAS.')
+              CALL U2MESK('A','SOUSTRUC_37',1,NOGNO)
             END IF
           GO TO 100
         END IF
@@ -167,8 +166,7 @@ C       ---------------------
 
           IF (N.EQ.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGNO','LE GROUP_NO :'//NOGNO//
-     &                  ' EST VIDE, ON NE LE CREE PAS.')
+              CALL U2MESK('A','SOUSTRUC_38',1,NOGNO)
             END IF
             GO TO 100
           END IF
@@ -228,8 +226,7 @@ C       ------------------
 
           IF (N.EQ.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGNO','LE GROUP_NO :'//NOGNO//
-     &                  ' EST VIDE, ON NE LE CREE PAS.')
+              CALL U2MESK('A','SOUSTRUC_38',1,NOGNO)
             END IF
           ELSE
             CALL JECROC(JEXNOM(GRPNOE,NOGNO))
@@ -279,8 +276,7 @@ C       ------------------
 
           IF (N.EQ.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGNO','LE GROUP_NO :'//NOGNO//
-     &                  ' EST VIDE, ON NE LE CREE PAS.')
+              CALL U2MESK('A','SOUSTRUC_38',1,NOGNO)
             END IF
           ELSE
             CALL JECROC(JEXNOM(GRPNOE,NOGNO))
@@ -329,8 +325,8 @@ C         -- TRAITEMENT DE L'OPTION "NOEUD_ORDO" :
 C         ----------------------------------------
           ELSE IF (OPTION(1:10).EQ.'NOEUD_ORDO') THEN
             PREFIX = '&&SSCGNO'
-            CALL FONFIS ( PREFIX, MA, MOTFAC, IOCC,  
-     +                                        1, MOTCLE, TYPMCL, 'V' )
+            CALL FONFIS ( PREFIX, MA, MOTFAC, IOCC,
+     &                                        1, MOTCLE, TYPMCL, 'V' )
             LISNOM = PREFIX//'.FOND      .NOEU'
             CALL JELIRA(LISNOM,'LONMAX',NBNO,K8B)
             CALL JEVEUO(LISNOM,'L',IDNONO)
@@ -345,15 +341,14 @@ C         ----------------------------------------
             CALL JEDETR ( PREFIX//'.FOND      .TYPE' )
 
           ELSE
-            CALL UTMESS('F','SSCGNO','OPTION INCONNUE: '//OPTION )
+            CALL U2MESK('F','PREPOST3_82',1,OPTION)
           END IF
 
 C         -- CREATION ET AFFECTATION DU GROUP_NO :
 C         ----------------------------------------
           IF (NBNO.EQ.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGNO','LE GROUP_NO :'//NOGNO//
-     &                  ' EST VIDE, ON NE LE CREE PAS.')
+              CALL U2MESK('A','SOUSTRUC_38',1,NOGNO)
             END IF
           ELSE
             CALL JEVEUO(LISNO,'L',IDLINO)
@@ -391,6 +386,7 @@ C         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
             IF (ZI(JNOEU2-1+NUM).EQ.2) THEN
               CALL UTMESS('A',CMD,'NOEUD EN DOUBLE : '//NOM1//
      &                            ' DANS LE GROUP_NO: '//NOGNO)
+C        CALL U2MESK('A','SOUSTRUC_39', 2 ,VALK)
               GOTO 20
             END IF
             NBNO = NBNO + 1
@@ -428,12 +424,8 @@ C
             IF (N6A.EQ.0) IND1 = 1
             CALL GETVIS(MOTFAC,'NUME_FIN',IOCC,1,1,IND2,N6A)
             IF (N6A.EQ.0) IND2 = ILI2
-            IF (IND2.LT.IND1) CALL UTMESS('F','SSCGNO',
-     &               'L''INDICE FINAL EST INFERIEUR A L''INDICE INITIAL'
-     &                             )
-            IF (ILI2.LT.IND2) CALL UTMESS('F','SSCGNO',
-     &             'L''INDICE FINAL EST SUPERIEUR A LA TAILLE DU GROUPE'
-     &                             )
+            IF (IND2.LT.IND1) CALL U2MESS('F','SOUSTRUC_33')
+            IF (ILI2.LT.IND2) CALL U2MESS('F','SOUSTRUC_34')
             N6A = IND2 - IND1 + 1
           ELSE
             N6A = 1

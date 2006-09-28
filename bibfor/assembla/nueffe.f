@@ -6,7 +6,7 @@
       CHARACTER*1 BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -404,9 +404,7 @@ C        ----------------------------------------------
                 ELSE IF (ZI(IDLGNS+N21-1).EQ.-1) THEN
                   N1M1RE = N1RE
                 ELSE
-                  CALL UTMESS('F','NUEFFE','L''ENTIER '//
-     &                       'DECRIVANT LA POSTION DU PREMIER LAGRANGE '
-     &                        //'NE PEUT ETRE EGAL QU''A  +1  OU  -1 .')
+                  CALL U2MESS('F','ASSEMBLA_27')
                 END IF
               END IF
 
@@ -513,10 +511,7 @@ C        --------------------------------------
                   ELSE IF (ZI(IDLGNS+N21-1).EQ.-1) THEN
                     JNULAG = 1
                   ELSE
-                    CALL UTMESS('F','NUEFFE','L''ENTIER '//
-     &                       'DECRIVANT LA POSTION DU PREMIER LAGRANGE '
-     &                          //
-     &                          'NE PEUT ETRE EGAL QU''A  +1  OU  -1 .')
+                    CALL U2MESS('F','ASSEMBLA_27')
                   END IF
                 END IF
 
@@ -823,9 +818,7 @@ C        -------------------------------------------------------
         END IF
   110 CONTINUE
 
-      IF (NBNONU.NE. (NBNORE+NLAG)) CALL UTMESS('F','NUEFFE_2','LE '//
-     &    'NOMBRE DE NOEUDS EFFECTIVEMENT NUMEROTES NE CORRESPOND PAS '
-     &    //' AU NOMBRE DE NOEUDS A NUMEROTER')
+      IF (NBNONU.NE. (NBNORE+NLAG)) CALL U2MESS('F','ASSEMBLA_28')
 
 
 
@@ -901,8 +894,8 @@ C     -------------------------------------------
 
 C                 -- CALCUL DU NUMERO DE LA CMP ASSO
                   IF (ICDDLB.EQ.0) THEN
-                    IF (NOMGDS.NE.NOMTE(3:8)) CALL UTMESS('F','NUEFFE',
-     &                  'STOP')
+                    IF (NOMGDS.NE.NOMTE(3:8)) CALL U2MESS('F','CALCULEL_
+     &13')
                     NOMCMP = NOMTE(10:16)
 
 C                   "GLUTE" POUR TEMP_INF ET TEMP_SUP :
@@ -917,7 +910,7 @@ C                   "GLUTE" POUR TEMP_INF ET TEMP_SUP :
                     CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGDS),
      &                          'LONMAX',NBCMP,KBID)
                     NDDLB = INDIK8(ZK8(IDNOCM),NOMCMP,1,NBCMP)
-                    IF (NDDLB.EQ.0) CALL UTMESS('F','NUEFFE','STOP 1')
+                    IF (NDDLB.EQ.0) CALL U2MESS('F','CALCULEL_2')
                     ICDDLB = 1
                   END IF
 

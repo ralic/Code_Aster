@@ -1,12 +1,12 @@
       SUBROUTINE ACEAOR(NOMA,NOMO,LMAX,NBEPO,NBEDI,NBTEL,NTYELE,
-     +                                       NOMELE,IVR,IFM,NBOCC)
+     &                                       NOMELE,IVR,IFM,NBOCC)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           LMAX,NBEPO,NBEDI,NBEBA,NTYELE(*),IVR(*),NBOCC(*)
       CHARACTER*8       NOMA,NOMO
       CHARACTER*16      NOMELE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,7 +141,7 @@ C
  22         CONTINUE
             CALL VDIFF(3,X2,X1,X3)
             IF (ABS(X3(1)).GT.TSM .OR. ABS(X3(2)).GT.TSM .OR.
-     +                                          ABS(X3(3)).GT.TSM) THEN
+     &                                          ABS(X3(3)).GT.TSM) THEN
                CALL ANGVX(X3,ALPHA,BETA)
                ZR(JAD)   = ZR(JAD)   + ALPHA
                ZR(JAD+1) = ZR(JAD+1) + BETA
@@ -154,13 +154,13 @@ C     --------------------------------------------------
       IF (NBOCC(4).NE.0) THEN
          DO 30 IOC = 1 , NBOCC(4)
           CALL GETVEM(NOMA,'GROUP_MA',
-     .               'ORIENTATION','GROUP_MA',IOC,1,LMAX ,ZK8(JDLS),NG)
+     &               'ORIENTATION','GROUP_MA',IOC,1,LMAX ,ZK8(JDLS),NG)
           CALL GETVEM(NOMA,'MAILLE',
-     .               'ORIENTATION','MAILLE'  ,IOC,1,LMAX ,ZK8(JDLS),NM)
+     &               'ORIENTATION','MAILLE'  ,IOC,1,LMAX ,ZK8(JDLS),NM)
           CALL GETVEM(NOMA,'GROUP_NO',
-     .               'ORIENTATION','GROUP_NO',IOC,1,LMAX ,ZK8(JDLS),NJ)
+     &               'ORIENTATION','GROUP_NO',IOC,1,LMAX ,ZK8(JDLS),NJ)
           CALL GETVEM(NOMA,'NOEUD',
-     .               'ORIENTATION','NOEUD'   ,IOC,1,LMAX ,ZK8(JDLS),NN)
+     &               'ORIENTATION','NOEUD'   ,IOC,1,LMAX ,ZK8(JDLS),NN)
           CALL GETVTX('ORIENTATION','CARA'    ,IOC,1,NBCAR,CAR    ,NCAR)
           CALL GETVR8('ORIENTATION','VALE'    ,IOC,1,NBVAL,VAL    ,NVAL)
 C
@@ -170,7 +170,7 @@ C                                                    GROUPES DE MAILLES
                DO 36 I = 1 , NG
                   CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
                   CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONMAX',
-     +                                                 NBMAGR,K1BID)
+     &                                                 NBMAGR,K1BID)
                   DO 38 J = 1,NBMAGR
                      NUMMAI = ZI(JDGM+J-1)
                      CALL JENUNO(JEXNUM(MLGNMA,NUMMAI),NOMMAI)
@@ -179,7 +179,7 @@ C                                                    GROUPES DE MAILLES
                      JAD = JDOR + (NUMMAI*3) - 3
                   IF ((NUTYMA.NE.NTSEG3).AND.(NUTYMA.NE.NTSEG4)) THEN
                         CALL AFFORI('MAILLE',NOMMAI,CAR(1),VAL,JAD,JDNO,
-     +                            JDCO,IVR,NUTYMA,NTSEG,CARORI,NCO,IER)
+     &                            JDCO,IVR,NUTYMA,NTSEG,CARORI,NCO,IER)
                      ENDIF
  38               CONTINUE
  36            CONTINUE
@@ -195,7 +195,7 @@ C ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
                   JAD = JDOR + (NUMMAI*3) - 3
                   IF ((NUTYMA.NE.NTSEG3).AND.(NUTYMA.NE.NTSEG4)) THEN
                      CALL AFFORI('MAILLE',NOMMAI,CAR(1),VAL,JAD,JDNO,
-     +                            JDCO,IVR,NUTYMA,NTSEG,CARORI,NCO,IER)
+     &                            JDCO,IVR,NUTYMA,NTSEG,CARORI,NCO,IER)
                   ENDIF
  40            CONTINUE
             ENDIF
@@ -208,7 +208,7 @@ C                                            LISTE DE GROUPES DE NOEUDS
                   DO 42 I = 1 , NJ
                      CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
                      CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONMAX',
-     +                                                  NBNOGR,K1BID)
+     &                                                  NBNOGR,K1BID)
                      DO 44 J = 1,NBNOGR
                         NUMNOE = ZI(JDGN+J-1)
                         DO 46 K = 1 , NBMTRD
@@ -217,7 +217,7 @@ C                                            LISTE DE GROUPES DE NOEUDS
                         CALL JENUNO(JEXNUM(MLGNNO,NUMNOE),NOMNOE)
                         JAD = JDOR + (NUMTRD*3) - 3
                         CALL AFFORI('NOEUD',NOMNOE,CAR(1),VAL,JAD,JDNO,
-     +                             JDCO,IVR,NTPOI,NTSEG,CARORI,NCO,IER)
+     &                             JDCO,IVR,NTPOI,NTSEG,CARORI,NCO,IER)
  44                  CONTINUE
  42               CONTINUE
                ENDIF
@@ -232,7 +232,7 @@ C                                                       LISTE DE NOEUDS
  50                  CONTINUE
                      JAD = JDOR + (NUMTRD*3) - 3
                      CALL AFFORI('NOEUD',NOMNOE,CAR(1),VAL,JAD,JDNO,
-     +                             JDCO,IVR,NTPOI,NTSEG,CARORI,NCO,IER)
+     &                             JDCO,IVR,NTPOI,NTSEG,CARORI,NCO,IER)
  48               CONTINUE
                ENDIF
             ENDIF
@@ -240,8 +240,7 @@ C                                                       LISTE DE NOEUDS
       ENDIF
 C
       IF (IER.NE.0) THEN
-         CALL UTMESS('F',CMD,'ORIENTATION : UNE  ERREUR A ETE '//
-     +               'DETECTEE LORS DE L AFFECTATION DES ORIENTATIONS')
+         CALL U2MESS('F','MODELISA_12')
       ENDIF
 C
 C --- IMPRESSION DES VALEURS DES ORIENTATIONS SI DEMANDE
@@ -288,13 +287,13 @@ C++++++
       ENDIF
 C
  1000 FORMAT(/,3X,'<ANGL> ORIENTATIONS SUR LES MAILLES DE TYPE POUTRE, '
-     +  ,'BARRE OU DISCRET',//,3X,
-     +  'NOM      TYPE             ALPHA         BETA',
-     +  '          GAMMA')
+     &  ,'BARRE OU DISCRET',//,3X,
+     &  'NOM      TYPE             ALPHA         BETA',
+     &  '          GAMMA')
  1010 FORMAT(3X,A8,1X,A16,1X,3(D12.6,2X))
  1020 FORMAT(/,3X,'<ANGL> ORIENTATIONS SUR LES NOEUDS DE TYPE ',
-     +  'DISCRET',//,3X,'NOM      TYPE             ALPHA         BETA',
-     +  '          GAMMA')
+     &  'DISCRET',//,3X,'NOM      TYPE             ALPHA         BETA',
+     &  '          GAMMA')
 C
 C --- AFFECTATION DES VALEURS DU TAMPON DANS LA CARTE ORIENTATION :
 C     -------------------------------------------------------------
@@ -335,7 +334,7 @@ C ---    AFFECTATION DES MAILLES TARDIVES DU MODELE (TYPE DISCRET)
                   ZR(JDVLVO+1)  = ZR(JDOR+(I+NBMAIL)*3-2)
                   ZR(JDVLVO+2)  = ZR(JDOR+(I+NBMAIL)*3-1)
                   CALL NOCART(CARTOR,-3,' ','NUM',1,' ',-I,
-     +                                            NOMO//'.MODELE    ',3)
+     &                                            NOMO//'.MODELE    ',3)
                   GOTO 72
 C              ENDIF
                ENDIF

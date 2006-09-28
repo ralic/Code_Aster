@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     -------------------------
       ELSE
         LFETI=.FALSE.
       ENDIF
-      
+
 C     RECUPERATION DE LA CARTE:
 C     -------------------------
       DESC = ZI(IACHII-1+11* (IICHIN-1)+4)
@@ -87,7 +87,7 @@ C     -------------------------------------------
       IF ((ITYPLO.EQ.2).OR.(ITYPLO.EQ.3)) THEN
 
         IF ((ITYPLO.EQ.2).AND.(NBPOIN.GT.10000)) THEN
-          CALL UTMESS('F',' EXCART','A FAIRE ...')
+          CALL U2MESS('F','CALCULEL_46')
         ELSE
           NCMP=LGCATA/NBPOIN
           CALL EXCAR2(NGRMX,DESC,ZI(MODLOC-1+5),LGCATA)
@@ -112,7 +112,7 @@ C           PAR LE PROC COURANT
 C     2-  CAS: CART -> ASSE :
 C     -----------------------
       ELSE IF (ITYPLO.GE.4) THEN
-        CALL UTMESS('F',' EXCART','IMPOSSIBLE')
+        CALL U2MESS('F','ALGORITH_15')
 
 
 C     3-  CAS: CART -> ELEM :

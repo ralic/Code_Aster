@@ -2,7 +2,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C       16/01/04 (OB): CREATION.
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
-      
+
 C DECLARATION PARAMETRES D'APPELS
       CHARACTER*(*)     CHPOUT,CHPIN,BASE,TYPC
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -72,7 +72,7 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*19 CH19
       CHARACTER*24 VALE,REFE,DESC,CELK,TAMP
       LOGICAL      LFETI
-      
+
 C     ------------------------------------------------------------------
       DATA REFE / '                   .REFE' /
       DATA CELK / '                   .CELK' /
@@ -83,7 +83,7 @@ C     ------------------------------------------------------------------
       CH19 = CHPIN
 
       CALL DISMOI('F','TYPE_CHAMP',CH19,'CHAMP',IBID,TYCH,IER)
-      
+
       IF (TYCH.EQ.'NOEU') THEN
          DOCU='CHNO'
          TAMP = REFE
@@ -95,8 +95,7 @@ C     ------------------------------------------------------------------
          VALE(20:24)='.CELV'
          TAMP = CELK
       ELSE
-        CALL UTMESS('F','VTDEFS','ON NE TRAITE QUE DES '//
-     +              '"CHAM_NO" OU DES "CHAM_ELEM".')
+        CALL U2MESS('F','UTILITAI_21')
       ENDIF
 
 C     --------------------------- REFE --------------------------------
@@ -152,15 +151,15 @@ C     --- TYPE DES VALEURS, LONGUEUR D'UN VECTEUR ---
       CALL JELIRA(VALE,'LONMAX',NBVAL,CBID)
       IF (LFETI) THEN
         CALL JEVEUO(VALE,'L',LCHPIN)
-        NBVAL1=NBVAL-1      
+        NBVAL1=NBVAL-1
       ENDIF
       VALE(1:19) = CHPOUT
       CALL JECREO(VALE,CLASSE//' V '//TYPE)
       CALL JEECRA(VALE,'LONMAX',NBVAL,CBID)
       CALL JEVEUO(VALE,'E',LCHP)
 
-C SI FETI INITIALISATION DU .VALE DIRECTEMENT SANS PASSER PAR 
-C COPISD+COPICH+JEDUPO LORS D'UN APPEL DANS RESOUD      
+C SI FETI INITIALISATION DU .VALE DIRECTEMENT SANS PASSER PAR
+C COPISD+COPICH+JEDUPO LORS D'UN APPEL DANS RESOUD
       IF (LFETI) THEN
         IF (TYPE.EQ.'R') THEN
           DO 30 IVAL = 0,NBVAL1
@@ -169,10 +168,10 @@ C COPISD+COPICH+JEDUPO LORS D'UN APPEL DANS RESOUD
         ELSE IF (TYPE.EQ.'C') THEN
           DO 40 IVAL = 0,NBVAL1
              ZC(LCHP+IVAL) = DCMPLX(0.D0,0.D0)
-   40     CONTINUE      
-        ENDIF      
+   40     CONTINUE
+        ENDIF
       ENDIF
-      
+
 C     --- CHANGER LA GRANDEUR ---
       CALL SDCHGD(CHPOUT,TYPE)
       CALL JEDEMA()

@@ -1,6 +1,6 @@
       SUBROUTINE JELSTC ( CLAS , SOUCH , IPOS , MAXVAL , KLST , NBVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
 C     ==================================================================
@@ -62,7 +62,7 @@ C     ==================================================================
       IF ( IPOS + L .GT. 25 .OR. IPOS .LT. 0 .OR. L .EQ. 0) THEN
          CMESS = ' LONGUEUR OU POSITION DE LA SOUS-CHAINE '//SOUCH//
      &           ' INVALIDE'
-         CALL JVMESS ( 'S' , PGMA//'01' , CMESS )
+         CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       KCLAS  = CLAS (1:MIN(1,LEN(CLAS)))
       IF ( KCLAS .EQ. ' ' ) THEN

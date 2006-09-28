@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBNO
       CHARACTER*(*)       MOFAZ, NOMAZ, LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,10 +82,9 @@ C     ----------------------------------
       TYPMCL(1) = 'GROUP_NO'
       TYPMCL(2) = 'NOEUD'
       CALL RELIEM ( ' ', NOMA, 'NU_NOEUD', MOTFAC, IOCC,
-     +                                2, MOTCLE, TYPMCL, LISNOE, NBNO )
+     &                                2, MOTCLE, TYPMCL, LISNOE, NBNO )
       IF ( NBNO .LE. 0 ) THEN
-         CALL UTMESS('F','CGNOSO','IL MANQUE L''ENSEMBLE DES NOEUDS '//
-     +   'QUE L''ON VEUT ORDONNER, MOTS CLES "NOEUD" ET/OU "GROUP_NO"')
+         CALL U2MESS('F','MODELISA3_99')
       ENDIF
       CALL JEVEUO ( LISNOE, 'E', JNOEU )
 C
@@ -105,8 +104,8 @@ C
 C --- ON ORDONNE :
 C     ----------
       CALL OREINO ( NOMA, ZI(JNOEU), NBNO, NUMORI, NUMEXT, ZR(IDCOOR),
-     +              CRIT, TOLE,IERA, IRET )
-      IF (IRET.NE.0) CALL UTMESS('F','CGNOSO','ARRET SUR ERREURS')
+     &              CRIT, TOLE,IERA, IRET )
+      IF (IRET.NE.0) CALL U2MESS('F','MODELISA4_1')
 C
       CALL JEDEMA()
 C

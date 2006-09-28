@@ -3,22 +3,22 @@
       INTEGER           IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C                       OPERATEUR MODI_MODELE_XFEM
@@ -46,7 +46,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C     
+C
       REAL*8          CRIMAX
       INTEGER         IBID,IRET,IMAIL,I,J,JJ,IGR1,IEL,IMA,J2
       INTEGER         IGR2
@@ -57,7 +57,7 @@ C
       INTEGER         ITYXH8(3),ITYXP6(3),ITYXT4(3),ITCPQ4(3)
       INTEGER         ITCPT3(3),ITDPQ4(3),ITDPT3(3),ITF4(3),ITF3(3)
       CHARACTER*8     MOD2,MOD1,FISS,K8BID,NOMA
-      CHARACTER*16    MOTFAC,K16BID,NOTYPE  
+      CHARACTER*16    MOTFAC,K16BID,NOTYPE
       CHARACTER*19    LIGR1,LIGR2
       CHARACTER*24    LIEL1,LIEL2,OBJMA,INDIC,GRP,MAIL2
       INTEGER         DIMENS,ADDIM
@@ -67,16 +67,16 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       CALL INFMAJ()
-      
+
       MOTFAC=' '
 
-      CALL GETRES(MOD2,K16BID,K16BID)     
+      CALL GETRES(MOD2,K16BID,K16BID)
       CALL GETVID( MOTFAC, 'MODELE_IN', 1,1,1, MOD1, IBID )
       CALL GETVID( MOTFAC, 'FISSURE', 1,1,1,FISS , IBID )
       CALL GETVR8( MOTFAC, 'CRITERE',1,1,1,CRIMAX,IBID)
-      
+
 C     ON RAJOUTE D'UN '.FISS' AU MODELE DE SORTIE
-      CALL WKVECT(MOD2//'.FISS','G V K8',1,JMOFIS) 
+      CALL WKVECT(MOD2//'.FISS','G V K8',1,JMOFIS)
       ZK8(JMOFIS)=FISS
 
       LIGR1=MOD1//'.MODELE'
@@ -84,18 +84,17 @@ C     ON RAJOUTE D'UN '.FISS' AU MODELE DE SORTIE
 
       LIGR2=MOD2//'.MODELE'
       LIEL2=LIGR2//'.LIEL'
-      
-      OBJMA = MOD1//'.MODELE    .NOMA' 
+
+      OBJMA = MOD1//'.MODELE    .NOMA'
       CALL JEVEUO(OBJMA,'L',IADRMA)
       NOMA = ZK8(IADRMA)
-      
+
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       DIMENS=ZI(ADDIM-1+6)
-     
 C-----------------------------------------------------------------------
 C     1)  REMPLISSAGE DE TAB : NBMA X 5 : GR1 | GR2 | GR3 | GR0 | ITYP
 C-----------------------------------------------------------------------
-      
+
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,K8BID,IBID)
       CALL WKVECT('&&OP0113.TAB','V V I',NBMA*5,JTAB)
 
@@ -110,13 +109,13 @@ C     INITIALISATION DE LA COLONNE 4 (GR0) À 1
  110  CONTINUE
 
       INDIC=FISS//'.MAILFISS .INDIC'
-      CALL JEVEUO(INDIC,'L',JINDIC)  
+      CALL JEVEUO(INDIC,'L',JINDIC)
 
       IF (ZI(JINDIC-1+1).EQ.1) THEN
         GRP=FISS//'.MAILFISS  .HEAV'
         CALL JEVEUO(GRP,'L',JG)
         NMAENR=ZI(JINDIC-1+2)
-C       POUR CHAQUE MAILLE DE CE GRP, ON MET À 1 LA CASE DE TAB 
+C       POUR CHAQUE MAILLE DE CE GRP, ON MET À 1 LA CASE DE TAB
 C       COLONNE 1 ET À O LA CASE DE TAB COLONNE 4
         DO 120 I=1,NMAENR
           IMA=ZI(JG-1+I)
@@ -129,7 +128,7 @@ C       COLONNE 1 ET À O LA CASE DE TAB COLONNE 4
         GRP=FISS//'.MAILFISS  .CTIP'
         CALL JEVEUO(GRP,'L',JG)
         NMAENR=ZI(JINDIC-1+4)
-C       POUR CHAQUE MAILLE DE CE GRP, ON MET À 1 LA CASE DE TAB 
+C       POUR CHAQUE MAILLE DE CE GRP, ON MET À 1 LA CASE DE TAB
 C       COLONNE 2 ET À O LA CASE DE TAB COLONNE 4
         DO 130 I=1,NMAENR
           IMA=ZI(JG-1+I)
@@ -142,14 +141,14 @@ C       COLONNE 2 ET À O LA CASE DE TAB COLONNE 4
         GRP=FISS//'.MAILFISS  .HECT'
         CALL JEVEUO(GRP,'L',JG)
         NMAENR=ZI(JINDIC-1+6)
-C       POUR CHAQUE MAILLE DE CE GRP, ON MET À 1 LA CASE DE TAB 
+C       POUR CHAQUE MAILLE DE CE GRP, ON MET À 1 LA CASE DE TAB
 C       COLONNE 3 ET À O LA CASE DE TAB COLONNE 4
         DO 140 I=1,NMAENR
           IMA=ZI(JG-1+I)
           ZI(JTAB-1+5*(IMA-1)+3)=1
           ZI(JTAB-1+5*(IMA-1)+4)=0
  140    CONTINUE
-      ENDIF 
+      ENDIF
 
 C-----------------------------------------------------------------------
 C     2)  MODIFICATION DE TAB EN FONTION DE L'ENRICHISSEMENT
@@ -166,11 +165,11 @@ C-----------------------------------------------------------------------
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XH_TETRA4'),ITYXT4(1))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XT_TETRA4'),ITYXT4(2))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XHT_TETRA4'),ITYXT4(3))
-      
+
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECPQU8_XH'),ITCPQ4(1))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECPQU8_XT'),ITCPQ4(2))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECPQU8_XHT'),ITCPQ4(3))
-      
+
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECPTR6_XH'),ITCPT3(1))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECPTR6_XT'),ITCPT3(2))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECPTR6_XHT'),ITCPT3(3))
@@ -178,7 +177,7 @@ C-----------------------------------------------------------------------
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPQU8_XH'),ITDPQ4(1))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPQU8_XT'),ITDPQ4(2))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPQU8_XHT'),ITDPQ4(3))
-      
+
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPTR6_XH'),ITDPT3(1))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPTR6_XT'),ITDPT3(2))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MEDPTR6_XHT'),ITDPT3(3))
@@ -186,7 +185,7 @@ C-----------------------------------------------------------------------
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XH_FACE4'),ITF4(1))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XT_FACE4'),ITF4(2))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XHT_FACE4'),ITF4(3))
-      
+
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XH_FACE3'),ITF3(1))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XT_FACE3'),ITF3(2))
       CALL JENONU(JEXNOM('&CATA.TE.NOMTE','MECA_XHT_FACE3'),ITF3(3))
@@ -202,17 +201,17 @@ C-----------------------------------------------------------------------
         DO 210 IEL=1,NBELT
           IMA=ZI(J1-1+IEL)
           JJ=JTAB-1+5*(IMA-1)
-          
+
           IF (NOTYPE.EQ.'MECA_X_HEXA20') THEN
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITYXH8(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITYXH8(2)
             IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITYXH8(3)
-            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL          
+            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL
           ELSEIF (NOTYPE.EQ.'MECA_X_PENTA15') THEN
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITYXP6(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITYXP6(2)
             IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITYXP6(3)
-            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL             
+            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL
           ELSEIF (NOTYPE.EQ.'MECA_X_TETRA10') THEN
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITYXT4(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITYXT4(2)
@@ -227,7 +226,7 @@ C-----------------------------------------------------------------------
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITCPT3(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITCPT3(2)
             IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITCPT3(3)
-            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL       
+            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL
           ELSEIF (NOTYPE.EQ.'MEDPQU8_X') THEN
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITDPQ4(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITDPQ4(2)
@@ -237,7 +236,7 @@ C-----------------------------------------------------------------------
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITDPT3(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITDPT3(2)
             IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITDPT3(3)
-            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL       
+            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL
           ELSEIF (NOTYPE.EQ.'MECA_X_FACE8') THEN
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITF4(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITF4(2)
@@ -247,7 +246,7 @@ C-----------------------------------------------------------------------
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITF3(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITF3(2)
             IF (ZI(JJ+3).EQ.1)  ZI(JJ+5)=ITF3(3)
-            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL       
+            IF (ZI(JJ+4).EQ.1)  ZI(JJ+5)=ITYPEL
           ELSE
             ZI(JJ+5)=ITYPEL
           ENDIF
@@ -257,28 +256,28 @@ C-----------------------------------------------------------------------
 
 C     ON COMPTE LE NB DE MAILLES DU LIGREL1 (= NB DE GREL DE LIEL2)
       NELT=0
-      DO 230 IMA=1,NBMA    
+      DO 230 IMA=1,NBMA
         IF (ZI(JTAB-1+5*(IMA-1)+5).NE.0) NELT=NELT+1
  230  CONTINUE
-      IF (NELT.EQ.0) CALL UTMESS('A','OP0113','AUCUNE MAILLE ENRICHIE')
+      IF (NELT.EQ.0) CALL U2MESS('A','ALGORITH9_51')
 
 C-----------------------------------------------------------------------
 C     3)  CONSTRUCTION DU .LIEL2
 C-----------------------------------------------------------------------
 
       CALL JECREC(LIEL2,'G V I','NU','CONTIG','VARIABLE',NELT)
-      CALL JEECRA(LIEL2,'LONT',2*NELT,K8BID) 
+      CALL JEECRA(LIEL2,'LONT',2*NELT,K8BID)
 
       IEL=0
       DO 300 IMA=1,NBMA
         IF (ZI(JTAB-1+5*(IMA-1)+5).EQ.0)  GOTO 300
         IEL=IEL+1
         CALL JECROC(JEXNUM(LIEL2,IEL))
-        CALL JEECRA(JEXNUM(LIEL2,IEL),'LONMAX',2,K8BID)  
+        CALL JEECRA(JEXNUM(LIEL2,IEL),'LONMAX',2,K8BID)
         CALL JEVEUO(JEXNUM(LIEL2,IEL),'E',J2)
         ZI(J2-1+1)=IMA
         ZI(J2-1+2)=ZI(JTAB-1+5*(IMA-1)+5)
- 300  CONTINUE      
+ 300  CONTINUE
 
       CALL JELIRA(LIEL2,'NUTIOC',NB1,K8BID)
       CALL ASSERT(NB1.EQ.NELT)
@@ -291,39 +290,39 @@ C-----------------------------------------------------------------------
       CALL WKVECT(MAIL2,'G V I',NBMA,JMAIL2)
       DO 400 IMA=1,NBMA
         ZI(JMAIL2-1+IMA)=ZI(JTAB-1+5*(IMA-1)+5)
- 400  CONTINUE     
-            
+ 400  CONTINUE
+
 C-----------------------------------------------------------------------
 C     5) DUPLICATION DU .NOMA, .NBNO
 C                ET DES .NEMA, .SSSA, .NOEUD S'ILS EXISTENT
 C        PUIS .NOEUD_UTIL
-C        PUIS .REPE, .PRNM ET .PRNS AVEC CALL ADALIG CORMGI ET INITEL 
+C        PUIS .REPE, .PRNM ET .PRNS AVEC CALL ADALIG CORMGI ET INITEL
 C-----------------------------------------------------------------------
 
       CALL JEDUPO(LIGR1//'.NOMA','G',LIGR2//'.NOMA',.FALSE.)
       CALL JEDUPO(LIGR1//'.NBNO','G',LIGR2//'.NBNO',.FALSE.)
 
-      CALL JEEXIN(LIGR1//'.NEMA',IRET)      
+      CALL JEEXIN(LIGR1//'.NEMA',IRET)
       IF (IRET.EQ.1) THEN
-        CALL JEDUPO(LIGR1//'.NEMA','G',LIGR2//'.NEMA',.FALSE.)        
+        CALL JEDUPO(LIGR1//'.NEMA','G',LIGR2//'.NEMA',.FALSE.)
       ENDIF
       CALL JEEXIN(MOD1//'.SSSA',IRET)
       IF (IRET.EQ.1) THEN
-        CALL JEDUPO(MOD1//'.SSSA','G',MOD2//'.SSSA',.FALSE.)        
+        CALL JEDUPO(MOD1//'.SSSA','G',MOD2//'.SSSA',.FALSE.)
       ENDIF
       CALL JEEXIN(MOD1//'.NOEUD',IRET)
       IF (IRET.EQ.1) THEN
-        CALL JEDUPO(MOD1//'.NOEUD','G',MOD2//'.NOEUD',.FALSE.)        
+        CALL JEDUPO(MOD1//'.NOEUD','G',MOD2//'.NOEUD',.FALSE.)
       ENDIF
-      
+
       CALL ADALIG(LIGR2)
       CALL CORMGI('G',LIGR2)
 
-C     --- CREATION DE L'OBJET .NOEUD_UTIL :     
+C     --- CREATION DE L'OBJET .NOEUD_UTIL :
       CALL DISMOI('F','NB_NO_MAILLA',MOD2,'MODELE',NBNOEU,K8BID,IBID)
       CALL WKVECT(MOD2//'.NOEUD_UTIL','G V I',NBNOEU,JNOUT)
       CALL DISMOI('F','NB_MA_MAILLA',MOD2,'MODELE',NBMAIL,K8BID,IBID)
-      IF (NBMAIL .EQ. 0) GOTO 520 
+      IF (NBMAIL .EQ. 0) GOTO 520
       CALL JEVEUO(NOMA//'.CONNEX','L',ICONX1)
       CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ICONX2)
       CALL JEVEUO(MAIL2,'L',JDMA)
@@ -344,7 +343,7 @@ C         ET VERIFICATION DES CRITERES DE CONDITIONNEMENT
 C-----------------------------------------------------------------------
 
 C     CALCUL DES DONNÉS UTILES POUR L'INTÉGRATION (SOUS-TÉTRAS...)
-      CALL XTOPOI(MOD2,FISS)  
+      CALL XTOPOI(MOD2,FISS)
 C      CALL IMPRSD('CHAMP',FISS//'.TOPOSE.PINTTO',6,'PPINTTO')
 C      CALL IMPRSD('CHAMP',FISS//'.TOPOSE.CNSETO',6,'PCNSETO')
 C      CALL IMPRSD('CHAMP',FISS//'.TOPOSE.HEAVTO',6,'PHEAVTO' )

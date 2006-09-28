@@ -24,7 +24,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,6 @@ C
       CALL WKVECT('&&IRGMCG.CESV','V V I',NBORD2,JTABV)
       CALL WKVECT('&&IRGMCG.CESL','V V I',NBORD2,JTABL)
       CALL WKVECT('&&IRGMCG.TYPE','V V K8',NBORD2,JTYPE)
-     
 
       NBCMP = 0
 
@@ -133,13 +132,12 @@ C
         NOMGD = ZK8(JCESK-1+2)
         CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
         IF (TSCA.NE.'R') THEN
-          CALL UTMESS('F','IRGMCG','ON IMPRIME QUE DES CHAMPS REELS')
+          CALL U2MESS('F','ALGORITH2_63')
         END IF
 
         TYPE = ZK8(JCESK-1+3)
         IF (TYPE(1:4).NE.'ELGA' .AND. TYPE(1:4).NE.'ELEM') THEN
-          CALL UTMESS('F','IRGMCG','ON IMPRIME QUE DES CHAMPS '//
-     +                             '"ELGA" OU "ELEM"')
+          CALL U2MESS('F','PREPOST2_56')
         END IF
 
         IF (IOR.EQ.1) THEN
@@ -168,7 +166,7 @@ C
    50     CONTINUE
         ELSE
           IF (ZI(ZI(JTABD+IOR-1)-1+2).NE.NBCMP) THEN
-            CALL UTMESS('F','IRGMCG','NBCMP DIFFERENT')
+            CALL U2MESS('F','PREPOST2_53')
           END IF
         END IF
 
@@ -201,7 +199,7 @@ C     *************************************************
             END IF
    70     CONTINUE
           K8B = NOMCMP(K)
-          CALL UTMESS('F','IRGNCG','COMPOSANTE INCONNUE'//K8B)
+          CALL U2MESK('F','PREPOST2_54',1,K8B)
    80     CONTINUE
         ELSE
           ICMP = K

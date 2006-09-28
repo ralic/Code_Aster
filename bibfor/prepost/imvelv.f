@@ -1,22 +1,22 @@
       SUBROUTINE IMVELV ( IFM, NOMSDZ, NBCMP, LISCMZ,
-     +                    NBELEM, LISMAZ, NBCHIF )
+     &                    NBELEM, LISMAZ, NBCHIF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C.======================================================================
@@ -165,7 +165,7 @@ C     -------------------------------------
 C
       FORVAR = '1PD'//KLVALR//'.'//KNBCH
       FORVAC = '"("'//'1PD'//KLVALR//'.'//KNBCH//'","'//
-     +                '1PD'//KLVALR//'.'//KNBCH//'")"'
+     &                '1PD'//KLVALR//'.'//KNBCH//'")"'
 C
 C --- FORMAT D'ECRITURE D'UNE LIGNE :
 C     -----------------------------
@@ -223,7 +223,7 @@ C
 C ---   NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR :
 C       ---------------------------------------------
          CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'LONMAX',NCMPMX,
-     +               K1BID)
+     &               K1BID)
          CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',INOCMP)
 C
 C ---   TYPE (REEL OU COMPLEXE) ASSOCIE AUX VALEURS DU RESU_ELEM :
@@ -289,7 +289,7 @@ C       ----------------------------------------------------
          FORM1 = '('//'//,2X,'//KLONLG//'("_")'//')'
          FORM3 = '(2X,'//KLONLG//'("_")'//',//'//')'
          FORM2 = '(2X,'//'"!",X,"LIGREL : "A'//KLONLS//
-     +           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
+     &           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
 C
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU LIGREL :
 C       ------------------------------------------
@@ -500,7 +500,7 @@ C
                IF (.NOT.IMPLIG(NOMCM1,NBCMP,ZK8(IDLICM))) GOTO 140
 C
                WRITE(IFM,FORMAV) NOMAIL,SLACH,NOMNO1,SLACH,
-     +                      NOMCM1,ZR(IDRESL+NCMPEL*(IEL-1)+I-1)
+     &                      NOMCM1,ZR(IDRESL+NCMPEL*(IEL-1)+I-1)
 
  140         CONTINUE
  80         CONTINUE
@@ -566,7 +566,7 @@ C       ----------------------------------------------------
          FORM1 = '('//'//,2X,'//KLONLG//'("_")'//')'
          FORM3 = '(2X,'//KLONLG//'("_")'//',//'//')'
          FORM2 = '(2X,'//'"!",X,"LIGREL : "A'//KLONLS//
-     +           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
+     &           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
 C
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU LIGREL :
 C       ------------------------------------------
@@ -777,7 +777,7 @@ C
                IF (.NOT.IMPLIG(NOMCM1,NBCMP,ZK8(IDLICM))) GOTO 270
 C
                WRITE(IFM,FORMAC) NOMAIL,SLACH,NOMNO1,SLACH,
-     +                      NOMCM1,ZC(IDRESL+NCMPEL*(IEL-1)+I-1)
+     &                      NOMCM1,ZC(IDRESL+NCMPEL*(IEL-1)+I-1)
 
  270         CONTINUE
  210        CONTINUE
@@ -785,10 +785,7 @@ C
  150     CONTINUE
          CALL JEDETC('V','&&IMVELV1',1)
         ELSE
-          CALL UTMESS('F','IMVELV','LES SEULS TYPES DE VALEURS ACCEPTES'
-     +                //' POUR LES RESU_ELEM SONT LES REELS ET LES'
-     +                //' COMPLEXES, LE DESCRIPTEUR DE TYPE '//TYPVAL
-     +                //' EST INADEQUAT.')
+          CALL U2MESK('F','PREPOST_63',1,TYPVAL)
         ENDIF
  10   CONTINUE
 C

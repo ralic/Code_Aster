@@ -5,7 +5,7 @@
      &                  TM, TP, TREF,
      &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,8 +94,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
           COM1D=.TRUE.
           IF ((COMPOR(5)(1:7).NE.'DEBORST').AND.
      &        (COMPOR(1)(1:4).NE.'SANS')) THEN
-                CALL UTMESS('F','NMCO1D','UTILISER ALGO_1D="DEBORST"'//
-     &              ' SOUS COMP_INCR POUR LE COMPORTEMENT '//COMPOR(1))
+                CALL U2MESK('F','ALGORITH6_81',1,COMPOR(1))
           ENDIF
       ENDIF
 

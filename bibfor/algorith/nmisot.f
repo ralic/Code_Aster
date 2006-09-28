@@ -3,7 +3,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,8 +127,7 @@ C
 C
       IF (.NOT.( COMPOR(1)(1:4) .EQ. 'ELAS'.OR.
      &     COMPOR(1)(1:9) .EQ. 'VMIS_ISOT' )) THEN
-            CALL UTMESS('F','NMISOT_01',
-     &           ' COMPORTEMENT INATTENDU : '//COMPOR(1))
+            CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
@@ -153,26 +152,26 @@ C
 C
       IF (COMPOR(1)(1:14) .EQ. 'VMIS_ISOT_TRAC' ) THEN
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
-     +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NUM = VALRES(2)
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
-     +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAM = VALRES(3)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
-     +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
-     +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAP = VALRES(3)
       ELSE
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
-     +                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
          EM  = VALRES(1)
          NUM = VALRES(2)
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
-     +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAM = VALRES(3)
          DEUMUM = EM/(1.D0+NUM)
@@ -182,9 +181,9 @@ C
            TROIKM = EM/(1.D0-2.D0*NUM)
          ENDIF
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
-     +                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
-     +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          E      = VALRES(1)
          NU     = VALRES(2)
@@ -203,22 +202,22 @@ C
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
+     &            NOMRES(1),VALRES(1),CODRET(1), BL2 )
       IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
       BENDOM = VALRES(1)
 C
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,1,
-     +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
+     &            NOMRES(1),VALRES(1),CODRET(1), BL2 )
       IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
       BENDOP = VALRES(1)
 C
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
+     &            NOMRES(2),VALRES(2),CODRET(2), BL2 )
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
       KDESSM = VALRES(2)
 C
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,1,
-     +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
+     &            NOMRES(2),VALRES(2),CODRET(2), BL2 )
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
       KDESSP = VALRES(2)
 C
@@ -286,7 +285,7 @@ C     --------------------------------
      &     - BENDOP*HYDRP        + BENDOM*HYDRM
      &     - KDESSP*(SREF-SECHP) + KDESSM*(SREF-SECHM)
       IF (CPLAN) DEPS(3)=-NU/(1.D0-NU)*(DEPS(1)+DEPS(2))
-     +                +(1.D0+NU)/(1.D0-NU)*COEF
+     &                +(1.D0+NU)/(1.D0-NU)*COEF
       DEPSMO = 0.D0
       DO 110 K=1,3
         DEPSTH(K)   = DEPS(K) -COEF
@@ -443,7 +442,7 @@ C
             IF(PLASTI.AND.SIGEPS.GE.0.D0) THEN
               A = 1.D0+1.5D0*DEUXMU*DP/RP
               COEF = -  (1.5D0 * DEUXMU)**2/(1.5D0*DEUXMU+RPRIM)/RP**2
-     +               *(1.D0 - DP*RPRIM/RP )/A
+     &               *(1.D0 - DP*RPRIM/RP )/A
               DO 135 K=1,NDIMSI
                 DO 135 L=1,NDIMSI
                   DSIDEP(K,L) =  COEF*SIGDV(K)*SIGDV(L)
@@ -469,7 +468,7 @@ C       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
             DO 137 L=1,NDIMSI
               IF (L.EQ.3) GO TO 137
               DSIDEP(K,L)=DSIDEP(K,L)
-     +          - 1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
+     &          - 1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
  137        CONTINUE
  136      CONTINUE
         ENDIF

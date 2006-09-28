@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,12 +107,12 @@ C     ------------------------------------------------------------------
       PARAMETER (NPDYHA=5)
       CHARACTER*16 PADYHA(NPDYHA)
 C     ------------------------------------------------------------------
-C                          M U L T _ E L A S 
+C                          M U L T _ E L A S
 C     ------------------------------------------------------------------
       PARAMETER (NPMUEL=5)
       CHARACTER*16 PAMUEL(NPMUEL)
 C     ------------------------------------------------------------------
-C                          A C O U _ H A R M O 
+C                          A C O U _ H A R M O
 C     ------------------------------------------------------------------
       PARAMETER (NPACHA=5)
       CHARACTER*16 PAACHA(NPACHA)
@@ -603,12 +603,12 @@ C     ------------------------------------------------------------------
         GO TO 310
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYPES2.EQ.'MODE_MECA'     .OR. 
+      ELSE IF (TYPES2.EQ.'MODE_MECA'     .OR.
      &         TYPES2.EQ.'MODE_MECA_C'   .OR.
-     &         TYPES2.EQ.'MODE_GENE'     .OR. 
-     &         TYPES2(1:9).EQ.'MODE_STAT'.OR. 
-     &         TYPES2.EQ.'MODE_ACOU'     .OR. 
-     &         TYPES2.EQ.'DYNAMIQUE'     .OR. 
+     &         TYPES2.EQ.'MODE_GENE'     .OR.
+     &         TYPES2(1:9).EQ.'MODE_STAT'.OR.
+     &         TYPES2.EQ.'MODE_ACOU'     .OR.
+     &         TYPES2.EQ.'DYNAMIQUE'     .OR.
      &         TYPES2.EQ.'BASE_MODALE'  ) THEN
 
 
@@ -708,7 +708,7 @@ C     ------------------------------------------------------------------
         NBCHAM = NBCHAM + NCTHER-3
         CALL JEECRA(NOMS2//'.DESC','NOMMAX',NBCHAM,' ')
         CALL JEECRA(NOMS2//'.DESC','DOCU',IBID,'COFO')
-        DO 270 I = 1,NCMECA 
+        DO 270 I = 1,NCMECA
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
   270   CONTINUE
         DO 271 I = 1,NCTHER-3
@@ -739,7 +739,7 @@ C     ------------------------------------------------------------------
         GO TO 310
 
       ELSE
-        CALL UTMESS('F','RSCRSD','TYPE_RESULTAT INCONNU :'//TYPES2)
+        CALL U2MESK('F','UTILITAI4_31',1,TYPES2)
       END IF
 
 C     ------------------------------------------------------------------

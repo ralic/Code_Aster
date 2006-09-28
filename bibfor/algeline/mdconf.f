@@ -4,22 +4,22 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C DESCRIPTION : CALCUL DES PARAMETRES DE COUPLAGE FLUIDE-STRUCTURE POUR
@@ -174,7 +174,7 @@ C
 C
 C ---    BOUCLE SUR LES ZONES D EXCITATION DU FLUIDE
 C
-         
+
          DO 60 NUZO = 1,NZEX
             PVITE = ZK8(IFSVK+3+NUZO)
             IRESZO = ZI(IFSVI+1+NUZO)
@@ -196,13 +196,11 @@ C
                ENDIF
   30        CONTINUE
   31        CONTINUE
-C            
+C
             ZI(IZONE + 2*(NUZO-1)-1+2) = N1
-            ZI(IZONE + 2*(NUZO-1)-1+3) = N2                         
+            ZI(IZONE + 2*(NUZO-1)-1+3) = N2
             IF(N1.EQ.N2) THEN
-                  CALL UTMESS('F','MDCONF','LA ZONE D EXCITATION'//
-     &            ' DU FLUIDE, DE NOM ' // ZK8(IFSVK+3+NUZO) //
-     &            ', EST REDUITE A UN POINT.' )
+                  CALL U2MESK('F','ALGELINE_68',1,ZK8(IFSVK+3+NUZO))
             ENDIF
 C
             AIRE = 0.D0
@@ -218,9 +216,7 @@ C
             ALONTO = ALONTO + (X2-X1)
             DO 50 IK = N1,N2
                IF(VECI1(IK).NE.0) THEN
-                  CALL UTMESS('F','MDCONF','LA ZONE D EXCITATION DU ' //
-     &                 'FLUIDE, DE NOM ' // ZK8(IFSVK+3+NUZO) //
-     &                 ', RECOUPE UNE AUTRE ZONE.' )
+                  CALL U2MESK('F','ALGELINE_69',1,ZK8(IFSVK+3+NUZO))
                ENDIF
                VECR1(IK+LNOE) = VMOY
                VECI1(IK) = IRESZO
@@ -272,7 +268,7 @@ C
         IF(IIMPR.EQ.1) THEN
       IPAS = ZI(IFSVI)
       CALL UTDEBM('I',
-     +'----------------------------------------------',' ')
+     &'----------------------------------------------',' ')
       CALL UTIMPI('L','! LE NB DE NOEUDS DE LA STRUCTURE: ',1,LNOE)
       CALL UTIMPK('L','! LA BASE UTILISEE EST           : ',1,BASE)
       CALL UTIMPK('L','! LES CARACTERISTIQUES ELEMTAIRES: ',1,
@@ -280,14 +276,14 @@ C
       CALL UTIMPR('L','! DIAMETRE DE LA STRUCTURE       : ',1,PHIE)
       CALL UTIMPI('L','! TYPE DE PAS                    : ',1,IPAS)
       CALL UTIMPK('L',
-     +'----------------------------------------------',0,' ')
+     &'----------------------------------------------',0,' ')
       DO 170 NUZO = 1,NZEX
       CALL UTIMPK('L','! LE PROFIL DE VITESSE DE LA ZONE: ',1,
      &            ZK8(IFSVK+NUZO+3))
       CALL UTIMPI('L','!   TYPE DE RESEAU DE LA ZONE    : ',1,
      &            ZI(IFSVI+NUZO+1))
       CALL UTIMPK('L',
-     +'----------------------------------------------',0,' ')
+     &'----------------------------------------------',0,' ')
  170  CONTINUE
       CALL UTFINM()
         ENDIF
@@ -333,18 +329,13 @@ C
 C ---    3.3.DIAMETRE EXTERIEUR DU TUBE         --> VECTEUR VECR4  ---
 C
          CALL EXMANO(NOMA,NUMNO0,ZI(IMAIL),NBMANO)
-         IF (NBMANO.NE.2) CALL UTMESS('F','MDCONF','LE NOEUD '//
-     &     'D APPLICATION DE L EXCITATION DOIT APPARTENIR A DEUX '//
-     &     'MAILLES, NI PLUS NI MOINS')
+         IF (NBMANO.NE.2) CALL U2MESS('F','ALGELINE_70')
 C
          CALL DEELPO(CAELEM(1:8),NOMA,ZI(IMAIL)  ,PHI1)
          CALL DEELPO(CAELEM(1:8),NOMA,ZI(IMAIL+1),PHI2)
          DIFPHI = DBLE(ABS(PHI1-PHI2))
          IF (DIFPHI.GT.PHI1*TOLR) THEN
-           CALL UTMESS('F','MDCONF','LE NOEUD D APPLICATION DE '//
-     &      'L EXCITATION EST SITUE A LA JONCTION DE DEUX ELEMENTS '//
-     &      'DE DIAMETRES EXTERIEURS DIFFERENTS => AMBIGUITE POUR LE '//
-     &      'DIMENSIONNEMENT DE L EXCITATION')
+           CALL U2MESS('F','ALGELINE_71')
          ELSE
             PHIE = PHI1
          ENDIF
@@ -452,7 +443,7 @@ C ---   2.6.IMPRESSION  ---
 C
         IF(IIMPR.EQ.1) THEN
       CALL UTDEBM('I',
-     +'----------------------------------------------',' ')
+     &'----------------------------------------------',' ')
       CALL UTIMPK('L','! LE NOEUD D APPLICATION         : ',1,NOMNO0)
       CALL UTIMPK('L','! LA BASE UTILISEE EST           : ',1,BASE)
       CALL UTIMPK('L','! LES CARACTERISTIQUES ELEMTAIRES: ',1,
@@ -463,7 +454,7 @@ C
       CALL UTIMPR('L','! LE COEFFICIENT DE MASSE AJOUTEE: ',1,CM1)
       CALL UTIMPR('L','! LE PROFIL DE MASSE VOLUMIQUE   : ',1,RHOF)
       CALL UTIMPK('L',
-     +'----------------------------------------------',0,' ')
+     &'----------------------------------------------',0,' ')
       CALL UTFINM()
         ENDIF
 C
@@ -474,11 +465,11 @@ C ---  PAS DE COUPLAGE
 C
         IF(IIMPR.EQ.1) THEN
       CALL UTDEBM('I',
-     +'----------------------------------------------',' ')
+     &'----------------------------------------------',' ')
       CALL UTIMPK('L',
-     +'  PAS DE COUPLAGE PRIS EN COMPTE              ',0,' ')
+     &'  PAS DE COUPLAGE PRIS EN COMPTE              ',0,' ')
       CALL UTIMPK('L',
-     +'----------------------------------------------',0,' ')
+     &'----------------------------------------------',0,' ')
       CALL UTFINM()
         ENDIF
 C
@@ -488,7 +479,7 @@ C --- 4.AUTRES CONFIGURATIONS NON TRAITEES  ---
 C
       ELSE
 C
-         CALL UTMESS('S','MDCONF','AUTRES CONFIGURATIONS NON TRAITEES')
+         CALL U2MESS('S','ALGELINE_72')
 C
       ENDIF
 C

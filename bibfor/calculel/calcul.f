@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 03/04/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,7 @@ C       ALLOCATION ET CALCUL DES OBJETS CORRESPONDANT AUX CHAMPS "OUT"
 
 C ----------------------------------------------------------------------
       LOGICAL      LFETI,LFETIC
-      CHARACTER*24 K24B,INFOFE
+      CHARACTER*24 K24B,INFOFE,VALK(2)
       REAL*8       RBID,TEMPS(6)
       CHARACTER*19 LCHIN2(NIN),LCHOU2(NOU)
       CHARACTER*8 LPAIN2(NIN),LPAOU2(NOU),K8BID
@@ -123,12 +123,12 @@ C DEB-------------------------------------------------------------------
       OPTION = OPTIO
       CALL INFNIV(IFM,NIV)
 
-C    POUR SAVOIR SI SOLVEUR FETI PARALLELE OU NON. SI C'EST LE CAS 
+C    POUR SAVOIR SI SOLVEUR FETI PARALLELE OU NON. SI C'EST LE CAS
 C    ON TARIT LE VOLUME DE DONNEES AVEC LES LIGRELS DE MODELE
 C    CAR POUR LES LIGRELS DE CHARGE, ON NE PEUT PAS LE FAIRE FACILEMENT
 C    A MOINS DE REMPLACER LE LIGREL INPUT GLOBAL PAR UN LIGREL PROJETE
 C    LOCAL.
-C    ON NE TRAITE PAS L'OPTION DE CALCUL ELEMENTAIRE SERVANT A 
+C    ON NE TRAITE PAS L'OPTION DE CALCUL ELEMENTAIRE SERVANT A
 C    DIMENSIONNER DES VECTEURS VARI_R, NSPG_NBVA, CAR ON A BESOIN, PROC
 C    PAR PROC, DE RESU_ELEM DIMENSIONNES GLOBALEMENT MEME SI ILS SONT
 C    REMPLIS QUE PARTIELLEMENT
@@ -171,8 +171,7 @@ C     -----------------------------------------------------------------
       CALL JEVEUO('&CATA.TE.TYPEMA','L',JTYPMA)
       CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTION),OPT)
       IF (OPT.LE.0) THEN
-        CALL UTMESS('F','CALCUL','OPTION INCONNUE AU CATALOGUE : '//
-     &              OPTION)
+        CALL U2MESK('F','CALCULEL_29',1,OPTION)
       END IF
 
 C     -- POUR SAVOIR L'UNITE LOGIQUE OU ECRIRE LE FICHIER ".CODE" :
@@ -192,28 +191,23 @@ C     -------------------------------------------------------------
 
 C        -- SI LE NUMERO DU TEOOIJ EST NEGATIF :
         IF (NUMC.LT.0) THEN
+          VALK(1)=NOMTE
+          VALK(2)=OPTION
           IF (NUMC.EQ.-1) THEN
-            IER = IER + 1
-            CALL UTMESS('F','CALCUL',' LE TYPE_ELEMENT: '//NOMTE//
-     &                  ' NE SAIT PAS ENCORE '//'CALCULER L''OPTION: '//
-     &                  OPTION//'. ON ARRETE TOUT.')
+            CALL U2MESK('F','CALCULEL_30', 2 ,VALK)
           ELSE IF (NUMC.EQ.-2) THEN
-            CALL UTMESS('A','CALCUL',' LE TYPE_ELEMENT: '//NOMTE//
-     &                  ' NE SAIT PAS ENCORE '//'CALCULER L''OPTION: '//
-     &                  OPTION//'.')
+            CALL U2MESK('A','CALCULEL_30', 2 ,VALK)
           ELSE
-            CALL UTMESS('F','CALCUL','VALEUR INTERDITE')
+            CALL U2MESS('F','CALCULEL_32')
           END IF
         END IF
 
         AFAIRE = MAX(AFAIRE,NUMC)
    20 CONTINUE
-      IF (IER.GT.0) CALL UTMESS('F','CALCUL','1')
+      IF (IER.GT.0) CALL U2MESS('F','CALCULEL_33')
       IF (AFAIRE.EQ.0) THEN
         IF (STOP.EQ.'S') THEN
-          CALL UTMESS('F','CALCUL','LE CALCUL DE L''OPTION : '//OPTION//
-     &              ' N''EST POSSIBLE POUR AUCUN DES TYPES D''ELEMENTS '
-     &                //' DU LIGREL.')
+          CALL U2MESK('F','CALCULEL_34',1,OPTION)
         ELSE
           GO TO 120
         END IF
@@ -225,9 +219,7 @@ C     2- ON REND PROPRES LES LISTES : LPAIN,LCHIN,LPAOU,LCHOU :
 C        EN NE GARDANT QUE LES PARAMETRES DU CATALOGUE DE L'OPTION
 C        QUI SERVENT A AU MOINS UN TYPE_ELEMENT
 C     ---------------------------------------------------------
-      IF (NIN.GT.80) CALL UTMESS('F','CALCUL',
-     &                        'ERREUR PROGRAMMEUR : TROP DE CHAMPS "IN"'
-     &                           )
+      IF (NIN.GT.80) CALL U2MESS('F','CALCULEL_35')
       NIN3 = ZI(IAOPDS-1+2)
       NOU3 = ZI(IAOPDS-1+3)
 
@@ -293,7 +285,7 @@ C     5- BOUCLE SUR LES GREL :
 C     -------------------------------------------------
       NGREL = NBGREL(LIGREL)
       DO 80 IGR = 1,NGREL
-        
+
         NUTE = TYPELE(LIGREL,IGR)
         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTE),NOMTE)
         NOMTM = ZK8(JTYPMA-1+NUTE)
@@ -309,13 +301,13 @@ C     -------------------------------------------------
         END IF
         NBELGR = NBELEM(LIGREL,IGR)
         NUMC = NUCALC(OPT,NUTE)
-        IF (NUMC.LT.-10) CALL UTMESS('F','CALCUL','STOP 1')
-        IF (NUMC.GT.9999) CALL UTMESS('F','CALCUL','STOP 2')
-        
+        IF (NUMC.LT.-10) CALL U2MESS('F','CALCULEL_2')
+        IF (NUMC.GT.9999) CALL U2MESS('F','CALCULEL_8')
+
         IF (NUMC.GT.0) THEN
 
-C       -- SI FETI PARALLELE, ON VA REMPLIR LE VECTEUR AUXILIAIRE 
-C       -- '&CALCUL.FETI.NUMSD' 
+C       -- SI FETI PARALLELE, ON VA REMPLIR LE VECTEUR AUXILIAIRE
+C       -- '&CALCUL.FETI.NUMSD'
           IF (LFETI) THEN
             CALL WKVECT('&CALCUL.FETI.NUMSD','V V L',NBELGR,IFETI2)
             IFETI2=IFETI2-1

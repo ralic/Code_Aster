@@ -3,7 +3,7 @@
       CHARACTER*(*)     CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C     ---------------------------------------------------------
         CALL WKVECT(CHARGE//'.CARA_TORSION','V V R',NG,IDCARA)
         CALL WKVECT('&&CATORS.GRMA','V V K8',NG,IDGRMA)
         CALL GETVEM(NOMA,'GROUP_MA',MOTFAC,'GROUP_MA',1,1,NG,
-     +                                            ZK8(IDGRMA),NGR)
+     &                                            ZK8(IDGRMA),NGR)
 C
 C ---   RECUPERATION DES COORDONNEES X_MIN ET Y_MIN DU MAILLAGE :
 C       -------------------------------------------------------
@@ -113,29 +113,25 @@ C       -------------------------------------------------------
           CALL LTNOTB ( NOMA , 'CARA_GEOM' , NOMT19 )
           NBPAR = 0
           CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8BID,
-     +                 K8BID,R8B , 'AR_MIN', K8BID, IBID, ARMIN, C16B,
-     +                 K8BID, IRET2 )
+     &                 K8BID,R8B , 'AR_MIN', K8BID, IBID, ARMIN, C16B,
+     &                 K8BID, IRET2 )
           IF ( IRET2 .EQ. 0 ) THEN
              PREC = ARMIN*1.D-06
           ELSEIF ( IRET2 .EQ. 1 ) THEN
              PREC = 1.D-10
           ELSE
-             CALL UTMESS('F','CATORS',
-     + 'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+             CALL U2MESS('F','MODELISA2_13')
           ENDIF
           CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8BID,
-     +                 K8BID,R8B , 'X_MIN', K8BID, IBID, XMIN, C16B,
-     +                K8BID, IRET2 )
-          IF ( IRET2 .NE. 0 ) CALL UTMESS('F','CATORS',
-     +'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+     &                 K8BID,R8B , 'X_MIN', K8BID, IBID, XMIN, C16B,
+     &                K8BID, IRET2 )
+          IF ( IRET2 .NE. 0 ) CALL U2MESS('F','MODELISA2_13')
           CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8BID,
-     +                 K8BID,R8B, 'Y_MIN', K8BID, IBID, YMIN, C16B,
-     +                K8BID, IRET2 )
-          IF ( IRET2 .NE. 0 ) CALL UTMESS('F','CATORS',
-     +'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+     &                 K8BID,R8B, 'Y_MIN', K8BID, IBID, YMIN, C16B,
+     &                K8BID, IRET2 )
+          IF ( IRET2 .NE. 0 ) CALL U2MESS('F','MODELISA2_13')
         ELSE
-          CALL UTMESS('F','CATORS',
-     +           'LA TABLE "CARA_GEOM" N''EXISTE PAS DANS LE MAILLAGE')
+          CALL U2MESS('F','MODELISA3_18')
         ENDIF
 C
 C ---   CALCUL POUR CHAQUE GROUP_MA CONSTITUANT UN BORD DE
@@ -150,18 +146,18 @@ C
 C ---     RECUPERATION DES MAILLES DU GROUP_MA :
 C         ------------------------------------
           CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',ZK8(IDGRMA+IGR-1)),
-     +                                                        'L',JGRO)
+     &                                                        'L',JGRO)
 C
 C ---     RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
 C         ---------------------------------------------
           CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',ZK8(IDGRMA+IGR-1)),
-     +                                        'LONMAX',NBMAIL,K1BID)
+     &                                        'LONMAX',NBMAIL,K1BID)
 C
 C ---     REORIENTATION DES MAILLES DU GROUP_MA :
 C         -------------------------------------
           NORIEN = 0
           CALL ORILMA (  NOMA, NDIM, ZI(JGRO), NBMAIL, NORIEN, NTRAIT,
-     +                  .TRUE., PREC )
+     &                  .TRUE., PREC )
 C
           NBMA = NBMA + NBMAIL
 C
@@ -182,7 +178,7 @@ C
 C ---       NOMBRE DE CONNECTIVITES DE LA MAILLE :
 C           ------------------------------------
             CALL JELIRA(JEXNUM(NOMA//'.CONNEX',NUMA),'LONMAX',NBNO,
-     +                  K1BID)
+     &                  K1BID)
 C
 C ---       RECUPERATION DES CONNECTIVITES DE LA MAILLE :
 C           -------------------------------------------
@@ -253,7 +249,7 @@ C
         IF (ICMP.NE.0) THEN
           DO 40 IGR = 1, NGR
             CALL NOCART(CARFLU,2,ZK8(IDGRMA+IGR-1),'NOM',0,' ',0,
-     +                  LIGRMO,ICMP)
+     &                  LIGRMO,ICMP)
   40      CONTINUE
         ENDIF
 C

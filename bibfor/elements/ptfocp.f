@@ -1,5 +1,5 @@
       SUBROUTINE PTFOCP(ITYPE,OPTION,NOMTE,XL,RAD,ANGS2,
-     +                  NNO,NC,PGL,PGL1,PGL2, FER, FEI )
+     &                  NNO,NC,PGL,PGL1,PGL2, FER, FEI )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           ITYPE
       CHARACTER*(*)           OPTION,NOMTE
@@ -7,7 +7,7 @@
       REAL*8                               XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,8 +90,7 @@ C         --- FORCE POUTRE A VALEURS COMPLEXES ---
             QI(I+6) =  QI(I)
             XXX    =  ABS( DBLE( ZC(LFORC-1+3+I) ) )
             IF (XXX .GT. 1.D-20) THEN
-               CALL UTMESS('F','ELEMENTS DE POUTRE (PTFOCP)',
-     +                         'ON NE TRAITE PAS LES MOMENTS')
+               CALL U2MESS('F','ELEMENTS2_46')
             ENDIF
  30      CONTINUE
 C
@@ -162,8 +161,7 @@ C        ---A CAUSE DES CHARGEMENTS VARIABLES ---
 C
       ELSE
          CH16 = OPTION
-         CALL UTMESS('F','ELEMENTS DE POUTRE (PTFORP)',
-     +                           'L''OPTION "'//CH16//'" EST INCONNUE')
+         CALL U2MESK('F','ELEMENTS2_47',1,CH16)
       ENDIF
 C *********************************************************************
 C
@@ -188,8 +186,8 @@ C
       ENDIF
 C
       CALL PTFOP1 ( ITYPE, COEF1, COEF2, XL, RAD, ANGS2, GLOBAL,
-     +                     QQR, FER )
+     &                     QQR, FER )
       CALL PTFOP1 ( ITYPE, COEF1, COEF2, XL, RAD, ANGS2, GLOBAL,
-     +                     QQI, FEI )
+     &                     QQI, FEI )
 C
       END

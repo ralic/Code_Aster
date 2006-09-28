@@ -1,5 +1,5 @@
       SUBROUTINE AFFBAR(TMP,TMPF,FCX,NOMMAI,
-     +                  ISEC,CAR,VAL,EXP,NBO,KIOC,IER)
+     &                  ISEC,CAR,VAL,EXP,NBO,KIOC,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                      ISEC,            NBO,     IER
       REAL*8                                VAL(*)
@@ -8,22 +8,22 @@
       CHARACTER*24      TMP,TMPF
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     VERIFICATION DE LA BONNE AFFECTATION DES SECTIONS DE BARRE :
@@ -76,8 +76,9 @@ C --- TESTS D ECRASEMENT DE SECTION
          IISEC = NINT(ZR(JDGE+NBO-1))
          IF (IISEC.NE.ISEC) THEN
             CALL UTMESS('A',CMD,'OCCURENCE '//KIOC//'DE "BARRE" ('//
-     +                             'MAILLE '//NOMMAI//') ECRASEMENT '//
-     +                'D UN TYPE DE GEOMETRIE DE SECTION PAR UN AUTRE')
+     &                             'MAILLE '//NOMMAI//') ECRASEMENT '//
+     &                'D UN TYPE DE GEOMETRIE DE SECTION PAR UN AUTRE')
+C        CALL U2MESK('A','MODELISA_69', 2 ,VALK)
             IER = IER + 1
             GOTO 9999
          ENDIF
@@ -138,15 +139,17 @@ C --- COMPLETUDE DES DONNES GENERALES
       IF (ISEC.EQ.0) THEN
          IF (ZR(JDGE).EQ.TST) THEN
             CALL UTMESS('A',CMD,'BARRE'//
-     +                    ' : MAILLE '//NOMMAI//' : SECTION GENERALE'//
-     +                      ' : IL MANQUE LA CARACTERISTIQUE '//EXP(1))
+     &                    ' : MAILLE '//NOMMAI//' : SECTION GENERALE'//
+     &                      ' : IL MANQUE LA CARACTERISTIQUE '//EXP(1))
+C        CALL U2MESK('A','MODELISA_70', 2 ,VALK)
             IER = IER + 1
          ENDIF
          IF (ZR(JDGE).LE.ZERO) THEN
             CALL UTMESS('A',CMD,'BARRE'//
-     +                    ' : MAILLE '//NOMMAI//' : SECTION GENERALE'//
-     +                            ' : LA VALEUR DE '//EXP(1)//' DOIT'//
-     +                                  ' ETRE  STRICTEMENT POSITIVE.')
+     &                    ' : MAILLE '//NOMMAI//' : SECTION GENERALE'//
+     &                            ' : LA VALEUR DE '//EXP(1)//' DOIT'//
+     &                                  ' ETRE  STRICTEMENT POSITIVE.')
+C        CALL U2MESK('A','MODELISA_71', 2 ,VALK)
             IER = IER + 1
          ENDIF
 C
@@ -155,15 +158,17 @@ C --- COMPLETUDE DES DONNES GEOMETRIQUES RECTANGLE
          DO 40 J = 1 , 2
             IF (ZR(JDGE+J).EQ.TST) THEN
                CALL UTMESS('A',CMD,'BARRE'//
-     +                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
-     +                   ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(1+J))
+     &                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
+     &                   ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(1+J))
+C        CALL U2MESK('A','MODELISA_72', 2 ,VALK)
                IER = IER + 1
             ENDIF
             IF (ZR(JDGE+J).LE.ZERO) THEN
                CALL UTMESS('A',CMD,'BARRE'//
-     +                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
-     +                          ' : LA VALEUR DE '//EXP(1+J)//' DOIT'//
-     +                                  ' ETRE  STRICTEMENT POSITIVE.')
+     &                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
+     &                          ' : LA VALEUR DE '//EXP(1+J)//' DOIT'//
+     &                                  ' ETRE  STRICTEMENT POSITIVE.')
+C        CALL U2MESK('A','MODELISA_73', 2 ,VALK)
                IER = IER + 1
             ENDIF
  40      CONTINUE
@@ -171,15 +176,17 @@ C --- COMPLETUDE DES DONNES GEOMETRIQUES RECTANGLE
             DO 42 J = 3 , 4
                IF (ZR(JDGE+J).EQ.TST) THEN
                   CALL UTMESS('A',CMD,'BARRE'//
-     +                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
-     +                   ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(1+J))
+     &                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
+     &                   ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(1+J))
+C        CALL U2MESK('A','MODELISA_72', 2 ,VALK)
                   IER = IER + 1
                ENDIF
                IF (ZR(JDGE+J).LE.ZERO) THEN
                   CALL UTMESS('A',CMD,'BARRE'//
-     +                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
-     +                          ' : LA VALEUR DE '//EXP(1+J)//' DOIT'//
-     +                                  ' ETRE  STRICTEMENT POSITIVE.')
+     &                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
+     &                          ' : LA VALEUR DE '//EXP(1+J)//' DOIT'//
+     &                                  ' ETRE  STRICTEMENT POSITIVE.')
+C        CALL U2MESK('A','MODELISA_73', 2 ,VALK)
                   IER = IER + 1
                ENDIF
  42         CONTINUE
@@ -189,23 +196,26 @@ C --- COMPLETUDE DES DONNES GEOMETRIQUES CERCLE
       ELSEIF(ISEC.EQ.2)THEN
          IF (ZR(JDGE+5).EQ.TST) THEN
             CALL UTMESS('A',CMD,'BARRE'//
-     +                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
-     +                     ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(5))
+     &                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
+     &                     ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(5))
+C        CALL U2MESK('A','MODELISA_74', 2 ,VALK)
             IER = IER + 1
          ENDIF
          IF (ZR(JDGE+5).LE.ZERO) THEN
             CALL UTMESS('A',CMD,'BARRE'//
-     +                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
-     +                            ' : LA VALEUR DE '//EXP(5)//' DOIT'//
-     +                                  ' ETRE  STRICTEMENT POSITIVE.')
+     &                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
+     &                            ' : LA VALEUR DE '//EXP(5)//' DOIT'//
+     &                                  ' ETRE  STRICTEMENT POSITIVE.')
+C        CALL U2MESK('A','MODELISA_75', 2 ,VALK)
             IER = IER + 1
          ENDIF
          IF ( .NOT. SECPLE ) THEN
             IF (ZR(JDGE+6).LE.ZERO) THEN
                CALL UTMESS('A',CMD,'BARRE'//
-     +                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
-     +                            ' : LA VALEUR DE '//EXP(6)//' DOIT'//
-     +                                               ' ETRE POSITIVE.')
+     &                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
+     &                            ' : LA VALEUR DE '//EXP(6)//' DOIT'//
+     &                                               ' ETRE POSITIVE.')
+C        CALL U2MESK('A','MODELISA_76', 2 ,VALK)
                IER = IER + 1
             ENDIF
          ENDIF

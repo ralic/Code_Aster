@@ -1,7 +1,7 @@
       SUBROUTINE MEMZME(MODELE,MATEL)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,12 +48,10 @@ C ----------------------------------------------------------------------
       CHARACTER*24 LIGRMO,LCHIN(1),LCHOUT(1),OPTION,CHGEOM
 
       CALL JEMARQ()
-      IF (MODELE(1:1).EQ.' ') CALL UTMESS('F','MEMZME',
-     &                             'IL FAUT UN MODELE.')
+      IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
 
       CALL MEGEOM(MODELE,' ',EXIGEO,CHGEOM)
-      IF (.NOT.EXIGEO) CALL UTMESS('F','MEMZME',
-     &                             'CHAMP DE GEOMETRIE NON TROUVE')
+      IF (.NOT.EXIGEO) CALL U2MESS('F','CALCULEL3_63')
 
       CALL MEMARE('V',MATEL,MODELE,' ',' ','MASS_ZZ1')
       CALL JEVEUO(MATEL//'.REFE_RESU','E',IAREFE)

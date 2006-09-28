@@ -1,9 +1,9 @@
       SUBROUTINE RVTEC0 ( T, CO, SP, ABSC, X, CMP, ND, SDM, NBPOIN,
-     +                    DOCU,  NBCMP, PADR, NOMTAB, IOC, IOCC,
-     +                    NCHEFF, I1, ISD )
+     &                    DOCU,  NBCMP, PADR, NOMTAB, IOC, IOCC,
+     &                    NCHEFF, I1, ISD )
       IMPLICIT   NONE
       INTEGER             CO(*),SP(*),NBPOIN,NBCMP,PADR(*),IOC,IOCC,
-     +                    I1, ISD
+     &                    I1, ISD
       REAL*8              T(*), ABSC(*), X(*)
       CHARACTER*4         DOCU
       CHARACTER*8         CMP(*), ND(*)
@@ -12,22 +12,22 @@
       CHARACTER*24        SDM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     AFFICHAGE CHAM_ELEM DE NBCMP COMPOSANTES
@@ -62,10 +62,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER      NBPAR, ILIGN, NBSP, I, IKK, L, JAM, 
-     +             NBCO, LC, IS, IC, VALEI(52), N1, ADRVAL, NBMAIL, J,
-     +             ADRACC, JACC, IK, IR, II, ICO, LM, IM, NC,
-     +             NBACC, NBPR, JACES, IAC, IADR
+      INTEGER      NBPAR, ILIGN, NBSP, I, IKK, L, JAM,
+     &             NBCO, LC, IS, IC, VALEI(52), N1, ADRVAL, NBMAIL, J,
+     &             ADRACC, JACC, IK, IR, II, ICO, LM, IM, NC,
+     &             NBACC, NBPR, JACES, IAC, IADR
       REAL*8       VALER(50)
       COMPLEX*16   C16B
       LOGICAL      EXIST, ERREUR
@@ -81,8 +81,8 @@ C
       IF ( NBCMP .LE. 0 ) GOTO 9999
 C
       IF ( DOCU.NE.'LSTN' .AND. DOCU.NE.'CHMM' .AND.
-     +     DOCU.NE.'SGTD' .AND. DOCU.NE.'ARCC' .AND.
-     +                          DOCU.NE.'SGT3' ) GOTO 9999
+     &     DOCU.NE.'SGTD' .AND. DOCU.NE.'ARCC' .AND.
+     &                          DOCU.NE.'SGT3' ) GOTO 9999
 C
       CALL GETVTX ( 'ACTION', 'INTITULE', IOCC,1,1, INTITU, N1 )
       CALL GETVID ( 'ACTION', 'CHEMIN'  , IOCC,1,1, COURBE, NC )
@@ -151,7 +151,7 @@ C
                CALL JEVEUO ( NOMJV, 'L', JACES )
                DO 10 IAC = 1 , NBACC
                   CALL RSADPA ( NOMRES, 'L', 1, ZK16(JACES-1+IAC),
-     +                          ZI(ADRVAL+I1-1), 1, IADR, CTYPE )
+     &                          ZI(ADRVAL+I1-1), 1, IADR, CTYPE )
                   CALL TBEXIP ( NOMTAB, ZK16(JACES-1+IAC), EXIST,TYPPAR)
                   IF ( .NOT. EXIST ) THEN
                      CALL TBAJPA ( NOMTAB, 1, ZK16(JACES-1+IAC), CTYPE )
@@ -257,8 +257,7 @@ C
       IF ( IR+4+NBCMP .GT. 50 )   ERREUR = .TRUE.
       IF ( IK    .GT. 50 )   ERREUR = .TRUE.
       IF ( ERREUR ) THEN
-         CALL UTMESS('F','RVTEC0','TABLEAU DE TRAVAIL LIMITE, '//
-     +                   'REDUIRE LE NOMBRE DE COMPOSANTES A TRAITER')
+         CALL U2MESS('F','POSTRELE_64')
       ENDIF
 C
       ILIGN = 0
@@ -334,11 +333,11 @@ C
 C
                   DO 224, IC = 1, NBCMP, 1
                      VALER(IR+4+IC) =
-     +                    T(J-1+(ICO-1)*LC+(IS-1)*NBCMP+(IM-1)*LM+IC)
+     &                    T(J-1+(ICO-1)*LC+(IS-1)*NBCMP+(IM-1)*LM+IC)
  224              CONTINUE
 C
                   CALL TBAJLI ( NOMTAB, NBPAR, NOPARA,
-     +                          VALEI, VALER, C16B, VALEK, ILIGN )
+     &                          VALEI, VALER, C16B, VALEK, ILIGN )
 C
  222           CONTINUE
 C

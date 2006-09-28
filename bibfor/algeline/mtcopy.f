@@ -3,7 +3,7 @@
       CHARACTER*(*) MATIN,MATOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C     --- CONTROLE DES REFERENCES ---
       IF (IER.NE.0) THEN
         CALL UTMESS('F','MTCOPY','LES "MATASS" "'//MATI19//'"  ET  "'//
      &              MATO19//'"  N''ONT LE MEME DOMAINE DE DEFINITION.')
+C        CALL U2MESK('F','ALGELINE2_11', 2 ,VALK)
 
       ELSE
 C        --- TYPE DES VALEURS, NOMBRE DE BLOCS, LONGUEUR D'UN BLOC ---

@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         CALL RCVALA(ZI(LMATER),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
      &              CODRES,'FM')
       ELSE
-        CALL UTMESS('F','TE0038','COMPORTEMENT ELASTIQUE INEXISTANT')
+        CALL U2MESS('F','ELEMENTS_50')
       END IF
 
 C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
@@ -89,8 +89,7 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
      &     (ZR(LX+6)-ZR(LX+3))**2)
       IF (XL.EQ.0.D0) THEN
         CH16 = ' ?????????'
-        CALL UTMESS('F','TE0038','ELEMENTS DE POUTRE '//
-     &              'NOEUDS CONFONDUS POUR UN ELEMENT: '//CH16(:8))
+        CALL U2MESK('F','ELEMENTS2_80',1,CH16(:8))
       END IF
 
 
@@ -286,9 +285,7 @@ C        --- POUTRE A SECTION VARIABLE AFFINE ---
 
           IF ((ABS(A1- (4.D0*RY1*RZ1)).GT. (A1*PREC)) .OR.
      &        (ABS(A2- (4.D0*RY2*RZ2)).GT. (A2*PREC))) THEN
-            CALL UTMESS('F','TE0038','ELEMENTS DE POUTRE '//
-     &                  'SECTION VARIABLE AFFINE :'//
-     &                  'SEUL RECTANGLE PLEIN DISPONIBLE.')
+            CALL U2MESS('F','ELEMENTS2_81')
           END IF
 C           -------- MASSE
           ZR(LCASTR) = RHO*XL* (A1+A2)/2.D0
@@ -324,17 +321,12 @@ C        --- POUTRE A SECTION VARIABLE HOMOTHETIQUE ---
 
         ELSE IF (ITYPE.EQ.2) THEN
           IF (A1.EQ.0.D0) THEN
-            CALL UTMESS('F','TE0038','ELEMENTS DE POUTRE '//
-     &                  'SECTION VARIABLE HOMOTHETIQUE :'//
-     &                  ' L''AIRE INITIALE EST NULLE.')
+            CALL U2MESS('F','ELEMENTS2_82')
           END IF
           IF (A1.EQ.A2) THEN
 C             SI A1 = A2 LA SECTION EST CONSTANTE.
 C             ON NE DEVRAIT DONC PAS PASSER PAR CETTE BRANCHE
-            CALL UTMESS('F','TE0038',
-     &                  'POUTRE SECTION VARIABLE/CONSTANTE '//
-     &                 ' PASSAGE PAR SECTION HOMOTHETIQUE AVEC A1 = A2 '
-     &                  )
+            CALL U2MESS('F','ELEMENTS2_83')
           END IF
 C           -------- MASSE
           ZR(LCASTR) = RHO* (A1+A2+SQRT(A1*A2))*XL/3.D0
@@ -397,8 +389,7 @@ C           --- INERTIE DE L'ELEMENT ---
 
       ELSE
         CH16 = OPTION
-        CALL UTMESS('F','TE0038','ELEMENTS DE POUTRE '//'L''OPTION "'//
-     &              CH16//'" EST INCONNUE')
+        CALL U2MESK('F','ELEMENTS2_84',1,CH16)
       END IF
 
       END

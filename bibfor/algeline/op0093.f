@@ -3,23 +3,23 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C
@@ -78,8 +78,7 @@ C
       CALL GETFAC('PSEUDO_MODE',NBPSMO)
       IF (NBPSMO.NE.0) THEN
          IF (NMA.EQ.0) THEN
-            CALL UTMESS('F','OP0093','POUR LE MOT CLE FACTEUR '//
-     >        ' "PSEUDO_MODE", IL FAUT DONNER LA MATRICE DE MASSE.')
+            CALL U2MESS('F','ALGELINE2_77')
          ENDIF
       ENDIF
 C
@@ -126,7 +125,7 @@ C                    ---------
  10      CONTINUE
          CALL WKVECT('&&OP0093.MODE_STAT_DEPL','V V R',NEQ*NBMODD,LMODD)
          CALL MODSTA('DEPL',LMATR,IBID,NUME,ZI(LDDLD),R8B,NEQ,
-     >                                                NBMODD,ZR(LMODD))
+     &                                                NBMODD,ZR(LMODD))
       ENDIF
 C
 C
@@ -143,7 +142,7 @@ C                    ------------
  20      CONTINUE
          CALL WKVECT('&&OP0093.MODE_STAT_FORC','V V R',NEQ*NBMODF,LMODF)
          CALL MODSTA('FORC',LMATR,IBID,NUME,ZI(LDDLF),R8B,NEQ,
-     >                                                NBMODF,ZR(LMODF))
+     &                                                NBMODF,ZR(LMODF))
       ENDIF
 C
 C
@@ -203,7 +202,7 @@ C
             ENDIF
             CALL GETVR8('PSEUDO_MODE','DIRECTION',I,1,3,COEF,ND)
 C              --- ON NORME LA DIRECTION ---
-            IF (ND.NE.0) THEN   
+            IF (ND.NE.0) THEN
                NBACC = NBACC + 1
                ACCUNI = .TRUE.
                XNORM = ZERO
@@ -211,7 +210,7 @@ C              --- ON NORME LA DIRECTION ---
                   XNORM = XNORM + COEF(ID)*COEF(ID)
  36            CONTINUE
                IF (XNORM.LE.ZERO) THEN
-                  CALL UTMESS('F','OP0093','LA DIRECTION EST NULLE.')
+                  CALL U2MESS('F','ALGELINE2_78')
                ENDIF
                XNORM = UN / SQRT(XNORM)
                DO 38 ID = 1,3
@@ -228,7 +227,7 @@ C
          IF ( ACCUNI ) THEN
         CALL WKVECT('&&OP0093.MODE_STAT_ACCU','V V R',NEQ*NBMODA,LMODA)
             CALL MODSTA('ACCE',LMATR,LMATM,NUME,IBID,ZR(JCOEF),NEQ,
-     >                                                NBMODA,ZR(LMODA))
+     &                                                NBMODA,ZR(LMODA))
          ENDIF
 C
          IF ( NBACC .NE. NBPSMO ) THEN
@@ -242,7 +241,7 @@ C
 C
          CALL WKVECT('&&OP0093.MODE_STAT_ACCD','V V R',NEQ*NBMOAD,LMOAD)
            CALL MODSTA('ACCD',LMATR,LMATM,NUME,ZI(LDDAD),R8B,NEQ,
-     >                                                NBMOAD,ZR(LMOAD))
+     &                                                NBMOAD,ZR(LMOAD))
          ENDIF
 C
       ENDIF
@@ -482,10 +481,10 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
       FORMAR = '1PE12.5'
       IF ( NIV. GT. 1 ) THEN
          CALL RSORAC ( RESU, 'LONUTI', IBID, R8B, K8B, C16B, R8B, K8B,
-     >                                            NBMODE, 1, NBTROU )
+     &                                            NBMODE, 1, NBTROU )
          CALL WKVECT ( '&&OP0093.ECRITURE.RES', 'V V I', NBMODE, LRES )
          CALL RSORAC ( RESU, 'TOUT_ORDRE', IBID, R8B, K8B, C16B, R8B,
-     >                                  K8B, ZI(LRES), NBMODE, NBTROU )
+     &                                  K8B, ZI(LRES), NBMODE, NBTROU )
          CALL IRPARB ( RESU, -1, ' ', '&&OP0093.NOM_PARA', NBPAR )
          CALL JEEXIN ( '&&OP0093.NOM_PARA', IRET )
          IF ( IRET .GT. 0 ) THEN
@@ -499,11 +498,11 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
          K8B = ' '
          IUL = IUNIFI( 'MESSAGE' )
          CALL IRECRI ( RESU,NOSIMP,NOPASE, 'RESULTAT',IUL, K8B,
-     >                 LBID,IBID, K8B,' ', NBPAR,
-     >                 ZK16(JPARA), NBMODE, ZI(LRES), .TRUE., K8B,
-     >                 IBID, K8B, 'T', .FALSE., IBID, IBID, IBID, IBID,
-     >                 IBID, K8B, .FALSE., R8B, .FALSE., R8B, .FALSE.,
-     >                 .FALSE., FORMAR,LMOD,NIVE,VERSIO)
+     &                 LBID,IBID, K8B,' ', NBPAR,
+     &                 ZK16(JPARA), NBMODE, ZI(LRES), .TRUE., K8B,
+     &                 IBID, K8B, 'T', .FALSE., IBID, IBID, IBID, IBID,
+     &                 IBID, K8B, .FALSE., R8B, .FALSE., R8B, .FALSE.,
+     &                 .FALSE., FORMAR,LMOD,NIVE,VERSIO)
       ENDIF
 C     ------------------------------------------------------------------
       CALL JEDEMA()

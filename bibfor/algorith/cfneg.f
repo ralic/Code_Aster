@@ -1,29 +1,29 @@
-      SUBROUTINE CFNEG(RESOCO,DEFICO,NOMA,NDIM, 
-     &                 INDIC,NBLIAI,NBLIAC,AJLIAI,SPLIAI, 
+      SUBROUTINE CFNEG(RESOCO,DEFICO,NOMA,NDIM,
+     &                 INDIC,NBLIAI,NBLIAC,AJLIAI,SPLIAI,
      &                 LLF,LLF1,LLF2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT     NONE
       CHARACTER*24 RESOCO
-      CHARACTER*24 DEFICO 
+      CHARACTER*24 DEFICO
       CHARACTER*8  NOMA
       INTEGER      NDIM
       INTEGER      INDIC
@@ -49,21 +49,21 @@ C                'E': RESOCO(1:14)//'.CONVEC'
 C                'E': RESOCO(1:14)//'.MU'
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NDIM   : DIMENSION DU PROBLEME
-C OUT INDIC  :+1 ON A RAJOUTE UNE LIAISON 
+C OUT INDIC  :+1 ON A RAJOUTE UNE LIAISON
 C             -1 ON A ENLEVE UNE LIAISON
 C IN  NBLIAI : NOMBRE DE LIAISONS DE CONTACT
-C I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES 
+C I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES
 C I/O AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
-C              LIAISON CORRECTE DU CALCUL 
+C              LIAISON CORRECTE DU CALCUL
 C              DE LA MATRICE DE CONTACT ACM1AT
 C I/O SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
 C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
 C I/O LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
-C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX
 C               DIRECTIONS SIMULTANEES (EN 3D)
-C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               PREMIERE DIRECTION (EN 3D)
-C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               SECONDE DIRECTION (EN 3D)
 C
 C
@@ -104,7 +104,7 @@ C
       CALL INFNIV(IFM,NIV)
       CALL JEMARQ()
 C
-      IF (NBLIAC.EQ.0) THEN 
+      IF (NBLIAC.EQ.0) THEN
         GOTO 999
       ENDIF
 C ======================================================================
@@ -124,7 +124,7 @@ C ======================================================================
       CALL JEVEUO(CONVEC,'E',JVECC)
       CALL JEVEUO(MU,    'E',JMU   )
 C ======================================================================
-C --- INITIALISATION DES VARIABLES 
+C --- INITIALISATION DES VARIABLES
 C ======================================================================
       DEKLAG = 0
       DEKLN  = 0
@@ -151,8 +151,8 @@ C ======================================================================
          CALL WKVECT ('&&CPNOTE.SUPLF2','V V I',LLF2,JSPLF2)
       ENDIF
 C ======================================================================
-C --- LES VALEURS DU VECTEUR SUPNBL SONT NECESSAIREMENT CROISSANTES 
-C --- ATTENTION CE N'EST PAS NECESSAIREMENT LE CAS DU VECTEUR SUPLLF  
+C --- LES VALEURS DU VECTEUR SUPNBL SONT NECESSAIREMENT CROISSANTES
+C --- ATTENTION CE N'EST PAS NECESSAIREMENT LE CAS DU VECTEUR SUPLLF
 C ======================================================================
       NBINI  = 1
       DO 10 ILIAC = 1, NBLIAC
@@ -187,20 +187,20 @@ C ======================================================================
                         IF (LLJAC.EQ.LLIAC) THEN
                            GOTO (1000, 2000, 3000, 4000) POSIT
 C ======================================================================
-C --- CAS IMPOSSIBLE 
+C --- CAS IMPOSSIBLE
 C ======================================================================
  1000                      CONTINUE
-                           CALL UTMESS ('F','CPNEG_1','CAS IMPOSSIBLE')
+                           CALL U2MESS('F','ALGORITH_92')
 C ======================================================================
-C --- CAS DU FROTTEMENT ADHERENT SUIVANT LES DEUX DIRECTIONS EN 3D 
-C --- OU CAS GENERAL EN 2D 
+C --- CAS DU FROTTEMENT ADHERENT SUIVANT LES DEUX DIRECTIONS EN 3D
+C --- OU CAS GENERAL EN 2D
 C ======================================================================
  2000                      CONTINUE
                            DEKLF0 = DEKLF0 + 1
                            ZI(JSPLF0-1+DEKLF0) = COMPT0
                            GOTO 10
 C ======================================================================
-C --- CAS DU FROTTEMENT ADHERENT SUIVANT LA PREMIERE DIRECTION  
+C --- CAS DU FROTTEMENT ADHERENT SUIVANT LA PREMIERE DIRECTION
 C ======================================================================
  3000                      CONTINUE
                            DO 3100 LL = 0, DEKLF1-1
@@ -217,7 +217,7 @@ C ======================================================================
                            ZI(JSPLF1-1+DEKLF1) = COMPT1
                            GOTO 10
 C ======================================================================
-C --- CAS DU FROTTEMENT ADHERENT SUIVANT LA SECONDE DIRECTION  
+C --- CAS DU FROTTEMENT ADHERENT SUIVANT LA SECONDE DIRECTION
 C ======================================================================
  4000                      CONTINUE
                            DO 4100 LL = 0, DEKLF2-1
@@ -247,8 +247,8 @@ C            CALL UTMESS ('F','CPNOTE_2','CAS IMPOSSIBLE')
          GOTO 999
       ENDIF
 C ======================================================================
-C --- MISE A JOUR DE MU POUR LE CONTACT ET DU VECTEUR DES LIAISONS 
-C --- DE CONTACT ET DE FROTTEMENT ADHERENT 
+C --- MISE A JOUR DE MU POUR LE CONTACT ET DU VECTEUR DES LIAISONS
+C --- DE CONTACT ET DE FROTTEMENT ADHERENT
 C ======================================================================
       JSTO = ZI(JSPNBL) - 1
       DO 100 ILIAC = 1, DEKLN-1
@@ -278,9 +278,9 @@ C ======================================================================
          ENDIF
  111  CONTINUE
 C ======================================================================
-C --- MISE A JOUR DE MU POUR LE FROTTEMENT 
+C --- MISE A JOUR DE MU POUR LE FROTTEMENT
 C ======================================================================
-C --- FROTTEMENT ADHERENT DE TYPE LLF 
+C --- FROTTEMENT ADHERENT DE TYPE LLF
 C ======================================================================
       IF (LLF.NE.0) THEN
          IF (DEKLF0.NE.0) THEN
@@ -291,7 +291,7 @@ C ======================================================================
             DO 210 ILIAC = 1, DEKLF0 - 1
                IDEBUT = JSTO + 1
                IFIN   = IDEBUT + ZI(JSPLF0-1+ILIAC+1) -
-     +                                       ZI(JSPLF0-1+ILIAC) - 1 - 1
+     &                                       ZI(JSPLF0-1+ILIAC) - 1 - 1
                DO 220 JJ = IDEBUT, IFIN
                   JSTO = JSTO + 1
                   ZR(JMU-1+JSTO) = ZR(JMU-1+DEKLN+JJ+ILIAC)
@@ -305,19 +305,19 @@ C ======================================================================
             ZR(JMU-1+JSTO) = ZR(JMU-1+DEKLN+DEKLF0+JJ)
  230     CONTINUE
 C ======================================================================
-C --- CAS DE LA SECONDE DIRECTION EN 3D 
+C --- CAS DE LA SECONDE DIRECTION EN 3D
 C ======================================================================
          IF (NDIM.EQ.3) THEN
             IF (DEKLF0.NE.0) THEN
                DO 240 ILIAC = 1, ZI(JSPLF0-1+1) - 1
                   JSTO = JSTO + 1
                   ZR(JMU-1+JSTO) =
-     +                           ZR(JMU-1+NBLIAC+DEKLN+LLF+DEKLF0+ILIAC)
+     &                           ZR(JMU-1+NBLIAC+DEKLN+LLF+DEKLF0+ILIAC)
  240           CONTINUE
                DO 250 ILIAC = 1, DEKLF0 - 1
                   IDEBUT = JSTO + 1
                   IFIN   = IDEBUT + ZI(JSPLF0-1+ILIAC+1) -
-     +                                        ZI(JSPLF0-1+ILIAC) - 1 - 1
+     &                                        ZI(JSPLF0-1+ILIAC) - 1 - 1
                   DO 260 JJ = IDEBUT, IFIN
                      JSTO = JSTO + 1
                      ZR(JMU-1+JSTO) = ZR(JMU-1+DEKLN+DEKLF0+JJ)
@@ -333,14 +333,14 @@ C ======================================================================
          ENDIF
       ENDIF
 C ======================================================================
-C --- FROTTEMENT ADHERENT DE TYPE LLF1 
+C --- FROTTEMENT ADHERENT DE TYPE LLF1
 C ======================================================================
       IF (LLF1.NE.0) THEN
          IF (DEKLF1.NE.0) THEN
             DO 300 ILIAC = 1, ZI(JSPLF1-1+1) - 1
                JSTO = JSTO + 1
                ZR(JMU-1+JSTO) =
-     +                ZR(JMU-1+NBLIAC+DEKLN+(NDIM-1)*(LLF+DEKLF0)+ILIAC)
+     &                ZR(JMU-1+NBLIAC+DEKLN+(NDIM-1)*(LLF+DEKLF0)+ILIAC)
  300        CONTINUE
             DO 310 ILIAC = 1, DEKLF1 - 1
                IDEBUT = ZI(JSPLF1-1+ILIAC  )
@@ -366,7 +366,7 @@ C ======================================================================
             DO 400 ILIAC = 1, ZI(JSPLF2-1+1) - 1
                JSTO = JSTO + 1
                ZR(JMU-1+JSTO) =
-     +    ZR(JMU-1+NBLIAC+DEKLN+(NDIM-1)*(LLF+DEKLF0)+LLF1+DEKLF1+ILIAC)
+     &    ZR(JMU-1+NBLIAC+DEKLN+(NDIM-1)*(LLF+DEKLF0)+LLF1+DEKLF1+ILIAC)
  400        CONTINUE
             DO 410 ILIAC = 1, DEKLF2 - 1
                IDEBUT = ZI(JSPLF2-1+ILIAC  )
@@ -374,7 +374,7 @@ C ======================================================================
                DO 420 JJ = IDEBUT, IFIN
                   JSTO = JSTO + 1
                   ZR(JMU-1+JSTO) =
-     +                         ZR(JMU-1+DEKLN+(NDIM-1)*DEKLF0+DEKLF1+JJ)
+     &                         ZR(JMU-1+DEKLN+(NDIM-1)*DEKLF0+DEKLF1+JJ)
  420           CONTINUE
  410        CONTINUE
          ENDIF
@@ -383,7 +383,7 @@ C ======================================================================
          DO 430 JJ = IDEBUT, IFIN
             JSTO = JSTO + 1
             ZR(JMU-1+JSTO) =
-     +                  ZR(JMU-1+DEKLN+(NDIM-1)*DEKLF0+DEKLF1+DEKLF2+JJ)
+     &                  ZR(JMU-1+DEKLN+(NDIM-1)*DEKLF0+DEKLF1+DEKLF2+JJ)
  430     CONTINUE
       ENDIF
 C ======================================================================

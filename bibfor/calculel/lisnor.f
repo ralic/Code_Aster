@@ -1,24 +1,24 @@
       SUBROUTINE LISNOR(CARA,DIME,NNORMZ,NTANGZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 C A_UTIL
 C ----------------------------------------------------------------------
@@ -71,10 +71,9 @@ C --- VARIABLES
       LOGICAL       LTOUT
 
 C --- LECTURE DES DONNEES
-  
+
       CALL JEEXIN(CARA//'.CARCOQUE  .DESC',I)
-      IF (I.EQ.0) CALL UTMESS('F','LISNOR',
-     &            'IL MANQUE .CARCOQUE DANS LA SD CARA_ELEM')
+      IF (I.EQ.0) CALL U2MESS('F','CALCULEL2_77')
 
       NNORM = NNORMZ
       NTANG = NTANGZ
@@ -125,7 +124,7 @@ C --- CALCUL DES NORMALES LISSEES
 
         P5 = P0+1+2*IZONE
         NN = ZI(P5)
-        
+
         IF (NN.EQ.1) THEN
 
           LTOUT = .TRUE.
@@ -146,7 +145,7 @@ C --- CALCUL DES NORMALES LISSEES
           CALL JELIRA(JEXNUM(CARA//'.CARCOQUE  .LIEL',J),'LONMAX',NMA,K)
 
         ELSE
-           
+
           GOTO 40
 
         ENDIF
@@ -155,7 +154,7 @@ C --- CALCUL DES NORMALES LISSEES
 
         DO 60 I = 1, NMA
 
-          IF (LTOUT) THEN 
+          IF (LTOUT) THEN
             IMA = I
           ELSE
             IMA = ZI(P5-1+I)
@@ -165,26 +164,26 @@ C --- CALCUL DES NORMALES LISSEES
           CALL TANGNT(NO,NN,DIME,0,0,TANG)
           P6 = P2-1+ZI(P3-1+IMA)
           P7 = 1
-          
+
           DO 60 J = 1, NN
-         
+
             INO = ZI(P6)
             P6 = P6 + 1
             ZI(Q2-1+INO) = ZI(Q2-1+INO) + 1
-            
+
             IF (DIME.EQ.2) THEN
 
               Q3 = Q0 + 2*(INO-1)
 
               R = EP/DNRM2(2,TANG(P7),1)
-              
+
               ZR(Q3  ) = ZR(Q3  ) - TANG(P7+1)*R
               ZR(Q3+1) = ZR(Q3+1) + TANG(P7  )*R
 
               P7 = P7 + 2
 
             ELSE
- 
+
               Q3 = Q0 + 3*(INO-1)
               Q4 = Q1 + 6*(INO-1)
 
@@ -198,10 +197,10 @@ C --- CALCUL DES NORMALES LISSEES
 
               P7 = P7 + 6
 
-            ENDIF 
+            ENDIF
 
  60     CONTINUE
-                
+
  40   CONTINUE
 
 C --- MOYENNE
@@ -211,7 +210,7 @@ C --- MOYENNE
         NN = ZI(Q2)
 
         IF (NN.NE.0) THEN
-          
+
           IF (DIME.EQ.2) THEN
 
             R = DNRM2(2,ZR(Q0),1)
@@ -223,8 +222,7 @@ C --- MOYENNE
             CALL PROVEC(ZR(Q0),ZR(Q1),ZR(Q1+3))
 
             R = DNRM2(3,ZR(Q1+3),1)
-            IF (R.EQ.0.D0) CALL UTMESS('F','LISNOR','NORMALE MOYENNE '//
-     &                 'NULLE : ATTENTION A L''ORIENTATION DES MAILLES')
+            IF (R.EQ.0.D0) CALL U2MESS('F','CALCULEL2_78')
 
             R = 1.D0/R
             CALL DSCAL(3,R,ZR(Q1+3),1)
@@ -249,7 +247,7 @@ C --- MOYENNE
 
 C --- DESALLOCATIONS
 
-      CALL JEDETR('&&LISNOR.COMPTEUR') 
+      CALL JEDETR('&&LISNOR.COMPTEUR')
       CALL JEDEMA()
 
       END

@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,9 +78,7 @@ C
       NOCH19 = CHOU
 
       CALL GETVTX(' ','NOEUD_CMP',0,1,0,K8BID,N1)
-      IF (N1.NE.0 .AND. N1.NE.-2) CALL UTMESS('F','CHPREC',
-     &    'AVEC "NOEUD_CMP", IL FAUT DONNER '//
-     &    'UN NOM ET UNE COMPOSANTE.')
+      IF (N1.NE.0 .AND. N1.NE.-2) CALL U2MESS('F','MODELISA4_16')
       NOMCH=' '
       CALL GETVTX(' ','NOM_CHAM',0,1,1,NOMCH,N2)
       TYCHLU=' '
@@ -90,9 +88,7 @@ C     1. CAS DE LA RECUPERATION DU CHAMP DE GEOMETRIE D'UN MAILLAGE
 C     ==============================================================
       IF (NOMCH.EQ.'GEOMETRIE') THEN
         CALL GETVID(' ','MAILLAGE',0,1,1,MA,N1)
-        IF (N1.EQ.0) CALL UTMESS('F',NOMPRO,'POUR RECUPERER '//
-     &     'LE CHAMP DE GEOMETRIE, IL FAUT UTILISER LE MOT CLE MAILLAGE'
-     &                           )
+        IF (N1.EQ.0) CALL U2MESS('F','MODELISA4_17')
 C
 C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 C     TYPE DU CHAMP EXTRAIT.
@@ -106,6 +102,7 @@ C
            CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
      &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
      &     TYCH(1:4)//'_'//NOMGD)
+C        CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
         END IF
         CALL COPISD('CHAMP_GD','G',MA//'.COORDO',NOCH19)
         GO TO 20
@@ -141,6 +138,7 @@ C
                    CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//
      &             TYCHLU//'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP'//
      &             'EXTRAIT : '//TYCH(1:4)//'_'//NOMGD)
+C        CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
                END IF
                CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
                GOTO 20
@@ -160,7 +158,7 @@ C
       IAUX = 1
       JAUX = 1
       CALL PSRESE ( ' ', IBID, IAUX, RESUCO, JAUX,
-     >              NBPASS, NORECG, IRET )
+     &              NBPASS, NORECG, IRET )
       CALL JEVEUO ( NORECG, 'L', ADRECG )
 C
 C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES =============
@@ -196,7 +194,7 @@ C         ===============================
             CALL RSUTNU(LERESU,' ',0,KNUM,NBORDR,EPSI,CRIT,IRET)
             IF ((IRET.NE.0) .OR. (NBORDR.GT.1)) GO TO 10
             IF (NBORDR.EQ.0) THEN
-              CALL UTMESS('F','CHPREC','ON NE TROUVE AUCUN CHAMP.')
+              CALL U2MESS('F','UTILITAI_23')
             END IF
             CALL JEVEUO(KNUM,'L',JORDR)
             CALL RSEXCH(LERESU,NOMCH,ZI(JORDR),CHEXTR,IRET)
@@ -212,15 +210,14 @@ C
            CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
      &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
      &     TYCH(1:4)//'_'//NOMGD)
+C        CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
             END IF
 
               CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
             ELSE IF (IRET.EQ.101 .OR. IRET.EQ.111) THEN
-              CALL UTMESS('F','CHPREC','LE NOM SYMBOLIQUE : '//NOMCH//
-     &                    ' EST ILLICITE POUR CE RESULTAT')
+              CALL U2MESK('F','UTILITAI_24',1,NOMCH)
             ELSE
-              CALL UTMESS('F','CHPREC','LE CHAMP CHERCHE N''A PAS '//
-     &                    'ENCORE ETE CALCULE.')
+              CALL U2MESS('F','UTILITAI_25')
             END IF
             CALL JEDETR(KNUM)
           END IF
@@ -240,7 +237,7 @@ C         ===========================
           CALL RSUTNU(LERESU,' ',0,KNUM,NBORDR,EPSI,CRIT,IRET)
           IF ((IRET.NE.0) .OR. (NBORDR.GT.1)) GO TO 10
           IF (NBORDR.EQ.0) THEN
-            CALL UTMESS('F','CHPREC','ON NE TROUVE AUCUN CHAMP.')
+            CALL U2MESS('F','UTILITAI_23')
           END IF
           CALL JEVEUO(KNUM,'L',JORDR)
           CALL RSEXCH(LERESU,NOMCH,ZI(JORDR),CHEXTR,IRET)
@@ -252,15 +249,14 @@ C         ===========================
            CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
      &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
      &     TYCH(1:4)//'_'//NOMGD)
+C        CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
             END IF
 
             CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
           ELSE IF (IRET.EQ.101 .OR. IRET.EQ.111) THEN
-            CALL UTMESS('F','CHPREC','LE NOM SYMBOLIQUE : '//NOMCH//
-     &                  ' EST ILLICITE POUR CE RESULTAT')
+            CALL U2MESK('F','UTILITAI_24',1,NOMCH)
           ELSE
-            CALL UTMESS('F','CHPREC','LE CHAMP CHERCHE N''A PAS '//
-     &                  'ENCORE ETE CALCULE.')
+            CALL U2MESS('F','UTILITAI_25')
           END IF
           CALL JEDETR(KNUM)
         END IF
@@ -271,8 +267,7 @@ C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
 
       GO TO 20
    10 CONTINUE
-      CALL UTMESS('F','CHPREC','ON NE PEUT EXTRAIRE QU''1 NUMERO'
-     &//' D''ORDRE. VOUS EN AVEZ SPECIFIE PLUSIEURS.' )
+      CALL U2MESS('F','MODELISA4_19')
 
    20 CONTINUE
       CALL TITRE

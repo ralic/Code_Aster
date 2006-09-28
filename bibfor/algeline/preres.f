@@ -1,7 +1,7 @@
       SUBROUTINE PRERES(SOLVEU,BASE,IRET,MATPRE,MATASS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -166,9 +166,7 @@ C             MULTIFRONTALE OU LDLT                        C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
           IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO') THEN
             IF (LFETI.AND.(METRES.EQ.'LDLT'))
-     &        CALL UTMESS('F','PRERES',
-     &        'SOLVEUR INTERNE LDLT POUR L''INSTANT PROSCRIT'//
-     &        '  AVEC FETI')
+     &        CALL U2MESS('F','ALGELINE3_27')
             NPREC = ZI(ISLVI-1+1)
             ISTOP = ZI(ISLVI-1+3)
             IF (LFETI) THEN
@@ -190,9 +188,7 @@ C                         MUMPS                            C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
           ELSE IF (METRES.EQ.'MUMPS') THEN
             IF (LFETI)
-     &        CALL UTMESS('F','PRERES',
-     &        'SOLVEUR INTERNE MUMPS POUR L''INSTANT PROSCRIT'//
-     &        '  AVEC FETI')
+     &        CALL U2MESS('F','ALGELINE3_28')
               CALL AMUMPS('DETR_MAT',' ',MATAS,' ',' ',' ')
               CALL AMUMPS('PRERES',SOLVEU,MATAS,' ',' ',' ')
               CALL JEVEUO(MATAS//'.REFA','E',JREFA)
@@ -204,9 +200,7 @@ C                         GCPC                             C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
           ELSE IF (METRES.EQ.'GCPC') THEN
             IF (LFETI)
-     &        CALL UTMESS('F','PRERES',
-     &        'SOLVEUR INTERNE GCPC POUR L''INSTANT PROSCRIT'//
-     &        '  AVEC FETI')
+     &        CALL U2MESS('F','ALGELINE3_29')
             IRET=0
             NIREMP = ZI(ISLVI-1+4)
             CALL PCLDLT(MAPREC,MATAS,NIREMP,BASE)

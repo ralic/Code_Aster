@@ -5,7 +5,7 @@
       REAL*8            VR(2)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C IN  : NUMAIL :  NUMERO DES MAILLES
 C OUT : VR     :  VECTEUR RESULTAT
 C
 C       LE RESULTAT EST DONNE SOUS LA FORME DE DEUX COMPOSANTES
-C          (1) VALEUR DE LA MOYENNE 
+C          (1) VALEUR DE LA MOYENNE
 C          (2) SOMME DES VALEURS DU CHAMP DE PONDERATION
 C
 C ----------------------------------------------------------------------
@@ -73,8 +73,7 @@ C
       CHAMP2 = CHAMPB
       RZERO = 0.0D0
       IF ((NCPA.LE.0).OR.(NCPB.LE.0)) THEN
-         CALL UTMESS('F','MEMOY','ON NE SAIT PAS MOYENNER CETTE '
-     &               //'COMPOSANTE NEGATIVE')
+         CALL U2MESS('F','CALCULEL3_57')
       ENDIF
 C
 C     -- ON RETROUVE LE NOM DU LIGREL:
@@ -86,13 +85,12 @@ C
       LIGRE2 = ZK24(IACELK-1+1)(1:19)
 C
       IF (LIGRE1.NE.LIGRE2) THEN
-         CALL UTMESS('F','MEMOY','CHAMPS SUR MODELES DIFFERENTS')
+         CALL U2MESS('F','CALCULEL3_58')
       ENDIF
       LIGREL = LIGRE1
 C
       CALL JEEXIN (CHAMP1//'.CELD',IBID)
-      IF (IBID.EQ.0) CALL UTMESS('F','MEMOY',
-     &                            CHAMP1//' DOIT ETRE UN CHAM_ELEM.')
+      IF (IBID.EQ.0) CALL U2MESK('F','CALCULEL3_59',1,CHAMP1)
 
 C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL CELVER ( CHAMP1, 'NBVARI_CST', 'STOP', IBID )
@@ -102,12 +100,11 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       IGD1  = ZI(JCELD1-1+1)
       SCAL1 = SCALAI(IGD1)
       IF (SCAL1(1:1).NE.'R') THEN
-         CALL UTMESS('F','MEMOY','NE TRAITE QU''UN CHAM_ELEM REEL')
+         CALL U2MESS('F','CALCULEL3_53')
       ENDIF
 C
       CALL JEEXIN (CHAMP2//'.CELD',IBID)
-      IF (IBID.EQ.0) CALL UTMESS('F','MEMOY',
-     &                            CHAMP2//' DOIT ETRE UN CHAM_ELEM.')
+      IF (IBID.EQ.0) CALL U2MESK('F','CALCULEL3_59',1,CHAMP2)
 
 C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL CELVER ( CHAMP2, 'NBVARI_CST', 'STOP', IBID )
@@ -117,7 +114,7 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       IGD2  = ZI(JCELD2-1+1)
       SCAL2 = SCALAI(IGD2)
       IF (SCAL2(1:1).NE.'R') THEN
-         CALL UTMESS('F','MEMAX','NE TRAITE QU''UN CHAM_ELEM REEL')
+         CALL U2MESS('F','CALCULEL3_53')
       ENDIF
 C
 C     -- ON VERIFIE LES LONGUEURS DE CHAQUE CHAMP:
@@ -134,8 +131,7 @@ C     --------------------------------------------
             LONGT1 = NCMPEL
          ELSE
             IF (LONGT1.NE.NCMPEL) THEN
-               CALL UTMESS('F','MEMOY','LONGUEURS DES MODES LOCAUX '
-     +                     //'CHAMP1 IMCOMPATIBLES ENTRE EUX.')
+               CALL U2MESS('F','CALCULEL3_60')
             ENDIF
          ENDIF
          FIRST = .FALSE.
@@ -153,15 +149,14 @@ C
             LONGT2 = NCMPEL
          ELSE
             IF (LONGT2.NE.NCMPEL) THEN
-               CALL UTMESS('F','MEMOY','LONGUEURS DES MODES LOCAUX '
-     +                     //'CHAMP2 IMCOMPATIBLES ENTRE EUX.')
+               CALL U2MESS('F','CALCULEL3_61')
             ENDIF
          ENDIF
          FIRST = .FALSE.
  100  CONTINUE
 C
       IF ((NCPA.GT.LONGT1).OR.(NCPB.GT.LONGT2)) THEN
-         CALL UTMESS('F','MEMOY','COMPOSANTE NON DEFINIE')
+         CALL U2MESS('F','CALCULEL3_62')
       ENDIF
 C
 C     -- ON MET A ZERO LE VECTEUR "VSCAL":

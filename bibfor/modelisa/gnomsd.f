@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C        CALL ASSERT(INUM.LE.9998)
          CALL JEEXIN ( NOOJB1,IRET )
          IF ( IRET .EQ. 0 ) GO TO 20
  10   CONTINUE
-      CALL UTMESS('F','GNOMSD','ON NE SAIT PLUS TROUVER DE NOMS.')
+      CALL U2MESS('F','MODELISA4_69')
 
  20   CONTINUE
       NOOJB=NOOJB1

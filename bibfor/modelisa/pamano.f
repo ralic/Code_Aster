@@ -1,25 +1,25 @@
-      SUBROUTINE PAMANO(MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, IOCC, LISNOZ, 
-     +                  LONLIS)
+      SUBROUTINE PAMANO(MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, IOCC, LISNOZ,
+     &                  LONLIS)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)     MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/05/99   AUTEUR CIBHHPD P.DAVID 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     CREATION DU VECTEUR DE K8 DE NOM LISNOZ ET DE LONGUEUR
@@ -40,7 +40,7 @@ C                     OU      NOEUD_1    OU NOEUD_2
 C IN       : NOMAZ  : NOM DU MAILLAGE
 C IN       : LISTYZ : LISTE DE NOMS DE TYPES (GEOMETRIQUES) D'ELEMENTS
 C                     SI CETTE LISTE N'EST PAS VIDE ON TESTE SI LE
-C                     DES ELEMENTS DONNES APRES LES MOTS CLES 
+C                     DES ELEMENTS DONNES APRES LES MOTS CLES
 C                     MAILLE_I ET GROUP_MA_I APPARTIENT A CETTE LISTE
 C                     SI CE N'EST PAS LE CAS ON S'ARRETE EN ERREUR
 C                     FATALE
@@ -99,7 +99,7 @@ C
           CALL WKVECT ('&&PAMANO.LISTYP','V V I',LONLIT,IDTYPI)
           DO 1 I = 1, LONLIT
             CALL JENONU(JEXNOM('&CATA.TM.NOMTM',ZK8(IDTYPK+I-1)),
-     +                  ZI(IDTYPI+I-1))
+     &                  ZI(IDTYPI+I-1))
   1       CONTINUE
           CALL JEVEUO(NOMA//'.TYPMAIL','L',IDTYMA)
         ENDIF
@@ -142,11 +142,11 @@ C              -----------------------------------------------------
              NG = -NG
              CALL WKVECT ('&&PAMANO.TRAV','V V K8',NG,JJJ)
              CALL GETVEM (NOMA,'GROUP_MA',
-     .                    MOTFAC,MOTCLE,IOCC,1,NG,ZK8(JJJ),NGR)
+     &                    MOTFAC,MOTCLE,IOCC,1,NG,ZK8(JJJ),NGR)
              DO 10 IGR = 1, NGR
                 CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'L',JGRO)
                 CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'LONMAX',
-     +                      NBMAIL,K1BID)
+     &                      NBMAIL,K1BID)
                 DO 20 M = 1, NBMAIL
                   NUMAIL = ZI(JGRO-1+M)
                   CALL JENUNO(JEXNUM(MAILMA,NUMAIL),NOMAIL)
@@ -162,14 +162,15 @@ C              -----------------------------------------------------
  22                 CONTINUE
                     IF (INDIC.EQ.0) THEN
                       CALL UTMESS('F','PAMANO','LA MAILLE '//NOMAIL
-     +               //' DU GROUP_MA '//ZK8(JJJ+IGR-1)
-     +               //'DONNE APRES LE MOT CLE '//MOTCLE//'N''A '
-     +               //'PAS UN TYPE GEOMETRIQUE AUTORISE.')
+     &               //' DU GROUP_MA '//ZK8(JJJ+IGR-1)
+     &               //'DONNE APRES LE MOT CLE '//MOTCLE//'N''A '
+     &               //'PAS UN TYPE GEOMETRIQUE AUTORISE.')
+C        CALL U2MESK('F','MODELISA6_17', 3 ,VALK)
                     ENDIF
                   ENDIF
                   CALL JENONU(JEXNOM(NOMA//'.NOMMAI',NOMAIL),IBID)
                   CALL JELIRA (JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',
-     +                         N1,K1BID)
+     &                         N1,K1BID)
                   IDIM1 = IDIM1 + N1
                   N1MAX = MAX ( N1MAX, N1)
  20            CONTINUE
@@ -194,7 +195,7 @@ C              ----------------------------------------------------
              NBMA = -NBMA
              CALL WKVECT ('&&PAMANO.TRAV','V V K8',NBMA,JJJ)
              CALL GETVEM (NOMA,'MAILLE',
-     .                    MOTFAC,MOTCLE,IOCC,1,NBMA,ZK8(JJJ),NMAI)
+     &                    MOTFAC,MOTCLE,IOCC,1,NBMA,ZK8(JJJ),NMAI)
              DO 30 IMA = 1, NMAI
                IF (LONLIT.NE.0) THEN
                  CALL JENONU(JEXNOM(MAILMA,ZK8(JJJ+IMA-1)),NUMAIL)
@@ -209,14 +210,15 @@ C              ----------------------------------------------------
  32              CONTINUE
                  IF (INDIC.EQ.0) THEN
                    CALL UTMESS('F','PAMANO','LA MAILLE '//
-     +                  ZK8(JJJ+IMA-1)
-     +               //'DONNE APRES LE MOT CLE '//MOTCLE//'N''A '
-     +               //'PAS UN TYPE GEOMETRIQUE AUTORISE.')
+     &                  ZK8(JJJ+IMA-1)
+     &               //'DONNE APRES LE MOT CLE '//MOTCLE//'N''A '
+     &               //'PAS UN TYPE GEOMETRIQUE AUTORISE.')
+C        CALL U2MESK('F','MODELISA6_18', 2 ,VALK)
                   ENDIF
                ENDIF
                CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JJJ+IMA-1)),IBID)
                CALL JELIRA (JEXNUM(NOMA//'.CONNEX',IBID),
-     +                       'LONMAX',  N2,K1BID)
+     &                       'LONMAX',  N2,K1BID)
                IDIM2 = IDIM2 + N2
                N1MAX = MAX ( N1MAX, N2)
  30          CONTINUE
@@ -239,10 +241,10 @@ C              ------------------------------------------------
              NG = -NG
              CALL WKVECT ('&&PAMANO.TRAV','V V K8',NG,JJJ)
              CALL GETVEM (NOMA,'GROUP_NO',
-     .                    MOTFAC,MOTCLE,IOCC,1,NG,ZK8(JJJ),NGR)
+     &                    MOTFAC,MOTCLE,IOCC,1,NG,ZK8(JJJ),NGR)
              DO 40 IGR = 1, NGR
                CALL JELIRA (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'LONMAX',
-     +                      N3,K1BID)
+     &                      N3,K1BID)
                IDIM3 = IDIM3 + N3
  40          CONTINUE
          ENDIF
@@ -261,7 +263,7 @@ C              ---------------------------------------------
              NBNO = -NBNO
              CALL WKVECT ('&&PAMANO.TRAV','V V K8',NBNO,JJJ)
              CALL GETVEM (NOMA,'NOEUD',
-     .                    MOTFAC,MOTCLE,IOCC,1,NBNO,ZK8(JJJ),NNO)
+     &                    MOTFAC,MOTCLE,IOCC,1,NBNO,ZK8(JJJ),NNO)
              IDIM4 = IDIM4 + NNO
       ENDIF
 C
@@ -269,10 +271,11 @@ C     -- MOTCLE NON ADMIS
 C        -------------------------------------------------------
       ELSE
          CALL UTMESS('F','PAMANO',' MOT CLE NON ADMIS :'//MOTCLE//
-     +                ' LES MOTS-CLES ADMISSIBLES SONT : '//MGRMA1//
-     +                ' OU '//MGRMA2//' OU '//MGRNO1//' OU '//
-     +                MGRNO2//' OU '//MMAIL1//' OU '//MMAIL2//
-     +                ' OU '//MNOEU1// 'OU '//MNOEU2)
+     &                ' LES MOTS-CLES ADMISSIBLES SONT : '//MGRMA1//
+     &                ' OU '//MGRMA2//' OU '//MGRNO1//' OU '//
+     &                MGRNO2//' OU '//MMAIL1//' OU '//MMAIL2//
+     &                ' OU '//MNOEU1// 'OU '//MNOEU2)
+C        CALL U2MESK('F','MODELISA6_19', 9 ,VALK)
       ENDIF
 C
 C     -- IDIMAX = MAJORANT DE LA LONGUEUR DE LA LISTE DE NOEUDS
@@ -305,14 +308,14 @@ C
              DO 50 IGR = 1, NGR
                CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'L',JGRO)
                CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'LONMAX',
-     +                      NBMAIL,K1BID)
+     &                      NBMAIL,K1BID)
                DO 60 M = 1, NBMAIL
                   NUMAIL = ZI(JGRO-1+M)
                   CALL JENUNO(JEXNUM(MAILMA,NUMAIL),NOMAIL)
                   CALL JENONU(JEXNOM(NOMA//'.NOMMAI',NOMAIL),IBID)
                   CALL JEVEUO (JEXNUM(NOMA//'.CONNEX',IBID),'L',JDES)
                   CALL JELIRA (JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',
-     +                         N1,K1BID)
+     &                         N1,K1BID)
                   DO 70 INO = 1, N1
                     CALL JENUNO(JEXNUM(NOEUMA,ZI(JDES+INO-1)),NOMNOE)
                     INDNOE = INDNOE + 1
@@ -333,10 +336,10 @@ C
              DO 80 IMA = 1, NMAI
                 CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JJJ+IMA-1)),IBID)
                 CALL JEVEUO (JEXNUM(NOMA//'.CONNEX',IBID),
-     +                       'L',JDES)
+     &                       'L',JDES)
                 CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JJJ+IMA-1)),IBID)
                 CALL JELIRA (JEXNUM(NOMA//'.CONNEX',IBID),
-     +                       'LONMAX',  N2,K1BID)
+     &                       'LONMAX',  N2,K1BID)
                 DO 90 INO = 1, N2
                     CALL JENUNO(JEXNUM(NOEUMA,ZI(JDES+INO-1)),NOMNOE)
                     INDNOE = INDNOE + 1
@@ -356,7 +359,7 @@ C
              DO 100 IGR = 1, NGR
                CALL JEVEUO (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'L',JGRO)
                CALL JELIRA (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'LONMAX',
-     +                      N3,K1BID)
+     &                      N3,K1BID)
                DO 110 INO = 1, N3
                   IN = ZI(JGRO+INO-1)
                   INDNOE = INDNOE + 1

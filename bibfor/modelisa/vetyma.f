@@ -1,21 +1,21 @@
       SUBROUTINE VETYMA(NOMA,LISTMA,NBMA,LISTGR,NBGR,OPTION,NDIM,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
@@ -66,9 +66,9 @@ C ----------------------------------------------------------------------
       NERR=0
 C
       IF(OPTION.EQ.'FLUX_REP' .OR.OPTION.EQ.'PRES_REP'  .OR.
-     +   OPTION.EQ.'ECHANGE'  .OR.OPTION.EQ.'FORCE_FACE'.OR.
-     +   OPTION.EQ.'IMPE_FACE'.OR.OPTION.EQ.'VITE_FACE' .OR.
-     +   OPTION.EQ.'FORCE_CONTOUR') THEN
+     &   OPTION.EQ.'ECHANGE'  .OR.OPTION.EQ.'FORCE_FACE'.OR.
+     &   OPTION.EQ.'IMPE_FACE'.OR.OPTION.EQ.'VITE_FACE' .OR.
+     &   OPTION.EQ.'FORCE_CONTOUR') THEN
 C
 C  MOT-CLE MAILLE
          IF(NBMA.GT.0) THEN
@@ -80,20 +80,20 @@ C  MOT-CLE MAILLE
                IF(NDIM.EQ.2.AND.TYPE(1:3).NE.'SEG') THEN
                   NERR=NERR+1
                   CALL UTMESS('A','VETYMA','LA MAILLE DE NOM : '
-     +            //LISTMZ//' N''EST PAS DE TYPE SEGMENT, ELLE NE '
-     +            //'SERA PAS AFFECTEE PAR '//OPTIOZ)
+     &            //LISTMZ//' N''EST PAS DE TYPE SEGMENT, ELLE NE '
+     &            //'SERA PAS AFFECTEE PAR '//OPTIOZ)
+C        CALL U2MESK('A','MODELISA7_86', 2 ,VALK)
                ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'QUAD'.
-     +                          AND.TYPE(1:4).NE.'TRIA') THEN
+     &                          AND.TYPE(1:4).NE.'TRIA') THEN
                   NERR=NERR+1
                   CALL UTMESS('A','VETYMA','LA MAILLE DE NOM : '
-     +            //LISTMZ//' N''EST PAS DE TYPE TRIA OU QUAD,'
-     +            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+     &            //LISTMZ//' N''EST PAS DE TYPE TRIA OU QUAD,'
+     &            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+C        CALL U2MESK('A','MODELISA7_87', 2 ,VALK)
                ENDIF
 1           CONTINUE
             IF(NBMA.EQ.NERR) THEN
-              CALL UTMESS('A','VETYMA','ERREUR DANS LES NOMS DE MAILLE'
-     +         //' DU MOT-CLE FACTEUR '//OPTIOZ//' : AUCUNE N''EST DU '
-     +         //'BON TYPE')
+              CALL U2MESK('A','MODELISA7_88',1,OPTIOZ)
             ENDIF
          ENDIF
 C
@@ -110,23 +110,26 @@ C  MOT-CLE GROUP_MA
                IF(NDIM.EQ.2.AND.TYPE(1:3).NE.'SEG') THEN
                   NERR=NERR+1
                   CALL UTMESS('A','VETYMA','LA MAILLE DE NUMERO : '
-     +            //KIMA//' N''EST PAS DE TYPE SEGMENT, ELLE NE '
-     +            //'SERA PAS AFFECTEE PAR '//OPTIOZ)
+     &            //KIMA//' N''EST PAS DE TYPE SEGMENT, ELLE NE '
+     &            //'SERA PAS AFFECTEE PAR '//OPTIOZ)
+C        CALL U2MESK('A','MODELISA7_89', 2 ,VALK)
                ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'QUAD'.
-     +                          AND.TYPE(1:4).NE.'TRIA'.
-     +                          AND.TYPE(1:3).NE.'SEG') THEN
+     &                          AND.TYPE(1:4).NE.'TRIA'.
+     &                          AND.TYPE(1:3).NE.'SEG') THEN
                   NERR=NERR+1
                   CALL UTMESS('A','VETYMA','LA MAILLE DE NUMERO : '
-     +            //KIMA//' N''EST PAS DE TYPE TRIA OU QUAD,'
-     +            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+     &            //KIMA//' N''EST PAS DE TYPE TRIA OU QUAD,'
+     &            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+C        CALL U2MESK('A','MODELISA7_90', 2 ,VALK)
                ENDIF
 3              CONTINUE
             IF(NBMA.EQ.NERR) THEN
               LISTGZ = LISTGR(I)
               CALL UTMESS('A','VETYMA','ERREUR DANS LES NOMS DE MAILLE'
-     +         //' DU GROUP_MA: '//LISTGZ
-     +         //' DU MOT-CLE FACTEUR '//OPTIOZ//' : AUCUNE N''EST DU '
-     +         //'BON TYPE')
+     &         //' DU GROUP_MA: '//LISTGZ
+     &         //' DU MOT-CLE FACTEUR '//OPTIOZ//' : AUCUNE N''EST DU '
+     &         //'BON TYPE')
+C        CALL U2MESK('A','MODELISA7_91', 2 ,VALK)
             ENDIF
 2           CONTINUE
          ENDIF
@@ -141,25 +144,25 @@ C  MOT-CLE MAILLE
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IADTYP)),TYPE)
                LISTMZ = LISTMA(I)
                IF(NDIM.EQ.2.AND.TYPE(1:4).NE.'QUAD'.
-     +                      AND.TYPE(1:4).NE.'TRIA') THEN
+     &                      AND.TYPE(1:4).NE.'TRIA') THEN
                   NERR=NERR+1
                   CALL UTMESS('A','VETYMA','LA MAILLE DE NOM : '
-     +            //LISTMZ//' N''EST PAS DE TYPE TRIA OU QUAD,'
-     +            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+     &            //LISTMZ//' N''EST PAS DE TYPE TRIA OU QUAD,'
+     &            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+C        CALL U2MESK('A','MODELISA7_87', 2 ,VALK)
                ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'HEXA'.
-     +                          AND.TYPE(1:4).NE.'PENT'.
-     +                          AND.TYPE(1:4).NE.'PYRA'.
-     +                          AND.TYPE(1:4).NE.'TETR') THEN
+     &                          AND.TYPE(1:4).NE.'PENT'.
+     &                          AND.TYPE(1:4).NE.'PYRA'.
+     &                          AND.TYPE(1:4).NE.'TETR') THEN
                   NERR=NERR+1
                   CALL UTMESS('A','VETYMA','LA MAILLE DE NOM : '
-     +            //LISTMZ//' N''EST PAS UNE MAILLE 3D,'
-     +            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+     &            //LISTMZ//' N''EST PAS UNE MAILLE 3D,'
+     &            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+C        CALL U2MESK('A','MODELISA7_92', 2 ,VALK)
                ENDIF
 10           CONTINUE
             IF(NBMA.EQ.NERR) THEN
-              CALL UTMESS('A','VETYMA','ERREUR DANS LES NOMS DE MAILLE'
-     +         //' DU MOT-CLE FACTEUR '//OPTIOZ//' : AUCUNE N''EST DU '
-     +         //'BON TYPE')
+              CALL U2MESK('A','MODELISA7_88',1,OPTIOZ)
             ENDIF
          ENDIF
 C  MOT-CLE GROUP_MA
@@ -173,27 +176,30 @@ C  MOT-CLE GROUP_MA
                  IADTYP=IATYMA-1+IMA
                  CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IADTYP)),TYPE)
                  IF(NDIM.EQ.2.AND.TYPE(1:4).NE.'QUAD'.
-     +                        AND.TYPE(1:4).NE.'TRIA') THEN
+     &                        AND.TYPE(1:4).NE.'TRIA') THEN
                    NERR=NERR+1
                    CALL UTMESS('A','VETYMA','LA MAILLE DE NUMERO : '
-     +             //KIMA//' N''EST PAS DE TYPE TRIA OU QUAD,'
-     +             //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+     &             //KIMA//' N''EST PAS DE TYPE TRIA OU QUAD,'
+     &             //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+C        CALL U2MESK('A','MODELISA7_90', 2 ,VALK)
                  ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'HEXA'.
-     +                            AND.TYPE(1:4).NE.'PENT'.
-     +                            AND.TYPE(1:4).NE.'PYRA'.
-     +                            AND.TYPE(1:4).NE.'TETR') THEN
+     &                            AND.TYPE(1:4).NE.'PENT'.
+     &                            AND.TYPE(1:4).NE.'PYRA'.
+     &                            AND.TYPE(1:4).NE.'TETR') THEN
                     NERR=NERR+1
                     CALL UTMESS('A','VETYMA','LA MAILLE DE NUMERO : '
-     +              //KIMA//' N''EST PAS UNE MAILLE 3D,'
-     +              //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+     &              //KIMA//' N''EST PAS UNE MAILLE 3D,'
+     &              //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
+C        CALL U2MESK('A','MODELISA7_93', 2 ,VALK)
                  ENDIF
 30             CONTINUE
                IF(NBMA.EQ.NERR) THEN
                LISTGZ = LISTGR(I)
                CALL UTMESS('A','VETYMA','ERREUR DANS LES NOMS DE MAILLE'
-     +          //' DU GROUP_MA: '//LISTGZ
-     +          //' DU MOT-CLE FACTEUR '//OPTIOZ//' : AUCUNE N''EST DU '
-     +          //'BON TYPE')
+     &          //' DU GROUP_MA: '//LISTGZ
+     &          //' DU MOT-CLE FACTEUR '//OPTIOZ//' : AUCUNE N''EST DU '
+     &          //'BON TYPE')
+C        CALL U2MESK('A','MODELISA7_91', 2 ,VALK)
                ENDIF
 20         CONTINUE
         ENDIF

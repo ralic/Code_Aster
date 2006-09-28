@@ -6,7 +6,7 @@
       COMPLEX*16 VECT(*),XSOL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     SELON REEL OU COMPLEXE :
       GO TO (70,80) ZI(LMAT+3)
 
-      CALL UTMESS('F','MCMULT','COEFFICIENT DE TYPE NON PREVU')
+      CALL U2MESS('F','ALGELINE_66')
 
 
    70 CONTINUE
@@ -81,7 +81,7 @@ C     MATRICE REELLE
 C     MATRICE COMPLEXE
       GO TO (90,100) ZI(LMAT+4)
 
-      CALL UTMESS('F','MCMULT','CARACT. DE MATRICE NON PREVUE')
+      CALL U2MESS('F','ALGELINE_67')
       GO TO 110
 
 

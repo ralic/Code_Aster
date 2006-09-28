@@ -1,6 +1,6 @@
       SUBROUTINE JEPRAT ( UNIT , NOMLU , CIDATR , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,17 +42,17 @@ C     -----------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -73,11 +73,11 @@ C     ------------------------------------------------------------------
       LOGICAL         LCOL
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
       CHARACTER*8    CIDNOM(IDNUM)
       INTEGER        IDPAR
       PARAMETER    ( IDPAR  = 3 )
@@ -104,7 +104,7 @@ C
         ICLAS = INDEX ( CLASSE , NOML32(2:2) )
         IF ( ICLAS .EQ. 0 ) THEN
           CMESS = ' CLASSE INVALIDE >'//NOML32(2:2)//'<'
-          CALL JVMESS ( 'S' , 'JEPRAT01' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ENDIF
         DO 1 K = 1, LIDBAS
            IF ( NOM .EQ. CIDBAS(K) ) THEN
@@ -116,12 +116,12 @@ C
               LTYPI = LTYP ( JLTYP(ICLAS) + IDATR )
               LONOI = LONO ( JLONO(ICLAS) + IDATR ) * LTYPI
               CALL JJIMPO ( UNIT,IADMI, IDECI, 0, GENRI, TYPEI, LTYPI,
-     +                      LONOI , MESS , PARM)
+     &                      LONOI , MESS , PARM)
               GO TO 10
            ENDIF
  1      CONTINUE
         CMESS = ' NOM D''OBJET ATTRIBUT INVALIDE '
-        CALL JVMESS ( 'S' , 'JEPRAT02' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
  10     CONTINUE
 C
       ELSE
@@ -137,12 +137,12 @@ C
             ENDIF
  2        CONTINUE
           CMESS = ' NOM D''ATTRIBUT INVALIDE '
-          CALL JVMESS ( 'S' , 'JEPRAT03' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
  20       CONTINUE
           CALL JJCREN (NOML32(1:24)//NOM , 0 , IRET2)
           IF ( IRET2 .EQ. 0 ) THEN
             CMESS = 'OBJET '//NOML32(1:24)//NOM//' INEXISTANT '
-            CALL JVMESS ( 'S' , 'JEPRAT04' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
           IADMI  = IADM ( JIADM(ICLAOS) + IDATOS )
           IADMEX = IADMI
@@ -156,14 +156,14 @@ C
           ENDIF
           IDECI = 0
           CALL JJIMPO(UNIT,IADMI, IDECI, 0, GENRI, TYPEI, LTYPI, LONOI,
-     +                MESS , PARM)
+     &                MESS , PARM)
           IF ( IADMEX .EQ. 0 ) THEN
             CALL JJLIDE ( 'JEIMPO' , NOML32(1:24)//NOM , 1 )
             IPGC = IPGCEX
           ENDIF
         ELSE IF ( IRET .NE. 2 ) THEN
           CMESS = 'IMPRESSION D''OBJET ATTRIBUT IMPOSSIBLE'
-          CALL JVMESS ( 'S' , 'JEPRAT05' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ELSE
           LCOL = .TRUE.
           CALL JJALLC ( ICLACO , IDATCO , 'L' , IBACOL )
@@ -174,15 +174,15 @@ C
             ENDIF
  3        CONTINUE
           CMESS = ' NOM D''ATTRIBUT INVALIDE '
-          CALL JVMESS ( 'S' , 'JEPRAT06' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
  30       CONTINUE
           IXATR = ISZON ( JISZON + IBACOL + IDATR )
           IF ( IXATR .GT. 0 ) THEN
              IBATR = IADM( JIADM(ICLACO) + IXATR )
              IF ( IBATR .EQ. 0 ) THEN
                CMESS = ' SEGMENT DE VALEUR ASSOCIE A L''ATTRIBUT '//
-     +                 NOM//' NON ACCESSIBLE '
-               CALL JVMESS ( 'S' , 'JEPRAT07' , CMESS )
+     &                 NOM//' NON ACCESSIBLE '
+               CALL U2MESK('S','JEVEUX_01',1,CMESS)
              ENDIF
              IDECI = 0
              GENRI = GENR( JGENR(ICLACO) + IXATR )
@@ -190,7 +190,7 @@ C
              LTYPI = LTYP( JLTYP(ICLACO) + IXATR )
              LONOI = LONO( JLONO(ICLACO) + IXATR ) * LTYPI
              CALL JJIMPO(UNIT,IBATR,IDECI,0,GENRI,TYPEI,LTYPI,LONOI,
-     +                   MESS , PARM)
+     &                   MESS , PARM)
           ENDIF
         ENDIF
         IF ( LCOL ) THEN

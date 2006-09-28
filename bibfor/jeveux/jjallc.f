@@ -1,21 +1,21 @@
       SUBROUTINE JJALLC ( ICLASI , IDATCI , CEL , IBACOL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18  CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -30,11 +30,11 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
       CHARACTER*8      ORIG
@@ -50,11 +50,11 @@ C ----------------------------------------------------------------------
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       CHARACTER*75     CMESS
       CHARACTER*1      GENRI,TYPEI
@@ -63,7 +63,7 @@ C     ------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
       ITROLD = ITRECH
-      IF (ITCOL .EQ. 2) THEN 
+      IF (ITCOL .EQ. 2) THEN
         ITRECH = 4
       ENDIF
       IC     = ICLASI
@@ -81,14 +81,14 @@ C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
         IF ( IADDI(1) .EQ. 0 ) THEN
           IF ( CEL .EQ. 'E' ) THEN
             CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
-     +                   COL , JCOL , IADML )
+     &                   COL , JCOL , IADML )
           ELSE
             CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
-            CALL JVMESS ( 'S' , 'JJALLC01' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
         ELSE
           CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT' ,
-     +                 COL , JCOL , IADML )
+     &                 COL , JCOL , IADML )
           CALL JXLIRO ( IC , IADML , IADDI , LONOI )
         ENDIF
         IADMI = IADML
@@ -119,7 +119,7 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
           LONOI  = LONO ( JLONO(IC) + IX ) * LTYPI
           IF ( LONOI .EQ. 0 ) THEN
             CMESS ='OBJET :'//RNOM(JRNOM(IC)+IX)//' INEXISTANT'
-            CALL JVMESS ( 'S' , 'JJALLC02' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
           IADMI  = IADM ( JIADM(IC) + IX )
           IADDI(1) = IADD ( JIADD(IC) + 2*IX-1 )
@@ -133,14 +133,14 @@ C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE
             IF ( IADDI(1) .EQ. 0 ) THEN
               IF ( CEL .EQ. 'E' ) THEN
                 CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT',
-     +                       COL , JCOL , IADML )
+     &                       COL , JCOL , IADML )
               ELSE
                 CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
-                CALL JVMESS ( 'S' , 'JJALLC03' , CMESS )
+                CALL U2MESK('S','JEVEUX_01',1,CMESS)
               ENDIF
             ELSE
               CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT',
-     +                     COL , JCOL , IADML )
+     &                     COL , JCOL , IADML )
               CALL JXLIRO ( IC , IADML , IADDI , LONOI )
             ENDIF
             IADMI = IADML
@@ -148,12 +148,12 @@ C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE
           ELSE
 C --------- MISE EN MEMOIRE SANS LECTURE DISQUE
             CALL JJALLS  ( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
-     +                     ITAB , JCTAB , IADMI )
+     &                     ITAB , JCTAB , IADMI )
             IADM( JIADM(IC) + IX ) = IADMI
           ENDIF
           IF ( (K.EQ.IDNOM  .OR. K.EQ.IDLONG  .OR.
-     +          K.EQ.IDLONO .OR. K.EQ.IDLUTI)
-     +         .AND.  RNOM(JRNOM(IC)+IX)(25:26) .NE. '$$'    ) THEN
+     &          K.EQ.IDLONO .OR. K.EQ.IDLUTI)
+     &         .AND.  RNOM(JRNOM(IC)+IX)(25:26) .NE. '$$'    ) THEN
             IPGC   = -1
           ENDIF
           CALL JJECRS (IADMI, IC, IX, 0, CEL, IMARQ(JMARQ(IC)+2*IX-1))

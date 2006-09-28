@@ -3,7 +3,7 @@
       CHARACTER*(*)       RIGID , MASSE , MASINV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C
       ELSEIF ( ZI(IMATR+3) .EQ. 2 ) THEN
          TYPMAT = 'C'
       ELSE
-         CALL UTMESS('F','AJLAGR','TYPE DE MATRICE INCONNU.')
+         CALL U2MESS('F','ALGORITH_3')
       ENDIF
       CALL JEVEUO(RAID//'           .REFA','L',JREFA1)
       NUMDDL = ZK24(JREFA1-1+2)(1:14)
@@ -84,7 +84,7 @@ C
       ELSEIF ( ZI(IMATM+3) .EQ. 2 ) THEN
          TYPMA2 = 'C'
       ELSE
-         CALL UTMESS('F','AJLAGR','TYPE DE MATRICE INCONNU.')
+         CALL U2MESS('F','ALGORITH_3')
       ENDIF
       CALL JEVEUO(MASS//'           .REFA','L',JREFA2)
       NU2DDL = ZK24(JREFA2-1+2)(1:14)

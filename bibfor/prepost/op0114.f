@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,8 +84,8 @@ C
       MASSE = ZK24(LMODE+1)
       NOMSY = 'DEPL'
       CALL VPRECU ( MECA, NOMSY, NBORDR,ZI(JORDR), KVEC,
-     +              NBPARA, NOPARA, K8B, KVAL, K8B,
-     +              NEQ, NBMODE, CTYP, NBPARI, NBPARR, NBPARK )
+     &              NBPARA, NOPARA, K8B, KVAL, K8B,
+     &              NEQ, NBMODE, CTYP, NBPARI, NBPARR, NBPARK )
       CALL JEVEUO(KVEC,'L',LMOD)
       CALL JEVEUO(KVAL,'L',LVAL)
 C
@@ -149,12 +149,12 @@ C     --- ECRITURE DESCRIPTION NOEUDS STRUCTURE ---
          IDDL = ZI( APRNO + (NEC+2)*(INOE-1) + 1 - 1 ) - 1
          NCMP = ZI( APRNO + (NEC+2)*(INOE-1) + 2 - 1 )
          WRITE( IFCLA , '(3F10.5,6I2)' )
-     +                ( ZR(JCOOR+3*(INOE-1)+IN-1) , IN=1,3    ) ,
-     +                ( ZI(JBLO+IDDL+IC-1)        , IC=1,NCMP )
+     &                ( ZR(JCOOR+3*(INOE-1)+IN-1) , IN=1,3    ) ,
+     &                ( ZI(JBLO+IDDL+IC-1)        , IC=1,NCMP )
          DO 25 IC=1,6
             IF (IC.LE.NCMP) THEN
               IF (ZI(JBLO+IDDL+IC-1).NE.1 .AND.
-     +            ZI(JLAG+IDDL+IC-1).NE.1 ) THEN
+     &            ZI(JLAG+IDDL+IC-1).NE.1 ) THEN
                 IACTI = IACTI + 1
                 ZI(JACTI+(INOE-1)*6+IC-1) = IACTI
               ENDIF
@@ -200,7 +200,7 @@ C     --- ECRITURE MODES ---
             COEF = UN
          ELSE
             CALL RSADPA(MECA,'L',1,'MASS_GENE',
-     +                                      ZI(JORDR+IM-1),0,LMASG,K8B)
+     &                                      ZI(JORDR+IM-1),0,LMASG,K8B)
             COEF = UN / SQRT( ZR(LMASG) )
          ENDIF
          DO 42 IN = 1,NEQ
@@ -215,22 +215,22 @@ C     --- ECRITURE MODES ---
          ZETA  = ZR(JAMOR+IM-1)
          WRITE( IFCLA , '(1P,2E10.3)' ) OMEGA , ZETA
          WRITE( IFCLA , '(1P,8E10.3)' )
-     +                ( ZR(JMOD-1+IN+(IM-1)*NDDL) , IN=1,NDDL )
+     &                ( ZR(JMOD-1+IN+(IM-1)*NDDL) , IN=1,NDDL )
  44   CONTINUE
 C
 C     --- ECRITURE DES NUMEROS DE DDL ACTIFS ---
       CALL GETFAC('IMPRESSION',NIMPR)
       IF (NIMPR.NE.0) THEN
           WRITE(IFR,1000)
-     +             ' IMPR_CLASSI : ECRITURE DES NUMEROS DE DDL ACTIF'
+     &             ' IMPR_CLASSI : ECRITURE DES NUMEROS DE DDL ACTIF'
          NDMAX = 0
          NGMAX = 0
          DO 50 IMPR =1,NIMPR
             CALL GETVEM(NOMA,'NOEUD','IMPRESSION','NOEUD',
-     +                IMPR,1,0,K8B,N1)
+     &                IMPR,1,0,K8B,N1)
             NDMAX = MAX(NDMAX,-N1)
             CALL GETVEM(NOMA,'GROUP_NO','IMPRESSION','GROUP_NO',
-     +                   IMPR,1,0,K8B,N1)
+     &                   IMPR,1,0,K8B,N1)
             NGMAX = MAX(NGMAX,-N1)
    50    CONTINUE
          IF (NGMAX .GT. 0) THEN
@@ -238,18 +238,19 @@ C        --- VERIFICATION DES GROUPES DE NOEUDS ET COMPTAGE NDMAX ---
            CALL WKVECT ('&&OP0114.IMPRESSION','V V K8',NGMAX,JGROU)
            DO 70 IMPR = 1, NIMPR
              CALL GETVEM(NOMA,'GROUP_NO','IMPRESSION','GROUP_NO',
-     +                    IMPR,1,NGMAX,ZK8(JGROU),NGR)
+     &                    IMPR,1,NGMAX,ZK8(JGROU),NGR)
              NOEUGR = 0
              DO 60 IGR = 1, NGR
                CALL JEEXIN (JEXNOM(NOMA//'.GROUPENO',
-     +                      ZK8(JGROU+IGR-1)),IRET)
+     &                      ZK8(JGROU+IGR-1)),IRET)
                IF (IRET .EQ. 0) THEN
                  CALL UTMESS('F','IMPRESSION','LE GROUPE '//
-     +                       ZK8(JGROU+IGR-1)//
-     +                      'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
+     &                       ZK8(JGROU+IGR-1)//
+     &                      'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
+C        CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
                ELSE
                  CALL JELIRA (JEXNOM(NOMA//'.GROUPENO',
-     +                        ZK8(JGROU+IGR-1)),'LONMAX',N1,K1B)
+     &                        ZK8(JGROU+IGR-1)),'LONMAX',N1,K1B)
                  NOEUGR = NOEUGR + N1
                ENDIF
  60          CONTINUE
@@ -263,30 +264,31 @@ C
         DO 130 IMPR=1,NIMPR
 C       --- LECTURE DES NOEUDS DU MOT CLE NOEUD ---
            CALL GETVEM(NOMA,'NOEUD','IMPRESSION','NOEUD',
-     +               IMPR,1,0,K8B,NNO)
+     &               IMPR,1,0,K8B,NNO)
            NNO = -NNO
            CALL GETVEM(NOMA,'NOEUD','IMPRESSION','NOEUD',
-     +               IMPR,1,NNO,ZK8(JNOEUD),N1)
+     &               IMPR,1,NNO,ZK8(JNOEUD),N1)
            DO 80 INO = 1, NNO
               CALL JENONU (JEXNOM(NOMA//'.NOMNOE',ZK8(JNOEUD+INO-1)),
-     +                     IRET)
+     &                     IRET)
               IF (IRET .EQ. 0) THEN
               CALL UTMESS('F','IMPRESSION','NOEUD'//' '//
-     +                    ZK8(JNOEUD+INO-1)//
-     +                    'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+     &                    ZK8(JNOEUD+INO-1)//
+     &                    'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+C        CALL U2MESK('F','PREPOST3_83', 2 ,VALK)
               ENDIF
  80        CONTINUE
 C       --- LECTURE DES NOEUDS DU MOT CLE GROUP_NO ---
            CALL GETVEM(NOMA,'GROUP_NO','IMPRESSION','GROUP_NO',
-     +                  IMPR,1,0,K8B,NGR)
+     &                  IMPR,1,0,K8B,NGR)
            NGR = -NGR
            CALL GETVEM(NOMA,'GROUP_NO','IMPRESSION','GROUP_NO',
-     +                  IMPR,1,NGR,ZK8(JGROU),N1)
+     &                  IMPR,1,NGR,ZK8(JGROU),N1)
            DO 100 J = 1, NGR
               CALL JEVEUO (JEXNOM(NOMA//'.GROUPENO',ZK8(JGROU-1+J)),
-     +                     'L',JGR0)
+     &                     'L',JGR0)
               CALL JELIRA (JEXNOM(NOMA//'.GROUPENO',ZK8(JGROU-1+J)),
-     +                     'LONMAX',NOEUGR,K1B)
+     &                     'LONMAX',NOEUGR,K1B)
               DO 90 K = 1, NOEUGR
                  IN = ZI(JGR0-1+K)
                  CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
@@ -317,12 +319,12 @@ C
                   ZI(JDDLA+IC-1) = ZI(JACTI+(INOE-1)*6+ICOMPO-1)
   110           CONTINUE
                 IF (ICOMPO.NE.0)
-     +             WRITE(IFR,1020) ZK8(JNOEUD+I-1),
-     +                             (ZI(JDDLA+IC-1),IC=1,N2)
+     &             WRITE(IFR,1020) ZK8(JNOEUD+I-1),
+     &                             (ZI(JDDLA+IC-1),IC=1,N2)
               ELSE
                 NCMP = ZI( APRNO + (NEC+2)*(INOE-1) + 2 - 1 )
                 WRITE(IFR,1020) ZK8(JNOEUD+I-1),
-     +                  (ZI(JACTI+(INOE-1)*6+IC-1),IC=1,NCMP)
+     &                  (ZI(JACTI+(INOE-1)*6+IC-1),IC=1,NCMP)
               ENDIF
   120      CONTINUE
            WRITE(IFR,1030)

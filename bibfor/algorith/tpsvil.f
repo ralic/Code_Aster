@@ -1,23 +1,23 @@
       SUBROUTINE TPSVIL(TPS,S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,PREC,NITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C    
+C
        IMPLICIT NONE
        REAL*8  TPS,S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,PREC
        INTEGER NITER
@@ -58,19 +58,19 @@ C
       IF (DPC.EQ.0.D0) THEN
         TPS = 0.D0
       ELSE
-        TPS = 1.D-3 
+        TPS = 1.D-3
    10   CONTINUE
 
 
 C----CALCUL DE F1,FP1-------------------------------------------
-  
-        IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN 
-         CALL UTMESS('F','TPSVIL','ERREUR LOG NEGATIF OU NUL')
+
+        IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN
+         CALL U2MESS('F','ALGORITH3_73')
         ENDIF
 
         F1 = LOG(1+CTPS*TPS*FLUPHI)
         FP1= CTPS*FLUPHI / (1+CTPS*TPS*FLUPHI)
-C       
+C
 C----CALCUL DE F2,FP2-------------------------------------------
 C
         F2 = TPS*FLUPHI
@@ -78,7 +78,7 @@ C
 C
 C----CALCUL DE G1-----------------------------------------------
 C
-        G1 = A*EXP(-ENER/(TEMP+273.15D0))*S   
+        G1 = A*EXP(-ENER/(TEMP+273.15D0))*S
 C
 C----CALCUL DE G2-----------------------------------------------
 C
@@ -102,19 +102,19 @@ C
    20   CONTINUE
         ITER = ITER + 1
         IF (ITER.EQ.NITER) THEN
-           CALL UTMESS('F','TPSVIL','ECHEC DANS ELIMINATION TEMPS')
+           CALL U2MESS('F','ALGORITH10_92')
         ENDIF
-   
+
 C
 C----CALCUL DE F1,FP1-------------------------------------------
-C   
-        IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN 
-           CALL UTMESS('F','TPSVIL','ERREUR LOG NEGATIF OU NUL')
+C
+        IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN
+           CALL U2MESS('F','ALGORITH3_73')
         ENDIF
 
         F1 = LOG(1+CTPS*TPS*FLUPHI)
         FP1= CTPS*FLUPHI / (1+CTPS*TPS*FLUPHI)
-C       
+C
 C----CALCUL DE F2,FP2-------------------------------------------
 C
         F2 = TPS*FLUPHI
@@ -122,11 +122,11 @@ C
 C
 C----CALCUL DE G1-----------------------------------------------
 C
-        G1 = A*EXP(-ENER/(TEMP+273.15D0))*S     
+        G1 = A*EXP(-ENER/(TEMP+273.15D0))*S
 C
 C----CALCUL DE G2-----------------------------------------------
 C
-        G2 = B*EXP(-ENER/(TEMP+273.15D0))*S        
+        G2 = B*EXP(-ENER/(TEMP+273.15D0))*S
 C
 C----CALCUL DE F -----------------------------------------------
 C
@@ -135,10 +135,10 @@ C
         TPSANC = TPS
         TPS  = (TPS*FFP-FF+DPC)/FFP
         TEST = ABS((TPS-TPSANC)/TPSANC)
-      
-      
+
+
         IF (TEST.GT.PREC) GO TO 20
-      ENDIF     
-      
-  299 CONTINUE      
+      ENDIF
+
+  299 CONTINUE
       END

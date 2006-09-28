@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C   OPERATEUR: MODI_MAILLAGE
@@ -42,16 +42,16 @@ C     --- DEBUT DECLARATIONS NORMALISEES  JEVEUX -----------------------
 C     --- FIN  DECLARATIONS  NORMALISEES  JEVEUX -----------------------
 C
       INTEGER       N1, N2, NBOCC, NBOC1, NBOC2,NOP,I,
-     +              DIM, IADCOO, NBNO, NDDL
+     &              DIM, IADCOO, NBNO, NDDL
       LOGICAL       BIDIM
       CHARACTER*8   MA, MA2, DEPLA, K8BID, COUTUR
       CHARACTER*16  KBI1, KBI2, OPTION
       CHARACTER*19  GEOMI, GEOMF,GEOM1
       CHARACTER*24  COORJV
       REAL*8        LTCHAR, PT(3), PT2(3), DIR(3), ANGL
-      
+
       REAL*8        AXE1(3),AXE2(3),PERP(3)
-      
+
 C -DEB------------------------------------------------------------------
 C
       CALL INFMAJ
@@ -60,9 +60,7 @@ C
 C
       CALL GETRES ( MA2, KBI1, KBI2 )
 C
-      IF (MA.NE.MA2) CALL UTMESS('F','OP0154','CET OPERATEUR MODIFIE'
-     +    //' UN MAILLAGE EXISTANT. LE RESULTAT DOIT ETRE IDENTIQUE'
-     +    //' AU CONCEPT DONNE DANS L''ARGUMENT MAILLAGE.')
+      IF (MA.NE.MA2) CALL U2MESS('F','SOUSTRUC_15')
 C
 C
 C     --- TRAITEMENT DU MOT CLEF  "ORIE_FISSURE" :
@@ -88,14 +86,14 @@ C     --- TRAITEMENT DU MOT CLEF  "DEFORME" :
 C     ---------------------------------------
       CALL GETFAC ( 'DEFORME', NBOCC )
       IF ( NBOCC .NE. 0 ) THEN
-         CALL GETVTX ('DEFORME','OPTION',1,1,1,OPTION,NOP)       
+         CALL GETVTX ('DEFORME','OPTION',1,1,1,OPTION,NOP)
          CALL GETVID ( 'DEFORME', 'DEPL', 1,1,1, DEPLA, N1 )
          CALL CHPVER('F',DEPLA,'NOEU','DEPL_R',IER)
          GEOMI = MA//'.COORDO'
          GEOMF = MA//'.COORD2'
          CALL VTGPLD ( GEOMI, 1.D0, DEPLA, 'V', GEOMF )
          CALL DETRSD ( 'CHAMP_GD', GEOMI )
-         IF (OPTION.EQ.'TRAN_APPUI') THEN 
+         IF (OPTION.EQ.'TRAN_APPUI') THEN
             CALL DEFAPP ( MA, GEOMF, 1.D0, DEPLA, 'G', GEOMI )
          ELSE
             CALL COPISD ( 'CHAMP_GD', 'G', GEOMF, GEOMI )
@@ -105,7 +103,7 @@ C     ---------------------------------------
 C
 C
 C     --- TRAITEMENT DU MOT CLEF  "TRANSLATION" :
-C     --------------------------------------- 
+C     ---------------------------------------
       CALL GETVID ( ' ', 'TRANSLATION', 1,1,0, K8BID, N1 )
       IF ( N1 .NE. 0 ) THEN
          GEOMI = MA//'.COORDO'
@@ -190,12 +188,10 @@ C           EN 2D : DIM=N1=2    , AXE_2 N'EXISTE PAS N2=0
 C           EN 3D : DIM=N1=N2=3
             IF ( DIM .EQ. -2) THEN
                IF ( N1 .NE. DIM ) THEN
-                  CALL UTMESS('F','OP0154','OPTION SYMETRIE : LA '
-     +         //'DIMENSION DE POINT ET AXE_1 DOIT ETRE IDENTIQUE.')
+                  CALL U2MESS('F','ALGORITH9_62')
                ENDIF
                IF ( N2 .NE. 0 ) THEN
-                  CALL UTMESS('A','OP0154','OPTION SYMETRIE : '
-     +         //'AXE_2 EST INUTILE EN 2D, IL EST IGNORE.')
+                  CALL U2MESS('A','ALGORITH9_63')
                ENDIF
                CALL GETVR8 ( 'SYMETRIE', 'POINT', I, 1, 2, PT,   DIM )
                CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I, 1, 2, AXE1, N1 )
@@ -205,12 +201,10 @@ C              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A Z ET AXE1
                PERP(3) =  0.0D0
             ELSE
                IF ( N1 .NE. DIM ) THEN
-                 CALL UTMESS('F','OP0154','OPTION SYMETRIE : LA '
-     +        //'DIMENSION DE POINT ET AXE_1 DOIT ETRE IDENTIQUE.')
+                 CALL U2MESS('F','ALGORITH9_62')
                ENDIF
                IF ( N2 .NE. DIM ) THEN
-                 CALL UTMESS('F','OP0154','OPTION SYMETRIE : LA '
-     +        //'DIMENSION DE POINT ET AXE_2 DOIT ETRE IDENTIQUE.')
+                 CALL U2MESS('F','ALGORITH9_64')
                ENDIF
                CALL GETVR8 ( 'SYMETRIE', 'POINT', I, 1, 3, PT,   DIM )
                CALL GETVR8 ( 'SYMETRIE', 'AXE_1', I, 1, 3, AXE1, N1 )
@@ -226,7 +220,7 @@ C              CONSTRUCTION DU VECTEUR PERPENDICULAIRE A AXE1 ET AXE2
 C
 C
 C     --- TRAITEMENT DU MOT CLEF  "ECHELLE" :
-C     --------------------------------------- 
+C     ---------------------------------------
       CALL GETVID ( ' ', 'ECHELLE', 1,1,0, K8BID, N1 )
       IF ( N1 .NE. 0 ) THEN
          GEOMI = MA//'.COORDO'
@@ -245,7 +239,7 @@ C     ------------------------------------------
 C
 C
 C     --- TRAITEMENT DES MOTS CLES  "ORIE_PEAU_2D" , "ORIE_PEAU_3D"
-C                               ET  "ORIE_NORM_COQUE" : 
+C                               ET  "ORIE_NORM_COQUE" :
 C     ---------------------------------------------------------------
         CALL ORILGM(MA)
 C
@@ -264,15 +258,15 @@ C     --------------------------------------------------------
          CALL GETVTX ( 'PLAQ_TUBE', 'COUTURE'   , 1,1,1, COUTUR , N1 )
          IF (COUTUR.EQ.'OUI') CALL ASCELI ( MA )
          CALL ASCTUB ( MA )
-      ENDIF 
+      ENDIF
       CALL GETFAC ( 'TUBE_COUDE', NBOC2 )
       IF ( NBOC2 .NE. 0 ) THEN
         CALL GETVR8 ( 'TUBE_COUDE', 'L_TUBE_P1' , 1,1,1, LTCHAR , N1 )
         CALL ASCCOU ( MA )
-      ENDIF  
+      ENDIF
       IF (NBOC1.NE.0 .OR. NBOC2.NE.0) THEN
         CALL ASCREP ( MA, LTCHAR )
-      END IF                 
+      END IF
 C
 C
       CALL CARGEO ( MA )

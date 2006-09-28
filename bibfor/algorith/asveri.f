@@ -1,27 +1,27 @@
       SUBROUTINE ASVERI(KNOMSY,NBOPT,MECA,PSMO,STAT,TRONC,MONOAP,NBSUP,
-     +                                  NSUPP,NOMSUP,NDIR,NORDR,NBMODE)
+     &                                  NSUPP,NOMSUP,NDIR,NORDR,NBMODE)
       IMPLICIT  REAL*8 (A-H,O-Z)
       INTEGER           NDIR(*),NORDR(*),NSUPP(*)
       CHARACTER*(*)     KNOMSY(*),MECA,PSMO,STAT,NOMSUP(NBSUP,*)
       LOGICAL           TRONC,MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     COMMANDE : COMB_SISM_MODAL
@@ -48,7 +48,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
       DATA  ACCES  / 'ACCE    X       ' , 'ACCE    Y       ',
-     +               'ACCE    Z       ' /
+     &               'ACCE    Z       ' /
 C     ------------------------------------------------------------------
 C
       CALL GETRES(RESU,CONCEP,NOMCMD)
@@ -60,7 +60,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
          DO 10 ID = 1,3
             IF (NDIR(ID).EQ.1) THEN
                CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,ACCES(ID),CBID,R8B,
-     +                                              K8B,IORDR,1,NBTROU)
+     &                                              K8B,IORDR,1,NBTROU)
                IF (NBTROU.NE.1) THEN
                   IER = IER + 1
                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
@@ -90,7 +90,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
                   CMP = NOMCMP(ID)
                   MONACC = NOEU//CMP
                   CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
-     +                                        R8B,K8B,IORDR,1,NBTROU)
+     &                                        R8B,K8B,IORDR,1,NBTROU)
                   IF (NBTROU.NE.1) THEN
                      IER = IER + 1
                    CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
@@ -112,7 +112,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
  16               CONTINUE
                   IF ( TRONC ) THEN
                   CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
-     +                                        R8B,K8B,IORDR,1,NBTROU)
+     &                                        R8B,K8B,IORDR,1,NBTROU)
                   IF (NBTROU.NE.1) THEN
                      IER = IER + 1
                    CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
@@ -214,8 +214,9 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
             IF (IRT.NE.0) THEN
                IER = IER + 1
                CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
-     +                                   '" ET "'//CHEXT2//'" N''ONT'//
-     +                           ' PAS LE MEME DOMAINE DE DEFINITION.')
+     &                                   '" ET "'//CHEXT2//'" N''ONT'//
+     &                           ' PAS LE MEME DOMAINE DE DEFINITION.')
+C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
             ENDIF
  32      CONTINUE
          IF ( MONOAP ) THEN
@@ -236,8 +237,9 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                         IF (IRT.NE.0) THEN
                            IER = IER + 1
                       CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
-     +                                   '" ET "'//CHEXT2//'" N''ONT'//
-     +                           ' PAS LE MEME DOMAINE DE DEFINITION.')
+     &                                   '" ET "'//CHEXT2//'" N''ONT'//
+     &                           ' PAS LE MEME DOMAINE DE DEFINITION.')
+C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                         ENDIF
                      ENDIF
                   ENDIF
@@ -251,7 +253,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                      CMP = NOMCMP(ID)
                      MONACC = NOEU//CMP
                      CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
-     +                                          R8B,K8B,IORDR,1,NBTROU)
+     &                                          R8B,K8B,IORDR,1,NBTROU)
                      IF (NBTROU.EQ.1) THEN
                         CALL RSEXCH(STAT,NOMSY,IORDR,CHEXT2,IRET)
                         IF (CTYP(1:2).EQ.'NO') THEN
@@ -264,8 +266,9 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                         IF (IRT.NE.0) THEN
                            IER = IER + 1
                       CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
-     +                                   '" ET "'//CHEXT2//'" N''ONT'//
-     +                           ' PAS LE MEME DOMAINE DE DEFINITION.')
+     &                                   '" ET "'//CHEXT2//'" N''ONT'//
+     &                           ' PAS LE MEME DOMAINE DE DEFINITION.')
+C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                         ENDIF
                      ENDIF
                      IF ( TRONC ) THEN
@@ -283,8 +286,9 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                            IF (IRT.NE.0) THEN
                               IER = IER + 1
                       CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
-     +                                   '" ET "'//CHEXT2//'" N''ONT'//
-     +                           ' PAS LE MEME DOMAINE DE DEFINITION.')
+     &                                   '" ET "'//CHEXT2//'" N''ONT'//
+     &                           ' PAS LE MEME DOMAINE DE DEFINITION.')
+C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                            ENDIF
                         ENDIF
                      ENDIF
@@ -294,6 +298,6 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
          ENDIF
  30   CONTINUE
 C
-      IF (IER.NE.0) CALL UTMESS('F','ASVERI','DONNEES INCOMPATIBLES.')
+      IF (IER.NE.0) CALL U2MESS('F','ALGORITH_25')
 C
       END

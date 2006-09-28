@@ -1,7 +1,7 @@
       SUBROUTINE DELTAU(JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE F1BHHAJ J.ANGLES
 C TOLE  CRP_20
       IMPLICIT     NONE
-      INTEGER      JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NUMPAQ, NBMAP 
+      INTEGER      JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NUMPAQ, NBMAP
       INTEGER      TSPAQ
       CHARACTER*16 NOMCRI, NOMMET
       CHARACTER*19 CESR
@@ -165,7 +165,7 @@ C RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
 
       TNECES = 209*NBORDR*2
       CALL JEDISP(1, TDISP)
-      TDISP =  (TDISP * LOISEM()) / LOR8EM() 
+      TDISP =  (TDISP * LOISEM()) / LOR8EM()
       IF (TDISP .LT. TNECES ) THEN
          CALL UTDEBM('F', 'DELTAU.1', 'LA TAILLE MEMOIRE '//
      &       ' NECESSAIRE AU VECTEUR DE TRAVAIL DANS '//
@@ -472,15 +472,12 @@ C DE LA DEFORMATION NORMALE MOYENNE SUR LE PLAN CRITIQUE.
                CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'E       ',
      &                     VALE,CODRET,'  ')
                IF (CODRET(1:2) .EQ. 'NO') THEN
-                  CALL UTMESS('F', 'DELTAU.2', 'NOUS NE POUVONS PAS'//
-     &                   ' RECUPERER LA VALEUR DU MODULE D''YOUNG : E.')
+                  CALL U2MESS('F','PREPOST_11')
                ENDIF
                CALL RCVALE(NOMMAT,'ELAS',0,'        ',R8B,1,'NU      ',
      &                     VALNU,CODRET,'  ')
                IF (CODRET(1:2) .EQ. 'NO') THEN
-                  CALL UTMESS('F', 'DELTAU.3', 'NOUS NE POUVONS PAS'//
-     &                    ' RECUPERER LA VALEUR DU COEFFICIENT DE ' //
-     &                    'POISSON : NU.')
+                  CALL U2MESS('F','PREPOST_12')
                ENDIF
                C1 = (1+VALNU)/VALE
                C2 = VALNU/VALE
@@ -588,9 +585,7 @@ C CELA N'A PAS DE SENS.
 C CALCUL DU NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
 
                CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, CODRET )
-               IF ( CODRET .EQ. 'NO' ) CALL UTMESS('F','DELTAU.4',
-     &            'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '//
-     &            'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU' )
+               IF ( CODRET .EQ. 'NO' ) CALL U2MESS('F','PREPOST_2')
 
                CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', CODWO )
                IF ( CODWO .EQ. 'OK' ) THEN
@@ -641,8 +636,7 @@ C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
                CALL CESEXI('C',JCERD,JCERL,IMAP,IPG,1,ICMP,JAD)
 
                IF (JAD .EQ. 0) THEN
-                  CALL UTMESS('F', 'DELTAU.5', 'HORS BORNES '//
-     &                             ' DEFINIES DANS CESCRE.')
+                  CALL U2MESS('F','PREPOST_3')
                ELSE
                   JAD = ABS(JAD)
                   ZL(JCERL - 1 + JAD) = .TRUE.

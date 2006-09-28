@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,10 +77,7 @@ C
 
       CALL GETVID(' ','ACCE',0,1,0,OPTION,N1)
       IF (N1.NE.0) THEN
-         CALL UTMESS('A','CALC_CHAM_ELEM',
-     &   'POUR PRENDRE EN COMPTE LES TERMES D''INERTIE IL EST PREFER'//
-     &   'ABLE D''UTILISER LA COMMANDE "CALC_ELEM". LE MOT CLE "ACCE"'//
-     &   ' N''EST PAS TRAITE ET LES RESULTATS RISQUENT D''ETRE FAUX.')
+         CALL U2MESS('A','CALCULEL3_96')
       ENDIF
 
       KCHA = '&&OP0038.CHARGES'
@@ -154,7 +151,7 @@ C        ------------------------
 C        -- OPTIONS INCONNUES:
 C        ---------------------
       ELSE
-        CALL UTMESS('F',' OP0038 ',' OPTION INEXISTANTE:'//OPTION)
+        CALL U2MESK('F','CALCULEL3_22',1,OPTION)
       END IF
 
 

@@ -3,22 +3,22 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C IMPRESSION DANS LE FICHIER RESULTAT DES PARAMETRES DE COUPLAGE
@@ -64,7 +64,7 @@ C
       CHARACTER*19   MELFLU
       CHARACTER*8    TYPFLU
       REAL*8         CARAC(2),FREQ(2*NBM*NPV),FREQI(*),VITE(NPV),AMOC(*)
-      REAL*8         VRMIN,VRMAX,VRMIN1,VRMIN2,VRMAX1,VRMAX2 
+      REAL*8         VRMIN,VRMAX,VRMIN1,VRMIN2,VRMAX1,VRMAX2
       REAL*8         VMOY,VMOYTO,REDUIT,RAPPOR
 C
       INTEGER        NBR,JTRAV1,JTRAV2,JTRAV3,JTRAV4,JVIT1,JVIT2,JZONE
@@ -99,7 +99,7 @@ C
       NOM2 = '&&COEFRA.CKR2'
       CHAM30='******************************'
 
-C      
+C
       CHAM19(1:13) = MELFLU(1:8)//'.C01.'
       NOMSYM = 'DEPL_R  '
       FORMAR = '1PE12.5'
@@ -117,22 +117,21 @@ C
       LRESU = .FALSE.
 C
 C
-C     VERIFICATION DE LA COHERENCE DES VITESSES REDUITES 
+C     VERIFICATION DE LA COHERENCE DES VITESSES REDUITES
 C     ENTRE LES FICHIERS .70 ET .71 - OPTION FAISCEAU-TRANS
 C
       IF(ITYPFL.EQ.1 ) THEN
         CALL JEEXIN(NOM1,IRET)
         IF (IRET.NE.0) THEN
-           CALL JEVEUO(NOM1,'L',JVIT1)   
-           CALL JEVEUO(NOM2,'L',JVIT2)            
+           CALL JEVEUO(NOM1,'L',JVIT1)
+           CALL JEVEUO(NOM2,'L',JVIT2)
            VRMIN1 = ZR(JVIT1-1+1)
            VRMAX1 = ZR(JVIT1-1+2)
            VRMIN2 = ZR(JVIT2-1+1)
-           VRMAX2 = ZR(JVIT2-1+2)        
+           VRMAX2 = ZR(JVIT2-1+2)
            IF((ABS(VRMIN1-VRMIN2)) .GT. 1.0D-04 .OR.
      &        (ABS(VRMAX1-VRMAX2)) .GT. 1.0D-04) THEN
-               CALL UTMESS('F','FLUIMP', 'LES VITESSES REDUITES' //
-     &        ' DES FICHIERS .70 ET .71 NE SONT PAS COHERENTES')
+               CALL U2MESS('F','ALGELINE_42')
            ENDIF
         ENDIF
 C
@@ -163,12 +162,12 @@ C
         ENDIF
         IF (ITYPFL.EQ.1) THEN
            CALL JEVEUO('&&MDCONF.TEMPO','L',JZONE)
-           NZONE = ZI(JZONE-1+1) 
+           NZONE = ZI(JZONE-1+1)
            IF(CALCUL(2)) THEN
               CALL JEVEUO(MELFLU(1:8)//'.VEN','L',JVEN)
               CALL JEVEUO(MELFLU(1:8)//'.VCN','L',JVCN)
               CALL JEVEUO(MELFLU(1:8)//'.MASS','L',JCONN)
-              
+
               CALL JEVEUO(TYPFLU//'           .FSVR','L',LFSVR)
               FSVI = TYPFLU//'           .FSVI'
               CALL JEVEUO(FSVI,'L',LFSVI)
@@ -249,7 +248,7 @@ C
                  ENDIF
 C
                  VRMAX = ZR(JVRZO+2*(J-1)+1)
-                 CALL CODREE(VRMAX,'E',XVMAX)   
+                 CALL CODREE(VRMAX,'E',XVMAX)
                  IF (VRMAX.LT.0.D0) THEN
                    XVMAX = '-'//XVMAX
                  ELSE
@@ -297,8 +296,8 @@ C
 C
                CALL JEDETR('&&FLUIMP.TRAV1')
                CALL JEDETR('&&FLUIMP.TRAV2')
-               CALL JEDETR('&&FLUIMP.TRAV3') 
-               CALL JEDETR('&&FLUIMP.TRAV4') 
+               CALL JEDETR('&&FLUIMP.TRAV3')
+               CALL JEDETR('&&FLUIMP.TRAV4')
              ENDIF
           ELSE
             WRITE(IFR,2001) ' *',CHAV11,CHAV11,CHAV11,CHAV11
@@ -352,7 +351,7 @@ C
 C
             ELSE
               VRED = VITE(IV)/(FREQ1*CARAC(1))
-              IF(VRED .GE. 0) THEN  
+              IF(VRED .GE. 0) THEN
                 CALL CODREE(VRED,'E',XVRED)
                 XVRED = ' '//XVRED
               ELSE
@@ -360,7 +359,7 @@ C
                 XVRED = '-'//XVRED
               ENDIF
 C
-              IF (FREQ1 .GE. 0) THEN  
+              IF (FREQ1 .GE. 0) THEN
                 CALL CODREE(FREQ1,'E',XFREQ1)
                 XFREQ1 = ' '//XFREQ1
               ELSE
@@ -368,22 +367,22 @@ C
                 XFREQ1 = '-'//XFREQ1
               ENDIF
 C
-              IF (AMOR1 .GE. 0) THEN    
+              IF (AMOR1 .GE. 0) THEN
                 CALL CODREE(AMOR1*1.D+02,'E',XAMOR)
                 XAMOR = ' '//XAMOR
               ELSE
                 CALL CODREE(ABS(AMOR1*1.D+02),'E',XAMOR)
                 XAMOR = '-'//XAMOR
-              ENDIF 
+              ENDIF
 
               CHAV40 =' * '//XCOD//' * '//XVRED//' * '//
-     &                   XFREQ1//' * '//XAMOR//' *' 
+     &                   XFREQ1//' * '//XAMOR//' *'
 C
               IF (ITYPFL .EQ. 1) THEN
                 CALL WKVECT('&&FLUIMP.TRAV5','V V K80',10,JTRAV5)
                 CALL JEVEUO('&&PACOUC.TRAV1','L',JTR1)
-                CALL JEVEUO('&&PACOUC.TRAV2','L',JTR2)  
-C              
+                CALL JEVEUO('&&PACOUC.TRAV2','L',JTR2)
+C
                 DO 25 IK = 1,NZONE
                   L1   = ZI(JTR2 + 3*NZONE*NPV*(IM-1)+
      &                   3*NZONE*(IV-1) + 3*(IK-1))
@@ -391,13 +390,13 @@ C
      &                   3*NZONE*(IV-1) + 3*(IK-1) + 1)
                   L3   = ZI(JTR2 + 3*NZONE*NPV*(IM-1)+
      &                   3*NZONE*(IV-1) + 3*(IK-1) + 2)
-                  BMIN = ZR(JTR1 + 2*NZONE*NPV*(IM-1) + 
+                  BMIN = ZR(JTR1 + 2*NZONE*NPV*(IM-1) +
      &                   2*NZONE*(IV-1) + 2*(IK-1))
-                  BMAX = ZR(JTR1 +2*NZONE*NPV*(IM-1) + 
+                  BMAX = ZR(JTR1 +2*NZONE*NPV*(IM-1) +
      &                   2*NZONE*(IV-1) + 2*(IK-1) + 1)
-                  CALL CODENT(L1,'D',XL1)     
-                  CALL CODENT(L2,'D',XL2)     
-                  CALL CODENT(L3,'D',XL3)     
+                  CALL CODENT(L1,'D',XL1)
+                  CALL CODENT(L2,'D',XL2)
+                  CALL CODENT(L3,'D',XL3)
                   IF (L1.EQ.0) THEN
                     XBMIN = '     -       '
                   ELSE
@@ -422,12 +421,12 @@ C
                    ENDIF
                   ZK80(JTRAV5+IK-1) =' '//XL1(1:8)//' '//XL2(1:8)//
      &               ' '//XL3(1:8)//' | '//XBMIN//' | '//XBMAX//' *'
-   25            CONTINUE 
-                 WRITE (IFR,3002) CHAV40,(ZK80(JTRAV5+J-1),J=1,NZONE) 
-                 CALL JEDETR('&&FLUIMP.TRAV5')         
+   25            CONTINUE
+                 WRITE (IFR,3002) CHAV40,(ZK80(JTRAV5+J-1),J=1,NZONE)
+                 CALL JEDETR('&&FLUIMP.TRAV5')
                ELSE
                  WRITE (IFR,2002) CHAV40
-               ENDIF                 
+               ENDIF
             ENDIF
    20     CONTINUE
 C
@@ -436,10 +435,10 @@ C
      &                     (CHAZP2,CHAZV7,J=1,NZONE)
             WRITE(IFR,3001) '*',CHAV11,CHAV11,CHAV11,CHAV11,
      &                     (CHAZP1,CHAZV1,J=1,NZONE)
-          ELSE      
+          ELSE
             WRITE(IFR,2001) '*',CHAV13,CHAV13,CHAV13,CHAV13
             WRITE(IFR,2001) '*',CHAV11,CHAV11,CHAV11,CHAV11
-          ENDIF      
+          ENDIF
           ENDIF
           IF (CALCUL(2)) THEN
 
@@ -513,7 +512,7 @@ C
                    ELSE
                       MODUL2=MODUL*ZI(LFSVI+1+NZONE+J)
                       PAS=(MOD((I-1),MODUL2))/MODUL
-                   ENDIF    
+                   ENDIF
                    ZR(JCSTE-1+J)=ZR(LFSVR+3+2*(J-1))+PAS*
      &             (ZR(LFSVR+3+2*(J-1)+1)-ZR(LFSVR+3+2*(J-1)))
      &             /(ZI(LFSVI+1+NZONE+J)-1)
@@ -534,8 +533,7 @@ C
 
  100         CONTINUE
              WRITE(IFR,'(A)') CTRAV2(1:(2+(30*NZONE)+90))
-             WRITE(IFR,*) 
-     
+             WRITE(IFR,*)
           ENDIF
 C
    10   CONTINUE
@@ -578,11 +576,11 @@ C
   40      CONTINUE
   30    CONTINUE
 C
-      ENDIF          
+      ENDIF
       CALL JEDETR('&&FLUIMP.CSTE')
-      CALL JEDEMA()      
+      CALL JEDEMA()
 C --- FORMATS
-C 
+C
  1001 FORMAT (1P,' VITESSE MOYENNE SUR L ENSEMBLE DES ZONES = ',D13.6)
  1002 FORMAT (1P,' MODE : NUMERO D ORDRE:',I3,'/ FREQ:',D13.6)
  2001 FORMAT (A2,4A16)
@@ -593,7 +591,7 @@ C
 
  4001 FORMAT (1X,' MODE N ',I3)
  4002 FORMAT (1X,' VITESSE N ',I3)
- 
+
  5001 FORMAT (1P,1X,'*',3X,I3,5X,'*',4(5X,D13.6,7X,'*'))
  5002 FORMAT (1X,91A1)
  5003 FORMAT (1X,'*',100(10X,A4,1X,I3,11X,'*'))

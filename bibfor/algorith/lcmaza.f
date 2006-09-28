@@ -2,24 +2,24 @@
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 
       IMPLICIT NONE
@@ -54,9 +54,9 @@ C                 1   -> VALEUR DE L'ENDOMMAGEMENT
 C                 2   -> INDICATEUR D'ENDOMMAGEMENT
 C                 3   -> TEMPERATURE MAXIMALE ATTEINTE PAR LE MATERIAU
 C OUT DSIDEP  : MATRICE TANGENTE
-C ON A BESOIN DE 
+C ON A BESOIN DE
 C         EPSD0 = DEFORMATION SEUIL  [REEL OU FCT]
-C         BETA = COEF CORRECTEUR POUR CISAILLEMENT (1. OU 1.06)[REEL]   
+C         BETA = COEF CORRECTEUR POUR CISAILLEMENT (1. OU 1.06)[REEL]
 C         AT = CONSTANTE DE TRACTION     (0.7 A 1)[REEL OU FCT]
 C         AC = CONSTANTE DE COMPRESSION (1 A 1.5)[REEL OU FCT]
 C         BT = CONSTANTE DE TRACTION    (10 000 A 100 000)[REEL OU FCT]
@@ -68,15 +68,15 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NOMRES(6), NOMPAR
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
       INTEGER     I,J,K,L,IRET
-      REAL*8      E, NU, ALPHA, KDESS, BENDO 
+      REAL*8      E, NU, ALPHA, KDESS, BENDO
       REAL*8      DC, DT, AC, AT, BC, BT, BETA, EPSD0
       REAL*8      EPS(6), EPSE(6), EPSPLU(6), EPSEP(3), EPST(3), EPSEQ
       REAL*8      SIGEL(6), SIGELP(3), TRSIG
-      REAL*8      TEMP, TMAX, TMAXM, HYDR, SECH , SREF     
+      REAL*8      TEMP, TMAX, TMAXM, HYDR, SECH , SREF
       REAL*8      TOL, TOLDYN, TR(6), TU(6), JACAUX(3), VECPE(3,3)
       REAL*8      RAC2, LAMBDA, DEUXMU, ALPHAT, COEF, RTEMPC, RTEMPT
       REAL*8      VALRES(6), VALPAR, COPLAN, D, TMP1
-      REAL*8      KRON(6)  
+      REAL*8      KRON(6)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
 C ======================================================================
@@ -88,8 +88,7 @@ C -- OPTION ET MODELISATION
      &   (.NOT.( COMPOR(1)(1:7) .EQ. 'KIT_HHM')).AND.
      &   (.NOT.( COMPOR(1)(1:7) .EQ. 'KIT_THM')).AND.
      &   (.NOT.( COMPOR(1)(1:8) .EQ. 'KIT_THHM'))) THEN
-            CALL UTMESS('F','MAZARS_01',
-     &           ' COMPORTEMENT INATTENDU : '//COMPOR(1))
+            CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
 
       RIGI  = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
@@ -100,7 +99,7 @@ C -- OPTION ET MODELISATION
       NDIMSI = 2*NDIM
       RAC2=SQRT(2.D0)
 
-C   DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET 
+C   DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET
 C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
       TMAXM = VIM(3)
         CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
@@ -112,7 +111,7 @@ C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
         POUM='+'
         CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECH,IRET)
         IF ( IRET.NE.0) SECH=0.D0
-        TMAX = MAX(TMAXM, TP) 
+        TMAX = MAX(TMAXM, TP)
         IF (TMAX.GT.TMAXM) VIP(3) = TMAX
       ELSE
         TEMP = TM
@@ -130,7 +129,7 @@ C-----------------------------------------------------
       NOMPAR = 'TEMP'
       VALPAR = TMAX
 
-C    LECTURE DES CARACTERISTIQUES ELASTIQUES 
+C    LECTURE DES CARACTERISTIQUES ELASTIQUES
 
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
@@ -152,18 +151,18 @@ C     SAUF EN CAS DE COUPLAGE
         NOMRES(1)='B_ENDOGE'
         NOMRES(2)='K_DESSIC'
         CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,1,
-     +            NOMRES(1),VALRES(1),CODRET(1), ' ' )
+     &            NOMRES(1),VALRES(1),CODRET(1), ' ' )
         IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
         BENDO = VALRES(1)
         CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,1,
-     +            NOMRES(2),VALRES(2),CODRET(2), ' ' )
+     &            NOMRES(2),VALRES(2),CODRET(2), ' ' )
         IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
         KDESS = VALRES(2)
-      ELSE 
+      ELSE
         BENDO = 0.D0
         KDESS = 0.D0
       ENDIF
-            
+
 C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(1) = 'EPSD0'
       NOMRES(2) = 'BETA'
@@ -179,14 +178,14 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       BC    = VALRES(4)
       AT    = VALRES(5)
       BT    = VALRES(6)
-      
+
 
 C ======================================================================
 C       CALCUL DES GRANDEURS UTILES QUELQUE SOIT OPTION
 C
 C ======================================================================
 
-C    1 - CALCUL DES DEFORMATIONS MECANIQUES ET THERMIQUES 
+C    1 - CALCUL DES DEFORMATIONS MECANIQUES ET THERMIQUES
 C--------------------------------------------------------
 
 C  -  MISE A JOUR DE LA DEFORMATION TOTALE
@@ -195,26 +194,26 @@ C  -  MISE A JOUR DE LA DEFORMATION TOTALE
       IF (RESI) THEN
         DO  10 K = 1, NDIMSI
           EPS(K) = EPSM(K) + DEPS(K)
-10      CONTINUE        
+10      CONTINUE
       ELSE
         DO 20 K=1,NDIMSI
           EPS(K)=EPSM(K)
 20      CONTINUE
         D=VIM(1)
-      ENDIF  
+      ENDIF
       DO  30 K=4,NDIMSI
         EPS(K) = EPS(K)/RAC2
 30    CONTINUE
 
-C    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE 
+C    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE
 C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
 
       CALL R8INIR(6, 0.D0, EPSE,1)
       DO 35 K=1,NDIMSI
-        EPSE(K) = EPS(K) - (   ALPHA * (TEMP - TREF) 
+        EPSE(K) = EPS(K) - (   ALPHA * (TEMP - TREF)
      &                      - KDESS * (SREF-SECH)
      &                      - BENDO *  HYDR         ) * KRON(K)
-35    CONTINUE 
+35    CONTINUE
       IF (CPLAN) THEN
         COPLAN  = - NU/(1.D0-NU)
         EPSE(3)  = COPLAN * (EPSE(1)+EPSE(2))
@@ -248,7 +247,7 @@ C
      &       NITJAC,TRIJ,ORDREJ)
 
 
-  
+
       EPSEQ = 0.D0
       DO 40 K = 1,3
         IF (EPSEP(K).GT.0.D0) THEN
@@ -256,8 +255,8 @@ C
         END IF
 40    CONTINUE
       EPSEQ = SQRT(EPSEQ)
-      
-C -  3     CALCUL DE <EPS>+ 
+
+C -  3     CALCUL DE <EPS>+
 C ------------------------------------------------------
 
       CALL R8INIR(6, 0.D0, TR,1)
@@ -294,20 +293,19 @@ C----------------------------------------------------------------
       ALPHAT = 0.D0
       DO 80 K = 1,3
         EPST(K) = ( MAX(0.D0, SIGELP(K))* (1.D0 + NU)
-     &            - NU *( TRSIG - TMP1) ) / E       
+     &            - NU *( TRSIG - TMP1) ) / E
         ALPHAT = ALPHAT + (MAX(0.D0, EPSEP(K))*EPST(K) )
 80    CONTINUE
-      IF (EPSEQ.GT.1.D-10 ) THEN 
+      IF (EPSEQ.GT.1.D-10 ) THEN
         ALPHAT = ALPHAT / EPSEQ**2
       ELSE
         ALPHAT = 0.0D0
       ENDIF
-     
 C ======================================================================
-C       CALCUL DES CONTRAINTES ET VARIABLES INTERNES 
+C       CALCUL DES CONTRAINTES ET VARIABLES INTERNES
 C           (OPTION FULL_MECA ET RAPH_MECA - (RESI) )
 C ====================================================================
-      IF (RESI) THEN          
+      IF (RESI) THEN
 
         IF (EPSEQ.LE.EPSD0) THEN
 C         PAS DE PROGRESSION DE L'ENDOMMAGEMENT
@@ -316,8 +314,8 @@ C         PAS DE PROGRESSION DE L'ENDOMMAGEMENT
 
 C   1 -     CALCUL DE L'ENDOMMAGEMENT
 C----------------------------------------------------------------
-C      ASTUCE POUR EVITER QUE LE CALCUL NE PLANTE DANS LE CALCUL DE 
-C      EXP(RTEMP) SI RTEMP TROP GRAND            
+C      ASTUCE POUR EVITER QUE LE CALCUL NE PLANTE DANS LE CALCUL DE
+C      EXP(RTEMP) SI RTEMP TROP GRAND
             RTEMPT = BT * ( EPSEQ - EPSD0 )
             RTEMPC = BC * ( EPSEQ - EPSD0 )
             RTEMPT = MIN(RTEMPT,700.D0)
@@ -327,7 +325,7 @@ C      EXP(RTEMP) SI RTEMP TROP GRAND
      &          ( AT / (EXP(RTEMPT  ) ))
           DC = 1.D0 - (EPSD0*(1.D0 - AC )/EPSEQ ) -
      &          ( AC / (EXP(RTEMPC) ) )
-           
+
           IF (DC.LT.0.D0) DC=0.D0
           IF (DC.GT.1.D0) DC=1.D0
           IF (DT.LT.0.D0) DT=0.D0
@@ -346,20 +344,20 @@ C      EXP(RTEMP) SI RTEMP TROP GRAND
             IF (D.GT.VIM(1)) PROG = .TRUE.
             IF (D.GT.0.D0)   ELAS = .FALSE.
         END IF
-        
+
 C    2 -   MISE A JOUR DES VARIABLES INTERNES
 C ------------------------------------------------------------
-          
+
         VIP(1) = D
         IF (D.EQ.0.D0) THEN
           VIP(2) = 0.D0
         ELSE
           VIP(2) = 1.D0
-        END IF 
+        END IF
 
 C    3 - CALCUL DES CONTRAINTES
-C ------------------------------------------------------------  
-                  
+C ------------------------------------------------------------
+
 C        ON PASSE DANS LE REPERE INITIAL LES CONTRAINTES REELLES
         CALL R8INIR(6, 0.D0, SIG,1)
         TR(1) = SIGELP(1)*(1.D0-D)
@@ -372,17 +370,17 @@ C        ON PASSE DANS LE REPERE INITIAL LES CONTRAINTES REELLES
         DO  90 K=4,NDIMSI
           SIG(K)=RAC2*SIG(K)
 90      CONTINUE
-      END IF   
+      END IF
 
 C ======================================================================
 C     CALCUL  DE LA MATRICE TANGENTE DSIDEP
 C         OPTION RIGI_MECA_TANG ET FULL_MECA  (RIGI)
 C ======================================================================
-      IF (RIGI)  THEN 
+      IF (RIGI)  THEN
 
 C   1 -  CONTRIBUTION ELASTIQUE
-C -------------------------------------------------------------  
-              
+C -------------------------------------------------------------
+
         CALL R8INIR(36, 0.D0, DSIDEP,1)
         LAMBDA = LAMBDA * (1.D0 - D)
         DEUXMU = DEUXMU * (1.D0 - D)
@@ -401,31 +399,30 @@ C -------------------------------------------------------------
 
 C   2 -  CONTRIBUTION DUE A  L'ENDOMMAGEMENT
 C             ON SYMETRISE LA MATRICE (K + Kt )/2
-C ------------------------------------------------------------  
+C ------------------------------------------------------------
         IF ((.NOT.ELAS).AND.(PROG)) THEN
             RTEMPT = BT * ( EPSEQ - EPSD0 )
             RTEMPC = BC * ( EPSEQ - EPSD0 )
             RTEMPT = MIN(RTEMPT,700.D0)
             RTEMPC = MIN(RTEMPC,700.D0)
-        
-          IF (ALPHAT.LT.1.D0.AND.ALPHAT.GT.0.D0) THEN 
-        
-            COEF =(EPSD0*(1.D0 - AT)/EPSEQ**2 + 
+
+          IF (ALPHAT.LT.1.D0.AND.ALPHAT.GT.0.D0) THEN
+
+            COEF =(EPSD0*(1.D0 - AT)/EPSEQ**2 +
      &             AT*BT/ EXP (RTEMPT) )*(ALPHAT**BETA)+
-     &            (EPSD0*(1.D0 - AC)/EPSEQ**2 + 
+     &            (EPSD0*(1.D0 - AC)/EPSEQ**2 +
      &             AC*BC/ EXP (RTEMPC))* ((1.D0-ALPHAT)**BETA)
-             
+
           ELSEIF (ALPHAT.GE.1.D0) THEN
-          
-            COEF =(EPSD0*(1.D0 - AT)/EPSEQ**2 + 
+
+            COEF =(EPSD0*(1.D0 - AT)/EPSEQ**2 +
      &             AT*BT/ EXP (RTEMPT) )
           ELSE
-            COEF= (EPSD0*(1.D0 - AC)/EPSEQ**2 + 
+            COEF= (EPSD0*(1.D0 - AC)/EPSEQ**2 +
      &             AC*BC/ EXP (RTEMPC))
           ENDIF
-       
+
           COEF = COEF / EPSEQ
-     
           CALL R8INIR(6, 0.D0, SIGEL,1)
           TR(1) = SIGELP(1)
           TR(2) = SIGELP(2)
@@ -437,10 +434,10 @@ C ------------------------------------------------------------
           DO  120 K=4,NDIMSI
             SIGEL(K)=RAC2*SIGEL(K)
 120       CONTINUE
-        
+
           DO 220 I=1,6
             DO 221 J=1,6
-              DSIDEP (I,J) = DSIDEP (I,J) - 
+              DSIDEP (I,J) = DSIDEP (I,J) -
      &                    COEF * SIGEL(I)* EPSPLU(J)
 221         CONTINUE
 220       CONTINUE
@@ -460,10 +457,10 @@ C -- CORRECTION CONTRAINTES PLANES
           ENDIF
 
 
-       
 
-        ENDIF        
+
+        ENDIF
 
       ENDIF
- 
+
       END

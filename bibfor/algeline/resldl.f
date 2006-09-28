@@ -4,7 +4,7 @@
       CHARACTER*19      NOMMA2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,12 +75,11 @@ C
       CALL MTDSCR(NOMMA2)
       CALL JEVEUO(NOMMA2(1:19)//'.&INT','E',LMAT)
       IF (LMAT.EQ.0) THEN
-         CALL UTMESS('F','RESLDL_1','ERREUR : LMAT EST NUL')
+         CALL U2MESS('F','ALGELINE3_40')
       ELSE
         NIMPO = ZI(LMAT+7)
         IF ( VCI19.EQ.' ')THEN
-          IF (NIMPO.NE.0) CALL UTMESS('F','RESLDL_2','LA MATRICE '
-     +     //'POSSEDE DES DDLS IMPOSES ELIMINES: IL FAUT UN VCINE')
+          IF (NIMPO.NE.0) CALL U2MESS('F','ALGELINE3_41')
           IDVALC = 0
         ELSE
 C
@@ -94,9 +93,8 @@ C     +     //' PRENDRE EN COMPTE VCINE')
           CALL JEVEUO(VCI19//'.VALE','L',IDVALC)
           CALL JELIRA(VCI19//'.VALE','TYPE',IBID,TYPE)
           IF (((TYPE(1:1).EQ.'R').AND.(ZI(LMAT+3).NE.1)).OR.
-     +       ((TYPE(1:1).EQ.'C').AND.(ZI(LMAT+3).NE.2))) THEN
-            CALL UTMESS('F','RESLDL_4',' LA MATRICE ET LE VECTEUR '
-     +      //'CINEMATIQUE NE CONTIENNENT PAS DES VALEURS DE MEME TYPE')
+     &       ((TYPE(1:1).EQ.'C').AND.(ZI(LMAT+3).NE.2))) THEN
+            CALL U2MESS('F','ALGELINE3_42')
           ENDIF
         ENDIF
         VALE(1:19) = CHAMNO
@@ -104,8 +102,7 @@ C     +     //' PRENDRE EN COMPTE VCINE')
         CALL JELIRA(VALE,'TYPE',IBID,TYPE)
         IF (TYPE(1:1).EQ.'R') THEN
           IF (ZI(LMAT+3).NE.1) THEN
-            CALL UTMESS('F','RESLDL_5','LA MATRICE ET LE SECOND MEMBRE'
-     +       //' NE CONTIENNENT PAS DES VALEURS DE MEME TYPE')
+            CALL U2MESS('F','ALGELINE3_43')
           ENDIF
            CALL MRCONL(LMAT,0,'R',ZR(LXSOL),1)
           IF (IDVALC.NE.0) THEN
@@ -120,8 +117,7 @@ C
            CALL MRCONL(LMAT,0,'R',ZR(LXSOL),1)
         ELSEIF (TYPE(1:1).EQ.'C') THEN
           IF (ZI(LMAT+3).NE.2) THEN
-            CALL UTMESS('F','RESLDL_6','LA MATRICE ET LE SECOND MEMBRE'
-     +       //' NE CONTIENNENT PAS DES VALEURS DE MEME TYPE')
+            CALL U2MESS('F','ALGELINE3_43')
           ENDIF
           CALL MCCONL(LMAT,0,'C',ZC(LXSOL),1)
           IF (IDVALC.NE.0) THEN

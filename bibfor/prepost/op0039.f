@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -104,8 +104,7 @@ C
        IF(NMO.NE.0) THEN
          NN = NMO / 2
          IF(2*NN.NE.NMO) THEN
-           CALL UTMESS('F','OP0039','POUR LA VARIABLE D''ACCES "'//
-     >          'NOEUD_CMP", IL FAUT UN NOMBRE PAIR DE VALEURS.')
+           CALL U2MESS('F','PREPOST3_65')
          ENDIF
        ENDIF
   100 CONTINUE
@@ -186,21 +185,19 @@ C           ---  IMPRESSION DU MAILLAGE -----
             IF ( NM .NE. 0 ) THEN
                IF ( LMOD  ) THEN
                   CALL DISMOI('I','NOM_MAILLA',MODELE,'MODELE',IBID,
-     >                                                 NOMAB,IRET)
+     &                                                 NOMAB,IRET)
                   IF (NOMA.NE.NOMAB) THEN
-                    CALL UTMESS('F','OP0039','LE MODELE ET LE MAILLAGE'
-     >                          //' INTRODUITS NE SONT PAS COHERENTS')
+                    CALL U2MESS('F','PREPOST3_66')
                   ENDIF
                ENDIF
                CALL IRMAIL ( FORM,IFI,VERSIO,NOMA,LMOD,MODELE,NIVE,
-     >                     INFMAI )
+     &                     INFMAI )
                NUMEMO = NUMEMO + 1
             ENDIF
  200     CONTINUE
 
          IF ( NUMEMO .LE. 1 ) THEN
-          CALL UTMESS('F','OP0039','IL FAUT DONNER LE MAILLAGE POUR '//
-     &                            'UNE IMPRESSION AU FORMAT "CASTEM".')
+          CALL U2MESS('F','PREPOST3_67')
          ENDIF
 C
          CALL JEEXIN('&&OP0039.LAST',IRET)
@@ -225,11 +222,9 @@ C
             ENDIF
 
  220     CONTINUE
-         
+
          IF ( LMAIL.AND.LRESU ) THEN
-            CALL UTMESS ('A','IMPR_RESU','VOUS VOULEZ IMPRIMER
-     & SUR UN MEME FICHIER LE MAILLAGE ET UN CHAMP CE QUI EST
-     & INCOMPATIBLE AVEC LE FORMAT GMSH')
+            CALL U2MESS('A','PREPOST3_68')
             GOTO 9999
          ENDIF
       ENDIF
@@ -280,8 +275,7 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
             IF(TYRES(1:10).EQ.'DYNA_HARMO')THEN
               IF(FORM(1:4).EQ.'GMSH' .OR. FORM(1:6).EQ.'CASTEM')THEN
                    IF(NP.EQ.0)
-     >                  CALL UTMESS('F','OP0039','LE MOT CLE '//
-     >                  ' ''PARTIE'' EST OBLIGATOIRE.')
+     &                  CALL U2MESS('F','PREPOST3_69')
                 ENDIF
             ENDIF
          ENDIF
@@ -293,8 +287,7 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
             IF(NOMGD(6:6).EQ.'C')THEN
               IF(FORM(1:4).EQ.'GMSH' .OR. FORM(1:6).EQ.'CASTEM')THEN
                    IF(NP.EQ.0)
-     >                  CALL UTMESS('F','OP0039','LE MOT CLE '//
-     >                  ' ''PARTIE'' EST OBLIGATOIRE.')
+     &                  CALL U2MESS('F','PREPOST3_69')
               ENDIF
             ENDIF
          ENDIF
@@ -307,8 +300,7 @@ C          --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
            IF (SAUX03.EQ.'OUI'.AND.FORM.EQ.'MED') THEN
              INFMAI = 2
            ELSEIF (SAUX03.EQ.'OUI'.AND.FORM.NE.'MED') THEN
-             CALL UTMESS('A','OP0039','LE MOT CLE "INFO_MAILLAGE" '
-     >               //'EST RESERVE AU FORMAT MED')
+             CALL U2MESS('A','PREPOST3_70')
            ENDIF
          ENDIF
 C
@@ -322,7 +314,7 @@ C
          ENDIF
          JAUX = 0
          CALL PSRESE ( 'RESU', IAUX, IBID, RESU, JAUX,
-     >                 NBPASS, NORECG, IRET )
+     &                 NBPASS, NORECG, IRET )
 C
          IF ( IRET.EQ.0 ) THEN
 C
@@ -341,8 +333,7 @@ C
          IF ( LMOD .AND. NM.NE.0 ) THEN
           CALL DISMOI('I','NOM_MAILLA',MODELE,'MODELE',IBID,NOMAB,IRET)
           IF (NOMA.NE.NOMAB) THEN
-               CALL UTMESS('F','OP0039','LE MODELE ET LE MAILLAGE'
-     >               //' INTRODUITS NE SONT PAS COHERENTS')
+               CALL U2MESS('F','PREPOST3_66')
           ENDIF
          ENDIF
 C
@@ -371,7 +362,7 @@ C        ---  IMPRESSION DU MAILLAGE AU PREMIER PASSAGE -----
          IF( NM.NE.0 .AND. FORM.NE.'CASTEM' .AND. NRPASS.EQ.1 ) THEN
            IF (FORM(1:4).NE.'GMSH'.OR.(NR.EQ.0.AND.NC.EQ.0)) THEN
              CALL IRMAIL ( FORM, IFI, VERSIO, NOMA, LMOD, MODELE, NIVE,
-     >                     INFMAI )
+     &                     INFMAI )
            ENDIF
          ENDIF
 C
@@ -396,8 +387,7 @@ C          --- TEST PRESENCE DU MOT CLE INFO_RESU (FORMAT 'RESULTAT')
                CALL RSINFO(LERESU,IFI)
                GOTO 10
              ELSEIF(INFRES.EQ.'OUI'.AND.FORM.NE.'RESULTAT') THEN
-               CALL UTMESS('A','OP0039','LE MOT CLE "INFO_RESU" EST '
-     >               //'RESERVE AU FORMAT RESULTAT')
+               CALL U2MESS('A','PREPOST3_71')
              ENDIF
            ENDIF
 
@@ -411,12 +401,12 @@ C              (PAR DEFAUT TOUS LES CHAMPS CAR MOT-CLE FACULTATIF)
            IF(N21.GT.0 .AND. TOUCHA.EQ.'OUI') THEN
 C            - ON RECUPERE LES NOMS (ON IMPRIME TOUS LES CHAMPS)
              CALL JELIRA(LERESU//'           .DESC','NOMUTI',
-     >                   NBNOSY,K1BID)
+     &                   NBNOSY,K1BID)
              CALL WKVECT('&&OP0039.NOM_SYMB','V V K16',
-     >                   NBNOSY,JNOSY)
+     &                   NBNOSY,JNOSY)
              DO 12 ISY = 1,NBNOSY
                CALL JENUNO(JEXNUM(LERESU//'           .DESC',ISY),
-     >                                         ZK16(JNOSY-1+ISY))
+     &                                         ZK16(JNOSY-1+ISY))
    12        CONTINUE
            ELSEIF (N21.GT.0 .AND. TOUCHA.EQ.'NON') THEN
              NBNOSY=0
@@ -424,10 +414,10 @@ C            - ON RECUPERE LES NOMS (ON IMPRIME TOUS LES CHAMPS)
            ELSEIF(N22.LT.0) THEN
              NBNOSY = - N22
              CALL WKVECT('&&OP0039.NOM_SYMB','V V K16',
-     >                   NBNOSY,JNOSY)
+     &                   NBNOSY,JNOSY)
 C            - ON RECUPERE LA LISTE DES NOMS DONNEE PAR L'UTILISATEUR
              CALL GETVTX('RESU','NOM_CHAM',IOCC,1,NBNOSY,
-     >                                                ZK16(JNOSY),N0)
+     &                                                ZK16(JNOSY),N0)
            ENDIF
 
 C          --- ON REGARDE QUELS SONT LES NOM_CMP A IMPRIMER:
@@ -459,7 +449,7 @@ C
            DO 16 I = 0 , NBNOSY-1
              DO 14 J = 0 , NBORDR-1
                CALL RSEXCH (LERESU,ZK16(JNOSY+I),ZI(JORDR+J),
-     >                      NOCH19,IRET)
+     &                      NOCH19,IRET)
                IF ( IRET .NE. 0 ) THEN
                   CALL UTDEBM('A','OP0039','CHAMP INEXISTANT')
                   CALL UTIMPK('L',' NOM_CHAM ',1,ZK16(JNOSY+I))
@@ -532,18 +522,12 @@ C              (OPERANDE DE SELECTION SUR DES ENTITES TOPOLOGIQUES)
            CALL GETVID('RESU','MAILLE'  ,IOCC,1,0,K8B,N3)
            CALL GETVID('RESU','GROUP_MA',IOCC,1,0,K8B,N4)
            IF((N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0)
-     >          .AND. (FORM(1:7).EQ.'ENSIGHT')) THEN
-             CALL UTMESS('A','OP0039','L''IMPRESSION AVEC'//
-     >         ' SELECTION SUR DES ENTITES TOPOLOGIQUES N''A PAS'//
-     >         ' DE SENS AU FORMAT ENSIGHT : LES VALEURS DE TOUS'//
-     >         ' LES NOEUDS DU MAILLAGE SERONT DONC IMPRIMEES.')
+     &          .AND. (FORM(1:7).EQ.'ENSIGHT')) THEN
+             CALL U2MESS('A','PREPOST3_72')
            ENDIF
            IF((N1.NE.0.OR.N2.NE.0.OR.N3.NE.0.OR.N4.NE.0)
-     >          .AND. (FORM(1:6).EQ.'CASTEM')) THEN
-             CALL UTMESS('A','OP0039','L''IMPRESSION AVEC'//
-     >         ' SELECTION SUR DES ENTITES TOPOLOGIQUES N''A PAS'//
-     >         ' DE SENS AU FORMAT CASTEM  : TOUTES LES VALEURS'//
-     >         ' SUR TOUT LE MAILLAGE SERONT DONC IMPRIMEES.')
+     &          .AND. (FORM(1:6).EQ.'CASTEM')) THEN
+             CALL U2MESS('A','PREPOST3_73')
            ENDIF
 
 C          *** ON S'ALLOUE UN TABLEAU DE 8 ENTIERS POUR LA TOPOLOGIE
@@ -557,11 +541,11 @@ C              - ON S'ALLOUE :
 C                UN TABLEAU DE K8, LISTE DES NOMS DE GPES DE NOEUDS
 C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
                CALL WKVECT('&&OP0039.LIST_GRNO','V V K8',
-     >                     NBGRN,JLGRN)
+     &                     NBGRN,JLGRN)
                CALL WKVECT('&&OP0039.NOM_GRNO','V V K80',
-     >                     NBGRN,JNGRN)
+     &                     NBGRN,JNGRN)
                CALL GETVID('RESU','GROUP_NO',IOCC,1,NBGRN,
-     >                                               ZK8(JLGRN),IBID)
+     &                                               ZK8(JLGRN),IBID)
                ZI(JTOPO-1+3) = NBGRN
              ENDIF
 C
@@ -584,11 +568,11 @@ C              - ON S'ALLOUE :
 C                UN TABLEAU DE K8, LISTE DES NOMS DE GPES DE MAILLES
 C                UN TABLEAU DE K80 (POUR FORMAT 'RESULTAT')
                CALL WKVECT('&&OP0039.LIST_GRMA','V V K8',
-     >                     NBGRM,JLGRM)
+     &                     NBGRM,JLGRM)
                CALL WKVECT('&&OP0039.NOM_GRMA','V V K80',
-     >                     NBGRM,JNGRM)
+     &                     NBGRM,JNGRM)
                CALL GETVID('RESU','GROUP_MA',IOCC,1,NBGRM,
-     >                                               ZK8(JLGRM),IBID)
+     &                                               ZK8(JLGRM),IBID)
                ZI(JTOPO-1+7) = NBGRM
              ENDIF
 C
@@ -607,19 +591,19 @@ C
 C            ***  IL Y A SELECTION EN OPERANDE SUR NOEUDS OU MAILLES
 C                 OU DES GROUPES DE NOEUDS OU DES GROUPES DE MAILLES
              IF(NBNO.NE.0.OR.NBGRN.NE.0
-     >          .OR.NBMA.NE.0.OR.NBGRM.NE.0) THEN
+     &          .OR.NBMA.NE.0.OR.NBGRM.NE.0) THEN
                IF(NR.NE.0) THEN
 C                - C'EST UN RESULTAT COMPOSE: NOM DU MAILLAGE DANS NOMMA
                  CALL DISMOI('F','NOM_MAILLA',LERESU,'RESULTAT',IBID,
-     >                       NOMMA,IBID)
+     &                       NOMMA,IBID)
                ELSEIF (NC.NE.0) THEN
 C                - C'EST UN CHAM_GD: NOM DU MAILLAGE DANS NOMMA
                  CALL DISMOI('F','NOM_MAILLA',LERESU,'CHAMP',IBID,
-     >                       NOMMA,IBID)
+     &                       NOMMA,IBID)
                ENDIF
 C              - NOMBRE TOTAL DE NOEUDS DU MAILLAGE NOMMA = NBNOE
                CALL DISMOI('F','NB_NO_MAILLA',NOMMA,'MAILLAGE',
-     >                                               NBNOE,K8B,IBID)
+     &                                               NBNOE,K8B,IBID)
                CALL WKVECT('&&OP0039.IND_NOEU','V V I',NBNOE,JINDNO)
                DO 70 I=1,NBNOE
                   ZI(JINDNO+I-1)=0
@@ -635,7 +619,7 @@ C              - ON RECUPERE A PARTIR DE ZI(JNUNOU) LES NUMEROS DES
 C                NOEUDS DE LA LISTE DE NOEUDS OU DE GROUPES DE NOEUDS
 C                (NBNOU EST LE NBRE TOTAL DE NOEUDS TROUVES A IMPRIMER)
                CALL IRNONO(NOMMA,NBNOE,NBNO,ZK8(JLNO),NBGRN,ZK8(JLGRN),
-     >                    '&&OP0039.NUMNOE',NBNOU,ZI(JINDNO))
+     &                    '&&OP0039.NUMNOE',NBNOU,ZI(JINDNO))
 C              - ON RECUPERE DE NOUVEAU L'ADRESSE DE .NUMNOE CAR IRNONO
 C                A PU AGRANDIR CET OBJET :
                CALL JEVEUO('&&OP0039.NUMNOE','L',JNUNOU)
@@ -653,7 +637,7 @@ C              - ON RECUPERE A PARTIR DE ZI(JNUMA) LES NUMEROS DES
 C                MAILLES DE LA LISTE DE MAILLES OU DE GROUPES DE MAILLES
 C                (NBMAT = NBRE TOTAL DE MAILLES TROUVEES A IMPRIMER)
                CALL IRMAMA(NOMMA,NBMA,ZK8(JLMA),NBGRM,ZK8(JLGRM),
-     >                     '&&OP0039.NUMMAI',NBMAT)
+     &                     '&&OP0039.NUMMAI',NBMAT)
 C              - ON RECUPERE DE NOUVEAU L'ADRESSE DE .NUMMAI CAR IRMAMA
 C                A PU AGRANDIR CET OBJET :
                CALL JEVEUO('&&OP0039.NUMMAI','L',JNUMA)
@@ -670,12 +654,12 @@ C               (NBNOS = NOMBRE DE NOEUDS SOMMETS DE CETTE LISTE)
                     ZI(JNOFI+II-1)=ZI(JNUNOS+I-1)
                  ENDIF
  490           CONTINUE
-               NBNOS=II                      
+               NBNOS=II
                NBNOT = NBNOT + NBNOS
              ENDIF
 C
              IF ( NBNO.NE.0 .OR. NBGRN.NE.0 .OR.
-     >            NBMA.NE.0 .OR. NBGRM.NE.0 ) THEN
+     &            NBMA.NE.0 .OR. NBGRM.NE.0 ) THEN
                 IF ( NBNOU.EQ.0 .AND. NBMAT.EQ.0 ) GOTO 99
              ENDIF
 C
@@ -778,8 +762,8 @@ C        ***************************************************************
            ENDIF
            CALL JEVEUO('&&OP0039.LIST_TOPO','L',JTOPO)
            IF(IMXNO.NE.0.OR.IMXGN.NE.0.OR.IMXMA.NE.0.OR.
-     >       IMXGM.NE.0)  WRITE(IFI,'(/,20X,A)') 'ENTITES '
-     >               //'TOPOLOGIQUES SELECTIONNEES '
+     &       IMXGM.NE.0)  WRITE(IFI,'(/,20X,A)') 'ENTITES '
+     &               //'TOPOLOGIQUES SELECTIONNEES '
            IF(IMXNO.NE.0) THEN
              ZK80(JNNO-1+1)(1:11) = 'NOEUD    : '
              WRITE(IFI,'(1X,A80)') (ZK80(JNNO-1+I),I=1,IMXNO)
@@ -821,12 +805,12 @@ C        ---- CHOIX DES COMPOSANTES AUX FORMATS ----
 C        ---- RESULTAT, ENSIGHT, CASTEM, MED ET GMSH  ----
 C        ********************************************
          IF((NC.NE.0.OR.NR.NE.0).AND.
-     >        ( FORM.EQ.'RESULTAT'     .OR.
-     >          FORM(1:4).EQ.'GMSH'    .OR.
-     >          FORM(1:3).EQ.'MED'     .OR.
-     >          FORM(1:7).EQ.'ENSIGHT' .OR.
-     >          FORM(1:5).EQ.'IDEAS'   .OR.
-     >          FORM(1:6).EQ.'CASTEM' ) ) THEN
+     &        ( FORM.EQ.'RESULTAT'     .OR.
+     &          FORM(1:4).EQ.'GMSH'    .OR.
+     &          FORM(1:3).EQ.'MED'     .OR.
+     &          FORM(1:7).EQ.'ENSIGHT' .OR.
+     &          FORM(1:5).EQ.'IDEAS'   .OR.
+     &          FORM(1:6).EQ.'CASTEM' ) ) THEN
            CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,K8B,N)
            IF(N.LT.0) THEN
            NBCMP=-N
@@ -841,7 +825,7 @@ C        ***************************************
          IF(NC.NE.0.OR.NR.NE.0) THEN
 C          - VERIFICATION DES PARAMETRES (FORMAT 'RESULTAT')
            CALL IRPARB(LERESU,NPA,ZK16(JPA),'&&OP0039.NOM_PAR',
-     >                 NBPARA)
+     &                 NBPARA)
            CALL JEEXIN('&&OP0039.NOM_PAR',IRET)
            IF (IRET.GT.0) THEN
               CALL JEVEUO('&&OP0039.NOM_PAR','E',JPARA)
@@ -851,10 +835,10 @@ C          - VERIFICATION DES PARAMETRES (FORMAT 'RESULTAT')
 C
 C          - ECRITURE DU CONCEPT LERESU SUR FICHIER FICH AU FORMAT FORM
            CALL IRECRI(LERESU,RESU,NOPASE,FORM,IFI,TITRE,LGMSH,
-     >       NBNOSY,ZK16(JNOSY),PARTIE,NBPARA,ZK16(JPARA),NBORDR,
-     >       ZI(JORDR),LRESU,'RESU',IOCC,MODELE,CECR,
-     >       LCOR,NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),NBCMP,ZK8(JCMP),
-     >       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,NIVE,VERSIO )
+     &       NBNOSY,ZK16(JNOSY),PARTIE,NBPARA,ZK16(JPARA),NBORDR,
+     &       ZI(JORDR),LRESU,'RESU',IOCC,MODELE,CECR,
+     &       LCOR,NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),NBCMP,ZK8(JCMP),
+     &       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,NIVE,VERSIO )
          ENDIF
 C        **********************
 C        --- FIN IMPRESSION ---
@@ -884,7 +868,7 @@ C        --- DESTRUCTION TABLEAUX DE TRAVAIL
          CALL JEDETR ( '&&OP0039.NOM_PAR'     )
          CALL JEDETR ( '&&OP0039.FILTRE_NO'   )
          CALL JEDETR ( '&&OP0039.IND_NOEU'    )
-         
+
 C===================================
  11   CONTINUE
 C
@@ -903,6 +887,6 @@ C
          ENDIF
       ENDIF
 
-9999  CONTINUE      
+9999  CONTINUE
       CALL JEDEMA()
       END

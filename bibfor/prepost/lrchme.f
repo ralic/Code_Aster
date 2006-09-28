@@ -1,12 +1,12 @@
       SUBROUTINE LRCHME ( CHANOM, NOCHMD, NOMAMD,
-     >                    NOMAAS, TYPECH, NOMGD,
-     >                    NBCMPV, NCMPVA, NCMPVM,
-     >                    IINST, NUMPT,  NUMORD, INST, CRIT, PREC,
-     >                    NROFIC, CODRET )
+     &                    NOMAAS, TYPECH, NOMGD,
+     &                    NBCMPV, NCMPVA, NCMPVM,
+     &                    IINST, NUMPT,  NUMORD, INST, CRIT, PREC,
+     &                    NROFIC, CODRET )
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,8 +74,6 @@ C 0.2. ==> COMMUNS
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'LRCHME' )
 C
       CHARACTER*8 NOMMOD
       INTEGER     IAUX
@@ -87,25 +85,23 @@ C
 C
       IF ( TYPECH(1:2).EQ.'NO' ) THEN
         CALL LRCNME ( CHANOM,  NOCHMD, NOMAMD,
-     >                NOMAAS, NOMGD,
-     >                NBCMPV, NCMPVA, NCMPVM,
-     >                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     >                NROFIC, CODRET )
+     &                NOMAAS, NOMGD,
+     &                NBCMPV, NCMPVA, NCMPVM,
+     &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
+     &                NROFIC, CODRET )
       ELSEIF ( TYPECH(1:2).EQ.'EL' ) THEN
         CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMMOD, IAUX )
         IF ( IAUX.EQ.0 ) THEN
-          CALL UTMESS
-     >    ( 'F' , NOMPRO, 'MODELE OBLIGATOIRE POUR LIRE UN CHAM_ELEM' )
+          CALL U2MESS('F','PREPOST3_25')
         ENDIF
         CALL LRCEME ( CHANOM,  NOCHMD, TYPECH(1:4), NOMAMD,
-     >                NOMAAS, NOMMOD, NOMGD,
-     >                NBCMPV, NCMPVA, NCMPVM,
-     >                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     >                NROFIC, CODRET )
+     &                NOMAAS, NOMMOD, NOMGD,
+     &                NBCMPV, NCMPVA, NCMPVM,
+     &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
+     &                NROFIC, CODRET )
       ELSE
         CODRET = 1
-        CALL UTMESS
-     >  ( 'A' , NOMPRO, 'TYPE '//TYPECH(1:4)//' INCONNU POUR MED.' )
+        CALL U2MESK('A','PREPOST_95',1,TYPECH(1:4))
       ENDIF
 C
 C====
@@ -113,9 +109,7 @@ C 2. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-        CALL UTMESS
-     > ( 'A' , NOMPRO, 'LECTURE IMPOSSIBLE POUR '//CHANOM//
-     >   ' AU FORMAT MED' )
+        CALL U2MESK('A','PREPOST3_24',1,CHANOM)
       ENDIF
 C
       END

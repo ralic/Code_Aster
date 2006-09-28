@@ -8,7 +8,7 @@
      &                   SECMBR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,7 +159,7 @@ C FETI OR NOT FETI ?
         CALL DESAGG (SECOLD,FEDOLD, FEPILD, DIDOLD,DIPILD ,
      &             FSDOLD, FSPILD, DIDILD, CINELD )
       ENDIF
-            
+
       CALL JEEXIN ( CHARGE, IRET )
       IF ( IRET .NE. 0 ) THEN
          CALL JEVEUO ( INFOCH, 'L', JINFC )
@@ -220,8 +220,7 @@ C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
         CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8BID,IRET)
         IF (NBSS.NE.0) THEN
 C -- ALERTE SI FETI
-         IF (LFETI) CALL UTMESS('F','NMCHAR',
-     &       'MACRO_ELEMENT STATIQUE ET FETI INCOMPATIBLES !')
+         IF (LFETI) CALL U2MESS('F','ALGORITH6_70')
           CALL GETFAC('SOUS_STRUC',NBSST)
           IF (NBSST.NE.0) THEN
             CALL EXISD('CHAMP',CNSSTR(1:19),IRET)
@@ -283,11 +282,10 @@ C    CNFEDO = CNFEDO + TABTRA
           CALL JEVEUO(TABTRA,'E',JTRA)
         ENDIF
         IF (LONDE) THEN
-         IF (LFETI) CALL UTMESS('F','NMCHAR',
-     &       'CHARGEMENT ONDE PLANE ET FETI INCOMPATIBLES !')
+         IF (LFETI) CALL U2MESS('F','ALGORITH6_71')
            CALL JEVEUO(CHONDP,'L',IONDP)
            CALL FONDPL(MODELE,MATE,NUMEDD,NEQ,ZK8(IONDP),NONDP,VECCOR,
-     +                 VEANEC,VAANEC,INSTAP,ZR(JTRA))
+     &                 VEANEC,VAANEC,INSTAP,ZR(JTRA))
            CALL DAXPY(NEQ, -1.D0, ZR(JTRA), 1, ZR(JCNFE), 1)
         ENDIF
 
@@ -296,10 +294,9 @@ C -- CHARGEMENTS FORCES FLUIDES SUR LES GRAPPES          ---> CNFEDO
 C    CNFEDO = CNFEDO + FORCE_FLUIDE + FEDOLD*COEFML
         IF ( LGRFL ) THEN
 C -- ALERTE SI FETI
-         IF (LFETI) CALL UTMESS('F','NMCHAR',
-     &       'FORCES FLUIDES SUR LES GRAPPES ET FETI INCOMPATIBLES !')
+         IF (LFETI) CALL U2MESS('F','ALGORITH6_72')
             CALL NMGRFL ( NUMEDD, CHGRFL, DEPMOI, DEPDEL,
-     +                             VITPLU, ACCPLU, INST(2), CNFEDO )
+     &                             VITPLU, ACCPLU, INST(2), CNFEDO )
         ENDIF
         IF ((IALGO.EQ.4).AND.(FOPREC)) THEN
           CALL EXISD('CHAMP',FEDOLD,IRET)
@@ -337,8 +334,7 @@ C ======================================================================
       ELSE IF (MODE.EQ.'INER' .OR. MODE.EQ.'TOUS') THEN
 
 C -- ALERTE SI FETI
-        IF (LFETI) CALL UTMESS('F','NMCHAR',
-     &       'FORCES D''INERTIE ET FETI INCOMPATIBLES !')        
+        IF (LFETI) CALL U2MESS('F','ALGORITH6_73')
         IF ( IALGO.EQ.4 ) THEN
           COEFM2 = -1.D0/(1.5D0-INST(5))
         ENDIF
@@ -405,9 +401,7 @@ C ======================================================================
       ELSE IF (MODE.EQ.'EXPL') THEN
 
 C -- ALERTE SI FETI
-        IF (LFETI) CALL UTMESS('F','NMCHAR',
-     &       'FORCES EXPLICITES ET FETI INCOMPATIBLES !')
-     
+        IF (LFETI) CALL U2MESS('F','ALGORITH6_74')
 C -- FORCES EXPLICITES
 C -- ON LES TRAITE DE LA MEME FACON QUE LES FORCES D'INERTIE
         INSTAM = INST(1) - INST(2)
@@ -484,8 +478,7 @@ C -- DERIVATION DEPLACEMENTS IMPOSES DONNES                 ---> CNDIDO
 
         IF (MODE.EQ.'SEDY') THEN
 C -- ALERTE SI FETI
-          IF (LFETI) CALL UTMESS('F','NMCHAR',
-     &       'FORCES D''INERTIE DERIVEES ET FETI INCOMPATIBLES !')
+          IF (LFETI) CALL U2MESS('F','ALGORITH6_75')
 
 C -- CONTRIBUTION FORCES D'INERTIE ET AMORT. DERIVEES        ---> CNFEDO
           INSTAM = INST(1) - INST(2)
@@ -521,9 +514,9 @@ C ======================================================================
 C                        FORCE INCONNUE
 C ======================================================================
       ELSE
-        CALL UTMESS('F','NMCHAR','MODE ' //MODE// ' NON RECONNU (DVLP)')
+        CALL U2MESK('F','ALGORITH6_76',1,MODE)
       END IF
-      
+
       INST(5) = RBID
       CALL JEDEMA()
       END

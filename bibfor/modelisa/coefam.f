@@ -1,22 +1,22 @@
       SUBROUTINE COEFAM(IPAS,IRES,X,XSI0,CD)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/11/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C-----------------------------------------------------------------------
@@ -53,18 +53,18 @@ C
       INTEGER      JBORNE, JCOEFF, JVIRED
       REAL*8       ZERO, BORNCD(20),COEFCD(20,11)
       CHARACTER*24 NOM1, NOM2, NOM3
-C        
+C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C      
+C
       X = DBLE(ABS(X))
 C
       NCDMAX = 11
       ZERO = 0.0D0
 C
       NOM1 = '&&COEFAM.CDI'
-      NOM2 = '&&COEFAM.CDR1'      
+      NOM2 = '&&COEFAM.CDR1'
       NOM3 = '&&COEFAM.CDR2'
 C
       IF (IRES .EQ. 0) THEN
@@ -78,39 +78,36 @@ C     ===============================================
       CALL JEEXIN (NOM2,IRET)
       IF (IRET .EQ. 0) THEN
 C
-C --- LECTURE DU FICHIER DE DONNEES 
+C --- LECTURE DU FICHIER DE DONNEES
 C     =============================
          CALL COEFAL(NOM1,NOM2,NOM3,NCDMAX,IPAS,IRES,BORNCD,
      &               NBORCD,COEFCD,IPAS1,IRES1)
-      ELSE       
+      ELSE
          CALL JEVEUO(NOM1,'L',JBORNE)
          CALL JEVEUO(NOM2,'L',JCOEFF)
-         CALL JEVEUO(NOM3,'L',JVIRED)                            
+         CALL JEVEUO(NOM3,'L',JVIRED)
          IPAS1 = ZI(JBORNE-1+1)
          IRES1 = ZI(JBORNE-1+2)
-         NBORCD = ZI(JBORNE-1+3)         
+         NBORCD = ZI(JBORNE-1+3)
          IF(IPAS1 .EQ. IPAS .AND. IRES1 .EQ. IRES) THEN
             K = 1
             DO 100 I = 1,NBORCD
                BORNCD(I) = ZR(JCOEFF + I - 1)
                DO 110 J = 1,NCDMAX
                  COEFCD(I,J) = ZR(JCOEFF + NBORCD + K - 1 )
-                 K = K + 1           
+                 K = K + 1
   110          CONTINUE
   100       CONTINUE
          ELSE
             CALL JEDETR(NOM1)
             CALL JEDETR(NOM2)
-            CALL JEDETR(NOM3)            
+            CALL JEDETR(NOM3)
             CALL COEFAL(NOM1,NOM2,NOM3,NCDMAX,IPAS,IRES,BORNCD,
      &                  NBORCD,COEFCD,IPAS1,IRES1)
-         ENDIF                                
+         ENDIF
       ENDIF
       IF(IPAS1 .NE. IPAS .OR. IRES1 .NE. IRES) THEN
-         CALL UTMESS('F','CALC_FLUI_STRU','<COEFAM> LE NUMERO'// 
-     &                ' DE CORRELATION ET/OU LE TYPE DE RESEAU'//
-     &                ' PASSES DANS LE FICHIER DE COMMANDE NE '//
-     &                ' SONT PAS COHERENTS AVEC LE FICHIER .70')
+         CALL U2MESS('F','MODELISA4_29')
       ENDIF
 C
 C **********************************************************************
@@ -120,71 +117,71 @@ C
 C
       IF ( IPAS .EQ. 1 ) THEN
 C
-         IF ( IRES.GE.1.AND.IRES.LE.1000 ) THEN        
-C           
+         IF ( IRES.GE.1.AND.IRES.LE.1000 ) THEN
+C
             IF( X.LT.BORNCD(1) ) THEN
                CD = 0.D0
-            ELSE   
-               IF( X.LT.BORNCD(NBORCD) ) THEN            
+            ELSE
+               IF( X.LT.BORNCD(NBORCD) ) THEN
                   DO 130 I = 2 , NBORCD
                     IF ( X.GE.BORNCD(I-1).AND.X.LT.BORNCD(I) ) THEN
                        CD = COEFCD(I-1,1)/(X*X*X*X*X*X*X) +
      &                      COEFCD(I-1,2)/(X*X*X*X*X*X) +
-     &                      COEFCD(I-1,3)/(X*X*X*X*X) + 
-     &                      COEFCD(I-1,4)/(X*X*X*X) + 
+     &                      COEFCD(I-1,3)/(X*X*X*X*X) +
+     &                      COEFCD(I-1,4)/(X*X*X*X) +
      &                      COEFCD(I-1,5)/(X*X*X) +
      &                      COEFCD(I-1,6)/(X*X) +
      &                      COEFCD(I-1,7)/(X) +
-     &                      COEFCD(I-1,8)   + 
-     &                      COEFCD(I-1,9)*(X)  + 
-     &                      COEFCD(I-1,10)*(X*X) + 
+     &                      COEFCD(I-1,8)   +
+     &                      COEFCD(I-1,9)*(X)  +
+     &                      COEFCD(I-1,10)*(X*X) +
      &                      COEFCD(I-1,11)*(X*X*X)
-                       GO TO 140              
+                       GO TO 140
                     ENDIF
   130              CONTINUE
   140             CONTINUE
                ELSE
                   CD = COEFCD(NBORCD,1)/(X*X*X*X*X*X*X) +
      &                 COEFCD(NBORCD,2)/(X*X*X*X*X*X) +
-     &                 COEFCD(NBORCD,3)/(X*X*X*X*X) + 
-     &                 COEFCD(NBORCD,4)/(X*X*X*X) + 
+     &                 COEFCD(NBORCD,3)/(X*X*X*X*X) +
+     &                 COEFCD(NBORCD,4)/(X*X*X*X) +
      &                 COEFCD(NBORCD,5)/(X*X*X) +
      &                 COEFCD(NBORCD,6)/(X*X) +
      &                 COEFCD(NBORCD,7)/(X) +
-     &                 COEFCD(NBORCD,8)   + 
-     &                 COEFCD(NBORCD,9)*(X) + 
-     &                 COEFCD(NBORCD,10)*(X*X) + 
-     &                 COEFCD(NBORCD,11)*(X*X*X)                  
-               ENDIF        
-            ENDIF         
+     &                 COEFCD(NBORCD,8)   +
+     &                 COEFCD(NBORCD,9)*(X) +
+     &                 COEFCD(NBORCD,10)*(X*X) +
+     &                 COEFCD(NBORCD,11)*(X*X*X)
+               ENDIF
+            ENDIF
 C
 C
 C --- CELLULE DE TUBES VIBRANTS EN DEBUT DE FAISCEAU VISCACHE1.
 C
          ELSE IF( IRES.EQ.1001 ) THEN
-C 
+C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8) + 
+               CD = COEFCD(1,8) +
      &              COEFCD(1,9)*X
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8) + 
-     &              COEFCD(2,9)*X     
+               CD = COEFCD(2,8) +
+     &              COEFCD(2,9)*X
             ELSE IF ( X .LT. BORNCD(4) ) THEN
-               CD = COEFCD(3,8) + 
-     &              COEFCD(3,7)/X + 
-     &              COEFCD(3,6)/(X*X)   
+               CD = COEFCD(3,8) +
+     &              COEFCD(3,7)/X +
+     &              COEFCD(3,6)/(X*X)
             ELSE IF ( X .LT. BORNCD(5) ) THEN
-               CD = COEFCD(4,8)               
+               CD = COEFCD(4,8)
             ELSE IF ( X .LT. BORNCD(6) ) THEN
-               CD = COEFCD(5,11)*X*X*X  + 
-     &              COEFCD(5,10)*X*X  + 
+               CD = COEFCD(5,11)*X*X*X  +
+     &              COEFCD(5,10)*X*X  +
      &              COEFCD(5,9)*X  +
      &              COEFCD(5,8)
             ELSE
-               CD = COEFCD(6,9)*X            
-            END IF         
+               CD = COEFCD(6,9)*X
+            END IF
 C
 C --- CELLULE DE TUBES VIBRANTS EN MILIEU DE FAISCEAU CLOTAIRE.
 C     (PROFIL DE VITESSE REEL)
@@ -196,9 +193,9 @@ C
             ELSE IF ( X .LT. BORNCD(2) ) THEN
                CD = COEFCD(1,9)*X + COEFCD(1,8)
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8) + 
-     &             COEFCD(2,7)/X + 
-     &             COEFCD(2,6)/(X*X) + 
+               CD = COEFCD(2,8) +
+     &             COEFCD(2,7)/X +
+     &             COEFCD(2,6)/(X*X) +
      &             COEFCD(2,5)/(X*X*X)
             ELSE IF ( X .LT. BORNCD(4) ) THEN
                CD = COEFCD(3,9)*X +
@@ -207,7 +204,7 @@ C
                CD = COEFCD(4,8)
             ELSE
                CD = COEFCD(5,9)*X
-            END IF         
+            END IF
 C
 C --- CELLULE DE TUBES VIBRANTS EN MILIEU DE FAISCEAU CLOTAIRE.
 C     (PROFIL DE VITESSE UNIFORME)
@@ -217,12 +214,12 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,9)*X + 
+               CD = COEFCD(1,9)*X +
      &              COEFCD(1,8)
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
-     &              COEFCD(2,6)/(X*X) + 
+     &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X)
             ELSE IF ( X .LT. BORNCD(4) ) THEN
                CD = COEFCD(3,9)*X +
@@ -231,7 +228,7 @@ C
                CD = COEFCD(4,8)
             ELSE
                CD = COEFCD(5,9)*X
-            END IF         
+            END IF
 C
 C --- TUBE UNIQUE VIBRANT EN MILIEU DE FAISCEAU RIGIDE VISCACHE1.
 C
@@ -243,14 +240,14 @@ C
                CD = COEFCD(1,9)*X  +
      &              COEFCD(1,8)
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
-     &              COEFCD(2,6)/(X*X) + 
+     &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X) +
-     &              COEFCD(2,4)/(X*X*X*X)     
+     &              COEFCD(2,4)/(X*X*X*X)
             ELSE
                CD = COEFCD(3,8) * (X ** 2.1337D0)
-            END IF         
+            END IF
 C
 C --- TUBE UNIQUE VIBRANT EN DEBUT DE FAISCEAU RIGIDE VISCACHE1.
 C
@@ -262,22 +259,22 @@ C
                CD = COEFCD(1,9)*X  +
      &              COEFCD(1,8)
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
-     &              COEFCD(2,6)/(X*X) + 
+     &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X)
             ELSE IF ( X .LT. BORNCD(4) ) THEN
                CD = COEFCD(3,9)*X  +
      &              COEFCD(3,8)
             ELSE IF ( X .LT. BORNCD(5) ) THEN
-               CD = COEFCD(4,8)  + 
+               CD = COEFCD(4,8)  +
      &              COEFCD(4,7)/X  +
-     &              COEFCD(4,6)/(X*X) + 
+     &              COEFCD(4,6)/(X*X) +
      &              COEFCD(4,5)/(X*X*X)
             ELSE IF (X .LT. BORNCD(6)) THEN
-               CD = COEFCD(5,8)  + 
+               CD = COEFCD(5,8)  +
      &              COEFCD(5,7)/X  +
-     &              COEFCD(5,6)/(X*X) 
+     &              COEFCD(5,6)/(X*X)
             ELSE
                CD = COEFCD(6,8) * (X ** 1.539D0)
             ENDIF
@@ -303,10 +300,10 @@ C
      &              COEFCD(1,2)/(X*X*X*X*X*X) +
      &              COEFCD(1,3)/(X*X*X*X*X) +
      &              COEFCD(1,4)/(X*X*X*X) +
-     &              COEFCD(1,5)/(X*X*X) + 
+     &              COEFCD(1,5)/(X*X*X) +
      &              COEFCD(1,6)/(X*X) +
      &              COEFCD(1,7)/X   +
-     &              COEFCD(1,8)   +  
+     &              COEFCD(1,8)   +
      &              COEFCD(1,9)*X
             ENDIF
 C
@@ -320,19 +317,19 @@ C
                CD = COEFCD(1,9)*X  +
      &              COEFCD(1,8)
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
      &              COEFCD(2,6)/(X*X)
             ELSE IF ( X .LT. BORNCD(4) ) THEN
-               CD = COEFCD(3,8)  + 
+               CD = COEFCD(3,8)  +
      &              COEFCD(3,7)/X  +
-     &              COEFCD(3,6)/(X*X) + 
+     &              COEFCD(3,6)/(X*X) +
      &              COEFCD(3,5)/(X*X*X)
             ELSE IF ( X .LT. BORNCD(5) ) THEN
                CD = COEFCD(4,9)*X  +
      &              COEFCD(4,8)
             ELSE IF ( X .LT. BORNCD(6) ) THEN
-               CD = COEFCD(5,8)  + 
+               CD = COEFCD(5,8)  +
      &              COEFCD(5,7)/X
             ELSE
                CD = COEFCD(6,8) * (X ** 0.66146D0)
@@ -345,17 +342,17 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
-     &              COEFCD(2,6)/(X*X) + 
+     &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X)
             ELSE
-               CD = COEFCD(3,8)  + 
+               CD = COEFCD(3,8)  +
      &              COEFCD(3,7)/X  +
-     &              COEFCD(3,6)/(X*X) + 
+     &              COEFCD(3,6)/(X*X) +
      &              COEFCD(3,5)/(X*X*X)
             END IF
 C
@@ -367,14 +364,14 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
-     &              COEFCD(2,6)/(X*X) + 
+     &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X) +
-     &              COEFCD(2,4)/(X*X*X*X)     
+     &              COEFCD(2,4)/(X*X*X*X)
             END IF
 C
 C
@@ -385,12 +382,12 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
-     &              COEFCD(2,6)/(X*X) + 
+     &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X)
             END IF
 C
@@ -402,12 +399,12 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
-     &              COEFCD(2,6)/(X*X) + 
+     &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X)
             END IF
 C
@@ -419,21 +416,21 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
-     &              COEFCD(2,6)/(X*X) + 
+     &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X)
             ELSE IF ( X .LT. BORNCD(4) ) THEN
-               CD = COEFCD(3,8)  + 
+               CD = COEFCD(3,8)  +
      &              COEFCD(3,7)/X  +
      &              COEFCD(3,6)/(X*X)
             ELSE
-               CD = COEFCD(4,8)  + 
+               CD = COEFCD(4,8)  +
      &              COEFCD(4,7)/X  +
-     &              COEFCD(4,6)/(X*X) + 
+     &              COEFCD(4,6)/(X*X) +
      &              COEFCD(4,5)/(X*X*X)
             END IF
 C
@@ -445,20 +442,20 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
      &              COEFCD(2,6)/(X*X)
             ELSE IF ( X .LT. BORNCD(4) ) THEN
-               CD = COEFCD(3,8)  + 
+               CD = COEFCD(3,8)  +
      &              COEFCD(3,7)/X  +
      &              COEFCD(3,6)/(X*X)
             ELSE
-               CD = COEFCD(4,8)  + 
+               CD = COEFCD(4,8)  +
      &              COEFCD(4,7)/X  +
-     &              COEFCD(4,6)/(X*X) + 
+     &              COEFCD(4,6)/(X*X) +
      &              COEFCD(4,5)/(X*X*X)
             END IF
 C
@@ -470,15 +467,15 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
      &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X) +
      &              COEFCD(2,4)/(X*X*X*X) +
-     &              COEFCD(2,3)/(X*X*X*X*X)               
+     &              COEFCD(2,3)/(X*X*X*X*X)
             END IF
 C
 C
@@ -489,10 +486,10 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
      &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X) +
@@ -507,10 +504,10 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
      &              COEFCD(2,6)/(X*X)
             END IF
@@ -523,10 +520,10 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
      &              COEFCD(2,6)/(X*X)
             END IF
@@ -539,10 +536,10 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
      &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X)
@@ -556,23 +553,22 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,7)/X  +
      &              COEFCD(2,6)/(X*X) +
      &              COEFCD(2,5)/(X*X*X) +
      &              COEFCD(2,4)/(X*X*X*X)
-            END IF                  
+            END IF
 C
-         ELSE                           
+         ELSE
 C
-            CALL UTMESS('F','CALC_FLUI_STRU','<COEFAM> CE TYPE DE ' //
-     &                  'RESEAU N EST PAS ENCORE IMPLANTE DANS LE CODE')
+            CALL U2MESS('F','MODELISA4_30')
 C
          END IF
-C 
+C
 C
 C **********************************************************************
 C ***               FAISCEAU EN PAS TRIANGULAIRE LIGNE               ***
@@ -580,62 +576,62 @@ C **********************************************************************
 C
       ELSE IF ( IPAS .EQ. 2 ) THEN
 C
-         IF ( IRES.GE.1.AND.IRES.LE.1000 ) THEN        
+         IF ( IRES.GE.1.AND.IRES.LE.1000 ) THEN
 C
             IF( X.LT.BORNCD(1) ) THEN
                CD = 0.D0
-            ELSE   
-               IF( X.LT.BORNCD(NBORCD) ) THEN            
+            ELSE
+               IF( X.LT.BORNCD(NBORCD) ) THEN
                   DO 150 I = 2 , NBORCD
                     IF ( X.GE.BORNCD(I-1).AND.X.LT.BORNCD(I) ) THEN
                        CD = COEFCD(I-1,1)/(X*X*X*X*X*X*X) +
      &                      COEFCD(I-1,2)/(X*X*X*X*X*X) +
-     &                      COEFCD(I-1,3)/(X*X*X*X*X) + 
-     &                      COEFCD(I-1,4)/(X*X*X*X) + 
+     &                      COEFCD(I-1,3)/(X*X*X*X*X) +
+     &                      COEFCD(I-1,4)/(X*X*X*X) +
      &                      COEFCD(I-1,5)/(X*X*X) +
      &                      COEFCD(I-1,6)/(X*X) +
      &                      COEFCD(I-1,7)/(X) +
-     &                      COEFCD(I-1,8)   + 
-     &                      COEFCD(I-1,9)*(X)  + 
-     &                      COEFCD(I-1,10)*(X*X) + 
+     &                      COEFCD(I-1,8)   +
+     &                      COEFCD(I-1,9)*(X)  +
+     &                      COEFCD(I-1,10)*(X*X) +
      &                      COEFCD(I-1,11)*(X*X*X)
-                       GO TO 160              
+                       GO TO 160
                     ENDIF
   150              CONTINUE
   160              CONTINUE
                ELSE
                   CD = COEFCD(NBORCD,1)/(X*X*X*X*X*X*X) +
      &                 COEFCD(NBORCD,2)/(X*X*X*X*X*X) +
-     &                 COEFCD(NBORCD,3)/(X*X*X*X*X) + 
-     &                 COEFCD(NBORCD,4)/(X*X*X*X) + 
+     &                 COEFCD(NBORCD,3)/(X*X*X*X*X) +
+     &                 COEFCD(NBORCD,4)/(X*X*X*X) +
      &                 COEFCD(NBORCD,5)/(X*X*X) +
      &                 COEFCD(NBORCD,6)/(X*X) +
      &                 COEFCD(NBORCD,7)/(X) +
-     &                 COEFCD(NBORCD,8)   + 
-     &                 COEFCD(NBORCD,9)*(X) + 
-     &                 COEFCD(NBORCD,10)*(X*X) + 
-     &                 COEFCD(NBORCD,11)*(X*X*X)                  
-               ENDIF        
+     &                 COEFCD(NBORCD,8)   +
+     &                 COEFCD(NBORCD,9)*(X) +
+     &                 COEFCD(NBORCD,10)*(X*X) +
+     &                 COEFCD(NBORCD,11)*(X*X*X)
+               ENDIF
             ENDIF
-C            
+C
 C --- CELLULE DE TUBES VIBRANTS EN DEBUT DE FAISCEAU VISCACHE1.
 C
          ELSE IF ( IRES .EQ. 1001 ) THEN
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,9)*X
             ELSE IF ( X .LT. BORNCD(4) ) THEN
-               CD = COEFCD(3,8)  + 
+               CD = COEFCD(3,8)  +
      &              COEFCD(3,7)/X  +
      &              COEFCD(3,6)/(X*X) +
      &              COEFCD(3,5)/(X*X*X)
             ELSE IF ( X .LT. BORNCD(5) ) THEN
-               CD = COEFCD(4,8)  + 
+               CD = COEFCD(4,8)  +
      &              COEFCD(4,7)/X  +
      &              COEFCD(4,6)/(X*X)
             ELSE
@@ -648,17 +644,17 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,9)*X
             ELSE IF ( X .LT. BORNCD(4) ) THEN
-               CD = COEFCD(3,8)  + 
+               CD = COEFCD(3,8)  +
      &              COEFCD(3,7)/X  +
      &              COEFCD(3,6)/(X*X)
             ELSE
-               CD = COEFCD(4,8)  + 
+               CD = COEFCD(4,8)  +
      &              COEFCD(4,9)*X
             END IF
 C
@@ -668,19 +664,19 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,9)*X +
      &              COEFCD(2,10)*X*X +
-     &              COEFCD(2,11)*X*X*X          
+     &              COEFCD(2,11)*X*X*X
             ELSE IF ( X .LT. BORNCD(4) ) THEN
-               CD = COEFCD(3,8)  + 
+               CD = COEFCD(3,8)  +
      &              COEFCD(3,7)/X
             ELSE
                CD = COEFCD(4,8) +
-     &              (0.0214D0*(X ** 1.1146D0)) 
+     &              (0.0214D0*(X ** 1.1146D0))
             END IF
 C
 C --- TUBE UNIQUE VIBRANT EN DEBUT DE FAISCEAU RIGIDE VISCACHE1.
@@ -689,32 +685,32 @@ C
             IF ( X .LT. BORNCD(1) ) THEN
                CD = 0.D0
             ELSE IF ( X .LT. BORNCD(2) ) THEN
-               CD = COEFCD(1,8)  + 
+               CD = COEFCD(1,8)  +
      &              COEFCD(1,9)*X
             ELSE IF ( X .LT. BORNCD(3) ) THEN
-               CD = COEFCD(2,8)  + 
+               CD = COEFCD(2,8)  +
      &              COEFCD(2,9)*X +
      &              COEFCD(2,10)*X*X
             ELSE IF ( X .LT. BORNCD(4) ) THEN
-               CD = COEFCD(3,8)  + 
+               CD = COEFCD(3,8)  +
      &              COEFCD(3,9)*X
             ELSE IF ( X .LT. BORNCD(5) ) THEN
-               CD = COEFCD(4,8)  + 
+               CD = COEFCD(4,8)  +
      &              COEFCD(4,7)/X  +
      &              COEFCD(4,6)/(X*X) +
      &              COEFCD(4,5)/(X*X*X)
                CD = 0.95D0*CD
             ELSE IF ( X .LT. BORNCD(6) ) THEN
-               CD = COEFCD(5,8)  + 
+               CD = COEFCD(5,8)  +
      &              COEFCD(5,9)*X
             ELSE IF ( X .LT. BORNCD(7) ) THEN
-               CD = COEFCD(6,8)  + 
+               CD = COEFCD(6,8)  +
      &              COEFCD(6,7)/X  +
      &              COEFCD(6,6)/(X*X) +
      &              COEFCD(6,5)/(X*X*X) +
      &              COEFCD(6,4)/(X*X*X*X)
             ELSE IF ( X .LT. BORNCD(8) ) THEN
-               CD = COEFCD(7,8)  + 
+               CD = COEFCD(7,8)  +
      &              COEFCD(7,9)*X
             ELSE
                CD = COEFCD(8,8) +

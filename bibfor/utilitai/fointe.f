@@ -5,22 +5,22 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 C     ------------------------------------------------------------------
@@ -73,7 +73,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      NUPAR, I, I1, NBVN, IZERO, ISAVE, LPROL, LVAR, NBPT,
-     +             LPARA, NBPF, IBID, IRET, LFON, IADZI, IAZK24
+     &             LPARA, NBPF, IBID, IRET, LFON, IADZI, IAZK24
       CHARACTER*1  COLI, CBID,K1BID, BL,XOUS
       CHARACTER*2  CODME2
       CHARACTER*8  NOMAIL
@@ -91,11 +91,11 @@ C     ------------------------------------------------------------------
       CHARACTER*16 SVNOMP
       CHARACTER*19 SVNOMF
       COMMON /IFOSAV/ MXSAVE, MXPARA, SVNBPA(4) , SVPAR(10,4) ,
-     +                ISVNXT , ISVIND(4), NEXTSV(4)
+     &                ISVNXT , ISVIND(4), NEXTSV(4)
       COMMON /JFOSAV/ IAPROL(4),IAVALE(4),IAPARA(4),LUVALE(4),LUPARA(4)
       COMMON /RFOSAV/ SVRESU(4)
       COMMON /KFOSAV/ SVNOMP(10,4) , SVNOMF(4) ,
-     +                SVTYPF(4) , SVPRGD(4) , SVINTE(4)
+     &                SVTYPF(4) , SVPRGD(4) , SVINTE(4)
 
 C     ------------------------------------------------------------------
       INTEGER      IPAR(10)
@@ -106,11 +106,11 @@ C     FONCTION EN LIGNE
 C
       LINLIN(X,X1,Y1,X2,Y2)= Y1+(X-X1)*(Y2-Y1)/(X2-X1)
       LINLOG(X,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(X-X1)*(LOG(Y2)-LOG(Y1))
-     +                                        /(X2-X1))
+     &                                        /(X2-X1))
       LOGLOG(X,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(LOG(X)-LOG(X1))*(LOG(Y2)
-     +                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
+     &                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
       LOGLIN(X,X1,Y1,X2,Y2)=Y1+(LOG(X)-LOG(X1))*(Y2-Y1)
-     +                                         /(LOG(X2)-LOG(X1))
+     &                                         /(LOG(X2)-LOG(X1))
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -207,7 +207,7 @@ C
 C     --- SI ECHEC PRECEDENT ALORS ON VERIFIE ---
    19 CONTINUE
       CALL FONBPA(NOMFON,ZK16(LPROL),CBID,MXPARA,
-     +                                   SVNBPA(ISAVE),SVNOMP(1,ISAVE))
+     &                                   SVNBPA(ISAVE),SVNOMP(1,ISAVE))
       IF (NBPU.LT.SVNBPA(ISAVE)) THEN
          IER = 160
          CALL UTDEBM('A','FOINT2','ERREUR A L''INTERPOLATION')
@@ -239,7 +239,7 @@ C     --- SI ECHEC PRECEDENT ALORS ON VERIFIE ---
             CALL UTDEBM('A','FOINT2','ERREUR A L''INTERPOLATION')
             CALL UTIMPK('S',' FONCTION',1,NOMFON)
             CALL UTIMPK('L',' PARAMETRES ATTENDUS',SVNBPA(ISAVE),
-     +                                            SVNOMP(1,ISAVE))
+     &                                            SVNOMP(1,ISAVE))
             CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
             CALL UTFINM()
             GOTO 9998
@@ -258,10 +258,10 @@ C        --- FONCTION ---
          LFON   = LVAR + NBPT
          RVAR   = VALPU(SVPAR(1,ISAVE))
          CALL FOLOCX(ZR(LVAR),NBPT,RVAR,SVPRGD(ISAVE),
-     +                                  ISVIND(ISAVE),EPSI,COLI,IER)
+     &                                  ISVIND(ISAVE),EPSI,COLI,IER)
          IF (IER.NE.0) GOTO 9998
          CALL FOCOLI ( ISVIND(ISAVE),COLI,SVINTE(ISAVE),ZR(LVAR),
-     +                                ZR(LFON),RVAR, RESU , IER )
+     &                                ZR(LFON),RVAR, RESU , IER )
          IF (IER.NE.0) GOTO 9998
          SVRESU(ISAVE) = RESU
 C
@@ -281,8 +281,7 @@ C
             IF (IER.NE.0) GOTO 9998
          ELSEIF (COLI.EQ.'I') THEN
             IF (SVINTE(ISAVE)(1:3).EQ.'NON') THEN
-               CALL UTMESS('A','FOINT2','INTERPOLATION SUR PARAMETRES'//
-     +                                                  ' NON PERMISE.')
+               CALL U2MESS('A','UTILITAI2_19')
                IER = 170
                GOTO 9998
             ENDIF
@@ -312,15 +311,13 @@ C           --- INTERPOLATION FINALE SUR LES PARAMETRES ---
             TAB(2) = ZR(LPARA+I  )
             RESU = LINLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
          ELSE
-            CALL UTMESS('A',NOMFON,
-     +                           'INTERPOLATION "'//COLI//'" INCONNUE.')
+            CALL U2MESK('A','UTILITAI2_20',1,COLI)
             IER = 140
             GOTO 9998
          ENDIF
 C
       ELSE
-         CALL UTMESS('A','FOINT2','"'//SVTYPF(ISAVE)//
-     +                                   '" TYPE DE FONCTION INCONNU.')
+         CALL U2MESK('A','UTILITAI2_21',1,SVTYPF(ISAVE))
          IER = 150
          GOTO 9998
       ENDIF

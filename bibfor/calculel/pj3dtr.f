@@ -1,6 +1,6 @@
       SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,ELRF3D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C       ITYPM : TYPE DE LA MAILLE IMA1
 
         CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,FAPG,NBPG,CRREFE,VOL)
 
-        IF ( NBNO .NE. NNO ) CALL UTMESS('F','PJ3DTR','BUG')
+        IF ( NBNO .NE. NNO ) CALL U2MESS('F','CALCULEL2_34')
 
 C       2.2.1 DETERMINATION DES COORDONEES DE INO2 DANS L'ELEMENT
 C             DE REFERENCE : KSI , ETA ET DZETA
@@ -232,7 +232,7 @@ C     -----------------------------------------------------------
 772       CONTINUE
 
         ELSE IF (ELREFA.EQ.'HE8' .OR. ELREFA.EQ.'H20' .OR.
-     +                                ELREFA.EQ.'H27' ) THEN
+     &                                ELREFA.EQ.'H27' ) THEN
           DO 773,KK=1,4
             X1 = CRREFE(NDIM*(CNHEXA(KK,ITYP)-1)+1)
             X2 = CRREFE(NDIM*(CNHEXA(KK,ITYP)-1)+2)
@@ -253,7 +253,7 @@ C     -----------------------------------------------------------
 774       CONTINUE
 
         ELSE
-           CALL UTMESS('F','PJ3DTR','ELREFA INCONNU: '//ELREFA)
+           CALL U2MESK('F','ELEMENTS_55',1,ELREFA)
         END IF
 
         X(1) = KSI

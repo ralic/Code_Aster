@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,8 +64,7 @@ CCC              5       DU MAJORANT DE SUPER MAILLES
       DO 11,I=1,5
         ZI(IADIME-1+I)=ZI(IADIM1-1+I)+ZI(IADIM2-1+I)
  11   CONTINUE
-      IF(ZI(IADIM1-1+6).NE.ZI(IADIM2-1+6)) CALL UTMESS('A','OP0105',
-     +      'LES 2 MAILLAGES NE SONT PAS DU MEME TYPE : 2D (OU 3D).')
+      IF(ZI(IADIM1-1+6).NE.ZI(IADIM2-1+6)) CALL U2MESS('A','SOUSTRUC_1')
 C
       NCOOR=ZI(IADIM1-1+6)
       ZI(IADIME-1+6)=NCOOR
@@ -140,7 +139,7 @@ C     --OBJET .SUPMAIL:
 C     -----------------
       IF (NBSMA.GT.0) THEN
         CALL JECREC(MAG//'.SUPMAIL','G V I','NO','DISPERSE',
-     +            'VARIABLE',NBSMA)
+     &            'VARIABLE',NBSMA)
         DO 18,I=1,NBSM1
           CALL JEVEUO(JEXNUM(MA1//'.SUPMAIL',I),'L',IASUP1)
           CALL JELIRA(JEXNUM(MA1//'.SUPMAIL',I),'LONMAX',N,KBID)
@@ -162,8 +161,7 @@ C     -----------------
           CALL JELIRA(JEXNUM(MA2//'.SUPMAIL',I),'LONMAX',N,KBID)
           CALL JENUNO(JEXNUM(MA2//'.SUPMAIL',I),NOSMA)
           CALL JEEXIN(JEXNOM(MAG//'.SUPMAIL',NOSMA),IRET)
-          IF (IRET.GT.0) CALL UTMESS('F','OP0105',
-     +       'LA (SUPER)MAILLE : '//NOSMA//' EST EN DOUBLE.')
+          IF (IRET.GT.0) CALL U2MESK('F','SOUSTRUC_2',1,NOSMA)
           CALL JECROC(JEXNOM(MAG//'.SUPMAIL',NOSMA))
           CALL JEECRA(JEXNUM(MAG//'.SUPMAIL',I1),'LONMAX',N,KBID)
           CALL JEVEUO(JEXNUM(MAG//'.SUPMAIL',I1),'E',IASUPM)
@@ -196,8 +194,7 @@ C     ----------------
           ELSE
             CALL JENONU(JEXNOM(MAG//'.NOMMAI',NOMA),IRET)
           END IF
-          IF (IRET.GT.0) CALL UTMESS('F','OP0105',
-     +       'LA MAILLE : '//NOMA//' EST EN DOUBLE.')
+          IF (IRET.GT.0) CALL U2MESK('F','SOUSTRUC_3',1,NOMA)
           CALL JECROC(JEXNOM(MAG//'.NOMMAI',NOMA))
  22     CONTINUE
       END IF
@@ -207,7 +204,7 @@ C     --OBJET .CONNEX:
 C     -----------------
       IF (NBMA.GT.0) THEN
         CALL JECREC(MAG//'.CONNEX','G V I','NU'
-     +            ,'CONTIG','VARIABLE',NBMA)
+     &            ,'CONTIG','VARIABLE',NBMA)
         L1=0
         L2=0
         IF (NBM1.GT.0) CALL JELIRA(MA1//'.CONNEX','LONT',L1,KBID)
@@ -265,13 +262,13 @@ C     -----------------
       NBGM1 = 0
       NBGM2 = 0
       IF (IRET1.GT.0) CALL JELIRA(MA1//'.GROUPEMA','NUTIOC',
-     +                            NBGM1,KBID)
+     &                            NBGM1,KBID)
       IF (IRET2.GT.0) CALL JELIRA(MA2//'.GROUPEMA','NUTIOC',
-     +                            NBGM2,KBID)
+     &                            NBGM2,KBID)
       NBGMA = NBGM1 + NBGM2
       IF ( NBGMA .GT. 0 ) THEN
         CALL JECREC(MAG//'.GROUPEMA','G V I','NO',
-     +                               'DISPERSE','VARIABLE',NBGMA)
+     &                               'DISPERSE','VARIABLE',NBGMA)
         DO 31,I=1,NBGM1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPEMA',I),'L',IAGMA1)
           CALL JELIRA(JEXNUM(MA1//'.GROUPEMA',I),'LONMAX',N,KBID)
@@ -290,9 +287,7 @@ C     -----------------
           CALL JENUNO(JEXNUM(MA2//'.GROUPEMA',I),NOGMA)
           CALL JEEXIN(JEXNOM(MAG//'.GROUPEMA',NOGMA),IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('A','OP0105',
-     +           'LE GROUP_MA : '//NOGMA//' EST EN DOUBLE.'
-     +           //' ON IGNORE LE SECOND.')
+            CALL U2MESK('A','SOUSTRUC_4',1,NOGMA)
             GO TO 32
           END IF
           ICOMPT = ICOMPT + 1
@@ -314,13 +309,13 @@ C     -----------------
       NBGN1 = 0
       NBGN2 = 0
       IF (IRET1.GT.0) CALL JELIRA(MA1//'.GROUPENO','NUTIOC',
-     +                            NBGN1,KBID)
+     &                            NBGN1,KBID)
       IF (IRET2.GT.0) CALL JELIRA(MA2//'.GROUPENO','NUTIOC',
-     +                            NBGN2,KBID)
+     &                            NBGN2,KBID)
       NBGNO = NBGN1 + NBGN2
       IF ( NBGNO .GT. 0 ) THEN
         CALL JECREC(MAG//'.GROUPENO','G V I','NO',
-     +                               'DISPERSE','VARIABLE',NBGNO)
+     &                               'DISPERSE','VARIABLE',NBGNO)
         DO 33,I=1,NBGN1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPENO',I),'L',IAGNO1)
           CALL JELIRA(JEXNUM(MA1//'.GROUPENO',I),'LONMAX',N,KBID)
@@ -339,9 +334,7 @@ C     -----------------
           CALL JENUNO(JEXNUM(MA2//'.GROUPENO',I),NOGNO)
           CALL JEEXIN(JEXNOM(MAG//'.GROUPENO',NOGNO),IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('A','OP0105',
-     +           'LE GROUP_NO : '//NOGNO//' EST EN DOUBLE.'
-     +           //' ON IGNORE LE SECOND.')
+            CALL U2MESK('A','SOUSTRUC_5',1,NOGNO)
             GO TO 34
           END IF
           ICOMPT = ICOMPT + 1
@@ -407,8 +400,9 @@ C     ----------------------------------------------------------------
           Z=ZR(IACOO2-1+3*(I-1)+3)-ZR(IACOO2-1+3*(J-1)+3)
           DIJ= SQRT(X**2+Y**2+Z**2)
           IF (DIJ.GT.1.0D-6*DREFE) CALL UTMESS('A','OP0105','LE NOEUD:'
-     +        //ZK8(IANON2-1+I)//' N''A PAS LES MEMES COORDONNEES'
-     +        //' DANS LES MAILLAGES: '//MA1//' ET '//MA2)
+     &        //ZK8(IANON2-1+I)//' N''A PAS LES MEMES COORDONNEES'
+     &        //' DANS LES MAILLAGES: '//MA1//' ET '//MA2)
+C        CALL U2MESK('A','SOUSTRUC_6', 3 ,VALK)
         END IF
  52   CONTINUE
 C

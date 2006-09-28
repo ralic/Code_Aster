@@ -3,7 +3,7 @@
       INTEGER IER
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -447,8 +447,7 @@ C        STOCKAGE DES CRITERES
    70   CONTINUE
         IF (IRET.EQ.0) THEN
         ELSE IF (IRET.NE.NBCOU) THEN
-          CALL UTMESS('F','OP0056','LE PARAMETRE "RHO" N''EST PAS '//
-     &                'DEFINI POUR TOUTES LES COUCHES.')
+          CALL U2MESS('F','MODELISA5_63')
         END IF
         QM(19) = EPTOT
         IF (IRET.EQ.NBCOU) THEN

@@ -1,21 +1,21 @@
       SUBROUTINE TPSEPR(TPS,S,DPC,TEMP,FLUPHI,VALDRP,TTAMAX,PREC,NITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
@@ -103,7 +103,7 @@ C
 C----CALCUL DE G1-----------------------------------------------
 C
         G1 = A1*EXP(A4*LOG(SINH(A2*EXP(A3*LOG(S))))+A6*LOG(VALDRP)
-     *       -A7/(TEMP+273.15D0))
+     &       -A7/(TEMP+273.15D0))
 C
 C----CALCUL DE G2-----------------------------------------------
 C
@@ -111,7 +111,7 @@ C
           G2 = 0.D0
         ELSE
           G2 = B1*EXP(B3*LOG(FLUPHI)+B4*LOG(S)-B5/(TEMP+273.15D0)
-     *         +B6*LOG(VALDRP)+B7*LOG(COS(TTAMAX)))
+     &         +B6*LOG(VALDRP)+B7*LOG(COS(TTAMAX)))
         ENDIF
 C---------------------------------------------------------------
 C---------------------------------------------------------------
@@ -131,7 +131,7 @@ C
    20   CONTINUE
         ITER = ITER + 1
         IF (ITER.EQ.NITER) THEN
-           CALL UTMESS('F','TPSEPR','ECHEC DANS ELIMINATION TEMPS')
+           CALL U2MESS('F','ALGORITH10_92')
         ENDIF
 C
 C---------------------------------------------------------------
@@ -150,7 +150,7 @@ C
 C----CALCUL DE G1-----------------------------------------------
 C
         G1 = A1*EXP(A4*LOG(SINH(A2*EXP(A3*LOG(S))))+A6*LOG(VALDRP)
-     *       -A7/(TEMP+273.15D0))
+     &       -A7/(TEMP+273.15D0))
 C
 C----CALCUL DE G2-----------------------------------------------
 C
@@ -158,7 +158,7 @@ C
           G2 = 0.D0
         ELSE
           G2 = B1*EXP(B3*LOG(FLUPHI)+B4*LOG(S)-B5/(TEMP+273.15D0)
-     *         +B6*LOG(VALDRP)+B7*LOG(COS(TTAMAX)))
+     &         +B6*LOG(VALDRP)+B7*LOG(COS(TTAMAX)))
         ENDIF
 C---------------------------------------------------------------
 C---------------------------------------------------------------

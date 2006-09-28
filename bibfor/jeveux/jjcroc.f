@@ -1,21 +1,21 @@
       SUBROUTINE JJCROC ( KNAT , ICRE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508 CRS_512
 
@@ -39,11 +39,11 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -66,11 +66,11 @@ C
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
@@ -82,7 +82,7 @@ C ----------------------------------------------------------------------
 C
       CHARACTER *8     NUME       , NOME
       DATA             NUME       , NOME
-     +               / '$$XNUM  ' , '$$XNOM  ' /
+     &               / '$$XNUM  ' , '$$XNOM  ' /
 C DEB ------------------------------------------------------------------
       IF ( KNAT .EQ. '        ' ) THEN
 C
@@ -115,7 +115,7 @@ C
           ENDIF
         ENDIF
         IDOC = JJCODN ( ICRE , NOM , NOMEC(1:LTYPI) ,
-     +           ISZON(JITAB+1) , K1ZON(KITAB+1) , NMAX , NUTI )
+     &           ISZON(JITAB+1) , K1ZON(KITAB+1) , NMAX , NUTI )
         IF ( IDOC .GT. 0 ) THEN
            IDATOC = IDOC
            NOMOC  = NOMEC
@@ -144,7 +144,7 @@ C
           ELSE IF ( IXNOM .NE. 0 ) THEN
             IF ( ICRE .GT. 0 ) THEN
               CMESS = 'CREATION D''OBJET AUTORISEE UNIQUEMENT PAR NOM'
-              CALL JVMESS ( 'S' , 'JJCROC01' , CMESS )
+              CALL U2MESK('S','JEVEUX_01',1,CMESS)
             ENDIF
             NMAX   = LONG ( JLONG(IC) + IXNOM )
             NUTI   = LUTI ( JLUTI(IC) + IXNOM )
@@ -160,14 +160,14 @@ C
             IF ( NUMEC .LE. NUTIEX ) THEN
               WRITE (CIOC , '(I8)' ) NUMEC
               CMESS = 'OBJET DE COLLECTION '//CIOC//' DEJA EXISTANT'
-              CALL JVMESS ( 'S' , 'JJCROC02' , CMESS )
+              CALL U2MESK('S','JEVEUX_01',1,CMESS)
             ELSE
               IF ( NUTIEX .LT. NMAX ) THEN
                 NUTI = NUTI + 1
                 ISZON(JISZON+IBNUM+1) = NUTI
               ELSE
                 CMESS = 'REPERTOIRE SATURE'
-                CALL JVMESS ( 'F' , 'JJCROC03' , CMESS )
+                CALL U2MESK('F','JEVEUX_01',1,CMESS)
               ENDIF
             ENDIF
           ENDIF
@@ -179,7 +179,7 @@ C
           IXNOM   = ISZON(JISZON+IBACOL+IDNOM )
           IF ( IXNOM .EQ. 0 ) THEN
             CMESS = 'ACCES PAR NOM A UNE COLLECTION NUMEROTEE '
-            CALL JVMESS ( 'S' , 'JJCROC04' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ELSE
             NMAX    = LONG (JLONG(IC)+IXNOM )
             NUTI    = LUTI (JLUTI(IC)+IXNOM )
@@ -206,7 +206,7 @@ C
  16             CONTINUE
               ENDIF
               IDOC = JJCODN ( ICRE , NOM , NOMEC(1:LONGNO) ,
-     +                   ISZON(JITAB+1) , K1ZON(KITAB+1) , NMAX , NUTI)
+     &                   ISZON(JITAB+1) , K1ZON(KITAB+1) , NMAX , NUTI)
               IF ( IDOC .GT. 0 ) THEN
                  NOMOC   = NOMEC
                  IDATOC = IDOC

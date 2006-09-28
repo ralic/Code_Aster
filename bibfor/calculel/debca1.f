@@ -1,6 +1,6 @@
       SUBROUTINE DEBCA1(NOMOP,LIGREL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,12 +60,9 @@ C---------------- COMMUNS POUR CALCUL ----------------------------------
 C DEB-------------------------------------------------------------------
 
       CALL DISMOI('F','EXI_ELEM',LIGREL,'LIGREL',IBID,EXIELE,IERD)
-      IF (EXIELE.NE.'OUI') CALL UTMESS('F','DEBCA1',
-     &                          'LE LIGREL : '//LIGREL//
-     &                          ' NE CONTIENT PAS D ELEMENTS FINIS')
+      IF (EXIELE.NE.'OUI') CALL U2MESK('F','CALCULEL2_25',1,LIGREL)
       CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',NOMOP),OPT)
-      IF (OPT.EQ.0) CALL UTMESS('F','DEBCA1',
-     &                          'L''OPTION '//NOMOP//' N''EXISTE PAS.')
+      IF (OPT.EQ.0) CALL U2MESK('F','CALCULEL2_26',1,NOMOP)
 
 
 C     INITIALISATION DU COMMON CAII02 :

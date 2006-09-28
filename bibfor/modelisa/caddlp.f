@@ -4,7 +4,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
       CHARACTER*8   MOD, NOMA, K8BID, NOMG
       CHARACTER*8   NOMN, VALIMF(NDDLA), DDL(NDDLA)
       CHARACTER*16  MOTFAC, MOTCLE(NDDLA), MOTCL1(2), TYMOC1(2),
-     +              MOTCL2(2), TYMOC2(2), NOMCMD
+     &              MOTCL2(2), TYMOC2(2), NOMCMD
       CHARACTER*19  LIGRMO, LISREL
       CHARACTER*24  NOMNOE, NCNCIN
 C ----------------------------------------------------------------------
@@ -108,9 +108,7 @@ C
       CALL JELIRA(LIGRMO//'.PRNM','LONMAX',N2,K1BID)
       NBEC = N2/N1
       IF (NBEC.GT.10) THEN
-        CALL UTMESS('F','CADDLP',
-     +              'LE DESCRIPTEUR_GRANDEUR ASSOCIE AU MODELE'//
-     +              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+        CALL U2MESS('F','MODELISA2_46')
       END IF
 C
 C --- MAILLAGE ASSOCIE AU MODELE ---
@@ -141,7 +139,7 @@ C                         DDLS IMPOSES PAR NOEUD
       IF (FONREE.EQ.'REEL') THEN
         CALL WKVECT('&&CADDLP.VALDDL','V V R' ,NDDLA*NBNOEU,JVAL)
       ELSE
-        CALL UTMESS('F','CADDLP','FONREE NON TRAITE '//FONREE )
+        CALL U2MESK('F','MODELISA2_47',1,FONREE)
       END IF
       CALL WKVECT('&&CADDLP.DIRECT'   ,'V V R',3*NBNOEU,JDIREC)
       CALL WKVECT('&&CADDLP.DIMENSION','V V I',  NBNOEU,JDIMEN)
@@ -155,10 +153,10 @@ C --------------------------------------------------------------
 
 C ------ RECUPERATION DE LA LISTE DES NOEUDS :
          CALL RELIEM ( MOD, NOMA, 'NU_NOEUD', MOTFAC, IOC, 2, MOTCL1,
-     +                                TYMOC1, '&&CADDLP.NOEUD', NBNO )
+     &                                TYMOC1, '&&CADDLP.NOEUD', NBNO )
          CALL JEVEUO ( '&&CADDLP.NOEUD','L', IALINO )
          CALL RELIEM ( MOD, NOMA, 'NU_MAILLE', MOTFAC, IOC, 2, MOTCL2,
-     +                              TYMOC2, '&&CADDLP.MAILLE', NBMA )
+     &                              TYMOC2, '&&CADDLP.MAILLE', NBMA )
          IF ( NBMA .NE. 0 ) THEN
             CALL JEVEUO ( '&&CADDLP.NOEUD','L', IALIMA )
          ELSE
@@ -173,7 +171,7 @@ C
 C --------- MATRICE DE PASSAGE AU REPERE GLOBAL ---
 C
             CALL MATLOC ( NOMA, NCNCIN, MOTFAC, IOC, INO, NBMA,
-     +                    ZI(IALIMA), PGL )
+     &                    ZI(IALIMA), PGL )
 C
 C --------- RECUPERATION DE LA VALEUR IMPOSEE  (MOCLE(J)):
 C           ----------------------------------------------
@@ -225,15 +223,15 @@ C
             ENDIF
 
             CALL AFDDLI ( ZR(JVAL), ZK8(JVAL), ZC(JVAL),
-     +                    ZI(JPRNM-1+(INO-1)*NBEC+1), NDDLA,
-     +                    FONREE, NOMN, INO, DDLIMP, VALIMR, VALIMF,
-     +                    VALIMC, MOTCLE, NBEC, ZR(JDIREC+3*(INO-1)),
-     +                    ZI(JDIMEN+INO-1), LISREL,
-     +                    ZK8(INOM), NBCMP, ZI(JCOMPT))
+     &                    ZI(JPRNM-1+(INO-1)*NBEC+1), NDDLA,
+     &                    FONREE, NOMN, INO, DDLIMP, VALIMR, VALIMF,
+     &                    VALIMC, MOTCLE, NBEC, ZR(JDIREC+3*(INO-1)),
+     &                    ZI(JDIMEN+INO-1), LISREL,
+     &                    ZK8(INOM), NBCMP, ZI(JCOMPT))
  110     CONTINUE
          DO 111,K=1,NDDLA
-             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL UTMESS('F','CADDLP',
-     &                    'AUCUN NOEUD NE CONNAIT LE DDL: '//MOTCLE(K))
+             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL U2MESK('F','MODELISA2_45',
+     &1,MOTCLE(K))
   111    CONTINUE
          CALL JEDETR('&&CADDLP.ICOMPT')
  100  CONTINUE

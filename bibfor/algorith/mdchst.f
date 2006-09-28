@@ -1,9 +1,9 @@
       SUBROUTINE MDCHST ( NUMDDL, TYPNUM, IMODE, IAMOR, PULSAT,
-     +                    MASGEN, AMOGEN, LFLU, NBNLI, NOECHO, LOGCHO,
-     +                    PARCHO, INTITU, DDLCHO, IER )
+     &                    MASGEN, AMOGEN, LFLU, NBNLI, NOECHO, LOGCHO,
+     &                    PARCHO, INTITU, DDLCHO, IER )
       IMPLICIT  NONE
       INTEGER             NBNLI, IAMOR, IMODE, IER, LOGCHO(NBNLI,*),
-     +                    DDLCHO(*)
+     &                    DDLCHO(*)
       REAL*8              PARCHO(NBNLI,*),PULSAT(*),MASGEN(*),AMOGEN(*)
       LOGICAL             LFLU
       CHARACTER*8         NOECHO(NBNLI,*), INTITU(*)
@@ -11,22 +11,22 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     ROUTINE APPELEE PAR MDCHOC
@@ -67,13 +67,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER       NBCHOC, NBSISM, NBFLAM, NBOCC, I, J, IOC, IBID, IL,
-     +              JCOOR, JMAMA, NBNMA, KMA, NN1, NN2, INO1, INO2, IG,
-     +              N1, JREFE, IRET, NMLIAI, JMAIL, IM, ILIAI, NMGR,
-     +              NGRM, NUMAI
+     &              JCOOR, JMAMA, NBNMA, KMA, NN1, NN2, INO1, INO2, IG,
+     &              N1, JREFE, IRET, NMLIAI, JMAIL, IM, ILIAI, NMGR,
+     &              NGRM, NUMAI
       REAL*8        KTANG, CTANG, K, RAP, XJEU
       LOGICAL       LNOUE2
       CHARACTER*8   KBID, REPERE, MAILLA, MAMAI, NOMNO1, NOMNO2,
-     +              NOMGR1, NOMGR2
+     &              NOMGR1, NOMGR2
       CHARACTER*10  MOTFAC
       CHARACTER*24  MDGENE
 C     ------------------------------------------------------------------
@@ -115,13 +115,13 @@ C
                NMLIAI = -IBID
                CALL WKVECT('&&MDCHST.MAILLE','V V K8',NMLIAI,JMAIL)
                CALL GETVEM ( MAILLA, 'MAILLE', MOTFAC, 'MAILLE',
-     +                                    IOC,1,NMLIAI,ZK8(JMAIL),IBID)
+     &                                    IOC,1,NMLIAI,ZK8(JMAIL),IBID)
                DO 110 IM = 1, NMLIAI
                   MAMAI = ZK8(JMAIL-1+IM)
                   CALL JENONU(JEXNOM(MAILLA//'.NOMMAI',MAMAI),NUMAI)
                   CALL JEVEUO(JEXNUM(MAILLA//'.CONNEX',NUMAI),'L',JMAMA)
                   CALL JELIRA(JEXNUM(MAILLA//'.CONNEX',NUMAI),'LONMAX',
-     +                                                       NBNMA,KBID)
+     &                                                       NBNMA,KBID)
                   IF (NBNMA.NE.2) THEN
                      CALL UTDEBM('F','MDCHOC','CHOC MAL DEFINI')
                CALL UTIMPK('L','LA MAILLE DEFINISSANT LE CHOC ',1,MAMAI)
@@ -130,9 +130,9 @@ C
                   ENDIF
                   ILIAI = ILIAI + 1
                   CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA)),
-     +                                                 NOECHO(ILIAI,1))
+     &                                                 NOECHO(ILIAI,1))
                   CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA+1)),
-     +                                                 NOECHO(ILIAI,5))
+     &                                                 NOECHO(ILIAI,5))
                   CALL MDCHDL ( NBNLI,NOECHO,LNOUE2,ILIAI,DDLCHO,IER )
  110           CONTINUE
                CALL JEDETR('&&MDCHST.MAILLE')
@@ -146,18 +146,18 @@ C
                NGRM = -IBID
                CALL WKVECT('&&MDCHST.GROUP_MA','V V K8',NGRM,JMAIL)
                CALL GETVEM ( MAILLA, 'GROUP_MA', MOTFAC, 'GROUP_MA',
-     +                                    IOC,1,NGRM,ZK8(JMAIL),IBID)
+     &                                    IOC,1,NGRM,ZK8(JMAIL),IBID)
                DO 120 IG = 1, NGRM
                   MAMAI = ZK8(JMAIL-1+IG)
                   CALL JELIRA(JEXNOM(MAILLA//'.GROUPEMA',MAMAI),
-     +                                             'LONMAX',NMGR,KBID)
+     &                                             'LONMAX',NMGR,KBID)
                  CALL JEVEUO(JEXNOM(MAILLA//'.GROUPEMA',MAMAI),'L',KMA)
                   NMLIAI = NMLIAI + NMGR
                   DO 122 IM = 1, NMGR
                      NUMAI = ZI(KMA-1+IM)
                   CALL JEVEUO(JEXNUM(MAILLA//'.CONNEX',NUMAI),'L',JMAMA)
                   CALL JELIRA(JEXNUM(MAILLA//'.CONNEX',NUMAI),'LONMAX',
-     +                                                       NBNMA,KBID)
+     &                                                       NBNMA,KBID)
                      IF (NBNMA.NE.2) THEN
                   CALL JENUNO(JEXNUM(MAILLA//'.NOMMAI',NUMAI),KBID)
                         CALL UTDEBM('F','MDCHOC','CHOC MAL DEFINI')
@@ -167,9 +167,9 @@ C
                      ENDIF
                      ILIAI = ILIAI + 1
                      CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA)),
-     +                                                 NOECHO(ILIAI,1))
+     &                                                 NOECHO(ILIAI,1))
                      CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA+1)),
-     +                                                 NOECHO(ILIAI,5))
+     &                                                 NOECHO(ILIAI,5))
                      CALL MDCHDL (NBNLI,NOECHO,LNOUE2,ILIAI,DDLCHO,IER)
  122              CONTINUE
  120           CONTINUE
@@ -179,12 +179,12 @@ C
          ENDIF
 C
          CALL GETVEM ( MAILLA, 'NOEUD', MOTFAC, 'NOEUD_1',
-     +                                             IOC,1,1,NOMNO1,IBID)
+     &                                             IOC,1,1,NOMNO1,IBID)
          IF (IBID.NE.0) THEN
             ILIAI = ILIAI + 1
             NOECHO(ILIAI,1) = NOMNO1
             CALL GETVEM ( MAILLA, 'NOEUD', MOTFAC, 'NOEUD_2',
-     +                                              IOC,1,1,NOMNO2,NN1)
+     &                                              IOC,1,1,NOMNO2,NN1)
             IF (NN1.NE.0) THEN
                NOECHO(ILIAI,5) = NOMNO2
                LNOUE2 = .TRUE.
@@ -193,8 +193,7 @@ C
                IF (NN2.NE.0) THEN
                   CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR2,NOMNO2,IRET)
                   IF (IRET.EQ.10) THEN
-                     CALL UTMESS('F','MDCHOC',
-     +                       'LE GROUP_NO : '//NOMGR2//'N''EXISTE PAS.')
+                     CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
                   ELSEIF (IRET.EQ.1) THEN
                      CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
                      CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR2)
@@ -212,11 +211,10 @@ C
          ENDIF
 C
          CALL GETVEM ( MAILLA, 'GROUP_NO', MOTFAC, 'GROUP_NO_1',
-     +                                              IOC,1,1,NOMGR1,IBID)
+     &                                              IOC,1,1,NOMGR1,IBID)
          CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR1,NOMNO1,IRET)
          IF (IRET.EQ.10) THEN
-            CALL UTMESS('F','MDCHOC',
-     +                     'LE GROUP_NO : '//NOMGR1//'N''EXISTE PAS.')
+            CALL U2MESK('F','ELEMENTS_67',1,NOMGR1)
          ELSEIF (IRET.EQ.1) THEN
             CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
             CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR1)
@@ -226,7 +224,7 @@ C
          ILIAI = ILIAI + 1
          NOECHO(ILIAI,1) = NOMNO1
          CALL GETVEM ( MAILLA, 'NOEUD', MOTFAC, 'NOEUD_2',
-     +                                               IOC,1,1,NOMNO2,NN1)
+     &                                               IOC,1,1,NOMNO2,NN1)
          IF (NN1.NE.0) THEN
             NOECHO(ILIAI,5) = NOMNO2
             LNOUE2 = .TRUE.
@@ -235,8 +233,7 @@ C
             IF (NN2.NE.0) THEN
                CALL UTNONO(' ',MAILLA,'NOEUD',NOMGR2,NOMNO2,IRET)
                IF (IRET.EQ.10) THEN
-                  CALL UTMESS('F','MDCHOC',
-     +                    'LE GROUP_NO : '//NOMGR2//'N''EXISTE PAS.')
+                  CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
                ELSEIF (IRET.EQ.1) THEN
                   CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
                   CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR2)
@@ -294,10 +291,9 @@ C
                ELSEIF (ZK24(JREFE)(1:7).NE.'DISCRET') THEN
                   NOECHO(ILIAI,9) = ZK24(JREFE)(1:8)
                ENDIF
-               IF ( NOECHO(ILIAI,9).EQ.'BI_CERCI' .AND. 
+               IF ( NOECHO(ILIAI,9).EQ.'BI_CERCI' .AND.
      &              PARCHO(ILIAI,30).LT.PARCHO(ILIAI,29)) THEN
-                  CALL UTMESS('F','MDCHOC',' OBSTACLE BI_CERC_INT : '//
-     &                  'DIST_2 DOIT ETRE SUPERIEURE OU EGALE A DIST_1')
+                  CALL U2MESS('F','ALGORITH5_35')
                ENDIF
             ELSEIF (MOTFAC.EQ.'FLAMBAGE') THEN
                INTITU(I) = NOECHO(ILIAI,1)
@@ -312,16 +308,12 @@ C
                LOGCHO(ILIAI,5) = 1
                IF ( PARCHO(ILIAI,2 ).LE.0.D0 .OR.
      &              PARCHO(ILIAI,51).LE.0.D0 ) THEN
-                  CALL UTMESS('F','MDCHOC','LES RIGIDITES DE CHOCS '//
-     &                          'DOIVENT ETRE STRICTEMENT POSITIVES')
+                  CALL U2MESS('F','ALGORITH5_40')
                ELSE
                   RAP=PARCHO(ILIAI,49)/PARCHO(ILIAI,2)-PARCHO(ILIAI,50)/
      &                                                 PARCHO(ILIAI,51)
                   IF (RAP .LT. 0.D0)
-     &               CALL UTMESS('F','MDCHOC','INCOHERENCE DANS LES '//
-     &                         'DONNEES DE LA LOI DE FLAMBAGE : LES '//
-     &                'CARACTERISTIQUES INTRODUITES PEUVENT INDUIRE '//
-     &                'A UN ECRASEMENT RESIDUEL NEGATIF ')
+     &               CALL U2MESS('F','ALGORITH5_41')
                ENDIF
                CALL GETVID(MOTFAC,'OBSTACLE',IOC,1,1,NOECHO(ILIAI,9),N1)
               CALL JEVEUO(NOECHO(ILIAI,9)//'           .REFO','L',JREFE)
@@ -334,10 +326,9 @@ C
                ELSEIF (ZK24(JREFE)(1:7).NE.'DISCRET') THEN
                   NOECHO(ILIAI,9) = ZK24(JREFE)(1:8)
                ENDIF
-               IF ( NOECHO(ILIAI,9).EQ.'BI_CERCI'    .AND. 
+               IF ( NOECHO(ILIAI,9).EQ.'BI_CERCI'    .AND.
      &              PARCHO(ILIAI,30).LT.PARCHO(ILIAI,29) ) THEN
-                  CALL UTMESS('F','MDCHOC',' OBSTACLE BI_CERC_INT : '//
-     &                  'DIST_2 DOIT ETRE SUPERIEURE OU EGALE A DIST_1')
+                  CALL U2MESS('F','ALGORITH5_35')
                ENDIF
 C
             ELSEIF (MOTFAC.EQ.'ANTI_SISM') THEN
@@ -355,22 +346,22 @@ C --------- SI CTANG NON PRECISE ON CALCULE UN AMORTISSEMENT CRITIQUE
             IF ( CTANG.EQ.0.D0 .AND. KTANG.NE.0.D0 ) THEN
                K = SQRT( PULSAT(IMODE) ) * MASGEN(IMODE)
                CTANG =   2.D0*SQRT( MASGEN(IMODE)*(K+KTANG) )
-     +                 - 2.D0*AMOGEN(IAMOR)*SQRT( K*MASGEN(IMODE) )
+     &                 - 2.D0*AMOGEN(IAMOR)*SQRT( K*MASGEN(IMODE) )
             ENDIF
             PARCHO(ILIAI,4) = KTANG
             PARCHO(ILIAI,5) = CTANG
 C
             IF (NOECHO(ILIAI,9)(1:2).EQ.'BI') THEN
-               XJEU = (PARCHO(ILIAI,10)-PARCHO(ILIAI,7))**2 + 
+               XJEU = (PARCHO(ILIAI,10)-PARCHO(ILIAI,7))**2 +
      &                (PARCHO(ILIAI,11)-PARCHO(ILIAI,8))**2 +
      &                (PARCHO(ILIAI,12)-PARCHO(ILIAI,9))**2
             ENDIF
 C
             CALL MDCHRE ( MOTFAC, IOC, ILIAI, MDGENE, TYPNUM, REPERE,
-     +                                          NBNLI, PARCHO, LNOUE2 )
+     &                                          NBNLI, PARCHO, LNOUE2 )
 C
-            CALL MDCHAN ( MOTFAC, IOC, ILIAI, MDGENE, TYPNUM, REPERE, 
-     +                                    XJEU, NBNLI, NOECHO, PARCHO )
+            CALL MDCHAN ( MOTFAC, IOC, ILIAI, MDGENE, TYPNUM, REPERE,
+     &                                    XJEU, NBNLI, NOECHO, PARCHO )
 C
  130     CONTINUE
 C

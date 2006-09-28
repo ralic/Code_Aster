@@ -2,22 +2,22 @@
      &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
 C       ----------------------------------------------------------------
@@ -46,8 +46,8 @@ C                        indice des paramètes localisation
 C                        Fv et 3 angles par phase
 C           pour chaque monocristal différent
 C                 par famille de système de glissement
-C                    nb coef écoulement + coef, 
-C                    nb coef écrou isot + coef,  
+C                    nb coef écoulement + coef,
+C                    nb coef écrou isot + coef,
 C                    nb coef ecou cine + coef
 C                        puis 2 (ou plus) paramètres localisation
 C
@@ -61,7 +61,7 @@ C                       Nom de la loi d'écoulement
 C                       Nom de la loi d'écrouissage isotrope
 C                       Nom de la loi d'écrouissage cinématique
 C                       Nom de la loi d'élasticité
-C           NBCOMM(*,3) : 
+C           NBCOMM(*,3) :
 C                        Colonne 1      Colonne 2      Colonne3
 C                    _____________________________________________
 C
@@ -69,23 +69,23 @@ C            Ligne 1     Nb phases      Nb var.int.   Nb monocristaux
 C                                                     différents
 C   pour chaque phase g  Num ligne g    Ind CPMONO    ind frac vol MATER
 C   ..................
-C   pour chaque phase 
+C   pour chaque phase
 C   pour la localisation  indice coef   nb param      0
 C   phase g              nb fam g       0            NVIg
 C                ... et pour chaque famille de système de glissement :
 C             famille 1  ind coef       ind coef      ind coef
-C                        ecoulement     ecr iso       ecr cin  
-C    .....   
-C         (ind signifie l'indice dans MATER(*,2)            
+C                        ecoulement     ecr iso       ecr cin
+C    .....
+C         (ind signifie l'indice dans MATER(*,2)
 C                    _____________________________________________
-C                    VARIABLES INTERNES : 
+C                    VARIABLES INTERNES :
 C                    Evp(6)+Norme(Evp)+
 C                       Nphase * (Betag (6) ou Evpg(6))
 C                       Nphase*(Nsyst*(ALPHAsg,GAMMAsg,Psg)
 C                    dernière : indicateur
 C                        ou s désigne le SYSTEME DE GLISSEMENT
 C                        ou g désigne le "grain" ou la phase
-C                    
+C
 C       ----------------------------------------------------------------
 C       IN  COMP   :  GRANDEUR COMPOR
 C           IMAT   :  ADRESSE DU MATERIAU CODE
@@ -146,7 +146,7 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
 C
       CALL JEMARQ()
-      
+
       BL2 = '  '
 C
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -171,7 +171,7 @@ C
       READ (COMP(2),'(I16)') NVI
       READ (COMP(7),'(I16)') NBPHAS
 C     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
-C           
+C
       NR=NVI+NDT-1
       COMPK=COMP(6)(1:8)//'.CPRK'
       COMPI=COMP(6)(1:8)//'.CPRI'
@@ -181,15 +181,15 @@ C
       CALL JEVEUO(COMPR,'L',ICOMPR)
       DIMK=ZI(ICOMPI-1+5+3*NBPHAS)
       NVLOC=ZI(ICOMPI-1+5+3*NBPHAS+1)
-      
-      
+
+
       DO 111 I=1,NMAT
       DO 111 J=1,3
          NBCOMM(I,J)=0
  111  CONTINUE
- 
+
       NBMONO=ZI(ICOMPI-1+4)
-      
+
       DO 112 I=1,DIMK
          CPMONO(I)=ZK16(ICOMPK-1+I)
  112  CONTINUE
@@ -204,8 +204,8 @@ C           pour chaque monocristal différent
 C                 par famille de système de glissement
 C                    coef écoulement, coef écrou isot, coef ecou cine
 C                        puis 2 (ou plus) paramètres localisation
-      MATERD(1,2)=NBMONO      
-      MATERF(1,2)=NBMONO      
+      MATERD(1,2)=NBMONO
+      MATERF(1,2)=NBMONO
       INDMAT=1+NBMONO+1
       DO 113 I=1,4*NBPHAS
          MATERD(INDMAT+I,2)=ZR(ICOMPR-1+I)
@@ -218,13 +218,13 @@ C                        puis 2 (ou plus) paramètres localisation
 C     Boucle sur le nombre de monocristaux
       DO 6 IMONO=1,NBMONO
          READ (CPMONO(INDCP),'(I16)') NBFSYS
-         DO 7 IFA=1,NBFSYS      
+         DO 7 IFA=1,NBFSYS
             NMATER=CPMONO(INDCP+5*(IFA-1)+2)
-            NECOUL=CPMONO(INDCP+5*(IFA-1)+3) 
-            NECRIS=CPMONO(INDCP+5*(IFA-1)+4) 
-            NECRCI=CPMONO(INDCP+5*(IFA-1)+5) 
+            NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
+            NECRIS=CPMONO(INDCP+5*(IFA-1)+4)
+            NECRCI=CPMONO(INDCP+5*(IFA-1)+5)
 
-C           COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT         
+C           COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
             CALL LCMAFL(NMATER,IMAT,NECOUL,NBVAL,1,NOMPAR,VALPAD,VALRES,
      &            NMAT)
             MATERD(INDMAT+1,2)=NBVAL
@@ -239,7 +239,7 @@ C           COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
                MATERF(INDMAT+I,2)=VALRES(I)
  502        CONTINUE
             INDMAT=INDMAT+NBVAL
-            
+
 C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE CINEMATIQUE
             CALL LCMAEC(NMATER,IMAT,NECRCI,NBVAL,1,NOMPAR,VALPAD,VALRES,
      &            NMAT)
@@ -255,7 +255,7 @@ C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE CINEMATIQUE
                MATERF(INDMAT+I,2)=VALRES(I)
  504        CONTINUE
             INDMAT=INDMAT+NBVAL
-            
+
 C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
             NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
             CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
@@ -273,27 +273,27 @@ C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
                MATERF(INDMAT+I,2)=VALRES(I)
  506        CONTINUE
             INDMAT=INDMAT+NBVAL
-                           
- 7       CONTINUE   
-   
+
+ 7       CONTINUE
+
          TABICP(IMONO)=INDCP
          INDCP=INDCP+5*NBFSYS+1+2
 C        INDICE DU DEBUT DU MONO SUIVANT DANS MATER
          MATERD(1+IMONO+1,2)=INDMAT +1
          MATERF(1+IMONO+1,2)=INDMAT +1
-      
- 6    CONTINUE     
-C     Paramètres de la loi de localisation 
+
+ 6    CONTINUE
+C     Paramètres de la loi de localisation
       INDLOC=INDMAT+1
       DO 118 I=1,NVLOC
          MATERD(INDMAT+I,2)=ZR(ICOMPR-1+4*NBPHAS+I)
          MATERF(INDMAT+I,2)=ZR(ICOMPR-1+4*NBPHAS+I)
  118  CONTINUE
       NBCOEF=INDMAT+NVLOC
- 
+
 C  FIN remplissage de MATER(*,2)
 
-      CALL RCCOMA(IMAT,'ELAS',PHENOM,CERR)      
+      CALL RCCOMA(IMAT,'ELAS',PHENOM,CERR)
       IF (PHENOM.EQ.'ELAS') THEN
 C
 C -    ELASTICITE ISOTROPE
@@ -305,22 +305,22 @@ C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
           CALL RCVALA (  IMAT,  ' ',  'ELAS', 1,  NOMPAR,VALPAD, 2,
-     1                   NOMC(1),  MATERD(1,1),  CERR(1), 'FM' )
+     &                   NOMC(1),  MATERD(1,1),  CERR(1), 'FM' )
           CALL RCVALA (  IMAT,  ' ',  'ELAS', 1,  NOMPAR,VALPAD, 1,
-     1                   NOMC(3),  MATERD(3,1),  CERR(3), BL2 )
+     &                   NOMC(3),  MATERD(3,1),  CERR(3), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           MATERD(NMAT,1)=0
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
           CALL RCVALA (  IMAT, ' ',   'ELAS',  1, NOMPAR,VALPAF, 2,
-     1                   NOMC(1),  MATERF(1,1),  CERR(1), 'FM' )
+     &                   NOMC(1),  MATERF(1,1),  CERR(1), 'FM' )
           CALL RCVALA (  IMAT, ' ',   'ELAS',  1, NOMPAR,VALPAF, 1,
-     1                   NOMC(3),  MATERF(3,1),  CERR(3), BL2 )
+     &                   NOMC(3),  MATERF(3,1),  CERR(3), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           MATERF(NMAT,1)=0
-          
-      ELSE IF (PHENOM.EQ.'ELAS_ORTH') THEN        
+
+      ELSE IF (PHENOM.EQ.'ELAS_ORTH') THEN
         REPERE(1)=1
         DO 21 I=1,3
            REPERE(I+1)=ANGMAS(I)
@@ -331,58 +331,56 @@ C -     MATRICE D'ELASTICITE ET SON INVERSE A TEMPD(T)
 C
         CALL DMAT3D(IMAT,VALPAD,R8VIDE(),R8VIDE(),R8VIDE(),REPERE,XYZ,
      &              HOOK)
-        CALL D1MA3D(IMAT,VALPAD,R8VIDE(),REPERE,XYZ,KOOH)        
+        CALL D1MA3D(IMAT,VALPAD,R8VIDE(),REPERE,XYZ,KOOH)
         DO 101 I=1,6
            DO 102 J=1,6
               MATERD(6*(J-1)+I,1)=HOOK(I,J)
               MATERD(36+6*(J-1)+I,1)=KOOH(I,J)
  102       CONTINUE
- 101    CONTINUE 
-        MATERD(NMAT,1)=1        
+ 101    CONTINUE
+        MATERD(NMAT,1)=1
         NOMC(1) = 'ALPHA_L'
         NOMC(2) = 'ALPHA_T'
-        NOMC(3) = 'ALPHA_N'        
+        NOMC(3) = 'ALPHA_N'
         CALL RCVALA(IMAT,' ',PHENOM,1,NOMPAR,VALPAD,3,NOMC,MATERD(73,1),
-     &              CERR,' ')     
+     &              CERR,' ')
         IF (CERR(1).NE.'OK') MATERD(73,1) = 0.D0
         IF (CERR(2).NE.'OK') MATERD(74,1) = 0.D0
-        IF (CERR(3).NE.'OK') MATERD(75,1) = 0.D0        
+        IF (CERR(3).NE.'OK') MATERD(75,1) = 0.D0
 C
 C -     MATRICE D'ELASTICITE ET SON INVERSE A A TEMPF (T+DT)
 C
         CALL DMAT3D(IMAT,VALPAF,R8VIDE(),R8VIDE(),R8VIDE(),REPERE,XYZ,
      &              HOOKF)
-     
         CALL D1MA3D(IMAT,VALPAF,R8VIDE(),REPERE,XYZ,KOOH)
-     
         DO 103 I=1,6
            DO 104 J=1,6
               MATERF(6*(J-1)+I,1)=HOOKF(I,J)
               MATERF(36+6*(J-1)+I,1)=KOOH(I,J)
  104       CONTINUE
- 103    CONTINUE 
-        MATERF(NMAT,1)=1        
+ 103    CONTINUE
+        MATERF(NMAT,1)=1
         CALL RCVALA(IMAT,' ',PHENOM,1,NOMPAR,VALPAF,3,NOMC,MATERF(73,1),
      &              CERR,' ')
         IF (CERR(1).NE.'OK') MATERF(73,1) = 0.D0
         IF (CERR(2).NE.'OK') MATERF(74,1) = 0.D0
-        IF (CERR(3).NE.'OK') MATERF(75,1) = 0.D0        
+        IF (CERR(3).NE.'OK') MATERF(75,1) = 0.D0
       ELSE
-         CALL UTMESS('F','LCMATE',PHENOM//' IMPOSSIBLE ACTUELLEMENT')
+         CALL U2MESK('F','ALGORITH4_65',1,PHENOM)
       ENDIF
-         
-      
+
+
 C     Remplissage de NBCOMM : Boucle sur le nombre de phases
-C     3 : Nombre de familles de systèmes de glissement phase g      
+C     3 : Nombre de familles de systèmes de glissement phase g
 C     Nb phases
       NBCOMM(1,1)=ZI(ICOMPI-1+2)
 C     Nb var. int. total
       NBCOMM(1,2)=ZI(ICOMPI-1+3)
 C     Nb materiaux (monocristaux) différents
       NBCOMM(1,3)=ZI(ICOMPI-1+4)
-C     2 : Numéro du matériau phase g      
-C     3 : indice fraction volumique  dans MATER     
-C     Indices de la première phase    dans NBCOMM  
+C     2 : Numéro du matériau phase g
+C     3 : indice fraction volumique  dans MATER
+C     Indices de la première phase    dans NBCOMM
       INDCOM=NBPHAS+1
 C     Ligne précisant l'indice des coef localisation
       INDCOM=INDCOM+1
@@ -400,11 +398,11 @@ C         Indice de la fraction volumique dans MATER
 C        Indice du monocristal dans CPMONO
          NBCOMM(1+IPHAS,2)=TABICP(NUMONO)
          NBCOMM(INDCOM,1)=NBFAM
-C        Indice début monocristal dans CPMONO         
+C        Indice début monocristal dans CPMONO
          NBCOMM(INDCOM,3)=NVINTG
-C        Debut du monocristal         
+C        Debut du monocristal
          IDMONO=MATERD((1+NUMONO),2)
-C        Indice coef ecoulement famille ifa dans MATER         
+C        Indice coef ecoulement famille ifa dans MATER
          DO 114 IFA=1,NBFAM
             NBVAL1=MATERD(IDMONO,2)
             NBCOMM(INDCOM+IFA,1)=IDMONO+1
@@ -419,10 +417,10 @@ C        Indice coef ecoulement famille ifa dans MATER
 C           Indice du monocristal (phase) dans NBCOMM
             NBCOMM(1+IPHAS+1,1)=INDCOM
          ENDIF
- 115  CONTINUE      
+ 115  CONTINUE
 C     Nombre total de COEF
-      
-      IF (NBCOEF.GE.NMAT) CALL UTMESS('F','LCMMAP','AUGMENTER NMAT')
+
+      IF (NBCOEF.GE.NMAT) CALL U2MESS('F','ALGORITH4_66')
       NBCOMM(NMAT,3)=NBCOEF
 C
 C -   MATERIAU CONSTANT ?

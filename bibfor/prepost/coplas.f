@@ -1,5 +1,5 @@
       SUBROUTINE COPLAS( TEMPA, K1A, K1B, MATREV, LREV, DEKLAG,
-     +                   KAL, KBL, DKMA, DKMB, K1ACP, K1BCP )
+     &                   KAL, KBL, DKMA, DKMB, K1ACP, K1BCP )
 C
       IMPLICIT      NONE
       REAL*8        TEMPA, KAL, KBL, K1A, K1B, LREV, DEKLAG
@@ -7,24 +7,24 @@ C
       CHARACTER*8   MATREV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 C ======================================================================
 C --- BUT : AJOUT DE CORRECTION PLASTIQUE AU CALCUL DES FACTEURS -------
@@ -113,8 +113,7 @@ C ======================================================================
                       IF (TEMPA.LT.ZR(INEUT3)) THEN
                          PROLG = ZK16(INEUT4+4)
                          IF (PROLG(1:1).EQ.'E') THEN
-                            CALL UTMESS('F','COPLAS_2','PROLONGEMENT'//
-     +                                  ' A GAUCHE EXCLU')
+                            CALL U2MESS('F','PREPOST_8')
                          ELSE IF (PROLG(1:1).EQ.'C') THEN
                             SIGMA = ZR(INEUT3+LDIM)
                          ELSE IF (PROLG(1:1).EQ.'L') THEN
@@ -129,8 +128,7 @@ C ======================================================================
                       ELSE IF (TEMPA.GT.ZR(INEUT3+LDIM-1)) THEN
                          PROLG = ZK16(INEUT4+4)
                          IF (PROLG(2:2).EQ.'E') THEN
-                            CALL UTMESS('F','COPLAS_3','PROLONGEMENT'//
-     +                                  ' A DROITE EXCLU')
+                            CALL U2MESS('F','PREPOST_9')
                          ELSE IF (PROLG(2:2).EQ.'C') THEN
                             SIGMA = ZR(INEUT3+2*LDIM-1)
                          ELSE IF (PROLG(1:1).EQ.'L') THEN
@@ -149,9 +147,9 @@ C ======================================================================
                                SIGMA2 = ZR(INEUT3+LDIM+K  )
                                TEMPDI = ZR(INEUT3+K) - ZR(INEUT3+K-1)
                        SIGMA  = (1-(TEMPA-ZR(INEUT3+K-1))/TEMPDI) *
-     +                           SIGMA1 +
-     +                          (1-(ZR(INEUT3+K)-TEMPA)/TEMPDI) *
-     +                           SIGMA2
+     &                           SIGMA1 +
+     &                          (1-(ZR(INEUT3+K)-TEMPA)/TEMPDI) *
+     &                           SIGMA2
                             ENDIF
  50                      CONTINUE
                       ENDIF
@@ -182,8 +180,7 @@ C ======================================================================
  21         CONTINUE
             IF (VALP.EQ.1) THEN
                IF (PROLN(1:1).EQ.'E') THEN
-                  CALL UTMESS('F','COPLAS_4','PROLONGEMENT'//
-     +                                  ' A GAUCHE EXCLU')
+                  CALL U2MESS('F','PREPOST_8')
                ELSE IF (PROLN(1:1).EQ.'C') THEN
            CALL JELIRA ( JEXNUM(NATNOM,VALP  ), 'LONMAX', NBPT1, K8B )
                CALL JEVEUO ( JEXNUM(NATNOM,VALP  ), 'L', ITOT1 )
@@ -203,8 +200,7 @@ C ======================================================================
                ENDIF
             ELSE IF (VALP.EQ.0) THEN
                IF (PROLN(2:2).EQ.'E') THEN
-                  CALL UTMESS('F','COPLAS_5','PROLONGEMENT'//
-     +                                  ' A DROITE EXCLU')
+                  CALL U2MESS('F','PREPOST_9')
                ELSE IF (PROLN(2:2).EQ.'C') THEN
         CALL JELIRA ( JEXNUM(NATNOM,NPARA), 'LONMAX', NBPT1, K8B )
                   CALL JEVEUO ( JEXNUM(NATNOM,NPARA), 'L', ITOT2 )
@@ -224,7 +220,7 @@ C ======================================================================
                ENDIF
             ELSE
                TEMP1 = ZR(INEUT5-1+VALP-1)
-               TEMP2 = ZR(INEUT5-1+VALP  ) 
+               TEMP2 = ZR(INEUT5-1+VALP  )
                TEMPD = TEMP2 - TEMP1
                COEF1 = 1 - (TEMPA-TEMP1)/TEMPD
                COEF2 = 1 - (TEMP2-TEMPA)/TEMPD
@@ -239,7 +235,7 @@ C ======================================================================
                GOTO 30
          ENDIF
  3    CONTINUE
-      CALL UTMESS('F','COPLAS_6','PHENOMENE NON VALIDE')
+      CALL U2MESS('F','PREPOST_10')
  30   CONTINUE
       RYA = (K1A * K1A)/(6 * PI * SIGMA * SIGMA)
       BETAA = 1 + 0.3D0 * TANH(36*RYA/(LREV+DEKLAG))

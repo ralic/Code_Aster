@@ -1,6 +1,6 @@
       SUBROUTINE SS2MME(MO,VECEL,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,8 +70,7 @@ C
       CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
 C
       IF (NBSSA.EQ.0) THEN
-        CALL UTMESS('F','SS2MME','MOT CLEF "SOUS_STRUC" INTERDIT'
-     +              //' POUR CE MODELE SANS SOUS_STRUCTURES.')
+        CALL U2MESS('F','SOUSTRUC_24')
       END IF
 C
       CALL JEVEUO(MO//'.SSSA','L',IASSSA)
@@ -81,7 +80,7 @@ C
       ZK24(IAREFR-1+3)(1:3)='OUI'
 C
       CALL JECREC(VECEL//'.LISTE_CHAR',BASE//' V I','NO','CONTIG',
-     +             'CONSTANT',NBOC)
+     &             'CONSTANT',NBOC)
       CALL JEECRA(VECEL//'.LISTE_CHAR','LONMAX',NBSMA,KBID)
 C
 C
@@ -109,17 +108,17 @@ C
 C       -- CAS : MAILLE: L_MAIL
 C       -----------------------
         CALL GETVID('SOUS_STRUC','MAILLE',
-     +             IOC,1,0,KBID,N2)
-        IF (-N2.GT.NBSMA) CALL UTMESS('F','SS2MME','LISTE DE MAILLES '
-     +     //'PLUS LONGUE QUE LA LISTE DES SOUS_STRUCTURES DU MODELE.')
+     &             IOC,1,0,KBID,N2)
+        IF (-N2.GT.NBSMA) CALL U2MESS('F','SOUSTRUC_25')
         CALL GETVID('SOUS_STRUC','MAILLE',
-     +             IOC,1,NBSMA,ZK8(IALMAI),N2)
+     &             IOC,1,NBSMA,ZK8(IALMAI),N2)
         DO 2, I=1,N2
           NOSMA=ZK8(IALMAI-1+I)
           CALL JENONU(JEXNOM(MA//'.SUPMAIL',NOSMA),IMAS)
           IF (IMAS.EQ.0) THEN
             CALL UTMESS('F','SS2MME','LA MAILLE : '//NOSMA
-     +                //' N EXISTE PAS DANS LE MAILLAGE : '//MA)
+     &                //' N EXISTE PAS DANS LE MAILLAGE : '//MA)
+C        CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
           ELSE
             ZI(IALSCH-1+IMAS)=1
           END IF
@@ -132,22 +131,22 @@ C       ----------------------------------------------------------
         DO 3, I=1,NBSMA
           IF (ZI(IALSCH-1+I).EQ.0) GO TO 3
           CALL JENUNO(JEXNUM(MA//'.SUPMAIL',I),NOSMA)
-          IF (ZI(IASSSA-1+I).NE.1) CALL UTMESS('F','SS2MME',
-     +     'LA MAILLE : '//NOSMA//' N''EST PAS ACTIVE DANS LE MODELE')
+          IF (ZI(IASSSA-1+I).NE.1) CALL U2MESK('F','SOUSTRUC_27',1,NOSMA
+     &)
 C
           NOMACR= ZK8(IAMACR-1+I)
           CALL JEEXIN(JEXNOM(NOMACR//'.LICA',NOMCAS),IRET)
           IF (IRET.EQ.0) THEN
             IER0=1
             CALL UTMESS('E','SS2MME','LA MAILLE : '//NOSMA
-     +                //' NE CONNAIT PAS LE CHARGEMENT : '//NOMCAS)
+     &                //' NE CONNAIT PAS LE CHARGEMENT : '//NOMCAS)
+C        CALL U2MESK('E','SOUSTRUC_28', 2 ,VALK)
           END IF
  3      CONTINUE
 C
  10   CONTINUE
 C
-      IF (IER0.EQ.1) CALL UTMESS
-     +    ('F','SS2MME','ARRET SUITE AUX ERREURS DETECTEES.')
+      IF (IER0.EQ.1) CALL U2MESS('F','SOUSTRUC_29')
 C
       CALL JEEXIN('&&SS2MME.LMAI',IRET)
       IF (IRET.GT.0) CALL JEDETR('&&SS2MME.LMAI')

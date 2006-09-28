@@ -9,7 +9,7 @@
       CHARACTER*24 MODELE,CARELE,CHARGE,MATE,NUMEDD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,9 +181,7 @@ C -- TEST DE PRESENCE DE CHARGEMENT DIRICHLET (DEPL IMPOSE NON NUL)
           INEW = 0
           CALL GETFAC('NEWMARK',INEW)
           IF ((IRET.EQ.1) .AND. (INEW.EQ.0)) THEN
-            CALL UTMESS('F',NOMPRO,'LE CHARGEMENT DE TYPE DIRICHLET'//
-     &               ' NECESSITE LA RESOLUTION PAR LE SCHEMA DE NEWMARK'
-     &                  )
+            CALL U2MESS('F','ALGORITH3_20')
           END IF
 
           DO 30 JJ = 1,LONCH
@@ -224,9 +222,7 @@ C -- LES DIRICHLETS
           INEW = 0
           CALL GETFAC('NEWMARK',INEW)
           IF (INEW.EQ.0) THEN
-            CALL UTMESS('F',NOMPRO,'LE CHARGEMENT DE TYPE DIRICHLET'//
-     &               ' NECESSITE LA RESOLUTION PAR LE SCHEMA DE NEWMARK'
-     &                  )
+            CALL U2MESS('F','ALGORITH3_20')
           END IF
 
           SECAL = .TRUE.
@@ -248,9 +244,7 @@ C IL FAUT UTILISER DANS CE CAS : TYPCAL = 'MECM' + 'MECA'
           INEW = 0
           CALL GETFAC('ADAPT',INEW)
           IF (INEW.EQ.1) THEN
-            CALL UTMESS('F',NOMPRO,'LE PAS DE TEMPS ADAPTATIF N EST '//
-     &                'PAS APPROPRIE POUR LE CALCUL DE SENSIBILITE PAR '
-     &                  //'RAPPORT AU PARAMETRE MATERIAU ')
+            CALL U2MESS('F','ALGORITH3_21')
           END IF
 
           SECAL = .TRUE.
@@ -286,9 +280,7 @@ C -- LES CARACTERISTIQUES ELEMENTAIRES
           INEW = 0
           CALL GETFAC('ADAPT',INEW)
           IF (INEW.EQ.1) THEN
-            CALL UTMESS('F',NOMPRO,'LE PAS DE TEMPS ADAPTATIF N EST '//
-     &                'PAS APPROPRIE POUR LE CALCUL DE SENSIBILITE PAR '
-     &                  //'RAPPORT AU PARAMETRE MATERIAU ')
+            CALL U2MESS('F','ALGORITH3_21')
           END IF
 
           SECAL = .TRUE.
@@ -372,7 +364,7 @@ C -- CHARGEMENTS DE NEUMANN
           CALL UTDEBM('A',NOMPRO,'TYPE DE SENSIBILITE NON TRAITE ')
           CALL UTIMPI('S','TYPESE : ',1,TYPESE)
           CALL UTFINM
-          CALL UTMESS('F',NOMPRO,'CAS SENSIBILITE NON PREVU')
+          CALL U2MESS('F','ALGORITH3_22')
         END IF
 
         CALL DCOPY(NEQ,ZR(J2ND1),1,F,1)

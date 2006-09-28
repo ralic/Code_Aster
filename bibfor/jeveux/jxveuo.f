@@ -1,21 +1,21 @@
       SUBROUTINE JXVEUO (CEL , ITAB , INAT , JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -38,11 +38,11 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -67,11 +67,11 @@ C ----------------------------------------------------------------------
       LOGICAL          LDEPS  , LCONST
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C DEB ------------------------------------------------------------------
       JITAB = 0
       GOTO ( 10 , 20 , 30 ) , INAT
@@ -112,7 +112,7 @@ C
             LONOI  = LONO ( JLONO(IC) + IXDESO ) * LTYPI
           ELSE
             CMESS ='COLLECTION CONTIG LONGUEUR CONSTANTE NON DEFINIE'
-            CALL JVMESS ( 'S' , 'JXVEUO01' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
         ELSE
           IBLONO = IADM ( JIADM(IC) + IXLONO )
@@ -164,15 +164,15 @@ C
         IF ( IADMI .EQ. 0 ) THEN
           IF ( IADDI(1) .NE. 0 ) THEN
             CALL JJALLS ( LONOI , GENRI , TYPEI , LTYPI ,
-     +                   'NOINIT' , ITAB , JITAB , IADMI )
+     &                   'NOINIT' , ITAB , JITAB , IADMI )
             CALL JXLIRO ( IC , IADMI , IADDI , LONOI )
           ELSE
             CALL JJALLS ( LONOI , GENRI , TYPEI , LTYPI ,
-     +                   'INIT  ' , ITAB , JITAB , IADMI )
+     &                   'INIT  ' , ITAB , JITAB , IADMI )
           ENDIF
           IADM( JIADM(IC) + IXDESO ) = IADMI
           CALL JJECRS (IADMI,IC,IXDESO,0,CEL,
-     +                 IMARQ(JMARQ(IC)+2*IXDESO-1))
+     &                 IMARQ(JMARQ(IC)+2*IXDESO-1))
         ENDIF
       GOTO 99
 C
@@ -215,17 +215,17 @@ C ------- PAS D'IMAGE DISQUE
 C
           IF ( CEL .EQ. 'E' ) THEN
             CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
-     +                   ITAB , JITAB , IADMI )
+     &                   ITAB , JITAB , IADMI )
           ELSE
             CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
-            CALL JVMESS ( 'S' , 'JXVEUO02' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
         ELSE
 C
 C ------- AVEC  IMAGE DISQUE
 C
           CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT' ,
-     +                 ITAB , JITAB , IADMI )
+     &                 ITAB , JITAB , IADMI )
           CALL JXLIRO ( IC , IADMI , IADDI , LONOI )
         ENDIF
       ELSE
@@ -243,7 +243,7 @@ C
         ISZON ( JISZON + IBIADD - 1 + 2*IDATOC-1 ) = IADDI(1)
         ISZON ( JISZON + IBIADD - 1 + 2*IDATOC   ) = IADDI(2)
         CALL JJECRS (IADMI, IC, IDOS, IDCO, CEL,
-     +               ISZON (JISZON+IBMARQ-1+2*IDATOC-1))
+     &               ISZON (JISZON+IBMARQ-1+2*IDATOC-1))
       ELSE
         IADM( JIADM(IC) + IXDESO ) = IADMI
         IADD( JIADD(IC) + 2*IXDESO-1 ) = IADDI(1)

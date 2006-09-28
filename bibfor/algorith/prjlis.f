@@ -2,22 +2,22 @@
      &                    LINTB,INTFA,INTFB,FPLIAO,FPLIBO,IADA,IADB,
      &                    NUMLIS,MATPRJ,MODGEN,SSTA,SSTB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C***********************************************************************
       IMPLICIT NONE
@@ -77,7 +77,7 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8    K8BID,LINTA,LINTB,MODA,MODB,MAA,MAB,INTFA,INTFB,
      &               MATPRJ,NONOB,NONOA,NONOAI,NOMG,NONOB2,MODGEN,
      &               SSTA,SSTB
-      CHARACTER*16   TYMOCL(2),MOTCLE(2),MOTFAC,CORRES,CORRED    
+      CHARACTER*16   TYMOCL(2),MOTCLE(2),MOTFAC,CORRES,CORRED
       CHARACTER*24   INTA,INTB,FPLIAO,FPLIBO,TOTO,GEOMA,GEOMB
       INTEGER        IBID,IER,NBNOA,NBNOB,LLINTA,LLINTB,NBMAA,IAGMAA,
      &               NDIM,IACONB,IACONU,IACOCF,IDMAX,IDNOMN,IDCOEF,
@@ -105,12 +105,12 @@ C     ---------------------------------------
       MOTFAC='LIAISON'
       TYMOCL(1) = 'MAILLE'
       TYMOCL(2) = 'GROUP_MA'
-      
+
 C--------------LES NOMBRES DES NOEUDS DES INTERFACES
       INTA=LINTA//'.IDC_LINO'
       CALL JENONU(JEXNOM(INTA(1:13)//'NOMS',INTFA),IBID)
       CALL JELIRA(JEXNUM(INTA,IBID),'LONMAX',NBNOA,K8BID)
-C      
+C
       INTB=LINTB//'.IDC_LINO'
       CALL JENONU(JEXNOM(INTB(1:13)//'NOMS',INTFB),IBID)
       CALL JELIRA(JEXNUM(INTB,IBID),'LONMAX',NBNOB,K8BID)
@@ -119,16 +119,15 @@ C--------------LES LISTES DES NUMEROS DES NOEUDS DES INTERFACES
       CALL JENONU(JEXNOM(LINTA //'.IDC_NOMS',INTFA),IBID)
       CALL JEVEUO(JEXNUM(LINTA //'.IDC_LINO',IBID),'L',LLINTA)
       CALL JEVEUO(LINTA//'.IDC_DEFO','L',LDESCA)
-      
+
       CALL JENONU(JEXNOM(LINTB //'.IDC_NOMS',INTFB),IBID)
       CALL JEVEUO(JEXNUM(LINTB //'.IDC_LINO',IBID),'L',LLINTB)
       CALL JEVEUO(LINTB//'.IDC_DEFO','L',LDESCB)
-  
+
 
 C--------------LE NOMBRE DES MAILLES DE L'INTERFACE MAITRE
       CALL RELIEM(MODA,MAA,'NU_MAILLE',MOTFAC,1,2,MOTCLE,TYMOCL,
      &           '&&PRJLIS.LIMANUA',NBMAA)
-     
 C--------------LA LISTE DES NUMEROS DES MAILLES DE L'INTERFACE MAITRE
       CALL JEVEUO('&&PRJLIS.LIMANUA','L',IAGMAA)
 
@@ -146,7 +145,7 @@ C--------------TRANSFORMATION DE LA GEOMETRIE POUR LA PROJECTION
      &            '&&PRJLIS.LIMANUA',NBMAA)
 
 C--------------CALCUL DE CORRES
-C 
+C
       IF (NDIM.EQ.2) THEN
         CALL PJ2DCO('PARTIE',MODA,MODB,NBMAA,ZI(IAGMAA),NBNOB,
      &        ZI(LDESCB),GEOMA,GEOMB,CORRES,.FALSE.,RBID)
@@ -159,14 +158,14 @@ C
       CALL JEVEUO(CORRES//'.PJEF_NU','L',IACONU)
       CALL JEVEUO(CORRES//'.PJEF_CF','L',IACOCF)
       CALL JELIRA(CORRES//'.PJEF_NB','LONMAX',NBNOB2,K8BID)
-        
+
 C      CALL UTIMSD(6,2,.TRUE.,.TRUE.,'&&PRJLIS.CORRES',1,' ')
 
 
 C-------------ON RECUPERE LES COEFFICIENTS DE LA PROJECTION
       TOTO='TUTU'
       CALL WKVECT(TOTO,'V V R',NBNOB*NBNOA,ITEMTM)
-      
+
 C Initialisation de la matrice d'observation
       DO 445 INOB = 1,NBNOB
         DO 444 INOA = 1,NBNOA
@@ -191,11 +190,11 @@ C si le nbre de noeud maitre lie au noeud esclave courant est > 0
           CALL JENUNO(JEXNUM(MAB//'.NOMNOE',NUNOBI),NONOB)
           IF (NIV.EQ.2) THEN
             WRITE (IFM,*) ' '
-            WRITE (IFM,*) '_RELA IMPRESSION D''UNE RELATION 
+            WRITE (IFM,*) '_RELA IMPRESSION D''UNE RELATION
      &            LINEAIRE ENTRE '
      &            ,NBTERM,' DDLS. (AVANT NORMALISATION DE LA RELATION)'
             WRITE (IFM,1001) -1.D0,NONOB
-          ENDIF  
+          ENDIF
 C boucle sur le nombre de noeud maitre lie au noeud esclave courant
           DO 30,INOA = 1,NNOA
             NUNOA = ZI(IACONU+IDECAL-1+INOA)
@@ -210,32 +209,30 @@ C maitres d'interface on stocke la valeur du coefficient
               IF (NUNOA.EQ.NUNOAI) THEN
 C On stocke la valeur du coefficient dans la matrice d'observation
 C le stockage est donc C(Nbre Noeud esclave,Nbre Noeud maitre)
-C l'ordre est donc celui de l'interface esclave pour 
-C les lignes de la matrice et celui de l'interface maitre pour les 
+C l'ordre est donc celui de l'interface esclave pour
+C les lignes de la matrice et celui de l'interface maitre pour les
 C colonnes
                  ZR(ITEMTM+(IINOB-1)*NBNOA+J-1)=COEFA
                  IF (NIV.EQ.2) THEN
                    WRITE (IFM,1001) COEFA,NONOA
-                 ENDIF  
+                 ENDIF
               END IF
  40         CONTINUE
  30       CONTINUE
           IF (NIV.EQ.2) THEN
             WRITE (IFM,*) '_RELA = ',BETA
-          ENDIF  
+          ENDIF
           IDECAL = IDECAL+NNOA
           IINOB=IINOB+1
         ENDIF
- 10   CONTINUE 
+ 10   CONTINUE
 
 C ************************************************************
-C Recuperation des donnees par composantes          
+C Recuperation des donnees par composantes
       NOMG = 'DEPL_R'
       CALL DISMOI('F','NB_EC',NOMG,'GRANDEUR',NBEC,K8BID,IERD)
       IF (NBEC.GT.10) THEN
-         CALL UTMESS('F','ROTLIS',
-     +                   'LE DESCRIPTEUR_GRANDEUR DES DEPLACEMENTS'//
-     +                    ' NE TIENT PAS SUR DIX ENTIERS CODES')
+         CALL U2MESS('F','MODELISA_94')
       ENDIF
 
       CALL JEVEUO(JEXNUM(FPLIAO,NUMLIS),'L',LLPLIA)
@@ -246,8 +243,8 @@ C Initialisation de la matrice d'observation
       DO 446 INOB = 1,IADB(1)
         DO 447 INOA = 1,IADA(1)
           ZR(ITEMCM+(INOB-1)*IADA(1)+INOA-1)=0.D0
- 447    CONTINUE 
- 446  CONTINUE 
+ 447    CONTINUE
+ 446  CONTINUE
 C
       DO 110 INOB = 1,NBNOB
         IADOB=ZI(LLPLIB+(INOB-1)*(1+NBEC))
@@ -263,18 +260,18 @@ C
      &                  IDECOA,NBCMPM)
               ICOMPA=IADOA-1
               DO 140 J=1,NBCMPM
-                IF ((IDECOA(J).GT.0) 
+                IF ((IDECOA(J).GT.0)
      &           .AND.(I.EQ.J)) THEN
-C On se limite au repere globaux     
+C On se limite au repere globaux
                   ICOMPA=ICOMPA+I
                   ZR(ITEMCM+(ICOMPB-1)*IADA(1)+ICOMPA-1)=
      &            ZR(ITEMTM+(INOB-1)*NBNOA+INOA-1)
                 ENDIF
- 140          CONTINUE 
+ 140          CONTINUE
  130        CONTINUE
           ENDIF
- 120    CONTINUE 
- 110  CONTINUE 
+ 120    CONTINUE
+ 110  CONTINUE
 
 
 C ************************************************************
@@ -289,7 +286,7 @@ C-------------FORMAT D'IMPRESSION
       CALL JEDETR(GEOMB)
       CALL JEDETR(CORRES)
       CALL JEDETR('&&PRJLIS')
-      
+
  9999 CONTINUE
       CALL JEDEMA()
       END

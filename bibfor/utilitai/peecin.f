@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,9 +98,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
      &           TYPRES(1:10).EQ.'DYNA_TRANS') THEN
           NOPARR(2) = 'INST'
         ELSE
-          CALL UTMESS('F','PEECIN','ON ATTEND UN CONCEPT '//
-     &                '"MODE_MECA" OU "EVOL_ELAS"'//
-     &                ' OU "EVOL_THER" OU "DYNA_TRANS" OU "EVOL_NOLI"')
+          CALL U2MESS('F','UTILITAI3_68')
         END IF
       END IF
 
@@ -123,9 +121,9 @@ C      TYPRES = ' '
       IF (ND.NE.0) THEN
         IF (NF.EQ.0) THEN
           XFREQ = 1.D0
-          CALL UTMESS('I','PEECIN','CHAMP DE VITESSE DONNE.')
+          CALL U2MESS('I','UTILITAI3_69')
         ELSE
-          CALL UTMESS('I','PEECIN','CHAMP DE DEPLACEMENT DONNE.')
+          CALL U2MESS('I','UTILITAI3_70')
           XFREQ = (R8DEPI()*XFREQ)**2
         END IF
         NBORDR = 1
@@ -148,7 +146,7 @@ C        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
           NOMMAS = ZK24(JREF+1)(1:8)
           CALL DISMOI('A','SUR_OPTION',NOMMAS,'MATR_ASSE',IBID,OPT,IE)
           IF (IE.NE.0) THEN
-            CALL UTMESS('A','PEECIN','OPTION MASSE COHERENTE.')
+            CALL U2MESS('A','UTILITAI3_71')
           ELSE
             IF (OPT(1:14).EQ.'MASS_MECA_DIAG') INUME = 0
           END IF
@@ -159,7 +157,7 @@ C        --- DANS LA COMMANDE POST_ELEM                          ---
         CALL GETVTX(OPTION(1:9),'OPTION',1,1,1,OPTMAS,NT)
         IF (OPTMAS(1:14).EQ.'MASS_MECA_DIAG') THEN
           INUME = 0
-          CALL UTMESS('I','PEECIN','CALCUL AVEC MASSE DIAGONALE')
+          CALL U2MESS('I','UTILITAI3_72')
         END IF
 
         CALL WKVECT(KINS,'V V R',NBORDR,JINS)
@@ -248,17 +246,17 @@ C           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
             CHTREF = ' '
             CHTEMP = DEPLA
           ELSE
-            CALL UTMESS('F','PEECIN','TYPE DE CHAMP INCONNU.')
+            CALL U2MESS('F','UTILITAI3_73')
           END IF
         ELSEIF(TYPCHA(1:9).EQ.'CHAM_ELEM')THEN
           IF (NOMGD(1:4).EQ.'ENER') THEN
             CHELEM = DEPLA
             GO TO 30
           ELSE
-            CALL UTMESS('F','PEECIN','TYPE DE CHAMP INCONNU.')
+            CALL U2MESS('F','UTILITAI3_73')
           END IF
         ELSE
-          CALL UTMESS('F','PEECIN','TYPE DE CHAMP INCONNU.')
+          CALL U2MESS('F','UTILITAI3_73')
         END IF
         CHELEM = '&&PEECIN.CHAM_ELEM'
         IBID = 0
@@ -306,14 +304,12 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
               NOMMAI = ZK8(JGR+IG-1)
               CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A','PEECIN','LE GROUPE DE MAILLE "'//
-     &                      NOMMAI//'" N''EXISTE PAS.')
+                CALL U2MESK('A','UTILITAI3_46',1,NOMMAI)
                 GO TO 40
               END IF
               CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONMAX',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL UTMESS('A','PEECIN','LE GROUPE "'//NOMMAI//
-     &                      '" NE CONTIENT AUCUNE MAILLE.')
+                CALL U2MESK('A','UTILITAI3_74',1,NOMMAI)
                 GO TO 40
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
@@ -341,8 +337,7 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
               NOMMAI = ZK8(JMA+IM-1)
               CALL JEEXIN(JEXNOM(MLGNMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A','PEECIN','LA MAILLE "'//NOMMAI//
-     &                      '" N''EXISTE PAS.')
+                CALL U2MESK('A','UTILITAI3_49',1,NOMMAI)
                 GO TO 50
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)

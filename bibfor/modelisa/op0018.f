@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/09/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 NOMA,NOMU,K8B,VERIF(2)
       CHARACTER*8 TYPENT,TYPEMA,NOMAIL,TABMAI(8)
       CHARACTER*16 CONCEP,CMD,PHENOM,TYPELE,MODELI,LMODEL(10),TYPEMO,
-     +             TYPEM1
+     &             TYPEM1
       CHARACTER*19 LIGREL
       CHARACTER*24 NOMMAI,NOMNOE,TYPMAI,GRPNOE,GRPMAI,TMPDEF
       CHARACTER*24 CPTNEM,CPTNOM,CPTNBN,CPTLIE,CPTMAI,CPTNOE
@@ -219,10 +219,7 @@ C       -- RAPPEL : LES MOTS CLES TOUT,GROUP_MA,... S'EXCLUENT
           IF (D2.EQ.-99) THEN
             D2 = D1
           ELSE
-            IF (D2.NE.D1) CALL UTMESS('F','OP0018','POUR AFFECTER '//
-     &           'UNE LISTE DE MODELISATIONS, IL FAUT QU''ELLES SOIENT '
-     &                                //'DE MEME DIMENSION TOPOLOGIQUE.'
-     &                                )
+            IF (D2.NE.D1) CALL U2MESS('F','MODELISA5_51')
           END IF
 
           IF (MODELI(1:4).EQ.'AXIS' .OR.
@@ -382,8 +379,7 @@ C ---   DIMENSIONNEMENT DES OBJETS LIEL ET NEMA
       END IF
 
       IF (NBMAAF.EQ.0) THEN
-        CALL UTMESS('F',CMD,'AUCUNE MAILLE N A ETE AFFECTEE '//
-     &              'PAR DES ELEMENTS FINIS POUR LE MAILLAGE '//NOMA)
+        CALL U2MESK('F','MODELISA5_52',1,NOMA)
       END IF
 
       NUTYPE = 0
@@ -577,17 +573,14 @@ C     --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE
 C     ----------------------------------------------------------
       CALL DISMOI('F','DIM_GEOM',NOMU,'MODELE',IDIM,K8B,IBID)
       IF (IDIM.GT.3) THEN
-        CALL UTMESS('A','OP0018',
-     &              'MELANGE DE MODELISATIONS PLANES ET VOLUMIQUES '//
-     &              '(OU PRESENCE DE SOUS-TRUCTURES STATIQUES)')
+        CALL U2MESS('A','MODELISA4_4')
       ELSE
         IDIM2 = 3
         CALL DISMOI('F','Z_CST',NOMU,'MODELE',IBID,CDIM,IBID)
         IF (CDIM.EQ.'OUI') IDIM2 = 2
         IF ((IDIM.EQ.3) .AND. (IDIM2.EQ.2)) THEN
         ELSE IF ((IDIM.EQ.2) .AND. (IDIM2.EQ.3)) THEN
-          CALL UTMESS('A','OP0018','LE MAILLAGE EST 3D MAIS '//
-     &                'LES ELEMENTS DU MODELE SONT 2D.')
+          CALL U2MESS('A','MODELISA5_53')
         END IF
       END IF
 
@@ -598,9 +591,7 @@ C     ---------------------------------------------------
       CALL MODEXI(NOMU,'DIS_',I3D)
       CALL MODEXI(NOMU,'2D_DIS_',I2D)
       IF (IDIM2.EQ.2 .AND. I3D.EQ.1 .AND. I2D.EQ.1) THEN
-        CALL UTMESS('F','OP0018','IL EST INTERDIT D''AVOIR '//
-     &              ',POUR UN MODELE DONNE, A LA FOIS DES '//
-     &              'ELEMENTS DISCRETS 2D ET 3D .')
+        CALL U2MESS('F','MODELISA5_54')
       END IF
 
 

@@ -3,7 +3,7 @@
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,8 +95,7 @@ C     ---------------------------------------------
         CALL MALINO(MOTFAC,CHARGE,IOCC,LISNOE,LONLIS)
         LONLIM = MAX(LONLIM,LONLIS)
         IF (LONLIS.LE.1) THEN
-          CALL UTMESS('F','CAGROU',
-     &                'POUR LIAISON_UNIF ENTRER PLUS DE UN NOEUD')
+          CALL U2MESS('F','MODELISA2_82')
         END IF
 
         CALL JEVEUO(LISNOE,'L',JLIST)

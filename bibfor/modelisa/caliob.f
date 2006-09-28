@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,9 +132,7 @@ C --- DANS TOUTES LES LIAISONS                            ---
 
       NDIM = MAX(NBGM,NBEM)
       IF (NDIM.EQ.0) THEN
-        CALL UTMESS('F',MOTFAC,'IL N''Y A AUCUN GROUPE DE '//
-     &              'NOEUDS NI AUCUN NOEUD DEFINI APRES LE '//
-     &              'MOT FACTEUR '//MOTFAC)
+        CALL U2MESK('F','MODELISA3_13',1,MOTFAC)
       END IF
       TRAV = '&&CALIOB.'//MOTFAC
       CALL WKVECT(TRAV,'V V K8',NDIM,JJJ)
@@ -146,6 +144,7 @@ C --- DANS TOUTES LES LIAISONS                            ---
           IF (IRET.EQ.0) THEN
             CALL UTMESS('F',MOTFAC,'LE GROUPE '//ZK8(JJJ+IGR-1)//
      &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
+C        CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
           ELSE
             CALL JELIRA(JEXNOM(GROUMA,ZK8(JJJ+IGR-1)),'LONMAX',N1,K1BID)
           END IF
@@ -156,6 +155,7 @@ C --- DANS TOUTES LES LIAISONS                            ---
           IF (IRET.EQ.0) THEN
             CALL UTMESS('F',MOTFAC,MOTCLE//' '//ZK8(JJJ+INO-1)//
      &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
+C        CALL U2MESK('F','MODELISA2_96', 3 ,VALK)
           END IF
    30   CONTINUE
    40 CONTINUE

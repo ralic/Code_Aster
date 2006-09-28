@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C ----------------------------------------------------------------------
       ELSE IF (NOMCMD.EQ.'AFFE_CHAR_THER') THEN
         TYPLIA = 'TEMP'
       ELSE
-        CALL UTMESS('F','CALYRC','STOP1')
+        CALL U2MESS('F','CALCULEL_2')
       END IF
 
 
@@ -138,19 +138,17 @@ C
          NBPAR = 0
          PARA = 'AR_MIN                  '
          CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, CBID, K8B,
-     +                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
-     +                K8B, IRET )
+     &                K8B, R8B , PARA, K8B, IBID, ARMIN, CBID,
+     &                K8B, IRET )
           IF ( IRET .EQ. 0 ) THEN
              PREC = ARMIN*1.D-06
           ELSEIF ( IRET .EQ. 1 ) THEN
              PREC = 1.D-10
           ELSE
-             CALL UTMESS('F','CALIRC',
-     + 'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+             CALL U2MESS('F','MODELISA2_13')
           ENDIF
       ELSE
-         CALL UTMESS('F','CALYRC',
-     +            'LA TABLE "CARA_GEOM" N''EXISTE PAS DANS LE MAILLAGE')
+         CALL U2MESS('F','MODELISA3_18')
       ENDIF
 
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NNOMX,KB,IER)
@@ -233,9 +231,9 @@ C        ---------------------------------------------
 
           NORIEN = 0
           CALL ORILMA ( NOMA, NDIM, ZI(IDMAI3), NBMA3, NORIEN, NTRAIT,
-     +                  LREORI, PREC )
+     &                  LREORI, PREC )
           IF (NORIEN.NE.0) THEN
-              CALL UTMESS('F','CALYRC','MAILLES MAL ORIENTEES')
+              CALL U2MESS('F','MODELISA3_19')
           END IF
 
 C ---        CREATION DU TABLEAU DES NUMEROS DES NOEUDS '&&NBNLMA.LN'
@@ -581,7 +579,7 @@ C           -----------------------------------------------------
             IDCAL2 = IDCAL2 + NNO12
   290     CONTINUE
         ELSE
-          CALL UTMESS('F','CALYRC','STOP 2')
+          CALL U2MESS('F','CALCULEL_8')
         END IF
 
         CALL DETRSD('CORRESP_2_MAILLA',CORES1)

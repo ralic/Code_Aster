@@ -1,5 +1,5 @@
       SUBROUTINE CESRED(CES1Z,NBMA,LIMA,NBCMP,LICMP,BASE,CES2Z)
-C MODIF CALCULEL  DATE 25/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,7 +112,7 @@ C     ------------------------------------------
       CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX,KBID,IBID)
 
       IF (NBCMP.LT.0) THEN
-        CALL UTMESS('F','CESRED','NBCMP DOIT ETRE >=0')
+        CALL U2MESS('F','CALCULEL_82')
       ELSE IF (NBCMP.GT.0) THEN
         NCMP2 = NBCMP
       ELSE
@@ -156,7 +156,7 @@ C     ------------------------------------------
    20 CONTINUE
 
       IF (NBMA.LT.0) THEN
-        CALL UTMESS('F','CESRED','NBMA DOIT ETRE >=0')
+        CALL U2MESS('F','CALCULEL_83')
 
       ELSE IF (NBMA.EQ.0) THEN
         DO 30,KMA = 1,NBMAM
@@ -189,7 +189,7 @@ C     ------------------------------------------
               DO 50,ISP = 1,NBSP
                 CALL CESEXI('C',JCE1D,JCE1L,IMA,IPT,ISP,ICMP1,IAD1)
                 CALL CESEXI('C',JCE2D,JCE2L,IMA,IPT,ISP,ICMP2,IAD2)
-                IF (IAD2.GT.0) CALL UTMESS('F','CESRED','STOP 1')
+                IF (IAD2.GT.0) CALL U2MESS('F','CALCULEL_2')
                 IF ((IAD1.LE.0) .OR. (IAD2.EQ.0)) GO TO 50
 
 C               -- RECOPIE DE LA VALEUR:
@@ -213,7 +213,7 @@ C               -- RECOPIE DE LA VALEUR:
                 ELSE IF (TSCA.EQ.'K80') THEN
                   ZK80(JCE2V-1-IAD2) = ZK80(JCE1V-1+IAD1)
                 ELSE
-                  CALL UTMESS('F','CESRED','TYPE SCALAIRE INCONNU')
+                  CALL U2MESS('F','CALCULEL_39')
                 END IF
 
    50         CONTINUE

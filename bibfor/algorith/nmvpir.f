@@ -7,7 +7,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,9 +82,9 @@ C     ZIRC_CYRA2   : FLUPHI EPSFAB TPREC
 C     VISC_IRRA_LOG: FLUPHI A      B      CTPS    ENER
 C -------------------------------------------------------------
       COMMON / NMPAIR / FLUPHI,
-     *                  EPSFAB,TPREC,
-     *                  VALDRP,TTAMAX,
-     *                  A,B,CTPS,ENER
+     &                  EPSFAB,TPREC,
+     &                  VALDRP,TTAMAX,
+     &                  A,B,CTPS,ENER
       REAL*8            FLUPHI
       REAL*8            VALDRP,TTAMAX
       REAL*8            EPSFAB,TPREC
@@ -148,15 +148,15 @@ C
       T2 = ABS(THETA-1.D0)
       PREC = 0.01D0
       IF ((T1.GT.PREC).AND.(T2.GT.PREC))  THEN
-         CALL UTMESS('F','ROUTINE NMVPIR','THETA = 1 OU 0.5 ')
+         CALL U2MESS('F','ALGORITH6_55')
       ENDIF
-      IF (COMPOR(1)(5:10).EQ.'_IRRA_') THETA=1.D0        
+      IF (COMPOR(1)(5:10).EQ.'_IRRA_') THETA=1.D0
 C
       IF (TYPMOD(1).EQ.'C_PLAN') THEN
          IULMES = IUNIFI('MESSAGE')
          WRITE (IULMES,*) 'COMPORTEMENT ',COMPOR(1)(1:10),' NON
      & PROGRAMME POUR DES ELEMENTS DE CONTRAINTES PLANES'
-         CALL UTMESS('F','NMVPIR_1','PAS DE CONTRAINTES PLANES')
+         CALL U2MESS('F','ALGORITH6_92')
          GO TO 299
       ENDIF
       TABS = R8T0()
@@ -173,8 +173,7 @@ C DEFORMATION PLASTIQUE CUMULEE
 C INCREMENT DE TEMPS
       DELTAT = INSTAP - INSTAM
       IF (DELTAT.EQ.0.D0) THEN
-         CALL UTMESS('F','NMVPIR',
-     &    'L''INCREMENT DE TEMPS VAUT ZERO, VERIFIER VOTRE DECOUPAGE')
+         CALL U2MESS('F','ALGORITH8_87')
       ENDIF
 
       DO 10 K=1,6
@@ -189,7 +188,7 @@ C INCREMENT DE TEMPS
       IF (NDIM.EQ.3)THEN
          NDT = 6
          NDI = 3
-      ELSE 
+      ELSE
          NDT = 4
          NDI = 3
       ENDIF
@@ -206,7 +205,7 @@ C VARIABLE DE COMMANDE D IRRADIATION ET ANELASTIQUE
 
         CALL RCVARC(' ',EPSA(K),'+',FAMI,KPG,KSP,DEFAP(K),IRET2)
         IF (IRET2.EQ.1) DEFAP(K)=0.D0
- 20   CONTINUE 
+ 20   CONTINUE
 C
 C MISE AU FORMAT DES TERMES NON DIAGONAUX
 C
@@ -251,20 +250,20 @@ C       TRAITEMENT DES PARAMETRES DE LA LOI DE FLUAGE
 C         PARAMETRES DE LA LOI DE FLUAGE
          VALDEN = COELEM(1)
          IF (COELEM(6).LE.0.D0) THEN
-            CALL UTMESS('F','LEMAITRE3D','PHI_ZERO < OU = A ZERO')
+            CALL U2MESS('F','ALGORITH7_80')
          ENDIF
          IF (FLUPHI.LT.0.D0) THEN
-            CALL UTMESS('F','LEMAITRE3D','FLUENCE DECROISSANTE(PHI<0)')
+            CALL U2MESS('F','ALGORITH6_57')
          ENDIF
          XNUMER = EXP(-1.D0*COELEM(4)/(VALDEN*(TSCHEM+TABS)))
          UNSURK = COELEM(2)*FLUPHI/COELEM(6) + COELEM(7)
          IF (UNSURK.LT.0.D0) THEN
-            CALL UTMESS('F','LEMAITRE3D','1/K ET L DOIVENT ETRE >=0')
+            CALL U2MESS('F','ALGORITH7_81')
          ENDIF
          IF (UNSURK.EQ.0.D0) THEN
             IF (COELEM(5).EQ.0.D0) UNSURK=1.D0
             IF (COELEM(5).LT.0.D0) THEN
-               CALL UTMESS('F','LEMAITRE3D','PHI/KPHI0+L=0 ET BETA<0')
+               CALL U2MESS('F','ALGORITH7_82')
             ENDIF
          ENDIF
          IF (UNSURK.GT.0.D0) THEN
@@ -287,8 +286,7 @@ C        PARAMETRES DE LA LOI DE FLUAGE
             IRRAM = FLUPHI*INSTAM
          ENDIF
          IF (IRRAP.LT.IRRAM) THEN
-            CALL UTMESS('F','GRAN_IRRA_LOG',
-     &      'FLUENCE DECROISSANTE (FLUX<0)')
+            CALL U2MESS('F','ALGORITH8_88')
          ENDIF
 
       ELSE IF (COMPOR(1)(1:10).EQ.'GRAN_IRRA_') THEN
@@ -306,8 +304,7 @@ C        PARAMETRES DE LA LOI DE FLUAGE
             IRRAM = FLUPHI*INSTAM
          ENDIF
          IF (IRRAP.LT.IRRAM) THEN
-            CALL UTMESS('F','GRAN_IRRA_LOG',
-     &      'FLUENCE DECROISSANTE (FLUX<0)')
+            CALL U2MESS('F','ALGORITH8_88')
          ENDIF
          A     = COEVIL(1)
          B     = COEVIL(2)
@@ -322,8 +319,7 @@ C        PARAMETRES DE LA LOI DE FLUAGE
          UNSURK = (COEINT(1)*FLUPHI*2.D0)/SQRT(3.D0)
          FLUPHI=IRRAP
          IF (UNSURK.LT.0.D0) THEN
-            CALL UTMESS('F','LEMA_SEUIL',
-     &                  'LE PARAMETRE A DOIT ETRE >=0')
+            CALL U2MESS('F','ALGORITH8_89')
          ENDIF
 C ------------------------- ZIRC_CYRA2 ---------------------------------
 C       LOI DE COMPORTEMENT ZIRC_CYRA2
@@ -344,8 +340,7 @@ C ---------------------------------------------------------------------
          VALDRP = COEEPR(2)
          TTAMAX = COEEPR(3)
       ELSE IF (COMPOR(1)(1:10).EQ.'LMARC_IRRA') THEN
-         CALL UTMESS ('F','NMVPIR','LA LOI LMARC_IRRA'//
-     &   'N''EST COMPATIBLE QU''AVEC UNE MODELISATION POUTRE')
+         CALL U2MESS('F','ALGORITH8_90')
 
       ENDIF
 C
@@ -354,7 +349,7 @@ C
       IF ((COEFGR(1).NE.0.D0).OR.(COEFGR(2).NE.0.D0)) THEN
 C      DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL
          DEPSGR = (COEFGR(1)*TP+COEFGR(2))*(IRRAP**COEFGR(3))-
-     *            (COEFGR(1)*TM+COEFGR(2))*(IRRAM**COEFGR(3))
+     &            (COEFGR(1)*TM+COEFGR(2))*(IRRAM**COEFGR(3))
 
 C      RECUPERATION DU REPERE POUR LE GRANDISSEMENT
          IF (NDIM.EQ.2) THEN
@@ -463,9 +458,7 @@ C
             IF(IRET.EQ.1) GOTO 9999
          ENDIF
          CALL GGPLEM(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),VALDEN,
-     *          UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
-     
-     
+     &          UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
       ELSE IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
          D=VIM(2)+(DELTAT*(SIEQM+SIEQP)/(2*COEINT(2)))
          XAP = SIELEQ
@@ -486,7 +479,7 @@ C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
             FDGDEV=0.D0
          ELSE
             CALL GGPLEM(X,1.D0,VALDEN,
-     *      UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
+     &      UNSURK,UNSURM,THETA,DEUMUP,FG,FDGDST,FDGDEV)
 
          ENDIF
 
@@ -499,8 +492,8 @@ C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
             IF(IRET.EQ.1) GOTO 9999
          ENDIF
          CALL GGPCYR(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     *     EPSFAB,TPREC,FLUPHI,THETA,DEUMUP,PREC,INT(NITER),FG,FDGDST,
-     *     FDGDEV)
+     &     EPSFAB,TPREC,FLUPHI,THETA,DEUMUP,PREC,INT(NITER),FG,FDGDST,
+     &     FDGDEV)
       ELSE IF (COMPOR(1)(1:9).EQ.'ZIRC_EPRI')THEN
          XAP = 0.99D0 * SIELEQ
          IF (ABS(A0).LE.PREC) THEN
@@ -510,11 +503,11 @@ C -----LE COMPORTEMENT EST PUREMENT ELASTIQUE EN DESSOUS DU SEUIL
             IF(IRET.EQ.1) GOTO 9999
          ENDIF
          CALL GGPEPR(X,DPC+(SIELEQ-X)/(1.5D0*DEUMUP),TSCHEM,
-     *        FLUPHI,VALDRP,TTAMAX,THETA,DEUMUP,PREC,INT(NITER),
-     *        FG,FDGDST,FDGDEV)
+     &        FLUPHI,VALDRP,TTAMAX,THETA,DEUMUP,PREC,INT(NITER),
+     &        FG,FDGDST,FDGDEV)
       ENDIF
 C
-      IF (COMPOR(1)(5:10).EQ.'_IRRA_') THEN        
+      IF (COMPOR(1)(5:10).EQ.'_IRRA_') THEN
          DP1=EXP(-ENER/(TP+273.15D0))
          DP1=DP1*(A*CTPS/(1.D0+CTPS*IRRAP)+B)*(IRRAP-IRRAM)
          COEF1=1.D0/(1.D0+1.5D0*DEUXMU*DP1)
@@ -538,13 +531,13 @@ C
             DELTP2   = DELTP2   + DELTEV**2
  170     CONTINUE
 
-         IF (COMPOR(1)(5:10).EQ.'_IRRA_') THEN  
+         IF (COMPOR(1)(5:10).EQ.'_IRRA_') THEN
             CALL LCDEVI ( SIGP , DEV )
-            VIP(1)= VIM(1) + DP1*LCNRTS( DEV ) 
+            VIP(1)= VIM(1) + DP1*LCNRTS( DEV )
          ELSE
             VIP(1) = VIM(1) + SQRT(2.D0*DELTP2/3.D0)
          ENDIF
-         
+
          IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
             IF (D.LE.1.D0) THEN
                VIP(2) = VIM(2)+ ((SIEQP+SIEQM)*DELTAT)/(2*COEINT(2))

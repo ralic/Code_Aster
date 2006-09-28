@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,7 @@ C
       R = (Q/2.D0)**2 + (P/3.D0)**3
       R = R**0.5D0
       IF (DCABS2(R).LT.EPS) THEN
-        CALL UTMESS('A','PBFLVP','DETERMINATION DES VALEURS PROPRES '//
-     &    'DE L OPERATEUR DIFFERENTIEL : EXISTENCE D UNE RACINE DOUBLE')
+        CALL U2MESS('A','ALGELINE3_19')
       ENDIF
 C
       DELTA = ((3.D0*Q/P)**2) + 4.D0*P/3.D0
@@ -85,8 +84,7 @@ C
       DO 10 I = 1,3
         IF (DCABS2(LAMBDA(I)).LT.EPS) THEN
           WRITE(K1BID,'(I1)') I
-          CALL UTMESS('A','PBFLVP','LA '//K1BID//'EME VALEUR PROPRE '//
-     &      'EST TROP PETITE')
+          CALL U2MESK('A','ALGELINE3_20',1,K1BID)
         ENDIF
  10   CONTINUE
 C

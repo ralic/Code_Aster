@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,7 +99,7 @@ C PARAMETRES D'APPELS
         IAUX = 0
         CALL RSEXC2(1,1,NOPASE,'THETA',IAUX,CHTHET,OPTIO2,CODRET)
       END IF
-       
+
       IF (CODRET.EQ.0) THEN
 
 C     -- ON DONNE LES INFOS NECESSAIRES POUR CREER UN CHAM_ELEM
@@ -109,7 +109,7 @@ C     ---------------------------------------------------------
         IF (OPTIO2.EQ.'VARI_ELNO_ELGA') THEN
           CALL EXISD('CARTE',COMPOR,IRET2)
           IF (IRET2.NE.1) THEN
-            CALL UTMESS('A',NOMPRO,'COMPOR SVP!')
+            CALL U2MESS('A','CALCULEL2_86')
             GO TO 40
           END IF
           CANBVA = '&&'//NOMPRO//'.NBVAR'
@@ -122,7 +122,7 @@ C         IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
         ELSE IF (OPTIO2.EQ.'VARI_ELNO_TUYO') THEN
           CALL EXISD('CARTE',COMPOR,IRET2)
           IF (IRET2.NE.1) THEN
-            CALL UTMESS('A',NOMPRO,'COMPOR SVP!')
+            CALL U2MESS('A','CALCULEL2_86')
             GO TO 40
           END IF
           CANBVA = '&&'//NOMPRO//'.NBVARI'
@@ -135,7 +135,7 @@ C         IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
          ELSE IF (OPTIO2.EQ.'VARI_ELNO_COQU') THEN
           CALL EXISD('CARTE',COMPOR,IRET2)
           IF (IRET2.NE.1) THEN
-            CALL UTMESS('A',NOMPRO,'COMPOR SVP!')
+            CALL U2MESS('A','CALCULEL2_86')
             GO TO 40
           END IF
           CANBVA = '&&'//NOMPRO//'.NBVARI'
@@ -321,7 +321,7 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
              NOMA=CHGEOM(1:8)
              CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
              CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
-     +                                             IBID,R8B,C16B,VARI )
+     &                                             IBID,R8B,C16B,VARI )
 
             LPAIN(1) = 'PVARIGR'
             LPAOUT(1) = 'PVARIGS'
@@ -332,7 +332,7 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
              NOMA=CHGEOM(1:8)
              CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
              CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
-     +                                             IBID,R8B,C16B,VARI )
+     &                                             IBID,R8B,C16B,VARI )
             LPAIN(1) = 'PVARINR'
             LPAOUT(1) = 'PVARINS'
             LPAIN(2) = 'PNOVARI'
@@ -477,7 +477,7 @@ C DETERMINATION DU CHAMP MATERIAU A PARTIR DE LA CARTE CODEE
 C DETERMINATION DU CHAMP MATERIAU DERIVE NON CODE MATSEN
           CALL PSRENC(MATERI,NOPASE,MATERS,IRET)
           IF (IRET.NE.0) THEN
-            CALL UTMESS('A',NOMPRO,'IMPOSSIBLE LIRE '//MATERI)
+            CALL U2MESK('A','CALCULEL2_87',1,MATERI)
             GO TO 40
           END IF
 C TRANSFORMATION EN CHAMP MATERIAU DERIVE CODE
@@ -507,9 +507,7 @@ C REDEFINITION DE L'OPTION
         CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
         IF (IRET.EQ.0) THEN
           CODRET = 1
-          CALL UTMESS('A','CALC_ELEM','OPTION '//OPTIO2//' NON '//
-     &         'DISPONIBLE SUR LES ELEMENTS DU MODELE'//
-     &         '- PAS DE CHAMP CREE ')
+          CALL U2MESK('A','CALCULEL2_88',1,OPTIO2)
         END IF
 C     MENAGE :
 C     -------

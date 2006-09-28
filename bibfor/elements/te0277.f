@@ -1,7 +1,7 @@
       SUBROUTINE TE0277(OPTION,NOMTE)
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
         NOMPAR(3) = 'INST'
         CALL FOINTE('A',ZK8(IHECHP),3,NOMPAR,VALPAR,HECHP,ICODE)
         IF (ICODE.NE.0) THEN
-          CALL UTMESS('F','TE0210','ERREUR LORS DE L''APPEL A FOINTE')
+          CALL U2MESS('F','ELEMENTS3_23')
         END IF
 CCDIR$ IVDEP
         DO 20 I = 1,NNO

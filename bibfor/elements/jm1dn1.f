@@ -1,23 +1,23 @@
-      SUBROUTINE JM1DN1 
+      SUBROUTINE JM1DN1
      & ( INDN , INDC , NB1 , NB2 , XR        , EPAIS , KSI3S2 , INTSX ,
      &                                                     JM1 , J1DN1 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C
@@ -26,7 +26,7 @@ C     FONCTION :  CALCUL DU PRODUIT
 C
 C                 J1DN1 ( 9 ,  6 * NB1  + 3 ) =
 C
-C                 JTILD ( 9 , 9 ) * DNDQSI1  ( 9 ,  6 * NB1  + 3 ) 
+C                 JTILD ( 9 , 9 ) * DNDQSI1  ( 9 ,  6 * NB1  + 3 )
 C
 C                 POUR LA DEFORMATION TOTALE
 C
@@ -48,7 +48,7 @@ C
       INTEGER INTSX1 , INTSX2
 C
       INTEGER LT1 , LT2
-      INTEGER I1  , I2 
+      INTEGER I1  , I2
 C
       INTEGER L1 , L2 , L3
       INTEGER           I3 , I4 , I5
@@ -64,7 +64,7 @@ C
       REAL * 8 JM1 ( 3 )
       REAL * 8 J1DN1 ( 9 , 51 )
 C
-      REAL * 8 TMPI  ( 3 ) 
+      REAL * 8 TMPI  ( 3 )
 C
 C
 CDEB
@@ -73,7 +73,7 @@ C---- INITIALISATION
 C
       CALL R8INIR ( 9 * 51 , 0.D0 , J1DN1 , 1 )
 C
-C---- LES ADRESSES DES FONCTIONS DE FORME ET DE LEURS DERIVEES 
+C---- LES ADRESSES DES FONCTIONS DE FORME ET DE LEURS DERIVEES
 C     SELON INDN ( VOIR ROUTINE BTDFN )
 C
 C
@@ -101,23 +101,23 @@ C----- CALCUL COMPLET AVEC TERMES ROTATION
 C
         DO 100 JN = 1 , NB2
 C
-C------- PARTIE ROTATION 
+C------- PARTIE ROTATION
 C
 C------- REMPLISSAGE DE VI ( 3 )
 C
-         VI ( 1 ) = EPAIS * KSI3S2 * XR ( I4 + JN ) 
-         VI ( 2 ) = EPAIS * KSI3S2 * XR ( I5 + JN ) 
-         VI ( 3 ) = EPAIS * 0.5D0 *  XR ( I3 + JN ) 
+         VI ( 1 ) = EPAIS * KSI3S2 * XR ( I4 + JN )
+         VI ( 2 ) = EPAIS * KSI3S2 * XR ( I5 + JN )
+         VI ( 3 ) = EPAIS * 0.5D0 *  XR ( I3 + JN )
 C
 C------- PRODUIT  JM1 ( 3 , 3 ) * VI ( 3 )
 C
          CALL PROMAT ( JM1  , 3 , 3 , 3 ,
-     &                 VI   , 3 , 3 , 1 , 
+     &                 VI   , 3 , 3 , 1 ,
      &                 TMPI )
 C
-C------- REMPLISSAGE DE J1DN1 ( 9 , 6 * NB1 + 3 ) 
+C------- REMPLISSAGE DE J1DN1 ( 9 , 6 * NB1 + 3 )
 C
-C        JTILD-1 ( 9 , 9 ) * DNDQSI ( 9 , 6 * NB1 + 3 ) 
+C        JTILD-1 ( 9 , 9 ) * DNDQSI ( 9 , 6 * NB1 + 3 )
 C
 C
 C
@@ -151,7 +151,7 @@ C---------- REMPLISSAGE DE VI ( 3 )
 C
             VI ( 1 ) = XR ( I1 + JN )
             VI ( 2 ) = XR ( I2 + JN )
-            VI ( 3 ) = 0.D0 
+            VI ( 3 ) = 0.D0
 C
 C---------- PRODUIT  JM1 ( 3 , 3 ) * VI ( 3 )
 C
@@ -159,7 +159,7 @@ C
      &                    VI   , 3 , 3 , 1 ,
      &                    TMPI )
 C
-C---------- BLOC U      TMPI   0        0       
+C---------- BLOC U      TMPI   0        0
 C
             J1DN1( 1 , (JN-1) * 6 + 1 )= TMPI ( 1 )
             J1DN1( 2 , (JN-1) * 6 + 1 )= TMPI ( 2 )
@@ -184,7 +184,7 @@ C
 C
 C
 C
-C---------- BLOC U      TMPI   0        0       
+C---------- BLOC U      TMPI   0        0
 C
             J1DN1( 1 ,  NB1 * 6   + 1 )=   TMPI ( 1 )
             J1DN1( 2 ,  NB1 * 6   + 1 )=   TMPI ( 2 )
@@ -227,7 +227,7 @@ C---------- REMPLISSAGE DE VI ( 3 )
 C
             VI ( 1 ) = XR ( I1 + JN )
             VI ( 2 ) = XR ( I2 + JN )
-            VI ( 3 ) = 0.D0 
+            VI ( 3 ) = 0.D0
 C
 C---------- PRODUIT  JM1 ( 3 , 3 ) * VI ( 3 )
 C
@@ -235,13 +235,13 @@ C
      &                    VI   , 3 , 3 , 1 ,
      &                    TMPI )
 C
-C---------- BLOC U 
+C---------- BLOC U
 C
             J1DN1( 1 , (JN-1) * 6 + 1 )= TMPI ( 1 )
             J1DN1( 2 , (JN-1) * 6 + 1 )= TMPI ( 2 )
             J1DN1( 3 , (JN-1) * 6 + 1 )= TMPI ( 3 )
 C
-C---------- BLOC V 
+C---------- BLOC V
 C
             J1DN1( 4 , (JN-1) * 6 + 2 )= TMPI ( 1 )
             J1DN1( 5 , (JN-1) * 6 + 2 )= TMPI ( 2 )
@@ -257,12 +257,9 @@ C
 C
 C
 C
-       ELSE 
+       ELSE
 C
-        CALL UTMESS('F','JM1DN1',
-     &  'INDC = 1 (COMPLET   : TRANSLATION ET ROTATION) OU
-     &   INDC = 0 (INCOMPLET : TRANSLATION SEULEMENT  )
-     &   OBLIGATOIREMENT.')
+        CALL U2MESS('F','ELEMENTS2_28')
 C
        ENDIF
 C

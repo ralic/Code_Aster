@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,10 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER       MXPARA, IBID, IER, LG, ICOMPT, IRET, NBFAC, IOCC,
-     +              NUMINI, NUMFIN, N0, N1, N2, N3, NIS, NBINST, IP,
-     +              NBVAL, NUME, IADESC, IGD, L, I, J, JC,
-     +              JCOOR, IAD, JINST, JVAL, JNOMF, IAREFE,
-     +              JDEEQ, LPROL, NBPF, INO, NBV
+     &              NUMINI, NUMFIN, N0, N1, N2, N3, NIS, NBINST, IP,
+     &              NBVAL, NUME, IADESC, IGD, L, I, J, JC,
+     &              JCOOR, IAD, JINST, JVAL, JNOMF, IAREFE,
+     &              JDEEQ, LPROL, NBPF, INO, NBV
       PARAMETER   ( MXPARA = 10 )
       INTEGER       RSMXNO, NBTROU,JCPT,NBR,IVMX,K
       REAL*8        VALPU(MXPARA), RBID, TPS, PREC
@@ -65,7 +65,7 @@ C
       CHARACTER*16  NOMP(MXPARA), TYPE, OPER, ACCES, K16B
       CHARACTER*19  NOMCH , CHAMP, CHAMP1, LISTR8, EXCIT, PCHN1
       CHARACTER*24  K24, LINST, NSYMB, TYPRES, LCPT,
-     +              O1, O2, PROFCH, NOOJB
+     &              O1, O2, PROFCH, NOOJB
 C
       DATA          LINST,LISTR8,LCPT/'&&CRTYPE_LINST','&&CRTYPE_LISR8',
      &                                '&&CPT_CRTYPE'/
@@ -121,16 +121,14 @@ C
         DO 110 I = 24, 1, -1
            IF ( K24(I:I) .EQ. ' ' ) GO TO 110
            IF ( K24(I-1:I) .EQ. '_F' ) THEN
-             IF (K24(1:7).NE. 'CHAM_NO')  CALL UTMESS('F','CRTYPE',
-     &                           'SEULS LES CHAMPS DE FONCTIONS AUX '//
-     &                           'NOEUDS SONT EVALUABLES: '//K24)
+             IF (K24(1:7).NE. 'CHAM_NO')  CALL U2MESK('F','ALGORITH2_45'
+     &,1,K24)
              LFONC = .TRUE.
              TYPEGD = K24(I-5:I-2)//'_R'
            ELSEIF ( K24(I-1:I) .EQ. '_R' ) THEN
              TYPEGD = K24(I-5:I)
            ELSE
-             CALL UTMESS('F','CRTYPE','NOUS TRAITONS LES CHAMPS DE '//
-     &                                'REELS ET DE FONCTIONS: .'//K24)
+             CALL U2MESK('F','ALGORITH2_46',1,K24)
            ENDIF
            GO TO 112
  110    CONTINUE
@@ -164,7 +162,7 @@ C
           IF ( IRET .EQ. 0 ) THEN
              CALL UTDEBM('A',OPER,'*** CHAMP DEJA EXISTANT ***')
              CALL UTIMPK('L','IL SERA REMPLACE PAR LE CHAMP',1,
-     +                                                     CHAMP(1:8) )
+     &                                                     CHAMP(1:8) )
              CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,NUMINI)
              CALL UTFINM()
           ELSEIF ( IRET .EQ. 110 ) THEN
@@ -172,8 +170,7 @@ C
              CALL RSEXCH ( RESU, NSYMB, NUMINI, NOMCH, IRET )
           ELSEIF ( IRET .EQ. 100 ) THEN
           ELSE
-             CALL UTMESS('F','CRTYPE','LE NOM SYMBOLIQUE DU '//
-     &                   'CHAMP CHERCHER N EST PAS LICITE.'//NSYMB)
+             CALL U2MESK('F','ALGORITH2_47',1,NSYMB)
           ENDIF
           CALL COPISD('CHAMP_GD','G',CHAMP,NOMCH)
           CALL RSNOCH ( RESU, NSYMB, NUMINI, ' ' )
@@ -224,8 +221,7 @@ C
               NBR = 0
             ENDIF
             IF (NBR.LT.0) THEN
-               CALL UTMESS('F','CRTYPE','PLUSIEURS INSTANTS '//
-     &                     'CORRESPONDENT A CELUI SPECIFIE SOUS AFFE ')
+               CALL U2MESS('F','ALGORITH2_48')
             ELSE IF (NBR.EQ.0) THEN
               ZI(JCPT + K - 1) = IVMX+1
               IVMX = IVMX+1
@@ -251,7 +247,7 @@ C
           IF ( NUMFIN.GT.NBVAL ) NUMFIN = NBVAL
           IF ( N2.NE.0 .AND. N3.NE.0 ) THEN
             IF ( NUMFIN .LT. NUMINI ) THEN
-             CALL UTMESS('F','CRTYPE','NUME_FIN INFERIEUR A NUME_INIT')
+             CALL U2MESS('F','ALGORITH2_49')
             ENDIF
             NBINST = NUMFIN - NUMINI + 1
           ELSEIF ( N2.NE.0 ) THEN
@@ -282,8 +278,7 @@ C
               NBR = 0
             ENDIF
             IF (NBR.LT.0) THEN
-               CALL UTMESS('F','CRTYPE','PLUSIEURS INSTANTS '//
-     &                     'CORRESPONDENT A CELUI SPECIFIE SOUS AFFE ')
+               CALL U2MESS('F','ALGORITH2_48')
             ELSE IF (NBR.EQ.0) THEN
               ZI(JCPT + J - 1) = IVMX+1
               IVMX = IVMX+1
@@ -302,7 +297,7 @@ C
           IF ( IRET .EQ. 0 ) THEN
              CALL UTDEBM('A',OPER,'*** CHAMP DEJA EXISTANT ***')
              CALL UTIMPK('L','IL SERA REMPLACE PAR LE CHAMP',1,
-     +                                                     CHAMP(1:8) )
+     &                                                     CHAMP(1:8) )
              CALL UTIMPR('S',' POUR L''INSTANT ',1,TPS)
              CALL UTFINM()
           ELSEIF ( IRET .EQ. 110 ) THEN
@@ -364,7 +359,7 @@ C           ----------------------------------
                 ELSEIF (NOMP(IP).EQ.'Z') THEN
                   VALPU(IP) = ZR(JCOOR-1+3*(INO-1)+3)
                 ELSE
-                  CALL UTMESS('F','CRTYPE','CMP NON TRAITEE')
+                  CALL U2MESS('F','ALGORITH2_50')
                 ENDIF
  310          CONTINUE
               CALL FOINTE('F',NOMF,NBPF,NOMP,VALPU,ZR(JC+L-1),IER)

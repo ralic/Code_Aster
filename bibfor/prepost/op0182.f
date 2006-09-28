@@ -2,22 +2,22 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
 C
@@ -56,16 +56,16 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       CHARACTER*8   K8B, GUIDAG, OBST, GUIDE, OBCRAY, TYPARA(NBPARA)
       CHARACTER*19  TABPUS
       CHARACTER*16  CONCEP, NOMCMD, NOMOBS, NOMOB1,
-     +              NOPARA(NBPARA), NOPAR1(NBPARA)
+     &              NOPARA(NBPARA), NOPAR1(NBPARA)
       CHARACTER*19  RESU, NOMT19
       CHARACTER*24  TYPE, TABK(NBPARA)
 C
-      DATA NOPARA / 'LIEU'    , 'SECTEUR' , 'TYPE'    , 'ANGL_DEBUT', 
-     +              'ANGL_FIN', 'ANGL_MAX', 'PROF_MAX', 'SURF_INIT' , 
-     +              'SURF_USE', 'FONCTION' /
+      DATA NOPARA / 'LIEU'    , 'SECTEUR' , 'TYPE'    , 'ANGL_DEBUT',
+     &              'ANGL_FIN', 'ANGL_MAX', 'PROF_MAX', 'SURF_INIT' ,
+     &              'SURF_USE', 'FONCTION' /
       DATA TYPARA / 'K8'      , 'I'         , 'K8'        , 'R'       ,
-     +              'R'       , 'R'         , 'R'         , 'R'       ,
-     +              'R'       , 'K24'       /
+     &              'R'       , 'R'         , 'R'         , 'R'       ,
+     &              'R'       , 'K24'       /
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -115,7 +115,7 @@ C
       IF ( NIS .NE. 0 ) THEN
          NS = -NIS
          IF ( NS.NE.10 .AND. NS.NE.12 ) THEN
-            CALL UTMESS('F','OP0182','ON ATTEND 10 OU 12 SECTEURS')
+            CALL U2MESS('F','PREPOST3_63')
          ENDIF
          CALL GETVR8 ( ' ', 'V_USUR_TUBE', 1,1,NS, VUST, NIS )
          CALL GETVR8 ( ' ', 'V_USUR_OBST', 1,1,NS, VUSO, NIS )
@@ -135,7 +135,7 @@ C
       CALL GETVR8 ( ' ', 'PERCEMENT', 1,1,1, PERCE, NIS )
 C
 C     ------------------------------------------------------------------
-C          PARAMETRES POUR L'USURE DES OBSTACLES EN FONCTION DE LA 
+C          PARAMETRES POUR L'USURE DES OBSTACLES EN FONCTION DE LA
 C                    HAUTEUR DE LA CARTE OU DU GUIDAGE
 C     ------------------------------------------------------------------
 C
@@ -153,7 +153,7 @@ C
          DO 20 I = 1,NPO
             ZR(IDROB+I-1) = JEUI
             ZR(IDTOB+I-1) = (I-1)*RAD*360.D0/(NPO-1)
- 20      CONTINUE   
+ 20      CONTINUE
       ENDIF
       CALL JELIRA ( OBST//'           .VALR', 'LONMAX', NO, K8B )
 C
@@ -221,15 +221,15 @@ C
       CALL GETVID ( ' ', 'CRAYON'  , 1,1,1, OBCRAY, NC )
       IF (NR.EQ.0) THEN
          IF (NC.EQ.0) THEN
-           IF (TYPE(14:17).EQ.'1300') RTUBE = 4.84D-3 
-           IF (TYPE(14:16).EQ.'900')  RTUBE = 4.825D-3 
+           IF (TYPE(14:17).EQ.'1300') RTUBE = 4.84D-3
+           IF (TYPE(14:16).EQ.'900')  RTUBE = 4.825D-3
          ELSE
            CALL JEVEUO(OBCRAY//'           .REFO','L',IDREF2)
            IF (ZK24(IDREF2)(14:17).EQ.'1300') THEN
               RTUBE = 4.84D-3
               GOTO 61
            ENDIF
-           IF (ZK24(IDREF2)(14:16).EQ.'900') THEN 
+           IF (ZK24(IDREF2)(14:16).EQ.'900') THEN
               RTUBE = 4.825D-3
               GOTO 61
            ENDIF
@@ -242,8 +242,8 @@ C
 C --- CALCUL DE LA SURFACE INITIALE :
 C     -----------------------------
 C
-      IF ( TYPE(14:17).EQ.'1300')  ETUBE = 0.98D-3 
-      IF ( TYPE(14:16).EQ.'900' )  ETUBE = 0.47D-3 
+      IF ( TYPE(14:17).EQ.'1300')  ETUBE = 0.98D-3
+      IF ( TYPE(14:16).EQ.'900' )  ETUBE = 0.47D-3
       RINT  = RTUBE-ETUBE
       SINIT = PI*((RTUBE*RTUBE)-(RINT*RINT))
 C
@@ -259,7 +259,7 @@ C
  140     CONTINUE
       ENDIF
  1000 FORMAT('==> IMPRESSION DES VOLUMES USES PAR SECTEUR:',/,'  SECT',
-     +   '   ANGL_DEBUT      ANGL_FIN      USURE_TUBE      USURE_OBST')
+     &   '   ANGL_DEBUT      ANGL_FIN      USURE_TUBE      USURE_OBST')
  1010 FORMAT(1P,2X,I2,3X,E12.5,3X,E12.5,3X,E12.5,3X,E12.5)
  1020 FORMAT(1P,'    TUBE RAYON EXT: ', E12.5 )
  1021 FORMAT(1P,'         EPAISSEUR: ', E12.5 )
@@ -273,9 +273,9 @@ C
 C*********************************************************************
 C
       IF ( GUIDAG .EQ. 'ENCO_1'  .OR.
-     &     GUIDAG .EQ. 'ENCO_2'  .OR. 
+     &     GUIDAG .EQ. 'ENCO_2'  .OR.
      &     GUIDAG .EQ. 'CERCLE'  ) THEN
-C             
+C
          CALL MOUSTO ( GUIDAG, DIMTUB, VOLTUB, ZR(JTUBUS),
      &                         DIMOBS, VOLOBS, ZR(JOBSUS), RTUBE,
      &                 ROBST, SECT, ARETE, ARETE2, NS, GUIDE,

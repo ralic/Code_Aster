@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C
       CHARACTER*8 NOMDDL,MODE
       CHARACTER*14 NUMGEN
       CHARACTER*16 CONCEP,NOMCMD,TYPREP,REP2
-      CHARACTER*24 CNOM,CCOEF,CTYPEC
+      CHARACTER*24 CNOM,CCOEF,CTYPEC,VALK(2)
       REAL*8 R8VAL(2)
       LOGICAL LCOEFC,LREENT
       COMPLEX*16 CVAL
@@ -169,10 +169,9 @@ C     --------------------------------
       DO 30 IOCC = 0,NBOCC - 2
          CALL VRREFE(ZK8(LNOM+IOCC),ZK8(LNOM+IOCC+1),IRET)
          IF (IRET.NE.0) THEN
-            CALL UTMESS('F','OP0031',
-     &        'ERR_31A: LES "MATR_ASSE"'//ZK8(LNOM+IOCC)//'"  ET  "'//
-     &         ZK8(LNOM+IOCC+1)//
-     &        '"  NE SONT PAS COMBINABLES.')
+         VALK(1)=ZK8(LNOM+IOCC)
+         VALK(2)=ZK8(LNOM+IOCC+1)
+         CALL U2MESK('F','ALGELINE2_28', 2 ,VALK)
          ENDIF
    30 CONTINUE
 

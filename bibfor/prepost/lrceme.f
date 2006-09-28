@@ -1,10 +1,10 @@
       SUBROUTINE LRCEME ( CHANOM, NOCHMD, TYPECH, NOMAMD,
-     >                    NOMAAS, NOMMOD, NOMGD,
-     >                    NBCMPV, NCMPVA, NCMPVM,
-     >                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     >                    NROFIC, CODRET )
+     &                    NOMAAS, NOMMOD, NOMGD,
+     &                    NBCMPV, NCMPVA, NCMPVM,
+     &                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
+     &                    NROFIC, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,12 +108,12 @@ C 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 C
       CALL JENONU ( JEXNOM ( '&CATA.GD.NOMGD', NOMGD ) , IAUX )
       IF ( IAUX.EQ.0 ) THEN
-        CALL UTMESS ( 'F', NOMPRO, 'GRANDEUR INCONNUE')
+        CALL U2MESS('F','PREPOST3_21')
       ENDIF
       CALL JEVEUO ( JEXNOM ( '&CATA.GD.NOMCMP', NOMGD ) ,
-     >              'L', JNOCMP )
+     &              'L', JNOCMP )
       CALL JELIRA ( JEXNOM ( '&CATA.GD.NOMCMP', NOMGD ) ,
-     >              'LONMAX', NCMPRF, SAUX01 )
+     &              'LONMAX', NCMPRF, SAUX01 )
 C
 C 1.2. ==> ALLOCATION DU CHAM_ELEM_S
 C
@@ -142,13 +142,11 @@ C
               IF (ZK8(JCMPVA+I-1).EQ.ZK8(JNOCMP+J-1)) TTT=.TRUE.
  30          CONTINUE
              IF (.NOT.TTT) THEN
-                CALL UTMESS('F', NOMPRO,
-     &                      'COMPOSANTE INCONNUE POUR LA GRANDEUR')
+                CALL U2MESS('F','PREPOST3_22')
              ENDIF
  20       CONTINUE
         ELSE
-          CALL UTMESS('F', NOMPRO,
-     &                'TROP DE COMPOSANTES POUR LA GRANDEUR')
+          CALL U2MESS('F','PREPOST3_23')
         ENDIF
       ENDIF
 C
@@ -170,11 +168,11 @@ C 3. LECTURE POUR CHAQUE TYPE DE SUPPORT
 C====
 C
       CALL LRCAME ( NROFIC, NOCHMD, NOMAMD, NOMAAS,
-     >              NBVATO, TYPECH,
-     >              NBCMPV, NCMPVA, NCMPVM,
-     >              IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     >              NOMGD, NCMPRF, JNOCMP, JCESL, JCESV, JCESD,
-     >              CODRET )
+     &              NBVATO, TYPECH,
+     &              NBCMPV, NCMPVA, NCMPVM,
+     &              IINST, NUMPT, NUMORD, INST, CRIT, PREC,
+     &              NOMGD, NCMPRF, JNOCMP, JCESL, JCESV, JCESD,
+     &              CODRET )
 C
 C====
 C 4. TRANSFORMATION DU CHAM_ELEM_S EN CHAM_ELEM :
@@ -201,9 +199,7 @@ C 5. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-         CALL UTMESS
-     > ( 'A' , NOMPRO, 'LECTURE IMPOSSIBLE POUR '//CHANOM//
-     >   ' AU FORMAT MED' )
+         CALL U2MESK('A','PREPOST3_24',1,CHANOM)
       ENDIF
       CALL JEDEMA ( )
 C

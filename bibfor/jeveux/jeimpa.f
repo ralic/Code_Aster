@@ -1,21 +1,21 @@
       SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -51,11 +51,11 @@ C
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     -----------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C
       CHARACTER *75   CMESS
       CHARACTER *72   COML
@@ -72,46 +72,46 @@ C
       LOGICAL         LCONST , LCONTI , LCOL
 
       DATA             NUME       , NOME
-     +               / '$$XNUM  ' , '$$XNOM  '  /
+     &               / '$$XNUM  ' , '$$XNOM  '  /
       DATA NAO     /
-     1     'CLAS    ' , 'GENR    ' , 'TYPE    ' , 'LTYP    ' ,
-     2     'DOCU    ' , 'DATE    ' , 'ORIG    ' , 'LONMAX  ' ,
-     3     'NOMMAX  ' , 'LONUTI  ' , 'NOMUTI  ' , 'LONO    ' ,
-     4     'IADM    ' , 'IADD    ' , 'LADD    ' , 'USAGE   ' /
+     &     'CLAS    ' , 'GENR    ' , 'TYPE    ' , 'LTYP    ' ,
+     &     'DOCU    ' , 'DATE    ' , 'ORIG    ' , 'LONMAX  ' ,
+     &     'NOMMAX  ' , 'LONUTI  ' , 'NOMUTI  ' , 'LONO    ' ,
+     &     'IADM    ' , 'IADD    ' , 'LADD    ' , 'USAGE   ' /
       DATA NAC     /   'ACCES   ' , 'STOCKAGE' , 'MODELONG' ,
-     1                 'NMAXOC  ' , 'NUTIOC  ' , 'LONT    ' /
+     &                 'NMAXOC  ' , 'NUTIOC  ' , 'LONT    ' /
       DATA TAO     /
-     1     'K'      , 'K'      , 'K'      , 'I'      ,
-     2     'K'      , 'I'      , 'K'      , 'I'      ,
-     3     'I'      , 'I'      , 'I'      , 'I'      ,
-     4     'I'      , 'I'      , 'I'      , 'K'      /
+     &     'K'      , 'K'      , 'K'      , 'I'      ,
+     &     'K'      , 'I'      , 'K'      , 'I'      ,
+     &     'I'      , 'I'      , 'I'      , 'I'      ,
+     &     'I'      , 'I'      , 'I'      , 'K'      /
       DATA TAC     /
-     1  'K'    , 'K'     , 'K'     , 'I'     ,'I' ,    'I' /
+     &  'K'    , 'K'     , 'K'     , 'I'     ,'I' ,    'I' /
       DATA LAO     /
-     1     1        , 1        , 1        , 0        ,
-     2     4        , 0        , 8        , 0        ,
-     3     0        , 0        , 0        , 0        ,
-     4     0        , 0        , 0        , 3        /
+     &     1        , 1        , 1        , 0        ,
+     &     4        , 0        , 8        , 0        ,
+     &     0        , 0        , 0        , 0        ,
+     &     0        , 0        , 0        , 3        /
       DATA LAC     /
-     1    33        ,   8        ,   33       , 0          , 0  , 0   /
+     &    33        ,   8        ,   33       , 0          , 0  , 0   /
 C 1 : CONT CSTE - 2 : DISP CSTE - 3 : CONT VARI - 4 : DISP VARI
 C     - IRET = 3 - CONDITION D'ACCES A LONO / IADM / IADD / LADD / USAGE
       DATA (( TAB1(I,J),I=1,5),J=1,4)    /
-     1     .FALSE.  , .FALSE.  , .FALSE.  , .FALSE.  , .TRUE.  ,
-     2     .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.  ,
-     3     .FALSE.  , .FALSE.  , .FALSE.  , .FALSE.  , .TRUE.  ,
-     4     .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.  /
+     &     .FALSE.  , .FALSE.  , .FALSE.  , .FALSE.  , .TRUE.  ,
+     &     .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.  ,
+     &     .FALSE.  , .FALSE.  , .FALSE.  , .FALSE.  , .TRUE.  ,
+     &     .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.  /
 C     - IRET = 2 - CONDITION D'ACCES A LONO / IADM / IADD / LADD / USAGE
       DATA (( TAB2(I,J),I=1,5),J=1,4)    /
-     1     .TRUE.  , .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.  ,
-     2     .FALSE. , .FALSE.  , .FALSE.  , .FALSE.  , .FALSE. ,
-     3     .TRUE.  , .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.  ,
-     4     .FALSE. , .FALSE.  , .FALSE.  , .FALSE.  , .FALSE. /
+     &     .TRUE.  , .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.  ,
+     &     .FALSE. , .FALSE.  , .FALSE.  , .FALSE.  , .FALSE. ,
+     &     .TRUE.  , .TRUE.   , .TRUE.   , .TRUE.   , .TRUE.  ,
+     &     .FALSE. , .FALSE.  , .FALSE.  , .FALSE.  , .FALSE. /
 C     ------------------- CONDITION D'ACCES A LON... / NOM...
       DATA (( TAB3(I,J),I=1,2),J=1,3)    /
-     1     .TRUE.  , .FALSE. ,
-     2     .TRUE.  , .FALSE. ,
-     3     .FALSE. , .TRUE.  /
+     &     .TRUE.  , .FALSE. ,
+     &     .TRUE.  , .FALSE. ,
+     &     .FALSE. , .TRUE.  /
 C DEB -----------------------------------------------------------------
       IPGCEX = IPGC
       IPGC = -2
@@ -125,7 +125,7 @@ C DEB -----------------------------------------------------------------
 C
       IF ( IRET .EQ. 0 ) THEN
         CMESS = 'NOM INEXISTANT DANS LES BASES OUVERTES'
-        CALL JVMESS( 'S' , 'JEIMPA01' , CMESS)
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE IF ( IRET .EQ. 1 ) THEN
         LCOL = .FALSE.
         IC = ICLAOS
@@ -154,7 +154,7 @@ C
 C
       CALL JVRINI ( UNIT )
       CALL JVDEBM ( 'X' , 'JEIMPA' , 'IMPRESSION DES '//
-     +              'ATTRIBUTS DE >'//NOML32(1:24)//'<'  )
+     &              'ATTRIBUTS DE >'//NOML32(1:24)//'<'  )
       CALL JVIMPK ( 'L' , ' ' , 1 , COML )
       IF ( IRET .EQ. 3 ) THEN
          IF ( NOML32(25:32) .EQ. NOME ) THEN
@@ -180,13 +180,13 @@ C
           IF ( NAO(K)(1:3) .EQ. 'LON' ) ILON = 1
           IF ( NAO(K)(1:3) .EQ. 'NOM' ) ILON = 2
           IF ( (K.LE.7)                                           .OR.
-     +         (K.GT.7 .AND. K.LE.11
-     +            .AND. LCONST .AND. TAB3(ILON,JLON) )            .OR.
-     +         ( (IRET.EQ.1.OR.IRET.EQ.3) .AND. (K.GT.7 .AND. K.LE.11)
-     +           .AND. TAB3(ILON,JLON) )                          .OR.
-     +         ( IRET.EQ.2 .AND. (K.GT.11.AND.TAB2(ICOL,JCOL)))   .OR.
-     +         ( IRET.EQ.3 .AND. (K.GT.11.AND.TAB1(ICOL,JCOL)))   .OR.
-     +         ( IRET.EQ.1 .AND. (K.GT.11)                    ) ) THEN
+     &         (K.GT.7 .AND. K.LE.11
+     &            .AND. LCONST .AND. TAB3(ILON,JLON) )            .OR.
+     &         ( (IRET.EQ.1.OR.IRET.EQ.3) .AND. (K.GT.7 .AND. K.LE.11)
+     &           .AND. TAB3(ILON,JLON) )                          .OR.
+     &         ( IRET.EQ.2 .AND. (K.GT.11.AND.TAB2(ICOL,JCOL)))   .OR.
+     &         ( IRET.EQ.3 .AND. (K.GT.11.AND.TAB1(ICOL,JCOL)))   .OR.
+     &         ( IRET.EQ.1 .AND. (K.GT.11)                    ) ) THEN
             CALL JELIRA ( NOML32 , NAO(K) , IVAL , CVAL )
             IF ( TAO(K) .EQ. 'I' ) THEN
               CALL JVIMPI ( 'S' , NAO(K) , 1 , IVAL )

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C     ON VERIFIE QUE LE MODELE EST COMPATIBLE AVEC LA METHODE XFEM
       CALL JEVEUO(MO//'.FISS','L',JFISS)
 C
 C --- DIMENSION GEOMETRIQUE
-      CALL DISMOI('F','DIM_GEOM',MO,'MODELE',DIM,K8B,IRET)  
+      CALL DISMOI('F','DIM_GEOM',MO,'MODELE',DIM,K8B,IRET)
 
 C --- RECUPERATION DU CHAMP GEOMETRIQUE
       CALL MEGEOM(MO,' ',EXIGEO,CHGEOM)
@@ -324,7 +324,7 @@ C             TABLEAU INDICATEUR DE MAILLES FISSUREES
 
               CALL WKVECT('&&'//NOMPRO//'.IND_MAIL','V V I',
      &                    ZI(JDIM+2),JINDMF)
-            
+
 C             TABLEAU DE POSITION DANS '.TOPOSE.CSETTO': ZI(JJCNS)
               CALL WKVECT('&&OP0196.POSI_CNS','V V I',NBMX,JJCNS)
 C             TABLEAU DE POSITION DANS '.TOPOSE.HEAVTO': ZI(JJHEA)
@@ -363,7 +363,7 @@ C             BOUCLE SUR LES GRELS:
 C                BOUCLE SUR LES MAILLES DU GREL:
                  DO 150 J=1,NBMAGL-1
                     IMA=ZI(IGREL+J-1)
-                    ZI(JMMF+IMA-1)=0 
+                    ZI(JMMF+IMA-1)=0
                     IOCC=IOCC+1
                     I1=ZI(JLON+8*(IOCC-1))
                     IF(I1.NE.0)THEN
@@ -403,7 +403,7 @@ C
               DO 5 I=1,ZI(JDIM+2)
                 IF(ZI(JMMF+I-1).EQ.1)KMMF=KMMF+1
  5            CONTINUE
-              NBMX=NBMX-KMMF    
+              NBMX=NBMX-KMMF
 
 C             LISTE DES NOEUDS NX : ZI(JLNONX)
               CALL JEVEUO(MA//'.DIME','L',JDIM)
@@ -545,7 +545,7 @@ C       2.2  TRAITEMENT DES CONTRAINTES
 C       ================================
 C
         ELSEIF (NOMCHA(1:9).EQ.'SIEF_ELGA')THEN
-          CALL UTMESS('A',NOMPRO,'OPTION SIEF_ELGA NON DEVELOPPEE')
+          CALL U2MESS('A','PREPOST4_25')
         ENDIF
  10   CONTINUE
 

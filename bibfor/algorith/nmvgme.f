@@ -1,7 +1,7 @@
       SUBROUTINE NMVGME(MODELE,LIGREL,CARELE,CHARGE,ICHA,INSTAN,
      &                  RESUFV,DEPMOI,DEPDEL,VITES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,8 +94,7 @@ C -----------------------------------------------------
       CALL GETTCO(FNOCAL,TYSD)
 
       IF (TYSD.NE.'EVOL_CHAR') THEN
-        CALL UTMESS('F','NMVGME_01',' LE CONCEPT EVOL_CHAR : '//
-     &              FNOCAL//' N''EN EST PAS UN !')
+        CALL U2MESK('F','ALGORITH7_15',1,FNOCAL)
       ENDIF
 
 C     ----------------------------------
@@ -103,9 +102,7 @@ C     ----------------------------------
      &            K8BID,IER)
 
       IF ( NBCHAM .LE. 0 ) THEN
-        CALL UTMESS('F','NMVGME_02',' LE CONCEPT EVOL_CHAR : '//
-     &   FNOCAL//' NE CONTIENT AUCUN CHAMP DE TYPE'//
-     &            ' EVOL_CHAR.')
+        CALL U2MESK('F','ALGORITH7_16',1,FNOCAL)
       END IF
 
 
@@ -150,9 +147,7 @@ C       -- DETERMINATION DE LA DIMENSION DE L'ESPACE :
         NBNO = ZI(KVALE)
         DIME = ZI(KVALE+5)
         IF ( NBNO * DIME .NE. NBEQUA ) THEN
-           CALL UTMESS('F','NMVGME_03',
-     &        'LE NOMBRE DE COMPOSANTE DANS LE CHAMP DE VENT '//
-     &        'EST INCORRECT. ON DOIT AVOIR : DX, DY, DZ')
+           CALL U2MESS('F','ALGORITH8_77')
         ENDIF
 
 C       NOM DE CONCEPT MAILLAGE GEOMETRIE DEFORMEE UNIQUE

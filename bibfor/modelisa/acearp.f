@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,7 +148,7 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          ETA = 0.D0
          CALL GETVEM(NOMA,'GROUP_MA','RIGI_PARASOL','GROUP_MA',
-     +               IOC,1,LMAX,ZK8(JDLS),NG)
+     &               IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVTX('RIGI_PARASOL','CARA'    ,IOC,1,NBCAR,CAR,NCAR)
          CALL GETVR8('RIGI_PARASOL','VALE'    ,IOC,1,NBVAL,VAL,NVAL)
          CALL GETVTX('RIGI_PARASOL','REPERE'  ,IOC,1,1,REP,NREP)
@@ -167,8 +167,8 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          IF (IVR(3).EQ.1) THEN
             WRITE(IFM,1000) REP,IOC
  1000       FORMAT(/,3X,
-     +            '<DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
-     +                                '(REPERE ',A6,'), OCCURENCE ',I4)
+     &            '<DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
+     &                                '(REPERE ',A6,'), OCCURENCE ',I4)
          ENDIF
 C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
@@ -177,35 +177,34 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
          II = 0
          DO 34 NC = 1,NCARAC
             IF (NC.EQ.2.AND.CAR(1)(1:1).EQ.CAR(2)(1:1))
-     +         CALL UTMESS('F','ACEARP.00',
-     +         'SI 2 CARACTERISTIQUES 1 AMOR ET 1 RIGI OBLIGATOIRES')
+     &         CALL U2MESS('F','MODELISA_16')
             IF     (CAR(NC)(1:8).EQ.'K_TR_D_N') THEN
                DO 131 J = 1,6
                   VALE(J) = VAL(II+J)
 131            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
             ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_N') THEN
                DO 132 J = 1,3
                   VALE(J) = VAL(II+J)
 132            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
             ELSEIF (CAR(NC)(1:8).EQ.'K_TR_D_L') THEN
                DO 133 J = 1,6
                   VALE(J) = VAL(II+J)
 133            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
             ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_L') THEN
                DO 134 J = 1,3
                   VALE(J) = VAL(II+J)
 134            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
 
             ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_N') THEN
@@ -213,32 +212,31 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
                   VALE(J) = VAL(II+J)
 135            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
             ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_N') THEN
                DO 136 J = 1,3
                   VALE(J) = VAL(II+J)
 136            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
             ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_L') THEN
                DO 137 J = 1,6
                   VALE(J) = VAL(II+J)
 137            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 6
             ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_L') THEN
                DO 138 J = 1,3
                   VALE(J) = VAL(II+J)
 138            CONTINUE
                CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+     &               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
                II = II + 3
             ELSE
-               CALL UTMESS('F','ACEARP01','CARACTERISTIQUE '//CAR(NC)//
-     &                     ' NON ADMISE ACTUELLEMENT')
+               CALL U2MESK('F','MODELISA_17',1,CAR(NC))
             ENDIF
             IF (IXNW.NE.0.AND.NGP.EQ.0) THEN
                DO 39 I = 1,NBNO
@@ -252,13 +250,11 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
                      ENDIF
  100              CONTINUE
  101              CONTINUE
-                  IF (ITROU.EQ.0) CALL UTMESS('F','ACEARP02',
-     +               'LE NOEUD '//ZK8(ITBNO+I-1)//
-     &               ' NON MODELISE PAR UN DISCRET')
+                  IF (ITROU.EQ.0) CALL U2MESK('F','MODELISA_18',1,ZK8(IT
+     &BNO+I-1))
  39            CONTINUE
             ELSEIF (IXNW.EQ.0.AND.NGP.EQ.0) THEN
-               CALL UTMESS('F','ACEARP03',
-     +            'PAS DE NOEUDS DU RADIER MODELISES PAR DES DISCRETS')
+               CALL U2MESS('F','MODELISA_19')
             ENDIF
             IF (NGP.NE.0) THEN
                IF     (CAR(NC)(1:8).EQ.'K_TR_D_N') THEN
@@ -296,7 +292,7 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
                ENDIF
 
                CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
-     +                     NMA,K8B)
+     &                     NMA,K8B)
                CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
                DO 22 IN = 0,NMA-1
 C                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
@@ -307,8 +303,7 @@ C                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
                   CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
 C                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
                   IF ( NBNMA .NE. NBNOEU) THEN
-                     CALL UTMESS('F','ACEARP04','LE DISCRET '//NOMMAI//
-     &                  ' N A PAS LE BON NOMBRE DE NOEUDS.')
+                     CALL U2MESK('F','MODELISA_20',1,NOMMAI)
                   ENDIF
                   DO 25 INBN = 1 , NBNMA
                      INOE = ZI(LDNM+INBN-1)
@@ -323,9 +318,7 @@ C                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
 C                 SI ON PASSE ICI AUCUN DES NOEUDS DU DISCRET APPARTIENT
 C                 A LA SURFACE, ET CE N'EST PAS NORMAL
                   WRITE(IFM,*)'GROUP_MA :',(' '//ZK8(JDLS+II-1),II=1,NG)
-                  CALL UTMESS('F','ACEARP05','LE NOEUD '//NOMNOE//
-     &             ' EXTREMITE D UN DES DISCRETS'//
-     &             ' N EXISTE PAS DANS LA SURFACE DONNEE PAR GROUP_MA.')
+                  CALL U2MESK('F','MODELISA_21',1,NOMNOE)
  22            CONTINUE
 C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
                IFR = IUNIFI('RESULTAT')
@@ -378,11 +371,11 @@ C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
                   IV = 1
                   JD = ITBNO + I - 1
                   CALL CRLINU('NOM', MLGNNO, 1, IBID, ZK8(JD),
-     +                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+     &                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
                   CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
-     +                        LIGMO,NCMP)
+     &                        LIGMO,NCMP)
  36            CONTINUE
             ENDIF
  34      CONTINUE
@@ -407,13 +400,13 @@ C
       CALL JEDEMA()
  1005 FORMAT(/,' PAS DE REPARTITION EN ROTATION POUR DES ',A,/)
  1006 FORMAT(/,' RAIDEURS DE ROTATION A REPARTIR POUR DES ',A,/
-     +        ,'  KRX: ',1PE12.5,' KRY: ',1PE12.5,' KRZ: ',1PE12.5,/)
+     &        ,'  KRX: ',1PE12.5,' KRY: ',1PE12.5,' KRZ: ',1PE12.5,/)
  1010 FORMAT(' _F(',A,'=''',A8,''', CARA=''',A,''',',/,
-     +       '    VALE=(',3(1X,1PE12.5,','),'),',/,
-     +       '    REPERE=''',A,'''),')
+     &       '    VALE=(',3(1X,1PE12.5,','),'),',/,
+     &       '    REPERE=''',A,'''),')
 
  1011 FORMAT(' _F(',A,'=''',A8,''', CARA=''',A,''',',/,
-     +       '    VALE=(',3(1X,1PE12.5,','),/,
-     +       '          ',3(1X,1PE12.5,','),'),',/,
-     +       '    REPERE=''',A,'''),')
+     &       '    VALE=(',3(1X,1PE12.5,','),/,
+     &       '          ',3(1X,1PE12.5,','),'),',/,
+     &       '    REPERE=''',A,'''),')
       END

@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -219,12 +219,10 @@ C
       NBCOU=ZI(JNBSPI-1+1)
 C
       IF ( NBCOU . LE . 0 )
-     &   CALL UTMESS ( 'F' , 'VDPNLR' ,
-     &        'NOMBRE DE COUCHES OBLIGATOIREMENT SUPERIEUR A 0' )
+     &   CALL U2MESS('F','ELEMENTS_12')
 C
       IF ( NBCOU . GT . 10 )
-     &   CALL UTMESS ( 'F' , 'VDPNLR' ,
-     &        'NOMBRE DE COUCHES LIMITE A 10 POUR LES COQUES 3D' )
+     &   CALL U2MESS('F','ELEMENTS_13')
 C
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
       CALL TECACH('OON','PVARIMR',7,ITAB,IRET)
@@ -237,7 +235,7 @@ C
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
       ELSE
-        CALL UTMESS('F','MATRC','COMPORTEMENT MATERIAU NON ADMIS')
+        CALL U2MESS('F','ELEMENTS_42')
       END IF
 C______________________________________________________________________
 C

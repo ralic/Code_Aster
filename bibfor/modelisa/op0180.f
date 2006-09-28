@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,13 +131,9 @@ C
         IF ( ABS(NBANCR).NE.2 ) THEN
            WRITE(K3B,'(I3)') ICABL
            IF ( N1.NE.0 ) THEN
-              CALL UTMESS('F',CMD,'MOT-CLE <DEFI_CABLE>, OCCURENCE '
-     &                 //'NO '//K3B//', OPERANDE <NOEUD_ANCRAGE> : '
-     &                 //'IL FAUT DEFINIR 2 NOEUDS D''ANCRAGE')
+              CALL U2MESK('F','MODELISA5_83',1,K3B)
            ELSE
-              CALL UTMESS('F',CMD,'MOT-CLE <DEFI_CABLE>, OCCURENCE '
-     &              //'NO '//K3B//', OPERANDE <GROUP_NO_ANCRAGE> : '
-     &                    //'IL FAUT DEFINIR 2 GROUP_NO D''ANCRAGE')
+              CALL U2MESK('F','MODELISA5_84',1,K3B)
            ENDIF
         ELSE
            IF ( N1.NE.0 ) THEN
@@ -145,20 +141,14 @@ C
      &                    NOANCR(1),IBID)
               IF ( NOANCR(1).EQ.NOANCR(2) ) THEN
                  WRITE(K3B,'(I3)') ICABL
-                 CALL UTMESS('F',CMD,'MOT-CLE <DEFI_CABLE>, '//
-     &                    'OCCURENCE NO '//K3B//', OPERANDE '//
-     &                    '<NOEUD_ANCRAGE> : LES 2 NOEUDS '//
-     &                    'D''ANCRAGE DOIVENT ETRE DISTINCTS')
+                 CALL U2MESK('F','MODELISA5_85',1,K3B)
               ENDIF
            ELSE
               CALL GETVID('DEFI_CABLE','GROUP_NO_ANCRAGE',ICABL,1,2,
      &                    NOANCR(1),IBID)
               IF ( NOANCR(1).EQ.NOANCR(2) ) THEN
                  WRITE(K3B,'(I3)') ICABL
-                 CALL UTMESS('F',CMD,'MOT-CLE <DEFI_CABLE>, '//
-     &                    'OCCURENCE NO '//K3B//', OPERANDE '//
-     &                    '<GROUP_NO_ANCRAGE> : LES 2 GROUP_NO '//
-     &                    'D''ANCRAGE DOIVENT ETRE DISTINCTS')
+                 CALL U2MESK('F','MODELISA5_86',1,K3B)
               ENDIF
            ENDIF
         ENDIF
@@ -172,16 +162,9 @@ C    SI TYPES D'ANCRAGE SONT TOUS LES DEUX PASSIFS
           WRITE(K3B,'(I3)') ICABL
 C    SI LA TENSION EST NULLE : SIMPLE ALARME
           IF (F0.EQ.0.D0) THEN
-            CALL UTMESS('A',CMD,'MOT-CLE <DEFI_CABLE>, '//
-     &                    'OCCURENCE NO '//K3B//', OPERANDE '//
-     &                    'TYPE ANCRAGE : LES 2 EXTREMITES SONT '//
-     &                    'PASSIVES -> ARMATURE PASSIVE')
+            CALL U2MESK('A','MODELISA5_87',1,K3B)
           ELSE
-            CALL UTMESS('F',CMD,'MOT-CLE <DEFI_CABLE>, '//
-     &                    'OCCURENCE NO '//K3B//', OPERANDE '//
-     &                    'TYPE ANCRAGE : LES 2 EXTREMITES SONT '//
-     &                    'PASSIVES ET LA TENSION QUE VOUS VOULEZ' //
-     &                    'IMPOSER EST NON-NULLE : IMPOSSIBLE !')
+            CALL U2MESK('F','MODELISA5_88',1,K3B)
 
           ENDIF
         ENDIF
@@ -242,28 +225,19 @@ C
       CADESC = CARTE//'.DESC'
       CALL JEEXIN(CADESC,IRET)
       IF ( IRET.EQ.0 )
-     &    CALL UTMESS('F',CMD,'LA CARTE DES CARACTERISTIQUES '//
-     &    'MATERIELLES DES ELEMENTS N EXISTE PAS. IL FAUT '//
-     &    'PREALABLEMENT AFFECTER CES CARACTERISTIQUES EN '//
-     &    'UTILISANT LA COMMANDE <AFFE_MATERIAU>')
+     &    CALL U2MESS('F','MODELISA5_89')
       CALL ETENCA(CARTE,LIGRMO,IRET)
       IF ( IRET.NE.0 )
-     &   CALL UTMESS('F',CMD,'ERREUR A L APPEL DE LA ROUTINE ETENCA '//
-     &   'POUR EXTENSION DE LA CARTE '//CARTE)
+     &   CALL U2MESK('F','MODELISA3_37',1,CARTE)
 C
       CARTE = CAELEM//'.CARGENBA  '
       CADESC = CARTE//'.DESC'
       CALL JEEXIN(CADESC,IRET)
       IF ( IRET.EQ.0 )
-     &   CALL UTMESS('F',CMD,'LA CARTE DES CARACTERISTIQUES '//
-     &   'GEOMETRIQUES DES ELEMENTS DE BARRE DE SECTION GENERALE '//
-     &   'N EXISTE PAS. IL FAUT PREALABLEMENT AFFECTER CES '//
-     &   'CARACTERISTIQUES EN UTILISANT LA COMMANDE '//
-     &   '<AFFE_CARA_ELEM>')
+     &   CALL U2MESS('F','MODELISA5_90')
       CALL ETENCA(CARTE,LIGRMO,IRET)
       IF ( IRET.NE.0 )
-     &   CALL UTMESS('F',CMD,'ERREUR A L APPEL DE LA ROUTINE ETENCA '//
-     &   'POUR EXTENSION DE LA CARTE '//CARTE)
+     &   CALL U2MESK('F','MODELISA3_37',1,CARTE)
 C
 C.... DETERMINATION DU RANG DE LA COMPOSANTE <A1>
 C.... DE LA GRANDEUR <CAGNBA>
@@ -279,8 +253,7 @@ C
   20  CONTINUE
   21  CONTINUE
       IF ( IRANA1.EQ.0 )
-     &   CALL UTMESS('F',CMD,'PROBLEME POUR DETERMINER LE RANG DE LA '//
-     &   'COMPOSANTE <A1> DE LA GRANDEUR <CAGNBA>')
+     &   CALL U2MESS('F','MODELISA5_91')
 C
 C 4.4 CREATION DE LA SD TABLE RESULTAT
 C ---

@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,9 +99,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
      &           TYPRES(1:10).EQ.'DYNA_TRANS') THEN
           NOPARR(2) = 'INST'
         ELSE
-          CALL UTMESS('F','PEEPOT','ON ATTEND UN CONCEPT '//
-     &                '"MODE_MECA" OU "EVOL_ELAS" OU "MULT_ELAS"'//
-     &                ' OU "EVOL_THER" OU "DYNA_TRANS" OU "EVOL_NOLI"')
+          CALL U2MESS('F','UTILITAI3_75')
         END IF
       END IF
 
@@ -199,17 +197,17 @@ C        --- ON RECUPERE LES INSTANTS ---
              CHTREF = ' '
              CHTEMP = DEPLA
            ELSE
-             CALL UTMESS('F','PEEPOT','TYPE DE CHAMP INCONNU.')
+             CALL U2MESS('F','UTILITAI3_73')
            END IF
         ELSEIF(TYPCHA(1:9).EQ.'CHAM_ELEM')THEN
           IF (NOMGD(1:4).EQ.'ENER') THEN
              CHELEM = DEPLA
              GO TO 30
           ELSE
-             CALL UTMESS('F','PEEPOT','TYPE DE CHAMP INCONNU.')
+             CALL U2MESS('F','UTILITAI3_73')
           END IF
         ELSE
-          CALL UTMESS('F','PEEPOT','TYPE DE CHAMP INCONNU.')
+          CALL U2MESS('F','UTILITAI3_73')
         END IF
         ICHEML = 1
         CHELEM = '&&PEEPOT.CHAM_ELEM'
@@ -258,14 +256,12 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
               NOMMAI = ZK8(JGR+IG-1)
               CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A','PEEPOT','LE GROUPE DE MAILLE "'//
-     &                      NOMMAI//'" N''EXISTE PAS.')
+                CALL U2MESK('A','UTILITAI3_46',1,NOMMAI)
                 GO TO 40
               END IF
               CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONMAX',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL UTMESS('A','PEEPOT','LE GROUPE "'//NOMMAI//
-     &                      '" NE CONTIENT AUCUNE MAILLE.')
+                CALL U2MESK('A','UTILITAI3_74',1,NOMMAI)
                 GO TO 40
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
@@ -293,8 +289,7 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
               NOMMAI = ZK8(JMA+IM-1)
               CALL JEEXIN(JEXNOM(MLGNMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A','PEEPOT','LA MAILLE "'//NOMMAI//
-     &                      '" N''EXISTE PAS.')
+                CALL U2MESK('A','UTILITAI3_49',1,NOMMAI)
                 GO TO 50
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)

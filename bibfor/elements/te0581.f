@@ -1,7 +1,7 @@
       SUBROUTINE TE0581 ( OPTION , NOMTE )
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,10 +66,10 @@ C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
       IF ( JTAB1(1)*JTAB2(1)*JTAB3(1).EQ.0 )
      &   CALL UTMESS('F','TE0581','OPTION '//OPTION//' NON ACTIVE '//
      &   'POUR UN ELEMENT DE TYPE '//NOMTE)
+C        CALL U2MESK('F','ELEMENTS4_38', 2 ,VALK)
 
       IF (( JTAB1(2).NE.JTAB2(2) ).OR.( JTAB1(3).NE.JTAB2(3) ))
-     &   CALL UTMESS('F','TE0581','OPTION '//OPTION//' : '//
-     &   'INCOMPATIBILITE DES DEUX CHAMPS D ENTREE')
+     &   CALL U2MESK('F','ELEMENTS4_39',1,OPTION)
 
 
       NBPT=JTAB3(3)

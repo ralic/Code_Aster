@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,7 @@ C ......................................................................
         CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
 
       ELSE
-        CALL UTMESS('F','TE0168','OPTION NON TRAITEE')
+        CALL U2MESS('F','ELEMENTS2_67')
       END IF
 
       END

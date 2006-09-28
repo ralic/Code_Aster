@@ -9,22 +9,22 @@ C ----------------------------------------------------------------------
       REAL*8  KLV(NBT),KLV2(NBT),VARIP(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/07/2005   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C
@@ -204,7 +204,7 @@ C
                   SI(11) = DMSDT2*TT
                   VARIP(1) = P1
                   VARIP(2) = VARIM(2)
-                  VARIP(3) = 1.0D0                               
+                  VARIP(3) = 1.0D0
 C
                   CALL DICOR3 (K01,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
 C
@@ -330,12 +330,11 @@ C
               ELSE
                 IF (ITERAT.EQ.1) THEN
                   IF (FEQ2.GE.C2) THEN
-                    CALL UTMESS('I','DICORN',
-     &                'CHARGEMENT EN MECA 2 TROP IMPORTANT A VERIFIER')
+                    CALL U2MESS('I','ELEMENTS_26')
                   ENDIF
                   SI(7) = SIM(7) + DNSDU2*DUR
                   SI(11) = SIM(11) + DMSDT2*DRYR
-                  VARIP(2) = FEQ2**2/(1.D0-FEQ2)/DBAR2   
+                  VARIP(2) = FEQ2**2/(1.D0-FEQ2)/DBAR2
                   UR2 = (VARIP(2)*SI(7)/FEQ2-P2*SIM(7)/RG2)/NU2
                   TR2 = (VARIP(2)*SI(11)/FEQ2-P2*SIM(11)/RG2)/MU2
                   U2 = UR2*DXU2
@@ -354,8 +353,7 @@ C
                   VARIP(7) = SI(11)
                   SI(7) = DNSDU2*UU
                   SI(11) = DMSDT2*TT
-                  CALL UTMESS('I','DICORN',
-     &                'ON POURSUIT EN MECANISME 2')
+                  CALL U2MESS('I','ELEMENTS_27')
                   VARIP(3) = 2.0D0
 C
                   CALL DICOR3 (K02,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
@@ -372,8 +370,7 @@ C
                   DNSDT2 = 0.D0
                   SI(7) = U2*FEQ2*NU2/DXU2/VARIP(2)
                   SI(11) = T2*FEQ2*MU2/DRYU2/VARIP(2)
-                  CALL UTMESS('I','DICORN',
-     &                'ON POURSUIT EN MECANISME 2')
+                  CALL U2MESS('I','ELEMENTS_27')
                   CALL DICOR3 (K02,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
                   VARIP(3) = 2.D0
                   VARIP(4) = UU - SI(7)/K02(1)
@@ -403,13 +400,10 @@ C
                   IF (ITERAT.EQ.1) THEN
                     FEQ1 = SQRT( (SI(7)/NU1)**2 + (SI(11)/MU1)**2 )
                     IF (FEQ1.GE.C1) THEN
-                      CALL UTMESS('I','DICORN',
-     &                  'DECHARGE NEGATIVE SANS PASSER PAR MECA 1 '//
-     &                  'DIMINUER LE PAS DE TEMPS')
+                      CALL U2MESS('I','ELEMENTS_28')
                       GOTO 19
                     ENDIF
-                    CALL UTMESS('I','DICORN',
-     &                  'ON REVIENT EN MECANISME 1')
+                    CALL U2MESS('I','ELEMENTS_29')
 C
 C ** ON REPASSE EN MECANISME 1
 C
@@ -423,9 +417,7 @@ C
                     FEQ2 = SQRT ( ((SIM(7)+K02(1)*DU2)/NU2)**2
      &                          + ((SIM(11)+K02(15)*DRY2)/MU2)**2 )
                     IF (FEQ2.GT.RG2) THEN
-                      CALL UTMESS('I','DICORN',
-     &                  'PAS DE RETOUR DANS MECA 1 TROP IMPORTANT '//
-     &                  'DIMINUER LE PAS DE TEMPS')
+                      CALL U2MESS('I','ELEMENTS_30')
                     ENDIF
 C
                     IF (DUR.NE.0.D0)  DNSDU2 = SI(7)/UTOT
@@ -437,7 +429,7 @@ C
                     SI(11) = DMSDT2*TT
                     VARIP(1) = P1
                     VARIP(2) = VARIM(2)
-                    VARIP(3) = 1.0D0 
+                    VARIP(3) = 1.0D0
 C
                     CALL DICOR3 (K01,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
 C
@@ -449,13 +441,10 @@ C
                     T2 = TT - VARIM(5)
                     VARIP(1) = SQRT ( (U2/DXU1)**2 + (T2/DRYU1)**2 )
                     P1 = VARIP(1)
-                    CALL UTMESS('I','DICORN',
-     &                  'ON REVIENT EN MECANISME 1')
+                    CALL U2MESS('I','ELEMENTS_29')
 C
                     IF (P1.GT.1.D0) THEN
-                      CALL UTMESS('I','DICORN',
-     &                  'DECHARGE NEGATIVE SANS PASSER PAR MECA 1 '//
-     &                  'DIMINUER LE PAS DE TEMPS')
+                      CALL U2MESS('I','ELEMENTS_28')
                       GOTO 19
                     ENDIF
 C
@@ -476,8 +465,8 @@ C
      &                           DMSDT2,DNSDT2,VARIP(2),VARIP(3),SI)
 C
                     CALL DICOR3 (K01,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
-C                 
-                  ENDIF                  
+C
+                  ENDIF
                   GOTO 20
                 ENDIF
    19           CONTINUE
@@ -496,9 +485,9 @@ C **** ON REVIENT SUR LA SLU2
 C
                 IF (ITERAT.EQ.1) THEN
                   SI(7) = SIM(7) + K02(1)*DUR
-                  SI(11) = SIM(11) + K02(15)*DRYR                
+                  SI(11) = SIM(11) + K02(15)*DRYR
                   VARIP(2) = FEQ2**2/(1.D0-FEQ2)/DBAR2
-                              
+
                   UR2 = (VARIP(2)*SI(7)/FEQ2-P2*VARIM(6)/RG2)/NU2
                   TR2 = (VARIP(2)*SI(11)/FEQ2-P2*VARIM(7)/RG2)/MU2
                   U2 = UR2*DXU2
@@ -518,8 +507,7 @@ C
                   SI(7) = DNSDU2*UU
                   SI(11) = DMSDT2*TT
 C
-                  CALL UTMESS('I','DICORN',
-     &                'ON POURSUIT EN MECANISME 2')
+                  CALL U2MESS('I','ELEMENTS_27')
                   VARIP(3) = 2.0D0
                   CALL DICOR3 (K02,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
                 ELSE
@@ -538,8 +526,7 @@ C
                   DNSDT2 = 0.D0
                   SI(7) = U2*FEQ2*NU2/DXU2/VARIP(2)
                   SI(11) = T2*FEQ2*MU2/DRYU2/VARIP(2)
-                  CALL UTMESS('I','DICORN',
-     &                'ON POURSUIT EN MECANISME 2')
+                  CALL U2MESS('I','ELEMENTS_27')
                   CALL DICOR3 (K02,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
                   VARIP(3) = 2.D0
                   VARIP(4) = UU - SI(7)/K02(1)

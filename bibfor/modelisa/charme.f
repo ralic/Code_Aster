@@ -1,6 +1,6 @@
       SUBROUTINE CHARME ( FONREE )
 
-C MODIF MODELISA  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,17 +76,17 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBOCC(6), I, IFACE, IGREL, INEMA, IRET,
-     +             NDIM, NBET, IRET2
+     &             NDIM, NBET, IRET2
       CHARACTER*5  PARAM(7),PARA
       CHARACTER*8  CHAR, NOMA, NOMO
       CHARACTER*16 TYPE, OPER , CHREP(6), MOTFAC
       CHARACTER*19 LIGRCH, LIGRMO, LIGRET, LIGREL
 C
       DATA CHREP / 'FORCE_CONTOUR' , 'FORCE_INTERNE' , 'FORCE_ARETE' ,
-     +             'FORCE_FACE'    , 'FORCE_POUTRE'  , 'FORCE_COQUE'   /
+     &             'FORCE_FACE'    , 'FORCE_POUTRE'  , 'FORCE_COQUE'   /
       DATA PARAM / 'F1D2D'         , 'F3D3D'         , 'F1D3D'       ,
-     +             'F2D3D'         , 'F1D1D'         , 'FCO3D'       ,
-     +             'FCO2D'         /
+     &             'F2D3D'         , 'F1D1D'         , 'FCO3D'       ,
+     &             'FCO2D'         /
 C     ------------------------------------------------------------------
 C
 C
@@ -135,16 +135,14 @@ C
 C
 C --- VERIFICATION DE LA DIMENSION DES TYPE_ELEM DU MODELE ---
 C
-      IF (NDIM.GT.3) CALL UTMESS('A','CHARME',
-     &               'MELANGE DE MODELISATIONS PLANES ET VOLUMIQUES '//
-     &               '(OU PRESENCE DE SOUS-TRUCTURES STATIQUES)')
+      IF (NDIM.GT.3) CALL U2MESS('A','MODELISA4_4')
 C
       IF ( NDIM .EQ. 3 ) THEN
          DO 20 I = 1 , 6
             IF ( NBOCC(I) .NE. 0 ) THEN
 C
                CALL CACHRE ( CHAR , LIGRMO ,  NOMA , NDIM ,
-     +                       FONREE , PARAM(I) , CHREP(I) )
+     &                       FONREE , PARAM(I) , CHREP(I) )
 
             ENDIF
    20    CONTINUE
@@ -154,8 +152,7 @@ C
             IF ( NBOCC(I) .NE. 0 ) THEN
 C            --------- FORCE_FACE    INTERDIT EN 2D
 C            --------- FORCE_POUTRE  INTERDIT EN 2D
-               CALL UTMESS('A',OPER,'MOT-CLE '//CHREP(I)//
-     +                                       ' INTERDIT EN 2D')
+               CALL U2MESK('A','MODELISA4_5',1,CHREP(I))
            ENDIF
    15    CONTINUE
          DO 25 I = 1 , 6
@@ -167,7 +164,7 @@ C    CAS DE FORCE INTERNE EN 2D
 C    CAS DES COQCYL AXI
                IF ( I .EQ. 6 .AND. NDIM . EQ. 2 ) PARA = 'FCO2D'
                CALL CACHRE ( CHAR , LIGRMO ,  NOMA , NDIM ,
-     +                       FONREE , PARA , CHREP(I) )
+     &                       FONREE , PARA , CHREP(I) )
             ENDIF
    25    CONTINUE
       ENDIF

@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -259,7 +259,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
                 CALL UTFINM()
                 IER = IER + 10
               ELSE IF (NBTROU.LT.0) THEN
-                CALL UTMESS('F','RSUTNU','Y A UN BUG ')
+                CALL U2MESS('F','MODELISA2_91')
               END IF
    20       CONTINUE
             NBORDR = NBORDR - 1
@@ -298,7 +298,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
               CALL UTIMPR('S','DE VALEUR ',1,ZR(LACCR+IORD))
               CALL UTFINM()
             ELSE IF (NBTROU.LT.0) THEN
-              CALL UTMESS('F','RSUTNU','Y A UN BUG ')
+              CALL U2MESS('F','MODELISA2_91')
             ELSE
               IF (NBTROU.GT.1) THEN
                 CALL UTDEBM('A','RSUTNU','PLUSIEURS CHAMPS '//
@@ -346,7 +346,7 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
               CALL UTIMPR('S','DE VALEUR ',1,ZR(LACCR+IORD))
               CALL UTFINM()
             ELSE IF (NBTROU.LT.0) THEN
-              CALL UTMESS('F','RSUTNU','Y A UN BUG ')
+              CALL U2MESS('F','MODELISA2_91')
             ELSE
               IF (NBTROU.GT.1) THEN
                 CALL UTDEBM('A','RSUTNU','PLUSIEURS CHAMPS '//
@@ -415,8 +415,7 @@ C     ------------------------------------------------------------
 
          IF (NBTROP.GT.0) THEN
            KNUM2='&&RSUTNU.KNUM2'
-           IF ((NBORDR-NBTROP).EQ.0) CALL UTMESS('F','RSUTNU',
-     &       'AUCUN NUMERO D''ORDRE TROUVE. STOP.')
+           IF ((NBORDR-NBTROP).EQ.0) CALL U2MESS('F','UTILITAI4_53')
            CALL WKVECT(KNUM2,'V V I',NBORDR-NBTROP,JORDR3)
            INDI=0
            DO 778,I=1,NBORDR

@@ -2,7 +2,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C     -- CAS DES CHAM_NO A PROF_CHNO:
       DO 40,ICMP = 1,NCMPMX
         IF (ZI(JNUCMP-1+ICMP).EQ.1) THEN
           NCMP1 = NCMP1 + 1
-          IF (NCMP1.GT.200) CALL UTMESS('F','CNOCNS','STOP 1')
+          IF (NCMP1.GT.200) CALL U2MESS('F','CALCULEL_2')
           ZI(JNUCMP-1+ICMP) = NCMP1
           LICMP(NCMP1) = ZK8(JCMPGD-1+ICMP)
         END IF
@@ -164,7 +164,7 @@ C     ---------------------------------------------------
             ELSE IF (TSCA.EQ.'K8') THEN
               ZK8(JCNSV-1+IEQ) = ZK8(JVALE-1+IEQ)
             ELSE
-              CALL UTMESS('F','CNOCNS','STOP 2')
+              CALL U2MESS('F','CALCULEL_8')
             END IF
    50     CONTINUE
    60   CONTINUE
@@ -203,7 +203,7 @@ C         IADG : DEBUT DU DESCRIPTEUR GRANDEUR DU NOEUD INO
               ELSE IF (TSCA.EQ.'K8') THEN
                 ZK8(JCNSV-1+ (INO-1)*NCMP1+ICMP1) = ZK8(JVALE-1+IEQ)
               ELSE
-                CALL UTMESS('F','CNOCNS','STOP 3')
+                CALL U2MESS('F','ALGORITH_19')
               END IF
             END IF
    70     CONTINUE

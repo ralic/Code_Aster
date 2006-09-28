@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/07/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,8 +64,8 @@ C
       CALL JEMARQ()
       NOMOB  = NOMOBZ
       IF (QUESTI.EQ.'EXI_AMOR_ALPHA'.OR.QUESTI.EQ.'EXI_AMOR_NOR'.OR.
-     +    QUESTI.EQ.'EXI_AMOR_TAN'.OR.QUESTI.EQ.'EXI_AMOR_HYST'.OR.
-     +    QUESTI.EQ.'EXI_AMOR_BETA') THEN
+     &    QUESTI.EQ.'EXI_AMOR_TAN'.OR.QUESTI.EQ.'EXI_AMOR_HYST'.OR.
+     &    QUESTI.EQ.'EXI_AMOR_BETA') THEN
 C     --------------------------------------
          CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
          CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
@@ -75,7 +75,7 @@ C     --------------------------------------
            MATER= ZK8(IAVALE-1+I)
            IF (MATER.NE.' ') THEN
              CALL JELSTC ( 'G' , MATER , 1 , 100 , NOMOBJ , N )
-             IF (N.LT.0) CALL UTMESS('F','DISMCM','TROP D OBJETS')
+             IF (N.LT.0) CALL U2MESS('F','UTILITAI_54')
              DO 3, II=1,N
                IF (NOMOBJ(II)(20:24).EQ.'.VALK') THEN
                  CALL JEVEUO(NOMOBJ(II),'L',IAOBJ)
@@ -248,8 +248,7 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
       ELSE
 C     --------------------------------------
          REPK = QUESTI
-         CALL UTMESS(CODMES,'DISMCM:',
-     +               'LA QUESTION : "'//REPK//'" EST INCONNUE')
+         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD=1
          GO TO 9999
       END IF

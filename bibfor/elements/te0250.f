@@ -1,6 +1,6 @@
       SUBROUTINE TE0250(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C INITS.
         CALL JEVECH('PRAYONF','L',IRAY)
         CALL JEVECH('PTEMPEI','L',ITEMP)
       ELSE
-        CALL UTMESS('F','TE0250','OPTION DE CALCUL INVALIDE')
+        CALL U2MESS('F','ELEMENTS2_95')
       END IF
       IF (LTEATT(' ','AXIS','OUI')) THEN
         LAXI = .TRUE.
@@ -134,9 +134,7 @@ C --- CALCUL ISO-P2 : BOUCLE SUR LES SOUS-ELEMENTS -------
           NOMPAR(3) = 'INST'
           IF (LCOEF) THEN
             CALL FOINTE('A',ZK8(ICOEFH),3,NOMPAR,VALPAR,COEFH,ICODE)
-            IF (ICODE.NE.0) CALL UTMESS('F','TE0250',
-     &                                'ERREUR LORS DE L''APPEL A FOINTE'
-     &                                  )
+            IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS3_23')
             DO 70 I = 1,NNO
               LI = IVF + (KP-1)*NNO + I - 1
 CCDIR$ IVDEP
@@ -156,11 +154,9 @@ CCDIR$ IVDEP
               TPG = TPG + ZR(ITEMP-1+C(ISE,I))*ZR(IVF+L-1)
    80       CONTINUE
             CALL FOINTE('A',ZK8(IRAY),4,NOMPAR,VALPAR,SIGMA,IER)
-            IF (IER.NE.0) CALL UTMESS('F','TE0250',
-     &                                'ERREUR LORS DE L APPEL A FOINTE')
+            IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_21')
             CALL FOINTE('A',ZK8(IRAY+1),4,NOMPAR,VALPAR,EPSIL,IER)
-            IF (IER.NE.0) CALL UTMESS('F','TE0250',
-     &                                'ERREUR LORS DE L APPEL A FOINTE')
+            IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_21')
             DO 100 I = 1,NNO
               LI = IVF + (KP-1)*NNO + I - 1
 CCDIR$ IVDEP

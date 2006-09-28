@@ -1,11 +1,11 @@
       SUBROUTINE MDNEWM (NBPAS,DT,NBMODE,PULSAT,PULSA2,
-     +                   MASGEN,RIGGEN,LAMOR,AMOGEN,TYPBAS,BASEMO,
-     +                   TINIT,IPARCH,
-     +                   DEPSTO,VITSTO,ACCSTO,IORSTO,TEMSTO,NOMRES) 
+     &                   MASGEN,RIGGEN,LAMOR,AMOGEN,TYPBAS,BASEMO,
+     &                   TINIT,IPARCH,
+     &                   DEPSTO,VITSTO,ACCSTO,IORSTO,TEMSTO,NOMRES)
       IMPLICIT     REAL*8 (A-H,O-Z)
       INTEGER      IORSTO(*), IPARCH(*)
       REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),RIGGEN(*),
-     +             AMOGEN(*),DEPSTO(*),VITSTO(*),ACCSTO(*),TEMSTO(*)
+     &             AMOGEN(*),DEPSTO(*),VITSTO(*),ACCSTO(*),TEMSTO(*)
       CHARACTER*8  BASEMO,NOMRES
       CHARACTER*16 TYPBAS
       LOGICAL      LAMOR, LPSTO
@@ -13,22 +13,22 @@
       REAL*8       R8B
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/05/2005   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     ALGORITHME DE NEWMARK
@@ -126,12 +126,11 @@ C
  112           CONTINUE
                IND = IM + NBMODE*(IM-1)
                ZR(JTRA3+IND-1) = ZR(JTRA3+IND-1) + QSDT2*MASGEN(IM)
-     +                                           + RIGGEN(IM)
+     &                                           + RIGGEN(IM)
  110        CONTINUE
 C           --- FACTORISATION DE LA MATRICE KTILDA ---
             CALL TRLDS(ZR(JTRA3),NBMODE,NBMODE,IRET)
-            IF (IRET.NE.0) CALL UTMESS('F','MDNEWM',
-     +                              'LA MATRICE KTILDA EST SINGULIERE.')
+            IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_61')
          ENDIF
       ELSE
          IF ( LAMOR ) THEN
@@ -144,19 +143,19 @@ C           --- FACTORISATION DE LA MATRICE KTILDA ---
                   ZR(JTRA5+IND-1) = QSDT2*MASGEN(IND)
  122           CONTINUE
                IND = IM + NBMODE*(IM-1)
-               ZR(JTRA3+IND-1) = ZR(JTRA3+IND-1) + 
-     +                           DSDT*AMOGEN(IM)*MASGEN(IND)
-               ZR(JTRA4+IND-1) = ZR(JTRA4+IND-1) + 
-     +                           AMOGEN(IM)*MASGEN(IND)
-               ZR(JTRA5+IND-1) = ZR(JTRA5+IND-1) + 
-     +                           DSDT*AMOGEN(IM)*MASGEN(IND)
+               ZR(JTRA3+IND-1) = ZR(JTRA3+IND-1) +
+     &                           DSDT*AMOGEN(IM)*MASGEN(IND)
+               ZR(JTRA4+IND-1) = ZR(JTRA4+IND-1) +
+     &                           AMOGEN(IM)*MASGEN(IND)
+               ZR(JTRA5+IND-1) = ZR(JTRA5+IND-1) +
+     &                           DSDT*AMOGEN(IM)*MASGEN(IND)
  120        CONTINUE
          ELSE
             DO 130 IM = 1 , NBMODE
                DO 132 JM = 1 , NBMODE
                   IND = JM + NBMODE*(IM-1)
                   ZR(JTRA3+IND-1) = QSDT2*MASGEN(IND) + RIGGEN(IND)
-     +                                         + DSDT*AMOGEN(IND)
+     &                                         + DSDT*AMOGEN(IND)
                   ZR(JTRA4+IND-1) = QSDT*MASGEN(IND) + AMOGEN(IND)
                   ZR(JTRA5+IND-1) = QSDT2*MASGEN(IND) + DSDT*AMOGEN(IND)
  132           CONTINUE
@@ -164,15 +163,13 @@ C           --- FACTORISATION DE LA MATRICE KTILDA ---
          ENDIF
 C        --- FACTORISATION DE LA MATRICE MASSE ---
          CALL WKVECT('&&MDNEWM.MASS','V V R8',NBMODE*NBMODE,JMASS)
-         CALL DCOPY(NBMODE*NBMODE,MASGEN,1,ZR(JMASS),1)      
+         CALL DCOPY(NBMODE*NBMODE,MASGEN,1,ZR(JMASS),1)
          CALL TRLDS(ZR(JMASS),NBMODE,NBMODE,IRET)
 C         CALL TRLDS(MASGEN,NBMODE,NBMODE,IRET)
-         IF (IRET.NE.0) CALL UTMESS('F','MDNEWM',
-     +                              'LA MATRICE MASSE EST SINGULIERE.')
+         IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_22')
 C        --- FACTORISATION DE LA MATRICE KTILDA ---
          CALL TRLDS(ZR(JTRA3),NBMODE,NBMODE,IRET)
-         IF (IRET.NE.0) CALL UTMESS('F','MDNEWM',
-     +                              'LA MATRICE KTILDA EST SINGULIERE.')
+         IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_61')
       ENDIF
 C
 C     --- CONDITIONS INITIALES ---
@@ -183,24 +180,24 @@ C     --- FORCES EXTERIEURES ---
       CALL GETFAC('EXCIT',NBEXCI)
       IF (NBEXCI.NE.0) THEN
          CALL MDFEXT(NBEXCI,BASEMO,TYPBAS,NBMODE,TINIT,1,DT,ZR(JFEXT),
-     +               IRET)
+     &               IRET)
          IF (IRET.NE.0) GOTO 9999
       ENDIF
 C
 C     --- ACCELERATIONS GENERALISEES INITIALES ---
       CALL MDACCE(TYPBAS,NBMODE,PULSA2,MASGEN,DESCMM,RIGGEN,
-     +            DESCMR,ZR(JFEXT),LAMOR,AMOGEN,DESCMA,ZR(JTRA1),
-     +            ZR(JDEPL),ZR(JVITE),ZR(JACCE))
+     &            DESCMR,ZR(JFEXT),LAMOR,AMOGEN,DESCMA,ZR(JTRA1),
+     &            ZR(JDEPL),ZR(JVITE),ZR(JACCE))
 C
 C     --- ARCHIVAGE DONNEES INITIALES ---
       IBID1 = 0
       IBID2 = 0
       TARCHI = TINIT
       CALL MDARCH(ISTO1,0,TINIT,DT, NBMODE,ZR(JDEPL),ZR(JVITE),
-     +            ZR(JACCE),IBID1,0,R8B,0,IBID2,0,R8B,IBID,
-     +            DEPSTO,VITSTO,
-     +            ACCSTO,R8B,LPSTO,IORSTO,TEMSTO, R8B,R8B,R8B, IBID,
-     +            R8B, IBID, R8B )
+     &            ZR(JACCE),IBID1,0,R8B,0,IBID2,0,R8B,IBID,
+     &            DEPSTO,VITSTO,
+     &            ACCSTO,R8B,LPSTO,IORSTO,TEMSTO, R8B,R8B,R8B, IBID,
+     &            R8B, IBID, R8B )
 C
       TEMPS = TINIT + DT
       CALL UTTCPU (1,'INIT',4,TPS1)
@@ -222,7 +219,7 @@ C
 C        --- FORCES EXTERIEURES ---
          IF (NBEXCI.NE.0) THEN
             CALL MDFEXT(NBEXCI,BASEMO,TYPBAS,NBMODE,TEMPS,NBPP,DT,
-     +                                        ZR(JFEXT),IRET)
+     &                                        ZR(JFEXT),IRET)
             IF (IRET.NE.0) GOTO 9999
          ENDIF
 C
@@ -240,8 +237,8 @@ C
                      X2 = ( QSDT2 + DSDT*AMOGEN(IM1) ) * MASGEN(IM1)
                      X3 = X2 + RIGGEN(IM1)
                      ZR(JDEPL+IM) = ( ZR(JFEXT+IFE+IM) + X1*ZR(JVITE+IM)
-     +                                + MASGEN(IM1)*ZR(JACCE+IM)
-     +                                + X2*ZR(JDEPL+IM) ) / X3
+     &                                + MASGEN(IM1)*ZR(JACCE+IM)
+     &                                + X2*ZR(JDEPL+IM) ) / X3
  210              CONTINUE
                ELSE
                   DO 212 IM = 0,NBMOD1
@@ -252,9 +249,9 @@ C
                   DO 214 IM = 0,NBMOD1
                      IM1 = IM + 1
                      X1 = ZR(JACCE+IM) + QSDT*ZR(JVITE+IM)
-     +                                   + QSDT2*ZR(JTRA1+IM)
+     &                                   + QSDT2*ZR(JTRA1+IM)
                      ZR(JDEPL+IM) = ZR(JDEPL+IM) + ZR(JFEXT+IFE+IM)
-     +                                               + X1*MASGEN(IM1)
+     &                                               + X1*MASGEN(IM1)
  214              CONTINUE
                   CALL RRLDS(ZR(JTRA3),NBMODE,NBMODE,ZR(JDEPL),1)
                ENDIF
@@ -270,10 +267,10 @@ C
             ENDIF
             DO 218 IM = 0,NBMOD1
                ZR(JACCE+IM) = -ZR(JACCE+IM) + QSDT2*( ZR(JDEPL+IM)
-     +                               - ZR(JTRA1+IM) - DT*ZR(JVITE+IM) )
+     &                               - ZR(JTRA1+IM) - DT*ZR(JVITE+IM) )
 C
                ZR(JVITE+IM) = -ZR(JVITE+IM) + DSDT*( ZR(JDEPL+IM)
-     +                                      - ZR(JTRA1+IM) )
+     &                                      - ZR(JTRA1+IM) )
  218        CONTINUE
 C
 C           --- ARCHIVAGE ---
@@ -285,10 +282,10 @@ C           --- ARCHIVAGE ---
               IBID1 = 0
               TARCHI = TEMPS
               CALL MDARCH(ISTO1,IARCHI,TEMPS,DT,NBMODE,ZR(JDEPL),
-     +                     ZR(JVITE),ZR(JACCE), IBID1,0,R8B,0,
-     +                     IBID2,0,R8B,IBID,
-     +                     DEPSTO,VITSTO,ACCSTO,R8B,LPSTO,IORSTO,TEMSTO,
-     +                     R8B,R8B,R8B,IBID, R8B, IBID,R8B )
+     &                     ZR(JVITE),ZR(JACCE), IBID1,0,R8B,0,
+     &                     IBID2,0,R8B,IBID,
+     &                     DEPSTO,VITSTO,ACCSTO,R8B,LPSTO,IORSTO,TEMSTO,
+     &                     R8B,R8B,R8B,IBID, R8B, IBID,R8B )
             ENDIF
 C
 C       --- TEST SI LE TEMPS RESTANT EST SUFFISANT POUR CONTINUER ---
@@ -335,7 +332,7 @@ C
       CALL JEDETR('&&MDNEWM.FTILD2')
       CALL JEDETR('&&MDNEWM.FEXT')
       IF (IRET.NE.0)
-     +   CALL UTMESS('F','DYNA_TRAN_MODAL','DONNEES ERRONEES.')
+     &   CALL U2MESS('F','ALGORITH5_24')
 C
       CALL JEDEMA()
       END

@@ -7,7 +7,7 @@
       CHARACTER*(*)     PARTIE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNUM, JEXNOM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IMAOLD, IOR, JCESD, JCESL, JCESV,
-     +              NBPT, NBSP, IPT, ISP, IAD, INO
+     &              NBPT, NBSP, IPT, ISP, IAD, INO
       REAL*8        VALE
 C
 C     ------------------------------------------------------------------
@@ -84,7 +84,7 @@ C
          NBPT = ZI(JCESD-1+5+4*(IMAOLD-1)+1)
          NBSP = ZI(JCESD-1+5+4*(IMAOLD-1)+2)
          IF ( NBSP .NE. 1 ) THEN
-            CALL UTMESS('F','IRGMG1','NBSP DIFFERENT DE 1')
+            CALL U2MESS('F','PREPOST2_57')
          ENDIF
          VALE = 0.D0
          IF (ZK8(JTYPE-1+IOR).EQ.'R') THEN
@@ -112,7 +112,7 @@ C
                    VALE = VALE + DIMAG(ZC(JCESV-1+IAD))
                  ENDIF
  17          CONTINUE
-           ENDIF           
+           ENDIF
          ENDIF
          IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
          IF ( NBPT .NE. 0 )  VALE = VALE / NBPT

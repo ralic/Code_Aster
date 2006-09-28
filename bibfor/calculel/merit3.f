@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
       CALL JEMARQ()
       IF (MODELE(1:1).EQ.' ') THEN
-        CALL UTMESS('F','MERIT3',' IL FAUT UN MODELE')
+        CALL U2MESS('F','CALCULEL3_50')
       END IF
 
       BLANC = '        '
@@ -122,9 +122,7 @@ C     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
           CALL JEEXIN(CONVCH,IRET)
           IF (IRET.GT.0) THEN
             ICONV = ICONV + 1
-            IF (ICONV.GT.1) CALL UTMESS('F','MERIT3',' IL NE FAUT PAS'//
-     &                            ' DEFINIR PLUS D"UN CHAMP DE VITESSE '
-     &                                  )
+            IF (ICONV.GT.1) CALL U2MESS('F','CALCULEL3_72')
 
             OPTION = 'RIGI_THER_CONV'
             IF (DECENT.EQ.'OUI') OPTION = 'RIGI_THER_CONV_D'

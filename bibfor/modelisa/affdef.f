@@ -5,22 +5,22 @@
       CHARACTER*24      TMP
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C       ----------------------------------------------------------------
 C        - VERIFICATION DE LA COMPLETUDE DES DONNES OBLIGATOIRES A
@@ -93,21 +93,23 @@ C
             DO 20 J = 1 , NG
             IF(ZR(JDGE+OGEN(J)-1).EQ.TST)THEN
             CALL UTMESS('A',CMD,'POUTRE'//
-     +      ' : MAILLE '//NOM//' : SECTION GENERALE'//
-     +      ' : IL MANQUE LA CARACTERISTIQUE '//TAB(OGEN(J)))
+     &      ' : MAILLE '//NOM//' : SECTION GENERALE'//
+     &      ' : IL MANQUE LA CARACTERISTIQUE '//TAB(OGEN(J)))
+C        CALL U2MESK('A','MODELISA_77', 2 ,VALK)
             IER = IER + 1
             ENDIF
  20         CONTINUE
 C - TYMOSHENKO
             IF ( NEL.EQ.NTEL(1) .OR. NEL.EQ.NTEL(4) .OR.
-     +           NEL.EQ.NTEL(5) .OR. NEL.EQ.NTEL(6) )THEN
+     &           NEL.EQ.NTEL(5) .OR. NEL.EQ.NTEL(6) )THEN
               DO 50 J = 1 , NT
                 IF(ZR(JDGE+OTPE(J)-1).EQ.TST)THEN
                 CALL UTMESS('A',CMD,'POUTRE'//
-     +          ' : MAILLE '//NOM//
-     +          ' : SECTION GENERALE'//
-     +          ' : ELEMENT POUTRE DE TIMOSHENKO'//
-     +          ' : IL MANQUE LA CARACTERISTIQUE '//TAB(OTPE(J)))
+     &          ' : MAILLE '//NOM//
+     &          ' : SECTION GENERALE'//
+     &          ' : ELEMENT POUTRE DE TIMOSHENKO'//
+     &          ' : IL MANQUE LA CARACTERISTIQUE '//TAB(OTPE(J)))
+C        CALL U2MESK('A','MODELISA_78', 2 ,VALK)
                 ENDIF
  50           CONTINUE
             ENDIF
@@ -119,8 +121,9 @@ C
             DO 30 J = 1 , NR
             IF(ZR(JDGE+OREC(J)-1).EQ.TST)THEN
             CALL UTMESS('A',CMD,'POUTRE'//
-     +      ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
-     +      ' : IL MANQUE  LA CARACTERISTIQUE '//TAB(OREC(J)))
+     &      ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
+     &      ' : IL MANQUE  LA CARACTERISTIQUE '//TAB(OREC(J)))
+C        CALL U2MESK('A','MODELISA_79', 2 ,VALK)
             IER = IER + 1
             ENDIF
  30         CONTINUE
@@ -132,8 +135,9 @@ C
             DO 40 J = 1 , NC
             IF(ZR(JDGE+OCER(J)-1).EQ.TST)THEN
             CALL UTMESS('A',CMD,'POUTRE'//
-     +      ' : MAILLE '//NOM//' : SECTION CERCLE'//
-     +      ' :  IL MANQUE  LA CARACTERISTIQUE '//TAB(OCER(J)))
+     &      ' : MAILLE '//NOM//' : SECTION CERCLE'//
+     &      ' :  IL MANQUE  LA CARACTERISTIQUE '//TAB(OCER(J)))
+C        CALL U2MESK('A','MODELISA_80', 2 ,VALK)
             IER = IER + 1
             ENDIF
  40         CONTINUE
@@ -146,9 +150,10 @@ C
             IF(ZR(JDGE+PGEN(J)-1).NE.TST)THEN
               IF(ZR(JDGE+PGEN(J)-1).LE.0.D0)THEN
               CALL UTMESS('A',CMD,'POUTRE'//
-     +        ' : MAILLE '//NOM//' : SECTION GENERALE'//
-     +        ' : LA VALEUR DE '//TAB(PGEN(J))//' DOIT'//
-     +        ' ETRE  STRICTEMENT POSITIVE')
+     &        ' : MAILLE '//NOM//' : SECTION GENERALE'//
+     &        ' : LA VALEUR DE '//TAB(PGEN(J))//' DOIT'//
+     &        ' ETRE  STRICTEMENT POSITIVE')
+C        CALL U2MESK('A','MODELISA_81', 2 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF
@@ -162,9 +167,10 @@ C
             IF(ZR(JDGE+PREC(J)-1).NE.TST)THEN
               IF(ZR(JDGE+PREC(J)-1).LE.0.D0)THEN
               CALL UTMESS('A',CMD,'POUTRE'//
-     +        ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
-     +        ' : LA VALEUR DE '//TAB(PREC(J))//' DOIT'//
-     +        ' ETRE STRICTEMENT POSITIVE')
+     &        ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
+     &        ' : LA VALEUR DE '//TAB(PREC(J))//' DOIT'//
+     &        ' ETRE STRICTEMENT POSITIVE')
+C        CALL U2MESK('A','MODELISA_82', 2 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF
@@ -178,9 +184,10 @@ C
             IF(ZR(JDGE+PCER(J)-1).NE.TST)THEN
               IF(ZR(JDGE+PCER(J)-1).LE.0.D0)THEN
               CALL UTMESS('A',CMD,'POUTRE'//
-     +        ' : MAILLE '//NOM//' : SECTION CERCLE'//
-     +        ' :  LA VALEUR DE '//TAB(PCER(J))//' DOIT'//
-     +        ' ETRE STRICTEMENT POSITIVE')
+     &        ' : MAILLE '//NOM//' : SECTION CERCLE'//
+     &        ' :  LA VALEUR DE '//TAB(PCER(J))//' DOIT'//
+     &        ' ETRE STRICTEMENT POSITIVE')
+C        CALL U2MESK('A','MODELISA_83', 2 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF
@@ -226,9 +233,10 @@ C
             ELSE
               IF(ZR(JDGE+DREC(J)-1).GT.(ZR(JDGE+OREC(J)-1)/2.D0))THEN
               CALL UTMESS('A',CMD,'POUTRE'//
-     +        ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
-     +        ' : LA VALEUR DE '//TAB(DREC(J))//' NE DOIT '//
-     +        'PAS DEPASSER '//TAB(OREC(J))//'/2  !!! M ENFIN QUOI !')
+     &        ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
+     &        ' : LA VALEUR DE '//TAB(DREC(J))//' NE DOIT '//
+     &        'PAS DEPASSER '//TAB(OREC(J))//'/2  !!! M ENFIN QUOI !')
+C        CALL U2MESK('A','MODELISA_84', 3 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF
@@ -244,9 +252,10 @@ C
             ELSE
               IF(ZR(JDGE+DCER(J)-1).GT.ZR(JDGE+OCER(J)-1))THEN
               CALL UTMESS('A',CMD,'POUTRE'//
-     +        ' : MAILLE '//NOM//' : SECTION CERCLE'//
-     +        ' :  LA VALEUR DE '//TAB(DCER(J))//' NE DOIT '//
-     +        'PAS DEPASSER CELLE DE '//TAB(OCER(J))//' !!! AARG !!')
+     &        ' : MAILLE '//NOM//' : SECTION CERCLE'//
+     &        ' :  LA VALEUR DE '//TAB(DCER(J))//' NE DOIT '//
+     &        'PAS DEPASSER CELLE DE '//TAB(OCER(J))//' !!! AARG !!')
+C        CALL U2MESK('A','MODELISA_85', 3 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF

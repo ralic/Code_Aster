@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,8 +88,7 @@ C ----------------------------------------------------------------------
       CALL GETFAC('CREA_FISS',NBJOIN)
       IF (NBJOIN.NE.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE CREA_FISS. ')
+          CALL U2MESS('F','ALGELINE2_89')
         ENDIF
         CALL WKVECT('&&OP0167.NOMMC','V V K16',NBJOIN,JNOMMC)
         CALL WKVECT('&&OP0167.OCCMC','V V I',NBJOIN,JOCCMC)
@@ -97,7 +96,7 @@ C ----------------------------------------------------------------------
           ZK16(JNOMMC-1+I) = 'CREA_FISS'
           ZI  (JOCCMC-1+I) = I
  2      CONTINUE
-      
+
         CALL CMCREA(NOMAIN,NOMAOU,NBJOIN,ZK16(JNOMMC),ZI(JOCCMC))
         GOTO 300
       END IF
@@ -110,8 +109,7 @@ C ----------------------------------------------------------------------
       CALL GETFAC('LINE_QUAD',NBMOMA)
       IF (NBMOMA.GT.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE LINE_QUAD. ')
+          CALL U2MESS('F','ALGELINE2_90')
         ENDIF
         CALL GETVTX('LINE_QUAD','PREF_NOEUD',1,1,1,PREFIX,N1)
         CALL GETVIS('LINE_QUAD','PREF_NUME' ,1,1,1,NDINIT,N1)
@@ -124,11 +122,9 @@ C ----------------------------------------------------------------------
      &              MOTCLE,NOMJV,NBMA)
         CALL JEVEUO(NOMJV,'L',JLIMA)
         CALL JEEXIN(NOMAIN//'.NOMACR',IRET)
-        IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
-     &  // 'L''OPTION LINE_QUAD NE TRAITE PAS LES MACROS MAILLES')
+        IF (IRET.NE.0) CALL U2MESS('F','ALGELINE2_91')
         CALL JEEXIN(NOMAIN//'.ABS_CURV',IRET)
-        IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
-     &  //  'L''OPTION LINE_QUAD NE TRAITE PAS LES ABSC_CURV')
+        IF (IRET.NE.0) CALL U2MESS('F','ALGELINE2_92')
 
         CALL CMLQLQ ( NOMAIN, NOMAOU, NBMA, ZI(JLIMA), PREFIX, NDINIT )
 
@@ -141,8 +137,7 @@ C ----------------------------------------------------------------------
       CALL GETFAC('QUAD_LINE',NBMOMA)
       IF (NBMOMA.GT.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE QUAD_LINE. ')
+          CALL U2MESS('F','ALGELINE2_93')
         ENDIF
         MOTCLE(1) = 'MAILLE'
         MOTCLE(2) = 'GROUP_MA'
@@ -152,11 +147,9 @@ C ----------------------------------------------------------------------
      &              MOTCLE,NOMJV,NBMA)
         CALL JEVEUO(NOMJV,'L',JLIMA)
         CALL JEEXIN(NOMAIN//'.NOMACR',IRET)
-        IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
-     &  // 'L''OPTION QUAD_LINE NE TRAITE PAS LES MACROS MAILLES')
+        IF (IRET.NE.0) CALL U2MESS('F','ALGELINE2_94')
         CALL JEEXIN(NOMAIN//'.ABS_CURV',IRET)
-        IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
-     &  //  'L''OPTION QUAD_LINE NE TRAITE PAS LES ABSC_CURV')
+        IF (IRET.NE.0) CALL U2MESS('F','ALGELINE2_95')
 
         CALL CMQLQL ( NOMAIN, NOMAOU, NBMA, ZI(JLIMA))
 
@@ -170,8 +163,7 @@ C ----------------------------------------------------------------------
       CALL GETFAC ( 'MODI_MAILLE', NBMOMA )
       IF ( NBMOMA .GT. 0 ) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE MODI_MAILLE. ')
+          CALL U2MESS('F','ALGELINE2_96')
         ENDIF
         IQTR = 0
         DO 400 IOCC = 1,NBMOMA
@@ -181,11 +173,9 @@ C ----------------------------------------------------------------------
         IF ( IQTR .EQ. 0 ) THEN
            GOTO 402
         ELSEIF ( IQTR .GT. 1 ) THEN
-           CALL UTMESS('F','MODI_MAILLE','UNE SEULE OCCURRENCE DE '//
-     &                      '"QUAD_TRIA3"' )
+           CALL U2MESS('F','ALGELINE2_97')
         ELSEIF ( IQTR.EQ.1 .AND. NBMOMA.NE.1 ) THEN
-           CALL UTMESS('F','MODI_MAILLE','UNE SEULE OCCURRENCE DE '//
-     &                      '"QUAD_TRIA3"' )
+           CALL U2MESS('F','ALGELINE2_97')
         ENDIF
 
         CALL GETVTX('MODI_MAILLE','PREF_MAILLE',1,1,1,PREFIX,N1)
@@ -213,8 +203,7 @@ C ----------------------------------------------------------------------
       CALL GETFAC ( 'COQU_VOLU', NBVOLU )
       IF ( NBVOLU .NE. 0 ) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE COQU_VOLU. ')
+          CALL U2MESS('F','ALGELINE2_98')
         ENDIF
 C
          CALL GETVR8 ('COQU_VOLU','EPAIS'      ,1,1,1,EPAIS,N1)
@@ -230,11 +219,11 @@ C
 
          NOMJV  = '&&OP0167.LISTE_MAV'
          CALL RELIEM ( ' ', NOMAIN, 'NU_MAILLE','COQU_VOLU', 1, 1,
-     +                   'GROUP_MA', 'GROUP_MA', NOMJV, NBMA )
+     &                   'GROUP_MA', 'GROUP_MA', NOMJV, NBMA )
          CALL JEVEUO ( NOMJV, 'L', JMA )
 C
          CALL CMCOVO ( NOMAIN, NOMAOU, NBMA, ZI(JMA), PRFNO,
-     +                 PRFMA, NUMMA, EPAIS, PLAN, TRANS )
+     &                 PRFMA, NUMMA, EPAIS, PLAN, TRANS )
 C
 C
          GOTO 300
@@ -295,8 +284,7 @@ C ----------------------------------------------------------------------
 C
       IF (NBMOMA.NE.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE MODI_MAILLE. ')
+          CALL U2MESS('F','ALGELINE2_96')
         ENDIF
         MOMANU = '&&OP0167.MO_MA.NUM'
         MOMANO = '&&OP0167.MO_MA.NOM'
@@ -328,14 +316,14 @@ C
           CALL GETVTX('MODI_MAILLE','PREF_NOEUD',IOCC,1,0,K8B,N1)
           IF (N1.NE.0) THEN
             CALL GETVTX('MODI_MAILLE','PREF_NOEUD',IOCC,1,1,
-     +                    ZK8(JPRO+IOCC-1),N1)
+     &                    ZK8(JPRO+IOCC-1),N1)
             LGNO = LXLGUT(ZK8(JPRO+IOCC-1))
          END IF
          CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,1,0,IBID,N1)
          IF (N1.NE.0) CALL GETVIS('MODI_MAILLE','PREF_NUME',IOCC,1,1,
-     +                                           ZI(JNUM+IOCC-1),N1)
+     &                                           ZI(JNUM+IOCC-1),N1)
          CALL PALIM2('MODI_MAILLE',IOCC,NOMAIN,MOMANU,MOMANO,
-     +                 ZI(JIAD+IOCC-1))
+     &                 ZI(JIAD+IOCC-1))
          IF (ZI(JIAD+IOCC-1)-1.LE.0) GOTO 10
 
          CALL WKVECT(LISI,'V V I' ,ZI(JIAD+IOCC-1)-1,JLII)
@@ -381,7 +369,7 @@ C
         CALL JEVEUO(MOMOTO,'L',JMOMTO)
         NBNOAJ = IAD - 1
         IF (NBNOAJ.EQ.0) THEN
-          CALL UTMESS('F','OP0167','PAS DE MAILLE A MODIFIER')
+          CALL U2MESS('F','ALGELINE2_99')
         END IF
       END IF
 
@@ -393,8 +381,7 @@ C ----------------------------------------------------------------------
       NBMAJ1 = 0
       IF (NBCRMA.NE.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE CREA_MAILLE. ')
+          CALL U2MESS('F','ALGELINE3_1')
         ENDIF
         CRMANU = '&&OP0167.CR_MA.NUM'
         CRMANO = '&&OP0167.CR_MA.NOM'
@@ -421,8 +408,7 @@ C ----------------------------------------------------------------------
       NBMAJ2 = 0
       IF (NBGRMA.NE.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE CREA_GROUP_MA. ')
+          CALL U2MESS('F','ALGELINE3_2')
         ENDIF
         CRGRNU = '&&OP0167.CR_GR.NUM'
         CRGRNO = '&&OP0167.CR_GR.NOM'
@@ -444,8 +430,7 @@ C ----------------------------------------------------------------------
       NBMAJ3 = 0
       IF (NBCRP1.NE.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE CREA_POI1. ')
+          CALL U2MESS('F','ALGELINE3_3')
         ENDIF
         CALL JENONU(JEXNOM('&CATA.TM.NOMTM','POI1'),NTPOI)
 
@@ -526,9 +511,7 @@ C LE NUME EST INCREMENTE
           ENDIF
 C
           LGNU = LXLGUT(KNUME)
-          IF (LGNU+LGNO.GT.8) CALL UTMESS('F','OP0167',
-     &            'PREF_NOEUD EST TROP LONG OU PREF_NUME EST TROP GRAND'
-     &                             )
+          IF (LGNU+LGNO.GT.8) CALL U2MESS('F','ALGELINE_16')
           PRFN1 = ZK8(JPR2+INO-NBNOEV-1)
           NOMG  = PRFN1(1:LGNO)//KNUME
           CALL JEEXIN(JEXNOM(NOMNOE,NOMG),IRET)
@@ -576,8 +559,7 @@ C     -----------------------------
       CALL GETFAC('REPERE',NREP)
       IF (NREP.NE.0) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE REPERE. ')
+          CALL U2MESS('F','ALGELINE3_4')
         ENDIF
         CALL GETVID('REPERE','TABLE',1,1,0,K8B,NTAB)
         IF (NTAB.NE.0) THEN
@@ -590,9 +572,7 @@ C     -----------------------------
             ELSE IF (NOMORI.EQ.'TORSION') THEN
               CALL CHCOMB(TABLE,NOMAOU)
             ELSE
-              CALL UTMESS('F','OP0167','SOUS LE MOT-CLE "NOM_ORIG"'//
-     &                    ' DU MOT-FACTEUR "REPERE", ON NE PEUT '//
-     &                    'DONNER QUE LES MOTS "CDG" OU "TORSION".')
+              CALL U2MESS('F','ALGELINE3_5')
             END IF
           END IF
         END IF
@@ -667,7 +647,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
         JTOM = JTYPMV - 1 + INUMOL
         CALL JENONU(JEXNOM(NOMMAI,NEWMAI),IBID)
         IF (IBID.EQ.0) THEN
-          CALL UTMESS('F','OP0167','MAILLE NON CREEE '//NEWMAI)
+          CALL U2MESK('F','ALGELINE3_6',1,NEWMAI)
         END IF
         ZI(IATYMA-1+IBID) = ZI(JTOM)
 
@@ -695,7 +675,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
         JTOM = JTYPMV - 1 + INUMOL
         CALL JENONU(JEXNOM(NOMMAI,NEWMAI),IBID)
         IF (IBID.EQ.0) THEN
-          CALL UTMESS('F','OP0167','MAILLE NON CREEE '//NEWMAI)
+          CALL U2MESK('F','ALGELINE3_6',1,NEWMAI)
         END IF
         ZI(IATYMA-1+IBID) = ZI(JTOM)
 
@@ -723,7 +703,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
 
         CALL JENONU(JEXNOM(NOMMAI,NEWMAI),IBID)
         IF (IBID.EQ.0) THEN
-          CALL UTMESS('F','OP0167','MAILLE NON CREEE '//NEWMAI)
+          CALL U2MESK('F','ALGELINE3_6',1,NEWMAI)
         END IF
         ZI(IATYMA-1+IBID) = NTPOI
 
@@ -860,9 +840,7 @@ C ----------------------------------------------------------------------
             IF (N1.NE.0) THEN
               CALL GETVID('CREA_POI1','NOM_GROUP_MA',IOCC,1,1,NOGMA,N1)
               CALL JENONU(JEXNOM(GRPMAI,NOGMA),IBID)
-              IF (IBID.GT.0) CALL UTMESS('F','OP0167',
-     &                                   ' LE GROUP_MA : '//NOGMA//
-     &                                   ' EXISTE DEJA.')
+              IF (IBID.GT.0) CALL U2MESK('F','ALGELINE3_7',1,NOGMA)
               CALL RELIEM(' ',NOMAIN,'NO_NOEUD',MOTFAC,IOCC,NBMC,
      &                    MOTCLE,TYMOCL,NOMJV,NBMA)
               CALL JEVEUO(NOMJV,'L',JMAIL)
@@ -895,15 +873,14 @@ C ----------------------------------------------------------------------
       CALL GETFAC ( 'DETR_GROUP_MA', NBDGMA )
       IF (NBDGMA.EQ.1) THEN
         IF(NN1.EQ.0) THEN
-          CALL UTMESS('F','OP0167','LE MOT-CLE MAILLAGE '//
-     +                'EST OBLIGATOIRE AVEC LE MOT-CLE DETR_GROUP_MA. ')
+          CALL U2MESS('F','ALGELINE3_8')
         ENDIF
         CALL CMDGMA(NOMAOU)
       ENDIF
   300 CONTINUE
 
       CALL TITRE()
-  
+
       CALL CARGEO ( NOMAOU )
 
 C     IMPRESSIONS DU MOT CLE INFO :

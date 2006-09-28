@@ -1,6 +1,6 @@
       SUBROUTINE TE0101(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -424,10 +424,7 @@ C       ---------------------------------
         B(3,2) = B(2,3)
 
       ELSE
-        CALL UTMESS('F','TE0101','LE MATERIAU '//PHENOM//' N''EST '//
-     &              'PAS CONNU. SEULS SONT ADMIS LES MATERIAUX '//
-     &              ' ''THER'', ''THER_COQMU'' ET ''THER_COQUE'' '//
-     &              'POUR LES COQUES THERMIQUES .')
+        CALL U2MESK('F','ELEMENTS3_17',1,PHENOM)
       END IF
 
 C======================================
@@ -491,7 +488,7 @@ C ---  RIGIDITE MEMBRANAIRE :
 C      --------------------
         CALL ELREF4(' ','MASS',NDIM2,NNO2,NNOS2,NPG2,
      &                   IPOIDS,IVF,IDFDE,JGANO2)
- 
+
 C ---  BOUCLE SUR LES POINTS D'INTEGRATION :
 C      -----------------------------------
         DO 180 KP = 1,NPG2

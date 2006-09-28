@@ -22,7 +22,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(NTYELE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,12 +131,12 @@ C
         NOMGD = ZK8(JCESK-1+2)
         CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
         IF (TSCA.NE.'R') THEN
-          CALL UTMESS('F','IRGMCE','ON IMPRIME QUE DES CHAMPS REELS')
+          CALL U2MESS('F','ALGORITH2_63')
         END IF
 
         TYPE = ZK8(JCESK-1+3)
         IF (TYPE(1:4).NE.'ELNO') THEN
-          CALL UTMESS('F','IRGMCE','ON IMPRIME QUE DES CHAMPS ELNO')
+          CALL U2MESS('F','PREPOST2_52')
         END IF
 
         IF (IOR.EQ.1) THEN
@@ -165,7 +165,7 @@ C
    50     CONTINUE
         ELSE
           IF (ZI(ZI(JTABD+IOR-1)-1+2).NE.NBCMP) THEN
-            CALL UTMESS('F','IRGMCE','NBCMP DIFFERENT')
+            CALL U2MESS('F','PREPOST2_53')
           END IF
         END IF
 
@@ -206,7 +206,7 @@ C     *************************************************
             END IF
    70     CONTINUE
           K8B = NOMCMP(K)
-          CALL UTMESS('F','IRGNCE','COMPOSANTE INCONNUE'//K8B)
+          CALL U2MESK('F','PREPOST2_54',1,K8B)
    80     CONTINUE
         ELSE
           ICMP = K
@@ -294,9 +294,7 @@ C
 C ----- ECRITURE DE L'ENTETE DE View
 C       ****************************
          IF (VERSIO.EQ.2) THEN
-            CALL UTMESS('A','IMPR_RESU','ATTENTION, IL FAUT SPECIFIER '
-     &     //'LES NOMS DES COMPOSANTES DU TENSEUR POUR POUVOIR LES '
-     &     //'VISUALISER SEPAREMENT AVEC GMSH')
+            CALL U2MESS('A','PREPOST2_55')
          ENDIF
          NOCMP = 'TENSEUR'
          CALL IRGMPV(IFI,LRESU,NOMCON,CHAMSY,NBORD2,PARA,NOCMP,NBEL2,

@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,8 +147,7 @@ C EST-ON DANS UN CALCUL DE SECHAGE ?
       IF (EVOLSC(1:1).NE.' ') THEN
         LSECHA = .TRUE.
         IF (NBPASE.GT.0) THEN
-          CALL UTMESS('F',NOMPRO,
-     &                'OPTION SENSIBILITE NON DEVELOPPEE EN SECHAGE')
+          CALL U2MESS('F','ALGORITH9_67')
         END IF
       ELSE
         LSECHA = .FALSE.
@@ -304,9 +303,7 @@ C POUR DECLENCHER L'ASSEMBLAGE MATRICE POUR LA PROCHAINE SENSIBILITE
                 CALL UTFINM()
                 GO TO 40
               ELSE IF (TYPESE.EQ.-1) THEN
-                CALL UTMESS('F',NOMPRO,'OPTION SENSIBILITE '//
-     &                     'LAGRANGIENNE NON DEVELOPPEE EN NON LINEAIRE'
-     &                      )
+                CALL U2MESS('F','ALGORITH9_68')
               END IF
             ELSE IF (NRORES.EQ.0) THEN
 C CALCUL STD
@@ -344,9 +341,7 @@ C     LOIS SECH_GRANGER ET SECH_NAPPE
                     CALL UTFINM()
                   END IF
                 ELSE
-                  CALL UTMESS('F',NOMPRO,' LE CONCEPT EVOL_THER : '//
-     &                        EVOLSC//
-     &                        ' NE CONTIENT AUCUN CHAMP DE TEMPERATURE')
+                  CALL U2MESK('F','ALGORITH8_99',1,EVOLSC)
                 END IF
               END IF
             END IF

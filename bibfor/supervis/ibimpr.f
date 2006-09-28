@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     DEFINITION DES UNITES LOGIQUES DES IMPRESSIONS
 C     ------------------------------------------------------------------
@@ -38,13 +38,13 @@ C     ------------------------------------------------------------------
       CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
       INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
       DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
-     +                      'ERREUR'  ,  'MED'      /
+     &                      'ERREUR'  ,  'MED'      /
       DATA          UNITPR /    0     ,      6      ,     8     ,
-     +                          9     ,    80       /
+     &                          9     ,    80       /
       DATA          TYPPR /    'A'    ,    'A'      ,    'A'    ,
-     +                         'A'    ,    'B'      /
+     &                         'A'    ,    'B'      /
       DATA          AUTPR /    'N'    ,    'N'      ,    'O'    ,
-     +                         'N'    ,    'O'      /
+     &                         'N'    ,    'O'      /
       DATA          PASSE  /    0     /
 C     ------------------------------------------------------------------
       IER = 0
@@ -75,8 +75,7 @@ C
          CALL GETVTX(MOTFAC,'FICHIER' ,IOCC,IUN,MXIMPR,PRNOM,NBNOM)
          IF ( NBNOM.LT.0 ) THEN
             IER = IER + 1
-          CALL UTMESS('F','IBIMPR','TROP DE NOMS DEFINIS DANS LA LISTE'
-     +                            //' ARGUMENT DE "FICHIER"')
+          CALL U2MESS('F','SUPERVIS_29')
          ENDIF
          DO 15 INOM = 1, NBNOM
             CALL LXCAPS( PRNOM(INOM) )
@@ -85,15 +84,13 @@ C
             IF (PLACE.EQ.0) THEN
                IER = IER + 1
                CALL UTDEBM('E','IBIMPR','NOM SYMBOLIQUE ERRONE '//
-     +                         'POUR UN FICHIER DE SORTIE.')
-     +
+     &                         'POUR UN FICHIER DE SORTIE.')
                CALL UTIMPK('L','VALEUR LUE',1,PRNOM(INOM))
                CALL UTIMPK('L','VALEURS ATTENDUES',MXIMPR,NOMPR)
                CALL UTFINM()
             ELSEIF ( PRESPR(PLACE) .NE. 0 ) THEN
                IER = IER + 1
-               CALL UTMESS('E','IBIMPR',
-     +                          PRNOM(INOM)//' EST DEJA (RE-) DEFINI')
+               CALL U2MESK('E','SUPERVIS_30',1,PRNOM(INOM))
                PRNOM(INOM) = '::'
             ELSE
                PRESPR(PLACE) = 1

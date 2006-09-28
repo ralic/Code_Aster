@@ -4,22 +4,22 @@
       CHARACTER*16        TYPFON
       INTEGER              NBNOFO,ILEV
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/09/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     OPERATEUR DEFI_FOND_FISS : RECUPERTAION DES NOEUDS DES LEVRES
@@ -67,13 +67,13 @@ C                        LE MAILLAGE, LE FOND
 C     ------------------------------------------------------------------
 
       CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMA , N1 )
-      
+
       CALL GETVR8 ( ' ', 'PREC_NORM', 1,1,1, PRECN, N1 )
 
       CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', IDCOOR )
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOE,K8B,IRET)
       NOMNOE = NOMA//'.NOMNOE'
-      
+
       IF (ILEV.EQ.0) THEN
         FONNOE =RESU//'.FOND      .NOEU'
         CALL JEVEUO ( FONNOE, 'L', JNOFO )
@@ -83,7 +83,7 @@ C     ------------------------------------------------------------------
         FONNOE =RESU//'.FOND_SUP  .NOEU'
         CALL JEVEUO ( FONNOE, 'L', JNOFOS )
       ENDIF
-    
+
 
 C     ------------------------------------------------------------------
 C                  VECTEUR RESULTAT
@@ -121,7 +121,7 @@ C     ------------------------------------------------------------------
          TGEX(2) = ZR(JTGEX+1)
          TGEX(3) = ZR(JTGEX+2)
       ENDIF
-C 
+C
 C ------ CAS DU FOND_FERME: LE PREMIER ET LE DERNIER NOEUD SONT
 C                           IDENTIQUES
       IF ( TYPFON .EQ. 'FOND_FERME') THEN
@@ -143,10 +143,10 @@ C     ------------------------------------------------------------------
       CALL WKVECT ( '&&GNORMF_MAILLE_LEV_SUP', 'V V I', NBMA, JLIMA )
       DO 10 IM = 1 , NBMA
          CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JSUP+IM-1)),
-     +                                                 ZI(JLIMA+IM-1) )
+     &                                                 ZI(JLIMA+IM-1) )
  10   CONTINUE
       CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), NBMA,
-     +                           ZI(JNOLS), NBNOLS, 'TOUS' )
+     &                           ZI(JNOLS), NBNOLS, 'TOUS' )
 
       CALL WKVECT ('&&PKFOND_COOR_LEV_SUP', 'V V R', 3*NBNOLS, JCOORS )
       DO 11 IN = 1 , NBNOLS
@@ -154,7 +154,7 @@ C     ------------------------------------------------------------------
          ZR(JCOORS-1+3*(IN-1)+2) = ZR(IDCOOR-1+3*(ZI(JNOLS+IN-1)-1)+2)
          ZR(JCOORS-1+3*(IN-1)+3) = ZR(IDCOOR-1+3*(ZI(JNOLS+IN-1)-1)+3)
  11   CONTINUE
- 
+
       CALL JEDETR ( '&&GNORMF_TRAV' )
 
 C     ------------------------------------------------------------------
@@ -170,10 +170,10 @@ C     ------------------------------------------------------------------
         CALL WKVECT ( '&&PKFOND_MAILLE_LEV_INF', 'V V I', NBMA,JLIMA)
         DO 20 IM = 1 , NBMA
          CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JINF+IM-1)),
-     +                                                 ZI(JLIMA+IM-1) )
+     &                                                 ZI(JLIMA+IM-1) )
  20     CONTINUE
         CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), NBMA,
-     +                           ZI(JNOLI), NBNOLI, 'TOUS' )
+     &                           ZI(JNOLI), NBNOLI, 'TOUS' )
 
         CALL WKVECT ('&&PKFOND_COOR_LEV_INF', 'V V R', 3*NBNOLI,JCOORI)
         DO 21 IN = 1 , NBNOLI
@@ -317,14 +317,14 @@ C        DEFINISSANT LA LEVRE INFERIEURE - SAUVEGARDE
          IF(ISYM.NE.0) THEN
            CALL WKVECT ( '&&PKFOND_INTERS_INF', 'V V I', NBNOE, JINTI )
            CALL CGNOP0 ( NBNOLI, ZR(JCOORI), X0, VECNOR, PREC, NBTRLI,
-     +                 ZI(JINTI))
-           IF ( NBTRLI .LE. 2 ) THEN 
+     &                 ZI(JINTI))
+           IF ( NBTRLI .LE. 2 ) THEN
              CALL JEDETR ( '&&PKFOND_INTERS_INF' )
              GOTO 200
            ENDIF
            CALL WKVECT ( '&&PKFOND_TRAV_INF', 'V V I', NBTRLI, JTI )
-         
-C ---- ORDRE DES NOEUDS         
+
+C ---- ORDRE DES NOEUDS
            NUMFIN = NUMORI
            DMAX = 0.D0
            DMIN = 100.D0
@@ -334,9 +334,9 @@ C ---- ORDRE DES NOEUDS
            X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
            Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
            Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
-C 
+C
 C identification noeuds sur bon cote de la levre (cas fond ferme)
-C a partir du noeud le plus proche du fond           
+C a partir du noeud le plus proche du fond
            DO 310 IN = 1 , NBTRLI
              INO = JNOLI+ZI(JINTI+IN-1)-1
              IF ( ZI(INO) .EQ. NUMORI ) GOTO 310
@@ -372,14 +372,14 @@ C a partir du noeud le plus proche du fond
                ENDIF
              ENDIF
 320        CONTINUE
-           
+
            PRECO = PREC*10
-           CALL OREINO ( NOMA, ZI(JTI), NBI, NUMORI, 
-     +             NUMFIN,ZR(IDCOOR),CRITN,PRECO,IERA,IRET)
+           CALL OREINO ( NOMA, ZI(JTI), NBI, NUMORI,
+     &             NUMFIN,ZR(IDCOOR),CRITN,PRECO,IERA,IRET)
 
            DO 330 IN = 1 , MIN(NBI,20)
              CALL JENUNO(JEXNUM(NOMNOE,ZI(JTI+IN-1)),
-     +                          ZK8(KNOLI+20*(INF-1)+IN-1))
+     &                          ZK8(KNOLI+20*(INF-1)+IN-1))
  330       CONTINUE
 
            CALL JEDETR ( '&&PKFOND_INTERS_INF' )
@@ -391,14 +391,14 @@ C        DEFINISSANT LA LEVRE SUPERIEURE - SAUVEGARDE
 
          CALL WKVECT ( '&&PKFOND_INTERS_SUP', 'V V I', NBNOE, JINTS )
          CALL CGNOP0 ( NBNOLS, ZR(JCOORS), X0, VECNOR, PREC, NBTRLS,
-     +                 ZI(JINTS))
-         IF ( NBTRLS .LE. 2 ) THEN 
+     &                 ZI(JINTS))
+         IF ( NBTRLS .LE. 2 ) THEN
            CALL JEDETR ( '&&PKFOND_INTERS_SUP' )
            GOTO 200
          ENDIF
          CALL WKVECT ( '&&PKFOND_TRAV_SUP', 'V V I', NBTRLS, JTS )
-         
-C ---- ORDRE DES NOEUDS                  
+
+C ---- ORDRE DES NOEUDS
          IF (ILEV.NE.0) THEN
            CALL JENONU(JEXNOM(NOMNOE,ZK8(JNOFOS+INF-1)), NUMORI )
          ENDIF
@@ -411,9 +411,9 @@ C ---- ORDRE DES NOEUDS
          X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
          Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
          Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
-C 
+C
 C identification noeuds sur bon cote de la levre (cas fond ferme)
-C a partir du noeud le plus proche du fond           
+C a partir du noeud le plus proche du fond
          DO 210 IN = 1 , NBTRLS
            INO = JNOLS+ZI(JINTS+IN-1)-1
            IF ( ZI(INO) .EQ. NUMORI ) GOTO 210
@@ -450,12 +450,12 @@ C a partir du noeud le plus proche du fond
            ENDIF
 220      CONTINUE
          PRECO = PREC*10
-         CALL OREINO ( NOMA, ZI(JTS), NBS, NUMORI, 
-     +             NUMFIN,ZR(IDCOOR),CRITN,PRECO,IERA,IRET)
+         CALL OREINO ( NOMA, ZI(JTS), NBS, NUMORI,
+     &             NUMFIN,ZR(IDCOOR),CRITN,PRECO,IERA,IRET)
 
          DO 230 IN = 1 , MIN(NBS,20)
            CALL JENUNO(JEXNUM(NOMNOE,ZI(JTS+IN-1)),
-     +                          ZK8(KNOLS+20*(INF-1)+IN-1))
+     &                          ZK8(KNOLS+20*(INF-1)+IN-1))
 230      CONTINUE
 
          CALL JEDETR ( '&&PKFOND_INTERS_SUP' )

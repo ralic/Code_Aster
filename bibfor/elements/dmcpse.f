@@ -1,21 +1,21 @@
       SUBROUTINE DMCPSE(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
 C      DMCPSE --   CALCUL DE LA MATRICE DE HOOKE POUR LES ELEMENTS
@@ -101,8 +101,7 @@ C ---- RECUPERATION DU MATERIAU DERIVE SI SENSIBILITE
 C      ----------------------------------------------
       CALL JEVECH('PMATSEN','L',IMATSE)
       CALL RCCOMA(ZI(IMATSE),'ELAS',PHESEN,CODRET)
-      IF (PHESEN.NE.PHENOM) CALL UTMESS('F','DMCPSE',
-     &                             '! PB PHESEN.NE.PHENOM !')
+      IF (PHESEN.NE.PHENOM) CALL U2MESS('F','ELEMENTS_38')
 
 C      ------------
 C ---- CAS ISOTROPE
@@ -216,14 +215,14 @@ C --------- SENSIBILITE PAR RAPPORT A G12
          END IF
 
         IF (TETYPS.EQ.1) THEN
-          DORTH(1,1) =  -(E1**2/(E1 - E2*NU12**2)**2) + 
-     -                   (2*E1)/(E1 - E2*NU12**2)
+          DORTH(1,1) =  -(E1**2/(E1 - E2*NU12**2)**2) +
+     &                   (2*E1)/(E1 - E2*NU12**2)
 
-          DORTH(1,2) = -((E1*E2*NU12)/(E1 - E2*NU12**2)**2) + 
-     -                   (E2*NU12)/(E1 - E2*NU12**2)
+          DORTH(1,2) = -((E1*E2*NU12)/(E1 - E2*NU12**2)**2) +
+     &                   (E2*NU12)/(E1 - E2*NU12**2)
 
-          DORTH(2,2) = -((E1*E2)/(E1 - E2*NU12**2)**2) + 
-     -                    E2/(E1 - E2*NU12**2)
+          DORTH(2,2) = -((E1*E2)/(E1 - E2*NU12**2)**2) +
+     &                    E2/(E1 - E2*NU12**2)
 
           DORTH(2,1) = DORTH(1,2)
 
@@ -232,11 +231,11 @@ C --------- SENSIBILITE PAR RAPPORT A G12
         ELSE IF (TETYPS.EQ.2) THEN
           DORTH(1,1) = (E1**2*NU12**2)/(E1 - E2*NU12**2)**2
 
-          DORTH(1,2) = (E1*E2*NU12**3)/(E1 - E2*NU12**2)**2 + 
-     -                 (E1*NU12)/(E1 - E2*NU12**2)
+          DORTH(1,2) = (E1*E2*NU12**3)/(E1 - E2*NU12**2)**2 +
+     &                 (E1*NU12)/(E1 - E2*NU12**2)
 
-          DORTH(2,2) = (E1*E2*NU12**2)/(E1 - E2*NU12**2)**2 + 
-     -                  E1/(E1 - E2*NU12**2)
+          DORTH(2,2) = (E1*E2*NU12**2)/(E1 - E2*NU12**2)**2 +
+     &                  E1/(E1 - E2*NU12**2)
 
           DORTH(2,1) = DORTH(1,2)
 
@@ -245,8 +244,8 @@ C --------- SENSIBILITE PAR RAPPORT A G12
         ELSE IF (TETYPS.EQ.3) THEN
           DORTH(1,1) = (2*E1**2*E2*NU12)/(E1 - E2*NU12**2)**2
 
-          DORTH(1,2) = (2*E1*E2**2*NU12**2)/(E1 - E2*NU12**2)**2 + 
-     -                 (E1*E2)/(E1 - E2*NU12**2)
+          DORTH(1,2) = (2*E1*E2**2*NU12**2)/(E1 - E2*NU12**2)**2 +
+     &                 (E1*E2)/(E1 - E2*NU12**2)
 
           DORTH(2,2) = (2*E1*E2**2*NU12)/(E1 - E2*NU12**2)**2
 
@@ -281,8 +280,7 @@ C        ----------------------------------
    30       CONTINUE
    40     CONTINUE
         ELSE
-          CALL UTMESS('F','DMCPSE','IREP (INDICATEUR DE CHANGEMENT'//
-     &                ' DE REPERE) DOIT ETRE EGAL A 0 OU 1 ')
+          CALL U2MESS('F','ELEMENTS_22')
         END IF
 
 
@@ -346,9 +344,7 @@ C --------- SENSIBILITE PAR RAPPORT A NU
         END IF
 
       ELSE
-        CALL UTMESS('F','DMCPSE','LA NATURE DU MATERIAU '//PHENOM//
-     &              ' N''EST PAS TRAITEE, SEULES SONT CONSIDEREES '//
-     &              'LES NATURES : ELAS, ELAS_ISTR, ELAS_ORTH .')
+        CALL U2MESK('F','ELEMENTS_15',1,PHENOM)
       END IF
 C.============================ FIN DE LA ROUTINE ======================
  9999 CONTINUE

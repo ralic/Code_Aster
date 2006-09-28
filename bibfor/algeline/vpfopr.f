@@ -1,24 +1,24 @@
       SUBROUTINE VPFOPR( OPTION, TYPRES, LMASSE, LRAIDE, LDYNAM, OMEMIN,
-     +                   OMEMAX, OMESHI, NBFREQ , NPIVOT, OMECOR,
-     +                   PRECDC, NPREC, NBRSSA, NBLAGR)
+     &                   OMEMAX, OMESHI, NBFREQ , NPIVOT, OMECOR,
+     &                   PRECDC, NPREC, NBRSSA, NBLAGR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/02/2001   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     DETERMINATION D'UN SHIFT ET CALCUL DE LA MATRICE SHIFTEE
 C     TROIS OPTIONS SONT POSSIBLES :
@@ -28,7 +28,7 @@ C       3) CALCUL DE TOUTES LES FREQUENCES DANS UNE BANDE DONNEE
 C     ------------------------------------------------------------------
 C IN  OPTION  : TX : CHOIX DE L'OPTION (PLUS_PETITE, CENTRE, BANDE)
 C IN  TYPRES  : TX : TYPE DU CALCUL (DYNAMIQUE OU FLAMBEMENT)
-C IN  LMASSE  : IS : DESCRIPTEUR DE LA MATRICE SECOND MEMBRE 
+C IN  LMASSE  : IS : DESCRIPTEUR DE LA MATRICE SECOND MEMBRE
 C IN  LRAIDE  : IS : DESCRIPTEUR DE LA MATRICE PREMIER MEMBRE
 C IN/OUT LDYNAM :IS : POINTEUR SUR LA FACTORISEE DE LA MATRICE DYNAMIQUE
 C                    INDUITE PAR L'OPTION
@@ -37,7 +37,7 @@ C                      OU VALEUR DE DEPART POUR LES AUTRES OPTIONS
 C IN/OUT OMEMAX : R8 : VALEUR SUPERIEURE DE LA BANDE DE RECHERCHE
 C    OUT OMESHI : R8 : VALEUR DU SHIFT  DE LA MATRICE DE TRAVAIL
 C    OUT NBFREQ : IS : NOMBRE DE FREQUENCES DANS LA BANDE
-C    OUT NPIVOT : IS : NOMBRE DE PIVOTS NEGATIFS DE LA MATRICE DE 
+C    OUT NPIVOT : IS : NOMBRE DE PIVOTS NEGATIFS DE LA MATRICE DE
 C                      TRAVAIL FACTORISEE
 C IN  OMECOR : R8 : VALEUR DE LA PULSATION AU CARRE DEFINISSANT LES
 C                   MODES DE CORPS RIGIDE
@@ -64,7 +64,7 @@ C PARAMETRES D'APPEL
       INTEGER                    LMASSE, LRAIDE, LDYNAM, NPREC,  NBRSSA
       REAL*8                     OMEMIN, OMEMAX, OMESHI, OMECOR, PRECDC
       INTEGER                    NBFREQ, NPIVOT, NIV,    IFM,    NBLAGR
-      
+
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
@@ -105,7 +105,7 @@ C     ------------------------------------------------------------------
  10      CONTINUE
 
          CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,
-     +               IDET,NPIVOT,IER)
+     &               IDET,NPIVOT,IER)
          IF (IER .NE. 0 ) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = OMECOR
@@ -127,13 +127,9 @@ C     ------------------------------------------------------------------
             IF (NBESSA .LE. NBRSSA) THEN
                GOTO 10
             ELSE
-               CALL UTMESS('F','VPFOPR.03',
-     +              'LA MATRICE DE RAIDEUR EST NUMERIQUEMENT '//
-     +              'SINGULIERE (MALGRE LA STRATEGIE DE DECALAGE'//
-     +              ') LA VALEUR DE DECALAGE EST UNE '//
-     +              'VALEUR PROPRE OU LA MATRICE EST NON INVERSIBLE.')
+               CALL U2MESS('F','ALGELINE3_65')
                CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,IDET,
-     +                     NPIVOT,IER)
+     &                     NPIVOT,IER)
             ENDIF
          ENDIF
          OMESHI = OMGSHI
@@ -157,7 +153,7 @@ C     ------------------------------------------------------------------
  21      CONTINUE
 
          CALL VPSTUR( LRAIDE,OMGMIN,LMASSE,LDYNAM,NPREC,DET,
-     +                IDET,NBFMIN,IER)
+     &                IDET,NBFMIN,IER)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGMIN) .LT. OMECOR) THEN
                OMGMIN = - OMECOR
@@ -178,23 +174,19 @@ C     ------------------------------------------------------------------
             IF (NBESSA .LE. NBRSSA) THEN
                GOTO 21
             ELSE
-               CALL UTMESS('A','VPFOPR.07',
-     +              'LA MATRICE DE RAIDEUR EST NUMERIQUEMENT '//
-     +              'SINGULIERE (MALGRE LA STRATEGIE DE DECALAGE'//
-     +              ') LA BORNE MINIMALE DE LA BANDE EST UNE '//
-     +              'VALEUR PROPRE. ON POURSUIT TOUT DE MEME')
+               CALL U2MESS('A','ALGELINE3_66')
                CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,NPREC,DET,IDET,
-     +                     NBFMIN,IER)
+     &                     NBFMIN,IER)
             ENDIF
          ENDIF
-         OMEMIN = OMGMIN 
+         OMEMIN = OMGMIN
          OMGMAX = OMEMAX
          NBESSA = 0
 
  22      CONTINUE
 
          CALL VPSTUR( LRAIDE,OMGMAX,LMASSE,LDYNAM,NPREC,DET,
-     +                IDET,NBFMAX,IER)
+     &                IDET,NBFMAX,IER)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGMAX) .LT. OMECOR) THEN
                OMGMAX = OMECOR
@@ -215,19 +207,15 @@ C     ------------------------------------------------------------------
             IF (NBESSA .LE. NBRSSA) THEN
                GOTO 22
             ELSE
-               CALL UTMESS('A','VPFOPR.10',
-     +              'LA MATRICE DE RAIDEUR EST NUMERIQUEMENT '//
-     +              'SINGULIERE (MALGRE LA STRATEGIE DE DECALAGE'//
-     +              ') LA BORNE MAXIMALE DE LA BANDE EST UNE '//
-     +             'VALEUR PROPRE. ON POURSUIT TOUT DE MEME')
+               CALL U2MESS('A','ALGELINE3_67')
                CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,NPREC,DET,IDET,
-     +                    NBFMAX,IER)
+     &                    NBFMAX,IER)
             ENDIF
          ENDIF
-         OMEMAX = OMGMAX  
+         OMEMAX = OMGMAX
 
            CALL VPECST(IFM,TYPRES,OMGMIN,OMGMAX,NBFMIN,NBFMAX,
-     +                 NBFREQ,NBLAGR)
+     &                 NBFREQ,NBLAGR)
 
 C        --- CENTRAGE DE L INTERVALLE ---
 
@@ -237,7 +225,7 @@ C        --- CENTRAGE DE L INTERVALLE ---
  23      CONTINUE
 
          CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,
-     +               IDET,NPIVOT,IER)
+     &               IDET,NPIVOT,IER)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = OMECOR
@@ -258,18 +246,14 @@ C        --- CENTRAGE DE L INTERVALLE ---
             IF (NBESSA .LE. NBRSSA) THEN
                GOTO 23
             ELSE
-               CALL UTMESS('F','VPFOPR.13',
-     +           'LA MATRICE DE RAIDEUR EST NUMERIQUEMENT '//
-     +           'SINGULIERE (MALGRE LA STRATEGIE DE DECALAGE'//
-     +           ') LA VALEUR DE DECALAGE EST UNE '//
-     +           'VALEUR PROPRE OU LA MATRICE EST NON INVERSIBLE.')
+               CALL U2MESS('F','ALGELINE3_65')
                CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,IDET,
-     +                     NPIVOT,IER)
+     &                     NPIVOT,IER)
             ENDIF
          ENDIF
          OMESHI = OMGSHI
          IF (NIV .GE. 1) THEN
-            IF (TYPRES .EQ. 'DYNAMIQUE') THEN 
+            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
                WRITE(IFM,2200) FREQOM(OMGMIN)
                WRITE(IFM,2300) FREQOM(OMGMAX)
                WRITE(IFM,1000) FREQOM(OMESHI)
@@ -292,7 +276,7 @@ C     ------------------------------------------------------------------
  30      CONTINUE
 
          CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,
-     +               IDET,NPIVOT,IER)
+     &               IDET,NPIVOT,IER)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = - OMECOR
@@ -313,13 +297,9 @@ C     ------------------------------------------------------------------
             IF (NBESSA .LE. NBRSSA) THEN
                GOTO 30
             ELSE
-               CALL UTMESS('F','VPFOPR.16',
-     +              'LA MATRICE DE RAIDEUR EST SINGULIERE '//
-     +              'MALGRE LA STRATEGIE DE DECALAGE ' //
-     +              '(IE STRUCTURE AVEC DES MODES DE CORPS '//
-     +              'SOLIDE). ')
+               CALL U2MESS('F','ALGELINE3_68')
                CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,IDET,
-     +                     NPIVOT,IER)
+     &                     NPIVOT,IER)
             ENDIF
          ENDIF
          OMESHI = OMGSHI
@@ -327,8 +307,8 @@ C     ------------------------------------------------------------------
             IF (TYPRES .EQ. 'DYNAMIQUE') THEN
               WRITE(IFM,1000) FREQOM(OMESHI)
             ELSE
-              WRITE(IFM,1001) OMESHI  
-            ENDIF          
+              WRITE(IFM,1001) OMESHI
+            ENDIF
          ENDIF
 
 C     ------------------------------------------------------------------
@@ -337,7 +317,7 @@ C     ------------------------------------------------------------------
 
       ELSE
          CH16 = OPTION
-         CALL UTMESS('F','VPFOPR.17','OPTION '//CH16//'NON RECONNUE.')
+         CALL U2MESK('F','ALGELINE3_69',1,CH16)
       ENDIF
 
       IF (NIV .GE. 1) THEN
@@ -351,29 +331,29 @@ C     -----------------------------FORMAT------------------------------
  1100 FORMAT (7X)
  1200 FORMAT (72('-'),/)
  1300 FORMAT('LA VALEUR DE DECALAGE (OMEGA2)EST INFERIEURE A LA VALEUR '
-     +      ,'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT:',1X,1PE12.5)
+     &      ,'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT:',1X,1PE12.5)
  1400 FORMAT('ON AUGMENTE LA VALEUR DE DECALAGE DE: ',1PE12.5,
-     +       'POUR CENT')
+     &       'POUR CENT')
  1500 FORMAT('LA VALEUR CENTRALE DEVIENT: ',1PE12.5)
  1600 FORMAT('LA VALEUR MINIMALE EST INFERIEURE A LA VALEUR ',
-     +       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
+     &       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
  1700 FORMAT('ON DIMINUE LA VALEUR MINIMALE DE: ',1PE12.5,' POURCENT',/,
-     +        'LA VALEUR MINIMALE DEVIENT: ',6X,1PE12.5)
+     &        'LA VALEUR MINIMALE DEVIENT: ',6X,1PE12.5)
  1800 FORMAT('LA VALEUR MAXIMALE EST INFERIEURE A LA VALEUR ',
-     +       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
+     &       'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
  1900 FORMAT('ON AUGMENTE LA VALEUR MAXIMALE DE: ',1PE12.5,' POURCENT',/
-     +       ,'LA VALEUR MAXIMALE DEVIENT:',8X,1PE12.5,/)
+     &       ,'LA VALEUR MAXIMALE DEVIENT:',8X,1PE12.5,/)
  2000 FORMAT('LA VALEUR DE DECALAGE EST INFERIEURE A LA VALEUR ',
-     +       ' DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
+     &       ' DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT: ',1PE12.5)
  2100 FORMAT('ON MODIFIE LA VALEUR DE DECALAGE DE: ',1PE12.5,
-     +      'POURCENT',/,'LA VALEUR DE DECALAGE DEVIENT: ',1PE12.5)
+     &      'POURCENT',/,'LA VALEUR DE DECALAGE DEVIENT: ',1PE12.5)
  2200 FORMAT('VALEUR_MIN EN FREQUENCE EST :   ',1PE12.5)
  2300 FORMAT('VALEUR_MAX EN FREQUENCE EST :   ',1PE12.5)
 
  2201 FORMAT('VALEUR_MIN EN CHARGE CRITIQUE EST :   ',1PE12.5)
  2301 FORMAT('VALEUR_MAX EN CHARGE CRITIQUE EST :   ',1PE12.5)
  2400 FORMAT('ON DIMINUE LA VALEUR DE DECALAGE DE: ',1PE12.5,
-     +       ' POURCENT',/, 'ELLE DEVIENT: ',26X,1PE12.5)
+     &       ' POURCENT',/, 'ELLE DEVIENT: ',26X,1PE12.5)
 C     ------------------------------------------------------------------
 
       END

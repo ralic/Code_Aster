@@ -5,22 +5,22 @@
       CHARACTER*24      TMP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/07/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C       AFFECTATION DES CARACTERISTIQUES GENERALES CALCULEES
@@ -59,21 +59,16 @@ C
       CALL JEMARQ()
       PI  = R8PI()
 C
-      
+
       IF (.NOT.( NEL.EQ.NTEL(1) .OR. NEL.EQ.NTEL(4) .OR. NEL.EQ.NTEL(2)
      &    .OR.NEL.EQ.NTEL(3).OR.NEL.EQ.NTEL(5) .OR. NEL.EQ.NTEL(6).OR.
      &      NEL.EQ.NTEL(12).OR.NEL.EQ.NTEL(13).OR.
      &    NEL.EQ.NTEL(9).OR.NEL.EQ.NTEL(10).OR.NEL.EQ.NTEL(11).OR.
-     &    NEL.EQ.NTEL(7).OR.NEL.EQ.NTEL(8))) THEN 
-     
-        CALL UTMESS('F','AFFGEN',
-     &            'SECTION CIRCULAIRE/RECTANGULAIRE NON'//
-     &            ' SUPPORTEE PAR POUTRE/TUYAU/FAISCEAU')
-     
+     &    NEL.EQ.NTEL(7).OR.NEL.EQ.NTEL(8))) THEN
+        CALL U2MESS('F','MODELISA_86')
       ENDIF
-     
 
-           
+
       CALL JEVEUO(JEXNOM(TMP,NOM),'E',JDGE)
       ISEC = NINT(ZR(JDGE+35))
 
@@ -139,7 +134,7 @@ C  AY
                IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+2) = 1.2D0
                IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+2) = 1.2D0
                IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+2) = 0.D0
-               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+2) = 1.2D0 
+               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+2) = 1.2D0
 C  AZ
                IF (NEL.EQ.NTEL(1)) ZR(JDGE+IGEN+3) = 1.2D0
                IF (NEL.EQ.NTEL(2)) ZR(JDGE+IGEN+3) = 0.D0
@@ -148,7 +143,7 @@ C  AZ
                IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+3) = 1.2D0
                IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+3) = 1.2D0
                IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+3) = 0.D0
-               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+3) = 1.2D0 
+               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+3) = 1.2D0
 C  JX
                ZR(JDGE+IGEN+6) = JX
 C  RT
@@ -170,7 +165,7 @@ C  AY
                IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+2) = 1.5D0
                IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+2) = 1.5D0
                IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+2) = 0.D0
-               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+2) = 1.5D0 
+               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+2) = 1.5D0
 C  AZ
                IF (NEL.EQ.NTEL(1)) ZR(JDGE+IGEN+3) = 1.5D0
                IF (NEL.EQ.NTEL(2)) ZR(JDGE+IGEN+3) = 0.D0
@@ -179,8 +174,8 @@ C  AZ
                IF (NEL.EQ.NTEL(5)) ZR(JDGE+IGEN+3) = 1.5D0
                IF (NEL.EQ.NTEL(6)) ZR(JDGE+IGEN+3) = 1.5D0
                IF (NEL.EQ.NTEL(12)) ZR(JDGE+IGEN+3) = 0.D0
-               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+3) = 1.5D0 
-            
+               IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+3) = 1.5D0
+
 C  JX
                ZR(JDGE+IGEN+6) = JX
 C  RT. TUBE RECTANGULAIRE MINCE D'EPAISSEUR CONSTANTE. RT=JX/2.E.AINT
@@ -190,13 +185,13 @@ C  AI
                ZR(JDGE+IGEN2-1)  = HYI * HZI
 C
             ENDIF
-C AY/AZ POUR TUYAUX ET 3D_FAISCEAU               
+C AY/AZ POUR TUYAUX ET 3D_FAISCEAU
             IF (NEL.EQ.NTEL(9).OR.NEL.EQ.NTEL(10).OR.
      &          NEL.EQ.NTEL(11).OR.NEL.EQ.NTEL(7)
      &          .OR.NEL.EQ.NTEL(8)) THEN
               ZR(JDGE+IGEN+2) = 0.D0
               ZR(JDGE+IGEN+3) = 0.D0
-            ENDIF                
+            ENDIF
 C
  10      CONTINUE
 C  JG1,JG2,IYR21,IYR22,IZR21,IZR22 :
@@ -272,10 +267,10 @@ C -         A PAROI EPAISSE
                     ZR(JDGE+IGEN+2) = - .905D0  * RIRE**3
      &                                + 1.156D0 * RIRE**2
      &                                + .634D0  * RIRE
-     &                                + 1.093D0 
-                  ENDIF                  
+     &                                + 1.093D0
+                  ENDIF
 C -         A PAROI FINE
-               ELSE              
+               ELSE
                   IF (NEL.EQ.NTEL(1)) ZR(JDGE+IGEN+2) = 2.D0
                   IF (NEL.EQ.NTEL(2)) ZR(JDGE+IGEN+2) = 0.D0
                   IF (NEL.EQ.NTEL(3)) ZR(JDGE+IGEN+2) = 2.D0
@@ -298,13 +293,13 @@ C  AZ
             IF (NEL.EQ.NTEL(13)) ZR(JDGE+IGEN+3) = ZR(JDGE+IGEN+2)
 C  AI
             ZR(JDGE+IGEN2-1) = PI * RI * RI
-C AY/AZ POUR TUYAUX ET 3D_FAISCEAU               
+C AY/AZ POUR TUYAUX ET 3D_FAISCEAU
             IF (NEL.EQ.NTEL(9).OR.NEL.EQ.NTEL(10).OR.
      &          NEL.EQ.NTEL(11).OR.NEL.EQ.NTEL(7)
      &          .OR.NEL.EQ.NTEL(8)) THEN
               ZR(JDGE+IGEN+2) = 0.D0
               ZR(JDGE+IGEN+3) = 0.D0
-            ENDIF           
+            ENDIF
 C
  20      CONTINUE
 C  JG1,JG2,IYR21,IYR22,IZR21,IZR22 :
@@ -312,7 +307,7 @@ C  JG1,JG2,IYR21,IYR22,IZR21,IZR22 :
            ZR(JDGE-1+38+I) = 0.D0
  21      CONTINUE
       ENDIF
- 
+
  9999 CONTINUE
       CALL JEDEMA()
       END

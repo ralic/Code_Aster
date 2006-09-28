@@ -1,29 +1,29 @@
       SUBROUTINE  BMATMC ( IGAU, NBSIG, MODELI, XYZ, IPOIDS, IVF, IDFDE,
-     +                     NNO, NHARM, JACOB, B )
+     &                     NNO, NHARM, JACOB, B )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C      BMATMC  -- CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS
 C                 DU PREMIER ORDRE AUX DEPLACEMENTS AU POINT
-C                 D'INTEGRATION D'INDICE IGAU 
+C                 D'INTEGRATION D'INDICE IGAU
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    IGAU           IN     I        INDICE DU POINT D'INTEGRATION
@@ -37,7 +37,7 @@ C    IDFDE          IN     I        PT DERIVEES DES FONCTIONS DE FORME
 C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
 C    NHARM          IN     R        NUMERO D'HARMONIQUE
 C    JACOB          OUT    R        PRODUIT POIDS*JACOBIEN
-C    B(NBSIG,1)     OUT    R        MATRICE (B) RELIANT LES 
+C    B(NBSIG,1)     OUT    R        MATRICE (B) RELIANT LES
 C                                   DEFORMATIONS DU PREMIER ORDRE
 C                                   AUX DEPLACEMENTS AU POINT
 C                                   D'INTEGRATION IGAU.
@@ -86,7 +86,7 @@ C ----    CALCUL DES DERIVEES DES FONCTIONS DE FORME SUR L'ELEMENT
 C ----    REEL ET DU PRODUIT JACOBIEN*POIDS (DANS JACOB)
 C         ----------------------------------------------
          CALL DFDM3D ( NNO, IGAU, IPOIDS, IDFDE,
-     +                 XYZ, DFDX, DFDY, DFDZ, JACOB )
+     &                 XYZ, DFDX, DFDY, DFDZ, JACOB )
 C
 C ----    AFFECTATION DE LA MATRICE (B)
 C         -----------------------------
@@ -140,7 +140,7 @@ C
           RAYON = ZERO
 C
           DO 40 I = 1, NNO
-             IDECNO = 2*(I-1) 
+             IDECNO = 2*(I-1)
              RAYON = RAYON + ZR(IVF+I+K-1)*XYZ(1+IDECNO)
   40      CONTINUE
 C
@@ -160,7 +160,7 @@ C
                  B3J(I) = ZR(IVF+I+K-1)/RAYON
  60           CONTINUE
           ENDIF
-C 
+C
 C ----    AFFECTATION DE LA MATRICE (B)
 C         -----------------------------
          DO 70 I = 1, NNO
@@ -184,7 +184,7 @@ C
           RAYON = ZERO
 C
           DO 80 I = 1, NNO
-             IDECNO = 2*(I-1) 
+             IDECNO = 2*(I-1)
              RAYON = RAYON + ZR(IVF+I+K-1)*XYZ(1+IDECNO)
   80      CONTINUE
 C
@@ -195,7 +195,7 @@ C         ----------------------------------------------
 C
          JACOB = JACOB*RAYON
          NHARAY = NHARM/RAYON
-C 
+C
 C ----    AFFECTATION DE LA MATRICE (B)
 C         -----------------------------
          DO 90 I = 1, NNO
@@ -215,8 +215,7 @@ C
 C
  90      CONTINUE
       ELSE
-         CALL UTMESS('F','BMATMC','LA MODELISATION : '//MODELI//
-     +               'N''EST PAS TRAITEE.')
+         CALL U2MESK('F','ELEMENTS_11',1,MODELI)
       ENDIF
 C.============================ FIN DE LA ROUTINE ======================
       END

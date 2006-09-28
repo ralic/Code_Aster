@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,8 +64,7 @@ C
       MOTFAC = 'PROL_RTZ'
       CALL GETRES ( RESU, TYPRES, NOMCMD )
       IF (TYPRES.NE.'EVOL_THER') THEN
-         CALL UTMESS ('F','RS1D3D','CETTE COMMANDE DOIT '//
-     +        'NECESSAIREMENT AVOIR LE TYPE EVOL_THER.')
+         CALL U2MESS('F','ALGORITH2_44')
       ENDIF
 C
 C --- RECUPERATION DES DONNEES UTILISATEUR :
@@ -79,7 +78,7 @@ C
       CALL GETVR8 ( MOTFAC, 'AXE_Z'         , 1,1,3, AXEZ  , IBID )
 C
       CALL DISMOI ('F', 'NB_NO_MAILLA', NOMMAF, 'MAILLAGE', NBNOF,
-     +                                            K8B,IBID )
+     &                                            K8B,IBID )
       CALL DISMOI ('F','Z_CST',NOMMAF,'MAILLAGE',NDIMF,K8B,IBID )
       NDIMF = 3
       IF ( K8B.EQ.'OUI' ) NDIMF = 2
@@ -121,7 +120,7 @@ C ------ ON EXTRAIT LA SOUS-TABLE POUR L'INSTANT COURANT
 C
          DINST = ZR(JINST+IORD-1)
          CALL TBEXTB ( TABLE, 'V', TABL2, 1, 'INST', 'EQ',
-     +                    IBID, DINST, CBID, K8B, PREC, CRIT )
+     &                    IBID, DINST, CBID, K8B, PREC, CRIT )
 C
 C ------ ON RECUPERE LES COORCONNEES DES NOEUDS POUR L'INSTANT COURANT
 C
@@ -144,7 +143,7 @@ C
             RMIN = MIN(RVAL,RMIN)
             IF ( RMIN.NE.0.0D0 ) THEN
                CALL UTDEBM('F','RS1D3D','L ORIGINE DU MAILLAGE 1D '//
-     +                                  'N EST PAS 0')
+     &                                  'N EST PAS 0')
                CALL UTFINM()
             ENDIF
  2       CONTINUE
@@ -202,12 +201,12 @@ C
  5          CONTINUE
             IF ((RMAX-RMIN).EQ.0.0D0) THEN
                CALL UTDEBM('F','RS1D3D','LES NOEUDS DU MAILLAGE SONT '//
-     +                      'CONFONDUS')
+     &                      'CONFONDUS')
                CALL UTFINM()
             ENDIF
             LAMBDA = ( RVAL - RMIN )/( RMAX - RMIN )
             ZR(JCNSVE-1+(INOF-1)+1)=(1-LAMBDA)*ZR(JCNSVL-1+(IMIN-1)+1)+
-     +                               LAMBDA*ZR(JCNSVL-1+(IMAX-1)+1)
+     &                               LAMBDA*ZR(JCNSVL-1+(IMAX-1)+1)
             ZL(JCNSLE-1+(INOF-1)+1) = .TRUE.
  3       CONTINUE
          DO 6 ORDEF = 1,INDICE
@@ -217,8 +216,8 @@ C
                IF (PGAUCH.EQ.'EXCLU') THEN
                   CALL JENUNO(JEXNUM(NOMMAF//'.NOMNOE',INO),NOM1)
                   CALL UTDEBM('F','RS1D3D','LE NOEUD SE TROUVE EN'//
-     +                        ' DEHORS DU DOMAINE DE DEFINITION AVEC'//
-     +                        ' UN PROFIL GAUCHE DE TYPE EXCLU')
+     &                        ' DEHORS DU DOMAINE DE DEFINITION AVEC'//
+     &                        ' UN PROFIL GAUCHE DE TYPE EXCLU')
                   CALL UTIMPK('L',' NOEUD : ',1,NOM1)
                   CALL UTFINM()
                ELSE IF (PGAUCH.EQ.'CONSTANT') THEN
@@ -232,15 +231,15 @@ C
                   RMAX = ZR(JTBCOR-1+INOMAX)
                   LAMBDA = (RMIN - RVAL)/(RMAX - RVAL)
                   ZR(JCNSVE-1+(INO-1)+1) = (ZR(JCNSVL-1+(INOMIN-1)+1)-
-     +                    ZR(JCNSVL-1+(INOMAX-1)+1)*LAMBDA)/(1-LAMBDA)
+     &                    ZR(JCNSVL-1+(INOMAX-1)+1)*LAMBDA)/(1-LAMBDA)
                   ZL(JCNSLE-1+(INO-1)+1) = .TRUE.
                ENDIF
             ELSE
                IF (PDROIT.EQ.'EXCLU') THEN
                   CALL JENUNO(JEXNUM(NOMMAF//'.NOMNOE',INO),NOM1)
                   CALL UTDEBM('F','RS1D3D','LE NOEUD SE TROUVE EN'//
-     +                        ' DEHORS DU DOMAINE DE DEFINITION AVEC'//
-     +                        ' UN PROFIL DROIT DE TYPE EXCLU')
+     &                        ' DEHORS DU DOMAINE DE DEFINITION AVEC'//
+     &                        ' UN PROFIL DROIT DE TYPE EXCLU')
                   CALL UTIMPK('L',' NOEUD : ',1,NOM1)
                   CALL UTFINM()
                ELSE IF (PDROIT.EQ.'CONSTANT') THEN
@@ -254,7 +253,7 @@ C
                   RMAX = ZR(JTBCOR-1+INOMAX)
                   LAMBDA = (RMAX - RMIN)/(RVAL - RMIN)
                   ZR(JCNSVE-1+(INO-1)+1) = (ZR(JCNSVL-1+(INOMAX-1)+1)-
-     +                    ZR(JCNSVL-1+(INOMIN-1)+1)*(1-LAMBDA))/LAMBDA
+     &                    ZR(JCNSVL-1+(INOMIN-1)+1)*(1-LAMBDA))/LAMBDA
                   ZL(JCNSLE-1+(INO-1)+1) = .TRUE.
                ENDIF
             ENDIF

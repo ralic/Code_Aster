@@ -1,6 +1,6 @@
       SUBROUTINE UTIMSD(UNIT,NIVEAU,LATTR,LCONT,SCH1,IPOS,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/01/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,13 +86,13 @@ C     -------------------------
 
          LONG=LEN(SCH1)
          IF (LEN(SCH1).GT.24) THEN
-            CALL UTMESS('F','UTIMSD','CHAINE SCH1 TROP LONGUE >24')
+            CALL U2MESS('F','UTILITAI5_42')
          END IF
          IF ((IPOS.LT.0).OR.(IPOS.GT.24)) THEN
-            CALL UTMESS('F','UTIMSD','IPOS HORS DE L INTERVALLE (0 24)')
+            CALL U2MESS('F','UTILITAI5_43')
          END IF
          IF (IPOS+LEN(SCH1).GT.25) THEN
-            CALL UTMESS('F','UTIMSD','LONGUEUR TOTALE > 24 ')
+            CALL U2MESS('F','UTILITAI5_44')
          END IF
       ENDIF
 C
@@ -102,9 +102,9 @@ C    --------------------------
       IF (.NOT.TOUT) CHAIN2(IPOS:IPOS-1+LONG)=SCH1
       WRITE(UNIT,*) ' '
       WRITE(UNIT,*) '====> IMPR_CO DE LA STRUCTURE DE DONNEE : ',
-     +                CHAIN2
+     &                CHAIN2
       WRITE(UNIT,*) 'ATTRIBUT : ',LATTR
-     +                   ,' CONTENU : ',LCONT,' BASE : >',BAS2,'<'
+     &                   ,' CONTENU : ',LCONT,' BASE : >',BAS2,'<'
       CALL JELSTC(BAS2 ,SCH1,IPOS,0,KBID,NBVAL)
       NBOBJ= -NBVAL
       WRITE(UNIT,*) 'NOMBRE D''OBJETS (OU COLLECTIONS) TROUVES :',NBOBJ
@@ -167,7 +167,7 @@ C
 C
 C
       WRITE(UNIT,*) '====> FIN IMPR_CO DE DE STRUCTURE DE DONNEE : ',
-     +                CHAIN2
+     &                CHAIN2
 C
 C
       CALL JEDETR('&&UTIMSD.LISTE')

@@ -14,7 +14,7 @@ C
       REAL*8       ZG(*),HG(*),DG(*),TG(*),CDG(*),CPG(*),RUGG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,7 +118,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24  NOMCHA
 C
       DATA NOPARA / 'NUME_VITE', 'VITE_FLUI',
-     +              'MATR_MASS', 'MATR_AMOR', 'MATR_RIGI' /
+     &              'MATR_MASS', 'MATR_AMOR', 'MATR_RIGI' /
       DATA TYPARA / 'I', 'R', 'K24', 'K24', 'K24' /
 C ----------------------------------------------------------------------
       CALL JEMARQ()
@@ -267,8 +267,7 @@ C --- DES IMAGES
      &                ZR(IBETA))
 C ---
       ELSE
-          CALL UTMESS('F','MEFIST','CAS D ENCEINTES CIRCULAIRE ET'//
-     &                 'ET RECTANGULAIRE SEULEMENT ')
+          CALL U2MESS('F','ALGELINE_85')
       ENDIF
 C
 C --- CALCUL DES COEFFICIENTS INTERVENANT DANS L EXPRESSION DES
@@ -538,10 +537,10 @@ C        DETERMINATION DU NOM DES SD CACHEES MATR_ASSE_GENE
          VALEK(3) = RIGGEN
 
          CALL MEFSMA ( ZR(IMATM), ZR(IMATA), ZR(IMATR), NUGENE,
-     +                                         MASGEN, AMOGEN, RIGGEN )
+     &                                         MASGEN, AMOGEN, RIGGEN )
 C
          CALL TBAJLI ( NOMT19, NBPARA, NOPARA,
-     +                                       NV, VIT0, C16B, VALEK, 0 )
+     &                                       NV, VIT0, C16B, VALEK, 0 )
 C
 C --- FIN DE BOUCLE SUR LES VITESSES D ECOULEMENT
  100  CONTINUE

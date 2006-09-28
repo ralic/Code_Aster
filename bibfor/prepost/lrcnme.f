@@ -1,12 +1,12 @@
       SUBROUTINE LRCNME ( CHANOM, NOCHMD, NOMAMD,
-     >                    NOMAAS, NOMGD,
-     >                    NBCMPV, NCMPVA, NCMPVM,
-     >                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     >                    NROFIC, CODRET )
+     &                    NOMAAS, NOMGD,
+     &                    NBCMPV, NCMPVA, NCMPVM,
+     &                    IINST, NUMPT, NUMORD, INST, CRIT, PREC,
+     &                    NROFIC, CODRET )
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,12 +104,12 @@ C 1.1. ==> REPERAGE DES CARACTERISTIQUES DE CETTE GRANDEUR
 C
       CALL JENONU ( JEXNOM ( '&CATA.GD.NOMGD', NOMGD ) , IAUX )
       IF ( IAUX.EQ.0 ) THEN
-        CALL UTMESS ( 'F', NOMPRO, 'GRANDEUR INCONNUE')
+        CALL U2MESS('F','PREPOST3_21')
       ENDIF
       CALL JEVEUO ( JEXNOM ( '&CATA.GD.NOMCMP', NOMGD ) ,
-     >              'L', JNOCMP )
+     &              'L', JNOCMP )
       CALL JELIRA ( JEXNOM ( '&CATA.GD.NOMCMP', NOMGD ) ,
-     >              'LONMAX', NCMPRF, SAUX01 )
+     &              'LONMAX', NCMPRF, SAUX01 )
 C
 C 1.2. ==> ALLOCATION DU CHAM_NO_S
 C
@@ -129,11 +129,11 @@ C 2. LECTURE
 C====
 C
       CALL LRCAME ( NROFIC, NOCHMD, NOMAMD, NOMAAS,
-     >              NBNOE,  'NOEU',
-     >              NBCMPV, NCMPVA, NCMPVM,
-     >              IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     >              NOMGD,  NCMPRF, JNOCMP, JCNSL, JCNSV, JCNSD,
-     >              CODRET )
+     &              NBNOE,  'NOEU',
+     &              NBCMPV, NCMPVA, NCMPVM,
+     &              IINST, NUMPT, NUMORD, INST, CRIT, PREC,
+     &              NOMGD,  NCMPRF, JNOCMP, JCNSL, JCNSV, JCNSD,
+     &              CODRET )
 C
 C====
 C 3. TRANSFORMATION DU CHAM_NO_S EN CHAM_NO :
@@ -150,9 +150,7 @@ C 4. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-         CALL UTMESS
-     > ( 'A' , NOMPRO, 'LECTURE IMPOSSIBLE POUR '//CHAMN//
-     >   ' AU FORMAT MED' )
+         CALL U2MESK('A','PREPOST3_24',1,CHAMN)
       ENDIF
       CALL JEDEMA ( )
 C

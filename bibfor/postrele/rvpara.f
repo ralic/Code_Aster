@@ -1,23 +1,23 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C IN  NOMTAB  : NOM DE LA TABLE PRINCIPALE PRODUITE PAR LA COMMANDE
 C IN  LATAB1  : NOM DE LA TABLE A INITIALISER
@@ -64,11 +64,11 @@ C
       INTEGER IOCC, IBID, IAUX, JAUX
       INTEGER NRPASS, NBPASS, ADRECG
       INTEGER       JCHEM, JCHAM, JRESU, JNCMP, NCMP, I,
-     >              JINVA, JPRIN, JMOME, JMAIL, JMOYE, J, JTRAD,
-     >              JTRAN, N1, N2, N3, JCMP1, JCMP2, JCMP3, NBC, NUME,
-     >              IRET, NBP, JINST, JORDR, JMODE, JABSC, JFREQ,
-     >              JNOEU, N11, N12, N13, N14, N15, N16, N17, N18,
-     >              JNCAS, JANGL, JNOCP, NUMCMP, JNUCP, NBORDR, JNUME
+     &              JINVA, JPRIN, JMOME, JMAIL, JMOYE, J, JTRAD,
+     &              JTRAN, N1, N2, N3, JCMP1, JCMP2, JCMP3, NBC, NUME,
+     &              IRET, NBP, JINST, JORDR, JMODE, JABSC, JFREQ,
+     &              JNOEU, N11, N12, N13, N14, N15, N16, N17, N18,
+     &              JNCAS, JANGL, JNOCP, NUMCMP, JNUCP, NBORDR, JNUME
       REAL*8        R8B
       LOGICAL       LMIMA, LMOYE, LEXTR
       COMPLEX*16    C16B
@@ -92,11 +92,12 @@ C
 C
       IF ( NIV.GE.2 ) THEN
         IF ( NOPASE.EQ.' ' ) THEN
-          CALL UTMESS('I',NOMPRO,'INITIALISATION DE LA TABLE '//NOMTAB)
+          CALL U2MESK('I','POSTRELE_58',1,NOMTAB)
         ELSE
           CALL UTMESS('I',NOMPRO,'INITIALISATION DE LA TABLE ASSOCIEE '
-     > //' A LA TABLE '//NOMTAB//' ET AU PARAMETRE SENSIBLE '//NOPASE
-     > //'CONNUE SOUS LE NOM DE CONCEPT '//LATAB1)
+     & //' A LA TABLE '//NOMTAB//' ET AU PARAMETRE SENSIBLE '//NOPASE
+     & //'CONNUE SOUS LE NOM DE CONCEPT '//LATAB1)
+C        CALL U2MESK('I','POSTRELE_59', 3 ,VALK)
         ENDIF
       ENDIF
 C               12   345678   9012345678901234
@@ -142,14 +143,14 @@ C
         ENDIF
         JAUX = 1
         CALL PSRESE ( MCF, IAUX, IBID, NOMTAB, JAUX,
-     >                NBPASS, NORECG, IRET )
+     &                NBPASS, NORECG, IRET )
 C
         CALL JEVEUO ( NORECG, 'L', ADRECG )
 C
         OK = .FALSE.
         DO 21 , NRPASS = 1 , NBPASS
           IF ( ZK24(ADRECG+2*NRPASS-2)(1:8).EQ.LATAB1(1:8) .AND.
-     >         ZK24(ADRECG+2*NRPASS-1)(1:8).EQ.NOPASE ) THEN
+     &         ZK24(ADRECG+2*NRPASS-1)(1:8).EQ.NOPASE ) THEN
             OK = .TRUE.
           ENDIF
    21   CONTINUE
@@ -172,19 +173,19 @@ C
             CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1, K8B, N3 )
             CALL GETTCO ( K8B, TYSD )
             IF     ( TYSD .EQ. 'EVOL_ELAS'  .OR.
-     >               TYSD .EQ. 'EVOL_THER'  .OR.
-     >               TYSD .EQ. 'EVOL_NOLI'  .OR.
-     >               TYSD .EQ. 'EVOL_CHAR'  .OR.
-     >               TYSD .EQ. 'DYNA_TRANS' )  THEN
+     &               TYSD .EQ. 'EVOL_THER'  .OR.
+     &               TYSD .EQ. 'EVOL_NOLI'  .OR.
+     &               TYSD .EQ. 'EVOL_CHAR'  .OR.
+     &               TYSD .EQ. 'DYNA_TRANS' )  THEN
                JINST = JINST + 1
             ELSEIF ( TYSD .EQ. 'DYNA_HARMO'  .OR.
-     >               TYSD .EQ. 'HARM_GENE'   .OR.
-     >               TYSD .EQ. 'ACOU_HARMO'  )  THEN
+     &               TYSD .EQ. 'HARM_GENE'   .OR.
+     &               TYSD .EQ. 'ACOU_HARMO'  )  THEN
                JFREQ = JFREQ + 1
             ELSEIF ( TYSD .EQ. 'MODE_MECA'   .OR.
-     >               TYSD .EQ. 'MODE_GENE'   .OR.
-     >               TYSD .EQ. 'MODE_ACOU'   .OR.
-     >               TYSD .EQ. 'BASE_MODALE' )  THEN
+     &               TYSD .EQ. 'MODE_GENE'   .OR.
+     &               TYSD .EQ. 'MODE_ACOU'   .OR.
+     &               TYSD .EQ. 'BASE_MODALE' )  THEN
                JFREQ = JFREQ + 1
                JMODE = JMODE + 1
             ELSEIF ( TYSD .EQ. 'MODE_STAT'   )  THEN
@@ -236,24 +237,24 @@ C
                CALL GETVTX ( MCF, 'NOM_CHAM', IOCC,1,1, NOMSY, N1 )
 
                CALL RSORAC(RESU,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
-     >                                                 NBORDR,1,IBID)
+     &                                                 NBORDR,1,IBID)
                KNUME = '&&'//NOMPRO//'.NUME_ORDRE'
                CALL WKVECT ( KNUME , 'V V I', NBORDR, JNUME )
                CALL RSORAC(RESU,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
-     >                                        ZI(JNUME),NBORDR,IBID)
+     &                                        ZI(JNUME),NBORDR,IBID)
                DO 14 I = 1 , NBORDR
                   NUME = ZI(JNUME+I-1)
                   CALL RSEXCH ( RESU, NOMSY, NUME, CHEXTR, IRET )
                   IF ( IRET .EQ. 0 ) GOTO 16
  14            CONTINUE
-               CALL UTMESS('F',NOMPRO,'PAS DE CHAMP TROUVE ')
+               CALL U2MESS('F','POSTRELE_60')
                CALL UTIMPK('S','POUR L''OPTION ',1,NOMSY)
                CALL UTFINM()
  16            CONTINUE
                CALL JEDETR ( KNUME )
                CALL UTNCMP ( CHEXTR, NBC, NOMOBJ )
             ENDIF
-            IF (NBC.EQ.0) CALL UTMESS('F',NOMPRO,'Y A UN BUG 2')
+            IF (NBC.EQ.0) CALL U2MESS('F','MODELISA2_89')
             CALL JEVEUO ( NOMOBJ, 'L', JCMP1 )
             DO 10 I = 1 , NBC
                DO 12 J = 1 , NCMP
@@ -284,11 +285,11 @@ C           CALL GETVIS ( MCF, 'NUME_CMP', IOCC,1,0, IBID,N11)
             IF ( N11 .NE. 0 ) THEN
                NUMCMP = -N11
                CALL WKVECT ( '&&'//NOMPRO//'.NU_CMP', 'V V I',
-     >                       NUMCMP, JNUCP )
+     &                       NUMCMP, JNUCP )
 C           CALL GETVIS(MCF,'NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
             N11=0
                IF (ZK8(JCMP2)(1:4).EQ.'VARI') THEN
-                  IF (NBC.NE.1) CALL UTMESS('F',NOMPRO,'Y A UN BUG 3')
+                  IF (NBC.NE.1) CALL U2MESS('F','ALGELINE_7')
                   DO 120 I = 1 , NUMCMP
                      CALL CODENT ( ZI(JNUCP+I-1), 'G', K8B )
                      NOMCMP = 'VARI_'//K8B(1:3)
@@ -606,7 +607,8 @@ C
       IF ( NIV.GE.2 ) THEN
         DO 1789 , N1 = 1 , NBP
           CALL UTMESS('I',NOMPRO,
-     >    'PARAMETRE '//NOPARA(N1)//'DE TYPE '//TYPARA(N1))
+     &    'PARAMETRE '//NOPARA(N1)//'DE TYPE '//TYPARA(N1))
+C        CALL U2MESK('I','POSTRELE_61', 2 ,VALK)
  1789   CONTINUE
       ENDIF
 C

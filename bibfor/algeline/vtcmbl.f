@@ -3,7 +3,7 @@ C     ------------------------------------------------------------------
 C     COMBINAISON LINEAIRE DE CHAM_NO OU DE CHAM_ELEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,16 +30,16 @@ C IN  : CONST  : R8  : TABLEAU DES COEFFICIENTS
 C IN  : TYPECH : K1  : TYPE DES CHAM_GDS   (R OU C)
 C IN  : NOMCH  : K19 : NOMS DES CHAM_GDS
 C IN  : TYPRES : K1  : TYPE DU CHAMP RESULTAT (R OU C)
-C IN  : CHPRES : K19 : NOM DU CHAMP RESULTAT 
+C IN  : CHPRES : K19 : NOM DU CHAMP RESULTAT
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
-      
+
 C DECLARATION PARAMETRES D'APPELS
       INTEGER       NBCMB
       REAL*8        CONST(*)
       CHARACTER*(*) TYPCST(*),TYPECH(*),NOMCH(*),TYPRES,CHPRES
-      
+
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -75,12 +75,12 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
 C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
-      
+
 C-----------------------------------------------------------------------
 C --- PHASE D'INITIALISATION
 C-----------------------------------------------------------------------
-      TYPE = TYPRES    
-      CH19 = NOMCH(1) 
+      TYPE = TYPRES
+      CH19 = NOMCH(1)
 
 C CHAM_NO OU CHAM_ELEM ?
       K24B=CH19//'.DESC'
@@ -89,7 +89,7 @@ C CHAM_NO OU CHAM_ELEM ?
         K24B=CH19//'.DESC'
         CALL JELIRA(K24B,'DOCU',IBID,DOCU)
       ELSE
-        K24B=CH19//'.CELD'      
+        K24B=CH19//'.CELD'
         CALL JELIRA(K24B,'DOCU',IBID,DOCU)
       END IF
 
@@ -98,19 +98,18 @@ C INIT. POUR FETI: NOMBRE DE SOUS-DOMAINES
       METHOD='XXXX'
       SDFETI='XXXX'
       FETC='.FETC'
-      
-C INIT. DE BASE      
+
+C INIT. DE BASE
       IF (DOCU.EQ.'CHNO') THEN
          REFE='.REFE'
          DESC='.DESC'
-         VALE='.VALE'                    
+         VALE='.VALE'
       ELSEIF (DOCU.EQ.'CHML') THEN
          REFE='.CELK'
          DESC='.CELD'
          VALE='.CELV'
       ELSE
-         CALL UTMESS('F','VTCMBL','ON NE TRAITE QUE DES '//      
-     &                                  '"CHAM_NO" OU DES "CHAM_ELEM".')
+         CALL U2MESS('F','UTILITAI_21')
       ENDIF
 
       IF (DOCU.EQ.'CHNO') THEN
@@ -121,45 +120,44 @@ C ON VERIFIE QUE TOUTE LES CHAM_NO DE LA LISTE SONT HOMOGENES
         IF (IRET.NE.0) THEN
           CALL JELIRA(K24B,'LONMAX',NBREFE,K8B)
         ELSE
-          IF (NIV.GE.2) 
+          IF (NIV.GE.2)
      &      WRITE(IFM,*)'<FETI/VTCMBL> CHAM_NO SANS REFE ',K24B(1:19)
           NBREFE=0
-        ENDIF     
+        ENDIF
         IF (NBREFE.NE.4) THEN
-          IF (NIV.GE.2) 
+          IF (NIV.GE.2)
      &      WRITE(IFM,*)'<FETI/VTCMBL> CHAM_NO NON ETENDU POUR FETI ',
      &      K24B(1:19)
         ELSE
-          CALL JEVEUO(K24B,'L',IREFE)      
+          CALL JEVEUO(K24B,'L',IREFE)
           METHOD=ZK24(IREFE+2)
-          SDFETI=ZK24(IREFE+3)       
+          SDFETI=ZK24(IREFE+3)
         ENDIF
-  
+
         DO 10 ICMB=2,NBCMB
           K24B=NOMCH(ICMB)(1:19)//REFE
           CALL JEEXIN(K24B,IRET)
           IF (IRET.NE.0) THEN
             CALL JELIRA(K24B,'LONMAX',NBREFE,K8B)
           ELSE
-            IF (NIV.GE.2) 
+            IF (NIV.GE.2)
      &        WRITE(IFM,*)'<FETI/VTCMBL> CHAM_NO SANS REFE ',K24B(1:19)
             NBREFE=0
-          ENDIF   
+          ENDIF
           IF (NBREFE.NE.4) THEN
             METHO1='XXXX'
             SDFET1='XXXX'
           ELSE
             CALL JEVEUO(K24B,'L',IREFE)
             METHO1=ZK24(IREFE+2)
-            SDFET1=ZK24(IREFE+3)                            
+            SDFET1=ZK24(IREFE+3)
             IF ((METHO1.NE.METHOD).OR.(SDFET1.NE.SDFETI))
-     &        CALL UTMESS('F','VTCMBL',       
-     &          'LISTE DE CHAM_NO A CONCATENER HETEROGENE')
-          ENDIF          
+     &        CALL U2MESS('F','ALGELINE3_92')
+          ENDIF
    10   CONTINUE
       ENDIF
-       
-C INIT. POUR METHODE FETI          
+
+C INIT. POUR METHODE FETI
       IF (METHOD(1:4).EQ.'FETI') THEN
         CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
         NBSD=ZI(IDIME)
@@ -170,14 +168,14 @@ C POUR EVITER (NBCMB-1)*NBSD APPELS A JEVEUO !
         DO 20 ICMB=1,NBCMB
           CH19=NOMCH(ICMB)
           CALL JEVEUO(CH19//FETC,'L',IFETC)
-          ZI(IVFETC+ICMB-1)=IFETC       
+          ZI(IVFETC+ICMB-1)=IFETC
    20   CONTINUE
         CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
         LFETI=.TRUE.
       ELSE
         LFETI=.FALSE.
       ENDIF
-         
+
 C========================================
 C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================
@@ -185,11 +183,11 @@ C IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
       DO 600 IDD=0,NBSD
 
 C TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
-C LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU 
+C LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU
 C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
         IF (.NOT.LFETI) THEN
           IDDOK=.TRUE.
-        ELSE 
+        ELSE
           IF (ZI(ILIMPI+IDD).EQ.1) THEN
             IDDOK=.TRUE.
           ELSE
@@ -199,13 +197,13 @@ C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
         IF (IDDOK) THEN
 
         IF (IDD.EQ.0) THEN
-C PREMIER CHAM_NO GLOBAL A CONCATENER   
+C PREMIER CHAM_NO GLOBAL A CONCATENER
           CH19 = NOMCH(1)
-        ELSE 
+        ELSE
 C DETOURS PAR LE .FETC DU PREMIER CHAM_NO GLOBAL A CONCATENER POUR
-C OBTENIR LE NOM DU CHAM_NO LOCAL CORRESPONDANT (CH19)  
+C OBTENIR LE NOM DU CHAM_NO LOCAL CORRESPONDANT (CH19)
           CH19=ZK24(ZI(IVFETC)+IDD-1)(1:19)
-        ENDIF  
+        ENDIF
 
 C OBTENTION DES ADRESSES ET DES TAILLES DES .DESC, .REFE ET .VALE
 C DU PREMIER CHAM_NO (GLOBAL OU LOCAL) A CONCATENER. ON SUPPOSE QUE
@@ -218,28 +216,28 @@ C TOUS LES CHAM_NOS DE LA LISTE NOMCH SONT HOMOGENES SUR CE POINT.
 
 C CONSTRUCTION D'UN CHAM_GD RESULTAT SUR LE MODELE DE NOMCH(1)
         IF (IDD.EQ.0) THEN
-C CHAM_NO GLOBAL RESULTAT       
+C CHAM_NO GLOBAL RESULTAT
           CH19R=CHPRES
           CALL JEEXIN(CH19R(1:19)//FETC,IFETI)
         ELSE
 C CHAM_NO RESULTAT A CREER
           IF (IFETI.EQ.0) THEN
             CALL GCNCON('.',K8B)
-            K8B(1:1)='F'    
-            CH19R=CHPRES(1:11)//K8B        
+            K8B(1:1)='F'
+            CH19R=CHPRES(1:11)//K8B
             ZK24(KFETC+IDD-1)(1:19)=CH19R
           ELSE
 C CHAM_NO RESULTAT DEJA EXISTANT A ECRASER
             CH19R=ZK24(KFETC+IDD-1)(1:19)
           ENDIF
-        ENDIF       
+        ENDIF
         CALL JEEXIN(CH19R//VALE,IRET)
         IF (IRET.EQ.0) THEN
           CALL WKVECT(CH19R//DESC,'V V I',NBDESC,KDESC)
           CALL WKVECT(CH19R//VALE,'V V '//TYPE,NBVALE,KVALE)
           CALL WKVECT(CH19R//REFE,'V V K24',NBREFE,KREFE)
 C SI FETI CONSTITUTION DE L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
-          IF ((NBSD.GT.0).AND.(IDD.EQ.0))         
+          IF ((NBSD.GT.0).AND.(IDD.EQ.0))
      &      CALL WKVECT(CH19R//FETC,'V V K24',NBSD,KFETC)
         ELSE
           CALL JEVEUO(CH19R//DESC,'E',KDESC)
@@ -248,11 +246,11 @@ C SI FETI CONSTITUTION DE L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
           CALL JELIRA(CH19R//REFE,'LONMAX',NBREFE,KBID)
 C SI FETI CONNEXION A L'OBJET JEVEUX CHPRESS.FETC COMPLEMENTAIRE
           IF ((NBSD.GT.0).AND.(IDD.EQ.0))
-     &      CALL JEVEUO(CH19R//FETC,'E',KFETC)  
+     &      CALL JEVEUO(CH19R//FETC,'E',KFETC)
         ENDIF
         CALL JEECRA(CH19R//DESC,'DOCU',IBID,DOCU)
 C RECOPIE DU .DESC ET DU .REFE DU PREMIER CHAM_NO DE LA LISTE
-C DANS CEUX DU CHAM_NO SOLUTION      
+C DANS CEUX DU CHAM_NO SOLUTION
         DO 90 I = 0,NBDESC-1
           ZI(KDESC+I)=ZI(JDESC+I)
    90   CONTINUE
@@ -262,8 +260,8 @@ C DANS CEUX DU CHAM_NO SOLUTION
 
 C CHANGER LA GRANDEUR
         CALL SDCHGD(CH19R,TYPRES)
-                
-C VECTEUR RECEPTACLE TEMPORAIRE DE LA COMBINAISON LINEAIRE      
+
+C VECTEUR RECEPTACLE TEMPORAIRE DE LA COMBINAISON LINEAIRE
         CALL WKVECT('&&VTCMBL.VALE','V V '//TYPE,NBVALE,LVALE)
 
 C-----------------------------------------------------------------------
@@ -272,36 +270,36 @@ C-----------------------------------------------------------------------
         ICONST = 1
         DO 100 ICMB =1,NBCMB
 
-C CHAM_NO A CONCATENER                 
+C CHAM_NO A CONCATENER
           IF (IDD.EQ.0) THEN
-C DOMAINE GLOBAL          
+C DOMAINE GLOBAL
             CH19=NOMCH(ICMB)
           ELSE
-C SOUS-DOMAINE N°IDD        
+C SOUS-DOMAINE N°IDD
             CH19=ZK24(ZI(IVFETC+ICMB-1)+IDD-1)(1:19)
           ENDIF
-                            
+
            CALL JEVEUO(CH19//VALE,'L',JVALE)
            IF (TYPRES(1:1).EQ.'R') THEN
              IF ( TYPECH(ICMB)(1:1) .EQ. 'R' ) THEN
                DO 110 IVAL = 0,NBVALE-1
                  ZR(LVALE+IVAL) = ZR(LVALE+IVAL) +
-     +                            CONST(ICONST)*ZR(JVALE+IVAL)
+     &                            CONST(ICONST)*ZR(JVALE+IVAL)
   110          CONTINUE
              ELSE
                IF ( TYPCST(ICMB)(1:1) .EQ. 'R') THEN
                  DO 120 IVAL = 0,NBVALE-1
                    ZR(LVALE+IVAL) = ZR(LVALE+IVAL) +
-     +                                CONST(ICONST)*ZC(JVALE+IVAL)
+     &                                CONST(ICONST)*ZC(JVALE+IVAL)
   120            CONTINUE
                ELSEIF ( TYPCST(ICMB)(1:1) .EQ. 'I') THEN
                  DO 130 IVAL = 0,NBVALE-1
                    ZR(LVALE+IVAL) = ZR(LVALE+IVAL) +
-     +                              CONST(ICONST)*DIMAG(ZC(JVALE+IVAL))
+     &                              CONST(ICONST)*DIMAG(ZC(JVALE+IVAL))
   130            CONTINUE
                ELSE
                  TYPE = TYPCST(ICMB)(1:1)
-                 CALL UTMESS('F','VTCMBL','TYPE INCONNU: '//TYPE)
+                 CALL U2MESK('F','UTILITAI5_50',1,TYPE)
                ENDIF
              ENDIF
            ELSE
@@ -309,26 +307,26 @@ C SOUS-DOMAINE N°IDD
                IF (TYPCST(ICMB) (1:1).EQ.'R') THEN
                  DO 210 IVAL = 0,NBVALE - 1
                    ZC(LVALE+IVAL) = ZC(LVALE+IVAL) +
-     +                              CONST(ICONST)*ZR(JVALE+IVAL)
+     &                              CONST(ICONST)*ZR(JVALE+IVAL)
   210            CONTINUE
               ELSEIF (TYPCST(ICMB) (1:1).EQ.'C') THEN
                 C8CST = DCMPLX(CONST(ICONST),CONST(ICONST+1))
                 DO 220 IVAL = 0,NBVALE - 1
                   ZC(LVALE+IVAL) = ZC(LVALE+IVAL) +
-     +                                C8CST*ZR(JVALE+IVAL)
+     &                                C8CST*ZR(JVALE+IVAL)
   220           CONTINUE
               ENDIF
             ELSE
               IF (TYPCST(ICMB) (1:1).EQ.'R') THEN
                 DO 310 IVAL = 0,NBVALE - 1
                   ZC(LVALE+IVAL) = ZC(LVALE+IVAL) +
-     +                             CONST(ICONST)*ZC(JVALE+IVAL)
+     &                             CONST(ICONST)*ZC(JVALE+IVAL)
   310           CONTINUE
               ELSEIF (TYPCST(ICMB) (:1).EQ.'C') THEN
                 C8CST = DCMPLX(CONST(ICONST),CONST(ICONST+1))
                 DO 320 IVAL = 0,NBVALE - 1
                    ZC(LVALE+IVAL) = ZC(LVALE+IVAL) +
-     +                              C8CST*ZC(JVALE+IVAL)
+     &                              C8CST*ZC(JVALE+IVAL)
   320           CONTINUE
               ENDIF
             ENDIF
@@ -336,7 +334,7 @@ C SOUS-DOMAINE N°IDD
           CALL JELIBE(CH19//VALE)
           ICONST = ICONST + 1
           IF (TYPCST(ICMB)(1:1).EQ.'C') ICONST = ICONST + 1
-          
+
 C-----------------------------------------------------------------------
 C --- FIN BOUCLE CHAM_GD
 C-----------------------------------------------------------------------
@@ -355,20 +353,20 @@ C   IL EST NECESSAIRE D'ACTUALISER KVALE SI LE RESULTAT EST DANS NOMCH()
         ENDIF
 
 C DESTRUCTION DU RECEPTACLE TEMPORAIRE, CAR SA TAILLE VA CHANGER A
-C L'ITERATION SUIVANTE  
+C L'ITERATION SUIVANTE
         CALL JEDETR('&&VTCMBL.VALE')
-        
+
 C LIBERATION DU CHAMP JEVEUX RESULTAT
         CALL JELIBE(CH19R//VALE)
 
-        ENDIF        
+        ENDIF
 C========================================
 C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================
   600 CONTINUE
 
-C DESTRUCTION OBJET JEVEUX TEMPORAIRE POUR FETI  
-      IF (NBSD.GT.0) CALL JEDETR('&&VECFETC')        
+C DESTRUCTION OBJET JEVEUX TEMPORAIRE POUR FETI
+      IF (NBSD.GT.0) CALL JEDETR('&&VECFETC')
 
       CALL JEDEMA()
       END

@@ -1,22 +1,22 @@
       SUBROUTINE HBRMAT(MOD, IMAT, NBMAT, TEMPD, MATERD, MATERF, MATCST,
      &   NDT, NDI, NR, NVI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
         IMPLICIT     NONE
@@ -84,7 +84,7 @@ C =================================================================
       NOMC(10) = 'BETA      '
       NOMC(11) = 'ALPHAHB   '
       NOMC(12) = 'PHI_RUP   '
-      NOMC(13) = 'PHI_RES   '      
+      NOMC(13) = 'PHI_RES   '
       NOMC(14) = 'PHI_END   '
 C =================================================================
 C --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
@@ -92,13 +92,13 @@ C =================================================================
       MATERF(3,1) = 0.0D0
       MATERF(11,2) = 0.0D0
       CALL RCVALA(IMAT,' ', 'ELAS', 0, ' ', 0.D0, 2,
-     +     NOMC(1),  MATERF(1,1),  CERR(1), 'FM')
+     &     NOMC(1),  MATERF(1,1),  CERR(1), 'FM')
       CALL RCVALA(IMAT,' ', 'ELAS', 0, ' ', 0.D0, 1,
-     +     NOMC(3),  MATERF(3,1),  CERR(3), ' ')    
+     &     NOMC(3),  MATERF(3,1),  CERR(3), ' ')
       CALL RCVALA(IMAT,' ', 'HOEK_BROWN', 0, ' ', 0.D0, 10,
-     +     NOMC(4),  MATERF(1,2),  CERR(4), 'FM' )
+     &     NOMC(4),  MATERF(1,2),  CERR(4), 'FM' )
       CALL RCVALA(IMAT,' ', 'HOEK_BROWN', 0, ' ', 0.D0, 1,
-     +     NOMC(14),  MATERF(11,2),  CERR(14), ' ' )     
+     &     NOMC(14),  MATERF(11,2),  CERR(14), ' ' )
 C =================================================================
 C - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 C =================================================================
@@ -115,27 +115,27 @@ C =================================================================
 C - CALCUL DES COEFFICIENTS PARABOLIQUES ET SIGMABD --------------
 C =================================================================
       MATERF(15,2) = MATERF(10,2)
-      MATERF(16,2) = MATERF(11,2)      
+      MATERF(16,2) = MATERF(11,2)
       GRUP    = MATERF(1,2)
       GRES    = MATERF(2,2)
       MRUP    = MATERF(6,2)
       SRUP    = MATERF(4,2)
       ALPHA   = MATERF(8,2)
-      BRES    = MATERF(7,2) - SQRT(SRUP)        
+      BRES    = MATERF(7,2) - SQRT(SRUP)
       AP      = -BRES / (GRUP - GRES)**2
       DP      = DEUX*BRES*GRES / (GRUP - GRES)**2
       CP      = BRES*GRUP*(GRUP-DEUX*GRES) / (GRUP - GRES)**2
-      COHERE  = AP*GRUP**2+DP*GRUP+CP    
+      COHERE  = AP*GRUP**2+DP*GRUP+CP
       IF (ABS(COHERE).GT.EPS) THEN
-         CALL UTMESS('F','HBRMAT','COEF PARABOLIQUES PAS COMPATIBLES')
+         CALL U2MESS('F','ALGORITH3_90')
       ENDIF
       COHERE  = AP*GRES**2+DP*GRES+CP
       IF (ABS(COHERE-BRES).GT.EPS) THEN
-         CALL UTMESS('F','HBRMAT','COEF PARABOLIQUES PAS COMPATIBLES 2')
+         CALL U2MESS('F','ALGORITH3_91')
       ENDIF
       SIGBD  = ((MRUP) +SQRT((MRUP)**2 +
-     +    4.0D0*((UN-ALPHA)**2)*SRUP)) /
-     +     (DEUX*(UN-ALPHA)**2)   
+     &    4.0D0*((UN-ALPHA)**2)*SRUP)) /
+     &     (DEUX*(UN-ALPHA)**2)
 C  =================================================================
 C --- STOCKAGE DES PARAMETRES PLASTIQUES CALCULES -----------------
 C =================================================================
@@ -143,12 +143,12 @@ C =================================================================
       MATERF(11,2) = AP
       MATERF(12,2) = DP
       MATERF(13,2) = CP
-      MATERF(14,2) = SIGBD     
+      MATERF(14,2) = SIGBD
       DO 10 II=1,NBMAT
          MATERD(II,1) = MATERF(II,1)
          MATERD(II,2) = MATERF(II,2)
  10   CONTINUE
-      MATCST = 'OUI'         
+      MATCST = 'OUI'
 C ======================================================================
 C --- NOMBRE DE COMPOSANTES --------------------------------------------
 C ======================================================================
@@ -156,23 +156,22 @@ C ======================================================================
          NDT = 6
          NDI = 3
       ELSE IF ((MOD(1:6).EQ.'D_PLAN') .OR.
-     +        (MOD(1:4).EQ.'AXIS')        ) THEN
+     &        (MOD(1:4).EQ.'AXIS')        ) THEN
          NDT = 4
          NDI = 3
       ELSE IF ((MOD(1:6).EQ.'C_PLAN') .OR.
-     +        (MOD(1:2).EQ.'1D')        ) THEN
-         CALL UTMESS('F','HOEK_BROWN',
-     +        'MODELISATIONS C_PLAN ET 1D PAS AUTORISEES')
+     &        (MOD(1:2).EQ.'1D')        ) THEN
+         CALL U2MESS('F','ALGORITH3_92')
       ELSE
-         CALL UTMESS('F','HOEK_BROWN','MODELISATION INCONNUE')
+         CALL U2MESS('F','ALGORITH2_20')
       ENDIF
 C ======================================================================
 C --- NOMBRE DE VARIABLES INTERNES -------------------------------------
 C ======================================================================
-        NVI = 3    
+        NVI = 3
 C =================================================================
 C - NOMBRE DE CONDITIONS NON-LINEAIRES ----------------------------
 C =================================================================
-        NR  = NDT + 3         
+        NR  = NDT + 3
 C ======================================================================
         END

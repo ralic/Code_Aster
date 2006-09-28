@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,26 +99,25 @@ C     --- EXISTENCE / COMPATIBILITE DES MATRICES ---
           CALL UTMESS('F','FACT_LDLT','LES MATRICES "'//MATASS//
      &                '" ET "'//MATFAC//
      &                '" N''ONT PAS LE MEME DOMAINE DE DEFINITION')
+C        CALL U2MESK('F','ALGELINE2_18', 2 ,VALK)
         ELSE IF (MFAC.NE.MASS) THEN
           IF (ILDEB.EQ.1 .AND. IBDEB.EQ.1) THEN
             CALL MTCOPY(MASS,MFAC,IRET)
-            IF (IRET.NE.0) CALL UTMESS('F','FACT_LDLT','STOP')
+            IF (IRET.NE.0) CALL U2MESS('F','CALCULEL_13')
           END IF
         END IF
       ELSE
         TYPE = ' '
         CALL MTDEFS(MFAC,MASS,'GLOBALE',TYPE)
         CALL MTCOPY(MASS,MFAC,IRET)
-        IF (IRET.NE.0) CALL UTMESS('F','FACT_LDLT','STOP')
+        IF (IRET.NE.0) CALL U2MESS('F','CALCULEL_13')
       END IF
 
 C     --- CHARGEMENT DES DESCRIPTEURS DE LA MATRICE A FACTORISER ---
       CALL MTDSCR(MFAC)
       CALL JEVEUO(MFAC(1:19)//'.&INT','E',IATFAC)
       IF (IATFAC.EQ.0) THEN
-        CALL UTMESS('F','FACT_LDLT',
-     &              'PROBLEMES A L''ALLOCATION DES DESCRIPTEURS '//
-     &              'DE LA MATRICE "'//MATFAC//'" ')
+        CALL U2MESK('F','ALGELINE2_19',1,MATFAC)
       END IF
       CALL MTDSC2(ZK24(ZI(IATFAC+1)),'SXDI','L',JADIA)
 
@@ -137,17 +136,13 @@ C     --- 2) AVEC BLOC_XXX
      &      ' STRICTEMENT POSITIF, IL EST PRIS A 1'
           IBDEB = 1
         ELSE IF (IBDEB.GT.ZI(IATFAC+13)) THEN
-          CALL UTMESS('F','FACT_LDLT',
-     &                'L''ARGUMENT DE "BLOC_DEBUT" EST PLUS '//
-     &                'GRAND QUE LE NOMBRE DE BLOC DE LA MATRICE')
+          CALL U2MESS('F','ALGELINE2_20')
         END IF
         ILDEB = ZI(JADIA+IBDEB-2) + 1
       END IF
       IF (LFNBLO.NE.0) THEN
         IF (IBFIN.LT.1) THEN
-          CALL UTMESS('F','FACT_LDLT',
-     &                'L''ARGUMENT DE "BLOC_FIN" DOIT ETRE '//
-     &                'STRICTEMENT POSITIF')
+          CALL U2MESS('F','ALGELINE2_21')
         ELSE IF (IBDEB.GT.ZI(IATFAC+13)) THEN
           WRITE (IFM,*) 'FACT_LDLT',
      &      'L''ARGUMENT DE "BLOC_FIN" EST PLUS '//

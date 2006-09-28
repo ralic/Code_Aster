@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -317,8 +317,7 @@ C        -------------------------------------------------------------
 C     ------------------------------------------------------------------
 C ---    CHAMP DE CONTRAINTES MAL DEFINI
       ELSE
-        CALL UTMESS('F','TE0511','LE TYPE DU CHAMP DE CONTRAINTES'//
-     &              ' EST INCOMPATIBLE AVEC L''OPTION : '//OPTION)
+        CALL U2MESK('F','ELEMENTS4_6',1,OPTION)
       END IF
 
 

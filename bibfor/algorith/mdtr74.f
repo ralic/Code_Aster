@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,8 +146,8 @@ C     --- RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES ---
       NTERM = ZI(LMAT+14)
       TYPBA2 = TYPBAS
       IF ((TYPBAS.EQ.'MODE_MECA'.AND.NTERM.GT.NBMODE).OR.
-     +    (TYPBAS.EQ.'MODE_GENE'.AND.NTERM.GT.NBMODE).OR.
-     +    (TYPBAS.EQ.'MODE_STAT'.AND.NTERM.GT.NBMODE)) THEN
+     &    (TYPBAS.EQ.'MODE_GENE'.AND.NTERM.GT.NBMODE).OR.
+     &    (TYPBAS.EQ.'MODE_STAT'.AND.NTERM.GT.NBMODE)) THEN
          TYPBAS = 'BASE_MODA'
       ENDIF
       IF (TYPBAS.EQ.'BASE_MODALE'.AND.NTERM.EQ.NBMODE) THEN
@@ -184,7 +184,7 @@ C
         NEQ = ZI(LLNEQU)
         NBMOD2 = NBMODE
       ELSE
-        CALL UTMESS('F','MDTR74','TYPE DE BASE INCONNU.')
+        CALL U2MESS('F','ALGORITH5_65')
       END IF
 
 C     --- RECOPIE DES MATRICES DANS DES VECTEURS DE TRAVAIL ---
@@ -439,7 +439,7 @@ C
  210        CONTINUE
             CALL JEDETR('&&MDTR74.GROUP_MA')
           ELSE
-            NBCHOC = NBCHOC + 1 
+            NBCHOC = NBCHOC + 1
           END IF
         END IF
  200  CONTINUE
@@ -490,9 +490,7 @@ C
             CALL UTDEBM('I','MDTR74','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             CALL UTIMPR('L',' TAUX DE SOUPLESSE NEGLIGEE :',1,SEUIL)
             CALL UTFINM()
-            CALL UTMESS(NIV,'MDTR74',
-     &        'LE TAUX DE SOUPLESSE NEGLIGEE EST SUPERIEUR AU SEUIL.'
-     &                  )
+            CALL U2MESS(NIV,'ALGORITH5_66')
           END IF
         END IF
       END IF
@@ -729,7 +727,7 @@ C
 
   120 CONTINUE
       CALL JEDETC('V','&&',1)
-      IF (IRET.NE.0) CALL UTMESS('F','MDTR74','DONNEES ERRONEES.')
+      IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_24')
 
       CALL JEDEMA()
       END

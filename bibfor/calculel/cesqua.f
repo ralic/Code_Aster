@@ -5,22 +5,22 @@
       LOGICAL LCUMUL(NBCHS)
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C BUT: COPIE DE CESFUS MAIS ON SOMME QUADRATIQUEMENT
 C ---------------------------------------------------------------------
@@ -80,7 +80,7 @@ C     ------------------------------------------------------------------
 C     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 C        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
       CES3 = '&&CESQUA.CES3'
-      IF (NBCHS.LE.0) CALL UTMESS('F','CESQUA','NBCHS >0 SVP')
+      IF (NBCHS.LE.0) CALL U2MESS('F','CALCULEL_72')
 
       CES1 = LICHS(1)
 
@@ -134,12 +134,9 @@ C     --------------------------------------------------------
         CALL JEVEUO(CES1//'.CESK','L',JCE1K)
         CALL JEVEUO(CES1//'.CESD','L',JCE1D)
 
-        IF (MA.NE.ZK8(JCE1K-1+1)) CALL UTMESS('F','CESQUA',
-     &                                 'MAILLAGES DIFFERENTS.')
-        IF (NOMGD.NE.ZK8(JCE1K-1+2)) CALL UTMESS('F','CESQUA',
-     &      'GRANDEURS DIFFERENTS.')
-        IF (TYPCES.NE.ZK8(JCE1K-1+3)) CALL UTMESS('F','CESQUA',
-     &      'TYPES DIFFERENTS (CART/ELNO/ELGA).')
+        IF (MA.NE.ZK8(JCE1K-1+1)) CALL U2MESS('F','CALCULEL_73')
+        IF (NOMGD.NE.ZK8(JCE1K-1+2)) CALL U2MESS('F','CALCULEL_74')
+        IF (TYPCES.NE.ZK8(JCE1K-1+3)) CALL U2MESS('F','CALCULEL_75')
 
         IF (ICHS.EQ.1) THEN
           DO 40,IMA = 1,NBMA
@@ -152,10 +149,8 @@ C     --------------------------------------------------------
             NBSP = ZI(JCE1D-1+5+4* (IMA-1)+2)
             NCMP = ZI(JCE1D-1+5+4* (IMA-1)+3)
             IF (NBPT*NBSP*NCMP.EQ.0) GO TO 50
-            IF (ZI(JNBPT-1+IMA).NE.NBPT) CALL UTMESS('F','CESQUA',
-     &          'NOMBRE DE POINTS DIFFERENTS.')
-            IF (ZI(JNBSP-1+IMA).NE.NBSP) CALL UTMESS('F','CESQUA',
-     &          'NOMBRE DE SOUS-POINTS DIFFERENTS.')
+            IF (ZI(JNBPT-1+IMA).NE.NBPT) CALL U2MESS('F','CALCULEL_76')
+            IF (ZI(JNBSP-1+IMA).NE.NBSP) CALL U2MESS('F','CALCULEL_77')
    50     CONTINUE
         END IF
         CALL JELIBE(CES1//'.CESK')
@@ -216,7 +211,7 @@ C     -----------------------------------------------------------
         DO 110,IMA = 1,NBMA
           ICMP1 = ZI(JCE1D-1+5+4* (IMA-1)+3)
           IF (ICMP1.EQ.0) GO TO 110
-          IF (ICMP1.LT.0) CALL UTMESS('F','CESQUA','STOP 1')
+          IF (ICMP1.LT.0) CALL U2MESS('F','CALCULEL_2')
           ICMP3 = ZI(JCRCMP-1+ICMP1)
           ZI(JNBCMP-1+IMA) = MAX(ICMP3,ZI(JNBCMP-1+IMA))
   110   CONTINUE
@@ -259,7 +254,7 @@ C     ------------------------------------------
                 CALL CESEXI('C',JCE3D,JCE3L,IMA,IPT,ISP,ICMP3,IAD3)
                 IF (IAD1.LE.0) GO TO 130
 
-                IF (IAD3.EQ.0) CALL UTMESS('F','CESQUA','STOP 1')
+                IF (IAD3.EQ.0) CALL U2MESS('F','CALCULEL_2')
 
 C               -- SI AFFECTATION :
                 IF ((.NOT.CUMUL) .OR. (IAD3.LT.0)) THEN
@@ -269,7 +264,7 @@ C               -- SI AFFECTATION :
                   IF (TSCA.EQ.'R') THEN
                     ZR(JCE3V-1+IAD3) = ZR(JCE1V-1+IAD1)**2
                   ELSE
-                    CALL UTMESS('F','CESQUA','TYPE SCALAIRE INCONNU')
+                    CALL U2MESS('F','CALCULEL_39')
                   END IF
 
 C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
@@ -279,7 +274,7 @@ C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                     ZR(JCE3V-1+IAD3) = ZR(JCE3V-1+IAD3) +
      &                                        ZR(JCE1V-1+IAD1)**2
                   ELSE
-                    CALL UTMESS('F','CESQUA','TYPE SCALAIRE INCONNU')
+                    CALL U2MESS('F','CALCULEL_39')
                   END IF
                 END IF
 

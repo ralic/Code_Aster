@@ -1,5 +1,5 @@
       SUBROUTINE RBPH01 ( TRANGE, NBCHAM, TYPE, ITRESU, NFONCT, BASEMO,
-     +                    TYPREF, TYPBAS, TOUSNO, MULTAP )
+     &                    TYPREF, TYPBAS, TOUSNO, MULTAP )
       IMPLICIT   NONE
       INTEGER             NBCHAM, ITRESU(*), NFONCT
       CHARACTER*8         BASEMO
@@ -8,22 +8,22 @@
       LOGICAL             TOUSNO, MULTAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR REST_BASE_PHYS
@@ -48,22 +48,19 @@ C
          TYPE(3) = 'ACCE            '
          CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
          IF ( IRET .EQ. 0 ) THEN
-            CALL UTMESS('F','RBPH01','LE CHAMP DE DEPLACEMENT N''A '//
-     +                             'PAS ETE CALCULE.')
+            CALL U2MESS('F','ALGORITH10_11')
          ELSE
             CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(1) )
          ENDIF
          CALL JEEXIN ( TRANGE//'.VITE' , IRET )
          IF ( IRET .EQ. 0 ) THEN
-            CALL UTMESS('F','RBPH01','LE CHAMP DE VITESSE N''A '//
-     +                             'PAS ETE CALCULE.')
+            CALL U2MESS('F','ALGORITH10_12')
          ELSE
             CALL JEVEUO ( TRANGE//'.VITE', 'L', ITRESU(2) )
          ENDIF
          CALL JEEXIN ( TRANGE//'.ACCE' , IRET )
          IF ( IRET .EQ. 0 ) THEN
-            CALL UTMESS('F','RBPH01','LE CHAMP D''ACCELERATION N''A '//
-     +                             'PAS ETE CALCULE.')
+            CALL U2MESS('F','ALGORITH10_13')
          ELSE
             CALL JEVEUO ( TRANGE//'.ACCE', 'L', ITRESU(3) )
          ENDIF
@@ -100,8 +97,7 @@ C
             TYPE(I) = 'DEPL'
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-             CALL UTMESS('F','RBPH01','LE CHAMP DE DEPLACEMENT N''A'//
-     +                               ' PAS ETE CALCULE.')
+             CALL U2MESS('F','ALGORITH10_11')
             ELSE
                CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(I) )
             ENDIF
@@ -117,8 +113,7 @@ C
             TYPE(I) = 'VITE'
             CALL JEEXIN ( TRANGE//'.VITE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-               CALL UTMESS('F','RBPH01','LE CHAMP DE VITESSE N''A'//
-     +                               ' PAS ETE CALCULE.')
+               CALL U2MESS('F','ALGORITH10_12')
             ELSE
                CALL JEVEUO ( TRANGE//'.VITE', 'L', ITRESU(I) )
             ENDIF
@@ -134,8 +129,7 @@ C
             TYPE(I) = 'ACCE'
             CALL JEEXIN ( TRANGE//'.ACCE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-             CALL UTMESS('F','RBPH01','LE CHAMP D''ACCELERATION N''A'//
-     +                               ' PAS ETE CALCULE.')
+             CALL U2MESS('F','ALGORITH10_13')
             ELSE
                CALL JEVEUO ( TRANGE//'.ACCE', 'L', ITRESU(I) )
             ENDIF
@@ -151,8 +145,7 @@ C
             TYPE(I) = 'ACCE_ABSOLU'
             CALL JEEXIN ( TRANGE//'.ACCE' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-             CALL UTMESS('F','RBPH01','LE CHAMP D''ACCELERATION N''A'//
-     +                               ' PAS ETE CALCULE.')
+             CALL U2MESS('F','ALGORITH10_13')
             ELSE
                CALL JEVEUO ( TRANGE//'.ACCE', 'L', ITRESU(I) )
             ENDIF
@@ -165,27 +158,25 @@ C
             TYPBAS(I) = 'DEPL'
 C
          ELSEIF ( CHAMP(I) .EQ. 'FORC_NODA' .OR.
-     +            CHAMP(I) .EQ. 'REAC_NODA' ) THEN
+     &            CHAMP(I) .EQ. 'REAC_NODA' ) THEN
             TYPE(I) = CHAMP(I)
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-             CALL UTMESS('F','RBPH01','LE CHAMP DE DEPLACEMENT N''A'//
-     +                               ' PAS ETE CALCULE.')
+             CALL U2MESS('F','ALGORITH10_11')
             ELSE
                CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(I) )
             ENDIF
-            IF ( MULTAP ) THEN 
-             CALL UTMESS('F','RBPH01','DEVELOPPEMENT NON PREVU POUR '//
-     +                                'LE MULT_APPUI OU CORR_STAT.')
+            IF ( MULTAP ) THEN
+             CALL U2MESS('F','ALGORITH10_14')
             ENDIF
             IF ( MODE .EQ. BLANC ) THEN
-             CALL UTMESS('F','RBPH01','DEVELOPPEMENT NON PREVU POUR '//
-     +                                'LA SOUS-STRUCTURATION.')
+             CALL U2MESS('F','ALGORITH10_15')
             ELSE
                CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
                IF ( IRET .NE. 0 ) THEN
                 CALL UTMESS('F','RBPH01','LE CHAMP '//TYPE(I)//' N''A'//
-     +                      ' PAS ETE CALCULE DANS LE MODE_MECA '//MODE)
+     &                      ' PAS ETE CALCULE DANS LE MODE_MECA '//MODE)
+C        CALL U2MESK('F','ALGORITH10_16', 2 ,VALK)
                ENDIF
                TYPREF(I) = NOMCHA
             ENDIF
@@ -195,27 +186,24 @@ C
             TYPE(I) = CHAMP(I)
             CALL JEEXIN ( TRANGE//'.DEPL' , IRET )
             IF ( IRET .EQ. 0 ) THEN
-             CALL UTMESS('F','RBPH01','LE CHAMP DE DEPLACEMENT N''A'//
-     +                               ' PAS ETE CALCULE.')
+             CALL U2MESS('F','ALGORITH10_11')
             ELSE
                CALL JEVEUO ( TRANGE//'.DEPL', 'L', ITRESU(I) )
             ENDIF
-            IF ( .NOT. TOUSNO ) THEN 
-               CALL UTMESS('F','RBPH01','L''OPTION '//TYPE(I)//
-     +                            ' S''APLIQUE SUR TOUTE LA STRUCTURE')
+            IF ( .NOT. TOUSNO ) THEN
+               CALL U2MESK('F','ALGORITH10_17',1,TYPE(I))
             ENDIF
-            IF ( MULTAP ) THEN 
-             CALL UTMESS('F','RBPH01','DEVELOPPEMENT NON PREVU POUR '//
-     +                                'LE MULT_APPUI OU CORR_STAT.')
+            IF ( MULTAP ) THEN
+             CALL U2MESS('F','ALGORITH10_14')
             ENDIF
             IF ( MODE .EQ. BLANC ) THEN
-             CALL UTMESS('F','RBPH01','DEVELOPPEMENT NON PREVU POUR '//
-     +                                'LA SOUS-STRUCTURATION.')
+             CALL U2MESS('F','ALGORITH10_15')
             ELSE
                CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
                IF ( IRET .NE. 0 ) THEN
                 CALL UTMESS('F','RBPH01','LE CHAMP '//TYPE(I)//' N''A'//
-     +                      ' PAS ETE CALCULE DANS LE MODE_MECA '//MODE)
+     &                      ' PAS ETE CALCULE DANS LE MODE_MECA '//MODE)
+C        CALL U2MESK('F','ALGORITH10_16', 2 ,VALK)
                ENDIF
                TYPREF(I) = NOMCHA
             ENDIF

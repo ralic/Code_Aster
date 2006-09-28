@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,14 +67,14 @@ C
       CALL GETVTX('DEBUG','JXVERI',1,1,1,REPONS,L)
       CALL GETRES(CBID,CBID,NOMCMD)
       IF ( REPONS .EQ. 'OUI') THEN
-         CALL UTMESS('I','IBDBGS','DEBUG JXVERI DEMANDE  ')
+         CALL U2MESS('I','SUPERVIS_23')
       ENDIF
 
       CALL GETVTX('DEBUG','SDVERI',1,1,1,REPONS,L)
       CALL GETRES(CBID,CBID,NOMCMD)
       IF ( REPONS .EQ. 'OUI') THEN
          ISDVER=1
-         CALL UTMESS('I','IBDBGS','DEBUG SDVERI DEMANDE  ')
+         CALL U2MESS('I','SUPERVIS_24')
       ELSE
          ISDVER=0
       ENDIF
@@ -83,15 +83,14 @@ C
       CALL GETRES(CBID,CBID,NOMCMD)
       IF ( REPONS.NE.'OUI' .AND. REPONS.NE.'NON') THEN
          CALL UTDEBM('E','IBDBGS','ARGUMENT ERRONE POUR LE MOT '//
-     +                      'CLE "DEBUG JEVEUX" ')
+     &                      'CLE "DEBUG JEVEUX" ')
          CALL UTIMPK('S',':',1,REPONS)
          CALL UTIMPK('L','LES ARGUMENTS AUTORISES SONT',1,'OUI')
          CALL UTIMPK('S',',',1,'NON')
          CALL UTFINM()
       ENDIF
       IF ( REPONS .EQ. 'OUI') THEN
-         CALL UTMESS('I','SUPERVISEUR',
-     +                  'EXECUTION DE JEVEUX EN MODE DEBUG')
+         CALL U2MESS('I','SUPERVIS_12')
          IDEBUG = 1
       ENDIF
 C
@@ -122,35 +121,34 @@ C
 
       CALL GETRES(CBID,CBID,NOMCMD)
       IF ( MEMOIR(1:8).NE.'COMPACTE' .AND.
-     +     MEMOIR(1:6).NE.'RAPIDE') THEN
+     &     MEMOIR(1:6).NE.'RAPIDE') THEN
          CALL UTDEBM('E','IBDBGS','ARGUMENT ERRONE POUR LE MOT '//
-     +                   'CLE "MEMOIRE GESTION" ')
+     &                   'CLE "MEMOIRE GESTION" ')
          CALL UTIMPK('S',':',1,MEMOIR)
          CALL UTIMPK('L','LES ARGUMENTS AUTORISES SONT',1,'COMPACTE')
          CALL UTIMPK('S',',',1,'RAPIDE')
          CALL UTFINM()
       ENDIF
       IF ( MEMOIR(1:8) .EQ. 'COMPACTE') THEN
-         CALL UTMESS('I','IBDBGS',
-     +               'MEMOIRE GESTION : "COMPACTE"')
+         CALL U2MESS('I','SUPERVIS_25')
          CALL JETYPR('DEBUT','XD',ISEG,ITAIL,RVAL)
       ELSE
          CALL JETYPR('DEFAUT','XX',ISEG,ITAIL,RVAL)
       ENDIF
       IF (ISEG .EQ. 2) THEN
-        CALL UTMESS('I','IBDBGS','TYPE ALLOCATION MEMOIRE 2')
+        CALL U2MESS('I','SUPERVIS_26')
       ELSE IF (ISEG .EQ. 3) THEN
-        CALL UTMESS('I','IBDBGS','TYPE ALLOCATION MEMOIRE 3')
+        CALL U2MESS('I','SUPERVIS_27')
         CALL UTDEBM('I','IBDBGS','TAILLE DES SEGMENTS')
         CALL UTIMPI('S',' ',1,ITAIL)
         CALL UTFINM()
       ELSE IF (ISEG .EQ. 4) THEN
-        CALL UTMESS('I','IBDBGS','TYPE ALLOCATION MEMOIRE 4')
+        CALL U2MESS('I','SUPERVIS_28')
         CALL UTDEBM('I','IBDBGS','TAILLE DES SEGMENTS')
         CALL UTIMPI('S',' ',1,ITAIL)
         CALL UTFINM()
         CALL UTDEBM('I','IBDBGS',
-     +              'TAILLE DE LA PARTITION PRINCIPALE')
+     &              'TAILLE DE LA PARTITION PRINCIPALE')
         CALL UTIMPR('S',' ',1,RVAL)
         CALL UTFINM()
       ENDIF

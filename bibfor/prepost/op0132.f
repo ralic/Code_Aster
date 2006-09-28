@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C
@@ -44,12 +44,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*3  TYPPAR
       CHARACTER*8  K8B, INTESP, NOMRES, TYPATN(5),
-     +             TYPART(3), TYPAFO(5), KINDI, KINDJ, KVAL(4)
+     &             TYPART(3), TYPAFO(5), KINDI, KINDJ, KVAL(4)
       CHARACTER*16 NOMCMD, TYCONC, TYCAL(4), NOCHAM, K16I, K16J
       CHARACTER*16 KPARFO(5), KVALST(10), NOPART(3),NOPATN(5)
       CHARACTER*19 NOMFON
       CHARACTER*24 K24B, KFOKIJ, SPEGRD, NOMOBJ, NOMOB1, NOMOB2,
-     +             NOMOB3, NOMOB4, NEWTAB
+     &             NOMOB3, NOMOB4, NEWTAB
       CHARACTER*75 CMESS
       LOGICAL      TABL, LINDI, EXISP
       INTEGER      IBID, IFVMIN(4), IFPAS(4), IVAL(3)
@@ -59,15 +59,15 @@ C
       DATA NOPART / 'NUME_VITE_FLUI' , 'NUME_ORDRE_I' , 'NUME_ORDRE_J' /
       DATA TYPART / 'I' , 'I' , 'I' /
       DATA NOPATN / 'NUME_VITE_FLUI' , 'NOEUD_I' , 'NOM_CMP_I' ,
-     +                                 'NOEUD_J' , 'NOM_CMP_J' /
+     &                                 'NOEUD_J' , 'NOM_CMP_J' /
       DATA TYPATN / 'I' , 'K8' , 'K8' , 'K8' , 'K8' /
 C
       DATA KVALST / 'LAMBDA_00' , 'LAMBDA_01' , 'LAMBDA_02','LAMBDA_03',
-     +              'LAMBDA_04' , 'ECART' , 'NB_EXTREMA_P_S' ,
-     +              'NB_PASS_ZERO_P_S' , 'FREQ_APPAR' , 'FACT_IRRE' /
+     &              'LAMBDA_04' , 'ECART' , 'NB_EXTREMA_P_S' ,
+     &              'NB_PASS_ZERO_P_S' , 'FREQ_APPAR' , 'FACT_IRRE' /
 C
       DATA KPARFO / 'GRANDEUR' , 'RAYLEIGH' , 'GAUSS' , 'DEPASSEMENT',
-     +              'VANMARCKE'/
+     &              'VANMARCKE'/
       DATA TYPAFO / 'K8' , 'K24' , 'K24' , 'K24' , 'K24' /
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -87,14 +87,14 @@ C
          CALL GETVTX(' ','NOM_CMP_I',1,1,0,K8B,NBCMPI)
          CALL GETVTX(' ','NOM_CMP_J',1,1,0,K8B,NBCMPJ)
          IF ( NBCMPI .NE. NBCMPJ ) THEN
-            CALL UTMESS('F','OP0132','IL FAUT AUTANT DE CMP EN I ET J')
+            CALL U2MESS('F','PREPOST3_84')
          ENDIF
          IF ( NBCMPI .NE. NBINDI ) THEN
-         CALL UTMESS('F','OP0132','IL FAUT AUTANT DE CMP QUE DE NOEUD')
+         CALL U2MESS('F','PREPOST3_85')
          ENDIF
       ENDIF
       IF ( NBINDJ .NE. NBINDI ) THEN
-         CALL UTMESS('F','OP0132','IL FAUT AUTANT D INDICES EN I ET J')
+         CALL U2MESS('F','PREPOST3_86')
       ENDIF
 C
       CALL INFMAJ
@@ -232,8 +232,8 @@ C
          CALL TBEXP2(INTESP,'NOM_CHAM')
          CALL TBEXP2(INTESP,'VITE_FLUIDE')
          CALL TBLIVA ( INTESP, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
-     +                  'NOM_CHAM', K8B, IBID, R8B, C16B, NOCHAM, IRET )
-         IF ( IRET .NE. 0 ) CALL UTMESS('F','OP0132','Y A UN BUG 1' )
+     &                  'NOM_CHAM', K8B, IBID, R8B, C16B, NOCHAM, IRET )
+         IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
          SPEGRD = 'DSP_'//NOCHAM(1:4)
 C
       ELSE
@@ -300,7 +300,7 @@ C
             IF ( TABL ) THEN
                NEWTAB = '&&OP0132.NEW_TABL'
                CALL TBEXTB ( INTESP, 'V', NEWTAB, 1, 'NUME_VITE_FLUI',
-     +                       'EQ', ZI(JVITE), R8B, C16B, K8B, R8B, K8B )
+     &                       'EQ', ZI(JVITE), R8B, C16B, K8B, R8B, K8B )
             ELSE
                NEWTAB = INTESP
             ENDIF
@@ -309,15 +309,15 @@ C
             CALL JEVEUO ( NOMOB1, 'L', JNOEI )
             NOMOB2 = '&&OP0132.CMP_I'
             CALL TBEXVE ( NEWTAB, 'NOM_CMP_I', NOMOB2, 'V', NBCI, K8B)
-            IF (NBNI.NE.NBCI) CALL UTMESS('F','OP0132','Y A UN BUG 2')
+            IF (NBNI.NE.NBCI) CALL U2MESS('F','MODELISA2_89')
             CALL JEVEUO ( NOMOB2, 'L', JCMPI )
             NOMOB3 = '&&OP0132.NOEUD_J'
             CALL TBEXVE ( NEWTAB, 'NOEUD_J', NOMOB3, 'V', NBNJ, K8B)
             CALL JEVEUO ( NOMOB3, 'L', JNOEJ )
             NOMOB4 = '&&OP0132.CMP_J'
             CALL TBEXVE ( NEWTAB, 'NOM_CMP_J', NOMOB4, 'V', NBCJ, K8B)
-            IF (NBNJ.NE.NBCJ) CALL UTMESS('F','OP0132','Y A UN BUG 3')
-            IF (NBNI.NE.NBNJ) CALL UTMESS('F','OP0132','Y A UN BUG 4')
+            IF (NBNJ.NE.NBCJ) CALL U2MESS('F','ALGELINE_7')
+            IF (NBNI.NE.NBNJ) CALL U2MESS('F','ALGORITH3_77')
             CALL JEVEUO ( NOMOB4, 'L', JCMPJ )
             CALL WKVECT('&&OP0132.LISTEINDI_I','V V K8',NBNI,IAINDI)
             CALL WKVECT('&&OP0132.LISTEINDI_J','V V K8',NBNI,IAINDJ)
@@ -340,7 +340,7 @@ C
             CALL JEDETR ( NOMOB3 )
             CALL JEDETR ( NOMOB4 )
             IF ( TABL ) CALL JEDETR ( NEWTAB )
-            IF (NBINDI.EQ.0) CALL UTMESS('F','OP0132','Y A UN BUG 5')
+            IF (NBINDI.EQ.0) CALL U2MESS('F','PREPOST3_87')
          ENDIF
       ENDIF
 C
@@ -392,14 +392,14 @@ C
          IF ( TABL ) THEN
             IVIT = ZI(JVITE+IV-1)
             IVAL(1) = IVIT
-         IF ( NIV .GE. 2 ) 
-     +      WRITE (IFM,'(A20,A24)') 'DE GRANDEUR :        ',NOCHAM
+         IF ( NIV .GE. 2 )
+     &      WRITE (IFM,'(A20,A24)') 'DE GRANDEUR :        ',NOCHAM
 C
             CALL TBLIVA ( INTESP, 1, 'NUME_VITE_FLUI', IV, R8B, C16B,
-     +                       K8B, K8B, R8B, 'VITE_FLUIDE', K8B,
-     +                       IBID, R8B, C16B, K8B, IRET )
+     &                       K8B, K8B, R8B, 'VITE_FLUIDE', K8B,
+     &                       IBID, R8B, C16B, K8B, IRET )
          IF ( NIV .GE. 2 )  WRITE (IFM,'(A30,D13.4,A4)')
-     +                   'POUR UNE VITESSE D''ECOULEMENT ',R8B,' M/S'
+     &                   'POUR UNE VITESSE D''ECOULEMENT ',R8B,' M/S'
          ENDIF
 C
 C-----BOUCLE SUR TOUS LES COUPLES D INDICES
@@ -416,7 +416,7 @@ C
                INDJ = ZI(IAINDJ-1+I2)
                IF ( INDI .GT. INDJ ) THEN
           CMESS='LA MATRICE EST TRIANGULAIRE SUPERIEUR-INVERSION INDICE'
-                 CALL UTMESS ('A','OP0132',CMESS)
+                 CALL U2MESK('A','MODELISA_96',1,CMESS)
                   IPASS = INDI
                   INDI  = INDJ
                   INDJ  = IPASS
@@ -430,7 +430,7 @@ C
                KINDJ = ZK8(IAINDJ-1+I2)
                IF ( NIV .GE. 2 ) THEN
                   WRITE (IFM,'(A9,A8,A8,A1,A8,A8)') 'INDICES :',
-     +                KINDI,ZK8(IACMPI-1+I2),'-',KINDJ,ZK8(IACMPJ-1+I2)
+     &                KINDI,ZK8(IACMPI-1+I2),'-',KINDJ,ZK8(IACMPJ-1+I2)
                ENDIF
             ENDIF
 C
@@ -438,28 +438,28 @@ C
                IVAL(II) = INDI
                IVAL(JJ) = INDJ
                CALL TBAJLI ( NOMRES, NBI, NOPART(IP),
-     +                                    IVAL, R8B, C16B, K8B, 0 )
+     &                                    IVAL, R8B, C16B, K8B, 0 )
                CALL TBNULI ( NOMRES, NBI, NOPART(IP),
-     +                          IVAL, R8B, C16B, K8B, R8B, K8B, ILIGN )
-               IF (ILIGN.LE.0) CALL UTMESS('F','OP0132','Y A UN BUG 6')
+     &                          IVAL, R8B, C16B, K8B, R8B, K8B, ILIGN )
+               IF (ILIGN.LE.0) CALL U2MESS('F','PREPOST3_88')
                CALL TBLIVA ( INTESP, NBI, NOPART(IP), IVAL, R8B, C16B,
-     +                          K8B, K8B, R8B, 'FONCTION',
-     +                          K8B, IBID, R8B, C16B, K24B, IRET )
-               IF (IRET.NE.0) CALL UTMESS('F','OP0132','Y A UN BUG 7')
+     &                          K8B, K8B, R8B, 'FONCTION',
+     &                          K8B, IBID, R8B, C16B, K24B, IRET )
+               IF (IRET.NE.0) CALL U2MESS('F','PREPOST3_89')
             ELSE
                KVAL(1) = KINDI
                KVAL(2) = ZK8(IACMPI-1+I2)
                KVAL(3) = KINDJ
                KVAL(4) = ZK8(IACMPJ-1+I2)
                CALL TBAJLI ( NOMRES, NBI, NOPATN(IP),
-     +                                    IVAL, R8B, C16B, KVAL, 0 )
+     &                                    IVAL, R8B, C16B, KVAL, 0 )
                CALL TBNULI ( NOMRES, NBI, NOPATN(IP),
-     +                          IVAL, R8B, C16B, KVAL, R8B, K8B, ILIGN )
-               IF (ILIGN.LE.0) CALL UTMESS('F','OP0132','Y A UN BUG 8')
+     &                          IVAL, R8B, C16B, KVAL, R8B, K8B, ILIGN )
+               IF (ILIGN.LE.0) CALL U2MESS('F','PREPOST3_90')
                CALL TBLIVA ( INTESP, NBI, NOPATN(IP), IVAL, R8B, C16B,
-     +                          KVAL, K8B, R8B, 'FONCTION',
-     +                          K8B, IBID, R8B, C16B, K24B, IRET )
-               IF (IRET.NE.0) CALL UTMESS('F','OP0132','Y A UN BUG 9')
+     &                          KVAL, K8B, R8B, 'FONCTION',
+     &                          K8B, IBID, R8B, C16B, K24B, IRET )
+               IF (IRET.NE.0) CALL U2MESS('F','PREPOST3_91')
             ENDIF
 C
             KFOKIJ = K24B(1:19)//'.VALE'
@@ -485,7 +485,7 @@ C
                     VALMOM = VALMOM + (Y1+Y2)/2.D0* (X2-X1)
                  ELSE
                     VALMOM = VALMOM + (Y1*(XW1**ICOEF)+Y2*(XW2**ICOEF))*
-     +                                    (X2-X1)/2.D0
+     &                                    (X2-X1)/2.D0
                  ENDIF
                  Y1 = Y2
                  X1 = X2
@@ -542,10 +542,10 @@ C
            ENDIF
 C
            CALL TBAJLI ( NOMRES, NBPAR, ZK16(IKVAL),
-     +                        IBID, ZR(IVALST), C16B, K8B, ILIGN )
+     &                        IBID, ZR(IVALST), C16B, K8B, ILIGN )
 C
            CALL TBAJLI ( NOMRES, 1, 'GRANDEUR',
-     +                        IBID, R8B, C16B, SPEGRD, ILIGN )
+     &                        IBID, R8B, C16B, SPEGRD, ILIGN )
 C
 C------DANS LE CAS OU AUCUN TRAITEMENT A ETE DEMANDE
 C
@@ -553,8 +553,8 @@ C
 C
            IF (ABS(XM0).LE.EPSMIN.OR.ABS(XM2).LE.EPSMIN) THEN
               WRITE (IFM,*)
-     +    ' >>> ATTENTION DES MOMENTS SPECTRAUX SONT NULS  ON ARRETE LE
-     +CALCUL POUR CETTE PAIRE D INDICES<<<'
+     &    ' >>> ATTENTION DES MOMENTS SPECTRAUX SONT NULS  ON ARRETE LE
+     &CALCUL POUR CETTE PAIRE D INDICES<<<'
               GO TO 201
            ENDIF
 C
@@ -578,10 +578,10 @@ C
 C
               IF ( LINDI ) THEN
                  WRITE(NOMFON,'(A8,A1,A6,2I2.2)') NOMRES(1:8),'_',
-     +                                      TYCAL(IT)(1:6), INDI,INDJ
+     &                                      TYCAL(IT)(1:6), INDI,INDJ
               ELSE
                  WRITE(NOMFON,'(A8,A1,A6,2I2.2)') NOMRES(1:8),'_',
-     +                                      TYCAL(IT)(1:6), IT,IT
+     &                                      TYCAL(IT)(1:6), IT,IT
               ENDIF
 C
               CALL WKVECT(NOMFON//'.VALE','G V R8',2*NBPOIN,IADVIJ)
@@ -614,7 +614,7 @@ C
                     WRITE (IFM,'(A24,A1,E15.6)') 'XP',':',XP
                     WRITE (IFM,'(A24,A1,E15.6)') 'XQ',':',XQ
                WRITE (IFM,'(A24,A1,E15.6)') 'VALEUR P+Q (DER KIUR)',':',
-     +                                        XPQ
+     &                                        XPQ
                  ENDIF
               ENDIF
 C
@@ -674,7 +674,7 @@ C
  303          CONTINUE
 C
               CALL TBAJLI ( NOMRES, 1, TYCAL(IT),
-     +                       IVAL, R8B, C16B, NOMFON, ILIGN )
+     &                       IVAL, R8B, C16B, NOMFON, ILIGN )
 C
  305       CONTINUE
 C

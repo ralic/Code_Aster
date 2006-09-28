@@ -1,11 +1,11 @@
       SUBROUTINE NTDOET ( MODELE,
-     >                    LOSTAT, INITPR, RESULT, NUMINI,
-     >                    TEMPIN, HYDRIN )
+     &                    LOSTAT, INITPR, RESULT, NUMINI,
+     &                    TEMPIN, HYDRIN )
 C
 C     THERMIQUE - DONNEES EN TEMPS
 C     *           **      *  *
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,11 +165,11 @@ C
 C
           CALL CHPVER('F',CHAMP(1:19),'NOEU','TEMP_R',IERD)
           CALL DISMOI('F','TYPE_RESU',CHAMP,'RESULTAT',IBID,K8BID,
-     >          IERD)
+     &          IERD)
           IF (K8BID.EQ.'CHAMP') THEN
             TEMPIN=CHAMP
           ELSE
-            CALL UTMESS('F',NOMPRO//'_01','CHAM_NO INVALIDE')
+            CALL U2MESS('F','ALGORITH9_2')
           ENDIF
 C
         ENDIF
@@ -185,13 +185,11 @@ C
 C
           CALL GETVIS('TEMP_INIT','NUME_INIT',1,1,1,NUM,N2)
           IF (N2.LE.0) THEN
-            CALL UTMESS('F',NOMPRO//'_02',
-     >           'LE MOT CLE "NUME_INIT" EST OBLIGATOIRE DANS CE CAS.')
+            CALL U2MESS('F','ALGORITH9_3')
           ELSE
             CALL RSEXCH(RESULT,'TEMP',NUM,TEMPIN,IRET)
             IF (IRET.GT.0) THEN
-              CALL UTMESS('F',NOMPRO//'_03','LE CHAMP DE '
-     >         //'TEMPERATURE : TEMP_INIT(NUM_INIT) N''EXISTE PAS.')
+              CALL U2MESS('F','ALGORITH9_1')
             ENDIF
             CALL GETRES(K8BID,K8BID,NOMCOM)
 
@@ -204,7 +202,7 @@ C ------- STRUCTURE DE DONNEES RESULTAT SI THER_NON_LINE
             IF (IRET.GT.0) THEN
                HYDRIN = '&&'//NOMPRO//'.HYDR_R'
                CALL MECACT('V',HYDRIC,'MODELE',LIGRMO,'HYDR_R',1,
-     >                 'HYDR',IBID,0.D0,CBID,K8BID)
+     &                 'HYDR',IBID,0.D0,CBID,K8BID)
                CALL CARCES(HYDRIC,'ELNO',' ','V',HYDRIS,IRET)
                CALL CESCEL(HYDRIS,LIGRMO,'RESI_RIGI_MASS',
      &              'PHYDRPP','NON',NNCP,'V',HYDRIN)
@@ -235,7 +233,7 @@ C
         IF ( INITPR.LE.2 ) THEN
           HYDRIN = '&&'//NOMPRO//'.HYDR_R'
           CALL MECACT('V',HYDRIC,'MODELE',LIGRMO,'HYDR_R',1,
-     >                 'HYDR',IBID,0.D0,CBID,K8BID)
+     &                 'HYDR',IBID,0.D0,CBID,K8BID)
           CALL CARCES(HYDRIC,'ELNO',' ','V',HYDRIS,IRET)
           CALL CESCEL(HYDRIS,LIGRMO,'RESI_RIGI_MASS',
      &         'PHYDRPP','NON',NNCP,'V',HYDRIN)

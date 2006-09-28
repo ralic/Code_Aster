@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       NPRES, JNCMP, JVALV, NCMP, IOCC, NPR, IATYMA, NBMA,
-     +              I, IMA, IADTYP, JMA, IBID, NMATOT, NBTOU
+     &              I, IMA, IADTYP, JMA, IBID, NMATOT, NBTOU
       CHARACTER*8   K8B, MAILLE, TYPE, TYPMCL(2)
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
@@ -72,7 +72,7 @@ C
          ELSE IF (FONREE.EQ.'FONC') THEN
             CALL ALCART ( 'G', CARTE, NOMA, 'PRES_F')
          ELSE
-            CALL UTMESS('F','CAFOTU','VALEUR INATTENDUE: '//FONREE )
+            CALL U2MESK('F','MODELISA2_37',1,FONREE)
          END IF
       END IF
 C
@@ -124,14 +124,14 @@ C
                   CALL UTIMPK('S','N''EST PAS DE TYPE ',1,'SEG3' )
                   CALL UTIMPK('S',' OU ',1,'SEG4' )
                   CALL UTIMPK('L','ELLE NE SERA PAS AFFECTEE PAR ',
-     +                                                       1,MOTCLF)
+     &                                                       1,MOTCLF)
                ENDIF
  12         CONTINUE
             CALL NOCART ( CARTE, 1,' ','NOM',0,' ', 0,LIGRMO, NCMP )
 C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
-     +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+     &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             DO 14 I = 1,NBMA
                IMA = ZI(JMA-1+I)
@@ -144,7 +144,7 @@ C
                   CALL UTIMPK('S','N''EST PAS DE TYPE ',1,'SEG3' )
                   CALL UTIMPK('S',' OU ',1,'SEG4' )
                   CALL UTIMPK('L','ELLE NE SERA PAS AFFECTEE PAR ',
-     +                                                 1,MOTCLF)
+     &                                                 1,MOTCLF)
                ENDIF
  14         CONTINUE
             CALL NOCART( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)

@@ -1,45 +1,45 @@
       SUBROUTINE NMGRFL ( NUMEDD, CHGRFL, DEPMOI, DEPDEL, VITPLU,
-     +                    ACCPLU, DT, CNFEDO)
+     &                    ACCPLU, DT, CNFEDO)
       IMPLICIT NONE
       REAL*8         DT
       CHARACTER*24   NUMEDD, CHGRFL , DEPMOI, DEPDEL, VITPLU, ACCPLU
       CHARACTER*24   CNFEDO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C BUT : CALCUL DES FORCES FLUIDES NON LINEAIRES S'EXERCANT SUR LES
-C       GRAPPES LORS DE LA CHUTE DE CELLES-CI 
+C       GRAPPES LORS DE LA CHUTE DE CELLES-CI
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    NUMEDD         IN    K24       NUME_DDL
-C    CHARGE         IN    K24       CHARGEMENT CONTENANT LES DONNEES 
+C    CHARGE         IN    K24       CHARGEMENT CONTENANT LES DONNEES
 C                                   POUR LE CALCUL DES FORCES FLUIDES
 C                                   S'EXERCANT SUR LA GRAPPE
 C    DEPMOI         IN    K24       DEPLACEMENT A L'INSTANT PRECEDENT
-C    DEPDEL         IN    K24       INCREMENT DE DEPLACEMENT 
+C    DEPDEL         IN    K24       INCREMENT DE DEPLACEMENT
 C    VITPLU         IN    K24       VITESSES A L'INSTANT COURANT
 C    ACCPLU         IN    K24       ACCELERATIONS A L'INSTANT COURANT
 C    DT             IN    R         PAS DE TEMPS
 C    IT             IN    I         NUMERO D'ITERATION
-C    CNFEDO        VAR    K24       VECTEUR ASSEMBLE DU CHARGEMENT 
+C    CNFEDO        VAR    K24       VECTEUR ASSEMBLE DU CHARGEMENT
 C                                   DU AUX FORCES FLUIDES
 C
 C.========================= DEBUT DES DECLARATIONS ====================
@@ -67,7 +67,7 @@ C
       INTEGER      IDDEPD, IDEPMO, IAPRNO, JIFL, JFFL, IDIM, NEC
       INTEGER      IVAL, INO, INO1, INO2, IDVALE, IDVITE, IDACCE
       INTEGER      IZONE, IPNOEU, IDNOEU
-      INTEGER      K1, K2, K3, I8, I11, I14 
+      INTEGER      K1, K2, K3, I8, I11, I14
       INTEGER      I17, I18, I20, I21
       INTEGER      IARCH, IPLAQ, IFMEC, IFTG, ICDG, IIMPF, IIMPN
       INTEGER      IMIL, DISTND
@@ -91,8 +91,8 @@ C
 C
       CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,K8BID,IER)
 
-      CALL JEVEUO ( '&&GFLECT.INDICE', 'E', JIFL ) 
-      CALL JEVEUO ( CHGRFL, 'E', JFFL ) 
+      CALL JEVEUO ( '&&GFLECT.INDICE', 'E', JIFL )
+      CALL JEVEUO ( CHGRFL, 'E', JFFL )
       II    = 5 + ZI(JIFL-1+5)
 CCC      I7    = ZI(JIFL-1+II+7)
       I8    = ZI(JIFL-1+II+8)
@@ -125,7 +125,7 @@ C     ----------------------------------------------------
       VDGC(3) = ZR(JFFL-1+I18+3*NBNO+3)
       IF ( VDGC(1) .NE. R8VIDE() ) LDIGC = .TRUE.
 C
-C --- RECUPERATION DE L'ADRESSAGE DES CHAMPS : 
+C --- RECUPERATION DE L'ADRESSAGE DES CHAMPS :
 C ---   .PRNO ASSOCIE AU MAILLAGE :
 C       -------------------------
       CALL JELIRA(NUMEDD(1:14)//'.NUME.PRNO','NMAXOC',NLILI,K8BID)
@@ -137,8 +137,7 @@ C
         K = I
   10  CONTINUE
       IF (K.EQ.0) THEN
-        CALL UTMESS('F','NMGRFL','ERREUR DANS LA RECUPERATION DU '//
-     +                           'NUME.PRNO .')
+        CALL U2MESS('F','ALGORITH3_84')
       ENDIF
       CALL JEVEUO(JEXNUM(NUMEDD(1:14)//'.NUME.PRNO',K),'L',IAPRNO)
 C
@@ -172,7 +171,7 @@ C     -----------------------------------------
          IVAL = ZI(IAPRNO+(ZI(JIFL-1+5+INO)-1)*(NEC+2)+1-1) - 1
          DO 30 IDIM = 1, NDIM
            ZR(JFFL-1+I21+INO) = ZR(JFFL-1+I21+INO) +
-     +     (ZR(IDDEPD+IVAL+IDIM-1) + ZR(IDEPMO+IVAL+IDIM-1))*VDIR(IDIM)
+     &     (ZR(IDDEPD+IVAL+IDIM-1) + ZR(IDEPMO+IVAL+IDIM-1))*VDIR(IDIM)
             DZ  = DZ  + ZR(IDVITE+IVAL+IDIM-1)*VDIR(IDIM)
             D2Z = D2Z + ZR(IDACCE+IVAL+IDIM-1)*VDIR(IDIM)
   30     CONTINUE
@@ -207,17 +206,17 @@ C     ----------------------------------
 C
 C --- POUR LES ABSCISSES CURVILIGNES, ON PREND L'ORIGINE AU SOMMET
 C --- DU COEUR.
-C --- Z1 VA ETRE L'ABSCISSE CURVILIGNE DU SOMMET DU MECANISME DE 
+C --- Z1 VA ETRE L'ABSCISSE CURVILIGNE DU SOMMET DU MECANISME DE
 C --- COMMANDE
 C --- Z2 VA ETRE L'ABSCISSE CURVILIGNE DU BAS DU MECANISME DE COMMANDE
-C --- Z3 VA ETRE L'ABSCISSE CURVILIGNE DU SOMMET DU GUIDAGE CONTINU 
+C --- Z3 VA ETRE L'ABSCISSE CURVILIGNE DU SOMMET DU GUIDAGE CONTINU
 C --- L1 EST LA LONGUEUR DU TUBE GUIDE HORS DASHPOT
 C --- L2 EST LA LONGUEUR DES RETREINTS :
 C     --------------------------------
       LDOME = ZR(JFFL-1+I17+4)
       LGDC  = ZR(JFFL-1+I17+5)
       HGC   = ZR(JFFL-1+I17+6)
-CCC      L1    = ZR(JFFL-1+I7+14) 
+CCC      L1    = ZR(JFFL-1+I7+14)
 C
       Z1 = -LDOME -LGDC -HGC
       Z2 =              -HGC
@@ -257,7 +256,7 @@ C --- CALCUL DES FORCES FLUIDES S'EXERCANT SUR LES DIFFERENTES PARTIES
 C --- DE LA GRAPPE :
 C     ------------
       CALL GFFORC ( CHGRFL, Z, DZ, D2Z, DT, FPMEC,
-     +              FFMEC, FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2, FRTG2)
+     &              FFMEC, FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2, FRTG2)
 C
 C --- AFFECTATION DU VECTEUR DE CHARGEMENT :
 C     ====================================
@@ -276,7 +275,7 @@ C
             WRITE(IIMPF,1002)
          ENDIF
          WRITE(IIMPF,1100) IT, Z, DZ, D2Z, MA, FFPLAQ, FPMEC, FFMEC,
-     +               FPTG1, FFTG1, FPTG2, FFTG2, FRTG2      
+     &               FPTG1, FFTG1, FPTG2, FFTG2, FRTG2
       ENDIF
 C
 C     =================================================================
@@ -287,7 +286,7 @@ C     ----------------------------------
       IF ( IARCH .EQ. 1 ) THEN
          XA1  = ZR(JFFL-1+I20+1)
          XA2  = ZR(JFFL-1+I20+NBNO)
-         XA12 = ABS ( XA2 - XA1 ) 
+         XA12 = ABS ( XA2 - XA1 )
          FARCHI = MA*G / XA12
          DO 100  I = 1, NBNO-1
             INO1  = ZI(JIFL-1+5+I)
@@ -296,7 +295,7 @@ C     ----------------------------------
             IVA2  = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             XA1 = ZR(JFFL-1+I20+I)
             XA2 = ZR(JFFL-1+I20+I+1)
-            XA12 = ABS ( XA2 - XA1 ) 
+            XA12 = ABS ( XA2 - XA1 )
             DO 102 IDIM = 1, NDIM
                FF = (FARCHI*XA12/2)*ZR(JFFL-1+I18+3*(I-1)+IDIM)
                ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) - FF
@@ -322,7 +321,7 @@ C     ----------------------------------
       IF ( IPLAQ .EQ. 1 ) THEN
          XA1  = ZR(JFFL-1+I20+1)
          XA2  = ZR(JFFL-1+I20+NBNO)
-         XA12 = ABS ( XA2 - XA1 ) 
+         XA12 = ABS ( XA2 - XA1 )
          FPLAQ = FFPLAQ / XA12
          DO 200  I = 1, NBNO-1
             INO1  = ZI(JIFL-1+5+I)
@@ -331,7 +330,7 @@ C     ----------------------------------
             IVA2  = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             XA1 = ZR(JFFL-1+I20+I)
             XA2 = ZR(JFFL-1+I20+I+1)
-            XA12 = ABS ( XA2 - XA1 ) 
+            XA12 = ABS ( XA2 - XA1 )
             DO 202 IDIM = 1, NDIM
                IF ( LDIGC ) THEN
                   FF = (FPLAQ*XA12/2)*VDGC(IDIM)
@@ -360,8 +359,7 @@ C     FORCE REPARTIE DANS LE GUIDAGE CONTINU
 C     --------------------------------------
       ELSEIF ( IPLAQ .EQ. 3 ) THEN
          IF ( K2 .EQ. 0) THEN
-            CALL UTMESS('F','NMGRFL','AUCUN NOEUD N''EST PRESENT '//
-     +                               'DANS LA ZONE CONSIDEREE 2')
+            CALL U2MESS('F','ALGORITH8_3')
          ENDIF
          IZONE = 0
          DO 220 INO = 1, NBNO
@@ -381,7 +379,7 @@ C     --------------------------------------
             IVA2 = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             XA1 = ZR(JFFL-1+I20+I)
             XA2 = ZR(JFFL-1+I20+I+1)
-            XA12 = ABS ( XA2 - XA1 ) 
+            XA12 = ABS ( XA2 - XA1 )
             DO 224 IDIM = 1, NDIM
                IF ( LDIGC ) THEN
                   FF = FFPLAQ*VDGC(IDIM)
@@ -397,8 +395,7 @@ C     FORCE APPLIQUEE AU MILIEU DU GUIDAGE CONTINU
 C     --------------------------------------------
       ELSEIF ( IPLAQ .EQ. 4 ) THEN
          IF ( K2 .EQ. 0) THEN
-            CALL UTMESS('F','NMGRFL','AUCUN NOEUD N''EST PRESENT '//
-     +                               'DANS LA ZONE CONSIDEREE 2')
+            CALL U2MESS('F','ALGORITH8_3')
          ENDIF
          IZONE = 0
          DO 230 INO = 1, NBNO
@@ -432,8 +429,7 @@ C     FORCE DISTRIBUEE AU NIVEAU DU GUIDAGE CONTINU
 C     ---------------------------------------------
       ELSEIF ( IPLAQ .EQ. 5 ) THEN
          IF ( K2 .EQ. 0) THEN
-            CALL UTMESS('F','NMGRFL','AUCUN NOEUD N''EST PRESENT '//
-     +                               'DANS LA ZONE CONSIDEREE 2')
+            CALL U2MESS('F','ALGORITH8_3')
          ENDIF
          IZONE = 0
          DO 240 INO = 1, NBNO
@@ -466,7 +462,7 @@ C     ----------------------------------
       IF ( IFMEC .EQ. 1 ) THEN
          XA1  = ZR(JFFL-1+I20+1)
          XA2  = ZR(JFFL-1+I20+NBNO)
-         XA12 = ABS ( XA2 - XA1 ) 
+         XA12 = ABS ( XA2 - XA1 )
          FMEC = ( FPMEC + FFMEC )  / XA12
          DO 300  I = 1, NBNO-1
             INO1  = ZI(JIFL-1+5+I)
@@ -475,7 +471,7 @@ C     ----------------------------------
             IVA2  = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             XA1 = ZR(JFFL-1+I20+I)
             XA2 = ZR(JFFL-1+I20+I+1)
-            XA12 = ABS ( XA2 - XA1 ) 
+            XA12 = ABS ( XA2 - XA1 )
             DO 302 IDIM = 1, NDIM
                FF = (FMEC*XA12/2)*ZR(JFFL-1+I18+3*(I-1)+IDIM)
                ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) - FF
@@ -496,8 +492,7 @@ C     FORCE REPARTIE SUR LA ZONE DU MECANISME DE LEVEE
 C     ------------------------------------------------
       ELSEIF ( IFMEC .EQ. 3 ) THEN
          IF ( K1 .EQ. 0) THEN
-            CALL UTMESS('F','NMGRFL','AUCUN NOEUD N''EST PRESENT '//
-     +                               'DANS LA ZONE CONSIDEREE 1')
+            CALL U2MESS('F','ALGORITH8_4')
          ENDIF
          IZONE = 0
          DO 320 INO = 1, NBNO
@@ -517,7 +512,7 @@ C     ------------------------------------------------
             IVA2  = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             XA1 = ZR(JFFL-1+I20+I)
             XA2 = ZR(JFFL-1+I20+I+1)
-            XA12 = ABS ( XA2 - XA1 ) 
+            XA12 = ABS ( XA2 - XA1 )
             DO 324 IDIM = 1, NDIM
                FF = (FMEC*XA12/2)*ZR(JFFL-1+I18+3*(I-1)+IDIM)
                ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) - FF
@@ -525,7 +520,7 @@ C     ------------------------------------------------
  324        CONTINUE
  322     CONTINUE
 C
-C     FORCE PONCTUELLE A L'EXTREMITE DU TUBE 
+C     FORCE PONCTUELLE A L'EXTREMITE DU TUBE
 C     FORCE REPARTIE SUR LA ZONE DU MECANISME DE LEVEE
 C     ------------------------------------------------
       ELSEIF ( IFMEC .EQ. 4 ) THEN
@@ -536,8 +531,7 @@ C     ------------------------------------------------
  330     CONTINUE
 C
          IF ( K1 .EQ. 0) THEN
-            CALL UTMESS('F','NMGRFL','AUCUN NOEUD N''EST PRESENT '//
-     +                               'DANS LA ZONE CONSIDEREE 1')
+            CALL U2MESS('F','ALGORITH8_4')
          ENDIF
          IZONE = 0
          DO 332 INO = 1, NBNO
@@ -557,7 +551,7 @@ C
             IVA2  = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             AA1 = ZR(JFFL-1+I20+I)
             AA2 = ZR(JFFL-1+I20+I+1)
-            AA12 = ABS ( AA2 - AA1 ) 
+            AA12 = ABS ( AA2 - AA1 )
             DO 336 IDIM = 1, NDIM
                FF = (FMEC*AA12/2)*ZR(JFFL-1+I18+3*(I-1)+IDIM)
                ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) - FF
@@ -574,7 +568,7 @@ C     ----------------------------------
       IF ( IFTG .EQ. 1 ) THEN
          XA1  = ZR(JFFL-1+I20+1)
          XA2  = ZR(JFFL-1+I20+NBNO)
-         XA12 = ABS ( XA2 - XA1 ) 
+         XA12 = ABS ( XA2 - XA1 )
          FFTG = FPTG1 + FFTG1 + FPTG2 + FFTG2 +FRTG2
          FTG = 24 * FFTG  / XA12
          DO 400  I = 1, NBNO-1
@@ -584,7 +578,7 @@ C     ----------------------------------
             IVA2  = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             XA1 = ZR(JFFL-1+I20+I)
             XA2 = ZR(JFFL-1+I20+I+1)
-            XA12 = ABS ( XA2 - XA1 ) 
+            XA12 = ABS ( XA2 - XA1 )
             DO 402 IDIM = 1, NDIM
                FF = (FTG*XA12/2)*ZR(JFFL-1+I18+3*(I-1)+IDIM)
                ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) - FF
@@ -606,8 +600,7 @@ C     FORCE REPARTIE SUR LA ZONE AVANT ET APRES LE RETREINT
 C     -----------------------------------------------------
       ELSEIF ( IFTG .EQ. 3 ) THEN
          IF ( K3 .EQ. 0) THEN
-            CALL UTMESS('F','NMGRFL','AUCUN NOEUD N''EST PRESENT '//
-     +                               'DANS LA ZONE CONSIDEREE 3')
+            CALL U2MESS('F','ALGORITH8_5')
          ENDIF
          IZONE = 0
          DO 420 INO = 1, NBNO
@@ -627,7 +620,7 @@ C     -----------------------------------------------------
             IVA2  = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             XA1 = ZR(JFFL-1+I20+I)
             XA2 = ZR(JFFL-1+I20+I+1)
-            XA12 = ABS ( XA2 - XA1 ) 
+            XA12 = ABS ( XA2 - XA1 )
             DO 424 IDIM = 1, NDIM
                FF = (FTG*XA12/2)*ZR(JFFL-1+I18+3*(I-1)+IDIM)
                ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) - FF
@@ -635,20 +628,19 @@ C     -----------------------------------------------------
  424        CONTINUE
  422     CONTINUE
 C
-C     FORCE PONCTUELLE A L'EXTREMITE DU CRAYON 
+C     FORCE PONCTUELLE A L'EXTREMITE DU CRAYON
 C     FORCE REPARTIE SUR LA ZONE AVANT ET APRES LE RETREINT
 C     -----------------------------------------------------
       ELSEIF ( IFTG .EQ. 4 ) THEN
-C      
+C
          INO = ZI(IAPRNO+(NBNO - 1) * (NEC + 2) + 1 - 1) - 1
          DO 430 IDIM = 1, NDIM
             FF = 24 * ( FPTG1 + FPTG2 )*ZR(JFFL-1+I18+3*(NBNO-1)+IDIM)
             ZR(IDVALE+INO+IDIM-1) = ZR(IDVALE+INO+IDIM-1) - FF
  430     CONTINUE
-C 
+C
          IF ( K3 .EQ. 0) THEN
-            CALL UTMESS('F','NMGRFL','AUCUN NOEUD N''EST PRESENT '//
-     +                               'DANS LA ZONE CONSIDEREE 3')
+            CALL U2MESS('F','ALGORITH8_5')
          ENDIF
          IZONE = 0
          DO 432 INO = 1, NBNO
@@ -668,7 +660,7 @@ C
             IVA2 = ZI(IAPRNO+(INO2-1)*(NEC+2)+1-1) - 1
             XA1  = ZR(JFFL-1+I20+I)
             XA2  = ZR(JFFL-1+I20+I+1)
-            XA12 = ABS ( XA2 - XA1 ) 
+            XA12 = ABS ( XA2 - XA1 )
             DO 436 IDIM = 1, NDIM
                FF = (FTG*XA12/2)*ZR(JFFL-1+I18+3*(I-1)+IDIM)
                ZR(IDVALE+IVA1+IDIM-1) = ZR(IDVALE+IVA1+IDIM-1) - FF
@@ -691,15 +683,15 @@ C
       CALL JEDEMA()
 C
  1000 FORMAT('  IT       Z             DZ            D2Z          ',
-     +       ' MA         PLAQUAGE     -----FORCE MECANISME-----   ',
-     +       '--------TUBE GUIDE-------   ',
-     +       '----------------DASHPOT----------------')
+     &       ' MA         PLAQUAGE     -----FORCE MECANISME-----   ',
+     &       '--------TUBE GUIDE-------   ',
+     &       '----------------DASHPOT----------------')
  1002 FORMAT(78X,'PRESSION      VISQUEUX      PRESSION      VISQUEUX',
-     +           '      PRESSION      VISQUEUX      RETREINT')
+     &           '      PRESSION      VISQUEUX      RETREINT')
  1100 FORMAT(1P,I4,12(2X,E12.5))
  1010 FORMAT('NOMBRE DE NOEUDS DANS LES DIFFERENTES ZONES')
  1012 FORMAT('  IT       Z        MECANISME_COMMANDE  GUIDAGE_CONTINU',
-     +       '   TUBE_GUIDE/DASHPOT/RETREINT')
+     &       '   TUBE_GUIDE/DASHPOT/RETREINT')
  1110 FORMAT(1P,I4,2X,E12.5,6X,I10,8X,I10,10X,I10)
 C
 C.============================ FIN DE LA ROUTINE ======================

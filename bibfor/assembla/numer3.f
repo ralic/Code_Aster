@@ -1,6 +1,6 @@
       SUBROUTINE NUMER3(MODELE,LISCHA,SOLVEU,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MODELE,SOLVEU,LISCHA
       CHARACTER*(*) NU
-      
+
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : CONLIG
@@ -30,11 +30,11 @@ C MODIFIE LE NUME_DDL NU POUR TENIR COMPTE DES ELEMENTS FINIS DE
 C CONTACT (LIGRCF)
 C
 C IN  MODELE : NOM DU MODELE
-C IN  SOLVEU : OBJET SOLVEUR 
+C IN  SOLVEU : OBJET SOLVEUR
 C IN  LISCHA : L_CHARGES CONTENANT LES CHARGES APPLIQUEES
 C IN  NUMEDD : NOM DU NUME_DDL
 C
-C     
+C
 C ----------------------------------------------------------------------
 C
       INTEGER       IUL,IUNIFI
@@ -42,9 +42,9 @@ C
       CHARACTER*24  OB1,OB2
       LOGICAL       IDENOB
       CHARACTER*2   BASE
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
 C --- BASE(1:1) : BASE POUR CREER LE NUME_DDL (SAUF LE PROF_CHNO)
 C --- BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 C
@@ -65,7 +65,7 @@ C
         IUL = IUNIFI('MESSAGE')
         CALL JEIMPO ( IUL , OB1 , ' ' , ' ' )
         CALL JEIMPO ( IUL , OB2 , ' ' , ' ' )
-        CALL UTMESS('F','NUMER3','LES DDLS DU NUME_DDL ONT BOUGE.')
+        CALL U2MESS('F','ASSEMBLA_31')
       END IF
 
       CALL DETRSD('NUME_DDL',NUAV)

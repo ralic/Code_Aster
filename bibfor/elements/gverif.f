@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/09/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,8 +93,7 @@ C          ---------------------
              CALL WKVECT(RESU//'.NORMALE','G V R8',3,JNORM)
              CALL GETVR8 (' ','NORMALE',1,1,3,ZR(JNORM),NCMP)
            ELSE
-             CALL UTMESS('E','GVERIF','LE MOT CLE NORMALE DOIT '
-     &                        //  'COMPORTER 3 COMPOSANTES' )
+             CALL U2MESS('E','ELEMENTS2_2')
              IER = IER + 1
            ENDIF
          ENDIF
@@ -111,8 +110,7 @@ C          -----------------------
              CALL WKVECT(RESU//'.DTAN_ORIGINE','G V R8',3,JORIG)
              CALL GETVR8 (' ',MOTFAC,1,1,3,ZR(JORIG),NCMP)
            ELSE
-             CALL UTMESS('E','GVERIF','LE MOT CLE DTAN_ORIG DOIT '
-     &                         //  'COMPORTER 3 COMPOSANTES' )
+             CALL U2MESS('E','ELEMENTS2_5')
              IER = IER + 1
            ENDIF
          ENDIF
@@ -129,8 +127,7 @@ C          -----------------------
              CALL WKVECT(RESU//'.DTAN_EXTREMITE','G V R8',3,JEXTR)
              CALL GETVR8 (' ',MOTFAC,1,1,3,ZR(JEXTR),NCMP)
            ELSE
-             CALL UTMESS('E','GVERIF','LE MOT CLE DTAN_EXTR DOIT '
-     &                         //  'COMPORTER 3 COMPOSANTES' )
+             CALL U2MESS('E','ELEMENTS2_6')
              IER = IER + 1
            ENDIF
          ENDIF
@@ -141,13 +138,13 @@ C     -----------------------------------------------------------------
       IF ( MOTFAC.EQ.'VECT_GRNO_ORIG' ) THEN
 C          --------------------------
          CALL GETVEM (NOMA,'GROUP_NO',
-     .                   ' ',MOTFAC,1,1,0,NOMGRP,NCMP)
+     &                   ' ',MOTFAC,1,1,0,NOMGRP,NCMP)
          IF(NCMP.NE.0) THEN
            NCMP = -NCMP
            IF(NCMP.EQ.2) THEN
              CALL WKVECT(RESU//'.DTAN_ORIGINE','G V R8',3,JORIG)
              CALL GETVEM (NOMA,'GROUP_NO',
-     .                   ' ',MOTFAC,1,1,2,NOMGRP,NCMP)
+     &                   ' ',MOTFAC,1,1,2,NOMGRP,NCMP)
 C
              CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(1)),'L',IAGRN)
              NUMER = ZI(IAGRN)
@@ -165,8 +162,7 @@ C
              ZR(JORIG+2)=ZPFI-ZPFO
 C
            ELSE
-             CALL UTMESS('E','GVERIF','LE MOT CLE VECT_GRNO_ORIG DOIT '
-     &                         //  'COMPORTER 2 GROUPES DE POINTS' )
+             CALL U2MESS('E','ELEMENTS2_7')
              IER = IER + 1
            ENDIF
          ENDIF
@@ -177,13 +173,13 @@ C     -----------------------------------------------------------------
       IF ( MOTFAC .EQ. 'VECT_GRNO_EXTR' ) THEN
 C          ----------------------------
          CALL GETVEM (NOMA,'GROUP_NO',
-     .                   ' ',MOTFAC,1,1,0,NOMGRP,NCMP)
+     &                   ' ',MOTFAC,1,1,0,NOMGRP,NCMP)
          IF(NCMP.NE.0) THEN
            NCMP = -NCMP
            IF(NCMP.EQ.2) THEN
              CALL WKVECT(RESU//'.DTAN_EXTREMITE','G V R8',3,JEXTR)
              CALL GETVEM (NOMA,'GROUP_NO',
-     .                   ' ',MOTFAC,1,1,2,NOMGRP,NCMP)
+     &                   ' ',MOTFAC,1,1,2,NOMGRP,NCMP)
 C
              CALL JEVEUO (JEXNOM(GRPNOE,NOMGRP(1)),'L',IAGRN)
              NUMER = ZI(IAGRN)
@@ -201,8 +197,7 @@ C
              ZR(JEXTR+2)=ZPFI-ZPFO
 C
            ELSE
-             CALL UTMESS('E','GVERIF','LE MOT CLE VECT_GRNO_EXTR DOIT '
-     &                         //  'COMPORTER 2 GROUPES DE POINTS' )
+             CALL U2MESS('E','ELEMENTS2_8')
              IER = IER + 1
            ENDIF
          ENDIF
@@ -266,12 +261,10 @@ C
             DIM1 = DIM1 + NBOBJ
          ELSE
             IER = IER + 1
-            CALL UTMESS('E','GVERIF',ZK8(JJJ+I-1)//' N''EST PAS '//
-     &                              'UN GROUP_NO OU UN GROUP_MA' )
+            CALL U2MESK('E','ELEMENTS_93',1,ZK8(JJJ+I-1))
          ENDIF
 100   CONTINUE
-      IF (IER.NE.0) CALL UTMESS('F','GVERIF',
-     +                          'ARRET SUR ERREUR(S) UTILISATEUR.')
+      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
       DIM2 = MAX(DIM1,NENT)
 C
 C --- ALLOCATION DE 5 AUTRES OBJETS DE TRAVAIL
@@ -329,13 +322,11 @@ C
                       NUMB = ZI(ACNCIN+ADRB-1+K-1)
                       ITYP = IATYMA-1+NUMB
                       CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),
-     +                             TYPE)
+     &                             TYPE)
                       IF (TYPE(1:3).EQ.'SEG ') THEN
-                        IF ((IT.GT.1) .AND. 
-     +                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
-                          CALL UTMESS('F','GVERIF',
-     +                     'MELANG1 SEG2 ET SEG3 : LES MAILLES DU '//
-     +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
+                        IF ((IT.GT.1) .AND.
+     &                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
+                          CALL U2MESS('F','ELEMENTS2_9')
                         ENDIF
                         TYPMP(1:4) = TYPE(1:4)
                         IT = IT + 1
@@ -344,11 +335,9 @@ C
                       IF (.NOT.LFON .AND. NUMA .EQ. NUMB ) GOTO 24
  22                 CONTINUE
  20               CONTINUE
-                  CALL UTMESS('F','GVERIF','LE GROUPE DE NOEUDS '//
-     &                                      ZK8(JJJ+IGR-1)//
-     &                    ' DEFINISSANT LA FISSURE N''EST PAS ORDONNE')
+                  CALL U2MESK('F','ELEMENTS2_10',1,ZK8(JJJ+IGR-1))
  24               CONTINUE
-                  
+
 
  10            CONTINUE
 C
@@ -359,8 +348,7 @@ C
                ZI(IAB + IGR - 1) = ZI(JADR)
                IF ( IGR .GE. 2 ) THEN
                   IF (ZI(IAA + IGR - 2) .NE. ZI(IAB + IGR - 1)) THEN
-                     CALL UTMESS('F','GVERIF','ARRET SUR ERREUR UTIL'//
-     +                'ISATEUR: DEUX GROUP_NO CONSECUTIFS INCOHERENTS')
+                     CALL U2MESS('F','ELEMENTS2_11')
                   ELSE
                     DO 102 I=2,NBOBJ
                        CALL JENUNO(JEXNUM(OBJ2,ZI(JADR+I-1)),NOEUD)
@@ -386,14 +374,10 @@ C
                   ITYP = IATYMA-1+IBID
                   CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                   TYPMA = TYPE(1:3)
-                  IF(TYPMA.NE.'SEG ')  CALL UTMESS('F','GVERIF',
-     +                      'LES MAILLES DU FOND DE FISSURE DOIVENT '//
-     +                      'ETRE DU TYPE SEGMENT')
+                  IF(TYPMA.NE.'SEG ')  CALL U2MESS('F','ELEMENTS2_12')
                   TYPM = TYPE(1:4)
                   IF ((IMA.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
-                   CALL UTMESS('F','GVERIF',
-     +                     'MELANG2 SEG2 ET SEG3 : LES MAILLES DU '//
-     +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
+                   CALL U2MESS('F','ELEMENTS2_13')
                   ENDIF
                   TYPMP(1:4) = TYPM(1:4)
 
@@ -401,7 +385,7 @@ C
 C
 C --------------- VERIFICATION DES NOEUDS IDENTIQUES POUR 2 MAILLES
 C                 CONSECUTIVES
-C                 
+C
                   CALL JENONU(JEXNOM(OBJ2,MAILLE),IBID)
                   CALL JEVEUO(JEXNUM(OBJ4,IBID),'L',IADM)
 
@@ -411,10 +395,7 @@ C
                   IF (IMA.EQ.NBOBJ) ZI(IGAA + IGR - 1) = ZI(IADM + 1)
                   IF (IMA.GE.2) THEN
                      IF (ZI(IAA + IMA - 2).NE.ZI(IAB + IMA - 1)) THEN
-                        CALL UTMESS('F','GVERIF','ARRET SUR ERREUR U'//
-     +                                  'TILISATEUR: DEUX MAILLES DU'//
-     +                        'FOND DE FISSURE SONT NON CONSECUTIVES'//
-     +                        ' DANS LA NUMEROTATION DES NOEUDS ')
+                        CALL U2MESS('F','ELEMENTS2_14')
                      ELSE
                         IF (TYPE(1:4) .EQ. 'SEG2' ) THEN
                            CALL JENUNO(JEXNUM(OBJ5,ZI(IADM+1)),NOEUD)
@@ -454,9 +435,7 @@ C              CONSECUTIFS
 C
                IF (IGR.GE.2) THEN
                   IF (ZI(IGAA + IGR - 2).NE.ZI(IGAB + IGR - 1)) THEN
-                     CALL UTMESS('F','GVERIF','ARRET SUR ERREUR UTIL'//
-     +                  'ISATEUR: 2 GROUP_MA DU FOND DE FISSURE SONT'//
-     +               'NON CONSECUTIFS DANS LA NUMEROTATION DES NOEUDS')
+                     CALL U2MESS('F','ELEMENTS2_15')
                   ENDIF
                ENDIF
             ENDIF
@@ -471,8 +450,7 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                TYPMA = TYPE(1:4)
                IF ((TYPMA.NE.'QUAD').AND.(TYPMA.NE.'TRIA')) THEN
-                  CALL UTMESS('F','GVERIF','LES MAILLES DES LEVRES '//
-     +                   'DOIVENT ETRE DU TYPE QUADRANGLE OU TRIANGLE')
+                  CALL U2MESS('F','ELEMENTS2_16')
                ELSE
                   ZK8(KK2) = MAILLE
                   KK2 = KK2 + 1
@@ -485,8 +463,7 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                TYPMA = TYPE(1:4)
                IF ((TYPMA.NE.'QUAD').AND.(TYPMA.NE.'TRIA')) THEN
-                  CALL UTMESS('F','GVERIF','LES MAILLES DES LEVRES '//
-     +                   'DOIVENT ETRE DU TYPE QUADRANGLE OU TRIANGLE')
+                  CALL U2MESS('F','ELEMENTS2_16')
                ELSE
                   ZK8(KK3) = MAILLE
                   KK3 = KK3 + 1
@@ -505,11 +482,11 @@ C
          IF(IRET .EQ. 0) THEN
             CALL UTMESS('E','GVERIF',MOTCLE//' '//ZK8(JJJ+INO-1)//
      &                     'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+C        CALL U2MESK('E','MODELISA2_96', 3 ,VALK)
             IER = IER + 1
          ENDIF
  200  CONTINUE
-      IF (IER.NE.0) CALL UTMESS('F','GVERIF',
-     +                          'ARRET SUR ERREUR(S) UTILISATEUR.')
+      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
 C
       IF ( MOTFAC(1:4) .EQ. 'FOND' ) THEN
          IF (NOUM(1:2).EQ.'NO') THEN
@@ -531,13 +508,11 @@ C
                      NUMB = ZI(ACNCIN+ADRB-1+K-1)
                      ITYP = IATYMA-1+NUMB
                      CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),
-     +                             TYPE)
+     &                             TYPE)
                      IF (TYPE(1:3).EQ.'SEG ') THEN
-                        IF ((IT.GT.1) .AND. 
-     +                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
-                          CALL UTMESS('F','GVERIF',
-     +                     'MELANG3 SEG2 ET SEG3 : LES MAILLES DU '//
-     +                     'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
+                        IF ((IT.GT.1) .AND.
+     &                      (TYPE(1:4).NE.TYPMP(1:4))) THEN
+                          CALL U2MESS('F','ELEMENTS2_17')
                         ENDIF
                         TYPMP(1:4) = TYPE(1:4)
                         IT = IT + 1
@@ -546,11 +521,10 @@ C
                       IF (.NOT.LFON .AND. NUMA .EQ. NUMB ) GOTO 216
  214              CONTINUE
  212           CONTINUE
-               CALL UTMESS('F','GVERIF','LA LISTE DE NOEUDS DEFINIS'//
-     &                           'SANT LA FISSURE N''EST PAS ORDONNEE')
+               CALL U2MESS('F','ELEMENTS2_18')
  216           CONTINUE
-                  
-                  
+
+
  210        CONTINUE
             DO 218 INO = 1, NBOBJ
                ZK8(KK1) = ZK8(JJJ + INO - 1)
@@ -563,14 +537,10 @@ C
                ITYP=IATYMA-1+IBID
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                TYPMA = TYPE(1:3)
-               IF(TYPMA.NE.'SEG ')  CALL UTMESS('F','GVERIF',
-     +                      'LES MAILLES DU FOND DE FISSURE DOIVENT '//
-     +                      'ETRE DU TYPE SEGMENT')
+               IF(TYPMA.NE.'SEG ')  CALL U2MESS('F','ELEMENTS2_12')
                TYPM = TYPE(1:4)
                IF ((INO.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
-                CALL UTMESS('F','GVERIF',
-     +                    'MELANG4 SEG2 ET SEG3 : LES MAILLES DU '//
-     +                    'FOND DE FISSURE DOIVENT ETRE DU MEME TYPE')
+                CALL U2MESS('F','ELEMENTS2_19')
                ENDIF
                TYPMP(1:4) = TYPM(1:4)
 
@@ -584,10 +554,7 @@ C
                ZI(IAB + INO - 1) = ZI(IADM)
                IF (INO.GE.2) THEN
                   IF (ZI(IAA + INO - 2).NE.ZI(IAB + INO - 1)) THEN
-                     CALL UTMESS('F','GVERIF',
-     +                 'ARRET SUR ERREUR(S) UTILISATEUR: DEUX MAILLES'
-     +             //  ' DU FOND DE FISSURE SONT NON CONSECUTIVES'
-     +             //  ' DANS LA NUMEROTATION DES NOEUDS ')
+                     CALL U2MESS('F','ELEMENTS2_20')
                   ELSE
                      IF (TYPE(1:4).EQ.'SEG2') THEN
                         CALL JENUNO(JEXNUM(OBJ5,ZI(IADM+1)),NOEUD)
@@ -629,8 +596,7 @@ C
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
             TYPMA = TYPE(1:4)
             IF ((TYPMA.NE.'QUAD').AND.(TYPMA.NE.'TRIA')) THEN
-               CALL UTMESS('F','GVERIF','LES MAILLES DES LEVRES '//
-     +                   'DOIVENT ETRE DU TYPE QUADRANGLE OU TRIANGLE')
+               CALL U2MESS('F','ELEMENTS2_16')
             ELSE
                ZK8(KK2) = ZK8(JJJ + INO - 1)
                KK2 = KK2 + 1
@@ -644,8 +610,7 @@ C
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
             TYPMA = TYPE(1:4)
             IF ((TYPMA.NE.'QUAD').AND.(TYPMA.NE.'TRIA')) THEN
-               CALL UTMESS('F','GVERIF','LES MAILLES DES LEVRES '//
-     +                   'DOIVENT ETRE DU TYPE QUADRANGLE OU TRIANGLE')
+               CALL U2MESS('F','ELEMENTS2_16')
             ELSE
                ZK8(KK3) = ZK8(JJJ + INO - 1)
                KK3 = KK3 + 1
@@ -691,9 +656,7 @@ C          -----------------------
         K1 = K1 - 1
 C
         IF (K1.NE.DIM) THEN
-           CALL UTMESS('E','GVERIF','ERREUR : LE FOND DE FISSURE '//
-     +                 'POSSEDE UN NOEUD REPETE 2 FOIS : NOEUD '//
-     +                  ZK8(LL1 + J1 - 1)//'. REVOIR LES DONNEES')
+           CALL U2MESK('E','ELEMENTS2_21',1,ZK8(LL1 + J1 - 1))
            IER = IER+1
         ENDIF
 C
@@ -707,8 +670,7 @@ C
           ELSE
              CALL JEVEUO(RESU//'.FOND      .TYPE','L',JJTYP)
              IF(ZK8(JJTYP)(1:4).NE.TYPMP)THEN
-                CALL UTMESS('F','GVERIF','LES MAILLES DU FOND_INF 
-     +                    ET DU FOND_SUP SONT DE TYPE DIFFERENT')
+                CALL U2MESS('F','ELEMENTS2_22')
              ENDIF
           ENDIF
         ELSE
@@ -728,11 +690,11 @@ C       ON VERIFIE QUE LES NOEUDS SONT EN VIV A VIS
              CALL JENONU(JEXNOM(OBJ2,ZK8(JFINF+IN-1)),NUFINF)
              CALL JENONU(JEXNOM(OBJ2,ZK8(JFSUP+IN-1)),NUFSUP)
              D = ABS(ZR(JVALE+3*(NUFINF-1))-
-     +               ZR(JVALE+3*(NUFSUP-1)))
+     &               ZR(JVALE+3*(NUFSUP-1)))
              D = D+ABS(ZR(JVALE+3*(NUFINF-1)+1)-
-     +                 ZR(JVALE+3*(NUFSUP-1)+1))
+     &                 ZR(JVALE+3*(NUFSUP-1)+1))
              D = D+ABS(ZR(JVALE+3*(NUFINF-1)+2)-
-     +                 ZR(JVALE+3*(NUFSUP-1)+2))
+     &                 ZR(JVALE+3*(NUFSUP-1)+2))
              IF ( SQRT(D) .GT.PREC)THEN
                CALL UTDEBM('F','GVERIF','LES NOEUDS')
                CALL UTIMPK('S',' ',1,ZK8(JFINF+IN-1))
@@ -767,9 +729,7 @@ C              -----------------------
          K2 = K2 - 1
 C
          IF (K2.NE.DIM2) THEN
-            CALL UTMESS('E','GVERIF','ERREUR : LA LEVRE SUPERIEURE '//
-     +                  'POSSEDE UNE MAILLE REPETEE 2 FOIS : MAILLE '//
-     +                   ZK8(LL2 + J2 - 1)//'. REVOIR LES DONNEES')
+            CALL U2MESK('E','ELEMENTS_96',1,ZK8(LL2 + J2 - 1))
             IER = IER+1
          ENDIF
 C
@@ -796,21 +756,17 @@ C              -----------------------
          K3 = K3 - 1
 C
          IF (K3.NE.DIM2) THEN
-            CALL UTMESS('E','GVERIF','ERREUR : LA LEVRE INFERIEURE '//
-     +                  'POSSEDE UNE MAILLE REPETEE 2 FOIS : MAILLE '//
-     +                   ZK8(LL3 + J3 - 1)//'. REVOIR LES DONNEES')
+            CALL U2MESK('E','ELEMENTS_97',1,ZK8(LL3 + J3 - 1))
             IER = IER+1
          ENDIF
-         
+
 C COMPARAISON LEVRE SUP / LEVRE INF
          CALL JEVEUO ( RESU//'.LEVRESUP  .MAIL', 'L', JSUP )
          CALL JELIRA ( RESU//'.LEVRESUP  .MAIL', 'LONMAX',NBMAS,K8B)
          DO 710 I = 1,NBMAS
            DO 715 J = 1,DIM2
             IF (ZK8(JSUP+I-1) .EQ. ZK8(MM3+J-1) ) THEN
-              CALL UTMESS('F','GVERIF','ERREUR : LA LEVRE INFERIEURE'//
-     +            ' ET LA LEVRE SUPERIEURE ONT UNE MAILLE SURFACIQUE'//
-     +            ' EN COMMUN. REVOIR LES DONNEES')
+              CALL U2MESS('F','ELEMENTS_98')
             END IF
 715        CONTINUE
 710      CONTINUE
@@ -833,8 +789,7 @@ C
          CALL JEDETR('&&VERIFE.LEVREINF  .MAIL')
       ENDIF
 C
-      IF (IER.NE.0) CALL UTMESS('F','GVERIF',
-     +                          'ARRET SUR ERREUR(S) UTILISATEUR.')
+      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
 9999  CONTINUE
       CALL JEDEMA()
       END

@@ -2,7 +2,7 @@
      &                  CHTNZ,VAPRIZ,VAPRMZ,NRGRPA,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,7 +134,7 @@ C 1.1 PREALABLES LIES AUX OPTIONS
 C====
       CALL JEMARQ()
       IF (TYPCAL.NE.'THER' .AND. TYPCAL.NE.'DLAG' .AND.
-     &    TYPCAL.NE.'SENS') CALL UTMESS('F',NOMPRO,'TYPCAL INVALIDE')
+     &    TYPCAL.NE.'SENS') CALL U2MESS('F','ALGORITH11_22')
 C LOGICAL INDICATEUR D'UN CALCUL DE SENSIBILITE (TYPESE.GT.0)
       IF (TYPCAL.EQ.'SENS') THEN
         LSENS = .TRUE.
@@ -403,8 +403,8 @@ C====
                   IRETH = 0
                   CALL EXISD('CHAMP_GD',LCHIN(5),IRETH)
                   IF (((IRETH.EQ.0).AND. (IRET.NE.0)) .OR.
-     &                ((IRET.EQ.0).AND. (IRETH.NE.0))) CALL UTMESS('F',
-     &                NOMPRO,'! PB ACCES SIMULTANE CARTH/T !')
+     &                ((IRET.EQ.0).AND. (IRETH.NE.0))) CALL U2MESS('F','
+     &CALCULEL4_75')
 
                   IF (TYPESE.EQ.7) THEN
 C MODIFICATION DU TERME STD: ON "BLUFF" LE CALCUL DE CHAR_THER_TEXT
@@ -589,8 +589,8 @@ C====
             CALL EXISD('CHAMP_GD',LCHINE,IRETE)
             CALL EXISD('CHAMP_GD',LCHIN(5),IRETH)
             IF (((IRETH.EQ.0).AND. (IRETE.NE.0)) .OR.
-     &          ((IRETE.EQ.0).AND. (IRETH.NE.0))) CALL UTMESS('F',
-     &          NOMPRO,'! PB ACCES SIMULTANE CARTH/T !')
+     &          ((IRETE.EQ.0).AND. (IRETH.NE.0))) CALL U2MESS('F','CALCU
+     &LEL4_75')
             IF (IRETE.EQ.0) CALL EXISD('CHAMP_GD',LCHINP,IRETP)
 
 C====

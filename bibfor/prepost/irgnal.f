@@ -1,32 +1,32 @@
       SUBROUTINE IRGNAL ( IFI, NBORDR, COORD, CONNEX, POINT,
-     +                    NOCMP, NBCMP,NUMEL, NOBJ, NBEL, CNSC,
-     +                    CNSL, CNSV, PARTIE, JTYPE, CNSD )
+     &                    NOCMP, NBCMP,NUMEL, NOBJ, NBEL, CNSC,
+     &                    CNSL, CNSV, PARTIE, JTYPE, CNSD )
       IMPLICIT NONE
 C
       INTEGER        NUMEL, NBEL, IFI, NBORDR, NBCMP
       INTEGER        CONNEX(*), POINT(*),
-     +               CNSC(*), CNSL(*), CNSV(*), CNSD(*),JTYPE 
+     &               CNSC(*), CNSL(*), CNSV(*), CNSD(*),JTYPE
       REAL*8         COORD(*)
       CHARACTER*(*)  NOBJ,PARTIE
       CHARACTER*8    NOCMP(NBCMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     IMPRESSION D'UN CHAM_NO AU FORMAT GMSH :
@@ -57,7 +57,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      IEL, IMA, IPOIN, LISTNO(99), J, JCNSC, JCNSL, JCNSV,
-     +             JCNSD, NCMP, K, JEL, IOR, INOE, NBNO, L, JNO
+     &             JCNSD, NCMP, K, JEL, IOR, INOE, NBNO, L, JNO
       REAL*8       VAL(NBCMP)
 C     ------------------------------------------------------------------
 C
@@ -66,16 +66,14 @@ C
 C --- VERIF QU'ON N'EST PAS HORS SCOPE D'UTILISATION
 C     (CHAMP SCALAIRE OU VECTEUR)
       IF(NBCMP.NE.1.AND.NBCMP.NE.3)
-     +  CALL UTMESS('F','IRGNAL','ERREUR DE PROGRAMMATION : '//
-     +              'NBCMP DIFFERENT DE 1 OU 3.')
+     &  CALL U2MESS('F','PREPOST2_61')
 C
       CALL JEVEUO ( NOBJ, 'L', JEL )
       CALL JEVEUO(JEXNUM('&CATA.TM.NBNO',NUMEL),'L',JNO)
       NBNO=ZI(JNO)
 C
       IF(NBNO.GT.99)
-     +  CALL UTMESS('F','IRGNAL','ON NE PEUT PAS TRAITER DES ELEMENTS'
-     +                  //' A PLUS DE 99 NOEUDS !')
+     &  CALL U2MESS('F','PREPOST2_62')
 C
 C     BOUCLE SUR LES ELEMENTS
       DO 10 IEL = 1 , NBEL
@@ -108,7 +106,7 @@ C           ...EN CHAQUE NOEUD...
 
 C              ...ON CHERCHE LES COMPOSANTES A ECRIRE...
               DO 1220 K = 1 , NCMP
-                  
+
                 DO 1230 L = 1, NBCMP
                   IF ( ZK8(JCNSC-1+K) .EQ. NOCMP(L)) THEN
                     IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
@@ -133,7 +131,7 @@ C              ...ET ON IMPRIME LES VALEURS DES COMPOSANTES DE NOCMP
 
 C              ...ON CHERCHE LES COMPOSANTES A ECRIRE...
               DO 2220 K = 1 , NCMP
-                  
+
                 DO 2230 L = 1, NBCMP
                   IF ( ZK8(JCNSC-1+K) .EQ. NOCMP(L)) THEN
                     IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
@@ -144,8 +142,7 @@ C              ...ON CHERCHE LES COMPOSANTES A ECRIRE...
                         VAL(L) = DIMAG(ZC(JCNSV-1+
      &                                 (LISTNO(INOE)-1)*NCMP+K))
                       ELSE
-                        CALL UTMESS ('F','IRGNAL',
-     &                                 'ERREUR DE PROGRAMATION')
+                        CALL U2MESS('F','PREPOST2_63')
                       ENDIF
                       IF (ABS(VAL(L)).LE.1.D-99) VAL(L)=0.D0
                     ENDIF
@@ -161,7 +158,7 @@ C              ...ET ON IMPRIME LES VALEURS DES COMPOSANTES DE NOCMP
 
           ENDIF
  120    CONTINUE
-                 
+
  10   CONTINUE
 C
       CALL JELIBE ( NOBJ )

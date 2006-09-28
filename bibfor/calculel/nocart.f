@@ -2,7 +2,7 @@
      &                  NMLIGZ, NCMP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C     -------------------------------
          IF (NOMLIG(1:8).NE.' ') THEN
             ZK24(NOLI-1+NEDIT) = NOMLIG
          ELSE
-            CALL UTMESS('F',' NOCAR2 ','1')
+            CALL U2MESS('F','CALCULEL_33')
          END IF
       END IF
 
@@ -146,7 +146,7 @@ C        -- A "TOUT":   9999
          ZI(JDESC-1+3+2*NEDIT) = NEDIT
          DIM = NMA
       ELSE
-         CALL UTMESS('F',' NOCAR2 ','2')
+         CALL U2MESS('F','UTILITAI_67')
       END IF
 
 
@@ -187,7 +187,7 @@ C             MAILLES NOMMEES DU MAILLAGE
             CALL JENONU(JEXNOM(MA//'.NOMMAI',LIMANZ),NUMERO)
             ZI(JLIMA-1+I) = NUMERO
          ELSE
-            CALL UTMESS('F',' NOCAR2 ','4')
+            CALL U2MESS('F','CALCULEL3_83')
          END IF
   100 CONTINUE
 

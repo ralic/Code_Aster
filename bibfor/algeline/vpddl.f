@@ -1,7 +1,7 @@
       SUBROUTINE VPDDL(RAIDE,MASSE,NEQ,NBLAGR,NBCINE,NEQACT,DLAGR,DBLOQ,
      &                 IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,9 +123,7 @@ C     ---------------------------------------------------------
 C
 C     ----------------- CALCUL DU NOMBRE DE DDL ACTIFS -----------------
       NEQACT = NEQ - 3* (NBLAGR/2) - NBCINE
-      IF (NEQACT.LE.0) CALL UTMESS('F','VPDDL',
-     &                    'LE SYSTEME A RESOUDRE N''A PAS DE DDL ACTIF.'
-     &                             )
+      IF (NEQACT.LE.0) CALL U2MESS('F','ALGELINE3_63')
 
 C    -----IMPRESSION DES DDL -----
 C

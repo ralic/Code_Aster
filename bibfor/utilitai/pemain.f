@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*),DEFORM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -170,14 +170,12 @@ C     --- CREATION DE LA TABLE ---
           DO 30 IG = 1,NBGRMA
             CALL JEEXIN(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),IRET)
             IF (IRET.EQ.0) THEN
-              CALL UTMESS('A','PEMAIN','LE GROUPE DE MAILLE "'//
-     &                    ZK8(JGR+IG-1)//'" N''EXISTE PAS.')
+              CALL U2MESK('A','UTILITAI3_46',1,ZK8(JGR+IG-1))
               GO TO 30
             END IF
             CALL JELIRA(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),'LONMAX',NBMA,K8B)
             IF (NBMA.EQ.0) THEN
-              CALL UTMESS('A','PEMAIN','LE GROUPE '//ZK8(JGR+IG-1)//
-     &                    ' NE CONTIENT AUCUNE MAILLE.')
+              CALL U2MESK('A','UTILITAI3_47',1,ZK8(JGR+IG-1))
               GO TO 30
             END IF
             CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',ZK8(JGR+IG-1)),'L',JAD)
@@ -197,8 +195,7 @@ C     --- CREATION DE LA TABLE ---
           DO 40 IM = 1,NBMAIL
             CALL JEEXIN(JEXNOM(MLGNMA,ZK8(JMA+IM-1)),IRET)
             IF (IRET.EQ.0) THEN
-              CALL UTMESS('A','PEMAIN','LA MAILLE "'//ZK8(JMA+IM-1)//
-     &                    '" N''EXISTE PAS.')
+              CALL U2MESK('A','UTILITAI3_49',1,ZK8(JMA+IM-1))
               GO TO 40
             END IF
             CALL JENONU(JEXNOM(MLGNMA,ZK8(JMA+IM-1)),NUME)

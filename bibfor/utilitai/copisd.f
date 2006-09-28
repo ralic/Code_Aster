@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -238,8 +238,7 @@ C     -----------------------------------
         CALL EXISD(TYPESD,SD1,IRET)
         IF (IRET.EQ.0) THEN
           SDR1 = SD1
-          CALL UTMESS('F','COPISD','STRUCTURE DE DONNEES INEXISTANTE :'
-     &                //SDR1)
+          CALL U2MESK('F','UTILITAI_40',1,SDR1)
         END IF
 
         CALL TBCOPI(BASE,SD1,SD2)
@@ -250,8 +249,7 @@ C     -----------------------------------
         CALL EXISD(TYPESD,SD1,IRET)
         IF (IRET.EQ.0) THEN
           SDR1 = SD1
-          CALL UTMESS('F','COPISD','STRUCTURE DE DONNEES INEXISTANTE :'
-     &                //SDR1)
+          CALL U2MESK('F','UTILITAI_40',1,SDR1)
         END IF
 
         CALL RSCOPI(BASE,SD1,SD2)
@@ -307,8 +305,7 @@ C
              IF ( IRET .NE. 0 ) THEN
                 CALL TBCOPI ( BAS2, K191, K192 )
              ELSE
-                CALL UTMESS('F','COPISD',
-     &         'DUPLCATION "MAILLAGE" DU .LTNT, OBJET INCONNU: '//K191)
+                CALL U2MESK('F','UTILITAI_41',1,K191)
              ENDIF
              ZK24(JLTN2+I-1) = K192
  10       CONTINUE
@@ -325,7 +322,7 @@ C       -- OBJETS QUE JE NE CONNAIS PAS !! (JP) :
 C ----------------------------------------------------------------------
       ELSE
         TYP2SD = TYPESD
-        CALL UTMESS('F',' COPISD ','TYPE DE SD. INCONNU : '//TYP2SD)
+        CALL U2MESK('F','UTILITAI_42',1,TYP2SD)
       END IF
 
       CALL JEDEMA

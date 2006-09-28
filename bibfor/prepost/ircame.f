@@ -1,28 +1,28 @@
       SUBROUTINE IRCAME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     >                    NBCMP, NOMCMP,
-     >                    NUMPT, INSTAN, UNIINS, NUMORD,
-     >                    ADSK, ADSD, ADSC, ADSV, ADSL,
-     >                    NBENEC, LIENEC,
-     >                    CODRET )
+     &                    NBCMP, NOMCMP,
+     &                    NUMPT, INSTAN, UNIINS, NUMORD,
+     &                    ADSK, ADSD, ADSC, ADSV, ADSL,
+     &                    NBENEC, LIENEC,
+     &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ECRITURE D'UN CHAMP - FORMAT MED
 C        -  -       - -            --
@@ -178,9 +178,9 @@ C 2.1. ==> NOM ET DIMENSION DU MAILLAGE ASTER
 C
       NOMAAS = ZK8(ADSK-1+1)
       CALL DISMOI ( 'F', 'DIM_GEOM', NOMAAS, 'MAILLAGE', NDIM,
-     >              SAUX32, CODRET )
+     &              SAUX32, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTMESS ( 'F', NOMPRO, 'MAILLAGE INTROUVABLE ?' )
+        CALL U2MESS('F','PREPOST_71')
       ENDIF
 C
 C 2.2. ==> CREATION DU NOM DU MAILLAGE POUR MED
@@ -188,7 +188,7 @@ C
       CALL MDNOMA ( NOMAMD, LNOMAM, NOMAAS, CODRET )
       IF ( CODRET.NE.0 ) THEN
         CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL UTMESS ( 'F', NOMPRO, 'MED:ERREUR MDNOMA NUMERO '//SAUX08 )
+        CALL U2MESK('F','PREPOST_72',1,SAUX08)
       ENDIF
 C
 C 2.3. ==> CE MAILLAGE EST-IL DEJA PRESENT DANS LE FICHIER ?
@@ -203,7 +203,7 @@ C
         LGAUX = .FALSE.
         K8BID = '        '
         CALL IRMAIL ( SAUX08, IFI, IAUX, NOMAAS, LGAUX, K8BID, JAUX,
-     >                NIVINF )
+     &                NIVINF )
       ENDIF
 C
 C====
@@ -213,8 +213,8 @@ C
 C 3.1. ==> NUMEROS, NOMS ET UNITES DES COMPOSANTES A ECRIRE
 C
       CALL UTLICM ( NBCMP, NOMCMP,
-     >              ZK8(ADSK+1), NCMPRF, ZK8(ADSC),
-     >              NCMPVE, NTLCMP, NTNCMP, NTUCMP )
+     &              ZK8(ADSK+1), NCMPRF, ZK8(ADSC),
+     &              NCMPVE, NTLCMP, NTNCMP, NTUCMP )
 C
 C 3.2. ==> . RECUPERATION DES NB/NOMS/NBNO/NBITEM DES TYPES DE MAILLES
 C            DANS CATALOGUE
@@ -222,18 +222,18 @@ C          . RECUPERATION DES TYPES GEOMETRIE CORRESPONDANT POUR MED
 C          . VERIF COHERENCE AVEC LE CATALOGUE
 C
       CALL LRMTYP ( NBTYP, NOMTYP,
-     >              NNOTYP, TYPGEO, RENUMD,
-     >              MODNUM, NUANOM, NUMNOA )
+     &              NNOTYP, TYPGEO, RENUMD,
+     &              MODNUM, NUANOM, NUMNOA )
 C
 C 3.3. ==> DEFINITIONS DES IMPRESSIONS ET CREATION DES PROFILS EVENTUELS
 C
       CALL IRCMPR ( NOFIMD,
-     >              TYPECH,
-     >              NBIMPR, NCAIMI, NCAIMK,
-     >              NCMPRF, NCMPVE, NTLCMP,
-     >              NBVATO, NBENEC, LIENEC, ADSD, ADSL,
-     >              NOMAAS, MODELE, TYPGEO, NOMTYP,
-     >              NTPROA )
+     &              TYPECH,
+     &              NBIMPR, NCAIMI, NCAIMK,
+     &              NCMPRF, NCMPVE, NTLCMP,
+     &              NBVATO, NBENEC, LIENEC, ADSD, ADSL,
+     &              NOMAAS, MODELE, TYPGEO, NOMTYP,
+     &              NTPROA )
 C
       CALL JEVEUO ( NCAIMI, 'L', ADCAII )
       CALL JEVEUO ( NCAIMK, 'L', ADCAIK )
@@ -243,10 +243,10 @@ C
       IF ( TYPECH(1:2).EQ.'EL' ) THEN
 C
         CALL IRMPGA ( NOFIMD,
-     >                CHANOM, TYPECH, NOMTYP,
-     >                NBIMPR, ZI(ADCAII), ZK32(ADCAIK),
-     >                MODNUM, NUANOM,
-     >                CODRET )
+     &                CHANOM, TYPECH, NOMTYP,
+     &                NBIMPR, ZI(ADCAII), ZK32(ADCAIK),
+     &                MODNUM, NUANOM,
+     &                CODRET )
 C
       ENDIF
 C
@@ -272,9 +272,9 @@ C
         CALL JEDETC('V',NMCMFI,1)
 C
         CALL MDEXCH ( NOFIMD,
-     >                NOCHMD, NUMPT, NUMORD, NCMPVE, NTNCMP,
-     >                NVALEC, TYPENT, TYGEOM,
-     >                JAUX, NBCMFI, NMCMFI, NBVAL, CODRET )
+     &                NOCHMD, NUMPT, NUMORD, NCMPVE, NTNCMP,
+     &                NVALEC, TYPENT, TYGEOM,
+     &                JAUX, NBCMFI, NMCMFI, NBVAL, CODRET )
 C
         EXISTC = MAX ( EXISTC, JAUX )
 C
@@ -289,13 +289,13 @@ C
       IF ( EXISTC.LE.2 ) THEN
 C
         CALL IRCAM1 ( NOFIMD, NOCHMD,
-     >                EXISTC, NCMPRF,
-     >                NUMPT, INSTAN, UNIINS, NUMORD,
-     >                ADSD, ADSV, ADSL,
-     >                NCMPVE, NTLCMP, NTNCMP, NTUCMP, NTPROA,
-     >                NBIMPR, ZI(ADCAII), ZK32(ADCAIK),
-     >                NOMAMD, NOMTYP, MODNUM, NUANOM,
-     >                CODRET )
+     &                EXISTC, NCMPRF,
+     &                NUMPT, INSTAN, UNIINS, NUMORD,
+     &                ADSD, ADSV, ADSL,
+     &                NCMPVE, NTLCMP, NTNCMP, NTUCMP, NTPROA,
+     &                NBIMPR, ZI(ADCAII), ZK32(ADCAIK),
+     &                NOMAMD, NOMTYP, MODNUM, NUANOM,
+     &                CODRET )
 C
       ELSE
 C
@@ -304,7 +304,7 @@ C
         CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
         CALL UTIMPI ( 'L', 'RETOUR DE MDEXCH : EXISTC = ', 1, EXISTC )
         CALL UTFINM ()
-        CALL UTMESS ('F',NOMPRO,'LE CHAMP EST ECRIT DANS LE FICHIER !')
+        CALL U2MESS('F','PREPOST_73')
 C
       ENDIF
 C

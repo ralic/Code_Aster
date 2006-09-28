@@ -1,28 +1,28 @@
       SUBROUTINE MMAXGL ( NBORN,BORN,GBIL,NOEU,ABCUR,LONVEC,
-     +                    NNOFF,RESULT )
-      IMPLICIT NONE        
+     &                    NNOFF,RESULT )
+      IMPLICIT NONE
 C
       INTEGER     NBORN,LONVEC,NNOFF
       REAL*8      BORN(*),GBIL(*),ABCUR(*)
       CHARACTER*8 RESULT,NOEU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C      OPERATEUR :     CALC_G
@@ -42,7 +42,7 @@ C     ABCUR       /IN/:ABSCISSE CURVILIGNE DU FOND DE FISSURE
 C     LONVEC      /IN/:NOMBRE DE CHAMPS DE DEPLACEMENTS
 C     NNOFF       /IN/:NOMBRE DE NOEUD EN FOND DE FISSURE
 C     RESULT     /OUT/:TABLE RESULTAT
-C 
+C
 C ----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
@@ -97,7 +97,7 @@ C
       ZK16(INOPR+LONVEC+3) = 'G_MAX'
       ZK8 (ITYPR+LONVEC+3) = 'R'
       ZK16(INOPR+LONVEC+4) = 'MAX_G_MAX'
-      ZK8 (ITYPR+LONVEC+4) = 'R'         
+      ZK8 (ITYPR+LONVEC+4) = 'R'
 C
       TABGMA = 'G_MAX'
       TABLE(1) = 'T1'
@@ -107,8 +107,7 @@ C
       CALL TBAJPA ( 'T4',NBPRUP,ZK16(INOPR),ZK8(ITYPR) )
 C
       IF (NBORN.NE.(2.D0*LONVEC)) THEN
-             CALL UTMESS('F','MMAXGL','NOMBRE DE BORNES ERRONE : '//
-     +   'ON DOIT EN AVOIR AUTANT QUE DE NUMEROS D''ORDRE')
+             CALL U2MESS('F','UTILITAI2_50')
 C
       END IF
       COLLEC = '&&MMAXGL.BORNES_Q'
@@ -163,19 +162,19 @@ C
                     NJ = J*(J-1)/2 + I
                     IF ( NJ .EQ. 1 ) THEN
                        ZR(IGQ+I-1) = ZR(IGQ+I-1)
-     +                               + GBIL(N)*ZR(IQ+J-1)
+     &                               + GBIL(N)*ZR(IQ+J-1)
                     ELSE
                        ZR(IGQ+I-1) = ZR(IGQ+I-1)
-     +                             + GBIL(N+((NJ-1)*NNOFF))*ZR(IQ+J-1)
+     &                             + GBIL(N+((NJ-1)*NNOFF))*ZR(IQ+J-1)
                     END IF
                   ELSE
                     NI = I*(I-1)/2 + J
                     IF ( NI .EQ. 1 ) THEN
                        ZR(IGQ+I-1) = ZR(IGQ+I-1)
-     +                               + GBIL(N)*ZR(IQ+J-1)
+     &                               + GBIL(N)*ZR(IQ+J-1)
                     ELSE
                        ZR(IGQ+I-1) = ZR(IGQ+I-1)
-     +                             + GBIL(N+((NI-1)*NNOFF))*ZR(IQ+J-1)
+     &                             + GBIL(N+((NI-1)*NNOFF))*ZR(IQ+J-1)
                     END IF
                   END IF
  210           CONTINUE
@@ -193,11 +192,11 @@ C
 C
 C  CONSTRUCTION DE LA TABLE DES G
            CALL TBAJLI ( TABGMA, NBPAR, ZK16(INOPR),
-     +                       IBID, ZR(IPA), CBID, NOEU(N), 0 )
+     &                       IBID, ZR(IPA), CBID, NOEU(N), 0 )
 C
  190     CONTINUE
 C
-         CALL TBEXVE(TABGMA,'G','&&MMAXGL.G','V',NCOMB,K8BID) 
+         CALL TBEXVE(TABGMA,'G','&&MMAXGL.G','V',NCOMB,K8BID)
          CALL JEVEUO('&&MMAXGL.G','L',IG)
 
          DO 220 K=1,NCOMB
@@ -224,11 +223,11 @@ C
 C
              NBPAR = LONVEC+4
              CALL TBAJLI ( TABGMA, NBPAR, ZK16(INOPR),
-     +                     IBID, ZR(IPA), CBID, NOEU(N), K )
+     &                     IBID, ZR(IPA), CBID, NOEU(N), K )
 C
 C  CONSTRUCTION DE LA TABLE DES G_MAX
              CALL TBAJLI ( 'T4', NBPAR, ZK16(INOPR),
-     +                     IBID, ZR(IPA), CBID, NOEU(N), 0 )
+     &                     IBID, ZR(IPA), CBID, NOEU(N), 0 )
            END IF
 C
  220     CONTINUE
@@ -241,7 +240,7 @@ C
             CALL COPISD('TABLE','V',TABLE(2),TABLE(1))
          ELSE
             CALL TBFUTB('T3','V',2,TABLE,' ',' ',IBID,RBID,CBID,
-     +                   K8BID)
+     &                   K8BID)
             CALL DETRSD('TABLE',TABLE(1))
             CALL COPISD('TABLE','V','T3',TABLE(1))
             CALL DETRSD('TABLE','T3')
@@ -256,7 +255,7 @@ C
          CALL TBTRTB('T4','V','T5',1,ZK16(INOPR+LONVEC+3),'DE',
      &               0.D0,'ABSOLU  ')
          CALL TBAJLI('T5', NBPRUP, ZK16(INOPR),
-     +               IBID, ZR(IRMAX), CBID, ZK8(IKMAX), 1 )            
+     &               IBID, ZR(IRMAX), CBID, ZK8(IKMAX), 1 )
          CALL DETRSD('TABLE','T4')
 C
 C  CONSTRUCTION DE LA TABLE SYNTHETISANT LES G_MAX
@@ -274,7 +273,7 @@ C
          CALL DETRSD('TABLE','T4')
          CALL DETRSD('TABLE','T5')
          CALL TBFUTB('T4','V',2,TABLE,' ',' ',IBID,RBID,CBID,
-     +                K8BID)
+     &                K8BID)
          CALL DETRSD('TABLE',TABLE(1))
          CALL DETRSD('TABLE',TABLE(2))
          CALL COPISD('TABLE','V','T4',TABLE(1))
@@ -282,7 +281,7 @@ C
          CALL DETRSD('TABLE','T3')
          CALL DETRSD('TABLE','T4')
          CALL TBFUTB('T4','V',2,TABLE,' ',' ',IBID,RBID,CBID,
-     +                K8BID)
+     &                K8BID)
 C
          CALL COPISD('TABLE','G','T4',RESULT)
 C

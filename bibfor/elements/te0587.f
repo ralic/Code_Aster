@@ -1,6 +1,6 @@
       SUBROUTINE TE0587(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,8 +83,7 @@ C=====RECUPERATION NOMBRE DE COUCHES ET DE SECTEURS ANGULAIRES
       NBCOU = ZI(JNBSPI-1+1)
       NBSEC = ZI(JNBSPI-1+2)
       IF (NBCOU*NBSEC.LE.0) THEN
-        CALL UTMESS('F','TE0587','LE NOMBRE DE COUCHES ET DE '//
-     &              'SECTEURS DOIVENT ETRE SUPERIEURS A 0')
+        CALL U2MESS('F','ELEMENTS4_46')
       END IF
       IF (NBCOU.GT.NBCOUM) THEN
         CALL UTDEBM('F','TE0587','TUYAU : LE NOMBRE DE COUCHES')
@@ -523,8 +522,7 @@ C ======== RAPPEL DES CONTRAINTES ====================
           ELSE IF (NOMCMP(1:4).EQ.'SIYZ') THEN
             NUMCMP = 6
           ELSE
-            CALL UTMESS('A','VALE_NCOU_MAXI',
-     &                  'CMP '//NOMCMP//' NON TRAITEE, ON ABANDONNE')
+            CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
             GO TO 350
           END IF
         ELSE IF (NOMCHA.EQ.'EQUI_ELGA_SIGM') THEN
@@ -535,8 +533,7 @@ C ======== RAPPEL DES CONTRAINTES ====================
           ELSE IF (NOMCMP(1:7).EQ.'VMIS_SG') THEN
             NUMCMP = 2
           ELSE
-            CALL UTMESS('A','VALE_NCOU_MAXI',
-     &                  'CMP '//NOMCMP//' NON TRAITEE, ON ABANDONNE')
+            CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
             GO TO 350
           END IF
         ELSE IF (NOMCHA.EQ.'EPSI_ELGA_DEPL') THEN
@@ -555,8 +552,7 @@ C ======== RAPPEL DES CONTRAINTES ====================
           ELSE IF (NOMCMP(1:4).EQ.'EPYZ') THEN
             NUMCMP = 6
           ELSE
-            CALL UTMESS('A','VALE_NCOU_MAXI',
-     &                  'CMP '//NOMCMP//' NON TRAITEE, ON ABANDONNE')
+            CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
             GO TO 350
           END IF
         ELSE IF (NOMCHA.EQ.'EQUI_ELGA_EPSI') THEN
@@ -567,13 +563,11 @@ C ======== RAPPEL DES CONTRAINTES ====================
           ELSE IF (NOMCMP(1:8).EQ.'INVA_2SG') THEN
             NUMCMP = 2
           ELSE
-            CALL UTMESS('A','VALE_NCOU_MAXI',
-     &                  'CMP '//NOMCMP//' NON TRAITEE, ON ABANDONNE')
+            CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
             GO TO 350
           END IF
         ELSE
-          CALL UTMESS('A','VALE_NCOU_MAXI',
-     &                'CHAMP '//NOMCHA//' NON TRAITE, ON ABANDONNE')
+          CALL U2MESK('A','ELEMENTS4_48',1,NOMCHA)
           GO TO 350
         END IF
 
@@ -662,8 +656,7 @@ C  =========================================
 
 
       ELSE
-        CALL UTMESS('F','TE0587','L''OPTION "'//OPTION//
-     &              '" EST NON PREVUE')
+        CALL U2MESK('F','ELEMENTS4_49',1,OPTION)
       END IF
 
   350 CONTINUE

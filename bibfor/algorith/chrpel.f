@@ -1,6 +1,6 @@
       SUBROUTINE CHRPEL(CHAMP1, REPERE, NBCMP, ICHAM, TYPE, NOMCH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,9 +78,9 @@ C
       IF (NBCMP.GT.0) THEN
          CALL WKVECT('&&CHRPEL.NOM_CMP','V V K8',NBCMP,JCMP)
          CALL GETVTX('MODI_CHAM','NOM_CMP',ICHAM,1,NBCMP,
-     +                ZK8(JCMP),IBID)
+     &                ZK8(JCMP),IBID)
       ELSE
-           CALL UTMESS('F','CHRPNO','IL FAUT DEFINIR NOM_CMP')
+           CALL U2MESS('F','ALGORITH2_6')
       ENDIF
 
 
@@ -115,8 +115,8 @@ C     ON EXCLUT LES MOT-CLES 'NOEUD' ET 'GROUP_NO'
       CALL UTIMPK('S','MOT-CLE ',1,K8B)
       CALL UTIMPK('S','EST INCOMPATIBLE AVEC LE CHAMP',1,NOMCH)
       CALL UTIMPK('S','. UTILISER ''GROUP_MA'' OU ''MAILLE'''
-     +   //' POUR RESTREINDRE LE CHANGEMENT DE REPERE A CERTAINES'
-     +   //' MAILLES.',0,' ')
+     &   //' POUR RESTREINDRE LE CHANGEMENT DE REPERE A CERTAINES'
+     &   //' MAILLES.',0,' ')
       CALL UTFINM()
  100  CONTINUE
       CALL JEDETR('&&CHRPEL.NOEUDS')
@@ -129,7 +129,7 @@ C
       IF (K8B.EQ.'OUI') NDIM = 2
 
       CALL RELIEM(' ',MA,'NU_MAILLE','MODI_CHAM',ICHAM,2,MOTCLE,TYPMCL,
-     +                                                   MESMAI,NBM)
+     &                                                   MESMAI,NBM)
 
       IF (NBM.GT.0) THEN
         NBMAIL = NBM
@@ -139,7 +139,7 @@ C
       ENDIF
 
       CALL JEEXIN(MA//'.CONNEX',IRET)
-      IF (IRET.EQ.0) CALL UTMESS('F','CHRPEL','STOP')
+      IF (IRET.EQ.0) CALL U2MESS('F','CALCULEL_13')
       CALL JEVEUO(MA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',JCONX2)
       CALL JEVEUO(CHAMS1//'.CESV','E',JCESV)
@@ -170,15 +170,14 @@ C
          IF (NDIM.EQ.3) THEN
             CALL GETVR8('DEFI_REPERE','ANGL_NAUT',1,1,3,ANGNOT,IBID)
             IF (IBID.NE.3) THEN
-               CALL UTMESS('F','CHRPEL','IL FAUT DEFINIR 3 ANGLES'//
-     +                     ' NAUTIQUES.')
+               CALL U2MESS('F','ALGORITH2_7')
             ENDIF
          ELSE
             CALL GETVR8('DEFI_REPERE','ANGL_NAUT',1,1,1,ANGNOT(1),IBID)
             IF (IBID.NE.1) THEN
                CALL UTDEBM('A','CHRPEL','ETUDE 2D')
                CALL UTIMPR('L','ANGLE NAUTIQUE UNIQUE : ',1,
-     +                                  ANGNOT(1))
+     &                                  ANGNOT(1))
                CALL UTFINM()
             ENDIF
          ENDIF
@@ -220,7 +219,7 @@ C
                      VALER(6) = VALET(5)
                      DO 14 II=1,NBCMP
                         CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
-     +                              II,IAD)
+     &                              II,IAD)
                         IF (IAD.GT.0) THEN
                            ZR(JCESV-1+IAD) = VALER(II)
                         ELSE
@@ -270,24 +269,20 @@ C
          IF (NDIM.EQ.3) THEN
             CALL GETVR8('DEFI_REPERE','ORIGINE',1,1,3,ORIG,IBID)
             IF (IBID.NE.3) THEN
-               CALL UTMESS('F','CHRPEL','L ORIGINE DOIT ETRE'//
-     +                     ' DEFINIE PAR 3 COORDONNEES.')
+               CALL U2MESS('F','ALGORITH2_8')
             ENDIF
             CALL GETVR8('DEFI_REPERE','AXE_Z',1,1,3,AXEZ,IBID)
             IF (IBID.EQ.0) THEN
-               CALL UTMESS('F','CHRPEL','L AXE Z EST OBLIGATOIRE'//
-     +                     ' EN 3D.')
+               CALL U2MESS('F','ALGORITH2_9')
             ENDIF
          ELSE
             CALL GETVR8('DEFI_REPERE','ORIGINE',1,1,2,ORIG,IBID)
             IF (IBID.NE.2) THEN
-               CALL UTMESS('A','CHRPEL','POUR LE 2D ON NE PREND'//
-     +                     ' QUE 2 COORDONNEES POUR L ORIGINE.')
+               CALL U2MESS('A','ALGORITH2_10')
             ENDIF
             CALL GETVR8('DEFI_REPERE','AXE_Z',1,1,0,AXEZ,IBID)
             IF (IBID.NE.0) THEN
-               CALL UTMESS('A','CHRPEL','L AXE Z EST N A PAS'//
-     +                     ' DE SENS EN 2D.')
+               CALL U2MESS('A','ALGORITH2_11')
             ENDIF
             AXEZ(1) = 0.0D0
             AXEZ(2) = 0.0D0
@@ -344,9 +339,7 @@ C
                      CALL NORMEV(AXER,XNORMR)
                      IF (XNORMR .LT. EPSI) THEN
                         CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
-                        CALL UTMESS('A',K8B,'LE NOEUD SE TROUVE SUR L'
-     +                  //' AXE DU REPERE CYLINDRIQUE. ON PREND LE'
-     +                  //' NOEUD MOYEN DES CENTRES GEOMETRIQUES.')
+                        CALL U2MESS('A','ALGORITH2_12')
                         AXER(1) = 0.0D0
                         AXER(2) = 0.0D0
                         AXER(3) = 0.0D0
@@ -356,7 +349,7 @@ C
                            AXER(2) = AXER(2) + ZR(AXYZM+3*(INOT-1)+1)
                            IF (NDIM.EQ.3) THEN
                               AXER(3) = AXER(3) +
-     +                                  ZR(AXYZM+3*(INOT-1)+2)
+     &                                  ZR(AXYZM+3*(INOT-1)+2)
                            ENDIF
  24                     CONTINUE
                         AXER(1) = AXER(1)/NBPT - ORIG(1)
@@ -410,7 +403,7 @@ C
                      VALER(6) = VALET(5)
                      DO 28 II=1,NBCMP
                         CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
-     +                              II,IAD)
+     &                              II,IAD)
                         IF (IAD.GT.0) THEN
                            ZR(JCESV-1+IAD) = VALER(LICMPU(II))
                         ELSE
@@ -464,9 +457,7 @@ C
                      CALL NORMEV(AXER,XNORMR)
                      IF (XNORMR .LT. EPSI) THEN
                         CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
-                        CALL UTMESS('A',K8B,'LE NOEUD SE TROUVE SUR L'
-     +                  //' AXE DU REPERE CYLINDRIQUE. ON PREND LE'
-     +                  //' NOEUD MOYEN DES CENTRES GEOMETRIQUES.')
+                        CALL U2MESS('A','ALGORITH2_12')
                         AXER(1) = 0.0D0
                         AXER(2) = 0.0D0
                         AXER(3) = 0.0D0
@@ -476,7 +467,7 @@ C
                            AXER(2) = AXER(2) + ZR(AXYZM+3*(INOT-1)+1)
                            IF (NDIM.EQ.3) THEN
                               AXER(3) = AXER(3) +
-     +                                  ZR(AXYZM+3*(INOT-1)+2)
+     &                                  ZR(AXYZM+3*(INOT-1)+2)
                            ENDIF
  33                     CONTINUE
                         AXER(1) = AXER(1)/NBPT - ORIG(1)
@@ -522,7 +513,7 @@ C
                      ENDIF
                      DO 37 II=1,NBCMP
                         CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,
-     +                              II,IAD)
+     &                              II,IAD)
                         IF (IAD.GT.0) THEN
                            ZR(JCESV-1+IAD) = VALER(LICMPU(II))
                         ELSE
@@ -535,9 +526,9 @@ C
          ENDIF
       ENDIF
       CALL DISMOI ( 'F', 'NOM_LIGREL', CHAMP1, 'CHAM_ELEM',
-     +              IBID, LIGREL, IBID )
+     &              IBID, LIGREL, IBID )
       CALL DISMOI ( 'F', 'NOM_OPTION', CHAMP1, 'CHAM_ELEM',
-     +              IBID, OPTION, IBID )
+     &              IBID, OPTION, IBID )
       CALL CESCEL(CHAMS1,LIGREL,OPTION,' ','OUI',NNCP,'G',CHAMP1)
       CALL DETRSD('CHAM_ELEM_S',CHAMS1)
       CALL JEDETR('&&CHRPEL.NOM_CMP')

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 01/07/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,9 +77,7 @@ C     -----------------------------------
         CALL GETVID('CREA_GROUP_MA','NOM',IOCC,1,1,NOGMA,N1)
 
         CALL JENONU(JEXNOM(MA//'.GROUPEMA',NOGMA),IBID)
-        IF (IBID.GT.0) CALL UTMESS('A','SSCGMA',
-     &                             ' LE GROUP_MA : '//NOGMA//
-     &                             ' EXISTE DEJA.')
+        IF (IBID.GT.0) CALL U2MESK('A','ALGELINE3_7',1,NOGMA)
 
         CALL GETVEM(MA,'MAILLE','CREA_GROUP_MA','MAILLE',IOCC,1,0,KBID,
      &              N2)
@@ -128,20 +126,20 @@ C       -------------------
             CALL JENONU(JEXNOM(MA//'.NOMMAI',NOM1),NUM)
             IF (NUM.EQ.0) THEN
               IER = IER + 1
-              CALL UTMESS('E','SSCGMA','LA MAILLE : '//NOM1//
-     &                    ' N''APPARTIENT PAS AU MAILLAGE')
+              CALL U2MESK('E','SOUSTRUC_31',1,NOM1)
               GO TO 20
             END IF
             ZI(JMAIL2-1+NUM) = ZI(JMAIL2-1+NUM) + 1
             IF (ZI(JMAIL2-1+NUM).EQ.2) THEN
               CALL UTMESS('A',CMD,'MAILLE EN DOUBLE : '//NOM1//
      &                    ' DANS LE GROUP_MA: '//NOGMA)
+C        CALL U2MESK('A','SOUSTRUC_32', 2 ,VALK)
               GO TO 20
             END IF
             NBMA = NBMA + 1
             ZI(JMAIL+NBMA-1) = NUM
    20     CONTINUE
-          IF (IER.NE.0) CALL UTMESS('F',CMD,'ARRET SUR ERREUR')
+          IF (IER.NE.0) CALL U2MESS('F','MODELISA4_1')
           CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
           CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',NBMA,KBID)
           CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',IAGMA)
@@ -171,13 +169,8 @@ C       ---------------------
             IF (N6A.EQ.0) IND1 = 1
             CALL GETVIS('CREA_GROUP_MA','NUME_FIN',IOCC,1,1,IND2,N6A)
             IF (N6A.EQ.0) IND2 = ILI2
-            IF (IND2.LT.IND1) CALL UTMESS('F','SSCGMA',
-     &                             'L''INDICE FINAL'//
-     &                             ' EST INFERIEUR A L''INDICE INITIAL '
-     &                             )
-            IF (ILI2.LT.IND2) CALL UTMESS('F','SSCGMA','L''INDICE '//
-     &                      'FINAL EST SUPERIEUR A LA TAILLE DU GROUPE '
-     &                             )
+            IF (IND2.LT.IND1) CALL U2MESS('F','SOUSTRUC_33')
+            IF (ILI2.LT.IND2) CALL U2MESS('F','SOUSTRUC_34')
             N6A = IND2 - IND1 + 1
           ELSE
             N6A = 1
@@ -214,10 +207,8 @@ C       -------------------
      &                NBID)
           DO 50,IGM = 1,N3
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            IF (IGM2.EQ.0) CALL UTMESS('F','SSCGMA',
-     &                                 'LE GROUP_MA : '//ZK8(IALIK8-1+
-     &                                 IGM)//
-     &                                 ' N''APPARTIENT PAS AU MAILLAGE')
+            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,ZK8(IALIK8-1+
+     &                                   IGM))
    50     CONTINUE
 
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
@@ -249,8 +240,7 @@ C       -------------------
 
           IF (N.EQ.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
-     &                  'EST VIDE. ON NE LE CREE PAS.')
+              CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
             END IF
           ELSE
             CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
@@ -272,10 +262,8 @@ C       -------------------
      &                NBID)
           DO 100,IGM = 1,N4
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            IF (IGM2.EQ.0) CALL UTMESS('F','SSCGMA',
-     &                                 'LE GROUP_MA : '//ZK8(IALIK8-1+
-     &                                 IGM)//
-     &                                 ' N''APPARTIENT PAS AU MAILLAGE')
+            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,ZK8(IALIK8-1+
+     &                                   IGM))
   100     CONTINUE
 
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
@@ -317,8 +305,7 @@ C       -------------------
 
           IF (N.EQ.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
-     &                  'EST VIDE. ON NE LE CREE PAS.')
+              CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
             END IF
           ELSE
             CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
@@ -340,10 +327,8 @@ C       -------------------
      &                NBID)
           DO 150,IGM = 1,N5
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            IF (IGM2.EQ.0) CALL UTMESS('F','SSCGMA',
-     &                                 'LE GROUP_MA : '//ZK8(IALIK8-1+
-     &                                 IGM)//
-     &                                 ' N''APPARTIENT PAS AU MAILLAGE')
+            IF (IGM2.EQ.0) CALL U2MESK('F','SOUSTRUC_35',1,ZK8(IALIK8-1+
+     &                                   IGM))
   150     CONTINUE
 
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
@@ -375,8 +360,7 @@ C       -------------------
 
           IF (N.EQ.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
-     &                  'EST VIDE. ON NE LE CREE PAS.')
+              CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
             END IF
           ELSE
             CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
@@ -427,8 +411,7 @@ C        -- CREATION ET AFFECTATION DU GROUP_MA :
 C            ----------------------------------
           IF (NBMA.EQ.0) THEN
             IF (ALARM.EQ.'OUI') THEN
-              CALL UTMESS('A','SSCGMA','LE GROUP_MA :'//NOGMA//
-     &                  'EST VIDE. ON NE LE CREE PAS.')
+              CALL U2MESK('A','SOUSTRUC_36',1,NOGMA)
             END IF
           ELSE
             CALL JEVEUO(LISMA,'L',IDLIMA)

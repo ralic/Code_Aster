@@ -2,22 +2,22 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/06/2001   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C  DESCRIPTION : TENTATIVE D'IMMERSION D'UN NOEUD CABLE X3DCA(3) DANS
@@ -281,7 +281,7 @@ C
                 DX = XYZMA(1,J) - X3DCA(1)
                 DY = XYZMA(2,J) - X3DCA(2)
                 DZ = XYZMA(3,J) - X3DCA(3)
-                D  = DX*DX + DY*DY + DZ*DZ 
+                D  = DX*DX + DY*DY + DZ*DZ
                 IF ( D.LT.R8PREM() ) THEN
                   IMMER=2
                   GOTO 9999
@@ -293,7 +293,7 @@ C
                 DX = XYZMA(1,J) - X3DCA(1)
                 DY = XYZMA(2,J) - X3DCA(2)
                 DZ = XYZMA(3,J) - X3DCA(3)
-                D  = DX*DX + DY*DY + DZ*DZ 
+                D  = DX*DX + DY*DY + DZ*DZ
                 IF ( D.LT.R8PREM() ) THEN
                   IMMER=2
                   GOTO 9999
@@ -309,35 +309,35 @@ C
            ITETRA = 1
            CALL TSTBAR(4,XYZMA(1,6),XYZMA(1,3),XYZMA(1,8),
      &                 XYZMA(1,1),X3DCA(1),XBAR(1),IMMER)
-           IF ( IMMER.GE.0 ) GOTO 9999   
+           IF ( IMMER.GE.0 ) GOTO 9999
 C
 C.... TETRAEDRE 1-3-8-4
 C
            ITETRA = 2
            CALL TSTBAR(4,XYZMA(1,1),XYZMA(1,3),XYZMA(1,8),XYZMA(1,4),
      &                   X3DCA(1),XBAR(1),IMMER)
-           IF ( IMMER.GE.0 ) GOTO 9999 
+           IF ( IMMER.GE.0 ) GOTO 9999
 C
 C.... TETRAEDRE 6-8-1-5
 C
            ITETRA = 3
            CALL TSTBAR(4,XYZMA(1,6),XYZMA(1,8),XYZMA(1,1),
      &                 XYZMA(1,5),X3DCA(1),XBAR(1),IMMER)
-           IF ( IMMER.GE.0 ) GOTO 9999 
+           IF ( IMMER.GE.0 ) GOTO 9999
 C
 C.....TETRAEDRE 1-3-6-2
 C
            ITETRA = 4
            CALL TSTBAR(4,XYZMA(1,1),XYZMA(1,3),XYZMA(1,6),
      &                 XYZMA(1,2),X3DCA(1),XBAR(1),IMMER)
-           IF ( IMMER.GE.0 ) GOTO 9999 
+           IF ( IMMER.GE.0 ) GOTO 9999
 C
 C.... TETRAEDRE 6-8-3-7
 C
            ITETRA = 5
            CALL TSTBAR(4,XYZMA(1,6),XYZMA(1,8),XYZMA(1,3),
      &                   XYZMA(1,7),X3DCA(1),XBAR(1),IMMER)
-           IF ( IMMER.GE.0 ) GOTO 9999 
+           IF ( IMMER.GE.0 ) GOTO 9999
 C
 C  DANS LE CAS DE FACES REORIENTEE (FACNP VRAI) ON TESTE LA PRESENCE
 C  DANS LES PETITS TETRAEDRES DEFINIS PAR CHAQUE FACE.
@@ -348,7 +348,7 @@ C
               ITETRA = 6
               CALL TSTBAR(4,XYZMA(1,1),XYZMA(1,2),XYZMA(1,3),
      &                    XYZMA(1,4),X3DCA(1),XBAR(1),IMMER)
-              IF ( IMMER.GE.0 ) GOTO 9999 
+              IF ( IMMER.GE.0 ) GOTO 9999
            ENDIF
 C
 C.... TETRAEDRE 3-4-8-7
@@ -357,7 +357,7 @@ C
               ITETRA = 7
               CALL TSTBAR(4,XYZMA(1,3),XYZMA(1,4),XYZMA(1,8),
      &                    XYZMA(1,7),X3DCA(1),XBAR(1),IMMER)
-              IF ( IMMER.GE.0 ) GOTO 9999 
+              IF ( IMMER.GE.0 ) GOTO 9999
            ENDIF
 C
 C.... TETRAEDRE 6-7-8-5
@@ -366,7 +366,7 @@ C
               ITETRA = 8
               CALL TSTBAR(4,XYZMA(1,6),XYZMA(1,7),XYZMA(1,8),
      &                    XYZMA(1,5),X3DCA(1),XBAR(1),IMMER)
-              IF ( IMMER.GE.0 ) GOTO 9999 
+              IF ( IMMER.GE.0 ) GOTO 9999
            ENDIF
 C
 C.... TETRAEDRE 6-5-1-2
@@ -375,7 +375,7 @@ C
               ITETRA = 9
               CALL TSTBAR(4,XYZMA(1,6),XYZMA(1,5),XYZMA(1,1),
      &                    XYZMA(1,2),X3DCA(1),XBAR(1),IMMER)
-              IF ( IMMER.GE.0 ) GOTO 9999 
+              IF ( IMMER.GE.0 ) GOTO 9999
            ENDIF
 C
 C.... TETRAEDRE 6-2-3-7
@@ -384,7 +384,7 @@ C
               ITETRA = 10
               CALL TSTBAR(4,XYZMA(1,6),XYZMA(1,2),XYZMA(1,3),
      &                    XYZMA(1,7),X3DCA(1),XBAR(1),IMMER)
-              IF ( IMMER.GE.0 ) GOTO 9999 
+              IF ( IMMER.GE.0 ) GOTO 9999
            ENDIF
 C
 C.... TETRAEDRE 1-5-8-4
@@ -393,11 +393,11 @@ C
               ITETRA = 11
               CALL TSTBAR(4,XYZMA(1,1),XYZMA(1,5),XYZMA(1,8),
      &                    XYZMA(1,4),X3DCA(1),XBAR(1),IMMER)
-              IF ( IMMER.GE.0 ) GOTO 9999 
+              IF ( IMMER.GE.0 ) GOTO 9999
            ENDIF
 
            IF (IMMER.LT.0) THEN
-            CALL UTMESS('F','IMMEHX','MAILLE DEGENEREE')
+            CALL U2MESS('F','MODELISA4_72')
            ENDIF
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

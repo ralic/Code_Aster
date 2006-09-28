@@ -5,22 +5,22 @@
       CHARACTER*(*)       NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     INTERPOLATION POUR FONCTION COMPLEXE A VARIABLE REELLE
 C
@@ -53,7 +53,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER      LPROL, NUPAR, MXPARA, NBPF, I, I1, I2, LVALE,
-     +             LFONC, NBVALE
+     &             LFONC, NBVALE
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
       REAL*8       EPSI, TOLE, R8PREM, R8VIDE, VALR
       CHARACTER*1  COLI, K1BID, BL
@@ -80,11 +80,11 @@ C     FONCTION EN LIGNE
 C
       LINLIN(X,X1,Y1,X2,Y2)= Y1+(X-X1)*(Y2-Y1)/(X2-X1)
       LINLOG(X,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(X-X1)*(LOG(Y2)-LOG(Y1))
-     +                                        /(X2-X1))
+     &                                        /(X2-X1))
       LOGLOG(X,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(LOG(X)-LOG(X1))*(LOG(Y2)
-     +                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
+     &                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
       LOGLIN(X,X1,Y1,X2,Y2)=Y1+(LOG(X)-LOG(X1))*(Y2-Y1)
-     +                                         /(LOG(X2)-LOG(X1))
+     &                                         /(LOG(X2)-LOG(X1))
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -100,8 +100,7 @@ C
 C --- CALCUL DE LA FONCTION INTERPRETEE ---
 C
       IF ( ZK16(LPROL) .EQ. 'INTERPRE' ) THEN
-         CALL UTMESS('F','FOINTC','POUR L''INSTANT, ON NE TRAITE '
-     +              //'PAS LES FORMULES COMPLEXES')
+         CALL U2MESS('F','UTILITAI2_15')
          GOTO 9999
 C
       ENDIF
@@ -156,41 +155,40 @@ C
             RESUIM = ZR(LFONC+I2+1)
           ELSE
             IER = 200
-            CALL UTMESS('A','FOINTC','INTERPOLATION NON PERMISE')
+            CALL U2MESS('A','UTILITAI2_16')
             GOTO 9999
           ENDIF
         ELSE IF (INTERP.EQ.'LIN LIN ') THEN
           I1 = 1 + 2 * ( I - 1 )
           I2 = 1 + 2 * I
           RESURE = LINLIN(VALR,ZR(LVALE+I-1),ZR(LFONC+I1),
-     +                                      ZR(LVALE+I),ZR(LFONC+I2))
+     &                                      ZR(LVALE+I),ZR(LFONC+I2))
           RESUIM = LINLIN(VALR,ZR(LVALE+I-1),ZR(LFONC+I1+1),
-     +                                    ZR(LVALE+I),ZR(LFONC+I2+1))
+     &                                    ZR(LVALE+I),ZR(LFONC+I2+1))
         ELSE IF (INTERP.EQ.'LIN LOG ') THEN
           I1 = 1 + 2 * ( I - 1 )
           I2 = 1 + 2 * I
           RESURE = LINLOG(VALR,ZR(LVALE+I-1),ZR(LFONC+I1),
-     +                                      ZR(LVALE+I),ZR(LFONC+I2))
+     &                                      ZR(LVALE+I),ZR(LFONC+I2))
           RESUIM = LINLOG(VALR,ZR(LVALE+I-1),ZR(LFONC+I1+1),
-     +                                    ZR(LVALE+I),ZR(LFONC+I2+1))
+     &                                    ZR(LVALE+I),ZR(LFONC+I2+1))
         ELSE IF (INTERP.EQ.'LOG LOG ') THEN
           I1 = 1 + 2 * ( I - 1 )
           I2 = 1 + 2 * I
           RESURE = LOGLOG(VALR,ZR(LVALE+I-1),ZR(LFONC+I1),
-     +                                      ZR(LVALE+I),ZR(LFONC+I2))
+     &                                      ZR(LVALE+I),ZR(LFONC+I2))
           RESUIM = LOGLOG(VALR,ZR(LVALE+I-1),ZR(LFONC+I1+1),
-     +                                    ZR(LVALE+I),ZR(LFONC+I2+1))
+     &                                    ZR(LVALE+I),ZR(LFONC+I2+1))
         ELSE IF (INTERP.EQ.'LOG LIN ') THEN
           I1 = 1 + 2 * ( I - 1 )
           I2 = 1 + 2 * I
           RESURE = LOGLIN(VALR,ZR(LVALE+I-1),ZR(LFONC+I1),
-     +                                      ZR(LVALE+I),ZR(LFONC+I2))
+     &                                      ZR(LVALE+I),ZR(LFONC+I2))
           RESUIM = LOGLIN(VALR,ZR(LVALE+I-1),ZR(LFONC+I1+1),
-     +                                    ZR(LVALE+I),ZR(LFONC+I2+1))
+     &                                    ZR(LVALE+I),ZR(LFONC+I2+1))
         ELSE
           IER = 230
-          CALL UTMESS('A','FOINTC','ON NE CONNAIT PAS CE'//
-     +                             ' TYPE D''INTERPOLATION: '//INTERP)
+          CALL U2MESK('A','UTILITAI2_17',1,INTERP)
           GOTO 9999
         ENDIF
 C
@@ -198,13 +196,13 @@ C
         I1 = 1 + 2 * ( I - 1 )
         I2 = 1 + 2 * I
         RESURE = LINLIN(VALR,ZR(LVALE+I-1),ZR(LFONC+I1),
-     +                                       ZR(LVALE+I),ZR(LFONC+I2))
+     &                                       ZR(LVALE+I),ZR(LFONC+I2))
         RESUIM = LINLIN(VALR,ZR(LVALE+I-1),ZR(LFONC+I1+1),
-     +                                     ZR(LVALE+I),ZR(LFONC+I2+1))
+     &                                     ZR(LVALE+I),ZR(LFONC+I2+1))
 C
       ELSE
         IER = 240
-        CALL UTMESS('A','FOINTC','TYPE INCONNU '//COLI)
+        CALL U2MESK('A','UTILITAI2_18',1,COLI)
       ENDIF
 C
 9999  CONTINUE

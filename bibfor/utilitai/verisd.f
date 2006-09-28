@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TYPESD,NOMSD
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/09/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -528,8 +528,7 @@ C     -----------------------------------
 
 
       ELSE
-        CALL UTMESS('I','VERISD',' LE MOT CLE :'//TYP2SD//
-     &              ' N EST PAS ENCORE PREVU.')
+        CALL U2MESK('I','UTILITAI5_87',1,TYP2SD)
       END IF
 
  9999 CONTINUE

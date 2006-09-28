@@ -2,22 +2,22 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C     ------------------------------------------------------------------
@@ -57,21 +57,21 @@ C ----------------------------------------------------------------------
       COMPLEX*16    CBID
       CHARACTER*1   COLI, K1BID
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, GRAN, INTERP, BASEM2,
-     +              MAILLA, NOMRES, NOMIN, NOMCMP(6), MODE, MONMOT(2),
-     +              MATGEN
+     &              MAILLA, NOMRES, NOMIN, NOMCMP(6), MODE, MONMOT(2),
+     &              MATGEN
       CHARACTER*14  NUMDDL, NUMGEN
       CHARACTER*16  TYPRES, NOMCMD, NOMP(MXPARA), TYPE(8), TYPCHA,
-     +              TYPBAS(8), TYPREP, CONCEP, CHAMP(8)
+     &              TYPBAS(8), TYPREP, CONCEP, CHAMP(8)
       CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE,
-     +              TYPREF(8)
+     &              TYPREF(8)
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1,
-     +              OBJVE2, NOMNOE, NUMEDD
+     &              OBJVE2, NOMNOE, NUMEDD
       LOGICAL       TOUSNO, MULTAP, LEFFOR, LRPHYS
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
       DATA CHAMN2   /'&&TRAN75.CHAMN2'/
       DATA NOMCMP   /'DX      ','DY      ','DZ      ',
-     +               'DRX     ','DRY     ','DRZ     '/
+     &               'DRX     ','DRY     ','DRZ     '/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       MODE = BASEMO
@@ -96,7 +96,7 @@ C
  10      CONTINUE
          XNORM = SQRT(XNORM)
          IF (XNORM.LT.R8PREM()) THEN
-            CALL UTMESS('F','TRAN75','LE VECTEUR DIRECTEUR EST NUL.')
+            CALL U2MESS('F','ALGORITH9_81')
          ENDIF
          DO 12 ID = 1,NBDIR
             DEPL(ID) = DEPL(ID) / XNORM
@@ -131,17 +131,17 @@ C
            MATRIC = ZK24(IADRIF)
            IF (MATRIC.NE.BLANC) THEN
             CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
-     +                 NUMDDL,IRET)
+     &                 NUMDDL,IRET)
             CALL DISMOI('F','NOM_MAILLA',MATRIC,'MATR_ASSE',IBID,
-     +                 MAILLA,IRET)
+     &                 MAILLA,IRET)
             IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',
-     +                               NEQ,K8B,IRET)
+     &                               NEQ,K8B,IRET)
            ELSE
             NUMDDL = ZK24(IADRIF+3)(1:14)
             CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IBID,
-     +                 MAILLA,IRET)
+     &                 MAILLA,IRET)
             IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',
-     +                               NEQ,K8B,IRET)
+     &                               NEQ,K8B,IRET)
            ENDIF
          ELSE
 C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
@@ -149,7 +149,7 @@ C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
            IF(MATRIC(1:8) .EQ. BLANC) THEN
              MATRIC=ZK24(IADRIF)
              CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',
-     +                              IBID,NUMDDL,IRET)
+     &                              IBID,NUMDDL,IRET)
            ELSE
              NUMDDL = MATRIC(1:8)
            ENDIF
@@ -158,7 +158,7 @@ C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
            MAILLA = MATRIC(1:8)
            MATRIC = ZK24(IADRIF)
            IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',
-     +                              NEQ,K8B,IRET)
+     &                              NEQ,K8B,IRET)
          ENDIF
 C
          BASEM2 = BASEMO
@@ -185,13 +185,13 @@ C
            CHAMP(1) = 'DEPL'
            CHAMP(2) = 'VITE'
            CHAMP(3) = 'ACCE'
-         ELSE         
+         ELSE
            CALL GETVTX(' ','NOM_CHAM',1,1,0,CHAMP,N1)
            IF (N1.NE.0) THEN
              NBCHAM = -N1
              CALL GETVTX(' ','NOM_CHAM',1,1,NBCHAM,CHAMP,N1)
            ELSE
-             CALL UTMESS('A','TRAN75','IL FAUT UN NOM DE CHAMP')
+             CALL U2MESS('A','ALGORITH10_93')
              GOTO 9999
            ENDIF
          ENDIF
@@ -200,8 +200,7 @@ C
          KINST = '&&TRAN75.INSTANT'
          CALL RSTRAN('NON',TRANGE,' ',1,KINST,KNUME,NBINST,IRETOU)
          IF ( IRETOU .NE. 0 ) THEN
-           CALL UTMESS('F','TRAN75','PROBLEME(S) RENCONTRE(S) LORS'//
-     +                     ' DE LA LECTURE DES INSTANTS.' )
+           CALL U2MESS('F','UTILITAI4_24')
          ENDIF
          CALL JEEXIN(KINST,IRET )
          IF ( IRET .GT. 0 ) THEN
@@ -209,22 +208,21 @@ C
            CALL JEVEUO ( KNUME, 'L', JNUME )
          END IF
 C        WRITE(6,*) 'NBINST NBINS2 NBMODE NEQ ',NBINST,NBINS2,NBMODE,NEQ
-         IF (NBINST.GT.NBINS2) NBINST = NBINS2         
+         IF (NBINST.GT.NBINS2) NBINST = NBINS2
 C         WRITE(6,*) 'KINST ',(ZR(JINST+I-1),I=1,NBINST)
 C         WRITE(6,*) 'KNUME ',(ZI(JNUME+I-1),I=1,NBINST)
 C     --- CREATION DE LA SD RESULTAT ---
          CALL RSCRSD(NOMRES, TYPRES, NBINST)
 C
          DO 300 I = 1 , NBCHAM
-           IF ( CHAMP(I) .EQ. 'DEPL' ) THEN 
+           IF ( CHAMP(I) .EQ. 'DEPL' ) THEN
              CALL JEVEUO(TRANGE//'.DGEN','L',JRESTR)
-           ELSEIF ( CHAMP(I) .EQ. 'VITE' ) THEN 
+           ELSEIF ( CHAMP(I) .EQ. 'VITE' ) THEN
              CALL JEVEUO(TRANGE//'.VGEN','L',JRESTR)
-           ELSEIF ( CHAMP(I) .EQ. 'ACCE' ) THEN 
+           ELSEIF ( CHAMP(I) .EQ. 'ACCE' ) THEN
              CALL JEVEUO(TRANGE//'.AGEN','L',JRESTR)
            ELSE
-             CALL UTMESS('A','TRAN75','PAS DE CHAMP AUTRE QUE'//
-     +                     ' DEPL OU VITE OU ACCE' )
+             CALL U2MESS('A','ALGORITH10_94')
              GOTO 300
            ENDIF
            DO 310 IARCH = 1, NBINST
@@ -233,7 +231,7 @@ C
              CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
              CALL JEVEUO(CHAMNO(1:19)//'.VALE','E',LDNEW)
              CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),
-     +                   ZR(JRESTR+(INUM-1)*NBMODE),ZR(LDNEW))
+     &                   ZR(JRESTR+(INUM-1)*NBMODE),ZR(LDNEW))
              CALL RSNOCH(NOMRES,CHAMP(I)(1:4),IARCH,' ')
              IF (I.EQ.1) THEN
                CALL RSADPA(NOMRES,'E',1,'INST',IARCH,0,LINST,K8B)
@@ -262,7 +260,7 @@ C
          CREFE(1) = ZK24(LLCHA)
          CREFE(2) = ZK24(LLCHA+1)
          IF ( TOUSNO ) CALL JELIRA(CREFE(2)(1:19)//'.NUEQ','LONMAX',
-     +                             NEQ,K8B)
+     &                             NEQ,K8B)
          BASEM2 = ' '
       ENDIF
 C
@@ -277,7 +275,7 @@ C
 C     ---   RECUPERATION DES VECTEURS DEPLACEMENT, VITESSE ET   ---
 C     --- ACCELERATION GENERALISES SUIVANT LES CHAMPS SOUHAITES ---
       CALL RBPH01 ( TRANGE, NBCHAM, TYPE, ITRESU, NFONCT, BASEM2,
-     +              TYPREF, TYPBAS, TOUSNO, MULTAP )
+     &              TYPREF, TYPBAS, TOUSNO, MULTAP )
 C
 C     --- RECUPERATION DES NUMEROS DES NOEUDS ET DES DDLS ASSOCIES ---
 C     ---         DANS LE CAS D'UNE RESTITUTION PARTIELLE          ---
@@ -331,8 +329,7 @@ C
       KINST = '&&TRAN75.INSTANT'
       CALL RSTRAN(INTERP,TRANGE,' ',1,KINST,KNUME,NBINST,IRETOU)
       IF ( IRETOU .NE. 0 ) THEN
-         CALL UTMESS('F','TRAN75','PROBLEME(S) RENCONTRE(S) LORS'//
-     +                          ' DE LA LECTURE DES INSTANTS.' )
+         CALL U2MESS('F','UTILITAI4_24')
       ENDIF
       CALL JEEXIN ( KINST, IRET )
       IF ( IRET .GT. 0 ) THEN
@@ -365,7 +362,7 @@ C
                   IEC = (J-1)/30 + 1
                   JJ = J - 30*(IEC-1)
                   ZI(JDESC+(NUNO-1)*NEC+IEC-1) =
-     +                    IOR(ZI(JDESC+(NUNO-1)*NEC+IEC-1),2**JJ)
+     &                    IOR(ZI(JDESC+(NUNO-1)*NEC+IEC-1),2**JJ)
                ENDIF
  160        CONTINUE
             ZI(JNBCA+NUNO-1) = 6
@@ -391,8 +388,7 @@ C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
        CALL GETVID(' ','MODE_MECA',0,1,1,K8B,FOMO)
        IF ((INTERP(1:3).NE.'NON').AND.(FOCI.EQ.0 .AND. FOCF.EQ.0 .AND.
      &     FOMI.EQ.0 .AND. FOMF.EQ.0 .AND. FOMO.EQ.0 )) THEN
-          CALL UTMESS('F','TRAN75','POUR INTERPOLER IL FAUT FOURNIR'//
-     &                ' UNE LISTE DE FREQUENCES OU INSTANTS.')
+          CALL U2MESS('F','ALGORITH10_95')
        ENDIF
 
        CALL JEVEUO(TRANGE//'.INST','L',IDINSG)
@@ -425,7 +421,7 @@ C
             IF (MODE.EQ.BLANC.AND.MATRIC.EQ.BLANC.AND.
      &         TYPCHA.EQ.'DEPL') THEN
              CALL COPMO2(BASEMO,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
-            ELSE      
+            ELSE
              CALL COPMOD(BASEMO,TYPCHA,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
             ENDIF
           ELSE
@@ -465,7 +461,7 @@ C
              IARCHI = IARCHI + 1
              CALL RSEXCH(NOMRES,TYPE(ICH),IARCHI,CHAMNO,IRET)
              IF ( IRET .EQ. 0 ) THEN
-             CALL UTMESS('A','TRAN75',CHAMNO//'CHAM_NO DEJA EXISTANT')
+             CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
              ELSEIF ( IRET .EQ. 100 ) THEN
                IF ( TOUSNO ) THEN
                  IF (MODE.EQ.BLANC) THEN
@@ -480,7 +476,7 @@ C
                ELSE
                  IF ( (I.EQ.0).AND.(ICH.EQ.1) ) THEN
                     CALL CRCHNO(CHAMNO,CHAMNO,GRAN,MAILLA,'G','R',
-     +                          NBNOMA,NEQ)
+     &                          NBNOMA,NEQ)
                     PRCHNO = CHAMNO
                     CALL CRPRNO(PRCHNO,'G',NBNOMA,NEQ)
                     CALL JEVEUO(PRCHNO//'.PRNO','E',JPRNO)
@@ -492,7 +488,7 @@ C
                        DO 230 INEC = 1,NEC
                           II = II + 1
                           ZI(JPRNO-1+(NEC+2)*(INO-1)+2+INEC) =
-     +                                                  ZI(JDESC+II-1)
+     &                                                  ZI(JDESC+II-1)
  230                   CONTINUE
                        IDEC = IDEC + ZI(JNBCA+INO-1)
  220                CONTINUE
@@ -503,11 +499,11 @@ C
                     CALL JEDETR('&&TRAN75.NBCOMP_AFFE')
                  ELSE
                     CALL CRCHNO(CHAMNO,PRCHNO,GRAN,MAILLA,'G','R',
-     +                          NBNOMA,NEQ)
+     &                          NBNOMA,NEQ)
                  ENDIF
                ENDIF
              ELSE
-                CALL UTMESS('F','TRAN75','APPEL ERRONE')
+                CALL U2MESS('F','ALGORITH3_16')
              ENDIF
              CHAMNO(20:24) = '.VALE'
              IF (INTERP(1:3).EQ.'NON') THEN
@@ -516,33 +512,33 @@ C
                  CHAMNO(20:24) = '.VALE'
                ELSE
                  CHAMNO(20:24) = '.CELV'
-               END IF             
-             END IF             
+               END IF
+             END IF
              CALL JEVEUO(CHAMNO,'E',LVALE)
 
-             IF (LEFFOR .OR. .NOT.TOUSNO) 
-     +         CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
+             IF (LEFFOR .OR. .NOT.TOUSNO)
+     &         CALL JELIRA(CHAMNO,'LONMAX',NEQ,K8B)
              IF (INTERP(1:3).NE.'NON') THEN
                CALL EXTRAC(INTERP,EPSI,CRIT,NBINSG,ZR(IDINSG),
-     +               ZR(JINST+I),ZR(IDRESU),NBMODE,ZR(IDVECG), IBID)
+     &               ZR(JINST+I),ZR(IDRESU),NBMODE,ZR(IDVECG), IBID)
                CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),ZR(IDVECG),ZR(LVALE))
              ELSE
                CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),
-     +                     ZR(IDRESU+(ZI(JNUME+I)-1)*NBMODE),ZR(LVALE))
+     &                     ZR(IDRESU+(ZI(JNUME+I)-1)*NBMODE),ZR(LVALE))
              ENDIF
              IF ( MULTAP ) THEN
                 IF (TYPE(ICH).EQ.'DEPL')
-     +           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                       ZR(JINST+I),ZK8(JNODEP),ZR(LVAL2))
+     &           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
+     &                       ZR(JINST+I),ZK8(JNODEP),ZR(LVAL2))
                 IF (TYPE(ICH).EQ.'VITE')
-     +           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                       ZR(JINST+I),ZK8(JNOVIT),ZR(LVAL2))
+     &           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
+     &                       ZR(JINST+I),ZK8(JNOVIT),ZR(LVAL2))
                 IF (TYPE(ICH).EQ.'ACCE')
-     +           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                       ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
+     &           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
+     &                       ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
                 IF (TYPE(ICH).EQ.'ACCE_ABSOLU')
-     +           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
-     +                       ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
+     &           CALL MDGEP3(NEQ,NBEXCI,ZR(LPSDEL),
+     &                       ZR(JINST+I),ZK8(JNOACC),ZR(LVAL2))
                 DO 240 IE =1,NEQ
                    ZR(LVALE+IE-1)=ZR(LVALE+IE-1)+ZR(LVAL2+IE-1)
  240            CONTINUE
@@ -558,10 +554,10 @@ C               --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
                 DO 250 ID = 1 , NBDIR
                    DO 252 IE = 0 , NEQ-1
                       ZR(JVEC+IE) =  ZR(JVEC+IE) +
-     +                         ZI(JDDL+NEQ*(ID-1)+IE)*ALPHA*DEPL(ID)
+     &                         ZI(JDDL+NEQ*(ID-1)+IE)*ALPHA*DEPL(ID)
  252               CONTINUE
  250            CONTINUE
-                DO 254 IE = 0 , NEQ-1 
+                DO 254 IE = 0 , NEQ-1
                    ZR(LVALE+IE) = ZR(LVALE+IE) + ZR(JVEC+IE)
  254            CONTINUE
                 CALL JEDETR ('&&TRAN75.VECTEUR')

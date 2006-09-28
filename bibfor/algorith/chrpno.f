@@ -1,6 +1,6 @@
       SUBROUTINE CHRPNO( CHAMP1, REPERE, NBCMP, ICHAM, TYPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,9 +78,9 @@ C
       IF (NBCMP.GT.0) THEN
          CALL WKVECT('&&CHRPNO.NOM_CMP','V V K8',NBCMP,JCMP)
          CALL GETVTX('MODI_CHAM','NOM_CMP',ICHAM,1,NBCMP,
-     +   ZK8(JCMP),IBID)
+     &   ZK8(JCMP),IBID)
       ELSE
-           CALL UTMESS('F','CHRPNO','IL FAUT DEFINIR NOM_CMP')
+           CALL U2MESS('F','ALGORITH2_6')
       ENDIF
 C
 C ----- DEFINITION ET CREATION DU CHAM_NO SIMPLE CHAMS1
@@ -104,7 +104,7 @@ C
 C
 
       CALL RELIEM(' ',MA,'NU_NOEUD','MODI_CHAM',ICHAM,4,MOTCLE,TYPMCL,
-     +                                                  MESNOE,NBN)
+     &                                                  MESNOE,NBN)
 
       IF (NBN.GT.0) THEN
         NBNOEU = NBN
@@ -157,15 +157,14 @@ C
          IF (NDIM.EQ.3) THEN
             CALL GETVR8('DEFI_REPERE','ANGL_NAUT',1,1,3,ANGNOT,IBID)
             IF (IBID.NE.3) THEN
-               CALL UTMESS('F','CHRPNO','IL FAUT DEFINIR 3 ANGLES'//
-     +                     ' NAUTIQUES.')
+               CALL U2MESS('F','ALGORITH2_7')
             ENDIF
          ELSE
             CALL GETVR8('DEFI_REPERE','ANGL_NAUT',1,1,1,ANGNOT(1),IBID)
             IF (IBID.NE.1) THEN
                CALL UTDEBM('A','CHRPNO','ETUDE 2D')
                CALL UTIMPR('L','ANGLE NAUTIQUE UNIQUE : ',1,
-     +                                  ANGNOT(1))
+     &                                  ANGNOT(1))
                CALL UTFINM()
             ENDIF
          ENDIF
@@ -229,24 +228,20 @@ C REPERE CYLINDRIQUE
          IF (NDIM.EQ.3) THEN
             CALL GETVR8('DEFI_REPERE','ORIGINE',1,1,3,ORIG,IBID)
             IF (IBID.NE.3) THEN
-               CALL UTMESS('F','CHRPNO','L ORIGINE DOIT ETRE'//
-     +                     ' DEFINIE PAR 3 COORDONNEES.')
+               CALL U2MESS('F','ALGORITH2_8')
             ENDIF
             CALL GETVR8('DEFI_REPERE','AXE_Z',1,1,3,AXEZ,IBID)
             IF (IBID.EQ.0) THEN
-               CALL UTMESS('F','CHRPNO','L AXE Z EST OBLIGATOIRE'//
-     +                     ' EN 3D.')
+               CALL U2MESS('F','ALGORITH2_9')
             ENDIF
          ELSE
             CALL GETVR8('DEFI_REPERE','ORIGINE',1,1,2,ORIG,IBID)
             IF (IBID.NE.2) THEN
-               CALL UTMESS('A','CHRPNO','POUR LE 2D ON NE PREND'//
-     +                     ' QUE 2 COORDONNEES POUR L ORIGINE.')
+               CALL U2MESS('A','ALGORITH2_10')
             ENDIF
             CALL GETVR8('DEFI_REPERE','AXE_Z',1,1,0,AXEZ,IBID)
             IF (IBID.NE.0) THEN
-               CALL UTMESS('A','CHRPNO','L AXE Z EST N A PAS'//
-     +                     ' DE SENS EN 2D.')
+               CALL U2MESS('A','ALGORITH2_11')
             ENDIF
             AXEZ(1) = 0.0D0
             AXEZ(2) = 0.0D0
@@ -288,9 +283,7 @@ C REPERE CYLINDRIQUE
                CALL NORMEV(AXER,XNORMR)
                IF (XNORMR .LT. EPSI) THEN
                   CALL JENUNO(JEXNUM(MA//'.NOMNOE',INOE),K8B)
-                  CALL UTMESS('A',K8B,'LE NOEUD SE TROUVE SUR L AXE'
-     +            //' DU REPERE CYLINDRIQUE. ON PREND LE NOEUD'
-     +            //' MOYEN DE L ELEMENT.')
+                  CALL U2MESS('A','ALGORITH2_13')
                   CALL JEVEUO(MA//'.CONNEX','L',JCONX1)
                   CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',JCONX2)
                   IPT2=0
@@ -304,12 +297,12 @@ C REPERE CYLINDRIQUE
                            AXER(3) = 0.0D0
                            DO 19 IPT2 = 1,NBPT
                               INOT = ZI(JCONX1-1 +
-     +                                ZI(JCONX2-1+INEL)+IPT2-1)
+     &                                ZI(JCONX2-1+INEL)+IPT2-1)
                               AXER(1) = AXER(1) + ZR(AXYZM+3*(INOT-1)  )
                               AXER(2) = AXER(2) + ZR(AXYZM+3*(INOT-1)+1)
                               IF (NDIM.EQ.3) THEN
                                  AXER(3) = AXER(3) +
-     +                                     ZR(AXYZM+3*(INOT-1)+2)
+     &                                     ZR(AXYZM+3*(INOT-1)+2)
                               ENDIF
  19                        CONTINUE
                            AXER(1) = AXER(1)/NBPT
@@ -410,9 +403,7 @@ C VECTEUR
                CALL NORMEV(AXER,XNORMR)
                IF (XNORMR .LT. EPSI) THEN
                   CALL JENUNO(JEXNUM(MA//'.NOMNOE',INOE),K8B)
-                  CALL UTMESS('A',K8B,'LE NOEUD SE TROUVE SUR L AXE'
-     +            //' DU REPERE CYLINDRIQUE. ON PREND LE NOEUD'
-     +            //' MOYEN DE L ELEMENT.')
+                  CALL U2MESS('A','ALGORITH2_13')
                   CALL JEVEUO(MA//'.CONNEX','L',JCONX1)
                   CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',JCONX2)
                   IPT2=0
@@ -426,12 +417,12 @@ C VECTEUR
                            AXER(3) = 0.0D0
                            DO 26 IPT2 = 1,NBPT
                               INOT = ZI(JCONX1-1 +
-     +                               ZI(JCONX2-1+INEL)+IPT2-1)
+     &                               ZI(JCONX2-1+INEL)+IPT2-1)
                               AXER(1) = AXER(1) + ZR(AXYZM+3*(INOT-1)  )
                               AXER(2) = AXER(2) + ZR(AXYZM+3*(INOT-1)+1)
                               IF (NDIM.EQ.3) THEN
                                  AXER(3) = AXER(3) +
-     +                                     ZR(AXYZM+3*(INOT-1)+2)
+     &                                     ZR(AXYZM+3*(INOT-1)+2)
                               ENDIF
  26                        CONTINUE
                            AXER(1) = AXER(1)/NBPT

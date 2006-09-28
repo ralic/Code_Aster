@@ -1,6 +1,6 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROL0,NNCP,BASEZ,CELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/05/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C     ------------------------------------------------------------------
         PROL = .FALSE.
         PROL2= .TRUE.
       ELSE
-        CALL UTMESS('F','CESCEL','ARGUMENT PROL0 INVALIDE.')
+        CALL U2MESS('F','CALCULEL_51')
       END IF
 
 
@@ -158,6 +158,7 @@ C     -----------------------------------------------------------------
           IF (ICMP.EQ.0) CALL UTMESS('F','CESCEL','LA CMP:'//NOMCMP//
      &                               ' N''APPARTIENT PAS A LA GRANDEUR:'
      &                               //NOMGD)
+C        CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
           ZI(JNUCM2-1+ICMP) = ICMP1
           ZI(JNUCM1-1+ICMP1) = ICMP
    10   CONTINUE
@@ -200,14 +201,13 @@ C     -------------------------------------------
         ELSE IF (TYPCES.EQ.'ELEM') THEN
           OPTION = 'TOU_INI_ELEM'
         ELSE
-          CALL UTMESS('F','CESCEL','STOP')
+          CALL U2MESS('F','CALCULEL_13')
         END IF
       END IF
       CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTION),IOPT)
 
 
-      IF (IOPT.EQ.0) CALL UTMESS('F','CESCEL','OPTION :'//OPTION//
-     &                           ' INEXISTANTE DANS LES CATALOGUES.')
+      IF (IOPT.EQ.0) CALL U2MESK('F','CALCULEL_53',1,OPTION)
 
 
 C     2.2 DETERMINATION DE NOMPAR SI NECESSAIRE :
@@ -263,6 +263,7 @@ C     ----------------------------------------------
      &                           ' DE L''OPTION: '//OPTION//
      &                           ' N''EST PAS CONNU '//
      &                           'DES TYPE_ELEM DU LIGREL: '//LIGREL)
+C        CALL U2MESK('F','CALCULEL_54', 3 ,VALK)
 
 
 C     3- ON REMPLIT LE .CELV :
@@ -336,8 +337,7 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
                     GO TO 130
                   ELSE
                     NOMCMP = ZK8(JCMPGD-1+ICMP)
-                    CALL UTMESS('F','CESCEL',
-     &                          'IL MANQUE LA CMP:'//NOMCMP)
+                    CALL U2MESK('F','CALCULEL_55',1,NOMCMP)
                   END IF
                 END IF
 
@@ -349,9 +349,7 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                     IF (PROL2) THEN
                       GO TO 120
                     ELSE
-                      CALL UTMESS('F','CESCEL',
-     &                        'LE LIGREL CONTIENT DES MAILLES TARDIVES,'
-     &                            )
+                      CALL U2MESS('F','CALCULEL_56')
                     END IF
                   END IF
 
@@ -364,6 +362,7 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                       CALL UTMESS('F','CESCEL','NOMBRES DE POINTS'//
      &                      ' DIFFERENTS POUR LA MAILLE: '//NOMMA//
      &                      ' CHAM_ELEM DE: '//NOMGD)
+C        CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
                     END IF
                   END IF
 
@@ -384,6 +383,7 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                         CALL UTMESS('F','CESCEL',
      &                              'IL MANQUE LA CMP:'//NOMCMP//
      &                              ' SUR LA MAILLE:'//NOMMA)
+C        CALL U2MESK('F','CALCULEL_58', 2 ,VALK)
                       END IF
                     END IF
 
@@ -400,7 +400,7 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                     ELSE IF (TSCA.EQ.'K8') THEN
                       ZK8(JCELV-1+IEQ) = ZK8(JCESV-1+IAD)
                     ELSE
-                      CALL UTMESS('F','CESCEL','STOP 1')
+                      CALL U2MESS('F','CALCULEL_2')
                     END IF
                     ZI(JCOPI-1+IAD)=1
   110             CONTINUE
@@ -420,10 +420,10 @@ C     ---------------------------------------------------
 
           CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
           DIFF = (ZI(JMOLO-1+4).GT.10000)
-          IF (DIFF) CALL UTMESS('F','CESCEL','A FAIRE...')
+          IF (DIFF) CALL U2MESS('F','CALCULEL_46')
           NBPT = MOD(ZI(JMOLO-1+4),10000)
           LGCATA = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+3)
-          IF (NBPT.NE.LGCATA) CALL UTMESS('F','CESCEL','STOP 1')
+          IF (NBPT.NE.LGCATA) CALL U2MESS('F','CALCULEL_2')
           NBEL = NBELEM(LIGREL,IGR)
 
 
@@ -435,8 +435,7 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
               IF (PROL2) THEN
                 GO TO 190
               ELSE
-                CALL UTMESS('F','CESCEL',
-     &                      'LE LIGREL CONTIENT DES MAILLES TARDIVES,')
+                CALL U2MESS('F','CALCULEL_56')
               END IF
             END IF
 
@@ -449,6 +448,7 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                 CALL UTMESS('F','CESCEL','NOMBRES DE POINTS'//
      &                      ' DIFFERENTS POUR LA MAILLE: '//NOMMA//
      &                      ' CHAM_ELEM DE: '//NOMGD)
+C        CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
               END IF
             END IF
 
@@ -473,6 +473,7 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                       CALL UTMESS('F','CESCEL',
      &                            'IL MANQUE LA CMP:'//NOMCMP//
      &                            ' SUR LA MAILLE:'//NOMMA)
+C        CALL U2MESK('F','CALCULEL_58', 2 ,VALK)
                     END IF
                   END IF
 
@@ -488,7 +489,7 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                   ELSE IF (TSCA.EQ.'K8') THEN
                     ZK8(JCELV-1+IEQ) = ZK8(JCESV-1+IAD)
                   ELSE
-                    CALL UTMESS('F','CESCEL','STOP 2')
+                    CALL U2MESS('F','CALCULEL_8')
                   END IF
                   ZI(JCOPI-1+IAD)=1
   160           CONTINUE
@@ -504,7 +505,7 @@ C     ------------------------------------------------------
       NBVCOP=0
       DO 210, IAD=1,NBVCES
          IF (.NOT.ZL(JCESL-1+IAD).OR.ZI(JCOPI-1+IAD).EQ.1)
-     +      NBVCOP=NBVCOP+1
+     &      NBVCOP=NBVCOP+1
 210   CONTINUE
       NNCP=NBVCES-NBVCOP
 

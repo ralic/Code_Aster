@@ -1,6 +1,6 @@
       SUBROUTINE DISMCP(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C DEB-------------------------------------------------------------------
         IF (IBI2.GT.0) THEN
           CALL JELIRA(NOMOB(1:19)//'.CELD','DOCU',IBID,DOCU)
         ELSE
-          CALL UTMESS(CODMES,'DISMCP','CHAMP INEXISTANT:'//NOMOB(1:19))
+          CALL U2MESK(CODMES,'UTILITAI_55',1,NOMOB(1:19))
           REPK = ' '
           GO TO 10
         END IF
@@ -90,8 +90,7 @@ C DEB-------------------------------------------------------------------
       ELSE IF (DOCU(1:4).EQ.'VGEN') THEN
         CALL DISMCG(CODMES,QUESTI,NOMOB,REPI,REPK,IERD)
       ELSE
-        CALL UTMESS(CODMES,'DISMCP','LE CHAMP : "'//NOMOB//
-     &              '" N EST PAS UN CHAMP')
+        CALL U2MESK(CODMES,'UTILITAI_56',1,NOMOB)
         IERD = 1
         GO TO 10
       END IF

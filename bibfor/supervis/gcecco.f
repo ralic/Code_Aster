@@ -4,22 +4,22 @@
       INTEGER                    IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/04/97   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ECRITURE DES CONCEPTS UTILISATEURS EXISTANT DANS L'ETUDE
 C     ------------------------------------------------------------------
@@ -89,17 +89,17 @@ C     --- ECRITURE DES EXISTANTS ---
          IIFIN = 0
          IF (IMPR .GT. 0 ) THEN
             WRITE(IMPR,*) '<',APPELA,'> ',
-     +           '<INFORMATION SUR LES CONCEPTS EXISTANTS.>'
+     &           '<INFORMATION SUR LES CONCEPTS EXISTANTS.>'
          ELSE
             CALL UTDEBM(CODE,APPELA,
-     +           'INFORMATION SUR LES CONCEPTS EXISTANTS.')
+     &           'INFORMATION SUR LES CONCEPTS EXISTANTS.')
             IIFIN = 1
          ENDIF
          IPASS = 1
          IF (IMPR .GT.0 ) THEN
             WRITE(IMPR,*)
             WRITE(IMPR,*)  '<NO  CMDE> <CONCEPT.> <TYPE DU CONCEPT.> '
-     +           //'< A ETE CREE PAR >'
+     &           //'< A ETE CREE PAR >'
             WRITE(IMPR,*)
          ELSE
             CALL UTSAUT()
@@ -114,10 +114,10 @@ C     --- ECRITURE DES EXISTANTS ---
                CALL CODENT( JCMD+1, 'D', CBID)
                IF (IMPR .GT.0 ) THEN
                   WRITE(IMPR,*)  '<',CBID,'> ',
-     +                 '<',ZK80(LGRESU+JCMD)( 1: 8),'> ',
-     +                 '<',ZK80(LGRESU+JCMD)( 9:24),'> ',
-     +                 '<',ZK80(LGRESU+JCMD)(25:40),'> ',
-     +                 '<',ZK80(LGRESU+JCMD)(41:48),'>'
+     &                 '<',ZK80(LGRESU+JCMD)( 1: 8),'> ',
+     &                 '<',ZK80(LGRESU+JCMD)( 9:24),'> ',
+     &                 '<',ZK80(LGRESU+JCMD)(25:40),'> ',
+     &                 '<',ZK80(LGRESU+JCMD)(41:48),'>'
                ELSE
                   CALL UTIMPK('L',' ',1,CBID)
                   CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)( 1: 8) )
@@ -183,18 +183,18 @@ C             ENTETE LA PREMIERE FOIS
                   IF (IMPR .GT.0 ) THEN
                      WRITE(IMPR,*)
                      WRITE(IMPR,*) '<',APPELA,'> ',
-     +                    'INFORMATION SUR LES CONCEPTS DEVANT ETRE '//
-     +                    'CREES.'
+     &                    'INFORMATION SUR LES CONCEPTS DEVANT ETRE '//
+     &                    'CREES.'
                      WRITE(IMPR,*)
                      WRITE(IMPR,*)
-     +                    '<NO  CMDE> <CONCEPT.> <TYPE DU CONCEPT.> '
-     +                    //'<SERA  CREE  PAR >'
+     &                    '<NO  CMDE> <CONCEPT.> <TYPE DU CONCEPT.> '
+     &                    //'<SERA  CREE  PAR >'
                      WRITE(IMPR,*)
                   ELSE
                      IIFIN = 1
                      CALL UTDEBM(CODE,APPELA,
-     +                    'INFORMATION SUR LES CONCEPTS DEVANT ETRE '//
-     +                    'CREES.')
+     &                    'INFORMATION SUR LES CONCEPTS DEVANT ETRE '//
+     &                    'CREES.')
                      CALL UTSAUT()
                      CALL UTIMPK('L',' ',1,' NO CMD ')
                      CALL UTIMPK('S',' ',1,'CONCEPT.')
@@ -207,10 +207,10 @@ C
                CALL CODENT( JCMD+1, 'D', CBID)
                IF (IMPR .GT.0 ) THEN
                   WRITE(IMPR,*)  '<',CBID,'> ',
-     +                 '<',ZK80(LGRESU+JCMD)( 1: 8),'> ',
-     +                 '<',ZK80(LGRESU+JCMD)( 9:24),'> ',
-     +                 '<',ZK80(LGRESU+JCMD)(25:40),'> ',
-     +                 '<',ZK80(LGRESU+JCMD)(41:48),'>'
+     &                 '<',ZK80(LGRESU+JCMD)( 1: 8),'> ',
+     &                 '<',ZK80(LGRESU+JCMD)( 9:24),'> ',
+     &                 '<',ZK80(LGRESU+JCMD)(25:40),'> ',
+     &                 '<',ZK80(LGRESU+JCMD)(41:48),'>'
                ELSE
                   CALL UTIMPK('L',' ',1,CBID)
                   CALL UTIMPK('S',' ',1,ZK80(LGRESU+JCMD)( 1: 8) )
@@ -232,13 +232,11 @@ C
          IF ( IERR .EQ. 2 ) THEN
             IF (IMPR .GT. 0 ) THEN
                WRITE(IMPR,*) '<',APPELA,'> ','LE CONCEPT "',NOMOBJ,
-     +              '" EST INCONNU. IL N''EST NI PARMI LES '
-     +              //'CREES, NI PARMI CEUX A CREER.'
+     &              '" EST INCONNU. IL N''EST NI PARMI LES '
+     &              //'CREES, NI PARMI CEUX A CREER.'
             ELSE
                CBID = NOMOBJ
-               CALL UTMESS(CODE,APPELA,'LE CONCEPT "'//CBID
-     +              //'" EST INCONNU. IL N''EST NI PARMI LES '
-     +              //'CREES, NI PARMI CEUX A CREER.')
+               CALL U2MESK(CODE,'SUPERVIS_7',1,CBID)
             ENDIF
          ENDIF
       ENDIF

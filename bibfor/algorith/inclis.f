@@ -2,22 +2,22 @@
      &                   FPLIBN,FPLIAO,FPLIBO,IADA,IADB,NUMLIS,MATPRJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/08/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
 C***********************************************************************
@@ -87,29 +87,27 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C 
+C
       TOTO='TATA'
       NOMG = 'DEPL_R'
       CALL DISMOI('F','NB_EC',NOMG,'GRANDEUR',NBEC,K8BID,IERD)
       IF (NBEC.GT.10) THEN
-         CALL UTMESS('F','ROTLIS',
-     +                   'LE DESCRIPTEUR_GRANDEUR DES DEPLACEMENTS'//
-     +                    ' NE TIENT PAS SUR DIX ENTIERS CODES')
+         CALL U2MESS('F','MODELISA_94')
       ENDIF
 
       CALL JEVEUO(MATPRJ,'L',ITEMCM)
-      
-C Calcul de la matrice orientee de la structure esclave 
+
+C Calcul de la matrice orientee de la structure esclave
       IF (IADB(3).LT.IADA(3)) THEN
         CALL ROTLIS(NOMRES,FMLIA,IADB,FPLIBN,FPLIBO,NUMLIS,SSTB,
      &              INTFB,UN)
       ENDIF
-C Calcul de la matrice orientee de la structure maitre        
+C Calcul de la matrice orientee de la structure maitre
       ZIT(1)=IADA(1)
       ZIT(2)=IADA(2)
       ZIT(3)=1
       CALL JECREC(TOTO,'V V R','NU','DISPERSE','VARIABLE',1)
-      
+
       CALL ROTLIS(NOMRES,TOTO,ZIT,FPLIAN,FPLIAO,NUMLIS,
      &            SSTA,INTFA,MOINS1)
       CALL JECROC(JEXNUM(FMLIA,IADA(3)))
@@ -118,7 +116,7 @@ C Calcul de la matrice orientee de la structure maitre
       CALL JEVEUO(JEXNUM(FMLIA,IADA(3)),'E',LDMAT)
       CALL JEVEUO(JEXNUM(TOTO,1),'L',LDMAT2)
 
-C Recuperation des donnees composantes      
+C Recuperation des donnees composantes
       CALL JEVEUO(JEXNUM(FPLIAO,NUMLIS),'L',LLPLIA)
       CALL JELIRA(JEXNUM(FPLIAO,NUMLIS),'LONMAX',NBNOEA,K8BID)
       NBNOEA=NBNOEA/(1+NBEC)
@@ -127,18 +125,18 @@ C Recuperation des donnees composantes
       NBNOEB=NBNOEB/(1+NBEC)
 
 
-C boucle sur nombre de mode de la structure maitre 
+C boucle sur nombre de mode de la structure maitre
       DO 1 K=1,IADA(2)
-C boucle sur nombre de noeuds d'interface de la structure esclave 
+C boucle sur nombre de noeuds d'interface de la structure esclave
         DO 2 M1=1,NBNOEB
           IADOB=ZI(LLPLIB+(M1-1)*(1+NBEC))
           CALL ISDECO(ZI(LLPLIB+(M1-1)*(1+NBEC)+1),IDECOB,
      &                NBCMPM)
           ICOMPB=IADOB-1
-C boucle sur nombre de composante de la structure esclave 
+C boucle sur nombre de composante de la structure esclave
          DO 3 N1=1,NBCMPM
             IF(IDECOB(N1).GT.0) THEN
-C boucle sur nombre de noeuds d'interface de la structure maitre 
+C boucle sur nombre de noeuds d'interface de la structure maitre
               ICOMPB=ICOMPB+1
               RBID=0.D0
               DO 4 M2=1,NBNOEA
@@ -151,7 +149,7 @@ C boucle sur nombre de composante de la structure maitre
                   IF ((IDECOA(N2).GT.0).AND.(N1.EQ.N2)) THEN
                     ICOMPA=ICOMPA+N2
                     RBID=RBID+
-     &                   ZR(ITEMCM+(ICOMPB-1)*IADA(1)+ICOMPA-1)* 
+     &                   ZR(ITEMCM+(ICOMPB-1)*IADA(1)+ICOMPA-1)*
      &                   ZR(LDMAT2+(K-1)*IADA(1)+ICOMPA-1)
                   ENDIF
  5            CONTINUE
@@ -164,11 +162,11 @@ C boucle sur nombre de composante de la structure maitre
 C On corrige in fine la taille de la nouvelle matrice de liaison
       IADA(1)=IADB(1)
       CALL JEDETR(TOTO)
-      
+
       IF (IADB(3).GT.IADA(3)) THEN
         CALL ROTLIS(NOMRES,FMLIA,IADB,FPLIBN,FPLIBO,NUMLIS,SSTB,
      &              INTFB,UN)
-      ENDIF          
+      ENDIF
 
 
       CALL JEDEMA()

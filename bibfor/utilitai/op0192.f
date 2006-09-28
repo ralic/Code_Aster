@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,10 +96,10 @@ C
       IF ( FORMAT.EQ.'MED' ) THEN
         CALL GETVTX ( ' ', 'NOM_MED', 0, 1, 1, NOCHMD, IAUX )
         IF ( IAUX.EQ.0 ) THEN
-          CALL UTMESS ( 'F', NOMPRO, 'NOM_MED ? (SVP)' )
+          CALL U2MESS('F','UTILITAI3_16')
         ENDIF
       ELSE
-        CALL UTMESS ( 'F', NOMPRO, 'FORMAT '//FORMAT//' INCONNU.' )
+        CALL U2MESK('F','UTILITAI3_17',1,FORMAT)
       ENDIF
 C
 C 2.2. ==> TYPE DE CHAMP A LIRE
@@ -122,7 +122,7 @@ C
         IF ( REP.EQ.'OUI' ) THEN
           NBCMPV = 0
         ELSE
-          CALL UTMESS ('F',NOMPRO,'NOM_CMP_IDEM EST CURIEUX : '//REP )
+          CALL U2MESK('F','UTILITAI3_18',1,REP)
         ENDIF
 C
       ELSE
@@ -137,7 +137,8 @@ C
         CALL GETVTX(' ',LCMPVM,0,1,0,REP,IAUX)
         IF ( -IAUX.NE.NBCMPV ) THEN
           CALL UTMESS ('F',NOMPRO,LCMPVA//' ET '//LCMPVM//' : NOMBRE '//
-     >                 'DE COMPOSANTES INCOMPATIBLE.')
+     &                 'DE COMPOSANTES INCOMPATIBLE.')
+C        CALL U2MESK('F','UTILITAI2_95', 2 ,VALK)
         ENDIF
 C
         IF ( NBCMPV.GT.0 ) THEN
@@ -160,9 +161,9 @@ C
       IF ( IAUX.EQ.0 ) THEN
         CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMO, IAUX )
         CALL DISMOI ( 'F', 'NOM_MAILLA', NOMO, 'MODELE',
-     >                IAUX, NOMAAS, CODRET )
+     &                IAUX, NOMAAS, CODRET )
         IF ( CODRET.NE.0 ) THEN
-          CALL UTMESS ( 'F', NOMPRO, 'PROBLEME MAILLAGE <-> MODELE' )
+          CALL U2MESS('F','UTILITAI3_19')
         ENDIF
       ENDIF
 C
@@ -214,10 +215,10 @@ C
 
         CHATMP = '&&OP0192.TEMPOR'
         CALL LRCHME ( CHATMP, NOCHMD, NOMAMD,
-     >                NOMAAS, TYCH(1:8), NOMGD,
-     >                NBCMPV, NCMPVA, NCMPVM,
-     >                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
-     >                UNITE,CODRET )
+     &                NOMAAS, TYCH(1:8), NOMGD,
+     &                NBCMPV, NCMPVA, NCMPVM,
+     &                IINST, NUMPT, NUMORD, INST, CRIT, PREC,
+     &                UNITE,CODRET )
 C
         CALL COPISD('CHAMP_GD','G',CHATMP,CHANOM)
         IF (TYCH(1:2).EQ.'NO') THEN

@@ -12,7 +12,7 @@
       CHARACTER*24  VEDIRI,DEPENT,VITENT
       CHARACTER*24  VALMOI,VALPLU,POUGD
 
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -288,7 +288,7 @@ C --- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE :
         LPAIN(10) = 'PTEMPEF'
         LPAIN(3) = ' '
       ELSE
-        CALL UTMESS('F','MERIMO','GRANDEUR INCONNUE.')
+        CALL U2MESS('F','CALCULEL3_70')
       END IF
       LCHIN(10) = TEMPLU
       LPAIN(11) = 'PTEREF'
@@ -380,7 +380,7 @@ C --- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE :
 
       IF (OPTION(1:9).EQ.'FULL_MECA') THEN
         CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,
-     +                                NBOUT,LCHOUT,LPAOUT,'V')
+     &                                NBOUT,LCHOUT,LPAOUT,'V')
         ZK24(JMER  ) = LCHOUT(1)
         ZK24(JMER+1) = LCHOUT(2)
         NBRIG = 2
@@ -394,7 +394,7 @@ C --- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE :
         IF (NOMGD.EQ.'TEMP_R') LPAIN(10) = 'PTEMPER'
         LPAIN(13) = 'PTEMPSR'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,
-     +                                NBOUT,LCHOUT,LPAOUT,'V')
+     &                                NBOUT,LCHOUT,LPAOUT,'V')
         ZK24(JMER  ) = LCHOUT(1)
         ZK24(JMER+1) = LCHOUT(2)
         NBRIG = 2
@@ -402,7 +402,7 @@ C --- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE :
 
       ELSE IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
         CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,
-     +                                NBOUT,LCHOUT,LPAOUT,'V')
+     &                                NBOUT,LCHOUT,LPAOUT,'V')
         ZK24(JMER  ) = LCHOUT(1)
         ZK24(JMER+1) = LCHOUT(2)
         NBRIG = 2
@@ -410,14 +410,14 @@ C --- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE :
 
       ELSE IF (OPTION(1:9).EQ.'RAPH_MECA') THEN
         CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,
-     +                                NBOUT,LCHOUT,LPAOUT,'V')
+     &                                NBOUT,LCHOUT,LPAOUT,'V')
         NBRES = 1
         ZK24(JRES+NBRES-1) = LCHOUT(3)
         CALL JEECRA(RESIDU,'LONUTI',NBRES,K8BID)
         CALL NMIRET(LCHOUT(6),TABRET)
 
       ELSE
-        CALL UTMESS('F','MERIMO','OPTION NON PREVUE')
+        CALL U2MESS('F','ALGORITH5_81')
       END IF
 
 C --- CALCUL DU RESIDU PARTIEL : F_INT + BT.LAMBDA
@@ -441,7 +441,7 @@ C --- CALCUL DU RESIDU PARTIEL : F_INT + BT.LAMBDA
             LCHOUT(1) = DIREL//'.RE'
             CALL CODENT(NBRES+1,'D0',LCHOUT(1) (12:15))
             CALL CALCUL('S',OPTINT,LIGRCH,2,LCHIN,LPAIN,
-     +                                    1,LCHOUT,LPAOUT,'V')
+     &                                    1,LCHOUT,LPAOUT,'V')
             NBRES = NBRES + 1
             ZK24(JRES+NBRES-1) = LCHOUT(1)
             NDIR = NDIR + 1

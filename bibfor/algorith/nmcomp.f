@@ -7,7 +7,7 @@
      &                   SIGP,VIP,DSIDEP,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C                DEPS(T) = DEPS(MECANIQUE(T)) + DEPS(DILATATION(T))
 C     SIGM    : CONTRAINTES A L'INSTANT DU CALCUL PRECEDENT
 C     VIM     : VARIABLES INTERNES A L'INSTANT DU CALCUL PRECEDENT
 C     OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
-C     ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM), 
+C     ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM),
 C               + UN REEL QUI VAUT 0 SI NAUTIQUIES OU 2 SI EULER
 C               + LES 3 ANGLES D'EULER
 C VAR VIP     : VARIABLES INTERNES
@@ -128,8 +128,7 @@ C ----------------------------------------------------------------------
 
       IF (TYPMOD(2) .EQ. 'GRADVARI') THEN
 
-        IF (INT(CRIT(6)) .NE. 0)  CALL UTMESS('F','NMCOMP',
-     &        'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+        IF (INT(CRIT(6)) .NE. 0)  CALL U2MESS('F','ALGORITH6_82')
 
 C -- ENDOMMAGEMENT FRAGILE (COURBE DE TRACTION BI-LINEAIRE)
 
@@ -162,8 +161,7 @@ C -- PLASTICITE ISOTROPE A GRADIENT
 C -- RUPTURE DUCTILE : LOI DE ROUSSELIER
 
         IF (COMPOR(1) .EQ. 'ROUSSELIER') THEN
-          IF (COMPOR(3).NE.'SIMO_MIEHE') CALL UTMESS('F','NMCOMP',
-     &        'ROUSSELIER A GRADIENT SANS SIMO MIEHE NON PROGRAMMEE')
+          IF (COMPOR(3).NE.'SIMO_MIEHE') CALL U2MESS('F','ALGORITH6_83')
           CALL LCRONL (NDIM,IMATE,OPTION,TM,TP,TREF,EPSM,DEPS,
      &                 VIM,VIP,SIGP,DSIDEP)
           GOTO 9000
@@ -178,8 +176,7 @@ C ----------------------------------------------------------------------
 
       IF (TYPMOD(2) .EQ. 'GRADEPSI') THEN
 
-        IF (INT(CRIT(6)) .NE. 0)  CALL UTMESS('F','NMCOMP',
-     &        'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+        IF (INT(CRIT(6)) .NE. 0)  CALL U2MESS('F','ALGORITH6_82')
 
 C -- ENDOMMAGEMENT FRAGILE (COURBE DE TRACTION BI-LINEAIRE)
 
@@ -245,8 +242,7 @@ C----------------------------------------------------------------------
 
         ELSE
 
-          CALL UTMESS('F','NMCOMP','LOI NON TRAITEE POUR LES ELEMJOIN :'
-     &                //COMPOR(1))
+          CALL U2MESK('F','ALGORITH6_84',1,COMPOR(1))
 
         ENDIF
 
@@ -256,8 +252,7 @@ C----------------------------------------------------------------------
 
 
       IF (COMPOR(3).EQ.'SIMO_MIEHE') THEN
-        IF (INT(CRIT(6)) .NE. 0) CALL UTMESS('F','NMCOMP',
-     &      'INTEGRATION EXPLICITE IMPOSSIBLE')
+        IF (INT(CRIT(6)) .NE. 0) CALL U2MESS('F','ALGORITH6_85')
         IF ( COMPOR(1) .EQ. 'ELAS            ' .OR.
      &       COMPOR(1) .EQ. 'VMIS_ISOT_LINE  ' .OR.
      &       COMPOR(1) .EQ. 'VMIS_ISOT_TRAC  ' .OR.
@@ -295,11 +290,10 @@ C----------------------------------------------------------------------
      &                   EPSM,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
      &                   DSIDEP,CODRET)
            ELSE
-                CALL UTMESS ('F','NMCOMP','ERREUR DE'
-     &       // 'PROGRAMMATION 1')
+                CALL U2MESS('F','ALGORITH6_86')
            ENDIF
         ELSE
-          CALL UTMESS('F','NMCOMP_1','LOI DE COMPORTEMENT INEXISTANTE')
+          CALL U2MESS('F','ALGORITH6_87')
         END IF
 C PETITES DEFORMATIONS
       ELSE
@@ -307,8 +301,7 @@ C PETITES DEFORMATIONS
      &       COMPOR(1)(1:9) .EQ. 'VMIS_ISOT'        .OR.
      &       COMPOR(1)(1:14).EQ. 'VMIS_ISOT_LINE' ) THEN
           IF ( TYPMOD(2)(1:7) .EQ. 'MEGRDKT') THEN
-            CALL UTMESS('F','GRILLE_01',
-     &             ' COMPORTEMENT INATTENDU : '//COMPOR(1))
+            CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
           ENDIF
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL RCCOMA(IMATE,'ELAS',PHENOM,K2BID)
@@ -322,44 +315,38 @@ C PETITES DEFORMATIONS
      &                    TREF,EPSM,DEPS,SIGM,OPTION,ANGMAS,SIGP,VIP,
      &                    DSIDEP)
             ELSE
-              CALL UTMESS('F','NMCOMP','ERREUR DANS LE TYPE'//
-     &                    ' DE COMPORTMENT')
+              CALL U2MESS('F','ALGORITH6_88')
             ENDIF
           ELSE
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
-     &      COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ENDIF
         ELSE IF (COMPOR(1).EQ. 'ENDO_FRAGILE') THEN
           CALL LCFRLO(NDIM, TYPMOD, IMATE, EPSM, DEPS,
      &                   VIM, OPTION, SIGP, VIP,  DSIDEP)
         ELSEIF ( COMPOR(1) .EQ. 'ENDO_ISOT_BETON' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
             ELSE
               CALL LCLDSB(FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
      &                   DEPS,VIM,TM,TP,TREF,OPTION,SIGP,VIP,DSIDEP)
             ENDIF
         ELSE IF ( COMPOR(1) .EQ. 'ENDO_ORTH_BETON' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
             ELSE
               CALL LCEOBL (NDIM, TYPMOD, IMATE, CRIT, EPSM, DEPS,
      &                   VIM, OPTION, SIGP, VIP,  DSIDEP,CODRET)
             ENDIF
         ELSE IF ( COMPOR(1)(1:6) .EQ. 'MAZARS' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL LCMAZA(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,EPSM,
      &                  DEPS,VIM,TM,TP,TREF,OPTION,SIGP,VIP,DSIDEP)
           ENDIF
         ELSEIF ( COMPOR(1) .EQ. 'BETON_REGLE_PR' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
             ELSE
               CALL LCLBR1(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
      &                   VIM,TM,TP,TREF,OPTION, SIGP, VIP,  DSIDEP)
@@ -394,8 +381,7 @@ C PETITES DEFORMATIONS
      &                     DEPS,SIGM,VIM,OPTION,SIGP,
      &                     VIP,DSIDEP,CODRET)
             ELSE
-                CALL UTMESS ('F','NMCOMP','ERREUR DE'
-     &       // 'PROGRAMMATION 2')
+                CALL U2MESS('F','ALGORITH6_89')
             ENDIF
         ELSE IF (COMPOR(1).EQ.'META_P_CL       '.OR.
      &           COMPOR(1).EQ. 'META_P_CL_PT    '.OR.
@@ -417,8 +403,7 @@ C PETITES DEFORMATIONS
      &                     DEPS,SIGM,VIM,OPTION,SIGP,
      &                     VIP,DSIDEP,CODRET)
             ELSE
-                CALL UTMESS ('F','NMCOMP','ERREUR DE'
-     &       // 'PROGRAMMATION 2')
+                CALL U2MESS('F','ALGORITH6_89')
             ENDIF
         ELSE IF ( COMPOR(1)(1:11).EQ. 'NORTON_HOFF') THEN
           CALL NMHOFF(NDIM,IMATE,INSTAP,EPSM,DEPS,OPTION,SIGP,DSIDEP)
@@ -430,22 +415,19 @@ C PETITES DEFORMATIONS
      &                   DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP,
      &                   CODRET)
           ELSE
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
-     &      COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ENDIF
         ELSE IF ( COMPOR(1)(1:14).EQ. 'VMIS_CINE_LINE') THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             IF (TYPMOD(1).EQ.'C_PLAN') THEN
-               CALL UTMESS('F','NMCOMP','PAS DE C_PLAN POUR VMIS_CINE'//
-     &                     'UTILISER C_PLAN_DEBORST')
+               CALL U2MESS('F','ALGORITH6_90')
             ELSE
               CALL NMCINE ( NDIM,  IMATE, COMPOR,CRIT,
      &                    INSTAM,INSTAP,TM,    TP,    TREF, EPSM,
      &                    DEPS,  SIGM,  VIM,   OPTION,SIGP, VIP, DSIDEP)
             ENDIF
           ELSE
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
-     &      COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ENDIF
         ELSE IF (( COMPOR(1)(1:14).EQ. 'VMIS_CIN1_CHAB') .OR.
      &           ( COMPOR(1)(1:14).EQ. 'VMIS_CIN2_CHAB') .OR.
@@ -453,8 +435,7 @@ C PETITES DEFORMATIONS
      &           ( COMPOR(1)(1:14).EQ. 'VISC_CIN2_CHAB')) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             IF (TYPMOD(1).EQ.'C_PLAN') THEN
-               CALL UTMESS('F','NMCOMP','PAS DE C_PLAN POUR VMIS_CIN1'//
-     &                     'UTILISER C_PLAN_DEBORST')
+               CALL U2MESS('F','ALGORITH6_91')
             ELSE
                CALL NMCHAB ( NDIM,  TYPMOD, IMATE, COMPOR, CRIT,
      &                    INSTAM, INSTAP, TM,    TP,    TREF,
@@ -462,16 +443,14 @@ C PETITES DEFORMATIONS
      &                    CODRET)
             ENDIF
           ELSE
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
-     &      COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ENDIF
 C
         ELSE IF (COMPOR(1)(1:11).EQ.'VISC_TAHERI') THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-            CALL UTMESS('F','NMCOMP_1',
-     &        'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ELSE IF ((TYPMOD(1).EQ.'C_PLAN').AND.(.NOT.CP)) THEN
-            CALL UTMESS('F','NMCOMP_2','PAS DE CONTRAINTES PLANES')
+            CALL U2MESS('F','ALGORITH6_92')
           ELSE
             CALL NMTAHE(NDIM,IMATE,COMPOR,CRIT,
      &                     INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
@@ -488,8 +467,7 @@ C
      &           INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,OPTION,
      &           TAMPON,ANGMAS,SIGP,VIP,DSIDEP,CODRET)
           ELSE
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
-     &      COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ENDIF
         ELSE IF ( COMPOR(1)(1:9) .EQ. 'VISCOCHAB'  ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
@@ -504,8 +482,7 @@ C
           ENDIF
         ELSE IF ( COMPOR(1)(1:8) .EQ. 'POLY_CFC' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION DU COMPORTEMENT
-     &      POLY_CFC UNIQUEMENT EXPLICITE')
+            CALL U2MESS('F','ALGORITH6_93')
           ELSE
             CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                    INSTAM,INSTAP, TM,    TP,     TREF,
@@ -540,8 +517,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
      &                  ANGMAS,
      &                  SIGP, VIP, DSIDEP, CODRET )
           ELSE
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
-     &      COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ENDIF
         ELSEIF ( COMPOR(1)(1:8)  .EQ. 'LEMAITRE') THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
@@ -550,8 +526,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
      &                  DEPS,SIGM,VIM,OPTION,
      &                  SIGP, VIP, DSIDEP , CODRET)
           ELSE
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
-     &      COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ENDIF
         ELSEIF ( COMPOR(1)(1:12)  .EQ. 'GATT_MONERIE') THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
@@ -560,15 +535,13 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
      &                  DEPS,SIGM,VIM,OPTION,
      &                  SIGP, VIP, DSIDEP, CODRET )
           ELSE
-            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
-     &      COMPORTEMENT NON PROGRAMMEE')
+            CALL U2MESS('F','ALGORITH6_82')
           ENDIF
         ELSEIF ( COMPOR(1)(1:3) .EQ. 'CJS' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE IF ((TYPMOD(1).EQ.'C_PLAN').AND.(.NOT.CP)) THEN
-              CALL UTMESS('F','NMCOMP_2','PAS DE CONTRAINTES PLANES')
+              CALL U2MESS('F','ALGORITH6_92')
             ELSE
               CALL NMCJS(  TYPMOD,  IMATE, COMPOR, CRIT,
      &                     INSTAM, INSTAP, TM, TP, TREF, EPSM,
@@ -577,8 +550,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
             ENDIF
         ELSEIF ( COMPOR(1)(1:9) .EQ. 'CAM_CLAY ') THEN
         IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL NMCCAM (NDIM,  TYPMOD, IMATE, COMPOR,CRIT,INSTAM,
      &                   INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
@@ -586,8 +558,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           ENDIF
         ELSEIF ( COMPOR(1)(1:6) .EQ. 'LAIGLE' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                    INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
@@ -595,8 +566,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           ENDIF
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'HOEK_BROWN' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                    INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
@@ -604,8 +574,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           ENDIF
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'GRANGER_FP' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL NMGRAN (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,TM,TP,TREF,TM,TP,DEPS,SIGM,VIM,
@@ -614,8 +583,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
 C -- FLUAGE PROPRE UMLV
         ELSEIF ( COMPOR(1)(1:13) .EQ. 'BETON_UMLV_FP' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL LCUMFP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,INSTAM,
      &                   INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,OPTION,
@@ -624,8 +592,7 @@ C -- FLUAGE PROPRE UMLV
 C----LOI D'ACIER CORRODE
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'CORR_ACIER') THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE
           CALL NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,TM,TP,SIGM,
      &           EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRIT,CODRET)
@@ -636,11 +603,9 @@ C -- COMPORTEMENT VIDE
 C
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'BAZANT_FD' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE IF (TYPMOD(1).EQ.'C_PLAN') THEN
-           CALL UTMESS('F','NMCOMP','PAS DE C_PLAN POUR BAZANT_FD  '//
-     &                     'UTILISER C_PLAN_DEBORST')
+           CALL U2MESS('F','ALGORITH6_94')
             ELSE
               CALL  NMGDES (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,
      &                   COMPOR,CRIT,INSTAM,INSTAP,TM,TP,TREF,
@@ -648,8 +613,7 @@ C
           ENDIF
         ELSEIF ( COMPOR(1)(1:7) .EQ. 'KIT_DDI' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL NMCOUP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CP,CRIT,
      &           INSTAM, INSTAP, TM,TP,TREF,EPSM, DEPS,SIGM, VIM,OPTION,
@@ -673,8 +637,7 @@ CCC    FIN MONOCRISTAL
 CCC    POLYCRISTAL
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'POLYCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'INTEGRATION IMPLICITE DU COMPORTEMENT NON PROGRAMMEE')
+              CALL U2MESS('F','ALGORITH6_95')
           ELSE
             CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
@@ -694,17 +657,16 @@ CCC    LOI HYPERELASTIQUE POUR METHODE SIGNORINI
 
         ELSEIF (COMPOR(1)(1:10).EQ. 'ELAS_HYPER') THEN
             IF (COMPOR(3).NE.'GREEN') THEN
-              CALL UTMESS('F','NMCOMP_1',
-     &          'GREEN DEFORMATION REQUIRED FOR ELAS_HYPER MATERIAL')
+              CALL U2MESS('F','ALGORITH6_96')
             ENDIF
             CALL HYPINC(NDIM,TYPMOD,IMATE,COMPOR,CRIT,OPTION,
      &                  TM,EPSM,DEPS,SIGM,
      &                  SIGP,DSIDEP,CODRET)
-        
+
 CCC    FIN LOI HYPERELASTIQUE POUR METHODE SIGNORINI
 
         ELSE
-          CALL UTMESS('F','NMCOMP_1','LOI DE COMPORTEMENT INEXISTANTE')
+          CALL U2MESS('F','ALGORITH6_87')
         ENDIF
       END IF
 

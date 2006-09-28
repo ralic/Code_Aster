@@ -5,7 +5,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
       ELSE IF (FONREE.EQ.'FONC') THEN
          CALL ALCART ( 'G', CARTE, NOMA, 'ONDE_F')
       ELSE
-         CALL UTMESS('F','CAONDE','VALEUR INATTENDUE: '//FONREE )
+         CALL U2MESK('F','MODELISA2_37',1,FONREE)
       ENDIF
 C
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
@@ -100,7 +100,7 @@ C
          ENDIF
 C
          CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
-     +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+     &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
          CALL JEVEUO ( MESMAI, 'L', JMA )
          CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',1)
          CALL JEDETR ( MESMAI )

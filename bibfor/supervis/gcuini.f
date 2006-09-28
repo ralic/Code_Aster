@@ -9,22 +9,22 @@ C IN  MXCMDU : IS : NOMBRE DE COMMANDES UTILISATEURS MAXIMUM
 C IN  BASE   : CH : TYPE DE LA BASE 'L' 'G' 'V' ....
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/04/97   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -88,7 +88,7 @@ C        --- INITIALISATION (DEBUT) ---
   10        CONTINUE
             CALL JEECRA ( KRESU , 'LONUTI',  0 , CBID )
          ELSE
-           CALL UTMESS('F','GCUINI',' LONGUEUR NULLE  ')
+           CALL U2MESS('F','SUPERVIS_9')
          ENDIF
       ELSE
 C           --- VERIFICATION (POURSUITE) ---
@@ -115,38 +115,38 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
          CALL CODENT( JCMD,'D0',CBID)
          CALL UTDEBM('I',PG,'RAPPEL SUR LES EXECUTIONS PRECEDENTES')
          CALL UTIMPK('L','  - IL A ETE EXECUTE '//CBID//
-     +                      ' PROCEDURES ET OPERATEURS.',0,' ')
+     &                      ' PROCEDURES ET OPERATEURS.',0,' ')
          IF (IER .EQ. 0 ) THEN
              CALL UTIMPK('L','  - L''EXECUTION PRECEDENTE S''EST '
-     +                                //'TERMINEE CORRECTEMENT.',0,' ')
+     &                                //'TERMINEE CORRECTEMENT.',0,' ')
          ELSEIF (IER .EQ. 1 ) THEN
              LG = LXLGUT(NOMCMD)
              CALL UTIMPK('L',
-     +               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE EN '
-     +                //'ERREUR DANS LA PROCEDURE "'//NOMCMD(1:LG)
-     +                //'".',0,' ')
+     &               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE EN '
+     &                //'ERREUR DANS LA PROCEDURE "'//NOMCMD(1:LG)
+     &                //'".',0,' ')
          ELSEIF (IER .EQ. 2 ) THEN
              LG = LXLGUT(NOMCMD)
              CALL UTIMPK('L',
-     +               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE EN '
-     +                 //'ERREUR DANS L''OPERATEUR "'//NOMCMD(1:LG)
-     +                 //'".',0,' ')
+     &               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE EN '
+     &                 //'ERREUR DANS L''OPERATEUR "'//NOMCMD(1:LG)
+     &                 //'".',0,' ')
              LG1 = LXLGUT(NOMUSR)
              LG2 = LXLGUT(TYPCON)
              CALL UTIMPK('L',
-     +               '    LE CONCEPT "'//NOMUSR(1:LG1)//'" DE TYPE "'
-     +             //TYPCON(1:LG2)//'"  EST PEUT-ETRE ERRONE.',0,' ')
+     &               '    LE CONCEPT "'//NOMUSR(1:LG1)//'" DE TYPE "'
+     &             //TYPCON(1:LG2)//'"  EST PEUT-ETRE ERRONE.',0,' ')
          ELSEIF (IER .EQ. 3 ) THEN
              LG = LXLGUT(NOMCMD)
              CALL UTIMPK('L',
-     +               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE PREMA'
-     +                 //'TUREMENT DANS L''OPERATEUR "'//NOMCMD(1:LG)
-     +                 //'".',0,' ')
+     &               '  - L''EXECUTION PRECEDENTE S''EST TERMINEE PREMA'
+     &                 //'TUREMENT DANS L''OPERATEUR "'//NOMCMD(1:LG)
+     &                 //'".',0,' ')
              LG1 = LXLGUT(NOMUSR)
              LG2 = LXLGUT(TYPCON)
              CALL UTIMPK('L','    LE CONCEPT "'//NOMUSR(1:LG1)
-     +                      //'" DE TYPE "'//TYPCON(1:LG2)//
-     +               '"  A ETE NEANMOIMS VALIDE PAR L''OPERATEUR',0,' ')
+     &                      //'" DE TYPE "'//TYPCON(1:LG2)//
+     &               '"  A ETE NEANMOIMS VALIDE PAR L''OPERATEUR',0,' ')
              CALL UTSAUT()
             SPVR = NOMUSR
             SPVR(20:24) = '.SPVR'
@@ -155,10 +155,10 @@ C        ---- MESSAGES RELATIF A L'EXECUTION PRECEDENTE ---
                CALL JEVEUO(SPVR,'L',LSPVR)
                CALL JELIRA(SPVR,'LONMAX',LONMAX,CBID)
                CALL UTIMPK('L','    MESSAGE ATTACHE AU CONCEPT ',
-     +                                               LONMAX,ZK80(LSPVR))
+     &                                               LONMAX,ZK80(LSPVR))
             ELSE
                CALL UTIMPK('L',
-     +                  '    PAS DE MESSAGE ATTACHE AU CONCEPT ',0,' ')
+     &                  '    PAS DE MESSAGE ATTACHE AU CONCEPT ',0,' ')
             ENDIF
             NOMUSR = '   '
             CALL UTSAUT()
@@ -173,9 +173,7 @@ C
 C        --- DESTRUCTION DU CONCEPT VEROLE ---
         IF ( NOMUSR .NE. '  ' ) THEN
            LG = LXLGUT(NOMUSR)
-           CALL UTMESS('I','SUPERVISEUR',
-     +                   '  - LE CONCEPT  "'//NOMUSR(1:LG)
-     +                 //'" EST DETRUIT DES BASES DE DONNEES.')
+           CALL U2MESK('I','SUPERVIS_10',1,NOMUSR(1:LG))
            CALL JEDETC( ' ' , NOMUSR , 1 )
         ENDIF
 C
@@ -204,7 +202,7 @@ C        --- INITIALISATION (DEBUT) ---
             CALL WKVECT(KSTAT,DDBASE//' V K80',MXCMDU,LGSTAT)
             CALL JEECRA ( KSTAT , 'LONUTI',  0 , CBID )
          ELSE
-           CALL UTMESS('F','GCUINI',' LONGUEUR NULLE  ')
+           CALL U2MESS('F','SUPERVIS_9')
          ENDIF
       ELSE
 C         --- VERIFICATION (POURSUITE) ---

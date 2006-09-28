@@ -3,7 +3,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,9 +106,9 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CAARPO
          XSIZ = 1.D0
 C
          CALL GETVEM(NOMA,'GROUP_MA','DEFI_ARC','GROUP_MA',
-     +              IOC,1,LMAX,ZK8(JDLS),NG)
+     &              IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','DEFI_ARC','MAILLE',
-     +            IOC,1,LMAX,ZK8(JDLS),NM)
+     &            IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVR8('DEFI_ARC','RAYON'    , IOC,1,1,    XRC      ,NR  )
          CALL GETVR8('DEFI_ARC','ORIE_ARC' , IOC,1,1,    XANG     ,NA  )
          CALL GETVR8('DEFI_ARC','COEF_FLEX', IOC,1,1,    XFL      ,NF  )
@@ -172,7 +172,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,IOC)
                   CALL UTIMPK('S',', GROUP_MA : ',1,ZK8(JDLS))
                   CALL UTIMPK('L','LE CENTRE N''EST PAS VRAIMENT'//
-     +                            ' LE CENTRE DU CERCLE',0,' ')
+     &                            ' LE CENTRE DU CERCLE',0,' ')
                   CALL UTFINM( )
                   XRC1 = ZERO
                   ENDIF
@@ -223,7 +223,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,IOC)
                      CALL UTIMPK('S',', GROUP_MA : ',1,ZK8(JDLS))
                      CALL UTIMPK('L','LE POINT DE TANGENCE N EST'//
-     +                 'PAS EQUIDISTANT DES POINTS EXTREMITES',0,' ')
+     &                 'PAS EQUIDISTANT DES POINTS EXTREMITES',0,' ')
                      CALL UTFINM( )
                   ENDIF
                   PHIS2 = PI / 2.D0 - ASIN( DM / TX1 )
@@ -310,7 +310,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                      CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,IOC)
                      CALL UTIMPK('S',', MAILLE : ',1,ZK8(JDLS))
                      CALL UTIMPK('L','LE CENTRE N''EST PAS VRAIMENT'//
-     +                               ' LE CENTRE DU CERCLE',0,' ')
+     &                               ' LE CENTRE DU CERCLE',0,' ')
                      CALL UTFINM( )
                      XRC1 = ZERO
                   ENDIF
@@ -357,7 +357,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                      CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,IOC)
                      CALL UTIMPK('S',', GROUP_MA : ',1,ZK8(JDLS))
                      CALL UTIMPK('L','LE POINT DE TANGENCE N EST'//
-     +                 'PAS EQUIDISTANT DES POINTS EXTREMITES',0,' ')
+     &                 'PAS EQUIDISTANT DES POINTS EXTREMITES',0,' ')
                      CALL UTFINM( )
                   ENDIF
                   PHIS2 = PI / 2.D0 - ASIN( DM / TX1 )
@@ -410,7 +410,7 @@ C
       CALL JEDETR(TMPNAR)
       CALL JEDETR(TMPVAR)
       IF (IER.NE.0) THEN
-         CALL UTMESS('F','ACEAPC','ERREUR(S) DANS LES DONNEES.')
+         CALL U2MESS('F','MODELISA_13')
       ENDIF
 C
       CALL JEDEMA()

@@ -4,22 +4,22 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ALLOCATION ET OUVERTURE DES BASES DE DONNEES
 C     ------------------------------------------------------------------
@@ -66,19 +66,19 @@ C
 C
 C
       DATA
-     +CASCA  /'PETIT           ','MOYEN           ','GROS            '/
+     &CASCA  /'PETIT           ','MOYEN           ','GROS            '/
 C
 C     TAILLE(GLOBALE)        PETIT   MOYEN      GROS
       DATA
-     +  (NBBLCA(1,I),I=1,3)/   0      , 0     ,    0        /,
-     +  (LGBLCA(1,I),I=1,3)/ 100   ,  100     ,  100        /,
-     +  (LGRECA(1,I),I=1,3)/2000   , 4000     , 6000        /
+     &  (NBBLCA(1,I),I=1,3)/   0      , 0     ,    0        /,
+     &  (LGBLCA(1,I),I=1,3)/ 100   ,  100     ,  100        /,
+     &  (LGRECA(1,I),I=1,3)/2000   , 4000     , 6000        /
 C
 C     TAILLE(VOLATILE)       PETIT   MOYEN      GROS
       DATA
-     +  (NBBLCA(2,I),I=1,3)/   0   ,    0     ,    0         /,
-     +  (LGBLCA(2,I),I=1,3)/ 100   ,  100     ,  100         /,
-     +  (LGRECA(2,I),I=1,3)/2000   , 2000     , 2000         /
+     &  (NBBLCA(2,I),I=1,3)/   0   ,    0     ,    0         /,
+     &  (LGBLCA(2,I),I=1,3)/ 100   ,  100     ,  100         /,
+     &  (LGRECA(2,I),I=1,3)/2000   , 2000     , 2000         /
 C
 C     ------------------------------------------------------------------
 C
@@ -114,7 +114,7 @@ C        --- MOT CLE "FICHIER" ANCIENNEMENT "NOM" ---------------------
          ELSE
             IF ( PRESBA(INDBAS) .NE. 0 ) THEN
                IER = IER + 1
-             CALL UTMESS('E','IBBASE',NOM//' NOM DE BASE DEJA DEFINIE')
+             CALL U2MESK('E','SUPERVIS_13',1,NOM)
             ELSE
                PRESBA(INDBAS) = 1
             ENDIF
@@ -129,7 +129,7 @@ C
                INDCAS = 1
                IER = IER + 1
                CALL UTDEBM('E','IBBASE','L''ARGUMENT DU MOT CLE '//
-     +                            '"CAS"  EST ERRONE ')
+     &                            '"CAS"  EST ERRONE ')
                CALL UTIMPK('L','VALEUR LUE',1,CAS)
                CALL UTIMPK('L','VALEURS ATTENDUES',MXCAS,CASCA)
                CALL UTFINM()
@@ -144,15 +144,15 @@ C        --- LONGUEUR D'UN BLOC D'ENREGISTREMENT -----------------------
          BALGBL(INDBAS) =  LGBLCA(INDBAS,INDCAS)
          CALL GETVIS(MOTFAC,'LONG_ENRE',IBASE,1,1,BALGBL(INDBAS),NB)
 C
-         LTT = BANBBL(INDBAS)*BALGBL(INDBAS)*LOISEM()         
+         LTT = BANBBL(INDBAS)*BALGBL(INDBAS)*LOISEM()
          IF ( LTT .GT. MOFIEM() ) THEN
             IER = IER + 1
             CALL UTDEBM('E','IBBASE','LE NOMBRE D''ENREGISTREMENTS '
-     +        //'(NMAX_ENRE) ET LEURS LONGUEURS (LONG_ENRE) CONDUISENT'
-     +        //' A UN FICHIER DONT LA TAILLE MAXIMALE EN OCTETS EST')
+     &        //'(NMAX_ENRE) ET LEURS LONGUEURS (LONG_ENRE) CONDUISENT'
+     &        //' A UN FICHIER DONT LA TAILLE MAXIMALE EN OCTETS EST')
             CALL UTIMPI('S',' : ',1,LTT)
             CALL UTIMPI('S','SUPERIEURE A LIMITE AUTORISEE : ',
-     +                   1,MOFIEM())
+     &                   1,MOFIEM())
             CALL UTFINM()
          ENDIF
 
@@ -172,8 +172,7 @@ C     --- QUELQUES CONTROLES SUPPLEMENTAIRES SUR LA GLOBALE EN POURSUITE
          IF ( INDBAS .GT. 0 ) THEN
             IF ( STIN(INDBAS).NE. 'POURSUITE' ) THEN
                IER = IER + 1
-               CALL UTMESS('E','IBBASE',STIN(INDBAS)//
-     +                       ' STATUT IMPOSSIBLE POUR LA BASE GLOBALE')
+               CALL U2MESK('E','SUPERVIS_14',1,STIN(INDBAS))
             ENDIF
          ENDIF
       ENDIF
@@ -192,20 +191,19 @@ C        --- INITIALISATION DE CHAQUE BASE ---
             CALL JELIHD ('GLOBALE ',FICHDF,'G')
 C           --- DESTRUCTION DU FICHIER POUR QU'ON NE CONFONDE PAS PLUS
 C               TARD AVEC UNE EVENTUELLE BASE HDF EN RESULTAT ---
-            CALL RMFILE(FICHDF)  
-         ENDIF   
+            CALL RMFILE(FICHDF)
+         ENDIF
          IDEB = 1
          IF ( FICHDF .NE. ' ') IDEB = 2
 
          DO 300 IBASE = IDEB, MXBASE
             CALL JEINIF( STIN(IBASE), STOUT(IBASE),
-     +                   NOMBA(IBASE)(1:8), NOMBA(IBASE)(1:1),
-     +                   BALGRE(IBASE),BANBBL(IBASE),BALGBL(IBASE))
+     &                   NOMBA(IBASE)(1:8), NOMBA(IBASE)(1:1),
+     &                   BALGRE(IBASE),BANBBL(IBASE),BALGBL(IBASE))
   300    CONTINUE
       ELSE
 C
-         CALL UTMESS('E','IBBASE',
-     +                   'PROBLEME D''ALLOCATION DES BASES DE DONNEES')
+         CALL U2MESS('E','SUPERVIS_15')
       ENDIF
 C
       END

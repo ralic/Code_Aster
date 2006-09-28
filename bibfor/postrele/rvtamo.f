@@ -1,5 +1,5 @@
       SUBROUTINE RVTAMO ( T, NOMCMP, NBCP, NBCO, NBSP, NOMTAB,
-     >                    IOCC, NCHEFF, I1, IOC, ISD )
+     &                    IOCC, NCHEFF, I1, IOC, ISD )
       IMPLICIT   NONE
       INTEGER             NBCP, NBCO, NBSP, IOCC, I1, IOC, ISD
       REAL*8              T(*)
@@ -7,22 +7,22 @@
       CHARACTER*(*)       NOMCMP(*), NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     MISE EN TABLEAU POUR UNE MOYENNE
@@ -51,8 +51,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       NBPAR, ILIGN, I, L, M, ICP, ISP, JACC, IK, IR, II,
-     >              VALEI(10), N1, ADRACC, ADRVAL, I10, I20, I30, ICO, 
-     >              NBACC, NBPR, JACES, IAC, IADR, NC
+     &              VALEI(10), N1, ADRACC, ADRVAL, I10, I20, I30, ICO,
+     &              NBACC, NBPR, JACES, IAC, IADR, NC
       REAL*8        VALER(12)
       LOGICAL       EXIST
       COMPLEX*16    C16B
@@ -63,7 +63,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*80  VALEK(11)
 C
       DATA NOMPAR / 'MOMENT_0'  ,  'MOMENT_1'  ,  'MINIMUM'   ,
-     >              'MAXIMUM'   ,  'MOYE_INT'  ,  'MOYE_EXT'  /
+     &              'MAXIMUM'   ,  'MOYE_INT'  ,  'MOYE_EXT'  /
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -135,7 +135,7 @@ C
                CALL JEVEUO ( NOMJV, 'L', JACES )
                DO 70 IAC = 1 , NBACC
                   CALL RSADPA ( NOMRES, 'L', 1, ZK16(JACES-1+IAC),
-     >                          ZI(ADRVAL+I1-1), 1, IADR, CTYPE )
+     &                          ZI(ADRVAL+I1-1), 1, IADR, CTYPE )
                   CALL TBEXIP ( NOMTAB, ZK16(JACES-1+IAC), EXIST,TYPPAR)
                   IF ( .NOT. EXIST ) THEN
                      CALL TBAJPA ( NOMTAB, 1, ZK16(JACES-1+IAC), CTYPE )
@@ -210,10 +210,10 @@ C
          NOPARA(NBPAR) = NOMCMP(ICP)
  50   CONTINUE
 C
-      IF ( NBPAR   .GT. 15 ) CALL UTMESS('F','RVTAMO','Y A UN BUG 0')
-      IF ( II+2    .GT. 10 ) CALL UTMESS('F','RVTAMO','Y A UN BUG 1')
-      IF ( IR+NBCP .GT. 10 ) CALL UTMESS('F','RVTAMO','Y A UN BUG 2')
-      IF ( IK+2    .GT. 10 ) CALL UTMESS('F','RVTAMO','Y A UN BUG 3')
+      IF ( NBPAR   .GT. 15 ) CALL U2MESS('F','ALGELINE_6')
+      IF ( II+2    .GT. 10 ) CALL U2MESS('F','MODELISA2_88')
+      IF ( IR+NBCP .GT. 10 ) CALL U2MESS('F','MODELISA2_89')
+      IF ( IK+2    .GT. 10 ) CALL U2MESS('F','ALGELINE_7')
 C
       L = 6 * NBSP
       M = L * NBCO
@@ -238,7 +238,7 @@ C
  30            CONTINUE
 C
                CALL TBAJLI ( NOMTAB, NBPAR, NOPARA,
-     >                          VALEI, VALER, C16B, VALEK, ILIGN )
+     &                          VALEI, VALER, C16B, VALEK, ILIGN )
  40         CONTINUE
 C
  10      CONTINUE

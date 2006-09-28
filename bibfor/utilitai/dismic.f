@@ -1,6 +1,6 @@
       SUBROUTINE DISMIC(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
          CALL JEEXIN(NOMOB//'.TAVA',IRE6)
          CALL JEEXIN(NOMOB//'.TACH',IRE7)
          IF (IRE3.GT.0 .AND. IRE4.GT.0 .AND. IRE5.GT.0 .AND.
-     +                       IRE6.GT.0 .AND. IRE7.GT.0 ) THEN
+     &                       IRE6.GT.0 .AND. IRE7.GT.0 ) THEN
            REPK = 'OUI'
            GO TO 9999
          ENDIF
@@ -120,8 +120,7 @@ C
                CALL RSDOCU ( DOCU, REPK, IRET )
                IF ( IRET .NE. 0 ) THEN
                   REPK = QUESTI
-                  CALL UTMESS(CODMES,'DISMIC',
-     +                  'LA QUESTION : "'//REPK//'" EST INCONNUE')
+                  CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
                   IERD=1
                ENDIF
                GO TO 9999
@@ -138,7 +137,7 @@ C
          IF (IRE1.GT.0) THEN
            CALL JEVEUO(NOMOB//'.PROL','L',JPRO)
            IF ( ZK16(JPRO).EQ.'CONSTANTE' .OR. ZK16(JPRO).EQ.'FONCTION'
-     +     .OR. ZK16(JPRO).EQ.'NAPPE'.OR. ZK16(JPRO).EQ.'FONCT_C' ) THEN
+     &     .OR. ZK16(JPRO).EQ.'NAPPE'.OR. ZK16(JPRO).EQ.'FONCT_C' ) THEN
               REPK='FONCTION'
               GO TO 9999
            ENDIF
@@ -146,8 +145,7 @@ C
 
       ELSE
          REPK = QUESTI
-         CALL UTMESS(CODMES,'DISMIC',
-     +                  'LA QUESTION : "'//REPK//'" EST INCONNUE')
+         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD=1
          GO TO 9999
       END IF

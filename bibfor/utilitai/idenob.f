@@ -3,7 +3,7 @@
       CHARACTER*(*) OBJ1,OBJ2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -200,7 +200,7 @@ C     ------------------------------
    90       CONTINUE
 
           ELSE
-            CALL UTMESS('F','IDENOB','STOP1')
+            CALL U2MESS('F','CALCULEL_2')
           END IF
 
 
@@ -229,7 +229,7 @@ C       ------------------------------
 
 
         ELSE
-          CALL UTMESS('F','IDENOB','A FAIRE 1 ...')
+          CALL U2MESS('F','UTILITAI2_29')
         END IF
 
 
@@ -317,12 +317,12 @@ C     ------------------------------
   190         CONTINUE
 
             ELSE
-              CALL UTMESS('F','IDENOB','STOP1')
+              CALL U2MESS('F','CALCULEL_2')
             END IF
   200     CONTINUE
 
         ELSE
-          CALL UTMESS('F','IDENOB','A FAIRE 2 ...')
+          CALL U2MESS('F','UTILITAI2_30')
         END IF
       END IF
 

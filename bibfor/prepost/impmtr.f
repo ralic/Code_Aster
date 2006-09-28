@@ -1,7 +1,7 @@
       SUBROUTINE IMPMTR ( IFM, NOMSDZ, GRAINZ, OPTIOZ, NBNO, LISNOZ,
-     +                    NBCMP, LISCMZ, NBCHIF, EPS )
+     &                    NBCMP, LISCMZ, NBCHIF, EPS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,18 +138,15 @@ C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
               CALL IMRSMN (IFM, NOMSDZ, OPTIOZ, NBNO,
-     +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
+     &                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
               CALL IMRSMV (IFM, NOMSDZ, OPTIOZ, NBNO,
-     +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
+     &                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
-              CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
-     +                     'D''IMPRESSION EST '//GRAIN//' ALORS '//
-     +                     'QUE LES SEULES VALEURS POSSIBLES SONT '//
-     +                     '"NOEUD" ET "VALEUR" .')
+              CALL U2MESK('F','PREPOST_66',1,GRAIN)
           ENDIF
 
 
@@ -158,27 +155,20 @@ C      ----------------------------------
        ELSEIF (TYPSYM.EQ.0) THEN
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
               CALL IMRNMN (IFM, NOMSDZ, OPTIOZ, NBNO,
-     +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
+     &                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
               CALL IMRNMV (IFM, NOMSDZ, OPTIOZ, NBNO,
-     +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
+     &                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
-              CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
-     +                     'D''IMPRESSION EST '//GRAIN//' ALORS '//
-     +                     'QUE LES SEULES VALEURS POSSIBLES SONT '//
-     +                     '"NOEUD" ET "VALEUR" .')
+              CALL U2MESK('F','PREPOST_66',1,GRAIN)
           ENDIF
 
 
        ELSE
-              CALL UTMESS ('F','IMPMTR','PROBLEME DANS LE DESCRIPTEUR'
-     +                   //' DE LA MATRICE: L''INDICATEUR DE SYMETRIE'
-     +                   //' NE CORRESPOND NI A UNE MATRICE '//
-     +                     ' SYMETRIQUE, NI A UNE MATRICE '//
-     +                     ' NON-SYMETRIQUE . ')
+              CALL U2MESS('F','PREPOST_67')
        ENDIF
 
 C --- CAS D'UNE MATR_ASSE A VALEURS COMPLEXES :
@@ -193,18 +183,15 @@ C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
               CALL IMCSMN (IFM, NOMSDZ, OPTIOZ, NBNO,
-     +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
+     &                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
               CALL IMCSMV (IFM, NOMSDZ, OPTIOZ, NBNO,
-     +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
+     &                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
-              CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
-     +                     'D''IMPRESSION EST '//GRAIN//' ALORS '//
-     +                     'QUE LES SEULES VALEURS POSSIBLES SONT '//
-     +                     '"NOEUD" ET "VALEUR" .')
+              CALL U2MESK('F','PREPOST_66',1,GRAIN)
           ENDIF
 
 
@@ -216,34 +203,23 @@ C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
               CALL IMCNMN (IFM, NOMSDZ, OPTIOZ, NBNO,
-     +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
+     &                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
               CALL IMCNMV (IFM, NOMSDZ, OPTIOZ, NBNO,
-     +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
+     &                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
-              CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
-     +                     'D''IMPRESSION EST '//GRAIN//' ALORS '//
-     +                     'QUE LES SEULES VALEURS POSSIBLES SONT '//
-     +                     '"NOEUD" ET "VALEUR" .')
+              CALL U2MESK('F','PREPOST_66',1,GRAIN)
           ENDIF
 
 
        ELSE
-              CALL UTMESS ('F','IMPMTR','PROBLEME DANS LE DESCRIPTEUR'
-     +                   //' DE LA MATRICE: L''INDICATEUR DE SYMETRIE'
-     +                   //' NE CORRESPOND NI A UNE MATRICE '//
-     +                     ' SYMETRIQUE, NI A UNE MATRICE '//
-     +                     ' NON-SYMETRIQUE . ')
+              CALL U2MESS('F','PREPOST_67')
        ENDIF
       ELSE
-            CALL UTMESS ('F','IMPMTR','PROBLEME DANS LE DESCRIPTEUR'
-     +                   //' DE LA MATRICE: L''INDICATEUR TYPE'
-     +                   //' DE VALEUR DE LA MATRICE NE CORRESPOND '//
-     +                     'NI A UNE MATRICE REELLE, NI A UNE MATRICE '
-     +                   //' COMPLEXE . ')
+            CALL U2MESS('F','PREPOST_68')
       ENDIF
 
       CALL JEDEMA()

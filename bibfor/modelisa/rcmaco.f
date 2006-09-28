@@ -5,7 +5,7 @@
       INTEGER            INDMAT,NBMAT,IMATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,8 +142,7 @@ C
          NOMMAT=ZK8(IGRP+INDMAT+L-1)
          CALL JEEXIN(NOMMAT//'.MATERIAU.NOMRC',IRET)
          IF ( IRET .EQ. 0 ) THEN
-             CALL UTMESS('F','RCMACO_01',
-     &          'OBJET '//NOMMAT//'.MATERIAU.NOMRC NON TROUVE ' )
+             CALL U2MESK('F','MODELISA6_63',1,NOMMAT)
          ENDIF
          CALL JELIRA(NOMMAT//'.MATERIAU.NOMRC','LONMAX',
      &               ZI(JNBCM+L-1),K8B)
@@ -256,13 +255,13 @@ C           ------------------------
                  CH19   = ZK8(ZI(KK+5)+ZI(KK)+ZI(KK+2)+ZI(KK+4)+M)
                  NOPARA = ZK8(ZI(KK+5)+ZI(KK)+ZI(KK+2)+M)
                  IF (NOPARA(1:5).EQ.'ALPHA'.OR.
-     +               NOPARA.EQ.'F_ALPHA '.OR.NOPARA.EQ.'C_ALPHA ') THEN
+     &               NOPARA.EQ.'F_ALPHA '.OR.NOPARA.EQ.'C_ALPHA ') THEN
 C
 C ---        INTERPOLATION DES COEFFICIENTS DE DILATATION ALPHA
 C ---        EN TENANT COMPTE DE LA TEMPERATURE DE DEFINITION TDEF :
 C            -----------------------------------------------------
                     CALL ALFINT ( CHMAT, IMATE, NOMMAT, TDEF, NOPARA,
-     +                                            K, PREC, CH19,EOUN)
+     &                                            K, PREC, CH19,EOUN)
                     ZK8(ZI(KK+5)+ZI(KK)+ZI(KK+2)+ZI(KK+4)+M) = CH19
                  ENDIF
   23           CONTINUE
@@ -294,8 +293,7 @@ C ---   DES FONCTIONS SONT CREEES SUR LA VOLATILE (ROUTINE ALFINT) ---
                   CALL JELIRA ( CH19//'.PARA', 'LONUTI',ZI(IPIF+5),K8B)
                ELSEIF ( ZK16(ZI(IPIF+1))(1:1) .EQ. 'I' ) THEN
                ELSE
-                  CALL UTMESS('F','RCMACO','TYPE SD NON TRAITE: '
-     &                     //ZK16(ZI(IPIF+1)) )
+                  CALL U2MESK('F','MODELISA6_64',1,ZK16(ZI(IPIF+1)))
                ENDIF
             ELSE IF ( IRETT .EQ. 1 ) THEN
               LISTR = '&&'//CH19(1:8)//'_LR8'
@@ -307,8 +305,7 @@ C ---   DES FONCTIONS SONT CREEES SUR LA VOLATILE (ROUTINE ALFINT) ---
               ZI(IPIF+1) = 0
               ZI(IPIF+2) = 0
             ELSE
-               CALL UTMESS('F','RCMACO','TYPE SD NON TRAITE: '
-     &                     //CH19(1:8))
+               CALL U2MESK('F','MODELISA6_64',1,CH19(1:8))
             ENDIF
 C
             IF ( ZI(KK+6) .EQ. 1 ) THEN

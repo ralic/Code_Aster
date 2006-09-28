@@ -1,8 +1,8 @@
       SUBROUTINE LCHOBR(TOLER, ITMAX, MOD, NBMAT, MATERF, NR, NVI,
-     1                 DEPSM, SIGM, VIM, SEUIL, VP, VECP, ICOMP, SIGP,
-     2                 VIP, IRTET)
+     &                 DEPSM, SIGM, VIM, SEUIL, VP, VECP, ICOMP, SIGP,
+     &                 VIP, IRTET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C --- INITIALISATION ---------------------------------------------------
 C ======================================================================
       GM = VIM(1)
       IF (GM.LT.0.0D0) THEN
-         CALL UTMESS('F','LCHOBR','GM NEGATIF')
+         CALL U2MESS('F','ALGORITH3_88')
       ENDIF
       IRTET = 0
       ITERI = 0
@@ -129,13 +129,11 @@ C -- ON OBTIENT DGAMMA_P NEGATIF : ON ESSAIE DE DECOUPER LE PAS DE TEMPS
 C ======================================================================
          IF (DGNP.LT.0.D0) THEN
             IF ((ICOMP.EQ.0) .OR. (ICOMP.EQ.1)) THEN
-               CALL UTMESS('I','LCHOBR','ERREUR:
-     &               PB DE CONVERGENCE (DGP NEG)')
+               CALL U2MESS('I','ALGORITH4_57')
                ITERI = 1
                GOTO 100
             ELSE
-               CALL UTMESS('I','LCHOBR','ERREUR:
-     &                 PB DE CONVERGENCE 2 (DGP NEG)')
+               CALL U2MESS('I','ALGORITH4_60')
                GOTO 100
             ENDIF
          ENDIF
@@ -153,8 +151,7 @@ C --------- ON DETECTE LES SOLUTIONS NON ADMISSIBLES -------------------
 C ======================================================================
             AUX = SIGEQE*(ETANP+1.0D0)/(TROIS*MATERF(4,1))
             IF (DGNP.GT.AUX) THEN
-              CALL UTMESS('I','LCHOBR','ERREUR:
-     &                 PAS DE SOLUTION')
+              CALL U2MESS('I','ALGORITH4_58')
               ITERI = 1
               GOTO 100
             ENDIF
@@ -179,11 +176,11 @@ C ======================================================================
 C --------- ON ESSAIE DE DECOUPER LE PAS DE TEMPS ----------------------
 C ======================================================================
             IF ((ICOMP.EQ.0) .OR. (ICOMP.EQ.1)) THEN
-               CALL UTMESS('I','LCHOBR','ERREUR: PB DE CONVERGENCE')
+               CALL U2MESS('I','ALGORITH4_59')
                ITERI = 1
                GOTO 100
             ELSE
-               CALL UTMESS('F','LBHOBR','ERREUR: PB DE CONV 2')
+               CALL U2MESS('F','ALGORITH4_61')
             ENDIF
          ENDIF
  100     CONTINUE

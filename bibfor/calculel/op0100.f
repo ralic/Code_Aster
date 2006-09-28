@@ -1,21 +1,21 @@
       SUBROUTINE OP0100(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
 C      OPERATEUR :     CALC_G
@@ -122,7 +122,7 @@ C 2.2. ==> LE CONCEPT DE SORTIE, SON TYPE, LA COMMANDE
 C-----------------------------------------------------
       CALL GETRES(TABLE1,TYPCO,OPER)
       IF ( NIV.GE.2 ) THEN
-        CALL UTMESS('I',NOMPRO,'CREATION DE LA TABLE '//TABLE1)
+        CALL U2MESK('I','CALCULEL4_9',1,TABLE1)
       ENDIF
 C
 C----------------
@@ -142,12 +142,10 @@ C---------------------------------------------------------------
         CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
         CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
         IF (N1.EQ.0 ) THEN
-           CALL UTMESS('F',NOMPRO,'SI LE MOT-CLE DEPL EST PRESENT'//
-     &                    ' ALORS LE MOT-CLE MODELE EST OBLIGATOIRE.')
+           CALL U2MESS('F','CALCULEL4_10')
         ENDIF
         IF (N2.EQ.0 ) THEN
-           CALL UTMESS('F',NOMPRO,'SI LE MOT CLE DEPL EST PRESENT'//
-     &                 ' ALORS LE MOT-CLE CHAM_MATER EST OBLIGATOIRE.')
+           CALL U2MESS('F','CALCULEL4_11')
         ENDIF
         CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',DIME,K8B,IER)
 C
@@ -164,8 +162,7 @@ C
         ELSE
           NBINST = -NBINST
           IF(NBINST.GT.1) THEN
-            CALL UTMESS('F',NOMPRO,'LA LISTE D''INSTANTS NE DOIT'
-     &        //'COMPORTER QU''UN SEUL INSTANT AVEC LE MOT-CLE DEPL')
+            CALL U2MESS('F','CALCULEL4_12')
           ENDIF
           CALL GETVR8(' ','INST',0,1,NBINST,TIME,IBID)
           EXITIM = .TRUE.
@@ -190,8 +187,7 @@ C
         CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,NC)
         CALL RSUTNU ( RESUCO, ' ', 0, VECORD, LONVEC, PREC, CRIT, IER )
         IF(IER.NE.0) THEN
-          CALL UTMESS('F',NOMPRO,
-     &                'PROBLEME A LA RECUPERATION D''UN CHAMP')
+          CALL U2MESS('F','CALCULEL4_13')
         ENDIF
         CALL GETTCO(RESUCO,TYSD)
         IF (TYSD.EQ.'DYNA_TRANS') THEN
@@ -199,26 +195,19 @@ C
            CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
            CALL GETFAC('EXCIT',NEXCI)
            IF (N1.EQ.0 ) THEN
-             CALL UTMESS('F',NOMPRO,'DANS LE CAS D''UNE SD RESULTAT'//
-     &                    ' DE TYPE DYNA_TRANS, LE MOT-CLE MODELE EST'//
-     &                    ' OBLIGATOIRE.')
+             CALL U2MESS('F','CALCULEL4_14')
            ENDIF
            IF (N2.EQ.0 ) THEN
-             CALL UTMESS('F',NOMPRO,'DANS LE CAS D''UNE SD RESULTAT'//
-     &                    ' DE TYPE DYNA_TRANS, LE MOT-CLE CHAM_MATER'//
-     &                    ' EST OBLIGATOIRE.')
+             CALL U2MESS('F','CALCULEL4_15')
            ENDIF
            IF (NEXCI.EQ.0 ) THEN
-             CALL UTMESS('F',NOMPRO,'DANS LE CAS D''UNE SD RESULTAT'//
-     &                    ' DE TYPE DYNA_TRANS, LE MOT-CLE EXCIT'//
-     &                    ' EST OBLIGATOIRE.')
+             CALL U2MESS('F','CALCULEL4_16')
            ENDIF
         ENDIF
 
         IF (((OPTION.EQ.'K_G_MODA') .AND. (TYSD.NE.'MODE_MECA')) .OR.
      &     ((TYSD.EQ.'MODE_MECA') .AND. (OPTION.NE.'K_G_MODA'))) THEN
-          CALL UTMESS('F','OP0100','POUR UN RESULTAT DE TYPE '//
-     &          'MODE_MECA L OPTION DE CALCUL DOIT ETRE K_G_MODA.')
+          CALL U2MESS('F','CALCULEL4_17')
         ENDIF
 
         CALL JEVEUO ( VECORD, 'L', IVEC )
@@ -252,15 +241,13 @@ C------------------
            CALL DISMOI('F','NOM_MODELE',ZK8(ICHA),'CHARGE',IBID,
      &                  MODCHA,IER)
            IF (MODCHA.NE.MODELE) THEN
-             CALL UTMESS('F',NOMPRO,'LES CHARGES NE S''APPUIENT PAS'
-     &                         //' SUR LE MODELE DONNE EN ARGUMENT')
+             CALL U2MESS('F','CALCULEL4_18')
            ENDIF
            DO 23 , I = 1,NCHA
              CALL DISMOI('F','NOM_MODELE',ZK8(ICHA-1+I),'CHARGE',IBID,
      &                   MODCHI,IER)
              IF (MODCHI.NE.MODCHA) THEN
-               CALL UTMESS('F',NOMPRO,'LES CHARGES NE '
-     &                   // 'S''APPUIENT PAS TOUTES SUR LE MEME MODELE')
+               CALL U2MESS('F','CALCULEL3_44')
              ENDIF
   23       CONTINUE
           ENDIF
@@ -281,37 +268,33 @@ C------------------------------------------
            CALL GETVID ( 'THETA','FISSURE', 1,1,1, K8B,N2)
            IF((OPTION(1:6).EQ.'CALC_K' .OR. OPTION.EQ.'K_G_MODA')
      &        .AND.N2.EQ.0)THEN
-              CALL UTMESS('F',NOMPRO,'LE MOT CLE ''FISSURE'''//
-     &          ' EST OBLIGATOIRE AVEC L''OPTION '//OPTION(1:8))
+              CALL U2MESK('F','CALCULEL4_19',1,OPTION(1:8))
            ELSEIF((OPTION(1:6).NE.'CALC_K' .AND. OPTION.NE.'K_G_MODA')
      &          .AND.N1.EQ.0)THEN
-              CALL UTMESS('F',NOMPRO,'LE MOT CLE ''FOND_FISS'''//
-     &          ' EST OBLIGATOIRE AVEC L''OPTION '//OPTION(1:8))
-           ENDIF        
+              CALL U2MESK('F','CALCULEL4_20',1,OPTION(1:8))
+           ENDIF
          ENDIF
       ENDIF
       IF(DIME.EQ.2)THEN
         IF(OPTION.EQ.'CALC_K_G' .OR. OPTION.EQ.'K_G_MODA')THEN
           CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,K8B,N1)
           IF(N1.EQ.0)THEN
-             CALL UTMESS('F',NOMPRO,'MOT CLE FOND_FISS'//
-     &          ' OBLIGATOIRE POUR L OPTION '//OPTION)
+             CALL U2MESK('F','CALCULEL4_21',1,OPTION)
           ENDIF
         ENDIF
       ENDIF
 C
 C----------------
 C 2.7. ==> THETA
-C----------------  
+C----------------
       CALL GETVTX ( ' ', 'SYME_CHAR', 0,1,1, SYMECH,IBID)
 
       CALL GETVID ( 'THETA','THETA', 1,1,1, SDTHET,IRET)
       IF (TROIDL.AND.(OPTION.EQ.'CALC_G') .AND. (IRET.NE.0)) THEN
-        CALL UTMESS('F',OPER,'CHAMP THETA CALCULE AUTOMATIQUEMENT')
+        CALL U2MESS('F','CALCULEL4_22')
       ENDIF
       IF(IRET.NE.0.AND.OPTION.EQ.'G_LAGR'.AND.TROIDL)THEN
-        CALL UTMESS('F',NOMPRO,'POUR L OPTION '//OPTION//'(3D LOCAL)'//
-     &     ' UTILISER LE MOT CLE THETA_LAGR')
+        CALL U2MESK('F','CALCULEL4_23',1,OPTION)
       ENDIF
 
 C ---  2.7.1 : THETA FOURNI
@@ -320,9 +303,7 @@ C ---  2.7.1 : THETA FOURNI
         IF (TYPCO(1:10).EQ.'THETA_GEOM') THEN
           CALL RSEXCH(SDTHET,'THETA',0,THETA,N1)
           IF (N1.GT.0) THEN
-            CALL UTMESS('F',NOMPRO,'LE CHAMP DE THETA EST INEXISTANT '//
-     &                 'DANS LA STRUCTURE DE DONNEES '//SDTHET//' DE '//
-     &                 'TYPE THETA_GEOM .')
+            CALL U2MESK('F','CALCULEL3_90',1,SDTHET)
           ENDIF
         ELSE
           THETA=SDTHET
@@ -340,8 +321,8 @@ C ---  2.7.2 : THETA CALCULE
          COORN = NOMA//'.COORDO    .VALE'
          CALL JEVEUO ( COORN, 'L', IADRCO )
          CALL GETVID ( 'THETA', 'FOND_FISS', 1,1,1, FOND, NBV )
-         CALL GETVR8 ( 'THETA', 'DIRECTION', 1,1,0, R8B, NBR8) 
-         DIREC=.FALSE.  
+         CALL GETVR8 ( 'THETA', 'DIRECTION', 1,1,0, R8B, NBR8)
+         DIREC=.FALSE.
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             SUITE='.'
@@ -349,28 +330,25 @@ C ---  2.7.2 : THETA CALCULE
               SUITE=',LA 3-EME NULLE.'
             ENDIF
             IF ( NBR8 .NE. 3 ) THEN
-               CALL UTMESS('F',NOMPRO,'IL FAUT DONNER 3 '//
-     &                   'COMPOSANTES DE LA DIRECTION'//SUITE)
+               CALL U2MESK('F','CALCULEL4_24',1,SUITE)
             ELSE
                CALL GETVR8 ( 'THETA', 'DIRECTION', 1, 1, 3, DIR, NBR8 )
                DIREC=.TRUE.
             ENDIF
          ELSE
           IF(DIME.EQ.2)THEN
-            CALL UTMESS('F',NOMPRO,
-     &          'IL FAUT DONNER LA DIRECTION DE PROPAGATION EN 2D'//
-     &          '    LA DIRECTION PAR DEFAUT N''EXISTE PLUS')
+            CALL U2MESS('F','CALCULEL4_3')
           ENDIF
          ENDIF
 
-C      - THETA 2D (COURONNE) 
-        IF(DIME.EQ.2)THEN 
+C      - THETA 2D (COURONNE)
+        IF(DIME.EQ.2)THEN
           OPTIO3='COURONNE'
-          CALL GVER2D ( NOMA,1,OPTIO3,'THETA',NOMNO, 
+          CALL GVER2D ( NOMA,1,OPTIO3,'THETA',NOMNO,
      &                 NOEUD, RINF, RSUP, MODULE )
-          CALL GCOU2D ( THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO), RINF, 
+          CALL GCOU2D ( THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO), RINF,
      &                    RSUP, MODULE, DIR )
-C     - THETA 3D 
+C     - THETA 3D
         ELSE IF(DIME.EQ.3)THEN
           CHFOND  = FOND//'.FOND      .NOEU'
           CALL JELIRA ( CHFOND, 'LONMAX', NBNO, K8B )
@@ -384,7 +362,7 @@ C
       ENDIF
 C
 C----------------------------------------------------
-C 2.8. ==> FOND_FISS, FISSURE, LISSAGE, 
+C 2.8. ==> FOND_FISS, FISSURE, LISSAGE,
 C          PROPAGATION (OPTIONS: G_LAGR,G_LAGR_GLOB)
 C----------------------------------------------------
 C
@@ -392,9 +370,7 @@ C    - PROPAGATION ALPHA
        CALL GETVR8(' ','PROPAGATION',0,1,1,ALPHA,IPROPA)
        IF (IPROPA.EQ.0) ALPHA = 0.D0
        IF ((OPTION(1:6).NE.'G_LAGR') .AND. (IPROPA.NE.0)) THEN
-         CALL UTMESS('F',NOMPRO,'MOT CLE PROPAGATION UTILISE '//
-     &       'SEULEMENT POUR LE CALCUL DE G AVEC '//
-     &       'PROPAGATION LAGRANGIENNE')
+         CALL U2MESS('F','CALCULEL4_25')
        ENDIF
 C
 C 2.8.1 ==> SI 3D LOCAL :
@@ -406,7 +382,7 @@ C     - FOND_FISS ET FISSURE :
         CHFOND = FOND//'.FOND      .NOEU'
         CALL JELIRA(CHFOND,'LONMAX',LNOFF,K8B)
       ENDIF
-      IF (OPTION(1:6) .EQ. 'CALC_K' .OR. OPTION .EQ. 'K_G_MODA')THEN 
+      IF (OPTION(1:6) .EQ. 'CALC_K' .OR. OPTION .EQ. 'K_G_MODA')THEN
         CALL GETVID ( 'THETA','FISSURE', 1,1,1, FISS, IFOND )
         CALL JEVEUO(FISS//'.FONDFISS','L',IFF)
         CALL JEVEUO(FISS//'.FONDMULT','L',IFOMUL)
@@ -441,14 +417,10 @@ C     - METHODE DE DECOMPOSITION DE THETA ET G : LAGRANGE OU LEGENDRE
         NBRE = LNOFF
         IF ((OPTION .EQ. 'G_MAX') .OR.
      &      (OPTION .EQ. 'G_BILI')) THEN
-           CALL UTMESS('F',NOMPRO,'CETTE COMBINAISON DE LISSAGE '//
-     &       'N''EST PAS PROGRAMMEE POUR L''OPTION : '//OPTION//'.')
+           CALL U2MESK('F','CALCULEL4_26',1,OPTION)
         ENDIF
         IF (NDEG.GT.LNOFF) THEN
-          CALL UTMESS('F',NOMPRO,'LE DEGRE DES POLYNOMES DE '//
-     &        'LEGENDRE DOIT ETRE INFERIEUR OU EGAL AU NOMBRE '//
-     &        'DE NOEUDS DU FOND DE FISSURE AVEC LA METHODE '//
-     &        'THETA-LAGRANGE')
+          CALL U2MESS('F','CALCULEL4_27')
         ENDIF
       ELSE IF ((LISSTH.EQ.'LAGRANGE') .AND.
      &         ((LISSG.EQ.'LAGRANGE').OR. (LISSG.EQ.
@@ -457,24 +429,20 @@ C     - METHODE DE DECOMPOSITION DE THETA ET G : LAGRANGE OU LEGENDRE
         GLAGR = .TRUE.
         NBRE = LNOFF
       ELSE IF ((LISSTH.EQ.'LEGENDRE') .AND. (LISSG.NE.'LEGENDRE')) THEN
-        CALL UTMESS('F',NOMPRO,'LE LISSAGE DE G DOIT ETRE DE TYPE '//
-     &         'LEGENDRE SI LE LISSAGE DE THETA EST DE TYPE LEGENDRE')
-      ELSE IF ((LISSTH.EQ.'LAGRANGE_REGU') .AND. 
+        CALL U2MESS('F','CALCULEL4_28')
+      ELSE IF ((LISSTH.EQ.'LAGRANGE_REGU') .AND.
      &         (LISSG.EQ.'LAGRANGE_REGU'))THEN
         THLAG2 = .TRUE.
         GLAGR  = .FALSE.
         THLAGR = .FALSE.
         IF(OPTION.EQ.'G_LAGR')THEN
-          CALL UTMESS('F',NOMPRO,'L''OPTION '//OPTION(1:6)//' N''EST '//
-     &         'PAS PERMISE AVEC LE LISSAGE ''LAGRANGE_REGU''')
-        ENDIF    
-      ELSE IF(((LISSTH.EQ.'LAGRANGE_REGU') .AND. 
+          CALL U2MESK('F','CALCULEL4_29',1,OPTION(1:6))
+        ENDIF
+      ELSE IF(((LISSTH.EQ.'LAGRANGE_REGU') .AND.
      &         (LISSG.NE.'LAGRANGE_REGU')).OR.
-     &      ((LISSTH.NE.'LAGRANGE_REGU') .AND. 
+     &      ((LISSTH.NE.'LAGRANGE_REGU') .AND.
      &       (LISSG.EQ.'LAGRANGE_REGU'))) THEN
-        CALL UTMESS('F',NOMPRO,'SI LA METHODE ''LAGRANGE_REGU'' EST '//
-     &   'UTILISEE POUR LE LISSAGE, ALORS LE LISSAGE DE G ET DE THETA'//
-     &   ' DOIVENT ETRE DE TYPE ''LAGRANGE_REGU''.')    
+        CALL U2MESS('F','CALCULEL4_30')
       ENDIF
 
 C    - PROPAGATION CHAMP THETA
@@ -484,24 +452,20 @@ C    - PROPAGATION CHAMP THETA
       ELSE
         CALL RSEXCH(SDTHET,'THETA',0,THETLG,IRET)
         IF (IRET.NE.0) THEN
-          CALL UTMESS('F',NOMPRO,'LE CHAMP DE THETA EST INEXISTANT '//
-     &                'DANS LA STRUCTURE DE DONNEES '//SDTHET//' DE '//
-     &                'TYPE THETA_GEOM .')
+          CALL U2MESK('F','CALCULEL3_90',1,SDTHET)
         ENDIF
       ENDIF
       IF ((OPTION.EQ.'G_LAGR') .AND. (ITHETA.EQ.0)) THEN
-        CALL UTMESS('F',NOMPRO,'CHAMP THETA OBLIGATOIRE AVEC '//
-     &        OPTION//'. UTILISER LE MOT CLE THETA_LAGR.')
+        CALL U2MESK('F','CALCULEL4_31',1,OPTION)
       ENDIF
-C 
+C
 C 2.8.2 ==> SI 2D
       ELSE IF(DIME.EQ.2)THEN
 C
 C        - FOND_FISS 2D
            CALL GETVID ( 'THETA', 'FOND_FISS', 1,1,1,FOND,IFOND)
            IF ( (OPTION .EQ. 'CALC_K_G') .AND. (IFOND.EQ.0) ) THEN
-              CALL UTMESS('F', NOMPRO,'FOND OBLIGATOIRE AVEC '//
-     &               'OPTION CALC_K_G')
+              CALL U2MESS('F','CALCULEL4_32')
            ENDIF
 C
       ENDIF
@@ -639,7 +603,7 @@ C        POUR LE PASSAGE NUMERO NRPASS :
 C        . NOPASE : NOM DU PARAMETRE DE SENSIBILITE EVENTUELLEMENT
 C        . LATABL : NOM DE LA TABLE A COMPLETER
 C                   C'EST 'TABLE1' POUR UN CALCUL STANDARD, UN NOM
-C                   COMPOSE A PARTIR DE 'TABLE1' ET 'NOPASE' POUR 
+C                   COMPOSE A PARTIR DE 'TABLE1' ET 'NOPASE' POUR
 C                   UN CALCUL DE SENSIBILITE
 C        . LERES0 : IDEM POUR RESUCO
 C        . OPTIO1 : C'EST OPTION POUR UN CALCUL STANDARD, 'CALC_DG' POUR
@@ -683,9 +647,7 @@ C
             ENDIF
             IF(OPTION.EQ.'CALC_K_G') OPTIO1 = 'CALC_DK_DG_E'
             IF(NBPASE.GE.2) THEN
-              CALL UTMESS ('F', NOMPRO,
-     &          'DERIVATION DE G : UN SEUL PARAMETRE SENSIBLE '//
-     &          'PAR APPEL A CALC_G ')
+              CALL U2MESS('F','CALCULEL4_33')
             ENDIF
           ELSE IF ( TYPESE.EQ.5 ) THEN
             IF(DIME.EQ.2)THEN
@@ -695,14 +657,10 @@ C
             ENDIF
             IF(OPTION.EQ.'CALC_K_G') OPTIO1 = 'CALC_DK_DG_FORC'
             IF(NBPASE.GE.2) THEN
-              CALL UTMESS ('F', NOMPRO,
-     &          'DERIVATION DE G : UN SEUL PARAMETRE SENSIBLE '//
-     &          'PAR APPEL A CALC_G ')
+              CALL U2MESS('F','CALCULEL4_33')
             ENDIF
           ELSE
-            CALL UTMESS ('F', NOMPRO,
-     &  'ON NE SAIT PAS TRAITER LE TYPE DE SENSIBILITE '//
-     &  'ASSOCIE AU PARAMETRE SENSIBLE '//NOPASE)
+            CALL U2MESK('F','CALCULEL4_34',1,NOPASE)
           ENDIF
           IF (NRES.NE.0) THEN
             CALL PSRENC ( RESUCO, NOPASE, LERES0, IRET )
@@ -710,6 +668,7 @@ C
               CALL UTMESS ('F', NOMPRO,
      &  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      &  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+C        CALL U2MESK('F','CALCULEL2_96', 2 ,VALK)
             ENDIF
           ENDIF
 
@@ -717,7 +676,7 @@ C
 C
         IF ( NIV.GE.2 ) THEN
           IF ( NOPASE.NE.'        ' ) THEN
-            CALL UTMESS('I',NOMPRO,'SENSIBILITE AU PARAMETRE '//NOPASE)
+            CALL U2MESK('I','CALCULEL4_35',1,NOPASE)
           ENDIF
         ENDIF
 
@@ -725,7 +684,7 @@ C
 C
 C --- DETERMINATION AUTOMATIQUE DE THETA (CAS 3D LOCAL)
 C
-      IF (TROIDL.AND. OPTIO1(1:6) .NE.'CALC_K' 
+      IF (TROIDL.AND. OPTIO1(1:6) .NE.'CALC_K'
      &          .AND. OPTIO1 .NE.'K_G_MODA') THEN
 
       CALL JEVEUO(CHFOND,'L',IADNUM)
@@ -737,8 +696,7 @@ C
       IF (.NOT.THLAG2)THEN
         IF ((CONNEX.AND. (.NOT.THLAGR)) .OR.
      &    (CONNEX.AND. (.NOT.GLAGR))) THEN
-          CALL UTMESS('F',NOMPRO,'L USAGE DES POLYNOMES DE LEGENDRE'//
-     &         ' DANS LE CAS D UN FOND DE FISSURE CLOS EST INTERDIT.')
+          CALL U2MESS('F','CALCULEL4_36')
         ENDIF
       ENDIF
       OBJMA = MODELE//'.MODELE    .NOMA'
@@ -762,7 +720,7 @@ C
       CALL GIMPT2(THETAI,NBRE,TRAV1,TRAV2,TRAV3,CHFOND,STOK4,LNOFF,0)
 
 
-      ELSE IF((TROIDL.AND. OPTIO1(1:6) .EQ.'CALC_K').OR. 
+      ELSE IF((TROIDL.AND. OPTIO1(1:6) .EQ.'CALC_K').OR.
      &        (TROIDL.AND. OPTIO1 .EQ.'K_G_MODA')) THEN
 
 C       ON A TOUJOURS À FAIRE À UN FOND OUVERT AVEC XFEM
@@ -786,7 +744,7 @@ C       ON A TOUJOURS À FAIRE À UN FOND OUVERT AVEC XFEM
         CALL JEEXIN(TRAV1,IRET)
         IF (IRET.NE.0) CALL JEDETR(TRAV1)
         CALL JEEXIN(TRAV2,IRET)
-        IF (IRET.NE.0) CALL JEDETR(TRAV2)      
+        IF (IRET.NE.0) CALL JEDETR(TRAV2)
         CALL JEEXIN(TRAV3,IRET)
         IF (IRET.NE.0) CALL JEDETR(TRAV3)
         CALL JEEXIN(STOK4,IRET)
@@ -817,8 +775,7 @@ C
               IORD2 = ZI(IVEC-1+J)
               CALL RSEXCH(RESUCO,'DEPL',IORD2,DEPLA2,IRET)
               IF(IRET.NE.0) THEN
-                CALL UTMESS('F',NOMPRO,
-     &                      'ACCES IMPOSSIBLE AU DEPLACEMENT')
+                CALL U2MESS('F','CALCULEL4_37')
               ENDIF
               CALL RSADPA(RESUCO,'L',1,'INST',IORD1,0,JINST,K8BID)
               TIMEU = ZR(JINST)
@@ -886,8 +843,7 @@ C
             ENDIF
 
           ELSE
-            CALL UTMESS('F',NOMPRO,'MOT-CLEF <BORNES> OBLIGATOIRE'//
-     &                  ' AVEC L OPTION '//OPTIO1//' !')
+            CALL U2MESK('F','CALCULEL4_38',1,OPTIO1)
           ENDIF
           ENDIF
 C
@@ -923,7 +879,7 @@ C
 C------------------------
 C 3.3.2. ==>OPTION CALC_K_MAX
 C------------------------
-C          
+C
         ELSE IF (OPTIO1 .EQ.'CALC_K_MAX') THEN
           CALL MMAXKL(LATABL,MODELE,THETAI,MATE,COMPOR,NCHA,SYMECH,
      &               CHFOND,LNOFF,BASLOC,COURB,NDEG,THLAGR,GLAGR,
@@ -933,25 +889,24 @@ C
 C------------------------
 C 3.4. ==>OPTION K_G_MODA
 C------------------------
-C       
+C
       ELSE IF (OPTIO1 .EQ. 'K_G_MODA') THEN
 C
 C  3.4.1 ==>  K_G_MODA 2D
 C  -----------------------
        IF(.NOT.TROIDL)THEN
           DO 341 I = 1 , LONVEC
-            IORD = ZI(IVEC-1+I) 
+            IORD = ZI(IVEC-1+I)
             CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
             IF(IRET.NE.0) THEN
-              CALL UTMESS('F',NOMPRO,
-     &                    'ACCES IMPOSSIBLE AU MODE PROPRE')
+              CALL U2MESS('F','CALCULEL4_39')
             ENDIF
-            CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8BID) 
+            CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8BID)
             PULS = ZR(IPULS)
             PULS = SQRT(PULS)
             CALL MEMOKG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
      &                  ZK8(ICHA),SYMECH,FOND,IORD,PULS,NBPRUP,NOPRUP)
- 341     CONTINUE  
+ 341     CONTINUE
 C
 C  3.4.2 ==> K_G_MODA 3D LOC
 C  -------------------------
@@ -998,7 +953,7 @@ C
                CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE ')
                CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
                CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
-               CALL UTFINM()            
+               CALL UTFINM()
             ENDIF
             CALL RSEXCH(RESUCO,'VITE',IORD,CHVITE,IRET)
             IF(IRET.NE.0) THEN
@@ -1008,7 +963,7 @@ C
             ENDIF
             CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,K8B)
             TIME  = ZR(JINST)
-            EXITIM = .TRUE.  
+            EXITIM = .TRUE.
 C
 C       - RECUPERATION DES CHAMNO DE DERIVEE LAGRANGIENNE DE DEPLACEMENT
 C         DANS LA SD RESULTAT DERIVE DE TYPE EVOL_ELAS.
@@ -1096,26 +1051,26 @@ C
      &                   NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
      &                   CHEPSE,CHSISE,CHVITE,CHACCE)
 C
-      ELSE IF (OPTIO1.EQ.'CALC_DK_DG_E') THEN 
+      ELSE IF (OPTIO1.EQ.'CALC_DK_DG_E') THEN
             OPTIO2 = 'CALC_DG_E'
             CALL MECALG (OPTIO2,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
      &                   ZK8(ICHA),SYMECH,COMPOR,EXITIM,TIME,IORD,
      &                   3,NOPRUP,NOPASE,TYPESE,CHDESE,
      &                   CHEPSE,CHSISE,CHVITE,CHACCE)
 C
-C         - LES DERIVEES DE KI ET KII SONT NULLES. 
+C         - LES DERIVEES DE KI ET KII SONT NULLES.
 C           ON LES AJOUTE DIRECTEMENT
             VAL(1) = 0.D0
             VAL(2) = 0.D0
             CALL TBAJLI(LATABL,2,NOPRUP(4),IORD,VAL,CBID,K8B,1)
-      ELSE IF (OPTIO1.EQ.'CALC_DK_DG_FORC') THEN 
+      ELSE IF (OPTIO1.EQ.'CALC_DK_DG_FORC') THEN
             CALL MEFICG (OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
      &                   ZK8(ICHA),SYMECH,FOND,EXITIM,TIME,IORD,
      &                   NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
      &                   CHEPSE,CHSISE,CHVITE,CHACCE)
 
       ELSE
-           CALL UTMESS('F',NOMPRO,'OPTION NON DISPO ACTUELLEMENT')
+           CALL U2MESS('F','CALCULEL4_40')
 
       ENDIF
 
@@ -1134,7 +1089,7 @@ C
       ENDIF
 
  30   CONTINUE
-  
+
       CALL JEDETC('G','&&NMDORC',1)
 
       CALL JEDEMA()

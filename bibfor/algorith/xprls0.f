@@ -3,24 +3,24 @@
       CHARACTER*2    LEVSET
       CHARACTER*8    NOMA,FISS
       CHARACTER*19   CNSLN,CNSLT,ISOZRO,NOESOM
-  
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C     ------------------------------------------------------------------
@@ -82,11 +82,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19   MAICOU,NOMCOU,VNOULS,VNOULT,MAI
       CHARACTER*24   NOMMAI
       LOGICAL        DEJAIN,DEJADI,NOEMAI,IN
-      
+
 C  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
       REAL*8         IATRI(20),IBTRI(20),ICTRI(20)
 C        ---------------------
-C        |  I | TRIANGLE | N | 
+C        |  I | TRIANGLE | N |
 C        --------------------
 C        |  1 |   1 2 3  | 3 |
 C        --------------------
@@ -138,7 +138,7 @@ C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       NDIM=ZI(ADDIM-1+6)
       NOMMAI = NOMA//'.NOMMAI'
-      
+
 C   RECUPERATION DE L'ADRESSE DES VALEURS DES LS
       IF (LEVSET.EQ.'LN') THEN
          CALL JEVEUO(CNSLN//'.CNSV','E',JLSNO)
@@ -146,7 +146,7 @@ C   RECUPERATION DE L'ADRESSE DES VALEURS DES LS
       ELSEIF (LEVSET.EQ.'LT') THEN
          CALL JEVEUO(CNSLT//'.CNSV','E',JLSNO)
       ENDIF
-      
+
 C  RECUPERATION DE L'ADRESSE DE L'INFORMATION 'NOEUD SOMMET'
       CALL JEVEUO(NOESOM,'L',JNOSOM)
 
@@ -169,7 +169,7 @@ C-----------------------------------------------------------------------
             NBNOZO = NBNOZO+1
          ENDIF
  50   CONTINUE
- 
+
 C--------------------------------------------------------------------
 C     ON REPERE LES MAILLES VOLUMIQUES COUPEES OU TANGENTEES PAR LS=0
 C     ( I.E. LES MAILLES OU L'ON PEUT INTERPOLER UN PLAN LS=0 )
@@ -180,7 +180,7 @@ C  VECTEUR CONTENANT LES NUMEROS DE MAILLES COUPEES
 
       NBMACO=0
       DO 100 IMA=1,NBMA
-      
+
 C   VERIFICATION DU TYPE DE MAILLE
          ITYPMA=ZI(JMAI-1+IMA)
          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
@@ -198,7 +198,7 @@ C  ON COMPTE D'ABORD LE NOMBRE DE NOEUDS DE LA MAILLE QUI S'ANNULENT
             IF (ABS(LSNA).LT.R8PREM().AND.ZL(JNOSOM-1+NUNOA))
      &         CPTZO = CPTZO+1
  105     CONTINUE
- 
+
 C  SI AU MOINS TROIS NOEUDS S'ANNULENT,ON A UN PLAN D'INTERSECTION
          IF (CPTZO.GE.3) THEN
             NBMACO = NBMACO + 1
@@ -228,7 +228,7 @@ C  SI UNE ARETE EST COUPEE,LA MAILLE L'EST FORCEMENT
  110     CONTINUE
 
  100  CONTINUE
-  
+
 C-----------------------------------------------------
 C     ON REPERE LES NOEUDS SOMMETS DES MAILLES COUPEES
 C-----------------------------------------------------
@@ -244,7 +244,7 @@ C  ON NE CONSIDERE QUE LE NOEUDS SOMMETS
 C  BOUCLE SUR LES MAILLES COUPEES
             DO 210 IMA=1,NBMACO
                NMAABS = ZI(JMACO-1+IMA)
-               NBNOMA = ZI(JCONX2+NMAABS)-ZI(JCONX2+NMAABS-1)         
+               NBNOMA = ZI(JCONX2+NMAABS)-ZI(JCONX2+NMAABS-1)
 C  BOUCLE SUR LES NOEUDS DE LA MAILLE
                DO 220 INOB=1,NBNOMA
                   NUNOB = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOB-1)
@@ -256,15 +256,15 @@ C  BOUCLE SUR LES NOEUDS DE LA MAILLE
  220           CONTINUE
  210        CONTINUE
          ENDIF
- 200  CONTINUE 
-      
+ 200  CONTINUE
+
 C----------------------------------------------
 C     CALCUL DES LS SUR LES NOEUDS SELECTIONNES
 C----------------------------------------------
 C  VECTEURS CONTENANT LES NOUVELLES LS POUR LES NOEUDS DE NOMCOU
       VNOULS = '&&XPRLS0.VNOULS'
       CALL WKVECT(VNOULS,'V V R',NBNOCO,JNOULS)
-      
+
       IF (LEVSET.EQ.'LN') THEN
          VNOULT = '&&XPRLS0.VNOULT'
          CALL WKVECT(VNOULT,'V V R',NBNOCO,JNOULT)
@@ -275,7 +275,7 @@ C  -----------------------------------------
       DO 300 INO=1,NBNOCO
          NUNO = ZI(JNOMCO-1+INO)
          LSN = ZR(JLSNO-1+NUNO)
-      
+
 C  SI LE NOEUD EST SUR L'ISOZERO, ON L'A DEJA REPERE
          IF (ZL(JZERO-1+NUNO)) THEN
             ZR(JNOULS-1+INO) = 0.D0
@@ -299,20 +299,20 @@ C  ON CHERCHE SI LE NOEUD(NUNO) APPARTIENT A LA MAILLE(NMAABS)
                IF (ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+I-1).EQ.NUNO)
      &             NOEMAI=.TRUE.
  320         CONTINUE
- 
+
 C  SI LE NOEUD APPARTIENT A LA MAILLE
             IF (NOEMAI) THEN
-            
+
                P(1)=ZR(JCOOR-1+3*(NUNO-1)+1)
                P(2)=ZR(JCOOR-1+3*(NUNO-1)+2)
                P(3)=ZR(JCOOR-1+3*(NUNO-1)+3)
-            
+
 C  ON RECUPERE LES POINTS D'INTERSECTION ISOZERO-ARETES
                NPTINT = 0
-               
+
 C  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
                DO 340 INOA=1,NBNOMA
-                  NUNOA = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOA-1)  
+                  NUNOA = ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOA-1)
                   IF (.NOT.ZL(JNOSOM-1+NUNOA)) GOTO 340
                   LSNA = ZR(JLSNO-1+NUNOA)
                   IF (ABS(LSNA).LT.R8PREM()) THEN
@@ -321,10 +321,10 @@ C  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
                      Y(NPTINT) = ZR(JCOOR-1+NDIM*(NUNOA-1)+2)
                      Z(NPTINT) = ZR(JCOOR-1+NDIM*(NUNOA-1)+3)
                      IF (LEVSET.EQ.'LN') LST(NPTINT)=ZR(JLTNO-1+NUNOA)
-                     
+
                   ENDIF
  340           CONTINUE
-            
+
 C  ON PARCOURT ENSUITE LES ARETES [AB] DE LA MAILLE
                ITYPMA=ZI(JMAI-1+NMAABS)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
@@ -334,10 +334,10 @@ C  ON PARCOURT ENSUITE LES ARETES [AB] DE LA MAILLE
                   NB=AR(IAR,2)
 
                   NUNOA=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NA-1)
-                  NUNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NB-1)   
+                  NUNOB=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+NB-1)
                   LSNA = ZR(JLSNO-1+NUNOA)
                   LSNB = ZR(JLSNO-1+NUNOB)
-                  
+
                   IF ((LSNA*LSNB.LT.0.D0).AND.
      &                (ABS(LSNA).GT.R8PREM()).AND.
      &                (ABS(LSNB).GT.R8PREM())) THEN
@@ -358,7 +358,7 @@ C  UN POINT D'INTERSECTION SE SITUE ENTRE LES NOEUDS (NUNOA) ET (NUNOB)
                         LSTB = ZR(JLTNO-1+NUNOB)
                         LST(NPTINT) = LSTA + S*(LSTB-LSTA)
                      ENDIF
-                     
+
                   ENDIF
  330           CONTINUE
 
@@ -372,12 +372,13 @@ C  VERIFICATION SUR LE NOMBRE DE POINTS D'INTERSECTION TROUVES
      &                  //NOMAIL//' ('//TYPMA//') ONT '//NPTIK2
      &                  //' POINTS D''INTERSECTION AVEC L''ISOZERO DE '
      &                  //LEVSET//' !!!')
+C        CALL U2MESK('F','ALGORITH11_67', 4 ,VALK)
                ENDIF
-      
+
                IF (NDIM.EQ.2.AND.NPTINT.LT.2) GOTO 310
                IF (NDIM.EQ.3.AND.NPTINT.LT.3) GOTO 310
                CALL ASSERT(NPTINT.LE.6)
-               
+
 
 C  CALCUL DE DISTANCE DU NOEUD (INO) A L'ISOZERO SUR LA MAILLE (NMAABS)
 C  --------------------------------------------------------------------
@@ -406,15 +407,15 @@ C  D'INTERSECTION ISOZERO-ARETES :
                      LSTB=LST(IB)
                      LSTC=LST(IC)
                   ENDIF
-                  
+
                   CALL XPROJ(P,A,B,C,M,D,VN,EPS,IN)
-                  
+
 C  ON RECHERCHE LA DISTANCE MINIMALE TELLE QUE EPS1>0 & EPS2>0 & EPS3>0
 C  --------------------------------------------------------------------
 C  ON STOCKE LA PREMIERE DISTANCE CALCULEE
                   IF (.NOT.DEJADI) THEN
                      BESTD = D
-                     IF (LEVSET.EQ.'LN') 
+                     IF (LEVSET.EQ.'LN')
      &                  BESTLT = EPS(1)*LSTB + EPS(2)*LSTC + EPS(3)*LSTA
                      DEJADI=.TRUE.
                   ENDIF
@@ -422,7 +423,7 @@ C  ON STOCKE LA PREMIERE DISTANCE CALCULEE
 C  ON STOCKE LA DISTANCE MINIMALE
                   IF (D.LT.BESTD) THEN
                      BESTD = D
-                     IF (LEVSET.EQ.'LN') 
+                     IF (LEVSET.EQ.'LN')
      &                  BESTLT = EPS(1)*LSTB + EPS(2)*LSTC + EPS(3)*LSTA
                   ENDIF
 
@@ -430,13 +431,13 @@ C  ON STOCKE LA DISTANCE MINIMALE AVEC PROJECTION DANS LE TRIANGLE ABC
                   IF (IN) THEN
                      IF (.NOT.DEJAIN) THEN
                         BESTDI = D
-                        IF (LEVSET.EQ.'LN') BESTLI = 
+                        IF (LEVSET.EQ.'LN') BESTLI =
      &                     EPS(1)*LSTB + EPS(2)*LSTC + EPS(3)*LSTA
                         DEJAIN=.TRUE.
                      ENDIF
                      IF (D.LT.BESTDI) THEN
                         BESTDI = D
-                        IF (LEVSET.EQ.'LN') BESTLI = 
+                        IF (LEVSET.EQ.'LN') BESTLI =
      &                     EPS(1)*LSTB + EPS(2)*LSTC + EPS(3)*LSTA
                      ENDIF
                   ENDIF
@@ -468,7 +469,7 @@ C  ------------------------------------------------
             ZR(JLTNO-1+NUNO) = ZR(JNOULT-1+INO)
          ENDIF
  400  CONTINUE
- 
+
 C      IF (NIV.GT.1)
       WRITE(IFM,*)'   NOMBRE DE LEVEL SETS CALCULEES :',NBNOCO+NBNOZO
 

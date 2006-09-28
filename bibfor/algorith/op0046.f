@@ -1,7 +1,7 @@
       SUBROUTINE OP0046 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C
             NOMCHA = ZK24(JCHAR+ICH-1)(1:8)
             CALL JEEXIN ( NOMCHA//'.CONTACT.METHCO', IRET )
             IF ( IRET .NE. 0 )  THEN
-               CALL UTMESS('F',NOMPRO,'CHARGE DE CONTACT NON TRAITEE')
+               CALL U2MESS('F','ALGORITH9_24')
             ENDIF
   9      CONTINUE
       ENDIF
@@ -156,9 +156,9 @@ C
 C ---- CALCUL MECANIQUE
 C
       CALL MESTAT ( MODELE, FOMULT, LISCHA,
-     >              MATE,   CARELE,
-     >              LISTPS, SOLVEU,
-     >              NBPASE, INPSCO )
+     &              MATE,   CARELE,
+     &              LISTPS, SOLVEU,
+     &              NBPASE, INPSCO )
 C
 C ---- CALCUL DE L'OPTION SIEF_ELGA_DEPL OU RIEN
 C
@@ -182,9 +182,7 @@ C
         CALL JEVEUO(CHARGE,'L',JCHAR)
         CALL COCHRE (ZK24(JCHAR),NCHAR,NBCHRE,IOCC)
         IF ( NBCHRE .GT. 1 ) THEN
-           CALL UTMESS('F',NOMPRO,'VOTRE CHARGEMENT CONTIENT PLUS '
-     >                 //'D''UNE CHARGE REPARTIE. LE CALCUL N''EST PAS'
-     >                 //'POSSIBLE POUR LES MODELES DE POUTRE')
+           CALL U2MESS('F','ALGORITH9_25')
         ENDIF
 C
         TYPCOE = 'R'
@@ -220,16 +218,16 @@ C
 C
          CALL RSEXCH(RESULT,NOSY,IORDR,CHAMEL,IRET)
          CALL MECHAM(NOSY,NOMODE,NCHA,TEMP,CARELE(1:8),NH,
-     >                           CHGEOM,CHCARA,CHHARM,IRET )
+     &                           CHGEOM,CHCARA,CHHARM,IRET )
          IF (IRET.NE.0) GOTO 13
          TIME = ZR(IAINST-1+IORDR)
          CALL MECHTI(CHGEOM(1:8),TIME,CHTIME)
          CALL MECHTE(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
-     >                                              CHTREF,CHTEMP )
+     &                                              CHTREF,CHTEMP )
          CALL VRCINS(MODELE(1:8),MATE(1:8),CARELE(1:8),TIME,
-     >                                       CHVARC(1:19))
+     &                                       CHVARC(1:19))
          CALL VRCREF(MODELE(1:8),MATE(1:8),CARELE(1:8),
-     >                                       CHVREF(1:19))
+     &                                       CHVREF(1:19))
 
          IF ( EXIPOU .AND. NFON.NE.0 ) THEN
            CALL FOINTE('F ',NOMFON,1,'INST',TIME,ALPHA,IER)
@@ -237,11 +235,11 @@ C
 C
          IBID = 0
          CALL MECALC(NOSY,NOMODE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
-     >               CHTREF,CHTIME,K24B,CHHARM,CHSIG,CHEPS,
-     >               CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
-     >               K24B,K24B,CHAMEL,LIGREL,BASE,
-     >               CHVARC,CHVREF,K24B,K24B,
-     >               K24B, K24B, K8B, IBID, IRET )
+     &               CHTREF,CHTIME,K24B,CHHARM,CHSIG,CHEPS,
+     &               CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
+     &               K24B,K24B,CHAMEL,LIGREL,BASE,
+     &               CHVARC,CHVREF,K24B,K24B,
+     &               K24B, K24B, K8B, IBID, IRET )
 
 
 C

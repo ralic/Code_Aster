@@ -1,5 +1,5 @@
       SUBROUTINE CALCK1( NOREV, NOMDB, SIGMRV, SIGMDB, TBSCRV, TBSCMB,
-     +                   PRODEF, LONDEF, DEKLAG, LREV, K1A, K1B )
+     &                   PRODEF, LONDEF, DEKLAG, LREV, K1A, K1B )
 C
       IMPLICIT     NONE
       INTEGER      NOREV, NOMDB
@@ -7,24 +7,24 @@ C
       CHARACTER*19 SIGMRV, SIGMDB, TBSCRV, TBSCMB
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 C ======================================================================
 C --- BUT : CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES
@@ -98,16 +98,14 @@ C --- DES ABSCISSES CURVILIGNES COTE REVETEMENT ET COTE METAL DE BASE --
 C ======================================================================
       LDEFO = ZR(JABSRV+NOREV-1) + ZR(JABSMB+NOMDB-1)
       IF ( ABS(LDEFO - PRODEF) .GT. RTOLE ) THEN
-         CALL UTMESS('F','CALCK1','LA LONGUEUR DU DEFAUT N EST PAS EN'//
-     +              ' ACCORD AVEC LES TABLES DEFINIES COTE REVETEMENT'//
-     +              ' ET COTE METAL DE BASE')
+         CALL U2MESS('F','PREPOST_5')
       ENDIF
 C ======================================================================
 C --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE REVETEMENT --
 C ======================================================================
       DO 10 IFIC = 1, NOREV-1
          ALPHA  = ( ZR(JSIGMR+IFIC) - ZR(JSIGMR+IFIC-1) ) /
-     +            ( ZR(JABSRV+IFIC) - ZR(JABSRV+IFIC-1) )
+     &            ( ZR(JABSRV+IFIC) - ZR(JABSRV+IFIC-1) )
          BETA   = ZR(JSIGMR+IFIC-1) - ALPHA * ( ZR(JABSRV+IFIC-1) - A )
          GAMX   = ( ZR(JABSRV+IFIC-1) - A )
          GAMY   = SQRT( ABS(A*A - GAMX*GAMX) )
@@ -132,20 +130,20 @@ C ======================================================================
             GAMMA2 = ATAN2( GAMX/GAMY , UN )
          ENDIF
          K1A    = K1A + (BETA-ALPHA*A/2) * (GAMMA2-GAMMA1) +
-     +           (BETA-ALPHA*A) * (COS(GAMMA2)-COS(GAMMA1)) +
-     +            ALPHA*A*(SIN(2*GAMMA2)-SIN(2*GAMMA1))/4
+     &           (BETA-ALPHA*A) * (COS(GAMMA2)-COS(GAMMA1)) +
+     &            ALPHA*A*(SIN(2*GAMMA2)-SIN(2*GAMMA1))/4
          K1B    = K1B + (BETA+ALPHA*A/2) * (GAMMA2-GAMMA1) -
-     +           (BETA+ALPHA*A) * (COS(GAMMA2)-COS(GAMMA1)) -
-     +            ALPHA*A*(SIN(2*GAMMA2)-SIN(2*GAMMA1))/4
+     &           (BETA+ALPHA*A) * (COS(GAMMA2)-COS(GAMMA1)) -
+     &            ALPHA*A*(SIN(2*GAMMA2)-SIN(2*GAMMA1))/4
  10   CONTINUE
 C ======================================================================
 C --- CALCULS DES FACTEURS D'INTENSITE DE CONTRAINTES COTE METAL DE BASE
 C ======================================================================
       DO 20 IFIC = 1, NOMDB-1
          ALPHA  = ( ZR(JSIGMB+IFIC) - ZR(JSIGMB+IFIC-1) ) /
-     +            ( ZR(JABSMB+IFIC) - ZR(JABSMB+IFIC-1) )
+     &            ( ZR(JABSMB+IFIC) - ZR(JABSMB+IFIC-1) )
          BETA   = ZR(JSIGMB+IFIC-1) -
-     +                        ALPHA * ( ZR(JABSMB+IFIC-1) - DEKLAG - A )
+     &                        ALPHA * ( ZR(JABSMB+IFIC-1) - DEKLAG - A )
          GAMX   = ( ZR(JABSMB+IFIC-1) - DEKLAG - A )
          GAMY   = SQRT( ABS(A*A - GAMX*GAMX) )
          IF ( GAMY.LE.R8PREM() ) THEN
@@ -169,11 +167,11 @@ C ======================================================================
             GAMMA2 = ATAN2( GAMX/GAMY , UN )
          ENDIF
          K1A    = K1A + (BETA-ALPHA*A/2) * (GAMMA2-GAMMA1) +
-     +           (BETA-ALPHA*A) * (COS(GAMMA2)-COS(GAMMA1)) +
-     +            ALPHA*A*(SIN(2*GAMMA2)-SIN(2*GAMMA1))/4
+     &           (BETA-ALPHA*A) * (COS(GAMMA2)-COS(GAMMA1)) +
+     &            ALPHA*A*(SIN(2*GAMMA2)-SIN(2*GAMMA1))/4
          K1B    = K1B + (BETA+ALPHA*A/2) * (GAMMA2-GAMMA1) -
-     +           (BETA+ALPHA*A) * (COS(GAMMA2)-COS(GAMMA1)) -
-     +            ALPHA*A*(SIN(2*GAMMA2)-SIN(2*GAMMA1))/4
+     &           (BETA+ALPHA*A) * (COS(GAMMA2)-COS(GAMMA1)) -
+     &            ALPHA*A*(SIN(2*GAMMA2)-SIN(2*GAMMA1))/4
  20   CONTINUE
       K1A = K1A * SQRT(A/PI)
       K1B = K1B * SQRT(A/PI)
@@ -186,13 +184,13 @@ C ======================================================================
       Z4 = Z3 * Z
       Z5 = Z4 * Z
       FA = 0.998742D0 + 0.142801D0*Z - 1.133379D0*Z2 + 5.491256D0*Z3 -
-     +     8.981896D0*Z4 + 5.765252D0*Z5
+     &     8.981896D0*Z4 + 5.765252D0*Z5
       IF (Z.LE.(0.92D0)) THEN
-         FB = 1.0D0 - 0.012328D0*Z+ 0.395205D0*Z2 - 0.527964D0*Z3 + 
-     +        0.432714D0*Z4
+         FB = 1.0D0 - 0.012328D0*Z+ 0.395205D0*Z2 - 0.527964D0*Z3 +
+     &        0.432714D0*Z4
       ELSE
-         FB = - 414.20286D0 + 1336.75998D0*Z - 1436.1197D0*Z2 + 
-     +          515.14949D0*Z3
+         FB = - 414.20286D0 + 1336.75998D0*Z - 1436.1197D0*Z2 +
+     &          515.14949D0*Z3
       ENDIF
 C ======================================================================
 C --- CORRECTION PAR LES FACTEURS D'ELLIPTICITE ------------------------

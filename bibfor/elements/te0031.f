@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 23/06/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,8 +89,8 @@ C
 C
       LCOELA = .FALSE.
       IF ( OPTION.EQ.'FULL_MECA'      .OR.
-     +     OPTION.EQ.'RAPH_MECA'      .OR.
-     +     OPTION(1:10).EQ.'RIGI_MECA_' ) THEN
+     &     OPTION.EQ.'RAPH_MECA'      .OR.
+     &     OPTION(1:10).EQ.'RIGI_MECA_' ) THEN
         CALL JEVECH('PMATERC','L',JMATE)
         CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRE2)
         IF (PHENOM.EQ.'ELAS_COQUE') LCOELA = .TRUE.
@@ -110,9 +110,9 @@ C
       END IF
 C
       IF ( OPTION.EQ.'RIGI_MECA'      .OR.
-     +     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
-     +     OPTION.EQ.'RIGI_MECA_SENS_C' .OR.
-     +     OPTION.EQ.'EPOT_ELEM_DEPL' ) THEN
+     &     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
+     &     OPTION.EQ.'RIGI_MECA_SENS_C' .OR.
+     &     OPTION.EQ.'EPOT_ELEM_DEPL' ) THEN
 C     --------------------------------------
 C
         IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
@@ -177,9 +177,9 @@ C PASSAGE VECTEUR - MATRICE
 C
 C
       ELSEIF ( OPTION.EQ.'MASS_MECA'      .OR.
-     +         OPTION.EQ.'MASS_MECA_DIAG' .OR.
-     +         OPTION.EQ.'M_GAMMA'        .OR.
-     +         OPTION.EQ.'ECIN_ELEM_DEPL' ) THEN
+     &         OPTION.EQ.'MASS_MECA_DIAG' .OR.
+     &         OPTION.EQ.'M_GAMMA'        .OR.
+     &         OPTION.EQ.'ECIN_ELEM_DEPL' ) THEN
 C     ------------------------------------------
         IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
           CALL DKTMAS ( XYZL, OPTION, PGL, MATLOC, ENER, MULTIC, GRILLE)
@@ -216,22 +216,22 @@ C     ------------------------------------------
           DO 30 I = 1,NDIM
             ZR(JMATR-1+I) = MATLOC(I)
    30     CONTINUE
-   
-   
-C     CORRECTION DES TERMES CORRESPONDANT AU DDL 6, 
-C     NON PREVU PAR LA THEORIE DKT ON RAJOUTE 
-C     UN TERME DIAGONAL NON ZERO, EGAL AU CELUI DU DDL 5 
+
+
+C     CORRECTION DES TERMES CORRESPONDANT AU DDL 6,
+C     NON PREVU PAR LA THEORIE DKT ON RAJOUTE
+C     UN TERME DIAGONAL NON ZERO, EGAL AU CELUI DU DDL 5
 C     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
 
-          COEF = 1.0D0 
+          COEF = 1.0D0
           DO 35 J = 1,NNO
             N1 = 6*(J-1) + 5
             NI = 6*J
-            NDIM = (NI + 1)*NI/2 
-            N1   = (N1 + 1)*N1/2 
-            ZR(JMATR-1+ NDIM) = ZR(JMATR-1+ N1) * COEF 
-   35     CONTINUE        
-C     ===============================   
+            NDIM = (NI + 1)*NI/2
+            N1   = (N1 + 1)*N1/2
+            ZR(JMATR-1+ NDIM) = ZR(JMATR-1+ N1) * COEF
+   35     CONTINUE
+C     ===============================
 
 
         END IF
@@ -242,40 +242,36 @@ C     ------------------------------------
         CALL JEVECH('PMASSINE','E',JMATR)
         CALL DXROEP(RHO,EPAIS)
         CALL DXINER(NNO,ZR(JGEOM),RHO,EPAIS,ZR(JMATR),ZR(JMATR+1),
-     +              ZR(JMATR+4))
+     &              ZR(JMATR+4))
 C
 C     -- OPTIONS NON-LINEAIRES :
 C     --------------------------
       ELSEIF ( ( OPTION(1:9).EQ.'FULL_MECA'.OR.
-     +           OPTION.EQ.'RAPH_MECA'     .OR.
-     +           OPTION(1:10).EQ.'RIGI_MECA_' )
-     +   .AND. ( OPTION.NE.'RIGI_MECA_SENSI' .OR.
-     +           OPTION.NE.'RIGI_MECA_SENS_C' ) ) THEN
+     &           OPTION.EQ.'RAPH_MECA'     .OR.
+     &           OPTION(1:10).EQ.'RIGI_MECA_' )
+     &   .AND. ( OPTION.NE.'RIGI_MECA_SENSI' .OR.
+     &           OPTION.NE.'RIGI_MECA_SENS_C' ) ) THEN
 C
         CALL JEVECH('PDEPLMR','L',JDEPM)
         CALL JEVECH('PDEPLPR','L',JDEPR)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
            IF (.NOT.LCOELA) THEN
-             CALL UTMESS('F','TE0031','COMP_ELAS NON PROGRAMME POUR'
-     +        //' LES MODELISATIONS DKT. IL FAUT UTILISER COMP_INCR.')
+             CALL U2MESS('F','ELEMENTS2_71')
            ENDIF
         ENDIF
         IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
 C
-          CALL UTMESS('A','TE0031',' LA REACTUALISATION DE LA '//
-     +                'GEOMETRIE (DEFORMATION : PETIT_REAC '//
-     +                'SOUS LE MOT CLE COMP_INCR) '//
-     +                'EST DECONSEILLEE POUR LES ELEMENTS DE PLAQUE.')
+          CALL U2MESS('A','ELEMENTS2_72')
 C
           DO 40 I = 1,NNO
             I1 = 3* (I-1)
             I2 = 6* (I-1)
             ZR(JGEOM+I1) = ZR(JGEOM+I1) + ZR(JDEPM+I2) + ZR(JDEPR+I2)
             ZR(JGEOM+I1+1) = ZR(JGEOM+I1+1) + ZR(JDEPM+I2+1) +
-     +                       ZR(JDEPR+I2+1)
+     &                       ZR(JDEPR+I2+1)
             ZR(JGEOM+I1+2) = ZR(JGEOM+I1+2) + ZR(JDEPM+I2+2) +
-     +                       ZR(JDEPR+I2+2)
+     &                       ZR(JDEPR+I2+2)
    40     CONTINUE
 C
           IF (NNO.EQ.3) THEN
@@ -293,21 +289,19 @@ C
         IF (NOMTE.EQ.'MEDKTR3' .OR. NOMTE.EQ.'MEGRDKT') THEN
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
-     +                    MATLOC, PGL, CODRET )
+     &                    MATLOC, PGL, CODRET )
           ELSE
-            CALL UTMESS('F','TE0031',
-     +                  'COMPORTEMENT NON TRAITE: '//ZK16(ICOMPO+3) )
+            CALL U2MESK('F','ELEMENTS2_73',1,ZK16(ICOMPO+3))
           ENDIF
         ELSE IF (NOMTE.EQ.'MEDKQU4 ') THEN
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
-     +                    MATLOC, PGL, CODRET )
+     &                    MATLOC, PGL, CODRET )
           ELSE
-            CALL UTMESS('F','TE0031',
-     +                  'COMPORTEMENT NON TRAITE: '//ZK16(ICOMPO+3) )
+            CALL U2MESK('F','ELEMENTS2_73',1,ZK16(ICOMPO+3))
           ENDIF
         ELSE
-          CALL UTMESS('F','TE0031',NOMTE//' NON IMPLANTE.')
+          CALL U2MESK('F','ELEMENTS2_74',1,NOMTE)
         END IF
 C
         IF (OPTION(1:9).EQ.'FULL_MECA') THEN
@@ -328,8 +322,7 @@ C
 C     ------------------------------------------
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
           IF (ZK16(ICOMPO+2)(1:8).EQ.'GREEN_GR') THEN
-             CALL UTMESS('F','TE0031','OPTION "SIEF_ELNO_ELGA" NON '//
-     +                    'IMPLANTEE POUR LA DEFORMATION "GREEN_GR"')
+             CALL U2MESS('F','ELEMENTS2_75')
           ENDIF
           CALL JEVECH ( 'PCONTRR', 'L', ICONTP )
           IND=6
@@ -374,11 +367,11 @@ C        ------------------------------------------------------
    90    CONTINUE
       ELSE
 
-         CALL UTMESS('F','TE0031','OPTION NON TRAITEE')
+         CALL U2MESS('F','ELEMENTS2_67')
       END IF
 C
       IF ( OPTION(1:9).EQ.'FULL_MECA'  .OR.
-     +     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
+     &     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
          CALL JEVECH ( 'PCODRET', 'E', JCRET )
          ZI(JCRET) = CODRET
       ENDIF

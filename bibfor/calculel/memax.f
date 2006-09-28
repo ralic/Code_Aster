@@ -6,7 +6,7 @@
       REAL*8 VR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/05/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,8 +71,7 @@ C
 C     -- ON RETROUVE LE NOM DU LIGREL:
 C     --------------------------------
       CALL JEEXIN(CHAMP2//'.CELD',IRET)
-      IF (IRET.EQ.0) CALL UTMESS('F','MEMAX',
-     &                           'LE CHAMP DOIT ETRE UN CHAM_ELEM.')
+      IF (IRET.EQ.0) CALL U2MESS('F','CALCULEL3_52')
 
 C --- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL CELVER(CHAMP2,'NBVARI_CST','STOP',IBID)
@@ -85,7 +84,7 @@ C --- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       IGD = ZI(JCELD-1+1)
       SCAL = SCALAI(IGD)
       IF (SCAL(1:1).NE.'R') THEN
-        CALL UTMESS('F','MEMAX','NE TRAITE QU''UN CHAM_ELEM REEL')
+        CALL U2MESS('F','CALCULEL3_53')
       END IF
 
 
@@ -104,8 +103,7 @@ C     ----------------------------
 
         ELSE
           IF (LONGT.NE.NCMPEL) THEN
-            CALL UTMESS('F','MEMAX','LONGUEURS DES MODES LOCAUX '//
-     &                  'IMCOMPATIBLES ENTRE EUX.')
+            CALL U2MESS('F','CALCULEL3_54')
           END IF
 
         END IF
@@ -113,11 +111,11 @@ C     ----------------------------
         FIRST = .FALSE.
    10 CONTINUE
       IF (LONGT.GT.LONG) THEN
-        CALL UTMESS('F','MEMAX','LA LONGUEUR:LONG EST TROP PETITE.')
+        CALL U2MESS('F','CALCULEL3_55')
       END IF
 
       IF (NCP.GT.LONGT) THEN
-        CALL UTMESS('F','MEMAX','IL N''Y A PAS AUTANT DE COMPOSANTES')
+        CALL U2MESS('F','CALCULEL3_56')
       END IF
 
 

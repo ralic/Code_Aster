@@ -1,21 +1,21 @@
       SUBROUTINE JEDETC ( CLAS , SOUCH , IPOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 23/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18 CRS_508  CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -42,11 +42,11 @@ C ----------------------------------------------------------------------
       COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -58,18 +58,18 @@ C
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       INTEGER          NCLA1,NCLA2,IC,J,IRET,ID(IDNUM),NMAX,IADDI(2)
       CHARACTER*75     CMESS
@@ -80,7 +80,7 @@ C DEB ------------------------------------------------------------------
       IF ( IPOS + L .GT. 25 .OR. IPOS .LT. 0 .OR. L .EQ. 0 ) THEN
         CMESS = ' LONGUEUR OU POSITION DE LA SOUS-CHAINE '//SOUCH//
      &       ' INVALIDE'
-        CALL JVMESS ( 'S' , 'JEDETC01' , CMESS )
+        CALL U2MESK('S','JEVEUX_1',1,CMESS)
       ENDIF
       KCLAS  = CLAS (1:MIN(1,LEN(CLAS)))
       IF ( KCLAS .EQ. ' ' ) THEN
@@ -96,7 +96,7 @@ C DEB ------------------------------------------------------------------
           DO 150 J = 1 , NREMAX(IC)
             CRNOM = RNOM(JRNOM(IC)+J)
             IF ( CRNOM(1:1) .EQ. '?' .OR.
-     +          CRNOM(25:32) .NE. '        ' ) GOTO 150
+     &          CRNOM(25:32) .NE. '        ' ) GOTO 150
             IF ( SOUCH .EQ. CRNOM(IPOS:IPOS+L-1) ) THEN
               CALL JJCREN ( CRNOM(1:24) , 0 , IRET )
               IF ( IRET .EQ. 1 .AND. KK .EQ. 2) THEN
@@ -111,8 +111,7 @@ C DEB ------------------------------------------------------------------
                   CALL JXLIBD ( 0, IDATOS , IC , IADDI , LONOI )
                 ENDIF
                 IF (NIVO .GE. 2) THEN
-                  CALL JVMESS('I','JEDETC','DESTRUCTION DE '//
-     +                         CRNOM(1:24))
+                  CALL U2MESK('I','JEVEUX_7',1,CRNOM(1:24))
                 ENDIF
                 CALL JJCREN ( CRNOM(1:24) , -1 , IRET )
                 NOMOS = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
@@ -144,10 +143,10 @@ C DEB ------------------------------------------------------------------
                       IF ( IXLONO .GT. 0 ) THEN
                          IBLONO=IADM(JIADM(IC)+IXLONO)
                          LONOI =ISZON(JISZON+IBLONO+K-1)
-     +                        *LTYP(JLTYP(IC)+IXDESO)
+     &                        *LTYP(JLTYP(IC)+IXDESO)
                       ELSE
                          LONOI = LONO(JLONO(IC)+IXDESO)
-     +                        *LTYP(JLTYP(IC)+IXDESO)
+     &                        *LTYP(JLTYP(IC)+IXDESO)
                       ENDIF
                       CALL JXLIBD (IDATCO, K, IC, IADDI, LONOI)
                     ENDIF
@@ -158,7 +157,7 @@ C DEB ------------------------------------------------------------------
                   IF ( ID(K) .GT. 0 ) THEN
                     NOM32 = RNOM ( JRNOM(IC) + ID(K) )
                     IF ( NOM32(1:24) .EQ. CRNOM(1:24) .OR.
-     +                  NOM32(25:26) .EQ. '&&'          ) THEN
+     &                  NOM32(25:26) .EQ. '&&'          ) THEN
                       IADMI = IADM (JIADM(IC) + ID(K) )
                       IF ( IADMI .GT. 0 ) THEN
                         CALL JJLIBP ( IADMI )
@@ -167,7 +166,7 @@ C DEB ------------------------------------------------------------------
                       IADDI(2) = IADD (JIADD(IC) + 2*ID(K)   )
                       IF ( IADDI(1) .GT. 0 ) THEN
                         LONOI=LONO(JLONO(IC)+ID(K))
-     +                        *LTYP(JLTYP(IC)+ID(K))
+     &                        *LTYP(JLTYP(IC)+ID(K))
                         CALL JXLIBD ( 0 , ID(K) , IC , IADDI , LONOI )
                       ENDIF
                     ELSE
@@ -179,8 +178,7 @@ C DEB ------------------------------------------------------------------
                   IF ( ID(K) .GT. 0 ) THEN
                     NOM32 = RNOM ( JRNOM(IC) + ID(K) )
                     IF (NIVO .GE. 2) THEN
-                      CALL JVMESS('I','JEDETC','DESTRUCTION DE '//
-     +                         NOM32)
+                      CALL U2MESK('I','JEVEUX_7',1,NOM32)
                     ENDIF
                     CALL JJCREN ( NOM32 , -2 , IRET )
                     CALL JJMZAT ( IC , ID(K) )
@@ -195,8 +193,7 @@ C DEB ------------------------------------------------------------------
                   CALL JXLIBD ( 0 ,IDATCO, IC , IADDI , LONOI )
                 ENDIF
                 IF (NIVO .GE. 2) THEN
-                  CALL JVMESS('I','JEDETC','DESTRUCTION DE '//
-     +                     CRNOM(1:24))
+                  CALL U2MESK('I','JEVEUX_7',1,CRNOM(1:24))
                 ENDIF
                 CALL JJCREN ( CRNOM(1:24) , -2 , IRET )
                 CALL JJMZAT ( IC , IDATCO )

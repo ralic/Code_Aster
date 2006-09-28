@@ -1,22 +1,22 @@
       SUBROUTINE NOEUD(TYPEMA,NO,NNO,DIME)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C A_UTIL
 C ----------------------------------------------------------------------
@@ -24,9 +24,9 @@ C COORDONNEES DES NOEUDS DES MAILLES DE REFERENCE
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE
 C CHARACTER*8  TYPEMA       : TYPE DE LA MAILLE
-C       
+C
 C VARIABLES DE SORTIE
-C REAL*8       NO(DIME,NNO) : COORDONNEES NOEUDS DES MAILLES DE 
+C REAL*8       NO(DIME,NNO) : COORDONNEES NOEUDS DES MAILLES DE
 C                             REFERENCE (X1,[Y1],[Z1],X2,...)
 C INTEGER      NNO          : NOMBRE DE NOEUDS
 C INTEGER      DIME         : DIMENSION DE LA MAILLE
@@ -39,7 +39,7 @@ C --- VARIABLES
       REAL*8       NO(*)
       INTEGER      NNO,DIME
 
-      IF (TYPEMA(1:3).EQ.'SEG') THEN 
+      IF (TYPEMA(1:3).EQ.'SEG') THEN
           DIME   =  1
           NO(1)  = -1.D0
           NO(2)  =  1.D0
@@ -103,7 +103,7 @@ C --- VARIABLES
         IF (TYPEMA(5:5).EQ.'9') THEN
           NO(17) =  0.D0
           NO(18) =  0.D0
-          NNO    =  9 
+          NNO    =  9
         ENDIF
         ENDIF
 
@@ -134,14 +134,14 @@ C --- VARIABLES
           NO(21) =  0.D0
           NO(22) =  0.5D0
           NO(23) =  0.5D0
-          NO(24) =  0.D0       
+          NO(24) =  0.D0
           NO(25) =  0.5D0
           NO(26) =  0.D0
           NO(27) =  0.5D0
           NO(28) =  0.5D0
           NO(29) =  0.D0
           NO(30) =  0.D0
-          NNO    =  10     
+          NNO    =  10
         ENDIF
 
        ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
@@ -201,7 +201,7 @@ C --- VARIABLES
           NO(21) =  0.5D0
           NO(22) = -1.D0
           NO(23) =  0.D0
-          NO(24) =  0.5D0       
+          NO(24) =  0.5D0
           NO(25) = -1.D0
           NO(26) =  0.5D0
           NO(27) =  0.D0
@@ -210,7 +210,7 @@ C --- VARIABLES
           NO(30) =  0.D0
           NO(31) =  0.D0
           NO(32) =  0.D0
-          NO(33) =  1.D0 
+          NO(33) =  1.D0
           NO(34) =  0.D0
           NO(35) =  0.D0
           NO(36) =  0.D0
@@ -252,7 +252,7 @@ C --- VARIABLES
           NO(21) =  1.D0
           NO(22) = -1.D0
           NO(23) =  1.D0
-          NO(24) =  1.D0       
+          NO(24) =  1.D0
           NNO    =  8
         IF (TYPEMA(5:5).EQ.'1') THEN
           NO(25) =  1.D0
@@ -298,7 +298,7 @@ C --- VARIABLES
           NO(30) = -1.D0
           NO(31) =  0.D0
           NO(32) =  1.D0
-          NO(33) = -1.D0 
+          NO(33) = -1.D0
           NO(34) = -1.D0
           NO(35) =  0.D0
           NO(36) = -1.D0
@@ -336,7 +336,7 @@ C --- VARIABLES
           NO(66) =  0.D0
           NO(67) =  1.D0
           NO(68) =  0.D0
-          NO(69) =  0.D0       
+          NO(69) =  0.D0
           NO(70) =  0.D0
           NO(71) =  1.D0
           NO(72) =  0.D0
@@ -345,7 +345,7 @@ C --- VARIABLES
           NO(75) =  0.D0
           NO(76) =  0.D0
           NO(77) =  0.D0
-          NO(78) =  1.D0 
+          NO(78) =  1.D0
           NO(79) =  0.D0
           NO(80) =  0.D0
           NO(81) =  0.D0
@@ -380,7 +380,7 @@ C --- VARIABLES
           NO(21) =  0.D0
           NO(22) = -0.5D0
           NO(23) = -0.5D0
-          NO(24) =  0.D0       
+          NO(24) =  0.D0
           NO(25) =  0.5D0
           NO(26) = -0.5D0
           NO(27) =  0.D0
@@ -389,18 +389,18 @@ C --- VARIABLES
           NO(30) =  0.5D0
           NO(31) =  0.D0
           NO(32) =  0.5D0
-          NO(33) =  0.5D0 
+          NO(33) =  0.5D0
           NO(34) = -0.5D0
           NO(35) =  0.D0
           NO(36) =  0.5D0
           NO(37) =  0.D0
           NO(38) = -0.5D0
-          NO(39) =  0.5D0     
+          NO(39) =  0.5D0
           NNO    =  13
         ENDIF
 
       ELSE
-        CALL UTMESS('F','NOEUD','MAILLE '//TYPEMA//' INDISPONIBLE')
+        CALL U2MESK('F','CALCULEL2_31',1,TYPEMA)
       ENDIF
 
       END

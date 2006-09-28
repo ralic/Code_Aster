@@ -3,22 +3,22 @@
      &                  NBPROC,RANG,K24IRP,ITPS,NBREOI,OPTION,LACSM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL NOUVELLE DIRECTION DE DESCENTE
@@ -31,7 +31,7 @@ C      IN :   IRG   :  IN  : ADRESSE JEVEUX GK+1
 C      IN :   ITER  :  IN  : NUMERO D'ITERATION
 C      IN :  NBREOR :  IN  : NBRE DE DD REORTHOGONALISEES
 C      IN :   IRP   :  IN   : ADRESSE JEVEUX PK+1
-C      IN : K24FIR/K24DDR/K24PSR   : K24 : OBJETS JEVEUX CONTENANT 
+C      IN : K24FIR/K24DDR/K24PSR   : K24 : OBJETS JEVEUX CONTENANT
 C                             FI*PK, PK ET PK.FIPK
 C      IN : GS/IGSMKP: LOG  : FLAG DETERMINANT LA METHODE DE REORTHO
 C      IN :  RMIN   :  R8  : PLUS PETITE VALEUR REELLE DISCERNABLE
@@ -74,7 +74,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      
+
 C DECLARATION VARIABLES LOCALES
       REAL*8       DDOT,RAUX,NORMAV,NORMAP,RGSKP2,BETAN,BETAD,BETA,RMIN,
      &             RBID
@@ -83,7 +83,7 @@ C DECLARATION VARIABLES LOCALES
       CHARACTER*8  K8BID
       CHARACTER*24 K24B
       LOGICAL      LPARA
-            
+
 C INITS DIVERSES
       IF (NBPROC.EQ.1) THEN
         LPARA=.FALSE.
@@ -97,9 +97,9 @@ C INITS DIVERSES
       ENDIF
       NBI1=NBI-1
       ITER1=ITER+1
-      
+
       IF (RANG.EQ.0) THEN
-      
+
 C PARAM EN DUR DE L'IGSM DE KAHN-PARLETT POUR REORTHOGONALISER LES DD
         RGSKP2=0.717D0**2
 C ---------------------------------------------------
@@ -122,7 +122,7 @@ C CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 1)
 C (ZR(IRP)) PK+1 = HK+1 (EQUIVAUT A GK+1 SI SANS PRECOND)
 C -----------------------------
           CALL DCOPY(NBI,ZR(IRH),1,ZR(IRP),1)
-          
+
 C -----------------------------
 C -----------------------------
 C REORTHOGONALISATION STANDARD AU SEIN D'UN MEME PAS DE TEMPS
@@ -145,16 +145,16 @@ C -----------------------------
 C -----------------------------
 C BOUCLE ET TEST IGSM DE KAHN-PARLETT
 C -----------------------------
-            DO 60 I=IAUX2,IAUX3         
+            DO 60 I=IAUX2,IAUX3
 C --------------
 C CALCUL DE BETAKI=-(HK+1.(FI*PK))/(PK.(FI*PK)) (ETAPE 2.1)
-C -------------- 
+C --------------
               IAUX1=IDDFRO+I*NBI
-              IF (GS) THEN            
+              IF (GS) THEN
                 RAUX=-DDOT(NBI,ZR(IRH),1,ZR(IAUX1),1)/ZR(IPSRO+I)
               ELSE
                 RAUX=-DDOT(NBI,ZR(IRP),1,ZR(IAUX1),1)/ZR(IPSRO+I)
-              ENDIF     
+              ENDIF
               IAUX1=IDDRO+I*NBI
               IF (IGSMKP) NORMAV=DDOT(NBI,ZR(IRP),1,ZR(IRP),1)
 C --------------
@@ -174,7 +174,7 @@ C CALCUL DE BETAKI_PRIM=-(PK+1_PRIM.(FI*PK))/(PK.(FI*PK)) (ETAPE 3.1)
 C --------------
                   IAUX1=IDDFRO+I*NBI
                   RAUX=-DDOT(NBI,ZR(IRP),1,ZR(IAUX1),1)/ZR(IPSRO+I)
-                  IAUX1=IDDRO+I*NBI  
+                  IAUX1=IDDRO+I*NBI
 C --------------
 C CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 3.2)
 C (ZR(IRP)) PK+1_SEC = PK+1_PRIM + BETAKI_PRIM * PI
@@ -188,7 +188,7 @@ C --------------
                     DO 58 J=0,NBI1
                       ZR(IRP+J)=0.D0
    58               CONTINUE
-                    GOTO 61                               
+                    GOTO 61
                   ENDIF
                 ENDIF
               ENDIF
@@ -219,7 +219,7 @@ C POUR SAUTER LES PAS DE TEMPS SANS INFORMATION (LAMBDAS=LAMBDA0)
 C BOUCLE SUR LES VECTEURS DE DESCENTE RETENUS D'UN PAS DE TEMPS DONNE
                 DO 30 J=1,NBDDSM
                   IAUX1=IDDFRO+J*NBI
-                  IF (GS) THEN            
+                  IF (GS) THEN
                     RAUX=-DDOT(NBI,ZR(IRH),1,ZR(IAUX1),1)/ZR(IPSRO+J)
                   ELSE
                     RAUX=-DDOT(NBI,ZR(IRP),1,ZR(IAUX1),1)/ZR(IPSRO+J)
@@ -239,7 +239,7 @@ C BOUCLE SUR LES VECTEURS DE DESCENTE RETENUS D'UN PAS DE TEMPS DONNE
                         DO 25 K=0,NBI1
                           ZR(IRP+K)=0.D0
    25                   CONTINUE
-                        GOTO 61                               
+                        GOTO 61
                       ENDIF
                     ENDIF
                   ENDIF
@@ -248,16 +248,16 @@ C BOUCLE SUR LES VECTEURS DE DESCENTE RETENUS D'UN PAS DE TEMPS DONNE
                 CALL JELIBE('&&FETI.DD.'//K8BID)
                 CALL JELIBE('&&FETI.FIDD.'//K8BID)
               ENDIF
-   35       CONTINUE      
+   35       CONTINUE
           ENDIF
 
 C SORTIE PREVUE POUR LE TEST 3.3
-   61     CONTINUE 
-C CALCUL DE ALPHAN = GK+1.PK+1  
+   61     CONTINUE
+C CALCUL DE ALPHAN = GK+1.PK+1
           ALPHAN=DDOT(NBI,ZR(IRG),1,ZR(IRP),1)
-                
+
         ELSE
-      
+
 C MONITORING
           IF (INFOFE(1:1).EQ.'T')
      &    WRITE(IFM,*)'<FETI/FETREO',RANG,'> SANS REORTHOGONALISATION'
@@ -265,14 +265,13 @@ C ---------------------------------------------------
 C ----  PAS DE REORTHOGONALISATION (ELLE EST IMPLICITE)
 C ---------------------------------------------------
 C ON REORTHOGONALISE SEULEMENT PAR RAPPORT A LA DERNIERE DD
-C CALCUL DE BETAK = HK+1.GK+1/HK.GK = BETANK/BETADK     
+C CALCUL DE BETAK = HK+1.GK+1/HK.GK = BETANK/BETADK
           BETAN=DDOT(NBI,ZR(IRG),1,ZR(IRH),1)
           BETAD=ALPHAN
           IF (ABS(BETAD).LT.RMIN) THEN
             BETAD=RMIN
-            CALL UTMESS('A','FETREO','PB DIVISION PAR ZERO'//
-     &                      'DANS LA CONSTRUCTION DU BETA !')      
-          ENDIF   
+            CALL U2MESS('A','ALGORITH3_67')
+          ENDIF
           BETA=BETAN/BETAD
           ALPHAN=BETAN
 
@@ -283,7 +282,7 @@ C -----------------------------
           DO 90 I=0,NBI1
             ZR(IRP+I)=ZR(IRH+I)+BETA*ZR(IRP+I)
    90     CONTINUE
-   
+
         ENDIF
 C FIN DU SI RANG
       ENDIF
@@ -291,4 +290,4 @@ C EN PARALLELE, ENVOI DE VO A TOUS LES PROC POUR PREPARER LE CALCUL
 C SUIVANT, C'EST A DIRE Z = FI * V
       IF (LPARA)
      &  CALL FETMPI(9,NBI,IFM,NIVMPI,IBID,IBID,K24IRP,K24B,K24B,RBID)
-      END      
+      END

@@ -1,28 +1,28 @@
       SUBROUTINE ELBORD(MAIL,CINE,LIMA,NLIMA,NTM,BASE,NOMZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C A_UTIL
 C ----------------------------------------------------------------------
 C                 ELEMENTS DE BORD D'UN GROUPE DE MAILLE
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE
-C CHARACTER*8    MAIL        : SD MAILLAGE  
+C CHARACTER*8    MAIL        : SD MAILLAGE
 C CHARACTER*8    CINE        : CINEMATIQUE MAILLES ('SOLIDE' OU 'COQUE')
 C INTEGER        LIMA(NLIMA) : LISTE DE MAILLES (INDEX GLOBAL)
 C INTEGER        NLIMA       : NOMBRE DE MAILLES
@@ -34,7 +34,7 @@ C SD DE SORTIE
 C NOM.BORD : LISTE DES MAILLES DE BORD DE LIMA
 C            (MA1, MA2, ...) MA* INDEX DANS LIMA
 C NOM.IPAN : INTERFACES PAVANT LE BORD DE LIMA
-C            (MA1, IPAN1, MA2, IPAN2, ..., 0) 
+C            (MA1, IPAN1, MA2, IPAN2, ..., 0)
 C            MA* INDEX DANS LIMA (PAR ORDRE CROISSANT)
 C            IPAN* INDEX DANS NOPAN (CF. NOPAN)
 C                  DONNE POUR LA MAILLE REORIENTEE (CF ORIEM3)
@@ -68,13 +68,13 @@ C --- VARIABLES
       INTEGER       LIMA(*),INT1(4),INT2(4),NOEPAN(30),CNXMA(27)
       INTEGER       NLIMA,NMA,IMA,NPAN,NINT,NN1,NN2,IINT,INO,I,J,K
       INTEGER       A0,A1,A2,A3,B0,B1,B2,B3,B4,B5,P0,P1,P2,P3,P4
- 
+
 C --- PARAMETRES
       INTEGER PANCOQ(9)
       DATA PANCOQ / 4,2, 3,4,5, 1,4,6,2 /
 
       NOM = NOMZ
-      
+
 C --- LECTURE DONNEES
 
       CALL JEMARQ()
@@ -113,7 +113,7 @@ C --- BOUCLE SUR LES MAILLES DE LA LISTE
 
 C ----- REORIENTATION DES MAILLES SOLIDES
 
-        IF (CINE.EQ.'SOLIDE') THEN 
+        IF (CINE.EQ.'SOLIDE') THEN
 
           CALL ORIEM3(IMA,TYPE,ZR(A3),ZI(A1),ZI(A2),CNXMA)
 
@@ -127,7 +127,7 @@ C ----- REORIENTATION DES MAILLES SOLIDES
  30       CONTINUE
 
         ENDIF
-        
+
 C ----- MAILLES REDUITES
 
         IF (TYPE(1:3).EQ.'SEG') THEN
@@ -143,7 +143,7 @@ C ----- MAILLES REDUITES
         ELSEIF (TYPE(1:4).EQ.'HEXA') THEN
           CALL NOPAN('HEXA8   ',NOEPAN,NPAN)
         ELSE
-          CALL UTMESS('F','ELBORD',TYPE//' INDISPONIBLE')
+          CALL U2MESK('F','CALCULEL_28',1,TYPE)
         ENDIF
 
 C ----- BOUCLE SUR LES PANS DE MA
@@ -153,14 +153,14 @@ C ----- BOUCLE SUR LES PANS DE MA
 
           P0 = P0 + 1
           NN1 = ABS(NOEPAN(P0))
-          
+
 C ------- CONSTRUCTION INTERFACE TRIEE
 
           INO = 0
           DO 40 K = 1, NN1
             P0 = P0 + 1
             INT1(K) = CNXMA(NOEPAN(P0))
-            IF (INT1(K).GT.INO) THEN 
+            IF (INT1(K).GT.INO) THEN
               INO = INT1(K)
               P1 = K
             ENDIF
@@ -211,7 +211,7 @@ C ------- STOCKAGE INTERFACE
             ZI(P2) = INT2(K)
             P2 = P2 + 1
  80       CONTINUE
-          
+
           NINT = NINT + 1
           P1 = B0-1+INO
 
@@ -224,7 +224,7 @@ C ------- STOCKAGE INTERFACE
 
 C --- CAS DES COQUES
 
-      IF (CINE.EQ.'COQUE   ') THEN 
+      IF (CINE.EQ.'COQUE   ') THEN
 
 C ----- SELECTION DES INTERFACES
 
@@ -245,7 +245,7 @@ C ----- STRUCTURE .BORD
 C ----- STRUCTURE .IPAN
 
         CALL WKVECT(NOM//'.IPAN',BASE//' V I',2*NPAN+1,P0)
-      
+
         J = ZI(B1)
 
         DO 110 I = 1, NLIMA
@@ -272,11 +272,11 @@ C ----- STRUCTURE .IPAN
 
  120      CONTINUE
           IF (I.NE.J) GOTO 110
-            
+
           IF (ZI(B2).NE.0) THEN
             ZI(P0) = J
             ZI(P0+1) = PANCOQ(P1+ZI(B1+1))
-            P0 = P0 + 2 
+            P0 = P0 + 2
           ENDIF
 
           B1 = B1 + 2
@@ -296,14 +296,14 @@ C ----- NOEUDS SUR LE BORD
 
         NPAN = 0
         P0 = B3 - 5
-      
+
         DO 130 I = 1, NINT
 
           P0 = P0 + 4
           NN1 = ZI(B2-1+I)
 
           IF (NN1.NE.0) NPAN = NPAN + 1
-        
+
           DO 130 J = 1, NN1
             ZI(B0-1+ZI(P0+J)) = -1
  130    CONTINUE
@@ -318,17 +318,17 @@ C ----- SELECTION DES MAILLES DE BORD
           P1 = ZI(A2+IMA)-1
 
           DO 150 J = P0, P1
- 
+
             IF (ZI(B0-1+ZI(A1-1+J)).LT.0) THEN
               ZL(B5-1+I) = .TRUE.
               NMA = NMA + 1
               GOTO 140
             ENDIF
-          
+
  150      CONTINUE
 
           ZL(B5-1+I) = .FALSE.
-        
+
  140    CONTINUE
 
 C ----- STRUCTURE .BORD
@@ -344,7 +344,7 @@ C ----- STRUCTURE .BORD
 C ----- STRUCTURE .IPAN
 
         CALL WKVECT(NOM//'.IPAN',BASE//' V I',2*NPAN+1,P0)
-      
+
         B1 = B1 - 2
         DO 170 I = 1, NINT
           B1 = B1 + 2
@@ -353,13 +353,13 @@ C ----- STRUCTURE .IPAN
           ZI(P0+1) = ZI(B1+1)
           P0 = P0 + 2
  170    CONTINUE
-   
+
         ZI(P0) = 0
 
       ENDIF
-       
+
 C --- DESALLOCATIONS
-      
+
       CALL JEDETR('&&ELBORD.LISTE')
       CALL JEDETR('&&ELBORD.IPAN')
       CALL JEDETR('&&ELBORD.NNOEUD')

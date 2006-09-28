@@ -5,7 +5,7 @@
       INTEGER           NBF,NBPOIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,14 +73,10 @@ C
 
       PHENO = 'DOMMA_LEMAITRE'
       CALL RCCOME (NOMMAT,PHENO,PHENOM,CODRET(1))
-      IF(CODRET(1).EQ.'NO') CALL UTMESS('F','POST_FATIGUE',
-     +  'POUR CALCULER LE DOMMAGE DE LEMAITRE-SERMAGE IL FAUT DEFINIR '
-     +  //' LE COMPORTEMENT DOMMA_LEMAITRE DANS DEFI_MATERIAU')
+      IF(CODRET(1).EQ.'NO') CALL U2MESS('F','PREPOST_41')
       PHENO = 'ELAS'
       CALL RCCOME (NOMMAT,PHENO,PHENOM,CODRET(1))
-      IF(CODRET(1).EQ.'NO') CALL UTMESS('F','POST_FATIGUE',
-     +  'POUR CALCULER LE DOMMAGE DE LEMAITRE_SERMAGE IL FAUT DEFINIR '
-     +  //' LE COMPORTEMENT ELAS_FO DANS DEFI_MATERIAU')
+      IF(CODRET(1).EQ.'NO') CALL U2MESS('F','PREPOST_42')
 C
 C --- CALCUL DU DOMMAGE ELEMENTAIRE
 C
@@ -97,8 +93,8 @@ C --- RECUPERATION DE EXP_S
         NOMPAR = '       '
         NOMRES(1) = 'EXP_S'
         CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
-     +              0,NOMPAR,RBID,1,NOMRES(1),
-     +              EXPS,CODRET(1),'F ')
+     &              0,NOMPAR,RBID,1,NOMRES(1),
+     &              EXPS,CODRET(1),'F ')
 C --- RECUPERATION DU VSEUIL AUX INSTANTS TI+1
         NBPAR = 1
         NOMPAR = 'TEMP'
@@ -106,8 +102,8 @@ C --- RECUPERATION DU VSEUIL AUX INSTANTS TI+1
         TEMPLU    = TEMP(I+1)
         NOMRES(1) = 'EPSP_SEU'
         CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
-     +              NBPAR,NOMPAR,TEMPLU,1,NOMRES(1),
-     +              VSEUIL,CODRET(1),'F ')
+     &              NBPAR,NOMPAR,TEMPLU,1,NOMRES(1),
+     &              VSEUIL,CODRET(1),'F ')
 C
         PMOI      = DEFPLA(I)
         PPLU      = DEFPLA(I+1)
@@ -121,17 +117,17 @@ C
           NOMRES(3) = 'S'
 C
           CALL RCVALE(NOMMAT,'ELAS',
-     +                NBPAR,NOMPAR,TEMMOI,2,NOMRES(1),
-     +                VALMOI(1),CODRET(1),'F ')
+     &                NBPAR,NOMPAR,TEMMOI,2,NOMRES(1),
+     &                VALMOI(1),CODRET(1),'F ')
           CALL RCVALE(NOMMAT,'ELAS',
-     +                NBPAR,NOMPAR,TEMPLU,2,NOMRES(1),
-     +                VALPLU(1),CODRET(1),'F ')
+     &                NBPAR,NOMPAR,TEMPLU,2,NOMRES(1),
+     &                VALPLU(1),CODRET(1),'F ')
           CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
-     +                NBPAR,NOMPAR,TEMMOI,1,
-     +                NOMRES(3),VALMOI(3),CODRET(3),'F ')
+     &                NBPAR,NOMPAR,TEMMOI,1,
+     &                NOMRES(3),VALMOI(3),CODRET(3),'F ')
           CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
-     +                NBPAR,NOMPAR,TEMPLU,1,
-     +                NOMRES(3),VALPLU(3),CODRET(3),'F ')
+     &                NBPAR,NOMPAR,TEMPLU,1,
+     &                NOMRES(3),VALPLU(3),CODRET(3),'F ')
 C
 C --- CALCUL DE SIGMAH ET SIGMA EQUIVALENTE AUX INSTANTS TI ET TI+1
 C
@@ -140,13 +136,13 @@ C
           SIHMOI=SIHMOI**2
           IF(NBF.EQ.6) THEN
             SEQMOI=(ZR(IDEV+IDE)*ZR(IDEV+IDE)+ZR(IDEV+IDE+1)*
-     +        ZR(IDEV+IDE+1)+ZR(IDEV+IDE+2)*ZR(IDEV+IDE+2))/DEUX
-     +        +ZR(IDEV+IDE+3)*ZR(IDEV+IDE+3)+ZR(IDEV+IDE+4)*
-     +        ZR(IDEV+IDE+4)+ZR(IDEV+IDE+5)*ZR(IDEV+IDE+5)
+     &        ZR(IDEV+IDE+1)+ZR(IDEV+IDE+2)*ZR(IDEV+IDE+2))/DEUX
+     &        +ZR(IDEV+IDE+3)*ZR(IDEV+IDE+3)+ZR(IDEV+IDE+4)*
+     &        ZR(IDEV+IDE+4)+ZR(IDEV+IDE+5)*ZR(IDEV+IDE+5)
           ELSEIF(NBF.EQ.4) THEN
             SEQMOI=(ZR(IDEV+IDE)*ZR(IDEV+IDE)+ZR(IDEV+IDE+1)*
-     +        ZR(IDEV+IDE+1)+ZR(IDEV+IDE+2)*ZR(IDEV+IDE+2))/DEUX
-     +        +ZR(IDEV+IDE+3)*ZR(IDEV+IDE+3)
+     &        ZR(IDEV+IDE+1)+ZR(IDEV+IDE+2)*ZR(IDEV+IDE+2))/DEUX
+     &        +ZR(IDEV+IDE+3)*ZR(IDEV+IDE+3)
           ENDIF
           SEQMOI = TROIS*SEQMOI
           IDE =  I*NBF
@@ -154,13 +150,13 @@ C
           SIHPLU=SIHPLU**2
           IF(NBF.EQ.6) THEN
             SEQPLU=(ZR(IDEV+IDE)*ZR(IDEV+IDE)+ZR(IDEV+IDE+1)*
-     +        ZR(IDEV+IDE+1)+ZR(IDEV+IDE+2)*ZR(IDEV+IDE+2))/DEUX
-     +        +ZR(IDEV+IDE+3)*ZR(IDEV+IDE+3)+ZR(IDEV+IDE+4)*
-     +        ZR(IDEV+IDE+4)+ZR(IDEV+IDE+5)*ZR(IDEV+IDE+5)
+     &        ZR(IDEV+IDE+1)+ZR(IDEV+IDE+2)*ZR(IDEV+IDE+2))/DEUX
+     &        +ZR(IDEV+IDE+3)*ZR(IDEV+IDE+3)+ZR(IDEV+IDE+4)*
+     &        ZR(IDEV+IDE+4)+ZR(IDEV+IDE+5)*ZR(IDEV+IDE+5)
           ELSEIF(NBF.EQ.4) THEN
             SEQPLU=(ZR(IDEV+IDE)*ZR(IDEV+IDE)+ZR(IDEV+IDE+1)*
-     +        ZR(IDEV+IDE+1)+ZR(IDEV+IDE+2)*ZR(IDEV+IDE+2))/DEUX
-     +        +ZR(IDEV+IDE+3)*ZR(IDEV+IDE+3)
+     &        ZR(IDEV+IDE+1)+ZR(IDEV+IDE+2)*ZR(IDEV+IDE+2))/DEUX
+     &        +ZR(IDEV+IDE+3)*ZR(IDEV+IDE+3)
           ENDIF
           SEQPLU = TROIS*SEQPLU
 C

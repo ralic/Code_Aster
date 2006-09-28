@@ -1,22 +1,22 @@
       SUBROUTINE PRONUA(METHOD,NUAG1,NUAG2)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/04/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       CHARACTER*(*) METHOD,NUAG1,NUAG2
 
@@ -68,18 +68,20 @@ C DEB-------------------------------------------------------------------
       NX1 = ZI(INUAI1-1+2)
       NX2 = ZI(INUAI2-1+2)
       IF (NX1.NE.NX2) CALL UTMESS('F','PRONUA',
-     +                            'LES 2 NUAGES :'//NUA1//' ET '//NUA2//
-     +                            ' DOIVENT AVOIR LE MEME NOMBRE '//
-     +                            'DE COORDONNEES.')
+     &                            'LES 2 NUAGES :'//NUA1//' ET '//NUA2//
+     &                            ' DOIVENT AVOIR LE MEME NOMBRE '//
+     &                            'DE COORDONNEES.')
+C        CALL U2MESK('F','UTILITAI3_89', 2 ,VALK)
 
       NP1 = ZI(INUAI1-1+1)
       NP2 = ZI(INUAI2-1+1)
       GD1 = ZI(INUAI1-1+4)
       GD2 = ZI(INUAI2-1+4)
       IF (GD1.NE.GD2) CALL UTMESS('F','PRONUA',
-     +                            'LES 2 NUAGES :'//NUA1//' ET '//NUA2//
-     +                            ' DOIVENT AVOIR LA MEME GRANDEUR '//
-     +                            'ASSOCIEE.')
+     &                            'LES 2 NUAGES :'//NUA1//' ET '//NUA2//
+     &                            ' DOIVENT AVOIR LA MEME GRANDEUR '//
+     &                            'ASSOCIEE.')
+C        CALL U2MESK('F','UTILITAI3_90', 2 ,VALK)
       CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD1),NOGD)
       CALL DISMOI('F','TYPE_SCA',NOGD,'GRANDEUR',IBID,TYSCA,IERD)
 
@@ -101,7 +103,7 @@ C        -----------------------------------------------------
         II2=ZI(INUAI2-1+5+I2)
         I1=INDIIS(ZI(INUAI1-1+6),II2,1,NC1)
         IF (I1.EQ.0) THEN
-          CALL UTMESS('F','PRONUA','IL MANQUE DES CMPS SUR : '//NUA1)
+          CALL U2MESK('F','UTILITAI3_91',1,NUA1)
         ELSE
           ZI(IACORR-1+I2) = I1
         END IF
@@ -164,8 +166,8 @@ C       ----------------------
           DO 10,IP2 = 1,NP2
             IF (ZL(INUAL2-1+ (IP2-1)*NC2+IC2)) THEN
               CALL NUAINR(METHOD,NP1,NX1,NC1,IC1,ZR(INUAX1),
-     +        ZL(INUAL1), ZR(INUAV1), ZR(INUAX2-1+ (IP2-1)*NX2+1),
-     +                  ZR(IADREF-1+IP2),VAL2R)
+     &        ZL(INUAL1), ZR(INUAV1), ZR(INUAX2-1+ (IP2-1)*NX2+1),
+     &                  ZR(IADREF-1+IP2),VAL2R)
               ZR(INUAV2-1+ (IP2-1)*NC2+IC2) = VAL2R
             ELSE
               ZR(INUAV2-1+ (IP2-1)*NC2+IC2) = 0.D0
@@ -174,8 +176,7 @@ C       ----------------------
 
         ELSE IF (TYSCA.EQ.'C') THEN
 C       ----------------------
-         CALL UTMESS('F','NUAINC','L''INTERPOLATION N''EST PAS '
-     +               //'ENCORE FAITE EN COMPLEXE.')
+         CALL U2MESS('F','UTILITAI3_92')
 
           DO 11,IP2 = 1,NP2
             IF (ZL(INUAL2-1+ (IP2-1)*NC2+IC2)) THEN
@@ -189,8 +190,7 @@ C    +                  ZR(IADREF-1+IP2),VAL2C)
             END IF
    11     CONTINUE
         ELSE
-          CALL UTMESS('F','PRONUA','SEULS LES TYPES "REEL" ET '
-     +               //'"COMPLEXE" SONT AUTORISES.')
+          CALL U2MESS('F','UTILITAI3_93')
         END IF
 
    20 CONTINUE

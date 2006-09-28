@@ -1,6 +1,6 @@
       SUBROUTINE NUDEEQ(PRCHNO,NEQ,GDS,IDDLAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,10 +119,8 @@ C     - ADRESSE DE ".NUEQ":
 
       CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GDS),'LONMAX',NCMPMX,K1BID)
       NEC = NBEC(GDS)
-      IF (NCMPMX.EQ.0) CALL UTMESS('F','NUDEEQ_1','LE NOMBRE MAXI DE'//
-     &                             ' COMPOSANTE DE LA GRANDEUR EST NUL')
-      IF (NEC.EQ.0) CALL UTMESS('F','NUDEEQ_2',
-     &                          'LE NOMBRE D"ENTIERS'//' CODES EST NUL')
+      IF (NCMPMX.EQ.0) CALL U2MESS('F','ASSEMBLA_24')
+      IF (NEC.EQ.0) CALL U2MESS('F','ASSEMBLA_25')
       NBLAG = 0
 
 
@@ -134,8 +132,8 @@ C     - ADRESSE DE ".NUEQ":
 C---- NBNO : SI I=1 --> NOMBRE DE NOEUDS DU MAILLAGE
 C            SI I>1 --> NOMBRE DE NOEUDS SUPPLEMENTAIRES DU LIGREL I
           NBNO = L/ (NEC+2)
-          IF ((I.EQ.1) .AND. (NBNO.NE. (NBNM+NBNL))) CALL UTMESS('F',
-     &        'NUDEEQ','STOP 1')
+          IF ((I.EQ.1) .AND. (NBNO.NE. (NBNM+NBNL))) CALL U2MESS('F','CA
+     &LCULEL_2')
 
           DO 20 J = 1,NBNO
 C--- J : SI I=1 --> NUMERO DU NOEUD DU MAILLAGE
@@ -149,8 +147,8 @@ C                   LIGREL I (CHANGE DE SIGNE).
                 IEQ = ZI(IANUEQ-1+IDDL)
 
                 IF (I.EQ.1) THEN
-                  IF ((NBNL.GT.0) .AND. (IEQ.NE.IDDL)) CALL UTMESS('F',
-     &                'NUDEEQ','STOP 2')
+                  IF ((NBNL.GT.0) .AND. (IEQ.NE.IDDL)) CALL U2MESS('F','
+     &CALCULEL_8')
                   ZI(IADEEQ-1+2* (IEQ-1)+1) = J
                   ZI(IADEEQ-1+2* (IEQ-1)+2) = K
                   ZI(IADELG-1+IEQ) = 0
@@ -196,11 +194,11 @@ C     -------------------------------------------------------
             CALL UTMESS('E','NUDEEQ','LE NOEUD: '//NONO//
      &                  'COMPOSANTE: '//NOCMP//
      &                  ' EST BLOQUE PLUSIEURS FOIS.')
+C        CALL U2MESK('E','ASSEMBLA_26', 2 ,VALK)
           END IF
    50   CONTINUE
    60 CONTINUE
-      IF (IER.GT.0) CALL UTMESS('F','NUEFFE',
-     &                          'ARRET DU AUX '//'ERREURS PRECEDENTES.')
+      IF (IER.GT.0) CALL U2MESS('F','CALCULEL_43')
       CALL JEDETR('&&NUEFFE.LNOBLOQ')
 
 

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
       CHARACTER*1  K1BID
       CHARACTER*4  CNUM
       CHARACTER*8  K8B, SURFAC, NOMAIL, TYPM, NOMM1, NOMM2,
-     +             NNMAIL(7), TYPMCL(2)
+     &             NNMAIL(7), TYPMCL(2)
       CHARACTER*16 OPERA,TYPRES,MOTCLE(3)
       CHARACTER*19 NOMT19
       CHARACTER*24 DESCM, NSDS, SD1TMP, SD2TMP
@@ -134,7 +134,7 @@ C
          TYPMCL(1) = 'GROUP_MA'
          TYPMCL(2) = 'MAILLE'
          CALL RELIEM(' ',NOMAIL,'NU_MAILLE',' ',1,2,MOTCLE, TYPMCL,
-     +                                                  LISMAI, NBTMA )
+     &                                                  LISMAI, NBTMA )
          CALL JEVEUO ( LISMAI, 'L', JNUMA )
       ENDIF
 C
@@ -146,10 +146,9 @@ C
          NBPAR = 0
          PARA = 'AR_MIN                  '
          CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8B,
-     +                K8B, R8B , PARA, K8B, IBID, ARMIN, C16B,
-     +                K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL UTMESS('F','OP0096',
-     +'PROBLEME POUR RECUPERER UNE GRANDEUR DANS LA TABLE "CARA_GEOM"')
+     &                K8B, R8B , PARA, K8B, IBID, ARMIN, C16B,
+     &                K8B, IRET )
+          IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_13')
          PREC = ARMIN*1.D-06
       ELSE
          PREC = 1.D-10
@@ -179,7 +178,7 @@ C
             CALL UTDEBM ('F','OP0096',' ')
             CALL UTIMPI ('L','DEFI_SEGMENT, OCCURENCE ',1,ISGT)
             CALL UTIMPR ('L','ORIGINE ET EXTREMITE CONFONDUES A LA '//
-     +                       'PRECISION : ',1,EPSI)
+     &                       'PRECISION : ',1,EPSI)
             CALL UTFINM
          ENDIF
 C
@@ -216,28 +215,28 @@ C
             CALL JENUNO(JEXNUM(NOMMAI,IMA),NOMM1)
 
             IF ( TYPM(1:5) .EQ. 'TETRA' .OR.
-     +           TYPM(1:5) .EQ. 'PENTA' .OR.
-     +           TYPM(1:4) .EQ. 'HEXA'  ) THEN
+     &           TYPM(1:5) .EQ. 'PENTA' .OR.
+     &           TYPM(1:4) .EQ. 'HEXA'  ) THEN
               COUPE = .FALSE.
               CALL I3CTPV ( EPSI,ZI(ADRMC),NBN,ZR(AXYZN),SGT,COUPE)
               IF ( COUPE ) THEN
                  IF ( TYPM(1:5) .EQ. 'TETRA' ) THEN
                     CALL I3LCHI ( NIL, TETE, QUEUE, IMA, TETRA,
-     +                                 ZI(ADESC), ZI(ASUCC), ZI(APREC))
+     &                                 ZI(ADESC), ZI(ASUCC), ZI(APREC))
                  ELSE IF ( TYPM(1:5) .EQ. 'PENTA' ) THEN
                     CALL I3LCHI ( NIL, TETE, QUEUE, IMA, PENTA,
-     +                                 ZI(ADESC), ZI(ASUCC), ZI(APREC))
+     &                                 ZI(ADESC), ZI(ASUCC), ZI(APREC))
                  ELSE
                     CALL I3LCHI ( NIL, TETE, QUEUE, IMA, HEXA,
-     +                                 ZI(ADESC), ZI(ASUCC), ZI(APREC))
+     &                                 ZI(ADESC), ZI(ASUCC), ZI(APREC))
                  ENDIF
               ENDIF
             ENDIF
  120     CONTINUE
 C
          CALL I3IMAS ( EPSI,NIL,TETE,QUEUE,ZI(ASUCC),ZI(APREC),
-     +                 ZI(ADESC),ZI(ADESCM),SGT,ZI(ACONEC),ZI(ADRVLC),
-     +                 ZR(AXYZN),SD1TMP,SD2TMP,NBSGEL)
+     &                 ZI(ADESC),ZI(ADESCM),SGT,ZI(ACONEC),ZI(ADRVLC),
+     &                 ZR(AXYZN),SD1TMP,SD2TMP,NBSGEL)
 C
          TEMP1  = SD1TMP(1:13)//'.SGTEL.ORIG'
          TEMP2  = SD1TMP(1:13)//'.SGTEL.EXTR'
@@ -305,7 +304,7 @@ C
          IF ( N .LE. 0 ) THEN
             CALL CODENT(ISGT,'G',CNUM)
             CALL UTDEBM('A',OPERA(1:13)//'_'//CNUM,'INTERSECTION '
-     +          //'SEGMENT '//CNUM//' MAILLAGE '//NOMAIL//' : VIDE')
+     &          //'SEGMENT '//CNUM//' MAILLAGE '//NOMAIL//' : VIDE')
             CALL UTIMPR('L','      ORIGINE   :' ,3,SGTU)
             CALL UTIMPR('L','      EXTREMITE :' ,3,SGTU(4))
             CALL UTFINM()
@@ -392,7 +391,7 @@ C           --- DETERMINATION DU CMP_CNX ---
                IAO2 = ZI(ASDS9+I-1)
                ABSCO = ZR(ASDS1+I-1)
                EGFAC = I3EGFA( ZI(ADESC), ZI(ADESCM), ZI(ACONEC),
-     +                ZI(ADRVLC), IM1, IF1, IAO1, IAE1, IM2, IF2, IAO2 )
+     &                ZI(ADRVLC), IM1, IF1, IAO1, IAE1, IM2, IF2, IAO2 )
                IF ( .NOT. EGFAC ) THEN
                   IF ( ABS(ABSCE-ABSCO) .LE. PREC )  EGFAC = .TRUE.
                ENDIF
@@ -472,16 +471,16 @@ C
                     NNBM = MIN( 7 , L-1 )
                     DO 212 INN = 1 , NNBM
                       CALL JENUNO(JEXNUM(NOMMAI,ZI(ASDS4+INN)),
-     +                                NNMAIL(INN) )
+     &                                NNMAIL(INN) )
  212                CONTINUE
                     WRITE(IFM,1018)I,NOMM1,ZI(ASDS5+J-1),ZI(ASDS9+J-1),
-     +                          ZR(ASDS1+J-1), (NNMAIL(K),K = 1,NNBM,1)
+     &                          ZR(ASDS1+J-1), (NNMAIL(K),K = 1,NNBM,1)
                   ELSE
                     WRITE(IFM,1014) I, NOMM1, ZI(ASDS5+J-1),
-     +                              ZI(ASDS9+J-1), ZR(ASDS1+J-1)
+     &                              ZI(ASDS9+J-1), ZR(ASDS1+J-1)
                   ENDIF
                   WRITE(IFM,1016) ZI(ASDS6+J-1), ZI(ASDS10+J-1),
-     +                            ZR(ASDS2+J-1)
+     &                            ZR(ASDS2+J-1)
  210            CONTINUE
  200          CONTINUE
             ENDIF
@@ -490,7 +489,7 @@ C
  100  CONTINUE
 C
       IF ( CPSGT .LE. 0 ) THEN
-         CALL UTMESS('F',OPERA,'AUCUN SEGMENT NE COUPE LE MAILLAGE')
+         CALL U2MESS('F','POSTRELE_24')
       ELSE
          CALL WKVECT(SURFAC//'.NSDS','G V K24',CPSGT,ATMP1)
          DO 300, ISGT = 1, CPSGT, 1

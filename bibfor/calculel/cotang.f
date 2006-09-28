@@ -1,29 +1,29 @@
       SUBROUTINE COTANG(NNR,DIME,L,COETAN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 C ----------------------------------------------------------------------
 C               COEFFICIENTS POUR LE CALCUL DES TANGENTES
 C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
+C VARIABLES D'ENTREE
 C INTEGER  NNR                  : NOMBRE DE NOEUDS MAILLE MOYENNE
 C INTEGER  DIME                 : DIMENSION DE L'ESPACE
 C
@@ -70,7 +70,7 @@ C ----- SEG 3
 
         ELSE
 
-          CALL UTMESS('F','COTANG','MAILLE INDISPONIBLE')
+          CALL U2MESS('F','CALCULEL2_20')
 
         ENDIF
 
@@ -102,7 +102,7 @@ C ----- TRIA 6
 
           COETAN(1)  = -3.D0
           COETAN(2)  = -1.D0
-          COETAN(4)  =  4.D0         
+          COETAN(4)  =  4.D0
           COETAN(7)  = -3.D0
           COETAN(9)  = -1.D0
           COETAN(12) =  4.D0
@@ -274,7 +274,7 @@ C ----- QUAD 4
           ENDIF
 
 C ----- QUAD 8
-          
+
         ELSEIF (NNR.EQ.8) THEN
 
           DO 40 I = 1, 128
@@ -319,7 +319,7 @@ C ----- QUAD 8
           COETAN(78)  =  2.D0
           COETAN(79)  =  1.D0
           COETAN(80)  =  2.D0
-           
+
           COETAN(81)  =  1.D0
           COETAN(82)  =  1.D0
           COETAN(83)  =  1.D0
@@ -352,11 +352,11 @@ C ----- QUAD 8
           COETAN(120) = -1.D0
           COETAN(121) = -1.D0
           COETAN(124) =  1.D0
-          
+
           L = 0
 
 C ----- QUAD 9
-          
+
         ELSEIF (NNR.EQ.9) THEN
 
           DO 50 I = 1, 162
@@ -369,21 +369,21 @@ C ----- QUAD 9
           COETAN(10)  = -3.D0
           COETAN(13)  = -1.D0
           COETAN(17)  =  4.D0
- 
+
           COETAN(19)  =  1.D0
           COETAN(20)  =  3.D0
           COETAN(23)  = -4.D0
           COETAN(29)  = -3.D0
           COETAN(30)  = -1.D0
           COETAN(33)  =  4.D0
-          
+
           COETAN(39)  =  3.D0
           COETAN(40)  =  1.D0
           COETAN(43)  = -4.D0
           COETAN(47)  =  1.D0
           COETAN(48)  =  3.D0
           COETAN(51)  = -4.D0
-          
+
           COETAN(57)  = -1.D0
           COETAN(58)  = -3.D0
           COETAN(61)  =  4.D0
@@ -414,7 +414,7 @@ C ----- QUAD 9
           COETAN(135) =  4.D0
           COETAN(136) = -1.D0
           COETAN(139) =  1.D0
- 
+
           COETAN(150) =  1.D0
           COETAN(152) = -1.D0
           COETAN(158) = -1.D0
@@ -424,7 +424,7 @@ C ----- QUAD 9
 
         ELSE
 
-          CALL UTMESS('F','COTANG','MAILLE INDISPONIBLE')
+          CALL U2MESS('F','CALCULEL2_20')
 
         ENDIF
 

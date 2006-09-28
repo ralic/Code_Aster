@@ -1,5 +1,5 @@
-      SUBROUTINE FONFIS ( RESU, NOMAIL,  
-     +                    MOTFAC, IOCC, NBMC, MOTCLE, TYPMCL, BASZ)
+      SUBROUTINE FONFIS ( RESU, NOMAIL,
+     &                    MOTFAC, IOCC, NBMC, MOTCLE, TYPMCL, BASZ)
       IMPLICIT   NONE
       INTEGER             IOCC, NBMC
       CHARACTER*8         RESU, NOMAIL
@@ -7,22 +7,22 @@
       CHARACTER*(*)       MOTFAC, BASZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C-----------------------------------------------------------------------
@@ -46,8 +46,8 @@ C
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       IER, NBTM, N1, N2, JMAIL, IM, EXISTE, IN, ND,
-     +              JTYPM, IATYMA, JNOE, NIG, NBNOT,
-     +              NID, NUMNO, IRET, TROUV, IBID, NUMMA
+     &              JTYPM, IATYMA, JNOE, NIG, NBNOT,
+     &              NID, NUMNO, IRET, TROUV, IBID, NUMMA
       CHARACTER*1   BASE
       CHARACTER*8   K8B, NOMMA, TYPM, TYPMP, NDORIG, NDEXTR
       CHARACTER*8   NOEUD, NOEUD1, NOEUD2, NOEUD3, NOEUD4
@@ -64,11 +64,9 @@ C
 C
       MESMAI = '&&FONFIS.MES_MAILLES'
       CALL RELIEM ( ' ', NOMAIL, 'NO_MAILLE', MOTFAC, IOCC, NBMC,
-     +                                  MOTCLE, TYPMCL, MESMAI, NBTM )
+     &                                  MOTCLE, TYPMCL, MESMAI, NBTM )
       IF ( NBTM .EQ. 0 ) THEN
-      CALL UTMESS('F','FONFIS','SI NOEUD_ORIG : DONNER UN GROUP_MA '//
-     &              'OU UNE LISTE DE MAILLES. ON NE REORDONNE PAS '//
-     &              'LES GROUP_NO ET LES LISTES DE NOEUDS. ')
+      CALL U2MESS('F','ELEMENTS_66')
       ENDIF
       CALL JEVEUO ( MESMAI, 'L', JMAIL )
       CALL DISMOI('F','NB_NO_MAILLA',NOMAIL,'MAILLAGE',NBNOT,K8B,IER)
@@ -118,8 +116,8 @@ C
          CALL UTDEBM('F','FONFIS',MOTFAC)
          CALL UTIMPI('S',' OCCURRENCE ', 1, IOCC )
          CALL UTIMPK('L','LES OBJETS PRECEDEMMENT EVOQUES SONT '//
-     +                   'INEXISTANTS OU DE TYPE INCOMPATIBLE',
-     +                    1,'ARRET EN ERREUR')
+     &                   'INEXISTANTS OU DE TYPE INCOMPATIBLE',
+     &                    1,'ARRET EN ERREUR')
          CALL UTFINM
       ENDIF
 C
@@ -150,7 +148,7 @@ C --- VERIFICATION QUE LA LIGNE EST CONTINUE ET UNIQUE
 
       N1 = 0
       N2 = 0
-      BUG = .FALSE.  
+      BUG = .FALSE.
       DO 130 IM = 1 , NBNOT
          IF ( ZI(JCOUR4+IM-1).EQ.1 ) N1 = N1 + 1
          IF ( ZI(JCOUR4+IM-1).GT.2 ) N2 = N2 + 1
@@ -161,10 +159,10 @@ C --- VERIFICATION QUE LA LIGNE EST CONTINUE ET UNIQUE
          CALL UTDEBM('F','FONFIS',MOTFAC)
          CALL UTIMPI('S',' OCCURRENCE ', 1, IOCC )
          CALL UTIMPK('L','LES MAILLES SPECIFIEES NE PERMETTENT PAS '//
-     +                   'DE DEFINIR UNE LIGNE CONTINUE',
-     +                    1,'ARRET EN ERREUR')
+     &                   'DE DEFINIR UNE LIGNE CONTINUE',
+     &                    1,'ARRET EN ERREUR')
          CALL UTFINM
-      ENDIF      
+      ENDIF
 
 C --- LECTURE DU NOM DU NOEUD ORIGINE (S'IL EST FOURNI)
 
@@ -176,11 +174,10 @@ C --- LECTURE DU NOM DU NOEUD ORIGINE (S'IL EST FOURNI)
         CALL GETVID ( MOTFAC, 'GROUP_NO_ORIG', IOCC,1,1, K8B, N2)
         CALL UTNONO ( ' ', NOMAIL, 'NOEUD', K8B, NDORIG, IRET )
         IF ( IRET .EQ. 10 ) THEN
-          CALL UTMESS('F','FONFIS',
-     +                    'LE GROUP_NO : '//K8B//'N''EXISTE PAS.')
+          CALL U2MESK('F','ELEMENTS_67',1,K8B)
         ELSEIF ( IRET .EQ. 1 ) THEN
           CALL UTDEBM('A','FONFIS',
-     +                           'TROP DE NOEUDS DANS LE GROUP_NO')
+     &                           'TROP DE NOEUDS DANS LE GROUP_NO')
           CALL UTIMPK('L','  NOEUD UTILISE: ',1,NDORIG)
           CALL UTFINM( )
         ENDIF
@@ -207,11 +204,10 @@ C --- LECTURE DU NOM DU NOEUD EXTREMITE (S'IL EST FOURNI)
          CALL GETVID ( MOTFAC, 'GROUP_NO_EXTR', IOCC,1,1, K8B, N2)
          CALL UTNONO ( ' ', NOMAIL, 'NOEUD', K8B, NDEXTR, IRET )
          IF ( IRET .EQ. 10 ) THEN
-            CALL UTMESS('F','FONFIS',
-     +                      'LE GROUP_NO : '//K8B//'N''EXISTE PAS.')
+            CALL U2MESK('F','ELEMENTS_67',1,K8B)
          ELSEIF ( IRET .EQ. 1 ) THEN
             CALL UTDEBM('A','FONFIS',
-     +                      'TROP DE NOEUDS DANS LE GROUP_NO')
+     &                      'TROP DE NOEUDS DANS LE GROUP_NO')
             CALL UTIMPK('L','  NOEUD UTILISE: ',1,NDEXTR)
             CALL UTFINM( )
          ENDIF
@@ -236,15 +232,12 @@ C      ON VERIFIE QU'IL S'AGIT BIEN D'UNE EXTREMITE
  540    CONTINUE
 
         IF ( TROUV .EQ. 0 )
-     &    CALL UTMESS('F','FONFIS','LE NOEUD ORIGINE '//NDORIG//
-     &                            'NE FAIT PAS PARTI DU CHEMIN')
+     &    CALL U2MESK('F','ELEMENTS_68',1,NDORIG)
         IF (( TROUV .NE. 1 ).AND.(MOTFAC(6:10).NE.'FERME'))
-     &   CALL UTMESS('F','FONFIS','LE NOEUD ORIGINE '//NDORIG//
-     &               ' N''EST PAS UNE EXTREMITE')
+     &   CALL U2MESK('F','ELEMENTS_69',1,NDORIG)
 
       ELSE IF (NOMCMD.NE.'DEFI_GROUP') THEN
-        CALL UTMESS('F','FONFIS','PAS D''ORIGINE DEFINIE PAR ' //
-     &              'NOEUD_ORIG OU GROUP_NO_ORIG')
+        CALL U2MESS('F','ELEMENTS_70')
       ELSE
 
 C      PAS DE NOEU_ORIG NI GROUP_NO_ORIG FOURNIS : ON LE RECHERCHE
@@ -271,14 +264,12 @@ C        NUMNO N'APPARAIT QU'UNE FOIS : C'EST L'ORIGINE
           GOTO 539
  538      CONTINUE
  533    CONTINUE
-        CALL UTMESS('F','FONFIS','ECHEC DANS LA RECHERCHE DU '
-     &      // 'NOEUD ORIGINE')
+        CALL U2MESS('F','ELEMENTS_71')
 
  539    CONTINUE
         CALL JENUNO(JEXNUM(NOMNOE,NUMNO),NOEUD)
-        CALL UTMESS('I',' ','GROUP_NO ORIENTE : NOEUD ORIGINE = '
-     &        // NOEUD)
- 
+        CALL U2MESK('I','ELEMENTS_72',1,NOEUD)
+
       ENDIF
 
 C     ------------------------------------------------------------------
@@ -299,11 +290,10 @@ C
             CALL GETVID ( MOTFAC, 'GROUP_MA_ORIG', IOCC,1,1, K8B, N1)
             CALL UTNONO ( ' ', NOMAIL, 'MAILLE', K8B, NOMMA, IRET )
             IF ( IRET .EQ. 10 ) THEN
-               CALL UTMESS('F','FONFIS',
-     +                      'LE GROUP_MA : '//K8B//'N''EXISTE PAS.')
+               CALL U2MESK('F','ELEMENTS_73',1,K8B)
             ELSEIF ( IRET .EQ. 1 ) THEN
                CALL UTDEBM('A','FONFIS',
-     +                           'TROP DE MAILLES DANS LE GROUP_MA')
+     &                           'TROP DE MAILLES DANS LE GROUP_MA')
                CALL UTIMPK('L','  MAILLE UTILISEE: ',1,NOEUD)
                CALL UTFINM( )
             ENDIF
@@ -312,22 +302,18 @@ C
       ENDIF
 C
       IF ( NUMMA .EQ. 0 ) THEN
-        CALL UTMESS('F','FONFIS','SI LE FOND EST UNE COURBE FERMEE '//
-     +               'MAILLE_ORIG OU GROUP_MA_ORIG DOIT ACCOMPAGNER '//
-     +               'NOEUD_ORIG')
+        CALL U2MESS('F','ELEMENTS_74')
       ELSE
         CALL I2EXTF (NUMMA,1,CONEC(1:15),TYPP(1:16),NIG,NID)
         IF ((NUMNO.NE.NIG).AND.(NUMNO.NE.NID)) THEN
-          CALL UTMESS('F','FONFIS','LE NOEUD_ORIG N''APPARTIENT'//
-     +                    ' PAS A LA MAILLE_ORIG')
+          CALL U2MESS('F','ELEMENTS_75')
         ENDIF
         TROUV = 0
         DO 545 IM = 1 , NBTM
           IF(NUMMA.EQ.ZI(JCOUR1+IM-1)) TROUV = IM
  545    CONTINUE
         IF (TROUV.EQ.0) THEN
-          CALL UTMESS('F','FONFIS','LA MAILLE_ORIG'//NOMMA//
-     +                ' N''APPARTIENT PAS AU FOND DE FISSURE')
+          CALL U2MESK('F','ELEMENTS_76',1,NOMMA)
         ELSE
 C
 C     ON REMONTE LA MAILLE_ORIG EN TETE DE LISTE
@@ -454,7 +440,7 @@ CJMP
              ZK8(JNOE+3*I-2) = NOEUD4
              ZK8(JNOE+3*I-1) = NOEUD3
           ELSE
-              CALL UTMESS('F','FONFIS','ERREUR DE PROGRAMMATION')
+              CALL U2MESS('F','MODELISA_67')
           ENDIF
 580     CONTINUE
         CALL JENUNO(JEXNUM(NOMNOE,ZI(JCOUR1+3*NBTM-1)),NOEUD)
@@ -469,11 +455,9 @@ C
       IF (MOTFAC(6:10).NE.'FERME') THEN
         IF (NDEXTR.NE.' ') THEN
           IF ( ZK8(JNOE+NBNO-1) .NE. NDEXTR )
-     &     CALL UTMESS('F','FONFIS','LE NOEUD EXTREMITE '//NDEXTR//
-     &              ' N''EST PAS LE DERNIER NOEUD')
+     &     CALL U2MESK('F','ELEMENTS_77',1,NDEXTR)
         ELSE
-          CALL UTMESS('I',' ','GROUP_NO ORIENTE : NOEUD EXTREMITE = '
-     &        // ZK8(JNOE+NBNO-1))
+          CALL U2MESK('I','ELEMENTS_78',1,ZK8(JNOE+NBNO-1))
         END IF
       ENDIF
 C     ------------------------------------------------------------------

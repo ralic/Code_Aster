@@ -4,7 +4,7 @@
       CHARACTER*(*)       CODMES, QUESTI, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,8 +105,7 @@ C
 C
             IF ( NUMAIL .LT. 0 ) THEN
 C --------- MAILLE TARDIVE: ON RECUPERE NEMA
-               IF (IER.EQ.0) CALL UTMESS ('F','DISMMO',
-     +                           'MAUVAISE RECUPERATION DE NEMA')
+               IF (IER.EQ.0) CALL U2MESS('F','UTILITAI_71')
                IMA = -NUMAIL
                CALL JEVEUO(JEXNUM(NEMA,IMA),'L',IDNEMA)
                CALL JELIRA(JEXNUM(NEMA,IMA),'LONMAX',NBNOT,K1BID)
@@ -115,8 +114,7 @@ C --------- NEMA NOUS DONNE DIRECTEMENT LE NUMERO DU NOEUD
                DO 22 INO = 1,NBNOT
                   NUNOTA = ZI(IDNEMA+INO-1)
                   IF (NUNOTA.LT.0) THEN
-                     CALL UTMESS('F','DISMMO','ON NE TRAITE PAS LES'//
-     +                                       ' NOEUDS TARDIFS')
+                     CALL U2MESS('F','UTILITAI_72')
                   ENDIF
                   ZI(JNBNO+NUNOTA-1) = 1
    22          CONTINUE

@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,8 +49,6 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32      JEXNUM
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER (NOMPRO='DISMMO')
 C
       INTEGER IBID,IALIEL,IAMACO,IANOMA,IASSSA,ICO,IGREL
       INTEGER ILMACO,INO,IRET,ITYPEL,N1,NBGREL,NEL,NUMAIL,NUMGLM
@@ -102,15 +100,15 @@ C     -------------------------------------
 C
 C     ------------------------------------------
       ELSE IF( (QUESTI.EQ.'NB_NO_MAILLA') .OR.
-     +         (QUESTI.EQ.'NB_MA_MAILLA') .OR.
-     +         (QUESTI.EQ.'NB_NO_SS_MAX') ) THEN
+     &         (QUESTI.EQ.'NB_MA_MAILLA') .OR.
+     &         (QUESTI.EQ.'NB_NO_SS_MAX') ) THEN
 C     ------------------------------------------
          CALL DISMMA(CODMES,QUESTI,MA,REPI,REPK,IERD)
 C
 C     ------------------------------------------
       ELSE IF( (QUESTI.EQ.'NB_SM_MAILLA') .OR.
-     +         (QUESTI.EQ.'NB_SS_ACTI'  ) .OR.
-     +         (QUESTI.EQ.'NB_NL_MAILLA') ) THEN
+     &         (QUESTI.EQ.'NB_SS_ACTI'  ) .OR.
+     &         (QUESTI.EQ.'NB_NL_MAILLA') ) THEN
 C     ------------------------------------------
          CALL JEEXIN(NOMOB//'.SSSA',IRET)
          IF (IRET.EQ.0) THEN
@@ -129,8 +127,8 @@ C     ------------------------------------------
 C
 C     -------------------------------------------
       ELSE IF ( (QUESTI.EQ.'PHENOMENE'   ) .OR.
-     +          (QUESTI.EQ.'MODELISATION') .OR.
-     +          (QUESTI.EQ.'MODELISATION_THM') ) THEN
+     &          (QUESTI.EQ.'MODELISATION') .OR.
+     &          (QUESTI.EQ.'MODELISATION_THM') ) THEN
 C     -------------------------------------------
         CALL JELIRA(NOLIG//'.NOMA','DOCU',IBID,PHEN4)
         IF (PHEN4.EQ.'MECA') THEN
@@ -140,12 +138,12 @@ C     -------------------------------------------
         ELSE IF (PHEN4.EQ.'ACOU') THEN
           NOPHEN='ACOUSTIQUE'
         ELSE
-          CALL UTMESS(CODMES,NOMPRO,'PHENOMENE INCONNU : '//PHEN4)
+          CALL U2MESK(CODMES,'UTILITAI_63',1,PHEN4)
         END IF
         REPK= NOPHEN
 C
         IF  ( (QUESTI.EQ.'MODELISATION')       .OR.
-     >        (QUESTI.EQ.'MODELISATION_THM') ) THEN
+     &        (QUESTI.EQ.'MODELISATION_THM') ) THEN
 C            ------------------------
 C
           IF  ( QUESTI.EQ.'MODELISATION' ) THEN
@@ -176,42 +174,42 @@ C
               ENDIF
             ELSE
               IF (( NOMOD2(1:6).EQ.'D_PLAN' )  .OR.
-     >            ( NOMOD2(1:6).EQ.'C_PLAN' )) THEN
+     &            ( NOMOD2(1:6).EQ.'C_PLAN' )) THEN
                 IBID = 8
               ELSEIF ( NOMOD2(1:4).EQ.'AXIS' ) THEN
                 IBID = 6
               ELSEIF ( NOMOD2(1:2).EQ.'3D' ) THEN
                 IBID = 4
-              ELSE 
+              ELSE
                 GOTO 4
               ENDIF
               IF ( NOMOD2(IBID:IBID).EQ.'H' ) THEN
                 IF ( NOMOD2(IBID:IBID+4).EQ.'HH2MD' .OR.
-     >               NOMOD2(IBID:IBID+4).EQ.'HH2MS' .OR.
-     >               NOMOD2(IBID:IBID+2).EQ.'HHM'   .OR.
-     >               NOMOD2(IBID:IBID+3).EQ.'HHMD'  .OR.
-     >               NOMOD2(IBID:IBID+3).EQ.'HHMS'  .OR.
-     >               NOMOD2(IBID:IBID+1).EQ.'HM'    .OR.
-     >               NOMOD2(IBID:IBID+2).EQ.'HMD'   .OR.
-     >               NOMOD2(IBID:IBID+2).EQ.'HMS' ) THEN
+     &               NOMOD2(IBID:IBID+4).EQ.'HH2MS' .OR.
+     &               NOMOD2(IBID:IBID+2).EQ.'HHM'   .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'HHMD'  .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'HHMS'  .OR.
+     &               NOMOD2(IBID:IBID+1).EQ.'HM'    .OR.
+     &               NOMOD2(IBID:IBID+2).EQ.'HMD'   .OR.
+     &               NOMOD2(IBID:IBID+2).EQ.'HMS' ) THEN
                   ICO = ICO + 1
-                ENDIF      
+                ENDIF
               ELSEIF ( NOMOD2(IBID:IBID).EQ.'T' ) THEN
                 IF ( NOMOD2(IBID:IBID+2).EQ.'THH'    .OR.
-     >               NOMOD2(IBID:IBID+4).EQ.'THH2D'  .OR.
-     >               NOMOD2(IBID:IBID+5).EQ.'THH2MD' .OR.
-     >               NOMOD2(IBID:IBID+5).EQ.'THH2MS' .OR.
-     >               NOMOD2(IBID:IBID+4).EQ.'THH2S'  .OR.
-     >               NOMOD2(IBID:IBID+3).EQ.'THHD'   .OR.
-     >               NOMOD2(IBID:IBID+3).EQ.'THHM'   .OR.
-     >               NOMOD2(IBID:IBID+4).EQ.'THHMD'  .OR.
-     >               NOMOD2(IBID:IBID+4).EQ.'THHMS'  .OR.
-     >               NOMOD2(IBID:IBID+3).EQ.'THHS'   .OR.
-     >               NOMOD2(IBID:IBID+2).EQ.'THM'    .OR.
-     >               NOMOD2(IBID:IBID+3).EQ.'THMD'   .OR. 
-     >               NOMOD2(IBID:IBID+3).EQ.'THMS'   .OR.
-     >               NOMOD2(IBID:IBID+3).EQ.'THVD'   .OR.
-     >               NOMOD2(IBID:IBID+3).EQ.'THVS' ) THEN
+     &               NOMOD2(IBID:IBID+4).EQ.'THH2D'  .OR.
+     &               NOMOD2(IBID:IBID+5).EQ.'THH2MD' .OR.
+     &               NOMOD2(IBID:IBID+5).EQ.'THH2MS' .OR.
+     &               NOMOD2(IBID:IBID+4).EQ.'THH2S'  .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'THHD'   .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'THHM'   .OR.
+     &               NOMOD2(IBID:IBID+4).EQ.'THHMD'  .OR.
+     &               NOMOD2(IBID:IBID+4).EQ.'THHMS'  .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'THHS'   .OR.
+     &               NOMOD2(IBID:IBID+2).EQ.'THM'    .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'THMD'   .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'THMS'   .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'THVD'   .OR.
+     &               NOMOD2(IBID:IBID+3).EQ.'THVS' ) THEN
                   ICO = ICO + 1
                 ENDIF
               ENDIF
@@ -239,12 +237,12 @@ C     ------------------------------------
 C
 C     -----------------------------------------------------------------
       ELSE IF ((QUESTI.EQ.'EXI_RDM'   ).OR.(QUESTI.EQ.'EXI_POUX'  ).OR.
-     +         (QUESTI.EQ.'EXI_THM_CT').OR.(QUESTI.EQ.'EXI_THM_VR').OR.
-     +         (QUESTI.EQ.'EXI_TUYAU' ).OR.(QUESTI.EQ.'EXI_COQ3D' ).OR.
-     +         (QUESTI.EQ.'EXI_COQ1D' ).OR.(QUESTI.EQ.'EXI_PLAQUE').OR.
-     +         (QUESTI.EQ.'EXI_COQUE' ).OR.
+     &         (QUESTI.EQ.'EXI_THM_CT').OR.(QUESTI.EQ.'EXI_THM_VR').OR.
+     &         (QUESTI.EQ.'EXI_TUYAU' ).OR.(QUESTI.EQ.'EXI_COQ3D' ).OR.
+     &         (QUESTI.EQ.'EXI_COQ1D' ).OR.(QUESTI.EQ.'EXI_PLAQUE').OR.
+     &         (QUESTI.EQ.'EXI_COQUE' ).OR.
      &         (QUESTI.EQ.'EXI_GRAD_VARI')
-     +        ) THEN
+     &        ) THEN
 C     -----------------------------------------------------------------
          CALL DISMLG(CODMES,QUESTI,NOLIG,REPI,REPK,IERD)
 C
@@ -298,8 +296,7 @@ C     ----
       ELSE
 C     ----
          REPK = QUESTI
-         CALL UTMESS(CODMES,NOMPRO,
-     +                  'LA QUESTION : "'//REPK//'" EST INCONNUE')
+         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          GO TO 9998
       END IF
       GO TO 9999
@@ -310,7 +307,7 @@ C     ------------------
       IERD=1
       REPI=0
       REPK='ERREUR'
-      IF (CODMES.EQ.'F') CALL UTMESS('F',NOMPRO,'PROBLEME DISMOI.')
+      IF (CODMES.EQ.'F') CALL U2MESS('F','UTILITAI_64')
 C
 C     -- SORTIE NORMALE :
 C     ------------------

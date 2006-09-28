@@ -1,5 +1,5 @@
       SUBROUTINE NMDEPR(MODELE,LIGREL,CARELE,CHARGE,ICHA,INSTAN,RESUFV)
-C MODIF ALGORITH  DATE 15/05/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,8 +83,7 @@ C -----------------------------------------------------
       CALL GETTCO(FNOCAL,TYSD)
 
       IF (TYSD.NE.'EVOL_CHAR') THEN
-        CALL UTMESS('F','MEDEFV_02',' LE CONCEPT EVOL_CHAR : '//FNOCAL//
-     &              ' N''EN EST PAS UN !')
+        CALL U2MESK('F','ALGORITH7_15',1,FNOCAL)
         GO TO 40
       END IF
 
@@ -92,8 +91,7 @@ C     ----------------------------------
       CALL DISMOI('F','NB_CHAMP_UTI',FNOCAL,'RESULTAT',NBCHAM,K8BID,IER)
 
       IF (NBCHAM.LE.0) THEN
-        CALL UTMESS('F','MEDEFV_01',' LE CONCEPT EVOL_CHAR : '//FNOCAL//
-     &              ' NE CONTIENT AUCUN CHAMP DE TYPE'//' EVOL_CHAR.')
+        CALL U2MESK('F','ALGORITH7_16',1,FNOCAL)
         GO TO 40
       END IF
 

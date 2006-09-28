@@ -3,7 +3,7 @@
       CHARACTER*(*)       LITAB , NOMTAB , NOMSD
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       LISTAB = LITAB
       CALL JEEXIN ( LISTAB//'.LTNT', IRET )
       IF ( IRET .EQ. 0 ) THEN
-         CALL UTMESS('F','LTNOTB','LA L_TABLE N''EXISTE PAS')
+         CALL U2MESS('F','UTILITAI2_49')
       ENDIF
 C
       NOMSYM = NOMTAB

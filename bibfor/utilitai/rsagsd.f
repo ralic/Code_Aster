@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,12 +64,11 @@ C ----------------------------------------------------------------------
       IUNDEF = ISNNEM()
 
       IF (ILONG.LT.0) THEN
-        CALL UTMESS('F','RSAGSD','NOUVELLE LONGUEUR INVALIDE, < 0 ')
+        CALL U2MESS('F','UTILITAI4_29')
       END IF
       CALL JEEXIN(NOMD2//'.DESC',IRET)
       IF (IRET.EQ.0) THEN
-        CALL UTMESS('F','RSAGSD','STRUCTURE DE DONNEES INEXISTANTE :'//
-     &              NOMD2)
+        CALL U2MESK('F','UTILITAI_40',1,NOMD2)
       END IF
 
       CALL JELIRA(NOMD2//'.DESC','NOMMAX',NBCHAM,K8B)

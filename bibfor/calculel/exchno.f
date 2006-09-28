@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,13 +101,13 @@ C     -------------------------
 C     1-  CAS: CHNO -> ELGA :
 C     -----------------------
       IF (ITYPLO.EQ.3) THEN
-        CALL UTMESS('F',' EXCHNO','A FAIRE ...')
+        CALL U2MESS('F','CALCULEL_46')
 
 
 C     2-  CAS: CHNO -> ASSE :
 C     -----------------------
       ELSE IF (ITYPLO.GE.4) THEN
-        CALL UTMESS('F',' EXCHNO','IMPOSSIBLE')
+        CALL U2MESS('F','ALGORITH_15')
 
 
 C     3-  CAS: CHNO -> ELNO :
@@ -124,7 +124,7 @@ C     --------------------------------
 C       4.1 ON CHERCHE NNO SUR LE 1ER ELEMENT :
 C       ---------------------------------------
         IMA = NUMAIL(IGR,1)
-        IF (IMA.EQ.0) CALL UTMESS('F',' EXCHNO','1')
+        IF (IMA.EQ.0) CALL U2MESS('F','CALCULEL_33')
         IF (IMA.GT.0) THEN
           NNO = ZI(ILMACO-1+IMA+1) - ZI(ILMACO-1+IMA)
         ELSE
@@ -204,12 +204,12 @@ C        -------------------------------------------------------
           DEB2 = 1
           DO 30,IEL = 1,NBELGR
 C     -- SI FETI, ON NE FAIT FINALEMENT RIEN CAR LA ROUTINE TRIGD MET
-C        A JOUR UN COMPTEUR DEB2 ELEMENT DE GREL APRES GREL           
+C        A JOUR UN COMPTEUR DEB2 ELEMENT DE GREL APRES GREL
 C            IF (LFETI) THEN
 C              IF (.NOT.ZL(IFETI+IEL)) GOTO 30
 C            ENDIF
             IMA = NUMAIL(IGR,IEL)
-            IF (IMA.EQ.0) CALL UTMESS('F',' EXCHNO','2')
+            IF (IMA.EQ.0) CALL U2MESS('F','UTILITAI_67')
             DO 20 INO = 1,NNO
               IF (DIFF) IDG2 = 5 + NEC* (INO-1)
               IF (IMA.GT.0) THEN
@@ -226,9 +226,7 @@ C            ENDIF
 C                 ON VERIFIE QUE LE MODLOC AFFIRME NCMP=0:
                 DO 10,IEC = 1,NEC
                   IF (ZI(MODLOC-1+IDG2-1+IEC).NE.0) THEN
-                    CALL UTMESS('F','EXCHNO','PROBLEME NOEUD TARDIF '//
-     &                        'POUR UN CHAMP A REPRESENTATION CONSTANTE'
-     &                          )
+                    CALL U2MESS('F','CALCULEL2_52')
                   END IF
    10           CONTINUE
               END IF
@@ -248,7 +246,7 @@ C           IF (LFETI) THEN
 C              IF (.NOT.ZL(IFETI+IEL)) GOTO 50
 C           ENDIF
             IMA = NUMAIL(IGR,IEL)
-            IF (IMA.EQ.0) CALL UTMESS('F',' EXCHNO','3')
+            IF (IMA.EQ.0) CALL U2MESS('F','CALCULEL2_50')
             DO 40 INO = 1,NNO
               IF (DIFF) IDG2 = 5 + NEC* (INO-1)
               IF (IMA.GT.0) THEN

@@ -4,22 +4,22 @@
       REAL*8             XYZG1(3,*), RHO, EPAIS, MASS, CDG(*), INERTI(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     CALCULE LE CDG ET LA MASSE D'UNE MAILLE TRIA ET QUAD
 C
@@ -130,11 +130,11 @@ C     ----------------------------------------
       DO 70 INO = 1,NNO
           DO 80 JNO = 1,NNO
               SX(INO,JNO) =   XYZG(2,INO) * XYZG(3,JNO)
-     +                      - XYZG(3,INO) * XYZG(2,JNO)
+     &                      - XYZG(3,INO) * XYZG(2,JNO)
               SY(INO,JNO) =   XYZG(3,INO) * XYZG(1,JNO)
-     +                      - XYZG(1,INO) * XYZG(3,JNO)
+     &                      - XYZG(1,INO) * XYZG(3,JNO)
               SZ(INO,JNO) =   XYZG(1,INO) * XYZG(2,JNO)
-     +                      - XYZG(2,INO) * XYZG(1,JNO)
+     &                      - XYZG(2,INO) * XYZG(1,JNO)
  80       CONTINUE
  70   CONTINUE
 C
@@ -156,11 +156,11 @@ C       ------------------------------------------
               JDEC = (J-1)*NDIM
 C
               NX = NX + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) *
-     +                  SX(I,J)
+     &                  SX(I,J)
               NY = NY + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) *
-     +                  SY(I,J)
+     &                  SY(I,J)
               NZ = NZ + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) *
-     +                  SZ(I,J)
+     &                  SZ(I,J)
 C
  100     CONTINUE
 C
@@ -226,8 +226,7 @@ C ---      AXY :
  90   CONTINUE
 C
       IF (ABS(AIRE).LT.R8PREM()) THEN
-          CALL UTMESS('F','DXINER','IMPOSSIBILITE, LA SURFACE '//
-     +                'DE L''ELEMENT EST NULLE. ')
+          CALL U2MESS('F','ELEMENTS_48')
       ENDIF
 C
       S1 = UN/AIRE

@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -230,6 +230,7 @@ C           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
      &                           ' ASSOCIEE AU MOT CLE: '//MOFAC//
      &                           ' DOIT ETRE: '//NOMGD//
      &                           ' MAIS ELLE EST: '//NOMGD2)
+C        CALL U2MESK('A','MODELISA5_50', 3 ,VALK)
 
 
 C         2-5 ECRITURE DANS LES CARTES :

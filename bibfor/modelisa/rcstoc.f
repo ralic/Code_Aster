@@ -8,22 +8,22 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20 CRS_513
 C ----------------------------------------------------------------------
@@ -114,8 +114,7 @@ C        ON EST OBLIGE DE RECOPIER LA GLUTE ELAS_FLUI :
 
          CALL JEEXIN(JEXNOM('&&RCSTOC.TEMPOR',MCLE8),IRET)
          IF (IRET.GT.0) THEN
-           CALL UTMESS('F','RCSTOC','LE MOT CLE:'//ZK16(JNOMO-1+I)
-     &     //' EST IDENTIQUE (SUR SES 8 1ERS CARACTERES) A UN AUTRE.')
+           CALL U2MESK('F','MODELISA6_69',1,ZK16(JNOMO-1+I))
          ELSE
            CALL JECROC(JEXNOM('&&RCSTOC.TEMPOR',MCLE8))
          END IF
@@ -140,16 +139,16 @@ C --- ON TRAITE LES TX QUE ON CONVERTIT EN REELS
 C
       DO 50  I = 1 , NBOBJ
        IF(ZK8(JTYPO+I-1)(1:2) .EQ. 'TX'  .AND.
-     + (NOMRC .EQ. 'ELAS_META' .OR. NOMRC .EQ. 'ELAS_META_FO'))THEN
+     & (NOMRC .EQ. 'ELAS_META' .OR. NOMRC .EQ. 'ELAS_META_FO'))THEN
             CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1), 1,1,1, VALTX, N )
             IF ( N .EQ. 1 ) THEN
                IF ( ZK16(JNOMO+I-1).EQ.'PHASE_REFE'  .AND.
-     +                        VALTX.EQ.'CHAU'        ) THEN
+     &                        VALTX.EQ.'CHAU'        ) THEN
                   NBR       = NBR + 1
                   VALR(NBR) = 1.D0
                   VALK(NBR) = ZK16(JNOMO+I-1)
                ELSEIF( ZK16(JNOMO+I-1).EQ.'PHASE_REFE'  .AND.
-     +                           VALTX.EQ.'FROI'        ) THEN
+     &                           VALTX.EQ.'FROI'        ) THEN
                   NBR       = NBR + 1
                   VALR(NBR) = 0.D0
                   VALK(NBR) = ZK16(JNOMO+I-1)
@@ -157,11 +156,11 @@ C
             ENDIF
          ENDIF
          IF ( ZK8(JTYPO+I-1)(1:2) .EQ. 'TX'  .AND.
-     +        NOMRC .EQ. 'BETON_DOUBLE_DP' ) THEN
+     &        NOMRC .EQ. 'BETON_DOUBLE_DP' ) THEN
             CALL GETVTX ( NOMRC, ZK16(JNOMO+I-1), 1,1,1, VALTX, N )
             IF ( N .EQ. 1 ) THEN
                IF ( ZK16(JNOMO+I-1).EQ.'ECRO_COMP_P_PIC'
-     +            .OR. ZK16(JNOMO+I-1).EQ.'ECRO_TRAC_P_PIC') THEN
+     &            .OR. ZK16(JNOMO+I-1).EQ.'ECRO_TRAC_P_PIC') THEN
                   NBR       = NBR + 1
                   VALK(NBR) = ZK16(JNOMO+I-1)
                   IF ( VALTX.EQ.'LINE'          ) THEN
@@ -277,9 +276,7 @@ C
           GOTO 151
          ENDIF
  150    CONTINUE
-        CALL UTMESS('F','RCSTOC_01','ERREUR LORS DE LA DEFINITION DE LA'
-     &             //' COURBE DE TRACTION, IL MANQUE LE PARAMETRE :'
-     &             //NOMCLE(II))
+        CALL U2MESK('F','MODELISA6_70',1,NOMCLE(II))
  151    CONTINUE
 
         CALL JEVEUO(NOMFCT//'.PROL','L',JFCT)
@@ -287,16 +284,12 @@ C
          CALL JELIRA(NOMFCT//'.VALE','LONMAX',NBPTM,K8BID)
         IF ( NOMRC(1:8)  .EQ. 'TRACTION') THEN
           IF ( NBPTM .LT. 4 ) THEN
-           CALL UTMESS('F','RCSTOC_02','ERREUR LORS DE LA DEFINITION '
-     &               //'DE LA COURBE DE TRACTION :'// NOMCLE(II)
-     &               // ' NB DE POINTS < 2  ! ')
+           CALL U2MESK('F','MODELISA6_71',1,NOMCLE(II))
           ENDIF
         ENDIF
         IF ( NOMRC(1:13) .EQ. 'META_TRACTION') THEN
           IF ( NBPTM .LT. 2 ) THEN
-           CALL UTMESS('F','RCSTOC_02','ERREUR LORS DE LA DEFINITION '
-     &               //'DE LA COURBE DE TRACTION :'// NOMCLE(II)
-     &               // ' NB DE POINTS < 1  ! ')
+           CALL U2MESK('F','MODELISA6_72',1,NOMCLE(II))
           ENDIF
         ENDIF
          NBCOUP = NBPTM / 2
@@ -347,7 +340,7 @@ C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
           ENDIF
  200     CONTINUE
          IF ( IRET .NE. 0 ) THEN
-          CALL UTMESS('F','RCSTOC_06','ERREURS RENCONTREES.')
+          CALL U2MESS('F','MODELISA6_73')
          ENDIF
          CPROL = ZK16(JFCT+1)
         ELSE IF ( ZK16(JFCT)(1:1) .EQ. 'N' ) THEN
@@ -359,16 +352,12 @@ C        VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
          IF (NBPTS . GE . NBMAX ) NBMAX = NBPTS
          IF ( NOMRC(1:8)  .EQ. 'TRACTION') THEN
            IF ( NBPTS .LT. 4 ) THEN
-            CALL UTMESS('F','RCSTOC_10','ERREUR LORS DE LA DEFINITION '
-     &           //'DE LA NAPPE DES COURBES DE TRACTION: NB DE POINTS'
-     &           //' < 2 ! ')
+            CALL U2MESS('F','MODELISA6_74')
            ENDIF
          ENDIF
          IF ( NOMRC(1:13) .EQ. 'META_TRACTION') THEN
            IF ( NBPTS .LT. 2 ) THEN
-            CALL UTMESS('F','RCSTOC_10','ERREUR LORS DE LA DEFINITION '
-     &           //'DE LA NAPPE DES COURBES DE TRACTION: '//NOMCLE(II)
-     &           //' NB DE POINTS < 1 ! ')
+            CALL U2MESK('F','MODELISA6_75',1,NOMCLE(II))
            ENDIF
          ENDIF
          CALL JEVEUO(JEXNUM(NOMFCT//'.VALE',K),'L',JRPV)
@@ -409,13 +398,12 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
            ENDIF
  210      CONTINUE
           IF ( IRET .NE. 0 ) THEN
-           CALL UTMESS('F','RCSTOC_14','ERREURS RENCONTREES.')
+           CALL U2MESS('F','MODELISA6_73')
           ENDIF
  160     CONTINUE
          CPROL = ZK16(JFCT+7)
         ELSE
-         CALL UTMESS('F','RCSTOC_08',' ERREUR LORS DE LA DEFINITION DE'
-     &         //'LA COURBE DE TRACTION: FONCTION OU NAPPE ! ')
+         CALL U2MESS('F','MODELISA6_76')
         ENDIF
  149   CONTINUE
 
@@ -449,8 +437,7 @@ C
         IF ( ZK16(JFCT)(1:1) .EQ. 'F' ) THEN
           CALL JELIRA(NOMFCT//'.VALE','LONMAX',NBPTM,K8BID)
           IF ( NBPTM .LT. 4 ) THEN
-            CALL UTMESS('F','RCSTOC_09','ERREUR LORS DE LA DEFINITION '
-     &               //'DE LA COURBE RELA_MZ : NB DE POINTS < 2  ! ')
+            CALL U2MESS('F','MODELISA6_77')
           ENDIF
           NBCOUP = NBPTM / 2
           CALL JEVEUO(NOMFCT//'.VALE','L',JRPV)
@@ -497,7 +484,7 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
              ENDIF
  460      CONTINUE
           IF ( IRET .NE. 0 ) THEN
-            CALL UTMESS('F','RCSTOC_13','ERREURS RENCONTREES.')
+            CALL U2MESS('F','MODELISA6_73')
           ENDIF
           CPROL = ZK16(JFCT+1)
         ELSE IF ( ZK16(JFCT)(1:1) .EQ. 'N' ) THEN
@@ -507,9 +494,7 @@ C         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
             CALL JELIRA(JEXNUM(NOMFCT//'.VALE',K),'LONMAX',NBPTS,K8BID)
             NBCOUP = NBPTS / 2
             IF ( NBPTS .LT. 4 ) THEN
-             CALL UTMESS('F','RCSTOC_10','ERREUR LORS DE LA DEFINITION '
-     &             //'DE LA NAPPE DES COURBES DE TRACTION: NB DE POINTS'
-     &             //' < 2 ! ')
+             CALL U2MESS('F','MODELISA6_74')
             ENDIF
             CALL JEVEUO(JEXNUM(NOMFCT//'.VALE',K),'L',JRPV)
             IF ( ZR(JRPV) .LE . 0.D0 ) THEN
@@ -534,7 +519,7 @@ C           VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
             IRET=2
             CALL FOVERF(ZR(JRPV),NBCOUP,IRET)
             IF ( IRET .NE. 0 ) THEN
-              CALL UTMESS('F','RCSTOC_13','ABSCISSES NON CROISSANTS.')
+              CALL U2MESS('F','MODELISA6_78')
             ENDIF
             IRET = 0
             E1 = ZR(JRPV+NBCOUP) / ZR(JRPV)
@@ -552,14 +537,13 @@ C           VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
               ENDIF
  480        CONTINUE
             IF ( IRET .NE. 0 ) THEN
-              CALL UTMESS('F','RCSTOC_14','ERREURS RENCONTREES.')
+              CALL U2MESS('F','MODELISA6_73')
             ENDIF
             NBPTM = MAX(NBPTM,NBPTS)
  470      CONTINUE
           CPROL = ZK16(JFCT+7)
         ELSE
-          CALL UTMESS('F','RCSTOC_15',' ERREUR LORS DE LA DEFINITION DE'
-     &              //'LA COURBE RELA_MZ: FONCTION ! ')
+          CALL U2MESS('F','MODELISA6_79')
         ENDIF
         MZP = NOMMAT//'.&&MZP'
 C
@@ -620,9 +604,9 @@ C
 C --- 7 VERIFICATION DES NOMS DES PARAMETRES DES TABLES
 C       'TEXTURE' ET 'TRC'
 C
-      IF ( NOMRC(1:8) .EQ. 'POLY_CFC')THEN  
+      IF ( NOMRC(1:8) .EQ. 'POLY_CFC')THEN
        DO 710 I=1,NBK
-          IF (VALK(NBR+NBC+I)(1:7) .EQ. 'TEXTURE') THEN             
+          IF (VALK(NBR+NBC+I)(1:7) .EQ. 'TEXTURE') THEN
              CALL GETVID(NOMRC,'TEXTURE',1,1,1,TABLE,N)
              CALL TBEXP2(TABLE,'N1')
              CALL TBEXP2(TABLE,'N2')
@@ -639,13 +623,13 @@ C
              CALL TBEXP2(TABLE,'XMS_3')
              CALL TBEXP2(TABLE,'XMS_4')
              CALL TBEXP2(TABLE,'XMS_5')
-             CALL TBEXP2(TABLE,'XMS_6')       
+             CALL TBEXP2(TABLE,'XMS_6')
           ENDIF
  710   CONTINUE
       ENDIF
-      IF ( NOMRC(1:10) .EQ. 'META_ACIER')THEN  
+      IF ( NOMRC(1:10) .EQ. 'META_ACIER')THEN
        DO 720 I=1,NBK
-          IF (VALK(NBR+NBC+I)(1:3) .EQ. 'TRC') THEN             
+          IF (VALK(NBR+NBC+I)(1:3) .EQ. 'TRC') THEN
              CALL GETVID(NOMRC,'TRC',1,1,1,TABLE,N)
              CALL TBEXP2(TABLE,'VITESSE')
              CALL TBEXP2(TABLE,'PARA_EQ')
@@ -662,13 +646,13 @@ C
              CALL TBEXP2(TABLE,'TEMP')
              CALL TBEXP2(TABLE,'SEUIL')
              CALL TBEXP2(TABLE,'AKM')
-             CALL TBEXP2(TABLE,'BKM')       
+             CALL TBEXP2(TABLE,'BKM')
              CALL TBEXP2(TABLE,'TPLM')
-             CALL TBEXP2(TABLE,'DREF')       
-             CALL TBEXP2(TABLE,'A')       
+             CALL TBEXP2(TABLE,'DREF')
+             CALL TBEXP2(TABLE,'A')
           ENDIF
  720   CONTINUE
-      ENDIF      
+      ENDIF
 C
       CALL JEDETR('&&RCSTOC.TYPOBJ')
       CALL JEDETR('&&RCSTOC.NOMOBJ')

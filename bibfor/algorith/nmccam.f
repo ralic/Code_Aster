@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,32 +130,32 @@ C
 C
       IF (COMPOR(1)(1:9) .EQ. 'CAM_CLAY ' ) THEN
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
          E  = VALRES(1)
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
+     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
+     &                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
          LAMBDA = VALRES(5)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
+     &                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
          KAPA = VALRES(6)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
+     &                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
          M     = VALRES(7)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
+     &                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
          PRESCR = VALRES(8)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
+     &                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
          PA = VALRES(9)
       ENDIF
       IF (((COMPOR(1)(1:6) .EQ. 'KIT_HM') .OR.
@@ -164,42 +164,41 @@ C
      &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
      &     (COMPOR(11)(1:9) .EQ. 'CAM_CLAY ')) THEN
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
          E  = VALRES(1)
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
+     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          PORO1 = PORO
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
+     &                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
          LAMBDA = VALRES(5)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
+     &                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
          KAPA = VALRES(6)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
+     &                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
          M     = VALRES(7)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
+     &                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
          PRESCR = VALRES(8)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
+     &                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
          PA = VALRES(9)
          CALL RCVALA(IMATE,' ','THM_INIT',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
+     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          PORO2 = PORO
          DIFF = PORO1-PORO2
          IF (ABS(DIFF) .GT. TOL) THEN
-           CALL UTMESS('F','NMCCAM','CAM_CLAY : LA POROSITE '
-     &   //'DONNEE DANS CAM_CLAY DOIT ETRE LA MEME QUE DANS THM_INIT')
+           CALL U2MESS('F','ALGORITH6_60')
          ELSE
          PORO=PORO1
          ENDIF
@@ -213,8 +212,7 @@ C     -- 3 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
       COEF = ALPHA*(TP-TREF) - ALPHA*(TM-TREF)
       IF (CPLAN)THEN
-           CALL UTMESS('F','NMCCAM','CAM_CLAY : LE CAS DES '
-     &     //'CONTRAINTES PLANES N EST PAS TRAITE POUR CE MODELE.')
+           CALL U2MESS('F','ALGORITH6_63')
       ENDIF
       DEPSMO = 0.D0
       DO 110 K=1,NDIMSI
@@ -237,9 +235,7 @@ C     -------------------------------------------------------------
  116  CONTINUE
       SIGMMO = -SIGMMO /3.D0
       IF (SIGMMO.LT.(0.99D0*PA)) THEN
-           CALL UTMESS('F','NMCCAM','CAM_CLAY : IL FAUT QUE '
-     &     //'LA CONTRAINTE HYDROSTATIQUE SOIT SUPERIEURE A LA '
-     &     //' PRESSION INITIALE PA ')
+           CALL U2MESS('F','ALGORITH6_64')
       ENDIF
       SIELEQ = 0.D0
       SIEQM = 0.D0
@@ -256,7 +252,7 @@ C     -------------------------------------------------------------
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_1','EXP EXPLOSE A LA MAILLE : ',
-     +                                                       NOMAIL
+     &                                                       NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -294,7 +290,7 @@ C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_2','EXP EXPLOSE A LA MAILLE : ',
-     +                                                        NOMAIL
+     &                                                        NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -303,7 +299,7 @@ C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_3','EXP EXPLOSE A LA MAILLE : ',
-     +                                                        NOMAIL
+     &                                                        NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -312,7 +308,7 @@ C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_4','EXP EXPLOSE A LA MAILLE : ',
-     +                                                        NOMAIL
+     &                                                        NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -321,7 +317,7 @@ C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_5','EXP EXPLOSE A LA MAILLE : ',
-     +                                                        NOMAIL
+     &                                                        NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -356,7 +352,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_6','EXP EXPLOSE A LA MAILLE : ',
-     +                                                        NOMAIL
+     &                                                        NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -365,7 +361,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_7','EXP EXPLOSE A LA MAILLE : ',
-     +                                                        NOMAIL
+     &                                                        NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -374,7 +370,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_8','EXP EXPLOSE A LA MAILLE : ',
-     +                                                        NOMAIL
+     &                                                        NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -383,7 +379,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_9','EXP EXPLOSE A LA MAILLE : ',
-     +                                                        NOMAIL
+     &                                                        NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -407,7 +403,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_10','EXP EXPLOSE A LA MAILLE : ',
-     +                                                         NOMAIL
+     &                                                         NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -416,7 +412,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_11','EXP EXPLOSE A LA MAILLE : ',
-     +                                                         NOMAIL
+     &                                                         NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -436,8 +432,8 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_12',
-     +              'ITER_INTE_MAXI INSUFFISANT A LA MAILLE: ',
-     +                                                   NOMAIL
+     &              'ITER_INTE_MAXI INSUFFISANT A LA MAILLE: ',
+     &                                                   NOMAIL
          RETCOM = 1
          GO TO 30
  100  CONTINUE
@@ -449,7 +445,7 @@ C     -- REACTUALISATION DE LA VARIABLE INTERNE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_13','EXP EXPLOSE A LA MAILLE : ',
-     +                                                         NOMAIL
+     &                                                         NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF
@@ -458,7 +454,7 @@ C     -- REACTUALISATION DE LA VARIABLE INTERNE
          CALL TECAEL(IADZI,IAZK24)
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'NMCCAM_14','EXP EXPLOSE A LA MAILLE : ',
-     +                                                         NOMAIL
+     &                                                         NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF

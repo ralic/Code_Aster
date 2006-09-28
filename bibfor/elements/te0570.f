@@ -1,6 +1,6 @@
       SUBROUTINE TE0570(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,10 +109,7 @@ C     -------------------------------------
       CALL TECACH('OON','PCACOQU',8,ITABM,IRET)
 
       IF (.NOT.ZL(ITABM(8))) THEN
-        CALL UTMESS('F','TE0570','VOUS UTILISEZ LE MOT CLE '//
-     &              'LIAISON_ELEM AVEC L''OPTION COQ_POU: '//
-     &              'L''EPAISSEUR DES ELEMENTS DE BORD DE COQUE '//
-     &              'N''A PAS ETE AFFECTEE.')
+        CALL U2MESS('F','ELEMENTS4_32')
       END IF
 
       ICOQU= ITABM(1)
@@ -120,8 +117,7 @@ C     -------------------------------------
       COEF = EPAIS*EPAIS*EPAIS/12.0D0
 
       IF (EPAIS.LE.R8PREM()) THEN
-        CALL UTMESS('F','TE0570','L''EPAISSEUR DES ELEMENTS '//
-     &              'DE BORD DE COQUE EST NEGATIVE OU NULLE.')
+        CALL U2MESS('F','ELEMENTS4_33')
       END IF
 
       IF (OPTION.EQ.'CARA_SECT_POUT3') THEN
@@ -206,7 +202,7 @@ C ---   JACOBIEN :
 C       --------
           JAC = SQRT(DXDK*DXDK+DYDK*DYDK+DZDK*DZDK)
           IF (JAC.LE.R8PREM()) THEN
-            CALL UTMESS('F','TE0570','LE JACOBIEN EST NUL.')
+            CALL U2MESS('F','ELEMENTS4_34')
           END IF
           JACPOI = JAC*ZR(IPOIDS+IPG-1)*EPAIS
           JACPO2 = JAC*ZR(IPOIDS+IPG-1)*COEF
@@ -323,7 +319,7 @@ C ---   JACOBIEN :
 C       --------
           JAC = SQRT(DXDK*DXDK+DYDK*DYDK+DZDK*DZDK)
           IF (JAC.LE.R8PREM()) THEN
-            CALL UTMESS('F','TE0570','LE JACOBIEN EST NUL.')
+            CALL U2MESS('F','ELEMENTS4_34')
           END IF
           JACPOI = JAC*ZR(IPOIDS+IPG-1)*EPAIS
           JACPO2 = JAC*ZR(IPOIDS+IPG-1)*COEF

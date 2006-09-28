@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C OUT VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
 C OUT DSIDEP  : MATRICE TANGENTE
 C OUT IRET    : CODE RETOUR DE  L'INTEGRATION DE LA LDC
 C                  IRET=0 => PAS DE PROBLEME
-C                  IRET=1 => ABSENCE DE CONVERGENCE DANS L'INTEGRATION 
+C                  IRET=1 => ABSENCE DE CONVERGENCE DANS L'INTEGRATION
 C                            DE LA LOI VISCO PLASTIQUE DE CHABOCHE
 C                            AVEC ENDOMAGEMENT
 C
@@ -166,9 +166,9 @@ C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
       CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM, TP,
-     1               TYPMA,  BZ, HSR,MATM,
-     3               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
-     2               TOLER, NDT, NDI, NRV, NVI, VIND )
+     &               TYPMA,  BZ, HSR,MATM,
+     &               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
+     &               TOLER, NDT, NDI, NRV, NVI, VIND )
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
 C
 C-- 1.3. OPERATEUR DE HOOK
@@ -177,8 +177,7 @@ C-------------------------
 C
       IF (.NOT.( LOI(1:4) .EQ. 'ELAS'.OR.
      &           LOI(1:9) .EQ. 'VENDOCHAB' )) THEN
-            CALL UTMESS('F','NMVPEI_01',
-     &           ' COMPORTEMENT INATTENDU : '//LOI)
+            CALL U2MESK('F','ALGORITH4_50',1,LOI)
       ENDIF
 C
 C-- 1.4. DEFORMATIONS TOTALES, THERMIQUES ET VISCOPLASTIQUES
@@ -203,7 +202,7 @@ C
         IF (NDIM.EQ.2) THEN
            SIGM(5)=0.D0
            SIGM(6)=0.D0
-        ENDIF   
+        ENDIF
         CALL LCEQVN ( NB,SIGM,B)
         DO 00142 I = 1,NB
           DO 00142 K = 1,NB
@@ -233,7 +232,7 @@ C REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
          CALL NMVEND(MATM,MATE,NMAT,DT,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
      &               NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,IER)
          IF (IER.GT.0) THEN
-         CALL UTMESS('A','NMVEEI','ECHEC LOI DE COMP DANS ZEROFO')
+         CALL U2MESS('A','ALGORITH8_65')
          ENDIF
        ENDIF
       ENDIF
@@ -256,7 +255,7 @@ C           CALL UTMESS('F','NMVEEI','ITER>1')
      &                  P, NP, BETA, NB, EP, RM, DM,
      &                  DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
      &                  RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
-         
+
          IF (IER.NE.0) GOTO 803
 C
 C-- 2.1. RESOLUTION DU SYSTEME
@@ -271,8 +270,8 @@ C
              DEPS(3) = ZERO
              DBETA(3) = ZERO
           ENDIF
-          
-C ON PEUT AUSSI DE PAS FAIRE D'ITERATION DE NEWTON 
+
+C ON PEUT AUSSI DE PAS FAIRE D'ITERATION DE NEWTON
 C CAR SOLUTION CALCULEE PAR NMVEND
 C           IF (ABS(GR-GK).LE.TOLER*GR) THEN
 C           IF (.NOT.CPLAN) THEN
@@ -291,7 +290,7 @@ C
             SUMB=SUMB+ABS(BETA(I))
 00210     CONTINUE
           IF (SUMB.GT.TOLER) DELTB=DELTB/SUMB
-          
+
           DELTX = ZERO
           SUMX = ZERO
           DO 00220 I=1,NP
@@ -301,20 +300,18 @@ C
 00220     CONTINUE
 C
           IF (SUMX.GT.TOLER) DELTX=DELTX/SUMX
-          
+
           DELTX=MAX(DELTX,DELTB)
-          
+
           IF (DELTX.LT.TOLER) GOTO 00230
-          
+
 00200   CONTINUE
 C-- NOMBRE D'ITERATIONS MAXI ATTEINT: ARRET DU PROGRAMME
         GOTO 801
 C
 00230   CONTINUE
         IF (ETATF(2).EQ.'TANGENT')THEN
-          CALL UTMESS('A','NMVEEI',' CONVERGENCE ATTEINTE SUR'//
-     &     'APPROXIMATION LINEAIRE TANGENTE DE L''EVOLUTION PLASTIQUE'//
-     &     '- RISQUE D''IMPRECISION')
+          CALL U2MESS('A','ALGORITH8_66')
         ENDIF
 C-- STOCKAGE DANS L'INDICATERU DU NOMBRE D'ITERATIONS
         VIP(NB+4) = MAX(VIP(NB+4),DBLE(ITER))
@@ -326,8 +323,7 @@ C--------------------------------------------------------------
         CALL LCDVMI (BETA, 0.D0, SE2, DSEDB, DSEDB2, SE)
 C
         IF (ETATF(3).EQ.'DAMMAXO')THEN
-          CALL UTMESS('A','NMVEEI',' ENDOMMAGEMENT MAXIMAL ATTEINT AU'//
-     &                ' COURS DES RESOLUTIONS INTERNES')
+          CALL U2MESS('A','ALGORITH8_67')
           VIP(NB+3) = UN
           VIP(NB+1) = VIM(NB+1) + DT * P(1)/(UN-DAMMAX)
           DO 00240 I= 1, NB
@@ -369,7 +365,7 @@ C-- RIGIDITE TANGENTE (RIGI_MECA_TANG) -> MATRICE ELASTIQUE
              GOTO 802
           ENDIF
 C        ENDIF
-        
+
 C-- RIGIDITE TANGENTE (RIGI_MECA_ELAS,FULL_MECA_ELAS)->MATRICE ELASTIQUE
         ELSEIF (OPTION(10:14).EQ.'_ELAS') THEN
 C             MATRICE SECANTE=MATRICE ELASTIQUE
@@ -391,7 +387,7 @@ C   SIG3=0 ET DE LA CONSERVATION DE L'ENERGIE
             DO 00320 L=1,NB
               IF (L.EQ.3) GO TO 00320
               DSIDEP(K,L)=DSIDEP(K,L)
-     +          - 1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
+     &          - 1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
 00320       CONTINUE
 00310     CONTINUE
         ENDIF
@@ -402,18 +398,16 @@ C
 C-- ERREURS
 C
  800  CONTINUE
-            CALL UTMESS('F','NMVEEI_01',' ERREUR RECUPERATION '//
-     &                  'PARAMETRES MATERIAU')
+            CALL U2MESS('F','ALGORITH8_68')
       GOTO 900
  801  CONTINUE
       IRET = 1
       GOTO 900
  802  CONTINUE
-            CALL UTMESS('F','NMVEEI_03',
-     &           ' TYPE DE MATRICE DEMANDE NON DISPONIBLE ')
+            CALL U2MESS('F','ALGORITH8_69')
       GOTO 900
  803  CONTINUE
-      CALL UTMESS('A','NMVEEI_04',' ERREUR DANS NMVECD ')
+      CALL U2MESS('A','ALGORITH8_70')
       IRET = 1
       GOTO 900
  900  CONTINUE

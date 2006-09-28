@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,8 +210,7 @@ C     -----------------------------------
         IF (I1*I2*I3*I4.NE.0) GO TO 20
 
       ELSE
-        CALL UTMESS('F','EXISD',' LE MOT CLE :'//TYP2SD//
-     &              'N EST PAS AUTORISE.')
+        CALL U2MESK('F','UTILITAI_47',1,TYP2SD)
       END IF
 
    10 CONTINUE

@@ -1,6 +1,6 @@
       SUBROUTINE RESYME(RESU1Z,BASEZ,RESU2Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,10 +88,7 @@ C     -------------------------------------------
       ELSE IF (PHENOM.EQ.'THERMIQUE') THEN
         OPTION = 'SYME_MTNS_R'
       ELSE
-        CALL UTMESS('F','RESYME','LE PHENOME '//PHENOM//' N''EST PAS'//
-     &              ' ADMIS POUR LA SYMETRISATION DES MATRICES.'//
-     &              'SEULS SONT ADMIS LES PHENOMENES "MECANIQUE"'//
-     &              ' ET "THERMIQUE" .')
+        CALL U2MESK('F','ASSEMBLA_39',1,PHENOM)
       END IF
 
 
@@ -138,9 +135,8 @@ C              TRAVAIL :
             CALL ASSERT(NBGR.EQ.ZI(JRESL2-1+2))
             DO 21, IGR=1,NBGR
               IF (ZI(JRESL1-1+2+IGR).GT.0) THEN
-                IF (ZI(JRESL2-1+2+IGR).EQ.0) CALL UTMESS('F','RESYME',
-     &             'ERREUR PROGRAMMEUR : CERTAINS TYPE_ELEMENT '
-     &             //'NE SAVENT PAS CALCULER LES OPTIONS SYME_M?NS_R')
+                IF (ZI(JRESL2-1+2+IGR).EQ.0) CALL U2MESS('F','ASSEMBLA_4
+     &0')
               END IF
  21         CONTINUE
           ELSE

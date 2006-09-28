@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,9 +97,7 @@ C     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
      &    (ZK16(ICOMPO).EQ.'VISC_CIN2_CHAB')) THEN
         IPOPP = 1
       ELSE
-        CALL UTMESS('F','TE0339','POUR L''OPTION '//
-     &              '"RICE_TRACEY", LA RELATION "'//ZK16(ICOMPO)//
-     &              '" N''EST PAS ADMISE')
+        CALL U2MESK('F','ELEMENTS3_74',1,ZK16(ICOMPO))
       END IF
 C   /* ========================================================= */
 C   /* PVARIMR = DEF PLAST EQ A L'INSTANT PRECEDENT              */
@@ -341,7 +339,7 @@ C           ----------------
 C     2.5 TRAITEMENT DES OPTIONS INVALIDES
 C     ------------------------------------
       ELSE
-        CALL UTMESS('F','TE0339','OPTION DE CALCUL NON VALIDE')
+        CALL U2MESS('F','ELEMENTS3_73')
       END IF
 
 

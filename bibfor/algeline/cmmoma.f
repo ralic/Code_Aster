@@ -4,7 +4,7 @@
       CHARACTER*(*)       MAILLA, MOMANU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,6 +154,7 @@ C           VERIF QUE LE 3EME NOEUD EST BIEN AU MILIEU
      &         ' NOEUDS '//NONO1//' ET '//NONO2//
      &         ' POUR LA MAILLE :'//NOMAIL//'. AMELIOREZ LE '//
      &         ' MAILLAGE. ON ARRETE POUR EVITER DES RESULTATS FAUX')
+C        CALL U2MESK('F','ALGELINE_23', 4 ,VALK)
             ENDIF
 
             IF(NORMEN.LE.EPSI) THEN

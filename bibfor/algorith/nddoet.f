@@ -15,7 +15,7 @@
       CHARACTER*19  SOLVEU,MAPREC,LISCHA,PARTPS
       CHARACTER*16  OPMASS
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,9 +99,7 @@ C -- EXTENSION DU COMPORTEMENT : NOMBRE DE VARIABLES INTERNES
 C -- PAS D'ETAT INITIAL EN PRESENCE D'UN CONCEPT REENTRANT
       CALL GETFAC('ETAT_INIT',NOCC)
       CALL JEEXIN(RESULT//'           .DESC',REENTR)
-      IF (NOCC.EQ.0 .AND. REENTR.NE.0) CALL UTMESS('A','NMDOET',
-     &    'SURCHARGE D''UN RESULTAT SANS DEFINIR D''ETAT INITIAL : '//
-     &    'ON PREND UN ETAT INITIAL NUL')
+      IF (NOCC.EQ.0 .AND. REENTR.NE.0) CALL U2MESS('A','ALGORITH6_35')
 
       BASE = 'V'
       LGRFL = .FALSE.
@@ -139,9 +137,7 @@ C ======================================================================
 
 C      CONTROLE DU TYPE DE EVOL
         CALL DISMOI('F','TYPE_RESU',EVOL,'RESULTAT',IBID,TYPE,IRET)
-        IF (TYPE.NE.'EVOL_NOLI') CALL UTMESS('F','NMDOET',
-     &              'LE CONCEPT DANS ETAT_INIT N''EST DU TYPE EVOL_NOLI'
-     &                                )
+        IF (TYPE.NE.'EVOL_NOLI') CALL U2MESS('F','ALGORITH6_36')
 
 C -- NUMERO D'ACCES ET INSTANT CORRESPONDANT
         CALL GETVR8('ETAT_INIT','INST',1,1,1,INST,N1)
@@ -151,24 +147,17 @@ C      NUME_ORDRE ET INST ABSENTS, ON PREND LE DERNIER PAS ARCHIVE
         IF (N1+N2.EQ.0) THEN
           CALL RSORAC(EVOL,'DERNIER',IBID,RBID,K8BID,CBID,RBID,K8BID,
      &                NUME,1,N2)
-          IF (N2.EQ.0) CALL UTMESS('F','NDDOET','PAS DE NUMERO '//
-     &                             'D''ORDRE POUR LE CONCEPT '//EVOL)
+          IF (N2.EQ.0) CALL U2MESK('F','ALGORITH6_37',1,EVOL)
         END IF
-  
+
 C      ACCES PAR INSTANT
         IF (N1.NE.0) THEN
           CALL GETVR8('ETAT_INIT','PRECISION',1,1,1,PREC,IBID)
           CALL GETVTX('ETAT_INIT','CRITERE',1,1,1,CRITER,IBID)
           CALL RSORAC(EVOL,'INST',IBID,INST,K8BID,CBID,PREC,CRITER,NUME,
      &                1,NBR)
-          IF (NBR.EQ.0) CALL UTMESS('F','NMDOET',
-     &                              'L''INSTANT SPECIFIE '//
-     &                            'SOUS ''ETAT_INIT'' N''EST PAS TROUVE'
-     &                              )
-          IF (NBR.LT.0) CALL UTMESS('F','NMDOET',
-     &                                'PLUSIEURS INSTANTS '//
-     &               'CORRESPONDENT A CELUI SPECIFIE SOUS ''ETAT_INIT'''
-     &                                )
+          IF (NBR.EQ.0) CALL U2MESS('F','ALGORITH6_38')
+          IF (NBR.LT.0) CALL U2MESS('F','ALGORITH6_39')
         END IF
 
 C      ACCES PAR NUMERO D'ORDRE
@@ -244,23 +233,21 @@ C ======================================================================
               CALL UTIMPI ( 'S', ': ', 1, IRET )
               CALL UTFINM
               CALL UTMESS ( 'F','NMDOET', 'LA DERIVEE DE '//EVOL//
-     >            ' PAR RAPPORT A '//NOPASE//' EST INTROUVABLE.')
+     &            ' PAR RAPPORT A '//NOPASE//' EST INTROUVABLE.')
+C        CALL U2MESK('F','ALGORITH6_40', 2 ,VALK)
             ENDIF
             STRUCT = RESUID
           ELSE
             STRUCT = EVOL
-          END IF 
+          END IF
 
-C -- LECTURE DES DEPLACEMENTS (OU DERIVE) 
+C -- LECTURE DES DEPLACEMENTS (OU DERIVE)
           CALL RSEXCH(STRUCT,'DEPL',NUME,CHAMP,IRET)
-          IF (IRET.NE.0) CALL UTMESS('F','NMDOET',
-     &                               'LE CHAMP DE DEPL_R (OU DERIVE)'//
-     &                              'N''EST PAS TROUVE DANS LE CONCEPT '
-     &                               //STRUCT)
+          IF (IRET.NE.0) CALL U2MESK('F','ALGORITH6_41',1,STRUCT)
           CALL VTCOPY(CHAMP,DEPMOI,IRET)
 
 
-C -- LECTURE DES CONTRAINTES AUX POINTS DE GAUSS (OU DERIVE) 
+C -- LECTURE DES CONTRAINTES AUX POINTS DE GAUSS (OU DERIVE)
           CALL RSEXCH(STRUCT,'SIEF_ELGA',NUME,CHAMP,IRET)
           IF (IRET.EQ.0) THEN
             CALL COPISD('CHAMP_GD','V',CHAMP,SIGMOI)
@@ -268,10 +255,7 @@ C -- LECTURE DES CONTRAINTES AUX POINTS DE GAUSS (OU DERIVE)
 
 C        CONTRAINTES AUX NOEUDS : PASSAGE AUX POINTS DE GAUSS
             CALL RSEXCH(STRUCT,'SIEF_ELNO',NUME,CHAMP,IRET)
-            IF (IRET.NE.0) CALL UTMESS('F','NMDOET',
-     &                              'LE CHAMP DE SIEF_R (OU DERIVE) '//
-     &                              'N''EST PAS TROUVE DANS LE CONCEPT '
-     &                                 //STRUCT)
+            IF (IRET.NE.0) CALL U2MESK('F','ALGORITH6_42',1,STRUCT)
             CALL MENOGA('SIEF_ELGA_ELNO  ',LIGRMO,COMPOR,CHAMP,SIGMOI,
      &                  K24BID)
           END IF
@@ -279,34 +263,24 @@ C        CONTRAINTES AUX NOEUDS : PASSAGE AUX POINTS DE GAUSS
 C -- LECTURE DES VITESSES (OU DERIVE)
           CALL RSEXCH(STRUCT,'VITE',NUME,CHAMP,IRETVI)
           IF (IRETVI.NE.0) THEN
-            CALL UTMESS('I','NDDOET_05','LE CHAMP DE VITE N''EST PA'//
-     &                'S TROUVE DANS LE CONCEPT '//EVOL//
-     &                ' ON CREE UN CHAMP DE VITESSES NULLES')
+            CALL U2MESK('I','ALGORITH6_43',1,EVOL)
             CALL NULVEC(VITPLU)
           ELSE
             CALL VTCOPY(CHAMP,VITPLU,IERR)
-            
+
           END IF
 
 C -- LECTURE DES ACCELERATIONS (OU DERIVE)
           CALL RSEXCH(STRUCT,'ACCE',NUME,CHAMP,IRETAC)
           IF (IRETAC.NE.0) THEN
             IF (IRETVI.NE.0) THEN
-              CALL UTMESS('I','NDDOET_06','LE CHAMP D''ACCE N''EST '//
-     &                  'PAS TROUVE DANS LE CONCEPT '//STRUCT//
-     &                  ' ON CALCULE UN CHAMP D''ACCELERATIONS, CE '//
-     &                  'QUI EST POSSIBLE PUISQUE LES VITESSES SONT '//
-     &                  'NULLES')
+              CALL U2MESK('I','ALGORITH6_44',1,STRUCT)
               CALL ACCEL0(MODELE,NUMEDD,MATE,COMPOR,CARELE,MEMASS,
      &                  MASSE,MEDIRI,LISCHA,INST,COMMOI,DEPMOI,SIGMOI,
      &                  ACCPLU,MAPREC,SOLVEU,CARCRI,LGRFL,CHGRFL,DT,
      &                  DEFICO)
             ELSE
-              CALL UTMESS('F','NDDOET_07','LE CHAMP D''ACCE N''EST '//
-     &                  'PAS TROUVE DANS LE CONCEPT '//STRUCT//
-     &                  ' ON NE PEUT PAS, POUR L''INSTANT, CALCULER '//
-     &                  'LE CHAMP DES ACCELERATIONS CAR LES VITESSES'//
-     &                  ' NE SONT PAS NULLES')
+              CALL U2MESK('F','ALGORITH6_45',1,STRUCT)
               END IF
             ELSE
               CALL VTCOPY(CHAMP,ACCPLU,IERR)
@@ -324,9 +298,7 @@ C -- LECTURE DES VARIABLES INTERNES AUX POINTS DE GAUSS (OU DERIVE)
 
 C        VARIABLES INTERNES AUX NOEUDS : PASSAGE AUX POINTS DE GAUSS
             CALL RSEXCH(STRUCT,'VARI_ELNO',NUME,CHAMP,IRET)
-            IF (IRET.NE.0) CALL UTMESS('F','NMDOET','LE CHAMP DE '//
-     &        'VARI_R (OU DERIVE) N''EST PAS TROUVE DANS LE CONCEPT '
-     &                               //STRUCT)
+            IF (IRET.NE.0) CALL U2MESK('F','ALGORITH6_46',1,STRUCT)
             IF (NRPASE.EQ.NBPASE) CALL VRCOMP(COMPOM,COMPOR,CHAMP)
             CALL COPISD('CHAM_ELEM_S','V',COMPOR,VARMOI)
             CALL MENOGA('VARI_ELGA_ELNO  ',LIGRMO,COMPOR,CHAMP,VARMOI,
@@ -337,9 +309,7 @@ C        VARIABLES INTERNES AUX NOEUDS : PASSAGE AUX POINTS DE GAUSS
 C -- LECTURE DES VARIABLES NON LOCALES (OU DERIVE)
           IF (MODEDE.NE.' ') THEN
             CALL RSEXCH(STRUCT,'VARI_NON_LOCAL',NUME,CHAMP,IRET)
-            IF (IRET.NE.0) CALL UTMESS('F','NMDOET','LE CHAMP DE '//
-     &           'VARI_NON_LOCAL (OU DERIVE) N''EST PAS TROUVE DANS'
-     &                           //'LE CONCEPT' //STRUCT)
+            IF (IRET.NE.0) CALL U2MESK('F','ALGORITH6_47',1,STRUCT)
             CALL VTCOPY(CHAMP,VARDEM,IRET)
           END IF
 
@@ -347,9 +317,7 @@ C -- LECTURE DES VARIABLES NON LOCALES (OU DERIVE)
 C -- LECTURE DES MULTIPLICATEURS DE LAGRANGE NON LOCAUX
           IF (MODEDE.NE.' ') THEN
             CALL RSEXCH(STRUCT,'LANL_ELGA',NUME,CHAMP,IRET)
-            IF (IRET.NE.0) CALL UTMESS('F','NMDOET','LE CHAMP DE '//
-     &                    'LANL_ELGA N''EST PAS TROUVE DANS LE CONCEPT '
-     &                               //STRUCT)
+            IF (IRET.NE.0) CALL U2MESK('F','ALGORITH6_48',1,STRUCT)
             CALL COPISD('CHAMP_GD','V',CHAMP,LAGDEM)
           END IF
 
@@ -368,10 +336,7 @@ C -- LECTURE DES DEPLACEMENTS
             CALL CHPVER('F',CHAMP(1:19),'NOEU','DEPL_R',IERR)
             CALL VTCOPY(CHAMP,DEPMOI,IRET)
           ELSE
-            IF (NRPASE.EQ.0) CALL UTMESS('I','NDDOET_09',
-     &                'L''ETAT INITIAL N''APPARTIENT'//
-     &                ' PAS A UN EVOL_NOLI : ON SUPPOSE QU''ON'//
-     &                ' PART D''UN ETAT A DEPLACEMENTS NULS')
+            IF (NRPASE.EQ.0) CALL U2MESS('I','ALGORITH6_49')
             CALL NULVEC(DEPMOI)
           END IF
 
@@ -382,9 +347,7 @@ C -- LECTURE DES VITESSES
             CALL CHPVER('F',CHAMP(1:19),'NOEU','DEPL_R',IERR)
             CALL VTCOPY(CHAMP,VITPLU,IERR)
           ELSE
-            CALL UTMESS('I','NDDOET_10','L''ETAT INITIAL '//
-     &             'N''APPARTIENT PAS A UN EVOL_NOLI : ON SUPPOSE'//
-     &                  ' QU''ON PART D''UN ETAT A VITESSES NULLES')
+            CALL U2MESS('I','ALGORITH6_50')
             CALL NULVEC(VITPLU)
           END IF
 
@@ -420,10 +383,7 @@ C -- LECTURE DES VARIABLES INTERNES
           CALL GETVID('ETAT_INIT','VARI',1,1,1,CHAMP,NOCC)
           LNOCC=(LNOCC.OR.(NOCC.NE.0))
 
-          IF (LNOCC .AND. NBPASE.GT.0) CALL UTMESS('F','NDDOET',
-     &        'POUR FAIRE UNE REPRISE AVEC'//
-     &        'UN CALCUL DE SENSIBILITE, IL FAUT RENSEIGNER '//
-     &        '"EVOL_NOLI" DANS "ETAT_INIT"')
+          IF (LNOCC .AND. NBPASE.GT.0) CALL U2MESS('F','ALGORITH6_51')
 
 C      PREPARATION POUR CREER UN CHAMP NUL
           IF (NOCC.EQ.0) THEN
@@ -518,5 +478,5 @@ C -- LECTURE DE L'INSTANT DU CHARGEMENT INITIAL (SI DONNE)
 
 C --- INITIALISATION DES COMMONS "FORCE_FLUIDE"
       IF ( LGRFL )  CALL GFINIT ( NUMEDD, NUME, DEPMOI, VITPLU,
-     +                              ACCPLU,  DT, CHGRFL )
+     &                              ACCPLU,  DT, CHGRFL )
       END

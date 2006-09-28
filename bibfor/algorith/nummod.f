@@ -4,7 +4,7 @@
       CHARACTER*14         NUGENE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,16 +48,14 @@ C
 C-----RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA OU MODE_GENE
 C
       CALL RSORAC ( MODMEC, 'LONUTI', IBID, RBID, K8B, CBID, RBID,
-     +                                            K8B, NBMODE, 1, N1 )
+     &                                            K8B, NBMODE, 1, N1 )
 C
 C-----TEST NBVECT A UTILISER / NBMODE
 C
       IF ( NBVECT .LE. NBMODE ) THEN
          NBMODE = NBVECT
       ELSE
-         CALL UTMESS('I','NUMMOD',
-     +                'NOMBRE DE VECTEURS DEMANDE TROP GRAND ON PREND '
-     +                //'TOUS LES MODES DU CONCEPT MODE_MECA ')
+         CALL U2MESS('I','ALGORITH9_10')
       ENDIF
 C
       CALL  NUMMO1 (NUGENE, MODMEC, NBMODE, TYPROF )

@@ -1,12 +1,12 @@
       SUBROUTINE ACEAPO(NOMA,NOMO,LMAX,NPOUTR,NBOCC,NBEPO,
-     +                                        NTYELE,IVR,IFM,JDLM)
+     &                                        NTYELE,IVR,IFM,JDLM)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           LMAX,NPOUTR,NBOCC,NBEPO,IFM,JDLM
       INTEGER           NTYELE(*),IVR(*)
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C
       CALL WKVECT('&&ACEAPO.TABPOU'  ,'V V K8 ',NBO        ,JTAB )
       CALL WKVECT('&&ACEAPO.CARPOU'  ,'V V K8 ',NDIM*NTYPSE,JCAR )
       CALL ACEDAT('POUTRE',1,ZI(JPARA),ZK16(JSECT),ZK8(JEXP),ZK8(JTAB),
-     +                                                      ZK8(JCAR))
+     &                                                      ZK8(JCAR))
       CALL WKVECT('&&ACEAPO.CARA'  ,'V V K8',NBCAR ,JCARA)
       CALL WKVECT('&&ACEAPO.VALE'  ,'V V R8',NBVAL ,JVALE)
 C
@@ -124,9 +124,9 @@ C --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
       DO 10 IOC = 1 , NBOCC
          CALL CODENT(IOC,'G',KIOC)
          CALL GETVEM(NOMA,'GROUP_MA','POUTRE','GROUP_MA',
-     +            IOC,1,LMAX,ZK8(JDLS),NG)
+     &            IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','POUTRE','MAILLE',
-     +          IOC,1,LMAX,ZK8(JDLS),NM)
+     &          IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVTX('POUTRE','SECTION'   ,IOC,1,1    ,SEC       ,NSEC)
          CALL GETVTX('POUTRE','VARI_SECT' ,IOC,1,1    ,VARSEC    ,NVSEC)
          CALL GETVTX('POUTRE','CARA'      ,IOC,1,NBCAR,ZK8(JCARA),NCAR)
@@ -185,7 +185,7 @@ C                                                    GROUPES DE MAILLES
             DO 40 I = 1 , NG
                CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
                CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONMAX',
-     +                                                  NBMAGR,K1BID)
+     &                                                  NBMAGR,K1BID)
                DO 42 J = 1,NBMAGR
                   NUMMAI = ZI(JDGM+J-1)
                   CALL JENUNO(JEXNUM(MLGNMA,NUMMAI),NOMMAI)
@@ -194,9 +194,9 @@ C                                                    GROUPES DE MAILLES
                      IF (NUTYEL.EQ.NTYELE(K)) THEN
                         IF (K.EQ.4) IIVAR = 10
                         CALL AFFPOU(TMPGEN,TMPGEF,FCX,
-     +                            NOMMAI,ISEC,IIVAR,
-     +                            ZK8(JCARA),NCARAC,
-     +                      ZR(JVALE),ZK8(JTAB),ZK8(JEXP),NBO,KIOC,IER)
+     &                            NOMMAI,ISEC,IIVAR,
+     &                            ZK8(JCARA),NCARAC,
+     &                      ZR(JVALE),ZK8(JTAB),ZK8(JEXP),NBO,KIOC,IER)
                         IIVAR = IVAR
                         GOTO 42
                      ENDIF
@@ -215,8 +215,8 @@ C ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
                   IF (NUTYEL.EQ.NTYELE(J)) THEN
                      IF (J.EQ.4) IIVAR = 10
                      CALL AFFPOU(TMPGEN,TMPGEF,FCX,NOMMAI,ISEC,IIVAR,
-     +                                               ZK8(JCARA),NCARAC,
-     +                      ZR(JVALE),ZK8(JTAB),ZK8(JEXP),NBO,KIOC,IER)
+     &                                               ZK8(JCARA),NCARAC,
+     &                      ZR(JVALE),ZK8(JTAB),ZK8(JEXP),NBO,KIOC,IER)
                      IIVAR = IVAR
                      GOTO 50
                   ENDIF
@@ -226,8 +226,7 @@ C ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
 C
  10   CONTINUE
       IF (IER.NE.0) THEN
-         CALL UTMESS('F',CMD,'POUTRE : UNE ERREUR A ETE '//
-     +     'DETECTEE LORS DE L AFFECTATION DES VALEURS DANS LE TAMPON')
+         CALL U2MESS('F','MODELISA_14')
       ENDIF
 C
       CALL JELIRA(TMPGEN,'NUTIOC',NPOAFF,K1BID)
@@ -240,9 +239,7 @@ C --- VERIFICATION DES OBLIGATIONS ET AFFECTATION DES DEFAUTS
          CALL AFFDEF(TMPGEN,NOMMAI,NUTYEL,NTYELE,ZK8(JTAB),IER)
  60   CONTINUE
       IF (IER.NE.0) THEN
-         CALL UTMESS('F',CMD,'POUTRE : UNE  '//
-     +            'ERREUR A ETE DETECTEE LORS DES VERIFICATIONS DES '//
-     +                                               'VALEURS ENTREES')
+         CALL U2MESS('F','MODELISA_15')
       ENDIF
 C
 C --- CALCUL DES DONNEES GENERALES A PARTIR DES DONNEES GEOMETRIQUES
@@ -265,7 +262,7 @@ C ---    IMPRESSION DES DONNEES GENERALES
             IVAR = NINT(ZR(JDGE+22))
             ISEC = NINT(ZR(JDGE+35))
             WRITE(IFM,2001)NOMMAI,(ZR(JDGE+J-1),J=1,22),
-     +                     (ZR(JDGE+J-1),J=37,44),IVAR,ISEC
+     &                     (ZR(JDGE+J-1),J=37,44),IVAR,ISEC
             CALL JENUNO(JEXNUM(TMPGEF,I),NOMMAI)
             CALL JEVEUO(JEXNUM(TMPGEF,I),'L',JDGEF)
             WRITE(IFM,*)'CX : ',ZK8(JDGEF)
@@ -288,23 +285,23 @@ C ---    IMPRESSION DES DONNEES GEOMETRIQUES
       ENDIF
 C
  2000   FORMAT(/,3X,'<SECTION> ',
-     +      'VALEURS DE TYPE GENERALE AFFECTEES AUX POUTRES',//,3X,
-     +      'MAILLE   ',
-     +      'A1  ',8X,'IY1  ',7X,'IZ1  ',7X,'AY1  ',7X,'AZ1  ',/,
-     +  12X,'EY1 ',8X,'EZ1  ',7X,'JX1  ',7X,'RY1  ',7X,'RZ1  ',/,
-     +  12X,'RT1 ',8X,'A2   ',7X,'IY2  ',7X,'IZ2  ',7X,'AY2  ',/,
-     +  12X,'AZ2 ',8X,'EY2  ',7X,'EZ2  ',7X,'JX2  ',7X,'RY2  ',/,
-     +  12X,'RZ2 ',8X,'RT2  ',7X,'AI1  ',7X,'AI2  ',7X,'JG1  ',/,
-     +  12X,'JG2 ',8X,'IYR21',7X,'IYR22',7X,'IZR21',7X,'IZR22',/,
-     +  12X,'TVAR',8X,'TSEC ')
+     &      'VALEURS DE TYPE GENERALE AFFECTEES AUX POUTRES',//,3X,
+     &      'MAILLE   ',
+     &      'A1  ',8X,'IY1  ',7X,'IZ1  ',7X,'AY1  ',7X,'AZ1  ',/,
+     &  12X,'EY1 ',8X,'EZ1  ',7X,'JX1  ',7X,'RY1  ',7X,'RZ1  ',/,
+     &  12X,'RT1 ',8X,'A2   ',7X,'IY2  ',7X,'IZ2  ',7X,'AY2  ',/,
+     &  12X,'AZ2 ',8X,'EY2  ',7X,'EZ2  ',7X,'JX2  ',7X,'RY2  ',/,
+     &  12X,'RZ2 ',8X,'RT2  ',7X,'AI1  ',7X,'AI2  ',7X,'JG1  ',/,
+     &  12X,'JG2 ',8X,'IYR21',7X,'IYR22',7X,'IZR21',7X,'IZR22',/,
+     &  12X,'TVAR',8X,'TSEC ')
  2001   FORMAT(/,1P,3X,A8,1X,5(D11.5,1X),5(/,12X,5(D11.5,1X)),
-     +         /,12X,I6,6X,I6)
+     &         /,12X,I6,6X,I6)
  2002   FORMAT(/,3X,'<SECTION> ',
-     +  'VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX POUTRES',//,3X,
-     +  'MAILLE   HY1         HZ1         EPY1        EPZ1'
-     +  ,/,12X,         'HY2         HZ2         EPY2        EPZ2'
-     +  ,/,12X,         'R1          EP1         R2          EP2',9X
-     +  ,'TSEC')
+     &  'VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX POUTRES',//,3X,
+     &  'MAILLE   HY1         HZ1         EPY1        EPZ1'
+     &  ,/,12X,         'HY2         HZ2         EPY2        EPZ2'
+     &  ,/,12X,         'R1          EP1         R2          EP2',9X
+     &  ,'TSEC')
  2003   FORMAT(/,1P,3X,A8,1X,4(D11.5,1X),2(/,12X,4(D11.5,1X)),I6)
 C
 C --- ALLOCATION DES CARTES

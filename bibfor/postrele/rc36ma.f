@@ -3,7 +3,7 @@
       CHARACTER*8 NOMMAT,NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,16 +89,16 @@ C DEB ------------------------------------------------------------------
 
       MOTCLF = 'SITUATION'
       CALL GETFAC(MOTCLF,NBSITU)
-      
+
 C    RECUP TYPE KE
       CALL GETVTX ( ' ', 'TYPE_KE', 0,1,1, TYPEKE, NB )
       IF (TYPEKE.EQ.'KE_MECA')THEN
          TKE=-1.D0
       ELSE
          TKE=1.D0
-      ENDIF   
+      ENDIF
       PARA(9)=TKE
-      
+
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMAIL,K8B,IERD)
 
       CALL WKVECT('&&RC3600.MATERIAU','V V K24',2*NBSITU,JCHMAT)
@@ -107,7 +107,7 @@ C    RECUP TYPE KE
       CHNMAT = NOMMAT//'.CHAMP_MAT '
       CHSMAT = '&&RC36MA.NOM_MATER'
       CALL CARCES(CHNMAT,'ELNO',K8B,'V',CHSMAT,IER)
-      IF (IER.NE.0) CALL UTMESS('F','RC36MA','PB 1')
+      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_19')
       CALL JEVEUO(CHSMAT//'.CESV','L',JCESVM)
       CALL JEVEUO(CHSMAT//'.CESD','L',JCESDM)
       CALL JEVEUO(CHSMAT//'.CESL','L',JCESLM)
@@ -115,7 +115,7 @@ C    RECUP TYPE KE
       MATREF = NOMMAT//'.TEMPE_REF '
       CHTMAT = '&&RC36MA.TEMPE_REF '
       CALL CARCES(MATREF,'ELNO',K8B,'V',CHTMAT,IER)
-      IF (IER.NE.0) CALL UTMESS('F','RC36MA','PB 2')
+      IF (IER.NE.0) CALL U2MESS('F','POSTRELE_37')
       CALL JEVEUO(CHTMAT//'.CESV','L',JCESVT)
       CALL JEVEUO(CHTMAT//'.CESD','L',JCESDT)
       CALL JEVEUO(CHTMAT//'.CESL','L',JCESLT)
@@ -200,25 +200,22 @@ C --------- LE MATERIAU
             MATER = ZK8(JCESVM-1+IAD)
           ELSE
             CALL CODENT(IM,'D',K8B)
-            CALL UTMESS('F','RC36MA','MATERIAU NON DEFINI, MAILLE'//K8B)
+            CALL U2MESK('F','POSTRELE_38',1,K8B)
           END IF
           ZK8(JMATER+IM-1) = MATER
           CALL RCCOME(MATER,'ELAS',PHENOM,CODRET)
           IF (CODRET(1).EQ.'NO') THEN
-            CALL UTMESS('F','RC36MA','IL FAUT DEFINIR LE '//
-     &                  'COMPORTEMENT "ELAS" DANS DEFI_MATERIAU')
+            CALL U2MESS('F','POSTRELE_31')
           END IF
 
           CALL RCCOME(MATER,'FATIGUE',PHENOM,CODRET)
           IF (CODRET(1).EQ.'NO') THEN
-            CALL UTMESS('F','RC36MA','IL FAUT DEFINIR LE '//
-     &                  'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU')
+            CALL U2MESS('F','POSTRELE_32')
           END IF
 
           CALL RCCOME(MATER,'RCCM',PHENOM,CODRET)
           IF (CODRET(1).EQ.'NO') THEN
-            CALL UTMESS('F','RC36MA','IL FAUT DEFINIR LE '//
-     &                  'COMPORTEMENT "RCCM" DANS DEFI_MATERIAU')
+            CALL U2MESS('F','POSTRELE_33')
           END IF
 
 C   INTERPOLATION POUR TEMP_A

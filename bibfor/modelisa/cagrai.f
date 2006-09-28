@@ -5,7 +5,7 @@
       CHARACTER*(*)     LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       NCHGI, JVALV, JNCMP, NX, NY, NZ, I,
-     +              IOCC, NBTOU, NBMA, JMA
+     &              IOCC, NBTOU, NBMA, JMA
       REAL*8        GRX, GRY, GRZ
       CHARACTER*8   K8B, TYPMCL(2), GRXF, GRYF, GRZF
       CHARACTER*16  MOTCLF, MOTCLE(2)
@@ -68,7 +68,7 @@ C
       ELSE IF (FONREE.EQ.'FONC') THEN
          CALL ALCART ( 'G', CARTE, NOMA, 'FLUX_F')
       ELSE
-         CALL UTMESS('F','CAGRAI','VALEUR INATTENDUE: '//FONREE )
+         CALL U2MESK('F','MODELISA2_37',1,FONREE)
       END IF
 C
       CALL JEVEUO (CARTE//'.NCMP'     , 'E', JNCMP)
@@ -124,7 +124,7 @@ C
 C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
-     +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+     &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',3)
             CALL JEDETR ( MESMAI )

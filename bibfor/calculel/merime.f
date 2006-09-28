@@ -9,7 +9,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -137,7 +137,7 @@ C     -- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE: TEMP_R/TEMP_F
           ELSE IF (NOMGD.EQ.'TEMP_F') THEN
             LPAIN(8) = 'PTEMPEF'
           ELSE
-            CALL UTMESS('F','MERIME','GRANDEUR INCONNUE.')
+            CALL U2MESS('F','CALCULEL3_70')
           END IF
           LCHIN(8) = CHTEMP
         ELSE

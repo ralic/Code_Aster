@@ -1,6 +1,6 @@
       SUBROUTINE TE0279(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/09/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,8 +69,7 @@ C DEB ------------------------------------------------------------------
       CALL JEVECH('PMATTTR','E',IMATTT)
 
       IF ((ZK16(ICOMP) (1:9).EQ.'THER_HYDR')) THEN
-        CALL UTMESS('F','TE0279','PAS D ELEMENTS LUMPES POUR'//
-     &              'HYDRATATION')
+        CALL U2MESS('F','ELEMENTS3_57')
       END IF
 
       DELTAT = ZR(ITEMPS+1)
@@ -83,7 +82,7 @@ C DEB ------------------------------------------------------------------
 
         DO 40 KP = 1,NPG
           L = (KP-1)*NNO
-          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE, 
+          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
           TPGI = 0.D0
           DO 10 I = 1,NNO
@@ -109,7 +108,7 @@ CCDIR$ IVDEP
             TPGI = TPGI + ZR(ITEMPI+I-1)*ZR(IVF+L+I-1)
    50     CONTINUE
           CALL RCFODE(IFON(1),TPGI,R8BID,RHOCP)
-  
+
           DO 70 I = 1,NNO
 CCDIR$ IVDEP
             DO 60 J = 1,I

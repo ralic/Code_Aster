@@ -1,7 +1,7 @@
       SUBROUTINE RAPOCO(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C -------------------------------------------------------
       MOTFAC = 'LIAISON_ELEM'
       CALL GETVTX(MOTFAC,'OPTION',IOCC,1,1,OPTION,IOP)
       IF ((OPTION.NE.'COQ_POU') .AND. (OPTION.NE.'COQ_TUYA')) THEN
-        CALL UTMESS('F','RAPOCO','OPTION '//OPTION//' INVALIDE')
+        CALL U2MESK('F','MODELISA6_39',1,OPTION)
       END IF
 
       CALL GETFAC(MOTFAC,NLIAI)
@@ -201,9 +201,7 @@ C     ------------------------------
 C --- ACCES A L'OBJET .PRNM :
 C     ----------------------
       IF (NBEC.GT.10) THEN
-        CALL UTMESS('F','RAPOCO',
-     &              'LE DESCRIPTEUR_GRANDEUR DES DEPLACEMENTS'//
-     &              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+        CALL U2MESS('F','MODELISA_94')
       ELSE
         CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
       END IF
@@ -220,8 +218,7 @@ C     -----------------------------------------
    30 CONTINUE
 
       IF (K.EQ.0) THEN
-        CALL UTMESS('F','RAPOCO',
-     &              'ERREUR DANS LA RECUPERATION DU NUME.PRNO')
+        CALL U2MESS('F','PREPOST_61')
       END IF
 
       CALL JEVEUO(JEXNUM(NUMDDL//'.NUME.PRNO',K),'L',IAPRNO)
@@ -261,15 +258,14 @@ C     -----------------------------------------------
      &                '''NOEUD_2'' OU ''GROUP_NO_2'''//
      &                ' APRES LE MOT-FACTEUR '//MOTFAC//
      &                ' POUR L''OPTION '//OPTION)
+C        CALL U2MESK('F','MODELISA6_48', 2 ,VALK)
         END IF
       END IF
 
       IF (NBNO.NE.0) THEN
         NBNO = -NBNO
         IF (NBNO.NE.1) THEN
-          CALL UTMESS('F','RAPOCO','IL NE FAUT DONNER QU''UN '//
-     &                'SEUL NOEUD DE POUTRE A RACCORDER A LA '//
-     &                'COQUE.')
+          CALL U2MESS('F','MODELISA6_49')
         END IF
         CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD_2',IOCC,1,NBNO,NOEPOU,
      &              NNO)
@@ -278,16 +274,13 @@ C     -----------------------------------------------
       IF (NBGNO.NE.0) THEN
         NBGNO = -NBGNO
         IF (NBGNO.NE.1) THEN
-          CALL UTMESS('F','RAPOCO','IL NE FAUT DONNER QU''UN '//
-     &                'UN SEUL GROUP_NO A UN NOEUD A RACCORDER'//
-     &                ' A LA COQUE.')
+          CALL U2MESS('F','MODELISA6_50')
         END IF
         CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO_2',IOCC,1,NBGNO,
      &              NOGRNO,NNO)
         CALL JELIRA(JEXNOM(GRNOMA,NOGRNO),'LONMAX',N1,K1BID)
         IF (N1.NE.1) THEN
-          CALL UTMESS('F','RAPOCO','IL NE FAUT DONNER '//
-     &                'Q"UN  SEUL NOEUD DANS LE GROUP_NO : '//NOGRNO)
+          CALL U2MESK('F','MODELISA6_43',1,NOGRNO)
         ELSE
           CALL JEVEUO(JEXNOM(GRNOMA,NOGRNO),'L',JGRO)
           IN = ZI(JGRO+1-1)
@@ -300,18 +293,14 @@ C --- DE LA PARTIE COQUE VERS LA PARTIE POUTRE :
 C     ----------------------------------------
       CALL GETVR8(MOTFAC,'AXE_POUTRE',IOCC,1,3,AXEPOU,NAXE)
       IF (NAXE.EQ.0) THEN
-        CALL UTMESS('F','RAPOCO','IL FAUT DONNER UN VECTEUR '//
-     &              'ORIENTANT L''AXE DE LA POUTRE SOUS LE MOT-CLE '//
-     &              '"AXE_POUTRE".')
+        CALL U2MESS('F','MODELISA6_51')
       END IF
 
       XNORM = SQRT(AXEPOU(1)*AXEPOU(1)+AXEPOU(2)*AXEPOU(2)+
      &        AXEPOU(3)*AXEPOU(3))
 
       IF (XNORM.LE.R8PREM()) THEN
-        CALL UTMESS('F','RAPOCO','IL FAUT DONNER UN VECTEUR '//
-     &          'NON NUL ORIENTANT L''AXE DE LA POUTRE SOUS LE MOT-CLE '
-     &              //'"AXE_POUTRE".')
+        CALL U2MESS('F','MODELISA6_52')
       END IF
 
       AXEPOU(1) = AXEPOU(1)/XNORM
@@ -333,8 +322,7 @@ C --- RECUPERATION DES CARACTERISTIQUES ELEMENTAIRES :
 C     ----------------------------------------------
       CALL GETVID(MOTFAC,'CARA_ELEM',IOCC,1,1,CARA,NCARA)
       IF (NCARA.EQ.0) THEN
-        CALL UTMESS('F','RAPOCO','IL FAUT DONNER UN CARA_ELEM '//
-     &              'POUR RECUPERER L''EPAISSEUR DES ELEMENTS DE BORD.')
+        CALL U2MESS('F','MODELISA6_53')
       END IF
 
 C ---  NUMERO DU NOEUD POUTRE A LIER :
@@ -361,6 +349,7 @@ C ---     NUMERO DU NOEUD COURANT DE LA LISTE
             CALL UTMESS('F','RAPOCO','IMPOSSIBILITE,LE NOEUD '//
      &                  ZK8(ILISNO+I-1)//'NE PORTE PAS LE DDL DE '//
      &                  'ROTATION '//CMP(J))
+C        CALL U2MESK('F','MODELISA6_54', 2 ,VALK)
           END IF
    40   CONTINUE
    50 CONTINUE
@@ -374,6 +363,7 @@ C     ---------------------------------------------------
         IF (.NOT.EXISDG(DG,ICMP(J))) THEN
           CALL UTMESS('F','RAPOCO','IMPOSSIBILITE,LE NOEUD POUTRE '//
      &                NOEPOU//' DEVRAIT PORTER LE DDL '//CMP(J))
+C        CALL U2MESK('F','MODELISA6_45', 2 ,VALK)
         END IF
    60 CONTINUE
 
@@ -416,8 +406,7 @@ C     ----------------------------------------
       AYZ = ZR(IDINER+10-1)
 
       IF (ABS(S).LT.R8PREM()) THEN
-        CALL UTMESS('F','RAPOCO','IMPOSSIBILITE, LA SURFACE '//
-     &              'DE RACCORD DE LA COQUE EST NULLE ')
+        CALL U2MESS('F','MODELISA6_55')
       END IF
       S1 = 1.0D0/S
 

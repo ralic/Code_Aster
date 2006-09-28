@@ -1,12 +1,12 @@
       SUBROUTINE RAIRE2(NOMA,RIGI,NBGR,LIGRMA,NBNOEU,NBNO,
-     +  TABNOE,RIGNOE)
+     &  TABNOE,RIGNOE)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER      NBGR, NBNO, NBNOEU, TABNOE(NBNOEU)
       CHARACTER*8  NOMA, LIGRMA(NBGR)
       REAL*8       RIGNOE(6*NBNOEU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,9 +80,9 @@ C
       ZG = ZERO
       CALL GETVR8('ENER_SOL','COOR_CENTRE',1,1,0,R8B,NCG)
       CALL GETVEM(NOMA,'NOEUD','ENER_SOL','NOEUD_CENTRE',
-     +               1,1,0,K8B,NNO)
+     &               1,1,0,K8B,NNO)
       CALL GETVEM(NOMA,'GROUP_NO','ENER_SOL','GROUP_NO_CENTRE',
-     +                  1,1,0,K8B,NGN)
+     &                  1,1,0,K8B,NGN)
       IF (NCG.NE.0) THEN
         CALL GETVR8('ENER_SOL','COOR_CENTRE',1,1,3,C,NCG)
         XG = C(1)
@@ -90,14 +90,14 @@ C
         ZG = C(3)
       ELSEIF (NNO.NE.0) THEN
         CALL GETVEM(NOMA,'NOEUD','ENER_SOL','NOEUD_CENTRE',
-     +                 1,1,1,NOMNOE,NNO)
+     &                 1,1,1,NOMNOE,NNO)
         CALL JENONU(JEXNOM(MANONO,NOMNOE),INOE)
         XG = ZR(JCOOR+3*(INOE-1)+1-1)
         YG = ZR(JCOOR+3*(INOE-1)+2-1)
         ZG = ZR(JCOOR+3*(INOE-1)+3-1)
       ELSEIF (NGN.NE.0) THEN
         CALL GETVEM(NOMA,'GROUP_NO','ENER_SOL','GROUP_NO_CENTRE',
-     +                    1,1,1,NOMGR,NGN)
+     &                    1,1,1,NOMGR,NGN)
         CALL JEVEUO(JEXNOM(MAGRNO,NOMGR),'L',LDGN)
         INOE = ZI(LDGN)
         XG = ZR(JCOOR+3*(INOE-1)+1-1)
@@ -111,11 +111,10 @@ C
       IF (NCG.NE.0) THEN
         CALL WKVECT('&&RAIRE2.COEGRO','V V R',NBGR,ICOEGR)
         CALL GETVR8('ENER_SOL','COEF_GROUP',1,1,NBGR,
-     +   ZR(ICOEGR),NCG)
+     &   ZR(ICOEGR),NCG)
       ELSE
         CALL GETVID('ENER_SOL','FONC_GROUP',1,1,0,K8B,NCF)
-        IF (NCF.EQ.0) CALL UTMESS('F','RAIRE2',
-     +   'IL FAUT COEF_GROUP OU FONC_GROUP')
+        IF (NCF.EQ.0) CALL U2MESS('F','MODELISA6_33')
         CALL WKVECT('&&RAIRE2.FONGRO','V V K8',NBGR,IFONGR)
         LFONC = .TRUE.
         CALL GETVID('ENER_SOL','FONC_GROUP',1,1,NBGR,ZK8(IFONGR),NFG)
@@ -180,8 +179,7 @@ C
              B(2) = Y(4) - Y(2)
              B(3) = Z(4) - Z(2)
            ELSE
-             CALL UTMESS('F','RAIRE2.01',
-     +       'UN ELEMENT N''EST NI TRIA3 NI TRIA6 NI QUAD4 NI QUAD8')
+             CALL U2MESS('F','MODELISA6_34')
            ENDIF
            CALL PROVEC(A,B,C)
            SURF=DDOT(3,C,1,C,1)
@@ -217,7 +215,7 @@ C
                IF (ZI(IDNO+IJ-1).EQ.0) GOTO 37
                IF (ZI(LDNM+NN-1).EQ.IJ) THEN
                   ZR(ICOEF+IJ-1) = ZR(ICOEF+IJ-1) +
-     +             ZR(ISURMA+IM-1)/SURTOT
+     &             ZR(ISURMA+IM-1)/SURTOT
                ENDIF
  37          CONTINUE
  35        CONTINUE
@@ -273,8 +271,8 @@ C
  51   CONTINUE
 C
  1001 FORMAT(1X,'RAIDEURS DE ROTATION A REPARTIR:',/
-     +      1X,' KRX: ',1X,1PE12.5,' KRY: ',1X,1PE12.5,
-     +      ' KRZ: ',1X,1PE12.5)
+     &      1X,' KRX: ',1X,1PE12.5,' KRY: ',1X,1PE12.5,
+     &      ' KRZ: ',1X,1PE12.5)
  9999 CONTINUE
       CALL JEDETR('&&RAIRE2.COEGRO')
       CALL JEDETR('&&RAIRE2.FONGRO')

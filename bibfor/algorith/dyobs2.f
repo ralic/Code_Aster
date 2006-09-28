@@ -1,22 +1,22 @@
       SUBROUTINE DYOBS2(MAILLA,NBOCC,NTOBS)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT     NONE
       CHARACTER*8  MAILLA
@@ -128,28 +128,28 @@ C
             NBNO = -N4
             CALL WKVECT ('&&DYOBS2.LIST_NOEU','V V K8',NBNO,JNOE)
             CALL GETVID ( 'OBSERVATION','NOEUD', IOCC,1,NBNO,
-     +                                                    ZK8(JNOE),N4)
+     &                                                    ZK8(JNOE),N4)
          ENDIF
          IF ( N5 .NE. 0 ) THEN
             NBGN = -N5
             CALL WKVECT ('&&DYOBS2.LIST_GRNO','V V K8',NBGN,JGRN)
             CALL GETVID ( 'OBSERVATION','GROUP_NO', IOCC,1,NBGN,
-     +                                                    ZK8(JGRN),N5)
+     &                                                    ZK8(JGRN),N5)
             NBTNO = 0
             DO 22 IGNO = 0 , NBGN-1
                CALL JELIRA ( JEXNOM(GRPNO,ZK8(JGRN+IGNO)),
-     +                                              'LONMAX', NBN, K8B )
+     &                                              'LONMAX', NBN, K8B )
                NBTNO = NBTNO + NBN
  22         CONTINUE
             CALL WKVECT ('&&DYOBS2.LIST_NOEU','V V K8',NBTNO,JNOE)
             NBNO = 0
             DO 24 IGNO = 0 , NBGN-1
                CALL JELIRA ( JEXNOM(GRPNO,ZK8(JGRN+IGNO)),
-     +                                              'LONMAX', NBN, K8B )
+     &                                              'LONMAX', NBN, K8B )
                CALL JEVEUO ( JEXNOM(GRPNO,ZK8(JGRN+IGNO)), 'L', JNOG )
                DO 26 INO = 0 , NBN-1
                   CALL JENUNO ( JEXNUM(NOMNOE,ZI(JNOG+INO)),
-     +                                                ZK8(JNOE+NBNO) )
+     &                                                ZK8(JNOE+NBNO) )
                   NBNO = NBNO + 1
  26            CONTINUE
  24         CONTINUE
@@ -159,13 +159,13 @@ C
             NBMA = -N6
             CALL WKVECT ('&&DYOBS2.LIST_MAIL','V V K8',NBMA,JMAI)
             CALL GETVID ( 'OBSERVATION','MAILLE', IOCC,1,NBMA,
-     +                                                    ZK8(JMAI),N6)
+     &                                                    ZK8(JMAI),N6)
          ENDIF
          IF ( N7 .NE. 0 ) THEN
             NBPO = -N7
             CALL WKVECT ('&&DYOBS2.LIST_POIN','V V I',NBPO,JPOI)
             CALL GETVIS ( 'OBSERVATION','POINT', IOCC,1,NBPO,
-     +                                                    ZI(JPOI),N7)
+     &                                                    ZI(JPOI),N7)
          ENDIF
 C
 C ------ ON STOCKE -----------------------------------------------------
@@ -175,9 +175,9 @@ C
             DO 110 J = 1 , NCMP
 C
                IF (     ZK16(KNCHP+I-1)(1:4) .EQ. 'DEPL' .OR.
-     +                  ZK16(KNCHP+I-1)(1:4) .EQ. 'VITE' .OR.
-     +                  ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE' .OR.
-     +                  ZK16(KNCHP+I-1)(1:9) .EQ. 'VALE_CONT') THEN
+     &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'VITE' .OR.
+     &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE' .OR.
+     &                  ZK16(KNCHP+I-1)(1:9) .EQ. 'VALE_CONT') THEN
 C
                   DO 120 K = 1 , NBNO
                      ZK16(KCHAM+IOBS) = ZK16(KNCHP+I-1)
@@ -226,8 +226,8 @@ C
 C
  10   CONTINUE
 C
-      IF (IOBS.GT.NTOBS) THEN 
-        CALL UTMESS('F','DYOBS2','DEBORDEMENT TABLEAU')
+      IF (IOBS.GT.NTOBS) THEN
+        CALL U2MESS('F','ALGORITH3_47')
       ENDIF
 
       CALL JEECRA ( '&&DYOBSE.NOM_CHAM', 'LONUTI', IOBS, ' ' )

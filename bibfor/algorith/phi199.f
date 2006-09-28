@@ -1,5 +1,5 @@
       SUBROUTINE PHI199 ( MODEL, MATE, MA, NU, NUM, NBMODE,
-     +                    SOLVEZ, INDICE, TABAD )
+     &                    SOLVEZ, INDICE, TABAD )
       IMPLICIT  NONE
       INTEGER             NBMODE, INDICE, TABAD(*)
       CHARACTER*8         MA
@@ -7,7 +7,7 @@
       CHARACTER*(*)       MATE, SOLVEZ
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C
 C----- -RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA
 C
         CALL RSORAC(MODMEC,'LONUTI',IBID,RBID,K8BID,CBID,RBID,'ABSOLU',
-     +              NBMODE,1,IBID)
+     &              NBMODE,1,IBID)
 
         CALL WKVECT('&&OP0199.PHI1','V V K24',1,IPHI1)
 
@@ -143,7 +143,7 @@ C     --- ON NORMALISE LE VECTEUR ---
  10     CONTINUE
         XNORM = SQRT(XNORM)
         IF (XNORM.LT.0.D0) THEN
-           CALL UTMESS('F','PHI199','LE VECTEUR DIRECTEUR EST NUL.')
+           CALL U2MESS('F','ALGORITH9_81')
         ENDIF
         DO 12 I = 1,NBDIR
           DEPL(I) = DEPL(I) / XNORM
@@ -169,7 +169,7 @@ C
         TYPMCL(1) = 'NOEUD'
         TYPMCL(2) = 'GROUP_NO'
         CALL RELIEM(' ',MAILLA,'NO_NOEUD',' ',1, 2, MOTCLE, TYPMCL,
-     +                                   '&&PHI199.NOEUD', NBNO )
+     &                                   '&&PHI199.NOEUD', NBNO )
         CALL JEVEUO ( '&&PHI199.NOEUD', 'L', IDNO )
 C
 C     --- ON BOUCLE SUR LES NOEUDS ---
@@ -183,7 +183,7 @@ C
 C
 C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                CALL RSORAC(MODSTA,'NOEUD_CMP',IBID,RBID,ACCES,C16B,
-     +                     EPSI,CRIT,IORDR,1,NBTROU)
+     &                     EPSI,CRIT,IORDR,1,NBTROU)
                IF (NBTROU.NE.1) THEN
                   IER = IER + 1
                   CALL UTDEBM('E','PHI199','PAS DE MODE STATIQUE POUR')
@@ -193,7 +193,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                   GOTO 26
                ENDIF
                CALL RSVPAR(MODSTA,IORDR,'TYPE_DEFO',IBID,RBID,
-     +                                  'DEPL_IMPO',IRET)
+     &                                  'DEPL_IMPO',IRET)
                IF (IRET.NE.100) THEN
                   IER = IER + 1
                   CALL UTDEBM('E','PHI199','POUR LES MODES STATIQUES.')
@@ -217,7 +217,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
 C
                   DO 27 I = 0,NEQ-1
                      ZR(JVEC+I) = ZR(JVEC+I)
-     +                - ZI(JDDL+(ID-1)*NEQ+I)*XD*ZR(IDMST+I)
+     &                - ZI(JDDL+(ID-1)*NEQ+I)*XD*ZR(IDMST+I)
  27               CONTINUE
                   CALL JELIBE(CHAMNO//'.VALE')
                ENDIF
@@ -225,7 +225,7 @@ C
           ENDIF
  25     CONTINUE
         IF (IER.NE.0) THEN
-          CALL UTMESS('F','PHI199','DONNEES ERRONEES.')
+          CALL U2MESS('F','ALGORITH5_24')
         ENDIF
 C
         GOTO 42
@@ -242,7 +242,7 @@ C
         VECSO1 = '&&OP0199.VECSOL1'
 
         CALL CALFLU ( NOMCHA, MOFLUI, MATE, NU, VECSO1, NBDESC, NBREFE,
-     +                NBVALE, 'R' )
+     &                NBVALE, 'R' )
 
         ILIRES = ILIRES + 1
 
@@ -259,7 +259,7 @@ C
 C------------------------------------------------------------------
         VESTO1 = '&&OP0199.VEST1'
         CALL PRSTOC ( VECSO1, VESTO1,
-     +                ILIRES, ILIRES, IPHI1, NBVALE, NBREFE, NBDESC )
+     &                ILIRES, ILIRES, IPHI1, NBVALE, NBREFE, NBDESC )
 C
         CALL JEDETC('V',VECSO1,1)
 C

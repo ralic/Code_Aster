@@ -1,17 +1,17 @@
       SUBROUTINE IRCHML(CHAMEL,PARTIE,IFI,FORM,TITRE,LOC,NOMSD,NOMSYM,
-     +            NUMORD,LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
-     +            LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,NCMP,
-     +            NUCMP,NIVE )
+     &            NUMORD,LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
+     &            LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,NCMP,
+     &            NUCMP,NIVE )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*(*)     CHAMEL,NOMCMP(*),FORM,TITRE,LOC,NOMSD,NOMSYM
       CHARACTER*(*)     FORMR,PARTIE
       REAL*8            BORSUP,BORINF
       INTEGER           NBNOT,NUMNOE(*),NBMAT,NUMMAI(*),NBCMP,IFI,
-     +                  NUMORD,NCMP,NUCMP(*),NIVE
+     &                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,9 +95,7 @@ C
       ELSE IF (TYPE(1:1).EQ.'C') THEN
          ITYPE = 2
       ELSE
-         CALL UTMESS('A','IMPR_RESU ',
-     +                 'ON NE SAIT PAS IMPRIMER LES CHAMPS DE TYPE "'//
-     +     TYPE(1:1)//'"   ON EST VRAIMENT DESOLE.')
+         CALL U2MESK('A','PREPOST_97',1,TYPE(1:1))
          GOTO 9999
       END IF
 
@@ -114,17 +112,13 @@ C     ----------------------------------------------------------
       CALL CELVER(CHAME,'NBSPT_1','COOL',KK)
       IF (KK.EQ.1) THEN
         IF (FORM.EQ.'RESULTAT') THEN
-          CALL UTMESS('I','IRCHML','LE CHAMP: '//NOMSY2
-     &  //' A DES ELEMENTS AYANT DES SOUS-POINTS.'
-     &  //' IL EST ECRIT AVEC UN FORMAT DIFFERENT.')
+          CALL U2MESK('I','PREPOST_98',1,NOMSY2)
           CALL CELCES(CHAME,'V','&&IRCHML_CES')
           CALL CESIMP('&&IRCHML_CES',IFI,NBMAT,NUMMAI)
           CALL DETRSD('CHAM_ELEM_S','&&IRCHML_CES')
           GO TO 9999
         ELSE
-          CALL UTMESS('I','IRCHML','LE CHAMP: '//NOMSY2
-     &  //' A DES ELEMENTS AYANT DES SOUS-POINTS.'
-     &  //' CES ELEMENTS NE SERONT PAS ECRITS.')
+          CALL U2MESK('I','PREPOST_99',1,NOMSY2)
         END IF
         CALL CELCEL('PAS_DE_SP',CHAME,'V','&&IRCHML.CHAMEL2')
         CHAME= '&&IRCHML.CHAMEL2'
@@ -217,18 +211,18 @@ C
         END IF
         IF (ITYPE.EQ.1) THEN
           CALL IRCERL(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
-     +       ZR(JCELV),ZK8(IAD),ZK8(JNOEL),LOC,ZI(JCELD),
-     +       ZI(JCNX),ZI(JPNT),ZK8(JNMN),NBCMPT,ZI(JNCMP),
-     +       NBNOT,NUMNOE,NBMAC,ZI(JLISTE),
-     +       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,
-     +       LCOR,NDIM,ZR(JCOOR),NOLILI(1:19), FORMR, NCMP,NUCMP )
+     &       ZR(JCELV),ZK8(IAD),ZK8(JNOEL),LOC,ZI(JCELD),
+     &       ZI(JCNX),ZI(JPNT),ZK8(JNMN),NBCMPT,ZI(JNCMP),
+     &       NBNOT,NUMNOE,NBMAC,ZI(JLISTE),
+     &       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,
+     &       LCOR,NDIM,ZR(JCOOR),NOLILI(1:19), FORMR, NCMP,NUCMP )
         ELSE IF (ITYPE.EQ.2) THEN
           CALL IRCECL(IFI,NBEL,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
-     +       ZC(JCELV),ZK8(IAD),ZK8(JNOEL),LOC,ZI(JCELD),
-     +       ZI(JCNX),ZI(JPNT),ZK8(JNMN),NBCMPT,ZI(JNCMP),
-     +       NBNOT,NUMNOE,NBMAC,ZI(JLISTE),
-     +       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,
-     +       LCOR,NDIM,ZR(JCOOR),NOLILI(1:19), FORMR, NCMP,NUCMP )
+     &       ZC(JCELV),ZK8(IAD),ZK8(JNOEL),LOC,ZI(JCELD),
+     &       ZI(JCNX),ZI(JPNT),ZK8(JNMN),NBCMPT,ZI(JNCMP),
+     &       NBNOT,NUMNOE,NBMAC,ZI(JLISTE),
+     &       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,
+     &       LCOR,NDIM,ZR(JCOOR),NOLILI(1:19), FORMR, NCMP,NUCMP )
         ENDIF
         IF (LOC.EQ.'ELNO') CALL JEDETR('&&IRCHML.NOMNOE')
         CALL JEDETR('&&IRCHML.MAILLE')
@@ -254,16 +248,16 @@ C ---------------------------------------------------------------------
          MAXNOD=ZI(JPERM-1+LON1)
          IF (ITYPE.EQ.1) THEN
             CALL IRCERS(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
-     +                  ZR(JCELV),NOMGD,ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
-     +                  ZI(JCELD),ZI(JNBNM),ZI(JPERM),MAXNOD,
-     +                  ZI(JTYPM),NOMSD,NOMSYM,NUMORD,NBMAT,NUMMAI,
-     +                  LMASU,NCMP,NUCMP,NBCMP,ZI(JNCMP),NOMCMP)
+     &                  ZR(JCELV),NOMGD,ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
+     &                  ZI(JCELD),ZI(JNBNM),ZI(JPERM),MAXNOD,
+     &                  ZI(JTYPM),NOMSD,NOMSYM,NUMORD,NBMAT,NUMMAI,
+     &                  LMASU,NCMP,NUCMP,NBCMP,ZI(JNCMP),NOMCMP)
          ELSE IF (ITYPE.EQ.2) THEN
             CALL IRCECS(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
-     +                  ZC(JCELV),ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
-     +                  ZI(JCELD),ZI(JNBNM),ZI(JPERM),MAXNOD,
-     +                  ZI(JTYPM),NOMSD,NOMSYM,NUMORD,NBMAT,NUMMAI,
-     +                  LMASU,NCMP,NUCMP)
+     &                  ZC(JCELV),ZK8(IAD),TITRE,ZK8(JNOEL),LOC,
+     &                  ZI(JCELD),ZI(JNBNM),ZI(JPERM),MAXNOD,
+     &                  ZI(JTYPM),NOMSD,NOMSYM,NUMORD,NBMAT,NUMMAI,
+     &                  LMASU,NCMP,NUCMP)
          ENDIF
          CALL JEDETR('&&IRADHS.PERMUTA')
          CALL JEDETR('&&IRADHS.CODEGRA')
@@ -283,22 +277,19 @@ C        LE NOM DU CHAM_GD EST DANS LA VARIABLE NOMSYM
          DO 200 IMOD = 1 , NBMODL
             IF ( NOLILI .EQ. ZK24(JMODE-1+IMOD) ) GOTO 202
  200     CONTINUE
-         CALL UTMESS('A','IRCHML','MODELE INCONNU, PAS D''IMPRESSION '
-     +                          //'DU CHAMP '//CHAME)
+         CALL U2MESK('A','PREPOST2_2',1,CHAME)
          GOTO 204
  202     CONTINUE
          IF(ITYPE.EQ.1) THEN
            CALL JEVEUO(NOMMA//'.TYPMAIL','L',JTYPM)
            IF (LOC.EQ.'ELNO') THEN
              CALL IRCECA(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
-     +                  ZR(JCELV),NOMGD,ZK8(IAD),
-     +                  ZI(JCELD),ZI(JNBNM),ZI(JTYPM),
-     +                  NOMSY2,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
-     +                  NCMP,NUCMP,NIVE)
+     &                  ZR(JCELV),NOMGD,ZK8(IAD),
+     &                  ZI(JCELD),ZI(JNBNM),ZI(JTYPM),
+     &                  NOMSY2,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
+     &                  NCMP,NUCMP,NIVE)
            ELSEIF (LOC.EQ.'ELGA') THEN
-             CALL UTMESS('A','IRCHML','ON NE SAIT PAS ECRIRE DES '
-     +           //' CHAMPS PAR ELEMENT AUX POINTS DE GAUSS AU FORMAT'
-     +           //' CASTEM')
+             CALL U2MESS('A','PREPOST2_3')
            ENDIF
          ELSEIF (ITYPE.EQ.2) THEN
            CALL JEVEUO(NOMMA//'.TYPMAIL','L',JTYPM)
@@ -314,17 +305,15 @@ C        LE NOM DU CHAM_GD EST DANS LA VARIABLE NOMSYM
                  ZR(JVALE-1+I)=DIMAG(ZC(JCELV-1+I))
  190           CONTINUE
              ELSE
-               CALL UTMESS ('F','IRCHML','ERREUR PROGRAMMATION')
+               CALL U2MESS('F','PREPOST2_4')
              ENDIF
              CALL IRCECA(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
-     +                  ZR(JCELV),NOMGD,ZK8(IAD),
-     +                  ZI(JCELD),ZI(JNBNM),ZI(JTYPM),
-     +                  NOMSY2,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
-     +                  NCMP,NUCMP,NIVE)
+     &                  ZR(JCELV),NOMGD,ZK8(IAD),
+     &                  ZI(JCELD),ZI(JNBNM),ZI(JTYPM),
+     &                  NOMSY2,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
+     &                  NCMP,NUCMP,NIVE)
            ELSEIF (LOC.EQ.'ELGA') THEN
-             CALL UTMESS('A','IRCHML','ON NE SAIT PAS ECRIRE DES '
-     +           //' CHAMPS PAR ELEMENT AUX POINTS DE GAUSS AU FORMAT'
-     +           //' CASTEM')
+             CALL U2MESS('A','PREPOST2_3')
            ENDIF
          ENDIF
       END IF

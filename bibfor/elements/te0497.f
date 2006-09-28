@@ -1,21 +1,21 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MEUNIER S.MEUNIER
 C TOLE CRP_20
@@ -42,10 +42,10 @@ C                      TE0377.F .
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
- 
+
 C DECLARATION PARAMETRES D'APPELS
       CHARACTER*16 OPTION,NOMTE
- 
+
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER        ZI
       COMMON /IVARJE/ZI(1)
@@ -62,14 +62,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
- 
+
 C DECLARATION VARIABLES LOCALES
 C
-      CHARACTER*6  NOMPRO
-      PARAMETER    ( NOMPRO = 'TE0497' )
 C
       INTEGER NBRES
-      PARAMETER ( NBRES = 3 ) 
+      PARAMETER ( NBRES = 3 )
 C
       INTEGER INO,JNO,NNO,NPG,NDIM,IGEOM,JGANO,
      &        IP,IR,IROT,IMATE,IVOIS,IERRE,NBS,IRET,NIV,
@@ -124,7 +122,7 @@ C =====================================================================
      &            DIMDEP,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
      &            NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
      &            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
- 
+
 C =====================================================================
 C --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU -------------
 C =====================================================================
@@ -150,7 +148,7 @@ C
       CALL JEVECH('PDEPLAR','L',IDEPLA)
 C
 C LES CHAMPS LOCAUX ASSOCIES AUX PARAMETRES:
-C GEOMETRIE (IGEOM),P), MATERIAU (IMATE) ET CONTRAINTES 
+C GEOMETRIE (IGEOM),P), MATERIAU (IMATE) ET CONTRAINTES
 C AUX NOEUDS (ISIELN)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -160,21 +158,20 @@ C
       NBCMP = ITAB(2)/NNO
 C
 C--------------------------------------------------------------------
-C 2. RECHERCHE DE LA VALEUR DU COEFFICIENT DE BIOT ET 
+C 2. RECHERCHE DE LA VALEUR DU COEFFICIENT DE BIOT ET
 C    DE LA MASSE VOLUMIQUE HOMOGENEISEE RHOHOM
-C-------------------------------------------------------------------- 
+C--------------------------------------------------------------------
       NOMPAR(1) = 'INST'
       VALPAR(1) = ZR(INST)
       CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALPAR,
-     &              NBRES, NOMRES, VALRES, CODMES, 'FM' )  
-C      
-      IF ( CODMES(1).EQ.'OK' .AND. CODMES(2).EQ.'OK' .AND. 
+     &              NBRES, NOMRES, VALRES, CODMES, 'FM' )
+C
+      IF ( CODMES(1).EQ.'OK' .AND. CODMES(2).EQ.'OK' .AND.
      &     CODMES(3).EQ.'OK' ) THEN
         RHOHOM   = VALRES(1)
         BIOT     = VALRES(2)
       ELSE
-        CALL UTMESS('F',NOMPRO,
-     &  '! PB RCVALA BIOT_COEF '//NOMRES(1)//NOMRES(2)//NOMRES(3))
+        CALL U2MESK('F','ELEMENTS4_4',1,NOMRES(1)//NOMRES(2)//NOMRES(3))
       ENDIF
 C
 C--------------------------------------------------------------------
@@ -184,7 +181,7 @@ C . SOIT A ZERO
 C--------------------------------------------------------------------
 C
       CALL TECACH('ONN','PPESANR',1,IP,IRET)
-C    
+C
       IF (IP .NE. 0) THEN
         CALL JEVECH('PPESANR','L',IPES)
         FPX = RHOHOM * ZR(IPES) * ZR(IPES+1)
@@ -200,7 +197,7 @@ C . SOIT A PARTIR D'UNE CARTE
 C . SOIT A ZERO
 C--------------------------------------------------------------------
 C
-      CALL TECACH('ONN','PROTATR',1,IR,IRET)   
+      CALL TECACH('ONN','PROTATR',1,IR,IRET)
 C
 C CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS
 C REMARQUE : LE TABLEAU EST REMPLI A 9 CASES CAR C'EST LE MAX DE POINTS
@@ -217,14 +214,14 @@ C
           FRX(JKP) = 0.D0
           FRY(JKP) = 0.D0
    40   CONTINUE
-C 
+C
       ENDIF
 C
 C------------------------------------------------------------------
-C 5. CALCUL DES TERMES VOLUMIQUES 
+C 5. CALCUL DES TERMES VOLUMIQUES
 C------------------------------------------------------------------
 C
-C CALCUL DU DIAMETRE HK DE L'ELEMENT K 
+C CALCUL DU DIAMETRE HK DE L'ELEMENT K
 C
       NIV = 1
       CALL UTHK(NOMTE,IGEOM,HK,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
@@ -233,7 +230,7 @@ C
      &            DIMDEP,DIMDEF,NMEC,NP1,NP2,NDIM,NNO,
      &            NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
      &            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,
-     &            ZR(IGEOM),ZR(IFOR), 
+     &            ZR(IGEOM),ZR(IFOR),
      &            ZR(IDEPLA),ZR(ISIELN),NBCMP,
      &            BIOT,
      &            FPX,FPY,FRX,FRY,
@@ -243,7 +240,7 @@ C
      &            TERVOM)
 C
 C------------------------------------------------------------------
-C 6. CALCUL DES TERMES SURFACIQUES 
+C 6. CALCUL DES TERMES SURFACIQUES
 C------------------------------------------------------------------
 C 6.1. PHASE DE PREPARATION : ON RECUPERE LES ADRESSES NECESSAIRES
 C                             AUX CALCULS
@@ -258,7 +255,7 @@ C ON RECUPERE L'ADRESSE DES CHARGEMENTS DE TYPE PRES_REP
 C
 C RECHERCHE DES ADRESSES POUR LES CHARGES SUR LES SEGMENTS
 C
-      IAGD  = ZI(IREF1+4)   
+      IAGD  = ZI(IREF1+4)
       IACMP = ZI(IREF1+5)
 C
       IADE2 = ZI(IREF2+4)
@@ -289,7 +286,7 @@ C
 C ADRESSE DU VECTEUR TYPE MAILLE
 C
       IATYMA = ZI(IREF1+3)
-      TYPEMA=ZK8(IATYMA-1+TYP)      
+      TYPEMA=ZK8(IATYMA-1+TYP)
       FORM=TYPEMA(1:2)
 C
 C NOMBRE DE NOEUDS SOMMETS ET NOMBRE DE NOEUDS DES ARETES
@@ -354,9 +351,9 @@ C --- CALCUL DES NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
 C
         IAUX = INO
         CALL CALNOR ( '2D', IAUX, NNO, IBID, NBS, NBNA, TBIAUX,
-     >                IGEOM, IBID,
-     >                IBID, IBID, ORIEN, HF,
-     >                JAC, NX, NY, NZ, TX, TY )
+     &                IGEOM, IBID,
+     &                IBID, IBID, ORIEN, HF,
+     &                JAC, NX, NY, NZ, TX, TY )
 C
 C TEST DU TYPE DE VOISIN : TYPV VAUT 0 POUR UN BORD LIBRE ==> ON NE SAIT
 C PAS FAIRE AUJOURD'HUI
@@ -364,7 +361,7 @@ C
         TYPV=ZI(IVOIS+7+INO)
         IF (TYPV.NE.0) THEN
 C
-          TYPMAV=ZK8(IATYMA-1+TYPV)      
+          TYPMAV=ZK8(IATYMA-1+TYPV)
           FORMV=TYPMAV(1:2)
 C
           IF (FORMV.EQ.'SE') THEN
@@ -408,13 +405,13 @@ C
 C
       ZR(IERRE+3) = TERVOM
       ZR(IERRE+4) = 0.D0
-C 
+C
       ZR(IERRE+5) = TERCLM+TERCLH
       ZR(IERRE+6) = 0.D0
-C 
+C
       ZR(IERRE+7) = TERSAM+TERSAH
       ZR(IERRE+8) = 0.D0
-C      
+C
       CALL JEDEMA()
 C
       END

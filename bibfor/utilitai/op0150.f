@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,9 +165,7 @@ C     ---  LISTE DES CHAMPS A LIRE ---
       ELSE
         CALL GETVTX(' ','NOM_CHAM',0,1,100,LINOCH,NBNOCH)
       END IF
-      IF (NBNOCH.LT.0) CALL UTMESS('F',NOMPRO,
-     &                  'LE NOMBRE DE CHAMPS A LIRE EST SUPERIEUR A 100'
-     &                             )
+      IF (NBNOCH.LT.0) CALL U2MESS('F','UTILITAI2_86')
 
 
 C     --- NOMBRE DE VARIABLES INTERNES A LIRE ---
@@ -296,22 +294,16 @@ C     =========================
 
         CALL JEEXIN(NOMA//'           .TITR',IRET)
         IF (IRET.EQ.0) THEN
-          CALL UTMESS('A',NOMPRO,'LE MAILLAGE DOIT ETRE ISSU'//
-     &          ' D''IDEAS POUR GARANTIR LA COHERENCE ENTRE LE MAILLAGE'
-     &                //' ET LES RESULTATS LUS')
+          CALL U2MESS('A','UTILITAI2_87')
         ELSE
           CALL JEVEUO(NOMA//'           .TITR','L',JTITR)
           CALL JELIRA(NOMA//'           .TITR','LONMAX',NBTITR,K8B)
           IF (NBTITR.GE.1) THEN
             IF (ZK80(JTITR) (10:31).NE.'AUTEUR=INTERFACE_IDEAS') THEN
-              CALL UTMESS('A',NOMPRO,'LE MAILLAGE DOIT ETRE ISSU'//
-     &          ' D''IDEAS POUR GARANTIR LA COHERENCE ENTRE LE MAILLAGE'
-     &                    //' ET LES RESULTATS LUS')
+              CALL U2MESS('A','UTILITAI2_87')
             END IF
           ELSE
-            CALL UTMESS('A',NOMPRO,'LE MAILLAGE DOIT ETRE ISSU'//
-     &          ' D''IDEAS POUR GARANTIR LA COHERENCE ENTRE LE MAILLAGE'
-     &                  //' ET LES RESULTATS LUS')
+            CALL U2MESS('A','UTILITAI2_87')
           END IF
         END IF
 
@@ -325,22 +317,16 @@ C     ================================
 
         CALL JEEXIN(NOMA//'           .TITR',IRET)
         IF (IRET.EQ.0) THEN
-          CALL UTMESS('A',NOMPRO,'LE MAILLAGE DOIT ETRE ISSU'//
-     &          ' D''IDEAS POUR GARANTIR LA COHERENCE ENTRE LE MAILLAGE'
-     &                //' ET LES RESULTATS LUS')
+          CALL U2MESS('A','UTILITAI2_87')
         ELSE
           CALL JEVEUO(NOMA//'           .TITR','L',JTITR)
           CALL JELIRA(NOMA//'           .TITR','LONMAX',NBTITR,K8B)
           IF (NBTITR.GE.1) THEN
             IF (ZK80(JTITR) (10:31).NE.'AUTEUR=INTERFACE_IDEAS') THEN
-              CALL UTMESS('A',NOMPRO,'LE MAILLAGE DOIT ETRE ISSU'//
-     &          ' D''IDEAS POUR GARANTIR LA COHERENCE ENTRE LE MAILLAGE'
-     &                    //' ET LES RESULTATS LUS')
+              CALL U2MESS('A','UTILITAI2_87')
             END IF
           ELSE
-            CALL UTMESS('A',NOMPRO,'LE MAILLAGE DOIT ETRE ISSU'//
-     &          ' D''IDEAS POUR GARANTIR LA COHERENCE ENTRE LE MAILLAGE'
-     &                  //' ET LES RESULTATS LUS')
+            CALL U2MESS('A','UTILITAI2_87')
           END IF
         END IF
 
@@ -356,15 +342,13 @@ C     ================================
 
         CALL JEEXIN(LIGREL//'.NOMA',IRET)
         IF (IRET.EQ.0) THEN
-          CALL UTMESS('F','LRIDEA',' LE MOT CLE MODELE EST'//
-     &                ' OBLIGATOIRE POUR UN CHAMP DE TYPE CHAM_ELEM')
+          CALL U2MESS('F','UTILITAI2_88')
         ELSE
           CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',NDIM,K8BID,IER)
         END IF
 
         IF (NBNOCH.NE.1 .OR. LINOCH(1).NE.'PRES') THEN
-          CALL UTMESS('F','LRIDEA',' LE FORMAT ENSIGHT N''ACCEPTE '//
-     &                'QUE LE CHAMP PRES')
+          CALL U2MESS('F','UTILITAI2_89')
         END IF
 
         CALL GETVTX(' ','NOM_FICHIER',0,1,1,FICH,NFIC)
@@ -397,8 +381,7 @@ C                              ET FICHIERS GEOM ET PRES)
           READ (IU99,'(2I8)',ERR=290,END=290,IOSTAT=IO) I1,I2
         ELSE
           IF (NPAS.NE.1) THEN
-            CALL UTMESS('F',NOMPRO,'NFLAG ETANT EGAL A 0, ON NE '//
-     &                  'PEUT PAS AVOIR PLUS D''UN INSTANT.')
+            CALL U2MESS('F','UTILITAI2_90')
           END IF
         END IF
         READ (IU99,'(A80)',ERR=290,END=290,IOSTAT=IO) FIGEOM
@@ -538,7 +521,7 @@ C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
 
   140           CONTINUE
               ELSE
-                CALL UTMESS('A',NOMPRO,'ELEMENT NON PREVU '//NOMTE)
+                CALL U2MESK('A','UTILITAI2_91',1,NOMTE)
               END IF
   150       CONTINUE
           END IF
@@ -616,13 +599,13 @@ C     =============================
           CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,1,1,NOCHMD,N1)
 
           IF (N1.EQ.0) THEN
-            CALL UTMESS('F','LIRE_RESU','NOM_CHAM_MED ? (SVP)')
+            CALL U2MESS('F','UTILITAI2_92')
           END IF
 
           CALL GETVTX('FORMAT_MED','NOM_CHAM',I,1,1,NOCH,N1)
           IF ((TYPRES(1:9).EQ.'EVOL_THER') .AND.
      &        (NOCH(1:4).NE.'TEMP')) THEN
-            CALL UTMESS('F','LIRE_RESU','EVOL_THER - CHAMP TEMP UNIQMT')
+            CALL U2MESS('F','UTILITAI2_93')
           END IF
           IF (NOCH(1:4).EQ.'TEMP') THEN
             NOMGD = 'TEMP_R  '
@@ -664,7 +647,7 @@ C     =============================
             NOMGD = 'PRES_R  '
             TYPCHA = 'ELEM'
           ELSE
-            CALL UTMESS('F',NOMPRO,'CHAMP NON PREVU : '//NOCH)
+            CALL U2MESK('F','UTILITAI2_94',1,NOCH)
           END IF
 
 C          ==> NOM DES COMPOSANTES VOULUES
@@ -684,6 +667,7 @@ C         --- NOM_CMP MED ?
           IF (-IAUX.NE.NBCMPV) THEN
             CALL UTMESS('F',NOMPRO,LCMPVA//' ET '//LCMPVM//
      &                  ' : NOMBRE '//'DE COMPOSANTES INCOMPATIBLE.')
+C        CALL U2MESK('F','UTILITAI2_95', 2 ,VALK)
           ENDIF
 
 C         --- LECTURE DES NOMS DE COMPOSANTES ASSOCIEES DEUX A DEUX
@@ -720,7 +704,7 @@ C     --------------------------------------------
             TYPGOM = TYPNOE
             CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
             IF (NPAS.EQ.0) THEN
-              CALL UTMESS('A',NOMPRO,'CHAMP MED INTROUVABLE : '//NOCHMD)
+              CALL U2MESK('A','UTILITAI2_96',1,NOCHMD)
               GO TO 240
             END IF
             CALL JEVEUO(PREFIX//'.INST','L',IPAS)
@@ -730,7 +714,7 @@ C     --------------------------------------------
           ELSE IF (TYPCHA(1:2).EQ.'EL') THEN
             CALL MDEXPM(NOFIMD,NOMAMD,EXISTM,NDIM,IRET)
             CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD,
-     >              MODNUM, NUANOM, NUMNOA )
+     &              MODNUM, NUANOM, NUMNOA )
             TYPENT = EDMAIL
             DO 230,LETYPE = 1,NBTYP
               IAUX = RENUMD(LETYPE)
@@ -842,7 +826,7 @@ C           DU CHAMP CREE AVEC LE PROF_CHNO PRECEDENT :
 
 
       ELSE
-        CALL UTMESS('F',NOMPRO,'STOP 1')
+        CALL U2MESS('F','CALCULEL_2')
       END IF
 
 C     -- QUELQUES VERIFS APRES LA LECTURE :
@@ -850,7 +834,7 @@ C     --------------------------------------------
       CALL RSORAC(RESU,'LONUTI',IBID,RBID,K8B,CBID,EPSI,CRIT,NBORDR,1,
      &            NBTROU)
       IF (NBORDR.LE.0) THEN
-        CALL UTMESS('F',NOMCMD,'AUCUN CHAMP LU.')
+        CALL U2MESS('F','UTILITAI2_97')
       END IF
       CALL WKVECT('&&'//NOMPRO//'.NUME_ORDR','V V I',NBORDR,LORDR)
       CALL RSORAC(RESU,'TOUT_ORDRE',IBID,RBID,K8B,CBID,EPSI,CRIT,
@@ -880,7 +864,7 @@ C     --------------------------------------------
 
       IF (NTO.EQ.0) THEN
         IF (NBORDR.NE.NBORLU) THEN
-          CALL UTMESS('F',NOMCMD,'ON N''A PAS LU TOUS LES CHAMPS.')
+          CALL U2MESS('F','UTILITAI2_98')
         END IF
       END IF
 

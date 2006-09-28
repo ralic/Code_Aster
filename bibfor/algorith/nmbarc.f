@@ -4,7 +4,7 @@
      &                   DSIDP1,SIPM,SIPP,RETCOM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,54 +146,54 @@ C
       VALPAM(1) = TM
 C
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
          E  = VALRES(1)
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
+     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          PORO1 = PORO
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
+     &                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
          LAMBDA = VALRES(5)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
+     &                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
          KAPA = VALRES(6)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
+     &                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
          M     = VALRES(7)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
+     &                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
          PRESCR = VALRES(8)
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
+     &                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
          PA = VALRES(9)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(10),VALRES(10),CODRET(10), FB2 )
+     &                 NOMRES(10),VALRES(10),CODRET(10), FB2 )
          R = VALRES(10)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(11),VALRES(11),CODRET(11), FB2 )
+     &                 NOMRES(11),VALRES(11),CODRET(11), FB2 )
          BETA = VALRES(11)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(12),VALRES(12),CODRET(12), FB2 )
+     &                 NOMRES(12),VALRES(12),CODRET(12), FB2 )
          KC = VALRES(12)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(13),VALRES(13),CODRET(13), FB2 )
+     &                 NOMRES(13),VALRES(13),CODRET(13), FB2 )
          PC0INI = VALRES(13)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(14),VALRES(14),CODRET(14), FB2 )
+     &                 NOMRES(14),VALRES(14),CODRET(14), FB2 )
          KAPAS = VALRES(14)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(15),VALRES(15),CODRET(15), FB2 )
+     &                 NOMRES(15),VALRES(15),CODRET(15), FB2 )
          LAMBS = VALRES(15)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(16),VALRES(16),CODRET(16), BL2 )
+     &                 NOMRES(16),VALRES(16),CODRET(16), BL2 )
          IF ( CODRET(16) .NE. 'OK' ) THEN
          VALRES(16) = M*(M-9.D0)*(M-3.D0)/9.D0/(6.D0-M)
      &                *(1.D0/(1.D0-KAPA/LAMBDA))
@@ -202,13 +202,12 @@ C
          ALPHAB = VALRES(16)
          ENDIF
          CALL RCVALA(IMATE,' ','THM_INIT',1,NOMPAR,VALPAM,1,
-     +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
+     &                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          PORO2 = PORO
          DIFF = PORO1-PORO2
          IF (ABS(DIFF) .GT. TOL) THEN
-           CALL UTMESS('F','NMCCAM','CAM_CLAY : LA POROSITE '
-     &   //'DONNEE DANS CAM_CLAY DOIT ETRE LA MEME QUE DANS THM_INIT')
+           CALL U2MESS('F','ALGORITH6_60')
          ELSE
          PORO=PORO1
          ENDIF
@@ -262,9 +261,7 @@ C     -------------------------------------------------------------
  116  CONTINUE
       SIGMMO = -SIGMMO/3.D0
       IF (SIGMMO.LE.(-0.99D0*KC*P1)) THEN
-           CALL UTMESS('F','NMBARC','BARCELONE : IL FAUT QUE '
-     &     //'LA CONTRAINTE HYDROSTATIQUE SOIT SUPERIEURE A LA '
-     &     //' PRESSION DE COHESION -KC*PC ')
+           CALL U2MESS('F','ALGORITH6_61')
       ENDIF
       SIELEQ = 0.D0
       SIEQM = 0.D0
@@ -499,8 +496,7 @@ C     -- DICHOTOMIE
        IF ((SIGNF0*SIGFI0).GT.ZERO) XINF0 = XB0
 
  210  CONTINUE
-      CALL UTMESS('F','BARCELONE','ITER_INTE_MAXI INSUFFISANT '
-     &     // 'LORS DU CALCUL DE LA BORNE'      )
+      CALL U2MESS('F','ALGORITH6_62')
  101  CONTINUE
        XB = XB0
        XSUP = XB
@@ -659,7 +655,7 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
 
 
  200  CONTINUE
-      CALL UTMESS('F','BARCELONE','ITER_INTE_MAXI INSUFFISANT')
+      CALL U2MESS('F','ALGORITH3_55')
  100  CONTINUE
       DEPPMO=V0
 C

@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/04/2006   AUTEUR GODARD V.GODARD 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,8 +137,7 @@ C                                 NEQ = NOMBRE DE DDL EN DEPLACEMENT
         NEQ = 6
         NDIM = 2
       ELSE
-        CALL UTMESS('F','ELEMENTS DISCRET (TE0047)',
-     &              '"'//NOMTE//'"    NOM D''ELEMENT INCONNU.')
+        CALL U2MESK('F','ELEMENTS2_42',1,NOMTE)
       END IF
 
 C --- RECUPERATION DES ADRESSES JEVEUX
@@ -149,7 +148,7 @@ C --- RECUPERATION DES ADRESSES JEVEUX
       CALL JEVECH('PDEPLPR','L',IDEPLP)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       IF (ZK16(ICOMPO+3).EQ.'COMP_ELAS') THEN
-        CALL UTMESS('F','TE0047','COMP_ELAS NON VALIDE')
+        CALL U2MESS('F','ELEMENTS2_90')
       END IF
 
 
@@ -164,9 +163,9 @@ C --- RECUPERATION DES ORIENTATIONS (ANGLES NAUTIQUES -> VECTEUR ANG)
          CALL TECAEL ( IADZI, IAZK24 )
          NOMAIL = ZK24(IAZK24-1+3)(1:8)
          CALL UTDEBM ( 'F', 'TE0047', 'POUR LES ELEMENTS DISCRETS, '//
-     +       'IL FAUT DEFINIR UN REPERE (COMMANDE AFFE_CARA_ELEM). '//
-     +       'CETTE INFORMATION DOIT ETRE FOURNIE DERRIERE LE MOT '//
-     +       'CLE "CARA_ELEM" DE LA COMMANDE EN COURS.')
+     &       'IL FAUT DEFINIR UN REPERE (COMMANDE AFFE_CARA_ELEM). '//
+     &       'CETTE INFORMATION DOIT ETRE FOURNIE DERRIERE LE MOT '//
+     &       'CLE "CARA_ELEM" DE LA COMMANDE EN COURS.')
          CALL UTIMPK ( 'L', '   MAILLE ', 1, NOMAIL )
          CALL UTFINM
       ENDIF
@@ -206,7 +205,7 @@ C* REACTUALISATION DES POSITIONS DES 2 NOEUDS ET CALCUL DE LEUR DISTANCE
       ENDIF
 
       IF (NOMTE.EQ.'MECA_DIS_TR_L'.AND.
-     +   ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
+     &   ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
 
 C* CALCUL DE L'ANGLE DE VRILLE MOYEN SI ELEMENT DE LONGUEUR NON NULLE
           TET1=DDOT(3,UGP(4),1,XD,1)
@@ -248,8 +247,7 @@ C ======================================================================
 
       IF ((ZK16(ICOMPO).NE.'ELAS').AND.(OPTION(11:14).EQ.'ELAS')
      &     .AND.(ZK16(ICOMPO).NE.'DIS_GRICRA')) THEN
-        CALL UTMESS('F','ELEMENTS DISCRET (TE0047)',
-     &              '"'//NOMTE//'" MATRICE DE DECHARGE NON DEVELOPPEE')
+        CALL U2MESK('F','ELEMENTS2_91',1,NOMTE)
       ENDIF
 
       IF (ZK16(ICOMPO).EQ.'ELAS') THEN
@@ -489,10 +487,7 @@ C ======================================================================
       IF (ZK16(ICOMPO).EQ.'DIS_GRICRA') THEN
 
         IF (NOMTE.NE.'MECA_DIS_TR_L') THEN
-          CALL UTMESS('F','ELEMENTS DISCRET (TE0047)',
-     &              'LA LOI DIS_GRICRA DOIT ETRE UTILISEE AVEC DES'//
-     &              'ELEMENTS DU TYPE MECA_DIS_TR_L: '//
-     &              'ELEMENT SEG2 + MODELISATION DIS_TR')
+          CALL U2MESS('F','ELEMENTS2_92')
         ENDIF
 
 C
@@ -693,7 +688,7 @@ C ======================================================================
    80 CONTINUE
 C
       IF ( OPTION(1:9).EQ.'FULL_MECA'  .OR.
-     +     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
+     &     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
          CALL JEVECH ( 'PCODRET', 'E', JCRET )
          ZI(JCRET) = 0
       ENDIF

@@ -6,7 +6,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,8 +108,7 @@ C ---------------------------------------------------
 
       CALL DISMOI('F','NB_EC','FORC_R','GRANDEUR',NBECF,K8BID,IERD)
       IF (NBECF.GT.10) THEN
-        CALL UTMESS('F','CAFONO_1','LE DESCRIPTEUR_GRANDEUR DES FORCES'
-     &              //' NE TIENT PAS SUR DIX ENTIERS CODES')
+        CALL U2MESS('F','MODELISA2_65')
       ELSE
         LIGRMO = LIGRMZ
         CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
@@ -117,9 +116,7 @@ C ---------------------------------------------------
 
       CALL DISMOI('F','NB_EC','DEPL_R','GRANDEUR',NBEC,K8BID,IERD)
       IF (NBEC.GT.10) THEN
-        CALL UTMESS('F','CAFONO_1',
-     &              'LE DESCRIPTEUR_GRANDEUR DES DEPLACEMENTS'//
-     &              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+        CALL U2MESS('F','MODELISA_94')
       END IF
 
       CALL JEVEUO(LIGRCH//'.NBNO','E',JNBNO)
@@ -208,8 +205,7 @@ C              --- REPERE GLOBAL ---
           END IF
         END IF
         IF (NANGL.LT.0) THEN
-          CALL UTMESS('A','CAFONO','TROP DE VALEURS D''ANGLES,'//
-     &                ' ON NE GARDE QUE LES 3 PREMIERS.')
+          CALL U2MESS('A','MODELISA2_66')
         END IF
 
 C       ---------------------------
@@ -217,7 +213,7 @@ C       CAS DE GROUP_NO ET DE NOEUD
 C       ---------------------------
 
         CALL RELIEM(LIGRMO, NOMA, 'NO_NOEUD', MOTCLF, I, 2,
-     +                                  MOTCLS, TYPMCL, MESNOE, NBNO )
+     &                                  MOTCLS, TYPMCL, MESNOE, NBNO )
         CALL JEVEUO ( MESNOE, 'L', JNO )
 
         DO 100 JJ = 1,NBNO
@@ -249,7 +245,7 @@ C
          ELSE IF (FONREE.EQ.'FONC') THEN
             CALL ALCART('G',CARTE,NOMA,'FORC_F')
          ELSE
-            CALL UTMESS('F','CAFONO','VALEUR INATTENDUE: '//FONREE)
+            CALL U2MESK('F','MODELISA2_37',1,FONREE)
          END IF
       END IF
 

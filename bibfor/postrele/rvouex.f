@@ -4,7 +4,7 @@
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 31/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,9 +108,7 @@ C          -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
            CALL CELVER(NCHP19,'NBSPT_1','COOL',KK)
            IF (KK.EQ.1) THEN
              CALL DISMOI('F','NOM_GD',NCHP19,'CHAMP',IBID,NOMGD,IE)
-             CALL UTMESS('I','RVOUEX','LE CHAMP DE: '//NOMGD
-     &          //' A DES ELEMENTS AYANT DES SOUS-POINTS.'
-     &          //' CES ELEMENTS NE SERONT PAS TRAITES.')
+             CALL U2MESK('I','PREPOST_36',1,NOMGD)
              CALL CELCEL('PAS_DE_SP',NCHP19,'V','&&RVOUEX.CHAMEL2')
              NCHP19= '&&RVOUEX.CHAMEL2'
            END IF
@@ -131,7 +129,7 @@ C
             CALL WKVECT ('&&RVOUEX.NOM_CMP','V V K8', NBCMP, JCMP )
             CALL GETVTX ( MCF,'NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),NC)
             CALL UTMACH ( NCHP19, NBCMP, ZK8(JCMP), 'NU',
-     +                                                 MALIST, NBTROU )
+     &                                                 MALIST, NBTROU )
             IF ( NBTROU .NE. 0 ) CALL JEVEUO ( MALIST, 'L', JMMAIL )
             CALL JEDETR ( '&&RVOUEX.NOM_CMP' )
          ENDIF

@@ -5,7 +5,7 @@ C
       REAL*8    MATER(NBMAT,2),PARAME(5),INVAR1,S(6),EPSSIG,BPRIME
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C ======================================================================
       FACT1  = SGAMP**(AGAMP-UN)
       FACT2  = UN+AGAMP*MGAMP*FACT1
       IF (FACT2.LT.EPSTOL) THEN
-         CALL UTMESS('F','BPRIME_1','VALEUR INFERIEURE A LA TOLERANCE')
+         CALL U2MESS('F','ALGELINE_4')
       ENDIF
       FACT2  = SQRT(FACT2)
       PHI0   = DEUX*ATAN2(FACT2,UN) - R8PI()/DEUX
@@ -97,7 +97,7 @@ C ======================================================================
 C --- CALCUL DE SIGT0 = 2*C0*RAC((1-SIN(PHI0))/(1+SIN(PHI0)) -----------
 C ======================================================================
       IF ((UN+SIN(PHI0)).LT.EPSTOL) THEN
-         CALL UTMESS('F','BPRIME_2','VALEUR INFERIEURE A LA TOLERANCE')
+         CALL U2MESS('F','ALGELINE_4')
       ENDIF
       SIGT0  = DEUX*C0*SQRT((UN-SIN(PHI0))/(UN+SIN(PHI0)))
  10   CONTINUE
@@ -106,9 +106,9 @@ C --- CALCULS DE INTERMEDIAIRE -----------------------------------------
 C ======================================================================
       SIG1  = INVAR1/TROIS + SQRT(DEUX/TROIS)*SII*RCOS3T
       SIG2  = INVAR1/TROIS - SQRT(DEUX/TROIS)*SII*
-     +               ( RCOS3T/DEUX+SQRT(TROIS*(UN-RCOS3T*RCOS3T))/DEUX )
+     &               ( RCOS3T/DEUX+SQRT(TROIS*(UN-RCOS3T*RCOS3T))/DEUX )
       SIG3  = INVAR1/TROIS + SQRT(DEUX/TROIS)*SII*
-     +               (-RCOS3T/DEUX+SQRT(TROIS*(UN-RCOS3T*RCOS3T))/DEUX )
+     &               (-RCOS3T/DEUX+SQRT(TROIS*(UN-RCOS3T*RCOS3T))/DEUX )
 C ======================================================================
 C --- RECUPERATION DE SIG1 (MAX) ET SIG3 (MIN) -------------------------
 C ======================================================================

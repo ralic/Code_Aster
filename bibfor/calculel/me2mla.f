@@ -1,7 +1,7 @@
       SUBROUTINE ME2MLA(MODELE,NCHAR,LCHAR,MATE,CARA,EXITIM,TIME,MATEL,
      &                  THETA,ALPHA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,10 +125,7 @@ C        ET CHAM_MATER :
       CALL DISMOI('F','ELAS_F_TEMP',MATE,'CHAM_MATER',IBID,REPK,IERD)
       IF (REPK.EQ.'OUI') THEN
         IF (.NOT.EXITHE) THEN
-          CALL UTMESS('F','ME2MLA',
-     &                'LE MATERIAU DEPEND DE LA TEMPERATURE'//
-     &                '! IL N''Y A PAS DE CHAMP DE TEMPERATURE '//
-     &                '! LE CALCUL EST IMPOSSIBLE ')
+          CALL U2MESS('F','ALGORITH_57')
         END IF
       END IF
 
@@ -429,8 +426,7 @@ C ====================================================================
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.PESAN',IRET)
           IF (IRET.NE.0) THEN
-            CALL UTMESS('F','ME2MLA',
-     &                  'CE CHARGEMENT N EST PAS PREVU EN LAGRANGE')
+            CALL U2MESS('F','CALCULEL2_79')
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.ROTAT',IRET)
@@ -494,9 +490,7 @@ C ====================================================================
 C ====================================================================
           CALL JEEXIN(LIGRCH(1:13)//'.TEMPE.TEMP',IRET)
           IF (IRET.NE.0) THEN
-            CALL UTMESS('F','ME2MLA',
-     &                  'LE CALCUL LAGRANGIEN AVEC LES TEMPERATURES'//
-     &                  ' N''EST PAS ENCORE DISPONIBLE')
+            CALL U2MESS('F','CALCULEL2_80')
           END IF
 C ====================================================================
           CALL EXISD('CHAMP_GD',LIGRCH(1:13)//'.PRESS',IRET)

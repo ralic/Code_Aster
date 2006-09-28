@@ -1,25 +1,25 @@
       SUBROUTINE UTEREF ( CHANOM, TYPECH, TYELAS, NOMTE,
-     >                    NOMFPG, NNOS, NNO, NBPG, NDIM,
-     >                    REFCOO, GSCOO, WG,
-     >                    CODRET )
+     &                    NOMFPG, NNOS, NNO, NBPG, NDIM,
+     &                    REFCOO, GSCOO, WG,
+     &                    CODRET )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GNICOLAS G.NICOLAS
 C-----------------------------------------------------------------------
@@ -90,8 +90,6 @@ C --------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'UTEREF' )
 C
       INTEGER NBPG00(10),IMOLO,NEC,KFPG,NBFPG,IFAM,INDIK8
       INTEGER ITYPE,NB1,NBELR,JMOLO,IBID
@@ -114,8 +112,7 @@ C     ---------------
 
       CALL INFNIV ( IFM, NIVINF )
       IF ( NIVINF.GT.1 ) THEN
-        CALL UTMESS ( 'I', NOMPRO,
-     > 'DETERMINATION DE LA LOCALISATION DES POINTS DE GAUSS')
+        CALL U2MESS('I','UTILITAI5_39')
         WRITE (IFM,10001) TYELAS, NOMTE
 10001   FORMAT('ELEMENT FINI NUMERO',I6,', DE NOM : ',A16)
       ENDIF
@@ -159,7 +156,7 @@ C
               CODRET = 1
               IF ( NIVINF.GT.1 ) THEN
                 WRITE (IFM,*)
-     >          '==> LE CHAMP N''EST PAS DEFINI SUR CE TYPE D''ELEMENT'
+     &          '==> LE CHAMP N''EST PAS DEFINI SUR CE TYPE D''ELEMENT'
               ENDIF
             ENDIF
             GO TO 32
@@ -239,13 +236,13 @@ C
           WRITE (IFM,60002) 'NOEUDS         '
           DO 6012 , IAUX = 1 , NNO
             WRITE (IFM,60012) IAUX, REFCOO(NDIM*(IAUX-1)+1),
-     >                              REFCOO(NDIM*(IAUX-1)+2)
+     &                              REFCOO(NDIM*(IAUX-1)+2)
  6012     CONTINUE
           WRITE (IFM,60022)
           WRITE (IFM,60002) 'POINTS DE GAUSS'
           DO 6022 , IAUX = 1 , NBPG
             WRITE (IFM,60012) IAUX, GSCOO(NDIM*(IAUX-1)+1),
-     >                              GSCOO(NDIM*(IAUX-1)+2)
+     &                              GSCOO(NDIM*(IAUX-1)+2)
  6022     CONTINUE
           WRITE (IFM,60022)
 C
@@ -255,15 +252,15 @@ C
           WRITE (IFM,60003) 'NOEUDS         '
           DO 6013 , IAUX = 1 , NNO
             WRITE (IFM,60013) IAUX, REFCOO(NDIM*(IAUX-1)+1),
-     >                              REFCOO(NDIM*(IAUX-1)+2),
-     >                              REFCOO(NDIM*(IAUX-1)+3)
+     &                              REFCOO(NDIM*(IAUX-1)+2),
+     &                              REFCOO(NDIM*(IAUX-1)+3)
  6013     CONTINUE
           WRITE (IFM,60023)
           WRITE (IFM,60003) 'POINTS DE GAUSS'
           DO 6023 , IAUX = 1 , NBPG
             WRITE (IFM,60013) IAUX, GSCOO(NDIM*(IAUX-1)+1),
-     >                              GSCOO(NDIM*(IAUX-1)+2),
-     >                              GSCOO(NDIM*(IAUX-1)+3)
+     &                              GSCOO(NDIM*(IAUX-1)+2),
+     &                              GSCOO(NDIM*(IAUX-1)+3)
  6023     CONTINUE
           WRITE (IFM,60023)
         ENDIF
@@ -279,31 +276,31 @@ C
       ENDIF
 C
 60001 FORMAT(
-     >/,28('*'),
-     >/,'*      COORDONNEES DES     *',
-     >/,'*      ',A15        ,'     *',
-     >/,28('*'),
-     >/,'*  NUMERO  *       X       *',
-     >/,28('*'))
+     &/,28('*'),
+     &/,'*      COORDONNEES DES     *',
+     &/,'*      ',A15        ,'     *',
+     &/,28('*'),
+     &/,'*  NUMERO  *       X       *',
+     &/,28('*'))
 60002 FORMAT(
-     >/,44('*'),
-     >/,'*       COORDONNEES DES ',A15        ,'    *',
-     >/,44('*'),
-     >/,'*  NUMERO  *       X       *       Y       *',
-     >/,44('*'))
+     &/,44('*'),
+     &/,'*       COORDONNEES DES ',A15        ,'    *',
+     &/,44('*'),
+     &/,'*  NUMERO  *       X       *       Y       *',
+     &/,44('*'))
 60003 FORMAT(
-     >/,60('*'),
-     >/,'*            COORDONNEES DES ',A15         ,
-     >'               *',
-     >/,60('*'),
-     >/,'*  NUMERO  *       X       *       Y       *',
-     >'       Z       *',
-     >/,60('*'))
+     &/,60('*'),
+     &/,'*            COORDONNEES DES ',A15         ,
+     &'               *',
+     &/,60('*'),
+     &/,'*  NUMERO  *       X       *       Y       *',
+     &'       Z       *',
+     &/,60('*'))
 60004 FORMAT(
-     >/,28('*'),
-     >/,'*      POINTS DE GAUSS     *',
-     >/,'*  NUMERO  *     POIDS     *',
-     >/,28('*'))
+     &/,28('*'),
+     &/,'*      POINTS DE GAUSS     *',
+     &/,'*  NUMERO  *     POIDS     *',
+     &/,28('*'))
 60011 FORMAT('* ',I5,'    *',G11.5,'    *')
 60012 FORMAT('* ',I5,2('    *',G11.5),'    *')
 60013 FORMAT('* ',I5,3('    *',G11.5),'    *')

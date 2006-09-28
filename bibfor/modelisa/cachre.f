@@ -1,5 +1,5 @@
       SUBROUTINE CACHRE ( CHAR, LIGRMO, NOMA, NDIM, FONREE,
-     +                    PARAM, MOTCL )
+     &                    PARAM, MOTCL )
       IMPLICIT   NONE
       INTEGER           NBCA, NBET, NDIM
       CHARACTER*4       FONREE
@@ -8,7 +8,7 @@
       CHARACTER*(*)     LIGRMO, MOTCL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,12 +55,12 @@ C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       IBID, I, N, NCHRE, NREP, NCMP, JVALV, JNCMP, IOCC,
-     +              NFX, NFY, NFZ, NMX, NMY, NMZ, NPLAN,
-     +              NBTOU, IER, NBMA, JMA
+     &              NFX, NFY, NFZ, NMX, NMY, NMZ, NPLAN,
+     &              NBTOU, IER, NBMA, JMA
       REAL*8        FX, FY, FZ, MX, MY, MZ, VPRE
       COMPLEX*16    CFX, CFY, CFZ, CMX, CMY, CMZ, CVPRE
       CHARACTER*8   K8B, KFX, KFY, KFZ, KMX, KMY, KMZ, TYPCH, PLAN,
-     +              TYPMCL(2)
+     &              TYPMCL(2)
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
@@ -81,7 +81,7 @@ C
       ELSE IF (FONREE.EQ.'COMP') THEN
          CALL ALCART ('G', CARTE , NOMA , 'FORC_C')
       ELSE
-         CALL UTMESS('F','CACHRE','VALEUR INATTENDUE: '//FONREE(1:4) )
+         CALL U2MESK('F','MODELISA2_37',1,FONREE(1:4))
       ENDIF
 C
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
@@ -113,7 +113,7 @@ C
          ZK8(JVALV-1+7) = 'GLOBAL'
          ZK8(JVALV-1+8) = '&FOZERO'
       ELSE
-         CALL UTMESS('F','CACHRE','VALEUR INATTENDUE: '//FONREE )
+         CALL U2MESK('F','MODELISA2_37',1,FONREE)
       ENDIF
       CALL NOCART ( CARTE, 1,' ','NOM', 0,' ', 0, LIGRMO, 8 )
 C
@@ -137,8 +137,8 @@ C
             CALL GETVC8 ( MOTCLF, 'FY', IOCC, 1, 1, CFY, NFY )
             CALL GETVC8 ( MOTCLF, 'FZ', IOCC, 1, 1, CFZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
-     +           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
-     +           MOTCLF .NE. 'FORCE_FACE'    ) THEN
+     &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
+     &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
               CALL GETVC8 ( MOTCLF, 'MX', IOCC, 1, 1, CMX, NMX )
               CALL GETVC8 ( MOTCLF, 'MY', IOCC, 1, 1, CMY, NMY )
               CALL GETVC8 ( MOTCLF, 'MZ', IOCC, 1, 1, CMZ, NMZ )
@@ -219,8 +219,8 @@ C                CALL GETVC8 ( MOTCLF, 'MFZ', IOCC, 1, 1, CMZ, NMZ )
             CALL GETVR8 ( MOTCLF, 'FY', IOCC, 1, 1, FY, NFY )
             CALL GETVR8 ( MOTCLF, 'FZ', IOCC, 1, 1, FZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
-     +           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
-     +           MOTCLF .NE. 'FORCE_FACE'    ) THEN
+     &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
+     &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
               CALL GETVR8 ( MOTCLF, 'MX', IOCC, 1, 1, MX, NMX )
               CALL GETVR8 ( MOTCLF, 'MY', IOCC, 1, 1, MY, NMY )
               CALL GETVR8 ( MOTCLF, 'MZ', IOCC, 1, 1, MZ, NMZ )
@@ -299,8 +299,8 @@ C                 CALL GETVR8 ( MOTCLF, 'MFZ', IOCC, 1, 1, MZ, NMZ )
             CALL GETVID ( MOTCLF, 'FY', IOCC,1,1, KFY, NFY )
             CALL GETVID ( MOTCLF, 'FZ', IOCC,1,1, KFZ, NFZ )
             IF ( MOTCLF .NE. 'FORCE_INTERNE' .AND.
-     +           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
-     +           MOTCLF .NE. 'FORCE_FACE'    ) THEN
+     &           MOTCLF .NE. 'FORCE_POUTRE'  .AND.
+     &           MOTCLF .NE. 'FORCE_FACE'    ) THEN
               CALL GETVID ( MOTCLF, 'MX', IOCC,1,1, KMX, NMX )
               CALL GETVID ( MOTCLF, 'MY', IOCC,1,1, KMY, NMY )
               CALL GETVID ( MOTCLF, 'MZ', IOCC,1,1, KMZ, NMZ )
@@ -412,7 +412,7 @@ C
             CALL NOCART (CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP )
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NO_MAILLE', MOTCLF, IOCC, 2,
-     +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+     &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL VETYMA ( NOMA, ZK8(JMA),NBMA, K8B,0, MOTCLF,NDIM,IER)
             CALL NOCART (CARTE,3,K8B,'NOM',NBMA,ZK8(JMA),IBID,' ',NCMP)

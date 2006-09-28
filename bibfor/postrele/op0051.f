@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,8 +55,8 @@ C
       INTEGER IFM, NIV
       INTEGER IAUX, JAUX
       INTEGER      ICHEF, IE, IOCC, IRET, IVCHF, JACC, JACCIS, JACCR8,
-     >             JCHEF, JTAC, JVAC, N1, NBACCE, NBCHEF, NBPOST,
-     >             NBRESU, NBVCHF, IBID
+     &             JCHEF, JTAC, JVAC, N1, NBACCE, NBCHEF, NBPOST,
+     &             NBRESU, NBVCHF, IBID
       INTEGER NRPASS, NBPASS, ADRECG
 C
       REAL*8       EPSI
@@ -104,8 +104,7 @@ C
 C 2.2. ==> LE CONCEPT DE SORTIE, SON TYPE, LA COMMANDE
 C
       CALL GETRES ( TABLE1, CONCEP, NOMCMD )
-      IF ( NIV.GE.2 )  CALL UTMESS('I','OP0051',
-     +                        'CREATION/EXTENSION DE LA TABLE '//TABLE1)
+      IF ( NIV.GE.2 )  CALL U2MESK('I','POSTRELE_23',1,TABLE1)
 C
 C 2.3. ==> PHASE DE VERIFICATIONS SUPPLEMENTAIRES
 C
@@ -164,7 +163,7 @@ C
         ENDIF
         JAUX = 1
         CALL PSRESE ( MCF, IAUX, IBID, TABLE1, JAUX,
-     >                NBPASS, NORECG, IRET )
+     &                NBPASS, NORECG, IRET )
 C
         IF ( IRET.EQ.0 ) THEN
 C
@@ -199,8 +198,9 @@ C
               CALL PSRENC ( RESUCO, NOPASE, LERES0, IRET )
               IF ( IRET.NE.0 ) THEN
                 CALL UTMESS ('F','OP0051',
-     >  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
-     >  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+     &  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
+     &  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+C        CALL U2MESK('F','CALCULEL2_96', 2 ,VALK)
               ENDIF
             ENDIF
 C
@@ -216,8 +216,8 @@ C
             CALL JEVEUO ( NACCR8, 'L', JACCR8 )
 C
             CALL RVGCHF ( EPSI, CRITER,
-     >                    LERES0, RESUCO, NOPASE, NCHSYM, CODACC,
-     >                    ZI(JACCIS), ZR(JACCR8), NBACCE, NCHEFF, CA )
+     &                    LERES0, RESUCO, NOPASE, NCHSYM, CODACC,
+     &                    ZI(JACCIS), ZR(JACCR8), NBACCE, NCHEFF, CA )
 C
             CALL JEDETR ( NACCIS )
             CALL JEDETR ( NACCR8 )
@@ -236,7 +236,7 @@ C
             ZI(JACC) = 1
 C
             CALL JECREC(NCHEFF//'.LSCHEFF','V V K24','NU',
-     >                                        'DISPERSE','VARIABLE',1)
+     &                                        'DISPERSE','VARIABLE',1)
 C
             CALL JECROC(JEXNUM(NCHEFF//'.LSCHEFF',1))
             CALL JEECRA(JEXNUM(NCHEFF//'.LSCHEFF',1),'LONMAX',1,' ')
@@ -247,7 +247,7 @@ C
             CALL DISMOI('F','TYPE_CHAMP',ZK24(JACC),'CHAMP',IBID,K8B,IE)
             IF ( K8B(1:4) .EQ. 'ELNO' ) THEN
                CALL DISMOI('F','NOM_OPTION',ZK24(JACC),'CHAMP',
-     >                                                 IBID,OPTION,IE)
+     &                                                 IBID,OPTION,IE)
             ENDIF
 C
          ENDIF
@@ -294,7 +294,7 @@ C
             ICHEF = 0
 C
             CALL JELIRA ( JEXNUM(NCHEFF//'.LSCHEFF', IVCHF),
-     >                                    'LONMAX', NBCHEF, K8B )
+     &                                    'LONMAX', NBCHEF, K8B )
             CALL JEVEUO ( JEXNUM(NCHEFF//'.LSCHEFF',IVCHF), 'L', JCHEF )
 C
  310        CONTINUE
@@ -331,13 +331,13 @@ C
             IF ( IRET .EQ. 0 ) THEN
 C
                CALL UTDEBM('F','OP0051',
-     +                  '****************************************')
+     &                  '****************************************')
                CALL UTIMPI('L','* POST_TRAITEMENT NUMERO : ',1,IOCC)
                CALL UTIMPK('L','* AUCUNES MAILLES NE CORRESPONDENT'//
-     +                         ' AUX CRITERES DEMANDES',0,DIM)
+     &                         ' AUX CRITERES DEMANDES',0,DIM)
                CALL UTIMPK('L','* PAS DE POST-TRAITEMENT',0,' ')
                CALL UTIMPK('L',
-     + '********************************************************',0,' ')
+     & '********************************************************',0,' ')
                CALL UTFINM()
 C
             ELSE
@@ -348,17 +348,17 @@ C
                DO 400, IVCHF = 1, NBVCHF, 1
 C
                   CALL JELIRA(JEXNUM(NCHEFF//'.LSCHEFF',IVCHF),
-     >                                          'LONMAX',NBCHEF,K8B)
+     &                                          'LONMAX',NBCHEF,K8B)
                   CALL JEVEUO(JEXNUM(NCHEFF//'.LSCHEFF',IVCHF),
-     >                                                    'L',JCHEF)
+     &                                                    'L',JCHEF)
 C
                   DO 410, ICHEF = 1, NBCHEF
 C
                      NCH19 = ZK24(JCHEF + ICHEF-1)(1:19)
 C
                      CALL RVPOST ( MCF, IOCC, DIM, IVCHF, ICHEF, NCHEFF,
-     >                             XNOMCP, LERES0, NCH19, NLSMAC,
-     >                             NLSNAC, LATAB1, XNOVAR )
+     &                             XNOMCP, LERES0, NCH19, NLSMAC,
+     &                             NLSNAC, LATAB1, XNOVAR )
 C
  410              CONTINUE
 C

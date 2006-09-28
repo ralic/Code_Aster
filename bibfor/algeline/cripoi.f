@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,8 +51,7 @@ C
 C
       IF (SOMMII.LT.TOLE) THEN
 C
-        CALL UTMESS('A','CRIPOI','SOMME DES CARRES DES TERMES '//
-     &              'DIAGONAUX NULLE => CRITERE INDEFINI')
+        CALL U2MESS('A','ALGELINE_30')
         CRIT = R8NNEM()
 C
       ELSE
@@ -85,8 +84,7 @@ C
 C
         IF (SOMMII.LT.X*TOLR) THEN
 C
-          CALL UTMESS('A','CRIPOI','SOMME DES CARRES DES TERMES '//
-     &                'DIAGONAUX NEGLIGEABLE => CRITERE INDEFINI')
+          CALL U2MESS('A','ALGELINE_31')
           CRIT = R8NNEM()
 C
         ELSE

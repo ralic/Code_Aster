@@ -5,22 +5,22 @@
       CHARACTER*(*)       NOMPU(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 C ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ C IER = 240 : RECHERCHE DE LA VALEUR INCONNUE (COLI)
 C
 C CODE RETOUR DE FOINTA :
 C IER = 100 : TYPE DE FONCTION NON VALIDE
-C IER = 110 : PAS ASSEZ DE PARAMETRES 
+C IER = 110 : PAS ASSEZ DE PARAMETRES
 C IER = 120 : PARAMETRE EN DOUBLE
 C IER = 130 : PARAMETRE ATTENDUS,PARAMETRES RECUS
 C IER = 140 : TYPE D'INTERPOLATION SUR LES PARA DE LA NAPPE INCONNU
@@ -73,7 +73,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER      NPAR(2), INDFCT, JPRO, JPAR, LPARA, NBVN, NBPARA, I,
-     +             NUPAR, NBPT, JVAL, INUME, IER
+     &             NUPAR, NBPT, JVAL, INUME, IER
       REAL*8       TAB(4), RPAR, RVAR, EPSI, R8PREM, R8VIDE
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
       CHARACTER*1  COLI
@@ -92,11 +92,11 @@ C     FONCTION EN LIGNE
 C
       LINLIN(X,X1,Y1,X2,Y2)= Y1+(X-X1)*(Y2-Y1)/(X2-X1)
       LINLOG(X,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(X-X1)*(LOG(Y2)-LOG(Y1))
-     +                                        /(X2-X1))
+     &                                        /(X2-X1))
       LOGLOG(X,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(LOG(X)-LOG(X1))*(LOG(Y2)
-     +                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
+     &                                     -LOG(Y1))/(LOG(X2)-LOG(X1)))
       LOGLIN(X,X1,Y1,X2,Y2)=Y1+(LOG(X)-LOG(X1))*(Y2-Y1)
-     +                                         /(LOG(X2)-LOG(X1))
+     &                                         /(LOG(X2)-LOG(X1))
 C     ------------------------------------------------------------------
       NPAR(1) = 0
       NPAR(2) = 0
@@ -185,10 +185,10 @@ C
         JVAL = JPAR + NBPT
         RVAR = VALPU(NPAR(1))
         CALL FOLOCX ( ZR(JPAR), NBPT, RVAR, ZK16(JPRO+4),
-     +                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
+     &                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
         IF ( IER .NE. 0 ) GOTO 9999
         CALL FOCOLI ( ZI(IPIF+INDFCT),COLI,ZK16(JPRO+1),ZR(JPAR),
-     +                                ZR(JVAL), RVAR, RESU , IER  )
+     &                                ZR(JVAL), RVAR, RESU , IER  )
         IF ( IER .NE. 0 ) GOTO 9999
 C
 C =====================================================================
@@ -201,7 +201,7 @@ C
         LPARA = ZI(IPIF+4)
         NBVN  = ZI(IPIF+5)
         CALL FOLOCX ( ZR(LPARA), NBVN, RPAR, ZK16(JPRO+4),
-     +                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
+     &                          ZI(IPIF+INDFCT), EPSI, COLI, IER )
         IF ( IER .NE. 0 ) GOTO 9999
         INUME = ZI(IPIF+INDFCT)
 C
@@ -211,8 +211,7 @@ C
 C
         ELSE IF (COLI.EQ.'I') THEN
           IF (ZK16(JPRO+1)(1:3).EQ.'NON') THEN
-            CALL UTMESS('E','FOINTA_08','INTERPOLATION SUR PARAMETRES'
-     +                  //' NON PERMISE')
+            CALL U2MESS('E','UTILITAI2_12')
             IER = 170
             GOTO 9999
           ENDIF
@@ -246,15 +245,13 @@ C
 C
         ELSE
           IER = 140
-          CALL UTMESS('E','FOINTA',
-     +                         'INTERPOLATION "'//COLI//'" INCONNUE')
+          CALL U2MESK('E','UTILITAI2_13',1,COLI)
           GOTO 9999
         ENDIF
 C
       ELSE
         IER = 150
-        CALL UTMESS('E','FOINTA','"'//ZK16(JPRO)//
-     +                              '" TYPE DE FONCTION INCONNU')
+        CALL U2MESK('E','UTILITAI2_14',1,ZK16(JPRO))
         GOTO 9999
       ENDIF
 C
@@ -262,7 +259,7 @@ C
 C
       IF ( IER .NE. 0 ) THEN
          CALL UTDEBM('F','FOINTA',
-     +                  'ERREUR RENCONTREE LORS DE L''INTERPOLATION.')
+     &                  'ERREUR RENCONTREE LORS DE L''INTERPOLATION.')
          CALL UTIMPI('L',' CODE RETOUR ',1,IER)
          CALL UTFINM( )
       ENDIF

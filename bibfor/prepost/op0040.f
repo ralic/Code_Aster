@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/01/2006   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE D6BHHAM A.M.DONORE
 C
@@ -113,7 +113,7 @@ C
          ELSEIF (INOEUD((IMAI-1)*2+2).EQ.NUMNOE) THEN
            INOE (IMAI) = 2
          ELSE
-           CALL UTMESS ('F','OP0040','LE NOEUD MENTIONNE EST INVALIDE')
+           CALL U2MESS('F','PREPOST3_74')
          ENDIF
  35   CONTINUE
 C
@@ -131,7 +131,7 @@ C
       DO 55 IMAI = 1,2
 C
         IF (NOMMAI(IMAI).EQ.'MECA_POU_D_T'.OR.
-     +      NOMMAI(IMAI).EQ.'MECA_POU_C_T') THEN
+     &      NOMMAI(IMAI).EQ.'MECA_POU_C_T') THEN
            CARGE1 = CARGEO//'.CARGEOPO'
            GEOCES = '&&OP0040.GEOCES'
            CALL CARCES ( CARGE1,'ELEM',' ','V',GEOCES,IBID)
@@ -197,51 +197,51 @@ C  IMPRESSION DES CARACTERISTIQUES GEOMETRIQUES
 C
       WRITE(IFI,'(A)') '<TUYAUTERIE>'
       IF(NOMMAI(1).EQ.'MECA_POU_D_T'.AND.
-     + (ABS(EP1(1)-EP2(1)).GT.(1.D-10).OR.
-     +  ABS(R1(1)-R2(1)).GT.(1.D-10)))
-     +   NOMMAI(1) = 'MECA_POU_R_T'
+     & (ABS(EP1(1)-EP2(1)).GT.(1.D-10).OR.
+     &  ABS(R1(1)-R2(1)).GT.(1.D-10)))
+     &   NOMMAI(1) = 'MECA_POU_R_T'
       IF(NOMMAI(2).EQ.'MECA_POU_D_T'.AND.
-     +   (ABS(EP1(2)-EP2(2)).GT.(1.D-10).OR.
-     +   ABS(R1(2)-R2(2)).GT.(1.D-10)))
-     +   NOMMAI(2) = 'MECA_POU_R_T'
+     &   (ABS(EP1(2)-EP2(2)).GT.(1.D-10).OR.
+     &   ABS(R1(2)-R2(2)).GT.(1.D-10)))
+     &   NOMMAI(2) = 'MECA_POU_R_T'
       IF(NOMMAI(1).EQ.'MECA_POU_C_T'.AND.
-     +   NOMMAI(2).EQ.'MECA_POU_C_T') THEN
+     &   NOMMAI(2).EQ.'MECA_POU_C_T') THEN
          CHAINE = '<TYPE_JONCTION>CNC</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(2).EQ.'MECA_POU_C_T'.AND.
-     +       NOMMAI(1).EQ.'MECA_POU_C_T') THEN
+     &       NOMMAI(1).EQ.'MECA_POU_C_T') THEN
          CHAINE = '<TYPE_JONCTION>CNC</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(1).EQ.'MECA_POU_C_T'.AND.
-     +       NOMMAI(2).EQ.'MECA_POU_D_T') THEN
+     &       NOMMAI(2).EQ.'MECA_POU_D_T') THEN
          CHAINE =  '<TYPE_JONCTION>EC</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(2).EQ.'MECA_POU_C_T'.AND.
-     +       NOMMAI(1).EQ.'MECA_POU_D_T') THEN
+     &       NOMMAI(1).EQ.'MECA_POU_D_T') THEN
          CHAINE = '<TYPE_JONCTION>EC</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(1).EQ.'MECA_POU_R_T'.AND.
-     +       NOMMAI(2).EQ.'MECA_POU_D_T') THEN
+     &       NOMMAI(2).EQ.'MECA_POU_D_T') THEN
          CHAINE = '<TYPE_JONCTION>TRAN1</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(2).EQ.'MECA_POU_R_T'.AND.
-     +       NOMMAI(1).EQ.'MECA_POU_D_T') THEN
+     &       NOMMAI(1).EQ.'MECA_POU_D_T') THEN
          CHAINE = '<TYPE_JONCTION>TRAN1</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(1).EQ.'MECA_POU_D_T'.AND.
-     +       NOMMAI(2).EQ.'MECA_POU_D_T') THEN
+     &       NOMMAI(2).EQ.'MECA_POU_D_T') THEN
          CHAINE =  '<TYPE_JONCTION>TUY</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(2).EQ.'MECA_POU_D_T'.AND.
-     +       NOMMAI(1).EQ.'MECA_POU_D_T') THEN
+     &       NOMMAI(1).EQ.'MECA_POU_D_T') THEN
          CHAINE =  '<TYPE_JONCTION>TUY</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(1).EQ.'MECA_POU_C_T'.AND.
-     +       NOMMAI(2).EQ.'MECA_POU_R_T') THEN
+     &       NOMMAI(2).EQ.'MECA_POU_R_T') THEN
          CHAINE =  '<TYPE_JONCTION>CTRAN1</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ELSEIF(NOMMAI(2).EQ.'MECA_POU_R_T'.AND.
-     +       NOMMAI(1).EQ.'MECA_POU_C_T') THEN
+     &       NOMMAI(1).EQ.'MECA_POU_C_T') THEN
          CHAINE = '<TYPE_JONCTION>CTRAN1</TYPE_JONCTION>'
          WRITE(IFI,'(A)') CHAINE
       ENDIF
@@ -258,61 +258,61 @@ C
         ENDIF
         IF (INOEUD((IMAI-1)*2+1).LE.9) THEN
           WRITE(IFI,'(A,I1,A)') '<NOEU_1>',INOEUD((IMAI-1)*2+1)
-     +          ,'</NOEU_1>'
+     &          ,'</NOEU_1>'
         ELSEIF (INOEUD((IMAI-1)*2+1).LE.99.AND.
-     +    INOEUD((IMAI-1)*2+1).GT.9) THEN
+     &    INOEUD((IMAI-1)*2+1).GT.9) THEN
           WRITE(IFI,'(A,I2,A)') '<NOEU_1>',INOEUD((IMAI-1)*2+1)
-     +          ,'</NOEU_1>'
+     &          ,'</NOEU_1>'
         ELSEIF (INOEUD((IMAI-1)*2+1).LE.999.AND.
-     +    INOEUD((IMAI-1)*2+1).GT.99) THEN
+     &    INOEUD((IMAI-1)*2+1).GT.99) THEN
           WRITE(IFI,'(A,I3,A)') '<NOEU_1>',INOEUD((IMAI-1)*2+1)
-     +          ,'</NOEU_1>'
+     &          ,'</NOEU_1>'
         ENDIF
         IF (INOEUD((IMAI-1)*2+2).LE.9) THEN
           WRITE(IFI,'(A,I1,A)') '<NOEU_2>',INOEUD((IMAI-1)*2+2)
-     +          ,'</NOEU_2>'
+     &          ,'</NOEU_2>'
         ELSEIF (INOEUD((IMAI-1)*2+2).LE.99.AND.
-     +    INOEUD((IMAI-1)*2+2).GT.9) THEN
+     &    INOEUD((IMAI-1)*2+2).GT.9) THEN
           WRITE(IFI,'(A,I2,A)') '<NOEU_2>',INOEUD((IMAI-1)*2+2)
-     +          ,'</NOEU_2>'
+     &          ,'</NOEU_2>'
         ELSEIF (INOEUD((IMAI-1)*2+2).LE.999.AND.
-     +    INOEUD((IMAI-1)*2+2).GT.99) THEN
+     &    INOEUD((IMAI-1)*2+2).GT.99) THEN
           WRITE(IFI,'(A,I3,A)') '<NOEU_2>',INOEUD((IMAI-1)*2+2)
-     +          ,'</NOEU_2>'
+     &          ,'</NOEU_2>'
         ENDIF
         IF(NOMMAI(IMAI).EQ.'MECA_POU_C_T') WRITE(IFI,'(A,A3,A)')
-     +            '<TYP_ELEM>','COU','</TYP_ELEM>'
+     &            '<TYP_ELEM>','COU','</TYP_ELEM>'
         IF(NOMMAI(IMAI).EQ.'MECA_POU_D_T') THEN
            R1(IMAI) = R1(IMAI)*2.D0
            WRITE(IFI,'(A,A3,A)') '<TYP_ELEM>','DRO','</TYP_ELEM>'
            WRITE(IFI,'(A,E12.5,A)')
-     +        '<DIAM_EXT>',R1(IMAI),'</DIAM_EXT>'
+     &        '<DIAM_EXT>',R1(IMAI),'</DIAM_EXT>'
            WRITE(IFI,'(A,E12.5,A)')
-     +        '<EPAISSEUR>',EP1(IMAI),'</EPAISSEUR>'
+     &        '<EPAISSEUR>',EP1(IMAI),'</EPAISSEUR>'
         ENDIF
         IF(NOMMAI(IMAI).EQ.'MECA_POU_R_T') THEN
            WRITE(IFI,'(A,A3,A)') '<TYP_ELEM>','RED','</TYP_ELEM>'
            R1(IMAI) = R1(IMAI)*2.D0
            R2(IMAI) = R2(IMAI)*2.D0
            WRITE(IFI,'(A,E12.5,A)')
-     +        '<DIAM_EXT_1>',R1(IMAI),'</DIAM_EXT_1>'
+     &        '<DIAM_EXT_1>',R1(IMAI),'</DIAM_EXT_1>'
            WRITE(IFI,'(A,E12.5,A)')
-     +        '<DIAM_EXT_2>',R1(IMAI),'</DIAM_EXT_2>'
+     &        '<DIAM_EXT_2>',R1(IMAI),'</DIAM_EXT_2>'
            WRITE(IFI,'(A,E12.5,A)')
-     +        '<EPAISSEUR_1>',EP1(IMAI),'</EPAISSEUR_1>'
+     &        '<EPAISSEUR_1>',EP1(IMAI),'</EPAISSEUR_1>'
            WRITE(IFI,'(A,E12.5,A)')
-     +        '<EPAISSEUR_2>',EP2(IMAI),'</EPAISSEUR_2>'
+     &        '<EPAISSEUR_2>',EP2(IMAI),'</EPAISSEUR_2>'
         ENDIF
         IF(NOMMAI(IMAI).EQ.'MECA_POU_C_T') THEN
            R1(IMAI) = R1(IMAI)*2.D0
            WRITE(IFI,'(A,E12.5,A)')
-     +        '<DIAM_EXT>',R1(IMAI),'</DIAM_EXT>'
+     &        '<DIAM_EXT>',R1(IMAI),'</DIAM_EXT>'
            WRITE(IFI,'(A,E12.5,A)')
-     +        '<EPAISSEUR>',EP1(IMAI),'</EPAISSEUR>'
+     &        '<EPAISSEUR>',EP1(IMAI),'</EPAISSEUR>'
              WRITE(IFI,'(A,E12.5,A)') '<ANGLE_COU>',ANGLE(IMAI),
-     +               '</ANGLE_COU>'
+     &               '</ANGLE_COU>'
              WRITE(IFI,'(A,E12.5,A)') '<RAYON_COURBURE>',RCOU(IMAI),
-     +               '</RAYON_COURBURE>'
+     &               '</RAYON_COURBURE>'
         ENDIF
         IF (IMAI.EQ.1) WRITE(IFI,'(A)') '</GEOM_MAILLE_1>'
         IF (IMAI.EQ.2) WRITE(IFI,'(A)') '</GEOM_MAILLE_2>'
@@ -339,15 +339,15 @@ C  IMPRESSION DE LA TEMPERATURE AUX NOEUDS
 C
          IF (TYPCHA.EQ.'DILA') THEN
              CALL GETVR8 ( 'CHARGE', 'TEMP_NOEUD' ,IOCC,1,1, TEMPE,
-     +                                IBID)
+     &                                IBID)
              WRITE(IFI,'(A,E12.5,A)') '<TEMP_NOEUD>',TEMPE,
-     +                                              '</TEMP_NOEUD>'
+     &                                              '</TEMP_NOEUD>'
          ENDIF
 C
          IF (TYPCHA.EQ.'POIDS') THEN
              WRITE(IFI,'(A,A5,A)') '<TYPE>',TYPCHA,'</TYPE>'
          ELSEIF (TYPCHA.EQ.'DILA'.OR.TYPCHA.EQ.'DEPL'.OR.
-     +           TYPCHA.EQ.'EFFO') THEN
+     &           TYPCHA.EQ.'EFFO') THEN
              WRITE(IFI,'(A,A4,A)') '<TYPE>',TYPCHA,'</TYPE>'
          ELSEIF (TYPCHA.EQ.'CONDITIONNEL') THEN
              WRITE(IFI,'(A,A12,A)') '<TYPE>',TYPCHA,'</TYPE>'

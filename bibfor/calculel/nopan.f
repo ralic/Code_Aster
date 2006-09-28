@@ -1,31 +1,31 @@
       SUBROUTINE NOPAN(TYPEMA,PAN,NPAN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 C TOLE CRP_20
 C
 C ----------------------------------------------------------------------
 C         NOEUDS DEFINISSANT LES PANS (2D = ARETES, 3D = FACES)
 C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
+C VARIABLES D'ENTREE
 C CHARACTER*8       TYPEMA     : TYPE DE MAILLE
 C
 C VARIABLES D'ENTREE/SORTIE
@@ -47,7 +47,7 @@ C --- VARIABLES
           PAN(1) = 1
             PAN(2) = 1
           PAN(3) = 1
-            PAN(4) = 2 
+            PAN(4) = 2
       ELSEIF (TYPEMA(1:4).EQ.'TRIA') THEN
         NPAN = 3
         IF (TYPEMA(5:5).EQ.'3') THEN
@@ -71,7 +71,7 @@ C --- VARIABLES
             PAN(8) = 5
           PAN(9) = 3
             PAN(10) = 3
-            PAN(11) = 1          
+            PAN(11) = 1
             PAN(12) = 6
         ENDIF
       ELSEIF (TYPEMA(1:4).EQ.'QUAD') THEN
@@ -88,7 +88,7 @@ C --- VARIABLES
             PAN(9) = 4
           PAN(10) = 2
             PAN(11) = 4
-            PAN(12) = 1          
+            PAN(12) = 1
         ELSEIF (TYPEMA(5:5).EQ.'6') THEN
           PAN(1) = 3
             PAN(2) = 1
@@ -121,7 +121,7 @@ C --- VARIABLES
             PAN(14) = 4
             PAN(15) = 1
             PAN(16) = 8
-        ENDIF        
+        ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'TETRA') THEN
         NPAN = 4
         IF (TYPEMA(6:6).EQ.'4') THEN
@@ -166,10 +166,10 @@ C --- VARIABLES
           PAN(22) = -6
             PAN(23) = 2
             PAN(24) = 3
-            PAN(25) = 4       
+            PAN(25) = 4
             PAN(26) = 6
             PAN(27) = 10
-            PAN(28) = 9         
+            PAN(28) = 9
         ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
         NPAN = 5
@@ -215,7 +215,7 @@ C --- VARIABLES
           PAN(15) = 6
             PAN(16) = 2
             PAN(17) = 3
-            PAN(18) = 6 
+            PAN(18) = 6
             PAN(19) = 5
             PAN(20) = 8
             PAN(21) = 11
@@ -252,7 +252,7 @@ C --- VARIABLES
           PAN(16) = 6
             PAN(17) = 2
             PAN(18) = 3
-            PAN(19) = 6 
+            PAN(19) = 6
             PAN(20) = 5
             PAN(21) = 8
             PAN(22) = 11
@@ -283,7 +283,7 @@ C --- VARIABLES
             PAN(9) = 1
             PAN(10) = 2
             PAN(11) = 5
-            PAN(12) = 4 
+            PAN(12) = 4
             PAN(13) = 7
             PAN(14) = 11
             PAN(15) = 13
@@ -301,7 +301,7 @@ C --- VARIABLES
             PAN(27) = 1
             PAN(28) = 4
             PAN(29) = 6
-            PAN(30) = 3         
+            PAN(30) = 3
             PAN(31) = 10
             PAN(32) = 15
             PAN(33) = 12
@@ -559,9 +559,9 @@ C --- VARIABLES
             PAN(58) = 19
             PAN(59) = 20
             PAN(60) = 26
-        ENDIF 
+        ENDIF
       ELSE
-        CALL UTMESS('F','NOPAN',TYPEMA//' INDISPONIBLE')
-      ENDIF  
+        CALL U2MESK('F','CALCULEL_28',1,TYPEMA)
+      ENDIF
 
       END

@@ -2,7 +2,7 @@
      &                  RESU,DEPTOT,LICCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -277,7 +277,7 @@ C     -----------------------------------------------------------------
       GCPC = (ZK24(JSLVK-1+1).EQ.'GCPC')
       IF (GCPC) THEN
         MATAS1 = ZK24(ZI(LMAT+1))
-        IF (MATAS1.NE.MATASS) CALL UTMESS('F','ALGOCO','STOP')
+        IF (MATAS1.NE.MATASS) CALL U2MESS('F','CALCULEL_13')
         MATPRE = '&&NMMATR.MAPREC'
         CHASOL = '&&ALGOCO.CHASOL'
         CHASEC = '&&ALGOCO.CHASEC'
@@ -320,9 +320,7 @@ C ======================================================================
             IF (AJEU.GT.ALJEU) THEN
               IALARM = IALARM+1
               IF (IALARM.EQ.1) THEN
-                CALL UTMESS('A','ALGOGL',
-     &                   'DES NOEUDS SE DECOLLENT PLUS QUE LA VALEUR'//
-     &                   ' D''ALARME_JEU:')
+                CALL U2MESS('A','ALGORITH_9')
               ENDIF
               CALL CFIMP2(IFM,NOMA,II,TYPEC0,'N','ALJ',AJEU,
      &                    JAPPAR,JNOCO,JMACO)

@@ -1,22 +1,22 @@
       SUBROUTINE IMELNV ( IFM, NOMSDZ, NBCMP, LISCMZ,
-     +                    NBELEM, LISMAZ, NBCHIF )
+     &                    NBELEM, LISMAZ, NBCHIF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C.======================================================================
@@ -27,7 +27,7 @@ C                (SYMETRIQUE OU NON-SYMETRIQUE)
 C                DANS LE FICHIER DE NOM FICHIER.
 C                LE GRAIN DE L'IMPRESSION EST 'VALEUR'
 C                (I.E. ON IMPRIME UNE VALEUR PAR LIGNE)
-C                
+C
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    IFM             IN    I     UNITE LOGIQUE D'IMPRESSION DU
@@ -44,7 +44,7 @@ C                                ON DESIRE L'IMPRESSION DES VALEURS
 C                                DU MATR_ELEM
 C    NBCHIF          IN    I     NOMBRE DE CHIFFRES SIGNIFICATIFS
 C.========================= DEBUT DES DECLARATIONS ====================
-C ----- COMMUNS NORMALISES  JEVEUX 
+C ----- COMMUNS NORMALISES  JEVEUX
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -68,7 +68,7 @@ C -----  VARIABLES LOCALES
       PARAMETER     (NBECMX = 10)
       CHARACTER*1   K1BID, TYMAT, TYPVAL
       CHARACTER*2   KLONLG , KLONLS, KLONLO
-      CHARACTER*7   SYM 
+      CHARACTER*7   SYM
       CHARACTER*8   K8BID, NOMA, NOMGD, NOMNO1, NOMCM1
       CHARACTER*8   M8BLAN, MATEL, NOMNOE, NOMAIL
       CHARACTER*8   NONO(NBTELI), NOCMP(NBTELI)
@@ -108,26 +108,26 @@ C
       CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
       CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',1),'L',ADMODL)
 C
-C --- RECUPERATION DES NOEUDS POUR-LESQUELS ON VEUT L'IMPRESSION 
+C --- RECUPERATION DES NOEUDS POUR-LESQUELS ON VEUT L'IMPRESSION
 C --- DE LA MATRICE :
 C     -------------
       IF (NBNOE.EQ.0) THEN
 C
-C ---    ON FABRIQUE UN VECTEUR BIDON DE K8 D'1 SEUL TERME SI LA 
+C ---    ON FABRIQUE UN VECTEUR BIDON DE K8 D'1 SEUL TERME SI LA
 C ---    EST VIDE :
-C        -------- 
+C        --------
          LISBI1 = '&&IMELNV.BID1'
          CALL WKVECT(LISBI1,'V V K8',1,IDLINO)
       ENDIF
 C
-C --- RECUPERATION DES MAILLES POUR-LESQUELLES ON VEUT L'IMPRESSION 
+C --- RECUPERATION DES MAILLES POUR-LESQUELLES ON VEUT L'IMPRESSION
 C --- DE LA MATRICE :
 C     -------------
       IF (NBELEM.EQ.0) THEN
 C
-C ---    ON FABRIQUE UN VECTEUR BIDON DE K8 D'1 SEUL TERME SI LA 
+C ---    ON FABRIQUE UN VECTEUR BIDON DE K8 D'1 SEUL TERME SI LA
 C ---    EST VIDE :
-C        -------- 
+C        --------
          LISBI2 = '&&IMELNV.BID2'
          CALL WKVECT(LISBI2,'V V K8',1,IDLIMA)
       ELSE
@@ -139,16 +139,16 @@ C --- DE LA MATRICE :
 C     -------------
       IF (NBCMP.EQ.0) THEN
 C
-C ---    ON FABRIQUE UN VECTEUR BIDON DE K8 D'1 SEUL TERME SI LA 
+C ---    ON FABRIQUE UN VECTEUR BIDON DE K8 D'1 SEUL TERME SI LA
 C ---    EST VIDE :
-C        -------- 
+C        --------
          LISBI3 = '&&IMELNV.BID3'
          CALL WKVECT(LISBI3,'V V K8',1,IDLICM)
       ELSE
          CALL JEVEUO(LISCMP,'L',IDLICM)
       ENDIF
 C
-C --- CREATION DU TABLEAU DU NOMBRE DE COMPOSANTES PAR NOEUD : 
+C --- CREATION DU TABLEAU DU NOMBRE DE COMPOSANTES PAR NOEUD :
 C     ------------------------------------------------------
       LINBCM = '&&IMELNV.NBCOMP'
       CALL WKVECT(LINBCM,'V V I',NBNOMX,IDNBCM)
@@ -176,7 +176,7 @@ C
          CALL JEEXIN(RESU(1:19)//'.DESC',IER)
          IF (IER.EQ.0) GO TO 10
 C
-C ---   DETERMINATION DU TYPE 'SYMETRIQUE' OU 'NON-SYMETRIQUE' 
+C ---   DETERMINATION DU TYPE 'SYMETRIQUE' OU 'NON-SYMETRIQUE'
 C ---   DU RESU_ELEM :
 C       ------------
          TYMAT = 'S'
@@ -206,7 +206,7 @@ C
 C ---   NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR :
 C       ---------------------------------------------
          CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'LONMAX',NCMPMX,
-     +               K1BID)
+     &               K1BID)
          CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',INOCMP)
 C
 C ---   TYPE (REEL OU COMPLEXE) ASSOCIE AUX VALEURS DU RESU_ELEM :
@@ -216,32 +216,32 @@ C       --------------------------------------------------------
 C
 C ---   CAS D'UN RESU_ELEM REEL :
 C       -----------------------
-        IF (TYPVAL.EQ.'R') THEN       
+        IF (TYPVAL.EQ.'R') THEN
 C
-C ---   CREATION DU TABLEAU DES NOMS DES COMPOSANTES ASSOCIEES 
+C ---   CREATION DU TABLEAU DES NOMS DES COMPOSANTES ASSOCIEES
 C ---    A LA GRANDEUR :
 C        -------------
          LINOCM = '&&IMELNV1.NOMCMP'
          CALL WKVECT(LINOCM,'V V K8',NCMPMX*NBNOMX,IDNOMC)
 C
-C ---   CREATION DU TABLEAU DES VALEURS DE LA LIGNE COURANTE 
+C ---   CREATION DU TABLEAU DES VALEURS DE LA LIGNE COURANTE
 C ---   DU MATR_ELEM OU DU VECT_ELEM A IMPRIMER :
 C        --------------------------------------
          LIVALE = '&&IMELNV1.VALE'
-         CALL WKVECT(LIVALE,'V V R',NCMPMX*NBNOMX,IDVALE)         
+         CALL WKVECT(LIVALE,'V V R',NCMPMX*NBNOMX,IDVALE)
 C
-C ---   CREATION DU TABLEAU DES NOMS NOEUDS, A CHAQUE INCONNUE 
+C ---   CREATION DU TABLEAU DES NOMS NOEUDS, A CHAQUE INCONNUE
 C ---   DE LA MATRICE ELEMENTAIRE, ON ASSOCIE LE NOM DU NOEUD
 C ---   SUR-LAQUELLE ELLE PORTE :
 C        ----------------------
          LINONO = '&&IMELNV1.NOMNOE'
          CALL WKVECT(LINONO,'V V K8',NCMPMX*NBNOMX,IDNONO)
 C
-C ---   CREATION DU TABLEAU D'INDICATEURS DISANT SI UNE COMPOSANTE 
+C ---   CREATION DU TABLEAU D'INDICATEURS DISANT SI UNE COMPOSANTE
 C ---   EST A PRENDRE EN COMPTE OU NON :
 C        -----------------------------
          LINDCM = '&&IMELNV1.INDIC'
-         CALL WKVECT(LINDCM,'V V I',NCMPMX*NBNOMX,IDINCM)         
+         CALL WKVECT(LINDCM,'V V I',NCMPMX*NBNOMX,IDINCM)
 C
 C ---   RECUPERATION DU .NOLI DU RESU_ELEM :
 C       ----------------------------------
@@ -272,7 +272,7 @@ C       ----------------------------------------------------
          FORM1 = '('//'//,2X,'//KLONLG//'("_")'//')'
          FORM3 = '(2X,'//KLONLG//'("_")'//',//'//')'
          FORM2 = '(2X,'//'"!",X,"LIGREL : "A'//KLONLS//
-     +           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
+     &           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
 C
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU LIGREL :
 C       ------------------------------------------
@@ -307,7 +307,7 @@ C ---      RECUPERATION DU NOMBRE DE CONNECTIVITES DES ELEMENTS DU GREL:
 C          ------------------------------------------------------------
             NNOE = NBNO(MODE)
 C
-C ---      CONSTITUTION DE LA LISTE DES NOMS DES COMPOSANTES ASSOCIEES  
+C ---      CONSTITUTION DE LA LISTE DES NOMS DES COMPOSANTES ASSOCIEES
 C ---      AUX NOEUDS DES ELEMENTS :
 C          -----------------------
             ICO = 0
@@ -334,7 +334,7 @@ C
                NOCMP(I) = ZK8(IDNOMC+I-1)
  70        CONTINUE
 C
-C ---      NOMBRE DE COMPOSANTES DU VECTEUR OU DE LA 
+C ---      NOMBRE DE COMPOSANTES DU VECTEUR OU DE LA
 C ---      MATRICE ELEMENTAIRE :
 C          -------------------
             NCMPEL = DIGDEL(MODE)
@@ -348,7 +348,7 @@ C ---      RECUPERATION DU GREL :
 C          --------------------
             CALL JEVEUO(JEXNUM(LIEL,IGR),'L',IDGREL)
 C
-C ---      RECUPERATION DU VECTEUR DES VECTEURS OU DES MATRICES 
+C ---      RECUPERATION DU VECTEUR DES VECTEURS OU DES MATRICES
 C ---      ELEMENTAIRES DU GREL :
 C          --------------------
             CALL JEVEUO(JEXNUM(RESU(1:19)//'.RESL',IGR),'L',IDRESL)
@@ -374,7 +374,7 @@ C
 C ---         RECUPERATION DES CONNECTIVITES DE LA MAILLE :
 C             -------------------------------------------
                CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',NUMEL),'L',IDNOEU)
-C 
+C
 C ---         BOUCLE SUR LES CONNECTIVITES DE LA MAILLE :
 C             -----------------------------------------
                K    = 0
@@ -405,7 +405,7 @@ C            ------------------------------------
 C
                NUMLAG = NUMLAG - 1
 C
-C ---         CODAGE DU NUMERO DE LA MAILLE SOUS FORME D'UNE CHAINE 
+C ---         CODAGE DU NUMERO DE LA MAILLE SOUS FORME D'UNE CHAINE
 C ---         DE CARACTERES :
 C             -------------
                CALL CODENT(NUMLAG,'G',NOMAIL)
@@ -418,7 +418,7 @@ C ---         RECUPERATION DU DESCRIPTEUR DE LA MAILLE DANS LE .NEMA :
 C             ------------------------------------------------------
                IMA = -NUMEL
                CALL JEVEUO(JEXNUM(NEMA,IMA),'L',IDNEMA)
-C 
+C
 C ---         BOUCLE SUR LES CONNECTIVITES  DE LA MAILLE :
 C             ------------------------------------------
                DO 110 INO = 1, NNOE
@@ -437,7 +437,7 @@ C              -----------------------
                  ELSEIF (ZI(IDNEMA+INO-1).LT.0) THEN
                     NOELAG = ZI(IDNEMA+INO-1)
 C
-C ---            CODAGE DU NUMERO DU NOEUD SOUS FORME D'UNE CHAINE 
+C ---            CODAGE DU NUMERO DU NOEUD SOUS FORME D'UNE CHAINE
 C ---            DE CARACTERES :
 C                -------------
                   CALL CODENT(NOELAG,'G',NOMNOE)
@@ -479,7 +479,7 @@ C ---        RECONSTITUTION DE LA LIGNE COURANTE DU MATR_ELEM   =
 C ---        OU DU VECT_ELEM                                    =
 C================================================================
 C
-C ---          CAS DES MATRICES NON_SYMETRIQUES : 
+C ---          CAS DES MATRICES NON_SYMETRIQUES :
 C              --------------------------------
               IF (TYMAT.EQ.'N') THEN
 C
@@ -505,34 +505,34 @@ C
 C
 C ---          POINTEUR DU DERNIER TERME TRAITE DE LA MATRICE :
 C              ----------------------------------------------
-                 NBTERM = NBINCO*(I-1)                   
+                 NBTERM = NBINCO*(I-1)
 C
 C ---          BOUCLE SUR LES TERMES DE LA LIGNE COURANTE DE LA
 C ---          MATRICE  :
 C              -------
                  DO 170 J = 1, NBINCO
                     ZR(IDVALE+J-1) = ZR(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + J -1)
+     &                                  + NBTERM + J -1)
  170             CONTINUE
-C  
+C
 C ---          RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
 C ---          EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---          PAR L'UTILISATEUR :
 C              -----------------
-                 CALL TRNOR1 (NBNOE, ZK8(IDLINO), NBCMP, 
-     +                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM),  
-     +                        LONLI2)
+                 CALL TRNOR1 (NBNOE, ZK8(IDLINO), NBCMP,
+     &                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                        ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM),
+     &                        LONLI2)
 C
 C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'VALEUR':
 C              ------------------------------------------------------
                  CALL IMPFR3 (NOMNO1, NOMCM1, LONLI2, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZR(IDVALE), NOMAIL, 
-     +                        NBCHIF, IFM)
+     &                        ZK8(IDNOMC), ZR(IDVALE), NOMAIL,
+     &                        NBCHIF, IFM)
 C
  140         CONTINUE
 C
-C ---          CAS DES MATRICES SYMETRIQUES : 
+C ---          CAS DES MATRICES SYMETRIQUES :
 C              --------------------------------
               ELSEIF (TYMAT.EQ.'S') THEN
 C
@@ -558,14 +558,14 @@ C
 C
 C ---          POINTEUR DU DERNIER TERME TRAITE DE LA DEMI-MATRICE :
 C              ---------------------------------------------------
-                 NBTERM = (I*(I-1))/2                   
+                 NBTERM = (I*(I-1))/2
 C
 C ---          BOUCLE SUR LES TERMES DE LA LIGNE COURANTE DE LA
 C ---          DEMI-MATRICE INFERIEURE :
 C              -----------------------
                  DO 210 J = 1, I
                     ZR(IDVALE+J-1) = ZR(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + J -1)
+     &                                  + NBTERM + J -1)
  210             CONTINUE
 C
 C ---          BOUCLE SUR LES TERMES DE LA COLONNE I SITUES
@@ -576,26 +576,26 @@ C
 C ---            POINTEUR DU TERME DIAGONAL PRECEDANT LA LIGNE
 C ---            COURANTE DANS LA DEMI-MATRICE :
 C                -----------------------------
-                    NBTERM = (J*(J-1))/2  
-C                 
+                    NBTERM = (J*(J-1))/2
+C
                     ZR(IDVALE+J-1) = ZR(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + I -1)
+     &                                  + NBTERM + I -1)
  220             CONTINUE
-C  
+C
 C ---          RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
 C ---          EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---          PAR L'UTILISATEUR :
 C              -----------------
-                 CALL TRNOR1 (NBNOE, ZK8(IDLINO), NBCMP, 
-     +                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM),  
-     +                        LONLI2)
+                 CALL TRNOR1 (NBNOE, ZK8(IDLINO), NBCMP,
+     &                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                        ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM),
+     &                        LONLI2)
 C
 C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'VALEUR':
 C              ------------------------------------------------------
                  CALL IMPFR3 (NOMNO1, NOMCM1, LONLI2, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZR(IDVALE), NOMAIL, 
-     +                        NBCHIF, IFM)
+     &                        ZK8(IDNOMC), ZR(IDVALE), NOMAIL,
+     &                        NBCHIF, IFM)
 C
  180          CONTINUE
              ENDIF
@@ -606,32 +606,32 @@ C
 C
 C ---   CAS D'UN RESU_ELEM COMPLEXE :
 C       --------------------------
-        ELSEIF (TYPVAL.EQ.'C') THEN       
+        ELSEIF (TYPVAL.EQ.'C') THEN
 C
-C ---   CREATION DU TABLEAU DES NOMS DES COMPOSANTES ASSOCIEES 
+C ---   CREATION DU TABLEAU DES NOMS DES COMPOSANTES ASSOCIEES
 C ---    A LA GRANDEUR :
 C        -------------
          LINOCM = '&&IMELNV1.NOMCMP'
          CALL WKVECT(LINOCM,'V V K8',NCMPMX*NBNOMX,IDNOMC)
 C
-C ---   CREATION DU TABLEAU DES VALEURS DE LA LIGNE COURANTE 
+C ---   CREATION DU TABLEAU DES VALEURS DE LA LIGNE COURANTE
 C ---   DU MATR_ELEM OU DU VECT_ELEM A IMPRIMER :
 C        --------------------------------------
          LIVALE = '&&IMELNV1.VALE'
-         CALL WKVECT(LIVALE,'V V C',NCMPMX*NBNOMX,IDVALE)         
+         CALL WKVECT(LIVALE,'V V C',NCMPMX*NBNOMX,IDVALE)
 C
-C ---   CREATION DU TABLEAU DES NOMS NOEUDS, A CHAQUE INCONNUE 
+C ---   CREATION DU TABLEAU DES NOMS NOEUDS, A CHAQUE INCONNUE
 C ---   DE LA MATRICE ELEMENTAIRE, ON ASSOCIE LE NOM DU NOEUD
 C ---   SUR-LAQUELLE ELLE PORTE :
 C        ----------------------
          LINONO = '&&IMELNV1.NOMNOE'
          CALL WKVECT(LINONO,'V V K8',NCMPMX*NBNOMX,IDNONO)
 C
-C ---   CREATION DU TABLEAU D'INDICATEURS DISANT SI UNE COMPOSANTE 
+C ---   CREATION DU TABLEAU D'INDICATEURS DISANT SI UNE COMPOSANTE
 C ---   EST A PRENDRE EN COMPTE OU NON :
 C        -----------------------------
          LINDCM = '&&IMELNV1.INDIC'
-         CALL WKVECT(LINDCM,'V V I',NCMPMX*NBNOMX,IDINCM)         
+         CALL WKVECT(LINDCM,'V V I',NCMPMX*NBNOMX,IDINCM)
 C
 C ---   RECUPERATION DU .NOLI DU RESU_ELEM :
 C       ----------------------------------
@@ -662,7 +662,7 @@ C       ----------------------------------------------------
          FORM1 = '('//'//,2X,'//KLONLG//'("_")'//')'
          FORM3 = '(2X,'//KLONLG//'("_")'//',//'//')'
          FORM2 = '(2X,'//'"!",X,"LIGREL : "A'//KLONLS//
-     +           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
+     &           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
 C
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU LIGREL :
 C       ------------------------------------------
@@ -697,7 +697,7 @@ C ---      RECUPERATION DU NOMBRE DE CONNECTIVITES DES ELEMENTS DU GREL:
 C          ------------------------------------------------------------
             NNOE = NBNO(MODE)
 C
-C ---      CONSTITUTION DE LA LISTE DES NOMS DES COMPOSANTES ASSOCIEES  
+C ---      CONSTITUTION DE LA LISTE DES NOMS DES COMPOSANTES ASSOCIEES
 C ---      AUX NOEUDS DES ELEMENTS :
 C          -----------------------
             ICO = 0
@@ -724,7 +724,7 @@ C
                NOCMP(I) = ZK8(IDNOMC+I-1)
  280        CONTINUE
 C
-C ---      NOMBRE DE COMPOSANTES DU VECTEUR OU DE LA 
+C ---      NOMBRE DE COMPOSANTES DU VECTEUR OU DE LA
 C ---      MATRICE ELEMENTAIRE :
 C          -------------------
             NCMPEL = DIGDEL(MODE)
@@ -738,7 +738,7 @@ C ---      RECUPERATION DU GREL :
 C          --------------------
             CALL JEVEUO(JEXNUM(LIEL,IGR),'L',IDGREL)
 C
-C ---      RECUPERATION DU VECTEUR DES VECTEURS OU DES MATRICES 
+C ---      RECUPERATION DU VECTEUR DES VECTEURS OU DES MATRICES
 C ---      ELEMENTAIRES DU GREL :
 C          --------------------
             CALL JEVEUO(JEXNUM(RESU(1:19)//'.RESL',IGR),'L',IDRESL)
@@ -764,7 +764,7 @@ C
 C ---         RECUPERATION DES CONNECTIVITES DE LA MAILLE :
 C             -------------------------------------------
                CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',NUMEL),'L',IDNOEU)
-C 
+C
 C ---         BOUCLE SUR LES CONNECTIVITES DE LA MAILLE :
 C             -----------------------------------------
                K    = 0
@@ -795,7 +795,7 @@ C            ------------------------------------
 C
                NUMLAG = NUMLAG - 1
 C
-C ---         CODAGE DU NUMERO DE LA MAILLE SOUS FORME D'UNE CHAINE 
+C ---         CODAGE DU NUMERO DE LA MAILLE SOUS FORME D'UNE CHAINE
 C ---         DE CARACTERES :
 C             -------------
                CALL CODENT(NUMLAG,'G',NOMAIL)
@@ -808,7 +808,7 @@ C ---         RECUPERATION DU DESCRIPTEUR DE LA MAILLE DANS LE .NEMA :
 C             ------------------------------------------------------
                IMA = -NUMEL
                CALL JEVEUO(JEXNUM(NEMA,IMA),'L',IDNEMA)
-C 
+C
 C ---         BOUCLE SUR LES CONNECTIVITES  DE LA MAILLE :
 C             ------------------------------------------
                DO 320 INO = 1, NNOE
@@ -827,7 +827,7 @@ C              -----------------------
                  ELSEIF (ZI(IDNEMA+INO-1).LT.0) THEN
                     NOELAG = ZI(IDNEMA+INO-1)
 C
-C ---            CODAGE DU NUMERO DU NOEUD SOUS FORME D'UNE CHAINE 
+C ---            CODAGE DU NUMERO DU NOEUD SOUS FORME D'UNE CHAINE
 C ---            DE CARACTERES :
 C                -------------
                   CALL CODENT(NOELAG,'G',NOMNOE)
@@ -869,7 +869,7 @@ C ---        RECONSTITUTION DE LA LIGNE COURANTE DU MATR_ELEM   =
 C ---        OU DU VECT_ELEM                                    =
 C================================================================
 C
-C ---          CAS DES MATRICES NON_SYMETRIQUES : 
+C ---          CAS DES MATRICES NON_SYMETRIQUES :
 C              --------------------------------
               IF (TYMAT.EQ.'N') THEN
 C
@@ -895,34 +895,34 @@ C
 C
 C ---          POINTEUR DU DERNIER TERME TRAITE DE LA MATRICE :
 C              ----------------------------------------------
-                 NBTERM = NBINCO*(I-1)                   
+                 NBTERM = NBINCO*(I-1)
 C
 C ---          BOUCLE SUR LES TERMES DE LA LIGNE COURANTE DE LA
 C ---          MATRICE  :
 C              -------
                  DO 380 J = 1, NBINCO
                     ZC(IDVALE+J-1) = ZC(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + J -1)
+     &                                  + NBTERM + J -1)
  380             CONTINUE
-C  
+C
 C ---          RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
 C ---          EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---          PAR L'UTILISATEUR :
 C              -----------------
-                 CALL TRNOC1 (NBNOE, ZK8(IDLINO), NBCMP, 
-     +                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM),  
-     +                        LONLI2)
+                 CALL TRNOC1 (NBNOE, ZK8(IDLINO), NBCMP,
+     &                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                        ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM),
+     &                        LONLI2)
 C
 C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'VALEUR':
 C              ------------------------------------------------------
                  CALL IMPFC3 (NOMNO1, NOMCM1, LONLI2, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZC(IDVALE), NOMAIL, 
-     +                        NBCHIF, IFM)
+     &                        ZK8(IDNOMC), ZC(IDVALE), NOMAIL,
+     &                        NBCHIF, IFM)
 C
  350         CONTINUE
 C
-C ---          CAS DES MATRICES SYMETRIQUES : 
+C ---          CAS DES MATRICES SYMETRIQUES :
 C              --------------------------------
               ELSEIF (TYMAT.EQ.'S') THEN
 C
@@ -948,14 +948,14 @@ C
 C
 C ---          POINTEUR DU DERNIER TERME TRAITE DE LA DEMI-MATRICE :
 C              ---------------------------------------------------
-                 NBTERM = (I*(I-1))/2                   
+                 NBTERM = (I*(I-1))/2
 C
 C ---          BOUCLE SUR LES TERMES DE LA LIGNE COURANTE DE LA
 C ---          DEMI-MATRICE INFERIEURE :
 C              -----------------------
                  DO 420 J = 1, I
                     ZC(IDVALE+J-1) = ZC(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + J -1)
+     &                                  + NBTERM + J -1)
  420             CONTINUE
 C
 C ---          BOUCLE SUR LES TERMES DE LA COLONNE I SITUES
@@ -966,26 +966,26 @@ C
 C ---            POINTEUR DU TERME DIAGONAL PRECEDANT LA LIGNE
 C ---            COURANTE DANS LA DEMI-MATRICE :
 C                -----------------------------
-                    NBTERM = (J*(J-1))/2  
-C                 
+                    NBTERM = (J*(J-1))/2
+C
                     ZC(IDVALE+J-1) = ZC(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + I -1)
+     &                                  + NBTERM + I -1)
  430             CONTINUE
-C  
+C
 C ---          RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
 C ---          EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---          PAR L'UTILISATEUR :
 C              -----------------
-                 CALL TRNOC1 (NBNOE, ZK8(IDLINO), NBCMP, 
-     +                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM),  
-     +                        LONLI2)
+                 CALL TRNOC1 (NBNOE, ZK8(IDLINO), NBCMP,
+     &                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                        ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM),
+     &                        LONLI2)
 C
 C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'VALEUR':
 C              ------------------------------------------------------
                  CALL IMPFC3 (NOMNO1, NOMCM1, LONLI2, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZC(IDVALE), NOMAIL, 
-     +                        NBCHIF, IFM)
+     &                        ZK8(IDNOMC), ZC(IDVALE), NOMAIL,
+     &                        NBCHIF, IFM)
 C
  390          CONTINUE
              ENDIF
@@ -994,10 +994,7 @@ C
  230     CONTINUE
          CALL JEDETC('V','&&IMELNV1',1)
         ELSE
-          CALL UTMESS('F','IMELNV','LES SEULS TYPES DE VALEURS ACCEPTES'
-     +                //' POUR LES RESU_ELEM SONT LES REELS ET LES'
-     +                //' COMPLEXES, LE DESCRIPTEUR DE TYPE '//TYPVAL
-     +                //' EST INADEQUAT.')
+          CALL U2MESK('F','PREPOST_63',1,TYPVAL)
         ENDIF
  10   CONTINUE
 C

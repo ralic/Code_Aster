@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -179,9 +179,7 @@ C
 C 1.4 SORTIE EN ERREUR FATALE SI REPRESENTATION NON ACCEPTABLE
 C ---
       IF ( (.NOT.MAIL2D) .AND. (.NOT.MAIL3D) )
-     &   CALL UTMESS('F','TOMABE','CARACTERISATION DE LA TOPOLOGIE DE'//
-     &   ' LA STRUCTURE BETON : LE GROUPE DE MAILLES ASSOCIE NE DOIT'//
-     &   ' CONTENIR QUE DES MAILLES 2D OU QUE DES MAILLES 3D')
+     &   CALL U2MESS('F','MODELISA7_46')
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 2   DETERMINATION DES NOEUDS APPARTENANT A LA STRUCTURE BETON
@@ -237,19 +235,15 @@ C
       IAS = ZI(JPTMA+NUMAIL-1)
       IF ( IAS.EQ.0 ) THEN
          WRITE(K3MAI,'(I3)') NUMAIL
-         CALL UTMESS('F','TOMABE','RECUPERATION DU MATERIAU BETON : '//
-     &               'LES CARACTERISTIQUES MATERIELLES N ONT PAS ETE '//
-     &               'AFFECTEES A LA MAILLE NO'//K3MAI//
-     &               ' APPARTENANT AU GROUPE DE MAILLES 
-     &                ASSOCIE A LA STRUCTURE BETON')
+         CALL U2MESK('F','MODELISA7_47',1,K3MAI)
       ENDIF
 C
 
 
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C 5.  RECUPERATION DES CARACTERISTIQUES DU MATERIAU CONSTITUTIF
-C     DE LA STRUCTURE BETON ET VERIFICATION DE LA COMPATIBILITE DES 
-C     MATERIAUX BETON. 
+C     DE LA STRUCTURE BETON ET VERIFICATION DE LA COMPATIBILITE DES
+C     MATERIAUX BETON.
 C     ( LA LOI BPEL_BETON DOIT ETRE LA MEME POUR TOUTES LES MAILLES )
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -258,7 +252,7 @@ C     TRANSFORMATION DU CHAM_MATER EN CHAM_ELEM_S POUR TRAITEMENT
 
       CHSMAT='&&TOMABE.NOM_MATER'
       CARTEZ='&&TOMABE.CARTE'
-      
+
       CALL COPISD(' ','V',CARTE,CARTEZ)
       CALL CARCES(CARTEZ,'ELEM',K8B,'V',CHSMAT,IRET)
       CALL JEVEUO(CHSMAT//'.CESD','L',JCESD)
@@ -275,9 +269,7 @@ C.... RELATION DE COMPORTEMENT <BPEL_BETON>
       RCVALK = NOMRC//'.VALK'
       CALL JEEXIN(RCVALK,IRET)
       IF ( IRET.EQ.0 )
-     &   CALL UTMESS('F','TOMABE','RECUPERATION DES CARACTERISTIQUES '//
-     &   'DU MATERIAU BETON : ABSENCE DE RELATION DE COMPORTEMENT DE '//
-     &   'TYPE <BPEL_BETON>')
+     &   CALL U2MESS('F','MODELISA7_48')
       RCVALR = NOMRC//'.VALR'
       CALL JEVEUO(RCVALK,'L',JVALK)
       CALL JEVEUO(RCVALR,'L',JVALR)
@@ -297,13 +289,12 @@ C.... RELATION DE COMPORTEMENT <BPEL_BETON>
   150 CONTINUE
 
   151 CONTINUE
-     
 
-C CRITERE DE COMPARAISON DES VALEURS MATERIAUX INTRODUITES 
+C CRITERE DE COMPARAISON DES VALEURS MATERIAUX INTRODUITES
 C PAR L UTILISATEUR DANS LA RELATION BPEL_BETON QUI DOIT ETRE
 C UNIQUE A TOUT LE BETON
       CRITE=1.D-07
-      
+
       IF ( NBMABE.GT.1 ) THEN
          DO 200 IMAIL = 2, NBMABE
             NUMAIL = ZI(JNUMAB+IMAIL-1)
@@ -319,12 +310,7 @@ C UNIQUE A TOUT LE BETON
             IAS = ZI(JPTMA+NUMAIL-1)
             IF ( IAS.EQ.0 ) THEN
                WRITE(K3MAI,'(I3)') NUMAIL
-               CALL UTMESS('F','TOMABE','RECUPERATION DU MATERIAU '//
-     &                     'BETON : LES CARACTERISTIQUES MATERIELLES '//
-     &                     'N ONT PAS ETE AFFECTEES A LA MAILLE NO'//
-     &                      K3MAI//' APPARTENANT AU GROUPE DE '//
-     &                     'MAILLES ASSOCIE A LA '//
-     &                     'STRUCTURE BETON')
+               CALL U2MESK('F','MODELISA7_47',1,K3MAI)
             ENDIF
 
             DO 250 ICSTE = 1, NBCSTE
@@ -332,37 +318,21 @@ C UNIQUE A TOUT LE BETON
               IF ( ZK8(JVALK+ICSTE-1).EQ.BPELB(1) ) THEN
                 IF ( ABS(XFLU).LT.CRITE ) THEN
                   IF (ABS(XFLU-ZR(JVALR+ICSTE-1)).GT.CRITE) THEN
-                    CALL UTMESS ('F','TOMABE','LE CALCUL DE LA '//
-     &                'TENSION EST FAIT SELON BPEL. IL NE PEUT '//
-     &                'Y AVOIR QU UN SEULE JEU DE DONNEES. '//
-     &                'VERIFIEZ LA COHERENCE DU PARAMETRE PERT_FLUA '//
-     &                ' DANS LES DEFI_MATERIAU')
+                    CALL U2MESS('F','MODELISA7_49')
                   ENDIF
                 ELSE
                   IF (ABS((XFLU-ZR(JVALR+ICSTE-1))/XFLU).GT.CRITE) THEN
-                    CALL UTMESS ('F','TOMABE','LE CALCUL DE LA '//
-     &                'TENSION EST FAIT SELON BPEL. IL NE PEUT '//
-     &                'Y AVOIR QU UN SEUL JEU DE DONNEES. '//
-     &                'VERIFIEZ LA COHERENCE DU PARAMETRE PERT_FLUA '//
-     &                'DANS LES DEFI_MATERIAU')
+                    CALL U2MESS('F','MODELISA7_50')
                   ENDIF
                 ENDIF
               ELSE IF ( ZK8(JVALK+ICSTE-1).EQ.BPELB(2) ) THEN
                 IF ( ABS(XRET).LT.CRITE ) THEN
                   IF (ABS(XRET-ZR(JVALR+ICSTE-1)).GT.CRITE) THEN
-                    CALL UTMESS ('F','TOMABE','LE CALCUL DE LA '//
-     &                'TENSION EST FAIT SELON BPEL. IL NE PEUT '//
-     &                'Y AVOIR QU UN SEULE JEU DE DONNEES. '//
-     &                'VERIFIEZ LA COHERENCE DU PARAMETRE PERT_RETR '//
-     &                'DANS LES DEFI_MATERIAU')
+                    CALL U2MESS('F','MODELISA7_51')
                   ENDIF
                 ELSE
                   IF (ABS((XRET-ZR(JVALR+ICSTE-1))/XRET).GT.CRITE) THEN
-                    CALL UTMESS ('F','TOMABE','LE CALCUL DE LA '//
-     &                'TENSION EST FAIT SELON BPEL. IL NE PEUT '//
-     &                'Y AVOIR QU UN SEULE JEU DE DONNEES. '//
-     &                'VERIFIEZ LA COHERENCE DU PARAMETRE PERT_FLUA '//
-     &                'DANS LES DEFI_MATERIAU')
+                    CALL U2MESS('F','MODELISA7_49')
                   ENDIF
                 ENDIF
               ENDIF
@@ -371,14 +341,10 @@ C UNIQUE A TOUT LE BETON
       ENDIF
 
       IF ( .NOT. ( TROUV1 .AND. TROUV2 ) )
-     &   CALL UTMESS('F','TOMABE','RECUPERATION DES CARACTERISTIQUES '//
-     &   'DU MATERIAU BETON, RELATION DE COMPORTEMENT <BPEL_BETON> : '//
-     &   'AU MOINS UN PARAMETRE INDEFINI')
+     &   CALL U2MESS('F','MODELISA7_52')
       IF ( ( XFLU.LT.0.0D0 ) .OR. ( XRET.LT.0.0D0 ) .OR.
      &     ( XFLU+XRET.GT.1.0D0 ) )
-     &   CALL UTMESS('F','TOMABE','RECUPERATION DES CARACTERISTIQUES '//
-     &   'DU MATERIAU BETON, RELATION DE COMPORTEMENT <BPEL_BETON> : '//
-     &   'AU MOINS UNE VALEUR DE PARAMETRE INVALIDE')
+     &   CALL U2MESS('F','MODELISA7_53')
 C
       CALL JEDETC('V','&&TOMABE',1)
       CALL JEDEMA()

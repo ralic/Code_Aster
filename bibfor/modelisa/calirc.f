@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C ----------------------------------------------------------------------
       ELSE IF (NOMCMD.EQ.'AFFE_CHAR_THER') THEN
         TYPLIA = 'TEMP'
       ELSE
-        CALL UTMESS('F','CALIRC','STOP1')
+        CALL U2MESS('F','CALCULEL_2')
       END IF
 
 
@@ -486,7 +486,7 @@ C           -----------------------------------------------------
             IDECAL = IDECAL + NNO1
   270     CONTINUE
         ELSE
-          CALL UTMESS('F','CALIRC','STOP 2')
+          CALL U2MESS('F','CALCULEL_8')
         END IF
 
         CALL DETRSD('CORRESP_2_MAILLA',CORRES)

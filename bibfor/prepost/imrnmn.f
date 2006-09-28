@@ -1,7 +1,7 @@
       SUBROUTINE IMRNMN(IFM,NOMSDZ,OPTIOZ,NBNO,LISNOZ,NBCMP,LISCMZ,
      &                  NBCHIF,EPS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -232,8 +232,7 @@ C     -----------------------------------------
         K = I
    10 CONTINUE
       IF (K.EQ.0) THEN
-        CALL UTMESS('F','IMRNMN',
-     &              'ERREUR DANS LA RECUPERATION DU NUME.PRNO')
+        CALL U2MESS('F','PREPOST_61')
       END IF
       CALL JEVEUO(JEXNUM(PRCHNO//'.PRNO',K),'L',IDPRNO)
 
@@ -382,9 +381,7 @@ C         ------------------------------------------------------
    30     CONTINUE
 
           IF (NUBLOC.EQ.0) THEN
-            CALL UTMESS('F','IMRNMN','PROBLEME DANS LA RECUPERATION'//
-     &                  ' DU NUMERO DE BLOC AUQUEL APPARTIENT'//
-     &                  ' LA LIGNE COURANTE.')
+            CALL U2MESS('F','PREPOST_62')
           END IF
 
 C ---     RECUPERATION DU BLOC INFERIEUR (SUPERIEUR) :

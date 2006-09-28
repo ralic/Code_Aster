@@ -1,21 +1,21 @@
       SUBROUTINE TE0598 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C
@@ -111,7 +111,7 @@ C
       INTEGER            IMATE, ICAMAS
       INTEGER            ITEMPM, ITEMPP, IDLAGT, ITHETA, ITEMPS
       INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,
-     +                   NPG2,IPOID2,IVF2,IDFDE2
+     &                   NPG2,IPOID2,IVF2,IDFDE2
 C
       LOGICAL THTNUL
       LOGICAL AXI
@@ -124,9 +124,9 @@ C
       IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
 C
       CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
-     +            JGANO)
+     &            JGANO)
       CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     +            JGANO)
+     &            JGANO)
 C====
 C 1. INITIALISATIONS
 C====
@@ -163,7 +163,7 @@ C
       ELSEIF ( OPTION(15:16).EQ.'TR' ) THEN
         TRANSI = .TRUE.
       ELSE
-        CALL UTMESS ('F','TE0598','MAUVAISE OPTION')
+        CALL U2MESS('F','ELEMENTS4_52')
       ENDIF
 C
 C====
@@ -221,7 +221,7 @@ C
          LAMBOR(2) = VALRES(3)
          ANISO     = .TRUE.
       ELSE
-         CALL UTMESS ('F','TE0598','COMPORTEMENT NON TROUVE')
+         CALL U2MESS('F','MODELISA5_46')
       ENDIF
       GLOBAL = .FALSE.
       IF ( ANISO ) THEN
@@ -428,9 +428,9 @@ C
 C
           DO 2471 , I = 1 , NNO
              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) + POIDS * (
-     >              CP/DELTAT*DLAGTG*ZR(IVF+K+I-1)
-     >            - UNMTHE*(FLUGLD(1)*DFDX(I) + FLUGLD(2)*DFDY(I))
-     >            )
+     &              CP/DELTAT*DLAGTG*ZR(IVF+K+I-1)
+     &            - UNMTHE*(FLUGLD(1)*DFDX(I) + FLUGLD(2)*DFDY(I))
+     &            )
  2471     CONTINUE
 C
           ENDIF
@@ -447,12 +447,12 @@ C
 C
           DO 2472 , I = 1 , NNO
              ZR(IVECTT+I-1) = ZR(IVECTT+I-1) + POIDS * (
-     >              R8AUX*ZR(IVF+K+I-1)
-     >            + FLUGRM(1)*DFDX(I) + FLUGRM(2)*DFDY(I)
-     >            + FLUGLO(1)*(DFDX(I)*GRADTH(1,1)+DFDY(I)*GRADTH(1,2))
-     >            + FLUGLO(2)*(DFDX(I)*GRADTH(2,1)+DFDY(I)*GRADTH(2,2))
-     >            - DIVTHT*(FLUGLO(1)*DFDX(I) + FLUGLO(2)*DFDY(I))
-     >            )
+     &              R8AUX*ZR(IVF+K+I-1)
+     &            + FLUGRM(1)*DFDX(I) + FLUGRM(2)*DFDY(I)
+     &            + FLUGLO(1)*(DFDX(I)*GRADTH(1,1)+DFDY(I)*GRADTH(1,2))
+     &            + FLUGLO(2)*(DFDX(I)*GRADTH(2,1)+DFDY(I)*GRADTH(2,2))
+     &            - DIVTHT*(FLUGLO(1)*DFDX(I) + FLUGLO(2)*DFDY(I))
+     &            )
  2472     CONTINUE
 C
           ENDIF
@@ -483,7 +483,7 @@ C
         IF ( TRANSI ) THEN
           DO 2522 , I = 1 , NNO
             TEMPNO(I) = THTIMP*ZR(ITEMPP+C(ISE,I)-1)
-     >                + UNMTHE*ZR(ITEMPM+C(ISE,I)-1)
+     &                + UNMTHE*ZR(ITEMPM+C(ISE,I)-1)
  2522     CONTINUE
         ELSE
           DO 2523 , I = 1 , NNO
@@ -640,8 +640,8 @@ C
 C
           DO 25251 , I = 1 , NNO
             VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS * (
-     >            - UNMTHE*(FLUGLD(1)*DFDX(I) + FLUGLD(2)*DFDY(I))
-     >            )
+     &            - UNMTHE*(FLUGLD(1)*DFDX(I) + FLUGLD(2)*DFDY(I))
+     &            )
 25251     CONTINUE
 C
           ENDIF
@@ -652,11 +652,11 @@ C
 C
           DO 25252 , I = 1 , NNO
              VECTT(C(ISE,I)) = VECTT(C(ISE,I)) + POIDS * (
-     >              FLUGRM(1)*DFDX(I) + FLUGRM(2)*DFDY(I)
-     >            + FLUGLO(1)*(DFDX(I)*GRADTH(1,1)+DFDY(I)*GRADTH(1,2))
-     >            + FLUGLO(2)*(DFDX(I)*GRADTH(2,1)+DFDY(I)*GRADTH(2,2))
-     >            - DIVTHT*(FLUGLO(1)*DFDX(I) + FLUGLO(2)*DFDY(I))
-     >            )
+     &              FLUGRM(1)*DFDX(I) + FLUGRM(2)*DFDY(I)
+     &            + FLUGLO(1)*(DFDX(I)*GRADTH(1,1)+DFDY(I)*GRADTH(1,2))
+     &            + FLUGLO(2)*(DFDX(I)*GRADTH(2,1)+DFDY(I)*GRADTH(2,2))
+     &            - DIVTHT*(FLUGLO(1)*DFDX(I) + FLUGLO(2)*DFDY(I))
+     &            )
 25252     CONTINUE
 C
           ENDIF
@@ -699,7 +699,7 @@ C
               TPL    = TPL    + ZR(ITEMPP+C(ISE,I)-1)*R8AUX
               DLAGTG = DLAGTG + ZR(IDLAGT+C(ISE,I)-1)*R8AUX
               DIVTHT = DIVTHT + ZR(ITHETA+2*C(ISE,I)-2)*DFDX(I)
-     >                        + ZR(ITHETA+2*C(ISE,I)-1)*DFDY(I)
+     &                        + ZR(ITHETA+2*C(ISE,I)-1)*DFDY(I)
 25312       CONTINUE
           ENDIF
 C

@@ -1,6 +1,6 @@
       SUBROUTINE DISMCH(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
          IPHEN = 3
          SUF = 'CIAC'
       ELSE
-         CALL UTMESS ('F','DISMCH','TYPE DE CHARGE INCONNU')
+         CALL U2MESS('F','UTILITAI_52')
       END IF
 C
 C
@@ -121,7 +121,7 @@ C
                GO TO 9999
             END IF
          ELSE
-            CALL UTMESS('F','DISMCH','SUFFIXE INCONU: '//SUF)
+            CALL U2MESK('F','UTILITAI_53',1,SUF)
          END IF
 C
       ELSE IF (QUESTI.EQ.'EXI_HYDRAT') THEN
@@ -141,12 +141,12 @@ C
             IF (TYPECO.EQ.'EVOL_THER') THEN
                REPK = 'EVOL'
                GO TO 9999
-            ELSE 
+            ELSE
                REPK = 'CHGD'
                GO TO 9999
             END IF
          ELSE
-            CALL UTMESS('F','DISMCH','SUFFIXE INCONU: '//SUF)
+            CALL U2MESK('F','UTILITAI_53',1,SUF)
          END IF
 C
       ELSE IF (QUESTI.EQ.'EXI_SECHAG') THEN
@@ -166,12 +166,12 @@ C
             IF (TYPECO.EQ.'EVOL_THER') THEN
                REPK = 'EVOL'
                GO TO 9999
-            ELSE 
+            ELSE
                REPK = 'CHGD'
                GO TO 9999
             END IF
          ELSE
-            CALL UTMESS('F','DISMCH','SUFFIXE INCONU: '//SUF)
+            CALL U2MESK('F','UTILITAI_53',1,SUF)
          END IF
 C
       ELSE IF (QUESTI.EQ.'NOM_MODELE') THEN
@@ -191,8 +191,7 @@ C
 C
       ELSE
          REPK = QUESTI
-         CALL UTMESS('F','DISMCH:',
-     +               'LA QUESTION : "'//REPK//'" EST INCONNUE')
+         CALL U2MESK('F','UTILITAI_49',1,REPK)
       END IF
 C
  9999 CONTINUE

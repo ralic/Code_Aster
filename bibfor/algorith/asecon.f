@@ -7,22 +7,22 @@ C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     COMMANDE : COMB_SISM_MODAL
@@ -77,7 +77,7 @@ C
       EPSMAC = R8VIDE()
       NBMODE = 10
       II = 0
-C 
+C
 C -- PREPARATION DU STOCKAGE DE LA REPONSE SECONDAIRE
 C
       CALL GETRES(K8B,CONCEP,NOMCMD)
@@ -88,15 +88,14 @@ C     --- CREATION DE LA STRUCTURE D'ACCUEIL ---
       IF (NOMSY(1:4).EQ.'VITE') NOMS2 = 'DEPL'
 C
       CALL RSORAC(MOME,'TOUT_ORDRE',IBID,R8B,K8B,CBID,R8B,K8B,
-     +    IORDR,1,NBTROU)
+     &    IORDR,1,NBTROU)
 
       CALL RSEXCH(MECA,NOMS2,IORDR,MONCHA,IER)
       IF (IER.NE.0) THEN
-        CALL UTMESS('F','ASSTOC','ON N''A PAS PU EXTRAIRE LE PREMIER'//
-     +                                   ' CHAMP DES MODES MECANIQUES.')
+        CALL U2MESS('F','ALGORITH_20')
       ENDIF
       DEF = 'SECONDAIRE'
-      IORDR = 200 
+      IORDR = 200
 C           --- CHAMP PAR OCCURENCE DE COMB_DPL_APPUI ---
 C
       CALL JEVEUO('&&ASENAP.TYPE','L',JTYP)
@@ -119,7 +118,7 @@ C
         IF ( IER .EQ. 100 ) THEN
           CALL VTDEFS(CHAMP,MONCHA,'G','R')
         ELSE
-         CALL CODENT(IOCC, 'D' , OCCUR ) 
+         CALL CODENT(IOCC, 'D' , OCCUR )
          CALL UTDEBM('F','ASSTOC',' PROBLEME STOCKAGE :')
          CALL UTIMPK('L','   OPTION DE CALCUL : ',1,NOMSY)
          CALL UTIMPK('L','   OCCURENCE :',1,OCCUR)
@@ -141,14 +140,14 @@ C
          ZR(JABS+IN-1)= 0.0D0
  4      CONTINUE
         CALL JELIRA(JEXNUM('&&ASENAP.LISTCAS',IOCC),'LONMAX',
-     +                                                   NCAS,K8B)
+     &                                                   NCAS,K8B)
         CALL JEVEUO(JEXNUM('&&ASENAP.LISTCAS',IOCC),'L',JCAS)
         DO 20 ICAS = 1,NCAS
           NUCAS = ZI(JCAS+ICAS-1)
           DO 40 IDEP = 1,NDEP
             CALL GETVIS('DEPL_MULT_APPUI','NUME_CAS',IDEP,1,1,NUME,IBID)
              IF (NUME.EQ.NUCAS) THEN
-               KNUM = 'N       '     
+               KNUM = 'N       '
                CALL CODENT(NUCAS, 'D0' , KNUM(2:8) )
                KDIR = 'D       '
                CALL CODENT(NUCAS, 'D0' , KDIR(2:8) )
@@ -166,11 +165,11 @@ C
                  NOEU =ZK8(JNO+INO-1)
                  DO 14 IDIR =  1,3
                    IF (ZR(JDIR+3*(INO-1)+IDIR-1).NE.EPSMAC) THEN
-                     CMP = NOMCMP(IDIR)  
+                     CMP = NOMCMP(IDIR)
                      MONACC = NOEU//CMP
                      XX1    = ZR(JDIR+3*(INO-1)+IDIR-1)
                      CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
-     +                      R8B,K8B,IORST,1,NBTROU)
+     &                      R8B,K8B,IORST,1,NBTROU)
                      CALL RSEXCH(STAT,NOMSY,IORST,CHEXTR,IRET)
                      CALL JEEXIN(CHEXTR//'.VALE',IBID)
                      IF (IBID.GT.0) THEN
@@ -198,8 +197,8 @@ C              --- COMBINAISON VALEUR ABSOLUE ---
                   XX1         = ABS(ZR(JREP+IN-1))
                   ZR(JABS+IN-1)= ZR(JABS+IN-1)+ XX1
  22            CONTINUE
-              ENDIF      
-            ENDIF                      
+              ENDIF
+            ENDIF
  14        CONTINUE
  12       CONTINUE
          ENDIF
@@ -212,7 +211,7 @@ C              --- COMBINAISON VALEUR ABSOLUE ---
           ZR(JVAL+IN-1) = XX1 + XX2 + XX3
           II = II + 1
           ZR(JAUX+II-1) =  ZR(JVAL+IN-1)
- 26    CONTINUE 
+ 26    CONTINUE
       CALL RSNOCH(RESU,NOMSY,IORDR,' ')
       CALL RSADPA(RESU,'E',1,'NOEUD_CMP',IORDR,0,IAD,K8B)
       CALL CODENT(IOCC, 'D' , OCCUR )
@@ -225,7 +224,7 @@ C              --- COMBINAISON VALEUR ABSOLUE ---
       IORDR = IORDR + 1
  10   CONTINUE
       ZI(JORD+NBOC) = IORDR
-C 
+C
       CALL RSEXCH(RESU,NOMSY,IORDR,CHAMP,IER)
       IF ( IER .EQ. 100 ) THEN
         CALL VTDEFS(CHAMP,MONCHA,'G','R')
@@ -250,7 +249,7 @@ C
           ZR(JCUM+IN-1) = ZR(JCUM+IN-1)+XX1*XX1
  30    CONTINUE
  32   CONTINUE
-C STOCKAGE DU CUMUL QUADRATIQUE 
+C STOCKAGE DU CUMUL QUADRATIQUE
       DO 34 IN = 1, NEQ
           ZR(JVAL+IN-1) = SQRT( ABS ( ZR(JCUM+IN-1) ) )
  34   CONTINUE

@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(DEFICO,DEPDEL,NUMEDD,NOMA,CNSINR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,8 +117,7 @@ C---------RECHERCHE DE LA METHODE D INTEGRATION
         NBZONE = INT(ZR(JCMCF))
         DO 10 I = 1,NBZONE
           IF (ZR(JCMCF+12* (I-1)+1).EQ.2.D0) THEN
-            CALL UTMESS('A','MMMRES','LA  METHODE D INTEGRATION'//
-     &                  ' EST GAUSS, LE CHAMP VALE_CONT N EST PAS CREE')
+            CALL U2MESS('A','ALGORITH6_12')
             GO TO 190
           END IF
    10   CONTINUE
@@ -262,7 +261,7 @@ C------DES MAILLES.
             INTEGR = INT(ZR(JCMCF)+12* (IZONE-1)+1)
 
 C ---- INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
-            IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR. 
+            IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
               NBNOC = NBNOC/2
             END IF
@@ -319,7 +318,7 @@ C ------ DEPLACEMENT DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
                 X(1) = ZR(JTABF+28* (NTPC+INO-1)+3)
                 X(2) = ZR(JTABF+28* (NTPC+INO-1)+12)
               ELSE
-                CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                CALL U2MESS('F','ELEMENTS_16')
               END IF
 
               CALL CALFFX(ALIAS,X(1),X(2),FF)
@@ -383,7 +382,7 @@ C        PROJETE DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
                 X(1) = ZR(JTABF+28* (NTPC+INO-1)+4)
                 X(2) = ZR(JTABF+28* (NTPC+INO-1)+5)
               ELSE
-                CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                CALL U2MESS('F','ELEMENTS_16')
               END IF
 
               CALL CALFFX(ALIAS,X(1),X(2),FF)
@@ -472,7 +471,7 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DE CONTACT
                 IZONE = ZI(JMAESC+3* (IMA-1)+2)
                 INTEGR = INT(ZR(JCMCF)+12* (IZONE-1)+1)
 
-                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR. 
+                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
                   NBNOC = NBNOC/2
                 END IF
@@ -518,7 +517,7 @@ C ------ COORD ABSOLUES DU POINT D INTEGRATION: COORE
                     X(1) = ZR(JTABF+28* (NTPC+IN-1)+3)
                     X(2) = ZR(JTABF+28* (NTPC+IN-1)+12)
                   ELSE
-                    CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                    CALL U2MESS('F','ELEMENTS_16')
                   END IF
 
                   CALL CALFFX(ALIAS,X(1),X(2),FF)
@@ -735,7 +734,7 @@ C----NBNOC= NOMBRE DE POINTS D'INTEGRATION DE CONTACT DE LA MAILLE IMA
             NBNOC = ZI(JMAESC+3* (IMA-1)+3)
 
 C----INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
-            IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR. 
+            IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
               NBNOC = NBNOC/2
             END IF
@@ -762,7 +761,7 @@ C ---- VECTEURS DIRECTEURS DU PLAN DE CONTACT
                 NNOE = 3
                 X(1) = ZR(JTABF+28* (NTPC+INO-1)+3)
               ELSE
-                CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                CALL U2MESS('F','ELEMENTS_16')
               END IF
 
               CALL CALFFX(ALIAS,X(1),X(2),FF)
@@ -791,7 +790,7 @@ C ---- DEPLACEMENT TANGENTIEL DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
                 NNOM = 3
                 X(1) = ZR(JTABF+28* (NTPC+INO-1)+4)
               ELSE
-                CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                CALL U2MESS('F','ELEMENTS_16')
               END IF
 
               CALL CALFFX(ALIAS,X(1),X(2),FF)
@@ -869,7 +868,7 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DU MAILLAGE
                 INTEGR = INT(ZR(JCMCF)+12* (IZONE-1)+1)
                 NBNOC = ZI(JMAESC+3* (IMA-1)+3)
 
-                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR. 
+                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5 .OR.
      &         INTEGR.EQ.6 .OR. INTEGR.EQ.7 .OR. INTEGR.EQ.8) THEN
                   NBNOC = NBNOC/2
                 END IF
@@ -886,7 +885,7 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DU MAILLAGE
                     NNOE = 3
                     X(1) = ZR(JTABF+28* (NTPC+IN-1)+3)
                   ELSE
-                    CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                    CALL U2MESS('F','ELEMENTS_16')
                   END IF
 
                   CALL CALFFX(ALIAS,X(1),X(2),FF)
@@ -1020,12 +1019,10 @@ C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
   180     CONTINUE
 
         ELSE
-          CALL UTMESS('F','MMMRES','DIMENSION DU PROBLEME INCONNU')
+          CALL U2MESS('F','ALGORITH6_13')
         END IF
       ELSE
-        CALL UTMESS('F','MMMRES','ERREUR DANS LA PROGRAMMATION, '//
-     &              'CETTE ROUTINE NE DOIT ETRE APPELE QUE DANS LE CAS '
-     &              //'DE LA METHODE CONTINUE DU CONTACT')
+        CALL U2MESS('F','ALGORITH6_14')
 
       END IF
 

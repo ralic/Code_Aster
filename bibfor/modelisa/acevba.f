@@ -3,22 +3,22 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/03/2000   AUTEUR CIBHHPD P.DAVID 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C     AFFE_CARA_ELEM
@@ -73,7 +73,7 @@ C
       CALL WKVECT('&&ACEVBA.TABBAR'  ,'V V K8 ',NBO   ,JTAB )
       CALL WKVECT('&&ACEVBA.CARBAR'  ,'V V K8 ',NDIM  ,JCAR )
       CALL ACEDAT('BARRE',1,ZI(JPARA),ZK16(JSECT),ZK8(JEXP),ZK8(JTAB),
-     +                                                      ZK8(JCAR))
+     &                                                      ZK8(JCAR))
       CALL WKVECT('&&ACEVBA.CARA','V V K8',NBCAR,JCARA)
       CALL WKVECT('&&ACEVBA.VALE','V V R8',NBVAL,JVALE)
 C
@@ -88,7 +88,7 @@ C
          CALL GETVTX('BARRE','SECTION'      ,IOC,1,1    ,SEC ,NSEC)
          CALL GETVTX('BARRE','CARA'         ,IOC,1,0    ,K8B ,NC)
          CALL GETVTX('BARRE','CARA'        ,IOC,1,NBCAR,
-     +                ZK8(JCARA),NCAR)
+     &                ZK8(JCARA),NCAR)
          CALL GETVR8('BARRE','VALE'         ,IOC,1,0    ,R8B ,NV)
          CALL GETVR8('BARRE','VALE'         ,IOC,1,NBVAL,ZR(JVALE),NVAL)
 C
@@ -101,15 +101,17 @@ C -- CARA
                  CALL CODENT(NCMAX,'G',KI)
                  IF (NCAR.GT.NCMAX .AND. L.NE.2) THEN
                     CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//KIOC//
-     +                         ' : "CARA" : '//KI//' ARGUMENTS MAXI'//
-     +                     ' POUR UNE SECTION "'//ZK16(JSECT+L-1)//'"')
+     &                         ' : "CARA" : '//KI//' ARGUMENTS MAXI'//
+     &                     ' POUR UNE SECTION "'//ZK16(JSECT+L-1)//'"')
+C        CALL U2MESK('E','MODELISA_44', 3 ,VALK)
                     IER = IER + 1
                  ENDIF
                  IF (L.EQ.2) THEN
                     IF (NCAR.GT.4) THEN
                        CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//KIOC//
-     +                              ' : "CARA" :  4  ARGUMENTS MAXI'//
-     +                     ' POUR UNE SECTION "'//ZK16(JSECT+L-1)//'"')
+     &                              ' : "CARA" :  4  ARGUMENTS MAXI'//
+     &                     ' POUR UNE SECTION "'//ZK16(JSECT+L-1)//'"')
+C        CALL U2MESK('E','MODELISA_45', 2 ,VALK)
                        IER = IER + 1
                     ENDIF
                     IRECH = 0
@@ -118,18 +120,20 @@ C -- CARA
                        IF (ZK8(JCARA+I-1)(1:2).EQ.'H ') THEN
                           IF (IRECH.EQ.2) THEN
                              CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//
-     +                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
-     +                   ' ARGUMENT "H" INCOMPATIBLE AVEC "HY" OU "HZ"')
+     &                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
+     &                   ' ARGUMENT "H" INCOMPATIBLE AVEC "HY" OU "HZ"')
+C        CALL U2MESK('E','MODELISA_46', 2 ,VALK)
                              IER = IER + 1
                           ENDIF
                           IRECH = 1
                        ENDIF
                        IF (ZK8(JCARA+I-1)(1:2).EQ.'HY' .OR.
-     +                                ZK8(JCARA+I-1)(1:2).EQ.'HZ') THEN
+     &                                ZK8(JCARA+I-1)(1:2).EQ.'HZ') THEN
                           IF (IRECH.EQ.1) THEN
                              CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//
-     +                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
-     +                  ' ARGUMENT "HY" OU "HZ" INCOMPATIBLE AVEC "H" ')
+     &                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
+     &                  ' ARGUMENT "HY" OU "HZ" INCOMPATIBLE AVEC "H" ')
+C        CALL U2MESK('E','MODELISA_47', 2 ,VALK)
                              IER = IER + 1
                           ENDIF
                           IRECH = 2
@@ -137,18 +141,20 @@ C -- CARA
                        IF (ZK8(JCARA+I-1)(1:3).EQ.'EP ') THEN
                            IF (IRECE.EQ.1) THEN
                              CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//
-     +                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
-     +                ' ARGUMENT "EP" INCOMPATIBLE AVEC "EPY" OU "EPZ"')
+     &                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
+     &                ' ARGUMENT "EP" INCOMPATIBLE AVEC "EPY" OU "EPZ"')
+C        CALL U2MESK('E','MODELISA_48', 2 ,VALK)
                               IER = IER + 1
                            ENDIF
                            IRECE = 2
                         ENDIF
                         IF (ZK8(JCARA+I-1)(1:3).EQ.'EPX' .OR.
-     +                               ZK8(JCARA+I-1)(1:3).EQ.'EPY') THEN
+     &                               ZK8(JCARA+I-1)(1:3).EQ.'EPY') THEN
                            IF (IRECE.EQ.2) THEN
                              CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//
-     +                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
-     +                ' ARGUMENT "EPY" OU "EPZ" INCOMPATIBLE AVEC "EP"')
+     &                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
+     &                ' ARGUMENT "EPY" OU "EPZ" INCOMPATIBLE AVEC "EP"')
+C        CALL U2MESK('E','MODELISA_49', 2 ,VALK)
                               IER = IER + 1
                            ENDIF
                            IRECE = 1
@@ -164,16 +170,18 @@ C -- VALE
             IF (NVAL.NE.NCARA) THEN
                CALL CODENT(NCARA,'G',KI)
                CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//KIOC//' : '//
-     +              '"CARA" : NOMBRE DE VALEURS ENTREES INCORRECT :'//
-     +                                              ' IL EN FAUT '//KI)
+     &              '"CARA" : NOMBRE DE VALEURS ENTREES INCORRECT :'//
+     &                                              ' IL EN FAUT '//KI)
+C        CALL U2MESK('E','MODELISA_50', 2 ,VALK)
                IER = IER + 1
             ELSE
                DO 70 I = 1 , NVAL
                   CALL CODENT(I,'G',KI)
                   IF (ZR(JVALE+I-1).EQ.TST) THEN
                      CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//KIOC//
-     +              ' : SECTION "'//ZK16(JSECT+L-1)//' : VALEUR '//KI//
-     +                   ' DE "VALE" NON ADMISE (VALEUR TEST INTERNE)')
+     &              ' : SECTION "'//ZK16(JSECT+L-1)//' : VALEUR '//KI//
+     &                   ' DE "VALE" NON ADMISE (VALEUR TEST INTERNE)')
+C        CALL U2MESK('E','MODELISA_51', 3 ,VALK)
                      IER = IER + 1
                   ENDIF
  70            CONTINUE

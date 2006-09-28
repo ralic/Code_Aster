@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,8 +68,7 @@ C ----------------------------------------------------------------------
       NEWNOM = '.0000000'
       VECELZ = VECEL
       BASE = BASEZ
-      IF (MODELE(1:1).EQ.' ') CALL UTMESS('F','MEMAM2',
-     &                             'IL FAUT UN MODELE.')
+      IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
 
       NH = 0
       CALL MECHAM('MASS_MECA',MODELE,NCHAR,LCHAR,CARA,NH,CHGEOM,CHCARA,

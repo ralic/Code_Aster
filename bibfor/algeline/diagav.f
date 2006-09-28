@@ -1,7 +1,7 @@
       SUBROUTINE DIAGAV(NOMA19,NEQ,TYPVAR,EPS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C     ---------------------------------------------
             ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(JSXDI+I-1)))
    50     CONTINUE
         ELSE
-          CALL UTMESS('F','DIAGAV','STOP 2')
+          CALL U2MESS('F','CALCULEL_8')
         END IF
         GO TO 9998
       END IF
@@ -100,7 +100,7 @@ C     ---------------------------------------------
       DO 30 IBLOC = 1,NBBLOC
         CALL JEVEUO(JEXNUM(NOMA19//'.UALF',IBLOC),'L',IAVALE)
         IDERN = ZI(JSCBL-1+IBLOC+1)
-        IF (IDERN.GT.NEQ) CALL UTMESS('F','DIAGAV','STOP1')
+        IF (IDERN.GT.NEQ) CALL U2MESS('F','CALCULEL_2')
         IPREM = ZI(JSCBL-1+IBLOC) + 1
         IF (TYPVAR.EQ.1) THEN
           DO 10 I = IPREM,IDERN
@@ -111,7 +111,7 @@ C     ---------------------------------------------
             ZR(IADIGS-1+I) = ABS(ZC(IAVALE-1+ZI(JSXDI+I-1)))
    20     CONTINUE
         ELSE
-          CALL UTMESS('F','DIAGAV','STOP 1')
+          CALL U2MESS('F','CALCULEL_2')
         END IF
         CALL JELIBE(JEXNUM(NOMA19//'.UALF',IBLOC))
    30 CONTINUE
@@ -136,7 +136,7 @@ C     DONC ON PREND UNE VALEUR ARBITRAIRE :
         DO 70 I = 1,NEQ
            DIAMAX = MAX(DIAMAX,ZR(IADIGS-1+I))
            IF (ZR(IADIGS-1+I).NE.0.D0)
-     +         DIAMIN = MIN(DIAMIN,ZR(IADIGS-1+I))
+     &         DIAMIN = MIN(DIAMIN,ZR(IADIGS-1+I))
    70   CONTINUE
         WRITE (IFM,*) '<FACTOR> AVANT FACTORISATION :'
         WRITE (IFM,*) '<FACTOR>   NB EQUATIONS : ',NEQ

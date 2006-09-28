@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO, MOTCL
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,13 +55,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       IBID, I, NCHEI, NCMP, JVALE, JVALV, JNCMP, IOCC,
-     +              NXX, NYY, NZZ, NXY, NXZ, NYZ, NEX, NKY, NKZ, NEXX,
-     +              NEYY, NEXY, NKXX, NKYY, NKXY,
-     +              NBTOU, IER, NBMA, JMA
+     &              NXX, NYY, NZZ, NXY, NXZ, NYZ, NEX, NKY, NKZ, NEXX,
+     &              NEYY, NEXY, NKXX, NKYY, NKXY,
+     &              NBTOU, IER, NBMA, JMA
       REAL*8        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ, EPX, XKY, XKZ,
-     +              XEXX, XEYY, XEXY, XKXX, XKYY, XKXY
+     &              XEXX, XEYY, XEXY, XKXX, XKYY, XKXY
       CHARACTER*8   K8B, KEPXX, KEPYY, KEPZZ, KEPXY, KEPXZ, KEPYZ,
-     +              MOD, MODELI, TYPMCL(2)
+     &              MOD, MODELI, TYPMCL(2)
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
@@ -87,7 +87,7 @@ C
       ELSE IF (FONREE.EQ.'FONC') THEN
          CALL ALCART ( 'G', CARTE , NOMA , 'EPSI_F')
       ELSE
-         CALL UTMESS('F','CACHEI','VALEUR INATTENDUE: '//FONREE )
+         CALL U2MESK('F','MODELISA2_37',1,FONREE)
       END IF
 C
       CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
@@ -171,8 +171,7 @@ C
             IF (NKYY .NE. 0) ZR(JVALV-1+14) = XKYY
             IF (NKXY .NE. 0) ZR(JVALV-1+15) = XKXY
             IF ((NKY.NE.0.OR.NKZ.NE.0).AND.(MODELI.EQ.'POU_C_T')) THEN
-                 CALL UTMESS('F','CACHEI','LES COURBURES KY ET KZ '//
-     +         'NE SONT PAS PRISES EN COMPTE POUR LES POUTRES COURBES')
+                 CALL U2MESS('F','MODELISA2_38')
             ENDIF
          ELSE
             CALL GETVID ( MOTCLF, 'EPXX', IOCC,1,1, KEPXX, NXX )
@@ -199,7 +198,7 @@ C
             CALL NOCART(CARTE, 1, ' ', 'NOM', 0, ' ', 0,LIGRMO, NCMP)
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
-     +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+     &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL NOCART( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
             CALL JEDETR ( MESMAI )

@@ -9,7 +9,7 @@
       CHARACTER*24  CONNEX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C
         NBPT = ZI(JCESD-1+5+4*(IMAOLD-1)+1)
         NBSP = ZI(JCESD-1+5+4*(IMAOLD-1)+2)
         IF ( NBSP .NE. 1 ) THEN
-          CALL UTMESS('F','IRGMCE','NBSP DIFFERENT DE 1')
+          CALL U2MESS('F','PREPOST2_57')
         ENDIF
         ITROU=0
         IF (ZK8(JTYPE-1+IOR).EQ.'R') THEN
@@ -129,7 +129,7 @@ C
           IF (IWRI)  WRITE(IFI,1000) VALE
  14       CONTINUE
             IF (ITROU.EQ.0) THEN
-              CALL UTMESS('F','IRGMEC','PAS DE CORRESPONDANCE')
+              CALL U2MESS('F','PREPOST2_58')
             ENDIF
         ELSE IF (ZK8(JTYPE-1+IOR).EQ.'C') THEN
           DO 24 J=1,NBNO
@@ -155,13 +155,13 @@ C
               ENDIF
  23         CONTINUE
             IF (ITROU.EQ.0) THEN
-              CALL UTMESS('F','IRGMEC','PAS DE CORRESPONDANCE')
+              CALL U2MESS('F','PREPOST2_58')
             ENDIF
  25       CONTINUE
           IF (IWRI)  WRITE(IFI,1000) VALE
  24       CONTINUE
             IF (ITROU.EQ.0) THEN
-              CALL UTMESS('F','IRGMEC','PAS DE CORRESPONDANCE')
+              CALL U2MESS('F','PREPOST2_58')
             ENDIF
         ENDIF
  11   CONTINUE

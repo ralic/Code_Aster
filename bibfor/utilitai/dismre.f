@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C
          IF ( K8BID(1:4) .EQ. 'RESL' ) THEN
             REPK = 'RESL'
          ELSE
-            CALL UTMESS ( 'F', 'DISMRE', '1' )
+            CALL U2MESS('F','CALCULEL_33')
             IERD = 1
             GOTO 9999
          ENDIF
@@ -90,7 +90,7 @@ C
          IF ( K8BID(1:4) .EQ. 'RESL' ) THEN
             REPK = '????'
          ELSE
-            CALL UTMESS ( 'F', 'DISMRE', '2' )
+            CALL U2MESS('F','UTILITAI_67')
             IERD = 1
             GOTO 9999
          ENDIF
@@ -126,8 +126,7 @@ C
 C
       ELSE
          REPK = QUESTI
-         CALL UTMESS ( CODMES, 'DISMRE:',
-     +                 'LA QUESTION : "'//REPK//'" EST INCONNUE')
+         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD = 1
          GOTO 9999
       ENDIF

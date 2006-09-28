@@ -4,7 +4,7 @@
       CHARACTER*(*)     CODMES,QUESTI,NOMOB,TYPECO,     REPK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,8 +124,7 @@ C
          CALL DISMTM(CODME2,QUESTI,NOMO1(1:8),REPI,REPK1,IERD)
       ELSE
          REPK1 = TYPECO
-         CALL UTMESS(CODME2,'DISMOI: ',
-     +               'LE TYPE DE CONCEPT : "'//REPK1//'" EST INCONNU')
+         CALL U2MESK(CODME2,'UTILITAI_65',1,REPK1)
          IERD=1
       END IF
 

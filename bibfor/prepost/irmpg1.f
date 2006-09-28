@@ -1,25 +1,25 @@
       SUBROUTINE IRMPG1 ( NOFIMD,
-     >                    NOMFPG, NBNOTO, NBREPG, NBSP, NDIM, TYPGEO,
-     >                    REFCOO, GSCOO, WG,
-     >                    RAUX1, RAUX2, RAUX3,
-     >                    NOLOPG, CODRET )
+     &                    NOMFPG, NBNOTO, NBREPG, NBSP, NDIM, TYPGEO,
+     &                    REFCOO, GSCOO, WG,
+     &                    RAUX1, RAUX2, RAUX3,
+     &                    NOLOPG, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/02/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GNICOLAS G.NICOLAS
 C_______________________________________________________________________
@@ -77,7 +77,7 @@ C
       PARAMETER (EDFUIN=0)
       INTEGER EDLEAJ
       PARAMETER (EDLEAJ=2)
-C 
+C
       INTEGER IFM, NIVINF
       INTEGER IAUX, JAUX, KAUX
       INTEGER NBLOPG
@@ -102,7 +102,7 @@ C
         WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
         WRITE (IFM,12001) NOMFPG
 12001 FORMAT(/,'ECRITURE D''UNE LOCALISATION DES POINTS DE GAUSS',
-     >       /,'==> NOM DE LA FAMILLE D''ELEMENT FINI ASSOCIEE : ',A)
+     &       /,'==> NOM DE LA FAMILLE D''ELEMENT FINI ASSOCIEE : ',A)
       ENDIF
  1001 FORMAT(/,4X,10('='),A,10('='),/)
 C
@@ -117,7 +117,7 @@ C
         CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
         CALL UTIMPI ( 'L', 'ERREUR EFOUVR NUMERO ', 1, CODRET )
         CALL UTFINM ()
-        CALL UTMESS ( 'F', NOMPRO, 'PROBLEME A L OUVERTURE DU FICHIER' )
+        CALL U2MESS('F','PREPOST_69')
       ENDIF
 C
 C 1.4. ==> CREATION DE LA PRMIERE MOITIE DU NOM DE LA LOCALISATION :
@@ -142,7 +142,7 @@ C
 C
       IF ( CODRET.NE.0 ) THEN
         CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFNGAU NUMERO '//SAUX08)
+        CALL U2MESK('F','PREPOST2_98',1,SAUX08)
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN
@@ -153,9 +153,9 @@ C
         ENDIF
       ENDIF
 21001 FORMAT(/,2X,'LE FICHIER NE CONTIENT PAS DE',
-     >' LOCALISATION DE POINTS DE GAUSS.')
+     &' LOCALISATION DE POINTS DE GAUSS.')
 21002 FORMAT(/,2X,'LE FICHIER CONTIENT DEJA',I8,
-     >' LOCALISATION(S) DE POINTS DE GAUSS : ')
+     &' LOCALISATION(S) DE POINTS DE GAUSS : ')
 C
 C 2.2. ==> PARCOURS DES LOCALISATIONS DEJA ENREGISTREES
 C
@@ -168,21 +168,21 @@ C              TYPGEL = TYPGEO
 C              NBREPL = NOMBRE DE POINTS DE GAUSS
 C
         CALL EFGAUI ( IDFIMD, IAUX,
-     >                SAUX32, TYPGEL, NBREPL, CODRET )
+     &                SAUX32, TYPGEL, NBREPL, CODRET )
 C
         IF ( CODRET.NE.0 ) THEN
           CALL CODENT ( CODRET,'G',SAUX08 )
-          CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFGAUI NUMERO '//SAUX08)
+          CALL U2MESK('F','PREPOST2_99',1,SAUX08)
         ENDIF
 C
         IF ( NIVINF.GT.1 ) THEN
           WRITE (IFM,22101) IAUX, SAUX32, TYPGEL, NBREPL
         ENDIF
 22101 FORMAT(
-     > /,2X,'. CARACTERISTIQUES DE LA LOCALISATION NUMERO',I4,' : ',
-     > /,2X,'... NOM    : ',A,
-     > /,2X,'... TYPGEO :',I4,
-     > /,2X,'... NBREPG :',I4)
+     & /,2X,'. CARACTERISTIQUES DE LA LOCALISATION NUMERO',I4,' : ',
+     & /,2X,'... NOM    : ',A,
+     & /,2X,'... TYPGEO :',I4,
+     & /,2X,'... NBREPG :',I4)
 C
 C 2.2.2. ==> ON REPERE SI LA LOCALISATION EST BATIE SUR LA MEME
 C            FAMILLE D'ELEMENT FINI ASTER.
@@ -199,12 +199,11 @@ C
           IF ( TYPGEL.EQ.TYPGEO .AND. NBREPL.EQ.NBREPG ) THEN
 C
             CALL EFGAUL ( IDFIMD, RAUX1, RAUX2, RAUX3,
-     >                    EDFUIN, SAUX32, CODRET )
+     &                    EDFUIN, SAUX32, CODRET )
 C
             IF ( CODRET.NE.0 ) THEN
               CALL CODENT ( CODRET,'G',SAUX08 )
-              CALL UTMESS ( 'F', NOMPRO,
-     >                      'MED: ERREUR EFGAUL NUMERO '//SAUX08)
+              CALL U2MESK('F','PREPOST3_1',1,SAUX08)
             ENDIF
 C
             KAUX = NBNOTO*NDIM
@@ -279,13 +278,13 @@ C
           WRITE (IFM,60002) 'NOEUDS         '
           DO 6012 , IAUX = 1 , NBNOTO
             WRITE (IFM,60012) IAUX, REFCOO(NDIM*(IAUX-1)+1),
-     >                              REFCOO(NDIM*(IAUX-1)+2)
+     &                              REFCOO(NDIM*(IAUX-1)+2)
  6012     CONTINUE
           WRITE (IFM,60022)
           WRITE (IFM,60002) 'POINTS DE GAUSS'
           DO 6022 , IAUX = 1 , NBREPG
             WRITE (IFM,60012) IAUX, GSCOO(NDIM*(IAUX-1)+1),
-     >                              GSCOO(NDIM*(IAUX-1)+2)
+     &                              GSCOO(NDIM*(IAUX-1)+2)
  6022     CONTINUE
           WRITE (IFM,60022)
 C
@@ -295,15 +294,15 @@ C
           WRITE (IFM,60003) 'NOEUDS         '
           DO 6013 , IAUX = 1 , NBNOTO
             WRITE (IFM,60013) IAUX, REFCOO(NDIM*(IAUX-1)+1),
-     >                              REFCOO(NDIM*(IAUX-1)+2),
-     >                              REFCOO(NDIM*(IAUX-1)+3)
+     &                              REFCOO(NDIM*(IAUX-1)+2),
+     &                              REFCOO(NDIM*(IAUX-1)+3)
  6013     CONTINUE
           WRITE (IFM,60023)
           WRITE (IFM,60003) 'POINTS DE GAUSS'
           DO 6023 , IAUX = 1 , NBREPG
             WRITE (IFM,60013) IAUX, GSCOO(NDIM*(IAUX-1)+1),
-     >                              GSCOO(NDIM*(IAUX-1)+2),
-     >                              GSCOO(NDIM*(IAUX-1)+3)
+     &                              GSCOO(NDIM*(IAUX-1)+2),
+     &                              GSCOO(NDIM*(IAUX-1)+3)
  6023     CONTINUE
           WRITE (IFM,60023)
         ENDIF
@@ -317,31 +316,31 @@ C
       ENDIF
 C
 60001 FORMAT(
-     >/,28('*'),
-     >/,'*      COORDONNEES DES     *',
-     >/,'*      ',A15        ,'     *',
-     >/,28('*'),
-     >/,'*  NUMERO  *       X       *',
-     >/,28('*'))
+     &/,28('*'),
+     &/,'*      COORDONNEES DES     *',
+     &/,'*      ',A15        ,'     *',
+     &/,28('*'),
+     &/,'*  NUMERO  *       X       *',
+     &/,28('*'))
 60002 FORMAT(
-     >/,44('*'),
-     >/,'*       COORDONNEES DES ',A15        ,'    *',
-     >/,44('*'),
-     >/,'*  NUMERO  *       X       *       Y       *',
-     >/,44('*'))
+     &/,44('*'),
+     &/,'*       COORDONNEES DES ',A15        ,'    *',
+     &/,44('*'),
+     &/,'*  NUMERO  *       X       *       Y       *',
+     &/,44('*'))
 60003 FORMAT(
-     >/,60('*'),
-     >/,'*            COORDONNEES DES ',A15         ,
-     >'               *',
-     >/,60('*'),
-     >/,'*  NUMERO  *       X       *       Y       *',
-     >'       Z       *',
-     >/,60('*'))
+     &/,60('*'),
+     &/,'*            COORDONNEES DES ',A15         ,
+     &'               *',
+     &/,60('*'),
+     &/,'*  NUMERO  *       X       *       Y       *',
+     &'       Z       *',
+     &/,60('*'))
 60004 FORMAT(
-     >/,28('*'),
-     >/,'*      POINTS DE GAUSS     *',
-     >/,'*  NUMERO  *     POIDS     *',
-     >/,28('*'))
+     &/,28('*'),
+     &/,'*      POINTS DE GAUSS     *',
+     &/,'*  NUMERO  *     POIDS     *',
+     &/,28('*'))
 60011 FORMAT('* ',I5,'    *',G11.5,'    *')
 60012 FORMAT('* ',I5,2('    *',G11.5),'    *')
 60013 FORMAT('* ',I5,3('    *',G11.5),'    *')
@@ -398,11 +397,11 @@ C
       DO 32 , IAUX = 1 , NBLOPG
 C
         CALL EFGAUI ( IDFIMD, IAUX,
-     >                SAUX32, TYPGEL, NBREPL, CODRET )
+     &                SAUX32, TYPGEL, NBREPL, CODRET )
 C
         IF ( CODRET.NE.0 ) THEN
           CALL CODENT ( CODRET,'G',SAUX08 )
-          CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFGAUI NUMERO '//SAUX08)
+          CALL U2MESK('F','PREPOST2_99',1,SAUX08)
         ENDIF
 C
         IF ( SAUX32.EQ.NOLOPG ) THEN
@@ -417,20 +416,20 @@ C
 C
         WRITE (IFM,33000) TYPGEO, NBNOTO, NBREPG, NOLOPG
 33000 FORMAT(
-     >/,'TYPE DE MAILLES MED :', I4,
-     >/,'NOMBRE DE NOEUDS          :', I4
-     >/,'NOMBRE DE POINTS DE GAUSS :', I4,
-     >/,'ECRITURE D''UNE NOUVELLE LOCALISATION DES POINTS DE GAUSS, ',
-     >  'NOMMEE : ',/,A,/)
+     &/,'TYPE DE MAILLES MED :', I4,
+     &/,'NOMBRE DE NOEUDS          :', I4
+     &/,'NOMBRE DE POINTS DE GAUSS :', I4,
+     &/,'ECRITURE D''UNE NOUVELLE LOCALISATION DES POINTS DE GAUSS, ',
+     &  'NOMMEE : ',/,A,/)
 C
       ENDIF
 C
       CALL EFGAUE ( IDFIMD, TYPGEO, REFCOO, EDFUIN,
-     >              NBREPG, GSCOO, WG, NOLOPG, CODRET )
+     &              NBREPG, GSCOO, WG, NOLOPG, CODRET )
 C
       IF ( CODRET.NE.0 ) THEN
         CALL CODENT ( CODRET,'G',SAUX08 )
-        CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFGAUE NUMERO '//SAUX08)
+        CALL U2MESK('F','PREPOST3_2',1,SAUX08)
       ENDIF
 C
 C====
@@ -439,7 +438,7 @@ C====
 C
    40 CONTINUE
 C
-C 4.1. ==> FERMETURE DU FICHIER MED  
+C 4.1. ==> FERMETURE DU FICHIER MED
 C
       CALL EFFERM ( IDFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
@@ -447,7 +446,7 @@ C
         CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
         CALL UTIMPI ( 'L', 'ERREUR EFFERM NUMERO ', 1, CODRET )
         CALL UTFINM ()
-        CALL UTMESS ( 'F', NOMPRO, 'PROBLEME A LA FERMETURE DU FICHIER')
+        CALL U2MESS('F','PREPOST_70')
       ENDIF
 C
       IF ( NIVINF.GT.1 ) THEN

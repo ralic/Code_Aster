@@ -2,7 +2,7 @@
      &                    TINSTM,TINSTP,TM,TP,TREF,EPSM,DEPS,SIGM,
      &                    VIM,OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -314,21 +314,15 @@ C  ------- CARACTERISTIQUES HYGROMETRIE H
 C
       NOMRES(1)='FONC_DESORP'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
-     +            R8BID,1,NOMRES(1),VALRES(1),CODRET(1), 'F ')
+     &            R8BID,1,NOMRES(1),VALRES(1),CODRET(1), 'F ')
       IF  (CODRET(1) .NE. 'OK')  THEN
-         CALL UTMESS ('F','RCVALA_01',
-     &        'IL FAUT DECLARER FONC_DESORP
-     &          SOUS ELAS_FO POUR LE FLUAGE PROPRE
-     &          AVEC SECH COMME PARAMETRE')
+         CALL U2MESS('F','ALGORITH4_94')
       ENDIF
       HYGRM=VALRES(1)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
-     +            R8BID,1,NOMRES(1),VALRES(1),CODRET(1), 'F ')
+     &            R8BID,1,NOMRES(1),VALRES(1),CODRET(1), 'F ')
          IF  (CODRET(1) .NE. 'OK')  THEN
-             CALL UTMESS ('F','RCVALA_01',
-     &        'IL FAUT DECLARER FONC_DESORP
-     &          SOUS ELAS_FO POUR LE FLUAGE PROPRE
-     &          AVEC SECH COMME PARAMETRE')
+             CALL U2MESS('F','ALGORITH4_94')
          ENDIF
       HYGRP=VALRES(1)
 C

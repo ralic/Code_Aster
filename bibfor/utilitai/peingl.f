@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,17 +178,14 @@ C     ----------------------------------
       CALL GETVID(' ','RESULTAT',1,1,1,RESUL,NR)
 
       IF (NR.EQ.0) THEN
-        CALL UTMESS('F','PEINGL','POUR CALCULER LES INDICATEURS '//
-     &              'GLOBAUX D''ENERGIE, IL FAUT DONNER UN RESULTAT'//
-     &              ' ISSU DE STAT_NON_LINE .')
+        CALL U2MESS('F','UTILITAI3_76')
       END IF
 
 C --- ON VERIFIE QUE LE  RESULTAT A TRAITER EST DE TYPE EVOL_NOLI :
 C     -----------------------------------------------------------
       CALL GETTCO(RESUL,TYPRES)
       IF (TYPRES(1:9).NE.'EVOL_NOLI') THEN
-        CALL UTMESS('F','PEINGL','ON ATTEND UN RESULTAT '//
-     &              'DE TYPE "EVOL_NOLI" .')
+        CALL U2MESS('F','UTILITAI3_77')
       END IF
 
 C --- RECUPERATION DE LA PRECISION POUR LE TRAITEMENT DES NUMEROS
@@ -268,6 +265,7 @@ C      ----------------------
           CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
      &                ' DOIT COMPORTER LA RELATION DE COMPORTEMENT '//
      &                'AU NUMERO D''ORDRE '//KIORD//' .')
+C        CALL U2MESK('F','UTILITAI3_78', 2 ,VALK)
         END IF
 
 CCC---RECUPERATION DU COMPOR PAR ETENCA
@@ -278,7 +276,7 @@ C --- CREATION DU TABLEAU DESCRIPTEUR DE LA CARTE COMPOR ---
 
         CALL ETENCA(COMPOR,LIGRMO,IRET)
         IF (IRET.NE.0) THEN
-          CALL UTMESS('F','NUROTA','ERREUR DANS ETENCA')
+          CALL U2MESS('F','UTILITAI2_62')
         END IF
 C --- RECUPERATION DE LA GRANDEUR (ICI COMPOR)  ---
 C --- REFERENCEE PAR LA CARTE COMPO             ---
@@ -291,8 +289,7 @@ C --- REFERENCEE PAR LA CARTE COMPO             ---
         CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,K8B,IRET)
 
         IF (NEC.GT.1) THEN
-          CALL UTMESS('F','PEINGL','LE DESCRIPTEUR_GRANDEUR DE COMPOR'//
-     &                ' NE TIENT PAS SUR UN SEUL ENTIER_CODE')
+          CALL U2MESS('F','UTILITAI2_61')
         END IF
 
 
@@ -326,9 +323,7 @@ C ---     ON S'ASSURE QUE LA PREMIERE COMPOSANTE DE LA GRANDEUR
 C ---     QUI EST RELCOM A BIEN ETE AFFECTEE
 
             IF (.NOT.EXISDG(DG,1)) THEN
-              CALL UTMESS('F','NUROTA',
-     &                    'LA COMPOSANTE RELCOM N''A PAS ETE'//
-     &                    ' AFFECTEE POUR LA GRANDEUR COMPOR')
+              CALL U2MESS('F','UTILITAI2_63')
             END IF
 C ---     RECUPERATION DU COMPORTEMENT AFFECTE A LA MAILLE
             COMPT = ZK16(IVALE+IDEBGD+1-1)
@@ -350,6 +345,7 @@ C      ----------------------
           CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
      &                ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
      &                'AU NUMERO D''ORDRE '//KIORD//' .')
+C        CALL U2MESK('F','CALCULEL3_17', 2 ,VALK)
         END IF
 
 C --- SI LE NUMERO COURANT EST INFERIEUR A NBORDR ON RECUPERE LES
@@ -363,6 +359,7 @@ C --- CONTRAINTES DE L INSTANT PRECEDENT
             CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
      &                  ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
      &                  'AU NUMERO D''ORDRE '//KIORDM//' .')
+C        CALL U2MESK('F','CALCULEL3_17', 2 ,VALK)
           END IF
         END IF
 
@@ -376,6 +373,7 @@ C      ----------------------
               CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
      &                ' DOIT COMPORTER UN CHAMP DE VARIABLES INTERNES '
      &                //'AU NUMERO D''ORDRE '//KIORD//' .')
+C        CALL U2MESK('F','UTILITAI3_79', 2 ,VALK)
            ELSE
 C CREATION D'UN CHAMP DE VARIABLES INTERNES NUL
               IVARI=0
@@ -393,6 +391,7 @@ C      ----------------------
           CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
      &                ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
      &                'AU NUMERO D''ORDRE '//KIORD//' .')
+C        CALL U2MESK('F','CALCULEL3_11', 2 ,VALK)
         END IF
 
 C ---  RECUPERATION DU CHAMP DES DEPLACEMENTS ASSOCIE AU
@@ -404,6 +403,7 @@ C      ----------------------
             CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
      &                  ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
      &                  'AU NUMERO D''ORDRE '//KIORDM//' .')
+C        CALL U2MESK('F','CALCULEL3_11', 2 ,VALK)
           END IF
         END IF
 
@@ -490,8 +490,7 @@ C         -------------------------------------------
               END IF
 
               IF (VOLUME.LE.R8PREM()) THEN
-                CALL UTMESS('F','PEINGL','IMPOSSIBILITE : LE VOLUME '//
-     &                      'DU MODELE TRAITE EST NUL. ')
+                CALL U2MESS('F','UTILITAI3_80')
               END IF
 
               VALER(2) = INDIC1/VOLUME
@@ -542,13 +541,11 @@ C         ---------------------------------
               NOMMAI = ZK8(JGR+IG-1)
               CALL JEEXIN(JEXNOM(MLGGMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('F','PEINGL','LE GROUPE DE MAILLE "'//
-     &                      NOMMAI//'" N''EXISTE PAS.')
+                CALL U2MESK('F','UTILITAI3_46',1,NOMMAI)
               END IF
               CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONMAX',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL UTMESS('F','PEINGL','LE GROUPE "'//NOMMAI//
-     &                      '" NE CONTIENT AUCUNE MAILLE.')
+                CALL U2MESK('F','UTILITAI3_74',1,NOMMAI)
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
 
@@ -572,8 +569,7 @@ C          -------------------------------------------
                 END IF
 
                 IF (VOLUME.LE.R8PREM()) THEN
-                  CALL UTMESS('F','PEINGL','IMPOSSIBILITE : LE VOLUME '
-     &                        //'DU GROUP_MA '//NOMMAI//' EST NUL. ')
+                  CALL U2MESK('F','UTILITAI3_81',1,NOMMAI)
                 END IF
 
                 VALER(2) = INDIC1/VOLUME
@@ -632,8 +628,7 @@ C        ----------------------
               NOMMAI = ZK8(JMA+IM-1)
               CALL JEEXIN(JEXNOM(MLGNMA,NOMMAI),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('F','PEINGL','LA MAILLE "'//NOMMAI//
-     &                      '" N''EXISTE PAS.')
+                CALL U2MESK('F','UTILITAI3_49',1,NOMMAI)
               END IF
               CALL JENONU(JEXNOM(MLGNMA,NOMMAI),NUME)
 
@@ -656,8 +651,7 @@ C          -------------------------------------------
                 END IF
 
                 IF (VOLUME.LE.R8PREM()) THEN
-                  CALL UTMESS('F','PEINGL','IMPOSSIBILITE : LE VOLUME '
-     &                        //'DE LA MAILLE '//NOMMAI//' EST NUL. ')
+                  CALL U2MESK('F','UTILITAI3_82',1,NOMMAI)
                 END IF
 
                 VALER(2) = INDIC1/VOLUME

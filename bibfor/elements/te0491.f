@@ -1,6 +1,6 @@
       SUBROUTINE TE0491(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -284,9 +284,9 @@ C ----    EPSTH = ALPHA*(T-TREF) :
 
       OPTIO2 = 'EPME_ELGA_DEPL'
       CALL EPSVMC('RIGI',MODELI, NNO, NDIM, NBSIG, NPG1, IPOIDS,IVF,
-     +            IDFDE,ZR(IGEOM), ZR(IDEPL),
-     +            ZR(ITEMPE), ZR(ITREF), INSTAN,
-     +            ZI(IMATE), REPERE, NHARM, OPTIO2, EPSM)
+     &            IDFDE,ZR(IGEOM), ZR(IDEPL),
+     &            ZR(ITEMPE), ZR(ITREF), INSTAN,
+     &            ZI(IMATE), REPERE, NHARM, OPTIO2, EPSM)
 
 C                      ===========================
 C                      =                         =
@@ -673,9 +673,7 @@ C --- TRAVAIL ELASTIQUE NON-LINEAIRE 'EQUIVALENT' :
 
             EPLAST = AIREP
           ELSE
-            CALL UTMESS('F','TE0491','POUR L''OPTION '//
-     &                '"INDIC_ENER", LES SEULES RELATIONS ADMISES SONT '
-     &                  //'"VMIS_ISOT_LINE" ET "VMIS_ISOT_TRAC" .')
+            CALL U2MESS('F','ELEMENTS4_2')
           END IF
 
 C --- PARTIE DEVIATORIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE
@@ -898,10 +896,7 @@ C ---          TRAVAIL PLASTIQUE 'EQUIVALENT' :
 
             EPLAEQ = RP*P
           ELSE
-            CALL UTMESS('F','TE0491','POUR L''OPTION '//
-     &               '"INDIC_SEUIL", LES SEULES RELATIONS ADMISES SONT '
-     &                  //'"VMIS_ISOT_LINE", "VMIS_ISOT_TRAC"  ET '//
-     &                  '"VMIS_CINE_LINE" .')
+            CALL U2MESS('F','ELEMENTS4_3')
           END IF
 
 C ---      CALCUL DU JACOBIEN AU POINT D'INTEGRATION COURANT :

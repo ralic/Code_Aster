@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,8 +199,7 @@ C     -----------------
         CUMUL = .TRUE.
 
       ELSE
-        CALL UTMESS('F','ASSMAM',' LE PARAMETRE : '//MOTCLE//
-     &              ' EST INCORRECT. ON ATTEND : "CUMU" OU "ZERO" ')
+        CALL U2MESK('F','ASSEMBLA_3',1,MOTCLE)
       END IF
 
 
@@ -476,8 +475,7 @@ C---- ALLOCATION VALM EN R OU C SUIVANT TYPE
      &                    'CONSTANT',NBLC)
 
             ELSE
-              CALL UTMESS('F','ASSMAM',' ON NE PEUT ASSEMBLER QUE DES'//
-     &                    ' MATRICES REELLES OU COMPLEXES')
+              CALL U2MESS('F','ASSEMBLA_4')
             END IF
 
             CALL JEECRA(KVALM,'LONMAX',ITBLOC,' ')
@@ -529,8 +527,7 @@ C     POUR LES MATRICES MORSE : IL N'Y A QU'1 BLOC. ON LE MET EN MEMOIRE
               IF (OPTIO2.NE.OPTIO) OPTIO2 = '&&MELANGE'
             END IF
 
-            IF (MO2.NE.MO) CALL UTMESS('F','ASSMAM',
-     &                                 'MODELES DISCORDANTS')
+            IF (MO2.NE.MO) CALL U2MESS('F','ASSEMBLA_5')
             IF (IMO.NE.1) GO TO 150
 
 
@@ -791,19 +788,13 @@ C SI ON EST DANS UN CALCUL FETI SUR UN SOUS-DOMAINE, ON SE POSE LA
 C QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA AU SOUS-DOMAINE IDD
                       IF (LFETI) THEN
                         IF (NUMA.GT.0) THEN
-                          IF (LLICH) CALL UTMESS('F','ASSMAM',
-     &                                    'FETI: MAILLE '//
-     &                                'POSITIVE AVEC LIGREL DE CHARGE !'
-     &                                    )
+                          IF (LLICH) CALL U2MESS('F','ASSEMBLA_6')
 C ELLE APPARTIENT AU GREL IGR DU LIGREL PHYSIQUE ILIMA
                           IF (ZI(ILIGRP+NUMA).NE.IDD) GO TO 300
 
                         ELSE
 C ELLE APPARTIENT AU GREL IGR DU LIGREL TARDIF ILIMA
-                          IF (LLIMO) CALL UTMESS('F','ASSMAM',
-     &                                    'FETI: MAILLE '//
-     &                                'NEGATIVE AVEC LIGREL DE MODELE !'
-     &                                    )
+                          IF (LLIMO) CALL U2MESS('F','ASSEMBLA_7')
                         END IF
 
                       END IF

@@ -7,7 +7,7 @@
       COMPLEX*16 CVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,8 +93,7 @@ C     ----------------------------
             NBTROU = -1
           END IF
         ELSE
-          CALL UTMESS('F','RSORAC','CET ACCES EST INTERDIT POUR UN '//
-     &                'RESULTAT DE TYPE "CHAMP_GD".')
+          CALL U2MESS('F','UTILITAI4_46')
         END IF
         GO TO 20
       END IF
@@ -162,7 +161,7 @@ C     ----------------------------
 
       CALL JENONU(JEXNOM(NOMS2//'.NOVA',ACCE2),IACCES)
       IF (IACCES.EQ.0) THEN
-        CALL UTMESS('F','RSORAC','CET ACCES EST INTERDIT : '//ACCE2)
+        CALL U2MESK('F','UTILITAI4_47',1,ACCE2)
       END IF
 
       CALL JEVEUO(JEXNUM(NOMS2//'.TAVA',IACCES),'L',IATAVA)
@@ -172,7 +171,7 @@ C     ----------------------------
       K8MAXI = ZK8(IATAVA-1+3)
       CALL LXLIIS(K8MAXI,IMAXI,IER2)
       IF (ABS(IER1)+ABS(IER2).GT.0) THEN
-        CALL UTMESS('F','RSORAC','1')
+        CALL U2MESS('F','CALCULEL_33')
       END IF
 
       CALL JEVEUO(NOMS2//'.ORDR','L',JORDR)

@@ -1,6 +1,6 @@
       SUBROUTINE LRMAST ( NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     >                    GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
-     >                    IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
+     &                    GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
+     &                    IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
       IMPLICIT REAL*8 (A-H,O-Z)
 C     IN
       INTEGER         IFM,    IFL
@@ -12,7 +12,7 @@ C     OUT
       INTEGER         NBNOEU,NBMAIL,NBCOOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,15 +197,15 @@ C
         DATA MCLCOO     /'COOR_1D ','COOR_2D ','COOR_3D '/
         DATA MCLDBG     /'DUMP    ','DEBUG   '/
         DATA MCLINT     /'GROUP_FA','SYS_UNIT','SYS_COOR','MACRO_AR',
-     >                   'MACRO_FA','MACRO_EL','MATERIAU'/
+     &                   'MACRO_FA','MACRO_EL','MATERIAU'/
 C
 C ---   INITIALISATION DU NB D'ERREUR
 C
-        IER = 0 
-        K16NOM = ' ' 
-        IF ( ULISOP ( IFL, K16NOM ) .EQ. 0 )  THEN 
+        IER = 0
+        K16NOM = ' '
+        IF ( ULISOP ( IFL, K16NOM ) .EQ. 0 )  THEN
           CALL ULOPEN ( IFL,' ',' ','NEW','O')
-        ENDIF 
+        ENDIF
 C
         CALL JEMARQ ( )
 C
@@ -251,8 +251,7 @@ C -     LECTURE DES NOMS/NBNO DES TYPES DE MAILLES DANS LE CATALOGUE
 C
       CALL JELIRA('&CATA.TM.NOMTM','NOMMAX',NBMMAI,K1BID)
       IF ( NBMMAI .GT. NBMMAX ) THEN
-         CALL UTMESS ( 'F',CMD,'ERREUR FORTRAN DE DIMENSIONNEMENT'//
-     &                                   ' DE TABLEAU (NBMMAI>NBMMAX)')
+         CALL U2MESS('F','MODELISA5_1')
       ENDIF
       DO 7 I = 1,NBMMAI
          CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',I),MCLMAI(I))
@@ -274,23 +273,23 @@ C
 C -     PREMIERE LECTURE DES DONNEES POUR CHAQUE TYPE DE MOT CLE
 C
         CALL LECDBG(IFL,ICL,IV,RV,CV,CNL,MCLDBG,NBMDBG,NBG,
-     >              DIMDBG,NOMDBG,IER,IRTET)
+     &              DIMDBG,NOMDBG,IER,IRTET)
         IF ( IRTET.GT.0 ) GOTO (8,9), IRTET
 C
         CALL LECTIT(IFL,ICL,IV,RV,CV,CNL,MCLTIT,NBMTIT,NBG,
-     >              DIMTIT,NBTTIT,IER,IRTET)
+     &              DIMTIT,NBTTIT,IER,IRTET)
         IF ( IRTET.GT.0 ) GOTO (8,9), IRTET
 C
         CALL LECGRP(IFL,ICL,IV,RV,CV,CNL,MCLGRP,NBMGRP,NBG,
-     >              DIMGRP,NBTGRP,IER,IRTET)
+     &              DIMGRP,NBTGRP,IER,IRTET)
         IF ( IRTET.GT.0 ) GOTO (8,9), IRTET
 C
         CALL LECCOO(IFL,ICL,IV,RV,CV,CNL,MCLCOO,NBMCOO,NBG,
-     >              DIMCOO,NBTCOO,IER,IRTET)
+     &              DIMCOO,NBTCOO,IER,IRTET)
         IF ( IRTET.GT.0 ) GOTO (8,9), IRTET
 C
         CALL LECMAI(IFL,ICL,IV,RV,CV,CNL,MCLMAI,NBMMAI,NBG,FMTMAI,
-     >              DIMMAI,NBTMAI,IER,IRTET)
+     &              DIMMAI,NBTMAI,IER,IRTET)
         IF ( IRTET.GT.0 ) GOTO (8,9), IRTET
 C
         CALL LECINT(IFL,ICL,IV,RV,CV,CNL,MCLINT,NBMINT,NBG,IER,IRTET)
@@ -374,16 +373,16 @@ C
 C -     FIN  DE LECTURE DU FICHIER
 C
         IF(NBNOEU.EQ.0)THEN
-        CALL UTMESS('E',CMD,'LECTURE 1 : IL MANQUE LES COORDONNEES !')
+        CALL U2MESS('E','MODELISA5_2')
         IER = 1
         ENDIF
         IF(NBMAIL.EQ.0)THEN
-        CALL UTMESS('E',CMD,'LECTURE 1 : IL MANQUE LES MAILLES !')
+        CALL U2MESS('E','MODELISA5_3')
         IER = 1
         ENDIF
 C
         IF(IER.EQ.1)THEN
-        CALL UTMESS('F',CMD,'LECTURE 1 : ERREUR DE SYNTAXE DETECTEE')
+        CALL U2MESS('F','MODELISA4_94')
         ENDIF
 C
 C
@@ -537,19 +536,19 @@ C
 C -     STOCKAGE DES DONNEES POUR CHAQUE TYPE DE  MOT CLE
 C
         CALL STKTIT(IFL,ICL,IV,RV,CV,CNL,MCLTIT,NBMTIT,NUMLTI,
-     >  TITRE,IRTET)
+     &  TITRE,IRTET)
         IF ( IRTET.GT.0 ) GOTO (800,900), IRTET
 C
         CALL STKCOO ( IFL, ICL, IV, RV, CV, CNL, MCLCOO, NBMCOO, NUMNEU,
-     >                COOVAL, NOMNOE, IRTET )
+     &                COOVAL, NOMNOE, IRTET )
         IF ( IRTET.GT.0 ) GOTO (800,900), IRTET
 C
         CALL STKGRP(IFL,ICL,IV,RV,CV,CNL,MCLGRP,NBMGRP,NUMGRN,NUMGRM,
-     >  GRPNOV,GRPMAV,IRTET)
+     &  GRPNOV,GRPMAV,IRTET)
         IF ( IRTET.GT.0 ) GOTO (800,900), IRTET
 C
         CALL STKMAI(IFL,ICL,IV,RV,CV,CNL,MCLMAI,NBMMAI,NUMELE,NUMNOD,
-     >  CONXV,TYPMAI,FMTMAI,IRTET)
+     &  CONXV,TYPMAI,FMTMAI,IRTET)
         IF ( IRTET.GT.0 ) GOTO (800,900), IRTET
 C
         GOTO 900
@@ -576,9 +575,10 @@ C
                 ZI(JGCNX+J-1) = NUM
                 IF(NUM.EQ.0)THEN
                 CALL UTMESS('E',CMD,'TRANSCODAGE : '//
-     >          'LE NOEUD '//NOM//' DECLARE DANS '//
-     >          'LA CONNECTIVITE DE LA MAILLE '//NOMN//' N EXISTE '//
-     >          'PAS DANS LES COORDONNEES')
+     &          'LE NOEUD '//NOM//' DECLARE DANS '//
+     &          'LA CONNECTIVITE DE LA MAILLE '//NOMN//' N EXISTE '//
+     &          'PAS DANS LES COORDONNEES')
+C        CALL U2MESK('E','MODELISA5_4', 2 ,VALK)
                 IER = 1
                 ENDIF
  550            CONTINUE
@@ -608,15 +608,17 @@ C         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
              IF ( NUM .EQ. 0 )THEN
                 IER = IER + 1
                 CALL UTMESS('E',CMD,'TRANSCODAGE : LE NOEUD '//NOM1//
-     >                      ' DECLARE DANS LE GROUP_NO: '//NOMG//
-     >                      ' N''EXISTE PAS DANS LES COORDONNEES')
+     &                      ' DECLARE DANS LE GROUP_NO: '//NOMG//
+     &                      ' N''EXISTE PAS DANS LES COORDONNEES')
+C        CALL U2MESK('E','MODELISA5_5', 2 ,VALK)
                 GOTO 610
              ENDIF
              ZI(JNOEU2-1+NUM)=ZI(JNOEU2-1+NUM)+1
              IF (ZI(JNOEU2-1+NUM)  .GE. 2 ) THEN
                 CALL UTMESS('A',CMD,'LE NOEUD : '//NOM1//
-     >        ' EST EN DOUBLE DANS LE GROUP_NO: '//NOMG//
-     >        '. ON ELIMINE LES DOUBLONS')
+     &        ' EST EN DOUBLE DANS LE GROUP_NO: '//NOMG//
+     &        '. ON ELIMINE LES DOUBLONS')
+C        CALL U2MESK('A','MODELISA5_6', 2 ,VALK)
                 GOTO 610
              ENDIF
              NBNO1 = NBNO1 + 1
@@ -656,15 +658,17 @@ C         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTS ---
              IF ( NUM .EQ. 0 ) THEN
                 IER = IER + 1
                 CALL UTMESS('E',CMD,'TRANSCODAGE : LA MAILLE '//NOM1//
-     >                      ' DECLARE DANS LE GROUP_MA: '//NOMG//
-     >                      ' N''EXISTE PAS DANS LES CONNECTIVITEES')
+     &                      ' DECLARE DANS LE GROUP_MA: '//NOMG//
+     &                      ' N''EXISTE PAS DANS LES CONNECTIVITEES')
+C        CALL U2MESK('E','MODELISA5_7', 2 ,VALK)
                 GOTO 710
              ENDIF
              ZI(JMAIL2-1+NUM)=ZI(JMAIL2-1+NUM)+1
              IF (ZI(JMAIL2-1+NUM)  .GE. 2 ) THEN
                 CALL UTMESS('A',CMD,'LA MAILLE : '//NOM1//
-     >         ' EST EN DOUBLE DANS LE GROUP_MA: '//NOMG//
-     >         '. ON ELIMINE LES DOUBLONS')
+     &         ' EST EN DOUBLE DANS LE GROUP_MA: '//NOMG//
+     &         '. ON ELIMINE LES DOUBLONS')
+C        CALL U2MESK('A','MODELISA5_8', 2 ,VALK)
                 GOTO 710
              ENDIF
              NBMA1 = NBMA1 + 1
@@ -684,10 +688,7 @@ C
 C -     FIN DE TRANSCODAGE
 C
       IF ( IER .NE. 0 ) THEN
-         CALL UTMESS('F',CMD,'TRANSCODAGE : UNE INCOHERENCE A ETE '//
-     >               'DETECTEE ENTRE LES DECLARATIONS DE NOMS DE '//
-     >               'NOEUDS OU DE MAILLES LORS DU TRANSCODAGE '//
-     >               'DES OBJETS GROUPES ET CONNECTIVITEES')
+         CALL U2MESS('F','MODELISA5_9')
          GOTO 9999
       ENDIF
 C

@@ -5,22 +5,22 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     APPELLE PAR LA ROUTINE CHAPEAU VTCOPY
 C     RECOPIE LES VALEURS DU CHAM_NO CHIN DANS LE CHAM_NO CHOUT
@@ -93,7 +93,8 @@ C     -------------------------------------------------
  12           CONTINUE
            ELSE
               CALL UTMESS('F','VTCOPY','LES CHAM_NOS '//CH1//' ET '//
-     +                         CH2//' SONT DE TYPE INCONNU '//TYP1)
+     &                         CH2//' SONT DE TYPE INCONNU '//TYP1)
+C        CALL U2MESK('F','ALGELINE3_93', 3 ,VALK)
            ENDIF
         ELSE
            IF ( TYP1 .EQ. 'R' .AND.  TYP2 .EQ. 'C' ) THEN
@@ -102,8 +103,9 @@ C     -------------------------------------------------
  14           CONTINUE
            ELSE
               CALL UTMESS('F','VTCOPY','LE CHAM_NO '//CH1//
-     +                ' DE TYPE '//TYP1//' NE PEUT ETRE COPIE DANS '//
-     +                       'LE CHAM_NO '//CH2//' DE TYPE '//TYP2)
+     &                ' DE TYPE '//TYP1//' NE PEUT ETRE COPIE DANS '//
+     &                       'LE CHAM_NO '//CH2//' DE TYPE '//TYP2)
+C        CALL U2MESK('F','ALGELINE3_94', 4 ,VALK)
            ENDIF
         ENDIF
         GOTO 9999
@@ -122,13 +124,12 @@ C     ------------------------------------------------------
       CALL JEVEUO ( CH1//'.DESC', 'L', JDESC1 )
       CALL JEVEUO ( CH2//'.DESC', 'L', JDESC2 )
       IF ((ZI(JDESC1-1+2).LT.0).OR.(ZI(JDESC2-1+2).LT.0))
-     &      CALL UTMESS('F','VTCOPY',
-     &           'CHAMP A REPRESENTATION CONSTANTE NON TRAITE.')
+     &      CALL U2MESS('F','ALGELINE3_95')
 
       CALL JEVEUO ( CH1//'.REFE', 'L', JREFE1 )
       CALL JEVEUO ( CH2//'.REFE', 'L', JREFE2 )
       IF (ZK24(JREFE1)(1:8).NE.ZK24(JREFE2)(1:8))
-     &   CALL UTMESS('F','VTCOPY','MAILLAGES DIFFERENTS.')
+     &   CALL U2MESS('F','CALCULEL_73')
       CALL JEVEUO ( ZK24(JREFE1-1+2)(1:19)//'.DEEQ', 'L', JDEEQ1 )
       CALL JEVEUO ( ZK24(JREFE2-1+2)(1:19)//'.DEEQ', 'L', JDEEQ2 )
 
@@ -162,8 +163,8 @@ C     -------------------------------------------
             DO 20 IEQ1 = 1 , NEQ1
               NUNO1=ZI(JDEEQ1-1+2*(IEQ1-1)+1)
               NUCP1=ZI(JDEEQ1-1+2*(IEQ1-1)+2)
-              IF ((NUCP1.GT.0).AND.(NUNO1.LE.NNOMX) 
-     +                        .AND. (NUCP1.LE.NCPMX)) THEN
+              IF ((NUCP1.GT.0).AND.(NUNO1.LE.NNOMX)
+     &                        .AND. (NUCP1.LE.NCPMX)) THEN
                 IEQ2=ZI(JTRAV1-1+(NUNO1-1)*NCPMX+NUCP1)
                 IF (IEQ2 .GT. 0) THEN
                   ZR(JVALE2-1+IEQ2)=ZR(JVALE1-1+IEQ1)
@@ -183,7 +184,8 @@ C     -------------------------------------------
  22         CONTINUE
          ELSE
             CALL UTMESS('F','VTCOPY','LES CHAM_NOS '//CH1//' ET '//
-     +                         CH2//' SONT DE TYPE INCONNU '//TYP1)
+     &                         CH2//' SONT DE TYPE INCONNU '//TYP1)
+C        CALL U2MESK('F','ALGELINE3_93', 3 ,VALK)
          ENDIF
 C
       ELSEIF ( TYP1 .EQ. 'R' .AND.  TYP2 .EQ. 'C' ) THEN
@@ -200,8 +202,9 @@ C
 C
       ELSE
          CALL UTMESS('F','VTCOPY','LE CHAM_NO '//CH1//' DE TYPE '//
-     +                TYP1//' NE PEUT ETRE COPIE DANS LE CHAM_NO '//
-     +                CH2//' DE TYPE '//TYP2)
+     &                TYP1//' NE PEUT ETRE COPIE DANS LE CHAM_NO '//
+     &                CH2//' DE TYPE '//TYP2)
+C        CALL U2MESK('F','ALGELINE3_94', 4 ,VALK)
       ENDIF
       CALL JEDETR ( '&&VTCOPY.TRAV1' )
 C

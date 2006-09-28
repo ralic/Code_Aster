@@ -1,21 +1,21 @@
       SUBROUTINE JEDEBU ( NBFI, LZON, IADZON, LMO, CMES, CVIG, IDB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/11/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -49,11 +49,11 @@ C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
       CHARACTER*8      ORIG
@@ -62,11 +62,11 @@ C
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
-     +                 IITLEC    , IITECR    , NITECR    , KMARQ
+     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
-     +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
+     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
@@ -75,7 +75,7 @@ C ----------------------------------------------------------------------
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
 C ----------------------------------------------------------------------
       CHARACTER *24                     NOMCO
       CHARACTER *32    NOMUTI , NOMOS ,         NOMOC , BL32
@@ -116,7 +116,7 @@ C ----------------------------------------------------------------------
       INTEGER          MXLICI , IPREM  , INIT
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM, LOUAEM
       INTEGER          LOR8EM , LOC8EM , ISNNEM
-      LOGICAL          LCRAEM 
+      LOGICAL          LCRAEM
       REAL*8           MAXBAS
       PARAMETER      ( MXLICI = 67 )
       CHARACTER *(MXLICI) CLICIT
@@ -129,7 +129,7 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       VAL = MAXBAS(-1.0D0)
       IF (VAL .LE. 0 ) THEN
          MFIC = MOFIEM()
-      ELSE 
+      ELSE
          MFIC = VAL*1024
       ENDIF
       LBIS = LBISEM()
@@ -144,11 +144,10 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
 C -----------------  NOMBRE DE BASES -----------------------------------
       NBFIC = MIN ( NBFI , N , LEN(CLASSE) )
       IF ( NBFIC .LE. 0 ) THEN
-         CALL JVMESS ( 'S' , 'JEDEBU01' ,
-     +                'LE NOMBRE DE BASES A GERER EST NEGATIF OU NUL')
+         CALL U2MESS('S','JEVEUX_04')
       ELSE IF ( NBFIC .NE. NBFI ) THEN
          CALL JVDEBM ( 'S' , 'JEDEBU02' ,
-     +                 'LE NOMBRE DE BASES GERABLES EST LIMITE')
+     &                 'LE NOMBRE DE BASES GERABLES EST LIMITE')
          CALL JVIMPI ( 'S' , ' A ', 1 , N )
          CALL JVFINM
       ENDIF
@@ -161,8 +160,7 @@ C -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
       IDEBUG = IDB
 C -----------------  ZONE MEMOIRE  -------------------------------------
       IF ( LZON .LE. 0 ) THEN
-         CALL JVMESS ( 'S' , 'JEDEBU03' ,
-     +                  'TAILLE MEMOIRE DEMANDEE NEGATIVE OU NULLE' )
+         CALL U2MESS('S','JEVEUX_05')
       ENDIF
       LOSZON = LZON*LOIS
       LORC   = MAX ( LOR8 , LOC8 )
@@ -196,7 +194,6 @@ C -----------------  ZONE MEMOIRE  -------------------------------------
       IDINIT(1) = 5
       IDXAXD(1) = 5
       IDINIT(2) = 0
-      IFDFR  = 0
       ITRECH = 1
       ITIAD  = 1
       ITCOL  = 1

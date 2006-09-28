@@ -1,21 +1,21 @@
       SUBROUTINE JECREC (NOMLU, LISTAT, ACCELU, STOCLU, LONGLU, NMAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CFT_726 CRP_18
 C TOLE CRS_508
@@ -30,11 +30,11 @@ C     ------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
       CHARACTER*8      ORIG
@@ -46,7 +46,7 @@ C     ------------------------------------------------------------------
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
       CHARACTER *24                     NOMCO
       CHARACTER *32    NOMUTI , NOMOS ,         NOMOC , BL32
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
@@ -57,11 +57,11 @@ C     ------------------------------------------------------------------
       COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM       , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM       , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5  , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5  , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       CHARACTER *75   CMESS
       CHARACTER *8    STOCKA , CVAL(3)
@@ -74,7 +74,7 @@ C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
       IF ( NMAX .LE. 0 ) THEN
          CMESS = 'NOMBRE D''OBJETS DE LA COLLECTION < 1 '
-         CALL JVMESS ( 'S' , 'JECREC01' , CMESS )
+         CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       NOM24L = NOMLU
 C
@@ -82,8 +82,8 @@ C
       ICLAS  = INDEX ( CLASSE , CVAL(1)(1:1) )
       IF ( ICLAS .EQ. 0 ) THEN
          CMESS  = ' LA BASE DEMANDEE '//CVAL(1)(1:1)//
-     +            ' N''EST PAS OUVERTE'
-         CALL JVMESS ( 'S' , 'JECREC02' , CMESS )
+     &            ' N''EST PAS OUVERTE'
+         CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
 C
       ICRE = 2
@@ -92,7 +92,7 @@ C
 C
       IF ( IRETC .EQ. 1 ) THEN
          CMESS = ' NOM DEJA UTILISE POUR UN OBJET SIMPLE'
-         CALL JVMESS ( 'S' , 'JECREC03' , CMESS )
+         CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE
         STOCKA = STOCLU
         IF ( LVAL(3) .EQ. 2 ) READ ( CVAL(3)(2:LVAL(3)) , '(I1)' ) LENK
@@ -100,15 +100,15 @@ C
         IF ( LVAL(3) .GT. 3 ) LENK = 512
         IF ( STOCKA .NE. 'CONTIG  ' .AND. STOCKA .NE. 'DISPERSE' ) THEN
            CMESS = ' TYPE DE STOCKAGE DE LA COLLECTION ERRONE'
-           CALL JVMESS ( 'S' , 'JECREC04' , CMESS )
+           CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ELSE IF (LONGLU .NE. 'CONSTANT'.AND. CVAL(2)(1:1) .EQ. 'E') THEN
            CMESS = ' LONGUEUR VARIABLE INCOMPATIBLE AVEC LE GENRE E '
-           CALL JVMESS ( 'S' , 'JECREC05' , CMESS )
+           CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ELSE IF ( STOCKA .EQ. 'CONTIG  ' .AND. LONGLU .NE. 'CONSTANT'
-     +            .AND. CVAL(3)(1:1) .EQ. 'K' .AND. LENK .NE. 8
-     +            .AND. LENK .NE. 16          .AND. LENK .NE.24 ) THEN
+     &            .AND. CVAL(3)(1:1) .EQ. 'K' .AND. LENK .NE. 8
+     &            .AND. LENK .NE. 16          .AND. LENK .NE.24 ) THEN
            CMESS = ' CREATION NON AUTORISEE '
-           CALL JVMESS ( 'S' , 'JECREC06' , CMESS )
+           CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ENDIF
 C
         CALL JJCREC(ICLACO, IDATCO, 'X', 'I',IDNUM+1 , IADCOL )
@@ -117,7 +117,7 @@ C     ------------------------------------------------------------------
         NOM32  = NOM24L//'$$DESO  '
         CALL JJCREN( NOM32 , ICRE , IRET )
         CALL JJCREC(ICLAOS,IDATOS,
-     +              CVAL(2)(1:1),CVAL(3)(1:LVAL(3)),0,IADZON)
+     &              CVAL(2)(1:1),CVAL(3)(1:LVAL(3)),0,IADZON)
         IF ( CVAL(2)(1:1) .EQ. 'E' ) THEN
            IF (STOCKA .EQ. 'CONTIG  ') THEN
               LONO( JLONO(ICLAOS) + IDATOS) = NMAX
@@ -148,13 +148,12 @@ C
 C     ------------------------------------------------------------------
         NOMPAR = NOM24L//'$$'
         IF( (LONGLU .NE. 'CONSTANT' .AND. LONGLU .NE. 'VARIABLE')
-     +      .OR. LEN(LONGLU) .NE. 8 ) THEN
-          CALL JVMESS ('S','JECREC15',
-     &    'PONTEUR DE LONGUEUR EXTERNE INTERDIT MAINTENANT.')
+     &      .OR. LEN(LONGLU) .NE. 8 ) THEN
+          CALL U2MESS('S','JEVEUX_02')
           ICL = ICLACO
           IF ( LEN(LONGLU) .GT. 24 ) THEN
              CMESS = 'NOM DU POINTEUR DE LONGUEURS INVALIDE'
-             CALL JVMESS ( 'S' , 'JECREC07' , CMESS )
+             CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
           NOML32 = LONGLU
           NOMPAR = NOML32(1:24)//'&&'
@@ -165,19 +164,19 @@ C     ------------------------------------------------------------------
              CALL JJCREC( ICLAOS , IDATOS , 'V', 'I', NMAX , IBID)
           ELSE IF(IRET.NE.1) THEN
              CMESS = 'NOM DE POINTEUR DE LONGUEURS INVALIDE'
-             CALL JVMESS ( 'S' , 'JECREC08' , CMESS )
+             CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ELSE
              IF ( ICL .NE. ICLAOS ) THEN
                 CMESS ='POINTEUR DE LONGUEURS DE CLASSE DIFFERENTE'
-                CALL JVMESS ( 'S' , 'JECREC09' , CMESS )
+                CALL U2MESK('S','JEVEUX_01',1,CMESS)
              ENDIF
              NBL = LONG (JLONG(ICLAOS) + IDATOS)
              IF ( NBL .LT. NMAX ) THEN
                 CMESS ='POINTEUR DE LONGUEURS DE TAILLE INSUFFISANTE'
-                CALL JVMESS ( 'S' , 'JECREC10' , CMESS )
+                CALL U2MESK('S','JEVEUX_01',1,CMESS)
              ELSE IF ( TYPE(JTYPE(ICLAOS)+IDATOS) .NE. 'I' ) THEN
                 CMESS ='POINTEUR DE LONGUEURS DE TYPE NON ENTIER'
-                CALL JVMESS ( 'S' , 'JECREC11' , CMESS )
+                CALL U2MESK('S','JEVEUX_01',1,CMESS)
              ENDIF
              IPGC = -1
              CALL JXVEUO( 'E' , ILONGU , 1 , JLONGU )
@@ -230,24 +229,23 @@ C     ------------------------------------------------------------------
         TA = ACCELU(1:2)
         IF ( INDEX('NO $NU $',TA//' $') .EQ. 0 ) THEN
           CMESS = 'TYPE D''ACCES INCONNU'
-          CALL JVMESS ( 'S' , 'JECREC12' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ELSE
           LA = LEN(ACCELU)
           IF ( LA .GT. 3 ) THEN
             IF ( ACCELU(3:3) .NE. ' ' ) THEN
               CMESS = 'ACCES PAR NOM MAL DECRIT'
-              CALL JVMESS ( 'S' , 'JECREC13' , CMESS )
+              CALL U2MESK('S','JEVEUX_01',1,CMESS)
             ENDIF
             IF ( LA .GT. 28 ) THEN
               CMESS = 'NOM DU POINTEUR D''ACCES INVALIDE'
-              CALL JVMESS ( 'S' , 'JECREC14' , CMESS )
+              CALL U2MESK('S','JEVEUX_01',1,CMESS)
             ENDIF
             NOML32 = ACCELU(4:MIN(LA,LEN(NOML32)))
           ELSE
             NOML32 = ' '
           ENDIF
-          IF  (NOML32.NE.' ') CALL JVMESS ('S','JECREC15',
-     &    'PONTEUR DE NOM EXTERNE INTERDIT MAINTENANT.')
+          IF  (NOML32.NE.' ') CALL U2MESS('S','JEVEUX_03')
         ENDIF
         IF ( TA .EQ. 'NO' .AND. NOML32 .NE. BL32 ) THEN
           ICL  = ICLACO
@@ -258,19 +256,19 @@ C     ------------------------------------------------------------------
             CALL JJCREC( ICLAOS, IDATOS, 'N', 'K8', NMAX, IBID)
           ELSE IF(IRET.NE.1) THEN
              CMESS = 'NOM DU REPERTOIRE DE NOMS INVALIDE'
-             CALL JVMESS ( 'S' , 'JECREC15' , CMESS )
+             CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ELSE
             IF ( ICL .NE. ICLAOS ) THEN
               CMESS = 'REPERTOIRE DE NOMS DE CLASSE DIFFERENTE'
-              CALL JVMESS ( 'S' , 'JECREC16' , CMESS )
+              CALL U2MESK('S','JEVEUX_01',1,CMESS)
             ENDIF
             NBL = LONG (JLONG ( ICLAOS) + IDATOS )
             IF ( NBL .LT. NMAX ) THEN
                CMESS = 'REPERTOIRE DE NOMS DE LONGUEUR INSUFFISANTE'
-               CALL JVMESS ( 'S' , 'JECREC17' , CMESS )
+               CALL U2MESK('S','JEVEUX_01',1,CMESS)
             ELSE IF ( GENR(JGENR(ICLAOS)+IDATOS) .NE. 'N' ) THEN
                CMESS ='REPERTOIRE DE NOMS DE TYPE NON N'
-               CALL JVMESS ( 'S' , 'JECREC18' , CMESS )
+               CALL U2MESK('S','JEVEUX_01',1,CMESS)
             END IF
             IPGC = -1
             CALL JXVEUO( 'E' , KNOM , 1 , JNOM )

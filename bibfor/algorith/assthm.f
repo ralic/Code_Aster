@@ -9,26 +9,26 @@
      &                   DIMDEF,DIMCON,DIMUEL,NBVARI,NDDLS,NDDLM,
      &                   NMEC,NP1,NP2,NDIM,COMPOR,
      &                   TYPMOD,AXI,PERMAN,MODINT,
-     >                   CODRET)
+     &                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ======================================================================
@@ -68,7 +68,7 @@ C =====================================================================
 C.......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
-C           EN MECANIQUE DES MILIEUX POREUX AVEC COUPLAGE THM 
+C           EN MECANIQUE DES MILIEUX POREUX AVEC COUPLAGE THM
 C.......................................................................
 C =====================================================================
 C IN AXI       AXISYMETRIQUE?
@@ -123,14 +123,14 @@ C               GENERALISEES AU POINT DE GAUSS DEFGEP ET DEFGEM DES
 C               DEFORMATIONS CORRESPONDANT A LA PREMIERE PRESSION
 C               ADCP11=PRESS1(4), ADRESSE DANS LES TABLEAUX DES CONTRAIN
 C               GENERALISEES AU POINT DE GAUSS CONGEP ET CONGEM DES
-C               CONTRAINTES CORRESPONDANT A LA PREMIERE PHASE DU 
+C               CONTRAINTES CORRESPONDANT A LA PREMIERE PHASE DU
 C               PREMIER CONSTITUANT
 C               ADCP12=PRESS1(5), ADRESSE DANS LES TABLEAUX DES CONTRAIN
 C               GENERALISEES AU POINT DE GAUSS CONGEP ET CONGEM DES
-C               CONTRAINTES CORRESPONDANT A LA DEUXIEME PHASE DU 
+C               CONTRAINTES CORRESPONDANT A LA DEUXIEME PHASE DU
 C               PREMIER CONSTITUANT
 C               NDEFP1 = PRESS1(6), NOMBRE DE DEFORMATIONS PRESSION 1
-C               NCONP1 = PRESS1(7), NOMBRE DE CONTRAINTES POUR 
+C               NCONP1 = PRESS1(7), NOMBRE DE CONTRAINTES POUR
 C               CHAQUE PHASE DU CONSTITUANT 1
 C IN  PRESS2    : TABLEAU CONTENANT
 C               YAP2 = PRESS2(1), YAP2 = 1 >> IL Y A UNE EQUATION DE PRE
@@ -140,14 +140,14 @@ C               GENERALISEES AU POINT DE GAUSS DEFGEP ET DEFGEM DES
 C               DEFORMATIONS CORRESPONDANT A LA PREMIERE PRESSION
 C               ADCP21=PRESS2(4), ADRESSE DANS LES TABLEAUX DES CONTRAIN
 C               GENERALISEES AU POINT DE GAUSS CONGEP ET CONGEM DES
-C               CONTRAINTES CORRESPONDANT A LA PREMIERE PHASE DU 
+C               CONTRAINTES CORRESPONDANT A LA PREMIERE PHASE DU
 C               SECOND CONSTITUANT
 C               ADCP22=PRESS2(5), ADRESSE DANS LES TABLEAUX DES CONTRAIN
 C               GENERALISEES AU POINT DE GAUSS CONGEP ET CONGEM DES
-C               CONTRAINTES CORRESPONDANT A LA DEUXIEME PHASE DU 
+C               CONTRAINTES CORRESPONDANT A LA DEUXIEME PHASE DU
 C               SECOND CONSTITUANT
 C               NDEFP2 = PRESS2(6), NOMBRE DE DEFORMATIONS PRESSION 2
-C               NCONP2 = PRESS2(7), NOMBRE DE CONTRAINTES POUR 
+C               NCONP2 = PRESS2(7), NOMBRE DE CONTRAINTES POUR
 C               CHAQUE PHASE DU CONSTITUANT 2
 C
 C IN  TEMPE    : TABLEAU CONTENANT
@@ -162,18 +162,18 @@ C               NDEFTE = TEMPE(4), NOMBRE DE DEFORMATIONS THERMIQUES
 C               NCONTE = TEMPE(5), NOMBRE DE CONTRAINTES THERMIQUES
 C OUT CODRET  : CODE RETOUR LOIS DE COMPORTEMENT
 C OUT DFDI    : DERIVEE DES FCT FORME
-C OUT CONTP   : CONTRAINTES 
+C OUT CONTP   : CONTRAINTES
 C OUT VARIP   : VARIABLES INTERNES
 C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
 C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
 C......................................................................
 C
       IF(NDDLS*NNO.GT.DIMMAT) THEN
-         CALL UTMESS('F',NOMPRO,'DIMENSIONEMENT ' )
+         CALL U2MESS('F','ALGORITH_33')
       ENDIF
 C
       IF(DIMUEL.GT.DIMMAT) THEN
-         CALL UTMESS('F',NOMPRO,'DIMENSIONEMENT ' )
+         CALL U2MESS('F','ALGORITH_33')
       ENDIF
 C =====================================================================
 C --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU -------------
@@ -258,7 +258,7 @@ C ======================================================================
 C --- INITIALISATION DF(MATUU) ET MATRI --------------------------------
 C ======================================================================
       IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
-     +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
+     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
          DO 3 I=1,DIMUEL*DIMUEL
                MATUU(I)=0.D0
  3       CONTINUE
@@ -273,7 +273,7 @@ C --- CALCUL POUR CHAQUE POINT D'INTEGRATION: BOUCLE SUR KPI -----------
 C ======================================================================
       LOI = ' '
       CALL RCVALA(IMATE,' ','THM_INIT', 0, ' ', 0.D0, 1, 'COMP_THM',
-     >                                              RTHMC, CODMES, 'FM')
+     &                                              RTHMC, CODMES, 'FM')
       THMC = COMPOR(8)
       IF ( (RTHMC-1.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_SATU'
@@ -292,8 +292,9 @@ C ======================================================================
       ENDIF
       IF (THMC.NE.LOI) THEN
          CALL UTMESS('F',NOMPRO,'IL Y A INCOHRENCE ENTRE LA LOI'//
-     +         ' DE COUPLAGE DE DEFI_MATERIAU '//LOI//' ET LA LOI'//
-     +         ' DE COUPLAGE DANS STAT_NON_LINE '//THMC)
+     &         ' DE COUPLAGE DE DEFI_MATERIAU '//LOI//' ET LA LOI'//
+     &         ' DE COUPLAGE DANS STAT_NON_LINE '//THMC)
+C        CALL U2MESK('F','ALGORITH_34', 2 ,VALK)
       ENDIF
 C =====================================================================
 C --- BOUCLE SUR LES POINTS D'INTEGRATION -----------------------------
@@ -304,10 +305,10 @@ C =====================================================================
 C --- CALCUL DE LA MATRICE B AU POINT D'INTEGRATION -------------------
 C =====================================================================
          CALL CABTHM(NDDLS,NDDLM,NNO,NNOS,NNOM,DIMUEL,
-     +               DIMDEF,NDIM,NPI,KPI,IPOIDS,IPOID2,IVF,IVF2,
-     +               IDFDE,IDFDE2,DFDI,DFDI2,
-     +               GEOM,POIDS,POIDS2,B,NMEC,YAMEC,ADDEME,YAP1,
-     +               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI)
+     &               DIMDEF,NDIM,NPI,KPI,IPOIDS,IPOID2,IVF,IVF2,
+     &               IDFDE,IDFDE2,DFDI,DFDI2,
+     &               GEOM,POIDS,POIDS2,B,NMEC,YAMEC,ADDEME,YAP1,
+     &               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI)
 C =====================================================================
 C --- CALCUL DES DEFORMATIONS GENERALISEES E=BU -----------------------
 C =====================================================================
@@ -352,7 +353,7 @@ C ======================================================================
          ENDIF
        IF ( CODRET.NE.0) THEN
          GOTO 9000
-       ENDIF             
+       ENDIF
 C ======================================================================
 C --- CONTRIBUTION DU POINT D'INTEGRATION KPI A LA MATRICE TANGENTE ET -
 C --- AU RESIDU --------------------------------------------------------
@@ -403,7 +404,7 @@ C ======================================================================
          IF ((OPTION(1:9).EQ.'FULL_MECA' .OR.
      &        OPTION(1:9).EQ.'RAPH_MECA')) THEN
             DO 20 I=1,DIMDEF
-               SIGBAR(I) = CK(I)*R(I)  
+               SIGBAR(I) = CK(I)*R(I)
  20         CONTINUE
 C ======================================================================
 C --- ON SELECTIONNE LA BONNE COMPOSANTE 7 POUR CE PI ------------------
@@ -425,14 +426,14 @@ C ======================================================================
 C --- SORTIE DE BOUCLE SUR LES POINTS D'INTEGRATION --------------------
 C ======================================================================
         IF(OPTION(1:9).EQ.'RIGI_MECA' .OR.
-     &     OPTION(1:9).EQ.'FULL_MECA') THEN   
+     &     OPTION(1:9).EQ.'FULL_MECA') THEN
                KJI=1
                DO 115 II=1,DIMUEL
                   DO 116 JJ=1,DIMUEL
                      MATUU(KJI) = MATRI(II,JJ)
                      KJI= KJI + 1
  116              CONTINUE
- 115           CONTINUE     
+ 115           CONTINUE
         ENDIF
 C ======================================================================
  9000  CONTINUE

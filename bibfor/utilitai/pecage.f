@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,8 +121,7 @@ C     --- CREATION DE LA TABLE ---
         CALL TBCRSD(RESU,'G')
         CALL TBAJPA(RESU,NBPARR,NOPARR,TYPARR)
       ELSE
-        CALL UTMESS('F','POST_ELEM','ON NE TRAITE QUE DES PROBLEMES 2D.'
-     &              )
+        CALL U2MESS('F','UTILITAI3_48')
       END IF
       NBPARC = NBPARR - 1
       CALL TBAJLI(RESU,1,NOPARR(NBPARR),IBID,R8B,C16B,NOMA,0)
@@ -157,14 +156,12 @@ C     --- CREATION DE LA TABLE ---
           DO 20 IG = 1,NBGRMA
             CALL JEEXIN(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),IRET)
             IF (IRET.EQ.0) THEN
-              CALL UTMESS('A','PECAGE','LE GROUPE DE MAILLE "'//
-     &                    ZK8(JGR+IG-1)//'" N''EXISTE PAS.')
+              CALL U2MESK('A','UTILITAI3_46',1,ZK8(JGR+IG-1))
               GO TO 20
             END IF
             CALL JELIRA(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),'LONMAX',NBMA,K8B)
             IF (NBMA.EQ.0) THEN
-              CALL UTMESS('A','PECAGE','LE GROUPE '//ZK8(JGR+IG-1)//
-     &                    ' NE CONTIENT AUCUNE MAILLE.')
+              CALL U2MESK('A','UTILITAI3_47',1,ZK8(JGR+IG-1))
               GO TO 20
             END IF
             CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',ZK8(JGR+IG-1)),'L',JAD)
@@ -187,8 +184,7 @@ C     --- CREATION DE LA TABLE ---
           DO 30 IM = 1,NBMAIL
             CALL JEEXIN(JEXNOM(MLGNMA,ZK8(JMA+IM-1)),IRET)
             IF (IRET.EQ.0) THEN
-              CALL UTMESS('A','PECAGE','LA MAILLE "'//ZK8(JMA+IM-1)//
-     &                    '" N''EXISTE PAS.')
+              CALL U2MESK('A','UTILITAI3_49',1,ZK8(JMA+IM-1))
               GO TO 30
             END IF
             CALL JENONU(JEXNOM(MLGNMA,ZK8(JMA+IM-1)),NUME)

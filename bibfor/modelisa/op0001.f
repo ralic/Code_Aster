@@ -1,7 +1,7 @@
       SUBROUTINE OP0001 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,17 +125,17 @@ C --- LECTURE DU MAILLAGE AU FORMAT ASTER :
 C     -----------------------------------
       IF ( FMT(1:5) .EQ. 'ASTER' ) THEN
           CALL LRMAST ( NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     >                  GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
-     >                  IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
+     &                  GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,ADAPMA,
+     &                  IFM,IFL,NBNOEU,NBMAIL,NBCOOR )
 C
 C --- LECTURE DU MAILLAGE AU FORMAT MED :
 C     ---------------------------------
       ELSEIF (FMT(1:3) .EQ. 'MED' ) THEN
           CALL LRMHDF ( NOMAMD,
-     >                  NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     >                  GRPNOE,GRPMAI,CONNEX,TITRE,FORMM,TYPMAI,
-     >                  ADAPMA,IFM,IFL,NIV,INFMED,NBNOEU,NBMAIL,
-     >                  NBCOOR )
+     &                  NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
+     &                  GRPNOE,GRPMAI,CONNEX,TITRE,FORMM,TYPMAI,
+     &                  ADAPMA,IFM,IFL,NIV,INFMED,NBNOEU,NBMAIL,
+     &                  NBCOOR )
       ENDIF
 C
 C --- CALCUL D'UNE ABSCISSE CURVILIGNE SUR LE MAILLAGE :
@@ -154,11 +154,10 @@ C
           ENDIF
         ELSE
           CALL GETVEM(NOMU,'GROUP_MA','ABSC_CURV','GROUP_MA',
-     >                1,1,0,ZK8,NBVAL)
+     &                1,1,0,ZK8,NBVAL)
           NBVAL=ABS(NBVAL)
           IF (NBVAL.NE.0) THEN
-            CALL UTMESS('E',CMD,' OPTION CALCUL DE L ABSC_CURV SUR '
-     >       //' UN GROUP_MA NON IMPLANTEE. ')
+            CALL U2MESS('E','MODELISA5_48')
           ENDIF
         ENDIF
       ENDIF
@@ -185,13 +184,12 @@ C     ---------------------------------
         CALL GETVR8('VERI_MAIL','APLAT',1,1,1,DTOL,IRET)
         CALL CHCKMA(NOMU,CMD,DTOL)
       ELSE
-         CALL UTMESS('A',CMD,'- PHASE DE VERIFICATION DU'
-     &   //' MAILLAGE DESACTIVEE')
+         CALL U2MESS('A','MODELISA5_49')
       ENDIF
 C
 C     IMPRESSIONS DU MOT CLE INFO :
 C     ---------------------------
       CALL INFOMA(NOMU)
-  
+
       CALL JEDEMA ( )
       END

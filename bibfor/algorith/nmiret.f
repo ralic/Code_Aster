@@ -1,7 +1,7 @@
       SUBROUTINE NMIRET ( CODRET , TABRET )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER       IRET, JCESK, JCESD, JCESV, JCESL, NBMAIL, ICMP,
-     +              IMA, IPT, ISP, IAD
+     &              IMA, IPT, ISP, IAD
       CHARACTER*8   NOMGD
       CHARACTER*19  CHAMNS
 C-----------------------------------------------------------------------
@@ -76,14 +76,14 @@ C
 
 C     CHAM_ELEM/ELGA MAIS EN FAIT : 1 POINT ET 1 SOUS_POINT PAR ELEMENT
       IF ((ZI(JCESD-1+3).NE.1).OR.(ZI(JCESD-1+4).NE.1))
-     &   CALL UTMESS('F','NMIRET','ERREUR CHAM_ELEM_S')
+     &   CALL U2MESS('F','ALGORITH8_9')
 
       NOMGD = ZK8(JCESK-1+2)
-      IF ( NOMGD .NE. 'CODE_I' ) CALL UTMESS('F','NMIRET',' BUG 1 ')
+      IF ( NOMGD .NE. 'CODE_I' ) CALL U2MESS('F','ALGORITH8_10')
 C
       NBMAIL = ZI(JCESD-1+1)
       ICMP   = ZI(JCESD-1+2)
-      IF ( ICMP .NE. 1 ) CALL UTMESS('F','NMIRET',' BUG 2 ')
+      IF ( ICMP .NE. 1 ) CALL U2MESS('F','ALGORITH8_11')
 C
       DO 20 IMA = 1 , NBMAIL
 

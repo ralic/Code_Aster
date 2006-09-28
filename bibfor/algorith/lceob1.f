@@ -3,22 +3,22 @@
      &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
@@ -33,7 +33,7 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
 C     ROUTINE DE RESOLUTION DU SYSTEME NON LINEAIRE
-C     ALGORITHME DE NEWTON 
+C     ALGORITHME DE NEWTON
 C
 C
 C
@@ -50,7 +50,7 @@ C  IN  ALPHA    : /
 C  IN  ECROB    : /
 C  IN  ECROD    : / PARAMETRES DU MODELE
 C  IN  SEUIL    : SEUIL DU CRITERE D'ENDOMMAGEMENT
-C  
+C
 C OUT  B D     : VARIABLES INTERNES EN T+
 C OUT MULT     : MULTIPLICATEUR PLASTIQUE DU PRINCIPE DE NORMALITE
 C OUT ELAS     : ELASTIQUE OU DISSIPATION?
@@ -77,7 +77,7 @@ C ----------------------------------------------------------------------
       REAL*8      INTER1,INTER2,INTER3,INTER4
 
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-            
+
       T(1,1)=1
       T(1,2)=4
       T(1,3)=5
@@ -92,7 +92,7 @@ C ----------------------------------------------------------------------
 
       COMPTE=0.D0
       MULT=0.D0
-      
+
       DO 100 I=1,6
         B(I)=BM(I)
  100  CONTINUE
@@ -102,9 +102,9 @@ C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
-      
+
       CALL R8INIR(6,0.D0,CC,1)
-      
+
       DO 9 I=1,3
         DO 10 J=I,3
           DO 11 K=1,3
@@ -136,12 +136,12 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
   18      CONTINUE
   17    CONTINUE
   16  CONTINUE
-  
+
       CALL R8INIR(6,0.D0,FB,1)
       TREB=0.D0
       DO 301 I=1,3
-      TREB=TREB+CC(I)/2 
- 301  CONTINUE      
+      TREB=TREB+CC(I)/2
+ 301  CONTINUE
       IF (TREB.GT.0.D0) THEN
         DO 19 I=1,6
           FB(I)=-LAMBDA*TREB*EPS(I)
@@ -161,13 +161,13 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
           FBSM=FBS
         ENDIF
         RTEMP=FBS**2
-  
+
 C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
       IF (DBLOQ) THEN
         FD=0.D0
-      ELSE      
+      ELSE
         TREPS=EPS(1)+EPS(2)+EPS(3)
         CALL DIAGO3(EPS,VECC,VALCC)
         DO 22 I=1,3
@@ -231,7 +231,7 @@ C--------------------------------------------------------
             ELSE
               MTE1=1.D0
             ENDIF
-            
+
             CALL DFBDB(3,B,EPS,2.D0*MU,LAMBDA,ECROB,MTE2)
 
             MTE2S=MTE2(1,1)
@@ -245,11 +245,11 @@ C--------------------------------------------------------
             ENDIF
 
             KSI=-MULT*ALPHA*MTE1*MTE2S+1.D0
-  
+
             IF (KSI.NE.0.D0) THEN
               IKSI=1.D0/KSI
             ELSE
-              CALL UTMESS('F','LCBETO','KSI NON INVERSIBLE')
+              CALL U2MESS('F','ALGORITH4_54')
             ENDIF
 
             PSI=1-MULT*(1-ALPHA)*DFDDD
@@ -260,14 +260,14 @@ C--------------------------------------------------------
 
             INTER1=DELTA1*IKSI*RESB
             INTER3=ALPHA*DELTA1*IKSI*FBSM
- 
+
             INTER2=DELTA2/PSI*RESD
             INTER4=DELTA2/PSI*(1-ALPHA)*FD
 
             DDG=-(CRIT*COUPL+INTER1+INTER2)/(INTER3+INTER4)
 
 
-            DD=RESD/PSI+DDG*(1-ALPHA)*FD/PSI          
+            DD=RESD/PSI+DDG*(1-ALPHA)*FD/PSI
             DBS=IKSI*(RESB+DDG*ALPHA*FBSM)
 
             BS=BS+DBS
@@ -281,9 +281,9 @@ C----CALCUL DE FB DANS NEWTON---------------------------
            CALL R8INIR(6,0.D0,B,1)
 
            B(1)=BS
-      
+
             CALL R8INIR(6,0.D0,CC,1)
-      
+
             DO 109 I=1,3
               DO 110 J=I,3
                 DO 111 K=1,3
@@ -316,9 +316,9 @@ C----CALCUL DE FB DANS NEWTON---------------------------
  118            CONTINUE
  117          CONTINUE
  116        CONTINUE
-  
+
             CALL R8INIR(6,0.D0,FB,1)
-            TREB=(CC(1)+CC(2)+CC(3))/2 
+            TREB=(CC(1)+CC(2)+CC(3))/2
             IF (TREB.GT.0.D0) THEN
               DO 119 I=1,6
                 FB(I)=-LAMBDA*TREB*EPS(I)
@@ -335,7 +335,6 @@ C----CALCUL DE FB DANS NEWTON---------------------------
               FBSM=FBS
             ENDIF
             RTEMP=FBS**2
-     
 C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
@@ -352,21 +351,21 @@ C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
 C----CALCUL DU CRITERE-------------------------------------
            COUPL=SQRT(ALPHA*RTEMP+(1-ALPHA)*FD**2)
-           CRIT=COUPL-SEUIL 
+           CRIT=COUPL-SEUIL
 
            RESB=-BS+BMS+ALPHA*MULT*FBSM
            RESD=-D+DM+(1-ALPHA)*MULT*FD
-            
+
            NORMRB=ABS(RESB)
 
        GOTO 38
            ELSE
              IRET = 1
              GOTO 999
-           ENDIF     
            ENDIF
-          
+           ENDIF
+
           ENDIF
  999      CONTINUE
-          
+
       END

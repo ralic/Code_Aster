@@ -2,22 +2,22 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/03/2003   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C  DESCRIPTION : CARACTERISATION DE LA TOPOLOGIE D'UN CABLE
@@ -25,7 +25,7 @@ C  -----------   APPELANT : OP0180 , OPERATEUR DEFI_CABLE_BP
 C
 C                EN SORTIE ON AJOUTE DES LIGNES DANS LA TABLE RESULTAT
 C                LES CASES RENSEIGNEES CORRESPONDENT AUX PARAMETRES
-C                <NUME_CABLE>, <NOEUD_CABLE>, <MAILLE_CABLE>, 
+C                <NUME_CABLE>, <NOEUD_CABLE>, <MAILLE_CABLE>,
 C                <NOM_CABLE>, <NOM_ANCRAGE1> ET <NOM_ANCRAGE2>
 C
 C  IN     : TABLCA : CHARACTER*19
@@ -74,25 +74,25 @@ C
 C VARIABLES LOCALES
 C -----------------
       INTEGER       IBID, IMAIL, INO, IRET, ISUIV, ISUIV0(2), IVOIS,
-     +              JCXMA, JNOMAD, JNONO1, JNONO2, JNONOD, JNUMA1,
-     +              JNUMA2, JNUMAC, JNUMAD, JTYMA, LONUTI, NBCHEM,
-     +              NBMAIL, NBNO1, NBNO2, NBSUIV, NO1, NO2, NTSEG,
-     +              NUMAIL, N1
+     &              JCXMA, JNOMAD, JNONO1, JNONO2, JNONOD, JNUMA1,
+     &              JNUMA2, JNUMAC, JNUMAD, JTYMA, LONUTI, NBCHEM,
+     &              NBMAIL, NBNO1, NBNO2, NBSUIV, NO1, NO2, NTSEG,
+     &              NUMAIL, N1
       REAL*8        RBID
       COMPLEX*16    CBID
       LOGICAL       OK1, OK2
       CHARACTER*1   K1B
       CHARACTER*3   K3B
       CHARACTER*8   K8B, NOANCR(2), NOGRMA, NOGRNA(2), NOCOUR, NOPREC,
-     +              NOSUI1, NOSUI2, NOSUIV, NOVOIS, TYANCR(2)
+     &              NOSUI1, NOSUI2, NOSUIV, NOVOIS, TYANCR(2)
       CHARACTER*8   VK(4), NOGRNO(2), PRESEN(2)
       CHARACTER*24  CONXMA, GRMAMA, NOMAMA, NONOMA, TYMAMA
       CHARACTER*24  PARAM(5)
       DATA          PARAM /'NUME_CABLE              ',
-     +                     'NOEUD_CABLE             ',
-     +                     'NOM_CABLE               ',
-     +                     'NOM_ANCRAGE1            ',
-     +                     'NOM_ANCRAGE2            '/
+     &                     'NOEUD_CABLE             ',
+     &                     'NOM_CABLE               ',
+     &                     'NOM_ANCRAGE1            ',
+     &                     'NOM_ANCRAGE2            '/
 
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -113,7 +113,7 @@ C
 C 1.1 SAISIE DES MAILLES ASSOCIEES
 C ---
       CALL GETVEM(MAILLA,'MAILLE','DEFI_CABLE','MAILLE',
-     +           ICABL,1,0,K8B,NBMAIL)
+     &           ICABL,1,0,K8B,NBMAIL)
 C
 C.... SAISIE DIRECTE
 C
@@ -123,10 +123,10 @@ C
          CALL WKVECT('&&TOPOCA.NOMAIL_DEF','V V K8',NBMAIL,JNOMAD)
          CALL WKVECT('&&TOPOCA.NUMAIL_DEF','V V I' ,NBMAIL,JNUMAD)
          CALL GETVEM(MAILLA,'MAILLE','DEFI_CABLE','MAILLE',
-     +              ICABL,1,NBMAIL,ZK8(JNOMAD),IBID)
+     &              ICABL,1,NBMAIL,ZK8(JNOMAD),IBID)
          DO 10 IMAIL = 1, NBMAIL
             CALL JENONU(JEXNOM(NOMAMA,ZK8(JNOMAD+IMAIL-1)),
-     +                  ZI(JNUMAD+IMAIL-1))
+     &                  ZI(JNUMAD+IMAIL-1))
   10     CONTINUE
 C
 C.... SAISIE INDIRECTE PAR UN GROUPE DE MAILLES
@@ -134,7 +134,7 @@ C
       ELSE
 C
          CALL GETVEM(MAILLA,'GROUP_MA','DEFI_CABLE','GROUP_MA',
-     +                ICABL,1,1,NOGRMA,IBID)
+     &                ICABL,1,1,NOGRMA,IBID)
          CALL JELIRA(JEXNOM(GRMAMA,NOGRMA),'LONMAX',NBMAIL,K1B)
          CALL JEVEUO(JEXNOM(GRMAMA,NOGRMA),'L',JNUMAD)
 C
@@ -151,10 +151,7 @@ C
          NUMAIL = ZI(JNUMAD+IMAIL-1)
          IF ( ZI(JTYMA+NUMAIL-1).NE.NTSEG ) THEN
             WRITE(K3B,'(I3)') ICABL
-            CALL UTMESS('F','TOPOCA','CARACTERISATION DE LA '//
-     +                  'TOPOLOGIE DU CABLE NO'//K3B//' : '//
-     +                  'ON A TROUVE UNE MAILLE D UN TYPE NON '//
-     +                  'ACCEPTABLE')
+            CALL U2MESK('F','MODELISA7_54',1,K3B)
          ENDIF
          CALL JEVEUO(JEXNUM(CONXMA,NUMAIL),'L',JCXMA)
          NO1 = ZI(JCXMA)
@@ -180,20 +177,19 @@ C
 C 1.4 SAISIE DES NOEUDS D'ANCRAGE DU CABLE
 C ---
       CALL GETVEM(MAILLA,'NOEUD','DEFI_CABLE','NOEUD_ANCRAGE',
-     +                  ICABL,1,0,K8B,IBID)
+     &                  ICABL,1,0,K8B,IBID)
 C
       IF ( IBID.EQ.0 ) THEN
 C
          CALL GETVEM(MAILLA,'GROUP_NO','DEFI_CABLE','GROUP_NO_ANCRAGE',
-     +                        ICABL,1,2,NOGRNA(1),IBID)
+     &                        ICABL,1,2,NOGRNA(1),IBID)
 C
          CALL UTNONO(' ',MAILLA,'NOEUD',NOGRNA(1),K8B,IRET)
          IF ( IRET.EQ.10 ) THEN
-            CALL UTMESS('F','TOPOCA',
-     +                  'LE GROUP_NO : '//NOGRNA(1)//'N''EXISTE PAS.')
+            CALL U2MESK('F','ELEMENTS_67',1,NOGRNA(1))
          ELSE IF ( IRET.EQ.1 ) THEN
             CALL UTDEBM('A','TOPOCA',
-     +                  'TROP DE NOEUDS DANS LE GROUP_NO')
+     &                  'TROP DE NOEUDS DANS LE GROUP_NO')
             CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
             CALL UTFINM( )
          ENDIF
@@ -201,11 +197,10 @@ C
 C
          CALL UTNONO(' ',MAILLA,'NOEUD',NOGRNA(2),K8B,IRET)
          IF ( IRET.EQ.10 ) THEN
-            CALL UTMESS('F','TOPOCA',
-     +                  'LE GROUP_NO : '//NOGRNA(1)//'N''EXISTE PAS.')
+            CALL U2MESK('F','ELEMENTS_67',1,NOGRNA(1))
          ELSE IF ( IRET.EQ.1 ) THEN
             CALL UTDEBM('A','TOPOCA',
-     +                  'TROP DE NOEUDS DANS LE GROUP_NO')
+     &                  'TROP DE NOEUDS DANS LE GROUP_NO')
             CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
             CALL UTFINM( )
          ENDIF
@@ -214,7 +209,7 @@ C
       ELSE
 C
          CALL GETVEM(MAILLA,'NOEUD','DEFI_CABLE','NOEUD_ANCRAGE',
-     +                     ICABL,1,2,NOANCR(1),IBID)
+     &                     ICABL,1,2,NOANCR(1),IBID)
 C
       ENDIF
 C
@@ -252,9 +247,10 @@ C
                IF ( NBCHEM.GT.2 ) THEN
                   WRITE(K3B,'(I3)') ICABL
                   CALL UTMESS('F','TOPOCA','CARACTERISATION DE LA '//
-     +                        'TOPOLOGIE DU CABLE NO'//K3B//' : IL '//
-     +                        'EXISTE PLUS DE DEUX CHEMINS POSSIBLES '//
-     +                        'AU DEPART DU NOEUD '//NOANCR(1))
+     &                        'TOPOLOGIE DU CABLE NO'//K3B//' : IL '//
+     &                        'EXISTE PLUS DE DEUX CHEMINS POSSIBLES '//
+     &                        'AU DEPART DU NOEUD '//NOANCR(1))
+C        CALL U2MESK('F','MODELISA7_55', 2 ,VALK)
                ENDIF
                ISUIV0(NBCHEM) = ISUIV
             ENDIF
@@ -264,8 +260,9 @@ C
       IF ( NBCHEM.EQ.0 ) THEN
          WRITE(K3B,'(I3)') ICABL
          CALL UTMESS('F','TOPOCA','CARACTERISATION DE LA TOPOLOGIE '//
-     +               'DU CABLE NO'//K3B//' : IL N EXISTE AUCUN '//
-     +               'CHEMIN POSSIBLE AU DEPART DU NOEUD '//NOANCR(1))
+     &               'DU CABLE NO'//K3B//' : IL N EXISTE AUCUN '//
+     &               'CHEMIN POSSIBLE AU DEPART DU NOEUD '//NOANCR(1))
+C        CALL U2MESK('F','MODELISA7_56', 2 ,VALK)
       ENDIF
 C
       NOSUI1 = ZK8(JNONOD+ISUIV0(1)-1)
@@ -405,9 +402,10 @@ C ---
       IF ( OK1 .AND. OK2 ) THEN
          WRITE(K3B,'(I3)') ICABL
          CALL UTMESS('F','TOPOCA','CARACTERISATION DE LA '//
-     +               'TOPOLOGIE DU CABLE NO'//K3B//' : '//
-     +               'DEUX CHEMINS CONTINUS POSSIBLES DE '//NOANCR(1)//
-     +               ' A '//NOANCR(2)//' : AMBIGUITE')
+     &               'TOPOLOGIE DU CABLE NO'//K3B//' : '//
+     &               'DEUX CHEMINS CONTINUS POSSIBLES DE '//NOANCR(1)//
+     &               ' A '//NOANCR(2)//' : AMBIGUITE')
+C        CALL U2MESK('F','MODELISA7_57', 3 ,VALK)
 C
 C 3.2 MISE A JOUR DES OBJETS DE SORTIE
 C ---
@@ -484,9 +482,7 @@ C .....
          ELSE
 C
             WRITE(K3B,'(I3)') ICABL
-            CALL UTMESS('F','TOPOCA','CARACTERISATION DE LA '//
-     +                  'TOPOLOGIE DU CABLE NO'//K3B//' : '//
-     +                  'AUCUN CHEMIN CONTINU VALIDE')
+            CALL U2MESK('F','MODELISA7_58',1,K3B)
          ENDIF
 C
       ENDIF

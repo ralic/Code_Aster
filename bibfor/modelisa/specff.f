@@ -1,9 +1,9 @@
       SUBROUTINE SPECFF(CASINT,NOMU,SPECTR,BASE,NUOR,IMODI,IMODF,NBM,
-     +                  NBPF,NPV)
+     &                  NBPF,NPV)
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,8 +101,7 @@ C
       CALL JEVEUO(FSIC,'L',IFSIC)
       ITYPFL = ZI(IFSIC)
       IF (ITYPFL.NE.2) THEN
-        CALL UTMESS('F','SPECFF','LE TYPE DE SPECTRE EST INCOMPATIBLE'//
-     &              ' AVEC LA CONFIGURATION ETUDIEE')
+        CALL U2MESS('F','MODELISA7_4')
       ENDIF
 C
 C
@@ -122,8 +121,8 @@ C
       IF ( LTABLE ) THEN
         TABLE = ZK16(ISPTE+3)(1:8)
         CALL TBLIVA ( TABLE, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
-     +              'DIMENSION', K8B, NBFONC, R8B, C16B, K8B, IRET )
-        IF ( IRET .NE. 0 ) CALL UTMESS('F','SPECFF','Y A UN BUG 1' )
+     &              'DIMENSION', K8B, NBFONC, R8B, C16B, K8B, IRET )
+        IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
         CALL WKVECT('&&SPECFF.TEMP.NOMF','V V K8',NBFONC,INOMF)
         DO 10 IFO = 1,NBFONC
           ZK8(INOMF+IFO-1) = ZK16(ISPTE+3+IFO)(1:8)
@@ -177,8 +176,7 @@ C ---     DU PARAMETRE LE LONG DE L'AXE DIRECTEUR DE LA POUTRE
 C
       CALL JELIRA(NOMA//'.NOMNOE','NOMUTI',NBN,K8B)
       IF (NBN.LT.3) THEN
-        CALL UTMESS('F','SPECFF','NOMBRE DE NOEUDS INSUFFISANT SUR LE'//
-     &              ' MAILLAGE')
+        CALL U2MESS('F','MODELISA7_6')
       ENDIF
       CALL WKVECT('&&SPECFF.TEMP.NUNO','V V I',NBN,INUNO)
       CALL WKVECT('&&SPECFF.TEMP.DIAX','V V R',NBN,IDIAX)
@@ -254,15 +252,14 @@ C
               IFO = IFO2*(IFO2-1)/2 + IFO1
               IVAL(1) = IFO1
               CALL TBLIVA ( TABLE, 2, NOPART, IVAL, R8B, C16B, K8B, K8B,
-     +             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
-              IF (IRET.NE.0) CALL UTMESS('F','SPECFF','Y A UN BUG 2' )
+     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
+              IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
                K8B = ' '
                DO 62 IL = 1,NBPF
                 PTF = ZR(LWR+IL-1)
                 CALL FOINTC(NOMFON,0,K8B,PTF,RESURE,RESUIM,IER)
                 IF (IER.NE.0) THEN
-                  CALL UTMESS('F','SPECFF','PROBLEME RENCONTRE LORS '//
-     &                 'DE L INTERPOLATION D UN INTERSPECTRE')
+                  CALL U2MESS('F','MODELISA7_5')
                 ENDIF
                 IDEC = 2*NBPF*(IFO-1)+2*(IL-1)
                 ZR(IINTE+IDEC  ) = RESURE

@@ -5,24 +5,24 @@
       CHARACTER*8    MODEL,NOMA,FISS
       CHARACTER*19   CNSLN,CNSLT,CNSGLN,CNSGLT,NORESI,NOESOM,ISOZRO,
      &               CNXINV
-  
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C TOLE CRP_20
@@ -87,13 +87,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19   CNOLT,CNOGLT,CELGLT,CHAMS,CELDFI,CESDFI,CELALF,
      &               CESALF,CNSVI,CNSWI,CNSVF,CNSGDF,CNOGDF,CELGDF,MAI
       CHARACTER*24   LIGREL,LCHIN(4),LCHOUT(2)
-      
+
       REAL*8         RESIMX
       PARAMETER      (RESIMX=1.D-3)
       INTEGER        ITERMX
       PARAMETER      (ITERMX=100)
       REAL*8         RESIDU(ITERMX),RESIT(ITERMX)
-      
+
 C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
@@ -116,9 +116,8 @@ C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
 C   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
       CALL GETVTX(' ','METHODE',1,1,1,METHOD,IBID)
       WRITE(IFM,*) '   UTILISATION DE LA METHODE '//METHOD
-      IF (METHOD.EQ.'UPWIND')  CALL UTMESS('F','XPRREI','LA METHODE '
-     &      //'"UPWIND" EST EN COURS D''IMPLEMENTATION.')
-      
+      IF (METHOD.EQ.'UPWIND')  CALL U2MESS('F','ALGORITH11_66')
+
 C   RECUPERATION DE L'ADRESSE DES VALEURS DE LS ET DU GRADIENT DE LS
       CALL JEVEUO(CNSLN//'.CNSV','L',JLNNO)
       CALL JEVEUO(CNSGLN//'.CNSV','L',JGLNNO)
@@ -130,7 +129,7 @@ C  RECUPERATION DE L'ADRESSE DE L'INFORMATION 'NOEUD SOMMET'
 
 C  RECUPERATION DE L'ADRESSE DE L'INFORMATION 'RESIDU A CALCULER'
       CALL JEVEUO(NORESI,'L',JRESDU)
-      
+
 C  RECUPERATION DES NOEUDS DONT LA "VRAIE" LST A ETE CALCULEE
       CALL JEVEUO(ISOZRO,'L',JZERO)
 
@@ -221,7 +220,7 @@ C-----BOUCLE PRINCIPALE-------------------------------------------------
             ZR(JVI-1+I) = 0.D0
             ZR(JWI-1+I) = 0.D0
  110     CONTINUE
-   
+
 C--------------------------------------
 C   CALCUL DE GRAND F SUR LES ELEMENTS
 C--------------------------------------
@@ -271,7 +270,6 @@ C---------------------------------------------------------
 
             CALL CALCUL('S','XFEM_SMPLX_CALC',LIGREL,4,LCHIN,LPAIN,2,
      &                  LCHOUT,LPAOUT,'V')
-     
             CALL CELCES (CELDFI,'V',CESDFI)
             CALL JEVEUO (CESDFI//'.CESV','L',JDELFI)
             CALL JEVEUO (CESDFI//'.CESL','L',JDEFIL)
@@ -304,10 +302,10 @@ C   BOUCLE SUR LES NOEUDS DE LA MAILLE
      &                                         * ZR(JMEAST-1+IADMET)
  130           CONTINUE
  120        CONTINUE
-         
+
 C-----------------------------------------------------------------------
          ELSEIF (METHOD.EQ.'UPWIND') THEN
-         
+
          ENDIF
 C-----------------------------------------------------------------------
 
@@ -333,10 +331,10 @@ C  ON ECARTE LES NOEUDS CALCULES PRECEDEMMENT
                   SIGMLT = SIGMLT + LTPREC**2.0D0
                ENDIF
                SDIFFT = SDIFFT + (LTNOUV-LTPREC)**2.0D0
-               SIGLST = SIGLST + LTPREC**2.0D0 
+               SIGLST = SIGLST + LTPREC**2.0D0
             ENDIF
  200     CONTINUE
-      
+
 C  CAS OU TOUS LES RESIDUS A ESTIMER SONT CALCULES
          IF (SDIFF.EQ.0.D0 .AND. SIGMLT.EQ.0.D0) THEN
             RESIDU(ITEMP) = 0.D0
@@ -398,7 +396,7 @@ C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                ENDIF
             ENDIF
  800     CONTINUE
- 
+
 C---------------------------------------------------
 C     CALCUL DU GRADIENT DE LA LEVEL SET RESULTANTE
 C---------------------------------------------------
@@ -412,12 +410,12 @@ C---------------------------------------------------
 
          CALL CALCUL('S','GRAD_NEUT_R',LIGREL,2,LCHIN,LPAIN,1,LCHOUT,
      &               LPAOUT,'V')
-      
+
 C  PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
          CALL CELCES (CELGLT, 'V', CHAMS)
          CALL CESCNS (CHAMS, ' ', 'V', CNSGLT)
          CALL JEVEUO (CNSGLT//'.CNSV','E',JGLTNO)
-            
+
 C-------------------------------------------------
 C     TESTS DES CONDITIONS DE SORTIE DE LA BOUCLE
 C-------------------------------------------------
@@ -433,7 +431,7 @@ C  MINIMUM LOCAL DU RESIDU GLOBAL ATTEINT
  995  CONTINUE
 C-----FIN DE LA BOUCLE PRINCIPALE---------------------------------------
  999  CONTINUE
- 
+
 C-------------------------------------
 C     AFFICHAGE DES INFOS UTILISATEUR
 C-------------------------------------
@@ -448,11 +446,11 @@ C      IF(NIV.GT.1) THEN
  300     CONTINUE
          WRITE(IFM,903)
 C      ENDIF
-      
+
       CALL CODENT(ITEMP,'D',ITERK3)
       CALL CODREE(RESIDU(ITEMP),'E',RESK10)
       CALL CODREE(RESIT(ITEMP),'E',RETK10)
-      
+
 C  CONVERGENCE ATTEINTE
       IF (RESIDU(ITEMP).LT.RESIMX)
      &   WRITE(IFM,*)'   CONVERGENCE ATTEINTE A L''ITERATION '//ITERK3
@@ -466,7 +464,7 @@ C  MINIMUM LOCAL ATTEINT
 C  NOMBRE MAXI D'ITERATIONS ATTEINT
       IF (ITEMP.EQ.ITERMX)
      &   WRITE(IFM,*)'   NOMBRE MAX D''ITERATION ('//ITERK3//') ATTEINT'
-         
+
       WRITE(IFM,*)'   RESIDU LOCAL  = '//RESK10
       WRITE(IFM,*)'   RESIDU GLOBAL = '//RETK10
 
@@ -480,7 +478,7 @@ C   DESTRUCTION DES OBJETS VOLATILES
       CALL JEDETR(CNSVI)
       CALL JEDETR(CNSWI)
       CALL JEDETR(CNSVF)
-      
+
       IF (METHOD.EQ.'SIMPLEXE') THEN
          CALL JEDETR(CELDFI)
          CALL JEDETR(CESDFI)
@@ -490,13 +488,12 @@ C   DESTRUCTION DES OBJETS VOLATILES
          CALL JEDETR(CNSGDF)
          CALL JEDETR(CNOGDF)
       ENDIF
-     
  900  FORMAT(3X,'+',11('-'),'+',12('-'),'+',12('-'),'+')
  901  FORMAT('   | ITERATION |   RESIDU   |   RESIDU   |')
  902  FORMAT('   |           |   LOCAL    |   GLOBAL   |')
  903  FORMAT(3X,'+',11('-'),'+',12('-'),'+',12('-'),'+')
  904  FORMAT(3X,'|',5X,I3,2X,2(' |',E11.4),' | ')
-      
+
 C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------

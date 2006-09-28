@@ -3,22 +3,22 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C     CALCUL POUR CHAQUE VITESSES DES INTERSPECTRES DE REPONSES
@@ -72,8 +72,8 @@ C
       CHARACTER*24  NOMFON, VALE, PROL, NOMFO
       COMPLEX*16    C16B
 C
-      DATA NOPAR  / 'VITE_FLUIDE'  , 'NUME_VITE_FLUI'   , 
-     +              'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION' /
+      DATA NOPAR  / 'VITE_FLUIDE'  , 'NUME_VITE_FLUI'   ,
+     &              'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION' /
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -85,8 +85,8 @@ C
       IVAL(3) = NUOR(1)
 C
       CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     +             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMCOD, IRET )
-      IF ( IRET .NE. 0 ) CALL UTMESS('F','CALCSP','Y A UN BUG 1' )
+     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMCOD, IRET )
+      IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
 C
       NOMFO = NOMCOD//'.VALE'
       CALL JELIRA ( NOMFO, 'LONUTI', NBPF, K8B )
@@ -104,8 +104,8 @@ C
         IVAL(3) = NUOR(1)
 C
         CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     +             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMCOD, IRET )
-        IF ( IRET .NE. 0 ) CALL UTMESS('F','CALCSP','Y A UN BUG 2' )
+     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMCOD, IRET )
+        IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
 C
         NOMFO = NOMCOD//'.VALE'
         CALL JEVEUO ( NOMFO, 'L', IFO )
@@ -121,6 +121,7 @@ C
      &                   'LA VITESSE NO'//K3IV//'. ON NE CALCULE '//
      &                   'DONC PAS D''INTERSPECTRES DE REPONSE '//
      &                   'MODALE POUR CETTE VITESSE.')
+C        CALL U2MESK('A','MODELISA2_90', 2 ,VALK)
              GO TO 20
           ENDIF
  25     CONTINUE
@@ -156,14 +157,14 @@ C
             IVAL(2) = NUOR(IM1)
 C
             CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     +             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
-            IF ( IRET .NE. 0 ) CALL UTMESS('F','CALCSP','Y A UN BUG' )
+     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
+            IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_91')
 C
             WRITE(NOMCOD,'(A8,A2,3I3.3)') NOMU,'.S',IV,NUOR(IM1),
-     +                                    NUOR(IM2)
+     &                                    NUOR(IM2)
 C
-            CALL TBAJLI ( NOMU, NBPAR, NOPAR, 
-     +                          IVAL, VITE(IV), C16B, NOMCOD, 0 )
+            CALL TBAJLI ( NOMU, NBPAR, NOPAR,
+     &                          IVAL, VITE(IV), C16B, NOMCOD, 0 )
 C
             VALE = NOMCOD(1:19)//'.VALE'
             PROL = NOMCOD(1:19)//'.PROL'
@@ -196,7 +197,7 @@ C
               ENDIF
               ZR(LVALE+NBPF+2*(IL-1))   = HHR*ZR(IFONC+NBPF+2*(IL-1))
               ZR(LVALE+NBPF+2*(IL-1)+1) = HHI*
-     +                                    ZR(IFONC+NBPF+2*(IL-1)+1)
+     &                                    ZR(IFONC+NBPF+2*(IL-1)+1)
  80         CONTINUE
 C
  60       CONTINUE

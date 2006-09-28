@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/09/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C
          TYPMCL(1) = 'GROUP_MA'
          TYPMCL(2) = 'MAILLE'
          CALL FONFIS ( RESU, NOMA, TYPFON, IOC,
-     +                    2, MOTCLE, TYPMCL, 'G')
+     &                    2, MOTCLE, TYPMCL, 'G')
       ENDIF
       CALL GVERIF(RESU,NOMA,TYPFON,ENTIT1)
       IF(ILEV.EQ.1)GOTO 10
@@ -162,12 +162,10 @@ C
             PS2=DDOT(3,ZR(JNORM),1,ZR(JEXTR),1)
             ZERO = R8PREM()
             IF(ABS(PS1).GT.ZERO) THEN
-               CALL UTMESS('E','OP0055','LA NORMALE N''EST PAS ORTHO'
-     &        //  'GONALE A LA TANGENTE A L''ORIGINE' )
+               CALL U2MESS('E','CALCULEL4_6')
             ENDIF
             IF(ABS(PS2).GT.ZERO) THEN
-               CALL UTMESS('E','OP0055','LA NORMALE N''EST PAS ORTHO'
-     &        //  'GONALE A LA TANGENTE A L''EXTREMITE' )
+               CALL U2MESS('E','CALCULEL4_7')
             ENDIF
           ENDIF
 C
@@ -199,7 +197,7 @@ C
         IRETNO = 1
         IRETOR = 0
         IRETEX = 0
-      
+
       ENDIF
 
 C

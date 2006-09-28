@@ -1,7 +1,7 @@
       SUBROUTINE CFCRSD(NOMA,LISCHA,NUMEDD,NEQ,DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/07/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,8 +122,7 @@ C
       END IF
 C
       IF (ICON.GT.1) THEN
-        CALL UTMESS('F','CFCRSD','IL Y A PLUSIEURS '
-     &              //'CHARGES CONTENANT DES CONDITIONS DE CONTACT ')
+        CALL U2MESS('F','ALGORITH_83')
       END IF
 C
 C --- NOM DE LA SD DE DEFINITION DU CONTACT
@@ -190,23 +189,21 @@ C
            CALL POSDDL ('NUME_DDL',NUMEDD,NOMNO,'DZ',
      &                              JBID,VERDIM)
            IF (VERDIM.NE.0) THEN
-            CALL UTMESS('A','CFCRSD',
-     &                  'MELANGE 2D ET 3D DANS LE CONTACT')
+            CALL U2MESS('A','ALGORITH_84')
            ENDIF
  24      CONTINUE
         ZI(JDIM) = 2
         NDIM     = 2
         ELSE IF (NDIM.EQ.1003) THEN
           ZI(JDIM) = 3
-          NDIM     = 3   
+          NDIM     = 3
         ELSE IF (NDIM.EQ.1002) THEN
           ZI(JDIM) = 2
-          NDIM     = 2  
+          NDIM     = 2
         ELSE
-          CALL UTMESS('F','CFCRSD',
-     &      'MELANGE DIMENSIONS MAILLAGE DANS LE CONTACT')
+          CALL U2MESS('F','ALGORITH_85')
         ENDIF
-      ENDIF  
+      ENDIF
 C
 C --- POINTEUR POUR LES DDLS LIES AU CONTACT
 C
@@ -344,7 +341,7 @@ C ======================================================================
       CALL JEEXIN (COCO,IER)
       IF (IER.EQ.0) THEN
         CALL WKVECT (COCO,'V V I',8,JCOCO)
-      ENDIF  
+      ENDIF
 
       CALL DISMOI('F','NB_EC','DEPL_R','GRANDEUR',NEC,K1BID,IER)
       ZI(JCOCO  ) = NDIM
@@ -416,15 +413,15 @@ C  OBJETS ASSOCIES AUX MATRICES
 C
 C ----------------------------------------------------------------------
 C
-      
+
 C     ON RECUPERE LA METHODE DE CONTACT
       METHCO = DEFICO(1:16)//'.METHCO'
       CALL JEVEUO (METHCO,'L',JMETH)
       IMETH  = ZI(JMETH+6)
-      
+
 C     SI LA METHODE N'EST PAS 'GCP', ON CREE LES SD DE DONNEES MATRICE
       IF (IMETH.NE.9) THEN
-      
+
          NBLIAI = NESMAX
 C
          CM1A   = RESOCO(1:14)//'.CM1A'
@@ -460,11 +457,11 @@ C ---    MATRICE CM2AT ET CM3AT (UTILISEE EN FROTTEMENT UNIQUEMENT)
  42         CONTINUE
          ENDIF
 
-C 
+C
 C ---    MATRICE DE CONTACT ACM1AT
-C 
+C
          CALL CFCRMA(NBREEL,NOMA,RESOCO)
-      
+
       ENDIF
 
  9999 CONTINUE

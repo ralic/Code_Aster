@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,7 @@ C
       CHARACTER*8  NOMPAV(1)
       REAL*8       VALPAV(1),FCX,VITE2,VP(3),ANG1(3),U(3),V(3),INSTAN
       LOGICAL      NORMAL,GLOBAL,OKVENT
-      
+
       REAL*8       KENDOG,KDESSI,SECH,HYDR
 C     ------------------------------------------------------------------
       DATA         NOMPAR / 'X' , 'Y' , 'Z' , 'INST' /
@@ -128,8 +128,7 @@ C          ------------------------------
       XL = SQRT(S)
       IF( XL .EQ. 0.D0 ) THEN
          CH16 = ' ?????????'
-         CALL UTMESS('F','ELEMENTS DE BARRE (TE0155)',
-     +                  'NOEUDS CONFONDUS POUR UN ELEMENT: '//CH16(:8))
+         CALL U2MESK('F','ELEMENTS2_43',1,CH16(:8))
       ENDIF
 C
 C     --- INITIALISATION DE FL ---
@@ -149,7 +148,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
-     +                 CODRES, 'FM' )
+     &                 CODRES, 'FM' )
 C
          CALL JEVECH('PPESANR','L',LPESA)
          DO 20 I = 1,3
@@ -190,7 +189,7 @@ C        POUR LE CAS DU VENT
          CALL TECACH('NNN','PVITER',1,LFORC,IRET)
          IF ( LFORC .NE. 0 ) THEN
            IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
-             CALL UTMESS('F','TE0155','OPTION NON DISPONIBLE')
+             CALL U2MESS('F','ELEMENTS3_33')
             ENDIF
            NORMAL = .TRUE.
            OKVENT = .TRUE.
@@ -287,9 +286,9 @@ C     --- FORCES REPARTIES PAR FONCTIONS ---
 40       CONTINUE
          DO 42 I = 1, 3
            CALL FOINTE('FM',ZK8(LFORC+I-1),NBPAR,NOMPAR,VALPA1,QG(I),
-     +                 IRET)
+     &                 IRET)
            CALL FOINTE('FM',ZK8(LFORC+I-1),NBPAR,NOMPAR,VALPA2,QG(I+3),
-     +                 IRET)
+     &                 IRET)
 42       CONTINUE
 C
          IF ( NORMAL ) THEN
@@ -438,7 +437,7 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
      &               CODRES,'FM')
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
-     +                                      ALPHAT,CODRES,'FM')
+     &                                      ALPHAT,CODRES,'FM')
 C
 C        TEMPERATURE DE REFERENCE
          CALL JEVECH('PTEREF','L',LTREF)
@@ -482,7 +481,7 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
      &               CODRES,'FM')
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
-     +                                      ALPHAT,CODRES,'FM')
+     &                                      ALPHAT,CODRES,'FM')
 
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
       IF (ITEMPS.NE.0) THEN
@@ -499,7 +498,7 @@ C
          IF (IRET.NE.0) SECH=0.D0
          CALL RCVARC(' ','SECH','REF','RIGI',1,1,SREF,IRET)
          IF (IRET.NE.0) SREF=0.D0
-                  
+
       NOMPAR(1) = 'TEMP'
       VALPA2(1) = TEMP
       NOMPAR(2) = 'INST'
@@ -514,7 +513,7 @@ C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 C           DU SECHAGE
 C           ----------------------------------------------------------
             CALL RCVALA(ZI(LMATER),' ','ELAS',3,NOMPAR,VALPA2,1,
-     +          'K_DESSIC',KDESSI, CODRES, ' ' )
+     &          'K_DESSIC',KDESSI, CODRES, ' ' )
 C
             IF (CODRES.NE.'OK') KDESSI=0.D0
 C
@@ -549,7 +548,7 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
      &               CODRES,'FM')
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
-     +                                      ALPHAT,CODRES,'FM')
+     &                                      ALPHAT,CODRES,'FM')
 
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
@@ -565,10 +564,10 @@ C        TEMPERATURE EFFETIVE
 C
          TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
 
-C        HYDRATATION EFFECTIVE 
+C        HYDRATATION EFFECTIVE
          CALL RCVARC(' ','HYDR','+','RIGI',1,1,HYDR,IRET)
          IF (IRET.NE.0) HYDR=0.D0
-         
+
       NOMPAR(1) = 'TEMP'
       VALPA2(1) = TEMP
       NOMPAR(2) = 'INST'
@@ -583,7 +582,7 @@ C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 C           OU DE L HYDRATATION
 C           ----------------------------------------------------------
             CALL RCVALA(ZI(LMATER),' ','ELAS',3,NOMPAR,VALPA2,1,
-     +          'B_ENDOGE',KENDOG, CODRES, ' ' )
+     &          'B_ENDOGE',KENDOG, CODRES, ' ' )
 C
             IF (CODRES.NE.'OK') KENDOG=0.D0
 C
@@ -612,14 +611,10 @@ C
 C
       GOTO 1000
 998   CONTINUE
-      CALL UTMESS('F','TE0155',
-     &        'SEULES LES FORCES SUIVEUSES DE TYPE VENT DEFINIES '//
-     &        'PAR UN EVOL_CHAR SONT AUTORISEES')
+      CALL U2MESS('F','ELEMENTS3_34')
 
 999   CONTINUE
-      CALL UTMESS('F','TE0155',
-     &        'UN CHAMP DE VITESSE DE VENT EST IMPOSE SANS DONNER '//
-     &        'UN CX DEPENDANT DE LA VITESSE SUR UNE DES BARRES.')
+      CALL U2MESS('F','ELEMENTS3_35')
 
  1000 CONTINUE
       END

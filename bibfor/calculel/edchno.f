@@ -1,21 +1,21 @@
       SUBROUTINE EDCHNO(CHAMNO,IFIC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) CHAMNO
@@ -75,7 +75,7 @@ C
       ELSE
           WRITE (IFIC,*) 'ERREUR EDCHNO '
           WRITE (IFIC,*) 'ON NE SAIT PAS IMPRIMER LES CHAMPS DE TYPE "',
-     +      TYPE(1:1),'"   ON EST VRAIMENT DESOLE.'
+     &      TYPE(1:1),'"   ON EST VRAIMENT DESOLE.'
           GO TO 9999
       END IF
       CALL JEVEUO(CHAMN2//'.VALE','L',IAVALE)
@@ -101,26 +101,25 @@ C     --SI LE CHAMP EST A REPRESENTATION CONSTANTE:
 C
       IF (NUM.LT.0) THEN
 C         A FAIRE ???
-          CALL UTMESS('F',' EDCHNO ','L IMPRESSION DES CHAM_NO A '//
-     +                ' REPRESENTATION CONSTANTE RESTE A FAIRE!')
+          CALL U2MESS('F','CALCULEL2_44')
       ELSE
 C        --SI LE CHAMP EST DECRIT PAR 1 "PRNO":
 C
           WRITE (IFIC,*) '---- ECRITURE DU CHAMP AUX NOEUDS: ',
-     +      CHAMNO(1:19)
+     &      CHAMNO(1:19)
           CALL JEVEUO(NOMNU(1:19)//'.NUEQ','L',IANUEQ)
           CALL JELIRA(NOMNU(1:19)//'.PRNO','NMAXOC',NLILI,K1BID)
           DO 10,I = 1,NLILI
               CALL JENUNO(JEXNUM(NOMNU(1:19)//'.LILI',I),NOLILI)
               CALL JELIRA(JEXNUM(NOMNU(1:19)//'.PRNO',I),'LONMAX',IBID,
-     +                    K1BID)
+     &                    K1BID)
               IF (IBID.EQ.0) GO TO 10
               CALL JEVEUO(JEXNUM(NOMNU(1:19)//'.PRNO',I),'L',IAPRNO)
               IF (I.EQ.1) THEN
                   WRITE (IFIC,*) '----  NOEUDS DU MAILLAGE:'
               ELSE
                   WRITE (IFIC,*) '----  NOEUDS SUPPLEMENTAIRES DE:',
-     +              NOLILI(1:19)
+     &              NOLILI(1:19)
               END IF
               IF (NCMPMX.LE.9) THEN
                   WRITE (IFIC,8001) ' NOEUD ', (NOMCMP(II),II=1,NCMPMX)
@@ -174,25 +173,25 @@ C
                   IF (NCMPMX.LE.9) THEN
                       IF (ITYPE.EQ.1) THEN
                           WRITE (IFIC,8000) NOMNO,
-     +                      (TAMPON(II,1),II=1,NCMPMX)
+     &                      (TAMPON(II,1),II=1,NCMPMX)
                       ELSE IF (ITYPE.EQ.2) THEN
                           WRITE (IFIC,8000) NOMNO,
-     +                      (TAMPON(II,1),II=1,NCMPMX)
+     &                      (TAMPON(II,1),II=1,NCMPMX)
                           WRITE (IFIC,8000) BLANC,
-     +                      (TAMPON(II,2),II=1,NCMPMX)
+     &                      (TAMPON(II,2),II=1,NCMPMX)
                       END IF
                   ELSE IF (NCMPMX.LE.18) THEN
                       IF (ITYPE.EQ.1) THEN
                           WRITE (IFIC,8000) NOMNO, (TAMPON(II,1),II=1,9)
                           WRITE (IFIC,8000) BLANC,
-     +                      (TAMPON(II,1),II=10,NCMPMX)
+     &                      (TAMPON(II,1),II=10,NCMPMX)
                       ELSE IF (ITYPE.EQ.2) THEN
                           WRITE (IFIC,8000) NOMNO, (TAMPON(II,1),II=1,9)
                           WRITE (IFIC,8000) BLANC,
-     +                      (TAMPON(II,1),II=10,NCMPMX)
+     &                      (TAMPON(II,1),II=10,NCMPMX)
                           WRITE (IFIC,8000) BLANC, (TAMPON(II,2),II=1,9)
                           WRITE (IFIC,8000) BLANC,
-     +                      (TAMPON(II,2),II=10,NCMPMX)
+     &                      (TAMPON(II,2),II=10,NCMPMX)
                       END IF
                   END IF
    11         CONTINUE

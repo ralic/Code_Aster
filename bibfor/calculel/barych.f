@@ -1,6 +1,6 @@
       SUBROUTINE BARYCH(CH1,CH2,R1,R2,CH,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
       CHARACTER*1                        BASE
       REAL*8                    R1,R2
 C ----------------------------------------------------------------------
-C     BUT :   FAIRE LA COMBINAISON LINERAIRE DE 2 CHAMP : 
+C     BUT :   FAIRE LA COMBINAISON LINERAIRE DE 2 CHAMP :
 C             CH = R1*CH1+ R2*CH2 (CHAMP = CHAM_NO OU CHAM_ELEM)
 C
 C IN:  CH1    : NOM DU 1ER CHAMP
@@ -67,7 +67,7 @@ C
 
 
       IF ((DOCU(1:4).NE.'CHNO').AND.(DOCU(1:4).NE.'CHML')) THEN
-        CALL UTMESS('F','BARYCH_01','TYPE DE CHAMP INCORRECT')
+        CALL U2MESS('F','CALCULEL_25')
       ELSE IF ( DOCU(1:4).EQ.'CHNO') THEN
 C     -----------------------------------
         VALE='.VALE'
@@ -115,8 +115,8 @@ C     -----------------------------------
           CALL JELIRA(CH1//VALE,'LONMAX',LON1,K1BID)
           CALL JELIRA(CH2//VALE,'LONMAX',LON2,K1BID)
           CALL JELIRA(CH//VALE,'LONMAX',LONG,K1BID)
-          IF ((LON1.NE.LON2).OR.(LON1.NE.LONG)) CALL UTMESS('F',
-     &    'BARYCH','LONGUEURS DES CHAM_ELEM INCOMPATIBLES')
+          IF ((LON1.NE.LON2).OR.(LON1.NE.LONG)) CALL U2MESS('F','CALCULE
+     &L_26')
 
           CALL JEVEUO(CH//VALE,'E',IACH)
           CALL JEVEUO(CH1//VALE,'L',IACH1)
@@ -131,7 +131,7 @@ C     -----------------------------------
     6       CONTINUE
           END IF
         ELSE
-          CALL UTMESS ('F','BARYCH','CHAM_ELEM A COMBINER INCOMPATIBLE')
+          CALL U2MESS('F','CALCULEL_27')
         ENDIF
       END IF
 

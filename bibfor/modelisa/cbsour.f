@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,7 @@ C
             NBCALC = NBCALC + ICALC
  10      CONTINUE
          IF ( NBCALC .GT. 1 ) THEN
-            CALL UTMESS('F','CBSOUR','NOMBRE D OCCURENCE DU MOT CLE '//
-     +                                '"SOUR_CALCULEE"  SUPERIEUR A 1')
+            CALL U2MESS('F','MODELISA3_64')
          ELSE IF (NBCALC.EQ.1) THEN
             CALL CHPVER('F',CHSOUR(1:19),'ELGA','SOUR_R',IER)
             CALL COPISD ( 'CHAMP_GD', 'G', CHSOUR(1:19), CARTE(1:19) )

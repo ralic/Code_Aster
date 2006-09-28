@@ -3,7 +3,7 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,8 +77,7 @@ C
          CALL GETVID ( 'AFFE', 'MATER' , I,1,1,  NOMMAT, NM )
          IF (NM .LT. -1) NM = -NM
          IF (NM .GT. NBCMP) THEN
-           CALL UTMESS('F','RCMATE','LE NOMBRE DE MATERIAU EST '//
-     +      'SUPERIEUR AU NOMBRE DE COMPOSANTES DE LA GRANDEUR NEUT_F')
+           CALL U2MESS('F','MODELISA6_65')
          ENDIF
          CALL GETVID ( 'AFFE', 'MATER' , I,1,NM, ZK8(JVALV), NM )
          CALL GETVTX ( 'AFFE', 'TOUT'  , I,1,1, OUI   , NT )
@@ -86,11 +85,11 @@ C
             CALL NOCART ( CHAMAT, 1, K8B, K8B, 0, K8B, IBID, ' ', NM )
          ELSE
             CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE',I,2,MOTCLE(1),
-     +                                      TYPMCL(1), MESMAI, NBMA )
+     &                                      TYPMCL(1), MESMAI, NBMA )
             IF ( NBMA .NE. 0 ) THEN
                CALL JEVEUO ( MESMAI, 'L', JMAIL )
                CALL NOCART ( CHAMAT, 3, K8B, 'NUM', NBMA, K8B,
-     +                                              ZI(JMAIL), ' ', NM )
+     &                                              ZI(JMAIL), ' ', NM )
                CALL JEDETR ( MESMAI )
             ENDIF
          ENDIF

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,17 +83,15 @@ C     -------------------------------
         CALL GETVID(' ','CHARGE',0,1,NCHA,ZK8(ICHA),IBID)
 
         CALL DISMOI('F','NOM_MODELE',ZK8(ICHA),'CHARGE',IBID,MO1,IED)
-        IF ((N1.EQ.1) .AND. (MODELE.NE.MO1)) CALL UTMESS('F','OP0008',
-     &      'LES CHARGES SONT INCOHERENTES AVEC LE MODELE.')
+        IF ((N1.EQ.1) .AND. (MODELE.NE.MO1)) CALL U2MESS('F','CALCULEL3_
+     &88')
 
         MODELE = MO1
         DO 10,ICH = 1,NCHA
           CALL DISMOI('F','NOM_MODELE',ZK8(ICHA-1+ICH),'CHARGE',IBID,
      &                K8BID,IED)
           IF (K8BID.NE.MODELE) THEN
-            CALL UTMESS('F','CALC_VECT_ELEM',
-     &        'ERREUR: LES CHARGES NE S APPUIENT PAS TOUTES SUR LE MEME'
-     &                  //' MODELE.')
+            CALL U2MESS('F','CALCULEL3_89')
           END IF
    10   CONTINUE
       END IF
@@ -133,9 +131,7 @@ C     -------------------------------
         CALL GETVR8(' ','PROPAGATION',0,1,1,ALPHA,N11)
         CALL RSEXCH(SDTHET,'THETA',0,THETA,IRET)
         IF (IRET.GT.0) THEN
-          CALL UTMESS('F','OP0008','LE CHAMP DE THETA EST INEXISTANT'
-     &                //' DANS LA STRUCTURE DE DONNEES '//SDTHET//
-     &                ' DE '//'TYPE THETA_GEOM .')
+          CALL U2MESK('F','CALCULEL3_90',1,SDTHET)
         END IF
         IF (N11.EQ.0) ALPHA = 0.0D0
       END IF
@@ -147,8 +143,7 @@ C     -- VERIFICATION DES CHARGES:
           CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA-1+ICH),'CHARGE',IBID,
      &                K8BID,IED)
           IF (K8BID(1:5).NE.'MECA_') THEN
-            CALL UTMESS('F','CALC_VECT_ELEM',
-     &                  'ERREUR: UNE DES CHARGES N''EST PAS MECANIQUE')
+            CALL U2MESS('F','CALCULEL3_91')
           END IF
    20   CONTINUE
       END IF
@@ -158,8 +153,7 @@ C     -- VERIFICATION DES CHARGES:
           CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA-1+ICH),'CHARGE',IBID,
      &                K8BID,IED)
           IF (K8BID(1:5).NE.'THER_') THEN
-            CALL UTMESS('F','CALC_VECT_ELEM',
-     &                  'ERREUR: UNE DES CHARGES N''EST PAS THERMIQUE')
+            CALL U2MESS('F','CALCULEL3_92')
           END IF
    30   CONTINUE
       END IF
@@ -169,8 +163,7 @@ C     -- VERIFICATION DES CHARGES:
           CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA-1+ICH),'CHARGE',IBID,
      &                K8BID,IED)
           IF (K8BID(1:5).NE.'ACOU_') THEN
-            CALL UTMESS('F','CALC_VECT_ELEM',
-     &                  'ERREUR: UNE DES CHARGES N''EST PAS ACOUSTIQUE')
+            CALL U2MESS('F','CALCULEL3_93')
           END IF
    40   CONTINUE
       END IF
@@ -178,9 +171,7 @@ C     -- VERIFICATION DES CHARGES:
       IF ((SUROPT.EQ.'FORC_NODA')) THEN
         CALL DISMOI('F','TYPE_CHAMP',CHAM,'CHAMP',IBID,TYCH,IERD)
         IF (TYCH(1:4).NE.'ELGA') THEN
-          CALL UTMESS('F','CALC_VECT_ELEM',
-     &                'ERREUR: LE CHAMP DOIT ETRE UN CHAM_ELEM'//
-     &                ' AUX POINTS DE GAUSS')
+          CALL U2MESS('F','CALCULEL3_94')
         END IF
       END IF
 
@@ -221,11 +212,7 @@ C       - ON CHERCHE LE NOM DU MODELE A ATTACHER AU VECT_ELEM :
           MODELE = K8B
         ELSE
           CALL GETVID(' ','MODELE',0,1,1,MODELE,N1)
-          IF (N1.EQ.0) CALL UTMESS('F','OP0008',
-     &              'AVEC UN CHAM_ELEM CALCULE SUR UNE LISTE DE MAILLE,'
-     &                             //
-     &                          ' IL FAUT UTILISER LE MOT CLE "MODELE:"'
-     &                             )
+          IF (N1.EQ.0) CALL U2MESS('F','CALCULEL3_95')
         END IF
 
         PARTPS(1) = 0.D0
@@ -234,7 +221,7 @@ C       - ON CHERCHE LE NOM DU MODELE A ATTACHER AU VECT_ELEM :
         CH24 = ' '
         FNOEVO=.FALSE.
         CALL VEFNME(MODELE,CHAM,CARA,' ',' ',VFONO,MATE,' ',NH,FNOEVO,
-     >              PARTPS,' ',CH24,' ',' ')
+     &              PARTPS,' ',CH24,' ',' ')
         CALL JEVEUO(VFONO,'L',JLVF)
         VAFONO = ZK24(JLVF)
         CALL JELIRA(VFONO,'LONUTI',NBCHME,K8BID)

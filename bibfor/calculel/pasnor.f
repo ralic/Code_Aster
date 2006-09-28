@@ -1,33 +1,33 @@
       SUBROUTINE PASNOR ( NBEL, LIGREL, NBGREL, LONGR, NCMPMX, VALE,
-     +                    NOMCMP,  CELD, CONNEX, POINT,
-     +                    LILI, NBNOEU,
-     +                    BASE, GRAN, NOMA , CHAMN )
+     &                    NOMCMP,  CELD, CONNEX, POINT,
+     &                    LILI, NBNOEU,
+     &                    BASE, GRAN, NOMA , CHAMN )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER           LIGREL(*),LONGR(*),CELD(*),CONNEX(*),
-     +                  POINT(*),DESCR
+     &                  POINT(*),DESCR
       REAL*8            VALE(*)
       CHARACTER*(*)     BASE, CHAMN,
-     +                  LILI, GRAN, NOMA
+     &                  LILI, GRAN, NOMA
       CHARACTER*8       NOMCMP(*)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C--------------------------------------------------------------------
@@ -141,7 +141,7 @@ C --- STOCKAGE DES NOMS DE COMPOSANTES ---
 C
          DO 42 I = 1 , NCMP2
             IF ( ICOEF .GT. 1 ) THEN
-               IF ( GRAN .NE. 'VAR2_R' ) CALL UTMESS('F','PASNOR','1')
+               IF ( GRAN .NE. 'VAR2_R' ) CALL U2MESS('F','CALCULEL_33')
                DO 43 JCO = 1 , ICOEF
                   CALL CODENT(JCO,'G',K8B)
                   ZK8(INOM-1+(I-1)*ICOEF+JCO)='V'//K8B(1:7)
@@ -163,11 +163,11 @@ C
                NUNO  = CONNEX(IPOIN-1+IN)
                ZI(JNBCA-1+NUNO) = NBVAL
                J = IACHML-1+NCMPP*ICOEF*(IN-1)
-     +                                  +(ICOU-1)*NCMPP*ICOEF*NBNO
+     &                                  +(ICOU-1)*NCMPP*ICOEF*NBNO
                DO 50 I = 1,NCMP2
                   DO 51 JCO = 1,ICOEF
                      ZR(IVAL-1+(I-1)*ICOEF+JCO) =
-     +                                        VALE(J+I+(JCO-1)*NCMPP)
+     &                                        VALE(J+I+(JCO-1)*NCMPP)
                      ZI(ICOE-1+(I-1)*ICOEF+JCO) = JCO
  51               CONTINUE
  50            CONTINUE
@@ -181,8 +181,7 @@ C
                    DESCR = IOR(DESCR,2**JJ)
                    ZI(JDESC-1+(NUNO-1)*NECG+IEC)=DESCR
                  ELSE
-                   CALL UTMESS('F','PASNOR','COMPOSANTE NON DEFINIE '// 
-     +                                             'DANS LA GRANDEUR.')
+                   CALL U2MESS('F','CALCULEL4_52')
                  ENDIF
                  IND = J + (NUNO-1)*NCMPMX
                  ZI(JADDL-1+IND) = ZI(JADDL-1+IND) + 1
@@ -202,7 +201,7 @@ C
  80   CONTINUE
 C
       CALL AFCHNO ( CHAMN, BASE, GRAN, NOMA, NBNOEU, ZI(JNBCA),
-     +              ZI(JDESC), LONVAL, TYPVAL, ZR(JVALE), C16B, K8B )
+     &              ZI(JDESC), LONVAL, TYPVAL, ZR(JVALE), C16B, K8B )
 C
       CALL JEDETR('&&PASNOR.VALCOMPNO')
       CALL JEDETR('&&PASNOR.DESC_NOEUD')

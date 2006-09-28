@@ -4,22 +4,22 @@
       CHARACTER*(*)             FICHIE, NAME, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE D6BHHJP J.P.LEFEBVRE
 C TOLE CRP_6
@@ -31,7 +31,7 @@ C
 C IN  : UNIT   : NUMERO D'UNITE LOGIQUE
 C IN  : FICHIE : NOM DU FICHIER ASSOCIE AU NUMERO D'UNITE LOGIQUE UNIT
 C IN  : NAME   : NOM LOCAL ASSOCIE AU NUMERO D'UNITE LOGIQUE UNIT
-C IN  : ACCES  : TYPE D'ACCES  N -> NEW, O -> OLD, A -> APPEND 
+C IN  : ACCES  : TYPE D'ACCES  N -> NEW, O -> OLD, A -> APPEND
 C IN  : AUTOR  : O -> AUTORISE LA MODIFICATION
 C                N -> N'AUTORISE PAS LA MODIFICATION
 C                R -> RESERVE L'UNITE SANS OUVRIR LE FICHIER
@@ -63,16 +63,16 @@ C     CONSERVER LA COHERENCE AVEC IBIMPR
       CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
       INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
       DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
-     +                      'ERREUR'  ,  'MED'      /
+     &                      'ERREUR'  ,  'MED'      /
       DATA          UNITPR /    0     ,      6      ,     8     ,
-     +                          9     ,    80       /
+     &                          9     ,    80       /
 C     ------------------------------------------------------------------
 C
       NAME16 = NAME
       NAMELL = FICHIE
       K1ACCE = ACCES
       K1AUT  = AUTOR
-C     
+C
       IF ( UNIT .GT. 0 ) THEN
 C
 C       VALEUR PAR DEFAUT POUR LES NOMS INTERNES
@@ -93,7 +93,7 @@ C
         ELSE
            NAMELL = FICHIE
         ENDIF
-C       
+C
         DO 10 I = 1 , NBFILE
           IF ( UNITFI(I) .EQ. UNIT ) THEN
 C
@@ -107,29 +107,30 @@ C
                       GOTO 9999
                     ENDIF
                     CALL UTMESS('E','ULOPEN01','UNITE LOGIQUE '//K4B//
-     &               ' ASSOCIEE AU NOM '//DDNAME(I)// 
-     &               ' ET AU FICHIER '//NAMEFI(I)(1:80))          
-                    CALL UTMESS('F','ULOPEN01','VOUS DEVEZ D''ABORD '
-     &                  //'LE FERMER POUR L''ASSOCIER AU NOM '//NAME16)
+     &               ' ASSOCIEE AU NOM '//DDNAME(I)//
+     &               ' ET AU FICHIER '//NAMEFI(I)(1:80))
+C        CALL U2MESK('E','UTILITAI5_11', 3 ,VALK)
+                    CALL U2MESK('F','UTILITAI5_12',1,NAME16)
                   ELSE
                     CALL UTMESS('E','ULOPEN02','UNITE LOGIQUE '//K4B//
-     &               ' DEJA UTILISEE EN ACCES '//ACCEFI(I)// 
-     &               ' PAR LE FICHIER '//NAMEFI(I)(1:80))         
-                    CALL UTMESS('F','ULOPEN02','VOUS DEVEZ D''ABORD '
-     &                        //'LE FERMER')        
+     &               ' DEJA UTILISEE EN ACCES '//ACCEFI(I)//
+     &               ' PAR LE FICHIER '//NAMEFI(I)(1:80))
+C        CALL U2MESK('E','UTILITAI5_13', 3 ,VALK)
+                    CALL U2MESS('F','UTILITAI5_14')
                   ENDIF
                 ENDIF
               ELSE
                 CALL UTMESS('E','ULOPEN03','UNITE LOGIQUE '//K4B//
      &               ' DEJA UTILISEE EN MODE BINAIRE PAR LE FICHIER '
-     &               //NAMEFI(I)(1:80))           
-                CALL UTMESS('F','ULOPEN03','VOUS DEVEZ D''ABORD'
-     &                    //' FERMER LE FICHIER ASSOCIE')           
+     &               //NAMEFI(I)(1:80))
+C        CALL U2MESK('E','UTILITAI5_15', 2 ,VALK)
+                CALL U2MESS('F','UTILITAI5_16')
               ENDIF
             ELSE
               CALL UTMESS('F','ULOPEN04','UNITE LOGIQUE '//K4B//
      &                    ' DEJA UTILISEE PAR LE FICHIER '//
      &           NAMEFI(I)(1:80)//' ASSOCIEE AU NOM '//DDNAME(I))
+C        CALL U2MESK('F','UTILITAI5_17', 3 ,VALK)
             ENDIF
           ENDIF
  10     CONTINUE
@@ -138,7 +139,7 @@ C     --- VERIFICATION DE L'OUVERTURE DU FICHIER ---
 C
         IF ( NAME16 .NE. ' ' ) THEN
           DO 11 I = 1 , NBFILE
-            IF ( DDNAME(I) .EQ. NAME16 )  DDNAME(I) = ' '    
+            IF ( DDNAME(I) .EQ. NAME16 )  DDNAME(I) = ' '
  11       CONTINUE
         ENDIF
         INQUIRE ( UNIT=UNIT, OPENED=V11, IOSTAT=IER1)
@@ -149,16 +150,15 @@ C
             IF ( IER2 .NE. 0 ) THEN
               CALL UTMESS('F','ULOPEN05','UNITE LOGIQUE '//K4B//
      &               ', PROBLEME LORS DE L''OPEN '//NAMELL(1:80))
-            ENDIF     
+C        CALL U2MESK('F','UTILITAI5_18', 2 ,VALK)
+            ENDIF
             CALL ULPOSI ( UNIT, K1ACCE, IERR)
             IF ( IERR .GT. 0 ) THEN
-              CALL UTMESS('F','ULOPEN06','UNITE LOGIQUE '//K4B//
-     &                    ', PROBLEME LORS DU POSITIONNEMENT') 
+              CALL U2MESK('F','UTILITAI5_19',1,K4B)
             ENDIF
           ENDIF
         ELSE
-            CALL UTMESS('F','ULOPEN07','UNITE LOGIQUE '//K4B//
-     &                 ', PROBLEME LORS DE L''INQUIRE')             
+            CALL U2MESK('F','UTILITAI5_20',1,K4B)
         ENDIF
 C
 C     --- ON STOCKE DANS LE COMMON ---
@@ -171,9 +171,8 @@ C
  15     CONTINUE
         NBFILE = NBFILE + 1
         IF ( NBFILE .GT. MXF ) THEN
-          WRITE(K4B,'(I4)') MXF  
-          CALL UTMESS('F','ULOPEN08','NOMBRE D''UNITES LOGIQUES'
-     &              //' OUVERTES SUPERIEUR A //K4B')
+          WRITE(K4B,'(I4)') MXF
+          CALL U2MESS('F','UTILITAI5_21')
         ENDIF
         IFILE=NBFILE
  16     CONTINUE
@@ -191,11 +190,10 @@ C       POUR UNE RÉSERVATION, ON FERME LE FICHIER, SON ÉTAT PASSE À 'R'
            CLOSE (UNIT=UNIT, IOSTAT=IERR)
            IF ( IERR .GT. 0 ) THEN
                WRITE(K4B,'(I4)') UNIT
-               CALL UTMESS('F','ULOPEN09','UNITE LOGIQUE '//K4B
-     &         //', PROBLEME LORS DU CLOSE DE LA RESERVATION.')
+               CALL U2MESK('F','UTILITAI5_22',1,K4B)
            ENDIF
         ENDIF
-C       
+C
       ELSE IF ( UNIT .LT. 0 ) THEN
         WRITE(K4B,'(I4)') -UNIT
         DO 20 I = 1 , NBFILE
@@ -205,8 +203,7 @@ C              IF ( TYPEFI(I) .EQ. 'A' ) THEN
                 IF ( ETATFI(I) .EQ. 'O' ) THEN
                   CLOSE (UNIT=-UNIT, IOSTAT=IERR)
                   IF ( IERR .GT. 0 ) THEN
-                    CALL UTMESS('F','ULOPEN20','UNITE LOGIQUE '//K4B
-     &                    //', PROBLEME LORS DU CLOSE ')         
+                    CALL U2MESK('F','UTILITAI_77',1,K4B)
                   ENDIF
                 ENDIF
                 NAMEFI(I) = ' '
@@ -223,8 +220,7 @@ C     &                  //'A L''UNITE LOGIQUE '//K4B//' N''EST PAS DE '
 C     &                  //'TYPE ASCII')
 C              ENDIF
             ELSE
-              CALL UTMESS('F','ULOPEN23','LA REDEFINITION DE L''UNITE '
-     &                //'LOGIQUE '//K4B//' N''EST PAS AUTORISEE')
+              CALL U2MESK('F','UTILITAI5_23',1,K4B)
             ENDIF
           ENDIF
 20      CONTINUE

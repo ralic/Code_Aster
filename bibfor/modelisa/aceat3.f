@@ -9,7 +9,7 @@
       REAL*8  ANGL1(3),ANGL2(3),ANGL3(3),EPSI,ANGL4(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,8 +120,7 @@ C
                IF (ISENS(IPA).EQ.0) THEN
                   ISENS(IPA)=IZK
                ELSE
-                  CALL UTMESS('F','ACEAT3',' GENE_TUYAU '//
-     +                   'PRECISER UN SEUL NOEUD PAR TUYAU')
+                  CALL U2MESS('F','MODELISA_24')
                ENDIF
             ENDIF
             IF (NOZK(IZK).EQ.(NOPAR(IPA,2,IMFIN))) THEN
@@ -129,14 +128,12 @@ C
                IF (ISENS(IPA).EQ.0) THEN
                   ISENS(IPA)=-IZK
                ELSE
-                  CALL UTMESS('F','ACEAT3',' GENE_TUYAU '//
-     +                   'PRECISER UN SEUL NOEUD PAR TUYAU')
+                  CALL U2MESS('F','MODELISA_24')
                ENDIF
             ENDIF
 61       CONTINUE
          IF((IOK1+IOK2).NE.1) THEN
-            CALL UTMESS('F','ACEAT3','ORIENTATION : GENE_TUYAU '//
-     +                   'LE NOEUD DOIT ETRE UNE DES EXTREMITES')
+            CALL U2MESS('F','MODELISA_25')
          ENDIF
 60    CONTINUE
 C
@@ -236,7 +233,7 @@ C              MODI_METRIQUE
                ELSEIF (NMMT(NUMMAI).EQ.1) THEN
                   ICOUD2=ICOUDE
                ELSE
-                  CALL UTMESS('F','ACEAT3',' PB NMMT ')
+                  CALL U2MESS('F','MODELISA_26')
                ENDIF
 
                ZR(JDVLVO-1+ICMP+1) = ICOUD2

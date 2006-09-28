@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
       IF ( MATRIC ) CALL JEVECH('PMATUUR','E',IMAT)
 C
       IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
-         CALL UTMESS('F','TE0346','COMP_ELAS NON VALIDE')
+         CALL U2MESS('F','ELEMENTS2_90')
       ENDIF
 C
 C     GEOMETRIE EVENTUELLEMENT  REACTUALISEE :
@@ -102,11 +102,7 @@ C
       REACTU =  ZK16(ICOMPO+2)(6:10) .EQ. '_REAC'
       IF ( REACTU ) THEN
 C
-        CALL UTMESS('A','TE0346',' LA REACTUALISATION DE LA '//
-     +              'GEOMETRIE (DEFORMATION : PETIT_REAC '//
-     +              'SOUS LE MOT CLE COMP_INCR) '//
-     +              'EST DECONSEILLEE POUR LES ELEMENTS '//
-     +              'POU_D_TG  .')
+        CALL U2MESS('A','ELEMENTS3_78')
 C
         DO 512 I = 1,3
           XUG(I) = UTG(I) + ZR(IGEOM-1+I)
@@ -180,7 +176,7 @@ C
 C
 9999  CONTINUE
       IF ( OPTION(1:9).EQ.'FULL_MECA'  .OR.
-     +     OPTION(1:9).EQ.'RAPH_MECA'   ) THEN
+     &     OPTION(1:9).EQ.'RAPH_MECA'   ) THEN
          CALL JEVECH('PCODRET','E',JCRET)
          ZI(JCRET) = 0
       ENDIF

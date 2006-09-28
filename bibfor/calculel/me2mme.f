@@ -1,6 +1,6 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
-C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,10 +148,7 @@ C        ET CHAM_MATER :
       END IF
       IF (REPK.EQ.'OUI') THEN
         IF (.NOT.EXITHE) THEN
-          CALL UTMESS('F','ME2MME',
-     &                'LE MATERIAU DEPEND DE LA TEMPERATURE'//
-     &                '! IL N''Y A PAS DE CHAMP DE TEMPERATURE '//
-     &                '! LE CALCUL EST IMPOSSIBLE ')
+          CALL U2MESS('F','ALGORITH_57')
         END IF
       END IF
 
@@ -589,10 +586,7 @@ C ====================================================================
      &                  IERD)
             IF (REPK.EQ.'OUI') THEN
               IF (.NOT.EXITRF) THEN
-                CALL UTMESS('A',' ME2MME ',
-     &                      'LE MATERIAU DEPEND DE LA TEMPERATURE'//
-     &                      ' IL N''Y A PAS DE TEMPERATURE DE REFERENCE'
-     &                      //' ON PRENDRA DONC LA VALEUR 0')
+                CALL U2MESS('A','ALGORITH_58')
               END IF
             END IF
 

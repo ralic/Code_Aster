@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,13 +102,13 @@ C     --- REMPLISSAGE DU .PROL ---
         CALL POSDDL('CHAM_NO',CHAM19,NOEUD,CMP,INOEUD,IDDL)
         IF (INOEUD.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
-          CALL UTMESS('F','FOCRR0','LE NOEUD "'//NOEUD(1:LG1)//
-     &                '" N''EXISTE PAS.')
+          CALL U2MESK('F','UTILITAI_92',1,NOEUD(1:LG1))
         ELSE IF (IDDL.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
           LG2 = LXLGUT(CMP)
         CALL UTMESS('F','FOCRR0','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
      &                'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
+C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
         END IF
         II = 0
         DO 10 IORDR = 1,NBORDR
@@ -123,14 +123,14 @@ C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
               CALL POSDDL('CHAM_NO',CHAM19,NOEUD,CMP,INOEUD,IDDL)
               IF (INOEUD.EQ.0) THEN
                 LG1 = LXLGUT(NOEUD)
-                CALL UTMESS('F','FOCRR0','LE NOEUD "'//NOEUD(1:LG1)//
-     &                      '" N''EXISTE PAS.')
+                CALL U2MESK('F','UTILITAI_92',1,NOEUD(1:LG1))
               ELSE IF (IDDL.EQ.0) THEN
                 LG1 = LXLGUT(NOEUD)
                 LG2 = LXLGUT(CMP)
               CALL UTMESS('F','FOCRR0','LA COMPOSANTE "'//CMP(1:LG2)//
      &                      '" DU '//'NOEUD "'//NOEUD(1:LG1)//
      &                      '" N''EXISTE PAS.')
+C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
               END IF
             END IF
             CALL RSADPA(RESU,'L',1,NOMACC,LORDR(IORDR),0,LACCE,K8B)
@@ -193,7 +193,7 @@ C           --- EXTRACTION DU CHAMP ET DE LA VALEUR DE L'ACCES ----
           CALL JEDEMA()
    20   CONTINUE
       ELSE
-        CALL UTMESS('F','FOCRR0','TYPE DE CHAMP INCONNU '//TYPCHA)
+        CALL U2MESK('F','UTILITAI_94',1,TYPCHA)
       END IF
       CALL JEDETR('&&FOCRR0.VAR.ACCES')
 

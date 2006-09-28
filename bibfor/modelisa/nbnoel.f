@@ -2,7 +2,7 @@
      &                  NBNO,NBNOQU)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/07/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,9 +133,7 @@ C ----------------------------------------------------------------------
                   ITYPEL = ZI(IALIEL-1+NEL)
                   CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
                   IF (NOMTE.EQ.'MEC3QU9H') THEN
-                    IF (INPROJ.EQ.2) CALL UTMESS('F','NBNOEL',
-     &                 'PROJECTION QUADRATIQUE INTERDITE AVEC '//
-     &                 'MAILLES LINEARISEES')
+                    IF (INPROJ.EQ.2) CALL U2MESS('F','MODELISA5_39')
                     DO 10 II3 = 1,NEL - 1
                       NUMAI2 = ZI(IALIEL-1+II3)
                       IF (NUMAI2.EQ.NUMAIL) THEN
@@ -194,9 +192,7 @@ C ----------------------------------------------------------------------
                 ITYPEL = ZI(IALIEL-1+NEL)
                 CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
                 IF (NOMTE.EQ.'MEC3QU9H') THEN
-                  IF (INPROJ.EQ.2) CALL UTMESS('F','NBNOEL',
-     &                'PROJECTION QUADRATIQUE INTERDITE AVEC '//
-     &                'MAILLES LINEARISEES')
+                  IF (INPROJ.EQ.2) CALL U2MESS('F','MODELISA5_39')
                   DO 60 II3 = 1,NEL - 1
                     NUMAI2 = ZI(IALIEL-1+II3)
                     IF (NUMAI2.EQ.NUMAIL) THEN

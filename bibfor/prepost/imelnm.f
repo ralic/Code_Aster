@@ -1,22 +1,22 @@
       SUBROUTINE IMELNM ( IFM, NOMSDZ, NBCMP, LISCMZ, NBELEM,
-     +                    LISMAZ, NBCHIF )
+     &                    LISMAZ, NBCHIF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C.======================================================================
@@ -215,7 +215,7 @@ C
 C ---   NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR :
 C       ---------------------------------------------
          CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'LONMAX',NCMPMX,
-     +               K1BID)
+     &               K1BID)
          CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',INOCMP)
 C
 C ---   TYPE (REEL OU COMPLEXE) ASSOCIE AUX VALEURS DU RESU_ELEM :
@@ -281,7 +281,7 @@ C       ----------------------------------------------------
          FORMA = '('//'//,2X,'//KLONLF//'("_")'//')'
          FORMC = '(2X,'//KLONLF//'("_")'//',//'//')'
          FORMB = '(2X,'//'"!",X,"LIGREL : "A'//KLONLS//
-     +           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
+     &           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
 C
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU LIGREL :
 C       ------------------------------------------
@@ -480,8 +480,8 @@ C ---        EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---        PAR L'UTILISATEUR :
 C            -----------------
              CALL TRNOR1 (NBNOE, ZK8(IDLINO), NBCMP,
-     +                    ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                    ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM), LONLI2)
+     &                    ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                    ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM), LONLI2)
 C
              IF (LONLI2.EQ.0) GOTO 70
 C
@@ -491,7 +491,7 @@ C            -----------
              LNOMCM = 0
              DO 130 I = 1, LONLI2
                 NOMNCI(I) = ZK8(IDNONO+I-1)(1:LXLGUT(ZK8(IDNONO+I-1)))
-     +                    //SLACH//ZK8(IDNOMC+I-1)
+     &                    //SLACH//ZK8(IDNOMC+I-1)
                 LNOMCM = MAX(LNOMCM,LXLGUT(NOMNCI(I)))
  130         CONTINUE
 C
@@ -541,9 +541,9 @@ C              -----------
 C
                FORM3 = '(2X,'//KLONLG//'("_")'//')'
                FORM4 = '(2X,A1,A17,A1,'//
-     +                 KLONLI//'(X,'//FORVAR//','//KBLAN1//',X,A1))'
+     &                 KLONLI//'(X,'//FORVAR//','//KBLAN1//',X,A1))'
                FORM2 = '(2X,A1,A8,9X,A1,'//KLONLI//'(X,A'//KLONG//
-     +                 'X,A1))'
+     &                 'X,A1))'
                FORM1 = '('//'2X,'//KLONLG//'("_")'//')'
 
              ELSEIF (LONG.EQ.LVALRE) THEN
@@ -557,9 +557,9 @@ C              ------------------------------------------
 C
                 FORM3 = '(2X,'//KLONLG//'("_")'//')'
                 FORM4 = '(2X,A1,A17,A1,'//
-     +                   KLONLI//'(X,'//FORVAR//',X,A1))'
+     &                   KLONLI//'(X,'//FORVAR//',X,A1))'
                 FORM2 = '(2X,A1,A8,9X,A1,'//KLONLI//'(X,A'//KLONM//','
-     +                    //KBLAN1//'X,A1))'
+     &                    //KBLAN1//'X,A1))'
                 FORM1 = '('//'2X,'//KLONLG//'("_")'//')'
              ENDIF
 C
@@ -577,7 +577,7 @@ C ---          (NOMNOE+NOMCMP) DE L'ELEMENT :
 C              ----------------------------
              WRITE(IFM,FORM1)
              WRITE(IFM,FORM2) EXCLAM, NOMAIL,EXCLAM,
-     +                        (NOMNCI(I),EXCLAM,I=1,LONLI2)
+     &                        (NOMNCI(I),EXCLAM,I=1,LONLI2)
              WRITE(IFM,FORM3)
 C
 C================================================================
@@ -619,7 +619,7 @@ C ---          MATRICE  :
 C              -------
                  DO 170 J = 1, NBINCO
                     ZR(IDVALE+J-1) = ZR(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + J -1)
+     &                                  + NBTERM + J -1)
  170             CONTINUE
 C
 C ---          RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
@@ -627,15 +627,15 @@ C ---          EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---          PAR L'UTILISATEUR :
 C              -----------------
                  CALL TRNOR1 (NBNOE, ZK8(IDLINO), NBCMP,
-     +                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM),
-     +                        LONLI2)
+     &                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                        ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM),
+     &                        LONLI2)
 C
 C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'MAILLE':
 C              ------------------------------------------------------
                  CALL IMPFR5 (NONOEU(I), NOCMP(I),
-     +                        LONLI2, ZR(IDVALE), FORM3, FORM4,
-     +                        IFM)
+     &                        LONLI2, ZR(IDVALE), FORM3, FORM4,
+     &                        IFM)
 C
                 ENDIF
  140           CONTINUE
@@ -674,7 +674,7 @@ C ---          DEMI-MATRICE INFERIEURE :
 C              -----------------------
                  DO 210 J = 1, I
                     ZR(IDVALE+J-1) = ZR(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + J -1)
+     &                                  + NBTERM + J -1)
  210             CONTINUE
 C
 C ---          BOUCLE SUR LES TERMES DE LA COLONNE I SITUES
@@ -688,7 +688,7 @@ C                -----------------------------
                     NBTERM = (J*(J-1))/2
 C
                     ZR(IDVALE+J-1) = ZR(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + I -1)
+     &                                  + NBTERM + I -1)
  220             CONTINUE
 C
 C ---          RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
@@ -696,15 +696,15 @@ C ---          EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---          PAR L'UTILISATEUR :
 C              -----------------
                  CALL TRNOR1 (NBNOE, ZK8(IDLINO), NBCMP,
-     +                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM),
-     +                        LONLI2)
+     &                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                        ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM),
+     &                        LONLI2)
 C
 C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'MAILLE':
 C              ------------------------------------------------------
                  CALL IMPFR5 (NONOEU(I), NOCMP(I),
-     +                        LONLI2, ZR(IDVALE), FORM3, FORM4,
-     +                        IFM)
+     &                        LONLI2, ZR(IDVALE), FORM3, FORM4,
+     &                        IFM)
 C
                 ENDIF
  180          CONTINUE
@@ -772,7 +772,7 @@ C       ----------------------------------------------------
          FORMA = '('//'//,2X,'//KLONLF//'("_")'//')'
          FORMC = '(2X,'//KLONLF//'("_")'//',//'//')'
          FORMB = '(2X,'//'"!",X,"LIGREL : "A'//KLONLS//
-     +           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
+     &           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
 C
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU LIGREL :
 C       ------------------------------------------
@@ -971,8 +971,8 @@ C ---        EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---        PAR L'UTILISATEUR :
 C            -----------------
              CALL TRNOC1 (NBNOE, ZK8(IDLINO), NBCMP,
-     +                    ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                    ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM), LONLI2)
+     &                    ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                    ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM), LONLI2)
 C
              IF (LONLI2.EQ.0) GOTO 280
 C
@@ -982,7 +982,7 @@ C            -----------
              LNOMCM = 0
              DO 340 I = 1, LONLI2
                 NOMNCI(I) = ZK8(IDNONO+I-1)(1:LXLGUT(ZK8(IDNONO+I-1)))
-     +                    //SLACH//ZK8(IDNOMC+I-1)
+     &                    //SLACH//ZK8(IDNOMC+I-1)
                 LNOMCM = MAX(LNOMCM,LXLGUT(NOMNCI(I)))
 340         CONTINUE
 C
@@ -1005,7 +1005,7 @@ C            -------------------------------------
              CALL CODENT(LVALRE,'D',KLVALR)
 C
              FORVAC = '"("'//'1PD'//KLVALR//'.'//KNBCH//'","'//
-     +                '1PD'//KLVALR//'.'//KNBCH//'")"'
+     &                '1PD'//KLVALR//'.'//KNBCH//'")"'
 C
 C ---        LONGUEUR D'UNE 'CASE' :
 C            --------------------
@@ -1031,9 +1031,9 @@ C            ------------------------------------------
 C
              FORMC3 = '(2X,'//KLONLG//'("_")'//')'
              FORMC4 = '(2X,A1,A17,A1,'//
-     +                   KLONLI//'(X,'//FORVAC//',X,A1))'
+     &                   KLONLI//'(X,'//FORVAC//',X,A1))'
              FORMC2 = '(2X,A1,A8,9X,A1,'//KLONLI//'(X,A'//KLONM//','
-     +                    //KBLAN1//'X,A1))'
+     &                    //KBLAN1//'X,A1))'
              FORMC1 = '('//'2X,'//KLONLG//'("_")'//')'
 C
 C ---        IMPRESSION DU NOM DU LIGREL ET DU NOM DE L'OPTION :
@@ -1050,7 +1050,7 @@ C ---          (NOMNOE+NOMCMP) DE L'ELEMENT :
 C              ----------------------------
              WRITE(IFM,FORMC1)
              WRITE(IFM,FORMC2) EXCLAM, NOMAIL,EXCLAM,
-     +                        (NOMNCI(I),EXCLAM,I=1,LONLI2)
+     &                        (NOMNCI(I),EXCLAM,I=1,LONLI2)
              WRITE(IFM,FORMC3)
 C
 C================================================================
@@ -1092,7 +1092,7 @@ C ---          MATRICE  :
 C              -------
                  DO 380 J = 1, NBINCO
                     ZC(IDVALE+J-1) = ZC(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + J -1)
+     &                                  + NBTERM + J -1)
  380             CONTINUE
 C
 C ---          RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
@@ -1100,15 +1100,15 @@ C ---          EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---          PAR L'UTILISATEUR :
 C              -----------------
                  CALL TRNOC1 (NBNOE, ZK8(IDLINO), NBCMP,
-     +                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM),
-     +                        LONLI2)
+     &                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                        ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM),
+     &                        LONLI2)
 C
 C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'MAILLE':
 C              ------------------------------------------------------
                  CALL IMPFC5 (NONOEU(I), NOCMP(I),
-     +                        LONLI2, ZC(IDVALE), FORMC3, FORMC4,
-     +                        IFM)
+     &                        LONLI2, ZC(IDVALE), FORMC3, FORMC4,
+     &                        IFM)
 C
                 ENDIF
  350          CONTINUE
@@ -1147,7 +1147,7 @@ C ---          DEMI-MATRICE INFERIEURE :
 C              -----------------------
                  DO 420 J = 1, I
                     ZC(IDVALE+J-1) = ZC(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + J -1)
+     &                                  + NBTERM + J -1)
  420             CONTINUE
 C
 C ---          BOUCLE SUR LES TERMES DE LA COLONNE I SITUES
@@ -1161,7 +1161,7 @@ C                -----------------------------
                     NBTERM = (J*(J-1))/2
 C
                     ZC(IDVALE+J-1) = ZC(IDRESL+NCMPEL*(IEL-1)
-     +                                  + NBTERM + I -1)
+     &                                  + NBTERM + I -1)
  430            CONTINUE
 C
 C ---          RECONSTRUCTION DES TABLEAUX DE TRAVAIL  PAR FILTRAGE
@@ -1169,15 +1169,15 @@ C ---          EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---          PAR L'UTILISATEUR :
 C              -----------------
                  CALL TRNOC1 (NBNOE, ZK8(IDLINO), NBCMP,
-     +                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                        ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM),
-     +                        LONLI2)
+     &                        ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                        ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM),
+     &                        LONLI2)
 C
 C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'MAILLE':
 C              ------------------------------------------------------
                  CALL IMPFC5 (NONOEU(I), NOCMP(I),
-     +                        LONLI2, ZC(IDVALE), FORMC3, FORMC4,
-     +                        IFM)
+     &                        LONLI2, ZC(IDVALE), FORMC3, FORMC4,
+     &                        IFM)
 C
                 ENDIF
  390          CONTINUE
@@ -1187,10 +1187,7 @@ C
  230     CONTINUE
          CALL JEDETC('V','&&IMELNM1',1)
         ELSE
-          CALL UTMESS('F','IMELNM','LES SEULS TYPES DE VALEURS ACCEPTES'
-     +                //' POUR LES RESU_ELEM SONT LES REELS ET LES'
-     +                //' COMPLEXES, LE DESCRIPTEUR DE TYPE '//TYPVAL
-     +                //' EST INADEQUAT.')
+          CALL U2MESK('F','PREPOST_63',1,TYPVAL)
         ENDIF
  10   CONTINUE
 C

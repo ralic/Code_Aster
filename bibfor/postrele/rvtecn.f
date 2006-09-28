@@ -1,6 +1,6 @@
       SUBROUTINE RVTECN ( RELEVE,ABSC,ITCOPT,ITSPPT,COOR,NOMCMP,NOMNOE,
-     >                    NBCMP,NBPOIN,DOCU,NOMTAB, IOCC, XNOVAR,
-     >                    NCHEFF, I1, IOC, ISD )
+     &                    NBCMP,NBPOIN,DOCU,NOMTAB, IOCC, XNOVAR,
+     &                    NCHEFF, I1, IOC, ISD )
       IMPLICIT NONE
       INTEGER           ITCOPT(*),ITSPPT(*),NBCMP,NBPOIN,IOCC,I1,IOC,ISD
       REAL*8            RELEVE(*),ABSC(*),COOR(*)
@@ -11,22 +11,22 @@
       CHARACTER*24      XNOVAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     MISE EN TABLEAU POUR UN EXTRACTION SUR UN CHAM_NO
@@ -60,9 +60,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      NBVARI, NBPAR,  JVAL1, JVALK, ILIGN,  IPT, NBSP,
-     >             NBCO, LC, LN, IS, IC, I2, VALEI(12), N1, ADRVAL,
-     >             ADRACC, JACC, IK, IR, II, LCR, LCK, NC,
-     >             NBACC, NBPR, JACES, IAC, IADR
+     &             NBCO, LC, LN, IS, IC, I2, VALEI(12), N1, ADRVAL,
+     &             ADRACC, JACC, IK, IR, II, LCR, LCK, NC,
+     &             NBACC, NBPR, JACES, IAC, IADR
       LOGICAL      EXIST
       CHARACTER*3  TYPPAR
       CHARACTER*8  K8B, ACCES, NOMRES, CTYPE, NOPASE, COURBE
@@ -74,14 +74,14 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ( )
       IF ( DOCU.NE.'LSTN' .AND. DOCU.NE.'CHMM' .AND.
-     >     DOCU.NE.'SGTD' .AND. DOCU.NE.'ARCC' .AND.
-     >                          DOCU.NE.'SGT3' ) GOTO 9999
+     &     DOCU.NE.'SGTD' .AND. DOCU.NE.'ARCC' .AND.
+     &                          DOCU.NE.'SGT3' ) GOTO 9999
 C
       CALL JELIRA(JEXNUM(XNOVAR,IOCC),'LONUTI',NBVARI,K8B)
       IF ( NBVARI .NE. 0 ) THEN
          CALL RVTEC2 ( RELEVE,ABSC,ITCOPT,ITSPPT,COOR,NOMNOE,
-     >                 NBCMP,NBPOIN,DOCU,NOMTAB,IOCC,XNOVAR,
-     >                 NCHEFF, I1, IOC, ISD )
+     &                 NBCMP,NBPOIN,DOCU,NOMTAB,IOCC,XNOVAR,
+     &                 NCHEFF, I1, IOC, ISD )
          GOTO 9999
       ENDIF
 C
@@ -157,7 +157,7 @@ C
                CALL JEVEUO ( NOMJV, 'L', JACES )
                DO 10 IAC = 1 , NBACC
                   CALL RSADPA ( NOMRES, 'L', 1, ZK16(JACES-1+IAC),
-     >                          ZI(ADRVAL+I1-1), 1, IADR, CTYPE )
+     &                          ZI(ADRVAL+I1-1), 1, IADR, CTYPE )
                   CALL TBEXIP ( NOMTAB, ZK16(JACES-1+IAC), EXIST,TYPPAR)
                   IF ( .NOT. EXIST ) THEN
                      CALL TBAJPA ( NOMTAB, 1, ZK16(JACES-1+IAC), CTYPE )
@@ -252,10 +252,10 @@ C
  30   CONTINUE
 C
       LC = IR+4+NBCMP
-      IF ( NBPAR .GT. LCK ) CALL UTMESS('F','RVTECN','Y A UN BUG 0')
-      IF ( II+2  .GT. 10  ) CALL UTMESS('F','RVTECN','Y A UN BUG 1')
-      IF ( LC    .GT. LCR ) CALL UTMESS('F','RVTECN','Y A UN BUG 2')
-      IF ( IK+1  .GT. 10  ) CALL UTMESS('F','RVTECN','Y A UN BUG 3')
+      IF ( NBPAR .GT. LCK ) CALL U2MESS('F','ALGELINE_6')
+      IF ( II+2  .GT. 10  ) CALL U2MESS('F','MODELISA2_88')
+      IF ( LC    .GT. LCR ) CALL U2MESS('F','MODELISA2_89')
+      IF ( IK+1  .GT. 10  ) CALL U2MESS('F','ALGELINE_7')
 C
       ILIGN = 0
 C
@@ -287,12 +287,12 @@ C
                DO 106, I2 = 1, NBCMP, 1
 C
                   ZR(JVAL1+IR+3+I2) =
-     >                      RELEVE((IPT-1)*LN+LC*(IC-1)+NBCMP*(IS-1)+I2)
+     &                      RELEVE((IPT-1)*LN+LC*(IC-1)+NBCMP*(IS-1)+I2)
 C
  106           CONTINUE
 C
                CALL TBAJLI ( NOMTAB, NBPAR, ZK24(JVALK),
-     >                       VALEI, ZR(JVAL1), C16B, VALEK, ILIGN )
+     &                       VALEI, ZR(JVAL1), C16B, VALEK, ILIGN )
 C
  104        CONTINUE
 C

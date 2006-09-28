@@ -1,7 +1,7 @@
       SUBROUTINE COPICH ( BASE, CH1Z, CH2Z )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,8 +126,8 @@ C --- BOUCLE SUR LES SOUS-DOMAINES CF VTCREB OU VTCMBL PAR EXEMPLE
               CH1ESC=ZK24(IFETC1+IDD-1)(1:19)
               IF (IRET.EQ.0) THEN
                 CALL GCNCON('.',K8BID)
-                K8BID(1:1)='F'          
-                CH2ESC=CH2(1:11)//K8BID          
+                K8BID(1:1)='F'
+                CH2ESC=CH2(1:11)//K8BID
                 ZK24(IFETC2+IDD-1)(1:19)=CH2ESC
               ELSE
                 CH2ESC=ZK24(IFETC2+IDD-1)(1:19)
@@ -166,7 +166,7 @@ C     ----------------------
 
 
       ELSE
-         CALL UTMESS('F',' COPICH ','TYPE DE CHAMP INCONNU')
+         CALL U2MESS('F','CALCULEL_17')
       END IF
 
 9999  CONTINUE

@@ -5,7 +5,7 @@
       CHARACTER*(*) MAILLZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,13 +76,12 @@ C DEB ------------------------------------------------------------------
         NDEC = 3
         NNO = 2
       ELSE
-        CALL UTMESS('F','PJ3DFB','STOP 7')
+        CALL U2MESS('F','CATAELEM_12')
       END IF
       CALL JEVEUO(MAILLE,'L',IATR3)
       NTR3 = ZI(IATR3-1+1)
       RBIG = R8MAEM()
-      IF (NTR3.EQ.0) CALL UTMESS('F','PJ3DFB','IL N''Y A PAS'//
-     &                           ' DE MAILLES A PROJETER.')
+      IF (NTR3.EQ.0) CALL U2MESS('F','CALCULEL4_57')
 
       CALL JEVEUO('&&PJXXCO.LINO1','L',IALIN1)
       CALL JEVEUO('&&PJXXCO.LINO2','L',IALIN2)
@@ -119,8 +118,7 @@ C     -------------------------------------------------------
 
 
       STOTAL = MAX((XMAX-XMIN), (YMAX-YMIN), (ZMAX-ZMIN))
-      IF (STOTAL.EQ.0.D0) CALL UTMESS('F','PF3DFB',
-     & 'LES MAILLAGES A PROJETER SONT PONCTUELS.')
+      IF (STOTAL.EQ.0.D0) CALL U2MESS('F','CALCULEL4_58')
       DX = 2.D0*STOTAL/(DBLE(NTR3)** (1.D0/3.D0))
 
       DY = DX
@@ -129,7 +127,7 @@ C     -------------------------------------------------------
       NX = INT((XMAX-XMIN)*1.05D0/DX) + 1
       NY = INT((YMAX-YMIN)*1.05D0/DY) + 1
       NZ = INT((ZMAX-ZMIN)*1.05D0/DZ) + 1
-      IF (NX*NY*NZ.EQ.0) CALL UTMESS('F','PJ3DFB','STOP 2')
+      IF (NX*NY*NZ.EQ.0) CALL U2MESS('F','CALCULEL_8')
       DDX = (NX*DX- (XMAX-XMIN))/2.D0
       DDY = (NY*DY- (YMAX-YMIN))/2.D0
       DDZ = (NZ*DZ- (ZMAX-ZMIN))/2.D0
@@ -283,8 +281,8 @@ C     -------------------------------------------------------
      &          (R-1)*NX*NY+ (Q-1)*NX+P) + 1
               IPOSI = ZI(IABTLC-1+ (R-1)*NX*NY+ (Q-1)*NX+P) +
      &                ZI(IABTNB-1+ (R-1)*NX*NY+ (Q-1)*NX+P)
-              IF ((IPOSI.LT.1) .OR. (IPOSI.GT.LONT)) CALL UTMESS('F',
-     &            'PJ3DFB','STOP 3')
+              IF ((IPOSI.LT.1) .OR. (IPOSI.GT.LONT)) CALL U2MESS('F','AL
+     &GORITH_19')
               ZI(IABTCO-1+IPOSI) = I
   100       CONTINUE
   110     CONTINUE

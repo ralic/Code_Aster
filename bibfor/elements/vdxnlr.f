@@ -1,6 +1,6 @@
       SUBROUTINE VDXNLR ( OPTION, NOMTE, XI, RIG, NB1, CODRET )
       IMPLICIT REAL*8 (A-H,O-Z)
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,12 +103,8 @@ C ----------------------------------------------------------------------
       CALL JEVECH('PVARIMP','L',IVARIX)
 C
       NBCOU=ZI(JNBSPI-1+1)
-      IF (NBCOU.LE.0) CALL UTMESS('F','VDXNLR',
-     &                 'NOMBRE DE COUCHES OBLIGATOIREMENT SUPERIEUR A 0'
-     &                            )
-      IF (NBCOU.GT.10) CALL UTMESS('F','VDXNLR',
-     &                'NOMBRE DE COUCHES LIMITE A 10 POUR LES COQUES 3D'
-     &                             )
+      IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_12')
+      IF (NBCOU.GT.10) CALL U2MESS('F','ELEMENTS_13')
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
       CALL TECACH('OON','PVARIMR',7,ITAB,IRET)
       LGPG = MAX(ITAB(6),1)*ITAB(7)
@@ -144,7 +140,7 @@ C       -- POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP :
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,VALRET)
 
       IF ( PHENOM.NE.'ELAS') THEN
-         CALL UTMESS('F','MATRC','COMPORTEMENT MATERIAU NON ADMIS')
+         CALL U2MESS('F','ELEMENTS_42')
       END IF
 
 C===============================================================
@@ -429,7 +425,7 @@ C     DES ROTATION FICTIVE
       END IF
 
       IF (VECTEU) THEN
- 
+
         CALL VEXPAN(NB1,EFFINT,VECL)
 
         DO 150 I = 1,6*NB1

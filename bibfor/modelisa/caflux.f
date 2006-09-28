@@ -6,7 +6,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,8 +52,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IBID, NFLUX, JVALV1, JVALV2, JNCMP1, JNCMP2, IOCC,
-     +              N, N1, N2, N3, N4, N5, N6, N7, N8, N11, N12, NGR,
-     +              NBTOU, NBMA, JMA, NCMP, NCMP1, NCMP2, IRET, IER
+     &              N, N1, N2, N3, N4, N5, N6, N7, N8, N11, N12, NGR,
+     &              NBTOU, NBMA, JMA, NCMP, NCMP1, NCMP2, IRET, IER
       REAL*8        R8B, AIRE, XLONG
       COMPLEX*16    C16B
       LOGICAL       ICRE1, ICRE2
@@ -94,15 +94,13 @@ C
             CALL GETVID(MOTCLF,'FLUX_Z'  ,IOCC,1,0,K8B,N8)
             N5 = N6+N7+N8
          ELSE
-            CALL UTMESS('F','CAFLUX','VALEUR INATTENDUE: '//FONREE )
+            CALL U2MESK('F','MODELISA2_37',1,FONREE)
          END IF
          N4 = N1+N2+N3
          IF ((N5.NE.0).AND.(N4.NE.0))THEN
            IF (FONREE.EQ.'REEL') THEN
            ELSE IF (FONREE.EQ.'FONC') THEN
-            CALL UTMESS('F','CAFLUX','IL FAUT CHOISIR ENTRE : '
-     +                //'FLUX_X ,  FLUX_Y , FLUX_Z'
-     +                //'ET FLUN , FLUN_INF , FLUN_SUP.')
+            CALL U2MESS('F','MODELISA2_64')
            ENDIF
          ENDIF
          IF (N4.NE.0) ICRE1 = .TRUE.
@@ -120,7 +118,7 @@ C
          IF (ICRE1) CALL ALCART('G',CART1,NOMA,'FLUN_F')
          IF (ICRE2) CALL ALCART('G',CART2,NOMA,'FLUX_F')
       ELSE
-         CALL UTMESS('F','CAFLUX','VALEUR INATTENDUE: '//FONREE )
+         CALL U2MESK('F','MODELISA2_37',1,FONREE)
       END IF
 C
       IF (ICRE1) THEN
@@ -190,11 +188,11 @@ C              VERIFICATION DES PARAMETRES DE LA TABLE 'NOMTAB'
                CALL TBEXP2(NOMTAB,'GROUP_MA')
 C
                CALL GETVEM (NOMA,'GROUP_MA',MOTCLF,'GROUP_MA',
-     +                                      IOCC,1,1,MONGRM,NGR)
+     &                                      IOCC,1,1,MONGRM,NGR)
                PARA = 'AIRE'
                CALL TBLIVA ( NOMTAB, 1, 'GROUP_MA', IBID, R8B, C16B,
-     +                       MONGRM, K8B, R8B, PARA, K8B,
-     +                       IBID, AIRE, C16B, K8B, IRET )
+     &                       MONGRM, K8B, R8B, PARA, K8B,
+     &                       IBID, AIRE, C16B, K8B, IRET )
                IF ( IRET .EQ. 1 ) THEN
                  CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
                  CALL UTIMPK('L','LE PARAMETRE ',1,PARA)
@@ -203,18 +201,18 @@ C
                ELSEIF ( IRET .EQ. 2 ) THEN
                  CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
                  CALL UTIMPK('L','PAS DE VALEUR POUR LE PARAMETRE ',
-     +                            1,PARA)
+     &                            1,PARA)
                  CALL UTFINM()
                ELSEIF ( IRET .EQ. 3 ) THEN
                  CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
                  CALL UTIMPK('L','PLUSIEURS VALEURS POUR LE GROUP_MA ',
-     +                            1,MONGRM)
+     &                            1,MONGRM)
                  CALL UTFINM()
                END IF
                PARA = 'LONGUEUR'
                CALL TBLIVA ( NOMTAB, 1, 'GROUP_MA', IBID, R8B, C16B,
-     +                       MONGRM, K8B, R8B, PARA, K8B,
-     +                       IBID, XLONG, C16B, K8B, IRET )
+     &                       MONGRM, K8B, R8B, PARA, K8B,
+     &                       IBID, XLONG, C16B, K8B, IRET )
                IF ( IRET .EQ. 1 ) THEN
                  CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
                  CALL UTIMPK('L','LE PARAMETRE ',1,PARA)
@@ -223,12 +221,12 @@ C
                ELSEIF ( IRET .EQ. 2 ) THEN
                  CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
                  CALL UTIMPK('L','PAS DE VALEUR POUR LE PARAMETRE ',
-     +                            1,PARA)
+     &                            1,PARA)
                  CALL UTFINM()
                ELSEIF ( IRET .EQ. 3 ) THEN
                  CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
                  CALL UTIMPK('L','PLUSIEURS VALEURS POUR LE GROUP_MA ',
-     +                            1,MONGRM)
+     &                            1,MONGRM)
                  CALL UTFINM()
                END IF
                NCMP1 = NCMP1 + 1
@@ -306,16 +304,16 @@ C
 C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NO_MAILLE', MOTCLF, IOCC, 2,
-     +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+     &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL VETYMA ( NOMA, ZK8(JMA),NBMA, K8B,0, MOTCLF,NDIM,IER)
             IF (NCMP1.GT.0) THEN
                CALL NOCART (CART1,3,' ','NOM',NBMA,ZK8(JMA),0,
-     +                                                    LIGRMO,NCMP1)
+     &                                                    LIGRMO,NCMP1)
             ENDIF
             IF (NCMP2.GT.0) THEN
                CALL NOCART (CART2,3,' ','NOM',NBMA,ZK8(JMA),0,
-     +                                                    LIGRMO,NCMP2)
+     &                                                    LIGRMO,NCMP2)
             ENDIF
             CALL JEDETR ( MESMAI )
          ENDIF

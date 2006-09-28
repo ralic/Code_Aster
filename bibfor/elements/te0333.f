@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,8 +137,8 @@ C ---    DE L'ELEMENT :
             CALL RCVARC(' ',EPSA(K),'+','RIGI',IGAU,1,
      &                  EPSANE(NBSIG*(IGAU-1)+K),IRET)
             IF (IRET.EQ.1) EPSANE(NBSIG*(IGAU-1)+K)=0.D0
- 30       CONTINUE 
- 20     CONTINUE 
+ 30       CONTINUE
+ 20     CONTINUE
 
 C ---    ON VERIFIE QUE LE MATERIAU EST ISOTROPE
 C ---    (POUR L'INSTANT PAS D'ORTHOTROPIE NI D'ISOTROPIE TRANSVERSE
@@ -148,10 +148,7 @@ C        --------------
 
         IF (PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ISTR' .OR.
      &      PHENOM.EQ.'ELAS_ORTH_FO' .OR. PHENOM.EQ.'ELAS_ISTR_FO') THEN
-          CALL UTMESS('F','TE0333','LE MATERIAU '//PHENOM(1:12)//
-     &                ' N''EST PAS AUTORISE POUR CALCULER LES '//
-     &                'DEFORMATIONS PLASTIQUES : SEULS LES '//
-     &                'MATERIAUX ISOTROPES SONT TRAITES EN PLASTICITE.')
+          CALL U2MESK('F','ELEMENTS3_75',1,PHENOM(1:12))
         END IF
 
 C ---    CALCUL DES DEFORMATIONS HORS THERMIQUES CORRESPONDANTES AU
@@ -166,8 +163,8 @@ C ---       EPSRET = - B_ENDO * HYDR - K_DESSIC *(SREF-S)
 C          ----------------------
         OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
       CALL EPSVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),ZR(ITREF),ZR(ITEMPS),
-     +            ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
+     &            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),ZR(ITREF),ZR(ITEMPS),
+     &            ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
 
       ELSE
         LPLAS = .FALSE.
@@ -215,11 +212,7 @@ C     ----------------------------------------------------------------
             NVI = NVIF + 3
             LTEMP = .TRUE.
           ELSE
-            CALL UTMESS('F','TE0333',
-     &           'COUPLAGE FLUAGE/FISSURATION : LA LOI BETON_DOUBLE_DP '
-     &                  //
-     &              'NE PEUT ETRE COUPLEE QU AVEC UNE LOI DE FLUAGE DE '
-     &                  //'GRANGER.')
+            CALL U2MESS('F','ELEMENTS3_76')
           END IF
         END IF
       END IF

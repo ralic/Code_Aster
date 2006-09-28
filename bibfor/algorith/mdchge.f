@@ -1,9 +1,9 @@
       SUBROUTINE MDCHGE ( NUMDDL, TYPNUM, IMODE, IAMOR, PULSAT, MASGEN,
-     +                    AMOGEN, LFLU, NBNLI, NOECHO, LOGCHO, PARCHO,
-     +                    INTITU, DDLCHO, IER )
+     &                    AMOGEN, LFLU, NBNLI, NOECHO, LOGCHO, PARCHO,
+     &                    INTITU, DDLCHO, IER )
       IMPLICIT  NONE
       INTEGER             NBNLI, IAMOR, IMODE, IER, LOGCHO(NBNLI,*),
-     +                    DDLCHO(*)
+     &                    DDLCHO(*)
       REAL*8              PARCHO(NBNLI,*),PULSAT(*),MASGEN(*),AMOGEN(*)
       LOGICAL             LFLU
       CHARACTER*8         NOECHO(NBNLI,*), INTITU(*)
@@ -11,22 +11,22 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     ROUTINE APPELEE PAR MDCHOC
@@ -67,12 +67,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER       NBCHOC, NBOCC, I, J, IBID, JCOOR1, JCOOR2,
-     +              IMAMA, JMAMA, NBNMA, KMA, NN1, NN2, INO1,
-     +              INO2, N1, N2, JREFE, IRET, LLREFE
+     &              IMAMA, JMAMA, NBNMA, KMA, NN1, NN2, INO1,
+     &              INO2, N1, N2, JREFE, IRET, LLREFE
       REAL*8        KTANG, CTANG, K, COOR1(3), COOR2(3), XJEU
       LOGICAL       LNOUE2
       CHARACTER*8   KBID, MAMAI, NOMNO1, NOMNO2, NOMGR1, NOMGR2,
-     +              SST1, SST2, MAYA1, MAYA2, MAILLA, REPERE
+     &              SST1, SST2, MAYA1, MAYA2, MAILLA, REPERE
       CHARACTER*10  MOTFAC
       CHARACTER*14  NUME1, NUME2
       CHARACTER*24  MDGENE, MDSSNO, NUMERO
@@ -91,14 +91,11 @@ C
 C
          CALL GETVTX(MOTFAC,'SOUS_STRUC_1',I,1,1,SST1,N1)
          IF (N1.EQ.0) THEN
-            CALL UTMESS('F','MDCHGE','CALCUL NON-LINEAIRE PAR '//
-     &                  'SOUS-STRUCTURATION, LE MOT-CLE SOUS_STRUC_1'//
-     &                  ' EST OBLIGATOIRE')
+            CALL U2MESS('F','ALGORITH5_31')
          ENDIF
          CALL JENONU(JEXNOM(MDSSNO,SST1),IRET)
          IF (IRET.EQ.0) THEN
-            CALL UTMESS('F','MDCHGE','ARGUMENT DU MOT-CLE'//
-     &            ' "SOUS_STRUC_1" N''EST PAS UN NOM DE SOUS-STRUCTURE')
+            CALL U2MESS('F','ALGORITH5_32')
          ENDIF
          CALL MGUTDM(MDGENE,SST1,IBID,'NOM_NUME_DDL',IBID,NUME1)
          CALL MGUTDM(MDGENE,SST1,IBID,'NOM_MAILLAGE',IBID,MAYA1)
@@ -110,11 +107,10 @@ C
             CALL GETVID(MOTFAC,'GROUP_NO_1',I,1,1,NOMGR1,IBID)
             CALL UTNONO(' ',MAYA1,'NOEUD',NOMGR1,NOMNO1,IRET)
             IF (IRET.EQ.10) THEN
-               CALL UTMESS('F','MDCHGE',
-     +                     'LE GROUP_NO : '//NOMGR1//'N''EXISTE PAS.')
+               CALL U2MESK('F','ELEMENTS_67',1,NOMGR1)
             ELSEIF (IRET.EQ.1) THEN
                CALL UTDEBM('A','MDCHGE',
-     +                     'TROP DE NOEUDS DANS LE GROUP_NO')
+     &                     'TROP DE NOEUDS DANS LE GROUP_NO')
                CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOMNO1)
                CALL UTFINM( )
             ENDIF
@@ -130,29 +126,24 @@ C
             LNOUE2 = .TRUE.
             CALL GETVTX(MOTFAC,'SOUS_STRUC_2',I,1,1,SST2,N2)
             IF (N2.EQ.0) THEN
-               CALL UTMESS('F','MDCHGE','CALCUL NON-LINEAIRE PAR '//
-     &                     'SOUS-STRUCTURATION ENTRE 2 STRUCTURES '//
-     &                     'MOBILES, LE MOT-CLE SOUS_STRUC_2 '//
-     &                     'EST OBLIGATOIRE')
+               CALL U2MESS('F','ALGORITH5_33')
             ENDIF
             CALL JENONU(JEXNOM(MDSSNO,SST2),IRET)
             IF (IRET.EQ.0) THEN
-               CALL UTMESS('F','MDCHGE','ARGUMENT DU MOT-CLE'//
-     &            ' "SOUS_STRUC_2" N''EST PAS UN NOM DE SOUS-STRUCTURE')
+               CALL U2MESS('F','ALGORITH5_34')
             ENDIF
             CALL MGUTDM(MDGENE,SST2,IBID,'NOM_NUME_DDL',IBID,NUME2)
             CALL MGUTDM(MDGENE,SST2,IBID,'NOM_MAILLAGE',IBID,MAYA2)
             IF (NN1.NE.0) THEN
                CALL GETVID(MOTFAC,'NOEUD_2',I,1,1,NOMNO2,NN1)
                NOECHO(I,5) = NOMNO2
-            ELSE 
+            ELSE
                CALL UTNONO(' ',MAYA2,'NOEUD',NOMGR2,NOMNO2,IRET)
                IF (IRET.EQ.10) THEN
-                  CALL UTMESS('F','MDCHGE',
-     +                     'LE GROUP_NO : '//NOMGR2//'N''EXISTE PAS.')
+                  CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
                ELSEIF (IRET.EQ.1) THEN
                   CALL UTDEBM('A','MDCHGE',
-     +                     'TROP DE NOEUDS DANS LE GROUP_NO')
+     &                     'TROP DE NOEUDS DANS LE GROUP_NO')
                   CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOMNO2)
                   CALL UTFINM( )
                ENDIF
@@ -214,31 +205,30 @@ C
          ELSEIF (ZK24(JREFE)(1:7).NE.'DISCRET') THEN
            NOECHO(I,9) = ZK24(JREFE)(1:8)
          ENDIF
-         IF (NOECHO(I,9).EQ.'BI_CERCI' .AND. 
+         IF (NOECHO(I,9).EQ.'BI_CERCI' .AND.
      &           PARCHO(I,30).LT.PARCHO(I,29)) THEN
-           CALL UTMESS('F','MDCHGE',' OBSTACLE BI_CERC_INT : '//
-     &             'DIST_2 DOIT ETRE SUPERIEURE OU EGALE A DIST_1')
+           CALL U2MESS('F','ALGORITH5_35')
          ENDIF
 C ------ SI CTANG NON PRECISE ON CALCULE UN AMORTISSEMENT CRITIQUE
          IF ( CTANG.EQ.0.D0 .AND. KTANG.NE.0.D0 ) THEN
             K = SQRT( PULSAT(IMODE) ) * MASGEN(IMODE)
             CTANG =   2.D0*SQRT( MASGEN(IMODE)*(K+KTANG) )
-     +              - 2.D0*AMOGEN(IAMOR)*SQRT( K*MASGEN(IMODE) )
+     &              - 2.D0*AMOGEN(IAMOR)*SQRT( K*MASGEN(IMODE) )
          ENDIF
          PARCHO(I,4) = KTANG
          PARCHO(I,5) = CTANG
 C
          IF (NOECHO(I,9)(1:2).EQ.'BI') THEN
-            XJEU = (PARCHO(I,10)-PARCHO(I,7))**2 + 
+            XJEU = (PARCHO(I,10)-PARCHO(I,7))**2 +
      &           (PARCHO(I,11)-PARCHO(I,8))**2 +
      &           (PARCHO(I,12)-PARCHO(I,9))**2
          ENDIF
 C
          CALL MDCHRE ( MOTFAC, I, I, MDGENE, TYPNUM, REPERE,
-     +                                   NBNLI, PARCHO, LNOUE2 )
+     &                                   NBNLI, PARCHO, LNOUE2 )
 C
          CALL MDCHAN ( MOTFAC, I, I, MDGENE, TYPNUM, REPERE, XJEU,
-     +                                     NBNLI, NOECHO, PARCHO )
+     &                                     NBNLI, NOECHO, PARCHO )
 C
 100   CONTINUE
 C

@@ -1,7 +1,7 @@
       SUBROUTINE CHCKMA (NOMU,CMD,DTOL)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,12 +129,10 @@ C
   11     CONTINUE
  10   CONTINUE
       IF (ALARME) THEN
-         CALL UTMESS('A',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
-     &   //' MAILLAGE - PRESENCE DE NOEUDS ORPHELINS')
+         CALL U2MESS('A','MODELISA4_6')
       ENDIF
       IF (NB200.EQ.1) THEN
-         CALL UTMESS('A',CMD,'CERTAINS NOEUDS CONNECTENT PLUS DE'
-     &   //' 200 MAILLES. CES MAILLES NE SONT PAS VERIFIEES.')
+         CALL U2MESS('A','MODELISA4_7')
       ENDIF
 
 C
@@ -234,8 +232,7 @@ C
         IT=IT+NBNM
  100  CONTINUE
       IF (ALARME) THEN
-         CALL UTMESS('A',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
-     &   //' MAILLAGE - PRESENCE DE MAILLES DOUBLES')
+         CALL U2MESS('A','MODELISA4_8')
       ENDIF
 C
 C     -----------------------------------------------------------
@@ -285,13 +282,11 @@ C
         IT=IT+NBNM
  200  CONTINUE
       IF (ALARME) THEN
-         CALL UTMESS('A',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
-     &   //' MAILLAGE - PRESENCE DE MAILLES APLATIES')
+         CALL U2MESS('A','MODELISA4_9')
       ENDIF
 C     ON ARRETE EN ERREUR SUR MAILLE DEGENEREE
       IF (ERREUR) THEN
-         CALL UTMESS('F',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
-     &   //' MAILLAGE - MAILLES DEGENEREES')
+         CALL U2MESS('F','MODELISA4_10')
       ENDIF
 C
 C     -----------------------------------------------------------

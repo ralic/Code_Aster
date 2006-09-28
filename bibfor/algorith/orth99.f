@@ -4,22 +4,22 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C----------------------------------------------------------------------
 C
@@ -52,14 +52,13 @@ C-----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------------
       REAL*8        ALPHA,RBID
       COMPLEX*16    CBID
       CHARACTER*8   K8B,MATRAS,BASE
+      CHARACTER*16   TYPBAS
       CHARACTER*14  NU, NUMDD1, NUMDDA,MATRI1
-      CHARACTER*16  TYPBAS,NOMCOM
       CHARACTER*19  MATR,CHAMOL
 C----------------------------------------------------------------------
       CALL JEMARQ()
 C
       ALPHA = 0.717D0
-      NOMCOM = 'DEFI_BASE_MODALE'
 C
 C     ---RECUPERATION DU NIVEAU D'IMPRESSION---
 C
@@ -72,12 +71,12 @@ C-----------------------------------------------------------------------
       CALL GETVID ( 'ORTHO_BASE', 'MATRICE'     , 1,1,1, MATRAS, N1 )
       IF (N1.NE.0) THEN
         CALL DISMOI('F', 'NOM_NUME_DDL', MATRAS, 'MATR_ASSE', IBID,
-     +                                            NUMDDA,IER)
+     &                                            NUMDDA,IER)
         CALL MTDSCR ( MATRAS )
         MATR=MATRAS
         CALL JEVEUO ( MATR//'.&INT', 'E', IMATRA )
         CALL DISMOI('F', 'NOM_NUME_DDL', MATRAS, 'MATR_ASSE', IBID,
-     +              NUMDDA,IER)
+     &              NUMDDA,IER)
       ELSE
         MATR=' '
       ENDIF
@@ -89,7 +88,7 @@ C
 C RECUPERATION DU TYPE ET DU NBRE DE MODES DES BASES
       CALL GETTCO ( BASE, TYPBAS )
       CALL RSORAC ( BASE, 'LONUTI', IBID, RBID, K8B, CBID, RBID,
-     +              'ABSOLU', NBMODE, 1, IBID )
+     &              'ABSOLU', NBMODE, 1, IBID )
 
       CALL JEVEUO(  BASE//'           .ORDR','L',JORDM)
 C RECUPERATION DE LA NUMEROTATION DES BASES
@@ -101,13 +100,12 @@ C RECUPERATION DE LA NUMEROTATION DES BASES
       ENDIF
       IF (MATRI1.NE.' ') THEN
         CALL DISMOI('F','NOM_NUME_DDL',MATRI1,'MATR_ASSE',IBID,
-     +                NUMDD1,IER)
+     &                NUMDD1,IER)
       ELSE
         NUMDD1 = ZK24(IADRI1+1)(1:14)
       ENDIF
       IF (NUMDD1.NE.NUMDDA) THEN
-          CALL UTMESS('I',NOMCOM,'BASE MODALE ET MATRICE AVEC'//
-     +               ' NUMEROTATIONS INCOMPATIBLES')    
+          CALL U2MESS('I','ALGELINE2_81')
       ENDIF
       NU = NUMDDA(1:14)
       CALL JEVEUO ( NU//'.NUME.DEEQ', 'L', IDDEEQ )
@@ -131,13 +129,13 @@ C
  50   CONTINUE
 C
       IF (MATR.EQ.' ') THEN
-C Orthonormalisation L2      
+C Orthonormalisation L2
         CALL VPGSKP ( NEQ, NBMODE, ZR(IDMODE), ALPHA, IMATRA, 0,
-     +                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
+     &                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
       ELSE
-C Orthonormalisation par rapport a la matrice      
+C Orthonormalisation par rapport a la matrice
         CALL VPGSKP ( NEQ, NBMODE, ZR(IDMODE), ALPHA, IMATRA, 2,
-     +                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
+     &                ZR(JTRAV1), ZI(JTRAV4), ZR(JTRAV3) )
       ENDIF
 C
       CALL RSCRSD(NOMRES,'BASE_MODALE',NBMODE)

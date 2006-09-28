@@ -2,22 +2,22 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 30/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
@@ -43,9 +43,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      N1, NBSITU, IOCC, IBID, NUME, II, NOCC, NSCY,
-     +             JNBOCC, JNUMGR, JPRESA, JPRESB, NBCHAR, JCHAR,
-     +             JNSITU, JCOMBI, JPASSA, JNBGR, IG, NUMPAS(2), 
-     +             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR
+     &             JNBOCC, JNUMGR, JPRESA, JPRESB, NBCHAR, JCHAR,
+     &             JNSITU, JCOMBI, JPASSA, JNBGR, IG, NUMPAS(2),
+     &             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR
       CHARACTER*8  K8B, KNUME, OUINON
       CHARACTER*16 MOTCLF
 C DEB ------------------------------------------------------------------
@@ -64,11 +64,11 @@ C
       CALL WKVECT('&&RC3200.SITU_COMBINABLE', 'V V L'  ,NBSITU, JCOMBI)
       CALL WKVECT('&&RC3200.SITU_PASSAGE'   , 'V V I',2*NBSITU, JPASSA)
       CALL JECREC('&&RC3200.SITU_ETAT_A'    , 'V V I', 'NO',
-     +                               'DISPERSE', 'VARIABLE', NBSITU )
+     &                               'DISPERSE', 'VARIABLE', NBSITU )
       CALL JECREC('&&RC3200.SITU_ETAT_B'    , 'V V I', 'NO',
-     +                               'DISPERSE', 'VARIABLE', NBSITU )
+     &                               'DISPERSE', 'VARIABLE', NBSITU )
       CALL JECREC('&&RC3200.SITU_THERMIQUE' , 'V V I', 'NO',
-     +                               'DISPERSE', 'VARIABLE', NBSITU )
+     &                               'DISPERSE', 'VARIABLE', NBSITU )
 C
       NBGR = 0
 C
@@ -109,8 +109,7 @@ C
          CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, NUMGR, N1)
 C
          IF ( NUMGR .LE. 0 ) THEN
-           CALL UTMESS('F','RC32SI',
-     +                 '"NUME_GROUPE" DOIT ETRE STRICTEMENT POSITIF')
+           CALL U2MESS('F','POSTRELE_36')
          ENDIF
          DO 20 IG = 1 , NBGR
             IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 22
@@ -148,9 +147,9 @@ C
          NBCHAR = -N1
          CALL JECROC (JEXNOM('&&RC3200.SITU_ETAT_A',KNUME))
          CALL JEECRA (JEXNOM('&&RC3200.SITU_ETAT_A',KNUME),
-     +                                          'LONMAX', NBCHAR, ' ' )
+     &                                          'LONMAX', NBCHAR, ' ' )
          CALL JEECRA (JEXNOM('&&RC3200.SITU_ETAT_A',KNUME),
-     +                                          'LONUTI', NBCHAR, ' ' )
+     &                                          'LONUTI', NBCHAR, ' ' )
          CALL JEVEUO (JEXNOM('&&RC3200.SITU_ETAT_A',KNUME),'E', JCHAR )
          CALL GETVIS ( MOTCLF,'CHAR_ETAT_A',IOCC,1,NBCHAR,ZI(JCHAR),N1)
 C
@@ -162,9 +161,9 @@ C
          NBCHAR = -N1
          CALL JECROC (JEXNOM('&&RC3200.SITU_ETAT_B',KNUME))
          CALL JEECRA (JEXNOM('&&RC3200.SITU_ETAT_B',KNUME),
-     +                                          'LONMAX', NBCHAR, ' ' )
+     &                                          'LONMAX', NBCHAR, ' ' )
          CALL JEECRA (JEXNOM('&&RC3200.SITU_ETAT_B',KNUME),
-     +                                          'LONUTI', NBCHAR, ' ' )
+     &                                          'LONUTI', NBCHAR, ' ' )
          CALL JEVEUO (JEXNOM('&&RC3200.SITU_ETAT_B',KNUME),'E', JCHAR )
          CALL GETVIS ( MOTCLF,'CHAR_ETAT_B',IOCC,1,NBCHAR,ZI(JCHAR),N1)
 C
@@ -176,18 +175,18 @@ C
          NBTH = -N1
          CALL JECROC (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME))
          CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
-     +                                      'LONMAX', MAX(1,NBTH),' ')
-C         
+     &                                      'LONMAX', MAX(1,NBTH),' ')
+C
          IF ( NBTH .EQ. 0 ) THEN
             CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
-     +                                      'LONUTI', 0,' ')
+     &                                      'LONUTI', 0,' ')
          ELSE
             CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
-     +                                              'LONUTI', NBTH,' ')
+     &                                              'LONUTI', NBTH,' ')
             CALL JEVEUO (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),'E',
-     +                                                          JCHAR )
+     &                                                          JCHAR )
             CALL GETVIS ( MOTCLF, 'NUME_RESU_THER', IOCC,1,
-     +                                            NBTH,ZI(JCHAR), N1 )
+     &                                            NBTH,ZI(JCHAR), N1 )
          ENDIF
 C
  10   CONTINUE
@@ -200,7 +199,7 @@ C
       CALL WKVECT('&&RC3200.SITU_NUME_GROUP', 'V V I', NBGR, JNUMGR )
       CALL WKVECT('&&RC3200.SITU_SEISME'    , 'V V I', NBGR, JSEIGR )
       CALL JECREC('&&RC3200.LES_GROUPES', 'V V I', 'NU',
-     +                               'DISPERSE', 'VARIABLE', NBGR )
+     &                               'DISPERSE', 'VARIABLE', NBGR )
 C
       DO 30 IG = 1, NBGR, 1
 C
@@ -208,7 +207,7 @@ C
 C
          ZI(JNUMGR+IG-1) = NUMGR
 C
-C ------ ON COMPTE LES SITUATIONS DU GROUPE 
+C ------ ON COMPTE LES SITUATIONS DU GROUPE
 C
          NBSIGR = 0
          DO 32, IOCC = 1, NBSITU, 1
@@ -220,7 +219,7 @@ C ------ ON STOCKE LE NUMERO DE L'OCCURRENCE
 C
          CALL JECROC (JEXNUM('&&RC3200.LES_GROUPES',NUMGR))
          CALL JEECRA (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
-     +                                                   NBSIGR,' ')
+     &                                                   NBSIGR,' ')
          CALL JEVEUO (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'E',JNSG)
          II = 0
          DO 34, IOCC = 1, NBSITU, 1

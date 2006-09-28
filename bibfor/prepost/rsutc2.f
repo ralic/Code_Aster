@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TYPRES,NOMCH,NOMGD,TYPSD
 
-C MODIF PREPOST  DATE 10/02/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -76,13 +76,13 @@ C----------------------------------------------------------------------
         TYPSD = 'NOEU'
       ELSE
 
-        CALL UTMESS('F','RSUTC2','LE CHAMP DEMANDE N''EST PAS PREVU')
+        CALL U2MESS('F','PREPOST4_76')
       END IF
 
 C--- TRAITEMENT DES CHAMPS DE DEPLACEMENTS COMPLEXES
 
       IF (NOMGD.EQ.'DEPL_R') THEN
-        IF (TYPRES.EQ.'DYNA_HARMO' .OR. TYPRES.EQ.'HARM_GENE' 
+        IF (TYPRES.EQ.'DYNA_HARMO' .OR. TYPRES.EQ.'HARM_GENE'
      &      .OR. TYPRES.EQ.'MODE_MECA_C') THEN
           NOMGD = 'DEPL_C'
         END IF

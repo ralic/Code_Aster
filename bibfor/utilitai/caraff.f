@@ -5,7 +5,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,11 +54,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
-      IF (NOMA.EQ.' ') CALL UTMESS('F','CARAFF','MAILLAGE OBLIGATOIRE.')
+      IF (NOMA.EQ.' ') CALL U2MESS('F','UTILITAI_10')
 
-      IF (GRAN.EQ.'VARI_R')  CALL UTMESS('F','CARAFF','ON NE PEUT'
-     &  // ' PAS CREER UN CHAMP DE VARI_R AVEC LE MOT CLE FACTEUR AFFE'
-     &  // ' (VOIR U2.01.09)')
+      IF (GRAN.EQ.'VARI_R')  CALL U2MESS('F','UTILITAI_11')
 
       CALL DISMOI('F','TYPE_SCA',GRAN,'GRANDEUR',IBID,TSCA,IED)
 
@@ -96,12 +94,10 @@ C     --------------------------------------------
       DO 30 IOCC = 1,NOCC
 
         CALL GETVID ( MOTCLF,'NOEUD',IOCC,1,0,K8B,N1)
-        IF (N1.NE.0) CALL UTMESS('F','CARAFF',
-     &      'MOT CLE AFFE/NOEUD INTERDIT ICI.')
+        IF (N1.NE.0) CALL U2MESS('F','UTILITAI_12')
 
         CALL GETVID ( MOTCLF,'GROUP_NO',IOCC,1,0,K8B,N1)
-        IF (N1.NE.0) CALL UTMESS('F','CARAFF',
-     &      'MOT CLE AFFE/GROUP_NO INTERDIT ICI.')
+        IF (N1.NE.0) CALL U2MESS('F','UTILITAI_13')
 
         CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,1,0, K8B, NBCMP)
 
@@ -114,13 +110,12 @@ C     --------------------------------------------
         ELSE IF (TSCA.EQ.'K8') THEN
           CALL GETVID ( MOTCLF, 'VALE_F',IOCC,1,0, K8B , NBVAR)
         ELSE
-          CALL UTMESS('F','CARAFF','TYPE SCALAIRE NON TRAITE : '//TSCA)
+          CALL U2MESK('F','UTILITAI_14',1,TSCA)
         END IF
 C
 C       TEST SUR LES DONNEES INTRODUITES
         IF (NBVAR.NE.NBCMP) THEN
-           CALL UTMESS('F','CARAFF','INCOHERENCE ENTRE NOMBRE DE '//
-     &                              'COMPOSANTES ET NOMBRE DE VALEURS')
+           CALL U2MESS('F','UTILITAI_15')
         ELSE
           NBCMP = -NBCMP
           NBVAR = -NBVAR
@@ -142,7 +137,7 @@ C
 C
         ELSE
            CALL RELIEM(' ', NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
-     +                                 MOTCLS, TYPMCL, MESMAI, NBMAIL )
+     &                                 MOTCLS, TYPMCL, MESMAI, NBMAIL )
            CALL JEVEUO ( MESMAI, 'L', JMAIL )
            CALL NOCART(CARTE,3,' ','NUM',NBMAIL,K8B,ZI(JMAIL),' ',NBCMP)
            CALL JEDETR ( MESMAI )

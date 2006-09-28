@@ -1,6 +1,6 @@
       SUBROUTINE JENONU ( NOMLU , NUMO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,11 @@ C ======================================================================
 C     ==================================================================
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
@@ -44,7 +44,7 @@ C     ------------------------------------------------------------------
 C
       IF ( LEN(NOMLU) .NE. 32 ) THEN
         CMESS = 'APPEL PAR JEXNOM/JEXNUM OBLIGATOIRE'
-        CALL JVMESS ( 'S' , 'JENONU01' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
 C
       ICRE = 0
@@ -53,7 +53,7 @@ C
 C
       IF ( IRET .EQ. 0 ) THEN
         CMESS = 'NOM DE COLLECTION OU DE REPERTOIRE INEXISTANT'
-        CALL JVMESS ( 'S' , 'JENONU02' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE
         IF ( IRET .EQ. 1 ) THEN
 C         ----- OBJET DE TYPE REPERTOIRE
@@ -73,7 +73,7 @@ C         ----- REPERTOIRE DE COLLECTION --
           CALL JJLIDE ('JENONU' , NOML32(1:24) , IRET )
         ELSE
           CMESS = 'ERREUR DE PROGRAMMATION'
-          CALL JVMESS ( 'S' , 'JENONU03' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ENDIF
         NUMO = IDATOC
       ENDIF

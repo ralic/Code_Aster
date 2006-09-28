@@ -2,22 +2,22 @@
      &                  FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 
@@ -32,7 +32,7 @@ C RESPONSABLE MABBAS M.ABBAS
       CHARACTER*8  MODEDE
 C ---------------------------------------------------------------------
 C
-C     COMMANDES STAT/DYNA_NON_LINE 
+C     COMMANDES STAT/DYNA_NON_LINE
 C     FONCTIONNALITES ACTIVEES
 C
 C ---------------------------------------------------------------------
@@ -94,8 +94,7 @@ C  ZFON MODIFIEE DANS OP0070
 C  MODIFIER LA LIGNE CI-DESSOUS ET DOCUMENTER DANS L'ENTETE
 C
       IF (ZFON.NE.12) THEN
-         CALL UTMESS('F','NMFONC',
-     &               'FONCTIONNALITE MODIFIEE (DVLP)')
+         CALL U2MESS('F','ALGORITH7_86')
       ENDIF
 C
 C --- NOM DE LA COMMANDE: STAT_NON_LINE, DYNA_NON_LINE, DYNA_TRAN_EXPLI
@@ -118,10 +117,10 @@ C --- PILOTAGE
 
 C --- LOIS NON LOCALES
       FONACT(3) = MODEDE .NE. ' '
-      
+
 C --- LIAISON UNILATERALE
       CALL JEEXIN(DEFICU(1:16)//'.METHCU',IUNIL)
-      FONACT(12) = IUNIL .NE. 0     
+      FONACT(12) = IUNIL .NE. 0
 
 C --- DEBORST ?
       CALL NMBORS(FONACT(7))
@@ -148,9 +147,8 @@ C --- X-FEM ET CONTACT (METHODE CONTINUE)
         CALL JEEXIN(ZK8(IFISS)//'.CONTACT.XFEM',ICONTX)
         DEFICO(1:16)=ZK8(IFISS)//'.CONTACT'
         CALL  JEVEUO (SOLVEU//'.SLVK','L',JSOLVE)
-        IF (ZK24(JSOLVE)(1:5).NE.'MUMPS') CALL UTMESS('A','NMINIT',
-     &   'POUR LE TRAITEMENT DU CONTACT AVEC X-FEM, LE SOLVEUR MUMPS '//
-     &   'EST VIVEMENT RECOMMANDE.') 
+        IF (ZK24(JSOLVE)(1:5).NE.'MUMPS') CALL U2MESS('A','ALGORITH7_87'
+     &)
         IF (ICONTX.NE.0) THEN
           FONACT(5) = .TRUE.
           FONACT(9) = .TRUE.
@@ -162,7 +160,7 @@ C --- X-FEM ET CONTACT (METHODE CONTINUE)
 
 C ----------------------------------------------------------------------
 C
-C     CONTACT / FROTTEMENT 
+C     CONTACT / FROTTEMENT
 C
 C ----------------------------------------------------------------------
 
@@ -180,10 +178,10 @@ C ----------------------------------------------------------------------
           FONACT(4) = .TRUE.
         ENDIF
       ENDIF
-      
+
 C ----------------------------------------------------------------------
 C
-C     FETI 
+C     FETI
 C
 C ----------------------------------------------------------------------
 
@@ -192,8 +190,8 @@ C ----------------------------------------------------------------------
         FONACT(11)=.TRUE.
       ELSE
         FONACT(11)=.FALSE.
-      ENDIF       
-      
+      ENDIF
+
 C ----------------------------------------------------------------------
 C
 C     INCOMPATIBILITES DE CERTAINES FONCTIONNALITES
@@ -206,53 +204,40 @@ C --- CONTACT DISCRET
 C
       IF (FONACT(4)) THEN
         IF (FONACT(2)) THEN
-          CALL UTMESS('F','NMINIT',
-     &    'CONTACT ET PILOTAGE SONT DES FONCTIONNALITES INCOMPATIBLES')
+          CALL U2MESS('F','ALGORITH7_88')
         ENDIF
-        IF (FONACT(1).AND.ABS(TYPALC).NE.5) THEN 
-          CALL UTMESS('A','NMINIT',
-     &     'CONTACT ET RECH. LIN. PEUVENT POSER DES PROBLEMES DE '//
-     &     'CONVERGENCE')
+        IF (FONACT(1).AND.ABS(TYPALC).NE.5) THEN
+          CALL U2MESS('A','ALGORITH7_89')
         ENDIF
         IF (ZK24(JSOLVE)(1:4).EQ.'GCPC') THEN
           IF (ABS(TYPALF).NE.0) THEN
-            CALL UTMESS('F','NMINIT',
-     &           'LA COMBINAISON: CONTACT-FROTTEMENT'//
-     &           ' ET SOLVEUR GCPC N''EST PAS DISPONIBLE.')
+            CALL U2MESS('F','ALGORITH7_90')
           ENDIF
         ENDIF
       ENDIF
 C
 C --- CONTACT CONTINUE
-C      
+C
       IF (FONACT(5)) THEN
         IF (FONACT(1)) THEN
-          CALL UTMESS('F','NMINIT',
-     &             'CONTACT CONTINUE ET RECH. LIN. SONT INCOMPATIBLES')
-        ENDIF  
+          CALL U2MESS('F','ALGORITH7_91')
+        ENDIF
         IF (FONACT(2)) THEN
-          CALL UTMESS('F','NMINIT',
-     &             'CONTACT CONTINUE ET PILOTAGE SONT INCOMPATIBLES')
-        ENDIF 
+          CALL U2MESS('F','ALGORITH7_92')
+        ENDIF
         IF (ZK24(JSOLVE)(1:4).EQ.'GCPC') THEN
-          CALL UTMESS('F','NMINIT',
-     &         'LA COMBINAISON: METHODE CONTINUE EN CONTACT'//
-     &         ' ET SOLVEUR GCPC N''EST PAS DISPONIBLE.')
-        ENDIF                   
+          CALL U2MESS('F','ALGORITH7_93')
+        ENDIF
       ENDIF
 C
-C --- LIAISON UNILATERALE 
+C --- LIAISON UNILATERALE
 C
       IF (FONACT(12)) THEN
         IF (FONACT(2)) THEN
-          CALL UTMESS('F','NMINIT',
-     &    'LIAISON_UNILATER ET PILOTAGE SONT DES '//
-     &    'FONCTIONNALITES INCOMPATIBLES')
+          CALL U2MESS('F','ALGORITH7_94')
         ENDIF
-        IF (FONACT(1)) THEN 
-          CALL UTMESS('A','NMINIT',
-     &     'LIAISON_UNILATER ET RECH. LIN. PEUVENT POSER DES '//
-     &     'PROBLEMES DE CONVERGENCE')
+        IF (FONACT(1)) THEN
+          CALL U2MESS('A','ALGORITH7_95')
         ENDIF
       ENDIF
 

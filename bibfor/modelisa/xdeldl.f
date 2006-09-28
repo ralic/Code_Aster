@@ -1,7 +1,7 @@
       SUBROUTINE XDELDL(MOD,MA,GRMAEN,JSTANO,LISREL,NREL)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C     POUR UN NOEUD (COMME DANS AFLRCH.F)
 
 C     RECUPERATION DE LA DIMENSION
       CALL JEVEUO(MA//'.DIME','L',ADDIM)
-      NDIME=ZI(ADDIM-1+6)      
+      NDIME=ZI(ADDIM-1+6)
 
 C     BOUCLE SUR LES MAILLES
       DO 90 IMA = 1,LONG
@@ -128,8 +128,7 @@ C           1) CAS DES MAILLES 'ROND'
 C           -------------------------
 
             IF (ISTATU.GT.1) THEN
-              CALL UTMESS('F','XDELDL',
-     &                    'PB DE STATUT DES NOEUDS ENRICHIS')
+              CALL U2MESS('F','MODELISA7_94')
             ELSE IF (ISTATU.EQ.1) THEN
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.0) THEN
@@ -147,8 +146,7 @@ C           2) CAS DES MAILLES 'CARRÉ'
 C           --------------------------
 
             IF (ISTATU.GT.2 .OR. ISTATU.EQ.1) THEN
-              CALL UTMESS('F','XDELDL',
-     &                    'PB DE STATUT DES NOEUDS ENRICHIS')
+              CALL U2MESS('F','MODELISA7_94')
             ELSE IF (ISTATU.EQ.2) THEN
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.0) THEN
@@ -168,8 +166,7 @@ C           3) CAS DES MAILLES 'ROND-CARRÉ'
 C           ------------------------------
 
             IF (ISTATU.GT.3) THEN
-              CALL UTMESS('F','XDELDL',
-     &                    'PB DE STATUT DES NOEUDS ENRICHIS')
+              CALL U2MESS('F','MODELISA7_94')
             ELSE IF (ISTATU.EQ.3) THEN
 C             ON NE SUPPRIME AUCUN DDL
             ELSE IF (ISTATU.EQ.2) THEN
@@ -205,7 +202,7 @@ C             ON SUPPRIME LES DDLS H ET E
             END IF
 
           ELSE
-            CALL UTMESS('F','XDELDL','PB DE GROUPE MAILLES ENRICHIES')
+            CALL U2MESS('F','MODELISA7_95')
           END IF
 
 C         POUR LES NOEUDS OÙ LE STATUT VAUT 0, IL FAUT IMPOSER

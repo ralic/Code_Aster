@@ -1,30 +1,30 @@
       SUBROUTINE PACOA1 ( NOEUD1, NOEUD2, LONLIS, NOMAZ,
-     +                            LISO1Z, LISO2Z )
+     &                            LISO1Z, LISO2Z )
       IMPLICIT   NONE
       INTEGER           LONLIS, NOEUD1(*), NOEUD2(*)
       CHARACTER*(*)     NOMAZ, LISO1Z, LISO2Z
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/01/2001   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C     BUT: TRIER 2 LISTES DE NOEUDS NOEUD1 ET LISI2Z DE MANIERE A
-C     METTRE EN VIS A VIS LES NOEUDS DES 2 LISTES 
+C     METTRE EN VIS A VIS LES NOEUDS DES 2 LISTES
 C     LES LISTES TRIEES OBTENUES A PARTIR DE NOEUD1 ET LISI2Z
 C     SONT RESPECTIVEMENT LISO1Z ET LISO2Z, LA CORRESPONDANCE
 C     ENTRE LES NOEUDS DES 2 LISTES EST ASSUREE DE LA MANIERE
@@ -35,7 +35,7 @@ C
 C     LES LISTES NOEUD1, LISI2Z, LISO1Z ET LISO2Z CONTIENNENT
 C     LES NUMEROS DES NOEUDS (CE SONT DES LISTES DE I).
 C
-C     ROUTINE INSPIREE DE  PACOAP 
+C     ROUTINE INSPIREE DE  PACOAP
 C
 C-----------------------------------------------------------------------
 C ARGUMENTS D'ENTREE:
@@ -64,9 +64,9 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNOM, JEXNUM
 C     ------- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IAGEOM, IRET, IDLOU1, IDLOU2, IDLOU3, IDLOU4,
-     +              IDLINV, I1, I2, INO1, NUNO1, INO2, NUNO2, J1, J2,
-     +              I, J, IEXCOR, TROUV1, TROUV2, JFAC1, JFAC2,
-     +              JFOND,IM, NBFA, NBFO
+     &              IDLINV, I1, I2, INO1, NUNO1, INO2, NUNO2, J1, J2,
+     &              I, J, IEXCOR, TROUV1, TROUV2, JFAC1, JFAC2,
+     &              JFOND,IM, NBFA, NBFO
       REAL*8        DMIN, D, R8GAEM, X1(3), X2(3), PADIST
       CHARACTER*8   NOMA, K8B
       CHARACTER*8   NOMNO1, NOMNO2, NOMNO3
@@ -80,14 +80,14 @@ C
       NOMA   = NOMAZ
 C
       NOMNOE = NOMA//'.NOMNOE         '
-      GRPNOE = NOMA//'.GROUPENO       '      
+      GRPNOE = NOMA//'.GROUPENO       '
       CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', IAGEOM )
-C   
+C
       CALL JEEXIN ( JEXNOM(GRPNOE,'FACE1'), IRET )
       IF (IRET.EQ.0) THEN
         NBFA = 0
         NBFO = 0
-      ELSE              
+      ELSE
         CALL JEVEUO ( JEXNOM(GRPNOE,'FACE1'), 'L', JFAC1 )
         CALL JEVEUO ( JEXNOM(GRPNOE,'FACE2'), 'L', JFAC2 )
         CALL JELIRA ( JEXNOM(GRPNOE,'FACE2'),'LONMAX',NBFA,K8B)
@@ -126,12 +126,12 @@ C
         X1(3)  = ZR(IAGEOM-1+3*(NUNO1-1)+3)
         DMIN   = R8GAEM()
         J2 = 0
-C        
+C
         TROUV1 = 0
         DO 11 IM = 1 , NBFO
-           IF ( ZI(JFOND+IM-1) .EQ. NUNO1 ) GOTO 13   
+           IF ( ZI(JFOND+IM-1) .EQ. NUNO1 ) GOTO 13
 11      CONTINUE
-        DO 12 IM = 1 , NBFA        
+        DO 12 IM = 1 , NBFA
           IF ( ZI(JFAC1+ IM-1) .EQ. NUNO1 ) THEN
             TROUV1 = 1
             GOTO 13
@@ -149,10 +149,10 @@ C
           X2(2) = ZR(IAGEOM-1+3*(INO2-1)+2)
           X2(3) = ZR(IAGEOM-1+3*(INO2-1)+3)
           D = PADIST( 3, X1, X2 )
-C          
+C
           TROUV2 = 0
           DO 21 IM = 1 , NBFO
-           IF ( ZI(JFOND+IM-1) .EQ. INO2 ) GOTO 23   
+           IF ( ZI(JFOND+IM-1) .EQ. INO2 ) GOTO 23
 21        CONTINUE
           DO 22 IM = 1 , NBFA
             IF ( ZI(JFAC1+ IM-1) .EQ. INO2 ) THEN
@@ -173,23 +173,22 @@ C
           ENDIF
 20      CONTINUE
 C
-        IF (J2.EQ.0) CALL UTMESS('F','PACOA1','ON NE TROUVE PAS DE'
-     +    //' NOEUD ASSEZ PRES DU NOEUD '//NOMNO1)
+        IF (J2.EQ.0) CALL U2MESK('F','MODELISA6_3',1,NOMNO1)
 C
         IF ( ZI(IDLINV+J2-1) .EQ. 0 ) THEN
             ZI(IDLOU1+I1-1) = NUNO1
             ZI(IDLOU2+I1-1) = NUNO2
             ZI(IDLINV+J2-1) = NUNO1
-        ELSE                
+        ELSE
             CALL JENUNO ( JEXNUM(NOMNOE,NUNO1), NOMNO1)
             CALL JENUNO ( JEXNUM(NOMNOE,NUNO2), NOMNO2)
             CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLINV+J2-1)), NOMNO3)
             CALL UTDEBM('F','PACOA1','CONFLIT DANS LES VIS_A_VIS '//
-     +                  'DES NOEUDS')
+     &                  'DES NOEUDS')
             CALL UTIMPK('L','LE NOEUD ',1,NOMNO2)
             CALL UTIMPK('S',' EST LE VIS-A-VIS DES NOEUDS ',1,NOMNO1)
             CALL UTIMPK('S',' ET ',1,NOMNO3)
-            CALL UTFINM()                        
+            CALL UTFINM()
         ENDIF
 C
 10    CONTINUE
@@ -211,10 +210,10 @@ C
         X2(3)  = ZR(IAGEOM-1+3*(NUNO2-1)+3)
         DMIN   = R8GAEM()
         J1 = 0
-C        
+C
         TROUV2 = 0
         DO 41 IM = 1 , NBFO
-           IF ( ZI(JFOND+IM-1) .EQ. NUNO2 ) GOTO 43   
+           IF ( ZI(JFOND+IM-1) .EQ. NUNO2 ) GOTO 43
 41      CONTINUE
         DO 42 IM = 1 , NBFA
            IF ( ZI(JFAC1+ IM-1) .EQ. NUNO2 ) THEN
@@ -234,11 +233,11 @@ C
           X1(2) = ZR(IAGEOM-1+3*(INO1-1)+2)
           X1(3) = ZR(IAGEOM-1+3*(INO1-1)+3)
           D = PADIST( 3, X1, X2 )
-C      
-          TROUV1 = 0        
+C
+          TROUV1 = 0
           DO 51 IM = 1 , NBFO
-           IF ( ZI(JFOND+IM-1) .EQ. INO1 ) GOTO 53   
-51        CONTINUE 
+           IF ( ZI(JFOND+IM-1) .EQ. INO1 ) GOTO 53
+51        CONTINUE
           DO 52 IM = 1 , NBFA
              IF ( ZI(JFAC1+ IM-1) .EQ. INO1 ) THEN
                 TROUV1 = 1
@@ -258,8 +257,7 @@ C
           ENDIF
 50      CONTINUE
 C
-        IF (J1.EQ.0) CALL UTMESS('F','PACOA1','ON NE TROUVE PAS DE'
-     +    //' NOEUD ASSEZ PRES DU NOEUD '//NOMNO2)
+        IF (J1.EQ.0) CALL U2MESK('F','MODELISA6_3',1,NOMNO2)
 C
         IF ( ZI(IDLINV+J1-1).EQ. 0 ) THEN
             ZI(IDLOU3+I2-1) = NUNO1
@@ -270,11 +268,11 @@ C
             CALL JENUNO ( JEXNUM(NOMNOE,NUNO2), NOMNO2)
             CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLINV+J1-1)), NOMNO3)
             CALL UTDEBM('F','PACOA1','CONFLIT DANS LES VIS_A_VIS '//
-     +                  'DES NOEUDS')
+     &                  'DES NOEUDS')
             CALL UTIMPK('L','LE NOEUD ',1,NOMNO1)
             CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,NOMNO2)
             CALL UTIMPK('S','ET ',1,NOMNO3)
-            CALL UTFINM()                        
+            CALL UTFINM()
         ENDIF
 C
 40    CONTINUE
@@ -293,10 +291,10 @@ C
                  CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLOU2+I-1)), NOMNO2)
                  CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLOU4+J-1)), NOMNO3)
                  CALL UTDEBM('F','PACOA1','CONFLIT DANS LES VIS-A-VIS '
-     +                       //'GENERES SUCCESSIVEMENT ')
+     &                       //'GENERES SUCCESSIVEMENT ')
                  CALL UTIMPK('L','LE NOEUD ',1,NOMNO1)
                  CALL UTIMPK('S',' A POUR VIS-A-VIS LE NOEUD',1,
-     +                           NOMNO2)
+     &                           NOMNO2)
                  CALL UTIMPK('S',' ET LE NOEUD',1,NOMNO3)
                  CALL UTFINM()
               ENDIF
@@ -306,7 +304,7 @@ C
         IF ( IEXCOR .EQ. 0 ) THEN
            CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLOU1+I-1)), NOMNO1)
            CALL UTDEBM('F','PACOA1','CONFLIT DANS LES VIS-A-VIS '
-     +                       //'GENERES SUCCESSIVEMENT ')
+     &                       //'GENERES SUCCESSIVEMENT ')
            CALL UTIMPK('L','LE NOEUD DE LA PREMIERE LISTE',1, NOMNO1)
            CALL UTIMPK('S',' N"EST L"IMAGE D"AUCUN ',0,' ')
            CALL UTIMPK('S','NOEUD PAR LA CORRESPONDANCE INVERSE',0,' ')

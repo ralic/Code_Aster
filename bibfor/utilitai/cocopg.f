@@ -1,7 +1,7 @@
       SUBROUTINE COCOPG(OBIN,OBOUT,NBOBJ,LONNEW,BASE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
       CALL JELIRA(OB1,'MODELONG',IBID,MODELO)
 C
       IF (ACCES(1:2).EQ.'R8') THEN
-         CALL UTMESS('F','COCOPG','ACCES "R8" INTERDIT ICI.')
+         CALL U2MESS('F','UTILITAI_37')
       END IF
 C
       IF (ACCES(1:2).EQ.'NO') THEN
@@ -106,10 +106,10 @@ C     -- CREATION :
 C     -------------
       IF (NOPTLG(1:1).EQ.' ') THEN
          CALL JECREC(OB2,BAS2(1:1)//' '//GENR(1:1)//' '//TYPE(1:4) ,
-     +         ACCE2,STOCKA,MODLO2,NBOBJ)
+     &         ACCE2,STOCKA,MODLO2,NBOBJ)
       ELSE
          CALL JECREC(OB2,BAS2(1:1)//' '//GENR(1:1)//' '//TYPE(1:4) ,
-     +         ACCE2,STOCKA,NOPTLG,NBOBJ)
+     &         ACCE2,STOCKA,NOPTLG,NBOBJ)
       END IF
 
 
@@ -131,7 +131,7 @@ C     -----------------------------
 C     -- LONMAX  DANS LE CAS CONSTANT,DISPERSE:
 C     -------------------------------------------------------
       IF ((MODLO2(1:8).EQ.'CONSTANT').AND.(STOCKA.EQ.'DISPERSE')
-     +               .AND.(NOPTLG(1:1).EQ.' ')) THEN
+     &               .AND.(NOPTLG(1:1).EQ.' ')) THEN
          IF (GENR(1:1).EQ.'E') THEN
          ELSE IF (GENR(1:1).EQ.'V') THEN
             CALL JELIRA(OB1,'LONMAX',LON1,K8BID)
@@ -151,7 +151,7 @@ C        ----------------------
             CALL JENUNO(JEXNUM(OB1,IOC),NOM24)
             CALL JECROC(JEXNOM(OB2,NOM24))
          ELSE
-            CALL UTMESS('F','COCOPG','ACCES INTERDIT')
+            CALL U2MESS('F','UTILITAI_38')
          END IF
 C
 C        -- ON ECRIT LES ATTRIBUTS PARTICULIERS AU GENRE :
@@ -173,8 +173,7 @@ C        -------------------------------------------------
             CALL JEVEUO(JEXNUM(OB2,IOC),'E',IAD2)
             CALL JACOPO(LON1,TYPE,IAD1,IAD2)
          ELSE
-            CALL UTMESS('F','COCOPG','GENRE : '//GENR(1:1)
-     +       //' NON PREVU.')
+            CALL U2MESK('F','UTILITAI_39',1,GENR(1:1))
          END IF
 C
  1    CONTINUE

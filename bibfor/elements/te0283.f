@@ -1,6 +1,6 @@
       SUBROUTINE TE0283(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/02/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,8 +77,7 @@ C DEB ------------------------------------------------------------------
       CALL JEVECH('PRESIDU','E',IVERES)
 
       IF ((ZK16(ICOMP) (1:9).EQ.'THER_HYDR')) THEN
-        CALL UTMESS('F','TE0279','PAS D ELEMENTS LUMPES POUR'//
-     &              'HYDRATATION')
+        CALL U2MESS('F','ELEMENTS3_57')
       END IF
 
       DELTAT = ZR(ITEMPS+1)

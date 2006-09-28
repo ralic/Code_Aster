@@ -1,22 +1,22 @@
       SUBROUTINE NMTHMC(COMP, MODELE, MOCLEF, K, COMEL, NCOMEL, NBNVI)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE UFBHHLL C.CHAVANT
 C TOLE CRP_20
@@ -74,32 +74,32 @@ C =====================================================================
 C --- PARTIE THMC -----------------------------------------------------
 C =====================================================================
       DATA POTHMC / 'LIQU_SATU'     ,
-     +              'LIQU_GAZ'      ,
-     +              'GAZ'           ,
-     +              'LIQU_GAZ_ATM'  ,
-     +              'LIQU_VAPE_GAZ' ,
-     +              'LIQU_VAPE'     ,
-     +              'LIQU_AD_GAZ_VAPE' /
+     &              'LIQU_GAZ'      ,
+     &              'GAZ'           ,
+     &              'LIQU_GAZ_ATM'  ,
+     &              'LIQU_VAPE_GAZ' ,
+     &              'LIQU_VAPE'     ,
+     &              'LIQU_AD_GAZ_VAPE' /
 C =====================================================================
 C --- PARTIE HYDR -----------------------------------------------------
 C =====================================================================
       DATA POHYDR / 'HYDR'      ,
-     +              'HYDR_UTIL' ,
-     +              'HYDR_ENDO' /
+     &              'HYDR_UTIL' ,
+     &              'HYDR_ENDO' /
 C =====================================================================
 C --- PARTIE MECA -----------------------------------------------------
 C =====================================================================
       DATA POMECA / 'ELAS'            ,
-     +              'CJS'             ,
-     +              'CAM_CLAY'        ,
-     +              'BARCELONE'       ,
-     +              'LAIGLE'          ,
-     +              'HOEK_BROWN_EFF'  ,  
-     +              'HOEK_BROWN_TOT'  ,  
-     +              'ELAS_THER'       ,
-     +              'MAZARS'          ,
-     +              'ENDO_ISOT_BETON' ,
-     +              'DRUCKER_PRAGER'  /
+     &              'CJS'             ,
+     &              'CAM_CLAY'        ,
+     &              'BARCELONE'       ,
+     &              'LAIGLE'          ,
+     &              'HOEK_BROWN_EFF'  ,
+     &              'HOEK_BROWN_TOT'  ,
+     &              'ELAS_THER'       ,
+     &              'MAZARS'          ,
+     &              'ENDO_ISOT_BETON' ,
+     &              'DRUCKER_PRAGER'  /
 C *********************************************************************
 C --- FIN INITIALISATION -------------------------------------------- *
 C *********************************************************************
@@ -121,11 +121,10 @@ C =====================================================================
 
       CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF,K,2,MOCLES,
      &           TYPMCL,MESMAI,NBMA)
-     
       IF (NBMA.EQ.0) THEN
          CALL JELIRA(MODELE(1:8)//'.MAILLE','LONUTI',NBMA,KBID)
          TOUT=.TRUE.
-      ELSE 
+      ELSE
       CALL JEVEUO(MESMAI,'L',JMESM)
       ENDIF
 
@@ -158,11 +157,12 @@ C =====================================================================
                          CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
      &                     'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
      &                     ' ET LA MODELISATION CHOISI '//MODELI)
+C        CALL U2MESK('F','ALGORITH8_35', 2 ,VALK)
                   ENDIF
 
                ELSEIF ((COMEL(JJ)(1:13).EQ.'LIQU_VAPE_GAZ').OR.
      &                      (COMEL(JJ)(1:8).EQ.'LIQU_GAZ')) THEN
-   
+
                   IF ((MODELI(1:6).NE.'3D_THH').AND.
      &                (MODELI(1:6).NE.'3D_HHM').AND.
      &                (MODELI(1:8).NE.'AXIS_THH').AND.
@@ -174,6 +174,7 @@ C =====================================================================
                      CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
      &                     'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
      &                     ' ET LA MODELISATION CHOISI '//MODELI)
+C        CALL U2MESK('F','ALGORITH8_35', 2 ,VALK)
 
                   ENDIF
 
@@ -187,6 +188,7 @@ C =====================================================================
                       CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
      &                  'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
      &                  ' ET LA MODELISATION CHOISI '//MODELI)
+C        CALL U2MESK('F','ALGORITH8_35', 2 ,VALK)
                   ENDIF
 
                ELSEIF  (COMEL(JJ)(1:16).EQ.'LIQU_AD_GAZ_VAPE') THEN
@@ -204,12 +206,13 @@ C =====================================================================
                      CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
      &                'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
      &                ' ET LA MODELISATION CHOISI '//MODELI)
+C        CALL U2MESK('F','ALGORITH8_35', 2 ,VALK)
                   ENDIF
 
                ENDIF
 
    5        CONTINUE
-         ENDIF  
+         ENDIF
    1  CONTINUE
 
       DO 10 JJ=1, NCOMEL
@@ -220,8 +223,7 @@ C =====================================================================
             IF (COMEL(JJ).EQ.POTHMC(II)) THEN
                THMC = COMEL(JJ)
                IF ( LTHMC ) THEN
-                  CALL UTMESS('F','NMTHMC_1','IL Y A DEJA UNE LOI '//
-     +                                                  'DE COUPLAGE')
+                  CALL U2MESS('F','ALGORITH8_36')
                ENDIF
                LTHMC = .TRUE.
                GOTO 10
@@ -234,8 +236,7 @@ C =====================================================================
             IF (COMEL(JJ).EQ.POHYDR(II)) THEN
                HYDR = COMEL(JJ)
                IF ( LHYDR ) THEN
-                  CALL UTMESS('F','NMTHMC_3','IL Y A DEJA UNE LOI '//
-     +                                                 'HYDRAULIQUE')
+                  CALL U2MESS('F','ALGORITH8_37')
                ENDIF
                LHYDR = .TRUE.
                GOTO 10
@@ -248,8 +249,7 @@ C =====================================================================
             IF (COMEL(JJ).EQ.POMECA(II)) THEN
                MECA = COMEL(JJ)
                IF ( LMECA ) THEN
-                  CALL UTMESS('F','NMTHMC_4','IL Y A DEJA UNE LOI '//
-     +                                                 'DE MECANIQUE')
+                  CALL U2MESS('F','ALGORITH8_38')
                ENDIF
                LMECA = .TRUE.
                GOTO 10
@@ -263,73 +263,59 @@ C --- PARTIE KIT_HM ---------------------------------------------------
 C =====================================================================
       IF (COMP.EQ.'KIT_HM') THEN
          IF (.NOT.LTHMC) THEN
-            CALL UTMESS('F','NMTHMC_5','IL N Y A PAS DE LOI DE '//
-     +                                                     'COUPLAGE')
+            CALL U2MESS('F','ALGORITH8_39')
          ENDIF
          IF (.NOT.LHYDR) THEN
-            CALL UTMESS('F','NMTHMC_7','IL N Y A PAS DE LOI '//
-     +                                                 'HYDRAULIQUE')
+            CALL U2MESS('F','ALGORITH8_40')
          ENDIF
          IF (.NOT.LMECA) THEN
-            CALL UTMESS('F','NMTHMC_8','IL N Y A PAS DE LOI DE '//
-     +                                                    'MECANIQUE')
+            CALL U2MESS('F','ALGORITH8_41')
          ENDIF
          IF ( THMC.NE.'LIQU_SATU'    .AND.
-     +        THMC.NE.'GAZ'          .AND.
-     +        THMC.NE.'LIQU_GAZ_ATM'      ) THEN
-            CALL UTMESS('F','NMTHMC_9','LA LOI DE COUPLAGE EST '//
-     +                          'INCORRECTE POUR UNE MODELISATION HM')
+     &        THMC.NE.'GAZ'          .AND.
+     &        THMC.NE.'LIQU_GAZ_ATM'      ) THEN
+            CALL U2MESS('F','ALGORITH8_42')
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
-     +        ( MECA.NE.'MAZARS'          .AND.
-     +          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
-            CALL UTMESS('F','NMTHMC_10','INCOMPATIBILITE DES '//
-     +                       'COMPORTEMENTS MECANIQUE ET HYDRAULIQUE')
+     &        ( MECA.NE.'MAZARS'          .AND.
+     &          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
+            CALL U2MESS('F','ALGORITH8_43')
          ENDIF
          IF ( MECA.EQ.'ELAS_THER') THEN
-            CALL UTMESS('F','NMTHMC_11','LOI DE MECANIQUE '//
-     +                      'INCOMPATIBLE AVEC UNE MODELISATION HM')
+            CALL U2MESS('F','ALGORITH8_44')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
-            CALL UTMESS('F','NMTHMC_50','LOI DE MECANIQUE '//
-     +                      'INCOMPATIBLE AVEC UNE MODELISATION HM')
+            CALL U2MESS('F','ALGORITH8_44')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_HHM --------------------------------------------------
 C =====================================================================
       ELSE IF (COMP.EQ.'KIT_HHM') THEN
          IF (.NOT.LTHMC) THEN
-            CALL UTMESS('F','NMTHMC_12','IL N Y A PAS DE LOI DE '//
-     +                                                     'COUPLAGE')
+            CALL U2MESS('F','ALGORITH8_39')
          ENDIF
          IF (.NOT.LHYDR) THEN
-            CALL UTMESS('F','NMTHMC_14','IL N Y A PAS DE LOI '//
-     +                                                 'HYDRAULIQUE')
+            CALL U2MESS('F','ALGORITH8_40')
          ENDIF
          IF (.NOT.LMECA) THEN
-            CALL UTMESS('F','NMTHMC_15','IL N Y A PAS DE LOI DE '//
-     +                                                    'MECANIQUE')
+            CALL U2MESS('F','ALGORITH8_41')
          ENDIF
          IF ( THMC.NE.'LIQU_GAZ'.AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
-     +        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
-            CALL UTMESS('F','NMTHMC_16','LA LOI DE COUPLAGE EST '//
-     +                         'INCORRECTE POUR UNE MODELISATION HHM')
+     &        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
+            CALL U2MESS('F','ALGORITH8_45')
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
-     +        ( MECA.NE.'MAZARS'          .AND.
-     +          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
-            CALL UTMESS('F','NMTHMC_17','INCOMPATIBILITE DES '//
-     +                       'COMPORTEMENTS MECANIQUE ET HYDRAULIQUE')
+     &        ( MECA.NE.'MAZARS'          .AND.
+     &          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
+            CALL U2MESS('F','ALGORITH8_43')
          ENDIF
          IF ( MECA.EQ.'ELAS_THER' ) THEN
-            CALL UTMESS('F','NMTHMC_18','LOI DE MECANIQUE '//
-     +                                 'INCOMPATIBLE AVEC UNE LOI HHM')
+            CALL U2MESS('F','ALGORITH8_46')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' .AND.
-     +        (THMC.NE.'LIQU_GAZ' .AND.
-     +         THMC.NE.'LIQU_VAPE_GAZ')) THEN
-            CALL UTMESS('F','NMTHMC_51','LOI DE MECANIQUE '//
-     +                      'INCOMPATIBLE AVEC UNE MODELISATION HHM')
+     &        (THMC.NE.'LIQU_GAZ' .AND.
+     &         THMC.NE.'LIQU_VAPE_GAZ')) THEN
+            CALL U2MESS('F','ALGORITH8_47')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THH --------------------------------------------------
@@ -337,29 +323,23 @@ C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THH') THEN
          THER = 'THER'
          IF (.NOT.LTHMC) THEN
-            CALL UTMESS('F','NMTHMC_19','IL N Y A PAS DE LOI DE '//
-     +                                                     'COUPLAGE')
+            CALL U2MESS('F','ALGORITH8_39')
          ENDIF
          IF (.NOT.LHYDR) THEN
-            CALL UTMESS('F','NMTHMC_21','IL N Y A PAS DE LOI '//
-     +                                                 'HYDRAULIQUE')
+            CALL U2MESS('F','ALGORITH8_40')
          ENDIF
          IF (LMECA) THEN
-            CALL UTMESS('F','NMTHMC_22','IL Y A UNE LOI DE '//
-     +                                'MECANIQUE DANS LA RELATION THH')
+            CALL U2MESS('F','ALGORITH8_48')
          ENDIF
          IF ( THMC.NE.'LIQU_GAZ' .AND.THMC.NE.'LIQU_VAPE_GAZ'.AND.
-     +        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
-            CALL UTMESS('F','NMTHMC_23','LA LOI DE COUPLAGE EST '//
-     +                         'INCORRECTE POUR UNE MODELISATION THH')
+     &        THMC.NE.'LIQU_AD_GAZ_VAPE'      ) THEN
+            CALL U2MESS('F','ALGORITH8_49')
          ENDIF
          IF ( MECA.EQ.'ELAS_THER' ) THEN
-            CALL UTMESS('F','NMTHMC_24','LOI DE MECANIQUE '//
-     +                                 'INCOMPATIBLE AVEC UNE LOI THH')
+            CALL U2MESS('F','ALGORITH8_50')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
-            CALL UTMESS('F','NMTHMC_52','LOI DE MECANIQUE '//
-     +                                 'INCOMPATIBLE AVEC UNE LOI THH')
+            CALL U2MESS('F','ALGORITH8_50')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THV --------------------------------------------------
@@ -367,28 +347,22 @@ C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THV') THEN
          THER = 'THER'
          IF (.NOT.LTHMC) THEN
-            CALL UTMESS('F','NMTHMC_25','IL N Y A PAS DE LOI DE '//
-     +                                                     'COUPLAGE')
+            CALL U2MESS('F','ALGORITH8_39')
          ENDIF
          IF (.NOT.LHYDR) THEN
-            CALL UTMESS('F','NMTHMC_27','IL N Y A PAS DE LOI '//
-     +                                                 'HYDRAULIQUE')
+            CALL U2MESS('F','ALGORITH8_40')
          ENDIF
          IF (LMECA) THEN
-            CALL UTMESS('F','NMTHMC_28','IL Y A UNE LOI DE '//
-     +                                'MECANIQUE DANS LA RELATION THV')
+            CALL U2MESS('F','ALGORITH8_51')
          ENDIF
          IF ( THMC.NE.'LIQU_VAPE' ) THEN
-            CALL UTMESS('F','NMTHMC_29','LA LOI DE COUPLAGE EST '//
-     +                          'INCORRECTE POUR UNE MODELISATION THV')
+            CALL U2MESS('F','ALGORITH8_52')
          ENDIF
          IF ( MECA.EQ.'ELAS_THER' ) THEN
-            CALL UTMESS('F','NMTHMC_30','LOI DE MECANIQUE '//
-     +                                 'INCOMPATIBLE AVEC UNE LOI THV')
+            CALL U2MESS('F','ALGORITH8_53')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
-            CALL UTMESS('F','NMTHMC_53','LOI DE MECANIQUE '//
-     +                                 'INCOMPATIBLE AVEC UNE LOI THV')
+            CALL U2MESS('F','ALGORITH8_53')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THM --------------------------------------------------
@@ -396,32 +370,26 @@ C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THM') THEN
          THER = 'THER'
          IF (.NOT.LTHMC) THEN
-            CALL UTMESS('F','NMTHMC_31','IL N Y A PAS DE LOI DE '//
-     +                                                      'COUPLAGE')
+            CALL U2MESS('F','ALGORITH8_39')
          ENDIF
          IF (.NOT.LHYDR) THEN
-            CALL UTMESS('F','NMTHMC_33','IL N Y A PAS DE LOI '//
-     +                                                   'HYDRAULIQUE')
+            CALL U2MESS('F','ALGORITH8_40')
          ENDIF
          IF (.NOT.LMECA) THEN
-            CALL UTMESS('F','NMTHMC_34','IL N Y A PAS DE LOI DE '//
-     +                                                     'MECANIQUE')
+            CALL U2MESS('F','ALGORITH8_41')
          ENDIF
          IF ( THMC.NE.'LIQU_SATU'     .AND.
-     +        THMC.NE.'LIQU_GAZ_ATM'  .AND.
-     +        THMC.NE.'GAZ'                ) THEN
-            CALL UTMESS('F','NMTHMC_35','LA LOI DE COUPLAGE EST '//
-     +                         'INCORRECTE POUR UNE MODELISATION THM')
+     &        THMC.NE.'LIQU_GAZ_ATM'  .AND.
+     &        THMC.NE.'GAZ'                ) THEN
+            CALL U2MESS('F','ALGORITH8_54')
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
-     +        ( MECA.NE.'MAZARS'          .AND.
-     +          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
-            CALL UTMESS('F','NMTHMC_36','INCOMPATIBILITE DES '//
-     +                       'COMPORTEMENTS MECANIQUE ET HYDRAULIQUE')
+     &        ( MECA.NE.'MAZARS'          .AND.
+     &          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
+            CALL U2MESS('F','ALGORITH8_43')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' ) THEN
-            CALL UTMESS('F','NMTHMC_54','LOI DE MECANIQUE '//
-     +                      'INCOMPATIBLE AVEC UNE MODELISATION THM')
+            CALL U2MESS('F','ALGORITH8_55')
          ENDIF
 C =====================================================================
 C --- PARTIE KIT_THHM -------------------------------------------------
@@ -429,34 +397,28 @@ C =====================================================================
       ELSE IF (COMP.EQ.'KIT_THHM') THEN
          THER = 'THER'
          IF (.NOT.LTHMC) THEN
-            CALL UTMESS('F','NMTHMC_38','IL N Y A PAS DE LOI DE '//
-     +                                                      'COUPLAGE')
+            CALL U2MESS('F','ALGORITH8_39')
          ENDIF
          IF (.NOT.LHYDR) THEN
-            CALL UTMESS('F','NMTHMC_40','IL N Y A PAS DE LOI '//
-     +                                                   'HYDRAULIQUE')
+            CALL U2MESS('F','ALGORITH8_40')
          ENDIF
          IF (.NOT.LMECA) THEN
-            CALL UTMESS('F','NMTHMC_41','IL N Y A PAS DE LOI DE '//
-     +                                                     'MECANIQUE')
+            CALL U2MESS('F','ALGORITH8_41')
          ENDIF
          IF ( THMC.NE.'LIQU_VAPE_GAZ' .AND.
-     +        THMC.NE.'LIQU_AD_GAZ_VAPE' .AND.
-     +        THMC.NE.'LIQU_GAZ'           ) THEN
-            CALL UTMESS('F','NMTHMC_42','LA LOI DE COUPLAGE EST '//
-     +                         'INCORRECTE POUR UNE MODELISATION THHM')
+     &        THMC.NE.'LIQU_AD_GAZ_VAPE' .AND.
+     &        THMC.NE.'LIQU_GAZ'           ) THEN
+            CALL U2MESS('F','ALGORITH8_56')
          ENDIF
          IF ( HYDR.EQ.'HYDR_ENDO'         .AND.
-     +        ( MECA.NE.'MAZARS'          .AND.
-     +          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
-            CALL UTMESS('F','NMTHMC_43','INCOMPATIBILITE DES '//
-     +                        'COMPORTEMENTS MECANIQUE ET HYDRAULIQUE')
+     &        ( MECA.NE.'MAZARS'          .AND.
+     &          MECA.NE.'ENDO_ISOT_BETON'      ) ) THEN
+            CALL U2MESS('F','ALGORITH8_43')
          ENDIF
          IF ( MECA.EQ.'BARCELONE' .AND.
-     +        (THMC.NE.'LIQU_GAZ' .AND.
-     +        THMC.NE.'LIQU_VAPE_GAZ')) THEN
-            CALL UTMESS('F','NMTHMC_55','LOI DE MECANIQUE '//
-     +                     'INCOMPATIBLE AVEC UNE MODELISATION THHM')
+     &        (THMC.NE.'LIQU_GAZ' .AND.
+     &        THMC.NE.'LIQU_VAPE_GAZ')) THEN
+            CALL U2MESS('F','ALGORITH8_57')
          ENDIF
       ENDIF
 C =====================================================================

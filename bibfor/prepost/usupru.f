@@ -2,22 +2,22 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C     CALCULE LA PROFONDEUR D'USURE
@@ -79,8 +79,8 @@ C     --- TUBE - BARRE ANTI VIBRATOIRE ---
             RAPP = UN
          ENDIF
          IF ( N3 .EQ. 0 ) THEN
-            CST1 = ( UN / ( DE * RAYT ) ) ** UNS3 
-            CST2 = 3.D0 / ( 4.D0 * LSUP ) 
+            CST1 = ( UN / ( DE * RAYT ) ) ** UNS3
+            CST2 = 3.D0 / ( 4.D0 * LSUP )
             DO 10 I = 1,NBINST
                V1 = VUSURT(I)*RAPP + VUSURO(I)*RAPP
                V2 = VUSURT(I)*RAPP / V1
@@ -104,7 +104,7 @@ C     --- TUBE - BARRE ANTI VIBRATOIRE ---
                   PARA(4) = VUSURT(I)*RAPP
                   PARA(5) = VUSURO(I)*RAPP
                   IF ( PRUST(I) .GE. X2 ) THEN
-                   CALL UTMESS('A','USURE','PROFONDEUR > RAYON DU TUBE')
+                   CALL U2MESS('A','PREPOST4_83')
                      PRUST(I) = 9999.D0
                      GOTO 12
                   ENDIF
@@ -144,7 +144,7 @@ C     --- TUBE - TROU CIRCULAIRE ---
                CALL USUBIS ( TYPE,PARA,CRIT,EPSI,X1,X2,RESU,IRET)
                IF ( IRET .EQ. 0 ) THEN
                  IF ( RESU .GE. X2 ) THEN
-                   CALL UTMESS('A','USURE','PROFONDEUR > RAYON DU TUBE')
+                   CALL U2MESS('A','PREPOST4_83')
                     PRUST(I) = 9999.D0
                     GOTO 22
                  ENDIF
@@ -189,7 +189,7 @@ C
 C
 C     --- TUBE - TROU QUADRIFOLIE OU TRIFOLIE ---
       ELSEIF ( TYPE(1:11) .EQ. 'TUBE_4_ENCO' .OR.
-     +         TYPE(1:11) .EQ. 'TUBE_3_ENCO' ) THEN
+     &         TYPE(1:11) .EQ. 'TUBE_3_ENCO' ) THEN
          CALL GETVR8(' ','RAYON_MOBILE'    ,1,1,1,PARA(1),N1)
          CALL GETVR8(' ','RAYON_OBST'      ,1,1,1,PARA(2),N2)
          CALL GETVR8(' ','LARGEUR_OBST'    ,1,1,1,PARA(3),N3)
@@ -211,7 +211,7 @@ C     --- TUBE - TROU QUADRIFOLIE OU TRIFOLIE ---
                CALL USUBIS ( TYPE,PARA,CRIT,EPSI,X1,X2,RESU,IRET)
                IF ( IRET .EQ. 0 ) THEN
                  IF ( RESU .GE. X2 ) THEN
-                   CALL UTMESS('A','USURE','PROFONDEUR > RAYON DU TUBE')
+                   CALL U2MESS('A','PREPOST4_83')
                     PRUST(I) = 9999.D0
                     GOTO 30
                  ENDIF
@@ -280,7 +280,7 @@ C     --- GRAPPE - ALESAGE ---
             CALL USUBIS ( TYPE,PARA,CRIT,EPSI,X11,X2,RESU,IRET)
             IF ( IRET .EQ. 0 ) THEN
                IF ( RESU .GE. X2 ) THEN
-                  CALL UTMESS('A','USURE','PROFONDEUR > RAYON DU TUBE')
+                  CALL U2MESS('A','PREPOST4_83')
                   GOTO 50
                ENDIF
                PRUST(I) = RESU
@@ -291,7 +291,7 @@ C
 C     --- GRAPPE - 1 ENCOCHE ---
 C     --- GRAPPE - 2 ENCOCHE ---
       ELSEIF ( TYPE(1:13) .EQ. 'GRAPPE_1_ENCO' .OR.
-     +         TYPE(1:13) .EQ. 'GRAPPE_2_ENCO' ) THEN
+     &         TYPE(1:13) .EQ. 'GRAPPE_2_ENCO' ) THEN
          IF ( TYPE(1:13) .EQ. 'GRAPPE_2_ENCO' ) THEN
             PARA(1) = -48.89D+03 / 11.D0
             PARA(2) = 106.03D0   / 11.D0
@@ -312,7 +312,7 @@ C     --- GRAPPE - 2 ENCOCHE ---
             CALL USUNEW ( TYPE,PARA,CRIT,EPSI,X11,X2,RESU,IRET)
             IF ( IRET .EQ. 0 ) THEN
                IF ( RESU .GE. X2 ) THEN
-                  CALL UTMESS('A','USURE','PROFONDEUR > RAYON DU TUBE')
+                  CALL U2MESS('A','PREPOST4_83')
                   GOTO 62
                ENDIF
                PRUST(I) = RESU

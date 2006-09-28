@@ -4,22 +4,22 @@ C        IMPLICIT REAL*8 (A-H,O-Z)
          IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
@@ -173,11 +173,7 @@ C
                E = MATERF(1,1)
                DELTA = JAC(2,2)
                IF(ABS(DELTA/E).LT.EPSI) THEN
-                   CALL UTMESS ('F','LCPLBE',' ERREUR'//
-     1              ' - JACOBIEN DU SYSTEME NON LINEAIRE A RESOUDRE '//
-     2              'NUL LORS DE LA PROJECTION AU SOMMET DU CONE DE '//
-     3              'TRACTION - LES PARAMETRES MATERIAUX SONT SANS '//
-     4              'DOUTE MAL DEFINIS.')
+                   CALL U2MESS('F','ALGORITH4_72')
                ELSE
                   MDELTA = -1.D0 / DELTA
                ENDIF
@@ -240,11 +236,12 @@ C                    MESSAGE D'ALARME SI ERR2 EST INSUFFISANT
                         CALL CODREE(TOLER,'E',CTOL)
                         CALL CODREE((ERR/CSEC),'E',CERR)
                         CALL UTMESS ('A','LCPLBE',' NON CONVERGENCE '//
-     1                  'A ITERATION MAXI '//CITER//
-     2                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
-     3                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
-     4                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
-     5                  'LA CONVERGENCE.')
+     &                  'A ITERATION MAXI '//CITER//
+     &                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
+     &                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
+     &                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
+     &                  'LA CONVERGENCE.')
+C        CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
                      ENDIF
                   ELSE
 C     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -253,10 +250,11 @@ C                    MESSAGE D'ALARME - ON POURSUIT AVEC RESO STANDARD
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL CODREE((ERR/CSEC),'E',CERR)
                      CALL UTMESS ('A','LCPLBE',' ERREUR'//
-     1                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
-     3                 ' - POUR LA LOI BETON_DOUBLE_DP '//
-     4                 ' - REDECOUPAGE DU PAS DE TEMPS')
+     &                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
+     &                 ' - POUR LA LOI BETON_DOUBLE_DP '//
+     &                 ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
                   ENDIF
                ELSE
 C     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -272,15 +270,11 @@ C
 C --        VERIFICATION DE LA SOLUTION
 C
             IF((FTRAC3/FTP).GT.EPSI2 .AND. DPT .GT. ZERO) THEN
-               CALL UTMESS ('A','LCPLBE','ETAT CONVERGE NON '//
-     1           'CONFORME LORS DE LA PROJECTION AU SOMMET '//
-     2           'DU CONE DE TRACTION')
+               CALL U2MESS('A','ALGORITH4_75')
                CONVER = .FALSE.
             ENDIF
             IF((FCOMP3/FCP).GT.EPSI2) THEN
-               CALL UTMESS ('A','LCPLBE','ETAT CONVERGE NON '//
-     1           'CONFORME EN COMPRESSION LORS DE LA PROJECTION '//
-     2           'AU SOMMET DU CONE DE TRACTION')
+               CALL U2MESS('A','ALGORITH4_76')
                CONVER = .FALSE.
             ENDIF
 C
@@ -357,11 +351,7 @@ C               RESOUDRE SONT IDENTIQUES --> ON PASSE DIRECTEMENT A LA
 C               PROJECTION AU SOMMET DU CONE DE COMPRESSION SEUL.
                 IF((VIND(1) + DPC).LT.KUC
      &            .OR. (VIND(2) + DPT).LT.KUT) THEN
-                  CALL UTMESS ('F','LCPLBE',' ERREUR'//
-     1           ' - JACOBIEN DU SYSTEME NON LINEAIRE A RESOUDRE '//
-     2           'NUL LORS DE LA PROJECTION AU SOMMET DES CONES DE '//
-     3           'COMPRESSION ET TRACTION - LES PARAMETRES MATERIAUX '//
-     4           'SONT SANS DOUTE MAL DEFINIS.')
+                  CALL U2MESS('F','ALGORITH4_77')
                ELSE
                   DDPC = ZERO
                   DDPT = ZERO
@@ -412,11 +402,12 @@ C                    MESSAGE D'ALARME SI ERR2 EST INSUFFISANT
                         CALL CODREE(TOLER,'E',CTOL)
                         CALL CODREE((ERR/CSEC),'E',CERR)
                         CALL UTMESS ('A','LCPLBE',' NON CONVERGENCE '//
-     1                  'A ITERATION MAXI '//CITER//
-     2                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
-     3                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
-     4                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
-     5                  'LA CONVERGENCE.')
+     &                  'A ITERATION MAXI '//CITER//
+     &                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
+     &                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
+     &                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
+     &                  'LA CONVERGENCE.')
+C        CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
                      ENDIF
                   ELSE
 C     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -425,10 +416,11 @@ C                    MESSAGE D'ALARME - ON POURSUIT AVEC RESO STANDARD
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL CODREE((ERR/CSEC),'E',CERR)
                      CALL UTMESS ('A','LCPLBE',' ERREUR'//
-     1                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
-     3                 ' - POUR LA LOI BETON_DOUBLE_DP '//
-     4                 ' - REDECOUPAGE DU PAS DE TEMPS')
+     &                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
+     &                 ' - POUR LA LOI BETON_DOUBLE_DP '//
+     &                 ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
                   ENDIF
                ELSE
 C     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -444,17 +436,13 @@ C
 C --        VERIFICATION DE LA SOLUTION
 C
             IF((FTRAC3/FTP).GT.EPSI2 .AND. DPT .GT. ZERO .AND.
-     1         CONVER) THEN
-               CALL UTMESS ('A','LCPLBE','ETAT CONVERGE NON '//
-     1           'CONFORME EN TRACTION LORS DE LA PROJECTION AU '//
-     2           'SOMMET DES DEUX CONES')
+     &         CONVER) THEN
+               CALL U2MESS('A','ALGORITH4_78')
                CONVER = .FALSE.
             ENDIF
             IF((FCOMP3/FCP).GT.EPSI2 .AND. DPC .GT. ZERO .AND.
-     1         CONVER) THEN
-               CALL UTMESS ('A','LCPLBE','ETAT CONVERGE NON '//
-     1           'CONFORME EN COMPRESSION LORS DE LA PROJECTION AU '//
-     2           'SOMMET DES DEUX CONES')
+     &         CONVER) THEN
+               CALL U2MESS('A','ALGORITH4_79')
                CONVER = .FALSE.
             ENDIF
 C
@@ -525,11 +513,7 @@ C
                E = MATERF(1,1)
                DELTA = JAC(1,1)
                IF(ABS(DELTA/E).LT.EPSI) THEN
-                   CALL UTMESS ('F','LCPLBE',' ERREUR'//
-     1              ' - JACOBIEN DU SYSTEME NON LINEAIRE A RESOUDRE '//
-     2              'NUL LORS DE LA PROJECTION AU SOMMET DU CONE DE '//
-     3              'COMPRESSION - LES PARAMETRES MATERIAUX SONT '//
-     4              'SANS DOUTE MAL DEFINIS.')
+                   CALL U2MESS('F','ALGORITH4_80')
                ELSE
                   MDELTA = -1.D0 / DELTA
                ENDIF
@@ -593,11 +577,12 @@ C                    MESSAGE D'ALARME SI ERR2 EST INSUFFISANT
                         CALL CODREE(TOLER,'E',CTOL)
                         CALL CODREE((ERR/CSEC),'E',CERR)
                         CALL UTMESS ('A','LCPLBE',' NON CONVERGENCE '//
-     1                  'A ITERATION MAXI '//CITER//
-     2                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
-     3                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
-     4                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
-     5                  'LA CONVERGENCE.')
+     &                  'A ITERATION MAXI '//CITER//
+     &                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
+     &                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
+     &                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
+     &                  'LA CONVERGENCE.')
+C        CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
                      ENDIF
                   ELSE
 C     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -606,10 +591,11 @@ C                    MESSAGE D'ALARME - ON POURSUIT AVEC RESO STANDARD
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL CODREE((ERR/CSEC),'E',CERR)
                      CALL UTMESS ('A','LCPLBE',' ERREUR'//
-     1                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
-     3                 ' - POUR LA LOI BETON_DOUBLE_DP '//
-     4                 ' - REDECOUPAGE DU PAS DE TEMPS')
+     &                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
+     &                 ' - POUR LA LOI BETON_DOUBLE_DP '//
+     &                 ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
                   ENDIF
                ELSE
 C     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -625,16 +611,12 @@ C
 C --        VERIFICATION DE LA SOLUTION
 C
             IF((FCOMP3/FCP).GT.EPSI2 .AND. DPC .GT. ZERO) THEN
-               CALL UTMESS ('A','LCPLBE','ETAT CONVERGE NON '//
-     1           'CONFORME LORS DE LA PROJECTION AU SOMMET '//
-     2           'DU CONE DE COMPRESSION')
+               CALL U2MESS('A','ALGORITH4_81')
                CONVER = .FALSE.
             ENDIF
 C
             IF((FTRAC3/FTP).GT.EPSI2) THEN
-               CALL UTMESS ('A','LCPLBE','ETAT CONVERGE NON '//
-     1           'CONFORME EN TRACTION LORS DE LA PROJECTION '//
-     2           'AU SOMMET DU CONE DE COMPRESSION')
+               CALL U2MESS('A','ALGORITH4_82')
                CONVER = .FALSE.
             ENDIF
 C
@@ -706,10 +688,7 @@ C
             IF(NSEUIL.EQ.1) THEN
                DELTA = JAC(1,1)
                IF(ABS(DELTA/E).LT.EPSI) THEN
-                  CALL UTMESS ('F','LCPLBE',' ERREUR'//
-     1              ' - JACOBIEN DU SYSTEME NON LINEAIRE A RESOUDRE '//
-     2              'NUL - LES PARAMETRES MATERIAUX SONT SANS DOUTE '//
-     3              'MAL DEFINIS.')
+                  CALL U2MESS('F','ALGORITH4_83')
                ELSE
                   MDELTA = -1.D0 / DELTA
                ENDIF
@@ -718,10 +697,7 @@ C
             ELSE IF(NSEUIL.EQ.2) THEN
                DELTA = JAC(2,2)
                IF(ABS(DELTA/E).LT.EPSI) THEN
-                  CALL UTMESS ('F','LCPLBE',' ERREUR'//
-     1              ' - JACOBIEN DU SYSTEME NON LINEAIRE A RESOUDRE '//
-     2              'NUL - LES PARAMETRES MATERIAUX SONT SANS DOUTE '//
-     3              'MAL DEFINIS.')
+                  CALL U2MESS('F','ALGORITH4_83')
                ELSE
                   MDELTA = -1.D0 / DELTA
                ENDIF
@@ -730,18 +706,14 @@ C
             ELSE IF(NSEUIL.EQ.3) THEN
                DELTA = (JAC(1,1) * JAC(2,2) - JAC(1,2) * JAC(2,1))
                IF(ABS(DELTA/E).LT.EPSI) THEN
-                  CALL UTMESS ('F','LCPLBE',' ERREUR'//
-     1              ' - JACOBIEN DU SYSTEME NON LINEAIRE A RESOUDRE '//
-     2              'NUL - LES PARAMETRES MATERIAUX SONT SANS DOUTE '//
-     3              'MAL DEFINIS.')
+                  CALL U2MESS('F','ALGORITH4_83')
                ELSE
                   MDELTA = -1.D0 / DELTA
                ENDIF
                DDPC = (JAC(2,2) * FCOMP - JAC(1,2) * FTRAC) * MDELTA
                DDPT = (JAC(1,1) * FTRAC - JAC(2,1) * FCOMP) * MDELTA
             ELSE
-               CALL UTMESS('A','LCPLBE','INTEGRATION ELASTOPLASTIQUE '
-     &           //'DE LOI MULTI-CRITERE : ERREUR DE PROGRAMMATION ')
+               CALL U2MESS('A','ALGORITH4_84')
                GOTO 5
             ENDIF
 C
@@ -817,8 +789,7 @@ C
             ERR = ABS(FCOMP/FCP)
             IF(ABS(DDPC/DPC).LT.PRECM) ITER4 = ITMAX+OSCI
          ELSE
-            CALL UTMESS ('F','LCPLBE',' ERREUR'//
-     1        ' DE PROGRAMMATION : VALEUR DE NSEUIL INCORRECTE.')
+            CALL U2MESS('F','ALGORITH4_85')
          ENDIF
 C
 C
@@ -848,11 +819,12 @@ C                  MESSAGE D'ALARME SI ERR2 EST INSUFFISANT
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL CODREE((ERR/CSEC),'E',CERR)
                         CALL UTMESS ('A','LCPLBE',' NON CONVERGENCE '//
-     1                  'A ITERATION MAXI '//CITER//
-     2                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
-     3                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
-     4                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
-     5                  'LA CONVERGENCE.')
+     &                  'A ITERATION MAXI '//CITER//
+     &                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
+     &                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
+     &                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
+     &                  'LA CONVERGENCE.')
+C        CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
                    ENDIF
                  ELSE
 C     -->>         NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -860,10 +832,11 @@ C     -->>         NB MAX D'ITERATIONS DEPASSE  -->> FIN
                    CALL CODREE(TOLER,'E',CTOL)
                    CALL CODREE((ERR/CSEC),'E',CERR)
                    CALL UTMESS ('A','LCPLBE',' ERREUR'//
-     1               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2               ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
-     3               ' - POUR LA LOI BETON_DOUBLE_DP '//
-     4               ' - REDECOUPAGE DU PAS DE TEMPS')
+     &               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &               ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
+     &               ' - POUR LA LOI BETON_DOUBLE_DP '//
+     &               ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
                    NSEUIL = 4
                    GOTO 5
                 ENDIF
@@ -884,30 +857,18 @@ C
          IF(NSEUIL.EQ.3) THEN
             IF((FCOMP3/FCP).GT.EPSI2.AND.(FTRAC3/FTP).GT.EPSI2) THEN
               IF (DPT .GT. ZERO .AND. DPC .GT. ZERO) THEN
-                CALL UTMESS ('A','LCPLBE',' ERREUR : ETAT CONVERGE '//
-     1          'NON CONFORME EN TRACTION ET EN COMPRESSION POUR ' //
-     2          'LA LOI DE COMPORTEMENT BETON_DOUBLE_DP POUR LES '//
-     3          'DEUX CRITERES EN MEME TEMPS. IL FAUT UN SAUT '//
-     4          'ELASTIQUE PLUS PETIT, OU REDECOUPER LE PAS DE TEMPS')
+                CALL U2MESS('A','ALGORITH4_86')
             GOTO 5
               ENDIF
             ELSE
               IF((FCOMP3/FCP).GT.EPSI2) THEN
                 IF (DPT .GT. ZERO .AND. DPC .GT. ZERO) THEN
-                  CALL UTMESS ('A','LCPLBE',' ERREUR : ETAT CONVERGE '//
-     1            'NON CONFORME EN COMPRESSION POUR ' //
-     2            'LA LOI DE COMPORTEMENT BETON_DOUBLE_DP POUR LES '//
-     3            'DEUX CRITERES EN MEME TEMPS. IL FAUT UN SAUT '//
-     4            'ELASTIQUE PLUS PETIT, OU REDECOUPER LE PAS DE TEMPS')
+                  CALL U2MESS('A','ALGORITH4_87')
             GOTO 5
                 ENDIF
               ELSEIF((FTRAC3/FTP).GT.EPSI2) THEN
                 IF (DPT .GT. ZERO .AND. DPC .GT. ZERO) THEN
-                  CALL UTMESS ('A','LCPLBE',' ERREUR : ETAT CONVERGE '//
-     1            'NON CONFORME EN TRACTION POUR ' //
-     2            'LA LOI DE COMPORTEMENT BETON_DOUBLE_DP POUR LES '//
-     3            'DEUX CRITERES EN MEME TEMPS. IL FAUT UN SAUT '//
-     4            'ELASTIQUE PLUS PETIT, OU REDECOUPER LE PAS DE TEMPS')
+                  CALL U2MESS('A','ALGORITH4_88')
             GOTO 5
                 ENDIF
               ENDIF
@@ -915,14 +876,12 @@ C
 C
          ELSE IF(NSEUIL.EQ.2) THEN
             IF((FTRAC3/FTP).GT.EPSI2 .AND. DPT .GT. ZERO) THEN
-              CALL UTMESS ('A','LCPLBE','ETAT CONVERGE NON '//
-     1                     'CONFORME EN TRACTION' )
+              CALL U2MESS('A','ALGORITH4_89')
             GOTO 5
              ENDIF
          ELSE IF(NSEUIL.EQ.1) THEN
             IF((FCOMP3/FCP).GT.EPSI2 .AND. DPC .GT. ZERO) THEN
-              CALL UTMESS ('A','LCPLBE','ETAT CONVERGE NON '//
-     1                     'CONFORME EN COMPRESSION')
+              CALL U2MESS('A','ALGORITH4_90')
             GOTO 5
             ENDIF
          ENDIF

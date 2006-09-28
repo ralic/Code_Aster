@@ -1,25 +1,25 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 21/11/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       FICHDF, CLAS 
+      CHARACTER*(*)       FICHDF, CLAS
 C ----------------------------------------------------------------------
 C IMPRESSION DE L'ENSEMBLE DES OBJETS JEVEUX AU FORMAT HDF
 C
@@ -37,11 +37,11 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -92,25 +92,25 @@ C ----------------------------------------------------------------------
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
       IPGC   = -2
-      KCLAS = CLAS 
+      KCLAS = CLAS
       NHDF  = FICHDF
       IDFIC = HDFCRF (NHDF)
       IF ( IDFIC .LT. 0 ) THEN
         CMESS = 'IMPOSSIBLE DE CREER LE FICHIER HDF '// NHDF
-        CALL JVMESS ('F','JEIMHD01',CMESS )
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
       NGRP ='/'
       IDG  = HDFOPG (IDFIC,NGRP)
       CALL VERSIO (IVERS, IUTIL, INIVO, K16, LEXP )
-      WRITE(KATTR(1),'(A16,I2,''.'',I2,''.'',I2)') 
+      WRITE(KATTR(1),'(A16,I2,''.'',I2,''.'',I2)')
      &               K16,IVERS,IUTIL,INIVO
       CALL NODNAM(1,KATTR(2)(1:16),KATTR(3)(1:16),K16)
       KATTR(2)(17:24) =' '
@@ -139,7 +139,7 @@ C
  1        CONTINUE
           KATTR(3)(1:1)=KCLAS
           IF ( J .EQ. 17 ) GOTO 5
-          IF ( J .GT. LIDBAS .AND. 
+          IF ( J .GT. LIDBAS .AND.
      &        (CRNOM(25:26) .EQ. '$$' .OR. CRNOM(1:1) .EQ. '?') ) GOTO 5
           GENRI = GENR(JGENR(IC)+J)
           TYPEI = TYPE(JTYPE(IC)+J)
@@ -151,10 +151,10 @@ C
           IADMI = IADM(JIADM(IC)+J)
           IADMX = IADMI
           IF ( GENRI .NE. 'X' ) THEN
-C           ON TRAITE UN OBJET SIMPLE 
+C           ON TRAITE UN OBJET SIMPLE
             IDATOS = J
             ICLAOS = IC
-            NOMOS  = CRNOM 
+            NOMOS  = CRNOM
             INAT  = 1
             INAT0 = 1
             IF ( J .LE. LIDBAS ) INAT0 = 0
@@ -162,7 +162,7 @@ C           ON TRAITE UN OBJET SIMPLE
               IF ( IADDI(1) .EQ. 0 .OR. LONOI .EQ. 0 ) THEN
                 IF (NIVO .GE. 2) THEN
                   CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-                  CALL JVMESS ( 'A' , 'JEIMHD02' , CMESS )
+                  CALL U2MESK('A','JEVEUX_01',1,CMESS)
                 ENDIF
                 GOTO 5
               ENDIF
@@ -176,7 +176,7 @@ C           ON TRAITE UN OBJET SIMPLE
               IF ( MOD(J,25) .EQ. 1 ) THEN
                 WRITE ( JULIST , '(/,A,A/)' )
      &       ' NUM  ------------- NOM ---------------- G T L- --LONG---'
-     +       ,' -LOTY- -IADD- ------ --KADM--'
+     &       ,' -LOTY- -IADD- ------ --KADM--'
               ENDIF
               WRITE(JULIST , 1001) J,CRNOM,GENRI,TYPEI,LTYPI,
      &                           ILONG,LONOI,IADDI(1),IADDI(2),IADMI
@@ -184,11 +184,11 @@ C           ON TRAITE UN OBJET SIMPLE
             IF ( IADMX .EQ. 0 ) THEN
               CALL JJLIDE ( 'JEIMPO' , CRNOM , INAT )
             ENDIF
-          ELSE 
-C         ON TRAITE UNE COLLECTION  
+          ELSE
+C         ON TRAITE UNE COLLECTION
             IDATCO = J
             ICLACO = IC
-            NOMCO  = CRNOM 
+            NOMCO  = CRNOM
             NOMCOL = CRNOM
             INAT   = 2
             CALL JJALLC ( IC , J , 'L' , IBACOL )
@@ -203,7 +203,7 @@ C         ON TRAITE UNE COLLECTION
             GENRI  = GENR( JGENR(IC) + IXDESO )
             LTYPI  = LTYP( JLTYP(IC) + IXDESO )
             IF ( IXIADD .EQ. 0 ) THEN
-C             ON TRAITE UNE COLLECTION CONTIGUE : 
+C             ON TRAITE UNE COLLECTION CONTIGUE :
 C                TRAITEMENT PARTICULIER DU $$DESO
               TYPEI = TYPE( JTYPE(IC) + IXDESO )
               LTYPI = LTYP( JLTYP(IC) + IXDESO )
@@ -215,9 +215,9 @@ C                TRAITEMENT PARTICULIER DU $$DESO
               IF ( IADMX .EQ. 0 ) THEN
                 IF ( IADDI(1) .EQ. 0 ) THEN
                   IF (NIVO .GE. 2) THEN
-                    CMESS = 'COLLECTION INEXISTANTE EN MEMOIRE ET' 
+                    CMESS = 'COLLECTION INEXISTANTE EN MEMOIRE ET'
      &                    //'SUR DISQUE'
-                    CALL JVMESS ( 'A' , 'JEIMHD03' , CMESS )
+                    CALL U2MESK('A','JEVEUX_01',1,CMESS)
                   ENDIF
                   GOTO 5
                 ENDIF
@@ -228,8 +228,8 @@ C                TRAITEMENT PARTICULIER DU $$DESO
               WRITE(KATTR(2),'(16X,I8)') IXDESO
               CALL JJIMHD (IDFIC,INAT,CRNOM,NGRP,KATTR,IADMI,GENRI,
      &                     TYPEI,LTYPI,LONOI)
-            ELSE 
-C             ON TRAITE UNE COLLECTION DISPERSEE 
+            ELSE
+C             ON TRAITE UNE COLLECTION DISPERSEE
 C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
               INAT   = 3
               IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
@@ -256,7 +256,7 @@ C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
                   IF ( IADDI(1) .EQ. 0 ) THEN
                     IF (NIVO .GE. 2) THEN
                       CMESS= 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-                      CALL JVMESS ( 'A' , 'JEIMHD04' , CMESS )
+                      CALL U2MESK('A','JEVEUX_01',1,CMESS)
                     ENDIF
                     GOTO 10
                   ENDIF
@@ -279,7 +279,7 @@ C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
                   DO 12 L = 1,MIN (24,LNOM)
                     KATTR(2)(L:L) = K1ZON ( JK1ZON + IDECO + L )
  12               CONTINUE
-                ELSE 
+                ELSE
                   WRITE(KATTR(2),'(16X,I8)') K
                 ENDIF
                 WRITE(CRNOM(25:32),'(I8)') K
@@ -290,8 +290,8 @@ C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
  10           CONTINUE
               IF (IDGC .GT. 0) IRET = HDFCLG(IDGC)
             ENDIF
-C                TRAITEMENT DES OBJETS SYSTEME DE COLLECTION        
-            INAT = 2 
+C                TRAITEMENT DES OBJETS SYSTEME DE COLLECTION
+            INAT = 2
             DO 20 K = IDIADD,IDNUM
               IX  = ISZON( JISZON + IBACOL + K )
               IF ( IX .GT. 0 ) THEN
@@ -323,7 +323,7 @@ C                TRAITEMENT DES OBJETS SYSTEME DE COLLECTION
       IRET = HDFCLF (IDFIC)
       IF (IRET .NE. 0 ) THEN
         CMESS = 'IMPOSSIBLE DE FERMER LE FICHIER '//NHDF
-        CALL JVMESS ( 'S' , 'JEIMHD05' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       IPGC = IPGCEX
 C FIN ------------------------------------------------------------------

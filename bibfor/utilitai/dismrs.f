@@ -1,6 +1,6 @@
       SUBROUTINE DISMRS(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,8 @@ C
             CALL RSDOCU ( DOCU , REPK, IRET )
             IF ( IRET .NE. 0 ) THEN
                CALL UTMESS(CODMES,'DISMRS','TYPE DE RESULTAT INCONNU: '
-     +                   //DOCU//' POUR L''OBJET : '//NOMOB)
+     &                   //DOCU//' POUR L''OBJET : '//NOMOB)
+C        CALL U2MESK(CODMES,'UTILITAI_68', 2 ,VALK)
                IERD=1
                GO TO 9999
             ENDIF
@@ -92,7 +93,7 @@ C
       ELSE IF  (QUESTI.EQ.'NOM_MAILLA') THEN
 C               ----------------------
          CALL JELIRA(JEXNUM(NOMOB//'           .TACH',1),
-     +                                         'LONMAX',NBCH,K8BID)
+     &                                         'LONMAX',NBCH,K8BID)
          CALL JEVEUO(JEXNUM(NOMOB//'           .TACH',1),'L',IATACH)
          DO 1, I=1,NBCH
            NOMCH=ZK24(IATACH-1+I)(1:19)
@@ -106,7 +107,7 @@ C        -- SINON ON PARCOURT TOUS LES CHAMPS DU RESULTAT :
          CALL JELIRA(NOMOB//'           .TACH','NMAXOC',NBSY,K8BID)
          DO 2, J=2,NBSY
            CALL JELIRA(JEXNUM(NOMOB//'           .TACH',J),
-     +                                           'LONMAX',NBCH,K8BID)
+     &                                           'LONMAX',NBCH,K8BID)
            CALL JEVEUO(JEXNUM(NOMOB//'           .TACH',J),'L',IATACH)
            DO 3, I=1,NBCH
              NOMCH=ZK24(IATACH-1+I)(1:19)
@@ -116,12 +117,11 @@ C        -- SINON ON PARCOURT TOUS LES CHAMPS DU RESULTAT :
              END IF
  3         CONTINUE
  2       CONTINUE
-         CALL UTMESS(CODMES,'DISMRS','LE RESULAT COMPOSE NE CONTIENT'
-     +             //' AUCUN CHAMP')
+         CALL U2MESS(CODMES,'UTILITAI_69')
          IERD=1
 
       ELSE IF ( (QUESTI.EQ.'NB_CHAMP_MAX')
-     +     .OR. (QUESTI.EQ.'NB_CHAMP_UTI')) THEN
+     &     .OR. (QUESTI.EQ.'NB_CHAMP_UTI')) THEN
 C               ------------------------
          CALL JELIRA(NOMOB//'           .DESC','GENR',IBID,K8BID)
          IF (K8BID(1:1).EQ.'N') THEN
@@ -132,8 +132,7 @@ C               ------------------------
 
       ELSE
          REPK = QUESTI
-         CALL UTMESS(CODMES,'DISMRS','LA QUESTION : "'//REPK//
-     +               '" EST INCONNUE')
+         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD=1
          GO TO 9999
       END IF

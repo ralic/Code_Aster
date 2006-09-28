@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -157,7 +157,7 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
-     +                                         IVF,IDFDX,IDFD2,JGANO)
+     &                                         IVF,IDFDX,IDFD2,JGANO)
 C
       DEUX   = 2.D0
       RAC2   = SQRT(DEUX)
@@ -179,7 +179,7 @@ C     --------------------------------------------------------
       ELSEIF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
         DKQ = .TRUE.
       ELSE
-        CALL UTMESS('F','DKTNLI','ELEMENT NON TRAITE '//NOMTE)
+        CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
 
       CALL JEVECH('PMATERC','L',IMATE)
@@ -187,7 +187,7 @@ C     --------------------------------------------------------
       CALL TECACH('OON','PCONTMR',7,JTAB,IRET)
       NBSP=JTAB(7)
       ICONTM=JTAB(1)
-      IF (NPG.NE.JTAB(3)) CALL UTMESS('F','DKTNLI','STOP')
+      IF (NPG.NE.JTAB(3)) CALL U2MESS('F','CALCULEL_13')
 
       CALL JEVECH('PVARIMR','L',IVARIM)
       CALL JEVECH('PTEREF' ,'L',ITREF)
@@ -218,8 +218,7 @@ C     ---------------------------
          IF (DISTN.NE.0.D0) THEN
             CALL TECAEL(IADZI, IAZK24)
             NOMELE=ZK24(IAZK24-1+3)
-            CALL UTMESS('F','DKTNLI',
-     &    'PAS D EXCENTREMENT AVEC STAT_NON_LINE MAILLE '//NOMELE)
+            CALL U2MESK('F','ELEMENTS_35',1,NOMELE)
          ENDIF
       ENDIF
       IF ( GRILLE ) THEN
@@ -281,8 +280,7 @@ C     NBCOU : NOMBRE DE COUCHES
       CALL JEVECH('PNBSP_I','L',JNBSPI)
       NBCOU=ZI(JNBSPI-1+1)
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
-      IF (NBCOU.LE.0) CALL UTMESS('F','DKTNLI','NOMBRE DE COUCHES '//
-     &                         ' NEGATIF OU NUL : '//ZK16(ICOMPO-1+6))
+      IF (NBCOU.LE.0) CALL U2MESK('F','ELEMENTS_36',1,ZK16(ICOMPO-1+6))
 
       HIC = H/NBCOU
       IF (GRILLE) THEN
@@ -341,7 +339,7 @@ C        -------------------------------------------------------
           NOMPU(1) = 'INST'
           NOMPU(2) = 'EPAIS'
         ELSE
-          CALL UTMESS('F','DKTNLI','TEMPERATURE NON TROUVEE.')
+          CALL U2MESS('F','ELEMENTS_37')
         END IF
       END IF
 

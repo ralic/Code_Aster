@@ -3,28 +3,28 @@
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
 C          CORRESPONDANT A UN CHARGEMENT EN PRESSION SUIVEUSE
 C          POUR LES PLAQUES ET COQUES
-C          MATRICE DE RIGIDITE TANGENTE POUR LES COQUES 3D 
+C          MATRICE DE RIGIDITE TANGENTE POUR LES COQUES 3D
 C          (TOUJOURS EN PRESSION SUIVEUSE)
 C
 C          OPTIONS : 'CHAR_MECA_PRSU_R '
@@ -99,7 +99,7 @@ C
 C        --- NOMBRE DE NOEUDS ( NB1 : SERENDIP , NB2 : LAGRANGE )
          NB1   = ZI ( LZI - 1 + 1 )
          NB2   = ZI ( LZI - 1 + 2 )
-C        --- NBRE POINTS INTEGRATIONS (NPGSN : NORMALE ) 
+C        --- NBRE POINTS INTEGRATIONS (NPGSN : NORMALE )
          NPGSN = ZI ( LZI - 1 + 4 )
 C
 C        ---  ( FONCTIONS DE FORMES, DERIVEES ET POIDS )
@@ -152,7 +152,7 @@ C
             NOMPAR ( 1 ) = 'X'
             NOMPAR ( 2 ) = 'Y'
             NOMPAR ( 3 ) = 'Z'
-            
+
             DO 55 I=1,NB2
                PRESNO(I)=0.D0
 55          CONTINUE
@@ -168,11 +168,10 @@ C             IF (NOMTE.EQ.'MEC3QU9H') THEN
                  VALPAR ( 2 ) = ZR ( IGEOM + 3 * IN + 1 )
                  VALPAR ( 3 ) = ZR ( IGEOM + 3 * IN + 2 )
 C
-                 CALL FOINTE ( 'FM', ZK8 ( IFCO3D + 2 ), 4, NOMPAR, 
+                 CALL FOINTE ( 'FM', ZK8 ( IFCO3D + 2 ), 4, NOMPAR,
      &                        VALPAR , PR , IERZ )
                  PRESNO ( IN+1 ) = PR
-                 IF ( IERZ . NE . 0 )  CALL UTMESS ( 'F' , 'TE0486', 
-     &                ' ERREUR DANS LE CALCUL DE PRES_F ' )
+                 IF ( IERZ . NE . 0 )  CALL U2MESS('F','ELEMENTS4_1')
 C
   50          CONTINUE
 C
@@ -192,22 +191,22 @@ C          ---- VECTEURS DE BASE AUX POINTS DE GAUSS A KSI3 = 0.D0
            CALL R8INIR ( 3 , 0.D0 , A1 , 1 )
            CALL R8INIR ( 3 , 0.D0 , A2 , 1 )
 C
-C          ---- INTERPOLATIONS PRESSION 
+C          ---- INTERPOLATIONS PRESSION
 C               VECTEURS TANGENTS NON NORMES A1 A2
            PRES = 0.D0
 C
-           DO 70 KN = 1 , NB2 
+           DO 70 KN = 1 , NB2
 C
              PRES = PRES + ZR ( LZR - 1 + 459 + 9 * ( INTSN - 1 ) + KN )
      &                    * PRESNO ( KN )
 C
-              DO 60 II = 1 , 3 
+              DO 60 II = 1 , 3
 C
-                A1 ( II ) = A1 ( II ) + 
+                A1 ( II ) = A1 ( II ) +
      &                     ZR ( LZR - 1 + 459 + 9 * ( INTSN - 1 ) + KN )
      &                   * VECTA ( KN , 1 , II )
 C
-                A2 ( II ) = A2 ( II ) + 
+                A2 ( II ) = A2 ( II ) +
      &                     ZR ( LZR - 1 + 459 + 9 * ( INTSN - 1 ) + KN )
      &                   * VECTA ( KN , 2 , II )
 C
@@ -268,9 +267,9 @@ C            POUR UNE MATRICE NON SYMETRIQUE (VOIR AUSSI MECGME)
 C
 C              DO 100  I = 1 , J
 C                 KOMPTU = KOMPTU + 1
-C                 ZR ( IMATUU - 1 + KOMPTU ) = -0.5D0 * 
+C                 ZR ( IMATUU - 1 + KOMPTU ) = -0.5D0 *
 C     &              (    RIGNS ( ( 6 * NB1 + 3 ) * ( J - 1 ) + I )
-C     &              +  RIGNS ( ( 6 * NB1 + 3 ) * ( I - 1 ) + J )  ) 
+C     &              +  RIGNS ( ( 6 * NB1 + 3 ) * ( I - 1 ) + J )  )
 C
 C  100         CONTINUE
 C

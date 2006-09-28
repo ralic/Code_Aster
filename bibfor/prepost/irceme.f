@@ -1,11 +1,11 @@
       SUBROUTINE IRCEME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     >                    NBCMP, NOMCMP,
-     >                    NUMPT, INSTAN, UNIINS, NUMORD,
-     >                    NBMAEC, LIMAEC,
-     >                    CODRET )
+     &                    NBCMP, NOMCMP,
+     &                    NUMPT, INSTAN, UNIINS, NUMORD,
+     &                    NBMAEC, LIMAEC,
+     &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,11 +98,11 @@ C 2. ECRITURE DES CHAMPS AU FORMAT MED
 C====
 C
       CALL IRCAME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
-     >              NBCMP, NOMCMP,
-     >              NUMPT, INSTAN, UNIINS, NUMORD,
-     >              JCESK, JCESD, JCESC, JCESV, JCESL,
-     >              NBMAEC, LIMAEC,
-     >              CODRET )
+     &              NBCMP, NOMCMP,
+     &              NUMPT, INSTAN, UNIINS, NUMORD,
+     &              JCESK, JCESD, JCESC, JCESV, JCESL,
+     &              NBMAEC, LIMAEC,
+     &              CODRET )
 C
 C====
 C 3. ON NETTOIE
@@ -119,9 +119,7 @@ C 4. BILAN
 C====
 C
       IF ( CODRET.NE.0 ) THEN
-         CALL UTMESS
-     > ( 'A' , NOMPRO, 'ECRITURE IMPOSSIBLE POUR '//CHANOM//
-     >   ' AU FORMAT MED' )
+         CALL U2MESK('A','PREPOST_82',1,CHANOM)
       ENDIF
 C
       CALL JEDEMA()

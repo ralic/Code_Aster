@@ -5,22 +5,22 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C      SAISIE ET PREPA VERIF COHERENCE DES ARGUMENTS D 'APPEL DE OP0051
@@ -113,11 +113,11 @@ C        /* CAS D' UN RESULTAT COMPOSE */
             IF ( N1 .NE. 0 ) THEN
 C           /* LE CHAMP SYMBOLIQUE EXISTE (POTENTIELLEMENT)*/
                CALL RSORAC(NRESU,'LONUTI',IBID,RBID,K8B,CBID,RBID,
-     +                    'RELATIF',N3,1,IBID)
+     &                    'RELATIF',N3,1,IBID)
                IF ( N3 .GT. 0 ) THEN
                    CALL WKVECT(KORDRE,'V V I',N3,JORDR)
                    CALL RSORAC(NRESU,'TOUT_ORDRE',IBID,RBID,K8B,CBID,
-     +                        RBID,'RELATIF',ZI(JORDR),N3,IBID)
+     &                        RBID,'RELATIF',ZI(JORDR),N3,IBID)
                    DO 10 J = 1 , N3
                      CALL RSEXCH(NRESU,NCHSYM,ZI(JORDR+J-1),NAUX24,N2)
                      IF ( N2 .EQ. 0 ) GOTO 12
@@ -131,7 +131,7 @@ C           /* LE CHAMP SYMBOLIQUE EXISTE (POTENTIELLEMENT)*/
 C           /* LE CHAMP SYMBOLIQUE N' EXISTE PAS */
                N2 = 1
                WRITE(IFR,*)'CHAMP SYMBOLIQUE >',NCHSYM,'< NON '//
-     +                      'AUTORISE POUR LE RESULTAT >',NRESU,'<'
+     &                      'AUTORISE POUR LE RESULTAT >',NRESU,'<'
                WRITE(IFR,*)'LES CHAMPS SYMBOLIQUES AUTORISES SONT :'
               CALL JEIMPO(IFR,NRESU//'           .DESC',' ',' ')
             ENDIF
@@ -176,7 +176,7 @@ C        /* IL EST LEGAL, MAIS IL N' ADMET AUCUN CHAMP EFFECTIF */
 
             GD = ZI(ADESC + 1-1)
             CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',
-     +                  NBCPGD,K1BID)
+     &                  NBCPGD,K1BID)
             CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',ACPGD)
             CALL GETVTX('ACTION','NOM_CMP'        ,IOCC,1,0,K8B,NBCMP)
             CALL GETVTX('ACTION','TOUT_CMP'       ,IOCC,1,0,K8B,NBTCP)
@@ -193,12 +193,12 @@ C           /* PASSAGE D' UNE OU DEUX LISTE DE NOM DE CMPS    */
 C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                IF ( NBCMP .NE. 0 ) THEN
                   CALL WKVECT('&&OP0051.NOMCMP.USER','V V K8',NBCMP,
-     +                         ANCPU1)
+     &                         ANCPU1)
                   CALL GETVTX('ACTION','NOM_CMP',IOCC,1,
-     +                        NBCMP,ZK8(ANCPU1),N1)
+     &                        NBCMP,ZK8(ANCPU1),N1)
                ELSE
                   IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN
-                    CALL UTMESS('F','RVGARG','ON NE TRAITE PAS CE CAS')
+                    CALL U2MESS('F','POSTRELE_52')
                   ENDIF
                   CALL GETVTX('ACTION','RESULTANTE',IOCC,1,0,K8B,N1)
                   CALL GETVTX('ACTION','MOMENT'    ,IOCC,1,0,K8B,N2)
@@ -206,15 +206,15 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                   N2    = -N2
                   NBCMP =  N1+N2
                   CALL WKVECT('&&OP0051.NOMCMP.USER','V V K8',NBCMP,
-     +                         ANCPU1)
+     &                         ANCPU1)
                   CALL GETVTX('ACTION','RESULTANTE',IOCC,1,
-     +                        N1,ZK8(ANCPU1),N1)
+     &                        N1,ZK8(ANCPU1),N1)
                   CALL GETVTX('ACTION','MOMENT',IOCC,1,
-     +                        N2,ZK8(ANCPU1+N1),N2)
+     &                        N2,ZK8(ANCPU1+N1),N2)
                ENDIF
                IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN
-                  CALL UTCMP2 ( GRANCH, 'ACTION', IOCC, NOMCP, NBCMP, 
-     +                                                  NUMECP, NBNC )
+                  CALL UTCMP2 ( GRANCH, 'ACTION', IOCC, NOMCP, NBCMP,
+     &                                                  NUMECP, NBNC )
                   CALL JEECRA(JEXNUM(NXDVAR,IOCC),'LONMAX',NBNC,' ')
                   CALL JEECRA(JEXNUM(NXDVAR,IOCC),'LONUTI',NBNC,' ')
                   CALL JEVEUO(JEXNUM(NXDVAR,IOCC),'E',JXVAR)
@@ -235,13 +235,13 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
                   ZK8(ANOMCP + I-1) = ZK8(ANCPU1 + I-1)
 110            CONTINUE
                CALL NUMEK8(ZK8(ACPGD),ZK8(ANOMCP),NBCPGD,NBCMP,
-     +                    ZI(ANUMCP))
+     &                    ZI(ANUMCP))
                CALL JEDETR('&&OP0051.NOMCMP.USER')
             ELSE IF ( NBTCP .NE. 0 ) THEN
 C
                NOMOBJ = '&&OP0051.NOMCMP.USER'
                CALL UTNCMP ( NCHP19, NBC, NOMOBJ )
-               IF (NBC.EQ.0) CALL UTMESS('F','RVGARG','Y A UN BUG')
+               IF (NBC.EQ.0) CALL U2MESS('F','MODELISA2_91')
                CALL JEVEUO ( NOMOBJ, 'L', ANCPU2 )
                CALL JEECRA(JEXNUM(NXDNOM,IOCC),'LONMAX',NBC,' ')
                CALL JEVEUO(JEXNUM(NXDNOM,IOCC),'E',ANOMCP)
@@ -251,7 +251,7 @@ C
                   ZK8(ANOMCP + I-1) = ZK8(ANCPU2 + I-1)
 120            CONTINUE
                CALL NUMEK8( ZK8(ACPGD), ZK8(ANOMCP), NBCPGD, NBC,
-     +                      ZI(ANUMCP) )
+     &                      ZI(ANUMCP) )
                CALL JEDETR ( NOMOBJ )
                IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN
                   CALL JEECRA(JEXNUM(NXDVAR,IOCC),'LONMAX',NBC,' ')

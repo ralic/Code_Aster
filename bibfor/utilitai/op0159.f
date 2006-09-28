@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR   IMPR_MATRICE
 C     ------------------------------------------------------------------
@@ -177,7 +177,7 @@ C       -----------------------------
            NBCM = -NBCM
            CALL WKVECT ('&OP0159.CMP','V V K8',NBCM,IDNBCM)
            CALL GETVTX ('MATR_ELEM','NOM_CMP' ,I,1,NBCM,ZK8(IDNBCM),
-     +                   NBCMP)
+     &                   NBCMP)
          ENDIF
 C
 C ---   RECUPERATION DU GRAIN DE L'IMPRESSION :
@@ -203,10 +203,7 @@ C ---     A IMPRIMER :
 C         ----------
            CALL JEEXIN (MATRIC//'.LISTE_RESU',IRET)
            IF (IRET.EQ.0) THEN
-             CALL UTMESS('F','OP0159','ERREUR DANS LA DONNEE DE LA '//
-     +                   'S.D. '//MATRIC//' A IMPRIMER, IL NE S''AGIT'
-     +                 //' NI D''UN MATR_ELEM, NI D''UN VECT_ELEM '//
-     +                   'CAR LE .LISTE_RESU N''EXISTE PAS.')
+             CALL U2MESK('F','UTILITAI2_99',1,MATRIC)
            ELSE
              CALL JEVEUO (MATRIC//'.LISTE_RESU','L',IDLRES)
              RESU = ZK24(IDLRES)
@@ -215,13 +212,11 @@ C         ----------
              ELSEIF (RESU(10:10).EQ.'V') THEN
                 TYPSD = 'VECT_ELEM'
              ELSE
-               CALL UTMESS('F','OP0159','ERREUR DANS LA DONNEE DE LA '
-     +                 //'S.D. '//MATRIC//' A IMPRIMER, IL NE S''AGIT'
-     +                 //' NI D''UN MATR_ELEM, NI D''UN VECT_ELEM.')
+               CALL U2MESK('F','UTILITAI3_1',1,MATRIC)
              ENDIF
              CALL IMPMAT(IFIC,MATRIC,TYPSD,GRAIN,OPTIO3,NBNOEU,
-     +                  '&OP0159.LISNOE',NBEL,'&OP0159.LISMAI',
-     +                   NBCMP,'&OP0159.CMP',NBCHIF,EPS)
+     &                  '&OP0159.LISNOE',NBEL,'&OP0159.LISMAI',
+     &                   NBCMP,'&OP0159.CMP',NBCHIF,EPS)
            ENDIF
          ENDIF
 C
@@ -274,7 +269,7 @@ C       -----------------------------
           NBCM = -NBCM
           CALL WKVECT ('&OP0159.CMP','V V K8',NBCM,IDNBCM)
           CALL GETVTX ('MATR_ASSE','NOM_CMP' ,I,1,NBCM,ZK8(IDNBCM),
-     +                  NBCMP)
+     &                  NBCMP)
         ENDIF
 C
 C ---   RECUPERATION DU GRAIN DE L'IMPRESSION :
@@ -302,8 +297,8 @@ C
             CALL IRMAID ( MATRIC, IFIC, VERSIO )
          ELSE
            CALL IMPMAT(IFIC,MATRIC,'MATR_ASSE',GRAIN,OPTIO3,NBNOEU,
-     +                  '&OP0159.LISNOE',NBEL,'&OP0159.LISMAI',
-     +                   NBCMP,'&OP0159.CMP',NBCHIF,EPS)
+     &                  '&OP0159.LISNOE',NBEL,'&OP0159.LISMAI',
+     &                   NBCMP,'&OP0159.CMP',NBCHIF,EPS)
          ENDIF
 C
          CALL JEDETR ( '&OP0159.LISMAI' )

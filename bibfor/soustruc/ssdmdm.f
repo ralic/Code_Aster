@@ -1,6 +1,6 @@
       SUBROUTINE SSDMDM(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     --------------------------------------------------
 C
       CALL WKVECT(MAG//'.NOMACR','G V K8',NBSMA,IANMCR)
       CALL JECREC(MAG//'.SUPMAIL','G V I','NO','DISPERSE',
-     +            'VARIABLE',NBSMA)
+     &            'VARIABLE',NBSMA)
       CALL WKVECT(MAG//'.PARA_R','G V R',NBSMA*14,IAPARR)
 C
 C
@@ -88,14 +88,11 @@ C     -----------------------------------------
       DO 2, IOCC=1,NOCC
 C
         CALL GETVID('DEFI_MAILLE','MACR_ELEM_STAT',IOCC,1,NBSMA,
-     +  ZK8(IALK81),N1)
+     &  ZK8(IALK81),N1)
         CALL GETVID('DEFI_MAILLE','MAILLE',
-     +              IOCC,1,NBSMA,ZK8(IALK82),N2)
-        IF (N2.LT.0) CALL UTMESS('F','SSDMDM','LISTE DE MAILLES TROP '
-     +              //'LONGUE.')
-        IF ((N2.GT.0).AND.(N2.NE.N1)) CALL UTMESS('F','SSDMDM',
-     +     'LA LISTE DES MAILLES EST PLUS '
-     +     //'LONGUE QUE LA LISTE DES MACR_ELEM_STAT.')
+     &              IOCC,1,NBSMA,ZK8(IALK82),N2)
+        IF (N2.LT.0) CALL U2MESS('F','SOUSTRUC_50')
+        IF ((N2.GT.0).AND.(N2.NE.N1)) CALL U2MESS('F','SOUSTRUC_51')
 C
         DO 3 ,K=1,9
           LISR8(K)=0.0D0
@@ -103,12 +100,9 @@ C
         CALL GETVR8('DEFI_MAILLE','TRAN',IOCC,1,3,LISR8(1),N3)
         CALL GETVR8('DEFI_MAILLE','ANGL_NAUT',IOCC,1,3,LISR8(4),N4)
         CALL GETVR8('DEFI_MAILLE','CENTRE',IOCC,1,3,LISR8(7),N5)
-        IF  (N3.LT.0) CALL UTMESS('F','SSDMDM',
-     +     'TROP DE REELS POUR LE MOT CLEF "TRAN" ')
-        IF  (N4.LT.0) CALL UTMESS('F','SSDMDM',
-     +     'TROP DE REELS POUR LE MOT CLEF "ANGL_NAUT" ')
-        IF  (N5.LT.0) CALL UTMESS('F','SSDMDM',
-     +     'TROP DE REELS POUR LE MOT CLEF "CENTRE" ')
+        IF  (N3.LT.0) CALL U2MESS('F','SOUSTRUC_52')
+        IF  (N4.LT.0) CALL U2MESS('F','SOUSTRUC_53')
+        IF  (N5.LT.0) CALL U2MESS('F','SOUSTRUC_54')
 C
         DO 4,I=1,N1
           ISMA=ISMA+1
@@ -116,14 +110,13 @@ C
           ZK8(IANMCR-1+ISMA)=NOMACR
 C
           CALL DISMOI('F','NOM_MAILLA',NOMACR,'MACR_ELEM_STAT',
-     +              IBID,MA,IERD)
+     &              IBID,MA,IERD)
           CALL DISMOI('F','DIM_GEOM',MA,'MAILLAGE',IDIM,KBID,IERD)
           IF (ISMA.EQ.1) THEN
             IDIMTO=IDIM
             ZI(IADIME-1+6)=IDIMTO
           ELSE
-            IF (IDIM.NE.IDIMTO) CALL UTMESS('A','SSDMDM','MELANGE DE '
-     +          //'MAILLAGES 2D ET 3D')
+            IF (IDIM.NE.IDIMTO) CALL U2MESS('A','SOUSTRUC_55')
           ENDIF
 C
           NOMAIL=NOMACR
@@ -131,8 +124,7 @@ C
 C
           CALL JECROC(JEXNOM(MAG//'.SUPMAIL',NOMAIL))
           CALL JEEXIN(NOMACR//'.DESM',IRET)
-          IF (IRET.EQ.0) CALL UTMESS('F','SSDMDM',' LE MACR_ELEM_STAT :'
-     +              //NOMACR//' N''EXISTE PAS.')
+          IF (IRET.EQ.0) CALL U2MESK('F','SOUSTRUC_56',1,NOMACR)
           CALL JEVEUO(NOMACR//'.DESM','L',IADESM)
           NBNOE=ZI(IADESM-1+2)
           NBNOL=ZI(IADESM-1+8)+ZI(IADESM-1+9)
@@ -140,7 +132,7 @@ C
           ZI(IADIM2-1+4*(ISMA-1)+1)= NBNOE
           ZI(IADIM2-1+4*(ISMA-1)+2)= NBNOL
           CALL JEECRA(JEXNOM(MAG//'.SUPMAIL',NOMAIL),'LONMAX'
-     +               ,NBNOET,KBID)
+     &               ,NBNOET,KBID)
 C
           DO 5,K=1,9
             ZR(IAPARR-1+14*(ISMA-1)+K)=LISR8(K)
@@ -179,7 +171,7 @@ C     ---------------------------------------------------
         CALL JEVEUO(NOMACR//'.CONX','L',IACONX)
         CALL JEVEUO(JEXNUM(MAG//'.SUPMAIL',ISMA),'E',IASUPM)
         CALL DISMOI('F','NOM_MAILLA',NOMACR,'MACR_ELEM_STAT',
-     +              IBID,MA,IERD)
+     &              IBID,MA,IERD)
         CALL JEVEUO(MA//'.COORDO    .VALE','L',IACOOR)
         NBNOE=ZI(IADIM2-1+4*(ISMA-1)+1)
         NBNOL=ZI(IADIM2-1+4*(ISMA-1)+2)
@@ -191,12 +183,12 @@ C
 C
 C         -- SI C'EST UN NOEUD PHYSIQUE:
           IF (    (ZI(IACONX-1+3*(INO-1)+1).EQ.1)
-     +       .AND.(ZI(IACONX-1+3*(INO-1)+3).EQ.0) )THEN
+     &       .AND.(ZI(IACONX-1+3*(INO-1)+3).EQ.0) )THEN
             INOLD=ZI(IACONX-1+3*(INO-1)+2)
             I1NOE=I1NOE+1
             ZI(IASUPM-1+INO)=I1NOE
             CALL SSDMGE(ZR(IACOOR+3*(INOLD-1)),ZR(IACOO2+3*(I1NOE-1)),
-     +                  ZR(IAPARR+14*(ISMA-1)),IDIM)
+     &                  ZR(IAPARR+14*(ISMA-1)),IDIM)
           ELSE
 C           -- SI C'EST UN NOEUD DE LAGRANGE:
             I1NOL=I1NOL+1

@@ -1,22 +1,21 @@
       SUBROUTINE SUICSD(SUIVCO,MAILLA,MOTCLE,NBOCC,NBSUIV)
-     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 
@@ -25,7 +24,7 @@ C RESPONSABLE MABBAS M.ABBAS
       CHARACTER*8  MAILLA
       CHARACTER*16 MOTCLE
       INTEGER      NBOCC
-      INTEGER      NBSUIV      
+      INTEGER      NBSUIV
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : SUIINI
@@ -72,14 +71,14 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      CALL WKVECT(SUIVCO(1:14)//'NBSUIV'   ,'V V I'  ,1    ,JSUINB)    
+      CALL WKVECT(SUIVCO(1:14)//'NBSUIV'   ,'V V I'  ,1    ,JSUINB)
       CALL WKVECT(SUIVCO(1:14)//'MAILLA'   ,'V V K8' ,1    ,JSUIMA)
       ZK8(JSUIMA)= MAILLA
       ZI(JSUINB) = NBSUIV
-      IF (NBSUIV.EQ.0) THEN 
+      IF (NBSUIV.EQ.0) THEN
         GOTO 999
-      ENDIF 
-C           
+      ENDIF
+C
       CALL WKVECT(SUIVCO(1:14)//'NOM_CHAM' ,'V V K16',NBSUIV,JCHAM)
       CALL WKVECT(SUIVCO(1:14)//'NOM_CMP ' ,'V V K8' ,NBSUIV,JCOMP)
       CALL WKVECT(SUIVCO(1:14)//'NUME_CMP' ,'V V I'  ,NBSUIV,JNUCM)
@@ -143,7 +142,7 @@ C
             NBNO = -N4
             CALL WKVECT ('&&SUICSD.LIST_NOEU','V V K8',NBNO,JNOE)
             CALL GETVID ( MOTCLE,'NOEUD', IOCC,1,NBNO,
-     +                    ZK8(JNOE),N4)
+     &                    ZK8(JNOE),N4)
          ENDIF
          IF ( N5 .NE. 0 ) THEN
             CALL RELIEM (' ',MAILLA,'NO_NOEUD','SUIVI_DDL',IOCC,1,
@@ -154,7 +153,7 @@ C
             NBMA = -N6
             CALL WKVECT ('&&SUICSD.LIST_MAIL','V V K8',NBMA,JMAI)
             CALL GETVID ( MOTCLE,'MAILLE', IOCC,1,NBMA,
-     +                    ZK8(JMAI),N6)
+     &                    ZK8(JMAI),N6)
          ENDIF
          IF ( N8 .NE. 0 ) THEN
             CALL RELIEM (' ',MAILLA,'NO_MAILLE','SUIVI_DDL',IOCC,1,
@@ -165,7 +164,7 @@ C
             NBPO = -N7
             CALL WKVECT ('&&SUICSD.LIST_POIN','V V I',NBPO,JPOI)
             CALL GETVIS ( MOTCLE,'POINT', IOCC,1,NBPO,
-     +                    ZI(JPOI),N7)
+     &                    ZI(JPOI),N7)
          ENDIF
          IF ( (N9.NE.0) .OR. (N10.NE.0) ) THEN
             NBPO=1
@@ -180,10 +179,10 @@ C
             DO 110 J = 1 , NCMP
 C
                IF (     ZK16(KNCHP+I-1)(1:4) .EQ. 'DEPL' .OR.
-     +                  ZK16(KNCHP+I-1)(1:4) .EQ. 'VITE' .OR.
-     +                  ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE' .OR.
-     +                  ZK16(KNCHP+I-1)(1:9) .EQ. 'FORC_NODA'.OR.
-     +                  ZK16(KNCHP+I-1)(1:9) .EQ. 'VALE_CONT') THEN
+     &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'VITE' .OR.
+     &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE' .OR.
+     &                  ZK16(KNCHP+I-1)(1:9) .EQ. 'FORC_NODA'.OR.
+     &                  ZK16(KNCHP+I-1)(1:9) .EQ. 'VALE_CONT') THEN
 C
                   DO 120 K = 1 , NBNO
                      ZK16(JCHAM+IOBS) = ZK16(KNCHP+I-1)
@@ -200,7 +199,7 @@ C  =2 LE MAXIMUM DU CHAMP
                      ELSE
                         ZI(JEXTR+IOBS)=0
                         ZK8 (JNOEU+IOBS) = ZK8(JNOE+K-1)
-                     ENDIF  
+                     ENDIF
                      IOBS = IOBS + 1
  120              CONTINUE
 C
@@ -222,7 +221,7 @@ C  =2 LE MAXIMUM DU CHAMP
                           ZI(JEXTR+IOBS)=0
                           ZK8 (JMAIL+IOBS) = ZK8(JMAI+K-1)
                           ZI  (JPOIN+IOBS) = ZI(JPOI+L-1)
-                        ENDIF  
+                        ENDIF
                         IOBS = IOBS + 1
  132                 CONTINUE
  130              CONTINUE
@@ -246,7 +245,7 @@ C  =2 LE MAXIMUM DU CHAMP
                           ZI(JEXTR+IOBS)=0
                           ZK8 (JMAIL+IOBS) = ZK8(JMAI+K-1)
                           ZI  (JPOIN+IOBS) = ZI(JPOI+L-1)
-                        ENDIF  
+                        ENDIF
                         IOBS = IOBS + 1
  144                 CONTINUE
  142              CONTINUE
@@ -268,8 +267,8 @@ C
 C
  10   CONTINUE
 C
-      IF (IOBS.NE.NBSUIV) THEN 
-        CALL UTMESS('F','SUICSD','DEBORDEMENT TABLEAU')
+      IF (IOBS.NE.NBSUIV) THEN
+        CALL U2MESS('F','ALGORITH3_47')
       ENDIF
 C
  999  CONTINUE

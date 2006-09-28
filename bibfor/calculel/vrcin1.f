@@ -1,6 +1,6 @@
       SUBROUTINE VRCIN1(MODELE,CHMAT,CARELE,INST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -207,7 +207,7 @@ C           -- SI TYSD='EVOL', ON INTERPOLE AU TEMPS INST
             PROLDR=ZK16(JLISSD-1+6*(ICHS-1)+6)
             NOMCH='&&VRCIN1.NOMCH'
             CALL RSINCH(NOMEVO,NOMSYM,'INST',INST,NOMCH,PROLDR,PROLGA,
-     +                  2,'V',IRET)
+     &                  2,'V',IRET)
             CALL ASSERT(IRET.LE.2)
           ELSE
             CALL ASSERT(TYSD.EQ.'CHAMP')
@@ -226,6 +226,7 @@ C         -- VERIFICATION DE NOMCH :
      &                           ' POUR LA VARIABLE: '//VARC//
      &                           ' DOIT ETRE: '//NOMGD//
      &                           ' MAIS ELLE EST: '//NOMGD2)
+C        CALL U2MESK('F','CALCULEL5_39', 3 ,VALK)
           CALL DISMOI('F','TYPE_CHAMP',NOMCH,'CHAMP',IBID,TYCH,IRET)
 
 

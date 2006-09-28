@@ -4,22 +4,22 @@
       CHARACTER*(*)    NOMZ, LIMANZ(LONLIM), TYPZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     VERIFICATION DE L'APPARTENANCE DES OBJETS DE LA LISTE
@@ -74,7 +74,8 @@ C        -------------------------------------------------------
               CALL JEEXIN (JEXNOM(GRNOMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
                 CALL UTMESS('S','VERIMA','LE GROUP_NO '//LIMANO//
-     +                      ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+     &                      ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+C        CALL U2MESK('S','MODELISA7_75', 2 ,VALK)
               ENDIF
 10        CONTINUE
 C
@@ -88,7 +89,8 @@ C        -------------------------------------------------------
               CALL JENONU (JEXNOM(NOEUMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
                 CALL UTMESS('S','VERIMA','LE NOEUD '//LIMANO//
-     +                     ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+     &                     ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+C        CALL U2MESK('S','MODELISA7_76', 2 ,VALK)
               ENDIF
  20         CONTINUE
 C
@@ -102,7 +104,8 @@ C        -------------------------------------------------------
               CALL JEEXIN (JEXNOM(GRMAMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
                 CALL UTMESS('S','VERIMA','LE GROUP_MA '//LIMANO//
-     +                      ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+     &                      ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+C        CALL U2MESK('S','MODELISA7_77', 2 ,VALK)
               ENDIF
  30         CONTINUE
 C
@@ -116,14 +119,12 @@ C        -------------------------------------------------------
               CALL JENONU (JEXNOM(MAILMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
                 CALL UTMESS('S','VERIMA','LA MAILLE '//LIMANO//
-     +                     ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+     &                     ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+C        CALL U2MESK('S','MODELISA7_78', 2 ,VALK)
               ENDIF
  40        CONTINUE
 C
       ELSE
-           CALL UTMESS('S','VERIMA','LE TYPE '//TYPE//
-     +                    'D''OBJETS A VERIFIER N''EST PAS CORRECT : '//
-     +                      'IL NE PEUT ETRE EGAL QU''A GROUP_NO OU '//
-     +                      'NOEUD OU GROUP_MA OU MAILLE ')
+           CALL U2MESK('S','MODELISA7_79',1,TYPE)
       ENDIF
       END

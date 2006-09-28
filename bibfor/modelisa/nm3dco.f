@@ -1,6 +1,6 @@
       SUBROUTINE NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,TM,TP,SIGM,
      &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRILDC,CODRET)
-C MODIF MODELISA  DATE 06/02/2006   AUTEUR ASSIRE A.ASSIRE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,7 +196,7 @@ C     PLASTICITE  (888 = RETOUR PLASTICITE)
               IF (.NOT. PCONV)  THEN
                 ITER = ITER + 1
                 IF (ITER . EQ. ITEMAX) THEN
-                   CALL UTMESS('A','NM3DCO','PAS DE CONVERGENCE')
+                   CALL U2MESS('A','MODELISA5_42')
                    CODRET=1
                    DO 157 I=1,NDIMSI
                       SIGP(I)=0.D0

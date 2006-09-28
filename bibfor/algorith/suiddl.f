@@ -4,22 +4,22 @@
      &                  DEPENT,VITENT,ACCENT,CNSINR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT     NONE
@@ -35,8 +35,8 @@ C
       CHARACTER*24 DEPENT
       CHARACTER*24 VITENT
       CHARACTER*24 ACCENT
-      CHARACTER*24 IMPRCO       
-      CHARACTER*24 SUIVCO      
+      CHARACTER*24 IMPRCO
+      CHARACTER*24 SUIVCO
       CHARACTER*19 CNSINR
 C
 C ----------------------------------------------------------------------
@@ -102,7 +102,7 @@ C
       CALL JEMARQ()
       CHTR1='&&SUIDDL.TR1'
       CHTRAV='&&SUIDDL.TRAV'
-C      
+C
       CALL GETRES(RESULT,CONCEP,NOMCMD)
       CALL JEVEUO(SUIVCO(1:14)//'NBSUIV'   ,'L',JSUINB)
       NBSUIV = ZI(JSUINB)
@@ -122,7 +122,7 @@ C
 C --- SI ON DEMANDE DES DDL ABSOLUS EN STATIQUE -> ARRET
 C
       IF (NOMCMD(1:13).EQ.'STAT_NON_LINE')THEN
-        DO 10 ISUI = 1 , NBSUIV 
+        DO 10 ISUI = 1 , NBSUIV
           CHAM   = ZK16(JCHAM-1+ISUI)
           IF ( CHAM(1:11) .EQ. 'DEPL_ABSOLU'.OR.
      &         CHAM(1:11) .EQ. 'VITE_ABSOLU'.OR.
@@ -146,10 +146,10 @@ C
 C
 C --- RECUPERATIONS DES POINTEURS JEVEUX SUR LES CHAMPS
 C
-      CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPP) 
-      CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE) 
+      CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPP)
+      CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
       IF (NOMCMD(1:13).NE.'STAT_NON_LINE')THEN
-         CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP) 
+         CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP)
          CALL JEVEUO(ACCPLU(1:19)//'.VALE','L',JACCP)
          CALL JEVEUO(DEPENT(1:19)//'.VALE','L',JDEPEN)
          CALL JEVEUO(VITENT(1:19)//'.VALE','L',JVITEN)
@@ -179,27 +179,27 @@ C --- IDENTIFICATION DU CHAMP A EXTRAIRE
 C
          TYPCHA = 0
          IF     ( CHAM(1:11) .EQ. 'DEPL_ABSOLU' ) THEN
-           TYPCHA = 1        
+           TYPCHA = 1
          ELSEIF ( CHAM(1:11) .EQ. 'VITE_ABSOLU' ) THEN
-           TYPCHA = 2         
+           TYPCHA = 2
          ELSEIF ( CHAM(1:11) .EQ. 'ACCE_ABSOLU' ) THEN
-           TYPCHA = 3         
+           TYPCHA = 3
          ELSEIF ( CHAM(1:4) .EQ. 'DEPL' ) THEN
-           TYPCHA = 4         
+           TYPCHA = 4
          ELSEIF ( CHAM(1:9) .EQ. 'VALE_CONT' ) THEN
-           TYPCHA = 5          
+           TYPCHA = 5
          ELSEIF ( CHAM(1:4) .EQ. 'VITE' ) THEN
-           TYPCHA = 6         
+           TYPCHA = 6
          ELSEIF ( CHAM(1:4) .EQ. 'ACCE' ) THEN
-           TYPCHA = 7         
+           TYPCHA = 7
          ELSEIF ( CHAM(1:9) .EQ. 'SIEF_ELGA' ) THEN
-           TYPCHA = 8         
+           TYPCHA = 8
          ELSEIF ( CHAM(1:9) .EQ. 'VARI_ELGA' ) THEN
-           TYPCHA = 9     
+           TYPCHA = 9
          ELSEIF ( CHAM(1:9) .EQ. 'FORC_NODA' ) THEN
-           TYPCHA = 10     
+           TYPCHA = 10
          ELSE
-           CALL UTMESS('F','SUIDDL','TYPE DE CHAMP INCONNU')
+           CALL U2MESS('F','CALCULEL_17')
          ENDIF
 C
 C --- COMPOSANTE
@@ -209,7 +209,7 @@ C
 C --- ENTITE TOPOLOGIQUE PRINCIPALE (NOEUD OU MAILLE)
 C --- SI MAILLE -> SOUS-ENTITE TOPOLOGIQUE  (POINT DE GAUSS)
 C
-         IF (ZI(JEXTR-1+ISUI).EQ.0) THEN 
+         IF (ZI(JEXTR-1+ISUI).EQ.0) THEN
            SUBTOP = 0
            IF ((TYPCHA.EQ.8).OR.(TYPCHA.EQ.9)) THEN
              TOPO   = ZK8(JMAIL-1+ISUI)
@@ -218,7 +218,7 @@ C
              TOPO   = ZK8(JNOEU-1+ISUI)
            ENDIF
 C
-C --- NUMERO DE VARIABLE INTERNE 
+C --- NUMERO DE VARIABLE INTERNE
 C
            VARINT = 0
            IF (TYPCHA.EQ.9) THEN
@@ -229,7 +229,7 @@ C --- DEPL, VITE ET ACCE ABSOLUS -> Y A T-IL DES MODES STATIQUES ?
 C
            IF ((TYPCHA.GE.1).AND.(TYPCHA.LE.3)) THEN
              IF (NBMODS.EQ.0) THEN
-               VALR = 0.D0 
+               VALR = 0.D0
                GOTO 15
              ENDIF
            ENDIF
@@ -243,8 +243,7 @@ C
 C
            IF ((ICMP.EQ.0).OR.(INOEUD.EQ.0)) THEN
              VALR = 0.D0
-             CALL UTMESS('A','SUIDDL','DDL INCONNU SUR LE NOEUD OU '//
-     &                   ' LA MAILLE SPECIFIEE POUR LE SUIVI')
+             CALL U2MESS('A','ALGORITH10_79')
              GOTO 15
            ENDIF
 C
@@ -259,22 +258,21 @@ C
            ELSEIF (TYPCHA.EQ.4) THEN
              VALR = ZR(JDEPP+ICMP-1)
            ELSEIF (TYPCHA.EQ.5) THEN
-             VALR = ZR(JCONT+ICMP-1)          
+             VALR = ZR(JCONT+ICMP-1)
            ELSEIF (TYPCHA.EQ.6) THEN
-             VALR = ZR(JVITP+ICMP-1)       
+             VALR = ZR(JVITP+ICMP-1)
            ELSEIF (TYPCHA.EQ.7) THEN
-             VALR = ZR(JACCP+ICMP-1)          
+             VALR = ZR(JACCP+ICMP-1)
            ELSEIF (TYPCHA.EQ.8) THEN
 C            VALR = VALR
            ELSEIF (TYPCHA.EQ.9) THEN
 C            VALR = VALR
            ELSEIF (TYPCHA.EQ.10) THEN
-C            VALR = VALR          
-           ELSE 
-             CALL UTMESS('F','SUIDDL','OPTION INDISPONIBLE POUR'//
-     &                   'LE SUIVI')
+C            VALR = VALR
+           ELSE
+             CALL U2MESS('F','ALGORITH10_80')
            ENDIF
-         ELSE 
+         ELSE
            IF     (TYPCHA.EQ.1) THEN
              CONST(1)=1.D0
              CONST(2)=1.D0
@@ -313,28 +311,28 @@ C            VALR = VALR
              IF (IRET.NE.0) THEN
                LISCH(1)=.TRUE.
                NOMCH(1)=CNFEDO
-             ELSE 
+             ELSE
                LISCH(1)=.FALSE.
-             ENDIF  
+             ENDIF
              CALL JEEXIN(CNFEPI(1:19)//'.VALE',IRET)
              IF (IRET.NE.0) THEN
                LISCH(2)=.TRUE.
                CHAMFO(2)=CNFEPI
-             ELSE 
+             ELSE
                LISCH(2)=.FALSE.
-             ENDIF  
+             ENDIF
              CALL JEEXIN(CNFSDO(1:19)//'.VALE',IRET)
              IF (IRET.NE.0) THEN
                LISCH(3)=.TRUE.
                CHAMFO(3)=CNFSDO
-             ELSE 
+             ELSE
                LISCH(3)=.FALSE.
-             ENDIF  
+             ENDIF
               CALL JEEXIN(CNFSPI(1:19)//'.VALE',IRET)
              IF (IRET.NE.0) THEN
                LISCH(4)=.TRUE.
                CHAMFO(4)=CNFSPI
-             ELSE 
+             ELSE
                LISCH(4)=.FALSE.
              ENDIF
              ICOMP=1
@@ -347,11 +345,10 @@ C            VALR = VALR
   20         CONTINUE
              CALL VTCMBL(ICOMP,'R',CONST,'R',NOMCH,'R',CHTR1)
              CALL CNOCNS(CHTR1,'V',CHTRAV)
-           ELSE 
-             CALL UTMESS('F','SUIDDL','OPTION INDISPONIBLE POUR'//
-     &                   'LE SUIVI')
+           ELSE
+             CALL U2MESS('F','ALGORITH10_80')
            ENDIF
-           
+
            IF (TYPCHA.EQ.8.OR.TYPCHA.EQ.9) THEN
              CALL JEVEUO(CHTRAV(1:19)//'.CESC','L',JCESC)
              CALL JEVEUO(CHTRAV(1:19)//'.CESD','L',JCESD)
@@ -372,7 +369,7 @@ C            VALR = VALR
                    DO 70 ISP=1,NBSP
                      CALL CESEXI('S',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
                      IF (IAD.GT.0) VALR=MIN(VALR,ZR(JCESV+IAD-1))
-  70               CONTINUE  
+  70               CONTINUE
   60             CONTINUE
   50           CONTINUE
 
@@ -385,10 +382,10 @@ C            VALR = VALR
                    DO 100 ISP=1,NBSP
                      CALL CESEXI('S',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
                      IF (IAD.GT.0) VALR=MAX(VALR,ZR(JCESV+IAD-1))
-  100              CONTINUE  
-  90             CONTINUE  
+  100              CONTINUE
+  90             CONTINUE
   80           CONTINUE
-             ENDIF  
+             ENDIF
            ELSE
              CALL JEVEUO(CHTRAV(1:19)//'.CNSD','L',JCNSD)
              CALL JEVEUO(CHTRAV(1:19)//'.CNSC','L',JCNSC)
@@ -424,19 +421,19 @@ C --- AFFICHAGE DANS LE TABLEAU
 C
          IF (ISUI.EQ.1) THEN
            CALL IMPSDR(IMPRCO(1:14),
-     &                 'SUIV_1   ',K16BID,VALR,IBID)        
+     &                 'SUIV_1   ',K16BID,VALR,IBID)
          ELSE IF (ISUI.EQ.2) THEN
            CALL IMPSDR(IMPRCO(1:14),
      &                 'SUIV_2   ',K16BID,VALR,IBID)
          ELSE IF (ISUI.EQ.3) THEN
            CALL IMPSDR(IMPRCO(1:14),
-     &                 'SUIV_3   ',K16BID,VALR,IBID)        
-         ELSE IF (ISUI.EQ.4) THEN        
+     &                 'SUIV_3   ',K16BID,VALR,IBID)
+         ELSE IF (ISUI.EQ.4) THEN
            CALL IMPSDR(IMPRCO(1:14),
-     &                 'SUIV_4   ',K16BID,VALR,IBID)       
-         ELSE 
-           CALL UTMESS('F','SUIDDL','TROP DE SUIVIS (LIMITE A 4)')
-         ENDIF  
+     &                 'SUIV_4   ',K16BID,VALR,IBID)
+         ELSE
+           CALL U2MESS('F','ALGORITH10_81')
+         ENDIF
 C
  30   CONTINUE
 C

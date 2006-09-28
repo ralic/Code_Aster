@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR()
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 28/11/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,11 +66,11 @@ C ---------------------------------------------------------------------
       INTEGER NUMGLM,IPG,IAMOL1,JCELV1,JCNSV2,NBSY,MXCMP,NP,NC
       INTEGER IMA,NBELGR,NBNOMA,JVAL2,NBNO,NDDL,IDDL,ADIEL,MXSY,ISY
       INTEGER IIPG,JCELD1,JCELK1,MOLOC1,NCMPMX,NBORDR,IORDR,JORDR
-      INTEGER ICH,IRET2 
+      INTEGER ICH,IRET2
       PARAMETER (MXSY=5,MXCMP=100)
       INTEGER NUDDL(MXCMP),IACMP,NCMPM1,ICOEF1,IEL
       CHARACTER*8   MO1,MA1,MA2,KBID,RESU,EVO1,NOMG1,NOMG2,CRIT,
-     +              ELREFA, FAPG
+     &              ELREFA, FAPG
       CHARACTER*16 TYPRES,NOMCMD,NOMTE,NOMSY1,NOMSY2,LICHAM(MXSY)
       CHARACTER*16 TYPRE2 ,OPTIO,PARAM
       CHARACTER*19 LIGREL,CH1,CH2S,CH2,PRCHNO
@@ -89,9 +89,7 @@ C DEB -----------------------------------------------------------------
       CALL GETRES(RESU,TYPRE2,NOMCMD)
       CALL GETVID('ECLA_PG','RESU_INIT',1,1,1,EVO1,IBID)
       CALL GETTCO(EVO1,TYPRES)
-      IF (TYPRES.NE.TYPRE2) CALL UTMESS('F','CREA_RESU',
-     &        'LE TYPE DE RESU_INIT EST DIFFERENT DE CELUI DU RESULTAT.'
-     &                           )
+      IF (TYPRES.NE.TYPRE2) CALL U2MESS('F','CALCULEL2_37')
 
       CALL GETVID('ECLA_PG','MAILLAGE',1,1,1,MA2,IBID)
       CALL GETVID('ECLA_PG','MODELE_INIT',1,1,1,MO1,IBID)
@@ -115,8 +113,7 @@ C     ------------------------------------
       CALL GETVTX('ECLA_PG','CRITERE',1,1,1,CRIT,NC)
       CALL RSUTNU(EVO1,'ECLA_PG',1,'&&ECLPGR.NUME_ORDRE',NBORDR,PREC,
      &            CRIT,IRET)
-      IF (NBORDR.EQ.0) CALL UTMESS('F','ECLPGR','LA LISTE DE NUMEROS'//
-     &                             ' D ORDRE EST VIDE.')
+      IF (NBORDR.EQ.0) CALL U2MESS('F','CALCULEL2_38')
       CALL JEVEUO('&&ECLPGR.NUME_ORDRE','L',JORDR)
 
       IF (RESU.NE.EVO1) CALL RSCRSD(RESU,TYPRES,NBORDR)
@@ -144,9 +141,7 @@ C         ---------------------------------------------------
           IF (IRET.GT.0) GO TO 80
 
           CALL DISMOI('F','NOM_GD',CH1,'CHAMP',IBID,NOMG1,IBID)
-          IF (NOMG1(5:6).NE.'_R') CALL UTMESS('F','ECLPGR',
-     & 'LES SEULS CHAMPS AUTORISES POUR ECLA_PG SONT LES CHAMPS '
-     & //'REELS.')
+          IF (NOMG1(5:6).NE.'_R') CALL U2MESS('F','CALCULEL2_39')
           NOMG2 = NOMG1
           IF (NOMG1.EQ.'VARI_R') NOMG2 = 'VAR2_R'
 
@@ -163,17 +158,15 @@ C         NOMSY2=NOMG1(1:4)//'_ELGA'
 C         -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
           CALL CELVER(CH1,'NBSPT_1','COOL',KK)
           IF (KK.EQ.1) THEN
-            CALL UTMESS('I','ECLPGR','LE CHAMP: '//NOMSY1
-     &      //' A DES ELEMENTS AYANT DES SOUS-POINTS.'
-     &      //' CES ELEMENTS NE SERONT PAS TRAITES.')
+            CALL U2MESK('I','CALCULEL2_40',1,NOMSY1)
             CALL CELCEL('PAS_DE_SP',CH1,'V','&&ECLPGR.CH1')
             CH1= '&&ECLPGR.CH1'
           END IF
 
 C        PROJECTION SUR LE LIGREL REDUIT
           CALL JEVEUO(CH1//'.CELK','L',JCELK1)
-          IF (ZK24(JCELK1-1+3) (1:4).NE.'ELGA') CALL UTMESS('F',
-     &    'ECLPGR','LES SEULS CHAMPS AUTORISES SONT ELGA.')
+          IF (ZK24(JCELK1-1+3) (1:4).NE.'ELGA') CALL U2MESS('F','CALCULE
+     &L2_41')
 
           OPTIO=ZK24(JCELK1-1+2)
           PARAM=ZK24(JCELK1-1+6)
@@ -214,7 +207,7 @@ C         -- LA 1ERE FOIS, ON CREE CH2S :
 C       -- REMPLISSAGE DU CHAM_NO :
 C       ---------------------------
 C         -- ON NE CALCULE NOMFPG QUE POUR LE 1ER NUME_ORDRE :
-C         -- ON VERIFIE QUE LES CHAMPS ONT TOUS LA MEME FAMILLE DE 
+C         -- ON VERIFIE QUE LES CHAMPS ONT TOUS LA MEME FAMILLE DE
 C            DE POINTS DE GAUSS
           IF (I.EQ.1) THEN
              DO 130 ICH=1,NBSY
@@ -224,6 +217,7 @@ C            DE POINTS DE GAUSS
      &            //' ON NE PEUT PAS VISUALISER LES CHAMPS ENSEMBLE '
      &            //LICHAM(1)
      &            //' ... CAR LES FAMILLES DE PG SONT DIFFERENTES')
+C        CALL U2MESK('I','CALCULEL2_33', 2 ,VALK)
                ENDIF
 130          CONTINUE
              CALL JEEXIN ( NOMFPG, IRET1 )
@@ -264,6 +258,7 @@ C           ---------------------------
               IF (NBPG.NE.NPG1) CALL UTMESS('F','ECLPGR',
      &  'LE TYPE_ELEM: '//NOMTE//' N''A PAS LE NOMBRE DE POINTS DE'
      &  //' GAUSS DECLARE DANS LA ROUTINE ECLAU1. NOM_CHAM='//NOMSY1)
+C        CALL U2MESK('F','CALCULEL2_42', 2 ,VALK)
             ELSE
 C            -- ON IGNORE LES AUTRES ELEMENTS :
               NBPG = 0
@@ -301,8 +296,7 @@ C            -- AU POINT DE GAUSS IPG CORRESPOND LA MAILLE NUMERO IPG
 C               DANS MA2.
                 IMA = IPG
                 NBNO = NBNOMA(IMA)
-                IF (NBNO.GT.27) CALL UTMESS('F','ECLPGR',
-     &                               'NOMBRE DE NOEUDS > 27 ')
+                IF (NBNO.GT.27) CALL U2MESS('F','CALCULEL2_43')
                 DO 40,INO = 1,NBNO
                   INOGL = NUMGLM(IMA,INO)
                   DO 30,IDDL = 1,NDDL

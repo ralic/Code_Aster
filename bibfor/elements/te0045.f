@@ -3,27 +3,27 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/11/97   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     CALCUL DES CARACTERISTIQUES DE STRUCTURES POUR LES ELEMENTS
-C     DISCRETS : MECA_DIS_T_N      MECA_DIS_T_L 
+C     DISCRETS : MECA_DIS_T_N      MECA_DIS_T_L
 C                MECA_DIS_TR_N     MECA_DIS_TR_L
-C                MECA_2D_DIS_T_N   MECA_2D_DIS_T_L 
+C                MECA_2D_DIS_T_N   MECA_2D_DIS_T_L
 C                MECA_2D_DIS_TR_N  MECA_2D_DIS_TR_L
 C     ------------------------------------------------------------------
 C IN  : OPTION : NOM DE L'OPTION A CALCULER
@@ -140,7 +140,7 @@ C           --- MASSE ---
             DO 15 I = 1 , N
                ZR(LCASTR) = ZR(LCASTR) + MAT(I)
  15         CONTINUE
-            ZR(LCASTR) = ZR(LCASTR) + MAT(2) 
+            ZR(LCASTR) = ZR(LCASTR) + MAT(2)
             ZR(LCASTR) = ZR(LCASTR) / DEUX
 C
 C           --- CDG ---
@@ -187,11 +187,11 @@ C
 C           --- MASSE ---
             DO 32 I = 1 , N
                ZR(LCASTR) = ZR(LCASTR) + MAT(I)
- 32         CONTINUE 
+ 32         CONTINUE
             ZR(LCASTR) = ZR(LCASTR) + MAT(2) + MAT(4) + MAT(5) + MAT(7)
-     +                 + MAT(8) + MAT(9) + MAT(11) + MAT(12) + MAT(13)
-     +                 + MAT(14) + MAT(16) + MAT(17) + MAT(18) + MAT(19)
-     +                 + MAT(20)
+     &                 + MAT(8) + MAT(9) + MAT(11) + MAT(12) + MAT(13)
+     &                 + MAT(14) + MAT(16) + MAT(17) + MAT(18) + MAT(19)
+     &                 + MAT(20)
             ZR(LCASTR) = ZR(LCASTR) / TROIS
 C
 C           --- CDG ---
@@ -212,8 +212,8 @@ C
             ENDIF
 C
 C           --- MASSE ---
-            ZR(LCASTR) =  MAT(2)  + MAT(4)  + MAT(5)  + 
-     +                    MAT(35) + MAT(43) + MAT(44)
+            ZR(LCASTR) =  MAT(2)  + MAT(4)  + MAT(5)  +
+     &                    MAT(35) + MAT(43) + MAT(44)
             DO 42 I = 1,3
                I1 = 21 + I
                I2 = 28 + I
@@ -221,8 +221,8 @@ C           --- MASSE ---
                ZR(LCASTR) = ZR(LCASTR) + MAT(I1) + MAT(I2) + MAT(I3)
  42         CONTINUE
             ZR(LCASTR) = DEUX * ZR(LCASTR)
-            ZR(LCASTR) =  ZR(LCASTR) + MAT(1)  + MAT(3)  + MAT(6) + 
-     +                                 MAT(28) + MAT(36) + MAT(45)
+            ZR(LCASTR) =  ZR(LCASTR) + MAT(1)  + MAT(3)  + MAT(6) +
+     &                                 MAT(28) + MAT(36) + MAT(45)
             ZR(LCASTR) = ZR(LCASTR) / TROIS
 C
 C           --- CDG ---
@@ -245,9 +245,9 @@ C
 C           --- MASSE ---
             DO 35 I = 1 , N
                ZR(LCASTR) = ZR(LCASTR) + MAT(I)
- 35         CONTINUE 
+ 35         CONTINUE
             ZR(LCASTR) = ZR(LCASTR) + MAT(2) + MAT(4) + MAT(5) + MAT(7)
-     +                 + MAT(8) + MAT(9)
+     &                 + MAT(8) + MAT(9)
             ZR(LCASTR) = ZR(LCASTR) / DEUX
 C
 C           --- CDG ---
@@ -267,11 +267,11 @@ C
             ENDIF
 C
 C           --- MASSE ---
-            ZR(LCASTR) =  MAT(2)  + MAT(7)  + MAT(8)  + 
-     +                    MAT(11) + MAT(12) + MAT(14)
+            ZR(LCASTR) =  MAT(2)  + MAT(7)  + MAT(8)  +
+     &                    MAT(11) + MAT(12) + MAT(14)
             ZR(LCASTR) = DEUX * ZR(LCASTR)
-            ZR(LCASTR) =  ZR(LCASTR) + MAT(1)  + MAT(3)  +  
-     +                                 MAT(10) + MAT(15) 
+            ZR(LCASTR) =  ZR(LCASTR) + MAT(1)  + MAT(3)  +
+     &                                 MAT(10) + MAT(15)
             ZR(LCASTR) = ZR(LCASTR) / DEUX
 C
 C           --- CDG ---
@@ -282,8 +282,7 @@ C
 C
       ELSE
          CH16 = OPTION
-         CALL UTMESS('F','ELEMENTS DISCRETS (TE0045)',
-     +                   'L''OPTION "'//CH16//'" EST INCONNUE')
+         CALL U2MESK('F','ELEMENTS2_47',1,CH16)
       ENDIF
 C
       END

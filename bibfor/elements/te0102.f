@@ -1,6 +1,6 @@
       SUBROUTINE TE0102(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
- 
+
       IF (NOMTE(1:8).NE.'THCPSE3 ' .AND. NOMTE(1:8).NE.'THCASE3 ' .AND.
      &    NOMTE(1:8).NE.'THCOSE3 ' .AND. NOMTE(1:8).NE.'THCOSE2 ') THEN
         CALL ELREF4(' ','MASS',NDIM,NNO,NNOS,NPG2,IPOIDS,
@@ -238,10 +238,7 @@ C       -------------------------
         M(3,2) = M(2,3)
 
       ELSE
-        CALL UTMESS('F','TE0102','LE MATERIAU '//PHENOM//' N''EST '//
-     &              'PAS CONNU. SEULS SONT ADMIS LES MATERIAUX '//
-     &              ' ''THER'', ''THER_COQMU'' ET ''THER_COQUE'' '//
-     &              'POUR LES COQUES THERMIQUES .')
+        CALL U2MESK('F','ELEMENTS3_17',1,PHENOM)
       END IF
 
 

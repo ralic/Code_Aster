@@ -1,6 +1,6 @@
       SUBROUTINE OP0060(IERR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,12 +155,10 @@ C On verifie si le concept est reentrant
             NEWCAL = .FALSE.
             IF (CONCEP.NE.RESUCO) THEN
 C Le concept est reentrant et la sortie est identique a l'entree
-              CALL UTMESS('F','OP0060','CONCEPT REENTRANT : '//
-     &             '"RESULTAT" DOIT PORTER LE MEME NOM QUE LA SORTIE')
+              CALL U2MESS('F','ALGORITH9_28')
             ENDIF
           ELSE
-            CALL UTMESS('F','OP0060','CONCEPT REENTRANT : '//
-     &                  '"RESULTAT" EST D''UN TYPE DIFFERENT')
+            CALL U2MESS('F','ALGORITH9_29')
           ENDIF
         ELSE
           NEWCAL = .TRUE.
@@ -176,8 +174,7 @@ C====
            DO 12 J=I+1,NBSYM
              IF ( NOMSYM(I).EQ. NOMSYM(J) ) THEN
                IERR = IERR + 1
-               CALL UTMESS('F','OP0060','ARGUMENT EN DOUBLE POUR '//
-     &                                    '"NOM_CHAM"')
+               CALL U2MESS('F','ALGORITH9_30')
              ENDIF
   12      CONTINUE
   1     CONTINUE
@@ -191,10 +188,8 @@ C====
      &                NBPASE, INPSCO, IRET )
 
       IF (TYPCON.EQ.'HARM_GENE' .AND. NBPASE.GT.0 ) THEN
-        CALL UTMESS('F','OP0060','POUR L''INSTANT, ON NE PEUT PAS'//
-     &   ' DERIVER SUR BASE MODALE DANS DYNA_LINE_HARM ')
-        CALL UTMESS('F','OP0060','LES CONCEPTS D''ENTREE ET '//
-     &   ' SORTIE NE DOIVENT PAS ETRE DE TYPE GENE SI SENSI.')
+        CALL U2MESS('F','ALGORITH9_31')
+        CALL U2MESS('F','ALGORITH9_32')
       ENDIF
 
 C===
@@ -251,8 +246,7 @@ C   SENSCH = .TRUE. SI IL Y A UN CALCUL DE SENSIBILITE SUR 1 CHARGEMENT
  251  CONTINUE
 
       IF (LVECAS .AND. SENSCH) THEN
-        CALL UTMESS('F','OP0060','POUR L''INSTANT, ON NE PEUT PAS'//
-     &      ' DERIVER AVEC UN VECT_ASSE EN ENTREE DE DYNA_LINE_HARM.')
+        CALL U2MESS('F','ALGORITH9_33')
       ENDIF
 C
 C 2.5.2  "VECT_ASSE" EN ENTREE: IL FAUT JUSTE RECUPERER LES DIFFERENTS
@@ -343,8 +337,7 @@ C ---------------------------------------------------------------
       ENDIF
       IF ((NUMDL1.NE.NUMDL2).OR.(NUMDL1.NE.NUMDL3).OR.
      & (NUMDL2.NE.NUMDL3)) THEN
-      CALL UTMESS('F','OP0060','LES MATRICES NE POSSEDENT PAS TOUTES'
-     &   //' LA MEME NUMEROTATION ')
+      CALL U2MESS('F','ALGORITH9_34')
       ELSE
          NUMDDL=NUMDL2
       ENDIF
@@ -480,8 +473,7 @@ C
      &                                 CALPHA*ZC(IADR+IEQ)
   123           CONTINUE
               ELSE
-                CALL UTMESS('F','OP0060',' UN VECT_ASSE N''EST '//
-     &               'NI A VALEURS REELLES, NI A VALEURS COMPLEXES.')
+                CALL U2MESS('F','ALGORITH9_35')
               ENDIF
   124       CONTINUE
         ELSE
@@ -573,11 +565,11 @@ C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
           DO 130 INOM =1, NBSYM
             CALL RSEXCH(RESULT,NOMSYM(INOM),IFREQ+NBOLD,CHAMNO,IER)
             IF ( IER .EQ. 0 ) THEN
-             CALL UTMESS('A','OP0060',CHAMNO//' CHAM_NO DEJA EXISTANT')
+             CALL U2MESK('A','ALGORITH2_64',1,CHAMNO)
             ELSEIF ( IER .EQ. 100 ) THEN
                CALL VTCREM(CHAMNO,MASSE,'G',TYPRES)
             ELSE
-               CALL UTMESS('F','OP0060','APPEL ERRONE A RSEXCH')
+               CALL U2MESS('F','ALGORITH2_65')
             ENDIF
             CALL JEVEUO(CHAMNO//'.VALE','E',LVALE)
 C

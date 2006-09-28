@@ -1,23 +1,23 @@
       SUBROUTINE NMCHAB (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     +                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
-     +                   OPTION,SIGP,VIP,DSIDEP,IRET)
+     &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
+     &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C RESPONSABLE JMBHH01 J.M.PROIX
@@ -125,8 +125,8 @@ C               -----------------------------------------------------
 C
 C    IRET           OUT   I    CODE RETOUR DE  L'INTEGRATION DE LA LDC
 C                              IRET=0 => PAS DE PROBLEME
-C                              IRET=1 => ABSENCE DE CONVERGENCE DANS  
-C                                        LORS DE L'INTEGRATION DE LA 
+C                              IRET=1 => ABSENCE DE CONVERGENCE DANS
+C                                        LORS DE L'INTEGRATION DE LA
 C                                        LOI VISC_CINX_CHAB
 C
 C -----  ARGUMENTS
@@ -162,9 +162,7 @@ C
 C --- POUR L'INSTANT ON NE TRAITE PAS LE CAS DES CONTRAINTES PLANES :
 C     -------------------------------------------------------------
       IF (TYPMOD(1) .EQ. 'C_PLAN') THEN
-        CALL UTMESS('F','NMCHAB','POUR L''INSTANT ON NE TRAITE PAS '//
-     +              'LE CAS DES CONTRAINTES PLANES DANS LE MODELE '//
-     +              'DE CHABOCHE A UNE VARIABLE CINEMATIQUE.')
+        CALL U2MESS('F','ALGORITH6_66')
       ENDIF
 C
       NBVAR=0
@@ -173,8 +171,7 @@ C
       ELSEIF ( COMPOR(1)(6:14) .EQ. 'CIN2_CHAB' ) THEN
          NBVAR=2
       ELSE
-         CALL UTMESS('F','NMCHAB',
-     +           ' COMPORTEMENT INATTENDU : '//COMPOR(1))
+         CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
 C
 C --- INITIALISATIONS :
@@ -208,9 +205,9 @@ C
 C ---  CARACTERISTIQUES A L'INSTANT PRECEDENT :
 C      --------------------------------------
       CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,2,
-     +              NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &              NOMRES(1),VALRES(1),CODRET(1), FB2 )
       CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,1,
-     +              NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &              NOMRES(3),VALRES(3),CODRET(3), BL2 )
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = ZERO
       EM     = VALRES(1)
       NUM    = VALRES(2)
@@ -221,10 +218,10 @@ C
 C ---  CARACTERISTIQUES A L'INSTANT ACTUEL :
 C      -----------------------------------
       CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,2,
-     +              NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &              NOMRES(1),VALRES(1),CODRET(1), FB2 )
 C
        CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,1,
-     +               NOMRES(3),VALRES(3),CODRET(3), BL2 )
+     &               NOMRES(3),VALRES(3),CODRET(3), BL2 )
        IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = ZERO
        E      = VALRES(1)
        NU     = VALRES(2)
@@ -245,7 +242,7 @@ C     ===============================================
           NOMRES(4) = 'C_I'
           NOMRES(7) = 'G_0'
           CALL RCVALA(IMATE,' ','CIN1_CHAB',1,'TEMP',TP,8
-     +             ,NOMRES,VALRES,CODRET,'FM')
+     &             ,NOMRES,VALRES,CODRET,'FM')
        ELSEIF (NBVAR.EQ.2) THEN
           NOMRES(4) = 'C1_I'
           NOMRES(7) = 'G1_0'
@@ -253,7 +250,7 @@ C     ===============================================
           NOMRES(10) = 'G2_0'
 
           CALL RCVALA(IMATE,' ','CIN2_CHAB',1,'TEMP',TP,10
-     +             ,NOMRES,VALRES,CODRET,'FM')
+     &             ,NOMRES,VALRES,CODRET,'FM')
        ENDIF
           R0     = VALRES(1)
           RINF   = VALRES(2)
@@ -293,23 +290,20 @@ C     ============================================
       NOMRES(2) = 'UN_SUR_K'
       NOMRES(3) = 'UN_SUR_M'
       CALL RCVALA (IMATE,' ','LEMAITRE',1,'TEMP',TP,3
-     +             ,NOMRES,VALRES,CODRET,BL2)
+     &             ,NOMRES,VALRES,CODRET,BL2)
 C
       IF (CODRET(1).EQ.'OK') THEN
         VALDEN = VALRES(1)
         UNSETA = VALRES(2)
         IF (VALDEN.LE.ZERO) THEN
-          CALL UTMESS('F','NMCHAB','N DOIT ETRE STRICTEMENT'//
-     +              'POSITIF.')
+          CALL U2MESS('F','ALGORITH6_67')
         ENDIF
         IF (UNSETA.EQ.ZERO) THEN
-          CALL UTMESS('F','NMCHAB','PARAMETRE UN_SUR_K EGAL A ZERO '//
-     +              'CAS INCOMPATIBLE AVEC VISC_CINX_CHAB')
+          CALL U2MESS('F','ALGORITH6_68')
         ENDIF
         ETA = UN/UNSETA
         IF (VALRES(3).NE.ZERO) THEN
-          CALL UTMESS('F','NMCHAB','LOI VISC_CINX_CHAB ON DOIT '//
-     +              'OBLIGATOIREMENT AVOIR UN_SUR_M = ZERO')
+          CALL U2MESS('F','ALGORITH6_69')
         ENDIF
       ELSE
         VALDEN = UN
@@ -373,7 +367,7 @@ C ---   SIGMP = (MU/MU-)*DEV SIGMA- + (K/K-)*1/3*TR(SIG-) :
 C       -------------------------------------------------
       DO 70 I=1,NDIMSI
         SIGMP(I)= DEUXMU/DEUMUM*(SIGM(I)-SIGMMO*KRON(I)) +
-     +            TROISK/TROIKM*SIGMMO*KRON(I)
+     &            TROISK/TROIKM*SIGMMO*KRON(I)
 70    CONTINUE
 C
 C --- CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
@@ -409,7 +403,7 @@ C
 C --- CALCUL DE SIGP,SIGPDV,VIP,DP,RP :
 C     ===============================
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
-     +     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
+     &     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
 C
 C       CALCUL DE DP :
 C       ------------
@@ -460,7 +454,7 @@ C       --------------------------------------------------------
 C           DEPSP(I) =  UN/DENOMI*(  TROIS/DEUX*DP*SIGEL(I)
 C     +                            + MP*GAMMAP*DP*DP*ALFAM(I))
            DEPSP(I) =  UN/DENOMI*(  TROIS/DEUX*DP*SIGEDV(I)
-     +                   - MP*DP*ALFAM(I)- M2P*DP*ALFA2M(I))
+     &                   - MP*DP*ALFAM(I)- M2P*DP*ALFA2M(I))
   120    CONTINUE
 C
          DO 110 I = 1, NDIMSI
@@ -502,7 +496,7 @@ C ---- CALCUL DE LA MATRICE DE COMPORTEMENT TANGENTE COHERENTE
 C ---  DSIDEP(6,6) :
 C      ===========
       IF ( OPTION(1:14) .EQ. 'RIGI_MECA_TANG'.OR.
-     +     OPTION(1:9)  .EQ. 'FULL_MECA'         ) THEN
+     &     OPTION(1:9)  .EQ. 'FULL_MECA'         ) THEN
 C
          PLASTI=(PLAST.GE.UNDEMI)
 C
@@ -559,14 +553,14 @@ C
            DCP    = -W*CINF*(K-UN)*EXP(-W*PP)
            DRP    = -B*(R0-RINF)*EXP(-B*PP)
            DMP    =  DCP/(UN+GAMMAP*DP)
-     +             - CP*(DGAMAP*DP+GAMMAP)/
-     +                  ((UN+GAMMAP*DP)*(UN+GAMMAP*DP))
+     &             - CP*(DGAMAP*DP+GAMMAP)/
+     &                  ((UN+GAMMAP*DP)*(UN+GAMMAP*DP))
 C
            DGAM2P = -B*GAMM20*(UN-AINF)*EXP(-B*PP)
            DC2P    = -W*C2INF*(K-UN)*EXP(-W*PP)
            DM2P    =  DC2P/(UN+GAMM2P*DP)
-     +             - C2P*(DGAM2P*DP+GAMM2P)/
-     +                  ((UN+GAMM2P*DP)*(UN+GAMM2P*DP))
+     &             - C2P*(DGAM2P*DP+GAMM2P)/
+     &                  ((UN+GAMM2P*DP)*(UN+GAMM2P*DP))
 C
 C           AP     =  UN - (DEUXMU+DEUX/TROIS*MP)*TROIS/DEUX*DP/DENOMI
            AP     =  (RP+VP)/DENOMI
@@ -625,15 +619,15 @@ C
              DSIDE(I,I) = -SIX*MU*MU*DP/DENOMI
              DO 230 J=1, NDIMSI
                DSIDE(I,J) = DSIDE(I,J)
-     +                        - SIX*MU*MU*ISP    * SIGEDV(I)*SIGEDV(J)
-     +                        - QUATRE*MU*MU*H1A1* ALFAM(I)*ALFAM(J)
-     +                        - QUATRE*MU*MU*H1A2* ALFA2M(I)*ALFAM(J)
-     +                        - QUATRE*MU*MU*H2A1* ALFAM(I)*ALFA2M(J)
-     +                        - QUATRE*MU*MU*H2A2* ALFA2M(I)*ALFA2M(J)
-     +                        - SIX*MU*MU*IAP    * ALFAM(I)*SIGEDV(J)
-     +                        - SIX*MU*MU*IA2P    * ALFA2M(I)*SIGEDV(J)
-     +                        - QUATRE*MU*MU*H1S * SIGEDV(I)*ALFAM(J)
-     +                        - QUATRE*MU*MU*H2S * SIGEDV(I)*ALFA2M(J)
+     &                        - SIX*MU*MU*ISP    * SIGEDV(I)*SIGEDV(J)
+     &                        - QUATRE*MU*MU*H1A1* ALFAM(I)*ALFAM(J)
+     &                        - QUATRE*MU*MU*H1A2* ALFA2M(I)*ALFAM(J)
+     &                        - QUATRE*MU*MU*H2A1* ALFAM(I)*ALFA2M(J)
+     &                        - QUATRE*MU*MU*H2A2* ALFA2M(I)*ALFA2M(J)
+     &                        - SIX*MU*MU*IAP    * ALFAM(I)*SIGEDV(J)
+     &                        - SIX*MU*MU*IA2P    * ALFA2M(I)*SIGEDV(J)
+     &                        - QUATRE*MU*MU*H1S * SIGEDV(I)*ALFAM(J)
+     &                        - QUATRE*MU*MU*H2S * SIGEDV(I)*ALFA2M(J)
  230         CONTINUE
  220       CONTINUE
 C
@@ -670,7 +664,7 @@ C
 C --- MISE AU FORMAT DES CONTRAINTES DE RAPPEL :
 C     ========================================
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
-     +    OPTION(1:9).EQ.'FULL_MECA')     THEN
+     &    OPTION(1:9).EQ.'FULL_MECA')     THEN
          VIP(1)=PP
          VIP(2)=PLAST
          DO 280 I = 1, 3
@@ -689,7 +683,7 @@ C     ========================================
          ENDIF
 
       END IF
-C  
+C
 
 
       END

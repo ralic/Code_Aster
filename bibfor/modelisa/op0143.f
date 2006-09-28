@@ -1,7 +1,7 @@
       SUBROUTINE OP0143(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -206,8 +206,7 @@ C            FLUIDE
          DO 50 I = 1,NZEX-1
          DO 50 J = I+1,NZEX
             IF(ZK8(LFSVK+I+3).EQ.ZK8(LFSVK+J+3)) THEN
-               CALL UTMESS('F',CMD,'<FAISCEAU_TRANS> DEUX ZONES '//
-     &                     'D EXCITATION DU FLUIDE ONT MEME NOM')
+               CALL U2MESS('F','MODELISA5_65')
             ENDIF
  50      CONTINUE
 C-----------------------------------------------------------------------

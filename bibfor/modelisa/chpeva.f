@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,9 +65,7 @@ C ------------------------------------------------------------------
       CALL GETVID(' ','CHAM_F',0,1,1,CHIN,IB)
 
       CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD,IB)
-      IF (NOMGD.NE.'NEUT_F') CALL UTMESS('F','CHPEVA',
-     &              'SEULE LA GRANDEUR NEUT_F EST TRAITEE ACTUELLEMENT.'
-     &                            )
+      IF (NOMGD.NE.'NEUT_F') CALL U2MESS('F','MODELISA4_13')
 
       CALL GETVID(' ','CHAM_PARA',0,1,0,KBID,N1)
       NPARA = -N1
@@ -83,11 +81,7 @@ C ------------------------------------------------------------
       CALL DISMOI('F','TYPE_CHAMP',CHIN,'CHAMP',IB,TYP1,IB)
       DO 10,K = 1,NPARA
         CALL DISMOI('F','TYPE_CHAMP',ZK8(JPARA1-1+K),'CHAMP',IB,TYP2,IB)
-        IF (TYP1.NE.TYP2) CALL UTMESS('F','CHPEVA',
-     &                   'LES CHAMPS DE CHAM_F ET CHAM_PARA N''ONT PAS '
-     &                                //
-     &              'LA MEME DISCRETISATION NOEU/CART/ELGA/ELNO/ELEM. '
-     &                                )
+        IF (TYP1.NE.TYP2) CALL U2MESS('F','MODELISA4_14')
 
         CALL CODENT(K,'G',KNUM)
         CHS1 = '&&CHPEVA.'//KNUM
@@ -120,7 +114,7 @@ C ------------------------------------------------------------
         CALL DETRSD('CHAM_ELEM_S',CHS2)
 
       ELSE
-        CALL UTMESS('F','CHPEVA','EVAL. CARTE: PAS ENCORE')
+        CALL U2MESS('F','MODELISA4_15')
       END IF
 
 

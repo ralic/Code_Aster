@@ -1,6 +1,6 @@
       SUBROUTINE TUSIEF(OPTION,NOMTE,NBRDDL,B,VIN,MAT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -244,8 +244,7 @@ C===============================================================
         CALL JEVECH('PCONTRR','E',JOUT)
 
       ELSE
-        CALL UTMESS('F','TE0584','L''OPTION "'//OPTION//
-     &              '" EST NON PREVUE')
+        CALL U2MESK('F','ELEMENTS4_49',1,OPTION)
       END IF
 
 

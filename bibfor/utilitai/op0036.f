@@ -3,22 +3,22 @@
       INTEGER             IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ----- OPERATEUR CREA_TABLE              --------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -56,7 +56,7 @@ C SENSIBILITE
       CHARACTER*24 NORECG,VECTCR,VECTCI
       CHARACTER*38 TITRES
 C SENSIBILITE
-      DATA TYPARR / 'R'       , 'R'       /   
+      DATA TYPARR / 'R'       , 'R'       /
       DATA TYPARC / 'R'       , 'R'       , 'R'       /
 C     ------------------------------------------------------------------
 
@@ -88,14 +88,14 @@ C     --- BOUCLE SUR LE NBRE DE PASSAGES POUR LA SENSIBILITE
          NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
 C
 C     ==========
-C --- CAS: LISTE 
+C --- CAS: LISTE
 C     ==========
       IF(NOCC.NE.0)THEN
          CALL WKVECT(WORK,'V V I'  ,NOCC,JLNG)
          CALL WKVECT(LDBL,'V V K16',NOCC,JD)
          CALL WKVECT(LTYP,'V V K8' ,NOCC,JY)
          DIMMAX=0
-         
+
          DO 50 IOCC=1,NOCC
             CALL GETVID('LISTE','PARA',IOCC,1,1,NMPAR,JP)
             ZK16(JD+IOCC-1)=NMPAR
@@ -104,11 +104,10 @@ C     ==========
             CALL GETVR8('LISTE','LISTE_R',  IOCC,1,0,RBID,NR)
             CALL GETVTX('LISTE','LISTE_K',  IOCC,1,0,KBID,NK)
             CALL GETVTX('LISTE','TYPE_K',   IOCC,1,1,NTYP,JT)
-            
+
             IF ( NINDI.NE.0 ) THEN
               IF ( (-NI-NR-NK).NE.(-NINDI)) THEN
-               CALL UTMESS('F','OP0036','LES LISTES NUME_LIGN'//
-     &         ' ET LISTE_X DOIVENT CONTENIR LE MEME NOMBRE DE TERMES')
+               CALL U2MESS('F','UTILITAI2_75')
               ENDIF
               CALL WKVECT(INDIC,'V V I',-NINDI,III)
               LONGCO=0
@@ -150,11 +149,10 @@ C
             CALL GETVID('LISTE','PARA',IOCC,1,1,NMPAR,JP)
             DO 150 J=1,NOCC
                NMPAR1=ZK16(JD+J-1)
-               IF ((NMPAR.EQ.NMPAR1).AND.(J.NE.IOCC)) THEN 
-                  CALL UTMESS('F','OP0036','LES NOMS'//
-     &                 ' DES PARAMETRES DOIVENT ETRE DIFFERENTS')
+               IF ((NMPAR.EQ.NMPAR1).AND.(J.NE.IOCC)) THEN
+                  CALL U2MESS('F','UTILITAI2_76')
                ENDIF
- 150        CONTINUE       
+ 150        CONTINUE
 C
             IF (NINDI.NE.0)THEN
                NINDI=-NINDI
@@ -164,9 +162,9 @@ C
                CALL WKVECT(INDIC,'V V I',(-NI-NR-NK),III)
                DO 175 I=1,(-NI-NR-NK)
                     ZI(III+I-1)=I
- 175           CONTINUE       
+ 175           CONTINUE
             ENDIF
-            
+
 C           LISTE D'ENTIERS :
 C           ---------------
             IF (NI.NE.0)THEN
@@ -214,11 +212,11 @@ C              CHAINES DE 24 CARACTERES
      &                        ZK24(JTRAV5),'R',ZI(III))
                ENDIF
             ENDIF
-            CALL JEDETR(TRAV) 
+            CALL JEDETR(TRAV)
             CALL JEDETR(INDIC)
  200     CONTINUE
 
-C     ==============    
+C     ==============
 C --- CAS : FONCTION
 C     ==============
       ELSEIF(NOCC2.NE.0)THEN
@@ -229,8 +227,9 @@ C     ==============
             CALL PSRENC ( NFCT, NOPASE, NFCT0, IRET )
             IF ( IRET.NE.0 ) THEN
               CALL UTMESS ('F', 'OP0036','IMPOSSIBLE DE TROUVER'//
-     >   ' LE RESULTAT DERIVE ASSOCIE A LA FONCTION '//
-     >  NFCT//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+     &   ' LE RESULTAT DERIVE ASSOCIE A LA FONCTION '//
+     &  NFCT//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+C        CALL U2MESK('F','UTILITAI2_77', 2 ,VALK)
             ENDIF
           ENDIF
 C
@@ -241,15 +240,13 @@ C
           IF(ZK16(JPROL).NE.'FONCTION' .AND.
      &      ZK16(JPROL).NE.'CONSTANT'.AND.
      &      ZK16(JPROL).NE.'FONCT_C')
-     &      CALL UTMESS('F','OP0036','FONCTION'//
-     &        ' INCOMPATIBLE AVEC '//NOMCMD)  
+     &      CALL U2MESK('F','UTILITAI2_78',1,NOMCMD)
           CALL GETVTX('FONCTION','PARA',1,1,2,NMPARF,IR)
           IF(IR.EQ.0)THEN
             NMPARF(1)=ZK16(JPROL+2)
-            NMPARF(2)=ZK16(JPROL+3) 
+            NMPARF(2)=ZK16(JPROL+3)
           ENDIF
-          IF(NMPARF(1).EQ.NMPARF(2)) CALL UTMESS('F','OP0036',
-     &    'LES NOMS DE CHAQUE PARAMETRE DOIVENT ETRE DIFFERENTS') 
+          IF(NMPARF(1).EQ.NMPARF(2)) CALL U2MESS('F','UTILITAI2_79')
 C
 C       ---CAS CREATION D UNE NOUVELLE TABLE
 C       ---

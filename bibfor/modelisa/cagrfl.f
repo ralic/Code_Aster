@@ -3,23 +3,23 @@
       CHARACTER*8       CHAR, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C BUT : STOCKAGE DES DONNEES HYDRAULIQUES ET DONNEES GEOMETRIQUES
@@ -30,7 +30,7 @@ C      CHAR   : NOM UTILISATEUR DU RESULTAT DE CHARGE
 C      NOMA   : NOM DU MAILLAGE
 C
 C --- VECTEURS CREES :
-C 
+C
 C     CHAR//'.CHME.GRFLU.GEOM' : DONNEES GEOMETRIQUES
 C     CHAR//'.CHME.GRFLU.NOMA' : NOM DU MAILLAGE
 C     CHAR//'.CHME.GRFLU.LIMA' : LISTE DES MAILLES ORDONNEES
@@ -51,8 +51,8 @@ C     CHAR//'.CHME.GF_AS.NCMP' : NOM DES COMPOSANTES POUR "AS"
 C     CHAR//'.CHME.GF_AS.VALE' : VALEUR DES COMPOSANTES POUR "AS"
 C     CHAR//'.CHME.GF_PC.NCMP' : NOM DES COMPOSANTES POUR "PC"
 C     CHAR//'.CHME.GF_PC.VALE' : VALEUR DES COMPOSANTES POUR "PC"
-C     CHAR//'.CHME.GRFLU.APPL' : VECTEUR DE 10 ENTIERS CONTENANT 
-C				 LES INFORMATIONS RELATIVES AUX LIEUX 
+C     CHAR//'.CHME.GRFLU.APPL' : VECTEUR DE 10 ENTIERS CONTENANT
+C				 LES INFORMATIONS RELATIVES AUX LIEUX
 C				 D'APPLICATION DES FORCES FLUIDES
 C				 ENTIER 1      LIEU APPLICATION FARCHI
 C					       1 => REPARTIE
@@ -69,11 +69,11 @@ C				 ENTIER 4      LIEU APPLICATION FTG
 C					       1 => REPARTIE
 C					       2 => CDG
 C					       3 => ZONE
-C				 ENTIER 5      NUMERO DU NOEUD LE PLUS 
+C				 ENTIER 5      NUMERO DU NOEUD LE PLUS
 C   					       PROCHE DU MILIEU DE LA
 C					       GAINE DE CONTROLE
-C				 ENTIER 6      NUMERO DU NOEUD LE PLUS 
-C   					       PROCHE DU CENTRE DE 
+C				 ENTIER 6      NUMERO DU NOEUD LE PLUS
+C   					       PROCHE DU CENTRE DE
 C					       GRAVITE DE LA GRAPPE
 C				 ENTIER 7      UNITE IMPRESSION FORCES (38)
 C				 ENTIER 8      UNITE IMPRESSION NOEUDS (37)
@@ -100,62 +100,62 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       IMPF, IMPN
       INTEGER       NKAR, NKFP, NKFM, NKF, NKIN
       PARAMETER    ( NDH = 16 , NGR = 20 , NMC = 11 , NMA = 11 ,
-     +               NTG = 12 , NAS = 11 , NPC = 10 )
+     &               NTG = 12 , NAS = 11 , NPC = 10 )
       CHARACTER*8   FFDH(NDH) , FFGR(NGR) , FFMC(NMC) , FFMA(NMA),
-     +              FFTG(NTG) , FFAS(NAS) , FFPC(NPC)
+     &              FFTG(NTG) , FFAS(NAS) , FFPC(NPC)
       INTEGER       I, J, N1, N2, IOC, NBFFL, INDIK8, NBV, JNOMA,
-     +              JCDH, JCGR, JCMC, JCMA, JCTG, JCAS, JCPC,
-     +              JVDH, JVGR, JVMC, JVMA, JVTG, JVAS, JVPC,
-     +              IRET, JAPL, JDIR
+     &              JCDH, JCGR, JCMC, JCMA, JCTG, JCAS, JCPC,
+     &              JVDH, JVGR, JVMC, JVMA, JVTG, JVAS, JVPC,
+     &              IRET, JAPL, JDIR
       REAL*8        R8B, VALR(NGR), Z0, CDG(3), Z2, VDIR(3), NORM,
-     +              R8VIDE
+     &              R8VIDE
       COMPLEX*16    C16B
       CHARACTER*8   K8B, VALK(NGR),KCRIT
       CHARACTER*8   K8ARC, K8PLA, K8MEC, K8TG, K8TIN
-      CHARACTER*16  MOTCLF, VALEK(2),CRIT(2)      
+      CHARACTER*16  MOTCLF, VALEK(2),CRIT(2)
       INTEGER       IBID
       INTEGER       CDGXI, CDGYI, CDGZI
       REAL*8        CDGXR, CDGYR, CDGZR
       COMPLEX*16    CDGXC, CDGYC, CDGZC
-      CHARACTER*8   CDGXK, CDGYK, CDGZK, TYPVAL      
+      CHARACTER*8   CDGXK, CDGYK, CDGZK, TYPVAL
 C
 C --- DONNEES HYDRAULIQUES
 C
       DATA FFDH  / 'Q'  , 'ROC', 'ROD' , 'ROP', 'ROM', 'ROML', 'ROG',
-     +             'NUC', 'NUM', 'NUML', 'NUG', 'P2' , 'P3'  , 'P4' , 
-     +             'CGG', 'G'  /
+     &             'NUC', 'NUM', 'NUML', 'NUG', 'P2' , 'P3'  , 'P4' ,
+     &             'CGG', 'G'  /
 C
 C --- DONNEES GEOMETRIQUES GRAPPE
 C
       DATA FFGR / 'M'     , 'DTIGE', 'DTMOY' , 'ROTIGE', 'LTIGE' ,
-     +            'LLT'   , 'LCT'  , 'VARAI' , 'RORAI' , 'DCRAY' ,
-     +            'ROCRAY', 'LCRAY', 'LCHUT' , 'CFCM'  , 'CFCI'  ,
-     +            'CFCG'  , 'HRUGC', 'HRUGTC', 'NCA'   , 'Z0'    /
-C   
+     &            'LLT'   , 'LCT'  , 'VARAI' , 'RORAI' , 'DCRAY' ,
+     &            'ROCRAY', 'LCRAY', 'LCHUT' , 'CFCM'  , 'CFCI'  ,
+     &            'CFCG'  , 'HRUGC', 'HRUGTC', 'NCA'   , 'Z0'    /
+C
 C --- DONNEES GEOMETRIQUES MECANISME DE COMMANDE
 C
-      DATA FFMC / 'LI'  , 'LML', 'LG' , 'LIG' , 'DIML' , 'DEML' , 
-     +            'DCSP', 'DG' , 'HRUGML', 'HRUGCSP', 'HRUGG' /
+      DATA FFMC / 'LI'  , 'LML', 'LG' , 'LIG' , 'DIML' , 'DEML' ,
+     &            'DCSP', 'DG' , 'HRUGML', 'HRUGCSP', 'HRUGG' /
 C
 C --- DONNEES GEOMETRIQUES MANCHETTE ET ADAPTATEUR
 C
-      DATA FFMA / 'LM' , 'LA'  , 'LIM', 'DIMT' , 'DEMT'  , 'DCMT', 
-     +            'VMT', 'ROMT', 'DA' , 'HRUGM', 'HRUGA' /
+      DATA FFMA / 'LM' , 'LA'  , 'LIM', 'DIMT' , 'DEMT'  , 'DCMT',
+     &            'VMT', 'ROMT', 'DA' , 'HRUGM', 'HRUGA' /
 C
 C --- DONNEES GEOMETRIQUES TUBES GUIDES
 C
-      DATA FFTG / 'NRET', 'L0' , 'L1'  , 'L2' , 'L3'  , 'L4'     ,  
-     +            'DTG' , 'DR' , 'DOR' , 'D0' , 'D00' , 'HRUGTG' /
+      DATA FFTG / 'NRET', 'L0' , 'L1'  , 'L2' , 'L3'  , 'L4'     ,
+     &            'DTG' , 'DR' , 'DOR' , 'D0' , 'D00' , 'HRUGTG' /
 C
 C --- DONNEES GEOMETRIQUES ASSEMBLAGES
 C
-      DATA FFAS / 'SASS' , 'DCC' , 'DTI' , 'NGM' , 'NGMDP' , 'KM', 
-     +            'KS'   , 'KI'  , 'KES' , 'KEI' , 'KF'    /
+      DATA FFAS / 'SASS' , 'DCC' , 'DTI' , 'NGM' , 'NGMDP' , 'KM',
+     &            'KS'   , 'KI'  , 'KES' , 'KEI' , 'KF'    /
 C
 C --- COEFFICIENT DE PERTE DE CHARGE SINGULIERE
 C
-      DATA FFPC / 'CD0' , 'CD1' , 'CD2'  , 'CDELARG' , 'CDRET' , 
-     +            'CDM' , 'CDA' , 'CDML' , 'CDI'     , 'CDG'   /
+      DATA FFPC / 'CD0' , 'CD1' , 'CD2'  , 'CDELARG' , 'CDRET' ,
+     &            'CDM' , 'CDA' , 'CDML' , 'CDI'     , 'CDG'   /
 C
 C     ------------------------------------------------------------------
 C
@@ -216,25 +216,21 @@ C     VERIFICATION QUE TOUS LES MOTS CLES SONT PRESENTS:
 C
       CALL GETVID ( MOTCLF, 'GROUP_MA', 1, 1, 1, K8B, N1)
       IF ( N1 .EQ. 0 ) THEN
-         CALL UTMESS('F','CAGRFL','LE MOT CLE "GROUP_MA" DOIT ETRE '//
-     +                            'PRESENT A LA PREMIERE OCCURENCE')
+         CALL U2MESS('F','MODELISA2_67')
       ENDIF
       CALL GETVID ( MOTCLF, 'GROUP_NO_ORIG', 1, 1, 1, K8B, N1)
       CALL GETVID ( MOTCLF, 'NOEUD_ORIG'   , 1, 1, 1, K8B, N2)
       IF ( N1+N2 .EQ. 0 ) THEN
-         CALL UTMESS('F','CAGRFL',' UN DES MOTS CLES "GROUP_NO_ORIG"'//
-     +    ' OU "NOEUD_ORIG" DOIT ETRE PRESENT A LA PREMIERE OCCURENCE')
+         CALL U2MESS('F','MODELISA2_68')
       ENDIF
       CALL GETVID ( MOTCLF, 'GROUP_NO_EXTR', 1, 1, 1, K8B, N1)
       CALL GETVID ( MOTCLF, 'NOEUD_EXTR'   , 1, 1, 1, K8B, N2)
       IF ( N1+N2 .EQ. 0 ) THEN
-         CALL UTMESS('F','CAGRFL',' UN DES MOTS CLES "GROUP_NO_EXTR"'//
-     +    ' OU "NOEUD_EXTR" DOIT ETRE PRESENT A LA PREMIERE OCCURENCE')
+         CALL U2MESS('F','MODELISA2_69')
       ENDIF
       CALL GETVR8 ( MOTCLF, 'Z0', 1, 1, 1, Z0, N1)
       IF ( N1 .EQ. 0 ) THEN
-         CALL UTMESS('F','CAGRFL','LE MOT CLE "Z0" DOIT ETRE '//
-     +                            'PRESENT A LA PREMIERE OCCURENCE')
+         CALL U2MESS('F','MODELISA2_70')
       ENDIF
 C
 C --- LECTURE DES DONNEES SUR LIEUX D'APP. DES FORCES FLUIDES
@@ -245,7 +241,7 @@ C
       ELSEIF ( K8ARC .EQ. 'CDG' ) THEN
          ZI(JAPL-1+1) = 2
       ENDIF
-C  
+C
       CALL GETVTX ( MOTCLF, 'APPL_FORC_FPLAQ',1,1,1, K8PLA, NKFP)
       IF ( K8PLA .EQ. 'REPARTIE' ) THEN
          ZI(JAPL-1+2) = 1
@@ -258,7 +254,7 @@ C
       ELSEIF ( K8PLA .EQ. 'DISTRI' ) THEN
          ZI(JAPL-1+2) = 5
       ENDIF
-C     
+C
       CALL GETVTX ( MOTCLF, 'APPL_FORC_FMEC' ,1,1,1, K8MEC, NKFM)
       IF ( K8MEC .EQ. 'REPARTIE' ) THEN
          ZI(JAPL-1+3) = 1
@@ -269,7 +265,7 @@ C
       ELSEIF ( K8MEC .EQ. 'PTREP' ) THEN
          ZI(JAPL-1+3) = 4
       ENDIF
-C      
+C
       CALL GETVTX ( MOTCLF, 'APPL_FORC_FTG' ,1,1,1, K8TG, NKF)
       IF ( K8TG .EQ. 'REPARTIE' ) THEN
          ZI(JAPL-1+4) = 1
@@ -286,8 +282,7 @@ C
       CALL GETVTX ( MOTCLF, 'CARA_HYDR', 1, 1, NDH, VALK, N1)
       CALL GETVR8 ( MOTCLF, 'VALE_HYDR', 1, 1, NDH, VALR, N2)
       IF ( N1 .NE. N2 ) THEN
-         CALL UTMESS('F','CAGRFL',
-     +               'NOMBRE CARA_HYDR DIFFERENT DE VALE_HYDR')
+         CALL U2MESS('F','MODELISA2_71')
       ENDIF
       IF ( N1 .NE. NDH ) THEN
          CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
@@ -304,8 +299,7 @@ C
       CALL GETVTX ( MOTCLF, 'CARA_GRAPPE', 1, 1, NGR, VALK, N1 )
       CALL GETVR8 ( MOTCLF, 'VALE_GRAPPE', 1, 1, NGR, VALR, N2 )
       IF ( N1 .NE. N2 ) THEN
-         CALL UTMESS('F','CAGRFL',
-     +             'NOMBRE CARA_GRAPPE DIFFERENT DE VALE_GRAPPE')
+         CALL U2MESS('F','MODELISA2_72')
       ENDIF
       IF ( N1 .NE. NGR-1 ) THEN
          CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
@@ -322,8 +316,7 @@ C
       CALL GETVTX ( MOTCLF, 'CARA_COMMANDE', 1, 1, NMC, VALK, N1 )
       CALL GETVR8 ( MOTCLF, 'VALE_COMMANDE', 1, 1, NMC, VALR, N2 )
       IF ( N1 .NE. N2 ) THEN
-        CALL UTMESS('F','CAGRFL',
-     +            'NOMBRE CARA_COMMANDE DIFFERENT DE VALE_COMMANDE')
+        CALL U2MESS('F','MODELISA2_73')
       ENDIF
       IF ( N1 .NE. NMC ) THEN
          CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
@@ -340,8 +333,7 @@ C
       CALL GETVTX ( MOTCLF, 'CARA_MANCHETTE', 1, 1, NMA, VALK, N1 )
       CALL GETVR8 ( MOTCLF, 'VALE_MANCHETTE', 1, 1, NMA, VALR, N2 )
       IF ( N1 .NE. N2 ) THEN
-         CALL UTMESS('F','CAGRFL',
-     +         'NOMBRE CARA_MANCHETTE DIFFERENT DE VALE_MANCHETTE')
+         CALL U2MESS('F','MODELISA2_74')
       ENDIF
       IF ( N1 .NE. NMA ) THEN
          CALL UTDEBM('F','CAGRFL',' IL JCINMANQUE DES DONNEES')
@@ -358,8 +350,7 @@ C
       CALL GETVTX ( MOTCLF, 'CARA_GUIDE', 1, 1, NTG, VALK, N1 )
       CALL GETVR8 ( MOTCLF, 'VALE_GUIDE', 1, 1, NTG, VALR, N2 )
       IF ( N1 .NE. N2 ) THEN
-         CALL UTMESS('F','CAGRFL',
-     +               'NOMBRE CARA_GUIDE DIFFERENT DE VALE_GUIDE')
+         CALL U2MESS('F','MODELISA2_75')
       ENDIF
       IF ( N1 .NE. NTG ) THEN
          CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
@@ -376,8 +367,7 @@ C
       CALL GETVTX ( MOTCLF, 'CARA_ASSEMBLAGE', 1, 1, NAS, VALK, N1 )
       CALL GETVR8 ( MOTCLF, 'VALE_ASSEMBLAGE', 1, 1, NAS, VALR, N2 )
       IF ( N1 .NE. N2 ) THEN
-         CALL UTMESS('F','CAGRFL',
-     +        'NOMBRE CARA_ASSEMBLAGE DIFFERENT DE VALE_ASSEMBLAGE')
+         CALL U2MESS('F','MODELISA2_76')
       ENDIF
       IF ( N1 .NE. NAS ) THEN
          CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
@@ -394,8 +384,7 @@ C
       CALL GETVTX ( MOTCLF, 'CARA_PDC', 1, 1, NPC, VALK, N1 )
       CALL GETVR8 ( MOTCLF, 'VALE_PDC', 1, 1, NPC, VALR, N2 )
       IF ( N1 .NE. N2 ) THEN
-         CALL UTMESS('F','CAGRFL',
-     +               'NOMBRE CARA_PDC DIFFERENT DE VALE_PDC')
+         CALL U2MESS('F','MODELISA2_77')
       ENDIF
       IF ( N1 .NE. NPC ) THEN
          CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
@@ -422,7 +411,7 @@ C
          VDIR(2) = VDIR(2) / NORM
          VDIR(3) = VDIR(3) / NORM
       ENDIF
-C      
+C
 C --- ON RECUPERE LES UNITES D'IMPRESSION POUR NOEUDS ET FORCES
 C
       IMPF = 0
@@ -442,8 +431,7 @@ C
           CALL GETVTX ( MOTCLF, 'CARA_HYDR', IOC,1,NBV, VALK, N1)
           CALL GETVR8 ( MOTCLF, 'VALE_HYDR', IOC,1,NBV, VALR, N2)
           IF ( N1 .NE. N2 ) THEN
-            CALL UTMESS('F','CAGRFL',
-     +                      'NOMBRE CARA_HYDR DIFFERENT DE VALE_HYDR')
+            CALL U2MESS('F','MODELISA2_71')
           ENDIF
           DO 201 I = 1, NBV
             J = INDIK8 ( FFDH, VALK(I), 1, NDH )
@@ -457,8 +445,7 @@ C
           CALL GETVTX ( MOTCLF, 'CARA_GRAPPE', IOC,1,NBV, VALK, N1)
           CALL GETVR8 ( MOTCLF, 'VALE_GRAPPE', IOC,1,NBV, VALR, N2)
           IF ( N1 .NE. N2 ) THEN
-            CALL UTMESS('F','CAGRFL',
-     +                  'NOMBRE CARA_GRAPPE DIFFERENT DE VALE_GRAPPE')
+            CALL U2MESS('F','MODELISA2_72')
           ENDIF
           DO 202 I = 1, NBV
             J = INDIK8 ( FFGR, VALK(I), 1, NGR )
@@ -472,8 +459,7 @@ C
           CALL GETVTX ( MOTCLF, 'CARA_COMMANDE', IOC,1,NBV, VALK, N1)
           CALL GETVR8 ( MOTCLF, 'VALE_COMMANDE', IOC,1,NBV, VALR, N2)
           IF ( N1 .NE. N2 ) THEN
-            CALL UTMESS('F','CAGRFL',
-     +               'NOMBRE CARA_COMMANDE DIFFERENT DE VALE_COMMANDE')
+            CALL U2MESS('F','MODELISA2_73')
           ENDIF
           DO 203 I = 1, NBV
             J = INDIK8 ( FFMC, VALK(I), 1, NMC )
@@ -487,8 +473,7 @@ C
           CALL GETVTX ( MOTCLF, 'CARA_MANCHETTE', IOC,1,NBV, VALK, N1)
           CALL GETVR8 ( MOTCLF, 'VALE_MANCHETTE', IOC,1,NBV, VALR, N2)
           IF ( N1 .NE. N2 ) THEN
-            CALL UTMESS('F','CAGRFL',
-     +            'NOMBRE CARA_MANCHETTE DIFFERENT DE VALE_MANCHETTE')
+            CALL U2MESS('F','MODELISA2_74')
           ENDIF
           DO 204 I = 1, NBV
             J = INDIK8 ( FFMA, VALK(I), 1, NMA )
@@ -502,8 +487,7 @@ C
           CALL GETVTX ( MOTCLF, 'CARA_GUIDE', IOC,1,NBV, VALK, N1)
           CALL GETVR8 ( MOTCLF, 'VALE_GUIDE', IOC,1,NBV, VALR, N2)
           IF ( N1 .NE. N2 ) THEN
-            CALL UTMESS('F','CAGRFL',
-     +                  'NOMBRE CARA_GUIDE DIFFERENT DE VALE_GUIDE')
+            CALL U2MESS('F','MODELISA2_75')
           ENDIF
           DO 205 I = 1, NBV
             J = INDIK8 ( FFTG, VALK(I), 1, NTG )
@@ -517,8 +501,7 @@ C
           CALL GETVTX ( MOTCLF, 'CARA_ASSEMBLAGE', IOC,1,NBV, VALK, N1)
           CALL GETVR8 ( MOTCLF, 'VALE_ASSEMBLAGE', IOC,1,NBV, VALR, N2)
           IF ( N1 .NE. N2 ) THEN
-            CALL UTMESS('F','CAGRFL',
-     +           'NOMBRE CARA_ASSEMBLAGE DIFFERENT DE VALE_ASSEMBLAGE')
+            CALL U2MESS('F','MODELISA2_76')
            ENDIF
            DO 206 I = 1, NBV
              J = INDIK8 ( FFAS, VALK(I), 1, NAS )
@@ -532,8 +515,7 @@ C
           CALL GETVTX ( MOTCLF, 'CARA_PDC', IOC,1,NBV, VALK, N1 )
           CALL GETVR8 ( MOTCLF, 'VALE_PDC', IOC,1,NBV, VALR, N2 )
           IF ( N1 .NE. N2 ) THEN
-             CALL UTMESS('F','CAGRFL',
-     +                       'NOMBRE CARA_PDC DIFFERENT DE VALE_PDC')
+             CALL U2MESS('F','MODELISA2_77')
           ENDIF
           DO 207 I = 1, NBV
              J = INDIK8 ( FFPC, VALK(I), 1, NPC )
@@ -549,7 +531,7 @@ C
           VDIR(2) = VDIR(2) / NORM
           VDIR(3) = VDIR(3) / NORM
         ENDIF
-C      
+C
         CALL GETVIS ( MOTCLF, 'UNITE_IMPR_FORCE', IOC,1,1, IMPF, N1 )
         IF ( N1 .NE. 0 )  ZI(JAPL-1+7) = IMPF
         CALL GETVIS ( MOTCLF, 'UNITE_IMPR_NOEUD', IOC,1,1, IMPN, N2 )
@@ -561,7 +543,7 @@ C
         ELSEIF ( K8ARC .EQ. 'CDG' ) THEN
            ZI(JAPL-1+1) = 2
         ENDIF
-C  
+C
         CALL GETVTX ( MOTCLF, 'APPL_FORC_FPLAQ',IOC,1,1, K8PLA, NKFP)
         IF ( K8PLA .EQ. 'REPARTIE' ) THEN
            ZI(JAPL-1+2) = 1
@@ -574,7 +556,7 @@ C
         ELSEIF ( K8PLA .EQ. 'DISTRI' ) THEN
            ZI(JAPL-1+2) = 5
         ENDIF
-C     
+C
         CALL GETVTX ( MOTCLF, 'APPL_FORC_FMEC' ,IOC,1,1, K8MEC, NKFM)
         IF ( K8MEC .EQ. 'REPARTIE' ) THEN
            ZI(JAPL-1+3) = 1
@@ -585,7 +567,7 @@ C
         ELSEIF ( K8MEC .EQ. 'PTREP' ) THEN
            ZI(JAPL-1+3) = 4
         ENDIF
-C        
+C
         CALL GETVTX ( MOTCLF, 'APPL_FORC_FTG' ,IOC,1,1, K8TG, NKF)
         IF ( K8TG .EQ. 'REPARTIE' ) THEN
            ZI(JAPL-1+4) = 1
@@ -598,20 +580,19 @@ C
         ENDIF
 C
  200  CONTINUE
-C      
+C
 C --- ON RECUPERE LES COORDONNEES DU CDG DE LA GRAPPE DANS LA TABLE
 C --- DANS LE CAS OU UNE OU PLUSIEURS FORCES Y SONT APPLIQUEES
 C
       IF (((ZI(JAPL-1+1)).EQ.2).OR.
-     +    ((ZI(JAPL-1+2)).EQ.2).OR.
-     +    ((ZI(JAPL-1+3)).EQ.2).OR.
-     +    ((ZI(JAPL-1+4)).EQ.2)) THEN
+     &    ((ZI(JAPL-1+2)).EQ.2).OR.
+     &    ((ZI(JAPL-1+3)).EQ.2).OR.
+     &    ((ZI(JAPL-1+4)).EQ.2)) THEN
          DO 300 IOC = 1, NBFFL
             CALL GETVID ( MOTCLF, 'MASS_INER' ,IOC,1,1, K8TIN, NKIN)
             IF (NKIN.NE.0) GOTO 302
  300     CONTINUE
-         CALL UTMESS('F','CAGRFL','ERREUR: OUBLI DE LA TABLE '//
-     +                       '"MASS_INER" DANS FICHIER DE COMMANDES.')
+         CALL U2MESS('F','MODELISA2_78')
  302     CONTINUE
 C        VERIFICATION DES PARAMETRES DE LA TABLE K8TIN
          CALL TBEXP2(K8TIN,'LIEU')
@@ -626,19 +607,16 @@ C
          CRIT(1) = KCRIT
          CRIT(2) = 'GROUP_MA'
          CALL TBLIVA ( K8TIN,2,VALEK,IBID,R8B,C16B,CRIT,K8B,R8B,'CDG_X',
-     +                 TYPVAL,CDGXI,CDGXR,CDGXC,CDGXK,IRET)
-         IF (IRET.NE.0) CALL UTMESS('F','CAGRFL',
-     +             'PROBLEME POUR RECUPERER LE "CDG_X" DANS '//K8TIN)
+     &                 TYPVAL,CDGXI,CDGXR,CDGXC,CDGXK,IRET)
+         IF (IRET.NE.0) CALL U2MESK('F','MODELISA2_79',1,K8TIN)
          CDG(1) = CDGXR
          CALL TBLIVA ( K8TIN,2,VALEK,IBID,R8B,C16B,CRIT,K8B,R8B,'CDG_Y',
-     +                 TYPVAL,CDGYI,CDGYR,CDGYC,CDGYK,IRET)
-         IF (IRET.NE.0) CALL UTMESS('F','CAGRFL',
-     +             'PROBLEME POUR RECUPERER LE "CDG_Y" DANS '//K8TIN)
+     &                 TYPVAL,CDGYI,CDGYR,CDGYC,CDGYK,IRET)
+         IF (IRET.NE.0) CALL U2MESK('F','MODELISA2_80',1,K8TIN)
          CDG(2) = CDGYR
          CALL TBLIVA ( K8TIN,2,VALEK,IBID,R8B,C16B,CRIT,K8B,R8B,'CDG_Z',
-     +                 TYPVAL,CDGZI,CDGZR,CDGZC,CDGZK,IRET)
-         IF (IRET.NE.0) CALL UTMESS('F','CAGRFL',
-     +             'PROBLEME POUR RECUPERER LE "CDG_Z" DANS '//K8TIN)
+     &                 TYPVAL,CDGZI,CDGZR,CDGZC,CDGZK,IRET)
+         IF (IRET.NE.0) CALL U2MESK('F','MODELISA2_81',1,K8TIN)
          CDG(3) = CDGZR
       ENDIF
 C
@@ -658,9 +636,9 @@ C     LM
       ZR(JGEO+3-1) = ZR(JVMA-1+1)
 C     LDOME
       ZR(JGEO+4-1) = 4.536D0 - 4.297D0
-C     LGDC 
+C     LGDC
       ZR(JGEO+5-1) = 4.297D0 - 1.217D0
-C     HGC 
+C     HGC
       ZR(JGEO+6-1) = 1.217D0
       Z2 = (-1)*ZR(JGEO+6-1)
 C     L1

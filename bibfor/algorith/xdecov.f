@@ -7,7 +7,7 @@
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 C     NDIM EST LA DIMENSION DU MAILLAGE
 C     NDIME EST DIMENSION DE L'ELEMENT FINI
 C     PAR EXEMPLE, POUR LES ELEMENT DE BORDS D'UN MAILLAGE 3D :
-C     NDIME = 2 ALORS QUE NDIM = 3      
+C     NDIME = 2 ALORS QUE NDIM = 3
 
       IF (NDIME.EQ.3) THEN
         NSEMAX=6
@@ -114,7 +114,7 @@ C-----------------------------------------------------------------------
 
 
         IF (NINTER .LT. 2) THEN
-          IF (NPTS.NE.NINTER) CALL UTMESS('F','XDECOV','INTER DOUTEUSE')
+          IF (NPTS.NE.NINTER) CALL U2MESS('F','ALGORITH11_45')
 C         1 SEUL ELEMENT
           NSE=1
           DO 90 IN=1,3
@@ -122,7 +122,7 @@ C         1 SEUL ELEMENT
  90       CONTINUE
         ELSEIF (NINTER .EQ. 2) THEN
           A1=NINT(ZR(JAINT-1+4*(1-1)+1))
-          A2=NINT(ZR(JAINT-1+4*(2-1)+1)) 
+          A2=NINT(ZR(JAINT-1+4*(2-1)+1))
           IF (NPTS .EQ. 2) THEN
 C           1 SEUL ELEMENT
             NSE=1
@@ -139,7 +139,7 @@ C           101 et 102 les 2 points d'intersection
             CNSE(1,3)=CONNEC(IT,AR(A2,1))
             CNSE(2,1)=101
             CNSE(2,2)=102
-            CNSE(2,3)=CONNEC(IT,AR(A2,2)) 
+            CNSE(2,3)=CONNEC(IT,AR(A2,2))
           ELSE
 C           3 ELEMENTS
             NSE=3
@@ -166,9 +166,9 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             CNSE(3,3)=CONNEC(IT,C)
           ENDIF
         ELSE
-          CALL UTMESS('F','XDECOV','TROP DE POINTS D INTERSECTION')
+          CALL U2MESS('F','ALGORITH11_46')
         ENDIF
-C      
+C
 
 
       ELSEIF (NDIME.EQ.3) THEN
@@ -179,7 +179,7 @@ C
 C       1°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
 C       ---------------------------------------------
 
-          IF (NPTS.NE.NINTER) CALL UTMESS('F','XDECOV','INTER DOUTEUSE')
+          IF (NPTS.NE.NINTER) CALL U2MESS('F','ALGORITH11_45')
 C         ON A UN SEUL ELEMENT
           NSE=1
           DO 100 IN=1,4
@@ -272,7 +272,7 @@ C             CONFIGURATION N°4
               CALL XPENTE(2,CNSE,CONNEC(IT,1),CONNEC(IT,2),CONNEC(IT,3),
      &                                                      101,102,103)
             ELSE
-              CALL UTMESS('F','XDECOV','PROBLEME DE DECOUPAGE A 3 PTS')
+              CALL U2MESS('F','ALGORITH11_47')
             ENDIF
 
           ENDIF
@@ -301,7 +301,7 @@ C          CONFIGURATION N°3
            CALL XPENTE(1,CNSE,101,103,CONNEC(IT,3),102,104,CONNEC(IT,4))
            CALL XPENTE(4,CNSE,CONNEC(IT,2),104,103,CONNEC(IT,1),102,101)
           ELSE
-           CALL UTMESS('F','XDECOV','PROBLEME DE DECOUPAGE A 4 PTS')
+           CALL U2MESS('F','ALGORITH11_48')
           ENDIF
         ENDIF
 
@@ -354,7 +354,6 @@ C          ON INVERSE LES NOEUDS 3 ET 4
 C            WRITE(6,*)'VERIF SENS OK'
           ENDIF
 
-     
  200    CONTINUE
 
 

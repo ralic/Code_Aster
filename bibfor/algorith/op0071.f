@@ -3,7 +3,7 @@
       INTEGER             IERR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
       INTEGER      IBID, N1, N2, N3, N4, N5, NBVECT, IER, NBMODE,
-     +             IADRIF, LLREFE, NEQ, LLNEQU, JSMDE
+     &             IADRIF, LLREFE, NEQ, LLNEQU, JSMDE
       REAL*8       RBID
       COMPLEX*16   CBID
       CHARACTER*1  TYPMAT
@@ -77,7 +77,7 @@ C
 C==================================================
 C
       CALL RSORAC ( BASEMO, 'LONUTI', IBID, RBID, K8B, CBID, RBID,
-     +              'ABSOLU', NBMODE, 1, IBID )
+     &              'ABSOLU', NBMODE, 1, IBID )
 C
 C RECUPERATION DU NOMBRE DE MODES REDUIT,
 C NB_VECT DONNE PAR NUME_DDL_GENE
@@ -86,18 +86,17 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
 
 
       CALL DISMOI('F', 'NOM_NUME_DDL', MATRAS, 'MATR_ASSE', IBID,
-     +                                         NUMDD1,IER)
+     &                                         NUMDD1,IER)
       CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
       MATRIC = ZK24(IADRIF)
       IF (MATRIC.NE.' ') THEN
          CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
-     +             NUMDD2,IER)
+     &             NUMDD2,IER)
       ELSE
          NUMDD2 = ZK24(IADRIF+1)(1:14)
       ENDIF
       IF (NUMDD1.NE.NUMDD2) THEN
-        CALL UTMESS('I',NOMCOM,'BASE MODALE ET MATR_ASSE AVEC'//
-     +             ' NUMEROTATIONS DIFFERENTES')
+        CALL U2MESS('I','ALGORITH9_39')
       ENDIF
       NU = NUMDD1(1:14)
       CALL DISMOI('F','NB_EQUA',MATRAS,'MATR_ASSE',NEQ,K8B,IER)
@@ -107,7 +106,7 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
       ELSEIF (TYPMAT.EQ.'C') THEN
          CALL PROJMC(MATRAS,NOMRES,BASEMO,NUGENE,NU,NEQ,NBMODE)
       ELSE
-         CALL UTMESS('F',NOMCOM,' TYPE DE MATRICE INCONNU: '//TYPMAT)
+         CALL U2MESK('F','ALGORITH9_40',1,TYPMAT)
       ENDIF
 
 

@@ -1,5 +1,5 @@
       SUBROUTINE RAYCIR(JVECPG, JDTAU, JVECN, NBORDR, NBVEC, NOMMET)
-C MODIF PREPOST  DATE 12/09/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE F1BHHAJ J.ANGLES 
+C RESPONSABLE F1BHHAJ J.ANGLES
 C TOLE  CRP_20
       IMPLICIT      NONE
       INTEGER       JVECPG, JDTAU, JVECN, NBORDR, NBVEC
@@ -27,13 +27,13 @@ C BUT: DETERMINER LE PLUS PETIT CERCLE CIRCONSCRIT AUX POINTS
 C      REPRESANTANT LE VECTEUR DE CISAILLEMENT TAU DANS LE PLAN u, v.
 C ---------------------------------------------------------------------
 C ARGUMENTS:
-C JVECPG     IN    I : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT 
-C                      LES COMPOSANTES u ET v DU VECTEUR TAU 
+C JVECPG     IN    I : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
+C                      LES COMPOSANTES u ET v DU VECTEUR TAU
 C                      (CISAILLEMENT), POUR TOUS LES NUMEROS
 C                      D'ORDRE.
-C JDTAU      IN    I : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT 
+C JDTAU      IN    I : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
 C                      LES VALEURS DE DELTA_TAU_MAX POUR CHAQUE VECTEUR.
-C JVECN      IN    I : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT 
+C JVECN      IN    I : ADRESSE DU VECTEUR DE TRAVAIL CONTENANT
 C                      LA VALEUR DU POINTEUR PERMETTANT D'ACCEDER AU
 C                      VECTEUR NORMAL ASSOCIE A DELTA_TAU_MAX.
 C NBORDR     IN    I : NOMBRE DE NUMERO D'ORDRE STOCKE DANS LA
@@ -214,7 +214,7 @@ C NOUS FAISONS UNE CORRECTION BARYCENTRIQUE
          ENDIF
 
 C REDEFINITION DES POINTS EXTREMES DU CADRE APRES LA CORRECTION
-C BARYCENTRIQUE (ON A TRANSLAT2 LE CADRE AUTOUR DE ZERO)         
+C BARYCENTRIQUE (ON A TRANSLAT2 LE CADRE AUTOUR DE ZERO)
 
          CUMIN = -(CUMAX - CUMIN)/2.0D0
          CVMIN = -(CVMAX - CVMIN)/2.0D0
@@ -332,7 +332,7 @@ C
      &                      COORPT(12))
             ELSE
               DMAXI(3) = 0.0D0
-            ENDIF        
+            ENDIF
          ENDIF
 
          IF (( NBPTS2 .GT. 0 ) .AND. ( NBPTS3 .GT. 0 )) THEN
@@ -451,7 +451,7 @@ C PASSANT PAR TROIS POINTS.
                   CALL DIMAX2(JDOM2, NBPTD2, CUON, CVON, RAY3PT,
      &                        CUPN, CVPN, IRETH)
                ENDIF
-               GOTO 100               
+               GOTO 100
 
             ELSEIF (NBOUCL .GT. 1) THEN
                ZR(JCOORP)      = CUPN0
@@ -501,8 +501,7 @@ C PASSANT PAR TROIS POINTS.
 
  110           CONTINUE
                IF (K .EQ. 0) THEN
-                  CALL UTMESS('F', 'RAYCIR.1', 'AUCUN CERCLE N''EST '//
-     &                        ' CIRCONSCRIT AUX QUATRE POINTS.' )
+                  CALL U2MESS('F','PREPOST4_59')
                ENDIF
 
                IF (CVON .LT. 0.0D0) THEN
@@ -522,7 +521,7 @@ C PASSANT PAR TROIS POINTS.
                   CVPN2 = ZR(JCER3P + 5)
                ENDIF
 
-               GOTO 100               
+               GOTO 100
             ENDIF
 
          ELSEIF (IRETV .EQ. 1) THEN
@@ -544,7 +543,7 @@ C PASSANT PAR TROIS POINTS.
      &                        CUPN, CVPN, IRETV)
                ENDIF
 
-               GOTO 100               
+               GOTO 100
 
             ELSEIF (NBOUCL .GT. 1) THEN
                ZR(JCOORP)      = CUPN0
@@ -594,8 +593,7 @@ C PASSANT PAR TROIS POINTS.
 
  120           CONTINUE
                IF (K .EQ. 0) THEN
-                  CALL UTMESS('F', 'RAYCIR.2', 'AUCUN CERCLE N''EST '//
-     &                        ' CIRCONSCRIT AUX QUATRE POINTS.' )
+                  CALL U2MESS('F','PREPOST4_59')
                ENDIF
 
                IF (CUON .LT. 0.0D0) THEN
@@ -615,7 +613,7 @@ C PASSANT PAR TROIS POINTS.
                   CVPN2 = ZR(JCER3P + 5)
                ENDIF
 
-               GOTO 100               
+               GOTO 100
             ENDIF
 
          ELSE
@@ -686,9 +684,9 @@ C CALCUL RECURRENT
          IF (P .GT. EPSILO) THEN
             NBR = 0
             RAYON = RAYON + X*P
-            CUON = CUTAU + 
+            CUON = CUTAU +
      &             RAYON*((CUTAU - CUON)/SQRT((CUTAU - CUON)**2))
-            CVON = CVTAU + 
+            CVON = CVTAU +
      &             RAYON*((CVTAU - CVON)/SQRT((CVTAU - CVON)**2))
          ELSE
             NBR = NBR + 1

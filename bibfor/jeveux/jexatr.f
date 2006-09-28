@@ -1,6 +1,6 @@
       FUNCTION   JEXATR ( NOMC , NOMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,11 +34,11 @@ C     ------------------------------------------------------------------
       COMMON /IDATJE/  NUMATR
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       INTEGER          ICRE , IRET
       CHARACTER *75    CMESS
@@ -52,25 +52,25 @@ C
       NOMALU = NOMA
       IF ( NOMALU .NE. 'LONCUM' ) THEN
         CMESS = 'ATTRIBUT NON ACCESSIBLE'
-        CALL JVMESS ( 'S' , 'JEXATR01' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       ICRE = 0
       CALL JJVERN ( NOM24//'        ' , ICRE ,IRET )
       IF ( IRET .NE. 2 ) THEN
         CMESS = 'ACCES RESERVE A UN ATTRIBUT DE COLLECTION'
-        CALL JVMESS ( 'S' , 'JEXATR02' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE
         CALL JJALLC ( ICLACO , IDATCO , 'L' , IBACOL )
         IXIADD = ISZON ( JISZON + IBACOL + IDIADD )
         IF ( IXIADD .NE. 0 ) THEN
           CMESS = 'ATTRIBUT LONCUM NON ACCESSIBLE POUR LES COLLECTIONS'
      &            //' DISPERSEES'
-          CALL JVMESS ( 'S' , 'JEXATR03' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ENDIF
         IXLONO = ISZON ( JISZON + IBACOL + IDLONO )
         IF ( IXLONO .EQ. 0 ) THEN
           CMESS = 'ATTRIBUT LONCUM NON ACCESSIBLE POUR CETTE COLLECTION'
-          CALL JVMESS ( 'S' , 'JEXATR04' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ELSE
           JEXATR = NOM24//CH8
           NUMATR = IXLONO

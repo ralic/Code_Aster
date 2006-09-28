@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C ---  RECUPERATION DES INFORMATIONS UTILES - INITIALISATIONS
 C     CALCUL D'UNE DIMENSION DE REFERENCE : DMIN
       CALL LTNOTB ( MAILLA, 'CARA_GEOM' , TABLE )
       CALL TBLIVA(TABLE,1,'APPLAT_Z',IBID,0.D0,C16B,K1BID,'ABSO',
-     +             R8GAEM(),'AR_MIN',K1BID,IBID,DMIN,C16B,K1BID,IER )
+     &             R8GAEM(),'AR_MIN',K1BID,IBID,DMIN,C16B,K1BID,IER )
 
 
 C --- NOM DE LA LISTE DE RELATIONS
@@ -153,9 +153,7 @@ C --- D'ELEMENTS DE LAGRANGE ASSOCIES
 C --- ACCES A L'OBJET .PRNM
 
         IF (NBEC.GT.10) THEN
-          CALL UTMESS('F','CAPREC',
-     &                'LE DESCRIPTEUR_GRANDEUR DES DEPLACEMENTS'//
-     &                ' NE TIENT PAS SUR DIX ENTIERS CODES')
+          CALL U2MESS('F','MODELISA_94')
         ELSE
           CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
         END IF
@@ -175,10 +173,7 @@ C....... DE LA GRANDEUR <SIEF_R>
           END IF
    20   CONTINUE
    30   CONTINUE
-        IF (IRANN.EQ.0) CALL UTMESS('F','CAPREC',
-     &                              'PROBLEME POUR DETERMINER LE '//
-     &               'RANG DE LA COMPOSANTE <N> DE LA GRANDEUR <SIEF_R>'
-     &                              )
+        IF (IRANN.EQ.0) CALL U2MESS('F','MODELISA3_35')
 
         IF (IRANN.GT.30) CALL VERI32()
         ICODOK = 2**IRANN
@@ -212,10 +207,7 @@ C ---  RECUPERATION D'UNE CARTE DE CONTRAINTES INITIALES LE CAS ECHEANT
               CALL DISMOI('F','NB_EC','SIEF_R','GRANDEUR',NBEC,K8B,IRET)
               SIGCAB = CABLPR//'.CHME.SIGIN'
               CALL JEEXIN(SIGCAB//'.DESC',IRET)
-              IF (IRET.EQ.0) CALL UTMESS('F','CAPREC',
-     &                                   'LE CONCEPT '//CABLPR//
-     &                                   ' N EST PAS UN CONCEPT DE TYPE'
-     &                                   //' CABL_PRECONT')
+              IF (IRET.EQ.0) CALL U2MESK('F','MODELISA3_36',1,CABLPR)
               CALL JEVEUO(SIGCAB//'.DESC','L',JDESC)
 
               IASM = ZI(JDESC+1)
@@ -227,10 +219,7 @@ C ---  RECOPIAGE DE LA PREMIERE CARTE
                 CALL COPISD('CHAMP_GD','G',SIGCAB,SIGCHA)
                 LCART1 = .FALSE.
                 CALL ETENCA(SIGCHA,LIGRMO,IRET)
-                IF (IRET.NE.0) CALL UTMESS('F','CAPREC','ERREUR '//
-     &                            'A L APPEL DE LA ROUTINE ETENCA POUR '
-     &                                     //'EXTENSION DE LA CARTE '//
-     &                                     SIGCHA)
+                IF (IRET.NE.0) CALL U2MESK('F','MODELISA3_37',1,SIGCHA)
                 CALL JEVEUO(SIGCHA//'.DESC','L',JDESC1)
                 CALL JEVEUO(SIGCHA//'.VALE','L',JVALE1)
                 CALL JEVEUO(SIGCHA//'.PTMA','L',JPTMA1)
@@ -251,10 +240,7 @@ C ---  RECUPERATION DES DONNEES APPORTEES PAR LES CARTES SUIVANTES
               ELSE
 
                 CALL ETENCA(SIGCAB,LIGRMO,IRET)
-                IF (IRET.NE.0) CALL UTMESS('F','CAPREC','ERREUR '//
-     &                            'A L APPEL DE LA ROUTINE ETENCA POUR '
-     &                                     //'EXTENSION DE LA CARTE '//
-     &                                     SIGCAB)
+                IF (IRET.NE.0) CALL U2MESK('F','MODELISA3_37',1,SIGCAB)
                 CALL JEVEUO(SIGCAB//'.DESC','L',JDESC)
                 CALL JEVEUO(SIGCAB//'.VALE','L',JVALE)
                 CALL JEVEUO(SIGCAB//'.PTMA','L',JPTMA)
@@ -286,10 +272,7 @@ C ---  LE CAS ECHEANT
               CALL DISMOI('F','NB_EC','DEPL_R','GRANDEUR',NBEC,K8B,IRET)
               LIRELA = CABLPR//'.LIRELA    '
               CALL JEEXIN(LIRELA//'.RLNR',IRET)
-              IF (IRET.EQ.0) CALL UTMESS('F','CAPREC',
-     &                                   'LE CONCEPT '//CABLPR//
-     &                                   ' N EST PAS UN CONCEPT DE TYPE'
-     &                                   //' CABL_PRECONT')
+              IF (IRET.EQ.0) CALL U2MESK('F','MODELISA3_36',1,CABLPR)
               CALL JEVEUO(LIRELA//'.RLNR','L',JDNBRE)
               NBRELA = ZI(JDNBRE)
               CALL JELIBE(LIRELA//'.RLNR')
@@ -396,10 +379,7 @@ C ---  ELIMINATION DES REDONDANCES EVENTUELLES DES NOEUDS DE LA LISTE
 C ---  CAS OU LA LISTE DES NOEUDS A LIER EST UN SINGLETON
 
                   IF (LONLIS.EQ.1) THEN
-                    CALL UTMESS('I','CALISO',
-     &                          'ATTENTION, LA LISTE DES NOEUDS '//
-     &                    'EST REDUITE A UN SEUL TERME ET L''ON NE FAIT'
-     &                          //' AUCUN TRAITEMENT')
+                    CALL U2MESS('I','MODELISA3_17')
                     GO TO 140
                   END IF
 

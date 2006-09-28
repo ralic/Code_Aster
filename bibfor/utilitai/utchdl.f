@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,6 +120,7 @@ C     -------------------------------------------------------
       IF (ICMP.EQ.0) THEN
         CALL UTMESS(AOF,'UTCHDL','COMPOSANTE '//NOCMP//'INEXISTANTE '//
      &              'POUR LA GRANDEUR '//NOMGD)
+C        CALL U2MESK(AOF,'UTILITAI5_30', 2 ,VALK)
         IDDL=0
         GOTO 9999
       END IF
@@ -132,6 +133,7 @@ C     -----------------------------
         CALL UTMESS(AOF,'UTCHDL','LA MAILLE:'//NOMAIZ//
      &                          'N''APPARTIENT PAS AU MAILLAGE:'//
      &                          NOMMAZ)
+C        CALL U2MESK(AOF,'UTILITAI5_31', 2 ,VALK)
         IDDL=0
         GOTO 9999
       END IF
@@ -142,13 +144,13 @@ C     ------------------------------------------
       IF (NONOEU(1:1).NE.' ') THEN
         CALL DISMOI(AOF,'TYPE_CHAMP',CHM19Z,'CHAMP',IBID,K8B,IBID)
         IF (K8B(1:4).NE.'ELNO') THEN
-          CALL UTMESS(AOF,'UTCHDL','LE CHAMP:'//CHM19Z//
-     &                'N''EST PAS UN CHAMP PAR ELEMENTS AUX NOEUDS.')
+          CALL U2MESK(AOF,'UTILITAI5_32',1,CHM19Z)
         END IF
         CALL JENONU(JEXNOM(NOMMAZ//'.NOMNOE',NONOEZ),INO)
         IF (INO.LE.0) THEN
           CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
      &                'N''APPARTIENT PAS AU MAILLAGE:'//NOMMAZ)
+C        CALL U2MESK(AOF,'UTILITAI5_33', 2 ,VALK)
         END IF
 C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         CALL JEVEUO(JEXNUM(NOMMAZ//'.CONNEX',IMA),'L',IACONX)
@@ -157,6 +159,7 @@ C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         IF (IPO.LE.0) THEN
           CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
      &                'N''APPARTIENT PAS A LA MAILLE:'//NOMAIZ)
+C        CALL U2MESK(AOF,'SOUSTRUC_59', 2 ,VALK)
         END IF
         NUPO2 = IPO
       ELSE
@@ -171,6 +174,7 @@ C     ------------------------------------------
      & CALL UTMESS(AOF,'UTCHDL','LA MAILLE:'//NOMAIZ//
      &                          'N''EST PAS AFFECTEE DANS LE LIGREL:'//
      &                          NOLIGR)
+C        CALL U2MESK(AOF,'UTILITAI5_34', 2 ,VALK)
       NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
       ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
       NCDYN = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+2)
@@ -181,9 +185,7 @@ C     6. CALCUL DE IDDL :
 C     ------------------------------------------
       IMOLO = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
       IF (IMOLO.LE.0) THEN
-        CALL UTMESS(AOF,'UTCHDL','LA MAILLE: '//NOMAIZ//
-     &        ' POSSEDE UN TYPE D''ELEMENT IGNORANT LE CHAM_ELEM TESTE.'
-     &              )
+        CALL U2MESK(AOF,'UTILITAI5_35',1,NOMAIZ)
       END IF
       CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
 
@@ -196,7 +198,7 @@ C     ------------------------
         ISPT = NUSP
       END IF
       IF (ISPT.GT.NBSPT) THEN
-          CALL UTMESS(AOF,'UTCHDL','NUM. DE SOUS-POINT > MAX')
+          CALL U2MESS(AOF,'UTILITAI5_36')
           IDDL=0
           GOTO 9999
       END IF
@@ -208,7 +210,7 @@ C     ----------------------------
         DIFF = (ZI(JMOLO-1+4).GT.10000)
         NBPT = MOD(ZI(JMOLO-1+4),10000)
         IF (NUPO2.GT.NBPT) THEN
-            CALL UTMESS(AOF,'UTCHDL','NUM. DE POINT > MAX')
+            CALL U2MESS(AOF,'UTILITAI5_37')
             IDDL=0
             GOTO 9999
         END IF
@@ -232,8 +234,7 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
           ZI(JLPT-1+IPT) = ICO
    20   CONTINUE
         IF ((.NOT.TROUVE) .AND. (.NOT.NOGRAN)) THEN
-          CALL UTMESS(AOF,'UTCHDL','L''ELEMENT N''ADMET PAS '//
-     &                'LA COMPOSANTE '//NOCMP)
+          CALL U2MESK(AOF,'UTILITAI5_38',1,NOCMP)
         END IF
 
 
@@ -273,9 +274,9 @@ C     ----------------------------
       ELSE
         LGCATA = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+3)
         DIFF = (ZI(JMOLO-1+4).GT.10000)
-        IF (DIFF) CALL UTMESS(AOF,'UTCHDL','A FAIRE ...')
+        IF (DIFF) CALL U2MESS(AOF,'CALCULEL_46')
         NBPT = MOD(ZI(JMOLO-1+4),10000)
-        IF (NBPT.NE.LGCATA) CALL UTMESS(AOF,'UTCHDL','STOP 1')
+        IF (NBPT.NE.LGCATA) CALL U2MESS(AOF,'CALCULEL_2')
 
 
         IPT = NUPO2

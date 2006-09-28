@@ -1,20 +1,20 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 14/06/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -77,7 +77,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
         NSO = 3
       END IF
       IF (OPTION(1:9).EQ.'SIEF_ELNO' .OR.
-     +    OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
+     &    OPTION(1:14).EQ.'SIGM_ELNO_COQU') THEN
 
         CALL JEVECH('PGEOMER','L',JGEOM)
         CALL JEVECH('PCACOQU','L',JCARA)
@@ -86,7 +86,7 @@ C
         CALL JEVECH('PCONTRR','L',ICHG)
 
         CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
-        
+
         IF(ICOMPO.EQ.0) THEN
              NBCOU = 1
         ELSE
@@ -94,10 +94,8 @@ C
           NBCOU=ZI(JNBSPI-1+1)
         ENDIF
 
-        IF (NBCOU.LE.0) CALL UTMESS('F','TE0415',
-     +              'NOMBRE DE COUCHES OBLIGATOIREMENT SUPERIEUR A 0')
-        IF (NBCOU.GT.10) CALL UTMESS('F','TE0415',
-     +              'NOMBRE DE COUCHES LIMITE A 10 POUR LES COQUES 3D')
+        IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_12')
+        IF (NBCOU.GT.10) CALL U2MESS('F','ELEMENTS_13')
         EPAIS = ZR(JCARA)
         ZMIN = -EPAIS/2.D0
         HIC = EPAIS/NBCOU
@@ -150,7 +148,7 @@ C     --------------------------------------------------------------
         K = 0
         DO 90 INTSR = 1,NPGSR
           CALL VECTGT(0,NB1,ZR(JGEOM),ZERO,INTSR,ZR(LZR),EPAIS,VECTN,
-     +                VECTG,VECTT)
+     &                VECTG,VECTT)
 
           DO 80 J = 1,3
             DO 70 I = 1,3
@@ -194,8 +192,8 @@ C     --------------------------------------------------------
           CALL JEVECH('PNUMCOR','L',JNUMC)
           ICOU = ZI(JNUMC)
           NORDO = ZI(JNUMC+1)
-          IF (ICOU.LE.0 .OR. ICOU.GT.NBCOU) CALL UTMESS('F','TE0415',
-     +        ' NUME_COUCHE INCORRECT')
+          IF (ICOU.LE.0 .OR. ICOU.GT.NBCOU) CALL U2MESS('F','ELEMENTS3_9
+     &5')
           DO 150 I = 1,NCMP
             DO 140 J = 1,NSO
               JJ = NSO* (NORDO+1) + NSO*NPGE* (ICOU-1) + J
@@ -207,7 +205,7 @@ C     --------------------------------------------------------
               SIGGN(I,7) = (SIGGN(I,3)+SIGGN(I,4))/2.D0
               SIGGN(I,8) = (SIGGN(I,4)+SIGGN(I,1))/2.D0
               SIGGN(I,9) = (SIGGN(I,1)+SIGGN(I,2)+SIGGN(I,3)+
-     +                     SIGGN(I,4))/4.D0
+     &                     SIGGN(I,4))/4.D0
             ELSE IF (NOMTE(1:8).EQ.'MEC3TR7H') THEN
               SIGGN(I,4) = (SIGGN(I,1)+SIGGN(I,2))/2.D0
               SIGGN(I,5) = (SIGGN(I,2)+SIGGN(I,3))/2.D0
@@ -236,7 +234,7 @@ C
             DO 190 ISOM = 1,NB2
               DO 180 ICOMP = 1,8
                 EFFGT(ICOMP,ISOM) = EFFGT(ICOMP,ISOM) +
-     +                              EFFGC(ICOMP,ISOM)
+     &                              EFFGC(ICOMP,ISOM)
   180         CONTINUE
   190       CONTINUE
   200     CONTINUE
@@ -258,12 +256,8 @@ C     --------------------------------------------------------
         LGPG = MAX(JTAB(6),1)*JTAB(7)
         CALL JEVECH('PNBSP_I','L',JNBSPI)
         NBCOU=ZI(JNBSPI-1+1)
-        IF (NBCOU.LE.0) CALL UTMESS('F','TE0415',
-     +                 'NOMBRE DE COUCHES OBLIGATOIREMENT SUPERIEUR A 0'
-     +                              )
-        IF (NBCOU.GT.10) CALL UTMESS('F','TE0415',
-     +                'NOMBRE DE COUCHES LIMITE A 10 POUR LES COQUES 3D'
-     +                               )
+        IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_12')
+        IF (NBCOU.GT.10) CALL U2MESS('F','ELEMENTS_13')
 
 C -- RECUPERATION DES VARIABLES INTERNES
 C -- NBVARI = NOMBRES DE VARIABLES INTERNES
@@ -343,17 +337,17 @@ C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
             IF (IC.NE.9) THEN
               DO 290 I = 1,LGPG
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     +                              ZR(JVARI-1+NP2+I)
+     &                              ZR(JVARI-1+NP2+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/2.D0
   290         CONTINUE
             ELSE
               DO 300 I = 1,LGPG
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     +                              ZR(JVARI-1+NP2+I)
+     &                              ZR(JVARI-1+NP2+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I) +
-     +                              ZR(JVARI-1+NP3+I)
+     &                              ZR(JVARI-1+NP3+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I) +
-     +                              ZR(JVARI-1+NP4+I)
+     &                              ZR(JVARI-1+NP4+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/4.D0
   300         CONTINUE
             END IF
@@ -378,23 +372,23 @@ C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
             IF (IC.NE.7) THEN
               DO 320 I = 1,LGPG
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     +                              ZR(JVARI-1+NP2+I)
+     &                              ZR(JVARI-1+NP2+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/2.D0
   320         CONTINUE
             ELSE
               DO 330 I = 1,LGPG
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     +                              ZR(JVARI-1+NP2+I)
+     &                              ZR(JVARI-1+NP2+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I) +
-     +                              ZR(JVARI-1+NP3+I)
+     &                              ZR(JVARI-1+NP3+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/3.D0
   330         CONTINUE
             END IF
   340     CONTINUE
         END IF
 
-C ------------------------------------------------------------ 
- 
+C ------------------------------------------------------------
+
       ELSE IF (OPTION(1:14).EQ.'VARI_ELNO_COQU') THEN
 
         CALL JEVECH('PNUMCOR','L',JNUMC)
@@ -422,7 +416,7 @@ C-- EXTRAPOLATION AUX NOEUDS SOMMETS (3 OU 4)
         CALL JEVECH('PVARINR','E',JVARI)
 
           DO 470 IC = 1,NBVARI
-          
+
             DO 460 I = 1,NPGE*NSO
               L = NPGE*NPGSN* (I-1)
               S = 0.D0
@@ -430,7 +424,7 @@ C-- EXTRAPOLATION AUX NOEUDS SOMMETS (3 OU 4)
 C -- DETERMINATION DU PT DE GAUSS A PARTIR DE LA POSITION JJ
                 DO 420 K1 = 1,NPGSN
                   DO 410 K2 = 1,NPGE
-C                  
+C
                     J1 = (K1-1)*NPGE + K2
                     IF (J1.EQ.J) THEN
                       INP = K1
@@ -447,7 +441,7 @@ C                JJ = (ICOU-1)*NPGE*NPGSN + J
   430         CONTINUE
             VAR(I)=S
   460       CONTINUE
-  
+
             IPGE=NORDO+2
             DO 465 INO=1,NSO
                ZR(JVARI-1+(INO-1)*NBVARI+IC) = VAR((INO-1)*NPGE+IPGE)
@@ -482,17 +476,17 @@ C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
             IF (IC.NE.9) THEN
               DO 490 I = 1,NBVARI
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     +                              ZR(JVARI-1+NP2+I)
+     &                              ZR(JVARI-1+NP2+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/2.D0
   490         CONTINUE
             ELSE
               DO 500 I = 1,NBVARI
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     +                              ZR(JVARI-1+NP2+I)
+     &                              ZR(JVARI-1+NP2+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I) +
-     +                              ZR(JVARI-1+NP3+I)
+     &                              ZR(JVARI-1+NP3+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I) +
-     +                              ZR(JVARI-1+NP4+I)
+     &                              ZR(JVARI-1+NP4+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/4.D0
   500         CONTINUE
             END IF
@@ -517,7 +511,7 @@ C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
             IF (IC.NE.7) THEN
               DO 520 I = 1,NBVARI
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NP1+I) +
-     +                              ZR(JVARI-1+NP2+I)
+     &                              ZR(JVARI-1+NP2+I)
                 ZR(JVARI-1+NPO+I) = ZR(JVARI-1+NPO+I)/2.D0
   520         CONTINUE
             ELSE

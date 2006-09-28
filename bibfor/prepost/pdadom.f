@@ -2,22 +2,22 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8  XM0,XM2,XM4,DOM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     CALCUL DOMMAGE EN FREQUENTIEL
@@ -61,9 +61,7 @@ C     ----------------------------------------------------------------
       CALL GETVID(' ','MATER',1,1,1,NOMMAT,NBVAL)
       PHENO = 'FATIGUE'
       CALL RCCOME (NOMMAT,PHENO,PHENOM,CODRET(1))
-      IF(CODRET(1).EQ.'NO') CALL UTMESS('F','POST_FATI_ALEA',
-     +   'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '
-     +   //'COMPORTEMENT FATIGUE DANS DEFI_MATERIAU')
+      IF(CODRET(1).EQ.'NO') CALL U2MESS('F','PREPOST_46')
       CARA = 'WOHLER'
       CALL RCPARE(NOMMAT,PHENO,CARA,CODWO)
       CARA = 'A_BASQUI'
@@ -77,24 +75,21 @@ C     ----------------------------------------------------------------
       ELSEIF(CODHS.EQ.'OK') THEN
         IHOSIN = 1
       ELSE
-        CALL UTMESS('F','POST_FATI_ALEA','LA DONNEE D''UNE '
-     +  //'COURBE DE WOHLER EST OBLIGATOIRE')
+        CALL U2MESS('F','PREPOST4_42')
       ENDIF
 C
 C----  DEFINITION DES BORNES INTEGRATION
 C
       CALL GETVTX(' ','COMPTAGE',1,1,1,MECOMP,NBVAL)
       IF (MECOMP.EQ.'PIC     '.AND.XM4.EQ.RUNDF) THEN
-        CALL UTMESS('F','POST_FATI_ALEA','LA DONNEE DU MOMENT '
-     +   //'SPECTRAL D''ORDRE 4 EST OBLIGATOIRE POUR LE '
-     +   //'COMPTAGE DES PICS DE CONTRAINTES')
+        CALL U2MESS('F','PREPOST4_43')
       ENDIF
       IF(IHOSIN.NE.0) THEN
         NOMRES(6) = 'SL'
         NBPAR     = 0
         NOMPAR    = ' '
         CALL RCVALE(NOMMAT,'FATIGUE',NBPAR,NOMPAR,RBID,1,NOMRES(6),
-     +              VAL(6),CODRET(6),'F ')
+     &              VAL(6),CODRET(6),'F ')
         VALMIN = VAL(6)
         VALMAX = 10*SQRT(XM0)
       ELSE
@@ -103,8 +98,7 @@ C
       ENDIF
       PAS  = (VALMAX-VALMIN)/300.D0
       IF(PAS.EQ.0.0D0) THEN
-        CALL UTMESS('F','POST_FATI_ALEA','LA VALEUR DU MOMENT '
-     +   //'SPECTRAL D''ORDRE 0 (LAMBDA_0) EST CERTAINEMENT NULLE')
+        CALL U2MESS('F','PREPOST4_44')
       ENDIF
       XNPOIN = (VALMAX-VALMIN)/PAS
       NBPOIN = INT(XNPOIN) + 1
@@ -112,12 +106,10 @@ C
 C------- CALCUL DES POINTS INTEGRATION
 C
       IF(XM2.EQ.0.D0) THEN
-          CALL UTMESS('F','POST_FATI_ALEA','LA VALEUR DU MOMENT '
-     +   //'SPECTRAL D''ORDRE 2 (LAMBDA_2) EST NULLE')
+          CALL U2MESS('F','PREPOST4_45')
       ENDIF
       IF(MECOMP.EQ.'PIC'.AND.XM4.EQ.0.D0) THEN
-          CALL UTMESS('F','POST_FATI_ALEA','LA VALEUR DU MOMENT '
-     +   //'SPECTRAL D''ORDRE 4 (LAMBDA_4) EST NULLE')
+          CALL U2MESS('F','PREPOST4_46')
       ENDIF
       CALL WKVECT('&&PDADOM.DISPICS','V V R8',2*NBPOIN,IAPICS)
       IF(MECOMP.EQ.'PIC     ')  XIREG = SQRT( XM2*XM2/XM0/XM4)
@@ -127,7 +119,7 @@ C
            ALPHA = XIREG*X1/((SQRT(1.D0-XIREG*XIREG))*(SQRT(XM0)))
            ALPHA = (-1.D0/SQRT(2.D0))*ALPHA
            Y1=SQRT(1-XIREG*XIREG)
-     +          *EXP(-X1*X1/(2.D0*XM0*(1.D0-XIREG*XIREG)))
+     &          *EXP(-X1*X1/(2.D0*XM0*(1.D0-XIREG*XIREG)))
            XP=SQRT(PI/2.D0)*ERFCAM(ALPHA)
            Y1=Y1+((XIREG*X1/SQRT(XM0))*EXP(-X1*X1/(2.D0*XM0)))*(XP)
            Y1=(SQRT(XM4)/(SQRT(XM2)*SQRT(XM0)))*Y1
@@ -153,15 +145,15 @@ C
           NBPAR = 0
           NOMPAR = ' '
           CALL RCVALE(NOMMAT,'RCCM',NBPAR,NOMPAR,RBID,3,NOMRES(1),
-     +                VAL(1),CODRET(1),'F ')
+     &                VAL(1),CODRET(1),'F ')
           DO 304 IPOINT = 1,NBPOIN
             DELTA = ZR(IAPICS+IPOINT-1)
             IF(DELTA.LE.3.D0*VAL(3)) THEN
               RVKE = 1.D0
             ELSEIF(DELTA.GT.3.D0*VAL(3).AND.DELTA.LT.
-     +        3.D0*VAL(2)*VAL(3)) THEN
+     &        3.D0*VAL(2)*VAL(3)) THEN
               RVKE = 1.D0 + ((1-VAL(1))/(VAL(1)*(VAL(2)-1)))*
-     +                      ((DELTA/(3.D0*VAL(3)))-1.D0)
+     &                      ((DELTA/(3.D0*VAL(3)))-1.D0)
             ELSEIF(DELTA.GE.3*VAL(2)*VAL(3)) THEN
               RVKE = 1.D0/VAL(1)
             ENDIF
@@ -189,7 +181,7 @@ C
                 ZR(IAWHO2+IPOINT-1) = 0.D0
              ELSE
                CALL RCVALE(NOMMAT,PHENO,NBPAR,NOMPAR,DELTA,1,NOMRES(1),
-     +                                           NRUPT,CODRET(1),'F ')
+     &                                           NRUPT,CODRET(1),'F ')
                ZR(IAWHO2+IPOINT-1)  = 1.D0 / NRUPT
              ENDIF
   307     CONTINUE
@@ -199,7 +191,7 @@ C
           NOMRES(1) = 'A_BASQUI'
           NOMRES(2) = 'BETA_BAS'
           CALL RCVALE(NOMMAT,'FATIGUE',NBPAR,NOMPAR,RBID,2,NOMRES,VAL,
-     +                                              CODRET,'F ')
+     &                                              CODRET,'F ')
           DO  308  IPOINT = 1,NBPOIN
             ZR(IAWHO2+IPOINT-1)  = VAL(1)*ZR(IAPICS+IPOINT-1)**VAL(2)
   308     CONTINUE
@@ -213,10 +205,10 @@ C
           NBPAR     = 0
           NOMPAR    = ' '
           CALL RCVALE(NOMMAT,'FATIGUE',NBPAR,NOMPAR,RBID,6,NOMRES,VAL,
-     +                                                   CODRET,'F ')
+     &                                                   CODRET,'F ')
           NOMRES(1) = 'E'
           CALL RCVALE(NOMMAT,'ELAS',NBPAR,NOMPAR,RBID,1,NOMRES,RE,
-     +                                                CODRET,'F ')
+     &                                                CODRET,'F ')
           DO  309  IPOINT = 1,NBPOIN
             SALT  = (VAL(1)/RE)*ZR(IAPICS+IPOINT-1)
             IF (SALT.GE.VAL(6)) THEN

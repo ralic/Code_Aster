@@ -1,6 +1,6 @@
       SUBROUTINE CESEXI(STOP,JCESD,JCESL,IMA,IPT,ISPT,ICMP,IAD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/03/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,23 +103,25 @@ C     ------------------------------------------------------------------
 
 
    20   CONTINUE
-        CALL UTMESS('F','CESEXI','NUMERO DE MAILLE INVALIDE: '//K8MAIL//
-     &              ' (<1 OU >NBMA)')
+        CALL U2MESK('F','CALCULEL_68',1,K8MAIL)
 
    30   CONTINUE
         CALL UTMESS('F','CESEXI','NUMERO DE POINT INVALIDE: '//K8PT//
      &              ' (<1 OU >NBPT)'//' POUR LA MAILLE: '//K8MAIL)
+C        CALL U2MESK('F','CALCULEL_69', 2 ,VALK)
 
    40   CONTINUE
         CALL UTMESS('F','CESEXI','NUMERO DE SOUS_POINT INVALIDE: '//
      &              K8SPT//' (<1 OU >NBSPT)'//' POUR LA MAILLE: '//
      &              K8MAIL//' ET POUR LE POINT: '//K8PT)
+C        CALL U2MESK('F','CALCULEL_70', 3 ,VALK)
 
    50   CONTINUE
         CALL UTMESS('F','CESEXI','NUMERO DE CMP INVALIDE: '//K8CMP//
      &              ' (<1 OU >NBCMP)'//' POUR LA MAILLE: '//K8MAIL//
      &              ' POUR LE POINT: '//K8PT//
      &              ' ET POUR LE SOUS_POINT: '//K8SPT)
+C        CALL U2MESK('F','CALCULEL_71', 4 ,VALK)
 
 
       ELSE

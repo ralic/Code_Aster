@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 26/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,8 +74,8 @@ C     ------------------------------------------------------------------
       IF (N1.EQ.0) MA = ' '
       IF (MO.NE.' ') THEN
         CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IB,MA2,IB)
-        IF ((MA.NE.' ') .AND. (MA.NE.MA2)) CALL UTMESS('F','OP0195',
-     &      'MAILLAGE ET MODELE INCOHERENTS.')
+        IF ((MA.NE.' ') .AND. (MA.NE.MA2)) CALL U2MESS('F','UTILITAI3_21
+     &')
         MA = MA2
       END IF
 
@@ -96,10 +96,7 @@ C     -------------------------------------------------------------
       IF (TYCHR(1:2).EQ.'EL') THEN
         IF ((OPERA.EQ.'AFFE') .OR. (OPERA.EQ.'ASSE') .OR.
      &      (OPERA.EQ.'DISC'))THEN
-          IF (MO.EQ.' ') CALL UTMESS('F','OP0195',
-     &                               'POUR TYPE_RESU:''EL..'''//
-     &                          ' IL FAUT RENSEIGNER LE MOT CLE MODELE.'
-     &                               )
+          IF (MO.EQ.' ') CALL U2MESS('F','UTILITAI3_22')
           LIGREL = MO//'.MODELE'
 
 C         -- CALCUL D'UN CHAM_ELEM "MODELE" : CELMOD
@@ -120,13 +117,13 @@ C         ---------------------------------------------------
           NOMPAR=NOPAR2(OPTIO2,NOMGD,'OUT')
           CELMOD = '&&OP0195.CELMOD'
           CALL ALCHML(LIGREL,OPTIO2,NOMPAR,'V',CELMOD,IB,' ')
-          IF (IB.NE.0) CALL UTMESS('F','OP0195','OPTION: '//OPTIO2//
-     &                       'NON PREVUE POUR LES ELEMENTS DU MODELE.')
+          IF (IB.NE.0) CALL U2MESK('F','UTILITAI3_23',1,OPTIO2)
 
 C         VERIFICATION DU TYPE DE CELMOD : ELGA/ELNO/ELEM :
           CALL JEVEUO(CELMOD//'.CELK','L',IB)
           IF (ZK24(IB-1+3).NE.TYCHR) CALL UTMESS('F','OP0195',
      &    'OPTION= '//OPTIO2//' INCOMPATIBLE AVEC TYPE_CHAM= '//TYCHR)
+C        CALL U2MESK('F','UTILITAI3_24', 2 ,VALK)
         END IF
       END IF
 
@@ -139,12 +136,12 @@ C     -------------------------------------------------------------
       IF (OPERA.EQ.'NORMALE') THEN
 C     -----------------------------------------
         IF (TYCHR.EQ.'NOEU') THEN
-          IF (NOMGD.NE.'GEOM_R') CALL UTMESS('F','OP0195','OPERATION= '
-     &               //OPERA//' SEULEMENT TYPE_CHAM= ''NOEU_GEOM_R'' ')
+          IF (NOMGD.NE.'GEOM_R') CALL U2MESK('F','UTILITAI3_25',1,OPERA)
           CALL CNONOR ( MO, NOMGD, 'G', CHOU )
-        ELSE 
+        ELSE
           CALL UTMESS('F','OP0195','OPERATION= '//OPERA//
      &                ' INCOMPATIBLE AVEC TYPE_CHAM= '//TYCHR)
+C        CALL U2MESK('F','UTILITAI3_26', 2 ,VALK)
         END IF
 
 
@@ -190,6 +187,7 @@ C     -----------------------------------------
         IF (NOMGD.NE.NOMGD2) CALL UTMESS('F','OP0195',
      &                            'GRANDEURS DIFFERENTES POUR :'//CHIN//
      &                            'ET :'//TYCHR1)
+C        CALL U2MESK('F','UTILITAI3_27', 2 ,VALK)
         CALL CHPCHD(CHIN,TYCHR,CELMOD,PROL0,'G',CHOU)
 
 

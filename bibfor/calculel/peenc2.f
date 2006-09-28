@@ -4,7 +4,7 @@
       REAL*8                      RCOEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 
       CALL JELIRA ( CHAMP2//'.CELD', 'DOCU', IBID, DOCU )
       IF( DOCU .NE. 'CHML') THEN
-         CALL UTMESS('F','PEENC2','LE CHAMP DOIT ETRE UN CHAM_ELEM.')
+         CALL U2MESS('F','CALCULEL3_52')
       ENDIF
       CALL JEVEUO ( CHAMP2//'.CELK', 'L', LCELK )
       LIGREL = ZK24(LCELK)(1:19)

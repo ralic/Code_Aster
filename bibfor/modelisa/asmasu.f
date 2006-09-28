@@ -2,22 +2,22 @@
       IMPLICIT NONE
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/11/2003   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     OPERATEUR: ASSE_MAILLAGE / CAS DE L ASSEMBLAGE DE MAILLAGES
@@ -75,8 +75,8 @@ CCC              5       DU MAJORANT DE SUPER MAILLES
       DO 10,I=1,5
         ZI(IADIME-1+I)=ZI(IADIM1-1+I)+ZI(IADIM2-1+I)
  10   CONTINUE
-      IF(ZI(IADIM1-1+6).NE.ZI(IADIM2-1+6)) CALL UTMESS('F','OP0105',
-     +      'LES 2 MAILLAGES DOIVENT ETRE DU MEME TYPE : 2D (OU 3D).')
+      IF(ZI(IADIM1-1+6).NE.ZI(IADIM2-1+6)) CALL U2MESS('F','MODELISA2_20
+     &')
 C
       NCOOR=ZI(IADIM1-1+6)
       ZI(IADIME-1+6)=NCOOR
@@ -128,7 +128,7 @@ C     --OBJET .CONNEX:
 C     -----------------
       IF (NBMA.GT.0) THEN
         CALL JECREC(MAG//'.CONNEX','G V I','NU'
-     +            ,'CONTIG','VARIABLE',NBMA)
+     &            ,'CONTIG','VARIABLE',NBMA)
         L1=0
         L2=0
         IF (NBM1.GT.0) CALL JELIRA(MA1//'.CONNEX','LONT',L1,KBID)
@@ -216,13 +216,13 @@ C     -----------------
       NBGM1 = 0
       NBGM2 = 0
       IF (IRET1.GT.0) CALL JELIRA(MA1//'.GROUPEMA','NUTIOC',
-     +                            NBGM1,KBID)
+     &                            NBGM1,KBID)
       IF (IRET2.GT.0) CALL JELIRA(MA2//'.GROUPEMA','NUTIOC',
-     +                            NBGM2,KBID)
+     &                            NBGM2,KBID)
       NBGMA = NBGM1 + NBGM2
       IF ( NBGMA .GT. 0 ) THEN
         CALL JECREC(MAG//'.GROUPEMA','G V I','NO',
-     +                               'DISPERSE','VARIABLE',NBGMA)
+     &                               'DISPERSE','VARIABLE',NBGMA)
         DO 71,I=1,NBGM1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPEMA',I),'L',IAGMA1)
           CALL JELIRA(JEXNUM(MA1//'.GROUPEMA',I),'LONMAX',N,KBID)
@@ -241,9 +241,7 @@ C     -----------------
           CALL JENUNO(JEXNUM(MA2//'.GROUPEMA',I),NOGMA)
           CALL JEEXIN(JEXNOM(MAG//'.GROUPEMA',NOGMA),IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('A','OP0105',
-     +           'LE GROUP_MA : '//NOGMA//' EST PRESENT DANS LES 2'
-     +           //' MAILLAGES. CONFLIT DE NOMS.')
+            CALL U2MESK('A','MODELISA2_21',1,NOGMA)
             NOGMAB=NOGMA
             II = LXLGUT(NOGMAB(1:7))
             DO 724,K=II+1,7
@@ -257,7 +255,7 @@ C     -----------------
  722        CONTINUE
  723        CONTINUE
             WRITE (IFM,*) ' LE GROUP_MA '//NOGMA//' DU MAILLAGE '
-     +           //MA2//' EST RENOMME '//NOGMAB//' DANS '//MAG
+     &           //MA2//' EST RENOMME '//NOGMAB//' DANS '//MAG
             NOGMA=NOGMAB
           END IF
           ICOMPT = ICOMPT + 1
@@ -279,13 +277,13 @@ C     -----------------
       NBGN1 = 0
       NBGN2 = 0
       IF (IRET1.GT.0) CALL JELIRA(MA1//'.GROUPENO','NUTIOC',
-     +                            NBGN1,KBID)
+     &                            NBGN1,KBID)
       IF (IRET2.GT.0) CALL JELIRA(MA2//'.GROUPENO','NUTIOC',
-     +                            NBGN2,KBID)
+     &                            NBGN2,KBID)
       NBGNO = NBGN1 + NBGN2
       IF ( NBGNO .GT. 0 ) THEN
         CALL JECREC(MAG//'.GROUPENO','G V I','NO',
-     +                               'DISPERSE','VARIABLE',NBGNO)
+     &                               'DISPERSE','VARIABLE',NBGNO)
         DO 81,I=1,NBGN1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPENO',I),'L',IAGNO1)
           CALL JELIRA(JEXNUM(MA1//'.GROUPENO',I),'LONMAX',N,KBID)
@@ -304,9 +302,7 @@ C     -----------------
           CALL JENUNO(JEXNUM(MA2//'.GROUPENO',I),NOGNO)
           CALL JEEXIN(JEXNOM(MAG//'.GROUPENO',NOGNO),IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('A','OP0105',
-     +           'LE GROUP_NO : '//NOGNO//' EST PRESENT DANS LES 2'
-     +           //' MAILLAGES. CONFLIT DE NOMS.')
+            CALL U2MESK('A','MODELISA2_22',1,NOGNO)
             NOGNOB=NOGNO
             II = LXLGUT(NOGNOB(1:7))
             DO 824,K=II+1,7
@@ -320,7 +316,7 @@ C     -----------------
  822        CONTINUE
  823        CONTINUE
             WRITE (IFM,*) ' LE GROUP_NO '//NOGNO//' DU MAILLAGE '
-     +           //MA2//' EST RENOMME '//NOGNOB//' DANS '//MAG
+     &           //MA2//' EST RENOMME '//NOGNOB//' DANS '//MAG
             NOGNO=NOGNOB
           END IF
           ICOMPT = ICOMPT + 1

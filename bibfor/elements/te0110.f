@@ -3,7 +3,7 @@
       CHARACTER*16  OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -561,10 +561,7 @@ C       ---------------
           M(3,2) = M(2,3)
 
         ELSE
-          CALL UTMESS('F','TE0101','LE MATERIAU '//PHENOM//' N''EST '//
-     &                'PAS CONNU. SEULS SONT ADMIS LES MATERIAUX '//
-     &                ' ''THER'', ''THER_COQMU'' ET ''THER_COQUE'' '//
-     &                'POUR LES COQUES THERMIQUES .')
+          CALL U2MESK('F','ELEMENTS3_17',1,PHENOM)
         END IF
 
 C --- PRISE EN COMPTE DANS LE TENSEUR DE CONDUCTIVITE TRANSVERSE DES

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,16 +96,11 @@ C TEST SUR LE MODE DE STOCKAGE : SI ON N EST PAS EN STOCKAGE
 C LIGNE DE CIEL PLEIN ON PLANTE
 
         IF (NUEQ.NE.NHMAX) THEN
-          CALL UTMESS('A','MAG152','LE PROFIL DE LA MATRICE '//
-     &                'N EST SUREMENT PAS PLEIN. '//
-     &                'ON  CONTINUE MAIS S''IL VOUS ARRIVE DES '//
-     &                'PROBLEMES PLUS LOIN...')
+          CALL U2MESS('A','ALGORITH5_16')
         END IF
 
         IF ((NUEQ* (NUEQ+1)/2).GT. (NBLOC*NTBLOC)) THEN
-          CALL UTMESS('F','MAG152','LE PROFIL DE LA MATRICE '//
-     &                'N EST SUREMENT PAS PLEIN. '//
-     &                'ON  CONTINUE MAIS ATTENTION ....')
+          CALL U2MESS('F','ALGORITH5_17')
         END IF
 
 C CALCUL DU NOMBRE DE TERME PAR BLOC ET TOTAL
@@ -132,8 +127,7 @@ C
 
         WRITE (6,*) 'SOMME=',SOMME
         IF ((NUEQ* (NUEQ+1)/2).NE.SOMME) THEN
-          CALL UTMESS('F','MAG152','LE PROFIL DE LA MATRICE '//
-     &                'N EST  PAS PLEIN. '//'ON ARRETE TOUT ....')
+          CALL U2MESS('F','ALGORITH5_18')
         END IF
 
 

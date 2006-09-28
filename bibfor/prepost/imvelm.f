@@ -1,22 +1,22 @@
       SUBROUTINE IMVELM ( IFM, NOMSDZ, NBCMP, LISCMZ, NBELEM,
-     +                    LISMAZ, NBCHIF)
+     &                    LISMAZ, NBCHIF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C.======================================================================
@@ -203,7 +203,7 @@ C
 C ---   NOMBRE DE COMPOSANTES ASSOCIEES A LA GRANDEUR :
 C       ---------------------------------------------
          CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'LONMAX',NCMPMX,
-     +               K1BID)
+     &               K1BID)
          CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',INOCMP)
 C
 C ---   TYPE (REEL OU COMPLEXE) ASSOCIE AUX VALEURS DU RESU_ELEM :
@@ -269,7 +269,7 @@ C       ----------------------------------------------------
          FORMA = '('//'//,2X,'//KLONLF//'("_")'//')'
          FORMC = '(2X,'//KLONLF//'("_")'//',//'//')'
          FORMB = '(2X,'//'"!",X,"LIGREL : "A'//KLONLS//
-     +           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
+     &           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
 C
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU LIGREL :
 C       ------------------------------------------
@@ -465,8 +465,8 @@ C ---        EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---        PAR L'UTILISATEUR :
 C            -----------------
              CALL TRNOR1 (NBNOE, ZK8(IDLINO), NBCMP,
-     +                    ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                    ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM), LONLI2)
+     &                    ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                    ZK8(IDNOMC), ZR(IDVALE), ZI(IDINCM), LONLI2)
 C
              IF (LONLI2.EQ.0) GOTO 70
 C
@@ -476,7 +476,7 @@ C            -----------
              LNOMCM = 0
              DO 130 I = 1, LONLI2
                 NOMNCI(I) = ZK8(IDNONO+I-1)(1:LXLGUT(ZK8(IDNONO+I-1)))
-     +                    //SLACH//ZK8(IDNOMC+I-1)
+     &                    //SLACH//ZK8(IDNOMC+I-1)
                 LNOMCM = MAX(LNOMCM,LXLGUT(NOMNCI(I)))
  130         CONTINUE
 C
@@ -519,7 +519,7 @@ C
 C
              FORM3 = '(2X,'//KLONLG//'("_")'//')'
              FORM4 = '(2X,A1,A17,A1,'//
-     +                KLONLI//'(X,'//FORVAR//',X,A1))'
+     &                KLONLI//'(X,'//FORVAR//',X,A1))'
              FORM2 = '(2X,A1,A8,9X,A1,X,'//KBLAN1//'X,X,A1)'
              FORM1 = '('//'2X,'//KLONLG//'("_")'//')'
 C
@@ -542,7 +542,7 @@ C             ------------------------------
 C
                 IF (IMPLIG(NOCMP(I),NBCMP,ZK8(IDLICM))) THEN
                    WRITE(IFM,FORM4) EXCLAM, NOMNCI(I),EXCLAM,
-     +                    ZR(IDRESL+NCMPEL*(IEL-1)+I-1),EXCLAM
+     &                    ZR(IDRESL+NCMPEL*(IEL-1)+I-1),EXCLAM
                    WRITE(IFM,FORM3)
 C
                 ENDIF
@@ -610,7 +610,7 @@ C       ----------------------------------------------------
          FORMA = '('//'//,2X,'//KLONLF//'("_")'//')'
          FORMC = '(2X,'//KLONLF//'("_")'//',//'//')'
          FORMB = '(2X,'//'"!",X,"LIGREL : "A'//KLONLS//
-     +           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
+     &           ',4X,"OPTION : "A'//KLONLO//',X,"!"'//')'
 C
 C ---   RECUPERATION DU MAILLAGE ASSOCIE AU LIGREL :
 C       ------------------------------------------
@@ -806,8 +806,8 @@ C ---        EN FONCTION DES NOEUDS ET DES COMPOSANTES SPECIFIES
 C ---        PAR L'UTILISATEUR :
 C            -----------------
              CALL TRNOC1 (NBNOE, ZK8(IDLINO), NBCMP,
-     +                    ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
-     +                    ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM), LONLI2)
+     &                    ZK8(IDLICM), OPTION, NBINCO, ZK8(IDNONO),
+     &                    ZK8(IDNOMC), ZC(IDVALE), ZI(IDINCM), LONLI2)
 C
              IF (LONLI2.EQ.0) GOTO 200
 C
@@ -817,7 +817,7 @@ C            -----------
              LNOMCM = 0
              DO 260 I = 1, LONLI2
                 NOMNCI(I) = ZK8(IDNONO+I-1)(1:LXLGUT(ZK8(IDNONO+I-1)))
-     +                    //SLACH//ZK8(IDNOMC+I-1)
+     &                    //SLACH//ZK8(IDNOMC+I-1)
                 LNOMCM = MAX(LNOMCM,LXLGUT(NOMNCI(I)))
  260         CONTINUE
 C
@@ -840,7 +840,7 @@ C            -------------------------------------
              CALL CODENT(LVALRE,'D',KLVALR)
 C
              FORVAC = '"("'//'1PD'//KLVALR//'.'//KNBCH//'","'//
-     +                '1PD'//KLVALR//'.'//KNBCH//'")"'
+     &                '1PD'//KLVALR//'.'//KNBCH//'")"'
 C
 C ---        LONGUEUR D'UNE 'CASE' :
 C            --------------------
@@ -864,7 +864,7 @@ C
 C
              FORM3 = '(2X,'//KLONLG//'("_")'//')'
              FORMC4 = '(2X,A1,A17,A1,'//
-     +                KLONLI//'(X,'//FORVAC//',X,A1))'
+     &                KLONLI//'(X,'//FORVAC//',X,A1))'
              FORM2 = '(2X,A1,A8,9X,A1,X,'//KBLAN1//'X,X,A1)'
              FORM1 = '('//'2X,'//KLONLG//'("_")'//')'
 C
@@ -887,7 +887,7 @@ C             ------------------------------
 C
                 IF (IMPLIG(NOCMP(I),NBCMP,ZK8(IDLICM))) THEN
                    WRITE(IFM,FORMC4) EXCLAM, NOMNCI(I),EXCLAM,
-     +                    ZC(IDRESL+NCMPEL*(IEL-1)+I-1),EXCLAM
+     &                    ZC(IDRESL+NCMPEL*(IEL-1)+I-1),EXCLAM
                    WRITE(IFM,FORM3)
 C
                 ENDIF
@@ -897,10 +897,7 @@ C
  150     CONTINUE
          CALL JEDETC('V','&&IMVELM1',1)
         ELSE
-          CALL UTMESS('F','IMVELM','LES SEULS TYPES DE VALEURS ACCEPTES'
-     +                //' POUR LES RESU_ELEM SONT LES REELS ET LES'
-     +                //' COMPLEXES, LE DESCRIPTEUR DE TYPE '//TYPVAL
-     +                //' EST INADEQUAT.')
+          CALL U2MESK('F','PREPOST_63',1,TYPVAL)
         ENDIF
  10   CONTINUE
 C

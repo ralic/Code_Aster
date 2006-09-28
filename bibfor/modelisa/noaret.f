@@ -1,21 +1,21 @@
       SUBROUTINE NOARET(TYPEMA,ARE,NARE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C ----------------------------------------------------------------------
@@ -39,7 +39,7 @@ C --- VARIABLES
       INTEGER ARE(*),NARE
 
       IF (TYPEMA(1:5).EQ.'TRIA3') THEN
-        
+
         NARE = 3
 
         ARE(1) = 2
@@ -49,7 +49,7 @@ C --- VARIABLES
         ARE(4) = 2
           ARE(5) = 2
           ARE(6) = 3
-          
+
         ARE(7) = 2
           ARE(8) = 3
           ARE(9) = 1
@@ -72,9 +72,9 @@ C --- VARIABLES
           ARE(10) = 3
           ARE(11) = 1
           ARE(12) = 6
-        
+
       ELSEIF (TYPEMA(1:5).EQ.'QUAD4') THEN
-        
+
         NARE = 4
 
         ARE(1) = 2
@@ -84,7 +84,7 @@ C --- VARIABLES
         ARE(4) = 2
           ARE(5) = 2
           ARE(6) = 3
-          
+
         ARE(7) = 2
           ARE(8) = 3
           ARE(9) = 4
@@ -94,18 +94,18 @@ C --- VARIABLES
           ARE(12) = 1
 
       ELSEIF (TYPEMA(1:5).EQ.'QUAD6') THEN
-        
+
         NARE = 4
 
         ARE(1) = 3
           ARE(2) = 1
           ARE(3) = 2
-          ARE(4) = 5        
+          ARE(4) = 5
 
         ARE(5) = 2
           ARE(6) = 2
           ARE(7) = 3
-          
+
         ARE(8) = 3
           ARE(9) = 3
           ARE(10) = 4
@@ -116,19 +116,19 @@ C --- VARIABLES
           ARE(14) = 1
 
       ELSEIF (TYPEMA(1:4).EQ.'QUAD') THEN
-        
+
         NARE = 4
 
         ARE(1) = 3
           ARE(2) = 1
           ARE(3) = 2
-          ARE(4) = 5        
+          ARE(4) = 5
 
         ARE(5) = 3
           ARE(6) = 2
           ARE(7) = 3
           ARE(8) = 6
-          
+
         ARE(9) = 3
           ARE(10) = 3
           ARE(11) = 4
@@ -204,7 +204,7 @@ C --- VARIABLES
       ELSEIF (TYPEMA(1:6).EQ.'PENTA6') THEN
 
         NARE = 9
-          
+
         ARE(1) = 2
           ARE(2) = 1
           ARE(3) = 2
@@ -218,9 +218,9 @@ C --- VARIABLES
           ARE(9) = 1
 
         ARE(10) = 2
-          ARE(11) = 1 
+          ARE(11) = 1
           ARE(12) = 4
- 
+
         ARE(13) = 2
           ARE(14) = 2
           ARE(15) = 5
@@ -245,7 +245,7 @@ C --- VARIABLES
      &        (TYPEMA(1:7).EQ.'PENTA14')) THEN
 
         NARE = 9
-          
+
         ARE(1) = 3
           ARE(2) = 1
           ARE(3) = 2
@@ -262,9 +262,9 @@ C --- VARIABLES
           ARE(12) = 9
 
         ARE(13) = 2
-          ARE(14) = 1 
+          ARE(14) = 1
           ARE(15) = 4
- 
+
         ARE(16) = 2
           ARE(17) = 2
           ARE(18) = 5
@@ -291,7 +291,7 @@ C --- VARIABLES
       ELSEIF (TYPEMA(1:7).EQ.'PENTA15') THEN
 
         NARE = 9
-          
+
         ARE(1) = 3
           ARE(2) = 1
           ARE(3) = 2
@@ -308,10 +308,10 @@ C --- VARIABLES
           ARE(12) = 9
 
         ARE(13) = 3
-          ARE(14) = 1 
+          ARE(14) = 1
           ARE(15) = 4
           ARE(16) = 10
- 
+
         ARE(17) = 3
           ARE(18) = 2
           ARE(19) = 5
@@ -515,7 +515,7 @@ C --- VARIABLES
 
       ELSE
 
-       CALL UTMESS('F','NOARET',TYPEMA//' INDISPONIBLE')
+       CALL U2MESK('F','CALCULEL_28',1,TYPEMA)
 
       ENDIF
 

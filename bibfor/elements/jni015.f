@@ -1,7 +1,7 @@
       SUBROUTINE JNI015(ELREFE,NMAXOB,LIOBJ,NBOBJ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,8 +109,7 @@ C
         NPG2(2,2) = 3
 C
       ELSE
-        CALL UTMESS('F','JNI015',
-     &              'ELEMENT FAISCEAU HOMOGENEISE NON PREVU')
+        CALL U2MESS('F','ELEMENTS2_29')
       ENDIF
 C
       CALL JEEXIN(CARAC,IRET)
@@ -140,9 +139,9 @@ C
       CALL WKVECT(FF   ,'V V R',LFF,IFF)
 C --- PLACE MEMOIRE POUR COORDONNEES DES DIFFERENTS POINTS DE GAUSS ---
       LFFT = 3*( NPG1(1,1)*NPG1(1,1)*NPG1(1,2) +
-     +           NPG1(2,1)*NPG1(2,1)*NPG1(2,2) +
-     +           NPG2(1,1)*NPG2(1,1)*NPG2(1,2) +
-     +           NPG2(2,1)*NPG2(2,1)*NPG2(2,2) )
+     &           NPG1(2,1)*NPG1(2,1)*NPG1(2,2) +
+     &           NPG2(1,1)*NPG2(1,1)*NPG2(1,2) +
+     &           NPG2(2,1)*NPG2(2,1)*NPG2(2,2) )
       CALL WKVECT('&&JNI014.FFT','V V R',LFFT,IFFT)
 C     --------------------------------------------
 C     --- COORDONNEES INTRINSEQUES DE L'HEXA8 ----
@@ -237,21 +236,21 @@ C                 AU POINT DE GAUSS
 C --- POUR LES POUTRES
         IDER = 2
         CALL CLFFCH ( ALIAS, POU, NNO1, XG, YG, ZG,
-     +       XIN, YIN, ZIN,
-     +       ZR(IVF1  +(I-1)*2*NNO1), ZR(IDPDX1+(I-1)*2*NNO1),
-     +       ZR(IDPDY1+(I-1)*2*NNO1), ZR(IDPDZ1+(I-1)*2*NNO1),
-     +       ZR(IDSDX1+(I-1)*2*NNO1), ZR(IDSDY1+(I-1)*2*NNO1),
-     +       ZR(IDSDZ1+(I-1)*2*NNO1), ZR(IDSXY1+(I-1)*2*NNO1),
-     +       ZR(IDSXZ1+(I-1)*2*NNO1), ZR(IDSYZ1+(I-1)*2*NNO1),IDER)
+     &       XIN, YIN, ZIN,
+     &       ZR(IVF1  +(I-1)*2*NNO1), ZR(IDPDX1+(I-1)*2*NNO1),
+     &       ZR(IDPDY1+(I-1)*2*NNO1), ZR(IDPDZ1+(I-1)*2*NNO1),
+     &       ZR(IDSDX1+(I-1)*2*NNO1), ZR(IDSDY1+(I-1)*2*NNO1),
+     &       ZR(IDSDZ1+(I-1)*2*NNO1), ZR(IDSXY1+(I-1)*2*NNO1),
+     &       ZR(IDSXZ1+(I-1)*2*NNO1), ZR(IDSYZ1+(I-1)*2*NNO1),IDER)
 C --- POUR LA GEOMETRIE
         IDER = 2
         CALL CLFFCH ( GEOM, FLUI, NNO1, XG, YG, ZG,
-     +       XIN, YIN, ZIN,
-     +       ZR(IVF2  +(I-1)*NNO1), ZR(IDPDX2+(I-1)*NNO1),
-     +       ZR(IDPDY2+(I-1)*NNO1), ZR(IDPDZ2+(I-1)*NNO1),
-     +       ZR(IDSDX2+(I-1)*NNO1), ZR(IDSDY2+(I-1)*NNO1),
-     +       ZR(IDSDZ2+(I-1)*NNO1), ZR(IDSXY2+(I-1)*NNO1),
-     +       ZR(IDSXZ2+(I-1)*NNO1), ZR(IDSYZ2+(I-1)*NNO1),IDER)
+     &       XIN, YIN, ZIN,
+     &       ZR(IVF2  +(I-1)*NNO1), ZR(IDPDX2+(I-1)*NNO1),
+     &       ZR(IDPDY2+(I-1)*NNO1), ZR(IDPDZ2+(I-1)*NNO1),
+     &       ZR(IDSDX2+(I-1)*NNO1), ZR(IDSDY2+(I-1)*NNO1),
+     &       ZR(IDSDZ2+(I-1)*NNO1), ZR(IDSXY2+(I-1)*NNO1),
+     &       ZR(IDSXZ2+(I-1)*NNO1), ZR(IDSYZ2+(I-1)*NNO1),IDER)
 C
  100  CONTINUE
 C     --------------------------------------------
@@ -280,16 +279,16 @@ C --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
 C --- POUR LES POUTRES
         IDER = 0
         CALL CLFFCH ( ALIAS, POU, NNO1, XG, YG, ZG,
-     +       XIN, YIN, ZIN,
-     +       ZR(IVF1+(I-1)*2*NNO1),
-     +       BID,BID,BID,BID,BID,BID,BID,BID,BID,IDER)
+     &       XIN, YIN, ZIN,
+     &       ZR(IVF1+(I-1)*2*NNO1),
+     &       BID,BID,BID,BID,BID,BID,BID,BID,BID,IDER)
 C --- POUR LA GEOMETRIE
         IDER = 1
         CALL CLFFCH ( GEOM, FLUI, NNO1, XG, YG, ZG,
-     +       XIN, YIN, ZIN,
-     +       ZR(IVF2  +(I-1)*NNO1),ZR(IDPDX2+(I-1)*NNO1),
-     +       ZR(IDPDY2+(I-1)*NNO1),ZR(IDPDZ2+(I-1)*NNO1),
-     +       BID,BID,BID,BID,BID,BID,IDER)
+     &       XIN, YIN, ZIN,
+     &       ZR(IVF2  +(I-1)*NNO1),ZR(IDPDX2+(I-1)*NNO1),
+     &       ZR(IDPDY2+(I-1)*NNO1),ZR(IDPDZ2+(I-1)*NNO1),
+     &       BID,BID,BID,BID,BID,BID,IDER)
 C
  200   CONTINUE
 C     --------------------------------------------
@@ -321,15 +320,15 @@ C --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
 C --- POUR LE FLUIDE
         IDER = 1
         CALL CLFFCH ( ALIAS, FLUI, NNO2, XG, YG, ZG, XIN, YIN, ZIN,
-     +       ZR(IVF1  +(I-1)*NNO2),ZR(IDPDX1+(I-1)*NNO2),
-     +       ZR(IDPDY1+(I-1)*NNO2),ZR(IDPDZ1+(I-1)*NNO2),
-     +       BID,BID,BID,BID,BID,BID,IDER )
+     &       ZR(IVF1  +(I-1)*NNO2),ZR(IDPDX1+(I-1)*NNO2),
+     &       ZR(IDPDY1+(I-1)*NNO2),ZR(IDPDZ1+(I-1)*NNO2),
+     &       BID,BID,BID,BID,BID,BID,IDER )
 C --- POUR LA GEOMETRIE
         IDER = 1
         CALL CLFFCH ( GEOM, FLUI, NNO1, XG, YG, ZG, XIN, YIN, ZIN,
-     +       ZR(IVF2  +(I-1)*NNO1),ZR(IDPDX2+(I-1)*NNO1),
-     +       ZR(IDPDY2+(I-1)*NNO1),ZR(IDPDZ2+(I-1)*NNO1),
-     +       BID,BID,BID,BID,BID,BID,IDER )
+     &       ZR(IVF2  +(I-1)*NNO1),ZR(IDPDX2+(I-1)*NNO1),
+     &       ZR(IDPDY2+(I-1)*NNO1),ZR(IDPDZ2+(I-1)*NNO1),
+     &       BID,BID,BID,BID,BID,BID,IDER )
 C
  300  CONTINUE
 C     --------------------------------------------
@@ -362,21 +361,21 @@ C --- FONCTIONS DE FORME ET DERIVEES PREMIERES AU POINT DE GAUSS
 C --- POUR LES POUTRES
         IDER = 0
         CALL CLFFCH( ALIAS, POU, NNO1, XG, YG, ZG,
-     +       XIN, YIN, ZIN,
-     +       ZR(IVF1+(I-1)*2*NNO1),
-     +       BID,BID,BID,BID,BID,BID,BID,BID,BID,IDER )
+     &       XIN, YIN, ZIN,
+     &       ZR(IVF1+(I-1)*2*NNO1),
+     &       BID,BID,BID,BID,BID,BID,BID,BID,BID,IDER )
 C --- POUR LE FLUIDE
         IDER = 1
         CALL CLFFCH( ALIAS, FLUI, NNO2, XG, YG, ZG, XIN, YIN, ZIN,
-     +       ZR(IVF12 +(I-1)*NNO2),ZR(IDPDX1+(I-1)*NNO2),
-     +       ZR(IDPDY1+(I-1)*NNO2),ZR(IDPDZ1+(I-1)*NNO2),
-     +       BID,BID,BID,BID,BID,BID,IDER )
+     &       ZR(IVF12 +(I-1)*NNO2),ZR(IDPDX1+(I-1)*NNO2),
+     &       ZR(IDPDY1+(I-1)*NNO2),ZR(IDPDZ1+(I-1)*NNO2),
+     &       BID,BID,BID,BID,BID,BID,IDER )
 C --- POUR LA GEOMETRIE
         IDER = 1
         CALL CLFFCH( GEOM, FLUI, NNO1, XG, YG, ZG, XIN, YIN, ZIN,
-     +       ZR(IVF2  +(I-1)*NNO1),ZR(IDPDX2+(I-1)*NNO1),
-     +       ZR(IDPDY2+(I-1)*NNO1),ZR(IDPDZ2+(I-1)*NNO1),
-     +       BID,BID,BID,BID,BID,BID,IDER )
+     &       ZR(IVF2  +(I-1)*NNO1),ZR(IDPDX2+(I-1)*NNO1),
+     &       ZR(IDPDY2+(I-1)*NNO1),ZR(IDPDZ2+(I-1)*NNO1),
+     &       BID,BID,BID,BID,BID,BID,IDER )
 C
  400   CONTINUE
 C

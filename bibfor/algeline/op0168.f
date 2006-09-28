@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,13 +58,13 @@ C     ------------------------------------------------------------------
       DATA  KVALR / '&&OP0168.GRAN_MODAL_R' /
       DATA  KVALK / '&&OP0168.GRAN_MODAL_K_' /
       DATA NOMPAR / 'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' ,
-     +              'MASS_EFFE_UN_DZ' /
+     &              'MASS_EFFE_UN_DZ' /
       DATA  NOPARA /        'NUME_MODE'       , 'NORME'           ,
-     +  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
-     +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
-     +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
-     +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
-     +  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
+     &  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
+     &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
+     &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
+     &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
+     &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -111,13 +111,13 @@ C
             MASSI = ZK24(LMODE+1)
             AMORI = ZK24(LMODE+2)
             IF ( MASSI.NE.MASSE .OR. AMORI.NE.AMOR .OR. RAIDI.NE.RAIDE )
-     +           CALL UTMESS('F','OP0168','MODE NON COMPATIBLE.')
+     &           CALL U2MESS('F','ALGELINE3_9')
 C
             CALL RSORAC(MODEIN,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
-     +                                                  NBMODT,1,IBID)
+     &                                                  NBMODT,1,IBID)
             CALL WKVECT('&&OP0168.NUME_ORDRE','V V I',NBMODT,JOR)
             CALL RSORAC(MODEIN,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
-     +                                            ZI(JOR),NBMODT,IBID)
+     &                                            ZI(JOR),NBMODT,IBID)
 C
             CALL JECROC(JEXNUM(KMODE,NBMR))
             CALL JEECRA(JEXNUM(KMODE,NBMR),'LONMAX',NBMODT,' ')
@@ -140,7 +140,7 @@ C
                NBMODU = -N2
                CALL WKVECT('&&OP0168.NUME_MODE','V V I',NBMODU,JME)
                CALL GETVIS('FILTRE_MODE','NUME_ORDRE',I,1,
-     +                                             NBMODU,ZI(JME),N2)
+     &                                             NBMODU,ZI(JME),N2)
                NBMODE = 0
                DO 20 J = 1 , NBMODU
                   DO 22 K = 1 , NBMODT
@@ -167,7 +167,7 @@ C
                NBMODU = -N3
                CALL WKVECT('&&OP0168.NUME_MODE','V V I',NBMODU,JME)
                CALL GETVIS('FILTRE_MODE','NUME_MODE',I,1,
-     +                                             NBMODU,ZI(JME),N3)
+     &                                             NBMODU,ZI(JME),N3)
                NBMODE = 0
                DO 30 J = 1 , NBMODT
                   IORD = ZI(JOR+J-1)
@@ -192,7 +192,7 @@ C
                NBME = -N4
                CALL WKVECT('&&OP0168.NUME_MODE','V V I',NBME,JME)
                CALL GETVIS('FILTRE_MODE','NUME_MODE_EXCLU',I,1,
-     +                                                NBME,ZI(JME),N4)
+     &                                                NBME,ZI(JME),N4)
                NBMODE = 0
                DO 40 J = 1 , NBMODT
                   IORD = ZI(JOR+J-1)
@@ -243,7 +243,7 @@ C
                CALL GETVR8('FILTRE_MODE','SEUIL_Z'  ,I,1,1,SEUIL ,N10)
                NBMODE = 0
                IF ( CRITFI .EQ. 'MASS_EFFE_UN'.AND.
-     +             TYPCON(1:9).EQ.'MODE_MECA' ) THEN
+     &             TYPCON(1:9).EQ.'MODE_MECA' ) THEN
                  DO 60 J = 1 , NBMODT
                    IORD = ZI(JOR+J-1)
                    CALL RSADPA(MODEIN,'L',3,NOMPAR,IORD,0,LPAR,K8B)
@@ -251,8 +251,7 @@ C
                    DY = ZR(LPAR(2))
                    DZ = ZR(LPAR(3))
                    IF (DX.EQ.UNDF.OR.DY.EQ.UNDF.OR.DZ.EQ.UNDF) THEN
-                     CALL UTMESS('F','OP0168','MASSES EFFECTIVES '
-     +                //'UNITAIRES NON CALCULEES PAR NORM_MODE')
+                     CALL U2MESS('F','ALGELINE3_10')
                    ENDIF
                    IF (N7.NE.0) THEN
                      IF (DX.GE.SEUIL.OR.DY.GE.SEUIL.OR.DZ.GE.SEUIL) THEN
@@ -274,8 +273,8 @@ C
                        NBMODE = NBMODE + 1
                        ZI(JORDR+NBMODE-1) = IORD
                      ENDIF
-                   ENDIF  
-                     
+                   ENDIF
+
  60              CONTINUE
                ENDIF
                IF ( CRITFI .EQ. 'MASS_GENE' ) THEN
@@ -307,8 +306,8 @@ C
 C
 C     --- STOCKAGE ---
 C
-      IF (NDIMT.EQ.0) 
-     +   CALL UTMESS('F','OP0168','STRUCTURE RESULTAT VIDE')
+      IF (NDIMT.EQ.0)
+     &   CALL U2MESS('F','ALGELINE3_11')
       CALL RSCRSD ( MODEOU, TYPCON, NDIMT )
       IPREC = 0
       NOMSY = 'DEPL'
@@ -325,26 +324,25 @@ C
          ENDIF
          CALL JEVEUO(JEXNUM(KMODE,I),'L',JORDR)
          CALL VPRECU ( MODEIN, NOMSY, NBMODE, ZI(JORDR), KVEC,
-     +                 NBPARA, NOPARA, KVALI, KVALR, KVALK,
-     +                 NEQ, NBMODE, TYPMOD, NPARI, NPARR, NPARK )
-         IF (NPARI.NE.NBPARI) CALL UTMESS('F','OP0168','Y A UN BUG')
-         IF (NPARR.NE.NBPARR) CALL UTMESS('F','OP0168','Y A UN BUG')
-         IF (NPARK.NE.NBPARK) CALL UTMESS('F','OP0168','Y A UN BUG')
+     &                 NBPARA, NOPARA, KVALI, KVALR, KVALK,
+     &                 NEQ, NBMODE, TYPMOD, NPARI, NPARR, NPARK )
+         IF (NPARI.NE.NBPARI) CALL U2MESS('F','MODELISA2_91')
+         IF (NPARR.NE.NBPARR) CALL U2MESS('F','MODELISA2_91')
+         IF (NPARK.NE.NBPARK) CALL U2MESS('F','MODELISA2_91')
          CALL JEVEUO ( KVEC , 'L', LMOD  )
          CALL JEVEUO ( KVALI, 'L', LVALI )
          CALL JEVEUO ( KVALR, 'L', LVALR )
          CALL JEVEUO ( KVALK, 'L', LVALK )
          IF ( TYPMOD .EQ. 'R' ) THEN
             CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD),
-     +              C16B, NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
-     +                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
+     &              C16B, NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
+     &                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
          ELSEIF ( TYPMOD .EQ. 'C' ) THEN
             CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, R8B,
-     +          ZC(LMOD), NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
-     +                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
+     &          ZC(LMOD), NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,'    ',
+     &                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
          ELSE
-            CALL UTMESS('F','OP0168','"'//TYPMOD//
-     +                                '"  TYPE DE MODE NON TRAITE')
+            CALL U2MESK('F','ALGELINE2_44',1,TYPMOD)
          ENDIF
          IPREC = IPREC + NBMODE
          CALL JEDETR ( KVEC )
@@ -358,10 +356,10 @@ C
 C     --- ON ALARME SI NUME_MODE IDENTIQUE ---
 C
       CALL RSORAC(MODEOU,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
-     +                                                  NBMODE,1,IBID)
+     &                                                  NBMODE,1,IBID)
       CALL WKVECT('&&OP0168.NUME_ORDRE','V V I',NBMODE,JORDR)
       CALL RSORAC(MODEOU,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
-     +                                          ZI(JORDR),NBMODE,IBID)
+     &                                          ZI(JORDR),NBMODE,IBID)
       DO 200 J = 1 , NBMODE
          IORD = ZI(JORDR+J-1)
          CALL RSADPA(MODEOU,'L',1,'NUME_MODE',IORD,0,JADR,K8B)
@@ -386,7 +384,7 @@ C
          CALL GETVTX('IMPRESSION','CUMUL'  ,1,1,1,OUINON,N1)
          CALL GETVTX('IMPRESSION','CRIT_EXTR',1,1,1,CRITFI,N2)
          IF ( CRITFI .EQ. 'MASS_EFFE_UN'.AND.
-     +          TYPCON(1:9).EQ.'MODE_MECA' ) THEN
+     &          TYPCON(1:9).EQ.'MODE_MECA' ) THEN
             IF ( OUINON .EQ. 'OUI' ) THEN
                WRITE(IFR,1000)
                WRITE(IFR,1010)
@@ -408,15 +406,14 @@ C
                DY = ZR(LPAR(2))
                DZ = ZR(LPAR(3))
                IF (DX.EQ.UNDF.OR.DY.EQ.UNDF.OR.DZ.EQ.UNDF) THEN
-                  CALL UTMESS('F','OP0168','MASSES EFFECTIVES '
-     +             //'UNITAIRES NON CALCULEES PAR NORM_MODE')
+                  CALL U2MESS('F','ALGELINE3_10')
                ENDIF
                CUMULX = CUMULX + DX
                CUMULY = CUMULY + DY
                CUMULZ = CUMULZ + DZ
                IF ( OUINON .EQ. 'OUI' ) THEN
                   WRITE(IFR,1020) IORD, NUME, FREQ, DX, CUMULX,
-     +                            DY, CUMULY, DZ, CUMULZ
+     &                            DY, CUMULY, DZ, CUMULZ
                ELSE
                   WRITE(IFR,1120) IORD, NUME, FREQ, DX, DY, DZ
                ENDIF
@@ -453,22 +450,22 @@ C
       CALL TITRE()
 C
  1000 FORMAT(/,50X,'M A S S E      E F F E C T I V E      ',
-     +              'U N I T A I R E')
+     &              'U N I T A I R E')
  1010 FORMAT('NUME_ORDRE  NUME_MODE     FREQUENCE   ',
-     +'MASS_EFFE_UN_DX   CUMUL_DX    MASS_EFFE_UN_DY   CUMUL_DY',
-     +'    MASS_EFFE_UN_DZ   CUMUL_DZ')
+     &'MASS_EFFE_UN_DX   CUMUL_DX    MASS_EFFE_UN_DY   CUMUL_DY',
+     &'    MASS_EFFE_UN_DZ   CUMUL_DZ')
  1020 FORMAT(1P,4X,I6,5X,I6,7(3X,D12.5))
  1100 FORMAT(/,45X,'MASSE  EFFECTIVE  UNITAIRE')
  1110 FORMAT('NUME_ORDRE  NUME_MODE     FREQUENCE',
-     +       '  MASS_EFFE_UN_DX  MASS_EFFE_UN_DY  MASS_EFFE_UN_DZ')
+     &       '  MASS_EFFE_UN_DX  MASS_EFFE_UN_DY  MASS_EFFE_UN_DZ')
  1120 FORMAT(1P,4X,I6,5X,I6,3X,D12.5,3(3X,D12.5,2X))
  1200 FORMAT(/,18X,'MASSE  GENERALISEE')
  1210 FORMAT('NUME_ORDRE  NUME_MODE     FREQUENCE',
-     +       '      MASS_GENE  CUMUL_MASS_GENE')
+     &       '      MASS_GENE  CUMUL_MASS_GENE')
  1220 FORMAT(1P,4X,I6,5X,I6,3X,D12.5,2(3X,D12.5))
  1300 FORMAT(/,18X,'MASSE  GENERALISEE')
  1310 FORMAT('NUME_ORDRE  NUME_MODE     FREQUENCE',
-     +       '      MASS_GENE  ')
+     &       '      MASS_GENE  ')
  1320 FORMAT(1P,4X,I6,5X,I6,3X,D12.5,3X,D12.5)
 C
       CALL JEDEMA ( )

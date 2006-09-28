@@ -2,7 +2,7 @@
      &                  NFREQ,BANDE,MOD45,PARTPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,16 +93,16 @@ C VARIABLES LOCALES
       LOGICAL STURM,FLAGE
 C     ------------------------------------------------------------------
       DATA  NOPARA /
-     +  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
-     +  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
-     +  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     +  'NORME'           , 'METHODE'         ,
-     +  'FREQ'            ,
-     +  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
-     +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
-     +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
-     +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
-     +  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
+     &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
+     &  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
+     &  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
+     &  'NORME'           , 'METHODE'         ,
+     &  'FREQ'            ,
+     &  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
+     &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
+     &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
+     &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
+     &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
 C     ------------------------------------------------------------------
       VECFLA = '&&NMOP45.VECTFLAMB'
       MODE = '&&NMOP45.MODEFLAMB'
@@ -203,13 +203,11 @@ C        RECHERCHE DU NOMBRE DE CHAR_CRIT DANS LINTERVALEE OMEMIN,OMEMAX
      &                OMESHI,NFREQ,NPIVOT,OMECOR,PRECSH,NPREC,NBRSS,
      &                NBLAGR)
           IF (NFREQ.LE.0) THEN
-            CALL UTMESS('I','NMOP45','PAS DE CHARGE CRITIQUE  DANS'//
-     &                  ' L INTERVALLE DEMANDE')
+            CALL U2MESS('I','ALGELINE2_15')
             GO TO 80
           ELSE
             CALL CODENT(NFREQ,'G',CHAINE)
-            CALL UTMESS('I','NMOP45',CHAINE//'CHARGES CRITIQUES  DANS'//
-     &                  ' L INTERVALLE DEMANDE')
+            CALL U2MESK('I','ALGELINE2_16',1,CHAINE)
           END IF
         ELSE
           OMESHI = 0.D0
@@ -362,9 +360,9 @@ C     CALCUL DES MODES PROPRES
      &              ZR(LDSOR),OMESHI,ZR(LAUX),ZR(LWORKV),ZI(LPROD),
      &              ZI(LDDL),NEQACT,MAXITR,IFM,NIV,PRIRAM,ALPHA,OMECOR,
      &              NCONV,FLAGE)
-      
+
       ENDIF
-      
+
 C     TRI DE CES MODES
       CALL RECTFR(NCONV,NCONV,OMESHI,NPIVOT,NBLAGR,ZR(LDSOR),
      &            NFREQ+1,ZI(LRESUI),ZR(LRESUR),NFREQ)
@@ -372,7 +370,7 @@ C     TRI DE CES MODES
      &            VPMAX,PRECDC,METHOD,OMECOR,STURM)
       IF (MOD45 .EQ. 'VIBR') THEN
         CALL VPORDI (1,0,NCONV,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
-     +                  ZI(LRESUI))
+     &                  ZI(LRESUI))
       ENDIF
       DO 40 IMET = 1,NCONV
         ZI(LRESUI-1+MXRESF+IMET) = 0
@@ -380,7 +378,7 @@ C     TRI DE CES MODES
         ZR(LRESUR-1+2*MXRESF+IMET) = 0.0D0
         ZK24(LRESUK-1+MXRESF+IMET) = 'SORENSEN'
    40 CONTINUE
-   
+
 
       IF (MOD45 .NE. 'VIBR') THEN
         ITYP = 0
@@ -402,13 +400,12 @@ C     --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
       IF (OPTION.EQ.'BANDE') THEN
          DO 110 IFREQ = MFREQ - 1,0
             IF (ZR(LRESUR+MXRESF+IFREQ).GT.OMEMAX .OR.
-     +          ZR(LRESUR+MXRESF+IFREQ).LT.OMEMIN ) THEN
+     &          ZR(LRESUR+MXRESF+IFREQ).LT.OMEMIN ) THEN
                 NCONV = NCONV - 1
             ENDIF
 110      CONTINUE
          IF (MFREQ.NE.NCONV) THEN
-            CALL UTMESS('I','NMOP45','AU MOINS UNE FREQUENCE '//
-     +                  'CALCULEE EXTERIEURE A LA BANDE DEMANDEE')
+            CALL U2MESS('I','ALGELINE2_17')
          ENDIF
       ENDIF
 
@@ -473,7 +470,7 @@ C      NUMARC = NINT(ZR(JINFO))
 
 
    80 CONTINUE
-      
+
       CALL JEDETC('V','.&',20)
       CALL JEDETC('V','&&NMOP45',1)
       CALL JEDETC('G',MODES,1)

@@ -1,7 +1,7 @@
       SUBROUTINE JNI080(ELREFE,NMAXOB,LIOBJ,NBOBJ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -332,7 +332,7 @@ C DEB ------------------------------------------------------------------
         NPGSN = 7
         NSO = 3
       ELSE
-        CALL UTMESS('F','INI080_1',' ELREFE NON PREVU')
+        CALL U2MESS('F','ELEMENTS2_31')
       END IF
 
       CALL JEEXIN(DESI,IRET)
@@ -982,7 +982,7 @@ C     POSITION DES 7 NOEUDS
         ZR(LZR-1+824) = 0.000000000000000D0
         ZR(LZR-1+825) = 0.500000000000000D0
         ZR(LZR-1+826) = 0.333333333333333D0
- 
+
         DO 290 L = 1,7
           I1 = 810 + L
           I2 = 810 + 9 + L

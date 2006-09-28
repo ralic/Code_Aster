@@ -1,6 +1,6 @@
       SUBROUTINE JENUNO ( NOMLU , NOMO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +39,11 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -63,11 +63,11 @@ C ----------------------------------------------------------------------
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       CHARACTER *75    CMESS
       CHARACTER *32    NOML32
@@ -86,7 +86,7 @@ C
 C
       IF ( IRET .EQ. 0 ) THEN
         CMESS = 'NOM DE COLLECTION OU DE REPERTOIRE INEXISTANT'
-        CALL JVMESS ( 'S' , 'JENUNO01' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE
         IF ( IRET .EQ. 1 ) THEN
 C
@@ -95,15 +95,15 @@ C
           GENRI = GENR ( JGENR(ICLAOS) + IDATOS )
           IF ( GENRI .NE. 'N' ) THEN
             CMESS = 'INTERROGATION SUR UN OBJET NON REPERTOIRE'
-            CALL JVMESS ( 'S' , 'JENUNO02' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
           LUTII = LUTI ( JLUTI(ICLAOS) + IDATOS )
           IF ( LUTII .LT. NUMEC .OR. NUMEC .LE. 0 ) THEN
             WRITE ( CLUTI , '(I6)' ) LUTII
             WRITE ( CNUMO , '(I6)' ) NUMEC
             CMESS = 'REPERTOIRE DE '//CLUTI//' NOMS NE CONTIENT PAS '
-     +              //CNUMO
-            CALL JVMESS ( 'S' , 'JENUNO03' , CMESS )
+     &              //CNUMO
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
           IADMI  = IADM ( JIADM(ICLAOS) + IDATOS )
           IADMEX = IADMI
@@ -130,15 +130,15 @@ C
           IXNOM = ISZON ( JISZON + IBACOL + IDNOM )
           IF ( IXNOM .EQ. 0 ) THEN
             CMESS = 'INTERROGATION SUR UNE COLLECTION NON NOMMEE'
-            CALL JVMESS ( 'S' , 'JENUNO04' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
           LUTII = LUTI ( JLUTI(ICLACO) + IXNOM )
           IF ( LUTII .LT. NUMEC .OR. NUMEC .LE. 0) THEN
             WRITE ( CLUTI , '(I6)' ) LUTII
             WRITE ( CNUMO , '(I6)' ) NUMEC
             CMESS = 'REPERTOIRE DE '//CLUTI//' NOMS NE CONTIENT PAS '
-     +              //CNUMO
-            CALL JVMESS ( 'S' , 'JENUNO07' , CMESS )
+     &              //CNUMO
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
           IADMI  = IADM ( JIADM(ICLACO) + IXNOM )
           KADM   = IADMI
@@ -152,7 +152,7 @@ C
           CALL JJLIDE ( 'JENUNO' , NOMLU(1:24) , 2 )
         ELSE
           CMESS = 'ERREUR DE PROGRAMMATION'
-          CALL JVMESS ( 'S' , 'JENUNO08' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ENDIF
       ENDIF
       IPGC = IPGCEX

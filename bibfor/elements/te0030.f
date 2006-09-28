@@ -1,22 +1,22 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
       IMPLICIT NONE
@@ -87,16 +87,15 @@ C =====================================================================
             IF ( LTEATT(' ','AXIS','OUI') )THEN
                MOD(1:4) = 'AXIS'
             ELSE IF ( NOMTE(6:7) .EQ.'DP' .OR.
-     +                NOMTE(7:8) .EQ.'DP' .OR.
-     +                NOMTE(4:5) .EQ.'DP' .OR.
-     +                NOMTE(5:6) .EQ.'DP'      )THEN
+     &                NOMTE(7:8) .EQ.'DP' .OR.
+     &                NOMTE(4:5) .EQ.'DP' .OR.
+     &                NOMTE(5:6) .EQ.'DP'      )THEN
                MOD(1:6) = 'D_PLAN'
             ELSE
 C =====================================================================
 C --- CAS NON TRAITE --------------------------------------------------
 C =====================================================================
-               CALL UTMESS('F','TE0030','LA MODELISATION : '//NOMTE//
-     +                                           'N''EST PAS TRAITEE.')
+               CALL U2MESK('F','ELEMENTS_11',1,NOMTE)
             ENDIF
          ENDIF
 C =====================================================================
@@ -124,12 +123,12 @@ C --- ON TESTE LA COHERENCE DES RECUPERATIONS ELREF4 ET TECACH SUR ----
 C --- LE NOMBRE DE POINTS DE GAUSS ------------------------------------
 C =====================================================================
             CALL ASSERT(NPGU.EQ.NPG)
-            NBSIG = DIMMAX / NPG  
+            NBSIG = DIMMAX / NPG
 C =====================================================================
 C --- DANS LE CADRE DE LA THM ON RECUPERE DIRECTEMENT LA RELATION -----
 C --- DE COMPORTEMENT DE TYPE MECANIQUE -------------------------------
 C =====================================================================
-            RELCOM = ZK16(ICOMPO-1+11)  
+            RELCOM = ZK16(ICOMPO-1+11)
          ELSE
             CALL JEVECH('PCONTPR','L',ICONTP)
             RELCOM = ZK16(ICOMPO-1+ 1)
@@ -163,12 +162,11 @@ C =====================================================================
 C --- LOI DE TYPE DRUCKER_PRAGER --------------------------------------
 C =====================================================================
                CALL REDRPR(MOD,ZI(IMATE),ZR(ICONTP-1+(KPG-1)*NBSIG+1 ),
-     +                                   ZR(IVARIP-1+(KPG-1)*NBVARI+1),
-     +                                                      DSDE,ICODE)
+     &                                   ZR(IVARIP-1+(KPG-1)*NBVARI+1),
+     &                                                      DSDE,ICODE)
                IF (ICODE.EQ.0) GO TO 10
             ELSE
-               CALL UTMESS('F','TE0030',
-     +                           'RELATION DE COMPORTEMENT NON TRAITE')
+               CALL U2MESS('F','ELEMENTS2_69')
             ENDIF
 C =====================================================================
 C --- CALCUL DU TENSEUR ACOUSTIQUE ------------------------------------
@@ -183,7 +181,7 @@ C =====================================================================
  20         CONTINUE
  10      CONTINUE
       ELSE
-         CALL UTMESS('F','TE0030', 'OPTION NON VALIDE')
+         CALL U2MESS('F','ELEMENTS2_70')
       END IF
 C =====================================================================
       END

@@ -1,12 +1,12 @@
       SUBROUTINE ACEABA(NOMA,NOMO,LMAX,NBARRE,NBOCC,NBTEL,NTYELE,
-     +                                              IVR,IFM,JDLM)
+     &                                              IVR,IFM,JDLM)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           LMAX,NBARRE,NBOCC,NBTEL,IFM,JDLM
       INTEGER           NTYELE(*),IVR(*)
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C
       CALL WKVECT('&&ACEABA.TABBAR'  ,'V V K8 ',NBO   ,JTAB )
       CALL WKVECT('&&ACEABA.CARBAR'  ,'V V K8 ',NDIM  ,JCAR )
       CALL ACEDAT('BARRE',1,ZI(JPARA),ZK16(JSECT),ZK8(JEXP),ZK8(JTAB),
-     +                                                      ZK8(JCAR))
+     &                                                      ZK8(JCAR))
       CALL WKVECT('&&ACEABA.CARA','V V K8',NBCAR,JCARA)
       CALL WKVECT('&&ACEABA.VALE','V V R8',NBVAL,JVALE)
 C
@@ -118,9 +118,9 @@ C --- LECTURE ET STOCKAGE DES DONNEES  DANS L OBJET TAMPON
       DO 10 IOC = 1 , NBOCC
          CALL CODENT(IOC,'G',KIOC)
          CALL GETVEM(NOMA,'GROUP_MA','BARRE','GROUP_MA',
-     +           IOC,1,LMAX,ZK8(JDLS),NG)
+     &           IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE','BARRE','MAILLE',
-     +         IOC,1,LMAX,ZK8(JDLS),NM)
+     &         IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVTX('BARRE','SECTION'  ,IOC,1,1     ,SEC       ,NSEC)
          CALL GETVTX('BARRE','CARA'     ,IOC,1,NBCAR ,ZK8(JCARA),NCAR)
          CALL GETVR8('BARRE','VALE'     ,IOC,1,NBVAL ,ZR(JVALE) ,NVAL)
@@ -137,7 +137,7 @@ C                                                    GROUPES DE MAILLES
             DO 40 I = 1 , NG
                CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
                CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONMAX',
-     +                                              NBMAGR,K1BID)
+     &                                              NBMAGR,K1BID)
                DO 42 J = 1,NBMAGR
                   NUMMAI = ZI(JDGM+J-1)
                   CALL JENUNO(JEXNUM(MLGNMA,NUMMAI),NOMMAI)
@@ -145,8 +145,8 @@ C                                                    GROUPES DE MAILLES
                   DO 44 K = 1 , NBTEL
                      IF (NUTYEL.EQ.NTYELE(K)) THEN
                         CALL AFFBAR(TMPGEN,TMPGEF,FCX,
-     +                            NOMMAI,ISEC,ZK8(JCARA),
-     +                            ZR(JVALE),ZK8(JEXP),NBO,KIOC,IER)
+     &                            NOMMAI,ISEC,ZK8(JCARA),
+     &                            ZR(JVALE),ZK8(JEXP),NBO,KIOC,IER)
                         GOTO 42
                      ENDIF
  44               CONTINUE
@@ -163,8 +163,8 @@ C ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
                DO 52 J = 1 , NBTEL
                   IF (NUTYEL.EQ.NTYELE(J)) THEN
                      CALL AFFBAR(TMPGEN,TMPGEF,FCX,
-     +                         NOMMAI,ISEC,ZK8(JCARA),
-     +                         ZR(JVALE),ZK8(JEXP),NBO,KIOC,IER)
+     &                         NOMMAI,ISEC,ZK8(JCARA),
+     &                         ZR(JVALE),ZK8(JEXP),NBO,KIOC,IER)
                      GOTO 50
                   ENDIF
  52            CONTINUE
@@ -173,8 +173,7 @@ C ---    "MAILLE" = TOUTES LES MAILLES POSSIBLES DE LA LISTE DE MAILLES
 C
  10   CONTINUE
       IF (IER.NE.0) THEN
-         CALL UTMESS('F',CMD,'BARRE : UNE ERREUR A ETE '//
-     +     'DETECTEE LORS DE L AFFECTATION DES VALEURS DANS LE TAMPON')
+         CALL U2MESS('F','MODELISA_7')
       ENDIF
 C
       CALL JELIRA(TMPGEN,'NUTIOC',NBAAFF,K1BID)
@@ -214,17 +213,17 @@ C ---    IMPRESSION DES DONNEES GEOMETRIQUES
  66      CONTINUE
       ENDIF
  2000   FORMAT(/,3X,
-     +  '<SECTION> VALEURS DE TYPE GENERALE AFFECTEES AUX BARRES'
-     +  ,//,3X,'MAILLE   A              TSEC')
+     &  '<SECTION> VALEURS DE TYPE GENERALE AFFECTEES AUX BARRES'
+     &  ,//,3X,'MAILLE   A              TSEC')
  2001   FORMAT(3X,A8,1X,D11.5,1X,I6)
  2010   FORMAT(/,3X,
-     +  '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'
-     +  ,//,3X,'MAILLE   HY          HZ          EPY         EPZ',
-     +                  '            TSEC')
+     &  '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'
+     &  ,//,3X,'MAILLE   HY          HZ          EPY         EPZ',
+     &                  '            TSEC')
  2012   FORMAT(3X,A8,1X,4(D11.5,1X),I6)
  2020   FORMAT(/,3X,
-     +  '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'
-     +  ,//,3X,'MAILLE   R           EP             TSEC')
+     &  '<SECTION> VALEURS DE TYPE GEOMETRIQUE AFFECTEES AUX BARRES'
+     &  ,//,3X,'MAILLE   R           EP             TSEC')
  2022   FORMAT(3X,A8,1X,2(D11.5,1X),I6)
 C
 C --- ALLOCATION DES CARTES

@@ -5,30 +5,30 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER       IFI, LIGREL(*), NBGREL, LONGR(*), NCMPMX,
-     +              CELD(*), NCMPU, NUCMP(*), NBNOMA(*), TYPMA(*),
-     +              PERMUT(MAXNOD,*), NBMAT, NUMMAI(*),NBCMP,NCMPS(*)
+     &              CELD(*), NCMPU, NUCMP(*), NBNOMA(*), TYPMA(*),
+     &              PERMUT(MAXNOD,*), NBMAT, NUMMAI(*),NBCMP,NCMPS(*)
       CHARACTER*(*) NOMGD,NOMCMP(*),NOMEL(*),LOC,TITR,NOMSYM,NOMSD,
-     +              NOCMPL(*)
+     &              NOCMPL(*)
       REAL*8        VALE(*)
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C TOLE CRP_20
@@ -106,15 +106,14 @@ C
 C
 C  --- RECHERCHE DES GRANDEURS SUPERTAB ----
 C
-     
       CALL IRGAGS(NCMPMX,NOMCMP,NOMSYM,NBCHS,ZK8(INOCHS),
-     +                 ZI(IBCMPS),ZK8(INOGDS),ZI(ICMPS))
+     &                 ZI(IBCMPS),ZK8(INOGDS),ZI(ICMPS))
 
-      
+
 C     NOM DE LA GRANDEUR SUPERTAB
       IF (NBCMP.NE.0)THEN
          LCMP=.TRUE.
-         IF(NOMGD.NE.'VARI_R')THEN       
+         IF(NOMGD.NE.'VARI_R')THEN
             DO 897 I=1,NBCHS
                DO 898 J=1,ZI(IBCMPS+I-1)
                   IF(NCMPS(1).EQ.ZI(ICMPS-1+(I-1)*NCMPMX+J)) GOTO 899
@@ -154,7 +153,7 @@ C ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
          AFAIRE = .FALSE.
          DO 2 ICP=1,ZI(IBCMPS-1+ICHS)
            AFAIRE= (AFAIRE.OR.ZL(ITABL-1+(ZI(ICMPS-1
-     +                 +(ICHS-1)*NCMPMX+ICP))))
+     &                 +(ICHS-1)*NCMPMX+ICP))))
  2       CONTINUE
          IF(.NOT. AFAIRE) GO TO 10
         ENDIF
@@ -172,7 +171,7 @@ C
           ILIG=ICMAX0/6
           IRES=ICMAX0-ILIG*6
           IF(IRES.EQ.0) THEN
-            NBDATS=ILIG      
+            NBDATS=ILIG
           ELSE
             NBDATS=ILIG+1
             ZI(JSPT-1+NBDATS)=IRES
@@ -244,7 +243,7 @@ C
               CALL WKVECT('&&IRCERS.ENT_COD','V V I',NEC,IAEC)
               CALL DGMODE(MODE,IMODEL,ILONG,NEC,ZI(IAEC))
               NCMPG=0
-C             POSITIONS DES COMPOSANTES SELECTIONNEES PRESENTES 
+C             POSITIONS DES COMPOSANTES SELECTIONNEES PRESENTES
 C             DANS LE  GREL PARMI LES COMPOSANTES SELECTIONNEES
               DO 905 ICMPL=1,NBCMP
                  IF (EXISDG(ZI(IAEC),NCMPS(ICMPL))) THEN
@@ -258,9 +257,8 @@ C             SOMME DES COMPOSANTES SELECTIONNEES PAR GREL
 C             NOMBRE DE COMPOSANTES SELECTIONNEES PRESENTES
 C             DANS LE GREL
               ZI(INBCG+IGREL-1)=NCMPG
-              IF(IGREL.EQ.NBGREL .AND. K.LT.NBCMP) CALL UTMESS('F',
-     &             'IRCERS','CERTAINES COMPOSANTES SELECTIONNEES NE '//
-     &             'FONT PAS PARTIES DU LIGREL')
+              IF(IGREL.EQ.NBGREL .AND. K.LT.NBCMP) CALL U2MESS('F','PREP
+     &OST_83')
               NCMPP=0
               DO 906 I=1,NCMPMX
                  IF (EXISDG(ZI(IAEC),I)) THEN
@@ -273,7 +271,7 @@ C                   DANS LE GREL PARMI LES COMPOSANTES DU GREL
                           L=L+1
                        ENDIF
  915                CONTINUE
-C                   POSITION DES COMPOSANTES SELECTIONNEES 
+C                   POSITION DES COMPOSANTES SELECTIONNEES
 C                   DANS LES DATASETS
                     DO 789 J=1,NBCMP
                        IF(I.EQ.NCMPS(J))THEN
@@ -287,13 +285,13 @@ C             NOMBRE DE COMPOSANTES DANS LE GREL
               ZI(INBCTG+IGREL-1)=NCMPP
  904       CONTINUE
         ENDIF
-       
+
 C
 C --- IMPRESSION DES DATASETS SUPERTAB ---
 C
-      
-        DO 11 IDA =1,NBDATS 
-           
+
+        DO 11 IDA =1,NBDATS
+
           IENTE = 1
           IMPRE = 0
           IFIN  = 1
@@ -302,7 +300,7 @@ C
           TEXTE = ' '
 C
 C --- ECRITURE DANS L'ENTETE SUPERTAB DES NOMS DE COMPOSANTES---
-C         
+C
           IF(NBCMP.NE.0 .AND. NOMGD.NE.'VARI_R')THEN
              DO 907 ICP=1,ZI(IBCMPS+IDA-1)
                 NOCMP=NOCMPL(ZI(INDATS+IDA-1)+ICP)
@@ -327,7 +325,7 @@ C
                       CALL CODENT (ENTIER,'G',TOTO)
                       IFIN = IDEBU+IUTIL+3
                       TEXTE(IDEBU:IFIN)=
-     +                     NOCMP(1:IUTIL) //'_'//TOTO//' '
+     &                     NOCMP(1:IUTIL) //'_'//TOTO//' '
                       IDEBU = IFIN + 1
  6                 CONTINUE
                 ELSE
@@ -366,7 +364,7 @@ C
             CALL DGMODE(MODE,IMODEL,ILONG,NEC,ZI(IAEC))
             IAD=CELD(CELD(4+IGREL)+8)
             NSCAL = DIGDEL(MODE)
-            
+
             IF(NBCMP.NE.0 .AND. NOMGD.NE.'VARI_R')THEN
                NSCA=NSCAL
                IF(ZI(INBCG+IGREL-1).NE.0)THEN
@@ -397,7 +395,7 @@ C
    23       CONTINUE
             DO 61 I=1,ZI(IBCMPS-1+ICHS)
               IF (EXISDG(ZI(IAEC),ZI(ICMPS-1+(ICHS-1)
-     +                *NCMPMX+I))) GOTO 62
+     &                *NCMPMX+I))) GOTO 62
   61        CONTINUE
             GOTO 12
   62        CONTINUE
@@ -419,7 +417,7 @@ C
 C           RECHERCHE DE L'ADRESSE DANS VALE DU DEBUT DES VALEURS
 C
             IACHML = IAD + NSCA * (IELG-1)
-      
+
 C
 C    --- CHAMELEM AUX NOEUDS ET AU POINTS DE GAUSS
 C
@@ -428,19 +426,17 @@ C
           ITYPE  = TYPMA(IEL)
           CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPE),KTYPE)
           IF ( KTYPE .EQ. 'PYRAM5' ) THEN
-            CALL UTMESS('A','IRCERS', 'ELEMENT PYRAN5 NON DISPONIBLE'
-     &                    //' DANS IDEAS')
+            CALL U2MESS('A','PREPOST_84')
           ELSE IF ( KTYPE .EQ. 'PYRAM13' ) THEN
-            CALL UTMESS('A','IRCERS', 'ELEMENT PYRAN13 NON DISPONIBLE'
-     &                    //' DANS IDEAS')
-          ELSE 
+            CALL U2MESS('A','PREPOST_85')
+          ELSE
 C
 C    --- CHAMELEM AUX NOEUDS ---
 C
             IF (LOC.EQ.'ELNO') THEN
 
                IF(NBCMP.NE.0 .AND. NOMGD.NE.'VARI_R')THEN
-              
+
                   NPCALC=NSCAL/ZI(INBCTG+IGREL-1)
                   NNOE   = NBNOMA(IEL)
                   ITYPE  = TYPMA(IEL)
@@ -470,29 +466,29 @@ C
                            GO TO 529
                         END IF
  528                  CONTINUE
-                     
+
  529                  CONTINUE
                      IF (INOA.EQ.0) THEN
-                        CALL UTMESS('F','IRCERS',' : INOA=0')
+                        CALL U2MESS('F','PREPOST_81')
                      END IF
-                     
+
                      DO 561 ICOU=1,NBCOU
                         JJ=IACHML-1+ZI(INBCTG+IGREL-1)*(INOA-1)+
-     +                       (ICOU-1)*ZI(INBCTG+IGREL-1)*NNOE
-                        
+     &                       (ICOU-1)*ZI(INBCTG+IGREL-1)*NNOE
+
                         DO 521 I=1,NBCMPT
                            ZR(IRVN-1+I)=0.D0
  521                     CONTINUE
-                        
+
                         DO 509 ICM=1,ZI(INBCG+IGREL-1)
                            J=ZI(IPERM+ZI(ISNBCS+IGREL-1)+ICM-1)
                            IF (J.LE.6*IDA .AND. J.GE.(6*IDA-5))THEN
-                              JT=J-6*(IDA-1)  
+                              JT=J-6*(IDA-1)
                               IC=ZI(IPOS+ZI(ISNBCS+IGREL-1)+ICM-1)
                               ZR(IRVN-1+JT)= VALE(JJ+IC)
                            ENDIF
  509                    CONTINUE
-                        
+
                         IF(IENTE.EQ.1) THEN
                            WRITE(IFI,'(A80)') (ENTETE(I),I=1,10)
                            IENTE=0
@@ -504,15 +500,15 @@ C
                            IES=IEL
                         ENDIF
                         WRITE (IFI,'(4I10,5X,A,A)')
-     +                IES,1,NNOE,NBCMPT,'% MAILLE ',NOMEL(IEL)
+     &                IES,1,NNOE,NBCMPT,'% MAILLE ',NOMEL(IEL)
                         IMPEL=0
                      ENDIF
                         WRITE (IFI,'(6(1PE13.5E3))') (ZR(IRVN-1+I),
-     +                       I=1,NBCMPT)
-                        
+     &                       I=1,NBCMPT)
+
  561                 CONTINUE
  516               CONTINUE
-                  
+
                ELSE
 
                NPCALC = NSCAL / NCMPP
@@ -546,11 +542,11 @@ C
    28             CONTINUE
    29             CONTINUE
                   IF (INOA.EQ.0) THEN
-                     CALL UTMESS('F','IRCERS',' : INOA=0')
+                     CALL U2MESS('F','PREPOST_81')
                   END IF
                   DO 161 ICOU=1,NBCOU
                    J=IACHML-1+NCMPP*ICOEF*(INOA-1)+
-     +                        (ICOU-1)*NCMPP*ICOEF*NNOE+NCMPP*(ICO-1)
+     &                        (ICOU-1)*NCMPP*ICOEF*NNOE+NCMPP*(ICO-1)
                      DO 21 I=1,NBCMPT
                         ZR(IRVN-1+I)=0.D0
    21                CONTINUE
@@ -564,7 +560,7 @@ C
                              IMPRE=1
                              DO 26 ISP=1,ZI(JSPT-1+IDA)
                               ZR(IRVN-1+ICMS-1+ISP)=
-     +                                         VALE(J+IC+NCMPP*(ISP-1))
+     &                                         VALE(J+IC+NCMPP*(ISP-1))
    26                        CONTINUE
                              GOTO 22
                            ENDIF
@@ -583,11 +579,11 @@ C
                             IES=IEL
                           ENDIF
                           WRITE (IFI,'(4I10,5X,A,A)')
-     +                   IES,1,NNOE,NBCMPT,'% MAILLE ',NOMEL(IEL)
+     &                   IES,1,NNOE,NBCMPT,'% MAILLE ',NOMEL(IEL)
                        IMPEL=0
                        ENDIF
                        WRITE (IFI,'(6(1PE13.5E3))') (ZR(IRVN-1+I),
-     +                                          I=1,NBCMPT)
+     &                                          I=1,NBCMPT)
                      ENDIF
   161             CONTINUE
    16          CONTINUE
@@ -596,30 +592,30 @@ C
 C  --- CHAMELEM AUX POINTS DE GAUSS---
 C
             ELSE IF (LOC.EQ.'ELGA'.OR.LOC.EQ.'ELEM') THEN
-               
+
                IF(NBCMP.NE.0 .AND. NOMGD.NE.'VARI_R')THEN
                   NBPG=NSCAL/ZI(INBCTG+IGREL-1)
-                  
+
                   DO 908 I=1,NBCMPT
                      ZR(IRVG-1+I)=0.D0
  908              CONTINUE
-                
+
                   DO 909 ICM=1,ZI(INBCG+IGREL-1)
                      J=ZI(IPERM+ZI(ISNBCS+IGREL-1)+ICM-1)
 
                      IF (J.LE.6*IDA .AND. J.GE.(6*IDA-5))THEN
                      JT=J-6*(IDA-1)
-        
+
                      DO 910 IPG=1,NBPG
                         JJ=ZI(INBCTG+IGREL-1)*(IPG-1)+
      &                        ZI(IPOS+ZI(ISNBCS+IGREL-1)+ICM-1)
                         ZR(IRVG-1+JT)=ZR(IRVG-1+JT)+VALE(IACHML-1+JJ)
  910                 CONTINUE
-                     ZR(IRVG-1+JT)=ZR(IRVG-1+JT)/NBPG 
-                 
+                     ZR(IRVG-1+JT)=ZR(IRVG-1+JT)/NBPG
+
                      ENDIF
  909              CONTINUE
-            
+
                   IF(IENTE.EQ.1) THEN
                      WRITE(IFI,'(A80)') (ENTETE(I),I=1,10)
                      IENTE=0
@@ -630,10 +626,10 @@ C
                      IES=IEL
                   ENDIF
                   WRITE(IFI,'(2I10,5X,2A)')IES,NBCMPT,
-     +                 '% MAILLE ',NOMEL(IEL)
+     &                 '% MAILLE ',NOMEL(IEL)
                   WRITE (IFI,'(6(1PE13.5E3))') (ZR(IRVG-1+I),I=1,NBCMPT)
-                  
-                  
+
+
                ELSE
                   NPCALC = NSCAL/NCMPP
                   NBPG=NPCALC
@@ -655,16 +651,15 @@ C
                      IS0 = NUCMP((IDA-1)*6+ISP)
                   ENDIF
                   DO 17 IPG =1,NBPG
-                     
+
                      J=IACHML-1+NCMPP*ICOEF*(IPG-1)+NCMPP*(ICO-1)
                      ZR(IRVG-1+ICMS-1+ISP)= ZR(IRVG-1+ICMS-1+ISP)+
      &                    VALE(J+IC+NCMPP*(IS0-1))
-          
+
  17               CONTINUE
                   ZR(IRVG-1+ICMS-1+ISP)=ZR(IRVG-1+ICMS-1+ISP)
      &                 / NBPG
-               
-     
+
  36            CONTINUE
                GOTO 19
             ENDIF
@@ -683,7 +678,7 @@ C
                IES=IEL
             ENDIF
             WRITE(IFI,'(2I10,5X,2A)')IES,NBCMPT,
-     +           '% MAILLE ',NOMEL(IEL)
+     &           '% MAILLE ',NOMEL(IEL)
             IMPEL=0
          ENDIF
          WRITE (IFI,'(6(1PE13.5E3))') (ZR(IRVG-1+I),I=1,NBCMPT)
@@ -699,8 +694,7 @@ C
  10   CONTINUE
 C
       IF(LNOCEN)THEN
-         CALL UTMESS('A','IRCERS','ON TRAITE LES TRIA7 QUAD9 HEXA27'//
-     &      ' EN OUBLIANT LE NOEUD CENTRE')
+         CALL U2MESS('A','PREPOST_86')
       ENDIF
 C
       CALL JEDETR('&&IRCERS.VALNOE')

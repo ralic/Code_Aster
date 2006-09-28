@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +85,7 @@ C ---------------------------------------------------------------
         CALL DISMOI('F','NOM_OPTION',CELMOD,'CHAM_ELEM',IB,OPTION,IB)
         CALL DISMOI('F','NOM_PARAM',CELMOD,'CHAM_ELEM',IB,PARAM,IB)
         CALL DISMOI('F','NOM_MAILLA',LIGREL,'LIGREL',IB,MA2,IB)
-        IF (MA.NE.MA2) CALL UTMESS('F','CHPCHD','MAILLAGES DIFFERENTS.')
+        IF (MA.NE.MA2) CALL U2MESS('F','CALCULEL_73')
         CESMOD = '&&CHPCHD.CESMOD'
         CALL CELCES(CELMOD,'V',CESMOD)
       END IF
@@ -169,7 +169,7 @@ C     ----------------------------------------------------------------
         ELSE IF (CAS(1:4).EQ.'ELGA') THEN
           CALL CELCES(CHIN,'V',CES1)
           MGANO = '&&CHPCHD.MAGANO'
-          CALL UTMESS('F','CHPCHD','GAUSS -> NOEUD A FAIRE ...')
+          CALL U2MESS('F','CALCULEL_96')
         ELSE IF (CAS(1:4).EQ.'CART') THEN
           CALL CARCES(CHIN,'ELNO',' ','V',CES1,IRET)
         END IF
@@ -182,7 +182,7 @@ C     ----------------------------------------------------------------
 
       ELSE IF (CAS(1:8).EQ.'CART->EL') THEN
 C     ----------------------------------------------------------------
-        IF (LIGREL.EQ.' ') CALL UTMESS('F','CHPCHD','IL FAUT MODELE')
+        IF (LIGREL.EQ.' ') CALL U2MESS('F','CALCULEL_97')
 
         CES1 = '&&CHPCHD.CES1'
         CALL CARCES(CHIN,CAS(7:10),CESMOD,'V',CES1,IB)
@@ -207,7 +207,7 @@ C     ----------------------------------------------------------------
         END IF
         END IF
       ELSE
-        CALL UTMESS('F','CHPCHD','NON PROGRAMME:'//CAS)
+        CALL U2MESK('F','CALCULEL_98',1,CAS)
       END IF
 
 

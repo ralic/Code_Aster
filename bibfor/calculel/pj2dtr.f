@@ -6,7 +6,7 @@
       INTEGER NUTM2D(NBTM)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/09/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C       ITYPM : TYPE DE LA MAILLE IMA1
 
         CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,FAPG,NBPG,CRREFE,VOL)
 
-        IF ( NBNO .NE. NNO ) CALL UTMESS('F','PJ2DTR','BUG')
+        IF ( NBNO .NE. NNO ) CALL U2MESS('F','CALCULEL2_34')
 
 C       2.2.1 DETERMINATION DES COORDONEES DE INO2 DANS L'ELEMENT
 C             DE REFERENCE : KSI , ETA
@@ -165,7 +165,7 @@ C       C'EST QUE LE TRIA3 EST EN "DESSOUS" :
 771       CONTINUE
 
         ELSE IF (ELREFA.EQ.'QU4' .OR. ELREFA.EQ.'QU8' .OR.
-     +                                ELREFA.EQ.'QU9' ) THEN
+     &                                ELREFA.EQ.'QU9' ) THEN
           IF (NUNO2.EQ.ZI(IATR3+4*(ITR-1)+2)) THEN
 C         -- SI 1ER TRIANGLE :
             DO 772,KK=1,3
@@ -185,7 +185,7 @@ C         -- SI 2EME TRIANGLE :
           END IF
 
         ELSE
-           CALL UTMESS('F','PJ2DTR','ELREFA INCONNU: '//ELREFA)
+           CALL U2MESK('F','ELEMENTS_55',1,ELREFA)
         END IF
 
         X(1) = KSI

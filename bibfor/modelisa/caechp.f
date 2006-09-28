@@ -6,7 +6,7 @@
       CHARACTER*(*)     LIGRCH, LIGRMO
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,8 +54,8 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNOM, JEXNUM
 C     ------- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       NBTYMX,NECHP,IBID, IERD, NBAPNO, NBALL,
-     +              JNCMP, JVALV, IOCC, NH, NT, NR, NO, I, J,
-     +              NBTYP, JLISTT, NBM
+     &              JNCMP, JVALV, IOCC, NH, NT, NR, NO, I, J,
+     &              NBTYP, JLISTT, NBM
       PARAMETER    (NBTYMX=7)
 C --- NOMBRE MAX DE TYPE_MAIL DE COUPLAGE ENTRE 2 PAROIS
       REAL*8        O(3), THETA(3), T(3)
@@ -81,7 +81,7 @@ C
       ELSE IF (FONREE.EQ.'FONC') THEN
         CALL ALCART ( 'G', CARTE, NOMA, 'COEH_F')
       ELSE
-        CALL UTMESS('F','CAECHP','VALEUR INATTENDUE: '//FONREE )
+        CALL U2MESK('F','MODELISA2_37',1,FONREE)
       END IF
 C
 C     MISE A JOUR DE LIGRCH ET STOCKAGE DANS LA CARTE

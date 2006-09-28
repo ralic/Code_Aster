@@ -1,6 +1,6 @@
       SUBROUTINE CESTAS(CESZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,7 @@ C     -----------------------------------------------------------
               CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
               CALL CESEXI('C',JCE2D,JCE2L,IMA,IPT,ISP,ICMP,IAD2)
               IF (IAD.GT.0) THEN
-                IF (IAD2.GE.0) CALL UTMESS('F','CESTAS','STOP 1')
+                IF (IAD2.GE.0) CALL U2MESS('F','CALCULEL_2')
                 IAD2 = -IAD2
                 ZL(JCE2L-1+IAD2) = .TRUE.
 
@@ -162,7 +162,7 @@ C     -----------------------------------------------------------
                 ELSE IF (TSCA.EQ.'K80') THEN
                   ZK80(JCE2V-1+IAD2) = ZK80(JCESV-1+IAD)
                 ELSE
-                  CALL UTMESS('F','CESTAS','TYPE SCALAIRE INCONNU')
+                  CALL U2MESS('F','CALCULEL_39')
                 END IF
               END IF
    50       CONTINUE

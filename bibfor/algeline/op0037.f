@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C     OPERATEUR DE NORMALISATION DES MODES
@@ -51,13 +51,13 @@ C     PARAMETRES "MODE_FLAMB"
       LOGICAL       LMASIN, LREFE
       CHARACTER*1   STATUT, TYPMOD
       CHARACTER*8   MODEOU, MODEIN, NOMCMP(7), MASINE, K8B, CRIT, CMP,
-     +              PARAKI(2), VALEKI(2), CTYP, FORMAR, NOMA
+     &              PARAKI(2), VALEKI(2), CTYP, FORMAR, NOMA
       CHARACTER*14  NUME
       CHARACTER*16  TYPCON, NOMCMD, NORM, NOEUD, NOMSY, NOMVAR, OLDNOR
       CHARACTER*19  K19B,NORECG
       CHARACTER*24  MASSE, AMOR, RAIDE, REFE, NOMJV, METHOD,
-     +              KVEC, KVALI, KVALR, KVALK,
-     +              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT)
+     &              KVEC, KVALI, KVALR, KVALK,
+     &              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT)
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'LAGR', 'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' /
       DATA  KVEC  / '&&OP0037.VAL_PROPRE'/
@@ -65,11 +65,11 @@ C     ------------------------------------------------------------------
       DATA  KVALR / '&&OP0037.GRAN_MODAL_R' /
       DATA  KVALK / '&&OP0037.GRAN_MODAL_K' /
       DATA  NOPARM /        'NUME_MODE'       , 'NORME'           ,
-     +  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
-     +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
-     +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
-     +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
-     +  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
+     &  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
+     &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
+     &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
+     &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
+     &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
       DATA  NOPARF / 'NUME_MODE'  , 'NORME'   ,'CHAR_CRIT'   /
 C     ------------------------------------------------------------------
 C
@@ -82,14 +82,14 @@ C
       IF ( IEX .GT. 0 ) THEN
          IF ( MODEOU .NE. MODEIN ) THEN
             CALL UTDEBM('F','OP0037','LE CONCEPT PRODUIT ETANT '//
-     +                  'DEJA EXISTANT, LA NORMALISATION DOIT SE '//
-     +                  'FAIRE EN PLACE ET DONC IL EST IMPOSSIBLE D')
+     &                  'DEJA EXISTANT, LA NORMALISATION DOIT SE '//
+     &                  'FAIRE EN PLACE ET DONC IL EST IMPOSSIBLE D')
             CALL UTIMPK('S','"AVOIR COMME CONCEPT PRODUIT ',1,MODEOU)
             CALL UTIMPK('S','ET ',1,MODEIN)
             CALL UTIMPK('S','COMME CONCEPT D''ENTREE.',0,' ')
             CALL UTIMPK('L','COMME LE DIT LA SAGESSE POPULAIRE, ON'//
-     +                  ' NE PEUT AVOIR LE BEURRE ET L''ARGENT DU '//
-     +                  'BEURRE (DE CHARENTE POITOU).',0,' ')
+     &                  ' NE PEUT AVOIR LE BEURRE ET L''ARGENT DU '//
+     &                  'BEURRE (DE CHARENTE POITOU).',0,' ')
             CALL UTFINM()
          ENDIF
       ENDIF
@@ -122,7 +122,7 @@ C
             NOPARA(I) = NOPARF(I)
  3       CONTINUE
       ELSE
-         CALL UTMESS('F','OP0037','TYPE DE MODE INCONNU: '//TYPCON)
+         CALL U2MESK('F','ALGELINE2_33',1,TYPCON)
       ENDIF
 C
 C
@@ -136,7 +136,7 @@ C SI LA BANDE DE FREQUENCE EST VIDE, ON NE FAIT RIEN
 C  => DIRECT A LA FIN APRES UN PETIT MESSAGE D'INFO
       IF ( IRET .EQ. 0 ) THEN
             IF ( NIV .GE. 1 ) THEN
-               WRITE(IFM,1000) MODEIN 
+               WRITE(IFM,1000) MODEIN
                WRITE(IFM,1030)
             ENDIF
             GOTO 9999
@@ -146,18 +146,17 @@ C  => DIRECT A LA FIN APRES UN PETIT MESSAGE D'INFO
 C     --- PROTECTION DES OBJETS PERES (AYANT GENERE DES OBJETS .PAPA)
 C
       CALL RSORAC(MODEIN,'LONUTI',IBID,R8B,K8B,C16B,0.0D0,
-     +                                           K8B,NBMOD,1,NBTROU)
+     &                                           K8B,NBMOD,1,NBTROU)
       CALL WKVECT('&&OP0037.NUMERO.ORDRE','V V I',NBMOD,LNUMOR)
       CALL RSORAC(MODEIN,'TOUT_ORDRE',IBID,R8B,K8B,C16B,0.0D0,
-     +                                   K8B,ZI(LNUMOR),NBMOD,NBTROU)
+     &                                   K8B,ZI(LNUMOR),NBMOD,NBTROU)
       DO 77 IM = 1, NBMOD
         CALL RSEXCH(MODEIN,'DEPL',ZI(LNUMOR+IM-1),K19B,IRET)
         CALL JEEXIN(K19B//'.PAPA',IRET)
         IF (IRET.NE.0) THEN
           CALL JELIRA(K19B//'.PAPA','LONUTI',IVAL,K8B)
           IF (IVAL.NE.0) THEN
-            CALL UTMESS('F','OP0037',
-     +                'IL N''EST PAS PERMIS DE MODIFIER UN OBJET PERE')
+            CALL U2MESS('F','ALGELINE2_34')
           ENDIF
         ENDIF
  77   CONTINUE
@@ -209,11 +208,11 @@ C     --- RECUPERATION DE LA MASSE ---
          CALL TBEXP2(MASINE,'LIEU')
          CALL TBEXP2(MASINE,'MASSE')
          CALL TBLIVA ( MASINE, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
-     +              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
+     &              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
          IF ( IRET .EQ. 2 ) THEN
             CALL UTDEBM('F','OP0037', 'ERREUR DANS LES DONNEES' )
             CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',
-     +      1,MASINE)
+     &      1,MASINE)
             CALL UTFINM()
          ELSEIF ( IRET .EQ. 3 ) THEN
             CALL TBEXP2(MASINE,'ENTITE')
@@ -222,11 +221,11 @@ C     --- RECUPERATION DE LA MASSE ---
             VALEKI(1) = NOMA
             VALEKI(2) = 'TOUT'
             CALL TBLIVA ( MASINE, 2, PARAKI, IBID, R8B, C16B, VALEKI,
-     +           K8B, R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
+     &           K8B, R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
             IF ( IRET .NE. 0 ) THEN
                CALL UTDEBM('F','OP0037', 'ERREUR DANS LES DONNEES' )
                CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',
-     +         1,MASINE)
+     &         1,MASINE)
                CALL UTFINM()
             ENDIF
          ENDIF
@@ -238,8 +237,7 @@ C     --- OPTION DE NORMALISATION  ---
       CALL GETVTX(' ','NORME',1,1,1,NORM,L)
       IF ( L .NE. 0 ) THEN
          IF      ( NORM .EQ. 'MASS_GENE'      ) THEN
-            IF (.NOT.LREFE) CALL UTMESS('F','OP0037',
-     +       'MODE NON CALCULE A PARTIR DE MATRICES ASSEMBLEES')
+            IF (.NOT.LREFE) CALL U2MESS('F','ALGELINE2_35')
             METHOD(1:9) = 'MASS_GENE'
             CALL MTDSCR(MASSE)
             CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT(1))
@@ -248,8 +246,7 @@ C     --- OPTION DE NORMALISATION  ---
                CALL JEVEUO(AMOR(1:19)//'.&INT','E',LMAT(2))
             END IF
          ELSE IF ( NORM .EQ. 'RIGI_GENE'  ) THEN
-            IF (.NOT.LREFE) CALL UTMESS('F','OP0037',
-     +       'MODE NON CALCULE A PARTIR DE MATRICES ASSEMBLEES')
+            IF (.NOT.LREFE) CALL U2MESS('F','ALGELINE2_35')
             METHOD(1:9) = 'RAID_GENE'
             CALL MTDSCR(RAIDE)
             CALL JEVEUO(RAIDE(1:19)//'.&INT','E',LMAT(1))
@@ -317,14 +314,10 @@ C
          CALL GETVTX(' ','NOM_CMP',1,1,1,ZK8(LCMP),L)
          CALL POSDDL('NUME_DDL', NUME,NOEUD,ZK8(LCMP),NUMNOE,NUMDDL)
          IF (NUMNOE.EQ.0) THEN
-            CALL UTMESS('F','OP0037'//' (ERREUR.1)',
-     +                     'NORMALISATION IMPOSSIBLE, LE POINT N''EST'//
-     +                     ' PAS PRESENT DANS LE MODELE.')
+            CALL U2MESS('F','ALGELINE2_36')
          ENDIF
          IF (NUMDDL.EQ.0) THEN
-            CALL UTMESS('F','OP0037'//' (ERREUR.1)',
-     +                     'NORMALISATION IMPOSSIBLE, LA COMPOSANTE '//
-     +                     'N''EST PAS PRESENTE DANS LE MODELE.')
+            CALL U2MESS('F','ALGELINE2_37')
          ENDIF
          IDEB = IFIN + 1
          DO 50 IC = 1,NCMP
@@ -394,16 +387,16 @@ C
 C
 C     --- RECUPERATION DES VECTEURS PROPRES ET DES GRANDEURS MODALES ---
       CALL VPRECU ( MODEIN, NOMSY, NBMOD, ZI(LNUMOR), KVEC,
-     +              NBPARA, NOPARA, KVALI, KVALR, KVALK,
-     +              NEQ, NBMODE, TYPMOD, NPARI, NPARR, NPARK )
+     &              NBPARA, NOPARA, KVALI, KVALR, KVALK,
+     &              NEQ, NBMODE, TYPMOD, NPARI, NPARR, NPARK )
       IF (NPARI.NE.NBPARI) THEN
-         CALL UTMESS('F','OP0037','MANQUE DES PARAMETRES ENTIERS')
+         CALL U2MESS('F','ALGELINE2_38')
       ENDIF
       IF (NPARR.NE.NBPARR) THEN
-         CALL UTMESS('F','OP0037','MANQUE DES PARAMETRES REELS')
+         CALL U2MESS('F','ALGELINE2_39')
       ENDIF
       IF (NPARK.NE.NBPARK) THEN
-         CALL UTMESS('F','OP0037','MANQUE DES PARAMETRES CARACTERES')
+         CALL U2MESS('F','ALGELINE2_40')
       ENDIF
       CALL JEVEUO ( KVEC , 'E', LMOD  )
       CALL JEVEUO ( KVALI, 'E', LVALI )
@@ -412,7 +405,7 @@ C     --- RECUPERATION DES VECTEURS PROPRES ET DES GRANDEURS MODALES ---
 C
 C     --- RECUPERATION DES COMPOSANTES ---
       IF ( NORM.EQ.'AVEC_CMP' .OR. NORM.EQ.'SANS_CMP' .OR.
-     +     NORM(1:4).EQ.'EUCL'     ) THEN
+     &     NORM(1:4).EQ.'EUCL'     ) THEN
          CALL WKVECT('&&OP0037.POSITION.DDL','V V I',NEQ*NCMP,LDDL)
          CALL PTEDDL('NUME_DDL', NUME , NCMP, ZK8(LCMP), NEQ, ZI(LDDL))
          DO 20 IC = 2,NCMP
@@ -440,9 +433,7 @@ C     --- CALCUL DU NOMBRE DE COMPOSANTES ACTIVES ---
             NCMPAC = NCMPAC + ZI(LDDL+IEQ)
  120     CONTINUE
          IF (NCMPAC .LT. 1 ) THEN
-            CALL UTMESS('F','OP0037'//' (ERREUR.1)',
-     +                     'NORMALISATION IMPOSSIBLE,  AUCUNE COMPOSANT'
-     +                   //'E N''EST PRESENTE DANS LE MODELE.')
+            CALL U2MESS('F','ALGELINE2_41')
          ENDIF
       ENDIF
 C
@@ -451,26 +442,21 @@ C     --- SIGNE DES MODES ---
       CALL GETFAC ( 'MODE_SIGNE' , MOSIGN )
       IF ( MOSIGN .NE. 0 ) THEN
          CALL GETVEM(NOMA,'NOEUD','MODE_SIGNE','NOEUD',
-     +             1,1,1,NOEUD,L)
+     &             1,1,1,NOEUD,L)
          CALL GETVTX('MODE_SIGNE','NOM_CMP',1,1,1,CMP  ,L)
          CALL POSDDL('NUME_DDL', NUME,NOEUD,CMP,NUMNOE,NUMDDL)
          IF (NUMNOE.EQ.0) THEN
-            CALL UTMESS('F','OP0037',
-     +                     'NORMALISATION IMPOSSIBLE, LE NOEUD N''EST'//
-     +                     ' PAS PRESENT DANS LE MODELE.')
+            CALL U2MESS('F','ALGELINE2_42')
          ENDIF
          IF (NUMDDL.EQ.0) THEN
-            CALL UTMESS('F','OP0037',
-     +                     'NORMALISATION IMPOSSIBLE, LA COMPOSANTE '//
-     +                     'N''EST PAS PRESENTE DANS LE MODELE.')
+            CALL U2MESS('F','ALGELINE2_37')
          ENDIF
          ISIGN = 1
          CALL GETVTX('MODE_SIGNE','SIGNE',1,1,1,K8B,L)
          IF ( K8B(1:7) .EQ. 'NEGATIF' ) ISIGN = -1
          IF ( TYPMOD .EQ. 'C' ) THEN
             ISIGN = 0
-            CALL UTMESS('A','OP0037','ON NE TIENT PAS COMPTE DU MOT '//
-     +              'CLE FACTEUR "MODE_SIGNE" POUR DES "MODE_MECA_C"')
+            CALL U2MESS('A','ALGELINE2_43')
          ENDIF
       ENDIF
 C
@@ -488,7 +474,7 @@ C RECUPERATION INFORMATIONS SENSIBILITE
         IF (NBPASS .GT. 0) CALL JEVEUO(NORECG,'L',ADRECG)
       ENDIF
 
-      DO 300 NRPASS = 0,NBPASS 
+      DO 300 NRPASS = 0,NBPASS
         IF (NRPASS .GT. 0) THEN
           K19B = ZK24(ADRECG+2*NRPASS-2)(1:19)
           CALL JEDETR(KVEC)
@@ -515,21 +501,21 @@ C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
          IF (NRPASS .EQ. 0) THEN
           IF ( TYPCON(1:10) .EQ. 'MODE_FLAMB' ) THEN
              CALL VPNOR1 ( NORM, NEQ, NBMODE, ZI(LDDL), ZR(LMOD),
-     +                     ISIGN, NUMDDL, ZR(LCOEF) )
+     &                     ISIGN, NUMDDL, ZR(LCOEF) )
           ELSE
              IF ( LREFE ) THEN
                 CALL VPNORM ( NORM,'OUI',LMAT,NEQ,NBMODE,ZI(LDDL),
-     +                        ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
-     +                        ISIGN, NUMDDL, ZR(LCOEF) )
+     &                        ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
+     &                        ISIGN, NUMDDL, ZR(LCOEF) )
              ELSE
                 CALL VPNORM ( NORM,'NON',LMAT,NEQ,NBMODE,ZI(LDDL),
-     +                        ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
-     +                        ISIGN, NUMDDL, ZR(LCOEF) )
+     &                        ZR(LMOD), ZR(LVALR), LMASIN, XMASTR,
+     &                        ISIGN, NUMDDL, ZR(LCOEF) )
              ENDIF
           ENDIF
           CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD),
-     +                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
-     +                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
+     &                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
+     &                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
           CALL VPNOR2 ( MODEOU, NBMODE, ZI(LNUMOR), ZR(LCOEF) )
 
          ELSE
@@ -540,18 +526,18 @@ C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
  210         CONTINUE
  200       CONTINUE
            CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(LMODS),
-     +                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
-     +                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
+     &                  ZC(1),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
+     &                  ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
            CALL VPNOR2 ( MODEOU,NBMODE,ZI(LNUMOR),ZR(LCOEF))
          ENDIF
 
         ELSEIF ( TYPMOD .EQ. 'C' ) THEN
          IF (NRPASS .EQ. 0) THEN
           CALL WPNORM ( NORM, 'OUI', LMAT, NEQ, NBMODE, ZI(LDDL),
-     +                  ZC(LMOD), ZR(LVALR) ,ZR(LCOEF))
+     &                  ZC(LMOD), ZR(LVALR) ,ZR(LCOEF))
           CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(1),
-     +               ZC(LMOD),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
-     +                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC )
+     &               ZC(LMOD),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
+     &                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC )
          ELSE
            DO 220 IM = 1,NBMODE
              DO 230 IEQ = 1,NEQ
@@ -560,12 +546,11 @@ C     --- NORMALISATION DES MODES ET ARCHIVAGE ---
  230         CONTINUE
  220       CONTINUE
            CALL VPSTOR ( -1,TYPMOD,MODEOU,NBMODE,NEQ,ZR(1),
-     +              ZC(LMODS),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
-     +                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
+     &              ZC(LMODS),NBMODE,NBPARI,NBPARR,NBPARK,NOPARA,'    ',
+     &                 ZI(LVALI),ZR(LVALR),ZK24(LVALK),IPREC)
          ENDIF
         ELSE
-          CALL UTMESS('F','OP0037','"'//TYPMOD//
-     +                                '"  TYPE DE MODE NON TRAITE')
+          CALL U2MESK('F','ALGELINE2_44',1,TYPMOD)
         ENDIF
 C
         DO 60 IM = 1,NBMODE
@@ -583,7 +568,7 @@ C
 C
  1000 FORMAT(/,'NORMALISATION DES MODES : ',A8)
  1010 FORMAT(' NUME_ORDRE         ANCIENNE NORME            ',
-     +       'NOUVELLE NORME')
+     &       'NOUVELLE NORME')
  1020 FORMAT(I12,A24,A24)
  1030 FORMAT('BANDE DE FREQUENCE VIDE !!!')
  9999 CONTINUE

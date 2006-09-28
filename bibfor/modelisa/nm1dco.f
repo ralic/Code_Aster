@@ -2,7 +2,7 @@
      &                  EPSM,DEPS,VIM,SIGP,VIP,DSDE,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,7 +161,7 @@ C    ******PLASTICITE**********************
    40    CONTINUE
   141    CONTINUE
           IF(J .GE. ITEMAX) THEN
-             CALL UTMESS('I','NM1DCO','ABSENCE DE CONVERGENCE J')
+             CALL U2MESS('I','MODELISA5_40')
              CODRET=1
              GOTO 9999
           ENDIF
@@ -195,7 +195,7 @@ C    *****ENDOMMAGEMENT*********************
    30   CONTINUE
   142   CONTINUE
         IF(I .GE. ITEMAX) THEN
-             CALL UTMESS('I','NM1DCO','ABSENCE DE CONVERGENCE I')
+             CALL U2MESS('I','MODELISA5_41')
              CODRET=1
              GOTO 9999
           ENDIF

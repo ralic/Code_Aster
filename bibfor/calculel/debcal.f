@@ -1,6 +1,6 @@
       SUBROUTINE DEBCAL(NOMOP,LIGREL,NIN,LCHIN,LPAIN,NOUT,LCHOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,10 +94,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C DEB-------------------------------------------------------------------
 
       CALL DISMOI('F','EXI_ELEM',LIGREL,'LIGREL',IBID,EXIELE,IERD)
-      IF (EXIELE(1:3).NE.'OUI') CALL UTMESS('F','DEBCAL',
-     &                               'LE LIGREL : '//LIGREL//
-     &                               ' NE CONTIENT PAS D ELEMENTS FINIS'
-     &                               )
+      IF (EXIELE(1:3).NE.'OUI') CALL U2MESK('F','CALCULEL2_25',1,LIGREL)
 
 
 C     INITIALISATION DU COMMON CAII05
@@ -157,6 +154,7 @@ C     -------------------------------------------------------------
      &                             CHIN//
      &                     ' EST DIFFERENT DE CELUI ASSOCIE AU LIGREL: '
      &                             //LIGREL)
+C        CALL U2MESK('F','CALCULEL2_27', 2 ,VALK)
    30 CONTINUE
 
 
@@ -168,11 +166,7 @@ C     ---------------------------------------------------
         DO 40,J = 1,NIN
           CHIN = LCHIN(J)
           IF (.NOT.ZL(IACHIX-1+J)) GO TO 40
-          IF (CHIN.EQ.CHOU) CALL UTMESS('F','DEBCAL',
-     &                 ' ERREUR PROGRAMMEUR : APPEL A CALCUL, LE CHAMP:'
-     &                                  //CHOU//
-     &                           ' EST UN CHAMP "IN" ET UN CHAMP "OUT".'
-     &                                  )
+          IF (CHIN.EQ.CHOU) CALL U2MESK('F','CALCULEL2_28',1,CHOU)
    40   CONTINUE
    50 CONTINUE
 
@@ -308,6 +302,7 @@ C            AU PARAMETRE, ON ARRETE TOUT :
      &                CHIN//':'//K8BI2//
      &                ' N EST PAS CELLE ASSOCIEE AU PARAMETRE '//
      &                NOMPAR//':'//K8BI1//' (OPTION:'//NOMOP)
+C        CALL U2MESK('F','CALCULEL2_29', 5 ,VALK)
         END IF
 
         CALL JEEXIN(CHIN//'.VALE',IRET)
@@ -391,8 +386,7 @@ C     -- INITIALISATION DU COMMON CAII13 :
 C     -- SORTIE ERREUR:
    90 CONTINUE
       CHIN = LCHIN(I)
-      CALL UTMESS('F',' DEBCAL  ',' ON N''ARRIVE PAS A ETENDRE'//
-     &            ' LA CARTE: '//CHIN)
+      CALL U2MESK('F','CALCULEL2_30',1,CHIN)
 
 C     -- SORTIE NORMALE:
   100 CONTINUE

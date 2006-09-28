@@ -7,7 +7,7 @@
       CHARACTER*(*) LITROZ,TYPEM,MOTFAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -289,12 +289,7 @@ C       ----------------------------------------------------
               END IF
             END IF
   150     CONTINUE
-          IF (IER.NE.0) CALL UTMESS('F','RELIEM',
-     &                              'LES MAILLES IMPRIMEES'//
-     &     ' CI-DESSUS N''APPARTIENNENT PAS AU MODELE ET POURTANT ELLES'
-     &                              //
-     &                    ' ONT ETE AFFECTEES DANS LE MOT-CLE FACTEUR :'
-     &                              //MOTFAC)
+          IF (IER.NE.0) CALL U2MESK('F','MODELISA6_96',1,MOTFAC)
         END IF
 
 

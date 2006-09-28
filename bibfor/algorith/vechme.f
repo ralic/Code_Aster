@@ -2,7 +2,7 @@
      &                  TEMPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,7 @@ C DEB ------------------------------------------------------------------
    10 CONTINUE
 
       IF (TYPCAL.NE.'MECA' .AND. TYPCAL.NE.'DLAG') THEN
-        CALL UTMESS('F',NOMPRO,'TYPCAL INVALIDE : '//TYPCAL)
+        CALL U2MESK('F','ALGORITH11_20',1,TYPCAL)
       END IF
 
 
@@ -271,7 +271,7 @@ C  -- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE: TEMP_R/TEMP_F
         ELSE IF (NOMGD.EQ.'TEMP_F') THEN
           LPAIN(12) = 'PTEMPEF'
         ELSE
-          CALL UTMESS('F',NOMPRO,'GRANDEUR INCONNUE.')
+          CALL U2MESS('F','CALCULEL3_70')
         END IF
         LCHIN(12) = CHTEM2
       ELSE
@@ -380,7 +380,7 @@ C           DANS LIGRCS.
 C               POUR LES ELEMENTS DE BORD X-FEM
                 CALL JEEXIN(MODELE(1:8)//'.FISS',IER)
                 IF (IER.NE.0) THEN
-                  CALL JEVEUO(MODELE(1:8)//'.FISS','L',JFISS)  
+                  CALL JEVEUO(MODELE(1:8)//'.FISS','L',JFISS)
                   LPAIN(NCHIN + 1) = 'PPINTTO'
                   LCHIN(NCHIN + 1) = ZK8(JFISS)//'.TOPOSE.PINTTO'
                   LPAIN(NCHIN + 2) = 'PCNSETO'

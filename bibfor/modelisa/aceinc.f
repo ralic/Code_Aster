@@ -1,6 +1,6 @@
       SUBROUTINE ACEINC(NOMA,NOMO,NBMCF,MCLF,NTYELE,NBOCC,IVR,
-     +                  NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,
-     +                  NBTEL,NOCACO,NOCAGB,JDLM,JDLN,LMAX,IER)
+     &                  NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,
+     &                  NBTEL,NOCACO,NOCAGB,JDLM,JDLN,LMAX,IER)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           NOCACO,NBMCF,NTYELE(*),NBOCC(*),IVR(*),NOCAGB
       INTEGER           NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEGB,NBTEL
@@ -9,7 +9,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,22 +102,22 @@ C
           NN = 0
           IF ( MCL.EQ.10 ) THEN
             CALL GETVEM(NOMA,'GROUP_MA_POI1',MCLF(MCL),
-     +                 'GROUP_MA_POI1',IOC,1,LMAX,ZK8(JDLS),NG)
+     &                 'GROUP_MA_POI1',IOC,1,LMAX,ZK8(JDLS),NG)
             IF ( NG .EQ. 0 ) THEN
               CALL GETVEM(NOMA,'GROUP_MA_SEG2',MCLF(MCL),
-     +                    'GROUP_MA_SEG2',IOC,1,LMAX,ZK8(JDLS),NG)
+     &                    'GROUP_MA_SEG2',IOC,1,LMAX,ZK8(JDLS),NG)
             ENDIF
           ELSE
             CALL GETVEM(NOMA,'GROUP_MA',MCLF(MCL),'GROUP_MA',
-     +                  IOC,1,LMAX,ZK8(JDLS),NG)
+     &                  IOC,1,LMAX,ZK8(JDLS),NG)
             CALL GETVEM(NOMA,'MAILLE',MCLF(MCL),'MAILLE',
-     +                  IOC,1,LMAX,ZK8(JDLS),NM)
+     &                  IOC,1,LMAX,ZK8(JDLS),NM)
           ENDIF
           IF ( MCL.EQ.3 .OR. MCL.EQ.4 .OR. MCL.EQ.13 ) THEN
             CALL GETVEM(NOMA,'GROUP_NO',MCLF(MCL),'GROUP_NO',
-     +                  IOC,1,LMAX,ZK8(JDLS),NJ)
+     &                  IOC,1,LMAX,ZK8(JDLS),NJ)
             CALL GETVEM(NOMA,'NOEUD',MCLF(MCL),'NOEUD',
-     +                  IOC,1,LMAX,ZK8(JDLS),NN)
+     &                  IOC,1,LMAX,ZK8(JDLS),NN)
           ELSEIF ( MCL.EQ.11 ) THEN
             CALL GETVR8(MCLF(MCL),'ORIG_AXE',IOC,1,0,R8B,NORIG)
           ENDIF
@@ -137,15 +137,15 @@ C ---     "GROUP_MA" = MAILLES DANS LA LISTE DES GROUPES DE MAILLES
             DO 34 I = 1 , NG
               CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
               CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONMAX',
-     +                                              NBMAGR,K1BID)
+     &                                              NBMAGR,K1BID)
               DO 36 J = 1,NBMAGR
                 NUMMAI = ZI(JDGM+J-1)
                 CALL JENUNO(JEXNUM(MLGNMA,NUMMAI),NOMMAI)
                 NUTYEL = ZI(JDME+NUMMAI-1)
                 IF (MCL.NE.4) ZI(JDLM+NUMMAI-1) = -MCL
                 CALL VAFCAR('MAILLE',MCLF(MCL),NOMMAI,NBEPO,NBEDI,
-     +                      NBECO,NBECA,NBEBA,NBEMA,NBEGB,
-     +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
+     &                      NBECO,NBECA,NBEBA,NBEMA,NBEGB,
+     &                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  36           CONTINUE
  34         CONTINUE
           ENDIF
@@ -160,8 +160,8 @@ C ---     "MAILLE" = MAILLES DE LA LISTE DE MAILLES
               NUTYEL = ZI(JDME+NUMMAI-1)
               IF (MCL.NE.4) ZI(JDLM+NUMMAI-1) = -MCL
               CALL VAFCAR('MAILLE',MCLF(MCL),NOMMAI,NBEPO,NBEDI,NBECO,
-     +                    NBECA,NBEBA,NBEMA,NBEGB,
-     +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
+     &                    NBECA,NBEBA,NBEMA,NBEGB,
+     &                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  46         CONTINUE
           ENDIF
 C
@@ -173,7 +173,7 @@ C ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
               DO 48 I = 1 , NJ
                 CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
                 CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONMAX',
-     +                                                NBNOGR,K1BID)
+     &                                                NBNOGR,K1BID)
                 DO 50 J = 1,NBNOGR
                   NUMNOE = ZI(JDGN+J-1)
                   IF (MCL.NE.4) THEN
@@ -184,8 +184,8 @@ C ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
                   CALL JENUNO(JEXNUM(MLGNNO,NUMNOE),NOMNOE)
                   NUTYEL = ZI(JDNE+NUMNOE-1)
                   CALL VAFCAR('NOEUD',MCLF(MCL),NOMNOE,NBEPO,NBEDI,
-     +                        NBECO,NBECA,NBEBA,NBEMA,NBEGB,
-     +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
+     &                        NBECO,NBECA,NBEBA,NBEMA,NBEGB,
+     &                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  50             CONTINUE
  48           CONTINUE
             ENDIF
@@ -202,8 +202,8 @@ C ---       "NOEUD" = MAILLES TARDIVES  DE LA LISTE DE NOEUDS
                 ENDIF
                 NUTYEL = ZI(JDNE+NUMNOE-1)
                 CALL VAFCAR('NOEUD',MCLF(MCL),NOMNOE,NBEPO,NBEDI,
-     +                      NBECO,NBECA,NBEBA,NBEMA,NBEGB,
-     +                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
+     &                      NBECO,NBECA,NBEBA,NBEMA,NBEGB,
+     &                            NUTYEL,NTYELE,CAR,NCARA,IVR,KIOC,IER)
  58           CONTINUE
             ENDIF
           ENDIF
@@ -214,9 +214,7 @@ C --- AUCUNE MAILLE TARDIVE N'EXISTE SUR CE MODELE :
       CALL DISMOI('F','EXI_TUYAU',NOMO,'MODELE',IBID,EXITUY,IBID)
       IF (EXITUY.NE.'OUI') THEN
          IF (IXNW.EQ.0 .AND. NNOE.NE.0) THEN
-            CALL UTMESS('E',CMD,'IMPOSSIBLE D"AFFECTER DES'//
-     +              ' CARACTERISTIQUES A DES NOEUDS DE CE MODELE CAR'//
-     +                           ' AUCUN NOEUD NE SUPPORTE UN ELEMENT')
+            CALL U2MESS('E','MODELISA_37')
             IER = IER + 1
          ENDIF
 C      ELSE
@@ -230,41 +228,36 @@ C     --------------------------------------------------
         IF ( NBOCC(1) .NE. 0 ) THEN
           DO 81 I = 1 , NBEPO
             IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
-               CALL UTMESS('A',CMD,'LA MAILLE '//NOMMAI//' N''A PAS ETE'
-     +                //' AFFECTEE PAR DES CARACTERISTIQUES DE POUTRE.')
+               CALL U2MESK('A','MODELISA_38',1,NOMMAI)
             ENDIF
  81       CONTINUE
         ENDIF
         IF ( NBOCC(3).NE.0 .OR. NBOCC(14).NE.0 .OR. NBOCC(10).NE.0) THEN
           DO 82 I = NBEPO+1 , NBEPO+NBEDI
             IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
-               CALL UTMESS('A',CMD,'LA MAILLE '//NOMMAI//' N''A PAS ETE'
-     +                         //' AFFECTEE PAR UNE MATRICE (DISCRET).')
+               CALL U2MESK('A','MODELISA_39',1,NOMMAI)
             ENDIF
  82       CONTINUE
         ENDIF
         IF ( NBOCC(6) .NE. 0 ) THEN
          DO 84 I = NBEPO+NBEDI+NBECO+1 , NBEPO+NBEDI+NBECO+NBECA
             IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
-               CALL UTMESS('A',CMD,'LA MAILLE '//NOMMAI//' N''A PAS ETE'
-     +                 //' AFFECTEE PAR DES CARACTERISTIQUES DE CABLE.')
+               CALL U2MESK('A','MODELISA_40',1,NOMMAI)
             ENDIF
  84       CONTINUE
         ENDIF
         IF ( NBOCC(7) .NE. 0 ) THEN
           DO 85 I = NBEPO+NBEDI+NBECO+NBECA+1 ,
-     +                 NBEPO+NBEDI+NBECO+NBECA+NBEBA
+     &                 NBEPO+NBEDI+NBECO+NBECA+NBEBA
             IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
-               CALL UTMESS('A',CMD,'LA MAILLE '//NOMMAI//' N''A PAS ETE'
-     +                 //' AFFECTEE PAR DES CARACTERISTIQUES DE BARRE.')
+               CALL U2MESK('A','MODELISA_41',1,NOMMAI)
             ENDIF
  85       CONTINUE
         ENDIF
         IF ( NBOCC(12) .NE. 0 ) THEN
           DO 88 I = NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+1,NBTEL
             IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
-               CALL UTMESS('A',CMD,'LA MAILLE '//NOMMAI//' N''A PAS ETE'
-     +            //' AFFECTEE PAR DES CARACTERISTIQUES DE GRILLE.')
+               CALL U2MESK('A','MODELISA_42',1,NOMMAI)
             ENDIF
  88       CONTINUE
         ENDIF
@@ -275,8 +268,7 @@ C     --------------------------------------------------
             CALL JENUNO(JEXNUM(MLGNNO,NUMNOE),NOMNOE)
             DO 102 I = NBEPO+1 , NBEPO+NBEDI
                IF (ZI(JDLN+K-1).EQ.NTYELE(I)) THEN
-                  CALL UTMESS('A',CMD,'LE NOEUD '//NOMNOE//' N''A PAS'//
-     +                                  ' ETE AFFECTE PAR UNE MATRICE.')
+                  CALL U2MESK('A','MODELISA_43',1,NOMNOE)
                ENDIF
  102        CONTINUE
  100     CONTINUE

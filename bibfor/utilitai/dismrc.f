@@ -6,7 +6,7 @@
       CHARACTER*(*) NOMOBZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,7 @@ C
          CALL JELIRA(NOMOB//'.ORDR','LONUTI',REPI,KBID)
       ELSE
          QUES2 = QUESTI
-         CALL UTMESS(CODMES,'DISMRC','LA QUESTION : "'//QUES2//
-     +               '" EST INCONNUE')
+         CALL U2MESK(CODMES,'UTILITAI_49',1,QUES2)
          IERD = 1
       ENDIF
 C

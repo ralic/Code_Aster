@@ -1,27 +1,27 @@
       SUBROUTINE IRGMM3 ( NOMAIN, NOMAOU, NBMAT, NUMMAI, BASZ,
-     +                    NOBJ, NBEL, VERSIO )
+     &                    NOBJ, NBEL, VERSIO )
       IMPLICIT   NONE
       INTEGER             NBMAT, NUMMAI(*)
       INTEGER             VERSIO
       CHARACTER*8         NOMAIN, NOMAOU
       CHARACTER*(*)       BASZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/02/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     TRANSFORME LE MAILLAGE "NOMAIN" EN UN MAILLAGE "NOMAOU"
@@ -46,9 +46,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      I, IMA, NBMA, NBMAIL, IFM, NIV,
-     +             INO, IMA2, IMAV, IATYMA, JREFE, JTITR
+     &             INO, IMA2, IMAV, IATYMA, JREFE, JTITR
       INTEGER      JTYPM, JDIME, JOPT, JNPT,
-     +             NBMAC, JMAIL, IM, JNUMOL, JNBNUN, IDLIMA
+     &             NBMAC, JMAIL, IM, JNUMOL, JNBNUN, IDLIMA
       LOGICAL      LOGIC
       CHARACTER*1  BASE
       CHARACTER*8  K8B, NOMG, TYPM, TYPM2
@@ -110,7 +110,7 @@ C
 C
       CALL JEVEUO ( TYPMAV, 'L', JTYPM )
       CALL JEVEUO ( NODIMV, 'L', JDIME )
-      NBMA = ZI(JDIME+3-1) 
+      NBMA = ZI(JDIME+3-1)
 C
       LOGIC = .FALSE.
 C
@@ -141,7 +141,7 @@ C ---    NUMEL = EN QUOI ON DECOUPE, NBCR = COMBIEN ON EN CREER
          IF(NUMEL.NE.0) THEN
             NBEL(NUMEL)=NBEL(NUMEL)+NBCR
          ELSE
-            CALL UTMESS ('A','IRGMM3','ELEMENT '//TYPM//' NON TRAITE')
+            CALL U2MESK('A','ALGELINE_64',1,TYPM)
          ENDIF
  10   CONTINUE
 C
@@ -157,7 +157,7 @@ C
                NBCR=TYPD(I,2)
                NBP =TYPD(I,3)
                WRITE(IFM,*) NBEL(I),' ELEMENTS ',TYPM,' DECOUPES EN ',
-     +                      NBCR,' ELTS ',TYPM2,' A ',NBP,' NOEUDS'
+     &                      NBCR,' ELTS ',TYPM2,' A ',NBP,' NOEUDS'
             ENDIF
          ENDIF
  102  CONTINUE
@@ -186,14 +186,14 @@ C ----------------------------------------------------------------------
       CALL WKVECT ( TYPMAI, BASE//' V I', NBMAIL, IATYMA )
 
       CALL JECREC ( CONNEX, BASE//' V I', 'NU', 'CONTIG', 'VARIABLE',
-     +                                                    NBMAIL )
+     &                                                    NBMAIL )
 C#MC  1*NBMAIL NE SUFFIT PAS ?
       CALL JEECRA ( CONNEX, 'LONT', NTYELE*NBMAIL, ' ' )
 
       CALL JEDETC('V','&&IRMGMS.LISMA',1)
-      CALL JECREC ( '&&IRMGMS.LISMA', 'V V I', 'NU', 'CONTIG', 
-     +                                       'VARIABLE', NBMAIL )
-      CALL JEECRA ( '&&IRMGMS.LISMA', 'LONT', NBMAIL, K8B) 
+      CALL JECREC ( '&&IRMGMS.LISMA', 'V V I', 'NU', 'CONTIG',
+     &                                       'VARIABLE', NBMAIL )
+      CALL JEECRA ( '&&IRMGMS.LISMA', 'LONT', NBMAIL, K8B)
 
       DO 103 I=1,NTYELE
          NBEL(I) = 0
@@ -214,15 +214,14 @@ C        NBP = NBRE DE POINTS PAR ELEMENTS CREES
          NBP   = TYPD(IND,3)
          CALL JECROC ( JEXNUM( '&&IRMGMS.LISMA', IMA ) )
          CALL JEECRA ( JEXNUM( '&&IRMGMS.LISMA', IMA ), 'LONMAX',
-     +                 NBCR, K8B )
+     &                 NBCR, K8B )
          CALL JEVEUO ( JEXNUM( '&&IRMGMS.LISMA', IMA), 'E', IDLIMA )
 C
          DO 110 I = 1 , NBCR
             IMAV = IMAV + 1
             IF(IMAV.GT.NBMMAX)THEN
                CALL CODENT(NBMMAX,'G',K8B)
-               CALL UTMESS('F','IRGMM3','ON NE PEUT DEPASSER '//
-     +         K8B//' MAILLES')
+               CALL U2MESK('F','ALGELINE_65',1,K8B)
             ENDIF
             NOMG = 'M       '
             CALL CODENT ( IMAV, 'G', NOMG(2:8) )

@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,8 @@ C
          ELSE
            CODRET = 1
            CALL UTMESS ( CODMES, NOMPRO,
-     >           'LE TABLEAU'//NOMCAR//'.VALE" EST DE TYPE '//TYPE)
+     &           'LE TABLEAU'//NOMCAR//'.VALE" EST DE TYPE '//TYPE)
+C        CALL U2MESK(CODMES,'UTILITAI4_88', 2 ,VALK)
          ENDIF
 C
 C 1.N. ==> QUESTION INCONNUE
@@ -118,8 +119,7 @@ C
       ELSE
         CODRET = 1
         K24BID = QUESTI
-        CALL UTMESS ( CODMES, NOMPRO,
-     >                'LA QUESTION : "'//K24BID//'" EST INCONNUE')
+        CALL U2MESK(CODMES,'UTILITAI_49',1,K24BID)
       ENDIF
 C
       REPKZ = REPK

@@ -1,12 +1,12 @@
       SUBROUTINE RAIREP(NOMA,IOC,KM,RIGI,NBGR,LIGRMA,NBNO,
-     +  TABNOE,RIGNOE,RIGTO,AMOTO,RIROT)
+     &  TABNOE,RIGNOE,RIGTO,AMOTO,RIROT)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER      IOC, NBGR, NBNO
       CHARACTER*8  NOMA, LIGRMA(NBGR), TABNOE(*),KM
       REAL*8       RIGNOE(*), RIGTO(*), AMOTO(*),RIROT(3)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,9 +72,9 @@ C       RECUPERATION DU CENTRE
 C
       CALL GETVR8('RIGI_PARASOL','COOR_CENTRE',IOC,1,0,R8B,NCG)
       CALL GETVEM(NOMA,'NOEUD','RIGI_PARASOL','NOEUD_CENTRE',
-     +                   IOC,1,0,K8B,NNO)
+     &                   IOC,1,0,K8B,NNO)
       CALL GETVEM(NOMA,'GROUP_NO','RIGI_PARASOL','GROUP_NO_CENTRE',
-     +                      IOC,1,0,K8B,NGN)
+     &                      IOC,1,0,K8B,NGN)
       IF (NCG.NE.0) THEN
         CALL GETVR8('RIGI_PARASOL','COOR_CENTRE',IOC,1,3,C,NCG)
         XG = C(1)
@@ -82,14 +82,14 @@ C
         ZG = C(3)
       ELSEIF (NNO.NE.0) THEN
         CALL GETVEM(NOMA,'NOEUD','RIGI_PARASOL','NOEUD_CENTRE',
-     +                     IOC,1,1,NOMNOE,NNO)
+     &                     IOC,1,1,NOMNOE,NNO)
         CALL JENONU(JEXNOM(MANONO,NOMNOE),INOE)
         XG = ZR(JCOOR+3*(INOE-1)+1-1)
         YG = ZR(JCOOR+3*(INOE-1)+2-1)
         ZG = ZR(JCOOR+3*(INOE-1)+3-1)
       ELSEIF (NGN.NE.0) THEN
         CALL GETVEM(NOMA,'GROUP_NO','RIGI_PARASOL','GROUP_NO_CENTRE',
-     +                        IOC,1,1,NOMGR,NGN)
+     &                        IOC,1,1,NOMGR,NGN)
         CALL JEVEUO(JEXNOM(MAGRNO,NOMGR),'L',LDGN)
         INOE = ZI(LDGN)
         CALL JENUNO(JEXNUM(MANONO,INOE),NOMNOE)
@@ -104,12 +104,12 @@ C
       IF (NCG.NE.0) THEN
         CALL WKVECT('&&RAIREP.COEGRO','V V R',NBGR,ICOEGR)
         CALL GETVR8('RIGI_PARASOL','COEF_GROUP',IOC,1,NBGR,
-     +   ZR(ICOEGR),NCG)
+     &   ZR(ICOEGR),NCG)
       ELSE
         CALL WKVECT('&&RAIREP.FONGRO','V V K8',NBGR,IFONGR)
         LFONC = .TRUE.
         CALL GETVID('RIGI_PARASOL','FONC_GROUP',IOC,1,NBGR,ZK8(IFONGR),
-     +  NFG)
+     &  NFG)
       ENDIF
 C
       DO 20 I = 1,NBGR
@@ -171,9 +171,7 @@ C
              B(2) = Y(4) - Y(2)
              B(3) = Z(4) - Z(2)
            ELSE
-             CALL UTMESS('F','RAIREP.01',
-     &           'UN ELEMENT N''EST NI TRIA3 NI TRIA6 NI TRIA7 NI'//
-     &           'QUAD4 NI QUAD8 NI QUAD9')
+             CALL U2MESS('F','MODELISA6_35')
            ENDIF
            CALL PROVEC(A,B,C)
            SURF=DDOT(3,C,1,C,1)
@@ -209,7 +207,7 @@ C
                IF (ZI(IDNO+IJ-1).EQ.0) GOTO 37
                IF (ZI(LDNM+NN-1).EQ.IJ) THEN
                   ZR(ICOEF+IJ-1) = ZR(ICOEF+IJ-1) +
-     +             ZR(ISURMA+IM-1)/SURTOT
+     &             ZR(ISURMA+IM-1)/SURTOT
                ENDIF
  37          CONTINUE
  35        CONTINUE

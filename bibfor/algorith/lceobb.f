@@ -4,22 +4,22 @@
      &                     IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
@@ -32,8 +32,8 @@ C ======================================================================
 
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
-C     ROUTINE DE DECOUPAGE DE L'INCREMENT DE CHARGE LORSQUE 
-C     L4ENDOMMAGEMENT APPROCHE DE 1 
+C     ROUTINE DE DECOUPAGE DE L'INCREMENT DE CHARGE LORSQUE
+C     L4ENDOMMAGEMENT APPROCHE DE 1
 C
 C
 C
@@ -54,7 +54,7 @@ C  IN  ECROD    : /
 C  IN  RK    : /
 C  IN  RK1    : /
 C  IN  RK2    : / PARAMETRES DU MODELE
-C  
+C
 C OUT  B D     : VARIABLES INTERNES EN T+
 C OUT MULT     : MULTIPLICATEUR PLASTIQUE DU PRINCIPE DE NORMALITE
 C OUT ELAS     : ELASTIQUE OU DISSIPATION?
@@ -76,7 +76,7 @@ C TOLE CRP_20
       REAL*8      INTERM(3,3),BINTER(6),EPI(6)
       REAL*8      EPSI(6),EPST(6),EPSF(6),TREPSM
 
-      
+
 
       UN=1.D0
       T(1,1)=1
@@ -104,12 +104,12 @@ C-------------------------------------------------
         EPSI(K) = EPSM(K)
         EPST(K) = (EPSF(K)+EPSI(K))/2.D0
  1    CONTINUE
-      
-      
+
+
 
       REINIT=.FALSE.
 
- 999  CONTINUE 
+ 999  CONTINUE
         IF ((((EPSI(1).NE.EPSF(1)).OR.(EPSI(2).NE.EPSF(2)).OR.
      &      (EPSI(3).NE.EPSF(3)).OR.(EPSI(4).NE.EPSF(4)).OR.
      &      (EPSI(5).NE.EPSF(5)).OR.(EPSI(6).NE.EPSF(6))).OR.
@@ -118,9 +118,9 @@ C-------------------------------------------------
 
             REINIT=.FALSE.
             COMPTE=COMPTE+1
-                        
+
               IF (COMPTE.EQ.100) THEN
-                CALL UTMESS('F','LCEOBB','CV APPROCHE 0 IMPOSSIBLE')
+                CALL U2MESS('F','ALGORITH4_55')
               ENDIF
 
             CALL DIAGO3(BM,VECBM,VALBM)
@@ -145,7 +145,7 @@ C----CAS OU LES 3 VALEURS PROPRES SONT NON NULLES---------------------
      &                    LAMBDA,MU,ALPHA,ECROB,ECROD,
      &                    SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
 
- 
+
               CALL DIAGO3(B,VECB,VALB)
                REINIT=.FALSE.
               IF (COMPTE.LT.100) THEN
@@ -211,11 +211,11 @@ C----CAS OU LES 3 VALEURS PROPRES SONT NON NULLES---------------------
                   EPSI(I)=EPST(I)
                   EPST(I)=EPSF(I)
  901            CONTINUE
- 
+
 
               ENDIF
 
-              
+
 C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
 
             ELSEIF (BDIM.EQ.2) THEN
@@ -237,7 +237,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
             TOT3=.FALSE.
             CALL R8INIR(6,0.D0,BMR,1)
             IF (ABS(VALBM(1)).LT.TOLB) THEN
- 
+
               BMR(1)=VALBM(2)
               BMR(2)=VALBM(3)
               EPSR(1)=EPI(2)
@@ -248,7 +248,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               EPSR(6)=EPI(5)
               TOT1=.TRUE.
             ELSEIF (ABS(VALBM(2)).LT.TOLB) THEN
- 
+
               BMR(1)=VALBM(3)
               BMR(2)=VALBM(1)
               EPSR(1)=EPI(3)
@@ -258,9 +258,9 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               EPSR(5)=EPI(6)
               EPSR(6)=EPI(4)
               TOT2=.TRUE.
- 
+
             ELSEIF (ABS(VALBM(3)).LT.TOLB) THEN
- 
+
               BMR(1)=VALBM(1)
               BMR(2)=VALBM(2)
               EPSR(1)=EPI(1)
@@ -270,7 +270,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               EPSR(5)=EPI(5)
               EPSR(6)=EPI(6)
               TOT3=.TRUE.
- 
+
             ENDIF
 
             CALL LCEOB2(INTMAX,TOLER,EPSR,BMR,DM,
@@ -278,9 +278,9 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
      &                 SEUIL,BR,D,MULT,ELAS,DBLOQ,IRET)
 
             CALL DIAGO3(BR,VECBR,VALBR)
- 
+
             IF (COMPTE.LT.100) THEN
-            
+
             DO 102 I=1,2
               IF (VALBR(I).LT.0) THEN
                 IF (ABS(VALBR(I)).LT.TOLB) THEN
@@ -301,10 +301,10 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
                 REINIT=.TRUE.
               ENDIF
             ENDIF
- 
+
             ELSE
 
-            REINIT=.FALSE. 
+            REINIT=.FALSE.
             DO 902 I=1,2
               IF (VALBR(I).LT.TOLB) THEN
                 VALBR(I)=0.D0
@@ -316,7 +316,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
             ENDIF
 
             ENDIF
- 
+
             IF (REINIT) THEN
               DO 802 I=1,6
                 EPST(I)=(EPST(I)+EPSI(I))/2
@@ -332,7 +332,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
  224               CONTINUE
  223             CONTINUE
  222           CONTINUE
-          
+
               IF (TOT1) THEN
               BINTER(1)=0.D0
               BINTER(2)=BR(1)
@@ -355,7 +355,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               BINTER(5)=0.D0
               BINTER(6)=0.D0
               ENDIF
- 
+
               CALL R8INIR(9,0.D0,INTERM,1)
               CALL R8INIR(6,0.D0,B,1)
               CALL R8INIR(6,0.D0,BM,1)
@@ -378,12 +378,12 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
  803          CONTINUE
               GOTO 999
              ENDIF
- 
+
 
 C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
- 
+
                 ELSEIF (BDIM.EQ.1) THEN
- 
+
                   CALL R8INIR(9,0.D0,INTERM,1)
                   CALL R8INIR(6,0.D0,EPI,1)
                   DO 242 I=1,3
@@ -396,7 +396,7 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
  245                  CONTINUE
  243                CONTINUE
  242              CONTINUE
- 
+
                   TOT1=.FALSE.
                   TOT2=.FALSE.
                   TOT3=.FALSE.
@@ -430,14 +430,14 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
                     EPSR(5)=EPI(6)
                     EPSR(6)=EPI(4)
                     TOT3=.TRUE.
-                  ENDIF 
- 
+                  ENDIF
+
                CALL LCEOB1(INTMAX,TOLER,EPSR,BMR,DM,
      &                     LAMBDA,MU,ALPHA,ECROB,ECROD,
      &                     SEUIL,BR,D,MULT,ELAS,DBLOQ,IRET)
 
                   IF (COMPTE.LT.100) THEN
-                  
+
                   IF (BR(1).LT.0) THEN
                     IF (ABS(BR(1)).LT.TOLB) THEN
                       BR(1)=0.D0
@@ -498,8 +498,8 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
               GOTO 999
             ENDIF
             ENDIF
-            
+
         ENDIF
 
- 
+
       END

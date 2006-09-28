@@ -1,6 +1,6 @@
       SUBROUTINE CELCES(CELZ,BASEZ,CESZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,8 +123,8 @@ C     -------------------------------------------------------
         IMOLO = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
         IF (IMOLO.EQ.0) GO TO 30
         CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
-        IF (ZI(JMOLO-1+1).GT.3) CALL UTMESS('F','CELCES','STOP 1')
-        IF (ZI(JMOLO-1+2).NE.GD) CALL UTMESS('F','CELCES','STOP 2')
+        IF (ZI(JMOLO-1+1).GT.3) CALL U2MESS('F','CALCULEL_2')
+        IF (ZI(JMOLO-1+2).NE.GD) CALL U2MESS('F','CALCULEL_8')
         DIFF = (ZI(JMOLO-1+4).GT.10000)
         NBPT = MOD(ZI(JMOLO-1+4),10000)
 
@@ -149,7 +149,7 @@ C     ----------------------------------------
         IF (ZI(JNUCMP-1+ICMP).EQ.1) THEN
           NCMP1 = NCMP1 + 1
           ZI(JNUCMP-1+ICMP) = NCMP1
-          IF (NCMP1.GT.503) CALL UTMESS('F','CELCES','STOP 1')
+          IF (NCMP1.GT.503) CALL U2MESS('F','CALCULEL_2')
           LICMP(NCMP1) = ZK8(JCMPGD-1+ICMP)
         END IF
    40 CONTINUE
@@ -174,8 +174,8 @@ C     ---------------------------------------------------------
         IF (IMOLO.EQ.0) GO TO 90
 
         CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
-        IF (ZI(JMOLO-1+1).GT.3) CALL UTMESS('F','CELCES','STOP 1')
-        IF (ZI(JMOLO-1+2).NE.GD) CALL UTMESS('F','CELCES','STOP 2')
+        IF (ZI(JMOLO-1+1).GT.3) CALL U2MESS('F','CALCULEL_2')
+        IF (ZI(JMOLO-1+2).NE.GD) CALL U2MESS('F','CALCULEL_8')
         DIFF = (ZI(JMOLO-1+4).GT.10000)
         NBPT = MOD(ZI(JMOLO-1+4),10000)
         NPTMX = MAX(NPTMX,NBPT)
@@ -219,7 +219,7 @@ C         -- NOMBRE DE CMPS:
 
    80   CONTINUE
    90 CONTINUE
-      IF (NPTMX.EQ.0) CALL UTMESS('F','CELCES','STOP 3')
+      IF (NPTMX.EQ.0) CALL U2MESS('F','ALGORITH_19')
 
 
 
@@ -309,7 +309,7 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
                     ELSE IF (TSCA.EQ.'K8') THEN
                       ZK8(JCESV-1+IAD) = ZK8(JCELV-1+IEQ)
                     ELSE
-                      CALL UTMESS('F','CELCES','STOP 4')
+                      CALL U2MESS('F','CALCULEL_9')
                     END IF
   130             CONTINUE
   140           CONTINUE
@@ -330,9 +330,9 @@ C       -------------------
           LGCATA = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+3)
           CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
           DIFF = (ZI(JMOLO-1+4).GT.10000)
-          IF (DIFF) CALL UTMESS('F','CELCES','A FAIRE ...')
+          IF (DIFF) CALL U2MESS('F','CALCULEL_46')
           NBPT = MOD(ZI(JMOLO-1+4),10000)
-          IF (NBPT.NE.LGCATA) CALL UTMESS('F','CELCES','STOP 1')
+          IF (NBPT.NE.LGCATA) CALL U2MESS('F','CALCULEL_2')
           NBEL = NBELEM(LIGREL,IGR)
 
           DO 210,IEL = 1,NBEL
@@ -355,7 +355,7 @@ C       -------------------
                   IF (TSCA.EQ.'R') THEN
                     ZR(JCESV-1+IAD) = ZR(JCELV-1+IEQ)
                   ELSE
-                    CALL UTMESS('F','CELCES','STOP 4')
+                    CALL U2MESS('F','CALCULEL_9')
                   END IF
   180           CONTINUE
   190         CONTINUE

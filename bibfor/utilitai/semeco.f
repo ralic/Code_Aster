@@ -1,28 +1,28 @@
       SUBROUTINE SEMECO ( CHOIX, NOSIMP, NOPASE,
-     >                    PREF,
-     >                    NOCOMP, NBMOCL, LIMOCL, LIVALE, LIMOFA,
-     >                    IRET )
+     &                    PREF,
+     &                    NOCOMP, NBMOCL, LIMOCL, LIVALE, LIMOFA,
+     &                    IRET )
 C
 C     SENSIBILITE - MEMORISATION DES CORRESPONDANCES
 C     **            **               **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ----------------------------------------------------------------------
@@ -171,9 +171,8 @@ C
             CALL UTDEBM ( 'A', NOMPRO, 'LA CHAINE '//SAUX06(IAUX) )
             CALL UTIMPI ( 'S', ' EST DE LONGUEUR : ', 1, LGNOCO )
             CALL UTFINM
-            CALL UTMESS ( 'A', NOMPRO,
-     >    'POUR UN CONCEPT, PAS PLUS DE 8 SVP.')
-            CALL UTMESS ( 'F', NOMPRO, 'ERREUR DE PROGRAMMATION')
+            CALL U2MESS('A','UTILITAI3_96')
+            CALL U2MESS('F','MODELISA_67')
           ELSE
             IF ( IAUX.EQ.1 ) THEN
               NOSIM8 = '        '
@@ -203,10 +202,8 @@ C
    21   CONTINUE
         JAUX = LEN(PREFIX)
         IF ( IAUX.LT.JAUX ) THEN
-          CALL UTMESS ( 'A', NOMPRO,
-     >                  'LA CHAINE PREF PASSE EN ARGUMENT EST TROP'//
-     >             ' COURTE POUR METTRE LA CHAINE PREFIX = '//PREFIX)
-          CALL UTMESS ( 'F', NOMPRO, 'ERREUR DE PROGRAMMATION')
+          CALL U2MESK('A','UTILITAI4_54',1,PREFIX)
+          CALL U2MESS('F','MODELISA_67')
         ENDIF
         PREF(1:JAUX) = PREFIX
 C
@@ -240,9 +237,10 @@ C 3.2. ==> CONTROLE
 C
         DO 32 , IAUX = 1 , NUTI - 1
           IF ( (ZK80(ADMMEM+2*IAUX-2) (1: 8).EQ.NOSIM8 ) .AND.
-     >         (ZK80(ADMMEM+2*IAUX-2) (9:16).EQ.NOPAS8) ) THEN
+     &         (ZK80(ADMMEM+2*IAUX-2) (9:16).EQ.NOPAS8) ) THEN
             CALL UTMESS ( 'F', NOMPRO, 'LA DERIVEE DE '//NOSIM8(1:8)//
-     >              ' PAR RAPPORT A '//NOPAS8(1:8)//' EST DEJA NOMMEE.')
+     &              ' PAR RAPPORT A '//NOPAS8(1:8)//' EST DEJA NOMMEE.')
+C        CALL U2MESK('F','UTILITAI4_55', 2 ,VALK)
           ENDIF
    32   CONTINUE
 C
@@ -316,7 +314,7 @@ C 4. EN RECUPERATION OU SUPPRESSION
 C====
 C
       ELSEIF ( CHOIX.EQ.'RENC' .OR. CHOIX.EQ.'REMC' .OR.
-     >         CHOIX.EQ.'S' ) THEN
+     &         CHOIX.EQ.'S' ) THEN
 C
 C 4.1. ==> RECHERCHE DU NOM COMPOSE QUI A ETE ASSOCIE AU COUPLE
 C          ( STRUCTURE DE BASE , PARAMETRE DE SENSIBILITE )
@@ -330,7 +328,7 @@ C
           CALL JELIRA ( NOMMEM, 'LONUTI', NUTI, SAUX08 )
           DO 41 , IAUX = 1 , NUTI
             IF ( (ZK80(ADMMEM+2*IAUX-2) (1: 8).EQ.NOSIM8 ) .AND.
-     >           (ZK80(ADMMEM+2*IAUX-2) (9:16).EQ.NOPAS8) ) THEN
+     &           (ZK80(ADMMEM+2*IAUX-2) (9:16).EQ.NOPAS8) ) THEN
               SAUX08 = ZK80(ADMMEM+2*IAUX-2) (17:24)
 C                             12345678
               IF ( SAUX08.EQ.'        ' ) THEN
@@ -358,11 +356,11 @@ C
           IF ( LGNOCO.LT.IAUX ) THEN
            CALL UTDEBM ( 'A', NOMPRO, 'PROBLEME DE DECLARATION' )
             CALL UTIMPI ( 'L',
-     >      'LA CHAINE NOCOMP EST DECLAREE A ', 1, LGNOCO)
+     &      'LA CHAINE NOCOMP EST DECLAREE A ', 1, LGNOCO)
             CALL UTIMPI ( 'L',
-     >'ON VEUT Y METTRE '//SAUX08//' QUI EN CONTIENT ', 1, IAUX)
+     &'ON VEUT Y METTRE '//SAUX08//' QUI EN CONTIENT ', 1, IAUX)
             CALL UTFINM
-            CALL UTMESS ( 'F', NOMPRO, 'ERREUR DE PROGRAMMATION' )
+            CALL U2MESS('F','MODELISA_67')
           ELSE
             NOCOMP(1:IAUX) = SAUX08(1:IAUX)
             DO 42 , JAUX = IAUX+1 , LGNOCO
@@ -401,7 +399,7 @@ C
               ZK80(ADVALE+IAUX) = ZK80(ADMEVA+IAUX)
               ZK80(ADMOFA+IAUX) = ZK80(ADMEMF+IAUX)
    43       CONTINUE
-C          
+C
           ENDIF
 C
           ENDIF
@@ -414,7 +412,7 @@ C
         ELSE
 C
           IF ( IRET.EQ.0 )  THEN
-C          
+C
           IAUX = LXLGUT(SAUX08)
           JAUX = LXLGUT(NOCOMP)
           IF ( JAUX.NE.IAUX ) THEN
@@ -424,25 +422,23 @@ C
               IRET = 3
             ENDIF
           ENDIF
-C          
+C
           ENDIF
 C
           IF ( IRET.EQ.0 ) THEN
-C          
+C
             ZK80(ADMMEM-1+NUMERO) = ZK80(ADMMEM-1+NUTI)
             NUTI = NUTI - 1
             CALL JEECRA ( NOMMEM,'LONUTI',NUTI,SAUX08)
 C
           ELSE
-C          
-            CALL UTMESS ( 'A', NOMPRO, 'STRUCTURE SIMPLE   : '//NOSIM8)
-            CALL UTMESS ( 'A', NOMPRO, 'PARAMETRE SENSIBLE : '//NOPAS8)
-            CALL UTMESS ( 'A', NOMPRO,
-     >     'LA STRUCTURE COMPOSEE A SUPPRIMER EST : '//NOCOM8 )
-            CALL UTMESS ( 'A', NOMPRO,
-     >     'MAIS LA STRUCTURE COMPOSEE ENREGISTREE EST : '//SAUX08 )
-            CALL UTMESS ( 'A', NOMPRO, 'SUPPRESSION IMPOSSIBLE !')
-C          
+C
+            CALL U2MESK('A','UTILITAI4_56',1,NOSIM8)
+            CALL U2MESK('A','UTILITAI4_57',1,NOPAS8)
+            CALL U2MESK('A','UTILITAI4_58',1,NOCOM8)
+            CALL U2MESK('A','UTILITAI4_59',1,SAUX08)
+            CALL U2MESS('A','UTILITAI4_60')
+C
           ENDIF
 C
         ENDIF
@@ -452,9 +448,8 @@ C 5. MAUVAIX CHOIX
 C====
 C
       ELSE
-        CALL UTMESS ( 'A', NOMPRO,
-     >                'CHOIX=/PREFIXE/E/RENC/REMC/S SVP.')
-        CALL UTMESS ( 'F', NOMPRO, 'ERREUR DE PROGRAMMATION')
+        CALL U2MESS('A','UTILITAI4_61')
+        CALL U2MESS('F','MODELISA_67')
       ENDIF
 C
       CALL JEDEMA()

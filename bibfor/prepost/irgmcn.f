@@ -1,7 +1,7 @@
       SUBROUTINE IRGMCN ( CHAMSY, PARTIE, IFI, NOMCON, ORDR, NBORDR,
-     +                    COORD, CONNX, POINT, NOBJ, NBEL,
-     +                    NBCMPI, NOMCMP, LRESU, PARA,
-     +                    VERSIO )
+     &                    COORD, CONNX, POINT, NOBJ, NBEL,
+     &                    NBCMPI, NOMCMP, LRESU, PARA,
+     &                    VERSIO )
       IMPLICIT NONE
       INTEGER        IFI, NBORDR, NBCMPI, VERSIO
       INTEGER        ORDR(*), CONNX(*), POINT(*)
@@ -16,22 +16,22 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C        IMPRESSION D'UN CHAM_NO AU FORMAT GMSH
@@ -93,8 +93,8 @@ C
       CALL WKVECT ( '&&IRGMCN.TYPE', 'V V K8', NBORD2,JTYPE )
 C
 C
-      DO 100 IOR = 1 , NBORD2  
-         IF ( LRESU ) THEN 
+      DO 100 IOR = 1 , NBORD2
+         IF ( LRESU ) THEN
            CALL RSEXCH ( NOMCON, CHAMSY, ORDR(IOR), NOCH19, IRET )
            IF( IRET .NE. 0 ) GOTO 100
          ELSE
@@ -157,20 +157,18 @@ C
       ENDIF
 C
 C ----------------------------------------------------------------------
-C          IMPRESSION D'UN CHAMP TENSORIEL 
+C          IMPRESSION D'UN CHAMP TENSORIEL
 C ----------------------------------------------------------------------
       IF ( TENS ) THEN
          IF (VERSIO.EQ.2) THEN
-            CALL UTMESS('A','IMPR_RESU','ATTENTION, IL FAUT SPECIFIER '
-     &     //'LES NOMS DES COMPOSANTES DU TENSEUR POUR POUVOIR LES '
-     &     //'VISUALISER SEPAREMENT AVEC GMSH')
+            CALL U2MESS('A','PREPOST2_55')
          ENDIF
 C
 C        ECRITURE DE L'ENTETE DE View
-C        **************************** 
+C        ****************************
          NOCMP = 'TENSEUR '
          CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
-     +                 NBEL, .FALSE., .FALSE., TENS, VERSIO )
+     &                 NBEL, .FALSE., .FALSE., TENS, VERSIO )
 
 C ---    BOUCLE SUR LES TYPES D'ELEMENTS SI NBEL>0
 C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
@@ -178,13 +176,13 @@ C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
             I=TORD(INE)
             IF(NBEL(I).NE.0)THEN
                CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT,
-     +                       NOBJ(I), NBEL(I),
-     +                       ZI(JTABV), PARTIE, JTYPE, ZI(JTABD) )
+     &                       NOBJ(I), NBEL(I),
+     &                       ZI(JTABV), PARTIE, JTYPE, ZI(JTABD) )
             ENDIF
  101     CONTINUE
 C
 C        FIN D'ECRITURE DE View
-C        ********************** 
+C        **********************
          WRITE(IFI,1000) '$EndView'
 C
       ENDIF
@@ -196,11 +194,11 @@ C ----------------------------------------------------------------------
       IF ( VECT ) THEN
 C
 C        ECRITURE DE L'ENTETE DE View
-C        **************************** 
+C        ****************************
 C
          NOCMP = 'VECTEUR '
          CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
-     +                 NBEL, .FALSE., VECT, TENS, VERSIO )
+     &                 NBEL, .FALSE., VECT, TENS, VERSIO )
 C
 C        LISTE DES COMPOSANTES
          TBCMP(1)='DX      '
@@ -213,15 +211,15 @@ C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
             I=TORD(INE)
             IF(NBEL(I).NE.0)THEN
                CALL IRGNAL(IFI, NBORD2, COORD, CONNX, POINT,
-     +                     TBCMP, 3, I, NOBJ(I), NBEL(I),
-     +                     ZI(JTABC), ZI(JTABL), ZI(JTABV),
-     +                     PARTIE,JTYPE, ZI(JTABD) )
+     &                     TBCMP, 3, I, NOBJ(I), NBEL(I),
+     &                     ZI(JTABC), ZI(JTABL), ZI(JTABV),
+     &                     PARTIE,JTYPE, ZI(JTABD) )
             ENDIF
  102     CONTINUE
 C
 C        FIN D'ECRITURE DE View
-C        ********************** 
-C      
+C        **********************
+C
          WRITE(IFI,1000) '$EndView'
 C
       ENDIF
@@ -235,10 +233,10 @@ C
             NOCMP = ZK8(JNCMP+K-1)
 C
 C        ECRITURE DE L'ENTETE DE View
-C        **************************** 
-C      
+C        ****************************
+C
          CALL IRGMPV ( IFI, LRESU, NOMCON, CHAMSY, NBORD2, PARA, NOCMP,
-     +                 NBEL, SCAL, .FALSE., TENS, VERSIO )
+     &                 NBEL, SCAL, .FALSE., TENS, VERSIO )
 C
 C        LISTE DES COMPOSANTES
          TBCMP(1)=NOCMP
@@ -249,20 +247,20 @@ C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
             I=TORD(INE)
             IF(NBEL(I).NE.0)THEN
                CALL IRGNAL(IFI, NBORD2, COORD, CONNX, POINT,
-     +                     TBCMP, 1, I, NOBJ(I), NBEL(I),
-     +                     ZI(JTABC), ZI(JTABL), ZI(JTABV),
-     +                     PARTIE, JTYPE, ZI(JTABD) )
+     &                     TBCMP, 1, I, NOBJ(I), NBEL(I),
+     &                     ZI(JTABC), ZI(JTABL), ZI(JTABV),
+     &                     PARTIE, JTYPE, ZI(JTABD) )
             ENDIF
  103     CONTINUE
 C
 C        FIN D'ECRITURE DE View
-C        ********************** 
-C      
+C        **********************
+C
          WRITE(IFI,1000) '$EndView'
 C
  300     CONTINUE
       ENDIF
-C 
+C
       CALL JEDETR ( '&&IRGMCN.CNSD'  )
       CALL JEDETR ( '&&IRGMCN.CNSC'  )
       CALL JEDETR ( '&&IRGMCN.CNSV'  )

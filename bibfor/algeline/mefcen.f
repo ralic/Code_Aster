@@ -10,7 +10,7 @@ C
       CHARACTER*19 CAELEM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,8 +107,7 @@ C
      &            ABS( COOR((NUMNO1-1)*3 + IROT(2))
      &                - COOR((NUMNO2-1)*3 + IROT(2)) ).GT.EPSIT) THEN
                   WRITE(NOTE(1:3),'(I3.3)') I
-                  CALL UTMESS('F','MEFCEN','LE CYLINDRE '// NOTE //
-     &            ' N A PAS UN AXE RECTILIGNE')
+                  CALL U2MESK('F','ALGELINE_73',1,NOTE)
                ENDIF
                ZINT(J,NUMGRP(I)) = COOR((NUMNO2-1)*3 + IROT(3))
   10        CONTINUE
@@ -147,7 +146,7 @@ CCC ON RECUPERE LA CARTE ET ON LA TRANSFORME EN CHAMELEM_S
          CARSD='&&MEFCEN.CARGEOPO'
          CALL CARCES(CARTE,'ELEM',' ','G',CARSD,IRET)
          IF (IRET.NE.0) THEN
-           CALL UTMESS('F',' ', 'ERREUR DANS CARCES')
+           CALL U2MESS('F','ALGELINE_74')
          ENDIF
 
 C --- RECUPERATION DE LA GRANDEUR (ICI R1)  ---
@@ -162,7 +161,7 @@ C
         CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP','CAGEPO'),'L',ICMP)
 C
         CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',ZI(IDESC)),
-     +       'LONMAX',NPMAX,KBID)
+     &       'LONMAX',NPMAX,KBID)
 C
          RANGR1= INDIK8(ZK8(ICMP),'R1      ',1,NPMAX)
 C
@@ -180,8 +179,7 @@ C
                RINT(I)=ZR(ICESV-1+ABS(IAD))
 C
             ELSE
-              CALL UTMESS('F','MEFCEN','LA COMPOSANTE '//
-     &            ' N''EST PAS DANS LE CHAMELEM')
+              CALL U2MESS('F','ALGELINE_75')
             ENDIF
   160    CONTINUE
       ENDIF

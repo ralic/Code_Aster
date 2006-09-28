@@ -4,22 +4,22 @@
       CHARACTER*(*)           NOMAZ,NOMOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C     AFFE_CARA_ELEM
@@ -52,7 +52,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
-C 
+C
       REAL*8        R8B
       CHARACTER*4   TYPE
       CHARACTER*8   K8B, NOMU, NOMA, NOMO, NOMAIL, TYPEL, NOGRM
@@ -95,8 +95,7 @@ C --- ON INTERDIT SUR UN MAILLAGE 2D D'AVOIR DES ELEMENTS DISCRETS
 C --- 2D ET 3D :
 C     --------
       IF (I2D.EQ.1.AND.I3D.EQ.1.AND.NDIM.EQ.2) THEN
-          CALL UTMESS('E',CMD,'ON INTERDIT D''AVOIR SUR UN MAILLAGE '
-     +              //'2D DES ELEMENTS DISCRETS 2D ET 3D .')
+          CALL U2MESS('E','MODELISA_8')
           IER = IER + 1
       ENDIF
       IF (I2D.EQ.1) MCF = 'DISCRET_2D'
@@ -105,14 +104,12 @@ C
 C --- ON INTERDIT SUR UN MAILLAGE 3D D'AVOIR DES ELEMENTS DISCRETS 2D :
 C     ---------------------------------------------------------------
       IF (I2D.EQ.1.AND.NDIM.EQ.3) THEN
-          CALL UTMESS('E',CMD,'ON INTERDIT D''AVOIR SUR UN MAILLAGE '
-     +              //'3D DES ELEMENTS DISCRETS 2D .')
+          CALL U2MESS('E','MODELISA_9')
           IER = IER + 1
       ENDIF
 C
       IF (I2D.EQ.0.AND.I3D.EQ.0) THEN
-          CALL UTMESS('E',CMD,'ABSENCE D ELEMENTS DISCRETS DANS LE '
-     +              //'MODELE')
+          CALL U2MESS('E','MODELISA_55')
           IER = IER + 1
       ENDIF
 C
@@ -129,7 +126,7 @@ C
 C
          NSOM = NG + NM + NJ + NN
          IF (NSOM.EQ.NG .OR. NSOM.EQ.NM .OR. NSOM.EQ.NJ
-     +                                  .OR. NSOM.EQ.NN) THEN
+     &                                  .OR. NSOM.EQ.NN) THEN
             NLM = MAX(NLM,-NM)
             NLG = MAX(NLG,-NG)
             NLN = MAX(NLN,-NN)
@@ -138,10 +135,10 @@ C
 C
 C ------ VERIFICATION DU BON TYPE DE MAILLE EN FONCTION DE CARA :
 C        ------------------------------------------------------
-         IF ( CARA(2:7) .EQ. '_T_D_N'   .OR. 
-     +        CARA(2:8) .EQ. '_TR_D_N'  .OR. 
-     +        CARA(2:5) .EQ. '_T_N'     .OR. 
-     +        CARA(2:6) .EQ. '_TR_N'   ) THEN
+         IF ( CARA(2:7) .EQ. '_T_D_N'   .OR.
+     &        CARA(2:8) .EQ. '_TR_D_N'  .OR.
+     &        CARA(2:5) .EQ. '_T_N'     .OR.
+     &        CARA(2:6) .EQ. '_TR_N'   ) THEN
             TYPE = 'POI1'
          ELSE
             TYPE = 'SEG2'
@@ -158,9 +155,10 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)
                IF (TYPEL(1:4).NE.TYPE) THEN
                   CALL UTMESS('F','ACEVDI','IMPOSSIBILITE, LA MAILLE '//
-     +                        NOMAIL//' DOIT ETRE UNE MAILLE DE TYPE '//
-     +                        TYPE //', ET ELLE EST DE TYPE : '//TYPEL//
-     +                        ' POUR LA CARACTERISTIQUE '//CARA)
+     &                        NOMAIL//' DOIT ETRE UNE MAILLE DE TYPE '//
+     &                        TYPE //', ET ELLE EST DE TYPE : '//TYPEL//
+     &                        ' POUR LA CARACTERISTIQUE '//CARA)
+C        CALL U2MESK('F','MODELISA_56', 4 ,VALK)
                ENDIF
  12         CONTINUE
             CALL JEDETR ( '&&ACEVDI.MAILLE' )
@@ -181,9 +179,10 @@ C
                   IF (TYPEL(1:4).NE.TYPE) THEN
                      CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
                   CALL UTMESS('F','ACEVDI','IMPOSSIBILITE, LA MAILLE '//
-     +                        NOMAIL//' DOIT ETRE UNE MAILLE DE TYPE '//
-     +                        TYPE //', ET ELLE EST DE TYPE : '//TYPEL//
-     +                        ' POUR LA CARACTERISTIQUE '//CARA)
+     &                        NOMAIL//' DOIT ETRE UNE MAILLE DE TYPE '//
+     &                        TYPE //', ET ELLE EST DE TYPE : '//TYPEL//
+     &                        ' POUR LA CARACTERISTIQUE '//CARA)
+C        CALL U2MESK('F','MODELISA_56', 4 ,VALK)
                   ENDIF
  16            CONTINUE
  14         CONTINUE

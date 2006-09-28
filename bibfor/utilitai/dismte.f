@@ -1,6 +1,6 @@
       SUBROUTINE DISMTE(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
 
 
       IF ((QUESTI.EQ.'MODELISATION').OR.
-     +    (QUESTI.EQ.'PHENOMENE')) THEN
+     &    (QUESTI.EQ.'PHENOMENE')) THEN
 C     --------------------------------------
         CALL JELIRA('&CATA.PHENOMENE','NOMUTI',NBPHEN,KBID)
         CALL JELIRA('&CATA.TM.NOMTM','NOMMAX',NBTM,KBID)
@@ -181,8 +181,7 @@ C     --------------------------------------
 
       ELSE
         REPK = QUESTI
-        CALL UTMESS(CODMES,'DISMTE',
-     +                 'LA QUESTION : "'//REPK//'" EST INCONNUE')
+        CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
         IERD=1
         GO TO 9999
       END IF

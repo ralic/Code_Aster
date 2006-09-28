@@ -1,6 +1,6 @@
       SUBROUTINE TE0319(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C FIN ------------------------------------------------------------------
       ELSE IF (PHENOM.EQ.'THER_NL') THEN
         ANISO = .FALSE.
       ELSE
-        CALL UTMESS('F','TE0319','COMPORTEMENT NON TROUVE')
+        CALL U2MESS('F','MODELISA5_46')
       END IF
 
       GLOBAL = .FALSE.

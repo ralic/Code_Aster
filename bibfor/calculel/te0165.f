@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,12 +69,10 @@ C***  FIN DE L'ESSAI DE PRETENSION
 C
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       IF (ZK16(ICOMPO)(1:4).NE.'ELAS') THEN
-        CALL UTMESS('F','TE0165_1',' RELATION : '//ZK16(ICOMPO)//
-     &              ' NON IMPLANTEE SUR LES POULIES')
+        CALL U2MESK('F','CALCULEL4_92',1,ZK16(ICOMPO))
       ENDIF
       IF (ZK16(ICOMPO+1)(1:8).NE.'GREEN   ') THEN
-        CALL UTMESS('F','TE0165_2',' DEFORMATION : '//ZK16(ICOMPO+1)//
-     &              ' NON IMPLANTEE SUR LES POULIES')
+        CALL U2MESK('F','CALCULEL4_93',1,ZK16(ICOMPO+1))
       ENDIF
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
@@ -82,9 +80,9 @@ C
       NOMRES(1) = 'E'
       NOMRES(2) = 'ALPHA'
       CALL RCVALA(ZI(IMATE),' ','ELAS',0,'  ',R8BID,1,NOMRES,
-     +              VALRES,CODRET , 'FM' )
+     &              VALRES,CODRET , 'FM' )
       CALL RCVALA(ZI(IMATE),' ','ELAS',0,'  ',R8BID,1,NOMRES(2),
-     +              VALRES(2),CODRET(2) , BL2 )
+     &              VALRES(2),CODRET(2) , BL2 )
       IF ( CODRET(2).NE.'OK' )  VALRES(2) = ZERO
       E     = VALRES(1)
       ALPHA = VALRES(2)
@@ -152,7 +150,7 @@ C
         ENDIF
 C
       IF ( OPTION(1:9).EQ.'FULL_MECA'  .OR.
-     +     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
+     &     OPTION(1:9).EQ.'RAPH_MECA'  ) THEN
          CALL JEVECH ( 'PCODRET', 'E', JCRET )
          ZI(JCRET) = 0
       ENDIF

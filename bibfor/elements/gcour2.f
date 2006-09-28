@@ -4,7 +4,7 @@
        IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,14 +199,11 @@ C
           ELSE IF(REPK.EQ.'NON') THEN
              MILIEU = .FALSE.
           ELSE IF(REPK.EQ.'MEL') THEN
-             CALL UTMESS('F','GCOUR2','IL Y A A LA FOIS DES ELEMENTS'
-     &     //' VOLUMIQUES DE DEGRE 1 ET DE DEGRE 2 DANS LE MODELE. '
-     &     //' ON A BESOIN DE SAVOIR SI ON EST EN LINEAIRE OU EN'
-     &     //' QUADRATIQUE POUR CHOISIR LA METHODE DE LISSAGE.')
+             CALL U2MESS('F','ELEMENTS_79')
           ENDIF
           CALL GDINOR(NORM,NBNOEU,IADNUM,COORN,IN2)
         ELSE
-          CALL UTMESS('F','GCOUR2','LE CONCEPT FOND_FISS EST MAL CREE')
+          CALL U2MESS('F','ELEMENTS_80')
         ENDIF
 C
 C  ON RECUPERE LES DIRECTIONS UTILISATEUR AUX EXTREMITES DU FOND
@@ -243,8 +240,7 @@ C
         DIRTH(20:24) = '.DEEQ'
         CALL JEVEUO(DIRTH,'L',IDEEQ)
         IF (LNDIR.NE.(3*NBNOEU)) THEN
-          CALL UTMESS('F','GCOUR2',
-     &       'LE .VALE DU CHAM_NO DIRE_THETA N''A PAS LA BONNE TAILLE')
+          CALL U2MESS('F','ELEMENTS_81')
         ELSE
           DO 5 I=1,NBNOEU
             DIRX = ZR(IDIRTH+(I-1)*3+1-1)
@@ -283,9 +279,7 @@ C
           NDIMTE = 1+NBNOS/2
           PAIR = .TRUE.
           IF (CONNEX) THEN
-          CALL UTMESS('F','GCOUR2','L''OPTION DE LISSAGE ''LAGRANG2'''//
-     &    ' N''A PAS ETE DEVELOPPEE LORSQUE LE NOMBRE DE NOEUDS D''UN'//
-     &    ' FOND DE FISSURE FERME EST PAIR.')
+          CALL U2MESS('F','ELEMENTS_82')
           ENDIF
         END IF
       ELSEIF(THLAGR) THEN
@@ -308,7 +302,7 @@ C
            CALL JEDETR(CHAMNO(1:19)//'.REFE')
            CALL JEDETR(CHAMNO(1:19)//'.VALE')
         ELSE IF(IRET.GT.100) THEN
-           CALL UTMESS('A','GCOUR2','APPEL ERRONE')
+           CALL U2MESS('A','ALGORITH3_16')
         ENDIF
 C  .DESC
         CHAMNO(20:24) = '.DESC'
@@ -366,7 +360,7 @@ C
                 ZR(IADRTT-1) = (ZR(IADABS+KNO-1-1)-S1)/(S0-S1)
               ENDIF
             ENDIF
-            IF ((K.LT. NDIMTE) .OR. 
+            IF ((K.LT. NDIMTE) .OR.
      &          (K. EQ. (NDIMTE-1) .AND.  .NOT. PAIR)) THEN
               IF (MILIEU) THEN
                 S0 = ZR(IADABS+KNO-1)
@@ -437,7 +431,7 @@ C
             I1 = 1
             IF (MILIEU) I1 = 3
             DO 4 I= (-1*I1), I1
-              IF (.NOT. (((K. EQ. 1) .AND. (I. LT. 0)) 
+              IF (.NOT. (((K. EQ. 1) .AND. (I. LT. 0))
      &        .OR.  ((K. EQ. NDIMTE) .AND. (I. GT. 0))
      &        .OR.  ((K. EQ. (NDIMTE-1)) .AND. (I. GT. 2) .AND. PAIR)))
      &       THEN
@@ -455,7 +449,7 @@ C
               IF (K. EQ. 1) KNO = NBNOEU
               IF (K. EQ. NDIMTE) KNO = 1
               DO 401 I= (-1*I1), I1
-              IF (.NOT. (((K. EQ. 1) .AND. (I. GT. 0)) 
+              IF (.NOT. (((K. EQ. 1) .AND. (I. GT. 0))
      &        .OR.  ((K. EQ. NDIMTE) .AND. (I. LT. 0))))
      &       THEN
                 NUM    = ZI(IADNUM+KNO-1+I)
@@ -574,7 +568,7 @@ C
           CHAMNO = RESU(1:8)//'_CHAM'//KIORD//'     '
           CHAMNO(20:24) = '.VALE'
           CALL JEVEUO(CHAMNO,'E',ITHETA)
-            IF (K.NE.(NDIMTE+1)) THEN          
+            IF (K.NE.(NDIMTE+1)) THEN
               IADRTT = IADRT3+(K-1)*NBNOEU+JMIN-1
               TEI = ZR(IADRTT)
               TEJ = ZR(IADRTT+1)
@@ -602,8 +596,8 @@ C
               ZR(ITHETA+(I-1)*3+1-1) = 0.D0
               ZR(ITHETA+(I-1)*3+2-1) = 0.D0
               ZR(ITHETA+(I-1)*3+3-1) = 0.D0
-            ENDIF              
-700       CONTINUE          
+            ENDIF
+700       CONTINUE
         ENDIF
 500   CONTINUE
 C

@@ -1,5 +1,5 @@
       SUBROUTINE TE0234(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,12 +107,8 @@ C----- RECUPERATION DU NBRE DE COUCHE
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         CALL JEVECH('PNBSP_I','L',JNBSPI)
         NBCOU = ZI(JNBSPI-1+1)
-        IF (NBCOU.LE.0) CALL UTMESS('F','TE0234',
-     &                 'NOMBRE DE COUCHES OBLIGATOIREMENT SUPERIEUR A 0'
-     &                              )
-        IF (NBCOU.GT.30) CALL UTMESS('F','TE0234',
-     &                'NOMBRE DE COUCHES LIMITE A 30 POUR LES COQUES 1D'
-     &                               )
+        IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_12')
+        IF (NBCOU.GT.30) CALL U2MESS('F','ELEMENTS3_50')
 
         NPGE = 3
 

@@ -2,22 +2,22 @@
       IMPLICIT   REAL*8 ( A-H , O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/10/2000   AUTEUR BOYERE E.BOYERE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
       REAL*8        PARA(*)
@@ -78,7 +78,7 @@ C
          DA = PARA(4)
          C0 = RS - RT + D
          C1 = RS**2 - RT**2 - C0**2
-         U  = RT**2 - ( C1**2 / ( 4.D0 * C0**2 ) ) 
+         U  = RT**2 - ( C1**2 / ( 4.D0 * C0**2 ) )
          IF ( U .GT. ZERO ) THEN
             X = SQRT ( U )
             XSIN1=X/RT
@@ -118,8 +118,8 @@ C
          C0B = RS - RT + D - DL*DA
          C1 = RS**2 - RT**2 - C0**2
          C1B = RS**2 - RT**2 - C0B**2
-         U   = RT**2 - ( C1**2  / ( 4.D0 * C0**2  ) ) 
-         U1  = RT**2 - ( C1B**2 / ( 4.D0 * C0B**2 ) ) 
+         U   = RT**2 - ( C1**2  / ( 4.D0 * C0**2  ) )
+         U1  = RT**2 - ( C1B**2 / ( 4.D0 * C0B**2 ) )
          IF ( U .GT. ZERO .AND. U1 .GT. ZERO ) THEN
             X  = SQRT ( U  )
             X1 = SQRT ( U1 )
@@ -177,7 +177,7 @@ C
             XSIN2=X/RS
             XCOS2=SQRT(ABS(1.D0-XSIN2*XSIN2))
             F = RT*RT*ATAN2(XSIN1,XCOS1) + X*C0 -
-     +          RS*RS*ATAN2(XSIN2,XCOS2) + D1
+     &          RS*RS*ATAN2(XSIN2,XCOS2) + D1
             F = D * F / ( 6.D0 * DA )
         ENDIF
 C
@@ -194,7 +194,7 @@ C
          D1 = TAN(DI) * D**2
          D2 = TAN(DI) * ( D - DL*DA )**2
          U   = RT**2 - ( C1**2  / ( 4.D0 * C0**2  ) )
-         U1  = RT**2 - ( C1B**2 / ( 4.D0 * C0B**2 ) ) 
+         U1  = RT**2 - ( C1B**2 / ( 4.D0 * C0B**2 ) )
          IF ( U .GT. ZERO .AND. U1 .GT. ZERO ) THEN
             X  = SQRT ( U )
             X1 = SQRT ( U1 )
@@ -215,7 +215,7 @@ C
 C
       ELSE
          TYPEZ = TYPE(1:16)
-         CALL UTMESS('F','USURE','TYPE '//TYPEZ//' NON IMPLANTE.')
+         CALL U2MESK('F','PREPOST4_82',1,TYPEZ)
       ENDIF
 C
       END

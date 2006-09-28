@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,7 +192,7 @@ C
    10 CONTINUE
 C
       TER1=HE*SQRT(TER1)
-C     
+C
 C ----------------------------------------------------------------------
 C ------------ FIN DU CALCUL DU PREMIER TERME DE L'ERREUR --------------
 C ----------------------------------------------------------------------
@@ -309,7 +309,7 @@ C
   170   CONTINUE
 C
       ELSE
-        CALL UTMESS('F','TE0375','TYPE MAILLE INCONNU')
+        CALL U2MESS('F','ELEMENTS3_84')
       END IF
 
       CALL ELREF4 (ELREFE,'NOEU',NDIM,NNO,NNOS,NPGB,IPOIDS,IVF,
@@ -334,7 +334,7 @@ C
         TYV=ZI(IVOIS+7+IFA)
         IF (TYV.NE.0) THEN
           TYPMAV=ZK8(IATYMA-1+TYV)
-C	  
+C	
 C ------- CAS DES PENTAEDRES -------------------------------------------
 C
           IF (NBF.EQ.5.AND.IFA.GE.3) THEN
@@ -438,7 +438,7 @@ C
 C
           ELSE
 C
-            CALL UTMESS('F','TE0375','TYPE MAILLE INCONNU')
+            CALL U2MESS('F','ELEMENTS3_84')
 C
           END IF
 C

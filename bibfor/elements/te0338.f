@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/11/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,8 +110,7 @@ C     ARRET
 
       CALL TECACH('NON','PTEMPER',1,ITEMPE,IRET)
       IF (ITEMPE.EQ.0) THEN
-        CALL UTMESS('F','PEWEIB','ERREUR: WEIBULL '//
-     &              'PAS DE CHAMP THERMIQUE')
+        CALL U2MESS('F','ELEMENTS3_72')
       END IF
       IF (OPTCAL(1).EQ.'SIGM_ELMOY') THEN
         TMOY = 0.D0
@@ -369,7 +368,7 @@ C           --- TEMPERATURE AU PG
 C     2.5 TRAITEMENT DES OPTIONS INVALIDES
 C     ------------------------------------
       ELSE
-        CALL UTMESS('F','TE0338','OPTION DE CALCUL NON VALIDE')
+        CALL U2MESS('F','ELEMENTS3_73')
       END IF
 
 

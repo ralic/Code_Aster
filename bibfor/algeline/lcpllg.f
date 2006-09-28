@@ -1,6 +1,6 @@
       SUBROUTINE LCPLLG( TOLER, ITMAX, MOD, NBMAT, MATER, NR, NVI,
-     +                   DEPS, SIGD, VIND, SEUIL, ICOMP, SIGF,
-     +                   VINF, DEVG, DEVGII, IRTET)
+     &                   DEPS, SIGD, VIND, SEUIL, ICOMP, SIGF,
+     &                   VINF, DEVG, DEVGII, IRTET)
 C
       IMPLICIT      NONE
       INTEGER       ITMAX, NBMAT, NR, NVI, ICOMP, IRTET
@@ -9,7 +9,7 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,12 +92,12 @@ C ======================================================================
 C --- CALCUL A PRIORI DE LA PROJECTION AU SOMMET -----------------------
 C ======================================================================
       CALL CALCPJ(NBMAT, MATER, GAMP, EVP, SIGD, SIGE, LGLEPS,
-     +            INVARE, GAMPS, EVPS, INVARS, B)
+     &            INVARE, GAMPS, EVPS, INVARS, B)
 C ======================================================================
 C --- FAUT-IL FAIRE UNE PROJECTION AU SOMMET DU DOMAINE ? --------------
 C ======================================================================
       IF (PRJSOM(NBMAT, MATER, INVARE, INVARS, B, SIIE,
-     +                                                'SUPERIEUR')) THEN
+     &                                                'SUPERIEUR')) THEN
 C ======================================================================
 C --- LA PROJECTION AU SOMMET DU DOMAINE EST RETENUE -------------------
 C ======================================================================
@@ -112,8 +112,8 @@ C ======================================================================
          IF (MOD.EQ.'C_PLAN') THEN
             SIGF(3) = 0.0D0
             EPSF(3) = DKOOH(3,1) * SIGF(1) +
-     +                DKOOH(3,2) * SIGF(2) +
-     +                DKOOH(3,4) * SIGF(4)
+     &                DKOOH(3,2) * SIGF(2) +
+     &                DKOOH(3,4) * SIGF(4)
          ENDIF
          CALL LCEQVN (  1, GAMPS  , VINF(1) )
          CALL LCEQVN (  1, EVPS   , VINF(2) )
@@ -126,7 +126,7 @@ C ======================================================================
 C --- CALCUL INITIAL (ITERATION 0) -------------------------------------
 C ======================================================================
          CALL LGLINI(YD, NBMAT, MATER, SEUIL, SIGD, DEPS,
-     +               DEVG, DEVGII, TRACEG, DY)
+     &               DEVG, DEVGII, TRACEG, DY)
          ITER = 0
  1       CONTINUE
 C ======================================================================
@@ -147,9 +147,10 @@ C ======================================================================
                CALL CODENT(ITER,'G',CITER)
                CALL CODREE(TOLER,'E',CTOL)
                CALL UTMESS ('I','LAIGLE',' ERREUR'//
-     +         ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     +         ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     +         ' - REDECOUPAGE DU PAS DE TEMPS')
+     &         ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &         ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
+     &         ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
                IRTETI = 3
                GOTO 100
             ELSE
@@ -192,8 +193,8 @@ C ======================================================================
             IF (MOD.EQ.'C_PLAN') THEN
                SIGF(3) = 0.0D0
                EPSF(3) = DKOOH(3,1) * SIGF(1) +
-     +                   DKOOH(3,2) * SIGF(2) +
-     +                   DKOOH(3,4) * SIGF(4)
+     &                   DKOOH(3,2) * SIGF(2) +
+     &                   DKOOH(3,4) * SIGF(4)
             ENDIF
             CALL LCEQVN (  1, GAMP, VINF(1) )
             CALL LCEQVN (  1, EVP , VINF(2) )
@@ -212,7 +213,7 @@ C ======================================================================
 C --- NOUVEAU CALCUL PLASTIQUE -----------------------------------------
 C ======================================================================
                CALL LGLITE(YF, NBMAT, MATER, FITER,
-     +                     DEVG, DEVGII, TRACEG, DY)
+     &                     DEVG, DEVGII, TRACEG, DY)
                IRTETI = 1
             ELSE
 C ======================================================================
@@ -221,7 +222,7 @@ C ======================================================================
 C --- FAUT-IL PROJETER AU SOMMET DU DOMAINE ? --------------------------
 C ======================================================================
                IF (PRJSOM(NBMAT, MATER, INVARE, INVARS, B, SIIE,
-     +                                               'INFERIEUR'))  THEN
+     &                                               'INFERIEUR'))  THEN
 C ======================================================================
 C --- DECOUPAGE
 C ======================================================================
@@ -229,9 +230,10 @@ C ======================================================================
                      CALL CODENT(ITER,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL UTMESS ('I','LAIGLE',' ERREUR'//
-     +               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     +               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     +               ' - REDECOUPAGE DU PAS DE TEMPS')
+     &               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
+     &               ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
                      IRTETI = 3
                      GOTO 100
                   ELSE
@@ -258,8 +260,8 @@ C ======================================================================
                   IF (MOD.EQ.'C_PLAN') THEN
                      SIGF(3) = 0.0D0
                      EPSF(3) = DKOOH(3,1) * SIGF(1) +
-     +                         DKOOH(3,2) * SIGF(2) +
-     +                         DKOOH(3,4) * SIGF(4)
+     &                         DKOOH(3,2) * SIGF(2) +
+     &                         DKOOH(3,4) * SIGF(4)
                   ENDIF
                   CALL LCEQVN (  1, GAMPS, VINF(1) )
                   CALL LCEQVN (  1, EVP  , VINF(2) )
@@ -274,9 +276,10 @@ C ======================================================================
                      CALL CODENT(ITER,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL UTMESS ('I','LAIGLE',' ERREUR'//
-     +               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     +               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     +               ' - REDECOUPAGE DU PAS DE TEMPS')
+     &               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
+     &               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
+     &               ' - REDECOUPAGE DU PAS DE TEMPS')
+C        CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
                      IRTETI = 3
                      GOTO 100
                   ELSE

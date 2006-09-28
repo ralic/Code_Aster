@@ -1,24 +1,24 @@
       SUBROUTINE OP0010(IER)
       IMPLICIT NONE
       INTEGER           IER
-   
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C     ------------------------------------------------------------------
@@ -45,7 +45,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32    JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      
+
       INTEGER        I,IFM,NIV,IBID,IRET,IRET2,NDIM,ADDIM,JFISS,JMAIL,
      &               JCARAF,JCMCF,JFON,NMAEN1,NMAEN2,NMAEN3,CLSM,JCONX1,
      &               JCONX2,NBMA,NBMAE
@@ -82,11 +82,11 @@ C  RECUPERATION DU MODELE, DU MAILLAGE ET DE SES CARACTERISTIQUES
 C  CONNECTIVITE INVERSEE
       CNXINV = '&&XPRREO.CNCINV'
       CALL CNCINV (NOMA,IBID,0,'V',CNXINV)
-      
+
 C  RECUPERATION DE LA FISSURE PRECEDENTE
       CALL JEVEUO(MODEL//'.FISS','L',JFISS)
       FISPRE = ZK8(JFISS)
-      
+
 C  RECUPERATION DES LEVEL SETS ET GRADIENTS
       CNSLT = '&&OP0010.CNSLT'
       CNSLN = '&&OP0010.CNSLN'
@@ -96,7 +96,7 @@ C  RECUPERATION DES LEVEL SETS ET GRADIENTS
       CALL CNOCNS(FISPRE//'.LNNO','V',CNSLN)
       CALL CNOCNS(FISPRE//'.GRLTNO','V',GRLT)
       CALL CNOCNS(FISPRE//'.GRLNNO','V',GRLN)
-      
+
 C  DUPLICATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
       LISMAE = FISS//'.GROUP_MA_ENRI'
       LISNOE = FISS//'.GROUP_NO_ENRI'
@@ -125,7 +125,7 @@ C  DUPLICATION DES DONNEES DE CONTACT
      &            .FALSE.)
       CALL JEDUPO(FISPRE//'.CONTACT.XFEM','G',FISS//'.CONTACT.XFEM',
      &            .FALSE.)
-      
+
       CALL JEEXIN(FISPRE//'.CONTACT.CARACF',IRET)
       IF (IRET.EQ.0) THEN
          ALGOLA = 'NON'
@@ -145,10 +145,10 @@ C  DUPLICATION DES DONNEES DE CONTACT
 C-----------------------------------------------------------------------
 C     CALCUL DES CHAM_NO_S DES VITESSES DE PROPAGATION
 C-----------------------------------------------------------------------
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,*)
       WRITE(IFM,*)'OP0010-1) CALCUL DU CHAMP DE VITESSE AUX NOEUDS'
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,901)
 
       CNSVT='&&OP0010.CNSVT'
@@ -159,55 +159,54 @@ C      IF (NIV.GT.1)
 C-----------------------------------------------------------------------
 C     CALCUL DES LONGUEURS CARACTERISTIQUES ET DES CONDITIONS CFL
 C-----------------------------------------------------------------------
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,*)
       WRITE(IFM,*) 'OP0010-2) '//
      &      'CALCUL DES CONDITIONS CFL ET LONGUEURS CARACTERISTIQUES'
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,902)
 
       CALL XPRCFL(MODEL,CNSVT,CFLPRO,LCMIN)
-      
+
 C-----------------------------------------------------------------------
 C     AJUSTEMENT DE VT
 C-----------------------------------------------------------------------
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,*)
       WRITE(IFM,*)'OP0010-3) AJUSTEMENT DU CHAMP DES VITESSES VN'
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,903)
 
       DELTAT=CFLPRO
       CALL XPRAJU(NOMA,CNSLT,CNSVT,CNSVN,DELTAT)
-      
+
 C-----------------------------------------------------------------------
 C     PROPAGATION DES LEVEL SETS
 C-----------------------------------------------------------------------
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,*)
       WRITE(IFM,*)'OP0010-4) PROPAGATION DES LEVEL SETS'
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,904)
 
       CALL XPRLS(MODEL,NOMA,CNSLN,CNSLT,GRLN,GRLT,CNSVT,CNSVN,DELTAT)
 
       CALL JEDETR(CNSVT)
       CALL JEDETR(CNSVN)
-           
+
 C-----------------------------------------------------------------------
 C     INITIALISATION DES PARAMETRES DE XPRREI ET XPRREO
 C-----------------------------------------------------------------------
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,*)
       WRITE(IFM,*)'OP0010-5) REINITIALISATION DE LSN'
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,905)
-     
       NOESOM = '&&OP0010.NOESOM'
       NORESI = '&&OP0010.NORESI'
-      
+
       CALL XPRINI(MODEL,NOMA,FISPRE,FISS,CNSLN,CNSLT,GRLT,NOESOM,NORESI)
-      
+
 C-----------------------------------------------------------------------
 C     REINITIALISATION DE LSN
 C-----------------------------------------------------------------------
@@ -217,56 +216,53 @@ C-----------------------------------------------------------------------
 
       CALL XPRREI(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,GRLN,DELTAT,
      &            LCMIN,'LN',ISOZRO,CNXINV)
-      
+
 C-----------------------------------------------------------------------
 C     REORTHOGONALISATION DE LST
 C-----------------------------------------------------------------------
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,*)
       WRITE(IFM,*)'OP0010-6) REORTHOGONALISATION DE LST'
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,906)
 
       CALL XPRREO(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLN,CNSLT,GRLN,GRLT,
      &            DELTAT,LCMIN,ISOZRO,CNXINV)
-     
       CALL JEDETR(ISOZRO)
-     
 C-----------------------------------------------------------------------
 C     REINITIALISATION DE  LST
 C-----------------------------------------------------------------------
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,*)
       WRITE(IFM,*)'OP0010-7) REINITIALISATION DE LST'
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,907)
 
       CALL XPRREI(MODEL,NOMA,FISS,NOESOM,NORESI,CNSLT,CNSLT,GRLT,DELTAT,
      &            LCMIN,'LT',ISOZRO,CNXINV)
-     
       CALL JEDETR(ISOZRO)
       CALL JEDETR(NOESOM)
-      
+
 C-----------------------------------------------------------------------
 C     REAJUSTEMENT DES LEVEL SETS TROP PROCHES DE 0
 C-----------------------------------------------------------------------
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,*)
       WRITE(IFM,*)'OP0010-8) ENRICHISSEMENT DE LA SD FISS_XFEM'
-C      IF (NIV.GT.1) 
+C      IF (NIV.GT.1)
       WRITE(IFM,908)
 
       CALL XAJULS(IFM,NOMA,NBMA,CNSLT,CNSLN,JCONX1,JCONX2,CLSM)
 
       WRITE(IFM,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',
      &            CLSM
-      
+
 C-----------------------------------------------------------------------
 C     EXTENSION DES LEVEL SETS AUX NOEUDS MILIEUX
 C-----------------------------------------------------------------------
 
       CALL XPRMIL(NOMA,CNSLT,CNSLN)
-            
+
       CALL CNSCNO(CNSLT,' ','NON','G',FISS//'.LTNO')
       CALL CNSCNO(CNSLN,' ','NON','G',FISS//'.LNNO')
       CALL CNSCNO(GRLT,' ','NON','G',FISS//'.GRLTNO' )
@@ -279,7 +275,7 @@ C    LA SD FISS_XFEM EST ENRICHIE COMME DANS OP0041 : DEFI_FISS_XFEM   |
 C   ( TOUTE MODIF. AFFECTANT OP0041 DOIT ETRE REPERCUTEE PLUS BAS,     |
 C     EXCEPTE L'APPEL A SDCONX )                                       |
 C----------------------------------------------------------------------+
-      
+
 C-----------------------------------------------------------------------
 C     CALCUL DE L'ENRICHISSEMENT ET DES POINTS DU FOND DE FISSURE
 C-----------------------------------------------------------------------
@@ -288,15 +284,14 @@ C-----------------------------------------------------------------------
       CNSENR='&&OP0010.CNSENR'
       IF (NDIM .EQ. 3) THEN
         CALL NORMEV(VOR,NORME)
-        IF (NORME.LT.1.D-10) CALL UTMESS('F','OP0041','LA NORME '//
-     &                              'DU VECTEUR VECT_ORIE EST NULLE')
+        IF (NORME.LT.1.D-10) CALL U2MESS('F','ALGORITH9_15')
         CALL XNRCH3(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,PFI,VOR,ORI,
      &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3,LISMAE,LISNOE)
       ELSEIF (NDIM .EQ. 2) THEN
         CALL XNRCH2(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,CNSENR,
      &              RAYON,FISS,NMAEN1,NMAEN2,NMAEN3,LISMAE,LISNOE)
       ENDIF
-      
+
       CALL CNSCNO(CNSENR,' ','NON','G',FISS//'.STNOR')
       CALL CNSCNO(CNSEN,' ','NON','G',FISS//'.STNO')
 
@@ -323,7 +318,7 @@ C     SEULEMENT S'IL Y A DES MAILLES DE CONTACT
       IF (NMAEN1+NMAEN2+NMAEN3.GT.0) THEN
 C       APPEL À L'ALGORITHME DE RESTRICTION DE L'ESPACE DES
 C       MULTIPLICATUERS DE LAGRANGE DE CONTACT
-        IF (ALGOLA.NE.'NON') THEN 
+        IF (ALGOLA.NE.'NON') THEN
           WRITE(IFM,*)'ACTIVATION DE L''ALGORITHME DE RESTRICTION DE '//
      &                'L''ESPACE DES MULTIPLICATEURS DE '//
      &                'PRESSION DE CONTACT'

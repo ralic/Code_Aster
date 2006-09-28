@@ -1,5 +1,5 @@
       SUBROUTINE MODSTA(MOTCLE,LMATF,LMATM,NUME,IDDL,COEF,NEQ,
-     +                                                    NBMODE,ZRMOD)
+     &                                                    NBMODE,ZRMOD)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                  LMATF,LMATM,    IDDL(*),   NEQ,NBMODE
       REAL*8                                       COEF(*),ZRMOD(NEQ,*)
@@ -7,22 +7,22 @@
       COMPLEX*16        CBID
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C
@@ -89,7 +89,7 @@ C
                IND = NEQ * ( IC - 1 )
                DO 14 IN = 0,NEQ-1
                   ZR(JDDR+IN) =  ZR(JDDR+IN) +
-     +                                   ZI(JDDL+IND+IN) * COEF(IN2+IC)
+     &                                   ZI(JDDL+IND+IN) * COEF(IN2+IC)
  14            CONTINUE
  12         CONTINUE
             CALL MRMULT('ZERO',LMATM,ZR(JDDR),'R',ZRMOD(1,IMOD),1)
@@ -104,8 +104,7 @@ C
                IF ( MOTCLE(1:4) .EQ. 'DEPL') THEN
                   CALL DDLLAG(NUME,IE,NEQ,ILA1,ILA2)
                   IF (ILA1.EQ.0 .OR. ILA2.EQ.0) THEN
-                     CALL UTMESS('F','MODSTA','ERREUR SUR LA RECHER'//
-     +                                            'CHE DES LAGRANGES.')
+                     CALL U2MESS('F','ALGELINE2_4')
                   ENDIF
                   ZRMOD(ILA1,IMOD) = UN
                   ZRMOD(ILA2,IMOD) = UN
@@ -115,8 +114,7 @@ C
                   CALL WKVECT('&&MODSTA.POSITION_DDR','V V R',NEQ,JDDR)
                   CALL DDLLAG(NUME,IE,NEQ,ILA1,ILA2)
                   IF (ILA1.EQ.0 .OR. ILA2.EQ.0) THEN
-                     CALL UTMESS('F','MODSTA','ERREUR SUR LA RECHER'//
-     +                                            'CHE DES LAGRANGES.')
+                     CALL U2MESS('F','ALGELINE2_4')
                   ENDIF
                   ZR(JDDR+ILA1-1) = UN
                   ZR(JDDR+ILA2-1) = UN

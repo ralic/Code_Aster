@@ -4,22 +4,22 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/07/99   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C     TRAITEMENT DE DEMONS
@@ -64,19 +64,19 @@ C     REMARQUE :  MXPARA DONNE LE NOMBRE DE PARAMETRES DU DEMON
 C     ------------------------------------------------------------------
 C     --- LISTE DES DEMONS RECONNUS ---
       DATA DEMONS/
-     +  'DATE'     , 'DATE_HEURE'    , 'HEURE'    ,
-     +  'RESULTAT' , 'TYPE'          , 'COMMANDE' ,
-     +  'CODE'     , 'TITRE_MAILLAGE', 'VERSION'  , 'RL'      ,
-     +  'NB_ELEM'  , 'NB_NOEUD'      , 'PHENOMENE', 'DIM_GEOM',
-     +  'NB_EQUA'  , 'LOC'           , 'NOM_SYMB' , 'NUME_ORDRE',
-     +  'ACCES'    , 'VALEUR'        /
+     &  'DATE'     , 'DATE_HEURE'    , 'HEURE'    ,
+     &  'RESULTAT' , 'TYPE'          , 'COMMANDE' ,
+     &  'CODE'     , 'TITRE_MAILLAGE', 'VERSION'  , 'RL'      ,
+     &  'NB_ELEM'  , 'NB_NOEUD'      , 'PHENOMENE', 'DIM_GEOM',
+     &  'NB_EQUA'  , 'LOC'           , 'NOM_SYMB' , 'NUME_ORDRE',
+     &  'ACCES'    , 'VALEUR'        /
       DATA MXPARA/
-     +    0        ,       0         ,     0      ,
-     +    0        ,       1         ,     0      ,
-     +    0        ,       1         ,     0      ,    0      ,
-     +    1        ,       1         ,     1      ,    1      ,
-     +    1        ,       1         ,     2      ,    2      ,
-     +    2        ,       1         /
+     &    0        ,       0         ,     0      ,
+     &    0        ,       1         ,     0      ,
+     &    0        ,       1         ,     0      ,    0      ,
+     &    1        ,       1         ,     1      ,    1      ,
+     &    1        ,       1         ,     2      ,    2      ,
+     &    2        ,       1         /
 C     ------------------------------------------------------------------
 C
 C     --- LIRE LE NOM DU DEMON DE MINUIT ---
@@ -90,7 +90,7 @@ C     --- LIRE LE NOM DU DEMON DE MINUIT ---
          ILIGD = ILIGD + 1
          IF ( ILIGD .LE. NBTITR )  GOTO 1
       ELSEIF( ICLASS .NE. 3 ) THEN
-         CALL UTMESS('E','  ',' VOTRE DEMON C''EST N''IMPORTE QUOI')
+         CALL U2MESS('E','UTILITAI4_90')
          CALL SNDBG(IUNIFI('MESSAGE'),ICLASS,IVAL,RVAL,CVAL)
          CGEN = ' '
          IGEN = 0
@@ -101,9 +101,9 @@ C
           CALL LXCAPS(CVAL(1:IVAL))
           CALL UTREMT(CVAL(1:IVAL),DEMONS,MXDEMO,IPLACE)
           GOTO( 10,  20,  30,  40,  50,  60,  70,  80,  90, 100,
-     +         110, 120, 130, 140, 150, 160, 170, 180, 190, 200 ) IPLACE
+     &         110, 120, 130, 140, 150, 160, 170, 180, 190, 200 ) IPLACE
 C
-               CALL UTMESS('A',CVAL(:IVAL),' DEMON NON ACTIF DESOLE.')
+               CALL U2MESS('A','UTILITAI4_91')
           GOTO 9000
 C
 C        --- DATE ---
@@ -139,7 +139,7 @@ C
 C        --- 'TYPE' ---
    50    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) GOTO 9001
             IGEN = LXLGUT(CGEN(1:16))
@@ -165,7 +165,7 @@ C
 C        --- TITRE_MAILLAGE ---
    80    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
@@ -176,7 +176,7 @@ C        --- TITRE_MAILLAGE ---
             ENDIF
             CALL JEVEUO(CBID(1:8)//'           .TITR','L',LTIT)
             CALL JELIRA(CBID(1:8)//'           .TITR','LONMAX',NL,
-     +                  CBID(9:))
+     &                  CBID(9:))
 C                 ---> LA RECOPIE SE FAIT ICI
             IF ( ICOLS+IGEN-1 .GT. LEN(SORTIE(1)) )  THEN
                ILIGS = ILIGS + 1
@@ -209,7 +209,7 @@ C
 C        --- NB_ELEM  ---
   110    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
@@ -219,7 +219,7 @@ C        --- NB_ELEM  ---
                IF ( IERD .NE. 0 ) GOTO 9000
             ENDIF
             CALL DISMOI('A','NB_MA_MAILLA',CBID,'MAILLAGE',
-     +                                                   IBID,CBID,IERD)
+     &                                                   IBID,CBID,IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             CGEN = '  '
             CALL CODENT(IBID,'G',CGEN(1:16))
@@ -229,7 +229,7 @@ C
 C        --- NB_NOEUD ---
   120    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
@@ -239,7 +239,7 @@ C        --- NB_NOEUD ---
                IF ( IERD .NE. 0 ) GOTO 9000
             ENDIF
             CALL DISMOI('A','NB_NO_MAILLA',CBID,'MAILLAGE',
-     +                                                   IBID,CBID,IERD)
+     &                                                   IBID,CBID,IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             CGEN = '  '
             CALL CODENT(IBID,'G',CGEN(1:16))
@@ -249,7 +249,7 @@ C
 C        --- PHENOMENE ---
   130    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MODELE' ) THEN
@@ -260,7 +260,7 @@ C        --- PHENOMENE ---
             ENDIF
             CGEN = '  '
             CALL DISMOI('A','PHENOMENE',CBID,'MODELE',
-     +                                             IBID,CGEN(1:16),IERD)
+     &                                             IBID,CGEN(1:16),IERD)
             IF ( IERD .NE. 0 ) GOTO 9000
             IGEN = LXLGUT(CGEN(1:16))
          GOTO 9000
@@ -268,7 +268,7 @@ C
 C        --- DIMENSION GEOMETRIE ---
   140    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             IF ( CGEN(1:16) .EQ. 'MAILLAGE' ) THEN
@@ -287,7 +287,7 @@ C
 C        --- NOMBRE D'EQUATIONS ---
   150    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL GETTCO(PARA(1),CGEN)
             IF ( CGEN .EQ. '  ' ) CGEN = 'CHAMP'
             CALL DISMOI('A','NB_EQUA',PARA(1),CGEN,IBID,CBID,IERD)
@@ -300,9 +300,9 @@ C
 C        --- LOCALISATION POUR UN CHAM_ELEM ---
   160    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL DISMOI('A','TYPE_CHAMP',PARA(1),'CHAMP',IBID,
-     +                  CBID,IERD)
+     &                  CBID,IERD)
             IF (CBID(1:4) .EQ. 'ELNO') THEN
                CGEN = 'AUX NOEUDS'
                IGEN = 10
@@ -321,45 +321,45 @@ C
 C        --- NOM SYMBOLIQUE POUR UN CHAMP D'UN RESULTAT ---
   170    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL RSUTOR(PARA(1)(1:8),' ',PARA(2)(1:19),1,K16BID,
-     +                                                      IBID,IRET)
+     &                                                      IBID,IRET)
             IF (IRET.EQ.1) THEN
                CGEN = K16BID
                IGEN = LXLGUT(K16BID)
             ELSE
               CALL UTMESS('A',CVAL(:IVAL),PARA(1)//
-     +                             ' N''EST PAS UN CHAMP DE RESULTAT ')
+     &                             ' N''EST PAS UN CHAMP DE RESULTAT ')
             ENDIF
          GOTO 9000
 C
 C        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
   180    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL RSUTOR(PARA(1)(1:8),' ',PARA(2)(1:19),1,K16BID,
-     +                                                       IBID,IRET)
+     &                                                       IBID,IRET)
             IF (IRET.EQ.1 ) THEN
                CALL CODENT(IBID,'G',CGEN(1:16))
                IGEN = LXLGUT(CGEN(1:16))
             ELSE
               CALL UTMESS('A',CVAL(:IVAL),PARA(1)//
-     +                             ' N''EST PAS UN CHAMP DE RESULTAT ')
+     &                             ' N''EST PAS UN CHAMP DE RESULTAT ')
             ENDIF
          GOTO 9000
 C
 C        --- ACCES ---
   190    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             CALL RSNOPA(PARA(1)(1:8),0,'&&TITREB.NOM_ACCE',NBACCE,NBPA)
             CALL JEEXIN('&&TITREB.NOM_ACCE',IRET)
             IF (IRET.GT.0)  CALL JEVEUO('&&TITREB.NOM_ACCE','E',JPARA)
             CALL RSUTOR(PARA(1)(1:8),' ',PARA(2)(1:19),1,K16BID,
-     +                                                       IBID,IRET)
+     &                                                       IBID,IRET)
             IF (IRET.NE.1 ) THEN
               CALL UTMESS('A',CVAL(:IVAL),PARA(1)//
-     +                             ' N''EST PAS UN CHAMP DE RESULTAT ')
+     &                             ' N''EST PAS UN CHAMP DE RESULTAT ')
               GOTO 9001
             ENDIF
             DO 191  IACC=1,NBACCE
@@ -368,7 +368,7 @@ C        --- ACCES ---
                CGEN(IGEN+ILG+1:IGEN+ILG+1) = ':'
                IGEN = IGEN+ILG+2
                CALL RSADPA(PARA(1)(1:8),'L',1,ZK16(JPARA-1+IACC),
-     +                                               IBID,1,IAD,CTYPE)
+     &                                               IBID,1,IAD,CTYPE)
                IF (CTYPE(1:1).EQ.'I') THEN
 C                 ENTIER
                   CALL CODENT(ZI(IAD),'G',CBID)
@@ -406,11 +406,9 @@ C                 K80
                   WRITE(CGEN(IGEN+1:IGEN+ILG),'(A)') ZK80(IAD)
                   IGEN = IGEN+ILG+1
                ELSE IF (CTYPE(1:1).EQ.'C') THEN
-                   CALL UTMESS('A',DEMONS(IPLACE),'ON NE SAIT PAS ECRIR'
-     +                           //'E LES COMPLEXES. NA !! ')
+                   CALL U2MESS('A','UTILITAI4_92')
                ELSE
-                   CALL UTMESS('A',DEMONS(IPLACE),'ON NE SAIT PAS ECRIR'
-     +                           //'E N''IMPORTE QUOI DESOLE.')
+                   CALL U2MESS('A','UTILITAI4_93')
                ENDIF
   191       CONTINUE
             CALL JEDETR('&&TITREB.NOM_ACCE')
@@ -419,13 +417,12 @@ C
 C        --- VALEUR PARAMETRE ---
   200    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
-     +                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
+     &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
             IDEB = 1
             DO 210 IUTI = 1,2
                CALL JEEXIN(PARA(IUTI),IRET)
                IF (IRET.EQ.0) THEN
-                 CALL UTMESS('A','TITREB',' CONCEPT '//PARA(1)
-     &           //'NON EXISTANT ')
+                 CALL U2MESK('A','UTILITAI4_94',1,PARA(1))
                  GOTO 210
                ENDIF
                CALL JELIRA(PARA(IUTI),'TYPE',IVAL,CVAL)
@@ -484,8 +481,7 @@ C        --- Y A T IL ASSEZ DE PLACE ---
 C     ------------------------------------------------------------------
  9001 CONTINUE
       ILG = LXLGUT(PARA(1))
-      CALL UTMESS('A',DEMONS(IPLACE),'L''OBJET DE NOM "'//
-     +                                PARA(1)(1:ILG)//'" EST INCONNU.')
+      CALL U2MESK('A','UTILITAI4_95',1,PARA(1)(1:ILG))
  9999 CONTINUE
       CALL JEDEMA()
       END

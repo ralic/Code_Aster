@@ -1,6 +1,6 @@
       SUBROUTINE TE0073(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,14 +87,14 @@ C====
       ELSE IF (OPTION(11:14).EQ.'RAYO') THEN
         LTEXT = .FALSE.
       ELSE
-        CALL UTMESS('F','TE0060','OPTION DE CALCUL INVALIDE')
+        CALL U2MESS('F','ELEMENTS2_95')
       END IF
       IF (OPTION(6:9).EQ.'SENS') THEN
         LSENS = .TRUE.
       ELSE IF (OPTION(6:9).EQ.'THER') THEN
         LSENS = .FALSE.
       ELSE
-        CALL UTMESS('F','TE0060','OPTION DE CALCUL INVALIDE')
+        CALL U2MESS('F','ELEMENTS2_95')
       END IF
 
 C====
@@ -235,26 +235,22 @@ C====
           IF (LTEXT) THEN
 
             CALL FOINTE('FM',ZK8(ICOEFH),3,NOMPAR,VALPAR,COENP1,ICODE)
-            IF (ICODE.NE.0) CALL UTMESS('F','TE0073',
-     &                                  'ERREUR CALCUL DE COENP1')
+            IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS3_8')
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(ICOEFH),3,NOMPAR,VALPAR,COEN,ICODE)
-              IF (ICODE.NE.0) CALL UTMESS('F','TE0073',
-     &                                    'ERREUR CALCUL DE COEN')
+              IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS3_9')
             ELSE
               COEN = 0.D0
             END IF
 
             VALPAR(3) = ZR(ITEMPS)
             CALL FOINTE('FM',ZK8(ITEX),3,NOMPAR,VALPAR,TEXNP1,ICODE)
-            IF (ICODE.NE.0) CALL UTMESS('F','TE0073',
-     &                                  'ERREUR CALCUL DE TEXNP1')
+            IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS2_96')
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(ITEX),3,NOMPAR,VALPAR,TEXN,ICODE)
-              IF (ICODE.NE.0) CALL UTMESS('F','TE0073',
-     &                                    'ERREUR CALCUL DE TEXN')
+              IF (ICODE.NE.0) CALL U2MESS('F','ELEMENTS2_97')
             ELSE
               TEXN = 0.D0
             END IF
@@ -288,39 +284,33 @@ C                         ===> DONNEES DU RAYONNEMENT INITIAL
 C SENSIBILITE / UNE DES CARACTERISTIQUES DU RAYONNEMENT
 C                         ===> DONNEES DU RAYONNEMENT DERIVE
             CALL FOINTE('FM',ZK8(IRAY),3,NOMPAR,VALPAR,SIGM1,IER)
-            IF (IER.NE.0) CALL UTMESS('F','TE0073',
-     &                                'ERREUR CALCUL DE SIGM1')
+            IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_1')
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(IRAY),3,NOMPAR,VALPAR,SIGMN,IER)
-              IF (IER.NE.0) CALL UTMESS('F','TE0073',
-     &                                  'ERREUR CALCUL DE SIGMN')
+              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_2')
             ELSE
               SIGMN = 0.D0
             END IF
 
             VALPAR(3) = ZR(ITEMPS)
             CALL FOINTE('FM',ZK8(IRAY+1),3,NOMPAR,VALPAR,EPS1,IER)
-            IF (IER.NE.0) CALL UTMESS('F','TE0073',
-     &                                'ERREUR CALCUL DE EPS1')
+            IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_3')
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(IRAY+1),3,NOMPAR,VALPAR,EPSN,IER)
-              IF (IER.NE.0) CALL UTMESS('F','TE0073',
-     &                                  'ERREUR CALCUL DE EPSN')
+              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_4')
             ELSE
               EPSN = 0.D0
             END IF
 
             VALPAR(3) = ZR(ITEMPS)
             CALL FOINTE('FM',ZK8(IRAY+2),3,NOMPAR,VALPAR,TPF1,IER)
-            IF (IER.NE.0) CALL UTMESS('F','TE0073',
-     &                                'ERREUR CALCUL DE TPF1')
+            IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_5')
             IF (THETA.NE.1.0D0) THEN
               VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
               CALL FOINTE('FM',ZK8(IRAY+2),3,NOMPAR,VALPAR,TPFN,IER)
-              IF (IER.NE.0) CALL UTMESS('F','TE0073',
-     &                                  'ERREUR CALCUL DE TPFN')
+              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_6')
             ELSE
               TPFN = 0.D0
             END IF
@@ -330,39 +320,33 @@ C SENSIBILITE / UNE DES CARACTERISTIQUES DU RAYONNEMENT
 C                         ===> DONNEES DU RAYONNEMENT INITIAL
             IF (LSENS .AND. (IRAYS.NE.0)) THEN
               CALL FOINTE('FM',ZK8(IRAYS),3,NOMPAR,VALPAR,SIGM1S,IER)
-              IF (IER.NE.0) CALL UTMESS('F','TE0060',
-     &                                  'ERREUR CALCUL DE SIGM1S')
+              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_1')
               IF (THETA.NE.1.0D0) THEN
                 VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
                 CALL FOINTE('FM',ZK8(IRAYS),3,NOMPAR,VALPAR,SIGMNS,IER)
-                IF (IER.NE.0) CALL UTMESS('F','TE0060',
-     &                                    'ERREUR CALCUL DE SIGMNS')
+                IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_2')
               ELSE
                 SIGMNS = 0.D0
               END IF
 
               VALPAR(3) = ZR(ITEMPS)
               CALL FOINTE('FM',ZK8(IRAYS+1),3,NOMPAR,VALPAR,EPS1S,IER)
-              IF (IER.NE.0) CALL UTMESS('F','TE0060',
-     &                                  'ERREUR CALCUL DE EPS1S')
+              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_3')
               IF (THETA.NE.1.0D0) THEN
                 VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
                 CALL FOINTE('FM',ZK8(IRAYS+1),3,NOMPAR,VALPAR,EPSNS,IER)
-                IF (IER.NE.0) CALL UTMESS('F','TE0060',
-     &                                    'ERREUR CALCUL DE EPSNS')
+                IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_4')
               ELSE
                 EPSNS = 0.D0
               END IF
 
               VALPAR(3) = ZR(ITEMPS)
               CALL FOINTE('FM',ZK8(IRAYS+2),3,NOMPAR,VALPAR,TPF1S,IER)
-              IF (IER.NE.0) CALL UTMESS('F','TE0060',
-     &                                  'ERREUR CALCUL DE TPF1S')
+              IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_5')
               IF (THETA.NE.1.0D0) THEN
                 VALPAR(3) = ZR(ITEMPS) - ZR(ITEMPS+1)
                 CALL FOINTE('FM',ZK8(IRAYS+2),3,NOMPAR,VALPAR,TPFNS,IER)
-                IF (IER.NE.0) CALL UTMESS('F','TE0060',
-     &                                    'ERREUR CALCUL DE TPFNS')
+                IF (IER.NE.0) CALL U2MESS('F','ELEMENTS3_6')
               ELSE
                 TPFNS = 0.D0
               END IF
@@ -442,8 +426,7 @@ C SENSIBILITE PAR RAPPORT A TEMPERATURE A L'INFINI
   140             CONTINUE
 
                 ELSE
-                  CALL UTMESS('F','TE0073','PB DETERMINATION '//
-     &                        'SENSIBILITE DE RAYONNEMENT')
+                  CALL U2MESS('F','ELEMENTS3_7')
                 END IF
 C FIN DU IF ITEMP
               END IF

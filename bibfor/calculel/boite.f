@@ -1,28 +1,28 @@
       SUBROUTINE BOITE(MAIL,NGRMZ,NNORMZ,DIME,NTM,NBOITZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C A_UTIL
 C ----------------------------------------------------------------------
 C     CONSTRUCTION DE BOITES ENGLOBANTES POUR UN ENSEMBLE DE MAILLES
 C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
+C VARIABLES D'ENTREE
 C CHARACTER*8       MAIL     : SD MAILLAGE
 C CHARACTER*(10)    NGRMZ    : GROUPE DE MAILLES
 C CHARACTER*(10)    NNORMZ   : NORMALES LISSEES COQUES (CF LISNOR)
@@ -39,9 +39,9 @@ C                 PAN* : INDEX DES PANS DE MA* DANS BOITE.PAN
 C                 SOM* : INDEX DES SOMMETS DE MA* DANS BOITE.SOMMET
 C BOITE.MINMAX : BOITES ENGLOBANT LES MAILLES SUIVANT X, Y, [Z]
 C                (X1MIN,X1MAX,Y1MIN,Y1MAX,[Z1MIN],[Z1MAX],X2MIN,...)
-C BOITE.PAN    : PANS (2D = ARETES, 3D = FACES) DES CONVEXES 
+C BOITE.PAN    : PANS (2D = ARETES, 3D = FACES) DES CONVEXES
 C                ENGLOBANTS ET INSCRITS DES MAILLES
-C                (A1,B1,[C1],D1,E1,A2...) 
+C                (A1,B1,[C1],D1,E1,A2...)
 C                   TELS QUE AX+BY+[CZ]+D<=0 (CONVEXE ENGLOBANT)
 C                   ET       AX+BY+[CZ]+E<=0 (CONVEXE INSCRIT)
 C BOITE.SOMMET : SOMMETS DES CONVEXES ENGLOBANT LES MAILLES
@@ -86,30 +86,29 @@ C --- VARIABLES
       INTEGER       P0,P1,P2,P3,P4,P5,P6,Q0,Q1,Q2,Q3,Q4,Q5,Q6
       INTEGER       NOEPAN(60),NOAR(36),PANNOE(24),PAAR(24)
       REAL*8        CNO(81),H,R
-      
+
       NGRMA = NGRMZ
       NBOITE = NBOITZ
       NNORMA = NNORMZ
 
       CALL JEMARQ()
-      
-C --- LECTURE DONNEES            
+
+C --- LECTURE DONNEES
 
       CALL JEVEUO(MAIL//'.TYPMAIL','L',P1)
       CALL JEVEUO(MAIL//'.CONNEX','L',P2)
       CALL JEVEUO(JEXATR(MAIL//'.CONNEX','LONCUM'),'L',P3)
       CALL JEVEUO(MAIL//'.COORDO    .VALE','L', P4)
-      CALL JELIRA(NGRMA,'LONMAX',NMA,ZK8) 
+      CALL JELIRA(NGRMA,'LONMAX',NMA,ZK8)
       CALL JEVEUO(NGRMA,'L',P5)
       CALL JEEXIN(NNORMA,I)
-      IF (I.NE.0) CALL JEVEUO(NNORMA,'L',P6)  
+      IF (I.NE.0) CALL JEVEUO(NNORMA,'L',P6)
 
-C --- COMPTE NOMBRE DE PANS ET DE SOMMETS     
+C --- COMPTE NOMBRE DE PANS ET DE SOMMETS
 
       P0 = P5
       NPAN = 0
       NSOM = 0
-     
       IF (DIME.EQ.2) THEN
 
         DO 10 I = 1, NMA
@@ -121,11 +120,11 @@ C --- COMPTE NOMBRE DE PANS ET DE SOMMETS
             NPAN = NPAN + 3
             NSOM = NSOM + 3
           ELSE
-            CALL UTMESS('F','BOITE',TYPEMA//' INDISPONIBLE')
+            CALL U2MESK('F','CALCULEL_28',1,TYPEMA)
           ENDIF
           P0 = P0 + 1
  10     CONTINUE
- 
+
       ELSE
 
         DO 20 I = 1, NMA
@@ -140,7 +139,7 @@ C --- COMPTE NOMBRE DE PANS ET DE SOMMETS
             NPAN = NPAN + 4
             NSOM = NSOM + 4
           ELSE
-            CALL UTMESS('F','BOITE',TYPEMA//' INDISPONIBLE')
+            CALL U2MESK('F','CALCULEL_28',1,TYPEMA)
           ENDIF
           P0 = P0 + 1
  20     CONTINUE
@@ -191,7 +190,7 @@ C ------- TRIANGLE
           IF (TYPEMA(1:4).EQ.'TRIA') THEN
 
 C --------- TRIA3
-            
+
             IF (TYPEMA(5:5).EQ.'3') THEN
 
               CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),H,DIME,0,ZR(Q4),NSOM)
@@ -204,13 +203,13 @@ C --------- TRIA6
               CALL PANNO(TYPEMA,PANNOE,NSOM)
               CALL NOAREQ(TYPEMA,NOAR,NARE)
               CALL PANARQ(TYPEMA,PAAR,NARE)
-              CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),H,DIME,0,CNO,NNO) 
+              CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),H,DIME,0,CNO,NNO)
               CALL BOITEL(CNO,TYPEMA,NOEPAN,NPAN,DIME,ZR(Q1),ZR(Q3))
               CALL BOITEA(CNO,NOAR,PAAR,NARE,NPAN,DIME,ZR(Q1),ZR(Q3))
               CALL SOMMET(PANNOE,DIME,ZR(Q3),NSOM,ZR(Q4))
 
-            ENDIF 
-  
+            ENDIF
+
             Q4 = Q4 + 6
 
           ELSE
@@ -221,7 +220,7 @@ C --------- QUAD4
 
             IF (TYPEMA(5:5).EQ.'4') THEN
 
-              CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),H,DIME,0,ZR(Q4),NSOM) 
+              CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),H,DIME,0,ZR(Q4),NSOM)
               CALL BOITEL(ZR(Q4),TYPEMA,NOEPAN,NPAN,DIME,ZR(Q1),ZR(Q3))
 
 C --------- QUAD6/QUAD8/QUAD9
@@ -236,7 +235,7 @@ C --------- QUAD6/QUAD8/QUAD9
               CALL BOITEA(CNO,NOAR,PAAR,NARE,NPAN,DIME,ZR(Q1),ZR(Q3))
               CALL SOMMET(PANNOE,DIME,ZR(Q3),NSOM,ZR(Q4))
 
-            ENDIF 
+            ENDIF
 
             Q4 = Q4 + 8
 
@@ -244,18 +243,18 @@ C --------- QUAD6/QUAD8/QUAD9
 
           Q6 = Q0
           H = 1.D0
-          DO 50 J = 1,DIME 
+          DO 50 J = 1,DIME
             R = ZR(Q1+1)-ZR(Q1)
             H = H*R
             R = PREC*R
             ZR(Q1) = ZR(Q1) - R
-            ZR(Q1+1) = ZR(Q1+1) + R 
+            ZR(Q1+1) = ZR(Q1+1) + R
             IF (ZR(Q1).LT.ZR(Q6)) ZR(Q6) = ZR(Q1)
             IF (ZR(Q1+1).GT.ZR(Q6+1)) ZR(Q6+1) = ZR(Q1+1)
             Q1 = Q1 + 2
             Q6 = Q6 + 2
  50       CONTINUE
-          
+
           DO 60 J = 1, NPAN
             DO 70 L = 1, 4
               ZR(Q3) = ZR(Q3)/H
@@ -264,7 +263,7 @@ C --------- QUAD6/QUAD8/QUAD9
             ZR(Q3-2) = ZR(Q3-2) - PREC
             ZR(Q3-1) = ZR(Q3-1) + PREC
  60       CONTINUE
-          
+
           H = H**0.5D0
           LCPAN = LCPAN + NPAN
           LCSOM = LCSOM + NSOM
@@ -278,10 +277,10 @@ C --------- QUAD6/QUAD8/QUAD9
 
  40     CONTINUE
 
-      ELSE 
+      ELSE
 
 C ----- MAILLES 3D
- 
+
         DO 80 I = 1, NMA
 
           MA = ZI(P0)
@@ -294,7 +293,7 @@ C ------- TETRAEDRE
           IF (TYPEMA(1:5).EQ.'TETRA') THEN
 
 C --------- TETRA4
-            
+
             IF (TYPEMA(6:6).EQ.'4') THEN
 
               CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),H,DIME,0,ZR(Q4),NSOM)
@@ -310,9 +309,9 @@ C --------- TETRA10
               CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),H,DIME,0,CNO,NNO)
               CALL BOITEL(CNO,TYPEMA,NOEPAN,NPAN,DIME,ZR(Q1),ZR(Q3))
               CALL BOITEA(CNO,NOAR,PAAR,NARE,NPAN,DIME,ZR(Q1),ZR(Q3))
-              CALL BOITEQ(CNO,NOEPAN,NPAN,ZR(Q1),ZR(Q3))   
+              CALL BOITEQ(CNO,NOEPAN,NPAN,ZR(Q1),ZR(Q3))
               CALL SOMMET(PANNOE,DIME,ZR(Q3),NSOM,ZR(Q4))
-  
+
             ENDIF
 
             Q4 = Q4 + 12
@@ -322,7 +321,7 @@ C ------- PENTAEDRE
           ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
 
             CALL PANNO(TYPEMA,PANNOE,NSOM)
-            CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),ZR(P6),DIME,L,CNO,NNO) 
+            CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),ZR(P6),DIME,L,CNO,NNO)
             CALL BOITEL(CNO,TYPEMA,NOEPAN,NPAN,DIME,ZR(Q1),ZR(Q3))
 
 C --------- PENTA12 / PENTA14 / PENTA15
@@ -332,9 +331,9 @@ C --------- PENTA12 / PENTA14 / PENTA15
               CALL NOAREQ(TYPEMA,NOAR,NARE)
               CALL PANARQ(TYPEMA,PAAR,NARE)
               CALL BOITEA(CNO,NOAR,PAAR,NARE,NPAN,DIME,ZR(Q1),ZR(Q3))
-              CALL BOITEQ(CNO,NOEPAN,NPAN,ZR(Q1),ZR(Q3))   
+              CALL BOITEQ(CNO,NOEPAN,NPAN,ZR(Q1),ZR(Q3))
 
-            ENDIF 
+            ENDIF
 
             CALL SOMMET(PANNOE,DIME,ZR(Q3),NSOM,ZR(Q4))
             Q4 = Q4 + 18
@@ -344,7 +343,7 @@ C ------- HEXAEDRE
           ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN
 
             CALL PANNO(TYPEMA,PANNOE,NSOM)
-            CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),ZR(P6),DIME,L,CNO,NNO) 
+            CALL CONOEU(MA,ZI(P2),ZI(P3),ZR(P4),ZR(P6),DIME,L,CNO,NNO)
             CALL BOITEL(CNO,TYPEMA,NOEPAN,NPAN,DIME,ZR(Q1),ZR(Q3))
 
 C --------- HEXA16 / HEXA18 / HEXA20 / HEXA27
@@ -354,9 +353,9 @@ C --------- HEXA16 / HEXA18 / HEXA20 / HEXA27
               CALL NOAREQ(TYPEMA,NOAR,NARE)
               CALL PANARQ(TYPEMA,PAAR,NARE)
               CALL BOITEA(CNO,NOAR,PAAR,NARE,NPAN,DIME,ZR(Q1),ZR(Q3))
-              CALL BOITEQ(CNO,NOEPAN,NPAN,ZR(Q1),ZR(Q3))   
+              CALL BOITEQ(CNO,NOEPAN,NPAN,ZR(Q1),ZR(Q3))
 
-            ENDIF 
+            ENDIF
 
             CALL SOMMET(PANNOE,DIME,ZR(Q3),NSOM,ZR(Q4))
             Q4 = Q4 + 24
@@ -365,12 +364,12 @@ C --------- HEXA16 / HEXA18 / HEXA20 / HEXA27
 
           Q6 = Q0
           H = 1.D0
-          DO 90 J = 1,DIME 
+          DO 90 J = 1,DIME
             R = ZR(Q1+1)-ZR(Q1)
             H = H*R
             R = R*PREC
             ZR(Q1) = ZR(Q1) - R
-            ZR(Q1+1) = ZR(Q1+1) + R 
+            ZR(Q1+1) = ZR(Q1+1) + R
             IF (ZR(Q1).LT.ZR(Q6)) ZR(Q6) = ZR(Q1)
             IF (ZR(Q1+1).GT.ZR(Q6+1)) ZR(Q6+1) = ZR(Q1+1)
             Q1 = Q1 + 2
@@ -385,7 +384,7 @@ C --------- HEXA16 / HEXA18 / HEXA20 / HEXA27
             ZR(Q3-2) = ZR(Q3-2) - PREC
             ZR(Q3-1) = ZR(Q3-1) + PREC
  100      CONTINUE
-            
+
           H = H**(1.D0/3.D0)
           LCPAN = LCPAN + NPAN
           LCSOM = LCSOM + NSOM

@@ -6,7 +6,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -170,9 +170,7 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
         IOCC = 0
         CALL COCHRE(ZK8(JCHA),NCHAR,NBCHRE,IOCC)
         IF (NBCHRE.GT.1) THEN
-          CALL UTMESS('A','THACLM','VOTRE CHARGEMENT CONTIENT PLUS '//
-     &                'D''UNE CHARGE REPARTIE. LE CALCUL N''EST PAS '//
-     &                'POSSIBLE POUR LES MODELES DE POUTRE.')
+          CALL U2MESS('A','CALCULEL2_92')
           GO TO 530
         END IF
         DO 10 III = 1,NCHAR
@@ -185,14 +183,7 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
           IF (L1.NE.0 .OR. L2.NE.0 .OR. L3.NE.0 .OR. L4.NE.0 .OR.
      &        L5.NE.0 .OR. L6.NE.0) THEN
             IF (NBCHRE.EQ.0) THEN
-              CALL UTMESS('A','THACLM',
-     &                    'VOUS AVEZ RENSEIGNE UN DES MOTS-CLES'//
-     &                ' FONC_MULT_*, COEF_MULT_*, PHAS_DEG, PUIS_PULS, '
-     &                    //
-     &              'OR VOTRE CHARGE NE CONTIENT PAS D''EFFORT REPARTI '
-     &                    //
-     &              'SUR DES POUTRES. CES MOTS-CLES SERONT DONC IGNORES'
-     &                    )
+              CALL U2MESS('A','CALCULEL2_93')
             END IF
           END IF
    10   CONTINUE
@@ -213,9 +204,7 @@ C=======================================================================
         CALL GETVIS(' ','NUME_COUCHE',1,1,1,IBID,N2)
         CALL GETVTX(' ','NIVE_COUCHE',1,1,1,K8B,N3)
         IF (N1.EQ.0.AND.CARA.EQ.' ') THEN
-          CALL UTMESS('A','THACLM','POUR UN MODELE COMPORTANT DES '//
-     &          'ELEMENTS DE PLAQUE OU DE COQUE, IL FAUT LE "CARA_ELEM"'
-     &                )
+          CALL U2MESS('A','CALCULEL2_94')
           GO TO 530
         END IF
       END IF
@@ -283,8 +272,7 @@ C EN OUTPUT --> INFCHA ET INPSCO
               CALL NTDOTH(MODEL2,MATE2,CARA2,K24B,LBID,LBID,INFCHA,
      &                    NBPASE,INPSCO,RESUCO,IBID)
             ELSE
-              CALL UTMESS('A','THACLM','IMPOSSIBLE DE CALCULER'//
-     &                    ' UN RESULTAT DERIVE POUR LE TYPE '//TYSD)
+              CALL U2MESK('A','CALCULEL2_95',1,TYSD)
               GO TO 480
             END IF
           END IF
@@ -296,6 +284,7 @@ C DETERMINATION DU CHAMP DERIVE LERES0 ASSOCIE A (RESUCO,NOPASE)
             CALL UTMESS('A','THACLM',
      &   'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      &                  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
+C        CALL U2MESK('A','CALCULEL2_96', 2 ,VALK)
             GO TO 480
           END IF
 
@@ -304,9 +293,7 @@ C DETERMINATION DU TYPE DE DERIVE: TYPESE ET STYPSE
           IF (TYSD.EQ.'EVOL_THER') THEN
             CALL NTTYSE(NBPASE,INPSCO,NOPASE,TYPESE,STYPSE)
           ELSE
-            CALL UTMESS('A','THACLM',
-     &         'IMPOSSIBLE DE CALCULER UN RESULTAT DERIVE POUR LE TYPE '
-     &                  //TYSD)
+            CALL U2MESK('A','CALCULEL2_95',1,TYSD)
             GO TO 480
           END IF
 
@@ -356,9 +343,7 @@ C RECUPERATION NIVEAU AFFICHAGE
 
 C VERIFICATION DU PERIMETRE D'UTILISATION
             CALL GETVTX(' ','TOUT',1,1,1,BUFCH,BUFIN1)
-            IF (BUFCH.NE.'OUI') CALL UTMESS('A','THACLM',
-     &                               '! TOUT = OUI OBLIGATOIRE AVEC '//
-     &                               OPTION//'!')
+            IF (BUFCH.NE.'OUI') CALL U2MESK('A','CALCULEL4_97',1,OPTION)
 
 C BOUCLE SUR LES INSTANTS CHOISIS PAR LE USER
             IOROLD = 0
@@ -417,19 +402,13 @@ C RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
      &                    'PARM_THETA'),IAD)
               IF (IAD.EQ.0) THEN
                 VALTHE = 0.57D0
-              CALL UTMESS('A','THACLM','ATTENTION : ON N''A PAS PU '//
-     &                      'RECUPERER LE PARAMETRE THETA DANS LE '//
-     &                      'RESULTAT '//RESUCO//
-     &                      ', VALEUR PRISE POUR THETA: 0.57 ')
+              CALL U2MESK('A','CALCULEL4_98',1,RESUCO)
               ELSE
                 CALL RSADPA(RESUCO,'L',1,'PARM_THETA',IORDR,0,IAD,K8B)
                 VALTHE = ZR(IAD)
                 IF ((VALTHE.GT.1.D0) .OR. (VALTHE.LT.0.D0)) THEN
                   VALTHE = 1.D0
-                CALL UTMESS('A','THACLM','ATTENTION : RECUPERATION '//
-     &                        'D''UNE VALEUR DE THETA ILLICITE '//
-     &                        'DANS LE RESULTAT '//RESUCO//
-     &                        'VALEUR PRISE POUR THETA: 1. ')
+                CALL U2MESK('A','CALCULEL4_99',1,RESUCO)
                 END IF
               END IF
               IF (NIV.GE.1) THEN
@@ -449,8 +428,8 @@ C ON ESTIME SON ERREUR COMME EN STATIONNAIRE
               ELSE
                 EVOL = .TRUE.
               END IF
-              IF (EVOL .AND. (IORDR-1.NE.IOROLD)) CALL UTMESS('A',
-     &            NOMCMD,'! ATTENTION NUMEROS D''ORDRE NON CONTIGUS !')
+              IF (EVOL .AND. (IORDR-1.NE.IOROLD)) CALL U2MESS('A','CALCU
+     &LEL5_1')
 
 C RECUPERATION DU NOM DES CHAMP_GD = RESUCO('FLUX_ELNO_TEMP',I)
 C ET RESUCO('TEMP',I) POUR I=IORDR. POUR IORDR-1 ILS SONT STOCKES
@@ -559,9 +538,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
 
             IF (.NOT.EXITIM) THEN
-              CALL UTMESS('A','THACLM',
-     &    'POUR LES OPTIONS DE THERMIQUE, IL Y A ENCORE A TRAVAILLER !!'
-     &                    )
+              CALL U2MESS('A','CALCULEL5_2')
               GO TO 440
             END IF
 C RECUPERATION NIVEAU AFFICHAGE
@@ -608,8 +585,7 @@ C T= RESUCO('TEMP',IAUX) --> CHTEMP
                 IF (IRET.GT.0) GO TO 282
               ELSE IF (TYPESE.EQ.-1) THEN
 C DERIVEE LAGRANGIENNE
-                CALL UTMESS('A','THACLM','!! OPTION INDISPONIBLE EN'//
-     &                      'SENSIBILITE LAGRANGIENNE !!')
+                CALL U2MESS('A','CALCULEL5_3')
                 GO TO 282
               ELSE IF (TYPESE.EQ.1) THEN
 C CALCUL INSENSIBLE: CREATION D'UN CHAM_ELEM NUL
@@ -620,8 +596,7 @@ C CALCUL INSENSIBLE: CREATION D'UN CHAM_ELEM NUL
                 DCEL = ' '
                 CALL ALCHML(LIGREL,OPTION,NOMPA1,BASE,CHELEM,IRET,DCEL)
                 IF (IRET.NE.0) THEN
-                  CALL UTMESS('A','THACLM','!! PROBLEME'//
-     &                        'CREATION CHAM_ELEM NUL DANS ALCHML !!')
+                  CALL U2MESS('A','CALCULEL5_4')
                   GO TO 282
                 END IF
                 GO TO 270
@@ -756,7 +731,7 @@ C ---- VERIF SENSIBILITE FIN
   350       CONTINUE
 C    ------------------------------------------------------------------
          ELSE
-             CALL UTMESS('A','THACLM',' OPTION INEXISTANTE:'//OPTION)
+             CALL U2MESK('A','CALCULEL3_22',1,OPTION)
          ENDIF
 
 C     ------------------------------------------------------------------
@@ -764,15 +739,14 @@ C     -- ERREUR SENSIBILITE
 C     ------------------------------------------------------------------
   123     CONTINUE
           IF ( CODSEN.NE.0 ) THEN
-            CALL UTMESS ( 'A', 'THACLM', 'OPTION : '//OPTION )
+            CALL U2MESK('A','CALCULEL3_23',1,OPTION)
             IF ( NOPASE.NE.' ' ) THEN
-             CALL UTMESS ('A', 'THACLM', 'PARAMETRE SENSIBLE '//NOPASE)
+             CALL U2MESK('A','CALCULEL3_24',1,NOPASE)
             ENDIF
             IF ( CODSEN.EQ.1 ) THEN
-               CALL UTMESS ('A', 'THACLM', 'CALCUL NON DISPONIBLE' )
+               CALL U2MESS('A','CALCULEL3_25')
             ELSEIF ( CODSEN.EQ.2 ) THEN
-               CALL UTMESS ( 'A', 'THACLM',
-     >         'LE PARAMETRE DE SENSIBILITE DOIT ETRE UN CHAMP THETA' )
+               CALL U2MESS('A','CALCULEL3_26')
             ENDIF
           ENDIF
   440   CONTINUE
@@ -877,7 +851,7 @@ C    ------------------------------------------------------------------
   772       CONTINUE
 
            ELSE
-             CALL UTMESS('A','THACLM',' OPTION INEXISTANTE:'//OPTION)
+             CALL U2MESK('A','CALCULEL3_22',1,OPTION)
            ENDIF
 C
 

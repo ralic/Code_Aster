@@ -4,29 +4,29 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER       IFI, LIGREL(*), NBGREL, LONGR(*), NCMPMX,
-     +              CELD(*), NBNOMA(*), PERMUT(MAXNOD,*), TYPMA(*),
-     +              NBMAT, NUMMAI(*), NCMPU, NUCMP(*)
+     &              CELD(*), NBNOMA(*), PERMUT(MAXNOD,*), TYPMA(*),
+     &              NBMAT, NUMMAI(*), NCMPU, NUCMP(*)
       CHARACTER*(*) NOMCMP(*),NOMEL(*),LOC,TITR,NOMSYM,NOMSD
       COMPLEX*16                                 VALE(*)
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C        ECRITURE D'UN CHAMELEM SUR FICHIER UNIVERSEL, DATASET TYPE 56
@@ -101,7 +101,7 @@ C
 C  --- RECHERCHE DES GRANDEURS SUPERTAB ----
 C
       CALL IRGAGS(NCMPMX,NOMCMP,NOMSYM,NBCHS,ZK8(INOCHS),
-     +                ZI(IBCMPS),ZK8(INOGDS),ZI(ICMPS))
+     &                ZI(IBCMPS),ZK8(INOGDS),ZI(ICMPS))
 C --- DETERMINATION DU NOMBRE MAXIMUM DE SOUS-POINTS ---
       ICOMAX = 0
       DO 8 IGRE=1,NBGREL
@@ -135,7 +135,7 @@ C ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
          AFAIRE = .FALSE.
          DO 2 ICP=1,ZI(IBCMPS-1+ICHS)
            AFAIRE= (AFAIRE.OR.ZL(ITABL-1+(ZI(ICMPS-1+
-     +       (ICHS-1)*NCMPMX+ICP))))
+     &       (ICHS-1)*NCMPMX+ICP))))
  2       CONTINUE
          IF(.NOT. AFAIRE) GO TO 10
         ENDIF
@@ -202,7 +202,7 @@ C
                 CALL CODENT (ENTIER,'G',TOTO)
                 IFIN = IDEBU+IUTIL+2
                 TEXTE(IDEBU:IFIN)=' '//
-     +                    NOCMP(1:IUTIL) //'_'//TOTO
+     &                    NOCMP(1:IUTIL) //'_'//TOTO
                 IDEBU = IFIN + 1
   6           CONTINUE
             ELSE
@@ -259,7 +259,7 @@ C
    23       CONTINUE
             DO 61 I=1,ZI(IBCMPS-1+ICHS)
               IF (EXISDG(ZI(IAEC),ZI(ICMPS-1+
-     +             (ICHS-1)*NCMPMX+I))) GOTO 62
+     &             (ICHS-1)*NCMPMX+I))) GOTO 62
   61        CONTINUE
             GOTO 12
   62        CONTINUE
@@ -312,11 +312,11 @@ C
    28             CONTINUE
    29             CONTINUE
                   IF (INOA.EQ.0) THEN
-                     CALL UTMESS('F','IRCECS',' : INOA=0')
+                     CALL U2MESS('F','PREPOST_81')
                   END IF
                   DO 161 ICOU=1,NBCOU
                    J=IACHML-1+NCMPP*ICOEF*(INOA-1)+
-     +                          (ICOU-1)*NCMPP*ICOEF*NNOE+NCMPP*(ICO-1)
+     &                          (ICOU-1)*NCMPP*ICOEF*NNOE+NCMPP*(ICO-1)
                      DO 21 I=1,NBCMPT
                         ZR(IRVN-1+I)=0.D0
                         ZR(ICVN-1+I)=0.D0
@@ -331,9 +331,9 @@ C
                              IMPRE=1
                              DO 26 ISP=1,ZI(JSPT-1+IDA)
                               ZR(IRVN-1+ICMS-1+ISP)=
-     +                                  DBLE(VALE(J+IC+NCMPP*(ISP-1)))
+     &                                  DBLE(VALE(J+IC+NCMPP*(ISP-1)))
                               ZR(ICVN-1+ICMS-1+ISP)=
-     +                                 DIMAG(VALE(J+IC+NCMPP*(ISP-1)))
+     &                                 DIMAG(VALE(J+IC+NCMPP*(ISP-1)))
    26                        CONTINUE
                              GOTO 22
                            ENDIF
@@ -352,11 +352,11 @@ C
                             IES=IEL
                           ENDIF
                           WRITE (IFI,'(4I10,5X,A,A)')
-     +                         IES,1,NNOE,NBCMPT,'% MAILLE ',NOMEL(IEL)
+     &                         IES,1,NNOE,NBCMPT,'% MAILLE ',NOMEL(IEL)
                        IMPEL=0
                        ENDIF
                        WRITE (IFI,'(6(1PE13.5))') (ZR(IRVN-1+I),
-     +                    ZR(ICVN-1+I),I=1,NBCMPT)
+     &                    ZR(ICVN-1+I),I=1,NBCMPT)
                      ENDIF
   161             CONTINUE
    16          CONTINUE
@@ -413,11 +413,11 @@ C
                      IES=IEL
                    ENDIF
                    WRITE(IFI,'(2I10,5X,2A)') IES,NBCMPT,
-     +                              '% MAILLE ',NOMEL(IEL)
+     &                              '% MAILLE ',NOMEL(IEL)
                    IMPEL=0
                  ENDIF
                  WRITE (IFI,'(6(1PE13.5))') (ZR(IRVG-1+I),
-     +               ZR(ICVG-1+I),I=1,NBCMPT)
+     &               ZR(ICVG-1+I),I=1,NBCMPT)
                  IMPRE=0
                ENDIF
             END IF
@@ -427,8 +427,7 @@ C
    11 CONTINUE
    10 CONTINUE
       IF(LNOCEN)THEN
-         CALL UTMESS('A','IRCECS','ON TRAITE LES TRIA7 QUAD9 '//
-     &      ' EN OUBLIANT LE NOEUD CENTRE')
+         CALL U2MESS('A','PREPOST_80')
       ENDIF
 C
       CALL JEDETR('&&IRCECS.VRNOE')

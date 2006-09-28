@@ -4,23 +4,23 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 22/02/2006   AUTEUR GRANET S.GRANET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C TOLE CRP_20
@@ -68,7 +68,7 @@ C
 C
       INTEGER NNOS,NPI2
 C     ------------------------------------------------------------------
-C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH ,THM, 
+C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH ,THM,
 C                           THH2M, HH2M,       THH2
 C     ------------------------------------------------------------------
 C ======================================================================
@@ -81,15 +81,15 @@ C ======================================================================
          ELSEIF ( ELREFE.EQ.'QU8') THEN
             ELREF2 = 'QU4'
          ELSE
-           CALL UTMESS('F','TE0600','ELEMENT:'//ELREFE//'NON IMPLANTE')
+           CALL U2MESK('F','ALGORITH4_46',1,ELREFE)
          ENDIF
-  
-C FONCTIONS DE FORMES QUADRATIQUES  
+
+C FONCTIONS DE FORMES QUADRATIQUES
       CALL ELREF4(ELREFE,'RIGI',NDIM,NNO,NNOS,NPI,
-     +                          IPOIDS,IVF,IDFDX,JGANO)
+     &                          IPOIDS,IVF,IDFDX,JGANO)
 C FONCTIONS DE FORMES LINEAIRES
       CALL ELREF4(ELREF2,'RIGI',NDIM,NNO2,NNOS2,NPI2,
-     +                          IPOID2,IVF2,IDFDX2,IBID)
+     &                          IPOID2,IVF2,IDFDX2,IBID)
 C
 C NB DE DDL A CHAQUE NOEUD
       CALL DIMTHM(NOMTE,NDLNO,NDLNM,NDIM2)
@@ -170,7 +170,7 @@ C
  102       CONTINUE
 C
            JAC = SQRT(NX*NX+NY*NY+NZ*NZ)
-   
+
 C ======================================================================
 C OPTIONS CHAR_MECA_FLUX_R ET CHAR_MECA_FLUX_F (INTERPOLATION LINEAIRE)
 C ======================================================================
@@ -181,7 +181,7 @@ C ======================================================================
 C --- SI MODELISATION = THHM OU THH
 C
            IF (NOMTE(1:4).EQ.'THHM'.OR.NOMTE(1:4).EQ.'THH_'
-     +      .OR.NOMTE(1:4).EQ.'THH2'.OR.NOMTE(1:4).EQ.'HH2M')THEN
+     &      .OR.NOMTE(1:4).EQ.'THH2'.OR.NOMTE(1:4).EQ.'HH2M')THEN
 C
 C --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
 C --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :
@@ -251,7 +251,7 @@ C
          ENDIF
 C
 C ======================================================================
-C --- SI MODELISATION = THV 
+C --- SI MODELISATION = THV
 C
            IF (NOMTE(1:4).EQ.'THV_')THEN
 C
@@ -342,7 +342,7 @@ C
 C
            ENDIF
 C ======================================================================
-C SI MODELISATION = HHM 
+C SI MODELISATION = HHM
 C
            IF (NOMTE(1:3).EQ.'HHM'.OR.NOMTE(1:4).EQ.'HH2M') THEN
 C
@@ -435,7 +435,7 @@ C
 C
 C ======================================================================
 C        --- OPTION CHAR_MECA_PRES_R OU CHAR_MECA_PRES_F ---
-C INTERPOLATION QUADRATIQUE 
+C INTERPOLATION QUADRATIQUE
 C ======================================================================
           ELSE IF ( (IOPT.EQ.3) .OR. (IOPT.EQ.4) ) THEN
             IF (IOPT.EQ.3) THEN

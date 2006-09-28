@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPO ( UNIT , NOMLU , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,11 +33,11 @@ C     -----------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -61,11 +61,11 @@ C     ------------------------------------------------------------------
       LOGICAL         LCONST , LCOL
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
+     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
       IPGC   = -2
@@ -77,7 +77,7 @@ C
 C
       IF ( IRET .EQ. 0 ) THEN
         CMESS = 'OBJET INEXISTANT DANS LES BASES OUVERTES'
-        CALL JVMESS ( 'A' , 'JEIMPO01' , CMESS )
+        CALL U2MESK('A','JEVEUX_01',1,CMESS)
         GOTO 9999
       ELSE IF ( IRET .EQ. 1 ) THEN
 C
@@ -95,7 +95,7 @@ C
           IADDI(2) = IADD ( JIADD(ICLAOS) + 2*IDATOS   )
           IF ( IADDI(1) .EQ. 0 ) THEN
             CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-            CALL JVMESS ( 'A' , 'JEIMPO02' , CMESS )
+            CALL U2MESK('A','JEVEUX_01',1,CMESS)
             GOTO 9999
           ENDIF
           CALL JJALTY (TYPEI , LTYPI , 'L' , 1 , JCTAB)
@@ -103,7 +103,7 @@ C
         ENDIF
         IDECI = 0
         CALL JJIMPO ( UNIT,IADMI, IDECI, 0, GENRI, TYPEI, LTYPI, LONOI,
-     +                MESS , PARM)
+     &                MESS , PARM)
         IF ( IADMEX .EQ. 0 ) THEN
           CALL JJLIDE ( 'JEIMPO' , NOML32 , INAT )
         ENDIF
@@ -141,7 +141,7 @@ C
           IF ( IADMEX .EQ. 0 ) THEN
             IF ( IADDI(1) .EQ. 0 ) THEN
               CMESS = 'COLLECTION INEXISTANTE EN MEMOIRE ET SUR DISQUE'
-              CALL JVMESS ( 'A' , 'JEIMPO03' , CMESS )
+              CALL U2MESK('A','JEVEUX_01',1,CMESS)
               GOTO 9999
             ENDIF
             CALL JJALTY (TYPEI , LTYPI , 'L' , 2 , JCTAB)
@@ -150,7 +150,7 @@ C
           LONOI  = LONO( JLONO(ICLACO) + IXDESO ) * LTYPI
           IDECI  = 0
           CALL JJIMPO ( UNIT,IADMI, IDECI, -1, GENRI,TYPEI,LTYPI,LONOI,
-     +                  MESS , PARM)
+     &                  MESS , PARM)
           IF ( IADMEX .EQ. 0 ) THEN
             CALL JJLIDE ( 'JEIMPO' , NOML32 , INAT )
           ENDIF
@@ -179,7 +179,7 @@ C
               LONOI  = ISZON ( JISZON + IBLONO - 1 + K ) * LTYPI
             ENDIF
             CALL JJIMPO(UNIT,IADMI,IDECI,K,GENRI,TYPEI,LTYPI,
-     +                  LONOI,MESS,PARM)
+     &                  LONOI,MESS,PARM)
             NUMEC = K
             CALL JJLIDE ('JEIMPO' , NOML32//'$$XNUM  ' , 2)
  10       CONTINUE
@@ -204,7 +204,7 @@ C           ----------- COLLECTION CONTIGUE
            IF ( IADMEX .EQ. 0 ) THEN
              IF ( IADDI(1) .EQ. 0 ) THEN
                CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-               CALL JVMESS ( 'A' , 'JEIMPO05' , CMESS )
+               CALL U2MESK('A','JEVEUX_01',1,CMESS)
                GOTO 9999
              ENDIF
              CALL JJALTY (TYPEI , LTYPI , 'L' , 2 , JCTAB)
@@ -214,16 +214,16 @@ C           ----------- COLLECTION CONTIGUE
              LONOI = LONO ( JLONO(ICLACO) + IXDESO ) * LTYPI
              LONOI = LONOI / ISZON ( JISZON + IBACOL + IVNMAX )
              IADMI = IBDESO
-             IDECI = ( IDATOC - 1 ) * LONOI 
+             IDECI = ( IDATOC - 1 ) * LONOI
            ELSE
              IBLONO = IADM ( JIADM(ICLACO) + IXLONO )
              LONOI = LTYPI * ( ISZON(JISZON+IBLONO-1+IDATOC+1) -
-     +                         ISZON(JISZON+IBLONO-1+IDATOC ) )
+     &                         ISZON(JISZON+IBLONO-1+IDATOC ) )
              IADMI = IBDESO
-             IDECI = (LTYPI*(ISZON(JISZON+IBLONO-1+IDATOC)-1)) 
+             IDECI = (LTYPI*(ISZON(JISZON+IBLONO-1+IDATOC)-1))
            ENDIF
            CALL JJIMPO(UNIT,IADMI,IDECI,IDATOC,GENRI,TYPEI,LTYPI,LONOI,
-     +                   MESS , PARM)
+     &                   MESS , PARM)
            IF ( IADMEX .EQ. 0 ) THEN
               CALL JJLIDE ( 'JEIMPO' , NOML32 , INAT )
            ENDIF
@@ -241,7 +241,7 @@ C
              IADDI(2) = ISZON(JISZON + IBIADD - 1 + 2*IDATOC   )
              IF ( IADDI(1) .EQ. 0 ) THEN
                CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-               CALL JVMESS ( 'A' , 'JEIMPO06' , CMESS )
+               CALL U2MESK('A','JEVEUX_01',1,CMESS)
                GOTO 9999
              ENDIF
              CALL JJALTY (TYPEI , LTYPI , 'L' , INAT , JCTAB)
@@ -255,7 +255,7 @@ C
              LONOI  = ISZON ( JISZON + IBLONO + IDATOC - 1 ) * LTYPI
            ENDIF
            CALL JJIMPO(UNIT,IADMI,IDECI,IDATOC,GENRI,TYPEI,LTYPI,LONOI,
-     +                   MESS , PARM)
+     &                   MESS , PARM)
            IF ( IADMEX .EQ. 0 ) THEN
              CALL JJLIDE ( 'JEIMPO' , NOML32 , INAT )
            ENDIF

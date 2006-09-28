@@ -1,35 +1,35 @@
-      SUBROUTINE LRMTYP ( NBTYP, NOMTYP, NNOTYP, TYPGEO, RENUMD, 
-     >                    MODNUM, NUANOM, NUMNOA )
+      SUBROUTINE LRMTYP ( NBTYP, NOMTYP, NNOTYP, TYPGEO, RENUMD,
+     &                    MODNUM, NUANOM, NUMNOA )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GNICOLAS G.NICOLAS
 C     RECUP DES NOMS/NBNO DES TYPES DE MAILLES DANS LE CATALOGUE
 C     ET RECUP DES TYPE GEO CORRESPONDANT POUR MED
-C    
+C
 C     SORTIE:
 C       MODNUM : INDICATEUR SI LA SPECIFICATION DE NUMEROTATION DES
 C                NOEUDS DES MAILLES EST DIFFERENTES ENTRE ASTER ET MED:
 C                     MODNUM = 0 : NUMEROTATION IDENTIQUE
 C                     MODNUM = 1 : NUMEROTATION DIFFERENTE
 C       NUANOM : TABLEAU DE CORRESPONDANCE DES NOEUDS (MED/ASTER).
-C                NUANOM(ITYP,J): NUMERO DANS ASTER DU J IEME NOEUD 
+C                NUANOM(ITYP,J): NUMERO DANS ASTER DU J IEME NOEUD
 C                DE LA MAILLE DE TYPE ITYP DANS MED.
 C       NUMNOA : TABLEAU DE CORRESPONDANCE DES NOEUDS (MED/ASTER).
 C                NUMNOA(ITYP,J) : NUMERO DANS MED DU J IEME NOEUD
@@ -48,8 +48,8 @@ C
       INTEGER NBTYP
       INTEGER NNOTYP(NTYMAX), TYPGEO(NTYMAX), RENUMD(NTYMAX)
       INTEGER MODNUM(NTYMAX)
-      INTEGER NUANOM(NTYMAX,NNOMAX), NUMNOA(NTYMAX,NNOMAX) 
-      CHARACTER*8 NOMTYP(NTYMAX)        
+      INTEGER NUANOM(NTYMAX,NNOMAX), NUMNOA(NTYMAX,NNOMAX)
+      CHARACTER*8 NOMTYP(NTYMAX)
 C
 C 0.2. ==> COMMUNS
 C
@@ -73,8 +73,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'LRMTYP' )
 C
       INTEGER NUMMED(NTYMAX)
       INTEGER IAUX, JAUX
@@ -85,33 +83,33 @@ C
 C 0.4. ==> INITIALISATIONS
 C
 C     CORRESPONDANCE DES NUMEROS DE TYPE DE GEOMETRIE ENTRE ASTER ET MED
-C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)   
+C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
       DATA NOMAST  /'POI1    ','SEG2    ','SEG22   ','SEG3    ',
-     +              'SEG33   ','SEG4    ',
-     +                         'TRIA3   ','TRIA33  ','TRIA6   ',
-     +              'TRIA66  ','TRIA7   ','QUAD4   ','QUAD44  ',
-     +              'QUAD8   ','QUAD88  ','QUAD9   ','QUAD99  ',
-     +              'TETRA4  ','TETRA10 ','PENTA6  ','PENTA15 ',
-     +              'PYRAM5  ','PYRAM13 ','HEXA8   ','HEXA20  ',
-     +              'HEXA27  ','TR3QU4  ','QU4TR3  ','TR6TR3  ',
-     +              'TR3TR6  ','TR6QU4  ','QU4TR6  ','TR6QU8  ',
-     +              'QU8TR6  ','TR6QU9  ','QU9TR6  ','QU8TR3  ',
-     +              'TR3QU8  ','QU8QU4  ','QU4QU8  ','QU8QU9  ',
-     +              'QU9QU8  ','QU9QU4  ','QU4QU9  ','QU9TR3  ',
-     +              'TR3QU9  ','SEG32   ','SEG23   '/
-      DATA NUMMED  /1,         102,       0,         103,    
-     +              0,         0, 
-     +                         203,       0,         206,
-     +              0,         0,         204,       0,
-     +              208,       0,         0,         0,
-     +              304,       310,       306,       315,
-     +              305,       313,       308,       320,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0/
+     &              'SEG33   ','SEG4    ',
+     &                         'TRIA3   ','TRIA33  ','TRIA6   ',
+     &              'TRIA66  ','TRIA7   ','QUAD4   ','QUAD44  ',
+     &              'QUAD8   ','QUAD88  ','QUAD9   ','QUAD99  ',
+     &              'TETRA4  ','TETRA10 ','PENTA6  ','PENTA15 ',
+     &              'PYRAM5  ','PYRAM13 ','HEXA8   ','HEXA20  ',
+     &              'HEXA27  ','TR3QU4  ','QU4TR3  ','TR6TR3  ',
+     &              'TR3TR6  ','TR6QU4  ','QU4TR6  ','TR6QU8  ',
+     &              'QU8TR6  ','TR6QU9  ','QU9TR6  ','QU8TR3  ',
+     &              'TR3QU8  ','QU8QU4  ','QU4QU8  ','QU8QU9  ',
+     &              'QU9QU8  ','QU9QU4  ','QU4QU9  ','QU9TR3  ',
+     &              'TR3QU9  ','SEG32   ','SEG23   '/
+      DATA NUMMED  /1,         102,       0,         103,
+     &              0,         0,
+     &                         203,       0,         206,
+     &              0,         0,         204,       0,
+     &              208,       0,         0,         0,
+     &              304,       310,       306,       315,
+     &              305,       313,       308,       320,
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0,         0,         0,         0,
+     &              0,         0,         0/
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )
 C
@@ -119,22 +117,20 @@ C     VERIFICATION QUE LE CATALOGUE EST ENCORE COHERENT AVEC LE FORTRAN
 C
       CALL JELIRA('&CATA.TM.NOMTM','NOMMAX',IAUX,K1)
       IF ( NTYMAX .NE. IAUX ) THEN
-         CALL UTMESS ( 'F',NOMPRO,'INCOHERENCE CATALOGUE - FORTRAN '//
-     &                 '(NBTYP FORTRAN DIFFERENT DE NBTYP CATALOGUE)')
+         CALL U2MESS('F','MODELISA5_30')
       ENDIF
 C
 C     NOM / NBNO PAR TYPE DE MAILLE
-C      
+C
       DO 1 ITYP = 1,NTYMAX
          CALL JENUNO (JEXNUM('&CATA.TM.NOMTM',ITYP),NOMTYP(ITYP))
          IF ( NOMAST(ITYP) .NE. NOMTYP(ITYP) ) THEN
-           CALL UTMESS('F',NOMPRO,'INCOHERENCE CATALOGUE - FORTRAN '//
-     &                 '(NOMTYP FORTRAN DIFFERENT DE NOMTYP CATALOGUE)')
+           CALL U2MESS('F','MODELISA5_31')
          ENDIF
          CALL JEVEUO (JEXNUM('&CATA.TM.NBNO' ,ITYP),'L',JAUX)
          NNOTYP(ITYP) = ZI(JAUX)
          TYPGEO(ITYP) = NUMMED(ITYP)
-C       
+C
   1   CONTINUE
 C
       NBTYP = 0

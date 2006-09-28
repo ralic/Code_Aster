@@ -1,9 +1,9 @@
       SUBROUTINE IRECRI(NOMCON,NOSIMP,NOPASE,FORM,IFI,TITRE,
-     >     LGMSH,NBCHAM,CHAM,PARTIE,NBPARA,PARA,NBORDR,ORDR,
-     >     LRESU,MOTFAC,IOCC,MODELE,CECR,LCOR,NBNOT,
-     >     NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
-     >     LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,
-     >     NIVE,VERSIO )
+     &     LGMSH,NBCHAM,CHAM,PARTIE,NBPARA,PARA,NBORDR,ORDR,
+     &     LRESU,MOTFAC,IOCC,MODELE,CECR,LCOR,NBNOT,
+     &     NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
+     &     LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,
+     &     NIVE,VERSIO )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*(*)     NOMCON,NOSIMP,NOPASE
@@ -17,7 +17,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LMOD,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,7 +135,7 @@ C         (UNIQUEMENT FORMAT 'CASTEM')
             CALL RSEXCH (NOMCO,CHAM(ICHA),ORDR(IORD),NOCH19,IRET)
             IF (IRET.EQ.0) THEN
               CALL DISMOI('A','TYPE_CHAMP',NOCH19,'CHAMP',IBIB,
-     +                TYCH,IERD)
+     &                TYCH,IERD)
               IF(TYCH(1:4).EQ.'NOEU'.OR.TYCH(1:4).EQ.'ELNO') THEN
                 NBCHCA = NBCHCA + 1
                 ZK16(JCHAM-1+NBCHCA) = CHAM(ICHA)
@@ -188,13 +188,10 @@ C         UTILISATEUR ORDR(IORDR) ET NUMERO DE RANGEMENT IRET
           CALL RSUTRG(NOMCON,ORDR(IORDR),IRET)
           IF(IRET.EQ.0) THEN
             CALL CODENT(ORDR(IORDR),'G',CHNUMO)
-            CALL UTMESS('A','IRECRI',' NUMERO D''ORDRE '//
-     +           CHNUMO//' NON LICITE ')
+            CALL U2MESK('A','PREPOST2_46',1,CHNUMO)
             IF(IORDR.EQ.IORDR1) THEN
               IORDR1=IORDR1+1
-              CALL UTMESS('A','IRECRI',' LE NUMERO D''ORDRE'//
-     +             ' SUIVANT EST DESORMAIS CONSIDERE COMME LE'//
-     +             ' PREMIER NUMERO D''ORDRE DEMANDE')
+              CALL U2MESS('A','PREPOST2_47')
             ENDIF
             GOTO 10
           ENDIF
@@ -250,11 +247,12 @@ C             DU CHAMP CHAM(ISY) POUR LE NO. D'ORDRE ORDR(IORDR)
             LGCH16=LXLGUT(CH16)
             LGCONC=LXLGUT(NOMCO)
             CALL UTMESS('A','IRECRI',' POUR CERTAINS NUMEROS'//
-     +        ' D''ORDRE LE CHAMP '//CH16(1:LGCH16)//
-     +        ' N''EST PAS PRESENT DANS LA SD_RESULTAT '//
-     +        NOMCO(1:LGCONC)//'==> DES FICHIERS DE VALEURS'//
-     +        ' VIDES SERONT GENERES AFIN DE RESPECTER LE'//
-     +        ' FORMAT ENSIGHT.')
+     &        ' D''ORDRE LE CHAMP '//CH16(1:LGCH16)//
+     &        ' N''EST PAS PRESENT DANS LA SD_RESULTAT '//
+     &        NOMCO(1:LGCONC)//'==> DES FICHIERS DE VALEURS'//
+     &        ' VIDES SERONT GENERES AFIN DE RESPECTER LE'//
+     &        ' FORMAT ENSIGHT.')
+C        CALL U2MESK('A','PREPOST2_48', 2 ,VALK)
           ENDIF
   12    CONTINUE
         DO 14 ISY=1,NBCHAM
@@ -298,7 +296,7 @@ C
       IF (FORM .EQ. 'GMSH') THEN
 
          CALL IRGMSH ( NOMCON, PARTIE, IFI, NBCHAM, CHAM, LRESU,NBORDR,
-     +          ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI, VERSIO, LGMSH )
+     &          ORDR, NBCMP, NOMCMP, NBMAT, NUMMAI, VERSIO, LGMSH )
 C
 C     -----------------------------
 C     TRAITEMENT DES AUTRES FORMATS
@@ -319,7 +317,7 @@ C
 C       --- FORMAT 'CASTEM'
         IF(FORM.EQ.'CASTEM'.AND.LRESU) THEN
           CALL IRPACA(NOMCON,IFI,NBORDR,IORDR,ORDR,NBACC,
-     +          ZK16(JPARA),NBCHCA,ZK16(JCHAM),NBK16,NIVE)
+     &          ZK16(JPARA),NBCHCA,ZK16(JCHAM),NBK16,NIVE)
           NBRK16 = NBRK16 + NBK16
         ENDIF
 C
@@ -332,8 +330,7 @@ C           (SAUF AU FORMAT 'ENSIGHT' CAR VERIFICATION DEJA FAITE)
           IF(IRET.EQ.0) THEN
 C           - MESSAGE NUMERO D'ORDRE NON LICITE
             CALL CODENT(ORDR(IORDR),'G',CHNUMO)
-            CALL UTMESS('A','IRECRI',' NUMERO D''ORDRE '//
-     +                                 CHNUMO//' NON LICITE ')
+            CALL U2MESK('A','PREPOST2_46',1,CHNUMO)
             GOTO 22
           ENDIF
           LORDR=.TRUE.
@@ -361,7 +358,7 @@ C-DEL           CALL UTFINM()
                 GOTO 20
               ENDIF
               IF((FORM(1:7).EQ.'ENSIGHT').AND.
-     +                                   (NBCHEN.EQ.0)) LCHAM1=.TRUE.
+     &                                   (NBCHEN.EQ.0)) LCHAM1=.TRUE.
               NBCHEN=NBCHEN+1
             ELSE
 C           * CHAM_GD
@@ -373,7 +370,7 @@ C           * IMPRESSION DES PARAMETRES (FORMAT 'RESULTAT')
 C             - SEPARATION DES DIVERS NUMEROS D'ORDRE PUIS IMPRESSION
               WRITE(IFI,'(/,1X,A)') '======>'
               CALL IRPARA(NOMCON,FORM,IFI,1,ORDR(IORDR),NBPARA,
-     +                                                       PARA,CECR)
+     &                                                       PARA,CECR)
               LORDR=.FALSE.
             ENDIF
 C           * CREATION D'UN SOUS-TITRE
@@ -397,11 +394,11 @@ C                LE CHAMP EST UN CHAM_GD SIMPLE SI LRESU=.FALSE. OU
 C                LE CHAMP EST LE CHAM_GD CHAM(ISY) DE NUMERO D'ORDRE
 C                ORDR(IORDR) ISSU DE LA SD_RESULTAT NOMCON
             CALL IRCH19(NOCH19,PARTIE,FORM,IFI,TITRE,MODELE,
-     >        NOMCON,NOSIMP,NOPASE,CHAM(ISY),
-     >        ORDR(IORDR),NUORD1,NORDEN,IORDEN,NBCHAM,ISY,
-     >        LCHAM1,LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
-     >        LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,
-     >        NIVE )
+     &        NOMCON,NOSIMP,NOPASE,CHAM(ISY),
+     &        ORDR(IORDR),NUORD1,NORDEN,IORDEN,NBCHAM,ISY,
+     &        LCHAM1,LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
+     &        LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,
+     &        NIVE )
             IF(LCHAM1) LCHAM1=.FALSE.
    20     CONTINUE
         ENDIF
@@ -423,10 +420,10 @@ C       --- IMPRESSION  DE LA TABLE SI FORMAT 'CASTEM'
           WRITE (IFI,'(A,I4)')   ' ENREGISTREMENT DE TYPE',IDEU
           IF (NIVE.EQ.3) THEN
               WRITE (IFI,'(A,I4,A,I4,A,I4)')  ' PILE NUMERO',ITYPE,
-     +        'NBRE OBJETS NOMMES ',IUN,'NBRE OBJETS ',IDEU
+     &        'NBRE OBJETS NOMMES ',IUN,'NBRE OBJETS ',IDEU
           ELSE IF (NIVE.EQ.10) THEN
               WRITE (IFI,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',ITYPE,
-     +        'NBRE OBJETS NOMMES',IUN,'NBRE OBJETS',IDEU
+     &        'NBRE OBJETS NOMMES',IUN,'NBRE OBJETS',IDEU
           ENDIF
           CALL LXCAPS(NOMCO)
           WRITE(IFI,'(1X,A8)') NOMCO

@@ -5,7 +5,7 @@
       REAL*8                       VR(*),           ORIG(3)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 
       CALL JELIRA (CHAMP2//'.CELD','DOCU',IBID,DOCU)
       IF( DOCU.NE.'CHML')THEN
-         CALL UTMESS('F','PEMICA','LE CHAMP DOIT ETRE UN CHAM_ELEM.')
+         CALL U2MESS('F','CALCULEL3_52')
       ENDIF
       CALL JEVEUO (CHAMP2//'.CELK','L',LCELK)
       LIGREL = ZK24(LCELK)(1:19)
@@ -94,14 +94,13 @@ C           --- NOMBRE D'ELEMENTS DANS LE MODE LOCAL ---
             IF (FIRST) THEN
                LONGT=LONG2
             ELSEIF (LONGT.NE.LONG2) THEN
-               CALL UTMESS('F','PEMICA','LONGUEURS DES MODES LOCAUX '
-     +                                //'INCOMPATIBLES ENTRE EUX.')
+               CALL U2MESS('F','CALCULEL4_53')
             ENDIF
             FIRST = .FALSE.
          ENDIF
  10   CONTINUE
       IF (LONGT.GT.LONG) THEN
-         CALL UTMESS ('F','PEMICA','LA LONGUEUR:LONG EST TROP PETITE.')
+         CALL U2MESS('F','CALCULEL3_55')
       ENDIF
 C
 C     -- ON MET A ZERO LE VECTEUR "VSCAL":
@@ -110,7 +109,7 @@ C     -- ON MET A ZERO LE VECTEUR "VSCAL":
             VR(I) = 0.D0
  20      CONTINUE
       ELSE
-         CALL UTMESS('F','PEMICA','TYPE SCALAIRE INTERDIT :'//SCAL)
+         CALL U2MESK('F','CALCULEL3_74',1,SCAL)
       ENDIF
 C
       CALL JEVEUO (CHAMP2//'.CELV','L',LVALE)
@@ -279,8 +278,8 @@ C     --- INERTIES DE LA STRUCTURE AU NOEUD UTILISATEUR P  ---
 C
       NBVEC = 3
       IF ( ABS(VR(5)).LT.EPSI .AND. ABS(VR(6)).LT.EPSI .AND.
-     +     ABS(VR(7)).LT.EPSI .AND. ABS(VR(8)).LT.EPSI .AND.
-     +     ABS(VR(9)).LT.EPSI .AND. ABS(VR(10)).LT.EPSI ) THEN
+     &     ABS(VR(7)).LT.EPSI .AND. ABS(VR(8)).LT.EPSI .AND.
+     &     ABS(VR(9)).LT.EPSI .AND. ABS(VR(10)).LT.EPSI ) THEN
          VR(11) = 0.D0
          VR(12) = 0.D0
          VR(13) = 0.D0

@@ -11,7 +11,7 @@
       CHARACTER*8 VECELE,NEWNOM
 
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,7 +125,7 @@ C     DETERMINATION DE LA GEOMETRIE (INITIALE OU DEFORMEE)
       LPAIN(5) = 'PCOMPOR'
       LCHIN(5) = COMPOR
       LPAIN(6) = 'PCONTMR'
-      LCHIN(6) = SIGMA      
+      LCHIN(6) = SIGMA
       LPAIN(7) = 'PDEPLMR'
       LCHIN(7) = DEPMOI
       LPAIN(8) = 'PDEPLPR'
@@ -146,9 +146,9 @@ C     PARAMETRES POUR THM
          INSTM = PARTPS(1)
          INSTP = PARTPS(2)
           CALL MECACT('V','&&VEFNME.CH_INSTAM','MAILLA',MAILLA,
-     >            'INST_R',1,'INST',IBID,INSTM,CBID,K8BID)
+     &            'INST_R',1,'INST',IBID,INSTM,CBID,K8BID)
           CALL MECACT('V','&&VEFNME.CH_INSTAP','MAILLA',MAILLA,
-     >            'INST_R',1,'INST',IBID,INSTP,CBID,K8BID)
+     &            'INST_R',1,'INST',IBID,INSTP,CBID,K8BID)
       ENDIF
 C
       LPAIN(14) = 'PCARCRI'
@@ -168,7 +168,7 @@ C     -- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE
         ELSE IF (NOMGD(1:6).EQ.'TEMP_F') THEN
           LPAIN(17) = 'PTEMPEF'
         ELSE
-          CALL UTMESS('F','VEFNME','GRANDEUR INCONNUE.')
+          CALL U2MESS('F','CALCULEL3_70')
         END IF
         LCHIN(17) = CHTEM2
       ELSE
@@ -194,7 +194,7 @@ C     CADRE X-FEM
         CNSETO=FISS//'.TOPOSE.CNSETO'
         HEAVTO=FISS//'.TOPOSE.HEAVTO'
         LONCHA=FISS//'.TOPOSE.LONCHAM'
-        BASLOC=FISS//'.BASLOC'  
+        BASLOC=FISS//'.BASLOC'
         LSN   =FISS//'.LNNO'
         LST   =FISS//'.LTNO'
       ELSE
@@ -235,7 +235,7 @@ C     CADRE X-FEM
 
    10 CONTINUE
 
-      VECELZ = VECELE//'.LISTE_RESU'    
+      VECELZ = VECELE//'.LISTE_RESU'
 
       CALL DETRSD('CHAMP_GD','&&VEFNME.NUME_HARM')
       CALL DETRSD('CHAMP_GD','&&VEFNME.CH_INSTAM')

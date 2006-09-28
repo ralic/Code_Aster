@@ -1,27 +1,27 @@
         SUBROUTINE AFFORI(TYP,NOMT,CARA,VAL,JAD,JDNO,JDCO,IVR,
-     +                                     NUTYMA,NTSEG,CARORI,NCO,IER)
+     &                                     NUTYMA,NTSEG,CARORI,NCO,IER)
         IMPLICIT REAL*8 (A-H,O-Z)
         CHARACTER*(*)     TYP,NOMT,CARA,                 CARORI(NCO)
         REAL*8                        VAL(6)
         INTEGER                                         IVR(*)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/01/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C       ----------------------------------------------------------------
 C       AFFECTATION DES ORIENTATIONS AUX POI1 ET SEG2 POSSIBLES
@@ -74,7 +74,7 @@ C
  10         CONTINUE
           CALL VDIFF(3,X2,X1,X3)
             IF(ABS(X3(1)).GT.TST.OR.ABS(X3(2)).GT.TST.OR.ABS(X3(3)).GT.
-     +      TST)THEN
+     &      TST)THEN
             LG = 1
             ELSE
             LG = 0
@@ -97,8 +97,9 @@ C ------ SI LA MAILLE N EST PAS UN SEG2 > RETURN
             IF(NUTYMA.NE.NTSEG)THEN
               IF( IVR(1) .EQ. 1 )THEN
               CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     +        'D ORIENTATION DU TYPE '//CAR//
-     +        ' SUR LA MAILLE '//NOM//' QUI N EST PAS UN SEG2')
+     &        'D ORIENTATION DU TYPE '//CAR//
+     &        ' SUR LA MAILLE '//NOM//' QUI N EST PAS UN SEG2')
+C        CALL U2MESK('A','MODELISA_87', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -107,8 +108,9 @@ C ------ SI LA MAILLE (SEG2) EST DE LONGUEUR NULLE > RETURN
             IF(LG.EQ.0)THEN
               IF( IVR(1) .EQ. 1 )THEN
               CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     +        'D ORIENTATION DU TYPE '//CAR//
-     +        'SUR LA MAILLE '//NOM//' DE LONGUEUR NULLE')
+     &        'D ORIENTATION DU TYPE '//CAR//
+     &        'SUR LA MAILLE '//NOM//' DE LONGUEUR NULLE')
+C        CALL U2MESK('A','MODELISA_88', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -123,7 +125,8 @@ C
 C ------ PAS D AFFECTATION SUR UN NOEUD POI1 > RETURN
             IF( IVR(2) .EQ. 1 )THEN
             CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     +      'D ORIENTATION DU TYPE '//CAR//' SUR LE NOEUD '//NOM)
+     &      'D ORIENTATION DU TYPE '//CAR//' SUR LE NOEUD '//NOM)
+C        CALL U2MESK('A','MODELISA_89', 2 ,VALK)
               IER = IER + 1
             ENDIF
           GOTO 9999
@@ -145,8 +148,9 @@ C ------ SI LA MAILLE (SEG2) EST DE LONGUEUR NON NULLE > RETURN
             IF(LG.EQ.1)THEN
               IF( IVR(1) .EQ. 1 ) THEN
               CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     +        'D ORIENTATION DU TYPE '//CAR//' SUR LA MAILLE '//NOM//
-     +        ' DE LONGUEUR NON NULLE')
+     &        'D ORIENTATION DU TYPE '//CAR//' SUR LA MAILLE '//NOM//
+     &        ' DE LONGUEUR NON NULLE')
+C        CALL U2MESK('A','MODELISA_90', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -181,8 +185,9 @@ C ------ SI LA MAILLE (SEG2) EST DE LONGUEUR NON NULLE > RETURN
             IF(LG.EQ.1)THEN
               IF( IVR(1) .EQ. 1 )THEN
               CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     +        'D ORIENTATION DU TYPE '//CAR//' SUR LA MAILLE '//NOM//
-     +        ' DE LONGUEUR NON NULLE')
+     &        'D ORIENTATION DU TYPE '//CAR//' SUR LA MAILLE '//NOM//
+     &        ' DE LONGUEUR NON NULLE')
+C        CALL U2MESK('A','MODELISA_90', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -225,8 +230,9 @@ C ------ SI LA MAILLE N EST PAS UN SEG2 > RETURN
             IF(NUTYMA.NE.NTSEG)THEN
               IF( IVR(1) .EQ. 1 )THEN
               CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     +        'D ORIENTATION DU TYPE '//CAR//
-     +        ' SUR LA MAILLE '//NOM//' QUI N EST PAS SEG2')
+     &        'D ORIENTATION DU TYPE '//CAR//
+     &        ' SUR LA MAILLE '//NOM//' QUI N EST PAS SEG2')
+C        CALL U2MESK('A','MODELISA_91', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -235,8 +241,9 @@ C ------ SI LA MAILLE (SEG2) EST DE LONGUEUR NULLE > GOTO 9999
             IF(LG.EQ.0)THEN
               IF( IVR(1) .EQ. 1 )THEN
               CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     +        'D ORIENTATION DU TYPE '//CAR//
-     +        'SUR LA MAILLE '//NOM//' DE LONGUEUR NULLE')
+     &        'D ORIENTATION DU TYPE '//CAR//
+     &        'SUR LA MAILLE '//NOM//' DE LONGUEUR NULLE')
+C        CALL U2MESK('A','MODELISA_88', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -255,7 +262,8 @@ C
 C ------ PAS D AFFECTATION SUR UN NOEUD POI1 > RETURN
             IF( IVR(2) .EQ. 1 ) THEN
             CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     +      'D ORIENTATION DU TYPE '//CAR//' SUR LE NOEUD '//NOM)
+     &      'D ORIENTATION DU TYPE '//CAR//' SUR LE NOEUD '//NOM)
+C        CALL U2MESK('A','MODELISA_89', 2 ,VALK)
               IER = IER + 1
             ENDIF
           GOTO 9999

@@ -1,7 +1,7 @@
       SUBROUTINE CESFUS(NBCHS,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,BASE,
      & CES3Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C     ------------------------------------------------------------------
 C     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 C        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
       CES3 = '&&CESFUS.CES3'
-      IF (NBCHS.LE.0) CALL UTMESS('F','CESFUS','NBCHS >0 SVP')
+      IF (NBCHS.LE.0) CALL U2MESS('F','CALCULEL_72')
 
       CES1 = LICHS(1)
 
@@ -147,12 +147,9 @@ C     --------------------------------------------------------
         CALL JEVEUO(CES1//'.CESK','L',JCE1K)
         CALL JEVEUO(CES1//'.CESD','L',JCE1D)
 
-        IF (MA.NE.ZK8(JCE1K-1+1)) CALL UTMESS('F','CESFUS',
-     &                                 'MAILLAGES DIFFERENTS.')
-        IF (NOMGD.NE.ZK8(JCE1K-1+2)) CALL UTMESS('F','CESFUS',
-     &      'GRANDEURS DIFFERENTS.')
-        IF (TYPCES.NE.ZK8(JCE1K-1+3)) CALL UTMESS('F','CESFUS',
-     &      'TYPES DIFFERENTS (CART/ELNO/ELGA).')
+        IF (MA.NE.ZK8(JCE1K-1+1)) CALL U2MESS('F','CALCULEL_73')
+        IF (NOMGD.NE.ZK8(JCE1K-1+2)) CALL U2MESS('F','CALCULEL_74')
+        IF (TYPCES.NE.ZK8(JCE1K-1+3)) CALL U2MESS('F','CALCULEL_75')
 
         IF (ICHS.EQ.1) THEN
           DO 40,IMA = 1,NBMA
@@ -167,15 +164,15 @@ C     --------------------------------------------------------
             IF (NBPT*NBSP*NCMP.EQ.0) GO TO 50
 
             IF (ZI(JNBPT-1+IMA).NE.0) THEN
-              IF (ZI(JNBPT-1+IMA).NE.NBPT)   CALL UTMESS('F','CESFUS',
-     &          'NOMBRE DE POINTS DIFFERENTS.')
+              IF (ZI(JNBPT-1+IMA).NE.NBPT)   CALL U2MESS('F','CALCULEL_7
+     &6')
             ELSE
                  IF (NBPT.EQ.0) ZI(JNBPT-1+IMA)=NBPT
             END IF
 
             IF (ZI(JNBSP-1+IMA).NE.0) THEN
-              IF (ZI(JNBSP-1+IMA).NE.NBSP) CALL UTMESS('F','CESFUS',
-     &          'NOMBRE DE SOUS-POINTS DIFFERENTS.')
+              IF (ZI(JNBSP-1+IMA).NE.NBSP) CALL U2MESS('F','CALCULEL_77'
+     &)
             ELSE
                  IF (NBSP.EQ.0) ZI(JNBSP-1+IMA)=NBSP
             END IF
@@ -241,7 +238,7 @@ C     -----------------------------------------------------------
         DO 110,IMA = 1,NBMA
           NCMP1 = ZI(JCE1D-1+5+4* (IMA-1)+3)
           IF (NCMP1.EQ.0) GO TO 110
-          IF (NCMP1.LT.0) CALL UTMESS('F','CESFUS','STOP 1')
+          IF (NCMP1.LT.0) CALL U2MESS('F','CALCULEL_2')
           DO 111,ICMP1 = 1,NCMP1
              ICMP3 = ZI(JCRCMP-1+ICMP1)
              ZI(JNBCMP-1+IMA) = MAX(ICMP3,ZI(JNBCMP-1+IMA))
@@ -296,7 +293,7 @@ C     ------------------------------------------
                 CALL CESEXI('C',JCE3D,JCE3L,IMA,IPT,ISP,ICMP3,IAD3)
                 IF (IAD1.LE.0) GO TO 130
 
-                IF (IAD3.EQ.0) CALL UTMESS('F','CESFUS','STOP 1')
+                IF (IAD3.EQ.0) CALL U2MESS('F','CALCULEL_2')
 
 
 C               -- SI AFFECTATION :
@@ -319,7 +316,7 @@ C               -- SI AFFECTATION :
                   ELSE IF (TSCA.EQ.'K8') THEN
                     ZK8(JCE3V-1+IAD3) = ZK8(JCE1V-1+IAD1)
                   ELSE
-                    CALL UTMESS('F','CESFUS','TYPE SCALAIRE INCONNU')
+                    CALL U2MESS('F','CALCULEL_39')
                   END IF
 
 C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
@@ -340,11 +337,9 @@ C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
      &                                 COEFR*ZC(JCE1V-1+IAD1)
                     ENDIF
                   ELSE IF ((TSCA.EQ.'L') .OR. (TSCA.EQ.'K8')) THEN
-                    CALL UTMESS('F','CESFUS',
-     &                        'CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE'
-     &                          )
+                    CALL U2MESS('F','CALCULEL_78')
                   ELSE
-                    CALL UTMESS('F','CESFUS','TYPE SCALAIRE INCONNU')
+                    CALL U2MESS('F','CALCULEL_39')
                   END IF
                 END IF
 

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       N1, IER, IM, NUMA, NUME, IBID, LGP, LGM,
-     +              ILIST, KLIST, LXLGUT, NBV1, I, NBMC, NBMA, JNOMA
+     &              ILIST, KLIST, LXLGUT, NBV1, I, NBMC, NBMA, JNOMA
       PARAMETER     ( NBMC = 3 )
       LOGICAL       LNUME,LGRPMA
       CHARACTER*1   K1B
@@ -89,7 +89,7 @@ C
 C
       NOMJV  = '&&OP0167.LISTE_MA'
       CALL RELIEM(' ', NOMA, 'NO_MAILLE', MCFACT, IOCC, NBMC,
-     +                      MOTCLE, TYMOCL, NOMJV, NBMA )
+     &                      MOTCLE, TYMOCL, NOMJV, NBMA )
       CALL JEVEUO ( NOMJV, 'L', JNOMA )
 C
       DO 30 IM = 0 , NBMA-1
@@ -98,27 +98,26 @@ C
          IF ( NUMA .EQ. 0 ) THEN
             IER = IER + 1
             CALL UTMESS('E','PALIM3','LA MAILLE '//NOMMAI//
-     +                       ' NE FAIT PAS PARTIE DU MAILLAGE '//NOMA )
+     &                       ' NE FAIT PAS PARTIE DU MAILLAGE '//NOMA )
+C        CALL U2MESK('E','MODELISA6_10', 2 ,VALK)
          ELSE
             IF ( LNUME ) THEN
                CALL CODENT ( NUME, 'G', KNUME )
                NUME = NUME + 1
                LGM = LXLGUT(KNUME)
-               IF ( LGM+LGP .GT. 8 ) CALL UTMESS('F','PALIM3',
-     +                               'PREF_MAILLE EST TROP LONG, '//
-     +                               'PREF_NUME EST TROP GRAND.')
+               IF ( LGM+LGP .GT. 8 ) CALL U2MESS('F','MODELISA6_11')
                NOMMAI = PRFM(1:LGP)//KNUME
             ELSE
                LGM = LXLGUT(NOMMAI)
                IF ( LGM+LGP .GT. 8 ) THEN
                    CALL UTDEBM('F','PALIM3','L''IDENTIFIANT D''UNE '//
-     +             'MAILLE DEPASSE LES 8 CARACTERES AUTORISES:')
+     &             'MAILLE DEPASSE LES 8 CARACTERES AUTORISES:')
                    CALL UTIMPK('S',' ',1,PRFM(1:LGP)//NOMMAI)
                    CALL UTIMPK('L','MAILLE      :',1,NOMMAI)
                    CALL UTIMPK('L','PREF_MAILLE :',1,PRFM)
                    IF(LGRPMA) CALL UTIMPK('L','GROUP_MA    :',1,GRPMA)
                    CALL UTIMPK('L','L''UTILISATION DE ''PREF_NUME'' '//
-     +             'EST RECOMMANDEE.',0,K1B)
+     &             'EST RECOMMANDEE.',0,K1B)
                    CALL UTFINM()
               ENDIF
               NOMMAI = PRFM(1:LGP)//NOMMAI
@@ -141,8 +140,7 @@ C
  30   CONTINUE
       CALL JEDETR ( NOMJV )
 C
-      IF ( IER .NE. 0 ) CALL UTMESS('F','PALIM3',
-     +                              'ARRET SUR ERREUR(S) UTILISATEUR.')
+      IF ( IER .NE. 0 ) CALL U2MESS('F','ELEMENTS_94')
 C
       CALL JEDEMA ( )
       END

@@ -3,22 +3,22 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     CALCUL DES MATRICES DE RAIDEUR, MASSE, AMORTISSEMENT POUR
 C     LES ELEMENTS DISCRETS : MECA_DIS_T_N      MECA_DIS_T_L
@@ -61,7 +61,7 @@ C     ------------------------------------------------------------------
 
       ZERO = 0.D0
       VALPAR = 0.D0
-      
+
       IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
          N    = 78
          NNO  = 2
@@ -104,7 +104,7 @@ C     ------------------------------------------------------------------
          NDIM = 2
       ENDIF
       NDDL = NNO * NC
-      
+
 C
       DO 5 I = 1,NL
          MATA1(I) = ZERO
@@ -126,11 +126,11 @@ C
       CALL JEVECH('PCAORIE','L',LORIEN)
       CALL MATROT ( ZR(LORIEN) , PGL )
       IF (OPTION.EQ.'RIGI_MECA'.OR.OPTION.EQ.'RIGI_MECA_TANG'
-     .     .OR.OPTION.EQ.'RIGI_FLUI_STRU') THEN
+     &     .OR.OPTION.EQ.'RIGI_FLUI_STRU') THEN
          CALL JEVECH('PCADISK','L',JDC)
          CALL JEVECH('PMATUUR','E',JDM)
       ELSEIF (OPTION.EQ.'MASS_MECA'.OR. OPTION.EQ.'MASS_MECA_DIAG'
-     .         .OR. OPTION.EQ.'MASS_FLUI_STRU') THEN
+     &         .OR. OPTION.EQ.'MASS_FLUI_STRU') THEN
          CALL JEVECH('PCADISM','L',JDC)
          CALL JEVECH('PMATUUR','E',JDM)
       ELSEIF (OPTION.EQ.'AMOR_MECA') THEN
@@ -146,11 +146,11 @@ C
          NOMRES(3) = 'AMOR_TAN'
          VALRES(1) = ZERO
          VALRES(2) = ZERO
-         VALRES(3) = ZERO 
+         VALRES(3) = ZERO
          CALL UTPSGL ( NNO, NC, PGL, ZR(JDR), MATV )
          CALL RCVALA ( ZI(JMA),' ','DIS_CONTACT',0,' ',VALPAR,3,
      &                            NOMRES,VALRES,CODRET, ' ' )
-         IF (CODRET(1).EQ.'OK'.AND.VALRES(1).NE.ZERO) THEN 
+         IF (CODRET(1).EQ.'OK'.AND.VALRES(1).NE.ZERO) THEN
            IF (CODRET(2).EQ.'OK') MATA1(1)=MATV(1)*VALRES(2)/VALRES(1)
            IF (CODRET(3).EQ.'OK') MATA1(3)=MATV(1)*VALRES(3)/VALRES(1)
            MATA1(6) = MATA1(3)
@@ -195,8 +195,7 @@ C
 
 
       ELSE
-         CALL UTMESS('F','ELEMENT DISCRET (TE0041)',
-     +                   '"'//OPTION//'"    : OPTION NON TRAITEE')
+         CALL U2MESK('F','ELEMENTS2_87',1,OPTION)
       ENDIF
       IF (NDIM.EQ.3) CALL UTPSLG ( NNO, NC, PGL, MATA1, MATA2 )
       IREP = NINT(ZR(JDC+N))
@@ -232,8 +231,8 @@ C        --- REPERE GLOBAL ==> PAS DE ROTATION ---
          ELSE
            DO 20 I = 1,N
              ZR(JDM+I-1) = ZR(JDC+I-1)
-             IF (OPTION.EQ.'AMOR_MECA') 
-     +           ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I) 
+             IF (OPTION.EQ.'AMOR_MECA')
+     &           ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I)
  20        CONTINUE
          ENDIF
 C
@@ -241,7 +240,7 @@ C
 C
 C        --- LOCAL ==> GLOBAL ---
          IF ( ZR(LORIEN).EQ.0.D0 .AND. ZR(LORIEN+1).EQ.0.D0
-     +                           .AND. ZR(LORIEN+2).EQ.0.D0 )THEN
+     &                           .AND. ZR(LORIEN+2).EQ.0.D0 )THEN
 C           --- ANGLES NULS  ===>  PAS DE ROTATION ---
             IF (OPTION.EQ.'M_GAMMA') THEN
                CALL VECMA(ZR(JDC),N,MATP,NDDL)
@@ -272,8 +271,8 @@ C           --- ANGLES NULS  ===>  PAS DE ROTATION ---
             ELSE
               DO 30 I = 1,N
                   ZR(JDM+I-1) = ZR(JDC+I-1)
-                  IF (OPTION.EQ.'AMOR_MECA') 
-     +             ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I) 
+                  IF (OPTION.EQ.'AMOR_MECA')
+     &             ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I)
  30           CONTINUE
             ENDIF
          ELSE
@@ -317,8 +316,8 @@ C ON CREE UN VECTEUR DE TRAVAIL ET ON FAIT LE PRODUIT
                  DO 25 I = 1,N
                    ZR(JDM+I-1) = ZR(JDM+I-1) + MATA2(I)
  25              CONTINUE
-                ENDIF 
-               ENDIF 
+                ENDIF
+               ENDIF
               ELSEIF (NDIM.EQ.2) THEN
                IF (OPTION(11:14).EQ.'SENS') THEN
 C ON CREE UN VECTEUR DE TRAVAIL ET ON FAIT LE PRODUIT

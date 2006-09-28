@@ -1,12 +1,12 @@
       SUBROUTINE REFODE ( NBCMB, ANGLE, NOMCH, NUHARM, TYHARM, COEF,
-     +                                                 BASZ, CHPRES )
+     &                                                 BASZ, CHPRES )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           NBCMB,            NUHARM(*)
       CHARACTER*(*)                 NOMCH(*),BASZ,TYHARM(*),  CHPRES
       REAL*8                  ANGLE,                    COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,8 +78,7 @@ C     ------------------------------------------------------------------
          REFE = '.CELK'
          VALE = '.CELV'
       ELSE
-         CALL UTMESS('F','REFODE','ON NE TRAITE QUE DES '//
-     +                                  '"CHAM_NO" OU DES "CHAM_ELEM".')
+         CALL U2MESS('F','UTILITAI_21')
       ENDIF
 
       LMECA = .FALSE.
@@ -145,11 +144,11 @@ C
                   I = ZI(JPRNO+(INO-1)*(NBEC+2))-2
                   IF (I.NE.-2) THEN
                   ZR(LVALE+I+1) = ZR(LVALE+I+1) + COEF(IM)*COS(ANG)*
-     +                                             ZR(JVALE+I+1)
+     &                                             ZR(JVALE+I+1)
                   ZR(LVALE+I+2) = ZR(LVALE+I+2) + COEF(IM)*COS(ANG)*
-     +                                             ZR(JVALE+I+2)
+     &                                             ZR(JVALE+I+2)
                   ZR(LVALE+I+3) = ZR(LVALE+I+3) - COEF(IM)*SIN(ANG)*
-     +                                             ZR(JVALE+I+3)
+     &                                             ZR(JVALE+I+3)
                   ENDIF
 110            CONTINUE
 C
@@ -159,11 +158,11 @@ C
                   I = ZI(JPRNO+(INO-1)*(NBEC+2))-2
                   IF (I.NE.-2) THEN
                   ZR(LVALE+I+1) = ZR(LVALE+I+1) + COEF(IM)*SIN(ANG)*
-     +                                             ZR(JVALE+I+1)
+     &                                             ZR(JVALE+I+1)
                   ZR(LVALE+I+2) = ZR(LVALE+I+2) + COEF(IM)*SIN(ANG)*
-     +                                             ZR(JVALE+I+2)
+     &                                             ZR(JVALE+I+2)
                   ZR(LVALE+I+3) = ZR(LVALE+I+3) + COEF(IM)*COS(ANG)*
-     +                                             ZR(JVALE+I+3)
+     &                                             ZR(JVALE+I+3)
                   ENDIF
  112           CONTINUE
 C
@@ -173,14 +172,14 @@ C
                   I = ZI(JPRNO+(INO-1)*(NBEC+2))-2
                   IF (I.NE.-2) THEN
                   ZR(LVALE+I+1) = ZR(LVALE+I+1)
-     +                                + COEF(IM)*SIN(ANG)*ZR(JVALE+I+1)
-     +                                + COEF(IM)*COS(ANG)*ZR(JVALE+I+1)
+     &                                + COEF(IM)*SIN(ANG)*ZR(JVALE+I+1)
+     &                                + COEF(IM)*COS(ANG)*ZR(JVALE+I+1)
                   ZR(LVALE+I+2) = ZR(LVALE+I+2)
-     +                                + COEF(IM)*SIN(ANG)*ZR(JVALE+I+2)
-     +                                + COEF(IM)*COS(ANG)*ZR(JVALE+I+2)
+     &                                + COEF(IM)*SIN(ANG)*ZR(JVALE+I+2)
+     &                                + COEF(IM)*COS(ANG)*ZR(JVALE+I+2)
                   ZR(LVALE+I+3) = ZR(LVALE+I+3)
-     +                                + COEF(IM)*COS(ANG)*ZR(JVALE+I+3)
-     +                                - COEF(IM)*SIN(ANG)*ZR(JVALE+I+3)
+     &                                + COEF(IM)*COS(ANG)*ZR(JVALE+I+3)
+     &                                - COEF(IM)*SIN(ANG)*ZR(JVALE+I+3)
                   ENDIF
  114           CONTINUE
 C
@@ -194,7 +193,7 @@ C
                   I = ZI(JPRNO+(INO-1)*(NBEC+2))-2
                   IF (I.NE.-2) THEN
                   ZR(LVALE+I+1) = ZR(LVALE+I+1) + COEF(IM)*COS(ANG)*
-     +                                             ZR(JVALE+I+1)
+     &                                             ZR(JVALE+I+1)
                   ENDIF
  120           CONTINUE
 C
@@ -204,7 +203,7 @@ C
                   I = ZI(JPRNO+(INO-1)*(NBEC+2))-2
                   IF (I.NE.-2) THEN
                   ZR(LVALE+I+1) = ZR(LVALE+I+1) + COEF(IM)*SIN(ANG)*
-     +                                             ZR(JVALE+I+1)
+     &                                             ZR(JVALE+I+1)
                   ENDIF
  122           CONTINUE
 C
@@ -214,8 +213,8 @@ C
                   I = ZI(JPRNO+(INO-1)*(NBEC+2))-2
                   IF (I.NE.-2) THEN
                   ZR(LVALE+I+1) = ZR(LVALE+I+1)
-     +                                + COEF(IM)*SIN(ANG)*ZR(JVALE+I+1)
-     +                                + COEF(IM)*COS(ANG)*ZR(JVALE+I+1)
+     &                                + COEF(IM)*SIN(ANG)*ZR(JVALE+I+1)
+     &                                + COEF(IM)*COS(ANG)*ZR(JVALE+I+1)
                   ENDIF
  124           CONTINUE
 C
@@ -250,8 +249,7 @@ C
                NBSCAL = DIGDEL(MODE)
                ICOEF=MAX(1,ZI(JCELD-1+4))
                IF (ICOEF.NE.1) THEN
-                  CALL UTMESS('F','REFODE','ON NE TRAITE PAS CE TYPE '//
-     +                            'DE CHAM_ELEM, ICOEF DIFFERENT DE 1')
+                  CALL U2MESS('F','ALGELINE3_33')
                ENDIF
                NBELGR = NBELEM(LIGREL,IGREL)
                IDECGR=ZI(JCELD-1+ZI(JCELD-1+4+IGREL)+8)
@@ -268,27 +266,27 @@ C
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) - COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) - COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
  222                 CONTINUE
  220              CONTINUE
 C
@@ -300,27 +298,27 @@ C
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
  232                 CONTINUE
  230              CONTINUE
 C
@@ -332,33 +330,33 @@ C
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           - COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           - COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           - COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           - COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
  262                 CONTINUE
  260              CONTINUE
                ENDIF
@@ -375,15 +373,15 @@ C
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) - COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
  242                 CONTINUE
  240              CONTINUE
 C
@@ -395,15 +393,15 @@ C
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*SIN(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1) + COEF(IM)*COS(ANG)*
-     +                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &                                ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
  252                 CONTINUE
  250              CONTINUE
 C
@@ -415,18 +413,18 @@ C
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
                         I1 = I1 + 1
                         IC = IC + 1
                         ZR(LVALE+I1) = ZR(LVALE+I1)
-     +           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
-     +           - COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           + COEF(IM)*COS(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
+     &           - COEF(IM)*SIN(ANG)*ZR(JCELV-1+IDECGR+(K-1)*NBSCAL+IC)
  272                 CONTINUE
  270              CONTINUE
                ENDIF

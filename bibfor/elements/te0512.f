@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C
       INTEGER  IMATE, ITEMP2,IDTRIA,ICONPG,IENDPG,IAZK24
       INTEGER  IDTRGP,IDTRNO,IVARMR,IVARPR,IENDMG
       INTEGER  MXCVAR,IEPSP, JGANO, IPOIDS,IVF,   IDFDE
-      INTEGER  ICOMPO,IBID, JTAB(7), NBVARI 
+      INTEGER  ICOMPO,IBID, JTAB(7), NBVARI
       PARAMETER ( MXCMEL = 162 )
       PARAMETER ( NBPGMX =  27 )
       PARAMETER ( NBRES  =   2 )
@@ -191,21 +191,15 @@ C ---    EVALUATION DES DONNEES MATERIAUX POUR LA TEMPERATURE ITEMP2
 C        -----------------------------------------------------------
          PHENO = 'ELAS'
          CALL RCCOMA (ZI(IMATE),PHENO,PHENOM,CODRES(1))
-         IF (CODRES(1).EQ.'NO') CALL UTMESS('F','CALC_ELEM',
-     +      'POUR CALCULER LE DOMMAGE DE LEMAITRE_SERMAGE '
-     +      //' IL FAUT DEFINIR LE COMPORTEMENT ELAS_FO'
-     +      //' DANS DEFI_MATERIAU')
+         IF (CODRES(1).EQ.'NO') CALL U2MESS('F','PREPOST_42')
          CALL RCVALA(ZI(IMATE),' ',PHENOM,NBPAR2,NOMPR2,VALPR2,NBRES,
-     +               NOMRES,VALRES,CODRES,'FM')
+     &               NOMRES,VALRES,CODRES,'FM')
 
          PHENO2 = 'DOMMA_LEMAITRE'
          CALL RCCOMA (ZI(IMATE),PHENO2,PHENM2,CODRES(1))
-         IF (CODRES(1).EQ.'NO') CALL UTMESS('F','CALC_ELEM',
-     +      'POUR CALCULER LE DOMMAGE DE LEMAITRE-SERMAGE '
-     +      //' IL FAUT DEFINIR LE COMPORTEMENT DOMMA_LEMAITRE'
-     +      //' DANS DEFI_MATERIAU')
+         IF (CODRES(1).EQ.'NO') CALL U2MESS('F','PREPOST_41')
          CALL RCVALA(ZI(IMATE),' ',PHENM2,NBPAR2,NOMPR2,VALPR2,NBRES2,
-     +               NOMRE2,VALRE2,CODRE2,'FM')
+     &               NOMRE2,VALRE2,CODRE2,'FM')
 C
 C ---    ASSIGNATION DES VALEURS DES PARAMETRES DE LA LOI DE
 C        LEMAITRE-SERMAGE EVALUEES A LA TEMPERATURE ACTUELLE ITEMP2
@@ -227,40 +221,40 @@ C     --------------------------------------------------------------
 C Tenseur des contraintes
          CALL JEVECH('PCONTGP','L',ICONPG)
          IF (ICONPG.EQ.0) THEN
-         CALL UTMESS('F','TE0512','PAS DE CONTRAINTES DANS PCONTGP')
+         CALL U2MESS('F','ELEMENTS4_7')
          ENDIF
 
 C Taux triaxialité, contraintes endo, dommage @[t-]
          CALL JEVECH('PTRIAGM','L',IENDMG)
          IF (IENDMG.EQ.0) THEN
-         CALL UTMESS('F','TE0512','PAS DE CHAMP ENDO_ELGA DANS PTRIAGP')
+         CALL U2MESS('F','ELEMENTS4_8')
          ENDIF
 
 C Taux triaxialité, contraintes endo, dommage @[t+]
          CALL JEVECH('PTRIAGP','L',IENDPG)
          IF (IENDPG.EQ.0) THEN
-         CALL UTMESS('F','TE0512','PAS DE CHAMP ENDO_ELGA DANS PTRIAGP')
+         CALL U2MESS('F','ELEMENTS4_8')
          ENDIF
 
 C Variables internes @[t-]
          CALL JEVECH('PVARIMR','L',IVARMR)
          IF (IVARMR.EQ.0) THEN
-         CALL UTMESS('F','TE0512','PAS DE CHAMP VARI_ELGA DANS PVARIMR')
+         CALL U2MESS('F','ELEMENTS4_9')
          ENDIF
 
 C Variables internes @[t+]
          CALL JEVECH('PVARIPR','L',IVARPR)
          IF (IVARPR.EQ.0) THEN
-         CALL UTMESS('F','TE0512','PAS DE CHAMP VARI_ELGA DANS PVARIPR')
+         CALL U2MESS('F','ELEMENTS4_10')
          ENDIF
 
       ELSEIF (OPTION.EQ.'ENDO_ELNO_ELGA') THEN
          CALL JEVECH('PTRIAGP','L',IENDPG)
          IF (IENDPG.EQ.0) THEN
-         CALL UTMESS('F','TE0512','PAS DE CHAMP ENDO_ELGA DANS PTRIAGP')
+         CALL U2MESS('F','ELEMENTS4_8')
          ENDIF
       ELSE
-         CALL UTMESS('F','TE0512','OPTION NON TRAITEE '//OPTION)
+         CALL U2MESK('F','ELEMENTS4_11',1,OPTION)
       ENDIF
 C
 C     ------------------------------------------------------------------
@@ -284,7 +278,7 @@ C        -----------------------------------
          DO 50 IGAU = 1, NPG
             INDIC = (IGAU-1)*NBSIG
             TRSIG(IGAU) = UNTIER       * ( SIGMA(INDIC+1)
-     +                  + SIGMA(INDIC+2) + SIGMA(INDIC+3) )
+     &                  + SIGMA(INDIC+2) + SIGMA(INDIC+3) )
             SIGMA(INDIC+1) =  SIGMA(INDIC+1) - TRSIG(IGAU)
             SIGMA(INDIC+2) =  SIGMA(INDIC+2) - TRSIG(IGAU)
             SIGMA(INDIC+3) =  SIGMA(INDIC+3) - TRSIG(IGAU)
@@ -295,12 +289,12 @@ C        ---------------
          DO 60 IGAU = 1, NPG
             INDIC = (IGAU-1)*NBSIG
             SIGEQ(IGAU) = SIGMA(INDIC+1) * SIGMA(INDIC+1)
-     +                     + SIGMA(INDIC+2) * SIGMA(INDIC+2)
-     +                     + SIGMA(INDIC+3) * SIGMA(INDIC+3)
-     +                     + SIGMA(INDIC+4) * SIGMA(INDIC+4) * DEUX
+     &                     + SIGMA(INDIC+2) * SIGMA(INDIC+2)
+     &                     + SIGMA(INDIC+3) * SIGMA(INDIC+3)
+     &                     + SIGMA(INDIC+4) * SIGMA(INDIC+4) * DEUX
             IF(NDIM.EQ.3) SIGEQ(IGAU) = SIGEQ(IGAU)
-     +                     + SIGMA(INDIC+5) * SIGMA(INDIC+5) * DEUX
-     +                     + SIGMA(INDIC+6) * SIGMA(INDIC+6) * DEUX
+     &                     + SIGMA(INDIC+5) * SIGMA(INDIC+5) * DEUX
+     &                     + SIGMA(INDIC+6) * SIGMA(INDIC+6) * DEUX
             SIGEQ(IGAU) = (SIGEQ(IGAU) * TRDEMI) ** UNDEMI
   60     CONTINUE
 C
@@ -311,7 +305,7 @@ C        -----------------------------------------------------
                CALL TECAEL ( IADZI, IAZK24 )
                NOMAIL = ZK24(IAZK24-1+3)(1:8)
                CALL UTDEBM('A','TE0512',
-     +                         'LA CONTRAINTE EQUIVALENTE EST NULLE')
+     &                         'LA CONTRAINTE EQUIVALENTE EST NULLE')
                CALL UTIMPK ( 'S', ' POUR LA MAILLE ', 1, NOMAIL )
                CALL UTFINM ()
                DO 72 INO = 1, NNO
@@ -423,8 +417,7 @@ C
 C ---    CHAMP DE CONTRAINTES MAL DEFINI
 C        -------------------------------
       ELSE
-         CALL UTMESS('F','TE0512','LE TYPE DU CHAMP DE CONTRAINTES'//
-     +                  ' EST INCOMPATIBLE AVEC L''OPTION : '//OPTION)
+         CALL U2MESK('F','ELEMENTS4_6',1,OPTION)
       ENDIF
 C
  7777 CONTINUE

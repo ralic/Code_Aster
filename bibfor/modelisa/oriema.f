@@ -1,14 +1,14 @@
-      SUBROUTINE ORIEMA ( NOMAIL, TPMAIL, NBNMAI, LNMAIL,  
-     +                    TYP3D, NBNM3D, LNM3D,  
-     +                    NDIM, COOR, REORIE, NORIEN, IFM, NIV )
+      SUBROUTINE ORIEMA ( NOMAIL, TPMAIL, NBNMAI, LNMAIL,
+     &                    TYP3D, NBNM3D, LNM3D,
+     &                    NDIM, COOR, REORIE, NORIEN, IFM, NIV )
       IMPLICIT   NONE
       INTEGER             NBNMAI, LNMAIL(*), NBNM3D, LNM3D(*), NDIM,
-     +                    NORIEN, IFM, NIV
+     &                    NORIEN, IFM, NIV
       REAL*8              COOR(*)
       LOGICAL             REORIE
       CHARACTER*8         NOMAIL, TPMAIL, TYP3D
 C.======================================================================
-C MODIF MODELISA  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,9 +97,10 @@ C
          NBNSM = 2
       ELSE
          CALL UTMESS('F','ORIEMA','IMPOSSIBILITE, LA MAILLE '//
-     +              NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
-     +              'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
-     +              //'EN 2D, ET ELLE EST DE TYPE : '//TPMAIL)
+     &              NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
+     &              'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
+     &              //'EN 2D, ET ELLE EST DE TYPE : '//TPMAIL)
+C        CALL U2MESK('F','MODELISA5_94', 2 ,VALK)
       ENDIF
 C
 C --- CENTRE DE GRAVITE DE LA MAILLE DE PEAU

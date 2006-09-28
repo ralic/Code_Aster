@@ -3,22 +3,22 @@
         IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C     ------------------------------------------------------------------
@@ -111,11 +111,11 @@ C ======================================================================
         COMMON /TDIM/   NDT, NDI
 C ======================================================================
         DATA    IDEN6   /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
-     1                   ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
-     2                   ZERO   , ZERO  , UN    , ZERO  ,ZERO  ,ZERO,
-     3                   ZERO   , ZERO  , ZERO  , UN    ,ZERO  ,ZERO,
-     4                   ZERO   , ZERO  , ZERO  , ZERO  ,UN    ,ZERO,
-     5                   ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
+     &                   ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
+     &                   ZERO   , ZERO  , UN    , ZERO  ,ZERO  ,ZERO,
+     &                   ZERO   , ZERO  , ZERO  , UN    ,ZERO  ,ZERO,
+     &                   ZERO   , ZERO  , ZERO  , ZERO  ,UN    ,ZERO,
+     &                   ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
         DATA          KRON /UN , UN , UN , ZERO ,ZERO ,ZERO/
 C ======================================================================
 C --- ATTENTION : NE PAS CONFONDRE LA VARIABLE INTERNE R ---------------
@@ -205,8 +205,7 @@ C --- CP/1D ------------------------------------------------------------
 C ======================================================================
         ELSE IF ( MOD(1:6) .EQ. 'C_PLAN' .OR.
      &            MOD(1:2) .EQ. '1D' )THEN
-             CALL UTMESS('F','CJS','LES MODELISATIONS AUTORISEES'//
-     &                       ' SONT 3D ET D_PLAN ET AXIS')
+             CALL U2MESS('F','ALGORITH2_15')
         ENDIF
 C ======================================================================
 C --- OPERATEURS NON LINEAIRE ------------------------------------------
@@ -232,8 +231,8 @@ C ======================================================================
 C --- ECROUISSAGE CINEMATIQUE DU MECANISME DEVIATOIRE ------------------
 C ======================================================================
         CALL CJSQCO( GAMMA, SIGF, XF, PREF, EPSSIG, I1F,
-     >               S, SII, SIIREL, COS3TS, HTS, DETS,
-     >               Q, QII, QIIREL, COS3TQ, HTQ, DETQ )
+     &               S, SII, SIIREL, COS3TS, HTS, DETS,
+     &               Q, QII, QIIREL, COS3TQ, HTQ, DETQ )
 
         CALL CALCQ(Q,GAMMA,PREF,EPSSIG,QQ)
         CALL LCPRSC(QQ,QQ,TRUC)

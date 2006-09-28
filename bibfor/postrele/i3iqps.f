@@ -1,28 +1,28 @@
       SUBROUTINE I3IQPS ( EPSI, K, F, DESC, DESCTM, CONEXK, COORDO,
-     +                    SGT, NBPT, LSTPT, FINK)
+     &                    SGT, NBPT, LSTPT, FINK)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER K,DESC(*),DESCTM(*),CONEXK(*),NBPT,LSTPT(*),F
       REAL*8  EPSI,SGT(*),COORDO(*)
       LOGICAL FINK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     INTERSECTION FACE QUADANGLE PLANE F SGT (AB)
@@ -92,16 +92,16 @@ C
             S = CS(I,J+1) - CS(I,J)
             C = C + S*S
  22      CONTINUE
-         C = SQRT( C ) 
-         LCARA = MIN ( C, LCARA ) 
+         C = SQRT( C )
+         LCARA = MIN ( C, LCARA )
  20   CONTINUE
       C = ZERO
       DO 24, I = 1, 3, 1
          S = CS(I,4) - CS(I,1)
          C = C + S*S
  24   CONTINUE
-      C = SQRT( C ) 
-      LCARA = MIN ( C, LCARA ) 
+      C = SQRT( C )
+      LCARA = MIN ( C, LCARA )
       TOLE = LCARA * EPSI
 C
 C --- DEFINITION DU REPERE LOCAL DE LA FACE
@@ -173,81 +173,81 @@ C
          E3(2) = ZERO
       ENDIF
 C
-      IF ( (ABS(ABS(E1(1))-UN) .LE. TOLE) .AND. 
-     +         ((E1(2) .NE. ZERO) .OR. (E1(3) .NE. ZERO)) ) THEN 
+      IF ( (ABS(ABS(E1(1))-UN) .LE. TOLE) .AND.
+     &         ((E1(2) .NE. ZERO) .OR. (E1(3) .NE. ZERO)) ) THEN
          IF (ABS(E1(1)) .NE. UN) THEN
             E1I(1) = SIGN(UN,E1(1))
             E1I(2) = ZERO
             E1I(3) = ZERO
-            CALL I3SL3R ( E1, E1I, E3, CS ) 
+            CALL I3SL3R ( E1, E1I, E3, CS )
             E1(1) = SIGN(UN,E1(1))
             E1(3) = ZERO
             E1(2) = ZERO
-         ENDIF         
-       ELSE IF ( (ABS(ABS(E1(2))-UN) .LE. TOLE) .AND. 
-     +         ((E1(1) .NE. ZERO) .OR. (E1(3) .NE. ZERO)) ) THEN 
+         ENDIF
+       ELSE IF ( (ABS(ABS(E1(2))-UN) .LE. TOLE) .AND.
+     &         ((E1(1) .NE. ZERO) .OR. (E1(3) .NE. ZERO)) ) THEN
          IF (ABS(E1(2)) .NE. UN) THEN
             E1I(2) = SIGN(UN,E1(2))
             E1I(1) = ZERO
             E1I(3) = ZERO
-            CALL I3SL3R ( E1, E1I, E3, CS ) 
+            CALL I3SL3R ( E1, E1I, E3, CS )
             E1(2) = SIGN(UN,E1(2))
             E1(1) = ZERO
             E1(3) = ZERO
-         ENDIF         
-      ELSE IF ( (ABS(ABS(E1(3))-UN) .LE. TOLE) .AND. 
-     +         ((E1(2) .NE. ZERO) .OR. (E1(1) .NE. ZERO)) ) THEN 
+         ENDIF
+      ELSE IF ( (ABS(ABS(E1(3))-UN) .LE. TOLE) .AND.
+     &         ((E1(2) .NE. ZERO) .OR. (E1(1) .NE. ZERO)) ) THEN
          IF (ABS(E1(3)) .NE. UN) THEN
             E1I(3) = SIGN(UN,E1(3))
             E1I(1) = ZERO
             E1I(2) = ZERO
-            CALL I3SL3R ( E1, E1I, E3, CS ) 
+            CALL I3SL3R ( E1, E1I, E3, CS )
             E1(3) = SIGN(UN,E1(3))
             E1(1) = ZERO
             E1(2) = ZERO
-         ENDIF         
+         ENDIF
       ENDIF
 C
-      IF ( (ABS(ABS(E2(1))-UN) .LE. TOLE) .AND. 
-     +         ((E2(2) .NE. ZERO) .OR. (E2(3) .NE. ZERO)) ) THEN 
+      IF ( (ABS(ABS(E2(1))-UN) .LE. TOLE) .AND.
+     &         ((E2(2) .NE. ZERO) .OR. (E2(3) .NE. ZERO)) ) THEN
          IF (ABS(E2(1)) .NE. UN) THEN
             E2I(1) = SIGN(UN,E2(1))
             E2I(3) = ZERO
             E2I(2) = ZERO
-            CALL I3SL3R ( E2, E2I, E3, CS ) 
+            CALL I3SL3R ( E2, E2I, E3, CS )
             E2(1) = SIGN(UN,E2(1))
             E2(3) = ZERO
             E2(2) = ZERO
-         ENDIF         
-      ELSE IF ( (ABS(ABS(E2(2))-UN) .LE. TOLE) .AND. 
-     +         ((E2(1) .NE. ZERO) .OR. (E2(3) .NE. ZERO)) ) THEN 
+         ENDIF
+      ELSE IF ( (ABS(ABS(E2(2))-UN) .LE. TOLE) .AND.
+     &         ((E2(1) .NE. ZERO) .OR. (E2(3) .NE. ZERO)) ) THEN
          IF (ABS(E2(2)) .NE. UN) THEN
             E2I(2) = SIGN(UN,E2(2))
             E2I(1) = ZERO
             E2I(3) = ZERO
-            CALL I3SL3R ( E2, E2I, E3, CS ) 
+            CALL I3SL3R ( E2, E2I, E3, CS )
             E2(2) = SIGN(UN,E2(2))
             E2(1) = ZERO
             E2(3) = ZERO
-         ENDIF         
-      ELSE IF ( (ABS(ABS(E2(3))-UN) .LE. TOLE) .AND. 
-     +         ((E2(1) .NE. ZERO) .OR. (E2(2) .NE. ZERO)) ) THEN 
+         ENDIF
+      ELSE IF ( (ABS(ABS(E2(3))-UN) .LE. TOLE) .AND.
+     &         ((E2(1) .NE. ZERO) .OR. (E2(2) .NE. ZERO)) ) THEN
          IF (ABS(E2(3)) .NE. UN) THEN
             E2I(3) = SIGN(UN,E2(3))
             E2I(1) = ZERO
             E2I(2) = ZERO
-            CALL I3SL3R ( E2, E2I, E3, CS ) 
+            CALL I3SL3R ( E2, E2I, E3, CS )
             E2(3) = SIGN(UN,E2(3))
             E2(1) = ZERO
             E2(2) = ZERO
-         ENDIF         
+         ENDIF
       ENDIF
 C
 C --- UN DEUXIEME TOUR DE PASSE-PASSE POUR METTRE LE POINT 3 DANS LE
 C     PLAN DE LA FACE
 C
       C = ZERO
-      DO 80, I = 1, 3, 1 
+      DO 80, I = 1, 3, 1
         C = C - ( (CS(I,3)-CS(I,1)) * E3(I) )
  80   CONTINUE
       DO 82, J = 1, 3, 1
@@ -327,7 +327,7 @@ C              -----------------
                CALL I3CRQP ( EPSI, EPSI, CS, R, S, X, IRET )
                IF ( IRET .EQ. -1 ) THEN
                   CALL UTDEBM('F','I3IQPS',
-     +                              'UNE FACE DEGENEREE EST DETECTEE')
+     &                              'UNE FACE DEGENEREE EST DETECTEE')
                   CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                   CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                   CALL UTFINM()
@@ -383,7 +383,7 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)),IRET)
                IF ( IRET .EQ. -1 ) THEN
                   CALL UTDEBM('F','I3IQPS',
-     +                              'UNE FACE DEGENEREE EST DETECTEE')
+     &                              'UNE FACE DEGENEREE EST DETECTEE')
                   CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                   CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                   CALL UTFINM()
@@ -398,7 +398,7 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)+2),IRET)
                IF ( IRET .EQ. -1 ) THEN
                   CALL UTDEBM('F','I3IFTS',
-     +                              'UNE FACE DEGENEREE EST DETECTEE')
+     &                              'UNE FACE DEGENEREE EST DETECTEE')
                   CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                   CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                   CALL UTFINM()
@@ -437,7 +437,7 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                   CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)+2),IRET)
                   IF ( IRET .EQ. -1 ) THEN
                      CALL UTDEBM('F','I3IQPS',
-     +                  'UNE FACE DEGENEREE EST DETECTEE')
+     &                  'UNE FACE DEGENEREE EST DETECTEE')
                      CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                      CALL UTIMPI('S','  FACE NUMERO : ',1,F)
                      CALL UTFINM()
@@ -447,7 +447,7 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                   CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)),IRET)
                   IF ( IRET .EQ. -1 ) THEN
                      CALL UTDEBM('F','I3IQPS',
-     +                  'UNE FACE DEGENEREE EST DETECTEE')
+     &                  'UNE FACE DEGENEREE EST DETECTEE')
                      CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                      CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                      CALL UTFINM()
@@ -474,7 +474,7 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                   CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)+2),IRET)
                   IF ( IRET .EQ. -1 ) THEN
                      CALL UTDEBM('F','I3IQPS',
-     +                  'UNE FACE DEGENEREE EST DETECTEE')
+     &                  'UNE FACE DEGENEREE EST DETECTEE')
                      CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                      CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                      CALL UTFINM()
@@ -498,10 +498,10 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                      R = A(1,1)
                      S = A(2,1)
                      CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)+2),
-     +                     IRET)
+     &                     IRET)
                      IF ( IRET .EQ. -1 ) THEN
                   CALL UTDEBM('F','I3IQPS',
-     +                   'UNE FACE DEGENEREE EST DETECTEE')
+     &                   'UNE FACE DEGENEREE EST DETECTEE')
                   CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
                   CALL UTIMPI('S',' FACE NUMERO : ',1,F)
                   CALL UTFINM()
@@ -522,7 +522,7 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
             NBPT = -2
          ELSE IF ( NBPT .GT. 2 ) THEN
             CALL UTDEBM('F','I3IQPS','SEGMENT ET FACE COPLANAIRE, '//
-     +                               'INTERSECTION : TROP DE POINT')
+     &                               'INTERSECTION : TROP DE POINT')
             CALL UTIMPI('L','MAILLE : ',1,K)
             CALL UTIMPI('S','  FACE : ',1,F)
             CALL UTIMPI('S',' NOMBRE DE POINT : ',1,NBPT)
@@ -530,7 +530,7 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
          ENDIF
 C
       ELSE
-         CALL UTMESS('F','I3IQPS','INTERSECTION DE TYPE INCONNU')
+         CALL U2MESS('F','POSTRELE_20')
       ENDIF
 C
       END

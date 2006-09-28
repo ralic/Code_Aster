@@ -3,28 +3,28 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/06/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
 C.......................................................................
 C
-C         CALCUL DES MATRICES DE CONTACT FROTTEMENT POUR X-FEM 
+C         CALCUL DES MATRICES DE CONTACT FROTTEMENT POUR X-FEM
 C                       (METHODE CONTINUE)
 C
 C
@@ -39,7 +39,7 @@ C TOLE CRP_20
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR 
+      REAL*8 ZR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -76,7 +76,7 @@ C
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
 C-----------------------------------------------------------------------
-C 
+C
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
@@ -123,7 +123,7 @@ C     SUR LA TOPOLOGIE DES FACETTES
         INDCO(I) = ZI(JINDCO-1+I)
         SEUIL(I) = ZR(JSEUIL-1+I)
  10   CONTINUE
- 
+
       RHON = ZR(JDONCO-1+1)
       MU = ZR(JDONCO-1+2)
       RHOTK = ZR(JDONCO-1+3)
@@ -142,9 +142,8 @@ C     DISCUSSION VOIR BOOK IV 18/10/2004 ET BOOK VI 06/07/2005
         FPG='MASS'
         ELC='SE2'
       ENDIF
-     
       NINTER=ZI(JLONCH-1+1)
-      IF (NINTER.LT.NDIM) GOTO 9999 
+      IF (NINTER.LT.NDIM) GOTO 9999
       NFACE=ZI(JLONCH-1+2)
       DO 11 I=1,NFACE
         DO 12 J=1,NDIM
@@ -158,13 +157,13 @@ C
 C     RECUPERATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
       DO 13 NLI=1,NINTER
         DO 14 J=1,NDIM
-          NDN(J,NLI)  =ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J)  
+          NDN(J,NLI)  =ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J)
           TAU1(J,NLI)=ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J+NDIM)
-          IF (NDIM.EQ.3) 
+          IF (NDIM.EQ.3)
      &      TAU2(J,NLI)=ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J+2*NDIM)
  14     CONTINUE
  13   CONTINUE
-C    
+C
 C-----------------------------------------------------------------------
 C
 C     BOUCLE SUR LES FACETTES
@@ -189,7 +188,7 @@ C       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
 C           	 WRITE(6,*)'MULTIPLICATION PAR 1/2'
                  MULT=0.5D0
                  GOTO 104
-              ENDIF  
+              ENDIF
  102        CONTINUE
           ENDIF
         ELSEIF (NDIM .EQ. 2) THEN
@@ -203,7 +202,7 @@ C           	 WRITE(6,*)'MULTIPLICATION PAR 1/2'
               IF (CPT.EQ.2) THEN
                 MULT=0.5D0
                 GOTO 104
-              ENDIF  
+              ENDIF
  1021       CONTINUE
           ENDIF
         ENDIF
@@ -217,7 +216,7 @@ C
 C         INDICE DE CE POINT DE GAUSS DANS INDCO
           ISSPG=NPGF*(IFA-1)+IPGF
 C
-C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)        
+C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 C         ET DES FF DE L'ELEMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           IF (NDIM.EQ.3) THEN
@@ -235,18 +234,17 @@ C         NORMALE AU CENTRE DE LA FACETTE
             NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/NNOF
             IF (NDIM .EQ. 3)
      &        NBARY(3)=NBARY(3)+NDN(3,CFACE(IFA,I))/NNOF
- 122      CONTINUE          
+ 122      CONTINUE
 
 C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
           IF (SINGU.EQ.1) THEN
             LSN=0.D0
-            LST=0.D0   
+            LST=0.D0
             DO 112 I=1,NNO
               LSN=LSN+ZR(JLSN-1+I)*FFP(I)
               LST=LST+ZR(JLST-1+I)*FFP(I)
  112        CONTINUE
-            IF (ABS(LSN).GT.1.D-3) CALL UTMESS('A','TE0533',
-     &                                    'LSN NON NUL SUR LA SURFACE.')
+            IF (ABS(LSN).GT.1.D-3) CALL U2MESS('A','ELEMENTS4_19')
             R=SQRT(LSN*LSN+LST*LST)
             RR=SQRT(R)
           ENDIF
@@ -256,7 +254,7 @@ C         ..............................
 
           IF (OPTION.EQ.'RIGI_CONT') THEN
 C
-C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LA MATRICE C 
+C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LA MATRICE C
             IF (INDCO(ISSPG).EQ.0) THEN
 C
               DO 120 I = 1,NNOF
@@ -311,7 +309,7 @@ C
      &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * MULT * E
 
  133              CONTINUE
- 
+
  131            CONTINUE
 
  130          CONTINUE
@@ -322,24 +320,24 @@ C             I.2. CALCUL DE A_U
                   DO 142 K = 1,DDLH
                     DO 143 L = 1,DDLH
 C
-                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
+                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
      &                4.D0*RHON*FFP(I)*FFP(J)*ND(K)*ND(L)*JAC*MULT
 C
  143                CONTINUE
                     DO 144 L = 1,SINGU*NDIM
 C
-                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) =  
+                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) =
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) +
      &                4.D0*RHON*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC*MULT
 C
  144                CONTINUE
-C 
+C
  142              CONTINUE
- 
+
                   DO 145 K = 1,SINGU*NDIM
                     DO 146 L = 1,DDLH
-                      MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) =  
+                      MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) +
      &                4.D0*RHON*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC*MULT
  146                CONTINUE
@@ -349,13 +347,13 @@ C
      &           +   4.D0*RHON*FFP(I)*FFP(J)*RR*RR*ND(K)*ND(L)*JAC*MULT
  147                CONTINUE
  145              CONTINUE
- 
+
  141            CONTINUE
  140          CONTINUE
 C
             ELSE
 C             SI INDCO N'EST NI EGAL A 0 NI EGAL A 1
-              CALL UTMESS('F','TE0533','PB DE STATUT DE CONTACT') 
+              CALL U2MESS('F','ELEMENTS4_18')
             END IF
 C
 C         II) CALCUL DES MATRICES DE FROTTEMENT
@@ -365,7 +363,7 @@ C         ..............................
 
             IF (MU.EQ.0.D0.OR.SEUIL(ISSPG).EQ.0.D0) INDCO(ISSPG) = 0
 
-C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F 
+C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F
             IF (INDCO(ISSPG).EQ.0) THEN
 
               DO 150 I = 1,NNOF
@@ -429,10 +427,10 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
-                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)       
+                CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
                 DO 159 J=1,NDIM
                   LAMB1(J)=LAMB1(J)+FFI * ZR(IDEPD-1+PLI+1)*TAU1(J,NLI)
-                  IF (NDIM.EQ.3)  
+                  IF (NDIM.EQ.3)
      &              LAMB1(J)=LAMB1(J)+FFI*ZR(IDEPD-1+PLI+2)*TAU2(J,NLI)
  159            CONTINUE
  158          CONTINUE
@@ -470,7 +468,7 @@ C               CALCUL DE TAU.KN.P
                   DO 166 K = 1,NDIM-1
                     DO 167 L = 1,DDLH
 C
-                      MMAT(PLI+K,DDLS*(J-1)+NDIM+L) = 
+                      MMAT(PLI+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(PLI+K,DDLS*(J-1)+NDIM+L) +
      &              2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC*MULT
 C
@@ -481,7 +479,7 @@ C
  167                CONTINUE
                     DO 168 L = 1,SINGU*NDIM
 C
-                      MMAT(PLI+K,DDLS*(J-1)+NDIM+DDLH+L) = 
+                      MMAT(PLI+K,DDLS*(J-1)+NDIM+DDLH+L) =
      &                MMAT(PLI+K,DDLS*(J-1)+NDIM+DDLH+L) +
      &           2.D0*RR*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC*MULT
 C
@@ -501,7 +499,7 @@ C             II.2. CALCUL DE B_U
                   DO 172 K = 1,DDLH
                     DO 173 L = 1,DDLH
 C
-                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
+                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) -
      &                4.D0*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*
      &                                               PTKNP(K,L)*JAC*MULT
@@ -509,7 +507,7 @@ C
  173                CONTINUE
                     DO 174 L = 1,SINGU*NDIM
 C
-                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) =  
+                      MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) =
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+DDLH+L) -
      &                4.D0*RR*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*
      &                                               PTKNP(K,L)*JAC*MULT
@@ -520,7 +518,7 @@ C
                   DO 175 K = 1,SINGU*NDIM
                     DO 176 L = 1,DDLH
 C
-                      MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) =  
+                      MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) =
      &                MMAT(DDLS*(I-1)+NDIM+DDLH+K,DDLS*(J-1)+NDIM+L) -
      &                4.D0*RR*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*
      &                                               PTKNP(K,L)*JAC*MULT
@@ -553,10 +551,10 @@ C             II.3. CALCUL DE F
 
 C                 CALCUL DE TAIKTA = TAUt.(Id-KN).TAU
                   CALL XMAFR2(NLI,NLJ,TAU1,TAU2,IK,TAIKTA)
-      
+
                   DO 182 K = 1,NDIM-1
                     DO 183 L = 1,NDIM-1
-                      
+
                       MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
      &              - MU*SEUIL(ISSPG)/RHOTK*FFI*FFJ*TAIKTA(K,L)*JAC*MULT
 
@@ -567,12 +565,12 @@ C                 CALCUL DE TAIKTA = TAUt.(Id-KN).TAU
 
             ELSE
 C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
-              CALL UTMESS('F','TE0533','PB DE STATUT DE CONTACT') 
+              CALL U2MESS('F','ELEMENTS4_18')
             END IF
 
           ELSE
 C           SI OPTION NI 'RIGI_CONT' NI 'RIGI_FROTT'
-            CALL UTMESS('F','TE0533','OPTION INCONNUE')           
+            CALL U2MESS('F','ELEMENTS3_81')
           ENDIF
 
 C         FIN DE BOUCLE SUR LES POINTS DE GAUSS
@@ -584,7 +582,7 @@ C
 C-----------------------------------------------------------------------
 C     COPIE DES CHAMPS DE SORITES ET FIN
 C-----------------------------------------------------------------------
-C 
+C
       DO 200 J = 1,NDDL
         DO 210 I = 1,J
           IJ = (J-1)*J/2 + I

@@ -4,7 +4,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,10 +47,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      JDCC, JDVC, JDLS, IOC,  NG, NM, N1, N2, N3, N4, N5,
-     +             I, AXYZM, NUNOE, NBMAT, IER, NBMA,
-     +             IMA, NBNO, INO, JNUMA, ADRM, NUMA, JGRMA, IGR,NBMAT0
+     &             I, AXYZM, NUNOE, NBMAT, IER, NBMA,
+     &             IMA, NBNO, INO, JNUMA, ADRM, NUMA, JGRMA, IGR,NBMAT0
       REAL*8       ANG(2), SL,EZ,EZA,CTR, ORIG(3), Z, R8RDDG,
-     +             AXEZ(3), XNORM, EPSI, AXER(3), PSCAL, AXET(3), X, Y
+     &             AXEZ(3), XNORM, EPSI, AXER(3), PSCAL, AXET(3), X, Y
       CHARACTER*8  K8B
       CHARACTER*16 TOU
       CHARACTER*19 CARTGR
@@ -96,9 +96,9 @@ C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
         CTR    = 1.D-10
 C
         CALL GETVEM(NOMA,'GROUP_MA','GRILLE','GROUP_MA',
-     +           IOC,1,LMAX,ZK8(JDLS),NG)
+     &           IOC,1,LMAX,ZK8(JDLS),NG)
         CALL GETVEM(NOMA,'MAILLE','GRILLE','MAILLE',
-     +         IOC,1,LMAX,ZK8(JDLS),NM)
+     &         IOC,1,LMAX,ZK8(JDLS),NM)
 C
         CALL GETVR8('GRILLE','SECTION'      ,IOC,1,1   ,SL       ,N1)
         CALL GETVR8('GRILLE','ANGL_REP'     ,IOC,1,2   ,ANG      ,N2)
@@ -154,7 +154,7 @@ C
               XNORM = XNORM + AXEZ(I)*AXEZ(I)
  40        CONTINUE
            IF ( XNORM .LT. EPSI ) THEN
-              CALL UTMESS('F','ACEAGB','AXE_Z NUL')
+              CALL U2MESS('F','MODELISA_10')
            ENDIF
            XNORM =  1.0D0 / SQRT( XNORM )
            DO 42 I = 1,3
@@ -186,7 +186,7 @@ C
                XNORM = XNORM + AXER(I)*AXER(I)
  44          CONTINUE
              IF ( XNORM .LT. EPSI ) THEN
-              CALL UTMESS('F','ACEAGB','NOEUD CONFONDU AVEC L''ORIGINE')
+              CALL U2MESS('F','MODELISA_11')
              ENDIF
              XNORM =  1.0D0 / SQRT( XNORM )
              DO 46 I = 1,3

@@ -6,22 +6,22 @@
         REAL*8 DDVIR(NVI),DRSDPR(NVI)
         CHARACTER*16 NECOUL,NECRIS,NECRCI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
@@ -57,35 +57,35 @@ C     DANS DVDTAU : 1 = DALPHA/DTAU, 2=GAMMA, 3=P
 
       ALPHA=VIS(1)
 
-C     NS=NOMBRE TOTAL DE SYSTEMES DE GLISSEMENT         
+C     NS=NOMBRE TOTAL DE SYSTEMES DE GLISSEMENT
       NS=(NVI-2-6)/3
       CALL LCINVN(NS, 0.D0, DDVIR)
       CALL LCINVN(3, 0.D0, DVDTAU)
-      CALL LCINVN(3*3, 0.D0, DDVIS)      
-            
+      CALL LCINVN(3*3, 0.D0, DDVIS)
+
       IF (NECOUL.EQ.'ECOU_VISC1') THEN
           N=COEFT(IFL-1+1)
           K=COEFT(IFL-1+2)
           C=COEFT(IFL-1+3)
-      
+
           FTAU=TAUS-C*ALPHA
-          
-          CRIT=ABS(FTAU)-RP 
+
+          CRIT=ABS(FTAU)-RP
           IF (CRIT.GT.0.D0) THEN
              VAL=DT*(CRIT/K)**(N-1)
              DP=((CRIT/K)**N)*DT
 C             DGAMMA=DP*FTAU/ABS(FTAU)
-             
+
              DDVIS(2,1)=0.D0
              DDVIS(2,2)=1.D0
              DDVIS(2,3)=-FTAU/ABS(FTAU)
-             
+
              DDVIS(3,1)= N*C*VAL/K*FTAU/ABS(FTAU)
              DDVIS(3,2)= 0.D0
              DDVIS(3,3)= 1.D0+N*VAL/K*DRSDPR(NUMS)
-             
+
              DVDTAU(3)=-N*VAL/K*FTAU/ABS(FTAU)
-             
+
              DO 11 IS=1,NS
                 IF (IS.EQ.NUMS) THEN
                    DDVIR(IS)=1.D0+N*VAL/K*DRSDPR(IS)
@@ -93,12 +93,12 @@ C             DGAMMA=DP*FTAU/ABS(FTAU)
                    DDVIR(IS)=N*VAL/K*DRSDPR(IS)
                 ENDIF
  11          CONTINUE
-             
+
           ELSE
              DP=0.D0
 C             DGAMMA=0.D0
 C             DP/DP
-             DDVIS(3,3)=1.D0             
+             DDVIS(3,3)=1.D0
              DDVIS(2,2)=1.D0
              IF (ABS(FTAU).GT.R8MIEM()) THEN
                 DDVIS(2,3)=-FTAU/ABS(FTAU)
@@ -109,33 +109,33 @@ C             DP/DP
              DDVIR(NUMS)=1.D0
          ENDIF
        ENDIF
-       
+
       IF (NECOUL.EQ.'ECOU_VISC2') THEN
           N=COEFT(IFL-1+1)
           K=COEFT(IFL-1+2)
           C=COEFT(IFL-1+3)
           A=COEFT(IFL-1+4)
           D=COEFT(IFL-1+5)
-          
+
           FTAU=TAUS-C*VIS(1)-A*VIS(2)
-          
+
           CRIT=ABS(FTAU)-RP + 0.5D0*C*D*(VIS(1))**2
           IF (CRIT.GT.0.D0) THEN
              VAL=DT*(CRIT/K)**(N-1)
              DP=((CRIT/K)**N)*DT
 C             DGAMMA=DP*FTAU/ABS(FTAU)
-             
+
              DDVIS(2,1)=0.D0
              DDVIS(2,2)=1.D0
              DDVIS(2,3)=-FTAU/ABS(FTAU)
-             
+
              DDVIS(3,1)= -N*VAL/K*(-C*FTAU/ABS(FTAU)+C*D*VIS(1))
              DDVIS(3,2)= N*VAL/K*A*FTAU/ABS(FTAU)
              DDVIS(3,3)= 1.D0+N*VAL/K*DRSDPR(NUMS)
-             
+
              DVDTAU(3)=-N*VAL/K*FTAU/ABS(FTAU)
-             
-             
+
+
              DO 13 IS=1,NS
                 IF (IS.EQ.NUMS) THEN
                    DDVIR(IS)=1.D0+N*VAL/K*DRSDPR(IS)
@@ -143,12 +143,12 @@ C             DGAMMA=DP*FTAU/ABS(FTAU)
                    DDVIR(IS)=N*VAL/K*DRSDPR(IS)
                 ENDIF
  13          CONTINUE
-             
+
           ELSE
              DP=0.D0
 C             DGAMMA=0.D0
 C             DP/DP
-             DDVIS(3,3)=1.D0             
+             DDVIS(3,3)=1.D0
              DDVIS(2,2)=1.D0
              IF (ABS(FTAU).GT.R8MIEM()) THEN
                 DDVIS(2,3)=-FTAU/ABS(FTAU)
@@ -159,34 +159,34 @@ C             DP/DP
              DDVIR(NUMS)=1.D0
           ENDIF
        ENDIF
-       
+
       IF (NECOUL.EQ.'ECOU_VISC3') THEN
           K      =COEFT(IFL-1+1)
           TAUMU  =COEFT(IFL-1+2)
           GAMMA0 =COEFT(IFL-1+3)
           DELTAV =COEFT(IFL-1+4)
           DELTAG =COEFT(IFL-1+5)
-          
-          TAUV=ABS(TAUS)-TAUMU 
+
+          TAUV=ABS(TAUS)-TAUMU
           IF (TAUV.GT.0.D0) THEN
              TABS=TPERD+273.5D0
 
              DDVIS(2,1)=0.D0
              DDVIS(2,2)=1.D0
              DDVIS(2,3)=-TAUS/ABS(TAUS)
-             
+
              DDVIS(3,1)= 0.D0
              DDVIS(3,2)= 0.D0
              DDVIS(3,3)= 1.D0
 C             DDVIS(3,3)= 1.D0+GAMMA0*DELTAV/K/TABS*EXP(-DELTAG/K/TABS)
 C     &                 *EXP(DELTAV/K/TABS*TAUV)*DRSDPR(NUMS)
-             
+
              DVDTAU(3)=GAMMA0*DELTAV/K/TABS*EXP(-DELTAG/K/TABS)
      &                 *EXP(DELTAV/K/TABS*TAUV)*TAUS/ABS(TAUS)
              DDVIR(NUMS)=0.D0
-             
+
           ELSE
-             DDVIS(3,3)=1.D0             
+             DDVIS(3,3)=1.D0
              DDVIS(2,2)=1.D0
              IF (ABS(FTAU).GT.R8MIEM()) THEN
                 DDVIS(2,3)=-FTAU/ABS(FTAU)
@@ -197,18 +197,18 @@ C     &                 *EXP(DELTAV/K/TABS*TAUV)*DRSDPR(NUMS)
              DDVIR(NUMS)=0.D0
           ENDIF
        ENDIF
-       
+
       IF (NECOUL.EQ.'ECOU_PLAS1') THEN
           C=COEFT(IFL-1+1)
-          CRIT=ABS(FTAU)-RP 
-      
+          CRIT=ABS(FTAU)-RP
+
           IF (CRIT.GT.0.D0) THEN
-             CALL UTMESS('F','LCMMFL','ECOU_PLAS1 NON DISPONIBLE')
+             CALL U2MESS('F','ALGORITH4_67')
           ELSE
              DP=0.D0
 C             DGAMMA=0.D0
           ENDIF
-       ENDIF  
-       
-           
+       ENDIF
+
+
       END

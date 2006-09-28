@@ -6,7 +6,7 @@
       CHARACTER*(*) LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     ------------------------------------------------------------------
         ELSEIF (FONREE.EQ.'FONC') THEN
           CALL ALCART('G',CARTE,NOMA,'PRES_F')
         ELSE
-          CALL UTMESS('F','CAFOND','VALEUR INATTENDUE: '//FONREE)
+          CALL U2MESK('F','MODELISA2_37',1,FONREE)
         END IF
       ENDIF
 

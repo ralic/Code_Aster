@@ -1,10 +1,10 @@
       SUBROUTINE CRICHO (NBMODE,RIGGEN,NBCHOC,PARCHO,NOECHO,INFO,
-     .    FIMPO,RFIMPO,TRLOC,SOUPL,INDIC,NEQ,BMODAL,SEUIL,MARIG,
-     .    NBNLI)
+     &    FIMPO,RFIMPO,TRLOC,SOUPL,INDIC,NEQ,BMODAL,SEUIL,MARIG,
+     &    NBNLI)
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER            NBCHOC, INFO, NBMODE,IRIGI,INDIC(NBMODE)
       INTEGER            NEQ,NBNLI,NDECI,ISINGU,NPVNEG,IRET, ISTOP,IFAC
       REAL*8             RIGGEN(*),SEUIL,
-     +                   PARCHO(NBNLI,*)
+     &                   PARCHO(NBNLI,*)
       CHARACTER*8        NOECHO(NBNLI,*)
       REAL*8             TRLOC(NBMODE),SOUPL(NBMODE),TRLOCJ
       REAL*8             FIMPO(NEQ),RFIMPO(NEQ)
@@ -107,18 +107,18 @@ C
             IC=4*JJ-3
             CALL UTDEBM('I','CRICHO','  ')
             IF (INFO.GE.2)
-     +      CALL UTIMPK('L','--- AU NOEUD DE CHOC :',1,NOECHO(I,IC))
+     &      CALL UTIMPK('L','--- AU NOEUD DE CHOC :',1,NOECHO(I,IC))
 C     CREATION DE FIMPO : FORCE UNITAIRE AU NOEUD DE CHOC (N)
             CALL UTFINM()
             DO 11 K=1,NEQ
               FIMPO(K)=0.D0
    11       CONTINUE
             CALL POSDDL('NUME_DDL',NOECHO(I,IC+2),NOECHO(I,IC),
-     .                  'DX',NUNOE,IDDLX)
+     &                  'DX',NUNOE,IDDLX)
             CALL POSDDL('NUME_DDL',NOECHO(I,IC+2),NOECHO(I,IC),
-     .                  'DY',NUNOE,IDDLY)
+     &                  'DY',NUNOE,IDDLY)
             CALL POSDDL('NUME_DDL',NOECHO(I,IC+2),NOECHO(I,IC),
-     .                  'DZ',NUNOE,IDDLZ)
+     &                  'DZ',NUNOE,IDDLZ)
             FIMPO(IDDLX)=PARCHO(I,44)
             FIMPO(IDDLY)=PARCHO(I,45)
             FIMPO(IDDLZ)=PARCHO(I,46)
@@ -133,14 +133,10 @@ C     SINGULIERE (MODES STATIQUES)
               CALL TLDLGG(ISTOP,IRIGI,1,NEQ,0,NDECI,ISINGU,
      &                  NPVNEG,IRET)
                 IF (IRET.EQ.2) THEN
-                  CALL UTMESS('A','CRICHO',
-     & 'MATRICE DE RIGIDITE NON INVERSIBLE (MODES RIGIDES ???)' //
-     & ' - ATTENTION : CRITERES DE CHOC NON CALCULES')
+                  CALL U2MESS('A','SOUSTRUC_7')
                   GOTO 9999
                 ELSE IF (IRET.EQ.1) THEN
-                  CALL UTMESS('A','CRICHO',
-     & 'MATRICE DE RIGIDITE : PIVOT QUASI-NUL (MODES RIGIDES ???)' //
-     & ' - ATTENTION : CRITERES DE CHOC NON CALCULES')
+                  CALL U2MESS('A','SOUSTRUC_8')
                   GOTO 9999
                 ENDIF
             ENDIF
@@ -206,28 +202,28 @@ C      ON ORDONNE SELON LES SOUPLESSES DECROISSANTES
                   CALL UTDEBM('I','CRICHO','  ')
                   CALL UTIMPI('L',' POUR LE MODE NO :',1,INDIC(J))
                   CALL UTIMPR('L','TAUX DE FLEXIBILITE LOCALE   : ',
-     .                             1,TRLOC(INDIC(J)))
+     &                             1,TRLOC(INDIC(J)))
                   CALL UTIMPR('L','SOUPLESSE LOCALE             : ',
-     .                             1,SOUPL(INDIC(J)))
+     &                             1,SOUPL(INDIC(J)))
                   CALL UTIMPR('L','TAUX EFFORT TRANCHANT LOCAL  : ',
-     .                             1,ZR(JEFLOC-1+INDIC(J)))
+     &                             1,ZR(JEFLOC-1+INDIC(J)))
                   CALL UTFINM()
  32            CONTINUE
             ENDIF
             CALL UTDEBM('I','CRICHO','  ')
             CALL UTIMPK('L','-- BILAN NOEUD DE CHOC :',1,NOECHO(I,IC))
             CALL UTIMPR('L',' TAUX DE RESTIT FLEXIBILITE      : ',
-     .                             1,CT)
+     &                             1,CT)
             CALL UTIMPR('L',' TAUX DE RESTIT EFFORT TRANCHANT : ',
-     .                             1,CEF)
+     &                             1,CEF)
 
             TX = SOUP*PARCHO(I,2)*(1.D0-CT)
             CALL UTIMPR('L',' ( SOUPLESSE STATIQUE - SOUPLESSE LOCALE )
-     ./ SOUPLESSE CHOC : ', 1,TX)
+     &/ SOUPLESSE CHOC : ', 1,TX)
             SEUIL=MAX(SEUIL,TX)
             TX = SOUP*CT*PARCHO(I,2)
             CALL UTIMPR('L',' SOUPLESSE LOCALE / SOUPLESSE CHOC : ',
-     .                             1,TX)
+     &                             1,TX)
             CALL UTFINM()
  21       CONTINUE
 C
@@ -251,7 +247,7 @@ C ICOLC : NB DE CHOC A CONSIDERER
             DO 82 IA = 1,ICOLC
              IF (ZR(JNORMX-1+IA).GT.EPS) THEN
               ZR(JA-1+K+NEQ*(IA-1)) =
-     .             ZR(JRFIMP-1+K+NEQ*(IA-1))/SQRT(ZR(JNORMX-1+IA))
+     &             ZR(JRFIMP-1+K+NEQ*(IA-1))/SQRT(ZR(JNORMX-1+IA))
              ELSE
               ZR(JA-1+K+NEQ*(IA-1)) = 0.D0
              ENDIF
@@ -270,15 +266,15 @@ C
 C CONDITIONNEMENT
           IF ( MMIN .LE. EPS ) THEN
             CALL UTIMPR('L','!! ATTENTION
-     .             PLUS PETITE VAL SING DEF STAT : ',1,MMIN)
+     &             PLUS PETITE VAL SING DEF STAT : ',1,MMIN)
             CALL UTIMPR('L','!! NOUS LA FORCONS A : ',
-     .                             1,EPS)
+     &                             1,EPS)
             MMIN = EPS
           ENDIF
           SCOND = MMAX/MMIN
 C
           CALL UTIMPR('L','---- CONDITIONNEMENT DEF STAT : ',
-     .                             1,SCOND)
+     &                             1,SCOND)
 C
 C     NORMY : TYN*YN
           DO 51 JJ = 1,NBMODE
@@ -293,13 +289,13 @@ C LA MATRICE A CONTIENT LES DEFORMEES STATIQUES ET MODE
               DO 62 IA = 1,ICOLC
                IF (ZR(JNORMX-1+IA).GT.EPS) THEN
                 ZR(JA-1+K+NEQ*(IA-1)) =
-     .               ZR(JRFIMP-1+K+NEQ*(IA-1))/SQRT(ZR(JNORMX-1+IA))
+     &               ZR(JRFIMP-1+K+NEQ*(IA-1))/SQRT(ZR(JNORMX-1+IA))
                ELSE
                 ZR(JA-1+K+NEQ*(IA-1)) = 0.D0
                ENDIF
 62            CONTINUE
               ZR(JA-1+K+NEQ*(ICOLC+1-1)) =
-     .               BMODAL(K,J)/SQRT(ZR(JNORMY-1+J))
+     &               BMODAL(K,J)/SQRT(ZR(JNORMY-1+J))
 60          CONTINUE
 C
             CALL CALSVD(NM,M,N,ZR(JA),ZR(JW),
@@ -315,9 +311,9 @@ C CONDITIONNEMENT
             IF ( MMIN .LE. EPS ) THEN
               CALL UTIMPI('L',' !!! MODE NO :',1,J)
               CALL UTIMPR('L','   LINEAIREMENT DEPENDANT A DEF. STATIQUE
-     .  VAL SING MIN : ',1,MMIN)
+     &  VAL SING MIN : ',1,MMIN)
               CALL UTIMPR('L','   !! NOUS LA FORCONS A : ',
-     .                             1,EPS)
+     &                             1,EPS)
               MMIN = EPS
             ENDIF
             ZR(JEFLOC-1+J) = MMAX/MMIN
@@ -333,7 +329,7 @@ C      ON ORDONNE SELON LA PARTICIPATION DECROISSANTE
           DO 72 J = 1,NBMODE
             CALL UTIMPI('L',' POUR LE MODE NO :',1,INDIC(J))
             CALL UTIMPR('L','PARTICIPATION : ',
-     .                             1,ZR(JEFLOC-1+INDIC(J)))
+     &                             1,ZR(JEFLOC-1+INDIC(J)))
  72       CONTINUE
 C
           CALL UTFINM()

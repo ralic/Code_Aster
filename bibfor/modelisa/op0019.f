@@ -1,5 +1,5 @@
       SUBROUTINE OP0019(IER)
-C MODIF MODELISA  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -145,7 +145,7 @@ C --- VERIFICATIONS SUPPLEMENTAIRES DE SYNTAXE
           IF (VER(I).EQ.'NOEUD   ') IVR(2) = 1
    40   CONTINUE
       ELSE IF (NBVER.LT.0) THEN
-        CALL UTMESS('F',CMD,'VERIF : 2 ARGUMENTS MAXI')
+        CALL U2MESS('F','MODELISA5_55')
       END IF
 
       DO 50 I = 1,NBMCF
@@ -213,7 +213,7 @@ C     -----------------------------------------------------
       LXPF = 0
       IF (NBOCC(9).NE.0) THEN
         IF (NBOCC(1).EQ.0) THEN
-          CALL UTMESS('F',CMD,'IL MANQUE LE MOT CLE FACTEUR'//'POUTRE.')
+          CALL U2MESS('F','MODELISA5_56')
         END IF
         CALL ACEVPF(NBOCC(9),NLM,NLG)
         LXPF = MAX(NLM,NLG)
@@ -308,8 +308,7 @@ C     ----------------------------------------------------------------
      &            NBTEL,NTYELE,NPOUTR,NDISCR,NCOQUE,NCABLE,
      &            NBARRE,NMASSI,NGRILL,NGRIBT,JDLM,JDLN,IRET)
       IF (IRET.NE.0) THEN
-        CALL UTMESS('F',CMD,'ERREUR(S) RENCONTREE(S) LORS DE LA '//
-     &              'VERIFICATION DES AFFECTATIONS.')
+        CALL U2MESS('F','MODELISA5_57')
       END IF
 
 C --- VERIFICATION DE L'EXISTENCE DES MAILLES/NOEUDS/GROUPES DECLARES
@@ -330,6 +329,7 @@ C     ---------------------------------------------------------------
      &                      ' : LE '//MCLE(ICLE)//' "'//ZK8(JDLS+J-1)//
      &                      '" NE FAIT PAS PARTIE DU MAILLAGE "'//NOMA//
      &                      '"')
+C        CALL U2MESK('A','MODELISA5_58', 5 ,VALK)
               END IF
    70       CONTINUE
    80     CONTINUE
@@ -346,11 +346,7 @@ C     -----------------
      &            NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBTEL,
      &            NOCACO,NOCAGB,JDLM,JDLN,LMAX,IRET)
       IF (IRET.NE.0) THEN
-        CALL UTMESS('F',CMD,'UNE ERREUR D AFFECTATION A ETE '//
-     &            'DETECTEE : CERTAINES MAILLES DEMANDEES POSSEDENT UN '
-     &              //
-     &           'TYPE ELEMENT INCOMPATIBLE AVEC LES DONNEES A AFFECTER'
-     &              )
+        CALL U2MESS('F','MODELISA5_59')
       END IF
 C     FABRICATION DE LA CARTE COMMUNE A TOUS LES ELEMENTS LINEIQUE
 C     S'IL Y EN A D'AFFECTE
@@ -363,16 +359,13 @@ C     S'IL Y EN A D'AFFECTE
          ENDIF
       ENDIF
       IF ( (NBOCC(1).EQ.0).AND.(NPOUTR.NE.0) )THEN
-         CALL UTMESS('A','AFFE_CARA_ELEM',
-     &                   'DES POUTRES NE SONT PAS AFFECTEES')
+         CALL U2MESS('A','MODELISA5_60')
       ENDIF
       IF ( (NBOCC(7).EQ.0).AND.(NBARRE.NE.0) )THEN
-         CALL UTMESS('A','AFFE_CARA_ELEM',
-     &                   'DES BARRES NE SONT PAS AFFECTEES')
+         CALL U2MESS('A','MODELISA5_61')
       ENDIF
       IF ( (NBOCC(6).EQ.0).AND.(NCABLE.NE.0) )THEN
-         CALL UTMESS('A','AFFE_CARA_ELEM',
-     &                   'DES CABLES NE SONT PAS AFFECTES')
+         CALL U2MESS('A','MODELISA5_62')
       ENDIF
 
 C --- AFFECTATION DES ORIENTATIONS AUX ELEMENTS POUTRES ET DISCRETS  ET

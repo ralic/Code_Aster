@@ -3,7 +3,7 @@
       INTEGER             IOCC, NBNO
       CHARACTER*(*)       MOFAZ, NOMAZ, LISNOZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,12 +59,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER        IRET, NRF, NLF, NBNOT, NBMAT, NBMB, NBNB, NBNC,
-     +               I, J, IDCOOR, JMAIL, JNOTR, IDLINO, JTRAV, JNOBE,
-     +               IDNONO, INO1, INO2, INO, JNORD, NBNOR, IREST
+     &               I, J, IDCOOR, JMAIL, JNOTR, IDLINO, JTRAV, JNOBE,
+     &               IDNONO, INO1, INO2, INO, JNORD, NBNOR, IREST
       REAL*8         C1(3), C2(3), NB(3), C1NB(3), C1C2(3), LC1C2, PSCA,
-     +               ZERO, RFUT, RFUT2, LFUT, LCUMUL, XC1H, XC2H, R,
-     +               C2NB(3), LC1NB, R8MAEM, X, Y, Z, XMIN, XMAX, LC2NB,
-     +               C2H(3), YMIN, YMAX, ZMIN, ZMAX, HNB(3), C1H(3),L12
+     &               ZERO, RFUT, RFUT2, LFUT, LCUMUL, XC1H, XC2H, R,
+     &               C2NB(3), LC1NB, R8MAEM, X, Y, Z, XMIN, XMAX, LC2NB,
+     &               C2H(3), YMIN, YMAX, ZMIN, ZMAX, HNB(3), C1H(3),L12
       CHARACTER*8    K8B, NOMA, PREFIX
       CHARACTER*16   MOTFAC, MOTCLE(3), TYPMCL(3)
       CHARACTER*24   LISNOE, NOMNOE, MESMAI, LISNOM
@@ -104,7 +104,7 @@ C     ---------------------------------------
       TYPMCL(2) = 'MAILLE'
       TYPMCL(3) = 'TOUT'
       CALL RELIEM ( ' ', NOMA, 'NU_MAILLE', MOTFAC, IOCC,
-     +                                3, MOTCLE, TYPMCL, MESMAI, NBMB )
+     &                                3, MOTCLE, TYPMCL, MESMAI, NBMB )
       CALL JEVEUO ( MESMAI, 'L', JMAIL )
 
 C --- TRANSFORMATION EN LISTE DE NOEUDS
@@ -112,7 +112,7 @@ C --- TRANSFORMATION EN LISTE DE NOEUDS
       CALL WKVECT ( '&&CGNOFU.TRAVAIL'    , 'V V I', NBNOT, JTRAV )
       CALL WKVECT ( '&&CGNOFU.NOEUD_BETON', 'V V I', NBNOT, JNOBE )
       CALL GMGNRE ( NOMA, NBNOT, ZI(JTRAV), ZI(JMAIL), NBMB,
-     +                                      ZI(JNOBE), NBNB, 'TOUS' )
+     &                                      ZI(JNOBE), NBNB, 'TOUS' )
 C
 C --- RECUPERATION DES NOEUDS AXE :
 C     ---------------------------
@@ -183,9 +183,7 @@ C
 C
          LC1C2 = C1C2(1)*C1C2(1) + C1C2(2)*C1C2(2) + C1C2(3)*C1C2(3)
          IF ( LC1C2 .EQ. ZERO ) THEN
-            CALL UTMESS('F','CGNOFU','ERREUR DANS LA DONNEE DU '//
-     +                   'VECTEUR ORIENTANT L''AXE D''UN SEGMENT ,'//
-     +                   'CE VECTEUR EST NUL.')
+            CALL U2MESS('F','MODELISA3_92')
          ENDIF
          L12 = SQRT(LC1C2)
          IF ( (LCUMUL+L12) .GE. LFUT ) THEN
@@ -217,8 +215,8 @@ C        --------------------------------------------------------
             Y =  ZR(IDCOOR-1+3*(INO-1)+2)
             Z =  ZR(IDCOOR-1+3*(INO-1)+3)
             IF ( (X.LE.XMAX .AND. X.GE.XMIN) .AND.
-     +           (Y.LE.YMAX .AND. Y.GE.YMIN) .AND.
-     +           (Z.LE.ZMAX .AND. Z.GE.ZMIN) ) THEN
+     &           (Y.LE.YMAX .AND. Y.GE.YMIN) .AND.
+     &           (Z.LE.ZMAX .AND. Z.GE.ZMIN) ) THEN
                NBNOR = NBNOR + 1
                ZI(JNORD+NBNOR-1) = INO
             ENDIF

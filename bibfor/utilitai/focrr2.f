@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,9 +77,7 @@ C     ------------------------------------------------------------------
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
         NOMACC = 'FREQ    '
         IF (N1+N2.NE.0) THEN
-          CALL UTMESS('F','FOCRR2',
-     &        '"INTERP_NUME" ET ("INST" OU "LIST_INST") NON COMPATIBLES'
-     &                )
+          CALL U2MESS('F','UTILITAI_95')
         END IF
         IF (N3+N4.EQ.0) THEN
           CALL FOCRRS(NOMFON,RESU,BASE,NOMCHA,MAILLE,NOEUD,CMP,NPOINT,
@@ -98,9 +96,7 @@ C     ------------------------------------------------------------------
       ELSE
         NOMACC = 'INST    '
         IF (N3+N4.NE.0) THEN
-          CALL UTMESS('F','FOCRR2',
-     &        '"INTERP_NUME" ET ("FREQ" OU "LIST_FREQ") NON COMPATIBLES'
-     &                )
+          CALL U2MESS('F','UTILITAI_96')
         END IF
         IF (N1+N2.EQ.0) THEN
           CALL FOCRRS(NOMFON,RESU,BASE,NOMCHA,MAILLE,NOEUD,CMP,NPOINT,
@@ -138,7 +134,7 @@ C     --- REMPLISSAGE DU .PROL ---
       LFON = LVAR + NBINST
 
       CALL JENONU(JEXNOM(RESU//'.NOVA',NOMACC),IACCES)
-      IF (IACCES.EQ.0) CALL UTMESS('F','FOCRR2','ERREUR 0')
+      IF (IACCES.EQ.0) CALL U2MESS('F','UTILITAI_97')
       CALL JEVEUO(JEXNUM(RESU//'.TAVA',IACCES),'L',IATAVA)
       NOMOBJ = ZK8(IATAVA-1+1)
       CALL JEVEUO(RESU//NOMOBJ,'L',KINST)
@@ -172,13 +168,13 @@ C               ----- EXTRACTION SUR UN "CHAM_NO" -----
         CALL POSDDL('CHAM_NO',CH1,NOEUD,CMP,INOEUD,IDDL1)
         IF (INOEUD.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
-          CALL UTMESS('F','FOCRR2','LE NOEUD "'//NOEUD(1:LG1)//
-     &                '" N''EXISTE PAS.')
+          CALL U2MESK('F','UTILITAI_92',1,NOEUD(1:LG1))
         ELSE IF (IDDL1.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
           LG2 = LXLGUT(CMP)
         CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
      &                'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
+C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
         END IF
         IDDL2 = IDDL1
         DO 20 IORDR = 0,NBINST - 1
@@ -207,13 +203,13 @@ C           -------------------------
             CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
             CALL UTIMPR('L',' BORNE SUPERIEURE:',1,ZR(KINST+NBORDR-1))
             CALL UTFINM()
-            CALL UTMESS('F','FOCRR2','2')
+            CALL U2MESS('F','UTILITAI_67')
           END IF
 
           CALL RSUTRO(RESU,I1,IP1,IERR1)
           CALL RSUTRO(RESU,I2,IP2,IERR2)
           IF (IERR1+IERR2.GT.0) THEN
-            CALL UTMESS('F','FOCRR2','1BIS')
+            CALL U2MESS('F','UTILITAI_98')
           END IF
           RBASE = ZR(KINST-1+I2) - ZR(KINST-1+I1)
 
@@ -242,14 +238,14 @@ C           -------------------------
             CALL POSDDL('CHAM_NO',CH1,NOEUD,CMP,INOEUD,IDDL1)
             IF (INOEUD.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
-              CALL UTMESS('F','FOCRR2','LE NOEUD "'//NOEUD(1:LG1)//
-     &                    '" N''EXISTE PAS.')
+              CALL U2MESK('F','UTILITAI_92',1,NOEUD(1:LG1))
             ELSE IF (IDDL1.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
               LG2 = LXLGUT(CMP)
               CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//
      &                    '" DU '//'NOEUD "'//NOEUD(1:LG1)//
      &                    '" N''EXISTE PAS.')
+C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
             END IF
             IDDL2 = IDDL1
           END IF
@@ -269,14 +265,14 @@ C           -------------------------
             CALL POSDDL('CHAM_NO',CH2,NOEUD,CMP,INOEUD,IDDL2)
             IF (INOEUD.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
-              CALL UTMESS('F','FOCRR2','LE NOEUD "'//NOEUD(1:LG1)//
-     &                    '" N''EXISTE PAS.')
+              CALL U2MESK('F','UTILITAI_92',1,NOEUD(1:LG1))
             ELSE IF (IDDL2.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
               LG2 = LXLGUT(CMP)
               CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//
      &                    '" DU '//'NOEUD "'//NOEUD(1:LG1)//
      &                    '" N''EXISTE PAS.')
+C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
             END IF
           END IF
 
@@ -338,13 +334,13 @@ C           -------------------------
             CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
             CALL UTIMPR('L',' BORNE SUPERIEURE:',1,ZR(KINST+NBORDR-1))
             CALL UTFINM()
-            CALL UTMESS('F','FOCRR2','2')
+            CALL U2MESS('F','UTILITAI_67')
           END IF
 
           CALL RSUTRO(RESU,I1,IP1,IERR1)
           CALL RSUTRO(RESU,I2,IP2,IERR2)
           IF (IERR1+IERR2.GT.0) THEN
-            CALL UTMESS('F','FOCRR2','1BIS')
+            CALL U2MESS('F','UTILITAI_98')
           END IF
           RBASE = ZR(KINST-1+I2) - ZR(KINST-1+I1)
 
@@ -370,7 +366,7 @@ C           -------------------------
           IF (RBASE.EQ.0.0D0) THEN
             CALL UTCH19(CH1,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,
      &                  TYPE,VALR1,VALC1,IRET)
-            IF (IRET.NE.0) CALL UTMESS('F','FOCRR2','ERREUR 1')
+            IF (IRET.NE.0) CALL U2MESS('F','UTILITAI_99')
             ZR(LVAR+IORDR) = RVAL
             IF (TYPE.EQ.'R') THEN
               ZR(LFON+IORDR) = VALR1
@@ -387,10 +383,10 @@ C           -------------------------
 
           CALL UTCH19(CH1,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,TYPE,
      &                VALR1,VALC1,IRET)
-          IF (IRET.NE.0) CALL UTMESS('F','FOCRR2','ERREUR 2')
+          IF (IRET.NE.0) CALL U2MESS('F','UTILITAI2_2')
           CALL UTCH19(CH2,NOMA,MAILLE,NOEUD,NPOINT,NUSP,IVARI,CMP,TYPE,
      &                VALR2,VALC2,IRET)
-          IF (IRET.NE.0) CALL UTMESS('F','FOCRR2','ERREUR 3')
+          IF (IRET.NE.0) CALL U2MESS('F','UTILITAI2_3')
 
           ZR(LVAR+IORDR) = RVAL
           IF (TYPE.EQ.'R') THEN

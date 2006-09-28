@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 
 C     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_GROUP
@@ -173,9 +173,7 @@ C --- CHAQUE COUPLE DE LA LIST(UN GREL PAR COUPLE)             ---
 
         IF ((NDDL1.EQ.1) .AND. (ZK8(IDDL1).EQ.'DNOR')) THEN
           IF (.NOT.DNOR) THEN
-            CALL UTMESS('F','CALIAG_01',' LIAISON_GROUP : ON NE SAIT'//
-     &      ' PAS CALCULER LA NORMALE A UN NOEUD IL FAUT PASSER PAR LES'
-     &                  //' MAILLES')
+            CALL U2MESS('F','MODELISA2_94')
           ELSE
           END IF
         ELSE
@@ -216,9 +214,7 @@ C --- SUR LA LISTE 2                                    ---
         CALL GETVR8(MOTFAC,'COEF_MULT_2',IOCC,1,NDDL2,ZR(IMULT2),NDDL2)
         IF ((NDDL2.EQ.1) .AND. (ZK8(IDDL2).EQ.'DNOR')) THEN
           IF (.NOT.DNOR) THEN
-            CALL UTMESS('F','CALIAG_02',' LIAISON_GROUP : ON NE SAIT'//
-     &      ' PAS CALCULER LA NORMALE A UN NOEUD IL FAUT PASSER PAR LES'
-     &                  //' MAILLES')
+            CALL U2MESS('F','MODELISA2_94')
           ELSE
           END IF
         ELSE
@@ -240,10 +236,7 @@ C --- NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR ---
 
       CALL DISMOI('F','NB_EC',NOMG,'GRANDEUR',NBEC,K8BID,IER)
       IF (NBEC.GT.10) THEN
-        CALL UTMESS('F','CALIAG',
-     &              'LE DESCRIPTEUR_GRANDEUR DE LA GRANDEUR'//
-     &              ' DE NOM '//NOMG//
-     &              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+        CALL U2MESK('F','MODELISA2_87',1,NOMG)
       END IF
 
       CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMG),'L',INOM)
@@ -354,7 +347,7 @@ C ---  AFFECTATION DE CE VECTEUR ---
      &                     ' IMPOSSIBLE'
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO1),NOMNO1)
             WRITE (TEXTE(10:17),'(A)') NOMNO1
-            CALL UTMESS('F','CALIAG_04',TEXTE)
+            CALL U2MESK('F','MODELISA_96',1,TEXTE)
           END IF
           ZI(IDNBN-1+2* (J-1)+1) = 3
           IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG1),ICMPZ))) THEN
@@ -367,7 +360,7 @@ C ---  AFFECTATION DE CE VECTEUR ---
      &                     ' IMPOSSIBLE'
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO2),NOMNO2)
             WRITE (TEXTE(10:17),'(A)') NOMNO2
-            CALL UTMESS('F','CALIAG_05',TEXTE)
+            CALL U2MESK('F','MODELISA_96',1,TEXTE)
           END IF
           ZI(IDNBN-1+2* (J-1)+2) = 3
           IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG2),ICMPZ))) THEN

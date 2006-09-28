@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,36 +90,36 @@ C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
           CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',1,NOMPAR,
-     1                VALPAD,5,NOMC(1),MATERD(1,1),CERR(1),BL2 )
+     &                VALPAD,5,NOMC(1),MATERD(1,1),CERR(1),BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
           CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPD, 8,
-     1                   NOMC(6),  MATERD(1,2),  CERR(6), FB2 )
+     &                   NOMC(6),  MATERD(1,2),  CERR(6), FB2 )
 C
 C         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 C         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 C
           CALL RCTRAC (IMAT,'TRACTION','SIGM',TEMPD,
-     1                 JPROL,JVALE,NBVALE,MATERD(1,1))
+     &                 JPROL,JVALE,NBVALE,MATERD(1,1))
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
           CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1, NOMPAR,
-     1                VALPAF,5,NOMC(1),MATERF(1,1),CERR(1), BL2 )
+     &                VALPAF,5,NOMC(1),MATERF(1,1),CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
           CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPF, 8,
-     1                   NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
+     &                   NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
 C
 C         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 C         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 C
           CALL RCTRAC (IMAT,'TRACTION','SIGM',TEMPF,
-     1                 JPROL,JVALE,NBVALE,MATERF(1,1))
+     &                 JPROL,JVALE,NBVALE,MATERF(1,1))
 C
 C -     MATERIAU CONSTANT ? ------------------------------------------
 C
@@ -144,11 +144,9 @@ C ---- INITIALISATION DE LA POROSITE INITIALE -------------------------
           F0 = MATERF(3,2)
           VIND(2) = F0
           IF (F0.LE.0.D0) THEN
-            CALL UTMESS('F','RSLMAT','LA POROSITE INITIALE'//
-     &      ' F0 NE PEUT ETRE NULLE OU NEGATIVE')
+            CALL U2MESS('F','ALGORITH10_49')
           ELSEIF (F0.GE.1.D0) THEN
-            CALL UTMESS('F','RSLMAT','LA POROSITE INITIALE'//
-     &      ' F0 NE PEUT ETRE EGAL OU PLUS GRAND QUE UN')
+            CALL U2MESS('F','ALGORITH10_50')
           ENDIF
         ENDIF
 C

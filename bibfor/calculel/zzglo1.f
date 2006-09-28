@@ -1,7 +1,7 @@
       SUBROUTINE ZZGLO1 (CHAMP,OPTION,INST,NIVEAU,IORDR,RESUCO)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C       ABS,SQRT.
 C  -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       05/07/01 (OB): CREATION EN S'INSPIRANT DE ZZGLOB.F.
-C       12/09/02 (OB): MODIF. MSG D'ALARME DE LA DIVISION PAR ZERO. 
+C       12/09/02 (OB): MODIF. MSG D'ALARME DE LA DIVISION PAR ZERO.
 C --------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -92,7 +92,7 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL CELVER(CHAMP2,'NBSPT_1','STOP',IBID)
       CALL JELIRA (CHAMP2//'.CELD','DOCU',IBID,DOCU)
       IF(DOCU.NE.'CHML')
-     & CALL UTMESS('F','ZZGLO1','! LE CHAMP DOIT ETRE UN CHAM_ELEM !')
+     & CALL U2MESS('F','CALCULEL5_44')
       CALL JEVEUO (CHAMP2//'.CELK','L',IACELK)
       LIGREL = ZK24(IACELK-1+1)(1:19)
 
@@ -111,8 +111,7 @@ C     -- ON VERIFIE LES LONGUEURS:
            LONGT = LONG2
          ELSE
            IF (LONGT.NE.LONG2)
-     &       CALL UTMESS('F','ZZGLO1','! LONGUEURS DES MODES LOCAUX '
-     &                     //'IMCOMPATIBLES ENTRE EUX !')
+     &       CALL U2MESS('F','CALCULEL5_45')
          ENDIF
          FIRST = .FALSE.
    1  CONTINUE
@@ -181,8 +180,7 @@ C ERREURS PARTIELLES RELATIVES
       IF (NORS.GT.OVFL) THEN
         NU0 = 100.D0*ERR0/NORS
       ELSE
-        CALL UTMESS
-     &   ('A','ZZGLO1','! TERME NORMALISATION GLOBAL NUL !')
+        CALL U2MESS('A','CALCULEL5_46')
         NU0 = 0.D0
       ENDIF
       WRITE(IFI,*) ' '

@@ -17,22 +17,22 @@
       REAL*8    R(1:DIMDEF+1),VECTU(DIMUEL),DT,CONTM(4)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C =====================================================================
@@ -68,25 +68,25 @@ C ======================================================================
        IF ( MECANI(1).NE.0 ) THEN
           INDICE = 1
           IF ( CONTM(INDICE).EQ.R8VIDE() ) THEN
-             CALL UTMESS('F','TE0600','IL MANQUE SIGM_REFE')
+             CALL U2MESS('F','ALGORITH10_36')
           ENDIF
        ENDIF
        IF ( PRESS1(1).NE.0 ) THEN
           INDICE = 2
           IF ( CONTM(INDICE).EQ.R8VIDE() ) THEN
-             CALL UTMESS('F','TE0600','IL MANQUE RESI_HYD1_REFE')
+             CALL U2MESS('F','ALGORITH10_37')
           ENDIF
        ENDIF
        IF ( PRESS2(1).NE.0 ) THEN
           INDICE = 3
           IF ( CONTM(INDICE).EQ.R8VIDE() ) THEN
-             CALL UTMESS('F','TE0600','IL MANQUE RESI_HYD2_REFE')
+             CALL U2MESS('F','ALGORITH10_38')
           ENDIF
        ENDIF
        IF ( TEMPE(1).NE.0 ) THEN
           INDICE = 4
           IF ( CONTM(INDICE).EQ.R8VIDE() ) THEN
-             CALL UTMESS('F','TE0600','IL MANQUE RESI_THER_REFE')
+             CALL U2MESS('F','ALGORITH10_39')
           ENDIF
        ENDIF
 C ======================================================================
@@ -103,24 +103,24 @@ C ======================================================================
 C --- ON NE FAIT RIEN DANS LE CAS DE L'ENTHALPIE -----------------------
 C ======================================================================
                     IF ( J.EQ.(MECANI(5)+PRESS1(7)) .OR.
-     +                   J.EQ.(MECANI(5)+PRESS1(2)*PRESS1(7)) ) THEN
+     &                   J.EQ.(MECANI(5)+PRESS1(2)*PRESS1(7)) ) THEN
                        GO TO 210
                     ENDIF
                  ENDIF
               ELSE IF ( J.LE.
-     +        (MECANI(5)+PRESS1(2)*PRESS1(7)+PRESS2(2)*PRESS2(7)) ) THEN
+     &        (MECANI(5)+PRESS1(2)*PRESS1(7)+PRESS2(2)*PRESS2(7)) ) THEN
                  INDICE = 3
                  IF ( TEMPE(5).GT.0 ) THEN
 C ======================================================================
 C --- ON NE FAIT RIEN DANS LE CAS DE L'ENTHALPIE -----------------------
 C ======================================================================
                     IF (
-     +             J.EQ.(MECANI(5)+
-     +                  PRESS1(2)*PRESS1(7)+PRESS2(7)) .OR.
-     +             J.EQ.(MECANI(5)+
-     +                  PRESS1(2)*PRESS1(7)+PRESS2(2)*PRESS2(7)) ) THEN
+     &             J.EQ.(MECANI(5)+
+     &                  PRESS1(2)*PRESS1(7)+PRESS2(7)) .OR.
+     &             J.EQ.(MECANI(5)+
+     &                  PRESS1(2)*PRESS1(7)+PRESS2(2)*PRESS2(7)) ) THEN
                        GO TO 210
-                    ENDIF                 
+                    ENDIF
                  ENDIF
               ELSE IF ( J.LE.(MECANI(5)+TEMPE(5)) ) THEN
                  INDICE = 4
@@ -135,7 +135,7 @@ C ======================================================================
      &                  PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,NDDLS,
      &                  NDDLM,DIMUEL,NMEC,NP1,NP2,NDIM,
      &                  AXI)
-   
+
               DO 220 K = 1,DIMUEL
                  FTEMP(K) = FTEMP(K) + ABS(BSIGM(K))
  220          CONTINUE
@@ -143,13 +143,12 @@ C ======================================================================
 
  210       CONTINUE
  200    CONTINUE
- 
+
         CALL DAXPY(DIMUEL,1.D0/NPI,FTEMP(1),1,VECTU(1),1)
 
         DO 230 K = 1,DIMUEL
            IF ( ABS(VECTU(K)).LT.R8MIEM() ) THEN
-              CALL UTMESS('F','TE0600','VECTEUR NUL ENTRAINANT '//
-     +                           'UNE DIVISION PAR ZERO DANS NMCONV')
+              CALL U2MESS('F','ALGORITH10_40')
            ENDIF
  230    CONTINUE
 

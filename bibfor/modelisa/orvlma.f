@@ -1,12 +1,12 @@
       SUBROUTINE ORVLMA ( NOMA, LISTMA, NBMAIL, NORIEN,
-     .                    VECT, NOEUD, PREC )
+     &                    VECT, NOEUD, PREC )
       IMPLICIT NONE
       INTEGER             LISTMA(*), NBMAIL, NOEUD, NORIEN
       CHARACTER*8         NOMA
       REAL*8              VECT(*), PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,12 +122,12 @@ C
         ELSE
           CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
           CALL UTMESS('F','ORVLMA','IMPOSSIBILITE, LA MAILLE '//
-     +                NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
-     +                'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
-     +              //'EN 2D, ET ELLE EST DE TYPE : '//TYPEL)
+     &                NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
+     &                'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
+     &              //'EN 2D, ET ELLE EST DE TYPE : '//TYPEL)
+C        CALL U2MESK('F','MODELISA5_94', 2 ,VALK)
         ENDIF
-        IF (DIME1.AND.DIME2) CALL UTMESS('F','ORVLMA',
-     +  'IMPOSSIBILITE DE MELANGER DES "SEG" ET DES "TRIA" OU "QUAD" !')
+        IF (DIME1.AND.DIME2) CALL U2MESS('F','MODELISA5_98')
   10  CONTINUE
 C
 C --- RECUPERATION DES MAILLES VOISINES DU GROUP_MA :
@@ -153,9 +153,9 @@ C
 C
 C ------ VERIFICATION QUE LE NOEUD EST DANS LA MAILLE
          IF (DIME1)
-     +      ICO = IORIV1( ZI(P1+JDESM1-1), NOEUD, VECT, ZR(JCOOR) )
+     &      ICO = IORIV1( ZI(P1+JDESM1-1), NOEUD, VECT, ZR(JCOOR) )
          IF (DIME2)
-     +      ICO = IORIV2( ZI(P1+JDESM1-1),NBNMAI, NOEUD,VECT, ZR(JCOOR))
+     &      ICO = IORIV2( ZI(P1+JDESM1-1),NBNMAI, NOEUD,VECT, ZR(JCOOR))
 C
 C ------ LA MAILLE NE CONTIENT PAS LE NOEUD
          IF ( ICO .EQ. 0 ) THEN
@@ -168,7 +168,7 @@ C ------ LA MAILLE A ETE REORIENTEE
             IF ( NIV .EQ. 2 ) THEN
                CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
                WRITE(IFM,*) 'LA MAILLE '//NOMAIL//
-     +                       ' A ETE ORIENTEE PAR RAPPORT AU VECTEUR'
+     &                       ' A ETE ORIENTEE PAR RAPPORT AU VECTEUR'
             ENDIF
             NORIEG = NORIEG + 1
 C
@@ -180,14 +180,13 @@ C ------ LA MAILLE A LA BONNE ORIENTATION
             IF ( NIV .EQ. 2 ) THEN
                CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
                WRITE(IFM,*) 'LA MAILLE '//NOMAIL//
-     +                       ' EST ORIENTEE PAR RAPPORT AU VECTEUR'
+     &                       ' EST ORIENTEE PAR RAPPORT AU VECTEUR'
             ENDIF
          ENDIF
 
  20   CONTINUE
       IF ( NBMAOR .EQ. 0 )
-     + CALL UTMESS('F','ORVLMA','PROBLEME D''ORIENTATION: '
-     & //'AUCUNE MAILLE NE TOUCHE LE NOEUD INDIQUE.')
+     & CALL U2MESS('F','MODELISA6_1')
 C
       DO 300 II = 1 , NBMAOR
       LLISTE = 0
@@ -211,10 +210,10 @@ C --- ON ESSAYE D'ORIENTER LES MAILLES VOISINES
             JDESM2 = ZI(KORI-1+IM2)
 C           VERIFICATION DE LA CONNEXITE ET REORIENTATION EVENTUELLE
             IF (DIME1) ICO = IORIM1 ( ZI(P1+JDESM1-1),
-     +                                  ZI(P1+JDESM2-1), REORIE )
+     &                                  ZI(P1+JDESM2-1), REORIE )
             IF (DIME2)
-     +         ICO = IORIM2 ( ZI(P1+JDESM1-1),ZI(NORI-1+IM1),
-     +                        ZI(P1+JDESM2-1),ZI(NORI-1+IM2), REORIE )
+     &         ICO = IORIM2 ( ZI(P1+JDESM1-1),ZI(NORI-1+IM1),
+     &                        ZI(P1+JDESM2-1),ZI(NORI-1+IM2), REORIE )
 C           SI MAILLES CONNEXES
             IF (ICO.NE.0) THEN
                ZI(LORI-1+IM2) = 1
@@ -242,9 +241,7 @@ C
 C --- ON VERIFIE QU'ON A BIEN TRAITE TOUTES LES MAILLES
 C
       DO 100 IMA = 1 , NBMAIL
-         IF ( PASORI(IMA) ) CALL UTMESS('F','ORVLMA',
-     &   'CERTAINES MAILLES N''ONT PAS PU ETRE REORIENTEES.'
-     &   //' L''ENSEMBLE DES MAILLES N''EST PAS CONNEXE.')
+         IF ( PASORI(IMA) ) CALL U2MESS('F','MODELISA6_2')
  100  CONTINUE
 C
       NORIEN = NORIEN + NORIEG

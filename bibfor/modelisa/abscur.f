@@ -1,7 +1,7 @@
       SUBROUTINE ABSCUR(CONNEX,TYPMAI,COOVAL,NOMU,IT)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*8  NOMU, NSP
+      CHARACTER*8  NOMU
       CHARACTER*24 CONNEX, TYPMAI, COOVAL
 C-----------------------------------------------------------------------
 C     CALCUL D'UNE ABSCISSE CURVILIGNE POUR UN GROUPE DE MAILLES
@@ -64,7 +64,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CALL JEMARQ()
-      NSP = 'ABSCUR'
       IF (IT.EQ.1) THEN
         NOMMAI = NOMU//'.NOMMAI'
         CALL JELIRA(NOMMAI,'NOMUTI',NBRMA,K1BID)
@@ -73,9 +72,7 @@ C
           ZI(IAGM+IJ-1) = IJ
    11   CONTINUE
       ELSE
-        CALL UTMESS('F',NSP,'L OPTION DE CALCUL D UNE ABSCISSE'//
-     +                ' CURVILIGNE SUR UN GROUPE DE MAILLES'//
-     +                ' N EST PAS IMPLANTEE')
+        CALL U2MESS('F','MODELISA_1')
       ENDIF
 C
       NBRMA2 = 2*NBRMA
@@ -109,9 +106,7 @@ C     TRI DES MAILLES POI1 ET SEG2
            NBPOI1=NBPOI1+1
            ZI(IMA1+NBPOI1-1)=IM
         ELSE
-          CALL UTMESS('F',NSP,'IL EST POSSIBLE DE DEFINIR UNE'//
-     +                ' ABSCISSE CURVILIGNE UNIQUEMENT POUR DES'//
-     +                ' MAILLES DE TYPE: POI1 OU SEG2')
+          CALL U2MESS('F','MODELISA_2')
         ENDIF
  12   CONTINUE
       CONSEG='&&ABSCUR.CONNEX'
@@ -158,7 +153,7 @@ C     IL FAUT VERIFIER L'INCLUSION DES POI1
             GOTO 15
           ENDIF
    16   CONTINUE
-        CALL UTMESS('F',NSP,'POINT NON TROUVE PARMI LES SEG2')
+        CALL U2MESS('F','MODELISA_3')
    15  CONTINUE
 
 
@@ -166,8 +161,7 @@ C     IL FAUT VERIFIER L'INCLUSION DES POI1
       CALL I2TGRM(ZI(IAV1),ZI(IAV2),NBSEG2,ZI(IACH),ZI(PTCH),NBCHM)
 C
       IF (NBCHM .GT. 1) THEN
-        CALL UTMESS('F',NSP,'MAUVAISE DEFINITION POUR L ABS_CURV.'//
-     +               ' DETECTION DE PLUSIEURS CHEMINS. ')
+        CALL U2MESS('F','MODELISA_4')
       ENDIF
 C
       CALL I2SENS(ZI(IACH),2*NBSEG2,ZI(IAGM),NBSEG2,CONSEG,TYPSEG)

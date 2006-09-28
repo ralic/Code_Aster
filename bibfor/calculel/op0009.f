@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF CALCULEL  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C     COMMANDE:  CALC_MATR_ELEM
 
 C ----------------------------------------------------------------------
@@ -88,9 +88,7 @@ C     ----------
       IF (N7.NE.0) THEN
         CALL RSEXCH(SDTHET,'THETA',0,THETA,IRET)
         IF (IRET.GT.0) THEN
-          CALL UTMESS('F','OP0009','LE CHAMP DE THETA EST INEXISTANT '//
-     &                'DANS LA STRUCTURE DE DONNEES '//SDTHET//' DE '//
-     &                'TYPE THETA_GEOM .')
+          CALL U2MESK('F','CALCULEL3_90',1,SDTHET)
         END IF
       END IF
 

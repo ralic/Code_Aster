@@ -1,7 +1,7 @@
       SUBROUTINE AFRELA(COEFR,COEFC,DDL,NOEUD,NDIM,DIRECT,NBTERM,BETAR,
      &                  BETAC,BETAF,TYPCOE,TYPVAL,TYPLAG,EPSI,LISREZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,18 +165,16 @@ C     ----------------------------------------------
         DO 20,K = 1,NBTERM
           RCOEF = MAX(RCOEF,ABS(COEFR(K)))
    20   CONTINUE
-        IF (RCOEF.EQ.0.D0) CALL UTMESS('F','AFRELA',
-     &                                 'TOUS LES COEF. SONT NULS')
+        IF (RCOEF.EQ.0.D0) CALL U2MESS('F','MODELISA_97')
 
       ELSE IF (TYPCO2.EQ.'COMP') THEN
         RCOEF = 0.D0
         DO 30,K = 1,NBTERM
           RCOEF = MAX(RCOEF,ABS(COEFC(K)))
    30   CONTINUE
-        IF (RCOEF.EQ.0.D0) CALL UTMESS('F','AFRELA',
-     &                                 'TOUS LES COEF. SONT NULS')
+        IF (RCOEF.EQ.0.D0) CALL U2MESS('F','MODELISA_97')
       ELSE
-        CALL UTMESS('F','AFRELA','TYPE DE COEF. INCONNU:'//TYPCO2)
+        CALL U2MESK('F','MODELISA_98',1,TYPCO2)
       END IF
 
 
@@ -186,9 +184,8 @@ C     ----------------------------------------------
         BETAC = BETAC/RCOEF
       ELSE IF (TYPVAL.EQ.'FONC') THEN
 C       -- ON ALARME SI LRCOEF EST TROP DIFFERENT DE 1.
-        IF ((RCOEF.GT.1.D3) .OR. (RCOEF.LT.1.D-3)) CALL UTMESS('A',
-     &      'AFRELA','LES COEF. DE L EQUATION SONT TRES PETITS'//
-     &      ' OU TRES GRANDS ET ON NE PEUT LA NORMALISER.')
+        IF ((RCOEF.GT.1.D3) .OR. (RCOEF.LT.1.D-3)) CALL U2MESS('A','MODE
+     &LISA_99')
       END IF
 
 

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/01/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,14 +81,10 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C DEB-------------------------------------------------------------------
 
       I = INDIK8(LPAIN,NOMPAR,1,NIN)
-      IF (I.EQ.0) CALL UTMESS('F','EXTRAI','STOP1')
+      IF (I.EQ.0) CALL U2MESS('F','CALCULEL_2')
 
       CHIN = LCHIN(I)
-      IF (CHIN(1:1).EQ.' ') CALL UTMESS('E','EXTRAI',
-     &                           ' ERREUR LORS D''UNE EXTRACTION: '//
-     &                           'LE CHAMP ASSOCIE AU PARAMETRE : '//
-     &                           NOMPAR//' N''EST PAS '//
-     &                           'DANS LA LISTE DES CHAMPS PARAMETRES.')
+      IF (CHIN(1:1).EQ.' ') CALL U2MESK('E','CALCULEL2_56',1,NOMPAR)
 
 
 
@@ -105,9 +101,9 @@ C     -- MISE A JOUR DES COMMON CAII01 ET CAKK02:
       ILCHLO = ZI(IAWLOC-1+7* (IPARG-1)+2)
       IMODAT = ZI(IAWLOC-1+7* (IPARG-1)+3)
       LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
-      IF ((IACHLO.GE.-2) .AND. (IACHLO.LE.0)) CALL UTMESS('F','EXTRAI',
-     &    'STOP 1')
-      IF (ILCHLO.EQ.-1) CALL UTMESS('F','EXTRAI','IMPOSSIBLE')
+      IF ((IACHLO.GE.-2) .AND. (IACHLO.LE.0)) CALL U2MESS('F','CALCULEL_
+     &2')
+      IF (ILCHLO.EQ.-1) CALL U2MESS('F','ALGORITH_15')
       TYPE = ZK8(IACHIK-1+2* (I-1)+1) (1:4)
       TYPEGD = ZK8(IACHIK-1+2* (I-1)+2)
 

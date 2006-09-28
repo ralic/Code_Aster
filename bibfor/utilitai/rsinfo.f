@@ -4,7 +4,7 @@ C     RESULTAT - INFORMATION
 C     * *        ****
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C
       NOMD2 = NOMCON
       CALL JELIRA(NOMD2//'.DESC','NOMMAX',NBNOSY,K8B)
       IF ( NBNOSY .EQ. 0 ) THEN
-         CALL UTMESS('A',NOMPRO,'SD '//NOMD2//' INEXISTANTE')
+         CALL U2MESK('A','UTILITAI4_34',1,NOMD2)
          GOTO 9999
       ENDIF
 C
@@ -160,12 +160,12 @@ C
 C 2.3. ==> NUMEROS D'ORDRE
 C
       CALL RSORAC ( NOMSTR, 'LONUTI', IBID, R8B, K8B, C16B, R8B, K8B,
-     >              NBORDT, 1, IBID )
+     &              NBORDT, 1, IBID )
       IF ( NBORDT .EQ. 0 ) THEN
         IF ( NRSTRU.EQ.0 .AND. NBSTSE.GE.0 ) THEN
-          CALL UTMESS('A',NOMPRO,'PAS DE NUMERO D''ORDRE POUR '//NOMPRI)
+          CALL U2MESK('A','UTILITAI4_35',1,NOMPRI)
         ELSE
-          CALL UTMESS('A',NOMPRO,'PAS DE NUMERO D''ORDRE POUR '//SAUX37)
+          CALL U2MESK('A','UTILITAI4_35',1,SAUX37)
         ENDIF
         GOTO 20
       ENDIF
@@ -185,13 +185,13 @@ C
       ENDIF
 C
 10001 FORMAT(/,1X,'STRUCTURE DU CONCEPT ',A,' CALCULE POUR 1',
-     >            ' NUMERO D''ORDRE')
+     &            ' NUMERO D''ORDRE')
 10002 FORMAT(/,1X,'STRUCTURE DU CONCEPT ',A,' CALCULE POUR ',I10,
-     >            ' NUMEROS D''ORDRE')
+     &            ' NUMEROS D''ORDRE')
 C
       CALL WKVECT('&&'//NOMPRO//'.NUME_ORDRE','V V I',NBORDT,LRES)
       CALL RSORAC(NOMSTR,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
-     >                                             ZI(LRES),NBORDT,IBID)
+     &                                             ZI(LRES),NBORDT,IBID)
 C
 C 2.4. ==> NOMS SYMBOLIQUES
 C
@@ -218,7 +218,7 @@ C
       FORM1 = '(1X,''!'',1X,A10,1X,'//NOMB1//'(''!'',A16),''!'')'
       LONGT = 17 * INOMSY
       IF (LONGT.GT.2000) THEN
-         CALL UTMESS('A',NOMPRO,'LONGT TROP GRAND')
+         CALL U2MESS('A','UTILITAI4_36')
          GOTO 9999
       ENDIF
       CALL CODENT ( LONGT, 'G', NOMB1 )
@@ -333,7 +333,7 @@ C
          WRITE (IFI,'(/,1X,A)') 'LISTE DES NOMS DE VARIABLES D''ACCES:'
          DO 25 IAC = 1,NBAC
             CALL RSADPA ( NOMSTR,'L',1,ZK16(JPA-1+IAC),ZI(LRES),1,
-     >                               IAD,CTYPE)
+     &                               IAD,CTYPE)
             IF (CTYPE(1:1).EQ.'I') THEN
                WRITE (IFI,'(38X,A,A)') ZK16(JPA-1+IAC),' DE TYPE  I'
             ELSEIF (CTYPE(1:1).EQ.'R') THEN

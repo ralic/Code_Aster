@@ -1,6 +1,6 @@
       SUBROUTINE CARCES(CARTZ,TYPCES,CESMOZ,BASE,CESZ,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,10 +132,7 @@ C     ------------------------------------------
 C     3- ON ETEND LA CARTE POUR CREER L'OBJET .PTMA :
 C     -----------------------------------------------------------
       CALL ETENC2(CART,IRET)
-      IF (IRET.EQ.1) CALL UTMESS('A','CARCES',
-     &                           'LA CARTE CONCERNE AUSSI'//
-     &                        ' DES MAILLES TARDIVES QUI SONT OUBLIEES.'
-     &                           )
+      IF (IRET.EQ.1) CALL U2MESS('A','CALCULEL_38')
       CALL JEVEUO(CART//'.PTMA','L',JPTMA)
 
 
@@ -205,13 +202,13 @@ C     ------------------------------------------
           IEQ = DEB1 - 1 + ICO
 
           CMP2 = ZI(JCRCMP-1+CMP)
-          IF (CMP2.LE.0) CALL UTMESS('F','CARCES','STOP 1')
-          IF (CMP2.GT.NCMP) CALL UTMESS('F','CARCES','STOP 2')
+          IF (CMP2.LE.0) CALL U2MESS('F','CALCULEL_2')
+          IF (CMP2.GT.NCMP) CALL U2MESS('F','CALCULEL_8')
 
           DO 100,IPT = 1,NBPT
             DO 90,ISP = 1,NBSP
               CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,CMP2,IAD)
-              IF (IAD.GT.0) CALL UTMESS('F','CARCES','STOP 3')
+              IF (IAD.GT.0) CALL U2MESS('F','ALGORITH_19')
               IF (IAD.EQ.0) GO TO 110
 
 
@@ -236,7 +233,7 @@ C         -- RECOPIE DE LA VALEUR:
               ELSE IF (TSCA.EQ.'K80') THEN
                 ZK80(JCESV-1-IAD) = ZK80(JVALE-1+IEQ)
               ELSE
-                CALL UTMESS('F','CARCES','TYPE SCALAIRE INCONNU')
+                CALL U2MESS('F','CALCULEL_39')
               END IF
    90       CONTINUE
   100     CONTINUE

@@ -1,11 +1,11 @@
         SUBROUTINE NMCPLA(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
-     2                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,SIGF,
-     3                      VINF,DSDE,IRET)
+     &                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
+     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,SIGF,
+     &                      VINF,DSDE,IRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,16 +153,11 @@ C
       MOD     = TYPMOD(1)
 C
       IF (CMP3(1)(1:8).NE.'        ') THEN
-          CALL UTMESS('F','NMCPLA_1',
-     &        'COUPLAGE FLUAGE/FISSURATION : IL FAUT DEFINIR DEUX '
-     &        // 'LOIS DE COMPORTEMENT EXACTEMENT. ')
+          CALL U2MESS('F','ALGORITH7_1')
       ENDIF
 C
       IF (CMP1(1)(1:10) .NE. 'GRANGER_FP' ) THEN
-         CALL UTMESS('F','NMCPLA_2',
-     &       'COUPLAGE FLUAGE/FISSURATION : LA PREMIERE LOI DOIT '
-     &       // 'ETRE UNE LOI DE FLUAGE DE TYPE GRANGER_FP OU '
-     &       // 'GRANGER_FP_V.')
+         CALL U2MESS('F','ALGORITH7_11')
       ENDIF
 C
 C     TABLEAU DES VARIABLES INTERNES DIMENSIONNE AUX MAX I.E. 3D
@@ -178,8 +173,7 @@ C
      &    CMP2(1)(1:9) .EQ. 'VMIS_ISOT'        .OR.
      &    CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE' ) THEN
           IF ( TYPMOD(2)(1:7) .EQ. 'MEGRDKT') THEN
-              CALL UTMESS('F','NMCPLA_3',
-     &        ' COMPORTEMENT INATTENDU : '// CMP2(1))
+              CALL U2MESK('F','ALGORITH4_50',1,CMP2(1))
           ELSE
             IF (CMP2(1)(1:5) .EQ. 'ELAS ')          NVI2 = 1
             IF (CMP2(1)(1:9) .EQ. 'VMIS_ISOT')      NVI2 = 2
@@ -201,8 +195,7 @@ C
      &            CALL BETNVI ( MOD3D , IBID , IBID2 , IBID3 , NVI2 )
 C
       ELSE
-         CALL UTMESS('F','NMCPLA_4','LOI DE COMPORTEMENT NON '
-     &      // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')
+         CALL U2MESS('F','ALGORITH7_3')
       ENDIF
 C
       WRITE (CMP2(2),'(I16)') NVI2
@@ -210,10 +203,7 @@ C
       WRITE (CVERI,'(I16)') (NVI1 + NVI2)
 C
       IF (CVERI(1:16).NE.COMP(2)(1:16)) THEN
-         CALL UTMESS('F','NMCPLA_5',
-     &        'COUPLAGE FLUAGE/FISSURATION : NOMBRE TOTAL DE '
-     &     // 'VARIABLES INTERNES INCOHERENT <--> ERREUR DE '
-     &     // 'PROGRAMMATION. ')
+         CALL U2MESS('F','ALGORITH7_12')
               ENDIF
 C
 C --- TEMPERATURE MAXIMALE AU COURS DE L'HISTORIQUE DE CHARGEMENT
@@ -252,9 +242,9 @@ C --- RESOLUTION LOI DE FLUAGE
 C
       IF ( OPTFLU .EQ. 'RAPH_MECA' ) THEN
          CALL NMGRAN (FAMI, KPG, KSP, NDIM, TYPMOD, IMAT, CMP1,
-     1                CRIT, TIMED, TIMEF, TEMPD, TEMPF, TREF,
-     2                TMPDMX,TMPFMX, DEPST2,SIGD,VIND(1),OPT,
-     3                SIGF2,  VINF(1),  DSDE )
+     &                CRIT, TIMED, TIMEF, TEMPD, TEMPF, TREF,
+     &                TMPDMX,TMPFMX, DEPST2,SIGD,VIND(1),OPT,
+     &                SIGF2,  VINF(1),  DSDE )
 C
 C ---    CALCUL DE L'INCREMENT DE LA DEFORMATION DE FLUAGE
 C
@@ -271,12 +261,12 @@ C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',1,NOMPAR,
-     1               VALPAD,1,NOMC(2),MATERD(2),CERR(1),FB2 )
+     &               VALPAD,1,NOMC(2),MATERD(2),CERR(1),FB2 )
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1,NOMPAR,
-     1               VALPAF,1,NOMC(2),MATERF(2),CERR(1),FB2 )
+     &               VALPAF,1,NOMC(2),MATERF(2),CERR(1),FB2 )
 C
          MATERD(1) = 1.D0
          MATERF(1) = 1.D0
@@ -326,9 +316,9 @@ C
      &    CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE' ) THEN
 C
           CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
-     1                 TIMED, TIMEF,     TEMPD,    TEMPF, TREF,
-     2                 DEPS , SIGD,      VIND(NN), OPT,
-     3                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
+     &                 TIMED, TIMEF,     TEMPD,    TEMPF, TREF,
+     &                 DEPS , SIGD,      VIND(NN), OPT,
+     &                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
 C
       ELSEIF (CMP2(1)(1:8).EQ. 'ROUSS_PR' .OR.
      &        CMP2(1)(1:5) .EQ. 'LMARC'      .OR.
@@ -336,12 +326,11 @@ C
      &        CMP2(1)(1:7) .EQ. 'NADAI_B'        ) THEN
 C
               CALL REDECE (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
-     1                     TIMED, TIMEF,    TEMPD,    TEMPF, TREF,
-     2                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,
-     3              ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE,RETCOM)
+     &                     TIMED, TIMEF,    TEMPD,    TEMPF, TREF,
+     &                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,
+     &              ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE,RETCOM)
       ELSE
-         CALL UTMESS('F','NMCPLA_6','LOI DE COMPORTEMENT NON '
-     &      // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')
+         CALL U2MESS('F','ALGORITH7_3')
       ENDIF
 C
       IF (OPTFLU.EQ.'RAPH_MECA') THEN
@@ -350,7 +339,7 @@ C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',2,NOMPAR,
-     1               VALPAD,5,NOMC(1),MATERD(1),CERR(1), FB2 )
+     &               VALPAD,5,NOMC(1),MATERD(1),CERR(1), FB2 )
 C
          IF ( CERR(3) .NE. 'OK' ) MATERD(3) = 0.D0
          IF ( CERR(4) .NE. 'OK' ) MATERD(4) = 0.D0
@@ -359,7 +348,7 @@ C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',2,NOMPAR,
-     1               VALPAF,5,NOMC(1),MATERF(1),CERR(1),FB2 )
+     &               VALPAF,5,NOMC(1),MATERF(1),CERR(1),FB2 )
 C
          IF ( CERR(3) .NE. 'OK' ) MATERF(3) = 0.D0
          IF ( CERR(4) .NE. 'OK' ) MATERF(4) = 0.D0

@@ -1,29 +1,29 @@
       SUBROUTINE MDPTEM (NBMODE,MASGEN,RIGGEN,PULSAT,NBCHOC,DPLMOD,
-     +                   PARCHO,NOECHO,DT,TINIT,TFIN,NBPAS,INFO,IER)
+     &                   PARCHO,NOECHO,DT,TINIT,TFIN,NBPAS,INFO,IER)
       IMPLICIT   REAL*8 (A-H,O-Z)
       INTEGER            NBCHOC, NBPAS, INFO,IER, NBMODE
       REAL*8             MASGEN(*),RIGGEN(*),PULSAT(*),
-     +                   PARCHO(NBCHOC,*),DPLMOD(NBCHOC,NBMODE,*)
+     &                   PARCHO(NBCHOC,*),DPLMOD(NBCHOC,NBMODE,*)
       REAL*8             DT, TINIT, TFIN
       CHARACTER*8        NOECHO(NBCHOC,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2006   AUTEUR ADBHHVF F.VOLDOIRE 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     VERIFICATION ET CALCUL DU PAS DE TEMPS
@@ -59,7 +59,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IC,IA,I,J,IVERI,JINST, N1,N2,N3,N4,N5,NBINST,
-     +              NR,NT
+     &              NR,NT
       REAL*8        KNORM, KTANG, KLOCX, KLOCY, KLOCZ, UNSGA
       REAL*8        ZERO, DEUXPI, DTS, DTU, DTI, R8DEPI, R8GAEM
       CHARACTER*8   METHOD, VERIPA,NOMRES,TRAN
@@ -84,12 +84,11 @@ C
          IF (NT.EQ.0) THEN
             CALL GETVID('ETAT_INIT','RESU_GENE',1,1,1, TRAN,NR)
             IF (NR.EQ.0) THEN
-             CALL UTMESS('I','MDPTEM',' INSTANT INITIAL NON TROUVE '//
-     +                                ' VALEUR PRISE : 0 ')
+             CALL U2MESS('I','ALGORITH5_62')
             ELSE
                CALL JEVEUO(TRAN//'           .INST' ,'E',JINST)
                CALL JELIRA(TRAN//'           .INST' ,'LONUTI',NBINST,
-     +                     K1BID)
+     &                     K1BID)
                TINIT = ZR(JINST+NBINST-1)
             ENDIF
          ENDIF
@@ -115,20 +114,20 @@ C
             IA = 0
  24         CONTINUE
             IF (INFO.EQ.2)
-     +      CALL UTIMPK('L','--- AU NOEUD DE CHOC :',1,NOECHO(I,IC))
+     &      CALL UTIMPK('L','--- AU NOEUD DE CHOC :',1,NOECHO(I,IC))
             DO 22 J = 1,NBMODE
                IF (PULSAT(J).EQ.ZERO) GOTO 22
                KLOCX = ZERO
                KLOCY = ZERO
                KLOCZ = ZERO
                IF (ABS(DPLMOD(I,J,1+IA)).GT.UNSGA)
-     +                       KLOCX = RIGGEN(J) / DPLMOD(I,J,1+IA)**2
+     &                       KLOCX = RIGGEN(J) / DPLMOD(I,J,1+IA)**2
                IF (ABS(DPLMOD(I,J,2+IA)).GT.UNSGA)
-     +                       KLOCY = RIGGEN(J) / DPLMOD(I,J,2+IA)**2
+     &                       KLOCY = RIGGEN(J) / DPLMOD(I,J,2+IA)**2
                IF (ABS(DPLMOD(I,J,3+IA)).GT.UNSGA)
-     +                       KLOCZ = RIGGEN(J) / DPLMOD(I,J,3+IA)**2
+     &                       KLOCZ = RIGGEN(J) / DPLMOD(I,J,3+IA)**2
                IF (KLOCX.LE.KNORM .OR. KLOCY.LE.KNORM
-     +                                      .OR. KLOCZ.LE.KNORM) THEN
+     &                                      .OR. KLOCZ.LE.KNORM) THEN
                   IF (INFO.EQ.2) THEN
                      CALL UTIMPI('L',' POUR LE MODE NO : ',1,J)
                      CALL UTIMPR('L','RAIDEUR LOCALE DEPX : ',1,KLOCX)
@@ -138,24 +137,24 @@ C
                ENDIF
                IF (KNORM.NE.ZERO) THEN
                      DTI = DEUXPI / SQRT(PULSAT(J)**2 +
-     +                     KNORM * DPLMOD(I,J,1+IA)**2 / MASGEN(J) )
+     &                     KNORM * DPLMOD(I,J,1+IA)**2 / MASGEN(J) )
                      DTS = MIN(DTS, DTI)
                      DTI = DEUXPI / SQRT(PULSAT(J)**2 +
-     +                     KNORM * DPLMOD(I,J,2+IA)**2 / MASGEN(J) )
+     &                     KNORM * DPLMOD(I,J,2+IA)**2 / MASGEN(J) )
                      DTS = MIN(DTS, DTI)
                      DTI = DEUXPI / SQRT(PULSAT(J)**2 +
-     +                     KNORM * DPLMOD(I,J,3+IA)**2 / MASGEN(J) )
+     &                     KNORM * DPLMOD(I,J,3+IA)**2 / MASGEN(J) )
                      DTS = MIN(DTS, DTI)
                ENDIF
                IF (KTANG.NE.ZERO) THEN
                      DTI = DEUXPI / SQRT(PULSAT(J)**2 +
-     +                     KTANG * DPLMOD(I,J,1+IA)**2 / MASGEN(J) )
+     &                     KTANG * DPLMOD(I,J,1+IA)**2 / MASGEN(J) )
                      DTS = MIN(DTS, DTI)
                      DTI = DEUXPI / SQRT(PULSAT(J)**2 +
-     +                     KTANG * DPLMOD(I,J,2+IA)**2 / MASGEN(J) )
+     &                     KTANG * DPLMOD(I,J,2+IA)**2 / MASGEN(J) )
                      DTS = MIN(DTS, DTI)
                      DTI = DEUXPI / SQRT(PULSAT(J)**2 +
-     +                     KTANG * DPLMOD(I,J,3+IA)**2 / MASGEN(J) )
+     &                     KTANG * DPLMOD(I,J,3+IA)**2 / MASGEN(J) )
                      DTS = MIN(DTS, DTI)
                ENDIF
  22         CONTINUE

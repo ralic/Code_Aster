@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,6 +109,7 @@ C     ------------------------------------------------------------------
      &              RESUC1//
      &              ' SOIT IDENTIQUE A L''ARGUMENT "RESULTAT" : '//
      &              RESUCO)
+C        CALL U2MESK('F','PREPOST3_79', 2 ,VALK)
       END IF
 
       CALL GETTCO(RESUCO(1:8),TYSD)
@@ -163,12 +164,11 @@ C RECUPERATION DES NUMEROS D'ORDRE AU PREMIER PASSAGE
         IF (NRPASS.EQ.1) THEN
           CALL RSUTNU(LERES0,' ',0,KNUM,NBORDR,PREC,CRIT,IRET)
           IF (IRET.EQ.10) THEN
-            CALL UTMESS('S',OPER,'LE RESULTAT '//LERES0//
-     &                  ' N''EXISTE PAS')
+            CALL U2MESK('S','CALCULEL4_8',1,LERES0)
             GO TO 260
           END IF
           IF (IRET.NE.0) THEN
-            CALL UTMESS('S',OPER,'ERREUR(S) DANS LES DONNEES')
+            CALL U2MESS('S','ALGORITH3_41')
             GO TO 260
           END IF
           CALL JEVEUO(KNUM,'L',JORDR)
@@ -196,8 +196,7 @@ C TRI DES OPTIONS SUIVANT TYSD
           DO 10 IOPT = 1,NBOPT
             OPTION = ZK16(JOPT+IOPT-1)
             IF (OPTION(6:9).NE.'NOEU') THEN
-              CALL UTMESS('A',OPER,'POUR UN RESULTAT DE TYPE "'//TYSD//
-     &                    '", ON NE TRAITE QUE L''OPTION ..._NOEU_...')
+              CALL U2MESK('A','PREPOST3_80',1,TYSD)
               GO TO 260
             END IF
    10     CONTINUE
@@ -214,8 +213,7 @@ C TRI DES OPTIONS SUIVANT TYSD
           DO 20 IOPT = 1,NBOPT
             OPTION = ZK16(JOPT+IOPT-1)
             IF (OPTION(6:9).NE.'NOEU') THEN
-              CALL UTMESS('A',OPER,'POUR UN RESULTAT DE TYPE "'//TYSD//
-     &                    '", ON NE TRAITE QUE L''OPTION ..._NOEU_...')
+              CALL U2MESK('A','PREPOST3_80',1,TYSD)
               GO TO 260
             END IF
    20     CONTINUE
@@ -439,7 +437,7 @@ C
           ELSE IF ((OPTION.EQ.'FORC_NODA') .OR.
      &             (OPTION.EQ.'REAC_NODA')) THEN
             IF (MODELE(1:8).EQ.'&&'//NOMPRO) THEN
-              CALL UTMESS('F',OPER,'IL MANQUE LE MODELE')
+              CALL U2MESS('F','CALCULEL3_51')
             END IF
 C       ================================================================
 
@@ -673,7 +671,7 @@ C           --- TRAITEMENT DES MODE_MECA ---
                 CALL JEVEUO(CHDEPL(1:19)//'.VALE','L',LDEPL)
                 CALL JELIRA(CHDEPL(1:19)//'.VALE','LONMAX',LONC2,K8BID)
                 CALL WKVECT('&&'//NOMPRO//'.TRAV','V V R',LONC2,LTRAV)
-                IF (LMAT.EQ.0) CALL UTMESS('F',NOMPRO,'LMAT =0')
+                IF (LMAT.EQ.0) CALL U2MESS('F','PREPOST3_81')
                 CALL MRMULT('ZERO',LMAT,ZR(LDEPL),'R',ZR(LTRAV),1)
                 DO 150 J = 0,LONCH - 1
                   ZR(JNOCH+J) = ZR(JNOCH+J) - OMEGA2*ZR(LTRAV+J)
@@ -708,7 +706,7 @@ C           --- TRAITEMENT DES MODE_STAT ---
   160               CONTINUE
   170             CONTINUE
                   CALL WKVECT('&&'//NOMPRO//'.TRAV','V V R',LONC2,LTRAV)
-                  IF (LMAT.EQ.0) CALL UTMESS('F',NOMPRO,'LMAT =0')
+                  IF (LMAT.EQ.0) CALL U2MESS('F','PREPOST3_81')
                   CALL MRMULT('ZERO',LMAT,ZR(JDDR),'R',ZR(LTRAV),1)
                   DO 180 J = 0,LONCH - 1
                     ZR(JNOCH+J) = ZR(JNOCH+J) - ZR(LTRAV+J)
@@ -724,14 +722,14 @@ C           --- TRAITEMENT DE DYNA_TRANS ---
                 IF (IRET.EQ.0) THEN
                   CALL JEVEUO(CHACCE(1:19)//'.VALE','L',LACCE)
                   CALL WKVECT('&&'//NOMPRO//'.TRAV','V V R',LONCH,LTRAV)
-                  IF (LMAT.EQ.0) CALL UTMESS('F',NOMPRO,'LMAT =0')
+                  IF (LMAT.EQ.0) CALL U2MESS('F','PREPOST3_81')
                   CALL MRMULT('ZERO',LMAT,ZR(LACCE),'R',ZR(LTRAV),1)
                   DO 190 J = 0,LONCH - 1
                     ZR(JNOCH+J) = ZR(JNOCH+J) + ZR(LTRAV+J)
   190             CONTINUE
                   CALL JEDETR('&&'//NOMPRO//'.TRAV')
                 ELSE
-                  CALL UTMESS('A',OPER,'MANQUE LES ACCELERATIONS')
+                  CALL U2MESS('A','CALCULEL3_1')
                 END IF
 
 C           --- TRAITEMENT DE DYNA_HARMO ---
@@ -740,14 +738,14 @@ C           --- TRAITEMENT DE DYNA_HARMO ---
                 IF (IRET.EQ.0) THEN
                   CALL JEVEUO(CHACCE(1:19)//'.VALE','L',LACCE)
                   CALL WKVECT('&&'//NOMPRO//'.TRAV','V V C',LONCH,LTRAV)
-                  IF (LMAT.EQ.0) CALL UTMESS('F',NOMPRO,'LMAT =0')
+                  IF (LMAT.EQ.0) CALL U2MESS('F','PREPOST3_81')
                   CALL MCMULT('ZERO',LMAT,ZC(LACCE),'C',ZC(LTRAV),1)
                   DO 200 J = 0,LONCH - 1
                     ZR(JNOCH+J) = ZR(JNOCH+J) + DBLE(ZC(LTRAV+J))
   200             CONTINUE
                   CALL JEDETR('&&'//NOMPRO//'.TRAV')
                 ELSE
-                  CALL UTMESS('A',OPER,'MANQUE LES ACCELERATIONS')
+                  CALL U2MESS('A','CALCULEL3_1')
                 END IF
 
 C           --- TRAITEMENT DE EVOL_NOLI ---
@@ -795,7 +793,7 @@ C               --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
               CALL JEDEMA()
   230       CONTINUE
           ELSE
-            CALL UTMESS('F',NOMPRO,'OPTION INCONNUE : '//OPTION)
+            CALL U2MESK('F','PREPOST3_82',1,OPTION)
           END IF
   240   CONTINUE
 C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============

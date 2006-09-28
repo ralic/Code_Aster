@@ -5,7 +5,7 @@
       CHARACTER*24        LIOBJ(NMAXOB)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +82,7 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
       ELSE
-        CALL UTMESS('F','JNI079','ELREFE NON PREVU '//ELREFE)
+        CALL U2MESK('F','ELEMENTS2_30',1,ELREFE)
       END IF
 
       CALL ELRACA(ELREF0,NDIM,NNO,NNOS,NBFPG,FAPG,NBPG,X,VOL)

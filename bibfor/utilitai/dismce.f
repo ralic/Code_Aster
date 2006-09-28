@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C
       QUESTL = QUESTI
       CALL JEEXIN ( NOMOB//'.CELD', IRET )
       IF ( IRET .EQ. 0 ) THEN
-          CALL UTMESS(CODMES,'DISMCE','CHAM_ELEM INEXISTANT: '//NOMOB)
+          CALL U2MESK(CODMES,'UTILITAI_50',1,NOMOB)
           IERD = 1
           GOTO 9999
       END IF
@@ -119,8 +119,7 @@ C
 C
       ELSE
          REPK = QUESTI
-         CALL UTMESS ( CODMES, 'DISMCE:',
-     +                 'LA QUESTION : "'//REPK//'" EST INCONNUE')
+         CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
          IERD = 1
          GOTO 9999
       ENDIF

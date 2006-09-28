@@ -1,7 +1,7 @@
       SUBROUTINE OP0044(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,16 +128,16 @@ C     ------------------------------------------------------------------
       DATA  CAMOR  / '&&OP0044.AMOR.USR ' /
       DATA  CFREQ  / '&&OP0044.CFREQ.USR ' /
       DATA  NOPARA /
-     +  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
-     +  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
-     +  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
-     +  'NORME'           , 'METHODE'         ,
-     +  'FREQ'            ,
-     +  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
-     +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
-     +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
-     +  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
-     +  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
+     &  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
+     &  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
+     &  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
+     &  'NORME'           , 'METHODE'         ,
+     &  'FREQ'            ,
+     &  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
+     &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
+     &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
+     &  'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
+     &  'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' /
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -198,33 +198,26 @@ C     --- RECUPERATION DES ARGUMENTS POUR LE CALCUL DES MODES ---
 C     ---- CONTROLE DES ARGUMENTS ---
 
       IF ((TYPRES.NE.'DYNAMIQUE').AND.(NCRITR.EQ.0)) THEN
-        CALL UTMESS('F','OP0044','CALCUL DE FLAMBEMENT ET '//
-     +   'ABSENCE DU MOT CLE CHAR_CRIT NE SONT PAS COMPATIBLES')
+        CALL U2MESS('F','ALGELINE2_45')
       ENDIF
       IF ((TYPRES.NE.'DYNAMIQUE').AND.(LAMOR.NE.0)) THEN
-        CALL UTMESS('F','OP0044','CALCUL DE FLAMBEMENT ET '//
-     +   'MATRICE D''AMORTISSEMENT NE SONT PAS COMPATIBLES')
+        CALL U2MESS('F','ALGELINE2_46')
       ENDIF
 C     --- VERIFICATION ET CORRECTION DES DONNEES DE DECOUPAGE ---
       IF ( MXFREQ .LT. 0 ) THEN
-         CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +        'LE NOMBRE DE FREQUENCES DEMANDEES EST INCORRECT.')
+         CALL U2MESS('E','ALGELINE2_47')
       ENDIF
       IF ( NITAJU.LE.0 .OR. NITSEP.LE.0 ) THEN
-         CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +        'NMAX_ITER_ AJUSTE OU SEPARE EST NEGATIF')
+         CALL U2MESS('E','ALGELINE2_48')
       ENDIF
       IF (NITV.LE.0) THEN
-         CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +        'NMAX_ITER EST NEGATIF')
+         CALL U2MESS('E','ALGELINE2_49')
       ENDIF
       IF (TOLAJU.LE.1.D-70 .OR. TOLSEP.LE.1.D-70  ) THEN
-         CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +        'PREC_ AJUSTE OU SEPARE EST IRREALISTE ' )
+         CALL U2MESS('E','ALGELINE2_50')
       ENDIF
       IF (TOLV.LE.1.D-70) THEN
-         CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +        'PREC EST IRREALISTE (INFERIEURE A 1.E-70)' )
+         CALL U2MESS('E','ALGELINE2_51')
       ENDIF
 
       IF ( OPTIOF.EQ.'SEPARE' .OR. OPTIOF.EQ.'AJUSTE' ) THEN
@@ -235,11 +228,9 @@ C     --- VERIFICATION ET CORRECTION DES DONNEES DE DECOUPAGE ---
          NCRIT = -NCRITR
          NBMOD = MAX(NFREQ,NCRIT)
          IF ( NBMOD.EQ.0 ) THEN
-            CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +           'PAS DE VALEUR DONNEE, SEPARATION IMPOSSIBLE')
+            CALL U2MESS('E','ALGELINE2_52')
          ELSEIF ( NBMOD.EQ.1 ) THEN
-            CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +           'UNE SEULE VALEUR DONNEE, SEPARATION IMPOSSIBLE')
+            CALL U2MESS('E','ALGELINE2_53')
          ELSEIF ( NBMOD .NE. 0 ) THEN
             CALL WKVECT(CBORNE,'V V R',NBMOD,LBORNE)
             IF (NFREQ .NE. 0) THEN
@@ -253,8 +244,7 @@ C     --- VERIFICATION ET CORRECTION DES DONNEES DE DECOUPAGE ---
                ERRF = MAX( ERRF, ZR(IFREQ-1)-ZR(IFREQ) )
  2          CONTINUE
             IF ( ERRF .GT. 0.0D0 ) THEN
-               CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +         'LA SUITE DES VALEURS DONNEES N''EST PAS CROISSANTE ')
+               CALL U2MESS('E','ALGELINE2_54')
             ENDIF
             CALL JEDETR( CBORNE )
          ENDIF
@@ -263,20 +253,16 @@ C     --- VERIFICATION ET CORRECTION DES DONNEES DE DECOUPAGE ---
       CALL GETVR8 ( 'CALC_FREQ', 'AMOR_REDUIT', 1,1,0,RBID, NA1 )
       NAMORR = NA1
       IF ((LAMOR.EQ.0).AND.(NAMORR.NE.0)) THEN
-         CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +        'MOT CLE AMOR_REDUIT IMPOSSIBLE POUR CAS GENERALISE ')
+         CALL U2MESS('E','ALGELINE2_55')
       ENDIF
       IF ((LAMOR.NE.0).AND.(NAMORR.NE.0).AND.
-     +                                    (OPTIOF.NE.'PROCHE')) THEN
-         CALL UTMESS('E','OP0044'//' (ERREUR)',
-     +     'MOT CLE AMOR_REDUIT IMPOSSIBLE SI OPTION DIFFERENTE
-     +      DE PROCHE')
+     &                                    (OPTIOF.NE.'PROCHE')) THEN
+         CALL U2MESS('E','ALGELINE2_56')
       ENDIF
       IF (OPTIOF.EQ.'PROCHE') THEN
          CALL GETVR8('CALC_FREQ','FREQ  ', 1,1,0,RBID,NFREQR)
          IF ((NAMORR.NE.0).AND.(NAMORR.NE.NFREQR)) THEN
-            CALL UTMESS('E','OP0044'//' (ERREUR)','NOMBRE DIFFERENT'//
-     +     ' D''ARGUMENTS ENTRE LES MOTS CLES AMOR_REDUIT ET FREQ')
+            CALL U2MESS('E','ALGELINE2_57')
          ENDIF
       ENDIF
 
@@ -291,12 +277,14 @@ C     --- VERIFICATION DES "REFE" ---
       CALL VRREFE(MASSE,RAIDE,IRET)
       IF (IRET .GT. 0 ) THEN
          CALL UTMESS('F','OP0044'//'(ERREUR)','LES MATRICES "'//RAIDE//
-     +         '" ET  "'//MASSE//'"  SONT INCOMPATIBLES ENTRE ELLES')
+     &         '" ET  "'//MASSE//'"  SONT INCOMPATIBLES ENTRE ELLES')
+C        CALL U2MESK('F','ALGELINE2_58', 2 ,VALK)
       ENDIF
       IF (LAMOR.NE.0) CALL VRREFE(MASSE,AMOR ,IRET)
       IF (IRET .GT. 0 ) THEN
          CALL UTMESS('F','OP0044'//'(ERREUR)','LES MATRICES "'//AMOR //
-     +        '"  ET  "'//MASSE//'"  SONT INCOMPATIBLES ENTRE ELLES')
+     &        '"  ET  "'//MASSE//'"  SONT INCOMPATIBLES ENTRE ELLES')
+C        CALL U2MESK('F','ALGELINE2_58', 2 ,VALK)
       ENDIF
 
 C     --- CREATION DE LA MATRICE DYNAMIQUE ---
@@ -349,8 +337,7 @@ C         --- CONTROLE DE FREQUENCE NEGATIVE ---
             IF ( ZR(LBORNE+IFREQ) .LT. 0.D0 ) IERFR = IERFR + 1
  4       CONTINUE
          IF (IERFR.GT.0) THEN
-            CALL UTMESS('A','OP0044'//' (ALARME)',
-     +           'PRESENCE DE FREQUENCES NEGATIVES DANS LES DONNEES.')
+            CALL U2MESS('A','ALGELINE2_59')
          ENDIF
 
       ENDIF
@@ -421,12 +408,11 @@ C        --- CALCUL DU NOMBRE DE VALEURS PROPRES A TROUVER ---
          ICOMP  = 0
  102     CONTINUE
          CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,NPREC,DET1,IDET1,
-     +               IEME1,IERX)
+     &               IEME1,IERX)
          IF (IERX .NE. 0 ) THEN
             ICOMP = ICOMP + 1
             IF (ICOMP.GT.NBRSS) THEN
-               CALL UTMESS('A','OP0044',' TROP DE REAJUSTEMENT '//
-     +             'D''UNE BORNE DE L''INTERVALLE DE RECHERCHE.')
+               CALL U2MESS('A','ALGELINE2_60')
             ENDIF
             OMGMIN = (1.D0-SIGN(PRECDC,OMGMIN)) * OMGMIN
             IF (NIV .GE. 1) THEN
@@ -442,12 +428,11 @@ C        --- CALCUL DU NOMBRE DE VALEURS PROPRES A TROUVER ---
          ICOMP  = 0
  104     CONTINUE
          CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,NPREC,DET2,IDET2,
-     +               IEME2,IERX)
+     &               IEME2,IERX)
          IF (IERX .NE. 0 ) THEN
             ICOMP = ICOMP + 1
             IF (ICOMP.GT.NBRSS) THEN
-               CALL UTMESS('A','OP0044','ERREUR TROP DE REAJUSTEMENT'//
-     +             'D''UNE BORNE DE L''INTERVALLE DE RECHERCHE.')
+               CALL U2MESS('A','ALGELINE2_61')
             ENDIF
             OMGMAX = (1.D0+SIGN(PRECDC,OMGMAX)) * OMGMAX
             IF (NIV .GE. 1) THEN
@@ -462,7 +447,7 @@ C        --- CALCUL DU NOMBRE DE VALEURS PROPRES A TROUVER ---
 C        --- AFFICHAGE DES INFORMATIONS SUR LE NOMBRE DE FREQUENCES
 
             CALL VPECST(IFM,TYPRES,OMGMIN,OMGMAX,IEME1,IEME2,
-     +                  NFREQB,NBLAGR)
+     &                  NFREQB,NBLAGR)
 
 
 C
@@ -517,20 +502,18 @@ C     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
 
 C           --- CALCUL DES FREQUENCES PAR DICHOTOMIE
             CALL VPDICH(LRAIDE,LMASSE,LDYNAM,TOLSEP,NITSEP,MXFREQ,NPREC,
-     +        NBMOD,ZR(JVALP),ZI(JIEME),ZR(JDET),ZI(JIDET),ZI(JNPAS),
-     +        TYPRES, NBLAGR )
+     &        NBMOD,ZR(JVALP),ZI(JIEME),ZR(JDET),ZI(JIDET),ZI(JNPAS),
+     &        TYPRES, NBLAGR )
 
 C                  --- AJUSTEMENT DES VALEURS PROPRES ---
 C           --- PRISE EN COMPTE DES VALEURS PROPRES MULTIPLES ---
             CALL VPINTE(OPTIOF,NBMOD,ZR(JVALP),ZR(JDET),ZI(JIDET),
-     +           ZI(JIEME),ZI(JNPAS),TOLAJU,NITAJU,LRAIDE,LMASSE,
-     +           LDYNAM, NPREC, ZI(LRESUI), ZR(LRESUR), MXRESF)
+     &           ZI(JIEME),ZI(JNPAS),TOLAJU,NITAJU,LRAIDE,LMASSE,
+     &           LDYNAM, NPREC, ZI(LRESUI), ZR(LRESUR), MXRESF)
 
 
          ELSE
-            CALL UTMESS('F','OP0044'//' (ERREUR)',
-     +           'PAS DE VALEURS PROPRES DANS LA BANDE DE CALCUL,'//
-     +           '  LE CONCEPT NE PEUT ETRE CREE DANS CES CONDITIONS.')
+            CALL U2MESS('F','ALGELINE2_62')
          ENDIF
 
 C        --- CAS QUADRATIQUE ---
@@ -565,7 +548,7 @@ C        --- CAS QUADRATIQUE : OPTION AJUSTE ---
   140       CONTINUE
 
             CALL WP1MUL(LMASSE,LAMOR,LRAIDE,ZC(LVALP),TOLAJU,NITAJU,
-     +                  NBMOD,MXRESF,NBMOD,ZI(LRESUI),ZR(LRESUR))
+     &                  NBMOD,MXRESF,NBMOD,ZI(LRESUI),ZR(LRESUR))
          ENDIF
 
          IF (MXFREQ .NE. 0) THEN
@@ -655,7 +638,7 @@ C     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF --
 
       ELSE
 C        --- ERREUR ---
-         CALL UTMESS('F','OP0044','"'//OPTIOF//'"   OPTION INCONNUE.')
+         CALL U2MESK('F','ALGELINE2_63',1,OPTIOF)
       ENDIF
 
 C     ------------------------------------------------------------------
@@ -668,9 +651,9 @@ C        --- CAS GENERALISE
 
          CALL WKVECT('&&OP0044.VECTEUR.PROPRE','V V R',NEQ*NBMOD,LVEC)
          CALL VP1PRO(OPTIOM,LRAIDE,LMASSE,LDYNAM,NEQ,NBMOD,MXRESF,
-     +         TOLV,NITV,ZI(LPROD),OMECOR,ZR(LVEC),
-     +         ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK), NPREC, NBRSS,
-     +         NBPARI,NBPARR,NBPARK,TYPRES,OPTIOF)
+     &         TOLV,NITV,ZI(LPROD),OMECOR,ZR(LVEC),
+     &         ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK), NPREC, NBRSS,
+     &         NBPARI,NBPARR,NBPARK,TYPRES,OPTIOF)
 
       ELSE
 
@@ -678,7 +661,7 @@ C        --- CAS QUADRATIQUE
 
          CALL WKVECT('&&OP0044.VECTEUR.PROPRE','V V C',NEQ*NBMOD,LVEC)
          CALL WP1INV(LMASSE,LAMOR,LRAIDE,TOLV,NITV,MXRESF,NBMOD,NEQ,
-     +            NPREC,ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK), ZC(LVEC))
+     &            NPREC,ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK), ZC(LVEC))
       ENDIF
 
 C     ------------------------------------------------------------------
@@ -686,7 +669,7 @@ C     ------------------------- POSITION DES MODES ---------------------
 C     ------------------------------------------------------------------
 
       IF ((TYPRES.EQ.'DYNAMIQUE').AND.(OPTIOF.NE.'PROCHE')
-     +    .AND.(LAMOR.EQ.0)) THEN
+     &    .AND.(LAMOR.EQ.0)) THEN
 
         DO 400 IFREQ = 0, NBMOD-1
            ZI(LRESUI+IFREQ) = ZI(LRESUI+IFREQ) - NBLAGR
@@ -722,7 +705,7 @@ C     POSITION MODALE NEGATIVE DES MODES INTERDITE
 
 C     --- IMPRESSION PROPRE A LA METHODE ----
       CALL VPWECF ( OPTIOF, TYPRES,NBMOD, MXRESF, ZI(LRESUI),
-     +              ZR(LRESUR), ZK24(LRESUK), LAMOR,KTYP)
+     &              ZR(LRESUR), ZK24(LRESUK), LAMOR,KTYP)
 
       CALL TITRE
 
@@ -746,9 +729,9 @@ C     ------------------------------------------------------------------
 C PARAMETRE POUR VERIF. DE STURM ETENDUE (INACTIVE DANS OP0044)
       STURM = .FALSE.
       CALL VPCNTL(CTYP,MODES,OPTIOV,FMIN,FMAX,SEUIL,NBMOD,ZI(LRESUI),
-     +         LMAT,OMECOR,PRECDC,IERX,FMIN,FMAX,NPREC,
-     +         ZR(LRESUR),ZR(LRESUR+3*MXRESF),ZR(LRESUR+MXRESF),TYPRES,
-     +         STURM, NBLAGR)
+     &         LMAT,OMECOR,PRECDC,IERX,FMIN,FMAX,NPREC,
+     &         ZR(LRESUR),ZR(LRESUR+3*MXRESF),ZR(LRESUR+MXRESF),TYPRES,
+     &         STURM, NBLAGR)
 CCC      IF ( CTYP .EQ. 'E' ) IER = IER + IERX
 
 C     ------------------------------------------------------------------

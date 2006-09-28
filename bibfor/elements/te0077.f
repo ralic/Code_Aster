@@ -1,6 +1,6 @@
       SUBROUTINE TE0077 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,9 +59,9 @@ C
       IF (NOMTE(5:7).EQ.'TL6') ELREFE='TR3'
 C
       CALL ELREF4(ELREFE,'NOEU',NDIM,NNO,NNOS,NPG2,IPOID2,IVF2,IDFDE2,
-     +            JGANO)
+     &            JGANO)
       CALL ELREF4(ELREFE,'MASS',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     +            JGANO)
+     &            JGANO)
 C
 C
       CALL JEVECH('PGEOMER','L',IGEOM )
@@ -78,7 +78,7 @@ C
         CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMPS),
      &                              1, 'RHO_CP', CP, CODRET, 'FM' )
       ELSE
-        CALL UTMESS ('F','TE0077','COMPORTEMENT NON TROUVE')
+        CALL U2MESS('F','MODELISA5_46')
       ENDIF
 C
 C
@@ -133,9 +133,7 @@ C BOUCLE SUR LES SOUS-ELEMENTS
 
                 POIDS = POIDS*R
                 IF (R.EQ.0.D0) THEN
-                  CALL UTMESS ('F','TE0077','ON NE PEUT PAS AFFECTER'//
-     &                         ' LA MODELISATION "AXIS_DIAG"'//
-     &                         ' AUX ELEMENTS DE L''AXE')
+                  CALL U2MESS('F','ELEMENTS3_10')
                 ENDIF
              ENDIF
 

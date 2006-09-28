@@ -7,7 +7,7 @@
       CHARACTER*(*) CHAMP,OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,9 +36,9 @@ C
 C      ENTREE :
 C-------------
 C IN   CHAMP  : NOM DU CHAM_ELEM_ERREUR
-C IN   OPTION :    'ERZ1_ELEM_SIGM' OU 'ERZ2_ELEM_SIGM' 
-C               OU 'QIZ1_ELEM_SIGM' OU 'QIZ2_ELEM_SIGM' 
-C               OU 'ERRE_ELEM_SIGM' OU 'QIRE_ELEM_SIGM' 
+C IN   OPTION :    'ERZ1_ELEM_SIGM' OU 'ERZ2_ELEM_SIGM'
+C               OU 'QIZ1_ELEM_SIGM' OU 'QIZ2_ELEM_SIGM'
+C               OU 'ERRE_ELEM_SIGM' OU 'QIRE_ELEM_SIGM'
 C IN   IORD   : NUMERO D'ORDRE
 C IN   TIME   : INSTANT DE CALCUL
 C IN   RESUCO : NOM DU CONCEPT ENTRANT
@@ -80,9 +80,9 @@ C
       CHARACTER*16 LISTK(4)
       CHARACTER*19 CHAMP2,LIGREL
       CHARACTER*19 NOMT19
-      
+
       COMPLEX*16 CBID
-      
+
       LOGICAL FIRST
 C
 C ----------------------------------------------------------------------
@@ -100,7 +100,7 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 
       CALL JELIRA (CHAMP2//'.CELD','DOCU',IBID,DOCU)
       IF( DOCU.NE.'CHML' ) THEN
-         CALL UTMESS('F','ZZGLOB','LE CHAMP DOIT ETRE UN CHAM_ELEM ')
+         CALL U2MESS('F','CALCULEL5_47')
       ENDIF
       CALL JEVEUO (CHAMP2//'.CELK','L',IACELK)
       LIGREL = ZK24(IACELK-1+1)(1:19)
@@ -121,8 +121,7 @@ C     ----------------------------
             LONGT = LONG2
          ELSE
             IF (LONGT.NE.LONG2) THEN
-               CALL UTMESS('F','ZZGLOB','LONGUEURS DES MODES LOCAUX '
-     +                     //'IMCOMPATIBLES ENTRE EUX.')
+               CALL U2MESS('F','CALCULEL3_54')
             ENDIF
          ENDIF
          FIRST = .FALSE.
@@ -159,7 +158,7 @@ C
         TERMVO = SQRT(TERMVO)
         TERMSA = SQRT(TERMSA)
         TERMNO = SQRT(TERMNO)
-      ELSE  
+      ELSE
         NU0    = 100.D0*SQRT(ERR0/(ERR0+NORS))
         ERR0   = SQRT(ERR0)
         NUVO   = 100.D0*SQRT(TERMVO/(TERMVO+NORS))
@@ -183,7 +182,7 @@ C        -----------------------------------
        ZR(LADPA)=TERMSA
        CALL RSADPA(RESUC1,'E',1,'TERME_NORM_ABSO',IORD,0,LADPA,K8BID)
        ZR(LADPA)=TERMNO
-      ELSE  
+      ELSE
        CALL RSADPA(RESUC1,'E',1,'ERREUR_ABSOLUE',IORD,0,LADPA,K8BID)
        ZR(LADPA)=ERR0
        CALL RSADPA(RESUC1,'E',1,'ERREUR_RELATIVE',IORD,0,LADPA,K8BID)
@@ -214,7 +213,7 @@ C        -----------------------------------
       LISTT(1)='I'
       LISTT(2)='R'
       LISTT(3)='R'
-      LISTT(4)='R'      
+      LISTT(4)='R'
 
       CALL JEEXIN(RESUC1//'.LTNT',IRET)
       IF (IRET.EQ.0) CALL LTCRSD(RESUC1,'G')
@@ -224,7 +223,7 @@ C        -----------------------------------
       CALL JEEXIN(NOMT19//'.TBBA',IRET)
       IF (IRET.EQ.0) THEN
         CALL TBCRSD(NOMT19,'G')
-        CALL TBAJPA (NOMT19,4,LISTK,LISTT)          
+        CALL TBAJPA (NOMT19,4,LISTK,LISTT)
       ENDIF
 
       LISTR(1)=NU0
@@ -232,10 +231,9 @@ C        -----------------------------------
       LISTR(3)=NORS
 
       CALL TBAJLI (NOMT19,4,LISTK,IORD,LISTR,CBID,KBID,0)
-            
+
       CALL TBIMPR (NOMT19,'        ','EXCEL',10,4,
      &                    LISTK,0,' ','1PE12.5',' ')
-     
       WRITE(IFI,*) ' '
       WRITE(IFI,*) '***************************************************'
       IF(OPTION(1:14).EQ.'ERZ1_ELEM_SIGM') THEN

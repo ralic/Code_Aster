@@ -1,6 +1,6 @@
       SUBROUTINE MEPSAN(EPSANE,EXITIM,TIME,THVRAI,CHEPSA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,18 +83,13 @@ C
          IF (TYSD(1:9).EQ.'EVOL_NOLI') THEN
 C           ----------------------------
             CALL DISMOI('F','NB_CHAMP_UTI',EPSANE(1:8),'RESULTAT',
-     +                  NBCHAM,K8BID,IERD)
+     &                  NBCHAM,K8BID,IERD)
             IF (NBCHAM.GT.0) THEN
                IF (.NOT. (EXITIM)) THEN
-                  CALL UTMESS('I',' MEPSAN ',
-     +                        'L''INSTANT DU CALCUL EST PRIS '//
-     +                        ' ARBITRAIREMENT A 0.0 ')
+                  CALL U2MESS('I','CALCULEL3_64')
                   TIME2 = 0.0D0
                   IF (NBCHAM.GT.1) THEN
-                     CALL UTMESS('F',' MEPSAN ',
-     +                           ' ON N''ACCEPTE UN INSTANT ARBITRAIRE'
-     +                           //' QUE SI LE CONCEPT DEFORMATIONS '
-     +                           //'ANELASTIQUES N''A QU''1 CHAMP.')
+                     CALL U2MESS('F','CALCULEL3_65')
                   END IF
                ELSE
                   TIME2 = TIME
@@ -104,25 +99,22 @@ C              RECUPERATION DU CHAMP DE DEFORMATIONS ANELASTIQUES
 C              DANS EPSANE:
 C              -----------
                CALL RSINCH(EPSANE(1:8),'EPSA_ELNO','INST',TIME2,
-     +                     CHEPSA(1:19),'CONSTANT','CONSTANT',1,'V',
-     +                     ICORET)
+     &                     CHEPSA(1:19),'CONSTANT','CONSTANT',1,'V',
+     &                     ICORET)
                IF (ICORET.GE.10) THEN
                   CALL UTDEBM('F','MEPSAN','INTERPOLATION DEFORMATIONS'
-     +                        //' ANELASTIQUES : ')
+     &                        //' ANELASTIQUES : ')
                   CALL UTIMPK('L','EVOL_NOLI:',1,EPSANE(1:8))
                   CALL UTIMPR('S','INSTANT:',1,TIME2)
                   CALL UTIMPI('L','ICORET:',1,ICORET)
                   CALL UTFINM()
                END IF
             ELSE
-               CALL UTMESS('F',' MEPSAN ',' LE CONCEPT EVOL_NOLI : '//
-     +                     EPSANE(1:8)//
-     +                     ' NE CONTIENT AUCUN CHAMP DE DEFORMATIONS'
-     +                   //' ANELASTIQUES.')
+               CALL U2MESK('F','CALCULEL3_66',1,EPSANE(1:8))
             END IF
 C
          ELSE
-            CALL UTMESS('F','MEPSAN','2')
+            CALL U2MESS('F','UTILITAI_67')
          END IF
       END IF
  9999 CONTINUE

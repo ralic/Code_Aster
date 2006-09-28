@@ -5,7 +5,7 @@
       CHARACTER*(*) SUFFI2
 C ----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/06/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 C------------------------------------------------------------------
       CALL JEMARQ()
 
-      
+
       SUFFIX = SUFFI2
       METHOD = 'MULT_FRO'
       PRECO = 'SANS'
@@ -149,8 +149,7 @@ C     -----------------
       ELSE IF (KSTOP.EQ.'DEC') THEN
         CALL GETVIS('INCREMENT','SUBD_PAS',1,1,1,NBRPAS,IBID)
         IF (NBRPAS.LE.1) THEN
-          CALL UTMESS('F','CRESOL','STOP_SINGULIER=DECOUPE NECESSITE'//
-     &      ' LA SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS (SUBD_PAS)')
+          CALL U2MESS('F','ALGORITH2_34')
         ELSE
           ISTOP = 1
         ENDIF
@@ -163,8 +162,7 @@ C     -----------------------------
         IF (IBID.EQ.0) RENUM = 'RCMK'
 
         IF (RENUM(1:4).NE.'RCMK' .AND. RENUM(1:4).NE.'SANS')
-     &    CALL UTMESS('F','CRESOL','LA METHODE '//RENUM//' EST '//
-     &                'INADEQUATE POUR UNE RESOLUTION DE TYPE "LDLT"')
+     &    CALL U2MESK('F','ALGORITH2_35',1,RENUM)
 
 
       ELSE IF (METHOD.EQ.'GCPC') THEN
@@ -172,8 +170,7 @@ C     -----------------------------
         CALL GETVTX(NOMSOL,'RENUM',1,1,1,RENUM,IBID)
         IF (IBID.EQ.0) RENUM = 'RCMK'
         IF (RENUM(1:4).NE.'RCMK' .AND. RENUM(1:4).NE.'SANS')
-     &    CALL UTMESS('F','CRESOL','LA METHODE '//RENUM//' EST '//
-     &                'INADEQUATE POUR UNE RESOLUTION DE TYPE "GCPC"')
+     &    CALL U2MESK('F','ALGORITH2_36',1,RENUM)
         PRECO='LDLT_INC'
 
         CALL GETVIS(NOMSOL,'NMAX_ITER',1,1,1,NMAXIT,IBID)
@@ -184,10 +181,7 @@ C     -----------------------------
 C     --------------------------------------------------------------
         CALL GETVTX(NOMSOL,'RENUM',1,1,1,RENUM,IBID)
         IF (RENUM(1:2).NE.'MD'.AND.RENUM(1:2).NE.'ME') THEN
-           CALL UTMESS('F','CRESOL',
-     &             'LA METHODE '//RENUM//' ETANT '//
-     &             'INADEQUATE POUR UNE RESOLUTION DE TYPE "MULT_FRONT"'
-     &                )
+           CALL U2MESK('F','ALGORITH2_37',1,RENUM)
         ENDIF
 
 
@@ -197,17 +191,13 @@ C CHAQUE SOUS-DOMAINE
 C     --------------------------------------------------------------
         CALL GETVTX(NOMSOL,'RENUM',1,1,1,RENUM,IBID)
         IF (RENUM(1:2).NE.'MD'.AND.RENUM(1:2).NE.'ME')
-     &     CALL UTMESS('F','CRESOL',
-     &             'LA METHODE '//RENUM//' ETANT '//
-     &             'INADEQUATE POUR UNE RESOLUTION DE TYPE "FETI"')
+     &     CALL U2MESK('F','ALGORITH2_38',1,RENUM)
 
 C LECTURE NOUVEAU MOT-CLE
         SDFETI=' '
         CALL GETVID(NOMSOL,'PARTITION',1,1,1,SDFETI(1:8),IBID)
         IF (IBID.EQ.0)
-     &    CALL UTMESS('F','CRESOL','LE SOLVEUR FETI REQUIERT UN '//
-     &                'CONCEPT PRODUIT DE TYPE SD_FETI EN ENTREE '//
-     &                'DU MOT-CLE PARTITION')
+     &    CALL U2MESS('F','ALGORITH2_39')
         CALL GETVIS(NOMSOL,'NMAX_ITER',1,1,1,NMAXIT,IBID)
         CALL GETVR8(NOMSOL,'RESI_RELA',1,1,1,RESIRE,IBID)
         CALL GETVTX(NOMSOL,'VERIF_SDFETI',1,1,1,VERIF,IBID)
@@ -243,8 +233,7 @@ C OBJET TEMPORAIRE POUR MONITORING FETI
 C LECTURE NOMBRE DE SOUS-DOMAINES:NBSD
         CALL JELIRA(SDFETI(1:19)//'.FETA','NUTIOC',NBSD,K8BID)
         IF (NBSD.LE.1)
-     &    CALL UTMESS('F','CRESOL',
-     &             '! NOMBRE DE SOUS-DOMAINES ILLICITE !')
+     &    CALL U2MESS('F','ALGORITH2_40')
 C CONSTITUTION DE L'OBJET SOLVEUR.FETS
         CALL WKVECT(SOLVEU(1:19)//'.FETS','V V K24',NBSD,IFETS)
 C LECTURE NOMBRE TOTAL DE MAILLE:NBMA
@@ -252,7 +241,7 @@ C LECTURE NOMBRE TOTAL DE MAILLE:NBMA
         NBMA=ZI(IDIME+2)
         CALL JEVEUO(SDFETI(1:19)//'.FREF','L',IFREF)
         MODELE=ZK8(IFREF)
-        CALL JEVEUO(MODELE//'.MAILLE','L',IMAIL)       
+        CALL JEVEUO(MODELE//'.MAILLE','L',IMAIL)
 C POUR RESOUDRE LES PBS AVEC MULTIPLES SECONDS MEMBRES OU MULTI-MATRICES
 C A STRUCTURE IDENTIQUE
         CALL WKVECT('&FETI.PAS.TEMPS','V V I',3,IFETPT)
@@ -310,28 +299,25 @@ C OBJET TEMPORAIRE POUR PROFILING CALCULS ELEMENTAIRES
         DO 30 I=1,NBPROC
           ZR(IBID6+I-1)=0.D0
    30   CONTINUE
-   
+
         IF (NBPROC.GT.NBSD)
-     &    CALL UTMESS('F','CRESOL',
-     &     'EN PARALLELE IL FAUT AU MOINS UN SOUS-DOMAINE'//
-     &     ' PAR PROCESSEUR !')
+     &    CALL U2MESS('F','ALGORITH2_41')
 C VOIR FETGGT.F POUR EXPLICATION DE CETTE CONTRAINTE
         IF ((NBPROC.GT.1).AND.(STOGI(1:3).NE.'OUI'))
-     &    CALL UTMESS('F','CRESOL',
-     &     'EN PARALLELE STOGI=OUI OBLIGATOIRE POUR LIMITER LES MSGS !')
+     &    CALL U2MESS('F','ALGORITH2_42')
         IF (NBPROC.EQ.1) THEN
           TESTOK=.TRUE.
         ELSE
           TESTOK=.FALSE.
         ENDIF
-        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
 C========================================
 C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================
         SDFETA=SDFETI(1:19)//'.FETA'
         DO 50 I=1,NBSD
           IF (ZI(ILIMPI+I).EQ.1) THEN
-          
+
 C REMPLISSAGE .FETS PAR LES NOMS DES SD SOLVEUR DES SOUS-DOMAINES
             CALL JENUNO(JEXNUM(SDFETA,I),NOMSD)
             CALL GCNCON('.',K8BID)
@@ -348,7 +334,7 @@ C --------------------------------------------------------------
      &        RESIR1,TBLOC,NPREC,NMAXI1,ISTOP,NIREMP,IFM,I,NBMA,
      &        VERIF1,TESTC1,NBREO1,TYREO1,SCALI1,INUMSD,IMAIL,NOMSD,
      &        INFOFE,STOGI,TESTOK,NBREO2,ACMA1,ACSM1)
-    
+
           ENDIF
    50   CONTINUE
 C========================================

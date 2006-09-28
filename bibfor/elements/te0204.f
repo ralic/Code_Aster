@@ -2,29 +2,29 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C-----------------------------------------------------------------------
 C
 C FONCTION REALISEE:
 C
-C   CALCUL DE LA DERIVEE DU TAUX DE RESTITUTION D'ENERGIE ELEMENTAIRE 
+C   CALCUL DE LA DERIVEE DU TAUX DE RESTITUTION D'ENERGIE ELEMENTAIRE
 C   EN ELASTICITE PAR RAPPORT AU MODULE D'YOUNG E (CALC_DG_E)
 C              OU PAR RAPPORT AU CHARGEMENT F (CALC_DG_FORC)
 C
@@ -74,8 +74,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'TE0204' )
 C
       CHARACTER*2   CODRET,CODRES(3)
       CHARACTER*8   NOMPAR(3),TYPMOD(2),ELREFE,NOMRES(3)
@@ -183,16 +181,12 @@ C TEST SUR LA LOI DE COMPORTEMENT
       IF (OPTION(1:9).EQ.'CALC_DG_E') THEN
         DERIVE = .TRUE.
         IF (COMPOR(1)(1:4).NE.'ELAS')
-     &    CALL UTMESS('F',NOMPRO//OPTION,'SEULE UNE LOI DE  '//
-     &    'COMPORTEMENT ELASTIQUE ISOTROPE EST VALIDE POUR LE '//
-     &    'CALCUL DE LA DERIVEE DE G PAR RAPPORT A E !')
+     &    CALL U2MESS('F','ELEMENTS3_40')
       ENDIF
       IF (OPTION(1:12).EQ.'CALC_DG_FORC') THEN
         DERIVF = .TRUE.
         IF (COMPOR(1)(1:4).NE.'ELAS')
-     &    CALL UTMESS('F',NOMPRO//OPTION,'SEULE UNE LOI DE  '//
-     &    'COMPORTEMENT ELASTIQUE ISOTROPE EST VALIDE POUR LE '//
-     &    'CALCUL DE LA DERIVEE DE G PAR RAPPORT AU CHARGEMENT !')
+     &    CALL U2MESS('F','ELEMENTS3_41')
       ENDIF
         CALL JEVECH('PDEPLSE','L',IDEPSE)
         CALL JEVECH('PDEFOSE','L',IDEFSE)
@@ -243,14 +237,11 @@ C =====================================================================
 
 C ON NE PEUT AVOIR SIMULTANEMENT DEFORMATIONS ET CONTRAINTES INIT.
       IF ((ISIGI.NE.0).AND.EPSINI) THEN
-        CALL UTMESS('F',OPTION,'UNE DEFORMATION INITIALE EST '//
-     &  'PRESENTE DANS LA CHARGE : INCOMPATIBLE AVEC LA CONTRAINTE'//
-     &  ' INITIALE SIGMA_INIT')
+        CALL U2MESS('F','ELEMENTS2_68')
       ENDIF
 
       IF (INCR) THEN
-        CALL UTMESS('F',NOMPRO//OPTION,'LE CALCUL DE DG N''A '//
-     &  'PAS ETE ETENDU A LA PLASTICITE !')
+        CALL U2MESS('F','ELEMENTS3_13')
       ENDIF
 
 C =====================================================================
@@ -271,7 +262,7 @@ C =====================================================================
             DO 45 J=1,NCMP
               KK = NCMP*I1+J
               CALL FOINTE('FM',ZK8(IEPSF+J-1),3,NOMPAR,VALPAR,
-     +                     EPSINO(KK),IER)
+     &                     EPSINO(KK),IER)
 45          CONTINUE
           ENDIF
           IF (DERFOR) THEN
@@ -307,7 +298,7 @@ C =====================================================================
           ENDIF
 80      CONTINUE
       ENDIF
-C      
+C
 C PESANTEUR ET ROTATION
 C
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
@@ -574,7 +565,7 @@ C CALCUL DE LA DERIVEE DE G PAR RAPPORT A E (SI DERIVE)
 C                                      OU F (SI DERIVF)
 
 C =======================================================
-C DERIVEE DU TERME THERMOELASTIQUE CLASSIQUE 
+C DERIVEE DU TERME THERMOELASTIQUE CLASSIQUE
 C =======================================================
           PROD1 = 0.D0
           PROD2 = 0.D0
@@ -601,8 +592,7 @@ C
           NU    = VALRES(2)
           ALPHA = VALRES(3)
           IF (ALPHA.NE.0.D0) THEN
-            CALL UTMESS('F',OPTION,'EN THERMOELASTICITE LE CALCUL'//
-     &      ' DES DERIVEES DE G EST POUR LE MOMENT INCORRECT')
+            CALL U2MESS('F','ELEMENTS3_42')
           ENDIF
 C DERIVEES PAR RAPPORT A LA TEMPERATURE
           DE    = DEVRES(1)
@@ -630,7 +620,7 @@ C
             TERM5 = -ALPHA*(TG-TREF)*E*TRADE/(1.D0-2.D0*NU)
             TERM6 = -ALPHA*(TG-TREF)*(TRA-1.5D0*ALPHA*(TG-TREF))
      &              /(1.D0-2.D0*NU)
-            IF(DERIVE) DPSIDE = TERM1 + TERM2 + TERM3 + TERM4 + TERM5 
+            IF(DERIVE) DPSIDE = TERM1 + TERM2 + TERM3 + TERM4 + TERM5
      &                         +TERM6
             IF(DERIVF) DPSIDE = TERM2 + TERM4 + TERM5
            ELSE
@@ -643,7 +633,7 @@ C
               COE2 = NU*E/((1.D0+NU)*(1.D0-NU))
               COE3 = E/(1.D0+NU)
              ELSE
-              CALL UTMESS('F',NOMPRO//OPTION,'ERREUR DE PROGRAMMATION')
+              CALL U2MESS('F','MODELISA_67')
              ENDIF
              DPSIDE = COE2*(EPS(1)*DEPSDE(2)+EPS(2)*DEPSDE(1))
      &               +2.D0*COE1*(EPS(1)*DEPSDE(1)+EPS(2)*DEPSDE(2))
@@ -655,7 +645,7 @@ C
      &                  -ALPHA*(TG-TREF)*(TRA-1.5D0*ALPHA*(TG-TREF))
      &                  /(1.D0-2.D0*NU)
              ENDIF
-C	  
+C	
            TCLA = TCLA + POIDS* (PROD-DPSIDE*DIVT)
         ENDIF
 C =======================================================
@@ -685,7 +675,7 @@ C
           IF(DERIVF) DDPSI = TERM2 + TERM4 + TERMT1 + TERMT2
         ELSE
           IF(DP) THEN
-            COEF = NU12*NU1M*NU1M         
+            COEF = NU12*NU1M*NU1M
             COE1 = (2.D0-NU)*NU/COEF
             COE2 = (1.D0-NU)/(2.D0*NU1*NU1M)
             COE3 = E*COE1
@@ -693,7 +683,7 @@ C
             COE5 = NU/(NU1*NU1M)
             COE6 = E*COE4
           ELSE IF(CP) THEN
-            COEF = (1.D0-NU*NU)*(1.D0-NU*NU)         
+            COEF = (1.D0-NU*NU)*(1.D0-NU*NU)
             COE1 = NU/COEF
             COE2 = 0.5D0/((1.D0+NU)*(1.D0-NU))
             COE3 = E*NU/COEF
@@ -701,7 +691,7 @@ C
             COE5 = NU/((1.D0+NU)*(1.D0-NU))
             COE6 = E*COE4
           ELSE
-            CALL UTMESS('F',NOMPRO//OPTION,'ERREUR DE PROGRAMMATION')
+            CALL U2MESS('F','MODELISA_67')
           ENDIF
           TERM1 = (EPS(1)*EPS(1)+EPS(2)*EPS(2))*COE1*DNU
           TERM2 = 2.D0*(EPS(1)*DEPSDE(1)+EPS(2)*DEPSDE(2))
@@ -739,12 +729,10 @@ C =======================================================
           ENDIF
 C
 C =======================================================
-C DERIVEE DU TERME INITIAL:  
+C DERIVEE DU TERME INITIAL:
 C =======================================================
         IF ((ISIGI.NE.0).OR.(IDEPI.NE.0).OR.EPSINI) THEN
-          CALL UTMESS('F',OPTION,'AVEC UN CHARGEMENT EN '//
-     &    ' DEFORMATIONS (OU CONTRAINTES) INITIALES ,LE CALCUL'//
-     &    ' DES DERIVEES DE G EST POUR LE MOMENT INCORRECT')
+          CALL U2MESS('F','ELEMENTS3_43')
           PROD=0.D0
           DO 670 I=1,NCMP
             DO 660 J=1,NDIM

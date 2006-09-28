@@ -1,21 +1,21 @@
       SUBROUTINE CGMABA (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -125,15 +125,11 @@ C --- RECUPERATION DE LA DEMI-LARGEUR DE LA BANDE :
 C     -------------------------------------------
       CALL GETVR8(MOTFAC,'DIST',IOCC,1,0,DIST,NDIST)
       IF (NDIST.EQ.0) THEN
-          CALL UTMESS('F','CGMABA','ON DOIT UTILISER '//
-     +                'OBLIGATOIREMENT LE MOT-CLE DIST '//
-     +                'POUR DEFINIR LA DEMI-LARGEUR DE BANDE. ')
+          CALL U2MESS('F','MODELISA3_67')
       ELSE
          CALL GETVR8(MOTFAC,'DIST',IOCC,1,1,DIST,NB)
          IF (DIST.LE.ZERO) THEN
-             CALL UTMESS('F','CGMABA','ON DOIT DONNER '//
-     +                   'UNE DISTANCE STRICTEMENT POSITIVE POUR '//
-     +                   'DEFINIR LA BANDE. ')
+             CALL U2MESS('F','MODELISA3_68')
          ENDIF
       ENDIF
 C
@@ -144,29 +140,16 @@ C     -----------
       IF (NANGLE.EQ.0) THEN
           CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,0,R8BID,NVECT)
           IF (NVECT.EQ.0) THEN
-              CALL UTMESS('F','CGMABA','ON DOIT UTILISER '//
-     +                    'OBLIGATOIREMENT LE MOT-CLE ANGL_NAUT '//
-     +                   'OU LE MOT-CLE VECT_NORMALE POUR L''OPTION '//
-     +                   'BANDE DE CREA_GROUP_MA. CE MOT-CLE PERMET '//
-     +                   'DE DEFINIR LA DIRECTION PERPENDICULAIRE '//
-     +                   'AU PLAN MILIEU DE LA BANDE. ')
+              CALL U2MESS('F','MODELISA3_69')
           ELSE
               NVECT = -NVECT
               IF (NDIM.EQ.3.AND.NVECT.NE.3) THEN
-                  CALL UTMESS('F','CGMABA','POUR L''OPTION '//
-     +                        'BANDE DE CREA_GROUP_MA, IL FAUT '//
-     +                        ' DEFINIR LES 3 COMPOSANTES DU VECTEUR'//
-     +                        ' PERPENDICULAIRE AU PLAN MILIEU DE LA '//
-     +                        ' BANDE QUAND ON EST EN 3D.')
+                  CALL U2MESS('F','MODELISA3_70')
               ELSEIF (NDIM.EQ.2.AND.NVECT.NE.2) THEN
-                  CALL UTMESS('F','CGMABA','POUR L''OPTION '//
-     +                        'BANDE DE CREA_GROUP_MA, IL FAUT '//
-     +                        ' DEFINIR LES 2 COMPOSANTES DU VECTEUR'//
-     +                        ' PERPENDICULAIRE AU PLAN MILIEU DE LA '//
-     +                        ' BANDE QUAND ON EST EN 2D.')
+                  CALL U2MESS('F','MODELISA3_71')
               ELSE
                   CALL GETVR8(MOTFAC,'VECT_NORMALE',IOCC,1,NVECT,VECNOR,
-     +                        NV)
+     &                        NV)
               ENDIF
           ENDIF
       ELSE
@@ -206,12 +189,10 @@ C
       ENDIF
 C
       XNORM2 = VECNOR(1)*VECNOR(1) + VECNOR(2)*VECNOR(2) +
-     +         VECNOR(3)*VECNOR(3)
+     &         VECNOR(3)*VECNOR(3)
 C
       IF (XNORM2.EQ.ZERO) THEN
-          CALL UTMESS('F','CGMABA','ERREUR DANS LA DONNEE DU '//
-     +                   'VECTEUR NORMAL AU PLAN MILIEU DE LA  '//
-     +                   'BANDE : CE VECTEUR EST NUL.')
+          CALL U2MESS('F','MODELISA3_72')
       ENDIF
 C
       XNORM = SQRT(XNORM2)
@@ -246,7 +227,7 @@ C ---     RECUPERATION DU NOMBRE DE CONNECTIVITES DE LA MAILLE :
 C         ----------------------------------------------------
            CALL JENONU(JEXNOM(NOMA//'.NOMMAI',NOMAIL),IBID)
            CALL JELIRA (JEXNUM(NOMA//'.CONNEX',IBID),'LONMAX',NBNO,
-     +                  K1BID)
+     &                  K1BID)
 C
 C ---     BOUCLE SUR LES CONNECTIVITES DE LA MAILLE :
 C         -----------------------------------------
@@ -269,7 +250,7 @@ C
 C ---        CALCUL DE LA DISTANCE DU NOEUD COURANT AU PLAN MILIEU :
 C            -----------------------------------------------------
                 D    = XX0(1)*VECNOR(1) + XX0(2)*VECNOR(2) +
-     +                 XX0(3)*VECNOR(3)
+     &                 XX0(3)*VECNOR(3)
 C
 C ---        SI LE NOEUD COURANT EST DANS LA BANDE, ON AFFECTE
 C ---        LA MAILLE COURANTE A LA LISTE DE MAILLES QUI SERA

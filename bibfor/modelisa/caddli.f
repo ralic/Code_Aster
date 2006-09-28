@@ -1,6 +1,6 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C                         DDLS IMPOSES PAR NOEUD
           ELSE IF (FONREE.EQ.'FONC') THEN
             CALL WKVECT('&&CADDLI.VALDDL','V V K8',NDDLA*NBNOEU,JVAL)
           ELSE
-            CALL UTMESS('F','CADDLI','STOP 1')
+            CALL U2MESS('F','CALCULEL_2')
           END IF
           CALL WKVECT('&&CADDLI.DIRECT','V V R',3*NBNOEU,JDIREC)
           CALL WKVECT('&&CADDLI.DIMENSION','V V I',NBNOEU,JDIMEN)
@@ -246,9 +246,8 @@ C       -- ON VERIFIE QUE SI EVOL_THER, IL EST EMPLOYE SEUL :
           IF (IEVOL.EQ.1) THEN
             DO 70 J = 1,NDDLA
               CALL GETVID(MOTFAC,MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
-              IF (DDLIMP(J).NE.0) CALL UTMESS('F','CADDLI',
-     &                    'LE MOT CLEF EVOL_THER EST INCOMPATIBLE AVEC:'
-     &                                 //MOTCLE(J))
+              IF (DDLIMP(J).NE.0) CALL U2MESK('F','MODELISA2_44',1,MOTCL
+     &E(J))
    70       CONTINUE
           END IF
         END IF
@@ -329,8 +328,8 @@ C         ---------------
 C       -- IL NE FAUT PAS GRONDER L'UTILISATEUR SI 'ENCASTRE' :
         IF (VALLIA.NE.'ENCASTRE') THEN
           DO 91,K=1,NDDLA
-             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL UTMESS('F','CADDLI',
-     &                  'AUCUN NOEUD NE CONNAIT LE DDL: '//MOTCLE(K))
+             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL U2MESK('F','MODELISA2_45',
+     &1,MOTCLE(K))
   91      CONTINUE
         ENDIF
         CALL JEDETR('&&CADDLI.ICOMPT')

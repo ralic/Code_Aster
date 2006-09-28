@@ -4,22 +4,22 @@
       CHARACTER*(*)     NOMSD,NOMSY, TYPMAX,NOCHAM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/08/1999   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C      AFFECTATION DU CHAMP-GD DE NOM NOCHAM  AVEC LES
 C      VALEURS MINMAX EN TOUT POINT DES CHAMPS-GD DE TYPE
@@ -74,7 +74,7 @@ C
 C
       CALL RSUTNU ( NOMSD, ' ', 0, KNUM, NBORDR, EPSI, CRIT, IRET )
       IF ( NBORDR .EQ. 0 ) THEN
-          CALL UTMESS('F','CHMIMA','ON NE TROUVE AUCUN CHAMP.')
+          CALL U2MESS('F','UTILITAI_23')
       ENDIF
       CALL JEVEUO ( KNUM, 'L', JORDR )
 C
@@ -87,11 +87,9 @@ C        --- INITIALISATION DE NOCHAM AVEC CHEXTR ---
         CALL COPISD('CHAMP_GD','G',CHEXTR(1:19),NOCHA2(1:19))
 C
       ELSEIF ( IRET.EQ.101 .OR. IRET.EQ.111 ) THEN
-         CALL UTMESS('F','CHMIMA','LE NOM SYMBOLIQUE: '//NOMS2//
-     +                           ' EST ILLICITE POUR CE RESULTAT')
+         CALL U2MESK('F','UTILITAI_24',1,NOMS2)
       ELSE
-         CALL UTMESS('F','CHMIMA','LE CHAMP CHERCHE N''A PAS '//
-     +                            'ENCORE ETE CALCULE.')
+         CALL U2MESS('F','UTILITAI_25')
       ENDIF
 C
 C     --- RECUPERATION DES VALEURS DU CHAMP-GD ---
@@ -121,11 +119,9 @@ C
             CALL RSEXCH(NOMSD,NOMS2,ZI(JORDR+I-1),CHEXTR,IRET)
 C
             IF ( IRET.EQ.101 .OR. IRET.EQ.111 ) THEN
-              CALL UTMESS('F','CHMIMA','LE NOM SYMBOLIQUE: '//NOMS2//
-     +                        ' EST ILLICITE POUR CE RESULTAT')
+              CALL U2MESK('F','UTILITAI_24',1,NOMS2)
             ELSEIF (IRET.NE.0)  THEN
-              CALL UTMESS('F','CHMIMA','LE CHAMP CHERCHE N''A PAS '//
-     +                         'ENCORE ETE CALCULE.')
+              CALL U2MESS('F','UTILITAI_25')
             ENDIF
 C
 C         - RECUPERATION DU VALE DU CHAMP EXTRAIT
@@ -151,11 +147,9 @@ C
             CALL RSEXCH(NOMSD,NOMS2,ZI(JORDR+I-1),CHEXTR,IRET)
 C
             IF ( IRET.EQ.101 .OR. IRET.EQ.111 ) THEN
-              CALL UTMESS('F','CHMIMA','LE NOM SYMBOLIQUE: '//NOMS2//
-     +                        ' EST ILLICITE POUR CE RESULTAT')
+              CALL U2MESK('F','UTILITAI_24',1,NOMS2)
             ELSEIF (IRET.NE.0)  THEN
-              CALL UTMESS('F','CHMIMA','LE CHAMP CHERCHE N''A PAS '//
-     +                         'ENCORE ETE CALCULE.')
+              CALL U2MESS('F','UTILITAI_25')
             ENDIF
 C
 C         - RECUPERATION DU VALE DU CHAMP EXTRAIT
@@ -182,11 +176,9 @@ C
             CALL RSEXCH(NOMSD,NOMS2,ZI(JORDR+I-1),CHEXTR,IRET)
 C
             IF ( IRET.EQ.101 .OR. IRET.EQ.111 ) THEN
-              CALL UTMESS('F','CHMIMA','LE NOM SYMBOLIQUE: '//NOMS2//
-     +                        ' EST ILLICITE POUR CE RESULTAT')
+              CALL U2MESK('F','UTILITAI_24',1,NOMS2)
             ELSEIF (IRET.NE.0)  THEN
-              CALL UTMESS('F','CHMIMA','LE CHAMP CHERCHE N''A PAS '//
-     +                         'ENCORE ETE CALCULE.')
+              CALL U2MESS('F','UTILITAI_25')
             ENDIF
 C
 C         - RECUPERATION DU VALE DU CHAMP EXTRAIT
@@ -213,11 +205,9 @@ C
             CALL RSEXCH(NOMSD,NOMS2,ZI(JORDR+I-1),CHEXTR,IRET)
 C
             IF ( IRET.EQ.101 .OR. IRET.EQ.111 ) THEN
-              CALL UTMESS('F','CHMIMA','LE NOM SYMBOLIQUE: '//NOMS2//
-     +                        ' EST ILLICITE POUR CE RESULTAT')
+              CALL U2MESK('F','UTILITAI_24',1,NOMS2)
             ELSEIF (IRET.NE.0)  THEN
-              CALL UTMESS('F','CHMIMA','LE CHAMP CHERCHE N''A PAS '//
-     +                         'ENCORE ETE CALCULE.')
+              CALL U2MESS('F','UTILITAI_25')
             ENDIF
 C
 C         - RECUPERATION DU VALE DU CHAMP EXTRAIT
@@ -280,31 +270,28 @@ C
              ZR(NVALE+ZI(JDDLX+IN)-1) = X
              ZR(NVALE+ZI(JDDLY+IN)-1) = Y
              IF ( ZI(JDDLZ+IN) .NE. 0 )
-     +          ZR(NVALE+ZI(JDDLZ+IN)-1) = Z
+     &          ZR(NVALE+ZI(JDDLZ+IN)-1) = Z
              ZI(INUMER+ZI(JDDLX+IN)-1) = ZI(JORDR)
              ZI(INUMER+ZI(JDDLY+IN)-1) = ZI(JORDR)
              ZI(INUMER+ZI(JDDLZ+IN)-1) = ZI(JORDR)
              IF ( ZI(JDLRX+IN) .NE. 0 )
-     +            ZR(NVALE+ZI(JDLRX+IN)-1) = ZR(IVALE+ZI(JDLRX+IN)-1)
+     &            ZR(NVALE+ZI(JDLRX+IN)-1) = ZR(IVALE+ZI(JDLRX+IN)-1)
              IF ( ZI(JDLRY+IN) .NE. 0 )
-     +            ZR(NVALE+ZI(JDLRY+IN)-1) = ZR(IVALE+ZI(JDLRY+IN)-1)
+     &            ZR(NVALE+ZI(JDLRY+IN)-1) = ZR(IVALE+ZI(JDLRY+IN)-1)
              IF ( ZI(JDLRZ+IN) .NE. 0 )
-     +            ZR(NVALE+ZI(JDLRZ+IN)-1) = ZR(IVALE+ZI(JDLRZ+IN)-1)
+     &            ZR(NVALE+ZI(JDLRZ+IN)-1) = ZR(IVALE+ZI(JDLRZ+IN)-1)
  50       CONTINUE
 C
           DO 52 I = 2 , NBORDR
             CALL RSEXCH(NOMSD,NOMS2,ZI(JORDR+I-1),CHEXTR,IRET)
             IF ( IRET.EQ.101 .OR. IRET.EQ.111 ) THEN
-              CALL UTMESS('F','CHMIMA','LE NOM SYMBOLIQUE: '//NOMS2//
-     +                        ' EST ILLICITE POUR CE RESULTAT')
+              CALL U2MESK('F','UTILITAI_24',1,NOMS2)
             ELSEIF (IRET.NE.0)  THEN
-              CALL UTMESS('F','CHMIMA','LE CHAMP CHERCHE N''A PAS '//
-     +                         'ENCORE ETE CALCULE.')
+              CALL U2MESS('F','UTILITAI_25')
             ENDIF
             CALL DISMOI('F','PROF_CHNO',CHEXTR,'CHAM_NO',IB,PRN2,IE)
             IF ( PRN2 .NE. PRNO ) THEN
-              CALL UTMESS('F','CHMIMA','PAS LA MEME NUMEROTATION SUR '//
-     +                                 'LES CHAM_NOS.')
+              CALL U2MESS('F','UTILITAI_26')
             ENDIF
             CALL JEVEUO(CHEXTR//'.VALE','L',IVALE)
 C
@@ -325,13 +312,13 @@ C
                   ZR(NVALE+ZI(JDDLX+IN)-1) = X
                   ZR(NVALE+ZI(JDDLY+IN)-1) = Y
                   IF ( ZI(JDDLZ+IN) .NE. 0 )
-     +                 ZR(NVALE+ZI(JDDLZ+IN)-1) = Z
+     &                 ZR(NVALE+ZI(JDDLZ+IN)-1) = Z
                   IF ( ZI(JDLRX+IN) .NE. 0 )
-     +              ZR(NVALE+ZI(JDLRX+IN)-1) = ZR(IVALE+ZI(JDLRX+IN)-1)
+     &              ZR(NVALE+ZI(JDLRX+IN)-1) = ZR(IVALE+ZI(JDLRX+IN)-1)
                   IF ( ZI(JDLRY+IN) .NE. 0 )
-     +              ZR(NVALE+ZI(JDLRY+IN)-1) = ZR(IVALE+ZI(JDLRY+IN)-1)
+     &              ZR(NVALE+ZI(JDLRY+IN)-1) = ZR(IVALE+ZI(JDLRY+IN)-1)
                   IF ( ZI(JDLRZ+IN) .NE. 0 )
-     +              ZR(NVALE+ZI(JDLRZ+IN)-1) = ZR(IVALE+ZI(JDLRZ+IN)-1)
+     &              ZR(NVALE+ZI(JDLRZ+IN)-1) = ZR(IVALE+ZI(JDLRZ+IN)-1)
                ENDIF
  54         CONTINUE
 C
@@ -346,17 +333,17 @@ C
           IF (  NBORDR.NE.1 ) THEN
             DO 102 IN = 0 , NBNOE-1
               CALL RSADPA(NOMSD,'L',1,'INST',
-     +                    ZI(INUMER+ZI(JDDLX+IN)-1),0,IAD,CTYP)
+     &                    ZI(INUMER+ZI(JDDLX+IN)-1),0,IAD,CTYP)
               ZR(NVALE+ZI(JDDLX+IN)-1) = ZR(IAD)
               ZR(NVALE+ZI(JDDLY+IN)-1) = ZR(IAD)
               IF ( ZI(JDDLZ+IN) .NE. 0 )
-     +           ZR(NVALE+ZI(JDDLZ+IN)-1) = ZR(IAD)
+     &           ZR(NVALE+ZI(JDDLZ+IN)-1) = ZR(IAD)
               IF ( ZI(JDLRX+IN) .NE. 0 )
-     +           ZR(NVALE+ZI(JDLRX+IN)-1) = ZR(IAD)
+     &           ZR(NVALE+ZI(JDLRX+IN)-1) = ZR(IAD)
               IF ( ZI(JDLRY+IN) .NE. 0 )
-     +           ZR(NVALE+ZI(JDLRY+IN)-1) = ZR(IAD)
+     &           ZR(NVALE+ZI(JDLRY+IN)-1) = ZR(IAD)
               IF ( ZI(JDLRZ+IN) .NE. 0 )
-     +           ZR(NVALE+ZI(JDLRZ+IN)-1) = ZR(IAD)
+     &           ZR(NVALE+ZI(JDLRZ+IN)-1) = ZR(IAD)
  102        CONTINUE
             CALL JEDETR ( '&&CHMIMA.DDL.DX' )
             CALL JEDETR ( '&&CHMIMA.DDL.DY' )

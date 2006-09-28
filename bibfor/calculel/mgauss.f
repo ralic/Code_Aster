@@ -1,7 +1,7 @@
       SUBROUTINE MGAUSS(CARA,A,B,DIM,NORDRE,NB,DET,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C     ---------------------------------------
         IF (LSTOP) THEN
           IF (CARA2(3:3).EQ.'S') THEN
             IF (IRET.EQ.N+1) THEN
-              CALL UTMESS('F','MGAUSS','LA MATRICE A EST SINGULIERE')
+              CALL U2MESS('F','CALCULEL3_79')
             ELSE
               CALL UTDEBM('F','MGAUSS',' ')
               CALL UTIMPI('L','L''ELEMENT DIAGONAL U(',1,IRET)
@@ -213,7 +213,7 @@ C     ---------------------------------------
               CALL UTFINM()
             END IF
           ELSE
-            CALL UTMESS('F','MGAUSS','LA MATRICE A EST SINGULIERE')
+            CALL U2MESS('F','CALCULEL3_79')
           END IF
         ELSE
 C         -- ON CONTINUE

@@ -5,22 +5,22 @@
       INTEGER JLTSV,JLTSL,JLNSV,JLNSL,NBNO,JCOOR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/09/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 
@@ -60,136 +60,136 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       MAI=NOMA//'.TYPMAIL'
       CALL JEVEUO(MAI,'L',JMA)
-C 
-C     BOUCLE SUR TOUS LES NOEUDS P DU MAILLAGE  
+C
+C     BOUCLE SUR TOUS LES NOEUDS P DU MAILLAGE
       DO 11 INO=1,NBNO
         P(1)=ZR(JCOOR-1+3*(INO-1)+1)
         P(2)=ZR(JCOOR-1+3*(INO-1)+2)
         P(3)=ZR(JCOOR-1+3*(INO-1)+3)
 
 C       CALCUL DE LSN
-C       -------------        
+C       -------------
         DMIN=R8MAEM()
-C       RECHERCHE DE LA MAILLE LA PLUS PROCHE : 
+C       RECHERCHE DE LA MAILLE LA PLUS PROCHE :
 C       BOUCLE SUR NOEUDS DE MAFIS
         DO 2 IMAFIS=1,NBMAF
           NMAABS=ZI(JDLIMA-1+(IMAFIS-1)+1)
           NBNOMA=ZI(JCONX2+NMAABS) - ZI(JCONX2+NMAABS-1)
-          IF ((NBNOMA.EQ.4).OR.(NBNOMA.EQ.8)) NTRI=4  
-          IF ((NBNOMA.EQ.3).OR.(NBNOMA.EQ.6)) NTRI=1  
+          IF ((NBNOMA.EQ.4).OR.(NBNOMA.EQ.8)) NTRI=4
+          IF ((NBNOMA.EQ.3).OR.(NBNOMA.EQ.6)) NTRI=1
 
 C         BOUCLE SUR LE NOMBRE DE TRIANGLES DE LA MAILLE
-          DO 21 ITRI=1,NTRI          
-      
+          DO 21 ITRI=1,NTRI
+
             INOMA=1
             IF (ITRI.EQ.4) INOMA=4
             NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
             A(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
             A(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
             A(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
-            
+
             INOMA=2
             IF (ITRI.EQ.2) INOMA=4
             NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
             B(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
             B(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
             B(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
-            
-            INOMA=3             
+
+            INOMA=3
             IF (ITRI.EQ.3) INOMA=4
             NUNO(INOMA)=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
             C(1)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+1)
             C(2)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+2)
             C(3)=ZR(JCOOR-1+3*(NUNO(INOMA)-1)+3)
-            
+
             DO 211 I=1,3
               AB(I)=B(I)-A(I)
               BC(I)=C(I)-B(I)
               AP(I)=P(I)-A(I)
               AC(I)=C(I)-A(I)
  211        CONTINUE
- 
+
 C           CALCUL DE LA NORMALE À LA MAILLE TRIA3
-C           PROJECTION DE P SUR LA MAILLE VOIR R5.03.50-B 
-            CALL PROVEC(AB,AC,VN)              
-            CALL NORMEV(VN,NORME)      
+C           PROJECTION DE P SUR LA MAILLE VOIR R5.03.50-B
+            CALL PROVEC(AB,AC,VN)
+            CALL NORMEV(VN,NORME)
             CALL PROVEC(AP,VN,VNT)
             PS=DDOT(3,VNT,1,AC,1)
-            EPS1=-1*PS/NORME              
+            EPS1=-1*PS/NORME
             PS=DDOT(3,VNT,1,AB,1)
             EPS2=PS/NORME
             EPS3=1-EPS1-EPS2
-           
+
 C           SI M EST DS LE SECTEUR 1
-            IF (EPS1.LT.0.D0) THEN                
+            IF (EPS1.LT.0.D0) THEN
               PS=DDOT(3,AC,1,AC,1)
               PS1=DDOT(3,AB,1,AC,1)
               EPS2=EPS2+EPS1*PS1/PS
               EPS1=0.D0
             END IF
 C           SI M EST DS LE SECTEUR 2
-            IF (EPS2.LT.0.D0) THEN               
+            IF (EPS2.LT.0.D0) THEN
               PS=DDOT(3,AB,1,AB,1)
               PS1=DDOT(3,AB,1,AC,1)
               EPS1=EPS1+EPS2*PS1/PS
               EPS2=0.D0
             END IF
 C           SI M EST DS LE SECTEUR 3
-            IF (EPS3.LT.0.D0) THEN                
+            IF (EPS3.LT.0.D0) THEN
               PS=DDOT(3,BC,1,BC,1)
               PS1=DDOT(3,AB,1,BC,1)
               PS2=DDOT(3,AC,1,BC,1)
               EPS1=(-1.D0*EPS1*PS1+(1.D0-EPS2)*PS2)/PS
               EPS2=1.D0-EPS1
-            END IF             
-           
-C          ON FINIT DE RAMENER LES POINTS ENCORE DEHORS             
+            END IF
+
+C          ON FINIT DE RAMENER LES POINTS ENCORE DEHORS
            IF (EPS1.LT.0.D0) EPS1=0.D0
            IF (EPS2.LT.0.D0) EPS2=0.D0
            IF (EPS1.GT.1.D0) EPS1=1.D0
            IF (EPS2.GT.1.D0) EPS2=1.D0
-           
+
            DO 212 I=1,3
              M(I)=A(I)+EPS1*AB(I)+EPS2*AC(I)
              PM(I)=M(I)-P(I)
- 212       CONTINUE                       
-                        
+ 212       CONTINUE
+
 C          CALCUL DE LA DISTANCE PM
            D=PADIST(3,P,M)
-           
-C          ON VÉRIFIE QUE CETTE NORMALE EST ORIENTÉE COMME LA 
-C          PRÉCENDENTE, À PART POUR LE 1ER TRIANGLE DE LA 1ER MAILLE! 
+
+C          ON VÉRIFIE QUE CETTE NORMALE EST ORIENTÉE COMME LA
+C          PRÉCENDENTE, À PART POUR LE 1ER TRIANGLE DE LA 1ER MAILLE!
            IF ((IMAFIS.NE.1) .OR. (ITRI.NE.1))THEN
              PS=DDOT(3,VN,1,VNREF,1)
              IF (PS.LT.0) VN(1)=-1*VN(1)
              IF (PS.LT.0) VN(2)=-1*VN(2)
              IF (PS.LT.0) VN(3)=-1*VN(3)
-           END IF  
-                      
+           END IF
+
 C          ON GARDE CETTE NORMALE COMME RÉFÉR POUR LA MAILLE SUIVANTE
            DO 213 I=1,3
-             VNREF(I)=VN(I) 
- 213       CONTINUE                
-      
+             VNREF(I)=VN(I)
+ 213       CONTINUE
+
 C          MISE EN MÉMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
            IF (D.LT.DMIN) THEN
-             DMIN=D             
+             DMIN=D
              XLN=DDOT(3,VN,1,PM,1)
-           END IF 
+           END IF
 
  21      CONTINUE
 
  2     CONTINUE
-      
+
        ZR(JLNSV-1+(INO-1)+1)=XLN
        ZL(JLNSL-1+(INO-1)+1)=.TRUE.
 
 C      CALCUL DE LST
-C      -------------   
+C      -------------
         DMIN=R8MAEM()
 C
 C       RECHERCHE DU SEGMENT LE PLUS PROCHE : BOUCLE SUR SEG DE FONFIS
-        DO 3 ISEFIS=1,NBSEF     
+        DO 3 ISEFIS=1,NBSEF
 
           NSEABS=ZI(JDLISE-1+(ISEFIS-1)+1)
 
@@ -217,11 +217,11 @@ C             MAILLE QUADRAT 2D:NB NOEUDS SOMMETS =1/2 x NB NOEUDS TOTAL
               NNOS=NBNOMA
             ENDIF
 
-            DO 32 INOMA=1,NNOS                
+            DO 32 INOMA=1,NNOS
               NUM=ZI(JCONX1-1+ZI(JCONX2+NMAABS-1)+INOMA-1)
               IF (NUNOSE(1).EQ.NUM) N1=1
               IF (NUNOSE(2).EQ.NUM) N2=1
-C             POUR RÉCUPÉRER UN 3EME POINT (SOMMET) DE LA MAILLE 
+C             POUR RÉCUPÉRER UN 3EME POINT (SOMMET) DE LA MAILLE
 C             QUI NE SOIT PAS SUR LE FOND
               IF ((NUNOSE(1).NE.NUM).AND.(NUNOSE(2).NE.NUM)) NUNOC=NUM
  32         CONTINUE
@@ -230,16 +230,16 @@ C             QUI NE SOIT PAS SUR LE FOND
 
               MA2FF=.TRUE.
               DO 33 I=1,3
-                A(I)=ZR(JCOOR-1+3*(NUNOSE(1)-1)+I)              
+                A(I)=ZR(JCOOR-1+3*(NUNOSE(1)-1)+I)
                 B(I)=ZR(JCOOR-1+3*(NUNOSE(2)-1)+I)
-                C(I)=ZR(JCOOR-1+3*(NUNOC-1)+I) 
+                C(I)=ZR(JCOOR-1+3*(NUNOC-1)+I)
                 AB(I)=B(I)-A(I)
                 AP(I)=P(I)-A(I)
                 AC(I)=C(I)-A(I)
  33           CONTINUE
 
-C             CALCUL DE LA NORMALE à LA MAILLE 
-              CALL PROVEC(AB,AC,VN) 
+C             CALCUL DE LA NORMALE à LA MAILLE
+              CALL PROVEC(AB,AC,VN)
               CALL NORMEV(VN,NORME)
 
 C             CALCUL DE LA NORMALE INTERIEURE AU SEGMENT
@@ -255,17 +255,15 @@ C             MAIS CA DEVRAIT JAMAIS ARRIVER
               IF (ISEFIS.NE.1) THEN
                 PS=DDOT(3,VN,1,VNREF,1)
                 IF (PS.LT.0.D0) THEN
-                  CALL UTMESS('F','XLS3D','PB DANS ORIENTATION '//
-     &                 'DES NORMALES A FOND_FISS. VERIFIER LA '//
-     &                 'CONTINUITE DES MAILLES DE FOND_FISS')
+                  CALL U2MESS('F','ALGORITH11_53')
 C                  VN(1)=-1*VN(1)
 C                  VN(2)=-1*VN(2)
 C                  VN(3)=-1*VN(3)
-                ENDIF  
+                ENDIF
               ENDIF
 
 C             ON GARDE CETTE NORMALE COMME RÉF POUR LE SEG SUIVANT
-              VNREF(1)=VN(1) 
+              VNREF(1)=VN(1)
               VNREF(2)=VN(2)
               VNREF(3)=VN(3)
 
@@ -281,7 +279,7 @@ C             ON RAMÈNE M SUR LES BORDS S'IL LE FAUT
               DO 34 I=1,3
                 M(I)=A(I)+EPS*AB(I)
                 PM(I)=M(I)-P(I)
- 34           CONTINUE                    
+ 34           CONTINUE
 
 C             CALCUL DE LA DISTANCE PM
               D=PADIST(3,P,M)
@@ -293,16 +291,15 @@ C             MISE EN MÉMOIRE DE LSN=PM.N POUR LE SEG LE PLUS PROCHE
 
             END IF
 
- 31       CONTINUE 
- 
-          IF (.NOT.MA2FF) CALL UTMESS('F','XINILS','SEGMENT '//
-     &            'DE FOND_FISS SANS MAILLE DE SURFACE RATTACHEE.')
+ 31       CONTINUE
+
+          IF (.NOT.MA2FF) CALL U2MESS('F','ALGORITH11_54')
  3      CONTINUE
 
        ZR(JLTSV-1+(INO-1)+1)=XLT
        ZL(JLTSL-1+(INO-1)+1)=.TRUE.
-       
+
  11   CONTINUE
- 
+
       CALL JEDEMA()
       END

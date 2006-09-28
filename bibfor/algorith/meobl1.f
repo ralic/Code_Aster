@@ -2,22 +2,22 @@
      &                    MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
@@ -51,11 +51,11 @@ C-------------------------------------------------------------
       REAL*8        FBS,DELTAS
       REAL*8        FBSM,SDFBDB,SDFBDE(6)
       REAL*8         COUPL,DCRIT(6)
-      
-      
-      
+
+
+
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      
+
       UN=1.D0
       T(1,1)=1
       T(2,2)=2
@@ -71,10 +71,10 @@ C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
-      
-      
+
+
       CALL R8INIR(6,0.D0,CC,1)
-      
+
       DO 9 I=1,3
         DO 10 J=I,3
           DO 11 K=1,3
@@ -106,12 +106,12 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
   18      CONTINUE
   17    CONTINUE
   16  CONTINUE
-  
+
       CALL R8INIR(6,0.D0,FB,1)
       TREB=0.D0
       DO 301 I=1,3
-      TREB=TREB+CC(I)/2 
- 301  CONTINUE      
+      TREB=TREB+CC(I)/2
+ 301  CONTINUE
       IF (TREB.GT.0.D0) THEN
         DO 19 I=1,6
           FB(I)=-LAMBDA*TREB*EPS(I)
@@ -131,11 +131,8 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
        ELSE
          FBSM=0.D0
        ENDIF
-     
-     
 
 
-     
 C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
@@ -179,7 +176,7 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
       DCRIT(6)=0.D0
 
 
-      
+
       CALL DFBDB(3,B,EPS,2.D0*MU,LAMBDA,ECROB,TDFBDB)
       CALL DFBDE(3,B,EPS,2.D0*MU,LAMBDA,TDFBDE)
 
@@ -230,7 +227,7 @@ C---CALCUL DE KSI ET PSI
        IF (KSI.NE.0.D0) THEN
          IKSI=1.D0/KSI
        ELSE
-         CALL UTMESS('F','MTADE1','KSI NON INVERSIBLE')
+         CALL U2MESS('F','ALGORITH4_54')
        ENDIF
 
 
@@ -246,32 +243,32 @@ C-- ! ksi n est plus disponible
         MATD(I)=-INTERT(I)/(1.D0-ALPHA)/FD/TDFDDD
      &         -INTERD*IKSI*PSI(I)/(1.D0-ALPHA)/FD/TDFDDD
         MATB(I)=MATB(I)+IKSI*PSI(I)
-150    CONTINUE 
+150    CONTINUE
 
 
 
       CALL R8INIR(36,0.D0,DSIDEP,1)
-       
-       
+
+
        DO 201 I=1,6
          DO 202 J=1,6
            DSIDEP(I,J)=-TDFDDE(I)*MATD(J)-SDFBDE(I)*MATB(J)
  202           CONTINUE
  201   CONTINUE
-   
+
        ELSEIF ((FD.EQ.0.D0).AND.(FBSM.NE.0.D0)) THEN
 
          CALL R8INIR(6,0.D0,PSI,1)
          KSI=-ALPHA*MULT*DFMF*SDFBDB
-         DO 581 J=1,6 
+         DO 581 J=1,6
            PSI(J)=ALPHA*MULT*DFMF*SDFBDE(J)
      &          -FBSM*ALPHA*MULT/COUPL*DCRIT(J)
  581     CONTINUE
- 
+
          IF (KSI.NE.0.D0) THEN
            IKSI=1.D0/KSI
          ELSE
-           CALL UTMESS('F','MTADE1','KSIB NON INVERSIBLE')
+           CALL U2MESS('F','ALGORITH5_79')
          ENDIF
 
          CALL R8INIR(6,0.D0,MATB,1)
@@ -279,15 +276,15 @@ C-- ! ksi n est plus disponible
          DO 551 J=1,6
              MATB(J)=IKSI*PSI(J)
 551           CONTINUE
- 
+
          CALL R8INIR(36,0.D0,DSIDEP,1)
          DO 561 I=1,6
            DO 562 J=1,6
               DSIDEP(I,J)=DSIDEP(I,J)-SDFBDE(I)*MATB(J)
  562             CONTINUE
  561     CONTINUE
- 
- 
+
+
        ELSEIF ((FD.NE.0.D0).AND.(FBSM.EQ.0.D0)) THEN
 
          CALL R8INIR(36,0.D0,DSIDEP,1)
@@ -297,7 +294,7 @@ C-- ! ksi n est plus disponible
      &                      *DCRIT(J)/FD)/TDFDDD
  662             CONTINUE
  661     CONTINUE
- 
+
 
       ENDIF
 

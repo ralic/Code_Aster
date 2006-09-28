@@ -3,22 +3,22 @@
      &                  INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_4
 C TOLE CRP_21
@@ -83,7 +83,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      
+
 C DECLARATION VARIABLES LOCALES
       INTEGER      JGITVI,JGITV1,I,J,IDECAI,K,IDECAO,L,M,IFM,NIVMPI,
      &             GII,GII1,NBDDL,NBMC,IFETR,IMC,IDD,INFOL8,IBID,IBCAST,
@@ -91,7 +91,7 @@ C DECLARATION VARIABLES LOCALES
       INTEGER*4    INFOLA
       REAL*8       RAUX,DDOT
       CHARACTER*8  NOMSD
-      CHARACTER*24 NOMSDR,SDFETG,K24B     
+      CHARACTER*24 NOMSDR,SDFETG,K24B
       CHARACTER*32 JEXNUM,JEXNOM
       LOGICAL      LPARA
 
@@ -106,15 +106,15 @@ C INITS DIVERSES
       ELSE
         NIVMPI=1
       ENDIF
-              
-C ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT     
-      IFM=ZI(IPRJ)        
+
+C ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT
+      IFM=ZI(IPRJ)
 
 C EN PARALLELE SEUL LE PROCESSUS MAITRE CONSTRUIT CET OBJET VD0
       IF (RANG.EQ.0) THEN
 
         IF ((OPTION.NE.1).AND.(OPTION.NE.2))
-     &    CALL UTMESS('F','FETPRJ','OPTION DE CALCUL NON PREVUE !')
+     &    CALL U2MESS('F','ALGELINE_40')
         SDFETG=SDFETI//'.FETG'
 C---------------------------------------------------------------------
 C --------------------------------------------------------------------
@@ -123,11 +123,11 @@ C --------------------------------------------------------------------
 C---------------------------------------------------------------------
 
         IF (.NOT.LRIGID) THEN
-      
+
           IF (OPTION.NE.1)
-     &      CALL UTMESS('F','FETPRJ','OPTION DE CALCUL INCOHERENTE !')
+     &      CALL U2MESS('F','ALGORITH3_66')
           CALL DCOPY(NBI,VI,1,VO,1)
-       
+
         ELSE
 C---------------------------------------------------------------------
 C --------------------------------------------------------------------
@@ -138,27 +138,27 @@ C---------------------------------------------------------------------
 C EN PARALLELE, GI ET GIT*GI NE SONT STOCKES QUE PAR LE PROC 0
           IF (LSTOGI) CALL JEVEUO(NOMGI,'L',JGI)
           CALL JEVEUO(NOMGGT,'L',JGITGI)
-        
+
 C --------------------------------------------------------------------
 C CONSTITUTION DE (GI)T*VI STOCKE DANS '&&FETPRJ.GITVI.R'
 C --------------------------------------------------------------------
           JGITVI=ZI(IPRJ+1)
           JGITV1=JGITVI-1
-        
-          IF (LSTOGI) THEN        
+
+          IF (LSTOGI) THEN
             CALL DGEMV('T',NBI,DIMGI,1.D0,ZR(JGI),NBI,VI,1,0.D0,
      &                 ZR(JGITVI),1)
           ELSE
 C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
             DO 9 I=1,DIMGI
               ZR(JGITV1+I)=0.D0
-    9       CONTINUE      
-            NOMSDR=MATAS//'.FETR'      
+    9       CONTINUE
+            NOMSDR=MATAS//'.FETR'
             GII=ZI(IPRJ+2)
             GII1=GII-1
             DO 30 IDD=1,NBSD
               NBDDL=VDDL(IDD)
-              NBMC=VSDF(IDD)                        
+              NBMC=VSDF(IDD)
               IF (NBMC.NE.0) THEN
                 CALL JENUNO(JEXNUM(SDFETG,IDD),NOMSD)
                 CALL JEVEUO(JEXNOM(NOMSDR,NOMSD),'L',IFETR)
@@ -174,9 +174,9 @@ C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
               ENDIF
    30       CONTINUE
             JGITV1=JGITVI-1
-          
+
           ENDIF
-        
+
 C --------------------------------------------------------------------
 C CONSTITUTION DE ((GI)T*GI)-1*(GI)T*VI STOCKE DANS '&&FETPRJ.GITGI.R'
 C --------------------------------------------------------------------
@@ -193,42 +193,42 @@ C VIA LAPACK
             CALL UTIMPI('L','PB LAPACK DGETRS: ',1,INFOL8)
             CALL UTFINM()
           ENDIF
-        
+
           IF (OPTION.EQ.1) THEN
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=VI-GI*((GI)T*GI)-1*(GI)T*VI (OPTION=1)
 C --------------------------------------------------------------------
             CALL DCOPY(NBI,VI,1,VO,1)
-          
-            IF (LSTOGI) THEN          
+
+            IF (LSTOGI) THEN
               CALL DGEMV('N',NBI,DIMGI,-1.D0,ZR(JGI),NBI,ZR(JGITVI),1,
      &                   1.D0,VO,1)
             ELSE
-C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL          
+C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
               DO 200 IDD=1,NBSD
                 NBDDL=VDDL(IDD)
                 NBMC=VSDF(IDD)
-                        
+
                 IF (NBMC.NE.0) THEN
                   CALL JENUNO(JEXNUM(SDFETG,IDD),NOMSD)
                   CALL JEVEUO(JEXNOM(NOMSDR,NOMSD),'L',IFETR)
                   DO 190 IMC=1,NBMC
                     JGITV1=JGITV1+1
-                    RAUX=-ZR(JGITV1)         
+                    RAUX=-ZR(JGITV1)
                     CALL FETREX(1,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
      &                          ZR(GII),IREX)
-                    CALL DAXPY(NBI,RAUX,ZR(GII),1,VO,1)  
+                    CALL DAXPY(NBI,RAUX,ZR(GII),1,VO,1)
   190             CONTINUE
                   CALL JELIBE(JEXNOM(NOMSDR,NOMSD))
                 ENDIF
   200         CONTINUE
-            
+
             ENDIF
-                  
+
 C MONITORING
             IF (INFOFE(1:1).EQ.'T')
      &        WRITE(IFM,*)'<FETI/FETPRJ',RANG,'> LAMBDA = P * LAMBDA'
-                    
+
           ELSE
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=((GI)T*GI)-1*(GI)T*VI (OPTION=2)
@@ -241,7 +241,7 @@ C MONITORING
             ENDIF
 C FIN DU SI LRIGID
         ENDIF
-C FIN DU SI RANG   
+C FIN DU SI RANG
       ENDIF
 
 C EN PARALLELE, ENVOI DE VO A TOUS LES PROC POUR PREPARER LE CALCUL

@@ -1,32 +1,32 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 08/11/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRP_20 CRS_508 CRS_512 CRS_513
       IMPLICIT NONE
       CHARACTER*(*)       NOMF, FICHDF, CLAS
 C ----------------------------------------------------------------------
-C ROUTINE UTILISATEUR D'OUVERTURE D'UNE BASE AVEC LECTURE SUR 
+C ROUTINE UTILISATEUR D'OUVERTURE D'UNE BASE AVEC LECTURE SUR
 C FICHIER HDF
 C
 C IN  NOMF   : NOM LOCALE DE LA BASE
 C IN  FICHDF : NOM LOCAL DU FICHIER HDF UTILISE POUR L'IMPRESSION
-C IN  CLAS   : NOM DE LA CLASSE ASSOCIEE 
+C IN  CLAS   : NOM DE LA CLASSE ASSOCIEE
 C
 C ----------------------------------------------------------------------
       CHARACTER *24                     NOMCO
@@ -45,20 +45,20 @@ C ----------------------------------------------------------------------
       INTEGER          N
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       INTEGER          JLTYP   , JLONG   , JDATE   , JIADD   , JIADM   ,
-     +                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ  
+     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
       CHARACTER*8      ORIG
       CHARACTER*32     RNOM
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
-      INTEGER          JGENR   , JTYPE   , JDOCU   , JORIG   , JRNOM   
+      INTEGER          JGENR   , JTYPE   , JDOCU   , JORIG   , JRNOM
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
       INTEGER          INDEF, JINDEF, IACCE, JIACCE, IUSADI, JUSADI
       COMMON /KINDJE/  INDEF(1)
@@ -69,11 +69,11 @@ C
       COMMON /JUSADI/  JUSADI(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
-     +                 IITLEC    , IITECR    , NITECR    , KMARQ
+     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
-     +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
+     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
@@ -82,7 +82,7 @@ C
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
       INTEGER          IDN    , IEXT    , NBENRG
@@ -121,7 +121,7 @@ C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       PARAMETER      ( Z = 'INIT' )
       CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU
       CHARACTER*16     K16BID
-      CHARACTER*75     CMESS      
+      CHARACTER*75     CMESS
             INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2)
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
@@ -130,7 +130,7 @@ C ----------------------------------------------------------------------
       CHARACTER*32     CRNOM,NGRP,K32(1),K32B(2),NOMO
       CHARACTER*24     KATTR(5),KATTRG(5),NOMATR,NOMAT2
       CHARACTER*8      K8(1),K8B(2),NREP(2)
-      PARAMETER      ( NOMATR = 'ATTRIBUTS JEVEUX', 
+      PARAMETER      ( NOMATR = 'ATTRIBUTS JEVEUX',
      &                 NOMAT2 = 'BASE GLOBALE JEVEUX' )
       INTEGER          IPGCA,LTYPI,LONOI,NBOBJ,IK32(1),JK32,IK8(1),JK8
       INTEGER          IDFIC,IDTS,NBEX,LTYPB,LONIND,NBVAL,IADMI
@@ -175,20 +175,20 @@ C
 C
       IF ( KNOMF .EQ. '        ' .OR. LEN(NOMF) .GT. 8 ) THEN
         CMESS = 'NOM DE BASE DE DONNEE '//KNOMF//' INVALIDE'
-        CALL JVMESS ( 'S' , 'JELIHD01' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( KCLAS .EQ. ' ' ) THEN
         CMESS = 'CLASSE DEMANDEE POUR '//KNOMF//' EST UN BLANC'
-        CALL JVMESS ( 'S' , 'JELIHD02' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE IF ( INDEX (CLASSE,KCLAS) .NE. 0 ) THEN
         CMESS = 'CLASSE DEMANDEE POUR '//KNOMF//' DEJA DEFINIE'
-        CALL JVMESS ( 'S' , 'JELIHD03' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
 C
       IC = INDEX ( CLASSE , ' ' )
       IF ( IC .EQ. 0 ) THEN
         CMESS = 'IMPOSSIBLE D''ACTIVER LE FICHIER '//KNOMF
-        CALL JVMESS ( 'S' , 'JELIHD04' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE
         NOMFIC(IC) = KNOMF
         NOMBAS(IC) = KNOM
@@ -212,7 +212,7 @@ C
       IDFIC = HDFOPF (NHDF)
       IF ( IDFIC .LT. 0 ) THEN
         CMESS = 'IMPOSSIBLE D''OUVRIR LE FICHIER HDF '// NHDF
-        CALL JVMESS ('F','JELIHD05',CMESS )
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
       NGRP ='/'
       IDG  = HDFOPG (IDFIC,NGRP)
@@ -255,6 +255,7 @@ C
           CALL JVMESS ( 'A' ,'JELIHD06' , ' LA BASE '//NOMBAS(IC)
      &     //' A ETE CONSTITUEE AVEC LA VERSION '//CVERSB//' ET VOUS'
      &     //' UTILISEZ LA VERSION '//CVERSU)
+C        CALL U2MESK('A','JEVEUX_08', 3 ,VALK)
       ENDIF
 C
       LMARQ = 2 * NREMAX(IC) * LOIS
@@ -287,7 +288,7 @@ C ----OPEN DU FICHIER BINAIRE ASSOCIE A LA BASE JEVEUX
 C
       CALL JXOUVR (IC, 1, INDEF(JINDEF(IC)), NBENRG(IC) )
       IEXT(IC) = 1
-C 
+C
 C ----ALLOCATION DES TAMPONS DE LECTURE/ECRITURE, DES ADRESSES MEMOIRE
 C     ET DES MARQUES
 C
@@ -417,14 +418,14 @@ C
       JUSADI(IC) = IADRS - 1
       CALL JJECRS (KAT(14),IC,14,0,'E',IMARQ(JMARQ(IC)+2*14-1))
 C
-C     LA BASE ETANT RECREE, IL FAUT RETABLIR L'ETAT D'USAGE DES 
-C     ENREGISTREMENTS A -1 
+C     LA BASE ETANT RECREE, IL FAUT RETABLIR L'ETAT D'USAGE DES
+C     ENREGISTREMENTS A -1
 C
       DO 14 I = 1,NBLMAX(IC)
         IUSADI( IADRS + (3*I-2) - 1 ) = -1
         IUSADI( IADRS + (3*I-1) - 1 ) = -1
         IUSADI( IADRS + (3*I  ) - 1 ) =  0
- 14   CONTINUE     
+ 14   CONTINUE
       DO 20 I = 1 , LIDBAS
          IADM(JIADM(IC) + I ) = KAT(I)
  20   CONTINUE
@@ -452,7 +453,7 @@ C
       ISZON(JISZON+ISZON(JISZON+KTEMP2-4)-4) = ISTAT(4)
       IRET2 = HDFTYP(IDFIC,NGRP,NBOBJ,K8(JK8))
 C
-C     ON AJUSTE LA LONGUEUR DU TYPE POUR LES INTEGER *8 OU *4 
+C     ON AJUSTE LA LONGUEUR DU TYPE POUR LES INTEGER *8 OU *4
 C     SUIVANT LA PLATE-FORME, ET LA LONGUEUR DES OBJETS DE GENRE
 C     REPERTOIRE
 C
@@ -484,7 +485,7 @@ Cjpl      write(6,*) '>',K32(JK32+K-1),'< >',K8(JK8+K-1),'<'
           IF ( KATTR(1) .EQ. 'COLLECTION' ) THEN
             READ(KATTR(2),'(16X,I8)') IDCO
             CALL JJLCHD (IDCO,IC,IDFIC,IDTS,NGRP)
-          ENDIF 
+          ENDIF
           IRET3=HDFCLD(IDTS)
         ENDIF
  101  CONTINUE
@@ -502,7 +503,7 @@ Cjpl      write(6,*) '>',K32(JK32+K-1),'< >',K8(JK8+K-1),'<'
             GENRI = GENR (JGENR(IC)+IDOS)
             TYPEI = TYPE (JTYPE(IC)+IDOS)
             LTYPI = LTYP (JLTYP(IC)+IDOS)
-            LON   = LONO (JLONO(IC)+IDOS)  
+            LON   = LONO (JLONO(IC)+IDOS)
             LONOI = LON  * LTYPI
             IADD (JIADD(IC)+2*IDOS-1) = 0
             IADD (JIADD(IC)+2*IDOS  ) = 0
@@ -516,7 +517,7 @@ Cjpl      write(6,*) '>',K32(JK32+K-1),'< >',K8(JK8+K-1),'<'
             NOMCO  = D32
             NOMOC  = D32
             CALL JJLIDE ('JELIBE',RNOM(JRNOM(IC)+IDOS),1)
-          ENDIF 
+          ENDIF
           IRET1=HDFCLD(IDTS)
         ELSE IF (K8(JK8+K-1) .EQ. 'group') THEN
           NOMO = K32(JK32+K-1)
@@ -527,12 +528,12 @@ Cjpl      write(6,*) '>',K32(JK32+K-1),'< >',K8(JK8+K-1),'<'
             GENRI = GENR (JGENR(IC)+IDOS)
             TYPEI = TYPE (JTYPE(IC)+IDOS)
             LTYPI = LTYP (JLTYP(IC)+IDOS)
-            LON   = LONO (JLONO(IC)+IDOS)  
+            LON   = LONO (JLONO(IC)+IDOS)
             LONOI = LON  * LTYPI
             IADD (JIADD(IC)+2*IDOS-1) = 0
             IADD (JIADD(IC)+2*IDOS  ) = 0
 C
-C           ON TRAITE UN GROUPE CONTENANT LES ELEMENTS T_HCOD ET T_NOM 
+C           ON TRAITE UN GROUPE CONTENANT LES ELEMENTS T_HCOD ET T_NOM
 C           CORRESPONDANT A UN REPERTOIRE DE NOMS
 C
             IDT1=HDFOPD(IDFIC,NOMO,NREP(1))
@@ -565,10 +566,10 @@ C
       IRET1 = HDFCLF (IDFIC)
       IF (IRET1 .NE. 0 ) THEN
         CMESS = 'IMPOSSIBLE DE FERMER LE FICHIER '//NHDF
-        CALL JVMESS ( 'S' , 'JELIHD07' , CMESS )
-      ELSE 
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+      ELSE
         CMESS = 'FERMETURE DU FICHIER '//NHDF
-        CALL JVMESS ( 'I' , 'JELIHD08' , CMESS )
+        CALL U2MESK('I','JEVEUX_01',1,CMESS)
       ENDIF
       CALL JJLIBP (KTEMP1)
       CALL JJLIBP (KTEMP2)

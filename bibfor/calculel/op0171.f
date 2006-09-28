@@ -1,7 +1,7 @@
       SUBROUTINE OP0171 (IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,9 +112,9 @@ C
 C               12   345678   90123
       INPSCO = '&&'//NOMPRO//'_PSCO'
 C
-C     DETERMINATION DU NOM DE LA SD INFO_CHARGE 
-C             12345678    90123    45678901234   
-      NOOBJ ='12345678'//'.1234'//'.EXCIT01234'      
+C     DETERMINATION DU NOM DE LA SD INFO_CHARGE
+C             12345678    90123    45678901234
+      NOOBJ ='12345678'//'.1234'//'.EXCIT01234'
       CALL GNOMSD(NOOBJ,10,13)
       LISCHA = NOOBJ(1:19)
 C
@@ -131,11 +131,11 @@ C               12   345678
       BASENO = '&&'//NOMPRO
       IAUX = 1
       CALL PSLECT ( ' ', IBID, BASENO, RESULT, IAUX,
-     >              NBPASE, INPSCO, IRET )
+     &              NBPASE, INPSCO, IRET )
 C
       CALL NTDOTH ( MODELE, MATE, CARELE, FOMULT, MATCST,
-     >              COECST, INFCHA,
-     >              NBPASE, INPSCO,K8BID, IBID )
+     &              COECST, INFCHA,
+     &              NBPASE, INPSCO,K8BID, IBID )
       CHARGE = INFCHA//'.LCHA'
       INFOCH = INFCHA//'.INFC'
 C
@@ -184,11 +184,11 @@ C
       IF(N1 .GT. 0) THEN
         CALL GETVIS('TEMP_INIT','NUME_INIT',1,1,1,NUM,N2)
         IF(N2 .LE. 0) THEN
-           CALL UTMESS('F','OP0171_01', 'ERREUR_01')
+           CALL U2MESS('F','CALCULEL4_41')
         ELSE
            CALL RSEXCH(TEMPEV, 'TEMP', NUM, TEMPIN, IRET)
            IF (IRET.GT.0) THEN
-           CALL UTMESS('F','OP0171_02', 'ERREUR_02')
+           CALL U2MESS('F','CALCULEL4_42')
            END IF
         END IF
         CALL VTCOPY (TEMPIN, VTEMP, IERR)
@@ -367,7 +367,7 @@ C --- COPIE DE LA SD INFO_CHARGE DANS LA BASE GLOBALE
           DO 52 I=1,2*NCHAR+1
             ZI(JINFC+I-1)=ZI(JINF+I-1)
  52       CONTINUE
- 
+
           CALL UTTCPU(1,'FIN',4,TPS1)
           WRITE(IFM,FMT)
           WRITE(IFM,'(A,21X,A,1PE10.2,21X,A)')
@@ -389,7 +389,7 @@ C
 C      ARCHIVAGE DU MODELE, MATERIAU, CARA_ELEM ET DE LA SD CHARGE
 C
           CALL RSSEPA(RESULT(1:8),0,MODELE(1:8),MATE(1:8),CARELE(1:8),
-     &                     LISCHA) 
+     &                     LISCHA)
 C
       CALL TITRE ()
 C

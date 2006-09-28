@@ -1,7 +1,7 @@
       SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,
      &                  TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/03/2006   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,8 +88,7 @@ C RECUPERATION DU TYPE DE CALCUL MECANIQUE EFFECTUE
       CALL DISMOI('F','TYPE_RESU',NOMSD,'RESULTAT',IBID,TYPRES,IERD)
       IF ( (TYPRES(1:9) .NE. 'EVOL_ELAS') .AND.
      &     (TYPRES(1:9) .NE. 'EVOL_NOLI') ) THEN
-          CALL UTMESS('F', 'PAQMAI.1', 'LE TYPE DU CONCEPT RESULTAT '//
-     &                ' N''EST NI EVOL_ELAS, NI EVOL_NOLI.')
+          CALL U2MESS('F','PREPOST4_26')
       ENDIF
 
 C CONSTRUCTION DU CHAMP SIMPLE DESTINE A RECEVOIR LES RESULTATS :
@@ -124,12 +123,7 @@ C DES NUMEROS D'ORDRE
      &             ZI(JORDR), NDIM, NBORDR )
 
       IF (ZI(JORDR) .EQ. 0) THEN
-         CALL UTMESS('A','PAQMAI',
-     &   'VOUS AVEZ PROBABLEMENT ARCHIVE L ETAT INITIAL DANS'//
-     &   ' LA COMMANDE STAT_NON_LINE.'//
-     &   ' CELA CORRESPOND AU NUMERO D ORDRE 0. NOUS NE TENONS PAS'//
-     &   ' COMPTE DU RESULTAT A CE NUMERO D ORDRE POUR LE CALCUL DE'//
-     &   ' DE LA FATIGUE.')
+         CALL U2MESS('A','PREPOST4_27')
          NBORDR = NBORDR - 1
       ENDIF
 
@@ -350,10 +344,7 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                   CALL RSEXCH( NOMSD, 'SIEF_ELGA', IORDR, CHSIG, IRET )
                ENDIF
                IF (IRET .NE. 0) THEN
-                  CALL UTMESS('F', 'PAQMAI.4', 'LES CHAMPS DE '//
-     &                    'CONTRAINTES AUX POINTS DE GAUSS '//
-     &                    'SIGM_NOEU_DEPL OU SIEF_NOEU_ELGA '//
-     &                    'SIEF_NOEU_ELGA N''ONT PAS ETE CALCULES.')
+                  CALL U2MESS('F','PREPOST4_28')
                ENDIF
                CES1 = '&&PAQMAI.SIG_S1'
                CES2 = '&&PAQMAI.SIG_ORDO'
@@ -361,9 +352,7 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                CALL CESRED(CES1, 0, IBID, 6, LSIG, 'V', CES2)
                CALL JEEXIN(CES2(1:19)//'.CESV', IRET)
                IF (IRET .EQ. 0) THEN
-                  CALL UTMESS('F', 'PAQMAI.5', 'LES CHAMPS DE '//
-     &                    ' CONTRAINTES AUX POINTS DE GAUSS ' //
-     &                    'N''EXISTENT PAS.')
+                  CALL U2MESS('F','PREPOST4_29')
                ENDIF
                CALL JEVEUO(CES2(1:19)//'.CESD', 'L', JSIGD)
                CALL JEVEUO(CES2(1:19)//'.CESL', 'L', JSIGL)
@@ -407,9 +396,7 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                            CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,
      &                                 JAD)
                            IF (JAD .LE. 0) THEN
-                             CALL UTMESS('F', 'PAQMAI.6', 'LE CHAMP '//
-     &                           'SIMPLE QUI CONTIENT LES VALEURS DES'//
-     &                           ' CONTRAINTES N EXISTE PAS.')
+                             CALL U2MESS('F','PREPOST4_30')
                            ELSE
                              ZR( JRWORK + (ICMP-1) + (IPG-1)*6 +
      &                             KWORK*SOMPGW*6 + (IORDR-1)*TSPAQ ) =
@@ -443,21 +430,13 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                   CALL RSEXCH(NOMSD, 'EPSI_ELGA_DEPL', IORDR, CHEPS,
      &                        IRET1)
                ELSE
-                  CALL UTMESS('F', 'PAQMAI.7', 'LE CRITERE DE '//
-     &                   'FATEMI ET SOCIE EST PREVU POUR FONCTIONNER '//
-     &                   'APRES UN CALCUL ELASTOPLASTIQUE, '//
-     &                   'SON UTILISATION APRES MECA_STATIQUE N''EST '//
-     &                   'PAS PREVUE.')
+                  CALL U2MESS('F','PREPOST4_31')
                ENDIF
 
                IF (IRET .NE. 0) THEN
-                  CALL UTMESS('F', 'PAQMAI.8', 'LE CHAMP DE '//
-     &                    'CONTRAINTES AUX POINTS DE GAUSS SIEF_ELGA'//
-     &                    ' OU SIEF_ELGA_DEPL N''A PAS ETE CALCULE.')
+                  CALL U2MESS('F','PREPOST4_32')
                ELSEIF (IRET1 .NE. 0) THEN
-                  CALL UTMESS('F', 'PAQMAI.9', 'LE CHAMP DE '//
-     &                    'DEFORMATIONS AUX POINTS DE GAUSS '//
-     &                    'EPSI_ELGA_DEPL N''A PAS ETE CALCULE.')
+                  CALL U2MESS('F','PREPOST4_33')
                ENDIF
 
                CES1 = '&&PAQMAI.SIG_S1'
@@ -466,9 +445,7 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                CALL CESRED(CES1, 0, IBID, 6, LSIG, 'V', CES2)
                CALL JEEXIN(CES2(1:19)//'.CESV', IRET)
                IF (IRET .EQ. 0) THEN
-                  CALL UTMESS('F', 'PAQMAI.10', 'LES CHAMPS DE '//
-     &                    ' CONTRAINTES AUX POINTS DE GAUSS ' //
-     &                    'N''EXISTENT PAS.')
+                  CALL U2MESS('F','PREPOST4_29')
                ENDIF
                CALL JEVEUO(CES2(1:19)//'.CESD', 'L', JSIGD)
                CALL JEVEUO(CES2(1:19)//'.CESL', 'L', JSIGL)
@@ -480,9 +457,7 @@ C        PERMET D'INITIALISER SOMPGS A CHAQUE PAQUET
                CALL CESRED(CES3, 0, IBID, 6, LEPS, 'V', CES4)
                CALL JEEXIN(CES4(1:19)//'.CESV', IRET)
                IF (IRET .EQ. 0) THEN
-                  CALL UTMESS('F', 'PAQMAI.11', 'LES CHAMPS DE '//
-     &                    ' DEFORMATIONS AUX POINTS DE GAUSS ' //
-     &                    'N''EXISTENT PAS.')
+                  CALL U2MESS('F','PREPOST4_34')
                ENDIF
                CALL JEVEUO(CES4(1:19)//'.CESD', 'L', JEPSD)
                CALL JEVEUO(CES4(1:19)//'.CESL', 'L', JEPSL)
@@ -528,9 +503,7 @@ C BOUCLE SUR LES CONTRAINTES (6 COMPOSANTES)
                            CALL CESEXI('C',JSIGD,JSIGL,IMAP,IPG,1,ICMP,
      &                                 JAD)
                            IF (JAD .LE. 0) THEN
-                             CALL UTMESS('F', 'PAQMAI.12', 'LE CHAMP '//
-     &                           'SIMPLE QUI CONTIENT LES VALEURS DES'//
-     &                           ' CONTRAINTES N EXISTE PAS.')
+                             CALL U2MESS('F','PREPOST4_30')
                            ELSE
                              ZR( JRWORK + (ICMP-1) + (IPG-1)*12 +
      &                           KWORK*SOMPGW*12 + (IORDR-1)*TSPAQ ) =
@@ -544,9 +517,7 @@ C BOUCLE SUR LES DEFORMATIONS (6 COMPOSANTES)
                            CALL CESEXI('C',JEPSD,JEPSL,IMAP,IPG,1,ICMP,
      &                                 JAD)
                            IF (JAD .LE. 0) THEN
-                             CALL UTMESS('F', 'PAQMAI.13', 'LE CHAMP '//
-     &                           'SIMPLE QUI CONTIENT LES VALEURS DES'//
-     &                           ' DEFORMATIONS N EXISTE PAS.')
+                             CALL U2MESS('F','PREPOST4_35')
                            ELSE
                              ZR( JRWORK + (ICMP+6-1) + (IPG-1)*12 +
      &                           KWORK*SOMPGW*12 + (IORDR-1)*TSPAQ ) =

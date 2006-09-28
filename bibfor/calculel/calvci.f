@@ -3,7 +3,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,14 +156,13 @@ C --- REMPLISSAGE DU .VALE
 C---  CAS DE DEFI_CONSTANTE
                 VALP = 0.D0
               ELSE
-                CALL UTMESS('F','CALVCI_2','STOP JE NE SAIS PAS FAIRE')
+                CALL U2MESS('F','CALCULEL_36')
               ENDIF
               CALL FOINTE('F ',NOMF,1,NOMP,VALP,RES,IER)
               ZR(IVVALE-1+NUEQ) = RES
               ZI(JDLCI-1+NUEQ) = 1
             ELSE
-              CALL UTMESS('F','CALVCI_1', 'ERREUR DANS LA LECTURE DES'
-     +        //' CHAR_CINE OU DANS LES CHAR_CINE')
+              CALL U2MESS('F','CALCULEL_37')
             ENDIF
 10        CONTINUE
         ELSE
@@ -186,8 +185,7 @@ C             NOMF = ZK24(ICVALF-1+NIMP)
 C             ...
 
             ELSE
-              CALL UTMESS('F','CALVCI_1', 'ERREUR DANS LA LECTURE DES'
-     +        //' CHAR_CINE OU DANS LES CHAR_CINE')
+              CALL U2MESS('F','CALCULEL_37')
             ENDIF
 20        CONTINUE
         ENDIF

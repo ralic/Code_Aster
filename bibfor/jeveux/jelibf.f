@@ -1,22 +1,22 @@
       SUBROUTINE JELIBF ( COND , CLAS )
 C COMPIL PARAL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       COND , CLAS
@@ -28,18 +28,18 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
-     +                 IITLEC    , IITECR    , NITECR    , KMARQ
+     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
-     +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
+     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
 C
@@ -56,7 +56,7 @@ C
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
 C
@@ -93,14 +93,14 @@ C DEB ------------------------------------------------------------------
       IF ( IC .EQ. 0 ) THEN
         NOMUTI = 'CLASSE '//KCLAS
         CMESS  = ' FICHIER NON OUVERT OU DEJA LIBERE'
-        CALL JVMESS ( 'S' , 'JELIBF01' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( KCOND .NE. '        ' .AND. KCOND .NE. 'SAUVE   ' .AND.
-     +     KCOND .NE. 'ERREUR  ' .AND. KCOND .NE. 'DETRUIT ' .AND.
-     +     KCOND .NE. 'LIBERE  ' )                                 THEN
+     &     KCOND .NE. 'ERREUR  ' .AND. KCOND .NE. 'DETRUIT ' .AND.
+     &     KCOND .NE. 'LIBERE  ' )                                 THEN
         NOMUTI = NOMBAS(IC)
         CMESS  = ' CONDITION DE LIBERATION ERRONEE'
-        CALL JVMESS ( 'S' , 'JELIBF02' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE IF ( KCOND .EQ. '        '  ) THEN
         KCOND = KSTOUT(IC)
       ELSE IF ( KCOND .EQ. 'ERREUR  '  ) THEN
@@ -165,7 +165,7 @@ C
       DO 50 K=1,NBLMAX(IC)
         NBIO = NBIO + IACCE (JIACCE(IC)+K)
  50   CONTINUE
-C  
+C
       IF ( KCOND .EQ. 'SAUVE   '  ) THEN
 C       ----------- STATISTIQUES DU FICHIER
 C       ----------- ACTUALISER CARA
@@ -223,9 +223,9 @@ C
       VALI(5)= NREUTI(IC)
       VALI(6)= NREMAX(IC)
       VALI(7)= (NREUTI(IC)*100)/NREMAX(IC)
-C      
-      CALL U2MESG ('I','JEVEUX_2',1,VALK,7,VALI,0,VALR)
-C      
+C
+      CALL U2MESG ('I','JEVEUX_22',1,VALK,7,VALI,0,VALR)
+C
       IF ( KCOND .NE. 'LIBERE  ' ) THEN
         IF ( IADCAR.NE. 0 ) THEN
            IDATOS = 1

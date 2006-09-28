@@ -1,5 +1,5 @@
       SUBROUTINE EXTCHE(NCHME2,NMAILE,NUMMAI,NCMP,NBM,NBC,INDIC,NSSCHE,
-     +                  MCF,IOCC)
+     &                  MCF,IOCC)
       IMPLICIT   NONE
       INTEGER NBM,NBC,NUMMAI(*),IOCC
       CHARACTER*6 INDIC
@@ -7,7 +7,7 @@
       CHARACTER*19 NCHMEL,NSSCHE,NCHME2
       CHARACTER*(*) MCF
 C*********************************************************************
-C MODIF PREPOST  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -222,9 +222,7 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL CELVER(NCHMEL,'NBSPT_1','COOL',KK)
       IF (KK.EQ.1) THEN
         CALL DISMOI('F','NOM_GD',NCHMEL,'CHAMP',IBID,NOMGD,IE)
-        CALL UTMESS('I','EXTCHE','LE CHAMP DE: '//NOMGD
-     &  //' A DES ELEMENTS AYANT DES SOUS-POINTS.'
-     &  //' CES ELEMENTS NE SERONT PAS TRAITES.')
+        CALL U2MESK('I','PREPOST_36',1,NOMGD)
         CALL CELCEL('PAS_DE_SP',NCHMEL,'V','&&EXTCHE.CHAMEL2')
         NCHMEL= '&&EXTCHE.CHAMEL2'
       END IF
@@ -258,7 +256,7 @@ C   --------------------------------------------------------
         CALL RVRECU(MCF,IOCC,NCHMEL,NOMVEC)
         CALL JEVEUO(NOMVEC,'L',AVALE)
       ELSE
-        CALL UTMESS('F','EXTCHE','VRAIMENT DESOLE')
+        CALL U2MESS('F','PREPOST_37')
       END IF
       CALL JEVEUO(NDESC,'L',JCELD)
       CALL JEVEUO(NCELK,'L',ACELK)
@@ -289,7 +287,7 @@ C   ------------------------------
             XNORMZ = XNORMZ + AXEZ(I)*AXEZ(I)
    20     CONTINUE
           IF (XNORMZ.LT.EPSI) THEN
-            CALL UTMESS('F','EXTCHN','LE VECTEUR EST "AXE_Z" NUL.')
+            CALL U2MESS('F','PREPOST_38')
           END IF
           XNORMZ = 1.0D0/SQRT(XNORMZ)
           DO 30 I = 1,3
@@ -417,8 +415,8 @@ C   -----------------------------------------------------------------
         NUMM = NUMMAI(M-1)
 
         ZI(APADR+NUMMAI(M)-1) = ZI(APADR+NUMM-1) +
-     +                          NBC*ZI(APNBN+NUMM-1)*ZI(APNSP+NUMM-1)*
-     +                          ZI(APNCO+NUMM-1)
+     &                          NBC*ZI(APNBN+NUMM-1)*ZI(APNSP+NUMM-1)*
+     &                          ZI(APNCO+NUMM-1)
 
    60 CONTINUE
 
@@ -453,7 +451,7 @@ C   ------------------------------------------------------
           ASGTM = AGREL + (POSM-1)*NBSCAL*NBSP - 1
 
           CALL EXCHEM(ZI(AMODLO),ZI(ANUMCP),NBC,NBSP,ZR(AVALE+ASGTM),
-     +                ZR(AVALCP+ZI(APADR+NUMM-1)-1),ZI(APERR))
+     &                ZR(AVALCP+ZI(APADR+NUMM-1)-1),ZI(APERR))
 
         END IF
 

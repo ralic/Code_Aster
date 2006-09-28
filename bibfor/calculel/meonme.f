@@ -5,7 +5,7 @@
       CHARACTER*(*) MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,8 +59,7 @@ C     ------------------------------------------------------------------
       LOGICAL EXITIM,LFONC
 
       CALL JEMARQ()
-      IF (MODELE(1:1).EQ.' ') CALL UTMESS('F','MEONME',
-     &                             'IL FAUT UN MODELE.')
+      IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
 
       CARA = ' '
       EXITIM = .FALSE.

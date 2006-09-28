@@ -1,21 +1,21 @@
       SUBROUTINE DMDPSE(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C.======================================================================
@@ -109,8 +109,7 @@ C ---- RECUPERATION DU MATERIAU DERIVE SI SENSIBILITE
 C      ----------------------------------------------
       CALL JEVECH('PMATSEN','L',IMATSE)
       CALL RCCOMA(ZI(IMATSE),'ELAS',PHESEN,CODRET)
-      IF (PHESEN.NE.PHENOM) CALL UTMESS('F','DMDPSE',
-     &                             '! PB PHESEN.NE.PHENOM !')
+      IF (PHESEN.NE.PHENOM) CALL U2MESS('F','ELEMENTS_38')
 
 C      ------------
 C ---- CAS ISOTROPE
@@ -298,423 +297,423 @@ C --------- SENSIBILITE PAR RAPPORT A G
          END IF
 
         IF (TETYPS.EQ.1) THEN
-          DORTH(1,1) = -((E1*((E2*NU12**2)/E1**2 - 
-     -            NU13**2/E3)*(-((E2*NU23**2)/E3) + UN))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (-((E2*NU23**2)/E3) + UN)/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+          DORTH(1,1) = -((E1*((E2*NU12**2)/E1**2 -
+     &            NU13**2/E3)*(-((E2*NU23**2)/E3) + UN))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (-((E2*NU23**2)/E3) + UN)/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(1,2) = -((E1*((E2*NU12**2)/E1**2 - NU13**2/E3)*
-     -        ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E2*NU12)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)) + 
-     -   ((E2*NU12)/E1 + (E2*NU13*NU23)/E3)/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &        ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E2*NU12)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)) +
+     &   ((E2*NU12)/E1 + (E2*NU13*NU23)/E3)/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(1,3) = -((E1*((E2*NU12**2)/E1**2 - 
-     -           NU13**2/E3)*(NU13 + (E2*NU12*NU23)/E1))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E2*NU12*NU23)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)) + 
-     -   (NU13 + (E2*NU12*NU23)/E1)/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+          DORTH(1,3) = -((E1*((E2*NU12**2)/E1**2 -
+     &           NU13**2/E3)*(NU13 + (E2*NU12*NU23)/E1))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E2*NU12*NU23)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)) +
+     &   (NU13 + (E2*NU12*NU23)/E1)/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(2,1) = -((E1*((E2*NU12**2)/E1**2 - NU13**2/E3)*
-     -                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E2*NU12)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)) + 
-     -   ((E2*NU12)/E1 + (E2*NU13*NU23)/E3)/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E2*NU12)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)) +
+     &   ((E2*NU12)/E1 + (E2*NU13*NU23)/E3)/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(2,2) = -((E2*((E2*NU12**2)/E1**2 - 
-     -                 NU13**2/E3)*(-((E1*NU13**2)/E3) + UN))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E2*NU13**2)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(2,2) = -((E2*((E2*NU12**2)/E1**2 -
+     &                 NU13**2/E3)*(-((E1*NU13**2)/E3) + UN))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E2*NU13**2)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(2,3) = -((E2*((E2*NU12**2)/E1**2 -
-     -                 NU13**2/E3)*(NU12*NU13 + NU23))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+     &                 NU13**2/E3)*(NU12*NU13 + NU23))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
 
-          DORTH(3,1) = -((E1*((E2*NU12**2)/E1**2 - 
-     -                 NU13**2/E3)*(NU13 + (E2*NU12*NU23)/E1))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E2*NU12*NU23)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)) + 
-     -   (NU13 + (E2*NU12*NU23)/E1)/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+          DORTH(3,1) = -((E1*((E2*NU12**2)/E1**2 -
+     &                 NU13**2/E3)*(NU13 + (E2*NU12*NU23)/E1))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E2*NU12*NU23)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)) +
+     &   (NU13 + (E2*NU12*NU23)/E1)/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(3,2) = -((E2*((E2*NU12**2)/E1**2 - 
-     -                 NU13**2/E3)*(NU12*NU13 + NU23))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+          DORTH(3,2) = -((E2*((E2*NU12**2)/E1**2 -
+     &                 NU13**2/E3)*(NU12*NU13 + NU23))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
-          DORTH(3,3) = -((E3*((E2*NU12**2)/E1**2 - 
-     -                 NU13**2/E3)*(-((E2*NU12**2)/E1) + UN))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (E2*E3*NU12**2)/
-     -    (E1**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(3,3) = -((E3*((E2*NU12**2)/E1**2 -
+     &                 NU13**2/E3)*(-((E2*NU12**2)/E1) + UN))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (E2*E3*NU12**2)/
+     &    (E1**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(4,4) = 0.D0
 
         ELSE IF (TETYPS.EQ.2) THEN
-          DORTH(1,1) = -((E1*(-(NU12**2/E1) - 
-     -                 (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3)*
-     -                 (-((E2*NU23**2)/E3) + UN))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E1*NU23**2)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(1,1) = -((E1*(-(NU12**2/E1) -
+     &                 (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3)*
+     &                 (-((E2*NU23**2)/E3) + UN))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E1*NU23**2)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(1,2) = -((E1*((E2*NU12)/E1 + (E2*NU13*NU23)/E3)*
-     -        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (E1*(NU12/E1 + (NU13*NU23)/E3))/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (E1*(NU12/E1 + (NU13*NU23)/E3))/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(1,3) = -((E1*(NU13 + (E2*NU12*NU23)/E1)*
-     -        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (NU12*NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (NU12*NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(2,1) = -((E1*((E2*NU12)/E1 + (E2*NU13*NU23)/E3)*
-     -        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (E1*(NU12/E1 + (NU13*NU23)/E3))/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (E1*(NU12/E1 + (NU13*NU23)/E3))/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(2,2) = -((E2*(-(NU12**2/E1) - 
-     -                 (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3)*
-     -                 (-((E1*NU13**2)/E3) + UN))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (-((E1*NU13**2)/E3) + UN)/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+          DORTH(2,2) = -((E2*(-(NU12**2/E1) -
+     &                 (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3)*
+     &                 (-((E1*NU13**2)/E3) + UN))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (-((E1*NU13**2)/E3) + UN)/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(2,3) = -((E2*(NU12*NU13 + NU23)*
-     -        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (NU12*NU13 + NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (NU12*NU13 + NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,1) = -((E1*(NU13 + (E2*NU12*NU23)/E1)*
-     -        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (NU12*NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (NU12*NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,2) = -((E2*(NU12*NU13 + NU23)*
-     -        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (NU12*NU13 + NU23)/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &        (-(NU12**2/E1) - (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (NU12*NU13 + NU23)/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,3) = -((E3*(-(NU12**2/E1) -
-     -                 (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3)*
-     -                 (-((E2*NU12**2)/E1) + UN))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E3*NU12**2)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+     &                 (DEUX*NU12*NU13*NU23)/E3 - NU23**2/E3)*
+     &                 (-((E2*NU12**2)/E1) + UN))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E3*NU12**2)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(4,4) = 0.D0
 
         ELSE IF (TETYPS.EQ.3) THEN
-          DORTH(1,1) = -((E1*((E1*NU13**2)/E3**2 + 
-     -                 (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -          (E2*NU23**2)/E3**2)*(-((E2*NU23**2)/E3) + UN))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (E1*E2*NU23**2)/
-     -    (E3**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(1,1) = -((E1*((E1*NU13**2)/E3**2 +
+     &                 (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &          (E2*NU23**2)/E3**2)*(-((E2*NU23**2)/E3) + UN))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (E1*E2*NU23**2)/
+     &    (E3**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(1,2) = -((E1*((E2*NU12)/E1 + (E2*NU13*NU23)/E3)*
-     -        ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -          (E2*NU23**2)/E3**2))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E1*E2*NU13*NU23)/
-     -    (E3**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+     &        ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &          (E2*NU23**2)/E3**2))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E1*E2*NU13*NU23)/
+     &    (E3**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(1,3) = -((E1*(NU13 + (E2*NU12*NU23)/E1)*
-     -       ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -         (E2*NU23**2)/E3**2))/
-     -     (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+     &       ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &         (E2*NU23**2)/E3**2))/
+     &     (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
           DORTH(2,1) = -((E1*((E2*NU12)/E1 + (E2*NU13*NU23)/E3)*
-     -        ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -          (E2*NU23**2)/E3**2))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -   (E1*E2*NU13*NU23)/
-     -    (E3**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+     &        ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &          (E2*NU23**2)/E3**2))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &   (E1*E2*NU13*NU23)/
+     &    (E3**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
-          DORTH(2,2) = -((E2*((E1*NU13**2)/E3**2 + 
-     -                 (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -          (E2*NU23**2)/E3**2)*(-((E1*NU13**2)/E3) + UN))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (E1*E2*NU13**2)/
-     -    (E3**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(2,2) = -((E2*((E1*NU13**2)/E3**2 +
+     &                 (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &          (E2*NU23**2)/E3**2)*(-((E1*NU13**2)/E3) + UN))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (E1*E2*NU13**2)/
+     &    (E3**2*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(2,3) = -((E2*(NU12*NU13 + NU23)*
-     -       ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -         (E2*NU23**2)/E3**2))/
-     -     (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+     &       ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &         (E2*NU23**2)/E3**2))/
+     &     (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
           DORTH(3,1) = -((E1*(NU13 + (E2*NU12*NU23)/E1)*
-     -       ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -         (E2*NU23**2)/E3**2))/
-     -     (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+     &       ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &         (E2*NU23**2)/E3**2))/
+     &     (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
           DORTH(3,2) = -((E2*(NU12*NU13 + NU23)*
-     -       ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -         (E2*NU23**2)/E3**2))/
-     -     (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+     &       ((E1*NU13**2)/E3**2 + (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &         (E2*NU23**2)/E3**2))/
+     &     (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
-          DORTH(3,3) = -((E3*((E1*NU13**2)/E3**2 + 
-     -                 (DEUX*E2*NU12*NU13*NU23)/E3**2 + 
-     -          (E2*NU23**2)/E3**2)*(-((E2*NU12**2)/E1) + UN))/
-     -      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -   (-((E2*NU12**2)/E1) + UN)/
-     -    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+          DORTH(3,3) = -((E3*((E1*NU13**2)/E3**2 +
+     &                 (DEUX*E2*NU12*NU13*NU23)/E3**2 +
+     &          (E2*NU23**2)/E3**2)*(-((E2*NU12**2)/E1) + UN))/
+     &      (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &   (-((E2*NU12**2)/E1) + UN)/
+     &    (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &      (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(4,4) = 0.D0
 
         ELSE IF (TETYPS.EQ.4) THEN
           DORTH(1,1) = -((E1*((-2*E2*NU12)/E1 -
-     -                 (DEUX*E2*NU13*NU23)/E3)*
-     -                 (-((E2*NU23**2)/E3) + UN))/
-     -               (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+     &                 (DEUX*E2*NU13*NU23)/E3)*
+     &                 (-((E2*NU23**2)/E3) + UN))/
+     &               (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
           DORTH(1,2) = -((E1*((E2*NU12)/E1 + (E2*NU13*NU23)/E3)*
-     -                 ((-2*E2*NU12)/E1 - (DEUX*E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - E2/
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 ((-2*E2*NU12)/E1 - (DEUX*E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - E2/
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(1,3) = -((E1*(NU13 + (E2*NU12*NU23)/E1)*
-     -                 ((-2*E2*NU12)/E1 - (DEUX*E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E2*NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 ((-2*E2*NU12)/E1 - (DEUX*E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E2*NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(2,1) = -((E1*((E2*NU12)/E1 + (E2*NU13*NU23)/E3)*
-     -                 ((-2*E2*NU12)/E1 - (DEUX*E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - E2/ 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 ((-2*E2*NU12)/E1 - (DEUX*E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - E2/
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(2,2) = -((E2*((-2*E2*NU12)/E1 -
-     -                 (DEUX*E2*NU13*NU23)/E3)*
-     -                 (-((E1*NU13**2)/E3) + UN))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+     &                 (DEUX*E2*NU13*NU23)/E3)*
+     &                 (-((E1*NU13**2)/E3) + UN))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
           DORTH(2,3) = -((E2*(NU12*NU13 + NU23)*((-2*E2*NU12)/E1 -
-     -                 (DEUX*E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E2*NU13)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 (DEUX*E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E2*NU13)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,1) = -((E1*(NU13 + (E2*NU12*NU23)/E1)*
-     -                 ((-2*E2*NU12)/E1 - (DEUX*E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E2*NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 ((-2*E2*NU12)/E1 - (DEUX*E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E2*NU23)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,2) = -((E2*(NU12*NU13 + NU23)*((-2*E2*NU12)/E1 -
-     -                 (DEUX*E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E2*NU13)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 (DEUX*E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E2*NU13)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(3,3) = -((E3*((-2*E2*NU12)/E1 - 
-     -                 (DEUX*E2*NU13*NU23)/E3)*
-     -                 (-((E2*NU12**2)/E1) + UN))/
-     -       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -       (2*E2*E3*NU12)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(3,3) = -((E3*((-2*E2*NU12)/E1 -
+     &                 (DEUX*E2*NU13*NU23)/E3)*
+     &                 (-((E2*NU12**2)/E1) + UN))/
+     &       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &       (2*E2*E3*NU12)/(E1*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(4,4) = 0.D0
 
         ELSE IF (TETYPS.EQ.5) THEN
-          DORTH(1,1) = -((E1*((-2*E1*NU13)/E3 - 
-     -                 (DEUX*E2*NU12*NU23)/E3)*
-     -                 (-((E2*NU23**2)/E3) + UN))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+          DORTH(1,1) = -((E1*((-2*E1*NU13)/E3 -
+     &                 (DEUX*E2*NU12*NU23)/E3)*
+     &                 (-((E2*NU23**2)/E3) + UN))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
-          DORTH(1,2) = -((E1*((-2*E1*NU13)/E3 - 
-     -                 (DEUX*E2*NU12*NU23)/E3)*
-     -                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E1*E2*NU23)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(1,2) = -((E1*((-2*E1*NU13)/E3 -
+     &                 (DEUX*E2*NU12*NU23)/E3)*
+     &                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E1*E2*NU23)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(1,3) = -((E1*(NU13 + (E2*NU12*NU23)/E1)*
-     -                 ((-2*E1*NU13)/E3 - (DEUX*E2*NU12*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       E1/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 ((-2*E1*NU13)/E3 - (DEUX*E2*NU12*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       E1/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(2,1) = -((E1*((-2*E1*NU13)/E3 - 
-     -                 (DEUX*E2*NU12*NU23)/E3)*
-     -                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
-     -       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E1*E2*NU23)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(2,1) = -((E1*((-2*E1*NU13)/E3 -
+     &                 (DEUX*E2*NU12*NU23)/E3)*
+     &                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
+     &       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E1*E2*NU23)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
-          DORTH(2,2) = -((E2*((-2*E1*NU13)/E3 - 
-     -                 (DEUX*E2*NU12*NU23)/E3)*
-     -                 (-((E1*NU13**2)/E3) + UN))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -       (2*E1*E2*NU13)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(2,2) = -((E2*((-2*E1*NU13)/E3 -
+     &                 (DEUX*E2*NU12*NU23)/E3)*
+     &                 (-((E1*NU13**2)/E3) + UN))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &       (2*E1*E2*NU13)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
-          DORTH(2,3) = -((E2*(NU12*NU13 + NU23)*((-2*E1*NU13)/E3 - 
-     -                 (DEUX*E2*NU12*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E2*NU12)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+          DORTH(2,3) = -((E2*(NU12*NU13 + NU23)*((-2*E1*NU13)/E3 -
+     &                 (DEUX*E2*NU12*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E2*NU12)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,1) = -((E1*(NU13 + (E2*NU12*NU23)/E1)*
-     -                 ((-2*E1*NU13)/E3 - (DEUX*E2*NU12*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - E1/
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 ((-2*E1*NU13)/E3 - (DEUX*E2*NU12*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - E1/
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,2) = -((E2*(NU12*NU13 + NU23)*((-2*E1*NU13)/E3 -
-     -                 (DEUX*E2*NU12*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E2*NU12)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 (DEUX*E2*NU12*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E2*NU12)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,3) = -((E3*((-2*E1*NU13)/E3 -
-     -                 (DEUX*E2*NU12*NU23)/E3)*
-     -                 (-((E2*NU12**2)/E1) + UN))/
-     -        (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+     &                 (DEUX*E2*NU12*NU23)/E3)*
+     &                 (-((E2*NU12**2)/E1) + UN))/
+     &        (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
           DORTH(4,4) = 0.D0
 
         ELSE IF (TETYPS.EQ.6) THEN
-          DORTH(1,1) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) - 
-     -                 (2*E2*NU23)/E3)*(-((E2*NU23**2)/E3) + UN))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) - 
-     -       (2*E1*E2*NU23)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(1,1) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) -
+     &                 (2*E2*NU23)/E3)*(-((E2*NU23**2)/E3) + UN))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) -
+     &       (2*E1*E2*NU23)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
-          DORTH(1,2) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) - 
-     -                 (2*E2*NU23)/E3)*
-     -                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E1*E2*NU13)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(1,2) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) -
+     &                 (2*E2*NU23)/E3)*
+     &                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E1*E2*NU13)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
           DORTH(1,3) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) -
-     -                 (2*E2*NU23)/E3)*(NU13 + (E2*NU12*NU23)/E1))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E2*NU12)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 (2*E2*NU23)/E3)*(NU13 + (E2*NU12*NU23)/E1))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E2*NU12)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(2,1) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) - 
-     -                 (2*E2*NU23)/E3)*
-     -                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E1*E2*NU13)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
+          DORTH(2,1) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) -
+     &                 (2*E2*NU23)/E3)*
+     &                 ((E2*NU12)/E1 + (E2*NU13*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E1*E2*NU13)/(E3*(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN))
 
-          DORTH(2,2) = -((E2*(-((DEUX*E2*NU12*NU13)/E3) - 
-     -                 (2*E2*NU23)/E3)*
-     -                 (-((E1*NU13**2)/E3) + UN))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+          DORTH(2,2) = -((E2*(-((DEUX*E2*NU12*NU13)/E3) -
+     &                 (2*E2*NU23)/E3)*
+     &                 (-((E1*NU13**2)/E3) + UN))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
           DORTH(2,3) = -((E2*(NU12*NU13 + NU23)*
-     -                 (-((DEUX*E2*NU12*NU13)/E3) - (2*E2*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       E2/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 (-((DEUX*E2*NU12*NU13)/E3) - (2*E2*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       E2/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(3,1) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) - 
-     -                 (2*E2*NU23)/E3)*
-     -                 (NU13 + (E2*NU12*NU23)/E1))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       (E2*NU12)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+          DORTH(3,1) = -((E1*(-((DEUX*E2*NU12*NU13)/E3) -
+     &                 (2*E2*NU23)/E3)*
+     &                 (NU13 + (E2*NU12*NU23)/E1))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       (E2*NU12)/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
           DORTH(3,2) = -((E2*(NU12*NU13 + NU23)*
-     -                 (-((DEUX*E2*NU12*NU13)/E3) - (2*E2*NU23)/E3))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) + 
-     -       E2/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
+     &                 (-((DEUX*E2*NU12*NU13)/E3) - (2*E2*NU23)/E3))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2) +
+     &       E2/(-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &       (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)
 
-          DORTH(3,3) = -((E3*(-((DEUX*E2*NU12*NU13)/E3) - 
-     -                 (2*E2*NU23)/E3)*
-     -                 (-((E2*NU12**2)/E1) + UN))/
-     -                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 - 
-     -        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
+          DORTH(3,3) = -((E3*(-((DEUX*E2*NU12*NU13)/E3) -
+     &                 (2*E2*NU23)/E3)*
+     &                 (-((E2*NU12**2)/E1) + UN))/
+     &                 (-((E2*NU12**2)/E1) - (E1*NU13**2)/E3 -
+     &        (DEUX*E2*NU12*NU13*NU23)/E3 - (E2*NU23**2)/E3 + UN)**2)
 
           DORTH(4,4) = 0.D0
 
@@ -751,8 +750,7 @@ C        ----------------------------------
    30       CONTINUE
    40     CONTINUE
         ELSE
-          CALL UTMESS('F','DMDPSE','IREP (INDICATEUR DE CHANGEMENT'//
-     &                ' DE REPERE) DOIT ETRE EGAL A 0 OU 1 ')
+          CALL U2MESS('F','ELEMENTS_22')
         END IF
 
 
@@ -760,7 +758,7 @@ C      -----------------------
 C ---- CAS ISOTROPE-TRANSVERSE
 C      -----------------------
       ELSE IF (PHENOM.EQ.'ELAS_ISTR') THEN
- 
+
          NOMRES(1) = 'E_L'
          NOMRES(2) = 'E_N'
          NOMRES(3) = 'NU_LT'
@@ -998,14 +996,11 @@ C        ----------------------------------
    50       CONTINUE
    60     CONTINUE
         ELSE
-          CALL UTMESS('F','DMDPSE','IREP (INDICATEUR DE CHANGEMENT'//
-     &                ' DE REPERE) DOIT ETRE EGAL A 0 OU 1 ')
+          CALL U2MESS('F','ELEMENTS_22')
         END IF
 
       ELSE
-        CALL UTMESS('F','DMDPSE','LA NATURE DU MATERIAU '//PHENOM//
-     &              ' N''EST PAS TRAITEE, SEULES SONT CONSIDEREES '//
-     &              'LES NATURES : ELAS, ELAS_ISTR, ELAS_ORTH .')
+        CALL U2MESK('F','ELEMENTS_15',1,PHENOM)
       END IF
 C.============================ FIN DE LA ROUTINE ======================
  9999 CONTINUE

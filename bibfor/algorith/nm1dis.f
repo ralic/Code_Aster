@@ -2,7 +2,7 @@
      &                  DEPS,VIM,OPTION,COMPOR,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
       REAL*8 RPRIM,RM,SIGE,VALPAR,VALRES(2),DEPSTH,AIRERP,DUM
-      REAL*8 SIELEQ,RP,DP,NU
+      REAL*8 SIELEQ,RP,DP,NU,ASIGE
       INTEGER JPROLM,JVALEM,NBVALM,NBVALP,NBPAR,JPROLP,JVALEP
       CHARACTER*2 BL2,FB2,CODRES(2)
       CHARACTER*8 NOMPAR,NOMECL(2),TYPE
@@ -117,7 +117,7 @@ C     ------------------------------------------------------------------
           SIGP = SIGE
           DSDE = EP
           VIP(2) = 0.D0
-          VIP(1) = VIM(1) 
+          VIP(1) = VIM(1)
           SIGP = SIGE
         ELSE
           VIP(2) = 1.D0
@@ -133,8 +133,9 @@ C     ------------------------------------------------------------------
             ENDIF
           ELSE
             NU=0.5D0
+            ASIGE=ABS(SIGE)
             CALL RCFONC('E','TRACTION',JPROLP,JVALEP,NBVALP,RBID,EP,
-     &                  NU,VIM(1),RP,RPRIM,AIRERP,ABS(SIGE),DP)
+     &                  NU,VIM(1),RP,RPRIM,AIRERP,ASIGE,DP)
             IF (OPTION.EQ.'FULL_MECA_ELAS') THEN
               DSDE = EP
             ELSE

@@ -1,5 +1,5 @@
       SUBROUTINE ASEFEN(NOMSY,ID,STAT,NEQ,NBSUP,NDIR,
-     +           NSUPP,MASSE,NOMSUP, DEPSUP,ZRCREP )
+     &           NSUPP,MASSE,NOMSUP, DEPSUP,ZRCREP )
       IMPLICIT  REAL*8 (A-H,O-Z)
       INTEGER           NSUPP(*),NDIR(*)
       REAL*8            DEPSUP(NBSUP,*),ZRCREP(NBSUP,NEQ,*)
@@ -7,22 +7,22 @@
       CHARACTER*16      NOMSY
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     COMMANDE : COMB_SISM_MODAL
@@ -59,7 +59,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 OBJ1, OBJ2
       CHARACTER*1  K1BID
       CHARACTER*8  K8B, NOEU, CMP, NOMCMP(3),NOMA,GRNOEU
-      CHARACTER*8  NOEREF      
+      CHARACTER*8  NOEREF
       CHARACTER*16 MONACC
       CHARACTER*19 CHEXTR,MOTFAC
       COMPLEX*16   CBID
@@ -72,7 +72,7 @@ C
       CALL DISMOI('F','NOM_MAILLA',MASSE,'MATR_ASSE',IBID,NOMA,IRET)
       OBJ1 = NOMA//'.GROUPENO'
       OBJ2 = NOMA//'.NOMNOE'
-      INORF =0 
+      INORF =0
 C
       MOTFAC ='DEPL_MULT_APPUI'
       CALL  GETFAC(MOTFAC,NCAS)
@@ -93,7 +93,8 @@ C
                IF (IRET.EQ.0) THEN
                   IER = IER + 1
                   CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEU//
-     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+C        CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
                   GOTO 22
                ENDIF
                IF (NX.NE.0) THEN
@@ -127,7 +128,8 @@ C
                IF (IRET .EQ. 0) THEN
                   IER = IER + 1
                   CALL UTMESS('E',MOTFAC,'LE GROUPE '//GRNOEU//
-     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+C        CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
                   GOTO 26
                ELSE
                   CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K1BID)
@@ -162,7 +164,8 @@ C
          IF ((IRE1+IRE2).EQ.0) THEN
             IER = IER + 1
             CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEREF//
-     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+C        CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
             GOTO 9999
          ENDIF
          IF (IRE2.NE.0) THEN
@@ -180,22 +183,21 @@ C
                   ENDIF
  92            CONTINUE
                IER = IER + 1
-               CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEREF//
-     +                             ' N''EST PAS UN NOEUD SUPPORT.')
+               CALL U2MESK('E','ALGORITH_23',1,NOEREF)
                GOTO 9999
             ENDIF
  90      CONTINUE
       ENDIF
-C      
+C
  2    CONTINUE
- 
+
       CMP = NOMCMP(ID)
       DO 10 IS = 1,NSUPP(ID)
-         NOEU   = NOMSUP(IS,ID)          
+         NOEU   = NOMSUP(IS,ID)
          MONACC = NOEU//CMP
          XX1    = DEPSUP(IS,ID)
          CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,R8B,K8B,
-     +                                                  IORDR,1,NBTROU)
+     &                                                  IORDR,1,NBTROU)
          CALL RSEXCH(STAT,NOMSY,IORDR,CHEXTR,IRET)
          CALL JEEXIN(CHEXTR//'.VALE',IBID)
          IF (IBID.GT.0) THEN
@@ -206,10 +208,10 @@ C
          DO 12 IN = 1,NEQ
             XXX = ZR(JVALE+IN-1) * XX1
             ZRCREP(IS,IN,ID) = ZRCREP(IS,IN,ID) + XXX*XXX
- 12     CONTINUE 
+ 12     CONTINUE
  10   CONTINUE
 C
- 9999 CONTINUE     
+ 9999 CONTINUE
 
       CALL JEDETC('V','&&ASEFEN',1)
       CALL JEDEMA()

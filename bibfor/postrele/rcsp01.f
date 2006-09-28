@@ -1,26 +1,26 @@
       SUBROUTINE RCSP01 ( NBM, ADRM, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
-     +                    NBTH, IOCS, SP6 )
+     &                    NBTH, IOCS, SP6 )
       IMPLICIT   NONE
       INTEGER             NBM, ADRM(*), IPT, NBTH, IOCS
       REAL*8              SP3, SP4, SP5, ALPHAA, ALPHAB, SP6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C
@@ -46,10 +46,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IOCC, JCHTH, IAD, ICMP, NBCMP, DECAL, JCESD, JCESV,
-     +             JCESL, NBINST, JINST, I, IBID, IRET, JABSC, NBABSC
-      REAL*8       INST, PREC(2), TINT, TEXT, TMOY(2), VMOY, TA, TB,  
-     +             TAB, DT1, DT2, TERM1, TERM2, DT1MAX, DT2MAX, TABMAX,
-     +             VALE(2)
+     &             JCESL, NBINST, JINST, I, IBID, IRET, JABSC, NBABSC
+      REAL*8       INST, PREC(2), TINT, TEXT, TMOY(2), VMOY, TA, TB,
+     &             TAB, DT1, DT2, TERM1, TERM2, DT1MAX, DT2MAX, TABMAX,
+     &             VALE(2)
       COMPLEX*16   CBID
       LOGICAL      EXIST
       CHARACTER*8  K8B, TBTHER(2), TBMOYE(2), CRIT(2)
@@ -60,7 +60,7 @@ C DEB ------------------------------------------------------------------
 C
       SP6 = 0.D0
       IF ( NBTH .EQ. 0 ) GOTO 9999
-C      
+C
       NOPARA(1) = 'INST'
       NOPARA(2) = 'QUANTITE'
       PREC(1) = 1.0D-06
@@ -128,13 +128,11 @@ C --- ON RECUPERE LES INSTANTS DANS UNE TABLE
 C
       CALL TBEXIP ( TBTHER(1), 'INST', EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
-         CALL UTMESS('F','RCSP01','ABSENCE DU PARAMETRE INST POUR'//
-     +                      ' LA TABLE TABL_RESU_THER')
+         CALL U2MESS('F','POSTRELE_44')
       ENDIF
       CALL TBEXIP ( TBMOYE(1), 'INST', EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
-         CALL UTMESS('F','RCSP01','ABSENCE DU PARAMETRE INST POUR'//
-     +                      ' LA TABLE TABL_MOYE_THER')
+         CALL U2MESS('F','POSTRELE_43')
       ENDIF
       NOMOBJ = '&&RCSP01.INSTANT'
       CALL TBEXV1 ( TBMOYE(1), 'INST', NOMOBJ, 'V', NBINST, K8B )
@@ -144,8 +142,7 @@ C --- ON RECUPERE L'ABSC_CURV DANS LA TABLE TABL_RESU_THER
 C
       CALL TBEXIP ( TBTHER(1), 'ABSC_CURV', EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
-         CALL UTMESS('F','RCSP01','ABSENCE DU PARAMETRE ABSC_CURV'//
-     +                      ' POUR LA TABLE TABL_RESU_THER')
+         CALL U2MESS('F','POSTRELE_45')
       ENDIF
       ABSCUR = '&&RCSP01.ABSC_CURV'
       CALL TBEXV1 ( TBTHER(1), 'ABSC_CURV', ABSCUR, 'V', NBABSC, K8B)
@@ -169,8 +166,8 @@ C
          VALE(2) = ZR(JABSC)
 C
          CALL TBLIVA ( TBTHER(1), 2, NOPARA, IBID, VALE, CBID, K8B,
-     +                 CRIT, PREC, 'TEMP', 
-     +                 K8B, IBID, TINT, CBID, K8B, IRET )
+     &                 CRIT, PREC, 'TEMP',
+     &                 K8B, IBID, TINT, CBID, K8B, IRET )
          IF (IRET.NE.0) THEN
             CALL UTDEBM('F','RCSP01','PROBLEME POUR RECUPERER ')
             CALL UTIMPK('S',' DANS LA TABLE ',1,TBTHER(1))
@@ -182,8 +179,8 @@ C
          VALE(2) = ZR(JABSC+NBABSC-1)
 C
          CALL TBLIVA ( TBTHER(1), 2, NOPARA, IBID, VALE, CBID, K8B,
-     +                 CRIT, PREC, 'TEMP', 
-     +                 K8B, IBID, TEXT, CBID, K8B, IRET )
+     &                 CRIT, PREC, 'TEMP',
+     &                 K8B, IBID, TEXT, CBID, K8B, IRET )
          IF (IRET.NE.0) THEN
             CALL UTDEBM('F','RCSP01','PROBLEME POUR RECUPERER ')
             CALL UTIMPK('S',' DANS LA TABLE ',1,TBTHER(1))
@@ -198,8 +195,8 @@ C
          NOPARA(2) = 'QUANTITE'
 C
          CALL TBLIVA ( TBMOYE(1), 2, NOPARA, IBID, INST, CBID,
-     +              'MOMENT_0', CRIT, PREC, 'TEMP', 
-     +              K8B, IBID, TMOY(1), CBID, K8B, IRET )
+     &              'MOMENT_0', CRIT, PREC, 'TEMP',
+     &              K8B, IBID, TMOY(1), CBID, K8B, IRET )
          IF (IRET.NE.0) THEN
             CALL UTDEBM('F','RCSP01','PROBLEME POUR RECUPERER ')
             CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(1))
@@ -209,8 +206,8 @@ C
          ENDIF
          IF ( NBM .GT. 1 ) THEN
             CALL TBLIVA ( TBMOYE(2), 2, NOPARA, IBID, INST, CBID,
-     +                 'MOMENT_0', CRIT, PREC, 'TEMP', 
-     +                 K8B, IBID, TMOY(2), CBID, K8B, IRET )
+     &                 'MOMENT_0', CRIT, PREC, 'TEMP',
+     &                 K8B, IBID, TMOY(2), CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
             CALL UTDEBM('F','RCSP01','PROBLEME POUR RECUPERER ')
             CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(2))
@@ -220,8 +217,8 @@ C
             ENDIF
          ENDIF
          CALL TBLIVA ( TBMOYE(1), 2, NOPARA, IBID, INST, CBID,
-     +              'MOMENT_1', CRIT, PREC, 'TEMP', 
-     +              K8B, IBID, VMOY, CBID, K8B, IRET )
+     &              'MOMENT_1', CRIT, PREC, 'TEMP',
+     &              K8B, IBID, VMOY, CBID, K8B, IRET )
          IF (IRET.NE.0) THEN
             CALL UTDEBM('F','RCSP01','PROBLEME POUR RECUPERER ')
             CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(1))
@@ -233,14 +230,14 @@ C
 C
 C ------ DT1: AMPLITUDE DE LA VARIATION ENTRE LES 2 ETATS STABILISES
 C             DE LA DIFFERENCE DE TEMPERATURE ENTRE LES PAROIS
-C             INTERNE ET EXTERNE 
-C 
+C             INTERNE ET EXTERNE
+C
          DT1 = VMOY
 C
 C ------ DT2: PARTIE NON LINEAIRE DE LA DISTRIBUTION DANS L'EPAISSEUR
 C             DE PAROI DE L'AMPLITUDE DE VARIATION DE LA TEMPERATURE
 C             ENTRE LES 2 ETATS STABILISES
-C 
+C
          TERM1 = ABS(TEXT-TMOY(1)) - ABS(0.5D0*DT1)
          TERM2 = ABS(TINT-TMOY(1)) - ABS(0.5D0*DT1)
          DT2 = MAX( TERM1, TERM2, 0.D0 )

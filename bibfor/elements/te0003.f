@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -301,8 +301,7 @@ C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
           LNONLI = .FALSE.
           CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',INST,1,'RHO_CP',
      &               RHOCP, CODRET,'FM')
-          IF (CODRET.NE.'OK') CALL UTMESS('F','TE0003',
-     &                             '! PB RCVALA RHOCP !')
+          IF (CODRET.NE.'OK') CALL U2MESS('F','ELEMENTS2_62')
         ELSE IF (PHENOM.EQ.'THER_NL') THEN
           LNONLI = .TRUE.
           CALL NTFCMA(ZI(IMATE),IFON)
@@ -311,10 +310,10 @@ C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
           CALL UTIMPI('L','! CONDITIONS LIMITES NON LINEAIRES   !',0,I)
           CALL UTFINM()
         ELSE
-          CALL UTMESS('F','TE0003','! COMPORTEMENT NON TROUVE !')
+          CALL U2MESS('F','ELEMENTS2_63')
         END IF
       ELSE
-        CALL UTMESS('F','TE0003','! PB RCCOMA RHOCP !')
+        CALL U2MESS('F','ELEMENTS2_64')
       END IF
       IF (TABNIV(4).EQ.2) THEN
         WRITE (IFM,*) 'PHENOM ',PHENOM
@@ -343,7 +342,7 @@ C FONCTIONS DE FORME ET LEURS DERIVEES
 
 C CALCUL L'ORIENTATION DE LA MAILLE
         CALL UTJAC ( L2D, IGEOM, KP, IDFDE,
-     +                                    TABNIV(5), IFM, NNO, JACOB )
+     &                                    TABNIV(5), IFM, NNO, JACOB )
 
 C---------------------------------
 C CALCUL DE LA PARTIE SOURCE (THETA * S+ + (1-THETA) * S-)
@@ -416,7 +415,7 @@ C TEMPM/P T-/+ AU POINT DE GAUSS
           IF (ABS(DELTAT).GT.OVFL) THEN
             UNSURD = 1.D0/DELTAT
           ELSE
-            CALL UTMESS('F','TE0003','! DELTAT: DIV PAR ZERO !')
+            CALL U2MESS('F','ELEMENTS2_65')
           END IF
           IF (LNONLI) THEN
 C CAS NON LINEAIRE
@@ -475,7 +474,7 @@ C TRAITEMENT PARTICULIER DU A L'AXI (PART III)
           IF (ABS(R).GT.OVFL) THEN
             UNSURR = 1.D0/R
           ELSE
-            CALL UTMESS('F','TE0003','! R AXI: DIV PAR ZERO !')
+            CALL U2MESS('F','ELEMENTS2_66')
           END IF
           POIDS = POIDS*R
         END IF

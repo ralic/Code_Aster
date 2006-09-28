@@ -1,22 +1,22 @@
       SUBROUTINE CONINI(MA,NOECON,MAICON,MARCON,NBMAR,NBNOE,NBMARC,
-     .        NOMMAR,JMICOR,MBCOR,NOMTYR,NBGCO,IO8GCO)
+     &        NOMMAR,JMICOR,MBCOR,NOMTYR,NBGCO,IO8GCO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C  ROUTINE CONINI
@@ -110,10 +110,10 @@ C
       CHARACTER*8 NOMMAR(NBMAR),NOMTYR(NBMAR)
 C     TYPES VALIDES POUR LES MAILLES DE REFERENCE
       VALID()=(CAS2D.AND.
-     .(KTYR(:4).EQ.'TRIA'.OR.KTYC(:4).EQ.'QUAD')).OR.
-     .(CAS3D.AND.
-     .(KTYR(:5).EQ.'PENTA'.OR.KTYR(:4).EQ.'HEXA'.OR.
-     . KTYR(:5).EQ.'PYRAM'.OR.KTYR(:5).EQ.'TETRA'))
+     &(KTYR(:4).EQ.'TRIA'.OR.KTYC(:4).EQ.'QUAD')).OR.
+     &(CAS3D.AND.
+     &(KTYR(:5).EQ.'PENTA'.OR.KTYR(:4).EQ.'HEXA'.OR.
+     & KTYR(:5).EQ.'PYRAM'.OR.KTYR(:5).EQ.'TETRA'))
 C
       INVAL=.FALSE.
       CAS2D=.FALSE.
@@ -148,8 +148,7 @@ C
 C     ------------------------------------------------------------------
 C     TRAITEMENT DU CAS DE NON-EXISTENCE
 C     ------------------------------------------------------------------
-               CALL UTMESS('I','CONORI',ZK8(IO8GCO+IGCO-1)//
-     +         ' GROUPE INEXISTANT')
+               CALL U2MESK('I','ALGORITH2_26',1,ZK8(IO8GCO+IGCO-1))
 C
             ELSE
 C     ------------------------------------------------------------------
@@ -164,7 +163,7 @@ C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE MAILLE DU GROUP_MA
 C     ------------------------------------------------------------------
                CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGMA),
-     +                     'LONMAX',NBMAG,K1BID)
+     &                     'LONMAX',NBMAG,K1BID)
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES MAILLES DU GROUP_MA
 C     ------------------------------------------------------------------
@@ -195,7 +194,8 @@ C
       ELSE
         INVAL=.TRUE.
         CALL UTMESS('E','CONORI','MAILLE '//KMAC//' DE TYPE '//KTYC//
-     +         ' INVALIDE POUR LE CONTACT')
+     &         ' INVALIDE POUR LE CONTACT')
+C        CALL U2MESK('E','ALGORITH2_27', 2 ,VALK)
       ENDIF
 C
 C     ------------------------------------------------------------------
@@ -206,7 +206,7 @@ C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
                   CALL JELIRA(JEXNUM(MA//'.CONNEX',IMAC),
-     +                        'LONMAX',NBCOC,K1BID)
+     &                        'LONMAX',NBCOC,K1BID)
 C
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES CONNEXIONS DE LA MAILLE
@@ -221,7 +221,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 3        CONTINUE
       IF (INVAL)
-     .CALL UTMESS('F','CONORI','GROUPE DE MAILLES DE CONTACT INVALIDE')
+     &CALL U2MESS('F','ALGORITH2_28')
 C
       IF (CAS2D.AND.CAS3D) THEN
         IF (IERR.EQ.0) THEN
@@ -229,7 +229,7 @@ C       ON RETOURNE DANS LA BOUCLE AVEC DEMANDE DE MESSAGES
           IERR=1
           GOTO 33
         ELSE
-          CALL UTMESS('F','CONINI','MAILLES DE CONTACT 2D ET 3D')
+          CALL U2MESS('F','ALGORITH2_29')
         ENDIF
       ENDIF
       IF (CAS2D) ITEST=2
@@ -255,7 +255,7 @@ C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE CONNEXIONS DE LA MAILLE
 C     ------------------------------------------------------------------
                      CALL JELIRA(JEXNUM(MA//'.CONNEX',IMAR),
-     +                           'LONMAX',NBCOR,K1BID)
+     &                           'LONMAX',NBCOR,K1BID)
                      MBCOR(IMAR)=NBCOR
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES CONNEXIONS DE LA MAILLE

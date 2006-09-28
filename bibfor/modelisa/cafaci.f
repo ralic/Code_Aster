@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/07/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,9 +136,7 @@ C ---------------------------------------------------
       CALL JELIRA(LIGRMO//'.PRNM','LONMAX',N2,K1BID)
       NBEC = N2/N1
       IF (NBEC.GT.10) THEN
-        CALL UTMESS('F','CAFACI',
-     &              'LE DESCRIPTEUR_GRANDEUR DES DEPLACEMENTS'//
-     &              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+        CALL U2MESS('F','MODELISA_94')
       ELSE
         CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
       END IF
@@ -185,13 +183,13 @@ C
 C ----- RECUPERATION DES MAILLES
 C
         CALL RELIEM ( ' ', NOMA, 'NU_MAILLE', MOTFAC, I, 2,
-     +                                    MOCLM, TYPMCL, MESMAI, NBMA )
+     &                                    MOCLM, TYPMCL, MESMAI, NBMA )
         CALL JEVEUO ( MESMAI, 'L', JLISTI )
 
 C ----- RECUPERATION DES MAILLES (A EXCLURE)
 C
         CALL RELIEM ( ' ', NOMA, 'NU_MAILLE', MOTFAC, I, 2,
-     +                                   MOCLM2, TYPMCL, MESMA2, NBMA2 )
+     &                                   MOCLM2, TYPMCL, MESMA2, NBMA2 )
 
 C ---------------------------------------------------
 C     RECUPERATION DES MOTS-CLES DDL SOUS FACE_IMPO
@@ -230,11 +228,7 @@ C ---------------------------------------------------
             END IF
    60     CONTINUE
           IF (NDIM.EQ.3 .AND. DDLIMP(NDDLA+2).NE.0) THEN
-            CALL UTMESS('F','CAFACI','PAS DE BLOCAGE DE DEPLACEMENT'//
-     &            ' TANGENT SUR DES FACES D''ELEMENTS 3D. RENTRER LA CO'
-     &                  //
-     &                 'NDITION AUX LIMITES PAR DDL_IMPO OU LIAISON_DDL'
-     &                  )
+            CALL U2MESS('F','MODELISA2_63')
           END IF
         ELSE
           DO 70 J = 1,NDDLA + 2
@@ -246,11 +240,7 @@ C ---------------------------------------------------
             END IF
    70     CONTINUE
           IF (NDIM.EQ.3 .AND. DDLIMP(NDDLA+2).NE.0) THEN
-            CALL UTMESS('F','CAFACI','PAS DE BLOCAGE DE DEPLACEMENT'//
-     &            ' TANGENT SUR DES FACES D''ELEMENTS 3D. RENTRER LA CO'
-     &                  //
-     &                 'NDITION AUX LIMITES PAR DDL_IMPO OU LIAISON_DDL'
-     &                  )
+            CALL U2MESS('F','MODELISA2_63')
           END IF
         END IF
         NCMP = NCMP + ICMP
@@ -280,14 +270,14 @@ C           LISTE DES NOMS DES NOEUDS A CONSERVER
             CALL JEDETR('&&CAFACI.NOEU_NOM')
             CALL WKVECT('&&CAFACI.NOEU_NOM','V V K8',NBNO1,JLINO)
             CALL KNDIFF(8,ZK8(JLINO1),NBNO1,ZK8(JLINO2),NBNO2,
-     +                    ZK8(JLINO),NBNO)
+     &                    ZK8(JLINO),NBNO)
 
 C           LISTE DES NUMEROS DES NOEUDS A CONSERVER
             CALL JEDETR('&&CAFACI.NOEU_NUM')
             CALL WKVECT ( '&&CAFACI.NOEU_NUM','V V I',NBNO,JLINU)
             DO 71 J=1,NBNO
                CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(JLINO+J-1)),
-     +              ZI(JLINU+J-1))
+     &              ZI(JLINU+J-1))
  71         CONTINUE
 
           ELSE
@@ -405,11 +395,7 @@ C                 ASSOCIE AUX DDLS IMPOSES PAR NOEUD
           DO 140 J = 1,NDDLA + 2
             CALL GETVR8('FACE_IMPO',MOTCLE(J),I,1,1,VALIMR(J),DDLIMP(J))
             IF (NDIM.EQ.3 .AND. DDLIMP(NDDLA+2).NE.0) THEN
-              CALL UTMESS('F','CAFACI','PAS DE BLOCAGE DE DEPLACEMENT'//
-     &            ' TANGENT SUR DES FACES D''ELEMENTS 3D. RENTRER LA CO'
-     &                    //
-     &                 'NDITION AUX LIMITES PAR DDL_IMPO OU LIAISON_DDL'
-     &                    )
+              CALL U2MESS('F','MODELISA2_63')
             END IF
             IF (J.LE.NDDLA) THEN
               ICMP = ICMP + DDLIMP(J)
@@ -421,11 +407,7 @@ C                 ASSOCIE AUX DDLS IMPOSES PAR NOEUD
           DO 150 J = 1,NDDLA + 2
             CALL GETVID('FACE_IMPO',MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
             IF (NDIM.EQ.3 .AND. DDLIMP(NDDLA+2).NE.0) THEN
-              CALL UTMESS('F','CAFACI','PAS DE BLOCAGE DE DEPLACEMENT'//
-     &            ' TANGENT SUR DES FACES D''ELEMENTS 3D. RENTRER LA CO'
-     &                    //
-     &                 'NDITION AUX LIMITES PAR DDL_IMPO OU LIAISON_DDL'
-     &                    )
+              CALL U2MESS('F','MODELISA2_63')
             END IF
             IF (J.LE.NDDLA) THEN
               ICMP = ICMP + DDLIMP(J)
@@ -452,8 +434,8 @@ C
      &                    ZK8(INOM),NBCMP,ZI(JCOMPT))
   180     CONTINUE
           DO 181,K=1,NDDLA
-             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL UTMESS('F','CAFACI',
-     &                    'AUCUN NOEUD NE CONNAIT LE DDL: '//MOTCLE(K))
+             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL U2MESK('F','MODELISA2_45',
+     &1,MOTCLE(K))
   181     CONTINUE
           CALL JEDETR('&&CAFACI.ICOMPT')
 

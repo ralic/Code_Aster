@@ -1,7 +1,7 @@
       SUBROUTINE ASEXC2( MOTFAC,NBOCC,NBMODE,PARMOD,AMORT,CORFRE,NOMA,
-     +                   NDIR,NOMSUP,NOMSPE,DIRSPE,ECHSPE,NATURE,
-     +                   NBSUPM,NSUPP,KNOEU,
-     +                   KVSPE,KASPE )
+     &                   NDIR,NOMSUP,NOMSPE,DIRSPE,ECHSPE,NATURE,
+     &                   NBSUPM,NSUPP,KNOEU,
+     &                   KVSPE,KASPE )
       IMPLICIT  REAL*8 (A-H,O-Z)
       INTEGER          NDIR(*),NATURE(3,*),NSUPP(*)
       REAL*8           PARMOD(NBMODE,*),AMORT(*),DIRSPE(3,*),ECHSPE(3,*)
@@ -10,22 +10,22 @@
       LOGICAL          CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C     ------------------------------------------------------------------
@@ -114,8 +114,7 @@ C        --- UN SPECTRE SUIVANT UN AXE ---
  12         CONTINUE
             IF (XNORM.LT.EPSI) THEN
                IER = IER + 1
-               CALL UTMESS('E',MOTFAC,'LE VECTEUR DIRECTEUR DU SPECTRE'
-     +                                                    //' EST NUL.')
+               CALL U2MESS('E','ALGORITH_26')
                GOTO 10
             ENDIF
             XNORM = UN / SQRT(XNORM)
@@ -166,26 +165,26 @@ C
                NDIR(ID) = 1
 C
             CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',
-     +          IOC,1,0,NOEU,NN)
+     &          IOC,1,0,NOEU,NN)
             IF (NN.NE.0) THEN
                NNO = -NN
                CALL WKVECT('&&ASEXC2.NOEUD','V V K8',NNO,JNOE)
                CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',
-     +             IOC,1,NNO,ZK8(JNOE),NN)
+     &             IOC,1,NNO,ZK8(JNOE),NN)
                DO 20 INO = 1, NNO
                   NOEU = ZK8(JNOE+INO-1)
                   CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
                   IF (IRET.EQ.0) THEN
                      IER = IER + 1
                      CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEU//
-     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+C        CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
                      GOTO 20
                   ENDIF
                   DO 22 IS = 1,NSUPP(ID)
                      IF (NOMSUP(ID,IS).EQ.NOEU) THEN
                         IER = IER + 1
-                        CALL UTMESS('E',MOTFAC,' VOUS AVEZ DEJA DONNE'//
-     +                           ' UN SPECTRE POUR LE SUPPORT '//NOEU)
+                        CALL U2MESK('E','ALGORITH_29',1,NOEU)
                         GOTO 20
                      ENDIF
  22               CONTINUE
@@ -200,18 +199,19 @@ C
 C
             ELSE
                CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     +                IOC,1,0,K8BID,NG)
+     &                IOC,1,0,K8BID,NG)
                NGR = -NG
                CALL WKVECT('&&ASEXC2.GROUP_NO','V V K8',NGR,JGRN)
                CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO',
-     +                IOC,1,NGR,ZK8(JGRN),NG)
+     &                IOC,1,NGR,ZK8(JGRN),NG)
                DO 30 IGR = 1, NGR
                   GRNOEU = ZK8(JGRN+IGR-1)
                   CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
                   IF (IRET .EQ. 0) THEN
                      IER = IER + 1
                      CALL UTMESS('E',MOTFAC,'LE GROUPE '//GRNOEU//
-     +                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
+C        CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
                      GOTO 30
                   ENDIF
                   CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K1BID)
@@ -221,8 +221,7 @@ C
                      DO 34 IS = 1,NSUPP(ID)
                         IF (NOMSUP(ID,IS).EQ.NOEU) THEN
                            IER = IER + 1
-                        CALL UTMESS('E',MOTFAC,' VOUS AVEZ DEJA DONNE'//
-     +                           ' UN SPECTRE POUR LE SUPPORT '//NOEU)
+                        CALL U2MESK('E','ALGORITH_29',1,NOEU)
                            GOTO 32
                         ENDIF
  34                  CONTINUE
@@ -241,8 +240,7 @@ C
 C
  10   CONTINUE
 C
-      IF (IER.NE.0) CALL UTMESS('F',MOTFAC,' ERREUR(S) RENCONTREE(S)'//
-     +                             ' LORS DE LA LECTURE DES SUPPORTS.')
+      IF (IER.NE.0) CALL U2MESS('F','ALGORITH_28')
 C
 C     --- NOM DES SUPPORTS PAR DIRECTION ---
       NBSUPM = MAX(NSUPP(1),NSUPP(2),NSUPP(3))
@@ -285,12 +283,12 @@ C     --- INTERPOLATION DES SPECTRES ---
                   J = ID + 3*(IM-1) + 3*NBMODE*(IS-1)
                   ZR(JVSPE+J-1) = RESU
                   IF (NIVEAU.EQ.'TOUT     '
-     +                               .OR. NIVEAU.EQ.'SPEC_OSCI') THEN
+     &                               .OR. NIVEAU.EQ.'SPEC_OSCI') THEN
                     IF (II.EQ.0) THEN
                        II = 1
                        III = 1
                        WRITE(IFM,1200)IM,FREQ,AMOR,DIR(ID),
-     +                                         NOMSUP(ID,IS),RESU
+     &                                         NOMSUP(ID,IS),RESU
                     ELSE
                        IF (III.EQ.0) THEN
                           III = 1
@@ -341,7 +339,7 @@ C     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
 C
  1000 FORMAT(/,1X,'--- VALEURS DU SPECTRE ---')
  1020 FORMAT(1X,'MODE      FREQUENCE   AMORTISSEMENT   ',
-     +          'DIR   SUPPORT         SPECTRE')
+     &          'DIR   SUPPORT         SPECTRE')
  1200 FORMAT(1P,1X,I4,3X,D12.5,4X,D12.5,4X,A1,4X,A8,3X,D12.5)
  1210 FORMAT(1P,40X,A1,4X,A8,3X,D12.5)
  1220 FORMAT(1P,45X,A8,3X,D12.5)

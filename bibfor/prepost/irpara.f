@@ -5,23 +5,23 @@
       CHARACTER*(*)       RESU,FORM
       INTEGER                          NBORDR,ORDR(*),NBPA
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRS_602
 C     IMPRESSION DES PARAMETRES
@@ -110,7 +110,7 @@ C
                ZK16(LK80PA+NECK80) = NOMPAR(IPA)
                NECK80 = NECK80 + 1
             ELSE
-               CALL UTMESS('A','IRPARA','TYPE INCONNU"'//CTYPE//'"')
+               CALL U2MESK('A','PREPOST3_6',1,CTYPE)
             ENDIF
  120      CONTINUE
 C
@@ -120,59 +120,59 @@ C
           IF(CECR(1:1).EQ.'L') THEN
 C            ----------------
             WRITE(IFI,'(1X,3A)') 'IMPRESSION DES PARAMETRES DU ',
-     +        'CONCEPT ',RESU
+     &        'CONCEPT ',RESU
 C
             DO 200 IORD=1,NBORDR
 C
             WRITE(IFI,'(1X,A,I4,/)') 'POUR LE NUMERO D''ORDRE ',
-     +                                ORDR(IORD)
+     &                                ORDR(IORD)
               IF(NECRI.NE.0) THEN
                 DO 202 IEC = 1,NECRI
                    CALL RSADPA(RESU,'L',1,ZK16(LNIPA-1+IEC),ORDR(IORD),
-     +                          1,IAD,CTYPE)
+     &                          1,IAD,CTYPE)
                    WRITE(IFI,'(14X,A,I12)') ZK16(LNIPA-1+IEC),ZI(IAD)
  202            CONTINUE
               ENDIF
               IF(NECRR.NE.0) THEN
                 DO 204 IEC = 1,NECRR
                    CALL RSADPA(RESU,'L',1,ZK16(LNRPA-1+IEC),ORDR(IORD),
-     +                          1,IAD,CTYPE)
+     &                          1,IAD,CTYPE)
                    WRITE(IFI,'(14X,A,1PE12.5)') ZK16(LNRPA-1+IEC),
-     +                                         ZR(IAD)
+     &                                         ZR(IAD)
  204            CONTINUE
               ENDIF
               IF(NECK8.NE.0) THEN
                 DO 206 IEC = 1,NECK8
                    CALL RSADPA(RESU,'L',1,ZK16(LK8PA-1+IEC),ORDR(IORD),
-     +                          1,IAD,CTYPE)
+     &                          1,IAD,CTYPE)
                    WRITE(IFI,'(14X,A,1X,A)') ZK16(LK8PA-1+IEC),ZK8(IAD)
  206            CONTINUE
               ENDIF
               IF(NECK16.NE.0) THEN
                 DO 208 IEC = 1,NECK16
                    CALL RSADPA(RESU,'L',1,ZK16(LK16PA-1+IEC),ORDR(IORD),
-     +                          1,IAD,CTYPE)
+     &                          1,IAD,CTYPE)
                   WRITE(IFI,'(14X,A,1X,A)') ZK16(LK16PA-1+IEC),ZK16(IAD)
  208            CONTINUE
               ENDIF
               IF(NECK24.NE.0) THEN
                 DO 210 IEC = 1,NECK24
                    CALL RSADPA(RESU,'L',1,ZK16(LK24PA-1+IEC),ORDR(IORD),
-     +                          1,IAD,CTYPE)
+     &                          1,IAD,CTYPE)
                   WRITE(IFI,'(14X,A,1X,A)') ZK16(LK24PA-1+IEC),ZK24(IAD)
  210            CONTINUE
               ENDIF
               IF(NECK32.NE.0) THEN
                 DO 212 IEC = 1,NECK32
                    CALL RSADPA(RESU,'L',1,ZK16(LK32PA-1+IEC),ORDR(IORD),
-     +                          1,IAD,CTYPE)
+     &                          1,IAD,CTYPE)
                   WRITE(IFI,'(14X,A,1X,A)') ZK16(LK32PA-1+IEC),ZK32(IAD)
  212            CONTINUE
               ENDIF
               IF(NECK80.NE.0) THEN
                 DO 214 IEC = 1,NECK80
                    CALL RSADPA(RESU,'L',1,ZK16(LK80PA-1+IEC),ORDR(IORD),
-     +                          1,IAD,CTYPE)
+     &                          1,IAD,CTYPE)
                    WRITE(IFI,'(14X,A)') ZK16(LK32PA-1+IEC)
                    WRITE(IFI,'(1X,A)')  ZK80(IAD)
  214            CONTINUE
@@ -182,16 +182,16 @@ C
           ELSEIF(CECR(1:1).EQ.'T') THEN
 C                ----------------
             WRITE(IFI,'(1X,A,4(1X,A),/,(13X,4(1X,A)))')
-     +          'NUMERO_ORDRE',(ZK16(LNIPA-1+IECI),IECI=1,NECRI),
-     +                         (ZK16(LNRPA-1+IECR),IECR=1,NECRR),
-     +                         (ZK16(LK8PA-1+IK8),IK8=1,NECK8),
-     +                         (ZK16(LK16PA-1+IK16),IK16=1,NECK16)
+     &          'NUMERO_ORDRE',(ZK16(LNIPA-1+IECI),IECI=1,NECRI),
+     &                         (ZK16(LNRPA-1+IECR),IECR=1,NECRR),
+     &                         (ZK16(LK8PA-1+IK8),IK8=1,NECK8),
+     &                         (ZK16(LK16PA-1+IK16),IK16=1,NECK16)
             WRITE(IFI,'(14X,2(A,9X))')
-     +                         (ZK16(LK24PA-1+IK24),IK24=1,NECK24)
+     &                         (ZK16(LK24PA-1+IK24),IK24=1,NECK24)
             WRITE(IFI,'(14X,2(A,17X))')
-     +                         (ZK16(LK32PA-1+IK32),IK32=1,NECK32)
+     &                         (ZK16(LK32PA-1+IK32),IK32=1,NECK32)
             WRITE(IFI,'(1X,A)')
-     +                         (ZK16(LK80PA-1+IK80),IK80=1,NECK80)
+     &                         (ZK16(LK80PA-1+IK80),IK80=1,NECK80)
             DO 300 IORD=1,NBORDR
              I = 1
              WRITE(TOTO(I:I+13),1000) ORDR(IORD)
@@ -199,7 +199,7 @@ C                ----------------
              IF (NECRI.NE.0) THEN
                DO 302 IEC = 1,NECRI
                  CALL RSADPA(RESU,'L',1,ZK16(LNIPA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                  WRITE(TOTO(I:I+16),1001) ZI(IAD)
                  I=I+17
                  IF(I.GE.68)  THEN
@@ -212,7 +212,7 @@ C                ----------------
              IF (NECRR.NE.0) THEN
                DO 304 IEC = 1,NECRR
                  CALL RSADPA(RESU,'L',1,ZK16(LNRPA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                  WRITE(TOTO(I:I+16),1002) ZR(IAD)
                  I=I+17
                  IF(I.GE.68)  THEN
@@ -225,7 +225,7 @@ C                ----------------
              IF (NECK8.NE.0) THEN
                DO 306 IEC = 1,NECK8
                  CALL RSADPA(RESU,'L',1,ZK16(LK8PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                  WRITE(TOTO(I:I+16),1008) ZK8(IAD)
                  I=I+17
                  IF(I.GE.68)  THEN
@@ -238,7 +238,7 @@ C                ----------------
              IF (NECK16.NE.0) THEN
                DO 308 IEC = 1,NECK16
                  CALL RSADPA(RESU,'L',1,ZK16(LK16PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                  WRITE(TOTO(I:I+16),1016) ZK16(IAD)
                  I=I+17
                  IF(I.GE.68)  THEN
@@ -256,7 +256,7 @@ C                ----------------
                I=14
                DO 310 IEC = 1,NECK24
                  CALL RSADPA(RESU,'L',1,ZK16(LK24PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                  WRITE(TOTO(I:I+24),1024) ZK24(IAD)
                  I=I+25
                  IF(I.GE.50)  THEN
@@ -274,7 +274,7 @@ C                ----------------
                I=14
                DO 312 IEC = 1,NECK32
                  CALL RSADPA(RESU,'L',1,ZK16(LK32PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                  WRITE(TOTO(I:I+32),1032) ZK32(IAD)
                  I=I+33
                  IF(I.GE.64)  THEN
@@ -291,7 +291,7 @@ C                ----------------
                ENDIF
                DO 314 IEC = 1,NECK80
                  CALL RSADPA(RESU,'L',1,ZK16(LK80PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                  WRITE(IFI,'(A)') ZK80(IAD)
  314           CONTINUE
              ENDIF
@@ -341,43 +341,43 @@ C
               I = 14
               DO 422 IEC = 1 , NECRI
                 CALL RSADPA(RESU,'L',1,ZK16(LNIPA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                 WRITE(TITI(I:I+15),'(I12)') ZI(IAD)
                 I = I + 17
  422          CONTINUE
               DO 424 IEC = 1,NECRR
                 CALL RSADPA(RESU,'L',1,ZK16(LNRPA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                 WRITE(TITI(I:I+15),'(1PD12.5)') ZR(IAD)
                 I = I + 17
  424          CONTINUE
               DO 426 IEC = 1,NECK8
                 CALL RSADPA(RESU,'L',1,ZK16(LK8PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                 TITI(I:I+15) = ZK8(IAD)
                 I = I + 17
  426          CONTINUE
               DO 428 IEC = 1,NECK16
                 CALL RSADPA(RESU,'L',1,ZK16(LK16PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                 TITI(I:I+15) = ZK16(IAD)
                 I = I + 17
  428          CONTINUE
               DO 430 IEC = 1,NECK24
                 CALL RSADPA(RESU,'L',1,ZK16(LK24PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                 TITI(I:I+23) = ZK24(IAD)
                 I = I + 25
  430          CONTINUE
               DO 432 IEC = 1,NECK32
                  CALL RSADPA(RESU,'L',1,ZK16(LK32PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                 TITI(I:I+31) = ZK32(IAD)
                 I = I + 33
  432          CONTINUE
               DO 434 IEC = 1,NECK80
                  CALL RSADPA(RESU,'L',1,ZK16(LK80PA-1+IEC),ORDR(IORD),
-     +                         1,IAD,CTYPE)
+     &                         1,IAD,CTYPE)
                 TITI(I:I+79) = ZK80(IAD)
                 I = I + 81
  434          CONTINUE

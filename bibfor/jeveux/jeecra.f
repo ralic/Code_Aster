@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +41,11 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -66,11 +66,11 @@ C     ------------------------------------------------------------------
       INTEGER         IBACOL , IXIADD , IXDESO , IXLONG
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     ,
-     +               IDLONG     ,
-     +               IDLONO     , IDLUTI
+     &               IDLONG     ,
+     &               IDLONO     , IDLUTI
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 ,
-     +               IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 )
+     &               IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 )
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C DEB ------------------------------------------------------------------
@@ -89,7 +89,7 @@ C
 C
       IF ( IRET .EQ. 0 ) THEN
         CMESS = 'OBJET INEXISTANT DANS LES BASES OUVERTES'
-        CALL JVMESS( 'S' , 'JEECRA01' , CMESS)
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE IF ( IRET .EQ. 1 ) THEN
         IC     = ICLAOS
         ID     = IDATOS
@@ -122,8 +122,8 @@ C
       IF ( CATRLU .EQ. 'LONT    ' ) THEN
          IF ( .NOT. LCONTI ) THEN
            CMESS= 'ATTRIBUT '//CATRLU//
-     +            ' UNIQUEMENT POUR COLLECTION CONTIGUE'
-           CALL JVMESS ( 'S' , 'JEECRA02' , CMESS )
+     &            ' UNIQUEMENT POUR COLLECTION CONTIGUE'
+           CALL U2MESK('S','JEVEUX_01',1,CMESS)
          ELSE
            LLONG = .FALSE.
            LLUTI = .FALSE.
@@ -132,12 +132,12 @@ C
          LLONG = ( CATRLU(4:6) .EQ. 'MAX' )
          LLUTI = ( CATRLU(4:6) .EQ. 'UTI' )
          IF((GENRI .NE. 'N'          .AND. CATRLU(1:3).EQ. 'NOM')  .OR.
-     +      (GENRI .EQ. 'N'          .AND. CATRLU(1:4).EQ. 'NOMU')  .OR.
-     +      (GENRI .NE. 'V'          .AND. CATRLU(1:4).EQ. 'LONM') .OR.
-     +      (GENRI .NE. 'V'          .AND. CATRLU(1:4).EQ. 'LONU')) THEN
+     &      (GENRI .EQ. 'N'          .AND. CATRLU(1:4).EQ. 'NOMU')  .OR.
+     &      (GENRI .NE. 'V'          .AND. CATRLU(1:4).EQ. 'LONM') .OR.
+     &      (GENRI .NE. 'V'          .AND. CATRLU(1:4).EQ. 'LONU')) THEN
              CMESS= 'NOM D''ATTRIBUT '//CATRLU//
-     +             ' INCOMPATIBLE AVEC LE GENRE '//GENRI
-             CALL JVMESS ( 'S' , 'JEECRA03' , CMESS )
+     &             ' INCOMPATIBLE AVEC LE GENRE '//GENRI
+             CALL U2MESK('S','JEVEUX_01',1,CMESS)
          ENDIF
       ENDIF
 C
@@ -159,14 +159,14 @@ C
           ENDIF
           IF ( LONGI .NE. 0 ) THEN
             CMESS = 'ATTRIBUT '//CATRLU//
-     +              ' NON MODIFIABLE OU DEJA DEFINI'
-            CALL JVMESS ( 'S' , 'JEECRA04' , CMESS )
+     &              ' NON MODIFIABLE OU DEJA DEFINI'
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ELSE
             LONG ( JLONG(IC) + ID ) = LONGJ
             IF ( LONOI .NE. 0 .AND. IRET .EQ. 1 ) THEN
               CMESS = 'ATTRIBUT '//CATRLU//
-     +                ' NON MODIFIABLE OU DEJA DEFINI POUR UN O.S.'
-              CALL JVMESS ( 'S' , 'JEECRA05' , CMESS )
+     &                ' NON MODIFIABLE OU DEJA DEFINI POUR UN O.S.'
+              CALL U2MESK('S','JEVEUX_01',1,CMESS)
             ELSE
               IF ( GENRI .EQ. 'V' ) THEN
                 LONO ( JLONO(IC) + ID ) = LONGJ
@@ -183,7 +183,7 @@ C
                 IF ( IADM(JIADM(IC)+ID) .EQ. 0 ) THEN
                   NBL = LONOK*LTYPI
                   CALL JJALLS(NBL,GENRI,TYPEI,LTYPI,'INIT',
-     +                        ITAB,JTAB,IADMI)
+     &                        ITAB,JTAB,IADMI)
                   IADM(JIADM(IC)+ID) = IADMI
                   CALL JJECRS(IADMI,IC,ID,0,'E',IMARQ(JMARQ(IC)+2*ID-1))
                   NHC = JJPREM(IVAL)
@@ -199,8 +199,8 @@ C
               IF ( LCONTI ) THEN
                 IF(LONOI.NE.0.AND.LONOI.LT.NMAXI*LONO(JLONO(IC)+ID))THEN
                   CMESS = 'ATTRIBUT '//CATRLU//
-     +                    ' NON COMPATIBLE AVEC VALEUR DE LONT'
-                  CALL JVMESS ( 'S' , 'JEECRA06' , CMESS )
+     &                    ' NON COMPATIBLE AVEC VALEUR DE LONT'
+                  CALL U2MESK('S','JEVEUX_01',1,CMESS)
                 ELSE
                   LONO (JLONO(IC)+ID) = NMAXI * LONO ( JLONO(IC) + ID )
                 ENDIF
@@ -213,7 +213,7 @@ C
           ENDIF
         ELSE
           CMESS = 'NOM D''ATTRIBUT '//CATRLU//' NON ACCESSIBLE'
-          CALL JVMESS ( 'S' , 'JEECRA07' , CMESS )
+          CALL U2MESK('S','JEVEUX_01',1,CMESS)
         ENDIF
       ELSE IF ( IRET .EQ. 3 ) THEN
         IF ( LLONG .AND. .NOT. LCONST ) THEN
@@ -229,8 +229,8 @@ C
             IL0 = JISZON + IBLONO - 1 + IDATOC
             IF ( ISZON(IL0) .EQ. 0 ) THEN
                CMESS = 'COLLECTION CONTIG: DEFINIR '//CATRLU//
-     +                 ' DANS L''ORDRE D''INSERTION DES OBJETS'
-               CALL JVMESS ( 'S' , 'JEECRA08' , CMESS )
+     &                 ' DANS L''ORDRE D''INSERTION DES OBJETS'
+               CALL U2MESK('S','JEVEUX_01',1,CMESS)
             ELSE
               LONTI = ISZON(IL0)
               LONOI = 0
@@ -244,8 +244,8 @@ C
           ENDIF
           IF ( LONOI .NE. 0 ) THEN
             CMESS = 'ATTRIBUT '//CATRLU//
-     +              ' NON MODIFIABLE OU DEJA DEFINI LONO NON NUL'
-            CALL JVMESS ( 'S' , 'JEECRA09' , CMESS )
+     &              ' NON MODIFIABLE OU DEJA DEFINI LONO NON NUL'
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ENDIF
           IF ( CATRLU.EQ.'LONMAX  ' ) THEN
             LONGI = ISZON ( JISZON + IBLONG - 1 + IDATOC )
@@ -254,13 +254,13 @@ C
           ENDIF
           IF ( LONGI .NE. 0 ) THEN
             CMESS ='ATTRIBUT '//CATRLU//' NON MODIFIABLE OU DEJA DEFINI'
-            CALL JVMESS ( 'S' , 'JEECRA10' , CMESS )
+            CALL U2MESK('S','JEVEUX_01',1,CMESS)
           ELSE
             IF ( LCONTI ) THEN
               IF ( LONOI .NE. 0 .AND. LONTI + LONOJ .GT. LONOI ) THEN
                 CMESS = 'ATTRIBUT '//CATRLU//' INCOMPATIBLE AVEC VALEUR'
-     +                  //' INITIALE DE LONT'
-                CALL JVMESS ( 'S' , 'JEECRA11' , CMESS )
+     &                  //' INITIALE DE LONT'
+                CALL U2MESK('S','JEVEUX_01',1,CMESS)
               ELSE
                 ISZON(JISZON+IBLONO-1+IDATOC+1) = LONTI + LONOJ
               ENDIF
@@ -280,7 +280,7 @@ C           ENDIF
         ENDIF
       ELSE
         CMESS = 'NOM D''ATTRIBUT '//CATRLU//' NON ACCESSIBLE'
-        CALL JVMESS ( 'S' , 'JEECRA12' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
 C FIN ------------------------------------------------------------------
             IF ( IGUARD .EQ. 1 ) THEN

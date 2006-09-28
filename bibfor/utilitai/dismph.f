@@ -1,6 +1,6 @@
       SUBROUTINE DISMPH(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,8 +70,7 @@ C DEB-------------------------------------------------------------------
       ELSE IF (NOMOB(1:9).EQ.'NON_LOCAL') THEN
         REPK = 'VANL_R'
       ELSE
-        CALL UTMESS(CODMES,'DISMPH','LE PHENOMENE : '//NOMOB//
-     &              ' EST INCONNU.')
+        CALL U2MESK(CODMES,'UTILITAI_66',1,NOMOB)
         IERD = 1
         GO TO 10
       END IF
@@ -93,8 +92,7 @@ C        C'EST DEJA FAIT !
         END IF
       ELSE
         REPK = QUESTI
-        CALL UTMESS(CODMES,'DISMPH','LA QUESTION : "'//REPK//
-     &              '" EST INCONNUE')
+        CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
         IERD = 1
         GO TO 10
       END IF

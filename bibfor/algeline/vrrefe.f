@@ -4,7 +4,7 @@
       INTEGER                              IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,8 +84,7 @@ C  SI OBJET1 ET OBJET2 SONT DES MATR_ASSE : ON COMPARE LEUR .REFA
              REFE2 = NOM2//'.CELK'
              CELK=.TRUE.
            ELSE
-             CALL UTMESS('F','VRREFE','OBJET .REFE/.REFA/.CELK'//
-     &                    ' INEXISTANT.')
+             CALL U2MESS('F','ALGELINE3_90')
            ENDIF
          ENDIF
       ENDIF

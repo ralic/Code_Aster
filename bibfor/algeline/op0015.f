@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,9 +82,7 @@ C     -----------------------------------------------
        CALL DISMOI('F','PROF_CHNO',MATFAC,'MATR_ASSE',IBID,PCHN1,IBID)
        CALL DISMOI('F','PROF_CHNO',SECMBR,'CHAM_NO',IBID,PCHN2,IBID)
        IF (.NOT.IDENSD('PROF_CHNO',PCHN1,PCHN2))
-     & CALL UTMESS('F','OP0015','LA NUMEROTATION '
-     & //'DES INCONNUES EST INCOHERENTE ENTRE LA MATRICE ET LE SECOND'
-     & //' MEMBRE.')
+     & CALL U2MESS('F','ALGELINE2_22')
 
 
       CALL GETVID('  ','CHAM_CINE',0,1,1,VCINE,NBCINE)
@@ -101,8 +99,9 @@ C        --- VERIFICATION DES COMPATIBILITES --
          CALL VRREFE(SECMBR,XSOL,IRET)
          IF (IRET.NE.0) THEN
             CALL UTMESS('F','RESO_LDLT',
-     +                      SECMBR//' ET '//XSOL//' N''ONT PAS LE '//
-     +                  'MEME DOMAINE DE DEFINITION.')
+     &                      SECMBR//' ET '//XSOL//' N''ONT PAS LE '//
+     &                  'MEME DOMAINE DE DEFINITION.')
+C        CALL U2MESK('F','ALGELINE2_23', 2 ,VALK)
          ENDIF
       ELSE
 C        --- CREATION DU VECTEUR SOLUTION ---
@@ -113,7 +112,7 @@ C
       IF (XSOL.NE.SECMBR) THEN
 C        --- TRANSFERT DU SECOND MEMBRE DANS LE VECTEUR SOLUTION ---
          CALL VTCOPY(SECMBR,XSOL,IRET)
-         IF (IRET.NE.0) CALL UTMESS('F','RESO_LDLT','STOP')
+         IF (IRET.NE.0) CALL U2MESS('F','CALCULEL_13')
       ENDIF
 
 C     --- CHARGEMENT DES DESCRIPTEURS DE LA MATRICE A FACTORISER ---
@@ -123,8 +122,7 @@ C     --- CHARGEMENT DES DESCRIPTEURS DE LA MATRICE A FACTORISER ---
 
 C     --- SI LA MATRICE A DES DDLS ELIM., IL FAUT RENSEIGNER CHAM_CINE:
       IF ((ZI(LMAT+7).GT.0).AND.(NBCINE.EQ.0)) THEN
-            CALL UTMESS('F','OP0015','LA MATRICE A DES DDLS ELIMINES. '
-     +      // 'IL FAUT UTILISER LE MOT CLE CHAM_CINE.' )
+            CALL U2MESS('F','ALGELINE2_24')
       ENDIF
 
       MAT19 = MATFAC
@@ -163,13 +161,9 @@ C     ---RECUPERATION DU TABLEAU DEVANT CONTENIR LA SOLUTION ---
 C
 C     --- CONTROLE DES TYPES ---
       IF (FTYPE(ZI(LMAT+3)).NE.TYPE(1:1)) THEN
-         CALL UTMESS('F','RESO_LDLT',
-     +                   'LA MATRICE ET LE SECOND MEMBRE SONT DE '//
-     +                   'TYPE DIFFERENT.')
+         CALL U2MESS('F','ALGELINE2_25')
       ELSE IF (TYPV(1:1).NE.TYPE(1:1)) THEN
-         CALL UTMESS('F','RESO_LDLT',
-     +                   'LE SECOND MEMBRE ET LE CHAMP CINEMATIQUE'//
-     +                   'SONT DE TYPE DIFFERENT.')
+         CALL U2MESS('F','ALGELINE2_26')
       ELSE IF (TYPE(1:1).EQ.'R') THEN
          CALL CSMBGG(LMAT,ZR(LXSOL),ZR(LCINE),CBID,CBID,'R')
          CALL MRCONL(LMAT,0,' ',ZR(LXSOL),NBSOL)
@@ -183,9 +177,7 @@ C     --- CONTROLE DES TYPES ---
          CALL RLDLGG(LMAT,RBID,ZC(LXSOL),NBSOL)
          CALL MCCOND(LMAT,0,ZC(LXSOL),NBSOL)
       ELSE
-         CALL UTMESS('F','RESO_LDLT',
-     +                   'LA MATRICE EST D''UN TYPE INCONNU '//
-     +               'DE L''OPERATEUR.')
+         CALL U2MESS('F','ALGELINE2_27')
       ENDIF
 C     --------------------------------------------------------------
 

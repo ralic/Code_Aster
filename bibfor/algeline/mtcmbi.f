@@ -5,7 +5,7 @@
       COMPLEX*16 CCOEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,13 +63,13 @@ C     -----------------------------------------------------------------
 
       IF (TYPMAT(1:1).NE.'R' .AND. TYPMAT(1:1).NE.'C') THEN
         CH1 = TYPMAT(1:1)
-        CALL UTMESS('F','MTCMBI','TYPE DE MATRICE "'//CH1//'" INCONNU.')
+        CALL U2MESK('F','ALGELINE2_6',1,CH1)
       END IF
 
 C     --- AFFE_CHAR_CINE ? ---
 
       IF (ZI(LMAT+7).NE.0) THEN
-        CALL UTMESS('F','MTCOMBI','ON NE TRAITE PAS CETTE OPTION.')
+        CALL U2MESS('F','ALGELINE2_7')
       END IF
 
       ZERO = 0.D0

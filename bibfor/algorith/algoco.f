@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCO(DEFICO,RESOCO,MATASS,LMAT,LDSCON,NOMA,CINE,
      &                  RESU,DEPTOT,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -268,7 +268,7 @@ C     -----------------------------------------------------------------
       GCPC = (ZK24(JSLVK-1+1).EQ.'GCPC')
       IF (GCPC) THEN
         MATAS1 = ZK24(ZI(LMAT+1))
-        IF (MATAS1.NE.MATASS) CALL UTMESS('F','ALGOCO','STOP')
+        IF (MATAS1.NE.MATASS) CALL U2MESS('F','CALCULEL_13')
         MATPRE = '&&NMMATR.MAPREC'
         CHASOL = '&&ALGOCO.CHASOL'
         CHASEC = '&&ALGOCO.CHASEC'
@@ -604,7 +604,7 @@ C - ET NON DANS LA LISTE DE TOUTES LES LIAISONS POSSIBLES
 C ======================================================================
         LLIAC = ZI(JLIAC-1+KKMIN)
         CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
-     +              RESOCO,TYPESP,KKMIN,LLIAC,TYPEC0)
+     &              RESOCO,TYPESP,KKMIN,LLIAC,TYPEC0)
         IF (NIV.GE.2) THEN
            CALL CFIMP2(IFM,NOMA,LLIAC,TYPEC0,TYPESP,'ALG',
      &                 ZR(JAPJEU-1+LLIAC),JAPPAR,JNOCO,JMACO)

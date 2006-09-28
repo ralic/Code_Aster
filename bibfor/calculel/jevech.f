@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,6 +92,7 @@ C     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
         CALL UTMESS('E','JEVECH','LE PARAMETRE:'//NOMPAR//
      &              ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
      &              OPTION)
+C        CALL U2MESK('E','CALCULEL2_69', 2 ,VALK)
         CALL CONTEX(OPTION,0,' ',' ',0)
       END IF
 
@@ -103,6 +104,7 @@ C     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
         CALL UTMESS('E','JEVECH','LE PARAMETRE:'//NOMPAR//
      &              ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
      &              OPTION//' POUR '//'LE TYPE_ELEMENT: '//NOMTE)
+C        CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
         CALL CONTEX(OPTION,0,NOMPAR,' ',0)
       END IF
 
@@ -113,10 +115,11 @@ C     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
      &              //' CALCUL DE CHAMP A ASSOCIER AU PARAMETRE:'//
      &              NOMPAR//' (OPTION:'//OPTION//' TYPE_ELEMENT:'//
      &              NOMTE//')')
+C        CALL U2MESK('E','CALCULEL2_71', 3 ,VALK)
         CALL CONTEX(OPTION,0,NOMPAR,' ',0)
 
       END IF
-      IF (IACHLO.EQ.-2) CALL UTMESS('F','JEVECH','IMPOSSIBLE...')
+      IF (IACHLO.EQ.-2) CALL U2MESS('F','CALCULEL2_72')
 
 
 C     -- CALCUL DE ITAB,LONCHL,DECAEL :
@@ -125,8 +128,8 @@ C     ---------------------------------
       IF (ETENDU) THEN
         ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
         DEBUGR = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+8)
-        IF (LGCATA.NE.ZI(JCELD-1+ZI(JCELD-1+4+IGR)+3)) CALL UTMESS('F',
-     &      'JEVECH','STOP')
+        IF (LGCATA.NE.ZI(JCELD-1+ZI(JCELD-1+4+IGR)+3)) CALL U2MESS('F','
+     &CALCULEL_13')
         DECAEL = (ADIEL-DEBUGR)
         LONCHL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+3)
       ELSE
@@ -152,6 +155,7 @@ C     ----------------------------------------------------------
      &                  //'DU CHAMP ASSOCIE AU PARAMETRE:'//NOMPAR//
      &                  ' (OPTION:'//OPTION//' TYPE_ELEMENT:'//NOMTE//
      &                  ')')
+C        CALL U2MESK('E','CALCULEL2_73', 3 ,VALK)
 
             CALL TECAEL(IADZI,IAZK24)
             WRITE (6,*) 'MAILLE: ',ZK24(IAZK24-1+3)

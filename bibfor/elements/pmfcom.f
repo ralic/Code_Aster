@@ -11,7 +11,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ C ======================================================================
       CHARACTER*16 OPTION,COMPOR(*),COMPO
       INTEGER NF,ICDMAT,NBVALC,ISECAN,KPG
       REAL*8 E,VARIM(NBVALC*NF),CONTM(NF),DEFM(NF),DEFP(NF),MODF(NF),
-     +       SIGF(NF),VARIMP(NBVALC*NF),VARIP(NBVALC*NF)
+     &       SIGF(NF),VARIMP(NBVALC*NF),VARIP(NBVALC*NF)
       REAL*8 TEMPM,TEMPP,ALPHA,DSIDEP,TREF,SIGX,SIGXP,EPSX,DEPSX
       REAL*8 CRIT(*),INSTAM,INSTAP
       REAL*8 DEFAP(*), DEFAM(*)
@@ -77,9 +77,9 @@ C     ------------------------------------------------------------------
       INTEGER I,IVARI,CODRET
       DATA ARRET,RETOUR/'FM','  '/
       DATA NOECLB/'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
-     +     'SIGF'/
+     &     'SIGF'/
       DATA NOMPIM/'SY','EPSI_ULTM','SIGM_ULTM','EPSP_HARD','R_PM',
-     +     'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM','A_PM'/
+     &     'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM','A_PM'/
 
       COMPO=COMPOR(1)
 
@@ -103,7 +103,7 @@ C ---   ON RECUPERE LES PARAMETRES MATERIAU
         VALPAR = 0.D0
         NBRES = 9
         CALL RCVALA(ICDMAT,' ','LABORD_1D',NBPAR,NOMPAR,VALPAR,NBRES,
-     +              NOECLB,VALRES,CODRES,ARRET)
+     &              NOECLB,VALRES,CODRES,ARRET)
         Y01 = VALRES(1)
         Y02 = VALRES(2)
         A1 = VALRES(3)
@@ -118,8 +118,8 @@ C ---   BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
         DO 20 I = 1,NF
           IVARI = NBVALC* (I-1) + 1
           CALL NMCB1D(E,Y01,Y02,A1,A2,B1,B2,BETA1,BETA2,SIGF1,ALPHA,
-     +                TREF,TEMPP,CONTM(I),VARIM(IVARI),DEFM(I),
-     +                DEFP(I),MODF(I),SIGF(I),VARIP(IVARI))
+     &                TREF,TEMPP,CONTM(I),VARIM(IVARI),DEFM(I),
+     &                DEFP(I),MODF(I),SIGF(I),VARIP(IVARI))
    20   CONTINUE
       ELSE IF (COMPO.EQ.'PINTO_MENEGOTTO') THEN
         NBRES = 12
@@ -128,7 +128,7 @@ C ---   BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
         NOMPAR = '  '
         VALPAR = 0.D0
         CALL RCVALA(ICDMAT,' ','PINTO_MENEGOTTO',NBPAR,NOMPAR,VALPAR,
-     +              NBRES,NOMPIM,VALRES,CODRES,RETOUR)
+     &              NBRES,NOMPIM,VALRES,CODRES,RETOUR)
         IF (CODRES(7).NE.'OK') VALRES(7) = -1.D0
         CSTPM(1) = E
         DO 30 I = 1,12
@@ -137,13 +137,13 @@ C ---   BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
         DO 40 I = 1,NF
           IVARI = NBVALC* (I-1) + 1
           CALL NM1DPM(OPTION,NBVALC,ALPHA,TEMPM,13,CSTPM,CONTM(I),
-     +                VARIM(IVARI),TEMPP,DEFP(I),VARIP(IVARI),SIGF(I),
-     +                MODF(I))
+     &                VARIM(IVARI),TEMPP,DEFP(I),VARIP(IVARI),SIGF(I),
+     &                MODF(I))
    40   CONTINUE
 
       ELSE IF (COMPO.EQ.'VMIS_ISOT_LINE' .OR.
-     +         (COMPO.EQ.'VMIS_CINE_LINE') .OR.
-     +           (COMPO.EQ.'CORR_ACIER' )) THEN
+     &         (COMPO.EQ.'VMIS_CINE_LINE') .OR.
+     &           (COMPO.EQ.'CORR_ACIER' )) THEN
       NBPAR = 1
       NOMPAR = 'TEMP'
 
@@ -190,8 +190,8 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
         DO 55 I = 1,NF
             IVARI = NBVALC* (I-1) + 1
             CALL NM1TRA(ICDMAT,TEMPP,DEFM(I),DEFP(I),
-     +                  VARIM(IVARI),VARIM(IVARI+1),
-     +                  SIGF(I),VARIP(IVARI),VARIP(IVARI+1),MODF(I))
+     &                  VARIM(IVARI),VARIM(IVARI+1),
+     &                  SIGF(I),VARIP(IVARI),VARIP(IVARI+1),MODF(I))
 55      CONTINUE
       ELSE IF ((COMPO.EQ.'GRAN_IRRA_LOG').OR.
      &         (COMPO.EQ.'VISC_IRRA_LOG')) THEN
@@ -235,9 +235,7 @@ C SI MODULE TANGENT PAS CALCULE EXACTEMENT -> EVALUATION
    57     CONTINUE
         ENDIF
       ELSE IF (COMPO.EQ.'LEMA_SEUIL') THEN
-              CALL UTMESS('F','PMF',
-     &     'LOI LEMA_SEUIL NON IMPLEMENTE '//
-     &      'AVEC LES POUTRES MULTI FIBRES')
+              CALL U2MESS('F','ELEMENTS2_39')
 
 
       ELSE
@@ -247,8 +245,7 @@ C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
 
         IF ((COMPOR(5)(1:7).NE.'DEBORST').AND.
      &      (COMPOR(1)(1:4).NE.'SANS')) THEN
-          CALL UTMESS('F','PMF','UTILISER ALGO_1D="DEBORST"'//
-     &     ' SOUS COMP_INCR POUR LE COMPORTEMENT '//COMPO)
+          CALL U2MESK('F','ALGORITH6_81',1,COMPO)
         ELSE
 
           IF ((OPTION(1:9).EQ.'FULL_MECA') .OR.

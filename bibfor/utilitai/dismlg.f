@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 28/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -195,7 +195,7 @@ C     -----------------------------------------------------------------
 
 
               ELSE
-                CALL UTMESS('F','DISMMO','STOP 1')
+                CALL U2MESS('F','CALCULEL_2')
               END IF
             END IF
    10     CONTINUE
@@ -245,8 +245,8 @@ C     -----------------------------------
             ITE = ZI(IAGREL-1+N1)
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITE),NOMTE)
             CALL DISMTE(CODMES,QUESTI,NOMTE,IGE1,REPK,IERD)
-            IF ((IGE1.LT.0) .OR. (IGE1.GT.3)) CALL UTMESS('F','DISMLG',
-     &          'STOP 1')
+            IF ((IGE1.LT.0) .OR. (IGE1.GT.3)) CALL U2MESS('F','CALCULEL_
+     &2')
             IF ((IGE2.EQ.0) .AND. (IGE1.NE.0)) IGE2 = IGE1
             IF ((IGE1*IGE2.GT.0) .AND. (IGE1.NE.IGE2)) MELANG = .TRUE.
             IF (IGE1.GT.0) DIMGE(IGE1) = 1
@@ -328,9 +328,7 @@ C        UNE CONVENTION DE NOM SUR LE LIGREL: 'TH' OU 'ME':
           REPK = 'ACOUSTIQUE'
           GO TO 40
         ELSE
-          CALL UTMESS(CODMES,'DISMLG',
-     &                'ON NE SAIT PAS ASSOCIER DE PHENOMENE A '//
-     &                'CE LIGREL : '//NOMOB)
+          CALL U2MESK(CODMES,'UTILITAI_62',1,NOMOB)
           IERD = 1
           GO TO 40
         END IF
@@ -348,15 +346,14 @@ C        SI C'EST UN LIGREL DE MODELE, ON REGARDE LE DOCU DU .NOMA :
         ELSE IF (PHENOM(1:4).EQ.'NON_') THEN
           REPK = 'NON_LOCAL'
         ELSE
-          CALL UTMESS(CODMES,'DISMLG','PHENOMENE INCONNU : '//PHENOM)
+          CALL U2MESK(CODMES,'UTILITAI_63',1,PHENOM)
         END IF
 
 C     ----
       ELSE
 C     ----
         REPK = QUESTI
-        CALL UTMESS(CODMES,'DISMLG:','LA QUESTION : "'//REPK//
-     &              '" EST INCONNUE')
+        CALL U2MESK(CODMES,'UTILITAI_49',1,REPK)
         IERD = 1
         GO TO 40
       END IF

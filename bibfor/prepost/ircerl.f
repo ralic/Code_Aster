@@ -1,35 +1,35 @@
       SUBROUTINE IRCERL(IFI,NBEL,LIGREL,NBGREL,LONGR,NCMPMX,VALE,NOMCMP,
-     +                  NOMEL,LOC,CELD,CONNEX,POINT,NOMNOS,NBCMPT,
-     +                  NUCMPU,NBNOT,NUMNOE,NBMAT,NUMMAI,LSUP,BORSUP,
-     +                  LINF,BORINF,LMAX,LMIN,LCOR,NDIM,COOR,NOLILI,
-     +                  FORMR,NCMPV,NUCMP)
+     &                  NOMEL,LOC,CELD,CONNEX,POINT,NOMNOS,NBCMPT,
+     &                  NUCMPU,NBNOT,NUMNOE,NBMAT,NUMMAI,LSUP,BORSUP,
+     &                  LINF,BORINF,LMAX,LMIN,LCOR,NDIM,COOR,NOLILI,
+     &                  FORMR,NCMPV,NUCMP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER           IFI,NBEL,LIGREL(*),NBGREL,LONGR(*),NCMPMX,NBNOT,
-     +                  NBCMPT,NUCMPU(*),CELD(*),CONNEX(*),POINT(*),
-     +                  NUMNOE(*),NBMAT,NDIM, NUMMAI(*),NCMPV,NUCMP(*)
+     &                  NBCMPT,NUCMPU(*),CELD(*),CONNEX(*),POINT(*),
+     &                  NUMNOE(*),NBMAT,NDIM, NUMMAI(*),NCMPV,NUCMP(*)
       REAL*8            BORSUP,BORINF,COOR(*),              VALE(*)
       CHARACTER*(*)     NOMCMP(*),NOMEL(*),LOC,NOMNOS(*),FORMR
       CHARACTER*19      NOLILI
       LOGICAL           LSUP,LINF,     LMAX,LMIN,LCOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE  CRP_20  CRP_21
 C        ECRITURE D'UN CHAMELEM SUR LISTING
@@ -105,7 +105,7 @@ C
       CALL JEVEUO (JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',ILONG)
       DO 2 I = 1 , LGR-1
          IF ( FORMAT(I:I) .EQ. 'D' .OR. FORMAT(I:I) .EQ. 'E' .OR.
-     +        FORMAT(I:I) .EQ. 'F' .OR. FORMAT(I:I) .EQ. 'G' ) THEN
+     &        FORMAT(I:I) .EQ. 'F' .OR. FORMAT(I:I) .EQ. 'G' ) THEN
             ID = I+1
             GOTO 2
          ENDIF
@@ -135,12 +135,11 @@ C  -- DETERMINATION DU NOMBRE MAXIMUM DE SOUS_POINTS ---
             ELSE
                CALL CODENT ( NUCMP(I), 'G', CBID )
                NOMCP = 'V'//CBID
-               CALL UTMESS('A','IMPR_RESU',
-     +                         'LA VARIABLE '//NOMCP//' N''EXISTE PAS' )
+               CALL U2MESK('A','PREPOST_74',1,NOMCP)
             ENDIF
  141     CONTINUE
          IF ( NCMP .EQ. 0 ) THEN
-            CALL UTMESS('A','IMPR_RESU','PAS D''IMPRESSION DU CHAMP' )
+            CALL U2MESS('A','PREPOST_75')
             GOTO 9999
          ENDIF
          ICOMAX = NCMP
@@ -306,16 +305,16 @@ C
              FMV = ' '
              IF (IRES.NE.0) THEN
                FMT = '(1X,A8,6(1X,'//FORCMP//'),30(/,9X,6(1X,'//
-     +                               FORCMP//')))'
+     &                               FORCMP//')))'
                IF(LOC.EQ.'ELNO') THEN
                  FMV = '(1X,A8,6(1X,'//FORMAT//'),30(/,9X,6(1X,'//
-     +                                 FORMAT//')))'
+     &                                 FORMAT//')))'
                ELSEIF(LOC.EQ.'ELGA') THEN
                  FMV = '(2X,I7,6(1X,'//FORMAT//'),30(/,9X,6(1X,'//
-     +                                 FORMAT//')))'
+     &                                 FORMAT//')))'
                ELSEIF(LOC.EQ.'ELEM') THEN
                  FMV = '(9X,6(1X,'//FORMAT//'),30(/,9X,6(1X,'//
-     +                              FORMAT//')))'
+     &                              FORMAT//')))'
                ENDIF
              ELSEIF (IRES.EQ.0.AND.ILIG.EQ.1) THEN
                FMT = '(1X,A8,6(1X,'//FORCMP//'))'
@@ -328,16 +327,16 @@ C
                ENDIF
              ELSE
                WRITE(FMT,'(A,A8,A,I2,A,A8,A)') '(1X,A8,6(1X,', FORCMP,
-     +                   '),', (ILIG-1),'(/,9X,6(1X,', FORCMP, ')))'
+     &                   '),', (ILIG-1),'(/,9X,6(1X,', FORCMP, ')))'
                IF (LOC.EQ.'ELNO') THEN
                  WRITE(FMV,'(A,A10,A,I2,A,A10,A)') '(1X,A8,6(1X,',
-     +               FORMAT,'),', (ILIG-1), '(/,9X,6(1X,', FORMAT, ')))'
+     &               FORMAT,'),', (ILIG-1), '(/,9X,6(1X,', FORMAT, ')))'
                ELSEIF(LOC.EQ.'ELGA') THEN
                  WRITE(FMV,'(A,A10,A,I2,A,A10,A)') '(2X,I7,6(1X,',
-     +               FORMAT,'),', (ILIG-1), '(/,9X,6(1X,', FORMAT, ')))'
+     &               FORMAT,'),', (ILIG-1), '(/,9X,6(1X,', FORMAT, ')))'
                ELSEIF(LOC.EQ.'ELEM') THEN
                  WRITE(FMV,'(A,A10,A,I2,A,A10,A)') '(9X,6(1X,',
-     +               FORMAT,'),', (ILIG-1), '(/,9X,6(1X,', FORMAT, ')))'
+     &               FORMAT,'),', (ILIG-1), '(/,9X,6(1X,', FORMAT, ')))'
                ENDIF
              ENDIF
            ENDIF
@@ -350,10 +349,10 @@ C
          IF(.NOT.LSUP.AND..NOT.LINF.AND..NOT.LMAX.AND..NOT.LMIN) THEN
              IF (NDIM.EQ.0) THEN
                WRITE(IFI,FMT) NOMEL(IEL),(ZK16(INOM-1+I)(1:11),
-     +                                                 I=1,ICOEF2*NCMP2)
+     &                                                 I=1,ICOEF2*NCMP2)
              ELSE
                WRITE(IFI,FMT) NOMEL(IEL),(NOMCOR(I),I=1,NDIM),
-     +                           (ZK16(INOM-1+I)(1:11),I=1,ICOEF2*NCMP2)
+     &                           (ZK16(INOM-1+I)(1:11),I=1,ICOEF2*NCMP2)
              ENDIF
          ENDIF
          IACHML = IAD + NSCA * (IELG-1)
@@ -365,13 +364,13 @@ C
                       IF ( NCMP .GT. 0 ) THEN
                          DO 551 JCO=1,ICOEF2
                            ZR(IVAL-1+(I-1)*ICOEF2+JCO)=
-     +                                    VALE(J+I+(NUCMP(JCO)-1)*NCMPP)
+     &                                    VALE(J+I+(NUCMP(JCO)-1)*NCMPP)
                            ZI(ICOE-1+(I-1)*ICOEF2+JCO)=JCO
   551                    CONTINUE
                       ELSE
                          DO 55 JCO=1,ICOEF2
                            ZR(IVAL-1+(I-1)*ICOEF2+JCO)=
-     +                                           VALE(J+I+(JCO-1)*NCMPP)
+     &                                           VALE(J+I+(JCO-1)*NCMPP)
                            ZI(ICOE-1+(I-1)*ICOEF2+JCO)=JCO
    55                    CONTINUE
                       ENDIF
@@ -382,13 +381,13 @@ C
                       IF ( NCMP .GT. 0 ) THEN
                          DO 301 JCO=1,ICOEF2
                            ZR(IVAL-1+(I-1)*ICOEF2+JCO)=
-     +                                  VALE(J+INU+(NUCMP(JCO)-1)*NCMPP)
+     &                                  VALE(J+INU+(NUCMP(JCO)-1)*NCMPP)
                            ZI(ICOE-1+(I-1)*ICOEF2+JCO)=JCO
   301                    CONTINUE
                       ELSE
                          DO 30 JCO=1,ICOEF2
                            ZR(IVAL-1+(I-1)*ICOEF2+JCO)=
-     +                                         VALE(J+INU+(JCO-1)*NCMPP)
+     &                                         VALE(J+INU+(JCO-1)*NCMPP)
                            ZI(ICOE-1+(I-1)*ICOEF2+JCO)=JCO
    30                    CONTINUE
                       ENDIF
@@ -401,11 +400,11 @@ C
                    DO 35 IVA=1,ICOEF2*NCMP2
                      IF(LSUP) THEN
                        IF((ZR(IVAL-1+IVA)-BORSUP).GT.0.D0)
-     +                    ZI(ICOE-1+IVA)=0
+     &                    ZI(ICOE-1+IVA)=0
                      ENDIF
                      IF(LINF) THEN
                        IF((ZR(IVAL-1+IVA)-BORINF).LT.0.D0)
-     +                    ZI(ICOE-1+IVA)=0
+     &                    ZI(ICOE-1+IVA)=0
                      ENDIF
  35                CONTINUE
 C
@@ -433,32 +432,32 @@ C
                      IF (LOC.EQ.'ELGA') THEN
                        IF (IRES.NE.0) THEN
                          FMT1 = '(9X,6(1X,'//FORCMP//'),30(/,9X,6(1X,'
-     +                                     //FORCMP//')))'
+     &                                     //FORCMP//')))'
                          FMT2 = '(2X,I7,6(1X,'//FORMAT//
-     +                          '),30(/,9X,6(1X,'//FORMAT//')))'
+     &                          '),30(/,9X,6(1X,'//FORMAT//')))'
                        ELSEIF (IRES.EQ.0.AND.ILIG.EQ.1) THEN
                          FMT1 = '(9X,6(1X,'//FORCMP//'))'
                          FMT2 = '(2X,I7,6(1X,'//FORMAT//'))'
                        ELSE
                         WRITE(FMT1,'(A,A8,A,I2,A,A8,A)')'(1X,A8,6(1X,',
-     +                   FORCMP,'),',(ILIG-1),'(/,9X,6(1X,',FORCMP,')))'
+     &                   FORCMP,'),',(ILIG-1),'(/,9X,6(1X,',FORCMP,')))'
                        WRITE(FMT2,'(A,A10,A,I2,A,A10,A)')'(2X,I7,6(1X,',
-     +                   FORMAT,'),',(ILIG-1),'(/,9X,6(1X,',FORMAT,')))'
+     &                   FORMAT,'),',(ILIG-1),'(/,9X,6(1X,',FORMAT,')))'
                        ENDIF
                      ELSE
                        IF (IRES.NE.0) THEN
                          FMT1 = '(9X,6(1X,'//FORCMP//'),30(/,9X,6(1X,'
-     +                                     //FORCMP//')))'
+     &                                     //FORCMP//')))'
                          FMT2 = '(9X,6(1X,'//FORMAT//'),30(/,9X,6(1X,'
-     +                                     //FORMAT//')))'
+     &                                     //FORMAT//')))'
                        ELSEIF (IRES.EQ.0.AND.ILIG.EQ.1) THEN
                          FMT1 = '(9X,6(1X,'//FORCMP//'))'
                          FMT2 = '(9X,6(1X,'//FORMAT//'))'
                        ELSE
                        WRITE(FMT1,'(A,A8,A,I2,A,A8,A)')'(1X,A8,6(1X,',
-     +                   FORCMP,'),',(ILIG-1),'(/,9X,6(1X,',FORCMP,')))'
+     &                   FORCMP,'),',(ILIG-1),'(/,9X,6(1X,',FORCMP,')))'
                        WRITE(FMT2,'(A,A10,A,I2,A,A10,A)')'(9X,6(1X,',
-     +                   FORMAT,'),',(ILIG-1),'(/,9X,6(1X,',FORMAT,')))'
+     &                   FORMAT,'),',(ILIG-1),'(/,9X,6(1X,',FORMAT,')))'
                        ENDIF
                      ENDIF
                      IF (LSUP.OR.LINF) THEN
@@ -470,7 +469,7 @@ C
                      IF (LOC.EQ.'ELGA') THEN
                        WRITE(IFI,FMT1) (ZK16(INOP-1+I)(1:11),I=1,ICOMP2)
                        WRITE(IFI,FMT2) IPCA,(ZR(IVAL-1+ICMP),
-     +                                              ICMP=1,ICOMP2)
+     &                                              ICMP=1,ICOMP2)
                      ELSE
                        WRITE(IFI,FMT1) (ZK16(INOP-1+I)(1:11),I=1,ICOMP2)
                        WRITE(IFI,FMT2) (ZR(IVAL-1+ICMP),ICMP=1,ICOMP2)
@@ -481,10 +480,10 @@ C
                    IF (.NOT.LMAX.AND..NOT.LMIN) THEN
                      IF (LOC.EQ.'ELGA') THEN
                        WRITE(IFI,FMV) IPCA,(ZR(IVAL-1+ICMP),
-     +                                            ICMP=1,ICOEF2*NCMP2)
+     &                                            ICMP=1,ICOEF2*NCMP2)
                      ELSE
                        WRITE(IFI,FMV) (ZR(IVAL-1+ICMP),
-     +                                            ICMP=1,ICOEF2*NCMP2)
+     &                                            ICMP=1,ICOEF2*NCMP2)
                      ENDIF
                    ENDIF
                    NBCPT=ICOEF2*NCMP2
@@ -563,19 +562,19 @@ CCCCCC
                      ENDIF
                      NOMNO= NOMNOS(NUNO)
                      J=IACHML-1+NCMPP*ICOEF*(IN-1)
-     +                                     +(ICOU-1)*NCMPP*ICOEF*NBNO
+     &                                     +(ICOU-1)*NCMPP*ICOEF*NBNO
                      IF (NBCMPT.EQ.0) THEN
                        DO 50 I=1,NCMP2
                          IF ( NCMP .GT. 0 ) THEN
                             DO 511 JCO=1,ICOEF2
                               ZR(IVAL-1+(I-1)*ICOEF2+JCO)=
-     +                                    VALE(J+I+(NUCMP(JCO)-1)*NCMPP)
+     &                                    VALE(J+I+(NUCMP(JCO)-1)*NCMPP)
                               ZI(ICOE-1+(I-1)*ICOEF2+JCO)=JCO
   511                       CONTINUE
                          ELSE
                             DO 51 JCO=1,ICOEF2
                               ZR(IVAL-1+(I-1)*ICOEF2+JCO)=
-     +                                           VALE(J+I+(JCO-1)*NCMPP)
+     &                                           VALE(J+I+(JCO-1)*NCMPP)
                               ZI(ICOE-1+(I-1)*ICOEF2+JCO)=JCO
    51                       CONTINUE
                          ENDIF
@@ -586,13 +585,13 @@ CCCCCC
                          IF ( NCMP .GT. 0 ) THEN
                             DO 701 JCO=1,ICOEF2
                               ZR(IVAL-1+(I-1)*ICOEF2+JCO)=
-     +                                  VALE(J+INU+(NUCMP(JCO)-1)*NCMPP)
+     &                                  VALE(J+INU+(NUCMP(JCO)-1)*NCMPP)
                               ZI(ICOE-1+(I-1)*ICOEF2+JCO)=JCO
   701                       CONTINUE
                          ELSE
                             DO 70 JCO=1,ICOEF2
                               ZR(IVAL-1+(I-1)*ICOEF2+JCO)=
-     +                                         VALE(J+INU+(JCO-1)*NCMPP)
+     &                                         VALE(J+INU+(JCO-1)*NCMPP)
                               ZI(ICOE-1+(I-1)*ICOEF2+JCO)=JCO
    70                       CONTINUE
                          ENDIF
@@ -605,11 +604,11 @@ C
                        DO 65 IVA=1,ICOEF2*NCMP2
                          IF(LSUP) THEN
                            IF((ZR(IVAL-1+IVA)-BORSUP).GT.0.D0)
-     +                       ZI(ICOE-1+IVA)=0
+     &                       ZI(ICOE-1+IVA)=0
                          ENDIF
                          IF(LINF) THEN
                            IF((ZR(IVAL-1+IVA)-BORINF).LT.0.D0)
-     +                       ZI(ICOE-1+IVA)=0
+     &                       ZI(ICOE-1+IVA)=0
                          ENDIF
  65                    CONTINUE
 C
@@ -636,18 +635,18 @@ C
                          FMT2 = ' '
                          IF (IRES.NE.0) THEN
                            FMT1 = '(9X,6(1X,'//FORCMP//
-     +                            '),30(/,9X,6(1X,'//FORCMP//')))'
+     &                            '),30(/,9X,6(1X,'//FORCMP//')))'
                            FMT2 = '(1X,A8,6(1X,'//FORMAT//
-     +                            '),30(/,9X,6(1X,'//FORMAT//')))'
+     &                            '),30(/,9X,6(1X,'//FORMAT//')))'
                          ELSEIF (IRES.EQ.0.AND.ILIG.EQ.1) THEN
                            FMT1 = '(9X,6(1X,'//FORCMP//'))'
                            FMT2 = '(1X,A8,6(1X,'//FORMAT//'))'
                          ELSE
                           WRITE(FMT1,'(A,A8,A,I2,A,A8,A)')'(9X,6(1X,',
-     +                   FORCMP,'),',(ILIG-1),'(/,9X,6(1X,',FORCMP,')))'
+     &                   FORCMP,'),',(ILIG-1),'(/,9X,6(1X,',FORCMP,')))'
                           WRITE(FMT2,'(A,A10,A,I2,A,A10,A)')
-     +                               '(1X,A8,6(1X,', FORMAT, '),',
-     +                          (ILIG-1), '(/,9X,6(1X,', FORMAT, ')))'
+     &                               '(1X,A8,6(1X,', FORMAT, '),',
+     &                          (ILIG-1), '(/,9X,6(1X,', FORMAT, ')))'
                          ENDIF
                          IF (LSUP.OR.LINF) THEN
                            IF (LIMPR) THEN
@@ -657,14 +656,14 @@ C
                          ENDIF
                          IF (NDIM.EQ.0) THEN
                            WRITE(IFI,FMT1) (ZK16(INOP-1+I)(1:11),
-     +                                                       I=1,ICOMP2)
+     &                                                       I=1,ICOMP2)
                            WRITE(IFI,FMT2) NOMNO,(ZR(IVAL-1+ICMP),
-     +                                             ICMP=1,ICOMP2)
+     &                                             ICMP=1,ICOMP2)
                          ELSE
                            WRITE(IFI,FMT1) (NOMCOR(I),I=1,NDIM),
-     +                                 (ZK16(INOP-1+I)(1:11),I=1,ICOMP2)
+     &                                 (ZK16(INOP-1+I)(1:11),I=1,ICOMP2)
                            WRITE(IFI,FMT2) NOMNO,(COOR((NUNO-1)*3+I),
-     +                     I=1,NDIM),(ZR(IVAL-1+ICMP),ICMP=1,ICOMP2)
+     &                     I=1,NDIM),(ZR(IVAL-1+ICMP),ICMP=1,ICOMP2)
                          ENDIF
                        ENDIF
                        NBCPT=ICOMP2
@@ -672,11 +671,11 @@ C
                        IF (.NOT.LMAX.AND..NOT.LMIN) THEN
                          IF (NDIM.EQ.0) THEN
                            WRITE(IFI,FMV) NOMNO,(ZR(IVAL-1+ICMP),
-     +                                        ICMP=1,ICOEF2*NCMP2)
+     &                                        ICMP=1,ICOEF2*NCMP2)
                          ELSE
                            WRITE(IFI,FMV) NOMNO,(COOR((NUNO-1)*3+I),
-     +                                   I=1,NDIM),(ZR(IVAL-1+ICMP),
-     +                                              ICMP=1,ICOEF2*NCMP2)
+     &                                   I=1,NDIM),(ZR(IVAL-1+ICMP),
+     &                                              ICMP=1,ICOEF2*NCMP2)
                          ENDIF
                        ENDIF
                        NBCPT=ICOEF2*NCMP2
@@ -740,8 +739,8 @@ C
           IF(ZR(IMAX-1+I).NE.RUNDF) THEN
             FORM1 = '(1X,3A,1X,'//FORMAT//',A,I4,2A)'
             WRITE(IFI,FORM1) 'LA VALEUR MAXIMALE DE ', ZK16(INOT-1+I),
-     +       ' EST ',ZR(IMAX-1+I),
-     +       ' EN ',ZI(IVMAX-1+I),' MAILLE(S) : ',ZK8(INMAX-1+I)
+     &       ' EST ',ZR(IMAX-1+I),
+     &       ' EN ',ZI(IVMAX-1+I),' MAILLE(S) : ',ZK8(INMAX-1+I)
           ENDIF
  95     CONTINUE
       ENDIF
@@ -753,8 +752,8 @@ C
           IF(ZR(IMIN-1+I).NE.RUNDF) THEN
             FORM1 = '(1X,3A,1X,'//FORMAT//',A,I4,2A)'
             WRITE(IFI,FORM1) 'LA VALEUR MINIMALE DE ', ZK16(INOT-1+I),
-     +       ' EST ',ZR(IMIN-1+I),
-     +       ' EN ',ZI(IVMIN-1+I),' MAILLE(S) : ',ZK8(INMIN-1+I)
+     &       ' EST ',ZR(IMIN-1+I),
+     &       ' EN ',ZI(IVMIN-1+I),' MAILLE(S) : ',ZK8(INMIN-1+I)
           ENDIF
  96     CONTINUE
       ENDIF

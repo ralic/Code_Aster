@@ -6,22 +6,22 @@
       CHARACTER*24        OBJVE1 , OBJVE2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR REST_BASE_PHYS
@@ -47,13 +47,13 @@ C
 C     ------- FIN DES COMMUNS JEVEUX -----------------------------------
 C     ------------------------------------------------------------------
       INTEGER       ICMP, N1, NBGRNO, INOMGR, INBNO, I, IRET, NB, NEQ,
-     +              INOMNO, INUMNO, IDEC, J, IINO, NUNO, NUMIN, IMIN,
-     +              INUDDL, NUNOE
+     &              INOMNO, INUMNO, IDEC, J, IINO, NUNO, NUMIN, IMIN,
+     &              INUDDL, NUNOE
       CHARACTER*8   K8B, NNOE, NOMCMP(6), GRNO
       CHARACTER*24  GRPNOE, NOMNOE
 C     ------------------------------------------------------------------
       DATA NOMCMP   /'DX      ','DY      ','DZ      ',
-     +               'DRX     ','DRY     ','DRZ     '/
+     &               'DRX     ','DRY     ','DRZ     '/
 C     ------------------------------------------------------------------
 C
 C
@@ -62,12 +62,12 @@ C
 C
 C
       CALL GETVEM(MAILLA,'GROUP_NO', ' ','GROUP_NO',
-     +     1,1,0,K8B,N1)
+     &     1,1,0,K8B,N1)
       IF ( N1 .NE. 0 ) THEN
          NBGRNO = -N1
          CALL WKVECT ('&&RBPH02.LISTE_GROUPE','V V K8', NBGRNO, INOMGR )
          CALL GETVEM(MAILLA,'GROUP_NO',' ','GROUP_NO',
-     +       1,1,NBGRNO,ZK8(INOMGR),N1)
+     &       1,1,NBGRNO,ZK8(INOMGR),N1)
 C
          CALL WKVECT ( '&&RBPH02.NBNO_GROUPE', 'V V I', NBGRNO, INBNO )
          NBNOEU = 0
@@ -75,8 +75,9 @@ C
             GRNO = ZK8(INOMGR+I-1)
             CALL JEEXIN(JEXNOM(GRPNOE,GRNO),IRET)
             IF ( IRET.EQ.0 ) CALL UTMESS('F','RBPH02','LE GROUPE DE '//
-     +            'NOEUDS '//GRNO//' NE FAIT PAS PARTIE DU MAILLAGE '//
-     +             MAILLA)
+     &            'NOEUDS '//GRNO//' NE FAIT PAS PARTIE DU MAILLAGE '//
+     &             MAILLA)
+C        CALL U2MESK('F','ALGORITH10_18', 2 ,VALK)
             CALL JELIRA(JEXNOM(GRPNOE,GRNO),'LONMAX',NB,K8B)
             ZI(INBNO+I-1) = NB
             NBNOEU = NBNOEU + NB
@@ -102,19 +103,20 @@ C
 C
 C
       CALL GETVEM(MAILLA,'NOEUD', ' ','NOEUD',
-     +  1,1,0,K8B,N1)
+     &  1,1,0,K8B,N1)
       IF ( N1 .NE. 0 ) THEN
          NBNOEU = -N1
          CALL WKVECT ('&&RBPH02.NOMS_NOEUDS','V V K8', NBNOEU, INOMNO)
          CALL GETVEM(MAILLA,'NOEUD',' ','NOEUD',
-     +   1,1,NBNOEU,ZK8(INOMNO),N1)
+     &   1,1,NBNOEU,ZK8(INOMNO),N1)
 C
          CALL WKVECT ( OBJVE2 , 'V V I', NBNOEU, INUMNO )
          DO 50 I = 1,NBNOEU
             NNOE = ZK8(INOMNO+I-1)
             CALL JEEXIN ( JEXNOM(NOMNOE,NNOE) , IRET )
             IF ( IRET.EQ.0 ) CALL UTMESS('F','RBPH02','LE NOEUD '//
-     +             NNOE//' NE FAIT PAS PARTIE DU MAILLAGE '//MAILLA)
+     &             NNOE//' NE FAIT PAS PARTIE DU MAILLAGE '//MAILLA)
+C        CALL U2MESK('F','ALGORITH10_19', 2 ,VALK)
             CALL JENONU ( JEXNOM(NOMNOE,NNOE), ZI(INUMNO+I-1) )
   50     CONTINUE
       ENDIF
@@ -145,7 +147,7 @@ C
          NNOE = ZK8(INOMNO+I-1)
          DO 90 ICMP = 1,6
             CALL POSDDL('NUME_DDL',NUMDDL,NNOE,NOMCMP(ICMP),NUNOE,
-     +                    ZI(INUDDL+IDEC+ICMP-1))
+     &                    ZI(INUDDL+IDEC+ICMP-1))
   90     CONTINUE
   80  CONTINUE
 C

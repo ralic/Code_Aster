@@ -3,7 +3,7 @@
       LOGICAL             LGRCOU
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF STBTRIAS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,18 +120,18 @@ C   ---------------------------------------------------------------
 
 
     1 CONTINUE
-    
+
       READ (IUNV,'(I6)',END=9999) DATSET
-      
+
       IF (DATSET.EQ.-1) THEN
 C  -->   FIN DE DATASET
-  
+
       ELSE IF ((DATSET.EQ.18).OR.(DATSET.EQ.2420)) THEN
 C
 C  -->   LECTURE ET ECRITURE DU(DES) SYSTEME(S) DE COORDONNEES
 C
          CALL SLECOR(IUNV,DATSET)
-  
+
       ELSE IF ((DATSET.EQ.15).OR.(DATSET.EQ.781)
      &         .OR.(DATSET.EQ.2411)) THEN
 C
@@ -182,8 +182,7 @@ C  -->   LECTURE D'UNE RUBRIQUE INCONNUE
       GO TO 1
  9999 CONTINUE
       IF (LARRET) THEN
-         CALL UTMESS('F','PRESUP','LE FICHIER IDEAS EST VIDE, OU'
-     +      //' NE CONTIENT PAS DE DATATSET TRAITE PAR L''INTERFACE')
+         CALL U2MESS('F','STBTRIAS_1')
       ENDIF
 C
       CALL JEDETR('&&PRESUP.INFO.NOEUDS')

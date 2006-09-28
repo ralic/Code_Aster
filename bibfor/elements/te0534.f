@@ -3,29 +3,29 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 
 C.......................................................................
 C
 C               CALCUL DES SECONDS MEMBRES DE CONTACT FROTTEMENT
-C                   POUR X-FEM  (METHODE CONTINUE) 
+C                   POUR X-FEM  (METHODE CONTINUE)
 C
 C
 C  OPTION : 'CHAR_MECA_CONT' (CALCUL DU SECOND MEMBRE DE CONTACT)
@@ -119,7 +119,7 @@ C     RÉCUPÉRATIONS DES DONNÉES SUR LE CONTACT ET
 C     SUR LA TOPOLOGIE DES FACETTES
       DO 10 I=1,60
         INDCO(I) = ZI(JINDCO-1+I)
-        SEUIL(I) = ZR(JSEUIL-1+I)        
+        SEUIL(I) = ZR(JSEUIL-1+I)
  10   CONTINUE
       RHON = ZR(JDONCO-1+1)
       MU = ZR(JDONCO-1+2)
@@ -146,7 +146,7 @@ C
  12     CONTINUE
  11   CONTINUE
 
-      IF (NINTER.LT.NDIM) GOTO 9999 
+      IF (NINTER.LT.NDIM) GOTO 9999
 
 C     RECUPERATION DU COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
       E=ZR(JDONCO-1+5)
@@ -154,9 +154,9 @@ C     RECUPERATION DU COEFFICIENT DE MISE À L'ECHELLE DES PRESSIONS
 C     RÉCUPÉRATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
       DO 13 NLI=1,NINTER
         DO 14 J=1,NDIM
-          NDN(J,NLI)  =ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J)  
+          NDN(J,NLI)  =ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J)
           TAU1(J,NLI)=ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J+NDIM)
-          IF (NDIM .EQ. 3) 
+          IF (NDIM .EQ. 3)
      &      TAU2(J,NLI)=ZR(JBASEC-1+NDIM*NDIM*(NLI-1)+J+2*NDIM)
  14     CONTINUE
  13   CONTINUE
@@ -184,7 +184,7 @@ C       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
               IF (CPT.EQ.3) THEN
                  MULT=0.5D0
                  GOTO 104
-              ENDIF  
+              ENDIF
  102        CONTINUE
           ENDIF
         ELSEIF (NDIM .EQ. 2) THEN
@@ -198,14 +198,14 @@ C       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
               IF (CPT.EQ.2) THEN
                 MULT=0.5D0
                 GOTO 104
-              ENDIF  
+              ENDIF
  1021       CONTINUE
           ENDIF
         ENDIF
  104    CONTINUE
 C
         CALL ELREF4(ELC,FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,IDFDEF,IBID)
-                  
+
 C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         DO 110 IPGF=1,NPGF
 C
@@ -237,7 +237,7 @@ C        (DEPDEL+DEPMOI)
  121        CONTINUE
  120      CONTINUE
 
-C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)        
+C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
           IF (NDIM .EQ. 3) THEN
@@ -247,7 +247,7 @@ C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
             CALL XJACF2(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
      &                                                    JAC,FFP,ND)
           ENDIF
-          
+
 C         NORMALE AU CENTRE DE LA FACETTE
           CALL LCINVN(NDIM,0.D0,NBARY)
           DO 122 I=1,NNOF
@@ -255,23 +255,23 @@ C         NORMALE AU CENTRE DE LA FACETTE
             NBARY(2)=NBARY(2)+NDN(2,CFACE(IFA,I))/NNOF
             IF (NDIM .EQ. 3)
      &        NBARY(3)=NBARY(3)+NDN(3,CFACE(IFA,I))/NNOF
- 122      CONTINUE           
-   
+ 122      CONTINUE
+
 C         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
           IF (SINGU.EQ.1) THEN
-            LST=0.D0   
+            LST=0.D0
             DO 112 I=1,NNO
               LST=LST+ZR(JLST-1+I)*FFP(I)
  112        CONTINUE
             R=ABS(LST)
             RR=SQRT(R)
           ENDIF
-          
+
 C         I) CALCUL DES SECONDS MEMBRES DE CONTACT
 C         ..............................
 
           IF (OPTION.EQ.'CHAR_MECA_CONT') THEN
-          
+
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LE VECTEUR LN2
             IF (INDCO(ISSPG).EQ.0) THEN
 C
@@ -291,7 +291,7 @@ C             CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
               CALL LCINVN(NDIM,0.D0,SAUT)
               DO 140 I = 1,NNO
                 DO 141 J = 1,DDLH
-                  SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * 
+                  SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
      &                             (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
      &                               + ZR(IDEPL-1+DDLS*(I-1)+NDIM+J) )
  141            CONTINUE
@@ -309,12 +309,12 @@ C
 C             TERME LN1
               DO 150 I = 1,NNO
                 DO 151 J = 1,DDLH
-                  VTMP(DDLS*(I-1)+NDIM+J) = 
+                  VTMP(DDLS*(I-1)+NDIM+J) =
      &            VTMP(DDLS*(I-1)+NDIM+J) +
      &            (REAC-RHON*DN)*2.D0*FFP(I)*ND(J)*JAC*MULT
  151            CONTINUE
                 DO 152 J = 1,SINGU*NDIM
-                  VTMP(DDLS*(I-1)+NDIM+DDLH+J) = 
+                  VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
      &            VTMP(DDLS*(I-1)+NDIM+DDLH+J) +
      &            (REAC-RHON*DN)*2.D0*FFP(I)*RR*ND(J)*JAC*MULT
  152            CONTINUE
@@ -330,10 +330,10 @@ C             TERME LN2
                 VTMP(PLI) = VTMP(PLI) - DN * FFI * JAC * MULT * E
 
  160          CONTINUE
- 
+
             ELSE
 C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
-              CALL UTMESS('F','TE0534','PB DE STATUT DE CONTACT') 
+              CALL U2MESS('F','ELEMENTS4_18')
             END IF
 C
 
@@ -346,7 +346,7 @@ C         ..............................
 
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
             IF (INDCO(ISSPG).EQ.0) THEN
-          
+
               DO 170 I = 1,NNOF
                 FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
                 NLI=CFACE(IFA,I)
@@ -354,7 +354,7 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
                 CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
 
                 METR(1)=DDOT(NDIM,TAU1(1,NLI),1,REAC12,1)
-                IF (NDIM.EQ.3) 
+                IF (NDIM.EQ.3)
      &            METR(2)=DDOT(NDIM,TAU2(1,NLI),1,REAC12,1)
 
                 DO 171 K = 1,NDIM-1
@@ -375,7 +375,7 @@ C             PBOUL SELON L'ÉTAT D'ADHERENCE DU PG (AVEC DEPDEL)
               CALL LCINVN(NDIM,0.D0,SAUT)
               DO 175 INO=1,NNO
                 DO 176 J=1,DDLH
-                  SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) * 
+                  SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *
      &                                ZR(IDEPL-1+DDLS*(INO-1)+NDIM+J)
  176            CONTINUE
                 DO 177 J = 1,SINGU*NDIM
@@ -384,7 +384,7 @@ C             PBOUL SELON L'ÉTAT D'ADHERENCE DU PG (AVEC DEPDEL)
 
  177            CONTINUE
  175          CONTINUE
-              
+
               CALL XADHER(P,SAUT,REAC12,RHOTK,PB,RBID1,RBID2,RBID3)
 
 C             CALCUL DE Pt.PBOUL ET REAC12-PBOUL
@@ -399,12 +399,12 @@ C             CALCUL DE Pt.PBOUL ET REAC12-PBOUL
 C             TERME LN1
               DO 185 I = 1,NNO
                 DO 186 J = 1,DDLH
-                  VTMP(DDLS*(I-1)+NDIM+J) = 
+                  VTMP(DDLS*(I-1)+NDIM+J) =
      &            VTMP(DDLS*(I-1)+NDIM+J) +
      &            2.D0*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC*MULT
  186            CONTINUE
                 DO 187 J = 1,SINGU*NDIM
-                  VTMP(DDLS*(I-1)+NDIM+DDLH+J) = 
+                  VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
      &            VTMP(DDLS*(I-1)+NDIM+DDLH+J) +
      &            2.D0*RR*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC*MULT
  187            CONTINUE
@@ -418,7 +418,7 @@ C             TERME LN3
                 CALL XPLMAT(NDIM,DDLH,NFE,DDLC,NNO,NNOM,NI,PLI)
 
                 METR(1)=DDOT(NDIM,TAU1(1,NLI),1,RPB,1)
-                IF(NDIM.EQ.3)    
+                IF(NDIM.EQ.3)
      &            METR(2)=DDOT(NDIM,TAU2(1,NLI),1,RPB,1)
 
                 DO 191 K=1,NDIM-1
@@ -430,12 +430,12 @@ C             TERME LN3
 
             ELSE
 C             SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1
-              CALL UTMESS('F','TE0534','PB DE STATUT DE CONTACT') 
+              CALL U2MESS('F','ELEMENTS4_18')
             END IF
 
           ELSE
 C           SI OPTION NI 'CHAR_MECA_CONT' NI 'CHAR_MECA_FROT'
-            CALL UTMESS('F','TE0534','OPTION INCONNUE')           
+            CALL U2MESS('F','ELEMENTS3_81')
           ENDIF
 
 
@@ -449,7 +449,7 @@ C
 C-----------------------------------------------------------------------
 C     COPIE DES CHAMPS DE SORITES ET FIN
 C-----------------------------------------------------------------------
-C 
+C
       DO 900 I=1,NDDL
         ZR(IVECT-1+I)=VTMP(I)
  900  CONTINUE

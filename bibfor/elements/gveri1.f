@@ -5,35 +5,35 @@
       INTEGER             ILEV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C-----------------------------------------------------------------------
 C FONCTION REALISEE:
 C
-C     DEFI_FOND_FISS EN 2D : TRAITEMENT DES LEVRES (MAILLES OU GROUPE 
-C     DE MAILLES) ET DE LA NORMALE 
+C     DEFI_FOND_FISS EN 2D : TRAITEMENT DES LEVRES (MAILLES OU GROUPE
+C     DE MAILLES) ET DE LA NORMALE
 C     -----------------------------------------------------------------
 C ENTREE:
 C        RESU   : NOM DU CONCEPT RESULTAT DE L'OPERATEUR
 C        NOMA   : NOM DU MAILLAGE
 C        MOTFAC : MOT-CLE 'LEVRE_SUP' OU 'LEVRE_INF'
-C                 OU  'NORMALE' 
+C                 OU  'NORMALE'
 C     -----------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -63,7 +63,7 @@ C
       INTEGER       NBNOE,N1,IDCOOR,IDLINO,JNOLS,JLIMA,NBNOLS,IM,JCOORS
       INTEGER       JNOFO,KNOLS,JNOLI,KNOLI,NBNOLI,NUMORI,NUMFIN,INORMS
       INTEGER       INORMI
-      
+
       REAL*8        ZRBID,D
       REAL*8        X1,Y1,Z1,X2,Y2,Z2,DMAX,XSUP,YSUP,ZSUP,XINF,YINF,ZINF
       REAL*8        PSUP(3),PINF(3),VECNOR(3),VZ(3)
@@ -76,7 +76,7 @@ C
       L = LEN(MOTFAC)
       IER = 0
 C
-      IF (MOTFAC .NE. 'NORMALE') THEN 
+      IF (MOTFAC .NE. 'NORMALE') THEN
        CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMA , N1 )
        CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', IDCOOR )
        CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOE,K8B,IRET)
@@ -122,12 +122,10 @@ C
             DIM1 = DIM1 + NBOBJ
          ELSE
             IER = IER + 1
-            CALL UTMESS('E','GVERI1',ZK8(JJJ+I-1)//' N''EST PAS '//
-     &                              'UN GROUP_NO OU UN GROUP_MA' )
+            CALL U2MESK('E','ELEMENTS_93',1,ZK8(JJJ+I-1))
          ENDIF
 100   CONTINUE
-      IF (IER.NE.0) CALL UTMESS('F','GVERI1',
-     +                          'ARRET SUR ERREUR(S) UTILISATEUR.')
+      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
       DIM2 = MAX(DIM1,NENT)
 C
       IF ( MOTFAC .EQ. 'LEVRE_SUP' ) THEN
@@ -155,8 +153,7 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                TYPMA = TYPE(1:3)
                IF (TYPMA.NE.'SEG') THEN
-                  CALL UTMESS('A','GVERI1','LES MAILLES DES LEVRES '//
-     +                   'DOIVENT ETRE LINEIQUES')
+                  CALL U2MESS('A','ELEMENTS_95')
                   ZK8(KK2) = MAILLE
                   KK2 = KK2 + 1
                ELSE
@@ -171,8 +168,7 @@ C
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
                TYPMA = TYPE(1:3)
                IF (TYPMA.NE.'SEG') THEN
-                  CALL UTMESS('A','GVERI1','LES MAILLES DES LEVRES '//
-     +                   'DOIVENT ETRE LINEIQUES')
+                  CALL U2MESS('A','ELEMENTS_95')
                   ZK8(KK3) = MAILLE
                   KK3 = KK3 + 1
                ELSE
@@ -193,11 +189,11 @@ C
          IF(IRET .EQ. 0) THEN
             CALL UTMESS('E','GVERI1',MOTCLE//' '//ZK8(JJJ+INO-1)//
      &                     'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
+C        CALL U2MESK('E','MODELISA2_96', 3 ,VALK)
             IER = IER + 1
          ENDIF
  200  CONTINUE
-      IF (IER.NE.0) CALL UTMESS('F','GVERI1',
-     +                          'ARRET SUR ERREUR(S) UTILISATEUR.')
+      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
 C
       IF ( MOTFAC .EQ. 'LEVRE_SUP' ) THEN
          DO 230 INO = 1, NBOBJ
@@ -206,8 +202,7 @@ C
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
             TYPMA = TYPE(1:3)
             IF (TYPMA.NE.'SEG') THEN
-               CALL UTMESS('A','GVERI1','LES MAILLES DES LEVRES '//
-     +                'DOIVENT ETRE LINEIQUES')
+               CALL U2MESS('A','ELEMENTS_95')
             ELSE
                ZK8(KK2) = ZK8(JJJ + INO - 1)
                KK2 = KK2 + 1
@@ -221,8 +216,7 @@ C
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
             TYPMA = TYPE(1:3)
             IF (TYPMA.NE.'SEG') THEN
-               CALL UTMESS('A','GVERI1','LES MAILLES DES LEVRES '//
-     +                'DOIVENT ETRE LINEIQUES')
+               CALL U2MESS('A','ELEMENTS_95')
             ELSE
                ZK8(KK3) = ZK8(JJJ + INO - 1)
                KK3 = KK3 + 1
@@ -255,9 +249,7 @@ C              -----------------------
          K2 = K2 - 1
 C
          IF (K2.NE.DIM2) THEN
-            CALL UTMESS('E','GVERI1','ERREUR : LA LEVRE SUPERIEURE '//
-     +                  'POSSEDE UNE MAILLE REPETEE 2 FOIS : MAILLE '//
-     +                   ZK8(LL2 + J2 - 1)//'. REVOIR LES DONNEES')
+            CALL U2MESK('E','ELEMENTS_96',1,ZK8(LL2 + J2 - 1))
             IER = IER+1
          ENDIF
 C-- GROUP_MA --> GROUP_NO  ET VECTEUR NORMAL
@@ -266,10 +258,10 @@ C-- GROUP_MA --> GROUP_NO  ET VECTEUR NORMAL
          CALL WKVECT ( '&&GVERI1_MAILLE_LEV_SUP', 'V V I', DIM2, JLIMA)
          DO 601 IM = 1 , DIM2
             CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(MM2+IM-1)),
-     +                   ZI(JLIMA+IM-1) )
+     &                   ZI(JLIMA+IM-1) )
  601     CONTINUE
          CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), DIM2,
-     +                           ZI(JNOLS), NBNOLS, 'TOUS' )
+     &                           ZI(JNOLS), NBNOLS, 'TOUS' )
 
          IF (ILEV.EQ.0) THEN
            CALL JEVEUO ( RESU//'.FOND      .NOEU', 'L', JNOFO )
@@ -279,11 +271,11 @@ C-- GROUP_MA --> GROUP_NO  ET VECTEUR NORMAL
          CALL JENONU(JEXNOM(OBJ3,ZK8(JNOFO)), NUMORI )
          X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
          Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
-         Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3) 
-         DMAX = 0.D0   
-         XSUP = 0.D0    
-         YSUP = 0.D0   
-         ZSUP = 0.D0      
+         Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
+         DMAX = 0.D0
+         XSUP = 0.D0
+         YSUP = 0.D0
+         ZSUP = 0.D0
          DO 602 IN = 1 , NBNOLS
            INO = JNOLS+IN-1
            IF ( ZI(INO) .EQ. NUMORI ) GOTO 602
@@ -300,13 +292,12 @@ C-- GROUP_MA --> GROUP_NO  ET VECTEUR NORMAL
            ENDIF
 602      CONTINUE
 
-         CALL OREINO ( NOMA, ZI(JNOLS), NBNOLS, NUMORI , 
-     +          NUMFIN,ZR(IDCOOR),'RELATIF',0.1D0,IERA,IRET)
-     
+         CALL OREINO ( NOMA, ZI(JNOLS), NBNOLS, NUMORI ,
+     &          NUMFIN,ZR(IDCOOR),'RELATIF',0.1D0,IERA,IRET)
          CALL WKVECT(RESU//'.SUPNORM   .NOEU','G V K8',20,KNOLS)
          DO 603 IN = 1 , MIN(NBNOLS,20)
            CALL JENUNO(JEXNUM(OBJ3,ZI(JNOLS+IN-1)),
-     +                          ZK8(KNOLS+IN-1))
+     &                          ZK8(KNOLS+IN-1))
 603      CONTINUE
 C CALCUL DE LA NORMALE
          CALL WKVECT ( '&&GVERI1_NORMAS'  , 'G V R8', 3, INORMS )
@@ -346,21 +337,17 @@ C              -----------------------
          K3 = K3 - 1
 C
          IF (K3.NE.DIM2) THEN
-            CALL UTMESS('E','GVERI1','ERREUR : LA LEVRE INFERIEURE '//
-     +                  'POSSEDE UNE MAILLE REPETEE 2 FOIS : MAILLE '//
-     +                   ZK8(LL3 + J3 - 1)//'. REVOIR LES DONNEES')
+            CALL U2MESK('E','ELEMENTS_97',1,ZK8(LL3 + J3 - 1))
             IER = IER+1
          ENDIF
-         
+
 C COMPARAISON LEVRE SUP / LEVRE INF
          CALL JEVEUO ( RESU//'.LEVRESUP  .MAIL', 'L', JSUP )
          CALL JELIRA ( RESU//'.LEVRESUP  .MAIL', 'LONMAX',NBMAS,K8B)
          DO 710 I = 1,NBMAS
            DO 715 J = 1,DIM2
             IF (ZK8(JSUP+I-1) .EQ. ZK8(MM3+J-1) ) THEN
-              CALL UTMESS('F','GVERI1','ERREUR : LA LEVRE INFERIEURE'//
-     +            ' ET LA LEVRE SUPERIEURE ONT UNE MAILLE SURFACIQUE'//
-     +            ' EN COMMUN. REVOIR LES DONNEES')
+              CALL U2MESS('F','ELEMENTS_98')
             END IF
 715        CONTINUE
 710      CONTINUE
@@ -370,10 +357,10 @@ C-- GROUP_MA --> GROUP_NO  ET VECTEUR NORMAL
          CALL WKVECT ( '&&GVERI1_MAILLE_LEV_INF', 'V V I', DIM2, JLIMA )
          DO 721 IM = 1 , DIM2
             CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(MM3+IM-1)),
-     +                                                 ZI(JLIMA+IM-1) )
+     &                                                 ZI(JLIMA+IM-1) )
 721      CONTINUE
          CALL GMGNRE ( NOMA, NBNOE, ZI(IDLINO), ZI(JLIMA), DIM2,
-     +                           ZI(JNOLI), NBNOLI, 'TOUS' )
+     &                           ZI(JNOLI), NBNOLI, 'TOUS' )
 
          IF (ILEV.EQ.0) THEN
            CALL JEVEUO ( RESU//'.FOND      .NOEU', 'L', JNOFO )
@@ -383,11 +370,11 @@ C-- GROUP_MA --> GROUP_NO  ET VECTEUR NORMAL
          CALL JENONU(JEXNOM(OBJ3,ZK8(JNOFO)), NUMORI )
          X1 = ZR(IDCOOR-1+3*(NUMORI-1)+1)
          Y1 = ZR(IDCOOR-1+3*(NUMORI-1)+2)
-         Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3) 
-         DMAX = 0.D0  
-         XINF = 0.D0    
-         YINF = 0.D0   
-         ZINF = 0.D0           
+         Z1 = ZR(IDCOOR-1+3*(NUMORI-1)+3)
+         DMAX = 0.D0
+         XINF = 0.D0
+         YINF = 0.D0
+         ZINF = 0.D0
          DO 722 IN = 1 , NBNOLI
            INO = JNOLI+IN-1
            IF ( ZI(INO) .EQ. NUMORI ) GOTO 722
@@ -404,13 +391,12 @@ C-- GROUP_MA --> GROUP_NO  ET VECTEUR NORMAL
            ENDIF
 722      CONTINUE
 
-         CALL OREINO ( NOMA, ZI(JNOLI), NBNOLI, NUMORI , 
-     +          NUMFIN,ZR(IDCOOR),'RELATIF',0.1D0,IERA,IRET)
-     
+         CALL OREINO ( NOMA, ZI(JNOLI), NBNOLI, NUMORI ,
+     &          NUMFIN,ZR(IDCOOR),'RELATIF',0.1D0,IERA,IRET)
          CALL WKVECT(RESU//'.INFNORM   .NOEU','G V K8',20,KNOLI)
          DO 723 IN = 1 , MIN(NBNOLI,20)
             CALL JENUNO(JEXNUM(OBJ3,ZI(JNOLI+IN-1)),
-     +                          ZK8(KNOLI+IN-1))
+     &                          ZK8(KNOLI+IN-1))
 723      CONTINUE
 C CALCUL DE LA NORMALE
          CALL WKVECT ( '&&GVERI1_NORMAI'  , 'G V R8', 3, INORMI )
@@ -452,16 +438,14 @@ C          ---------------------
              ENDIF
              CALL JEDETR ( '&&GVERI1_NORMAS' )
            ELSE
-             CALL UTMESS('E','GVERI1','PROBLEME DANS LE CALCUL DE '
-     &                        //  'LA NORMALE A LA FISSURE' )
+             CALL U2MESS('E','ELEMENTS_99')
            ENDIF
          ELSE
            NCMP = -NCMP
            IF(NCMP.EQ.3) THEN
              CALL GETVR8 (' ','NORMALE',1,1,3,ZR(JNORM),NCMP)
-           ELSE  
-             CALL UTMESS('E','GVERI1','LE MOT CLE NORMALE DOIT '
-     &                        //  'COMPORTER 3 COMPOSANTES' )
+           ELSE
+             CALL U2MESS('E','ELEMENTS2_2')
              IER = IER + 1
            ENDIF
          ENDIF
@@ -475,12 +459,11 @@ C
          CALL JEDETR (TRAV)
          CALL JEDETR('&&VERIFE.LEVRESUP  .MAIL')
       ELSEIF(MOTFAC.EQ.'LEVRE_INF') THEN
-         CALL JEDETR (TRAV) 
-         CALL JEDETR('&&VERIFE.LEVREINF  .MAIL')        
+         CALL JEDETR (TRAV)
+         CALL JEDETR('&&VERIFE.LEVREINF  .MAIL')
       ENDIF
 C
-      IF (IER.NE.0) CALL UTMESS('F','GVERI1',
-     +                          'ARRET SUR ERREUR(S) UTILISATEUR.')
+      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_94')
 9999  CONTINUE
       CALL JEDEMA()
       END

@@ -1,22 +1,22 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C RESPONSABLE ASSIRE A.ASSIRE
@@ -60,9 +60,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      
+
 C DECLARATION VARIABLES LOCALES
-C      INTEGER      NBNO(1000), NGMA(1000), NBRD(1000), NBMABD(1000) 
+C      INTEGER      NBNO(1000), NGMA(1000), NBRD(1000), NBMABD(1000)
 C      CHARACTER*8  LSTGMA(1000), LSTBRD(1000),NOMCHA(1000),NOMSD(1000)
       INTEGER      NBNO, NGMA, NBRD, NBMABD, LSTGMA, LSTBRD,NOMCHA,NOMSD
 
@@ -73,7 +73,7 @@ C      CHARACTER*8  LSTGMA(1000), LSTBRD(1000),NOMCHA(1000),NOMSD(1000)
       CHARACTER*24 NOMSDA,NOMSDB,NOMSDI,NOMSDG,NOMSDM,NOMSDH,NOMSDJ,
      &             NOMSLN,NOMSLI,NOMSLM
       CHARACTER*32 JEXNOM
-      
+
       INTEGER      NBID,ITMP,JVALE,NBGRMN,IALIK8,IALII1,IALII2,
      &             NBK8,NBIS,IRET,IER,NBNOTO,IERD,IALINO,JTRAV,IANBNO,
      &             NBGMA,NBMAIL,IALIMA,II,JJ,NBNOSD,NB,IANBMA,IALIBD,
@@ -108,8 +108,8 @@ C CORPS DU PROGRAMME
 
 C INITIALISATIONS
       SDFETI=SDFET1
-      NOMREF=SDFETI//'.FREF'            
-      NOMSDM=SDFETI//'.FDIM'      
+      NOMREF=SDFETI//'.FREF'
+      NOMSDM=SDFETI//'.FDIM'
       NOMSDA=SDFETI//'.FETA'
       NOMSDB=SDFETI//'.FETB'
       NOMSDG=SDFETI//'.FETG'
@@ -160,7 +160,7 @@ C LISTE DES CHARGES
           IF (NIV.GE.4) WRITE(IFM,*) 'CHARGE=',K8B
           ZK8(NOMCHA-1+I)=K8B
   800   CONTINUE
-      ENDIF 
+      ENDIF
 
 C     CREATION .FREF
       INTBUF=NBCHAR+1
@@ -170,14 +170,14 @@ C     CREATION .FREF
         ZK8(JADR+I)=ZK8(NOMCHA-1+I)
    50 CONTINUE
 
-      IF (NIV.GE.3) THEN 
+      IF (NIV.GE.3) THEN
         WRITE(IFM,*)
-        WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMREF 
-      ENDIF 
+        WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMREF
+      ENDIF
 
 
 C --- MAILLAGE ASSOCIE AU MODELE
-C     
+C
       CALL GETVID(' ','MAILLAGE',1,1,1,NOMA,NBVM)
 C      write(6,*) 'NBVM=',NBVM
 C      write(6,*) 'NOMA=',NOMA
@@ -246,7 +246,7 @@ C .FETA : LISTE DES MAILLES DE CHAQUE SD
 C .FETB : LISTE DES NOEUDS ET DDL CUMULES DE CHAQUE SD
 C --------------------------------------------------------------
 
-C CREATION DE LA LISTE DES NOEUDS DE TOUS LES SD : 
+C CREATION DE LA LISTE DES NOEUDS DE TOUS LES SD :
 C   ZI(IALINO-1+J), J = 1,NBNOT
 
       IER = 0
@@ -256,12 +256,11 @@ C   ZI(IALINO-1+J), J = 1,NBNOT
           CALL JEEXIN(JEXNOM(GRPMA,NOMGMA),IRET)
             IF (IRET.EQ.0) THEN
               IER = IER + 1
-              CALL UTMESS('E','FETCRF','GROUP_MA : '//NOMGMA//
-     &                  ' INCONNU DANS LE MAILLAGE')
+              CALL U2MESK('E','ELEMENTS_62',1,NOMGMA)
             END IF
         ENDIF
    21 CONTINUE
-      IF (IER.NE.0) CALL UTMESS('F','FETCRF','ERREURS GROUP_MA')
+      IF (IER.NE.0) CALL U2MESS('F','ELEMENTS_63')
 
 
 C     BOUCLE SUR CHAQUE SOUS-DOMAINES POUR DETERMINER :
@@ -321,7 +320,7 @@ C                         nombre de noeuds = ZI(IANBNO-1+I)
 
         CALL GMGNRE(MA,NBNOTO,ZI(JTRAV),ZI(IALIMA),NBMAIL,ZI(JTMP),
      &              ZI(IANBNO-1+I),'TOUS')
-      
+
 
         IF (NIV.GE.4) THEN
           DO 222 J = 1,ZI(IANBNO-1+I)
@@ -351,7 +350,7 @@ C         - NB DDL CUMULES
   7       CONTINUE
           ZI(JADR+2*J-1  )=K
           IF (NIV.GE.4) WRITE(IFM,*) 'DDL___=',K
-  210     CONTINUE                      
+  210     CONTINUE
   200   CONTINUE
 
 C       NB DDL TOTAL DU SOUS-DOMAINE I
@@ -361,7 +360,7 @@ C       NB NOEUD DANS LE SD COURANT
         ZI(NBNO-1+I)=ZI(IANBNO-1+I)
 
 C       CREATION DU VECTEUR DES NOEUDS :  ZI(IALINO-1+...+3*NBNOTO)
-C                DU VECTEUR DE CORRESPONDANCE NOEUD -> SD 
+C                DU VECTEUR DE CORRESPONDANCE NOEUD -> SD
 C                                      :  ZI(LINOMA-1+...+3*NBNOTO)
 C                DU VECTEUR DE CORRESPONDANCE NOEUD -> POSITION DANS SD
         IPOS=1
@@ -403,7 +402,7 @@ C       NB MAILLES DE BORDS SI BESOIN...
      &                               ZI(NBMABD-1+I),K8B)
 C          WRITE(IFM,*) 'NBID=',NBID
         ENDIF
-        
+
 C       NB MAILLES TOTALES
         NBID=INTBUF+ZI(NBMABD-1+I)
 
@@ -420,7 +419,7 @@ C       MAILLES DU GROUP_MA (POUR .FETA)
         DO 90 J=1,INTBUF
           ZI(JADR+J-1)=ZI(IALIMA-1+J)
 C          WRITE(IFM,*) JADR+J-1
-   90   CONTINUE                        
+   90   CONTINUE
 
 C       MAILLES DE BORD (POUR .FETA)
         IF (ZI(NBRD-1+I).EQ.1) THEN
@@ -434,27 +433,27 @@ C         MAILLES DU GROUP_MA (POUR LE CALCUL DE NBMAIL)
             ZI(JADR+J-1+INTBUF)=ZI(IALIBD-1+J)
 C            WRITE(IFM,*) JADR+J-1+INTBUF
 C            WRITE(IFM,*) 'ZI(IALIBD-1+J)=',ZI(IALIBD-1+J)
-   91     CONTINUE                        
+   91     CONTINUE
 
         ENDIF
 
 
   100 CONTINUE
-      IF (NIV.GE.3) 
-     &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDA   
+      IF (NIV.GE.3)
+     &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDA
 
 
 C FIN .FETA ET .FETB
 C --------------------------------------------------------------
 
       IF (NIV.GE.3) THEN
-        WRITE(IFM,*) ' '  
-        WRITE(IFM,*) '------------------------------------'  
+        WRITE(IFM,*) ' '
+        WRITE(IFM,*) '------------------------------------'
         WRITE(IFM,*) '|           FETA ET FETB            |'
         WRITE(IFM,*) '|  PAR SD :   - NB DDL              |'
         WRITE(IFM,*) '|             - NB MAILLES          |'
         WRITE(IFM,*) '|             - NB NOEUDS           |'
-        WRITE(IFM,*) ' '  
+        WRITE(IFM,*) ' '
 
         WRITE(IFM,*) 'NB NOEUDS=',NB
         DO 94 I = 1,NBSD
@@ -466,23 +465,23 @@ C --------------------------------------------------------------
       ENDIF
 
       IF (NIV.GE.4) THEN
-        WRITE(IFM,*) ' '  
-        WRITE(IFM,*) '------------------------------------'  
+        WRITE(IFM,*) ' '
+        WRITE(IFM,*) '------------------------------------'
         WRITE(IFM,*) '|    TOUS LES NOEUDS ET LEUR SD     |'
-        WRITE(IFM,*) ' '  
+        WRITE(IFM,*) ' '
         DO 24 J = 1,NB
           WRITE(IFM,*) 'NOEUD=',ZI(IALINO-1+J), 'GMA=',ZI(LINOMA-1+J)
    24   CONTINUE
-        WRITE(IFM,*)  'TOTAL NOEUDS=',NB 
-        WRITE(IFM,*) ' '  
-        WRITE(IFM,*) '------------------------------------'  
+        WRITE(IFM,*)  'TOTAL NOEUDS=',NB
+        WRITE(IFM,*) ' '
+        WRITE(IFM,*) '------------------------------------'
         CALL JXVERI('MESSAGE',' ')
       ENDIF
 
 
 C --------------------------------------------------------------
 C ON REORDONNE LA LISTE DE TOUS LES NOEUDS DES SD (ET LEUR SD)
-C   (INSPIRE DU TRI A BULLE UTTRIF.F) 
+C   (INSPIRE DU TRI A BULLE UTTRIF.F)
 C   PARTIE A OPTIMISER (VOIR TRI PAR INSERTION)
 C --------------------------------------------------------------
 
@@ -608,7 +607,7 @@ C     CALCUL DE LA MULTIPLICITE DES NOEUDS D'INTERFACE
       IF (NIV.GE.4) WRITE(IFM,*) '------------------------------------'
       IF (NIV.GE.4) WRITE(IFM,*) '  NOEUDS INTERFACE ET MULTIPLICITE  '
       IF (NIV.GE.4) WRITE(IFM,*) '   1 SI APPARTIENT AU SD, 0 SINON   '
-      IF (NIV.GE.4) WRITE(IFM,*) ' '  
+      IF (NIV.GE.4) WRITE(IFM,*) ' '
 
       CALL WKVECT('&&FETCRF.LST_MLT  ','V V I',K-1,IALSML)
       CALL WKVECT('&&FETCRF.LST_COR  ','V V I',K-1,IALSCR)
@@ -652,7 +651,7 @@ C     CALCUL DE LA MULTIPLICITE DES NOEUDS D'INTERFACE
         CALL JXVERI('MESSAGE',' ')
       ENDIF
 
-      IF (NIV.GE.4) THEN 
+      IF (NIV.GE.4) THEN
         DO 59 I = 1,NBSD
           DO 58 J = 1,NBSD
             WRITE(IFM,*) I,J,ZI(IALSTB-1+(I-1)*NBSD+J)
@@ -660,7 +659,7 @@ C     CALCUL DE LA MULTIPLICITE DES NOEUDS D'INTERFACE
    59   CONTINUE
       ENDIF
 
-      IF (NIV.GE.3) WRITE(IFM,*) ' '  
+      IF (NIV.GE.3) WRITE(IFM,*) ' '
       IF (NIV.GE.3) WRITE(IFM,*) '------------------------------------'
       IF (NIV.GE.3) WRITE(IFM,*) '  NOEUDS ET LAGRANGES D''INTERFACE  |'
       IF (NIV.GE.3) WRITE(IFM,*) ' '
@@ -678,7 +677,7 @@ C     CALCUL DE LA MULTIPLICITE DES NOEUDS D'INTERFACE
 C       ON NE CONSERVE QUE LES SD QUI ONT AU MOINS 2 NOEUDS COMMUNS
 C        (EN 2D) OU 3 NOEUDS COMMUNS (EN 3D)
         IF ( ZI(IALSTB-1+(ITMP-1)*NBSD+JTMP).GE.NDIME ) THEN
-          IF (NIV.GE.3) WRITE(IFM,*) '--> LAGRANGE CONSERVE'  
+          IF (NIV.GE.3) WRITE(IFM,*) '--> LAGRANGE CONSERVE'
 
           NBID=0
           DO 36 J = 1,K-1
@@ -700,7 +699,7 @@ C        (EN 2D) OU 3 NOEUDS COMMUNS (EN 3D)
      &         '(LAGRANGE NON CONSERVE)'
         ENDIF
 
-        IF (NIV.GE.3) WRITE(IFM,*) ' '  
+        IF (NIV.GE.3) WRITE(IFM,*) ' '
 
    37 CONTINUE
 
@@ -724,15 +723,15 @@ C     TAILLE DE LA LISTE RELIANT LES NOEUDS A LEURS SD
         DO 32 J = 1,NBFETE
           WRITE(IFM,*) 'NOEUD =',ZI(IALSNO-1+J), ' MULT=',ZI(IALSMU-1+J)
    32   CONTINUE
-        WRITE(IFM,*) ' '  
+        WRITE(IFM,*) ' '
         DO 33 J = 1,NBNOSD
           WRITE(IFM,*) 'SD_=',ZI(IALSMA-1+J)
    33   CONTINUE
-        WRITE(IFM,*) ' '  
+        WRITE(IFM,*) ' '
       ENDIF
 
 
-C .FETI : LISTE DES NOEUDS D'INTERFACE + MULTIPLICITE + DDL 
+C .FETI : LISTE DES NOEUDS D'INTERFACE + MULTIPLICITE + DDL
 C         + POINTEUR VERS LA LISTE DES SD (FETJ)
       CALL WKVECT(NOMSDI,'G V I',4*NBFETE,JADR)
       JADRI=JADR
@@ -774,12 +773,12 @@ C        MULTC=MULTC+ZI(IALSMU-1+I)
         MULTC=MULTC+2
 
   500 CONTINUE
-  
+
 C     On STOCKE LE NB DE DDL TOTAL DES NOEUDS D'INTERFACE
       NBDDLI=K
-      IF (NIV.GE.3) 
+      IF (NIV.GE.3)
      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDI
-        
+
 
 
 C .FETJ : LISTE DES SD PARTAGEANT UN NOEUD D'INTERFACE
@@ -789,8 +788,8 @@ C .FETJ : LISTE DES SD PARTAGEANT UN NOEUD D'INTERFACE
         ZI(JADR+J-1)=ZI(IALSMA-1+J)
         IF (NIV.GE.4) WRITE(IFM,*) 'SD__=',ZI(IALSMA-1+J)
   501 CONTINUE
-      IF (NIV.GE.3) 
-     &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDJ   
+      IF (NIV.GE.3)
+     &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDJ
 
       IF (NIV.GE.4) CALL JXVERI('MESSAGE',' ')
 
@@ -805,7 +804,7 @@ C ----------------------------------------------------------------------
 
 C .FETG
       CALL JECREC(NOMSDG,'G V I','NO','DISPERSE','VARIABLE',NBSD)
-      IF (NIV.GE.3) 
+      IF (NIV.GE.3)
      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDG
 
 
@@ -890,7 +889,7 @@ C               OU SI LE SD I EST LE DEUXIEME SD DU NOEUD COURANT
         DO 610 J=1,NN
           ZI(JADR+2*(J-1))  =ZI(IALSFG+2*(J-1))
           ZI(JADR+2*(J-1)+1)=ZI(IALSFG+2*(J-1)+1)
-  610   CONTINUE                      
+  610   CONTINUE
 
 C FIN BOUCLE SUR LES SD
   51  CONTINUE
@@ -1079,10 +1078,10 @@ C POUR REMPLISSAGE OBJETS FLIM, FLIN, FLII
 C ON RAJOUTE CE TEST SUR NB1 POUR NE PAS DUPLIQUER LES NOEUDS OU MAILLES
 C TARDIVES SITUEES SUR L'INTERFACE.
                         IF (NB1.EQ.1) THEN
-                          IF (ZI(ISDMAT-1+DEC).EQ.0) 
+                          IF (ZI(ISDMAT-1+DEC).EQ.0)
      &                      ZI(ISDMAT-1+DEC) = 1
                         ENDIF
-                       
+
 C REMPLISSAGE OBJET TEMPORAIRE POUR DETECTER LA PRESENCE DE LIAISONS
 C TRAVERSANT LES INTERFACES. ON NE S'INTERESSE QU'AUX TRIA3 DANS LA
 C CONFIGURATION: NOEUD PHYS NOEUD TARDIF1 NOEUD TARDIF2
@@ -1103,6 +1102,7 @@ C CAS DU LIAISON INTER-SOUS-DOMAINES
      &                      //ZK8(NOMCHA-1+ICH)//' IMPLIQUE LES NOEUDS '
      &                      //'PHYSIQUES '//NOMN//' ET '//NOMN1// 'ET '
      &                      //'TRAVERSE L''INTERFACE')
+C        CALL U2MESK('F','ELEMENTS_64', 3 ,VALK)
                         ENDIF
                         IF (ZI(IAUX2+2).LT.2) THEN
                           ZI(IAUX2)=NDTAR
@@ -1136,6 +1136,7 @@ C CHARGE TOUCHANT L'INTERFACE
      &                      //ZK8(NOMCHA-1+ICH)//' IMPLIQUE LE NOEUD '
      &                      //'PHYSIQUE '//NOMN// 'ET TOUCHE L''INTER'
      &                      //'FACE')
+C        CALL U2MESK('F','ELEMENTS_65', 2 ,VALK)
                       ENDIF
                       GOTO 206
                     ENDIF
@@ -1209,7 +1210,7 @@ C           DESTRUCTION DES OBJETS TEMPORAIRES
             CALL JEDETR('&&FETCRF.L_MAT_SD')
 
 C         FIN SI ON A TROUVE DES MAILLES TARDIVES DANS CETTE CHARGE...
-          ENDIF 
+          ENDIF
 
 C       FIN BOUCLE DE 1 A NBCHAR
           IF (INBNO.NE.0) THEN
@@ -1221,11 +1222,11 @@ C       FIN BOUCLE DE 1 A NBCHAR
 
 C       VERIFICATION DES OBJETS TEMPORAIRES
         IF (NIV.GE.4) THEN
-          WRITE(IFM,*) ' '  
+          WRITE(IFM,*) ' '
           WRITE(IFM,*) '----------------------------------------------'
           WRITE(IFM,*) '         FIN DES CHARGES'
           WRITE(IFM,*) '----------------------------------------------'
-          WRITE(IFM,*) ' '  
+          WRITE(IFM,*) ' '
           WRITE(IFM,*) 'NB1=',NB1
           WRITE(IFM,*) 'NB2=',NB2
           WRITE(IFM,*) 'NBMATA=',NBMATA
@@ -1264,11 +1265,11 @@ C       VERIFICATION DES OBJETS TEMPORAIRES
             WRITE(IFM,*) 'MAT',K,' NBNOT:',ZI(IFNT-1+K)
   824     CONTINUE
           WRITE(IFM,*) '--------------------------'
-        ENDIF 
+        ENDIF
 
 
 C     FIN SI IL Y A DES CHARGES
-      ENDIF 
+      ENDIF
 
 
 
@@ -1282,7 +1283,7 @@ C -------------------------------------------------------------------
 
 C CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SD_FETI
 
-C .FDIM                 
+C .FDIM
 C     ON COMPTE LES MAILLES DE BORDS DANS LE TOTAL DES MAILLES
       DO 93 I=1,NBSD
         NBMATO=NBMATO+ZI(NBMABD-1+I)
@@ -1320,7 +1321,7 @@ C            WRITE(IFM,*) 'HH IFLIM:',ZI(IFLIM-1+DEC),' NUMSD:',NUMSD
   701   CONTINUE
       ENDIF
 
-      IF (NIV.GE.3) 
+      IF (NIV.GE.3)
      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDH
 
 
@@ -1508,9 +1509,9 @@ C             ADDR COURANTE POUR FLIM/ISD INCREMENTEE DE 1
   930   CONTINUE
 
         IF (NIV.GE.3) THEN
-          WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSLI   
-          WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSLM   
-          WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSLN   
+          WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSLI
+          WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSLM
+          WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSLN
         ENDIF
 
 C     FIN DE CREATION DE FLII, FLIM ET FLIN

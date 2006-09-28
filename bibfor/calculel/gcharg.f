@@ -1,5 +1,5 @@
       SUBROUTINE GCHARG ( MODELE, NCHAR, LCHAR, CHVOLU, CF1D2D, CF2D3D,
-     +                 CHPRES,CHEPSI,CHPESA,CHROTA,FONC,EPSI,TIME,IORD)
+     &                 CHPRES,CHEPSI,CHPESA,CHROTA,FONC,EPSI,TIME,IORD)
       IMPLICIT NONE
       INTEGER         NCHAR, IORD
       CHARACTER*8     MODELE, LCHAR(*)
@@ -8,22 +8,22 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/01/2006   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -44,47 +44,47 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C ----------------------------------------------------------------------
 C
       INTEGER       IBID, IER, I, IF3D3D, IF2D2D, IF1D2D, IF2D3D,
-     +              IPRESS, IEPSIN, IROTA, IPESA, IRET, N1, ICHA0, 
-     +              NBVALE, IN, IVAL, JVAL, NEXCI, JPARA, JFCHA, NRES
+     &              IPRESS, IEPSIN, IROTA, IPESA, IRET, N1, ICHA0,
+     &              NBVALE, IN, IVAL, JVAL, NEXCI, JPARA, JFCHA, NRES
       INTEGER       NVOLU, N1D2D, N2D3D, NPRESS, NEPSI, NROTA, NPESA
       CHARACTER*8   K8B, RESU
       CHARACTER*16  TYPE, OPER
       CHARACTER*24  VCHAR, NOMFCT
       CHARACTER*24  EXCISD
-      REAL*8  CONST 
+      REAL*8  CONST
       LOGICAL LCHSD, FONCI
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      
+
       CALL GETRES ( K8B, TYPE, OPER )
       FONC   = .FALSE.
       EPSI   = .FALSE.
-      NVOLU = 0 
-      N1D2D = 0 
-      N2D3D = 0 
-      NPRESS = 0 
-      NEPSI = 0 
-      NROTA = 0 
+      NVOLU = 0
+      N1D2D = 0
+      N2D3D = 0
+      NPRESS = 0
+      NEPSI = 0
+      NROTA = 0
       NPESA = 0
-C      
+C
       CALL GETFAC('EXCIT',NEXCI)
       CALL GETVID(' ','RESULTAT',0,1,1,RESU,NRES)
       LCHSD=.FALSE.
-      IF(NRES.NE.0.AND.NEXCI.EQ.0) LCHSD=.TRUE. 
+      IF(NRES.NE.0.AND.NEXCI.EQ.0) LCHSD=.TRUE.
 C
 C--- LECTURE DES INFORMATIONS CONTENUES DANS LA SD RESULTAT
 C
       IF(LCHSD) THEN
         CALL RSADPA(RESU,'L',1,'EXCIT',IORD,0,JPARA,K8B)
         EXCISD = ZK24(JPARA)
-        CALL JEVEUO(EXCISD(1:19)//'.FCHA','L',JFCHA)          
+        CALL JEVEUO(EXCISD(1:19)//'.FCHA','L',JFCHA)
       ENDIF
 C
       IER = 0
       DO 10 I = 1 , NCHAR
 C
-        IF(LCHAR(I).NE.' ') THEN      
+        IF(LCHAR(I).NE.' ') THEN
          CALL DISMOI('F','TYPE_CHARGE',LCHAR(I),'CHARGE',IBID,K8B,IRET)
          IF ( K8B(5:7) .EQ. '_FO' ) THEN
             FONC = .TRUE.
@@ -98,7 +98,7 @@ C
            IF ( NVOLU .EQ. 0) THEN
              NVOLU = NVOLU + 1
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F3D3D',CHVOLU)
-             
+
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -138,7 +138,7 @@ C
            IF ( NVOLU .EQ. 0 ) THEN
              NVOLU = NVOLU + 1
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F2D2D',CHVOLU)
-             
+
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -179,7 +179,7 @@ C
              N1D2D = N1D2D + 1
              CALL JEVEUO(LCHAR(I)//'.CHME.F1D2D.VALE','L',JVAL)
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F1D2D',CF1D2D)
-             
+
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -219,7 +219,7 @@ C
            IF ( N2D3D .EQ. 0 ) THEN
              N2D3D = N2D3D +1
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.F2D3D',CF2D3D)
-             
+
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -244,7 +244,7 @@ C
                CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
                CALL UTFINM()
              ENDIF
-            ELSE               
+            ELSE
                IER = IER + 1
                CALL UTDEBM('E',OPER,'IL FAUT DONNER 1 SEUL CHARGEMENT')
                CALL UTIMPK('S',' DE TYPE ',1,'FORCE_...')
@@ -259,7 +259,7 @@ C
            IF ( NPRESS .EQ. 0 ) THEN
              NPRESS = NPRESS + 1
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.PRESS',CHPRES)
-             
+
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -284,7 +284,7 @@ C
                CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
                CALL UTFINM()
              ENDIF
-            ELSE               
+            ELSE
                IER = IER + 1
                CALL UTDEBM('E',OPER,'IL FAUT DONNER 1 SEUL CHARGEMENT')
                CALL UTIMPK('S',' DE TYPE ',1,'PRESSION')
@@ -300,7 +300,7 @@ C
            IF ( NEPSI .EQ. 0 ) THEN
              NEPSI = NEPSI + 1
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.EPSIN',CHEPSI)
-             
+
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -340,7 +340,7 @@ C
            IF ( NPESA .EQ. 0 ) THEN
              NPESA = NPESA + 1
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.PESAN',CHPESA)
-             
+
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -380,7 +380,7 @@ C
            IF ( NROTA .EQ. 0 ) THEN
              NROTA = NROTA + 1
              CALL COPISD('CHAMP_GD','V',LCHAR(I)//'.CHME.ROTAT',CHROTA)
-             
+
              IF(LCHSD) THEN
                 N1 = 1
                 NOMFCT = ZK24(JFCHA-1+I)
@@ -419,7 +419,7 @@ C
  10   CONTINUE
 C
       IF ( IER .NE. 0 ) THEN
-         CALL UTMESS('F',OPER,'******* ERREUR DONNEES *******')
+         CALL U2MESS('F','CALCULEL2_60')
       ENDIF
 C
 C  -  SI ABSENCE D'UN CHAMP DE FORCES, CREATION D'UN CHAMP NUL

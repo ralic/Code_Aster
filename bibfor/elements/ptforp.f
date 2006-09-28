@@ -1,5 +1,5 @@
       SUBROUTINE PTFORP ( ITYPE,OPTION,NOMTE,A,A2,XL,RAD,ANGS2,IST,
-     +                    NNO, NC, PGL, PGL1, PGL2, FER, FEI)
+     &                    NNO, NC, PGL, PGL1, PGL2, FER, FEI)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           ITYPE,IST,NNO,NC
 
@@ -8,7 +8,7 @@
       REAL*8            A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
       CALL JEVECH('PCAORIE','L',IORIEN)
 
       IF ( OPTION .EQ. 'CHAR_MECA_SR1D1D' .OR.
-     +     OPTION .EQ. 'CHAR_MECA_SF1D1D' ) THEN
+     &     OPTION .EQ. 'CHAR_MECA_SF1D1D' ) THEN
          IF (NOMTE .EQ. 'MECA_POU_C_T') GOTO 998
          CALL JEVECH('PDEPLMR','L',IDEPLA)
          CALL JEVECH('PDEPLPR','L',IDEPLP)
@@ -125,10 +125,10 @@ C
          CALL JEVECH('PMATERC','L',LMATE)
          IF ( IST .EQ. 1 ) THEN
             CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
-     +                              'RHO',RHO,CODRET, 'FM' )
+     &                              'RHO',RHO,CODRET, 'FM' )
          ELSE
             CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
-     +                              'RHO',RHO,CODRET, BL2 )
+     &                              'RHO',RHO,CODRET, BL2 )
             IF (CODRET.NE.'OK' ) RHO = ZERO
          ENDIF
 C
@@ -160,7 +160,7 @@ C *********************************************************************
 C
       OKVENT = .FALSE.
       IF ( OPTION .EQ. 'CHAR_MECA_FR1D1D' .OR.
-     +     OPTION .EQ. 'CHAR_MECA_SR1D1D' ) THEN
+     &     OPTION .EQ. 'CHAR_MECA_SR1D1D' ) THEN
 C     --- FORCES REPARTIES PAR VALEURS REELLES---
 C        POUR LE CAS DU VENT
          CALL TECACH('NNN','PVITER',1,LFORC,IRET)
@@ -182,13 +182,12 @@ C        POUR LE CAS DU VENT
              Q(I)   =  ZR(LFORC-1+I)
              Q(I+6) =  Q(I)
              XXX    =  ABS(ZR(LFORC+2+I))
-             IF (XXX .GT. 1.D-20) CALL UTMESS('F','ELEMENTS DE POUTRE',
-     +                                  'ON NE TRAITE PAS LES MOMENTS')
+             IF (XXX .GT. 1.D-20) CALL U2MESS('F','ELEMENTS2_46')
 40         CONTINUE
          ENDIF
 C
       ELSEIF ( OPTION .EQ. 'CHAR_MECA_FF1D1D' .OR.
-     +         OPTION .EQ. 'CHAR_MECA_SF1D1D' ) THEN
+     &         OPTION .EQ. 'CHAR_MECA_SF1D1D' ) THEN
 C     --- FORCES REPARTIES PAR FONCTIONS ---
           CALL TECACH ('NNN', 'PTEMPSR', 1, ITEMPS,IRET )
           IF ( IRET .EQ. 0 ) THEN
@@ -209,7 +208,7 @@ C     --- FORCES REPARTIES PAR FONCTIONS ---
 C
       ELSE
         CH16 = OPTION
-        CALL UTMESS('F','PTFORP','L''OPTION "'//CH16//'" EST INCONNUE')
+        CALL U2MESK('F','ELEMENTS2_47',1,CH16)
       ENDIF
 C
 C     --- CONTROLE DE VALIDITE DE FORCES VARIANT LINEAIREMENT ---
@@ -217,11 +216,9 @@ C     --- CONTROLE DE VALIDITE DE FORCES VARIANT LINEAIREMENT ---
          DO 342 I=1,3
             IF ( QQ(I) .NE. QQ(I+6)  ) THEN
                IF ( ITYPE .EQ. 10 ) THEN
-                  CALL UTMESS('F','PTFORP','CHARGE REPARTIE VARIABLE'//
-     +                            ' NON ADMISE SUR UN ELEMENT COURBE.')
+                  CALL U2MESS('F','ELEMENTS2_49')
                ELSE
-                  CALL UTMESS('F','PTFORP','CHARGE REPARTIE VARIABLE'//
-     +                          ' NON ADMISE SUR UN ELEMENT VARIABLE.')
+                  CALL U2MESS('F','ELEMENTS2_50')
                ENDIF
             ENDIF
   342    CONTINUE
@@ -339,7 +336,7 @@ C
             QQ(I) = QQ(I) * ZR(ICOER)
  400     CONTINUE
          CALL PTFOP1 ( ITYPE, COEF1, COEF2, XL, RAD, ANGS2, GLOBAL,
-     +                     QQ, FER )
+     &                     QQ, FER )
 C
       ELSEIF ( IRETC .EQ. 0 ) THEN
          DO 410 I = 1 , 12
@@ -347,13 +344,13 @@ C
             QQI(I) =   QQ(I) * DIMAG( ZC(ICOEC) )
  410     CONTINUE
          CALL PTFOP1 ( ITYPE, COEF1, COEF2, XL, RAD, ANGS2, GLOBAL,
-     +                     QQR, FER )
+     &                     QQR, FER )
          CALL PTFOP1 ( ITYPE, COEF1, COEF2, XL, RAD, ANGS2, GLOBAL,
-     +                     QQI, FEI )
+     &                     QQI, FEI )
 C
       ELSE
          CALL PTFOP1 ( ITYPE, COEF1, COEF2, XL, RAD, ANGS2, GLOBAL,
-     +                     QQ, FER )
+     &                     QQ, FER )
 C
       ENDIF
 C
@@ -361,19 +358,13 @@ C
       GOTO 1000
 
 997   CONTINUE
-      CALL UTMESS('F','PTFORP',
-     &   'ON NE PEUT PAS IMPOSER DE CHARGES REPARTIES SUIVEUSES '//
-     &   'DE TYPE VITESSE DE VENT SUR LES POUTRES COURBES.')
+      CALL U2MESS('F','ELEMENTS2_51')
 
 998   CONTINUE
-      CALL UTMESS('F','PTFORP',
-     &   'ON NE PEUT PAS IMPOSER DE CHARGES REPARTIES SUIVEUSES '//
-     &   'SUR LES POUTRES COURBES.')
+      CALL U2MESS('F','ELEMENTS2_52')
 
 999   CONTINUE
-      CALL UTMESS('F','PTFORP',
-     &        'UN CHAMP DE VITESSE DE VENT EST IMPOSE SANS DONNER '//
-     &        'UN CX DEPENDANT DE LA VITESSE SUR UNE DES POUTRES.')
+      CALL U2MESS('F','ELEMENTS2_53')
 
 
  1000 CONTINUE

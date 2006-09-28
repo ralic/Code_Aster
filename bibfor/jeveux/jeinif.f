@@ -1,21 +1,21 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_720 CRP_18 CRP_20 CRS_508
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -46,11 +46,11 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
-     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+     &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
-     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+     &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -67,11 +67,11 @@ C
       COMMON /INBDET/  NBLIM(N),NBGROS(N),NBPETI(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
-     +                 IITLEC    , IITECR    , NITECR    , KMARQ
+     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
-     +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
+     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
@@ -80,7 +80,7 @@ C
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
-     +                 DN2(N)
+     &                 DN2(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
       INTEGER          IDN    , IEXT    , NBENRG
@@ -135,42 +135,42 @@ C
 C
       IF ( KNOMF .EQ. '        ' .OR. LEN(NOMF) .GT. 8 ) THEN
         CMESS = 'NOM DE BASE DE DONNEE '//KNOMF//' INVALIDE'
-        CALL JVMESS ( 'S' , 'JEINIF01' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( KCLAS .EQ. ' ' ) THEN
         CMESS = 'CLASSE DEMANDEE POUR '//KNOMF//' EST UN BLANC'
-        CALL JVMESS ( 'S' , 'JEINIF02' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE IF ( INDEX (CLASSE,KCLAS) .NE. 0 ) THEN
         CMESS = 'CLASSE DEMANDEE POUR '//KNOMF//' DEJA DEFINIE'
-        CALL JVMESS ( 'S' , 'JEINIF03' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
 C
       IF ( KSTIN .NE. 'DEBUT   ' .AND. KSTIN .NE. 'POURSUIT' .AND.
-     +     KSTIN .NE. 'DUMMY   '                                 ) THEN
+     &     KSTIN .NE. 'DUMMY   '                                 ) THEN
         CMESS = 'STATUT INITIAL DEMANDE POUR '//KNOMF//' NON VALABLE'
-        CALL JVMESS ( 'S' , 'JEINIF04' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( KSTOU .NE. 'SAUVE   ' .AND. KSTOU .NE. 'DETRUIT ') THEN
         CMESS = 'STATUT FINAL DEMANDE POUR '//KNOMF//' NON VALABLE'
-        CALL JVMESS ( 'S' , 'JEINIF05' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( KSTIN .EQ. 'DUMMY   ' .AND. KSTOU .EQ. 'SAUVE   ') THEN
         CMESS = 'STATUT INITIAL ET FINAL INCOMPATIBLES POUR '//KNOMF
-        CALL JVMESS ( 'S' , 'JEINIF06' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( NREP .LE. 0 ) THEN
         CMESS = 'TAILLE DE REPERTOIRE POUR '//KNOMF//' NON VALABLE'
-        CALL JVMESS ( 'S' , 'JEINIF07' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( LBLOC .LE. 0 ) THEN
         CMESS = 'LONGUEUR DE BLOC POUR '//KNOMF//' NON VALABLE'
-        CALL JVMESS ( 'S' , 'JEINIF09' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ENDIF
 C
       IC = INDEX ( CLASSE , ' ' )
       IF ( IC .EQ. 0 ) THEN
         CMESS = 'IMPOSSIBLE D''ACTIVER LE FICHIER '//KNOMF
-        CALL JVMESS ( 'S' , 'JEINIF10' , CMESS )
+        CALL U2MESK('S','JEVEUX_01',1,CMESS)
       ELSE
         NOMFIC(IC) = KNOMF
         NOMBAS(IC) = KNOM
@@ -199,7 +199,7 @@ C
         ELSE
           NBLMAX(IC) = MIN ( NBLOC , MFIC/(LONGBL(IC)*LOIS) )
         ENDIF
-        NBLIM(IC) = 500    
+        NBLIM(IC) = 500
 C
         LMARQ = 2 * NREP * LOIS
         CALL JJALLS (LMARQ,'V','I',LOIS,Z,IMARQ,IADRS,KMARQ(IC))
@@ -419,6 +419,7 @@ C
           CALL JVMESS ( 'A' ,'JEINIF' , ' LA BASE '//NOMBAS(IC)
      &     //' A ETE CONSTITUEE AVEC LA VERSION '//CVERSB//' ET VOUS'
      &     //' UTILISEZ LA VERSION '//CVERSU)
+C        CALL U2MESK('A','JEVEUX_08', 3 ,VALK)
         ENDIF
 
         IF ( NBLOC .EQ. 0 ) THEN
@@ -440,8 +441,8 @@ C
           CALL JVIMPI ( 'S' , 'A ', 1 , NBLMA2 )
           CALL JVFINM
           LENRG = .TRUE.
-        ENDIF 
-         
+        ENDIF
+
         VALK(1)= NOMBAS(IC)
         VALK(2)= CVERSB
         VALI(1)= NBLUTI(IC)
@@ -450,8 +451,8 @@ C
         VALI(4)= NREUTI(IC)
         VALI(5)= NREMAX(IC)
         VALI(6)= (NREUTI(IC)*100)/NREMAX(IC)
-        
-        CALL U2MESG ('I','JEVEUX_1',2,VALK,6,VALI,1,VALR)
+
+        CALL U2MESG ('I','JEVEUX_21',2,VALK,6,VALI,1,VALR)
 C
         NBLMAX(IC)= NBLMA2
 C
@@ -520,7 +521,7 @@ C
           IADD(JIADD(IC)+2*15-1) = 0
           IADD(JIADD(IC)+2*15  ) = 0
           CALL JXECRO(IC,KAT(15),IADD(JIADD(IC)+2*15-1),LON2,0,15)
-        ENDIF  
+        ENDIF
 C
         LON = NREMAX(IC) * LEN(GENR(1))
         CALL JJALLS (LON,'V','K',LEN(GENR(1)),Z,IGENR, IADRS , KAT(3))
@@ -590,7 +591,7 @@ C
           IADD(JIADD(IC)+2*14-1) = 0
           IADD(JIADD(IC)+2*14  ) = 0
           CALL JXECRO(IC,KAT(14),IADD(JIADD(IC)+2*14-1),LON2,0,14)
-        ENDIF  
+        ENDIF
         DO 20 I = 1 , LIDBAS
            IADM(JIADM(IC) + I ) = KAT(I)
  20     CONTINUE
@@ -605,7 +606,7 @@ C
           CALL JXECRO(IC,KAT(10),IADD(JIADD(IC)+2*10-1),LON2,0,10)
           CALL JXECRO(IC,KAT(1),IADD(JIADD(IC)+2*I-1),
      &                  LONO(JLONO(IC)+I)*LOIS,0,1)
-        ENDIF  
+        ENDIF
       ENDIF
 C
       IPGC = IPGCA

@@ -3,27 +3,27 @@
      &                  LLF,LLF1,LLF2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C 
+C
       IMPLICIT     NONE
       CHARACTER*24 RESOCO
-      CHARACTER*24 DEFICO 
+      CHARACTER*24 DEFICO
       CHARACTER*8  NOMA
       INTEGER      NDIM
       INTEGER      INDIC
@@ -46,21 +46,21 @@ C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C                'E': RESOCO(1:14)//'.MU'
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NDIM   : DIMENSION DU PROBLEME
-C OUT INDIC  :+1 ON A RAJOUTE UNE LIAISON 
+C OUT INDIC  :+1 ON A RAJOUTE UNE LIAISON
 C             -1 ON A ENLEVE UNE LIAISON
 C IN  NBLIAI : NOMBRE DE LIAISONS DE CONTACT
-C I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES 
+C I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES
 C I/O AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
-C              LIAISON CORRECTE DU CALCUL 
+C              LIAISON CORRECTE DU CALCUL
 C              DE LA MATRICE DE CONTACT ACM1AT
 C I/O SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
 C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
 C I/O LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
-C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX
 C               DIRECTIONS SIMULTANEES (EN 3D)
-C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               PREMIERE DIRECTION (EN 3D)
-C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA
 C               SECONDE DIRECTION (EN 3D)
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
@@ -104,7 +104,7 @@ C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
       APPARI = RESOCO(1:14)//'.APPARI'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO' 
+      CONTMA = DEFICO(1:16)//'.MAILCO'
       LIAC   = RESOCO(1:14)//'.LIAC'
       CONVEC = RESOCO(1:14)//'.CONVEC'
       MU     = RESOCO(1:14)//'.MU'
@@ -117,7 +117,7 @@ C ======================================================================
       CALL JEVEUO(MU,    'E',JMU   )
       CALL JEVEUO(FROTE, 'L',IFRO  )
 C ======================================================================
-C --- INITIALISATION DES VARIABLES 
+C --- INITIALISATION DES VARIABLES
 C ======================================================================
       TYPESP = 'S'
       TYPEC0 = 'C0'
@@ -128,7 +128,7 @@ C
       CALL WKVECT ('&&CFADH.SUPLF0','V V I',LLF+LLF1+LLF2,JSPLF0)
       IF (NDIM.EQ.3) THEN
 C ======================================================================
-C --- CAS 3D 
+C --- CAS 3D
 C ======================================================================
         COMPT0 = 0
         COMPT1 = 0
@@ -137,7 +137,7 @@ C ======================================================================
         COMPTU = 0
         COMPTV = 0
 C ======================================================================
-C --- CAS D'UNE LIAISON DE FROTTEMENT SUIVANT LES DEUX DIRECTIONS 
+C --- CAS D'UNE LIAISON DE FROTTEMENT SUIVANT LES DEUX DIRECTIONS
 C ======================================================================
         DO 20 JJ = 1, NBLIAC + LLF + LLF1 + LLF2
           IF (ZK8(JVECC-1+JJ).EQ.TYPEF0) THEN
@@ -153,12 +153,12 @@ C ======================================================================
                  XQUOT = 0.0D0
                  XK    = ZR(IFRO -1+LLIAC)
 C ======================================================================
-C --- NORME DE MU POUR LE FROTTEMENT 
+C --- NORME DE MU POUR LE FROTTEMENT
 C ======================================================================
                  XCOMP  = SQRT(  ZR(JMU-1+NBLIAC    +COMPT0)**2 +
-     +                           ZR(JMU-1+NBLIAC+LLF+COMPT0)**2 )
+     &                           ZR(JMU-1+NBLIAC+LLF+COMPT0)**2 )
 C ======================================================================
-C --- TEST SUR MU POUR LE CONTACT 
+C --- TEST SUR MU POUR LE CONTACT
 C ======================================================================
                  IF ( ZR(JMU-1+COMPTN).GT.0.0D0 ) THEN
                     XQUOT = XCOMP/ZR(JMU-1+COMPTN)
@@ -168,9 +168,9 @@ C ======================================================================
                     ZI(JSPLF0-1+COMPTS+COMPTU+COMPTV) = JJ
                  ELSE
                     ZR(JMU-1+NBLIAC+COMPT0-COMPTS) =
-     +                                     ZR(JMU-1+NBLIAC+COMPT0)
+     &                                     ZR(JMU-1+NBLIAC+COMPT0)
                     ZR(JMU-1+NBLIAC+LLF+COMPT0-COMPTS) =
-     +                                   ZR(JMU-1+NBLIAC+LLF+COMPT0)
+     &                                   ZR(JMU-1+NBLIAC+LLF+COMPT0)
                  ENDIF
                  GOTO 20
               ENDIF
@@ -188,11 +188,11 @@ C ======================================================================
                   XQUOT = 0.0D0
                   XK    = ZR(IFRO -1+LLIAC)
 C ======================================================================
-C --- NORME DE MU POUR LE FROTTEMENT 
+C --- NORME DE MU POUR LE FROTTEMENT
 C ======================================================================
                   XCOMP = ABS(ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+COMPT1))
 C ======================================================================
-C --- TEST SUR MU POUR LE CONTACT 
+C --- TEST SUR MU POUR LE CONTACT
 C ======================================================================
                   IF ( ZR(JMU-1+COMPTN).GT.0.0D0 ) THEN
                      XQUOT = XCOMP/ZR(JMU-1+COMPTN)
@@ -202,7 +202,7 @@ C ======================================================================
                      ZI(JSPLF0-1+COMPTS+COMPTU+COMPTV) = JJ
                   ELSE
                      ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+COMPT1-COMPTU) =
-     +                           ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+COMPT1)
+     &                           ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+COMPT1)
                   ENDIF
                   GOTO 20
                 ENDIF
@@ -220,12 +220,12 @@ C ======================================================================
                   XQUOT = 0.0D0
                   XK    = ZR(IFRO -1+LLIAC)
 C ======================================================================
-C --- NORME DE MU POUR LE FROTTEMENT 
+C --- NORME DE MU POUR LE FROTTEMENT
 C ======================================================================
                   XCOMP=
-     +               ABS(ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+LLF1+COMPT2))
+     &               ABS(ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+LLF1+COMPT2))
 C ======================================================================
-C --- TEST SUR MU POUR LE CONTACT 
+C --- TEST SUR MU POUR LE CONTACT
 C ======================================================================
                   IF ( ZR(JMU-1+COMPTN).GT.0.0D0 ) THEN
                      XQUOT = XCOMP/ZR(JMU-1+COMPTN)
@@ -235,7 +235,7 @@ C ======================================================================
                      ZI(JSPLF0-1+COMPTS+COMPTU+COMPTV) = JJ
                   ELSE
                      ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+LLF1+COMPT2-COMPTV) =
-     +                       ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+LLF1+COMPT2)
+     &                       ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+LLF1+COMPT2)
                   ENDIF
                   GOTO 20
                ENDIF
@@ -249,7 +249,7 @@ C ======================================================================
              LIAISO = ZI(JLIAC-1+POSIT)
              TYPLIA = ZK8(JVECC-1+POSIT)
              CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
-     +             LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
+     &             LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
              IF (NIV.GE.2) THEN
               CALL CFIMP2(IFM,NOMA,LIAISO,TYPLIA,TYPESP,'GLI',0.D0,
      &                    JAPPAR,JNOCO,JMACO)
@@ -257,20 +257,20 @@ C ======================================================================
  60       CONTINUE
           DO 70 JJ = 1, LLF
              ZR(JMU-1+NBLIAC+LLF+JJ) =
-     +                               ZR(JMU-1+NBLIAC+LLF+COMPTS+JJ)
+     &                               ZR(JMU-1+NBLIAC+LLF+COMPTS+JJ)
  70       CONTINUE
           DO 80 JJ = 1, LLF1
              ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+JJ) =
-     +                    ZR(JMU-1+NBLIAC+(NDIM-1)*(LLF+COMPTS)+JJ)
+     &                    ZR(JMU-1+NBLIAC+(NDIM-1)*(LLF+COMPTS)+JJ)
  80       CONTINUE
           DO 90 JJ = 1, LLF2
              ZR(JMU-1+NBLIAC+(NDIM-1)*LLF+LLF1+JJ) =
-     +           ZR(JMU-1+NBLIAC+(NDIM-1)*(LLF+COMPTS)+LLF1+COMPTU+JJ)
+     &           ZR(JMU-1+NBLIAC+(NDIM-1)*(LLF+COMPTS)+LLF1+COMPTU+JJ)
  90       CONTINUE
         ENDIF
       ELSE
 C ======================================================================
-C --- CAS 2D 
+C --- CAS 2D
 C ======================================================================
         COMPT0 = 0
         COMPTS = 0
@@ -278,7 +278,7 @@ C ======================================================================
         DO 300 II = 1, BTOTAL
           COMPTN = 0
 C ======================================================================
-C --- CAS D'UNE LIAISON DE FROTTEMENT CAS GENERAL EN 2D 
+C --- CAS D'UNE LIAISON DE FROTTEMENT CAS GENERAL EN 2D
 C ======================================================================
           IF (ZK8(JVECC-1+II).EQ.TYPEF0) THEN
             COMPT0 = COMPT0 + 1
@@ -294,7 +294,7 @@ C ======================================================================
                   ENDIF
                ENDIF
  310         CONTINUE
-             CALL UTMESS ('F','CFADH','CAS 2D IMPOSSIBLE')
+             CALL U2MESS('F','ALGORITH_78')
           ENDIF
           GOTO 300
  312      CONTINUE
@@ -309,7 +309,7 @@ C ======================================================================
              ZR(JMU+3*NBLIAI-1+LLIAC) = XCOS * XK
           ELSE
              ZR(JMU-1+NBLIAC+COMPT0-COMPTS) =
-     +                           ZR(JMU-1+NBLIAC+COMPT0)
+     &                           ZR(JMU-1+NBLIAC+COMPT0)
              ZR(JMU+3*NBLIAI-1+LLIAC) = 0.0D0
           ENDIF
  300    CONTINUE
@@ -319,7 +319,7 @@ C ======================================================================
           LIAISO = ZI(JLIAC-1+POSIT)
           TYPLIA = ZK8(JVECC-1+POSIT)
                CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
-     +                  LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
+     &                  LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
                IF (NIV.GE.2) THEN
                 CALL CFIMP2(IFM,NOMA,LIAISO,'F3',TYPESP,'GLI',0.D0,
      &                      JAPPAR,JNOCO,JMACO)

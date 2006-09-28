@@ -9,7 +9,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C
            IOC1 = ZI(JNSG+IS1-1)
            IF (IOC1.EQ.IOCS) GO TO 18
  16     CONTINUE
-        CALL UTMESS('F','RC3201','PB POUR RECUPERER IOC SEISME')
+        CALL U2MESS('F','POSTRELE_30')
  18     CONTINUE
         NS = ZI(JNBOCC+2*IOCS-2)
         NSCY = ZI(JNBOCC+2*IOCS-1)
@@ -141,17 +141,17 @@ C
         ENDIF
         IF ( OSN ) THEN
           CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
-     +                                                   SEISME,MSE,SN)
+     &                                                   SEISME,MSE,SN)
           VPMPB(6*(IS1-1)+4) = SN
         ENDIF
         IF ( OSN .AND. OSNET ) THEN
           CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
-     +                                                 SEISME,MSE,SNET)
+     &                                                 SEISME,MSE,SNET)
           VPMPB(6*(IS1-1)+6) = SNET
         ENDIF
         IF ( OFATIG ) THEN
           CALL RC32SP('SP_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
-     +                SEISME,MSE,SP,TYPEKE,SPMECA,SPTHER)
+     &                SEISME,MSE,SP,TYPEKE,SPMECA,SPTHER)
           CALL RC32SA(MATER,MATPI,MATPI,SN,SP,TYPEKE,SPMECA,SPTHER,
      &                KEMECA,KETHER,SALTSE,SM)
           VPMPB(6*(IS1-1)+5) = SALTSE
@@ -228,12 +228,12 @@ C --- SITUATION P :
         ENDIF
         IF ( OSN ) THEN
           CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
-     +                                                  .FALSE.,MSE,SN)
+     &                                                  .FALSE.,MSE,SN)
           VPMPB(6*(IS1-1)+4) = SN
         ENDIF
         IF ( OSN .AND. OSNET ) THEN
           CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
-     +                                                .FALSE.,MSE,SNET)
+     &                                                .FALSE.,MSE,SNET)
           VPMPB(6*(IS1-1)+6) = SNET
         ENDIF
         IF (SEISME) THEN
@@ -246,12 +246,12 @@ C --- SITUATION P :
           ENDIF
           IF ( OSN ) THEN
             CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
-     +                                                  SEISME,MSE,SNS)
+     &                                                  SEISME,MSE,SNS)
             VPMPB(6*(IS1-1)+4) = SNS
           ENDIF
           IF ( OSN .AND. OSNET ) THEN
             CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
-     +                                                SEISME,MSE,SNETS)
+     &                                                SEISME,MSE,SNETS)
             VPMPB(6*(IS1-1)+6) = SNETS
           ENDIF
         END IF
@@ -279,7 +279,7 @@ C
         SPMECS = 0.D0
         SPTHES = 0.D0
         CALL RC32SP('SP_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
-     +              .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
+     &              .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
         CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP, TYPEKE,
      &                SPMECA, SPTHER,KEMECA,KETHER,SALTIJ, SMM )
         IF (NIV.GE.2)  WRITE (IFM,2050) NSITUP, SALTIJ
@@ -292,7 +292,7 @@ C
         IF (SEISME) THEN
           ZR(JMSAB-1+INDI+3) = SALTIJ
           CALL RC32SP('SP_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
-     +                SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
+     &                SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
           CALL RC32SA(MATER,MATPI,MATPJ,SNS,SPS,TYPEKE,SPMECS,SPTHES,
      &                KEMECS,KETHES,SALIJS,SMM)
           ZR(JMSAS-1+INDI+3) = SALIJS
@@ -313,10 +313,10 @@ C
           UG=0.D0
         ELSE
           CALL RCVALE ( MATER, 'FATIGUE', 1, 'SIGM    ', SALTIJ, 1,
-     +                  'WOHLER  ', NADM, CODRET, 'F ' )
+     &                  'WOHLER  ', NADM, CODRET, 'F ' )
           IF ( NADM .LT. 0 ) THEN
             CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
-     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
+     &                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
             CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTIJ)
             CALL UTIMPR ('L','   NADM = ',1,NADM)
             CALL UTFINM ()
@@ -350,22 +350,22 @@ C ------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS
           SNS = 0.D0
           SN  = 0.D0
           CALL RC32SN('SN_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
-     +                                                  .FALSE.,MSE,SN)
+     &                                                  .FALSE.,MSE,SN)
           CALL RC32SN('SN_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQJ,MQJ,
-     +                                                  .FALSE.,MSE,SN)
+     &                                                  .FALSE.,MSE,SN)
           CALL RC32SN('SN_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQJ,MQJ,
-     +                                                  .FALSE.,MSE,SN)
+     &                                                  .FALSE.,MSE,SN)
           CALL RC32SN('SN_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
-     +                                                  .FALSE.,MSE,SN)
+     &                                                  .FALSE.,MSE,SN)
           IF (SEISME) THEN
             CALL RC32SN('SN*_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
-     +                                                  SEISME,MSE,SNS)
+     &                                                  SEISME,MSE,SNS)
             CALL RC32SN('SN*_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQJ,MQJ,
-     +                                                  SEISME,MSE,SNS)
+     &                                                  SEISME,MSE,SNS)
             CALL RC32SN('SN*_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQJ,MQJ,
-     +                                                  SEISME,MSE,SNS)
+     &                                                  SEISME,MSE,SNS)
             CALL RC32SN('SN*_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
-     +                                                  SEISME,MSE,SNS)
+     &                                                  SEISME,MSE,SNS)
           END IF
           SNMAX = MAX(SNMAX,SNS,SN)
           IF (NIV.GE.2) WRITE (IFM,1020) NSITUP,NSITUQ,SN
@@ -381,7 +381,7 @@ C ------- 1/ CALCUL DU SALT(I,I) A PARTIR DU SN(P,Q) ET SP(I,I)
           SPMECS = 0.D0
           SPTHES = 0.D0
           CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
-     +                .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
+     &                .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
           CALL RC32SA(MATER,MATPI,MATQI,SN,SP,TYPEKE,SPMECA,SPTHER,
      &                KEMECA,KETHER,SALTIJ,SMM)
           ZR(JMSA-1+INDS+1) = SALTIJ
@@ -394,7 +394,7 @@ C ------- 1/ CALCUL DU SALT(I,I) A PARTIR DU SN(P,Q) ET SP(I,I)
             ZR(JMSAB-1+INDS+1) = SALTIJ
             ZR(JMSAB-1+INDI+1) = SALTIJ
             CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQI,MQI,
-     +                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
+     &                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
             CALL RC32SA(MATER,MATPI,MATQI,SNS,SPS,TYPEKE,SPMECS,SPTHES,
      &                  KEMECS,KETHES,SALIJS,SMM)
             ZR(JMSAS-1+INDS+1) = SALIJS
@@ -419,7 +419,7 @@ C ------- 2/ CALCUL DU SALT(I,J) A PARTIR DU SN(P,Q) ET SP(I,J)
           SPMECS = 0.D0
           SPTHES = 0.D0
           CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQJ,MQJ,
-     +                .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
+     &                .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
           CALL RC32SA(MATER,MATPI,MATQJ,SN,SP,TYPEKE,SPMECA,SPTHER,
      &                KEMECA,KETHER,SALTIJ,SMM)
           ZR(JMSA-1+INDS+3) = SALTIJ
@@ -432,7 +432,7 @@ C ------- 2/ CALCUL DU SALT(I,J) A PARTIR DU SN(P,Q) ET SP(I,J)
             ZR(JMSAB-1+INDS+3) = SALTIJ
             ZR(JMSAB-1+INDI+2) = SALTIJ
             CALL RC32SP('SP_COMB',LIEU,NSITUP,PPI,MPI,NSITUQ,PQJ,MQJ,
-     +                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
+     &                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
             CALL RC32SA(MATER,MATPI,MATQJ,SNS,SPS,TYPEKE,SPMECS,SPTHES,
      &                  KEMECS,KETHES,SALIJS,SMM)
             ZR(JMSAS-1+INDS+3) = SALIJS
@@ -457,7 +457,7 @@ C ------- 3/ CALCUL DU SALT(J,I) A PARTIR DU SN(P,Q) ET SP(J,I)
           SPMECS = 0.D0
           SPTHES = 0.D0
           CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
-     +                .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
+     &                .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
           CALL RC32SA(MATER,MATPJ,MATQI,SN,SP,TYPEKE,SPMECA,SPTHER,
      &                KEMECA,KETHER,SALTIJ,SMM)
           ZR(JMSA-1+INDS+2) = SALTIJ
@@ -470,7 +470,7 @@ C ------- 3/ CALCUL DU SALT(J,I) A PARTIR DU SN(P,Q) ET SP(J,I)
             ZR(JMSAB-1+INDS+2) = SALTIJ
             ZR(JMSAB-1+INDI+3) = SALTIJ
             CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQI,MQI,
-     +                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
+     &                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
             CALL RC32SA(MATER,MATPJ,MATQI,SNS,SPS,TYPEKE,SPMECS,SPTHES,
      &                  KEMECS,KETHES,SALIJS,SMM)
             ZR(JMSAS-1+INDS+2) = SALIJS
@@ -495,7 +495,7 @@ C ------- 4/ CALCUL DU SALT(J,J) A PARTIR DU SN(P,Q) ET SP(J,J)
           SPMECS = 0.D0
           SPTHES = 0.D0
           CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQJ,MQJ,
-     +                .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
+     &                .FALSE.,MSE,SP,TYPEKE,SPMECA,SPTHER)
           CALL RC32SA(MATER,MATPJ,MATQJ,SN,SP,TYPEKE,SPMECA,SPTHER,
      &                KEMECA,KETHER,SALTIJ,SMM)
           ZR(JMSA-1+INDS+4) = SALTIJ
@@ -508,7 +508,7 @@ C ------- 4/ CALCUL DU SALT(J,J) A PARTIR DU SN(P,Q) ET SP(J,J)
             ZR(JMSAB-1+INDS+4) = SALTIJ
             ZR(JMSAB-1+INDI+4) = SALTIJ
             CALL RC32SP('SP_COMB',LIEU,NSITUP,PPJ,MPJ,NSITUQ,PQJ,MQJ,
-     +                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
+     &                  SEISME,MSE,SPS,TYPEKE,SPMECS,SPTHES)
             CALL RC32SA(MATER,MATPJ,MATQJ,SNS,SPS,TYPEKE,SPMECS,SPTHES,
      &                  KEMECS,KETHES,SALIJS,SMM)
             ZR(JMSAS-1+INDS+4) = SALIJS
@@ -554,9 +554,9 @@ C
  1000 FORMAT ('=> GROUPE: ',I4,' , NOMBRE DE SITUATIONS: ',I4)
  1002 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
  1010 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5,' PM =',E12.5,
-     +                            ' PB =',E12.5,' PMPB =',E12.5)
+     &                            ' PB =',E12.5,' PMPB =',E12.5)
  1012 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
-     +                            ' PB =',E12.5,' PMPB =',E12.5)
+     &                            ' PB =',E12.5,' PMPB =',E12.5)
  1014 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )
  1016 FORMAT (1P,' SITUATION ',I4,' SN* =',E12.5 )
  1020 FORMAT (1P,' COMBINAISON DES SITUATIONS ',I4,3X,I4,'  SN =',E12.5)

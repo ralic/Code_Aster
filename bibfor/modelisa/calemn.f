@@ -1,7 +1,7 @@
       SUBROUTINE CALEMN(MOTFAZ, NOMAZ, IOCC, LISI1Z, LONLI1,
-     +                  LISI2Z, LONLI2)
+     &                  LISI2Z, LONLI2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,11 +118,7 @@ C     --------------
                MOTCLE = 'MAILLE_1'
                TYMOCL = 'MAILLE'
              ELSE
-               CALL UTMESS('F','CALEMN',
-     +                ' LES MOTS-CLES ADMISSIBLES POUR DEFINIR '//
-     +                'LA PREMIERE LISTE DE NOEUDS SOUS LE MOT-FACTEUR '
-     +                //MOTFAC//' SONT : "GROUP_NO_1" OU "NOEUD_1"'//
-     +                ' OU "GROUP_MA_1" OU "MAILLE_1".')
+               CALL U2MESK('F','MODELISA2_92',1,MOTFAC)
              ENDIF
            ENDIF
          ENDIF
@@ -132,7 +128,7 @@ C --- CONSTITUTION DE LA PREMIERE LISTE DE NOEUDS :
 C     -------------------------------------------
       TYPEM  = 'NO_NOEUD'
       CALL RELIEM(' ', NOMA, TYPEM, MOTFAC, IOCC, 1, MOTCLE,
-     +                    TYMOCL, LISIN1, LONLI1 )
+     &                    TYMOCL, LISIN1, LONLI1 )
 C
 C --- DETERMINATION DU MOT-CLE A TRAITER POUR LA SECONDE LISTE
 C --- DE NOEUDS (I.E. 'GROUP_NO_2' OU 'NOEUD_2' OU 'GROUP_MA_2'
@@ -158,11 +154,7 @@ C     --------------
                MOTCLE = 'MAILLE_2'
                TYMOCL = 'MAILLE'
              ELSE
-               CALL UTMESS('F','CALEMN',
-     +                ' LES MOTS-CLES ADMISSIBLES POUR DEFINIR '//
-     +                'LA SECONDE LISTE DE NOEUDS SOUS LE MOT-FACTEUR '
-     +                //MOTFAC//' SONT : "GROUP_NO_2" OU "NOEUD_2"'//
-     +                ' OU "GROUP_MA_2" OU "MAILLE_2".')
+               CALL U2MESK('F','MODELISA2_93',1,MOTFAC)
              ENDIF
            ENDIF
          ENDIF
@@ -172,7 +164,7 @@ C --- CONSTITUTION DE LA SECONDE LISTE DE NOEUDS :
 C     ------------------------------------------
       TYPEM  = 'NO_NOEUD'
       CALL RELIEM(' ', NOMA, TYPEM, MOTFAC, IOCC, 1, MOTCLE,
-     +                    TYMOCL, LISIN2, LONLI2 )
+     &                    TYMOCL, LISIN2, LONLI2 )
 C
  9999 CONTINUE
       CALL JEDEMA()

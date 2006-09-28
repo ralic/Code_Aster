@@ -1,24 +1,24 @@
-      SUBROUTINE DLTP0 (T0) 
+      SUBROUTINE DLTP0 (T0)
       IMPLICIT  REAL*8  (A-H,O-Z)
       REAL*8    T0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C OUT : T0   INSTANT INITIAL
@@ -57,26 +57,25 @@ C
             CALL GETVR8('ETAT_INIT','INST_INIT',1,1,1,TEMPS,NT)
             IF ( NT .EQ. 0 ) THEN
                CALL RSORAC(DYNA,'DERNIER',IBID,TEMPS,K8B,C16B,
-     +                                         PREC,CRIT,NUME,1,NBTROU)
+     &                                         PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.NE.1) THEN
-                CALL UTMESS('F','DLTP0','ON N''A PAS PU TROUVER LE '//
-     +                                   'DERNIER INSTANT SAUVE.')
+                CALL U2MESS('F','ALGORITH3_35')
                ENDIF
             ELSE
                CALL GETVR8('ETAT_INIT','PRECISION',1,1,1,PREC ,NP)
                CALL GETVTX('ETAT_INIT','CRITERE'  ,1,1,1,CRIT ,NC)
                CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
-     +                                        PREC,CRIT,NUME,1,NBTROU)
+     &                                        PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.LT.0) THEN
                   CALL UTDEBM('F','DLTP0','PLUSIEURS CHAMPS '
-     +                           //'CORRESPONDANT A L''ACCES DEMANDE.')
+     &                           //'CORRESPONDANT A L''ACCES DEMANDE.')
                   CALL UTIMPK('L','RESULTAT ',1,DYNA)
                   CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
                   CALL UTIMPI('S',', NOMBRE :',1,-NBTROU)
                   CALL UTFINM()
                ELSEIF (NBTROU.EQ.0) THEN
                   CALL UTDEBM('F','DLTP0','PAS DE CHAMP '//
-     +                             'CORRESPONDANT A UN ACCES DEMANDE.')
+     &                             'CORRESPONDANT A UN ACCES DEMANDE.')
                   CALL UTIMPK('L','RESULTAT ',1,DYNA)
                   CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
                   CALL UTFINM()
@@ -85,15 +84,14 @@ C
          ELSE
 C           --- VERIFICATION QUE NUME EXISTE ---
             CALL RSORAC(DYNA,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
-     +                                                 NBORDR,1,IBID)
+     &                                                 NBORDR,1,IBID)
             CALL WKVECT('&&OP0048.NUME_ORDRE','V V I',NBORDR,JORDR)
             CALL RSORAC(DYNA,'TOUT_ORDRE',IBID,R8B,K8B,C16B,R8B,K8B,
-     +                                        ZI(JORDR),NBORDR,IBID)
+     &                                        ZI(JORDR),NBORDR,IBID)
             DO 10 I = 1,NBORDR
                IF (ZI(JORDR+I-1).EQ.NUME) GOTO 12
  10         CONTINUE
-            CALL UTMESS('F','DLTP0','NUME_INIT: ON N''A PAS TROUVE'//
-     +                  ' LE NUME_INIT DANS LE RESULTAT '//DYNA)
+            CALL U2MESK('F','ALGORITH3_36',1,DYNA)
  12         CONTINUE
          ENDIF
 C
@@ -116,10 +114,9 @@ C
             IF (N2.NE.0) THEN
               CALL GETVIS('INCREMENT','PAS_CALCUL',1,1,1,IPC,N3)
               CALL JEVEUO(LI//'           .PROL','L',LPROL)
-              IF (ZK16(LPROL).NE.'FONCTION') CALL UTMESS('F','DLTP0',
-     +                     'FONC_INST: ON ATTEND UNE FONCTION.')
+              IF (ZK16(LPROL).NE.'FONCTION') CALL U2MESS('F','ALGORITH3_
+     &32')
               CALL JEVEUO(LI//'           .VALE','L',LVAR)
-     
               T0 = ZR(LVAR)
             ELSE
 C

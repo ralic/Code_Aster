@@ -1,24 +1,24 @@
       SUBROUTINE OP0054 ( IER )
       IMPLICIT   NONE
-      INTEGER             IER 
+      INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C      OPERATEUR :     CALC_THETA
@@ -45,7 +45,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       NBV, NBR8, NBNO, IRET, NOCC2D, NOCC3D, IADRT1
       INTEGER       IADRNO, IMPR, IADRCO, IADRMA, IADRT2, IADRT3,
-     +              IADRT4, IADRT5, ICODE, NOCCTB, IFIC, N1, IUNIFI
+     &              IADRT4, IADRT5, ICODE, NOCCTB, IFIC, N1, IUNIFI
       REAL*8        R8B, DIR(3), RINF, RSUP, ABSC
       LOGICAL       DIREC, ULEXIS
       CHARACTER*3   OUINON
@@ -53,7 +53,7 @@ C
       CHARACTER*16  TYPE, OPER, FICHIE
       CHARACTER*19  OPTION, METHOD
       CHARACTER*24  TRAV1, TRAV2, TRAV3, TRAV4, STOK4
-      CHARACTER*24  OBJ1, NOMNO, COORN, OBJ2 
+      CHARACTER*24  OBJ1, NOMNO, COORN, OBJ2
       CHARACTER*24  THETA, GDTETA
 C     ------------------------------------------------------------------
 C
@@ -78,7 +78,7 @@ C
       IF ( IMPR .NE. 0 ) THEN
          CALL GETVTX ( 'IMPRESSION', 'FORMAT ', 1,1,1, FORMAT, NBV )
          IFIC   = 0
-         FICHIE = ' ' 
+         FICHIE = ' '
          CALL GETVIS ( 'IMPRESSION', 'UNITE'  , 1,1,1, IFIC  , N1 )
          IF ( .NOT. ULEXIS( IFIC ) ) THEN
             CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
@@ -98,11 +98,10 @@ C
 C --- SI LE CHAMP THETA EXISTE DEJA, ON SORT EN ERREUR FATALE :
 C     -------------------------------------------------------
       IF (ICODE.EQ.0) THEN
-        CALL UTMESS('F','OP0054','LE CHAMP DE NOM SYMBOLIQUE THETA'
-     +          //' EXISTE DEJA DANS LA S.D. RESULTAT '//RESU)
+        CALL U2MESK('F','CALCULEL3_97',1,RESU)
       ENDIF
 C
-C --- CREATION DU NOM DU CHAMP CORRESPONDANT AU NOM SYMBOLIQUE 
+C --- CREATION DU NOM DU CHAMP CORRESPONDANT AU NOM SYMBOLIQUE
 C --- GRAD_NOEU_THETA POUR LE NUMERO D'ORDRE 0 :
 C     ----------------------------------------
       CALL RSEXCH (RESU,'GRAD_NOEU_THETA',0,GDTETA,ICODE)
@@ -110,9 +109,7 @@ C
 C --- SI LE CHAMP THETA EXISTE DEJA, ON SORT EN ERREUR FATALE :
 C     -------------------------------------------------------
       IF (ICODE.EQ.0) THEN
-        CALL UTMESS('F','OP0054','LE CHAMP DE NOM SYMBOLIQUE '
-     +          //'GRAD_NOEU_THETA EXISTE DEJA DANS LA S.D. RESULTAT '
-     +          //RESU)
+        CALL U2MESK('F','CALCULEL3_98',1,RESU)
       ENDIF
 C
       OBJ1 = MODELE//'.MODELE    .NOMA'
@@ -125,7 +122,7 @@ C
 C     ==================================================================
 C                          T H E T A _ 3 D
 C     ==================================================================
-C 
+C
       IF ( NOCC3D .NE. 0 ) THEN
 C
          CALL GETVID ( ' ', 'FOND_FISS', 0,1,1, FOND, NBV )
@@ -136,8 +133,7 @@ C
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             IF ( NBR8 .NE. 3 ) THEN
-               CALL UTMESS('F','OP0054',
-     +                 'IL FAUT DONNER 3 COMPOSANTES DE LA DIRECTION')
+               CALL U2MESS('F','CALCULEL3_99')
             ELSE
                CALL GETVR8(' ','DIRECTION', 0, 1, 3, DIR, NBR8)
                DIREC = .TRUE.
@@ -162,10 +158,7 @@ C
 C
          ELSE
 C
-            CALL UTMESS ( 'F','OP0054','OPTION NON OPERATIONNELLE: '//
-     +                    'SEULE L''OPTION COURONNE EST A UTILISER'
-     +                  //'DANS LE CAS OU ON EMPLOIE LE MOT CLE '
-     +                  //'THETA_3D .')
+            CALL U2MESS('F','CALCULEL4_1')
          ENDIF
 C
 C        --- IMPRESSION DES OBJETS DECRIVANT LE CHAMP THETA ---
@@ -176,9 +169,9 @@ C
             CALL JEVEUO ( TRAV3, 'L', IADRT3 )
             CALL JEVEUO ( TRAV4, 'L', IADRT4 )
             CALL JEVEUO ( STOK4, 'L', IADRT5 )
-            CALL GIMPTE ( THETA(1:8), OPTION, ZR(IADRT1), ZR(IADRT2), 
-     +               ZR(IADRT3), ZK8(IADRNO), ZR(IADRT5), ZR(IADRT4), 
-     +               NBNO, FORMAT, IFIC )
+            CALL GIMPTE ( THETA(1:8), OPTION, ZR(IADRT1), ZR(IADRT2),
+     &               ZR(IADRT3), ZK8(IADRNO), ZR(IADRT5), ZR(IADRT4),
+     &               NBNO, FORMAT, IFIC )
          ENDIF
 C
       ENDIF
@@ -186,7 +179,7 @@ C
 C     ==================================================================
 C                          T H E T A _ 2 D
 C     ==================================================================
-C 
+C
 C
       IF ( NOCC2D .NE. 0 ) THEN
 C
@@ -195,33 +188,27 @@ C
          IF ( NBR8 .NE. 0 ) THEN
             NBR8  = -NBR8
             IF ( NBR8 .NE. 3 ) THEN
-               CALL UTMESS('F','OP0054','IL FAUT DONNER 3 '//
-     +                   'COMPOSANTES DE LA DIRECTION,LA 3-EME NULLE')
+               CALL U2MESS('F','CALCULEL4_2')
             ELSE
                CALL GETVR8 ( ' ', 'DIRECTION', 0, 1, 3, DIR, NBR8 )
             ENDIF
          ELSE
-            CALL UTMESS('F','OP0054',
-     +          'IL FAUT DONNER LA DIRECTION DE PROPAGATION EN 2D'//
-     +          '    LA DIRECTION PAR DEFAUT N''EXISTE PLUS')
+            CALL U2MESS('F','CALCULEL4_3')
          ENDIF
 C
-         CALL GVER2D ( NOMA, NOCC2D, OPTION, 'THETA_2D',NOMNO, 
-     +                 NOEUD, RINF, RSUP, MODULE )
+         CALL GVER2D ( NOMA, NOCC2D, OPTION, 'THETA_2D',NOMNO,
+     &                 NOEUD, RINF, RSUP, MODULE )
 C
 C        --- CALCUL SUIVANT LA METHODE CHOISIE ---
 C
          IF ( OPTION .EQ. 'COURONNE' ) THEN
 C
-            CALL GCOU2D ( THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO), RINF, 
+            CALL GCOU2D ( THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO), RINF,
      &                    RSUP, MODULE, DIR )
 C
          ELSE
 C
-            CALL UTMESS ( 'F','OP0054','OPTION NON OPERATIONNELLE: '//
-     +                    'SEULE L''OPTION COURONNE EST A UTILISER'
-     +                  //'DANS LE CAS OU ON EMPLOIE LE MOT CLE '
-     +                  //'THETA_2D .')
+            CALL U2MESS('F','CALCULEL4_4')
          ENDIF
 C
       ENDIF
@@ -229,12 +216,12 @@ C
 C     ==================================================================
 C                          T H E T A _ B A N D E
 C     ==================================================================
-C 
+C
 C
       IF ( NOCCTB .NE. 0 ) THEN
 C
-         CALL GVER2D ( NOMA, NOCCTB, OPTION, 'THETA_BANDE', NOMNO, 
-     +                 NOEUD, RINF,  RSUP, MODULE )
+         CALL GVER2D ( NOMA, NOCCTB, OPTION, 'THETA_BANDE', NOMNO,
+     &                 NOEUD, RINF,  RSUP, MODULE )
 C
 C        --- CALCUL SUIVANT LA METHODE CHOISIE ---
 C
@@ -244,10 +231,7 @@ C
 C
          ELSE
 C
-            CALL UTMESS ( 'F','OP0054','OPTION INEXISTANTE: '//
-     +                    'SEULE L''OPTION BANDE EST A UTILISER '
-     +                  //'DANS LE CAS OU ON EMPLOIE LE MOT CLE '
-     +                  //'THETA_BANDE .')
+            CALL U2MESS('F','CALCULEL4_5')
          ENDIF
 C
 C        --- IMPRESSION DES OBJETS DECRIVANT LES CHAMPS THETA ---
@@ -255,8 +239,8 @@ C
          IF ( IMPR .NE. 0 ) THEN
             NBNO = 1
             ABSC = 0.D0
-            CALL GIMPTE ( THETA(1:8), OPTION, RINF, RSUP, MODULE, 
-     +                    NOEUD, DIR, ABSC, NBNO, FORMAT, IFIC )
+            CALL GIMPTE ( THETA(1:8), OPTION, RINF, RSUP, MODULE,
+     &                    NOEUD, DIR, ABSC, NBNO, FORMAT, IFIC )
          ENDIF
 C
       ENDIF
@@ -264,7 +248,7 @@ C
 C --- CALCUL DU CHAMNO DES GRADIENTS DE THETA :
 C     ---------------------------------------
       IF (OUINON.EQ.'OUI') THEN
-        CALL GGDTET ( GDTETA, THETA, MODELE)   
+        CALL GGDTET ( GDTETA, THETA, MODELE)
       ENDIF
 C
 C --- AFFECTATION DU CHAMNO THETA A LA S.D. RESU DE TYPE THETA_GEOM :

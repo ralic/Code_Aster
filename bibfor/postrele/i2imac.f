@@ -1,26 +1,26 @@
       SUBROUTINE I2IMAC (EPSI,CONEC,COORD,TYP,NBM,NUMAIL,
-     +                   XC,YC,R,ALFINF,ALFSUP,
-     +                   NBSEG,SGTOR,SGTEX,MAIL1,MAIL2,
-     +                   FACOR,FACEX,PAROR,PAREX)
+     &                   XC,YC,R,ALFINF,ALFSUP,
+     &                   NBSEG,SGTOR,SGTEX,MAIL1,MAIL2,
+     &                   FACOR,FACEX,PAROR,PAREX)
       IMPLICIT  NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2000   AUTEUR CIBHHPD P.DAVID 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C
@@ -150,11 +150,8 @@ C
       R1   = 0.0D0
       PI=R8PI()
 C
-      IF (ALFINF.GE.ALFSUP) CALL UTMESS('F','DEFI_ARC',
-     .    'IL FAUT QUE LES ANGLES SOIENT CROISSANTS')
-      IF (ALFINF.LT.-PI.OR.ALFSUP.GT.PI) CALL UTMESS('F',
-     .   'DEFI_ARC','IL FAUT QUE LES ANGLES SOIENT DANS'//
-     .   ' L''INTERVALLE [-180,180]')
+      IF (ALFINF.GE.ALFSUP) CALL U2MESS('F','POSTRELE_15')
+      IF (ALFINF.LT.-PI.OR.ALFSUP.GT.PI) CALL U2MESS('F','POSTRELE_16')
 C
       XA = XC + R*COS(ALFINF)
       YA = YC + R*SIN(ALFINF)
@@ -226,9 +223,9 @@ C---------------SI LA MAILLE COURANTE N' EST PAS UNE MAILLE---------
 C---------------SURFACIQUE ALORS ON L' IGNORE              ---------
 C
          IF ( (TYPM .NE. 'POI1') .AND.
-     +        (TYPM .NE. 'SEG2') .AND.
-     +        (TYPM .NE. 'SEG3')
-     +      ) THEN
+     &        (TYPM .NE. 'SEG2') .AND.
+     &        (TYPM .NE. 'SEG3')
+     &      ) THEN
 C
             PT = 1
 C
@@ -310,23 +307,23 @@ C
 C----------------------CAS D' UN COTE DROIT--------------------------
 C
                   CALL I2IACS (EPSI,XC,YC,R,ALFINF,ALFSUP,XD,YD,XF,YF,
-     +                         NBPF,ABS1,ABS2,ABR1,ABR2,ELIMIN)
+     &                         NBPF,ABS1,ABS2,ABR1,ABR2,ELIMIN)
 C
                   IF ( .NOT. ELIMIN ) THEN
 C
                      IF ( NBPF .GE. 1 ) THEN
 C
                         CALL I2RGEL (EPSI,ABS1,ABR1,C,
-     +                               ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     +                               ZI(AF1LOC),ZI(AF2LOC),PT)
+     &                               ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
+     &                               ZI(AF1LOC),ZI(AF2LOC),PT)
 C
                      ENDIF
 C
                      IF ( NBPF .EQ. 2 ) THEN
 C
                         CALL I2RGEL (EPSI,ABS2,ABR2,C,
-     +                               ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     +                               ZI(AF1LOC),ZI(AF2LOC),PT)
+     &                               ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
+     &                               ZI(AF1LOC),ZI(AF2LOC),PT)
 C
                      ENDIF
 C
@@ -337,39 +334,39 @@ C
 C-------------------CAS D' UN COTE COURBE-----------------------------
 C
                   CALL I2IACC (EPSI,XC,YC,R,ALFINF,ALFSUP,
-     +                         XD,YD,XI,YI,XF,YF,
-     +                         NBPF,ABS1,ABS2,ABS3,ABS4,
-     +                         ABR1,ABR2,ABR3,ABR4)
+     &                         XD,YD,XI,YI,XF,YF,
+     &                         NBPF,ABS1,ABS2,ABS3,ABS4,
+     &                         ABR1,ABR2,ABR3,ABR4)
 C
                   IF ( NBPF .GE. 1 ) THEN
 C
                      CALL I2RGEL (EPSI,ABS1,ABR1,C,
-     +                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     +                            ZI(AF1LOC),ZI(AF2LOC),PT)
+     &                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
+     &                            ZI(AF1LOC),ZI(AF2LOC),PT)
 C
                   ENDIF
 C
                   IF ( NBPF .GE. 2 ) THEN
 C
                      CALL I2RGEL (EPSI,ABS2,ABR2,C,
-     +                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     +                            ZI(AF1LOC),ZI(AF2LOC),PT)
+     &                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
+     &                            ZI(AF1LOC),ZI(AF2LOC),PT)
 C
                   ENDIF
 C
                   IF ( NBPF .GE. 3 ) THEN
 C
                      CALL I2RGEL (EPSI,ABS3,ABR3,C,
-     +                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     +                            ZI(AF1LOC),ZI(AF2LOC),PT)
+     &                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
+     &                            ZI(AF1LOC),ZI(AF2LOC),PT)
 C
                   ENDIF
 C
                   IF ( NBPF .EQ. 4 ) THEN
 C
                      CALL I2RGEL (EPSI,ABS4,ABR4,C,
-     +                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
-     +                            ZI(AF1LOC),ZI(AF2LOC),PT)
+     &                            ZR(ASLOC),ZR(AR1LOC),ZR(AR2LOC),
+     &                            ZI(AF1LOC),ZI(AF2LOC),PT)
 C
                   ENDIF
 C
@@ -390,7 +387,7 @@ C
                IF ( .NOT. ATROUV ) THEN
 C
                   CALL I2APPM (XA,YA,ZR(AXSOM),ZR(AYSOM),ZR(AXINT),
-     +                     ZR(AYINT),ZL(ACOTDR),NBCOTE,ADANSM)
+     &                     ZR(AYINT),ZL(ACOTDR),NBCOTE,ADANSM)
 C
                   IF ( ADANSM ) THEN
 C
@@ -406,8 +403,8 @@ C
                      M2     =  0
 C
                      CALL I2RGMA(EPSI,OR,EX,ROR,REX,M1,M2,F1OR,F1EX,
-     +                           SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
-     +                           MAIL1,MAIL2,ADRGT)
+     &                           SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
+     &                           MAIL1,MAIL2,ADRGT)
 C
                      FINI = .TRUE.
 C
@@ -424,10 +421,10 @@ C
                F1 = ZI(AF1LOC)
 C
                IF ( (.NOT. ATROUV) .AND.
-     +              ( ABS(S-ALFINF) .LT. EPSI ) ) THEN
+     &              ( ABS(S-ALFINF) .LT. EPSI ) ) THEN
 C
                   CALL I2APPM (XB,YB,ZR(AXSOM),ZR(AYSOM),ZR(AXINT),
-     +                        ZR(AYINT),ZL(ACOTDR),NBCOTE,BDANSM)
+     &                        ZR(AYINT),ZL(ACOTDR),NBCOTE,BDANSM)
 C
                   IF ( BDANSM ) THEN
 C
@@ -441,8 +438,8 @@ C
                      M2   =  0
 C
                      CALL I2RGMA (EPSI,OR,EX,ROR,REX,M1,M2,F1OR,F1EX,
-     +                      SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
-     +                      MAIL1,MAIL2,ADRGT)
+     &                      SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
+     &                      MAIL1,MAIL2,ADRGT)
 C
                      ATROUV = .TRUE.
                      BTROUV = .TRUE.
@@ -455,7 +452,7 @@ C
                IF ((.NOT. BTROUV).AND.(ABS(ALFSUP-S).LT.EPSI)) THEN
 C
                   CALL I2APPM (XA,YA,ZR(AXSOM),ZR(AYSOM),ZR(AXINT),
-     +                        ZR(AYINT),ZL(ACOTDR),NBCOTE,ADANSM)
+     &                        ZR(AYINT),ZL(ACOTDR),NBCOTE,ADANSM)
 C
                   IF ( ADANSM ) THEN
 C
@@ -469,8 +466,8 @@ C
                      M2   =  0
 C
                      CALL I2RGMA (EPSI,OR,EX,ROR,REX,M1,M2,F1OR,F1EX,
-     +                      SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
-     +                      MAIL1,MAIL2,ADRGT)
+     &                      SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
+     &                      MAIL1,MAIL2,ADRGT)
 C
                      ATROUV = .TRUE.
                      BTROUV = .TRUE.
@@ -481,13 +478,13 @@ C
                ENDIF
 C
                IF ( ( ABS(ALFINF-S) .GT. EPSI ) .AND.
-     +              ( ABS(ALFSUP-S) .GT. EPSI )
-     +            ) THEN
+     &              ( ABS(ALFSUP-S) .GT. EPSI )
+     &            ) THEN
 C
                   IF ( .NOT. ATROUV ) THEN
 C
                      CALL I2APPM (XA,YA,ZR(AXSOM),ZR(AYSOM),ZR(AXINT),
-     +                          ZR(AYINT),ZL(ACOTDR),NBCOTE,ADANSM)
+     &                          ZR(AYINT),ZL(ACOTDR),NBCOTE,ADANSM)
 C
                      IF ( ADANSM ) THEN
 C
@@ -501,14 +498,14 @@ C
                         M2   =  0
 C
                         CALL I2RGMA(EPSI,OR,EX,ROR,REX,M1,M2,F1OR,F1EX,
-     +                         SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
-     +                         MAIL1,MAIL2,ADRGT)
+     &                         SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
+     &                         MAIL1,MAIL2,ADRGT)
 C
                         ATROUV = .TRUE.
 C
                         CALL I2FINI (EPSI,ALFINF,ALFSUP,
-     +                               SGTOR,SGTEX,MAIL2,
-     +                               ADRGT,FINCAL)
+     &                               SGTOR,SGTEX,MAIL2,
+     &                               ADRGT,FINCAL)
 C
                      ENDIF
 C
@@ -517,7 +514,7 @@ C
                   IF ( .NOT. BTROUV ) THEN
 C
                      CALL I2APPM (XB,YB,ZR(AXSOM),ZR(AYSOM),ZR(AXINT),
-     +                           ZR(AYINT),ZL(ACOTDR),NBCOTE,BDANSM)
+     &                           ZR(AYINT),ZL(ACOTDR),NBCOTE,BDANSM)
 C
                      IF ( BDANSM ) THEN
 C
@@ -531,13 +528,13 @@ C
                         M2   =  0
 C
                         CALL I2RGMA(EPSI,OR,EX,ROR,REX,M1,M2,F1OR,F1EX,
-     +                            SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
-     +                            MAIL1,MAIL2,ADRGT)
+     &                            SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
+     &                            MAIL1,MAIL2,ADRGT)
 C
                         BTROUV = .TRUE.
 C
                         CALL I2FINI (EPSI,ALFINF,ALFSUP,
-     +                               SGTOR,SGTEX,MAIL2,ADRGT,FINCAL)
+     &                               SGTOR,SGTEX,MAIL2,ADRGT,FINCAL)
 C
                      ENDIF
 C
@@ -599,7 +596,7 @@ C
                   YM = YC + R*SIN(SM)
 C
                   CALL I2APPM (XM,YM,ZR(AXSOM),ZR(AYSOM),ZR(AXINT),
-     +                        ZR(AYINT),ZL(ACOTDR),NBCOTE,ELIMIN)
+     &                        ZR(AYINT),ZL(ACOTDR),NBCOTE,ELIMIN)
 C
                   IF ( ELIMIN ) THEN
 C
@@ -616,33 +613,33 @@ C
                      ENDIF
 C
                      CALL I2RGMA (EPSI,OR,EX,ROR,REX,M1,M2,F1OR,F1EX,
-     +                         SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
-     +                         MAIL1,MAIL2,ADRGT)
+     &                         SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
+     &                         MAIL1,MAIL2,ADRGT)
 C
                      CALL I2FINI (EPSI,ALFINF,ALFSUP,
-     +                         SGTOR,SGTEX,MAIL2,ADRGT,FINCAL)
+     &                         SGTOR,SGTEX,MAIL2,ADRGT,FINCAL)
 C
                      IF ( (.NOT. ATROUV)
-     +                     .AND.
-     +                    (
-     +                      (ABS(OR-ALFINF).LT.EPSI)
-     +                      .OR.
-     +                      (ABS(EX-ALFINF).LT.EPSI)
-     +                    )
-     +                  ) THEN
+     &                     .AND.
+     &                    (
+     &                      (ABS(OR-ALFINF).LT.EPSI)
+     &                      .OR.
+     &                      (ABS(EX-ALFINF).LT.EPSI)
+     &                    )
+     &                  ) THEN
 C
                         ATROUV = .TRUE.
 C
                      ENDIF
 C
                      IF ( (.NOT. BTROUV)
-     +                     .AND.
-     +                    (
-     +                      (ABS(OR-ALFSUP).LT.EPSI)
-     +                      .OR.
-     +                      (ABS(EX-ALFSUP).LT.EPSI)
-     +                    )
-     +                   ) THEN
+     &                     .AND.
+     &                    (
+     &                      (ABS(OR-ALFSUP).LT.EPSI)
+     &                      .OR.
+     &                      (ABS(EX-ALFSUP).LT.EPSI)
+     &                    )
+     &                   ) THEN
 C
                         BTROUV = .TRUE.
 C
@@ -658,12 +655,12 @@ C--------------MAILLE COURANTE, BIEN QUE CETTE     -----------------
 C--------------MAILLE DONNE PLUS DE 2 POINTS       -----------------
 C
                IF ( (.NOT. BTROUV)
-     +               .AND.
-     +              (ABS(ZR(ASLOC + NBPM-1)-ALFSUP) .GT. EPSI)
-     +            ) THEN
+     &               .AND.
+     &              (ABS(ZR(ASLOC + NBPM-1)-ALFSUP) .GT. EPSI)
+     &            ) THEN
 C
                   CALL I2APPM (XB,YB,ZR(AXSOM),ZR(AYSOM),ZR(AXINT),
-     +                        ZR(AYINT),ZL(ACOTDR),NBCOTE,BDANSM)
+     &                        ZR(AYINT),ZL(ACOTDR),NBCOTE,BDANSM)
 C
                   IF ( BDANSM ) THEN
 C
@@ -677,25 +674,25 @@ C
                      M2   =  0
 C
                      CALL I2RGMA (EPSI,OR,EX,ROR,REX,M1,M2,F1OR,F1EX,
-     +                            SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
-     +                            MAIL1,MAIL2,ADRGT)
+     &                            SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
+     &                            MAIL1,MAIL2,ADRGT)
 C
                      BTROUV = .TRUE.
 C
                      CALL I2FINI (EPSI,ALFINF,ALFSUP,
-     +                            SGTOR,SGTEX,MAIL2,ADRGT,FINCAL)
+     &                            SGTOR,SGTEX,MAIL2,ADRGT,FINCAL)
 C
                   ENDIF
 C
                ENDIF
 C
                IF ( (.NOT. ATROUV)
-     +               .AND.
-     +              (ABS(ZR(ASLOC)-ALFINF) .GT. EPSI)
-     +            ) THEN
+     &               .AND.
+     &              (ABS(ZR(ASLOC)-ALFINF) .GT. EPSI)
+     &            ) THEN
 C
                   CALL I2APPM (XA,YA,ZR(AXSOM),ZR(AYSOM),ZR(AXINT),
-     +                        ZR(AYINT),ZL(ACOTDR),NBCOTE,ADANSM)
+     &                        ZR(AYINT),ZL(ACOTDR),NBCOTE,ADANSM)
 C
                   IF ( ADANSM ) THEN
 C
@@ -709,13 +706,13 @@ C
                      M2   =  0
 C
                      CALL I2RGMA (EPSI,OR,EX,ROR,REX,M1,M2,F1OR,F1EX,
-     +                            SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
-     +                            MAIL1,MAIL2,ADRGT)
+     &                            SGTOR,SGTEX,PAROR,PAREX,FACOR,FACEX,
+     &                            MAIL1,MAIL2,ADRGT)
 C
                      ATROUV = .TRUE.
 C
                      CALL I2FINI (EPSI,ALFINF,ALFSUP,
-     +                            SGTOR,SGTEX,MAIL2,ADRGT,FINCAL)
+     &                            SGTOR,SGTEX,MAIL2,ADRGT,FINCAL)
 C
                   ENDIF
 C

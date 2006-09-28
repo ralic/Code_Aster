@@ -1,26 +1,26 @@
          SUBROUTINE PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
-     1                       CRIT, TEMPD, TEMPF, TREF, EPSDT,
-     2                       DEPST, SIGD, VIND, OPT, ELGEOM, SIGF,
-     3                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
+     &                       CRIT, TEMPD, TEMPF, TREF, EPSDT,
+     &                       DEPST, SIGD, VIND, OPT, ELGEOM, SIGF,
+     &                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
@@ -241,7 +241,7 @@ C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
         CALL BETMAT ( FAMI, KPG, KSP, MOD, IMAT, NMAT, TMPMX, TEMPF,
-     1                MATERD, MATERF, MATCST, NDT, NDI , NR, NVI)
+     &                MATERD, MATERF, MATCST, NDT, NDI , NR, NVI)
 C
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
@@ -279,7 +279,7 @@ C       CALL LCELAS ( LOI  ,MOD ,  IMAT,  NMAT, MATERD, MATERF, MATCST,
 C    1                NVI,  TEMPD, TEMPF, TIMED,TIMEF,  DEPS,   EPSD,
 C    2                SIGD ,VIND,  SIGE,  VINF )
         CALL LCELIN ( MOD ,  NMAT, MATERD, MATERF,
-     1                NVI,   DEPS,  SIGD, VIND,   SIGE,   VINF )
+     &                NVI,   DEPS,  SIGD, VIND,   SIGE,   VINF )
         VINF(3) = TEMPF
         IF(TEMPF.LT.TMPMX) VINF(3) = TMPMX
 C
@@ -288,7 +288,7 @@ C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL BETCVX ( NMAT, MATERF, SIGF, VIND, VINF,
-     1                ELGEOM, NVI, NSEUIL)
+     &                ELGEOM, NVI, NSEUIL)
 C
         IF ( NSEUIL .GE. 0 ) THEN
 C
@@ -298,29 +298,21 @@ C
 C
            NSEUI1 = NSEUIL
            CALL LCPLBE ( TOLER, ITMAX, NMAT, MATERF,NVI, VIND, SIGF,
-     1                   VINF, ELGEOM, NSEUIL, IRTET)
+     &                   VINF, ELGEOM, NSEUIL, IRTET)
 C           GOTO (1), IRTET
 C
            CALL BETCVX ( NMAT, MATERF,  SIGF, VIND,
-     1                   VINF, ELGEOM, NVI, NSEUIL)
+     &                   VINF, ELGEOM, NVI, NSEUIL)
            NSEUI2 = NSEUIL
 C
            IF ( NSEUI2 .GT. 0 ) THEN
               IF ( NSEUI2 .EQ. 44) THEN
-                 CALL UTMESS('A','PLASBE','INTEGRATION ELASTO'
-     &            //'PLASTIQUE DE LOI BETON_DOUBLE_DP : PAS DE '
-     &            //'CONVERGENCE LORS DE LA PROJECTION AU SOMMET DES '
-     &            //'CONES DE TRACTION ET DE COMPRESSION --> UTILISER '
-     &            //'LE REDECOUPAGE AUTOMATIQUE DU PAS DE TEMPS.')
+                 CALL U2MESS('A','ALGORITH9_93')
                  GOTO 1
               ENDIF
               IF ( NSEUI2 .EQ. 4) THEN
                  CALL CODENT(NSEUI1,'G',CNSEUI)
-                 CALL UTMESS('A','PLASBE','INTEGRATION ELASTO'
-     &            //'PLASTIQUE DE LOI BETON_DOUBLE_DP : PAS DE '
-     &            //'CONVERGENCE LORS DE LA RESOLUTION POUR NSEUIL '
-     &            //'= ' // CNSEUI //' --> UTILISER LE '
-     &            //'REDECOUPAGE AUTOMATIQUE DU PAS DE TEMPS.')
+                 CALL U2MESK('A','ALGORITH9_94',1,CNSEUI)
                  GOTO 1
               ENDIF
               IF ( NSEUI2 .EQ. NSEUI1) THEN
@@ -333,30 +325,22 @@ C
               ENDIF
               CALL LCEQVN ( NDT  ,  SIGE , SIGF )
               CALL LCPLBE ( TOLER, ITMAX, NMAT, MATERF,NVI,VIND,SIGF,
-     1                      VINF, ELGEOM, NSEUIL, IRTET)
+     &                      VINF, ELGEOM, NSEUIL, IRTET)
 C              GOTO (1), IRTET
 C
               CALL BETCVX ( NMAT, MATERF, SIGF, VIND,
-     1                      VINF, ELGEOM, NVI, NSEUIL)
+     &                      VINF, ELGEOM, NVI, NSEUIL)
               NSEUI3 = NSEUIL
            ENDIF
 C
            IF ( NSEUI3 .GT. 0 ) THEN
               IF ( NSEUI3 .EQ. 44) THEN
-                 CALL UTMESS('A','PLASBE','INTEGRATION ELASTO'
-     &            //'PLASTIQUE DE LOI BETON_DOUBLE_DP : PAS DE '
-     &            //'CONVERGENCE LORS DE LA PROJECTION AU SOMMET DES '
-     &            //'CONES DE TRACTION ET DE COMPRESSION --> UTILISER '
-     &            //'LE REDECOUPAGE AUTOMATIQUE DU PAS DE TEMPS.')
+                 CALL U2MESS('A','ALGORITH9_93')
                  GOTO 1
               ENDIF
               IF ( NSEUI3 .EQ. 4) THEN
                  CALL CODENT(NSEUI2,'G',CNSEUI)
-                 CALL UTMESS('A','PLASBE','INTEGRATION ELASTO'
-     &            //'PLASTIQUE DE LOI BETON_DOUBLE_DP : PAS DE '
-     &            //'CONVERGENCE LORS DE LA RESOLUTION POUR NSEUIL '
-     &            //'= ' // CNSEUI //' --> UTILISER LE '
-     &            //'REDECOUPAGE AUTOMATIQUE DU PAS DE TEMPS.')
+                 CALL U2MESK('A','ALGORITH9_94',1,CNSEUI)
                  GOTO 1
               ENDIF
               IF ( NSEUI3 .EQ. NSEUI1 .OR. NSEUI3 .EQ. NSEUI2 ) THEN
@@ -365,50 +349,38 @@ C
               ENDIF
               CALL LCEQVN ( NDT  ,  SIGE , SIGF )
               CALL LCPLBE ( TOLER, ITMAX, NMAT, MATERF,NVI, VIND, SIGF,
-     1                      VINF, ELGEOM, NSEUIL, IRTET)
+     &                      VINF, ELGEOM, NSEUIL, IRTET)
 C              GOTO (1), IRTET
 C
               CALL BETCVX ( NMAT, MATERF, SIGF, VIND,
-     1                      VINF, ELGEOM, NVI, NSEUIL)
+     &                      VINF, ELGEOM, NVI, NSEUIL)
               NSEUI4 = NSEUIL
            ENDIF
 C
            IF ( NSEUI4 .GT. 0 ) THEN
               IF ( NSEUI4 .EQ. 44) THEN
-                 CALL UTMESS('A','PLASBE','INTEGRATION ELASTO'
-     &            //'PLASTIQUE DE LOI BETON_DOUBLE_DP : PAS DE '
-     &            //'CONVERGENCE LORS DE LA PROJECTION AU SOMMET DES '
-     &            //'CONES DE TRACTION ET DE COMPRESSION --> UTILISER '
-     &            //'LE REDECOUPAGE AUTOMATIQUE DU PAS DE TEMPS.')
+                 CALL U2MESS('A','ALGORITH9_93')
                  GOTO 1
               ENDIF
               IF ( NSEUI4 .EQ. 4) THEN
                  CALL CODENT(NSEUI3,'G',CNSEUI)
-                 CALL UTMESS('A','PLASBE','INTEGRATION ELASTO'
-     &            //'PLASTIQUE DE LOI BETON_DOUBLE_DP : PAS DE '
-     &            //'CONVERGENCE LORS DE LA RESOLUTION POUR NSEUIL '
-     &            //'= ' // CNSEUI //' --> UTILISER LE '
-     &            //'REDECOUPAGE AUTOMATIQUE DU PAS DE TEMPS.')
+                 CALL U2MESK('A','ALGORITH9_94',1,CNSEUI)
                  GOTO 1
               ENDIF
               NSEUIL = 22
               NSEUI4 = NSEUIL
               CALL LCEQVN ( NDT  ,  SIGE , SIGF )
               CALL LCPLBE ( TOLER,ITMAX,NMAT,MATERF,NVI,VIND,SIGF,
-     3                      VINF,ELGEOM,NSEUIL,IRTET )
+     &                      VINF,ELGEOM,NSEUIL,IRTET )
 C             GOTO (1), IRTET
 C
               CALL BETCVX ( NMAT, MATERF, SIGF, VIND,
-     1                      VINF, ELGEOM, NVI, NSEUIL)
+     &                      VINF, ELGEOM, NVI, NSEUIL)
            ENDIF
 C
            IF ( NSEUIL .GE. 0 ) THEN
               CALL CODENT(NSEUI4,'G',CNSEUI)
-              CALL UTMESS('A','PLASBE','INTEGRATION ELASTO'
-     &         //'PLASTIQUE DE LOI BETON_DOUBLE_DP : PAS DE '
-     &         //'CONVERGENCE LORS DE LA RESOLUTION POUR NSEUIL '
-     &         //'= ' // CNSEUI //' --> UTILISER LE '
-     &         //'REDECOUPAGE AUTOMATIQUE DU PAS DE TEMPS.')
+              CALL U2MESK('A','ALGORITH9_94',1,CNSEUI)
               GOTO 1
            ENDIF
 C
@@ -446,7 +418,7 @@ C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
 C PAS UTILISE ICI  CALL LCJELA ( LOI  , MOD ,  NMAT, MATERD,VIND, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL BETJPL (MOD, NMAT, MATERD, SIGD,
-     1                      VIND, ELGEOM, DSDE)
+     &                      VIND, ELGEOM, DSDE)
                 ENDIF
             ENDIF
 C
@@ -462,7 +434,7 @@ C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
 C PAS UTILISE ICI  CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERD, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL BETJPL (MOD, NMAT, MATERD, SIGF,
-     1                      VINF, ELGEOM, DSDE)
+     &                      VINF, ELGEOM, DSDE)
                 ENDIF
             ENDIF
 C
@@ -491,13 +463,12 @@ C
  1      CONTINUE
         IRTETI = 1
         CALL BETIMP ( NMAT, MATERF, SIGF, VIND, VINF,
-     1                ELGEOM, NSEUI1, NSEUI2, NSEUI3, NSEUI4,
-     2                SIGE, SIGD)
+     &                ELGEOM, NSEUI1, NSEUI2, NSEUI3, NSEUI4,
+     &                SIGE, SIGD)
 C
         CALL TECAEL ( IADZI, IAZK24 )
         NOMAIL = ZK24(IAZK24-1+3)(1:8)
-        CALL UTMESS('A','PLASBE','NON CONVERGENCE '
-     &      //'A LA MAILLE: '// NOMAIL)
+        CALL U2MESK('A','ALGORITH9_95',1,NOMAIL)
 C
         GOTO 9999
 C

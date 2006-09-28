@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,8 +187,7 @@ C     ----------------------------------------------------
         CUMUL = .TRUE.
 
       ELSE
-        CALL UTMESS('F','ASSMMN',' LE PARAMETRE : '//MOTCLE//
-     &              ' EST INCORRECT. ON ATTEND : "CUMU" OU "ZERO" ')
+        CALL U2MESK('F','ASSEMBLA_3',1,MOTCLE)
       END IF
 C
       CALL JEVEUO(JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',LCMODL)
@@ -336,8 +335,7 @@ C     --------------------------------------
      &                NBLC)
 
         ELSE
-          CALL UTMESS('F','ASSMAT',' ON NE PEUT ASSEMBLER QUE DES'//
-     &                ' MATRICES REELLES OU COMPLEXES')
+          CALL U2MESS('F','ASSEMBLA_4')
         END IF
 
         CALL JEECRA(KVALM,'LONMAX',ITBLOC,' ')

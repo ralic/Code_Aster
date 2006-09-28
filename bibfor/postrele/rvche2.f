@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              ORIG(3), AXEZ(3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,12 +43,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       JCELD, GD, IAD, NCMPMX, NEC, NBEC, TABEC(10), IBID,
-     +              IAVALE, IACELK, IREPE, IM, IMAIL, IGREL, IELG, MODE,
-     +              NSCAL, ICOEF, NSCA, NNOE, NCMPP, ICMP, NPCALC, IEL,
-     +              NCOU, IACHML, ICOU, INO, ICMPT, NBGREL, IER, DIGDEL,
-     +              NUMXX, NUMYY, NUMZZ, NUMXY, NUMXZ, NUMYZ, NUDDL, I,
-     +              JLONGR, JLIGR, JPNT, IPOIN, IANOMA, NUNOE,AXYZM,
-     +              JCNX,IMODEL,ILONG
+     &              IAVALE, IACELK, IREPE, IM, IMAIL, IGREL, IELG, MODE,
+     &              NSCAL, ICOEF, NSCA, NNOE, NCMPP, ICMP, NPCALC, IEL,
+     &              NCOU, IACHML, ICOU, INO, ICMPT, NBGREL, IER, DIGDEL,
+     &              NUMXX, NUMYY, NUMZZ, NUMXY, NUMXZ, NUMYZ, NUDDL, I,
+     &              JLONGR, JLIGR, JPNT, IPOIN, IANOMA, NUNOE,AXYZM,
+     &              JCNX,IMODEL,ILONG
       REAL*8        SG(6), SL(6), PGL(3,3), PSCAL
       REAL*8        XNORMR, EPSI, AXER(3), AXET(3)
       CHARACTER*8   K8B, NOMCMP, NOMMA
@@ -72,16 +72,16 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL JEVEUO (JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',ILONG)
 C
       NEC  = NBEC( GD )
-      IF ( NEC .GT. 10 ) CALL UTMESS('F','RVCHE2','NEC TROP GRAND')
+      IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')
 C
       CALL DISMOI('F','NOM_OPTION', CHELEZ, 'CHAM_ELEM',IBID,OPTION,IER)
       IF  ( OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL'  .OR.
-     +      OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA'  )THEN
+     &      OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA'  )THEN
 C         COMPOSANTE:  SIXX SIYY SIZZ SIXY SIXZ SIYZ
       ELSEIF ( OPTION(1:14) .EQ. 'EPSI_ELNO_DEPL'  .OR.
-     +         OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL'  .OR.
-     +         OPTION(1:14) .EQ. 'EPME_ELNO_DEPL'  .OR.
-     +         OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL'  )THEN
+     &         OPTION(1:14) .EQ. 'EPSG_ELNO_DEPL'  .OR.
+     &         OPTION(1:14) .EQ. 'EPME_ELNO_DEPL'  .OR.
+     &         OPTION(1:14) .EQ. 'EPMG_ELNO_DEPL'  )THEN
 C         COMPOSANTE:  EPXX EPYY EPZZ EPXY EPXZ EPYZ
       ELSE IF ( OPTION(1:14) .EQ. 'EFGE_ELNO_DEPL' ) THEN
 C         COMPOSANTE:  NXX NYY NXY MXX MYY MXY
@@ -120,7 +120,7 @@ C
          CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
          NSCAL = DIGDEL( MODE )
          ICOEF=MAX(1,ZI(JCELD-1+4))
-         IF (ICOEF.GT.1) CALL UTMESS('F','RVCHE2','ICOEF TROP GRAND')
+         IF (ICOEF.GT.1) CALL U2MESS('F','POSTRELE_47')
          NSCA  = NSCAL*ICOEF
          IPOIN = ZI(JLONGR-1+IGREL)
          IEL   = ZI(JLIGR-1+IPOIN+IELG-1)
@@ -191,46 +191,46 @@ C
                SG(5) = 0.0D0
                SG(6) = 0.0D0
                NUDDL = IACHML-1+NCMPP*ICOEF*(INO-1)
-     +                                     +(ICOU-1)*NCMPP*ICOEF*NNOE
+     &                                     +(ICOU-1)*NCMPP*ICOEF*NNOE
                ICMPT = 0
                DO 34 ICMP = 1, NCMPMX
                   IF ( EXISDG( TABEC, ICMP ) ) THEN
                      ICMPT = ICMPT + 1
                      NOMCMP = ZK8(IAD-1+ICMP)
                      IF ( NOMCMP .EQ. 'SIXX'  .OR.
-     +                    NOMCMP .EQ. 'EPXX'  .OR.
-     +                    NOMCMP .EQ. 'NXX'   .OR.
-     +                    NOMCMP .EQ. 'N'     ) THEN
+     &                    NOMCMP .EQ. 'EPXX'  .OR.
+     &                    NOMCMP .EQ. 'NXX'   .OR.
+     &                    NOMCMP .EQ. 'N'     ) THEN
                         NUMXX = NUDDL + ICMPT
                         SG(1) = ZR(IAVALE-1+NUMXX)
                      ELSEIF ( NOMCMP .EQ. 'SIYY'  .OR.
-     +                        NOMCMP .EQ. 'EPYY'  .OR.
-     +                        NOMCMP .EQ. 'NYY'   .OR.
-     +                        NOMCMP .EQ. 'VY'    ) THEN
+     &                        NOMCMP .EQ. 'EPYY'  .OR.
+     &                        NOMCMP .EQ. 'NYY'   .OR.
+     &                        NOMCMP .EQ. 'VY'    ) THEN
                         NUMYY = NUDDL + ICMPT
                         SG(3) = ZR(IAVALE-1+NUMYY)
                      ELSEIF ( NOMCMP .EQ. 'SIZZ'  .OR.
-     +                        NOMCMP .EQ. 'EPZZ'  .OR.
-     +                        NOMCMP .EQ. 'NXY'   .OR.
-     +                        NOMCMP .EQ. 'VZ'    ) THEN
+     &                        NOMCMP .EQ. 'EPZZ'  .OR.
+     &                        NOMCMP .EQ. 'NXY'   .OR.
+     &                        NOMCMP .EQ. 'VZ'    ) THEN
                         NUMZZ = NUDDL + ICMPT
                         SG(6) = ZR(IAVALE-1+NUMZZ)
                      ELSEIF ( NOMCMP .EQ. 'SIXY'  .OR.
-     +                        NOMCMP .EQ. 'EPXY'  .OR.
-     +                        NOMCMP .EQ. 'MXX'   .OR.
-     +                        NOMCMP .EQ. 'MT'    ) THEN
+     &                        NOMCMP .EQ. 'EPXY'  .OR.
+     &                        NOMCMP .EQ. 'MXX'   .OR.
+     &                        NOMCMP .EQ. 'MT'    ) THEN
                         NUMXY = NUDDL + ICMPT
                         SG(2) = ZR(IAVALE-1+NUMXY)
                      ELSEIF ( NOMCMP .EQ. 'SIXZ'  .OR.
-     +                        NOMCMP .EQ. 'EPXZ'  .OR.
-     +                        NOMCMP .EQ. 'MYY'   .OR.
-     +                        NOMCMP .EQ. 'MFY'   ) THEN
+     &                        NOMCMP .EQ. 'EPXZ'  .OR.
+     &                        NOMCMP .EQ. 'MYY'   .OR.
+     &                        NOMCMP .EQ. 'MFY'   ) THEN
                         NUMXZ = NUDDL + ICMPT
                         SG(4) = ZR(IAVALE-1+NUMXZ)
                      ELSEIF ( NOMCMP .EQ. 'SIYZ'  .OR.
-     +                        NOMCMP .EQ. 'EPYZ'  .OR.
-     +                        NOMCMP .EQ. 'MXY'   .OR.
-     +                        NOMCMP .EQ. 'MFZ'   ) THEN
+     &                        NOMCMP .EQ. 'EPYZ'  .OR.
+     &                        NOMCMP .EQ. 'MXY'   .OR.
+     &                        NOMCMP .EQ. 'MFZ'   ) THEN
                         NUMYZ = NUDDL + ICMPT
                         SG(5) = ZR(IAVALE-1+NUMYZ)
                      ENDIF

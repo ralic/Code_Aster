@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -902,7 +902,7 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
       ELSE
-         CALL UTMESS('F','ELRACA','ELREFA INCONNU: '//ELREFA)
+         CALL U2MESK('F','ELEMENTS_55',1,ELREFA)
       END IF
 
       DO 200 I = 0,NNO - 1

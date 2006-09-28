@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,14 +107,12 @@ C --- 0.VERIFICATIONS AVANT EXECUTION ---
 C
       IF (NBNO.NE.0 .AND. NBAM.NE.0 .AND. NBAM.NE.NBNO) THEN
         IER = IER + 1
-        CALL UTMESS('F',CMD,'NOMBRE DE MODES ET D AMORTISSEMENTS '//
-     &                      'DIFFERENTS')
+        CALL U2MESS('F','ALGELINE2_82')
       ENDIF
 
       IF (NBNO.NE.0 .AND. NBCONN.NE.0 .AND. NBCONN.NE.NBNO) THEN
         IER = IER + 1
-        CALL UTMESS('F',CMD,'NOMBRE DE MODES ET D AMORTISSEMENTS '//
-     &                      'DE CONNORS DIFFERENTS')
+        CALL U2MESS('F','ALGELINE2_83')
       ENDIF
 C
 C --- 1.RECUPERATION DES CARACTERISTIQUES MODALES AVANT COUPLAGE ---
@@ -128,9 +126,8 @@ C
         TMODE = .TRUE.
         NUMOI = NOMBM//'           .NUMO'
         CALL JELIRA(NUMOI,'LONUTI',NBNO,K8B)
-        IF (NBAM.NE.0 .AND. ABS(NBAM).NE.NBNO) CALL UTMESS('F',CMD,
-     &    'NOMBRE D AMORTISSEMENTS DIFFERENT DU NOMBRE DE MODES '//
-     &    'CALCULES')
+        IF (NBAM.NE.0 .AND. ABS(NBAM).NE.NBNO) CALL U2MESS('F','ALGELINE
+     &2_84')
       ELSE
         NBNO = ABS(NBNO)
       ENDIF
@@ -181,7 +178,7 @@ C
         UMIN = VMIN
         VMIN = VMAX
         VMAX = UMIN
-        CALL UTMESS('A',CMD,'INVERSION VMIN <=> VMAX')
+        CALL U2MESS('A','ALGELINE2_85')
       ENDIF
 C
       VITE = NOMU//'.VITE'
@@ -315,7 +312,7 @@ C
           NOMCHA(17:24) = NOMPAR(1:3)//'     '
 C
           CALL TBAJLI ( NOMU, 1, 'NOM_CHAM',
-     +                        IBID, R8B, C16B, NOMCHA, 0 )
+     &                        IBID, R8B, C16B, NOMCHA, 0 )
 C
 C --------CREATION DU CHAMP
           CHAM19 = NOMCHA(1:19)

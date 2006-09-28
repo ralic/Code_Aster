@@ -2,7 +2,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,8 +116,9 @@ C     --------------------------------------------
         NOMCMP = ZK8(JCNSC-1+ICMP1)
         ICMP = INDIK8(ZK8(JCMPGD),NOMCMP,1,NCMPMX)
         IF (ICMP.EQ.0) CALL UTMESS('F','CNSCNO','LA CMP:'//NOMCMP//
-     +                             ' N''APPARTIENT PAS A LA GRANDEUR:'//
-     +                             NOMGD)
+     &                             ' N''APPARTIENT PAS A LA GRANDEUR:'//
+     &                             NOMGD)
+C        CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
         ZI(JNUCMP-1+ICMP) = ICMP1
         ZI(JNUCM1-1+ICMP1) = ICMP
    10 CONTINUE
@@ -146,8 +147,7 @@ C       2.1 ON COMPTE LES CMPS PORTEES PAR CNS :
         DO 20,K = 1,NBNO * NCMP1
           IF (ZL(JCNSL-1+K)) NEQ2 = NEQ2 + 1
    20   CONTINUE
-        IF (NEQ2.EQ.0) CALL UTMESS('F','CNSCNO',
-     &      'LE CHAM_NO EST DE LONGUEUR NULLE.')
+        IF (NEQ2.EQ.0) CALL U2MESS('F','CALCULEL2_12')
 
 C       2.2 ALLOCATION DES OBJETS :
         CALL CRPRN2(PRCHNO,BASE,NBNO,NEQ2,NEC)
@@ -164,7 +164,7 @@ C       2.3 REMPLISSAGE DE .PRNO :
               IDG2 = JPRN2 - 1 + ((2+NEC)* (INO-1)) + 2 + IEC
               ZI(IDG2) = IOR(ZI(IDG2),CODE)
               ZI(JPRN2-1+ ((2+NEC)* (INO-1))+2) = ZI(JPRN2-1+
-     +          ((2+NEC)* (INO-1))+2) + 1
+     &          ((2+NEC)* (INO-1))+2) + 1
 
             END IF
    30     CONTINUE
@@ -214,7 +214,8 @@ C     -----------------------------------
             IF (PROL0.EQ.'NON') THEN
                CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
                CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
-     +                  ' SUR LE NOEUD:'//NOMNO)
+     &                  ' SUR LE NOEUD:'//NOMNO)
+C        CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
             ELSE
                CALL ASSERT(PROL0.EQ.'OUI')
                IF (TSCA.EQ.'R') THEN
@@ -228,7 +229,7 @@ C     -----------------------------------
                ELSE IF (TSCA.EQ.'K8') THEN
                  ZK8(JVALE-1+IEQ2) = ' '
                ELSE
-                 CALL UTMESS('F','CNSCNO','STOP 3')
+                 CALL U2MESS('F','ALGORITH_19')
                END IF
                GO TO 60
             ENDIF
@@ -246,13 +247,14 @@ C     -----------------------------------
             ELSE IF (TSCA.EQ.'K8') THEN
               ZK8(JVALE-1+IEQ2) = ZK8(JCNSV-1+ (INO-1)*NCMP1+ICMP1)
             ELSE
-              CALL UTMESS('F','CNSCNO','STOP 3')
+              CALL U2MESS('F','ALGORITH_19')
             END IF
           ELSE
             IF (PROL0.EQ.'NON') THEN
                CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
                CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
-     +                  ' SUR LE NOEUD:'//NOMNO)
+     &                  ' SUR LE NOEUD:'//NOMNO)
+C        CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
             ELSE
                CALL ASSERT(PROL0.EQ.'OUI')
                IF (TSCA.EQ.'R') THEN
@@ -266,7 +268,7 @@ C     -----------------------------------
                ELSE IF (TSCA.EQ.'K8') THEN
                  ZK8(JVALE-1+IEQ2) = ' '
                ELSE
-                 CALL UTMESS('F','CNSCNO','STOP 3')
+                 CALL U2MESS('F','ALGORITH_19')
                END IF
                GO TO 60
             ENDIF

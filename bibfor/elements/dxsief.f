@@ -4,22 +4,22 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     IN  XYZL : COORDONNEES DES NOEUDS
@@ -52,7 +52,7 @@ C
 C --------------------------------------------------------------------
       INTEGER  NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG, IRET, ITEMP,
-     +         IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8), JTREF, NBPAR
+     &         IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8), JTREF, NBPAR
       REAL*8   DISTN, ROT(9), DH(9), D(4,4), REPERE(7), INST
       REAL*8   C,S,PI,PHI,EPSL(4),R8PI
       REAL*8   HIC, H, ZIC, ZMIN, VALPU(2), TINF, TMOY, TSUP
@@ -61,13 +61,13 @@ C --------------------------------------------------------------------
       REAL*8   EPS2D(6), KHI(3), DEPF(12), DEPM(8)
       REAL*8   BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
       REAL*8   CARAT3(21),CARAQ4(25),QSI,ETA,JACOB(5)
-      LOGICAL      TEMPNO, GRILLE, DKT, DKQ 
+      LOGICAL      TEMPNO, GRILLE, DKT, DKQ
       CHARACTER*2  CODRET
       CHARACTER*8  NOMPAR(2)
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
-     +                                         IVF,IDFDX,IDFD2,JGANO)
+     &                                         IVF,IDFDX,IDFD2,JGANO)
 C
       ZERO = 0.0D0
       DEUX = 2.0D0
@@ -78,14 +78,14 @@ C
       IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
         GRILLE = .TRUE.
       ELSEIF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
-     +         NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
+     &         NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
         DKT = .TRUE.
       ELSEIF ( NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
-     +         NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
+     &         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     &         NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
         DKQ = .TRUE.
       ELSE
-        CALL UTMESS('F','DXSIEF','ELEMENT NON TRAITE '//NOMTE)
+        CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
 C
       CALL TECACH ('ONN','PTEREF',8,ITAB,IRET)
@@ -178,7 +178,7 @@ C        -------------------------------------------------------
           NOMPAR(1) = 'INST'
           NOMPAR(2) = 'EPAIS'
         ELSE
-          CALL UTMESS('F','DXSIEF','TEMPERATURE NON TROUVEE.')
+          CALL U2MESS('F','ELEMENTS_37')
         END IF
       END IF
 
@@ -201,8 +201,7 @@ C
       CALL JEVECH('PNBSP_I','L',JNBSPI)
       NBCON = 6
       NBCOU = ZI(JNBSPI-1+1)
-      IF (NBCOU.LE.0) CALL UTMESS('F','DXSIEF',
-     +                            'NOMBRE DE COUCHES NEGATIF OU NUL')
+      IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
 C
       HIC = H/NBCOU
       IF (GRILLE) THEN
@@ -238,7 +237,7 @@ C       --------------------------------
           DO 120, IGAUH = 1 , NPGH
 
             ICPG = NBCON*NPGH*NBCOU*(IPG-1) + NBCON*NPGH*(ICOU-1) +
-     +                                        NBCON*(IGAUH-1)
+     &                                        NBCON*(IGAUH-1)
 
 C       -- COTE DES POINTS D'INTEGRATION
 C       --------------------------------
@@ -262,7 +261,7 @@ C         -------------------------------------------
             END IF
 
             CALL RCVALA(MATER,' ', 'ELAS', NBPAR,NOMPAR,VALPU,
-     +                                   1,'ALPHA',ALPHA,CODRET, '  ' )
+     &                                   1,'ALPHA',ALPHA,CODRET, '  ' )
             IF ( CODRET.NE.'OK' ) ALPHA = ZERO
 
 C         -- CALCUL DE EPS2D
@@ -273,14 +272,14 @@ C         ------------------
             EPS2D(4) = EPSM(3) + ZIC*KHI(3)
             EPS2D(5) = ZERO
             EPS2D(6) = ZERO
- 
+
 C
 C         -- INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
 C         ----------------------------------------------------
             EPSTH(1) = ALPHA*(TEMPG-TREF)
             EPSTH(2) = ALPHA*(TEMPG-TREF)
             EPSTH(3) = ZERO
-            EPSTH(4) = ZERO         
+            EPSTH(4) = ZERO
             IF (GRILLE) THEN
 C
 C              DEFORMATIONS  REPERE LOCAL
@@ -311,7 +310,7 @@ C              --------------------------------
 
 C              -- CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT
 C              ---------------------------------------------------------
-               DO 130 I = 1, 4 
+               DO 130 I = 1, 4
                   SIG = ZERO
                   DO 132 J = 1, 4
                      SIG = SIG + (EPS2D(J)-EPSTH(J))*D(I,J)

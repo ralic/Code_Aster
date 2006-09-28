@@ -1,7 +1,7 @@
       SUBROUTINE ALCHML(LIGREZ,OPTIOZ,NOMPAZ,BASZ,CELZ,IRET,DCELZ)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,18 +158,19 @@ C       -- QUELQUES VERIFICATIONS :
         IF (MA2.NE.MA) CALL UTMESS('F','ALCHML',
      &                             'INCOHERENCE '//'DES MAILLAGES :'//
      &                             MA2//' ET '//MA)
+C        CALL U2MESK('F','CALCULEL_4', 2 ,VALK)
 
-        IF (ZI(JDCESD-1+2).NE.2) CALL UTMESS('F','ALCHML','STOP 1A')
-        IF (ZI(JDCESD-1+3).NE.1) CALL UTMESS('F','ALCHML','STOP 1B')
-        IF (ZI(JDCESD-1+4).NE.1) CALL UTMESS('F','ALCHML','STOP 1C')
+        IF (ZI(JDCESD-1+2).NE.2) CALL U2MESS('F','CALCULEL_5')
+        IF (ZI(JDCESD-1+3).NE.1) CALL U2MESS('F','CALCULEL_6')
+        IF (ZI(JDCESD-1+4).NE.1) CALL U2MESS('F','CALCULEL_7')
 
         KBID = ZK8(JDCESK-1+2)
-        IF (KBID.NE.'DCEL_I') CALL UTMESS('F','ALCHML','STOP 2')
+        IF (KBID.NE.'DCEL_I') CALL U2MESS('F','CALCULEL_8')
 
         KBID = ZK8(JDCESC-1+1)
-        IF (KBID.NE.'NPG_DYN') CALL UTMESS('F','ALCHML','STOP 4')
+        IF (KBID.NE.'NPG_DYN') CALL U2MESS('F','CALCULEL_9')
         KBID = ZK8(JDCESC-1+2)
-        IF (KBID.NE.'NCMP_DYN') CALL UTMESS('F','ALCHML','STOP 5')
+        IF (KBID.NE.'NCMP_DYN') CALL U2MESS('F','CALCULEL_10')
       END IF
 
 
@@ -212,14 +213,12 @@ C     DEBGRL: DEBUT DE DESCRIPTION DU GREL DANS .CELD
           ITYPLO = ZI(IAMOLO-1+1)
           IF (ITYPLO.GT.3) THEN
             CALL JENUNO(JEXNUM('&CATA.TE.NOMMOLOC',MODE),NOMOLO)
-            CALL UTMESS('F','ALCHML','LE MODE_LOCAL: '//NOMOLO//
-     &                  ' NE DOIT PAS ETRE VECTEUR OU MATRICE.')
+            CALL U2MESK('F','CALCULEL_11',1,NOMOLO)
           ELSE
             NBPOIN = ZI(IAMOLO-1+4)
             IF ((ITYPLO.EQ.2).AND.(NBPOIN.GT.10000)) THEN
               CALL JENUNO(JEXNUM('&CATA.TE.NOMMOLOC',MODE),NOMOLO)
-              CALL UTMESS('F','ALCHML','LE MODE_LOCAL: '//NOMOLO//
-     &                  ' NE DOIT PAS ETRE "DIFF__".')
+              CALL U2MESK('F','CALCULEL_12',1,NOMOLO)
             END IF
           END IF
 
@@ -317,7 +316,7 @@ C                         NIVE_COUCHE (INF MOY SUP)
       ELSE IF (ITYCH1.EQ.3) THEN
         ZK24(JCELK-1+3) = 'ELGA'
       ELSE
-        CALL UTMESS('F','ALCHML','STOP')
+        CALL U2MESS('F','CALCULEL_13')
       END IF
       ZK24(JCELK-1+4) = ' '
       ZK24(JCELK-1+5) = ' '
@@ -336,6 +335,7 @@ C     CAVER1  (COHERENCE DES TYPE_ELEM AVEC L'OPTION):
      &            ' INCOMPATIBILITE DES TYPE_CHAMP ("ELGA"/"ELNO") '//
      &            ' POUR L OPTION : '//OPTION//
      &            ' ENTRE LES 2 TYPE_ELEM : '//NOMTE1//' ET '//NOMTE)
+C        CALL U2MESK('F','CALCULEL_14', 3 ,VALK)
 
 
 C     8- FIN NORMALE:

@@ -1,6 +1,6 @@
       SUBROUTINE CESIMP(CESZ,UNITE,NBMAT,NUMMAI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C     ------------------------------------------------------------------
       NCMP = ZI(JCESD-1+2)
 
       CALL JEEXIN(MA//'.CONNEX',IRET)
-      IF (IRET.EQ.0) CALL UTMESS('F','CESIMP','STOP')
+      IF (IRET.EQ.0) CALL U2MESS('F','CALCULEL_13')
       CALL JEVEUO(MA//'.CONNEX','L',JCONX1)
       CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',JCONX2)
 
@@ -112,7 +112,7 @@ C     ------------------------------------------------------------
       ELSEIF (((TSCA.EQ.'R').OR.TSCA.EQ.'K16')) THEN
         FMT = '(A12,XXX(''|'',A16))'
       ELSE
-        CALL UTMESS('F','CESIMP','I/R/K8/K16 SVP')
+        CALL U2MESS('F','CALCULEL_79')
       END IF
 
 
@@ -124,7 +124,7 @@ C     ------------------------------------------------------------
 
 C     2- FORMAT DES LIGNES :
 C     ----------------------
-      IF (NCMPU.GT.997) CALL UTMESS('F','CESIMP','TROP DE CMPS (997)')
+      IF (NCMPU.GT.997) CALL U2MESS('F','CALCULEL_80')
       CALL CODENT(NCMPU+2,'D',FMT(6:8))
 
 

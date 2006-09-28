@@ -5,24 +5,24 @@
       CHARACTER*2    LEVSET
       CHARACTER*8    MODEL,NOMA,FISS
       CHARACTER*19   CNSLN,CNSLT,CNSGLS,NOESOM,NORESI,ISOZRO,CNXINV
-      
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/08/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C TOLE CRP_20
@@ -91,14 +91,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               CELALF,CESALF,CNSVI,CNSWI,CNSPTF,CNSGDF,CESPTF,
      &               CELGDF,CELPTF,CNOPTF,CNOGDF
       CHARACTER*24   LIGREL,LCHIN(4),LCHOUT(2)
-      
+
       REAL*8         RESILN,RESILT
       PARAMETER      (RESILN = 1.D-7)
       PARAMETER      (RESILT = 1.D-5)
       INTEGER        ITERMX
       PARAMETER      (ITERMX=100)
       REAL*8         RESIDU(ITERMX),RESIT(ITERMX)
-      
+
 C-----------------------------------------------------------------------
 C     DEBUT
 C-----------------------------------------------------------------------
@@ -117,12 +117,11 @@ C  RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL JEVEUO(NOMA//'.DIME','L',ADDIM)
       NDIM=ZI(ADDIM-1+6)
       LIGREL = MODEL//'.MODELE'
-      
+
 C   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
       CALL GETVTX(' ','METHODE',1,1,1,METHOD,IBID)
       WRITE(IFM,*) '   UTILISATION DE LA METHODE '//METHOD
-      IF (METHOD.EQ.'UPWIND')  CALL UTMESS('F','XPRREI','LA METHODE '
-     &      //'"UPWIND" EST EN COURS D''IMPLEMENTATION.')
+      IF (METHOD.EQ.'UPWIND')  CALL U2MESS('F','ALGORITH11_66')
 
 C   RECUPERATION DE L'ADRESSE DES VALEURS DE LS ET DU GRADIENT DE LS
       IF (LEVSET.EQ.'LN') CALL JEVEUO(CNSLN//'.CNSV','E',JLSNO)
@@ -163,15 +162,15 @@ C   ALPHA
          CELALF = '&&XPRREI.CELALF'
          CESALF = '&&XPRREI.CESALF'
       ENDIF
-      
+
 C----------------------------------------------------------------------
 C   CALCUL DES VRAIES DISTANCES SIGNEES SUR LES NOEUDS PROCHES DE LS=0
 C----------------------------------------------------------------------
 C  VECTEUR IDIQUANT SI LS AU NOEUD EST CALCULEE
       CALL WKVECT(ISOZRO,'V V L',NBNO,JZERO)
-      
+
       CALL XPRLS0(NOMA,FISS,NOESOM,CNSLN,CNSLT,ISOZRO,LEVSET)
-      
+
 C--------------------------------------
 C   CALCUL DE PETIT F SUR LES ELEMENTS
 C--------------------------------------
@@ -215,7 +214,7 @@ C----------------------------------------
          CALL JEVEUO (FISS//'.PRO.MES_EL'//'.CESD','L',JMESTD)
       ENDIF
 C-----------------------------------------------------------------------
-          
+
       CNSGDF =  '&&XPRREI.CNSGDF'
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSGDF)
       CALL JEVEUO(CNSGDF//'.CNSV','E',JGDF)
@@ -256,7 +255,7 @@ C--------------------------------------
 
 C-----------------------------------------------------------------------
          IF (METHOD.EQ.'SIMPLEXE') THEN
-         
+
 C---------------------------------------------------------
 C     CALCUL DU CHAM_ELEM DELTA_PHI ET DU CHAM_ELNO ALPHA
 C---------------------------------------------------------
@@ -308,15 +307,15 @@ C   BOUCLE SUR LES NOEUDS DE LA MAILLE
                   ZR(JVI-1+NUNO) = ZR(JVI-1+NUNO) + ZR(JALPHA-1+IADALP)
      &                           * (ZR(JDELFI-1+IADDFI)-ZR(JFEL-1+IADF)
      &                           *  ZR(JMEAST-1+IADMET))
-            
+
                   ZR(JWI-1+NUNO) = ZR(JWI-1+NUNO) + ZR(JALPHA-1+IADALP)
      &                               * ZR(JMEAST-1+IADMET)
  130           CONTINUE
  120        CONTINUE
-         
+
 C-----------------------------------------------------------------------
          ELSEIF (METHOD.EQ.'UPWIND') THEN
-         
+
          ENDIF
 C-----------------------------------------------------------------------
 
@@ -338,7 +337,7 @@ C  ON ECARTE LES NOEUDS CALCULES PLUS HAUT
                ZR(JLSNO-1+I) = LSNOUV
                IF (ZL(JRESDU-1+I)) THEN
                   SDIFF = SDIFF + (LSNOUV-LSPREC)**2.0D0
-                  SIGMLS = SIGMLS + LSPREC**2.0D0               
+                  SIGMLS = SIGMLS + LSPREC**2.0D0
                ENDIF
                SDIFFT = SDIFFT + (LSNOUV-LSPREC)**2.0D0
                SIGLST = SIGLST + LSPREC**2.0D0
@@ -355,7 +354,7 @@ C  CAS OU TOUS LES RESIDUS A ESTIMER SONT CALCULES
          ELSE
             RESIT(ITEMP) = (SDIFFT/SIGLST)**0.5D0
          ENDIF
-             
+
 C---------------------------------
 C     CALCUL DES NOEUDS DONT WI=0
 C---------------------------------
@@ -410,7 +409,7 @@ C     BOUCLE SUR LES NOEUDS DE LA MAILLE
                ENDIF
             ENDIF
  800     CONTINUE
-         
+
 C---------------------------------------------------
 C     CALCUL DU GRADIENT DE LA LEVEL SET RESULTANTE
 C---------------------------------------------------
@@ -425,7 +424,7 @@ C---------------------------------------------------
 
          CALL CALCUL('S','GRAD_NEUT_R',LIGREL,2,LCHIN,LPAIN,1,LCHOUT,
      &               LPAOUT,'V')
-      
+
 C  PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
          CALL CELCES (CELGLS, 'V', CHAMS)
          CALL CESCNS (CHAMS, ' ', 'V', CNSGLS)
@@ -439,11 +438,11 @@ C  CONVERGENCE ATTEINTE
          IF (LEVSET.EQ.'LT'.AND.RESIDU(ITEMP).LT.RESILT) GOTO 999
 C  NOMBRE D'ITERATION MAXI
          IF (ITEMP.EQ.ITERMX) GOTO 999
-         
+
  995  CONTINUE
 C-----FIN DE LA BOUCLE PRINCIPALE---------------------------------------
  999  CONTINUE
-         
+
 C-------------------------------------
 C     AFFICHAGE DES INFOS UTILISATEUR
 C-------------------------------------
@@ -468,10 +467,10 @@ C  CONVERGENCE ATTEINTE
 C  NOMBRE MAXI D'ITERATIONS ATTEINT
       IF (ITEMP.EQ.ITERMX)
      &   WRITE(IFM,*)'   NOMBRE MAX D''ITERATION ('//ITERK3//') ATTEINT'
-         
+
       WRITE(IFM,*)'   RESIDU LOCAL  = '//RESK10
       WRITE(IFM,*)'   RESIDU GLOBAL = '//RETK10
-         
+
       CALL ASSERT(ITEMP.LE.ITERMX)
 
 C   DESTRUCTION DES OBJETS VOLATILES
@@ -498,7 +497,7 @@ C   DESTRUCTION DES OBJETS VOLATILES
  902  FORMAT('   |           |   LOCAL    |   GLOBAL   |')
  903  FORMAT(3X,'+',11('-'),'+',12('-'),'+',12('-'),'+')
  904  FORMAT(3X,'|',5X,I3,2X,2(' |',E11.4),' | ')
-      
+
 C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
