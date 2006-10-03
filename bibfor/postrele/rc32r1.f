@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,72 +43,191 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       IBID, NPAR0, IM, IG, IS, I3,
-     +              NBSIGR, VALEI(2), JNUMGR, JNSITU, JNSG, JVALE,
-     +              JPMPB, NBGR, IOC, NUMGR, IS1, IS2 
-      PARAMETER    ( NPAR0 = 18 )
+      INTEGER       IBID, NPAR2, NPAR1, NPAR4, NPAR6, IM, IG, IS, I3,
+     +              IRET, NBSIGR, VALEI(2), JNUMGR, JNSITU, JNSG, JVALE,
+     +              JPMPB, NBGR, IOC, NUMGR, IS1, IS2, JREAS, JRESS, N1,
+     +              JSEIGR, JCOMBI, IOC1, IOC2, IOCS, II, NPAR0
+      PARAMETER    ( NPAR0 = 39, NPAR2 = 7, NPAR1 = 15, NPAR4 = 15, 
+     +               NPAR6 = 13 )
       REAL*8        UTOT, VALER(2)
       COMPLEX*16    C16B
       CHARACTER*2   K2C, K2L
       CHARACTER*4   LIEU(2)
       CHARACTER*6   K6B
-      CHARACTER*8   K8B, TYPAR0(NPAR0), VALEK(3)
-      CHARACTER*16  NOPAR0(NPAR0), NOPAR4(9), NOPAR5(6), NOPAR6(7)
-      CHARACTER*24  K24B, K24T
+      CHARACTER*8   K8B, VALEK(4), TYPAR0(NPAR0), TYPAR6(NPAR6), TYPTAB
+      CHARACTER*16  NOPAR2(NPAR2), NOPAR1(NPAR1), NOPAR4(NPAR4),
+     +              NOPAR6(NPAR6), NOPAR0(NPAR0)
+      CHARACTER*24  K24B, K24C, K24T
 C     ------------------------------------------------------------------
-      DATA NOPAR0 / 'NUME_GROUPE', 'LIEU', 'NUME_SITU_1', 'NUME_SITU_2',
-     +              'NUME_SITU', 'PM' , 'PB' , 'PMPB', 'SN' , 'SN*',
-     +              'FACT_USAGE' , '%_FACT_USAGE', 'SM' , 'SN/3SM' ,
-     +              'SN_MAX' , 'SP_MAX' , 'SALT_MAX' ,
-     +              'FACT_USAGE_CUMU' /
-      DATA TYPAR0 / 'I', 'K8', 'K8', 'K8','I', 'R', 'R', 'R', 'R', 
-     +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' /
       DATA LIEU   / 'ORIG' , 'EXTR' /
-C    
-      DATA NOPAR4 / 'NUME_GROUPE', 'LIEU' , 'NUME_SITU', 'PM' , 'PB' ,
-     +              'PMPB', 'SN', 'FACT_USAGE', 'SN*'   /
 C
-      DATA NOPAR5 / 'NUME_GROUPE', 'LIEU', 'NUME_SITU_1', 
-     +              'NUME_SITU_2', 'FACT_USAGE', '%_FACT_USAGE'  /
-
-      DATA NOPAR6 / 'LIEU',  'SM' , 'SN/3SM' , 'SN_MAX' , 'SP_MAX' ,
-     +              'SALT_MAX' , 'FACT_USAGE_CUMU' /
+      DATA NOPAR0 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' ,  
+     +              'PM_MAX', 'PB_MAX', 'PMPB_MAX', 'SM' ,
+     +              'SN/3SM' , 'SN_MAX' , 'SN*_MAX' , 'SP_MAX',
+     +              'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU',
+     +              'NUME_SITU', 'NUME_SITU_I', 'NUME_SITU_J',
+     +              'PM' , 'PB' , 'PMPB', 'SN', 'SN*', 'SP', 'KE_MECA',
+     +              'KE_THER', 'SALT', 'NUME_SITU_K', 'NUME_SITU_L',
+     +              'FACT_USAGE',  '%_FACT_USAGE' ,
+     +              'SP_ETAT_A_A', 'SALT_ETAT_A_A' ,
+     +              'SP_ETAT_B_A', 'SALT_ETAT_B_A' ,
+     +              'SP_ETAT_A_B', 'SALT_ETAT_A_B' ,
+     +              'SP_ETAT_B_B', 'SALT_ETAT_B_B' /
+      DATA TYPAR0 / 'K8', 'K8', 'I', 'K8',  'R', 'R', 'R', 'R', 'R',
+     +              'R', 'R', 'R', 'R', 'R', 'R', 'I', 'I', 'I', 'R',
+     +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8', 
+     +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'  /
+C
+C --- PARAMETRES FACTEUR D'USAGE
+C
+      DATA NOPAR2 / 'TYPE', 'NUME_GROUPE', 'LIEU', 'NUME_SITU_K', 
+     +              'NUME_SITU_L', 'FACT_USAGE' , '%_FACT_USAGE' /
+C
+C --- PARAMETRES POUR LE CALCUL DU FACTEUR D'USAGE
+C
+      DATA NOPAR1 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU', 
+     +              'NUME_SITU_I', 'NUME_SITU_J', 'SN' ,
+     +                     'SP_ETAT_A_A', 'SALT_ETAT_A_A' ,
+     +                     'SP_ETAT_B_A', 'SALT_ETAT_B_A' ,
+     +                     'SP_ETAT_A_B', 'SALT_ETAT_A_B' ,
+     +                     'SP_ETAT_B_B', 'SALT_ETAT_B_B' /
+C    
+C --- PARAMETRES POUR CHAQUE SITUATION
+C
+      DATA NOPAR4 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' , 
+     +              'NUME_SITU', 'PM' , 'PB' , 'PMPB', 'SN', 'SN*', 
+     +              'SP', 'KE_MECA', 'KE_THER', 'SALT', 'FACT_USAGE'  /
+C
+C --- PARAMETRES POUR LES MAXIMA
+C
+      DATA NOPAR6 / 'TYPE', 'LIEU', 'PM_MAX', 'PB_MAX', 'PMPB_MAX',
+     +              'SM' , 'SN/3SM' , 'SN_MAX' , 'SN*_MAX' , 'SP_MAX',
+     +              'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU' /
+C
+      DATA TYPAR6 / 'K8', 'K8', 'R', 'R', 'R', 'R', 'R', 'R',
+     +                          'R', 'R', 'R', 'R', 'R'  /
 C DEB ------------------------------------------------------------------
+C
+      CALL GETVTX ( ' ', 'TYPE_RESU', 1,1,1, TYPTAB , N1 )
 C
       CALL JELIRA ( '&&RC3200.SITU_NUME_GROUP', 'LONMAX', NBGR, K8B )
       CALL JEVEUO ( '&&RC3200.SITU_NUME_GROUP', 'L', JNUMGR )
+      CALL JEVEUO ( '&&RC3200.SITU_SEISME'    , 'L', JSEIGR )
 
       CALL JEVEUO ( '&&RC3200.SITU_NUMERO', 'L', JNSITU )
+      CALL JEVEUO ( '&&RC3200.SITU_COMBINABLE', 'L', JCOMBI )
+C
+C     ------------------------------------------------------------------
+C
+      IF ( TYPTAB .EQ. 'VALE_MAX' ) THEN
+         CALL TBAJPA ( NOMRES, NPAR6, NOPAR6, TYPAR6 )
+      ELSE
+         CALL TBAJPA ( NOMRES, NPAR0, NOPAR0, TYPAR0 )
+      ENDIF
+C
+C     -----------------------------------------------------------------
+C     LES MAXIMUM DES QUANTITES
+C     -----------------------------------------------------------------
+C
+      VALEK(1) = 'MAXI'
+      DO 110 IM = 1 , 2
+C
+         VALEK(2) = LIEU(IM)
+C
+         CALL JEVEUO ( '&&RC3200.RESULTAT  .'//LIEU(IM), 'L', JVALE )
+C
+         CALL TBAJLI ( NOMRES, NPAR6, NOPAR6, IBID, ZR(JVALE),
+     +                                              C16B, VALEK, 0 )
+C
+ 110  CONTINUE
+C
+      IF ( TYPTAB .EQ. 'VALE_MAX' ) GOTO 9999
 C
 C     -----------------------------------------------------------------
 C
-        CALL TBAJPA ( NOMRES, NPAR0, NOPAR0, TYPAR0 )
-C
-        DO 100 IG = 1 , NBGR
-          NUMGR = ZI(JNUMGR+IG-1)
-          VALEI(1) = NUMGR
-          CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
+      DO 100 IG = 1 , NBGR
+         NUMGR = ZI(JNUMGR+IG-1)
+         IOCS  = ZI(JSEIGR+IG-1)
+         VALEI(1) = NUMGR
+         CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
      +                                                    NBSIGR,K8B)
-          CALL JEVEUO(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
+         CALL JEVEUO(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
 
-          DO 102 IM = 1 , 2
-            K24B = '&&RC3200.PMPB       '//LIEU(IM)
-            CALL JEVEUO(JEXNUM(K24B,NUMGR),'L',JPMPB)
+C        --------------------------------------------------------------
+C        QUANTITE POUR CHAQUE SITUATION
+C        --------------------------------------------------------------
+         VALEK(1) = 'SITU'
+         DO 102 IM = 1 , 2
+            VALEK(3) = LIEU(IM)
+            K24B = '&&RC3200.AVEC_SEISME'//LIEU(IM)
+            CALL JEVEUO(JEXNUM(K24B,NUMGR),'L',JREAS)
+            K24C = '&&RC3200.SANS_SEISME'//LIEU(IM)
+            CALL JEVEUO(JEXNUM(K24C,NUMGR),'L',JRESS)
+            VALEK(2) = 'AVEC'
             DO 104 IS = 1 , NBSIGR
               IOC = ZI(JNSG+IS-1)
               VALEI(2) = ZI(JNSITU+IOC-1)
-
-              CALL TBAJLI ( NOMRES, 9, NOPAR4, VALEI,
-     +                      ZR(JPMPB-1+6*(IS-1)+1), C16B, LIEU(IM), 0 )
-C
+              CALL TBAJLI ( NOMRES, NPAR4, NOPAR4, VALEI,
+     +                      ZR(JREAS-1+10*(IS-1)+1), C16B, VALEK, 0 )
  104        CONTINUE
- 102      CONTINUE
+            VALEK(2) = 'SANS'
+            DO 106 IS = 1 , NBSIGR
+              IOC = ZI(JNSG+IS-1)
+              VALEI(2) = ZI(JNSITU+IOC-1)
+              CALL TBAJLI ( NOMRES, NPAR4, NOPAR4, VALEI,
+     +                      ZR(JRESS-1+10*(IS-1)+1), C16B, VALEK, 0 )
+ 106        CONTINUE
+ 102     CONTINUE
 C
+C        --------------------------------------------------------------
+C        QUANTITE POUR CHAQUE COMBINAISON
+C        --------------------------------------------------------------
+C
+          VALEK(1) = 'COMB'
+          DO 120 IM = 1 , 2
+C
+            VALEK(3) = LIEU(IM)
+            K24B = '&&RC3200.COMBI_A_SEI'//LIEU(IM)
+            CALL JEVEUO(JEXNUM(K24B,NUMGR),'L',JREAS)
+            K24C = '&&RC3200.COMBI_S_SEI'//LIEU(IM)
+            CALL JEVEUO(JEXNUM(K24C,NUMGR),'L',JRESS)
+C
+            II = 0
+            DO 122 IS1 = 1,NBSIGR
+               IOC1 = ZI(JNSG+IS1-1)
+               IF (.NOT.ZL(JCOMBI+IOC1-1)) GO TO 122
+               IF (IOC1.EQ.IOCS) GO TO 122
+               VALEI(2) = ZI(JNSITU+IOC1-1)
+               DO 124 IS2 = IS1 + 1,NBSIGR
+                  IOC2 = ZI(JNSG+IS2-1)
+                  IF (.NOT.ZL(JCOMBI+IOC2-1)) GO TO 124
+                  IF (IOC2.EQ.IOCS) GO TO 124
+                  VALEI(3) = ZI(JNSITU+IOC2-1)
+C
+                  VALEK(2) = 'AVEC'
+                  CALL TBAJLI ( NOMRES, NPAR1, NOPAR1, VALEI,
+     +                          ZR(JREAS+II), C16B, VALEK, 0 )
+                  VALEK(2) = 'SANS'
+                  CALL TBAJLI ( NOMRES, NPAR1, NOPAR1, VALEI,
+     +                          ZR(JRESS+II), C16B, VALEK, 0 )
+
+                  II = II + 9
+ 124           CONTINUE
+
+ 122        CONTINUE
+
+ 120     CONTINUE
+C
+C        --------------------------------------------------------------
+C        FACTEUR D'USAGE
+C        --------------------------------------------------------------
+C
+          VALEK(1) = 'FACT'
           DO 112 IM = 1 , 2
-            VALEK(1) = LIEU(IM)
+            VALEK(2) = LIEU(IM)
 C
             CALL JEVEUO ( '&&RC3200.RESULTAT  .'//LIEU(IM), 'L', JVALE)
-            UTOT = ZR(JVALE+5)
+            UTOT = ZR(JVALE+7)
 C
             K24T = '&&RC3200.FACT_USAGE '//LIEU(IM)
             CALL JEVEUO(JEXNUM(K24T,NUMGR),'L',JPMPB)
@@ -134,23 +253,17 @@ C
                 K2C = '_B'
               ENDIF
               CALL CODENT ( IS1, 'D', K6B )
-              VALEK(2) = K6B//K2L
+              VALEK(3) = K6B//K2L
               CALL CODENT ( IS2, 'D', K6B )
-              VALEK(3) = K6B//K2C
-              CALL TBAJLI ( NOMRES, 6,NOPAR5,VALEI,VALER,C16B,VALEK,0 )
+              VALEK(4) = K6B//K2C
+              CALL TBAJLI ( NOMRES, NPAR2, NOPAR2, VALEI, VALER,
+     +                                                C16B, VALEK, 0 )
 C
  114        CONTINUE
  116        CONTINUE
  112      CONTINUE
  100    CONTINUE
 C
-        DO 110 IM = 1 , 2
-C
-          CALL JEVEUO ( '&&RC3200.RESULTAT  .'//LIEU(IM), 'L', JVALE )
-C
-          CALL TBAJLI ( NOMRES, 7, NOPAR6, IBID, ZR(JVALE),
-     +                                              C16B, LIEU(IM), 0 )
-C
- 110    CONTINUE
+ 9999 CONTINUE
 C
       END

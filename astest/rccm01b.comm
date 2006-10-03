@@ -1,4 +1,4 @@
-# MODIF  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / UNITAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,7 +51,8 @@ MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                                 E_REFE = 200000.),
                     RCCM=_F(  M_KE = 1.7,
                               N_KE = 0.3,
-                              SM = 200.)
+                              SM = 200.,
+                              SY_02 = 200.)
                                )
 
 #Relecture des tables de contraintes
@@ -115,47 +116,45 @@ UNIPM=POST_RCCM( MATER=MAT,
                      TEMP_REF_A=20.0,
                      TEMP_REF_B=20.0,),),);
 
-IMPR_TABLE(    TABLE=UNIPM)
-
 #---le PM_PB
 TEST_TABLE(    TABLE=UNIPM,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PM',
+                  NOM_PARA='PM_MAX',
                       VALE=200.        )
 TEST_TABLE(    TABLE=UNIPM,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PB',
+                  NOM_PARA='PB_MAX',
                   CRITERE='ABSOLU',
                       VALE= 0.         )
 TEST_TABLE(    TABLE=UNIPM,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PMPB',
+                  NOM_PARA='PMPB_MAX',
                       VALE= 200.       )
 
 TEST_TABLE(    TABLE=UNIPM,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PM',
+                  NOM_PARA='PM_MAX',
                       VALE=200.        )
 TEST_TABLE(    TABLE=UNIPM,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PB',
+                  NOM_PARA='PB_MAX',
                   CRITERE='ABSOLU',
                       VALE= 0.         )
 TEST_TABLE(    TABLE=UNIPM,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PMPB',
+                  NOM_PARA='PMPB_MAX',
                       VALE= 200.       )
 
 #--------------------------------------------------------------------------------
@@ -209,21 +208,19 @@ UNISN=POST_RCCM( MATER=MAT,
                      TEMP_REF_A=20.0,
                      TEMP_REF_B=20.0,),),);
 
-IMPR_TABLE(    TABLE=UNISN)
-
 #---le SN
 TEST_TABLE(    TABLE=UNISN,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN',
+                  NOM_PARA='SN_MAX',
                       VALE=300.        )
 
 TEST_TABLE(    TABLE=UNISN,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN',
+                  NOM_PARA='SN_MAX',
                       VALE=100.        )
 
 #---le SN*
@@ -231,14 +228,14 @@ TEST_TABLE(    TABLE=UNISN,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN*',
+                  NOM_PARA='SN*_MAX',
                       VALE=200.          )
 
 TEST_TABLE(    TABLE=UNISN,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN*',
+                  NOM_PARA='SN*_MAX',
                       VALE=200.          )
 
 #--------------------------------------------------------------------------------
@@ -292,34 +289,32 @@ UNIFA=POST_RCCM( MATER=MAT,
                      TEMP_REF_A=20.0,
                      TEMP_REF_B=20.0,),),);
 
-IMPR_TABLE(    TABLE=UNIFA )
-
 #---le PM
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PM',
+                  NOM_PARA='PM_MAX',
                       VALE=200.        )
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PM',
+                  NOM_PARA='PM_MAX',
                       VALE=200.        )
 #---le PB
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PB',
+                  NOM_PARA='PB_MAX',
                   CRITERE='ABSOLU',
                       VALE= 0.         )
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PB',
+                  NOM_PARA='PB_MAX',
                   CRITERE='ABSOLU',
                       VALE= 0.         )
 #---le PMPB
@@ -327,14 +322,14 @@ TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PMPB',
+                  NOM_PARA='PMPB_MAX',
                       VALE= 200.       )
 
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='PMPB',
+                  NOM_PARA='PMPB_MAX',
                       VALE= 200.       )
 
 #---le SN
@@ -342,28 +337,28 @@ TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN',
+                  NOM_PARA='SN_MAX',
                       VALE=300.        )
 
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN',
+                  NOM_PARA='SN_MAX',
                       VALE=100.        )
 #---le SN*
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN*',
+                  NOM_PARA='SN*_MAX',
                       VALE=200.          )
 
 TEST_TABLE(    TABLE=UNIFA,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'EXTR'),),
                  REFERENCE='ANALYTIQUE',
-                  NOM_PARA='SN*',
+                  NOM_PARA='SN*_MAX',
                       VALE=200.          )
 
 #---le SP
@@ -411,5 +406,84 @@ TEST_TABLE(    TABLE=UNIFA,
                   NOM_PARA='FACT_USAGE_CUMU',
                       VALE=2.41379E-07  )
 
+
+#--------------------------------------------------------------------------------
+#   option = 'FATIGUE'
+#   chargement unitaire - Validation FATIGUE
+#--------------------------------------------------------------------------------
+
+UNIF2=POST_RCCM( MATER=MAT,
+                 TYPE_RESU_MECA='UNITAIRE',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='NUL',
+                     FX=0.0,
+                     FY=0.0,
+                     FZ=0.0,
+                     MX=0.0,
+                     MY=0.0,
+                     MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='UNIT',
+                     FX=2.0,
+                     FY=0.0,
+                     FZ=0.0,
+                     MX=0.0,
+                     MY=0.0,
+                     MZ=0.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_FX=TBTHME,
+                      TABL_FY=TBTHME,
+                      TABL_FZ=TBTHME,
+                      TABL_MX=TBTHME,
+                      TABL_MY=TBTHME,
+                      TABL_MZ=TBTHME,
+                      TABL_PRES=TBTHME,),),
+                  RESU_THER=(
+                   _F(NUME_RESU_THER=1,
+                      TABL_RESU_THER=TBTHME, ),
+                  ),
+                  SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Unitaire FX',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=0.,
+                     PRES_B=1.,
+                     TEMP_REF_A=0.0,
+                     TEMP_REF_B=20.0,),),);
+
+TEST_TABLE(    TABLE=UNIF2,
+               FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K   = 'EXTR'),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SY',
+                      VALE= 200.       )
+
+TEST_TABLE(    TABLE=UNIF2,
+               FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K   = 'EXTR'),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SIGM_M_PRES',
+                      VALE= 100.       )
+
+TEST_TABLE(    TABLE=UNIF2,
+               FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K   = 'EXTR'),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='VALE_MAXI_LINE',
+                      VALE= 400.       )
+
+TEST_TABLE(    TABLE=UNIF2,
+               FILTRE=_F(  NOM_PARA = 'LIEU',
+                           VALE_K   = 'EXTR'),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='VALE_MAXI_PARAB',
+                      VALE= 540.       )
 
 FIN();

@@ -6,7 +6,7 @@
       CHARACTER*8         NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 25/03/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,8 @@ C OUT : SALTIJ : AMPLITUDE DE CONTRAINTE ENTRE LES ETATS I ET J
 C
 C     ------------------------------------------------------------------
 C
-      REAL*8 E,EC,PARA(3),M,N,KE,NADM,SALTM,SALTH, KEMECA,KETHER,KETHE1
+      REAL*8    R8VIDE, E, EC, PARA(3), M, N, NADM, SALTM, SALTH,
+     +          KEMECA, KETHER, KETHE1
 C DEB ------------------------------------------------------------------
 C
 C --- LE MATERIAU
@@ -60,7 +61,8 @@ C --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
 C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM
 C
       IF (TYPEKE.LT.0.D0) THEN
-         CALL PRCCM3 ( NOMMAT, PARA, SM, SNPQ, SPIJ, KE, SALTIJ, NADM )
+         CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPIJ,KEMECA,SALTIJ,NADM )
+         KETHER = R8VIDE()
       ELSE
          CALL PRCCM3 ( NOMMAT,PARA,SM,SNPQ,SPMECA,KEMECA,SALTM,NADM )
 C

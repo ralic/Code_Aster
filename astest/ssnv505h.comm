@@ -1,4 +1,4 @@
-# MODIF  DATE 18/09/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 03/10/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 #
 # TITRE VALIDATION DE POU_D_TGM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,6 +142,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                              DEFORMATION='REAC_GEOM',),
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
+                             SUBD_METHODE='UNIFORME',
                              SUBD_PAS=4,
                              SUBD_PAS_MINI=1E-8,
                              ),
@@ -253,6 +254,7 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                              DEFORMATION='REAC_GEOM',),
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
+                             SUBD_METHODE='UNIFORME',
                              SUBD_PAS=4,
                              SUBD_PAS_MINI=1E-8,
                              ),
@@ -359,8 +361,9 @@ USIG=STAT_NON_LINE(MODELE=MODE,
                              DEFORMATION='REAC_GEOM',),
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
+                             SUBD_METHODE='UNIFORME',
                              SUBD_PAS=4,
-                             SUBD_PAS_MINI=1E-8,
+                             SUBD_PAS_MINI=1.0E-8,
                              ),
                 NEWTON=_F(REAC_ITER=5,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),

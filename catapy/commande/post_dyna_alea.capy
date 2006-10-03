@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-POST_DYNA_ALEA=OPER(nom="POST_DYNA_ALEA",op= 132,sd_prod=table_sdaster,
+from Macro.post_dyna_alea_ops import post_dyna_alea_ops
+
+POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",op= post_dyna_alea_ops,sd_prod=table_sdaster,
                     fr="Traitements statistiques de résultats de type interspectre et impression sur fichiers",
                     reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
@@ -35,36 +37,6 @@ POST_DYNA_ALEA=OPER(nom="POST_DYNA_ALEA",op= 132,sd_prod=table_sdaster,
            NOM_CMP_I       =SIMP(statut='o',typ='TXM',max='**' ),  
            NOM_CMP_J       =SIMP(statut='o',typ='TXM',max='**' ),     
          ),  
-         DEPASSEMENT     =FACT(statut='f',max='**',
-           fr="Loi de dépassement d un seuil pendant une durée donnée",
-           regles=(ENSEMBLE('VALE_MIN','VALE_MAX'),),
-           VALE_MIN        =SIMP(statut='f',typ='R' ),  
-           VALE_MAX        =SIMP(statut='f',typ='R' ),  
-           PAS             =SIMP(statut='f',typ='R' ),  
-           DUREE           =SIMP(statut='f',typ='R',defaut= 1. ),  
-         ),
-         RAYLEIGH        =FACT(statut='f',max='**',
-           fr="Densité de probabilité de pic positif, loi adaptée à des signaux à bande étroite",
-           regles=(ENSEMBLE('VALE_MIN','VALE_MAX'),),
-           VALE_MIN        =SIMP(statut='f',typ='R' ),  
-           VALE_MAX        =SIMP(statut='f',typ='R' ),  
-           PAS             =SIMP(statut='f',typ='R' ),  
-         ),
-         GAUSS           =FACT(statut='f',max='**',
-           fr="Densité de probabilité de pic positif, loi normale adaptée à des signaux large bande",
-           regles=(ENSEMBLE('VALE_MIN','VALE_MAX'),),
-           VALE_MIN        =SIMP(statut='f',typ='R' ),  
-           VALE_MAX        =SIMP(statut='f',typ='R' ),  
-           PAS             =SIMP(statut='f',typ='R' ),  
-         ),
-         VANMARCKE       =FACT(statut='f',max='**',
-           fr="Probabilité de non dépassement de seuil pendant une durée donnée (analyse sismique)",
-           regles=(ENSEMBLE('VALE_MIN','VALE_MAX'),),
-           VALE_MIN        =SIMP(statut='f',typ='R' ),  
-           VALE_MAX        =SIMP(statut='f',typ='R' ),  
-           PAS             =SIMP(statut='f',typ='R' ),  
-           DUREE           =SIMP(statut='f',typ='R',defaut= 10. ),  
-         ),
          MOMENT          =SIMP(statut='f',typ='I',max='**',fr="Moments spectraux en complément des cinq premiers" ),  
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

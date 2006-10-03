@@ -7,7 +7,7 @@
       CHARACTER*4         FREXCI
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
          IF ( PAS .EQ.-1.D0 ) THEN
             PAS = ( FREMAX - FREMIN ) / 100.D0
          ENDIF
-         NPDSC3 = INT( (FREMAX-FREMIN) / PAS ) + 2
+         NPDSC3 = INT( (FREMAX-FREMIN) / PAS +1.D-6) + 1
          CALL WKVECT( '&&OP0131.DISCR3', 'V V R8', NPDSC3, IADSC3 )
          DO 331,I1=1,NPDSC3-1
             ZR(IADSC3-1+I1) = FREMIN + (I1-1)*PAS

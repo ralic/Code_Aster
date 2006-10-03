@@ -1,5 +1,5 @@
 # AJOUT
-# TITRE VALIDATION DE L'OPERATEUR POST_RCCM  / TYPE_RESU='DETAILS'
+# TITRE VALIDATION DE L'OPERATEUR POST_RCCM / TYPE_RESU_MECA='EVOLUTION'  / TYPE_RESU='DETAILS'
 
 POURSUITE( CODE=_F(  NOM = 'RCCM01A') )
 
@@ -15,8 +15,6 @@ PMPB1=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                          TITRE='INST PM_PB, RESULTAT: RESU1',
                    TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU1,)
                  )
-
-IMPR_TABLE(    TABLE=PMPB1 ) 
 
 # le PM
 TEST_TABLE(    TABLE=PMPB1,
@@ -90,8 +88,6 @@ PMPB2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                                     TABL_SIGM_THER = T_RESUTH,)
                  )
 
-IMPR_TABLE(    TABLE=PMPB2 ) 
-
 # le PM
 TEST_TABLE(    TABLE=PMPB2,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
@@ -119,6 +115,7 @@ TEST_TABLE(    TABLE=PMPB2,
                              VALE     = 2.    ),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='PB',
+                   CRITERE='ABSOLU',
                       VALE=0.                 )
 
 TEST_TABLE(    TABLE=PMPB2,
@@ -128,6 +125,7 @@ TEST_TABLE(    TABLE=PMPB2,
                              VALE     = 2.    ),),
                  REFERENCE='ANALYTIQUE',
                   NOM_PARA='PB',
+                   CRITERE='ABSOLU',
                       VALE=0.                 )
 
 # le PMB
@@ -163,8 +161,6 @@ PMPBTH=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                                 _F( TABL_RESU_MECA = T_RESUTH,
                                     INST = ( 2., 3., ),))
                  )
-
-IMPR_TABLE(    TABLE=PMPBTH ) 
 
 # le PM
 TEST_TABLE(    TABLE=PMPBTH,
@@ -236,8 +232,6 @@ SN2TH=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                                   TABL_SIGM_THER = T_RESUTH,)
                  )
 
-IMPR_TABLE(    TABLE=SN2TH ) 
-
 # le SN
 TEST_TABLE(    TABLE=SN2TH,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
@@ -294,8 +288,6 @@ SN1=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                  TRANSITOIRE=_F( TABL_RESU_MECA = T_RESU1,)
                  )
 
-IMPR_TABLE(    TABLE=SN1 ) 
-
 TEST_TABLE(    TABLE=SN1,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG'),
@@ -326,8 +318,6 @@ SN2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                        TITRE='*** SN: RESU2 ***',
                  TRANSITOIRE=_F( TABL_RESU_MECA = T_RESU2,)
                  )
-
-IMPR_TABLE(    TABLE=SN2 ) 
 
 TEST_TABLE(    TABLE=SN2,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
@@ -360,8 +350,6 @@ SN1_2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                  TRANSITOIRE=(_F( TABL_RESU_MECA = T_RESU1,),
                               _F( TABL_RESU_MECA = T_RESU2,),)
                  )
-
-IMPR_TABLE(    TABLE=SN1_2 ) 
 
 TEST_TABLE(    TABLE=SN1_2,
                FILTRE=( _F(  NOM_PARA = 'TABL_RESU_1',
@@ -398,8 +386,6 @@ SNTH=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                  TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESUTH,
                                   TABL_SIGM_THER = T_RESUTH,)
                  )
-
-IMPR_TABLE(    TABLE=SNTH ) 
 
 TEST_TABLE(    TABLE=SNTH,
                FILTRE=( _F(  NOM_PARA = 'LIEU',
@@ -458,8 +444,6 @@ FAT2=POST_RCCM(TYPE_RESU_MECA = 'EVOLUTION',
                          TITRE='FATIGUE_SPMAX, RESULTAT: RESU2',
                    TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU2,)
                  )
-
-IMPR_TABLE(    TABLE=FAT2 )
 
 # le SN
 TEST_TABLE(    TABLE=FAT2,
@@ -599,8 +583,6 @@ SNb=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                  TRANSITOIRE=_F(  TABL_RESU_MECA = T_RESU2b,
                                   TABL_SIGM_THER = T_RESUTb,)
                  )
-
-IMPR_TABLE(    TABLE=SNb ) 
 
 # le SN
 TEST_TABLE(    TABLE=SNb,

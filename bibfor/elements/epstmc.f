@@ -1,7 +1,7 @@
-      SUBROUTINE  EPSTMC(MODELI, TEMPE, TREF, HYDR, SECH, SREF, INSTAN,
-     &                    MATER,OPTION, EPSTH)
+      SUBROUTINE  EPSTMC(MODELI, NDIM, TEMPE, TREF, HYDR, SECH, SREF,
+     &                   INSTAN, XYZGAU,REPERE,MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,9 @@ C    HYDR           IN     R        HYDRATATION AU POINT D'INTEGRATION
 C    SECH           IN     R        SECHAGE AU POINT D'INTEGRATION
 C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
+C    XYZGAU         IN     R        COORDONNEES DU POINT DE GAUSS
+C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
+C                                   D'ORTHOTROPIE
 C    MATER          IN     I        MATERIAU
 C    OPTION         IN     K16      OPTION DE CALCUL
 C    EPSTH(6)       IN     R        VECTEUR DES DEFORMATIONS THERMIQUES
@@ -41,7 +44,9 @@ C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            CHARACTER*8  MODELI
            CHARACTER*16 OPTION
-           REAL*8       EPSTH(6), INSTAN, HYDR, SECH
+           REAL*8       EPSTH(6), INSTAN, HYDR, SECH,XYZGAU(3)
+           REAL*8       REPERE(7)
+           INTEGER      NDIM
 C -----  VARIABLES LOCALES
            PARAMETER (NBRES = 3)
 C
@@ -49,7 +54,10 @@ C
            CHARACTER*8  NOMRES(NBRES), NOMPAR(4)
            CHARACTER*16 PHENOM
 C
-           REAL*8 VALRES(NBRES), VALPAR(4), BENDOG, KDESSI
+           REAL*8 VALRES(NBRES),VALPAR(4),BENDOG,KDESSI,ANGL(3)
+           REAL*8 DIRE(3),ORIG(3),P(3,3),EPSTHL(6)
+           REAL*8 VEPST1(6),VEPST2(6)
+           INTEGER I,J,K
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -162,6 +170,21 @@ C ---- CAS ORTHOTROPE
 C      --------------
       ELSEIF (PHENOM.EQ.'ELAS_ORTH') THEN
 C
+          IF (REPERE(1).GT.0.D0) THEN
+            ANGL(1) = REPERE(2)
+            ANGL(2) = REPERE(3)
+            ANGL(3) = REPERE(4)
+            CALL MATROT(ANGL, P)
+         ELSE
+            DIRE(1) = REPERE(2)
+            DIRE(2) = REPERE(3)
+            DIRE(3) = REPERE(4) 
+C
+            ORIG(1) = REPERE(5)     
+            ORIG(2) = REPERE(6)     
+            ORIG(3) = REPERE(7) 
+            CALL UTRCYL(XYZGAU,DIRE,ORIG,P)
+          ENDIF
           NOMRES(1)='ALPHA_L'
           NOMRES(2)='ALPHA_T'
           NOMRES(3)='ALPHA_N'
@@ -180,15 +203,54 @@ C
           ALPHAT = VALRES(2)
           ALPHAN = VALRES(3)
 C
-          EPSTH(1) = ALPHAL*(TEMPE-TREF)
-          EPSTH(2) = ALPHAT*(TEMPE-TREF)
-          EPSTH(3) = ALPHAN*(TEMPE-TREF)
+          EPSTHL(1) = ALPHAL*(TEMPE-TREF)
+          EPSTHL(2) = ALPHAT*(TEMPE-TREF)
+          EPSTHL(3) = ALPHAN*(TEMPE-TREF)
+          EPSTHL(4) = 0.D0
+          EPSTHL(5) = 0.D0
+          EPSTHL(6) = 0.D0
+
+
+          VEPST1(1)=EPSTHL(1)
+          VEPST1(2)=EPSTHL(4)
+          VEPST1(3)=EPSTHL(2)
+          VEPST1(4)=EPSTHL(5)
+          VEPST1(5)=EPSTHL(6)
+          VEPST1(6)=EPSTHL(3)
+
+
+C        PASSAGE DES DEFORMATIONS DANS LE REPERE D ORTHOTROPIE
+C        AU REPERE GLOBAL
+          CALL UTPSLG(1,3,P,VEPST1,VEPST2)
+          EPSTH(1)=VEPST2(1)
+          EPSTH(2)=VEPST2(3)
+          EPSTH(3)=VEPST2(6)
+          EPSTH(4)=VEPST2(2)
+          EPSTH(5)=VEPST2(4)
+          EPSTH(6)=VEPST2(5)
+          IF (NDIM.EQ.2) EPSTH(3)=EPSTHL(3)
 C
 C      -----------------------
 C ---- CAS ISOTROPE-TRANSVERSE
 C      -----------------------
       ELSEIF (PHENOM.EQ.'ELAS_ISTR') THEN
 C
+          IF (REPERE(1).GT.0.D0) THEN
+            ANGL(1) = REPERE(2)
+            ANGL(2) = REPERE(3)
+            ANGL(3) = REPERE(4)
+            CALL MATROT(ANGL, P)
+          ELSE
+            DIRE(1) = REPERE(2)
+            DIRE(2) = REPERE(3)
+            DIRE(3) = REPERE(4) 
+C
+            ORIG(1) = REPERE(5)     
+            ORIG(2) = REPERE(6)     
+            ORIG(3) = REPERE(7) 
+            CALL UTRCYL(XYZGAU,DIRE,ORIG,P)
+          ENDIF
+
           NOMRES(1)='ALPHA_L'
           NOMRES(2)='ALPHA_N'
           NBV = 2
@@ -204,9 +266,32 @@ C
           ALPHAL = VALRES(1)
           ALPHAN = VALRES(2)
 C
-          EPSTH(1) = ALPHAL*(TEMPE-TREF)
-          EPSTH(2) = ALPHAL*(TEMPE-TREF)
-          EPSTH(3) = ALPHAN*(TEMPE-TREF)
+          EPSTHL(1) = ALPHAL*(TEMPE-TREF)
+          EPSTHL(2) = ALPHAL*(TEMPE-TREF)
+          EPSTHL(3) = ALPHAN*(TEMPE-TREF)
+          EPSTHL(4) = 0.D0
+          EPSTHL(5) = 0.D0
+          EPSTHL(6) = 0.D0
+
+
+          VEPST1(1)=EPSTHL(1)
+          VEPST1(2)=EPSTHL(4)
+          VEPST1(3)=EPSTHL(2)
+          VEPST1(4)=EPSTHL(5)
+          VEPST1(5)=EPSTHL(6)
+          VEPST1(6)=EPSTHL(3)
+
+
+C        PASSAGE DES DEFORMATIONS DANS LE REPERE D ORTHOTROPIE
+C        AU REPERE GLOBAL
+          CALL UTPSLG(1,3,P,VEPST1,VEPST2)
+          EPSTH(1)=VEPST2(1)
+          EPSTH(2)=VEPST2(3)
+          EPSTH(3)=VEPST2(6)
+          EPSTH(4)=VEPST2(2)
+          EPSTH(5)=VEPST2(4)
+          EPSTH(6)=VEPST2(5)
+          IF (NDIM.EQ.2) EPSTH(3)=EPSTHL(3)
       ELSEIF (PHENOM.EQ.'ELAS_HYPER') THEN
       ELSE
           CALL U2MESK('F','ELEMENTS_15',1,PHENOM)

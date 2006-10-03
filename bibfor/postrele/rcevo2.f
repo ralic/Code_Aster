@@ -1,13 +1,13 @@
       SUBROUTINE RCEVO2 ( NBINTI, KINTI, CSIGM, CINST, CCONT, 
-     +                    LFATIG, FLEXIO, CNOC, CRESU )
+     +                    LFATIG, FLEXIO, LROCHT, CNOC, CRESU, CPRES )
       IMPLICIT      NONE
       INTEGER       NBINTI
-      LOGICAL       LFATIG, FLEXIO
+      LOGICAL       LFATIG, FLEXIO, LROCHT
       CHARACTER*16  KINTI
-      CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU
+      CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,14 +50,16 @@ C
       INTEGER      IBID, N1, NUME, NBINST, KINST, JCONT, JCOFL, NCMPR,
      +             I, J, K, L, NDIM, NBABSC, JABSC, JSIGM, JINST, NCMP,
      +             IRET, JOCCU, NBTRAN, JSIOE, IOCC, NBINS0, JNOCC, II,
-     +             JRESU, NBCYCL, JCALS
+     +             JRESU, NBCYCL, JCALS, JCOPR, JRESP
       PARAMETER  ( NCMP = 6 )
-      REAL*8       R8B, PREC(2), MOMEN0, MOMEN1, VALE(2), SIGMLO, SIGMLE
+      REAL*8       R8B, PREC(2), MOMEN0, MOMEN1, VALE(2), SIGMLO,
+     +             SIGMLE, R8VIDE
       COMPLEX*16   CBID
       LOGICAL      EXIST, CFAIT
       CHARACTER*4  TYPE
       CHARACTER*8  K8B, CRIT(2), NOCMP(NCMP), KNUME
-      CHARACTER*16 MOTCLF, VALEK(2), TABLE, TABFLE, TABL0, TABFL0
+      CHARACTER*16 MOTCLF, VALEK(2), TABLE, TABL0, TABFLE, TABFL0,
+     +             TABPRE, TABPR0
       CHARACTER*19 NOMF
       CHARACTER*24 INSTAN, ABSCUR
 C DEB ------------------------------------------------------------------
@@ -94,6 +96,8 @@ C
         CALL GETVID ( MOTCLF, 'TABL_RESU_MECA', IOCC,1,1, TABL0 , N1 )
         CALL GETVID ( MOTCLF, 'TABL_SIGM_THER', IOCC,1,1, TABFL0, N1 )
         IF ( N1 .NE. 0 )  FLEXIO = .TRUE.
+        CALL GETVID ( MOTCLF, 'TABL_RESU_PRES', IOCC,1,1, TABPR0, N1 )
+        IF ( N1 .NE. 0 )  LROCHT = .TRUE.
 C
         NBINS0 = 0
         CALL GETVR8 ( MOTCLF, 'INST', IOCC,1,1, R8B, N1 )
@@ -107,13 +111,17 @@ C
               IF ( NBINTI .EQ. 1 ) THEN
                 TABLE  = TABL0
                 TABFLE = TABFL0
+                TABPRE = TABPR0
               ELSE
                 CFAIT  = .TRUE.
                 TABLE  = '&&RCEVO2.RESU_MECA'
                 TABFLE = '&&RCEVO2.SIGM_THER'
+                TABPRE = '&&RCEVO2.RESU_PRES'
                 CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
      +                       IBID, R8B, CBID, KINTI, R8B, K8B )
                 IF ( FLEXIO ) CALL TBEXTB ( TABFL0, 'V', TABFLE, 1,
+     +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
+                IF ( LROCHT ) CALL TBEXTB ( TABPR0, 'V', TABPRE, 1,
      +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
               ENDIF
               CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
@@ -138,13 +146,17 @@ C
           IF ( NBINTI .EQ. 1 ) THEN
             TABLE  = TABL0
             TABFLE = TABFL0
+            TABPRE = TABPR0
           ELSE
             CFAIT  = .TRUE.
             TABLE  = '&&RCEVO2.RESU_MECA'
             TABFLE = '&&RCEVO2.SIGM_THER'
+            TABPRE = '&&RCEVO2.RESU_PRES'
             CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
      +                    IBID, R8B, CBID, KINTI, R8B, K8B )
             IF ( FLEXIO ) CALL TBEXTB ( TABFL0, 'V', TABFLE, 1,
+     +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
+            IF ( LROCHT ) CALL TBEXTB ( TABPR0, 'V', TABPRE, 1,
      +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
           ENDIF
         ENDIF
@@ -164,6 +176,16 @@ C
             IF ( .NOT. EXIST ) THEN
             CALL UTDEBM('F', 'RCEVO2', 'PROBLEME POUR RECUPERER')
             CALL UTIMPK('S', ' DANS LA TABLE ',1, TABFLE )
+            CALL UTIMPK('S', ' INTITULE ',1, KINTI )
+            CALL UTIMPK('S', ' LES ', 4, NOCMP(1) )
+            CALL UTFINM
+            ENDIF
+          ENDIF
+          IF ( LROCHT ) THEN
+            CALL TBEXIP ( TABPRE, NOCMP(I), EXIST, K8B )
+            IF ( .NOT. EXIST ) THEN
+            CALL UTDEBM('F', 'RCEVO2', 'PROBLEME POUR RECUPERER')
+            CALL UTIMPK('S', ' DANS LA TABLE ',1, TABPRE )
             CALL UTIMPK('S', ' INTITULE ',1, KINTI )
             CALL UTIMPK('S', ' LES ', 4, NOCMP(1) )
             CALL UTFINM
@@ -189,6 +211,7 @@ C
         IF ( CFAIT ) THEN
            CALL DETRSD ( 'TABLE', TABLE )
            IF ( FLEXIO ) CALL DETRSD ( 'TABLE', TABFLE )
+           IF ( LROCHT ) CALL DETRSD ( 'TABLE', TABPRE )
         ENDIF
 C
  10   CONTINUE
@@ -196,10 +219,11 @@ C
       CALL JEVEUO ( ABSCUR, 'L', JABSC )
       CALL WKVECT ( '&&RCEVO2.CONTRAINTES', 'V V R', NBABSC, JCONT )
       CALL WKVECT ( '&&RCEVO2.CONT_FLEXIO', 'V V R', NBABSC, JCOFL )
+      CALL WKVECT ( '&&RCEVO2.CONT_PRESSI', 'V V R', NBABSC, JCOPR )
 C
 C --- CREATION DES OBJETS DE TRAVAIL
 C
-      NDIM = 4 * NBINST * NCMP
+      NDIM = 6 * NBINST * NCMP
       CALL WKVECT ( CSIGM, 'V V R' , NDIM  , JSIGM )
       CALL WKVECT ( CINST, 'V V R' , NBINST, JINST )
       CALL WKVECT ( CNOC , 'V V I' , NBINST, JNOCC )
@@ -207,6 +231,9 @@ C
       IF ( LFATIG ) THEN
          NDIM = 2 * NBINST * NCMP
          CALL WKVECT ( CCONT, 'V V R', NDIM, JSIOE )
+      ENDIF
+      IF ( LROCHT ) THEN
+         CALL WKVECT ( CPRES, 'V V K8', NBTRAN, JRESP )
       ENDIF
 C
 C --- RECUPERATION DES INFORMATIONS
@@ -221,15 +248,25 @@ C
         CALL GETVID ( MOTCLF, 'TABL_SIGM_THER', IOCC,1,1, TABFL0, N1 )
         IF (N1.NE.0) FLEXIO = .TRUE.
 C
+        CALL GETVID ( MOTCLF, 'TABL_RESU_PRES', IOCC,1,1, TABPR0, N1 )
+        IF (N1.NE.0) THEN
+           LROCHT = .TRUE.
+           ZK8(JRESP-1+IOCC) = TABPR0
+        ENDIF
+C
         IF ( NBINTI .EQ. 1 ) THEN
            TABLE  = TABL0
            TABFLE = TABFL0
+           TABPRE = TABPR0
         ELSE
            TABLE  = '&&RCEVO2.RESU_MECA'
            TABFLE = '&&RCEVO2.SIGM_THER'
+           TABPRE = '&&RCEVO2.RESU_PRES'
            CALL TBEXTB ( TABL0, 'V', TABLE, 1, 'INTITULE', 'EQ',
      +                   IBID, R8B, CBID, KINTI, R8B, K8B )
            IF ( FLEXIO ) CALL TBEXTB ( TABFL0, 'V', TABFLE, 1,
+     +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
+           IF ( LROCHT ) CALL TBEXTB ( TABPR0, 'V', TABPRE, 1,
      +             'INTITULE', 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B )
         ENDIF
 C
@@ -305,6 +342,20 @@ C
                 ENDIF
               ENDIF
 C
+              IF ( LROCHT ) THEN
+                CALL TBLIVA ( TABPRE, 2, VALEK, IBID, VALE,
+     +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
+     +                        IBID, ZR(JCOPR+K-1), CBID, K8B, IRET)
+                IF (IRET.NE.0) THEN
+                  CALL UTDEBM('F', 'RCEVO2', 'PROBLEME POUR RECUPERER')
+                  CALL UTIMPK('S', ' DANS LA TABLE ',1, TABPR0 )
+                  CALL UTIMPK('S', ' INTITULE ',1, KINTI )
+                  CALL UTIMPK('L', ' LA CONTRAINTE ', 1, NOCMP(J) )
+                  CALL UTIMPR('S',' POUR L''ABSC_CURV ',1,ZR(JABSC+K-1))
+                  CALL UTFINM
+                ENDIF
+              ENDIF
+C
  106        CONTINUE
 C
             IF ( LFATIG ) THEN
@@ -315,15 +366,16 @@ C
             ENDIF
 C
             CALL RC32MY (NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
+            MOMEN1 = 0.5D0*MOMEN1
 C
             L = NCMP*(II-1) + J
             ZR(JSIGM-1+L) = MOMEN0
-C
             L = NCMP*NBINST + NCMP*(II-1) + J
-            ZR(JSIGM-1+L) = 0.5D0*MOMEN1
+            ZR(JSIGM-1+L) = MOMEN1
 C
             IF ( FLEXIO ) THEN
               CALL RC32MY (NBABSC,ZR(JABSC),ZR(JCOFL), MOMEN0, MOMEN1)
+              MOMEN1 = 0.5D0*MOMEN1
             ELSE
               MOMEN0 = 0.D0
               MOMEN1 = 0.D0
@@ -331,7 +383,19 @@ C
             L = 2*NCMP*NBINST + NCMP*(II-1) + J
             ZR(JSIGM-1+L) = MOMEN0
             L = 3*NCMP*NBINST + NCMP*(II-1) + J
-            ZR(JSIGM-1+L) = 0.5D0*MOMEN1
+            ZR(JSIGM-1+L) = MOMEN1
+C
+            IF ( LROCHT ) THEN
+              CALL RC32MY (NBABSC,ZR(JABSC),ZR(JCOPR), MOMEN0, MOMEN1)
+              MOMEN1 = 0.5D0*MOMEN1
+            ELSE
+              MOMEN0 = R8VIDE()
+              MOMEN1 = R8VIDE()
+            ENDIF
+            L = 4*NCMP*NBINST + NCMP*(II-1) + J
+            ZR(JSIGM-1+L) = MOMEN0
+            L = 5*NCMP*NBINST + NCMP*(II-1) + J
+            ZR(JSIGM-1+L) = MOMEN1
 C
  104      CONTINUE
 C
@@ -340,6 +404,7 @@ C
         IF ( NBINTI .NE. 1 ) THEN
            CALL DETRSD ( 'TABLE', TABLE )
            IF ( FLEXIO ) CALL DETRSD ( 'TABLE', TABFLE )
+           IF ( LROCHT ) CALL DETRSD ( 'TABLE', TABPRE )
         ENDIF
 C
  100  CONTINUE
@@ -347,6 +412,7 @@ C
       CALL JEDETR ( ABSCUR )
       CALL JEDETR ( '&&RCEVO2.CONTRAINTES' )
       CALL JEDETR ( '&&RCEVO2.CONT_FLEXIO' )
+      CALL JEDETR ( '&&RCEVO2.CONT_PRESSI' )
 C
 9999  CONTINUE
       CALL JEDEMA( )

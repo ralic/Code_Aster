@@ -1,11 +1,12 @@
-      SUBROUTINE RC32R3 ( NOMRES )
+      SUBROUTINE RC32R8 ( NOMRES, MATER, SYMAX )
       IMPLICIT   NONE
-      CHARACTER*8         NOMRES
+      REAL*8              SYMAX
+      CHARACTER*8         NOMRES, MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,6 +24,7 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C     STOCKAGE DES RESULTATS DANS LA TABLE DE SORTIE
+C     CALCUL DU ROCHET THERMIQUE
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -43,50 +45,55 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       NPAR1, IM, IG, IS, NBSIGR, VALEI(2), JNUMGR, 
-     +              JNSITU, JNSG, JPMPB, NBGR, IOC, NUMGR
-      PARAMETER    ( NPAR1 = 6 )
+      INTEGER       IBID, NPAR1, IM, JRESU
+      PARAMETER    ( NPAR1 = 7 )
+      REAL*8        RBID, VALER(NPAR1), R8VIDE, VALRES
       COMPLEX*16    C16B
+      CHARACTER*2   CODRET
       CHARACTER*4   LIEU(2)
-      CHARACTER*8   K8B, TYPAR1(NPAR1)
+      CHARACTER*8   K8B, TYPAR1(NPAR1), VALEK(2)
       CHARACTER*16  NOPAR1(NPAR1)
-      CHARACTER*24  K24B
+      CHARACTER*19  NOT19R
 C     ------------------------------------------------------------------
       DATA LIEU   / 'ORIG' , 'EXTR' /
 C
-      DATA NOPAR1 / 'NUME_GROUPE', 'LIEU', 'NUME_SITU' , 'PM' , 'PB' ,
-     +              'PMPB' /
-      DATA TYPAR1 / 'I', 'K8', 'I', 'R', 'R', 'R' /
+      DATA NOPAR1 / 'TYPE', 'LIEU', 'SY', 'SP_THER', 'SIGM_M_PRES',
+     +              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB' /
+      DATA TYPAR1 / 'K8', 'K8', 'R', 'R', 'R', 'R', 'R' /
 C DEB ------------------------------------------------------------------
 C
-      CALL JELIRA ( '&&RC3200.SITU_NUME_GROUP', 'LONMAX', NBGR, K8B )
-      CALL JEVEUO ( '&&RC3200.SITU_NUME_GROUP', 'L', JNUMGR )
-
-      CALL JEVEUO ( '&&RC3200.SITU_NUMERO', 'L', JNSITU )
+      CALL TBAJPA ( NOMRES, NPAR1-2, NOPAR1(3), TYPAR1(3) )
 C
-C     -----------------------------------------------------------------
+      IF ( SYMAX .EQ. R8VIDE() ) THEN
+         CALL RCVALE ( MATER, 'RCCM', 0, K8B, RBID, 1, 
+     +                                'SY_02   ', VALRES, CODRET, '  ' )
+         IF ( CODRET .EQ. 'OK' ) THEN
+            SYMAX = VALRES
+         ELSE
+            CALL U2MESS('A','POSTRELE_66')
+            GOTO 9999
+         ENDIF
+      ENDIF
 C
-        CALL TBAJPA ( NOMRES, NPAR1, NOPAR1, TYPAR1 )
+      VALER(1) = SYMAX
+      VALEK(1) = 'ROCHET'
 C
-        DO 300 IG = 1 , NBGR
-          NUMGR = ZI(JNUMGR+IG-1)
-          VALEI(1) = NUMGR
-          CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
-     +                                                    NBSIGR,K8B)
-          CALL JEVEUO(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
-
-          DO 302 IS = 1 , NBSIGR
-            IOC = ZI(JNSG+IS-1)
-            VALEI(2) = ZI(JNSITU+IOC-1)
-            DO 304 IM = 1 , 2
-              K24B = '&&RC3200.PMPB       '//LIEU(IM)
-              CALL JEVEUO ( JEXNUM(K24B,NUMGR), 'L', JPMPB )
-
-              CALL TBAJLI ( NOMRES, NPAR1, NOPAR1, VALEI,
-     +                      ZR(JPMPB-1+6*(IS-1)+1), C16B, LIEU(IM), 0 )
+      DO 10 IM = 1 , 2
 C
- 304        CONTINUE
- 302      CONTINUE
- 300    CONTINUE
+         VALEK(2) = LIEU(IM)
+C
+         CALL JEVEUO ( '&&RC3200.RESULTAT  .'//LIEU(IM), 'L', JRESU)
+C
+         VALER(2) = ZR(JRESU+12)
+         VALER(3) = ZR(JRESU+11)
+C
+         CALL RCMCRT ( SYMAX, VALER(3), VALER(4), VALER(5) )
+C
+         CALL TBAJLI ( NOMRES, NPAR1, NOPAR1, IBID,
+     +                                   VALER, C16B, VALEK, 0 )
+C
+ 10   CONTINUE
+C
+ 9999 CONTINUE
 C
       END

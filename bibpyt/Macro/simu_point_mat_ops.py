@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 03/10/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -248,34 +248,14 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
     l_char.append(  _F(CHARGE=__S[i],FONC_MULT=SIG[iks])  )
       
 # -- Deroulement du calcul
-
-  motscles={}
-  
-  dCompIncr=COMP_INCR[0].cree_dict_valeurs(COMP_INCR[0].mc_liste)
-  for i in dCompIncr.keys():
-      if dCompIncr[i]==None : del dCompIncr[i]
-  motscles['COMP_INCR']   =dCompIncr
-
-  dConverg=CONVERGENCE[0].cree_dict_valeurs(CONVERGENCE[0].mc_liste)
-  for i in dConverg.keys():
-      if dConverg[i]==None : del dConverg[i]
-  motscles['CONVERGENCE'] =dConverg
-
-  dNewton=NEWTON[0].cree_dict_valeurs(NEWTON[0].mc_liste)
-  for i in dNewton.keys():
-      if dNewton[i]==None : del dNewton[i]
-  motscles['NEWTON']      =dNewton
-
-  dIncrem=INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
-  for i in dIncrem.keys():
-      if dIncrem[i]==None : del dIncrem[i]
-  motscles['INCREMENT']   =dIncrem
+  motscles={} 
+  motscles['COMP_INCR']   = COMP_INCR.List_F()
+  motscles['CONVERGENCE'] = CONVERGENCE.List_F()
+  motscles['NEWTON']      = NEWTON.List_F()
+  motscles['INCREMENT']   = INCREMENT.List_F()
   
   if   SUIVI_DDL   : 
-     dSuivi=SUIVI_DDL[0].cree_dict_valeurs(SUIVI_DDL[0].mc_liste)
-     for i in dSuivi.keys():
-         if dSuivi[i]==None : del dSuivi[i]
-     motscles['SUIVI_DDL']   =dSuivi
+     motscles['SUIVI_DDL']   = SUIVI_DDL.List_F()
      
   if   PARM_THETA  : motscles['PARM_THETA']  =PARM_THETA
 

@@ -1,16 +1,18 @@
       SUBROUTINE RCEVOM ( CSIGM, CINST, CNOC, SM, LFATIG, LPMPB, LSN,
-     +                    CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO,
-     +                    CFAE, CSPO, CSPE, CRESU, KINTI, IT, JT )
+     +                    CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO, CFAE,
+     +                    CSPO, CSPE, CRESU, KINTI, IT, JT, LROCHT, 
+     +                    SYMAX, CPRES )
       IMPLICIT   NONE
       INTEGER      IT, JT
-      REAL*8       SM
-      LOGICAL      LFATIG, LPMPB, LSN, FLEXIO
+      REAL*8       SM, SYMAX
+      LOGICAL      LFATIG, LPMPB, LSN, FLEXIO, LROCHT
       CHARACTER*16 KINTI
       CHARACTER*24 CSIGM, CINST, CNOC, CSNO, CSNE, CSNEO, CSNEE,
-     +             CFAO, CFAE, CSPO, CSPE, CRESU
+     +             CFAO, CFAE, CSPO, CSPE, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,28 +56,33 @@ C
       INTEGER      NCMP, JSIGM, JINST, NBINST, NBORDR, JSNO, JSNE, N1,
      +             IND, I1, I2, ICMP, L1,L2,L3,L4, NPARA, II,IK,IR, I,
      +             VAIO(5), VAIE(5), IOO1, IOO2, IOE1, IOE2, NPAR1,
-     +             JSNEO, JSNEE, JSPO, JSPE, JFAO, JFAE, JNOC, JRESU
+     +             JSNEO, JSNEE, JSPO, JSPE, JFAO, JFAE, JNOC, JRESU,
+     +             JRESP
       PARAMETER  ( NCMP = 6 )
       REAL*8       TPM(NCMP), TPB(NCMP), TPMPBO(NCMP), TPMPBE(NCMP),
      +             PM, PB, PMPBO, PMPBE, IPM, IPB, IPMPBO, IPMPBE,
      +             SNO, SNE, I1SNO, I2SNO, I1SNE, I2SNE,
      +             SPO, SPE, KEO, KEE, SAO, SAE, NAO, NAE,
-     +             DOO, DOE, DCO, DCE,
+     +             DOO, DOE, DCO, DCE, STLIN, STPAR,
      +             EQUI(NCMP), VALO(36), VALE(36)
       COMPLEX*16   C16B
       CHARACTER*8  K8B, NOMRES, TYPARA(36), RPM, RPB, RPMPBO, RPMPBE, 
      +             R1SNO, R1SNE, R2SNO, R2SNE
       CHARACTER*16 NOMCMD, CONCEP, NOPARA(36), VAKO(5), VAKE(5)
 C
-      INTEGER      NPAREN, NPARPM, NPARSN, NPARSE, NPARFA
-      PARAMETER  ( NPAREN=4, NPARPM=7, NPARSN=5, NPARSE=3, NPARFA=10 )
+      INTEGER      NPAREN, NPARPM, NPARSN, NPARSE, NPARFA, NPARRT
+      PARAMETER  ( NPAREN=4, NPARPM=7, NPARSN=5, NPARSE=3, NPARFA=10,
+     +             NPARRT=5 )
       CHARACTER*8  TYPAEN(NPAREN), TYPAPM(NPARPM), TYPASN(NPARSN),
-     +             TYPASE(NPARSE), TYPAFA(NPARFA)
+     +             TYPASE(NPARSE), TYPAFA(NPARFA), TYPART(NPARRT)
       CHARACTER*16 NOPAEN(NPAREN), NOPAPM(NPARPM), NOPASN(NPARSN),
-     +             NOPASE(NPARSE), NOPAFA(NPARFA)
+     +             NOPASE(NPARSE), NOPAFA(NPARFA), NOPART(NPARRT)
 C
       DATA NOPAEN / 'INTITULE', 'LIEU', 'SM', '3SM' /
       DATA TYPAEN / 'K16',      'K8'  , 'R' , 'R'   / 
+      DATA NOPART / 'TABL_PRES', 'SY', 'SIGM_M_PRES',
+     +              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB' /
+      DATA TYPART / 'K8', 'R' , 'R'   , 'R'   , 'R'   / 
       DATA NOPAPM / 'TABL_RESU', 'INST_PM', 'PM', 'INST_PB', 'PB',
      +              'INST_PMB' , 'PMB' /
       DATA TYPAPM / 'K8', 'R', 'R', 'R', 'R', 'R', 'R' /
@@ -106,10 +113,17 @@ C
           NOPARA(I) = NOPAEN(I)
           TYPARA(I) = TYPAEN(I)
  10     CONTINUE
+        IF ( LROCHT ) THEN
+           DO 11 I = 1 , NPARRT
+              NOPARA(NPARA+I) = NOPART(I)
+              TYPARA(NPARA+I) = TYPART(I)
+ 11        CONTINUE
+           NPARA = NPARA + NPARRT
+        ENDIF
         IF ( LPMPB ) THEN
            DO 12 I = 1 , NPARPM
               NOPARA(NPARA+I) = NOPAPM(I)
-            TYPARA(NPARA+I) = TYPAPM(I)
+              TYPARA(NPARA+I) = TYPAPM(I)
  12        CONTINUE
            NPARA = NPARA + NPARPM
         ENDIF
@@ -145,7 +159,6 @@ C
       NPARA = NPAREN
       DO 30 I = 1 , NPAREN
         NOPARA(I) = NOPAEN(I)
-        TYPARA(I) = TYPAEN(I)
  30   CONTINUE
       IK = IK + 1
       VAKO(IK) = KINTI
@@ -159,6 +172,52 @@ C
 C
       VALO(2) = 3*SM
       VALE(2) = 3*SM
+C
+C --- POUR LE ROCHET THERMIQUE
+C
+      IF ( LROCHT ) THEN
+         CALL JEVEUO ( CSIGM, 'L', JSIGM )
+         CALL JEVEUO ( CPRES, 'L', JRESP )
+C RECHERCHE DU MAXIMUM DE LA CONTRAINTE DE MEMBRANE DUE A LA PRESSION
+         PM = 0.D0
+         DO 400 I = 1, NBINST
+            DO 402 ICMP = 1, NCMP
+               L3 = 4*NCMP*NBINST + NCMP*(I-1) + ICMP
+               TPM(ICMP) = ZR(JSIGM-1+L3)
+ 402        CONTINUE
+            CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
+            IF ( EQUI(2) .GT. PM ) PM = EQUI(2)
+ 400     CONTINUE
+         CALL RCMCRT ( SYMAX, PM, STLIN, STPAR )
+C
+         NPAR1 = NPARA + 1
+         NOPARA(NPAR1) = 'TABL_PRES'
+         VAKO(IK+1) = ZK8(JRESP-1+JT)
+         VAKE(IK+1) = ZK8(JRESP-1+JT)
+         NPAR1 = NPAR1 + 1
+         NOPARA(NPAR1) = 'SY'
+         IR = 2 + 1
+         VALO(IR) = SYMAX
+         VALE(IR) = SYMAX
+         NPAR1 = NPAR1 + 1
+         NOPARA(NPAR1) = 'SIGM_M_PRES'
+         IR = IR + 1
+         VALO(IR) = PM
+         VALE(IR) = PM
+         NPAR1 = NPAR1 + 1
+         NOPARA(NPAR1) = 'VALE_MAXI_LINE'
+         IR = IR + 1
+         VALO(IR) = STLIN
+         VALE(IR) = STLIN
+         NPAR1 = NPAR1 + 1
+         NOPARA(NPAR1) = 'VALE_MAXI_PARAB'
+         IR = IR + 1
+         VALO(IR) = STPAR
+         VALE(IR) = STPAR
+         CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIO, VALO, C16B, VAKO,0)
+         CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIE, VALE, C16B, VAKE,0)
+C
+      ENDIF
 C
 C --- POUR L'OPTION "PMPB"
 C

@@ -1,7 +1,6 @@
 # AJOUT
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / FATIGUE + UNITAIRE
 
-
 POURSUITE(CODE=_F(  NOM = 'RCCM01B'));
 
 COURFATA = FORMULE(NOM_PARA='SIGM',VALE='2.E6/SIGM ')
@@ -17,8 +16,8 @@ WOHLER2=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,INFO=2,
 MAT2=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                      FATIGUE=_F(  WOHLER = WOHLER2, E_REFE = 200000.),
                         RCCM=_F(  M_KE = 1.7,
-                               N_KE = 0.3,
-                               SM = 50.)
+                                  N_KE = 0.3,
+                                  SM = 50.)
                                )
 
 #--------------------------------------------------------------------------------
@@ -26,7 +25,8 @@ MAT2=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
 #   chargement unitaire - Validation KE_MECA
 #--------------------------------------------------------------------------------
 
-FAT1=POST_RCCM( MATER=MAT2,
+FAT1=POST_RCCM(  MATER=MAT2,
+                 SY_MAX = 50. ,
                  TYPE_RESU_MECA='UNITAIRE',
                  OPTION='FATIGUE',
                  INFO=2,
@@ -72,8 +72,6 @@ FAT1=POST_RCCM( MATER=MAT2,
                              ),
                    );
 
-IMPR_TABLE(    TABLE=FAT1 )
-
 TEST_TABLE(    TABLE=FAT1,
                FILTRE= _F(  NOM_PARA = 'LIEU',
                              VALE_K   = 'ORIG',),
@@ -92,7 +90,8 @@ TEST_TABLE(    TABLE=FAT1,
 #   chargement unitaire - Validation KE_MIXTE
 #--------------------------------------------------------------------------------
 
-FAT2=POST_RCCM( MATER=MAT2,
+FAT2=POST_RCCM(  MATER=MAT2,
+                 SY_MAX = 50. ,
                  TYPE_RESU_MECA='UNITAIRE',
                  OPTION='FATIGUE',
                  TYPE_KE = 'KE_MIXTE',
@@ -138,8 +137,6 @@ FAT2=POST_RCCM( MATER=MAT2,
                                 TEMP_REF_B=20.0,),
                              ),
                    );
-
-IMPR_TABLE(    TABLE=FAT2 )
 
 TEST_TABLE(    TABLE=FAT2,
                FILTRE= _F(  NOM_PARA = 'LIEU',

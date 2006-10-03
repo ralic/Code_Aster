@@ -1,6 +1,6 @@
       SUBROUTINE VDXNLR ( OPTION, NOMTE, XI, RIG, NB1, CODRET )
       IMPLICIT REAL*8 (A-H,O-Z)
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,7 +107,12 @@ C
       IF (NBCOU.GT.10) CALL U2MESS('F','ELEMENTS_13')
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
       CALL TECACH('OON','PVARIMR',7,ITAB,IRET)
-      LGPG = MAX(ITAB(6),1)*ITAB(7)
+C      LGPG = MAX(ITAB(6),1)*ITAB(7) resultats faux sur Bull avec ifort
+      IF (ITAB(6).LE.1) THEN
+         LGPG=ITAB(7)
+      ELSE
+         LGPG = ITAB(6)*ITAB(7)
+      ENDIF
 
       CALL JEVECH('PCACOQU','L',JCARA)
       EPAIS = ZR(JCARA)

@@ -1,0 +1,97 @@
+      SUBROUTINE RCMCRT ( SYMAX, SIGM, STLIN, STPAR )
+      IMPLICIT   NONE
+      REAL*8              SYMAX, SIGM, STLIN, STPAR
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C     ------------------------------------------------------------------
+C
+C     OPERATEUR POST_RCCM
+C     CALCUL DU CRITERE DU ROCHET THERMIQUE
+C
+C IN  : SYMAX : LIMITE ELASTIQUE
+C IN  : SIGM  : MAXIMUM DE LA CONTRAINTE DE MEMBRANE DUE A LA PRESSION
+C OUT : STLIN : VALEUR MAXIMALE ADMISSIBLE DE L'AMPLITUDE DE VARIATION
+C               D'ORIGINE THERMIQUE (VARIATION DE TEMPERATURE LINEAIRE)
+C OUT : STPAR : VALEUR MAXIMALE ADMISSIBLE DE L'AMPLITUDE DE VARIATION
+C             D'ORIGINE THERMIQUE (VARIATION DE TEMPERATURE PARABOLIQUE)
+C     ------------------------------------------------------------------
+C
+      REAL*8    LINLIN, X, X1, Y1, X2, Y2, YPRIM, R8VIDE, VALER(3)
+C
+      LINLIN(X,X1,Y1,X2,Y2)= Y1+(X-X1)*(Y2-Y1)/(X2-X1)
+C DEB ------------------------------------------------------------------
+C
+      X = SIGM / SYMAX
+C
+C --- VARIATION DE TEMPERATURE LINEAIRE DANS LA PAROI
+C
+      IF ( ABS(X).LE.1.0D-10 ) THEN
+         YPRIM = 0.0D0
+      ELSEIF ( ABS(X-1.0D0).LE.1.0D-10 ) THEN
+         YPRIM = 0.0D0
+      ELSEIF ( X.GT.0.0D0 .AND. X.LE.0.50D0 ) THEN
+         YPRIM = 1.0D0 / X
+
+      ELSEIF ( X.GT.0.50D0 .AND. X.LE.1.0D0 ) THEN
+         YPRIM = 4.0D0 * ( 1.0D0 - X )
+
+      ELSE
+         STLIN = R8VIDE()
+         VALER(1) = X
+         VALER(2) = SIGM
+         VALER(3) = SYMAX
+         CALL U2MESR ( 'I', 'POSTRELE_67', 3, VALER )
+         GOTO 9998
+      ENDIF
+      STLIN = YPRIM * SYMAX
+C
+ 9998 CONTINUE
+C
+C --- VARIATION DE TEMPERATURE PARABOLIQUE DANS LA PAROI
+C
+      IF ( ABS(X).LE.1.0D-10 ) THEN
+         YPRIM = 0.0D0
+      ELSEIF ( ABS(X-1.0D0).LE.1.0D-10 ) THEN
+         YPRIM = 0.0D0
+      ELSEIF ( X.GE.0.615D0 .AND. X.LT.1.0D0 ) THEN
+         YPRIM = 5.2D0 * ( 1.0D0 - X )
+
+      ELSEIF ( X.GE.0.5D0 .AND. X.LT.0.615D0 ) THEN
+         YPRIM = LINLIN( X, 0.5D0,2.7D0, 0.615D0,2.002D0 )
+
+      ELSEIF ( X.GE.0.4D0 .AND. X.LT.0.5D0 ) THEN
+         YPRIM = LINLIN( X, 0.4D0,3.55D0, 0.5D0,2.7D0 )
+
+      ELSEIF ( X.GE.0.3D0 .AND. X.LT.0.4D0 ) THEN
+         YPRIM = LINLIN( X, 0.3D0,4.65D0, 0.4D0,3.55D0 )
+
+      ELSE
+         STPAR = R8VIDE()
+         VALER(1) = X
+         VALER(2) = SIGM
+         VALER(3) = SYMAX
+         CALL U2MESR ( 'I', 'POSTRELE_68', 3, VALER )
+         GOTO 9999
+      ENDIF
+      STPAR = YPRIM * SYMAX
+C
+ 9999 CONTINUE
+C
+      END

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,6 @@ C      --------------------------------------------------
    40   CONTINUE
       END IF
 
-
 C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
 C      -------------------------------------------
       CALL TECACH('NNN','PTEREF',1,ITREF,IRET)
@@ -139,6 +138,11 @@ C ----                    ET EPSI_MECA - EPSI_THERMIQUES POUR LES
 C ----                    OPTIONS EPME ET EPMG :
 C      ---------------------------------------
       CALL TECACH('NNN','PMATERC',1,IMATE,IRET)
+
+C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
+C      ------------------------------------------------------------
+      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+
       CALL EPSVMC('RIGI',MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,
      +            IDFDE,ZR(IGEOM), ZR(IDEPL),
      +            TEMPE, TREF, INSTAN,

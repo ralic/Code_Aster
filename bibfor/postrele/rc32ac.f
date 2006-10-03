@@ -1,10 +1,11 @@
-      SUBROUTINE RC32AC ( OPMPB, OSN, OSNET, OFATIG, MATER )
+      SUBROUTINE RC32AC ( LPMPB, LSN, LSNET, LFATIG, LROCHT, MATER )
       IMPLICIT   NONE
-      LOGICAL             OPMPB, OSN, OSNET, OFATIG
+      LOGICAL             LPMPB, LSN, LSNET, LFATIG, LROCHT
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -76,16 +77,19 @@ C
       INTEGER      IG, NBGR, NBSIGR, JNSG, IS, IS1, IOC1, NOCC, NUMGR, 
      +             JCOMBI, JPRESA, JPRESB, JNBOCC, IM, JNUMGR, JPASSA,
      +             NPASS, NUM1, NUM2, IFM, NIV, IOCS, JSEIGR, JRESU,
-     +             JNSITU, NSITUP, NSITUQ, JPMPB, IRET, I1, JFACT, I
-      REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ,
+     +             JNSITU, NSITUP, NSITUQ, IRET, I1, JFACT, I, J,
+     +             JREAS, JRESS, JRECA, JRECS, NDIM
+      REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ, VALRES,
      +             UG, NADM, MPI(12), MPJ(12), SM, SN, SNET, SP, SMM,
      +             MATPI(8), MATPJ(8), MSE(12),TYPEKE,SPMECA,SPTHER,
-     +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB
+     +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB,
+     +             SIPMAX, SIMPIJ, SNEMAX, KEMAX, R8VIDE, PMMAX, PBMAX,
+     +             PMBMAX
       LOGICAL      SEISME, ENDUR, CFAIT
       CHARACTER*2  CODRET
       CHARACTER*4  LIEU(2)
       CHARACTER*8  K8B
-      CHARACTER*24 K24B, K24T
+      CHARACTER*24 K24AS, K24SS, K24CA, K24CS, K24FU
 C
       DATA LIEU / 'ORIG' , 'EXTR' /
 C DEB ------------------------------------------------------------------
@@ -108,11 +112,45 @@ C --- IL FAUT CALCULER LE FACTEUR D'USAGE A CHAQUE EXTREMITE
 C
       DO 10 IM = 1 , 2
 C
-         K24B = '&&RC3200.PMPB       '//LIEU(IM)
-         CALL JECREC(K24B, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
+C ------ POUR CHAQUE SITUATION, ON ARCHIVE :
+C         * 10 QUANTITES AVEC LA PRISE EN COMPTE DU SEISME
+C         * 10 QUANTITES SANS LA PRISE EN COMPTE DU SEISME
+C         1  : PM
+C         2  : PB
+C         3  : PMPB
+C         4  : SN
+C         5  : SN*
+C         6  : SP
+C         7  : KE_MECA
+C         8  : KE_THER
+C         9  : SALT
+C         10 : UG
 C
-         K24T = '&&RC3200.FACT_USAGE '//LIEU(IM)
-         CALL JECREC(K24T, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
+C ------ POUR CHAQUE COMBINAISON, ON ARCHIVE :
+C         1  : SN(P,Q)
+C         2  : SP(K,L)
+C         3  : SALT(K,L)
+C         4  : SP(K,L)
+C         5  : SALT(K,L)
+C         6  : SP(K,L)
+C         7  : SALT(K,L)
+C         8  : SP(K,L)
+C         9  : SALT(K,L)
+C
+         K24AS = '&&RC3200.AVEC_SEISME'//LIEU(IM)
+         CALL JECREC(K24AS, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
+C
+         K24SS = '&&RC3200.SANS_SEISME'//LIEU(IM)
+         CALL JECREC(K24SS, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
+C
+         K24CA = '&&RC3200.COMBI_A_SEI'//LIEU(IM)
+         CALL JECREC(K24CA, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
+C
+         K24CS = '&&RC3200.COMBI_S_SEI'//LIEU(IM)
+         CALL JECREC(K24CS, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
+C
+         K24FU = '&&RC3200.FACT_USAGE '//LIEU(IM)
+         CALL JECREC(K24FU, 'V V R', 'NU', 'DISPERSE', 'VARIABLE', NBGR)
 C
          IF ( NIV .GE. 2 ) THEN
             IF (IM.EQ.1) THEN
@@ -126,13 +164,19 @@ C
             WRITE(IFM,*)
      +       '=> ON TRAITE LES SITUATIONS COMBINABLES DANS LEUR GROUPE'
          ENDIF
-         SM    = 0.D0
-         SNMAX = 0.D0
-         SPMAX = 0.D0
+         PMMAX  = 0.D0
+         PBMAX  = 0.D0
+         PMBMAX = 0.D0
+         SM     = 0.D0
+         SNMAX  = 0.D0
+         SNEMAX = 0.D0
+         SPMAX  = 0.D0
+         KEMAX  = 0.D0
          SPMECM = 0.D0
          SPTHEM = 0.D0
-         SAMAX = 0.D0
-         UTOT  = 0.D0
+         SAMAX  = 0.D0
+         UTOT   = 0.D0
+         SIPMAX = 0.D0
 C
 C ----------------------------------------------------------------------
 C                           E T A P E   1   
@@ -148,13 +192,26 @@ C
 C
             CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
      +                                                    NBSIGR, K8B )
-            CALL JECROC (JEXNUM(K24B,IG))
-            CALL JEECRA (JEXNUM(K24B,IG), 'LONMAX', 6*NBSIGR, ' ' )
-            CALL JEVEUO (JEXNUM(K24B,IG), 'E', JPMPB )
+            CALL JECROC (JEXNUM(K24AS,IG))
+            CALL JEECRA (JEXNUM(K24AS,IG), 'LONMAX', 10*NBSIGR, ' ' )
+            CALL JEVEUO (JEXNUM(K24AS,IG), 'E', JREAS )
 C
-            CALL JECROC (JEXNUM(K24T,IG))
-            CALL JEECRA (JEXNUM(K24T,IG), 'LONMAX', 4*50, ' ' )
-            CALL JEVEUO (JEXNUM(K24T,IG), 'E', JFACT )
+            CALL JECROC (JEXNUM(K24SS,IG))
+            CALL JEECRA (JEXNUM(K24SS,IG), 'LONMAX', 10*NBSIGR, ' ' )
+            CALL JEVEUO (JEXNUM(K24SS,IG), 'E', JRESS )
+C
+            NDIM = MAX(9,9*NBSIGR*(NBSIGR-1)/2)
+            CALL JECROC (JEXNUM(K24CA,IG))
+            CALL JEECRA (JEXNUM(K24CA,IG), 'LONMAX', NDIM, ' ' )
+            CALL JEVEUO (JEXNUM(K24CA,IG), 'E', JRECA )
+C
+            CALL JECROC (JEXNUM(K24CS,IG))
+            CALL JEECRA (JEXNUM(K24CS,IG), 'LONMAX', NDIM, ' ' )
+            CALL JEVEUO (JEXNUM(K24CS,IG), 'E', JRECS )
+C
+            CALL JECROC (JEXNUM(K24FU,IG))
+            CALL JEECRA (JEXNUM(K24FU,IG), 'LONMAX', 4*50, ' ' )
+            CALL JEVEUO (JEXNUM(K24FU,IG), 'E', JFACT )
 C
             NPASS = 0
             IF ( IOCS .EQ. 0 ) THEN
@@ -163,9 +220,12 @@ C
                SEISME = .TRUE.
             ENDIF
 C
-            CALL RC3201 ( OPMPB, OSN, OSNET, OFATIG, LIEU(IM), NUMGR,
-     +              IOCS, SEISME, NPASS, MATER, SNMAX, SPMAX, SPMECM,
-     +                    SPTHEM, SAMAX, UTOT, SM, ZR(JPMPB),ZR(JFACT))
+            CALL RC3201 ( LPMPB, LSN, LSNET, LFATIG, LROCHT, LIEU(IM),
+     +                    NUMGR, IOCS, SEISME, NPASS, MATER, SNMAX,
+     +                    SNEMAX, SPMAX, KEMAX, SPMECM, SPTHEM, SAMAX,  
+     +                    UTOT, SM, SIPMAX, ZR(JREAS), ZR(JRESS),
+     +                    ZR(JRECA), ZR(JRECS), ZR(JFACT), PMMAX,
+     +                    PBMAX, PMBMAX )
 C
  100     CONTINUE
 C
@@ -195,6 +255,23 @@ C
             DO 210 IS1 = 1 , NBSIGR
               IOC1 = ZI(JNSG+IS1-1)
               IF ( ZL(JCOMBI+IOC1-1) )  GOTO 210
+C
+              CALL JEEXIN (JEXNUM(K24AS,IG), IRET )
+              IF ( IRET .EQ. 0 ) THEN
+                 CALL JECROC (JEXNUM(K24AS,IG))
+                 CALL JEECRA (JEXNUM(K24AS,IG),'LONMAX',10*NBSIGR,' ')
+              ENDIF
+              CALL JEVEUO ( JEXNUM(K24AS,IG), 'E', JREAS )
+              DO 212 J = 1 , 10
+                 ZR(JREAS-1+10*(IS1-1)+J) = R8VIDE()
+ 212          CONTINUE
+C
+              CALL JEEXIN (JEXNUM(K24SS,IG), IRET )
+              IF ( IRET .EQ. 0 ) THEN
+                 CALL JECROC (JEXNUM(K24SS,IG))
+                 CALL JEECRA (JEXNUM(K24SS,IG),'LONMAX',10*NBSIGR,' ')
+              ENDIF
+              CALL JEVEUO ( JEXNUM(K24SS,IG), 'E', JRESS )
 C   
               IF ( .NOT.CFAIT .AND. NIV.GE.2 ) THEN
                 CFAIT = .TRUE.
@@ -220,42 +297,33 @@ C
 C
 C ----------- CALCUL DU PM_PB
 C
-              IF ( OPMPB ) THEN
+              IF ( LPMPB ) THEN
                  PM = 0.D0
                  PB = 0.D0
                  PMPB = 0.D0
-                 CALL JEEXIN (JEXNUM(K24B,IG), IRET )
-                 IF ( IRET .EQ. 0 ) THEN
-                    CALL JECROC (JEXNUM(K24B,IG))
-                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',6*NBSIGR,' ')
-                 ENDIF
-                 CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
                  CALL RC32PM ( LIEU(IM), SEISME, PPI, MPI, 
      +                                            MSE, PM, PB, PMPB )
                  CALL RC32PM ( LIEU(IM), SEISME, PPJ, MPJ,
      +                                            MSE, PM, PB, PMPB )
-                 ZR(JPMPB-1+6*(IS1-1)+1) = PM
-                 ZR(JPMPB-1+6*(IS1-1)+2) = PB
-                 ZR(JPMPB-1+6*(IS1-1)+3) = PMPB
+                 ZR(JRESS-1+10*(IS1-1)+1) = PM
+                 ZR(JRESS-1+10*(IS1-1)+2) = PB
+                 ZR(JRESS-1+10*(IS1-1)+3) = PMPB
                  IF (NIV.GE.2) THEN
                     WRITE (IFM,2020) NSITUP, PM, PB, PMPB
                  END IF
+                 PMMAX  = MAX (  PMMAX , PM   )
+                 PBMAX  = MAX (  PBMAX , PB   )
+                 PMBMAX = MAX ( PMBMAX , PMPB )
               ENDIF
 C
 C ----------- CALCUL DU SN
 C
-              IF ( OSN ) THEN
+              IF ( LSN ) THEN
                  SN = 0.D0
                  CALL RC32SN ( 'SN_SITU', LIEU(IM), NSITUP, PPI, MPI, 
      +                         NSITUQ, PPJ, MPJ, SEISME, MSE, SN )
                  SNMAX = MAX ( SNMAX , SN )
-                 CALL JEEXIN (JEXNUM(K24B,IG), IRET )
-                 IF ( IRET .EQ. 0 ) THEN
-                    CALL JECROC (JEXNUM(K24B,IG))
-                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',6*NBSIGR,' ')
-                 ENDIF
-                 CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
-                 ZR(JPMPB-1+6*(IS1-1)+4) = SN
+                 ZR(JRESS-1+10*(IS1-1)+4) = SN
                  IF (NIV.GE.2) THEN
                     WRITE (IFM,2030) NSITUP, SN
                  END IF
@@ -263,41 +331,51 @@ C
 C
 C ----------- CALCUL DU SN*
 C
-              IF ( OSN .AND. OSNET ) THEN
+              IF ( LSN .AND. LSNET ) THEN
                  SNET = 0.D0
                  CALL RC32SN ( 'SN*_SITU', LIEU(IM), NSITUP, PPI, MPI, 
      +                         NSITUQ, PPJ, MPJ, SEISME, MSE, SNET )
-                 CALL JEEXIN (JEXNUM(K24B,IG), IRET )
-                 IF ( IRET .EQ. 0 ) THEN
-                    CALL JECROC (JEXNUM(K24B,IG))
-                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',6*NBSIGR,' ')
-                 ENDIF
-                 CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
-                 ZR(JPMPB-1+6*(IS1-1)+6) = SNET
+                 SNEMAX = MAX ( SNEMAX , SNET )
+                 ZR(JRESS-1+10*(IS1-1)+5) = SNET
                  IF (NIV.GE.2) THEN
                     WRITE (IFM,2032) NSITUP, SNET
                  END IF
               ENDIF
 C
-              IF ( .NOT.OFATIG ) GOTO 210
+C ----------- CALCUL DU ROCHET THERMIQUE
+C
+              IF ( LROCHT ) THEN
+                 CALL RC32RT ( LIEU(IM), PPI, PPJ, SIMPIJ )
+                 SIPMAX = MAX ( SIPMAX, SIMPIJ )
+                 WRITE (IFM,2034) NSITUP, SIMPIJ
+              ENDIF
+C
+              IF ( .NOT.LFATIG ) GOTO 210
 C
 C ----------- CALCUL DU SP
 C
               SP = 0.D0
+              SPTHER = 0.D0
               TYPEKE=MATPI(8)
               CALL RC32SP ( 'SP_SITU', LIEU(IM), NSITUP, PPI, MPI, 
      +                      NSITUQ, PPJ, MPJ, SEISME, MSE, 
      +                      SP, TYPEKE, SPMECA, SPTHER )
+              SPTHEM = MAX ( SPTHEM , SPTHER )
               SPMAX = MAX ( SPMAX , SP )
               IF (NIV.GE.2) WRITE (IFM,2040) NSITUP, SP
+              ZR(JRESS-1+10*(IS1-1)+6) = SP
 C
 C ----------- CALCUL DU SALT
 C
               CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP, TYPEKE,  
      &                    SPMECA, SPTHER, KEMECA, KETHER, SALTIJ, SMM )
+              KEMAX = MAX ( KEMAX , KEMECA )
               IF (NIV.GE.2) THEN
                  WRITE (IFM,2050) NSITUP, SALTIJ
               END IF
+              ZR(JRESS-1+10*(IS1-1)+7) = KEMECA
+              ZR(JRESS-1+10*(IS1-1)+8) = KETHER
+              ZR(JRESS-1+10*(IS1-1)+9) = SALTIJ
 C
               IF ( SALTIJ .GT. SAMAX ) THEN
                  SAMAX = SALTIJ
@@ -322,7 +400,7 @@ C
 C
                  UG = DBLE( NOCC ) / NADM
               ENDIF
-              ZR(JPMPB-1+6*(IS1-1)+5) = UG
+              ZR(JRESS-1+10*(IS1-1)+10) = UG
               IF (NIV.GE.2) THEN
                  WRITE (IFM,2060) NSITUP, UG
               END IF
@@ -366,7 +444,8 @@ C
               NPASS = ZI(JNBOCC+2*IOC1-2)
 C
               CALL RC3203 ( LIEU(IM), NUM1, NUM2, NPASS,
-     +              MATER, SNMAX, SPMAX,SPMECM,SPTHEM, SAMAX, UTOT, SM )
+     +                      MATER, SNMAX, SPMAX, KEMAX, SPMECM, SPTHEM, 
+     +                      SAMAX, UTOT, SM, LROCHT, SIPMAX )
 C
  320        CONTINUE
 C
@@ -378,25 +457,38 @@ C ------ ON STOCKE LES RESULTATS DE CALCUL
 C        ---------------------------------
 C
          CALL WKVECT ( '&&RC3200.RESULTAT  .'//LIEU(IM), 'V V R',
-     +                                                   6, JRESU )
+     +                                                  13, JRESU )
+C        - LE PM
+         ZR(JRESU  ) = PMMAX
+C        - LE PB
+         ZR(JRESU+1) = PBMAX
+C        - LE PMPB
+         ZR(JRESU+2) = PMBMAX
 C        - LE SM
-         ZR(JRESU  ) = SM
+         ZR(JRESU+3) = SM
 C        - LE SN/3SM
          IF ( SM .EQ. 0.D0 ) THEN
-            ZR(JRESU+1) = 0.D0
+            ZR(JRESU+4) = 0.D0
          ELSE
-            ZR(JRESU+1) = SNMAX / ( 3 * SM )
+            ZR(JRESU+4) = SNMAX / ( 3 * SM )
          ENDIF
 C        - LE SN
-         ZR(JRESU+2) = SNMAX
+         ZR(JRESU+5) = SNMAX
+C        - LE SN*
+         ZR(JRESU+6) = SNEMAX
 C        - LE SP
-         ZR(JRESU+3) = SPMAX
+         ZR(JRESU+7) = SPMAX
+C        - LE KE
+         ZR(JRESU+8) = KEMAX
 C        - LE SALT
-         ZR(JRESU+4) = SAMAX
-C        - LE U_TOTAL
-         ZR(JRESU+5) = UTOT
+         ZR(JRESU+9) = SAMAX
+C        - LE FACTEUR D'USAGE TOTAL
+         ZR(JRESU+10) = UTOT
+C        - LE ROCHET THERMIQUE
+         ZR(JRESU+11) = SIPMAX
+         ZR(JRESU+12) = SPTHEM
 C
-         IF ( OFATIG )  WRITE (IFM,2070) UTOT
+         IF ( LFATIG )  WRITE (IFM,2070) UTOT
 C
  10   CONTINUE
 C
@@ -406,6 +498,7 @@ C
      +                            ' PB =',E12.5,' PMPB =',E12.5)
  2030 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )
  2032 FORMAT (1P,' SITUATION ',I4,' SN* =',E12.5 )
+ 2034 FORMAT (1P,' SITUATION ',I4,' ROCHET THERMIQUE =',E12.5 )
  2040 FORMAT (1P,' SITUATION ',I4,' SP =',E12.5)
  2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
  2060 FORMAT (1P,' SITUATION ',I4,' FACT_USAGE =',E12.5)

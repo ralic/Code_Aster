@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 03/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE 3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,6 +222,8 @@ TEST_RESU(RESU=(_F(
                    INST = 1.,      NOM_CMP = 'NXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02))
             )
+
+IMPR_RESU(RESU=_F(RESULTAT=U))
 
 FIN()
 #

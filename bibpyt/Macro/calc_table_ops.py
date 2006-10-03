@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 10/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_table_ops Macro  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,7 +112,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
       if occ['OPERATION'] == 'COMB':
          tab2 = occ['TABLE'].EXTR_TABLE()
          opts = [tab, tab2]
-         if occ['NOM_PARA']<>None:
+         if ('NOM_PARA' in occ.keys() and occ['NOM_PARA']<>None) :
             lpar = occ['NOM_PARA']
             if not type(lpar) in EnumTypes:
                lpar = [lpar]

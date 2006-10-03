@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF postrele Messages  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,7 +51,7 @@ cata_msg={
 """),
 
 8: _("""
- la courbe   krd_etoil(lrd_etoil) a plus de 100 points
+ la courbe krd_etoil(lrd_etoil) a plus de 100 points
 """),
 
 9: _("""
@@ -119,7 +119,7 @@ cata_msg={
 """),
 
 25: _("""
- il faut definir le comportement "rccm" dans "defi_materiau"
+ il faut definir le comportement "RCCM" dans "DEFI_MATERIAU"
 """),
 
 26: _("""
@@ -143,15 +143,15 @@ cata_msg={
 """),
 
 31: _("""
- il faut definir le comportement "elas" dans defi_materiau
+ il faut definir le comportement "ELAS" dans "DEFI_MATERIAU"
 """),
 
 32: _("""
- il faut definir le comportement "fatigue" dans defi_materiau
+ il faut definir le comportement "FATIGUE" dans "DEFI_MATERIAU"
 """),
 
 33: _("""
- il faut definir le comportement "rccm" dans defi_materiau
+ il faut definir le comportement "RCCM" dans "DEFI_MATERIAU"
 """),
 
 34: _("""
@@ -163,7 +163,7 @@ cata_msg={
 """),
 
 36: _("""
- "nume_groupe" doit etre strictement positif
+ "NUME_GROUPE" doit etre strictement positif
 """),
 
 37: _("""
@@ -175,7 +175,7 @@ cata_msg={
 """),
 
 39: _("""
- un seul "nb_cycl_seisme"
+ un seul "NB_CYCL_SEISME"
 """),
 
 40: _("""
@@ -187,19 +187,19 @@ cata_msg={
 """),
 
 42: _("""
- si on est la, y a bug
+ si on est la, y a un bug
 """),
 
 43: _("""
- absence du parametre inst pour la table tabl_moye_ther
+ absence du parametre INST pour la table tabl_moye_ther
 """),
 
 44: _("""
- absence du parametre inst pour la table tabl_resu_ther
+ absence du parametre INST pour la table tabl_resu_ther
 """),
 
 45: _("""
- absence du parametre absc_curv pour la table tabl_resu_ther
+ absence du parametre ABSC_CURV pour la table tabl_resu_ther
 """),
 
 46: _("""
@@ -235,7 +235,7 @@ cata_msg={
 """),
 
 54: _("""
- avec vect_y il faut preciser soit un seul groupe de noeuds soit plusieurs noeuds
+ avec VECT_Y il faut preciser soit un seul groupe de noeuds soit plusieurs noeuds
 """),
 
 55: _("""
@@ -247,7 +247,7 @@ cata_msg={
 """),
 
 57: _("""
- contradictio avec inte_mail_2d
+ contradiction avec INTE_MAIL_2D
 """),
 
 58: _("""
@@ -267,7 +267,7 @@ cata_msg={
 """),
 
 62: _("""
- le nombre de composantes a traiter est limite a 6 pour operation "moyenne". utiliser "nom_cmp" avec au plus 6 composantes
+ le nombre de composantes a traiter est limite a 6 pour operation "MOYENNE". utiliser "NOM_CMP" avec au plus 6 composantes
 """),
 
 63: _("""
@@ -281,4 +281,27 @@ cata_msg={
 65: _("""
  + de 3000 cmps!
 """),
+
+66: _("""
+ il manque la donnee de la limite d'elasticite (SY_02 ou SY_MAX) pour le calcul du rochet thermique
+"""),
+
+67: _("""
+ le calcul du critere du rochet thermique pour une variation de temperature lineaire est impossible
+        X = SIGM / SYMAX =  %(r1)12.5E
+         SIGM =  %(r2)12.5E
+        SYMAX =  %(r3)12.5E
+        ON DOIT AVOIR 0. < X < 1.                                                                                                   
+ 
+"""),
+
+68: _("""
+ le calcul du critere du rochet thermique pour une variation de temperature parabolique est impossible
+        X = SIGM / SYMAX =  %(r1)12.5E
+         SIGM =  %(r2)12.5E
+        SYMAX =  %(r3)12.5E
+        ON DOIT AVOIR 0.3 < X < 1.                                                                                                   
+ 
+"""),
+
 }

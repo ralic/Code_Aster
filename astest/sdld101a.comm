@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
 # TITRE OSCILLATEUR SIMPLE SOUMIS A UNE EXCITATION ALEATOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -308,16 +308,13 @@ TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTER3,
 #  PROBABILITE DE DEPASSEMENT DE SEUIL      **********#
 #  PROBA CUMULEE SELON VANMARCKE             *********#
 #*****************************************************#
-STADEF=POST_DYNA_ALEA(       INTE_SPEC=INTERRE1,
-                                NOEUD_I='P2',
-                              NOM_CMP_I='DX',
-                                NOEUD_J='P2',
-                              NOM_CMP_J='DX',
-                                 MOMENT=( 6,  7,  10, ),
-                                  GAUSS=_F(),
-                               RAYLEIGH=_F(),
-                            DEPASSEMENT=_F(),
-                              VANMARCKE=_F(  DUREE = 10.)
+STADEF=POST_DYNA_ALEA(  INTE_SPEC=INTERRE1,
+                        NOEUD_I='P2',
+                        NOM_CMP_I='DX',
+                        NOEUD_J='P2',
+                        NOM_CMP_J='DX',
+                        MOMENT=( 6,  7,  10, ),
+                        INFO=2
                       )
 
 TEST_TABLE(      TABLE=STADEF,FILTRE=(
@@ -425,25 +422,13 @@ TEST_TABLE(      TABLE=STADEF,FILTRE=(
                    VALE=1.234367E+26       )
 
 #
-STAIMP=POST_DYNA_ALEA(       INTE_SPEC=INTERRE1,
-                                NOEUD_I='P2',
-                              NOM_CMP_I='DX',
-                                NOEUD_J='P2',
-                              NOM_CMP_J='DX',
-                           MOMENT=( 6,  7,  10, ),
-                           GAUSS=_F(  PAS = 10.,
-                                   VALE_MIN = 10.,
-                                   VALE_MAX = 80.),
-                           RAYLEIGH=_F(  PAS = 10.,
-                                      VALE_MIN = 10.,
-                                      VALE_MAX = 80.),
-                           DEPASSEMENT=_F(  PAS = 10.,
-                                         VALE_MIN = 10.,
-                                         VALE_MAX = 80.),
-                             VANMARCKE=_F(  PAS = 10.,
-                                         VALE_MIN = 10.,
-                                         VALE_MAX = 80.,
-                                         DUREE = 10.)
+STAIMP=POST_DYNA_ALEA(   INTE_SPEC=INTERRE1,
+                         NOEUD_I='P2',
+                         NOM_CMP_I='DX',
+                         NOEUD_J='P2',
+                         NOM_CMP_J='DX',
+                         MOMENT=( 6,  7,  10, ),
+                         INFO=2
               )
 
 # PAS DE TEST SUR LES FONCTIONS QUI SONT EXPLICITEMENT CALCULEES A 
@@ -452,15 +437,14 @@ STAIMP=POST_DYNA_ALEA(       INTE_SPEC=INTERRE1,
 INTBID1=DEFI_INTE_SPEC(    DIMENSION=1,
                CONSTANT=_F(  NUME_ORDRE_I = 1,
                           NUME_ORDRE_J = 1,
-                          FREQ_MIN = 0.,
+                          FREQ_MIN = 1.E-6,
                           FREQ_MAX = 10.,
                           PAS = 1.,
                           VALE_R = 1.,
                           PROL_GAUCHE = 'EXCLU',
                           PROL_DROITE = 'EXCLU',
-                          INTERPOL = 'LOG')
+                          INTERPOL = ('LOG','LIN'))
                          )
-
 #
 INTBID2=DEFI_INTE_SPEC(    DIMENSION=1,
                CONSTANT=_F(  NUME_ORDRE_I = 1,
@@ -478,7 +462,7 @@ INTBID2=DEFI_INTE_SPEC(    DIMENSION=1,
 INTBID3=DEFI_INTE_SPEC(    DIMENSION=1,
                KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
                               NUME_ORDRE_J = 1,
-                              FREQ_MIN = 0.,
+                              FREQ_MIN = 1.E-6,
                               FREQ_MAX = 30.,
                               PAS = 5.,
                               VALE_R = 1.,
@@ -486,7 +470,7 @@ INTBID3=DEFI_INTE_SPEC(    DIMENSION=1,
                               AMOR_REDUIT = 0.05,
                               PROL_GAUCHE = 'LINEAIRE',
                               PROL_DROITE = 'LINEAIRE',
-                              INTERPOL = 'LOG')
+                              INTERPOL = ('LOG','LIN'))
                          )
 
 #

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,6 +31,8 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                into=("PM_PB","SN","FATIGUE_ZH210") ),
          MATER           =SIMP(statut='o',typ=mater_sdaster ),
+         SY_MAX          =SIMP(statut='f',typ='R',
+                               fr="limite élastique utilisée pourle calcul du rochet thermique" ),
 
          TRANSITOIRE     =FACT(statut='o',max='**',fr="transitoire à dépouiller",
            regles=(EXCLUS('TOUT_ORDRE','INST','LIST_INST'),),
@@ -40,6 +42,8 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
                                  fr="relevé des contraintes sur le chemin"),
            TABL_SIGM_THER  =SIMP(statut='f',typ=table_sdaster,
                                  fr="résultat sous chargement thermique seul" ),
+           TABL_RESU_PRES  =SIMP(statut='f',typ=table_sdaster,
+                                 fr="table relevé des contraintes sous chargement de pression" ),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
            LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ),
@@ -56,6 +60,8 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                                into=("PM_PB","SN","FATIGUE") ),
          MATER           =SIMP(statut='o',typ=mater_sdaster ),
+         SY_MAX          =SIMP(statut='f',typ='R',
+                               fr="limite élastique utilisée pourle calcul du rochet thermique" ),
          TYPE_KE         =SIMP(statut='f',typ='TXM',defaut="KE_MECA",into=("KE_MECA","KE_MIXTE"),
                                fr="Ke meca seul ou partition mecanique + thermique" ),
          CHAR_MECA   =FACT(statut='o',max='**',fr="Chargements mécaniques",

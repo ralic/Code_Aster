@@ -1,4 +1,4 @@
-# MODIF  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,8 +59,9 @@ WOHLER=DEFI_FONCTION(
 MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
                      FATIGUE=_F(  WOHLER = WOHLER, E_REFE = 200000.),
                         RCCM=_F(  M_KE = 1.7,
-                               N_KE = 0.3,
-                               SM = 200.)
+                                  N_KE = 0.3,
+                                  SM = 200.,
+                                  SY_02 = 200.)
                                )
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,

@@ -1,10 +1,11 @@
-      SUBROUTINE RCEVOL ( TYPTAB, NOMMAT, NBOPT, OPTION )
+      SUBROUTINE RCEVOL ( TYPTAB, NOMMAT, SYMAX, NBOPT, OPTION )
       IMPLICIT   NONE
       INTEGER             NBOPT
+      REAL*8              SYMAX
       CHARACTER*8         NOMMAT
       CHARACTER*16        TYPTAB, OPTION(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,12 +46,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      I, J, N1, NBINTI, JINTI, NBTRAN
-      REAL*8       RBID, PARA(3), SM
-      LOGICAL      LPMPB, LSN, LFATIG, FLEXIO
+      REAL*8       RBID, PARA(3), SM, R8VIDE
+      LOGICAL      LPMPB, LSN, LFATIG, FLEXIO, LROCHT
       CHARACTER*8  K8B
       CHARACTER*16 KINTI
       CHARACTER*24 CINST, CSILI, CSIEX, CSNO, CSNE, CSNEO, CSNEE, 
-     +             CSPO, CSPE, CFAO, CFAE, CNOC, CRESU, INTITU
+     +             CSPO, CSPE, CFAO, CFAE, CNOC, CRESU, CRESP, INTITU
 C DEB ------------------------------------------------------------------
 C
 C --- VECTEUR DES INSTANTS DEMANDES
@@ -60,6 +61,7 @@ C
 C --- VECTEUR DES TRANSITOIRES
 C
       CRESU = '&&RCEVOL.RESU_MECA'
+      CRESP = '&&RCEVOL.RESU_PRES'
 C
 C --- VECTEUR DES CONTRAINTES LINEARISEES AUX EXTREMITES (PMPB, SN)
 C
@@ -91,6 +93,7 @@ C     ------------------------------------------------------------------
       LSN    = .FALSE.
       LPMPB  = .FALSE.
       FLEXIO = .FALSE.
+      LROCHT = .FALSE.
 C
       DO 10 I = 1 , NBOPT
          IF ( OPTION(I) .EQ. 'PM_PB' ) THEN
@@ -115,7 +118,7 @@ C     ------------------------------------------------------------------
 C                            LE MATERIAU
 C     ------------------------------------------------------------------
 C
-      CALL RCEVO1 ( NOMMAT, LFATIG, SM, PARA )
+      CALL RCEVO1 ( NOMMAT, LFATIG, SM, PARA, SYMAX )
 C
 C     ------------------------------------------------------------------
 C
@@ -131,10 +134,15 @@ C         --------------------------------------------------------------
 C
            IF ( LSN .AND. .NOT.LFATIG .AND. NBTRAN.GT.1 ) THEN
              CALL RCEV22 ( NBINTI, KINTI, J, CSILI, CINST, CSIEX, 
-     +                     LFATIG, FLEXIO, CNOC, CRESU )
+     +                     LFATIG, FLEXIO, LROCHT, CNOC, CRESU, CRESP )
            ELSE
              CALL RCEVO2 ( NBINTI, KINTI, CSILI, CINST, CSIEX, 
-     +                     LFATIG, FLEXIO, CNOC, CRESU )
+     +                     LFATIG, FLEXIO, LROCHT, CNOC, CRESU, CRESP )
+           ENDIF
+C
+           IF ( LROCHT .AND. SYMAX.EQ.R8VIDE() ) THEN
+              CALL U2MESS('A','POSTRELE_66')
+              LROCHT = .FALSE.
            ENDIF
 C
 C         --------------------------------------------------------------
@@ -159,18 +167,21 @@ C
 C
            CALL RCEVOM ( CSILI, CINST, CNOC, SM, LFATIG, LPMPB, LSN,
      +                   CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO, CFAE, 
-     +                   CSPO, CSPE, CRESU, KINTI, I, J )
+     +                   CSPO, CSPE, CRESU, KINTI, I, J, LROCHT, SYMAX,
+     +                   CRESP )
 C
           ELSE
 C
            CALL RCEVOD ( CSILI, CINST, CNOC, SM, LFATIG, LPMPB, LSN,
      +                   CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO, CFAE,
-     +                   CSPO, CSPE, CRESU, KINTI, I, J )
+     +                   CSPO, CSPE, CRESU, KINTI, I, J, LROCHT, SYMAX,
+     +                   CRESP  )
 C
           ENDIF
 C
           CALL JEDETR ( CINST )
           CALL JEDETR ( CRESU )
+          CALL JEDETR ( CRESP )
           CALL JEDETR ( CSILI )
           CALL JEDETR ( CSIEX )
           CALL JEDETR ( CNOC  )

@@ -6,7 +6,7 @@
       CHARACTER*(*) RESU,NOMCMD,CHS,NOCHAM,LIGREL,TYCHAS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF PREPOST  DATE 03/10/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,7 +140,7 @@ C     ------------------------------
       IF (IRET.GT.0) THEN
         CALL RSADPA(RESU,'E',1,PARAM,NUMORD,0,IAD,K8B)
         IF (AMRGE.LT.1.D92) THEN
-          ZR(IAD) = 2*AMRGE*(2*DEPI*IOUF)
+          ZR(IAD) = 2*AMRGE*MASGEN*DEPI*IOUF
         ELSE
           ZR(IAD) = 0.D0
         ENDIF
@@ -151,10 +151,17 @@ C     ------------------------------
       IF (IRET.GT.0) THEN
         CALL RSADPA(RESU,'E',1,PARAM,NUMORD,0,IAD,K8B)
         IF (MASGEN.LT.1.D92) THEN
-          ZR(IAD) = MASGEN*(2*DEPI*IOUF)**2
+          ZR(IAD) = MASGEN*(DEPI*IOUF)**2
         ELSE
           ZR(IAD) = 0.D0
         ENDIF
+      END IF
+
+      PARAM = 'OMEGA2'
+      CALL RSEXPA(RESU,2,PARAM,IRET)
+      IF (IRET.GT.0) THEN
+        CALL RSADPA(RESU,'E',1,PARAM,NUMORD,0,IAD,K8B)
+        ZR(IAD) = (DEPI*IOUF)**2
       END IF
 
 

@@ -1,9 +1,11 @@
-      SUBROUTINE RC32RS ( PMPB, SN, SNET, FATIGU )
+      SUBROUTINE RC32RS ( PMPB, SN, SNET, FATIGU, LROCHT, MATER, SYMAX )
       IMPLICIT   NONE
-      LOGICAL             PMPB, SN, SNET, FATIGU
+      LOGICAL             PMPB, SN, SNET, FATIGU, LROCHT
+      REAL*8              SYMAX
+      CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,8 +27,10 @@ C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C     STOCKAGE DES RESULTATS DANS LA TABLE DE SORTIE
 C
 C     ------------------------------------------------------------------
+      INTEGER       IRET
       CHARACTER*8   NOMRES
       CHARACTER*16  CONCEP, NOMCMD
+      CHARACTER*19  NOT19A, NOT19S, NOT19M, NOT19R, NT19CA, NT19SA
 C DEB ------------------------------------------------------------------
 C
       CALL GETRES ( NOMRES , CONCEP , NOMCMD )
@@ -40,35 +44,13 @@ C
          CALL RC32R1 ( NOMRES )
 C
 C     -----------------------------------------------------------------
-      ELSEIF ( PMPB .AND. SN .AND. SNET ) THEN
+      ELSE
 C
-        CALL RC32R7 ( NOMRES )
-C
-C     -----------------------------------------------------------------
-      ELSEIF ( PMPB .AND. SN ) THEN
-C
-        CALL RC32R2 ( NOMRES )
-C
-C     -----------------------------------------------------------------
-      ELSEIF ( PMPB ) THEN
-C
-        CALL RC32R3 ( NOMRES )
-C
-C     -----------------------------------------------------------------
-      ELSEIF ( SN .AND. SNET ) THEN
-C
-        CALL RC32R6 ( NOMRES )
-C
-C     -----------------------------------------------------------------
-      ELSEIF ( SN ) THEN
-C
-        CALL RC32R4 ( NOMRES )
-C
-C     -----------------------------------------------------------------
-      ELSEIF ( SNET ) THEN
-C
-        CALL RC32R5 ( NOMRES )
+        CALL RC32R0 ( NOMRES, PMPB, SN, SNET )
 C
       ENDIF
+C
+C     -----------------------------------------------------------------
+      IF ( LROCHT )  CALL RC32R8 ( NOMRES, MATER, SYMAX )
 C
       END

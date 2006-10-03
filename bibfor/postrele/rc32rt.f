@@ -1,11 +1,12 @@
-      SUBROUTINE RC32R7 ( NOMRES )
+      SUBROUTINE RC32RT ( LIEU, PI, PJ, SIMPIJ )
       IMPLICIT   NONE
-      CHARACTER*8         NOMRES
+      REAL*8              PI, PJ, SIMPIJ 
+      CHARACTER*4         LIEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,7 +23,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
-C     STOCKAGE DES RESULTATS DANS LA TABLE DE SORTIE
+C     ROCHET THERMIQUE : CALCUL DE LA CONTRAINTE DE MEMBRANE DE PRESSION
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -43,58 +44,24 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       NPAR3, IM, IG, IS, NBSIGR, VALEI(2), JNUMGR,
-     +              JNSITU, JNSG, JPMPB, NBGR, IOC, NUMGR
-      PARAMETER    ( NPAR3 = 8 )
-      REAL*8        VALER(5)
-      COMPLEX*16    C16B
-      CHARACTER*4   LIEU(2)
-      CHARACTER*8   K8B, TYPAR3(NPAR3)
-      CHARACTER*16  NOPAR3(NPAR3)
-      CHARACTER*24  K24B
-C     ------------------------------------------------------------------
-      DATA LIEU   / 'ORIG' , 'EXTR' /
-C
-C --- QUE DU PMPB ET DU SN
-      DATA NOPAR3 / 'NUME_GROUPE', 'LIEU', 'NUME_SITU', 'PM', 'PB',
-     +              'PMPB', 'SN', 'SN*'  /
-      DATA TYPAR3 / 'I', 'K8', 'I', 'R', 'R', 'R', 'R', 'R'  /
+      INTEGER       JSIGU, ICMP
+      REAL*8        PIJ, SIGMP(6), EQUI(6)
 C DEB ------------------------------------------------------------------
 C
-      CALL JELIRA ( '&&RC3200.SITU_NUME_GROUP', 'LONMAX', NBGR, K8B )
-      CALL JEVEUO ( '&&RC3200.SITU_NUME_GROUP', 'L', JNUMGR )
-
-      CALL JEVEUO ( '&&RC3200.SITU_NUMERO', 'L', JNSITU )
+      CALL JEVEUO ( '&&RC3200.MECA_UNIT .'//LIEU, 'L', JSIGU )
 C
-C     -----------------------------------------------------------------
+C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 C
-        CALL TBAJPA ( NOMRES, NPAR3, NOPAR3, TYPAR3 )
+      PIJ = PJ - PI
 C
-        DO 200 IG = 1 , NBGR
-          NUMGR = ZI(JNUMGR+IG-1)
-          VALEI(1) = NUMGR
-          CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
-     +                                                    NBSIGR,K8B)
-          CALL JEVEUO(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
-
-          DO 202 IS = 1 , NBSIGR
-            IOC = ZI(JNSG+IS-1)
-            VALEI(2) = ZI(JNSITU+IOC-1)
-            DO 204 IM = 1 , 2
-              K24B = '&&RC3200.PMPB       '//LIEU(IM)
-              CALL JEVEUO ( JEXNUM(K24B,NUMGR), 'L', JPMPB )
-
-              VALER(1) = ZR(JPMPB-1+6*(IS-1)+1)
-              VALER(2) = ZR(JPMPB-1+6*(IS-1)+2)
-              VALER(3) = ZR(JPMPB-1+6*(IS-1)+3)
-              VALER(4) = ZR(JPMPB-1+6*(IS-1)+4)
-              VALER(5) = ZR(JPMPB-1+6*(IS-1)+6)
-
-              CALL TBAJLI ( NOMRES, NPAR3, NOPAR3, VALEI,
-     +                      VALER, C16B, LIEU(IM), 0 )
+C --- CONTRAINTE DE MEMBRANE DUE A LA PRESSION  (RECUP M_0)
 C
- 204        CONTINUE
- 202      CONTINUE
- 200    CONTINUE
+      DO 10 ICMP = 1 , 6
+         SIGMP(ICMP) = PIJ * ZR(JSIGU-1+156+72+ICMP)
+ 10   CONTINUE
+C
+      CALL FGEQUI ( SIGMP, 'SIGM', 3, EQUI )
+C
+      SIMPIJ = EQUI(2)
 C
       END

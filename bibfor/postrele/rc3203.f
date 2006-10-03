@@ -1,13 +1,16 @@
-      SUBROUTINE RC3203 ( LIEU, IG1, IG2, NPASS, MATER,
-     +        SNMAX, SPMAX,  SPMECM,SPTHEM, SAMAX, UTOT, SM )
+      SUBROUTINE RC3203 ( LIEU, IG1, IG2, NPASS, MATER, SNMAX,
+     +                    SPMAX, KEMAX, SPMECM, SPTHEM, SAMAX, UTOT, 
+     +                    SM, LROCHT, SIGPM )
       IMPLICIT   NONE
       INTEGER             IG1, IG2, NPASS
-      REAL*8              SNMAX, SPMAX, SAMAX, UTOT, SM, SPMECM,SPTHEM
+      REAL*8              SNMAX, SPMAX, KEMAX, SAMAX, UTOT, SM,  
+     +                    SIGPM, SPMECM, SPTHEM
+      LOGICAL             LROCHT
       CHARACTER*4         LIEU
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +70,7 @@ C
      +             JIST1, JIST2, I1, I2, I
       REAL*8       PPI, PPJ, PQI, PQJ, SALTIJ, UG, SN, SP, SMM, 
      +             MPI(12), MPJ(12), MQI(12), MQJ(12), MSE(12),
-     +             MATPI(8), MATPJ(8),MATQI(8), MATQJ(8)
+     +             MATPI(8), MATPJ(8),MATQI(8), MATQJ(8), SIMPIJ
       REAL*8       TYPEKE,SPMECA,SPTHER
       REAL*8 KEMECA,KETHER,KEMECS,KETHES
       LOGICAL      SEISME
@@ -131,6 +134,11 @@ C
         CALL RCMO02 ( 'B', NSITUP, MPJ )
         CALL RCMA02 ( 'B', IOC1, MATPJ )
         
+        IF ( LROCHT ) THEN
+           CALL RC32RT ( LIEU, PPI, PPJ, SIMPIJ )
+           SIGPM = MAX ( SIGPM, SIMPIJ )
+        ENDIF
+
         TYPEKE=MATPI(8)
 C
 C ----- SITUATION Q :
@@ -156,6 +164,19 @@ C
           PQJ = ZR(JPRESB+IOC2-1)
           CALL RCMO02 ( 'B', NSITUQ, MQJ )
           CALL RCMA02 ( 'B', IOC2, MATQJ )
+C
+          IF ( LROCHT ) THEN
+             CALL RC32RT ( LIEU, PQI, PQJ, SIMPIJ )
+             SIGPM = MAX ( SIGPM, SIMPIJ )
+             CALL RC32RT ( LIEU, PPI, PQI, SIMPIJ )
+             SIGPM = MAX ( SIGPM, SIMPIJ )
+             CALL RC32RT ( LIEU, PPI, PQJ, SIMPIJ )
+             SIGPM = MAX ( SIGPM, SIMPIJ )
+             CALL RC32RT ( LIEU, PPJ, PQI, SIMPIJ )
+             SIGPM = MAX ( SIGPM, SIMPIJ )
+             CALL RC32RT ( LIEU, PPJ, PQJ, SIMPIJ )
+             SIGPM = MAX ( SIGPM, SIMPIJ )
+          ENDIF
 C
 C --------- CALCUL DU SN(P,Q), ON A 4 COMBINAISONS
 C
@@ -187,6 +208,7 @@ C
      +                  SEISME, MSE, SP,TYPEKE, SPMECA, SPTHER )
           CALL RC32SA ( MATER, MATPI, MATQI, SN, SP,
      +               TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM )
+          KEMAX = MAX ( KEMAX , KEMECA )
           ZR(JMSA-1+INDI+1) = SALTIJ
 C
           SPMAX = MAX ( SPMAX , SP )
@@ -194,10 +216,10 @@ C
             SAMAX = SALTIJ
             SM = SMM
           ENDIF
+          SPMECM = MAX ( SPMECM , SPMECA )
+          SPTHEM = MAX ( SPTHEM , SPTHER )
           IF ( NIV .GE. 2 )  WRITE(IFM,1031) SP
           IF (TYPEKE.GT.0.D0) THEN
-             SPMECM = MAX ( SPMECM , SPMECA )
-             SPTHEM = MAX ( SPTHEM , SPTHER )
              IF ( NIV .GE. 2 )  THEN
                WRITE(IFM,1131) SPMECA,SPTHER,KEMECA,KETHER
              ENDIF
@@ -211,6 +233,7 @@ C
      +                  SEISME,MSE, SP ,TYPEKE, SPMECA, SPTHER)
           CALL RC32SA ( MATER, MATPI, MATQJ, SN, SP,
      +                  TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM)
+          KEMAX = MAX ( KEMAX , KEMECA )
           ZR(JMSA-1+INDI+3) = SALTIJ
 C
           SPMAX = MAX ( SPMAX , SP )
@@ -218,10 +241,10 @@ C
             SAMAX = SALTIJ
             SM = SMM
           ENDIF
+          SPMECM = MAX ( SPMECM , SPMECA )
+          SPTHEM = MAX ( SPTHEM , SPTHER )
           IF ( NIV .GE. 2 )  WRITE(IFM,1032) SP
           IF (TYPEKE.GT.0.D0) THEN
-             SPMECM = MAX ( SPMECM , SPMECA )
-             SPTHEM = MAX ( SPTHEM , SPTHER )
              IF ( NIV .GE. 2 )  THEN
                WRITE(IFM,1132) SPMECA,SPTHER,KEMECA,KETHER
              ENDIF
@@ -235,6 +258,7 @@ C
      +                  SEISME,MSE, SP,TYPEKE, SPMECA, SPTHER )
           CALL RC32SA ( MATER, MATPJ, MATQI, SN, SP,
      +                  TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM)
+          KEMAX = MAX ( KEMAX , KEMECA )
           ZR(JMSA-1+INDI+2) = SALTIJ
 C
           SPMAX = MAX ( SPMAX , SP )
@@ -242,10 +266,10 @@ C
             SAMAX = SALTIJ
             SM = SMM
           ENDIF
+          SPMECM = MAX ( SPMECM , SPMECA )
+          SPTHEM = MAX ( SPTHEM , SPTHER )
           IF ( NIV .GE. 2 )  WRITE(IFM,1034)  SP
           IF (TYPEKE.GT.0.D0) THEN
-             SPMECM = MAX ( SPMECM , SPMECA )
-             SPTHEM = MAX ( SPTHEM , SPTHER )
              IF ( NIV .GE. 2 )  THEN
                WRITE(IFM,1134) SPMECA,SPTHER,KEMECA,KETHER
              ENDIF
@@ -259,16 +283,17 @@ C
      +                  SEISME,MSE, SP,TYPEKE, SPMECA, SPTHER )
           CALL RC32SA ( MATER, MATPJ, MATQJ, SN, SP,
      +                 TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM )
+          KEMAX = MAX ( KEMAX , KEMECA )
           ZR(JMSA-1+INDI+4) = SALTIJ
 C
           IF ( SALTIJ .GT. SAMAX ) THEN
             SAMAX = SALTIJ
             SM = SMM
           ENDIF
+          SPMECM = MAX ( SPMECM , SPMECA )
+          SPTHEM = MAX ( SPTHEM , SPTHER )
           IF ( NIV .GE. 2 )  WRITE(IFM,1033)  SP
           IF (TYPEKE.GT.0.D0) THEN
-             SPMECM = MAX ( SPMECM , SPMECA )
-             SPTHEM = MAX ( SPTHEM , SPTHER )
              IF ( NIV .GE. 2 )  THEN
                WRITE(IFM,1133) SPMECA,SPTHER,KEMECA,KETHER
              ENDIF

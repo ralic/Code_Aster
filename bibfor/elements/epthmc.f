@@ -1,7 +1,7 @@
-      SUBROUTINE EPTHMC (MODELI,NNO,NDIM,NBSIG,NPG,NI,TEMPE,TREF,
-     +                   HYDR,SECH,SREF,INSTAN,MATER,OPTION,EPSITH)
+      SUBROUTINE EPTHMC (MODELI,NNO,NDIM,NBSIG,NPG,NI,XYZ,REPERE,TEMPE,
+     +                  TREF,HYDR,SECH,SREF,INSTAN,MATER,OPTION,EPSITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,8 @@ C                                   A L'ELEMENT
 C    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
 C                                   DE L'ELEMENT
 C    NI(1)          IN     R        FONCTIONS DE FORME
+C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
+C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 C    TEMPE(1)       IN     R        TEMPERATURES AUX NOEUDS DE
 C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
@@ -51,9 +53,10 @@ C -----  ARGUMENTS
            CHARACTER*8  MODELI
            CHARACTER*16 K16BID, OPTION
            REAL*8       NI(1), TEMPE(1), EPSITH(1), HYDR(1), SECH(1)
-           REAL*8       INSTAN, SREF
+           REAL*8       INSTAN, SREF,REPERE(7),XYZ(*)
 C -----  VARIABLES LOCALES
-           REAL*8       EPSTH(6),EPSHY(6),EPSSE(6)
+           REAL*8       EPSTH(6),EPSHY(6),EPSSE(6),XYZGAU(3)
+           REAL*8       HYDRG,SECHG
            CHARACTER*16 OPTIO2, OPTIO3
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -65,6 +68,11 @@ C
       DO 10 I = 1, NBSIG*NPG
          EPSITH(I) = ZERO
  10   CONTINUE
+
+      NDIM2  = NDIM
+      IF (MODELI(1:2).EQ.'FO') THEN
+        NDIM2 = 2
+      ENDIF
 C
 C --- CALCUL DES CONTRAINTES D'ORIGINE THERMIQUE :
 C ---  BOUCLE SUR LES POINTS D'INTEGRATION
@@ -75,37 +83,45 @@ C  --      TEMPERATURE AU POINT D'INTEGRATION COURANT
 C          ------------------------------------------
           TEMPG     = ZERO
           HYDRG     = HYDR(IGAU)
+          SECHG     = SECH(IGAU)
+          XYZGAU(1) = ZERO
+          XYZGAU(2) = ZERO
+          XYZGAU(3) = ZERO
 C
           DO 30 I = 1, NNO
+             DO 40 IDIM = 1, NDIM2
+               XYZGAU(IDIM) = XYZGAU(IDIM) +
+     +                  NI(I+NNO*(IGAU-1))*XYZ(IDIM+NDIM2*(I-1))
+  40         CONTINUE
              TEMPG     = TEMPG     + NI(I+NNO*(IGAU-1))*TEMPE(I)
   30      CONTINUE
 C
 C  --      CALCUL DES DEFORMATIONS THERMIQUES  AU POINT D'INTEGRATION
 C  --      COURANT
 C          -------
-          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECH, SREF, INSTAN,
-     &                MATER, K16BID, EPSTH)
+          CALL EPSTMC(MODELI, NDIM,TEMPG, TREF, HYDRG, SECHG, SREF,
+     &                INSTAN,XYZGAU,REPERE,MATER, K16BID, EPSTH)
 C
 C  --      DEFORMATIONS THERMIQUES SUR L'ELEMENT
 C          -------------------------------------
-          DO 40 I = 1, NBSIG
+          DO 50 I = 1, NBSIG
                 EPSITH(I+NBSIG*(IGAU-1)) = EPSITH(I+NBSIG*(IGAU-1)) +
      +                                     EPSTH(I)
-  40      CONTINUE
+  50      CONTINUE
 C
           OPTIO2 = OPTION(1:9) // '_HYDR'
-          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECH, SREF,
-     &                INSTAN,MATER, OPTIO2, EPSHY)
+          CALL EPSTMC(MODELI, NDIM, TEMPG, TREF, HYDRG, SECHG, SREF,
+     &                INSTAN,XYZGAU,REPERE,MATER, OPTIO2, EPSHY)
           OPTIO3 = OPTION(1:9) // '_SECH'
-          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECH, SREF, 
-     &                INSTAN,MATER, OPTIO3, EPSSE)
+          CALL EPSTMC(MODELI, NDIM, TEMPG, TREF, HYDRG, SECHG, SREF, 
+     &                INSTAN,XYZGAU,REPERE,MATER, OPTIO3, EPSSE)
 C
 C  --     DEFORMATIONS DE RETRAIT SUR L'ELEMENT
 C         -------------------------------------
-          DO 50 I = 1, NBSIG
+          DO 60 I = 1, NBSIG
             EPSITH(I+NBSIG*(IGAU-1)) = EPSITH(I+NBSIG*(IGAU-1))
      +                                + EPSHY(I) + EPSSE(I)
-  50      CONTINUE
+  60      CONTINUE
 
   20  CONTINUE
 C

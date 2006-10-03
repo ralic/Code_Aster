@@ -2,7 +2,7 @@
      +                   TREF,INSTAN,MATER,REPERE,OPTION,
      +                   SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,9 +115,17 @@ C
 C  --      CALCUL DES DEFORMATIONS THERMIQUES/HYDRIQUE/DE SECHAGE
 C  --      AU POINT D'INTEGRATION COURANT
 C          ------------------------------
-          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF, INSTAN,
-     &                MATER, OPTION, EPSTH)
-C
+          CALL EPSTMC(MODELI, NDIM,TEMPG, TREF, HYDRG, SECHG, SREF,
+     &                INSTAN, XYZGAU,REPERE,MATER, OPTION, EPSTH)
+
+
+C         PASSAGE DES COMPOSANTES DE CISAILLEMENTS EN CONFORMITE
+C         ( DMATMC RETOURNE UNE MATRICE DE HOOKE EN SUPPOSANT 
+C           UN DEUX SUR LES DEFORMATIONS DE CISAILLEMENT )
+
+          DO 50 I=4,2*NDIM
+            EPSTH(I)=2.D0*EPSTH(I)
+50        CONTINUE
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
@@ -127,12 +135,12 @@ C
 C  --      CONTRAINTES THERMIQUES/HYDRIQUE/DE SECHAGE AU POINT
 C  --      D'INTEGRATION COURANT
 C          ------------------------------------------------------
-          DO 50 I = 1, NBSIG
-             DO 60 J = 1, NBSIG
+          DO 60 I = 1, NBSIG
+             DO 70 J = 1, NBSIG
                 SIGMA(I+NBSIG*(IGAU-1)) = SIGMA(I+NBSIG*(IGAU-1)) +
      +                                    D(J+(I-1)*NBSIG)*EPSTH(J)
-  60         CONTINUE
-  50      CONTINUE
+  70         CONTINUE
+  60      CONTINUE
 C
   20  CONTINUE
 C

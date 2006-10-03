@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF modelisa7 Messages  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -400,5 +400,8 @@ cata_msg={
 
 95: _("""
  pb de groupe mailles enrichies
+"""),
+96: _("""
+ seules les chargement mecaniques peuvent etre des fonctions 
 """),
 }

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,7 +16,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-DEFI_INTE_SPEC=OPER(nom="DEFI_INTE_SPEC",op= 115,sd_prod=table_sdaster,
+from Macro.defi_inte_spec_ops import defi_inte_spec_ops
+
+DEFI_INTE_SPEC=MACRO(nom="DEFI_INTE_SPEC",op= defi_inte_spec_ops,sd_prod=table_sdaster,
                     reentrant='n',fr="Définit une matrice interspectrale",
             UIinfo={"groupes":("Fonction",)},
 

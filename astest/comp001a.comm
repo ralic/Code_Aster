@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 03/10/2006   AUTEUR MJBHHPE J.L.FLEJOU 
 # TITRE FLUAGE EN 3D VENDOCHAB CAS OPTIMISE R_D=K_D, UTILISANT SIMU_PONT_MAT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,10 +93,16 @@ RESUXX=SIMU_POINT_MAT(
    NEWTON=_F(MATRICE='ELASTIQUE',                       
              PREDICTION='EXTRAPOL'),                             
    CONVERGENCE=_F(ITER_GLOB_MAXI=60,),                  
-   MATER           = ACIER,
-   INCREMENT       =_F( LIST_INST       =INSTANTS,),
-   SIGM_IMPOSE     =_F( SIXX = CHARGE,),
-                )
+   MATER = ACIER,
+   INCREMENT=_F(
+      LIST_INST  =INSTANTS,
+      SUBD_METHODE    ='UNIFORME',
+      SUBD_PAS        = 4,
+      SUBD_COEF_PAS_1 = 1.0,
+      SUBD_PAS_MINI   = 0.00000001,
+   ),
+   SIGM_IMPOSE=_F( SIXX = CHARGE,),
+)
 
 IMPR_TABLE(TABLE = RESUXX)
 

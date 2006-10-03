@@ -9,7 +9,7 @@ C
       LOGICAL           LCMP
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 03/10/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -260,6 +260,6 @@ C-MOD    CALL RSADPA(                  'AMORTISSEMENT STRUCTURAL
       END IF
  1000 FORMAT(6I10)
  2000 FORMAT(8I10)
- 3000 FORMAT(6D13.5)
+ 3000 FORMAT(6(1PE13.5E3))
       CALL JEDEMA()
       END
