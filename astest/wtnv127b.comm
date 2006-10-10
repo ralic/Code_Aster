@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR SUR CELLULE UNITAIRE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,7 +164,7 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(_F(CHARGE=FLUTH,),),
-                 COMP_INCR=_F(RELATION='KIT_THV',
+                 COMP_INCR=_F(RELATION='KIT_THV',PARM_THETA=0.57,
                               ITER_INTE_MAXI=5,
                               RELATION_KIT=('LIQU_VAPE','HYDR_UTIL'),),
                  
@@ -177,7 +177,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CONVERGENCE=_F(
                                 RESI_GLOB_RELA=1.E-10,
                                 ITER_GLOB_MAXI=50,),
-                 PARM_THETA=0.57,
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
                  ARCHIVAGE=_F(PAS_ARCH=1,),

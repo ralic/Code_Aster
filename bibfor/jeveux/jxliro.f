@@ -1,6 +1,6 @@
       SUBROUTINE JXLIRO ( IC , IADMI , IADDI , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C DEB ------------------------------------------------------------------
 C
       IF ( IADDI(1) .EQ. 0 ) THEN
         CMESS = 'OBJET SANS IMAGE DISQUE'
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ELSE
 C
 C ----- RECHARGEMENTS ULTERIEURS

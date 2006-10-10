@@ -4,7 +4,7 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -322,8 +322,8 @@ C        --- NOM SYMBOLIQUE POUR UN CHAMP D'UN RESULTAT ---
   170    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
-            CALL RSUTOR(PARA(1)(1:8),' ',PARA(2)(1:19),1,K16BID,
-     &                                                      IBID,IRET)
+            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID,IRET)
+            CALL ASSERT(IRET.EQ.1)
             IF (IRET.EQ.1) THEN
                CGEN = K16BID
                IGEN = LXLGUT(K16BID)
@@ -337,8 +337,8 @@ C        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
   180    CONTINUE
             CALL TITREC(DEMONS(IPLACE),DONNEE,ILIGD,ICOLD,
      &                               NBTITR,MXPARA(IPLACE),PARA,NBPARA)
-            CALL RSUTOR(PARA(1)(1:8),' ',PARA(2)(1:19),1,K16BID,
-     &                                                       IBID,IRET)
+            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID,IRET)
+            CALL ASSERT(IRET.EQ.1)
             IF (IRET.EQ.1 ) THEN
                CALL CODENT(IBID,'G',CGEN(1:16))
                IGEN = LXLGUT(CGEN(1:16))
@@ -355,8 +355,8 @@ C        --- ACCES ---
             CALL RSNOPA(PARA(1)(1:8),0,'&&TITREB.NOM_ACCE',NBACCE,NBPA)
             CALL JEEXIN('&&TITREB.NOM_ACCE',IRET)
             IF (IRET.GT.0)  CALL JEVEUO('&&TITREB.NOM_ACCE','E',JPARA)
-            CALL RSUTOR(PARA(1)(1:8),' ',PARA(2)(1:19),1,K16BID,
-     &                                                       IBID,IRET)
+            CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID,IRET)
+            CALL ASSERT(IRET.EQ.1)
             IF (IRET.NE.1 ) THEN
               CALL UTMESS('A',CVAL(:IVAL),PARA(1)//
      &                             ' N''EST PAS UN CHAMP DE RESULTAT ')

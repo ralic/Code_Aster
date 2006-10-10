@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE FLUAGE AXIAL D'UN ELEMENT HEXA8 AVEC COMPORTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -336,10 +336,9 @@ REST=STAT_NON_LINE(
                 FONC_MULT = FONCT),
                              _F( 
                 CHARGE = CH_TH)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE_IRRA',
                 ITER_INTE_MAXI = 150),
-                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = LINST),
                             NEWTON=_F( 

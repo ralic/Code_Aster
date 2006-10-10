@@ -7,7 +7,7 @@
       CHARACTER*(*)       NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,10 +202,10 @@ C
       NBPAR = NBPAR + 1
       NOPARA(NBPAR) = 'TRESCA_MFLE_EXTR'
 C
-      IF ( NBPAR .GT. 15 ) CALL U2MESS('F','ALGELINE_6')
-      IF ( II+2  .GT. 10 ) CALL U2MESS('F','MODELISA2_88')
-      IF ( IR+4  .GT. 10 ) CALL U2MESS('F','MODELISA2_89')
-      IF ( IK    .GT. 10 ) CALL U2MESS('F','ALGELINE_7')
+      CALL ASSERT( NBPAR .LE. 15 )
+      CALL ASSERT( II+2  .LE. 10 )
+      CALL ASSERT( IR+4  .LE. 10 )
+      CALL ASSERT( IK    .LE. 10 )
 C
       ILIGN = 0
 C

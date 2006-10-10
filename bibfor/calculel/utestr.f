@@ -1,18 +1,19 @@
-      SUBROUTINE UTESTR(CHAM19,NONOEU,NOCMP,REFI,REFR,REFC,TYPRES,
+      SUBROUTINE UTESTR(CHAM19,NONOEU,NOCMP,NBREF,REFI,REFR,REFC,TYPRES,
      +                                           EPSI,CRIT,IFIC,SSIGNE)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*19      CHAM19
       CHARACTER*17             NONOEU
       CHARACTER*8                     NOCMP
-      REAL*8                                     REFR
-      COMPLEX*16                                      REFC
+      INTEGER                               NBREF
+      REAL*8                                     REFR(NBREF)
+      COMPLEX*16                                      REFC(NBREF)
       CHARACTER*1                                          TYPRES
       REAL*8                                          EPSI
       CHARACTER*(*)                                        CRIT, SSIGNE
-      INTEGER                               REFI,               IFIC
+      INTEGER                               REFI(NBREF),           IFIC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +34,7 @@ C     ENTREES:
 C        CHAM19 : NOM DU CHAM_NO DONT ON DESIRE VERIFIER 1 COMPOSANTE
 C        NONOEU : NOM DU NOEUD A TESTER
 C        NOCMP  : NOM DU DDL A TESTER SUR LE NOEUD NONOEU
+C        NBREF  : NOMBRE DE VALEURS DE REFERENCE
 C        REFR   : VALEUR REELLE ATTENDUE SUR LE DDL DU NOEUD
 C        REFC   : VALEUR COMPLEXE ATTENDUE SUR LE DDL DU NOEUD
 C        CRIT   : 'RELATIF' OU 'ABSOLU'(PRECISION RELATIVE OU ABSOLUE).
@@ -138,7 +140,7 @@ C
               ELSEIF (TYPE .EQ. 'C' ) THEN
                   VALC = ZC(IAVALE-1+(INO-1)*NCMP+IDECAL)
               ENDIF
-              CALL UTITES(NOCMP,'         '//NONOEU(1:8),TYPE,
+              CALL UTITES(NOCMP,'         '//NONOEU(1:8),TYPE,NBREF,
      +             REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
           ELSE
               WRITE (IFIC,*) TESTOK,' ON NE TROUVE PAS LE DDL'
@@ -181,7 +183,7 @@ C
               ELSEIF (TYPE .EQ. 'C' ) THEN
                   VALC = ZC(IAVALE-1+ZI(IANUEQ-1+IVAL-1+IDECAL))
               ENDIF
-              CALL UTITES(NOCMP,'         '//NONOEU(1:8),TYPE,
+              CALL UTITES(NOCMP,'         '//NONOEU(1:8),TYPE,NBREF,
      +             REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
           ELSE
               WRITE (IFIC,*) TESTOK,' ON NE TROUVE PAS LE DDL'

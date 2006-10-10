@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -170,8 +170,6 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
               R               =SIMP(statut='f',typ='R',defaut= 1000.),
               ITER_PRIM_MAXI  =SIMP(statut='f',typ='I',defaut= 10),
             ),
-          PARM_THETA      =SIMP(statut='f',typ='R'
-                               ,defaut= 1. ),
           INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
           TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
 

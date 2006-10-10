@@ -1,6 +1,6 @@
       SUBROUTINE JEPRAT ( UNIT , NOMLU , CIDATR , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C
         ICLAS = INDEX ( CLASSE , NOML32(2:2) )
         IF ( ICLAS .EQ. 0 ) THEN
           CMESS = ' CLASSE INVALIDE >'//NOML32(2:2)//'<'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
         DO 1 K = 1, LIDBAS
            IF ( NOM .EQ. CIDBAS(K) ) THEN
@@ -121,7 +121,7 @@ C
            ENDIF
  1      CONTINUE
         CMESS = ' NOM D''OBJET ATTRIBUT INVALIDE '
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
  10     CONTINUE
 C
       ELSE
@@ -137,12 +137,12 @@ C
             ENDIF
  2        CONTINUE
           CMESS = ' NOM D''ATTRIBUT INVALIDE '
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
  20       CONTINUE
           CALL JJCREN (NOML32(1:24)//NOM , 0 , IRET2)
           IF ( IRET2 .EQ. 0 ) THEN
             CMESS = 'OBJET '//NOML32(1:24)//NOM//' INEXISTANT '
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           IADMI  = IADM ( JIADM(ICLAOS) + IDATOS )
           IADMEX = IADMI
@@ -163,7 +163,7 @@ C
           ENDIF
         ELSE IF ( IRET .NE. 2 ) THEN
           CMESS = 'IMPRESSION D''OBJET ATTRIBUT IMPOSSIBLE'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ELSE
           LCOL = .TRUE.
           CALL JJALLC ( ICLACO , IDATCO , 'L' , IBACOL )
@@ -174,7 +174,7 @@ C
             ENDIF
  3        CONTINUE
           CMESS = ' NOM D''ATTRIBUT INVALIDE '
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
  30       CONTINUE
           IXATR = ISZON ( JISZON + IBACOL + IDATR )
           IF ( IXATR .GT. 0 ) THEN
@@ -182,7 +182,7 @@ C
              IF ( IBATR .EQ. 0 ) THEN
                CMESS = ' SEGMENT DE VALEUR ASSOCIE A L''ATTRIBUT '//
      &                 NOM//' NON ACCESSIBLE '
-               CALL U2MESK('S','JEVEUX_01',1,CMESS)
+               CALL U2MESK('F','JEVEUX_01',1,CMESS)
              ENDIF
              IDECI = 0
              GENRI = GENR( JGENR(ICLACO) + IXATR )

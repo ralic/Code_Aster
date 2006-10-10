@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,7 +84,6 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
      ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
      ARRET           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
    ),
-   PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
    SUIVI_DDL      = FACT(statut='f',max=4,                                                                   
        NUME_SUIVI      =SIMP(statut='o',typ='I' ,min=1,max=4),                                               
        NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,                               

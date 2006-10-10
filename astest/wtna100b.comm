@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # ======================================================================
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -344,7 +344,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=_F(CHARGE=CALEXT,),
-                 COMP_INCR=_F(RELATION='KIT_THHM',
+                 COMP_INCR=_F(RELATION='KIT_THHM',PARM_THETA=0.57,
                               ITER_INTE_MAXI=5,
                               RELATION_KIT=('ELAS','LIQU_GAZ','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
@@ -355,7 +355,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=10,),
                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-05,
                                 ITER_GLOB_MAXI=150),
-                 PARM_THETA=0.57,
                  ARCHIVAGE=_F(PAS_ARCH=1,),);
 
 U0=CALC_ELEM(reuse =U0,

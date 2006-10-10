@@ -1,6 +1,6 @@
       SUBROUTINE JENUNO ( NOMLU , NOMO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
 C
       IF ( IRET .EQ. 0 ) THEN
         CMESS = 'NOM DE COLLECTION OU DE REPERTOIRE INEXISTANT'
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ELSE
         IF ( IRET .EQ. 1 ) THEN
 C
@@ -95,7 +95,7 @@ C
           GENRI = GENR ( JGENR(ICLAOS) + IDATOS )
           IF ( GENRI .NE. 'N' ) THEN
             CMESS = 'INTERROGATION SUR UN OBJET NON REPERTOIRE'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           LUTII = LUTI ( JLUTI(ICLAOS) + IDATOS )
           IF ( LUTII .LT. NUMEC .OR. NUMEC .LE. 0 ) THEN
@@ -103,7 +103,7 @@ C
             WRITE ( CNUMO , '(I6)' ) NUMEC
             CMESS = 'REPERTOIRE DE '//CLUTI//' NOMS NE CONTIENT PAS '
      &              //CNUMO
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           IADMI  = IADM ( JIADM(ICLAOS) + IDATOS )
           IADMEX = IADMI
@@ -130,7 +130,7 @@ C
           IXNOM = ISZON ( JISZON + IBACOL + IDNOM )
           IF ( IXNOM .EQ. 0 ) THEN
             CMESS = 'INTERROGATION SUR UNE COLLECTION NON NOMMEE'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           LUTII = LUTI ( JLUTI(ICLACO) + IXNOM )
           IF ( LUTII .LT. NUMEC .OR. NUMEC .LE. 0) THEN
@@ -138,7 +138,7 @@ C
             WRITE ( CNUMO , '(I6)' ) NUMEC
             CMESS = 'REPERTOIRE DE '//CLUTI//' NOMS NE CONTIENT PAS '
      &              //CNUMO
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           IADMI  = IADM ( JIADM(ICLACO) + IXNOM )
           KADM   = IADMI
@@ -152,7 +152,7 @@ C
           CALL JJLIDE ( 'JENUNO' , NOMLU(1:24) , 2 )
         ELSE
           CMESS = 'ERREUR DE PROGRAMMATION'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
       ENDIF
       IPGC = IPGCEX

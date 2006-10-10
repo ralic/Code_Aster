@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE TEST THM, 3D, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,12 +156,11 @@ MESTAT=STAT_NON_LINE(
                         CHAM_MATER=CHMAT0,
                              EXCIT=_F( 
                 CHARGE = CHAR0),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F( PARM_THETA=1.,
                 RELATION = 'KIT_THM',
                 RELATION_KIT = (
                   'ELAS',       'LIQU_SATU',  'HYDR_UTIL',     ),
                 ITER_INTE_MAXI = 5),
-                         PARM_THETA=1.,
                          INCREMENT=_F( 
                 LIST_INST = LI),
                             NEWTON=_F( 

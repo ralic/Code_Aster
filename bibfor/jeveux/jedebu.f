@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU ( NBFI, LZON, IADZON, LMO, CMES, CVIG, IDB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
 C -----------------  NOMBRE DE BASES -----------------------------------
       NBFIC = MIN ( NBFI , N , LEN(CLASSE) )
       IF ( NBFIC .LE. 0 ) THEN
-         CALL U2MESS('S','JEVEUX_04')
+         CALL U2MESS('F','JEVEUX_04')
       ELSE IF ( NBFIC .NE. NBFI ) THEN
          CALL JVDEBM ( 'S' , 'JEDEBU02' ,
      &                 'LE NOMBRE DE BASES GERABLES EST LIMITE')
@@ -160,7 +160,7 @@ C -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
       IDEBUG = IDB
 C -----------------  ZONE MEMOIRE  -------------------------------------
       IF ( LZON .LE. 0 ) THEN
-         CALL U2MESS('S','JEVEUX_05')
+         CALL U2MESS('F','JEVEUX_05')
       ENDIF
       LOSZON = LZON*LOIS
       LORC   = MAX ( LOR8 , LOC8 )

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,38 +17,28 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE MCOURTOI M.COURTOIS
-def recu_fonction_prod(RESULTAT=None,TABLE=None,OBSTACLE=None,
-                       RESU_GENE=None,BASE_ELAS_FLUI=None,CHAM_GD=None,
-                       TYPE_RESU=None,**args):
-  if AsType(RESULTAT)  == dyna_harmo : return fonction_c
-  if AsType(RESU_GENE) == harm_gene  : return fonction_c
-#  On ne sait pas interpreter les deux conditions suivantes
-  if TABLE != None :
-     if TYPE_RESU != None :
-        if TYPE_RESU == "FONCTION_C" : return fonction_c
-        if TYPE_RESU == "FONCTION"   : return fonction_sdaster
-     else:
-        return fonction_sdaster
-  if RESU_GENE      != None         : return fonction_sdaster
-  if BASE_ELAS_FLUI != None         : return fonction_sdaster
-  if RESULTAT       != None         : return fonction_sdaster
-  if CHAM_GD        != None         : return fonction_sdaster
-  if OBSTACLE       != None         : return fonction_sdaster
-  raise AsException("type de concept resultat non prevu")
+def recu_fonction_prod(RESULTAT=None,TABLE=None,RESU_GENE=None,
+                       BASE_ELAS_FLUI=None,CHAM_GD=None,
+                       NOM_PARA_TABL=None,**args):
+   if AsType(RESULTAT)  == dyna_harmo or \
+      AsType(RESU_GENE) == harm_gene or \
+      (TABLE != None and NOM_PARA_TABL == "FONCTION_C"):
+      return fonction_c
+   else:
+      return fonction_sdaster
 
 RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
                    fr="Extraire sous forme d'une fonction, l'évolution d'une grandeur en fonction d'une autre",
                    reentrant='f',
             UIinfo={"groupes":("Fonction",)},
-         regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI','OBSTACLE'),),
+         regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI'),),
 
          CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,
                                                cham_elem,),),
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,dyna_trans,evol_noli,evol_ther,dyna_harmo ) ),
          RESU_GENE       =SIMP(statut='f',typ=(tran_gene, mode_gene, harm_gene)),
-         TABLE           =SIMP(statut='f',typ=table_sdaster),
+         TABLE           =SIMP(statut='f',typ=(table_sdaster,table_fonction)),
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu_sdaster),
-         OBSTACLE        =SIMP(statut='f',typ=obstacle_sdaster),
 
 # ======= SENSIBILITE =================================================
          b_sensibilite   =BLOC(condition="RESULTAT != None",
@@ -94,17 +84,16 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
                           fr="Récupération de la fonction à partir d un concept table",
                           regles=(UN_PARMI('PARA_X','NOM_PARA_TABL'),
                                   PRESENT_PRESENT('PARA_X','PARA_Y'),),
-           PARA_X          =SIMP(statut='f',typ='TXM',
+           PARA_X        = SIMP(statut='f',typ='TXM',
                                  fr="1ère colonne de la table qui définit la fonction à récupérer", ),
-           PARA_Y          =SIMP(statut='f',typ='TXM',
+           PARA_Y        = SIMP(statut='f',typ='TXM',
                                  fr="2ème colonne de la table qui définit la fonction à récupérer", ),
-           NOM_PARA_TABL   =SIMP(statut='f',typ='TXM',into=("FONCTION",),
-                                 fr="Nom du paramètre de la table à qui est associé la fonction" ),
-           b_nom_para_tabl = BLOC (condition = "NOM_PARA_TABL != None",
-             TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="FONCTION",into=("FONCTION","FONCTION_C") ),
-           ),
+           #b_tabl_fonc = BLOC(condition = "AsType(TABLE) == table_fonction",
+           NOM_PARA_TABL = SIMP(statut='f',typ='TXM',into=("FONCTION","FONCTION_C"),
+                                fr="Nom du paramètre de la table contenant la fonction" ),
+           #),
 
-           FILTRE          =FACT(statut='f',max='**',
+           FILTRE        = FACT(statut='f',max='**',
               NOM_PARA        =SIMP(statut='o',typ='TXM' ),
               CRIT_COMP       =SIMP(statut='f',typ='TXM',defaut="EQ",
                                     into=("EQ","LT","GT","NE","LE","GE","VIDE",
@@ -220,12 +209,6 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
            GROUP_NO        =SIMP(statut='f',typ=grno),
            POINT           =SIMP(statut='f',typ='I' ),
            SOUS_POINT      =SIMP(statut='f',typ='I' ),
-         ),
-
-# ======= OBSTACLE =================================================
-         b_obstacle = BLOC ( condition = "OBSTACLE != None",
-                              fr="Choix du repère",
-            REPERE          =SIMP(statut='f',typ='TXM',into=("POLAIRE","GLOBAL") ),
          ),
 
 # ======= SURCHARGE DES ATTRIBUTS =================================================

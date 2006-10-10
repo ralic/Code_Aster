@@ -1,6 +1,6 @@
       SUBROUTINE JXALLM ( IADZON, ISZON , LISZON , JISZON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ------------------------------------------------------------------
          ELSE
             CMESS = 'ERREUR VERIFICATION DE ZONE'
          ENDIF
-         CALL U2MESK('S','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ELSE
          IERR = 0
          IF (IADZON .EQ. 0 ) THEN
@@ -66,7 +66,7 @@ C     ------------------------------------------------------------------
               WRITE ( CTAILL , '(I9)' ) LISZON
               CMESS = 'MEMOIRE SATUREE POUR ALLOUER '//CTAILL
             ENDIF
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
          ENDIF
       ENDIF
 C     ==================================================================

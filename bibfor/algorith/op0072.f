@@ -1,7 +1,7 @@
       SUBROUTINE OP0072(IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,6 @@ C
 C --- VERIFICATION DE LA CONFORMITE DES NUMEROTATIONS
 C     DES MODES ET DU VECTEUR ASSEMBLE
 C
-      CALL CHPVER('F',VECTAS,'NOEU','*',IERR)
       CALL JEVEUO(VECTAS//'           .VALE','L',IADVEC)
       CALL JEVEUO(VECTAS//'           .REFE','L',IADREF)
       CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
@@ -100,7 +99,6 @@ C
           NUMDD2 = NUMDD1
         ENDIF
         NU = NUMDD1
-        WRITE(6,*)'NU = ',NU
       ELSEIF (TYPBAS(1:9).EQ.'MODE_STAT') THEN
         NUMDD1 = ZK24(IADREF+1)
         MATRIC = ZK24(IADRIF)
@@ -152,6 +150,7 @@ C
       ENDIF
       CALL WKVECT(NOMRES//'           .REFE','G V K24',2,IAREFE)
       CALL WKVECT(NOMRES//'           .DESC','G V I',3,IADESC)
+      CALL JEECRA(NOMRES//'           .DESC','DOCU',0,'VGEN')
 C
 C --- REMPLISSAGE DU .REFE ET .VALE
 C

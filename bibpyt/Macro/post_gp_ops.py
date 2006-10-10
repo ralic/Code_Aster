@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF post_gp_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,7 +126,9 @@ def post_gp_ops(self, **args):
    
    # 2.2. ----- Calcul de Gp fonction de Ener.Totale et de deltaL
    t_enel.fromfunction('GP', fGp_Etot, ('TOTALE', 'ICOP'),
-         { 'pascop' : self['PAS_ENTAILLE'], 'syme' : self['SYME_CHAR'] != 'SANS' })
+         { 'pascop' : self['PAS_ENTAILLE'],
+           'syme'   : self['SYME_CHAR'] != 'SANS',
+           'R'      : self['RAYON_AXIS'] })
    
    # 2.3. ----- Tableau de Gp = f(icop) pour chaque instant
    if info >= 2:
@@ -140,7 +142,11 @@ def post_gp_ops(self, **args):
    l_numord = list(Set(ttmp.NUME_ORDRE.values()))
    l_numord.sort()
    for j in l_numord:
-      t = (ttmp.NUME_ORDRE == j).GP.MAXI()
+      tj = ttmp.NUME_ORDRE == j
+      if self['CRIT_MAXI_GP'] == 'ABSOLU':
+         t = tj.GP.MAXI()
+      else:
+         t = MaxRelatif(tj, 'GP')
       if j == 1:
          tb_Gpmax = t
       else:
@@ -278,12 +284,12 @@ def post_gp_ops(self, **args):
    if identification:
       tab_ident = Table(rows=lv_ident,
                         para=('KJ_CRIT', 'INST', 'GPMAX', 'KGPMAX', 'DELTALMAX'),
-                        typ= ('R',    'R',       'R',     'R',      'R'),
+                        typ= ('R',       'R',    'R',     'R',      'R'),
                         titr='Identification aux valeurs de tenacités critiques')
       dprod_result = tab_ident.dict_CREA_TABLE()
       if info >= 2:
          print tab_ident
-
+   
    # 4.2. --- prédiction
    else:
       # définition de la fonction GPcrit = f(TEMP)
@@ -326,7 +332,7 @@ def fDL(ICOP, pascop):
    return ICOP * pascop
 
 # -----------------------------------------------------------------------------
-def fGp_Etot(TOTALE, ICOP, pascop, syme=False):
+def fGp_Etot(TOTALE, ICOP, pascop, R, syme=False):
    """Gp(Etotale, K), deltal pris dans le context global.
       ICOP   : numéro du copeau,
       pascop : pas d'entaille.
@@ -335,7 +341,20 @@ def fGp_Etot(TOTALE, ICOP, pascop, syme=False):
    fact_axis = 1.
    if syme:
       fact_axis = 2.
-   return fact_axis * TOTALE / fDL(ICOP, pascop)
+   return fact_axis * TOTALE / (fDL(ICOP, pascop) * R)
+
+# -----------------------------------------------------------------------------
+def MaxRelatif(table, nom_para):
+   """Extrait le dernier maxi du champ `nom_para` de la table.
+   """
+   l_val = getattr(table, nom_para).values()
+   l_val.reverse()
+   Vlast = l_val[0]
+   for val in l_val:
+      if val < Vlast:
+         break
+      Vlast = val
+   return getattr(table, nom_para) == Vlast
 
 # -----------------------------------------------------------------------------
 def crit(GP_CRIT, GPMAX):

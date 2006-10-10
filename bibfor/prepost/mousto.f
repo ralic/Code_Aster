@@ -1,17 +1,17 @@
       SUBROUTINE MOUSTO ( GUIDAG, DIMTUB, VOLTUB, TUBUSE,
      &                            DIMOBS, VOLOBS, OBSUSE, RCRAY,
      &                    RCARTE, SECT, ARETE, ARETE2, NS, OBCONT,
-     &                    EPAIS, ECRAY, NOMT19, DENC, PERCE )
+     &                    EPAIS, ECRAY, RESU, DENC, PERCE )
       IMPLICIT   NONE
       INTEGER             DIMTUB, DIMOBS, NS
       REAL*8              VOLOBS(*), OBSUSE(*), RCRAY, RCARTE, SECT(*),
      &                    ARETE, ARETE2, EPAIS, ECRAY, DENC, PERCE,
      &                    VOLTUB(*), TUBUSE(*)
       CHARACTER*8         OBCONT, GUIDAG
-      CHARACTER*19        NOMT19
+      CHARACTER*19        RESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,14 +48,16 @@ C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
-      INTEGER      TYPUTU(20), TYPUOB(20), I
-      INTEGER      NCO, IRAYO, ITHET, IREFE
+      INTEGER      TYPUTU(20), TYPUOB(20), I, NBVAL
+      INTEGER      NCO, IRAYO, ITHET, IBID, IRETT, IRET2
       REAL*8       PARUTU(20,4), ADEBTU, AMAXTU, AFINTU, PROFTU
       REAL*8       PARUOB(20,4), ADEBOB, AMAXOB, AFINOB, PROFOB
       REAL*8       PROFON, ANSINI, ANSFIN, ANGARE, ANGVA
-      REAL*8       VOLUME, RAPT, RAPO, R8PREM
-      CHARACTER*8  K8B
+      REAL*8       VOLUME, RAPT, RAPO, R8PREM, R8B
+      COMPLEX*16   C16B
+      CHARACTER*8  K8B, K8TYP, REFO
       CHARACTER*16 CONCEP, NOMCMD
+      CHARACTER*24 NOMF
 C-----------------------------------------------------------------------
 C
 C     CALCUL DES PARAMETRES DES USURES :
@@ -292,19 +294,26 @@ C     CALCUL DE LA PROFONDEUR EN CUMULANT LES SECTEURS :
 C     --------------------------------------------------
 C
       IF ( GUIDAG .EQ. 'CERCLE' ) THEN
-         CALL USOBCE ( DIMOBS, OBSUSE, RCARTE, NOMT19, NS,
+         CALL USOBCE ( DIMOBS, OBSUSE, RCARTE, RESU, NS,
      &                                 PARUOB, TYPUOB )
       ELSE
-         CALL JEVEUO ( OBCONT//'           .VALR', 'L', IRAYO )
-         CALL JEVEUO ( OBCONT//'           .VALT', 'L', ITHET )
-         CALL JEVEUO ( OBCONT//'           .REFO', 'L', IREFE )
-         CALL JELIRA ( OBCONT//'           .VALT', 'LONMAX', NCO, K8B )
-         CALL USOBEN ( GUIDAG, DIMOBS, OBSUSE, NCO, ZR(IRAYO),
-     &                 ZR(ITHET), NS, PARUOB, TYPUOB, NOMT19,
+         CALL TBLIVA(OBCONT,1,'LIEU',
+     &               IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'TYPE',
+     &               K8TYP,IBID,R8B,C16B,REFO,IRETT)
+         CALL TBLIVA(OBCONT,1,'LIEU',
+     &               IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'FONCTION',
+     &               K8TYP,IBID,R8B,C16B,NOMF,IRET2)
+         CALL ASSERT(IRETT.EQ.0.AND.IRET2.EQ.0)
+         CALL JEVEUO(NOMF(1:19)//'.VALE', 'L', ITHET)
+         CALL JELIRA(NOMF(1:19)//'.VALE','LONMAX',NBVAL,K8B)
+         NCO = NBVAL/2
+         IRAYO = ITHET + NCO
+         CALL USOBEN ( GUIDAG, DIMOBS, OBSUSE, NCO, ZR(IRAYO), 
+     &                 ZR(ITHET), NS, PARUOB, TYPUOB, RESU,
      &                 ARETE, ARETE2, RCARTE, DENC )
       ENDIF
 C
-      CALL USTUEN ( DIMTUB, TUBUSE, RCRAY, NOMT19, NS, PARUTU, TYPUTU )
+      CALL USTUEN ( DIMTUB, TUBUSE, RCRAY, RESU, NS, PARUTU, TYPUTU )
 C
 C
 C     VERIFICATION DU NON PERCEMENT :

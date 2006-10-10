@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -239,10 +239,9 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  EXCIT=(
                  _F(CHARGE=FLUTH,),
                                           ),
-                 COMP_INCR=_F(RELATION='KIT_THV',
+                 COMP_INCR=_F(RELATION='KIT_THV',PARM_THETA=0.57,
                               RELATION_KIT=('LIQU_VAPE','HYDR_UTIL'),
                               ITER_INTE_MAXI=5,),
-                 PARM_THETA=0.57,
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -579,15 +579,15 @@ TRANGENE = DYNA_TRAN_MODAL (
              2.000000e-02, 2.000000e-02,),
 
              EXCIT=(
-                   _F( NUME_MODE=1, 
+                   _F( NUME_ORDRE=1, 
                        FONC_MULT=EFPROJ1 ),
-                   _F( NUME_MODE=2, 
+                   _F( NUME_ORDRE=2, 
                        FONC_MULT=EFPROJ2 ),
-                   _F( NUME_MODE=3, 
+                   _F( NUME_ORDRE=3, 
                        FONC_MULT=EFPROJ3 ),
-                   _F( NUME_MODE=4, 
+                   _F( NUME_ORDRE=4, 
                        FONC_MULT=EFPROJ4 ),
-                   _F( NUME_MODE=5, 
+                   _F( NUME_ORDRE=5, 
                        FONC_MULT=EFPROJ5 ),
              ),
              CHOC=(

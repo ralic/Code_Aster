@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -262,10 +262,9 @@ U=STAT_NON_LINE(
                              _F( 
                 CHARGE = CH1), _F( 
                 CHARGE = CH2)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 ITER_INTE_MAXI = 1000),
-                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 5),
@@ -291,10 +290,9 @@ U=STAT_NON_LINE( reuse=U,
                          ETAT_INIT=_F( 
                 EVOL_NOLI = U,
                 INST = 20.),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 ITER_INTE_MAXI = 1000),
-                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 

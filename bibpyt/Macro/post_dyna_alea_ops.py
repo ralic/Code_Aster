@@ -1,4 +1,4 @@
-#@ MODIF post_dyna_alea_ops Macro  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF post_dyna_alea_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,8 +186,7 @@ def post_dyna_alea_ops(self,INTE_SPEC,NUME_VITE_FLUI,TOUT_ORDRE,NUME_ORDRE_I,
              aster.affiche('MESSAGE','INDICES :'+str(ind[0])+' - '\
                                                 +str(ind[1])+'\n')
         __fon1=RECU_FONCTION(TABLE        = INTE_SPEC,
-                             TYPE_RESU    = 'FONCTION_C',
-                             NOM_PARA_TABL= 'FONCTION',
+                             NOM_PARA_TABL= 'FONCTION_C',
                              FILTRE       = mcfact, )
         val  = __fon1.Valeurs()
         fvalx= Numeric.array(val[0])

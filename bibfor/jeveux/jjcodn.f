@@ -1,6 +1,6 @@
       FUNCTION JJCODN(ICRE , NOMREP , NOMEC , IREP, CREP , NMAX , NUTI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
               IRET = 0
             ELSE
               CMESS =' LE NOM N''EXISTE PAS DANS '//NOMREP
-              CALL U2MESK('S','JEVEUX_01',1,CMESS)
+              CALL U2MESK('F','JEVEUX_01',1,CMESS)
             END IF
          END IF
       ELSE
@@ -79,7 +79,7 @@ C
             IF ( ICRE .EQ. 3 ) THEN
               CMESS=' LE NOM DEMANDE EXISTE DEJA DANS LE REPERTOIRE '
      &                //NOMREP
-              CALL U2MESK('S','JEVEUX_01',1,CMESS)
+              CALL U2MESK('F','JEVEUX_01',1,CMESS)
             ELSE IF ( ICRE .EQ. 0 ) THEN
               IRET  = J
             ELSE IF ( ICRE .EQ. -3 ) THEN

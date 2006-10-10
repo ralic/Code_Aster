@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k_trans_ops Macro  DATE 10/10/2006   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,14 +18,13 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
-from Cata.cata import *
-
 def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE, 
                  INST, LIST_INST,INFO,**args):          
   """
      Ecriture de la macro post_k_trans
   """
+  import aster
+  import string
   from Accas import _F
   from Utilitai.Utmess     import UTMESS
   from types import ListType, TupleType

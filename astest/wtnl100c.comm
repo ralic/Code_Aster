@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,14 +125,13 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
                     EXCIT=_F(CHARGE=CHAR,),
-                    COMP_INCR=_F(RELATION='KIT_HM',
+                    COMP_INCR=_F(RELATION='KIT_HM',PARM_THETA=0.57,
                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
                     INCREMENT=_F(LIST_INST=LI,
                                  INST_FIN=250.0,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                    PARM_THETA=0.57,
                     SOLVEUR=_F(METHODE='LDLT',),
                     ARCHIVAGE=_F(INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
                                  PRECISION=0.001,),);

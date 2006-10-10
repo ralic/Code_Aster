@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,17 +63,17 @@ C
       REAL*8        FREQ(*), MASG(*), VITE(*)
 C
       PARAMETER   ( NBPAR = 5 )
-      INTEGER       IVAL(3)
+      INTEGER       IVAL(3), VALI(2)
       REAL*8        MGI, KSI
       CHARACTER*3   K3IM, K3IV
       CHARACTER*8   K8B
       CHARACTER*19  NOMCOD
       CHARACTER*16  NOPAR(NBPAR)
-      CHARACTER*24  NOMFON, VALE, PROL, NOMFO
+      CHARACTER*24  NOMFON, VALE, PROL, NOMFO, VALK(2)
       COMPLEX*16    C16B
 C
       DATA NOPAR  / 'VITE_FLUIDE'  , 'NUME_VITE_FLUI'   ,
-     &              'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION' /
+     &              'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION_C' /
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -85,8 +85,12 @@ C
       IVAL(3) = NUOR(1)
 C
       CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMCOD, IRET )
-      IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
+     &          R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMCOD, IRET )
+      IF ( IRET .NE. 0 ) THEN
+         VALK(1) = 'FONCTION_C'
+         VALK(2) = TABLE
+         CALL U2MESK('F','MODELISA2_91', 2, VALK)
+      ENDIF
 C
       NOMFO = NOMCOD//'.VALE'
       CALL JELIRA ( NOMFO, 'LONUTI', NBPF, K8B )
@@ -104,8 +108,12 @@ C
         IVAL(3) = NUOR(1)
 C
         CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMCOD, IRET )
-        IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
+     &          R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMCOD, IRET )
+        IF ( IRET .NE. 0 ) THEN
+           VALK(1) = 'FONCTION_C'
+           VALK(2) = TABLE
+           CALL U2MESK('F','MODELISA2_91', 2, VALK)
+        ENDIF
 C
         NOMFO = NOMCOD//'.VALE'
         CALL JEVEUO ( NOMFO, 'L', IFO )
@@ -113,15 +121,9 @@ C
         DO 25 IM = IMOD1,IMODF
           FRI = FREQ(2*NBM*(IV-1)+2*(IM-1)+1)
           IF ( FRI.LT.0.D0 ) THEN
-             WRITE(K3IV,'(I3)') IV
-             WRITE(K3IM,'(I3)') NUOR(IM)
-             CALL UTMESS('A','CALCSP','LE CALCUL DES PARAMETRES DU '//
-     &                   'MODE NO'//K3IM//' PAR L''OPERATEUR '//
-     &                   '<CALC_FLUI_STRU> N''A PAS CONVERGE POUR '//
-     &                   'LA VITESSE NO'//K3IV//'. ON NE CALCULE '//
-     &                   'DONC PAS D''INTERSPECTRES DE REPONSE '//
-     &                   'MODALE POUR CETTE VITESSE.')
-C        CALL U2MESK('A','MODELISA2_90', 2 ,VALK)
+             VALI(1) = IV
+             VALI(2) = NUOR(IM)
+             CALL U2MESI('A','MODELISA2_90', 2 ,VALI)
              GO TO 20
           ENDIF
  25     CONTINUE
@@ -157,8 +159,12 @@ C
             IVAL(2) = NUOR(IM1)
 C
             CALL TBLIVA ( TABLE, 3, NOPAR(2), IVAL, R8B, C16B, K8B, K8B,
-     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
-            IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_91')
+     &           R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET )
+            IF ( IRET .NE. 0 ) THEN
+               VALK(1) = 'FONCTION_C'
+               VALK(2) = TABLE
+               CALL U2MESK('F','MODELISA2_91', 2, VALK)
+            ENDIF
 C
             WRITE(NOMCOD,'(A8,A2,3I3.3)') NOMU,'.S',IV,NUOR(IM1),
      &                                    NUOR(IM2)

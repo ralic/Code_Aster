@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CYLINDRE CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,9 +80,8 @@ RESU = STAT_NON_LINE (MODELE = MO,
                       EXCIT =(
                          _F( CHARGE = BLOC),
                          _F( CHARGE = PRES),),
-                      COMP_INCR =_F(RELATION ='LEMA_SEUIL',
+                      COMP_INCR =_F(RELATION ='LEMA_SEUIL',PARM_THETA = 1.,
                                     ITER_INTE_MAXI = 1000),
-                      PARM_THETA = 1.,
                       INCREMENT =_F(LIST_INST =L_INST),
                       NEWTON    =_F(
                                 MATRICE ='TANGENTE', 

@@ -1,8 +1,9 @@
       SUBROUTINE OP0182 ( IERR )
-      IMPLICIT  REAL*8  ( A-H,O-Z )
+      IMPLICIT  NONE
+      INTEGER IERR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,18 +48,26 @@ C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
 
-      INTEGER       IBID, NS, DIMTUB, DIMOBS, NBPARA
+      INTEGER       IBID, NS, DIMTUB, DIMOBS, IFM, I,
+     +              IDRAY, IDTOB, IDROB, IDTHE, IRETT,
+     +              JTUBUS, JOBSUS, N1, NIS, NC, NCO, NCR,
+     +              NPU, NR, NIV, NPO, IREUSE, IRET2,
+     +              NBPARA, LPRO
       PARAMETER   ( NBPARA = 10 )
-      REAL*8        ARETE, ARETE2, SECT(20), VOLTUB(20), TABR(NBPARA)
-      REAL*8        VOLOBS(20), RTUBE, ROBST, JEUI, VUST(20), VUSO(20)
-      REAL*8        RAD, R8DGRD, PI, R8PI, PERCE
+      REAL*8        ARETE, ARETE2, SECT(20), VOLTUB(20), TABR(NBPARA),
+     +              VOLOBS(20), RTUBE, ROBST, JEUI, VUST(20), VUSO(20),
+     +              RAD, R8DGRD, PI, R8PI, PERCE, R8B, SUSETU, RINT,
+     +              ETUBE, DENC, DINST, HOBST, SINIT, SUSEOB, SVOOBS,
+     +              SVOTUB
       COMPLEX*16    C16B
-      CHARACTER*8   K8B, GUIDAG, OBST, GUIDE, OBCRAY, TYPARA(NBPARA)
+      CHARACTER*8   K8B, GUIDAG, GUIDE, OBCRAY,
+     +              TYPARA(NBPARA), K8TYP
       CHARACTER*19  TABPUS
       CHARACTER*16  CONCEP, NOMCMD, NOMOBS, NOMOB1,
-     &              NOPARA(NBPARA), NOPAR1(NBPARA)
-      CHARACTER*19  RESU, NOMT19
-      CHARACTER*24  TYPE, TABK(NBPARA)
+     +              NOPARA(NBPARA), NOPAR1(NBPARA)
+      CHARACTER*19  RESU
+      CHARACTER*24  TYPE, TABK(NBPARA), NOMFON, NOMF, TYPINI, NOMFG,
+     +              TYPOBC, NOMOBC
 C
       DATA NOPARA / 'LIEU'    , 'SECTEUR' , 'TYPE'    , 'ANGL_DEBUT',
      &              'ANGL_FIN', 'ANGL_MAX', 'PROF_MAX', 'SURF_INIT' ,
@@ -71,6 +80,7 @@ C
       CALL JEMARQ()
 C
       CALL GETRES ( RESU, CONCEP, NOMCMD )
+      NOMFON = RESU(1:8)//'   _INITIAL'
 C
       PI  = R8PI( )
       RAD = R8DGRD()
@@ -84,15 +94,54 @@ C
 C     ------------------------------------------------------------------
 C                       CREATION DE LA TABLE
 C     ------------------------------------------------------------------
+C
+      CALL JEEXIN(RESU//'.TBLP', IREUSE)
+      IF (IREUSE.NE.0) THEN
+C     SI REENTRANT ON CONSERVE LA DESCRIPTION ET LE TYPE DE L'OBSTACLE
+         CALL TBLIVA(RESU,1,'LIEU',
+     &               IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'FONCTION',
+     &               K8TYP,IBID,R8B,C16B,NOMF,IRETT)
+         CALL TBLIVA(RESU,1,'LIEU',
+     &               IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'TYPE',
+     &               K8TYP,IBID,R8B,C16B,TYPINI,IRET2)
+         IF (IRETT.NE.0.OR.IRET2.NE.0)THEN
+            CALL UTMESS('F', 'OBSTACLE', 'TYPE DE CONCEPT INVALIDE')
+         ENDIF
+         CALL COPISD('FONCTION', 'V', NOMF, '&&OP0182.REUSE.NOMF')
+         CALL JEDETC('G', RESU(1:8), 1)
+         CALL COPISD('FONCTION', 'G', '&&OP0182.REUSE.NOMF', NOMFON)
+      ELSE
+C     SI PAS REENTRANT : TYPE DISCRET, INITIALISATION DE NOMFON
+         TYPINI = 'DISCRET'
+         CALL WKVECT(NOMFON(1:19)//'.PROL','G V K16',5,LPRO)
+         ZK16(LPRO) = 'FONCTION'
+         ZK16(LPRO+1) = 'LINLIN'
+         ZK16(LPRO+2) = 'THETA'
+         ZK16(LPRO+3) = 'R'
+         ZK16(LPRO+4) = 'EE'
+         NPO = 721
+         CALL WKVECT(NOMFON(1:19)//'.VALE','G V R',NPO*2,IDTOB)
+         IDROB = IDTOB + NPO
+         JEUI = 5.D-4
+         DO 20 I = 1,NPO
+            ZR(IDROB+I-1) = JEUI
+            ZR(IDTOB+I-1) = (I-1)*RAD*360.D0/(NPO-1)
+ 20      CONTINUE
+      ENDIF
+      CALL TBCRSD(RESU, 'G')
+      CALL TBAJPA(RESU, NBPARA, NOPARA, TYPARA)
+C
+C --- INSERTION DE LA LIGNE DE DESCRIPTION DANS LA TABLE
+      NOPAR1(1) = 'LIEU'
+      NOPAR1(2) = 'TYPE'
+      NOPAR1(3) = 'FONCTION'
+      TABK(1) = 'DEFIOBST'
+      TABK(2) = TYPINI
+      TABK(3) = NOMFON
+      CALL TBAJLI(RESU,3,NOPAR1,IBID,R8B,C16B,TABK,0)
 
-      CALL JEEXIN ( RESU//'.LTNT', IRET )
-      IF (IRET.EQ.0) CALL LTCRSD ( RESU, 'G' )
-      NOMT19 = ' '
-      CALL LTNOTB ( RESU, 'OBSTACLE', NOMT19 )
-      CALL JEEXIN ( NOMT19//'.TBBA', IRET )
-      IF (IRET.NE.0)  CALL DETRSD ( 'TABLE', NOMT19 )
-      CALL TBCRSD ( NOMT19, 'G' )
-      CALL TBAJPA ( NOMT19, NBPARA, NOPARA, TYPARA )
+C     utiliser uniquement par CALFIG
+      CALL JELIRA (NOMFON(1:19)//'.VALE', 'LONMAX', NPO, K8B)
 C
       NS = 12
       DINST = 0.D0
@@ -140,35 +189,29 @@ C                    HAUTEUR DE LA CARTE OU DU GUIDAGE
 C     ------------------------------------------------------------------
 C
       CALL GETVID ( ' ', 'GUIDE'   , 1,1,1, GUIDE, N1  )
-      CALL GETVID ( ' ', 'OBSTACLE', 1,1,1, OBST , NOB )
 C
-      IF ( NOB .EQ. 0 ) THEN
-         OBST = '&&OBSTEM'
-         CALL WKVECT(OBST//'           .REFO','V V K24',1,IDREFO)
-         ZK24(IDREFO) = 'DISCRET'
-         NPO = 721
-         CALL WKVECT(OBST//'           .VALR','V V R8',NPO,IDROB)
-         CALL WKVECT(OBST//'           .VALT','V V R8',NPO,IDTOB)
-         JEUI = 5.D-4
-         DO 20 I = 1,NPO
-            ZR(IDROB+I-1) = JEUI
-            ZR(IDTOB+I-1) = (I-1)*RAD*360.D0/(NPO-1)
- 20      CONTINUE
+      CALL TBLIVA(GUIDE,1,'LIEU',
+     &            IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'TYPE',
+     &            K8TYP,IBID,R8B,C16B,TYPE,IRETT)
+      CALL TBLIVA(GUIDE,1,'LIEU',
+     &            IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'FONCTION',
+     &            K8TYP,IBID,R8B,C16B,NOMFG,IRET2)
+      IF (IRETT.NE.0.OR.IRET2.NE.0)THEN
+         CALL UTMESS('F', 'GUIDE', 'TYPE DE CONCEPT INVALIDE')
       ENDIF
-      CALL JELIRA ( OBST//'           .VALR', 'LONMAX', NO, K8B )
-C
-      CALL JEVEUO ( GUIDE//'           .REFO', 'L', IDREFE )
-      CALL JELIRA ( GUIDE//'           .VALR', 'LONMAX', NCO, K8B )
-      TYPE = ZK24(IDREFE)
+      CALL JELIRA(NOMFG(1:19)//'.VALE', 'LONMAX', NCO, K8B)
+      NCO = NCO/2
       NOMOB1 = TYPE(1:7)
 C
 C --- CAS DES DISCRETS, EN SUPPOSANT QUE LE RAYON EST CONSTANT
 C     SI PAS CONSTANT LE CALCUL DE L'USURE EST FAUX
 C
       IF ( NOMOB1 .EQ. 'DISCRET') THEN
-         CALL JEVEUO ( GUIDE//'           .VALR', 'L', JVALR )
+         CALL JEVEUO ( NOMFG(1:19)//'.VALE', 'L', IDTHE )
+         IDRAY = IDTHE + NCO
          HOBST = 0.D0
-         ROBST = ZR(JVALR)
+         ROBST = ZR(IDRAY)
+         NOMOBS = NOMOB1
          NOMOBS = NOMOB1
       ELSE
          NOMOBS = TYPE(8:12)
@@ -224,16 +267,23 @@ C
            IF (TYPE(14:17).EQ.'1300') RTUBE = 4.84D-3
            IF (TYPE(14:16).EQ.'900')  RTUBE = 4.825D-3
          ELSE
-           CALL JEVEUO(OBCRAY//'           .REFO','L',IDREF2)
-           IF (ZK24(IDREF2)(14:17).EQ.'1300') THEN
+           CALL TBLIVA(OBCRAY,1,'LIEU',
+     &                 IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'TYPE',
+     &                 K8TYP,IBID,R8B,C16B,TYPOBC,IRETT)
+           CALL TBLIVA(OBCRAY,1,'LIEU',
+     &                 IBID,R8B,C16B,'DEFIOBST',K8B,R8B,'FONCTION',
+     &                 K8TYP,IBID,R8B,C16B,NOMOBC,IRET2)
+           CALL ASSERT(IRETT.EQ.0.AND.IRET2.EQ.0)
+           IF (TYPOBC(14:17).EQ.'1300') THEN
               RTUBE = 4.84D-3
               GOTO 61
            ENDIF
-           IF (ZK24(IDREF2)(14:16).EQ.'900') THEN
+           IF (TYPOBC(14:16).EQ.'900') THEN 
               RTUBE = 4.825D-3
               GOTO 61
            ENDIF
-           CALL JELIRA(OBCRAY//'           .VALR','LONMAX',NCR,K8B)
+           CALL JELIRA(NOMOBC(1:19)//'.VALE', 'LONMAX', NCR, K8B)
+           NCR = NCR/2
            GUIDAG = ' '
  61        CONTINUE
          ENDIF
@@ -279,7 +329,7 @@ C
          CALL MOUSTO ( GUIDAG, DIMTUB, VOLTUB, ZR(JTUBUS),
      &                         DIMOBS, VOLOBS, ZR(JOBSUS), RTUBE,
      &                 ROBST, SECT, ARETE, ARETE2, NS, GUIDE,
-     &                 HOBST, ETUBE, NOMT19, DENC, PERCE )
+     &                 HOBST, ETUBE, RESU, DENC, PERCE )
 C
 C*********************************************************************
 C
@@ -289,16 +339,16 @@ C*********************************************************************
 C
       ELSE
          DIMTUB = NCR
-         CALL JEVEUO ( OBCRAY//'           .VALR', 'L', IDRAY )
-         CALL JEVEUO ( OBCRAY//'           .VALT', 'L', IDTHE )
+         CALL JEVEUO(NOMOBC(1:19)//'.VALE', 'L', IDTHE)
+         IDRAY = IDTHE + NCR
          DO 101 I = 1 , DIMTUB
             ZR(JTUBUS+2*I-2) = ZR(IDTHE+I-1)/RAD
             ZR(JTUBUS+2*I-1) = ZR(IDRAY+I-1)
  101     CONTINUE
 C
          DIMOBS = NCO
-         CALL JEVEUO ( GUIDE//'           .VALR', 'L', IDRAY )
-         CALL JEVEUO ( GUIDE//'           .VALT', 'L', IDTHE )
+         CALL JEVEUO(NOMFG(1:19)//'.VALE', 'L', IDTHE)
+         IDRAY = IDTHE + NCO
          DO 102 I = 1 , DIMOBS
             ZR(JOBSUS+2*I-2) = ZR(IDTHE+I-1)/RAD
             ZR(JOBSUS+2*I-1) = ZR(IDRAY+I-1)
@@ -306,8 +356,7 @@ C
       ENDIF
 C*********************************************************************
 C
-      CALL CALFIG ( GUIDAG, RESU, OBST, NO, DIMOBS, DIMTUB,
-     &                      ZR(JOBSUS), ZR(JTUBUS), NOMT19 )
+      CALL CALFIG(GUIDAG, RESU, DIMOBS, DIMTUB, ZR(JOBSUS), ZR(JTUBUS))
 C
 C
 C     CALCUL DES SECTIONS USEES SUR TUBE ET OBSTACLE :
@@ -334,12 +383,12 @@ C
       TABR(1) = SINIT
       TABR(2) = SUSETU
       TABK(1) = 'TUBE'
-      CALL TBAJLI ( NOMT19, 3, NOPAR1, IBID, TABR, C16B, TABK, 0 )
+      CALL TBAJLI ( RESU, 3, NOPAR1, IBID, TABR, C16B, TABK, 0 )
       NOPAR1(1) = NOPARA(1)
       NOPAR1(2) = NOPARA(9)
       TABR(1) = SUSEOB
       TABK(1) = 'OBST'
-      CALL TBAJLI ( NOMT19, 2, NOPAR1, IBID, TABR, C16B, TABK, 0 )
+      CALL TBAJLI ( RESU, 2, NOPAR1, IBID, TABR, C16B, TABK, 0 )
 C
 C
       CALL JEDEMA()

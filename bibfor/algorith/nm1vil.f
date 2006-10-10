@@ -8,7 +8,7 @@
      &                  ANGMAS,
      &                  SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C     PARAMETRE THETA D'INTEGRATION
       THETA = CRIT(4)
       T1 = ABS(THETA-0.5D0)
       T2 = ABS(THETA-1.D0)
-      PREC = 0.01D0
+      PREC = 0.000001D0
       IF ((T1.GT.PREC).AND.(T2.GT.PREC))  THEN
          CALL U2MESS('F','ALGORITH6_55')
       ENDIF
@@ -180,7 +180,7 @@ C         PARAMETRES DE LA LOI DE FLUAGE
           IF (COEGIL(5).NE.1.D0) THEN
             CALL U2MESS('A','ALGORITH6_56')
           ENDIF
-          IF (FLUPHI.LT.0.D0) THEN
+          IF (FLUPHI.LT.-PREC) THEN
             CALL U2MESS('F','ALGORITH6_57')
           ENDIF
       ELSE

@@ -1,6 +1,6 @@
       SUBROUTINE JEVEUO ( NOMLU , CEL  , JCTAB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C     ==================================================================
       KCEL   = CEL
       IF ( KCEL .NE. 'L' .AND. KCEL .NE. 'E' ) THEN
          CMESS = 'PARAMETRE D''ACCES '//KCEL//' INVALIDE'
-         CALL U2MESK('S','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
 C
       ICRE = 0
@@ -97,7 +97,7 @@ C
  10   CONTINUE
 C ----   IRET = 0
          CMESS = 'OBJET INEXISTANT DANS LES BASES OUVERTES'
-         CALL U2MESK('S','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_01',1,CMESS)
          GOTO 100
  20   CONTINUE
 C ----   IRET = 1
@@ -106,7 +106,7 @@ C ----   IRET = 1
          LTYPI =  LTYP( JLTYP(ICLAOS) + IDATOS )
          IF ( GENRI .EQ. 'N' ) THEN
            CMESS = 'ACCES A UN REPERTOIRE NON AUTORISE'
-           CALL U2MESK('S','JEVEUX_01',1,CMESS)
+           CALL U2MESK('F','JEVEUX_01',1,CMESS)
          ENDIF
          GOTO 100
  30   CONTINUE
@@ -133,7 +133,7 @@ C            ------ CAS D'UN OBJET DE COLLECTION  ------
              IF ( IXIADD .NE. 0 ) THEN
 C            ----------- COLLECTION DISPERSEE
                 CMESS = 'COLLECTION DISPERSEE NON ACCESSIBLE EN BLOC'
-                CALL U2MESK('S','JEVEUX_01',1,CMESS)
+                CALL U2MESK('F','JEVEUX_01',1,CMESS)
              ENDIF
            ENDIF
            GENRI =  GENR( JGENR(ICLACO) + IXDESO )
@@ -152,7 +152,7 @@ C            ----------- COLLECTION DISPERSEE
             JCTAB  = JCTAB +  (ISZON(JISZON+IBLONO-1+IDATOC) - 1)
           ELSE
             CMESS = 'OBJET DE COLLECTION CONTIG DE LONGUEUR NULLE'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
         ELSE
           JCTAB = JCTAB + LONG(JLONG(ICLACO)+IXDESO) * (IDATOC-1)

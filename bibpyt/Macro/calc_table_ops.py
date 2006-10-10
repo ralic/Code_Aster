@@ -1,4 +1,4 @@
-#@ MODIF calc_table_ops Macro  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_table_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,19 +29,23 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
    import aster
 
    macro = 'CALC_TABLE'
-   from Accas               import _F
-   from Cata.cata import table_jeveux
-   from Utilitai.Utmess     import UTMESS
-   from Utilitai            import transpose
-   from Utilitai.Table      import Table, merge
-   from Utilitai.Sensibilite import NomCompose
+   from Accas                 import _F
+   from Cata.cata             import table_sdaster, table_fonction, table_jeveux
+   from Utilitai.Utmess       import UTMESS
+   from Utilitai              import transpose
+   from Utilitai.Table        import Table, merge
+   from Utilitai.Sensibilite  import NomCompose
 
    ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
 
-   # Le concept sortant (de type table_sdaster ou dérivé) est tab
+   # Le concept sortant (de type table_sdaster ou dérivé) est tabout
    self.DeclareOut('tabout', self.sd)
+   if self.sd.__class__ == table_fonction:
+      typ_tabout = 'TABLE_FONCTION'
+   else:
+      typ_tabout = 'TABLE'
 
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
@@ -112,7 +116,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
       if occ['OPERATION'] == 'COMB':
          tab2 = occ['TABLE'].EXTR_TABLE()
          opts = [tab, tab2]
-         if ('NOM_PARA' in occ.keys() and occ['NOM_PARA']<>None) :
+         if occ.get('NOM_PARA') != None:
             lpar = occ['NOM_PARA']
             if not type(lpar) in EnumTypes:
                lpar = [lpar]
@@ -157,6 +161,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
          tit = [tit]
       dprod['TITRE'] = tuple(['%-80s' % lig for lig in tit])
    # type de la table de sortie à passer à CREA_TABLE
-   tabout = CREA_TABLE(**dprod)
+   tabout = CREA_TABLE(TYPE_TABLE=typ_tabout,
+                       **dprod)
    
    return ier

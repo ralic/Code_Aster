@@ -1,6 +1,6 @@
       SUBROUTINE JJALLC ( ICLASI , IDATCI , CEL , IBACOL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
      &                   COL , JCOL , IADML )
           ELSE
             CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
         ELSE
           CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT' ,
@@ -119,7 +119,7 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
           LONOI  = LONO ( JLONO(IC) + IX ) * LTYPI
           IF ( LONOI .EQ. 0 ) THEN
             CMESS ='OBJET :'//RNOM(JRNOM(IC)+IX)//' INEXISTANT'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           IADMI  = IADM ( JIADM(IC) + IX )
           IADDI(1) = IADD ( JIADD(IC) + 2*IX-1 )
@@ -136,7 +136,7 @@ C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE
      &                       COL , JCOL , IADML )
               ELSE
                 CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
-                CALL U2MESK('S','JEVEUX_01',1,CMESS)
+                CALL U2MESK('F','JEVEUX_01',1,CMESS)
               ENDIF
             ELSE
               CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT',

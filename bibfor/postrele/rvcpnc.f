@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,7 +162,7 @@ C           CALL UTFINM
 C        ELSE
             NOMOB1 = '&&OP0051.NOMCMP.USER'
             CALL UTNCMP ( NCH19, NBC, NOMOB1 )
-            IF (NBC.EQ.0) CALL U2MESS('F','MODELISA2_91')
+            IF (NBC.EQ.0) CALL U2MESS('F','CHAMPS_1')
             CALL JEVEUO ( NOMOB1, 'L', ANCPU )
             CALL WKVECT(NOMOJB,'V V K8',NBC,AVK8)
             DO 10, I = 1, NBC, 1

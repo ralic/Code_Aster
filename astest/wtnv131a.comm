@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -213,7 +213,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(
                  _F(CHARGE=TIMP,), ),
-                 COMP_INCR=_F(RELATION='KIT_HHM',
+                 COMP_INCR=_F(RELATION='KIT_HHM',PARM_THETA=0.6,
                               RELATION_KIT=('ELAS','LIQU_AD_GAZ_VAPE','HYDR_UTIL'),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
@@ -227,7 +227,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                                 RESI_GLOB_RELA=1.E-6,
                                 ITER_GLOB_MAXI=80,
                                 ),
-                 PARM_THETA=0.6,
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
                  );

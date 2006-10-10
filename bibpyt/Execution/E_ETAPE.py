@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 03/04/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,24 +138,19 @@ class ETAPE:
          echo_mess.append( '\n' )
 
          # Affichage numero de la commande (4 digits)
-         echo_mess.append( decalage+" #  COMMANDE NO : " )
-         chaine=`self.icmd`
-         l=len(chaine)
-         while l < 4  :
-               chaine='0'+chaine
-               l=l+1
-         echo_mess.append( chaine )
-         # Affichage nom du concept resultat
-         echo_mess.append( "          ")
-         echo_mess.append( "CONCEPT DE TYPE : " )
          if self.sd != None:
-               type_concept=self.sd.__class__.__name__
-               echo_mess.append( type_concept )
-
-         echo_mess.append( '\n' )
-         echo_mess.append( decalage )
-         echo_mess.append( "#  -------------               -----------------")
-
+            type_concept = self.sd.__class__.__name__
+         else:
+            type_concept = ''
+         
+         if self.icmd != None:
+            echo_mess.append("""   #  COMMANDE NO :  %04d            CONCEPT DE TYPE : %s
+    #  -------------                  -----------------""" % (self.icmd, type_concept))
+         else:
+            # commande non comptabilisée (INCLUDE)
+            echo_mess.append("""   #  COMMANDE :
+    #  ----------""")
+            
          # recuperation du texte de la commande courante dans la chaine
          # commande_formatee
          v=genpy.genpy(defaut='avec')
@@ -180,12 +175,12 @@ class ETAPE:
          decalage="  "  # blancs au debut de chaque ligne affichee
          echo_mess=[decalage]
          if cpu_user != None :
-            echo_fin = "%s #  FIN COMMANDE NO : %04d   DUREE TOTALE:%12.2fs (SYST:%12.2fs)" \
+            echo_fin = "%s  #  FIN COMMANDE NO : %04d   DUREE TOTALE:%12.2fs (SYST:%12.2fs)" \
                % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst)
          else :
-            echo_fin = "%s #  FIN COMMANDE : %s" % (decalage, self.nom)
+            echo_fin = "%s  #  FIN COMMANDE : %s" % (decalage, self.nom)
          echo_mess.append(echo_fin)
-         echo_mess.append(decalage + '#  ' + '-'*75)
+         echo_mess.append(decalage + '  #  ' + '-'*75)
          texte_final=os.linesep.join(echo_mess)
          aster.affiche('MESSAGE', texte_final)
 

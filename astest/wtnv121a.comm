@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -275,7 +275,7 @@ REPONSE=STAT_NON_LINE( MODELE     = MO,
                        CHAM_MATER = CHMAT,
                        EXCIT      = ( _F( CHARGE = CLIM),
                                       _F( CHARGE = CHARGT, FONC_MULT=CAP)),
-                       COMP_INCR  = _F( RELATION     = 'KIT_HHM',
+                       COMP_INCR  = _F( RELATION     = 'KIT_HHM',PARM_THETA  = 0.56999999999999995,
                                         DEFORMATION  = 'PETIT',
                                         RELATION_KIT = ( 'ENDO_ISOT_BETON',
                                                          'LIQU_GAZ',
@@ -287,7 +287,6 @@ REPONSE=STAT_NON_LINE( MODELE     = MO,
                       NEWTON      = _F( MATRICE   = 'TANGENTE',
                                         REAC_ITER = 1     ),
                       SOLVEUR     = _F( RENUM     = 'MDA',),
-                      PARM_THETA  = 0.56999999999999995,
                       CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6,
                                         ITER_GLOB_MAXI = 20)
                      )

@@ -2,22 +2,22 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C (AT YOUR OPTION) ANY LATER VERSION.
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C RESPONSABLE MCOURTOI M.COURTOIS
 C TOLE CRP_20
@@ -41,8 +41,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER      REFI, VALI, IUNIFI
-      REAL*8       VALPU(2),RESURE,RESUIM,R8NNEM,RVAL
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='OP0135')
+C
+      INTEGER      REFI, VALI, IUNIFI, NREF, IREFC, IREFR, IMIN, IBID
+      REAL*8       VALPU(2),RESURE,RESUIM,R8NNEM,RVAL,R8B,MINVR,TMPR
+      REAL*8       MINVC,TMPC
       CHARACTER*1  CBID
       CHARACTER*3  OUINON, SSIGNE
       CHARACTER*4  TESTOK
@@ -53,12 +58,12 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19 NOMFON, SPECTR
       CHARACTER*24 CHPROL, CHPARA
       CHARACTER*50 TEXTE
-      COMPLEX*16   REFC, VALC , ZEROC
+      COMPLEX*16   REFC, VALC , ZEROC, C16B
       LOGICAL      LOK, ULEXIS
 C SENSIBILITE
       INTEGER NRPASS,NBPASS,ADRECG,IAUX
       CHARACTER*19 LAFONC,NOPASE
-      CHARACTER*24 NORECG
+      CHARACTER*24 NORECG,TRAVR,TRAVC
       CHARACTER*38 TITRES
 C SENSIBILITE
 C     ------------------------------------------------------------------
@@ -67,8 +72,10 @@ C
       CALL JEMARQ()
       CALL INFMAJ()
 C
-      NORECG = '&&'//'OP0135'//'_RESULTA_GD     '
-C
+      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
+      TRAVR  = '&&'//NOMPRO//'_TRAVR          '
+      TRAVC  = '&&'//NOMPRO//'_TRAVC          '
+
       ZERO   = 0.D0
       ZEROC  = DCMPLX(0.D0,0.D0)
       CALL GETVTX(' ','TEST_NOOK',0,1,1,OUINON,N1)
@@ -120,7 +127,7 @@ C                      12345678901234567890123456789012345678
            ELSE
              TITRES = ' ... SENSIBILITE AU PARAMETRE '//NOPASE
            END IF
-
+ 
            CHPROL = LAFONC//'.PROL'
            CALL JEEXIN(CHPROL,IRET)
            IF (IRET.NE.0)THEN
@@ -146,18 +153,26 @@ C                      12345678901234567890123456789012345678
            ENDIF
 C
            IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
-             CALL GETVR8('VALEUR','VALE_PARA'  ,IOCC,1,1,VALPU,N5)
-             CALL GETVC8('VALEUR','VALE_REFE_C',IOCC,1,1,REFC,N7)
+            CALL GETVR8('VALEUR','VALE_PARA'  ,IOCC,1,1,VALPU,N5)
+            CALL GETVC8('VALEUR','VALE_REFE_C',IOCC,1,0,C16B,N7)
+            NREF=-N7
+            CALL JEDETR(TRAVC)
+            CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
+            CALL GETVC8('VALEUR','VALE_REFE_C',IOCC,1,NREF,ZC(IREFC),N7)
            ELSE
-             CALL GETVR8('VALEUR','VALE_PARA' ,IOCC,1,NBPU,VALPU,N5)
-             CALL GETVR8('VALEUR','VALE_REFE' ,IOCC,1,1   ,REFR ,N6)
+            CALL GETVR8('VALEUR','VALE_PARA' ,IOCC,1,NBPU,VALPU,N5)
+            CALL GETVR8('VALEUR','VALE_REFE',IOCC,1,0,R8B,N6)
+            NREF=-N6
+            CALL JEDETR(TRAVR)
+            CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
+            CALL GETVR8('VALEUR','VALE_REFE' ,IOCC,1,NREF,ZR(IREFR),N6)
            ENDIF
 C
            IF (ZK16(LPROL).EQ.'NAPPE   ') THEN
              L1 = MAX(1,LXLGUT(LAFONC))
              L2 = MAX(1,LXLGUT(NOMPU(1)))
              WRITE(IFIC,*)'---- NAPPE: ',NOMFON(1:L1),
-     &                ', NOM_PARA: ',NOMPU(1)(1:L2),', PARA: ',VALPU(1)
+     +                ', NOM_PARA: ',NOMPU(1)(1:L2),', PARA: ',VALPU(1)
            ELSE
              WRITE(IFIC,*)'---- FONCTION: ',NOMFON,TITRES
            ENDIF
@@ -172,12 +187,22 @@ C
                TESTOK = ' OK '
                IF ( IRET .EQ. 0 ) THEN
                  VALC = DCMPLX(RESURE,RESUIM)
+                 MINVC=ABS(VALC-ZC(IREFC))
+                 IMIN=1
+                 DO 69 I=1,NREF-1
+                   TMPC=ABS(VALC-ZC(IREFC+I))
+                   IF(TMPC.LT.MINVC)THEN
+                     TMPC=MINVC
+                     IMIN=I+1
+                   ENDIF
+ 69              CONTINUE
                  IF ( CRIT(1:4) .EQ. 'RELA' ) THEN
-                   LOK = ( ABS(VALC-REFC) .LE. EPSI * ABS(REFC))
-                   IF ( ABS(REFC) .NE. ZEROC ) THEN
-                     ERR = ABS(VALC - REFC) /  ABS(REFC)
+                   LOK = ( ABS(VALC-ZC(IREFC+IMIN-1)) .LE.
+     &                        EPSI * ABS(ZC(IREFC+IMIN-1)))
+                   IF ( ABS(ZC(IREFC+IMIN-1)) .NE. ZEROC ) THEN
+                    ERR=ABS(VALC-ZC(IREFC+IMIN-1))/ABS(ZC(IREFC+IMIN-1))
                    ELSE
-                     ERR = 999.999999D0
+                    ERR = 999.999999D0
                    ENDIF
                    IF ( LOK ) THEN
                      TESTOK = 'NOOK'
@@ -186,11 +211,11 @@ C
                    ELSE
                      TESTOK = ' OK '
                      WRITE(IFIC,3000) TESTOK, K12, CRIT(1:4), ERR, VALC
-                     WRITE(IFIC,3100) LABEL, EPSI, REFC
+                     WRITE(IFIC,3100) LABEL, EPSI, ZC(IREFC+IMIN-1)
                    ENDIF
                  ELSE
-                   LOK = ( ABS(VALC - REFC) .LE. EPSI )
-                   ERR =   ABS(VALC - REFC)
+                   LOK = ( ABS(VALC - ZC(IREFC+IMIN-1)) .LE. EPSI )
+                   ERR =   ABS(VALC - ZC(IREFC+IMIN-1))
                    IF ( LOK ) THEN
                      TESTOK = 'NOOK'
                      TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
@@ -198,7 +223,7 @@ C
                    ELSE
                      TESTOK = ' OK '
                      WRITE(IFIC,3200) TESTOK, K12, CRIT(1:4), ERR, VALC
-                     WRITE(IFIC,3210) LABEL, EPSI, REFC
+                     WRITE(IFIC,3210) LABEL, EPSI, ZC(IREFC+IMIN-1)
                    ENDIF
                  ENDIF
                ELSEIF ( IRET .EQ. 10 ) THEN
@@ -262,8 +287,9 @@ C
                  WRITE(IFIC,1300) TESTOK, TEXTE
                ELSE
                  VALC = DCMPLX(RESURE,RESUIM)
-                 CALL UTITES(ZK16(LPROL+2),LABEL,'C',REFI,REFR,REFC,
-     &                       VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+                 CALL UTITES(ZK16(LPROL+2),LABEL,'C',NREF,
+     +                       IBID,ZR(IREFR),ZC(IREFC),
+     +                       VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
                ENDIF
              ENDIF
            ELSE
@@ -271,11 +297,21 @@ C
              IF ( OUINON .EQ. 'OUI' ) THEN
                K12 = NOMPU(NBPU)
                TESTOK = ' OK '
+               MINVR=ABS(VALR-ZR(IREFR))
+               IMIN=1
+               DO 70 I=1,NREF-1
+                 TMPR=ABS(VALR-ZR(IREFR+I))
+                 IF(TMPR.LT.MINVR)THEN
+                   TMPR=MINVR
+                   IMIN=I+1
+                 ENDIF
+ 70            CONTINUE
                IF ( IRET .EQ. 0 ) THEN
                  IF ( CRIT(1:4) .EQ. 'RELA' ) THEN
-                   LOK = ( ABS(VALR-REFR) .LE. EPSI * ABS(REFR) )
-                   IF ( ABS(REFR) .NE. ZERO ) THEN
-                     ERR = (VALR - REFR) / REFR
+                   LOK=( ABS(VALR-ZR(IREFR+IMIN-1))  .LE. 
+     +                             EPSI*ABS(ZR(IREFR+IMIN-1)))
+                   IF ( ABS(ZR(IREFR+IMIN-1)) .NE. ZERO ) THEN
+                     ERR = (VALR - ZR(IREFR+IMIN-1)) / ZR(IREFR+IMIN-1)
                    ELSE
                      ERR = 999.999999D0
                    ENDIF
@@ -286,11 +322,11 @@ C
                    ELSE
                      TESTOK = ' OK '
                      WRITE(IFIC,2000) TESTOK, K12, CRIT(1:4), ERR, VALR
-                     WRITE(IFIC,2100) LABEL, EPSI, REFR
+                     WRITE(IFIC,2100) LABEL, EPSI, ZR(IREFR+IMIN-1)
                    ENDIF
                  ELSE
-                   LOK = ( ABS(VALR - REFR) .LE. EPSI )
-                   ERR =       VALR - REFR
+                   LOK = ( ABS(VALR - ZR(IREFR+IMIN-1)) .LE. EPSI )
+                   ERR =       VALR - ZR(IREFR+IMIN-1)
                    IF ( LOK ) THEN
                      TESTOK = 'NOOK'
                      TEXTE = 'PAS DE CHANCE LE TEST EST CORRECT !!!'
@@ -298,7 +334,7 @@ C
                    ELSE
                      TESTOK = ' OK '
                      WRITE(IFIC,2200) TESTOK, K12, CRIT(1:4), ERR, VALR
-                     WRITE(IFIC,2210) LABEL, EPSI, REFR
+                     WRITE(IFIC,2210) LABEL, EPSI, ZR(IREFR+IMIN-1)
                    ENDIF
                  ENDIF
                ELSEIF ( IRET .EQ. 10 ) THEN
@@ -359,9 +395,9 @@ C
                  TEXTE = ' PB INTERPOLATION. VOIR MESSAGE CI-DESSUS'
                  WRITE(IFIC,1300) TESTOK, TEXTE
                ELSE
-C
-                 CALL UTITES(NOMPU(NBPU),LABEL,'R',REFI,REFR,REFC,
-     &                       VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+                 CALL UTITES(NOMPU(NBPU),LABEL,'R',NREF,IBID,
+     +                       ZR(IREFR),ZC(IREFC),VALI,VALR,VALC,
+     +                       EPSI,CRIT,IFIC,SSIGNE)
                ENDIF
              ENDIF
            ENDIF
@@ -445,7 +481,7 @@ C
             L1 = MAX(1,LXLGUT(NOMFON))
             L2 = MAX(1,LXLGUT(ZK16(LPROL+2)))
             WRITE(IFIC,*)'---- NAPPE: ',NOMFON(1:L1),
-     &            ', NOM_PARA: ',ZK16(LPROL+2)(1:L2),', PARA: ',PARA
+     +            ', NOM_PARA: ',ZK16(LPROL+2)(1:L2),', PARA: ',PARA
          ELSE
             WRITE(IFIC,*)'---- FONCTION: ',NOMFON,TITRES
          ENDIF
@@ -461,7 +497,13 @@ C
          CALL GETVR8('TABL_INTSP','PRECISION'  ,IOCC,1,1,EPSI  ,N1)
          CALL GETVTX('TABL_INTSP','CRITERE'    ,IOCC,1,1,CRIT  ,N2)
          CALL GETVR8('TABL_INTSP','VALE_PARA'  ,IOCC,1,1,XPARA ,N6)
-         CALL GETVC8('TABL_INTSP','VALE_REFE_C',IOCC,1,1,REFC  ,N7)
+         CALL GETVC8('TABL_INTSP','VALE_REFE_C',IOCC,1,0,C16B,N7)
+         NREF=-N7
+         CALL JEDETR(TRAVC)
+         CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
+         CALL GETVC8('TABL_INTSP','VALE_REFE_C',IOCC,1,NREF,
+     &                ZC(IREFC),N7)
+
          CALL EXTBSP ( 'TABL_INTSP', IOCC, SPECTR )
 C
          CHPROL = SPECTR//'.PROL'
@@ -479,9 +521,8 @@ C
            WRITE(IFIC,1300) TESTOK, TEXTE
          ELSE
             VALC = DCMPLX(RESURE,RESUIM)
-C
-            CALL UTITES(ZK16(LPROL+2),LABEL,'C',REFI,REFR,REFC,
-     &                           VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
+            CALL UTITES(ZK16(LPROL+2),LABEL,'C',NREF,IBID,
+     +         ZR(IREFR),ZC(IREFC),VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
          ENDIF
 C
  30   CONTINUE

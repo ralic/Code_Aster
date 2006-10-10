@@ -1,6 +1,6 @@
       SUBROUTINE JJANAL( CONDLU, NVAL , NVALO , LVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C
       LONG = LEN(CONDLU)
       IF ( LONG .EQ. 0 .AND. NVALO .GT. 0 ) THEN
          CMESS = 'LISTE INCOMPLETE'
-         CALL U2MESK('S','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
       NBSC = 0
       I = 1
@@ -40,7 +40,7 @@ C
       IF ( I .GT. LONG ) THEN
          IF ( NBSC .LT. NVALO ) THEN
             CMESS = 'LISTE INCOMPLETE'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
          ELSE
             GOTO 100
          ENDIF
@@ -66,13 +66,13 @@ C
          GO TO 1
       ELSE IF ( NBSC .LT. NVALO   .AND. J. EQ. LONG+1) THEN
          CMESS = 'LISTE INCOMPLETE'
-         CALL U2MESK('S','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       END IF
  100  CONTINUE
       DO 10 I = J , LONG
          IF ( CONDLU(I:I) .NE. ' ') THEN
             CMESS = 'LISTE TROP LONGUE '
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
          END IF
  10   CONTINUE
 C

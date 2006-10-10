@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,12 +171,11 @@ RESU_V=STAT_NON_LINE(CHAM_MATER=CHMAT_V,
                        MODELE=MOD_MECA,
                        CONVERGENCE=_F(ITER_GLOB_MAXI=30,
                                       RESI_GLOB_MAXI=1.E-06),
-                       COMP_INCR=_F(TOUT='OUI',
+                       COMP_INCR=_F(TOUT='OUI',PARM_THETA=0.57,
                                     ITER_INTE_MAXI=400,
                                     ITER_INTE_PAS=-90,
                                     RELATION='ROUSS_VISC',
                                     DEFORMATION='PETIT_REAC',),
-                       PARM_THETA=0.57,
                        INCREMENT=_F(SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                     LIST_INST=LINST,
                                     SUBD_PAS_MINI=1.E-06,),

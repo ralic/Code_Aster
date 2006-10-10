@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  - CONSOLIDATION DE TERZAGHI  CAS 3D  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,13 +120,12 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                     CHAM_MATER=CHMAT0,
                     EXCIT=_F(CHARGE=CHAR,),
-                    COMP_INCR=_F(RELATION='KIT_HM',
+                    COMP_INCR=_F(RELATION='KIT_HM',PARM_THETA=0.56999999999999995,
                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                     INCREMENT=_F(LIST_INST=LI,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=10,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                    PARM_THETA=0.56999999999999995,
                     SOLVEUR=_F(METHODE='LDLT',),);
 
 RESU1=CALC_ELEM(reuse =RESU1,

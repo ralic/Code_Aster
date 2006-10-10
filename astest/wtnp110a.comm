@@ -1,4 +1,4 @@
-# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  - ECOULEMENT ORTHOTOPE SATURE EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,13 +145,12 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                         _F(CHARGE=CALHAU,),
                         _F(CHARGE=CALBAS,),
                         _F(CHARGE=CALMEC,),),
-                 COMP_INCR=_F(RELATION='KIT_HM',
+                 COMP_INCR=_F(RELATION='KIT_HM',PARM_THETA=0.57,
                               RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                  INCREMENT=_F(LIST_INST=INST1,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
-                 PARM_THETA=0.57,
                  );
 
 U0=CALC_ELEM(reuse =U0,

@@ -21,7 +21,7 @@ C TOLE CRP_20
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -123,7 +123,7 @@ C                           1234567890123
 C    -----------------------------------------------------------
 C     POUR LA COMMANDE CALC_G
 C     SI AUCUN DES DEUX COMPORTEMENTS COMP_ELAS ET COMP_INCR N'EST
-C     SPECIFIE PAR L'UTILISATEUR, ON CREE UNE CARTE PAR DEFAUT
+C     SPECIFIE PAR L'UTILISATEUR, ON CREE UNE CARTE PAR DEFAUT 
 C     AVEC LES CARACTERISTIQUES SUIVANTES :
 C          COMP_ELAS ( RELATION    : ELAS
 C                      DEFORMATION : PETIT
@@ -282,7 +282,6 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
 
         IF (CRILOC) THEN
 C CARTE DES CRITERES DE CONVERGENCES LOCAUX
-          CALL GETVR8(' ','PARM_THETA',0,1,1,THETA ,IRET)
           CALL ALCART('V',CARCRI,NOMA,'CARCRI')
           CALL JEVEUO(CARCRI(1:19)//'.NCMP','E',JCRIT)
           CALL JEVEUO(CARCRI(1:19)//'.VALV','E',JVALC)
@@ -315,6 +314,12 @@ C     ------------------------------------------------------------------
             DO 100 ICOMEL = 1,DIMAKI
               NBVEL(ICOMEL) = 0
   100       CONTINUE
+
+            IF(CRILOC.AND.I.EQ.1)THEN
+               CALL GETVR8(MOCLEF(I),'PARM_THETA',K,1,1,THETA,IRET)
+            ELSE
+               THETA=1.D0
+            ENDIF
 
             CALL GETVTX(MOCLEF(I),'RELATION',K,1,1,COMP,N1)
             IF (COMP(1:4).EQ.'KIT_') THEN
@@ -437,7 +442,7 @@ C   CPLAN DEBORST  ET COMP1D DEBORST
                    ENDIF
                 END IF
             END IF
-
+            
 C RELATION SIMO_MIEHE POUR VMIS_ISOT_XXX ET META_XXX_IL
 C ET META_XXX_INL
 
@@ -540,7 +545,7 @@ C    LECTURE DES PARAMETRES
 
 
                 IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
-     &            CALL U2MESS('A','ALGORITH7_60')
+     &             CALL U2MESS('A','ALGORITH7_60')
 
                 CALL GETVIS(MOCLEF(I),'ITER_INTE_PAS' ,K,1,1,ITEPAS,
      &                       IRET)

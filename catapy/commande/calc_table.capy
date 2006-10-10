@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,19 +20,26 @@
 
 # RESPONSABLE MCOURTOI M.COURTOIS
 
-def calc_table_prod(self, TABLE, **kargs):
+def calc_table_prod(self, TABLE, ACTION, **kargs):
    """Typage du concept produit.
    """
-   typ_table = AsType(TABLE)
-   if issubclass(typ_table, table_sdaster):
-      return typ_table
-   raise AsException("type de concept resultat non prevu")
+   l_typ = [AsType(TABLE),]
+   for mcf in ACTION:
+      dmc = mcf.cree_dict_valeurs(mcf.mc_liste)
+      if dmc.get('TABLE') != None:
+         l_typ.append(AsType(dmc['TABLE']))
+   # une table_fonction étant une table
+   if table_fonction in l_typ:
+      return table_fonction
+   else:
+      return table_sdaster
+
 
 from Macro.calc_table_ops import calc_table_ops
 
 CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
-                     fr="Opérations sur une table",
-                     reentrant='f',
+                 fr="Opérations sur une table",
+                 reentrant='f',
    regles=(DERIVABLE('TABLE'),),
    TABLE  = SIMP(statut='o',typ=table_sdaster),
    ACTION = FACT(statut='o', max='**',

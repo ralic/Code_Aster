@@ -1,4 +1,4 @@
-#@ MODIF defi_inte_spec_ops Macro  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF defi_inte_spec_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,14 +139,15 @@ def defi_inte_spec_ops(self,DIMENSION,PAR_FONCTION,KANAI_TAJIMI,
    mcfact.append(_F(PARA='NOM_CHAM'  ,LISTE_K='DSP' ))
    mcfact.append(_F(PARA='OPTION'    ,LISTE_K='TOUT' ))
    mcfact.append(_F(PARA='DIMENSION' ,LISTE_I=(DIMENSION,) ))
-   tabout=CREA_TABLE(LISTE=mcfact,TITRE='')
+   tabout=CREA_TABLE(LISTE=mcfact, TITRE='',
+                     TYPE_TABLE='TABLE_FONCTION')
    mcfact=[]
    mcfact.append(_F(PARA='NUME_ORDRE_I'  ,LISTE_I=l_is ))
    mcfact.append(_F(PARA='NUME_ORDRE_J'  ,LISTE_I=l_js ))
-   mcfact.append(_F(PARA='FONCTION'      ,LISTE_K=l_fc ,TYPE_K='K24' ))
-   __l_fonc=CREA_TABLE(LISTE=mcfact,TITRE='')
+   mcfact.append(_F(PARA='FONCTION_C'    ,LISTE_K=l_fc ,TYPE_K='K24' ))
+   __l_fonc=CREA_TABLE(LISTE=mcfact, TITRE='')
    tabout=CALC_TABLE(reuse=tabout,TABLE=tabout,
                      TITRE=self.sd.nom+' : interspectre obtenu par DEFI_INTE_SPEC',
-                     ACTION=_F(OPERATION='COMB',TABLE=__l_fonc))
+                     ACTION=_F(OPERATION='COMB',TABLE=__l_fonc,))
 
    return ier

@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 12/09/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -423,10 +423,8 @@ class CALCUL_ASTER:
                 _fic_table = tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+str(int(100+i))
     
                 try:
-                   file=open(_fic_table,'r')
-                   texte=file.readlines()
-                   file.close()
-                   ier,message,titr_tab,list_para,tab_lue=lecture_table(texte,nume=1,separ=' ')
+                   ier, message, tab_lue = lecture_table(texte, 1, ' ')
+                   list_para = tab_lue.para
                 except:
                    ier=1
                    message = "Impossible de recuperer les resultats de calcul esclave!"
@@ -489,10 +487,8 @@ class CALCUL_ASTER:
                           _fic_table = tmp_macr_recal+os.sep+"REPE_TABLE"+os.sep+"fort."+str(int(100+len(reponses)+1+i))
       
                           try:
-                             file=open(_fic_table,'r')
-                             texte=file.readlines()
-                             file.close()
-                             ier,message,titr_tab,list_para,tab_lue=lecture_table(texte,nume=1,separ=' ')
+                             ier, message, tab_lue = lecture_table(texte, 1, ' ')
+                             list_para = tab_lue.para
                           except:
                              ier=1
                              message = "Impossible de recuperer les resultats de calcul esclave!"

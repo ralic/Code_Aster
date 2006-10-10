@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,13 +104,15 @@ C ---    CALCUL TRANSITOIRE CLASSIQUE
       NOMMOT = 'NON'
 CC
       DO 10 I=1,NBEXCI
-        CALL GETVIS('EXCIT','NUME_MODE',I,1,1,INUM,NF)
-        CALL GETVID('EXCIT','VECT_GENE',I,1,1,CHANNO,L1)
-        CALL GETVID('EXCIT','FONC_MULT',I,1,1,FONCT,N1)
-        CALL GETVR8('EXCIT','COEF_MULT',I,1,1,ALPHA,M1)
-        CALL GETVID('EXCIT','ACCE',I,1,1,FACCE,NA)
+
+        CALL GETVIS('EXCIT','NUME_ORDRE',I,1,1,INUM,NF)
+        CALL GETVID('EXCIT','VECT_GENE' ,I,1,1,CHANNO,L1)
+        CALL GETVID('EXCIT','FONC_MULT' ,I,1,1,FONCT,N1)
+        CALL GETVR8('EXCIT','COEF_MULT' ,I,1,1,ALPHA,M1)
+        CALL GETVID('EXCIT','ACCE'      ,I,1,1,FACCE,NA)
         CALL GETVTX('EXCIT','MULT_APPUI',I,1,1,MONMOT(1),N2)
-        CALL GETVTX('EXCIT','CORR_STAT',I,1,1,MONMOT(2),N3)
+        CALL GETVTX('EXCIT','CORR_STAT' ,I,1,1,MONMOT(2),N3)
+
         IF (MONMOT(1).EQ.'OUI'.OR.MONMOT(2).EQ.'OUI') NOMMOT = 'OUI'
         IF (N1.NE.0) THEN
 C         CAS D'UNE FONC_MULT
@@ -123,7 +125,8 @@ C           CAS D'UN VECT_GENE
             IADVEC(I)=JVALE
             IDESCF(I)=1
           ELSE
-C           CAS D'UN NUME_ORDR
+C           CAS D'UN NUME_ORDRE
+            IF(INUM.GT.NEQ) CALL U2MESS('F','ALGORITH5_76')
             INUMOR(I)=INUM
             IDESCF(I)=2
           ENDIF
@@ -136,7 +139,8 @@ C           CAS D'UN VECT_GENE
             IADVEC(I)=JVALE
             IDESCF(I)=3
           ELSE
-C           CAS D'UN NUME_ORDR
+C           CAS D'UN NUME_ORDRE
+            IF(INUM.GT.NEQ) CALL U2MESS('F','ALGORITH5_76')
             INUMOR(I)=INUM
             IDESCF(I)=4
           ENDIF
@@ -153,7 +157,8 @@ C           CAS D'UN VECT_GENE
             IADVEC(I)=JVALE
             IDESCF(I)=1
           ELSE
-C           CAS D'UN NUME_ORDR
+C           CAS D'UN NUME_ORDRE
+            IF(INUM.GT.NEQ) CALL U2MESS('F','ALGORITH5_76')
             INUMOR(I)=INUM
             IDESCF(I)=2
           ENDIF

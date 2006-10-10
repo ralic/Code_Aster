@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,14 +118,14 @@ U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH1,),
                        _F(CHARGE=CH2,),),
-                COMP_INCR=_F(RELATION='LEMAITRE',
+                COMP_INCR=_F(RELATION='LEMAITRE',PARM_THETA=0.5,
                              ITER_INTE_MAXI=1000,),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,
                                ITER_GLOB_MAXI=25,),
-                PARM_THETA=0.5,);
+                );
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,

@@ -6,7 +6,7 @@
       INTEGER REFI,IFIC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,16 +45,17 @@ C     VARIABLES LOCALES:
 C
       CALL TSTOBJ(NOMOBJ,'NON',RESUME,SOMMI,SOMMR,LONUTI,LONMAX,TYSC,
      &            IRET,NI)
+
       IF (IRET.EQ.0) THEN
         IF (TYPE.EQ.'RESUME') THEN
-          CALL UTITES(TYPE,' ','I',REFI,RBID,CBID,RESUME,RBID,CBID,EPSI,
-     +                CRIT,IFIC,SSIGNE)
+          CALL UTITES(TYPE,' ','I',1,REFI,RBID,CBID,RESUME,RBID,CBID,
+     +                EPSI,CRIT,IFIC,SSIGNE)
         ELSE IF (TYPE.EQ.'S_I') THEN
-          CALL UTITES(TYPE,' ','I',REFI,RBID,CBID,SOMMI,RBID,CBID,EPSI,
-     +                CRIT,IFIC,SSIGNE)
+          CALL UTITES(TYPE,' ','I',1,REFI,RBID,CBID,SOMMI,RBID,CBID,
+     +                EPSI,CRIT,IFIC,SSIGNE)
         ELSE IF (TYPE.EQ.'S_R') THEN
-          CALL UTITES(TYPE,' ','R',IBID,REFR,CBID,IBID,SOMMR,CBID,EPSI,
-     +                CRIT,IFIC,SSIGNE)
+          CALL UTITES(TYPE,' ','R',1,IBID,REFR,CBID,IBID,SOMMR,CBID,
+     +                EPSI,CRIT,IFIC,SSIGNE)
         END IF
       ELSE
         CALL JEEXIN(NOMOBJ,IRET2)

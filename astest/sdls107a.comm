@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CYLINDRE SOUMIS A UNE TUBULENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -378,12 +378,12 @@ SSPROJ=PROJ_SPEC_BASE(
 
 
 AUTOSPEC=RECU_FONCTION(    TABLE=SSPROJ,
-                             TYPE_RESU='FONCTION_C',FILTRE=(
+                           FILTRE=(
                             _F(  NOM_PARA = 'NUME_ORDRE_I',
                                      VALE_I = 1),
                                    _F(  NOM_PARA = 'NUME_ORDRE_J',
                                      VALE_I = 1)),
-                             NOM_PARA_TABL='FONCTION',
+                             NOM_PARA_TABL='FONCTION_C',
                                   INTERPOL='LIN',
                                 PROL_DROITE='LINEAIRE',
                                PROL_GAUCHE='LINEAIRE'

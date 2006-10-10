@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,7 +109,6 @@ class listis_sdaster  (ASSD):pass
 class melasflu_sdaster(ASSD):pass
 class nume_ddl_sdaster(ASSD):pass
 class nume_ddl_gene   (ASSD):pass
-class obstacle_sdaster(ASSD):pass
 class sd_feti_sdaster (ASSD):pass
 class spectre_sdaster (ASSD):pass
 class surface_sdaster (ASSD):pass
@@ -153,11 +152,14 @@ class mater_sdaster(ASSD):
       from Utilitai.Utmess import UTMESS
       # vérification des arguments
       if not type(nompar) in EnumTypes:
-         nompar = tuple([nompar,])
+         nompar = [nompar,]
       if not type(valpar) in EnumTypes:
-         valpar = tuple([valpar,])
+         valpar = [valpar,]
       if not type(nomres) in EnumTypes:
-         nomres = tuple([nomres,])
+         nomres = [nomres,]
+      nompar = tuple(nompar)
+      valpar = tuple(valpar)
+      nomres = tuple(nomres)
       if len(nompar) != len(valpar):
          UTMESS('F', 'RCVALE', """Arguments incohérents :
       Nom des paramètres : %s
@@ -206,7 +208,6 @@ class macr_elem_dyna  (ASSD):
     else:
        raise Accas.AsException("Le type de la matrice est incorrect")
     ncham=nommacr+(8-len(nommacr))*' '+ext
-    print ncham
     desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
 
     # On teste si le DESC du vecteur existe
@@ -1050,6 +1051,11 @@ class table_sdaster(ASSD):
       return Table(lisdic, lpar, ltyp, titr)
 
 # -----------------------------------------------------------------------------
+class table_fonction(table_sdaster):
+   """Table contenant en plus une colonne FONCTION et/ou FONCTION_C dont les
+   valeurs des cellules sont des noms de fonction_sdaster ou fonction_c.
+   """
+
 class table_jeveux(table_sdaster):
    """Classe permettant d'accéder à une table jeveux qui n'a pas d'ASSD associée,
    c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""

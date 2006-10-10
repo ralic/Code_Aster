@@ -8,7 +8,7 @@
       CHARACTER*8 MA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LOGICAL OK
 
       LOGICAL LDMAX,LOIN
-      REAL*8  DISTMA
+      REAL*8  DISTMA ,VALR(2)
 C DEB ------------------------------------------------------------------
 C     NTR3=TETR4(1)
       NBTROU = 0
@@ -175,11 +175,9 @@ C       ---------------------------------------------------------------
 
             IF (LOIN) THEN
               CALL JENUNO(JEXNUM(MA2//'.NOMNOE',INO2),NONO2)
-              WRITE (IFM,*) '<PROJCH> LE NOEUD :',NONO2,
-     &          ' EST PROJETE SUR UNE MAILLE DISTANTE.'
-              WRITE (IFM,*) '           DISTANCE              = ',DMIN
-              WRITE (IFM,*) '           DIAMETRE DE LA MAILLE = ',RTR3
-              WRITE (IFM,*)
+              VALR(1)=DMIN
+              VALR(2)=RTR3
+              CALL U2MESG ('A','CALCULEL5_48',1,NONO2,0,0,2,VALR)
             END IF
           END IF
         END IF

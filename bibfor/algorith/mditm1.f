@@ -8,7 +8,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C ---------
 C
 C VARIABLES LOCALES
 C -----------------
-      INTEGER       I, IC, IDRAYO, IDTHET, IM, IMODE, J,JINS1,
+      INTEGER       I, IC, IDRAYO, IDTHET, IM, IMODE, J,
      &              KFEXT, KTEXT, KINTI, KNCHO, N2, NBSEG, NBSEG0,
      &              NITMAX, NP3,NBCHOC
       INTEGER       JTRAN
@@ -96,10 +96,12 @@ C -----------------
      &              ICHO, IORIG, IALP, IBET, IGAM, IOLDF, IH,
      &              IRC, ITHE
       INTEGER       JDEP, JVIT, JACC, JDEP0, JVIT0, JACC0
-      INTEGER       JDT
-      REAL*8        DTTR
-      CHARACTER*8   RESU, NOMOBJ, VECGEN, K8BID
+      INTEGER       JDT, IBID, IRETT, NBVAL
+      REAL*8        DTTR, R8BID
+      COMPLEX*16    CBID
+      CHARACTER*8   RESU, NOMOBJ, VECGEN, K8TYP, KBID
       CHARACTER*16  TYPRES, NOMCMD
+      CHARACTER*24  NOMFON
 C
 C ROUTINES EXTERNES
 C -----------------
@@ -324,7 +326,12 @@ C        CALL U2MESK('F','ALGORITH5_51', 2 ,VALK)
          ELSE
             ZI(JTYPCH+IC-1) = 3
             NOMOBJ = NOECHO(IC,9)
-            CALL JELIRA(NOMOBJ//'           .VALT','LONMAX',NBSEG,K8BID)
+            CALL TBLIVA(NOMOBJ,1,'LIEU',
+     &                 IBID,R8BID,CBID,'DEFIOBST',KBID,R8BID,'FONCTION',
+     &                 K8TYP,IBID,R8BID,CBID,NOMFON,IRETT)
+            CALL ASSERT(IRETT.EQ.0)
+            CALL JELIRA(NOMFON(1:19)//'.VALE','LONMAX',NBVAL,KBID)
+            NBSEG = NBVAL/2
             ZI(JNS+IC-1) = NBSEG
             IF ( NBSEG.GT.NBSEG0 ) NBSEG0 = NBSEG
          ENDIF
@@ -335,9 +342,14 @@ C        CALL U2MESK('F','ALGORITH5_51', 2 ,VALK)
       DO 80 IC = 1, NBNL
          IF ( ZI(JTYPCH+IC-1).EQ.3 ) THEN
             NOMOBJ = NOECHO(IC,9)
-            CALL JEVEUO(NOMOBJ//'           .VALR','L',IDRAYO)
-            CALL JEVEUO(NOMOBJ//'           .VALT','L',IDTHET)
-            CALL JELIRA(NOMOBJ//'           .VALT','LONMAX',NBSEG,K8BID)
+            CALL TBLIVA(NOMOBJ,1,'LIEU',
+     &                 IBID,R8BID,CBID,'DEFIOBST',KBID,R8BID,'FONCTION',
+     &                 K8TYP,IBID,R8BID,CBID,NOMFON,IRETT)
+            CALL ASSERT(IRETT.EQ.0)
+            CALL JEVEUO(NOMFON(1:19)//'.VALE', 'L', IDTHET)
+            CALL JELIRA(NOMFON(1:19)//'.VALE','LONMAX',NBVAL,KBID)
+            NBSEG = NBVAL/2
+            IDRAYO = IDTHET + NBSEG
             DO 81 I = 1, NBSEG
                ZR(IRC+NBSEG0*(IC-1)+I-1) = ZR(IDRAYO + I - 1)
                ZR(ITHE+NBSEG0*(IC-1)+I-1) = ZR(IDTHET + I - 1)

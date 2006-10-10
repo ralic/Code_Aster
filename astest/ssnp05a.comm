@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,10 +160,9 @@ U=STAT_NON_LINE(
                              _F( 
                 CHARGE = CH1), _F( 
                 CHARGE = CH2)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 ITER_INTE_MAXI = 1000),
-                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = L_INST),
                             NEWTON=_F( 
@@ -220,10 +219,9 @@ U2=STAT_NON_LINE(
                 SIGM = CHSIG0,
                 DEPL = CHDEP0,
                 VARI = CHVAR0),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 ITER_INTE_MAXI = 1000),
-                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = L_INST,
                 NUME_INST_INIT = 10,

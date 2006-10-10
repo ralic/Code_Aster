@@ -11,7 +11,7 @@
       CHARACTER*24      XNOVAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -252,10 +252,10 @@ C
  30   CONTINUE
 C
       LC = IR+4+NBCMP
-      IF ( NBPAR .GT. LCK ) CALL U2MESS('F','ALGELINE_6')
-      IF ( II+2  .GT. 10  ) CALL U2MESS('F','MODELISA2_88')
-      IF ( LC    .GT. LCR ) CALL U2MESS('F','MODELISA2_89')
-      IF ( IK+1  .GT. 10  ) CALL U2MESS('F','ALGELINE_7')
+      CALL ASSERT( NBPAR .LE. LCK )
+      CALL ASSERT( II+2 .LE. 10 )
+      CALL ASSERT( IK+1 .LE. 10 )
+      CALL ASSERT( LC .LE. LCR )
 C
       ILIGN = 0
 C

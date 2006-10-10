@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,7 +193,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       if args['IMPR_FONCTION'] and args['IMPR_FONCTION']=='OUI':
          # cherche parmi les cellules celles qui contiennent un nom de fonction
          dfon={}
-         for row in timp:
+         for row in timp['FONCTION', 'FONCTION_C']:
             for par,cell in row.items():
                if type(cell) in StringTypes:
                 if aster.getvectjev(cell.strip().ljust(19)+'.PROL')<>None:
@@ -213,7 +213,6 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
 
    # 99. Traiter le cas des UL réservées
    UL.EtatInit()
-
    return ier
 
 # ------------------------------------------------------------------------------

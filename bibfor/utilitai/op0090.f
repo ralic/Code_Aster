@@ -1,7 +1,7 @@
       SUBROUTINE OP0090(IER)
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,10 +22,10 @@ C ======================================================================
 C RESPONSABLE MCOURTOI M.COURTOIS
 C     OPERATEUR "RECU_FONCTION"
 C     ------------------------------------------------------------------
-      INTEGER NREG,NRB,NCH,NOBS,NG,IER
-      INTEGER NGN,IBID,NTA,NRES,NRGEN,NC
+      INTEGER NREG,NRB,NCH,NG,IER
+      INTEGER NTA,NRES,NC
       CHARACTER*8 K8B
-      CHARACTER*19 NOMFON,CHAM19,RESU,TABRES,TABTYP(8)
+      CHARACTER*19 CHAM19,RESU,TABRES,TABTYP(8)
       DATA TABTYP/'NOEU#DEPL_R','NOEU#TEMP_R','NOEU#PRES_R',
      &            'ELXX#SIEF_R','ELXX#VARI_R','ELXX#EPSI_R',
      &            'ELXX#FLUX_R','ELXX#PRES_R'/
@@ -49,6 +49,7 @@ C     -----------------------------------------------------------------
         CALL RFRESU(IER)
         GO TO 10
       ENDIF
+
 C
 
 C     -----------------------------------------------------------------
@@ -76,15 +77,6 @@ C     -----------------------------------------------------------------
       CALL GETVID(' ','TABLE',0,1,1,TABRES,NTA)
       IF (NTA.NE.0) THEN
         CALL RFTABL(TABRES)
-        GO TO 10
-      END IF
-
-C     -----------------------------------------------------------------
-C                    --- CAS D'UN OBSTACLE ---
-C     -----------------------------------------------------------------
-      CALL GETVID(' ','OBSTACLE',0,1,1,RESU,NOBS)
-      IF (NOBS.NE.0) THEN
-        CALL RFOBST(RESU)
         GO TO 10
       END IF
 

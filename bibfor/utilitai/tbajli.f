@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMTA,        NOMPAR(*),          VK(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -194,9 +194,7 @@ C
                   GOTO 34
                ENDIF
  32         CONTINUE
-            CALL UTDEBM('F','TBAJLI','ERREUR DANS LES DONNEES')
-            CALL UTIMPK('L','PARAMETRE NON TROUVE: ',1,JNPAR)
-            CALL UTFINM( )
+            CALL U2MESK('F','TABLE0_1',1,JNPAR)
  34         CONTINUE
  30      CONTINUE
 C

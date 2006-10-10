@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,21 +41,29 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
-      INTEGER      VALI, REFI, IOCC, IBID, IRET, NBCMP, JCMP,
-     +             N1, N2, N3, N4, IVARI, NUPO, NUSP
-      REAL*8       VALR, REFR, EPSI, PREC
-      COMPLEX*16   VALC, REFC
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='TRCHEL')
+
+      INTEGER      VALI, IOCC, IBID, IRET, NBCMP, JCMP,
+     &             N1, N2, N3, N4, IVARI, NUPO, NUSP, IREFR,
+     &             IREFI,IREFC,NREF
+      REAL*8       VALR, EPSI, PREC, R8B
+      COMPLEX*16   VALC, C16B
       CHARACTER*1  TYPRES
       CHARACTER*3  SSIGNE
       CHARACTER*4  TYPCH, TESTOK
-      CHARACTER*8  CRIT,NODDL,NOGRNO,NOMMA,NOCMP,TYPTES,NOMAIL,NOMGD
+      CHARACTER*8  CRIT,NODDL,NOGRNO,NOMMA,NOCMP,TYPTES,NOMAIL,NOMGD,K8B
       CHARACTER*11 MOTCLE
       CHARACTER*19 CHAM19
       CHARACTER*17 NONOEU, LABEL
+      CHARACTER*24 TRAVR,TRAVI,TRAVC
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
       MOTCLE = 'CHAM_ELEM:'
+      TRAVR  = '&&'//NOMPRO//'_TRAVR          '
+      TRAVI  = '&&'//NOMPRO//'_TRAVI          '
+      TRAVC  = '&&'//NOMPRO//'_TRAVC          '
 
       DO 100 IOCC = 1,NOCC
         TESTOK = 'NOOK'
@@ -70,25 +78,42 @@ C     ------------------------------------------------------------------
         CALL GETVR8 ( 'CHAM_ELEM', 'PRECISION',IOCC,1,1, EPSI,  N1 )
         CALL GETVTX ( 'CHAM_ELEM', 'CRITERE',  IOCC,1,1, CRIT,  N1 )
 
-        CALL GETVR8 ( 'CHAM_ELEM', 'VALE',   IOCC,1,1, REFR, N1 )
-        CALL GETVIS ( 'CHAM_ELEM', 'VALE_I', IOCC,1,1, REFI, N2 )
-        CALL GETVC8 ( 'CHAM_ELEM', 'VALE_C', IOCC,1,1, REFC, N3 )
-        TYPRES = 'R'
-        IF (N2.NE.0) TYPRES = 'I'
-        IF (N3.NE.0) TYPRES = 'C'
+        CALL GETVR8('CHAM_ELEM','VALE'    , IOCC,1,0,R8B   ,N1)
+        CALL GETVIS('CHAM_ELEM','VALE_I'  , IOCC,1,0,IBID  ,N2)
+        CALL GETVC8('CHAM_ELEM','VALE_C'  , IOCC,1,0,C16B  ,N3)
+        IF( N1 .NE. 0) THEN
+          NREF=-N1
+          TYPRES = 'R'
+          CALL JEDETR(TRAVR)
+          CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
+          CALL GETVR8('CHAM_ELEM','VALE', IOCC,1,NREF,ZR(IREFR),IRET)
+        ELSEIF( N2 .NE. 0) THEN
+          NREF=-N2
+          TYPRES = 'I'
+          CALL JEDETR(TRAVI)
+          CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
+          CALL GETVIS('CHAM_ELEM','VALE_I', IOCC,1,NREF,ZI(IREFI),IRET)
+        ELSEIF( N3 .NE. 0) THEN
+          NREF=-N3
+          TYPRES = 'C'
+          CALL JEDETR(TRAVC)
+          CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
+          CALL GETVC8('CHAM_ELEM','VALE_C', IOCC,1,NREF,ZC(IREFC),IRET)
+        ENDIF
+
 
         CALL GETVTX('CHAM_ELEM','TYPE_TEST',IOCC,1,1,TYPTES,N1)
         IF (N1.NE.0) THEN
           CALL GETVTX('CHAM_ELEM','NOM_CMP',IOCC,1,0,NODDL,N4)
           IF (N4.EQ.0) THEN
-            CALL UTEST1(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,CRIT,
-     &                  IFIC,SSIGNE)
+            CALL UTEST1(CHAM19,TYPTES,TYPRES,NREF,ZI(IREFI),ZR(IREFR),
+     &                  ZC(IREFC),EPSI,CRIT,IFIC,SSIGNE)
           ELSE
             NBCMP = -N4
             CALL WKVECT('&&OP0023.NOM_CMP','V V K8',NBCMP,JCMP)
             CALL GETVTX('CHAM_ELEM','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
-            CALL UTEST4(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,CRIT,
-     &                  IFIC,NBCMP,ZK8(JCMP),SSIGNE)
+            CALL UTEST4(CHAM19,TYPTES,TYPRES,NREF,ZI(IREFI),ZR(IREFR),
+     &                  ZC(IREFC),EPSI,CRIT,IFIC,NBCMP,ZK8(JCMP),SSIGNE)
             CALL JEDETR('&&OP0023.NOM_CMP')
           END IF
 
@@ -120,10 +145,15 @@ C             RIEN A FAIRE.
           IF (N2.EQ.0) NUSP = 0
           CALL GETVIS('CHAM_ELEM','POINT',IOCC,1,1,NUPO,N2)
 
-          CALL UTEST2(CHAM19,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NODDL,
-     &                REFI,REFR,REFC,TYPRES,EPSI,CRIT,IFIC,SSIGNE)
+          CALL UTEST2(CHAM19,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NODDL,NREF,
+     &                ZI(IREFI),ZR(IREFR),ZC(IREFC),TYPRES,EPSI,CRIT,
+     &                IFIC,SSIGNE)
         END IF
  100  CONTINUE
+
+      CALL JEDETR(TRAVR)
+      CALL JEDETR(TRAVC)
+      CALL JEDETR(TRAVI)
 
       CALL JEDEMA()
       END

@@ -1,6 +1,6 @@
       SUBROUTINE JXFERM ( ICLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C DEB ------------------------------------------------------------------
         CALL CODENT(K,'G',NOM(6:7))
         CALL CLOSDR ( NOM , IER )
         IF ( IER .NE. 0 ) THEN
-          CALL U2MESK('S','JEVEUX_11',1,NOMBAS(ICLAS))
+          CALL U2MESK('F','JEVEUX_11',1,NOMBAS(ICLAS))
         ENDIF
  1    CONTINUE
 C

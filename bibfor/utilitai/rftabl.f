@@ -3,7 +3,7 @@
       CHARACTER*(*)       TABRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  NOMCMD, TYPCON, PARAX, PARAY
       CHARACTER*19  NOMFON, NEWTAB, NEWTA1
       CHARACTER*24  NOPARA, NOMF
+      CHARACTER*24  VALK(2)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -85,7 +86,11 @@ C
 C
           CALL TBLIVA ( NEWTAB,0,K8B,IBID,R8B,C16B,K8B,K8B,R8B,
      &                  NOPARA,K8B,IBID,R8B,C16B,NOMF,IRET)
-          IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_91')
+          IF (IRET.NE.0) THEN
+            VALK(1) = NOPARA
+            VALK(2)(1:19) = NEWTAB
+            CALL U2MESK('F','MODELISA2_91', 2, VALK)
+          ENDIF
           CALL COPISD ( 'FONCTION', 'G', NOMF, NOMFON )
 C
       ELSE

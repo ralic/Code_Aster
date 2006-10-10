@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF modelisa2 Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -366,32 +366,33 @@ cata_msg={
  le descripteur_grandeur de la grandeur de nom  %(k1)s  ne tient pas sur dix entiers codes
 """),
 
-88: _("""
- y a un bug 1
-"""),
-
 89: _("""
- y a un bug 2
+ Le contenu de la table n'est pas celui attendu !
 """),
 
 90: _("""
- le calcul des parametres du mode no %(k1)s  par l'operateur <calc_flui_stru> n'a pas converge pour la vitesse no %(k2)s . on ne calcule donc pas d'interspectres de reponse modale pour cette vitesse.
+ Le calcul par l'opérateur <CALC_FLUI_STRU> des paramètres du mode no %(i1)d
+ n'a pas convergé pour la vitesse no %(i2)d. On ne calcule donc pas
+ d'interspectres de réponse modale pour cette vitesse.
 """),
 
 91: _("""
- y a un bug
+La fonction n'a pas été trouvée dans la colonne %(k1)s de la table %(k2)s
+(ou bien le paramètre %(k1)s n'existe pas dans la table).
 """),
 
 92: _("""
-  les mots-cles admissibles pour definir la premiere liste de noeuds sous le mot-facteur  %(k1)s  sont : "group_no_1" ou "noeud_1" ou "group_ma_1" ou "maille_1".
+Les mots-cles admissibles pour definir la premiere liste de noeuds sous le mot-facteur  %(k1)s sont :
+"GROUP_NO_1" ou "NOEUD_1" ou "GROUP_MA_1" ou "MAILLE_1".
 """),
 
 93: _("""
-  les mots-cles admissibles pour definir la seconde liste de noeuds sous le mot-facteur  %(k1)s  sont : "group_no_2" ou "noeud_2" ou "group_ma_2" ou "maille_2".
+Les mots-cles admissibles pour definir la seconde liste de noeuds sous le mot-facteur  %(k1)s  sont :
+"GROUP_NO_2" ou "NOEUD_2" ou "GROUP_MA_2" ou "MAILLE_2".
 """),
 
 94: _("""
-  liaison_group : on ne sait pas calculer la normale a un noeud il faut passer par les mailles
+  LIAISON_GROUP : on ne sait pas calculer la normale a un noeud il faut passer par les mailles
 """),
 
 95: _("""
@@ -403,7 +404,7 @@ cata_msg={
 """),
 
 97: _("""
- cas non prevu
+ Cas non prévu. Contactez l'assistance technique.
 """),
 
 98: _("""

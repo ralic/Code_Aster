@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF astermodule supervis  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -534,6 +534,7 @@ void STDCALL(XFINI,xfini)(_IN INTEGER *code)
 /* commande (la commande courante) est definie par les fonctions aster_debut et aster_oper */
 static PyObject *commande       = (PyObject*)0 ;
 static PyObject *pile_commandes = (PyObject*)0 ;
+static PyObject *static_module  = (PyObject*)0 ;
 
 /* NomCas est initialise dans aster_debut() */
 /* NomCas est initialise a blanc pour permettre la recuperation de la
@@ -1579,9 +1580,9 @@ void DEFSSSPSPPPP(UTPRIN,utprin,_IN char *typmess,_IN int ltype,_IN char *unite,
            PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
         }
 
-        res=PyObject_CallMethod(commande,"utprin","s#s#s#OOO",typmess,ltype,unite,lunite,idmess,lidmess,tup_valk,tup_vali,tup_valr);
+        res=PyObject_CallMethod(static_module,"utprin","s#s#s#OOO",typmess,ltype,unite,lunite,idmess,lidmess,tup_valk,tup_vali,tup_valr);
         if (!res) {
-           MYABORT("erreur utprin");
+           MYABORT("erreur lors de l'appel à UTPRIN");
         }
 
         Py_DECREF(tup_valk);
@@ -3944,25 +3945,31 @@ PyObject *args;
 #define CALL_IBMAIN(a,b,c)  F_FUNC(IBMAIN,ibmain)(a,b,c)
 extern void STDCALL(IBMAIN,ibmain)(INTEGER* , INTEGER* , INTEGER* );
 
-static PyObject *
-aster_init(self, args)
+static PyObject *aster_init(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        INTEGER lot=1 ; /* FORTRAN_TRUE */
-        INTEGER ier=0 ;
-        INTEGER dbg=0 ; /* FORTRAN_FALSE */
-
-        _DEBUT(aster_init)
-        if (!PyArg_ParseTuple(args, "l",&dbg)) return NULL;
-
-        fflush(stderr) ;
-        fflush(stdout) ;
-
-        CALL_IBMAIN (&lot,&ier,&dbg);
-
-        _FIN(aster_init)
-        return PyInt_FromLong(ier);
+   PyObject *res;
+   INTEGER lot=1 ; /* FORTRAN_TRUE */
+   INTEGER ier=0 ;
+   INTEGER dbg=0 ; /* FORTRAN_FALSE */
+   
+   _DEBUT(aster_init)
+   if (!PyArg_ParseTuple(args, "l",&dbg)) return NULL;
+   
+   /* initialisation de la variable `static_module` */
+   static_module = PyImport_ImportModule("Execution/E_Global");
+   if (! static_module) {
+      MYABORT("Impossible d'importer le module E_Global !");
+   }
+   
+   fflush(stderr) ;
+   fflush(stdout) ;
+   
+   CALL_IBMAIN (&lot,&ier,&dbg);
+   
+   _FIN(aster_init)
+return PyInt_FromLong(ier);
 }
 
 

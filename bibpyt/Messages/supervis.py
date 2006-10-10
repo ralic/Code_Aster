@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF supervis Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,43 +35,43 @@ cata_msg={
 """),
 
 4: _("""
- commande n  %(k1)s  :  " %(k2)s "  :   %(k3)s  erreur(s) detectee(s)
+ Commande n  %(k1)s  :  "%(k2)s"  :   %(k3)s  erreur(s) detectee(s)
 """),
 
 5: _("""
- erreur(s) a l'execution de " %(k1)s " : arret immediat du programme.
+ Erreur(s) à l'exécution de "%(k1)s" : arret immediat du programme.
 """),
 
 6: _("""
- fin a la suite de message(s) <e>
+ Fin à la suite de message(s) <E>
 """),
 
 7: _("""
- le concept " %(k1)s " est inconnu. il n'est ni parmi les crees, ni parmi ceux a creer.
+ Le concept " %(k1)s " est inconnu. Il n'est ni parmi les créés, ni parmi ceux à créer.
 """),
 
 8: _("""
-  un nom de concept intermediaire    doit commencer par '.' ou '_' et non :  %(k1)s
+ Un nom de concept intermediaire doit commencer par '.' ou '_' et non :  %(k1)s
 """),
 
 9: _("""
-  longueur nulle
+ Longueur nulle
 """),
 
 10: _("""
-   - le concept  " %(k1)s " est detruit des bases de donnees.
+   - le concept  "%(k1)s" est detruit des bases de donnees.
 """),
 
 11: _("""
- impossible d'allouer la memoire jeveux demandee
+ Impossible d'allouer la mémoire jeveux demandée
 """),
 
 12: _("""
- execution de jeveux en mode debug
+ Exécution de jeveux en mode debug
 """),
 
 13: _("""
-  %(k1)s  nom de base deja definie
+  %(k1)s  nom de base déjà définie
 """),
 
 14: _("""
@@ -79,7 +79,7 @@ cata_msg={
 """),
 
 15: _("""
- probleme d'allocation des bases de donnees
+ Problème d'allocation des bases de données
 """),
 
 16: _("""
@@ -87,11 +87,11 @@ cata_msg={
 """),
 
 17: _("""
-  Relecture des catalogues dans ELEMBASE faite.
+ Relecture des catalogues dans ELEMBASE faite.
 """),
 
 18: _("""
- Trop de catalogues (maximum = 10)
+  Trop de catalogues (maximum = 10)
 """),
 
 19: _("""
@@ -99,82 +99,90 @@ cata_msg={
 """),
 
 20: _("""
- " %(k1)s " argument invalide du mot cle "fichier" du mot cle facteur "catalogue"
+  "%(k1)s" argument invalide du mot clé "FICHIER" du mot clé facteur "CATALOGUE"
 """),
 
 21: _("""
- erreur(s) fatale(s) lors de la lecture des catalogues
+  Erreur(s) fatale(s) lors de la lecture des catalogues
 """),
 
 22: _("""
- l'argument du mot cle "nom" sous le mot cle facteur "code" est tronque a 8 caracteres. le nom de code est donc " %(k1)s ".
+L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 caractères. Le nom de code est donc "%(k1)s".
 """),
 
 23: _("""
- debug jxveri demande
+ Debug JXVERI demandé
 """),
 
 24: _("""
- debug sdveri demande
+ Debug SDVERI demandé
 """),
 
 25: _("""
- memoire gestion : "compacte"
+ Mémoire gestion : "COMPACTE"
 """),
 
 26: _("""
- type allocation memoire 2
+ Type allocation memoire 2
 """),
 
 27: _("""
- type allocation memoire 3
+ Type allocation memoire 3
 """),
 
 28: _("""
- type allocation memoire 4
+ Type allocation memoire 4
 """),
 
 29: _("""
- trop de noms definis dans la liste argument de "fichier"
+ Trop de noms definis dans la liste argument de "FICHIER"
 """),
 
 30: _("""
-  %(k1)s  est deja (re-) defini
+  %(k1)s est déjà (re-) défini
 """),
 
 31: _("""
- valeur invalide pour le mot clereserve_cpu
+ Valeur invalide pour le mot clé RESERVE_CPU
 """),
 
 32: _("""
- la procedure " %(k1)s " ne peut etre appelee en cours d'execution des commandes
+ La procédure "%(k1)s" ne peut etre appelée en cours d'exécution des commandes
 """),
 
 33: _("""
- erreur fatale  **** appel a commande "superviseur".
+ Erreur fatale  **** appel a commande "superviseur".
 """),
 
 34: _("""
- arret de la lecture des commandes.
+ Arret de la lecture des commandes.
 """),
 
 35: _("""
- la procedure "retour" ne peut etre utilisee dans le fichier principal de commandes.
+ La procédure "RETOUR" ne peut etre utilisée dans le fichier principal de commandes.
 """),
 
 36: _("""
- le concept de nom '  %(k1)s  ' n'existe pas
+ Le concept de nom '%(k1)s' n'existe pas
 """),
 
 37: _("""
- le nom de materiau ( %(k1)s ) doit etre au plus de 6 caracteres.
+ Le nom de matériau '%(k1)s' doit etre au plus de 6 caractères.
 """),
 
 38: _("""
- il n'y a plus de temps pour continuer
+ Il n'y a plus de temps pour continuer
 """),
 
 39: _("""
- arret de l'execution et fermeture des bases jeveux
+ Arret de l'exécution et fermeture des bases jeveux
 """),
+
+40: _("""
+ Vous utilisez une version dont les routines suivantes ont été surchargées :
+   %(ktout)s
+"""),
+
+41 : _("Plus de 5 fois le meme message d'alarme."),
+
 }

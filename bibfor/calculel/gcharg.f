@@ -8,7 +8,7 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 10/10/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,8 @@ C
       IF(LCHSD) THEN
         CALL RSADPA(RESU,'L',1,'EXCIT',IORD,0,JPARA,K8B)
         EXCISD = ZK24(JPARA)
+        CALL JEEXIN(EXCISD(1:19)//'.FCHA',IRET)
+        IF (IRET .EQ. 0) GO TO 99
         CALL JEVEUO(EXCISD(1:19)//'.FCHA','L',JFCHA)
       ENDIF
 C
@@ -424,6 +426,8 @@ C
 C
 C  -  SI ABSENCE D'UN CHAMP DE FORCES, CREATION D'UN CHAMP NUL
 C
+ 99   CONTINUE
+      
       IF ( NVOLU .EQ. 0 ) THEN
          CALL MEFOR0 ( MODELE, CHVOLU, FONC )
       ENDIF

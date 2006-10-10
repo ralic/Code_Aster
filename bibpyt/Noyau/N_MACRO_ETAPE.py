@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,7 @@ from N_Exception import AsException
 import N_utils
 from N_utils import AsType
 from N_CO import CO
+from N_ASSD import ASSD
 
 class MACRO_ETAPE(N_ETAPE.ETAPE):
    """
@@ -209,6 +210,14 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
           self.typret=sd_prod
           # Si la commande est obligatoirement reentrante et reuse n'a pas ete specifie, c'est une erreur. 
           # On ne fait rien ici. L'erreur sera traitee par la suite. 
+      # précaution
+      if self.sd is not None and not isinstance(self.sd, ASSD):
+         raise AsException("""
+Impossible de typer le résultat !
+Causes possibles :
+   Utilisateur : Soit la valeur fournie derrière "reuse" est incorrecte,
+                 soit il y a une "," à la fin d'une commande précédente.
+   Développeur : La fonction "sd_prod" retourne un type invalide.""")
       return self.sd
 
    def get_type_produit(self,force=0):

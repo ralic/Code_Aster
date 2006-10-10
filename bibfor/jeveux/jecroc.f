@@ -1,6 +1,6 @@
       SUBROUTINE JECROC ( NOMLU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C DEB ------------------------------------------------------------------
       L =  LEN(NOMLU)
       IF ( L .NE. 32 ) THEN
          CMESS = 'APPEL DE JECROC PAR JEXNOM/JEXNUM OBLIGATOIRE '
-         CALL U2MESK('S','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
 C
       ICRE = 3
@@ -41,13 +41,13 @@ C
 C
       IF ( IRET .EQ. 0 ) THEN
          CMESS = 'NOM DE COLLECTION OU DE REPERTOIRE INEXISTANT'
-         CALL U2MESK('S','JEVEUX_01',1,CMESS)
+         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ELSE
         IF ( IRET .EQ. 1 ) THEN
 C         ----- OBJET DE TYPE REPERTOIRE
           IF ( NOMLU(25:32) .EQ. NUME  ) THEN
             CMESS = 'ACCES PAR JEXNUM INTERDIT'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           CALL JXVEUO ( 'E' , ITAB , 1 , JCTAB )
           CALL JJCROC ( '        ' , ICRE )
@@ -57,7 +57,7 @@ C         ----- REPERTOIRE DE COLLECTION --
           CALL JJCROC ( NOMLU(25:32) , ICRE )
         ELSE
           CMESS = 'ERREUR DE PROGRAMMATION'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
       ENDIF
 C FIN ------------------------------------------------------------------

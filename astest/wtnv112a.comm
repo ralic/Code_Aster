@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE TEST HHM 2D, CALCUL DECOUPLE (S=0.5, DSDP=0)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,11 +177,10 @@ RESU0=STAT_NON_LINE(
                         CHAM_MATER=CHMAT0,
                              EXCIT=_F( 
                 CHARGE = CHARHO),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F( PARM_THETA=1.,
                 RELATION = 'KIT_HHM',
                 RELATION_KIT = ('ELAS','LIQU_GAZ','HYDR_UTIL'),
                 ITER_INTE_MAXI = 5),
-                         PARM_THETA=1.,
                          INCREMENT=_F( 
                 LIST_INST = LI),
                             NEWTON=_F( 

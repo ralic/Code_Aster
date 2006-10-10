@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE TUBE REMPLI DE FLUIDE SOUS EXCITATIONS FLUIDES ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,12 +162,12 @@ INTPRESS=REST_SPEC_PHYS(         MODE_MECA=MODES,
                                         OPTION='TOUT_TOUT'  )
 
 FP1=RECU_FONCTION(    TABLE=INTPRESS,
-                             TYPE_RESU='FONCTION_C',FILTRE=(
+                      FILTRE=(
                             _F(  NOM_PARA = 'NOEUD_I',
                                      VALE_K = 'NBAM10'),
                                    _F(  NOM_PARA = 'NOEUD_J',
                                      VALE_K = 'NBAM10')),
-                             NOM_PARA_TABL='FONCTION',
+                             NOM_PARA_TABL='FONCTION_C',
                                   INTERPOL='LIN',
                                 PROL_DROITE='LINEAIRE',
                                PROL_GAUCHE='LINEAIRE'

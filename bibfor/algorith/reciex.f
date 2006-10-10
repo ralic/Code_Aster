@@ -1,7 +1,7 @@
       SUBROUTINE RECIEX ( INTEXC, IDEREX, NINDEX, NNOEEX, NCMPEX,
      &                    NVASEX, GRAEXC, EXCMOD, NAPEXC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,7 +101,7 @@ C
       CALL GETVIS('EXCIT','NUME_VITE_FLUI',1,1,1,IVITE,IBID)
 C
 C     VERIFICATIONS DES PARAMETRES DE LA TABLE 'INTEXC'
-      CALL TBEXP2(INTEXC,'FONCTION')
+      CALL TBEXP2(INTEXC,'FONCTION_C')
       IF(LINDI)THEN
         CALL TBEXP2(INTEXC,'NUME_ORDRE_I')
         CALL TBEXP2(INTEXC,'NUME_ORDRE_J')
@@ -141,14 +141,14 @@ C
             IF ( LINDI ) THEN
                IVAL(JJ) = ZI(ILINDJ+I2-1)
                CALL TBLIVA ( INTEXC, NBI, NOPART(IP), IVAL, R8B, C16B,
-     &                       K8B, K8B, R8B, 'FONCTION',
+     &                       K8B, K8B, R8B, 'FONCTION_C',
      &                       K8B, IBID, R8B, C16B, NOMFON, IRET )
                IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
             ELSE
                KVAL(3) = ZK8(ILINDJ+I2-1)
                KVAL(4) = ZK8(ILCMPJ+I2-1)
                CALL TBLIVA ( INTEXC, NBI, NOPARN(IP), IVAL, R8B, C16B,
-     &                       KVAL, K8B, R8B, 'FONCTION',
+     &                       KVAL, K8B, R8B, 'FONCTION_C',
      &                       K8B, IBID, R8B, C16B, NOMFON, IRET )
                IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
             ENDIF

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
       CHARACTER*24  CHVALE, CHPROL, NOMOBJ
 C
       DATA NOPAR / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
-     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' ,'FONCTION' /
+     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' ,'FONCTION_C' /
       DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'I' , 'K24' /
 C     ------------------------------------------------------------------
 C
@@ -201,7 +201,7 @@ C
       ENDIF
       IF ( NIV .GE. 2 ) THEN
          NOMOBJ = '&&OP0117.FONCTION'
-         CALL TBEXVE ( NOMU, 'FONCTION', NOMOBJ, 'V', NBF1, K8B )
+         CALL TBEXVE ( NOMU, 'FONCTION_C', NOMOBJ, 'V', NBF1, K8B )
          IF (NFCOD.NE.NBF1) CALL U2MESS('F','MODELISA2_88')
          CALL JEVEUO ( NOMOBJ, 'L', LTABL )
          CALL INTIMP ( IFM, ZR(LRMS), ZK24(LTABL), NMATR, NFCOD )

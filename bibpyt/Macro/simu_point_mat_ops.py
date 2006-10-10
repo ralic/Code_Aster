@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 03/10/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+#@ MODIF simu_point_mat_ops Macro  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
-               PARM_THETA, SUIVI_DDL,SIGM_IMPOSE,EPSI_IMPOSE, INFO, **args) :
+               SUIVI_DDL,SIGM_IMPOSE,EPSI_IMPOSE, INFO, **args) :
 
   """Simulation de la reponse d'un point materiel"""
 
@@ -257,7 +257,6 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
   if   SUIVI_DDL   : 
      motscles['SUIVI_DDL']   = SUIVI_DDL.List_F()
      
-  if   PARM_THETA  : motscles['PARM_THETA']  =PARM_THETA
 
   __EVOL = STAT_NON_LINE(
     MODELE = __MO, 

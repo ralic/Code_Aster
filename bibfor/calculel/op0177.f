@@ -1,7 +1,7 @@
       SUBROUTINE OP0177 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,14 @@ C
 C
 C 0.2. ==> COMMUNS
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
@@ -43,14 +51,14 @@ C
       PARAMETER (NOMPRO='OP0177')
 C
       INTEGER IBID, N1, N2, N3, IRET, IUNIFI, IFIC, NPARFI
-      INTEGER VALI, REFI
+      INTEGER VALI,IREFR,IREFI,IREFC,NREF
       INTEGER NRPASS,NBPASS,ADRECG
       INTEGER IAUX, JAUX
       LOGICAL       ULEXIS
 C
-      REAL*8       R8B, VALR, REFR, PREC
+      REAL*8       R8B, VALR, PREC
 C
-      COMPLEX*16   CBID, VALC, REFC
+      COMPLEX*16   CBID, VALC, C16B
 C
       CHARACTER*1  TYPR
       CHARACTER*3  SSIGNE
@@ -61,7 +69,7 @@ C
       CHARACTER*16 NOMFI
       CHARACTER*19 NEWTAB, NEWTA1
       CHARACTER*24 PARA
-      CHARACTER*24 NORECG
+      CHARACTER*24 NORECG,TRAVR,TRAVI,TRAVC
       CHARACTER*38 TITRES
       CHARACTER*80 VALK
 C     ------------------------------------------------------------------
@@ -77,6 +85,9 @@ C
 C
       TESTOK = 'NOOK'
       LABEL  = ' '
+      TRAVR  = '&&'//NOMPRO//'_TRAVR          '
+      TRAVI  = '&&'//NOMPRO//'_TRAVI          '
+      TRAVC  = '&&'//NOMPRO//'_TRAVC          '
       NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
 C
       NOMFI = ' ' 
@@ -95,13 +106,30 @@ C
       CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , N1 )
       CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , N1 )
 C
-      CALL GETVR8 ( ' ', 'VALE'  , 1,1,1, REFR, N1 )
-      CALL GETVIS ( ' ', 'VALE_I', 1,1,1, REFI, N2 )
-      CALL GETVC8 ( ' ', 'VALE_C', 1,1,1, REFC, N3 )
-      TYPR = 'R'
-      IF ( N2 .NE. 0 ) TYPR = 'I'
-      IF ( N3 .NE. 0 ) TYPR = 'C'
-C
+      CALL GETVR8(' ','VALE'    , 1,1,0,R8B   ,N1)
+      CALL GETVIS(' ','VALE_I'  , 1,1,0,IBID  ,N2)
+      CALL GETVC8(' ','VALE_C'  , 1,1,0,C16B  ,N3)
+      IF( N1 .NE. 0) THEN
+        NREF=-N1
+        TYPR = 'R'
+        CALL JEDETR(TRAVR)
+        CALL WKVECT(TRAVR,'V V R',NREF,IREFR)
+        CALL GETVR8(' ','VALE', 1,1,NREF,ZR(IREFR),IRET)
+      ELSEIF( N2 .NE. 0) THEN
+        NREF=-N2
+        TYPR = 'I'
+        CALL JEDETR(TRAVI)
+        CALL WKVECT(TRAVI,'V V I',NREF,IREFI)
+        CALL GETVIS(' ','VALE_I', 1,1,NREF,ZI(IREFI),IRET)
+      ELSEIF( N3 .NE. 0) THEN
+        NREF=-N3
+        TYPR = 'C'
+        CALL JEDETR(TRAVC)
+        CALL WKVECT(TRAVC,'V V C',NREF,IREFC)
+        CALL GETVC8(' ','VALE_C', 1,1,NREF,ZC(IREFC),IRET)
+      ENDIF
+
+
       CALL GETVTX ( ' ', 'NOM_PARA', 1,1,1, PARA, N1 )
 C
       CALL GETVTX ( ' ', 'TYPE_TEST', 1,1,1, TYPTES, N1 )
@@ -148,8 +176,8 @@ C
       CALL UTEST3 ( IFIC, ' ', 1 )
 C
       IF ( N1. NE. 0 ) THEN
-         CALL UTEST0 ( NEWTAB, PARA, TYPTES, TYPR, REFI, REFR, REFC, 
-     +                                       PREC, CRIT, IFIC, SSIGNE )
+         CALL UTEST0 ( NEWTAB, PARA, TYPTES, TYPR, ZI(IREFI), ZR(IREFR),
+     +                     ZC(IREFC), PREC, CRIT, IFIC, SSIGNE )
          GOTO 9999 
       ENDIF
 C
@@ -173,8 +201,8 @@ C
          WRITE (IFIC,*) TESTOK,' LES TYPES NE CORRESPONDENT PAS '
          GOTO 9999
       ENDIF
-      CALL UTITES ( LABEL, PARA, TYPR, REFI, REFR, REFC,
-     +                     VALI, VALR, VALC, PREC, CRIT, IFIC, SSIGNE )
+      CALL UTITES ( LABEL, PARA, TYPR, NREF, ZI(IREFI), ZR(IREFR),
+     +        ZC(IREFC), VALI, VALR, VALC, PREC, CRIT, IFIC, SSIGNE )
 C
  9999 CONTINUE
       IF ( NPARFI .NE. 0 )  CALL DETRSD ( 'TABLE' , NEWTA1 )

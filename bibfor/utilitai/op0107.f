@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C                   -----------
                IF ( IRET .NE. 0 ) GOTO 9999
                CALL JEVEUO ( KNUM, 'L', JORDR )
                CALL RSEXCH ( RESUCO, 'DEPL', ZI(JORDR), CHDEF, IRET )
-               IF ( IRET .GT. 0 ) CALL U2MESS('F','MODELISA2_91')
+               IF ( IRET .GT. 0 ) CALL U2MESS('F','CHAMPS_2')
             ENDIF
          ENDIF
 

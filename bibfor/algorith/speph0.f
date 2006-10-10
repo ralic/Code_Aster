@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,11 +53,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 K8B,MODMEC,MODSTA,NOEUD,NOMA,CMP,TYPAR(NBPAR)
       CHARACTER*16 MOVREP,OPTCAL,OPTCHA,NOPAR(NBPAR),NOPAOU(2),KVAL(2),
      &             TYPCHA,ACCES,TYPMEC,NOCHAM,OPTCH1,MAILLE
-      CHARACTER*24 CHAM19,NOMFON
+      CHARACTER*24 CHAM19,NOMFON, VALK(2)
 
       DATA NOPAOU/'NUME_ORDRE_I','NUME_ORDRE_J'/
       DATA NOPAR/'NOM_CHAM','OPTION','DIMENSION','NOEUD_I','NOM_CMP_I',
-     &     'NOEUD_J','NOM_CMP_J','FONCTION'/
+     &     'NOEUD_J','NOM_CMP_J','FONCTION_C'/
       DATA TYPAR/'K16','K16','I','K8','K8','K8','K8','K24'/
 
 C-----------------------------------------------------------------------
@@ -327,9 +327,13 @@ C     --- CREATION DE LA TABLE DE SORTIE ---
 
       IVAL(1) = 1
       IVAL(2) = 1
-      CALL TBLIVA(TABLE,2,NOPAOU,IVAL,R8B,C16B,K8B,K8B,R8B,'FONCTION',
+      CALL TBLIVA(TABLE,2,NOPAOU,IVAL,R8B,C16B,K8B,K8B,R8B,'FONCTION_C',
      &            K8B,IBID,R8B,C16B,NOMFON,IRET)
-      IF (IRET.NE.0) CALL U2MESS('F','ALGELINE_7')
+      IF (IRET.NE.0) THEN
+         VALK(1) = 'FONCTION_C'
+         VALK(2) = TABLE
+         CALL U2MESK('F','MODELISA2_91', 2, VALK)
+      ENDIF
       CALL JELIRA(NOMFON(1:19)//'.VALE','LONUTI',NBPF,K8B)
       NBPF = NBPF/3
 

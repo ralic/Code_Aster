@@ -1,6 +1,6 @@
       SUBROUTINE JELIRA ( NOMLU , CATR , IVAL , CVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C
       IC = ICLAS
       IF ( IRET .EQ. 0 ) THEN
         CMESS = 'OBJET INEXISTANT DANS LES BASES OUVERTES'
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ELSE IF ( IRET .EQ. 1 ) THEN
         LCOL = .FALSE.
         IC = ICLAOS
@@ -99,7 +99,7 @@ C
         IF ( NOML32(25:32) .NE. '        ' ) THEN
           CMESS = 'APPEL INVALIDE POUR L''OBJET SIMPLE >'//NOML32(1:24)
      &            //'<'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
       ELSE
         LCOL = .TRUE.
@@ -111,7 +111,7 @@ C
            CALL JJCROC ( NOML32(25:32) , ICRE )
            IF ( IDATOC .EQ. 0 ) THEN
              CMESS = ' OBJET DE COLLECTION INEXISTANT : '
-             CALL U2MESK('S','JEVEUX_01',1,CMESS)
+             CALL U2MESK('F','JEVEUX_01',1,CMESS)
            ENDIF
         ENDIF
         IXDESO  = ISZON ( JISZON + IBACOL + IDDESO )
@@ -194,7 +194,7 @@ C
      &    (INDEX('EV' ,GENRI).EQ.0 .AND. CATRLU(1:4).EQ. 'LONU') ) THEN
         CMESS= 'NOM D''ATTRIBUT >'//CATRLU//
      &         '< INCOMPATIBLE AVEC LE GENRE '//GENRI
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
 C
       IF      ( CATRLU .EQ. 'CLAS    ' ) THEN
@@ -304,7 +304,7 @@ C
           ENDIF
         ELSE
           CMESS=' ATTRIBUT >'//CATRLU//'< ERRONE OU NON ACCESSIBLE'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
       ENDIF
  100  CONTINUE

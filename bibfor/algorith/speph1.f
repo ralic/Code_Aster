@@ -8,7 +8,7 @@
       CHARACTER*8         NOMU, NNOE(*), NOMCMP(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       COMPLEX*16    C16B
 C
       DATA NOPAOU / 'NOEUD_I'  , 'NOM_CMP_I'  , 
-     +              'NOEUD_J'  , 'NOM_CMP_J' , 'FONCTION'     /
+     +              'NOEUD_J'  , 'NOM_CMP_J' , 'FONCTION_C'     /
 C-----------------------------------------------------------------------
       CALL JEMARQ()
 C

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C     --- ON RECUPERE FREQ ET NUME_ORDRE DE LA TABLE ---
 C
       NOMOB2 = '&&OP0172.NUME'
       CALL TBEXVE ( ENERPO, 'NUME_ORDRE', NOMOB2, 'V', NBMOD2, K8B )
-      IF ( NBMOD2 .EQ. 0 ) CALL U2MESS('F','MODELISA2_91')
+      IF ( NBMOD2 .EQ. 0 ) CALL U2MESS('F','MODELISA2_89')
       CALL JEVEUO ( NOMOB2, 'L', JNUOR )
       CALL ORDIS  ( ZI(JNUOR) , NBMOD2 )
 C     --- ON ELIMINE LES DOUBLONS ---
@@ -272,7 +272,7 @@ C
       DO 51 I = 1 , NBMODE
         IF (METHOD.EQ.'DEPL') THEN
          CALL RSEXCH ( MECA, 'DEPL', ZI(JNUME+I-1), NOMCH1, IRET )
-         IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_88')
+         IF ( IRET .NE. 0 ) CALL U2MESS('F','CHAMPS_2')
          NOMCH1 = NOMCH1(1:19)//'.VALE'
          CALL JEVEUO ( NOMCH1, 'L', IADMO1 )
          DO 52 INO = 1 , NBNO
@@ -289,7 +289,7 @@ C
  52      CONTINUE
         ELSEIF (METHOD.EQ.'RIGI_PARASOL') THEN
          CALL RSEXCH( MECA,'DEPL',ZI(JNUME+I-1),NOMCH1,IRET )
-         IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_89')
+         IF ( IRET .NE. 0 ) CALL U2MESS('F','CHAMPS_2')
          NOMCH1 = NOMCH1(1:19)//'.VALE'
          CALL JEVEUO ( NOMCH1, 'L', IADMO1 )
          DO 72 INO = 1 , NBNO

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CHAUFFAGE D UN MILIEU POREUX DESATURE AVEC AIR DISSOUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,10 +193,9 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
                  EXCIT=( _F(CHARGE=FLUTH,),),
-                 COMP_INCR=_F(RELATION='KIT_THH',
+                 COMP_INCR=_F(RELATION='KIT_THH',PARM_THETA=0.57,
                               RELATION_KIT=('LIQU_AD_GAZ_VAPE','HYDR_UTIL'),
                               ITER_INTE_MAXI=5,),
-                 PARM_THETA=0.57,
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               SIGM=SIGINIT,),
                  INCREMENT=_F(LIST_INST=INST1, ),

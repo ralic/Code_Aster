@@ -16,7 +16,7 @@
       REAL*8             TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/04/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C ----------------------------------------------------------------------
       REAL*8      KNORM, KTANG, DEPLOC(6), DEPGLO(6), FLOCAL(3),
      +            FGLOBA(3), VITGLO(6), VITLOC(6), ORIG(3), ORIGOB(3),
      +            ACCGLO(6), ACCLOC(6),
-     +            FTANGE(2), VTANG(2), DVITLO(3), DDEPLO(3),
+     +            FTANGE(2), VTANG(2), DDEPLO(3),
      +            OLDFT(2), OLDXL(3), OLDVT(2), POND,
      +            SIGNE(2), FDISPO
 C     ------------------------------------------------------------------
@@ -74,7 +74,6 @@ C     ------------------------------------------------------------------
       REAL*8        COEDEP(NBEXCI), COEVIT(NBEXCI), COEACC(NBEXCI)
 C
       ZERO = 0.D0
-      NBSEG = 0
       ORIG(1) = ZERO
       ORIG(2) = ZERO
       ORIG(3) = ZERO
@@ -250,7 +249,7 @@ C        --- PARAMETRES DE FLAMBAGE ---
 C
 C        ---  CALCUL DE LA DISTANCE NORMALE ---
          CALL DISTNO( DEPLOC,SIGNE,NOECHO(I,9),XJEU,DIST1,DIST2,
-     +                NBSEG,DNORM,COST,SINT )
+     +                DNORM,COST,SINT )
 C
          IF ( LOGCHO(I,2).EQ.1) THEN
 C

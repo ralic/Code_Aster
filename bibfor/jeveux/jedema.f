@@ -1,7 +1,7 @@
       SUBROUTINE JEDEMA
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C NOUVEAU COMMON D'INIHIBITION DES JEMARQ ET JEDEMA
       DATA             D24 /'$$$$$$$$$$$$$$$$$$$$$$$$'/
 C DEB ------------------------------------------------------------------
       IF (IPGC .EQ. 0 ) THEN
-         CALL U2MESS('S','JEVEUX_06')
+         CALL U2MESS('F','JEVEUX_06')
       ELSE
         IDEB = ISZON(JISZON+KPOSMA+IPGC-1)
       ENDIF

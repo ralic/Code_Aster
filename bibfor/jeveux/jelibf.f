@@ -1,7 +1,7 @@
       SUBROUTINE JELIBF ( COND , CLAS )
 C COMPIL PARAL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,14 +93,14 @@ C DEB ------------------------------------------------------------------
       IF ( IC .EQ. 0 ) THEN
         NOMUTI = 'CLASSE '//KCLAS
         CMESS  = ' FICHIER NON OUVERT OU DEJA LIBERE'
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( KCOND .NE. '        ' .AND. KCOND .NE. 'SAUVE   ' .AND.
      &     KCOND .NE. 'ERREUR  ' .AND. KCOND .NE. 'DETRUIT ' .AND.
      &     KCOND .NE. 'LIBERE  ' )                                 THEN
         NOMUTI = NOMBAS(IC)
         CMESS  = ' CONDITION DE LIBERATION ERRONEE'
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ELSE IF ( KCOND .EQ. '        '  ) THEN
         KCOND = KSTOUT(IC)
       ELSE IF ( KCOND .EQ. 'ERREUR  '  ) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE JETYPR( RECH , CAND , ISEG , ITAIL , RVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C DEB ------------------------------------------------------------------
         ITIAD = 3
       ELSE
         CMESS = 'TYPE DE RECHERCHE DE PLACE INVALIDE '
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
 C
       IF ( CHC2 .EQ. 'XX' ) THEN
@@ -82,7 +82,7 @@ C
         ITRECH = 3
       ELSE
         CMESS = 'TYPE DE RECHERCHE DE PLACE INVALIDE '
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
 C
  100  CONTINUE
@@ -95,24 +95,24 @@ C
         LMOTS = ITAIL
         IF (LMOTS .LE. 0) THEN
            CMESS = 'TAILLE DES SEGMENTS DE VALEURS INVALIDE'
-           CALL U2MESK('S','JEVEUX_01',1,CMESS)
+           CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
       ELSE IF ( ISEG .EQ. 4 ) THEN
         ITCOL = 4
         LMOTS = ITAIL
         IF (LMOTS .LE. 0) THEN
            CMESS = 'TAILLE DES SEGMENTS DE VALEURS INVALIDE'
-           CALL U2MESK('S','JEVEUX_01',1,CMESS)
+           CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
         RPAR  = RVAL
         IF (RPAR .LE. 0.D0 .OR. RPAR .GE. 1.D0) THEN
            CMESS = 'TAILLE DE LA PARTITION INVALIDE'
-           CALL U2MESK('S','JEVEUX_01',1,CMESS)
+           CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
         CALL JJCPSG( RPAR, 1 )
       ELSE
         CMESS = 'TYPE DE PARCOURS DE LA SEGMENTATION  INVALIDE '
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
 C FIN ------------------------------------------------------------------
       END

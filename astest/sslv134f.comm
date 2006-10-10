@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 10/10/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,228 +19,191 @@
 # ======================================================================
 # QUART DE FISSURE. CALCUL DE G BILINEAIRE ET DE G_MAX LOCAL
 
-DEBUT(   CODE=_F(  NOM = 'SSLV134F',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSLV134F',
+              NIV_PUB_WEB='INTERNET',),);
 
-MA=LIRE_MAILLAGE()
+MA=LIRE_MAILLAGE();
 
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=(
-                     _F(  GROUP_MA = 'SSUP_S'),
-                     _F(  GROUP_MA = 'SAV_S'),
-                     _F(  GROUP_MA = 'SLAT_S'),
-                     _F(  GROUP_MA = 'LFF'))
-                 )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA='SSUP_S',),
+                             _F(GROUP_MA='SAV_S',),
+                             _F(GROUP_MA='SLAT_S',),
+                             _F(GROUP_MA='LFF',),),);
 
-MO=AFFE_MODELE(  MAILLAGE=MA, 
-                               AFFE=_F( TOUT = 'OUI',
-                                     PHENOMENE = 'MECANIQUE',
-                                     MODELISATION = '3D'))
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
 
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
+                          NU=0.3,),);
 
-MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.E11, NU = 0.3))
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
 
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                           AFFE=_F(  TOUT = 'OUI',MATER = MAT))
+F1=DEFI_FONCTION(NOM_PARA='INST',
+                 VALE=
+                 (0.0,0.0,1.0,1.0,2.0,0.0,3.0,1.0,4.0,1.0,),
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='LINEAIRE',);
 
-F1=DEFI_FONCTION(    NOM_PARA='INST',
-                             PROL_GAUCHE='LINEAIRE',
-                              PROL_DROITE='CONSTANT',
-                             VALE=( 0., 0.,
-                                    1., 1.,
-                                    2., 0.,
-                                    3., 1.,
-                                    4., 1.,  )  )
+F2=DEFI_FONCTION(NOM_PARA='INST',
+                 VALE=
+                 (0.0,0.0,1.0,0.0,2.0,1.0,3.0,1.0,4.0,-1.0,),
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='LINEAIRE',);
 
-F2=DEFI_FONCTION(    NOM_PARA='INST',
-                             PROL_GAUCHE='LINEAIRE',
-                              PROL_DROITE='CONSTANT',
-                             VALE=( 0., 0.,
-                                    1., 0.,
-                                    2., 1.,
-                                    3., 1.,
-                                    4., -1., )  )
-
-LIST=DEFI_LIST_REEL(  
-                                DEBUT=0.E+0,  
-                         
-                              INTERVALLE=_F( 
-                      JUSQU_A = 4.,  
-                      NOMBRE = 4),
-                                 INFO=1  
-                       )
-
-#-----------------------------------------------------------------------
-CHCL=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=( 
-                               _F( GROUP_NO = 'SSUP_S',   DZ = 0.),
-                               _F( GROUP_NO = 'SLAT_S',   DX = 0.),
-                               _F( GROUP_NO = 'SAV_S',    DY = 0.))
-                            )
-
-CH1=AFFE_CHAR_MECA(  MODELE=MO, 
-                              PRES_REP=_F( GROUP_MA = 'SINF', PRES = -1.E6)
-                            )
-
-CH2=AFFE_CHAR_MECA(  MODELE=MO,FORCE_FACE=( 
-                             _F( GROUP_MA = 'SLAT',     FZ = +1.E6),
-                             _F( GROUP_MA = 'SINF',     FX = +1.E6))
-                           )
-
+LIST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=4.0,
+                                  NOMBRE=4,),
+                    INFO=1,);
 #-----------------------------------------------------------------------
 
+CHCL=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_NO='SSUP_S',
+                                 DZ=0.0,),
+                              _F(GROUP_NO='SLAT_S',
+                                 DX=0.0,),
+                              _F(GROUP_NO='SAV_S',
+                                 DY=0.0,),),);
 
-RESU=STAT_NON_LINE( 
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                             _F( 
-                CHARGE = CHCL), _F( 
-                CHARGE = CH1,
-                FONC_MULT = F1), _F( 
-                CHARGE = CH2,
-                FONC_MULT = F2)),
-                         COMP_ELAS=_F( 
-                RELATION = 'ELAS'),
-                         INCREMENT=_F( 
-                LIST_INST = LIST),
-                       CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-6),
-                              INFO=1
-              )
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   PRES_REP=_F(GROUP_MA='SINF',
+                               PRES=-1000000.0,),);
 
-RESU=CALC_ELEM( reuse=RESU,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=RESU,
-              )
+CH2=AFFE_CHAR_MECA(MODELE=MO,
+                   FORCE_FACE=(_F(GROUP_MA='SLAT',
+                                  FZ=1000000.0,),
+                               _F(GROUP_MA='SINF',
+                                  FX=1000000.0,),),);
+#-----------------------------------------------------------------------
 
-FOND=DEFI_FOND_FISS(  
-                            MAILLAGE=MA,        
-                               
-                       FOND_FISS=_F( 
-                      GROUP_MA = 'LFF'),
-                    NORMALE=(0., 0., 1.,),
-                    DTAN_ORIG=(1., 0., 0.,),
-                    DTAN_EXTR=(0., 1., 0.,)
-                       )
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CHCL,),
+                          _F(CHARGE=CH1,
+                             FONC_MULT=F1,),
+                          _F(CHARGE=CH2,
+                             FONC_MULT=F2,),),
+                   COMP_ELAS=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=LIST,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,),
+                   INFO=1,);
 
-GL1=CALC_G(
-                    COMP_ELAS=(_F(RELATION='ELAS',),),
-  TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
-                    RESULTAT=RESU,
-                    THETA=_F( FOND_FISS=FOND,
-                              R_INF=0.1,
-                              R_SUP=1.0,),
-                    LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
-                                LISSAGE_G = 'LAGRANGE',),
-                    TOUT_ORDRE='OUI',
-                  );
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
 
-GL2=CALC_G(
-                    COMP_ELAS=(_F(RELATION='ELAS',),),
-  TITRE='G_LOCAL AVEC R_INF =  0.50000E-01 ET R_SUP =  1.50000E+00',
-                    RESULTAT=RESU,
-                    THETA=_F( FOND_FISS=FOND,
-                              R_INF=0.5,
-                              R_SUP=1.5,),
-                    TOUT_ORDRE='OUI'
-                  )
+FOND=DEFI_FOND_FISS(MAILLAGE=MA,
+                    FOND_FISS=_F(GROUP_MA='LFF',),
+                    NORMALE=(0.0,0.0,1.0,),
+                    DTAN_ORIG=(1.0,0.0,0.0,),
+                    DTAN_EXTR=(0.0,1.0,0.0,),);
 
-
-GLBIL1=CALC_G(
-                    COMP_ELAS=(_F(RELATION='ELAS',),),
-  TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
-                    RESULTAT=RESU,
-                    THETA=_F( R_INF=0.1,
-                              R_SUP=1.0,
-                              FOND_FISS=FOND,),
-                    OPTION='G_BILI',
-                    LISSAGE=_F(  LISSAGE_THETA = 'LAGRANGE',
-                                 LISSAGE_G = 'LAGRANGE',),
-                    TOUT_ORDRE='OUI'
-                    );
-
-
-GLBIL2=CALC_G(
-  TITRE='G_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
-      COMP_ELAS=(_F(RELATION='ELAS',),),
-      RESULTAT=RESU,
-      THETA=_F( R_INF=0.5,
-                R_SUP=1.5,
-                FOND_FISS=FOND,),
-      OPTION='G_BILI',
-      TOUT_ORDRE='OUI'
-                  );
-
-
-
-                  
-GLMAX1=CALC_G(   
-  TITRE='GMAX_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',
-        RESULTAT=RESU,
-        BORNES=(
-          _F(  NUME_ORDRE = 1,
-               VALE_MIN = 0.,
-               VALE_MAX = 1.),
-          _F(  NUME_ORDRE = 2,
-               VALE_MIN = -1.,
-               VALE_MAX = 1.),
-          _F(  NUME_ORDRE = 3,
-               VALE_MIN = 0.,
-               VALE_MAX = 1.),
-          _F(  NUME_ORDRE = 4,
-               VALE_MIN = -1.,
-               VALE_MAX = 1.)),    
-          OPTION='G_MAX',
-          THETA=_F( FOND_FISS=FOND,
+GL1=CALC_G(THETA=_F(FOND_FISS=FOND,
                     R_INF=0.1,
                     R_SUP=1.0,),
-         LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
-                      LISSAGE_G = 'LAGRANGE',),
-         TOUT_ORDRE='OUI',
-         COMP_ELAS=_F(  RELATION = 'ELAS',)
-   );
+           RESULTAT=RESU,
+           TOUT_ORDRE='OUI',
+           COMP_ELAS=_F(RELATION='ELAS',),
+           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                      LISSAGE_G='LAGRANGE',),
+           OPTION='CALC_G',
+           TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',);
 
-GLMAX2=CALC_G(   
-  TITRE='GMAX_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
-        RESULTAT=RESU,
-        BORNES=(
-          _F(  NUME_ORDRE = 1,
-               VALE_MIN = 0.,
-               VALE_MAX = 1.),
-          _F(  NUME_ORDRE = 2,
-               VALE_MIN = -1.,
-               VALE_MAX = 1.),
-          _F(  NUME_ORDRE = 3,
-               VALE_MIN = 0.,
-               VALE_MAX = 1.),
-          _F(  NUME_ORDRE = 4,
-               VALE_MIN = -1.,
-               VALE_MAX = 1.)),    
-          OPTION='G_MAX',
-          THETA=_F(  FOND_FISS=FOND,
-                     R_INF=0.5,
-                     R_SUP=1.5,),
-          TOUT_ORDRE='OUI',
-          COMP_ELAS=_F(  RELATION = 'ELAS',)
-   )
+GL2=CALC_G(THETA=_F(FOND_FISS=FOND,
+                    R_INF=0.5,
+                    R_SUP=1.5,),
+           RESULTAT=RESU,
+           TOUT_ORDRE='OUI',
+           COMP_ELAS=_F(RELATION='ELAS',),
+           OPTION='CALC_G',
+           TITRE='G_LOCAL AVEC R_INF =  0.50000E-01 ET R_SUP =  1.50000E+00',);
 
-FFX=DEFI_FISS_XFEM(MODELE=MO,  
-                   DEFI_FISS=_F(
-                                GROUP_MA_FISS='LEVREINF',
-                                GROUP_MA_FOND='LFF',               
-                                ),
+GLBIL1=CALC_G(THETA=_F(FOND_FISS=FOND,
+                       R_INF=0.1,
+                       R_SUP=1.0,),
+              RESULTAT=RESU,
+              TOUT_ORDRE='OUI',
+              COMP_ELAS=_F(RELATION='ELAS',),
+              LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                         LISSAGE_G='LAGRANGE',),
+              OPTION='G_BILI',
+              TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',);
+
+GLBIL2=CALC_G(THETA=_F(FOND_FISS=FOND,
+                       R_INF=0.5,
+                       R_SUP=1.5,),
+              RESULTAT=RESU,
+              TOUT_ORDRE='OUI',
+              COMP_ELAS=_F(RELATION='ELAS',),
+              OPTION='G_BILI',
+              TITRE='G_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',);
+
+GLMAX1=CALC_G(THETA=_F(FOND_FISS=FOND,
+                       R_INF=0.1,
+                       R_SUP=1.0,),
+              RESULTAT=RESU,
+              TOUT_ORDRE='OUI',
+              COMP_ELAS=_F(RELATION='ELAS',),
+              LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                         LISSAGE_G='LAGRANGE',),
+              OPTION='G_MAX',
+              BORNES=(
+              _F(NUME_ORDRE=1,
+                 VALE_MIN=0.0,
+                 VALE_MAX=1.0,),
+              _F(NUME_ORDRE=2,
+                 VALE_MIN=-1.0,
+                 VALE_MAX=1.0,),
+              _F(NUME_ORDRE=3,
+                 VALE_MIN=0.0,
+                 VALE_MAX=1.0,),
+              _F(NUME_ORDRE=4,
+                 VALE_MIN=-1.0,
+                 VALE_MAX=1.0,),),
+              TITRE='GMAX_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',);
+
+GLMAX2=CALC_G(THETA=_F(FOND_FISS=FOND,
+                       R_INF=0.5,
+                       R_SUP=1.5,),
+              RESULTAT=RESU,
+              TOUT_ORDRE='OUI',
+              COMP_ELAS=_F(RELATION='ELAS',),
+              OPTION='G_MAX',
+              BORNES=(
+              _F(NUME_ORDRE=1,
+                 VALE_MIN=0.0,
+                 VALE_MAX=1.0,),
+              _F(NUME_ORDRE=2,
+                 VALE_MIN=-1.0,
+                 VALE_MAX=1.0,),
+              _F(NUME_ORDRE=3,
+                 VALE_MIN=0.0,
+                 VALE_MAX=1.0,),
+              _F(NUME_ORDRE=4,
+                 VALE_MIN=-1.0,
+                 VALE_MAX=1.0,),),
+              TITRE='GMAX_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',);
+
+FFX=DEFI_FISS_XFEM(MODELE=MO,
+                   DEFI_FISS=_F(GROUP_MA_FISS='LEVREINF',
+                                GROUP_MA_FOND='LFF',),
                    GROUP_MA_ENRI='VTOT',
-                   ORIE_FOND=_F(PFON_INI=(-0.005, 0.0, 0.0),
-                                VECT_ORIE=(0.0, 1.0, 0.0),
-                                PT_ORIGIN=(0.0, 0.0, 0.0),),
-                   INFO=1,
+                   ORIE_FOND=_F(PFON_INI=(-0.005,0.0,0.0,),
+                                VECT_ORIE=(0.0,1.0,0.0,),
+                                PT_ORIGIN=(0.0,0.0,0.0,),),
                    CONTACT=_F(),
-                  );
+                   INFO=1,);
 
 KLMAX1=CALC_G( 
            TITRE='K_MAX AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
            RESULTAT=RESU,
            OPTION='CALC_K_MAX',
-                    LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
-                                LISSAGE_G = 'LAGRANGE',),
+           LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
+                       LISSAGE_G = 'LAGRANGE',),
            THETA=_F( FISSURE=FFX,
                      R_INF=0.5,
                      R_SUP=1.5,),
@@ -248,136 +211,113 @@ KLMAX1=CALC_G(
                         CHARGE_NS = (2,4),),
                     );
 
-IMPR_TABLE     ( TABLE = GL1,  )
 
-IMPR_TABLE     ( TABLE = GL2,  )
+IMPR_TABLE(TABLE=GL1,);
 
-IMPR_TABLE     ( TABLE = GLBIL1, )
+IMPR_TABLE(TABLE=GL2,);
 
-IMPR_TABLE     ( TABLE = GLBIL2, )
+IMPR_TABLE(TABLE=GLBIL1,);
 
-IMPR_TABLE     ( TABLE = GLMAX1, )
-IMPR_TABLE     ( TABLE = GLMAX2, )
-IMPR_TABLE     ( TABLE= KLMAX1);
+IMPR_TABLE(TABLE=GLBIL2,);
 
+IMPR_TABLE(TABLE=GLMAX1,);
 
+IMPR_TABLE(TABLE=GLMAX2,);
 
+IMPR_TABLE(TABLE=KLMAX1,);
 
-TEST_TABLE(        TABLE=GL1,
-                   FILTRE=(
-                            _F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                            _F(  NOM_PARA = 'NOEUD',
-                                  VALE_K = 'N2667')
-                          ),
-                  NOM_PARA='G_LOCAL',
-                      VALE=5.79,
-                 PRECISION=0.0075,   
-                 REFERENCE='AUTRE_ASTER'  
-            )
+TEST_TABLE(TABLE=GL1,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N2667',),),
+           NOM_PARA='G_LOCAL',
+           VALE=5.79,
+           PRECISION=0.008,
+           REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(        TABLE=GLBIL1,
-                  FILTRE=(
-                           _F(  NOM_PARA = 'NUME_CMP_I',
-                                  VALE_I = 1),
-                           _F(  NOM_PARA = 'NUME_CMP_J',
-                                  VALE_I = 1),
-                           _F(  NOM_PARA = 'NOEUD',
-                                  VALE_K = 'N2667')
-                         ),  
-                  NOM_PARA='G_BILI_LOCAL',
-                      VALE=5.79,
-                 PRECISION=0.0075, 
-                 REFERENCE='AUTRE_ASTER'  
-            )
+TEST_TABLE(TABLE=GLBIL1,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_CMP_J',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N2667',),),
+           NOM_PARA='G_BILI_LOCAL',
+           VALE=5.79,
+           PRECISION=0.008,
+           REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(        TABLE=GLMAX1,
-                      FILTRE=(
-                              _F(  NOM_PARA = 'Q_1',
-                                       VALE = 1.),
-                              _F(  NOM_PARA = 'Q_2',
-                                       VALE = -1.),
-                              _F(  NOM_PARA = 'Q_3',
-                                       VALE = 1.),
-                              _F(  NOM_PARA = 'Q_4',
-                                       VALE = -1.),
-                              _F(  NOM_PARA = 'NOEUD',
-                                     VALE_K = 'N2667')
-                             ),  
-                  NOM_PARA='G',
-                      VALE=1.4945524639672E+01,
-                 PRECISION=5.0E-3,
-                 REFERENCE='NON_REGRESSION',
-          )
+TEST_TABLE(TABLE=GLMAX1,
+           FILTRE=(_F(NOM_PARA='Q_1',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_2',
+                      VALE=-1.0,),
+                   _F(NOM_PARA='Q_3',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_4',
+                      VALE=-1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N2667',),),
+           NOM_PARA='G',
+           VALE=14.9455246397,
+           PRECISION=0.005,
+           REFERENCE='NON_REGRESSION',);
 
+TEST_TABLE(TABLE=GL2,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N2667',),),
+           NOM_PARA='G_LOCAL',
+           VALE=2.17357612388,
+           PRECISION=0.005,
+           REFERENCE='NON_REGRESSION',
+           VERSION='7.0.17',);
 
-TEST_TABLE(        TABLE=GL2,
-                   FILTRE=(
-                            _F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 2),
-                            _F(  NOM_PARA = 'NOEUD',
-                                  VALE_K = 'N2667')
-                          ),
-                  NOM_PARA='G_LOCAL',
-                      VALE=2.1735761238787E+00,
-                 PRECISION=5.0E-3,
-                 REFERENCE='NON_REGRESSION',
-                 VERSION='7.0.17'
-            )
+TEST_TABLE(TABLE=GLBIL2,
+           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+                      VALE_I=2,),
+                   _F(NOM_PARA='NUME_CMP_J',
+                      VALE_I=2,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N2667',),),
+           NOM_PARA='G_BILI_LOCAL',
+           VALE=2.17357612388,
+           PRECISION=0.005,
+           REFERENCE='NON_REGRESSION',);
 
-TEST_TABLE(        TABLE=GLBIL2,
-                   FILTRE=(
-                            _F(  NOM_PARA = 'NUME_CMP_I',
-                                   VALE_I = 2),
-                            _F(  NOM_PARA = 'NUME_CMP_J',
-                                   VALE_I = 2),
-                            _F(  NOM_PARA = 'NOEUD',
-                                   VALE_K = 'N2667')
-                          ),  
-                  NOM_PARA='G_BILI_LOCAL',
-                      VALE=2.1735761238787E+00,
-                 PRECISION=5.0E-3,
-                 REFERENCE='NON_REGRESSION',
-            )
+TEST_TABLE(TABLE=GLMAX2,
+           FILTRE=(_F(NOM_PARA='Q_1',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_2',
+                      VALE=-1.0,),
+                   _F(NOM_PARA='Q_3',
+                      VALE=1.0,),
+                   _F(NOM_PARA='Q_4',
+                      VALE=-1.0,),
+                   _F(NOM_PARA='NOEUD',
+                      VALE_K='N2773',),),
+           NOM_PARA='G',
+           VALE=15.0825,
+           PRECISION=0.005,
+           REFERENCE='NON_REGRESSION',);
 
-TEST_TABLE(        TABLE=GLMAX2,
-                      FILTRE=(
-                              _F(  NOM_PARA = 'Q_1',
-                                       VALE = 1.),
-                              _F(  NOM_PARA = 'Q_2',
-                                       VALE = -1.),
-                              _F(  NOM_PARA = 'Q_3',
-                                       VALE = 1.),
-                              _F(  NOM_PARA = 'Q_4',
-                                       VALE = -1.),
-                              _F(  NOM_PARA = 'NOEUD',
-                                     VALE_K = 'N2773')
-                             ),  
-                  NOM_PARA='G',
-                      VALE=1.50825E+01,
-                 PRECISION=5.0E-3,
-                 REFERENCE='NON_REGRESSION',
-          )
+TEST_TABLE(TABLE=KLMAX1,
+           FILTRE=(_F(NOM_PARA='Q_1',
+                      VALE_I=1,),
+                   _F(NOM_PARA='Q_2',
+                      VALE_I=1,),
+                   _F(NOM_PARA='Q_3',
+                      VALE_I=1,),
+                   _F(NOM_PARA='Q_4',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),),
+           NOM_PARA='G_LOCAL',
+           VALE=74.0091,
+           PRECISION=0.005,
+           REFERENCE='NON_REGRESSION',);
 
-TEST_TABLE(        TABLE=KLMAX1,
-                      FILTRE=(
-                              _F(  NOM_PARA = 'Q_1',
-                                       VALE_I = 1),
-                              _F(  NOM_PARA = 'Q_2',
-                                       VALE_I = 1),
-                              _F(  NOM_PARA = 'Q_3',
-                                       VALE_I = 1),
-                              _F(  NOM_PARA = 'Q_4',
-                                       VALE_I = 1),
-                              _F(  NOM_PARA = 'NUM_PT',
-                                     VALE_I = 5)
-                             ),  
-                  NOM_PARA='G_LOCAL',
-                      VALE= 7.40091E+01,
-                 PRECISION=5.0E-3,
-                 REFERENCE='NON_REGRESSION',
-          )
-
-
-FIN()
+FIN();
 #

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#@ MODIF B_ETAPE Build  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -412,13 +412,6 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       self.jdc.alea=Random(100)
       self.jdc.alea.jumpahead(jump)
       return None
-
-   def utprin(self,typmess,unite,idmess,valk,vali,valr):
-      """
-         Cette methode permet d'imprimer un message venu d'U2MESG
-      """
-      from Messages import utprin
-      utprin.utprin(typmess,unite,idmess,valk,vali,valr)
 
    def fiintf(self,nom_fonction,nom_param,val):
       """

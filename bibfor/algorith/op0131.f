@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24  LIFEX2
 C
       DATA NOPARM / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
-     +              'NUME_ORDRE_I' , 'NUME_ORDRE_J' ,'FONCTION' /
+     +              'NUME_ORDRE_I' , 'NUME_ORDRE_J' ,'FONCTION_C' /
       DATA TYPARM / 'K16' , 'K16' , 'I' , 'I' , 'I' , 'K24' /
 C     ------------------------------------------------------------------
 C

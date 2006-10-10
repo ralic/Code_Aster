@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE VALIDATION DE NON REGRESSION DU CHAINAGE 2D CYRANO3-CODE_ASTER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -949,15 +949,14 @@ MDEP=STAT_NON_LINE(
                 CHARGE = CHME),
                              _F( 
                 CHARGE = CHMEF)),COMP_INCR=(
-                         _F( 
+                         _F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE',
                 GROUP_MA = 'PASTILLE',
                 ITER_INTE_MAXI = 1000),
-                         _F( 
+                         _F( PARM_THETA = 0.5,
                 RELATION = 'ZIRC_CYRA2',
                 GROUP_MA = 'GAINE',
                 ITER_INTE_MAXI = 1000),),
-                         PARM_THETA = 0.5,
                          INCREMENT=_F( 
                 LIST_INST = LINST),
                             NEWTON=_F( 

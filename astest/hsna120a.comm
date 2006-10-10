@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -404,7 +404,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
                    MODELE=MOD_G[num_calc],
                    CONVERGENCE=_F(ITER_GLOB_MAXI=30,
                                   RESI_GLOB_RELA=1.E-06,),
-                   COMP_INCR=_F(RELATION='ELAS',),
+                   COMP_INCR=_F(RELATION='ELAS',PARM_THETA=0.57,),
                    INCREMENT=_F(#NUME_INST_INIT=1,
                                 LIST_INST=LIST,
                                 NUME_INST_FIN =100),
@@ -415,7 +415,6 @@ for num_calc in range(1,nb_calc_total_plus_1) :
                           _F(CHARGE=CHARM[num_calc],),
                           _F(CHARGE=CHART[num_calc],),),
                    ARCHIVAGE=_F(INST=(90,95,100)),
-                   PARM_THETA=0.57,
                            );
 #
 # 5.2.6. CALCULS COMPLEMENTAIRES

@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,13 +95,13 @@ C
       CHARACTER*8   K8B
       CHARACTER*16  NOPAIN(3), NOPAOU(NBPAR)
       CHARACTER*19  NOMCOD
-      CHARACTER*24  NOMFON, VALE, PROL, KVAL(5)
+      CHARACTER*24  NOMFON, VALE, PROL, KVAL(5), VALK(2)
       COMPLEX*16    C16B
 C
       DATA NOPAIN / 'NUME_VITE_FLUI' , 'NUME_ORDRE_I' , 'NUME_ORDRE_J' /
       DATA NOPAOU / 'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
      &              'NOEUD_I'  , 'NOM_CMP_I'  ,
-     &              'NOEUD_J'  , 'NOM_CMP_J' , 'FONCTION'     /
+     &              'NOEUD_J'  , 'NOM_CMP_J' , 'FONCTION_C'     /
 C-----------------------------------------------------------------------
       CALL JEMARQ()
       PI = R8PI()
@@ -122,7 +122,7 @@ C
         IVAL(2) = NUOR(1)
         IVAL(3) = NUOR(1)
         CALL TBLIVA ( TABLE, 3, NOPAIN, IVAL, R8B, C16B, K8B, K8B,
-     &         R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
+     &         R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET )
         IF ( IRET .NE. 0 ) GO TO 20
 C
 C     --- RECUPERATION DES FONCTIONS (SPECTRES) ET STOCKAGE DANS
@@ -140,8 +140,12 @@ C
             IVAL(2) = NUOR(IMI)
 C
             CALL TBLIVA ( TABLE, 3, NOPAIN, IVAL, R8B, C16B, K8B, K8B,
-     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
-            IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_91')
+     &           R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET )
+            IF (IRET.NE.0) THEN
+               VALK(1)(1:10) = 'FONCTION_C'
+               VALK(2)(1:8) = TABLE
+               CALL U2MESK('F','MODELISA2_91', 2, VALK)
+            ENDIF
 C
             CALL JEVEUO ( NOMFON(1:19)//'.VALE', 'L', IFON )
             ISJ = (IMJ* (IMJ-1))/2 + IMI

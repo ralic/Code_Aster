@@ -10,7 +10,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 09/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C                 MA(I), I>1,ONT EN COMMUN CETTE FACE OU ARETE
 C     ------------------------------------------------------------------
       INTEGER M,F,IPT,ICO,I,J,K,NDGLO1(4),NDGLO2(4),NDLOC(4),NLOC
       INTEGER NCOM,NSPM,NBNM,DEC1,DEC2,DEC3,NBNF
-      REAL*8  C1,C2,C3,C4,C5,R,S,UNSUR4
+      REAL*8  C1,C2,C3,C4,C5,R,S,UNSUR4,R8VIDE
 C
 C======================================================================
 C
@@ -102,8 +102,10 @@ C
                      DEC2 = NBCP*NBSP*(ICO-1)
                      DEC3 = NBCP*NSPM*NBNM*(ICO-1)
                      DO 112, J = 1, NBSP*NBCP, 1
-                        TABAUX(I,DEC2+J) = VALE(PADR(M)+DEC1+DEC3+J-1)
-     &                                     + TABAUX(I,DEC2+J)
+                        IF ( TABAUX(I,DEC2+J) .NE. R8VIDE() ) THEN
+                         TABAUX(I,DEC2+J) = VALE(PADR(M)+DEC1+DEC3+J-1)
+     &                                      + TABAUX(I,DEC2+J)
+                        ENDIF
 112                  CONTINUE
 111               CONTINUE
                ENDIF
@@ -112,7 +114,9 @@ C
 C
          DO 200, I = 1, NBNF, 1
             DO 210, J = 1, NBCO*NBSP*NBCP, 1
-               TABAUX(I,J) = TABAUX(I,J)/NBMA
+               IF ( TABAUX(I,J) .NE. R8VIDE() ) THEN
+                  TABAUX(I,J) = TABAUX(I,J)/NBMA
+               ENDIF
 210         CONTINUE
 200      CONTINUE
 C
@@ -122,17 +126,21 @@ C
          DO 310, ICO = 1, NBCO, 1
             DEC2 = NBCP*NBPT*NBSP*(ICO-1)
             DO 320, I = 1, NBCP*NBSP, 1
-               C1 = TABAUX(1,I)
-               C2 = TABAUX(2,I)
-               C3 = TABAUX(3,I)
-               IF ( NBNF .EQ. 3 ) THEN
+              IF ( TABAUX(1,I) .EQ. R8VIDE() ) THEN
+                C5 = R8VIDE()
+              ELSE
+                C1 = TABAUX(1,I)
+                C2 = TABAUX(2,I)
+                C3 = TABAUX(3,I)
+                IF ( NBNF .EQ. 3 ) THEN
                   C5 = C1 + R*(C2-C1) + S*(C3-C1)
-               ELSE
+                ELSE
                   C4 = TABAUX(4,I)
                   C5 = R*((C2+C3-C1-C4) + S*(C1+C3-C2-C4))+C1+C2+C3+C4
                   C5 = UNSUR4*(C5 + S*(C3+C4-C1-C2))
-               ENDIF
-               VAL(PTADR+DEC1+DEC2+I-1) = C5
+                ENDIF
+              ENDIF
+              VAL(PTADR+DEC1+DEC2+I-1) = C5
 320         CONTINUE
 310      CONTINUE
 C

@@ -1,6 +1,6 @@
       SUBROUTINE JJVERN ( NOML32 , ICRE , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C DEB ------------------------------------------------------------------
      &       NOML8 .NE. NUME .AND.
      &       NOML8 .NE. NOMATR     ) THEN
           CMESS  = 'LONGUEUR OU STRUCTURE DU NOM INCORRECTE'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
       END IF
       IF (NOML24       .EQ. NOMOS(1:24) .AND.
@@ -62,12 +62,12 @@ C
         IF(IRET.NE.0 .AND. ICRE .NE. 0 ) THEN
           IF ( INDEX ( NOML24 , '$' ) .NE. 0 ) THEN
             CMESS  = 'LONGUEUR OU STRUCTURE DU NOM INCORRECTE'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           DO 10 K = 1,32
             IF( JCLASS(ICHAR( NOM32(K:K) )).EQ. ILLICI ) THEN
               CMESS = 'LE CARACTERE "'//NOM32(K:K)//'" EST ILLICITE'
-              CALL U2MESK('S','JEVEUX_01',1,CMESS)
+              CALL U2MESK('F','JEVEUX_01',1,CMESS)
             END IF
  10       CONTINUE
         ENDIF

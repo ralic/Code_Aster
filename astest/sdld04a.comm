@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,9 +189,9 @@ F3 = FORMULE(NOM_PARA='INST',VALE='1.82018E-01*2.E+05*INST**2')
 
 TRAN_NUM=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
                   METHODE='EULER',EXCIT=(
-                  _F(  NUME_MODE = 1,  FONC_MULT = F1),
-                  _F(  NUME_MODE = 2,  FONC_MULT = F2),
-                  _F(  NUME_MODE = 3,  FONC_MULT = F3)),
+                  _F(  NUME_ORDRE = 1,  FONC_MULT = F1),
+                  _F(  NUME_ORDRE = 2,  FONC_MULT = F2),
+                  _F(  NUME_ORDRE = 3,  FONC_MULT = F3)),
                   INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 0.1,  PAS = 0.001)
                            )
 
@@ -219,9 +219,9 @@ TEST_FONCTION(VALEUR=(
 TRAN_NUC=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
                              METHODE='EULER',EXCIT=(
                  _F(  VECT_GENE = VECT_X,  FONC_MULT = ACCELERO),
-                 _F(  NUME_MODE = 1,  FONC_MULT = F1),
-                 _F(  NUME_MODE = 2,  FONC_MULT = F2),
-                 _F(  NUME_MODE = 3,  FONC_MULT = F3)),
+                 _F(  NUME_ORDRE = 1,  FONC_MULT = F1),
+                 _F(  NUME_ORDRE = 2,  FONC_MULT = F2),
+                 _F(  NUME_ORDRE = 3,  FONC_MULT = F3)),
                  INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 0.1,  PAS = 0.001)
                            )
 

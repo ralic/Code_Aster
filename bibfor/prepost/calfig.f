@@ -1,13 +1,12 @@
-      SUBROUTINE CALFIG ( GUIDAG, RESU, OBST, NO, DIMOBS, DIMTUB,
-     +                    OBSUSE, TUBUSE, NOMTAB )
+      SUBROUTINE CALFIG( GUIDAG, RESU, DIMOBS, DIMTUB, OBSUSE, TUBUSE )
       IMPLICIT   NONE
       INTEGER             NO, DIMOBS, DIMTUB
       REAL*8              OBSUSE(*), TUBUSE(*)
-      CHARACTER*8         OBST, GUIDAG
-      CHARACTER*19        RESU, NOMTAB
+      CHARACTER*8         GUIDAG
+      CHARACTER*19        RESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +45,7 @@ C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
 C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       INTEGER    I, J, K, N, P, Q, R, K1, N1, CONTAC, NDIM, NV
       INTEGER    IBID, ICOMP1, ICOMP2, ICOMP3, LVAL, LPRO
-      INTEGER    IJEU, IJPRM, ITUB, IOBS, IDRAY, IDTHE, IDREFE
+      INTEGER    IJEU, IJPRM, ITUB, IOBS, IDRAY, IDTHE
       PARAMETER  ( NDIM = 3000 )
       COMPLEX*16    C16B
       REAL*8        R8B, C, D, E, F, ANG2, ANGMIN, ANGMAX, RHO2
@@ -54,10 +53,11 @@ C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
       REAL*8        PAS, PAS1, PAS2, PAS3, THET, TETDEG, ESPACE
       REAL*8        ANG2BI, RHO2BI, XA, XABIS, YA, YABIS, A1, B1, GAME
       REAL*8        RAD, R8DGRD, DEG, R8RDDG, PI, R8PI, R8PREM
+      INTEGER       NBVAL
       CHARACTER*8   K8B
       CHARACTER*16  NOPARA(2)
       CHARACTER*19  NOMFON
-      CHARACTER*24  TABK(2)
+      CHARACTER*24  TABK(2), NOMF
 C
 C ----------------------------------------------------------------------
 C
@@ -73,8 +73,11 @@ C
       CALL WKVECT ( '&&CALFIG.TUB'   , 'V V R', 2*NDIM, ITUB  )
       CALL WKVECT ( '&&CALFIG.OBS'   , 'V V R', 2*NDIM, IOBS  )
 C
-      CALL JEVEUO ( OBST//'           .VALR', 'L', IDRAY )
-      CALL JEVEUO ( OBST//'           .VALT', 'L', IDTHE )
+      NOMF = RESU(1:8)//'   _INITIAL'
+      CALL JEVEUO(NOMF(1:19)//'.VALE', 'L', IDTHE)
+      CALL JELIRA(NOMF(1:19)//'.VALE','LONMAX',NBVAL,K8B)
+      NO = NBVAL/2
+      IDRAY = IDTHE + NO
 C
       NOPARA(1) = 'LIEU'
       NOPARA(2) = 'FONCTION'
@@ -84,14 +87,14 @@ C
       CALL FO0182 ( NOMFON, DIMTUB, TUBUSE )
       TABK(1) = 'TUBE_USE'
       TABK(2) = NOMFON
-      CALL TBAJLI ( NOMTAB, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
+      CALL TBAJLI ( RESU, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
 C
       CALL GCNCON ( '_' , K8B )
       NOMFON = RESU(1:8)//K8B
       CALL FO0182 ( NOMFON, DIMOBS, OBSUSE )
       TABK(1) = 'OBST_USE'
       TABK(2) = NOMFON
-      CALL TBAJLI ( NOMTAB, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
+      CALL TBAJLI ( RESU, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
 C
 C --- REMPLISSAGE DES TABLEAUX POUR LE CALCUL :
 C     ---------------------------------------
@@ -113,7 +116,7 @@ C
       CALL FO0182 ( NOMFON, NO, ZR(IJEU) )
       TABK(1) = 'JEU_INIT'
       TABK(2) = NOMFON
-      CALL TBAJLI ( NOMTAB, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
+      CALL TBAJLI ( RESU, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
 C
       N1 = NO
       DO 104 J = 1 , (N1-1)
@@ -311,15 +314,6 @@ C
          IF (ZR(IJPRM+2*Q-2).NE.0.D0) NV = NV +1
  304  CONTINUE
 C
-      IF ( RESU(1:8) .NE. OBST ) THEN
-         CALL WKVECT ( RESU//'.REFO', 'G V K24',1 , IDREFE )
-         ZK24(IDREFE) = 'DISCRET'
-         CALL WKVECT ( RESU//'.VALR', 'G V R'  ,NV, IDRAY )
-         CALL WKVECT ( RESU//'.VALT', 'G V R'  ,NV, IDTHE )
-      ELSE
-         CALL JEVEUO ( RESU//'.VALR', 'E', IDRAY )
-         CALL JEVEUO ( RESU//'.VALT', 'E', IDTHE )
-      ENDIF
 C
       CALL GCNCON ( '_' , K8B )
       NOMFON = RESU(1:8)//K8B
@@ -355,7 +349,7 @@ C
 C
       TABK(1) = 'JEU_USE'
       TABK(2) = NOMFON
-      CALL TBAJLI ( NOMTAB, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
+      CALL TBAJLI ( RESU, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
 C
       CALL JEDETR ( '&&CALFIG.JEU' )
       CALL JEDETR ( '&&CALFIG.JEUPRM' )

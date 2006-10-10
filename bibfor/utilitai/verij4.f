@@ -1,8 +1,8 @@
-      SUBROUTINE VERIS2(TYPESD,NOMSD)
+      CHARACTER*1 FUNCTION VERIJ4(OUF,OIF)
       IMPLICIT NONE
-      CHARACTER*(*) TYPESD,NOMSD
+      CHARACTER*1 OUF,OIF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,8 +19,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ----------------------------------------------------------------------
-C    ROUTINE SERVANT A MASQUER LA RECURSIVITE
-C ----------------------------------------------------------------------
-      CALL VERISD(TYPESD,NOMSD)
+
+      IF (OUF.EQ.'F') THEN
+         VERIJ4='F'
+      ELSE IF (OUF.EQ.'O') THEN
+         VERIJ4=OIF
+      ELSE
+         CALL ASSERT(.FALSE.)
+      ENDIF
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE JOUMANA J. EL GHARIB
 
 # TITRE CAS TEST HYDROSTATIQUE CAM_CLAY EN 3D
@@ -172,10 +172,9 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                       CHAM_MATER=CHM,
                       EXCIT=(_F(CHARGE=CHA0,),
                              _F(CHARGE=CHA2,),),
-                      COMP_INCR=_F(RELATION='CAM_CLAY',
+                      COMP_INCR=_F(RELATION='CAM_CLAY',PARM_THETA=0.57,
                                    ITER_INTE_MAXI=100,
                                    ITER_INTE_PAS=-10,),
-                      PARM_THETA=0.57,
                       ETAT_INIT=_F(SIGM=RES1,),
                       INCREMENT=_F(LIST_INST=LI1,
                                    INST_INIT=100.0,
@@ -197,10 +196,9 @@ RESU1=STAT_NON_LINE(reuse=RESU1,
                      CHAM_MATER=CHM,
                       EXCIT=(_F(CHARGE=CHA0,),
                              _F(CHARGE=CHA2,),),
-                      COMP_INCR=_F(RELATION='CAM_CLAY',
+                      COMP_INCR=_F(RELATION='CAM_CLAY',PARM_THETA=0.57,
                                    ITER_INTE_MAXI=50,
                                    ITER_INTE_PAS=-10,),
-                      PARM_THETA=0.57,
                       ETAT_INIT=_F(EVOL_NOLI=RESU1,),
                       INCREMENT=_F(LIST_INST=LI1,
                                    INST_INIT= 8000.0,

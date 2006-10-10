@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
       DATA NOPAR  / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
      &              'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
      &              'NOEUD_I'  , 'NOM_CMP_I'  ,
-     &              'NOEUD_J'  , 'NOM_CMP_J' , 'FONCTION'     /
+     &              'NOEUD_J'  , 'NOM_CMP_J' , 'FONCTION_C'     /
       DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'R' , 'K8' , 'K8' ,
      &             'K8' , 'K8' , 'K24' /
 C
@@ -83,7 +83,7 @@ C
       CALL TBEXP2(TABLE,'OPTION')
       CALL TBEXP2(TABLE,'NUME_ORDRE_I')
       CALL TBEXP2(TABLE,'NUME_ORDRE_J')
-      CALL TBEXP2(TABLE,'FONCTION')
+      CALL TBEXP2(TABLE,'FONCTION_C')
       CALL TBEXIP ( TABLE, 'NUME_VITE_FLUI', EXISP ,TYPPAR)
       IF ( .NOT. EXISP ) THEN
          CALL TBEXP2(TABLE,'DIMENSION')
@@ -210,7 +210,7 @@ C
       IVAL(2) = ZI(INUOR)
       IVAL(3) = ZI(INUOR)
       CALL TBLIVA ( TABLE, 3, NOPAOU, IVAL, R8B, C16B, K8B, K8B, R8B,
-     &              'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
+     &              'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET )
       IF ( IRET .NE. 0 ) CALL U2MESS('F','ALGELINE_7')
       CALL JELIRA ( NOMFON(1:19)//'.VALE', 'LONUTI', NBPF, K8B )
       NBPF = NBPF/3

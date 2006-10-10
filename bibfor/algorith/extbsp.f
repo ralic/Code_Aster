@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCF, NOMF
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C
       CHARACTER*8   K8B, INTESP, NOEUI, NOEUJ, KVAL(4), CMPI, CMPJ
       CHARACTER*16  NOPAR(5)
       CHARACTER*19  NOMFON
+      CHARACTER*24  VALK(2)
 C     ----------------------------------------------------------------
 C
       CALL GETVID ( MCF, 'INTE_SPEC'     , IOCC,1,1, INTESP, N1 )
@@ -43,7 +44,7 @@ C
       CALL GETVTX ( MCF, 'NOM_CMP_I'     , IOCC,1,1, CMPI  , N7 )
       CALL GETVTX ( MCF, 'NOM_CMP_J'     , IOCC,1,1, CMPJ  , N8 )
 C
-      CALL TBEXP2(INTESP,'FONCTION')
+      CALL TBEXP2(INTESP,'FONCTION_C')
       NBPAR = 0
       NBPARK = 0
 C
@@ -96,8 +97,12 @@ C
       ENDIF
 C
       CALL TBLIVA ( INTESP, NBPAR, NOPAR, IVAL, R8B, C16B, KVAL, K8B,
-     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
-      IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_91')
+     &           R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET )
+      IF ( IRET .NE. 0 ) THEN
+         VALK(1) = 'FONCTION_C'
+         VALK(2) = INTESP
+         CALL U2MESK('F','MODELISA2_91', 2, VALK)
+      ENDIF
 C
       NOMF = NOMFON
 C

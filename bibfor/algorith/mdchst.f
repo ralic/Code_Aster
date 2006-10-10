@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,14 +68,15 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER       NBCHOC, NBSISM, NBFLAM, NBOCC, I, J, IOC, IBID, IL,
      &              JCOOR, JMAMA, NBNMA, KMA, NN1, NN2, INO1, INO2, IG,
-     &              N1, JREFE, IRET, NMLIAI, JMAIL, IM, ILIAI, NMGR,
-     &              NGRM, NUMAI
-      REAL*8        KTANG, CTANG, K, RAP, XJEU
+     &              N1, IRET, NMLIAI, JMAIL, IM, ILIAI, NMGR,
+     &              NGRM, NUMAI, IRETT
+      REAL*8        KTANG, CTANG, K, RAP, XJEU, R8BID
+      COMPLEX*16    CBID
       LOGICAL       LNOUE2
       CHARACTER*8   KBID, REPERE, MAILLA, MAMAI, NOMNO1, NOMNO2,
-     &              NOMGR1, NOMGR2
+     &              NOMGR1, NOMGR2, K8TYP
       CHARACTER*10  MOTFAC
-      CHARACTER*24  MDGENE
+      CHARACTER*24  MDGENE, REFO
 C     ------------------------------------------------------------------
 C
       CALL GETFAC ( 'CHOC'     , NBCHOC )
@@ -281,15 +282,18 @@ C
               CALL GETVR8('CHOC','DELTA   ',IOC,1,1,PARCHO(ILIAI,34),N1)
                ENDIF
                CALL GETVID(MOTFAC,'OBSTACLE',IOC,1,1,NOECHO(ILIAI,9),N1)
-              CALL JEVEUO(NOECHO(ILIAI,9)//'           .REFO','L',JREFE)
-               IF (ZK24(JREFE)(1:9).EQ.'BI_PLAN_Y') THEN
+               CALL TBLIVA(NOECHO(ILIAI,9),1,'LIEU',
+     &                     IBID,R8BID,CBID,'DEFIOBST',KBID,R8BID,'TYPE',
+     &                     K8TYP,IBID,R8BID,CBID,REFO,IRETT)
+               CALL ASSERT(IRETT.EQ.0)
+               IF (REFO(1:9).EQ.'BI_PLAN_Y') THEN
                   NOECHO(ILIAI,9) = 'BI_PLANY'
-               ELSEIF (ZK24(JREFE)(1:9).EQ.'BI_PLAN_Z') THEN
+               ELSEIF (REFO(1:9).EQ.'BI_PLAN_Z') THEN
                   NOECHO(ILIAI,9) = 'BI_PLANZ'
-               ELSEIF (ZK24(JREFE)(1:11).EQ.'BI_CERC_INT') THEN
+               ELSEIF (REFO(1:11).EQ.'BI_CERC_INT') THEN
                   NOECHO(ILIAI,9) = 'BI_CERCI'
-               ELSEIF (ZK24(JREFE)(1:7).NE.'DISCRET') THEN
-                  NOECHO(ILIAI,9) = ZK24(JREFE)(1:8)
+               ELSEIF (REFO(1:7).NE.'DISCRET') THEN
+                  NOECHO(ILIAI,9) = REFO(1:8)
                ENDIF
                IF ( NOECHO(ILIAI,9).EQ.'BI_CERCI' .AND.
      &              PARCHO(ILIAI,30).LT.PARCHO(ILIAI,29)) THEN
@@ -316,15 +320,18 @@ C
      &               CALL U2MESS('F','ALGORITH5_41')
                ENDIF
                CALL GETVID(MOTFAC,'OBSTACLE',IOC,1,1,NOECHO(ILIAI,9),N1)
-              CALL JEVEUO(NOECHO(ILIAI,9)//'           .REFO','L',JREFE)
-               IF (ZK24(JREFE)(1:9).EQ.'BI_PLAN_Y') THEN
+               CALL TBLIVA(NOECHO(ILIAI,9),1,'LIEU',
+     &                     IBID,R8BID,CBID,'DEFIOBST',KBID,R8BID,'TYPE',
+     &                     K8TYP,IBID,R8BID,CBID,REFO,IRETT)
+               CALL ASSERT(IRETT.EQ.0)
+               IF (REFO(1:9).EQ.'BI_PLAN_Y') THEN
                   NOECHO(ILIAI,9) = 'BI_PLANY'
-               ELSEIF (ZK24(JREFE)(1:9).EQ.'BI_PLAN_Z') THEN
+               ELSEIF (REFO(1:9).EQ.'BI_PLAN_Z') THEN
                   NOECHO(ILIAI,9) = 'BI_PLANZ'
-               ELSEIF (ZK24(JREFE)(1:11).EQ.'BI_CERC_INT') THEN
+               ELSEIF (REFO(1:11).EQ.'BI_CERC_INT') THEN
                   NOECHO(ILIAI,9) = 'BI_CERCI'
-               ELSEIF (ZK24(JREFE)(1:7).NE.'DISCRET') THEN
-                  NOECHO(ILIAI,9) = ZK24(JREFE)(1:8)
+               ELSEIF (REFO(1:7).NE.'DISCRET') THEN
+                  NOECHO(ILIAI,9) = REFO(1:8)
                ENDIF
                IF ( NOECHO(ILIAI,9).EQ.'BI_CERCI'    .AND.
      &              PARCHO(ILIAI,30).LT.PARCHO(ILIAI,29) ) THEN

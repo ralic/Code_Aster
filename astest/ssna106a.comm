@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE CREUX THERMOVISCOPLASTICITE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,9 +90,8 @@ RESU = STAT_NON_LINE (MODELE = MO,
                       EXCIT =(
                          _F( CHARGE = BLOC),
                          _F( CHARGE = CALC_T),),
-                      COMP_INCR =_F(RELATION ='LEMAITRE',
+                      COMP_INCR =_F(RELATION ='LEMAITRE',PARM_THETA = 0.5,
                                     ITER_INTE_MAXI = 1000),
-                      PARM_THETA = 0.5,
                       INCREMENT =_F(LIST_INST =L_INST),
                       NEWTON    =_F(
                                 MATRICE ='TANGENTE', 

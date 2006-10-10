@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 
 from Macro.lire_inte_spec_ops import lire_inte_spec_ops
 
-LIRE_INTE_SPEC=MACRO(nom="LIRE_INTE_SPEC",op=lire_inte_spec_ops,sd_prod=table_sdaster,
+LIRE_INTE_SPEC=MACRO(nom="LIRE_INTE_SPEC",op=lire_inte_spec_ops,sd_prod=table_fonction,
                     fr="Lecture sur un fichier externe de fonctions complexes pour créer une matrice interspectrale",
                     reentrant='n',
             UIinfo={"groupes":("Fonction",)},

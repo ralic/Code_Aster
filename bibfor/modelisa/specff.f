@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -252,7 +252,7 @@ C
               IFO = IFO2*(IFO2-1)/2 + IFO1
               IVAL(1) = IFO1
               CALL TBLIVA ( TABLE, 2, NOPART, IVAL, R8B, C16B, K8B, K8B,
-     &             R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
+     &           R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET)
               IF (IRET.NE.0) CALL U2MESS('F','MODELISA2_89')
                K8B = ' '
                DO 62 IL = 1,NBPF

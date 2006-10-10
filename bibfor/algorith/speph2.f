@@ -8,7 +8,7 @@
       CHARACTER*16        MOVREP
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C
       REAL*8        R8B
       CHARACTER*8   K8B
       CHARACTER*16  NOPAR(NBPAR)
-      CHARACTER*24  NOMFON
+      CHARACTER*24  NOMFON, VALK(2)
       COMPLEX*16    C16B
 C
       DATA NOPAR / 'NUME_ORDRE_I' , 'NUME_ORDRE_J' /
@@ -82,8 +82,12 @@ C
             IVAL(1) = IMI
 C
             CALL TBLIVA ( TABLE, NBPAR, NOPAR, IVAL, R8B, C16B, K8B,
-     &        K8B, R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
-            IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_91')
+     &       K8B, R8B, 'FONCTION_C', K8B, IBID, R8B, C16B, NOMFON, IRET)
+             IF (IRET.NE.0) THEN
+                VALK(1)(1:10) = 'FONCTION_C'
+                VALK(2)(1:8) = TABLE
+                CALL U2MESK('F','MODELISA2_91', 2, VALK)
+             ENDIF
 C
             CALL JEVEUO ( NOMFON(1:19)//'.VALE', 'L', IFON )
             ISJ = J * ( J - 1 ) / 2 + I

@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith5 Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -319,15 +319,11 @@ cata_msg={
 """),
 
 75: _("""
- algorithme de newmark: developpement "rela_effo_depl" non implante.
+ algorithme de NEWMARK: developpement %(k1)s non implante.
 """),
 
 76: _("""
- algorithme de newmark: developpement "rela_effo_vite" non implante.
-"""),
-
-77: _("""
- algorithme de newmark: developpement "choc" non implante.
+ NUME_ORDRE plus grand que le nombre de modes de la base
 """),
 
 78: _("""

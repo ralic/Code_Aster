@@ -1,7 +1,7 @@
       SUBROUTINE OP0076( IERR )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C
       CALL WKVECT(NOMRES//'           .VALE','G V R'  ,NBMODE,IDVECG)
       CALL WKVECT(NOMRES//'           .REFE','G V K24',2     ,IDREFE)
       CALL WKVECT(NOMRES//'           .DESC','G V I'  ,2     ,IDDESC)
+      CALL JEECRA(NOMRES//'           .DESC','DOCU',0,'VGEN')
 C
       ZI(IDDESC)     = 1
       ZI(IDDESC+1)   = NBMODE

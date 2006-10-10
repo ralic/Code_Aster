@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -289,7 +289,7 @@ C           CALL GETVIS ( MCF, 'NUME_CMP', IOCC,1,0, IBID,N11)
 C           CALL GETVIS(MCF,'NUME_CMP',IOCC,1,NUMCMP,ZI(JNUCP),N11)
             N11=0
                IF (ZK8(JCMP2)(1:4).EQ.'VARI') THEN
-                  IF (NBC.NE.1) CALL U2MESS('F','ALGELINE_7')
+                  CALL ASSERT( NBC.EQ.1 )
                   DO 120 I = 1 , NUMCMP
                      CALL CODENT ( ZI(JNUCP+I-1), 'G', K8B )
                      NOMCMP = 'VARI_'//K8B(1:3)

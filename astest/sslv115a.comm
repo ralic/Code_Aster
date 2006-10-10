@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,8 +18,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 
-
-
 DEBUT(CODE=_F(NOM='SSLV115A',NIV_PUB_WEB='INTERNET'));
 
 MAILLAGE=LIRE_MAILLAGE(UNITE=20,);
@@ -29,6 +27,8 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MAILLAGE = DEFI_GROUP( reuse=MAILLAGE, MAILLAGE=MAILLAGE, INFO=2,
+                CREA_GROUP_MA= _F( NOM = 'TOUT',
+                                   TOUT = 'OUI', ),
                 CREA_GROUP_NO=(_F( NOM = 'GRNO1',
                                    OPTION = 'TUNNEL',
                                    GROUP_MA = 'VOILE',
@@ -43,6 +43,9 @@ MAILLAGE = DEFI_GROUP( reuse=MAILLAGE, MAILLAGE=MAILLAGE, INFO=2,
                                    GROUP_NO_ORIG = 'NC1',
                                    LONGUEUR = 0.75 ,
                                    RAYON = 3. ,
+                                 ),
+                               _F( NOM = 'TOUT',
+                                   GROUP_MA = 'TOUT',
                                  ),
                                ),
                ) ;
@@ -129,6 +132,7 @@ EVOLNOLI=CALC_PRECONT( CHAM_MATER=CHMATER,
 EVOLNOLI=CALC_NO(reuse =EVOLNOLI,
                  OPTION='REAC_NODA',
                  RESULTAT=EVOLNOLI,);
+
 
 EVOLNO2=CALC_PRECONT(CHAM_MATER=CHMATER,
                       MODELE=MODELE,
@@ -273,7 +277,7 @@ EVOLNOT=CALC_PRECONT( CHAM_MATER=CHMATER,
                       CABLE_BP=( CABLEPR ,),   )       
 
 EVOLNOT=CALC_ELEM(reuse =EVOLNOT,
-                   OPTION=('EPSI_ELNO_DEPL',),
+                   OPTION=('SIEF_ELNO_ELGA', 'EPSI_ELNO_DEPL',),
                    RESULTAT=EVOLNOT,);
                    
 
@@ -310,5 +314,69 @@ TEST_RESU(RESU=(
          RESULTAT = NLTT100,   NOM_CHAM = 'EPSI_ELNO_DEPL',     NUME_ORDRE = 1,  
          MAILLE='TOTO1',NOEUD='NB001001',   NOM_CMP = 'EPXX',      VALE = 9.94449E-04    ),
          ),)
+
+# -----------------------------------------------------------------------------------------------
+
+TT = POST_RELEVE_T( ACTION=_F(  GROUP_NO = 'TOUT',
+                                INTITULE = 'SIEF',
+                                RESULTAT = EVOLNOT,
+                                NUME_ORDRE=1,
+                                NOM_CHAM='SIEF_ELNO_ELGA',
+                                TOUT_CMP = 'OUI',
+                                OPERATION = 'EXTRACTION')
+                   )
+#
+TEST_TABLE( TABLE= TT ,
+            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=0. ),
+            REFERENCE='NON_REGRESSION',
+            NOM_PARA='SIXX',
+            VALE= -1.66521E+05   )      
+TEST_TABLE( TABLE= TT ,
+            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=2. ),
+            REFERENCE='NON_REGRESSION',
+            NOM_PARA='SIXX',
+            VALE= -1.66521E+05   )      
+TEST_TABLE( TABLE= TT ,
+            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=2.08043E+01 ),
+            REFERENCE='NON_REGRESSION',
+            NOM_PARA='N',
+            VALE= 2.00000E+05   )      
+#
+IM = INTE_MAIL_3D ( MAILLAGE = MAILLAGE ,
+                    INFO = 2 ,
+                    DEFI_SEGMENT = _F( ORIGINE   =  ( 0. , 1. , 0.3 ),
+                                       EXTREMITE =  ( 2. , 1. , 0.3 ), ) , )
+
+TC = POST_RELEVE_T( ACTION=_F(  CHEMIN = IM ,
+                                INTITULE = 'SIEF',
+                                RESULTAT = EVOLNOT,
+                                NUME_ORDRE=1,
+                                NOM_CHAM='SIEF_ELNO_ELGA',
+                                TOUT_CMP = 'OUI',
+                                OPERATION = 'EXTRACTION')
+                   )
+#
+TEST_TABLE( TABLE= TC ,
+            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=0. ),
+            REFERENCE='NON_REGRESSION',
+            NOM_PARA='SIXX',
+            VALE= -1.66521E+05   )      
+TEST_TABLE( TABLE= TC ,
+            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=2. ),
+            REFERENCE='NON_REGRESSION',
+            NOM_PARA='SIXX',
+            VALE= -1.66521E+05   )      
+TEST_TABLE( TABLE= TC ,
+            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=0. ),
+            REFERENCE='NON_REGRESSION',
+            CRITERE='ABSOLU',
+            NOM_PARA='N',
+            VALE= 0.   )      
+TEST_TABLE( TABLE= TC ,
+            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=2. ),
+            REFERENCE='NON_REGRESSION',
+            CRITERE='ABSOLU',
+            NOM_PARA='N',
+            VALE= 0.   )      
 
 FIN();

@@ -7,7 +7,7 @@
      &                    INFMED, NIVINF, IFM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,14 +118,15 @@ C
 C
       INTEGER CODRET
       INTEGER IAUX, JAUX, KAUX,JAU2
-      INTEGER ITYP
+      INTEGER ITYP, INDIK8, INOM, ITMP
       INTEGER NUMFAM
       INTEGER NBATTR, NBGROU, NBENFA
       INTEGER IDATFA(200)
       INTEGER ADNOMG, ADNUMG, ADNUME
+      LOGICAL IERR
 C
       CHARACTER*2 SAUX02
-      CHARACTER*8 SAUX08
+      CHARACTER*8 SAUX08, K8B
       CHARACTER*32 NOMFAM
       CHARACTER*200 DESCAT(200)
 C
@@ -133,6 +134,7 @@ C
 C
 C     ------------------------------------------------------------------
 C
+      IERR = .FALSE.
       IF ( NIVINF.GE.2 ) THEN
         WRITE (IFM,1001) NOMPRO
  1001 FORMAT( 60('-'),/,'DEBUT DU PROGRAMME ',A)
@@ -182,13 +184,20 @@ C
           DO 20 , IAUX = 1 , NBGROU
             JAUX = LXLGUT(NOGRFA(IAUX))
             IF ( JAUX.GT.8 ) THEN
-              KAUX = KAUX + 1
-              WRITE (IFM,2001) NOMFAM, IAUX, JAUX, NOGRFA(IAUX)
+              K8B = NOGRFA(IAUX)(1:8)
+              JAU2 = LXLGUT(NOMFAM)
+              CALL UTDEBM('I','LRMMF3','LE NOM DE GROUPE ')
+              CALL UTIMPI('S','NUMERO',1,IAUX )
+              CALL UTIMPK('S','DE LA FAMILLE ',1,NOMFAM(1:JAU2))
+              CALL UTIMPK('S',' EST TROP LONG. IL SERA TRONQUE.',0,' ')
+              CALL UTIMPK('L','NOUVEAU NOM DU GROUPE: ',1,K8B)
+              CALL UTFINM()
+C
             ELSEIF(JAUX.EQ.0)THEN
               JAU2 = LXLGUT(NOMFAM)
               CALL UTDEBM('F','LRMMF3','LE NOM DE GROUPE ')
-              CALL UTIMPI('S','NUMERO',1,IAUX)
-              CALL UTIMPK('S','DE LA FAMILLE',1,NOMFAM(1:JAU2))
+              CALL UTIMPI('S','NUMERO ',1,IAUX)
+              CALL UTIMPK('S','DE LA FAMILLE ',1,NOMFAM(1:JAU2))
               CALL UTIMPK('S',' EST VIDE.',0,' ')
               CALL UTFINM()
             ENDIF
@@ -199,9 +208,6 @@ C
             CALL U2MESS('F','MODELISA5_21')
           ENDIF
 C
- 2001 FORMAT (/,'FAMILLE : ',A,
-     &/,'LE NOM DU GROUPE NUMERO',I3,' EST TROP LONG (',I2,
-     &  ' CARACTERES) :',/,A)
  2002 FORMAT (/,'CELA EST CONFORME AUX CONVENTIONS MED : ',
      &  'LE NOM D''UN GROUPE DOIT ETRE AU PLUS DE 80 CARACTERES.',
      &/,'MAIS CODE_ASTER NE SAIT TRAITER QUE DES NOMS D''AU',
@@ -315,8 +321,6 @@ C
             SAUX02 = 'GM'
             JAUX = -99999999
           ENDIF
-          ADNOMG = ADNOMG - 1
-          ADNUMG = ADNUMG - 1
 C
           IF ( NBGROU.EQ.0 ) THEN
 C
@@ -328,21 +332,42 @@ C
                 SAUX08(3:8) = 'P'//SAUX08(1:5)
               ENDIF
               SAUX08(1:2) = SAUX02
-              ZK8(ADNOMG+IAUX) = SAUX08
-              ZI(ADNUMG+IAUX)  = JAUX
+              ZK8(ADNOMG-1+IAUX) = SAUX08
+              ZI(ADNUMG-1+IAUX)  = JAUX
   251       CONTINUE
 C
           ELSE
 C
             DO 252 , IAUX = 1 , NBGROU
-              ZK8(ADNOMG+IAUX) = NOGRFA(IAUX)(1:8)
-              ZI(ADNUMG+IAUX) = JAUX
+              K8B = NOGRFA(IAUX)(1:8)
+              INOM = INDIK8 ( ZK8(ADNOMG), K8B, 1, IAUX )
+              IF ( INOM .NE. 0 ) THEN
+                IERR = .TRUE.
+                CALL UTDEBM('E','LRMMF3','LE NOM DE GROUPE ')
+                CALL UTIMPI('S','NUMERO ',1,IAUX )
+                CALL UTIMPK('S',' EST EN DOUBLE.',0,' ')
+                ITMP = LXLGUT(NOGRFA(IAUX))
+                CALL UTIMPK('L','PREMIER NOM MED  : ',1,
+     &                      NOGRFA(IAUX)(1:ITMP))
+                ITMP = LXLGUT(NOGRFA(INOM))
+                CALL UTIMPK('L','SECOND NOM MED   : ',1,
+     &                      NOGRFA(INOM)(1:ITMP))
+                CALL UTIMPK('L','NOM ASTER RETENU : ',1,K8B)
+                CALL UTFINM()
+              ENDIF
+              ZK8(ADNOMG-1+IAUX) = K8B
+              ZI(ADNUMG-1+IAUX) = JAUX
   252       CONTINUE
 C
           ENDIF
 C
         ENDIF
 C
+      ENDIF
+C
+      IF (IERR) THEN
+         CALL UTMESS('F', 'LRMMF3', 'ERREUR LORS DE LA VERIFICATION '
+     &                  //'DES NOMS DE GROUPES')
       ENDIF
 C
       IF ( NIVINF.GE.2 ) THEN

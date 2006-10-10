@@ -1,7 +1,7 @@
-      SUBROUTINE ZZCALB(IMA,NPG,NNO,WI,SIG,X,Y,XMIN,XMAX,YMIN,
+      SUBROUTINE ZZCALB(IGR,IEL,NPG,NNO,WI,DESC,SIG,X,Y,XMIN,XMAX,YMIN,
      &YMAX,F)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF ELEMENTS  DATE 09/10/2006   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ C     X(IPG),Y(IPG) SONT LES COORDONNEES DES PTS DE GAUSS SUR
 C     L'ELEMENT COURANT IMA
 C
       REAL*8 R,WI(1),X(1),Y(1),F(9,4),XX,YY,SIG(1),B(9)
+      INTEGER DESC(1)
       DO 1 IPG = 1,NPG
         XX = 0.D0
         YY = 0.D0
@@ -52,11 +53,13 @@ C
         B(8) =  YY*B(4)
         B(9) =  B(6)*B(5)
 C
-        IAD = (IMA-1)*4*NPG+(IPG-1)*4
+        IDEB = DESC(4+IGR)
+        IADIEL = DESC(IDEB+8+4*(IEL-1))
+        IAD = IADIEL + 4*(IPG-1) - 1
         DO 3 I = 1,NNO
-          DO 3 J = 1,4
+        DO 3 J = 1,4
           F(I,J) = F(I,J) + B(I) * SIG(IAD+J)
-3         CONTINUE
+3       CONTINUE
 1     CONTINUE
 C
       END

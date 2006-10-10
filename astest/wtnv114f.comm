@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # ======================================================================
 # TITRE TEST HM, 3D , MODELISATION THMC=LIQU_GAZ_ATM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,7 +176,7 @@ RESU0=STAT_NON_LINE(
                 CHARGE = CHARHO),
                              _F( 
                 CHARGE = CH_FLU1)),
-                         COMP_INCR=_F( 
+                         COMP_INCR=_F( PARM_THETA=1.,
                 RELATION = 'KIT_HM',
                 ITER_INTE_MAXI = 5,
                 RELATION_KIT = (
@@ -190,7 +190,6 @@ RESU0=STAT_NON_LINE(
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-8,
                 ITER_GLOB_MAXI = 120),
-                        PARM_THETA=1.,
                          ARCHIVAGE=_F( 
                 LIST_INST = ARCHI)
               )

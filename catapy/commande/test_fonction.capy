@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,8 +31,8 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
                                  ang="Sensitivity parameter"),
            NOM_PARA        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2),
            VALE_PARA       =SIMP(statut='o',typ='R'  ,validators=NoRepeat(),max=2),
-           VALE_REFE       =SIMP(statut='f',typ='R' ),
-           VALE_REFE_C     =SIMP(statut='f',typ='C' ),
+           VALE_REFE       =SIMP(statut='f',typ='R',max='**' ),
+           VALE_REFE_C     =SIMP(statut='f',typ='C',max='**' ),
            VALE_ABS        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            CRITERE         =SIMP(statut='f',typ='TXM',fr="Critère de comparaison avec la solution de référence",
                                  defaut="RELATIF",into=("RELATIF","ABSOLU") ),
@@ -76,7 +76,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,
            ),
            NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
            VALE_PARA       =SIMP(statut='o',typ='R' ),
-           VALE_REFE_C     =SIMP(statut='o',typ='C' ),
+           VALE_REFE_C     =SIMP(statut='o',typ='C',max='**' ),
            CRITERE         =SIMP(statut='f',typ='TXM',fr="Critère de comparaison avec la solution de référence",
                                  defaut="RELATIF",into=("RELATIF","ABSOLU") ),
            PRECISION       =SIMP(statut='f',typ='R',fr="Ecart maximal autorisé avec la solution de référence",

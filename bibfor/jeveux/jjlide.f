@@ -1,6 +1,6 @@
       SUBROUTINE JJLIDE ( NOMAP , NOMLU , ITYPE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C DEB ------------------------------------------------------------------
         FONC = 'TASS'
         IF ( ITYPE.NE.1 ) THEN
           CMESS = 'APPEL A JJLIDE PAR '//NOMAP//' INVALIDE'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
       ELSE IF ( NOMAP .EQ. 'JELIBF' ) THEN
         FONC   = 'LIBF'
@@ -294,7 +294,7 @@ C
           IF ( IXIADD .EQ. 0 ) THEN
             CMESS = 'LIBERATION D''UN OBJET DE COLLECTION CONTIG '//
      &              'REFUSEE '
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ELSE
             IBIADM = IADM ( JIADM(IC) + IXIADM )
             IBIADD = IADM ( JIADM(IC) + IXIADD )

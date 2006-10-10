@@ -1,4 +1,4 @@
-#@ MODIF algeline Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algeline Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,12 +42,8 @@ cata_msg={
  pour l'instant, on ne traiteque le cas des matrices reelles.
 """),
 
-6: _("""
- y a un bug 0
-"""),
-
 7: _("""
- y a un bug 3
+ Impossible de récupérer les valeurs dans la table.
 """),
 
 8: _("""

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -203,7 +203,6 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            ITER_GLOB_ELAS  =SIMP(statut='f',typ='I',defaut=25),
            ARRET           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          ),
-         PARM_THETA      =SIMP(statut='f',typ='R',defaut= 1. ),
          SOLVEUR         =FACT(statut='d',
            METHODE=SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS","FETI") ),
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",

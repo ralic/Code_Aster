@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,19 +16,20 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-MODI_OBSTACLE=OPER(nom="MODI_OBSTACLE",op=182,sd_prod=obstacle_sdaster,
-            fr="Calculer les obstacles dans les systèmes guidage-tube après usure",reentrant='f',
+MODI_OBSTACLE=OPER(nom="MODI_OBSTACLE",op=182,sd_prod=table_fonction,
+            fr="Calculer les obstacles dans les systèmes guidage-tube après usure",
+            reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
       regles=(PRESENT_ABSENT('R_MOBILE','CRAYON'),
               PRESENT_PRESENT('V_USUR_TUBE','V_USUR_OBST'),),
-         V_USUR_TUBE     =SIMP(statut='f',typ='R',max='**'),
-         V_USUR_OBST     =SIMP(statut='f',typ='R',max='**'),
+         OBSTACLE        =SIMP(statut='f',typ=table_fonction),
+         GUIDE           =SIMP(statut='o',typ=table_sdaster),
+         CRAYON          =SIMP(statut='f',typ=table_sdaster),
          TABL_USURE      =SIMP(statut='f',typ=table_sdaster),
          INST            =SIMP(statut='f',typ='R'),  
-         OBSTACLE        =SIMP(statut='f',typ=obstacle_sdaster),
-         GUIDE           =SIMP(statut='o',typ=obstacle_sdaster),
-         CRAYON          =SIMP(statut='f',typ=obstacle_sdaster),
          R_MOBILE        =SIMP(statut='f',typ='R'),  
          PERCEMENT       =SIMP(statut='f',typ='R',defaut=1),  
+         V_USUR_TUBE     =SIMP(statut='f',typ='R',max='**'),
+         V_USUR_OBST     =SIMP(statut='f',typ='R',max='**'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 )  ;

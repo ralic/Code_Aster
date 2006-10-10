@@ -1,21 +1,21 @@
-#@ MODIF calculel5 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF calculel5 Messages  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -163,19 +163,19 @@ cata_msg={
 """),
 
 36: _("""
- la cmp:  %(k1)s  n'est pas une cmp de  %(k2)s 
+ la cmp:  %(k1)s  n'est pas une cmp de  %(k2)s
 """),
 
 37: _("""
- programme  %(k1)s 
+ programme  %(k1)s
 """),
 
 38: _("""
-  il faut definir un champ de vitesse 
+  il faut definir un champ de vitesse
 """),
 
 39: _("""
- la grandeur pour la variable:  %(k1)s  doit etre:  %(k2)s  mais elle est:  %(k3)s 
+ la grandeur pour la variable:  %(k1)s  doit etre:  %(k2)s  mais elle est:  %(k3)s
 """),
 
 40: _("""
@@ -183,11 +183,11 @@ cata_msg={
 """),
 
 41: _("""
- pas de variables internes initiales pour la maille  %(k1)s 
+ pas de variables internes initiales pour la maille  %(k1)s
 """),
 
 42: _("""
- comportements incompatibles :  %(k1)s  et  %(k2)s  pour la maille  %(k3)s 
+ comportements incompatibles :  %(k1)s  et  %(k2)s  pour la maille  %(k3)s
 """),
 
 43: _("""
@@ -207,6 +207,20 @@ cata_msg={
 """),
 
 47: _("""
- le champ doit etre un cham_elem 
+ le champ doit etre un cham_elem
+"""),
+
+48: _("""
+ PROJ_CHAMP (ou LAISON_MAIL) :
+ Le noeud : %(k1)s      est projeté sur une maille un peu distante (%(k2)s).
+    distance à la maille  =   %(r1)g
+    diamètre de la maille =   %(r2)g
+"""),
+
+49: _("""
+ LIAISON_MAIL :
+ La relation linéaire destinée à éliminer le noeud esclave %(k1)s est une tautologie
+ car la maille maitre en vis à vis de ce noeud possède ce meme noeud dans sa connectivité.
+ On ne l'écrit donc pas.
 """),
 }

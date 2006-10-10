@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE PLAQUE SOUMISE A UNE TURBULENCE HOMOGENE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -208,14 +208,14 @@ SPPROJ=PROJ_SPEC_BASE(
 #EXTRACTION DE L AUTOSPECTRE D EFFORT MODAL TURBULENT
 
 AUTOSPEC=RECU_FONCTION(     TABLE=SPPROJ,
-                             TYPE_RESU='FONCTION_C',FILTRE=(
+                             FILTRE=(
                              _F(  NOM_PARA = 'NUME_VITE_FLUI',
                                       VALE_I = 0),
                                     _F(  NOM_PARA = 'NUME_ORDRE_I',
                                       VALE_I = 1),
                                     _F(  NOM_PARA = 'NUME_ORDRE_J',
                                       VALE_I = 1)),
-                             NOM_PARA_TABL='FONCTION',
+                             NOM_PARA_TABL='FONCTION_C',
                                   INTERPOL='LIN',
                                 PROL_DROITE='LINEAIRE',
                                PROL_GAUCHE='LINEAIRE'
@@ -274,12 +274,12 @@ REPINTSP=REST_SPEC_PHYS(         MODE_MECA=MODEAU,
                                         OPTION='TOUT_TOUT'  )
 
 REPONSE=RECU_FONCTION(    TABLE=REPINTSP,
-                            TYPE_RESU='FONCTION_C',FILTRE=(
+                          FILTRE=(
                             _F(  NOM_PARA = 'NOEUD_I',
                                      VALE_K = 'N2'),
                                    _F(  NOM_PARA = 'NOEUD_J',
                                      VALE_K = 'N2')),
-                            NOM_PARA_TABL='FONCTION',
+                            NOM_PARA_TABL='FONCTION_C',
                                  INTERPOL='LIN',
                                PROL_DROITE='EXCLU',
                               PROL_GAUCHE='EXCLU'

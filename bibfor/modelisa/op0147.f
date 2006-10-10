@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
 C
       DATA NOPAR / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
      &             'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
-     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION' /
+     &             'NUME_ORDRE_I' , 'NUME_ORDRE_J' , 'FONCTION_C' /
       DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'R' , 'I' , 'I' , 'K24' /
 C
 C-----------------------------------------------------------------------
@@ -92,7 +92,7 @@ C
 C
 C     VERIFICATION DES PARAMETRES DE LA TABLE
       CALL TBEXP2(TABLE,'OPTION')
-      CALL TBEXP2(TABLE,'FONCTION')
+      CALL TBEXP2(TABLE,'FONCTION_C')
       CALL TBEXP2(TABLE,'NUME_VITE_FLUI')
       CALL TBEXP2(TABLE,'NUME_ORDRE_I')
       CALL TBEXP2(TABLE,'NUME_ORDRE_J')

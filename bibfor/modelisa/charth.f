@@ -3,7 +3,7 @@
       CHARACTER*4 FONREE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,6 +143,7 @@ C     + INITIALISATION DES TYPE_ELEMENT
       IF (IRET.NE.0) THEN
         CALL ADALIG(LIGRCH)
         CALL INITEL(LIGRCH)
+        CALL JEECRA(LIGRCH//'.NOMA','DOCU',IBID,'THER')
       END IF
 
 

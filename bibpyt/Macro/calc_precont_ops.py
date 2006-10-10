@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_precont_ops Macro  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                 CABLE_BP,CABLE_BP_INACTIF,
                                 COMP_INCR,ETAT_INIT,NEWTON,RECH_LINEAIRE,
                                 CONVERGENCE,INCREMENT,SOLVEUR,SOLV_NON_LOCAL,
-                                LAGR_NON_LOCAL,PARM_THETA,INFO,TITRE,**args):
+                                LAGR_NON_LOCAL,INFO,TITRE,**args):
 
 
   """
@@ -291,12 +291,20 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
       for i in dComp_incr[-1].keys():
           if dComp_incr[-1][i]==None : del dComp_incr[-1][i]
 
+  PARM_THETA=0.
+  for j in range(len(COMP_INCR)) :
+     if dComp_incr[j]['RELATION'] == 'ELAS':
+        PARM_THETA=dComp_incr[j]['PARM_THETA']
+
+  if PARM_THETA == 0:
+    PARM_THETA=dComp_incr[0]['PARM_THETA']
+
   dComp_incr0=copy.copy(dComp_incr)
   dComp_incr1=copy.copy(dComp_incr)
    
-  dComp_incr0.append(_F(RELATION='SANS',GROUP_MA=__GROUP_MA_CABLES) )
+  dComp_incr0.append(_F(RELATION='SANS',GROUP_MA=__GROUP_MA_CABLES,) )
   if __GROUP_MA_I:
-    dComp_incr1.append(_F(RELATION='SANS',GROUP_MA=__GROUP_MA_I) )
+    dComp_incr1.append(_F(RELATION='SANS',GROUP_MA=__GROUP_MA_I,) )
 
 
   # 1.5 Modele contenant uniquement les cables de precontrainte
@@ -354,11 +362,11 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                                       _F(CHARGE = _C_CN),),
                          COMP_INCR  =_F( RELATION = 'ELAS',
                                          DEFORMATION = 'PETIT',
+                                         PARM_THETA = PARM_THETA,
                                          TOUT = 'OUI'),
                          INCREMENT  =_F(LIST_INST = __LST0,
                                         PRECISION = __prec),
                          SOLVEUR = dSolveur,
-                         PARM_THETA = PARM_THETA,
                          INFO     =INFO,
                          TITRE = TITRE,  )                      
                    
@@ -421,7 +429,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      SOLV_NON_LOCAL = dSolv_nonloc,
                      LAGR_NON_LOCAL = dLagr_nonloc,
                      ARCHIVAGE = _F(INST = __TINT),
-                     PARM_THETA = PARM_THETA,
                      INFO     =INFO,
                      TITRE = TITRE,
                      EXCIT = dExcit1,
@@ -457,7 +464,6 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                      LAGR_NON_LOCAL = dLagr_nonloc,
                      ARCHIVAGE = _F(NUME_INIT = __no,
                                     DETR_NUME_SUIV = 'OUI' ),
-                     PARM_THETA = PARM_THETA,
                      INFO  =INFO,
                      TITRE = TITRE,    
                      EXCIT =dExcit2,                 

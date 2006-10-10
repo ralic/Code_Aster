@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,10 +141,9 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                             _F(CHARGE=CHARG0,
                                TYPE_CHARGE='SUIV',),
                          ),
-                     COMP_INCR=_F(RELATION='KIT_HM',
+                     COMP_INCR=_F(RELATION='KIT_HM',PARM_THETA=1.0,
                                   RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),
                                   ITER_INTE_MAXI=5,),
-                     PARM_THETA=1.0,
                      INCREMENT=_F(LIST_INST=LI,),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=1,),

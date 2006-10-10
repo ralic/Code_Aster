@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -312,6 +312,13 @@ C           NNO1: NB DE NOEUD_MAIT LIES A INO2
                 CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO1),NONO1)
                 ZK8(IDNOMN+INO1) = NONO1
                 ZR(IDCOEF+INO1) = COEF1
+C               SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
+                IF (NUNO1.EQ.NUNO2) THEN
+                  IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-6) THEN
+                    CALL U2MESK('A','CALCULEL5_49',1,NONO1)
+                    GOTO 120
+                  ENDIF
+                ENDIF
    70         CONTINUE
 
 C           -- AFFECTATION DES RELATIONS CONCERNANT LE NOEUD INO2 :
@@ -470,6 +477,13 @@ C           NNO1: NB DE NOEUD_MAIT LIES A INO2
               CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO1),NONO1)
               ZK8(IDNOMN+INO1) = NONO1
               ZR(IDCOEF+INO1) = COEF1
+C             SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
+              IF (NUNO1.EQ.NUNO2) THEN
+                IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-6) THEN
+                  CALL U2MESK('A','CALCULEL5_49',1,NONO1)
+                  GOTO 270
+                ENDIF
+              ENDIF
   250       CONTINUE
 
 C           -- AFFECTATION DE LA RELATION CONCERNANT LE NOEUD INO2 :

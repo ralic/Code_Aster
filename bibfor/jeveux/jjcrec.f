@@ -1,6 +1,6 @@
       SUBROUTINE JJCREC ( ICL , IDA , GENRI , TYPEI , NB , IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,28 +63,28 @@ C DEB ------------------------------------------------------------------
       TYPE(JTYPE (ICL) + IDA ) = TYPEI(1:1)
       IF ( GENRI .EQ. 'N' .AND. TYPEI(1:1) .NE. 'K' ) THEN
         CMESS = 'UN OBJET REPERTOIRE DOIT ETRE DE TYPE K'
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
       IF ( TYPEI(1:1) .EQ. 'K' ) THEN
         L = LEN(TYPEI)
         IF ( L .EQ. 1 ) THEN
           CMESS  = ' LTYP D''UN OBJET DE TYPE K NON DEFINI'
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
         WRITE(IFMT,'(''(I'',I1,'')'')') L - 1
         READ ( TYPEI(2:L) , IFMT ) IV
         IF ( IV .LE. 0 .OR. IV .GT. 512 ) THEN
           CMESS = 'LTYP D'' OBJET DE TYPE K INVALIDE >'//TYPEI(2:)
-          CALL U2MESK('S','JEVEUX_01',1,CMESS)
+          CALL U2MESK('F','JEVEUX_01',1,CMESS)
         ENDIF
         IF ( GENRI .EQ. 'N' ) THEN
           IF ( MOD ( IV , LOIS ) .NE. 0 ) THEN
             CMESS = 'LTYP D'' OBJET REPERTOIRE NON MULTIPLE DE K8'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
           IF ( IV .GT. 24 ) THEN
             CMESS = 'LTYP D''OBJET REPERTOIRE > 24'
-            CALL U2MESK('S','JEVEUX_01',1,CMESS)
+            CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
         ENDIF
       ELSE IF ( TYPEI(1:1) .EQ. 'S' ) THEN
@@ -99,7 +99,7 @@ C DEB ------------------------------------------------------------------
         IV = LOLS
       ELSE
         CMESS = 'TYPE D''OBJET DE REFERENCE INCORRECT'
-        CALL U2MESK('S','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
       LTYP(JLTYP (ICL) + IDA ) = IV
       IF ( NB .GT. 0 ) THEN

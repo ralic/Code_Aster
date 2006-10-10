@@ -1,13 +1,13 @@
-      SUBROUTINE UTITES (LABEL1,LABEL2,TYPE,REFI,REFR,REFC,
+      SUBROUTINE UTITES (LABEL1,LABEL2,TYPE,NBREF,REFI,REFR,REFC,
      +                          VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
       IMPLICIT   NONE
-      INTEGER                          VALI,REFI,        IFIC
+      INTEGER                          VALI,NBREF,REFI(NBREF),     IFIC
       CHARACTER*(*)      LABEL1,LABEL2,TYPE,        CRIT,     SSIGNE
-      REAL*8                          VALR,REFR,EPSI
-      COMPLEX*16                          VALC,REFC
+      REAL*8                          VALR,REFR(NBREF),EPSI
+      COMPLEX*16                          VALC,REFC(NBREF)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,9 @@ C ======================================================================
 C  IN  : K12 : LABEL1 : UN LABEL SUR LA PREMIERE LIGNE (6,17)
 C  IN  : K17 : LABEL2 : UN LABEL SUR LA DEUXIEME LIGNE (1,17)
 C  IN  : K1  : TYPE   : TYPE DE VALEUR A TESTER 'R', OU 'C'
-C  IN  : R8  : REFR   : VALEUR REELLE DE REFERENCE
-C  IN  : C16 : REFC   : VALEUR COMPLEXE DE REFERENCE
+C  IN  : I   : NBREF  : NOMBRE DE VALEURS DE REFERENCE (=1 SOUVENT)
+C  IN  : R8  : REFR   : VALEUR(S) REELLE(S) DE REFERENCE
+C  IN  : C16 : REFC   : VALEUR(S) COMPLEXE(S) DE REFERENCE
 C  IN  : R8  : VALR   : VALEUR REELLE A TESTER ( ASTER )
 C  IN  : C16 : VALC   : VALEUR COMPLEXE A TESTER ( ASTER )
 C  IN  : K8  : CRIT   : PRECISION 'RELATIVE' OU 'ABSOLUE'
@@ -36,10 +37,11 @@ C  IN  : R8  : EPSI   : PRECISION ESPEREE
 C  IN  : I   : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
 C  OUT :                IMPRESSION SUR LISTING
 C ----------------------------------------------------------------------
+      INTEGER I, IMIN, MINVI, TMPI
       CHARACTER*4  TESTOK, RELA
       CHARACTER*12 K12
       CHARACTER*17 K17
-      REAL*8       ERR, ZERO, CENT, EPSR
+      REAL*8       ERR, ZERO, CENT, EPSR, TMPR, MINVR, MINVC, TMPC
       COMPLEX*16   ZEROC
       LOGICAL      LOK
 C     ------------------------------------------------------------------
@@ -53,11 +55,20 @@ C
       TESTOK = 'NOOK '
 C
       IF ( TYPE(1:1) .EQ. 'R' ) THEN
-         IF ( SSIGNE .EQ. 'OUI' ) VALR = ABS(VALR) 
+         IF ( SSIGNE .EQ. 'OUI' )  VALR = ABS(VALR)
+         MINVR=ABS(VALR-REFR(1))
+         IMIN=1
+         DO 10 I=1,NBREF-1
+           TMPR=ABS(VALR-REFR(I+1))
+           IF(TMPR.LT.MINVR)THEN
+             TMPR=MINVR
+             IMIN=I+1
+           ENDIF
+ 10      CONTINUE
          IF ( RELA .EQ. 'RELA' ) THEN
-            LOK = ( ABS(VALR-REFR) .LE. EPSI * ABS(REFR) )
-            IF ( REFR .NE. ZERO ) THEN
-               ERR = (VALR - REFR) / REFR *CENT
+            LOK = ( ABS(VALR-REFR(IMIN)) .LE. EPSI * ABS(REFR(IMIN)) )
+            IF ( REFR(IMIN) .NE. ZERO ) THEN
+               ERR = (VALR - REFR(IMIN)) / REFR(IMIN) *CENT
             ELSE
                ERR = 999.999999D0
             ENDIF
@@ -73,13 +84,13 @@ C
             ENDIF
             EPSR = EPSI*CENT
             IF (ABS(EPSR).GT.1.0D-03 .AND. ABS(EPSR).LT.1.0D+03 ) THEN
-               WRITE(IFIC,1010) K17, EPSR, REFR
+               WRITE(IFIC,1010) K17, EPSR, REFR(IMIN)
             ELSE
-               WRITE(IFIC,1012) K17, EPSR, REFR
+               WRITE(IFIC,1012) K17, EPSR, REFR(IMIN)
             ENDIF
          ELSE
-            LOK = ( ABS(VALR - REFR) .LE. EPSI )
-            ERR =       VALR - REFR
+            LOK = ( ABS(VALR - REFR(IMIN)) .LE. EPSI )
+            ERR =       VALR - REFR(IMIN)
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
                IF (ERR.LT.-99.9D0) THEN
@@ -91,19 +102,28 @@ C
                WRITE(IFIC,1006) TESTOK, K12, ERR, VALR
             ENDIF
             IF (ABS(EPSI).GT.1.0D-03 .AND. ABS(EPSI).LT.1.0D+03) THEN
-               WRITE(IFIC,1014) K17, EPSI, REFR
+               WRITE(IFIC,1014) K17, EPSI, REFR(IMIN)
             ELSE
-               WRITE(IFIC,1016) K17, EPSI, REFR
+               WRITE(IFIC,1016) K17, EPSI, REFR(IMIN)
             ENDIF
          ENDIF
 C
       ELSEIF ( TYPE(1:1) .EQ. 'I' ) THEN
+         MINVI=ABS(VALI-REFI(1))
+         IMIN=1
+         DO 20 I=1,NBREF-1
+           TMPI=ABS(VALI-REFI(I+1))
+           IF(TMPI.LT.MINVI)THEN
+             TMPI=MINVI
+             IMIN=I+1
+           ENDIF
+ 20      CONTINUE
          IF ( SSIGNE .EQ. 'OUI' ) VALI = ABS(VALI) 
-         ERR = DBLE( VALI - REFI )
+         ERR = DBLE( VALI - REFI(IMIN) )
          IF ( RELA .EQ. 'RELA' ) THEN
-            LOK = ( ABS( ERR ) .LE. EPSI*ABS(REFI) )
-            IF ( REFI .NE. 0 ) THEN
-               ERR = ( VALI - REFI ) / REFI *CENT
+            LOK = ( ABS( ERR ) .LE. EPSI*ABS(REFI(IMIN)) )
+            IF ( REFI(IMIN) .NE. 0 ) THEN
+               ERR = ( VALI - REFI(IMIN) ) / REFI(IMIN) *CENT
             ELSE
                ERR = 999.999999D0
             ENDIF
@@ -119,9 +139,9 @@ C
             ENDIF
             EPSR = EPSI*CENT
             IF (ABS(EPSR).GT.1.0D-03 .AND. ABS(EPSR).LT.1.0D+03) THEN
-               WRITE(IFIC,1110) K17, EPSR, REFI
+               WRITE(IFIC,1110) K17, EPSR, REFI(IMIN)
             ELSE
-               WRITE(IFIC,1112) K17, EPSR, REFI
+               WRITE(IFIC,1112) K17, EPSR, REFI(IMIN)
             ENDIF
          ELSE
             LOK = ( ABS( ERR ) .LE. EPSI )
@@ -136,17 +156,26 @@ C
                WRITE(IFIC,1106) TESTOK, K12, ERR, VALI
             ENDIF
             IF (ABS(EPSI).GT.1.0D-03 .AND. ABS(EPSI).LT.1.0D+03) THEN
-               WRITE(IFIC,1114) K17, EPSI, REFI
+               WRITE(IFIC,1114) K17, EPSI, REFI(IMIN)
             ELSE
-               WRITE(IFIC,1116) K17, EPSI, REFI
+               WRITE(IFIC,1116) K17, EPSI, REFI(IMIN)
             ENDIF
          ENDIF
 C
       ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
+         MINVC=ABS(VALC-REFC(1))
+         IMIN=1
+         DO 30 I=1,NBREF-1
+           TMPC=ABS(VALC-REFC(I+1))
+           IF(TMPC.LT.MINVC)THEN
+             TMPC=MINVC
+             IMIN=I+1
+           ENDIF
+ 30      CONTINUE
          IF ( RELA .EQ. 'RELA' ) THEN
-            LOK = ( ABS(VALC-REFC) .LE. EPSI * ABS(REFC))
-            IF ( REFC .NE. ZEROC ) THEN
-               ERR = ABS(VALC - REFC) /  ABS(REFC) *CENT
+            LOK = ( ABS(VALC-REFC(IMIN)) .LE. EPSI * ABS(REFC(IMIN)))
+            IF ( REFC(IMIN) .NE. ZEROC ) THEN
+               ERR = ABS(VALC - REFC(IMIN)) /  ABS(REFC(IMIN)) *CENT
             ELSE
                ERR = 999.999999D0
             ENDIF
@@ -162,13 +191,13 @@ C
             ENDIF
             EPSR = EPSI*CENT
             IF (ABS(EPSR).GT.1.0D-03 .AND. ABS(EPSR).LT.1.0D+03) THEN
-               WRITE(IFIC,1210) K17, EPSR, REFC
+               WRITE(IFIC,1210) K17, EPSR, REFC(IMIN)
             ELSE
-               WRITE(IFIC,1212) K17, EPSR, REFC
+               WRITE(IFIC,1212) K17, EPSR, REFC(IMIN)
             ENDIF
          ELSE
-            LOK = ( ABS(VALC - REFC) .LE. EPSI )
-            ERR =   ABS(VALC - REFC)
+            LOK = ( ABS(VALC - REFC(IMIN)) .LE. EPSI )
+            ERR =   ABS(VALC - REFC(IMIN))
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
                IF (ERR.LT.-99.9D0) THEN
@@ -180,9 +209,9 @@ C
                WRITE(IFIC,1206) TESTOK, K12, ERR, VALC
             ENDIF
             IF (ABS(EPSI).GT.1.0D-03 .AND. ABS(EPSI).LT.1.0D+03) THEN
-               WRITE(IFIC,1214) K17, EPSI, REFC
+               WRITE(IFIC,1214) K17, EPSI, REFC(IMIN)
             ELSE
-               WRITE(IFIC,1216) K17, EPSI, REFC
+               WRITE(IFIC,1216) K17, EPSI, REFC(IMIN)
             ENDIF
          ENDIF
       ENDIF
