@@ -1,7 +1,7 @@
        SUBROUTINE ALGOCL(DEFICO,RESOCO,MATASS,LMAT,LDSCON,NOMA,CINE,
      &                   DEPTOT,ITERAT,LREAC,RESU,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/10/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,8 +124,8 @@ C
       INTEGER      JZOCO,JAPCOE,JAPDDL,JAPJEU,JAPMEM
       CHARACTER*24 MACONT,K24BID
       CHARACTER*19 MATAS1,MATPRE
-      CHARACTER*19 DELT0,LIAC,CM1A,LIOT,MU
-      INTEGER      JDELT0,JLIAC,JCM1A,JLIOT,JMU
+      CHARACTER*19 DELT0,LIAC,LIOT,MU
+      INTEGER      JDELT0,JLIAC,JLIOT,JMU
       CHARACTER*19 SOLVEU,CHASEC,CHASOL
       INTEGER      JSLVK,JCHSEC,JCHSOL
       INTEGER      JRESU,JDEPP
@@ -138,7 +138,7 @@ C
       INTEGER      JDECAL,POSIT,BTOTAL
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
-      LOGICAL      GCPC,TROUAC,DELPOS,LELPIV
+      LOGICAL      TROUAC,DELPOS,LELPIV
       REAL*8       XJVMAX,AJEU,VAL,AADELT,RHO,RHORHO,X1,R8BID
       REAL*8       R8MAEM,R8PREM
       INTEGER      ITER,ITEMAX,ITEMUL,ISTO
@@ -183,7 +183,6 @@ C ======================================================================
       DELT0  = RESOCO(1:14)//'.DEL0'
       DELTA  = RESOCO(1:14)//'.DELT'
       COCO   = RESOCO(1:14)//'.COCO'
-      CM1A   = RESOCO(1:14)//'.CM1A'
       MACONT = ZK24(ZI(LDSCON+1))
       SOLVEU = '&&OP0070.SOLVEUR'
 C ======================================================================
@@ -268,20 +267,6 @@ C ======================================================================
 C ======================================================================
 C                             INITIALISATIONS
 C ======================================================================
-C     SI SOLVEUR GCPC, ON ALLOUE 2 CHAM_NO UTILES POUR APPELER RESOUD :
-C     -----------------------------------------------------------------
-      GCPC = (ZK24(JSLVK-1+1).EQ.'GCPC')
-      IF (GCPC) THEN
-        MATAS1 = ZK24(ZI(LMAT+1))
-        IF (MATAS1.NE.MATASS) CALL U2MESS('F','CALCULEL_13')
-        MATPRE = '&&NMMATR.MAPREC'
-        CHASOL = '&&ALGOCL.CHASOL'
-        CHASEC = '&&ALGOCL.CHASEC'
-        CALL COPISD('CHAMP_GD','V',DEPTOT,CHASOL)
-        CALL COPISD('CHAMP_GD','V',DEPTOT,CHASEC)
-        CALL JEVEUO(CHASOL//'.VALE','E',JCHSOL)
-        CALL JEVEUO(CHASEC//'.VALE','L',JCHSEC)
-      END IF
 C ======================================================================
 C --- RECOPIE DANS DELT0 DU CHAMP DE DEPLACEMENTS OBTENU SANS
 C --- TRAITER LE CONTACT (LE DDEPLA DONNE PAR STAT_NON_LINE)
@@ -380,39 +365,6 @@ C ---
 C ======================================================================
 C
       IF (NBLIAC.NE.0) THEN
-        IF (GCPC) THEN
-C
-C --- PAR GRADIENT CONJUGUE
-C
-           INDFAC = MIN(INDFAC, SPLIAI+1)
-           SPAVAN = 0
-           IF (INDIC.NE.-1) THEN
-              DO 210 ILIAC = AJLIAI+1,NBLIAC
-                 LLIAC = ZI(JLIAC+ILIAC-1)
-C
-C --- CALCUL DE CHAQUE COLONNE DE AT (UNE PAR LIAISON ACTIVE)
-C
-                 CALL JEVEUO(JEXNUM(CM1A,LLIAC),'E',JCM1A)
-                 DO 110 KK = 1,NEQ
-                    ZR(JCM1A-1+KK) = 0.0D0
- 110             CONTINUE
-                 JDECAL = ZI(JAPPTR+LLIAC-1)
-                 NBDDL = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
-                 CALL CALATM(NEQ,NBDDL,1.D0,ZR(JAPCOE+JDECAL),
-     &                       ZI(JAPDDL+JDECAL),ZR(JCM1A))
-C
-C --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES DIRICHLET)
-C
-                 CALL JACOPO(NEQ,'R',JCM1A,JCHSEC)
-                 CALL RESOUD(MATASS,MATPRE,CHASEC,SOLVEU,CINE,'V',
-     &                  CHASOL,'&&ALGOCO_CRIT')
-                 CALL JEVEUO(CHASOL//'.VALE','L',JCHSOL)
-                 CALL JACOPO(NEQ,'R',JCHSOL,JCM1A)
-                 CALL JELIBE(JEXNUM(CM1A,LLIAC))
- 210          CONTINUE
-           ENDIF
-        ELSE
-C
 C --- PAR LDLT OU MULT_FRONT
 C
          SPAVAN = SPLIAI
@@ -422,7 +374,6 @@ C
          CALL CFACAT(NDIM,INDIC,NBLIAC,AJLIAI,SPLIAI,0,0,0,
      &               INDFAC,NESMAX,DEFICO,RESOCO,LMAT,CINE,NBLIAI,
      &               XJVMAX)
-         ENDIF
 C ======================================================================
 C ---
 C --- ELIMINATION DES PIVOTS NULS
@@ -654,13 +605,6 @@ C ======================================================================
       END IF
 C
   999 CONTINUE
-C ======================================================================
-C --- DESTRUCTION DES VECTEURS INUTILES
-C ======================================================================
-      IF (GCPC) THEN
-        CALL DETRSD('CHAMP_GD','&&ALGOCL.CHASOL')
-        CALL DETRSD('CHAMP_GD','&&ALGOCL.CHASEC')
-      ENDIF
 C ======================================================================
 C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
 C ======================================================================

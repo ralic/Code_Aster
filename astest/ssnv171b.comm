@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COMPARAISON POLYCRISTAL ET MONOCRISTAL.
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,6 +98,65 @@ ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                      MASSIF=_F(GROUP_MA='TOUT',
                                ANGL_REP=(30.0,0.0,0.0,),),);
 
+MONOIMPL=STAT_NON_LINE(MODELE=TROISD,
+                    CHAM_MATER=MAT,
+                    CARA_ELEM=ORIEN,
+                    EXCIT=(_F(CHARGE=TRAC,
+                              FONC_MULT=COEF,
+                              TYPE_CHARGE='FIXE_CSTE',),),
+                    COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                  COMPOR=COMPORT,
+                                  DEFORMATION='PETIT',
+                                  ITER_INTE_MAXI=100,
+                                  ITER_INTE_PAS=10,
+                                  RESO_INTE='IMPLICITE',
+                                  TOUT='OUI',),),
+                    INCREMENT=(_F(LIST_INST=LINST),),
+                    NEWTON=(_F(REAC_ITER=1,),),
+                    CONVERGENCE=(_F(ITER_GLOB_MAXI=100,),),);
+
+MONOIMPL=CALC_ELEM(reuse =MONOIMPL,
+                RESULTAT=MONOIMPL,
+                OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MONOIMPL,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-210.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MONOIMPL,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.0018909,
+                   PRECISION=(0.01,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MONOIMPL,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPYY',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=0.000502667,
+                   PRECISION=(0.01,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MONOIMPL,
+                   INST=TFIN,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPYY',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=6.87828e-05,
+                   PRECISION=(0.02,1e-06,),
+                   REFERENCE='AUTRE_ASTER',),),);
+
+FIN()
+
 MONOEXPL=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT,
                      CARA_ELEM=ORIEN,
@@ -155,63 +214,6 @@ TEST_RESU(RESU=(_F(RESULTAT=MONOEXPL,
                    VALE=6.87828e-05,
                    PRECISION=(0.0001,1e-06,),
                    REFERENCE='NON_REGRESSION',),),);
-
-MONOIMPL=STAT_NON_LINE(MODELE=TROISD,
-                    CHAM_MATER=MAT,
-                    CARA_ELEM=ORIEN,
-                    EXCIT=(_F(CHARGE=TRAC,
-                              FONC_MULT=COEF,
-                              TYPE_CHARGE='FIXE_CSTE',),),
-                    COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                  COMPOR=COMPORT,
-                                  DEFORMATION='PETIT',
-                                  ITER_INTE_MAXI=100,
-                                  ITER_INTE_PAS=10,
-                                  RESO_INTE='IMPLICITE',
-                                  TOUT='OUI',),),
-                    INCREMENT=(_F(LIST_INST=LINST),),
-                    NEWTON=(_F(REAC_ITER=1,),),
-                    CONVERGENCE=(_F(ITER_GLOB_MAXI=100,),),);
-
-MONOIMPL=CALC_ELEM(reuse =MONOIMPL,
-                RESULTAT=MONOIMPL,
-                OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
-
-TEST_RESU(RESU=(_F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-210.0,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.0018909,
-                   PRECISION=(0.01,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPYY',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=0.000502667,
-                   PRECISION=(0.01,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=MONOIMPL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPYY',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=6.87828e-05,
-                   PRECISION=(0.01,1e-06,),
-                   REFERENCE='AUTRE_ASTER',),),);
 
 COMPORP=DEFI_COMPOR(POLYCRISTAL=(
                                _F(MONOCRISTAL=COMPORT,
@@ -311,4 +313,3 @@ FORMAT='TABLEAU',UNITE=38,
            _F(FONCTION=EPSPXX3,MARQUEUR=1,COULEUR=1,FREQ_MARQUEUR=1,LEGENDE='POLYCRISTAL EXPLICITE'),
            ),)
 
-FIN()

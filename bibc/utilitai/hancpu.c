@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hancpu utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hancpu utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,9 +16,9 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-
 #include <stdio.h>
 #include <stdlib.h>
+#include "aster.h"
 
 /*
 **  Fonction C intermediaire pour appeler une routine FORTRAN
@@ -28,12 +28,9 @@
 */
 void hancpu(int sig)
 {
-#ifdef CRAY
-   SIGCPU();
-#endif
-#if defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64
-   sigcpu_();
-#endif
-exit(sig);
+   void STDCALL(SIGCPU, sigcpu)();
+   
+   F_FUNC(SIGCPU, sigcpu)();
+   exit(sig);
 }
 

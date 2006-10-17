@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,7 +119,6 @@ C
         REAL*8          TIMED,       TIMEF,     TEMPD,    TEMPF  , TREF
         REAL*8          DEPS(6),     EPSF(6)
         REAL*8          EPSDT(6),    DEPST(6)
-        LOGICAL         BZ
         CHARACTER*(*)   FAMI
 C
         REAL*8            ENDOC, MAXDOM
@@ -150,7 +149,7 @@ C
         REAL*8          SIGI(6),EPSD(6),DETOT(6)
         REAL*8          NU,TPERD,DTPER,TPEREF,DTIME,E,ALPHA,X
         REAL*8          EPSEQ
-        REAL*8          HSR(5,24,24)
+        REAL*8          HSR(5,24,24),TOUTMS(5,24,6)
 C
         COMMON /TDIM/   NDT,    NDI
         COMMON /OPTI/   IOPTIO, IDNR
@@ -194,9 +193,9 @@ C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-      CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     &             TYPMA,BZ,HSR,MATERD,MATERF,MATCST,
-     &            NBCOMM,CPMONO,ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND)
+      CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,1,
+     &             TYPMA,HSR,MATERD,MATERF,MATCST,
+     &    NBCOMM,CPMONO,ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
 C
       IF (OPT.EQ.'RIGI_MECA_TANG') THEN
           CALL LCINMA(0.D0,DSDE)
@@ -294,7 +293,7 @@ C      POUR POLYCRISTAL
       CALL GERPAS(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
      &              NVI,NMAT,VINF,DTIME,TOLER,YMFS,COTHE,
      &              COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,ANGMAS,
-     &              SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,BZ,X)
+     &              SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,X)
       IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI +2
 
 

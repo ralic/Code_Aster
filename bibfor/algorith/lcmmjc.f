@@ -1,11 +1,11 @@
-        SUBROUTINE LCMMJC( COEFT,IFA,NMAT,NBCOMM,DP,
-     &                     NECRCI,VIS,DADV)
+        SUBROUTINE LCMMJC( COEFT,IFA,NMAT,NBCOMM,
+     &              IR,IS,NECRCI,DGAMMS,ALPHMR,DALPHA,SGNR,DALDGR)
         IMPLICIT NONE
-        INTEGER IFA,NMAT,NBCOMM(NMAT,3)
-        REAL*8 COEFT(NMAT),VIS(3),DADV(3)
+        INTEGER IFA,NMAT,NBCOMM(NMAT,3),IR,IS
+        REAL*8 COEFT(NMAT),DALDGR,DGAMMS,ALPHMR,SGNR,LCINE2,R8PREM
         CHARACTER*16 NECRCI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,27 +26,27 @@ C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C  CALCUL DES DERIVEES DES VARIABLES INTERNES DES LOIS MONOCRISTALLINES
 C  POUR L'ECROUISSAGE CINEMATIQUE
-C       IN  COEFT   :  PARAMETRES MATERIAU
-C           IFA :  NUMERO DE FAMILLE
+C       IN  COEFT  :  PARAMETRES MATERIAU
+C           IFA    :  NUMERO DE FAMILLE
+C           IR     :  
 C           NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
-C           NECRCI  :  NOM DE LA LOI D'ECROUISSAGE CINEMATIQUE
-C           VIS : VARIABLES INTERNES DU SYSTEME DE GLISSEMENT COURANT
-C           DP  : DELTA P ACTUEL
+C           IS     :  NUMERO DU SYSTEME DE GLISSEMENT EN COURS
+C           IR     :  NUMERO DU SYSTEME DE GLISSEMENT POUR INTERACTION
+C           NECRCI :  NOM DE LA LOI D'ECROUISSAGE CINEMATIQUE
+C           DGAMMS :  ACCROISS. GLISSEMENT PLASTIQUE 
+C           ALPHMR :  VAR. ECR. CIN. INST T
+C           DALPHA :  DELTA ALPHA
+C           SGNR   : DELTA P ACTUEL
 C     OUT:
-C       DADV  :  DERIVEES DE L'EQUATION ECR. CIN. PAR RAPPORT A 
-C                ALPHA, GAMMA ET P
+C           DALDGR : dAlpha/dGamma
+C           
 C     ----------------------------------------------------------------
-      REAL*8 C,P,D,ALPHA,GAMMA,DP,GM,PM,CC
+      REAL*8 C,P,D,ALPHA,GAMMA,DP,GM,PM,CC,DALPHA
       INTEGER IEC
 C     ----------------------------------------------------------------
 
-C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
-C     DANS DADV : 1,1 = DA/DALPHA, 1,2=DG/DALPHA, 1,3=DP/DALPHA...
-
-      CALL LCINVN(3, 0.D0, DADV)
       
       IEC=NBCOMM(IFA,2)
-      ALPHA=VIS(1)
 
 C--------------------------------------------------------------------
 C     POUR UN NOUVEL ECROUISSAGE CINEMATIQUE, AJOUTER UN BLOC IF 
@@ -54,26 +54,20 @@ C--------------------------------------------------------------------
 
       IF (NECRCI.EQ.'ECRO_CINE1') THEN
           D=COEFT(IEC-1+1)
-          DADV(1)=1.D0+D*DP
-          DADV(2)=-1.D0
-          DADV(3)=D*ALPHA
+          DALDGR=0.D0
+          IF (IS.EQ.IR) THEN
+             DALDGR=(1.D0-D*ALPHMR*SGNR)/(1.D0+D*ABS(DGAMMS))**2
+          ENDIF
       ENDIF
       
       IF (NECRCI.EQ.'ECRO_CINE2') THEN
-          D=COEFT(IEC-1+1)
-          GM=COEFT(IEC-1+2)
-          PM=COEFT(IEC-1+3)
-          C=COEFT(IEC-1+4)
-          CC=C*ALPHA
-          IF(CC.NE.0.D0) THEN
-            DADV(1)=1.D0+D*DP+
-     &           PM*C/GM*((ABS(CC)/GM)**(PM-1))*ALPHA/ABS(ALPHA)
-            DADV(2)=-1.D0
-            DADV(3)=D*ALPHA
-          ELSE
-            DADV(1)=1.D0+D*DP
-            DADV(2)=-1.D0
-            DADV(3)=D*ALPHA
+          DALDGR=0.D0
+          IF (IS.EQ.IR) THEN
+             IF (ABS(DGAMMS).GT.R8PREM()) THEN
+                DALDGR=DALPHA/DGAMMS
+             ELSE
+                DALDGR=1.D0
+             ENDIF
           ENDIF
       ENDIF
            

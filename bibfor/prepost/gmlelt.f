@@ -1,6 +1,6 @@
       SUBROUTINE  GMLELT(IGMSH, MAXNOD, NBTYMA, NBMAIL, NBNOMA, NUCONN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 17/10/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,8 +108,13 @@ C --- DES VECTEURS DE TRAVAIL :
 C     -----------------------
       K      = 0
       IJ     = 0
+      
+C --- ICURGR : NUMERO DU GROUPE GMSH
+C     NBGROU : NBRE DE GROUPES TROUVES
+C     INDGRO : INDICE DU GROUPE
+      ICURGR = 0
+      NBGROU = 0
       INDGRO = 0
-      MAXGRO = 0
       DO 10 IMA = 1, NBMAIL
         READ(IGMSH,*) ZI(JNUMA+IMA-1),ZI(JTYPMA+IMA-1),
      +                ZI(JGROMA+IMA-1),IBID,ZI(JNBNMA+IMA-1),
@@ -123,33 +128,30 @@ C      INDICATION DES NOEUDS QUI NE SONT PAS ORPHELINS
           ZI(JDETR+NODE) = 1
  12     CONTINUE
 
-
-        IF (MAXGRO.NE.ZI(JGROMA+IMA-1)) THEN
-          MAXGRO = ZI(JGROMA+IMA-1)
-          INDGRO = INDGRO + 1
+        IF (ICURGR.NE.ZI(JGROMA+IMA-1)) THEN
+          ICURGR = ZI(JGROMA+IMA-1)
           EXISGR = .FALSE.
-          DO 20 I = 1, INDGRO-1
-            IF (MAXGRO.EQ.ZI(JINDMA+I-1)) THEN
-              ZI(JNBMAG+I-1) = ZI(JNBMAG+I-1)+1
+          DO 20 I = 1, NBGROU
+            IF (ICURGR.EQ.ZI(JINDMA+I-1)) THEN
               EXISGR = .TRUE.
+              INDGRO = I
               GOTO 30
             ENDIF
   20      CONTINUE
   30      CONTINUE
-          IF (EXISGR) THEN
-            INDGRO = INDGRO-1
-          ELSE
-            ZI(JNBMAG+INDGRO-1) = ZI(JNBMAG+INDGRO-1)+1
+          IF (.NOT.EXISGR) THEN
+            NBGROU = NBGROU + 1
+            INDGRO = NBGROU
             ZI(JINDMA+INDGRO-1) = ZI(JGROMA+IMA-1)
           ENDIF
-        ELSE
-            ZI(JNBMAG+INDGRO-1) = ZI(JNBMAG+INDGRO-1)+1
         ENDIF
+        ZI(JNBMAG+INDGRO-1) = ZI(JNBMAG+INDGRO-1) + 1
+      
         IJ = IJ + ZI(JNBNMA+IMA-1)
         ZI(JNBTYM+ZI(JTYPMA+IMA-1)-1) = ZI(JNBTYM+ZI(JTYPMA+IMA-1)-1)+1
   10  CONTINUE
 C
-      INDMAX = INDGRO
+      INDMAX = NBGROU
       CALL JEECRA('&&PREGMS.INDICE.GROUP_MA','LONUTI',INDMAX,K8BID)
 C
 C --- CREATION DE LA COLLECTION DES GROUPES DE MAILLES :
@@ -167,29 +169,30 @@ C
 C --- AFFECTATION DES OBJETS RELATIFS AUX GROUPES DE MAILLES :
 C     ------------------------------------------------------
       K      = 0
+C --- ICURGR : NUMERO DU GROUPE GMSH
+C     NBGROU : NBRE DE GROUPES TROUVES
+C     INDGRO : INDICE DU GROUPE
+      ICURGR = 0
+      NBGROU = 0
       INDGRO = 0
-      MAXGRO = 0
       DO 50 IMA = 1, NBMAIL
-        IF (MAXGRO.NE.ZI(JGROMA+IMA-1)) THEN
-          MAXGRO = ZI(JGROMA+IMA-1)
-          INDGRO = INDGRO + 1
+        IF (ICURGR.NE.ZI(JGROMA+IMA-1)) THEN
+          ICURGR = ZI(JGROMA+IMA-1)
           EXISGR = .FALSE.
-          DO 60 I = 1, INDGRO-1
-            IF (MAXGRO.EQ.ZI(JINDMA+I-1)) THEN
-              ZI(JNBMAG+I-1) = ZI(JNBMAG+I-1)+1
+          DO 60 I = 1, NBGROU
+            IF (ICURGR.EQ.ZI(JINDMA+I-1)) THEN
               EXISGR = .TRUE.
+              INDGRO = I
               GOTO 70
             ENDIF
   60      CONTINUE
   70      CONTINUE
-          IF (EXISGR) THEN
-            INDGRO = INDGRO-1
-          ELSE
-            ZI(JNBMAG+INDGRO-1) = ZI(JNBMAG+INDGRO-1)+1
+          IF (.NOT.EXISGR) THEN
+            NBGROU = NBGROU + 1
+            INDGRO = NBGROU
           ENDIF
-        ELSE
-            ZI(JNBMAG+INDGRO-1) = ZI(JNBMAG+INDGRO-1)+1
         ENDIF
+        ZI(JNBMAG+INDGRO-1) = ZI(JNBMAG+INDGRO-1) + 1
 C
         ZI(JINDMA+INDGRO-1) = ZI(JGROMA+IMA-1)
         CALL JEVEUO(JEXNUM('&&PREGMS.LISTE.GROUP_MA',INDGRO),'E',JGR)

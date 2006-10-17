@@ -1,7 +1,6 @@
 /* ------------------------------------------------------------------*/
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF GTNPRO utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF GTNPRO utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -22,24 +21,19 @@
 /* RECUPERE LE NUMERO DU PROCESSEUR COURANT SOUS MPI                  */
 /* RETOURNE 0 SI MPI N'A PAS ETE ACTIVEE                              */
 /* ------------------------------------------------------------------ */
-#ifdef MPI
+#include "aster.h"
+
+#ifdef _USE_MPI
 #include "mpi.h"
 #endif
-#ifdef CRAY
-   long GTNPRO()
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long gtnpro_()
-#elif defined HPUX
-   long gtnpro()
-#elif defined PPRO_NT
-   long __stdcall GTNPRO()
-#endif
+
+INTEGER STDCALL(GTNPRO, gtnpro)()
 {
-int nprocs;
-#ifdef MPI
-  MPI_Comm_rank(MPI_COMM_WORLD, &nprocs);
+   int nproc;
+#ifdef _USE_MPI
+   MPI_Comm_rank(MPI_COMM_WORLD, &nproc);
 #else
-  nprocs=0;
+   nproc=0;
 #endif
-return((long) nprocs);
+   return (INTEGER)nproc;
 }

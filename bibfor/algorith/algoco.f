@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCO(DEFICO,RESOCO,MATASS,LMAT,LDSCON,NOMA,CINE,
      &                  RESU,DEPTOT,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/10/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C
       CHARACTER*24 K24BID
       COMPLEX*16   CBID
       INTEGER      IBID
-      LOGICAL      TROUAC,DELPOS,GCPC,LELPIV,CFEXCL
+      LOGICAL      TROUAC,DELPOS,LELPIV,CFEXCL
       CHARACTER*19 MATAS1,MATPRE
       INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,IZONE
       INTEGER      II,KK,ITER,ILIAC,NEQMAX,ITEX
@@ -126,8 +126,8 @@ C
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JZOCO
       CHARACTER*24 CONTNO,CONTMA,CONVCO,APMEMO
       INTEGER      JNOCO,JMACO,JCONV,JAPMEM
-      CHARACTER*19 LIAC,MU,DELT0,DELTA,CM1A,COCO,LIOT,ATMU
-      INTEGER      JLIAC,JMU,JDELT0,JDELTA,JCM1A,JCOCO,JLIOT,JATMU
+      CHARACTER*19 LIAC,MU,DELT0,DELTA,COCO,LIOT,ATMU
+      INTEGER      JLIAC,JMU,JDELT0,JDELTA,JCOCO,JLIOT,JATMU
       CHARACTER*19 CHASEC,CHASOL,SOLVEU
       INTEGER      JCHSEC,JCHSOL,JSLVK
       INTEGER      ITEMAX,ISTO,ITEMUL
@@ -172,7 +172,6 @@ C ======================================================================
       MU     = RESOCO(1:14)//'.MU'
       DELT0  = RESOCO(1:14)//'.DEL0'
       DELTA  = RESOCO(1:14)//'.DELT'
-      CM1A   = RESOCO(1:14)//'.CM1A'
       ATMU   = RESOCO(1:14)//'.ATMU'
       COCO   = RESOCO(1:14)//'.COCO'
       SOLVEU = '&&OP0070.SOLVEUR'
@@ -262,21 +261,6 @@ C ======================================================================
 
 C ======================================================================
 C                             INITIALISATIONS
-C ======================================================================
-C     SI SOLVEUR GCPC, ON ALLOUE 2 CHAM_NO UTILES POUR APPELER RESOUD :
-C     -----------------------------------------------------------------
-      GCPC = (ZK24(JSLVK-1+1).EQ.'GCPC')
-      IF (GCPC) THEN
-        MATAS1 = ZK24(ZI(LMAT+1))
-        IF (MATAS1.NE.MATASS) CALL U2MESS('F','CALCULEL_13')
-        MATPRE = '&&NMMATR.MAPREC'
-        CHASOL = '&&ALGOCO.CHASOL'
-        CHASEC = '&&ALGOCO.CHASEC'
-        CALL COPISD('CHAMP_GD','V',DEPTOT,CHASOL)
-        CALL COPISD('CHAMP_GD','V',DEPTOT,CHASEC)
-        CALL JEVEUO(CHASOL//'.VALE','E',JCHSOL)
-        CALL JEVEUO(CHASEC//'.VALE','L',JCHSEC)
-      END IF
 
       ITER = 0
 C ======================================================================
@@ -362,38 +346,6 @@ C --- DETERMINATION DE LA 1ERE LIAISON AYANT CHANGE D'ETAT (IN/ACTIF)
 C --- (ON NE RECONSTRUIRA -A.C-1.AT QU'A PARTIR DE CETTE LIAISON)
 C
       IF (NBLIAC.NE.0) THEN
-        IF (GCPC) THEN
-C
-C --- PAR GRADIENT CONJUGUE
-C
-           INDFAC = MIN(INDFAC, SPLIAI+1)
-           SPAVAN = 0
-           IF (INDIC.NE.-1) THEN
-              DO 210 ILIAC = AJLIAI+1,NBLIAC
-                 LLIAC = ZI(JLIAC+ILIAC-1)
-C
-C --- CALCUL DE CHAQUE COLONNE DE AT (UNE PAR LIAISON ACTIVE)
-C
-                 CALL JEVEUO(JEXNUM(CM1A,LLIAC),'E',JCM1A)
-                 DO 110 KK = 1,NEQ
-                    ZR(JCM1A-1+KK) = 0.0D0
- 110             CONTINUE
-                 JDECAL = ZI(JAPPTR+LLIAC-1)
-                 NBDDL = ZI(JAPPTR+LLIAC) - ZI(JAPPTR+LLIAC-1)
-                 CALL CALATM(NEQ,NBDDL,1.D0,ZR(JAPCOE+JDECAL),
-     &                                 ZI(JAPDDL+JDECAL),ZR(JCM1A))
-C
-C --- CALCUL DE C-1.AT (EN TENANT COMPTE DES CHARGES DIRICHLET)
-C
-                 CALL JACOPO(NEQ,'R',JCM1A,JCHSEC)
-                 CALL RESOUD(MATASS,MATPRE,CHASEC,SOLVEU,CINE,'V',
-     &                  CHASOL,'&&ALGOCO_CRIT')
-                 CALL JEVEUO(CHASOL//'.VALE','L',JCHSOL)
-                 CALL JACOPO(NEQ,'R',JCHSOL,JCM1A)
-                 CALL JELIBE(JEXNUM(CM1A,LLIAC))
- 210          CONTINUE
-           ENDIF
-        ELSE
 C
 C --- PAR LDLT OU MULT_FRONT
 C
@@ -404,7 +356,6 @@ C
          CALL CFACAT(NDIM,INDIC,NBLIAC,AJLIAI,SPLIAI,0,0,0,
      &               INDFAC,NESMAX,DEFICO,RESOCO,LMAT,CINE,NBLIAI,
      &               XJVMAX)
-        ENDIF
 C ======================================================================
 C ---
 C --- ELIMINATION DES PIVOTS NULS
@@ -679,14 +630,6 @@ C
 C      do 2 II=1,neq
 C        write(6,*) ZR(Jresu-1+II)
 C 2    continue
-C
-C ======================================================================
-C --- DESTRUCTION DES VECTEURS INUTILES
-C ======================================================================
-      IF (GCPC) THEN
-        CALL DETRSD('CHAMP_GD','&&ALGOCL.CHASOL')
-        CALL DETRSD('CHAMP_GD','&&ALGOCL.CHASEC')
-      ENDIF
 C
       CALL JEDEMA()
 C

@@ -40,8 +40,8 @@ for IP in range (NB_GRAINS):
                                 NOM_CMP=('SIXX','SIYY','SIZZ'),
                                 GROUP_MA = 'GM'+str(IP+1),
 				),)
-  IMPR_TABLE(FORMAT = 'TABLEAU',
-             TABLE=INS[IP],);
+#   IMPR_TABLE(FORMAT = 'TABLEAU',
+#              TABLE=INS[IP],);
 
   EPS[IP]=POST_ELEM(MODELE=TROISD,
                    RESULTAT=SOLNL,
@@ -49,9 +49,9 @@ for IP in range (NB_GRAINS):
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 GROUP_MA = 'GM'+str(IP+1),
 				),)
-  IMPR_TABLE(FORMAT = 'TABLEAU',
-             TABLE=EPS[IP],);
-
+#   IMPR_TABLE(FORMAT = 'TABLEAU',
+#              TABLE=EPS[IP],);
+# 
   INSX[IP]=CALC_TABLE(TABLE=INS[IP], 
                  ACTION=(_F(OPERATION ='EXTR',
 		            NOM_PARA=('INST','INTE_SIXX'),),),)
@@ -63,10 +63,10 @@ for IP in range (NB_GRAINS):
   COMX[IP]=CALC_TABLE(TABLE=EPSX[IP], 
                  ACTION=(_F(OPERATION ='COMB',TABLE=INSX[IP],NOM_PARA='INST',),),)
 
-  IMPR_TABLE (FORMAT = 'TABLEAU',
-              TABLE  = COMX[IP],
-              NOM_PARA = ('INST', 'INTE_EPXX','INTE_SIXX'),
-             ) ;
+#   IMPR_TABLE (FORMAT = 'TABLEAU',
+#               TABLE  = COMX[IP],
+#               NOM_PARA = ('INST', 'INTE_EPXX','INTE_SIXX'),
+#              ) ;
 
   INSY[IP]=CALC_TABLE(TABLE=INS[IP], 
                  ACTION=(_F(OPERATION ='EXTR',
@@ -79,10 +79,10 @@ for IP in range (NB_GRAINS):
   COMY[IP]=CALC_TABLE(TABLE=EPSY[IP], 
                  ACTION=(_F(OPERATION ='COMB',TABLE = INSY[IP], NOM_PARA='INST',),),)
 
-  IMPR_TABLE (FORMAT = 'TABLEAU',
-              TABLE  = COMY[IP],
-              NOM_PARA = ('INST', 'INTE_EPYY','INTE_SIYY'),
-             ) ;
+#   IMPR_TABLE (FORMAT = 'TABLEAU',
+#               TABLE  = COMY[IP],
+#               NOM_PARA = ('INST', 'INTE_EPYY','INTE_SIYY'),
+#              ) ;
 
   INSZ[IP]=CALC_TABLE(TABLE=INS[IP], 
                  ACTION=(_F(OPERATION ='EXTR',
@@ -95,10 +95,10 @@ for IP in range (NB_GRAINS):
   COMZ[IP]=CALC_TABLE(TABLE=EPS[IP], 
                  ACTION=(_F(OPERATION ='COMB',TABLE = INS[IP], NOM_PARA='INST',),),)
 
-  IMPR_TABLE (FORMAT = 'TABLEAU',
-              TABLE  = COMZ[IP],
-              NOM_PARA = ('INST', 'INTE_EPZZ','INTE_SIZZ'),
-             ) ;
+#   IMPR_TABLE (FORMAT = 'TABLEAU',
+#               TABLE  = COMZ[IP],
+#               NOM_PARA = ('INST', 'INTE_EPZZ','INTE_SIZZ'),
+#              ) ;
 
   FSX[IP]=RECU_FONCTION(TABLE=COMX[IP],
                            PARA_X='INST',

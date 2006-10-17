@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF FASTER utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF FASTER utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,25 +20,17 @@
 /* ------------------------------------------------------------------ */
 
 #include <stdio.h>
-#ifdef CRAY
-   void FASTER(void)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   void faster_(void)
-#elif defined HPUX 
-   void faster(void)
-#elif defined PPRO_NT
-   void __stdcall FASTER(void)
-#endif
-/*
-** Fonction pour positionner le buffer du ficher de sortie
-** d'execution d'Aster en mode ligne (flush a chaque fin de ligne
-** ou quand le buffer est plein) pour pouvoir suivre les batch
-** en interactif.
-** setvbuf est ANSI
-*/
+#include "aster.h"
+
+void STDCALL(FASTER,faster)()
 {
-int err;
-
-err=setvbuf(stdout,NULL,_IOLBF,0);
-
+/*
+   Fonction pour positionner le buffer du ficher de sortie
+   d'execution d'Aster en mode ligne (flush a chaque fin de ligne
+   ou quand le buffer est plein) pour pouvoir suivre les batch
+   en interactif.
+   setvbuf est ANSI
+*/
+   int err;
+   err=setvbuf(stdout,NULL,_IOLBF,0);
 }

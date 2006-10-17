@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hanfpe utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hanfpe utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,40 +18,30 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
+#include "aster.h"
+
 /*
 **  Fonction C intermediaire pour appeler une routine FORTRAN
 **  qui va faire appel a UTMESS('F',...)
 **  Il n'y a pas de passage d'argument pour minimiser les problemes
 **  d'interfacage FORTRAN/C et reciproquement
 */
-#if defined CRAY || SOLARIS || HPUX|| IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+#if defined _POSIX
 #include <stdio.h>
 #include <stdlib.h>
 #endif
 
-#if defined CRAY || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   void hanfpe (int sig)
-#elif defined SOLARIS
+#if defined SOLARIS
 #include <siginfo.h>
 #include <ucontext.h>
    void hanfpe (int sig, siginfo_t *sip, ucontext_t *uap)
-#elif defined PPRO_NT
+#elif defined _POSIX
    void hanfpe (int sig)
 #endif
 {
-void exit (int status) ;
-#ifdef CRAY
-   UTMFPE();
+   void exit (int status);
+   void STDCALL(UTMFPE, utmfpe)();
+   
+   F_FUNC(UTMFPE, utmfpe)();
    exit(sig);
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   utmfpe_();
-   exit(sig);
-#elif defined HPUX
-   utmfpe();
-   exit(sig);
-#elif defined PPRO_NT
-   extern void __stdcall UTMFPE(void);
-   UTMFPE();
-   exit(sig);
-#endif
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+# MODIF  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE LIBRE ET ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,6 +116,15 @@ MODES_L1=MODE_ITER_SIMULT(     MATR_A=RAID_L,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (10.,1000.,)))
 
+MODES_L1=CALC_ELEM( reuse=MODES_L1,     
+
+                      TOUT_ORDRE='OUI',
+                          OPTION='SIEF_ELGA_DEPL',
+                         RESULTAT=MODES_L1 )
+MODES_L1=CALC_NO(reuse =MODES_L1,
+              RESULTAT=MODES_L1,
+              OPTION='FORC_NODA');
+
 #
 MODES_L2=MODE_ITER_SIMULT(     MATR_A=RAID_L, 
                                  MATR_B=MASS_L, 
@@ -209,7 +218,6 @@ BAMO2_CL=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT2_CL,
 #
 MACEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1_CL,
                                 OPTION='RITZ')
-
 #
 MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2_CL,
                                 OPTION='RITZ')
@@ -247,12 +255,10 @@ MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'CARRE1',
                                VERIF=_F( 
                                       PRECISION = 1.E-6,
                                       CRITERE = 'RELATIF'))
-
 #
 #  NUMEROTATION DU PROBLEME GENERALISE
 #
 NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
-
 #
 #  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
 #
@@ -262,7 +268,6 @@ MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 #
 RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
                                   OPTION='RIGI_GENE')
-
 #
 #   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
@@ -271,7 +276,6 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
                              CALC_FREQ=_F( OPTION = 'BANDE', 
                                         FREQ = (8., 150.,)),
                              VERI_MODE=_F( SEUIL = 1.E-3))
-
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 #
@@ -293,13 +297,11 @@ SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
 MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN, 
                              SQUELETTE=SQUEL,
                            TOUT_ORDRE='OUI')
-
 #
 MODGLO2=REST_BASE_PHYS(   RESU_GENE=RESGEN, 
                            SOUS_STRUC='CARRE1', 
                            TOUT_ORDRE='OUI', 
                             TOUT_CHAM='OUI')
-
 #
 TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ', 
                 CRITERE = 'RELATIF', PRECISION = 1.25E-2, 
@@ -416,7 +418,6 @@ MOD_CY=MODE_ITER_CYCL(  BASE_MODALE=BAMO_CY,
                                        NMAX_FREQ = 2, 
                                        PREC_AJUSTE = 1.E-12) 
                           )
-
 #
 #  CREATION DES MAILLAGES SQUELETTES
 #
@@ -467,7 +468,7 @@ CARSQUEL=AFFE_CARA_ELEM(  MODELE=MODELE1,
                                    GROUP_MA = 'TOUT2')  )
 
 #
-MODGL2=CALC_ELEM( reuse=MODGL2,     MODELE=MODELE1,
+MODGL2=CALC_ELEM( reuse=MODGL2,MODELE=MODELE1,
                        CHAM_MATER=MATSQUEL,
                         CARA_ELEM=CARSQUEL,
                       TOUT_ORDRE='OUI',

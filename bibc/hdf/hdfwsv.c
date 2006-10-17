@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfwsv hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Ecriture sur un fichier HDF d'un segment de valeur associé à un objet JEVEUX
 /  Paramètres : 
@@ -29,19 +30,13 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 #include <stdlib.h>
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfwsv_( long *idf, char *nomg, char *nomdts, char *type, long *ltype, void *sv, long *lsv, long lg, long ln, long lt )
-#elif defined HPUX
-   long hdfwsv ( long *idf, char *nomg, char *nomdts, char *type, long *ltype, void *sv, long *lsv, long lg, long ln, long lt )
-#elif defined PPRO_NT
-  /* extern long __stdcall HDFWSV(long *idf, char *nomg, unsigned long lg, char *nomdts, unsigned long ln, char *type, long *ltype, unsigned long lt, void *sv, long *lsv ) */
-   extern long __stdcall HDFWSV(long *idf, char *nomg, unsigned long lg, char *nomdts, unsigned long ln, char *type, unsigned long lt, long *ltype, char *sv, unsigned long toto, long *lsv )
-#endif
+
+INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, int lg, char *nomdts, int ln, char *type, int lt, INTEGER *ltype, char *sv, int toto, INTEGER *lsv)
 {
   hid_t idfic,datatype,dataspace,dataset,type_id;
   herr_t iret;
   hsize_t dimsf[1];
-  int istat,k,l,lg2,lmot;
+  int istat,k,lg2,lmot;
   char *nomd,*vtype,*mot,*pmot;
   void *malloc(size_t size);
   

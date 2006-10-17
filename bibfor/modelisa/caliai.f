@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/10/2006   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,15 +48,18 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
       COMPLEX*16 BETAC
       CHARACTER*2 TYPLAG
-      CHARACTER*4 TYPCOE,TYPVAL
+      CHARACTER*4 TYPCOE,TYPVAL,TYPCO2
       CHARACTER*7 TYPCHA
       CHARACTER*8 BETAF
-      CHARACTER*8 K8BID,MOTCLE,MOGROU,MOD,NOMA,NOMNOE
-      CHARACTER*16 MOTFAC
+      CHARACTER*8 K8BID,MOTCLE,MOGROU,MOD,NOMA,NOMNOE,CHAR
+      CHARACTER*16 MOTFAC,CONCEP,OPER
       CHARACTER*19 LISREL
-      CHARACTER*24 TRAV,GROUMA,NOEUMA
+      CHARACTER*24 TRAV,GROUNO,NOEUMA
+      CHARACTER*15 COORDO
       CHARACTER*19 LIGRMO
-      CHARACTER*1 K1BID
+      CHARACTER*1 K1BID,NOMPAR(3)
+      REAL*8       VALPAR(3),VALE
+      DATA NOMPAR /'X','Y','Z'/
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -64,6 +67,7 @@ C ----------------------------------------------------------------------
       MOTCLE = 'NOEUD'
       MOGROU = 'GROUP_NO'
       TYPLAG = '12'
+      TYPCO2='REEL'
 
       LISREL = '&&CALIAI.RLLISTE'
       CALL GETFAC(MOTFAC,NLIAI)
@@ -76,7 +80,9 @@ C ----------------------------------------------------------------------
       CALL DISMOI('F','NOM_MAILLA',CHARGE,'CHARGE',IBID,NOMA,IER)
 
       NOEUMA = NOMA//'.NOMNOE'
-      GROUMA = NOMA//'.GROUPENO'
+      GROUNO = NOMA//'.GROUPENO'
+      COORDO = NOMA//'.COORDO'
+      CALL JEVEUO(COORDO//'    .VALE','L',JCOOR)
 
 C     -- CALCUL DE NDIM1 : NBRE DE TERMES MAXI D'UNE LISTE
 C        DE GROUP_NO OU DE NOEUD
@@ -102,13 +108,13 @@ C        -------------------------------------------------------
         CALL GETVID(MOTFAC,MOGROU,IOCC,1,NDIM1,ZK8(JJJ),NGR)
         NBGT = 0
         DO 20 IGR = 1,NGR
-          CALL JEEXIN(JEXNOM(GROUMA,ZK8(JJJ+IGR-1)),IRET)
+          CALL JEEXIN(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),IRET)
           IF (IRET.EQ.0) THEN
             CALL UTMESS('F',MOTFAC,'LE GROUPE '//ZK8(JJJ+IGR-1)//
      &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
 C        CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
           ELSE
-            CALL JELIRA(JEXNOM(GROUMA,ZK8(JJJ+IGR-1)),'LONMAX',N1,K1BID)
+            CALL JELIRA(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),'LONMAX',N1,K1BID)
             NBGT = NBGT + N1
           END IF
    20   CONTINUE
@@ -131,16 +137,24 @@ C    -------------------------------------
       CALL WKVECT('&&CALIAI.DDL  ','V V K8',NDIM2,JDDL)
       CALL WKVECT('&&CALIAI.COEMUR','V V R',NDIM2,JCMUR)
       CALL WKVECT('&&CALIAI.COEMUC','V V C',NDIM2,JCMUC)
+      CALL WKVECT('&&CALIAI.COEMUF','V V K8',NDIM2,JCMUF)
       CALL WKVECT('&&CALIAI.DIRECT','V V R',3*NDIM2,JDIREC)
       CALL WKVECT('&&CALIAI.DIMENSION','V V I',NDIM2,JDIME)
 
 C     BOUCLE SUR LES RELATIONS LINEAIRES
 C     -----------------------------------
+      CALL GETRES(CHAR,CONCEP,OPER)
       DO 80 I = 1,NLIAI
         CALL GETVR8(MOTFAC,'COEF_MULT',I,1,NDIM2,ZR(JCMUR),N2)
+        IF ( OPER.EQ.'AFFE_CHAR_MECA_F') THEN
+          CALL GETVID(MOTFAC,'COEF_MULT_FONC',I,1,NDIM2,ZK8(JCMUF),N3)
+        ELSE
+          N3=0
+        ENDIF
+        IF (N3.NE.0) TYPCO2='FONC'
         CALL GETVTX(MOTFAC,'DDL',I,1,NDIM2,ZK8(JDDL),N1)
-
         TYPCOE = 'REEL'
+
 
 C        EXCEPTION :SI LE MOT-CLE DDL N'EXISTE PAS DANS AFFE_CHAR_THER,
 C        ON CONSIDERE QUE LES RELATIONS LINEAIRES PORTENT
@@ -152,12 +166,13 @@ C        SUR LE DDL 'TEMP'
    50     CONTINUE
         END IF
 
-        IF (N1.NE.N2) THEN
+        IF (N1.NE.(N2+N3)) THEN
           CALL UTDEBM('F','CALIAI','LE NOMBRE DE DDLS FIGURANT DANS'//
-     &            ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE COEF_MULT :'
+     &            ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE'//
+     &            ' COEF_MULT/COEF_MULT_FONC :'
      &                )
-          CALL UTIMPI('S',' ',1,N1)
-          CALL UTIMPI('S',' ',1,N2)
+          CALL UTIMPI('S',' ',1,ABS(N1))
+          CALL UTIMPI('S',' ',1,ABS(N2+N3))
           CALL UTFINM()
         END IF
 
@@ -189,13 +204,21 @@ C           --------------------
      &                ZK8(JLIST1),N)
           INDNOE = 0
           DO 70 J = 1,NG
-            CALL JEVEUO(JEXNOM(GROUMA,ZK8(JLIST1-1+J)),'L',JGR0)
-            CALL JELIRA(JEXNOM(GROUMA,ZK8(JLIST1-1+J)),'LONMAX',N,K1BID)
+            CALL JEVEUO(JEXNOM(GROUNO,ZK8(JLIST1-1+J)),'L',JGR0)
+            CALL JELIRA(JEXNOM(GROUNO,ZK8(JLIST1-1+J)),'LONMAX',N,K1BID)
             DO 60 K = 1,N
               IN = ZI(JGR0-1+K)
               INDNOE = INDNOE + 1
               CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',IN),NOMNOE)
               ZK8(JLIST2+INDNOE-1) = NOMNOE
+              IF (TYPCO2.EQ.'FONC') THEN
+                VALPAR(1) = ZR(JCOOR-1+3*(IN-1)+1)
+                VALPAR(2) = ZR(JCOOR-1+3*(IN-1)+2)
+                VALPAR(3) = ZR(JCOOR-1+3*(IN-1)+3)
+                CALL FOINTE('F',ZK8(JCMUF-1+INDNOE),3,NOMPAR,VALPAR,
+     &                      VALE,IER)
+                ZR(JCMUR-1+INDNOE)=VALE
+              ENDIF
    60       CONTINUE
    70     CONTINUE
 
@@ -206,7 +229,7 @@ C              -----------------------------------------
             CALL UTDEBM('F','CALIAI','LE NOMBRE DE DDLS FIGURANT DANS'//
      &               ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE NOEUDS :'
      &                  )
-            CALL UTIMPI('S',' ',1,N1)
+            CALL UTIMPI('S',' ',1,ABS(N1))
             CALL UTIMPI('S',' ',1,INDNOE)
             CALL UTFINM()
           END IF
@@ -227,6 +250,17 @@ C           -------------
             NBNO = -NBNO
             CALL GETVEM(NOMA,'NOEUD',MOTFAC,'NOEUD',I,1,NBNO,
      &                  ZK8(JLIST1),N)
+            IF (TYPCO2.EQ.'FONC') THEN
+              DO 100 K=1,N
+                CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(JLIST1-1+K)),IN)
+                VALPAR(1) = ZR(JCOOR-1+3*(IN-1)+1)
+                VALPAR(2) = ZR(JCOOR-1+3*(IN-1)+2)
+                VALPAR(3) = ZR(JCOOR-1+3*(IN-1)+3)
+                CALL FOINTE('F',ZK8(JCMUF-1+K),3,NOMPAR,VALPAR,
+     &                      VALE,IER)
+                ZR(JCMUR-1+K)=VALE
+  100         CONTINUE
+            ENDIF
           END IF
 
 C           -- ON VERIFIE QUE LE NOMBRE DE NOEUDS DE LA LISTE DE
@@ -236,7 +270,7 @@ C              ------------------------------------------------
             CALL UTDEBM('F','CALIAI','LE NOMBRE DE DDLS FIGURANT DANS'//
      &               ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE NOEUDS :'
      &                  )
-            CALL UTIMPI('S',' ',1,N1)
+            CALL UTIMPI('S',' ',1,ABS(N1))
             CALL UTIMPI('S',' ',1,NBNO)
             CALL UTFINM()
           END IF
@@ -259,6 +293,7 @@ C     -----------
       CALL JEDETR('&&CALIAI.DDL  ')
       CALL JEDETR('&&CALIAI.COEMUR')
       CALL JEDETR('&&CALIAI.COEMUC')
+      CALL JEDETR('&&CALIAI.COEMUF')
       CALL JEDETR('&&CALIAI.DIRECT')
       CALL JEDETR('&&CALIAI.DIMENSION')
 

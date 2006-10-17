@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fetsco scotch  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF fetsco scotch  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,18 +17,16 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include <stdio.h>
+#include "aster.h"
 #include "common.h"
 #include "scotch.h"
 
-#if  defined IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS || SOLARIS64
-void fetsco_ ( int *nbmato, int *nblien, int *connect, int *idconnect, int *nbpart, int *mapsd, int *edlo, int *velo,int err)
-#elif defined HPUX
-void fetsco ( int *nbmato, int *nblien, int *connect, int *idconnect, int *nbpart, int *mapsd, int *edlo, int *velo,int err)
-#elif defined PPRO_NT
-void __stdcall FETSCO ( int *nbmato, int *nblien, int *connect, int *idconnect, int *nbpart, int *mapsd, int *edlo, int *velo,int err)
-#endif
-{
 
+void DEFPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
+                                 int *connect, int *idconnect, INTEGER *nbpart,
+                                 int *mapsd, int *edlo, int *velo, INTEGER *ier)
+{
+  int err;
   SCOTCH_Graph        grafdat;
   SCOTCH_Arch         archdat; 
   SCOTCH_Strat        mapstrat;  
@@ -39,7 +37,7 @@ void __stdcall FETSCO ( int *nbmato, int *nblien, int *connect, int *idconnect, 
   err = SCOTCH_graphInit (&grafdat);
   
   if ( err == 0 )
-    err = SCOTCH_graphBuild(&grafdat,1,*nbmato,idconnect,NULL,velo,NULL,*nblien,connect,edlo);
+    err = SCOTCH_graphBuild(&grafdat,1,(int)*nbmato,idconnect,NULL,velo,NULL,(int)*nblien,connect,edlo);
 
   if ( err == 0 ) 
     err = SCOTCH_graphCheck (&grafdat);
@@ -48,7 +46,7 @@ void __stdcall FETSCO ( int *nbmato, int *nblien, int *connect, int *idconnect, 
     err = SCOTCH_archInit (&archdat);                     
 
   if ( err == 0 ) 
-    err = SCOTCH_archCmplt (&archdat,*nbpart);   
+    err = SCOTCH_archCmplt (&archdat,(int)*nbpart);   
 
   if ( err == 0 ) 
     err = SCOTCH_stratInit (&mapstrat);                     
@@ -65,6 +63,8 @@ void __stdcall FETSCO ( int *nbmato, int *nblien, int *connect, int *idconnect, 
     SCOTCH_archExit     (&archdat);
     SCOTCH_graphExit    (&grafdat);
   }
+  
+  *ier = (INTEGER)err;
 
 }
 

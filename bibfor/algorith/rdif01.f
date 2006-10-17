@@ -3,11 +3,11 @@
      &                     COTHE, COEFF, DCOTHE, DCOEFF,PGL,NBPHAS, E,
      &                     NU,    ALPHA, COEL,X,   DTIME,  SIGI,
      &                     EPSD,  DETOT, TPERD,  DTPER,  TPEREF,
-     &                     DVIN,  BZ )
+     &                     DVIN)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,14 +54,12 @@ C           TPERD   :  TEMPERATURE A T
 C           DTPER   :  INTERVALE DE TEMPERATURE ENTRE T+DT ET T
 C           TPEREF  :  TEMPERATURE DE REFERENCE
 C           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
-C           BZ      :  VARIABLE LOGIQUE
 C       ----------------------------------------------------------------
         INTEGER IMAT,I,NMAT,NVI,NBCOMM(NMAT,3),NCOE,NBPHAS,NBFSYM
         CHARACTER*16 LOI,COMP(*),CPMONO(5*NMAT+1)
         CHARACTER*8 MOD
         CHARACTER*3 MATCST
         REAL*8 E, NU, ALPHA,PGL(3,3)
-        LOGICAL BZ
         REAL*8 X, DTIME,COEL(NMAT)
         REAL*8 TPERD, DTPER, TPEREF
         REAL*8 COTHE(NMAT),DCOTHE(NMAT)
@@ -96,19 +94,6 @@ C
      &                E,NU,ALPHA,NMAT,COEL)
           CALL RKDCHA(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,NMAT,COEL,
      &                SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN)
-        ELSE IF (LOI(1:9).EQ.'POLY_CFC') THEN
-          NCOE=13
-          IF (BZ) THEN
-            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
-     &                E,NU,ALPHA,NMAT,COEL)
-            CALL RKDCFC(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,NMAT,COEL,
-     &                  SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN,IMAT)
-          ELSE
-            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
-     &                E,NU,ALPHA,NMAT,COEL)
-            CALL RKDCBZ(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,NMAT,COEL,
-     &                  SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN,IMAT)
-          END IF
         ELSE  IF (LOI(1:9).EQ.'VENDOCHAB') THEN
           NCOE=9
             CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,

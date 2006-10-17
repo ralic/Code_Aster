@@ -1,6 +1,6 @@
       SUBROUTINE JXLIBM ( ISZON , LISZON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,38 +25,21 @@ C     ==================================================================
       COMMON /IALLJE/  IADA
 C     ------------------------------------------------------------------
       CHARACTER *75    CMESS
-C     ------------------------------------------------------------------
-C             ROUTINE AVEC ADHERENCE SYSTEME    CRAY
-C
-C
 C     ==================================================================
-      IERCOD = 0
-      CALL HPCHECK ( IERCOD )
-      IF ( IERCOD .NE. 0 ) THEN
-         IF ( IERCOD .EQ. -5 ) THEN
-            CMESS = 'MOT DE CONTROLE INCORRECT POUR UNE ZONE ALLOUEE'
-         ELSE IF ( IERCOD .EQ. -6 ) THEN
-            CMESS = 'MOT DE CONTROLE INCORRECT POUR UNE ZONE LIBEREE'
-         ELSE
-            CMESS = 'ERREUR VERIFICATION DE ZONE'
+      IZERO = 0
+      IERR = 0
+      CALL  HPDEALLC ( IADA , IERR , IZERO )
+      IF ( IERR .NE. 0 ) THEN
+         IF      ( IERR .EQ. -3 ) THEN
+         CMESS = 'ADRESSE INCORRECTE'
+         ELSE IF ( IERR .EQ. -4 ) THEN
+         CMESS = 'ZONE DEJA LIBEREE'
+         ELSE IF ( IERR .EQ. -5 ) THEN
+         CMESS = 'ADRESSE DIFFERENTE D''UN DEBUT DE ZONE'
+         ELSE IF ( IERR .EQ. -7 ) THEN
+         CMESS = 'ECRASEMENT DU DEBUT DE LA ZONE SUIVANTE'
          ENDIF
          CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ELSE
-         IZERO = 0
-         IERR = 0
-         CALL  HPDEALLC ( IADA , IERR , IZERO )
-         IF ( IERR .NE. 0 ) THEN
-            IF      ( IERR .EQ. -3 ) THEN
-              CMESS = 'ADRESSE INCORRECTE'
-            ELSE IF ( IERR .EQ. -4 ) THEN
-              CMESS = 'ZONE DEJA LIBEREE'
-            ELSE IF ( IERR .EQ. -5 ) THEN
-              CMESS = 'ADRESSE DIFFERENTE D''UN DEBUT DE ZONE'
-            ELSE IF ( IERR .EQ. -7 ) THEN
-              CMESS = 'ECRASEMENT DU DEBUT DE LA ZONE SUIVANTE'
-            ENDIF
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
-         ENDIF
       ENDIF
 C     ==================================================================
       END

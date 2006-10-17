@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------- */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF LSEGJV UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF LSEGJV UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,14 +19,9 @@
 /* ================================================================== */
 /* -------------------------------------------------------------------- */
 #include <stdlib.h>
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long lsegjv_(long* val)
-#elif defined HPUX
-   long lsegjv(long* val)
-#elif defined PPRO_NT
-   long __stdcall LSEGJV(long* val)
-#endif
-/*
+#include "aster.h"
+
+INTEGER DEFP(LSEGJV, lsegjv, INTEGER *val)/*
 ** Fonction pour positionner et interroger l'indicateur de longueur
 ** des segments de valeurs associés au type 3 de
 ** parcours de la segmentation de memoire JEVEUX
@@ -34,9 +29,9 @@
 **        si >= 0 positionne l'indicateur
 */
 {
-static long LSEG_JEVEUX=0;
-if (*val >= 0) {
-   LSEG_JEVEUX=*val;
+   static INTEGER LSEG_JEVEUX=0;
+   if (*val >= 0) {
+      LSEG_JEVEUX=*val;
    }
-return(LSEG_JEVEUX);
+   return LSEG_JEVEUX;
 }

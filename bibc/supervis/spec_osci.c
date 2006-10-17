@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF spec_osci supervis  DATE 12/05/2005   AUTEUR DURAND C.DURAND */
+/* MODIF spec_osci supervis  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,11 +17,13 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include <math.h>
+#include <stdio.h>
+#include "aster.h"
 
-#define R8_PI   3.1415926535897932384626433832
 /*
 #define __DEBUG__
 */
+double STDCALL(R8PI, r8pi)();
 
 void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
                      int len_f, double* l_freq, int len_a, double* l_amor,
@@ -47,7 +49,7 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
       i++;
    }
 
-   DEUXPI = (double)(2. * R8_PI);
+   DEUXPI = (double)(2. * F_FUNC(R8PI, r8pi)());
 #ifdef __DEBUG__
    printf("2*pi : %lf\n", DEUXPI);
 #endif

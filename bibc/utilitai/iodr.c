@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF IODR utilitai  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF IODR utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,27 +17,12 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-/* ------------------------------------------------------------------ */
-#if defined CRAY
-/* pour le moment, on appelle les routines fournies par le système 
-   #ifdef CRAY
-   #include <fortran.h>
-   #define OFF_INIT 8
-   #endif
-*/
-/* La variable OFF_INIT est utilisee pour indiquer la longueur du premier */
-/* mot stocke en tete de fichier                                          */
-
-#elif defined SOLARIS || PPRO_NT || HPUX || IRIX_32 || P_LINUX  
-#define OFF_INIT 4
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-#define OFF_INIT 8
-#endif 
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
 #include <stdio.h>
 #include <string.h>
 #include <fcntl.h>
 #include <stdlib.h>
+
+#include "aster.h"
 
 #define MAX_FAC 100
 
@@ -50,66 +35,61 @@ static char *nomFAC[MAX_FAC];
 
 long ind_fac ( char *nom )
 {
-long i;
-static long res;
-res=-1;
-i=0;
-while ((i < nbFAC) && (strcmp(nom,nomFAC[i]) != 0)) i++;
-if (i < nbFAC) res=i;
-
-return(res);
+   long i;
+   static long res;
+   res=-1;
+   i=0;
+   while ((i < nbFAC) && (strcmp(nom,nomFAC[i]) != 0)) i++;
+   if (i < nbFAC) res=i;
+   
+   return(res);
 }
 
 long  open_fac ( char *nom )
 {
-long ifac;
-static long res;
-void *malloc(size_t size);
-res=-1;
-ifac=ind_fac(nom);
-if (ifac < 0) {
-   /* Creation */
-   if (nbFAC < MAX_FAC) {
-      nomFAC[nbFAC]=(char *) malloc(10);
-      strcpy(nomFAC[nbFAC],nom);
-      fpfile[nbFAC]=NULL;
-      nenr[nbFAC]=-1;
-      res=nbFAC;
-      nbFAC++;
+   long ifac;
+   static long res;
+   void *malloc(size_t size);
+   res=-1;
+   ifac=ind_fac(nom);
+   if (ifac < 0) {
+      /* Creation */
+      if (nbFAC < MAX_FAC) {
+         nomFAC[nbFAC]=(char *) malloc(10);
+         strcpy(nomFAC[nbFAC],nom);
+         fpfile[nbFAC]=NULL;
+         nenr[nbFAC]=-1;
+         res=nbFAC;
+         nbFAC++;
+         }
       }
-   }
-else {
-   /* Reinitialisation */
-   strcpy(nomFAC[ifac],nom);
-   fpfile[ifac]=NULL;
-   nenr[ifac]=-1;
-   res=ifac;
-   }
-return(res);
+   else {
+      /* Reinitialisation */
+      strcpy(nomFAC[ifac],nom);
+      fpfile[ifac]=NULL;
+      nenr[ifac]=-1;
+      res=ifac;
+      }
+   return(res);
 }
 
 void strcpyF2C (char *cname, char *fname)
 {
-char *p;
-char *q;
-
-p=fname;
-q=cname;
-
-while ((*p != '\0') && (*p != ' ')) {
-   *q++=*p++;
-   }
-*q='\0';
+   char *p;
+   char *q;
+   
+   p=fname;
+   q=cname;
+   
+   while ((*p != '\0') && (*p != ' ')) {
+      *q++=*p++;
+      }
+   *q='\0';
 }
-#endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-  void  opendr_ ( char *dfname,long *indx,long *lgti,long *indic,long *ierr,unsigned long len_dfname)
-#elif defined HPUX
-  void opendr ( char *dfname,long *indx,long *lgti,long *indic,long *ierr,unsigned long len_dfname)
-#elif defined PPRO_NT
-  void __stdcall OPENDR ( char *dfname,unsigned long len_dfname,long *indx,long *lgti,long *indic,long *ierr)
-#endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+
+
+void DEFSPPPP(OPENDR, opendr, char *dfname, int len_dfname, INTEGER *indx, INTEGER *lgti,
+                         INTEGER *indic, INTEGER *ierr)
 {
     long iu,nbread;
     char fname[24];
@@ -141,15 +121,8 @@ while ((*p != '\0') && (*p != ' ')) {
            nbread=fread(&nenr[iu], OFF_INIT, 1, fpfile[iu]);
     }
 }
-#endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-  void closdr_( char *dfname,long *ierr,unsigned long len_dfname)
-#elif defined HPUX
-  void closdr( char *dfname,long *ierr,unsigned long len_dfname)
-#elif defined PPRO_NT
-  void __stdcall CLOSDR( char *dfname,unsigned long len_dfname,long *ierr)
-#endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+
+void DEFSP(CLOSDR, closdr, char *dfname, int len_dfname, INTEGER *ierr)
 {
     long iu;
     char fname[24];
@@ -169,15 +142,9 @@ while ((*p != '\0') && (*p != ' ')) {
         *ierr = 0;
     }
 }
-#endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-  void readdr_( char *dfname,void *buf,long *nbytes,long *irec,long *ierr,unsigned long len_dfname)
-#elif defined HPUX
-  void readdr ( char *dfname,void *buf,long *nbytes,long *irec,long *ierr,unsigned long len_dfname)
-#elif defined PPRO_NT
-  void __stdcall READDR( char *dfname,unsigned long len_dfname,void *buf,long *nbytes,long *irec,long *ierr)
-#endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+
+void DEFSPPPP(READDR, readdr, char *dfname, int len_dfname, void *buf,
+                              INTEGER *nbytes, INTEGER *irec, INTEGER *ierr)
 {
     long offset;
     long iu,nbval,nbseek;
@@ -207,15 +174,9 @@ while ((*p != '\0') && (*p != ' ')) {
  if ( nbval != *nbytes ) {*ierr = -4;}
 
 }
-#endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-  void writdr_( char *dfname,void *buf,long *nbytes,long *irec,long *indic,long *s,long *ierr,unsigned long len_dfname)
-#elif defined HPUX
-  void writdr( char *dfname,void *buf,long *nbytes,long *irec,long *indic,long *s,long *ierr,unsigned long len_dfname)
-#elif defined PPRO_NT
-  void __stdcall WRITDR( char *dfname,unsigned long len_dfname,void *buf,long *nbytes,long *irec,long *indic,long *s,long *ierr)
-#endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+
+void DEFSPPPPPP(WRITDR, writdr, char *dfname, int len_dfname, void *buf,
+            INTEGER *nbytes, INTEGER *irec, INTEGER *indic, INTEGER *s, INTEGER *ierr)
 {
     long offset;
     long iu,nbval,nbseek,nbwrite;
@@ -246,4 +207,3 @@ while ((*p != '\0') && (*p != ' ')) {
 
     if ( nbval != *nbytes ) {*ierr = -4;}
 }
-#endif

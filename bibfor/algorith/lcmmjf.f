@@ -1,12 +1,13 @@
         SUBROUTINE LCMMJF( TAUS,COEFT,IFA,NMAT,NBCOMM,DT,NECOUL,
-     &             TPERD,NUMS,VIS,NVI,RP,DRSDPR,DVDTAU,DDVIS,DDVIR,DP)
+     &     TPERD,RP,ALPHAP,DALPHA,GAMMAP,DGAMMA,
+     &     DFDTAU,DFDAL,DFDR)
         IMPLICIT NONE
-        INTEGER IFA,NMAT,NBCOMM(NMAT,3),NUMS,NVI
-        REAL*8 TAUS,COEFT(NMAT),VIS(3),DVDTAU(3),RP,DDVIS(3,3),DT
-        REAL*8 DDVIR(NVI),DRSDPR(NVI)
-        CHARACTER*16 NECOUL,NECRIS,NECRCI
+        INTEGER IFA,NMAT,NBCOMM(NMAT,3)
+        REAL*8 TAUS,COEFT(NMAT),RP,DT,ALPHAP,DALPHA,GAMMAP,DGAMMA
+        REAL*8 DFDTAU,DFDAL,DFDR
+        CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,188 +28,117 @@ C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C  CALCUL DES DERIVEES DES VARIABLES INTERNES DES LOIS MONOCRISTALLINES
 C  POUR LA LOI D'ECOULEMENT
-C       IN  TAUS     :  SCISSION REDUITE
+C       IN  TAUS    :  SCISSION REDUITE
 C           COEFT   :  PARAMETRES MATERIAU
-C           IFA :  NUMERO DE FAMILLE
-C           NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
-C           NECOU  :  NOM DE LA LOI D'ECOULEMENT
-C           VIS : VARIABLES INTERNES DU SYSTEME DE GLISSEMENT COURANT
+C           IFA     :  NUMERO DE FAMILLE
+C           NBCOMM  :  NOMBRE DE COEF MATERIAU PAR FAMILLE
+C           NECOUL  :  NOM DE LA LOI D'ECOULEMENT
+C           TPERD   :  TEMPERATURE
+C           RP      :  ECROUISSAGE
+C           ALPHAP  :  ALPHA (CINEMATIQUE) A T+DT
+C           DALPHA  :  DALPHA ENTRE T ET T+DT ITERATION COURANTE
+C           GAMMAP  :  GAMMA (GLISSEMENT) A T+DT
+C           DALPHA  :  DGAMMA ENTRE T ET T+DT ITERATION COURANTE
 C     OUT:
-C       DVDTAU    :  DERIVEES DES VARIABLES INTERNES PAR RAPPORT A TAU
-C       DDVIS    :  DERIVEES DES VARIABLES INTERNES PAR RAPPORT AUX
-C           AUTRES
-C       DDVIR    :  DERIVEES DES VARIABLES INTERNES PAR RAPPORT AUX
-C                   VARIABLES INTERNES DES AUTRES SYSTEMES
-C       DP
+C           DFDTAU  :  dF/dTau
+C           DFDAL   :  dF/dAlpha
+C           DFDR    :  dF/dR
 C     ----------------------------------------------------------------
-      REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D,VAL
-      REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,DGAMMA,TAUMU,TAUV,GM,PM,CC
-      REAL*8 PR,DRDPR,DELTAV,DELTAG,R8MIEM
+      REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
+      REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,TAUMU,TAUV,GM,PM,CC
+      REAL*8 PR,DRDPR,DELTAV,DELTAG,SGNS,R8MIEM
       INTEGER IFL,NS, IS
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
-C     DANS DDVIS : 1,1 = DA/DALPHA, 1,2=DG/DALPHA, 1,3=DP/DALPHA...
-C     DANS DDVIS : 2,1 = DA/DGAMMA, 2,2=DG/DGAMMA, 2,3=DP/DGAMMA...
-C     DANS DDVIS : 3,1 = DA/DP,     3,2=DG/DP,     3,3=DP/DP...
-C     DANS DVDTAU : 1 = DALPHA/DTAU, 2=GAMMA, 3=P
 
       IFL=NBCOMM(IFA,1)
-
-      ALPHA=VIS(1)
-
-C     NS=NOMBRE TOTAL DE SYSTEMES DE GLISSEMENT
-      NS=(NVI-2-6)/3
-      CALL LCINVN(NS, 0.D0, DDVIR)
-      CALL LCINVN(3, 0.D0, DVDTAU)
-      CALL LCINVN(3*3, 0.D0, DDVIS)
 
       IF (NECOUL.EQ.'ECOU_VISC1') THEN
           N=COEFT(IFL-1+1)
           K=COEFT(IFL-1+2)
           C=COEFT(IFL-1+3)
 
-          FTAU=TAUS-C*ALPHA
-
+          FTAU=TAUS-C*ALPHAP
           CRIT=ABS(FTAU)-RP
+          
+C         dF/dTau
+                  
           IF (CRIT.GT.0.D0) THEN
-             VAL=DT*(CRIT/K)**(N-1)
-             DP=((CRIT/K)**N)*DT
-C             DGAMMA=DP*FTAU/ABS(FTAU)
-
-             DDVIS(2,1)=0.D0
-             DDVIS(2,2)=1.D0
-             DDVIS(2,3)=-FTAU/ABS(FTAU)
-
-             DDVIS(3,1)= N*C*VAL/K*FTAU/ABS(FTAU)
-             DDVIS(3,2)= 0.D0
-             DDVIS(3,3)= 1.D0+N*VAL/K*DRSDPR(NUMS)
-
-             DVDTAU(3)=-N*VAL/K*FTAU/ABS(FTAU)
-
-             DO 11 IS=1,NS
-                IF (IS.EQ.NUMS) THEN
-                   DDVIR(IS)=1.D0+N*VAL/K*DRSDPR(IS)
-                ELSE
-                   DDVIR(IS)=N*VAL/K*DRSDPR(IS)
-                ENDIF
- 11          CONTINUE
-
+             DFDTAU=(N*DT/(K**N))*(CRIT**(N-1))
           ELSE
-             DP=0.D0
-C             DGAMMA=0.D0
-C             DP/DP
-             DDVIS(3,3)=1.D0
-             DDVIS(2,2)=1.D0
-             IF (ABS(FTAU).GT.R8MIEM()) THEN
-                DDVIS(2,3)=-FTAU/ABS(FTAU)
-             ELSE
-                DDVIS(2,3)=0.D0
-             ENDIF
-             DVDTAU(3)=0.D0
-             DDVIR(NUMS)=1.D0
-         ENDIF
-       ENDIF
-
-      IF (NECOUL.EQ.'ECOU_VISC2') THEN
+             DFDTAU=0.D0
+          ENDIF
+          
+C         DFDAL          
+          DFDAL=-C*DFDTAU
+          
+C         DFDR
+          IF (ABS(FTAU).LE.R8MIEM()) THEN
+             SGNS=1.D0
+          ELSE
+             SGNS=FTAU/ABS(FTAU)    
+          ENDIF
+          DFDR=-SGNS*DFDTAU          
+          
+      ELSEIF (NECOUL.EQ.'ECOU_VISC2') THEN
           N=COEFT(IFL-1+1)
           K=COEFT(IFL-1+2)
           C=COEFT(IFL-1+3)
           A=COEFT(IFL-1+4)
           D=COEFT(IFL-1+5)
 
-          FTAU=TAUS-C*VIS(1)-A*VIS(2)
+          FTAU=TAUS-C*ALPHAP-A*GAMMAP
 
-          CRIT=ABS(FTAU)-RP + 0.5D0*C*D*(VIS(1))**2
-          IF (CRIT.GT.0.D0) THEN
-             VAL=DT*(CRIT/K)**(N-1)
-             DP=((CRIT/K)**N)*DT
-C             DGAMMA=DP*FTAU/ABS(FTAU)
-
-             DDVIS(2,1)=0.D0
-             DDVIS(2,2)=1.D0
-             DDVIS(2,3)=-FTAU/ABS(FTAU)
-
-             DDVIS(3,1)= -N*VAL/K*(-C*FTAU/ABS(FTAU)+C*D*VIS(1))
-             DDVIS(3,2)= N*VAL/K*A*FTAU/ABS(FTAU)
-             DDVIS(3,3)= 1.D0+N*VAL/K*DRSDPR(NUMS)
-
-             DVDTAU(3)=-N*VAL/K*FTAU/ABS(FTAU)
-
-
-             DO 13 IS=1,NS
-                IF (IS.EQ.NUMS) THEN
-                   DDVIR(IS)=1.D0+N*VAL/K*DRSDPR(IS)
-                ELSE
-                   DDVIR(IS)=N*VAL/K*DRSDPR(IS)
-                ENDIF
- 13          CONTINUE
-
+          CRIT=ABS(FTAU)-RP + 0.5D0*C*D*(ALPHAP)**2
+          IF (ABS(FTAU).LE.R8MIEM()) THEN
+             SGNS=1.D0
           ELSE
-             DP=0.D0
-C             DGAMMA=0.D0
-C             DP/DP
-             DDVIS(3,3)=1.D0
-             DDVIS(2,2)=1.D0
-             IF (ABS(FTAU).GT.R8MIEM()) THEN
-                DDVIS(2,3)=-FTAU/ABS(FTAU)
-             ELSE
-                DDVIS(2,3)=0.D0
-             ENDIF
-             DVDTAU(3)=0.D0
-             DDVIR(NUMS)=1.D0
+             SGNS=FTAU/ABS(FTAU)    
           ENDIF
-       ENDIF
-
-      IF (NECOUL.EQ.'ECOU_VISC3') THEN
+          
+          IF (CRIT.GT.0.D0) THEN          
+             DFDTAU=(N*DT/(K**N))*(CRIT**(N-1))
+          ELSE
+             DFDTAU=0.D0
+          ENDIF
+          
+C         DFDAL          
+          DFDAL=(-C*SGNS+D*ALPHAP*DALPHA)*DFDTAU*SGNS
+          
+C         DFDR
+          DFDR=-SGNS*DFDTAU          
+          
+          
+      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
           K      =COEFT(IFL-1+1)
           TAUMU  =COEFT(IFL-1+2)
           GAMMA0 =COEFT(IFL-1+3)
           DELTAV =COEFT(IFL-1+4)
           DELTAG =COEFT(IFL-1+5)
 
-          TAUV=ABS(TAUS)-TAUMU
-          IF (TAUV.GT.0.D0) THEN
+          CRIT=ABS(TAUS)-TAUMU
+          IF (ABS(TAUS).LE.R8MIEM()) THEN
+             SGNS=1.D0
+          ELSE
+             SGNS=(TAUS)/ABS(TAUS)
+          ENDIF       
+          
+          IF (CRIT.LT.0.D0) THEN
+             DFDTAU=0.D0
+          ELSE
              TABS=TPERD+273.5D0
 
-             DDVIS(2,1)=0.D0
-             DDVIS(2,2)=1.D0
-             DDVIS(2,3)=-TAUS/ABS(TAUS)
-
-             DDVIS(3,1)= 0.D0
-             DDVIS(3,2)= 0.D0
-             DDVIS(3,3)= 1.D0
-C             DDVIS(3,3)= 1.D0+GAMMA0*DELTAV/K/TABS*EXP(-DELTAG/K/TABS)
-C     &                 *EXP(DELTAV/K/TABS*TAUV)*DRSDPR(NUMS)
-
-             DVDTAU(3)=GAMMA0*DELTAV/K/TABS*EXP(-DELTAG/K/TABS)
-     &                 *EXP(DELTAV/K/TABS*TAUV)*TAUS/ABS(TAUS)
-             DDVIR(NUMS)=0.D0
-
-          ELSE
-             DDVIS(3,3)=1.D0
-             DDVIS(2,2)=1.D0
-             IF (ABS(FTAU).GT.R8MIEM()) THEN
-                DDVIS(2,3)=-FTAU/ABS(FTAU)
-             ELSE
-                DDVIS(2,3)=0.D0
-             ENDIF
-             DVDTAU(3)=0.D0
-             DDVIR(NUMS)=0.D0
+             DFDTAU=GAMMA0*DELTAV*K*TABS*EXP(-DELTAG/K/TABS)
+     &              *EXP(DELTAV/K/TABS*CRIT-1.D0)*(DELTAV/K/TABS*CRIT)
           ENDIF
+          
+C         DFDAL          
+          DFDAL=0.D0
+          
+C         DFDR
+          DFDR=0.D0         
+
        ENDIF
-
-      IF (NECOUL.EQ.'ECOU_PLAS1') THEN
-          C=COEFT(IFL-1+1)
-          CRIT=ABS(FTAU)-RP
-
-          IF (CRIT.GT.0.D0) THEN
-             CALL U2MESS('F','ALGORITH4_67')
-          ELSE
-             DP=0.D0
-C             DGAMMA=0.D0
-          ENDIF
-       ENDIF
-
 
       END

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcrg hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfcrg hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,8 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include <stdlib.h>
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Création d'un groupe HDF, renvoie une erreur si le groupe ne peut être créé 
 /  Paramètres :
@@ -27,13 +29,7 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfcrg_ ( long *idf, char *nomgp, char *nomgr, long lp, long ln )
-#elif defined HPUX
-   long hdfcrg ( long *idf, char *nomgp, char *nomgr, long lp, long ln )
-#elif defined PPRO_NT
-   extern long __stdcall HDFCRG ( long *idf, char *nomgp, unsigned long lp, char *nomgr, unsigned long ln )
-#endif
+INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, int lp, char *nomgr, int ln)
 {
   hid_t  idgrp,idfic;     
   char *nomd;

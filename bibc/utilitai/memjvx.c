@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMJVX utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MEMJVX utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,15 +19,9 @@
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
 #include <stdio.h>
-#ifdef CRAY
-   long MEMJVX(double* val)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long memjvx_(double* val)
-#elif defined HPUX
-   long memjvx(double* val)
-#elif defined PPRO_NT
-   long __stdcall MEMJVX(double* val)
-#endif
+#include "aster.h"
+
+INTEGER DEFP(MEMJVX, memjvx, double *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** d'allocation d'une zone de memoire exacte JEVEUX
@@ -35,10 +29,10 @@
 **        si >= 0 positionne l'indicateur par une valeur en Mw
 */
 {
-static long MEM_JEVEUX=0;
-if (*val >= 0) {
-   MEM_JEVEUX=(long)((*val)*1024*1024);
+   static INTEGER MEM_JEVEUX=0;
+   if (*val >= 0) {
+      MEM_JEVEUX=(long)((*val)*1024*1024);
    }
-
-return(MEM_JEVEUX);
+   
+   return MEM_JEVEUX;
 }

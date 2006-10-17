@@ -1,4 +1,4 @@
-# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 17/10/2006   AUTEUR CIBHHPD L.SALMONA 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                    );        
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');                       
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     DEFI_FISS=_F(
@@ -78,107 +78,117 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',);
 
-ZERO=0.0
-DEPHAUT=1.E-6
+ZERO=DEFI_CONSTANTE(VALE=0.)
+DEPHAUT=DEFI_CONSTANTE(VALE=1.E-6)
+# definition de la fonction signe
+def SIGN(x) :
+   if x<0.  :  return -1.
+   if x>0.  :  return  1.
+   if x==0. :  return  0.
 
-CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+# definition de la fonction signe de LN
+SILN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='SIGN(LN(X,Y,Z))');
+
+UN=DEFI_CONSTANTE(VALE=1.);
+
+
+CH=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                        LIAISON_DDL=(
                                  _F(NOEUD=('N1','N1',),
                                     DDL=('DCX','H1X',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),
                                  _F(NOEUD=('N1','N1',),
                                     DDL=('DCY','H1Y',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),  
                                  _F(NOEUD=('N1','N1',),
                                     DDL=('DCZ','H1Z',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,), 
                                  _F(NOEUD=('N2','N2',),
                                     DDL=('DCX','H1X',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),
                                  _F(NOEUD=('N2','N2',),
                                     DDL=('DCY','H1Y',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),  
                                  _F(NOEUD=('N2','N2',),
                                     DDL=('DCZ','H1Z',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),    
                                   _F(NOEUD=('N3','N3',),
                                     DDL=('DCX','H1X',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),
                                  _F(NOEUD=('N3','N3',),
                                     DDL=('DCY','H1Y',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),  
                                  _F(NOEUD=('N3','N3',),
                                     DDL=('DCZ','H1Z',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,), 
                                  _F(NOEUD=('N4','N4',),
                                     DDL=('DCX','H1X',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),
                                  _F(NOEUD=('N4','N4',),
                                     DDL=('DCY','H1Y',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),  
                                  _F(NOEUD=('N4','N4',),
                                     DDL=('DCZ','H1Z',),
-                                    COEF_MULT=(-1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),                          
-
                                  _F(NOEUD=('N5','N5',),
                                     DDL=('DCX','H1X',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),
                                  _F(NOEUD=('N5','N5',),
                                     DDL=('DCY','H1Y',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),    
                                  _F(NOEUD=('N5','N5',),
                                     DDL=('DCZ','H1Z',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=DEPHAUT,),
                                   _F(NOEUD=('N6','N6',),
                                     DDL=('DCX','H1X',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),
                                  _F(NOEUD=('N6','N6',),
                                     DDL=('DCY','H1Y',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),     
                                  _F(NOEUD=('N6','N6',),
                                     DDL=('DCZ','H1Z',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=DEPHAUT,),
                                  _F(NOEUD=('N7','N7',),
                                     DDL=('DCX','H1X',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),
                                  _F(NOEUD=('N7','N7',),
                                     DDL=('DCY','H1Y',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),      
                                  _F(NOEUD=('N7','N7',),
                                     DDL=('DCZ','H1Z',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=DEPHAUT,),
                                  _F(NOEUD=('N8','N8',),
                                     DDL=('DCX','H1X',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),
                                  _F(NOEUD=('N8','N8',),
                                     DDL=('DCY','H1Y',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=ZERO,),      
                                  _F(NOEUD=('N8','N8',),
                                     DDL=('DCZ','H1Z',),
-                                    COEF_MULT=(1.0,1.0),
+                                    COEF_MULT_FONC=(UN,SILN),
                                     COEF_IMPO=DEPHAUT,),      
                                     ),
                        INFO=1,);
@@ -221,12 +231,12 @@ IMPR_TABLE(TABLE=DEP,
            FORMAT_C='MODULE_PHASE',
            IMPR_FONCTION='NON',);
 
-DCZH1Z=DEPHAUT/2
+DCZH1Z=1E-6/2
 
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='DCX',
            TYPE_TEST='MIN',
-           VALE=ZERO,
+           VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
            REFERENCE='ANALYTIQUE',);   
@@ -234,7 +244,7 @@ TEST_TABLE(TABLE=DEP,
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='DCX',
            TYPE_TEST='MAX',
-           VALE=ZERO,
+           VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
            REFERENCE='ANALYTIQUE',);  
@@ -242,7 +252,7 @@ TEST_TABLE(TABLE=DEP,
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='DCY',
            TYPE_TEST='MIN',
-           VALE=ZERO,
+           VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
            REFERENCE='ANALYTIQUE',);   
@@ -250,7 +260,7 @@ TEST_TABLE(TABLE=DEP,
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='DCY',
            TYPE_TEST='MAX',
-           VALE=ZERO,
+           VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
            REFERENCE='ANALYTIQUE',);  
@@ -274,7 +284,7 @@ TEST_TABLE(TABLE=DEP,
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='H1X',
            TYPE_TEST='MIN',
-           VALE=ZERO,
+           VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
            REFERENCE='ANALYTIQUE',);   
@@ -282,7 +292,7 @@ TEST_TABLE(TABLE=DEP,
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='H1X',
            TYPE_TEST='MAX',
-           VALE=ZERO,
+           VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
            REFERENCE='ANALYTIQUE',);  
@@ -290,7 +300,7 @@ TEST_TABLE(TABLE=DEP,
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='H1Y',
            TYPE_TEST='MIN',
-           VALE=ZERO,
+           VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
            REFERENCE='ANALYTIQUE',);   
@@ -298,7 +308,7 @@ TEST_TABLE(TABLE=DEP,
 TEST_TABLE(TABLE=DEP,
            NOM_PARA='H1Y',
            TYPE_TEST='MAX',
-           VALE=ZERO,
+           VALE=0.,
            CRITERE='ABSOLU',
            PRECISION=1.0E-16,
            REFERENCE='ANALYTIQUE',);  

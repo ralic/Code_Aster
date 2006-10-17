@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF INTMAX UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF INTMAX UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,35 +18,12 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
-#ifdef CRAY
-/*    On ne fait rien : on utilise la fonction INTMAX systeme */
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long intmax_(long *n, long *dx, long *incx)
-#elif defined HPUX
-   long intmax(long *n, long *dx, long *incx)
-#elif defined PPRO_NT
-   extern long __stdcall INTMAX (long *n, long *dx, long *incx)
-#endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-{
-extern long blimax_(long *n, long *dx, long *incx);
-long v;
-v=blimax_(n,dx,incx);
-return(v);
-}
-#elif defined HPUX
-{
-extern long blimax(long *n, long *dx, long *incx);
-long v;
-v=blimax(n,dx,incx);
-return(v);
-}
+#include "aster.h"
 
-#elif defined PPRO_NT
+extern long DEFPPP(BLIMAX, blimax, long *n, long *dx, long *incx);
+#define CALL_BLIMAX(a,b,c) CALLPPP(BLIMAX,blimax,a,b,c)
+
+INTEGER DEFPPP(INTMAX, intmax, INTEGER *n, INTEGER *dx, INTEGER *incx)
 {
-long v;
-extern long __stdcall BLIMAX(long *n, long *dx, long *incx);
-v=BLIMAX(n,dx,incx);
-return(v);
+   return (INTEGER)CALL_BLIMAX(n, dx, incx);
 }
-#endif

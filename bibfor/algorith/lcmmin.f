@@ -4,7 +4,7 @@
      &                      TIMED,TIMEF,VIND,SIGD  )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,8 +29,18 @@ C       IN  ESSAI  :  VALEUR DE LA SOLUTION D ESSAI
 C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
-C           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
-C       VAR DEPS   :  INCREMENT DE DEFORMATION
+C           NR     :  DIMENSION DECLAREE DRDY
+C           NVI    :  NOMBRE DE VARIABLES INTERNES
+C           YD     :  VARIABLES A T  
+C           DY     :  SOLUTION  A L'ITERATION PRECEDENTE
+C           COMP   :  NOM COMPORTEMENT
+C           NBCOMM :  INCIDES DES COEF MATERIAU
+C           CPMONO :  NOM DES COMPORTEMENTS
+C           PGL    :  MATRICE DE PASSAGE
+C           TOUTMS :  TENSEURS D'ORIENTATION
+C           VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
+C           SIGD   :  CONTRAINTE A T
+C       VAR DEPS   :  INCREMENT DE DEFORMATION (ACTUALISE EN C_PLAN)
 C           TYPESS :  TYPE DE SOLUTION D ESSAI
 C                               0 = NUL(0)
 C                               1 = ELASTIQUE
@@ -53,7 +63,7 @@ C
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------
-      INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS,MONO1
+      INTEGER         I ,NBFSYS,NBSYS,IS,NBCOMM(NMAT,3),IFA,NUMS
       REAL*8          EVP(6)
       REAL*8          PGL(3,3),MS(6)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
@@ -64,12 +74,8 @@ C - SOLUTION INITIALE = NUL
 C
       TYPES0=TYPESS
 
-      MONO1=NBCOMM(NMAT,1)
-      IF (MONO1.EQ.1) THEN
-         TYPESS=0
-      ELSE
-         TYPESS=7
-      ENDIF
+      TYPESS=0
+C         TYPESS=7
 
       IF ( TYPESS .EQ. 0) THEN
          CALL LCINVN ( NR  , 0.D0 , DY )
@@ -148,6 +154,5 @@ C
 
       ENDIF
 C
-      CALL CALCMM(NBCOMM,CPMONO,NMAT,PGL,TOUTMS)
       TYPESS=TYPES0
       END

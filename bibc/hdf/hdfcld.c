@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcld hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfcld hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Fermeture d'un dataset HDF 
 /  Paramètres :
@@ -25,13 +26,7 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfcld_( long *idd )
-#elif defined HPUX
-   long hdfcld ( long *idd )
-#elif defined PPRO_NT
-   extern long __stdcall HDFCLD( long  *idd )
-#endif
+INTEGER DEFP(HDFCLD, hdfcld, INTEGER *idd)
 {
   hid_t id;
   herr_t icode;

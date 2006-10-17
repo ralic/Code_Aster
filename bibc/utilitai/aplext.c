@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF APLEXT UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,67 +21,64 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
+extern int errno;
 
- extern int errno;
+#include "aster.h"
 
-#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+
+#ifdef _POSIX
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
-#endif
 
-#if defined CRAY
-#include <fortran.h>
-void APLEXT(long *niv,long *nbd, _fcd nomF, long *ier)
-
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-void aplext_(long *niv,long *nbd, char *nom, long *ier, unsigned long lnom)
-
-#elif defined HPUX
-void aplext(long *niv,long *nbd, char *nom, long *ier, unsigned long lnom)
-
-#elif defined PPRO_NT
+#elif defined(_WIN32)
 #include <process.h>
-void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *ier)
 
 #endif
+
+
+void DEFPPSP(APLEXT, aplext, long *niv,long *nbd ,char *nom ,unsigned long lnom, long *ier)
 {
-   char *args[100];char nomcmd[81];char *ncmd,*msg;
-   long i,k,num,ipid,l;
-#ifndef PPRO_NT
+   char *args[100];
+   char nomcmd[81];
+   char *ncmd,*msg;
+   long i,k,l;
+#ifdef _POSIX
    pid_t pid;
-#endif
-#if defined CRAY
-   char *nom;unsigned long lnom;
-   nom  = _fcdtocp(nomF);
-   lnom = _fcdlen(nomF);
+#else
+   long ipid,num;
 #endif
    *ier = 0;
    if (*nbd > 100){
-   fprintf(stderr,"\nLe nombre d'arguments d'appel (%ld) est supérieur à 99\n",*nbd);
-   fprintf(stdout,"\nLe nombre d'arguments d'appel (%ld) est supérieur à 99\n",*nbd);
-   *ier = 1;
-#if defined PPRO_NT
-      num = _flushall();
-#else
+      fprintf(stderr,"\nLe nombre d'arguments d'appel (%ld) est supérieur à 99\n",*nbd);
+      fprintf(stdout,"\nLe nombre d'arguments d'appel (%ld) est supérieur à 99\n",*nbd);
+      *ier = 1;
+#ifdef _POSIX
       fflush(stderr);
       fflush(stdout);
+#else
+      num = _flushall();
 #endif
-   return;
+      return;
    }
-/*
-   Initialisation des pointeurs sur les arguments d'appel
-*/
-   for (k=1;k<100;k++) {args[k] = NULL;}
-/*
-   Construction du nom de la commande ou du programme externe à appeler
-*/
+   /*
+      Initialisation des pointeurs sur les arguments d'appel
+   */
+   for (k=1;k<100;k++) {
+      args[k] = NULL;
+   }
+   /*
+      Construction du nom de la commande ou du programme externe à appeler
+   */
    l    = (long) lnom;
    ncmd = nom;
    if (l != 0) {
-     for (i=0;i<l;i++) {nomcmd[i]=ncmd[i];}
+     for (i=0;i<l;i++) {
+       nomcmd[i]=ncmd[i];
+     }
      i=l-1;
      while (ncmd[i] == ' ') {i--;}
      nomcmd[i+1] ='\0';
@@ -92,9 +89,9 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
    }
 
    if (*niv > 0){fprintf(stdout,"\n\nLancement de la commande ->%s<-\n",nomcmd);}
-/*
-   Recopie des arguments d'appel
-*/
+   /*
+      Recopie des arguments d'appel
+   */
    args[0] = nomcmd;
    for (k=1;k<*nbd;k++) {
         ncmd = ncmd+lnom;
@@ -106,12 +103,12 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
 
    args[*nbd+1] = NULL;
 
-#ifndef PPRO_NT
+#ifdef _POSIX
    fflush(stderr);
    fflush(stdout);
    if ( (pid=fork()) < 0 ) {
      *ier=1;
-     msg=strerror(errno);
+     msg=(char *)strerror(errno);
      fprintf(stdout,"\n%s\n",msg);
      fprintf(stderr,"\n%s\n",msg);
    }
@@ -136,7 +133,7 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
        if (pidr == -1) {
                 perror("wait"); 
                 *ier=1;
-                msg=strerror(errno);
+                msg=(char *)strerror(errno);
                 fprintf(stdout,"\n%s\n",msg);
                 fprintf(stderr,"\n%s\n",msg);
 		}
@@ -144,8 +141,6 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
 /*
    Examen du code retour avec détection des signaux
 */
-         long code;
-
          if (WIFEXITED(errnoSTAT)) {
             *ier=WEXITSTATUS(errnoSTAT);
             if (*niv > 0){fprintf(stderr,"Fin du processus avec code retour: %d\n",WEXITSTATUS(errnoSTAT));}
@@ -156,18 +151,6 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
             fprintf(stderr,"Fin du processus par signal : %d :",WTERMSIG(errnoSTAT));
             fprintf(stdout,"Fin du processus par signal : %d :",WTERMSIG(errnoSTAT));
             switch (WTERMSIG(errnoSTAT)) {
-#endif
-#ifdef CRAY
-               case SIGORE :
-                  fprintf(stderr,"operand range error");
-                  fprintf(stdout,"operand range error");
-                  break;
-               case SIGCPULIM  :
-                  fprintf(stderr,"cpu limit exceeded");
-                  fprintf(stdout,"cpu limit exceeded");
-                  break;
-#endif
-#if defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
                case SIGXCPU  :
                   fprintf(stderr,"cpu limit exceeded");
                   fprintf(stdout,"cpu limit exceeded");
@@ -185,8 +168,6 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
                   fprintf(stderr,"floating point exception");
                   fprintf(stdout,"floating point exception");
                   break;
-#endif
-#ifndef PPRO_NT
                }
             fprintf(stderr,"\n");
             fprintf(stdout,"\n");
@@ -197,20 +178,21 @@ void __stdcall APLEXT(long *niv,long *nbd ,char *nom ,unsigned long lnom, long *
          }
       }
    }
-#endif
-#if defined PPRO_NT
+#else
    num = _flushall();
    ipid = _spawnv( _P_WAIT, nomcmd , args );
    perror("\ncode retour spawnv");
 #endif
 
-if (*niv > 0){fprintf(stdout,"\nRetour au Code_Aster \n\n");}
+   if (*niv > 0){
+      fprintf(stdout,"\nRetour au Code_Aster \n\n");
+   }
 
-#if defined PPRO_NT
-   num = _flushall();
-#else
+#ifdef _POSIX
    fflush(stderr);
    fflush(stdout);
+#else
+   num = _flushall();
 #endif
 
 }

@@ -3,11 +3,11 @@
      &                   KP,    EE,      A,       H, PGL,NBPHAS,COTHE,
      &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
      &                   ALPHA, COEL, X,       PAS,     SIGI,   EPSD,
-     &                   DETOT, TPERD,   DTPER,   TPEREF, BZ )
+     &                   DETOT, TPERD,   DTPER,   TPEREF )
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,16 +59,12 @@ C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C         TPERD   :  TEMPERATURE A T
 C         DTPER   :  INTERVALE DE TEMPERATURE ENTRE T+DT ET T
 C         TPEREF  :  TEMPERATURE DE REFERENCE
-C         BZ      :  VARIABLE LOGIQUE :
-C                   'VRAI' ON UTILISE LE MODELE POLY PILVIN
-C                   'FAUX' ON UTILISE LE MODELE POLY B.Z.
 C     ----------------------------------------------------------------
       
       INTEGER    NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I,NBFSYM,NBPHAS
       CHARACTER*16 COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8 MOD
       CHARACTER*3     MATCST
-      LOGICAL BZ
       REAL*8 E, NU, ALPHA, PGL(3,3), COEL(NMAT)
       REAL*8 X, PAS, H, HS2
       REAL*8 TPERD, DTPER, TPEREF
@@ -85,7 +81,7 @@ C
         CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBFSYM,TOUTMS,
      &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
      &              E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
-     &              TPEREF,F,BZ)
+     &              TPEREF,F)
         DO 10 I=1,NVI
           A(I)=F(I)
           Y(I)=Y(I)+A(I)*H
@@ -99,7 +95,7 @@ C
       CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBFSYM,TOUTMS,
      &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
      &            E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
-     &            TPEREF,F,BZ)
+     &            TPEREF,F)
       HS2=0.5D0*H
       DO 12 I=1,NVI
         EE(I)=(F(I)-A(I))*HS2

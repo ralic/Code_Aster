@@ -10,7 +10,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,15 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER       JREFD, IMODE, JMODE, IER, NMIN, IMIN, NMAX, IMAX,IEQ
       INTEGER       NMIN1, KMODE, NORDR, IBID, I, LADPA, LMODE, LVALE
-      INTEGER       INDK24, NBPAST, IRANG
+      INTEGER       INDK24, NBPAST, IRANG,IRET,JMODG,JMACR,JBASM,JRAID
+      INTEGER       JMOD2,JMODL,JMATE,JCARA
       PARAMETER    ( NBPAST = 17 )
-      CHARACTER*8   RES ,K8B, RAIDE
+      CHARACTER*8   RES ,K8B, RAIDE, MODELE, CHMAT, CARAEL
       CHARACTER*16  TYPCON, NOMCMD, NOSY
       CHARACTER*19  CHAMNO
       CHARACTER*24  REFD,NUME,NOPAST(NBPAST)
-      LOGICAL       LREFD, LNUME
+      CHARACTER*32  JEXNUM
+      LOGICAL       LREFD, LNUME, LSTOCK
 C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C
@@ -103,8 +105,10 @@ C On recupere la matrice du REFD
 C On recupere la numerotation du REFD si la matrice n'existe pas
            NUME = ZK24(JREFD+3)
            LNUME = .FALSE.
+           LSTOCK=.FALSE.
          ELSE
            LNUME = .TRUE.
+           LSTOCK=.TRUE.
          ENDIF
 C Si elle existe on prend la numerotation associee
       ENDIF
@@ -140,6 +144,52 @@ C
  30   CONTINUE
       NMIN1 = NMAX
 C
+C     ON RECUPERE LE NOM DE LA MATRICE DE RAIDEUR AFIN DE
+C     DETERMINER LE NOM DU MODELE, DU MATERIAU ET DES
+C     CARACTERISTIQUES ELEMENTAIRES
+      IF(LSTOCK)THEN
+        IF ( TYPCON(1:9).EQ.'MODE_MECA'.OR.TYPCON.EQ. 'MODE_ACOU'
+     &  .OR. TYPCON.EQ.'MODE_FLAMB')THEN
+           CALL DISMOI('F','NOM_MODELE',RAIDE,'MATR_ASSE',IBID,
+     &          MODELE,IRET)
+           CALL DISMOI('F','CHAM_MATER',RAIDE,'MATR_ASSE',IBID,
+     &          CHMAT,IRET)
+           CALL DISMOI('F','CARA_ELEM',RAIDE,'MATR_ASSE',IBID,
+     &          CARAEL,IRET)
+        ELSEIF( TYPCON(1:9).EQ.'MODE_GENE')THEN
+           CALL JEVEUO(RAIDE//'           .LIME','L',JMODG)
+           IF(ZK8(JMODG).EQ.'        ')THEN
+C            ON EST PASSE PAR UN PROJ_MATR_BASE
+             CALL JEVEUO(RAIDE//'           .REFA','L',JMODG)
+             CALL JEVEUO(ZK24(JMODG)(1:8)//'           .REFD','L',JRAID)
+           ELSE
+C            ON EST PASSE PAR UN DEFI_MODELE_GENE
+             CALL JEVEUO(ZK8(JMODG)//'      .MODG.SSME','L',JMACR)
+             CALL JEVEUO(ZK8(JMACR)//'.MAEL_INER_REFE','L',JBASM)
+             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .REFD','L',JRAID)
+             IF(ZK24(JRAID)(1:8).EQ.'        ')THEN
+             CALL JEVEUO(JEXNUM(ZK24(JBASM)(1:8)//'           .TACH',1),
+     &                   'L',JMOD2)
+             CALL JEVEUO(ZK24(JMOD2)(1:8)//'           .MODL','L',JMODL)
+             CALL JEVEUO(ZK24(JMOD2)(1:8)//'           .MATE','L',JMATE)
+             CALL JEVEUO(ZK24(JMOD2)(1:8)//'           .CARA','L',JCARA)
+             MODELE=ZK8(JMODL)
+             CHMAT =ZK8(JMATE)
+             CARAEL=ZK8(JCARA)
+             GOTO 39
+             ENDIF
+           ENDIF
+           CALL DISMOI('F','NOM_MODELE',ZK24(JRAID)(1:8),'MATR_ASSE',
+     &        IBID,MODELE,IRET)
+           CALL DISMOI('F','CHAM_MATER',ZK24(JRAID)(1:8),'MATR_ASSE',
+     &        IBID, CHMAT,IRET)
+           CALL DISMOI('F','CARA_ELEM',ZK24(JRAID)(1:8),'MATR_ASSE',
+     &        IBID,CARAEL,IRET)
+        ENDIF
+      ENDIF  
+C
+ 39   CONTINUE
+
       DO 40 IMODE = 1, NBMODE
 C
 C       STOCKAGE DES FREQUENCES PAR ORDRE CROISSANT DE NUMERO
@@ -209,6 +259,18 @@ C
            CALL RSADPA(MODES,'E',1,NOPAST(2),NORDR,0,LADPA,K8B)
            ZK24(LADPA) = RESUFK(KMODE,IRANG)
         ENDIF
+C
+C ----- ON STOCKE : MODELE, CARA_ELEM, CHAM_MATER
+C
+        IF(LSTOCK)THEN
+          CALL RSADPA(MODES,'E',1,'MODELE',NORDR,0,LADPA,K8B)
+          ZK8(LADPA)=MODELE
+          CALL RSADPA(MODES,'E',1,'CHAMPMAT',NORDR,0,LADPA,K8B)
+          ZK8(LADPA)=CHMAT
+          CALL RSADPA(MODES,'E',1,'CARAELEM',NORDR,0,LADPA,K8B)
+          ZK8(LADPA)=CARAEL
+        ENDIF
+C
 C
 C ----- ON STOCKE LES PARAMETRES REELS
 C

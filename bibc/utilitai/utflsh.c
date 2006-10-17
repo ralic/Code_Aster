@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTFLSH UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTFLSH UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,30 +17,19 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-/* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
-/*      CE PROGRAMME VIDE LES BUFFERS DE LA SORTIE STANDARD          */
-/*      CELA CORRESPOND AU PRINT FORTRAN                             */
-/* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
 
 extern int fflush();
 
-#ifdef CRAY
-   void UTFLSH ( int *codret )
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   void utflsh_ ( int *codret )
-#elif defined HPUX
-   void utflsh ( int *codret )
-#elif defined PPRO_NT
-   void __stdcall UTFLSH ( int *codret )
-#endif
-{
+#include "aster.h"
 
-#if defined PPRO_NT
-  _flushall() ;
-  *codret = 0 ;
+void DEFP(UTFLSH, utflsh, INTEGER *codret)
+{
+#ifdef _POSIX
+  *codret = fflush(0) ;
 
 #else
-  *codret = fflush(0) ;
+  _flushall() ;
+  *codret = 0 ;
 
 #endif
 }

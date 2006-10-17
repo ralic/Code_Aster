@@ -1,6 +1,6 @@
       SUBROUTINE IMPVEM ( IFI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/97   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C
       CHARACTER*34   CFT1R8 , CFT2R8 , CFT3R8 , CFTR8
 C
       LOGICAL        LCRAEM
-      INTEGER        LBISEM , LUISEM
+      INTEGER        LBISEM
       INTEGER        LOLSEM , LOISEM , LOR8EM , LOC8EM
       INTEGER        NCISEM , NCR8EM
       REAL*8         R8BAEM , R8PREM , R8MAEM , R8MIEM , R8GAEM , R8NNEM
@@ -44,7 +44,7 @@ C
       DATA ( LABEL(I), I=1,7) /
      1   'LCRAEM  MACHINE  CRAY   ',
      2   'LBISEM  ENTIER   INTEGER    ',
-     3   'LUISEM  ENTIER   INTEGER    ',
+     3   'xxxxxx  xxxxxx   xxxxxxx    ',
      4   'LOLSEM  LOGIQUE  LOGICAL    ',
      5   'LOISEM  ENTIER   INTEGER    ',
      6   'LOR8EM  REEL     REAL*8     ',
@@ -126,10 +126,6 @@ C
       WRITE ( IFI , '(/,A,/)' )
      &   ' ----- LONGUEUR EN BITS'
       WRITE ( IFI , '((1X,A,I3,2X))' ) LABEL( 2) , LBISEM()
-C
-      WRITE ( IFI , '(/,A,/)' )
-     &   ' ----- LONGUEUR EN UNITES D''ADRESSAGE DE LA MACHINE'
-      WRITE ( IFI , '((1X,A,I3))' )    LABEL( 3) , LUISEM()
 C
       WRITE ( IFI , '(/,A,/)' )
      &   ' ----- LONGUEUR EN OCTETS'

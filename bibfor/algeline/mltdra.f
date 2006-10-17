@@ -2,7 +2,7 @@
      +                  ADRESS,GLOBAL,LGSN,FACTOL,FACTOU,SM,X,
      +                  INVP,PERM,AD,TRAV,TYPSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,14 +91,12 @@ C     DESCENTE  L * Y = B
 C                 RANGEMENT DU TERME DIAGONAL
                   SM(NDJ) = ZR(IFAC-1+AD(J))
 
-CRAY DIR$ IVDEP
                   K = 1
                   DO 140 I = J + 1,L
                      TRAV(I) = TRAV(I) -
      +                    ZR(IFAC-1+AD(J)+K) *TRAV(J)
                       K = K + 1
   140             CONTINUE
-CCHANGTPOUR SGEMV   AD(J+1) = AD(J) + LONG - J + 1
                   AD(J+1) = AD(J) + LONG + 1
                   AD(J) = AD(J) + L - J + 1
   150         CONTINUE
@@ -111,13 +109,11 @@ C                 RANGEMENT DU TERME DIAGONAL
                  KK= L
                  LDA = LONG
                  IF(NN.LT.SEUIN.OR.KK.LT.SEUIK) THEN
-                 CALL SSPMVA((LONG-L),L,ZR(IFAC),AD,TRAV,TRAV(L+1))
+                 CALL SSPMVB((LONG-L),L,ZR(IFAC),AD,TRAV,TRAV(L+1))
                  ELSE
                  CALL DGEMV(TRA,NN,KK,ALPHA,ZR(IFAC+AD(1)-1),LDA,TRAV,
      &                      INCX,BETA,TRAV(L+1),INCY)
                  ENDIF
-C CHANGTSGEMV                 CALL SSPMVA(LONG-L,L,ZR(IFAC),AD,TRAV,
-C     +                         TRAV(L+1))
               END IF
               K = 1
               DO 160 I = ADRESS(SNI),ADRESS(SNI+1) - 1

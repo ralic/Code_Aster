@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ERFCAM UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF ERFCAM UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,23 +18,16 @@
 /* ================================================================== */
 
 #include <math.h>
-#if defined CRAY
-   double ERFCAM(double *x)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   double erfcam_(double *x)
-#elif defined HPUX 
-   double erfcam(double *x)
-#elif defined PPRO_NT
-   double __stdcall ERFCAM(double *x)
-#endif
+#include "aster.h"
+
+double DEFP(ERFCAM, erfcam, double *x)
 {
-#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
   double y;
+#ifdef _POSIX
   y = erfc(*x);
   return(y);
-#elif defined PPRO_NT
-  extern double __stdcall ERFCFO(double *z);
-  double y;
+#else
+  extern double STDCALL(ERFCFO,erfcfo)(double *z);
   y = ERFCFO(x);
   return(y);
 #endif

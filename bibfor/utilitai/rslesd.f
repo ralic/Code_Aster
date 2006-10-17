@@ -6,7 +6,7 @@
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,8 @@ C
         ELSEIF (NOMSD.EQ.NOMLU) THEN
            MODELE = NOMLU
         ELSE
-          CALL U2MESS('F','UTILITAI4_37')
+          CALL U2MESS('A','UTILITAI4_37')
+          MODELE = NOMLU
         ENDIF
       ELSE
         IF (N1.NE.0) THEN

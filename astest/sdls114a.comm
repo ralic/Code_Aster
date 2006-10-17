@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -254,8 +254,16 @@ RES_DYNA=DYNA_TRAN_MODAL(MASS_GENE=MASS_GE,
                          IMPRESSION = _F(TOUT='OUI',),);
 
 RESUDYNA = REST_BASE_PHYS(RESU_GENE = RES_DYNA, 
-                          NOM_CHAM='DEPL',);
-                
+                          NOM_CHAM=('DEPL','ACCE',)
+                          );                
+
+RESUDYNA =CALC_ELEM(reuse =RESUDYNA ,
+                   OPTION='SIEF_ELGA_DEPL',
+                   RESULTAT=RESUDYNA ,);
+
+RESUDYNA =CALC_NO(reuse =RESUDYNA ,
+              RESULTAT=RESUDYNA ,
+              OPTION='REAC_NODA',);
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    K_MODAL = _F(TABL_K_MODA =GLMO1,

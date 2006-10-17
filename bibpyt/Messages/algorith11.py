@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith11 Messages  DATE 17/10/2006   AUTEUR CIBHHPD L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -336,5 +336,8 @@ cata_msg={
 
 79: _("""
  pas d'interpolation possible.
+"""),
+80: _("""
+ le solveur GCPC n'est pas compatible avec du contact. Changez de solveur
 """),
 }

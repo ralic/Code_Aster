@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------- */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTRST UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTRST UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,62 +19,17 @@
 /* ================================================================== */
 /* -------------------------------------------------------------------- */
 /* temps(sec) total restant pour ce processus              */
+#include "aster.h"
 
-#if defined PPRO_NT
-  void __stdcall UTTLIM( double *t_lim );
-  void __stdcall UTTCSM( double *t_csm);
-#endif
+void DEFP(UTTLIM, uttlim, double *);
+void DEFP(UTTCSM, uttcsm, double *);
 
 
-#ifdef CRAY
-/* calcul du temps restants user et systeme en multitasking */
-/* sur cray pour ce processus */
-void UTTRST ( float *t_rst )
-{
-  float 	t_csm[2] , t_lim;
-
-/* temps user + systeme consommes  pour ce processus    */
-
-  UTTCSM (t_csm);
-
-/* temps limite pour ce processus                       */
-
-  UTTLIM (&t_lim);
-
-/* temps restant a peu pres pour ce processus           */
-
-  *t_rst = t_lim - t_csm[0] - t_csm[1];
-}
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-void uttrst_ ( double *t_rst )
+void DEFP(UTTRST, uttrst, double *t_rst)
 {
   double t_csm[2] , t_lim;
   uttcsm_ (t_csm);
   uttlim_ (&t_lim);
   *t_rst = t_lim - t_csm[0] - t_csm[1];
 }
-#elif defined PPRO_NT
-void __stdcall UTTRST ( double *t_rst )
-{
-  double t_csm[2] , t_lim;
-  UTTCSM (t_csm);
-  UTTLIM (&t_lim);
-  *t_rst = t_lim - t_csm[0] - t_csm[1];
-}
-#elif defined HPUX
-void uttrst ( double *t_rst )
-{
-  double t_csm[2] , t_lim;
-  uttcsm (t_csm);
-  uttlim (&t_lim);
-  *t_rst = t_lim - t_csm[0] - t_csm[1];
-}
-#elif defined PPRO_NT
-void __stdcall UTTRST ( double *t_rst )
-{
-  double 	t_csm[2] , t_lim;
-  UTTCSM (t_csm);
-  UTTLIM (&t_lim);
-  *t_rst = t_lim - t_csm[0] - t_csm[1];
-}
-#endif
+

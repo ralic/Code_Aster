@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF RMFILE UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF RMFILE UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -25,39 +25,25 @@
 
 extern int errno;
 
-#if defined CRAY
-#include <fortran.h>
-void rmfile(_fcd nom1F)
+#include "aster.h"
 
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-void rmfile_(char *nom1, unsigned long lnom1)
 
-#elif defined HPUX
-void rmfile (char *nom1, unsigned long lnom1)
-
-#elif defined PPRO_NT
-void __stdcall RMFILE(char *nom1 ,unsigned long lnom1)
-
-#endif
+void DEFS(RMFILE, rmfile, char *nom1, int lnom1)
 {
    char nomcmd[85];char *ncmd;
    long i,l,ldeb,num;
    int ier;
-#if defined CRAY
-   char *nom1;unsigned long lnom1;
-   nom1  = _fcdtocp(nom1F);
-   lnom1 = _fcdlen(nom1F);
-#endif
-if (lnom1 > 80) { lnom1 = 80; }
-#if defined PPRO_NT
-   num = _flushall();
-   ncmd = "del ";
-   ldeb = 4;
-#else
+
+   if (lnom1 > 80) { lnom1 = 80; }
+#if defined _POSIX
    num = fflush(stderr);
    num = fflush(stdout);
    ncmd = "rm ";
    ldeb = 3;
+#else
+   num = _flushall();
+   ncmd = "del ";
+   ldeb = 4;
 #endif
    for (i=0;i<ldeb;i++) {nomcmd[i]=ncmd[i];}
    l    = (long) lnom1;
@@ -80,10 +66,10 @@ if (lnom1 > 80) { lnom1 = 80; }
    if ( ier == -1 ) {
         perror("\n<rmfile> code retour system");
    } 
-#if defined PPRO_NT
-   num = _flushall();
-#else
+#if defined _POSIX
    num = fflush(stderr);
    num = fflush(stdout);
+#else
+   num = _flushall();
 #endif
 }

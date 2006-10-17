@@ -8,7 +8,7 @@
       CHARACTER*16       NOMRC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -602,31 +602,6 @@ C
       ENDIF
 C
 C --- 7 VERIFICATION DES NOMS DES PARAMETRES DES TABLES
-C       'TEXTURE' ET 'TRC'
-C
-      IF ( NOMRC(1:8) .EQ. 'POLY_CFC')THEN
-       DO 710 I=1,NBK
-          IF (VALK(NBR+NBC+I)(1:7) .EQ. 'TEXTURE') THEN
-             CALL GETVID(NOMRC,'TEXTURE',1,1,1,TABLE,N)
-             CALL TBEXP2(TABLE,'N1')
-             CALL TBEXP2(TABLE,'N2')
-             CALL TBEXP2(TABLE,'N3')
-             CALL TBEXP2(TABLE,'L1')
-             CALL TBEXP2(TABLE,'L2')
-             CALL TBEXP2(TABLE,'L3')
-             CALL TBEXP2(TABLE,'PHI1')
-             CALL TBEXP2(TABLE,'GPHI')
-             CALL TBEXP2(TABLE,'PHI2')
-             CALL TBEXP2(TABLE,'PROPORTION')
-             CALL TBEXP2(TABLE,'XMS_1')
-             CALL TBEXP2(TABLE,'XMS_2')
-             CALL TBEXP2(TABLE,'XMS_3')
-             CALL TBEXP2(TABLE,'XMS_4')
-             CALL TBEXP2(TABLE,'XMS_5')
-             CALL TBEXP2(TABLE,'XMS_6')
-          ENDIF
- 710   CONTINUE
-      ENDIF
       IF ( NOMRC(1:10) .EQ. 'META_ACIER')THEN
        DO 720 I=1,NBK
           IF (VALK(NBR+NBC+I)(1:3) .EQ. 'TRC') THEN

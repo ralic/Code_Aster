@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE TEST DE LA COMMANDE EXEC_LOGICIEL STANDARD ET GENERATION DE MAILLAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GMSH',
               INFO=1)
 
 EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='SALOME',
-                          UNITE_GEOM=15,
+                          UNITE_GEOM=17,
                           UNITE=21,
                           MAILLAGE=CO('mamed'),),
               ARGUMENT='cube.mmed',

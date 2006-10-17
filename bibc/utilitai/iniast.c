@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF iniast utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF iniast utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,69 +21,39 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if defined CRAY
-   long INIAST(long *r1, long *r2, long *r3)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-#define INIAST iniast_
-   long iniast_(long *r1, long *r2, long *r3)
-#elif defined HPUX
-#define INIAST iniast
-   long iniast(long *r1, long *r2, long *r3)
-#elif defined PPRO_NT
-   long __stdcall INIAST(long *r1, long *r2, long *r3)
-#endif
+#include "aster.h"
+
+extern void STDCALL(ERRLIC, errlic)();
+extern void DEFPPPSP(VERSIO, versio, INTEGER *, INTEGER *, INTEGER *, char *, int, INTEGER *);
+#define CALL_VERSIO(a,b,c,d,e) CALLPPPSP(VERSIO,versio,a,b,c,d,e)
+extern void DEFP(DATE, date, INTEGER *v);
+#define CALL_DATE(a) CALLP(DATE,date,a)
+
+INTEGER DEFPPP(INIAST, iniast, long *r1, long *r2, long *r3)
 {
-
-int status,days;
-char * string;
-long ier,ivers,iutil,iniv,ilog,v[6],vrand;
-int a1,a2,a3,delta;
-unsigned long ldate;
-char vdate[9];
-
-#if defined CRAY
-   extern void ERRLIC(void);
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-#define ERRLIC errlic_
-#define VERSIO versio_
-#define DATE date_
-   extern void errlic_(void);
-   extern void versio(long *a, long *b, long *c, char *v, long *d, unsigned long *l);
-   extern void date (long *v);
-#elif defined HPUX
-#define ERRLIC errlic
-#define VERSIO versio
-#define DATE date
-   extern void errlic(void);
-   extern void versio(long *a, long *b, long *c, char *v, long *d, unsigned long *l);
-   extern void date (long *v);
-#elif defined PPRO_NT
-   extern void __stdcall ERRLIC(void);
-   extern void __stdcall VERSIO(long *a, long *b, long *c, char *v, unsigned long *l, long *d);
-   extern void __stdcall DATE (long *v);
+   long ier,ivers,iutil,iniv,ilog,v[6],vrand;
+   int a1,a2,a3,delta;
+   char vdate[9];
+#ifndef _NO_EXPIR
+   void STDCALL(ERRLIC, errlic)(void);
 #endif
-
- vdate[8] = '\0' ;
-#if defined PPRO_NT
- VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ldate,&ilog);
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
- VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ilog,&ldate);
-#endif
- sscanf(vdate,"%d/%d/%d",&a1,&a2,&a3);
- DATE(&v[0]);
+   
+   vdate[8] = '\0';
+   CALL_VERSIO(&ivers,&iutil,&iniv,&vdate[0],&ilog);
+   sscanf(vdate,"%d/%d/%d",&a1,&a2,&a3);
+   CALL_DATE(&v[0]);
 /* calcul du nombre de jours à la louche */
- delta=(a3-v[0]-1900)*365+(a2+15-v[1])*30+a1-v[2];
- if (delta < 0 ) {
-#if defined TRU64 || LINUX64 || NO_EXPIR
-#else
-     ERRLIC();
+   delta=(a3-v[0]-1900)*365+(a2+15-v[1])*30+a1-v[2];
+   if (delta < 0 ) {
+#ifndef _NO_EXPIR
+      F_FUNC(ERRLIC, errlic)();
 #endif
-}
- srand( (unsigned int) v[4]+v[5] );
- vrand = rand();
- *r1 = vrand * (ivers+a1);
- *r2 = vrand * (iutil+a2);
- *r3 = vrand * (iniv +a3);
- ier = 0;
- return (vrand);
+   }
+   srand( (unsigned int) v[4]+v[5] );
+   vrand = rand();
+   *r1 = vrand * (ivers+a1);
+   *r2 = vrand * (iutil+a2);
+   *r3 = vrand * (iniv +a3);
+   ier = 0;
+   return vrand;
 }

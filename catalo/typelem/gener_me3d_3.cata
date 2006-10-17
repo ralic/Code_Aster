@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -123,7 +123,7 @@ MODE_LOCAL__
     EFACY_R  = FACY_R   ELGA__ RIGI    (DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1  
                                         EPNMAX1  EPNMOY1  SIGEQ1   NBRUP1   ENDO1    DTAUM2   
                                         VNM2X    VNM2Y    VNM2Z    SINMAX2  SINMOY2  EPNMAX2  
-                                        EPNMOY2  SIGEQ2   NBRUP2   ENDO2    )
+                                        EPNMOY2  SIGEQ2   NBRUP2   ENDO2    VMIS     TRESCA   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )

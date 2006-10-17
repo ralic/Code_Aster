@@ -1,11 +1,11 @@
         SUBROUTINE LCJPLC ( LOI  ,MOD , NMAT, MATER, TEMPF,
      &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &                  NR,NVI,EPSD,DEPS,SIGF,VINF,SIGD,VIND, 
-     &                   DSDE )
+     &            NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
+     &                   DSDE, DRDY, OPTION, IRET )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,17 +33,19 @@ C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         NMAT , NR, NVI
-        REAL*8          DSDE(6,6),EPSD(*),DEPS(*),TEMPF
+        INTEGER         NMAT , NR, NVI, ITMAX, IRET
+        REAL*8          DSDE(6,6),EPSD(*),DEPS(*),TEMPF, TOLER
         REAL*8          MATER(NMAT,2)
         REAL*8 TOUTMS(5,24,6),HSR(5,24,24)
         CHARACTER*8     MOD
-        CHARACTER*16    LOI
+        CHARACTER*16    LOI,OPTION
       
       INTEGER         NBCOMM(NMAT,3)
       REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
+      REAL*8  DRDY(NR,NR)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C       ----------------------------------------------------------------
+       IRET=0
          IF     ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
             CALL  CVMJPL (MOD,NMAT,MATER,
      &        TIMED, TIMEF,EPSD,DEPS,SIGF,VINF,SIGD,VIND,NVI,NR,DSDE)
@@ -53,8 +55,8 @@ C       ----------------------------------------------------------------
          ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS'     ) THEN
             CALL  LCMMJP (MOD,NMAT,MATER,TEMPF,
      &          TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &                  NR,NVI,SIGF,VINF,SIGD,VIND, 
-     &                   DSDE )
+     &                  NR,NVI,ITMAX,TOLER,SIGF,VINF,SIGD,VIND, 
+     &                   DSDE , DRDY, OPTION, IRET)
          ENDIF
 C
          END

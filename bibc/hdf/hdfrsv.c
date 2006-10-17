@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrsv hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfrsv hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Lecture sur un fichier HDF d'un segment de valeur associé à un objet JEVEUX
 /  Paramètres : 
@@ -28,13 +29,7 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfrsv_( long *idat, long *lsv, void *sv, long *icv)
-#elif defined HPUX
-   long hdfrsv ( long *idat, long *lsv, void *sv, long *icv)
-#elif defined PPRO_NT
-   extern long __stdcall HDFRSV(long *idat, long *lsv, char *sv, unsigned long toto, long *icv)
-#endif
+INTEGER DEFPPPP(HDFRSV, hdfrsv, INTEGER *idat, INTEGER *lsv, void *sv, INTEGER *icv)
 {
   hid_t ida,datatype,dasp,bidon=0;
   herr_t ier;

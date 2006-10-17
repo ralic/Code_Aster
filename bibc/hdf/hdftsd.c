@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftsd hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdftsd hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Récupération du type et de la taille des valeurs stockées dans un dataset
 / au sein d'un fichier HDF 
@@ -30,13 +31,7 @@
 #include "hdf5.h"
 #define FALSE   0
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdftsd_(long *iddat, char *type, long *ltype, long *lv, long lt)
-#elif defined HPUX
-   long hdftsd(long *iddat, char *type, long *ltype, long *lv, long lt )
-#elif defined PPRO_NT
-   extern long __stdcall HDFTSD(long *iddat, char *type, unsigned long lt, long *ltype, long *lv )
-#endif
+INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, INTEGER *ltype, INTEGER *lv, int lt)
 {
   hid_t id,datatype,class,dataspace;
   hsize_t dims_out[1];

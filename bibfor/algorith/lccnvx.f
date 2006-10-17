@@ -1,10 +1,11 @@
         SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
      &                TEMPF, SIGF, VIND,COMP, NBCOMM, CPMONO, PGL,NR,
-     &                NVI,VP,VECP,SEUIL)
+     &                NVI,VP,VECP,HSR,TOUTMS,SEUIL)
         IMPLICIT  NONE
+C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,10 +43,10 @@ C ======================================================================
         INTEGER         NMAT , IMAT, NR, NVI, KPG, KSP
         CHARACTER*(*)   FAMI
         REAL*8          MATERF(NMAT,2), TEMPF , SEUIL
-        REAL*8          SIGF(6) , VIND(*)
+        REAL*8          SIGF(6) , VIND(*),HSR(5,24,24)
         CHARACTER*16    LOI
         INTEGER         NBCOMM(NMAT,3)
-        REAL*8          PGL(3,3),VP(3),VECP(3)
+        REAL*8          PGL(3,3),VP(3),VECP(3),TOUTMS(5,24,6)
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN
@@ -72,7 +73,7 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
          CALL LCMMVX ( SIGF, VIND, NMAT, MATERF, TEMPF,
-     &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL)
+     &          COMP,NBCOMM, CPMONO, PGL, NR, NVI,HSR, TOUTMS,SEUIL)
 C ======================================================================
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M') THEN
          CALL IRRCVX ( FAMI, KPG, KSP, NMAT, MATERF, SIGF, VIND, SEUIL)

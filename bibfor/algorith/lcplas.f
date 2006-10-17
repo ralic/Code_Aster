@@ -2,11 +2,11 @@
      1                      NMAT, MATERD, MATERF, MATCST,NR, NVI,TEMPD,
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
      3                 SIGF, VINF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     4                  ICOMP,IRTETI,THETA,VP,VECP,SEUIL, DEVG, DEVGII)
+     4        ICOMP,IRTETI,THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
         REAL*8          VIND(*),        VINF(*)
         REAL*8          MATERF(NMAT,2), MATERD(NMAT,2)
         REAL*8          SEUIL, DEVG(*), DEVGII
-        REAL*8          VP(3),VECP(3,3)     
+        REAL*8          VP(3),VECP(3,3) , DRDY(NR,NR)
 C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
@@ -96,7 +96,7 @@ C
      1                 IMAT,NMAT, MATERD,MATERF,MATCST,NR, NVI,
      2                 TEMPD,TEMPF,TIMED,TIMEF,DEPS,EPSD,SIGD,
      3                 VIND,COMP,NBCOMM, CPMONO,PGL,TOUTMS,HSR,
-     3                 SIGF, VINF, ICOMP, IRTET)
+     3                 SIGF, VINF, ICOMP, IRTET,DRDY)
          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 CC
 

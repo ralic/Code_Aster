@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ISINTE utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF ISINTE utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,16 +18,9 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
-#include <stdio.h>
-#ifdef CRAY
-   long ISINTE(long* val)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long isinte_(long* val)
-#elif defined HPUX
-   long isinte(long* val)
-#elif defined PPRO_NT
-   long __stdcall ISINTE(long* val)
-#endif
+#include "aster.h"
+
+INTEGER DEFP(ISINTE, isinte, INTEGER *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** d'execution d'Aster en interactif
@@ -35,11 +28,11 @@
 **        si >=0 positionne l'indicateur
 */
 {
-static long IND_INTERACTIF=0;
+   static INTEGER IND_INTERACTIF=0;
 
-if (*val >= 0) {
-   IND_INTERACTIF=*val;
+   if (*val >= 0) {
+      IND_INTERACTIF=*val;
    }
 
-return(IND_INTERACTIF);
+   return IND_INTERACTIF;
 }

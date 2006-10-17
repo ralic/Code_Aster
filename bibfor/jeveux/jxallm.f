@@ -1,6 +1,6 @@
       SUBROUTINE JXALLM ( IADZON, ISZON , LISZON , JISZON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,44 +30,32 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C             ROUTINE AVEC APPEL SYSTEME  LOC
 C
-C             HPCHECK , HPALLOC
+C             HPALLOC
 C
 C     ==================================================================
       JISZON = 0
 C     ------------------------------------------------------------------
-      CALL HPCHECK ( IERCOD )
-      IF ( IERCOD .NE. 0 ) THEN
-         IF ( IERCOD .EQ. -5 ) THEN
-            CMESS = 'MOT DE CONTROLE INCORRECT POUR UNE ZONE ALLOUEE'
-         ELSE IF ( IERCOD .EQ. -6 ) THEN
-            CMESS = 'MOT DE CONTROLE INCORRECT POUR UNE ZONE LIBEREE'
-         ELSE
-            CMESS = 'ERREUR VERIFICATION DE ZONE'
+      IERR = 0
+      IF (IADZON .EQ. 0 ) THEN
+         CALL  HPALLOC ( IADA , LISZON , IERR , 0 )
+      ELSE
+         IADA = IADZON
+      ENDIF
+      IF ( IERR .EQ. 0 ) THEN
+         VALLOC = LOC(ISZON)
+         JISZON = (IADA - VALLOC)/LOISEM()
+         IMAX = ISMAEM()
+         DO 10 I = 1 , LISZON
+            ISZON(JISZON+I) = IMAX
+   10        CONTINUE
+      ELSE
+         IF      ( IERR .EQ. -1 ) THEN
+            CMESS = 'TAILLE A ALLOUER DEMANDEE NEGATIVE'
+         ELSE IF ( IERR .EQ. -2 ) THEN
+            WRITE ( CTAILL , '(I9)' ) LISZON
+            CMESS = 'MEMOIRE SATUREE POUR ALLOUER '//CTAILL
          ENDIF
          CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ELSE
-         IERR = 0
-         IF (IADZON .EQ. 0 ) THEN
-            CALL  HPALLOC ( IADA , LISZON , IERR , 0 )
-         ELSE
-            IADA = IADZON
-         ENDIF
-         IF ( IERR .EQ. 0 ) THEN
-           VALLOC = LOC(ISZON)
-           JISZON = (IADA - VALLOC)/LUISEM()
-           IMAX = ISMAEM()
-           DO 10 I = 1 , LISZON
-             ISZON(JISZON+I) = IMAX
- 10        CONTINUE
-         ELSE
-            IF      ( IERR .EQ. -1 ) THEN
-              CMESS = 'TAILLE A ALLOUER DEMANDEE NEGATIVE'
-            ELSE IF ( IERR .EQ. -2 ) THEN
-              WRITE ( CTAILL , '(I9)' ) LISZON
-              CMESS = 'MEMOIRE SATUREE POUR ALLOUER '//CTAILL
-            ENDIF
-            CALL U2MESK('F','JEVEUX_01',1,CMESS)
-         ENDIF
       ENDIF
 C     ==================================================================
       END

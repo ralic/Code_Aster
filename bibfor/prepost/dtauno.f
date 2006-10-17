@@ -1,7 +1,7 @@
       SUBROUTINE DTAUNO(JRWORK, LISNOE, NBNOT, NBORDR, NNOINI, NBNOP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, NOMMAI, CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C
       REAL*8       EPSZM(2), EPNORM(2), EPNMAX(2), SEPNMX(2), NORMOY(2)
       REAL*8       EPNMOY(2), R8B, VALE, VALNU, C1, C2, VALA, VALB
       REAL*8       PHYDRO, PHYDRM
-      REAL*8       COEFPA, SIGEQ(2), NRUPT(2), DOM(2), VRESU(22)
+      REAL*8       COEFPA, SIGEQ(2), NRUPT(2), DOM(2), VRESU(24)
       REAL*8       R8MAEM
 C
       CHARACTER*2  CODRET, CODWO
@@ -573,7 +573,7 @@ C ---------------------------------------------------------------------
 
 
 C 1/ CRITERE DE MATAKE
-            IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
+            IF (NOMCRI(1:14) .EQ. 'MATAKE_MODI_AC') THEN
                IF ( (VALA*NORMAX(K)) .GT. 0.0D0 ) THEN
                   SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*NORMAX(K))
                   SIGEQ(K) = SIGEQ(K)*COEFPA
@@ -644,11 +644,13 @@ C VECTEUR NORMAL ASSOCIE.
          VRESU(20) = SIGEQ(2)
          VRESU(21) = NRUPT(2)
          VRESU(22) = DOM(2)
+         VRESU(23) = 0.0D0
+         VRESU(24) = 0.0D0
 
 C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 
-         DO 550 ICMP=1, 22
-               JAD = 22*(NUNOE-1) + ICMP
+         DO 550 ICMP=1, 24
+               JAD = 24*(NUNOE-1) + ICMP
                ZL(JCNRL - 1 + JAD) = .TRUE.
                ZR(JCNRV - 1 + JAD) = VRESU(ICMP)
 

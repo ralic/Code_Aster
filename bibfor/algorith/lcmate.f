@@ -1,11 +1,11 @@
         SUBROUTINE LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1                      TYPMA,BZ,HSR,MATERD,MATERF,MATCST,NBCOMM,
+     1                   IMPEXP,TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,
      2                      CPMONO,ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,
-     3                      NVI,VIND)
+     3                      NVI,VIND,TOUTMS)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,9 +34,7 @@ C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION 1 DE MATER
 C           TEMPD  :  TEMPERATURE A T
 C           TEMPF  :  TEMPERATURE A T + DT
-C           BZ     :  VARIABLE LOGIQUE :
-C                    'VRAI' POUR CALCULER AVEC LE MODELE POLY PILVIN
-C                    'FAUX' POUR CALCULER AVEC LE MODELE POLY B.Z.
+C           IMPEXP : 0 IMPLICITE, 1 EXPLICITE
 C      ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C       OUT MATERD :  COEFFICIENTS MATERIAU A T    (TEMPD )
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT (TEMPF )
@@ -45,25 +43,27 @@ C                                    I = 1  CARACTERISTIQUES ELASTIQUES
 C                                    I = 2  CARACTERISTIQUES PLASTIQUES
 C           MATCST :  'OUI' SI  MATERIAU A T = MATERIAU A T+DT
 C                     'NON' SINON OU 'NAP' SI NAPPE DANS 'VECMAT.F'
-C           NBCOMM :  NB DE PARAMETRES POUR CHAQUE LOI MONOCRISTAL
-C           CPMONO  :  LOIS MONOCRIST
+C           NBCOMM : POSITION DES COEF POUR CHAQUE LOI DE CHAQUE SYSTEME
+C           CPMONO : NOMS DES LOIS POUR CHAQUE FAMILLE DE SYSTEME
 C           PGL    : MATRICE DE PASSAGE 
 C           NDT    :  NB TOTAL DE COMPOSANTES TENSEURS
 C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
+C           TOUTMS :  TOUS LES TENSEURS MS
+C           HSR    : MATRICE D'INTERACTION POUR L'ECROUISSAGE ISOTROPE
+C                    UTILISEE SEULEMENT POUR LE MONOCRISTAL IMPLICITE
 C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I, ITMAX, J
-        INTEGER         NBCOMM(NMAT,3),KPG,KSP
+        INTEGER         NBCOMM(NMAT,3),KPG,KSP, IMPEXP
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8          VIND(*), PGL(3,3), ANGMAS(3)
         REAL*8          TOLER
-        REAL*8          HSR(5,24,24)
+        REAL*8          HSR(5,24,24),TOUTMS(5,24,6)
         CHARACTER*16    LOI, COMP(*), CPMONO(5*NMAT+1)
         CHARACTER*8     MOD,    TYPMA
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
-        LOGICAL         BZ
 C       ----------------------------------------------------------------
 C
 C -     INITIALISATION DE MATERD ET MATERF A 0.
@@ -95,10 +95,6 @@ C
          CALL CVMMAT ( MOD,    IMAT,   NMAT,   TEMPD, TEMPF, MATERD,
      1                 MATERF, MATCST, TYPMA,  NDT,   NDI , NR , NVI )
 C
-      ELSEIF ( LOI(1:8) .EQ. 'POLY_CFC' ) THEN
-         CALL CFCMAT ( IMAT,   NMAT,   TEMPD, TEMPF, MATERD,
-     1                 MATERF, MATCST, NDT,    NDI ,  NR ,   NVI , BZ )
-C
       ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
          CALL INSMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,TEMPD,TEMPF,
      1                 MATERD, MATERF, MATCST,NDT,NDI,NR,NVI )
@@ -117,8 +113,9 @@ C
      1                 MATERF, MATCST, NDT, NDI, NR, NVI )     
      
       ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
-         CALL LCMMAT ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF,ANGMAS,PGL,
-     1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI,HSR)
+         CALL LCMMAT (COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,IMPEXP,ANGMAS,PGL,
+     1     MATERD,MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI,HSR,
+     &     TOUTMS)
          TYPMA='COHERENT'
           
       ELSEIF ( LOI(1:8) .EQ. 'POLYCRIS' ) THEN

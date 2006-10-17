@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF INDIK8 UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF INDIK8 UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,21 +17,14 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include "aster.h"
 /* ------------------------------------------------------------------ */
 /* recherche de la  n-ieme apparition d un K*8 dans une liste de K*8    */
 /* resultat = indice si present / 0 si absent                           */
 #include <stdio.h>
 #include <string.h>
 
-#if defined HPUX
-#define  indik8_ indik8
-#endif
-#if defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-long indik8_ ( char *lstmot , char *mot , long *n , long *nmot ,long llm , long lm)
-#elif defined PPRO_NT
-long __stdcall INDIK8 ( char *lstmot, unsigned long llm, char *mot, unsigned long lm, long *n,long *nmot)
-#endif
-
+INTEGER DEFSSPP(INDIK8, indik8, char *lstmot, int llm, char *mot, int lm, INTEGER *n, INTEGER *nmot)
 {
 	long i,j=0;
 	char *p,m[8];

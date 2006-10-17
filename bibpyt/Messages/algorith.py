@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith Messages  DATE 17/10/2006   AUTEUR MABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,14 +84,6 @@ cata_msg={
 
 16: _("""
  les charges cinematiques sont pour l'instant proscrites avec feti
-"""),
-
-17: _("""
- la liste des matrices elementaires n'existe pas %(k1)s 
-"""),
-
-18: _("""
- y a un stuck  %(k1)s 
 """),
 
 19: _("""

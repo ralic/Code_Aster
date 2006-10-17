@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET */
+/* MODIF ENVIMA UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -24,86 +24,35 @@
 #include <math.h>
 #include <float.h>
 #include <limits.h>
-
-/* definition des constantes
-ISMFIC est exprimee en kilo (1024)*/
-
-#if defined  CRAY
-static long   ISUND  = 0605054000037000000000 ;
-static long   ISMAX  = LONG_MAX ;
-static double R8MAX  = DBL_MAX ;
-static double R8MIN  = DBL_MIN ;
-static double R8PREC = DBL_EPSILON ;
-static long   ISMFIC = 4*1024*1024 ;
+#include "aster.h"
 
 
 
-#elif defined SOLARIS || HPUX  /* SPARC - ARCHITECTURE IEEE 754  */
+/* Définition des constantes */
 
-/* les valeurs de R8MAX , R8MIN , R8UND peuvent etre aussi
-   obtenues a l'aide des fonctions ieee (-lsunmath -lm) :
-   max_normal(), min_normal(), quiet_nan()                  */
-
-static long   ISUND    = 0x7fffffff ;
-static long   ISMAX    = LONG_MAX ;
-static double R8MAX    = DBL_MAX ;
-static double R8MIN    = DBL_MIN ;
-static double R8PREC   = DBL_EPSILON ;
-static long   R8UND[2] = { 0x7ff00000 , 0x00000001 };
-static long   ISMFIC   = LONG_MAX ;
-
-#elif defined IRIX_32
-
-static long   ISUND    = 0x7fffffff ;
-static long   ISMAX    = LONG_MAX ;
-static double R8MAX    = DBL_MAX ;
-static double R8MIN    = DBL_MIN ;
-static double R8PREC   = DBL_EPSILON ;
-static long   R8UND[2] = { 0x7ff00000 , 0x00000001 };
-static long   ISMFIC   = LONG_MAX ;
-
-#elif defined IRIX_64
-
+/* undef entier et réel */
+#ifdef _USE_64_BITS
 static long   ISUND    = 0x7FFFFFFFFFFFFFFF ;
-static long   ISMAX    = LONG_MAX ;
-static double R8MAX    = DBL_MAX ;
-static double R8MIN    = DBL_MIN ;
-static double R8PREC   = DBL_EPSILON ;
-static int R8UND[2]    = { 0x00000001 , 0x7ff00000 };
-static long   ISMFIC   = 12582912;
-
-#elif defined TRU64 || LINUX64 || SOLARIS64
-
-static long   ISUND    = 0x7FFFFFFFFFFFFFFF ;
-static long   ISMAX    = LONG_MAX ;
-static double R8MAX    = DBL_MAX ;
-static double R8MIN    = DBL_MIN ;
-static double R8PREC   = DBL_EPSILON ;
 static int    R8UND[2] = { 0x00000000 , 0x7ff80000 };
-static long   ISMFIC   = 12582912;
-
-#elif defined  PPRO_NT || P_LINUX /* PENTIUM - ARCHITECTURE IEEE 754      */
-
+#else
 static long   ISUND    = LONG_MAX ;
+static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
+#endif
+
+
+/* entier max, réel max, réel min, précision en réel */
 static long   ISMAX    = LONG_MAX ;
 static double R8MAX    = DBL_MAX ;
 static double R8MIN    = DBL_MIN ;
 static double R8PREC   = DBL_EPSILON ;
-static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
+
+/* taille max d'une base */
 static long   ISMFIC   = 12582912;
 
-#endif
 
 #define  R8_PI   3.1415926535897932384626433832
-
 #define  R8_T0   273.15
-
-#if defined CRAY || SOLARIS || HPUX || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64  || PPRO_NT || P_LINUX
 #define  R8GAME (sqrt(R8MAX*((double)1.-R8PREC)))
-#else
-#define  R8PREC (*(double*)R8UNPE-*(double*)R8UN)
-#define  R8GAME (sqrt(*(double*)R8MAX*((double)1.-*(double*)R8UNPE+*(double*)R8UN)))
-#endif
 
 
 /* ---------------------- fonctions renvoyant un  LOGICAL (int)  */
@@ -111,598 +60,122 @@ static long   ISMFIC   = 12582912;
 
 
 /* -------------------------------------------- MACHINE UTILISEE */
+INTEGER STDCALL(LCRAEM,lcraem)() { return 0; }
 
-#if   defined  CRAY
-#include <fortran.h>
-int LCRAEM () {int l;l = _btol(1);return l;}
-#elif defined SOLARIS || IRIX_32
-int lcraem_() {return 0;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long lcraem_() {return 0;}
-#elif defined HPUX
-int lcraem() {return 0;}
-#elif defined P_LINUX
-int lcraem_() {return 0;}
-#elif defined PPRO_NT
-int __stdcall LCRAEM() {return 0;}
-#endif
-
-/* ---------------------- fonctions renvoyant un  INTEGER (int)  */
-
+/* ----------------------------- fonctions renvoyant un  INTEGER */
 /* -------------------------------------------- LONGUEUR EN BITS */
-
-#if   defined CRAY
-int LBISEM  () {return 64;}
-#elif defined SOLARIS
-int lbisem_ () {return 32;}
-#elif defined HPUX
-int lbisem () {return 32;}
-#elif defined IRIX_32
-int lbisem_ () {return 32;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long lbisem_ () {return 64;}
-#elif defined P_LINUX
-int lbisem_ () {return 32;}
-#elif defined PPRO_NT
-int __stdcall LBISEM () {return 32;}
-#endif
-
-/* ----------------- LONGUEUR EN UNITES D'ADRESSAGE DE LA MACHINE*/
-
-#if   defined CRAY
-int LUISEM  () {return 1;}
-#elif defined SOLARIS
-int luisem_ () {return 4;}
-#elif defined HPUX
-int luisem () {return 4;}
-#elif defined IRIX_32
-int luisem_ () {return 4;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long luisem_ () {return 8;}
-#elif defined P_LINUX
-int luisem_ () {return 4;}
-#elif defined PPRO_NT
-int __stdcall LUISEM () {return 4;}
-#endif
+INTEGER STDCALL(LBISEM,lbisem)() { return LONG_INTEGER_BITS; }
 
 /* ------------------------------------------ LONGUEUR EN OCTETS */
-
-#if   defined CRAY
-int LOLSEM  () {return 8;}
-#elif defined SOLARIS
-int lolsem_ () {return 4;}
-#elif defined HPUX
-int lolsem () {return 4;}
-#elif defined IRIX_32
-int lolsem_ () {return 4;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long lolsem_ () {return 8;}
-#elif defined P_LINUX
-int lolsem_ () {return 4;}
-#elif defined PPRO_NT
-int __stdcall LOLSEM () {return 4;}
-#endif
-
-#if   defined CRAY
-int LOISEM  () {return 8;}
-#elif defined SOLARIS
-int loisem_ () {return 4;}
-#elif defined HPUX
-int loisem () {return 4;}
-#elif defined IRIX_32
-int loisem_ () {return 4;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long loisem_ () {return 8;}
-#elif defined P_LINUX
-int loisem_ () {return 4;}
-#elif defined PPRO_NT
-int __stdcall LOISEM () {return 4;}
-#endif
-
-#if   defined CRAY
-int LOR8EM  () {return 8;}
-#elif defined SOLARIS || IRIX_32
-int lor8em_ () {return 8;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long lor8em_ () {return 8;}
-#elif defined HPUX
-int lor8em () {return 8;}
-#elif defined P_LINUX
-int lor8em_ () {return 8;}
-#elif defined PPRO_NT
-int __stdcall LOR8EM () {return 8;}
-#endif
-
-#if   defined CRAY
-int LOC8EM  () {return 16;}
-#elif defined SOLARIS || IRIX_32
-int loc8em_ () {return 16;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long loc8em_ () {return 16;}
-#elif defined HPUX
-int loc8em () {return 16;}
-#elif defined P_LINUX
-int loc8em_ () {return 16;}
-#elif defined PPRO_NT
-int __stdcall LOC8EM () {return 16;}
-#endif
+INTEGER STDCALL(LOLSEM,lolsem)() { return LONG_INTEGER_MOTS; }
+INTEGER STDCALL(LOISEM,loisem)() { return LONG_INTEGER_MOTS; }
+INTEGER STDCALL(LOR8EM,lor8em)() { return LONG_REAL_MOTS; }
+INTEGER STDCALL(LOC8EM,loc8em)() { return LONG_COMPLEX_MOTS; }
 
 /* --------------- NOT.A.NUMBER (IEEE) OU UNDEF (CRAY NON IEEE) */
 /* rq : ne veut rien dire pour un entier...mais utilise...      */
-
-#if   defined CRAY
-int ISNNEM  () {return (int)ISUND;}
-#elif defined SOLARIS
-int isnnem_ () {return (int)ISUND;}
-#elif defined HPUX
-int isnnem () {return (int)ISUND;}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long isnnem_ () {return (long)ISUND;}
-#elif defined P_LINUX
-int isnnem_ () {return (int)ISUND;}
-#elif defined PPRO_NT
-int __stdcall ISNNEM () {return (int)ISUND;}
-#endif
+INTEGER STDCALL(ISNNEM,isnnem)() { return (INTEGER)ISUND; }
 
 /* --------------------------- NOMBRE DE CHIFFRES SIGNIFICATIFS */
-#if   defined CRAY
-int NCISEM  () {return 19;}
-#elif defined SOLARIS
-int ncisem_ () {return 9;}
-#elif defined HPUX
-int ncisem () {return 9;}
-#elif defined IRIX_32
-int ncisem_() {return 9;} /* ???????????????? */
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long ncisem_() {return 19;} /* ???????????????? */
-#elif defined P_LINUX
-int ncisem_ () {return 9;}
-#elif defined PPRO_NT
-int __stdcall NCISEM () {return 9;}
-#endif
-
-#if   defined CRAY
-int NCR8EM  () {return 14;}
-#elif defined SOLARIS
-int ncr8em_ () {return 16;}
-#elif defined HPUX
-int ncr8em () {return 16;}
-#elif defined IRIX_32
-int ncr8em_ () {return 16;} /* ???????????????? */
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long ncr8em_ () {return 16;} /* ???????????????? */
-#elif defined P_LINUX
-int ncr8em_ () {return 16;}
-#elif defined PPRO_NT
-int __stdcall NCR8EM () {return 16;}
-#endif
+INTEGER STDCALL(NCISEM,ncisem)() { return INTEGER_NB_CHIFFRES_SIGNIFICATIFS; }
+INTEGER STDCALL(NCR8EM,ncr8em)() { return REAL_NB_CHIFFRES_SIGNIFICATIFS; }
 
 /* ------------------------------------- VALEUR ENTIERE MAXIMALE */
-
-#if   defined CRAY
-
-int ISMAEM  () {return ISMAX;}
-#elif defined SOLARIS
-int ismaem_ () {return (int)ISMAX;}
-#elif defined HPUX
-int ismaem () {return (int)ISMAX;}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long ismaem_ () {return (long)ISMAX;}
-#elif defined P_LINUX
-int ismaem_ () {return (int)ISMAX;}
-#elif defined PPRO_NT
-int __stdcall ISMAEM () {return (int)ISMAX;}
-#endif
+INTEGER STDCALL(ISMAEM,ismaem)() { return (INTEGER)ISMAX; }
 
 /* ---------------------------------  LONGUEUR UNITE D'ADRESSAGE */
-
-#if   defined CRAY
-int LOUAEM  () {return 8;}
-#elif defined SOLARIS || IRIX_32
-int louaem_ () {return 1;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long louaem_ () {return 1;}
-#elif defined HPUX
-int louaem () {return 1;}
-#elif defined P_LINUX
-int louaem_ () {return 1;}
-#elif defined PPRO_NT
-int __stdcall LOUAEM () {return 1;}
-#endif
+/* reste du Cray : 8 de longueur 1 */
+INTEGER STDCALL(LOUAEM,louaem)() { return 1; }
 
 /* ------------------------------------------  TAILLE DE FICHIER
  exprimee en kilo (1024) */
-
-#if   defined CRAY
-int LOFIEM  () {return 523468800/1024;}
-#elif defined SOLARIS || IRIX_32
-int lofiem_ () {return 2000*1024;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-int lofiem_ () {return 12582912;}
-#elif defined HPUX
-int lofiem ()  {return 2000*1024;}
-#elif defined P_LINUX
-int lofiem_ () {return 2000*1024;}
-#elif defined PPRO_NT
-int __stdcall LOFIEM () {return 2000*1024;}
+INTEGER STDCALL(LOFIEM,lofiem)() {
+#ifdef _USE_64_BITS
+   return (INTEGER)ISMFIC;
+#else
+   return (INTEGER)2000*1024;
 #endif
+}
 
 /* ----------------------------------  TAILLE MAXIMUM DE FICHIER */
-
-#if   defined CRAY
-int MOFIEM  () {return ISMFIC;}
-#elif defined SOLARIS
-int mofiem_ () {return ISMFIC;}
-#elif defined HPUX
-int mofiem () {return ISMFIC;}
-#elif defined IRIX_32  || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long mofiem_ () {return ISMFIC;}
-#elif defined P_LINUX
-int mofiem_ () {return ISMFIC;}
-#elif defined PPRO_NT
-int __stdcall MOFIEM () {return ISMFIC;}
-#endif
+INTEGER STDCALL(MOFIEM,mofiem)() { return (INTEGER)ISMFIC; }
 
 /* ---------------------------------------------  POIDS DES BITS */
-
-#if   defined CRAY
-int ISPBEM  (int *jb) {return (int)pow(2.,(*jb-1));}
-#elif defined SOLARIS
-int ispbem_ (int *jb) {return (int)pow(2.,(*jb-1));}
-#elif defined HPUX
-int ispbem (int *jb) {return (int)pow(2.,(*jb-1));}
-#elif defined IRIX_32  || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long ispbem_ (long *jb) {return (long)pow(2.,(*jb-1));}
-#elif defined P_LINUX
-int ispbem_ (int *jb) {return (int)pow(2.,(*jb-1));}
-#elif defined PPRO_NT
-int __stdcall ISPBEM (int *jb) {return (int)pow(2.,(*jb-1));}
-#endif
+INTEGER DEFP(ISPBEM, ispbem, INTEGER *jb) { return (INTEGER)pow(2.,(*jb-1)); }
 
 /* ----------------------------------------  Base de numeration B */
-
-#if   defined CRAY
-int ISBAEM ()  {return 2;}
-#elif defined SOLARIS || IRIX_32
-int isbaem_ ()  {return 2;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long isbaem_ ()  {return 2;}
-#elif defined HPUX
-int isbaem ()  {return 2;}
-#elif defined P_LINUX
-int isbaem_()  {return 2;}
-#elif defined PPRO_NT
-int __stdcall ISBAEM () {return 2;}
-#endif
+INTEGER STDCALL(ISBAEM,isbaem)() { return 2; }
 
 /* ---------------  nombre de bits de la mantisse des flottants T */
-
-#if   defined CRAY
-int ISLBEM () {return 47;}
-#elif defined SOLARIS
-int islbem_ () {return 53;}
-#elif defined HPUX
-int islbem () {return 53;}
-#elif defined IRIX_32
-int islbem_ () {return 53;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long islbem_ () {return 53;}
-#elif defined P_LINUX
-int islbem_ () {return 53;}
-#elif defined PPRO_NT
-int __stdcall ISLBEM () {return 53;}
-#endif
+/* reste du Cray : 47 */
+INTEGER STDCALL(ISLBEM,islbem)() { return 53; }
 
 /* ---------------  exposant maximum des flottants en base 2 EMAX */
-
-#if   defined CRAY
-int IEMAEM () {return 8190;}
-#elif defined SOLARIS
-int iemaem_ () {return 1024;}
-#elif defined HPUX
-int iemaem () {return 1024;}
-#elif defined IRIX_32
-int iemaem_ () {return 1024;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long iemaem_ () {return 1024;}
-#elif defined P_LINUX
-int iemaem_ () {return 1024;}
-#elif defined PPRO_NT
-int __stdcall IEMAEM () {return 1024;}
-#endif
+/* reste du Cray : 8190 */
+INTEGER STDCALL(IEMAEM,iemaem)() { return 1024; }
 
 /* ---------------  exposant minimum des flottants en base 2 EMIN */
-
-#if   defined CRAY
-int IEMIEM () {return -8189;}
-#elif defined SOLARIS
-int iemiem_ () {return -1021;}
-#elif defined HPUX
-int iemiem () {return -1021;}
-#elif defined IRIX_32
-int iemiem_ () {return -1021;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long iemiem_ () {return -1021;}
-#elif defined P_LINUX
-int iemiem_ () {return -1021;}
-#elif defined PPRO_NT
-int __stdcall IEMIEM () {return -1021;}
-#endif
+/* reste du Cray : -8189 */
+INTEGER STDCALL(IEMIEM,iemiem)() { return -1021; }
 
 /* ---------------------- fonctions renvoyant un REAL*8 (double) */
-
 /* --------------------- Plus petit increment relatif B**-T */
-
-#if   defined CRAY
-double RMIREM  () {return pow(2,-47);}
-#elif defined SOLARIS
-double rmirem_ () {return pow(2,-53);}
-#elif defined HPUX
-double rmirem () {return pow(2,-53);}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double rmirem_ () {return pow(2,-53);}
-#elif defined P_LINUX
-double rmirem_ () {return pow(2,-53);}
-#elif defined PPRO_NT
-double __stdcall RMIREM () {return pow(2,-53);}
-#endif
+double STDCALL(RMIREM,rmirem)() { return pow(2,-53); }
 
 /* -------------------- Plus grand increment relatif B**(1-T) */
 /* cette valeur est normalment identique a R8PREM             */
-
-#if   defined CRAY
-double RMAREM  () {return pow(2,-46);}
-#elif defined SOLARIS
-double rmarem_ () {return pow(2,-52);}
-#elif defined HPUX
-double rmarem () {return pow(2,-52);}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double rmarem_ () {return pow(2,-52);}
-#elif defined P_LINUX
-double rmarem_ () {return pow(2,-52);}
-#elif defined PPRO_NT
-double __stdcall RMAREM () {return pow(2,-52);}
-#endif
+double STDCALL(RMAREM,rmarem)() { return pow(2,-52); }
 
 /* --------------------------- Plus petite valeur B**(EMIN-1) */
 /* cette valeur est normalment identique a R8MIEM             */
-
-#if   defined CRAY
-double RMINEM  () {return pow(2,-8190);}
-#elif defined SOLARIS
-double rminem_ () {return pow(2,-1022);}
-#elif defined HPUX
-double rminem () {return pow(2,-1022);}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double rminem_ () {return pow(2,-1022);}
-#elif defined P_LINUX
-double rminem_ () {return pow(2,-1022);}
-#elif defined PPRO_NT
-double __stdcall RMINEM () {return pow(2,-1022);}
-#endif
+double STDCALL(RMINEM,rminem)() { return pow(2,-1022); }
 
 /* --------------- Plus grande valeur B**(EMAX-1) * (1-B**-T) */
 /* cette valeur est normalment identique a R8MAEM             */
-
-#if   defined CRAY
-double RMAXEM  () {return (pow(2,8190)*(1.-pow(2,-47)));}
-#elif defined SOLARIS
-double rmaxem_ () {return (pow(2,1023)*(1.-pow(2,-53)));}
-#elif defined HPUX
-double rmaxem () {return (pow(2,1023)*(1.-pow(2,-53)));}
-#elif defined IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double rmaxem_ () {return (pow(2,1023)*(1.-pow(2,-53)));}
-#elif defined P_LINUX
-double rmaxem_ () {return (pow(2,1023)*(1.-pow(2,-53)));}
-#elif defined PPRO_NT
-double __stdcall RMAXEM () {return (pow(2,1023)*(1.-pow(2,-53)));}
-#endif
-
-
+double STDCALL(RMAXEM,rmaxem)() { return pow(2,1023)*(1.-pow(2,-53)); }
 
 /* ---------------------REEL NOT.A.NUMBER (IEEE) OU UNDEF (CRAY) */
-
-#if   defined CRAY
-long R8NNEM  ()   {long *p; p=&ISUND; return(*p);}
-#elif defined SOLARIS
-double r8nnem_ () {return *(double*)R8UND;}
-#elif defined HPUX
-double r8nnem ()  {return *(double*)R8UND;}
-#elif defined IRIX_32
-double r8nnem_ () {return *(double*)R8UND;}
-#elif defined IRIX_64
-double r8nnem_ () {return *(double*)R8UND;}
-#elif defined TRU64 || LINUX64 || SOLARIS64
-double r8nnem_ () {return *(double*)R8UND;}
-#elif defined P_LINUX
-double r8nnem_ () {return *(double*)R8UND;}
-#elif defined PPRO_NT
-double __stdcall R8NNEM () {return *(double*)R8UND;}
-#endif
+double STDCALL(R8NNEM,r8nnem)() { return *(double*)R8UND; }
 
 /* -------------------------------------- VALEUR MAXIMALE REELLE */
-
-#if   defined CRAY
-double R8MAEM  () {return R8MAX;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64  || P_LINUX
-double r8maem_ () {return R8MAX;}
-#elif defined HPUX
-double r8maem () {return R8MAX;}
-#elif defined PPRO_NT
-double __stdcall R8MAEM () {return R8MAX;}
-#endif
+double STDCALL(R8MAEM,r8maem)() { return R8MAX; }
 
 /* -------------------------------------- VALEUR MINIMALE REELLE */
-
-#if   defined CRAY
-double R8MIEM  () {return R8MIN;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64  || P_LINUX
-double r8miem_ () {return R8MIN;}
-#elif defined HPUX
-double r8miem () {return R8MIN;}
-#elif defined PPRO_NT
-double __stdcall R8MIEM () {return R8MIN;}
-#endif
+double STDCALL(R8MIEM,r8miem)() { return R8MIN; }
 
 /* ----------------------------  REEL A BOUCHER LES CASES (R8MAX)*/
-
-#if   defined CRAY
-long R8VIDE  () {long *p; p=&ISUND; return(*p);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8vide_ () {return R8MAX;}
-#elif defined HPUX
-double r8vide () {return R8MAX;}
-#elif defined P_LINUX
-double r8vide_ () {return R8MAX;}
-#elif defined PPRO_NT
-double __stdcall R8VIDE () {return R8MAX;}
-#endif
+double STDCALL(R8VIDE,r8vide)() { return R8MAX; }
 
 /* -----------------------------------------  BASE DE NUMERATION */
-
-
-#if   defined CRAY
-double R8BAEM  () {return (double)2.;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8baem_ () {return (double)2.;}
-#elif defined HPUX
-double r8baem () {return (double)2.;}
-#elif defined P_LINUX
-double r8baem_ () {return (double)2.;}
-#elif defined PPRO_NT
-double __stdcall R8BAEM () {return (double)2.;}
-#endif
+double STDCALL(R8BAEM,r8baem)() { return (double)2.; }
 
 /* -----------------------------------------  PRECISION RELATIVE */
-
-#if   defined CRAY
-double R8PREM  () {return (double)R8PREC;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8prem_ () {return R8PREC;}
-#elif defined HPUX
-double r8prem () {return R8PREC;}
-#elif defined P_LINUX
-double r8prem_ () {return (double)R8PREC;}
-#elif defined PPRO_NT
-double __stdcall R8PREM () {return R8PREC;}
-#endif
+double STDCALL(R8PREM,r8prem)() { return R8PREC; }
 
 
 /* ----------------------------------  GAMME D"UTILISATION RELLE */
-
-#if   defined CRAY
-double R8GAEM  () {return (double)R8GAME;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8gaem_ () {return (double)R8GAME;}
-#elif defined HPUX
-double r8gaem () {return (double)R8GAME;}
-#elif defined P_LINUX
-double r8gaem_ () {return (double)R8GAME;}
-#elif defined PPRO_NT
-double __stdcall R8GAEM () {return (double)R8GAME;}
-#endif
+double STDCALL(R8GAEM,r8gaem)() { return (double)R8GAME; }
 
 
 /* ----------- fonctions renvoyant des valeurs reelles diverses */
-
 /* ------------------------------------------ VALXEM ZERO ABSOLU*/
-
-#if   defined CRAY
-double R8T0  () {return (double)R8_T0;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8t0_ () {return (double)R8_T0;}
-#elif defined HPUX
-double r8t0 () {return (double)R8_T0;}
-#elif defined P_LINUX
-double r8t0_ () {return (double)R8_T0;}
-#elif defined PPRO_NT
-double __stdcall R8T0 () {return (double)R8_T0;}
-#endif
+double STDCALL(R8T0,r8t0)() { return (double)R8_T0; }
 
 /* --------------------------------------------------- VALXEM PI*/
-
-#if   defined CRAY
-double R8PI  () {return (double)R8_PI;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8pi_ () {return (double)R8_PI;}
-#elif defined HPUX
-double r8pi () {return (double)R8_PI;}
-#elif defined P_LINUX
-double r8pi_ () {return (double)R8_PI;}
-#elif defined PPRO_NT
-double __stdcall R8PI () {return (double)R8_PI;}
-#endif
+double STDCALL(R8PI,r8pi)() { return (double)R8_PI; }
 
 /* -------------------------------------------------- VALXEM 2PI*/
-
-#if   defined CRAY
-double R8DEPI  () {return (double)((double)2.*(double)R8_PI);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8depi_ () {return (double)((double)2.*(double)R8_PI);}
-#elif defined HPUX
-double r8depi () {return (double)((double)2.*(double)R8_PI);}
-#elif defined P_LINUX
-double r8depi_ () {return (double)((double)2.*(double)R8_PI);}
-#elif defined PPRO_NT
-double __stdcall R8DEPI () {return (double)((double)2.*(double)R8_PI);}
-#endif
+double STDCALL(R8DEPI,r8depi)() { return (double)((double)2.*(double)R8_PI); }
 
 /* ------------------------------------------------- VALXEM DGRD*/
-
-#if   defined CRAY
-double R8DGRD  () {return (double)((double)R8_PI/(double)180.);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8dgrd_ () {return (double)((double)R8_PI/(double)180.);}
-#elif defined HPUX
-double r8dgrd () {return (double)((double)R8_PI/(double)180.);}
-#elif defined P_LINUX
-double r8dgrd_ () {return (double)((double)R8_PI/(double)180.);}
-#elif defined PPRO_NT
-double __stdcall R8DGRD () {return (double)((double)R8_PI/(double)180.);}
-#endif
+double STDCALL(R8DGRD,r8dgrd)() { return (double)((double)R8_PI/(double)180.); }
 
 /* ------------------------------------------------- VALXEM RDDG*/
-
-#if   defined CRAY
-double R8RDDG  () {return (double)((double)180./(double)R8_PI);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-double r8rddg_ () {return (double)((double)180./(double)R8_PI);}
-#elif defined HPUX
-double r8rddg () {return (double)((double)180./(double)R8_PI);}
-#elif defined P_LINUX
-double r8rddg_ () {return (double)((double)180./(double)R8_PI);}
-#elif defined PPRO_NT
-double __stdcall R8RDDG () {return (double)((double)180./(double)R8_PI);}
-#endif
+double STDCALL(R8RDDG,r8rddg)() { return (double)((double)180./(double)R8_PI); }
 
 /* ------------------------------------ LONGUEUR de BLOC pour MULT_FRONT */
-#if   defined CRAY
-int LLBLOC  () {return 64;}
-#elif defined SOLARIS
-int llbloc_ () {return 64;}
-#elif defined HPUX
-int llbloc () {return 64;}
-#elif defined IRIX_32
-int llbloc_ () {return 64;}
-#elif defined IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long llbloc_ () {return 96;}
-#elif defined P_LINUX
-int llbloc_ () {return 32;}
-#elif defined PPRO_NT
-int __stdcall LLBLOC () {return 32;}
-#endif
+INTEGER STDCALL(LLBLOC,llbloc)() { return OPT_TAILLE_BLOC_MULT_FRONT; }
 
 /* ----------------------------------------  Pour tester un NaN */
 /* on fait un chapeau (iisnan) à la fonction C isnan  pour éviter le conflit avec la fonction intrinsèque (logique) isnan de fortran 95 */
-
-#if   defined CRAY
-int IISNAN (double *x)                   {return  isnan(*x);}
-#elif defined HPUX
-int iisnan (double *x)                   {return  isnan(*x);}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || LINUX64 || SOLARIS64
-long iisnan_ (double *x)                 {return  isnan(*x);}
-#elif defined P_LINUX
-int iisnan_(double *x)                   {return  isnan(*x);}
-#elif defined PPRO_NT
-int __stdcall IISNAN (double *x)         {return  isnan(*x);}
-#endif
+INTEGER DEFP(IISNAN, iisnan, double *x) { return isnan(*x); }

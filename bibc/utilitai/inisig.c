@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 18/09/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF inisig utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,9 +17,10 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include "aster.h"
 /* ------------------------------------------------------------------ */
 /*
-** Initialisation de l'iterception de certain signaux
+** Initialisation de l'interception de certains signaux
 ** Actuellement sont traites les signaux :
 **    CPULIM  : plus de temps CPU
 **    FPE     : Floating point exception
@@ -28,116 +29,100 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <errno.h>
+
 extern int errno;
+
 void hancpu (int sig);
 
-#if defined CRAY || HPUX || P_LINUX || TRU64 || LINUX64  || SOLARIS64
-  void hanfpe (int sig);
-  void stptrap ( int sig) ;
-  void stpusr1 ( int sig) ;
-#elif defined SOLARIS
-/*#include <sunmath.h>*/
+#if defined SOLARIS
 #include <siginfo.h>
 #include <ucontext.h>
   void hanfpe(int sig, siginfo_t *sip, ucontext_t *uap);
+
 #elif defined IRIX 
 #include <siginfo.h>
 #include <sigfpe.h>
 #include <limits.h>
   void stptrap ( int sig) ;
-#elif defined PPRO_NT
+
+#elif defined _WIN32
 #include <float.h>
   void  hanfpe (int sig);
   void stptrap(int sig);
+
+#elif defined _POSIX
+  void hanfpe (int sig);
+  void stptrap ( int sig) ;
+  void stpusr1 ( int sig) ;
 #endif
 
-#if defined P_LINUX || LINUX64
+#if defined LINUX
 #define _GNU_SOURCE 1
 #include <fenv.h>
 #endif
 
-#ifdef CRAY
-  void INISIG( void )
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-  void inisig_( void )
-#elif defined HPUX
-  void inisig( void )
-#elif defined PPRO_NT
-  extern void __stdcall INISIG( void )
-#endif
+
+void STDCALL(INISIG, inisig)()
 {
-int ier;
-#if defined CRAY || SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
-  struct sigaction action_CPU_LIM;
+#if defined _POSIX
+   struct sigaction action_CPU_LIM;
 #endif
 #if defined IRIX
-  extern struct sigfpe_template sigfpe_[_N_EXCEPTION_TYPES+1];
-  extern int inifpe(void);
-#endif
-#ifdef CRAY
-  struct sigaction action_FPE;
+   int ier;
+   extern struct sigfpe_template sigfpe_[_N_EXCEPTION_TYPES+1];
+   extern int inifpe(void);
 #endif
 /*            */
 /* CPU LIMITE */
 /*            */
-#if defined CRAY || SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
-  action_CPU_LIM.sa_handler=hancpu;
-  sigemptyset(&action_CPU_LIM.sa_mask);
-  action_CPU_LIM.sa_flags=0;
-#endif
-
-#ifdef CRAY
-   sigaction(SIGCPULIM,&action_CPU_LIM,NULL);
-#elif defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
+#if defined _POSIX
+   action_CPU_LIM.sa_handler=hancpu;
+   sigemptyset(&action_CPU_LIM.sa_mask);
+   action_CPU_LIM.sa_flags=0;
    sigaction(SIGXCPU  ,&action_CPU_LIM,NULL);
 #endif
 
 /*                          */
 /* Floating point exception */
 /*                          */
-#ifdef CRAY
-   action_FPE.sa_handler=hanfpe;
-   sigemptyset(&action_FPE.sa_mask);
-   action_FPE.sa_flags=0;
-   sigaction(SIGFPE,&action_FPE,NULL);
-#elif defined SOLARIS
+#if defined SOLARIS
    ieee_handler("set","common",hanfpe);
    ieee_handler("clear","invalid",hanfpe);
 #elif defined IRIX
    ier=inifpe();
 
-#elif defined P_LINUX || LINUX64
+#elif defined LINUX
 
    /* Enable some exceptions. At startup all exceptions are masked. */
    feenableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
 
    signal(SIGFPE,  hanfpe);
 
-#elif defined HPUX || TRU64  || SOLARIS64
-   signal(SIGFPE,  hanfpe);
-#elif defined PPRO_NT
+#elif defined _WIN32
 #define _EXC_MASK  _EM_INEXACT + _EM_UNDERFLOW
    unsigned int  _controlfp (unsigned int new, unsigned int mask);
    _controlfp(_EXC_MASK,_MCW_EM);
+   signal(SIGFPE,  hanfpe);
+#else
    signal(SIGFPE,  hanfpe);
 #endif
 
 /*                          */
 /* Arret par CRTL C         */
 /*                          */
-#if defined PPRO_NT || IRIX || TRU64 || LINUX64 || P_LINUX
    signal(SIGINT,  stptrap);
-#endif
 
 /*                          */
 /* Arret par SIGUSR1        */
 /*                          */
 /* Note : l'arret par SIGUSR1 ne fonctionne pas sous MSVC,
    il faudra essayer de trouver autre chose... */
-#if defined IRIX || TRU64 || LINUX64 || P_LINUX
+#if defined _POSIX
    signal(SIGUSR1,  stpusr1);
 #endif
 }
+
+
 void stptrap (int sig)
 {
   printf(" \n <I> arret sur CTRL C \n");
@@ -146,12 +131,10 @@ void stptrap (int sig)
 
 void stpusr1 (int sig)
 {
-  printf(" \n <I> arret sur signal SIGUSR1 \n");
-#ifdef CRAY
-   SIGUSR();
-#endif
-#if defined SOLARIS || IRIX || TRU64 || LINUX64 || SOLARIS64 || P_LINUX
+   printf(" \n <I> arret sur signal SIGUSR1 \n");
+#if defined _POSIX
+   void STDCALL(SIGUSR, sigusr)(void);
    sigusr_();
 #endif
-exit(sig);
+   exit(sig);
 }

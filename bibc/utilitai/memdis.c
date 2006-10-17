@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMDIS UTILITAI  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF MEMDIS UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -27,39 +27,29 @@
 /*             !=1 la zone est disponible a l'adresse iadm        */
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef CRAY
-   long MEMDIS(long *L, long **iadm, long *taille_mo, long *lfree)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long memdis_(long *L, long **iadm, long *taille_mo, long *lfree)
-#elif defined HPUX
-   long memdis(long *L, long **iadm, long *taille_mo, long *lfree)
-#elif defined PPRO_NT
-   long __stdcall MEMDIS(long *L, long **iadm, long *taille_mo, long *lfree)
-#endif
+#include "aster.h"
+
+INTEGER DEFPPPP(MEMDIS, memdis, INTEGER *L, INTEGER **iadm, INTEGER *taille_mo, INTEGER *lfree)
 {
-long dim , delta ;
-long *retour ;
-void *malloc(size_t size);
-dim = *L ;
-delta = 262144 ;
-do {
-    retour = (long * ) malloc(dim*sizeof(long));
-    dim  = dim - delta ;
-    }
-while ( (retour == NULL) && (dim > 0)) ;
-dim=dim+delta;
-if ( *lfree == 1 ) {
-#ifdef CRAY
-   cfree ( retour , dim , sizeof(long) ) ;
-#elif defined SOLARIS || IRIX || PPRO_NT || HPUX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   free (retour );
-#endif
-   iadm = NULL;
-   taille_mo = 0; 
-   }
-else {
-   *iadm = retour;
-   *taille_mo = (long) (dim*sizeof(long));
-   }
-return ( dim ) ;
+   long dim , delta ;
+   long *retour ;
+   void *malloc(size_t size);
+   dim = *L ;
+   delta = 262144 ;
+   do {
+      retour = (long * ) malloc(dim*sizeof(long));
+      dim  = dim - delta ;
+      }
+   while ( (retour == NULL) && (dim > 0)) ;
+   dim=dim+delta;
+   if ( *lfree == 1 ) {
+      free (retour );
+      iadm = NULL;
+      taille_mo = 0; 
+      }
+   else {
+      *iadm = retour;
+      *taille_mo = (long) (dim*sizeof(long));
+      }
+   return ( dim ) ;
 }

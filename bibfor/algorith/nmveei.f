@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C ----------------------------------------------------------------------
       PARAMETER  ( ZERO = 0.D0   )
       PARAMETER  (DAMMAX = 0.99D0)
 C
-      LOGICAL       CPLAN, BZ
+      LOGICAL       CPLAN
 C
       INTEGER       ITMAX, I, IER, ITER
       INTEGER       NDT, NVI, NRV, NDI, K, L
@@ -123,7 +123,7 @@ C
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
       REAL*8        DRPDE(NP,NB), EPTHM(NB),DELTB,SUMB
       REAL*8        DBETA(NB), DP(NP), DSEDB(NB), DSEDB2(NB,NB), SE
-      REAL*8        PGL(3,3),ANGMAS(3)
+      REAL*8        PGL(3,3),ANGMAS(3),TOUTMS(5,24,6)
 C
       CHARACTER*3   MATCST
       CHARACTER*16  LOI, CPMONO(5*NMAT+1)
@@ -165,10 +165,10 @@ C
 C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
-      CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM, TP,
-     &               TYPMA,  BZ, HSR,MATM,
+      CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM, TP,0,
+     &               TYPMA, HSR,MATM,
      &               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
-     &               TOLER, NDT, NDI, NRV, NVI, VIND )
+     &               TOLER, NDT, NDI, NRV, NVI, VIND ,TOUTMS)
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
 C
 C-- 1.3. OPERATEUR DE HOOK

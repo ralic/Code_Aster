@@ -8,7 +8,7 @@
      &                  LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/10/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,8 +165,7 @@ C ======================================================================
          CALL MEAMME('AMOR_MECA',MODELE,NBCHAR,ZK8(IACHA2),MATE,
      &               CARELE,.TRUE.,INSTAM,MERIGI,MEMASS,MEAMOR)
          CALL JEDETR('&&MXMASS.LISTE_CHARGE')
-         CALL ASMATR(1,MEAMOR,' ',NUMEDD,SOLVEU,LISCHA,'ZERO','V',1,
-     &                  AMORT)
+         CALL ASMAAM(MEAMOR,NUMEDD,SOLVEU,LISCHA,AMORT)
          CALL MTDSCR(AMORT)
       END IF
 
@@ -174,10 +173,8 @@ C -- AU PREMIER PASSAGE, INITIALISATION DES MATRICES MATASS
 C -- ET MASSE
       IF (PREMIE) THEN
          PREMIE = .FALSE.
-         TLIMAT(1) = MEMASS
-         TLIMAT(2) = MEDIRI
-         CALL ASMATR (2,TLIMAT,' ',NUMEDD,SOLVEU,
-     &                LISCHA,'ZERO','V',1,MASSE)
+         CALL ASMAMA(MEMASS,MEDIRI,NUMEDD,SOLVEU,LISCHA,
+     &               MASSE)
          CALL MTDSCR(MASSE)
          LIMAT(1) = MASSE
 

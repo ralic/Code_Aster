@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMUN  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -68,7 +68,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "VMIS_CIN2_CHAB",
                                         "VISC_CIN1_CHAB",
                                         "VISC_CIN2_CHAB",
-                                        "POLY_CFC",
                                         "LMARC",
                                         "LMARC_IRRA",
                                         "ROUSSELIER",
@@ -179,7 +178,6 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           VMIS_CIN2_CHAB  =SIMP(statut='c',typ='I',defaut=14,into=(14,)),
           VISC_CIN1_CHAB  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           VISC_CIN2_CHAB  =SIMP(statut='c',typ='I',defaut=14,into=(14,)),
-          POLY_CFC        =SIMP(statut='c',typ='I',defaut=1688,into=(1688,)),
           LMARC           =SIMP(statut='c',typ='I',defaut=20,into=(20,)),
           LMARC_IRRA      =SIMP(statut='c',typ='I',defaut=20,into=(20,)),
           VISC_TAHERI     =SIMP(statut='c',typ='I',defaut=9,into=(9,)),

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -293,7 +293,65 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                           
 
                           
+# IMPLICITE : TEST DE ECOU_VISC2, ECRO_LINE2, ECRO_CIN2
 
+IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
+                     CHAM_MATER=MAT,
+                     EXCIT=(_F(CHARGE=TRAC,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPOR2,
+                                   DEFORMATION='PETIT',
+                                   ITER_INTE_MAXI=100,
+                                   RESI_INTE_RELA=1.E-9,
+                                   ITER_INTE_PAS=10,
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST,
+                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
+                                   SUBD_PAS_MINI=1e-06,),),
+                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOL'),),
+                     ARCHIVAGE=_F(LIST_INST=LINST,),
+                                     );
+
+IMPL2=CALC_ELEM(reuse =IMPL2,
+                 RESULTAT=IMPL2,
+                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+
+                   
+# COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
+# TEMPS. CELA CONVERGE QUAND DELTAT TEND VERS 0
+
+TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-95.5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=IMPL2,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.000675943476554,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=IMPL2,
+                   INST=TFIN,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-1.82299780001e-05,
+                   PRECISION=(0.02,0.0001,),
+                   REFERENCE='AUTRE_ASTER',),),);
+                   
+
+# IMPR_RESU(RESU=_F(RESULTAT=IMPL2))
+# 
+# FIN()
                    
 
 # SOLUTION DE REFERENCE                          
@@ -609,6 +667,7 @@ EXPLTOUT=STAT_NON_LINE(MODELE=TROISD,
                                TYPE_CHARGE='FIXE_CSTE',),),
                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
                                    COMPOR=COMPORT,
+                                   RESO_INTE='RUNGE_KUTTA_2',
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,
                                    SUBD_METHODE='UNIFORME', SUBD_PAS=4,
@@ -696,60 +755,6 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
                    
                    
                    
-                   
-# IMPLICITE : TEST DE ECOU_VISC2, ECRO_LINE2, ECRO_CIN2
-
-IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
-                     CHAM_MATER=MAT,
-                     EXCIT=(_F(CHARGE=TRAC,
-                               FONC_MULT=COEF,
-                               TYPE_CHARGE='FIXE_CSTE',),),
-                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPOR2,
-                                   DEFORMATION='PETIT',
-                                   ITER_INTE_MAXI=100,
-                                   ITER_INTE_PAS=10,
-                                   TOUT='OUI',),),
-                     INCREMENT=(_F(LIST_INST=LINST,
-                                   SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                   SUBD_PAS_MINI=1e-06,),),
-                     NEWTON=(_F(REAC_ITER=1,),),
-                     ARCHIVAGE=_F(LIST_INST=LINST,),
-                                     );
-
-IMPL2=CALC_ELEM(reuse =IMPL2,
-                 RESULTAT=IMPL2,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
-
-                   
-# COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
-# TEMPS. CELA CONVERGE QUAND DELTAT TEND VERS 0
-
-TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
-                   INST=TFIN,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-95.5,
-                   REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=IMPL2,
-                   INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.000675943476554,
-                   REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=IMPL2,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-1.82299780001e-05,
-                   PRECISION=(0.02,0.0001,),
-                   REFERENCE='AUTRE_ASTER',),),);
                    
 
 # IMPLICITE : TEST DE L'ORTHOTROPIE                    

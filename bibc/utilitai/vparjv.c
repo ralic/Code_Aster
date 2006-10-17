@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF VPARJV utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF VPARJV utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,15 +18,9 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
-#ifdef CRAY
-   double VPARJV(double* val)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   double vparjv_(double* val)
-#elif defined HPUX
-   double vparjv(double* val)
-#elif defined PPRO_NT
-   double __stdcall VPARJV(double* val)
-#endif
+#include "aster.h"
+
+double DEFP(VPARJV, vparjv, double *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur de taille 
 ** de partition memoire JEVEUX
@@ -34,9 +28,9 @@
 **        si >= 0 positionne l'indicateur 
 */
 {
-static double PART_JEVEUX=0.90;
-if (*val >= 0.0) {
-   PART_JEVEUX=*val;
+   static double PART_JEVEUX=0.90;
+   if (*val >= 0.0) {
+      PART_JEVEUX=*val;
    }
-return(PART_JEVEUX);
+   return PART_JEVEUX;
 }

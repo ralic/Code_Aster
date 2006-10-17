@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MAXBAS utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MAXBAS utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,13 +19,9 @@
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
 #include <stdio.h>
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64
-   double maxbas_(double* val)
-#elif defined HPUX
-   double maxbas(double* val)
-#elif defined PPRO_NT
-   double __stdcall MAXBAS(double* val)
-#endif
+#include "aster.h"
+
+double DEFP(MAXBAS, maxbas, double *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** fixant la taille maximale de base en mega-octets
@@ -33,9 +29,9 @@
 **        si >= 0 positionne l'indicateur par une valeur en Mo
 */
 {
-static double TAILLE_BASE=0.0;
-if (*val >= 0.) {
-   TAILLE_BASE=*val;
+   static double TAILLE_BASE=0.0;
+   if (*val >= 0.) {
+      TAILLE_BASE=*val;
    }
-return(TAILLE_BASE);
+   return TAILLE_BASE;
 }

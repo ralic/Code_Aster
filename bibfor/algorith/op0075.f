@@ -3,7 +3,7 @@
       INTEGER            IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,15 +46,16 @@ C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
 C
       CHARACTER*8  K8B, NOMRES, RESIN, NOMSST, MAILSK, MODE
-      CHARACTER*8  K8BID,BID,RESULT,BLANC
+      CHARACTER*8  K8BID,BID,RESULT,BLANC,PARAM(3)
       CHARACTER*16 CONCEP, NOMCMD, TYPRES, TYPMAT, TYPREP, CHAMP(4)
       CHARACTER*19 PROFNO
       CHARACTER*24 MATGEN, NUMGEN
       LOGICAL      PROMES
-      INTEGER      IOC1
+      INTEGER      IOC1,JORD,NBORD,I,IORD,LPAIN(3),LPAOUT(3)
 C
 C     -----------------------------------------------------------------
       DATA K8B    /'        '/
+      DATA PARAM /'MODELE','CHAMPMAT','CARAELEM'/
       CALL JEMARQ()
       CALL INFMAJ()
       K8BID =  '        '
@@ -114,6 +115,7 @@ C      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
            ZK24(LDREFB) = MAILSK
            ZK24(LDREFB+1) = 'DEPL_R'
            CONCEP(1:9) = '         '
+           RESIN=RESULT
            GO TO 9999
          ELSE
            IF (TYPRES.EQ.'MODE_MECA') THEN
@@ -122,6 +124,7 @@ C      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
              ZK24(LDREFB) = MAILSK
              ZK24(LDREFB+1) = 'DEPL_R'
              CONCEP(1:9) = '         '
+             RESIN=RESULT
              GO TO 9999
            ELSE
              CALL U2MESS('E','ALGORITH9_46')
@@ -283,5 +286,29 @@ C
       ENDIF
 C
  9999 CONTINUE
+
+      CALL JEVEUO(NOMRES//'           .ORDR','L',JORD)
+      CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
+      CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
+      IF(CONCEP(1:9).EQ.'TRAN_GENE'.OR.CONCEP(1:9).EQ.'MODE_CYCL')THEN
+         CALL JEVEUO(RESIN//'           .MODL','L',JMODL)
+         CALL JEVEUO(RESIN//'           .MATE','L',JMATE)
+         CALL JEVEUO(RESIN//'           .CARA','L',JCARA)
+         DO 30 IORD=1,NBORD
+           CALL RSADPA(NOMRES,'E',3,PARAM,ZI(JORD+IORD-1),0,LPAOUT,K8B)
+           ZK8(LPAOUT(1))=ZK8(JMODL+IORD-1)
+           ZK8(LPAOUT(2))=ZK8(JMATE+IORD-1)
+           ZK8(LPAOUT(3))=ZK8(JCARA+IORD-1)
+ 30     CONTINUE
+      ELSE
+        DO 10 IORD=1,NBORD
+          CALL RSADPA(RESIN,'L',3,PARAM,ZI(JORD+IORD-1),0,LPAIN,K8B)
+          CALL RSADPA(NOMRES,'E',3,PARAM,ZI(JORD+IORD-1),0,LPAOUT,K8B)
+          DO 20 I=1,3
+            ZK8(LPAOUT(I))=ZK8(LPAIN(I))
+ 20       CONTINUE
+ 10     CONTINUE
+      ENDIF
+         
       CALL JEDEMA()
       END

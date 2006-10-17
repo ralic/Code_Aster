@@ -1,11 +1,11 @@
         SUBROUTINE LCJACB ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,
      1                      MATERF,TEMPF,TIMED,TIMEF,YF,DEPS,
-     3                COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,
-     2                VIND,EPSD,  DY,  DRDY )
+     3   ITMAX,TOLER, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,
+     2                VIND,EPSD,  DY,  DRDY ,IRET)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,8 @@ C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C       ----------------------------------------------------------------
 C TOLE CRP_21
 C
-        INTEGER         IMAT, NR ,    NMAT,NVI,KPG,KSP
-        REAL*8          DEPS(6) , EPSD(6)
+        INTEGER         IMAT, NR ,    NMAT,NVI,KPG,KSP,ITMAX,IRET
+        REAL*8          DEPS(6) , EPSD(6), TOLER
         REAL*8          DRDY(NR,NR) , YF(NR), DY(NR)
 C
         REAL*8          MATERF(NMAT,2),TEMPF
@@ -60,7 +60,8 @@ C
         CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 
 C       ----------------------------------------------------------------
-C
+
+      IRET=0
       IF ( LOI(1:5) .EQ. 'LMARC' ) THEN
          CALL LMAJAC ( MOD, NMAT, MATERF, TIMED, TIMEF,
      1                  YF,  DY,   NR,  DRDY )
@@ -75,8 +76,8 @@ C
 C
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
          CALL LCMMJA ( MOD, NMAT, MATERF, TIMED, TIMEF,TEMPF,
-     3            COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
-     1                  YF,  DY,   DRDY )
+     3  ITMAX,TOLER,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
+     1                  YF,  DY,   DRDY, IRET )
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M' ) THEN
          CALL IRRJAC ( FAMI,KPG,KSP,MOD, NMAT, MATERF,
      1                  YF,  DY,   NR,  DRDY )

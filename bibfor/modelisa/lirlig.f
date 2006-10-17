@@ -5,7 +5,7 @@
         CHARACTER*80                       LIG
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C       ----------------------------------------------------------------
         COMMON          /OPMAIL/        CMD
         DATA NL1,NL2    /0,0/
 C
+        CNL = ' '
         READ(UNIT=IFL,FMT=1,END=100) LIRLG
         DO 10 I = 81, 255
            IF ( LIRLG(I:I) .EQ. '%' ) GOTO 12

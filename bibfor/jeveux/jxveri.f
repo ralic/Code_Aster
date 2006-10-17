@@ -1,6 +1,6 @@
       SUBROUTINE JXVERI ( CUNIT , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,6 @@ C TOLE CFT_720 CFT_726 CFT_889 CRP_18 CRS_508 CRS_505
 C ----------------------------------------------------------------------
 C VERIFIE L'INTEGRITE DU CHAINAGE AVANT DES SEGMENTS DE VALEURS ET DE LA
 C ZONE MEMOIRE UTILISEE
-C ROUTINE AVEC ADHERENCE SYSTEME CRAY : HPCHECK
 C
 C IN  CUNIT  : NOM LOCAL DU FICHIER D'IMPRESSION
 C IN  CMESS  : MESSAGE D'INFORMATION
@@ -105,10 +104,5 @@ C DEB ------------------------------------------------------------------
           ENDIF
         ENDIF
  100  CONTINUE
-      IERR = 0
-      CALL HPCHECK(IERR)
-      IF ( IERR .NE. 0 ) THEN
-        CALL U2MESS('F','JEVEUX_18')
-      ENDIF
 C FIN ------------------------------------------------------------------
       END

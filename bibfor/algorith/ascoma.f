@@ -1,7 +1,7 @@
-      SUBROUTINE ASCOMA (LMECHP,NUMEDD,FOMULT,INSTAP,MATASZ,SOLVEU,
-     &                   INFCHA)
+      SUBROUTINE ASCOMA(MESUIV,INSTAP,NUMEDD,SOLVEU,LISCHA,
+     &                  MATSUI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 17/10/2006   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,25 +18,32 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)      MATASZ
-      CHARACTER*19       MATASS
-      CHARACTER*24       LMECHP,NUMEDD,FOMULT
-      CHARACTER*(*)      SOLVEU,INFCHA
-      REAL*8             INSTAP
+C RESPONSABLE MABBAS M.ABBAS
+      IMPLICIT NONE
+      CHARACTER*24  MESUIV,NUMEDD
+      CHARACTER*19  SOLVEU,LISCHA
+      REAL*8        INSTAP
+      CHARACTER*(*) MATSUI
+C      
 C ----------------------------------------------------------------------
-C     ASSEMBLAGE DES MATRICES DE RIGIDITE ASSOCIEES AUX CHARGEMENTS
-C     SUIVEURS
 C
-C IN  LMECHP  : MATRICES ELEMENTAIRES DE RIGIDITE
-C IN  NUMEDD  : NUMEROTATION DU SYSTEME
-C IN  FOMULT  : FONCTIONS MULTIPLICATRICES
-C IN  INSTAP  : INSTANT DE CALCUL
-C VAR MATASS  : MATRICE ASSEMBLEE
+C ROUTINE POUR OP0070 (*_NON_LINE)
 C
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C ASSEMBLAGE DE LA MATRICE DE RIGIDITE ASSOCIEE AUX CHARGEMENTS
+C SUIVEURS 
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C ----------------------------------------------------------------------
+C 
+C
+C IN  MESUIV : MATRICES ELEMENTAIRES DE RIGIDITE
+C IN  NUMEDD : NOM DE LA NUMEROTATION MECANIQUE
+C IN  LISCHA : SD L_CHARGE
+C IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
+C IN  INSTAP : INSTANT DE CALCUL
+C OUT MATRIG : MATRICE DES FORCES SUIVEUSES ASSEMBLEE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -52,32 +59,40 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       LOGICAL BIDON,FCT
       INTEGER            IRET,NBCHME,JMEC,NCHAR,JFONCT
-      INTEGER            K,ILICOE,ICHA,IER
+      INTEGER            K,ILICOE,ICHA,IER,JRESU,JCOEF
       REAL*8             VALRES
-      CHARACTER*24       LICOEF
-      CHARACTER*8        K8BID
-C DEB ------------------------------------------------------------------
+      CHARACTER*24       LICOEF,FOMULT
+      CHARACTER*8        K8BLA
+C
+      DATA K8BLA /' '/      
+C
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      MATASS = MATASZ
-      BIDON = .FALSE.
-      CALL JEEXIN(LMECHP,IRET)
+C      
+      FOMULT = LISCHA(1:19)//'.FCHA'
+      BIDON  = .FALSE.
+      CALL JEEXIN(MESUIV,IRET)
       IF ( IRET .NE. 0 ) THEN
-        CALL JELIRA(LMECHP,'LONUTI',NBCHME,K8BID)
+        CALL JELIRA(MESUIV,'LONUTI',NBCHME,K8BLA)
         IF ( NBCHME .EQ. 0 ) THEN
           BIDON = .TRUE.
         ELSE
-          CALL JEVEUO(LMECHP,'L',JMEC)
-          IF ( ZK24(JMEC)(7:8) .EQ. '00' ) BIDON = .TRUE.
+          CALL JEVEUO(MESUIV,'L',JMEC)
+          IF ( ZK24(JMEC)(7:8) .EQ. '00' ) THEN
+            BIDON = .TRUE.
+          ENDIF  
         ENDIF
       ELSE
-        CALL U2MESK('F','ALGORITH_17',1,LMECHP)
+        CALL ASSERT(.FALSE.)
       ENDIF
-      IF(BIDON) GOTO 9999
+      IF (BIDON) THEN
+        GOTO 9999
+      ENDIF  
 C
       LICOEF = '&&ASCOMA.LICOEF'
       CALL JEEXIN(FOMULT,IRET)
@@ -85,7 +100,7 @@ C
         FCT = .FALSE.
       ELSE
         FCT = .TRUE.
-        CALL JELIRA(FOMULT,'LONMAX',NCHAR,K8BID)
+        CALL JELIRA(FOMULT,'LONMAX',NCHAR,K8BLA)
         IF ( NCHAR .EQ. 0 ) GOTO 9999
         CALL JEVEUO(FOMULT,'L',JFONCT)
       ENDIF
@@ -102,7 +117,7 @@ C
             CALL FOINTE('F ',ZK24(JFONCT+ICHA-1)(1:8),1,'INST',INSTAP,
      &                  VALRES,IER)
           ELSE
-            CALL U2MESK('F','ALGORITH_18',1,ZK24(JMEC+K-1))
+            CALL ASSERT(.FALSE.)
           ENDIF
         ELSE
           VALRES = 1.D0
@@ -111,21 +126,21 @@ C
  1    CONTINUE
 
       CALL WKVECT('&&ASCOMA.LISTE_RESU','V V K24',1,JRESU)
-      CALL JEDUPO(LMECHP(1:8)//'.REFE_RESU',
+      CALL JEDUPO(MESUIV(1:8)//'.REFE_RESU',
      &            'V','&&ASCOMA.REFE_RESU',.TRUE.)
       CALL WKVECT('&&ASCOMA.LISTE_COEF','V V R',1,JCOEF)
       DO 777,K=1,NBCHME
-        ZK24(JRESU)=ZK24(JMEC+K-1)
-        ZR(JCOEF)=ZR(ILICOE+K-1)
+        ZK24(JRESU) = ZK24(JMEC+K-1)
+        ZR(JCOEF)   = ZR(ILICOE+K-1)
         CALL ASMATR(1,'&&ASCOMA','&&ASCOMA.LISTE_COEF',NUMEDD,SOLVEU,
-     &          INFCHA,'CUMU','V',1,MATASS)
+     &              LISCHA,'CUMU','V',1,MATSUI)
  777  CONTINUE
-
+C
       CALL JEDETR('&&ASCOMA.LISTE_RESU')
       CALL JEDETR('&&ASCOMA.REFE_RESU')
       CALL JEDETR('&&ASCOMA.LISTE_COEF')
       CALL JEDETR(LICOEF)
 9999  CONTINUE
-C FIN ------------------------------------------------------------------
+C 
       CALL JEDEMA()
       END

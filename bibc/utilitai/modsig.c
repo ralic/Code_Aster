@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF modsig utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF modsig utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -41,40 +41,23 @@
 #include <signal.h>
 #include <string.h>
 
-#if defined CRAY || HPUX || IRIX || P_LINUX || TRU64 || LINUX64  || SOLARIS64
-  void hanfpe (int sig);
-#elif defined SOLARIS
+#include "aster.h"
+
+#ifdef _WIN32
+#include <float.h>
+#endif
+
+#if defined SOLARIS
 #include <siginfo.h>
 #include <ucontext.h>
   void hanfpe(int sig, siginfo_t *sip, ucontext_t *uap);
-#elif defined PPRO_NT
-#include <float.h>
-  void  hanfpe (int sig);
+#else
+  void hanfpe(int sig);
 #endif
 
-#ifdef CRAY
-#include <fortran.h>
-  void MODSIG( long *enable, _fcd  *TypeErreurF)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-  void modsig_( long *enable, char *TypeErreur, unsigned long lte)
-#elif defined HPUX
-  void modsig( long *enable, char *TypeErreur, unsigned long lte)
-#elif defined PPRO_NT
-  extern void __stdcall MODSIG( long *enable, char *TypeErreur, unsigned long lte)
-#endif
+void DEFPS(MODSIG, modsig, INTEGER *enable, char *TypeErreur, int lte)
 {
-#ifdef CRAY
-   struct sigaction action_FPE;
-   char *TypeErreur;
-   int lte;
-   TypeErreur  = _fcdtocp(TypeErreurF);
-   if( strncmp ( TypeErreur , "INIT" , 4) == 0 ) {
-     action_FPE.sa_handler=hanfpe;
-     sigemptyset(&action_FPE.sa_mask);
-     action_FPE.sa_flags=0;
-     sigaction(SIGFPE,&action_FPE,NULL);
-   }
-#elif defined SOLARIS
+#if defined SOLARIS
    static int valsig[3];
    int i;
    if( strncmp ( TypeErreur , "INIT" , lte) == 0 ) {
@@ -112,9 +95,9 @@
    else if ( valsig[1] < 0 ) {ieee_handler("clear","overflow",hanfpe);}
    if      ( valsig[2] > 0 ) {ieee_handler("set","division",hanfpe);}
    else if ( valsig[2] < 0 ) {ieee_handler("clear","division",hanfpe);}
-#elif defined HPUX || IRIX || P_LINUX || TRU64 || LINUX64  || SOLARIS64
+#elif defined _POSIX
    signal(SIGFPE,  hanfpe);
-#elif defined PPRO_NT
+#elif defined _WIN32
    unsigned int  _controlfp (unsigned int new, unsigned int mask);
    void _fpreset(void);
    static unsigned int valsig[3];

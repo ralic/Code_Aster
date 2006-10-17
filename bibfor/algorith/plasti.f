@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,7 +199,6 @@ C                                       = 1  1D
 C               NDI             NB DE COMPOSANTE DIRECTES DES TENSEURS
 C               NVI             NB DE VARIABLES INTERNES
 C               NR              NB EQUATION SYSTEME INTEGRE A RESOUDRE
-C               BZ              VARIABLE LOGIQUE UTILISEE POUR POLY_CFC
 C               JFIS1           INDICATEUR DE FISSURATION POUR NADAI_B
 C       ----------------------------------------------------------------
 C       ROUTINE LC....UTILITAIRES POUR INTEGRATION LOI DE COMPORTEMENT
@@ -221,10 +220,9 @@ C       ----------------------------------------------------------------
         INTEGER         IMAT , NDT   , NDI   , NR  , NVI
         INTEGER         ITMAX, ICOMP  , JFIS1, KPG, KSP
         INTEGER         NMAT
-        INTEGER         IRTET, IRTETI, K, L
+        INTEGER         IRTET, IRTETI, K, L, IRET
         REAL*8          TOLER
         REAL*8          EPSI
-        LOGICAL         BZ
         CHARACTER*(*)   FAMI
 C
         PARAMETER       ( EPSI = 1.D-15 )
@@ -245,8 +243,9 @@ C
         REAL*8          DSDE(6,6),  PGL(3,3), ANGMAS(3)
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
-C
-        REAL*8          TOUTMS(5,24,6),HSR(5,24,24)
+C ON SUPPOSE ICI QUE LE NOMBRE DE FAMILLES DE SYSTEME DE GLISSEMENT EN
+C UN POINT DE GAUSS EST 5 AU MAXIMUM. 126=5*24+6
+        REAL*8          TOUTMS(5,24,6),HSR(5,24,24),DRDY(126*126)
         CHARACTER*7     ETATD  ,     ETATF
         CHARACTER*8     MOD    ,     TYPMA,   TYPMOD(*)
         CHARACTER*16    COMP(*),     OPT,        LOI, CPMONO(5*NMAT+1)
@@ -263,6 +262,8 @@ C
         ITMAX    = INT(CRIT(1))
         TOLER    =     CRIT(3)
         THETA    =     CRIT(4)
+C       EXPLICITE=1 OU IMPLICITE=0        
+        NBCOMM(NMAT,1) = INT(CRIT(6))
         LOI      = COMP(1)
         MOD      = TYPMOD(1)
         DT = TIMEF - TIMED
@@ -283,10 +284,17 @@ C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-        CALL LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,
-     1                TYPMA,BZ,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
-     2                ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND)
- 
+        CALL LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,0,
+     1                TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
+     2                ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
+        IF(MOD.NE.'3D') THEN
+           SIGD(5)=0.D0
+           SIGD(6)=0.D0
+           EPSDT(5)=0.D0
+           EPSDT(6)=0.D0
+           DEPST(5)=0.D0
+           DEPST(6)=0.D0
+        ENDIF
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
         CALL LCDEDI ( NMAT,  MATERD, MATERF, TEMPD, TEMPF, TREF,
@@ -345,7 +353,7 @@ C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
      &      TEMPF, SIGF, VIND,COMP, NBCOMM, CPMONO, PGL, NR, NVI,
-     &      VP,VECP, SEUIL)
+     &      VP,VECP, HSR, TOUTMS, SEUIL)
 C
           IF ( SEUIL .GE. 0.D0 ) THEN
 C
@@ -357,7 +365,7 @@ C
      1                  MATERD,MATERF, MATCST, NR, NVI, TEMPD, TEMPF,
      2                  TIMED,TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF,
      3                  VINF,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     3              ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII)
+     3          ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY)
 C
           IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
           ELSE
@@ -407,8 +415,9 @@ C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
                   IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
                     CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERF,TEMPF,
      &              TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &                  NR,NVI,EPSD,DEPS,SIGD,VIND,SIGD,VIND, 
-     &                   DSDE )
+     &              NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGD,VIND,SIGD,VIND, 
+     &                   DSDE,DRDY,OPT, IRET )
+                    IF (IRET.NE.0) GOTO 1
                   ELSE
                   CALL LCJELA ( LOI  , MOD , NMAT, MATERD,  VIND, DSDE)
                   ENDIF
@@ -435,8 +444,9 @@ C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
 
                 CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERF,TEMPF,
      &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &                  NR,NVI,EPSD,DEPS,SIGF,VINF,SIGD,VIND, 
-     &                   DSDE )
+     &            NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGF,VINF,SIGD,VIND, 
+     &                   DSDE ,DRDY,OPT, IRET)
+                IF (IRET.NE.0) GOTO 1
 
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,

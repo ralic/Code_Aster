@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfclg hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfclg hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Fermeture d'un groupe HDF, renvoie une erreur si le groupe ne peut être fermé 
 /  Paramètres :
@@ -25,18 +26,12 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfclg_ ( long *idg )
-#elif defined HPUX
-   long hdfclg ( long *idg )
-#elif defined PPRO_NT
-   extern long __stdcall HDFCLG ( long *idg )
-#endif
+INTEGER DEFP(HDFCLG, hdfclg, INTEGER *idg)
 {
-hid_t  idgrp;     
-herr_t icode;
-idgrp=(hid_t) *idg;
-if ((icode = H5Gclose(idgrp)) < 0) 
-   return -1 ;
-return 0;
+   hid_t  idgrp;     
+   herr_t icode;
+   idgrp=(hid_t) *idg;
+   if ((icode = H5Gclose(idgrp)) < 0) 
+      return -1 ;
+   return 0;
 }     

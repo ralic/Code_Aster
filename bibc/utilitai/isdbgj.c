@@ -1,6 +1,6 @@
  /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ISDBGJ utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF ISDBGJ utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,16 +18,9 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
-#include <stdio.h>
-#ifdef CRAY
-   long ISDBGJ(long* val)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long isdbgj_(long* val)
-#elif defined HPUX
-   long isdbgj(long* val)
-#elif defined PPRO_NT
-   long __stdcall ISDBGJ(long* val)
-#endif
+#include "aster.h"
+
+INTEGER DEFP(ISDBGJ, isdbgj, INTEGER *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** d'execution d'Aster en debugg JEVEUX
@@ -35,11 +28,11 @@
 **        si >= 0 positionne l'indicateur
 */
 {
-static long IND_DBG_JEVEUX=0;
+   static INTEGER IND_DBG_JEVEUX=0;
 
-if (*val >= 0) {
-   IND_DBG_JEVEUX=*val;
+   if (*val >= 0) {
+      IND_DBG_JEVEUX=*val;
    }
 
-return(IND_DBG_JEVEUX);
+   return IND_DBG_JEVEUX;
 }

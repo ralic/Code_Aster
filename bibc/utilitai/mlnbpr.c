@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MLNBPR utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MLNBPR utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,27 +19,18 @@
 /* fournit le nombre de  threads en execution */
 /*issu de l'afectation de la variable d environement OMP_NUM_THREADS  */
 /* ------------------------------------------------------------------ */
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
- int  mlnbpr_()
-#elif defined HPUX
- int  mlnbpr()
-#elif defined PPRO_NT
- int __stdcall MLNBPR()
-#endif
+#include "aster.h"
+
+int STDCALL(MLNBPR, mlnbpr)()
 {
-#ifdef OMP
-{
+#ifdef _USE_OPENMP
     extern int omp_get_max_threads();
     int nump;
     nump= omp_get_max_threads() ;
     return(nump);
-}
 #else
-{
     int nump;
     nump=1;
     return(nump);
-}
-
 #endif
 }

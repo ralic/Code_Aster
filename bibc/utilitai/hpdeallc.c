@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF HPDEALLC UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF HPDEALLC UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,16 +16,10 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-#if defined CRAY
-/* on appelle la version systeme sur CRAY */
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-  void hpdeallc_(void **addr,long *errcode,long *abrt)
-#elif defined HPUX
-  void hpdeallc(void **addr,long *errcode,long *abrt)
-#elif defined PPRO_NT
-  void __stdcall HPDEALLC(void **addr,long *errcode,long *abrt)
-#endif
-#if defined SOLARIS || PPRO_NT || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-    { void free(void *p); 
-      free(*addr); }
-#endif
+#include "aster.h"
+
+void DEFPPP(HPDEALLC, hpdeallc, void **addr, INTEGER *errcode, INTEGER *abrt)
+{
+   void free(void *);
+   free(*addr);
+}

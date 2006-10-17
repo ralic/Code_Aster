@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MLNUMP utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF MLNUMP utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,20 +17,15 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
- int  mlnump_()
-#elif defined HPUX
- int  mlnump()
-#elif defined PPRO_NT
- int __stdcall MLNUMP()
-#endif
+#include "aster.h"
+
+int STDCALL(MLNUMP, mlnump)()
 {
-#if defined OMP
+#if defined _USE_OPENMP
     extern int omp_get_thread_num();
     int nump;
     nump= omp_get_thread_num()+1 ;
     return(nump);
-
 #else
     int nump;
     nump=1;

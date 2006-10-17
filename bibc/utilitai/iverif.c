@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF IVERIF utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF IVERIF utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,16 +19,9 @@
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
 #include <stdio.h>
+#include "aster.h"
 
-#if defined CRAY
-   long IVERIF(long* val)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long iverif_(long* val)
-#elif defined HPUX
-   long iverif(long* val)
-#elif defined PPRO_NT
-   long __stdcall IVERIF(long* val)
-#endif
+INTEGER DEFP(IVERIF, iverif, INTEGER *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur
 ** de verification de la syntaxe des commandes.
@@ -36,11 +29,11 @@
 **        si >=0 positionne l'indicateur
 */
 {
-static long IND_VERIF=0;
-
-if (*val >= 0) {
-   IND_VERIF=*val;
+   static INTEGER IND_VERIF=0;
+   
+   if (*val >= 0) {
+      IND_VERIF=*val;
    }
-
-return(IND_VERIF);
+   
+   return IND_VERIF;
 }

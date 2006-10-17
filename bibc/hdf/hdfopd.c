@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopd hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfopd hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,8 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include <stdlib.h>
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Ouverture d'un dataset HDF, renvoie éventuellement une erreur  
 /  Paramètres :
@@ -27,13 +29,7 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfopd_( long *idf, char *nomg, char *nomd, long lg, long ln )
-#elif defined HPUX
-   long hdfopd ( long *idf, char *nomg, char *nomd, long lg, long ln )
-#elif defined PPRO_NT
-   extern long __stdcall HDFOPD ( long *idf, char *nomg, unsigned long lg, char *nomd, unsigned long ln )
-#endif
+INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, int lg, char *nomd, int ln)
 {
   hid_t id,idfic; 
   int k,lg2;

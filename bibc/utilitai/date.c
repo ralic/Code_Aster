@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF DATE UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF DATE UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,16 +18,9 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include <time.h>
+#include "aster.h"
 
-#if defined PPRO_NT
-   extern void __stdcall DATE(long itab[6])
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   void date_(long itab[6])
-#elif defined HPUX
-   void date(long itab[6])
-#elif defined CRAY
-   void DATE (long itab[6])
-#endif
+void DEFP(DATE, date, INTEGER itab[6])
 {
     time_t ltime;
     struct tm *today;

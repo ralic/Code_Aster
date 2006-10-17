@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF KLOKLO UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF KLOKLO UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,6 +20,7 @@
 /* ------------------------------------------------------------------ */
 #include <sys/types.h>
 #include <time.h>
+#include "aster.h"
 
 /***************************************************************
 *
@@ -86,29 +87,20 @@
 *
 ****************************************************************/
 
-
-#ifdef CRAY
-   void KLOKLO(long *date)
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   void kloklo_(long *date)
-#elif defined HPUX
-   void kloklo(long *date)
-#elif defined PPRO_NT
-   void __stdcall KLOKLO(long *date)
-#endif
+void DEFP(KLOKLO, kloklo, INTEGER *date)
 {
 	time_t timval;
 	struct tm *timeptr;
 
 	time(&timval);
 	timeptr = localtime(&timval);
-	date[6] = timeptr->tm_sec;
-	date[5] = timeptr->tm_min;
-	date[4] = timeptr->tm_hour;
-	date[1] = timeptr->tm_mday;
-	date[2] = timeptr->tm_mon+1;
-	date[3] = timeptr->tm_year+1900;
-        date[0] = (timeptr->tm_wday == 0 ? 6 : timeptr->tm_wday-1);
-        date[7] = timeptr->tm_yday+1;
-        date[8] = (date[7]+6)/7;
+	date[6] = (INTEGER)(timeptr->tm_sec);
+	date[5] = (INTEGER)(timeptr->tm_min);
+	date[4] = (INTEGER)(timeptr->tm_hour);
+	date[1] = (INTEGER)(timeptr->tm_mday);
+	date[2] = (INTEGER)(timeptr->tm_mon+1);
+	date[3] = (INTEGER)(timeptr->tm_year+1900);
+   date[0] = (INTEGER)(timeptr->tm_wday == 0 ? 6 : timeptr->tm_wday-1);
+   date[7] = (INTEGER)(timeptr->tm_yday+1);
+   date[8] = (INTEGER)((date[7]+6)/7);
 } 

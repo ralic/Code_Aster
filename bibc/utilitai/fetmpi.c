@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF FETMPI UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF FETMPI UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,41 +16,26 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64
-  void fetmpi_(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc,
-             char *k124,char *k224,char *k324,float *argr1,unsigned long lk124,unsigned long lk224,unsigned long lk324)
-#elif defined HPUX
-  void fetmpi(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc,
-             char *k124,char *k224,char *k324,float *argr1,unsigned long lk124,unsigned long lk224,unsigned long lk324)
-#elif defined PPRO_NT
-  extern void __stdcall FETMPI(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc,
-             char *k124,unsigned long lk124,char *k224,unsigned long lk224,char *k324,unsigned long lk324,float *argr1)
-#endif
+#include "aster.h"
+
+
+void DEFPPPPPPSSSP(FETMPI, fetmpi,
+            long *opt, long *nbsd, long *ifm, long *niv, long *rang, long *nbproc,
+            char *k124, int lk124,char *k224, int lk224, char *k324, int lk324,
+            float *argr1)
 {
-#if defined MPI_FETI
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64
-  extern void fetam_(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc,
-                   char *k124,char *k224,char *k324,float *argr1,unsigned long lk124,unsigned long lk224,unsigned long lk324);
-  fetam_(opt,nbsd,ifm,niv,rang,nbproc,k124,k224,k324,argr1,lk124,lk224,lk324);
-#elif defined HPUX
-  extern void fetam(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc,
-                   char *k124,char *k224,char *k324,float *argr1,unsigned long lk124,unsigned long lk224,unsigned long lk324);
-  fetam(opt,nbsd,ifm,niv,rang,nbproc,k124,k224,k324,argr1,lk124,lk224,lk324);
-#elif defined PPRO_NT
-  extern void __stdcall FETAM(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc,
-                   char *k124,unsigned long lk124,char *k224,unsigned long lk224,char *k324,unsigned long lk324,float *argr1);
-  FETAM(opt,nbsd,ifm,niv,rang,nbproc,k124,lk124,k224,lk224,k324,lk324,argr1);
-#endif
+#if defined _USE_MPI_FETI
+   void DEFPPPPPPSSSP(FETAM, fetam, long *, long *, long *, long *, long *, long *,
+            char *, int, char *, int, char *, int, float *);
+   #define CALL_FETAM(a,b,c,d,e,f,s1,s2,s3,g) CALLPPPPPPSSSP(FETAM,fetam,a,b,c,d,e,f,s1,s2,s3,g)
+
+   CALL_FETAM(opt, nbsd, ifm, niv, rang, nbproc, k124, k224, k324, argr1);
+
 #else
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64
-  extern void fetsm_(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc);
-  fetsm_(opt,nbsd,ifm,niv,rang,nbproc);
-#elif defined HPUX
-  extern void fetsm(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc);
-  fetsm(opt,nbsd,ifm,niv,rang,nbproc);
-#elif defined PPRO_NT
-  extern void __stdcall FETSM(long *opt,long *nbsd,long *ifm,long *niv,long *rang,long *nbproc);
-  FETSM(opt,nbsd,ifm,niv,rang,nbproc);
-#endif
+   void DEFPPPPPP(FETSM, fetsm, long *, long *, long *, long *, long *, long *);
+   #define CALL_FETSM(a,b,c,d,e,f) CALLPPPPPP(FETSM,fetsm,a,b,c,d,e,f)
+
+   CALL_FETSM(opt, nbsd, ifm, niv, rang, nbproc);
+
 #endif
 }

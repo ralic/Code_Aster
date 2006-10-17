@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF main utilitai  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF main utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -22,112 +22,69 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-/*
-#include "UTILITES.h"
-*/
-# define DEBUT(chaine)
-# define FIN(chaine)
-# define SSCRUTE(chaine)
-# define DSCRUTE(val)
-# define ASSERT(condition)
+#include "aster.h"
 
-#if defined CRAY || SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+
+#ifdef _POSIX
 #include <sys/utsname.h> /* Pour le nom de la machine d'execution */
 #endif
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-#define INIAST iniast_
-#define LMEMEX lmemex_
-#define ISINTE isinte_
-#define ISSUIV issuiv_
-#define IVERIF iverif_
-#define ISDBGJ isdbgj_
-#define MEMJVX memjvx_
-#define REPSPY repspy_
-#define REPMAT repmat_
-#define REPOUT repout_
-#define REPDEX repdex_
-#define ORIGIN origin_
-#define NODNAM nodnam_
-#define ASTER  aster_
-#define VERSIO versio_
-#define SEGJVX segjvx_
-#define LSEGJV lsegjv_
-#define VPARJV vparjv_
-#define MAXBAS maxbas_
-void aster_( void );
-extern long  repspy_ (long *a, long *l, char *rep, unsigned long l_rep);
-extern long  repmat_ (long *a, long *l, char *rep, unsigned long l_rep);
-extern long  repout_ (long *a, long *l, char *rep, unsigned long l_rep);
-extern long  repdex_ (long *a, long *l, char *rep, unsigned long l_rep);
-extern void  nodnam_ (long *a, char *n1, char *n2, char *n3, unsigned long l1, unsigned long l2, unsigned long l3);
-extern void  origin_ (long *a, char *ori, unsigned long l_ori);
-extern void  VERSIO (long *a, long *b, long *c, char *v, long *d, unsigned long *l);
-extern long  INIAST (long *a, long *b, long *c);
-extern long  SEGJVX (long *a);
-extern long  LSEGJV (long *a);
-extern double VPARJV (double *a);
-#elif defined PPRO_NT
-extern long __stdcall INIAST (long *a, long *b, long *c);
-extern long __stdcall LMEMEX (long *a);
-extern long __stdcall MEMJVX (double *a);
-extern long __stdcall REPSPY (long *a, long *l, char *rep, unsigned long l_rep);
-extern long __stdcall REPMAT (long *a, long *l, char *rep, unsigned long l_rep);
-extern long __stdcall REPOUT (long *a, long *l, char *rep, unsigned long l_rep);
-extern long __stdcall REPDEX (long *a, long *l, char *rep, unsigned long l_rep);
-extern void __stdcall NODNAM (long *a, char *n1, unsigned long l1, char *n2, unsigned long l2, char *n3, unsigned long l3);
-extern void __stdcall ASTER ();
-extern long __stdcall ISINTE (long *a);
-extern long __stdcall ISSUIV (long *a);
-extern long __stdcall IVERIF (long *a);
-extern long __stdcall ISDBGJ (long *a);
-extern void __stdcall ORIGIN (long *a, char *ori, unsigned long l_ori);
-extern void __stdcall VERSIO (long *a, long *b, long *c, char *v, unsigned long *l, long *d);
-extern long __stdcall SEGJVX (long *a);
-extern long __stdcall LSEGJV (long *a);
-extern double __stdcall VPARJV (double *a);
-extern double __stdcall MAXBAS (double *a);
-#elif defined HPUX
-#define INIAST iniast
-#define LMEMEX lmemex
-#define ISINTE isinte
-#define ISSUIV issuiv
-#define IVERIF iverif
-#define ISDBGJ isdbgj
-#define MEMJVX memjvx
-#define REPSPY repspy
-#define REPMAT repmat
-#define REPOUT repout
-#define REPDEX repout
-#define ORIGIN origin
-#define NODNAM nodnam
-#define ASTER  aster
-#define VERSIO versio
-#define SEGJVX segjvx
-#define LSEGJV lsegjv
-#define VPARJV vparjv
-#define MAXBAS maxbas
-extern long lmemex (long *a);
-extern long memjvx (double *a);
-extern long repspy (long *a, long *l, char *rep, unsigned long l_rep);
-extern long repmat (long *a, long *l, char *rep, unsigned long l_rep);
-extern long repout (long *a, long *l, char *rep, unsigned long l_rep);
-extern long repdex (long *a, long *l, char *rep, unsigned long l_rep);
-extern void nodnam (long *a, char *n1, char *n2, char *n3, unsigned long l1, unsigned long l2, unsigned long l3);
-extern void aster ();
-extern long isinte (long *a);
-extern long issuiv (long *a);
-extern long iverif (long *a);
-extern long isdbgj (long *a);
-extern void origin (long *a, char *ori, unsigned long l_ori);
-extern void VERSIO(long *a, long *b, long *c, char *v, long *d, unsigned long *l);
-extern long INIAST (long *a, long *b, long *c);
-extern long SEGJVX (long *a);
-extern long LSEGJV (long *a);
-extern double VPARJV (double *a);
-#endif
 
-void strmaju (char *namin, char *namaj , int l)
+
+INTEGER DEFPPP(INIAST, iniast, INTEGER *, INTEGER *, INTEGER *);
+#define CALL_INIAST(a, b, c) CALLPPP(INIAST, iniast, a, b, c)
+
+INTEGER DEFP(LMEMEX, lmemex, INTEGER *);
+#define CALL_LMEMEX(a) CALLP(LMEMEX, lmemex, a)
+
+INTEGER DEFP(MEMJVX, memjvx, double *);
+#define CALL_MEMJVX(a) CALLP(MEMJVX, memjvx, a)
+
+INTEGER DEFPPS(REPMAT, repmat, INTEGER *, INTEGER *, char *, int);
+#define CALL_REPMAT(a, b, c) CALLPPS(REPMAT, repmat, a, b, c)
+
+INTEGER DEFPPS(REPOUT, repout, INTEGER *, INTEGER *, char *, int);
+#define CALL_REPOUT(a, b, c) CALLPPS(REPOUT, repout, a, b, c)
+
+INTEGER DEFPPS(REPDEX, repdex, INTEGER *, INTEGER *, char *, int);
+#define CALL_REPDEX(a, b, c) CALLPPS(REPDEX, repdex, a, b, c)
+
+void DEFPSSS(NODNAM, nodnam, INTEGER *, char *, int, char *, int, char *, int);
+#define CALL_NODNAM(a, b, c, d) CALLPSSS(NODNAM, nodnam, a, b, c, d)
+
+INTEGER DEFP(ISINTE, isinte, INTEGER *);
+#define CALL_ISINTE(a) CALLP(ISINTE, isinte, a)
+
+INTEGER DEFP(ISSUIV, issuiv, INTEGER *);
+#define CALL_ISSUIV(a) CALLP(ISSUIV, issuiv, a)
+
+INTEGER DEFP(IVERIF, iverif, INTEGER *);
+#define CALL_IVERIF(a) CALLP(IVERIF, iverif, a)
+
+INTEGER DEFP(ISDBGJ, isdbgj, INTEGER *);
+#define CALL_ISDBGJ(a) CALLP(ISDBGJ, isdbgj, a)
+
+void DEFPS(ORIGIN, origin, INTEGER *, char *, int);
+#define CALL_ORIGIN(a, b) CALLPS(ORIGIN, origin, a, b)
+
+void DEFPPPSP(VERSIO, versio, INTEGER *, INTEGER *, INTEGER *, char *, int, INTEGER *);
+#define CALL_VERSIO(a, b, c, d, e) CALLPPPSP(VERSIO, versio, a, b, c, d, e)
+
+INTEGER DEFP(SEGJVX, segjvx, INTEGER *);
+#define CALL_SEGJVX(a) CALLP(SEGJVX, segjvx, a)
+
+INTEGER DEFP(LSEGJV, lsegjv, INTEGER *);
+#define CALL_LSEGJV(a) CALLP(LSEGJV, lsegjv, a)
+
+double DEFP(VPARJV, vparjv, double *);
+#define CALL_VPARJV(a) CALLP(VPARJV, vparjv, a)
+
+double DEFP(MAXBAS, maxbas, double *);
+#define CALL_MAXBAS(a) CALLP(MAXBAS, maxbas, a)
+
+
+void strmaju(char *namin, char *namaj, int l)
 { 
 	int iin, jjn;
 	char *p,*q;
@@ -136,7 +93,6 @@ void strmaju (char *namin, char *namaj , int l)
 	q=namaj;
 
 	/* troncature a l caracteres et passage en majuscules */
-
 	iin=0;
 	while ((*p != '\0') && (iin < l)) {
 		*q++=toupper(*p++);
@@ -146,15 +102,13 @@ void strmaju (char *namin, char *namaj , int l)
 	*q='\0';
 }
 
-void strcpBS (char *namin, char *namaj , int l , long *ll)
+void strcpBS(char *namin, char *namaj , int l , long *ll)
 { 
 	int iin, jjn;
 	char *p,*q;
-#if defined CRAY
+#if defined _POSIX
 #define BS  '/'
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-#define BS  '/'
-#elif defined PPRO_NT
+#else
 #define BS  0x5c
 #endif
 
@@ -162,7 +116,6 @@ void strcpBS (char *namin, char *namaj , int l , long *ll)
 	q=namaj;
 
 	/* troncature a l caracteres  */
-
 	iin=0;
 	while ((*p != '\0') && (iin < l)) {
 		*q++=*p++;
@@ -179,7 +132,7 @@ void strcpBS (char *namin, char *namaj , int l , long *ll)
 
 char g_memory[32],g_tpmax[32];
 
-void asterm(long argc,char** argv)
+void asterm(long argc, char** argv)
 /*
 ** Programme principal d'Aster pour enrober le Code_Aster
 ** afin de traiter les arguments de la ligne de commande
@@ -187,27 +140,18 @@ void asterm(long argc,char** argv)
 */
 {
 	long ivers,iutil,iniv,ilog;
-	unsigned long ldate;
 	char vdate[9];
 	long cerr,inter,iret;
 	long r1,r2,r3;
-	unsigned long l_argv,l_ori,l_nom = 16;
 
-	DEBUT("asterm") ;
 	/*
 ** Initialisation
 */
 
+	iret=CALL_INIAST(&r1,&r2,&r3);
 
-	iret=INIAST(&r1,&r2,&r3);
-
-
-	vdate[8] = '\0' ;
-#if defined PPRO_NT
-	VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ldate,&ilog);
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-	VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ilog,&ldate);
-#endif
+	vdate[8] = '\0';
+   CALL_VERSIO(&ivers,&iutil,&iniv,&vdate[0],&ilog);
 	*argv ++;
 
 	/* Nom de la machine */
@@ -216,13 +160,13 @@ void asterm(long argc,char** argv)
 		char *pn,*os,*mach;
 		long fino=0;
 
-#if defined CRAY || HPUX || SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+#ifdef _POSIX
 		struct utsname un;
 		uname(&un);
 		pn=un.nodename;
 		os=un.sysname;
 		mach=un.machine;
-#elif defined PPRO_NT
+#else
 		pn=getenv ("COMPUTERNAME");
 		if ( pn == NULL ) {
 			pn="????";
@@ -236,119 +180,63 @@ void asterm(long argc,char** argv)
 			mach="????";
 		}
 #endif
-		strmaju (pn, nodename, 16);
-		strmaju (os, nomos, 16);
-		strmaju (mach, nomcpu, 16);
-#if defined CRAY
-		NODNAM(&fino,nodename,nomos,nomcpu);
-#elif defined PPRO_NT
-		NODNAM(&fino,nodename,l_nom,nomos,l_nom,nomcpu,l_nom);
-#elif defined HPUX || SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-		NODNAM(&fino,nodename,nomos,nomcpu,l_nom,l_nom,l_nom);
-#endif
+		strmaju(pn, nodename, 16);
+		strmaju(os, nomos, 16);
+		strmaju(mach, nomcpu, 16);
+
+      CALL_NODNAM(&fino,nodename,nomos,nomcpu);
 	}
 
-#if defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+#ifdef _POSIX
 	g_memory[0] = '\0';
 	g_tpmax[0] = '\0';
 #endif
-	/*
-** Init pour le repertoire associe a spycod
-*/
-#if defined CRAY
-#define REP_SPY "/aster/stat/"
-#define LREP  12
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-#define REP_SPY "/export/docaster/asa/aster/stat/"
-#define LREP  32
-#elif defined PPRO_NT
-#define REP_SPY " "
-#define LREP  0
-#endif
-	{
-		char rep_spy[129];
-		long fi=0;
-		long ll;
-		unsigned long l_rep;
-		strcpy(rep_spy,REP_SPY);
-		ll = LREP;
-#if defined CRAY
-		REPSPY(&fi,&ll,rep_spy);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-		l_rep = strlen(rep_spy);
-		REPSPY(&fi,&ll,rep_spy,l_rep);
-#endif
-	}
 	/*
 ** Init pour le repertoire associe au catalogue materiau
    pour les scripts appelables depuis aster et pour les
    donnees lues depuis aster
 */
-#if defined CRAY || IRIX || TRU64 || LINUX64 || SOLARIS64 
-#define REP_MAT "/aster/materiau/"
-#define REP_OUT "/aster/outils/"
-#define REP_DON "/aster/donnees/"
-#elif defined SOLARIS || HPUX || P_LINUX 
-#define REP_MAT "/logiciels/aster/materiau/"
-#define REP_OUT "/logiciels/aster/outils/"
-#define REP_DON "/logiciels/aster/donnees/"
-#elif defined PPRO_NT
-#define REP_MAT "C:\\ASTER\\MATERIAU\\"
-#define REP_OUT "D:\\Progra~1\\"
-#define REP_DON "C:\\ASTER\\DONNEES\\"
-#endif
 	{ 
 		char rep_mat[129],rep_out[129],rep_don[129];
 		long fi=0;
 		long ll;
-		unsigned long l_rep=0;
 		strcpy(rep_mat,REP_MAT);
 		ll = strlen(rep_mat);
-#if defined CRAY
-		REPMAT(&fi,&ll,rep_mat);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-		REPMAT(&fi,&ll,rep_mat,l_rep);
-#endif
-		strcpy(rep_out,REP_OUT);
+      CALL_REPMAT(&fi, &ll, rep_mat);
+		
+      strcpy(rep_out,REP_OUT);
 		ll = strlen(rep_out);
-#if defined CRAY
-		REPOUT(&fi,&ll,rep_out);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-		REPOUT(&fi,&ll,rep_out,l_rep);
-#endif
-		strcpy(rep_don,REP_DON);
+      CALL_REPOUT(&fi, &ll, rep_out);
+		
+      strcpy(rep_don,REP_DON);
 		ll = strlen(rep_don);
-#if defined CRAY
-		REPDEX(&fi,&ll,rep_don);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-		REPDEX(&fi,&ll,rep_don,l_rep);
-#endif
+      CALL_REPDEX(&fi, &ll, rep_don);
 	}
 	/*
 ** Traitement des arguments de la ligne de commande
 */
 	while (*argv != NULL) {
-		ASSERT(argv!=NULL) ; ASSERT(*argv!=NULL) ; SSCRUTE(*argv) ;
+		ASSERT(argv!=NULL) ; ASSERT(*argv!=NULL) ;
 		/*
    ** Execution en interactif
    */
 		if (strcmp(*argv,"-i") == 0) {
 			inter=1;
-			cerr=ISINTE(&inter);
+			cerr=CALL_ISINTE(&inter);
 		}
 		/*
    ** Suivi interactif d'un batch
    */
 		if (strcmp(*argv,"-suivi_batch") == 0) {
 			inter=1;
-			cerr=ISSUIV(&inter);
+			cerr=CALL_ISSUIV(&inter);
 		}
 		/*
    ** Verification de la syntaxe des commandes
    */
 		if (strcmp(*argv,"-verif") == 0) {
 			inter=1;
-			cerr=IVERIF(&inter);
+			cerr=CALL_IVERIF(&inter);
 		}
 		/*
    ** Limite memoire
@@ -357,14 +245,14 @@ void asterm(long argc,char** argv)
 			*argv++;
 			strcpy(g_memory,*argv);
 			inter=1;
-			cerr=LMEMEX(&inter);
+			cerr=CALL_LMEMEX(&inter);
 		}
 		/*
    ** Debug JEVEUX
    */
 		if (strcmp(*argv,"-dbgjeveux") == 0) {
 			inter=1;
-			cerr=ISDBGJ(&inter);
+			cerr=CALL_ISDBGJ(&inter);
 		}
 		/*
    ** Memoire JEVEUX
@@ -373,8 +261,7 @@ void asterm(long argc,char** argv)
 			double finter;
 			*argv++;
 			finter=(double) atof(*argv);
-			DSCRUTE(finter) ;
-			cerr=MEMJVX(&finter);
+			cerr=CALL_MEMJVX(&finter);
 		}
 		/*
    ** Type parcours de la segmentation Memoire JEVEUX
@@ -383,7 +270,7 @@ void asterm(long argc,char** argv)
 			long typseg;
 			*argv++;
 			typseg=atol(*argv);
-			cerr=SEGJVX(&typseg);
+			cerr=CALL_SEGJVX(&typseg);
 		}
 		/*
    ** Taille des segments de valeurs associ‰s (parcours de type 3)
@@ -392,7 +279,7 @@ void asterm(long argc,char** argv)
 			long lseg;
 			*argv++;
 			lseg=atol(*argv);
-			cerr=LSEGJV(&lseg);
+			cerr=CALL_LSEGJV(&lseg);
 		}
 		/*
    ** Partition memoire (parcours de type 4)
@@ -401,7 +288,7 @@ void asterm(long argc,char** argv)
 			double vpar,rerr;
 			*argv++;
 			vpar=(double)atof(*argv);
-			rerr=VPARJV(&vpar);
+			rerr=CALL_VPARJV(&vpar);
 		}
 		/*
    ** Taille maximale des bases (en mega-octets)
@@ -410,22 +297,7 @@ void asterm(long argc,char** argv)
 			double tmax,rerr;
 			*argv++;
 			tmax=(double) atof(*argv);
-			rerr=MAXBAS(&tmax);
-		}
-		/*
-   ** Repertoire de stockage des informations spycod
-   */
-		if (strcmp(*argv,"-rep") == 0) {
-			char rep[129];
-			unsigned long l_rep;
-			long fi=0;
-			long ll;
-			char *p;
-			*argv++;
-			p=*argv;
-			l_rep = strlen(p);
-			strcpBS (p,rep,l_rep,&ll);
-			REPSPY(&fi,&ll,rep,l_rep);
+			rerr=CALL_MAXBAS(&tmax);
 		}
 		/*
    ** Repertoire des fichiers du catalogue materiau
@@ -440,7 +312,7 @@ void asterm(long argc,char** argv)
 			p=*argv;
 			l_rep = strlen(p);
 			strcpBS (p,rep,l_rep,&ll);
-			REPMAT(&fi,&ll,rep,l_rep);
+			CALL_REPMAT(&fi,&ll,rep);
 		}
 		/*
    ** Repertoire des outils (logiciels externes, scripts)
@@ -455,7 +327,7 @@ void asterm(long argc,char** argv)
 			p=*argv;
 			l_rep = strlen(p);
 			strcpBS (p,rep,l_rep,&ll);
-			REPOUT(&fi,&ll,rep,l_rep);
+			CALL_REPOUT(&fi,&ll,rep);
 		}
 		/*
    ** Repertoire des donnees externes
@@ -470,7 +342,7 @@ void asterm(long argc,char** argv)
 			p=*argv;
 			l_rep = strlen(p);
 			strcpBS (p,rep,l_rep,&ll);
-			REPDEX(&fi,&ll,rep,l_rep);
+			CALL_REPDEX(&fi,&ll,rep);
 		}
 		/*
    ** Limite de temps CPU en secondes
@@ -500,12 +372,7 @@ void asterm(long argc,char** argv)
 			}
 			for (jj=ii;jj<16;jj++) *q++=' ';
 			*q='\0';
-#if defined CRAY
-			ORIGIN(&fi,ori);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-			l_ori = strlen(ori);
-			ORIGIN(&fi,ori,l_ori);
-#endif
+			CALL_ORIGIN(&fi,ori);
 		}
 		/*
    ** Aide en ligne
@@ -537,16 +404,5 @@ void asterm(long argc,char** argv)
 		*argv++;
 	}
 
-	/*
-** Appel au FORTRAN
-*/
-	/*----------------- ASTER();*/
-
-	/*
-** On ne passe jamais par ici !!!
-** ASTER() sort avec un STOP dans JEFINI
-** SI !!! avec python on se glisse par ICI (AY)
-*/
-	FIN("asterm") ;
 	return ;
 }

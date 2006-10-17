@@ -1,7 +1,7 @@
       SUBROUTINE AVSIGN( NBVEC, NBORDR, VECTN, VWORK, TDISP, KWORK,
      &                   SOMMW, TSPAQ, I, NOMCRI, VSIGN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -80,7 +80,7 @@ C234567                                                              012
       CALL JEMARQ()
 
       N = 1
-      IF ( NOMCRI(1:12) .EQ. 'FATEMI_SOCIE' ) THEN
+      IF ( NOMCRI(1:16) .EQ. 'FATESOCI_MODI_AV' ) THEN
          DECAL = 12
       ELSE
          DECAL = 6

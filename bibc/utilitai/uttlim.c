@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTLIM UTILITAI  DATE 26/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF UTTLIM UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,84 +20,33 @@
 /* ------------------------------------------------------------------ */
 /* temps (sec)  maxi pour ce processus                    	*/
 extern char g_tpmax[];
+
 #include <string.h>
 #include <stdio.h>
-#ifdef CRAY
-#include <sys/category.h>
-#include <sys/resource.h>
-#include <time.h>
-#elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
+
 #include <sys/time.h>
 #include <sys/resource.h>
-#endif
+#include <float.h>
+#include <limits.h>
 
+#include "aster.h"
 
-#ifdef CRAY
-void UTTLIM ( float *t_lim )
+void DEFP(UTTLIM, uttlim, double *t_lim)
 {
-  if (strlen(g_tpmax) > 0) {
-  int itpm;
-  sscanf(g_tpmax,"%d",&itpm);
-  *t_lim= (float)itpm;
-  }
-  else {
-	*t_lim = (float)limit(C_PROC, 0, L_CPU, -1)/(float)CLK_TCK;
-  }
-}
-#elif  defined SOLARIS 
-void uttlim_ ( double *t_lim )
-{
-  struct rlimit rlp;
-  if (strlen(g_tpmax) > 0) {
-    int itpm;
-    sscanf(g_tpmax,"%d",&itpm);
-    *t_lim= (double)itpm;
-  }
-  else {
-	getrlimit(RLIMIT_CPU,&rlp);
- 	*t_lim = (double)rlp.rlim_max;
-  }
-}
-#elif  defined HPUX 
-#include <float.h>
-#include <limits.h>
-void uttlim ( double *t_lim )
-{
-  if (strlen(g_tpmax) > 0) {
-    int itpm;
-    sscanf(g_tpmax,"%d",&itpm);
-    *t_lim= (double)itpm;
-  }
-  else {
-	*t_lim = ((double) LONG_MAX)/2;
-  }
-}
-#elif  defined IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-#include <float.h>
-#include <limits.h>
-void uttlim_ ( double *t_lim )
-{
-  if (strlen(g_tpmax) > 0) {
-    int itpm;
-    sscanf(g_tpmax,"%d",&itpm);
-    *t_lim= (double)itpm;
-  }
-  else {
-	*t_lim = ((double) LONG_MAX)/2;
-  }
-}
-#elif  defined PPRO_NT
-#include <float.h>
-#include <limits.h>
-void __stdcall UTTLIM ( double *t_lim )
-{
-  if (strlen(g_tpmax) > 0) {
-    int itpm;
-    sscanf(g_tpmax,"%d",&itpm);
-    *t_lim= (double)itpm;
-  }
-  else {
-	*t_lim = (double) LONG_MAX;
-  }
-}
+   int itpm;
+#ifdef _USE_RLIMIT
+   struct rlimit rlp;
 #endif
+   if (strlen(g_tpmax) > 0) {
+      sscanf(g_tpmax,"%d",&itpm);
+      *t_lim = (double)itpm;
+   }
+   else {
+#ifdef _USE_RLIMIT
+      getrlimit(RLIMIT_CPU,&rlp);
+      *t_lim = (double)rlp.rlim_max;
+#else
+      *t_lim = ((double) LONG_MAX)/2;
+#endif
+   }
+}

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfclf hdf  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdfclf hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,7 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Fermeture d'un fichier HDF, renvoie une erreur si le fichier existe 
 /  Paramètres :
@@ -25,13 +26,7 @@
 /-----------------------------------------------------------------------------*/
 #include <hdf5.h>
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfclf_( long *idf )
-#elif defined HPUX
-   long hdfclf ( long *idf )
-#elif defined PPRO_NT
-   extern long __stdcall HDFCLF( long  *idf )
-#endif
+INTEGER DEFP(HDFCLF, hdfclf, INTEGER *idf)
 {
 hid_t idfic;
 herr_t icode;

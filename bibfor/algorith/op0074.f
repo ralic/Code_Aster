@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,9 +43,11 @@ C
 C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      CHARACTER*8  MATGEN, NOMRES, TRAN
+      CHARACTER*8  MATGEN, NOMRES, TRAN, RIGGEN, K8B
+      CHARACTER*8  MODELE, CHMAT, CARAEL, NOBJS
       CHARACTER*14 NUMGEN
       CHARACTER*16 TYPREP, NOMCMD, TYPRES
+      CHARACTER*32 JEXNUM
 C
 C     --- ETAPE DE VERIFICATIONS
 C
@@ -92,5 +94,75 @@ C     --- CAS DE REPRISE AVEC LE MEME NOM DE CONCEPT ---
 C
       IF (NOMRES.EQ.'&&OP0074') CALL RESU74(TRAN,NOMRES)
 C
+C     --- STOCKAGE ---
+C
+      IF (NOMRES.NE.'&&OP0074')THEN
+        CALL JEVEUO(NOMRES//'           .ORDR','L',JORD)
+        CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
+        CALL JECREO(NOMRES//'           .MODL' ,'G V K8')
+        CALL JEECRA(NOMRES//'           .MODL' ,'LONMAX',NBORD,K8B)
+        CALL JEECRA(NOMRES//'           .MODL' ,'LONUTI',NBORD,K8B)
+        CALL JECREO(NOMRES//'           .MATE' ,'G V K8')
+        CALL JEECRA(NOMRES//'           .MATE' ,'LONMAX',NBORD,K8B)
+        CALL JEECRA(NOMRES//'           .MATE' ,'LONUTI',NBORD,K8B)
+        CALL JECREO(NOMRES//'           .CARA' ,'G V K8')
+        CALL JEECRA(NOMRES//'           .CARA' ,'LONMAX',NBORD,K8B)
+        CALL JEECRA(NOMRES//'           .CARA' ,'LONUTI',NBORD,K8B)
+        CALL GETVID(' ','RIGI_GENE',0,1,1,RIGGEN,NM)
+        CALL JEVEUO(RIGGEN//'           .LIME','L',JMODG)
+        IF(ZK8(JMODG).EQ.'        ')THEN
+C          ON EST PASSE PAR UN PROJ_MATR_BASE
+           CALL JEVEUO(RIGGEN//'           .REFA','L',JMODG)
+           CALL JEVEUO(ZK24(JMODG)(1:8)//'           .REFD','L',JRAID)
+           IF(ZK24(JRAID)(1:8).EQ.'        ')THEN
+             CALL JEVEUO(JEXNUM(ZK24(JMODG)(1:8)//'           .TACH',1),
+     &                   'L',JBASM)
+             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .MODL','L',JMODL)
+             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .MATE','L',JMATE)
+             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .CARA','L',JCARA)
+             MODELE=ZK8(JMODL)
+             CHMAT =ZK8(JMATE)
+             CARAEL=ZK8(JCARA)
+             GOTO 44
+           ENDIF
+           CALL JEVEUO(ZK24(JRAID)(1:8)//'           .LIME','L',JMODG)
+C          SI LA MATR DE RIGIDITE EST GENERALISEE:
+           IF(ZK8(JMODG).NE.'        ')THEN
+             CALL JEEXIN(ZK8(JMODG)//'.REFE_RESU',IRET)
+             IF(IRET.NE.0)THEN
+               CALL JEVEUO(ZK8(JMODG)//'.REFE_RESU','L',JRE)
+               MODELE=ZK24(JRE)(1:8)
+               CHMAT =ZK24(JRE+3)(1:8)
+               CARAEL=ZK24(JRE+4)(1:8)
+               GOTO 44
+             ENDIF
+             CALL JEVEUO(ZK8(JMODG)//'      .MODG.SSME','L',JMACR)
+             CALL JEVEUO(ZK8(JMACR)//'.MAEL_INER_REFE','L',JBASM)
+             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .REFD','L',JRAID)
+           ENDIF
+        ELSE
+C          ON EST PASSE PAR UN DEFI_MODELE_GENE
+           CALL JEVEUO(ZK8(JMODG)//'      .MODG.SSME','L',JMACR)
+           CALL JEVEUO(ZK8(JMACR)//'.MAEL_INER_REFE','L',JBASM)
+           CALL JEVEUO(ZK24(JBASM)(1:8)//'           .REFD','L',JRAID)
+        ENDIF
+        CALL DISMOI('F','NOM_MODELE',ZK24(JRAID)(1:8),'MATR_ASSE',
+     &     IBID,MODELE,IRET)
+        CALL DISMOI('F','CHAM_MATER',ZK24(JRAID)(1:8),'MATR_ASSE',
+     &     IBID, CHMAT,IRET)
+        CALL DISMOI('F','CARA_ELEM',ZK24(JRAID)(1:8),'MATR_ASSE',
+     &     IBID,CARAEL,IRET)
+ 44     CONTINUE
+        CALL JEVEUO(NOMRES//'           .MODL','E',JMODL)
+        CALL JEVEUO(NOMRES//'           .MATE','E',JMATE)
+        CALL JEVEUO(NOMRES//'           .CARA','E',JCARA)
+        DO  43 I=1,NBORD
+          ZK8(JMODL+I-1)=MODELE
+          ZK8(JMATE+I-1)=CHMAT
+          ZK8(JCARA+I-1)=CARAEL
+ 43     CONTINUE
+        
+      ENDIF
+
       CALL JEDEMA()
       END

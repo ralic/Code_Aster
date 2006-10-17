@@ -3,11 +3,11 @@
      &                   PAS,     EPS,    TOLY,  COTHE, COEFF,
      &                   DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL, ANGMAS,
      &                   SIGI,    EPSD,   DETOT, TPERD, DTPER,
-     &                   TPEREF, BZ, X )
+     &                   TPEREF, X )
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,9 +56,6 @@ C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
 C         TPERD   :  TEMPERATURE A T
 C         DTPER   :  INTERVALE DE TEMPERATURE ENTRE T+DT ET T
 C         TPEREF  :  TEMPERATURE DE REFERENCE
-C         BZ      :  VARIABLE LOGIQUE :
-C                   'VRAI' ON UTILISE LE MODELE POLY PILVIN
-C                   'FAUX' ON UTILISE LE MODELE POLY B.Z.
 C     OUT X       :  INSTANT COURANT
 C     -
       INTEGER  NMAT,IMAT,NBCOMM(NMAT,3),NE,NY,NA,NVI,KPOK,IP,I,II
@@ -70,7 +67,6 @@ C      POUR GAGNER EN TEMPS CPU
       CHARACTER*16 LOI,COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8  MOD
       CHARACTER*3  MATCST
-      LOGICAL BZ
       REAL*8 E, NU, ALPHA, COEL(NMAT)
       REAL*8 X, PAS, H, TOLY, XOUT, XR, W, WZ, DMG0
       REAL*8 TPERD, DTPER, TPEREF,DMG1,EPS
@@ -120,7 +116,7 @@ C
       CALL RK21CO(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBFSYM,TOUTMS,
      &            NVI,NMAT,Y,KPOK,WK(NE+1),WK(NA+1),H,PGL,NBPHAS,
      &            COTHE,COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,X,PAS,
-     &            SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,BZ)
+     &            SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF)
       W=ABS(WK(1))/YMFS(1)
       DO 70 I=2,NVI
         WZ=ABS(WK(I))/YMFS(I)

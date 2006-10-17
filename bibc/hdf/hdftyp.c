@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftyp hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdftyp hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,8 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include <stdlib.h>
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Récupération du type associé (dataset,group,etc) de chaque entité d'une liste 
 / de noms d'un groupe donné au sein d'un fichier HDF 
@@ -30,19 +32,11 @@
 #include "hdf5.h"
 #define FALSE   0
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdftyp_(long *idf, char *nomgr, long *nbnom, char *typ, long ln, long ltp )
-#elif defined HPUX
-   long hdftyp(long *idf, char *nomgr, long *nbnom, char *typ, long ln, long ltp )
-#elif defined PPRO_NT
-   extern long __stdcall HDFTYP(long *idf, char *nomgr, unsigned long ln, long *nbnom, char *typ, long ltp )
-#endif
+INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, int ln, INTEGER *nbnom, char *typ, int ltp)
 {
   hid_t idfic;
-  herr_t iret;
   char *nomg, *pt, *ptype; 
   int indx,k,j,ind,ll;
-  long nbobj=0;
   void *malloc(size_t size);
   
   herr_t indiceType(hid_t loc_id, const char *name, void *opdata);
@@ -77,7 +71,7 @@ herr_t indiceType(hid_t id, const char *nom, void *donnees)
 {
   char *retour;
   H5G_stat_t statbuf;
-  int iret,j;
+  int iret;
 
   retour =(char *)donnees;
   iret=H5Gget_objinfo(id, nom, FALSE, &statbuf);

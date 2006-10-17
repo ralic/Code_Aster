@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTCLIM UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTCLIM UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -27,16 +27,12 @@ extern char g_tpmax[];
 #include <string.h>
 #include <stdio.h>
 
-#if  defined IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS || SOLARIS64 
-void utclim_ ( long *t_fin )
-#elif defined HPUX 
-void utclim ( long *t_fin )
-#elif defined PPRO_NT
-void __stdcall UTCLIM ( long *t_fin )
-#endif
+#include "aster.h"
+
+void DEFP(UTCLIM, utclim, INTEGER *t_fin)
 {
   if (strlen(g_tpmax) > 0) {
-    long itpm;
+    INTEGER itpm;
     sscanf(g_tpmax,"%ld",&itpm);
     itpm= itpm-(*t_fin);
     sprintf(g_tpmax,"%ld",itpm);

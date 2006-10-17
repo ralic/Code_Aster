@@ -3,7 +3,7 @@
 C RESPONSABLE JMBHH01 J.M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,6 +34,8 @@ C            NR     :  DIMENSION DY DDY
 C            ITMAX  :  NB MAXI D ITERATIONS LOCALES
 C            TOLER  :  TOLERANCE A CONVERGENCE
 C            ITER   :  NUMERO ITERATION COURANTE
+C            NMAT   :  DIMENSION MATER
+C            NBCOMM :  INCIDES DES COEF MATERIAU
 C            R      :  R(Y) RESIDU A L'ITERATION COURANTE
 C            RINI   :  R(Y0) RESIDU A L'ITERATION 1
 C       OUT  IRTETI  :  =0 CONVERGENCE
@@ -53,56 +55,30 @@ C       ----------------------------------------------------------------
 C
 C -   EVALUATION  DE L'ERREUR ABSOLUE EN RESIDU (DEFORMATIONS)
 C
-      MONO1=NBCOMM(NMAT,1)
       
-      IF (MONO1.EQ.1) THEN
-      
-          ERRR(1)=0.D0
-          DO 100 I = 1,NR
-             ERRR(1) = MAX(ERRR(1), ABS(R(I)))
- 100      CONTINUE
+      ERRR(1)=0.D0                               
+      DO 100 I = 1,NR                            
+         ERRR(1) = MAX(ERRR(1), ABS(R(I)))       
+ 100  CONTINUE                                   
 
-          ERRDY(1)=0.D0
-          DO 101 I = NDT+1,NR
-             ERRDY(1) = MAX(ERRDY(1), ABS(DY(I)))
- 101      CONTINUE
+C       ERRDY(1)=0.D0                              
+C       DO 101 I = NDT+1,NR                        
+C          ERRDY(1) = MAX(ERRDY(1), ABS(DY(I)))    
+C  101  CONTINUE                                   
 
-      ELSE
-C
-C - EVALUATION  DE L'ERREUR RELATIVE EN DY, ERR =  !!DDY!!/!!DY!!
-C
-          CALL LCVERR ( DY, DDY, NR, 1, ERRDY  )
- 
-C - EVALUATION  DE L'ERREUR RELATIVE EN RESIDU, ERR = !!R!!/!!RINI!!
-C          CALL LCVERR ( RINI, R, NR, 0, ERRR  )
-          CALL LCVERR ( RINI, R, NR, 1, ERRR  )
-      
-      ENDIF
-         
  
       TER(ITER) = ERRR(1)
-C
-C
+
 C -         ITER < ITMAX
 C           ------------
-C
-      IF ( ITER .LT. ITMAX ) THEN
+
+      IF ( ITER .LE. ITMAX ) THEN
 C
 C -             CONVERGENCE
 C
           IF ( ERRR(1) .LE. TOLER ) THEN
              IRTETI = 0
              GOTO 9999
-          ENDIF
-          
-          IF (MONO1.EQ.1) THEN
-      
-C        CAS OU LES VARIABLES INTERNES S'ENVOLENT
-             IF ( ERRDY(1) .GT. 1.D0 ) THEN
-                IRTETI = 3
-                GOTO 9999
-             ENDIF
-             
           ENDIF
 C
 C -     NON CONVERGENCE ITERATION SUIVANTE
@@ -113,46 +89,16 @@ C
                 IRTETI = 1
                 GOTO 9999
              ELSE 
-C ESSAI                 IRTETI = 3
-                 IRTETI = 1
-                 GOTO 9999             
+                IRTETI = 3
+                GOTO 9999             
              ENDIF
           ELSE
                IRTETI = 1
                GOTO 9999             
           ENDIF
 C
-C -         ITER >= ITMAX
-C           ------------
-C
-      ELSEIF ( ITER .GE. ITMAX ) THEN
-      
-C -     TEST DE NON DIVERGENCE
-         CALL LCVERR ( DY, DDY, NR, 0, ERRDY  )
-         
-         IF ( ERRR(1) .LE. TOLER ) THEN
-            IRTETI = 0
-            GOTO 9999
-C
-C        RESIDU NON NUL MAIS SOLUTION STABLE. ON ACCEPTE
-         ELSEIF ( ERRDY(1) .LE. TOLER ) THEN
-            IRTETI = 0
-            GOTO 9999
-          ENDIF
-C
-C -      NON CONVERGENCE ET ITMAX ATTEINT
-C
-         IF(ITER.GE.4) THEN
-          IF ((TER(ITER) .LT. TER(ITER-1)).AND.
-     1           (TER(ITER-1) .LT. TER(ITER-2) )    ) THEN
-            IRTETI = 3
-            GOTO 9999
-          ENDIF
-          ELSE 
-            IRTETI=3
-            GOTO 9999
-          ENDIF
-C
+      ELSE
+         IRTETI=3
       ENDIF
 C
  9999 CONTINUE

@@ -1,6 +1,6 @@
 /* -------------------------------------------------------------------- */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF SEGJVX UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF SEGJVX UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,13 +19,9 @@
 /* ================================================================== */
 /* -------------------------------------------------------------------- */
 #include <stdlib.h>
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long segjvx_(long* val)
-#elif defined HPUX
-   long segjvx(long* val)
-#elif defined PPRO_NT
-   long __stdcall SEGJVX(long* val)
-#endif
+#include "aster.h"
+
+INTEGER DEFP(SEGJVX, segjvx, INTEGER *val)
 /*
 ** Fonction pour positionner et interroger l'indicateur du type de
 ** parcours de la segmentation de memoire JEVEUX
@@ -33,9 +29,9 @@
 **        si >= 0 positionne l'indicateur
 */
 {
-static long SEG_JEVEUX=1;
-if (*val >= 0) {
-   SEG_JEVEUX=*val;
+   static INTEGER SEG_JEVEUX=1;
+   if (*val >= 0) {
+      SEG_JEVEUX=*val;
    }
-return(SEG_JEVEUX);
+   return SEG_JEVEUX;
 }

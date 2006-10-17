@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfnom hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfnom hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,8 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include <stdlib.h>
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Récupération des noms (dataset,group) de chaque entité contenu dans
 / d'un groupe donné au sein d'un fichier HDF 
@@ -27,13 +29,7 @@
 /-----------------------------------------------------------------------------*/
 #include "hdf5.h"
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfnom_(long *idf, char *nomgr, char *nom, long ln, long lnm )
-#elif defined HPUX
-   long hdfnom(long *idf, char *nomgr, char *nom, long ln, long lnm )
-#elif defined PPRO_NT
-   extern long __stdcall HDFNOM(long *idf, char *nomgr, unsigned long ln, char *nom, unsigned long lnm )
-#endif
+INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, int ln, char *nom, int lnm)
 {
   hid_t idfic;
   char *nomg, *pnomdts, *pnom;   

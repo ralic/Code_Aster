@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwat hdf  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF hdfwat hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,6 +16,8 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+#include <stdlib.h>
+#include "aster.h"
 /*-----------------------------------------------------------------------------/
 / Ecrire un attribut de type chaine de caractères associé à un dataset 
 / au sein d'un fichier HDF 
@@ -29,13 +31,7 @@
 /-----------------------------------------------------------------------------*/
 #include "hdf5.h"
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-   long hdfwat_(long *iddat, char *nomat, long *nbv, char *valat, long ln, long lv )
-#elif defined HPUX
-   long hdfwat(long *iddat, char *nomat, long *nbv, char *valat, long ln, long lv )
-#elif defined PPRO_NT
-   extern long __stdcall HDFWAT(long *iddat, char *nomat, unsigned long ln, long *nbv, char *valat,  unsigned long lv )
-#endif
+INTEGER DEFPSPS(HDFWAT, hdfwat, INTEGER *iddat, char *nomat, int ln, INTEGER *nbv, char *valat, int lv)
 {
   hid_t ida,aid,aty,att;  
   herr_t ret,retc; 

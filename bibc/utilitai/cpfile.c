@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF CPFILE UTILITAI  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF CPFILE UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,25 +21,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
- 
-extern int errno;
+#include "aster.h"
 
-#if defined SOLARIS || IRIX || P_LINUX || TRU64 || LINUX64 || SOLARIS64 
-void cpfile_(char *action, char *nom1, char *nom2, unsigned long la, unsigned long lnom1, unsigned long lnom2)
-
-#elif defined HPUX
-void cpfile(char *action, char *nom1, char *nom2, unsigned long la, unsigned long lnom1, unsigned long lnom2)
-
-#elif defined PPRO_NT
-void __stdcall CPFILE(char *action, unsigned long la, char *nom1, unsigned long lnom1,char *nom2 ,unsigned long lnom2)
-
-#endif
+void DEFSSS(CPFILE, cpfile, char *action, int la, char *nom1, int lnom1, char *nom2, int lnom2)
 {
    char nomcmd[165];char *ncmd;
    long i,l,ldeb,num;
    int ier;
-#if defined PPRO_NT
+#ifdef _WIN32
    num = _flushall();
    ldeb = 5;
    if ( *action == 'C' ) {ncmd = "copy ";}
@@ -90,7 +79,7 @@ void __stdcall CPFILE(char *action, unsigned long la, char *nom1, unsigned long 
    if ( ier == -1 ) {
         perror("\n<cpfile> code retour system");
    } 
-#if defined PPRO_NT
+#ifdef _WIN32
    num = _flushall();
 #else
    num = fflush(stderr);
