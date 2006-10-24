@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMUN  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,8 +56,12 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "ENEL_ELNO_ELGA",
                         "ENEL_NOEU_ELGA",
                         "EPEQ_ELNO_TUYO",
-                        "EPGR_ELGA",
-                        "EPGR_ELNO",
+                        "EPVC_ELGA",
+                        "EPVC_ELNO",
+                        "EPFD_ELGA",
+                        "EPFD_ELNO",
+                        "EPFP_ELGA",
+                        "EPFP_ELNO",
                         "EPME_ELGA_DEPL",
                         "EPME_ELNO_DEPL",
                         "EPMG_ELGA_DEPL",

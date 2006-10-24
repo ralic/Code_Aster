@@ -1,6 +1,6 @@
       SUBROUTINE GILIO2(NFIC,IOBJ,NBELE,NIV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     VARIABLES LOCALES:
       CHARACTER*4 K4BID,TYPMAI
       CHARACTER*5 K5BID
       CHARACTER*16 K16OBJ
-      INTEGER      NBNUM
+      INTEGER      NBNUM, VALI(5)
 C
 C
       CALL JEMARQ()
@@ -69,7 +69,7 @@ C
       ENDIF
 C
       IF ((ITYPEL.EQ.0) .AND. (NBSOOB.EQ.0)) THEN
-        CALL U2MESS('F','CALCULEL_33')
+        CALL U2MESS('F','PREPOST4_95')
       END IF
 C ---------------------------------
       CALL JEVEUO('&&GILIRE.NOMOBJ','E',IANOOB)
@@ -79,6 +79,8 @@ C ---------------------------------
 C
 C -- CONVERSION NUMERO TYPE MAILLE AVEC CODE TYPE MAILLE --
 C
+      TYPMAI = 'INCONNU'
+      
       IF (ITYPEL.EQ.1) THEN
         TYPMAI = 'POI1'
 
@@ -129,6 +131,15 @@ C
 
       ELSE IF (ITYPEL.EQ.26) THEN
         TYPMAI = 'PY13'
+      
+C --- SI ITYPEL = 0, ON S'EST ASSURE QUE NBSOOB > 0
+      ELSE IF (ITYPEL.NE.0) THEN
+         VALI(1) = ITYPEL
+         VALI(2) = NBSOOB
+         VALI(3) = NBREF
+         VALI(4) = NBNO
+         VALI(5) = NBELE
+         CALL U2MESI('F', 'PREPOST4_94', 5, VALI)
       END IF
 C
       ZK8(IANOOB-1+2* (IOBJ-1)+2) = TYPMAI

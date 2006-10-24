@@ -4,7 +4,7 @@
       INTEGER                 IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,12 +28,6 @@ C     ROUTINE(S) UTILISEE(S) :
 C         LXINIT  LXUNIT  LXDELI
 C         IB0MAI  
 C     ------------------------------------------------------------------
-C     COMMON SPECIFIQUE A L'INCLUDE_MATERIAU POUR CONSERVER LE NOM
-C     DE MATERIAU DEVANT PREFIXER LES CONCEPTS INCLUS DANS LE FICHIER
-      CHARACTER*8 PRFXCO
-      INTEGER     LPRFXC
-      COMMON /INCMAT/ PRFXCO
-      COMMON /INCMAI/ LPRFXC
 C     ------- COMMUN DEBUG SUPERVISEUR ---------------------------------
       LOGICAL         LDBG
       INTEGER         IFV
@@ -51,8 +45,6 @@ C
       IER    = 0
       CMDUSR = 'CMD   01'
 C
-      PRFXCO='?'   
-      LPRFXC=1 
       LDBG=LLDBG
 C     --- BUFFERISATION EN CAS DE SUIVI INTERACTIF
       ISUI=-1

@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,8 @@ C     ----------------------
          CALL GETVR8(' ','RESI_RELA',1,1,1,EPS,IBID)
          CALL JEVEUO(SOLVEU//'.SLVR','E',JSLVR)
          ZR(JSLVR-1+2)=EPS
-         CALL AMUMPS('RESOUD',SOLVEU,MATFAC,SECMBR,XSOL,VCINE)
+         CALL AMUMPS('RESOUD',SOLVEU,MATFAC,SECMBR,XSOL,VCINE,IRET)
+         CALL ASSERT(IRET.EQ.0)
          CALL JEVEUO(MAT19//'.REFA','E',JREFA)
          ZK24(JREFA-1+8)='DECT'
          GO TO 9999

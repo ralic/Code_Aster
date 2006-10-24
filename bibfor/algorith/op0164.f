@@ -2,10 +2,11 @@
 C      IMPLICIT NONE
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             IERR
+C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/09/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 23/10/2006   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +58,7 @@ C
       CHARACTER*24 MATRIC, TABRIG, TABFRQ
       CHARACTER*72 TEXTE
       REAL*8 A(3)
+      INTEGER*8    LONG1,LONG2,LONG3
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -125,7 +127,15 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
     4   CONTINUE
       ELSE
         REWIND IFMIS
-        READ(IFMIS) NFREQ,NBMODS,N1
+C
+C   Lecture d'entiers INTEGER*8 en binaire venant de MISS3D
+C   On convertir ensuite en INTEGER (*4 sur machine 32 bits, sinon *8).
+C   Les reels ne posent pas de probleme : ce sont toujousr des REAL*8
+C
+        READ(IFMIS) LONG1,LONG2,LONG3
+        NFREQ=LONG1
+        NBMODS=LONG2
+        N1=LONG3
         CALL WKVECT(TABFRQ,'V V R',NFREQ,JFRQ)
         READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
         DO 3 I = 1, NFREQ

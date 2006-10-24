@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE MACR_CARA_POUTRE - POUTRE EN U
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,62 +32,62 @@ TCARS=MACR_CARA_POUTRE(   GROUP_MA_BORD='LPOU',
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='AIRE',
                 PRECISION=0.005,
                     VALE=29.5        )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='CDG_X',
                 PRECISION=0.002,
                      VALE=6.8612     )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='CDG_Y',
                      VALE=10.        )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='CT',
                 PRECISION=0.004,
                      VALE=2.4583     )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='AY',
                 PRECISION=0.06,
                      VALE=4.253      )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='AZ',
                 PRECISION=0.19,
                      VALE=1.618      )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='EY',
                  CRITERE='ABSOLU',
                      VALE=0.         )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='EZ',
                 PRECISION=0.02,
                      VALE=-15.0908    )
 
 TEST_TABLE(     TABLE=TCARS,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                              VALE_K = '.9000003'),
+                              VALE_K = '.9000002'),
                 NOM_PARA='JG',
                 PRECISION=0.003,
                      VALE=86899.     )

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -443,7 +443,7 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN int lfac, _OUT INTEGER *occu)
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
         *occu=PyInt_AsLong(res);
-        
+
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return ;
 }
@@ -1287,7 +1287,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
         int ioc        = 0 ;
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
-        
+
         mfc=fstr1(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
         mcs=fstr2(motcle,lcle);
@@ -1313,7 +1313,14 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
-        if (res == NULL)MYABORT("erreur dans la partie Python");
+        if (res == NULL)
+        {
+                printf( "<F> GETVTX : numero d'occurence (IOCC=%d) \n",*iocc) ;
+                printf( "             commande : %s\n",PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
+                printf( "             mot-cle facteur : %s\n",mfc) ;
+                printf( "             mot-cle simple  : %s\n",mcs) ;
+                MYABORT("erreur dans la partie Python");
+        }
 
         ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
         if (!ok)MYABORT("erreur au decodage d'une chaine dans le module C aster.getvtx");
@@ -1391,7 +1398,7 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 
         ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
         if (!ok)MYABORT("erreur dans la partie Python");
-        
+
         nval=*nbval;
         if(*nbval < 0)nval=*mxval;
         if ( nval > 0 ){
@@ -2581,7 +2588,7 @@ PyObject *args;
         INTEGER oper=0 ;
         INTEGER ipass=0 ;
         char *cmdusr="                                                                          ";
-        
+
         if (!PyArg_ParseTuple(args, "Olll",&temp,&icmd,&ipass,&oper)) return NULL;
 
         /* On empile le nouvel appel */
@@ -3131,20 +3138,20 @@ PyObject *args;
    INTEGER lot=1 ; /* FORTRAN_TRUE */
    INTEGER ier=0 ;
    INTEGER dbg=0 ; /* FORTRAN_FALSE */
-   
+
    if (!PyArg_ParseTuple(args, "l",&dbg)) return NULL;
-   
+
    /* initialisation de la variable `static_module` */
    static_module = PyImport_ImportModule("Execution/E_Global");
    if (! static_module) {
       MYABORT("Impossible d'importer le module E_Global !");
    }
-   
+
    fflush(stderr) ;
    fflush(stdout) ;
-   
+
    CALL_IBMAIN (&lot,&ier,&dbg);
-   
+
 return PyInt_FromLong(ier);
 }
 

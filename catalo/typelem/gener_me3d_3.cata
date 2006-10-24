@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF TYPELEM  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -114,6 +114,8 @@ MODE_LOCAL__
                                         VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X 
                                         VECT_3_Y VECT_3_Z )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
+    EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO   
@@ -389,14 +391,18 @@ OPTION__
                                      DDL_MECA PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  
                                      CTEREFE  PTEREF   ZVARIPG  PVARIPR  
                               OUT__  EENEDNO  PENERD1  
-    EPGR_ELGA           333   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
-                                     CTEMPSR  PTEMPSR  CTEREFE  PTEREF   ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     ZVARIPG  PVARIGR  
-                              OUT__  EDEFOPG  PDEFOPL  
-    EPGR_ELNO           333   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
-                                     CTEMPSR  PTEMPSR  CTEREFE  PTEREF   ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                                     ZVARIPG  PVARIGR  
-                              OUT__  EDEFONO  PDEFOPL  
+    EPFD_ELGA           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR  
+                              OUT__  EDEFOPG  PDEFORR  
+    EPFD_ELNO           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  ZVARIPG  PVARIGR  
+                              OUT__  EDEFONO  PDEFORR  
+    EPFP_ELGA           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIGR   
+                                     CTEMPSR  PTEMPSR  NTEMPER PTEMPER   CTEREFE  PTEREF   ZVARCPG  PVARCPR 
+                                     ZVARCPG  PVARCRR
+                              OUT__  EDEFOPG  PDEFORR  
+    EPFP_ELNO           528   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIGR  
+                                     CTEMPSR  PTEMPSR  NTEMPER PTEMPER   CTEREFE  PTEREF  ZVARCPG  PVARCPR
+                                     ZVARCPG  PVARCRR
+                              OUT__  EDEFONO  PDEFORR  
     EPME_ELGA_DEPL      25    IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                                      CTEMPSR  PTEMPSR  CTEREFE  PTEREF   ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      CCAMASS  PCAMASS
@@ -436,6 +442,12 @@ OPTION__
                                      CMATERC  PMATERC  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIGR  
                               OUT__  EDEFONO  PDEFOPL  
+    EPVC_ELGA           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF 
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR    
+                              OUT__  EDFVCPG  PDEFOVC                              
+    EPVC_ELNO           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF  
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                              OUT__  EDFVCNO  PDEFOVC  
     EQUI_ELGA_EPME      335   IN__   EDEFOPG  PDEFORR  
                               OUT__  EDFEQPG  PDEFOEQ  
     EQUI_ELGA_EPSI      335   IN__   EDEFOPG  PDEFORR  

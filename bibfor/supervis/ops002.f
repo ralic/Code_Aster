@@ -1,6 +1,6 @@
       SUBROUTINE OPS002( ICMD , ICOND, IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,28 +29,6 @@ C     ------------------------------------------------------------------
       COMMON  /SUCC00/ UNITE(MXFILE), NAME(MXFILE)
       COMMON  /SUCN00/ IPASS,IFILE,JCMD
 C     ------------------------------------------------------------------
-C     COMMON SPECIFIQUE A L'INCLUDE_MATERIAU POUR CONSERVER LE NOM
-C     DE MATERIAU DEVANT PREFIXER LES CONCEPTS INCLUS DANS LE FICHIER
-      CHARACTER*8 PRFXCO
-      INTEGER     LPRFXC
-      COMMON /INCMAT/ PRFXCO
-      COMMON /INCMAI/ LPRFXC
-C     ------------------------------------------------------------------
-C     ------------------------------------------------------------------
-      IF (ICOND .EQ. 1 ) THEN
-C     --- DESACTIVATION DU PREFIXE CONCEPT
-        PRFXCO='?'
-        LPRFXC=1
-        GOTO 9999
-      ENDIF
-
-      IF (ICOND .EQ. 0 ) THEN
-C     --- DESACTIVATION DU PREFIXE CONCEPT
-        PRFXCO='?'
-        LPRFXC=1
-        GOTO 9999
-      ENDIF
-
       IF (ICOND .NE. -1) THEN
         CALL U2MESS('E','SUPERVIS_33')
         IER = 1
@@ -85,9 +63,6 @@ C
 C     --- DESACTIVATION DE L'UNITE COURANTE ---
       CALL LXUNIT( -1, 0  , 0 ,NOMSYM )
       CALL ULOPEN(-IREAD,' ',NOMSYM,' ',' ')
-C     --- DESACTIVATION DU PREFIXE CONCEPT
-      PRFXCO='?'
-      LPRFXC=1
 C
 C     --- ACTIVATION DE L'UNITE PRECEDENTE (ON DEPILE) ---
       CALL LXUNIT( 0 , 0  , 0 ,UNITE(IFILE))

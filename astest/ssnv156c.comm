@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
 # TITRE COLONNE PLASTIQUE A GRADIENT SOUS CHARGE VOLUMIQUE (AXIS) 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,18 +22,20 @@
 
 DEBUT( CODE=_F(NOM='SSNV156C',NIV_PUB_WEB='INTERNET') )
 
+PRE_GMSH()
+
 MA  =  LIRE_MAILLAGE()
+
 
 MA  =  DEFI_GROUP(reuse  = MA, 
   MAILLAGE = MA, 
   CREA_GROUP_MA = (
-    _F(NOM = 'HAUT',      GROUP_MA = 'GMA31'), 
-    _F(NOM = 'COTE',      GROUP_MA = 'GMA32'),
-    _F(NOM = 'MATIERE',   GROUP_MA = 'GMA33'),
+    _F(NOM = 'HAUT',      GROUP_MA = 'GM31'), 
+    _F(NOM = 'COTE',      GROUP_MA = 'GM32'),
+    _F(NOM = 'MATIERE',   GROUP_MA = 'GM33'),
     ),
   CREA_GROUP_NO = (
-    _F(NOM = 'MESURE', GROUP_MA = 'GMA30'),
-    _F(TOUT_GROUP_MA = 'OUI'),
+    _F(NOM = 'MESURE', GROUP_NO = 'GM30'),
     )
   )
 

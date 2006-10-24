@@ -1,21 +1,21 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ----------------------------------------------------------------------
 # POUTRE ENCASTREE-LIBRE SOUMIS A UN SEISME
@@ -24,7 +24,7 @@
 # ----------------------------------------------------------------------
 
 
-DEBUT( CODE=_F(  NOM = 'SDLL23A',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F(  NOM = 'SDLL23A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAILLAGE=LIRE_MAILLAGE( )
 
@@ -38,7 +38,7 @@ MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E+11,  NU = 0.3,  RHO = 0.) )
 CH_MATE=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
                             AFFE=_F(  GROUP_MA = 'M_POUT',  MATER = MAT) )
 
-MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=( 
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                         _F(  GROUP_MA = 'M_POUT', PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'POU_D_E'),
                              _F(  GROUP_NO = 'MASSE',  PHENOMENE = 'MECANIQUE',
@@ -71,7 +71,7 @@ MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUME1      )
 
 TABL_MAS=POST_ELEM(  MODELE=MODELE,
                          CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
-                        MASS_INER=_F(  TOUT = 'OUI',  
+                        MASS_INER=_F(  TOUT = 'OUI',
                                     GROUP_MA = 'MAILLAGE')
                       )
 
@@ -112,7 +112,7 @@ MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
                        CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
                        NUME_ORDRE=3 )
 
-MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2, 
+MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
                     MODELE=MODELE, OPTION='REAC_NODA',
                        CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
                        FREQ=12.4675,  CRITERE='ABSOLU' )
@@ -197,7 +197,7 @@ ACCE_X=DEFI_FONCTION(  NOM_PARA='FREQ',        INTERPOL='LOG',
                                  20.0,          10.,
                                  100.0,         10.,  ) )
 
-SPECT=DEFI_NAPPE(  NOM_PARA='AMOR', 
+SPECT=DEFI_NAPPE(  NOM_PARA='AMOR',
                          INTERPOL=( 'LIN', 'LOG', ),
                        PARA=(     0.005,   0.01,    0.015,  ),
                        FONCTION=( ACCE_X,  ACCE_X,  ACCE_X, )        )
@@ -216,7 +216,7 @@ SISM_SP3=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
                                       SPEC_OSCI = SPECT),
                               COMB_MODE=_F(  TYPE = 'DPC'),
                               COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'REAC_NODA', 
+                                OPTION=( 'DEPL',  'REAC_NODA',
                                          'EFGE_ELNO_DEPL',
                                          'SIPO_ELNO_DEPL',  )
                             )
@@ -277,7 +277,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
                    )
 #
 TEST_RESU(RESU=(_F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
-                   CRITERE= 'RELATIF'  , PRECISION= 0.02,  
+                   CRITERE= 'RELATIF'  , PRECISION= 0.02,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SMFY'   , VALE=  4.611E+09),
@@ -296,7 +296,7 @@ TEST_RESU(RESU=(_F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SVZ'   , VALE=  3.481E+06)),
-                 ) 
+                 )
 #
 TEST_RESU(RESU=( _F(  RESULTAT = SISMSP32, NOM_CHAM = 'REAC_NODA',
                      CRITERE = 'ABSOLU',   PRECISION = 0.0001,
@@ -331,7 +331,7 @@ SISM_SP6=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
                                       SPEC_OSCI = SPECT),
                               COMB_MODE=_F(  TYPE = 'DPC'),
                               COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                                OPTION=( 'DEPL',  'REAC_NODA', 
+                                OPTION=( 'DEPL',  'REAC_NODA',
                                          'VITE',  'ACCE_ABSOLU', )
                             )
 

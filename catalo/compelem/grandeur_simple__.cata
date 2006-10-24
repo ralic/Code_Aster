@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+%& MODIF COMPELEM  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -261,14 +261,14 @@ GRANDEUR_SIMPLE__
                     INVA_2SG PRE1     P1DX     P1DY     P1DZ     PRE2     P2DX     P2DY
                     P2DZ     TEMP     TEDX     TEDY     TEDZ     DX       DY       DZ
                     VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y
-                    VECT_3_Z
+                    VECT_3_Z EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR
     EPSI_C   = C    EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     EXX      EYY
                     EXY      KXX      KYY      KXY      EPX      GAXY     GAXZ     GAT
                     KY       KZ       GAX      GAY      INVA_2   PRIN_1   PRIN_2   PRIN_3
                     INVA_2SG PRE1     P1DX     P1DY     P1DZ     PRE2     P2DX     P2DY
                     P2DZ     TEMP     TEDX     TEDY     TEDZ     DX       DY       DZ
                     VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y
-                    VECT_3_Z
+                    VECT_3_Z EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR
 <<  ERREUR  : GRANDEUR LIEE A L'ESTIMATEUR D'ERREUR EN RESIDU
      Pour chaque élément :
        ERREST : erreur absolue

@@ -1,4 +1,4 @@
-#@ MODIF info_fonction_ops Macro  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF info_fonction_ops Macro  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,9 +27,13 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
   import math
   from Accas import _F
   from Utilitai.Utmess import UTMESS
+  import types
+  from types import ListType, TupleType
+  EnumTypes = (ListType, TupleType)
 
   ### On importe les definitions des commandes a utiliser dans la macro
   CREA_TABLE     = self.get_cmd('CREA_TABLE')
+  CALC_TABLE     = self.get_cmd('CALC_TABLE')
   IMPR_TABLE     = self.get_cmd('IMPR_TABLE')
   CALC_FONCTION  = self.get_cmd('CALC_FONCTION')
   
@@ -41,22 +45,69 @@ def info_fonction_ops(self,RMS,NOCI_SEISME,MAX,NORME,ECART_TYPE,INFO,**args):
   
   ###
   if (MAX != None): 
-     __ff=MAX['FONCTION'].convert()
-     __ex=__ff.extreme()
-     n_mini=len(__ex['min'])
-     n_maxi=len(__ex['max'])
-     listeMCF=[_F(LISTE_K=[MAX['FONCTION'].nom]*(n_mini+n_maxi),PARA='FONCTION'), 
-               _F(LISTE_K=['MINI',]*n_mini+['MAXI',]*n_maxi,PARA='TYPE'),]
-     if isinstance(__ff,t_nappe) :
-        listeMCF=listeMCF+[\
-           _F(LISTE_R=[i[0] for i in __ex['min']]+[i[0] for i in __ex['max']],PARA=__ff.para['NOM_PARA']),\
-           _F(LISTE_R=[i[1] for i in __ex['min']]+[i[1] for i in __ex['max']],PARA=__ff.para['NOM_PARA_FONC']),\
-           _F(LISTE_R=[i[2] for i in __ex['min']]+[i[2] for i in __ex['max']],PARA=__ff.para['NOM_RESU'])]
-     else :
-        listeMCF=listeMCF+[\
-               _F(LISTE_R=[i[0] for i in __ex['min']]+[i[0] for i in __ex['max']],PARA=__ff.para['NOM_PARA']),\
-               _F(LISTE_R=[i[1] for i in __ex['min']]+[i[1] for i in __ex['max']],PARA=__ff.para['NOM_RESU'])]
-     C_out=CREA_TABLE(LISTE=listeMCF)
+     if type(MAX['FONCTION']) not in EnumTypes : l_fonc=[MAX['FONCTION'],]
+     else                                       : l_fonc=MAX['FONCTION']
+     __tmfonc=[None]*3
+     k=0
+     mfact=[]
+     ltyfo=[]
+     lpara=[]
+     lresu=[]
+     lfnom=[]
+     for fonc in l_fonc :
+        __ff=fonc.convert()
+        __ex=__ff.extreme()
+        ltyfo.append(__ff.__class__)
+        lpara.append(__ff.para['NOM_PARA'])
+        lresu.append(__ff.para['NOM_RESU'])
+        lfnom.append(fonc.nom)
+        n_mini=len(__ex['min'])
+        n_maxi=len(__ex['max'])
+        listeMCF=[_F(LISTE_K=[fonc.nom]*(n_mini+n_maxi),PARA='FONCTION'), 
+                  _F(LISTE_K=['MINI',]*n_mini+['MAXI',]*n_maxi,PARA='TYPE'),]
+        n_resu=__ff.para['NOM_RESU']
+        if isinstance(__ff,t_nappe) :
+           listeMCF=listeMCF+[\
+              _F(LISTE_R=[i[0] for i in __ex['min']]+[i[0] for i in __ex['max']],PARA=__ff.para['NOM_PARA']),\
+              _F(LISTE_R=[i[1] for i in __ex['min']]+[i[1] for i in __ex['max']],PARA=__ff.para['NOM_PARA_FONC']),\
+              _F(LISTE_R=[i[2] for i in __ex['min']]+[i[2] for i in __ex['max']],PARA=__ff.para['NOM_RESU'])]
+        else :
+           listeMCF=listeMCF+[\
+                  _F(LISTE_R=[i[0] for i in __ex['min']]+[i[0] for i in __ex['max']],PARA=__ff.para['NOM_PARA']),\
+                  _F(LISTE_R=[i[1] for i in __ex['min']]+[i[1] for i in __ex['max']],PARA=__ff.para['NOM_RESU'])]
+        __tmfonc[k]=CREA_TABLE(LISTE=listeMCF)
+        if k!=0 :
+           mfact.append(_F(OPERATION = 'COMB',TABLE=__tmfonc[k]))
+        k=k+1
+     ltyfo=dict([(i,0) for i in ltyfo]).keys()
+     lpara=dict([(i,0) for i in lpara]).keys()
+     lresu=dict([(i,0) for i in lresu]).keys()
+     if len(ltyfo)>1 : 
+        UTMESS('F','INFO_FONCTION',''' calcul du MAX, la liste de fonctions\
+ n'est pas homogène en type (fonctions et nappes) ''')
+     if len(lpara)>1 : 
+        UTMESS('F','INFO_FONCTION',''' calcul du MAX, la liste de fonctions\
+ n'est pas homogène en label NOM_PARA :'''+' '.join(lpara))
+     if len(lresu)>1 : 
+        UTMESS('F','INFO_FONCTION',''' calcul du MAX, la liste de fonctions\
+ n'est pas homogène en label NOM_RESU : '''+' '.join(lresu))
+     __tab=CALC_TABLE(TABLE  = __tmfonc[0],
+                      ACTION = mfact        )
+     __min=CALC_TABLE(TABLE  = __tab,
+                      ACTION = _F(OPERATION = 'FILTRE',
+                                  CRIT_COMP = 'MINI',
+                                  NOM_PARA  = lresu[0]  ), )
+     __max=CALC_TABLE(TABLE  = __tab,
+                      ACTION = _F(OPERATION = 'FILTRE',
+                                  CRIT_COMP = 'MAXI',
+                                  NOM_PARA  = lresu[0]  ), )
+     print __min.EXTR_TABLE()
+     print __max.EXTR_TABLE()
+     C_out=CALC_TABLE(TABLE  = __min,
+                      TITRE  = 'Calcul des extrema sur fonction '+' '.join(lfnom),
+                      ACTION = _F(OPERATION = 'COMB',
+                                  TABLE=__max  ), )
+     print C_out.EXTR_TABLE()
 
   ###
   if (ECART_TYPE  != None): 

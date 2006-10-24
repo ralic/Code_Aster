@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # RESPONSABLE PBADEL P.BADEL
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,33 +30,13 @@ M=LIRE_MAILLAGE( )
 
 M=DEFI_GROUP( reuse=M,
               MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_INF')
-           )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_SUP')
-            )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_GCH')
-            )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_DRT')
-            )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_AVT')
-            )
-
-M=DEFI_GROUP( reuse=M,
-              MAILLAGE=M,
-              CREA_GROUP_NO=_F( GROUP_MA = 'S_ARR')
-            )
+              CREA_GROUP_NO=(_F( GROUP_MA = 'S_INF'),
+                             _F( GROUP_MA = 'S_SUP'),
+                             _F( GROUP_MA = 'S_GCH'),
+                             _F( GROUP_MA = 'S_DRT'),
+                             _F( GROUP_MA = 'S_AVT'),
+                             _F( GROUP_MA = 'S_ARR'),
+            ),)
 
 MO=AFFE_MODELE( MAILLAGE=M,
                 AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D')
@@ -94,8 +74,7 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                         K_RD   = 3.86E+4,
                                         ETA_RD = 6.19E+10,
                                         ETA_ID = 1.64e+12,
-                                      ),
-                  )
+                                      ), )
 
 SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                         AFFE=_F( TOUT = 'OUI',
@@ -190,6 +169,10 @@ U=STAT_NON_LINE( MODELE=MO,
                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-6)
                                 )
 
+U=CALC_ELEM(reuse = U,
+            RESULTAT=U,
+            OPTION= 'EPFP_ELGA')
+
 U104 = CREA_CHAMP(
              TYPE_CHAM   = 'NOEU_DEPL_R',
              OPERATION   = 'EXTR',
@@ -246,8 +229,15 @@ TEST_RESU(RESU=(
           VALE = 1.54698E-1,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'),
-           )),
-
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFP_ELGA',
+          MAILLE = 'M1',
+          POINT = 1,
+          NUME_ORDRE = 104,
+          NOM_CMP = 'EPZZ',
+          VALE = 5.57153E-05,
+          PRECISION = 0.0001,
+          REFERENCE = 'NON_REGRESSION'), ),)
 
 FIN()
 #

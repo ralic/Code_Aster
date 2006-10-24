@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF jeveux Messages  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,4 +120,14 @@ cata_msg={
      POURCENTAGE D'UTILISATION DU REPERTOIRE :  %(i7)d %%
 """),
 
+23: _("""
+     Nom de Collection ou de Répertoire de noms inexistant :  %(k1)s
+"""),
+
+24: _("""
+     JENONU : Collection ou Répertoire de noms  :  %(k1)s
+     Il faut passer par JEXNOM,JEXNUM.
+"""),
+
 }
+

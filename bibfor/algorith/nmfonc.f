@@ -2,7 +2,7 @@
      &                  FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -213,6 +213,8 @@ C
           IF (ABS(TYPALF).NE.0) THEN
             CALL U2MESS('F','ALGORITH7_90')
           ENDIF
+        ELSE IF (ZK24(JSOLVE).EQ.'MUMPS') THEN
+            CALL U2MESS('F','FACTOR_51')
         ENDIF
       ENDIF
 C
@@ -233,11 +235,14 @@ C
 C --- LIAISON UNILATERALE
 C
       IF (FONACT(12)) THEN
-        IF (FONACT(2)) THEN
-          CALL U2MESS('F','ALGORITH7_94')
-        ENDIF
         IF (FONACT(1)) THEN
           CALL U2MESS('A','ALGORITH7_95')
+        ENDIF
+        IF (ZK24(JSOLVE).EQ.'MUMPS') THEN
+            CALL U2MESS('F','FACTOR_51')
+        ENDIF
+        IF (FONACT(2)) THEN
+          CALL U2MESS('F','ALGORITH7_94')
         ENDIF
       ENDIF
 

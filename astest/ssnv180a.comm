@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,7 +231,7 @@ U=STAT_NON_LINE( MODELE=MO,
 
 U=CALC_ELEM(reuse=U,  
             RESULTAT=U,
-            OPTION='EPSI_ELNO_DEPL')
+            OPTION=('EPSI_ELNO_DEPL','EPVC_ELGA','EPVC_ELNO','EPFP_ELNO','EPFD_ELNO'),)
 
 RELEVE_=POST_RELEVE_T(ACTION=( 
                    _F(  RESULTAT = U,
@@ -243,7 +243,7 @@ RELEVE_=POST_RELEVE_T(ACTION=(
                             GROUP_NO = 'PC',
                             OPERATION = 'EXTRACTION', ), 
                             ), )
-
+# TESTS SUR LES DEFORMATIONS TOTALES
 TEST_RESU(RESU=(
       _F( RESULTAT = U,
           NOM_CHAM = 'EPSI_ELNO_DEPL',
@@ -282,5 +282,55 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
            )),
+# TESTS SUR LES DEFORMATIONS DUES A LA THERMIQUE, L'HYDRATATION 
+#  ET LE SECHAGE
+
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPTHER_L',
+          VALE = 2.0E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPTHER_N',
+          VALE = 2.0E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPTHER_T',
+          VALE = 2.0E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPSECH',
+          VALE = -5.E-4,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELNO',
+          MAILLE = 'M1',
+          NOEUD = 'N6',
+          INST = 64800000.,
+          NOM_CMP = 'EPHYDR',
+          VALE = -6E-05,
+          PRECISION = 0.005,
+          REFERENCE = 'ANALYTIQUE'),                    
+          ),)
 FIN()
 #

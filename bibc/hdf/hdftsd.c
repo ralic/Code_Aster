@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftsd hdf  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF hdftsd hdf  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -31,7 +31,7 @@
 #include "hdf5.h"
 #define FALSE   0
 
-INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, INTEGER *ltype, INTEGER *lv, int lt)
+INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, int lt, INTEGER *ltype, INTEGER *lv)
 {
   hid_t id,datatype,class,dataspace;
   hsize_t dims_out[1];
@@ -49,7 +49,7 @@ INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, INTEGER *ltype, INTE
   for (k=1;k<lt;k++) {
     *(type+k)=' ';
   }
-  if ((*ltype = H5Tget_size(datatype))>=0 ) {
+  if ((*ltype = (int)H5Tget_size(datatype))>=0 ) {
     if ((dataspace = H5Dget_space(id))>=0 ) { 
       if ((rank = H5Sget_simple_extent_ndims(dataspace))==1) {
         status = H5Sget_simple_extent_dims(dataspace, dims_out, NULL);

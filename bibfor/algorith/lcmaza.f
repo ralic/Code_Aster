@@ -2,7 +2,7 @@
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,8 @@ C ======================================================================
       CHARACTER*16      COMPOR(*),OPTION
       CHARACTER*(*)     FAMI
       INTEGER           NDIM, IMATE, KPG, KSP
-      REAL*8            EPSM(6), DEPS(6), VIM(3), TM, TP, TREF
-      REAL*8            SIG(6), VIP(3), DSIDEP(6,6)
+      REAL*8            EPSM(6), DEPS(6), VIM(4), TM, TP, TREF
+      REAL*8            SIG(6), VIP(4), DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDOMMAGEABLE : MODELE DE MAZARS
 C     POUR MAZARS  OU MAZARS_FO COMBINABLE AVEC ELAS OU ELAS_FO
@@ -53,6 +53,7 @@ C OUT VIP     : VARIABLES INTERNES
 C                 1   -> VALEUR DE L'ENDOMMAGEMENT
 C                 2   -> INDICATEUR D'ENDOMMAGEMENT
 C                 3   -> TEMPERATURE MAXIMALE ATTEINTE PAR LE MATERIAU
+C                 4   -> VALEUR DE EPSEQ (UTILE POUR POSTTRAITER)
 C OUT DSIDEP  : MATRICE TANGENTE
 C ON A BESOIN DE
 C         EPSD0 = DEFORMATION SEUIL  [REEL OU FCT]
@@ -354,6 +355,7 @@ C ------------------------------------------------------------
         ELSE
           VIP(2) = 1.D0
         END IF
+          VIP(4) = EPSEQ
 
 C    3 - CALCUL DES CONTRAINTES
 C ------------------------------------------------------------
@@ -455,9 +457,6 @@ C -- CORRECTION CONTRAINTES PLANES
  310          CONTINUE
  300        CONTINUE
           ENDIF
-
-
-
 
         ENDIF
 

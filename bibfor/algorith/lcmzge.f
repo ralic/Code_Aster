@@ -2,7 +2,7 @@
      &                   EPSTM,DEPST, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDPT, PROJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,8 @@ C ======================================================================
       CHARACTER*(*)     FAMI
       CHARACTER*16      OPTION
       INTEGER            NDIM, IMATE,KPG,KSP
-      REAL*8             EPSTM(12), DEPST(12), VIM(3)
-      REAL*8             SIG(6), VIP(3), DSIDPT(6,6,2), TM, TP, TREF
+      REAL*8             EPSTM(12), DEPST(12), VIM(4)
+      REAL*8             SIG(6), VIP(4), DSIDPT(6,6,2), TM, TP, TREF
       REAL*8             PROJ(6,6)
 
 C ----------------------------------------------------------------------
@@ -52,6 +52,9 @@ C                 RAPH_MECA      -> SIG        VIP
 C OUT SIG     : CONTRAINTE
 C OUT VIP     : VARIABLES INTERNES
 C                 1   -> VALEUR DE L'ENDOMMAGEMENT
+C                 2   -> INDICATEUR D'ENDOMMAGEMENT
+C                 3   -> TEMPERATURE MAXIMALE VUE PAR LE MATERIAU
+C                 3   -> VALEUR DE EPSEQ (NON lOCAL)
 C OUT DSIDEP  : MATRICE TANGENTE
 C OUT DSIDPR  : MATRICE TANGENTE DEFO GENERALISEE
 C OUT PROJ    : PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
@@ -373,6 +376,7 @@ C        ON PASSE DANS LE REPERE INITIAL LES CONTRAINTES REELLES
         ELSE
           VIP(2) = 1.D0
         END IF
+          VIP(4) = EPSEQ
       END IF
 C ======================================================================
 C     CALCUL  DE LA MATRICE TANGENTE DSIDEP

@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,13 +42,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBPARA = 11 )
-      REAL*8       R8B, TEMPS, PREC, UNS2PI, R8DEPI, XMASTR, MASUNI
+      REAL*8       R8B, TEMPS, PREC, R8DEPI, XMASTR, MASUNI
       REAL*8       FREQ, FACPAR, MASMOD, MASTOT(3), ZERO, CUMUL(3)
       CHARACTER*1  DIR(3),DIREC
       CHARACTER*3  CORF
       CHARACTER*4  CTYP,CBTYP
       CHARACTER*8  K8B, RESU, MECA, PSMO, STAT, MASSE, TYPCMO, TYPCDI
-      CHARACTER*8  CRIT, AMOGEN, COMP(3), NOEU, TMAS, FORMAR, NOMA
+      CHARACTER*8  CRIT, AMOGEN,NOEU, TMAS, FORMAR, NOMA
       CHARACTER*8  NATURE, TYPCMA, PARAKI(2), VALEKI(2)
       CHARACTER*9  NIVEAU
       CHARACTER*16 NOMCMD, CONCEP, NOMSY, NOMVAR
@@ -60,7 +60,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       COMPLEX*16   C16B
 C     ------------------------------------------------------------------
       DATA  DIR    / 'X' , 'Y' , 'Z' /
-      DATA  COMP   / 'DX' , 'DY' , 'DZ' /
       DATA  DESC   /'                   .SCDE'/
       DATA  REFD   /'                   .REFD'/
       DATA  KVEC   /'&&OP0109.VAL_PROPRE'/
@@ -77,7 +76,6 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       ZERO   = 0.D0
-      UNS2PI = 1.D0 / ( R8DEPI() )
       IFM    = IUNIFI('RESULTAT')
       TRONC  = .FALSE.
       COMDIR = .FALSE.
@@ -368,47 +366,6 @@ C
                IF (ZI(JDIR+ID-1).EQ.1) WRITE(IFM,1164)DIR(ID),MASTOT(ID)
             ENDIF
  34      CONTINUE
-         IF (NIVEAU.EQ.'TOUT     ' .OR. NIVEAU.EQ.'MAXI_GENE') THEN
-            WRITE(IFM,1120)
-            WRITE(IFM,1130)
-         ENDIF
-         DO 40 IM = 1,NBMODE
-            II = 0
-            W2 = ZR(LVAL+NBMODE+IM-1)
-            FREQ = UNS2PI * SQRT( W2 )
-            DO 42 ID = 1,3
-               IF (ZI(JDIR+ID-1).EQ.1) THEN
-                  CALL WKVECT('&&OP0109.VECTEUR','V V I',NEQ,JUNI)
-                  CALL PTEDDL('NUME_DDL',NUME,1,COMP(ID),NEQ,ZI(JUNI))
-                  DNM = ZERO
-                  IDDL = 0
-                  DO 44 IN = 1,NEQ
-                     XXX = ZI(JUNI+IN-1) * ZR(LMOD+NEQ*(IM-1)+IN-1)
-                     IF (ABS(XXX).GT.ABS(DNM)) THEN
-                        IDDL = IN
-                        DNM = XXX
-                     ENDIF
- 44               CONTINUE
-                  IF (IDDL.EQ.0) THEN
-                   CALL UTDEBM('F','OP0109','INCOHERENCE')
-                   CALL UTIMPI('L','LE MODE DYNAMIQUE: ',1,IM)
-                   CALL UTIMPI('L','NE PARTICIPE DIRECTION: ',1,ID)
-                   CALL UTFINM()
-                  ENDIF
-                  CALL RGNDAS('NUME_DDL',NUME,IDDL,NOEU,K8B,K8B,K8B,K8B)
-                  FACPAR = ZR(LVAL+NBMODE*(4+ID)+IM-1)
-                  DEP1 = DNM * FACPAR
-                  DEP2 = DNM * FACPAR / W2
-                  IF (II.EQ.0) THEN
-                     II = 1
-                     WRITE(IFM,1140)IM,FREQ,DIR(ID),DEP1,DEP2,NOEU
-                  ELSE
-                     WRITE(IFM,1150)DIR(ID),DEP1,DEP2,NOEU
-                  ENDIF
-                  CALL JEDETR('&&OP0109.VECTEUR')
-               ENDIF
- 42         CONTINUE
- 40      CONTINUE
       ENDIF
 C     --- RECUPERATION DES MODES STATIQUES ---
       CALL GETVID('DEPL_MULT_APPUI','MODE_STAT',1,1,1,STAT,NS)
@@ -461,9 +418,6 @@ C
  1164 FORMAT(1P,7X,'DIRECTION : ',A1,' , CUMUL : ',D12.5)
  1166 FORMAT(1P,7X,'DIRECTION : ',A1,
      +       ' , CUMUL : ',D12.5,', SOIT ',2P,F7.3,' %')
- 1120 FORMAT(/,28X,'CONTRIBUTION GENERALISEE MAXI')
- 1130 FORMAT(1X,'MODE      FREQUENCE   DIR     DEPLACEMENT          ',
-     +                          'FORCE  LOCALISATION')
 C      DEPLACEMENT: (QN/MN)*DNM, FORCE: (QN/MN*W2)*DNM.
  1140 FORMAT(1P,1X,I4,3X,D12.5,5X,A1,4X,D12.5,3X,D12.5,6X,A8)
  1150 FORMAT(1P,25X,A1,4X,D12.5,3X,D12.5,6X,A8)

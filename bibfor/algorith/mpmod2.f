@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -347,6 +347,7 @@ C ******************************
 C
             IF (TYPRES(1:9).EQ.'MODE_GENE') THEN
 
+              CALL ASSERT(NBCMPI.LE.3)
               DO 102 ICMP = 1,NBCMPI
               VECT(ICMP)= 0.D0
               IF (ZK8(JCNSC-1 +ICMP) .EQ. ZK8(LRANGE-1 +IMESU))

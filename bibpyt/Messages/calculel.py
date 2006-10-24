@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF calculel Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,10 +141,6 @@ cata_msg={
 
 32: _("""
  dvp : Valeur interdite
-"""),
-
-33: _("""
- 1
 """),
 
 34: _("""

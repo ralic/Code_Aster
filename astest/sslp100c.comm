@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (SANS SOUS-STRUCTURATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@
 #======================================================================
 
 
-DEBUT(CODE=_F(  NOM = 'SSLP100C',NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(  NOM = 'SSLP100C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 ACIER=DEFI_MATERIAU( ELAS=_F(E = 1.5E11,  NU = 0.3, RHO=7800.) )
 

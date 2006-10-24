@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF prepost4 Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -393,4 +393,22 @@ cata_msg={
 93: _("""
  volume use trop grand pour la modelisation
 """),
+
+94: _("""
+Elément inconnu.
+   Type d'élément Gibi          : %(i1)d
+   Nombre de sous-objet         : %(i2)d
+   Nombre de sous-référence     : %(i3)d
+   Nombre de noeuds par élément : %(i4)d
+   Nombre d'éléments            : %(i5)d
+
+La ligne lue dans le fichier doit ressembler à ceci :
+%(i1)8d%(i2)8d%(i3)8d%(i4)8d%(i5)8d
+"""),
+
+95: _("""
+On a lu un objet dit composé (car type d'élément = 0) qui serait
+composé de 0 sous-objet !
+"""),
+
 }

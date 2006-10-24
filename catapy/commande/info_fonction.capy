@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,7 +69,7 @@ INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_foncti
            ),
          ),
          MAX             =FACT(statut='f',fr="Extrémas locaux d'une fonction",
-           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster) ),
+           FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),max='**' ),
          ),
          NORME           =FACT(statut='f',fr="Norme L2 d'une fonction",
             FONCTION      =SIMP(statut='o', typ=nappe_sdaster),

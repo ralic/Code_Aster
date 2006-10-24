@@ -1,6 +1,7 @@
-      SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,EPS)
+      SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,EPS,
+     &           ISTOP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/06/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +21,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*) SOLVEZ
       CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ
-      INTEGER PCPIVZ
+      INTEGER PCPIVZ ,ISTOP
       REAL*8 EPS
 C ----------------------------------------------------------
 C BUT : CREER UN SOLVEUR POUR MUMPS
@@ -38,6 +39,8 @@ C                  ' ' -> DEFAUT
 C IN R   EPS     : ERREUR MAX RELATIVE ACCEPTEE POUR LA SOLUTION
 C                  0.  -> DEFAUT
 C IN/JXOUT    SOLVEU  : LE SOLVEUR EST CREE ET REMPLI
+C IN I   ISTOP   : 0 : STOP_SINGULIER=OUI
+C                  1 : STOP_SINGULIER=NON
 C ----------------------------------------------------------
 C RESPONSABLE VABHHTS J.PELLET
 
@@ -98,7 +101,7 @@ C     ------------
 C     TYPE_RENUM :
 C     ------------
       IF (KTYPRN.EQ.' ') KTYPRN='AUTO'
-      
+
 C     ERRE_RELA_MAX :
 C     ------------
       IF (EPSMAX.EQ.0.D0) EPSMAX=1.D-6
@@ -118,7 +121,7 @@ C     ---------------------------------------------------
 
       ZI(ISLVI-1+1) = -9999
       ZI(ISLVI-1+2) = PCPIV
-      ZI(ISLVI-1+3) = -9999
+      ZI(ISLVI-1+3) = ISTOP
       ZI(ISLVI-1+4) = -9999
 
       ZR(ISLVR-1+2) = EPSMAX

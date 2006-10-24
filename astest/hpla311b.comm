@@ -1,27 +1,27 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #        SOUMISE A UNE TEMPERATURE UNIFORME SUR LES LEVRES
 #        A/B = 0.01
 #
 
-DEBUT( CODE=_F( NOM = 'HPLA311B',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F( NOM = 'HPLA311B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI()
 
@@ -29,8 +29,8 @@ PRE_GIBI()
 MA=LIRE_MAILLAGE( )
 
 #
-MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
-                           CREA_GROUP_NO=_F( 
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+                           CREA_GROUP_NO=_F(
                          GROUP_MA = ( 'LPOP11',  'LP11PC1',  'C1',
                                       'LP8P9',   'LP9PC2',   'LPOP8',
                                          ))
@@ -40,7 +40,7 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 # -------------------------------------------------------------------
 #                    DEBUT DU THERMIQUE
 # -------------------------------------------------------------------
-MOTH=AFFE_MODELE(        MAILLAGE=MA, 
+MOTH=AFFE_MODELE(        MAILLAGE=MA,
                                     AFFE=_F( TOUT = 'OUI',
                           PHENOMENE = 'THERMIQUE',
                           MODELISATION = 'AXIS')
@@ -102,14 +102,14 @@ TEMP=RESO_LDLT(         MATR_FACT=KTH,
 # -------------------------------------------------------------------
 #
 #
-MO=AFFE_MODELE( MAILLAGE=MA, 
+MO=AFFE_MODELE( MAILLAGE=MA,
                              AFFE=_F( TOUT = 'OUI',
                                    PHENOMENE = 'MECANIQUE',
                                    MODELISATION = 'AXIS')
                        )
 
 #
-MAT=DEFI_MATERIAU( 
+MAT=DEFI_MATERIAU(
                                ELAS=_F(  E = 2.E11,
                                  NU = 0.3,
                                  RHO = 7800.,
@@ -118,7 +118,7 @@ MAT=DEFI_MATERIAU(
 
 #
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                                AFFE=_F( TOUT = 'OUI', 
+                                AFFE=_F( TOUT = 'OUI',
                                       MATER = MAT)
                          )
 
@@ -165,7 +165,7 @@ FORCE=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
 RIGIDITE=FACT_LDLT(    reuse=RIGIDITE,  MATR_ASSE=RIGIDITE)
 
 #
-DEP=RESO_LDLT(   MATR_FACT=RIGIDITE, 
+DEP=RESO_LDLT(   MATR_FACT=RIGIDITE,
                             CHAM_NO=FORCE
                        )
 

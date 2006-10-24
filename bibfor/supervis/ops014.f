@@ -3,7 +3,7 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,7 @@ C     ------------------------------------------------------------------
       COMMON  /SUCC00/ UNITE(MXFILE), NAME(MXFILE)
       COMMON  /SUCN00/ IPASS,IFILE,JCMD
 C     ------------------------------------------------------------------
-      CHARACTER*72     NOMAFN,TYPMOD,VARIAN,TYPVAL,PREFUT
+      CHARACTER*72     NOMAFN,TYPMOD,VARIAN,TYPVAL
       INTEGER          LRM,LTY,LNA,LTYV
       CHARACTER*128    REP
       CHARACTER*128    NOMFM
@@ -64,30 +64,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C     ------------------------------------------------------------------
-C     COMMON SPECIFIQUE A L'INCLUDE_MATERIAU POUR CONSERVER LE NOM
-C     DE MATERIAU DEVANT PREFIXER LES CONCEPTS INCLUS DANS LE FICHIER
-      CHARACTER*8 PRFXCO
-      INTEGER     LPRFXC
-      COMMON /INCMAT/ PRFXCO
-      COMMON /INCMAI/ LPRFXC
-C     ------------------------------------------------------------------
-      IF (ICOND .EQ. 0) THEN
-C     --- A L'EXECUTION ON MET PRFXCO A LA BONNE VALEUR  ---
-C     --- PREFIXE A AJOUTER AUX CONCEPTS DE L'INCLUDE_MATERIAU
-        CALL GETVTX(' ','NOM_MATER',1,1,1,PREFUT,L)
-        CALL GETLTX(' ','NOM_MATER',1,1,1,LPREF,L)
-        LPRFXC=LPREF
-        PRFXCO=PREFUT(1:LPRFXC)
-        GOTO 9999
-      ENDIF
-
-      IF (ICOND .EQ. 1) THEN
-C     --- A L'EXECUTION ON MET PRFXCO A LA BONNE VALEUR  ---
-C     --- PREFIXE A AJOUTER AUX CONCEPTS DE L'INCLUDE_MATERIAU
-        CALL GETVTX(' ','NOM_MATER',1,1,1,PREFUT,L)
-        CALL GETLTX(' ','NOM_MATER',1,1,1,LPREF,L)
-        LPRFXC=LPREF
-        PRFXCO=PREFUT(1:LPRFXC)
+      IF ((ICOND .EQ. 0).OR.(ICOND .EQ. 1)) THEN
         GOTO 9999
       ENDIF
 
@@ -113,15 +90,6 @@ C
 C     --- ON EMPILE LE NOM SYMBOLIQUE DE L'UNITE DE LECTURE COURANTE ---
       UNITE(IFILE) = NOMSYM
 C
-C     --- PREFIXE A AJOUTER AUX CONCEPTS DE L'INCLUDE_MATERIAU
-      CALL GETVTX(' ','NOM_MATER',1,1,1,PREFUT,L)
-      CALL GETLTX(' ','NOM_MATER',1,1,1,LPREF,L)
-      IF (LPREF .GT. 6) THEN
-         CALL U2MESK('F','SUPERVIS_37',1,PREFUT(1:LPREF))
-      ENDIF
-      LPRFXC=LPREF
-      PRFXCO=PREFUT(1:LPRFXC)
-
 C     --- DEFINITION DE LA NOUVELLE UNITE LOGIQUE ---
       NOMSYM = 'INCMAT'
       IUNIT=99

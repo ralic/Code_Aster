@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF modelisa2 Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -401,10 +401,6 @@ Les mots-cles admissibles pour definir la seconde liste de noeuds sous le mot-fa
 
 96: _("""
   %(k1)s   %(k2)s ne fait pas partie du maillage :  %(k3)s 
-"""),
-
-97: _("""
- Cas non prévu. Contactez l'assistance technique.
 """),
 
 98: _("""

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                       'ELAS_ORTH_FO','ELAS_COQUE','ELAS_COQUE_FO',
                       'ELAS_HYPER',),
                EXCLUS('THER','THER_FO','THER_ORTH','THER_NL'),
-               EXCLUS('ECRO_LINE','ECRO_LINE_FO'),
+               EXCLUS('ECRO_LINE','ECRO_LINE_FO','ECRO_PUIS'),
                EXCLUS('TAHERI','TAHERI_FO'),
                EXCLUS('ROUSSELIER','ROUSSELIER_FO'),
                PRESENT_PRESENT('ROUSSELIER','TRACTION'),
@@ -305,6 +305,17 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            ECRO_LINE_FO    =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              SY              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
+           ),
+           ECRO_PUIS       =FACT(statut='f',
+             SY              =SIMP(statut='o',typ='R',),  
+             A_PUIS          =SIMP(statut='o',typ='R',val_min=0.0),
+             N_PUIS          =SIMP(statut='o',typ='R',val_min=1.E-6),
+           ),
+           ECRO_PUIS_FO    =FACT(statut='f',
+             SY              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             A_PUIS          =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             N_PUIS          =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
            ),
            BETON_ECRO_LINE =FACT(statut='f',

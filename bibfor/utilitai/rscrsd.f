@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=47)
       PARAMETER (NCMEC2=54)
-      PARAMETER (NCMEC3=31)
+      PARAMETER (NCMEC3=35)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -223,7 +223,8 @@ C     ------------------------------------------------------------------
      &     'DEDE_ELNO_DLDE','DEDE_NOEU_DLDE','DESI_ELNO_DLSI',
      &     'DESI_NOEU_DLSI','PMPB_ELGA_SIEF','PMPB_ELNO_SIEF',
      &     'PMPB_NOEU_SIEF','SIGM_ELNO_SIEF','SIPO_ELNO_SIEF',
-     &     'EPGR_ELGA','SIGM_NOEU_SIEF','SIPO_NOEU_SIEF','EPGR_ELNO',
+     &     'SIGM_NOEU_SIEF','SIPO_NOEU_SIEF','EPFP_ELNO','EPFP_ELGA',
+     &     'EPFD_ELNO','EPFD_ELGA','EPVC_ELNO','EPVC_ELGA',
      &     'VALE_CONT','VARI_ELNO_COQU','CRIT_ELNO_RUPT','ETOT_ELGA',
      &     'ETOT_ELNO_ELGA','ETOT_ELEM','VALE_NCOU_MAXI',
      &     'MODE_FLAMB','ENDO_ELGA','ENDO_ELNO_ELGA','INDI_LOCA_ELGA',

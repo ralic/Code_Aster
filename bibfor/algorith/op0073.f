@@ -3,7 +3,7 @@
       INTEGER   IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       IFM, NIV
       REAL*8        R8BID, DENC, R8DGRD, RAD, RCARTE
       COMPLEX*16    CBID
+      LOGICAL       CRPROL
 C     ------------------------------------------------------------------
       DATA NOPARA / 'LIEU'    , 'TYPE'    , 'FONCTION' /
       DATA TYPARA / 'K8'      , 'K24'     , 'K24'      /
@@ -79,12 +80,7 @@ C --- TYPE DE L'OBSTACLE
 C
 C --- FONCTION R=F(THETA EN RADIAN) DECRIVANT LA GEOMETRIE
       NOMFON = NOMRES//'   _INITIAL'
-      CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
-      ZK16(LPRO) = 'FONCTION'
-      ZK16(LPRO+1) = 'LINLIN'
-      ZK16(LPRO+2) = 'THETA'
-      ZK16(LPRO+3) = 'R'
-      ZK16(LPRO+4) = 'EE'
+      CRPROL = .TRUE.
 C
 C --- LIGNE DESCRIPTIVE
       NBINFO = NBPARA
@@ -195,9 +191,19 @@ C
 C
 C --- CAS CERCLE, PLAN... SEUL LE .REFO ETAIT PRODUIT DANS L'ANCIENNE SD
       ELSE
+         CRPROL = .FALSE.
          NBINFO = 2
       ENDIF      
 C
+      IF (CRPROL) THEN
+         CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
+         ZK16(LPRO) = 'FONCTION'
+         ZK16(LPRO+1) = 'LINLIN'
+         ZK16(LPRO+2) = 'THETA'
+         ZK16(LPRO+3) = 'R'
+         ZK16(LPRO+4) = 'EE'
+      ENDIF
+
 C --- INSERTION EFFECTIVE DE LA LIGNE DANS LA TABLE
       CALL TBAJLI(NOMRES,NBINFO,NOPARA,IBID,R8BID,CBID,TABK,0)
 C

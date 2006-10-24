@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 # TITRE VALIDATION DE POST_ELEM MOT CLE FACTEUR CARA_GEOM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,118 +24,118 @@ TCARA=MACR_CARA_POUTRE(    SYME_X='OUI',
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='AIRE_M',
                     VALE=7.01890E-05     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='CDG_X_M',
                     VALE=1.45182E-02     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='CDG_Y_M',
                     VALE=1.45182E-02     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='IX_G_M',
                     VALE=3.42657E-09     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='IY_G_M',
                     VALE=3.42657E-09     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='IXY_G_M',
                     VALE=-3.10015E-09    )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='AIRE',
                     VALE=2.80756E-04     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='CDG_X',
                  CRITERE='ABSOLU',
                      VALE=0.             )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='CDG_Y',
                  CRITERE='ABSOLU',
                      VALE=0.             )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='IX_G',
                     VALE=7.28824E-08     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='IY_G',
                     VALE=7.28824E-08     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='IXY_G',
                  CRITERE='ABSOLU',
                      VALE=0.             )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='IY_PRIN_G',
                     VALE=7.28824E-08     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='IZ_PRIN_G',
                     VALE=7.28824E-08     )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='Y_MIN',
                     VALE=-2.30967E-02    )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='Y_MAX',
                      VALE=2.30967E-02    )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='Z_MIN',
                     VALE=-2.30967E-02    )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='Z_MAX',
                      VALE=2.30967E-02    )
 
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='R_MAX',
                      VALE=2.50000E-02    )
 #
@@ -152,7 +152,7 @@ TEST_TABLE(     TABLE=TCARA,
 #
 TEST_TABLE(     TABLE=TCARA,
                   FILTRE=_F(  NOM_PARA = 'LIEU',
-                           VALE_K = '.9000003'),
+                           VALE_K = '.9000002'),
                 NOM_PARA='ALPHA',
                  CRITERE='ABSOLU',
                     VALE=( 0., 90. )           )

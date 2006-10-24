@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/10/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -189,7 +189,7 @@ C       ------------------------------
           CALL GETVC8(MOTFAC,'COEF_IMPO',I,1,1,BETAC,NB)
           TYPVAL = 'COMP'
         ELSE
-          CALL U2MESS('F','MODELISA2_97')
+          CALL U2MESS('F','DVP_1')
         END IF
 
 

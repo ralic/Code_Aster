@@ -1,4 +1,4 @@
-# MODIF  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 # TITRE MOUVEMENTS DE CORPS SOLIDE 2D ET 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 #----------------------------------------------------------------------
 
 
-DEBUT( CODE=_F(  NOM = 'SSLV114A',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F(  NOM = 'SSLV114A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MATER=DEFI_MATERIAU(  ELAS=_F(  E = 200000.,   NU = 0.) )
 

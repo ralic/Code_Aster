@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,8 +81,6 @@ CALC_ELEM(     reuse=DEP2,  MODELE=MO,            CHAM_MATER=CHMAT,
                                                 'ERRE_ELNO_ELEM',))
 
 
-IMPR_RESU ( RESU = _F( RESULTAT = DEP2, NOM_CHAM = 'ERRE_ELEM_SIGM',
-                      ) )
 DEPL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 NOM_CHAM='DEPL', RESULTAT=DEP2, NUME_ORDRE=1
                       )
@@ -129,16 +127,16 @@ TEST_RESU(CHAM_NO=(
 
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX12',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.),
+              MAILLE = 'HEX12',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 5.0318334625225),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX100',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 11.),
+              MAILLE = 'HEX100',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 18.218314622368),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELEM',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX300',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.),
+              MAILLE = 'HEX300',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 5.2043574900480),
             _F(  RESULTAT = DEP2, NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELNO_ELEM',
               CRITERE = 'RELATIF',   PRECISION = 5.E-2,
-              MAILLE = 'HEX600',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 3.))
+              MAILLE = 'HEX600',  POINT = 1,  NOM_CMP = 'NUEST',  VALE = 5.2554833994913))
 
      )
 

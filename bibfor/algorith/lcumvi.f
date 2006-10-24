@@ -1,6 +1,6 @@
-      SUBROUTINE LCUMVI(VIM,EPSFM)
+      SUBROUTINE LCUMVI(CMP,VIM,EPSFM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +21,10 @@ C ----------------------------------------------------------------------
 C ROUTINE DE COMPORTEMENT DE FLUAGE UMLV
 C PASSAGE DES VARIABLES INTERNES AU VECTEUR DE DEFORMATIONS DE FLUAGE
 C
+C IN  CMP : COMPOSANTES A CALCULER : 
+C             'FT' : FLUAGE PROPRE + DESSICCATION
+C             'FP' : FLUAGE PROPRE UNIQUEMENT
+C             'FD' : FLUAGE DE DESSICCATION
 C IN  VIM   : VARIABLES INTERNES
 C OUT EPSFM : VECTEUR DE DEFORMATIONS DE FLUAGE
 C
@@ -49,17 +53,37 @@ C     VIX(20)    = EFD31 : DEFORMATION DE FLUAGE DE DESSICCATION  31
 C_______________________________________________________________________
 C ----------------------------------------------------------------------
       IMPLICIT NONE
+      CHARACTER*(*) CMP
       REAL*8  VIM(20), EPSFM(6)
       INTEGER I
       
-      DO 20 I=1,3
-        EPSFM(I)=(VIM(1)+VIM(2))
- 20   CONTINUE
-      EPSFM(1)=EPSFM(1)+VIM(3)+VIM(4)+VIM(9)
-      EPSFM(2)=EPSFM(2)+VIM(5)+VIM(6)+VIM(10)
-      EPSFM(3)=EPSFM(3)+VIM(7)+VIM(8)+VIM(11)
-      EPSFM(4)=VIM(12)+VIM(13)+VIM(18)
-      EPSFM(5)=VIM(14)+VIM(15)+VIM(19)
-      EPSFM(6)=VIM(16)+VIM(17)+VIM(20)
+      IF  (CMP(1:2).EQ.'FP')  THEN 
+        DO 20 I=1,3
+          EPSFM(I)=(VIM(1)+VIM(2))
+ 20     CONTINUE
+        EPSFM(1)=EPSFM(1)+VIM(3)+VIM(4)
+        EPSFM(2)=EPSFM(2)+VIM(5)+VIM(6)
+        EPSFM(3)=EPSFM(3)+VIM(7)+VIM(8)
+        EPSFM(4)=VIM(12)+VIM(13)
+        EPSFM(5)=VIM(14)+VIM(15)
+        EPSFM(6)=VIM(16)+VIM(17)
+       ELSE IF  (CMP(1:2).EQ.'FD') THEN 
+        EPSFM(1)=VIM(9)
+        EPSFM(2)=VIM(10)
+        EPSFM(3)=VIM(11)
+        EPSFM(4)=VIM(18)
+        EPSFM(5)=VIM(19)
+        EPSFM(6)=VIM(20)
+       ELSE IF  (CMP(1:2).EQ.'FT')  THEN 
+        DO 25 I=1,3
+          EPSFM(I)=(VIM(1)+VIM(2))
+ 25     CONTINUE
+        EPSFM(1)=EPSFM(1)+VIM(3)+VIM(4)+VIM(9)
+        EPSFM(2)=EPSFM(2)+VIM(5)+VIM(6)+VIM(10)
+        EPSFM(3)=EPSFM(3)+VIM(7)+VIM(8)+VIM(11)
+        EPSFM(4)=VIM(12)+VIM(13)+VIM(18)
+        EPSFM(5)=VIM(14)+VIM(15)+VIM(19)
+        EPSFM(6)=VIM(16)+VIM(17)+VIM(20)
+      ENDIF 
       
       END

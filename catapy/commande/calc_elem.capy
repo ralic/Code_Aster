@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,6 +78,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               # déformations
                                  "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELGA_DEPL","EPSG_ELNO_DEPL",
                                  "EPME_ELNO_DEPL","EPME_ELGA_DEPL","DEGE_ELNO_DEPL","EPSI_ELNO_TUYO",
+                                 "EPVC_ELNO","EPVC_ELGA",
                               #  ENER    
                                  "EPOT_ELEM_DEPL","ECIN_ELEM_DEPL","ENEL_ELGA","ENEL_ELNO_ELGA",
                                  "ETOT_ELGA","ETOT_ELNO_ELGA","ETOT_ELEM",
@@ -205,7 +206,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
           b_epsi         =BLOC( condition = "TYPE_OPTION=='EPSI'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPME_ELNO_DEPL","EPME_ELGA_DEPL",
-                                 "DEGE_ELNO_DEPL","EPSI_ELNO_TUYO",),
+                                 "DEGE_ELNO_DEPL","EPSI_ELNO_TUYO","EPVC_ELNO","EPVC_ELGA",),
                                  ),
                b_niv_couche = BLOC( condition = "OPTION =='EPSI_ELNO_DEPL' or \
                                   (type(OPTION)==type(()) and  'EPSI_ELNO_DEPL' in OPTION) ",
@@ -326,7 +327,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "EPME_ELNO_DEPL","EPME_ELGA_DEPL","EPMG_ELNO_DEPL","EPMG_ELGA_DEPL",
                                  "DEGE_ELNO_DEPL","EPSI_ELNO_TUYO",
                                  "EPSP_ELNO","EPSP_ELGA",
-                                 "EPGR_ELNO","EPGR_ELGA",
+                                 "EPFD_ELNO","EPFD_ELGA","EPVC_ELNO","EPVC_ELGA",
+                                 "EPFP_ELNO","EPFP_ELGA", 
                                  "VARI_ELNO_ELGA","VARI_ELNO_TUYO","VARI_ELNO_COQU","CRIT_ELNO_RUPT",
                                  "EXTR_ELGA_VARI","EXTR_ELNO_VARI",
                                  # CRIT
@@ -417,8 +419,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
                                  "EPME_ELNO_DEPL","EPME_ELGA_DEPL","EPMG_ELNO_DEPL","EPMG_ELGA_DEPL",
-                                 "EPSP_ELNO","EPSP_ELGA","EPGR_ELNO","EPGR_ELGA",
-                                 "DEGE_ELNO_DEPL",),
+                                 "EPSP_ELNO","EPSP_ELGA","DEGE_ELNO_DEPL","EPVC_ELNO","EPVC_ELGA",
+                                 "EPFD_ELNO","EPFD_ELGA","EPFP_ELNO","EPFP_ELGA"),
                                  ),
                b_niv_couche = BLOC( condition = "OPTION =='EPSI_ELNO_DEPL' or \
                                   (type(OPTION)==type(()) and  'EPSI_ELNO_DEPL' in OPTION) ",

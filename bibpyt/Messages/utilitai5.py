@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF utilitai5 Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -220,10 +220,6 @@ cata_msg={
 
 50: _("""
  type inconnu:  %(k1)s
-"""),
-
-51: _("""
- il y a probablement une erreur dans la programmation
 """),
 
 52: _("""

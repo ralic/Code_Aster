@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 # TITRE VALIDATION DE LA COMMANDE CREA_CHAMP/OPTION:'EVAL'
 #                                 CREA_CHAMP/OPTION:'DISC'
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -35,7 +35,7 @@
 #   pouvant servir de champ de variables internes initiales pour STAT_NON_LINE
 # ----------------------------------------------------------------
 
-DEBUT( CODE=_F(  NOM = 'ZZZZ130A',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F(  NOM = 'ZZZZ130A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE( )
 

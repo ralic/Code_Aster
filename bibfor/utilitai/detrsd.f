@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -247,7 +247,7 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
         IF (IRET.GT.0) THEN
           CALL DISMOI('F','EST_MUMPS',MATAS,'MATR_ASSE',IBID,MUMPS,IBID)
           IF (MUMPS.EQ.'OUI') THEN
-            CALL AMUMPS('DETR_MAT',' ',MATAS,' ',' ',' ')
+            CALL AMUMPS('DETR_MAT',' ',MATAS,' ',' ',' ',IBID)
           END IF
 
         END IF

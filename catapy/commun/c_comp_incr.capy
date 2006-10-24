@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMUN  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -25,6 +25,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "VISC_ISOT_TRAC",
                                         "VMIS_ISOT_LINE",
                                         "VISC_ISOT_LINE",
+                                        "VMIS_ISOT_PUIS",
                                         "VMIS_ECMI_TRAC",
                                         "VMIS_ECMI_LINE",
                                         "LABORD_1D",
@@ -136,6 +137,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           VISC_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           VMIS_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           VISC_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          VMIS_ISOT_PUIS  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           VMIS_ECMI_TRAC  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           VMIS_ECMI_LINE  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           LABORD_1D       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
@@ -143,7 +145,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           ENDO_ISOT_BETON =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           ENDO_ORTH_BETON =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           BETON_REGLE_PR  =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          MAZARS          =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          MAZARS          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           JOINT_BA        =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           RUPT_FRAG       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           CZM_EXP_REG      =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
@@ -280,6 +282,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "VMIS_ISOT_TRAC",
                                        "VMIS_ISOT_LINE",
                                        "VMIS_ISOT_CINE",
+                                       "VMIS_ISOT_PUIS",
                                        "GRANGER_FP",
                                        "GRANGER_FP_INDT",
                                        "GRANGER_FP_V",

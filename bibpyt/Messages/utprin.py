@@ -1,4 +1,4 @@
-#@ MODIF utprin Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF utprin Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,10 +19,18 @@
 # ======================================================================
 
 import os
+import sys
+import traceback
 import imp
+import re
 
 def _(s):
    return s
+
+# -----------------------------------------------------------------------------
+contacter_assistance = """
+Il y a probablement une erreur dans la programmation.
+Veuillez contacter votre assistance technique."""
 
 # -----------------------------------------------------------------------------
 def utprin(typmess,unite,idmess,valk,vali,valr):
@@ -33,6 +41,12 @@ def utprin(typmess,unite,idmess,valk,vali,valr):
    from Utilitai.Utmess import UTMESS
 
    typmess = typmess.strip()
+   if aster.onFatalError() == 'EXCEPTION':
+      if typmess in ('E', 'F', 'Z'):
+         typmess = 'EXCEPTION'
+   elif typmess == 'Z':
+      typmess = 'S'
+   
    unite   = unite.strip()
    idmess  = idmess.strip()
    valk    = [k.strip() for k in valk]
@@ -53,8 +67,8 @@ def utprin(typmess,unite,idmess,valk,vali,valr):
       mod  = imp.load_module(catamess, *args)
       cata_msg = mod.cata_msg
    except ImportError, msg:
-      UTMESS('F', 'utprin', """Impossible d'importer %s dans Messages.
-Le fichier %s.py n'existe pas dans le répertoire 'Messages'.""" \
+      UTMESS('F', 'utprin', """Impossible d'importer %(catamess)s dans Messages.
+Le fichier %(catamess)s.py n'existe pas dans le répertoire 'Messages'.""" \
             % { 'catamess' : catamess })
    else:
       args[0].close()
@@ -77,7 +91,7 @@ Le fichier %s.py n'existe pas dans le répertoire 'Messages'.""" \
    dicarg['ktout'] = ' '.join(valk)
 
    # on imprime le message :
-   if cata_msg.has_key(numess):
+   try:
       dictmess = {
          'type_message'  : typmess,
          'id_message'    : '<%s>' % idmess,
@@ -85,14 +99,22 @@ Le fichier %s.py n'existe pas dans le répertoire 'Messages'.""" \
       }
       if typmess == 'I':
          dictmess['id_message'] = ''
-   else:
+   except Exception, msg:
       dictmess = {
-         'type_message'  : 'A',
+         'type_message'  : typmess,
          'id_message'    : '',
-         'corps_message' : """Erreur programmeur : Le message %s n'existe pas.
-Contacter l'assistance technique.""" % idmess,
+         'corps_message' : """Erreur de programmation.
+Le message %s n'a pas pu etre formatté correctement.
+--------------------------------------------------------------------------
+%s
+--------------------------------------------------------------------------
+
+%s""" \
+   % (idmess, ''.join(traceback.format_tb(sys.exc_traceback)), contacter_assistance),
       }
-   aster.affiche(unite, format_message(dictmess))
+   
+   txt = clean_string(format_message(dictmess))
+   aster.affiche(unite, txt)
 
    return None
 
@@ -152,6 +174,9 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
    
    dmsg['header']      = format['header'] % dmsg
    dmsg['commentaire'] = dcomm.get(dmsg['type_message'], '')
+   if re.search('^DVP', dmsg['id_message']) != None:
+      dmsg['commentaire'] += contacter_assistance
+   
    dmsg['corps']       = format['corps'] % dmsg
    
    # longueur de la ligne la plus longue
@@ -181,10 +206,24 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
 
 
 # -----------------------------------------------------------------------------
+def clean_string(chaine):
+   """Supprime tous les caractères non imprimables.
+   """
+   invalid = '?'
+   txt = []
+   for c in chaine:
+      if ord(c) != 0:
+         txt.append(c)
+      else:
+         txt.append(invalid)
+   return ''.join(txt)
+
+
+# -----------------------------------------------------------------------------
 if __name__ == '__main__':
    dtest = {
       'type_message'  : 'A',
-      'id_message'    : 'DEVELOPPEUR_00',
+      'id_message'    : 'DVP_00',
       'corps_message' : """
 Ceci est le texte d'un message bidon.
 Ligne 2...

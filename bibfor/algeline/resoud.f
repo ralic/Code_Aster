@@ -2,7 +2,7 @@
      &                    CHASOL, CRITEZ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -177,7 +177,8 @@ C========================================
         CALL VTDEFS(CHSOL,CHSECM,'V',' ')
         IF (METRES.NE.'FETI') THEN
           IF (METRES.EQ.'MUMPS') THEN
-             CALL AMUMPS('RESOUD',SOLVEU,MATAS,CHSECM,CHSOL,CHCINE)
+             CALL AMUMPS('RESOUD',SOLVEU,MATAS,CHSECM,CHSOL,CHCINE,IRET)
+             CALL ASSERT(IRET.EQ.0)
           ELSE
              CALL COPISD('CHAMP_GD',BASE,CHSECM,CHSOL)
              CALL RESLDL(SOLVEU,MATAS,CHCINE,CHSOL)

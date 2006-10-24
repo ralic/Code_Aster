@@ -1,4 +1,4 @@
-#@ MODIF champs Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF champs Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,11 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
-Erreur dans les données. Le paramètre %(k1)s n'existe pas dans la table.
+ Impossible de récupérer les composantes du champ.
 """),
+
+2: _("""
+ Impossible de récupérer le nom du champ.
+"""),
+
 }

@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -870,15 +870,16 @@ def merge(tab1, tab2, labels=[]):
    """
    tb1 = tab1.copy()
    tb2 = tab2.copy()
-   if type(labels) not in EnumTypes : labels=(labels,)
+   if type(labels) not in EnumTypes:
+      labels=(labels,)
    for key in labels :
-       if key not in tb1.para : UTMESS('F','Table','Erreur, label non présent %s' %key)
-       if key not in tb2.para : UTMESS('F','Table','Erreur, label non présent %s' %key)
+       if key not in tb1.para : UTMESS('F','Table','Erreur, label non présent %s' % key)
+       if key not in tb2.para : UTMESS('F','Table','Erreur, label non présent %s' % key)
    # ensemble des paramètres et des types
    n_para=tb1.para[:]
    n_type=tb1.type[:]
-   for i in tb2.para :
-      if i not in tb1.para :
+   for i in tb2.para:
+      if i not in tb1.para:
          n_para.append(i)
          n_type.append(tb2.type[tb2.para.index(i)])
    # restriction des lignes aux labels communs (peu cher en cpu)
@@ -903,10 +904,10 @@ def merge(tab1, tab2, labels=[]):
    # lignes a merger dans les deux tableaux
    dic1 = {}
    for cle in dlab1.keys():
-      if dlab1[cle] == None:
+      if dlab1[cle] == None or cle == ():
          bid = dlab1.pop(cle)
    for cle in dlab2.keys():
-      if dlab2[cle] == None:
+      if dlab2[cle] == None or cle == ():
          bid = dlab2.pop(cle)
    for cle in dlab2.keys():
       if dlab1.has_key(cle):

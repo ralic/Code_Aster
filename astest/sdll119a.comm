@@ -1,21 +1,21 @@
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 # TITRE FAISCEAU DE POUTRES SOUS EXCITATION FLUIDELASTIQUE AXIALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #====================================================
 # SIMULATION DE L'ESSAI DE HOTTA ET AL.
@@ -34,7 +34,7 @@
 # RESPONSABLE QUANTIN C.QUANTIN
 #
 
-DEBUT(   CODE=_F(  NOM = 'SDLL119A',NIV_PUB_WEB='INTERNET'))
+DEBUT(   CODE=_F(  NOM = 'SDLL119A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -42,13 +42,13 @@ POUTRE=LIRE_MAILLAGE( )
 
 #
 
-MODELE=AFFE_MODELE( 
+MODELE=AFFE_MODELE(
                 MAILLAGE=POUTRE,AFFE=(
-                    _F( 
+                    _F(
                 TOUT = 'OUI',
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'POU_D_T'),
-                    _F( 
+                    _F(
                 GROUP_NO = ('NO_BASE',  'NO_EXTR',),
                 PHENOMENE = 'MECANIQUE',
                 MODELISATION = 'DIS_TR'))
@@ -60,9 +60,9 @@ MODELE=AFFE_MODELE(
 #-------------------------
 #
 
-CARA=AFFE_CARA_ELEM( 
+CARA=AFFE_CARA_ELEM(
                 MODELE=MODELE,POUTRE=(
-                _F( 
+                _F(
                 GROUP_MA = (
                   'MA_TU001','MA_TU002','MA_TU003',
                   'MA_TU004','MA_TU005','MA_TU006',
@@ -71,17 +71,17 @@ CARA=AFFE_CARA_ELEM(
                 SECTION = 'CERCLE',
                 CARA = ('R', 'EP',),
                 VALE = (4.75E-3, 5.0E-4,)),
-                _F( 
+                _F(
                 GROUP_MA = 'MA_BASE',
                 SECTION = 'CERCLE',
                 CARA = 'R',
                 VALE = 1.0E-03),
-                _F( 
+                _F(
                 GROUP_MA = 'MA_GRIL',
                 SECTION = 'CERCLE',
                 CARA = 'R',
                 VALE = 1.0E-03)),
-                DISCRET=_F( 
+                DISCRET=_F(
                 GROUP_NO = ('NO_BASE',  'NO_EXTR',),
                 CARA = 'K_TR_D_N',
                 VALE = (0.,  0.,  0.,  0.,  6.29,  6.29,))
@@ -94,8 +94,8 @@ CARA=AFFE_CARA_ELEM(
 #-----------------------------------------------------
 #
 
-MAT=DEFI_MATERIAU( 
-                ELAS=_F( 
+MAT=DEFI_MATERIAU(
+                ELAS=_F(
                 E = 6.89E+10,
                 NU = 0.3,
                 RHO = 20450.)
@@ -103,8 +103,8 @@ MAT=DEFI_MATERIAU(
 
 #
 
-MATGRIL=DEFI_MATERIAU( 
-                ELAS=_F( 
+MATGRIL=DEFI_MATERIAU(
+                ELAS=_F(
                 E = 2.1E+11,
                 NU = 0.3,
                 RHO = 7800.)
@@ -112,8 +112,8 @@ MATGRIL=DEFI_MATERIAU(
 
 #
 
-MATBASE=DEFI_MATERIAU( 
-                ELAS=_F( 
+MATBASE=DEFI_MATERIAU(
+                ELAS=_F(
                 E = 1.,
                 NU = 0.3,
                 RHO = 7800.)
@@ -125,19 +125,19 @@ MATBASE=DEFI_MATERIAU(
 #----------------------
 #
 
-CHMAT=AFFE_MATERIAU( 
+CHMAT=AFFE_MATERIAU(
                 MAILLAGE=POUTRE,AFFE=(
-                    _F( 
+                    _F(
                 GROUP_MA = (
                   'MA_TU001','MA_TU002','MA_TU003',
                   'MA_TU004','MA_TU005','MA_TU006',
                   'MA_TU007','MA_TU008','MA_TU009',
                            ),
                 MATER = MAT),
-                    _F( 
+                    _F(
                 GROUP_MA = 'MA_GRIL',
                 MATER = MATGRIL),
-                    _F( 
+                    _F(
                 GROUP_MA = 'MA_BASE',
                 MATER = MATBASE))
                           )
@@ -149,15 +149,15 @@ CHMAT=AFFE_MATERIAU(
 #----------------------------
 #
 
-CHARG=AFFE_CHAR_MECA( 
+CHARG=AFFE_CHAR_MECA(
                   MODELE=MODELE,DDL_IMPO=(
-                _F( 
+                _F(
                 GROUP_NO = 'NO_BASE',
                 DX = 0.,  DY = 0.,  DZ = 0.),
-                _F( 
+                _F(
                 GROUP_NO = 'NO_EXTR',
                 DY = 0.,  DZ = 0.),
-                _F( 
+                _F(
                 TOUT = 'OUI',
                 DRX = 0.))
                            )
@@ -169,7 +169,7 @@ CHARG=AFFE_CHAR_MECA(
 #----------------------------------------
 #
 
-MELR=CALC_MATR_ELEM( 
+MELR=CALC_MATR_ELEM(
                     MODELE=MODELE,
                     CHARGE=CHARG,
                  CARA_ELEM=CARA,
@@ -179,7 +179,7 @@ MELR=CALC_MATR_ELEM(
 
 #
 
-MELM=CALC_MATR_ELEM( 
+MELM=CALC_MATR_ELEM(
                     MODELE=MODELE,
                     CHARGE=CHARG,
                  CARA_ELEM=CARA,
@@ -193,14 +193,14 @@ NUM=NUME_DDL(   MATR_RIGI=MELR)
 
 #
 
-MATR=ASSE_MATRICE( 
+MATR=ASSE_MATRICE(
                 MATR_ELEM=MELR,
                  NUME_DDL=NUM
                          )
 
 #
 
-MATM=ASSE_MATRICE( 
+MATM=ASSE_MATRICE(
                 MATR_ELEM=MELM,
                  NUME_DDL=NUM
                          )
@@ -217,9 +217,9 @@ MATM=ASSE_MATRICE(
 #------------------
 #
 
-TENSION=AFFE_CHAR_MECA( 
+TENSION=AFFE_CHAR_MECA(
                       MODELE=MODELE,
-                FORCE_NODALE=_F( 
+                FORCE_NODALE=_F(
                 GROUP_NO = 'NO_EXTR',
                 FX = -26.7,  FY = 0.,  FZ = 0.,
                 MX = 0.,     MY = 0.,  MZ = 0.)
@@ -252,7 +252,7 @@ CONTR=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 #----------------------------------------------------
 #
 
-MELRG=CALC_MATR_ELEM( 
+MELRG=CALC_MATR_ELEM(
                    MODELE=MODELE,
                 SIEF_ELGA=CONTR,
                 CARA_ELEM=CARA,
@@ -261,7 +261,7 @@ MELRG=CALC_MATR_ELEM(
 
 #
 
-MATRG=ASSE_MATRICE( 
+MATRG=ASSE_MATRICE(
                 MATR_ELEM=MELRG,
                  NUME_DDL=NUM
                          )
@@ -269,10 +269,10 @@ MATRG=ASSE_MATRICE(
 #
 
 MATRC=COMB_MATR_ASSE( COMB_R=(
-                _F( 
+                _F(
                 MATR_ASSE = MATR,
                 COEF_R = 1.),
-                _F( 
+                _F(
                 MATR_ASSE = MATRG,
                 COEF_R = 1.))
                            )
@@ -284,10 +284,10 @@ MATRC=COMB_MATR_ASSE( COMB_R=(
 #------------------------------------------------
 #
 
-MODES=MODE_ITER_SIMULT( 
+MODES=MODE_ITER_SIMULT(
                    MATR_A=MATRC,
                    MATR_B=MATM,
-                CALC_FREQ=_F( 
+                CALC_FREQ=_F(
                 OPTION = 'PLUS_PETITE',
                 NMAX_FREQ = 2)
                              )
@@ -302,7 +302,7 @@ MODES=MODE_ITER_SIMULT(
 #------------------------------------
 #
 
-RHOFLUI=DEFI_FONCTION( 
+RHOFLUI=DEFI_FONCTION(
                 NOM_PARA='X',
                     VALE=(0., 1.E+3, 1.2, 1.E+3,)
                           )
@@ -313,7 +313,7 @@ RHOFLUI=DEFI_FONCTION(
 #------------------------------------------
 #
 
-VISC=DEFI_FONCTION( 
+VISC=DEFI_FONCTION(
                 NOM_PARA='X',
                     VALE=(0., 1.1E-6, 1.2, 1.1E-6,)
                           )
@@ -325,8 +325,8 @@ VISC=DEFI_FONCTION(
 #--------------------------------------------------------------
 #
 
-TYPEFLU=DEFI_FLUI_STRU( 
-                FAISCEAU_AXIAL=_F( 
+TYPEFLU=DEFI_FLUI_STRU(
+                FAISCEAU_AXIAL=_F(
                 TRI_GROUP_MA = 'MA_TU*',
                 CARA_ELEM = CARA,
                 VECT_X = (1., 0., 0.,),
@@ -345,17 +345,17 @@ TYPEFLU=DEFI_FLUI_STRU(
 #------------------------------------------
 #
 
-MELAS=CALC_FLUI_STRU( 
-                VITE_FLUI=_F( 
+MELAS=CALC_FLUI_STRU(
+                VITE_FLUI=_F(
                 VITE_MIN = 0.0,
                 VITE_MAX = 10.0,
                 NB_POIN = 11),
-                BASE_MODALE=_F( 
+                BASE_MODALE=_F(
                 MODE_MECA = MODES,
                 NUME_ORDRE = (1, 2,),
                 AMOR_UNIF = 0.123),
                 TYPE_FLUI_STRU=TYPEFLU,
-                    IMPRESSION=_F( 
+                    IMPRESSION=_F(
                 PARA_COUPLAGE = 'OUI',
                 DEFORMEE = 'NON')
                            )
@@ -377,7 +377,7 @@ MODES=MODI_BASE_MODALE( reuse=MODES,
 #-----------------------------
 #
 
-FREQ_1=RECU_FONCTION( 
+FREQ_1=RECU_FONCTION(
                 BASE_ELAS_FLUI=MELAS,
                         PARA_X='VITE_FLU',
                         PARA_Y='FREQ',
@@ -388,7 +388,7 @@ FREQ_1=RECU_FONCTION(
 #
 
 TEST_FONCTION(
-                   VALEUR=_F( 
+                   VALEUR=_F(
                    FONCTION = FREQ_1,
                    VALE_PARA = 4.000000E+00,
                    VALE_REFE = 4.47E+00,
@@ -399,7 +399,7 @@ TEST_FONCTION(
 #
 
 TEST_FONCTION(
-                   VALEUR=_F( 
+                   VALEUR=_F(
                    FONCTION = FREQ_1,
                    VALE_PARA = 4.000000E+00,
                    VALE_REFE = 4.734999E+00,
@@ -410,7 +410,7 @@ TEST_FONCTION(
 
 #
 
-AMOR_1=RECU_FONCTION( 
+AMOR_1=RECU_FONCTION(
                 BASE_ELAS_FLUI=MELAS,
                         PARA_X='VITE_FLU',
                         PARA_Y='AMOR',
@@ -421,7 +421,7 @@ AMOR_1=RECU_FONCTION(
 #
 
 TEST_FONCTION(
-                   VALEUR=_F( 
+                   VALEUR=_F(
                    FONCTION = AMOR_1,
                    VALE_PARA = 4.000000E+00,
                    VALE_REFE = 19.E-02,
@@ -432,7 +432,7 @@ TEST_FONCTION(
 #
 
 TEST_FONCTION(
-                   VALEUR=_F( 
+                   VALEUR=_F(
                    FONCTION = AMOR_1,
                    VALE_PARA = 4.000000E+00,
                    VALE_REFE = 2.264758E-01,
@@ -447,7 +447,7 @@ TEST_FONCTION(
 #-----------------------------
 #
 
-FREQ_2=RECU_FONCTION( 
+FREQ_2=RECU_FONCTION(
                 BASE_ELAS_FLUI=MELAS,
                         PARA_X='VITE_FLU',
                         PARA_Y='FREQ',
@@ -458,7 +458,7 @@ FREQ_2=RECU_FONCTION(
 #
 
 TEST_FONCTION(
-                   VALEUR=_F( 
+                   VALEUR=_F(
                    FONCTION = FREQ_2,
                    VALE_PARA = 4.000000E+00,
                    VALE_REFE = 5.003898E+00,
@@ -469,7 +469,7 @@ TEST_FONCTION(
 
 #
 
-AMOR_2=RECU_FONCTION( 
+AMOR_2=RECU_FONCTION(
                 BASE_ELAS_FLUI=MELAS,
                         PARA_X='VITE_FLU',
                         PARA_Y='AMOR',
@@ -480,7 +480,7 @@ AMOR_2=RECU_FONCTION(
 #
 
 TEST_FONCTION(
-                   VALEUR=_F( 
+                   VALEUR=_F(
                    FONCTION = AMOR_2,
                    VALE_PARA = 4.000000E+00,
                    VALE_REFE = 2.141491E-01,

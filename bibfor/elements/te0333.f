@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,13 +21,11 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-C     BUT: CALCUL DES DEFORMATIONS PLASTIQUES AUX NOEUDS ET PG ET DES
-C          DEFORMATIONS DE FLUAGE DE GRANGER
+C     BUT: CALCUL DES DEFORMATIONS PLASTIQUES AUX NOEUDS ET PG 
 C          ELEMENTS ISOPARAMETRIQUES 3D
 
 C     IN   OPTION : OPTIONS DE CALCUL
 C                   'EPSP_ELNO'   'EPSP_ELGA'
-C                   'EPGR_ELNO'   'EPGR_ELGA'
 C          NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -57,7 +55,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NBSGM=6)
       REAL*8 VALRES(NBRES)
       REAL*8 EPSM(MXCMEL),EPSANE(MXCMEL),EPSPLA(MXCMEL)
-      REAL*8 EPSPLN(MXCMEL),EPSFLU(MXCMEL),SIGMA(NBSGM)
+      REAL*8 EPSPLN(MXCMEL),SIGMA(NBSGM)
       REAL*8 VALPAR(2),C1,C2,TRSIG
       REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN,TEMPG
       REAL*8 EPSFL(NBSGM),EPSFLF(NBSGM),TMPDMX,TMPFMX
@@ -66,7 +64,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*6       EPSA(6)
       CHARACTER*8 NOMPAR(2),MODELI,MOD3D
       CHARACTER*16 OPTIO2,PHENOM,CMP1,CMP2,CMP3
-      LOGICAL LFLU,LPLAS,LTEMP
+      LOGICAL LFLU,LTEMP
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
@@ -117,39 +115,35 @@ C --- RECUPERATION DE L'INSTANT COURANT :
 C     ---------------------------------
       CALL JEVECH('PTEMPSR','L',ITEMPS)
 
-      IF (OPTION(1:4).EQ.'EPSP') THEN
-        LPLAS = .TRUE.
-
 
 C ---    RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
 C        ------------------------------------------------
-        CALL JEVECH('PDEPLAR','L',IDEPL)
+      CALL JEVECH('PDEPLAR','L',IDEPL)
 
 C ---    RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION :
 C        -------------------------------------------------------------
-        CALL JEVECH('PCONTRR','L',IDSIG)
+      CALL JEVECH('PCONTRR','L',IDSIG)
 
 C ---    RECUPERATION DES DEFORMATIONS ANELASTIQUES AUX NOEUDS
 C ---    DE L'ELEMENT :
 
-        DO 20 K=1,NBSIG
-          DO 30 IGAU=1,NPG
-            CALL RCVARC(' ',EPSA(K),'+','RIGI',IGAU,1,
+      DO 20 K=1,NBSIG
+        DO 30 IGAU=1,NPG
+          CALL RCVARC(' ',EPSA(K),'+','RIGI',IGAU,1,
      &                  EPSANE(NBSIG*(IGAU-1)+K),IRET)
-            IF (IRET.EQ.1) EPSANE(NBSIG*(IGAU-1)+K)=0.D0
- 30       CONTINUE
- 20     CONTINUE
+          IF (IRET.EQ.1) EPSANE(NBSIG*(IGAU-1)+K)=0.D0
+ 30     CONTINUE
+ 20   CONTINUE
 
 C ---    ON VERIFIE QUE LE MATERIAU EST ISOTROPE
 C ---    (POUR L'INSTANT PAS D'ORTHOTROPIE NI D'ISOTROPIE TRANSVERSE
 C ---    EN PLASTICITE) :
 C        --------------
-        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
-
-        IF (PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ISTR' .OR.
+      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+      IF (PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ISTR' .OR.
      &      PHENOM.EQ.'ELAS_ORTH_FO' .OR. PHENOM.EQ.'ELAS_ISTR_FO') THEN
-          CALL U2MESK('F','ELEMENTS3_75',1,PHENOM(1:12))
-        END IF
+        CALL U2MESK('F','ELEMENTS3_75',1,PHENOM(1:12))
+      END IF
 
 C ---    CALCUL DES DEFORMATIONS HORS THERMIQUES CORRESPONDANTES AU
 C ---    CHAMP DE DEPLACEMENT I.E. EPSM = EPST - EPSTH - EPSRET
@@ -161,14 +155,11 @@ C ---    ET EPSRET SONT LES DEFORMATIONS LIEES AU RETRAIT
 C ---       DE DESSICCATION ET  D HYDRATION
 C ---       EPSRET = - B_ENDO * HYDR - K_DESSIC *(SREF-S)
 C          ----------------------
-        OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
+      OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
       CALL EPSVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      &            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),ZR(ITREF),ZR(ITEMPS),
      &            ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
 
-      ELSE
-        LPLAS = .FALSE.
-      END IF
 
 C --- RECUPERATION DU COMPORTEMENT  :
 C     -------------------------------
@@ -261,70 +252,45 @@ C        ---------------------------------------------
 C ---    TENSEUR DE DEFORMATION DE FLUAGE AU PT D'INTEGRATION COURANT :
 C        --------------------------------------------------------------
         IF (LFLU) THEN
-          DO 100 K = 1,NBSIG
-            EPSFL(K) = ZR(IVARI+ (IGAU-1)*NBVARI+8*NBSIG+K-1)
-            DO 90 I = 1,8
-              EPSFL(K) = EPSFL(K) - ZR(IVARI+ (IGAU-1)*NBVARI+
-     &                   (I-1)*NBSIG+K-1)
-   90       CONTINUE
-  100     CONTINUE
 
-          C1 = (UN+NU)
-          C2 = -NU
-          EPSFLF(1) = EPSFL(1) + C2*EPSFL(2) + C2*EPSFL(3)
-          EPSFLF(2) = C2*EPSFL(1) + EPSFL(2) + C2*EPSFL(3)
-          EPSFLF(3) = C2*EPSFL(1) + C2*EPSFL(2) + EPSFL(3)
-          DO 110 I = 4,NBSIG
-            EPSFLF(I) = C1*EPSFL(I)
-  110     CONTINUE
+         CALL CALCGR(IGAU,NBSIG,NBVARI,ZR(IVARI),NU,EPSFLF)
+
         END IF
-
-        IF (LPLAS) THEN
 
 C ----      TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 C           ------------------------------------------------------
-          DO 120 I = 1,NBSIG
-            SIGMA(I) = ZR(IDSIG+ (IGAU-1)*NBSIG+I-1)
-  120     CONTINUE
+        DO 120 I = 1,NBSIG
+          SIGMA(I) = ZR(IDSIG+ (IGAU-1)*NBSIG+I-1)
+  120   CONTINUE
 
-          TRSIG = SIGMA(1) + SIGMA(2) + SIGMA(3)
+        TRSIG = SIGMA(1) + SIGMA(2) + SIGMA(3)
 
-          C1 = (UN+NU)/E
-          C2 = NU/E
+        C1 = (UN+NU)/E
+        C2 = NU/E
 
 C ---       TENSEUR DES DEFORMATIONS PLASTIQUES AU POINT
 C ---       D'INTEGRATION COURANT
 C ---       I.E. EPSPLA = EPS_TOT - EPS_THERM - EPS_ELAS - EPS_ANELAS :
 C ---                             - EPS_FLUAGE :
 C           ---------------------------------------------------------
-          EPSPLA(NBSIG* (IGAU-1)+1) = EPSM(NBSIG* (IGAU-1)+1) -
+        EPSPLA(NBSIG* (IGAU-1)+1) = EPSM(NBSIG* (IGAU-1)+1) -
      &                                EPSANE(NBSIG* (IGAU-1)+1) -
      &                                (C1*SIGMA(1)-C2*TRSIG) - EPSFLF(1)
-          EPSPLA(NBSIG* (IGAU-1)+2) = EPSM(NBSIG* (IGAU-1)+2) -
+        EPSPLA(NBSIG* (IGAU-1)+2) = EPSM(NBSIG* (IGAU-1)+2) -
      &                                EPSANE(NBSIG* (IGAU-1)+2) -
      &                                (C1*SIGMA(2)-C2*TRSIG) - EPSFLF(2)
-          EPSPLA(NBSIG* (IGAU-1)+3) = EPSM(NBSIG* (IGAU-1)+3) -
+        EPSPLA(NBSIG* (IGAU-1)+3) = EPSM(NBSIG* (IGAU-1)+3) -
      &                                EPSANE(NBSIG* (IGAU-1)+3) -
      &                                (C1*SIGMA(3)-C2*TRSIG) - EPSFLF(3)
-          EPSPLA(NBSIG* (IGAU-1)+4) = EPSM(NBSIG* (IGAU-1)+4) -
+        EPSPLA(NBSIG* (IGAU-1)+4) = EPSM(NBSIG* (IGAU-1)+4) -
      &                                EPSANE(NBSIG* (IGAU-1)+4) -
      &                                C1*SIGMA(4) - EPSFLF(4)
-          EPSPLA(NBSIG* (IGAU-1)+5) = EPSM(NBSIG* (IGAU-1)+5) -
+        EPSPLA(NBSIG* (IGAU-1)+5) = EPSM(NBSIG* (IGAU-1)+5) -
      &                                EPSANE(NBSIG* (IGAU-1)+5) -
      &                                C1*SIGMA(5) - EPSFLF(5)
-          EPSPLA(NBSIG* (IGAU-1)+6) = EPSM(NBSIG* (IGAU-1)+6) -
+        EPSPLA(NBSIG* (IGAU-1)+6) = EPSM(NBSIG* (IGAU-1)+6) -
      &                                EPSANE(NBSIG* (IGAU-1)+6) -
      &                                C1*SIGMA(6) - EPSFLF(6)
-        ELSE
-
-C ---      TENSEUR DES DEFORMATIONS DE FLUAGE AU POINT
-C ---      D'INTEGRATION COURANT
-C          ----------------------------------------------
-          DO 130 I = 1,NBSIG
-            EPSPLA(NBSIG* (IGAU-1)+I) = EPSFLF(I)
-  130     CONTINUE
-
-        END IF
 
   140 CONTINUE
 

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF UTTCSM UTILITAI  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -38,7 +38,7 @@
    les deux (CLOCKS_PER_SEC = 1e6, CLK_TCK = 100). A priori,
    cela semble lier à l'utilisation de times() ou getrusage()
 */
-#ifndef _USE_CLK_TCK
+#ifndef CLK_TCK
    #define CLOCKS_PER_SEC_VALUE CLOCKS_PER_SEC
 #else
    #define CLOCKS_PER_SEC_VALUE CLK_TCK

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -806,6 +806,7 @@ DE11=CALC_FONC_INTERP(  FONCTION=DE11a,
                         NOM_PARA='INST', VALE_PARA=LINST   )
 
 DE11M=INFO_FONCTION( MAX=_F(  FONCTION = DE11)    )
+IMPR_TABLE(TABLE=DE11M)
 
 TEST_FONCTION( 
                 VALEUR=_F(  FONCTION = SOD, NOM_PARA = ('AMOR','FREQ',),
@@ -1795,6 +1796,59 @@ TEST_FONCTION(VALEUR=(
                       CRITERE   = 'ABSOLU', 
                       REFERENCE = 'ANALYTIQUE'))
                 )
+#=======================================================================
+#
+#          VALIDATION DU CALCUL D EXTREMA DANS INFO_FONCTION
+#
+#=======================================================================
+
+FONCa=DEFI_FONCTION(    NOM_PARA='X',
+                          NOM_RESU='F',
+                              VALE=( 0.,  0.,
+                                     2.,  5.,
+                                     3., 10., 
+                                     5., 15.,
+                                     7., 13.,
+                                     8., 10.,
+                                     10., 9.,
+                                     12., 8.,
+                                     13., 5.,
+                                     15., 1.,
+                                     20., 0., ) )
+
+FONCb=DEFI_FONCTION(    NOM_PARA='X',
+                          NOM_RESU='F',
+                              VALE=( 0.,   0.,
+                                     0.1,  2.,
+                                     0.2,  4.,
+                                     0.3,  6.,
+                                     0.4,  8.,
+                                     0.5, 10.,
+                                     0.6, 12.,
+                                     0.7, 14.,
+                                     0.8, 16.,
+                                     0.9, 18.,
+                                     1.0, 20., ) )
+TABM=INFO_FONCTION(MAX=_F(FONCTION=(FONCa,FONCb)))
+
+TEST_TABLE(  TABLE=TABM,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCb'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MAXI'),),
+             NOM_PARA='F',
+             REFERENCE='ANALYTIQUE',
+             VALE=2.00000E+01  )
+TEST_TABLE(  TABLE=TABM,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'FONCa'),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MINI'),
+                      _F(  NOM_PARA = 'X',
+                           VALE = 0.0),),
+             NOM_PARA='F',
+             REFERENCE='ANALYTIQUE',
+             VALE=0.0  )
 
 #=======================================================================
 # VALIDATION DE CALC_FONC_INTERP POUR UNE NAPPE
@@ -1865,5 +1919,6 @@ TEST_FONCTION( VALEUR = _F( FONCTION  = FXXX,
                             VALE_REFE = -1.57436635E-02,
                             REFERENCE='ANALYTIQUE'), )
 
-FIN( )
+
 #
+FIN( )

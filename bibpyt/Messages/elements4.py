@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF elements4 Messages  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -268,5 +268,8 @@ cata_msg={
 
 62: _("""
   erreur: element non 2d
+"""),
+63: _("""
+  l'option %(k1)s n'est pas disponible pour le comportement %(k2)s 
 """),
 }

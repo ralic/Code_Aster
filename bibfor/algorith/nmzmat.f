@@ -3,7 +3,7 @@
      &                   DEPS,   SIGM,   VIM,    OPTION, ANGMAS,
      &                   SIGP,   VIP,    DSIDEP, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 23/10/2006   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21
 C ======================================================================
@@ -66,7 +66,7 @@ C ----------------------------------------------------------------------
 C
       IMPLICIT NONE
       INTEGER            NDIM,CODRET,I,NUNIT,KPG,KSP,NVARCM,IRET2
-      PARAMETER (NVARCM=3)
+      PARAMETER (NVARCM=5)
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*), OPTION, NOMVAR(NVARCM)
       CHARACTER*(*)      FAMI
@@ -131,8 +131,8 @@ C     VARIABLES DE COMMANDE
       NOMVAR(1)='temperature'
       NOMVAR(2)='fluence'
       NOMVAR(3)='corrosion'
-C      NOMVAR(4)='hydratation'
-C      NOMVAR(5)='sechage'
+      NOMVAR(4)='hydratation'
+      NOMVAR(5)='sechage'
 
 C     Température
 
@@ -155,6 +155,21 @@ C     CORROSION
       CALL RCVARC(' ','CORR','+',FAMI,KPG,KSP,VARPLU(3),IRET2)
       IF (IRET2.GT.0) VARPLU(3)=0.D0
       VARREF(3)=0.D0
+      
+C     hydratation
+      CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,VARMOI(4),IRET2)
+      IF (IRET2.GT.0) VARMOI(4)=0.D0
+      CALL RCVARC(' ','CORR','+',FAMI,KPG,KSP,VARPLU(4),IRET2)
+      IF (IRET2.GT.0) VARPLU(4)=0.D0
+      VARREF(4)=0.D0
+      
+C     sechage
+      CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,VARMOI(5),IRET2)
+      IF (IRET2.GT.0) VARMOI(5)=0.D0
+      CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,VARPLU(5),IRET2)
+      IF (IRET2.GT.0) VARPLU(5)=0.D0
+      CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,VARREF(5),IRET2)
+      IF ( IRET2.NE.0) VARREF(5)=0.D0
       
       CALL TECAEL(IZI,IZK)
       

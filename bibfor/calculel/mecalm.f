@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -422,7 +422,8 @@ C               "EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
 C               "EPME_ELNO_DEPL","EPME_ELGA_DEPL","EPMG_ELNO_DEPL",
 C               "EPMG_ELGA_DEPL","EFGE_ELNO_DEPL","EPOT_ELEM_DEPL",
 C               "SIPO_ELNO_DEPL","SIRE_ELNO_DEPL","DEGE_ELNO_DEPL",
-C               "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF"
+C               "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF",
+C               "EPVC_ELGA","EPVC_ELNO"
 C    ------------------------------------------------------------------
           IF (OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
      &        OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
@@ -432,6 +433,8 @@ C    ------------------------------------------------------------------
      &        OPTION.EQ.'EPSG_ELGA_DEPL' .OR.
      &        OPTION.EQ.'EPME_ELNO_DEPL' .OR.
      &        OPTION.EQ.'EPME_ELGA_DEPL' .OR.
+     &        OPTION.EQ.'EPVC_ELNO'      .OR.
+     &        OPTION.EQ.'EPVC_ELGA'      .OR.     
      &        OPTION.EQ.'EPMG_ELNO_DEPL' .OR.
      &        OPTION.EQ.'EPMG_ELGA_DEPL' .OR.
      &        OPTION.EQ.'EFGE_ELNO_DEPL' .OR.
@@ -886,63 +889,16 @@ C ---- VERIF SENSIBILITE FIN
   132         CONTINUE
               CALL JEDEMA()
   130       CONTINUE
-C    ------------------------------------------------------------------
-C    -- OPTIONS "EPGR_ELNO","EPGR_ELGA"
-C    ------------------------------------------------------------------
-          ELSE IF (OPTION.EQ.'EPGR_ELNO' .OR.
-     &             OPTION.EQ.'EPGR_ELGA') THEN
-C ---- VERIF SENSIBILITE
-            IF (TYPESE.NE.0) THEN
-               CODSEN = 1
-            ENDIF
-            IF(CODSEN.NE.0) GO TO 900
-C ---- VERIF SENSIBILITE FIN
-            DO 140,IAUX = 1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR = ZI(JORDR+IAUX-1)
-              CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
-     &                    RESUCO,IORDR,NBORDR,NPASS,LIGREL)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHAMGD,OPTION,
-     &                    IRET)
-              IF (IRET.GT.0) GO TO 142
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHEPSP)
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
-                CALL RSADPA(RESUCO,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
-                CALL MEHARM(MODELE,ZI(JNMO),CHHARM)
-              END IF
-              IF (EXITIM) THEN
-                CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-                TIME = ZR(IAINST)
-                CALL MECHTI(NOMA,TIME,CHTIME)
-              ELSE
-                CHTIME = ' '
-                TIME = ZERO
-              END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
-              CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
-              CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
-              CALL MECHDA(MODELE,NCHAR,ZK8(JCHA),EXITIM,TIME,CHEPSA)
-              CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
-     &                    CHEPSA,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),K24B,
-     &                    ZERO,CZERO,CHDYNR,SOP,CHEPSP,LIGREL,BASE,
-     &                    CHVARC,CHVREF,K24B,COMPOR,CHTESE,
-     &                    CHDESE,NOPASE,TYPESE,IRET)
-              IF (IRET.GT.0) GO TO 142
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  142         CONTINUE
-              CALL JEDEMA()
-  140       CONTINUE
+
 C    ------------------------------------------------------------------
 C    -- OPTIONS "EPSP_ELNO","EPSP_ELGA"
 C    ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'EPSP_ELNO' .OR.
-     &             OPTION.EQ.'EPSP_ELGA') THEN
+     &             OPTION.EQ.'EPSP_ELGA' .OR. 
+     &             OPTION.EQ.'EPFP_ELNO' .OR.
+     &             OPTION.EQ.'EPFP_ELGA' .OR. 
+     &             OPTION.EQ.'EPFD_ELNO' .OR.
+     &             OPTION.EQ.'EPFD_ELGA'     ) THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
                CODSEN = 1

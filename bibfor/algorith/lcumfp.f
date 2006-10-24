@@ -2,7 +2,7 @@
      &                    TINSTM,TINSTP,TM,TP,TREF,EPSM,DEPS,SIGM,
      &                    VIM,OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -377,7 +377,7 @@ C        DO 12 J=1,NSTRS
 12      CONTINUE
 11    CONTINUE
 
-      CALL LCUMVI(VIM,EPSFM)
+      CALL LCUMVI('FT',VIM,EPSFM)
 C_______________________________________________________________________
 C
 C CALCUL DES MATRICES DES DEFORMATIONS DE FLUAGE TOTAL
@@ -527,7 +527,7 @@ C            CALL LCMAZA()
               DO 45 I=1,NSTRS
                 EPSE(I)=EPSM(I)+DEPS(I)-EPSRP*KRON(I)
  45           CONTINUE
-              CALL LCUMVI(VIP,EPSF)
+              CALL LCUMVI('FT',VIP,EPSF)
               CALL LCEIBT(NSTRS,EPSE,EPSF,DEP,INVN,CN,DSIDEP)
             ENDIF
           ENDIF

@@ -5,11 +5,11 @@
      &                  VALPLU, SECMBR, CNRESI, DDEPLA, ETA   ,
      &                  LICCVG, DEFICO, STADYN, PREMIE, CMD   ,
      &                  DEPENT, VITENT, LAMORT, MEMASS, MASSE ,
-     &                  RIGID,  MATASS, AMORT,  COEDEP, COEVIT, 
+     &                  RIGID,  MATASS, AMORT,  COEDEP, COEVIT,
      &                  COEACC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C -- LECTURE DE LA MATRICE ASSEMBLEE (ET ASSEMBLAGE SI BESOIN)
      &                  PREMIE, CMD,    DEPENT, VITENT, RIGID,
      &                  LAMORT, MEMASS, MASSE,  AMORT,  COEDEP,
      &                  COEVIT, COEACC, LICCVG(5))
-      IF (LICCVG(5).NE.0) GOTO 9999
+      IF ((LICCVG(5).EQ.1).OR.(LICCVG(5).EQ.2)) GOTO 9999
 
 
 C -- PREPARATION DU SECOND MEMBRE

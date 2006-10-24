@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -242,9 +242,6 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           LPAIN(1) = 'PDEFORR'
           LCHIN(1) = CHEPS
           LPAOUT(1) = 'PDEFOEQ'
-        ELSE IF (OPTIO2.EQ.'EPGR_ELNO' .OR. OPTIO2.EQ.'EPGR_ELGA') THEN
-          LPAIN(1) = 'PVARIGR'
-          LPAOUT(1) = 'PDEFOPL'
         ELSE
           LPAIN(1) = 'PDEPLAR'
           IF (OPTIO2.EQ.'SIGM_ELNO_COQU') THEN
@@ -265,11 +262,18 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
      &             OPTIO2.EQ.'EPME_ELNO_DEPL' .OR.
      &             OPTIO2.EQ.'EPME_ELGA_DEPL' .OR.
      &             OPTIO2.EQ.'EPMG_ELNO_DEPL' .OR.
-     &             OPTIO2.EQ.'EPMG_ELGA_DEPL') THEN
+     &             OPTIO2.EQ.'EPMG_ELGA_DEPL' .OR. 
+     &             OPTIO2.EQ.'EPFP_ELGA'      .OR. 
+     &             OPTIO2.EQ.'EPFP_ELNO'      .OR. 
+     &             OPTIO2.EQ.'EPFD_ELGA'      .OR. 
+     &             OPTIO2.EQ.'EPFD_ELNO'      ) THEN
             LPAOUT(1) = 'PDEFORR'
           ELSE IF (OPTIO2.EQ.'EPSP_ELNO' .OR.
      &             OPTIO2.EQ.'EPSP_ELGA') THEN
             LPAOUT(1) = 'PDEFOPL'
+          ELSE IF (OPTIO2.EQ.'EPVC_ELNO' .OR.
+     &             OPTIO2.EQ.'EPVC_ELGA') THEN
+            LPAOUT(1) = 'PDEFOVC'
           ELSE IF (OPTIO2.EQ.'EPOT_ELEM_DEPL' .OR.
      &             OPTIO2.EQ.'EPOT_ELEM_TEMP') THEN
             LPAOUT(1) = 'PENERDR'

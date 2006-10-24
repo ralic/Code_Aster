@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF APLEXT UTILITAI  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -40,7 +40,7 @@ extern int errno;
 #endif
 
 
-void DEFPPSP(APLEXT, aplext, long *niv,long *nbd ,char *nom ,unsigned long lnom, long *ier)
+void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,int lnom, INTEGER *ier)
 {
    char *args[100];
    char nomcmd[81];

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -641,10 +641,10 @@ USURE = POST_USURE (
 );
 
 TEST_TABLE(        TABLE=USURE,
-                   PRECISION=1E-4,
+                   PRECISION=2E-3,
                    NOM_PARA='PUIS_USUR_GLOBAL',
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.03.06',
+                   VERSION='8.03.17',
                    VALE=6.77424E-02    )
 
 

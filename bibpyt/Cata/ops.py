@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF ops Cata  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,6 +121,7 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
        print nomres,concep,nomcmd,statut
        if nomres[0] not in (' ','.','&') and statut != '&DETRUIT':
           exec nomres+'='+string.lower(concep)+'()' in self.parent.g_context,d
+       elif statut == '&DETRUIT' : self.jdc.nsd = self.jdc.nsd+1
        pos=pos+80
      for k,v in d.items():
        self.parent.NommerSdprod(v,k)
@@ -407,7 +408,6 @@ def INCLUDE_MATERIAU(self,NOM_AFNOR,TYPE_MODELE,VARIANTE,TYPE_VALE,NOM_MATER,
     # On lit le fichier et on supprime les éventuels \r
     text=string.replace(open(f).read(),'\r\n','\n')
     # On effectue les substitutions necessaires
-    self.prefix=NOM_MATER
     self.text= subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR)
     if INFO == 2:
       print "INCLUDE_MATERIAU: ", self.mat,' ',NOM_MATER,'\n'

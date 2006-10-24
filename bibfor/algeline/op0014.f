@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,15 @@ C     ------------------------------------------------------------------
       MASS = MATASS
 
 
+      CALL GETVIS('  ','NPREC',0,1,1,NPREC,IBID)
+      CALL GETVTX('  ','STOP_SINGULIER',0,1,1,KSTOP,IBID)
+      IF (KSTOP.EQ.'OUI') THEN
+        ISTOP = 0
+      ELSE IF (KSTOP.EQ.'NON') THEN
+        ISTOP = 1
+      END IF
+
+
 C     CAS DU SOLVEUR MUMPS :
 C     ----------------------
       CALL DISMOI('F','EST_MUMPS',MASS,'MATR_ASSE',IBID,MUMPS,IER1)
@@ -71,9 +80,11 @@ C     ----------------------
          CALL JEVEUO(SOLVEU//'.SLVI','E',JSLVI)
          CALL JEVEUO(SOLVEU//'.SLVK','E',JSLVK)
          ZI(JSLVI-1+2)=PCPIV
+         ZI(JSLVI-1+3)=ISTOP
          ZK24(JSLVK-1+3)=KTYPR
-         CALL AMUMPS('DETR_MAT',' ',MFAC,' ',' ',' ')
-         CALL AMUMPS('PRERES',SOLVEU,MFAC,' ',' ',' ')
+         CALL AMUMPS('DETR_MAT',' ',MFAC,' ',' ',' ',IRET)
+         CALL AMUMPS('PRERES',SOLVEU,MFAC,' ',' ',' ',IRET)
+         CALL ASSERT(IRET.EQ.3)
          GO TO 9999
       END IF
 
@@ -158,13 +169,6 @@ C     --- RECUPERATION DU TYPE DE CONDITIONNEMENT MATRICIEL ---
       CALL GETVTX('  ','PRE_COND',0,1,1,PRECON,IBID)
       LPRECO = PRECON(1:4) .EQ. 'DIAG'
 
-      CALL GETVIS('  ','NPREC',0,1,1,NPREC,IBID)
-      CALL GETVTX('  ','STOP_SINGULIER',0,1,1,KSTOP,IBID)
-      IF (KSTOP.EQ.'OUI') THEN
-        ISTOP = 0
-      ELSE IF (KSTOP.EQ.'NON') THEN
-        ISTOP = 1
-      END IF
 
 
 C     --- IMPRESSION SUR LE FICHIER MESSAGE ----------------------------
@@ -186,7 +190,7 @@ C     --- IMPRESSION SUR LE FICHIER MESSAGE ----------------------------
 C     ------------------ FACTORISATION EFFECTIVE -------------------
       IF (LPRECO) CALL MTCOND(IATFAC,'GLOBALE')
       CALL TLDLGG(ISTOP,IATFAC,ILDEB,ILFIN,NPREC,NDECI,ISINGU,NPVNEG,
-     &            IER1)
+     &            IRET)
 C     --------------------------------------------------------------
 
       CALL JEDETR(MFAC//'.&VDI')
