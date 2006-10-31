@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE . METHODE ARLEQUIN
 # SOUMISE A UNE TRACTION UNIFORME A L'INFINI (MATERIAU HOMOGENE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,12 +77,6 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=LINST,),);
 
-DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                OPERATION='EXTR',
-                RESULTAT=RESU,
-                NOM_CHAM='DEPL',
-                NUME_ORDRE=1,);
-
 FOND1=DEFI_FOND_FISS(MAILLAGE=MA,
                      FOND_FISS=_F(GROUP_NO='P0',),
                      NORMALE=(-0.6018,0.7986,0.0),);
@@ -94,27 +88,19 @@ THETA01=CALC_THETA(MODELE=MO,
                                R_INF=1.875E-05,
                                R_SUP=7.5E-05,),);
 
-G01=CALC_G(MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   THETA=_F(THETA=THETA01),
-                   EXCIT=(_F(CHARGE=AR,),
-                          _F(CHARGE=BL,),
-                          _F(CHARGE=CH,),),
-                   DEPL=DEPL,
+G01=CALC_G(        THETA=_F(THETA=THETA01),
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
                    SYME_CHAR='SANS',);
 
-GK01=CALC_G(MODELE=MO,
-                    CHAM_MATER=CHMAT,
-                    THETA=_F(
+GK01=CALC_G(        THETA=_F(
                                DIRECTION=(0.7986,0.6018,0.0),
                                MODULE=1.0,
                                R_INF=1.875E-05,
                                R_SUP=7.5E-05,
                                FOND_FISS=FOND1),
-                    EXCIT=(_F(CHARGE=AR,),
-                          _F(CHARGE=BL,),
-                          _F(CHARGE=CH,),),
-                    DEPL=DEPL,
+                    RESULTAT=RESU,
+                    NUME_ORDRE=1,
                     SYME_CHAR='SANS',
                     OPTION='CALC_K_G');
 

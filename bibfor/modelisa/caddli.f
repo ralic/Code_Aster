@@ -1,6 +1,6 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 31/10/2006   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C--- Variables pour le mot-clef "LIAISON = ENCASTRE"
       LOGICAL      EXISDG
       CHARACTER*8  NOMG
       CHARACTER*72 VALLIA
+      DATA         VALLIA  /'XXXXXXXX'/
 C-------------------------------------------------------------
 
       CALL JEMARQ()
@@ -258,6 +259,7 @@ C       -- ON VERIFIE QUE SI EVOL_THER, IL EST EMPLOYE SEUL :
           CALL JENUNO(JEXNUM(NOMNOE,INO),NOMN)
 C---  GESTION DU MOT-CLEF "LIAISON"
           DO 80 J = 1,NDLIA
+            VALLIA='XXXXXXXX'
             CALL GETVTX(MOTFAC,'LIAISON',I,1,1,VALLIA,LIAIMP)
             IF (VALLIA.EQ.'ENCASTRE') THEN
               IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP1)) THEN
@@ -328,8 +330,8 @@ C         ---------------
 C       -- IL NE FAUT PAS GRONDER L'UTILISATEUR SI 'ENCASTRE' :
         IF (VALLIA.NE.'ENCASTRE') THEN
           DO 91,K=1,NDDLA
-             IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL U2MESK('F','MODELISA2_45',
-     &1,MOTCLE(K))
+             IF (ZI(JCOMPT-1+K).EQ.0) CALL U2MESK('F',
+     &                                    'MODELISA2_45',1,MOTCLE(K))
   91      CONTINUE
         ENDIF
         CALL JEDETR('&&CADDLI.ICOMPT')

@@ -1,0 +1,176 @@
+# MODIF  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+# TITRE TEST DU MODE EXTERNE DE LA MACRO-COMMANDE DE RECALAGE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ159F',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
+
+import os, sys, glob, math
+
+ROOT = os.getcwd()
+
+# Recuperation du chemin du fichier macr_recal_ops.py
+commande = None
+for REPPY in ['Eficas', 'Python']:
+   fic = os.path.join( ROOT, REPPY, 'Macro', 'macr_recal_ops.py' )
+   if os.path.isfile(fic):
+      commande = fic
+      break
+
+sys.path.append(os.path.join(ROOT, REPPY))
+sys.path.append(os.path.join(ROOT, REPPY, 'Macro'))
+sys.path.append(os.path.join(ROOT, REPPY, 'Utilitai'))
+sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
+
+from Utilitai.System import ExecCommand
+from Utilitai.Utmess import UTMESS
+from as_profil import ASTER_PROFIL
+
+if not commande: UTMESS('F', '', "Probleme : impossible de recuperer le chemin de macr_recal_ops.py")
+
+arguments = "-v 2 -F float -f True -G normal"        # Calcul du gradient par Aster
+commande = 'python ' + commande + ' ' + arguments
+
+# Parametres
+fichier_in       = 'input.txt'
+fichier_out      = 'output.txt'
+fichier_grad_out = 'grad.txt'
+
+# Affichage des outputs esclaves ou non
+verbose = True
+
+
+# ------------------------------------------------------------
+def fonction(val):
+   """
+      Calcul de F et eventuellement G par Aster
+   """
+
+   # Affichage
+   print val
+
+   # Menage
+   for fic in [fichier_in, fichier_out, fichier_grad_out]:
+      try:    os.remove(fic)
+      except: pass
+
+   # Ecriture du fichier des parametres
+   txt = ' '.join( [ str(x) for x in val ] )
+   try:
+      f=open(fichier_in, 'w')
+      f.write(txt)
+      f.close()
+   except:
+      UTMESS('F', '', "Probleme : impossible d ecrire le fichier des parametres : \n" + fichier_in)
+
+   # Execution de Code_Aster
+   iret = ExecCommand(commande, follow_output=verbose, verbose=verbose)
+
+   # Lecture du fichier de F
+   try:
+      f=open(fichier_out, 'r')
+      txt = f.read()
+      f.close()
+      fval = float(txt)
+   except:
+      UTMESS('F', '', "Probleme : impossible de lire le fichier de la fonction F : \n"+fichier_out)
+
+   # Affichage
+   print '  --> fonctionnelle : ' + str(fval)
+
+   # Lecture du fichier de G (option -G normal ou -G adim)
+   if os.path.isfile(fichier_grad_out):
+      try:
+         f=open(fichier_grad_out, 'r')
+         txt = f.read()
+         f.close()
+         gval = [ float(x) for x in txt.split(',') ]
+      except:
+         UTMESS('F', '', "Probleme : impossible de lire le fichier de la fonction G : \n"+fichier_grad_out)
+
+      # Affichage
+      print '  --> gradient : ' + str(gval)
+      return fval, gval
+
+   return fval
+
+
+# ------------------------------------------------------------
+# Modification du profil .export
+# - Le fichier fort.2 devient le nouveau .comm (commande MACR_RECAL)
+# - On fixe les noms des fichiers esclave (fort.3) et maillage (fort.20)
+# - On retire du profil tous les fichiers resultats
+liste = glob.glob('*.export')
+fichier_export = liste[0]
+prof = ASTER_PROFIL(fichier_export)
+for lab in ('data', 'resu'):
+   l_fr = getattr(prof, lab)
+   l_tmp = l_fr[:]
+   for dico in l_tmp:
+      # fichiers
+      if not dico['isrep']:
+         # Le fichier d'UL 2 est le nouveau .comm de MACR_RECAL
+         if dico['type'] == 'comm' and dico['ul'] == '1':
+            dico['path'] = os.path.join(ROOT, 'fort.2')
+         else:
+            if dico['ul'] == '3':  dico['path'] = os.path.join(ROOT, 'fort.3')
+            if dico['ul'] == '20': dico['path'] = os.path.join(ROOT, 'fort.20')
+            if dico['ul'] == '2':  l_fr.remove(dico)
+
+            # On supprime tous les fichiers resultats
+            if lab == 'resu': l_fr.remove(dico)
+   setattr(prof, lab, l_fr)
+# Ecriture du nouveau fichier export
+prof.WriteExportTo(fichier_export)
+
+
+# ------------------------------------------------------------
+# Lancement d'une iteration
+# Attention les parametres doivent etre mis ici par ordre alphabetique
+# et non pas dans l'ordre dans lequel ils apparaissent dans le fichier maitre MACR_RECAL
+#      DSDE__,   SIGY__,   YOUN__
+x0 = [ 2000.,    200.,     200000. ]    # Point de depart
+
+# Une iteration du calcul de F et de G
+fval, gval = fonction(x0)
+
+norme_gval = math.sqrt( sum([x**2 for x in gval]) )
+
+TBL=CREA_TABLE(LISTE=(_F(LISTE_R=[ fval ],
+                         PARA='FVAL'),
+                      _F(LISTE_R=[ norme_gval ],
+                         PARA='GVAL'),
+                      )); 
+
+TEST_TABLE(TABLE=TBL,
+           NOM_PARA='FVAL',
+           VALE=0.,
+           PRECISION=0.0001,
+           CRITERE='ABSOLU',
+           REFERENCE='NON_REGRESSION',
+           );
+
+TEST_TABLE(TABLE=TBL,
+           NOM_PARA='GVAL',
+           VALE=0.94588,
+           PRECISION=0.001,
+           CRITERE='ABSOLU',
+           REFERENCE='NON_REGRESSION',
+           );
+
+FIN()

@@ -11,7 +11,7 @@
       CHARACTER*(*)       CHAMP
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -186,7 +186,7 @@ C
       CALL JENUNO(JEXNUM(MA//'.NOMNOE',IPAMAX),NOAMAX)
       CALL JENUNO(JEXNUM(MA//'.NOMNOE',IPAMIN),NOAMIN)
 C
-      CALL JEDETR ( MESMAI )
+      CALL JEDETC ( 'V','&&PREXEL',1 )
       CALL DETRSD ( 'CHAM_ELEM_S', CHAMS1 )
 C
       END

@@ -1,8 +1,9 @@
-      SUBROUTINE CNOCRE(MAZ,NOMGDZ,NCMPZ,LICMP,BASEZ,CNOZ)
+      SUBROUTINE CNOCRE ( MAZ, NOMGDZ, NBNOZ, LINOE, NCMPZ, LICMP,
+     &                    CNOCMP, BASEZ, CNOZ )
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,15 +21,17 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-      CHARACTER*(*) MAZ,NOMGDZ,CNOZ,BASEZ
-      INTEGER NCMPZ
-      CHARACTER*(*) LICMP(NCMPZ)
+      CHARACTER*(*)  MAZ, NOMGDZ, CNOZ, BASEZ
+      INTEGER        NCMPZ, NBNOZ, LINOE(NBNOZ), CNOCMP(NBNOZ*NCMPZ)
+      CHARACTER*(*)  LICMP(NCMPZ)
 C ------------------------------------------------------------------
 C BUT : CREER UN CHAM_NO A VALEURS NULLES
 C ------------------------------------------------------------------
 C     ARGUMENTS:
 C MAZ     IN/JXIN  K8  : MAILLAGE DE CNOZ
 C NOMGDZ  IN       K8  : NOM DE LA GRANDEUR DE CNOZ
+C NBNOZ   IN       I   : NOMBRE DE NOEUDS VOULUES DANS CNOZ
+C LINOE   IN       L_I : NOMS DES NOEUDS VOULUES DANS CNOZ
 C NCMPZ   IN       I   : NOMBRE DE CMPS VOULUES DANS CNOZ
 C LICMP   IN       L_K8: NOMS DES CMPS VOULUES DANS CNOZ
 C BASEZ   IN       K1  : BASE DE CREATION POUR CNOZ : G/V/L
@@ -52,17 +55,17 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      CHARACTER*3 TSCA
-      CHARACTER*8 NOMGD
+      INTEGER      IBID,NBNO,JCNSK,JCNSD,INO
+      INTEGER      I,K,JCNSL,JCNSV,NCMP
+      CHARACTER*3  TSCA
+      CHARACTER*8  NOMGD
       CHARACTER*19 CNS
-      INTEGER IBID,NBNO,JCNSK,JCNSD,INO
-      INTEGER K,JCNSL,JCNSV,NCMP
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
 
       CNS =  '&&CNOCRE.CNS'
-      CALL CNSCRE(MAZ,NOMGDZ,NCMPZ,LICMP,'V',CNS)
+      CALL CNSCRE ( MAZ, NOMGDZ, NCMPZ, LICMP, 'V', CNS )
 
       CALL JEVEUO(CNS//'.CNSK','L',JCNSK)
       CALL JEVEUO(CNS//'.CNSD','L',JCNSD)
@@ -74,14 +77,51 @@ C     ------------------------------------------------------------------
       NCMP  = ZI(JCNSD-1+2)
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-      IF (TSCA.NE.'R') CALL U2MESS('F','CALCULEL2_11')
 
-      DO 30,K = 1,NCMP
-        DO 10,INO = 1,NBNO
-          ZL(JCNSL-1+ (INO-1)*NCMP+K) = .TRUE.
-          ZR(JCNSV-1+ (INO-1)*NCMP+K) = 0.0D0
-   10   CONTINUE
-   30 CONTINUE
+      IF (TSCA.EQ.'R') THEN
+C         -----------
+      IF ( NBNOZ .EQ. 0 ) THEN
+         DO 10,K = 1,NCMP
+            DO 12,INO = 1,NBNO
+               ZL(JCNSL-1+(INO-1)*NCMP+K) = .TRUE.
+               ZR(JCNSV-1+(INO-1)*NCMP+K) = 0.0D0
+ 12         CONTINUE
+ 10      CONTINUE
+      ELSE
+         DO 20,I = 1,NBNOZ
+            INO = LINOE(I)
+            DO 22,K = 1,NCMP
+               IF ( CNOCMP((I-1)*NCMP+K) .EQ. 1 ) THEN
+                  ZL(JCNSL-1+(INO-1)*NCMP+K) = .TRUE.
+                  ZR(JCNSV-1+(INO-1)*NCMP+K) = 0.0D0
+               ENDIF
+ 22         CONTINUE
+ 20      CONTINUE
+      ENDIF
+C
+      ELSEIF (TSCA.EQ.'C') THEN
+C             -----------
+      IF ( NBNOZ .EQ. 0 ) THEN
+         DO 30,K = 1,NCMP
+            DO 32,INO = 1,NBNO
+               ZL(JCNSL-1+(INO-1)*NCMP+K) = .TRUE.
+               ZC(JCNSV-1+(INO-1)*NCMP+K) = (0.0D0,0.0D0)
+ 32         CONTINUE
+ 30      CONTINUE
+      ELSE
+         DO 40,I = 1,NBNOZ
+            INO = LINOE(I)
+            DO 42,K = 1,NCMP
+               IF ( CNOCMP((I-1)*NCMP+K) .EQ. 1 ) THEN
+                  ZL(JCNSL-1+(INO-1)*NCMP+K) = .TRUE.
+                  ZC(JCNSV-1+(INO-1)*NCMP+K) = (0.0D0,0.0D0)
+               ENDIF
+ 42         CONTINUE
+ 40      CONTINUE
+      ENDIF
+      ELSE
+         CALL U2MESS('F','CALCULEL2_11')
+      ENDIF
 
       CALL CNSCNO(CNS,' ','NON',BASEZ,CNOZ)
       CALL DETRSD('CHAM_NO_S',CNS)

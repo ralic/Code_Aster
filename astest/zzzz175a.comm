@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,7 +187,7 @@ for num_calc in range(nbre_calcul):
                     INDICATEUR = 'ERRE_ELEM_SIGM',
                     NOM_CMP_INDICA = 'ERREST' ,
                     INST=inst_fin,
-                    CRIT_RAFF_PE = 0.02,
+                    CRIT_RAFF_PE = 0.03,
                     MAILLAGE_FRONTIERE = maill_fr,
                     QUALITE='OUI',
                     TAILLE='OUI',

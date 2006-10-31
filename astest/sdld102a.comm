@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -435,6 +435,7 @@ TRANGEN5=DYNA_TRAN_MODAL(        METHODE='ADAPT',
 #
 TRAN1=REST_BASE_PHYS(   RESU_GENE=TRANGEN1,
                             TOUT_CHAM='OUI',
+                             NOEUD='NO3',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
@@ -442,6 +443,7 @@ TRAN1=REST_BASE_PHYS(   RESU_GENE=TRANGEN1,
 #
 TRAN2=REST_BASE_PHYS(   RESU_GENE=TRANGEN2,
                             TOUT_CHAM='OUI',
+                             NOEUD='NO3',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
@@ -449,6 +451,7 @@ TRAN2=REST_BASE_PHYS(   RESU_GENE=TRANGEN2,
 #
 TRAN3=REST_BASE_PHYS(   RESU_GENE=TRANGEN3,
                             TOUT_CHAM='OUI',
+                             NOEUD='NO3',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
@@ -456,6 +459,7 @@ TRAN3=REST_BASE_PHYS(   RESU_GENE=TRANGEN3,
 #
 TRAN4=REST_BASE_PHYS(   RESU_GENE=TRANGEN4,
                             TOUT_CHAM='OUI',
+                             NOEUD='NO3',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              MODE_MECA=MODGLO )
@@ -463,6 +467,7 @@ TRAN4=REST_BASE_PHYS(   RESU_GENE=TRANGEN4,
 #
 TRAN5=REST_BASE_PHYS(   RESU_GENE=TRANGEN5,
                             TOUT_CHAM='OUI',
+                             NOEUD='NO3',
                              LIST_INST=LIST_R,
                              INTERPOL='LIN',
                              SQUELETTE=SQUEL )
@@ -773,24 +778,28 @@ IMPR_FONCTION(  UNITE=24,
 #
 RESULT1=REST_BASE_PHYS(   RESU_GENE=TRANG1,
                            TOUT_CHAM='OUI',
+                            NOEUD = 'NO3',
                             LIST_INST=LIST_R,
                             INTERPOL='LIN')
 
 #
 RESULT2=REST_BASE_PHYS(   RESU_GENE=TRANG2,
                            TOUT_CHAM='OUI',
+                            NOEUD = 'NO3',
                             LIST_INST=LIST_R,
                             INTERPOL='LIN')
 
 #
 RESULT3=REST_BASE_PHYS(   RESU_GENE=TRANG3,
                            TOUT_CHAM='OUI',
+                            NOEUD = 'NO3',
                             LIST_INST=LIST_R,
                             INTERPOL='LIN')
 
 #
 RESULT4=REST_BASE_PHYS(   RESU_GENE=TRANG4,
                            TOUT_CHAM='OUI',
+                            NOEUD = 'NO3',
                             LIST_INST=LIST_R,
                             INTERPOL='LIN')
 

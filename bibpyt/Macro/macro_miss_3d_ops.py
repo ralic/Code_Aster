@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 19/09/2006   AUTEUR ACBHHCD G.DEVESA 
+#@ MODIF macro_miss_3d_ops Macro  DATE 31/10/2006   AUTEUR ACBHHCD G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,11 +51,12 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
       tv = tv[:3]
   vers = '%2s.%2s.%2s' % tuple(tv)
 
-  if vers > ' 8. 3.11':
-     miss3d='/aster/logiciels/MISS3D/NEW/miss3d.csh'
-  else:
-     miss3d=loc_fic+'miss3d'
-  #  miss3d='/home/acbhhcd/MISS3D/V6.4/miss3d_d.csh'
+  # if vers > ' 8. 3.11':
+  #    miss3d='/aster/logiciels/MISS3D/NEW/miss3d.csh'
+  # else:
+  #    miss3d=loc_fic+'miss3d'
+     
+  miss3d=loc_fic+'miss3d'
   
   if VERSION=='V1_2':
      if PARAMETRE != None and PARAMETRE['TYPE']=='BINAIRE':

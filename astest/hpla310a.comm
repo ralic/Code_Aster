@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -687,43 +687,32 @@ THETA3=CALC_THETA(    MODELE=MO,
 #
 # POUR FO = 0.001
 #
-G01B=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP1B,
-                                 NUME_ORDRE=1,
-                               THETA=_F(THETA=THETA0),
-                              EXCIT=_F(CHARGE=CH1B,),
-                          CHAM_MATER=CHMATB,
+G01B=CALC_G(        
+                           RESULTAT=CHDEP1B,
+                           NUME_ORDRE=1,
+                           THETA=_F(THETA=THETA0),
                            SYME_CHAR='SYME'
                       )
 
 #
-G01B1=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP1B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA1),
-                               EXCIT=_F(CHARGE=CH1B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G01B1=CALC_G(              RESULTAT=CHDEP1B,
+                           NUME_ORDRE=1,
+                           THETA=_F(THETA=THETA1),
+                           SYME_CHAR='SYME'
                        )
 
 #
-G01B2=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP1B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA2),
-                               EXCIT=_F(CHARGE=CH1B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G01B2=CALC_G(              RESULTAT=CHDEP1B,
+                           NUME_ORDRE=1,
+                           THETA=_F(THETA=THETA2),
+                           SYME_CHAR='SYME'
                        )
 
 #
-G01B3=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP1B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA3),
-                               EXCIT=_F(CHARGE=CH1B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G01B3=CALC_G(              RESULTAT=CHDEP1B,
+                           NUME_ORDRE=1,
+                           THETA=_F(THETA=THETA3),
+                           SYME_CHAR='SYME'
                        )
 
 #
@@ -761,43 +750,31 @@ TEST_TABLE(       TABLE=G01B3,
 #
 # POUR FO = 0.004
 #
-G02B=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP2B,
-                                 NUME_ORDRE=1,
-                               THETA=_F(THETA=THETA0),
-                              EXCIT=_F(CHARGE=CH2B,),
-                          CHAM_MATER=CHMATB,
-                           SYME_CHAR='SYME'
+G02B=CALC_G(        RESULTAT=CHDEP2B,
+                    NUME_ORDRE=1,
+                    THETA=_F(THETA=THETA0),
+                    SYME_CHAR='SYME'
                       )
 
 #
-G02B1=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP2B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA1),
-                               EXCIT=_F(CHARGE=CH2B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G02B1=CALC_G(        RESULTAT=CHDEP2B,
+                     NUME_ORDRE=1,
+                     THETA=_F(THETA=THETA1),
+                     SYME_CHAR='SYME'
                        )
 
 #
-G02B2=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP2B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA2),
-                               EXCIT=_F(CHARGE=CH2B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G02B2=CALC_G(        RESULTAT=CHDEP2B,
+                     NUME_ORDRE=1,
+                     THETA=_F(THETA=THETA2),
+                     SYME_CHAR='SYME'
                        )
 
 #
-G02B3=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP2B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA3),
-                               EXCIT=_F(CHARGE=CH2B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G02B3=CALC_G(        RESULTAT=CHDEP2B,
+                     NUME_ORDRE=1,
+                     THETA=_F(THETA=THETA3),
+                     SYME_CHAR='SYME'
                        )
 
 #
@@ -835,43 +812,31 @@ TEST_TABLE(       TABLE=G02B3,
 #
 # POUR FO = 1
 #
-G03B=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP3B,
-                                 NUME_ORDRE=1,
-                               THETA=_F(THETA=THETA0),
-                              EXCIT=_F(CHARGE=CH3B,),
-                          CHAM_MATER=CHMATB,
-                           SYME_CHAR='SYME'
+G03B=CALC_G(        RESULTAT=CHDEP3B,
+                    NUME_ORDRE=1,
+                    THETA=_F(THETA=THETA0),
+                    SYME_CHAR='SYME'
                       )
 
 #
-G03B1=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP3B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA1),
-                               EXCIT=_F(CHARGE=CH3B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G03B1=CALC_G(       RESULTAT=CHDEP3B,
+                    NUME_ORDRE=1,
+                    THETA=_F(THETA=THETA1),
+                    SYME_CHAR='SYME'
                        )
 
 #
-G03B2=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP3B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA2),
-                               EXCIT=_F(CHARGE=CH3B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G03B2=CALC_G(       RESULTAT=CHDEP3B,
+                    NUME_ORDRE=1,
+                    THETA=_F(THETA=THETA2),
+                    SYME_CHAR='SYME'
                        )
 
 #
-G03B3=CALC_G(        MODELE=MO,
-                                 RESULTAT=CHDEP3B,
-                                 NUME_ORDRE=1,
-                                THETA=_F(THETA=THETA3),
-                               EXCIT=_F(CHARGE=CH3B,),
-                           CHAM_MATER=CHMATB,
-                            SYME_CHAR='SYME'
+G03B3=CALC_G(        RESULTAT=CHDEP3B,
+                     NUME_ORDRE=1,
+                     THETA=_F(THETA=THETA3),
+                     SYME_CHAR='SYME'
                        )
 
 #

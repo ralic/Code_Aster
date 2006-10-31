@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,8 +124,7 @@ C DEB -----------------------------------------------------------------
       CALL JJVERN ( NOML32 , ICRE , IRET )
 C
       IF ( IRET .EQ. 0 ) THEN
-        CMESS = 'NOM INEXISTANT DANS LES BASES OUVERTES'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_26',1,NOML32(1:24))
       ELSE IF ( IRET .EQ. 1 ) THEN
         LCOL = .FALSE.
         IC = ICLAOS

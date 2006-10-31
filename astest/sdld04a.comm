@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE REPONSE TRANSITOIRE D'UN SYSTEME A UNE ACCELERATION IMPOSEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,19 +36,19 @@ MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                     )
 
 #
-CON_LIM=AFFE_CHAR_MECA( MODELE=MODELE,DDL_IMPO=(
-                _F(  GROUP_NO = 'ENCASTRE',
-                                     DX = 0., DY = 0., DZ = 0.),
-                         _F(  GROUP_NO = 'DY',   DY = 0.),
-                         _F(  GROUP_NO = 'DZ',   DZ = 0.))
+CON_LIM=AFFE_CHAR_MECA( MODELE=MODELE,
+                        DDL_IMPO=(_F(  GROUP_NO = 'ENCASTRE',
+                                       DX = 0., DY = 0., DZ = 0.),
+                                  _F(  GROUP_NO = 'DY',   DY = 0.),
+                                  _F(  GROUP_NO = 'DZ',   DZ = 0.))
                          )
 
 #
-CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
-                _F(  NOEUD = ('N02',  'N03',  'N04',),
-                          CARA = 'M_T_D_N',  VALE = 1.),
-                        _F(  GROUP_MA = 'RLN_1',  CARA = 'K_T_D_L',
-                          VALE = (1000., 0., 0.,),  REPERE = 'GLOBAL'))
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
+                          DISCRET=(_F(  NOEUD = ('N02',  'N03',  'N04',),
+                                        CARA = 'M_T_D_N',  VALE = 1.),
+                                   _F(  GROUP_MA = 'RLN_1',  CARA = 'K_T_D_L',
+                                        VALE = (1000., 0., 0.,),  REPERE = 'GLOBAL'))
                          )
 
 #
@@ -58,9 +58,6 @@ RIGI_ELE=CALC_MATR_ELEM(  MODELE=MODELE,        OPTION='RIGI_MECA',
 MASS_ELE=CALC_MATR_ELEM( MODELE=MODELE,    OPTION='MASS_MECA_DIAG',
                             CARA_ELEM=CARA_ELE,   CHARGE=CON_LIM   )
 
-#
-#NUME_DDL = NUME_DDL( MATR_RIGI: RIGI_ELE  METHODE: 'LDLT'
-#                     RENUM:'SANS');
 NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE )
 
 #
@@ -373,8 +370,7 @@ TRAN_LI2=DYNA_LINE_TRAN(reuse=TRAN_LI2,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                            )
 
 DEPL_0_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-RESULTAT=TRAN_LI2, NOM_CHAM='DEPL',
-                          INST=0.10  )
+                     RESULTAT=TRAN_LI2, NOM_CHAM='DEPL', INST=0.10  )
 
 F_D_0_10=RECU_FONCTION(  CHAM_GD=DEPL_0_1, 
                              NOEUD='N04',   NOM_CMP='DX'  )
@@ -422,14 +418,12 @@ TRAN_LI4=DYNA_LINE_TRAN(reuse=TRAN_LI4,   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                            )
 
 DEPLB0_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-RESULTAT=TRAN_LI4, NOM_CHAM='DEPL',
-                          INST=0.10  )
+                     RESULTAT=TRAN_LI4, NOM_CHAM='DEPL', INST=0.10  )
 
 F_DB0_10=RECU_FONCTION(  CHAM_GD=DEPLB0_1, 
                              NOEUD='N04',   NOM_CMP='DX'  )
 
-N04BDX_3=RECU_FONCTION(
-                        NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+N04BDX_3=RECU_FONCTION( NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
                              RESULTAT=TRAN_LI4,  LIST_INST=L_RECU  )
 
 TEST_FONCTION(VALEUR=( 
@@ -450,12 +444,10 @@ TEST_FONCTION(VALEUR=(
 #
 
 DEPL_INI=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-RESULTAT=TRAN_LI2, NOM_CHAM='DEPL',
-                          INST=0.06  )
+                     RESULTAT=TRAN_LI2, NOM_CHAM='DEPL', INST=0.06  )
 
 VITE_INI=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-RESULTAT=TRAN_LI2, NOM_CHAM='VITE',
-                          INST=0.06  )
+                     RESULTAT=TRAN_LI2, NOM_CHAM='VITE', INST=0.06  )
 
 TRAN_LI3=DYNA_LINE_TRAN(   MATR_MASS=MASSE,   MATR_RIGI=RIGIDITE,
                              ETAT_INIT=_F( DEPL_INIT = DEPL_INI,
@@ -478,9 +470,8 @@ TEST_RESU(RESU=(
              NOEUD = 'N04',  NOM_CMP = 'DX',  VALE = -7.18626E+02))
            )
 
-N04_DX_4=RECU_FONCTION(
-                    NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
-                             RESULTAT=TRAN_LI3   )
+N04_DX_4=RECU_FONCTION(  NOEUD='N04',   NOM_CMP='DX',   NOM_CHAM='DEPL',
+                         RESULTAT=TRAN_LI3   )
 
 TEST_FONCTION(VALEUR=( 
                _F(  FONCTION = N04_DX_4,  PRECISION = 1.E-02,
@@ -493,8 +484,8 @@ TEST_FONCTION(VALEUR=(
 
 
 INST_MAX=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-RESULTAT=TRAN_LI3, NOM_CHAM='ACCE',
-                         TYPE_RESU='INST',     TYPE_MAXI='NORM_TRAN' )
+                     RESULTAT=TRAN_LI3, NOM_CHAM='ACCE',
+                     TYPE_RESU='INST',     TYPE_MAXI='NORM_TRAN' )
 
 TEST_RESU(CHAM_NO=( 
            _F(  CHAM_GD = INST_MAX,
@@ -542,17 +533,12 @@ ACCE_A_1=CALC_FONCTION( COMB=(  _F( FONCTION = ACCE_R_1, COEF = 1.),
                                 _F( FONCTION = ACCE_ENT, COEF = 1.))
                              )
 
-RESTPHYS=REST_BASE_PHYS(   RESU_GENE=TRAN_GEN,
-                                LIST_INST=LISTINST,
-                                 NOM_CHAM='ACCE'
-                             )
+RESTPHYS=REST_BASE_PHYS(   RESU_GENE=TRAN_GEN, NOM_CHAM='ACCE',  NOEUD='N04',
+                           LIST_INST=LISTINST,  )
 
 ACCE_R_2=RECU_FONCTION(  RESULTAT=RESTPHYS,
-                                  NOEUD='N04',
-                                NOM_CMP='DX',
-                               NOM_CHAM='ACCE',
-                               INTERPOL='LIN'
-                            )
+                         NOM_CHAM='ACCE', NOEUD='N04', NOM_CMP='DX',
+                         INTERPOL='LIN',   )
 
 ACCE_A_2=CALC_FONCTION( COMB=(  _F( FONCTION = ACCE_R_2, COEF = 1.),
                                 _F( FONCTION = ACCE_ENT, COEF = 1.))
@@ -573,12 +559,10 @@ REST_ABS=RECU_FONCTION(  RESULTAT=RESPHYA,
                             )
 
 RECU_ABS=RECU_FONCTION(   RESU_GENE=TRAN_GEN,
-                                LIST_INST=LISTINST,
-                                    NOEUD='N04',
-                                  NOM_CMP='DX',
-                                 NOM_CHAM='ACCE',
-                               ACCE_MONO_APPUI=ACCE_ENT,
-                                 INTERPOL='LIN'
+                          NOEUD='N04',  NOM_CMP='DX',   NOM_CHAM='ACCE',
+                          ACCE_MONO_APPUI=ACCE_ENT,
+                          LIST_INST=LISTINST,
+                          INTERPOL='LIN'
                              )
 
 TEST_FONCTION(VALEUR=(  
@@ -636,5 +620,3 @@ TEST_FONCTION(VALEUR=(
                   )
 
 FIN()
-#
-#

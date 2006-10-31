@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,136 +103,100 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                        FOND_FISS=_F( NOEUD = 'N668'),
                        NORMALE=(0., 1., 0.,))
 
-G1=CALC_G(         MODELE=MO,
-                         RESULTAT=RESU,
-                            THETA=_F(THETA=THETA1),
-                           EXCIT=_F(CHARGE=CH,),
+G1=CALC_G(              RESULTAT=RESU,
+                        THETA=_F(THETA=THETA1),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                       CHAM_MATER=CHMAT )
+                                      DEFORMATION = 'PETIT'), )
 
-GK1=CALC_G(         MODELE=MO,
-                          RESULTAT=RESU,
+GK1=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                  MODULE = 1.,
                                  R_INF = 22.04078,
                                  R_SUP = 30.,
                                  DIRECTION=( 1., 0., 0.,), 
                                  FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CH,),
-                        CHAM_MATER=CHMAT,
+                            SYME_CHAR='SYME',
                             OPTION='CALC_K_G')
 
-G2=CALC_G(         MODELE=MO,
-                         RESULTAT=RESU,
+G2=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA2),
-                           EXCIT=_F(CHARGE=CH,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                       CHAM_MATER=CHMAT )
+                            SYME_CHAR='SYME',
+                            COMP_ELAS=_F( RELATION = 'ELAS',
+                                          DEFORMATION = 'PETIT'), )
 
-GK2=CALC_G(         MODELE=MO,
-                          RESULTAT=RESU,
+GK2=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   MODULE = 1.,
                                   R_SUP = 22.04078,
                                   R_INF = 15.3061094,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CH,),
-                        CHAM_MATER=CHMAT,
-                            OPTION='CALC_K_G')
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G')
 
-G3=CALC_G(         MODELE=MO,
-                         RESULTAT=RESU,
+G3=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA3),
-                           EXCIT=_F(CHARGE=CH,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                       CHAM_MATER=CHMAT )
+                            SYME_CHAR='SYME',
+                            COMP_ELAS=_F( RELATION = 'ELAS',
+                                          DEFORMATION = 'PETIT'),)
 
-GK3=CALC_G(         MODELE=MO,
-                          RESULTAT=RESU,
+GK3=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   MODULE = 1.,
                                   R_INF = 9.79591846,
                                   R_SUP = 15.3061094,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CH,),
-                        CHAM_MATER=CHMAT,
+                            SYME_CHAR='SYME',
                             OPTION='CALC_K_G')
 
-G4=CALC_G(         MODELE=MO,
-                         RESULTAT=RESU,
+G4=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA4),
-                           EXCIT=_F(CHARGE=CH,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                       CHAM_MATER=CHMAT )
+                            SYME_CHAR='SYME',
+                            COMP_ELAS=_F( RELATION = 'ELAS',
+                                          DEFORMATION = 'PETIT'),)
 
-GK4=CALC_G(         MODELE=MO,
-                          RESULTAT=RESU,
+GK4=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   MODULE = 1.,
                                   R_SUP = 9.79591846,
                                   R_INF = 5.510197639,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CH,),
-                        CHAM_MATER=CHMAT,
-                            OPTION='CALC_K_G')
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G')
 
-G5=CALC_G(         MODELE=MO,
-                         RESULTAT=RESU,
+G5=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA5),
-                           EXCIT=_F(CHARGE=CH,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                       CHAM_MATER=CHMAT )
+                            SYME_CHAR='SYME',
+                            COMP_ELAS=_F( RELATION = 'ELAS',
+                                          DEFORMATION = 'PETIT'),)
 
-GK5=CALC_G(         MODELE=MO,
-                          RESULTAT=RESU,
+GK5=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   MODULE = 1.,
                                   R_INF = 2.448979377,
                                   R_SUP = 5.510197639,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CH,),
-                        CHAM_MATER=CHMAT,
+                            SYME_CHAR='SYME',
                             OPTION='CALC_K_G')
 
-G6=CALC_G(         MODELE=MO,
-                         RESULTAT=RESU,
+G6=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA6),
-                           EXCIT=_F(CHARGE=CH,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                       CHAM_MATER=CHMAT )
+                            SYME_CHAR='SYME',
+                            COMP_ELAS=_F( RELATION = 'ELAS',
+                                          DEFORMATION = 'PETIT'), )
 
-GK6=CALC_G(         MODELE=MO,
-                          RESULTAT=RESU,
+GK6=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
                                   MODULE = 1.,
                                   R_SUP = 2.448979377,
                                   R_INF = 0.61225116,
                                   DIRECTION=( 1., 0., 0.,),
                                   FOND_FISS=FOND),
-                         SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CH,),
-                        CHAM_MATER=CHMAT,
+                            SYME_CHAR='SYME',
                             OPTION='CALC_K_G')
 
 TEST_TABLE(       TABLE=G1,

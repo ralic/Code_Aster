@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/06/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,8 +52,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V8_2",
-                        into=("V8_2", "V8_N", "V8_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V8_5",
+                        into=("V8_5", "V8_N", "V8_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -129,7 +129,19 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                         ang="Error indicator field in the result structure" ),
     ),
 #
-# 6.1.3. La composante retenue
+# 6.1.3. Est-ce un champ dérivé
+#
+    b_sensibilite = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
+                        fr="Est-ce un champ dérivé",
+                        ang="Is the indicator a derivative field",
+#
+      SENSIBILITE = SIMP(statut='f',typ=(para_sensi,theta_geom),
+                         fr="Paramètre de sensibilité.",
+                         ang="Sensitivity parameter")
+#
+    ),
+#
+# 6.1.4. La composante retenue
 #
     b_composante = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
                         fr="Choix de la composante pour l'indicateur",
@@ -141,7 +153,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
     ),
 #
-# 6.1.4. Le paramètre temporel pour l'indicateur
+# 6.1.5. Le paramètre temporel pour l'indicateur
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT_N != None)",
                                 fr="Choix éventuel du paramètre temporel pour l'indicateur",
@@ -149,20 +161,20 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
-# 6.1.4.1. Soit le numero d'ordre
+# 6.1.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
                         fr="Numero d ordre",
                         ang="Rank" ),  
 #
-# 6.1.4.2. Soit l'instant
-# 6.1.4.2.1. Sa valeur
+# 6.1.5.2. Soit l'instant
+# 6.1.5.2.1. Sa valeur
 #
       INST       = SIMP(statut='f',typ='R',
                         fr="Instant associé",
                         ang="Instant" ),
 #
-# 6.1.4.2.2. La précision du choix de l'instant
+# 6.1.5.2.2. La précision du choix de l'instant
 #
       b_precision = BLOC(condition="(INST != None)",
                          fr="Choix de la précision du choix de l'instant",
@@ -174,6 +186,18 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                          fr="Critère de précision sur le choix de l'instant associé",
                          ang="Accuracy criterium over instant choice" ),
       ),
+#
+    ),
+#
+# 6.1.6. Type de valeur de l'indicateur : absolue ou relative
+#
+    b_valeur_indicateur = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
+                               fr="Type de valeur pour l'indicateur",
+                               ang="Value type for error indicator",
+#
+      TYPE_VALEUR_INDICA = SIMP(statut='f',typ='TXM',defaut="V_ABSOLUE",into=("V_ABSOLUE","V_RELATIVE"),
+                                fr="Valeur absolue ou relative pour l'indicateur",
+                                ang="Absolute or relative value for error indicator" ),
 #
     ),
 #
@@ -222,7 +246,6 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
   ) ,
 #
 # 8. Pour de l'adaptation par zone, définitions des zones
-# Remarque : on impose le 3D
 #
   b_zone = BLOC( condition = " (ADAPTATION == 'RAFFINEMENT_ZONE') " ,
                                 fr="Pour une adaptation selon une zone à raffiner",
@@ -233,8 +256,12 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
       regles=(AU_MOINS_UN('X_MINI','X_CENTRE'),
               EXCLUS('X_MINI','X_CENTRE',),
-              PRESENT_PRESENT('X_MINI','X_MAXI','Y_MINI','Y_MAXI','Z_MINI','Z_MAXI'),
-              PRESENT_PRESENT('X_CENTRE','Y_CENTRE','Z_CENTRE','RAYON'),),
+              EXCLUS('Z_MINI','X_CENTRE',),
+              EXCLUS('X_MINI','Z_CENTRE',),
+              EXCLUS('Z_MINI','Z_CENTRE',),
+              PRESENT_PRESENT('X_MINI','X_MAXI','Y_MINI','Y_MAXI'),
+              PRESENT_PRESENT('Z_MINI','Z_MAXI'),
+              PRESENT_PRESENT('X_CENTRE','Y_CENTRE','RAYON'),),
 #
 # 6.2.1. Une boite parallelepipedique
 #
@@ -364,7 +391,13 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
     ),
 #
-# 11.4. Le paramètre temporel pour le champ a interpoler
+# 11.4. Est-ce un champ dérivé
+#
+    SENSIBILITE = SIMP(statut='f',typ=(para_sensi,theta_geom),
+                       fr="Paramètre de sensibilité.",
+                       ang="Sensitivity parameter"),
+#
+# 11.5. Le paramètre temporel pour le champ a interpoler
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT != None)",
                                 fr="Choix éventuel du paramètre temporel pour le champ à interpoler",
@@ -372,20 +405,20 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
-# 11.4.1. Soit le numero d'ordre
+# 11.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
                         fr="Numero d ordre du champ à mettre à jour",
                         ang="Rank of the field to be updated" ),
 #
-# 11.4.2. Soit l'instant
-# 11.4.2.1. Sa valeur
+# 11.5.2. Soit l'instant
+# 11.5.2.1. Sa valeur
 #
       INST = SIMP(statut='f',typ='R',
                   fr="Instant associé",
                   ang="Instant" ),
 #
-# 11.4.2.2. La précision du choix de l'instant
+# 11.5.2.2. La précision du choix de l'instant
 #
       b_precision = BLOC(condition="(INST != None)",
                          fr="Choix de la précision du choix de l'instant",

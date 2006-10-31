@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
               NIV_PUB_WEB='INTERNET',),);
@@ -133,58 +133,31 @@ THETA3=CALC_THETA( MODELE=MODELE,
                                 R_SUP = 18.)
                                )
 
-G1=CALC_G( MODELE=MODELE,
-                    RESULTAT=evol,
+G1=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA1),
-                    CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-G2=CALC_G( MODELE=MODELE,
-                    RESULTAT=evol,
+G2=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA2),
-                    CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-G3=CALC_G( MODELE=MODELE,
-                    RESULTAT=evol,
+G3=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA3),
-                    CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-DEPL5=CREA_CHAMP(OPERATION='EXTR',
-                TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=evol,
-                NUME_ORDRE=5,
-                NOM_CHAM='DEPL',
-                 )
-VITE5=CREA_CHAMP(OPERATION='EXTR',
-                TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=evol,
-                NUME_ORDRE=5,
-                NOM_CHAM='VITE',
-                 )
-ACCE5=CREA_CHAMP(OPERATION='EXTR',
-                TYPE_CHAM='NOEU_DEPL_R',
-                RESULTAT=evol,
-                NUME_ORDRE=5,
-                NOM_CHAM='ACCE',
-                 )
 
-G4=CALC_G( MODELE=MODELE,
-                    THETA=_F(THETA=THETA1),
-                    DEPL=DEPL5,
-                    VITE=VITE5,
-                    ACCE=ACCE5,
-                    CHAM_MATER=CHAMPMAT,
+G4=CALC_G(          THETA=_F(THETA=THETA1),
+                    RESULTAT=evol,
+                    NUME_ORDRE=5,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )

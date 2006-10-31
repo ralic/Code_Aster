@@ -16,7 +16,6 @@ tcal = 35.
 tab = POST_GP(RESULTAT=RESU,
               MODELE=MOD,
               MATER=ACIER,
-              CHAM_MATER=CHMAT,
               COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
                            DEFORMATION='PETIT'),
          

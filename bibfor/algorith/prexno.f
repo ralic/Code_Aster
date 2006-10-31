@@ -10,7 +10,7 @@
       CHARACTER*(*)       CHAMP
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C
       TYPMCL(2) = 'NOEUD'
       TYPMCL(3) = 'GROUP_MA'
       TYPMCL(4) = 'MAILLE'
-      MESNOE = '&&PREXEL.MES_NOEUDS'
+      MESNOE = '&&PREXNO.MES_NOEUDS'
 C
       CHAMS1 = '&&PREXNO.CHAMS1'
       CALL CNOCNS ( CHAMP,'V', CHAMS1 )
@@ -94,7 +94,7 @@ C
       CALL GETVTX ( 'ACTION', 'NOM_CMP', IOC,1,0,K8B, NBC )
       IF (NBC.NE.0) THEN
          NBCMP = -NBC
-         CALL WKVECT('&&PREXEL.NOM_CMP','V V K8',NBCMP,JCMP)
+         CALL WKVECT('&&PREXNO.NOM_CMP','V V K8',NBCMP,JCMP)
          CALL GETVTX('ACTION','NOM_CMP',IOC,1,NBCMP,ZK8(JCMP),IBID)
       ELSE
          NBCMP = NCMP
@@ -166,7 +166,7 @@ C
       CALL JENUNO(JEXNUM(MA//'.NOMNOE',INAMAX),NOAMAX)
       CALL JENUNO(JEXNUM(MA//'.NOMNOE',INAMIN),NOAMIN)
 C
-      CALL JEDETR ( MESNOE )
       CALL DETRSD ( 'CHAM_NO_S', CHAMS1 )
+      CALL JEDETC ( 'V','&&PREXNO',1 )
 C
       END

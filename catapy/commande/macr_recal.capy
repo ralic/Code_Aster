@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,12 +34,31 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
          LIST_PARA       =SIMP(statut='o',typ=assd,max='**'),
          LIST_DERIV      =SIMP(statut='f',typ=assd,max='**'),
          ITER_MAXI       =SIMP(statut='f',typ='I',defaut=10),
+         ITER_FONC_MAXI  =SIMP(statut='f',typ='I',defaut=100),
          RESI_GLOB_RELA  =SIMP(statut='f',typ='R',defaut=1.E-3),
          UNITE_RESU      =SIMP(statut='f',typ='I',defaut=91),
          PARA_DIFF_FINI  =SIMP(statut='f',typ='R',defaut=0.001),
-         GRAPHIQUE       =FACT(statut='d',
+#         GRAPHIQUE       =FACT(statut='d',
+         GRAPHIQUE       =FACT(statut='f',
            UNITE           =SIMP(statut='f',typ='I',defaut=90),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut='XMGRACE',into=("XMGRACE","GNUPLOT")),
-           INTERACTIF      =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON")),),
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=( 1, 2, 3, 4 ) ),
+           INTERACTIF      =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON")),
+           AFFICHAGE       =SIMP(statut='f',typ='TXM',defaut='TOUTE_ITERATION',into=("TOUTE_ITERATION","ITERATION_FINALE")),),
+         SUIVI_ESCLAVE   =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON"),),
+
+         METHODE         =SIMP(statut='f',typ='TXM',defaut='LEVENBERG',into=("LEVENBERG","FMIN","FMINBFGS","FMINNCG","EXTERNE")),
+
+         b_gradient =BLOC(condition = "METHODE == 'FMINBFGS' or METHODE == 'FMINNCG'" ,
+            GRADIENT        =SIMP(statut='f',typ='TXM',defaut='NON_CALCULE', into=("NON_CALCULE", "NORMAL", "ADIMENSIONNE" )),
+         ),
+
+         b_gradient_externe =BLOC(condition = "METHODE == 'EXTERNE'" ,
+            GRADIENT        =SIMP(statut='f',typ='TXM',defaut='NON_CALCULE', into=("NON_CALCULE", "NORMAL", "ADIMENSIONNE" )),
+         ),
+
+         b_type_fonctionnelle =BLOC(condition = "METHODE == 'EXTERNE'" ,
+            FONCTIONNELLE   =SIMP(statut='f',typ='TXM',defaut='SCALAIRE',into=("SCALAIRE","VECTORIELLE")),
+         ),
+
+         INFO            =SIMP(statut='f',typ='I',defaut=2,into=( 1, 2 ) ),
 );

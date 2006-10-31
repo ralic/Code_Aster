@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,7 +193,7 @@ MACR_ADAP_MAIL ( ADAPTATION = 'RAFFINEMENT',
                  RESULTAT_N = RESU_0,
                  INDICATEUR = 'ERRE_ELEM_SIGM',
                  NOM_CMP_INDICA = 'ERREST' ,
-                 CRIT_RAFF_PE = 0.03,
+                 CRIT_RAFF_PE = 0.05,
                  MAILLAGE_FRONTIERE = ARC,
                  QUALITE='OUI',
                  INTERPENETRATION = 'OUI',
@@ -266,7 +266,7 @@ MACR_ADAP_MAIL ( ADAPTATION = 'RAFF_DERA',
                  RESULTAT_N = RESU_1,
                  INDICATEUR = 'ERRE_ELEM_SIGM',
                  NOM_CMP_INDICA = 'ERREST' ,
-                 CRIT_RAFF_PE = 0.03,
+                 CRIT_RAFF_PE = 0.10,
                  CRIT_DERA_PE = 0.20,
                  MAILLAGE_FRONTIERE = ARC,
                  QUALITE='OUI',

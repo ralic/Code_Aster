@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,21 +108,16 @@ THETA2=CALC_THETA(    MODELE=MO,
                                      DIRECTION=(1., 0., 0.,)
                      )
 
-G_0=CALC_G(MODELE=MO,
-            CHAM_MATER=CHMAT,
-            THETA=_F(THETA=THETA0),
+G_0=CALC_G( THETA=_F(THETA=THETA0),
             RESULTAT=CHAMDEP,
-            TOUT_ORDRE='OUI',
-            SYME_CHAR='SYME',
+            TOUT_ORDRE='OUI',SYME_CHAR='SYME',
             COMP_ELAS=_F(RELATION='ELAS_VMIS_LINE',),
             );
 
 IMPR_TABLE(TABLE=G_0,);
 
 LISTG = (30, 60,90,120,150);
-G_1=CALC_G(MODELE=MO,
-            CHAM_MATER=CHMAT,
-            THETA=_F(THETA=THETA1),
+G_1=CALC_G( THETA=_F(THETA=THETA1),
             RESULTAT=CHAMDEP,
             NUME_ORDRE=LISTG,
             SYME_CHAR='SYME',
@@ -131,9 +126,7 @@ G_1=CALC_G(MODELE=MO,
 
 IMPR_TABLE(TABLE=G_1,);
 
-G_2=CALC_G(MODELE=MO,
-            CHAM_MATER=CHMAT,
-            THETA=_F(THETA=THETA2),
+G_2=CALC_G( THETA=_F(THETA=THETA2),
             RESULTAT=CHAMDEP,
             NUME_ORDRE=LISTG,
             SYME_CHAR='SYME',

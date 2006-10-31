@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,11 +74,6 @@ C     ------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C DEB ------------------------------------------------------------------
-            IF ( IGUARD .EQ. 0 ) THEN
-               IGUARD = 1
-            ELSE
-               IGUARD = IGUARD + 1
-            END IF
       CATRLU = CATR
       NOML32 = NOMLU
 C
@@ -88,8 +83,7 @@ C
       CALL JJVERN ( NOML32 , ICRE , IRET )
 C
       IF ( IRET .EQ. 0 ) THEN
-        CMESS = 'OBJET INEXISTANT DANS LES BASES OUVERTES'
-        CALL U2MESK('F','JEVEUX_01',1,CMESS)
+        CALL U2MESK('F','JEVEUX_26',1,NOML32(1:24))
       ELSE IF ( IRET .EQ. 1 ) THEN
         IC     = ICLAOS
         ID     = IDATOS
@@ -283,9 +277,4 @@ C           ENDIF
         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
 C FIN ------------------------------------------------------------------
-            IF ( IGUARD .EQ. 1 ) THEN
-               IGUARD = 0
-            ELSE
-               IGUARD = IGUARD - 1
-            END IF
       END

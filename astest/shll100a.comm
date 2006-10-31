@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -192,9 +192,10 @@ TEST_FONCTION( VALEUR= _F( FONCTION = HFOG1 ,
                            VALE_REFE_C = -5.50231E-11+4.11411E-09j ), ) ;
 #
 DYNHARD=REST_BASE_PHYS(   RESU_GENE=DYNPROD,
-                           FREQ=FD,
-                           MODE_MECA=MODESD,
-                           TOUT_CHAM='OUI')
+                          NOEUD = 'N11',
+                          FREQ=FD,
+                          MODE_MECA=MODESD,
+                          NOM_CHAM = 'DEPL',   )
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHARD,
                   REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
@@ -563,9 +564,10 @@ DYNHARM2=REST_BASE_PHYS(   RESU_GENE=DYNPRO,
 #SUR LA SOUS STRUCTURE NUMERO 2
 
 DYNHARC=REST_BASE_PHYS(   RESU_GENE=DYNPRO,
-                           FREQ=F,
-                           MODE_MECA=MODCOT,
-                           TOUT_CHAM='OUI')
+                          FREQ=F,
+                          MODE_MECA=MODCOT,
+                          NOM_CHAM = 'DEPL',
+                          NOEUD = 'N5',        )
 
 #
 DYNHARM=REST_BASE_PHYS(  RESU_GENE=DYNGEN,

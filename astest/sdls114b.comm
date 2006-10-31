@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,9 +161,7 @@ FF2=DEFI_FISS_XFEM(MODELE=MO,
                    CONTACT=_F(),
                   );
 
-GLMO1=CALC_G(MODELE=MO,
-             CHAM_MATER=CM,
-             OPTION='K_G_MODA',
+GLMO1=CALC_G(OPTION='K_G_MODA',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
              THETA=_F( FISSURE=FF2,
@@ -281,8 +279,6 @@ RES_DYNA=DYNA_TRAN_MODAL(MASS_GENE=MASS_GE,
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                   K_MODAL = _F(RESU_MODA = MODE,
                               FISSURE=FF2,
-                              MODELE=MO,
-                              CHAM_MATER=CM,
                               R_INF=9.E-5,
                               R_SUP=3.E-4, 
                               LISSAGE_THETA='LAGRANGE',

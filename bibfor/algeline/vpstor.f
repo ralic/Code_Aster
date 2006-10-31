@@ -10,22 +10,22 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C (AT YOUR OPTION) ANY LATER VERSION.
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C     STOCKAGE DES VALEURS PROPRES
 C
@@ -54,14 +54,14 @@ C     ------------------------------------------------------------------
       INTEGER       JREFD, IMODE, JMODE, IER, NMIN, IMIN, NMAX, IMAX,IEQ
       INTEGER       NMIN1, KMODE, NORDR, IBID, I, LADPA, LMODE, LVALE
       INTEGER       INDK24, NBPAST, IRANG,IRET,JMODG,JMACR,JBASM,JRAID
-      INTEGER       JMOD2,JMODL,JMATE,JCARA
+      INTEGER       JMOD2,JMODL,JMATE,JCARA,JLIME,JMERI
       PARAMETER    ( NBPAST = 17 )
       CHARACTER*8   RES ,K8B, RAIDE, MODELE, CHMAT, CARAEL
       CHARACTER*16  TYPCON, NOMCMD, NOSY
       CHARACTER*19  CHAMNO
       CHARACTER*24  REFD,NUME,NOPAST(NBPAST)
       CHARACTER*32  JEXNUM
-      LOGICAL       LREFD, LNUME, LSTOCK
+      LOGICAL       LREFD, LNUME, LBASM, LSTOCK
 C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C
@@ -83,12 +83,19 @@ C     POUR POUVOIR UTILISER VPSTOR DANS STAT_NON_LINE VIA NMOP45
         TYPCON = 'MODE_FLAMB'
         IF ( MOD45 . EQ. 'VIBR' ) TYPCON = 'MODE_MECA'
       ENDIF
-
+      
       IF ( TYPCON .EQ. 'MODE_ACOU' ) THEN
         NOSY = 'PRES'
       ELSE
         NOSY = 'DEPL'
       ENDIF
+C
+      IF ( TYPCON(1:11) .EQ. 'BASE_MODALE' ) THEN 
+        LBASM=.TRUE.
+      ELSE
+        LBASM=.FALSE.
+      ENDIF
+C
       LREFD = .TRUE.
       LNUME = .TRUE.
       REFD(1:8) = MODES
@@ -97,19 +104,24 @@ C On teste l'existence du REFD
       IF (IER.EQ.0) THEN
          LREFD = .FALSE.
       ELSE
-         CALL JEVEUO (REFD, 'L', JREFD )
-C On recupere la matrice du REFD
-         RAIDE=ZK24(JREFD)(1:8)
-         CALL EXISD('MATR_ASSE',RAIDE,IER)
-         IF (IER.EQ.0) THEN
-C On recupere la numerotation du REFD si la matrice n'existe pas
-           NUME = ZK24(JREFD+3)
-           LNUME = .FALSE.
-           LSTOCK=.FALSE.
-         ELSE
+         IF(LBASM)THEN
            LNUME = .TRUE.
-           LSTOCK=.TRUE.
-         ENDIF
+           CALL GETVID(' ','RAIDE',0,1,1,RAIDE,IER)
+         ELSE
+           CALL JEVEUO (REFD, 'L', JREFD )
+C On recupere la matrice du REFD
+           RAIDE=ZK24(JREFD)(1:8)
+           CALL EXISD('MATR_ASSE',RAIDE,IER)
+           IF (IER.EQ.0) THEN
+C On recupere la numerotation du REFD si la matrice n'existe pas
+             NUME = ZK24(JREFD+3)
+             LNUME = .FALSE.
+             LSTOCK=.FALSE.
+           ELSE
+             LNUME = .TRUE.
+             LSTOCK=.TRUE.
+           ENDIF
+        ENDIF
 C Si elle existe on prend la numerotation associee
       ENDIF
 C
@@ -162,6 +174,34 @@ C     CARACTERISTIQUES ELEMENTAIRES
 C            ON EST PASSE PAR UN PROJ_MATR_BASE
              CALL JEVEUO(RAIDE//'           .REFA','L',JMODG)
              CALL JEVEUO(ZK24(JMODG)(1:8)//'           .REFD','L',JRAID)
+             IF(ZK24(JRAID)(1:8).EQ.'        ')THEN
+             CALL JEVEUO(JEXNUM(ZK24(JMODG)(1:8)//'           .TACH',1),
+     &                   'L',JMOD2)
+             CALL JEVEUO(ZK24(JMOD2)(1:8)//'           .MODL','L',JMODL)
+             CALL JEVEUO(ZK24(JMOD2)(1:8)//'           .MATE','L',JMATE)
+             CALL JEVEUO(ZK24(JMOD2)(1:8)//'           .CARA','L',JCARA)
+             MODELE=ZK8(JMODL)
+             CHMAT =ZK8(JMATE)
+             CARAEL=ZK8(JCARA)
+             GOTO 39
+             ELSE
+             CALL JEVEUO(ZK24(JRAID)(1:8)//'           .LIME','L',JLIME)
+             IF(ZK8(JLIME).NE.'        ')THEN
+C            ON EST PASSE PAR UN ASSE_MATRICE/CALC_MATR_ELEM
+             CALL JEEXIN(ZK8(JLIME)//'      .MODG.SSME',IRET)
+             IF(IRET.NE.0)THEN
+             CALL JEVEUO(ZK8(JLIME)//'      .MODG.SSME','L',JMACR)
+             CALL JEVEUO(ZK8(JMACR)//'.MAEL_INER_REFE','L',JBASM)
+             CALL JEVEUO(ZK24(JBASM)(1:8)//'           .REFD','L',JRAID)
+             CALL JEVEUO(ZK24(JRAID)(1:8)//'           .LIME','L',JLIME)
+             CALL JEVEUO(ZK8(JLIME)//'.REFE_RESU','L',JMERI)
+             MODELE=ZK24(JMERI)(1:8)
+             CHMAT=ZK24(JMERI+3)(1:8)
+             CARAEL=ZK24(JMERI+4)(1:8)
+             GOTO 39
+             ENDIF
+             ENDIF
+             ENDIF
            ELSE
 C            ON EST PASSE PAR UN DEFI_MODELE_GENE
              CALL JEVEUO(ZK8(JMODG)//'      .MODG.SSME','L',JMACR)

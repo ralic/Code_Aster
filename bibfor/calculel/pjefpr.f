@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,13 +67,15 @@ C
       INTEGER       IPAR, IPAR1, IPAR2
       LOGICAL       ACCENO
       CHARACTER*8   KB, MA1, MA2, NUME,PROL0,K8B, TYP1, TYP2
-      CHARACTER*16  NOMSYM(200)
+      CHARACTER*16  NOMSYM(200),K16B,NOMCMD
       CHARACTER*19  CH1, CH2, PRFCHN,LIGREL,PRFCH2
       CHARACTER*19  NOMS2,REFE, KPAR(NBMAX)
       INTEGER IACONB,IACONU,NBNO2,JPJM1,IACNX1,ILCNX1,IDECAL,INO2
       INTEGER KMA1,NBNO1,IMA1,NBMA1,INO1
       INTEGER NUNO1A,NUNO1B
       INTEGER IER,LMATAS
+      REAL*8 R8B
+      COMPLEX*16 C16B
 
 C     FONCTIONS FORMULES :
 
@@ -84,32 +86,54 @@ C
 C
       LIGREL=MODEL2//'.MODELE'
 
-      CALL DISMOI('F','NOM_MAILLA', RESU1,'RESULTAT',IBID,MA1,IE)
-      CALL DISMOI('F','NOM_MAILLA', MODEL2,'MODELE',IBID,MA2,IE)
+      CALL GETRES(K8B,K16B,NOMCMD)
 
-      CALL JEVEUO(CORRES//'.PJEF_NO','L',JCONO)
-      IF (ZK8(JCONO-1+1).NE.MA1)
-     &CALL U2MESS('F','CALCULEL4_59')
-      IF (ZK8(JCONO-1+2).NE.MA2)
-     &CALL U2MESS('F','CALCULEL4_60')
+      IF (NOMCMD .EQ. 'DEPL_INTERNE') THEN
+C       ON NE TRAITE QUE LE CHAMP DEPL
+        NBSYM = 1
+        NOMSYM(1) = 'DEPL'
+        CALL RSORAC(RESU1,'LONUTI',IBID,R8B,KB,C16B,R8B,KB,NBORDR,1,
+     &              IBID)
+        IF ( NBORDR.EQ.0 ) THEN
+          CALL U2MESK('F','CALCULEL4_62',1,RESU1)
+        ENDIF
 
-      CALL RSUTC4(RESU1,' ',1,200,NOMSYM,NBSYM,ACCENO)
-      CALL ASSERT (NBSYM.GT.0)
+        CALL WKVECT('&&PJEFPR.NUME_ORDRE','V V I',NBORDR,JORDR)
 
-      CALL GETVTX(' ','PROL_ZERO',1,1,1,PROL0,IER)
+        CALL RSORAC(RESU1,'TOUT_ORDRE',IBID,R8B,KB,C16B,R8B,KB,
+     &              ZI(JORDR),NBORDR,IBID)
+
+        PROL0 = 'OUI'
+      ELSE
+
+        CALL DISMOI('F','NOM_MAILLA', RESU1,'RESULTAT',IBID,MA1,IE)
+        CALL DISMOI('F','NOM_MAILLA', MODEL2,'MODELE',IBID,MA2,IE)
+
+        CALL JEVEUO(CORRES//'.PJEF_NO','L',JCONO)
+        IF (ZK8(JCONO-1+1).NE.MA1)
+     &  CALL U2MESS('F','CALCULEL4_59')
+        IF (ZK8(JCONO-1+2).NE.MA2)
+     &  CALL U2MESS('F','CALCULEL4_60')
+
+        CALL RSUTC4(RESU1,' ',1,200,NOMSYM,NBSYM,ACCENO)
+        CALL ASSERT (NBSYM.GT.0)
+
+        CALL GETVTX(' ','PROL_ZERO',1,1,1,PROL0,IER)
 
 
 C     1- CREATION DE LA SD RESULTAT : RESU2
 C     ------------------------------------
-      CALL RSUTNU(RESU1,' ',0,'&&PJEFPR.NUME_ORDRE',NBORDR,0.D0,
+        CALL RSUTNU(RESU1,' ',0,'&&PJEFPR.NUME_ORDRE',NBORDR,0.D0,
      &            'ABSO',IRET)
-      IF ( IRET.NE.0 ) THEN
-        CALL U2MESK('F','CALCULEL4_61',1,RESU1)
+        IF ( IRET.NE.0 ) THEN
+          CALL U2MESK('F','CALCULEL4_61',1,RESU1)
+        ENDIF
+        IF ( NBORDR.EQ.0 ) THEN
+          CALL U2MESK('F','CALCULEL4_62',1,RESU1)
+        ENDIF
+        CALL JEVEUO('&&PJEFPR.NUME_ORDRE','L',JORDR)
       ENDIF
-      IF ( NBORDR.EQ.0 ) THEN
-        CALL U2MESK('F','CALCULEL4_62',1,RESU1)
-      ENDIF
-      CALL JEVEUO('&&PJEFPR.NUME_ORDRE','L',JORDR)
+
       NOMS2 = RESU2
       CALL JEEXIN (NOMS2//'.DESC', IRET )
       IF ( IRET.EQ.0 ) THEN
@@ -120,10 +144,13 @@ C     ------------------------------------
 C Dans le cas des concepts type modes meca on teste la presence
 C des matrices afin de recuperer la numerotation sous-jacente
       PRFCH2='12345678.00000.NUME'
+      IF (NOMCMD .EQ. 'DEPL_INTERNE') THEN
+      ELSE
 C    On essaye de recuperer la numerotation imposee
-      CALL GETVID(' ','NUME_DDL',1,1,1,NUME,IER)
-      IF (IER.NE.0) THEN
-        PRFCH2=NUME(1:8)//'      .NUME'
+        CALL GETVID(' ','NUME_DDL',1,1,1,NUME,IER)
+        IF (IER.NE.0) THEN
+          PRFCH2=NUME(1:8)//'      .NUME'
+        ENDIF
       ENDIF
 
 C     2- ON CALCULE LES CHAMPS RESULTATS :
@@ -191,8 +218,13 @@ C             Recuperation de nume_mode
 C            on fait rien
           ENDIF
 
+          IF (NOMCMD .EQ. 'DEPL_INTERNE') THEN
+            IPAR = 0
+          ELSE
 C         REMPLIT D AUTRES PARAMETRES SI DEMANDE PAR UTILISATEUR
-          CALL GETVTX(' ','NOM_PARA',1,1,NBMAX,KPAR,IPAR)
+            CALL GETVTX(' ','NOM_PARA',1,1,NBMAX,KPAR,IPAR)
+          ENDIF
+
 
           DO 15 IND=1,IPAR
              CALL RSADPA ( RESU1,'L',1,KPAR(IND),

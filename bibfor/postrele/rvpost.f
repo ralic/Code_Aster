@@ -13,7 +13,7 @@
       LOGICAL TRIDIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/09/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,7 +197,7 @@ C
                             OPER = 'MOYENNE'
                             CALL RVAFFM(MCF,IOCC,SDLI,SDPOST,SDMOYE,
      +                                  OPER,QUANT,OPTION,REPERE,
-     +                                  NOMTAB,NCHEFF,I1,ISD)
+     +                                  NOMTAB,XNOVAR,NCHEFF,I1,ISD)
                             CALL JEDETR(SDMOYE)
 C
                          ELSE
@@ -213,7 +213,7 @@ C
                               CALL RVPSTM(SDLI,SDPOST,SDMOYE)
                               CALL RVAFFM(MCF,IOCC,SDLI,SDPOST,SDMOYE,
      +                                    OPER,QUANT,OPTION,REPERE,
-     +                                    NOMTAB,NCHEFF,I1,ISD)
+     +                                    NOMTAB,XNOVAR,NCHEFF,I1,ISD)
                               CALL JEDETR(SDMOYE)
                             ENDIF
                          ENDIF

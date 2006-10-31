@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE MURA 11.17 FISSURE SOUS FLUX DE CHALEUR UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -170,6 +170,13 @@ DEP=RESO_LDLT(   MATR_FACT=RIGIDITE,
                             CHAM_NO=FORCE
                        )
 
+RESU=CREA_RESU(  OPERATION='AFFE',
+                 TYPE_RESU='EVOL_ELAS',
+                 NOM_CHAM='DEPL',
+                      AFFE=_F(  CHAM_GD = DEP, 
+                                INST=0.,
+                                MODELE=MO,
+                                CHAM_MATER = CHMAT)     )
 #
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                          FOND_FISS=_F( GROUP_NO = ('P0',)),
@@ -186,27 +193,24 @@ THETA0=CALC_THETA(       MODELE=MO,
                      )
 
 #
-G00=CALC_G(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=_F(THETA=THETA0),
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G00=CALC_G(        RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   THETA=_F(THETA=THETA0),
+                   EXCIT=_F(CHARGE=CH,),
+                   SYME_CHAR='SANS'
                      )
 
 #
-GK00=CALC_G(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=_F(
-                                    MODULE = 1.,
-                                    R_INF = 5.00E-3,
-                                    R_SUP = 1.00E-2,
-                                    DIRECTION=(1., 0., 0.,),
-                                    FOND_FISS=FOND),
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
+GK00=CALC_G(        RESULTAT=RESU,
+                    NUME_ORDRE=1,
+                    THETA=_F( MODULE = 1.,
+                              R_INF = 5.00E-3,
+                              R_SUP = 1.00E-2,
+                              DIRECTION=(1., 0., 0.,),
+                              FOND_FISS=FOND),
+                    EXCIT=_F(CHARGE=CH,),
+                    SYME_CHAR='SANS',
+                    OPTION='CALC_K_G'
                       )
 
 #
@@ -235,27 +239,24 @@ THETA01=CALC_THETA(       MODELE=MO,
                      )
 
 #
-G01=CALC_G(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=_F(THETA=THETA01),
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G01=CALC_G(        RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   THETA=_F(THETA=THETA01),
+                   EXCIT=_F(CHARGE=CH,),
+                   SYME_CHAR='SANS'
                      )
 
 #
-GK01=CALC_G(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=_F(
-                                     MODULE = 1.,
-                                     R_INF = 1.00E-2,
-                                     R_SUP = 1.50E-2,
-                                     DIRECTION=(1., 0., 0.,),
-                                     FOND_FISS=FOND),
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
+GK01=CALC_G(        RESULTAT=RESU,
+                    NUME_ORDRE=1,
+                    THETA=_F( MODULE = 1.,
+                              R_INF = 1.00E-2,
+                              R_SUP = 1.50E-2,
+                              DIRECTION=(1., 0., 0.,),
+                              FOND_FISS=FOND),
+                    EXCIT=_F(CHARGE=CH,),
+                    SYME_CHAR='SANS',
+                    OPTION='CALC_K_G'
                       )
 
 #
@@ -284,27 +285,24 @@ THETA02=CALC_THETA(       MODELE=MO,
                      )
 
 #
-G02=CALC_G(        MODELE=MO,
-                               DEPL=DEP,
-                              THETA=_F(THETA=THETA02),
-                             EXCIT=_F(CHARGE=CH,),
-                         CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G02=CALC_G(        RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   THETA=_F(THETA=THETA02),
+                   EXCIT=_F(CHARGE=CH,),
+                   SYME_CHAR='SANS'
                      )
 
 #
-GK02=CALC_G(        MODELE=MO,
-                                DEPL=DEP,
-                               THETA=_F(
-                                     MODULE = 1.,
-                                     R_INF = 1.50E-2,
-                                     R_SUP = 2.00E-2,
-                                     DIRECTION=(1., 0., 0.,),
-                                     FOND_FISS=FOND),
-                              EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                           SYME_CHAR='SANS',
-                              OPTION='CALC_K_G'
+GK02=CALC_G(        RESULTAT=RESU,
+                    NUME_ORDRE=1,
+                    THETA=_F( MODULE = 1.,
+                              R_INF = 1.50E-2,
+                              R_SUP = 2.00E-2,
+                              DIRECTION=(1., 0., 0.,),
+                              FOND_FISS=FOND),
+                    EXCIT=_F(CHARGE=CH,),
+                    SYME_CHAR='SANS',
+                    OPTION='CALC_K_G'
                       )
 
 #

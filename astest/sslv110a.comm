@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,10 +55,6 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
 
 CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
               EXCIT=_F( CHARGE = CH))
-
-DEP=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-RESULTAT=CHAMDEPL, NOM_CHAM='DEPL',
-                           NUME_ORDRE=1 )
 
 #
 #
@@ -179,14 +175,13 @@ THETA0=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
                                  )
 
-G0=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
+G0=CALC_G(  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                   DEFORMATION = 'PETIT'),
-                        THETA=_F(THETA=THETA0),  EXCIT=_F(CHARGE=CH),
-                        CHAM_MATER=CHMAT )
+                        THETA=_F(THETA=THETA0), )
 
-G0BIS=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
+G0BIS=CALC_G(  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                   DEFORMATION = 'PETIT'),
@@ -194,11 +189,10 @@ G0BIS=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
                                  MODULE_FO = MODUF,
                                  R_INF_FO = RINF0,
                                  R_SUP_FO = RSUP0),
-                        EXCIT=_F(CHARGE=CH),
-                        CHAM_MATER=CHMAT )
+                         )
 
 
-GLOC0=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL,  CHAM_MATER=CHMAT,
+GLOC0=CALC_G(   RESULTAT=CHAMDEPL, 
                        THETA=_F(FOND_FISS=FISS1,
                                 MODULE_FO = MODUF,
                                 R_INF_FO = RINF0, 
@@ -207,39 +201,39 @@ GLOC0=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL,  CHAM_MATER=CHMAT,
                        TOUT_ORDRE='OUI',SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
-                        EXCIT=_F(CHARGE=CH,),)
+                       )
 
 THETA0M=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
                                    R_INF_FO = RINF0,  R_SUP_FO = RSUP0),
                                      DIRE_THETA=DIRTHE  )
 
-G0M=CALC_G(  MODELE=MO,  DEPL=DEP,SYME_CHAR='SYME',
+G0M=CALC_G(            RESULTAT=CHAMDEPL,
+                       NUME_ORDRE=1,
+                       SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                         COMP_ELAS=_F( RELATION = 'ELAS',
+                       COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
-                   THETA=_F(THETA=THETA0M),  EXCIT=_F(CHARGE=CH,),   CHAM_MATER=CHMAT )
+                       THETA=_F(THETA=THETA0M),  )
 
-GLOC0M=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,
-                      THETA=_F(FOND_FISS=FISS1,
+GLOC0M=CALC_G(         RESULTAT=CHAMDEPL,
+                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP0,  
                                R_INF_FO=RINF0,),
-                      LISSAGE=_F(DEGRE=7),
-                        TOUT_ORDRE='OUI',SYME_CHAR='SYME',
-                        EXCIT=_F(CHARGE=CH,),
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
+                       LISSAGE=_F(DEGRE=7),
+                       TOUT_ORDRE='OUI',SYME_CHAR='SYME',
+                       COMP_ELAS=_F( RELATION = 'ELAS',
+                                     DEFORMATION = 'PETIT'),
                        )
 
 
-GLOC0M1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,
+GLOC0M1=CALC_G(       RESULTAT=CHAMDEPL,
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP0,  
                                R_INF_FO=RINF0,),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
                                  LISSAGE_G='LAGRANGE_REGU',),
                         TOUT_ORDRE='OUI',SYME_CHAR='SYME',
-                        EXCIT=_F(CHARGE=CH,),
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
                        )
@@ -254,13 +248,13 @@ THETA1=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
                                  )
 
-G1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, NUME_ORDRE=1,SYME_CHAR='SYME',
+G1=CALC_G(     RESULTAT=CHAMDEPL, NUME_ORDRE=1,SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
-                     THETA=_F(THETA=THETA1),  EXCIT=_F(CHARGE=CH),    CHAM_MATER=CHMAT )
+                     THETA=_F(THETA=THETA1),  )
 
-GLOC1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL,  CHAM_MATER=CHMAT,
+GLOC1=CALC_G(  RESULTAT=CHAMDEPL,  
                         THETA=_F(FOND_FISS=FISS1,   
                                  R_SUP_FO=RSUP1,  
                                  R_INF_FO=RINF1,),  
@@ -268,39 +262,37 @@ GLOC1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL,  CHAM_MATER=CHMAT,
                         NUME_ORDRE=1,SYME_CHAR='SYME',
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
-                       EXCIT=_F(CHARGE=CH), )
+                       )
 
 THETA1M=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                         THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
                                    R_INF_FO = RINF1,  R_SUP_FO = RSUP1),
                                      DIRE_THETA=DIRTHE )
 
-G1M=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, NUME_ORDRE=1,SYME_CHAR='SYME',
+G1M=CALC_G(  RESULTAT=CHAMDEPL, NUME_ORDRE=1,SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                   DEFORMATION = 'PETIT'),
-                     THETA=_F(THETA=THETA1M), EXCIT=_F(CHARGE=CH),    CHAM_MATER=CHMAT )
+                     THETA=_F(THETA=THETA1M),)
 
-GLOC1M=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,
+GLOC1M=CALC_G(    RESULTAT=CHAMDEPL,
                         THETA=_F(FOND_FISS=FISS1,
                                  R_SUP_FO=RSUP1,
                                  R_INF_FO=RINF1,), 
                         LISSAGE=_F(DEGRE=7),  
                        NUME_ORDRE=1,SYME_CHAR='SYME',
-                        EXCIT=_F(CHARGE=CH,),
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                      )
 
 
-GLOC1M1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,
+GLOC1M1=CALC_G(    RESULTAT=CHAMDEPL, 
                         THETA=_F(FOND_FISS=FISS1,
                                  R_SUP_FO=RSUP1,
                                  R_INF_FO=RINF1,), 
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
                                  LISSAGE_G='LAGRANGE_REGU',), 
                        NUME_ORDRE=1,SYME_CHAR='SYME',
-                        EXCIT=_F(CHARGE=CH,),
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                      )
@@ -317,16 +309,17 @@ THETA2=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
 
 LISTI=DEFI_LIST_ENTI(   VALE=1  )
 
-G2=CALC_G(   MODELE=MO,  DEPL=DEP,
+G2=CALC_G(     RESULTAT=CHAMDEPL,
+                       NUME_ORDRE=1,
                       THETA=_F(THETA=THETA2),SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
-                     EXCIT=_F(CHARGE=CH,),    CHAM_MATER=CHMAT )
+                     )
 
-GLOC2=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL,  CHAM_MATER=CHMAT,SYME_CHAR='SYME',
+GLOC2=CALC_G(  RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2), 
-                       LIST_ORDRE=LISTI,  EXCIT=_F(CHARGE=CH,),
+                       LIST_ORDRE=LISTI,  
                          COMP_ELAS=_F( RELATION = 'ELAS',
                                     DEFORMATION = 'PETIT'),
                        LISSAGE=_F(DEGRE=7))
@@ -336,15 +329,16 @@ THETA2M=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
                                    R_INF_FO = RINF2,  R_SUP_FO = RSUP2),
                                      DIRE_THETA=DIRTHE)
 
-G2M=CALC_G(   MODELE=MO,  DEPL=DEP,
+G2M=CALC_G(  RESULTAT=CHAMDEPL,
+                       NUME_ORDRE=1,
                       THETA=_F(THETA=THETA2M),SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
-                     EXCIT=_F(CHARGE=CH,),    CHAM_MATER=CHMAT )
+                     )
 
-GLOC2M=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,SYME_CHAR='SYME',
-                        LIST_ORDRE=LISTI,  EXCIT=_F(CHARGE=CH,),
+GLOC2M=CALC_G(   RESULTAT=CHAMDEPL,SYME_CHAR='SYME',
+                        LIST_ORDRE=LISTI,  
                        LISSAGE=_F(DEGRE=7),  
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),
                          COMP_ELAS=_F( RELATION = 'ELAS',
@@ -352,8 +346,8 @@ GLOC2M=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,SYME_CHAR='SYME'
                        )
 
 
-GLOC2M1=CALC_G(  MODELE=MO,  RESULTAT=CHAMDEPL, CHAM_MATER=CHMAT,SYME_CHAR='SYME',
-                        LIST_ORDRE=LISTI,  EXCIT=_F(CHARGE=CH,),
+GLOC2M1=CALC_G(  RESULTAT=CHAMDEPL, SYME_CHAR='SYME',
+                        LIST_ORDRE=LISTI,  
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
                                  LISSAGE_G='LAGRANGE_REGU',),  
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),

@@ -1,0 +1,1710 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR a3bhhae      ANDRIAMBOLOLONA H.     DATE 31/10/2006 - 10:39:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010148 DU 2006-10-17 16:08:28
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   un bug dans PROJ_MESU_MODAL / MODE_GENE (test sdls112a)
+FONCTIONNALITE
+   Contexte :
+   Un vecteur indiquant la direction sensible du capteur a
+   ete dimensionne a 3. Les trois valeurs correspondent aux
+   axes dx, dy et dz. Dans le cas des mode_gene, on effectue
+   une initialisation de ce vecteur en bouclant sur le nombre
+   de CMP du modele. D'ou, debordement si nb_cmp > 3.
+   
+   Correction :
+   On modifie le programme de localisation des ddl mesure en
+   recuperant directement la direction sensible du capteur
+   qui est supposee etre parmi dx, dy ou dz.
+   Je profite aussi pour mettre en global les vecteurs de
+   travail contenant la projection de la base de projection
+   sur les ddl mesure (VNOEUD, VRANGE et BASEPR).
+   
+   Validation :
+   Cas test perso et partiellement sur sdls112a (ce cas test
+   a ete casse suite a l'evolution 9559 dont la correction
+   est traitee dans la fiche 10162).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso et sdls112a (partiellement)
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010092 DU 2006-10-02 16:44:40
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.15, le test sensd01a s'arrete en ERREUR (Alphaserver)
+FONCTIONNALITE
+   sensd01a a ete relance avec la 8.3.19.
+   Le calcul se deroule normalement sans anomalie.
+   Je classe cette fiche "sans suite".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sensd01a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009956 DU 2006-08-22 08:20:55
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Modification structurale dans Code Aster
+FONCTIONNALITE
+   Contexte :
+   Cette evolution consiste a estimer les modes propres d'une
+   structure suite a une modification structurale. On utilise
+   la technique de sous-structuration pour le couplage du
+   modele initial et la modification. La particularite de
+   cette methode reside sur la facon de calculer le champ aux
+   interfaces a partir des informations mesurees.
+   
+   Cette evolution concerne essentiellement les operateurs
+   macr_elem_stat et depl_interne.
+   Macr_elem_stat a ete modifie afin de pouvoir calculer le
+   champ aux ddl interfaces a partir des informations
+   mesurees. La structure de donnees macr_elem_stat a ete
+   enrichie en consequence. On enregistre dans REFM(9) le nom
+   du concept issu de proj_mesu_modal qui a servi a la
+   definition de la base de projection et a la localisation
+   des ddl capteurs.
+   depl_interne effectue le chemin inverse pour l'estimation
+   des champs aux points capteur, a partir des resultats
+   issus de calcul modal de la structure couplee.
+   
+   On profite de cette evolution pour homogeneiser la syntaxe
+   concernant les super-mailles.
+   AFFE_MODELE/AFFE_SOUS_STRUC/MAILLE devient
+   AFFE_MODELE/AFFE_SOUS_STRUC/SUPER_MAILLE.
+   DEFI_MAILLAGE/DEFI_MAILLE devient
+   DEFI_MAILLAGE/DEFI_SUPER_MAILLE. Et les mots cles MAILLES
+   sont transformes en SUPER_MAILLE.
+   DEPL_INTERNE/MAILLE devient DEPL_INTERNE/SUPER_MAILLE.
+   
+   Validation :
+   Les cas test faisant intervenir MACR_ELEM_STAT : sdls01d,
+   sslp100b,sslp100d,ssnv193a (le temps cpu de ssnv193a a ete
+   passe de 600 s a 660 s).
+   Un nouveau cas test pour la validation de ce
+   developpement : sdll137a (cas d'une poutre encastree -
+   libre, la mesure a ete simulee numeriquement, la solution
+   de reference est obtenue par calcul direct sur la
+   structure couplee).
+   
+   On prevoit la redaction d'une doc U2, pour aider
+   l'utilisateur a la mise en oeuvre de cette technique de
+   modification structurale.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.41.01, U4.62.01, U4.23.01,U4.62.02, D4.08.01, V2.02.137
+VALIDATION
+   sdll137a, sdls01d, sslp100b, sslp100d, ssnv193a
+NB_JOURS_TRAV  : 40.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 31/10/2006 - 10:39:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010162 DU 2006-10-20 07:40:05
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   Modification des SD TRAN_GENE et MODE_CYCL non tracees
+FONCTIONNALITE
+   Objectif
+   --------
+   Suite a la restitution de la fiche 9559 (REST_BASE_PHYS mettre le modele dans la sd), ou
+   le nom du modele le materiau et les caracteristiques elementaires ont ete stockes en
+   particulier dans les structures de donnees de type tran_gene et mode_cycl, on est revenu
+   en arriere car ces structures de donnees n'ont pas ete construites par la routine
+   standard, rscrsd.
+   Ainsi, on a supprime l'allocation et le remplissage des objets .MODL,.CARA,.MATE
+   pour les sd tran_gene, mode_cycl et aussi pour harm_gene.
+   
+   Impact
+   ------
+   - op0075.f (REST_BASE_PHYS): Si le concept resultat entrant est de type
+   tran_gene mode_cycl ou harm_gene, on ne stocke plus les objets en question.
+   - op0080.f (MODE_ITER_CYCLE): On est revenu a l'etat initial.
+   - op0074.f (DYNA_TRAN_MODAL): On est revenu a l'etat initial.
+   - mptran.f (PROJ_MESU_MODAL): on ne conserve le stockage des objets en question
+   uniquement si le type de la sd est mode_gene.
+   - op0060.f (DYNA_LINE_HARM): si le type de la sd est harm_gene, on ne stocke
+   plus les objets en question.
+   - rscrsd.f :  On revient a l'etat initial car elle avait ete modifiee uniquement
+   pour le type de sd harm_gene.
+   - verij1.f : Suppression de la verification de la presence des objets .MODL,.CARA,.MATE
+   pour les sd de type tran_gene et mode_cycl.
+   
+   Validation
+   ----------
+   liste complete
+   
+   Doc
+   ---
+   D4.07.03 : structure de donnees tran_gene
+   D4.08.04 : structure de donnees mode_cycl
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : D4.07.03, D4.08.04
+VALIDATION
+   liste complete
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010155 DU 2006-10-19 09:38:45
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   NEW8.3.18, le test sdls112a s'arrete en ERREUR (ALR)
+FONCTIONNALITE
+   Anomalie
+   --------
+   L'erreur se produit lorsque l'on consulte la sd resultat de type harm_gene via
+   l'appel a rsadpa dans l'op0075.f (REST_BASE_PHYS).
+   La sd harm_gene est construite par l'operateur PROJ_MESU_MODAL
+   "a la main" (cf mptran.f,mdallc.f) sans passer par l'appel a rscrsd.
+   Or l'appel a rsadpa y est proscrit, ce qui explique l'arret d'Aster.
+   
+   Correction
+   ----------
+   La fiche d'anomalie 10162 a pour consequence (entre autres) de supprimer le
+   stockage des objets .MODL,.CARA,.MATE dans la sd harm_gene produite par
+   PROJ_MESU_MODAL, et dans la sd produite par REST_BASE_PHYS lorsque la
+   sd harm_gene y est fournie en entree.
+   La realisation de la fiche 10162 corrige donc le probleme.
+   
+   NB : il reste une erreur de dimensionnement a corriger dans mpmod2.
+   Elle est prise en charge par Hari.
+   
+   Consequence : sdll112a est toujours plante mais devrait etre corrige par les apports
+   conjoints d'Hari et de Deltacad.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste complete
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010153 DU 2006-10-19 09:28:38
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   NEW8.3.18, les tests fdlv102c, miss07a, sdnl105c, sdnv107a en ERREUR (ALR)
+FONCTIONNALITE
+   Anomalie
+   --------
+   Suite a la restitution de la fiche 9559 (REST_BASE_PHYS: mettre le modele dans la sd), les
+   cas-tests miss07a,sdnl105c,sdnv107a,fdlv102c ont ete casses.
+   L'explication est la suivante:
+   - miss07a : la sd resultat fournie a REST_BASE_PHYS est de type
+   harm_gene. Le probleme a deja ete reference dans la fiche 10155.
+   - sdnl105c,sdnv107a:  la sd resultat fournie a REST_BASE_PHYS est issue de
+   MODE_ITER_SIMULT et doit theoriquement contenir les objets .MODL,.CARA,.MATE.
+   Or ceux-ci n'ont pas ete remplis car le modele, le materiau et les
+   caracteristiques elementaires obtenus a partir de la matrice de rigidite n'ont
+   pas ete trouve. En effet, l'operateur COMB_MATR_ASSE qui genere une sd contenant
+   le nom de la matrice de rigidite n'avait pas ete pris en compte.
+   - fdlv102c: la sd resultat fournie a REST_BASE_PHYS est issue de
+   MODE_ITER_SIMULT et doit theoriquement contenir les objets .MODL,.CARA,.MATE.
+   Or ceux-ci n'ont pas ete remplis car le modele, le materiau et les
+   caracteristiques elementaires obtenus a partir de la matrice de rigidite n'ont
+   pas ete trouve.En effet, la matrice de rigidite issue de l'operateur ASSE_MATRICE
+   ne contenait pas les objets concernes.
+   
+   Correction
+   ----------
+   - fdlv102c: Dans MODE_ITER_SIMULT, si les objets issus de la matrice de
+   rigidite n'ont pas ete trouves, alors on est dans la situation ou la matrice de
+   rigidite peut etre produite par ASSE_MATRICE et dans ce cas, on a exploite l'objet .LIME
+   afin de recuperer le concept issu de CALC_MATR_ELEM qui contient le nom du
+   modele,...
+   - miss07a : la correction de la fiche 10155 a resolu le probleme.
+   - sdnl105c,sdnv107a:Dans MODE_ITER_SIMULT, si les objets issus de la matrice de
+   rigidite n'ont pas ete trouves, alors on est dans la situation ou la matrice de
+   rigidite peut etre produite par COMB_MATR_ASSE et dans ce cas, on a exploite l'objet .REFA
+   afin de recuperer le nom de la base modale, puis les modes, qui permettent de recuperer
+   les objets concernes.
+   
+   Impact: vpstor.f
+   ------
+   
+   Validation: liste restreinte
+   ----------
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR acbhhcd      DEVESA G.              DATE 31/10/2006 - 10:39:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009418 DU 2006-01-31 17:49:42
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TMA : DeltaCad
+TITRE
+   NORM_MODE
+FONCTIONNALITE
+   Developpement ainsi realise :
+   Objectif
+   --------
+   Amelioration de l'operateur NORM_MODE:
+   1) en enrichissant un test de la base pour demontrer l'exactitude de la
+   normalisation de modes complexes.
+   2) en considerant des SD Resultat de type base_modale
+   
+   Descriptif de la realisation
+   ----------------------------
+   1) Enrichissement du cas-test sdld21c de calcul modal avec amortissement en y
+   integrant NORM_MODE afin de valider cet operateur sur des SD de type
+   mode_meca_c.
+   2) Le type de SD acceptable en entree dans l'operateur NORM_MODE ne pouvait
+   etre que
+   mode_meca, mode_meca_c ou mode_flamb, ce qui constituait une restriction. En
+   effet, une base de Ritz par exemple, obtenue avec DEFI_BASE_MODALE, pouvait se
+   normaliser de la meme maniere. Le type de SD base_modale a donc ete ajoute aux
+   types existants.
+   Cette realisation a necessite l'ajout dans le catalogue de commande de 3
+   nouveaux mots-cles MASSE, RAIDE, AMOR permettant de renseigner les matrices
+   assemblees necessaires aux calculs des parametres generalises.
+   L'evolution a consiste a calculer les parametres generalises qui, contrairement
+   aux SD de type mode_meca*, n'ont pas ete stockes dans la SD. Une fois ces
+   parametres generalises calcules, la calcul de renormalisation determine un
+   facteur de normalisation et l'applique sur les modes propres et sur les
+   parametres generalises.
+   
+   Impact
+   ------
+   fortran: op0037.f, vpnorm.f,  vpstor.f, mobiba.f
+   catapy: norm_mode.capy
+   test validation: sdld21c, sdlx201a
+   doc: U4.52.11(Operateur NORM_MODE)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.52.11 V2.01.021 V2.05.201
+VALIDATION
+   cas test sdld21c sdlx201a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR acbhhcd      DEVESA G.              DATE 31/10/2006 - 15:47:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009770 DU 2006-05-16 13:55:48
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Validation Aster-MISS3D
+FONCTIONNALITE
+   On restitue 4 tests ASTER-MISS3D suivants :
+   - Pour la modelisation partielle du sol dans
+   Code_Aster avec etude de la deconvolution, au test
+   MISS07A deja livre, on ajoute une modelisation MISS07B
+   pour une reponse transitoire comparee au calcul chaine
+   Aster-MISS3D. Utilisation de DYNA_LINE_HARM couplee a
+   CALC_FONCTION et FFT. Comparaison de la resolution
+   harmonique dans Aster et des resultats du calcul chaine
+   Aster-MISS3D sous forme AUTRE_ASTER. Le parametre temps
+   est de 1 heure.
+   - Le calcul d'impedances de fondations cylindriques
+   enfoncees avec modelisation eventuelle du non-contact
+   lateral fait l'objet d'un nouveau test MISS08A.
+   Comparaison d'impedances calculees via l'option
+   MISS_IMPE et extraites par composantes via LIRE_FONCTION
+   a des references issues du manuel des fonctions
+   d'impedance de Sieffert et Cevaer sous forme
+   SOURCE_EXTERNE. Le parametre temps est de 1/2 heure.
+   - La comparaison de la reponse de radiers solidaires ou
+   disjoints par rapport a des radiers relies par une
+   liaison souple fait l'objet du test MISS02A ou on
+   remplace un ancien test en interaction structure-sol-
+   structure de fondations superficielles. On compare ces 2
+   chemins de calcul via AUTRE_ASTER.
+   - On remplace egalement le test MISS04A a partir de
+   l'etude NUPEC qui traite en meme temps de l'interaction
+   structure-sol-structure entre 2 batiments et de
+   fondations enterrees. On compare les reponses calculees
+   aux resultats d'essais NUPEC par des references sous
+   forme SOURCE_EXTERNE. Le parametre temps y est ramene de
+   3 heures a 1 heure.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.10.121 V1.10.123 V1.10.126  V1.10.127
+VALIDATION
+   cas tests MISS
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 31/10/2006 - 13:22:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010075 DU 2006-09-28 09:53:06
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.14, les tests zzzz159a, b, c et d s'arretent en ERREUR (ALR)
+FONCTIONNALITE
+   Pour tous ces tests MACR_RECAL, on utilise la variable d'environnement ASTER_ROOT pour
+   pouvoir gerer l'execution des calculs esclaves. Cette petite evolution est faite dans
+   aster_profile.sh, qui est source avant l'execution.
+   
+   De plus, pour le zzzz159d, on avait laisse l'impression des graphiques au format GNUPLOT.
+   On change en XMGRACE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz159a, b, c et d
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010064 DU 2006-09-22 07:35:25
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.13, le test ssna110a en ERREUR (ALR)
+FONCTIONNALITE
+   Cette fiche est sans suite.
+   Ce test utilise la variable d'environnement ASTER_ROOT. Lors de la mise a jour, l'astout
+   a
+   ete relance manuellement par JPL et l'environnement ne contenait pas cette variable,
+   d'ou
+   l'erreur dans ce test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssna110a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010042 DU 2006-09-14 11:08:39
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Test zzzz216a en version NEW8.3.12 sous linux Rocks et Calibre 4
+FONCTIONNALITE
+   On fait un TEST_FICHIER d'un fichier resultat au format GMSH et il y a un ecart entre
+   Linux et Alpha sur la 6ieme decimale d'un des resultats du fichier... Pour corriger, on ne
+   prend que 5 premieres decimales pour le test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz216a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010013 DU 2006-09-11 09:38:00
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Test feti007a en version NEW8.3.11 sous Calibre 4
+FONCTIONNALITE
+   Ce test fonctionne en ce moment. Il n'a ete NOOK qu'une semaine (plus une en fevrier
+   2006)
+   sans raison apparente. Une des causes pourrait etre un probleme avec le partitionnement
+   (SCOTCH) car il utilise un nombre aleatoire pour initaliser le partitionnement. Il se peut
+   qu'a de rares occasions, le partitionnement genere soit "bizarre" (non-connexe ou
+   autre).
+   
+   Je propose d'ajouter dans le feti007a.comm un IMPR_RESU du maillage apres partitionnement
+   pour stocker dans le .resu le maillage.
+   
+   La prochaine fois que ce test sera NOOK, on aura peut etre plus d'idee.
+   
+   AA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   feti007a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009707 DU 2006-04-25 16:27:49
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   amelioration de MACR_RECAL
+FONCTIONNALITE
+   On ajoute un nouveau mot-cle dans la commande MACR_RECAL pour choisir quand afficher les
+   graphiques :
+   AFFICHAGE = "TOUTE_ITERATION" (defaut) ou "ITERATION_FINALE"
+   
+   On corrige FIN (); et les parametres qui sont en commentaires sont maintenant ignores
+   dans
+   l'esclave.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.73.02
+VALIDATION
+   zzzz159a, b, c et d
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010061 DU 2006-09-21 11:53:49
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Evolutions de MACR_RECAL
+FONCTIONNALITE
+   1. Presentation rapide
+   
+   Les evolutions apportees a l'operateur MACR_RECAL permettent d'enrichir les
+   possibilites
+   de recalage.
+   
+   Trois modes de fonctionnement sont maintenant possibles :
+   
+   - Mode d'utilisation par defaut avec l'algorithme par defaut (Levenberg-Marquardt) ;
+   - Algorithmes d'optimisation supplementaires :
+   fmin     --- Nelder-Mead Simplex algorithm (uses only function calls)
+   fminBFGS --- Quasi-Newton method (uses function and gradient)
+   fminNCG ---  Line-search Newton Conjugate Gradient (uses function, gradient
+   and hessian (if it's provided))
+   - Mode "Externe" permettant d'utiliser un logiciel d'optimisation externe quelconque
+   d'utiliser Aster pour l'evaluation de la fonctionnelle.
+   
+   Pour differencier les modes d'utilisation, un mot-cle supplementaire a ete ajoute :
+   METHODE = algo		[txm] [default='LEVENBERG']
+   Liste : ("LEVENBERG","FMIN","FMINBFGS","FMINNCG","EXTERNE")
+   
+   
+   
+   2. Mot-cles supplementaires pour la commande MACR_RECAL
+   
+   - ITER_FONC_MAXI : nombre maximum d'evaluation de la fonctionnelle (ie nombre d'execution
+   de l'etude esclave);
+   - GRAPHIQUE
+   .  AFFICHAGE : affichage des courbes : "TOUTE_ITERATION" (defaut) ou "ITERATION_FINALE";
+   .  SUIVI_ESCLAVE : affichage de l'output des fichiers esclaves dans le .mess du maitre :
+   "OUI" ou "NON" (defaut);
+   - METHODE : methode choisie : "LEVENBERG" (defaut) ,"FMIN", "FMINBFGS", "FMINNCG",
+   "EXTERNE";
+   - GRADIENT : type du gradient genere (ou non) par Aster : "NON_CALCULE" (defaut),
+   "NORMAL", "ADIMENSIONNE";
+   - FONCTIONNELLE : type de la fonctionnelle generee en mode EXTERNE : "SCALAIRE" ou
+   "VECTORIELLE";
+   
+   
+   
+   2. Algorithmes supplementaires
+   
+   Les nouveaux algorithmes ont ete repris integralement d'un module Python distribue sur
+   Internet (http://pylab.sourceforge.net/) sous licence GPL par Travis E. Oliphant.
+   
+   2.1 Utilisation :
+   Il suffit de mettre le mot-cle METHODE = FMIN", "FMINBFGS" ou "FMINNCG".
+   
+   2.2 Note :
+   - Ces algorithmes minimisent une fonctionnelle scalaire (la norme 2 de l'ecart entre les
+   valeurs experimentales et les valeurs calculees).
+   - Ces algorithmes ne gerent pas les bornes sur les parametres.
+   -  Ils sont donc en general moins performants que l'algorithme par defaut
+   (Levenberg-Marquardt). Cependant, ils peuvent s'averer plus robustes dans les cas ou
+   Levenberg n'arrive pas a converger.
+   - Pour l'instant, le trace de courbes pour ces algorithmes n'est effectue qu'a la fin
+   de
+   l'optimisation.
+   
+   2.3 Details :
+   
+   - L'algorithme FMINBFGS utilise des estimations des gradients. Deux solutions sont alors
+   disponibles :
+   . laisser l'algorithme gerer lui meme les gradients en interne (par differences finies).
+   Dans ce cas la on choisit GRADIENT = 'NON_CALCULE'.
+   . utiliser le calcul des gradient interne a MACR_RECAL, qui utilise les sensibilites
+   d'Aster ou les differences finies. On choisi GRADIENT = "ADIMENSIONNE" ou "NORMAL",
+   suivant que l'on veut des gradients adimensionnes ou pas.
+   
+   - L'algorithme FMINNCG utilise des estimations des gradients et n'a pas de routine de
+   calcul interne. Les gradients calcules par Aster seront donc utilises. Cet algorithme
+   utilise egalement des estimations du Hessien, dont le calcul est effectue en interne a
+   l'algorithme.
+   
+   - L'algorithme FMIN (simplex) n'utilise pas de calculs de gradients. Il est generalement
+   nettement plus long a converger que les autres algorithmes car il necessite plus
+   d'iterations et donc plus de calculs Aster, mais il peut se reveler plus robuste dans
+   certains cas (pour faire un parallele, c'est un peu comme Matrice Elastique et Tangeante
+   dans Stat_non_line).
+   
+   - Le parametres ITER_MAXI est utilise dans les algorithmes trois algorithmes pour
+   definir
+   le nombre maximum d'iteration et le parametre ITER_FONC_MAXI est utilise pour definir
+   le
+   nombre maximum d'evaluation de la fonctionnelle (c'est le nombre d'execution maximum du
+   calcul Aster).
+   
+   - Pour l'algorithme FMIN, certains parametres internes ne sont pas accessibles via la
+   commande MACR_RECAL et ont donc leur valeurs par defaut : xtol=1e-4 et ftol=1e-4.
+   
+   - Pour l'algorithme FMINBFGS, le parametre RESI_GLOB_RELA permet de fixer la valeur du
+   parametre interne avegtol.
+   
+   - Pour l'algorithme FMINNCG, le parametre RESI_GLOB_RELA permet de fixer la valeur du
+   parametre interne avextol.
+   
+   - Pour les algorithme FMINBFGS et FMINNCG, certains parametres internes utilises par
+   l'algorithme interne de recherche "line search" ne sont pas accessibles via la commande
+   MACR_RECAL et ont donc leur valeur par defaut : c1=1e-4, alpha0=1.
+   
+   
+   2.4 Validation : nouveau cas-test zzzz159e
+   
+   
+   
+   3. Utilisation d'un logiciel d'optimisation externe (METHODE = 'EXTERNE')
+   
+   Il est possible d'utiliser un programme d'optimisation completement independant d'Aster
+   (matlab, tomlab, python-scipy, etc.., eventuellement d'autres comme Zopt ou SiDoLo) pour
+   faire de l'optimisation en utilisant Aster pour l'evaluation de la fonctionnelle a
+   minimiser.
+   
+   Pour ce faire, on utilise un mode special de MACR_RECAL afin de se servir de celui-ci
+   pour
+   effectuer un calcul de la fonctionnelle a minimiser, avec les parametres qu'on lui
+   donne.
+   
+   
+   
+   3.1 Definition du fichier maitre de MACR_RECAL
+   
+   Pour effectuer une optimisation dans ce mode d'utilisation, il faut partir d'un profil
+   ASTK classique de MACR_RECAL, avec un fichier .comm contenant la commande MACR_RECAL, un
+   fichier esclave, un maillage, etc..
+   
+   Le fichier maitre, c'est-a-dire le fichier .comm contenant la commande MACR_RECAL, doit
+   etre legerement modifie. Il faut mettre dans les arguments de la commande MACR_RECAL :
+   . le mot-cle METHODE = 'EXTERNE' dans MACR_RECAL
+   
+   Le fichier maitre sera evalue en Python (c'est-a-dire en dehors d'Aster). Si ce
+   fichier ne
+   contient que du Python et les commandes Aster DEBUT, MACR_RECAL et FIN, alors l'execution
+   Aster de l'etude esclave se lancera.
+   
+   Si l'evaluation en Python de fichier maitre echoue, alors Aster est lance «
+   normalement »
+   avec le profil fourni. Celui-ci doit etre un profil ASTK d'utilisation standard de
+   MACR_RECAL (fichier maitre, fichiers pour l'etude esclave avec maillage, etc..), et il
+   devra respecter les points suivants :
+   . les parametres initiaux doivent etre donnes au debut du fichier maitre .comm (celui
+   contenant l'appel a MACR_RECAL) sous la forme d'une variable _PARAM_ :
+   _PARAM_ = [10., 20., 30.]
+   puis utilise, par exemple :
+   parametres=[['P1__',_PARAM_[0],5.,50.],['P2__',_PARAM_[1],5.,100.],['P3__',_PARAM_[2],5.,5
+   0.]]
+   
+   
+   
+   3.2 Utilisation du fichier de lancement externe macr_recal_ops.py
+   
+   Le fichier macr_recal_ops.py est le fichier ops de la macro-commande Aster MACR_RECAL. Il
+   peut de plus s'executer de maniere autonome avec quelques parametres optionnels sur la
+   ligne de commande :
+   
+   ~> python macr_recal_ops.py -h
+   usage: macr_recal_ops.py fichier_export [options]
+   options:
+   (etc...).
+   
+   Details des parametres de la ligne de commande :
+   -h, --help            show this help message and exit
+   -i INPUT, --input=INPUT : fichier contenant les parametres (entree)
+   -o OUTPUT, --output=OUTPUT : fichier contenant la fonctionnelle (sortie)
+   -g OUTPUT_GRAD, --output_grad=OUTPUT_GRAD : fichier contenant le gradient (sortie)
+   -p PREFIX_GRAPH, --prefix_graph=PREFIX_GRAPH : prefixe des fichiers contenant les
+   courbes
+   -v INFO, --info=INFO  : niveau de message (-1, 0, 1, 2)
+   -f FOLLOW_OUTPUT, --follow=FOLLOW_OUTPUT : affiche ou non l'output du fichier Aster
+   (True/False)
+   -F OBJECTIVE, --objective=OBJECTIVE : type de la fonctionnelle (float/vector)
+   -G GRADIENT, --gradient=GRADIENT : calcul du gradient par Aster (no/normal/adim)
+   -d DISPLAY, --display=DISPLAY : renvoi du DISPLAY (pour que la creation des courbes soit
+   moins genante)
+   
+   Cette procedure a au moins besoin :
+   . du fichier .export de l'etude ASTK definie precedemment (l'etude standard de
+   MACR_RECAL)
+   . d'un fichier texte contenant la liste des parametres
+   
+   A partir de ces deux fichiers, elle lance un calcul Aster pour les parametres specifies
+   (ou deux calcul : un pour le maitre si il ne s'evalue pas simplement en Python, un pour
+   l'esclave), et genere un ou deux fichiers texte contenant uniquement la valeur de la
+   fonctionnelle (scalaire ou vectorielle), et le gradient.
+   
+   Cette procedure peut etre lancee sans argument. Elle va alors chercher dans le
+   repertoire
+   courant des fichiers par defauts :
+   . s'il n'y a qu'un seul fichier .export dans le repertoire courant, celui-ci sera
+   utilise
+   (dans le cas contraire la procedure s'arrete en erreur)
+   . le fichier d'entree par defaut sera cherche sous le nom input.txt
+   . le fichier de sortie sera genere avec le nom output.txt
+   
+   Note pour follow_output : pour le moment, il doit egalement etre active avec le
+   mot-cle
+   SUIVI_ESCLAVE='OUI' dans la commande MACR_RECAL, sinon on a que le suivi du calcul maitre.
+   De plus, il faut mettre le mot-cle IMPR_MACRO='OUI' dans DEBUT.
+   
+   Enfin, il faut configurer la variable d'environnement ASTER_ROOT (le chemin de base
+   d'Aster) pour pouvoir lancer en python le fichier macr_recal_ops.py.
+   
+   Le bon fonctionnement de la procedure macr_recal_ops.py peut etre verifie
+   manuellement, en
+   generant un fichier d'entree avec des valeurs de parametres et en lancant
+   manuellement la
+   procedure. Exemple sur la machine Aster :
+   
+   cd repertoire
+   export ASTER_ROOT=/aster
+   echo "10., 20., 30. " >input.txt
+   python $ASTER_ROOT/STA8/bibpyt/Macro/macr_recal_ops.py etude.export -v 2
+   cat ouput.txt
+   
+   Le calcul Aster devrait se lancer et terminer convenablement. Un fichier output.txt doit
+   etre genere dans le repertoire courant.
+   
+   
+   
+   3.3 Appel a la procedure depuis le logiciels d'optimisation
+   
+   Principe
+   
+   Generalement, les logiciels d'optimisation demandent que l'utilisateur ecrive une
+   procedure pour le calcul de la fonctionnelle : f = F(param) ou bien f, g = F(param).
+   
+   Si le logiciel autorise la lecture/ecriture de fichiers et l'execution de code externe
+   (commande « system » ou autres), alors il est potentiellement utilisable avec
+   MACR_RECAL.
+   
+   On va encapsuler l'appel a la procedure Python macr_recal_ops.py ainsi que l'ecriture
+   du
+   fichier des parametres et la relecture du fichier de la valeur de la fonctionnelle dans
+   la
+   routine de calcul de F.
+   
+   Le cas-test zzzz159f est un exemple d'utilisation du mode externe pour l'optimisation avec
+   un algorithme de optimize.py presente precedement.
+   
+   
+   
+   
+   3.4 Exemple en utilisant la toolbox Optimisation de Matlab :
+   
+   
+   Fichier fonction(x) :
+   
+   # --------------------------------------------------------------------------
+   function [f, g] = fonction(x)
+   
+   system('rm -f input.txt');
+   system('rm -f output.txt');
+   system('rm -f grad.txt');
+   
+   % Ecriture des parametres
+   dlmwrite('input.txt', x, 'precision', '%.20f');
+   
+   % Execution Aster
+   if nargout > 1
+   iret = system('export ASTER_ROOT=/opt/aster ; python
+   $ASTER_ROOT/bibpyt/Macro/macr_recal_ops.py -v -1 -F vector -G normal');
+   else
+   iret = system('export ASTER_ROOT=/opt/aster ; python
+   $ASTER_ROOT/bibpyt/Macro/macr_recal_ops.py -v -1 -F vector -G no');
+   end
+   
+   f = dlmread('output.txt', ',', 0, 0);   % permet de relire un scalaire ou un vecteur
+   
+   % Read the gradient.
+   if nargout > 1
+   g = dlmread('grad.txt', ',', 0, 0);
+   end
+   # --------------------------------------------------------------------------
+   
+   
+   Fichier d'initalisation de l'optimisation :
+   
+   # --------------------------------------------------------------------------
+   clear all
+   close all hidden
+   
+   format long;
+   
+   system('rm -f fort.91');  % Fichier log
+   
+   % Params :  DSDE__, SIGY__,   YOUN__
+   x0 = [  1000.,    30.,  100000. ];
+   lb = [   500.,     5.,   50000. ];
+   ub = [ 10000.,   500.,  500000. ];
+   
+   options = optimset('Jacobian','on', 'Display', 'iter', 'Diagnostics', 'on', 'TolFun',
+   1e-8, 'MaxFunEvals', 1000, 'MaxIter', 100);
+   
+   [x,resnorm,residual,exitflag,output,lambda,jacobian] =
+   lsqnonlin(@fonction,x0,lb,ub,options);
+   # --------------------------------------------------------------------------
+   
+   
+   3.5 Validation : nouveau cas-test zzzz159f. Ce cas-test ne contient que
+   DEBUT(), TEST_ERSU() et FIN(), et est bourre de Python. Il simule un appel a
+   macr_recal_ops.py et la recuperation de la fonctionnelle et du gradient.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.73.02
+VALIDATION
+   zzzz159a, b, c, d, e, f
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 31/10/2006 - 19:10:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009863 DU 2006-06-22 10:21:30
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   REST_BASE_PHYS sur groupe de maille ou de noeud
+FONCTIONNALITE
+   Remise en service les mots cles NOEUD et GROUP_NO dans la commande REST_BASE_PHYS :
+   
+   - impact dans le catalogue de commande rest_base_phys.capy
+   
+   - impact dans le fortran :
+   1- creation d'un champ reduit a partir d'une liste de noeuds: routine CNOCRE
+   En accord avec JP, on ajoute des arguments a la routine afin de creer le champ
+   aux noeuds a partir d'une liste de noeuds.
+   2- reprise de la programmation de la routine RBPH02 :
+   recuperation de la liste de noeuds
+   recuperation de la liste de composantes
+   correspondance noeud-composante <--> position dans le NUME_DDL
+   3- modification de la routine TRAN75
+   prise en compte d'une restitution partielle
+   
+   - validation :
+   cas test sdld102a (validation de la fiche 9688)
+   cas test sdnd100a : restituer DYNAMODA que sur le NOEUD='NO1'
+   puis sur d'autres tests
+   
+   - impact DOC :
+   mots cles NOEUD et GROUP_NO existants dans la doc U4.63.21
+   ajout de MAILLE et GROUP_MA dans le meme §.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.63.21
+VALIDATION
+   cf histor
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR g8bhhxd      DESROCHES X.           DATE 31/10/2006 - 19:10:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010167 DU 2006-10-20 14:15:30
+TYPE anomalie concernant Code_Aster (VERSION 7.7)
+TMA : CS
+TITRE
+   POST_RELEVE_T
+FONCTIONNALITE
+   Un POST_RELEVE_T d'un champ de grandeur VARI_R sur une
+   operation MOYENNE s'arrete
+   en ERREUR avec le message suivant :
+   
+   TU_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
+   GROUP_NO='LESC',
+   RESULTAT=U_NOR,
+   
+   NOM_CHAM='VARI_ELNO_ELGA',
+   NOM_CMP='V1',
+   OPERATION='MOYENNE',
+   INST=1.),);
+   !-----------------------------------------------------
+   -------------------!
+   ! <F>
+   <TABLE0_1>
+   !
+   ! Erreur dans les donnees. Le parametre VARI n'existe
+   pas dans la table. !
+   ! Cette erreur est fatale. Le code
+   s'arrete.                             !
+   !-----------------------------------------------------
+   -------------------!
+   
+   Les champs dont la grandeur est VARI_R ont un traitement
+   specifique.
+   Les noms utilisateur V1, V2,... n'existent que lors de
+   l'impression (commandes IMPR_RESU
+   et POST_RELEVE_T).
+   C'est pour cette raison que lorsque l'utilisateur
+   demande V1, V2,..., le code
+   traduit par VARI + une liste de numeros 1,2,...
+   Un "flip-flop" est fait a la lecture des donnees puis a
+   l'ecriture des resultats.
+   Dans le cas de l'anomalie, le "flip-flop retour" n'a pas
+   ete pris en compte pour
+   une operation MOYENNE.
+   correction dans rvpost.f, rvaffm.f et rvtamo.f
+   validation dans ssnv503a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de l'etude + ssnv503a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE J.P.          DATE 30/10/2006 - 11:24:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010190 DU 2006-10-26 12:02:03
+TYPE express concernant Code_Aster (VERSION 8.4)
+TITRE
+   Messages d'erreur dans Jeveux en version NEW8
+FONCTIONNALITE
+   On complete le catalogue de messages jeveux :
+   25: _("""
+   Nom de collection ou de Repertoire inexistant : >%(k1)s<
+   """),
+   
+   26: _("""
+   Objet JEVEUX inexistant dans les bases ouvertes : >%(k1)s<
+   l'objet n'a pas ete cree ou il a ete detruit
+   """),
+   
+   27: _("""
+   Objet simple JEVEUX inexistant en memoire et sur disque : >%(k1)s<
+   le segment de valeurs est introuvable
+   """),
+   
+   28: _("""
+   Collection JEVEUX inexistant en memoire et sur disque : >%(k1)s<
+   le segment de valeurs est introuvable
+   """),
+   
+   29: _("""
+   Objet %(i1)d de Collection JEVEUX inexistant en memoire et sur disque : >%(k1)s<
+   """),
+   
+   30: _("""
+   Objet de Collection JEVEUX inexistant : >%(k1)s<
+   l'objet n'a pas ete cree ou il a ete detruit
+   """),
+   
+   
+   Et on modifie les sources pour faire passer le nom de l'objet incrimine dans chacun de
+   ces
+   messages.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ?
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 30/10/2006 - 11:24:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010191 DU 2006-10-26 13:08:55
+TYPE express concernant Code_Aster (VERSION 8.3)
+TITRE
+   Bugs introduits en 8.3.18
+FONCTIONNALITE
+   Correction de 2 anomalies :
+   1. uttlim : retourne le temps maxi pour un process.
+   La fonction getrlimit retourne la limite cpu systeme (comme ulimit -t).
+   Quand il n'y a pas de limite, selon les machines, elle retourne un reel qui vaut 2**31-1
+   (2.e9) ou 2**32-1 (4e9).
+   Dans le 2eme cas, on plante en FPE dans le fortran lors de la conversion du real*8 en
+   integer.
+   
+   On introduit une limite max a 2*31-1 pour etre certain de ne pas depasser l'entier 32
+   bits.
+   
+   
+   2. sspmva a ete supprime (vieux truc pour le cray) : utilisation de SSPMVB de mlnfld.
+   (passe inapercu car le CSUPPR ne fonctionnait pas)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR gnicolas     Gerald NICOLAS         DATE 30/10/2006 - 15:40:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008860 DU 2005-07-08 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   SENSIBILITE  MACR_ADAP_MAIL adaptation de maillage avec un gradient
+FONCTIONNALITE
+   On peut adapter un maillage selon un champ qui est la derivee d'un autre. Par exemple,
+   adapter selon la derivee du champ de contraintes par rapport a un chargement. Le mode
+   de
+   selection de ce champ derive est conforme a la gestion du calcul de sensibilite.
+   Dans la
+   commande MACR_ADAP_MAIL, on ajoute le mot-cle SENSIBILITE = ps, ou ps est le concept
+   associe au parametre sensible par rapport auquel on a derive.
+   Exemple :
+   RESULTAT_N=RESUTROI,
+   INDICATEUR='DEPL',
+   NOM_CMP_INDICA='DX',
+   SENSIBILITE = FZ,
+   Cela utilisera comme indicateur d'erreur le champ de la derivee de la composante DX du
+   deplacement par rapport a la force FZ.
+   
+   On remarque que ce champ est exprime aux noeuds. Dans de tels cas, on raffine tous les
+   elements qui portent un noeud pour lequel la valeur du champ est superieure au seuil
+   demande.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01
+VALIDATION
+   zzzz121b
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009735 DU 2006-05-04 14:17:19
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   HOMARD et l'estimateur en quantite d'interet
+FONCTIONNALITE
+   Dans l'adaptation de maillage avec la commande MACR_ADAP_MAIL, on choisit de traiter
+   l'indicateur d'erreur transmis :
+   . soit en valeur relative, TYPE_VALEUR_INDICA = 'V_RELATIVE'
+   . soit en valeur absolue, TYPE_VALEUR_INDICA = 'V_ABSOLUE'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01
+VALIDATION
+   zzzz121b
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009821 DU 2006-06-07 07:27:06
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Adaptation de maillages de degre differents
+FONCTIONNALITE
+   Quand on adapte un maillage en degre 2 par la commande MACR_ADAP_MAIL, on produit en
+   sortie le nouveau maillage en degre 2. De maniere optionnelle, on produira egalement le
+   meme maillage en degre 1. Les connectivites des elements sont identiques, les
+   groupes sont
+   identiques ; seul les types de mailles changent : QUAD4 au lieu de QUAD8, TETR4 au lieu de
+   TETR10, ...
+   Pour recuperer ce maillage, on ajoute le mot-cle MAILLAGE_NP1_ANNEXE a la commande
+   MACR_ADAP_MAIL pour preciser le nom du concept qui contiendra le nouveau maillage en
+   degre 1.
+   
+   Ce developpement a revele une anomalie : la lecture d'un champ au format MED ne
+   focntionnait pas quand 2 maillages etaient presents dans le fichier MED. Tout etait
+   prevu
+   dans la commande (LIRE_CHAMP) et dans le programme final de lecture (MDEXCV/LRCMVA) mais
+   il manquait le lien enre les deux. C'est corrige.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01
+VALIDATION
+   zzzz121c
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010125 DU 2006-10-09 09:28:33
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   MACR_ADAP_MAIL
+FONCTIONNALITE
+   Le message peu clair etait :
+   
+   Ligne numero     2
+   ==================
+   ==> La ligne est en    2 morceaux
+   
+   On ajoute maintenant les informations suivantes :
+   
+   .    2-eme famille, de numero MED   -30, de nom REF02___________________________
+   .. Extremite  1 : noeud       2257, X = 0.36000    , Y =  1.3430
+   .. Extremite  2 : noeud       3653, X = 0.24200    , Y = 0.86000E-01
+   .. Extremite  3 : noeud       3656, X = 0.24000    , Y = 0.12000
+   .. Extremite  4 : noeud       3975, X = 0.24185    , Y = 0.11611
+   
+   Cela devrait permettre de rechercher la definition incriminee.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test transmis a la creation de la fiche
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010183 DU 2006-10-25 14:59:38
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Montee de version MED pour HOMARD
+FONCTIONNALITE
+   La version 2.3.1.de MED est disponible avec HOMARD a partir de la version 8.5. Cela se
+   traduit par le changement de la version par defaut dans les commandes MACR_INFO_MAIL et
+   MACR_ADAP_MAIL.
+   
+   Avec ce changement de version de HOMARD, Code_Aster beneficie des evolutions suivantes
+   :
+   . Production des maillages en degre 1 et 2 apres adaptation (cf. fiche 9821)
+   . Choix de la valeur absolue ou relative de l'indicateur d'erreur (cf. fiche 9735)
+   . Utilisation d'un gradient de champ comme indicateur d'erreur (cf. fiche 8860)
+   . Optimisation du temps de calcul dans le tri des valeurs d'indicateurs d'erreur dans le
+   cas de gros maillages (> 100 000 mailles)
+   . Mise a jour de champs exprimes sur des segments
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01  U7.03.02
+VALIDATION
+   zzzz121a zzzz121b zzzz121c zzzz121d demo001a forma04a forma04b forma04c forma05a forma05b
+tpll01j zzzz175a
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND C.              DATE 30/10/2006 - 15:40:54
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010205 DU 2006-10-30 08:19:45
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   objets temporaires non detruits POST_RELEVE_T
+FONCTIONNALITE
+   bug introduit avec la fiche 9215
+   
+   On ne detruit pas les objets temporaires :faire restitution routines prexel.f et prexno.f
+   en 7 et en 8
+   faire restitution routines prexel.f et prexno.f en 7 et en 8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude JF Rit
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 30/10/2006 - 15:40:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010136 DU 2006-10-12 15:48:01
+TYPE anomalie concernant Code_Aster (VERSION 7.7)
+TITRE
+   Blindage de DEFI_FOND_FISS
+FONCTIONNALITE
+   Blindage de DEFI_FOND_FISS : on verifie que les mailles surfaciques des levres
+   contiennent
+   bien les noeuds du fond.
+   Si on ne definie pas correctement les levres (ou le fond), on a le message d'erreur
+   suivant:
+   
+   <F> <DEFI_FOND_FISS> <GVERIF> Le noeud N49     du fond de fissure n est
+   
+   rattache a aucune maille surfacique de la levre inferieure : verifier les
+   
+   
+   groupes de mailles
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009395 DU 2006-01-25 14:49:05
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CALC_G : FONCT_MULT et chargements fonction
+FONCTIONNALITE
+   On ne sait pas combiner dans les routines de CALC_G chargements fonctions et fonctions
+   multiplicatrices. Jusqu'a present, on termine dans ce cas en ERREUR... ce qui n'est pas
+   tres agreable pour l'utilisateur.
+   On propose de remplacer l'erreur par une ALARME signalant explicitement a l'utilisateur
+   que la fonction multiplicatice n'est pas prise en compte, et qu'un resultat faux est
+   alors
+   possible si le chargement impacte la fissure (pression sur les levres ou force volumique)
+   
+   ! <A> <UTILITAI5_91>
+   !
+   ! On ne peut associer des chargements fonction (ici : XXXX ) avec une fonction
+   ! multiplicatrice. La fonction multiplicatrice n'est pas prise en compte :
+   
+   ! RESULTATS FAUX si la charge impacte la fissure (pression sur les levres,force
+   ! volumique)
+   
+   
+   Une refonte plus complete de la prise en compte des chargements dans CALC_G sera
+   realisee
+   l'annee prochaine.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 30/10/2006 - 15:41:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010201 DU 2006-10-27 10:53:03
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   HSNV124A NOOK sur Bull
+FONCTIONNALITE
+   Test HSNV124A sur Bull :
+   
+   En nodebug la variable interne V5 etait NOOK, et OK en debug.
+   
+   Elle est calculee en fonction d'un test sur la proportion d'austenite.
+   
+   il s'agit de comparaisons de reels a zero strictement dans la routine NZISFW :
+   
+   IF (ZAUSTP .GT.0.D0)THEN
+   VIP(5)=...
+   
+   en nodebug on avait :
+   ZAUSTP,VIP(5) =   1.110223024625157E-016  8.929800000000000E-003
+   et en debug
+   ZAUSTP,VIP(5)  -2.220446049250313E-016  0.000000000000000E+000
+   
+   d'ou le NOOK
+   
+   Je propose de remplacer par :
+   
+   IF (ABS(ZAUSTP) .GT.PRECR)THEN
+   VIP(5)=...
+   
+   avec PRECP=R8PREM(). On peut comparer en valeur relative a 1 car ZAUSTP est calcule en
+   fonction de proportions qui sont bornees a 1.
+   Si on fait cela, les resultats sont OK
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   HSNV124A
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR granet       GRANET S.              DATE 30/10/2006 - 13:31:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010095 DU 2006-10-03 06:03:56
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   test wtnv129b en version NEW8.3.15 sous linux Rocks
+FONCTIONNALITE
+   Sous Linux, au 52 eme pas de temps , le residu ne peut pas descendre en
+   dessous de 1.E-8 (il s'arrete a 1.1E-8) ce qui oblige a redecouper
+   plusieurs fois le pas de temps pour arriver a converger. Les numero
+   d'ordre ne sont plus alors significatifs.
+   On passe le critere de convergence a 1.E-7 et tout va bien.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   wtnv129b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR romeo        FERNANDES R.           DATE 30/10/2006 - 13:31:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010011 DU 2006-09-08 12:14:17
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.11, le test wtnv101a en ERREUR (clayastr) et NOOK (Linux)
+FONCTIONNALITE
+   Le test converge lentement car il n'y a pas de reactualisation de l'operateur tangent.
+   Il
+   y a eu une petite degradation
+   de la convergence depuis la version stabilisee. En activant la reactualisation de
+   l'operateur tangent on converge en 2 iterations de Newton!
+   
+   De plus je simplifie la liste des pas de temps - au niveau de la subdivision uniquement.
+   Ceci impacte les TEST-RESU. Les resultats sont identiques sur clayastr et Linux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   wtnv101a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET N.             DATE 30/10/2006 - 15:52:53
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010154 DU 2006-10-19 09:37:18
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   NEW8.3.18, les tests fdnl100a, sdnl100a, sdnl113a  en NOOK (ALR)
+FONCTIONNALITE
+   Il s'est avere que l'appel a la routine asmama dans accel0 (pour
+   calculer l'acceleration initiale on a besoin d'inverser la
+   matrice de masse assemblee par asmama).
+   Il manquait l'argument concernant les degres de liberte de
+   Dirichlet : mediri.
+   On modifie donc l'appel ainsi :
+   CALL ASMAMA(MEMASS,MEDIRI,NUMEDD,SOLVEU,LISCHA,
+   &            MASSE)
+   Au lieu de :
+   CALL ASMAMA(MEMASS,' ',NUMEDD,SOLVEU,LISCHA,
+   &            MASSE)
+   On cherchait donc a inverser une matrice singuliere au niveau des
+   Dirichlet, d'ou probleme...
+   
+   On valide sur les cas-tests fdnl100a, sdnl100a, sdnl113a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.3.18
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fdnl100a, sdnl100a, sdnl113a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pabhhhh      TARDIEU N.             DATE 31/10/2006 - 09:57:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010180 DU 2006-10-25 08:21:54
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Variables non initialisees
+FONCTIONNALITE
+   Le programme valgrind (http://valgrind.org) permet de detecter des variables non
+   initialisees par un programme lors de son execution.
+   Son utilisation est tres simple : valgrind mon_executable.
+   
+   En lancant de cette maniere une petite etude Code_Aster, on detecte facilement un
+   certain
+   nombre de variables non initialisees.
+   
+   - JEECRA :  variable IGUARD non initialisee et non utilisee
+   
+   - BISSEC : variable GRAIN0 non initialisee
+   
+   - ACEINC : on tentait d'acceder a la composante 14 du tableau NBOCC alors que NBOCC est
+   dimensionne a 13 dans l'appelant OP0019.
+   
+   - CADDLI : on va chercher par un GETVTX la valeur d'un mot cle facultatif. Comme il est
+   absent du jeu de commandes, GETVTX ne modifie pas la chaine de sortie. Or en entree,
+   cette
+   chaine n'etait pas initialisee.
+   
+   - CRESO1 : on teste la variable d'impression FETI quelle que soit la methode de
+   resolution. Dans tous les autres cas, cette variable est non-ititialisee.
+   
+   - TE0032 : pour l'option CHAR_MECA_PRES_R, le booleen GLOBAL n'etait pas initialise. On
+   l'initialise a .FALSE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage des tests
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 31/10/2006 - 10:19:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010081 DU 2006-09-29 12:11:27
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   CALC_G : suppression de MODELE, CHAM_MATER, DEPL
+FONCTIONNALITE
+   L'objectif de cette evolution est de resorber les mots cles MODELE,CHAMP_MATER,
+   DEPL,VITE,ACCE de l'operateur CALC_G.
+   Dorenavant, ces informations sont extraites directement de la sd resultat fournie au mot
+   cle RESULTAT (devenu obligatoire).
+   
+   Etape 1: CALC_G : suppression des mots cles DEPL, VITE et ACCE dans les cas-tests.
+   ----------------------------------------------------------------------------------
+   L'objectif de cette etape est de remplacer dans 53 cas-tests le mot cle DEPL (VITE,
+   ACCE)par le mot cle RESULTAT.
+   
+   Ce remplacement a permis de faire du menage en supprimant les commandes CREA_CHAMP
+   creants
+   les cham_no DEPL utilises dans CALC_G.
+   
+   Etape 2 : Suppression de DEPL ; recuperation des mots cles MODELE/CHAM_MATER dans SD
+   Resultat
+   ------------------------------------------------------------------------------------------
+   --
+   L'objectif de cette etape est dans les sources, catalogues de CALC_G de :
+   - Supprimer le mot cle DEPL de la commande CALC_G en modifiant le catalogue de la
+   commande et la routine op0100.
+   - Recuperer de la SD resultat les mots cles MODELE et CHAM_MATER dans la commande
+   CALC_G,
+   via la routine rslesd.
+   
+   Dans 52 cas-tests, on a supprime les mots cles MODELE/CHAM_MATER.
+   
+   On a essaye de supprimer dans la mesure du possible le mot cle EXCIT. Dans 23 cas-tests,
+   on a conserve le mot cle EXCIT car:
+   - l'introduction de l'operateur CREA_RESU pour creer un resultat a fournir a CALC_G
+   afin de remplacer le mot-cle DEPL ne permet pas de stocker le chargement.
+   (21 cas-tests: hplp100a, hplp101a, hplp311a-b-c-d-e-f-g, hplv102a, sslp101b-d-e-f,
+   sslp102a-b, sslv110b-d-e).
+   - le chargement fourni a CALC_G est different de celui stocke dans la sd resultat
+   (2 cas-tests: sdlv123a-b,sslv134d)
+   
+   Validation
+   ----------
+   Passage de l'ensemble des cas-tests de CALC_G + etude plus precise d'un cas test pour
+   chacun des types de resultat : EVOL_ELAS (sslp101f), MODE_MECA (sdls114b) et DYNA_TRANS
+   (sdlv123b).
+   
+   Documentation
+   -------------
+   Mise a jour de la doc U de CALC_G
+   
+   Impact:
+   ------
+   - catapy: calc_g.capy,post_gp.capy,post_k_trans.capy
+   - py    : macr_ascouf_calc_ops.py, post_gp_ops.py, macr_aspic_calc_ops.py,
+   post_k_trans_ops.py
+   - src   : op0100.f,cgcrtb.f,rslesd.f
+   - tests : 77 cas-tests
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.03
+VALIDATION
+   cas test CALC_G
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF utilitai/uttlim               d6bhhjp J.P.LEFEBVRE        57      7      2
+ CASTEST AJOUT miss07b                       acbhhcd G.DEVESA           426    426      0
+ CASTEST AJOUT miss08a                       acbhhcd G.DEVESA           372    372      0
+ CASTEST AJOUT sdll137a                      a3bhhae H.ANDRIAMBOLOLONA    443    443      0
+ CASTEST AJOUT zzzz159e                       assire A.ASSIRE           103    103      0
+ CASTEST AJOUT zzzz159f                       assire A.ASSIRE           176    176      0
+ CASTEST MODIF ascou18a                      rezette C.REZETTE          298      3      7
+ CASTEST MODIF ascou19a                      rezette C.REZETTE          394      4     10
+ CASTEST MODIF feti007a                       assire A.ASSIRE           183      5      1
+ CASTEST MODIF forma04c                       durand C.DURAND           312      3      3
+ CASTEST MODIF forma05a                       durand C.DURAND           313      3      3
+ CASTEST MODIF hpla310a                      rezette C.REZETTE          996     13     48
+ CASTEST MODIF hpla311a                      rezette C.REZETTE          295     19     13
+ CASTEST MODIF hpla311b                      rezette C.REZETTE          299     19     13
+ CASTEST MODIF hplp100a                      rezette C.REZETTE          311     30     29
+ CASTEST MODIF hplp101a                      rezette C.REZETTE          438     32     37
+ CASTEST MODIF hplp310a                      rezette C.REZETTE         1943      2      3
+ CASTEST MODIF hplp311a                      rezette C.REZETTE          468     36     43
+ CASTEST MODIF hplp311b                      rezette C.REZETTE          328     23     25
+ CASTEST MODIF hplp311c                      rezette C.REZETTE          372     28     33
+ CASTEST MODIF hplp311d                      rezette C.REZETTE          326     23     25
+ CASTEST MODIF hplp311e                      rezette C.REZETTE          371     28     33
+ CASTEST MODIF hplp311f                      rezette C.REZETTE          324     23     25
+ CASTEST MODIF hplp311g                      rezette C.REZETTE          364     28     33
+ CASTEST MODIF hplv102a                      rezette C.REZETTE          249     18     17
+ CASTEST MODIF miss02a                       acbhhcd G.DEVESA           527    332   1132
+ CASTEST MODIF miss04a                       acbhhcd G.DEVESA           311    218    430
+ CASTEST MODIF sdld04a                       cibhhlv L.VIVAN            622     18     36
+ CASTEST MODIF sdld102a                      cibhhlv L.VIVAN            838     10      1
+ CASTEST MODIF sdld21c                       a3bhhae H.ANDRIAMBOLOLONA    231     53      3
+ CASTEST MODIF sdll06a                       cibhhlv L.VIVAN            227      4      6
+ CASTEST MODIF sdls01d                       a3bhhae H.ANDRIAMBOLOLONA    118      2      2
+ CASTEST MODIF sdls08a                       a3bhhae H.ANDRIAMBOLOLONA    283      2      2
+ CASTEST MODIF sdls114a                      rezette C.REZETTE          341      9     13
+ CASTEST MODIF sdls114b                      rezette C.REZETTE          318      2      6
+ CASTEST MODIF sdlv123a                      rezette C.REZETTE          235      6     33
+ CASTEST MODIF sdlv123b                      rezette C.REZETTE          232      5     13
+ CASTEST MODIF sdlx201a                      a3bhhae H.ANDRIAMBOLOLONA    594     43     17
+ CASTEST MODIF sdnd100a                      cibhhlv L.VIVAN            214      2      1
+ CASTEST MODIF shll100a                      cibhhlv L.VIVAN            697      5      3
+ CASTEST MODIF ssla310a                      rezette C.REZETTE          467     31    145
+ CASTEST MODIF ssla311a                      rezette C.REZETTE           85      3      8
+ CASTEST MODIF ssla311b                      rezette C.REZETTE           90      3      8
+ CASTEST MODIF ssla311c                      rezette C.REZETTE           85      3      8
+ CASTEST MODIF ssla311d                      rezette C.REZETTE           85      3      8
+ CASTEST MODIF sslp100b                      a3bhhae H.ANDRIAMBOLOLONA    486     41     41
+ CASTEST MODIF sslp100d                      a3bhhae H.ANDRIAMBOLOLONA    426     21     21
+ CASTEST MODIF sslp101b                      rezette C.REZETTE          400     31     47
+ CASTEST MODIF sslp101c                      rezette C.REZETTE          419     19     55
+ CASTEST MODIF sslp101d                      rezette C.REZETTE          268     38     29
+ CASTEST MODIF sslp101e                      rezette C.REZETTE          626     72    138
+ CASTEST MODIF sslp101f                      rezette C.REZETTE          334     23     55
+ CASTEST MODIF sslp102a                      rezette C.REZETTE          321     38     13
+ CASTEST MODIF sslp102b                      rezette C.REZETTE          252      9     32
+ CASTEST MODIF sslp103a                      rezette C.REZETTE          242     13     31
+ CASTEST MODIF sslp310a                      rezette C.REZETTE         1151     37    182
+ CASTEST MODIF sslp311a                      rezette C.REZETTE          444     17     38
+ CASTEST MODIF sslp311b                      rezette C.REZETTE          447     17     38
+ CASTEST MODIF sslp311c                      rezette C.REZETTE          441     17     38
+ CASTEST MODIF sslp311d                      rezette C.REZETTE          448     17     40
+ CASTEST MODIF sslp313a                      rezette C.REZETTE          503      5     12
+ CASTEST MODIF sslp313b                      rezette C.REZETTE          571      5     13
+ CASTEST MODIF sslp313c                      rezette C.REZETTE          252      7     21
+ CASTEST MODIF sslp314a                      rezette C.REZETTE          288     20     43
+ CASTEST MODIF sslp314b                      rezette C.REZETTE          303     21     45
+ CASTEST MODIF sslp314c                      rezette C.REZETTE          321     21     46
+ CASTEST MODIF sslp314d                      rezette C.REZETTE          151      6     17
+ CASTEST MODIF sslp314e                      rezette C.REZETTE          151      6     17
+ CASTEST MODIF sslp314f                      rezette C.REZETTE          150      6     17
+ CASTEST MODIF sslv110a                      rezette C.REZETTE          636     33     39
+ CASTEST MODIF sslv110b                      rezette C.REZETTE          293     15      7
+ CASTEST MODIF sslv110c                      rezette C.REZETTE          387      2      2
+ CASTEST MODIF sslv110d                      rezette C.REZETTE          300     15      7
+ CASTEST MODIF sslv110e                      rezette C.REZETTE          353     10     23
+ CASTEST MODIF sslv134a                      rezette C.REZETTE          389     10     17
+ CASTEST MODIF sslv134b                      rezette C.REZETTE          773      6     13
+ CASTEST MODIF sslv134c                      rezette C.REZETTE          225      4      6
+ CASTEST MODIF sslv134d                      rezette C.REZETTE         1303     21     33
+ CASTEST MODIF sslv310a                      rezette C.REZETTE          488     16     31
+ CASTEST MODIF sslv311a                      rezette C.REZETTE          419      3     11
+ CASTEST MODIF ssnp102a                      rezette C.REZETTE          492      5     17
+ CASTEST MODIF ssnp110a                      rezette C.REZETTE          274      5     12
+ CASTEST MODIF ssnp110b                      rezette C.REZETTE          275      4     10
+ CASTEST MODIF ssnp131a                      rezette C.REZETTE          337      1      1
+ CASTEST MODIF ssnp312a                      rezette C.REZETTE          638    166    452
+ CASTEST MODIF ssnp312b                      rezette C.REZETTE          587    111    395
+ CASTEST MODIF ssnv108a                      rezette C.REZETTE          262     19     34
+ CASTEST MODIF ssnv166c                      rezette C.REZETTE          292      6     36
+ CASTEST MODIF ssnv185a                      rezette C.REZETTE          240      3      7
+ CASTEST MODIF ssnv185b                      rezette C.REZETTE          274      2      4
+ CASTEST MODIF ssnv185c                      rezette C.REZETTE          346      5     13
+ CASTEST MODIF ssnv185d                      rezette C.REZETTE          271      2      4
+ CASTEST MODIF ssnv185e                      rezette C.REZETTE          221      2      4
+ CASTEST MODIF ssnv185f                      rezette C.REZETTE          205      2      4
+ CASTEST MODIF ssnv185g                      rezette C.REZETTE          291      3      7
+ CASTEST MODIF ssnv185h                      rezette C.REZETTE          381      2      4
+ CASTEST MODIF ssnv185i                      rezette C.REZETTE          265      2      4
+ CASTEST MODIF ssnv185j                      rezette C.REZETTE          250      2      4
+ CASTEST MODIF ssnv192a                      rezette C.REZETTE          414      3      7
+ CASTEST MODIF ssnv193a                      a3bhhae H.ANDRIAMBOLOLONA    178      4      4
+ CASTEST MODIF ssnv503a                      cibhhlv L.VIVAN            411     14      6
+ CASTEST MODIF tpll01j                        durand C.DURAND           119      2      2
+ CASTEST MODIF wtnv101a                       granet S.GRANET           455     39     68
+ CASTEST MODIF wtnv129b                       granet S.GRANET           538     23     23
+ CASTEST MODIF zzzz121a                       durand C.DURAND           269      4      4
+ CASTEST MODIF zzzz121b                       durand C.DURAND           560    105      5
+ CASTEST MODIF zzzz121c                       durand C.DURAND           389    166    151
+ CASTEST MODIF zzzz121d                       durand C.DURAND           465      3      3
+ CASTEST MODIF zzzz159c                       assire A.ASSIRE           123     11      6
+ CASTEST MODIF zzzz159d                       assire A.ASSIRE           126      3      3
+ CASTEST MODIF zzzz175a                       durand C.DURAND           622      2      2
+ CASTEST MODIF zzzz216a                       assire A.ASSIRE           281      6      5
+CATALOPY MODIF commande/affe_modele          a3bhhae H.ANDRIAMBOLOLONA    210      3      3
+CATALOPY MODIF commande/calc_g               rezette C.REZETTE          141      8     16
+CATALOPY MODIF commande/defi_maillage        a3bhhae H.ANDRIAMBOLOLONA     79     10     10
+CATALOPY MODIF commande/depl_interne         a3bhhae H.ANDRIAMBOLOLONA     34     13      4
+CATALOPY MODIF commande/macr_adap_mail        durand C.DURAND           479     50     17
+CATALOPY MODIF commande/macr_elem_stat       a3bhhae H.ANDRIAMBOLOLONA     52      5      1
+CATALOPY MODIF commande/macr_info_mail        durand C.DURAND           106      4      4
+CATALOPY MODIF commande/macr_recal            assire A.ASSIRE            64     23      4
+CATALOPY MODIF commande/norm_mode            a3bhhae H.ANDRIAMBOLOLONA     60      8      2
+CATALOPY MODIF commande/post_gp              rezette C.REZETTE           88      1      2
+CATALOPY MODIF commande/post_k_trans         rezette C.REZETTE           63      1      4
+CATALOPY MODIF commande/rest_base_phys       cibhhlv L.VIVAN             94      3      1
+ FORTRAN AJOUT calculel/cnsprm               a3bhhae H.ANDRIAMBOLOLONA    333    333      0
+ FORTRAN AJOUT soustruc/crmema               a3bhhae H.ANDRIAMBOLOLONA    424    424      0
+ FORTRAN AJOUT soustruc/crmeri               a3bhhae H.ANDRIAMBOLOLONA    498    498      0
+ FORTRAN AJOUT soustruc/remome               a3bhhae H.ANDRIAMBOLOLONA    185    185      0
+ FORTRAN MODIF algeline/mlnfld               d6bhhjp J.P.LEFEBVRE        66      3      4
+ FORTRAN MODIF algeline/op0037               a3bhhae H.ANDRIAMBOLOLONA    660     96     12
+ FORTRAN MODIF algeline/vpnorm               a3bhhae H.ANDRIAMBOLOLONA    213      6      4
+ FORTRAN MODIF algeline/vpstor               a3bhhae H.ANDRIAMBOLOLONA    337     43      3
+ FORTRAN MODIF algorith/accel0               greffet N.GREFFET          230      2      2
+ FORTRAN MODIF algorith/modiba               a3bhhae H.ANDRIAMBOLOLONA    248      2      2
+ FORTRAN MODIF algorith/mpmod2               a3bhhae H.ANDRIAMBOLOLONA    485     77     42
+ FORTRAN MODIF algorith/mptran               a3bhhae H.ANDRIAMBOLOLONA    391      4     16
+ FORTRAN MODIF algorith/nmvgme               cibhhlv L.VIVAN            224      2      2
+ FORTRAN MODIF algorith/nzisfw                durand C.DURAND           749     15     14
+ FORTRAN MODIF algorith/op0060               a3bhhae H.ANDRIAMBOLOLONA    651      2     35
+ FORTRAN MODIF algorith/op0074               a3bhhae H.ANDRIAMBOLOLONA     98      1     71
+ FORTRAN MODIF algorith/op0075               a3bhhae H.ANDRIAMBOLOLONA    308      7     13
+ FORTRAN MODIF algorith/op0080               a3bhhae H.ANDRIAMBOLOLONA     86      1     31
+ FORTRAN MODIF algorith/prexel                durand C.DURAND           192      2      2
+ FORTRAN MODIF algorith/prexno                durand C.DURAND           172      4      4
+ FORTRAN MODIF algorith/rbph02               cibhhlv L.VIVAN            128     71     99
+ FORTRAN MODIF algorith/tran75               cibhhlv L.VIVAN            553     44     91
+ FORTRAN MODIF calculel/bissec               pabhhhh N.TARDIEU          345      2      1
+ FORTRAN MODIF calculel/cgcrtb               rezette C.REZETTE          227      3     81
+ FORTRAN MODIF calculel/cnocre               cibhhlv L.VIVAN            130     52     12
+ FORTRAN MODIF calculel/gcharg                durand C.DURAND           413      9     41
+ FORTRAN MODIF calculel/nocart               d6bhhjp J.P.LEFEBVRE       195      4      4
+ FORTRAN MODIF calculel/op0100               rezette C.REZETTE          993      8    112
+ FORTRAN MODIF calculel/pjefch               a3bhhae H.ANDRIAMBOLOLONA    115     12      3
+ FORTRAN MODIF calculel/pjefpr               a3bhhae H.ANDRIAMBOLOLONA    257     36      4
+ FORTRAN MODIF elements/creso1               pabhhhh N.TARDIEU          192     45     39
+ FORTRAN MODIF elements/gverif                durand C.DURAND           884     90      1
+ FORTRAN MODIF elements/te0032               pabhhhh N.TARDIEU          269      2      1
+ FORTRAN MODIF jeveux/jecroc                 d6bhhjp J.P.LEFEBVRE        63      2      3
+ FORTRAN MODIF jeveux/jeecra                 d6bhhjp J.P.LEFEBVRE       280      2     13
+ FORTRAN MODIF jeveux/jeimhd                 d6bhhjp J.P.LEFEBVRE       327      5      8
+ FORTRAN MODIF jeveux/jeimpa                 d6bhhjp J.P.LEFEBVRE       204      2      3
+ FORTRAN MODIF jeveux/jeimpo                 d6bhhjp J.P.LEFEBVRE       265      7     12
+ FORTRAN MODIF jeveux/jelibe                 d6bhhjp J.P.LEFEBVRE        45      2      3
+ FORTRAN MODIF jeveux/jelira                 d6bhhjp J.P.LEFEBVRE       320      3      5
+ FORTRAN MODIF jeveux/jenuno                 d6bhhjp J.P.LEFEBVRE       159      2      3
+ FORTRAN MODIF jeveux/jeprat                 d6bhhjp J.P.LEFEBVRE       201      2      3
+ FORTRAN MODIF jeveux/jerazo                 d6bhhjp J.P.LEFEBVRE       201      2      3
+ FORTRAN MODIF jeveux/jeveuo                 d6bhhjp J.P.LEFEBVRE       165      2      3
+ FORTRAN MODIF jeveux/jjallc                 d6bhhjp J.P.LEFEBVRE       175      2      3
+ FORTRAN MODIF modelisa/aceinc               pabhhhh N.TARDIEU          280      2      2
+ FORTRAN MODIF modelisa/caddli               pabhhhh N.TARDIEU          350      5      3
+ FORTRAN MODIF postrele/rvaffm               cibhhlv L.VIVAN            145      4      4
+ FORTRAN MODIF postrele/rvpost               cibhhlv L.VIVAN            273      3      3
+ FORTRAN MODIF postrele/rvtamo               cibhhlv L.VIVAN            273     30      6
+ FORTRAN MODIF prepost/ircame                 durand C.DURAND           321      2      2
+ FORTRAN MODIF prepost/lrcame                 durand C.DURAND           633     11      2
+ FORTRAN MODIF prepost/mdexch                 durand C.DURAND           141      6      4
+ FORTRAN MODIF prepost/mdexcv                 durand C.DURAND           124      4     15
+ FORTRAN MODIF soustruc/op0088               a3bhhae H.ANDRIAMBOLOLONA     66      4      3
+ FORTRAN MODIF soustruc/op0089               a3bhhae H.ANDRIAMBOLOLONA     99     51      6
+ FORTRAN MODIF soustruc/ssafmo               a3bhhae H.ANDRIAMBOLOLONA    122      3      3
+ FORTRAN MODIF soustruc/ssdege               a3bhhae H.ANDRIAMBOLOLONA    166     11      4
+ FORTRAN MODIF soustruc/ssdmdm               a3bhhae H.ANDRIAMBOLOLONA    242     11      9
+ FORTRAN MODIF soustruc/ssdmdn               a3bhhae H.ANDRIAMBOLOLONA    156      2      2
+ FORTRAN MODIF soustruc/ssdmgn               a3bhhae H.ANDRIAMBOLOLONA    265      5      5
+ FORTRAN MODIF soustruc/ssdmrg               a3bhhae H.ANDRIAMBOLOLONA    134      2      2
+ FORTRAN MODIF soustruc/ssdmrm               a3bhhae H.ANDRIAMBOLOLONA    228      9      8
+ FORTRAN MODIF soustruc/ssmage               a3bhhae H.ANDRIAMBOLOLONA    128      2      2
+ FORTRAN MODIF soustruc/ssmau2               a3bhhae H.ANDRIAMBOLOLONA    307     20      5
+ FORTRAN MODIF soustruc/ssrige               a3bhhae H.ANDRIAMBOLOLONA    123      3      2
+ FORTRAN MODIF soustruc/ssriu2               a3bhhae H.ANDRIAMBOLOLONA    220     26      3
+ FORTRAN MODIF utilitai/dismml               a3bhhae H.ANDRIAMBOLOLONA     83      3      1
+ FORTRAN MODIF utilitai/rscrsd               a3bhhae H.ANDRIAMBOLOLONA    791     15     18
+ FORTRAN MODIF utilitai/rslesd               rezette C.REZETTE          431     12      1
+ FORTRAN MODIF utilitai/utlicm                durand C.DURAND           153      8      3
+ FORTRAN MODIF utilitai/verij1               a3bhhae H.ANDRIAMBOLOLONA   2279      1     26
+  PYTHON AJOUT Utilitai/optimize              assire A.ASSIRE           593    593      0
+  PYTHON MODIF Macro/creation_donnees_homard     durand C.DURAND           535     34     21
+  PYTHON MODIF Macro/macr_adap_mail_ops       durand C.DURAND           839    132     81
+  PYTHON MODIF Macro/macr_ascouf_calc_ops    rezette C.REZETTE          681      2      4
+  PYTHON MODIF Macro/macr_aspic_calc_ops     rezette C.REZETTE          797      5     13
+  PYTHON MODIF Macro/macr_recal_ops           assire A.ASSIRE          1024    821     64
+  PYTHON MODIF Macro/macro_miss_3d_ops       acbhhcd G.DEVESA           141      6      5
+  PYTHON MODIF Macro/post_gp_ops             rezette C.REZETTE          371      2      4
+  PYTHON MODIF Macro/post_k_trans_ops        rezette C.REZETTE          245      1      5
+  PYTHON MODIF Macro/reca_algo                assire A.ASSIRE           299     27     11
+  PYTHON MODIF Macro/reca_calcul_aster        assire A.ASSIRE           901    322     68
+  PYTHON MODIF Macro/reca_controles           assire A.ASSIRE           228     14      4
+  PYTHON MODIF Macro/reca_interp              assire A.ASSIRE           325     22      8
+  PYTHON MODIF Macro/reca_message             assire A.ASSIRE           173    100     53
+  PYTHON MODIF Macro/reca_utilitaires         assire A.ASSIRE           225     33     15
+  PYTHON MODIF Messages/jeveux               d6bhhjp J.P.LEFEBVRE       161     29      1
+  PYTHON MODIF Messages/soustruc             a3bhhae H.ANDRIAMBOLOLONA    356     21      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   10        3553      3553             +3553
+ MODIF :  203       70573      5103    6175     -1072
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  213       74126      8656    6175     +2481 

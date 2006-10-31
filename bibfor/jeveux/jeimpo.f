@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPO ( UNIT , NOMLU , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,12 +53,12 @@ C
       INTEGER          NUMEC
       COMMON /INUMJE/  NUMEC
 C     ------------------------------------------------------------------
-      CHARACTER *75   CMESS
       CHARACTER *32   NOML32
       CHARACTER *1    GENRI , TYPEI
       INTEGER         ICRE , IRET , JCTAB , LTYPI , LONOI , IADDI(2)
       INTEGER         IBACOL , IXIADD , IXDESO
       LOGICAL         LCONST , LCOL
+      REAL*8          RB
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
@@ -76,8 +76,7 @@ C
       CALL JJVERN ( NOML32 , ICRE , IRET )
 C
       IF ( IRET .EQ. 0 ) THEN
-        CMESS = 'OBJET INEXISTANT DANS LES BASES OUVERTES'
-        CALL U2MESK('A','JEVEUX_01',1,CMESS)
+        CALL U2MESK('A','JEVEUX_26',1,NOML32(1:24))
         GOTO 9999
       ELSE IF ( IRET .EQ. 1 ) THEN
 C
@@ -94,8 +93,7 @@ C
           IADDI(1) = IADD ( JIADD(ICLAOS) + 2*IDATOS-1 )
           IADDI(2) = IADD ( JIADD(ICLAOS) + 2*IDATOS   )
           IF ( IADDI(1) .EQ. 0 ) THEN
-            CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-            CALL U2MESK('A','JEVEUX_01',1,CMESS)
+            CALL U2MESK('A','JEVEUX_27',1,NOML32(1:24))
             GOTO 9999
           ENDIF
           CALL JJALTY (TYPEI , LTYPI , 'L' , 1 , JCTAB)
@@ -140,8 +138,7 @@ C
           IADMEX = IADMI
           IF ( IADMEX .EQ. 0 ) THEN
             IF ( IADDI(1) .EQ. 0 ) THEN
-              CMESS = 'COLLECTION INEXISTANTE EN MEMOIRE ET SUR DISQUE'
-              CALL U2MESK('A','JEVEUX_01',1,CMESS)
+              CALL U2MESK('A','JEVEUX_28',1,NOML32(1:24))
               GOTO 9999
             ENDIF
             CALL JJALTY (TYPEI , LTYPI , 'L' , 2 , JCTAB)
@@ -203,8 +200,7 @@ C           ----------- COLLECTION CONTIGUE
            IADMEX = IBDESO
            IF ( IADMEX .EQ. 0 ) THEN
              IF ( IADDI(1) .EQ. 0 ) THEN
-               CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-               CALL U2MESK('A','JEVEUX_01',1,CMESS)
+               CALL U2MESG('A','JEVEUX_29',1,NOML32(1:24),1,IDATOC,0,RB)
                GOTO 9999
              ENDIF
              CALL JJALTY (TYPEI , LTYPI , 'L' , 2 , JCTAB)
@@ -240,8 +236,7 @@ C
              IADDI(1) = ISZON(JISZON + IBIADD - 1 + 2*IDATOC-1 )
              IADDI(2) = ISZON(JISZON + IBIADD - 1 + 2*IDATOC   )
              IF ( IADDI(1) .EQ. 0 ) THEN
-               CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-               CALL U2MESK('A','JEVEUX_01',1,CMESS)
+               CALL U2MESG('A','JEVEUX_29',1,NOML32(1:24),1,IDATOC,0,RB)
                GOTO 9999
              ENDIF
              CALL JJALTY (TYPEI , LTYPI , 'L' , INAT , JCTAB)

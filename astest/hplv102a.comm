@@ -1,5 +1,5 @@
 
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,6 +119,15 @@ K=FACT_LDLT(reuse =K,
 
 DEPLA=RESO_LDLT(MATR_FACT=K,
                 CHAM_NO=F,);
+
+RESU=CREA_RESU(  OPERATION='AFFE', 
+                 TYPE_RESU='EVOL_ELAS',
+                 NOM_CHAM='DEPL',
+                      AFFE=_F(  CHAM_GD = DEPLA, 
+                                INST=0.,
+                                MODELE=MO,
+                                CHAM_MATER = CM)     )
+
 #--------------------------------------------------------------------
 #               CALCUL DE G SUR 4 COURONNES                         #
 #--------------------------------------------------------------------
@@ -133,10 +142,8 @@ THETA1=CALC_THETA(MODELE=MO,
 CHAM1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',  OPERATION='EXTR',
                  RESULTAT=THETA1, NOM_CHAM='THETA',NUME_ORDRE=0,);
 
-G1=CALC_G(MODELE=MO,
-                  CHAM_MATER=CM,
-                  THETA=_F(THETA=CHAM1),
-                  DEPL=DEPLA,
+G1=CALC_G(        THETA=_F(THETA=CHAM1),
+                  RESULTAT=RESU,NUME_ORDRE=1,
                   EXCIT=_F(CHARGE=CH,),
                   COMP_ELAS=_F(RELATION='ELAS',
                                DEFORMATION='PETIT',),);
@@ -148,10 +155,8 @@ THETA2=CALC_THETA(MODELE=MO,
                               R_INF=0.5,
                               R_SUP=4.5,),);
 
-G2=CALC_G(MODELE=MO,
-                  CHAM_MATER=CM,
-                  THETA=_F(THETA=THETA2),
-                  DEPL=DEPLA,
+G2=CALC_G(        THETA=_F(THETA=THETA2),
+                  RESULTAT=RESU,NUME_ORDRE=1,
                   EXCIT=_F(CHARGE=CH,),
                   COMP_ELAS=_F(RELATION='ELAS',
                                DEFORMATION='PETIT',),);
@@ -163,10 +168,8 @@ THETA3=CALC_THETA(MODELE=MO,
                               R_INF=1.5,
                               R_SUP=3.5,),);
 
-G3=CALC_G(MODELE=MO,
-                  CHAM_MATER=CM,
-                  THETA=_F(THETA=THETA3),
-                  DEPL=DEPLA,
+G3=CALC_G(        THETA=_F(THETA=THETA3),
+                  RESULTAT=RESU,NUME_ORDRE=1,
                   EXCIT=_F(CHARGE=CH,),
                   COMP_ELAS=_F(RELATION='ELAS',
                                DEFORMATION='PETIT',),);
@@ -178,10 +181,8 @@ THETA4=CALC_THETA(MODELE=MO,
                               R_INF=1.0,
                               R_SUP=4.5,),);
 
-G4=CALC_G(MODELE=MO,
-                  CHAM_MATER=CM,
-                  THETA=_F(THETA=THETA4),
-                  DEPL=DEPLA,
+G4=CALC_G(        THETA=_F(THETA=THETA4),
+                  RESULTAT=RESU,NUME_ORDRE=1,
                   EXCIT=_F(CHARGE=CH,),
                   COMP_ELAS=_F(RELATION='ELAS',
                                DEFORMATION='PETIT',),);

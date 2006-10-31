@@ -3,7 +3,7 @@
       INTEGER            IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -286,27 +286,21 @@ C
       ENDIF
 C
  9999 CONTINUE
-
-      CALL JEVEUO(NOMRES//'           .ORDR','L',JORD)
-      CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
-      CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
-      IF(CONCEP(1:9).EQ.'TRAN_GENE'.OR.CONCEP(1:9).EQ.'MODE_CYCL')THEN
-         CALL JEVEUO(RESIN//'           .MODL','L',JMODL)
-         CALL JEVEUO(RESIN//'           .MATE','L',JMATE)
-         CALL JEVEUO(RESIN//'           .CARA','L',JCARA)
-         DO 30 IORD=1,NBORD
-           CALL RSADPA(NOMRES,'E',3,PARAM,ZI(JORD+IORD-1),0,LPAOUT,K8B)
-           ZK8(LPAOUT(1))=ZK8(JMODL+IORD-1)
-           ZK8(LPAOUT(2))=ZK8(JMATE+IORD-1)
-           ZK8(LPAOUT(3))=ZK8(JCARA+IORD-1)
- 30     CONTINUE
-      ELSE
+C
+C --- STOCKAGE
+      CALL GETTCO(RESIN,CONCEP)
+      IF ((CONCEP(1:9) .NE.'TRAN_GENE').AND.
+     &    (CONCEP(1:9) .NE.'MODE_CYCL') .AND.
+     &    (CONCEP(1:9) .NE.'HARM_GENE')) THEN
+        CALL JEVEUO(NOMRES//'           .ORDR','L',JORD)
+        CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
+        CALL JELIRA(NOMRES//'           .ORDR','LONUTI',NBORD,K8B)
         DO 10 IORD=1,NBORD
           CALL RSADPA(RESIN,'L',3,PARAM,ZI(JORD+IORD-1),0,LPAIN,K8B)
           CALL RSADPA(NOMRES,'E',3,PARAM,ZI(JORD+IORD-1),0,LPAOUT,K8B)
           DO 20 I=1,3
-            ZK8(LPAOUT(I))=ZK8(LPAIN(I))
- 20       CONTINUE
+           ZK8(LPAOUT(I))=ZK8(LPAIN(I))
+ 20      CONTINUE
  10     CONTINUE
       ENDIF
          

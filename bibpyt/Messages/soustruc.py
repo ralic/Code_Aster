@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF soustruc Messages  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -332,5 +332,25 @@ cata_msg={
 
 78: _("""
  erreur dans le maillage
+"""),
+
+79: _("""
+ le calcul de reponse pour ce type de resultat n'est disponible que sur les macr_elem_stat obtenus a partir de la mesure
+"""),
+
+80: _("""
+ la matrice de rigidite condensee n'a pas ete calculee
+"""),
+
+81: _("""
+ la matrice de masse condensee n'a pas ete calculee
+"""),
+
+82: _("""
+ nb de ddl capteur insuffisant ou nb vecteurs de base trop eleve, nb ddl capteur : %(i1)d ,nb vecteurs de base : %(i2)d
+"""),
+
+83: _("""
+ nb ddl interface insuffisant ou nb modes identifies trop eleve, nb ddl interface : %(i1)d ,nb modes identifies : %(i2)d
 """),
 }

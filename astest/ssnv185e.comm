@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -184,9 +184,7 @@ SIF = [None]*nbc
 
 for i in range(0,nbc) :
 
-   SIF[i]=CALC_G(MODELE=MODELEK,
-                 CHAM_MATER=CHAMPMA1,
-                 RESULTAT=UTOT1,
+   SIF[i]=CALC_G(RESULTAT=UTOT1,
                  SYME_CHAR='SANS',
                  COMP_ELAS=_F(RELATION='ELAS',),
                  OPTION='CALC_K_G',

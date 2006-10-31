@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD,TYPSD,M80
       INTEGER NOBJ,NVU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -1259,7 +1259,6 @@ C----------------------------------------
         CALL VERIJ3(OUF,NOMS8//'.REFM','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'.REFM','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'.REFM','TYPE','K8',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'.REFM','LONMAX','9',NOBJ)
         OUF = VERIJ4(OF,'F')
         CALL VERIJ2(OUF,'MATR_ASSE',NOMS8//'.RIGIMECA',M80,NVU,NOBJ)
         OUF = VERIJ4(OF,'O')
@@ -1577,18 +1576,6 @@ C----------------------------------------
         CALL VERIJ3(OUF,NOMS8//'.CYCL_TYPE','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'.CYCL_TYPE','TYPE','K8',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'.CYCL_TYPE','LONMAX','1',NOBJ)
-        OUF = VERIJ4(OF,'O')
-        CALL VERIJ3(OUF,NOMS8//'           .CARA','XOUS','S',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .CARA','GENR','V',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .CARA','TYPE','K8',NOBJ)
-        OUF = VERIJ4(OF,'O')
-        CALL VERIJ3(OUF,NOMS8//'           .MATE','XOUS','S',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .MATE','GENR','V',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .MATE','TYPE','K8',NOBJ)
-        OUF = VERIJ4(OF,'O')
-        CALL VERIJ3(OUF,NOMS8//'           .MODL','XOUS','S',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .MODL','GENR','V',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .MODL','TYPE','K8',NOBJ)
 
       ELSEIF (TYP2SD.EQ.'NUME_DDL') THEN
 C----------------------------------------
@@ -2138,10 +2125,6 @@ C----------------------------------------
         CALL VERIJ3(OUF,NOMS19//'.ACCE','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.ACCE','TYPE','R8',NOBJ)
         OUF = VERIJ4(OF,'O')
-        CALL VERIJ3(OUF,NOMS19//'.CARA','XOUS','S',NOBJ)
-        CALL VERIJ3(OUF,NOMS19//'.CARA','GENR','V',NOBJ)
-        CALL VERIJ3(OUF,NOMS19//'.CARA','TYPE','K8',NOBJ)
-        OUF = VERIJ4(OF,'O')
         CALL VERIJ3(OUF,NOMS19//'.DEPL','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.DEPL','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.DEPL','TYPE','R8',NOBJ)
@@ -2186,14 +2169,6 @@ C----------------------------------------
         CALL VERIJ3(OUF,NOMS19//'.IPSD','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.IPSD','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.IPSD','TYPE','R8',NOBJ)
-        OUF = VERIJ4(OF,'O')
-        CALL VERIJ3(OUF,NOMS19//'.MATE','XOUS','S',NOBJ)
-        CALL VERIJ3(OUF,NOMS19//'.MATE','GENR','V',NOBJ)
-        CALL VERIJ3(OUF,NOMS19//'.MATE','TYPE','K8',NOBJ)
-        OUF = VERIJ4(OF,'O')
-        CALL VERIJ3(OUF,NOMS19//'.MODL','XOUS','S',NOBJ)
-        CALL VERIJ3(OUF,NOMS19//'.MODL','GENR','V',NOBJ)
-        CALL VERIJ3(OUF,NOMS19//'.MODL','TYPE','K8',NOBJ)
         OUF = VERIJ4(OF,'F')
         CALL VERIJ3(OUF,NOMS19//'.NCHO','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.NCHO','GENR','V',NOBJ)

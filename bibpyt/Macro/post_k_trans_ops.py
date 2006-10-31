@@ -1,4 +1,4 @@
-#@ MODIF post_k_trans_ops Macro  DATE 10/10/2006   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k_trans_ops Macro  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,8 +56,6 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
     montit = 'Calcul des K modaux'
     resumod = K_MODAL['RESU_MODA']
     thet = K_MODAL['THETA']
-    model = K_MODAL['MODELE']
-    chmat = K_MODAL['CHAM_MATER']
 
     motscles={}
     motscles2={}
@@ -86,8 +84,6 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
                         DEGRE = K_MODAL['DEGRE'] ))
     
     __kgtheta = CALC_G(       RESULTAT   = resumod,
-                            MODELE = model,
-                            CHAM_MATER=chmat,
                             OPTION = 'K_G_MODA',
                             TOUT_MODE = 'OUI',
                             INFO       = INFO, 

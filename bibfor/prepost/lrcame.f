@@ -7,7 +7,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,6 +158,7 @@ C
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
+        WRITE (IFM,*) '.. NOM DU CHAMP A LIRE : ',NOMAMD
       ENDIF
  1001 FORMAT(/,10('='),A,10('='),/)
 C
@@ -259,6 +260,11 @@ C        CALL U2MESK('F','PREPOST3_12', 2 ,VALK)
 C
       ENDIF
 C
+      IF ( NIVINF.GT.1 ) THEN
+        WRITE (IFM,*) '.. NOM DU MAILLAGE MED ASSOCIE : ',NOMAMD,
+     &                '   DE DIMENSION', NDIM
+      ENDIF
+C
 C 2.2. ==> VERIFICATIONS DES COMPOSANTES ASTER DEMANDEES
 C          EN SORTIE, ON A :
 C       NCMPUT : NOMBRE DE COMPOSANTES VALIDES.
@@ -352,6 +358,9 @@ C            LE NUMERO D'ORDRE ASSOCIE
 C
         IF ( IINST.NE.0 ) THEN
 C
+          IF ( NIVINF.GT.1 ) THEN
+           WRITE (IFM,*) '.... INSTANT : ', INST
+          ENDIF
           CALL MDCHIN ( NOFIMD, NOCHMD, TYPENT, TYGEOM, PREFIX,
      &                  NPAS, CODRET )
 C
@@ -409,7 +418,7 @@ C
         NMCMFL = '&&'//NOMPRO//'.NOMCMP_FICHIE'//K2BID
 
         CALL MDEXCH ( NOFIMD,
-     &                NOCHMD, NUMPT, NUMORD, NBCMPV, NCMPVM,
+     &                NOCHMD, NOMAMD, NUMPT, NUMORD, NBCMPV, NCMPVM,
      &                NBVATO, TYPENT, TYGEOM,
      &                EXISTC, NBCMFI, NMCMFL, NBVAL, CODRET )
         IF ( EXISTC.GE.3 ) THEN

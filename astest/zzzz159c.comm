@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,13 +75,18 @@ experience=[    Numeric.array([[0.00000E+00  , 0.00000E+00 ],
 # LANCEMENT DE L'IDENTIFICATION
 
 RESU=MACR_RECAL(
-         UNITE_ESCL       =3,
-         RESU_EXP         =experience,
-         LIST_PARA        =parametres,
+         UNITE_ESCL       = 3,
+         RESU_EXP         = experience,
+         LIST_PARA        = parametres,
          RESI_GLOB_RELA   = 1.E-5,
-         RESU_CALC        =calcul,
+         RESU_CALC        = calcul,
          POIDS            = weight,
-)  ;
+         GRAPHIQUE        = (_F(INTERACTIF='NON',
+                                UNITE=90,
+                                AFFICHAGE='ITERATION_FINALE',
+                             )),
+
+                 )  ;
 
 
 # On cree une liste bidon pour pouvoir

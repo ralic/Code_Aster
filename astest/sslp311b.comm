@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,11 +72,6 @@ CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
                           )
 
 #
-DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=CHAMDEPL,
-            NUME_ORDRE=1 )
-
-#
 # POINT DROIT
 #
 FOND1=DEFI_FOND_FISS(    MAILLAGE=MA,
@@ -94,12 +89,10 @@ THETA01A=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G01A=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(THETA=THETA01A),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G01A=CALC_G(    RESULTAT=CHAMDEPL,
+                NUME_ORDRE=1,
+                THETA=_F(THETA=THETA01A),
+                SYME_CHAR='SANS'
                       )
 
 #
@@ -119,12 +112,10 @@ THETA01B=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G01B=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(THETA=THETA01B),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G01B=CALC_G(    RESULTAT=CHAMDEPL,
+                NUME_ORDRE=1,
+                THETA=_F(THETA=THETA01B),
+                SYME_CHAR='SANS'
                       )
 
 #
@@ -144,12 +135,10 @@ THETA01C=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G01C=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(THETA=THETA01C),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G01C=CALC_G(    RESULTAT=CHAMDEPL,
+                NUME_ORDRE=1,
+                THETA=_F(THETA=THETA01C),
+                SYME_CHAR='SANS'
                       )
 
 #
@@ -169,12 +158,10 @@ THETA01D=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G01D=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(THETA=THETA01D),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G01D=CALC_G(    RESULTAT=CHAMDEPL,
+                NUME_ORDRE=1,
+                THETA=_F(THETA=THETA01D),
+                SYME_CHAR='SANS'
                       )
 
 #
@@ -203,12 +190,10 @@ THETA02A=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G02A=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(THETA=THETA02A),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G02A=CALC_G(    RESULTAT=CHAMDEPL,
+                NUME_ORDRE=1,
+                THETA=_F(THETA=THETA02A),
+                SYME_CHAR='SANS'
                       )
 
 #
@@ -229,12 +214,10 @@ THETA02B=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G02B=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(THETA=THETA02B),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G02B=CALC_G(    RESULTAT=CHAMDEPL,
+                NUME_ORDRE=1,
+                THETA=_F(THETA=THETA02B),
+                SYME_CHAR='SANS'
                      )
 
 #
@@ -255,12 +238,10 @@ THETA02C=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G02C=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(THETA=THETA02C),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G02C=CALC_G(    RESULTAT=CHAMDEPL,
+                NUME_ORDRE=1,
+                THETA=_F(THETA=THETA02C),
+                SYME_CHAR='SANS'
                       )
 
 #
@@ -280,12 +261,10 @@ THETA02D=CALC_THETA(    MODELE=MO,
                       )
 
 #
-G02D=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(THETA=THETA02D),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
-                          SYME_CHAR='SANS'
+G02D=CALC_G(    RESULTAT=CHAMDEPL,
+                NUME_ORDRE=1,
+                THETA=_F(THETA=THETA02D),
+                SYME_CHAR='SANS'
                       )
 
 #

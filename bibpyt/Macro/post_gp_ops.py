@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF post_gp_ops Macro  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,9 +87,7 @@ def post_gp_ops(self, **args):
                                        R_INF=dMC['R_INF'],
                                        R_SUP=dMC['R_SUP']),)
 
-      __gtheta = CALC_G(MODELE=self['MODELE'],
-                        CHAM_MATER=self['CHAM_MATER'],
-                        THETA=_F(THETA=__theta),
+      __gtheta = CALC_G(THETA=_F(THETA=__theta),
                         EXCIT=self['EXCIT'].List_F(),
                         RESULTAT=self['RESULTAT'],
                         TOUT_ORDRE='OUI',

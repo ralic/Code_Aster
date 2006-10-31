@@ -6,7 +6,7 @@
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,12 @@ C      WRITE(6,*)'rslesd01'
 
 C---  RECUPERATION DU NOM DU MODELE
 C
-      CALL GETVID(' ','MODELE'    ,0,1,1,NOMLU,N1)
+      IF(NOMCMD(1:6).NE.'CALC_G')THEN
+       CALL GETVID(' ','MODELE'    ,0,1,1,NOMLU,N1)
+      ELSE
+       N1=0
+       NOMLU=BLAN8
+      ENDIF
 C
 C      WRITE(6,*)'rslesd01-MODELE=',MODELE
 
@@ -218,7 +223,13 @@ C      WRITE(6,*)'rslesd04'
 C
 C---  RECUPERATION DU NOM DU CHAMP MATERIAU
 C
-      CALL GETVID(' ','CHAM_MATER',0,1,1,NOMLU,N3)
+      IF(NOMCMD(1:6).NE.'CALC_G')THEN
+        CALL GETVID(' ','CHAM_MATER',0,1,1,NOMLU,N3)
+      ELSE
+        N3=0
+        NOMLU=BLAN8
+      ENDIF
+      
 C
       CALL RSADPA(RESULT,'L',1,'CHAMPMAT',NUORD,0,JPARA,K8B)
       NOMSD=ZK8(JPARA)

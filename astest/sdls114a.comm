@@ -1,4 +1,4 @@
-# MODIF  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,9 +150,7 @@ FF1=DEFI_FOND_FISS(MAILLAGE=M,
                    NORMALE=(0.0, -1.0, 0.0),
                   );
 
-GLMO1=CALC_G(MODELE=MO,
-             CHAM_MATER=CM,
-             OPTION='K_G_MODA',
+GLMO1=CALC_G(OPTION='K_G_MODA',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
              THETA=_F(FOND_FISS=FF1,
@@ -255,15 +253,19 @@ RES_DYNA=DYNA_TRAN_MODAL(MASS_GENE=MASS_GE,
 
 RESUDYNA = REST_BASE_PHYS(RESU_GENE = RES_DYNA, 
                           NOM_CHAM=('DEPL','ACCE',)
-                          );                
+                          );
 
 RESUDYNA =CALC_ELEM(reuse =RESUDYNA ,
+                   MODELE=MO,
+                   CHAM_MATER=CM,
                    OPTION='SIEF_ELGA_DEPL',
                    RESULTAT=RESUDYNA ,);
 
 RESUDYNA =CALC_NO(reuse =RESUDYNA ,
-              RESULTAT=RESUDYNA ,
-              OPTION='REAC_NODA',);
+                   MODELE=MO,
+                   CHAM_MATER=CM,
+                   RESULTAT=RESUDYNA ,
+                   OPTION='REAC_NODA',);
 
 KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    K_MODAL = _F(TABL_K_MODA =GLMO1,
@@ -280,9 +282,7 @@ TEST_TABLE(TABLE=KT1,
            REFERENCE = 'NON_REGRESSION',
           );
 ###TESTS INFORMATIQUES         
-GLMO2=CALC_G(MODELE=MO,
-             CHAM_MATER=CM,
-             NUME_MODE = 1,
+GLMO2=CALC_G(NUME_MODE = 1,
              OPTION='K_G_MODA',
              RESULTAT=MODE,
              THETA=_F(FOND_FISS=FF1,
@@ -301,9 +301,7 @@ TEST_TABLE(TABLE=GLMO2,
               REFERENCE = 'NON_REGRESSION',
              );
 
-GLMO3=CALC_G(MODELE=MO,
-             CHAM_MATER=CM,
-             OPTION='K_G_MODA',
+GLMO3=CALC_G(OPTION='K_G_MODA',
              RESULTAT=MODE,
              FREQ = 3.46915E+03,
              CRITERE='RELATIF',
@@ -323,9 +321,7 @@ TEST_TABLE(TABLE=GLMO3,
 LI = DEFI_LIST_REEL(VALE = (9.0E-04,6.90E-03, 1.285E-2),);
 KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                   LIST_INST = LI,
-                  K_MODAL = _F(MODELE=MO,
-                              CHAM_MATER=CM,
-                              RESU_MODA=MODE,
+                  K_MODAL = _F(RESU_MODA=MODE,
                               FOND_FISS=FF1,
                               MODULE=1.0,
                               R_SUP = 5.E-5,

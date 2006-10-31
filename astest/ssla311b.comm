@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE MURAKAMI 9.12 FISSURE CIRCULAIRE SOUMISE A UNE CHARGE ANNULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,9 +55,6 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
                               EXCIT=_F( CHARGE = CH)
                            )
 
-DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=CHAMDEPL,
-                   NUME_ORDRE=1       )
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                          FOND_FISS=_F( GROUP_NO = ('P0',)),
@@ -72,11 +69,9 @@ THETA0=CALC_THETA(    MODELE=MO,
                          DIRECTION=(1., 0., 0.,)
                      )
 
-G0=CALC_G(    MODELE=MO,
-                          DEPL=DEP,
-                         THETA=_F(THETA=THETA0),
-                        EXCIT=_F(CHARGE=CH,),
-                        CHAM_MATER=CHMAT,
+G0=CALC_G(              RESULTAT=CHAMDEPL,
+                        NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA0),
                         SYME_CHAR='SYME'
                     )
 

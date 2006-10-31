@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,14 +58,14 @@ C ----------------------------------------------------------------------
       CHARACTER*1   COLI, K1BID
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, GRAN, INTERP, BASEM2,
      &              MAILLA, NOMRES, NOMIN, NOMCMP(6), MODE, MONMOT(2),
-     &              MATGEN
+     &              MATGEN, NOMGD
       CHARACTER*14  NUMDDL, NUMGEN
       CHARACTER*16  TYPRES, NOMCMD, NOMP(MXPARA), TYPE(8), TYPCHA,
      &              TYPBAS(8), TYPREP, CONCEP, CHAMP(8)
       CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE,
      &              TYPREF(8)
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1,
-     &              OBJVE2, NOMNOE, NUMEDD
+     &              OBJVE2, OBJVE3, OBJVE4, NOMNOE, NUMEDD
       LOGICAL       TOUSNO, MULTAP, LEFFOR, LRPHYS
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
@@ -107,9 +107,11 @@ C
 C     --- RECUPERATION DES ENTITES DU MAILLAGE SUR LESQUELLES ---
 C     ---                PORTE LA RESTITUTION                 ---
       TOUSNO = .TRUE.
-C      CALL GETVEM(MAILLA,'GROUP_NO', ' ','GROUP_NO',1,1,0,K8B,N1)
-C      CALL GETVEM(MAILLA,'NOEUD'   , ' ','NOEUD'   ,1,1,0,K8B,N2)
-C      IF ( N1+N2 .NE. 0 ) TOUSNO = .FALSE.
+      CALL GETVID ( ' ', 'GROUP_NO', 1,1,0, K8B, N1 )
+      CALL GETVID ( ' ', 'NOEUD'   , 1,1,0, K8B, N2 )
+      CALL GETVID ( ' ', 'GROUP_MA', 1,1,0, K8B, N3 )
+      CALL GETVID ( ' ', 'MAILLE'  , 1,1,0, K8B, N4 )
+      IF ( N1+N2+N3+N4 .NE. 0 ) TOUSNO = .FALSE.
 C
 C     --- RECUPERATION DE LA BASE MODALE ---
 C
@@ -281,12 +283,16 @@ C     --- RECUPERATION DES NUMEROS DES NOEUDS ET DES DDLS ASSOCIES ---
 C     ---         DANS LE CAS D'UNE RESTITUTION PARTIELLE          ---
 C
       IF ( .NOT. TOUSNO ) THEN
-         OBJVE1 = '&&TRAN75.NUMDDL_NOEUD'
-         OBJVE2 = '&&TRAN75.NUME_NOEUDS'
-         CALL RBPH02 ( MAILLA, NUMDDL, NBNOEU, OBJVE1, OBJVE2 )
-         NEQ = 6 * NBNOEU
-         CALL JEVEUO ( OBJVE1, 'L', INUDDL )
-         CALL JEVEUO ( OBJVE2, 'L', INUMNO )
+         OBJVE1 = '&&TRAN75.NUME_NOEUD  '
+         OBJVE2 = '&&TRAN75.NOM_CMP     '
+         OBJVE3 = '&&TRAN75.NB_NEQ      '
+         OBJVE4 = '&&TRAN75.NUME_DDL    '
+         CALL RBPH02 ( MAILLA, NUMDDL, NOMGD, NEQ, NBNOEU, OBJVE1, 
+     &                    NCMP, OBJVE2, OBJVE3, OBJVE4 )
+         CALL JEVEUO ( OBJVE1, 'L', INUMNO )
+         CALL JEVEUO ( OBJVE2, 'L', INOCMP )
+         CALL JEVEUO ( OBJVE3, 'L', INOECP )
+         CALL JEVEUO ( OBJVE4, 'L', INUDDL )
       ENDIF
 C
 C --- MULTI-APPUIS : RECUP DE L EXCITATION ET DE PSI*DELTA
@@ -305,14 +311,14 @@ C
             LPSDEL = IPSDEL
          ELSE
             CALL WKVECT('&&TRAN75.PSI_DELTA','V V R',NEQ,JPSDEL)
+            IDEC = 0
             DO 100 I = 1,NBNOEU
-               IDEC = 6 * ( I - 1 )
-               ZR(JPSDEL+IDEC  ) = ZR(IPSDEL+ZI(INUDDL+IDEC  )-1)
-               ZR(JPSDEL+IDEC+1) = ZR(IPSDEL+ZI(INUDDL+IDEC+1)-1)
-               ZR(JPSDEL+IDEC+2) = ZR(IPSDEL+ZI(INUDDL+IDEC+2)-1)
-               ZR(JPSDEL+IDEC+3) = ZR(IPSDEL+ZI(INUDDL+IDEC+3)-1)
-               ZR(JPSDEL+IDEC+4) = ZR(IPSDEL+ZI(INUDDL+IDEC+4)-1)
-               ZR(JPSDEL+IDEC+5) = ZR(IPSDEL+ZI(INUDDL+IDEC+5)-1)
+               DO 102 J = 1,NCMP
+                  IF ( ZI(INOECP-1+(I-1)*NCMP+J) .EQ. 1 ) THEN
+                     IDEC = IDEC + 1
+                     ZR(JPSDEL+IDEC-1) = ZR(IPSDEL+ZI(INUDDL+IDEC-1)-1)
+                  ENDIF
+ 102           CONTINUE
  100        CONTINUE
             CALL WKVECT('&&TRAN75.VAL2','V V R',NEQ,LVAL2)
             LPSDEL = JPSDEL
@@ -339,36 +345,6 @@ C
 C
 C     --- CREATION DE LA SD RESULTAT ---
       CALL RSCRSD ( NOMRES, TYPRES, NBINST )
-C
-C --- SI RESTITUTION PARTIELLE CONSTITUTION DE DONNEES POUR
-C --- CREATION DU PROF_CHNO ADEQUAT
-C
-      IF ( .NOT. TOUSNO ) THEN
-         NOMNOE = MAILLA//'.NOMNOE'
-         CALL JELIRA(NOMNOE,'NOMMAX',NBNOMA,K1BID)
-         GRAN = 'DEPL_R  '
-         CALL JENONU(JEXNOM('&CATA.GD.NOMGD',GRAN),NUMGD)
-         CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',IACMP)
-         CALL JEVEUO(JEXATR('&CATA.GD.NOMCMP','LONCUM'),'L',IAV)
-         NBCOMP = ZI(IAV+NUMGD) - ZI(IAV+NUMGD-1)
-         CALL DISMOI('F','NB_EC',GRAN,'GRANDEUR',NEC,K8B,IER)
-         CALL WKVECT('&&TRAN75.DESC_NOEUD' ,'V V I',NEC*NBNOMA,JDESC)
-         CALL WKVECT('&&TRAN75.NBCOMP_AFFE','V V I',NBNOMA,    JNBCA)
-         DO 150 I = 1,NBNOEU
-            NUNO = ZI(INUMNO+I-1)
-            DO 160 ICMP = 1,6
-               J = INDIK8(ZK8(IACMP),NOMCMP(ICMP),1,NBCOMP)
-               IF ( J.NE.0 ) THEN
-                  IEC = (J-1)/30 + 1
-                  JJ = J - 30*(IEC-1)
-                  ZI(JDESC+(NUNO-1)*NEC+IEC-1) =
-     &                    IOR(ZI(JDESC+(NUNO-1)*NEC+IEC-1),2**JJ)
-               ENDIF
- 160        CONTINUE
-            ZI(JNBCA+NUNO-1) = 6
- 150     CONTINUE
-      ENDIF
-      IER = 0
 C
 C     --- RESTITUTION SUR LA BASE REELLE ---
 C
@@ -425,31 +401,33 @@ C
              CALL COPMOD(BASEMO,TYPCHA,NEQ,NUMDDL,NBMODE,ZR(IDBASE))
             ENDIF
           ELSE
-             DO 110 J = 1,NBMODE
-                CALL RSEXCH(BASEMO,TYPCHA,J,NOMCHA,IRET)
-                CALL JEEXIN(NOMCHA,IBID)
-                IF (IBID.GT.0) THEN
+            DO 110 J = 1,NBMODE
+               CALL RSEXCH ( BASEMO, TYPCHA, J, NOMCHA, IRET )
+               IF ( IRET .NE. 0 ) THEN
+                  CALL UTDEBM('F','TRAN75','CHAMP INEXISTANT')
+                  CALL UTIMPK('L',' CHAMP: '      ,1, TYPCHA )
+                  CALL UTIMPI('S',', NUME_ORDRE: ',1, J      )
+                  CALL UTIMPK('S',', MODE_MECA: ' ,1, BASEMO )
+                  CALL UTFINM()
+               ENDIF
+               CALL JEEXIN ( NOMCHA(1:19)//'.VALE', IBID )
+               IF (IBID.GT.0) THEN
                   NOMCHA(20:24)='.VALE'
-                ELSE
+               ELSE
                   NOMCHA(20:24)='.CELV'
-                END IF
-                IF (INTERP(1:3).NE.'NON') THEN
-                  NOMCHA = NOMCHA(1:19)//'.VALE'
-                ENDIF
-                CALL JEVEUO(NOMCHA,'L',IDEFM)
-                IDECJ = NEQ * ( J - 1 )
-                DO 120 I = 1,NBNOEU
-                  IDECI = 6 * ( I - 1 )
-                  IDECJI = IDECJ + IDECI
-                  ZR(IDBASE+IDECJI  ) = ZR(IDEFM+ZI(INUDDL+IDECI  )-1)
-                  ZR(IDBASE+IDECJI+1) = ZR(IDEFM+ZI(INUDDL+IDECI+1)-1)
-                  ZR(IDBASE+IDECJI+2) = ZR(IDEFM+ZI(INUDDL+IDECI+2)-1)
-                  ZR(IDBASE+IDECJI+3) = ZR(IDEFM+ZI(INUDDL+IDECI+3)-1)
-                  ZR(IDBASE+IDECJI+4) = ZR(IDEFM+ZI(INUDDL+IDECI+4)-1)
-                  ZR(IDBASE+IDECJI+5) = ZR(IDEFM+ZI(INUDDL+IDECI+5)-1)
- 120            CONTINUE
- 110         CONTINUE
-             CALL JEDETR ( OBJVE1 )
+               END IF
+               CALL JEVEUO(NOMCHA,'L',IDEFM)
+               IDEC = 0
+               DO 120 I = 1,NBNOEU
+                  DO 122 JC = 1,NCMP
+                     IF ( ZI(INOECP-1+(I-1)*NCMP+JC) .EQ. 1 ) THEN
+                        IDEC = IDEC + 1
+                        ZR(IDBASE+(J-1)*NEQ+IDEC-1) =
+     &                                    ZR(IDEFM+ZI(INUDDL+IDEC-1)-1)
+                     ENDIF
+ 122              CONTINUE
+ 120           CONTINUE
+ 110        CONTINUE
           ENDIF
           IARCHI = 0
           IF (INTERP(1:3).EQ.'NON') THEN
@@ -474,33 +452,8 @@ C
                    CALL VTCREA(CHAMNO,CREFE,'G','R',NEQ)
                  ENDIF
                ELSE
-                 IF ( (I.EQ.0).AND.(ICH.EQ.1) ) THEN
-                    CALL CRCHNO(CHAMNO,CHAMNO,GRAN,MAILLA,'G','R',
-     &                          NBNOMA,NEQ)
-                    PRCHNO = CHAMNO
-                    CALL CRPRNO(PRCHNO,'G',NBNOMA,NEQ)
-                    CALL JEVEUO(PRCHNO//'.PRNO','E',JPRNO)
-                    II = 0
-                    IDEC = 1
-                    DO 220 INO = 1,NBNOMA
-                       ZI(JPRNO-1+(NEC+2)*(INO-1)+1) = IDEC
-                       ZI(JPRNO-1+(NEC+2)*(INO-1)+2) = ZI(JNBCA+INO-1)
-                       DO 230 INEC = 1,NEC
-                          II = II + 1
-                          ZI(JPRNO-1+(NEC+2)*(INO-1)+2+INEC) =
-     &                                                  ZI(JDESC+II-1)
- 230                   CONTINUE
-                       IDEC = IDEC + ZI(JNBCA+INO-1)
- 220                CONTINUE
-                    CALL JELIBE(PRCHNO//'.PRNO')
-                    CALL PTEEQU(PRCHNO,NEQ,NUMGD)
-                    CALL JEDETR( OBJVE2 )
-                    CALL JEDETR('&&TRAN75.DESC_NOEUD')
-                    CALL JEDETR('&&TRAN75.NBCOMP_AFFE')
-                 ELSE
-                    CALL CRCHNO(CHAMNO,PRCHNO,GRAN,MAILLA,'G','R',
-     &                          NBNOMA,NEQ)
-                 ENDIF
+                  CALL CNOCRE ( MAILLA, NOMGD, NBNOEU, ZI(INUMNO),
+     &                 NCMP, ZK8(INOCMP), ZI(INOECP), 'G', CHAMNO )
                ENDIF
              ELSE
                 CALL U2MESS('F','ALGORITH3_16')

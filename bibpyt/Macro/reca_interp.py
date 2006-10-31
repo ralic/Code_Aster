@@ -1,5 +1,6 @@
-#@ MODIF reca_interp Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_interp Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +21,18 @@
 
 import os, sys, pprint
 import Numeric
-import Macro
-from Utilitai.Utmess import UTMESS
+
+try: import Macro
+except: pass
+
+try:
+   from Utilitai.Utmess import UTMESS
+except ImportError:
+   def UTMESS(code,sprg,texte):
+      fmt='\n <%s> <%s> %s\n\n'
+      print fmt % (code,sprg,texte)
+      if code=='F': sys.exit()
+
 
 #===========================================================================================
 
@@ -127,6 +138,8 @@ class Sim_exp :
          err = self._Interpole(L_F[i],self.resu_exp[i],self.poids[i])
          L_erreur.append(err)
 
+#      print "L_erreur=", L_erreur
+
       # On transforme L_erreur en tab num
       dim=[]
       J=[]
@@ -174,7 +187,7 @@ class Sim_exp :
 
 # ------------------------------------------------------------------------------
 
-   def norme_J(self,L_J_init,L_J,unite_resu):
+   def norme_J(self,L_J_init,L_J,unite_resu=None):
       """
          Cette fonction calcul une valeur normée de J
       """
@@ -184,9 +197,10 @@ class Sim_exp :
          except ZeroDivisionError:
             message=        'Problème de division par zéro dans la normalisation de la fonctionnelle.\n'
             message=message+'Une des valeurs de la fonctionnelle initiale est nulle ou inférieure à la précision machine : %.2f \n'%L_J_init
-            fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
-            fic.write(message)
-            fic.close()
+            if unite_resu:
+               fic=open(os.getcwd()+'/fort.'+str(unite_resu),'a')
+               fic.write(message)
+               fic.close()
             UTMESS('F', "MACR_RECAL", message)
             return
 
@@ -224,7 +238,7 @@ class Sim_exp :
 
          # On utilise les differences finies pour calculer la sensibilité
          # --------------------------------------------------------------
-         # Dans ce cas, un premier calcul_F pour val[k] a deja ete effectué, on effectue un autre calcul_F pour val[k]+h
+         # Dans ce cas, un premier calcul_Aster pour val[k] a deja ete effectué, on effectue un autre calcul_Aster pour val[k]+h
 
          if para[k] not in LIST_SENSI:
 
@@ -239,8 +253,8 @@ class Sim_exp :
              h = val[k]*pas
              val[k] = val[k] + h
 
-             # Calcul_F pour la valeur perturbée
-             F_perturbe, L_deriv = CALCUL_ASTER.calcul_F(val)
+             # Calcul_Aster pour la valeur perturbée
+             F_perturbe, L_deriv = CALCUL_ASTER.calcul_Aster(val)
 
              # Erreur de l'interpolation de F_perturb : valeur de F (perturbée) interpolée sur les valeurs experimentales
              F_perturbe_interp =self.multi_interpole_sensib(F_perturbe, reponses)
@@ -280,7 +294,7 @@ class Sim_exp :
                 for i in range(len(self.resu_exp[j])):
 
                    # On interpole la fonction derivée aux points experimentaux
-                   val_derivee_interpolee = self.InterpolationLineaire( self.resu_exp[j][i][0], L_deriv_sensible[ para[k] ][:][j] )
+                   val_derivee_interpolee = self.InterpolationLineaire( self.resu_exp[j][i][0], L_deriv_sensible_interp[ para[k] ][:][j] )
 
                    # Application du poids de la reponse courante j
                    val_derivee_interpolee = val_derivee_interpolee*self.poids[j]

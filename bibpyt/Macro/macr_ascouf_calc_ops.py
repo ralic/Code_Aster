@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -649,10 +649,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                              motscles['LISSAGE']=_F(LISSAGE_THETA='LAGRANGE',
                                                     LISSAGE_G='LAGRANGE',
                                                     DEGRE=4,)
-        _nogloc=CALC_G (MODELE     =modele,
-                        RESULTAT   =nomres,
+        _nogloc=CALC_G (RESULTAT   =nomres,
                         TOUT_ORDRE ='OUI',
-                        CHAM_MATER =affmat,
                         THETA=_F( FOND_FISS  =fonfis,
                                   R_INF      = thet['R_INF'],
                                   R_SUP      = thet['R_SUP'],),**motscles);

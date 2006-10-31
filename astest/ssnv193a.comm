@@ -1,5 +1,5 @@
 
-# MODIF  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 # TITRE CONTACT AVEC MACRO-ELEMENTS STATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,8 +95,8 @@ MACSS=MACR_ELEM_STAT(DEFINITION=_F(MODELE=MODSS,
                                    SUIV='OUI',
                                    CHARGE=CHF31,),);
 
-MAYSS=DEFI_MAILLAGE(DEFI_MAILLE=_F(MACR_ELEM_STAT=MACSS,
-                                   MAILLE='MAILLE1',),
+MAYSS=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=_F(MACR_ELEM_STAT=MACSS,
+                                   SUPER_MAILLE='MAILLE1',),
                     RECO_GLOBAL=_F(TOUT='OUI',),
                     DEFI_NOEUD=_F(TOUT='OUI',
                                   INDEX=(1,0,1,8,),),);
@@ -107,7 +107,7 @@ MAG=ASSE_MAILLAGE(MAILLAGE_1=MA,
                   OPERATION='SOUS_STR',);
 
 MO=AFFE_MODELE(MAILLAGE=MAG,
-               AFFE_SOUS_STRUC=_F(MAILLE='MAILLE1',
+               AFFE_SOUS_STRUC=_F(SUPER_MAILLE='MAILLE1',
                                   PHENOMENE='MECANIQUE',),
                AFFE=_F(GROUP_MA=('Cube1','Maitre','Base',),
                        PHENOMENE='MECANIQUE',

@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C
       REAL*8             RBID,HALPHA,RALPHA,CM,MM
       REAL*8             HPLUS(5),H(5),RPLUS(5),SY(5),ECRO(5)
       REAL*8             DH(5),PHASM(5),PHASP(5)
-      REAL*8             COEF1,COEF2,COEF3,DV,ECROAL
+      REAL*8             COEF1,COEF2,COEF3,DV,ECROAL,PRECR,R8PREM
       INTEGER            NDIMSI,MODE,JPROL,JVALE,NBVALE(5),NBMAX,NZ
       INTEGER            I,J,K,L,IRE2
       CHARACTER*2        BL2, FB2, CODRET(20), TEST
@@ -162,6 +162,7 @@ C RECUPERATION DES PHASES METALLURGIQUES ( A T+ ET T- )
      &             VALRES,CODRET, FB2 )
        ZALPHP  = PHASP(1) + PHASP(2) + PHASP(3) + PHASP(4)
        ZAUSTP = 1.D0 - ZALPHP
+       PRECR=R8PREM()
        PHASP(5)=ZAUSTP
        TTRGP  = TP -TREF
        COEF1P = ZAUSTP*(VALRES(4)*TTRGP-(1.D0-VALRES(5))*VALRES(6))
@@ -331,7 +332,7 @@ C 6 CARACTERISTIQUES MATERIAUX (VISCO)
 C 7 CALCUL DE A,RP
 
        DO 420 K=1,4
-        IF (PHASP(K).GT.0.D0)THEN
+        IF (ABS(PHASP(K)).GT.PRECR)THEN
          DVIN(K) = DZ1(K)*THETA(K)*VIM(5)/PHASP(K)
      &           - DZ1(K)*VIM(K)/PHASP(K)
          VIM(K)  = VIM(K)+DVIN(K)
@@ -341,7 +342,7 @@ C 7 CALCUL DE A,RP
          VIM(K)  = 0.D0
         ENDIF
  420   CONTINUE
-       IF (ZAUSTP .GT. 0.D0)THEN
+       IF (ABS(ZAUSTP) .GT.PRECR)THEN
         DO 430 K=1,4
          DVIN(5) = DZ2(K)*THETA(4+K)*VIM(K)/ZAUSTP
      &           - DZ2(K)*VIM(5)/ZAUSTP
@@ -375,7 +376,7 @@ C      RESTAURATION ECROUISSAGE VISQUEUSE
         DS= DT*((CM*RM)**MM)
        ENDIF
        DO 421 K=1,4
-        IF (PHASP(K).GT.0.D0)THEN
+        IF (ABS(PHASP(K)).GT.PRECR)THEN
          DVIN(K) = -(DS)
          VIM(K)  = VIM(K)+DVIN(K)
          IF(VIM(K) .LT. 0.D0) VIM(K)=0.D0
@@ -384,7 +385,7 @@ C      RESTAURATION ECROUISSAGE VISQUEUSE
          VIM(K)  = 0.D0
         ENDIF
  421   CONTINUE
-       IF (ZAUSTP .GT. 0.D0)THEN
+       IF (ABS(ZAUSTP) .GT.PRECR)THEN
         DO 431 K=1,4
          DVIN(5)  =   -(DS)
  431    CONTINUE
@@ -418,7 +419,7 @@ C  CALCUL DES RK
  423    CONTINUE
        ENDIF
 
-       IF ( ZALPHP .GT. 0.D0) THEN
+       IF (ABS( ZALPHP ).GT. PRECR) THEN
         RALPHA = PHASP(1)*R(1)+PHASP(2)*R(2)+PHASP(3)*R(3)
      &         + PHASP(4)*R(4)
         RALPHA = RALPHA/ZALPHP
@@ -535,7 +536,7 @@ C TEST SI PENTE COURBE TRACTION BIEN ESTIME
           IF((COMPOR(1)(1:10) .EQ. 'META_P_INL') .OR.
      &       (COMPOR(1)(1:10) .EQ. 'META_V_INL')) THEN
            DO 221 K=1,4
-            IF (PHASP(K).GT.0.D0)THEN
+            IF (ABS(PHASP(K)).GT.PRECR)THEN
              DVIN(K) = DP
              VIP(K)  = VIM(K)+DVIN(K)
              IF(VIP(K) .LT. 0.D0) VIP(K)=0.D0
@@ -544,7 +545,7 @@ C TEST SI PENTE COURBE TRACTION BIEN ESTIME
              VIP(K)  = 0.D0
             ENDIF
  221       CONTINUE
-           IF (ZAUSTP .GT.0.D0)THEN
+       IF (ABS(ZAUSTP) .GT.PRECR)THEN
             DVIN(5)  = DP
             VIP(5)  = VIM(5)+DVIN(5)
             IF(VIP(5) .LT. 0.D0) VIP(5)=0.D0
@@ -577,7 +578,7 @@ C TEST SI PENTE COURBE TRACTION BIEN ESTIME
             IF (TEST .EQ. 'OK') THEN
              GO TO 500
             ELSE
-             IF ( ZALPHP .GT. 0.D0) THEN
+             IF ( ABS(ZALPHP) .GT. PRECR) THEN
               RALPHA = PHASP(1)*R(1)+PHASP(2)*R(2)
      &               +PHASP(3)*R(3)+ PHASP(4)*R(4)
               RALPHA = RALPHA/ZALPHP
@@ -612,7 +613,7 @@ C TEST SI PENTE COURBE TRACTION BIEN ESTIME
   160       CONTINUE
 C
             DO 220 K=1,4
-             IF (PHASP(K).GT.0.D0)THEN
+             IF (ABS(PHASP(K)).GT.PRECR)THEN
                 DVIN(K) = DP
                 VIP(K)  = VIM(K)+DVIN(K)
                 IF(VIP(K) .LT. 0.D0) VIP(K)=0.D0
@@ -621,7 +622,7 @@ C
                 VIP(K)  = 0.D0
              ENDIF
  220        CONTINUE
-             IF (ZAUSTP .GT.0.D0)THEN
+       IF (ABS(ZAUSTP) .GT.PRECR)THEN
                DVIN(5)  = DP
                VIP(5)  = VIM(5)+DVIN(5)
                IF(VIP(5) .LT. 0.D0) VIP(5)=0.D0
@@ -632,7 +633,7 @@ C
              DO 240 K=1,5
               ECRO(K)=R(K)-SY(K)
  240         CONTINUE
-             IF ( ZALPHP .GT. 0.D0) THEN
+             IF ( ABS(ZALPHP) .GT. PRECR) THEN
               ECROAL = PHASP(1)*ECRO(1)+PHASP(2)*ECRO(2)
      &               + PHASP(3)*ECRO(3)+PHASP(4)*ECRO(4)
               ECROAL= ECROAL/ZALPHP
@@ -698,7 +699,7 @@ C       --MATRICE ELASTIQUE
  178                 CONTINUE
                  DV=(1-FMEL)*ZAUSTP*(ETA(5)/N(5)/DT)*((DP/DT)**N0(5))
                      DO 179 I=1,4
-                     IF (PHASP(I) .GT. 0.D0)
+                     IF (ABS(PHASP(I)).GT. PRECR)
      &                DV= DV+FMEL*(PHASP(I)/ZALPHP)*(ETA(I)/N(I)/DT)*
      &                    ((DP/DT)**N0(I))
  179                 CONTINUE

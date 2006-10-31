@@ -1,6 +1,6 @@
       SUBROUTINE SSRIU2(NOMU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,10 +40,12 @@ C           "K_II**(-1)" (DANS LE DEBUT DE .RIGIMECA.UALF)
 C ----------------------------------------------------------------------
 
 
-      INTEGER I,SCDI,SCHC,IBLO
+      INTEGER I,SCDI,SCHC,IBLO,IBID
       CHARACTER*8 KBID
-      CHARACTER*8 NOMO
+      CHARACTER*8 NOMO,PROMES
       INTEGER IDBG
+      LOGICAL MODIF
+
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
@@ -70,6 +72,10 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       STOCK = NU(1:14)//'.SLCS'
       MATAS = NOMU//'.RIGIMECA'
 
+      MODIF = .TRUE.
+      CALL DISMOI('F',
+     &    'NOM_PROJ_MESU',NOMU,'MACR_ELEM_STAT',IBID,PROMES,IER)
+      IF (PROMES .EQ. ' ') MODIF = .FALSE.
 
       CALL JEVEUO(NOMU//'.DESM','E',IADESM)
       NDDLE = ZI(IADESM-1+4)
@@ -123,17 +129,26 @@ C     -------------------------------------------------------
           END IF
           IBLOLD = IBLO
           K = 0
-CCDIR$ IVDEP
-          DO 10,I = NDDLI + J + 1 - SCHC,NDDLI
-            K = K + 1
-            ZR(IAPHIE-1+I) = ZR(JUALF-1+SCDI-SCHC+K)
-   10     CONTINUE
+
+          IF (MODIF) THEN
+            DO 210,I = NDDLI + J + 1 - SCHC,NDDLI
+              K = K + 1
+              ZR(IAPHIE-1+I) = 0.D0
+  210       CONTINUE
+          ELSE
 
 CCDIR$ IVDEP
-          DO 20,I = MAX(1,J+1-SCHC),J
-            II = ((J-1)*J)/2 + I
-            ZR(IAKPEE-1+II) = ZR(JUALF-1+SCDI+I-J)
-   20     CONTINUE
+            DO 10,I = NDDLI + J + 1 - SCHC,NDDLI
+              K = K + 1
+              ZR(IAPHIE-1+I) = ZR(JUALF-1+SCDI-SCHC+K)
+   10       CONTINUE
+
+CCDIR$ IVDEP
+            DO 20,I = MAX(1,J+1-SCHC),J
+              II = ((J-1)*J)/2 + I
+              ZR(IAKPEE-1+II) = ZR(JUALF-1+SCDI+I-J)
+   20       CONTINUE
+          ENDIF
 
    30   CONTINUE
    40   CONTINUE
@@ -144,18 +159,24 @@ CCDIR$ IVDEP
 
 C     -- CALCUL DE PHI_IE = (K_II**(-1))*K_IE:
 C     ----------------------------------------
-      DO 60,IBLPH = 1,NBLPH
+      IF (MODIF) THEN
+      ELSE
+       DO 60,IBLPH = 1,NBLPH
         CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'E',IAPHI0)
         CALL RLDLR8(ZK24(ZI(LMAT+1)),ZI(IASCHC),ZI(IASCDI),ZI(IASCBL),
      &              NDDLI,NBBLOC,ZR(IAPHI0),NLBLPH)
         CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
-   60 CONTINUE
+   60  CONTINUE
+      ENDIF
 
 
 C     -- CALCUL DE KP_EE:
 C     -------------------
-      IBLOLD = 0
-      DO 110,J = 1,NDDLE
+      IF (MODIF) THEN
+       CALL CRMERI(PROMES,IAKPEE)
+      ELSE
+       IBLOLD = 0
+       DO 110,J = 1,NDDLE
         IBLO = ZI(IASCIB-1+NDDLI+J)
         SCDI = ZI(IASCDI-1+NDDLI+J)
         SCHC = ZI(IASCHC-1+NDDLI+J)
@@ -185,9 +206,11 @@ CCDIR$ IVDEP
           CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
   100   CONTINUE
 
-  110 CONTINUE
-      IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
+  110  CONTINUE
+       IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
 
+C FIN TEST SUR MODIF
+      ENDIF
 
 
   120 CONTINUE

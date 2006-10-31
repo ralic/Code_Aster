@@ -1,6 +1,6 @@
       SUBROUTINE OP0100(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C 0.3. ==> VARIABLES LOCALES
 C
-      INTEGER IFM,NIV,NDEP,N1,N2,LONVEC,IORD,NBINST,IBID,I,NVITES,NACCE
+      INTEGER IFM,NIV,N1,N2,LONVEC,IORD,NBINST,IBID,I,NVITES,NACCE
       INTEGER NRES,NP,NC,NEXCI,L,NCHA,N3,IEXC,IRET,ICHA,IVEC,DIME,NBPRUP
       INTEGER IFOND,LNOFF,TYPESE,JINST,IAUX,JAUX,NBPASS,ADRECG,NRPASE
       INTEGER ADCHSE,ICHAR,NBPASE,NRPASS,NDEG,NBRE,IADNUM,IADRMA,IPROPA
@@ -130,129 +130,33 @@ C 2.3. ==> OPTION
 C----------------
       CALL GETVTX(' ','OPTION',0,1,1,OPTION,IBID)
 C
-C---------------------------------------------------------------
-C 2.4. ==> RECUPERATION DU DEPLACEMENT A PARTIR DU MOT CLE DEPL
-C          OU EXTRACTION D'UN OU PLUSIEURS DEPLACEMENTS A PARTIR
-C          D'UN RESULTAT
-C---------------------------------------------------------------
-      CALL GETVID(' ','DEPL',0,1,1,DEPLA,NDEP)
-
-      IF(NDEP.NE.0) THEN
-        CALL CHPVER('F',DEPLA(1:19),'NOEU','DEPL_R',IER)
-        CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
-        CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
-        IF (N1.EQ.0 ) THEN
-           CALL U2MESS('F','CALCULEL4_10')
-        ENDIF
-        IF (N2.EQ.0 ) THEN
-           CALL U2MESS('F','CALCULEL4_11')
-        ENDIF
-        CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',DIME,K8B,IER)
-C
-        CALL RCMFMC(MATERI,MATE)
-        CALL NMDORC(MODELE,COMPOR,K24B)
-        LONVEC = 1
-        IORD = 0
-        CALL GETVR8(' ','INST',0,1,0,R8B,NBINST)
-        IF (NBINST.EQ.0) THEN
-          EXITIM = .FALSE.
-          TIME  = 0.D0
-          TIMEU = 0.D0
-          TIMEV = 0.D0
-        ELSE
-          NBINST = -NBINST
-          IF(NBINST.GT.1) THEN
-            CALL U2MESS('F','CALCULEL4_12')
-          ENDIF
-          CALL GETVR8(' ','INST',0,1,NBINST,TIME,IBID)
-          EXITIM = .TRUE.
-          TIMEU = TIME
-          TIMEV = TIME
-        ENDIF
-      ENDIF
-
-      CHVITE = ' '
-      CHACCE = ' '
-      CALL GETVID(' ','VITE',0,1,1,CHVITE,NVITES)
-      IF(NVITES.NE.0) THEN
-        CALL CHPVER('F',CHVITE(1:19),'NOEU','DEPL_R',IER)
-        CALL GETVID(' ','ACCE',0,1,1,CHACCE,NACCE)
-        CALL CHPVER('F',CHACCE(1:19),'NOEU','DEPL_R',IER)
-      ENDIF
-
       CALL GETVID (' ','RESULTAT',0,1,1,RESUCO,NRES)
-      IF (NRES.NE.0) THEN
-        VECORD = '&&'//NOMPRO//'.VECTORDR'
-        CALL GETVR8(' ','PRECISION',0,1,1,PREC,NP)
-        CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,NC)
-        CALL RSUTNU ( RESUCO, ' ', 0, VECORD, LONVEC, PREC, CRIT, IER )
-        IF(IER.NE.0) THEN
-          CALL U2MESS('F','CALCULEL4_13')
-        ENDIF
-        CALL GETTCO(RESUCO,TYSD)
-        IF (TYSD.EQ.'DYNA_TRANS') THEN
-           CALL GETVID(' ','MODELE'    ,0,1,1,MODELE,N1)
-           CALL GETVID(' ','CHAM_MATER',0,1,1,MATERI,N2)
-           CALL GETFAC('EXCIT',NEXCI)
-           IF (N1.EQ.0 ) THEN
-             CALL U2MESS('F','CALCULEL4_14')
-           ENDIF
-           IF (N2.EQ.0 ) THEN
-             CALL U2MESS('F','CALCULEL4_15')
-           ENDIF
-           IF (NEXCI.EQ.0 ) THEN
-             CALL U2MESS('F','CALCULEL4_16')
-           ENDIF
-        ENDIF
-
-        IF (((OPTION.EQ.'K_G_MODA') .AND. (TYSD.NE.'MODE_MECA')) .OR.
-     &     ((TYSD.EQ.'MODE_MECA') .AND. (OPTION.NE.'K_G_MODA'))) THEN
-          CALL U2MESS('F','CALCULEL4_17')
-        ENDIF
-
-        CALL JEVEUO ( VECORD, 'L', IVEC )
-        IORD = ZI(IVEC)
-        CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
-        CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',DIME,K8B,IER)
-        CALL NMDORC(MODELE,COMPOR,K24B)
-        CALL JEVEUO(VCHAR,'L',ICHA)
+      VECORD = '&&'//NOMPRO//'.VECTORDR'
+      CALL GETVR8(' ','PRECISION',0,1,1,PREC,NP)
+      CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,NC)
+      CALL RSUTNU ( RESUCO, ' ', 0, VECORD, LONVEC, PREC, CRIT, IER )
+      IF(IER.NE.0) THEN
+        CALL U2MESS('F','CALCULEL4_13')
       ENDIF
-C
-C-----------------
-C 2.5. ==> CHARGES
-C------------------
-      CALL GETVID(' ','DEPL',0,1,1,DEPLA,NDEP)
-      IF(NDEP.NE.0) THEN
-        CALL GETFAC('EXCIT',NEXCI)
-          NCHA = 0
-        IF (NEXCI .GT. 0) THEN
-          DO 21 IEXC = 1,NEXCI
-            CALL GETVID('EXCIT','CHARGE',IEXC,1,1,K24B,L)
-            IF (L .EQ. 1) NCHA = NCHA + 1
- 21       CONTINUE
-          CALL JEEXIN(VCHAR,IRET)
-          IF(IRET.NE.0) CALL JEDETR(VCHAR)
-          N3=MAX(1,NCHA)
-          CALL WKVECT(VCHAR,'V V K8',N3,ICHA)
-          IF (NCHA .NE. 0) THEN
-           DO 22 , I = 1,NCHA
-             CALL GETVID('EXCIT','CHARGE',I,1,1,ZK8(ICHA+I-1),IBID)
- 22        CONTINUE
-           CALL DISMOI('F','NOM_MODELE',ZK8(ICHA),'CHARGE',IBID,
-     &                  MODCHA,IER)
-           IF (MODCHA.NE.MODELE) THEN
-             CALL U2MESS('F','CALCULEL4_18')
-           ENDIF
-           DO 23 , I = 1,NCHA
-             CALL DISMOI('F','NOM_MODELE',ZK8(ICHA-1+I),'CHARGE',IBID,
-     &                   MODCHI,IER)
-             IF (MODCHI.NE.MODCHA) THEN
-               CALL U2MESS('F','CALCULEL3_44')
-             ENDIF
-  23       CONTINUE
-          ENDIF
-        ENDIF
+      CALL GETTCO(RESUCO,TYSD)
+      IF (TYSD.EQ.'DYNA_TRANS') THEN
+         CALL GETFAC('EXCIT',NEXCI)
+         IF (NEXCI.EQ.0 ) THEN
+           CALL U2MESS('F','CALCULEL4_16')
+         ENDIF
       ENDIF
+
+      IF (((OPTION.EQ.'K_G_MODA') .AND. (TYSD.NE.'MODE_MECA')) .OR.
+     &   ((TYSD.EQ.'MODE_MECA') .AND. (OPTION.NE.'K_G_MODA'))) THEN
+        CALL U2MESS('F','CALCULEL4_17')
+      ENDIF
+
+      CALL JEVEUO ( VECORD, 'L', IVEC )
+      IORD = ZI(IVEC)
+      CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
+      CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',DIME,K8B,IER)
+      CALL NMDORC(MODELE,COMPOR,K24B)
+      CALL JEVEUO(VCHAR,'L',ICHA)
 C
 C------------------------------------------
 C 2.6. ==> CAS: 2D, 3D LOCAL ou 3D GLOBAL ?
@@ -662,14 +566,12 @@ C
           ELSE
             CALL U2MESK('F','CALCULEL4_34',1,NOPASE)
           ENDIF
-          IF (NRES.NE.0) THEN
-            CALL PSRENC ( RESUCO, NOPASE, LERES0, IRET )
-            IF ( IRET.NE.0 ) THEN
+          CALL PSRENC ( RESUCO, NOPASE, LERES0, IRET )
+          IF ( IRET.NE.0 ) THEN
               CALL UTMESS ('F', NOMPRO,
      &  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
      &  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
 C        CALL U2MESK('F','CALCULEL2_96', 2 ,VALK)
-            ENDIF
           ENDIF
 
         ENDIF
@@ -754,7 +656,7 @@ C       ON A TOUJOURS À FAIRE À UN FOND OUVERT AVEC XFEM
 C --- CREATION DE LA TABLE
 C
       NBPRUP=9
-      CALL CGCRTB(LATABL,OPTIO1,DIME,TROIDL,NDEP,NRES,NBPRUP,
+      CALL CGCRTB(LATABL,OPTIO1,DIME,TROIDL,NBPRUP,
      &                  NOPRUP,TYPRUP)
 C
 C--------------------------------------------------------------
@@ -767,25 +669,25 @@ C
           DO 3112 J = 1,I
             CALL JEMARQ()
             CALL JERECU('V')
-            IF (NRES.NE.0) THEN
-              IORD1 = ZI(IVEC-1+I)
-              CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD1)
-              CALL JEVEUO(VCHAR,'L',ICHA)
-              CALL RSEXCH(RESUCO,'DEPL',IORD1,DEPLA1,IRET)
+            IORD1 = ZI(IVEC-1+I)
+            CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD1)
+            CALL JEVEUO(VCHAR,'L',ICHA)
+            CALL RSEXCH(RESUCO,'DEPL',IORD1,DEPLA1,IRET)
+            IF(LONVEC.EQ.1)THEN
+              IORD2  = IORD1
+              DEPLA2 = DEPLA1
+            ELSE
               IORD2 = ZI(IVEC-1+J)
               CALL RSEXCH(RESUCO,'DEPL',IORD2,DEPLA2,IRET)
               IF(IRET.NE.0) THEN
                 CALL U2MESS('F','CALCULEL4_37')
               ENDIF
-              CALL RSADPA(RESUCO,'L',1,'INST',IORD1,0,JINST,K8BID)
-              TIMEU = ZR(JINST)
-              CALL RSADPA(RESUCO,'L',1,'INST',IORD2,0,JINST,K8BID)
-              TIMEV = ZR(JINST)
-              EXITIM = .TRUE.
-            ELSE
-              DEPLA1 = DEPLA
-              DEPLA2 = DEPLA
             ENDIF
+            CALL RSADPA(RESUCO,'L',1,'INST',IORD1,0,JINST,K8BID)
+            TIMEU = ZR(JINST)
+            CALL RSADPA(RESUCO,'L',1,'INST',IORD2,0,JINST,K8BID)
+            TIMEV = ZR(JINST)
+            EXITIM = .TRUE.
             OPTIO2 = 'G_BILI'
             IF(TROIDL)THEN
                CALL MBILGL(OPTIO2,LATABL,MODELE,DEPLA1,DEPLA2,THETAI,
@@ -854,21 +756,19 @@ C
        ELSE IF ( TROIDL .AND. OPTIO1 .EQ. 'CALC_K_G' ) THEN
 
           DO 33 I = 1,LONVEC
-            IF (NRES.NE.0) THEN
-              IORD = ZI(IVEC-1+I)
-              CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
-              CALL JEVEUO(VCHAR,'L',ICHA)
-              CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
-              IF (IRET.NE.0) THEN
-                CALL UTDEBM('F',NOMPRO,'ACCES IMPOSSIBLE ')
-                CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
-                CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
-                CALL UTFINM()
-              ENDIF
-              CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,K8B)
-              TIME = ZR(JINST)
-              EXITIM = .TRUE.
+            IORD = ZI(IVEC-1+I)
+            CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
+            CALL JEVEUO(VCHAR,'L',ICHA)
+            CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
+            IF (IRET.NE.0) THEN
+              CALL UTDEBM('F',NOMPRO,'ACCES IMPOSSIBLE ')
+              CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
+              CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
+              CALL UTFINM()
             ENDIF
+            CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,K8B)
+            TIME = ZR(JINST)
+            EXITIM = .TRUE.
 
             CALL CAKG3D(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
@@ -912,22 +812,20 @@ C  3.4.2 ==> K_G_MODA 3D LOC
 C  -------------------------
        ELSE
           DO 342 I = 1,LONVEC
-            IF (NRES.NE.0) THEN
-              IORD = ZI(IVEC-1+I)
-              CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4B,RESUCO,IORD)
-              CALL JEVEUO(VCHAR,'L',ICHA)
-              CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
-              IF (IRET.NE.0) THEN
-                CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE AU MODE PROPRE')
-                CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
-                CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
-                CALL UTFINM()
-              ENDIF
-              CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8B)
-              PULS = ZR(IPULS)
-              PULS = SQRT(PULS)
-              EXITIM = .TRUE.
+            IORD = ZI(IVEC-1+I)
+            CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4B,RESUCO,IORD)
+            CALL JEVEUO(VCHAR,'L',ICHA)
+            CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
+            IF (IRET.NE.0) THEN
+              CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE AU MODE PROPRE')
+              CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
+              CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
+              CALL UTFINM()
             ENDIF
+            CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8B)
+            PULS = ZR(IPULS)
+            PULS = SQRT(PULS)
+            EXITIM = .TRUE.
             CALL CAKGMO(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
      &              IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,NDIMTE,
@@ -943,27 +841,26 @@ C
         DO 35  I = 1 , LONVEC
           CALL JEMARQ()
           CALL JERECU('V')
-          IF(NRES.NE.0) THEN
-            IORD = ZI(IVEC-1+I)
-            CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,
-     &      RESUCO,IORD)
-            CALL JEVEUO(VCHAR,'L',ICHA)
-            CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
-            IF(IRET.NE.0) THEN
-               CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE ')
-               CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
-               CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
-               CALL UTFINM()
-            ENDIF
-            CALL RSEXCH(RESUCO,'VITE',IORD,CHVITE,IRET)
-            IF(IRET.NE.0) THEN
-              CHVITE = ' '
-            ELSE
-              CALL RSEXCH(RESUCO,'ACCE',IORD,CHACCE,IRET)
-            ENDIF
-            CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,K8B)
-            TIME  = ZR(JINST)
-            EXITIM = .TRUE.
+          IORD = ZI(IVEC-1+I)
+          CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,
+     &    RESUCO,IORD)
+          CALL JEVEUO(VCHAR,'L',ICHA)
+          CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
+          IF(IRET.NE.0) THEN
+             CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE ')
+             CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
+             CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
+             CALL UTFINM()
+          ENDIF
+          CALL RSEXCH(RESUCO,'VITE',IORD,CHVITE,IRET)
+          IF(IRET.NE.0) THEN
+            CHVITE = ' '
+          ELSE
+            CALL RSEXCH(RESUCO,'ACCE',IORD,CHACCE,IRET)
+          ENDIF
+          CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,K8B)
+          TIME  = ZR(JINST)
+          EXITIM = .TRUE.
 C
 C       - RECUPERATION DES CHAMNO DE DERIVEE LAGRANGIENNE DE DEPLACEMENT
 C         DANS LA SD RESULTAT DERIVE DE TYPE EVOL_ELAS.
@@ -1015,7 +912,6 @@ C
                 CALL UTFINM()
               ENDIF
             ENDIF
-          ENDIF
 C
       IF(    (OPTIO1.EQ.'CALC_G' .AND. DIME.EQ.2 )
      &   .OR. OPTIO1.EQ.'CALC_DG'

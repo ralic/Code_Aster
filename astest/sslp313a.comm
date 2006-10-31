@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE MURAKAMI 4.2 FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,9 +54,6 @@ CHAMDEPL=MECA_STATIQUE(  MODELE=MO,
                          EXCIT=_F( CHARGE = CH)
                           )
 
-DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-                 NOM_CHAM='DEPL',  RESULTAT=CHAMDEPL,  NUME_ORDRE=1  )
-
 FOND1=DEFI_FOND_FISS(  MAILLAGE=MA,
                        FOND_FISS=_F( GROUP_NO = ('P0',)),
 #                       NORMALE=(-0.6018, 0.7986, 0.,)
@@ -73,24 +70,20 @@ THETA01=CALC_THETA(  MODELE=MO,
                      DIRECTION=(0.7986, 0.6018, 0.,)
                      )
 
-G01=CALC_G(  MODELE=MO,
-                     DEPL=DEP,
+G01=CALC_G(          RESULTAT=CHAMDEPL,
+                     NUME_ORDRE=1,
                      THETA=_F(THETA=THETA01),
-                     EXCIT=_F(CHARGE=CH,),
-                     CHAM_MATER=CHMAT,
                      SYME_CHAR='SANS'
                    )
 
-GK01=CALC_G(    MODELE=MO,
-                            DEPL=DEP,
-                           THETA=_F(
+GK01=CALC_G(              RESULTAT=CHAMDEPL,
+                          NUME_ORDRE=1,
+                          THETA=_F(
                                    MODULE = 1.,
                                    R_INF = 0.00001875,
                                    R_SUP = 0.000075,
                                    DIRECTION=(0.7986, 0.6018, 0.,),
                                    FOND_FISS=FOND1),
-                          EXCIT=_F(CHARGE=CH,),
-                          CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS',
                           OPTION='CALC_K_G'
                       )

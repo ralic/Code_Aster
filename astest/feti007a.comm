@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
 # ======================================================================
 # TITRE VALIDATION ARCHITECTURE PARTITIONNEMENT SCOTCH ET CALCUL FETI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,6 +100,10 @@ RESU=MECA_STATIQUE(MODELE=MODM,
                           _F(CHARGE=CH2),),
                    INFO=2,
                         )
+
+IMPR_RESU(RESU=_F(MAILLAGE=MAIL1,),);
+
+IMPR_CO(CHAINE='SD',);
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = RESU,   NUME_ORDRE = 1,

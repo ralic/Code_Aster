@@ -1,4 +1,4 @@
-# MODIF  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -234,6 +234,31 @@ MODN7=NORM_MODE(   MODE=MOD1,
 MODN8=NORM_MODE(   MODE=MOD1,
              AVEC_CMP=('DX', 'DZ', 'DRZ', ))
 
+
+BASMOD=DEFI_BASE_MODALE(RITZ=_F(MODE_MECA=MOD1,),
+                        NUME_REF=NU,)
+
+MODB1=NORM_MODE(   MODE=BASMOD,   NORME='MASS_GENE', MASSE=MASAS, RAIDE=RIGAS, )                  
+
+MODB2=NORM_MODE(   MODE=BASMOD,   NORME='RIGI_GENE', MASSE=MASAS, RAIDE=RIGAS, )
+
+MODB3=NORM_MODE(   MODE=BASMOD,   NORME='TRAN', MASSE=MASAS, RAIDE=RIGAS,)
+
+MODB4=NORM_MODE(   MODE=BASMOD,   NORME='TRAN_ROTA', MASSE=MASAS, RAIDE=RIGAS,)
+
+MODB5=NORM_MODE(   MODE=BASMOD,   NORME='EUCL', MASSE=MASAS, RAIDE=RIGAS,)
+
+MODB6=NORM_MODE(   MODE=BASMOD, MASSE=MASAS, RAIDE=RIGAS,
+              NOEUD='N21', NOM_CMP='DRY' )
+
+MODB7=NORM_MODE(   MODE=BASMOD, MASSE=MASAS, RAIDE=RIGAS,
+            MODE_SIGNE=_F(  NOEUD = 'N21', NOM_CMP = 'DY', SIGNE = 'POSITIF'),
+             SANS_CMP=('DY', 'DZ', 'DRX', 'DRY', 'DRZ', ))
+
+MODB8=NORM_MODE(   MODE=BASMOD, MASSE=MASAS, RAIDE=RIGAS,
+             AVEC_CMP=('DX', 'DZ', 'DRZ', ))
+
+
 #-----------------------------------------------------------------------
 
 #       4. MODE_ITER_XXX /MATR_C
@@ -256,6 +281,7 @@ MOC2=MODE_ITER_INV(   MATR_A=RIGAS2,   MATR_B=MASAS2,
                  CALC_FREQ=_F( OPTION = 'PROCHE',
                FREQ = ( 6.2E-3,  6.14E-2,)),
                VERI_MODE=_F(  STOP_ERREUR = 'NON'))
+
 
 #-----------------------------------------------------------------------
 
@@ -411,14 +437,14 @@ TEST_RESU(RESU=(
                       VALE = -2.9242875932011E-07,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
-                      RESULTAT = MODN1,
+                      RESULTAT = MODB1,
                       NUME_ORDRE = 2,
                       PARA = 'FREQ',
                       VALE = 9.2529719799964E-04,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
                       CRITERE = 'RELATIF'),
                               _F(
-                      RESULTAT = MODN1,
+                      RESULTAT = MODB1,
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DX',
@@ -426,14 +452,14 @@ TEST_RESU(RESU=(
                       VALE = 1.8125780447830E-07,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
-                      RESULTAT = MODN2,
+                      RESULTAT = MODB2,
                       NUME_ORDRE = 2,
                       PARA = 'FREQ',
                       VALE = 9.2529719799964E-04,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
                       CRITERE = 'RELATIF'),
                               _F(
-                      RESULTAT = MODN2,
+                      RESULTAT = MODB2,
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DY',
@@ -441,14 +467,14 @@ TEST_RESU(RESU=(
                       VALE = -5.8538383646419E-02,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
-                      RESULTAT = MODN3,
+                      RESULTAT = MODB3,
                       NUME_ORDRE = 2,
                       PARA = 'FREQ',
                       VALE = 9.2529719799964E-04,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
                       CRITERE = 'RELATIF'),
                               _F(
-                      RESULTAT = MODN3,
+                      RESULTAT = MODB3,
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DZ',
@@ -456,14 +482,14 @@ TEST_RESU(RESU=(
                       VALE = -1.0978418784923E-06,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
-                      RESULTAT = MODN4,
+                      RESULTAT = MODB4,
                       NUME_ORDRE = 2,
                       PARA = 'FREQ',
                       VALE = 9.2529719799964E-04,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
                       CRITERE = 'RELATIF'),
                               _F(
-                      RESULTAT = MODN4,
+                      RESULTAT = MODB4,
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DY',
@@ -471,14 +497,14 @@ TEST_RESU(RESU=(
                       VALE = -1.2297631847061E-01,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
-                      RESULTAT = MODN5,
+                      RESULTAT = MODB5,
                       NUME_ORDRE = 2,
                       PARA = 'FREQ',
                       VALE = 9.2529719799964E-04,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
                       CRITERE = 'RELATIF'),
                               _F(
-                      RESULTAT = MODN5,
+                      RESULTAT = MODB5,
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DX',
@@ -486,14 +512,14 @@ TEST_RESU(RESU=(
                       VALE = 3.2937824246451E-05,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
-                      RESULTAT = MODN6,
+                      RESULTAT = MODB6,
                       NUME_ORDRE = 2,
                       PARA = 'FREQ',
                       VALE = 9.2529719799964E-04,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
                       CRITERE = 'RELATIF'),
                               _F(
-                      RESULTAT = MODN6,
+                      RESULTAT = MODB6,
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DZ',
@@ -501,14 +527,14 @@ TEST_RESU(RESU=(
                       VALE = -1.7337287158908E-06,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
-                      RESULTAT = MODN7,
+                      RESULTAT = MODB7,
                       NUME_ORDRE = 2,
                       PARA = 'FREQ',
                       VALE = 9.2529719799964E-04,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
                       CRITERE = 'RELATIF'),
                               _F(
-                      RESULTAT = MODN7,
+                      RESULTAT = MODB7,
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DY',
@@ -516,14 +542,14 @@ TEST_RESU(RESU=(
                       VALE = 9.8354732768982E+00,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
                               _F(
-                      RESULTAT = MODN8,
+                      RESULTAT = MODB8,
                       NUME_ORDRE = 2,
                       PARA = 'FREQ',
                       VALE = 9.2529719799964E-04,
                       REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
                       CRITERE = 'RELATIF'),
                               _F(
-                      RESULTAT = MODN8,
+                      RESULTAT = MODB8,
                       NUME_ORDRE = 2,
                       NOM_CHAM = 'DEPL',
                       NOM_CMP = 'DX',

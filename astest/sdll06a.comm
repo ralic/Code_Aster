@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE REPONSE TRANSITOIRE D'UN POTEAU ENCASTRE LIBRE (ACCELERA. IMPO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,17 +110,15 @@ TRAN_GEN=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
 L_RECU=DEFI_LIST_REEL(  DEBUT=0.,
                       INTERVALLE=_F(  JUSQU_A = 0.1,  PAS = 0.001) )
 
-RESUR=REST_BASE_PHYS(  RESU_GENE=TRAN_GEN,
-                         INTERPOL='LIN',   LIST_INST=L_RECU,
-                        TOUT_CHAM='OUI',
+RESUR=REST_BASE_PHYS(  RESU_GENE=TRAN_GEN, NOEUD='N02',
+                       INTERPOL='LIN',   LIST_INST=L_RECU,
+                       NOM_CHAM='DEPL',
                       )
 
 # RECUPERATION DES DEPLACEMENTS RELATIFS CALCULES
 # -----------------------------------------------
 N02DXR=RECU_FONCTION(  NOEUD='N02',  NOM_CMP='DX',   NOM_CHAM='DEPL',
-                           RESU_GENE=TRAN_GEN,  
-                         INTERP_NUME='LIN',      INTERPOL='LIN',
-                           LIST_INST=L_RECU    )
+                       RESULTAT=RESUR  )
 
 #
 # CALCUL ANALYTIQUE DES DEPLACEMENTS

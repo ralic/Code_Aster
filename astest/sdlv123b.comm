@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 
 DEBUT(CODE=_F(NOM='SDLV123B',
               NIV_PUB_WEB='INTERNET',),);
@@ -132,44 +132,36 @@ THETA3=CALC_THETA( MODELE=MODELE,
                                 R_SUP = 18.)
                                )
 
-G1=CALC_G( MODELE=MODELE,
-                    OPTION='CALC_G_GLOB',
+G1=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA1),
-                    CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-GL1=CALC_G( MODELE=MODELE,
-                    THETA=_F(FOND_FISS=FF,
+GL1=CALC_G(         THETA=_F(FOND_FISS=FF,
                              R_INF = 3.,
                              R_SUP = 10.),
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
-                    CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME',
                     LISSAGE=_F(LISSAGE_THETA='LAGRANGE'),
                   )
 
-G2=CALC_G( MODELE=MODELE,
-                    OPTION='CALC_G_GLOB',
+G2=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA2),
-                    CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
-G3=CALC_G( MODELE=MODELE,
-                    RESULTAT=evol,
+G3=CALC_G(          RESULTAT=evol,
                     OPTION='CALC_G_GLOB',
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA3),
-                    CHAM_MATER=CHAMPMAT,
                     EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )

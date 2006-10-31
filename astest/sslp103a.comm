@@ -1,4 +1,4 @@
-# MODIF  DATE 29/05/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,10 +123,6 @@ ELASCP=MECA_STATIQUE( MODELE=MOCP,
                       CHAM_MATER=CM,
                        EXCIT=_F( CHARGE = CHCP))
 
-UCP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=ELASCP,
-               NUME_ORDRE=1
-               )
 
 THETACP=CALC_THETA(    MODELE=MOCP,
                       THETA_2D=_F(  NOEUD = 'N1',
@@ -135,20 +131,15 @@ THETACP=CALC_THETA(    MODELE=MOCP,
                                  R_SUP = 20.),
                        DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
-GCP=CALC_G(      MODELE=MOCP,
-                         DEPL=UCP,
-                         THETA=_F(THETA=THETACP),
-                         EXCIT=_F( CHARGE = CHCP),
-                         CHAM_MATER=CM )
+GCP=CALC_G(              RESULTAT=ELASCP,
+                         NUME_ORDRE=1,
+                         THETA=_F(THETA=THETACP),)
 
-K1K2CP=CALC_G(      MODELE=MOCP,
-                            DEPL=UCP,
-                            THETA=_F(
-                                 THETA = THETACP,
-                                 FOND_FISS=FOND,),
-                            EXCIT=_F( CHARGE = CHCP),
-                            CHAM_MATER=CM,
-                            OPTION='CALC_K_G')
+K1K2CP=CALC_G(      RESULTAT=ELASCP,
+                    NUME_ORDRE=1,
+                    THETA=_F(  THETA = THETACP,
+                               FOND_FISS=FOND,),
+                    OPTION='CALC_K_G')
 
 
 #---------------------------------------------------------------------
@@ -169,10 +160,6 @@ ELASDP=MECA_STATIQUE( MODELE=MODP,
                       CHAM_MATER=CM,
                        EXCIT=_F( CHARGE = CHDP))
 
-UDP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=ELASDP,
-               NUME_ORDRE=1
-               )
 
 THETADP=CALC_THETA(    MODELE=MODP,
                       THETA_2D=_F(  NOEUD = 'N1',
@@ -181,19 +168,14 @@ THETADP=CALC_THETA(    MODELE=MODP,
                                  R_SUP = 20.),
                        DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
 
-GDP=CALC_G(      MODELE=MODP,
-                         DEPL=UDP,
-                         EXCIT=_F( CHARGE = CHDP),
-                         THETA=_F(THETA=THETADP),
-                         CHAM_MATER=CM )
+GDP=CALC_G(              RESULTAT=ELASDP,
+                         NUME_ORDRE=1,
+                         THETA=_F(THETA=THETADP),)
 
-K1K2DP=CALC_G(    MODELE=MODP,
-                          DEPL=UDP,
-                          EXCIT=_F( CHARGE = CHDP),
-                          THETA=_F(
-                                THETA = THETADP,
-                                FOND_FISS=FOND),
-                          CHAM_MATER=CM,
+K1K2DP=CALC_G(            RESULTAT=ELASDP,
+                          NUME_ORDRE=1,
+                          THETA=_F( THETA = THETADP,
+                                    FOND_FISS=FOND),
                           OPTION='CALC_K_G')
 
 #--------------------------------------------------------------------

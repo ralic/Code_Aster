@@ -1,5 +1,6 @@
-#@ MODIF reca_utilitaires Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_utilitaires Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,12 +19,13 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
-import Numeric, LinearAlgebra, copy, os, string, types, sys
+import Numeric, LinearAlgebra, copy, os, string, types, sys, glob
 from Numeric import take
 
-from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, IMPR_FONCTION, DETRUIRE
-from Accas import _F
+try:
+   from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, IMPR_FONCTION, DETRUIRE
+   from Accas import _F
+except: pass
 
 try:    import Gnuplot
 except: pass
@@ -110,7 +112,8 @@ def detr_concepts(self):
 #_____________________________________________
 
 
-def temps_CPU(self,restant_old,temps_iter_old):
+#def temps_CPU(self,restant_old,temps_iter_old):
+def temps_CPU(restant_old,temps_iter_old):
    """
       Fonction controlant le temps CPU restant
    """
@@ -149,59 +152,74 @@ def temps_CPU(self,restant_old,temps_iter_old):
 #_____________________________________________
 
 
-def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, interactif):
+def graphique(FORMAT, L_F, res_exp, reponses, iter, UL_out, interactif, fichier=None, INFO=0):
 
-   if FORMAT=='XMGRACE':
-       for i in range(len(L_F)):
-           _tmp = []
-           courbe1 = res_exp[i]
-           _tmp.append( { 'ABSCISSE': courbe1[:,0].tolist(), 'ORDONNEE': courbe1[:,1].tolist(), 'COULEUR': 1 } )
-           courbe2 = L_F[i]
-           _tmp.append( { 'ABSCISSE': courbe2[:,0].tolist(), 'ORDONNEE': courbe2[:,1].tolist(), 'COULEUR': 2 } )
+  if iter: txt_iter = 'Iteration : ' + str(iter)
+  else:    txt_iter = ''
 
-           motscle2= {'COURBE': _tmp }
-           if interactif: motscle2['PILOTE']= 'INTERACTIF'
-           else:          motscle2['PILOTE']= 'POSTSCRIPT'
+  # Le try/except est la pour eviter de planter betement dans un trace de courbes (DISPLAY non defini, etc...)
+  try:
+     if FORMAT=='XMGRACE':
+         for i in range(len(L_F)):
+             _tmp = []
+             courbe1 = res_exp[i]
+             _tmp.append( { 'ABSCISSE': courbe1[:,0].tolist(), 'ORDONNEE': courbe1[:,1].tolist(), 'COULEUR': 1 } )
+             courbe2 = L_F[i]
+             _tmp.append( { 'ABSCISSE': courbe2[:,0].tolist(), 'ORDONNEE': courbe2[:,1].tolist(), 'COULEUR': 2 } )
 
-#           DEFI_FICHIER(UNITE=int(UL_out), ACCES='NEW',)
+             motscle2= {'COURBE': _tmp }
+             if interactif: motscle2['PILOTE']= 'INTERACTIF'
+             else:          motscle2['PILOTE']= 'POSTSCRIPT'
 
-           IMPR_FONCTION(FORMAT='XMGRACE',
-                         UNITE=int(UL_out),
-                         TITRE='Courbe de : ' + reponses[i][0],
-                         SOUS_TITRE='Iteration : ' + str(iter),
-                         LEGENDE_X=reponses[i][1],
-                         LEGENDE_Y=reponses[i][2],
-                         **motscle2
-                         );
-#           DEFI_FICHIER(ACTION='LIBERER',UNITE=int(UL_out),)
+             IMPR_FONCTION(FORMAT='XMGRACE',
+                           UNITE=int(UL_out),
+                           TITRE='Courbe de : ' + reponses[i][0],
+                           SOUS_TITRE=txt_iter,
+                           LEGENDE_X=reponses[i][1],
+                           LEGENDE_Y=reponses[i][2],
+                           **motscle2
+                           );
 
-   elif FORMAT=='GNUPLOT':
-       graphe=[]
-       impr=Gnuplot.Gnuplot()
-       Gnuplot.GnuplotOpts.prefer_inline_data=1
-       impr('set data style linespoints')
-       impr('set grid')
-       impr('set pointsize 2.')
-       impr('set terminal postscript color')
-       impr('set output "fort.'+str(UL_out)+'"')
+     elif FORMAT=='GNUPLOT':
+         if INFO>=2: UTMESS('I','MACR_RECAL',"Trace des courbes dans le fichier " + fichier )
 
-       for i in range(len(L_F)):
-             if interactif:
-                graphe.append(Gnuplot.Gnuplot(persist=0))
-                graphe[i]('set data style linespoints')
-                graphe[i]('set grid')
-                graphe[i]('set pointsize 2.')
-                graphe[i].xlabel(reponses[i][1])
-                graphe[i].ylabel(reponses[i][2])
-                graphe[i].title(reponses[i][0]+'  Iteration '+str(iter))
-                graphe[i].plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
-                graphe[i]('pause 5')
+         if fichier:
+            # On efface les anciens graphes
+            liste = glob.glob(fichier + '*.ps')
+            for fic in liste:
+               try:    os.remove(fic)
+               except: pass
 
-             impr.xlabel(reponses[i][1])
-             impr.ylabel(reponses[i][2])
-             impr.title(reponses[i][0]+'  Iteration '+str(iter))
-             impr.plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
+         graphe=[]
+         impr=Gnuplot.Gnuplot()
+         Gnuplot.GnuplotOpts.prefer_inline_data=1
+         impr('set data style linespoints')
+         impr('set grid')
+         impr('set pointsize 2.')
+         impr('set terminal postscript color')
+         impr('set output "fort.'+str(UL_out)+'"')
 
-   else:
-     pass
+         for i in range(len(L_F)):
+               graphe.append(Gnuplot.Gnuplot(persist=0))
+               graphe[i]('set data style linespoints')
+               graphe[i]('set grid')
+               graphe[i]('set pointsize 2.')
+               graphe[i].xlabel(reponses[i][1])
+               graphe[i].ylabel(reponses[i][2])
+               graphe[i].title(reponses[i][0]+'  ' + txt_iter)
+               graphe[i].plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
+               if interactif:
+                  graphe[i]('pause 5')
+               else:
+                  if fichier:
+                     if INFO>=2: UTMESS('I','MACR_RECAL',"Trace des courbes dans le fichier " + fichier + '_' + str(i) + '.ps' )
+                     graphe[i].hardcopy(fichier + '_' + str(i) + '.ps', enhanced=1, color=1)
+
+               impr.xlabel(reponses[i][1])
+               impr.ylabel(reponses[i][2])
+               impr.title(reponses[i][0]+'  Iteration '+str(iter))
+               impr.plot(Gnuplot.Data(L_F[i],title='Calcul'),Gnuplot.Data(res_exp[i],title='Experimental'))
+
+  except Exception, err:
+     UTMESS('A','MACR_RECAL',"Probleme lors de l'affichage des courbes. On ignore et on continue. Erreur :\n" + str(err) )
 

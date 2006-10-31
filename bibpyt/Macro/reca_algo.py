@@ -1,5 +1,6 @@
-#@ MODIF reca_algo Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_algo Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,14 +19,25 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import Numeric
+import Numeric, MLab
 from Numeric import take, size
 import copy,os
 import LinearAlgebra 
-from Cata.cata import INFO_EXEC_ASTER
-from Cata.cata import DETRUIRE
-from Utilitai.Utmess import UTMESS
-from Accas import _F
+
+try:
+  from Cata.cata import INFO_EXEC_ASTER
+  from Cata.cata import DETRUIRE
+  from Accas import _F
+except: pass
+
+try:
+   from Utilitai.Utmess import UTMESS
+except ImportError:
+   def UTMESS(code,sprg,texte):
+      fmt='\n <%s> <%s> %s\n\n'
+      print fmt % (code,sprg,texte)
+      if code=='F': sys.exit()
+
 
 
 def calcul_gradient(A,erreur):
@@ -141,7 +153,8 @@ def lambda_init(matrix):
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):  
+#def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):  
+def Levenberg_bornes(val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):  
    """
       On resoud le système par contraintes actives:
          Q.dval + s + d =0
@@ -215,7 +228,7 @@ def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out
              res.write('\n\nval_ini= '+Numeric.array2string(val_init,array_output=1,separator=','))
              res.write('\n\nborne_inf= '+Numeric.array2string(borne_inf,array_output=1,separator=','))
              res.write('\n\nborne_sup= '+Numeric.array2string(borne_sup,array_output=1,separator=','))
-             self.cr.fatal("<F> <MACR_RECAL> Erreur dans l'algorithme de bornes de MACR_RECAL")
+             UTMESS('F','MACR_RECAL',"Erreur dans l'algorithme de bornes de MACR_RECAL")
              return 
    newval=copy.copy(val+dval)
    return newval,s,l,Act
@@ -252,6 +265,9 @@ def actualise_lambda(l,val,new_val,A,erreur,new_J,old_J):
 # ------------------------------------------------------------------------------
 
 def test_convergence(gradient_init,erreur,A,s):
+   """
+      Renvoie le residu
+   """
    gradient = calcul_gradient(A,erreur)+s
    try:
       epsilon = Numeric.dot(gradient,gradient)/Numeric.dot(gradient_init,gradient_init)
@@ -265,7 +281,7 @@ def test_convergence(gradient_init,erreur,A,s):
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-def calcul_etat_final(para,A,iter,max_iter,prec,residu,Messg,ul_out):
+def calcul_etat_final(para,A,iter,max_iter,prec,residu,Messg):
    """
       Fonction appelée quand la convergence est atteinte
       on calcule le Hessien et les valeurs propres et vecteurs 
@@ -277,7 +293,7 @@ def calcul_etat_final(para,A,iter,max_iter,prec,residu,Messg,ul_out):
    if ((iter < max_iter) or (residu < prec)):
       Hessien = Numeric.matrixmultiply(Numeric.transpose(A),A)
       valeurs_propres,vecteurs_propres = LinearAlgebra.eigenvectors(Hessien) 
+#      valeurs_propres,vecteurs_propres = MLab.eig(Hessien) 
       sensible=Numeric.nonzero(Numeric.greater(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-1))
       insensible=Numeric.nonzero(Numeric.less(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-2))
-      Messg.affiche_calcul_etat_final(para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible,ul_out)
-
+      Messg.affiche_calcul_etat_final(para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible)

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 31/10/2006   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,6 +76,7 @@ C
 C --- CAS DES CHARGEMENTS DE FORME REEL
       IF (OPTION .EQ. 'CHAR_MECA_PRES_R') THEN
 C         ------------------------------
+         GLOBAL = .FALSE.
          CALL JEVECH ('PPRESSR', 'L', JPRES)
          DO 110 J = 1, NNO
             DO 100 I = 1, 6

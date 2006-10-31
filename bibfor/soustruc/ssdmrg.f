@@ -1,6 +1,6 @@
       SUBROUTINE SSDMRG(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     -----------------------------------------------
             ZI(IALIIS-1+I)=I
  3        CONTINUE
         ELSE
-          CALL GETVEM(MAG,'MAILLE','RECO_GLOBAL','MAILLE',
+          CALL GETVEM(MAG,'MAILLE','RECO_GLOBAL','SUPER_MAILLE',
      &                IOCC,1,NBSMA,ZK8(IALIK8),N1)
           IF (N1.LT.0) CALL U2MESS('F','SOUSTRUC_63')
           NBSMAR= N1

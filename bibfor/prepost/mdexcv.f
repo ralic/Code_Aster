@@ -1,8 +1,8 @@
       SUBROUTINE MDEXCV ( NOFIMD,
-     &                    NOCHMD, NUMPT, NUMORD, TYPENT, TYPGEO,
+     &                    NOCHMD, NOMAMD, NUMPT, NUMORD, TYPENT, TYPGEO,
      &                    NBVAL, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C .  NOM   . E/S . TAILLE .           DESCRIPTION                      .
 C .____________________________________________________________________.
 C . NOFIMD .  E  .   1    . NOM DU FICHIER MED                         .
 C . NOCHMD .  E  .   1    . NOM DU CHAMP MED VOULU                     .
+C . NOMAMD .  E  .   1    . NOM DU MAILLAGE MED ASSOCIE                .
 C . NUMPT  .  E  .   1    . NUMERO DU PAS DE TEMPS DU CHAMP            .
 C . NUMORD .  E  .   1    . NUMERO D'ORDRE DU CHAMP                    .
 C . TYPENT .  E  .   1    . TYPE D'ENTITE AU SENS MED                  .
@@ -45,7 +46,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*(*) NOFIMD, NOCHMD
+      CHARACTER*(*) NOFIMD, NOCHMD, NOMAMD
 C
       INTEGER NUMPT, NUMORD, TYPENT, TYPGEO, NBVAL
 C
@@ -76,9 +77,6 @@ C
       INTEGER IAUX
 C
       CHARACTER*8 SAUX08
-      CHARACTER*32 NOMAMD
-      LOGICAL EXISTM
-      INTEGER NDIM
 C ______________________________________________________________________
 C
 C====
@@ -100,15 +98,6 @@ C====
 C 2. COMBIEN DE VALEURS ?
 C====
 C
-C       CALL EFNVAL ( IDFIMD, NOCHMD, TYPENT, TYPGEO,
-C      >              NUMPT, NUMORD,
-C      >              NBVAL, CODRET )
-C
-C pas de trace de MED_NOREF dans med.hf ?????
-C
-C NOMAMD doit passer en argument ou ' '
-      CALL MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
-
       CALL EFNVAL ( IDFIMD, NOCHMD, TYPENT, TYPGEO,
      &              NUMPT,  NUMORD, NOMAMD, EDCOMP,
      &              NBVAL,  CODRET )

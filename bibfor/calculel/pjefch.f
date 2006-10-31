@@ -1,6 +1,6 @@
       SUBROUTINE PJEFCH (CORRES,CH1,CH2,PRFCHN,PROL0,LIGREL,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,10 +54,14 @@ C     ------------------------------------------------------------------
       CALL DISMOI('F','TYPE_CHAMP',CH1,'CHAMP',IBID,TYCH,IBID)
 
 C     L'UTILISATEUR VEUT-IL DES CHAM_NO ?  TYCHV
-      TYCHV=' '
-      CALL GETVTX(' ','TYPE_CHAM',1,1,1,TYCHV,IBID)
-      CALL ASSERT(TYCHV.EQ.' '.OR.TYCHV.EQ.'NOEU')
+      IF (CORRES .EQ. ' ') THEN
+        TYCHV='NOEU'
+      ELSE
+        CALL GETVTX(' ','TYPE_CHAM',1,1,1,TYCHV,IBID)
+        IF (IBID.EQ.0) TYCHV = ' '
+      ENDIF
 
+      CALL ASSERT(TYCHV.EQ.' '.OR.TYCHV.EQ.'NOEU')
 
 C     1 : TRANSFORMATION DE CH1 EN CHAMP SIMPLE : CH1S
 C     -------------------------------------------------
@@ -81,10 +85,15 @@ C          -- ON NE SAIT PAS ENCORE TRAITER LES CART ET ELGA:
 
 C     2 : PROJECTION DU CHAMP SIMPLE : CH1S -> CH2S
 C     -------------------------------------------------
-        IF (TYCH.EQ.'NOEU') THEN
+        IF (CORRES .EQ. ' ') THEN
+C CAS MODIFICATION STRUCTURALE : PROJECTION SUR MAILLAGE MESURE
+           CALL CNSPRM(CH1S,'V',CH2S,IRET)
+        ELSE  
+          IF (TYCH.EQ.'NOEU') THEN
            CALL CNSPRJ(CH1S,CORRES,'V',CH2S,IRET)
-        ELSE IF ((TYCH.EQ.'ELEM').OR.(TYCH.EQ.'ELNO')) THEN
+          ELSE IF ((TYCH.EQ.'ELEM').OR.(TYCH.EQ.'ELNO')) THEN
            CALL CESPRJ(CH1S,CORRES,'V',CH2S,IRET)
+          END IF
         END IF
 
 

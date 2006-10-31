@@ -1,0 +1,185 @@
+      SUBROUTINE REMOME(PROMES,MODMES,NOMMAC)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+C     RECUPERATION DES MODES MESURES ET CREATION DE .MODMES
+C      LES DDL DE .MODMES SONT RANGES COMME LA MESURE DANS PROMES
+C
+C     IN  : PROMES : NOM DU CONCEPT PROJ_MESU_MODAL ASSOCIE A LA MESURE
+C     IN  : MODMES : NOM DU CONCEPT MODES PROPRES IDENTIFIES
+C     IN  : NOMMAC : NOM DU CONCEPT MACR_ELEM_STAT CONCERNE
+C
+      IMPLICIT NONE
+C     ------------------------------------------------------------------
+C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      CHARACTER*8   PROMES,MODMES,NOMMAC
+
+      LOGICAL      ZCMPLX
+
+      CHARACTER*1  TYPVAL
+      CHARACTER*8  K8BID,SCAL,SCALAI
+      CHARACTER*16 NOMCHA
+      CHARACTER*19 CHAMNO,CHS
+      CHARACTER*24  VNOEUD,VRANGE,VMES,VORIEN
+
+      INTEGER      NBMESU,NBMTOT,NUMORD,LMESU,IMES,LORD,LRANGE,LORI,II
+      INTEGER      IRET,ICMP,INO,LNOEUD,IDESC,GD,NBCMP,IBID
+      INTEGER      JCNSD,JCNSC,JCNSV,JCNSL,JCNSK
+
+      REAL*8       RBID,VORI(3),VAL,VECT(3)
+
+      COMPLEX*16   CBID,VALC,VECTC(3)
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ ( )
+
+      VMES = NOMMAC//'.MODMES'
+
+C RECUPERATION ORDRE DE RANGEMENT MESURE SELON VRANGE ET VNOEUD
+      VNOEUD = PROMES//'.VNOEUD'
+      VRANGE = PROMES//'.VRANGE'
+      VORIEN = PROMES//'.VORIEN'
+
+      CALL JELIRA(VNOEUD,'LONUTI',NBMESU,K8BID)
+      CALL JELIRA(VNOEUD,'ORIG',IBID,NOMCHA)
+
+      CALL JEVEUO (VRANGE, 'L', LRANGE)
+      CALL JEVEUO (VNOEUD, 'L', LNOEUD)
+      CALL JEVEUO (VORIEN, 'L', LORI)
+
+C RECUPERATION ADRESSE DES NUMEROS D'ORDRE ET DU NOM SYMBOLIQUE
+
+      CALL JEVEUO ( MODMES//'           .ORDR' , 'L' , LORD )
+
+      CHS = '&&MESURE.CHS'
+
+C RECUPERATION DU NB DE VECTEURS PROPRES IDENTIFIES : NBMTOT
+      CALL RSORAC(MODMES,'LONUTI',IBID,RBID,K8BID,CBID,RBID,'ABSOLU',
+     &            NBMTOT,1,IBID)
+
+C BOUCLE SUR LES NUMEROS ORDRE
+
+      DO 110 NUMORD = 1, NBMTOT
+C        -> EXISTENCE DES CHAMPS DANS LA STRUCTURE DE DONNEES MESURE
+        CALL RSEXCH (MODMES,NOMCHA,ZI(LORD-1+NUMORD),CHAMNO,IRET)
+        IF (NUMORD .LE. 1) THEN
+          CALL JEVEUO(CHAMNO//'.DESC','L',IDESC)
+          GD = ZI(IDESC-1 +1)
+          SCAL = SCALAI(GD)
+          TYPVAL = SCAL(1:1)
+          IF (TYPVAL.EQ.'C') THEN
+            ZCMPLX = .TRUE.
+            CALL WKVECT (VMES, 'G V C', NBMESU*NBMTOT, LMESU)
+          ELSE
+            ZCMPLX = .FALSE.
+            CALL WKVECT (VMES, 'G V R', NBMESU*NBMTOT, LMESU)
+          ENDIF
+          CALL JEECRA(VMES,'LONUTI',NBMESU*NBMTOT,K8BID)
+          CALL JEECRA(VMES,'ORIG',IBID,MODMES)
+        ENDIF
+
+C TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS
+        CALL DETRSD('CHAM_NO_S',CHS)
+        CALL CNOCNS(CHAMNO,'V',CHS)
+        CALL JEVEUO(CHS//'.CNSK','L',JCNSK)
+        CALL JEVEUO(CHS//'.CNSD','L',JCNSD)
+        CALL JEVEUO(CHS//'.CNSC','L',JCNSC)
+        CALL JEVEUO(CHS//'.CNSV','L',JCNSV)
+        CALL JEVEUO(CHS//'.CNSL','L',JCNSL)
+       
+        NBCMP = ZI(JCNSD-1 + 2)
+
+        DO 120 IMES = 1,NBMESU
+          INO = ZI(LNOEUD-1 +IMES)
+
+C DIRECTION DE MESURE (VECTEUR DIRECTEUR)
+          DO 21 II = 1 , 3
+            VORI(II) = ZR(LORI-1 + (IMES-1)*3 +II)
+21        CONTINUE
+
+C NORMALISATION DU VECTEUR DIRECTEUR
+          VAL = 0.D0
+          DO 22 II = 1,3
+            VAL = VAL + VORI(II)*VORI(II)
+22        CONTINUE
+          VAL = SQRT(VAL)
+          DO 23 II = 1,3
+            VORI(II) = VORI(II)/VAL
+23        CONTINUE
+
+          IF (ZCMPLX) THEN
+            DO 130 ICMP = 1,NBCMP
+              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DX')
+     &          VECTC(1) = ZC(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DY')
+     &          VECTC(2) = ZC(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DZ')
+     &          VECTC(3) = ZC(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+130         CONTINUE
+
+            VALC = DCMPLX(0.D0,0.D0)
+
+            DO 300 II = 1 , 3
+              VALC = VALC + VECTC(II) * VORI(II)
+300         CONTINUE
+            ZC(LMESU-1 +(NUMORD-1)*NBMESU+IMES) = VALC
+          ELSE
+            DO 230 ICMP = 1,NBCMP
+              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DX')
+     &          VECT(1) = ZR(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DY')
+     &          VECT(2) = ZR(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+              IF (ZK8(JCNSC-1 +ICMP) .EQ. 'DZ')
+     &          VECT(3) = ZR(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+230         CONTINUE
+            VAL = 0.D0
+            DO 320 II = 1 , 3
+              VAL = VAL + VECT(II) * VORI(II)
+320         CONTINUE
+            ZR(LMESU-1 +(NUMORD-1)*NBMESU+IMES) = VAL
+          ENDIF
+120     CONTINUE
+
+C FIN BOUCLE SUR NUMERO ORDRE
+110    CONTINUE
+
+      CALL DETRSD('CHAM_NO_S',CHS)
+
+      CALL JEDEMA ()
+C
+      END

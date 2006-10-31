@@ -1,6 +1,6 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,6 +82,7 @@ C ----------------------------------------------------------------------
       CHARACTER*75     CMESS
       CHARACTER*80     NHDF
       LOGICAL          LEXP
+      REAL*8           RBID
       INTEGER          IC,JULIST,LTYPI,ILONG,LONOI,IADDI(2),IADMI,IADMX
       INTEGER          IDFIC,NBMAX,JCTAB,IDG,IDGC
       INTEGER          HDFCRF,HDFCLF,HDFCRG,HDFOPG,HDFWAT,HDFCLG
@@ -161,8 +162,7 @@ C           ON TRAITE UN OBJET SIMPLE
             IF ( IADMX .EQ. 0 ) THEN
               IF ( IADDI(1) .EQ. 0 .OR. LONOI .EQ. 0 ) THEN
                 IF (NIVO .GE. 2) THEN
-                  CMESS = 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-                  CALL U2MESK('A','JEVEUX_01',1,CMESS)
+                  CALL U2MESK('A','JEVEUX_27',1,CRNOM)
                 ENDIF
                 GOTO 5
               ENDIF
@@ -215,9 +215,7 @@ C                TRAITEMENT PARTICULIER DU $$DESO
               IF ( IADMX .EQ. 0 ) THEN
                 IF ( IADDI(1) .EQ. 0 ) THEN
                   IF (NIVO .GE. 2) THEN
-                    CMESS = 'COLLECTION INEXISTANTE EN MEMOIRE ET'
-     &                    //'SUR DISQUE'
-                    CALL U2MESK('A','JEVEUX_01',1,CMESS)
+                    CALL U2MESK('A','JEVEUX_28',1,NOMCOL(1:24))
                   ENDIF
                   GOTO 5
                 ENDIF
@@ -255,8 +253,7 @@ C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
                   IADDI(2) = ISZON(JISZON + IBIADD - 1 + 2*K   )
                   IF ( IADDI(1) .EQ. 0 ) THEN
                     IF (NIVO .GE. 2) THEN
-                      CMESS= 'OBJET INEXISTANT EN MEMOIRE ET SUR DISQUE'
-                      CALL U2MESK('A','JEVEUX_01',1,CMESS)
+                      CALL U2MESG('A','JEVEUX_29',1,CMESS,1,K,0,RBID)
                     ENDIF
                     GOTO 10
                   ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF creation_donnees_homard Macro  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,11 +18,11 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE MCOURTOI M.COURTOIS
-__all__ = [ ]
 """
 Cette classe crée le fichier de configuration permettant de lancer HOMARD depuis Code_Aster.
 """
-__revision__ = "V1.0"
+__revision__ = "V1.1"
+__all__ = [ ]
  
 import os
 import os.path
@@ -109,9 +109,9 @@ class creation_donnees_homard:
 #    print "\nArguments a l'entree de", __name__, ":", entier
 #
     try:
-       la_chaine = '%02d' % entier
+      la_chaine = '%02d' % entier
     except TypeError:
-       la_chaine = None
+      la_chaine = None
 #
     return la_chaine
 # ------------------------------------------------------------------------------
@@ -173,6 +173,8 @@ class creation_donnees_homard:
         self.CCNoMNP1 = self.dico_configuration["NOM_MED_MAILLAGE_NP1"]
         if self.dico_configuration.has_key("NOM_MED_MAILLAGE_NP1_ANNEXE") :
           self.CCMaiAnn = self.dico_configuration["NOM_MED_MAILLAGE_NP1_ANNEXE"]
+        else :
+          self.CCMaiAnn = None
 #
 #     5. Les entrées/sorties au format HOMARD
 #
@@ -269,12 +271,12 @@ class creation_donnees_homard:
             s_aux_1 = "Zone numero "+str(iaux)+" : "
             s_aux_2 = ", doit etre < au "
             if zone.has_key("X_MINI") :
-              if zone["X_MINI"] >= zone["X_MAXI"] :
+              if zone["X_MINI"] > zone["X_MAXI"] :
                 message_erreur = s_aux_1+"X mini ,"+str(zone["X_MINI"])+s_aux_2+"X maxi, "+str(zone["X_MAXI"])+"."
-              if zone["Y_MINI"] >= zone["Y_MAXI"] :
+              if zone["Y_MINI"] > zone["Y_MAXI"] :
                 message_erreur = s_aux_1+"Y mini ,"+str(zone["Y_MINI"])+s_aux_2+"Y maxi, "+str(zone["Y_MAXI"])+"."
             if zone.has_key("Z_MINI") :
-              if zone["Z_MINI"] >= zone["Z_MAXI"] :
+              if zone["Z_MINI"] > zone["Z_MAXI"] :
                 message_erreur = s_aux_1+"Z mini ,"+str(zone["Z_MINI"])+s_aux_2+"Z maxi, "+str(zone["Z_MAXI"])+"."
 #
       break
@@ -370,8 +372,8 @@ class creation_donnees_homard:
         self.ecrire_ligne_configuration_2("CCNoMNP1", self.CCNoMNP1)
         self.ecrire_ligne_configuration_2("CCMaiNP1", self.dico_configuration["Fichier_HOMARD_vers_ASTER"])
 #
-      self.ecrire_ligne_configuration_0("Les fichiers de bilan")
-      self.ecrire_ligne_configuration_2("PPBasFic", "info")
+      self.ecrire_ligne_configuration_0("Le répertoire des fichiers de bilan")
+      self.ecrire_ligne_configuration_2("RepeInfo", self.dico_configuration["Rep_Calc_HOMARD_global"])
 #
 #     4. Les fichiers HOMARD
 #
@@ -409,35 +411,37 @@ class creation_donnees_homard:
           if self.dico_configuration["Indicateur"].has_key("NUME_ORDRE") :
             self.ecrire_ligne_configuration_2("CCNumOrI", self.dico_configuration["Indicateur"]["NUME_ORDRE"])
             self.ecrire_ligne_configuration_2("CCNumPTI", self.dico_configuration["Indicateur"]["NUME_ORDRE"])
+          if self.mots_cles.has_key("TYPE_VALEUR_INDICA") :
+            self.ecrire_ligne_configuration_2("CCTyVaIn", self.mots_cles["TYPE_VALEUR_INDICA"])
 #
-#     5.3. Les niveaux extremes
+#     5.3. Les éventuelles zones de raffinement
+#
+        if self.dico_configuration.has_key("Zones") :
+          iaux = 0
+          for zone in self.dico_configuration["Zones"] :
+            iaux = iaux + 1
+            self.ecrire_ligne_configuration_0("Zone de raffinement numéro "+str(iaux))
+            if zone.has_key("X_MINI") :
+              self.ecrire_ligne_configuration_3("ZoRaXmin", iaux, zone["X_MINI"])
+              self.ecrire_ligne_configuration_3("ZoRaXmax", iaux, zone["X_MAXI"])
+              self.ecrire_ligne_configuration_3("ZoRaYmin", iaux, zone["Y_MINI"])
+              self.ecrire_ligne_configuration_3("ZoRaYmax", iaux, zone["Y_MAXI"])
+            if zone.has_key("Z_MINI") :
+              self.ecrire_ligne_configuration_3("ZoRaZmin", iaux, zone["Z_MINI"])
+              self.ecrire_ligne_configuration_3("ZoRaZmax", iaux, zone["Z_MAXI"])
+            if zone.has_key("X_CENTRE") :
+              self.ecrire_ligne_configuration_3("ZoRaXCen", iaux, zone["X_CENTRE"])
+              self.ecrire_ligne_configuration_3("ZoRaYCen", iaux, zone["Y_CENTRE"])
+              self.ecrire_ligne_configuration_3("ZoRaRayo", iaux, zone["RAYON"])
+            if zone.has_key("Z_CENTRE") :
+              self.ecrire_ligne_configuration_3("ZoRaZCen", iaux, zone["Z_CENTRE"])
+#
+#     5.4. Les niveaux extremes
 #
         for aux in self.niveau :
           self.ecrire_ligne_configuration_2(aux[0], aux[1])
 #
-#     6. Les éventuelles zones de raffinement
-#
-      if self.dico_configuration.has_key("Zones") :
-        iaux = 0
-        for zone in self.dico_configuration["Zones"] :
-          iaux = iaux + 1
-          self.ecrire_ligne_configuration_0("Zone de raffinement numéro "+str(iaux))
-          if zone.has_key("X_MINI") :
-            self.ecrire_ligne_configuration_3("ZoRaXmin", iaux, zone["X_MINI"])
-            self.ecrire_ligne_configuration_3("ZoRaXmax", iaux, zone["X_MAXI"])
-            self.ecrire_ligne_configuration_3("ZoRaYmin", iaux, zone["Y_MINI"])
-            self.ecrire_ligne_configuration_3("ZoRaYmax", iaux, zone["Y_MAXI"])
-          if zone.has_key("Z_MINI") :
-            self.ecrire_ligne_configuration_3("ZoRaZmin", iaux, zone["Z_MINI"])
-            self.ecrire_ligne_configuration_3("ZoRaZmax", iaux, zone["Z_MAXI"])
-          if zone.has_key("X_CENTRE") :
-            self.ecrire_ligne_configuration_3("ZoRaXCen", iaux, zone["X_CENTRE"])
-            self.ecrire_ligne_configuration_3("ZoRaYCen", iaux, zone["Y_CENTRE"])
-            self.ecrire_ligne_configuration_3("ZoRaRayo", iaux, zone["RAYON"])
-          if zone.has_key("Z_CENTRE") :
-            self.ecrire_ligne_configuration_3("ZoRaZCen", iaux, zone["Z_CENTRE"])
-#
-#     7. Les éventuels champs à mettre à jour
+#     6. Les éventuels champs à mettre à jour
 #
       if self.dico_configuration.has_key("Champs") :
         self.ecrire_ligne_configuration_0("Champs à mettre à jour")
@@ -454,7 +458,7 @@ class creation_donnees_homard:
           elif maj_champ.has_key("INST") :
             self.ecrire_ligne_configuration_3("CCChaIns", iaux, maj_champ["INST"])
 #
-#     8. L'éventuel maillage de frontière
+#     7. L'éventuel maillage de frontière
 #
       if self.dico_configuration.has_key("NOM_MED_MAILLAGE_FRONTIERE") :
         self.ecrire_ligne_configuration_0("Maillage de frontière")
@@ -466,13 +470,16 @@ class creation_donnees_homard:
             for group_ma in self.mots_cles["GROUP_MA"] :
               self.ecrire_ligne_configuration_2("CCGroFro", group_ma)
 #
-#     9. L'usage des éléments incompatibles avec HOMARD
+#     8. L'éventuel maillage annexe
 #
-      if self.elements_incompatibles is not None :
-        self.ecrire_ligne_configuration_0("Les éléments incompatibles avec HOMARD")
-        self.ecrire_ligne_configuration_2("TypeElem", self.elements_incompatibles)
+      if self.mode_homard == "ADAP" :
+        if self.CCMaiAnn is not None :
+          self.ecrire_ligne_configuration_0("Maillage d'autre degré")
+          self.ecrire_ligne_configuration_2("ModDegre", "oui")
+          self.ecrire_ligne_configuration_2("CCNoMAnn", self.CCMaiAnn)
+          self.ecrire_ligne_configuration_2("CCMaiAnn", self.dico_configuration["Fichier_HOMARD_vers_ASTER"])
 #
-#     10. Options particulières
+#     9. Options particulières
 #
       self.ecrire_ligne_configuration_0("Autres options")
       if self.mots_cles.has_key("LANGUE") :
@@ -481,6 +488,12 @@ class creation_donnees_homard:
       if self.dico_configuration["version_perso"] :
         VERSION_HOMARD = self.dico_configuration["VERSION_HOMARD"]
         self.ecrire_ligne_configuration_2("DicoOSGM", "$HOMARD_USER/"+VERSION_HOMARD+"/CONFIG/typobj.stu")
+#
+#     10. L'usage des éléments incompatibles avec HOMARD
+#
+      if self.elements_incompatibles is not None :
+        self.ecrire_ligne_configuration_0("Les éléments incompatibles avec HOMARD")
+        self.ecrire_ligne_configuration_2("TypeElem", self.elements_incompatibles)
 #
 #     11. Fermeture du fichier
 #

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,9 +64,11 @@ C
       INTEGER       IMA,JEXTR,JNORM,JORIG,JVALE,NCMP,NUMER,J1,J2,J3
       INTEGER       ADRVLC, ACNCIN, NBMA, NBMB, ADRA, ADRB, NUMA, NUMB
       INTEGER       NUFINF, NUFSUP,JSUP, NBMAS
+      INTEGER       NN,IAMASE,COMPTA,NBNO
       REAL*8        XPFI,XPFO,YPFI,YPFO,ZPFI,ZPFO,ZRBID,D,PREC
       CHARACTER*4   TYPMA, TYPMP, TYPM
       CHARACTER*8   K8B, MOTCLE, GROUPE, NOEUD, MAILLE, TYPE, NOMGRP(2)
+      CHARACTER*8   NOEUG
       CHARACTER*24  GRPNOE, COOVAL, NCNCIN
       CHARACTER*24  OBJ1, OBJ2, OBJ4, OBJ5, TRAV
       LOGICAL       LFON
@@ -732,6 +734,50 @@ C
             CALL U2MESK('E','ELEMENTS_96',1,ZK8(LL2 + J2 - 1))
             IER = IER+1
          ENDIF
+
+C VERIFICATION COHERENCE LEVRE SUP / FOND
+        CALL JEEXIN(RESU//'.FOND      .NOEU',IRET)
+        IF(IRET.NE.0) THEN
+          CALL JELIRA(RESU//'.FOND      .NOEU' , 'LONMAX', NBNO, K8B)
+          CALL JEVEUO(RESU//'.FOND      .NOEU' ,'L',MM1)
+        ELSE
+          CALL JELIRA(RESU//'.FOND_SUP  .NOEU' , 'LONMAX', NBNO, K8B)
+          CALL JEVEUO(RESU//'.FOND_SUP      .NOEU' ,'L',MM1)
+        ENDIF
+        DO 610 I=1,NBNO
+          COMPTA = 0
+          DO 620 J=1,DIM2
+            CALL JENUNO(JEXNUM(OBJ2,ZI(JADR+J-1)),MAILLE)
+            CALL JENONU (JEXNOM(OBJ2,MAILLE),IBID)
+            ITYP=IATYMA-1+IBID
+            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
+            IF(TYPE(1:5).EQ.'QUAD8') THEN
+             NN = 8
+            ELSE IF(TYPE(1:5).EQ.'TRIA3') THEN
+             NN = 3
+            ELSE IF(TYPE(1:5).EQ.'QUAD4') THEN
+             NN = 4
+            ELSE IF(TYPE(1:5).EQ.'TRIA6') THEN
+             NN = 6
+            ELSE
+              CALL U2MESS('F','ELEMENTS2_16')
+            ENDIF
+            CALL JEVEUO(JEXNUM(OBJ4,IBID),'L',IAMASE)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',ZI(IAMASE)),NOEUG)
+            DO 630 K=1,NN
+              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',ZI(IAMASE+K-1)),
+     &            NOEUG)
+              IF(NOEUG.EQ.ZK8(MM1+I-1)) THEN
+                 COMPTA = COMPTA + 1
+                 GOTO 610
+              ENDIF   
+630         CONTINUE
+620       CONTINUE
+          IF(COMPTA .EQ. 0)  THEN
+            CALL U2MESK('F','UTILITAI5_92',1,ZK8(MM1+I-1))
+          ENDIF
+610     CONTINUE
+        
 C
       ELSEIF ( MOTFAC .EQ. 'LEVRE_INF' ) THEN
 C              -----------------------
@@ -771,6 +817,49 @@ C COMPARAISON LEVRE SUP / LEVRE INF
 715        CONTINUE
 710      CONTINUE
 
+C VERIFICATION COHERENCE LEVRE INF / FOND
+        CALL JEEXIN(RESU//'.FOND      .NOEU',IRET)
+        IF(IRET.NE.0) THEN
+          CALL JELIRA(RESU//'.FOND      .NOEU' , 'LONMAX', NBNO, K8B)
+          CALL JEVEUO(RESU//'.FOND      .NOEU' ,'L',MM1)
+        ELSE
+          CALL JELIRA(RESU//'.FOND_INF  .NOEU' , 'LONMAX', NBNO, K8B)
+          CALL JEVEUO(RESU//'.FOND_INF      .NOEU' ,'L',MM1)
+        ENDIF
+        DO 711 I=1,NBNO
+          COMPTA = 0
+          DO 720 J=1,DIM2
+            CALL JENUNO(JEXNUM(OBJ2,ZI(JADR+J-1)),MAILLE)
+            CALL JENONU (JEXNOM(OBJ2,MAILLE),IBID)
+            ITYP=IATYMA-1+IBID
+            CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP)),TYPE)
+            IF(TYPE(1:5).EQ.'QUAD8') THEN
+             NN = 8
+            ELSE IF(TYPE(1:5).EQ.'TRIA3') THEN
+             NN = 3
+            ELSE IF(TYPE(1:5).EQ.'QUAD4') THEN
+             NN = 4
+            ELSE IF(TYPE(1:5).EQ.'TRIA6') THEN
+             NN = 6
+            ELSE
+              CALL U2MESS('F','ELEMENTS2_16')
+            ENDIF
+            CALL JEVEUO(JEXNUM(OBJ4,IBID),'L',IAMASE)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',ZI(IAMASE)),NOEUG)
+            DO 730 K=1,NN
+              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',ZI(IAMASE+K-1)),
+     &            NOEUG)
+              IF(NOEUG.EQ.ZK8(MM1+I-1)) THEN
+                 COMPTA = COMPTA + 1
+                 GOTO 711
+              ENDIF   
+730         CONTINUE
+720       CONTINUE
+          IF(COMPTA .EQ. 0)  THEN
+            CALL U2MESK('F','UTILITAI5_93',1,ZK8(MM1+I-1))
+          ENDIF
+       
+711     CONTINUE
       ENDIF
 C
 C --- DESTRUCTION DES OBJETS DE TRAVAIL

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -839,8 +839,7 @@ GK1_32=CALC_G(   RESULTAT=CHAMDEP1,
 # COURONNE 2
 # ----------
 
-G2_32=CALC_G(   MODELE=MO,
-                        RESULTAT=CHAMDEP1,
+G2_32=CALC_G(   RESULTAT=CHAMDEP1,
                         THETA=_F(THETA=THETA2),
                         SYME_CHAR='SYME',
                         NUME_ORDRE=1

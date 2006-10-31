@@ -1,6 +1,6 @@
       SUBROUTINE SSDMDM(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C     ----------
       CHARACTER*8 MAG
 C ----------------------------------------------------------------------
 C     BUT:
-C        - TRAITER LE MOT CLEF "DEFI_MAILLE"
+C        - TRAITER LE MOT CLEF "DEFI_SUPER_MAILLE"
 C          DE LA COMMANDE DEFI_MAILLAGE.
 C        - CREER LES OBJETS :
 C            BASE GLOBALE : .DIME ,   .NOMACR, .SUPMAIL
@@ -54,10 +54,11 @@ C ----------------------------------------------------------------------
 C
 C     -- ON COMPTE LES (SUPER)MAILLES :
 C     ---------------------------------
-      CALL GETFAC('DEFI_MAILLE',NOCC)
+      CALL GETFAC('DEFI_SUPER_MAILLE',NOCC)
       NBSMA=0
       DO 1, IOCC=1,NOCC
-        CALL GETVID('DEFI_MAILLE','MACR_ELEM_STAT',IOCC,1,0,KBI81,N1)
+        CALL GETVID('DEFI_SUPER_MAILLE','MACR_ELEM_STAT',
+     &               IOCC,1,0,KBI81,N1)
         NBSMA=NBSMA-N1
  1    CONTINUE
 C
@@ -87,9 +88,9 @@ C     -----------------------------------------
       ISMA=0
       DO 2, IOCC=1,NOCC
 C
-        CALL GETVID('DEFI_MAILLE','MACR_ELEM_STAT',IOCC,1,NBSMA,
+        CALL GETVID('DEFI_SUPER_MAILLE','MACR_ELEM_STAT',IOCC,1,NBSMA,
      &  ZK8(IALK81),N1)
-        CALL GETVID('DEFI_MAILLE','MAILLE',
+        CALL GETVID('DEFI_SUPER_MAILLE','SUPER_MAILLE',
      &              IOCC,1,NBSMA,ZK8(IALK82),N2)
         IF (N2.LT.0) CALL U2MESS('F','SOUSTRUC_50')
         IF ((N2.GT.0).AND.(N2.NE.N1)) CALL U2MESS('F','SOUSTRUC_51')
@@ -97,9 +98,10 @@ C
         DO 3 ,K=1,9
           LISR8(K)=0.0D0
  3      CONTINUE
-        CALL GETVR8('DEFI_MAILLE','TRAN',IOCC,1,3,LISR8(1),N3)
-        CALL GETVR8('DEFI_MAILLE','ANGL_NAUT',IOCC,1,3,LISR8(4),N4)
-        CALL GETVR8('DEFI_MAILLE','CENTRE',IOCC,1,3,LISR8(7),N5)
+        CALL GETVR8('DEFI_SUPER_MAILLE','TRAN',IOCC,1,3,LISR8(1),N3)
+        CALL GETVR8('DEFI_SUPER_MAILLE','ANGL_NAUT',
+     &               IOCC,1,3,LISR8(4),N4)
+        CALL GETVR8('DEFI_SUPER_MAILLE','CENTRE',IOCC,1,3,LISR8(7),N5)
         IF  (N3.LT.0) CALL U2MESS('F','SOUSTRUC_52')
         IF  (N4.LT.0) CALL U2MESS('F','SOUSTRUC_53')
         IF  (N5.LT.0) CALL U2MESS('F','SOUSTRUC_54')

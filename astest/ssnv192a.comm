@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE SOUS CONTACT XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -339,9 +339,7 @@ SIF1 = [None]*n
 SIF2 = [None]*n
 
 for i in range(0,n) :
-   SIF1[i]=CALC_G(MODELE=MODELEK,
-               CHAM_MATER=CHAMPMA1,
-               RESULTAT=RESU1,
+   SIF1[i]=CALC_G(RESULTAT=RESU1,
                SYME_CHAR='SANS',
                COMP_ELAS=_F(RELATION='ELAS',),
                OPTION='CALC_K_G',
@@ -357,9 +355,7 @@ for i in range(0,n) :
 
    IMPR_TABLE(TABLE=SIF1[i],);
 
-   SIF2[i]=CALC_G(MODELE=MODELEK,
-               CHAM_MATER=CHAMPMA1,
-               RESULTAT=RESU1,
+   SIF2[i]=CALC_G(RESULTAT=RESU1,
                SYME_CHAR='SANS',
                COMP_ELAS=_F(RELATION='ELAS',),
                OPTION='CALC_K_G',

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -273,12 +273,9 @@ THET4=CALC_THETA(       MODELE=MO,
                        DIRECTION=(1.,0.,0.,)
                    )
 
-G1=CALC_G(  MODELE=MO,
+G1=CALC_G(  
             RESULTAT=UP,
-            CHAM_MATER=CM,
             THETA=_F(THETA=THET1),
-            EXCIT=_F(CHARGE=CH,
-                     FONC_MULT = F),
             SYME_CHAR='SYME',
             COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
                          DEFORMATION = 'PETIT'),
@@ -286,36 +283,27 @@ G1=CALC_G(  MODELE=MO,
              );
 
 
-G2=CALC_G(  MODELE=MO,
+G2=CALC_G(  
             RESULTAT=UP,
-            CHAM_MATER=CM,
             THETA=_F(THETA=THET2),
-            EXCIT=_F(CHARGE=CH,
-                     FONC_MULT = F),
             SYME_CHAR='SYME',
             COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
                          DEFORMATION = 'PETIT'),
             OPTION='CALC_G'
              );
 
-G3=CALC_G(  MODELE=MO,
+G3=CALC_G(  
             RESULTAT=UP,
-            CHAM_MATER=CM,
             THETA=_F(THETA=THET3),
-            EXCIT=_F(CHARGE=CH,
-                     FONC_MULT = F),
             SYME_CHAR='SYME',
             COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
                          DEFORMATION = 'PETIT'),
             OPTION='CALC_G'
              );
 
-G4=CALC_G(  MODELE=MO,
+G4=CALC_G(  
             RESULTAT=UP,
-            CHAM_MATER=CM,
             THETA=_F(THETA=THET4),
-            EXCIT=_F(CHARGE=CH,
-                     FONC_MULT = F),
             SYME_CHAR='SYME',
             COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
                          DEFORMATION = 'PETIT'),

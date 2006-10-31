@@ -1,6 +1,6 @@
       SUBROUTINE SSMAU2(NOMU,OPTION)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,10 +40,12 @@ C            / NOMU.AP_EE  SI 'AMOR_MECA'
 C ----------------------------------------------------------------------
 
 
-      INTEGER I,SCDI,SCHC,IBLO
+      INTEGER I,SCDI,SCHC,IBLO,IBID
       CHARACTER*8 KBID
-      CHARACTER*8 NOMO
+      CHARACTER*8 NOMO,PROMES
       INTEGER IDBG
+      LOGICAL MODIF
+
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
@@ -78,6 +80,10 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
         CALL JXABOR()
       END IF
 
+      MODIF = .TRUE.
+      CALL DISMOI('F',
+     &    'NOM_PROJ_MESU',NOMU,'MACR_ELEM_STAT',IBID,PROMES,IER)
+      IF (PROMES .EQ. ' ') MODIF = .FALSE.
 
       CALL JEVEUO(NOMU//'.DESM','E',IADESM)
       NDDLE = ZI(IADESM-1+4)
@@ -109,6 +115,12 @@ C     ---------------------------------------------------
       CALL JEVEUO(STOCK//'.SCIB','L',IASCIB)
 
       CALL WKVECT(NOMU//'.MP_EE','G V R', (NDDLE* (NDDLE+1)/2),IAMPEE)
+
+
+      IF (MODIF) THEN
+C CREATION DE LA MATRICE POUR MODIFICATION STRUCTURALE
+        CALL CRMEMA(PROMES,IAMPEE)
+      ELSE
 
       IBLOLD = 0
       DO 30,J = 1,NDDLE
@@ -281,12 +293,15 @@ CCDIR$ IVDEP
         CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
   250 CONTINUE
 
-
-
-
   260 CONTINUE
       CALL JEDETR(NOMU//'.TMP_IE')
+
+
+C FIN TEST SUR MODIF
+      ENDIF
+
       CALL JELIBE(ZK24(JREFA-1+2)(1:14)//'.SLCS.SCHC')
+
 
       CALL JEDEMA()
       END

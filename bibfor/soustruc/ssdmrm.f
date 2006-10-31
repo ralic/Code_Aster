@@ -1,6 +1,6 @@
       SUBROUTINE SSDMRM ( MAG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C     ----------
       CHARACTER*8 MAG
 C ----------------------------------------------------------------------
 C     BUT:
-C        - TRAITER LE MOT CLEF "RECO_MAILLE"
+C        - TRAITER LE MOT CLEF "RECO_SUPER_MAILLE"
 C          DE LA COMMANDE DEFI_MAILLAGE.
 C
 C     IN:
@@ -51,7 +51,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*80 ZK80
 C ----------------------------------------------------------------------
       CALL JEMARQ()
-      CALL GETFAC('RECO_MAILLE',NOCC)
+      CALL GETFAC('RECO_SUPER_MAILLE',NOCC)
       IF (NOCC.EQ.0) GO TO 9999
 C
 C     -- ON RECUPERE CERTAINES DIMENSIONS:
@@ -77,8 +77,9 @@ C     -----------------------------------------
 C
 C     -- ON RECUPERE LA LISTE DES MAILLES ET LA LISTE DES GROUP_NO:
 C     -------------------------------------------------------------
-        CALL GETVID('RECO_MAILLE','MAILLE',IOCC,1,NBSMA,ZK8(IALIKM),N1)
-        CALL GETVID('RECO_MAILLE','GROUP_NO',IOCC,1,NBSMA,
+        CALL GETVID('RECO_SUPER_MAILLE','SUPER_MAILLE',
+     &               IOCC,1,NBSMA,ZK8(IALIKM),N1)
+        CALL GETVID('RECO_SUPER_MAILLE','GROUP_NO',IOCC,1,NBSMA,
      &               ZK8(IALIKG),N2)
         IF (N1.LT.0) CALL U2MESS('F','SOUSTRUC_64')
         IF (N1.NE.N2) CALL U2MESS('F','SOUSTRUC_65')
@@ -86,10 +87,10 @@ C     -------------------------------------------------------------
 C
         NBSMAR=N1
 C
-        CALL GETVTX('RECO_MAILLE','OPTION',IOCC,1,1,OPTION,N1)
+        CALL GETVTX('RECO_SUPER_MAILLE','OPTION',IOCC,1,1,OPTION,N1)
         IF (OPTION(1:11).EQ.'GEOMETRIQUE') THEN
-          CALL GETVR8('RECO_MAILLE','PRECISION',IOCC,1,1,PREC,N1)
-          CALL GETVTX('RECO_MAILLE','CRITERE',IOCC,1,1,CRIT,N1)
+          CALL GETVR8('RECO_SUPER_MAILLE','PRECISION',IOCC,1,1,PREC,N1)
+          CALL GETVTX('RECO_SUPER_MAILLE','CRITERE',IOCC,1,1,CRIT,N1)
         END IF
 C
         DO 5, I=1,NBSMAR

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,6 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       RESU_THER    = SIMP(statut='f',typ=evol_ther,),
       MODELE       = SIMP(statut='o',typ=modele_sdaster),
       MATER        = SIMP(statut='o',typ=mater_sdaster),
-      CHAM_MATER   = SIMP(statut='o',typ=cham_mater),
       
       COMP_ELAS    = FACT(statut='o',
             RELATION    = SIMP(statut='f',typ='TXM',defaut="ELAS",

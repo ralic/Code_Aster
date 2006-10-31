@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF jeveux Messages  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,6 +127,34 @@ cata_msg={
 24: _("""
      JENONU : Collection ou Répertoire de noms  :  %(k1)s
      Il faut passer par JEXNOM,JEXNUM.
+"""),
+
+25: _("""
+     Nom de collection ou de répertoire inexistant : >%(k1)s<
+"""),
+
+26: _("""
+     Objet JEVEUX inexistant dans les bases ouvertes : >%(k1)s<
+     l'objet n'a pas été créé ou il a été détruit
+"""),
+
+27: _("""
+     Objet simple JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+     le segment de valeurs est introuvable
+"""),
+
+28: _("""
+     Collection JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+     le segment de valeurs est introuvable
+"""),
+
+29: _("""
+     Objet %(i1)d de collection JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+"""),
+
+30: _("""
+     Objet de collection JEVEUX inexistant : >%(k1)s<
+     l'objet n'a pas été créé ou il a été détruit
 """),
 
 }

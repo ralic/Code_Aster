@@ -1,7 +1,7 @@
-      SUBROUTINE CGCRTB(LATABL,OPTIO1,DIME,TROIDL,NDEP,NRES,NBPRUP,
+      SUBROUTINE CGCRTB(LATABL,OPTIO1,DIME,TROIDL,NBPRUP,
      &                  NOPRUP,TYPRUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/08/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,14 +29,12 @@ C     IN  OPTIO1    :  OPTION DE CALCUL
 C     IN  DIME      :  DIMENSION GEOMETRIQUE
 C     IN  TROIDL    :  = .TRUE.  SI 3D LOCAL
 C                        .FALSE. SI 2D OU 3D GLOBAL
-C     IN  NDEP      :  NON NUL SI UN CHAMP DEPL EST FOURNI A CALC_G
-C     IN  NRES      :  NON NUL SI UNE SD RESULTAT EST FOURNIE A CALC_G
 C     IN/OUT NBPRUP :  NOMBRE DE PARAMETRES
 C     OUT NOPRUP    :  NOMS DES PARAMETRES
 C     OUT TYPRUP    :  TYPES DES PARAMETRES
 C
       IMPLICIT NONE
-      INTEGER       NBPRUP,NDEP,NRES,DIME
+      INTEGER       NBPRUP,DIME
       CHARACTER*8   LATABL,TYPRUP(NBPRUP)
       CHARACTER*16  OPTIO1,NOPRUP(NBPRUP)
       LOGICAL       TROIDL
@@ -48,11 +46,6 @@ C
      &       OPTIO1.EQ.'G_LAGR') .AND. DIME.EQ.2)
      &  .OR. (OPTIO1.EQ.'CALC_G_GLOB' .OR.
      &        OPTIO1.EQ.'G_LAGR_GLOB' )) THEN
-        IF (NDEP .NE. 0 ) THEN
-          NBPRUP = 1
-          NOPRUP(1) = 'G'
-          TYPRUP(1) = 'R'
-        ELSE
           NBPRUP = 3
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -60,10 +53,8 @@ C
           TYPRUP(2) = 'R'
           NOPRUP(3) = 'G'
           TYPRUP(3) = 'R'
-        ENDIF
       ELSEIF((OPTIO1.EQ.'CALC_G'.OR.OPTIO1.EQ.'G_LAGR')
      &       .AND. TROIDL)THEN
-        IF(NRES.NE.0)THEN
           NBPRUP = 5
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -75,22 +66,8 @@ C
           TYPRUP(4) = 'R'
           NOPRUP(5) = 'G_LOCAL'
           TYPRUP(5) = 'R'
-        ELSE
-          NBPRUP = 3
-          NOPRUP(1) = 'NOEUD'
-          TYPRUP(1) = 'K8'
-          NOPRUP(2) = 'ABSC_CURV'
-          TYPRUP(2) = 'R'
-          NOPRUP(3) = 'G_LOCAL'
-          TYPRUP(3) = 'R'
-        ENDIF
       ELSEIF (OPTIO1.EQ.'CALC_DG_E'
      &   .OR. OPTIO1.EQ.'CALC_DGG_E') THEN
-        IF (NDEP .NE. 0 ) THEN
-          NBPRUP = 1
-          NOPRUP(1) = 'DG/DE'
-          TYPRUP(1) = 'R'
-        ELSE
           NBPRUP = 3
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -98,14 +75,8 @@ C
           TYPRUP(2) = 'R'
           NOPRUP(3) = 'DG/DE'
           TYPRUP(3) = 'R'
-        ENDIF
       ELSEIF (OPTIO1.EQ.'CALC_DG_FORC'
      &   .OR. OPTIO1.EQ.'CALC_DGG_FORC')THEN
-        IF (NDEP .NE. 0 ) THEN
-          NBPRUP = 1
-          NOPRUP(1) = 'DG/DF'
-          TYPRUP(1) = 'R'
-        ELSE
           NBPRUP = 3
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -113,17 +84,7 @@ C
           TYPRUP(2) = 'R'
           NOPRUP(3) = 'DG/DF'
           TYPRUP(3) = 'R'
-        ENDIF
       ELSEIF (OPTIO1 .EQ.'CALC_DK_DG_E')THEN
-        IF ( NDEP .NE. 0 ) THEN
-          NBPRUP = 3
-          NOPRUP(1) = 'DG/DE'
-          TYPRUP(1) = 'R'
-          NOPRUP(2) = 'DK1/DE'
-          TYPRUP(2) = 'R'
-          NOPRUP(3) = 'DK2/DE'
-          TYPRUP(3) = 'R'
-        ELSE
           NBPRUP = 5
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -135,15 +96,7 @@ C
           TYPRUP(4) = 'R'
           NOPRUP(5) = 'DK2/DE'
           TYPRUP(5) = 'R'
-        ENDIF
       ELSEIF (OPTIO1.EQ.'CALC_DK_DG_FORC')THEN
-        IF ( NDEP .NE. 0 ) THEN
-          NBPRUP = 2
-          NOPRUP(1) = 'DK1/DF'
-          TYPRUP(1) = 'R'
-          NOPRUP(2) = 'DK2/DF'
-          TYPRUP(2) = 'R'
-        ELSE
           NBPRUP = 4
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -153,19 +106,7 @@ C
           TYPRUP(3) = 'R'
           NOPRUP(4) = 'DK2/DF'
           TYPRUP(4) = 'R'
-        ENDIF
       ELSE IF( OPTIO1.EQ.'CALC_K_G' .AND. DIME.EQ.2)THEN
-        IF (NDEP .NE. 0 ) THEN
-          NBPRUP = 4
-          NOPRUP(1) = 'G'
-          TYPRUP(1) = 'R'
-          NOPRUP(2) = 'K1'
-          TYPRUP(2) = 'R'
-          NOPRUP(3) = 'K2'
-          TYPRUP(3) = 'R'
-          NOPRUP(4) = 'G_IRWIN'
-          TYPRUP(4) = 'R'
-        ELSE
           NBPRUP = 6
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -179,7 +120,6 @@ C
           TYPRUP(5) = 'R'
           NOPRUP(6) = 'G_IRWIN'
           TYPRUP(6) = 'R'
-        ENDIF
       ELSEIF(OPTIO1(1:6).EQ.'CALC_K' .AND. TROIDL)THEN
           NBPRUP = 9
           NOPRUP(1) = 'NUME_ORDRE'
@@ -201,15 +141,6 @@ C
           NOPRUP(9) = 'BETA_LOCAL'
           TYPRUP(9) = 'R'
       ELSEIF ( OPTIO1 .EQ. 'CALC_DK_DG_E' ) THEN
-        IF ( NDEP .NE. 0 ) THEN
-          NBPRUP = 3
-          NOPRUP(1) = 'DG/DE'
-          TYPRUP(1) = 'R'
-          NOPRUP(2) = 'DK1/DE'
-          TYPRUP(2) = 'R'
-          NOPRUP(3) = 'DK2/DE'
-          TYPRUP(3) = 'R'
-        ELSE
           NBPRUP = 5
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -221,15 +152,7 @@ C
           TYPRUP(4) = 'R'
           NOPRUP(5) = 'DK2/DE'
           TYPRUP(5) = 'R'
-        ENDIF
       ELSEIF ( OPTIO1 .EQ. 'CALC_DK_DG_FORC' ) THEN   
-        IF ( NDEP .NE. 0 ) THEN
-          NBPRUP = 2
-          NOPRUP(1) = 'DK1/DF'
-          TYPRUP(1) = 'R'
-          NOPRUP(2) = 'DK2/DF'
-          TYPRUP(2) = 'R'
-        ELSE
           NBPRUP = 4
           NOPRUP(1) = 'NUME_ORDRE'
           TYPRUP(1) = 'I'
@@ -239,7 +162,6 @@ C
           TYPRUP(3) = 'R'
           NOPRUP(4) = 'DK2/DF'
           TYPRUP(4) = 'R'
-        ENDIF
       ELSEIF ( OPTIO1 .EQ. 'K_G_MODA' ) THEN
         IF(TROIDL)THEN
           NBPRUP = 8

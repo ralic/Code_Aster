@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,23 +91,23 @@ S_1=MACR_ELEM_STAT(reuse=S_1,
 #=======================================================================
 
 
-MA_123=DEFI_MAILLAGE( DEFI_MAILLE=(
+MA_123=DEFI_MAILLAGE( DEFI_SUPER_MAILLE=(
 #  ---------------------
 
-      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_1'),
-      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_2', ANGL_NAUT = (45.0,)),
-      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_3', ANGL_NAUT = (90.0,))),
+      _F( MACR_ELEM_STAT = S_1, SUPER_MAILLE = 'S_1'),
+      _F( MACR_ELEM_STAT = S_1, SUPER_MAILLE = 'S_2', ANGL_NAUT = (45.0,)),
+      _F( MACR_ELEM_STAT = S_1, SUPER_MAILLE = 'S_3', ANGL_NAUT = (90.0,))),
 
     RECO_GLOBAL=_F( TOUT = 'OUI'),DEFI_NOEUD=(
 
     _F( TOUT = 'OUI', PREFIXE = 'NN', INDEX = (3,3,2,5,)),
-               _F( NOEUD_FIN = 'N1',   MAILLE = 'S_1', NOEUD_INIT = 'N1'),
-               _F( NOEUD_FIN = 'N4',   MAILLE = 'S_1', NOEUD_INIT = 'N4'),
-               _F( NOEUD_FIN = 'N7',   MAILLE = 'S_1', NOEUD_INIT = 'N7'),
-               _F( NOEUD_FIN = 'N10',  MAILLE = 'S_1', NOEUD_INIT = 'N10')),DEFI_GROUP_NO=(
+               _F( NOEUD_FIN = 'N1',   SUPER_MAILLE = 'S_1', NOEUD_INIT = 'N1'),
+               _F( NOEUD_FIN = 'N4',   SUPER_MAILLE = 'S_1', NOEUD_INIT = 'N4'),
+               _F( NOEUD_FIN = 'N7',   SUPER_MAILLE = 'S_1', NOEUD_INIT = 'N7'),
+               _F( NOEUD_FIN = 'N10',  SUPER_MAILLE = 'S_1', NOEUD_INIT = 'N10')),DEFI_GROUP_NO=(
 
-    _F( MAILLE = 'S_3',  GROUP_NO_FIN = 'GH', GROUP_NO_INIT = 'GRNM13'),
-                  _F( MAILLE = 'S_1',  GROUP_NO_FIN = 'AB', GROUP_NO_INIT = 'GRNM11'))
+    _F( SUPER_MAILLE = 'S_3',  GROUP_NO_FIN = 'GH', GROUP_NO_INIT = 'GRNM13'),
+                  _F( SUPER_MAILLE = 'S_1',  GROUP_NO_FIN = 'AB', GROUP_NO_INIT = 'GRNM11'))
           )
 
 MO_123=AFFE_MODELE(  MAILLAGE=MA_123,
@@ -149,7 +149,7 @@ S_123=MACR_ELEM_STAT(
 
 MAG0=DEFI_MAILLAGE(
 #  ---------------------
-     DEFI_MAILLE=_F( MACR_ELEM_STAT = S_123, MAILLE = 'S_123'),
+     DEFI_SUPER_MAILLE=_F( MACR_ELEM_STAT = S_123, SUPER_MAILLE = 'S_123'),
     DEFI_NOEUD=_F( TOUT = 'OUI', INDEX = (1,0,1,8,))
           )
 
@@ -164,7 +164,7 @@ MAG=ASSE_MAILLAGE( MAILLAGE_1=MAG0,
 MOG=AFFE_MODELE( MAILLAGE=MAG,
 
        AFFE=_F( GROUP_MA = 'GRSD1', MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'),
-       AFFE_SOUS_STRUC=_F( MAILLE = ('S_123',)))
+       AFFE_SOUS_STRUC=_F( SUPER_MAILLE = ('S_123',)))
 
 #=======================================================================
 #
@@ -226,28 +226,28 @@ U2=RESO_LDLT( MATR_FACT=MATAS,   CHAM_NO=VECAS2)
 #=======================================================================
 
 
-U1S_123=DEPL_INTERNE(   DEPL_GLOBAL=U1,    MAILLE='S_123',
+U1S_123=DEPL_INTERNE(   DEPL_GLOBAL=U1,    SUPER_MAILLE='S_123',
                             NOM_CAS='CHF1' )
 
-U2S_123=DEPL_INTERNE(   DEPL_GLOBAL=U2,    MAILLE='S_123',
+U2S_123=DEPL_INTERNE(   DEPL_GLOBAL=U2,    SUPER_MAILLE='S_123',
                             NOM_CAS='CHF2' )
 
-U1S_1=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  MAILLE='S_1',
+U1S_1=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  SUPER_MAILLE='S_1',
                             NOM_CAS='CHF1' )
 
-U1S_2=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  MAILLE='S_2',
+U1S_2=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  SUPER_MAILLE='S_2',
                             NOM_CAS='CHF1' )
 
-U1S_3=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  MAILLE='S_3',
+U1S_3=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  SUPER_MAILLE='S_3',
                             NOM_CAS='CHF1' )
 
-U2S_1=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  MAILLE='S_1',
+U2S_1=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  SUPER_MAILLE='S_1',
                             NOM_CAS='CHF2' )
 
-U2S_2=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  MAILLE='S_2',
+U2S_2=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  SUPER_MAILLE='S_2',
                             NOM_CAS='CHF2' )
 
-U2S_3=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  MAILLE='S_3',
+U2S_3=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  SUPER_MAILLE='S_3',
                             NOM_CAS='CHF2' )
 
 #=======================================================================
@@ -370,30 +370,30 @@ _F( CHAM_GD = U2S_1, NOEUD = 'N10', NOM_CMP = 'DY',
 
 
 
-MA_123B=DEFI_MAILLAGE( DEFI_MAILLE=(
+MA_123B=DEFI_MAILLAGE( DEFI_SUPER_MAILLE=(
 #  ---------------------
 
-      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_1',  TRAN = (1.0E-6,1.0E-5,)),
-      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_2', ANGL_NAUT = (45.0,), CENTRE = (1.E-6,0.,)),
-      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_3', ANGL_NAUT = (90.0,))),RECO_MAILLE=(
+      _F( MACR_ELEM_STAT = S_1, SUPER_MAILLE = 'S_1',  TRAN = (1.0E-6,1.0E-5,)),
+      _F( MACR_ELEM_STAT = S_1, SUPER_MAILLE = 'S_2', ANGL_NAUT = (45.0,), CENTRE = (1.E-6,0.,)),
+      _F( MACR_ELEM_STAT = S_1, SUPER_MAILLE = 'S_3', ANGL_NAUT = (90.0,))),RECO_SUPER_MAILLE=(
 
-    _F( MAILLE = ('S_1','S_2',), GROUP_NO = ('GRNM13','GRNM11',),
+    _F( SUPER_MAILLE = ('S_1','S_2',), GROUP_NO = ('GRNM13','GRNM11',),
           OPTION = 'GEOMETRIQUE', PRECISION = 1.0E-2, CRITERE = 'ABSOLU'),
-    _F( MAILLE = ('S_2','S_3',), GROUP_NO = ('GRNM13','GRNM11',),
+    _F( SUPER_MAILLE = ('S_2','S_3',), GROUP_NO = ('GRNM13','GRNM11',),
           OPTION = 'GEOMETRIQUE', PRECISION = 1.0E-2, CRITERE = 'RELATIF'),
-    _F( MAILLE = ('S_1','S_2',), GROUP_NO = ('D','A',),
+    _F( SUPER_MAILLE = ('S_1','S_2',), GROUP_NO = ('D','A',),
           OPTION = 'NOEUD_A_NOEUD'),
-    _F( MAILLE = ('S_2','S_3',), GROUP_NO = ('D','A',),
+    _F( SUPER_MAILLE = ('S_2','S_3',), GROUP_NO = ('D','A',),
           OPTION = 'INVERSE')),DEFI_NOEUD=(
 
     _F( TOUT = 'OUI', PREFIXE = 'NN', INDEX = (3,3,2,5,)),
-               _F( NOEUD_FIN = 'N1',   MAILLE = 'S_1', NOEUD_INIT = 'N1'),
-               _F( NOEUD_FIN = 'N4',   MAILLE = 'S_1', NOEUD_INIT = 'N4'),
-               _F( NOEUD_FIN = 'N7',   MAILLE = 'S_1', NOEUD_INIT = 'N7'),
-               _F( NOEUD_FIN = 'N10',  MAILLE = 'S_1', NOEUD_INIT = 'N10')),DEFI_GROUP_NO=(
+               _F( NOEUD_FIN = 'N1',   SUPER_MAILLE = 'S_1', NOEUD_INIT = 'N1'),
+               _F( NOEUD_FIN = 'N4',   SUPER_MAILLE = 'S_1', NOEUD_INIT = 'N4'),
+               _F( NOEUD_FIN = 'N7',   SUPER_MAILLE = 'S_1', NOEUD_INIT = 'N7'),
+               _F( NOEUD_FIN = 'N10',  SUPER_MAILLE = 'S_1', NOEUD_INIT = 'N10')),DEFI_GROUP_NO=(
 
-    _F( MAILLE = 'S_3',  GROUP_NO_FIN = 'GH', GROUP_NO_INIT = 'GRNM13'),
-                  _F( MAILLE = 'S_1',  GROUP_NO_FIN = 'AB', GROUP_NO_INIT = 'GRNM11'))
+    _F( SUPER_MAILLE = 'S_3',  GROUP_NO_FIN = 'GH', GROUP_NO_INIT = 'GRNM13'),
+                  _F( SUPER_MAILLE = 'S_1',  GROUP_NO_FIN = 'AB', GROUP_NO_INIT = 'GRNM11'))
           )
 
 MO_123B=AFFE_MODELE(  MAILLAGE=MA_123B,
@@ -414,13 +414,13 @@ S_123B=MACR_ELEM_STAT(
     CAS_CHARGE=_F( NOM_CAS = 'CHF1',  CHARGE = CHBL_12B,  SUIV = 'OUI'))
 
 MAG0B=DEFI_MAILLAGE(
-     DEFI_MAILLE=_F( MACR_ELEM_STAT = S_123B, MAILLE = 'S_123B'),
+     DEFI_SUPER_MAILLE=_F( MACR_ELEM_STAT = S_123B, SUPER_MAILLE = 'S_123B'),
      RECO_GLOBAL=_F( CRITERE = 'ABSOLU', TOUT = 'OUI'),DEFI_NOEUD=(
     _F( TOUT = 'OUI', PREFIXE = 'F', INDEX = (1,0,1,7,)),
-               _F( NOEUD_FIN = 'N1',   MAILLE = 'S_123B', NOEUD_INIT = 'N1'),
-               _F( NOEUD_FIN = 'N4',   MAILLE = 'S_123B', NOEUD_INIT = 'N4'),
-               _F( NOEUD_FIN = 'N7',   MAILLE = 'S_123B', NOEUD_INIT = 'N7'),
-               _F( NOEUD_FIN = 'N10',  MAILLE = 'S_123B', NOEUD_INIT = 'N10')),
+               _F( NOEUD_FIN = 'N1',   SUPER_MAILLE = 'S_123B', NOEUD_INIT = 'N1'),
+               _F( NOEUD_FIN = 'N4',   SUPER_MAILLE = 'S_123B', NOEUD_INIT = 'N4'),
+               _F( NOEUD_FIN = 'N7',   SUPER_MAILLE = 'S_123B', NOEUD_INIT = 'N7'),
+               _F( NOEUD_FIN = 'N10',  SUPER_MAILLE = 'S_123B', NOEUD_INIT = 'N10')),
     DEFI_GROUP_NO=_F( TOUT = 'OUI', PREFIXE = 'Z', INDEX = (1,0,1,7,))
     )
 
@@ -430,7 +430,7 @@ MAGB=ASSE_MAILLAGE(  MAILLAGE_1=MAG0B,
 
 MOGB=AFFE_MODELE( MAILLAGE=MAGB,
       AFFE=_F( GROUP_MA = 'GRSD1', MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'),
-       AFFE_SOUS_STRUC=_F( MAILLE = ('S_123B',)))
+       AFFE_SOUS_STRUC=_F( SUPER_MAILLE = ('S_123B',)))
 
 CHAGBLB=AFFE_CHAR_MECA(MODELE=MOGB,
            DDL_IMPO=_F( NOEUD = ('N19',), DX = 2.0) )

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE LACHER D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -187,8 +187,9 @@ R4=( U0 - ( 8. * C ) ) * ANG
 
 DYNATRA1=REST_BASE_PHYS(   RESU_GENE=DYNAMODA,
                                NOM_CHAM='DEPL',
+                               NOEUD = 'NO1', 
                                INTERPOL='LIN',
-                                   INST=( T1, T2, T3, T4, )
+                               INST=( T1, T2, T3, T4, )
                           )
 
 TEST_RESU(RESU=( _F(  RESULTAT = DYNATRA1,  NUME_ORDRE = 1,

@@ -1,5 +1,6 @@
-#@ MODIF reca_controles Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_controles Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,14 +103,19 @@ def verif_fichier(UL,PARAMETRES,REPONSES):
 #On verifie les occurences des noms des PARAMETRES et REPONSES 
 #dans le fichier de commande ASTER
    txt=""
-   fichier = open('fort.'+str(UL),'r')
-   fic=fichier.read()
+
+   try:
+      fichier = open('fort.'+str(UL),'r')
+      fic=fichier.read()
+   except:
+      txt += "\nImpossible d'ouvrir le fichier esclave declare avec l'unite logique " + str(UL)
+      return txt
    for i in range(len(PARAMETRES)):
       if((string.find(fic,PARAMETRES[i][0])==-1) or ((string.find(fic,PARAMETRES[i][0]+'=')==-1) and (string.find(fic,PARAMETRES[i][0]+' ')==-1))):
-         txt=txt + "\nLe paramètre "+PARAMETRES[i][0]+" que vous avez entré pour la phase d'optimisation n'a pas été trouvé dans votre fichier de commandes ASTER"
+         txt += "\nLe paramètre "+PARAMETRES[i][0]+" que vous avez entré pour la phase d'optimisation n'a pas été trouvé dans votre fichier de commandes ASTER"
    for i in range(len(REPONSES)):
       if((string.find(fic,REPONSES[i][0])==-1) or ((string.find(fic,REPONSES[i][0]+'=')==-1) and (string.find(fic,REPONSES[i][0]+' ')==-1))):
-         txt=txt + "\nLa réponse  "+REPONSES[i][0]+" que vous avez entrée pour la phase d'optimisation n'a pas été trouvée dans votre fichier de commandes ASTER"
+         txt += "\nLa réponse  "+REPONSES[i][0]+" que vous avez entrée pour la phase d'optimisation n'a pas été trouvée dans votre fichier de commandes ASTER"
    return txt
 
 
@@ -153,15 +159,16 @@ def verif_UNITE(GRAPHIQUE,UNITE_RESU):
    # On vérifie que les unités de résultat et 
    # de graphique sont différentes
    txt=""
-   GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
-   if (GRAPHE_UL_OUT==UNITE_RESU):
-       txt=txt + "\nLes unités logiques des fichiers de résultats graphiques et de résultats d'optimisation sont les memes."
+   if GRAPHIQUE:
+      GRAPHE_UL_OUT=GRAPHIQUE['UNITE']
+      if (GRAPHE_UL_OUT==UNITE_RESU):
+          txt=txt + "\nLes unités logiques des fichiers de résultats graphiques et de résultats d'optimisation sont les memes."
    return txt
 
 
 # ------------------------------------------------------------------------------
 
-def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU):
+def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE):
    #Cette methode va utiliser les methodes de cette classe declarée ci-dessus
    #test  est un boolean: test=0 -> pas d'erreur
    #                      test=1 -> erreur détectée
@@ -182,7 +189,7 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU):
    #test des sous_listes de REPONSES
    for i in range(len(REPONSES)):
       texte = texte + erreur_de_type(0,REPONSES[i])
- 
+
    #On verifie si la dimension de chaque sous-liste de : PARAMETRES, REPONSES
    #il faut que:la dimension d'une sous-liste de PARAMETRES = 4
    #et   que    la dimension d'une sous liste de REPONSES   = 3
@@ -199,20 +206,23 @@ def gestion(UL,PARAMETRES,REPONSES,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU):
       texte = texte + erreur_de_type(1,PARAMETRES[i][0])
       for k in [1,2,3]:
          texte = texte + erreur_de_type(2,PARAMETRES[i][k])
-         
+
    #verification du type string pour les arguments  de REPONSES
    for i in range(len(REPONSES)):
       for j in range(len(REPONSES[i])):
          texte = texte + erreur_de_type(1,REPONSES[i][j])
    
    #verification du fichier de commndes ASTER
-   texte = texte + verif_fichier(UL,PARAMETRES,REPONSES)
+   if METHODE != 'EXTERNE': # pour celui-ci le fort.UL n'est pas l'esclave... voir comment faire
+      texte = texte + verif_fichier(UL,PARAMETRES,REPONSES)
 
    #verification des valeurs des PARAMETRES entrées par l'utilisteur 
-   texte = texte + verif_valeurs_des_PARAMETRES(PARAMETRES)
+   if METHODE == 'LEVENBERG':
+      texte = texte + verif_valeurs_des_PARAMETRES(PARAMETRES)
 
    #verification des unités logiques renseignées par l'utilisateur
-   texte = texte + verif_UNITE(GRAPHIQUE,UNITE_RESU)
+   if METHODE != 'EXTERNE':
+      texte = texte + verif_UNITE(GRAPHIQUE,UNITE_RESU)
 
    return texte
    

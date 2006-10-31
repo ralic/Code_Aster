@@ -1,5 +1,6 @@
-#@ MODIF reca_message Macro  DATE 25/07/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_message Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
+# RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +20,14 @@
 # ======================================================================
 
 import os, Numeric
-from Utilitai.Utmess import UTMESS
+
+try:
+   from Utilitai.Utmess import UTMESS
+except:
+   def UTMESS(code,sprg,texte):
+      fmt='\n <%s> <%s> %s\n\n'
+      print fmt % (code,sprg,texte)
+      if code=='F': sys.exit()
 
 #===========================================================================================
 
@@ -34,93 +42,132 @@ class Message :
 
    def __init__(self,para,val_init,resu_exp,ul_out):
       self.nom_para = para
-      self.res_exp = resu_exp
-      res=open(os.getcwd()+'/fort.'+str(ul_out),'a')
-      res.write(' <INFO>  MACR_RECAL\n\n\n')
-      res.close()
-      
+      self.resu_exp = resu_exp
+      self.val_init = val_init
+      self.resu_exp = resu_exp
+      self.ul_out = ul_out
 
 # ------------------------------------------------------------------------------
    
-   def affiche_result_iter(self,iter,J,val,residu,Act,ul_out):
-      res=open(os.getcwd()+'/fort.'+str(ul_out),'a')
-      res.write('\n=======================================================\n')
-      res.write('Iteration '+str(iter)+' :\n')
-      res.write('\n=> Fonctionnelle = '+str(J))
-      res.write('\n=> Résidu        = '+str(residu))
-      res.write('\n=> Paramètres    = ')
-      for i in range(len(val)):
-         res.write('\n         '+ self.nom_para[i]+' = '+str(val[i]) )
-      if (len(Act)!=0):
-         if (len(Act)==1):
-            res.write('\n\n Le paramètre ')
-         else:
-            res.write('\n\n Les paramètres ')
-         for i in Act:
-            res.write(self.nom_para[i]+' ')
-         if (len(Act)==1):
-            res.write('\n est en butée sur un bord de leur domaine admissible.')
-         else:
-            res.write('\n sont en butée sur un bord de leur domaine admissible.')
-      res.write('\n=======================================================\n\n')
+   def initialise(self):
+      res=open(os.getcwd()+'/fort.'+str(self.ul_out),'w')
+      res.close()
+
+      txt = ' <INFO>  MACR_RECAL\n\n'
+      self.ecrire(txt)
+
+# ------------------------------------------------------------------------------
+   
+   def ecrire(self,txt):
+      res=open(os.getcwd()+'/fort.'+str(self.ul_out),'a')
+      res.write(txt+'\n')
+      res.flush()
       res.close()
 
 
 # ------------------------------------------------------------------------------
+   
+   def affiche_valeurs(self,val):
 
-   def affiche_etat_final_convergence(self,iter,max_iter,prec,residu,Act,ul_out):
-      res=open(os.getcwd()+'/fort.'+str(ul_out),'a')
-      if ((iter < max_iter) or (residu < prec)):
-        res.write('\n=======================================================\n') 
-        res.write('                   CONVERGENCE ATTEINTE                ')
-        if (len(Act)!=0):
-           res.write("\n\n         ATTENTION : L'OPTIMUM EST ATTEINT AVEC      ")
-           res.write("\n           DES PARAMETRES EN BUTEE SUR LE BORD     ")
-           res.write("\n               DU DOMAINE ADMISSIBLE                 ")
-        res.write('\n=======================================================\n') 
-        res.close()
-      else:
-        res.write("\n=======================================================\n")
-        res.write('               CONVERGENCE  NON ATTEINTE              ')
-        res.write("\n  Le nombre maximal  d'itération ("+str(max_iter)+") a été dépassé")                    
-        res.write('\n=======================================================\n')
-        res.close()
+      txt = '\n=> Paramètres    = '
+      for i in range(len(val)):
+         txt += '\n         '+ self.nom_para[i]+' = '+str(val[i])
+      self.ecrire(txt)
+
+# ------------------------------------------------------------------------------
+   
+   def affiche_fonctionnelle(self,J):
+
+      txt = '\n=> Fonctionnelle = '+str(J)
+      self.ecrire(txt)
+
+# ------------------------------------------------------------------------------
+   
+   def affiche_result_iter(self,iter,J,val,residu,Act=[],):
+
+      txt  = '\n=======================================================\n'
+      txt += 'Iteration '+str(iter)+' :\n'
+      txt += '\n=> Fonctionnelle = '+str(J)
+      txt += '\n=> Résidu        = '+str(residu)
+
+      self.ecrire(txt)
+
+      txt = ''
+      self.affiche_valeurs(val)
+
+      if (len(Act)!=0):
+         if (len(Act)==1):
+            txt += '\n\n Le paramètre '
+         else:
+            txt += '\n\n Les paramètres '
+         for i in Act:
+            txt += self.nom_para[i]+' '
+         if (len(Act)==1):
+            txt += '\n est en butée sur un bord de leur domaine admissible.'
+         else:
+            txt += '\n sont en butée sur un bord de leur domaine admissible.'
+      txt += '\n=======================================================\n\n'
+      self.ecrire(txt)
+
 
 # ------------------------------------------------------------------------------
 
-   def affiche_calcul_etat_final(self,para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible,ul_out):
-        res=open(os.getcwd()+'/fort.'+str(ul_out),'a')
-        res.write('\n\nValeurs propres du Hessien:\n')
-        res.write(str( valeurs_propres))
-        res.write('\n\nVecteurs propres associés:\n')
-        res.write(str( vecteurs_propres))
-        res.write('\n\n              --------')
-        res.write('\n\nOn peut en déduire que :')
+   def affiche_etat_final_convergence(self,iter,max_iter,iter_fonc,max_iter_fonc,prec,residu,Act=[]):
+
+      txt = ''
+      if ((iter <= max_iter) or (residu <= prec) or (iter_fonc <= max_iter_fonc) ):
+        txt += '\n=======================================================\n'
+        txt += '                   CONVERGENCE ATTEINTE                '
+        if (len(Act)!=0):
+           txt += "\n\n         ATTENTION : L'OPTIMUM EST ATTEINT AVEC      "
+           txt += "\n           DES PARAMETRES EN BUTEE SUR LE BORD     "
+           txt += "\n               DU DOMAINE ADMISSIBLE                 "
+        txt += '\n=======================================================\n'
+      else:
+        txt += "\n=======================================================\n"
+        txt += '               CONVERGENCE  NON ATTEINTE              '
+        if (iter > max_iter):
+          txt += "\n  Le nombre maximal  d'itération ("+str(max_iter)+") a été dépassé"
+        if (iter_fonc > max_iter_fonc):
+          txt += "\n  Le nombre maximal  d'evaluation de la fonction ("+str(max_iter_fonc)+") a été dépassé"
+        txt += '\n=======================================================\n'
+      self.ecrire(txt)
+
+
+# ------------------------------------------------------------------------------
+
+   def affiche_calcul_etat_final(self,para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible):
+
+        txt  = '\n\nValeurs propres du Hessien:\n'
+        txt += str( valeurs_propres)
+        txt += '\n\nVecteurs propres associés:\n'
+        txt += str( vecteurs_propres)
+        txt += '\n\n              --------'
+        txt += '\n\nOn peut en déduire que :'
         # Paramètres sensibles
         if (len(sensible)!=0):
-           res.write('\n\nLes combinaisons suivantes de paramètres sont prépondérantes pour votre calcul :\n')
+           txt += '\n\nLes combinaisons suivantes de paramètres sont prépondérantes pour votre calcul :\n'
            k=0
            for i in sensible:
               k=k+1
               colonne=vecteurs_propres[:,i]
               numero=Numeric.nonzero(Numeric.greater(abs(colonne/max(abs(colonne))),1.E-1))
-              res.write('\n   '+str(k)+') ')
+              txt += '\n   '+str(k)+') '
               for j in numero:
-                 res.write('%+3.1E ' %colonne[j]+'* '+para[j]+' ')
-              res.write('\n      associée à la valeur propre %3.1E \n' %valeurs_propres[i])
+                 txt += '%+3.1E ' %colonne[j]+'* '+para[j]+' '
+              txt += '\n      associée à la valeur propre %3.1E \n' %valeurs_propres[i]
         # Paramètres insensibles
         if (len(insensible)!=0):
-           res.write('\n\nLes combinaisons suivantes de paramètres sont insensibles pour votre calcul :\n')
+           txt += '\n\nLes combinaisons suivantes de paramètres sont insensibles pour votre calcul :\n'
            k=0
            for i in insensible:
               k=k+1
               colonne=vecteurs_propres[:,i]
               numero=Numeric.nonzero(Numeric.greater(abs(colonne/max(abs(colonne))),1.E-1))
-              res.write('\n   '+str(k)+') ')
+              txt += '\n   '+str(k)+') '
               for j in numero:
-                 res.write('%+3.1E ' %colonne[j]+'* '+para[j]+' ')
-              res.write('\n      associée à la valeur propre %3.1E \n' %valeurs_propres[i])
-        res.close()
+                 txt += '%+3.1E ' %colonne[j]+'* '+para[j]+' '
+              txt += '\n      associée à la valeur propre %3.1E \n' %valeurs_propres[i]
       
-   
+        self.ecrire(txt)
 

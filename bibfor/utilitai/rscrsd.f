@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF UTILITAI  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -503,23 +503,7 @@ C     ------------------------------------------------------------------
         DO 120 I = 1,NBCHAM
           CALL JECROC(JEXNOM(NOMS2//'.DESC',CHMECA(I)))
   120   CONTINUE
-
-        NBNOVA = NPDYHA-1
-        CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
-
-        DO 125 I = 1,NPDYHA-1
-          CALL JECROC(JEXNOM(NOMS2//'.NOVA',PADYHA(I)))
-  125   CONTINUE
-
-        CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',
-     &            NBNOVA)
-        CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
-
-        CALL UTACCE('A',NOMSD,'FREQ','FREQ','R',NBORDR)
-        CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
-        CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
-        CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)
-        GO TO 310
+        GO TO 290
 
 C     ------------------------------------------------------------------
       ELSE IF (TYPES2.EQ.'ACOU_HARMO') THEN
@@ -758,6 +742,19 @@ C     ------------------------------------------------------------------
       ELSE
         CALL U2MESK('F','UTILITAI4_31',1,TYPES2)
       END IF
+
+C     ------------------------------------------------------------------
+  290 CONTINUE
+      NBNOVA = 1
+      CALL JEECRA(NOMS2//'.NOVA','NOMMAX',NBNOVA,' ')
+      CALL JECROC(JEXNOM(NOMS2//'.NOVA','FREQ'))
+
+      CALL JECREC(NOMS2//'.TAVA','G V K8','NU','CONTIG','CONSTANT',
+     &            NBNOVA)
+      CALL JEECRA(NOMS2//'.TAVA','LONMAX',4,' ')
+
+      CALL UTACCE('A',NOMSD,'FREQ','FREQ','R',NBORDR)
+      GO TO 310
 
 C     ------------------------------------------------------------------
   300 CONTINUE

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,6 +43,8 @@ MATER2=DEFI_MATERIAU(ELAS=_F(E=220000.,
                              NU=0.33,
                              RHO=8300.,
                              ALPHA=16.E-6,),);
+
+FZ=DEFI_PARA_SENSI(VALE=78480.0,);
 #
 # 2. LECTURE DU MAILLAGE ET TEST DE LA MACRO SUR L'INFORMATION
 
@@ -395,7 +397,7 @@ MATETROI=AFFE_MATERIAU(MAILLAGE=MTROI,
 #
 # 11.4. CHARGEMENTS
 
-CHARTROI=AFFE_CHAR_MECA(MODELE=MODETROI,
+CHA_TROI=AFFE_CHAR_MECA(MODELE=MODETROI,
                         PESANTEUR=(9.81,0.,0.,-1.,),
                         DDL_IMPO=(_F(GROUP_NO='ORIGINE',
                                      DX=0.,
@@ -405,15 +407,22 @@ CHARTROI=AFFE_CHAR_MECA(MODELE=MODETROI,
                                      DY=0.,
                                      DZ=0.,),
                                   _F(GROUP_NO='J',
-                                     DZ=0.,),),
+                                     DZ=0.,),),);
+
+CHAFTROI=AFFE_CHAR_MECA_F(MODELE=MODETROI,
                         FORCE_FACE=_F(GROUP_MA='Z_1',
-                                      FZ=78480.,),);
+                                      FZ=FZ,),);
 #
 # 11.5. RESOLUTION
 
 RESUTROI=MECA_STATIQUE(MODELE=MODETROI,
                        CHAM_MATER=MATETROI,
-                       EXCIT=_F(CHARGE=CHARTROI,),);
+                       SENSIBILITE = FZ,
+                       EXCIT=(_F(CHARGE=CHA_TROI,),
+                              _F(CHARGE=CHAFTROI,)));
+#
+###IMPR_RESU ( RESU=_F( RESULTAT=RESUTROI ) ) ;
+###IMPR_RESU ( RESU=_F( RESULTAT=RESUTROI, SENSIBILITE = FZ) ) ;
 #
 # 12. TEST DE NON REGRESSION
 
@@ -456,5 +465,96 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLTROI,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.02.05',),),);
 #
+# 13. ADAPTATION DU MAILLAGE DE TROIS VERS QUATRE
+#    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
+#               DE LA COMMANDE :
+#               . RAFFINEMENT SELON LA VALEUR RELATIVE DE l'INDICATEUR
+#               . SELECTION DE L'INDICATEUR PAR LA DERIVEE D'UN CHAMP DE GRANDEUR
+#               . MISE A JOUR LA DERIVEE D'UN CHAMP DE GRANDEUR
+#
+
+###IMPR_RESU ( RESU=_F( RESULTAT=RESUTROI, SENSIBILITE = FZ) ) ;
+MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
+               MAILLAGE_N=MTROI,
+               MAILLAGE_NP1=CO('MQUAT'),
+               RESULTAT_N=RESUTROI,
+               INDICATEUR='DEPL',
+               SENSIBILITE = FZ,
+               NOM_CMP_INDICA='DX',
+               CRIT_RAFF_PE=0.08,
+               TYPE_VALEUR_INDICA = 'V_RELATIVE',
+               MAJ_CHAM=(_F(RESULTAT   = RESUTROI,
+                           NOM_CHAM   = 'DEPL',
+                           SENSIBILITE = FZ,
+                           TYPE_CHAM  = 'NOEU_DEPL_R',
+                           NUME_ORDRE = 1,
+                           CHAM_MAJ   = CO("DUDFQUAT"),),
+                         _F(RESULTAT   = RESUTROI,
+                           NOM_CHAM   = 'DEPL',
+                           TYPE_CHAM  = 'NOEU_DEPL_R',
+                           NUME_ORDRE = 1,
+                           CHAM_MAJ   = CO("U___QUAT"),),),);
+###IMPR_RESU ( RESU=_F( CHAM_GD=DUDFQUAT) ) ;
+#
+# 14. CALCUL SUR LE MAILLAGE QUAT
+# 14.1. MODELE MECANIQUE
+
+MODEQUAT=AFFE_MODELE(MAILLAGE=MQUAT,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),);
+#
+# 14.2. MISE EN PLACE DES MATERIAUX
+
+MATEQUAT=AFFE_MATERIAU(MAILLAGE=MQUAT,
+                       AFFE=(_F(GROUP_MA='MOITIE1',
+                                MATER=MATER1,
+                                TEMP_REF=20.,),
+                             _F(GROUP_MA='MOITIE2',
+                                MATER=MATER2,
+                                TEMP_REF=20.,),),);
+#
+# 14.3. CHARGEMENTS
+
+CHARQUAT=AFFE_CHAR_MECA(MODELE=MODEQUAT,
+                        PESANTEUR=(9.81,0.,0.,-1.,),
+                        DDL_IMPO=(_F(GROUP_NO='ORIGINE',
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),
+                                  _F(GROUP_NO='I',
+                                     DY=0.,
+                                     DZ=0.,),
+                                  _F(GROUP_NO='J',
+                                     DZ=0.,),),
+                        FORCE_FACE=_F(GROUP_MA='Z_1',
+                                      FZ=78480.,),);
+#
+# 14.4. RESOLUTION
+
+RESUQUAT=MECA_STATIQUE(MODELE=MODEQUAT,
+                       CHAM_MATER=MATEQUAT,
+                       EXCIT=_F(CHARGE=CHARQUAT,),);
+#
+# 15. TEST DE NON REGRESSION
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=DUDFQUAT,
+                     GROUP_NO='OPPOSE',
+                     NOM_CMP='DX',
+                     VALE=-1.70473E-05,
+                     CRITERE='RELATIF',
+                     PRECISION=1e-05,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='8.03.19',),
+          RESU=(_F(RESULTAT=RESUQUAT,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='OPPOSE',
+                   VALE=-0.333748,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-05,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.03.19',),),);
 
 FIN();

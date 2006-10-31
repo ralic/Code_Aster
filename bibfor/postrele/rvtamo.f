@@ -1,13 +1,14 @@
       SUBROUTINE RVTAMO ( T, NOMCMP, NBCP, NBCO, NBSP, NOMTAB,
-     &                    IOCC, NCHEFF, I1, IOC, ISD )
+     &                    IOCC, XNOVAR, NCHEFF, I1, IOC, ISD )
       IMPLICIT   NONE
       INTEGER             NBCP, NBCO, NBSP, IOCC, I1, IOC, ISD
       REAL*8              T(*)
       CHARACTER*16        NCHEFF
+      CHARACTER*24        XNOVAR
       CHARACTER*(*)       NOMCMP(*), NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,11 +53,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       NBPAR, ILIGN, I, L, M, ICP, ISP, JACC, IK, IR, II,
      &              VALEI(10), N1, ADRACC, ADRVAL, I10, I20, I30, ICO,
-     &              NBACC, NBPR, JACES, IAC, IADR, NC
+     &              NBACC, NBPR, JACES, IAC, IADR, NC, NBVARI, JVARI,
+     &              NBCMP2
       REAL*8        VALER(12)
       LOGICAL       EXIST
       COMPLEX*16    C16B
       CHARACTER*3   TYPPAR
+      CHARACTER*7  KII
       CHARACTER*8   K8B, ACCES, NOMRES, CTYPE, NOPASE, COURBE
       CHARACTER*16  INTITU, NOMPAR(6)
       CHARACTER*24  NOMVAL, NOMACC, NNORES, NOPARA(18), NOMJV
@@ -70,6 +73,19 @@ C
 C
       CALL GETVTX ( 'ACTION', 'INTITULE', IOCC,1,1, INTITU, N1 )
       CALL GETVID ( 'ACTION', 'CHEMIN'  , IOCC,1,1, COURBE, NC )
+C
+      CALL JELIRA ( JEXNUM(XNOVAR,IOCC),'LONUTI',NBVARI,K8B)
+      IF ( NBVARI .EQ. 0 ) THEN
+         NBCMP2 = NBCP
+      ELSE
+         CALL JEVEUO ( JEXNUM(XNOVAR,IOCC), 'L', JVARI )
+         IF ( NBVARI .EQ. 1  .AND. ZI(JVARI).EQ. -1 ) THEN
+            NBCMP2 = NBCP
+         ELSE
+            NBCMP2 = NBVARI
+         ENDIF
+         IF ( NBCMP2.GT.3000) CALL U2MESS('F','POSTRELE_65')
+      ENDIF
 C
       NOMVAL = NCHEFF//'.VALACCE'
       NOMACC = NCHEFF//'.TYPACCE'
@@ -205,14 +221,22 @@ C
       NBPAR = NBPAR + 1
       NOPARA(NBPAR) = 'QUANTITE'
 C
-      DO 50 ICP = 1, NBCP
-         NBPAR = NBPAR + 1
-         NOPARA(NBPAR) = NOMCMP(ICP)
- 50   CONTINUE
+      IF ( NBVARI .EQ. 0 ) THEN
+         DO 50 ICP = 1, NBCMP2
+            NBPAR = NBPAR + 1
+            NOPARA(NBPAR) = NOMCMP(ICP)
+ 50      CONTINUE
+      ELSE
+         DO 52 ICP = 1, NBCMP2
+            CALL CODENT ( ZI(JVARI+ICP-1), 'G', KII )
+            NBPAR = NBPAR + 1
+            NOPARA(NBPAR) = 'V'//KII
+ 52      CONTINUE
+      ENDIF
 C
       CALL ASSERT( NBPAR   .LE. 15 )
       CALL ASSERT( II+2    .LE. 10 )
-      CALL ASSERT( IR+NBCP .LE. 10 )
+      CALL ASSERT( IR+NBCMP2 .LE. 10 )
       CALL ASSERT( IK+2    .LE. 10 )
 C
       L = 6 * NBSP
@@ -231,7 +255,7 @@ C
             DO 40 I = 1, 6
                VALEK(IK) = NOMPAR(I)
 C
-               DO 30 ICP = 1, NBCP
+               DO 30 ICP = 1, NBCMP2
                   I30 = M * ( ICP - 1 )
                   VALER(IR+ICP) = T(I30+I20+I10+I)
 C

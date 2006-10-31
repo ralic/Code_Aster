@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,7 @@ MACR_ELEM_STAT=OPER(nom="MACR_ELEM_STAT",op=86,sd_prod=macr_elem_stat,reentrant=
         regles=(AU_MOINS_UN('DEFINITION','RIGI_MECA','MASS_MECA','CAS_CHARGE'),
                 ENSEMBLE('DEFINITION','EXTERIEUR'),),
          DEFINITION      =FACT(statut='f',
+           regles=(PRESENT_PRESENT('PROJ_MESU','MODE_MESURE'),),
            MODELE          =SIMP(statut='o',typ=modele_sdaster),
            CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
            CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
@@ -29,6 +30,8 @@ MACR_ELEM_STAT=OPER(nom="MACR_ELEM_STAT",op=86,sd_prod=macr_elem_stat,reentrant=
            INST            =SIMP(statut='f',typ='R',defaut=0.0E+0 ),
            NMAX_CAS        =SIMP(statut='f',typ='I',defaut=10),
            NMAX_CHAR       =SIMP(statut='f',typ='I',defaut=10),
+           PROJ_MESU       =SIMP(statut='f',typ=(mode_gene,tran_gene,harm_gene),max=1),
+           MODE_MESURE     =SIMP(statut='f',typ=( mode_meca,base_modale) ),
          ),
          EXTERIEUR       =FACT(statut='f',
            regles=(AU_MOINS_UN('NOEUD','GROUP_NO'),),
@@ -45,4 +48,5 @@ MACR_ELEM_STAT=OPER(nom="MACR_ELEM_STAT",op=86,sd_prod=macr_elem_stat,reentrant=
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
            INST            =SIMP(statut='f',typ='R',defaut=0.E+0),
          ),
+
 )  ;

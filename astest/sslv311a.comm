@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -144,9 +144,7 @@ RAY_INF1=DEFI_CONSTANTE(   VALE=0.00075);
 RAY_SUP1=DEFI_CONSTANTE(   VALE=0.0025);
 
                       
-GLO1=CALC_G(MODELE=MO,
-            CHAM_MATER=CHMAT,
-            RESULTAT=CHAMDEPL,
+GLO1=CALC_G(RESULTAT=CHAMDEPL,
             SYME_CHAR='SYME',
             COMP_ELAS=_F(RELATION='ELAS',),
             OPTION='CALC_K_G',
@@ -157,8 +155,6 @@ GLO1=CALC_G(MODELE=MO,
             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                        LISSAGE_G='LAGRANGE',),
             INFO=2,
-            EXCIT=(_F( CHARGE = CL),
-                   _F( CHARGE = CH)),
            );
 
 
@@ -332,9 +328,7 @@ CHAMDEP2=MECA_STATIQUE(MODELE=MO,
                               _F( CHARGE = CH2))
                       );
                                        
-GLO2=CALC_G(MODELE=MO,
-            CHAM_MATER=CHMAT,
-            RESULTAT=CHAMDEP2,
+GLO2=CALC_G(RESULTAT=CHAMDEP2,
             SYME_CHAR='SYME',
             COMP_ELAS=_F(RELATION='ELAS',),
             OPTION='CALC_K_G',
@@ -346,8 +340,6 @@ GLO2=CALC_G(MODELE=MO,
                        LISSAGE_THETA='LAGRANGE',
                        LISSAGE_G='LAGRANGE',),
             INFO=2,
-            EXCIT=(_F( CHARGE = CL),
-                   _F( CHARGE = CH2)),
            );
 
 TEST_TABLE(TABLE=GLO2,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,10 +16,19 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-DEPL_INTERNE=OPER(nom="DEPL_INTERNE",op=89,sd_prod=cham_no_sdaster,reentrant='n',
+def depl_interne_prod(DEPL_GLOBAL,**args ):
+    if AsType(DEPL_GLOBAL)     == cham_no_sdaster: return cham_no_sdaster
+    if AsType(DEPL_GLOBAL)     == evol_elas      : return evol_elas
+    if AsType(DEPL_GLOBAL)     == dyna_trans     : return dyna_trans
+    if AsType(DEPL_GLOBAL)     == dyna_harmo     : return dyna_harmo
+    if AsType(DEPL_GLOBAL)     == mode_meca      : return mode_meca
+    if AsType(DEPL_GLOBAL)     == base_modale    : return base_modale
+    raise AsException("type de concept resultat non prevu")
+
+DEPL_INTERNE=OPER(nom="DEPL_INTERNE",op=89,sd_prod=depl_interne_prod,reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
                   fr="Calculer le champ de déplacement à l'intérieur d'une sous-structure statique",
-         DEPL_GLOBAL     =SIMP(statut='o',typ=cham_no_sdaster),
-         MAILLE          =SIMP(statut='o',typ=ma,),
+         DEPL_GLOBAL     =SIMP(statut='o',typ=(cham_no_sdaster,mode_meca,base_modale,evol_elas,dyna_trans,dyna_harmo),),
+         SUPER_MAILLE    =SIMP(statut='o',typ=ma,),
          NOM_CAS         =SIMP(statut='f',typ='TXM',defaut=" "),
 )  ;

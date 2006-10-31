@@ -1,14 +1,14 @@
       SUBROUTINE RVAFFM ( MCF, IOCC, SDLIEU, SDEVAL, SDMOY, OPER, QUANT,
-     +                    OPTION, REP, NOMTAB, NCHEFF, I1, ISD )
+     +                    OPTION, REP, NOMTAB, XNOVAR,NCHEFF, I1, ISD )
       IMPLICIT   NONE
       INTEGER             I1, IOCC, ISD
       CHARACTER*16        NCHEFF, OPER
       CHARACTER*19        SDEVAL
-      CHARACTER*24        SDLIEU, SDMOY
+      CHARACTER*24        SDLIEU, SDMOY, XNOVAR
       CHARACTER*(*)       MCF, REP, OPTION, NOMTAB, QUANT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,7 +134,7 @@ C
          ENDIF
          IF ( OPER .EQ. 'MOYENNE' ) THEN
             CALL RVTAMO ( ZR(ASDMO), ZK8(ANOCP), NBCP, NBCO, NBSP,
-     +                    NOMTAB, IOCC, NCHEFF, I1, IOC, ISD )
+     +                    NOMTAB, IOCC, XNOVAR, NCHEFF, I1, IOC, ISD )
          ELSE
             CALL RVRCCM ( ZR(ASDMO), NBCP, NBCO, NBSP,
      +                    NOMTAB, IOCC, NCHEFF, I1, IOC, ISD )

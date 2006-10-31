@@ -1,12 +1,13 @@
-      SUBROUTINE RBPH02 ( MAILLA, NUMDDL, NBNOEU, OBJVE1, OBJVE2 )
+      SUBROUTINE RBPH02 ( MAILLA, NUMDDL, NOMGD, NEQ, NBNOEU, OBJVE1, 
+     &                    NCMP, OBJVE2, OBJVE3, OBJVE4 )
       IMPLICIT   NONE
-      INTEGER             NBNOEU
+      INTEGER             NBNOEU, NEQ
       CHARACTER*8         MAILLA
       CHARACTER*14        NUMDDL
-      CHARACTER*24        OBJVE1 , OBJVE2
+      CHARACTER*24        OBJVE1 , OBJVE2 , OBJVE3 , OBJVE4
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,111 +47,82 @@ C
       CHARACTER*32     JEXNOM, JEXNUM
 C     ------- FIN DES COMMUNS JEVEUX -----------------------------------
 C     ------------------------------------------------------------------
-      INTEGER       ICMP, N1, NBGRNO, INOMGR, INBNO, I, IRET, NB, NEQ,
-     &              INOMNO, INUMNO, IDEC, J, IINO, NUNO, NUMIN, IMIN,
-     &              INUDDL, NUNOE
-      CHARACTER*8   K8B, NNOE, NOMCMP(6), GRNO
-      CHARACTER*24  GRPNOE, NOMNOE
-C     ------------------------------------------------------------------
-      DATA NOMCMP   /'DX      ','DY      ','DZ      ',
-     &               'DRX     ','DRY     ','DRZ     '/
+      INTEGER       IBID, IE, JPRNO, NEC, TABEC(10), I, IDEC, INUDDL,
+     &              IAD, IEC, INO, NCMPMX, JNOEU, NCMP, ICMP, NUNOE,
+     &              JNEQ, JCMP, J, NBCMP
+      LOGICAL       EXISDG
+      CHARACTER*8   K8B, MOTCLS(4), TYPMCL(4), NOMGD, NOMNOE, NOMCMP
+      CHARACTER*19  PRNO
 C     ------------------------------------------------------------------
 C
+      MOTCLS(1) = 'GROUP_NO'
+      MOTCLS(2) = 'NOEUD'
+      MOTCLS(3) = 'GROUP_MA'
+      MOTCLS(4) = 'MAILLE'
+      TYPMCL(1) = 'GROUP_NO'
+      TYPMCL(2) = 'NOEUD'
+      TYPMCL(3) = 'GROUP_MA'
+      TYPMCL(4) = 'MAILLE'
 C
-      NOMNOE = MAILLA//'.NOMNOE'
-      GRPNOE = MAILLA//'.GROUPENO'
+      CALL RELIEM(' ', MAILLA, 'NU_NOEUD', ' ', 1, 4, 
+     +                                  MOTCLS, TYPMCL, OBJVE1, NBNOEU )
+      CALL JEVEUO ( OBJVE1, 'L', JNOEU )
 C
+      CALL DISMOI ('F', 'PROF_CHNO',NUMDDL,'NUME_DDL', IBID, PRNO ,IE )
+      CALL DISMOI ('F', 'NOM_GD'   ,NUMDDL,'NUME_DDL', IBID, NOMGD,IE )
+      CALL DISMOI ('F', 'NB_EC'    ,NOMGD,'GRANDEUR' , NEC , K8B  ,IE )
+      CALL DISMOI ('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX, K8B  ,IE )
+      IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')
+      CALL JEVEUO ( JEXNOM('&CATA.GD.NOMCMP',NOMGD), 'L', IAD )
+      CALL JEVEUO ( JEXNUM(PRNO//'.PRNO',1), 'L', JPRNO )
 C
-      CALL GETVEM(MAILLA,'GROUP_NO', ' ','GROUP_NO',
-     &     1,1,0,K8B,N1)
-      IF ( N1 .NE. 0 ) THEN
-         NBGRNO = -N1
-         CALL WKVECT ('&&RBPH02.LISTE_GROUPE','V V K8', NBGRNO, INOMGR )
-         CALL GETVEM(MAILLA,'GROUP_NO',' ','GROUP_NO',
-     &       1,1,NBGRNO,ZK8(INOMGR),N1)
+      CALL WKVECT ( OBJVE2, 'V V K8', NCMPMX, JCMP )
 C
-         CALL WKVECT ( '&&RBPH02.NBNO_GROUPE', 'V V I', NBGRNO, INBNO )
-         NBNOEU = 0
-         DO 20 I = 1 , NBGRNO
-            GRNO = ZK8(INOMGR+I-1)
-            CALL JEEXIN(JEXNOM(GRPNOE,GRNO),IRET)
-            IF ( IRET.EQ.0 ) CALL UTMESS('F','RBPH02','LE GROUPE DE '//
-     &            'NOEUDS '//GRNO//' NE FAIT PAS PARTIE DU MAILLAGE '//
-     &             MAILLA)
-C        CALL U2MESK('F','ALGORITH10_18', 2 ,VALK)
-            CALL JELIRA(JEXNOM(GRPNOE,GRNO),'LONMAX',NB,K8B)
-            ZI(INBNO+I-1) = NB
-            NBNOEU = NBNOEU + NB
-  20     CONTINUE
-         CALL WKVECT ('&&RBPH02.NOMS_NOEUDS', 'V V K8', NBNOEU, INOMNO)
-         CALL WKVECT ( OBJVE2 , 'V V I' , NBNOEU, INUMNO )
-         IDEC = 0
-         DO 30 J = 1 , NBGRNO
-            GRNO = ZK8(INOMGR+J-1)
-            CALL JEVEUO(JEXNOM(GRPNOE,GRNO),'L',IINO)
-            NB = ZI(INBNO+J-1)
-            DO 40 I = 1,NB
-               NUNO = ZI(IINO+I-1)
-               ZI(INUMNO+IDEC+I-1) = NUNO
-               CALL JENUNO(JEXNUM(NOMNOE,NUNO),ZK8(INOMNO+IDEC+I-1))
-  40        CONTINUE
-            CALL JELIBE(JEXNOM(GRPNOE,GRNO))
-            IDEC = IDEC + NB
-  30     CONTINUE
-         CALL JEDETR ( '&&RBPH02.LISTE_GROUPE' )
-         CALL JEDETR ( '&&RBPH02.NBNO_GROUPE'  )
-      ENDIF
-C
-C
-      CALL GETVEM(MAILLA,'NOEUD', ' ','NOEUD',
-     &  1,1,0,K8B,N1)
-      IF ( N1 .NE. 0 ) THEN
-         NBNOEU = -N1
-         CALL WKVECT ('&&RBPH02.NOMS_NOEUDS','V V K8', NBNOEU, INOMNO)
-         CALL GETVEM(MAILLA,'NOEUD',' ','NOEUD',
-     &   1,1,NBNOEU,ZK8(INOMNO),N1)
-C
-         CALL WKVECT ( OBJVE2 , 'V V I', NBNOEU, INUMNO )
-         DO 50 I = 1,NBNOEU
-            NNOE = ZK8(INOMNO+I-1)
-            CALL JEEXIN ( JEXNOM(NOMNOE,NNOE) , IRET )
-            IF ( IRET.EQ.0 ) CALL UTMESS('F','RBPH02','LE NOEUD '//
-     &             NNOE//' NE FAIT PAS PARTIE DU MAILLAGE '//MAILLA)
-C        CALL U2MESK('F','ALGORITH10_19', 2 ,VALK)
-            CALL JENONU ( JEXNOM(NOMNOE,NNOE), ZI(INUMNO+I-1) )
-  50     CONTINUE
-      ENDIF
-C
-C
-      DO 60 I = 1 , NBNOEU-1
-         NUMIN = ZI(INUMNO+I-1)
-         IMIN = I
-         DO 70 J = I+1,NBNOEU
-            IF ( ZI(INUMNO+J-1) .LT. NUMIN ) THEN
-               NUMIN = ZI(INUMNO+J-1)
-               IMIN = J
+      NEQ  = 0
+      NCMP = 0
+      DO 10 I = 1 , NBNOEU
+         INO = ZI(JNOEU+I-1)
+         DO 12 IEC = 1 , NEC
+            TABEC(IEC)= ZI(JPRNO-1+(INO-1)*(NEC+2)+2+IEC )
+ 12      CONTINUE
+         NBCMP = 0
+         DO 14 ICMP = 1 , NCMPMX
+            IF ( EXISDG(TABEC,ICMP) ) THEN
+               NBCMP = NBCMP + 1
+               DO 16 J = 1 , NCMP
+                  IF ( ZK8(JCMP+J-1) .EQ. ZK8(IAD-1+ICMP) ) GOTO 14
+ 16            CONTINUE
+               NCMP = NCMP + 1
+               ZK8(JCMP-1+NCMP) = ZK8(IAD-1+ICMP)
             ENDIF
-  70     CONTINUE
-         IF ( IMIN .NE. I ) THEN
-            ZI(INUMNO+IMIN-1) = ZI(INUMNO+I-1)
-            ZI(INUMNO+I-1) = NUMIN
-            K8B = ZK8(INOMNO+IMIN-1)
-            ZK8(INOMNO+IMIN-1) = ZK8(INOMNO+I-1)
-            ZK8(INOMNO+I-1) = K8B
-         ENDIF
-  60  CONTINUE
+ 14      CONTINUE
+         NEQ = NEQ + NBCMP
+ 10   CONTINUE
 C
-      NEQ = 6 * NBNOEU
-      CALL WKVECT ( OBJVE1, 'V V I', NEQ, INUDDL )
-      DO 80 I = 1 , NBNOEU
-         IDEC = 6 * ( I - 1 )
-         NNOE = ZK8(INOMNO+I-1)
-         DO 90 ICMP = 1,6
-            CALL POSDDL('NUME_DDL',NUMDDL,NNOE,NOMCMP(ICMP),NUNOE,
-     &                    ZI(INUDDL+IDEC+ICMP-1))
-  90     CONTINUE
-  80  CONTINUE
+      CALL WKVECT ( OBJVE3, 'V V I', NBNOEU*NCMP, JNEQ )
+      CALL WKVECT ( OBJVE4, 'V V I', NEQ, INUDDL )
 C
-      CALL JEDETR ( '&&RBPH02.NOMS_NOEUDS')
+      IDEC = 0
+      DO 20 I = 1 , NBNOEU
+         INO = ZI(JNOEU+I-1)
+         CALL JENUNO ( JEXNUM(MAILLA//'.NOMNOE',INO), NOMNOE )
+         DO 22 IEC = 1 , NEC
+            TABEC(IEC)= ZI(JPRNO-1+(INO-1)*(NEC+2)+2+IEC )
+ 22      CONTINUE
+         DO 24 ICMP = 1 , NCMPMX
+            IF ( EXISDG(TABEC,ICMP) ) THEN
+               IDEC = IDEC + 1
+               NOMCMP = ZK8(IAD-1+ICMP)
+               CALL POSDDL ( 'NUME_DDL', NUMDDL, NOMNOE, NOMCMP,
+     &                                   NUNOE, ZI(INUDDL+IDEC-1) )
+               DO 26 J = 1 , NCMP
+                  IF ( ZK8(JCMP+J-1) .EQ. ZK8(IAD-1+ICMP) ) THEN
+                     ZI(JNEQ-1+(I-1)*NCMP+J) = 1
+                     GOTO 24
+                  ENDIF
+ 26            CONTINUE
+            ENDIF
+ 24      CONTINUE
+ 20   CONTINUE
 C
       END

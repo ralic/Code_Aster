@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,7 +115,7 @@ G0=CALC_G( RESULTAT=RESU,SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
                       COMP_ELAS=_F( RELATION = 'ELAS',
                                  DEFORMATION = 'PETIT'),
-                     THETA=_F(THETA=THETA0),  EXCIT=_F(CHARGE=CH),  )
+                     THETA=_F(THETA=THETA0),  )
 
 
 GLOC0=CALC_G( RESULTAT=RESU,SYME_CHAR='SYME',

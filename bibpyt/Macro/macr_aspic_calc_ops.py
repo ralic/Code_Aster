@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -670,9 +670,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
           if COMP_ELAS!=None:  motscles['COMP_ELAS']=  _F(TOUT     = 'OUI',
                                                           RELATION = COMP_ELAS['RELATION'],)
           if COMP_INCR!=None:  motscles['COMP_INCR']=  _F(RELATION = COMP_INCR['RELATION'],)
-          __gtheta = CALC_G ( MODELE     = modele,
-                              CHAM_MATER = affmat,
-                              THETA      = _F(THETA=__theta),
+          __gtheta = CALC_G ( THETA      = _F(THETA=__theta),
                               OPTION     = 'CALC_G_GLOB',
                               RESULTAT   = nomres,
                               TOUT_ORDRE = 'OUI',
@@ -688,9 +686,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                 mcfact.append(_F( NUME_ORDRE = born['NUME_ORDRE'] ,
                                   VALE_MIN   = born['VALE_MIN'  ] ,
                                   VALE_MAX   = born['VALE_MAX'  ]   ) )
-              __gbil = CALC_G( MODELE     = modele,
-                               CHAM_MATER = affmat,
-                               THETA      = _F(THETA=__theta),
+              __gbil = CALC_G( THETA      = _F(THETA=__theta),
                                RESULTAT   = nomres,
                                TOUT_ORDRE = 'OUI',
                                COMP_ELAS  =  _F(TOUT     = 'OUI',
@@ -709,9 +705,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
           if FERME:
                                motscles['LISSAGE']=_F(LISSAGE_THETA= 'LAGRANGE',
                                                       LISSAGE_G= 'LAGRANGE',)
-          __glocal = CALC_G( MODELE     = modele,
-                             CHAM_MATER = affmat,
-                             THETA=_F( FOND_FISS  = fond3d[j],
+          __glocal = CALC_G( THETA=_F( FOND_FISS  = fond3d[j],
                                        R_INF      = tht3d['R_INF'],
                                        R_SUP      = tht3d['R_SUP'],),
                              RESULTAT   = nomres,
@@ -733,9 +727,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
                                   VALE_MIN   = born['VALE_MIN'  ] ,
                                   VALE_MAX   = born['VALE_MAX'  ]   ) )
               motscles['BORNES']=mcfact
-              __glbil = CALC_G( MODELE     = modele,
-                                CHAM_MATER = affmat,
-                                THETA=_F( FOND_FISS  = fond3d[j],
+              __glbil = CALC_G( THETA=_F( FOND_FISS  = fond3d[j],
                                           R_INF      = tht3d['R_INF'],
                                           R_SUP      = tht3d['R_SUP'],),
                                 RESULTAT   = nomres,

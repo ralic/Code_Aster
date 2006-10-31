@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE BIBLIO_73 FISSURE RADIALE INTERNE A L'INTERFACE D'UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,49 +80,25 @@ RES1=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT1,
           EXCIT=_F( CHARGE = CH1)
                       )
 
-DEP1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=RES1,
-             NUME_ORDRE=1 )
-
 RES2=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT2, 
           EXCIT=_F( CHARGE = CH1)
                       )
-
-DEP2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=RES2,
-             NUME_ORDRE=1 )
 
 RES3=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT3, 
           EXCIT=_F( CHARGE = CH1)
                       )
 
-DEP3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=RES3,
-             NUME_ORDRE=1 )
-
 RES4=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT1, 
           EXCIT=_F( CHARGE = CH2)
                       )
-
-DEP4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=RES4,
-             NUME_ORDRE=1 )
 
 RES5=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT2, 
           EXCIT=_F( CHARGE = CH2)
                       )
 
-DEP5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=RES5,
-             NUME_ORDRE=1 )
-
 RES6=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT3, 
           EXCIT=_F( CHARGE = CH2)
                       )
-
-DEP6=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=RES6,
-             NUME_ORDRE=1 )
 
 # POST TRAITEMENT MECA. RUPTURE
 # -----------------------------
@@ -185,226 +161,136 @@ THETA4=CALC_THETA(    MODELE=MO,
 # CALCUL DE G_THETA SUR LA COURONNE 0
 # -----------------------------------
 
-G1_C0=CALC_G(    MODELE=MO,
-                          DEPL=DEP1,
+G1_C0=CALC_G(            RESULTAT=RES1,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA0),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT1
                     )
 
-G2_C0=CALC_G(    MODELE=MO,
-                          DEPL=DEP2,
+G2_C0=CALC_G(            RESULTAT=RES2,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA0),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT2
                     )
 
-G3_C0=CALC_G(    MODELE=MO,
-                          DEPL=DEP3,
+G3_C0=CALC_G(            RESULTAT=RES3,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA0),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT3
                     )
 
-G4_C0=CALC_G(    MODELE=MO,
-                          DEPL=DEP4,
+G4_C0=CALC_G(            RESULTAT=RES4,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA0),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT1
                     )
 
-G5_C0=CALC_G(    MODELE=MO,
-                          DEPL=DEP5,
+G5_C0=CALC_G(            RESULTAT=RES5,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA0),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT2
                     )
 
-G6_C0=CALC_G(    MODELE=MO,
-                          DEPL=DEP6,
+G6_C0=CALC_G(            RESULTAT=RES6,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA0),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT3
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 1
 # -----------------------------------
 
-G1_C1=CALC_G(    MODELE=MO,
-                          DEPL=DEP1,
-                         THETA=_F(THETA=THETA1),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT1
+G1_C1=CALC_G(           RESULTAT=RES1,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA1),
                     )
 
-G2_C1=CALC_G(    MODELE=MO,
-                          DEPL=DEP2,
+G2_C1=CALC_G(            RESULTAT=RES2,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA1),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT2
                     )
 
-G3_C1=CALC_G(    MODELE=MO,
-                          DEPL=DEP3,
+G3_C1=CALC_G(            RESULTAT=RES3,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA1),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT3
                     )
 
-G4_C1=CALC_G(    MODELE=MO,
-                          DEPL=DEP4,
+G4_C1=CALC_G(            RESULTAT=RES4,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA1),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT1
                     )
 
-G5_C1=CALC_G(    MODELE=MO,
-                          DEPL=DEP5,
+G5_C1=CALC_G(            RESULTAT=RES5,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA1),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT2
                     )
 
-G6_C1=CALC_G(    MODELE=MO,
-                          DEPL=DEP6,
+G6_C1=CALC_G(            RESULTAT=RES6,NUME_ORDRE=1,
                          THETA=_F(THETA=THETA1),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT3
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 2
 # -----------------------------------
 
-G1_C2=CALC_G(    MODELE=MO,
-                          DEPL=DEP1,
-                         THETA=_F(THETA=THETA2),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT1
+G1_C2=CALC_G(           RESULTAT=RES1,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA2),
                     )
 
-G2_C2=CALC_G(    MODELE=MO,
-                          DEPL=DEP2,
-                         THETA=_F(THETA=THETA2),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT2
+G2_C2=CALC_G(           RESULTAT=RES2,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA2),
                     )
 
-G3_C2=CALC_G(    MODELE=MO,
-                          DEPL=DEP3,
-                         THETA=_F(THETA=THETA2),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT3
+G3_C2=CALC_G(           RESULTAT=RES3,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA2),
                     )
 
-G4_C2=CALC_G(    MODELE=MO,
-                          DEPL=DEP4,
-                         THETA=_F(THETA=THETA2),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT1
+G4_C2=CALC_G(           RESULTAT=RES4,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA2),
                     )
 
-G5_C2=CALC_G(    MODELE=MO,
-                          DEPL=DEP5,
-                         THETA=_F(THETA=THETA2),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT2
+G5_C2=CALC_G(           RESULTAT=RES5,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA2),
                     )
 
-G6_C2=CALC_G(    MODELE=MO,
-                          DEPL=DEP6,
-                         THETA=_F(THETA=THETA2),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT3
+G6_C2=CALC_G(           RESULTAT=RES6,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA2),
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 3
 # -----------------------------------
 
-G1_C3=CALC_G(    MODELE=MO,
-                          DEPL=DEP1,
-                         THETA=_F(THETA=THETA3),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT1
+G1_C3=CALC_G(           RESULTAT=RES1,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA3),
                     )
 
-G2_C3=CALC_G(    MODELE=MO,
-                          DEPL=DEP2,
-                         THETA=_F(THETA=THETA3),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT2
+G2_C3=CALC_G(           RESULTAT=RES2,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA3),
                     )
 
-G3_C3=CALC_G(    MODELE=MO,
-                          DEPL=DEP3,
-                         THETA=_F(THETA=THETA3),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT3
+G3_C3=CALC_G(           RESULTAT=RES3,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA3),
                     )
 
-G4_C3=CALC_G(    MODELE=MO,
-                          DEPL=DEP4,
-                         THETA=_F(THETA=THETA3),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT1
+G4_C3=CALC_G(           RESULTAT=RES4,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA3),
                     )
 
-G5_C3=CALC_G(    MODELE=MO,
-                          DEPL=DEP5,
-                         THETA=_F(THETA=THETA3),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT2
+G5_C3=CALC_G(           RESULTAT=RES5,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA3),
                     )
 
-G6_C3=CALC_G(    MODELE=MO,
-                          DEPL=DEP6,
-                         THETA=_F(THETA=THETA3),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT3
+G6_C3=CALC_G(           RESULTAT=RES6,NUME_ORDRE=1,
+                        THETA=_F(THETA=THETA3),
                     )
 
 # CALCUL DE G_THETA SUR LA COURONNE 4
 # -----------------------------------
 
-G1_C4=CALC_G(    MODELE=MO,
-                          DEPL=DEP1,
-                         THETA=_F(THETA=THETA4),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT1
+G1_C4=CALC_G(    RESULTAT=RES1,NUME_ORDRE=1,
+                 THETA=_F(THETA=THETA4),
                     )
 
-G2_C4=CALC_G(    MODELE=MO,
-                          DEPL=DEP2,
-                         THETA=_F(THETA=THETA4),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT2
+G2_C4=CALC_G(    RESULTAT=RES2,NUME_ORDRE=1,
+                 THETA=_F(THETA=THETA4),
                     )
 
-G3_C4=CALC_G(    MODELE=MO,
-                          DEPL=DEP3,
-                         THETA=_F(THETA=THETA4),
-                        EXCIT=_F(CHARGE=CH1,),
-                        CHAM_MATER=CHMAT3
+G3_C4=CALC_G(    RESULTAT=RES3,NUME_ORDRE=1,
+                 THETA=_F(THETA=THETA4),
                     )
 
-G4_C4=CALC_G(    MODELE=MO,
-                          DEPL=DEP4,
-                         THETA=_F(THETA=THETA4),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT1
+G4_C4=CALC_G(    RESULTAT=RES4,NUME_ORDRE=1,
+                 THETA=_F(THETA=THETA4),
                     )
 
-G5_C4=CALC_G(    MODELE=MO,
-                          DEPL=DEP5,
-                         THETA=_F(THETA=THETA4),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT2
+G5_C4=CALC_G(    RESULTAT=RES5,NUME_ORDRE=1,
+                 THETA=_F(THETA=THETA4),
                     )
 
-G6_C4=CALC_G(    MODELE=MO,
-                          DEPL=DEP6,
-                         THETA=_F(THETA=THETA4),
-                        EXCIT=_F(CHARGE=CH2,),
-                        CHAM_MATER=CHMAT3
+G6_C4=CALC_G(    RESULTAT=RES6,NUME_ORDRE=1,
+                 THETA=_F(THETA=THETA4),
                     )
 
 # IMPRESSION DES RESULTATS COURONNE 0

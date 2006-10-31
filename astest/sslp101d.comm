@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,6 +109,14 @@ K1=FACT_LDLT(      reuse=K1,     MATR_ASSE=K1           )
 DEP1=RESO_LDLT(           MATR_FACT=K1,
                                CHAM_NO=F1           )
 
+RESU1=CREA_RESU(  OPERATION='AFFE', 
+                 TYPE_RESU='EVOL_ELAS',
+                 NOM_CHAM='DEPL',
+                      AFFE=_F(  CHAM_GD = DEP1, 
+                                INST=0.,
+                                MODELE=MO,
+                                CHAM_MATER = CHMAT)     )
+
 NU2=NUME_DDL(            MATR_RIGI=ME2          )
 
 K2=ASSE_MATRICE(        MATR_ELEM=ME2,
@@ -121,63 +129,64 @@ K2=FACT_LDLT(      reuse=K2,     MATR_ASSE=K2           )
 
 DEP2=RESO_LDLT(           MATR_FACT=K2,
                                CHAM_NO=F2           )
+RESU2=CREA_RESU(  OPERATION='AFFE', 
+                 TYPE_RESU='EVOL_ELAS',
+                 NOM_CHAM='DEPL',
+                      AFFE=_F(  CHAM_GD = DEP2, 
+                                INST=0.,
+                                MODELE=MO,
+                                CHAM_MATER = CHMAT)     )
 
 #
 #            ALPHA= 0.  OPTION CALC_G PAR DEFAUT
 #
-G1=CALC_G(  MODELE=MO,
-            DEPL=DEP1,
+G1=CALC_G(  RESULTAT=RESU1,
+            NUME_ORDRE=1,
             THETA=_F(THETA=THETA1),
             EXCIT=_F(CHARGE=CHFONC,),
             COMP_ELAS=_F( RELATION = 'ELAS',
                           DEFORMATION = 'PETIT'),
-            SYME_CHAR='SYME',
-            CHAM_MATER=CHMAT );
+            SYME_CHAR='SYME',);
 
-G2=CALC_G(  MODELE=MO,
-            DEPL=DEP1,
+G2=CALC_G(  RESULTAT=RESU1,
+            NUME_ORDRE=1,
             THETA=_F(THETA=THETA2),
             COMP_ELAS=_F( RELATION = 'ELAS',
                           DEFORMATION = 'PETIT'),
             EXCIT=_F(CHARGE=CH,),
-            SYME_CHAR='SYME',
-            CHAM_MATER=CHMAT );
+            SYME_CHAR='SYME',);
 
-G3=CALC_G(  MODELE=MO,
-            DEPL=DEP1,
+G3=CALC_G(  RESULTAT=RESU1,
+            NUME_ORDRE=1,
             THETA=_F(THETA=THETA3),
             COMP_ELAS=_F( RELATION = 'ELAS',
                           DEFORMATION = 'PETIT'),
             EXCIT=_F(CHARGE=CH,),
-            SYME_CHAR='SYME',
-            CHAM_MATER=CHMAT );
+            SYME_CHAR='SYME',);
 
-G4=CALC_G(  MODELE=MO,
-            DEPL=DEP1,
+G4=CALC_G(  RESULTAT=RESU1,
+            NUME_ORDRE=1,
             THETA=_F(THETA=THETA4),
             COMP_ELAS=_F( RELATION = 'ELAS',
                           DEFORMATION = 'PETIT'),
             EXCIT=_F(CHARGE=CH,),
-            SYME_CHAR='SYME',
-            CHAM_MATER=CHMAT );
+            SYME_CHAR='SYME', );
 
-G5=CALC_G(  MODELE=MO,
-            DEPL=DEP1,
+G5=CALC_G(  RESULTAT=RESU1,
+            NUME_ORDRE=1,
             THETA=_F(THETA=THETA5),
             EXCIT=_F(CHARGE=CHFONC,),
             COMP_ELAS=_F( RELATION = 'ELAS',
                           DEFORMATION = 'PETIT'),
-            SYME_CHAR='SYME',
-            CHAM_MATER=CHMAT )
+            SYME_CHAR='SYME', )
 
-G6=CALC_G(  MODELE=MO,
-            DEPL=DEP1,
+G6=CALC_G(  RESULTAT=RESU1,
+            NUME_ORDRE=1,
             THETA=_F(THETA=THETA6),
             COMP_ELAS=_F( RELATION = 'ELAS',
                           DEFORMATION = 'PETIT'),
             EXCIT=_F(CHARGE=CH,),
-            SYME_CHAR='SYME',
-            CHAM_MATER=CHMAT );
+            SYME_CHAR='SYME',);
 
 #
 #            ALPHA= 1.
@@ -186,7 +195,8 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
                      FOND_FISS=_F( NOEUD = 'N668'),
                      NORMALE=(0., 1., 0.,));
 
-GLAG=CALC_G(  MODELE=MO,  DEPL=DEP2,
+GLAG=CALC_G(  RESULTAT=RESU2,
+              NUME_ORDRE=1,
               THETA=_F(FOND_FISS=FOND,
                         MODULE = 1.,
                         R_INF = 22.04078,
@@ -195,10 +205,10 @@ GLAG=CALC_G(  MODELE=MO,  DEPL=DEP2,
               EXCIT=_F(CHARGE=CH,),
               SYME_CHAR='SYME',
               PROPAGATION=1.,
-              CHAM_MATER=CHMAT,
               OPTION='G_LAGR');
 
-GLAGF=CALC_G(  MODELE=MO,  DEPL=DEP2,
+GLAGF=CALC_G(  RESULTAT=RESU2,
+               NUME_ORDRE=1,
                THETA=_F(FOND_FISS=FOND,
                         MODULE = 1.,
                         R_INF = 22.04078,
@@ -207,7 +217,6 @@ GLAGF=CALC_G(  MODELE=MO,  DEPL=DEP2,
                 EXCIT=_F(CHARGE=CHFONC,),
                 SYME_CHAR='SYME',
                 PROPAGATION=1.,
-                CHAM_MATER=CHMAT,
                 OPTION='G_LAGR');
 
 #

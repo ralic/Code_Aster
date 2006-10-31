@@ -8,7 +8,7 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,11 +119,7 @@ C
                   ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
   101         CONTINUE
              ELSEIF (N1. NE. 0 .AND. FONCI) THEN
-               IER = IER + 1
-               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
-               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
-               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
-               CALL UTFINM()
+               CALL U2MESK('A','UTILITAI5_91',1,LCHAR(I)(1:8))
              ENDIF
             ELSE
                IER = IER + 1
@@ -159,11 +155,7 @@ C
                   ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
   102         CONTINUE
              ELSEIF (N1. NE. 0 .AND. FONCI) THEN
-               IER = IER + 1
-               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
-               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
-               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
-               CALL UTFINM()
+               CALL U2MESK('A','UTILITAI5_91',1,LCHAR(I)(1:8))
              ENDIF
             ELSE
                IER = IER + 1
@@ -200,11 +192,7 @@ C
                   ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
   103         CONTINUE
              ELSEIF (N1. NE. 0 .AND. FONCI) THEN
-               IER = IER + 1
-               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
-               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
-               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
-               CALL UTFINM()
+               CALL U2MESK('A','UTILITAI5_91',1,LCHAR(I)(1:8))
              ENDIF
             ELSE
                IER = IER + 1
@@ -240,11 +228,7 @@ C
                   ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
   104         CONTINUE
              ELSEIF (N1. NE. 0 .AND. FONCI) THEN
-               IER = IER + 1
-               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
-               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
-               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
-               CALL UTFINM()
+               CALL U2MESK('A','UTILITAI5_91',1,LCHAR(I)(1:8))
              ENDIF
             ELSE
                IER = IER + 1
@@ -280,11 +264,7 @@ C
                   ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
   105         CONTINUE
              ELSEIF (N1. NE. 0 .AND. FONCI) THEN
-               IER = IER + 1
-               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
-               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
-               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
-               CALL UTFINM()
+               CALL U2MESK('A','UTILITAI5_91',1,LCHAR(I)(1:8))
              ENDIF
             ELSE
                IER = IER + 1
@@ -321,11 +301,7 @@ C
                   ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
   106         CONTINUE
              ELSEIF (N1. NE. 0 .AND. FONCI) THEN
-               IER = IER + 1
-               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
-               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
-               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
-               CALL UTFINM()
+               CALL U2MESK('A','UTILITAI5_91',1,LCHAR(I)(1:8))
              ENDIF
             ELSE
                IER = IER + 1
@@ -361,11 +337,7 @@ C
                   ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
   107         CONTINUE
              ELSEIF (N1. NE. 0 .AND. FONCI) THEN
-               IER = IER + 1
-               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
-               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
-               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
-               CALL UTFINM()
+               CALL U2MESK('A','UTILITAI5_91',1,LCHAR(I)(1:8))
              ENDIF
             ELSE
                IER = IER + 1
@@ -401,11 +373,7 @@ C
                   ZR(JVAL+IN-1)  = CONST* ZR(IVAL +IN-1)
   108         CONTINUE
              ELSEIF (N1. NE. 0 .AND. FONCI) THEN
-               IER = IER + 1
-               CALL UTDEBM('E',OPER,'ON NE PEUT ASSOCIER DES CHARGE')
-               CALL UTIMPK('S','MENTS FONCTION (ICI :',1,LCHAR(I)(1:8))
-               CALL UTIMPK('S','AVEC UNE',1,'FONCTION MULTIPLICATRICE')
-               CALL UTFINM()
+               CALL U2MESK('A','UTILITAI5_91',1,LCHAR(I)(1:8))
              ENDIF
             ELSE
                IER = IER + 1

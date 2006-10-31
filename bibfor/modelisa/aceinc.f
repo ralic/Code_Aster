@@ -9,7 +9,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 31/10/2006   AUTEUR PABHHHH N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -232,7 +232,7 @@ C     --------------------------------------------------
             ENDIF
  81       CONTINUE
         ENDIF
-        IF ( NBOCC(3).NE.0 .OR. NBOCC(14).NE.0 .OR. NBOCC(10).NE.0) THEN
+        IF ( NBOCC(3).NE.0 .OR. NBOCC(10).NE.0) THEN
           DO 82 I = NBEPO+1 , NBEPO+NBEDI
             IF (ZI(JDLM+NUMMAI-1).EQ.NTYELE(I)) THEN
                CALL U2MESK('A','MODELISA_39',1,NOMMAI)

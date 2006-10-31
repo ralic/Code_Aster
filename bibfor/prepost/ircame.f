@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -272,7 +272,7 @@ C
         CALL JEDETC('V',NMCMFI,1)
 C
         CALL MDEXCH ( NOFIMD,
-     &                NOCHMD, NUMPT, NUMORD, NCMPVE, NTNCMP,
+     &                NOCHMD, NOMAMD, NUMPT, NUMORD, NCMPVE, NTNCMP,
      &                NVALEC, TYPENT, TYGEOM,
      &                JAUX, NBCMFI, NMCMFI, NBVAL, CODRET )
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,10 +73,6 @@ CHAMDEPL=MECA_STATIQUE(   MODELE=MO,
                              CHAM_MATER=CHMAT,
                               EXCIT=_F( CHARGE = CH,  ))
 
-DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=CHAMDEPL,
-                         NUME_ORDRE=1 )
-
 #
 #    --- DEFINITION DU MODULE DE THETA ET DES RAYONS DEFINISSANT LA
 #        COURONNE PAR FONCTIONS
@@ -115,16 +111,14 @@ THETA1=CALC_THETA(   OPTION='COURONNE',
                                    R_SUP_FO = RSUP1,  )
                      )
 
-G1=CALC_G(  MODELE=MO,
-                       OPTION='CALC_G_GLOB',
-                      DEPL=DEP,
-                     THETA=_F(THETA=THETA1),
-                    EXCIT=_F(CHARGE=CHFONC,),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                 DEFORMATION = 'PETIT',  ),
-                    CHAM_MATER=CHMAT )
+G1=CALC_G(        OPTION='CALC_G_GLOB',
+                  RESULTAT=CHAMDEPL,NUME_ORDRE=1,
+                  THETA=_F(THETA=THETA1),
+                  EXCIT=_F(CHARGE=CHFONC,),
+                  COMP_ELAS=_F( RELATION = 'ELAS',     
+                                DEFORMATION = 'PETIT',  ), )
 
-GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
+GLOC1=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP1,
@@ -132,9 +126,8 @@ GLOC1=CALC_G(  RESULTAT=CHAMDEPL,
                       LISSAGE=_F(DEGRE=7,
                                  LISSAGE_THETA='LEGENDRE',
                                  LISSAGE_G='LEGENDRE',),
-                         COMP_ELAS=_F( RELATION = 'ELAS',     
+                      COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                        INFO=1
                       )
 
 #----------------------------------------------------------------------
@@ -150,16 +143,14 @@ THETA2=CALC_THETA(   OPTION='COURONNE',
                                    R_SUP_FO = RSUP2,  )
                      )
 
-G2=CALC_G(  MODELE=MO,
-                       OPTION='CALC_G_GLOB',
-                      DEPL=DEP,
-                     THETA=_F(THETA=THETA2),
+G2=CALC_G(          OPTION='CALC_G_GLOB',
+                    RESULTAT=CHAMDEPL,NUME_ORDRE=1,
+                    THETA=_F(THETA=THETA2),
                     EXCIT=_F(CHARGE=CHFACER,),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                 DEFORMATION = 'PETIT',  ),
-                    CHAM_MATER=CHMAT )
+                    COMP_ELAS=_F( RELATION = 'ELAS',     
+                                 DEFORMATION = 'PETIT',  ),)
 
-GLOC2=CALC_G(  RESULTAT=CHAMDEPL,
+GLOC2=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP2,
@@ -167,7 +158,7 @@ GLOC2=CALC_G(  RESULTAT=CHAMDEPL,
                       LISSAGE=_F(DEGRE=7,
                                  LISSAGE_THETA='LEGENDRE',
                                  LISSAGE_G='LEGENDRE',),
-                         COMP_ELAS=_F( RELATION = 'ELAS',     
+                      COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
                         )
 
@@ -184,22 +175,20 @@ THETA3=CALC_THETA(   OPTION='COURONNE',
                                    R_SUP_FO = RSUP3,  )
                      )
 
-G3=CALC_G(  MODELE=MO,
-                       OPTION='CALC_G_GLOB',
-                      DEPL=DEP,
-                     THETA=_F(THETA=THETA3),
+G3=CALC_G(          OPTION='CALC_G_GLOB',
+                    RESULTAT=CHAMDEPL,NUME_ORDRE=1,
+                    THETA=_F(THETA=THETA3),
                     EXCIT=_F(CHARGE=CHFACEF,),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                 DEFORMATION = 'PETIT',  ),
-                    CHAM_MATER=CHMAT )
+                    COMP_ELAS=_F( RELATION = 'ELAS',     
+                                  DEFORMATION = 'PETIT',  ), )
 
-GLOC3=CALC_G(  RESULTAT=CHAMDEPL,
+GLOC3=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP3,
                                R_INF_FO=RINF3),
                       LISSAGE=_F(DEGRE=7),
-                         COMP_ELAS=_F( RELATION = 'ELAS',     
+                      COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
                         )
 
@@ -207,31 +196,29 @@ GLOC3=CALC_G(  RESULTAT=CHAMDEPL,
 #  CALCUL AVEC LA METHODE 'THETA_LAGRANGE'
 #
 
-GLOC4=CALC_G(  RESULTAT=CHAMDEPL,
+GLOC4=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP2,
                                R_INF_FO=RINF2),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                                  LISSAGE_G='LEGENDRE',),
-
-                         COMP_ELAS=_F( RELATION = 'ELAS',     
+                      COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                        INFO=1
                       )
 
 #
 #  CALCUL AVEC LA METHODE 'LAGRANGE_LAGRANGE'
 #
 
-GLOC5=CALC_G(  RESULTAT=CHAMDEPL,
+GLOC5=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP2,
                                R_INF_FO=RINF2),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                                  LISSAGE_G='LAGRANGE'),
-                         COMP_ELAS=_F( RELATION = 'ELAS',     
+                      COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
                         )
 
@@ -239,15 +226,15 @@ GLOC5=CALC_G(  RESULTAT=CHAMDEPL,
 #  CALCUL AVEC LA METHODE 'NOEUD_NOEUD'
 #
 
-GLOC6=CALC_G(  RESULTAT=CHAMDEPL,
+GLOC6=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP2,
                                R_INF_FO=RINF2),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                                  LISSAGE_G='LAGRANGE_NO_NO'),
-                         COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  ), )
+                      COMP_ELAS=_F( RELATION = 'ELAS',     
+                                   DEFORMATION = 'PETIT',  ), )
 
 #----------------------------------------------------------------------
 #              TEST DE G

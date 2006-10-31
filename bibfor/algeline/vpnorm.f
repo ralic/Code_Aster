@@ -1,13 +1,13 @@
       SUBROUTINE VPNORM(NORM,PARA,LMATR,NEQ,NBMODE,DDLEXC,VECPRO,RESUFR,
-     +                  LMASIN, XMASTR, ISIGN, NUMDDL, COEF )
+     +                  LMASIN, XMASTR, ISIGN, NUMDDL, COEF, LBASM )
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)     NORM,PARA
       INTEGER           NBMODE,NEQ,LMATR,DDLEXC(*)
       REAL*8            VECPRO(NEQ,*),RESUFR(NBMODE,*),XMASTR,COEF(*)
-      LOGICAL           LMASIN
+      LOGICAL           LMASIN,LBASM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/03/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C          = 'EUCL', 'EUCL_TRAN', ...
 C IN  PARA   : ON REPERCUTE LA NORMALISATION SUR LES PARAMETRES MODAUX
 C          = 'OUI' DANS CE CAS ILS DOIVENT DEJA AVOIR ETE CALCULES
 C          = 'NON' ON NE NORMALISE QUE LES VECTEURS PROPRES
-C IN  LMTR   : DESCRIPTEUR D'UNE MATRICE
+C IN  LMATR   : DESCRIPTEUR D'UNE MATRICE
 C IN  NEQ    : NOMBRE D'EQUATIONS
 C IN  NBMODE : NOMBRE DE MODES
 C IN  DDLEXC : TABLEAU DES DDL EXCLUS
@@ -49,6 +49,8 @@ C        'FACT_PARTICI_DX' , 'FACT_PARTICI_DY' , 'FACT_PARTICI_DZ' ,
 C        'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' , 'MASS_EFFE_UN_DZ' 
 C IN  LMASIN : CALCUL DES MASSES MODALES UNITAIRES
 C IN  XMASTR : MASSE DE LA STRUCTURE
+C IN  LBASM  : LOGICAL = TRUE SI BASE MODALE,
+C                        FALSE SI MODE_MECA,MODE_FLAMB,...
 C OUT COEF   : COEFFICIENTS
 C     ------------------------------------------------------------------
 C
@@ -99,18 +101,18 @@ C
                VECPRO(IE,IM) = VECPRO(IE,IM) * XX1
  8          CONTINUE
             IF (PARA.EQ.'OUI') THEN
-               XX2 = XX1 * XX1
-               RESUFR(IM,4)  = RESUFR(IM,4)  * XX2
-               RESUFR(IM,5)  = RESUFR(IM,5)  * XX2
-C-PROV         RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
-               RESUFR(IM,10) = RESUFR(IM,10) * XNORM
-               RESUFR(IM,11) = RESUFR(IM,11) * XNORM
-               RESUFR(IM,12) = RESUFR(IM,12) * XNORM
+              XX2 = XX1 * XX1
+              RESUFR(IM,4)  = RESUFR(IM,4)  * XX2
+              RESUFR(IM,5)  = RESUFR(IM,5)  * XX2
+C-PROV        RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
+              RESUFR(IM,10) = RESUFR(IM,10) * XNORM
+              RESUFR(IM,11) = RESUFR(IM,11) * XNORM
+              RESUFR(IM,12) = RESUFR(IM,12) * XNORM
             ELSE
-               XX2 = XX1 * XX1
-               RESUFR(IM,4)  = RESUFR(IM,4)  * XX2
-               RESUFR(IM,5)  = RESUFR(IM,5)  * XX2
-C-PROV         RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
+              XX2 = XX1 * XX1
+              RESUFR(IM,4)  = RESUFR(IM,4)  * XX2
+              RESUFR(IM,5)  = RESUFR(IM,5)  * XX2
+C-PROV        RESUFR(IM,6)  = RESUFR(IM,6)  * XX2
             ENDIF
  2       CONTINUE
 C

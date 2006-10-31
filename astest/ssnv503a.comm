@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 # - MODELISATION AVEC DES ELEMENTS D_PLAN (MAILLES QUA4)
 # - MODELISATION DU CONTACT AVEC LA METHODE CONTACT (AFFE_CHAR_MECA)
 # - METHODE LAGRANGIENNE POUR LE CONTACT ET LE FROTTEMENT
-
+#
 DEBUT(CODE=_F(NOM='SSNV503A',NIV_PUB_WEB='INTERNET',),);
 
 PRE_GIBI();
@@ -156,11 +156,11 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     CONVERGENCE=_F(ITER_GLOB_MAXI=30,),
                     INFO=1,);
 
-U_NOR=CALC_NO(reuse =U_NOR,
-              RESULTAT=U_NOR,
-              OPTION='REAC_NODA',
-              
-              );
+U_NOR=CALC_NO(reuse =U_NOR, RESULTAT=U_NOR,
+              OPTION='REAC_NODA',   );
+                                               
+U_NOR=CALC_ELEM(reuse =U_NOR, RESULTAT=U_NOR,
+                OPTION='VARI_ELNO_ELGA',   );
                                                
 # CHARGEMENT 2                                 
 U_99=STAT_NON_LINE(MODELE=MODE,
@@ -262,6 +262,14 @@ TU_NOR=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                REPERE='LOCAL',
                                OPERATION='EXTRACTION',
                                INST=1.,),);
+
+TU_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
+                                GROUP_NO='LESC',
+                                RESULTAT=U_NOR,
+                                NOM_CHAM='VARI_ELNO_ELGA',
+                                NOM_CMP='V1',
+                                OPERATION='MOYENNE',
+                                INST=1.),);
 
 TEST_TABLE(TABLE=TU_NOR,
            TYPE_TEST='SOMM',

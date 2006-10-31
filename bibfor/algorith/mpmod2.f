@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,20 +59,20 @@ C
       INTEGER       NBMESU, NBMTOT
 C
       CHARACTER*1  TYPVAL
-      CHARACTER*8  NOMRES,K8BID,SCAL,SCALAI
-      CHARACTER*8  NOMGD,LICMP(30)
+      CHARACTER*8  NOMRES,K8BID,SCAL,SCALAI,COMPMS,COMCAP
+      CHARACTER*8  NOMGD,LICMP(30),MODMES
       CHARACTER*16 NOMROU, NOMCHA, CORRES,NOMCHP,TYPRES, K16BID,TYPREP
       CHARACTER*19 CHAMNO, CH1S, CH2S, CHS
       CHARACTER*24 VORIEN
 
       INTEGER      LORD, LRED, LORI,LRANGE
-      INTEGER      IMESU, II, IMODE, IRET
-      INTEGER      IPOSD, ICMP, INO
+      INTEGER      IMESU, II, IMODE, IRET,NBORD
+      INTEGER      IPOSD, ICMP, INO,INOMES,INOCAP
       INTEGER      LNOEUD,IDESC,GD,NBNOEU,NBCMP
       INTEGER      JCNSD,JCNSC,JCNSV,JCNSL,JCNSK
       INTEGER      IBID,INDICE,NBCMPI
 
-      LOGICAL      ZCMPLX,ORIEN
+      LOGICAL      ZCMPLX,ORIEN,DCAPT
 
       REAL*8       VORI(3)
       REAL*8       VAL,RBID,VECT(3),R8PREM
@@ -91,7 +91,7 @@ C RECUPERATION DU NOM DU CONCEPT RESULTAT
       CALL GETRES (NOMRES, TYPRES, K16BID)
 C
 C RECUPERATION DU CHAMP MESURE
-      CALL GETVTX ('MODELE_MESURE','NOM_CHAM',1,1,1,NOMCHA,IBID)
+      CALL GETVID ('MODELE_MESURE','NOM_CHAM',1,1,1,NOMCHA,IBID)
 C
 C RECUPERATION DU NB DE VECTEURS DE BASE : NBMTOT
       CALL RSORAC(BASEMO,'LONUTI',IBID,RBID,K8BID,CBID,RBID,'ABSOLU',
@@ -105,6 +105,10 @@ C RECUPERATION ADRESSE DES NUMEROS D'ORDRE POUR CHAQUE MESURE
 C
       CALL JEVEUO ( NOMMES//'           .ORDR' , 'L' , LORD )
 
+C RECUPERATION DU NB DE NUMERO D ORDRE : NBORD
+      CALL RSORAC(NOMMES,'LONUTI',IBID,RBID,K8BID,CBID,RBID,'ABSOLU',
+     &            NBORD,1,IBID)
+C
       CHS = '&&MESURE.CHS'
       NBMESU = 0
 C        -> EXISTENCE DU CHAMP DANS LA STRUCTURE DE DONNEES MESURE
@@ -139,13 +143,14 @@ C TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CHS
       NOMGD = ZK8(JCNSK-1 +2)
 
 C ORDRE DE RANGEMENT MESURE SELON VRANGE ET VNOEUD
-      VNOEUD = '&&RANGENOEUD'
-      VORIEN = '&&ORIENTATION'
-      VRANGE = '&&RANGECMP'
-      BASEPR = '&&BASEPROJ'
-      CALL WKVECT (VNOEUD, 'V V I', NBNOEU*NBCMP, LNOEUD)
-      CALL WKVECT (VRANGE, 'V V K8', NBNOEU*NBCMP, LRANGE)
-      CALL WKVECT (VORIEN, 'V V R', NBNOEU*NBCMP*3, LORI)
+      VNOEUD = NOMRES//'.VNOEUD'
+      VRANGE = NOMRES//'.VRANGE'
+      VORIEN = NOMRES//'.VORIEN'
+      BASEPR = NOMRES//'.BASEPR'
+
+      CALL WKVECT (VNOEUD, 'G V I', NBNOEU*NBCMP, LNOEUD)
+      CALL WKVECT (VRANGE, 'G V K8', NBNOEU*NBCMP, LRANGE)
+      CALL WKVECT (VORIEN, 'G V R', NBNOEU*NBCMP*3, LORI)
 
       IF (NOMGD(1:4) .EQ. 'DEPL') THEN
 C RECUPERATION DE L ORIENTATION
@@ -240,23 +245,67 @@ C  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 58
         ELSEIF (TYPRES(1:9).EQ.'MODE_GENE') THEN
 C  SI RESULTAT DE TYPE MODE_GENE ON SUPPOSE QUE L'ORIENTATION
 C  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 55
-          DO 121 INO = 1,NBNOEU
-            DO 131 ICMP = 1,NBCMP
-              INDICE = (INO-1)*NBCMP+ICMP
-              IF(ZL(JCNSL-1 + INDICE)) THEN
-                IF (ZCMPLX) THEN
-                  VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+ICMP))
-                ELSE
-                  VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+C BOUCLE SUR LES NUMEROS D ORDRE POUR RECUPERATION DES DDL MESURE
+          DO 200 IMODE = 1,NBORD
+            CALL RSEXCH (NOMMES,NOMCHA,ZI(LORD-1+IMODE),CHAMNO,IRET)
+            CALL CNOCNS(CHAMNO,'V',CHS)
+            CALL JEVEUO(CHS//'.CNSC','L',JCNSC)
+            CALL JEVEUO(CHS//'.CNSV','L',JCNSV)
+            CALL JEVEUO(CHS//'.CNSL','L',JCNSL)
+            DO 221 INO = 1,NBNOEU
+              DO 231 ICMP = 1,NBCMP
+                INDICE = (INO-1)*NBCMP+ICMP
+                IF(ZL(JCNSL-1 + INDICE)) THEN
+                  DCAPT = .FALSE.
+                  IF (ZCMPLX) THEN
+                    VAL = DBLE(ZC(JCNSV-1 +(INO-1)*NBCMP+ICMP))
+                  ELSE
+                    VAL = ZR(JCNSV-1 +(INO-1)*NBCMP+ICMP)
+                  ENDIF
+                  IF (ABS(VAL).GT.(100*R8PREM())) THEN
+                    IF((ZK8(JCNSC-1 +ICMP).EQ.'DX') .OR.
+     &                 (ZK8(JCNSC-1 +ICMP).EQ.'DY') .OR.
+     &                 (ZK8(JCNSC-1 +ICMP).EQ.'DZ')) THEN
+                      INOMES = INO
+                      COMPMS = ZK8(JCNSC-1 +ICMP)
+                      DCAPT = .TRUE.
+                    ENDIF
+                    DO 210 IMESU = 1,NBMESU
+                      INOCAP = ZI(LNOEUD-1 +IMESU)
+                      COMCAP = ZK8(LRANGE-1 +IMESU)
+                      IF((COMCAP .EQ. COMPMS) .AND.
+     &                   (INOCAP .EQ. INOMES)) THEN
+                        DCAPT = .FALSE.
+                      ENDIF
+210                 CONTINUE
+                    IF (DCAPT) THEN
+                      NBMESU = NBMESU+1
+                      ZI(LNOEUD-1 +NBMESU) = INO
+                      ZK8(LRANGE-1 +NBMESU) = ZK8(JCNSC-1 +ICMP)
+                    ENDIF
+                  ENDIF
                 ENDIF
-                IF (ABS(VAL).GT.(100*R8PREM())) THEN
-                  NBMESU = NBMESU+1
-                  ZI(LNOEUD-1 +NBMESU) = INO
-                  ZK8(LRANGE-1 +NBMESU) = ZK8(JCNSC-1 +ICMP)
-                ENDIF
-              ENDIF
- 131        CONTINUE
- 121      CONTINUE
+231           CONTINUE
+221         CONTINUE
+200       CONTINUE
+
+          DO 121 IMESU = 1,NBMESU
+            IF(ZK8(LRANGE-1 +IMESU) .EQ. 'DX') THEN
+              ZR(LORI-1 +(IMESU-1)*3+1) = 1.0D0
+              ZR(LORI-1 +(IMESU-1)*3+2) = 0.0D0
+              ZR(LORI-1 +(IMESU-1)*3+3) = 0.0D0
+            ENDIF
+            IF(ZK8(LRANGE-1 +IMESU) .EQ. 'DY') THEN
+              ZR(LORI-1 +(IMESU-1)*3+1) = 0.0D0
+              ZR(LORI-1 +(IMESU-1)*3+2) = 1.0D0
+              ZR(LORI-1 +(IMESU-1)*3+3) = 0.0D0
+            ENDIF
+            IF(ZK8(LRANGE-1 +IMESU) .EQ. 'DZ') THEN
+              ZR(LORI-1 +(IMESU-1)*3+1) = 0.0D0
+              ZR(LORI-1 +(IMESU-1)*3+2) = 0.0D0
+              ZR(LORI-1 +(IMESU-1)*3+3) = 1.0D0
+            ENDIF
+121       CONTINUE
         ENDIF
       ENDIF
 
@@ -274,7 +323,7 @@ C  EST DEFINI PAR LIRE_RESU AU FORMAT DATASET 55
       ENDIF
 
 C     -> OBJET MATRICE MODALE REDUITE SUIVANT DIRECTION DE MESURE
-      CALL WKVECT ( BASEPR,'V V R', NBMESU*NBMTOT , LRED)
+      CALL WKVECT ( BASEPR,'G V R', NBMESU*NBMTOT , LRED)
 C
 C RECUPERATION SD CORRESPONDANCE ENTRE MAILLAGE MODELE/MESURE
 C
@@ -345,27 +394,6 @@ C
 C CAS DES MESURES DE TYPE 'DEPL'
 C ******************************
 C
-            IF (TYPRES(1:9).EQ.'MODE_GENE') THEN
-
-              CALL ASSERT(NBCMPI.LE.3)
-              DO 102 ICMP = 1,NBCMPI
-              VECT(ICMP)= 0.D0
-              IF (ZK8(JCNSC-1 +ICMP) .EQ. ZK8(LRANGE-1 +IMESU))
-     &          VECT(ICMP) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
- 102          CONTINUE
-
-C DETERMINATION DE LA BASE RESTREINTE
-C *********************************************
-C
-              IPOSD = (IMODE-1)*NBMESU + IMESU
-              ZR(LRED-1 + IPOSD) = 0.D0
-
-              DO 302 II = 1 , NBCMPI
-                ZR(LRED-1 + IPOSD) = ZR(LRED-1 + IPOSD)
-     &                 + VECT(II)
- 302          CONTINUE
-
-            ELSE
 C DIRECTION DE MESURE (VECTEUR DIRECTEUR)
               DO 21 II = 1 , 3
                 VORI(II) = ZR(LORI-1 + (IMESU-1)*3 +II)
@@ -406,7 +434,6 @@ C
                 ZR(LRED-1 + IPOSD) = ZR(LRED-1 + IPOSD)
      &                 + VECT(II) * VORI(II)
  300          CONTINUE
-            ENDIF
 C
           ELSE IF ( (NOMCHP(1:14) .EQ. 'EPSI_NOEU_DEPL') .OR.
      &              (NOMCHP(1:14) .EQ. 'SIGM_NOEU_DEPL') ) THEN
@@ -436,10 +463,18 @@ C
 C FIN DE LA BOUCLE SUR LES MODES
 C ******************************
  10   CONTINUE
+
+      CALL GETVID ('MODELE_MESURE','MODELE',1,1,1,MODMES,IBID)
+
+      CALL JEECRA (VNOEUD,'LONUTI',NBMESU,K8BID )
+      CALL JEECRA (VRANGE,'LONUTI',NBMESU,K8BID )
+      CALL JEECRA (BASEPR,'LONUTI',NBMESU*NBMTOT,K8BID )
+      CALL JEECRA (VNOEUD,'ORIG',IBID,NOMCHP )
+      CALL JEECRA (VRANGE,'ORIG',IBID,MODMES )
+      CALL JEECRA (BASEPR,'ORIG',IBID,BASEMO )
 C
 C DESTRUCTION DES VECTEURS DE TRAVAIL
 C
-      CALL JEDETR (VORIEN)
       CALL DETRSD('CHAM_NO_S',CHS)
       CALL DETRSD('CHAM_NO_S',CH1S)
       CALL DETRSD('CHAM_NO_S',CH2S)
