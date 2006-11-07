@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF UTILITAI  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCMEC1=47)
+      PARAMETER (NCMEC1=49)
       PARAMETER (NCMEC2=54)
       PARAMETER (NCMEC3=35)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
@@ -200,7 +200,8 @@ C     ------------------------------------------------------------------
      &     'EQUI_ELNO_EPSI','EQUI_NOEU_EPSI','SIGM_ELNO_ZAC',
      &     'EPSP_ELNO_ZAC','VARI_ELGA_ZAC','SIGM_NOEU_ZAC',
      &     'EPSP_NOEU_ZAC','ALPH0_ELGA_EPSP','ALPHP_ELGA_ALPH0',
-     &     'VARI_NON_LOCAL','LANL_ELGA'/
+     &     'VARI_NON_LOCAL','LANL_ELGA',
+     &     'ARCO_ELNO_SIGM','ARCO_NOEU_SIGM'/
       DATA CHMEC2/'DEGE_ELNO_DEPL','DEGE_NOEU_DEPL','EPOT_ELEM_DEPL',
      &     'ECIN_ELEM_DEPL','FORC_NODA','REAC_NODA',
      &     'ERRE_ELEM_SIGM','ERRE_ELNO_ELEM','ERRE_NOEU_ELEM',

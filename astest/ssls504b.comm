@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # DATE   : 13/11/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -142,13 +142,10 @@ DEPL=CREA_CHAMP(    RESULTAT=RESU,
 #COUCHE 2 : CALCUL DES CONTRAINTES
 ##################################
 
-C2_M=CALC_ELEM(
-                OPTION='SIGM_ELNO_DEPL',
+C2_M=CALC_ELEM( OPTION='SIGM_ELNO_DEPL',
                 RESULTAT=RESU,
-                
-                 NUME_COUCHE=2,
-                 NIVE_COUCHE='MOY'
-)
+                REPE_COQUE =_F( NUME_COUCHE=2,
+                                NIVE_COUCHE='MOY',),)
 
 C2_M=CALC_NO(reuse =C2_M,
               RESULTAT=C2_M,
@@ -163,13 +160,10 @@ SIG_C2_M=CREA_CHAMP(    RESULTAT=C2_M,
                     NUME_ORDRE=1
                   )
 
-C2_S=CALC_ELEM(
-                OPTION='SIGM_ELNO_DEPL',
+C2_S=CALC_ELEM( OPTION='SIGM_ELNO_DEPL',
                 RESULTAT=RESU,
-                
-                 NUME_COUCHE=2,
-                 NIVE_COUCHE='SUP'
-)
+                REPE_COQUE =_F( NUME_COUCHE=2,
+                                NIVE_COUCHE='SUP',),)
 
 C2_S=CALC_NO(reuse =C2_S,
               RESULTAT=C2_S,
@@ -186,13 +180,10 @@ SIG_C2_S=CREA_CHAMP(    RESULTAT=C2_S,
 
 #COUCHE 3 : CALCUL DES CONTRAINTES
 ##################################
-C3_S=CALC_ELEM(
-                OPTION='SIGM_ELNO_DEPL',
+C3_S=CALC_ELEM( OPTION='SIGM_ELNO_DEPL',
                 RESULTAT=RESU,
-                
-                 NUME_COUCHE=3,
-                 NIVE_COUCHE='SUP'
-                 )
+                REPE_COQUE =_F( NUME_COUCHE=3,
+                                NIVE_COUCHE='SUP',),)
 
 C3_S=CALC_NO(reuse =C3_S,
               RESULTAT=C3_S,
@@ -219,10 +210,9 @@ RESU=_F(      RESULTAT = RESU,             NUME_ORDRE = 1,
            NOM_CMP = 'DZ',              REFERENCE='SOURCE_EXTERNE',VALE=-0.07323,
            PRECISION = 0.03),
            
-           CHAM_NO=(
-
 # CONTRAINTE SIXX AU POINT (L/2,L/2,H/2)
 #
+CHAM_NO=(
 _F( CHAM_GD = SIG_C3_S,         GROUP_NO='C',               NOM_CMP = 'SIXX',
            REFERENCE='SOURCE_EXTERNE',VALE=-0.478,             PRECISION = 0.04),
 #

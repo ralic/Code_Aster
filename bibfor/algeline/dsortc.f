@@ -2,7 +2,7 @@
      &  (WHICH, APPLY, N, XREAL, XIMAG, Y)
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,6 +110,8 @@ C     %--------------------%
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
 C     %-----------------------%
+C
+      CALL MATFPE(-1)
 
       IGAP = N / 2
 
@@ -346,6 +348,8 @@ C        %------------------------------------------------%
       END IF
 
  9000 CONTINUE
+C
+      CALL MATFPE(1)
 
 C     %---------------%
 C     | END OF DSORTC |

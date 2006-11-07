@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF utilitai5 Messages  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,6 +270,10 @@ cata_msg={
 
 89: _("""
  Erreur de programmation : contacter l'assistance
+"""),
+
+90: _("""
+ On ne trouve pas le VALE_PARA_FONC exact dans la liste de la nappe
 """),
 
 }

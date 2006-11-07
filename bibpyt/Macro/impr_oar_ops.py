@@ -1,4 +1,4 @@
-#@ MODIF impr_oar_ops Macro  DATE 27/06/2006   AUTEUR THOMASSO D.THOMASSON 
+#@ MODIF impr_oar_ops Macro  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,14 +191,14 @@ class composant(OAR_element) :
       2. Dans le cas d'un revetement, l'utilisateur est supposé définir son plan de coupe de telle sorte 
          que la coupe de la structure et la coupe du revetement se raccordent
    """
-   def __init__(self, COMPOSANT) :
+   def __init__(self, **args) :
       self.nodeComp = XMLNode("COMPOSANT") # Racine de l'arborescence composant
       
-      self.diametre = COMPOSANT['DIAMETRE']
-      self.origine = COMPOSANT['ORIGINE']
-      self.coef_u = COMPOSANT['COEF_U']
-      self.angle_c = COMPOSANT['ANGLE_C']
-      self.revet = COMPOSANT['REVET']
+      self.diametre = args['DIAMETRE']
+      self.origine  = args['ORIGINE']
+      self.coef_u   = args['COEF_U']
+      self.angle_c  = args['ANGLE_C']
+      self.revet    = args['REVET']
       
       self.lastAbscisse = None # Permet de gerer le recouvrement des points de coupe entre revetement et structure
       self.num_char = -1
@@ -226,7 +226,7 @@ class composant(OAR_element) :
       try : 
          # On ne construit qu'une table des abscisses et une table des contraintes.
          # Le revetement est obligatoirement en interne on commence par lui
-         para_resu_meca = COMPOSANT['RESU_MECA']
+         para_resu_meca = args['RESU_MECA']
          self.num_char = para_resu_meca['NUM_CHAR']
          self.type_char = para_resu_meca['TYPE']
 
@@ -250,7 +250,7 @@ class composant(OAR_element) :
       
       # 2. Résultat thermique
       try :
-         para_resu_ther = COMPOSANT['RESU_THER']
+         para_resu_ther = RESU_THER
          self.num_tran = para_resu_ther['NUM_TRAN']
          self.tabAbscisses = list()
          self.tabAbscisses_S = None
@@ -638,10 +638,10 @@ class tuyauterie(OAR_element) :
    """
       Classe permettant de traiter les tuyauteries
    """
-   def __init__(self, TUYAUTERIE) :
+   def __init__(self, **args) :
       self.nodeComp = XMLNode("TUYAUTERIE")
       try :
-         self.para_resu_meca = TUYAUTERIE['RESU_MECA']
+         self.para_resu_meca = args['RESU_MECA']
          self.num_char = self.para_resu_meca['NUM_CHAR']
       
          #Gestion du maillage
@@ -655,11 +655,11 @@ class tuyauterie(OAR_element) :
          self.dictMailleNoeuds = dict()
          for val in self.ma :
             self.dictMailleNoeuds[val] = list()
-         
+      
          for i in range(0, len(mapy.co)) :
             self.dictMailleNoeuds[self.ma[i]].append(self.no[mapy.co[i][0]])
             self.dictMailleNoeuds[self.ma[i]].append(self.no[mapy.co[i][1]])
-         
+      
          self.dictNoeudValTorseur = dict()
          self.buildTableTorseur()
       
@@ -722,7 +722,7 @@ class tuyauterie(OAR_element) :
       
       
 
-def impr_oar_ops(self, COMPOSANT=None, MEF=None, TUYAUTERIE=None, **args) :
+def impr_oar_ops(self, TYPE_CALC, **args) :
    """
    Macro IMPR_OAR
    Ecrit des fichiers au format XML selon la DTD OAR Fichier
@@ -735,12 +735,12 @@ def impr_oar_ops(self, COMPOSANT=None, MEF=None, TUYAUTERIE=None, **args) :
    
    obj = None
    
-   if COMPOSANT != None :
-      obj = composant(COMPOSANT)
-   elif MEF != None : 
+   if TYPE_CALC=='COMPOSANT' :
+      obj = composant(**args)
+   elif TYPE_CALC=='MEF' : 
       UTMESS('F', 'IMPR_OAR', 'FONCTION NON IMPLANTEE') 
-   elif TUYAUTERIE != None:
-      obj = tuyauterie(TUYAUTERIE) 
+   elif TYPE_CALC=='TUYAUTERIE' :
+      obj = tuyauterie(**args) 
    else :
       UTMESS('F', 'IMPR_OAR', 'Mot clé facteur inconnu')
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE MCOURTOI M.COURTOIS
 def recu_fonction_prod(RESULTAT=None,TABLE=None,RESU_GENE=None,
-                       BASE_ELAS_FLUI=None,CHAM_GD=None,
+                       BASE_ELAS_FLUI=None,CHAM_GD=None,NAPPE=None,
                        NOM_PARA_TABL=None,**args):
    if AsType(RESULTAT)  == dyna_harmo or \
       AsType(RESU_GENE) == harm_gene or \
@@ -31,7 +31,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
                    fr="Extraire sous forme d'une fonction, l'évolution d'une grandeur en fonction d'une autre",
                    reentrant='f',
             UIinfo={"groupes":("Fonction",)},
-         regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI'),),
+         regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI','NAPPE'),),
 
          CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,
                                                cham_elem,),),
@@ -39,6 +39,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
          RESU_GENE       =SIMP(statut='f',typ=(tran_gene, mode_gene, harm_gene)),
          TABLE           =SIMP(statut='f',typ=(table_sdaster,table_fonction)),
          BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu_sdaster),
+         NAPPE           =SIMP(statut='f',typ=nappe_sdaster),
 
 # ======= SENSIBILITE =================================================
          b_sensibilite   =BLOC(condition="RESULTAT != None",
@@ -209,6 +210,13 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
            GROUP_NO        =SIMP(statut='f',typ=grno),
            POINT           =SIMP(statut='f',typ='I' ),
            SOUS_POINT      =SIMP(statut='f',typ='I' ),
+         ),
+
+# ======= NAPPE =================================================
+         b_nappe = BLOC ( condition = "(NAPPE != None)", fr="Opérandes en cas de NAPPE",
+         VALE_PARA_FONC  =SIMP(statut='o',typ='R' ),
+         PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          ),
 
 # ======= SURCHARGE DES ATTRIBUTS =================================================

@@ -1,7 +1,7 @@
       SUBROUTINE OP0090(IER)
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,9 +23,9 @@ C RESPONSABLE MCOURTOI M.COURTOIS
 C     OPERATEUR "RECU_FONCTION"
 C     ------------------------------------------------------------------
       INTEGER NREG,NRB,NCH,NG,IER
-      INTEGER NTA,NRES,NC
+      INTEGER NTA,NRES,NC,NNA
       CHARACTER*8 K8B
-      CHARACTER*19 CHAM19,RESU,TABRES,TABTYP(8)
+      CHARACTER*19 CHAM19,RESU,TABRES,TABTYP(8),NAPPE
       DATA TABTYP/'NOEU#DEPL_R','NOEU#TEMP_R','NOEU#PRES_R',
      &            'ELXX#SIEF_R','ELXX#VARI_R','ELXX#EPSI_R',
      &            'ELXX#FLUX_R','ELXX#PRES_R'/
@@ -49,8 +49,6 @@ C     -----------------------------------------------------------------
         CALL RFRESU(IER)
         GO TO 10
       ENDIF
-
-C
 
 C     -----------------------------------------------------------------
 C                   --- CAS D'UN NOEUD DE CHOC ---
@@ -86,6 +84,15 @@ C     -----------------------------------------------------------------
       CALL GETVID(' ','BASE_ELAS_FLUI',0,1,1,RESU,NRB)
       IF (NRB.NE.0) THEN
         CALL RFBEFL(RESU)
+        GO TO 10
+      END IF
+
+C     -----------------------------------------------------------------
+C                     --- CAS D'UNE NAPPE ---
+C     -----------------------------------------------------------------
+      CALL GETVID(' ','NAPPE',0,1,1,NAPPE,NNA)
+      IF (NNA.NE.0) THEN
+        CALL RFNAPP(NAPPE)
         GO TO 10
       END IF
 

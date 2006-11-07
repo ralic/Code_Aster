@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 25/09/2006   AUTEUR GALENNE E.GALENNE 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 06/11/2006   AUTEUR GALENNE E.GALENNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -595,8 +595,10 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,MATER,RESULTAT,
          l_inst=None
          l_inst_tab=tabsup['INST'].values()['INST']
          l_inst_tab=dict([(i,0) for i in l_inst_tab]).keys() #elimine les doublons
+         l_inst_tab.sort()
          if LIST_ORDRE !=None or NUME_ORDRE !=None :
            l_ord_tab = tabsup['NUME_ORDRE'].values()['NUME_ORDRE']
+           l_ord_tab.sort()
            l_ord_tab=dict([(i,0) for i in l_ord_tab]).keys() 
            d_ord_tab= [[l_ord_tab[i],l_inst_tab[i]] for i in range(0,len(l_ord_tab))]
            d_ord_tab= [(i[0],i[1]) for i in d_ord_tab]

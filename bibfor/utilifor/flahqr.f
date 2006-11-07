@@ -1,7 +1,7 @@
       SUBROUTINE FLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
      &                   ILOZ, IHIZ, Z, LDZ, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -132,6 +132,8 @@ C     .. EXTERNAL FUNCTIONS ..
       REAL*8 DLANHS, R8PREM, R8MIEM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
+C
+      CALL MATFPE(-1)
 C
 C DUE TO CRS513
       WORK(1) = ZERO
@@ -419,6 +421,8 @@ C
 C
   150 CONTINUE
  1000 CONTINUE
+C
+      CALL MATFPE(1)
 C
 C     END OF FLAHQR
 C

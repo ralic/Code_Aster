@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,10 +151,9 @@ DEPLPES=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
-                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-             NUME_COUCHE=1,
-             NIVE_COUCHE='INF'
+                  REPE_COQUE =_F( NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF',),
                          )
 
 
@@ -166,10 +165,9 @@ DEPLDIL=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-             NUME_COUCHE=1,
-             NIVE_COUCHE='INF'
+                  REPE_COQUE =_F( NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF', ),
                          )
 
 
@@ -181,10 +179,9 @@ DEPLDIL2=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDIL2 ,RESULTAT= DEPLDIL2 ,
-                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-              NUME_COUCHE=2,
-             NIVE_COUCHE='SUP'
+                  REPE_COQUE =_F( NUME_COUCHE=2,
+                                  NIVE_COUCHE='SUP', ),
                          )
 
 
@@ -196,10 +193,9 @@ DEPLDI2=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-                   
                   OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-             NUME_COUCHE=1,
-             NIVE_COUCHE='INF'
+                  REPE_COQUE =_F( NUME_COUCHE=1,
+                                  NIVE_COUCHE='INF', ),
                          )
 
 #---------------------------------------------------------------------

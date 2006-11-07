@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET */
+/* MODIF astermodule supervis  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2805,7 +2805,6 @@ PyObject *args;
    int long_codret = 2;       /* déclarées dans la routine fortran RCVALE */
    void *malloc(size_t size);
 
-
    if (!PyArg_ParseTuple(args, "ssOOOs", &nommat, &phenom, \
                   &t_nompar, &t_valpar, &t_nomres, &stop)) return NULL;
 
@@ -2844,6 +2843,30 @@ PyObject *args;
    return t_res;
 }
 
+/* ---------------------------------------------------------------------- */
+void DEFP(MATFPE, matfpe, INTEGER *);
+#define CALL_MATFPE(a) CALLP(MATFPE,matfpe,a)
+
+static char matfpe_doc[] =
+"Interface d'appel à la routine C matfpe.\n"
+"   usage: matfpe(actif)\n"
+"     matfpe(-1) : on désactive l'interception des erreurs numériques,\n"
+"     matfpe(1)  : on active l'interception des erreurs numériques.\n";
+
+static PyObject * aster_matfpe(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+   long actif;
+   
+   if (!PyArg_ParseTuple(args, "l:matfpe", &actif)) return NULL;
+   
+   if (actif >= -1  && actif <= 1) {
+      CALL_MATFPE(&actif);
+   } else {
+      MYABORT("Valeur incorrecte : seuls 0 et 1 sont valides.");
+   }
+}
 
 /* ---------------------------------------------------------------------- */
 void DEFSPSP(MDNOMA,mdnoma,char *,int,INTEGER *,char *,int,INTEGER *);
@@ -3225,6 +3248,7 @@ static PyMethodDef aster_methods[] = {
                 {"mdnoma",       aster_mdnoma,       METH_VARARGS},
                 {"mdnoch",       aster_mdnoch,       METH_VARARGS},
                 {"rcvale",       aster_rcvale,       METH_VARARGS, rcvale_doc},
+                {"matfpe",       aster_matfpe,       METH_VARARGS, matfpe_doc},
                 {"argv",         aster_argv,         METH_VARARGS},
                 {"prepcompcham", aster_prepcompcham, METH_VARARGS},
                 {"getvectjev",   aster_getvectjev,   METH_VARARGS, getvectjev_doc},

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN C.P. (PENTA15 HEXA20)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,6 +95,45 @@ RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
                              OPTION=('SIGM_ELNO_DEPL',),
                 )
                 
+#----------------------------------------------------------------
+# VALIDATION DE L'OPTION ARCO_ELNO_SIGM
+
+CALC_ELEM( reuse= RESU ,
+           RESULTAT= RESU ,
+           GROUP_MA='FACEAE',
+           REPE_COQUE=_F( GROUP_MA='FACEAE',
+                          ANGL_REP=(0.,90.),),
+           OPTION='ARCO_ELNO_SIGM',);
+
+
+TEST_RESU(RESU=(
+
+    # ARCO_ELNO_SIGM
+
+
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'A',  MAILLE='MA751',   VALE = 100.,      NOM_CMP = 'SI_ARC'),
+           _F(        CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'A',  MAILLE='MA751',    VALE = 0.,      NOM_CMP = 'SI_CONS'),
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'A',  MAILLE='MA751',    VALE = -60.,      NOM_CMP = 'SI_NORM'),
+
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'E', MAILLE='MA769',   VALE = 100.,      NOM_CMP = 'SI_ARC'),
+           _F(        CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 2.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'E', MAILLE='MA769',    VALE = 0.,      NOM_CMP = 'SI_CONS'),
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'E', MAILLE='MA769',    VALE = -60.,      NOM_CMP = 'SI_NORM'),
+
+           ),)
+
+#----------------------------------------------------------------              
 DEP_BF=POST_RELEVE_T(
               ACTION=_F(  INTITULE = 'FACEBF',
                        RESULTAT=RESU,

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  : VALIDATION DE  CRIT_ELNO_RUPT DE CALC_ELEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,22 +139,19 @@ RESU=MECA_STATIQUE(MODELE=MOD,
                    CARA_ELEM=CARA,
                    EXCIT=_F(CHARGE=CONDLIM,),);
 
-RESU1=CALC_ELEM(
-               OPTION=('SIGM_ELNO_DEPL'),
-               RESULTAT=RESU,
-               
-               NUME_COUCHE=1,
-               NIVE_COUCHE='INF',);
+RESU1=CALC_ELEM( RESULTAT=RESU,
+                 OPTION='SIGM_ELNO_DEPL',
+                 REPE_COQUE =_F( NUME_COUCHE=1,
+                                 NIVE_COUCHE='INF',),);
        
-RESU1=CALC_ELEM(reuse=RESU1,
+RESU1=CALC_ELEM(reuse=RESU1, RESULTAT=RESU1,
                MODELE=MOD,
                CHAM_MATER=CHAMPMAT,
                CARA_ELEM=CARA,
-               OPTION=('CRIT_ELNO_RUPT',),
-               RESULTAT=RESU1,
+               OPTION='CRIT_ELNO_RUPT',
                EXCIT=_F(CHARGE=CONDLIM,),
-               NUME_COUCHE=1,
-               NIVE_COUCHE='INF',);
+               REPE_COQUE =_F( NUME_COUCHE=1,
+                               NIVE_COUCHE='INF',),);
               
 
 
@@ -218,22 +215,19 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   CRITERE = 'RELATIF',
                   REFERENCE='AUTRE_ASTER')
                )               
-RESU2=CALC_ELEM(
-               OPTION=('SIGM_ELNO_DEPL'),
-               RESULTAT=RESU,
-               
-               NUME_COUCHE=2,
-               NIVE_COUCHE='INF',);
+RESU2=CALC_ELEM( RESULTAT=RESU,
+                 OPTION='SIGM_ELNO_DEPL',
+                 REPE_COQUE =_F( NUME_COUCHE=2,
+                                 NIVE_COUCHE='INF',),);
        
-RESU2=CALC_ELEM(reuse=RESU2,
-               MODELE=MOD,
-               CHAM_MATER=CHAMPMAT,
-               CARA_ELEM=CARA,
-               OPTION=('CRIT_ELNO_RUPT',),
-               RESULTAT=RESU2,
-               EXCIT=_F(CHARGE=CONDLIM,),
-               NUME_COUCHE=2,
-               NIVE_COUCHE='INF',);
+RESU2=CALC_ELEM( reuse=RESU2, RESULTAT=RESU2,
+                 MODELE=MOD,
+                 CHAM_MATER=CHAMPMAT,
+                 CARA_ELEM=CARA,
+                 OPTION='CRIT_ELNO_RUPT',
+                 EXCIT=_F(CHARGE=CONDLIM,),
+                 REPE_COQUE =_F( NUME_COUCHE=2,
+                                 NIVE_COUCHE='INF',),);
               
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -232,7 +232,7 @@ CALC_NO( reuse=RESF,   RESULTAT=RESF,
 RESFINF=CALC_ELEM(       
                           RESULTAT=RESF,
                            OPTION='SIGM_ELNO_DEPL',
-                          NIVE_COUCHE='INF'
+                          REPE_COQUE=_F(NIVE_COUCHE='INF',),
                       )
 
 CALC_NO(   reuse=RESFINF,   RESULTAT=RESFINF,
@@ -242,7 +242,7 @@ CALC_NO(   reuse=RESFINF,   RESULTAT=RESFINF,
 RESFSUP=CALC_ELEM(       
                           RESULTAT=RESF,
                            OPTION='SIGM_ELNO_DEPL',
-                          NIVE_COUCHE='SUP'
+                          REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                       )
 
 CALC_NO(   reuse=RESFSUP,   RESULTAT=RESFSUP,
@@ -330,7 +330,7 @@ CALC_NO( reuse=RESG,   RESULTAT=RESG,
 RESGINF=CALC_ELEM(       
                           RESULTAT=RESG,
                            OPTION='SIGM_ELNO_DEPL',
-                          NIVE_COUCHE='INF'
+                          REPE_COQUE=_F(NIVE_COUCHE='INF',),
                       )
 
 CALC_NO(   reuse=RESGINF,   RESULTAT=RESGINF,
@@ -340,7 +340,7 @@ CALC_NO(   reuse=RESGINF,   RESULTAT=RESGINF,
 RESGSUP=CALC_ELEM(       
                           RESULTAT=RESG,
                            OPTION='SIGM_ELNO_DEPL',
-                          NIVE_COUCHE='SUP'
+                          REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                       )
 
 CALC_NO(   reuse=RESGSUP,   RESULTAT=RESGSUP,
@@ -428,7 +428,7 @@ CALC_NO( reuse=RESM,   RESULTAT=RESM,
 RESMINF=CALC_ELEM(       
                           RESULTAT=RESM,
                            OPTION='SIGM_ELNO_DEPL',
-                          NIVE_COUCHE='INF'
+                          REPE_COQUE=_F(NIVE_COUCHE='INF',),
                       )
 
 CALC_NO(   reuse=RESMINF,   RESULTAT=RESMINF,
@@ -438,7 +438,7 @@ CALC_NO(   reuse=RESMINF,   RESULTAT=RESMINF,
 RESMSUP=CALC_ELEM(       
                           RESULTAT=RESM,
                            OPTION='SIGM_ELNO_DEPL',
-                          NIVE_COUCHE='SUP'
+                          REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                       )
 
 CALC_NO(   reuse=RESMSUP,   RESULTAT=RESMSUP,

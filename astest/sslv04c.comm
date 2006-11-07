@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN 3D (TETRA4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -297,5 +297,42 @@ TEST_RESU(RESU=(
  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'SIXY',       VALE = -20.))
            )
+#----------------------------------------------------------------
+# VALIDATION DE L'OPTION ARCO_ELNO_SIGM
+
+CALC_ELEM( reuse= RESU ,
+           RESULTAT= RESU ,
+           GROUP_MA='PRES',
+           REPE_COQUE=_F( GROUP_MA='PRES',
+                          ANGL_REP=(0.,90.),),
+           OPTION='ARCO_ELNO_SIGM',);
+
+
+TEST_RESU(RESU=(
+
+    # ARCO_ELNO_SIGM
+
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 2.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'A', MAILLE='M5444',  VALE = 100.,      NOM_CMP = 'SI_ARC'),
+           _F(        CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 1.5,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'A', MAILLE='M5444',   VALE = 0.,    NOM_CMP = 'SI_CONS'),
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 8.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'A',  MAILLE='M5444',  VALE = -60.,      NOM_CMP = 'SI_NORM'),
+
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'E', MAILLE='M5405',   VALE = 100.,      NOM_CMP = 'SI_ARC'),
+           _F(        CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 1.5,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'E', MAILLE='M5405',   VALE = 0.,     NOM_CMP = 'SI_CONS'),
+           _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 7.E-2,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ GROUP_NO = 'E', MAILLE='M5405',  VALE =  -60.,     NOM_CMP = 'SI_NORM'),
+
+           ),)
+
 
 FIN()

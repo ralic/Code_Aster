@@ -1,5 +1,4 @@
-
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # DATE   : 04/12/2000
 # AUTEUR : P. MASSIN
 # TITRE  PLAQUE CARREE COMPOSITE SOUS PRESSION UNIFORME
@@ -135,8 +134,8 @@ SIG_C1_S=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=1,
-                   NIVE_COUCHE='SUP',
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),
                    );
 #
 
@@ -144,8 +143,8 @@ SIG_C1_I=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=1,
-                   NIVE_COUCHE='INF',
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),
                    );
 #COUCHE 2 : CALCUL DES CONTRAINTES
 
@@ -153,16 +152,16 @@ SIG_C2_S=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=2,
-                   NIVE_COUCHE='SUP',
+                   REPE_COQUE =_F( NUME_COUCHE=2,
+                                   NIVE_COUCHE='SUP',),
                    );
 
 SIG_C2_I=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=2,
-                   NIVE_COUCHE='INF',
+                   REPE_COQUE =_F( NUME_COUCHE=2,
+                                   NIVE_COUCHE='INF',),
                    );
 #COUCHE 3 : CALCUL DES CONTRAINTES
 
@@ -170,16 +169,16 @@ SIG_C3_S=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=3,
-                   NIVE_COUCHE='SUP',
+                   REPE_COQUE =_F( NUME_COUCHE=3,
+                                   NIVE_COUCHE='SUP',),
                    );
 
 SIG_C3_I=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=3,
-                   NIVE_COUCHE='INF',
+                   REPE_COQUE =_F( NUME_COUCHE=3,
+                                   NIVE_COUCHE='INF',),
                    );
 #
 #---------------------------------------------------------------------
@@ -268,5 +267,3 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),),);
 
 FIN();
-#
-# 

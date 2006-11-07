@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+#& MODIF COMMANDE  DATE 07/11/2006   AUTEUR MARKOVIC D.MARKOVIC 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,6 +49,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                PRESENT_PRESENT('BAZANT_FD','ELAS_FO'),
                PRESENT_PRESENT('JOINT_BA','ELAS'),
                PRESENT_PRESENT('CABLE','ELAS'),
+               EXCLUS('GLRC_DAMAGE','GLRC_DM'),
                ),
 #
 # comportement élastique
@@ -1009,6 +1010,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              QP2             =SIMP(statut='o',typ='R',val_min=0.E+0),
              GAMMA           =SIMP(statut='o',typ='R',val_min=0.E+0),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("X ",) ),
+           ),
+           GLRC_DM         =FACT(statut='f',min=0,max=1,
+             GAMMA_T         =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=1.E+0),
+             GAMMA_F         =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=1.E+0),
+             SYT             =SIMP(statut='o',typ='R',val_min=0.E+0), 
+             SYF             =SIMP(statut='o',typ='R',val_min=0.E+0), 
+             EF              =SIMP(statut='f',typ='R',val_min=0.E+0), 
+             NUF             =SIMP(statut='f',typ='R',val_min=0.E+0,val_max=0.5+0), 
            ),
            GLRC_ACIER        =FACT(statut='f',min=0,max=1,
              AX              =SIMP(statut='o',typ='R',val_min=0.E+0),

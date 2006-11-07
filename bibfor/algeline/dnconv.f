@@ -2,7 +2,7 @@
      &  (N, RITZR, RITZI, BOUNDS, TOL, NCONV)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -96,6 +96,8 @@ C     %-----------%
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
 C     %-----------------------%
+C
+      CALL MATFPE(-1)
 
 C     %-------------------------------------------------------------%
 C     | CONVERGENCE TEST: UNLIKE IN THE SYMMETRIC CODE, I AM NOT    |
@@ -120,6 +122,8 @@ C
          TEMP = MAX( EPS23, DLAPY2( RITZR(I), RITZI(I) ) )
          IF (BOUNDS(I) .LE. TOL*TEMP)   NCONV = NCONV + 1
    20 CONTINUE
+C
+      CALL MATFPE(1)
 
 C     %---------------%
 C     | END OF DNCONV |

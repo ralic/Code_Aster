@@ -6,7 +6,7 @@
       CHARACTER*8         CHAR, NOMA, FFGR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 07/11/2006   AUTEUR ZENTNER I.ZENTNER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
       CHARACTER*32       JEXNOM
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       N1, I, J, NBM, NBNO, JMAIL, IDNONO, JVMA, JVNO, 
-     +              ICOOR, JVAL, JABSC, IAPL, INO
+     +              ICOOR, JVAL, JABSC, IAPL, INO, NIV, IFM
       INTEGER       IZONE, IPNOEU, IDNOEU, NG, NOEUDG, NM, INDIK8
       REAL*8        XM1, XM2, YM1, YM2, ZM1, ZM2, XM, YM, ZM, COTE
       REAL*8        S, X1, Y1, Z1, X2, Y2, Z2, X12, Y12, Z12, V1(3)
@@ -195,7 +195,9 @@ C ----------------------------------------------------------------------
 C     VERIFICATION DE QUELQUES GRANDEURS
 C ----------------------------------------------------------------------
 C
-C --- VERIFICATION QUE LA MASSE EST COHERENTE AVEC LES MASSES VOLUMIQUES
+      CALL INFNIV ( IFM , NIV )
+C --- VERIFICATION QUE LA MASSE ET LES MASSES VOLUMIQUES DONNEES SONT
+C            COHERENTES
 C
       J = INDIK8 ( FFGR, 'M', 1, NGR )
       MGRAPP = VGRAP(J)
@@ -224,19 +226,24 @@ C
 C
       MGRAP2 = MTIGE + MARAIG + MCRAYO
       ERR = ( MGRAPP - MGRAP2 ) / MGRAPP
-      IF ( ABS(ERR).GT.1.D-06 ) THEN
-         CALL UTDEBM('F','CAGRF1','ERREURS DANS LES DONNEES')
-         CALL UTIMPR('L','MASSE TOTALE DE LA GRAPPE: ',1,MGRAPP)
-         CALL UTIMPR('L','MASSE DE LA TIGE:            ',1,MTIGE)
-         CALL UTIMPR('L','MASSE DE L''ARAIGNEE:          ',1,MARAIG)
-         CALL UTIMPR('L','MASSE DU CRAYON:              ',1,MCRAYO)
-         CALL UTIMPR('L','MASSE GRAPPE+ARAIGNEE+CRAYON: ',1,MGRAP2)
+          
+       IF ( ABS(ERR).GT.1.D-03 ) THEN
+         WRITE(IFM,*) '---------------ATTENTION: --------------------'
+        CALL UTDEBM('A','CAGRF1','LES MASSES ET DENSITES VOLUMIQUES
+     &  DONNEES NE CORRESPONDENT PAS!')     
+         CALL UTIMPR('L','MASSE TOTALE GRAPPE DONNEE:    ',1,MGRAPP)
+         CALL UTIMPR('L','MASSE DE LA TIGE CALCULEE:     ',1,MTIGE)
+         CALL UTIMPR('L','MASSE DE L''ARAIGNEE CALCULEE: ',1,MARAIG)
+         CALL UTIMPR('L','MASSE DU CRAYON CALCULEE:      ',1,MCRAYO)
+        CALL UTIMPR('L','MASSE GRAPPE=TIGE+ARAIGNEE+CRAYON: ',1,MGRAP2)
          CALL UTFINM()
-      ENDIF
+         WRITE(IFM,*) '---------------------------------------------'
+       ENDIF
 C
       LGR2 = LTIGE + LCRAY
       ERR = ( LGR - LGR2 ) / LGR
-      IF ( ABS(ERR).GT.1.D-06 ) THEN
+      IF ( ABS(ERR).GT.1.D-03 ) THEN
+         WRITE(IFM,*) '---------------ATTENTION: --------------------'
          CALL UTDEBM('F','CAGRF1','ERREURS DANS LES DONNEES')
          CALL UTIMPR('L','LONGUEUR MODELISEE: ',1,LGR)
          CALL UTIMPR('L','LONGUEUR DONNEE   : ',1,LGR2)

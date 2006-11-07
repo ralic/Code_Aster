@@ -1,5 +1,4 @@
-
-# MODIF  DATE 27/06/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. DKT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +30,6 @@ MO=AFFE_MODELE(MAILLAGE=M,
 CARAC=AFFE_CARA_ELEM(MODELE=MO,
                      COQUE=_F(GROUP_MA='TOUT',
                               EPAIS=2.0,
-                              ANGL_REP=(90.0,-53.13,),
                               COQUE_NCOU=2,),);
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.0,
@@ -115,36 +113,48 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+            OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
+            REPE_COQUE=_F(GROUP_MA='TOUT',
+                          ANGL_REP=(90.0,-53.13,),),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
             TOUT_ORDRE='OUI',
             OPTION='SIGM_ELNO_COQU',
-            NIVE_COUCHE='SUP',);
+            REPE_COQUE=_F(GROUP_MA='TOUT',
+                          NIVE_COUCHE='SUP',
+                          ANGL_REP=(90.0,-53.13,),),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
             TOUT_ORDRE='OUI',
-            OPTION=('DEGE_ELNO_DEPL','EPSI_ELNO_DEPL',),);
+            OPTION=('DEGE_ELNO_DEPL','EPSI_ELNO_DEPL',),
+            REPE_COQUE=_F(GROUP_MA='TOUT',
+                          ANGL_REP=(90.0,-53.13,),),);
 
 U1=CALC_ELEM(
              RESULTAT=U,
              TOUT_ORDRE='OUI',
              OPTION='VARI_ELNO_COQU',
-             NIVE_COUCHE='INF',);
+             REPE_COQUE=_F(GROUP_MA='TOUT',
+                           NIVE_COUCHE='INF',
+                           ANGL_REP=(90.0,-53.13,),),);
 
 U2=CALC_ELEM(
              RESULTAT=U,
              TOUT_ORDRE='OUI',
              OPTION='VARI_ELNO_COQU',
-             NIVE_COUCHE='MOY',);
+             REPE_COQUE=_F(GROUP_MA='TOUT',
+                           NIVE_COUCHE='MOY',
+                           ANGL_REP=(90.0,-53.13,),),);
 
 U3=CALC_ELEM(
              RESULTAT=U,
              TOUT_ORDRE='OUI',
              OPTION='VARI_ELNO_COQU',
-             NIVE_COUCHE='SUP',);
+             REPE_COQUE=_F(GROUP_MA='TOUT',
+                           NIVE_COUCHE='SUP',
+                           ANGL_REP=(90.0,-53.13,),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
                    INST=1.0,

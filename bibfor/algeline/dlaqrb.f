@@ -2,7 +2,7 @@
      &  (WANTT, N, ILO, IHI, H, LDH, WR, WI, Z, INFO )
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -157,6 +157,8 @@ C     %-----------%
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
 C     %-----------------------%
+C
+      CALL MATFPE(-1)
 
 C DUE TO CRS513
       WORK(1) = ZERO
@@ -509,6 +511,8 @@ C     %---------------------------------------------------------%
 
   150 CONTINUE
  1000 CONTINUE
+C
+      CALL MATFPE(1)
 
 C     %---------------%
 C     | END OF DLAQRB |

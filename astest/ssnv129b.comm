@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -209,7 +209,7 @@ RESU = CALC_ELEM( reuse = RESU,
                   RESULTAT=RESU)
 
 RESU = CALC_ELEM( reuse = RESU,
-                  NIVE_COUCHE='INF',
+                  REPE_COQUE=_F(NIVE_COUCHE='INF',),
                   OPTION='SIGM_ELNO_COQU',
                   RESULTAT=RESU)
 
@@ -343,7 +343,7 @@ RESU2 = CALC_ELEM( reuse = RESU2,
                   RESULTAT=RESU2)
 
 RESU2 = CALC_ELEM( reuse = RESU2,
-                  NIVE_COUCHE='INF',
+                  REPE_COQUE=_F(NIVE_COUCHE='INF',),
                   OPTION='SIGM_ELNO_COQU',
                   RESULTAT=RESU2)
 
@@ -482,7 +482,7 @@ RESU4 = CALC_ELEM( reuse = RESU4,
                   RESULTAT=RESU4)
 
 RESU4 = CALC_ELEM( reuse = RESU4,
-                  NIVE_COUCHE='INF',
+                  REPE_COQUE=_F(NIVE_COUCHE='INF',),
                   OPTION='SIGM_ELNO_COQU',
                   RESULTAT=RESU4)
 

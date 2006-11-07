@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+%& MODIF COMPELEM  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -535,6 +535,7 @@ GRANDEUR_SIMPLE__
                     FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
                     QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
                     VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
+                    SI_ARC   SI_CONS  SI_NORM
 
 <<  QXX QXY QYX QYY QZX QZY : CONTRAINTES GENERALISEES
                                POUR ASSUMED STRAIN QUAS4 >>
@@ -551,6 +552,7 @@ GRANDEUR_SIMPLE__
                     FHTZ     SIMAX    SIMIN    QXX      QXY      QYX      QYY      QZX
                     QZY      Q2XX     Q2XY     Q2YX     Q2YY     Q2ZX     Q2ZY     VECT_1_X
                     VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y VECT_3_Z
+                    SI_ARC   SI_CONS  SI_NORM
     SING_R   = R    DEGRE    TAILLE
     SIZZ_R   = R    SIZZ
     SOUR_F   = K8   SOUR     VNOR

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  PLAQUE CARREE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,23 +102,26 @@ RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
 
 
 SIG_C1_S=CALC_ELEM(RESULTAT=RESU,
-                        NIVE_COUCHE='SUP',
-                        NUME_COUCHE=1,
-                        OPTION='SIGM_ELNO_DEPL',);
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),
+                   OPTION='SIGM_ELNO_DEPL',);
+
 SIG_C1_M=CALC_ELEM(RESULTAT=RESU,
-                        NIVE_COUCHE='MOY',
-                        NUME_COUCHE=1,
-                        OPTION='SIGM_ELNO_DEPL',);
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),
+                   OPTION='SIGM_ELNO_DEPL',);
+
 SIG_C1_I=CALC_ELEM(RESULTAT=RESU,
-                        NIVE_COUCHE='INF',
-                        NUME_COUCHE=1,
-                        OPTION='SIGM_ELNO_DEPL',);
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),
+                   OPTION='SIGM_ELNO_DEPL',);
+
 EFF=CALC_ELEM(RESULTAT=RESU,
-                   PLAN='MOY',
-                   OPTION='EFGE_ELNO_DEPL',);
+              REPE_COQUE =_F( PLAN='MOY',),
+              OPTION='EFGE_ELNO_DEPL',);
 
 SIGG=CALC_ELEM(RESULTAT=RESU,
-                   OPTION='SIEF_ELNO_ELGA',);
+               OPTION='SIEF_ELNO_ELGA',);
 
 TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
                   RESULTAT=RESU,

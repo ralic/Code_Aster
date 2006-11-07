@@ -1,5 +1,4 @@
-
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,25 +112,25 @@ REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
                OPTION='SIGM_ELNO_TUYO',
-               NUME_COUCHE=3,
-               NIVE_COUCHE='SUP',
-               ANGLE=90,);
+               REPE_COQUE =_F( NUME_COUCHE=3,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=90,),);
 
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
                OPTION=('EPSI_ELNO_TUYO','EPEQ_ELNO_TUYO','SIEQ_ELNO_TUYO',),
-               NUME_COUCHE=3,
-               NIVE_COUCHE='SUP',
-               ANGLE=90,);
+               REPE_COQUE =_F( NUME_COUCHE=3,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=90,),);
 
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
                OPTION='VARI_ELNO_TUYO',
-               NUME_COUCHE=3,
-               NIVE_COUCHE='SUP',
-               ANGLE=360,);
+               REPE_COQUE =_F( NUME_COUCHE=3,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=360,),);
 
 TEST_RESU(RESU=(_F(RESULTAT=REST,
                    NUME_ORDRE=11,
@@ -280,17 +279,16 @@ RESM=CALC_ELEM(reuse =RESM,
                RESULTAT=RESM,
                TOUT_ORDRE='OUI',
                OPTION=('SIGM_ELNO_TUYO','DEGE_ELNO_DEPL',),
-               NUME_COUCHE=3,
-               NIVE_COUCHE='SUP',
-               ANGLE=90,);
+               REPE_COQUE =_F( NUME_COUCHE=3,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=90,),);
 
-RESM2=CALC_ELEM(
-                RESULTAT=RESM,
+RESM2=CALC_ELEM(RESULTAT=RESM,
                 TOUT_ORDRE='OUI',
                 OPTION='SIGM_ELNO_TUYO',
-                NUME_COUCHE=1,
-                NIVE_COUCHE='INF',
-                ANGLE=90,);
+                REPE_COQUE =_F( NUME_COUCHE=1,
+                                NIVE_COUCHE='INF',
+                                ANGLE=90,),);
 
 #
 # POUR VALIDER L'IMPRESSION DES VARIABLES INTERNES:

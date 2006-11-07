@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+#& MODIF COMMANDE  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,6 +59,32 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
      MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
                            fr="le calcul ne sera effectué que sur ces mailles là"),
 
+#    definition d'un repere local 
+
+     REPE_COQUE      =FACT(statut='f',max='**',
+                           fr="définiton du lieu de post-traitement",
+                           regles=EXCLUS('ANGL_REP','VECTEUR'),
+          TOUT         =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+          GROUP_MA     =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',),
+          MAILLE       =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),
+
+          NUME_COUCHE  =SIMP(statut='f',typ='I',defaut= 1,
+                             fr="numero de couche dans l'épaisseur de la coque ou du tuyau" ),
+          NIVE_COUCHE  =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
+                             fr="position dans l'épaisseur de la coque, ou de la couche" ),
+
+          ANGLE        =SIMP(statut='f',typ='I',defaut= 0,
+                             fr="angle de dépouillement pour les tuyaux, en degres à partir de la génératrice" ),
+
+          PLAN         =SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL"),
+                               fr="Plan de calcul pour les plaques excentrées" ),
+
+          ANGL_REP     =SIMP(statut='f',typ='R',min=2,max=2,
+                           fr="définition du repere de post-traitement, par défaut ANGL_REP=(0.,0.)"),
+          VECTEUR      =SIMP(statut='f',typ='R',min=3,max=3,
+                           fr="définition du repere de post-traitement, par défaut VECTEUR=(1.,0.,0.)"),
+                            ),
+
 #    options pour des resultats lineaires 
 
      b_lineaire =BLOC( condition = "AsType(RESULTAT) in (evol_elas,dyna_trans,dyna_harmo,mode_meca,\
@@ -74,7 +100,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  contraintes
                            into=( "SIEF_ELNO_ELGA","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
                                   "SIPO_ELNO_DEPL","EFGE_ELNO_DEPL","EFGE_ELNO_CART","SIGM_ELNO_CART",
-                                  "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","SIGM_ELNO_TUYO",
+                                  "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","SIGM_ELNO_TUYO","ARCO_ELNO_SIGM",
                               # déformations
                                  "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELGA_DEPL","EPSG_ELNO_DEPL",
                                  "EPME_ELNO_DEPL","EPME_ELGA_DEPL","DEGE_ELNO_DEPL","EPSI_ELNO_TUYO",
@@ -97,15 +123,8 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  autres      
                                  "VNOR_ELEM_DEPL","VALE_NCOU_MAXI","PRES_DBEL_DEPL"),),
 
-               NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                                fr="numero de couche dans l'épaisseur de la coque ou du tuyau" ),
-               NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                fr="position dans l'épaisseur de la coque, ou de la couche" ),
-               ANGLE       =SIMP(statut='f',typ='I',defaut= 0,fr="angle en degres à partir de la génératrice"),
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="nom du champ pour VALE_NCOU_MAXI", ),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="nom de la composante pour VALE_NCOU_MAXI",  ),
-               PLAN =     SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL"),
-                               fr="Plan de calcul pour les plaques excentrées" ),
               
                 b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM_SIGM','QIZ1_ELEM_SIGM','QIZ2_ELEM_SIGM') or \
                                         (type(OPTION)==type(()) and 'QIRE_ELEM_SIGM' in OPTION) or \
@@ -176,30 +195,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                          TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),),
                              ),
                           
-               b_niv_couche = BLOC( condition = "OPTION in ('SIGM_ELNO_DEPL',) or \
-                                                 (type(OPTION)==type(()) and  'SIGM_ELNO_DEPL' in OPTION) ",
-                                                 
-                         NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                                           fr="numero de couche dans l'épaisseur de la coque (coques multicouches)" ),
-                         NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                           fr="position dans l'épaisseur de la coque, ou de la couche" ),
-                              ),     
                                  
-               b_sigtuyo = BLOC( condition = "OPTION == 'SIGM_ELNO_TUYO' or \
-                                  (type(OPTION)==type(()) and  'SIGM_ELNO_TUYO' in OPTION) ",
-                         NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1 ,
-                                           fr="numero de couche dans l'épaisseur du tuyau" ),
-                         ANGLE       =SIMP(statut='f',typ='I',defaut= 0,fr="angle en degres à partir de la génératrice" ),
-                         NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                           fr="position dans l'épaisseur de la couche" ),
-                               ),
-               b_plan_excentrement    =BLOC( condition = "OPTION=='EFGE_ELNO_DEPL' or \
-                                            (type(OPTION)==type(()) and 'EFGE_ELNO_DEPL' in OPTION)",
-                                             fr="Plan de calcul des efforts pour les plaques avec excentrement",
-                         PLAN =     SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL"),
-                                         fr="Plan de calcul des efforts pour les plaques avec excentrement",),
-                         
-                            ),
                             ),
 #          fin bloc contraintes struct
 
@@ -208,21 +204,6 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                            into=("EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPME_ELNO_DEPL","EPME_ELGA_DEPL",
                                  "DEGE_ELNO_DEPL","EPSI_ELNO_TUYO","EPVC_ELNO","EPVC_ELGA",),
                                  ),
-               b_niv_couche = BLOC( condition = "OPTION =='EPSI_ELNO_DEPL' or \
-                                  (type(OPTION)==type(()) and  'EPSI_ELNO_DEPL' in OPTION) ",
-                         NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                                           fr="numero de couche dans l'épaisseur de la coque (coques multicouches)" ),
-                         NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                           fr="position dans l'épaisseur de la coque, ou de la couche" ),
-                                 ) ,
-               b_epstuyo = BLOC( condition = "OPTION == 'EPSI_ELNO_TUYO' or \
-                                  (type(OPTION)==type(()) and  'EPSI_ELNO_TUYO' in OPTION) ",
-                         NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1 ,
-                                           fr="numero de couche dans l'épaisseur du tuyau" ),
-                         ANGLE       =SIMP(statut='f',typ='I',defaut= 0,fr="angle en degres à partir de la génératrice" ),
-                         NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                           fr="position dans l'épaisseur de la couche" ),
-                               ),
 b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_ELGA_DEPL','EPSI_ELNO_DEPL','EPSI_ELNO_TUYO' ) or \
                                       (type(OPTION)==type(()) and  'EPSI_ELNO_DEPL' in OPTION ) or \
                                       (type(OPTION)==type(()) and  'EPSI_ELNO_TUYO' in OPTION ) or \
@@ -257,15 +238,6 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "ENDO_ELGA","ENDO_ELNO_ELGA",
                                  "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","CRIT_ELNO_RUPT","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
                                  ) ),
-               b_niv_couche = BLOC( condition = "OPTION in ('CRIT_ELNO_RUPT','EQUI_ELNO_SIGM') or \
-                                  (type(OPTION)==type(()) and  'EQUI_ELNO_SIGM' in OPTION) or \
-                                  (type(OPTION)==type(()) and  'SIEQ_ELNO_TUYO' in OPTION) or \
-                                  (type(OPTION)==type(()) and  'CRIT_ELNO_RUPT' in OPTION) ",
-                    NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                                           fr="numero de couche dans l'épaisseur de la coque (coques multicouches)" ),
-                    NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                           fr="position dans l'épaisseur de la coque, ou de la couche" ),
-                                  ),        
                 EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                      CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                  ),
@@ -320,7 +292,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
           b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol elas",
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "SIEF_ELNO_ELGA",
-                                  "SIGM_ELNO_TUYO","SIGM_ELNO_COQU",
+                                  "SIGM_ELNO_TUYO","SIGM_ELNO_COQU","ARCO_ELNO_SIGM",
                                   "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","EFGE_ELNO_CART",
                                   # EPSI
                                   "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
@@ -346,13 +318,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  into=("VMIS","TOTAL","VMIS_CINE","TOTAL_CINE"),
                                  fr="Type de norme pour les options RADI_ et DCHA_"),
                                  
-               NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,fr="numéro de couche pour coques et tuyaux" ),
-               NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                 fr="choix du point d'intégration dans la couche" ),
-               ANGLE       =SIMP(statut='f',typ='I',defaut= 0 ,fr="angle de dépouillement pour les tuyaux"),
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="Nom du champ pour VALE_NCOU_MAXI"),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="Nom de la composante pour VALE_NCOU_MAXI"),
-               PLAN =     SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL") ),
                
                b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM_SIGM','QIZ1_ELEM_SIGM','QIZ2_ELEM_SIGM') or \
                                         (type(OPTION)==type(()) and 'QIRE_ELEM_SIGM' in OPTION) or \
@@ -397,22 +364,6 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                               #  contraintes
                            into=( "SIEF_ELNO_ELGA","EFGE_ELNO_CART","SIGM_ELNO_TUYO","SIGM_ELNO_COQU",
                            "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF",),),
-               b_sigcoqu = BLOC( condition = "OPTION in ('SIGM_ELNO_COQU',) or \
-                                  (type(OPTION)==type(()) and  'SIGM_ELNO_COQU' in OPTION) ",
-                    NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                         fr="numéro de couche dans l'épaisseur de la coque"  ),
-                    NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                         fr="choix du point d'intégration dans la couche"  ),
-                              ),        
-               b_sigtuyo = BLOC( condition = "OPTION in ('SIGM_ELNO_TUYO',) or \
-                                  (type(OPTION)==type(()) and  'SIGM_ELNO_TUYO' in OPTION)",
-                    NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                         fr="numéro de couche dans l'épaisseur du tuyau" ),
-                    ANGLE       =SIMP(statut='f',typ='I',defaut= 0,
-                         fr="angle de dépouillement pour les tuyaux, en degres" ),
-                    NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                         fr="choix du point d'intégration dans la couche"),
-                               ),
                              ),
                              
           b_epsi         =BLOC( condition = "TYPE_OPTION=='EPSI'",
@@ -422,23 +373,11 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "EPSP_ELNO","EPSP_ELGA","DEGE_ELNO_DEPL","EPVC_ELNO","EPVC_ELGA",
                                  "EPFD_ELNO","EPFD_ELGA","EPFP_ELNO","EPFP_ELGA"),
                                  ),
-               b_niv_couche = BLOC( condition = "OPTION =='EPSI_ELNO_DEPL' or \
-                                  (type(OPTION)==type(()) and  'EPSI_ELNO_DEPL' in OPTION) ",
-                    NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                                           fr="numero de couche dans l'épaisseur de la coque (coques multicouches)" ),
-                    NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                           fr="position dans l'épaisseur de la coque, ou de la couche" ),
-                                 ) ,
                EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                     CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                  ),
-               b_epstuyo = BLOC( condition = "OPTION == 'EPSI_ELNO_TUYO' or \
+         b_epstuyo       =BLOC( condition = "OPTION == 'EPSI_ELNO_TUYO' or \
                                   (type(OPTION)==type(()) and  'EPSI_ELNO_TUYO' in OPTION) ",
-                         NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1 ,
-                                           fr="numero de couche dans l'épaisseur du tuyau" ),
-                         ANGLE       =SIMP(statut='f',typ='I',defaut= 0,fr="angle en degres à partir de la génératrice" ),
-                         NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                           fr="position dans l'épaisseur de la couche" ),
               EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                     CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                ),
@@ -449,24 +388,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                    into=("VARI_ELNO_ELGA","VARI_ELNO_TUYO","VARI_ELNO_COQU",
                                          "EXTR_ELGA_VARI","EXTR_ELNO_VARI"),
                                  ),
-               b_varcoqu = BLOC( condition = "OPTION in ('VARI_ELNO_COQU',) or \
-                                  (type(OPTION)==type(()) and  'VARI_ELNO_COQU' in OPTION) ",
-                         NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                         fr="numéro de couche dans l'épaisseur de la coque"),
-                         NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                         fr="choix du point d'intégration dans la couche" ),
-                              ),        
-               b_vartuyo = BLOC( condition = "OPTION in ('VARI_ELNO_TUYO',) or \
-                                  (type(OPTION)==type(()) and  'VARI_ELNO_TUYO' in OPTION) ",
-                         NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,
-                         fr="numéro de couche dans l'épaisseur de tuyau" ),
-                         ANGLE       =SIMP(statut='f',typ='I',defaut= 0,
-                         fr="angle de dépouillement pour les tuyaux, en degres"),
-                         NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                         fr="choix du point d'intégration dans la couche" ),
-                               ),
-               b_extr = BLOC( condition = "OPTION in ('EXTR_ELNO_VARI','EXTR_ELGA_VARI')",
-                             NOM_VARI =SIMP(statut='o',typ='TXM',min= 1,max=1,fr="nom de la variable à extraire",
+          b_extr         =BLOC( condition = "OPTION in ('EXTR_ELNO_VARI','EXTR_ELGA_VARI')",
+                   NOM_VARI =SIMP(statut='o',typ='TXM',min= 1,max=1,fr="nom de la variable à extraire",
                          into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",
                                "SEUIL_HYD","IND_HYD","PCOHE","COMP_ROC","SEUIL_ISO","ANG_DEV","X11","X22","X33","X12","X13","X23",
                                "DIST_DEV","DEV_SUR_CRIT","DIST_ISO","NB_ITER","ARRET","NB_REDE","SIGNE"),),
@@ -489,9 +412,6 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "ENDO_ELGA","ENDO_ELNO_ELGA",
                                  "PMPB_ELNO_SIEF","PMPB_ELGA_SIEF","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
                                  ) ),
-                         NUME_COUCHE =SIMP(statut='f',typ='I',defaut= 1,fr="numéro de couche dans l'épaisseur de la coque"),
-                         NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                         fr="choix du point d'intégration dans la couche" ),
                                  ),
                                  
           b_autres         =BLOC( condition = "TYPE_OPTION=='AUTRES'",
@@ -551,9 +471,6 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                     PUIS_PULS       =SIMP(statut='f',typ='I'),
                     TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),
                                      ),
-                    NIVE_COUCHE =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY"),
-                                      fr="choix du point de calcul dans l'épaisseur des coques"  ),
-                                 
                                  ),
                                  
 #    acoustique                                

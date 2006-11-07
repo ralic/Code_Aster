@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,9 +70,9 @@ CHARGE=AFFE_CHAR_MECA(  MODELE=MODEL,DDL_IMPO=(
                FORCE_COQUE=_F(  TOUT = 'OUI',   PRES = 1.) )
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
-                       COQUE=_F(
-       GROUP_MA = 'TOUT',
- EPAIS = 0.1, ANGL_REP = (0., 0.,)))
+                       COQUE=_F( GROUP_MA = 'TOUT',
+                                 EPAIS = 0.1, 
+                                 ANGL_REP = (0., 0.,)))
 
 RESU=MECA_STATIQUE(    MODELE=MODEL,       CHAM_MATER=CHMAT,
                                CARA_ELEM=CARELEM,
@@ -112,11 +112,11 @@ REFERENCE='ANALYTIQUE', NOEUD = 'F',          NOM_CMP = 'DZ',    VALE = -78.897)
           )
 
 RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,        
-                        NIVE_COUCHE='SUP',
+                        REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                              OPTION='EFGE_ELNO_DEPL' )
 
 RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,        
-                        NIVE_COUCHE='SUP',
+                        REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                              OPTION='SIGM_ELNO_DEPL' )
 
 EFFORT=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',

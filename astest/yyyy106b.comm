@@ -1,5 +1,4 @@
-
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -432,20 +431,19 @@ DEP=CALC_ELEM(reuse =DEP,
               GROUP_MA='E_GOU',
               OPTION='SIEF_ELNO_ELGA',
               NORME='VMIS',
-              NUME_COUCHE=1,
-              NIVE_COUCHE='MOY',
-              ANGLE=0,
-              EXCIT=(
-              _F(CHARGE=CHMLIA1,
-                 TYPE_CHARGE='FIXE',),
-              _F(CHARGE=CHMC1,
-                 TYPE_CHARGE='FIXE',),
-              _F(CHARGE=CHMS1,
-                 TYPE_CHARGE='FIXE',),
-              _F(CHARGE=CHMP1,
-                 TYPE_CHARGE='FIXE',),
-              _F(CHARGE=CHTHER,
-                 TYPE_CHARGE='FIXE',),),);
+              REPE_COQUE =_F( NUME_COUCHE=1,
+                              NIVE_COUCHE='MOY',
+                              ANGLE=0,),
+              EXCIT=(_F(CHARGE=CHMLIA1,
+                        TYPE_CHARGE='FIXE',),
+                     _F(CHARGE=CHMC1,
+                        TYPE_CHARGE='FIXE',),
+                     _F(CHARGE=CHMS1,
+                        TYPE_CHARGE='FIXE',),
+                     _F(CHARGE=CHMP1,
+                        TYPE_CHARGE='FIXE',),
+                     _F(CHARGE=CHTHER,
+                        TYPE_CHARGE='FIXE',),),);
 
 SIG0=POST_RELEVE_T(ACTION=_F(INTITULE='CONTRAINTE SYY DANS LE GOUJON 0',
                              NOEUD='N5495',

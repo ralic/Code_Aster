@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF spec_osci supervis  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF spec_osci supervis  DATE 07/11/2006   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -36,7 +36,9 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
    
    eps = 1.e-6;
 
+#ifdef __DEBUG__
    printf("<I> <SPEC_OSCI> INTEGRATION PAR LA METHODE DE NIGAM_JENNINGS\n");
+#endif
 
    /* pas constant ou variable */
    DELTAT = vale_x[1]-vale_x[0];
@@ -57,9 +59,11 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
    /* le pas est constant */
    if (ecart < eps)
    {
+#ifdef __DEBUG__
       printf("   AVEC UN PAS CONSTANT\n");
       printf("      VALEUR DU PAS     : %lf\n", DELTAT);
       printf("      ECART RELATIF MAX : %lf\n", ecart);
+#endif
 
       for (a=0; a<len_a; a++) {
          XSI = l_amor[a];
@@ -112,7 +116,9 @@ void calc_SPEC_OSCI( int nbpts, double* vale_x, double* vale_y,
    /* le pas est variable */
    else
    {
+#ifdef __DEBUG__
       printf("   AVEC UN PAS NON CONSTANT\n");
+#endif
 
       for (a=0; a<len_a; a++) {
          XSI = l_amor[a];

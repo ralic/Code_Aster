@@ -1,6 +1,6 @@
       SUBROUTINE FGEQR2( M, N, A, LDA, TAU, WORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -90,6 +90,8 @@ C     .. LOCAL SCALARS ..
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
+      CALL MATFPE(-1)
+C
 C     TEST THE INPUT ARGUMENTS
 C
       INFO = 0
@@ -125,6 +127,8 @@ C
          END IF
    10 CONTINUE
  1000 CONTINUE
+C
+      CALL MATFPE(1)
 C
 C     END OF FGEQR2
 C

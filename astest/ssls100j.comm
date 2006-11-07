@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,19 +58,18 @@ CHARGE=AFFE_CHAR_MECA(  MODELE=MODEL,DDL_IMPO=(
            FORCE_COQUE=_F(  TOUT = 'OUI',   FY = -1.0)   )
 
 CARELEM=AFFE_CARA_ELEM(  MODELE=MODEL,
-                 COQUE=_F(
-       GROUP_MA = 'TOUT',
- EPAIS = 0.1,
-                       A_CIS = 0.83333, MODI_METRIQUE = 'NON',
-                       ANGL_REP = (180., 0.,)) )
+                 COQUE=_F( GROUP_MA = 'TOUT',
+                           EPAIS = 0.1,
+                           A_CIS = 0.83333, MODI_METRIQUE = 'NON',) )
 
 RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
                                CARA_ELEM=CARELEM,
                                EXCIT=_F(  CHARGE = CHARGE)       )
 
 RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     
-                        NIVE_COUCHE='SUP',
-                             OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
+               REPE_COQUE=_F(NIVE_COUCHE='SUP',
+                             ANGL_REP = (180., 0.,),),
+               OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
                );
                
 RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,     

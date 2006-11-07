@@ -1,5 +1,4 @@
-
-# MODIF  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DSQ -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -226,19 +225,15 @@ DEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 #
 
 
-EFINF=CALC_ELEM(
-                GROUP_MA='PLAQ1',
+EFINF=CALC_ELEM(GROUP_MA='PLAQ1',
                 OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=MESTAT,
-                
-                PLAN='MAIL',);
+                REPE_COQUE=_F(PLAN='MAIL',),);
 
-EFSUP=CALC_ELEM(
-                GROUP_MA='PLAQ2',
+EFSUP=CALC_ELEM(GROUP_MA='PLAQ2',
                 OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=MESTAT,
-                
-                PLAN='MAIL',);
+                REPE_COQUE=_F(PLAN='MAIL',),);
 
 CALC_NO(reuse =EFINF,
               RESULTAT=EFINF,
@@ -324,8 +319,8 @@ MESTAT1=MECA_STATIQUE(MODELE=MO1,
                        EXCIT=_F(CHARGE=CHME1,),);
 
 CALC_ELEM( reuse= MESTAT1 ,RESULTAT= MESTAT1 ,                        
-                       OPTION='EFGE_ELNO_DEPL',
-                       PLAN='MAIL',);
+           OPTION='EFGE_ELNO_DEPL',
+           REPE_COQUE=_F(PLAN='MAIL',),);
 
 CALC_NO(reuse =MESTAT1,
                 RESULTAT=MESTAT1,

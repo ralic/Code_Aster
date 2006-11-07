@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 06/11/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,14 +199,14 @@ FFX=DEFI_FISS_XFEM(MODELE=MO,
                    INFO=1,);
 
 KLMAX1=CALC_G( 
-           TITRE='K_MAX AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',
+           TITRE='K_MAX AVEC R_INF =  0.1 ET R_SUP =  0.5',
            RESULTAT=RESU,
            OPTION='CALC_K_MAX',
            LISSAGE=_F( LISSAGE_THETA = 'LAGRANGE',
                        LISSAGE_G = 'LAGRANGE',),
            THETA=_F( FISSURE=FFX,
-                     R_INF=0.5,
-                     R_SUP=1.5,),
+                     R_INF=0.1,
+                     R_SUP=0.5,),
            SIGNES = _F( CHARGE_S = (1,3),
                         CHARGE_NS = (2,4),),
                     );
@@ -315,7 +315,7 @@ TEST_TABLE(TABLE=KLMAX1,
                    _F(NOM_PARA='NUM_PT',
                       VALE_I=5,),),
            NOM_PARA='G_LOCAL',
-           VALE=74.0091,
+           VALE=76.330476,
            PRECISION=0.005,
            REFERENCE='NON_REGRESSION',);
 

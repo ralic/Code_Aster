@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # DATE   : 22/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -130,8 +130,8 @@ SIG_C2_S=CALC_ELEM(       RESULTAT=RESU,
                           OPTION='SIGM_ELNO_DEPL',
                           CHAM_MATER=CHAM_MAT,
                           CARA_ELEM=CAR_ELE,
-                          NUME_COUCHE=2,
-                          NIVE_COUCHE='SUP'
+                          REPE_COQUE =_F( NUME_COUCHE=2,
+                                          NIVE_COUCHE='SUP',),
                           )
 
 #
@@ -141,8 +141,8 @@ SIG_C2_M=CALC_ELEM(       RESULTAT=RESU,
                           CARA_ELEM=CAR_ELE,
                           NUME_ORDRE=1,
                           OPTION='SIGM_ELNO_DEPL',
-                          NUME_COUCHE=2,
-                          NIVE_COUCHE='MOY'
+                          REPE_COQUE =_F( NUME_COUCHE=2,
+                                          NIVE_COUCHE='MOY',),
                           )
 
 #
@@ -154,8 +154,8 @@ SIG_C3_S=CALC_ELEM(       RESULTAT=RESU,
                           CARA_ELEM=CAR_ELE,
                           NUME_ORDRE=1,
                           OPTION='SIGM_ELNO_DEPL',
-                          NUME_COUCHE=3,
-                          NIVE_COUCHE='SUP'
+                          REPE_COQUE =_F( NUME_COUCHE=3,
+                                          NIVE_COUCHE='SUP',),
                           )
 
 TEST_RESU(

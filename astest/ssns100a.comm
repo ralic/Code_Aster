@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,7 @@ LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
 # ------------------------------------------------
 #
 T0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -96,7 +96,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -105,7 +105,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -114,7 +114,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -123,7 +123,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T4=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -132,7 +132,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T5=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -141,7 +141,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T6=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -150,7 +150,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T7=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -159,7 +159,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T8=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -168,7 +168,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T9=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -177,7 +177,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T10=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -186,7 +186,7 @@ MAILLAGE=MAILTOT,
                       )
 
 T11=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILTOT,
+               MAILLAGE=MAILTOT,
                           AFFE=_F(
                            TOUT = 'OUI',
                            NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
@@ -311,7 +311,7 @@ LEDEP=CALC_ELEM(reuse    = LEDEP,
 
 U1=CALC_ELEM( TOUT_ORDRE  = 'OUI',
               OPTION      = ('VARI_ELNO_COQU',),
-              NIVE_COUCHE = 'MOY',
+              REPE_COQUE  =_F(NIVE_COUCHE = 'MOY',),
               RESULTAT    = LEDEP
             )
 

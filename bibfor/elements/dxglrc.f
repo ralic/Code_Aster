@@ -9,7 +9,7 @@
       CHARACTER*16 OPT, NOMTE, COMPOR(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 07/11/2006   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -132,12 +132,13 @@ C     ------------------
       REAL*8     MATR(50)
       INTEGER    MATI(50)
       INTEGER    TSHEAR, ICARA
-      REAL*8     EPST(6), EP, SURFGP, SIG(6), DSIG(8), ECR(21)
-      REAL*8     MVAL(50),QSI,ETA
-      INTEGER    MENT(50),ICPG,ICPV
+      REAL*8     EPST(6), EP, SURFGP, SIG(6),DSIG(8),ECR(21),ECRP(21)
+      REAL*8     EPSM(6),MVAL(50),QSI,ETA
+      INTEGER    MENT(50),ICPG,ICPV,NVINT,T(2,2)
+      REAL*8     LAMBDA,DEUXMU,DEUMUF,LAMF,GT,GC,GF,SEUIL,RAC2,ALPHA
 C     ------------------------------------------------------------------
 
-
+      RAC2 = SQRT(2.0D0)
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)
 
@@ -219,6 +220,8 @@ C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     -------------------------------------------------
       DO 130,IPG = 1,NPG
 C
+        CALL R8INIR(21,0.D0,ECRP,1)
+        
         CALL R8INIR(3,0.D0,N,1)
         CALL R8INIR(3,0.D0,M,1)
         CALL R8INIR(9,0.D0,DF,1)
@@ -264,20 +267,27 @@ C ---   EPAISSEUR TOTALE :
           EPST(3 + I) = KHI(I) + DKHI(I)
           DEPS(3 + I) = DKHI(I)
  70     CONTINUE
-        SURFGP = 0.0D0
-
-        DO 75, I = 1,21
-          ECR(I)     = ZR(IVARIM-1 + ICPV + I)
- 75     CONTINUE
+        
+        DO 73, I = 1,3
+          EPSM(I)   = EPS(I)        
+          EPSM(I+3) = KHI(I)        
+ 73     CONTINUE
 
         DO 77, I = 1,6
           SIG(I) = ZR(ICONTM-1 + ICPG + I)
  77     CONTINUE
 
-        CALL MAGLRC (NNO,COMPOR,PGL,MATR,MATI,DELAS,ECR)
+        IF (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') THEN
 
-        IF ( (COMPOR(1)(1:11).EQ. 'GLRC_DAMAGE') .OR.
-     &       (COMPOR(1)(1:4).EQ. 'GLRC')) THEN
+          NVINT = 21
+          
+          DO 75, I = 1,NVINT
+            ECR(I)     = ZR(IVARIM-1 + ICPV + I)
+ 75       CONTINUE
+
+
+          CALL MAGLRC (NNO,COMPOR,PGL,MATR,MATI,DELAS,ECR)
+
 
 C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
           SURFGP = POIDS
@@ -289,7 +299,7 @@ C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
             DSIG(3 + I) = DSIG(3 + I) * EP*EP / 6.D0
  78       CONTINUE
 
-          DO 80, I = 1,21
+          DO 80, I = 1,NVINT
            ZR(IVARIP-1 + ICPV + I) = ECR(I)
  80       CONTINUE
 
@@ -297,8 +307,35 @@ C   AIRE DE SURFACE APPARTENANT AU POINT DE G.
            ZR(ICONTP-1 + ICPG + I) = SIG(I) + DSIG(I)
  85       CONTINUE
 
+        ELSEIF (COMPOR(1)(1:9).EQ. 'GLRC_DM') THEN
+        
+          NVINT = 4 
+
+          DO 8510, I = 1,NVINT
+            ECR(I)     = ZR(IVARIM-1 + ICPV + I)        
+ 8510     CONTINUE
+
+          CALL CRGDM(ZI(IMATE),COMPOR,T,LAMBDA,DEUXMU,LAMF,DEUMUF,
+     &               GT,GC,GF,SEUIL,ALPHA,EP)
+     
+          CALL R8INIR(36,0.D0,DSIDEP,1)
+          CALL LCGLDM(EPSM,DEPS,ECR,OPT,SIG,ECRP,DSIDEP,T,
+     &                LAMBDA,DEUXMU,LAMF,DEUMUF,GT,GC,GF,SEUIL,ALPHA)
+
+          DO 8520, I = 1,NVINT
+            ZR(IVARIP-1 + ICPV + I) = ECRP(I)        
+ 8520     CONTINUE
+ 
+          DO 8530, I = 1,6
+           ZR(ICONTP-1 + ICPG + I) = SIG(I)        
+ 8530       CONTINUE
+ 
+          ZR(ICONTP-1 + ICPG + 3) = ZR(ICONTP-1 + ICPG + 3)/RAC2        
+          ZR(ICONTP-1 + ICPG + 6) = ZR(ICONTP-1 + ICPG + 6)/RAC2        
+
+        
         ELSE
-           CALL UTDEBM ('F','DXGLRC','LA LOI DE COMPORTEMENT SUIVANTE')
+           CALL UTDEBM ('F','DXGLRC','LA LOI DE COMPORTEMENT')
            CALL UTIMPK ('S',' N''EXISTE PAS POUR LA '//
      &                  'MODELISATION DKTG : ',1,COMPOR(1))
            CALL UTFINM ()
@@ -312,6 +349,7 @@ C         --------------------------
                 M(I) = ZR(ICONTP-1+ICPG+I+3)
    90            CONTINUE
             END IF
+
 C         -- CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
 C         ---------------------------------------------------------
             IF (MATRIC) THEN

@@ -1,6 +1,6 @@
       SUBROUTINE FLARFG( N, ALPHA, X, INCX, TAU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -90,6 +90,8 @@ C     .. EXTERNAL FUNCTIONS ..
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
+      CALL MATFPE(-1)
+C
       IF( N.LE.1 ) THEN
          TAU = ZERO
          GOTO 1000
@@ -143,6 +145,7 @@ C
       END IF
 C
  1000 CONTINUE
+      CALL MATFPE(1)
 C
 C     END OF FLARFG
 C

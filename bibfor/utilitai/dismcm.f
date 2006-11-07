@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,6 +93,42 @@ C     --------------------------------------
  2       CONTINUE
          REPK='NON'
          IF (TROUVE) REPK='OUI'
+C
+      ELSEIF (QUESTI.EQ.'EXI_ANISO') THEN
+C     -----------------------------------
+         REPK='NON'
+         CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
+         CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
+         DO 50, I=1,NMAT
+           MATER= ZK8(IAVALE-1+I)
+           IF (MATER.EQ.' ') GOTO 50
+           CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
+           CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
+           DO 52, IRC=1,NBRC
+             NOMRC=ZK16(IANORC-1+IRC)(1:10)
+             IF (NOMRC.EQ.'ELAS_COQUE') THEN
+                REPK='OUI'
+                GO TO 54
+             ELSEIF (NOMRC.EQ.'THER_COQUE') THEN
+                REPK='OUI'
+                GO TO 54
+             ELSEIF (NOMRC.EQ.'ELAS_ORTH') THEN
+                REPK='OUI'
+                GO TO 54
+             ELSEIF (NOMRC.EQ.'THER_ORTH') THEN
+                REPK='OUI'
+                GO TO 54
+             ELSEIF (NOMRC.EQ.'ELAS_COQMU') THEN
+                REPK='OUI'
+                GO TO 54
+             ELSEIF (NOMRC.EQ.'THER_COQMU') THEN
+                REPK='OUI'
+                GO TO 54
+             END IF
+ 52        CONTINUE
+ 50      CONTINUE
+ 54      CONTINUE
+C
       ELSE IF (QUESTI.EQ.'ELAS_F_TEMP') THEN
 C     --------------------------------------
          REPK='NON'
@@ -131,6 +167,7 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
  11        CONTINUE
  13        CONTINUE
  10      CONTINUE
+C
       ELSE IF (QUESTI.EQ.'THER_F_INST') THEN
 C     --------------------------------------
          REPK='NON'
@@ -169,6 +206,7 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
  21        CONTINUE
  23        CONTINUE
  20      CONTINUE
+C
       ELSE IF (QUESTI.EQ.'ELAS_F_HYDR') THEN
 C     --------------------------------------
          REPK='NON'
@@ -207,6 +245,7 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
  31        CONTINUE
  33        CONTINUE
  30      CONTINUE
+C
       ELSE IF (QUESTI.EQ.'ELAS_F_SECH') THEN
 C     --------------------------------------
          REPK='NON'

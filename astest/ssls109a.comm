@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE DE 3 NAPPES D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,7 +168,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 RESU1=CALC_ELEM(
                 RESULTAT=RESU,
                 OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
-                NUME_COUCHE=1,);
+                REPE_COQUE =_F( NUME_COUCHE=1,),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   NUME_ORDRE=1,
@@ -191,7 +191,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
 RESU2=CALC_ELEM(
                 RESULTAT=RESU,
                 OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
-                NUME_COUCHE=2,);
+                REPE_COQUE =_F( NUME_COUCHE=2,),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   NUME_ORDRE=1,
@@ -214,7 +214,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
 RESU3=CALC_ELEM(
                 RESULTAT=RESU,
                 OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
-                NUME_COUCHE=3,);
+                REPE_COQUE =_F( NUME_COUCHE=3,),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU3,
                   NUME_ORDRE=1,

@@ -1,7 +1,7 @@
       SUBROUTINE FLAEXC( WANTQ, N, T, LDT, Q, LDQ, J1, N1, N2, WORK,
      &                   INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -112,6 +112,8 @@ C     .. EXTERNAL FUNCTIONS ..
       REAL*8 DLANGE, R8MIEM, R8PREM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
+C
+      CALL MATFPE(-1)
 C
       INFO = 0
 C
@@ -361,6 +363,8 @@ C
    50 CONTINUE
       INFO = 1
  1000 CONTINUE
+C
+      CALL MATFPE(1)
 C
 C     END OF FLAEXC
 C

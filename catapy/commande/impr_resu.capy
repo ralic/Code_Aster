@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
          ),
 
          b_format_gmsh  =BLOC(condition="FORMAT=='GMSH'",fr="unité logique d'impression et version GMSH",
-           UNITE           =SIMP(statut='f',typ='I',defaut=19),  
+           UNITE           =SIMP(statut='f',typ='I',defaut=37),  
            VERSION         =SIMP(statut='f',typ='R',defaut=1.2,into=(1.0,1.2)),
          ),
 

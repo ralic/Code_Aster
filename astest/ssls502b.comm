@@ -1,5 +1,4 @@
-
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -95,8 +94,8 @@ RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
                TOUT_ORDRE='OUI',
                OPTION='SIGM_ELNO_DEPL',
-               NUME_COUCHE=1,
-               NIVE_COUCHE='SUP',);
+               REPE_COQUE =_F( NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',),);
 
 DEP_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_DZ ',
                                GROUP_NO='CD',

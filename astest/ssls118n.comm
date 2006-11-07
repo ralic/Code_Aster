@@ -1,5 +1,4 @@
-
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  PLAQUE CARREE TOURNEE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,75 +159,65 @@ RESU=MECA_STATIQUE(MODELE=MO,
                           _F(CHARGE=CHA_P,),),);
 #COUCHE 1 : CALCUL DES CONTRAINTES
 
-SIG_C1_S=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C1_S=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=1,
-                   NIVE_COUCHE='SUP',);
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),);
 
-SIG_C1_I=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C1_I=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=1,
-                   NIVE_COUCHE='INF',);
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),);
 #COUCHE 2: CALCUL DES CONTRAINTES
 
-SIG_C2_S=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C2_S=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=2,
-                   NIVE_COUCHE='SUP',);
+                   REPE_COQUE =_F( NUME_COUCHE=2,
+                                   NIVE_COUCHE='SUP',),);
 
-SIG_C2_I=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C2_I=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=2,
-                   NIVE_COUCHE='INF',);
+                   REPE_COQUE =_F( NUME_COUCHE=2,
+                                   NIVE_COUCHE='INF',),);
 #COUCHE 3: CALCUL DES CONTRAINTES
 
-SIG_C3_S=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C3_S=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=3,
-                   NIVE_COUCHE='SUP',);
+                   REPE_COQUE =_F( NUME_COUCHE=3,
+                                   NIVE_COUCHE='SUP',),);
 
-SIG_C3_M=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C3_M=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=3,
-                   NIVE_COUCHE='MOY',);
+                   REPE_COQUE =_F( NUME_COUCHE=3,
+                                   NIVE_COUCHE='MOY',),);
 
-SIG_C3_I=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C3_I=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=3,
-                   NIVE_COUCHE='INF',);
+                   REPE_COQUE =_F( NUME_COUCHE=3,
+                                   NIVE_COUCHE='INF',),);
 #COUCHE 4: CALCUL DES CONTRAINTES
 
 SIG_C4_S=CALC_ELEM(
                    RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=4,
-                   NIVE_COUCHE='SUP',);
+                   REPE_COQUE =_F( NUME_COUCHE=4,
+                                   NIVE_COUCHE='SUP',),);
 
-SIG_C4_I=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C4_I=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=4,
-                   NIVE_COUCHE='INF',);
+                   REPE_COQUE =_F( NUME_COUCHE=4,
+                                   NIVE_COUCHE='INF',),);
 #COUCHE 5: CALCUL DES CONTRAINTES
 
-SIG_C5_S=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C5_S=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=5,
-                   NIVE_COUCHE='SUP',);
+                   REPE_COQUE =_F( NUME_COUCHE=5,
+                                   NIVE_COUCHE='SUP',),);
 
-SIG_C5_I=CALC_ELEM(
-                   RESULTAT=RESU,
+SIG_C5_I=CALC_ELEM(RESULTAT=RESU,
                    OPTION='SIGM_ELNO_DEPL',
-                   NUME_COUCHE=5,
-                   NIVE_COUCHE='INF',);
+                   REPE_COQUE =_F( NUME_COUCHE=5,
+                                   NIVE_COUCHE='INF',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=SIG_C1_I,
                    NUME_ORDRE=1,

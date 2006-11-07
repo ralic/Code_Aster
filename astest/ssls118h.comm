@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  PLAQUE CARREE TOURNEE EN APPUI SIMPLE SOUS PRESSION SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,8 +51,7 @@ MAIL=MODI_MAILLAGE( reuse=MAIL,
                                          INFO=2
                                        )
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
-                       COQUE=_F(ANGL_REP=(20.,-30.),
-                                GROUP_MA='TOUT',
+                       COQUE=_F(GROUP_MA='TOUT',
                                 EPAIS=0.1,),);
 MAT=DEFI_MATERIAU(ELAS=_F(NU=0.25,
                           E=25.0,),);
@@ -143,23 +142,31 @@ RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
 
 
 SIG_C1_S=CALC_ELEM(RESULTAT=RESU,
-                        NIVE_COUCHE='SUP',
-                        NUME_COUCHE=1,
-                        OPTION='SIGM_ELNO_DEPL',);
+                   REPE_COQUE =_F( ANGL_REP=(20.,-30.),
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',),
+                   OPTION='SIGM_ELNO_DEPL',);
+
 SIG_C1_M=CALC_ELEM(RESULTAT=RESU,
-                        NIVE_COUCHE='MOY',
-                        NUME_COUCHE=1,
-                        OPTION='SIGM_ELNO_DEPL',);
+                   REPE_COQUE =_F( ANGL_REP=(20.,-30.),
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='MOY',),
+                   OPTION='SIGM_ELNO_DEPL',);
+
 SIG_C1_I=CALC_ELEM(RESULTAT=RESU,
-                        NIVE_COUCHE='INF',
-                        NUME_COUCHE=1,
-                        OPTION='SIGM_ELNO_DEPL',);
+                   REPE_COQUE =_F( ANGL_REP=(20.,-30.),
+                                   NUME_COUCHE=1,
+                                   NIVE_COUCHE='INF',),
+                   OPTION='SIGM_ELNO_DEPL',);
+
 EFF=CALC_ELEM(RESULTAT=RESU,
-                   PLAN='MOY',
-                   OPTION='EFGE_ELNO_DEPL',);
+              REPE_COQUE =_F( ANGL_REP=(20.,-30.),
+                              PLAN='MOY',),
+              OPTION='EFGE_ELNO_DEPL',);
 
 SIGG=CALC_ELEM(RESULTAT=RESU,
-                   OPTION='SIEF_ELNO_ELGA',);
+               REPE_COQUE =_F( ANGL_REP=(20.,-30.),),
+               OPTION='SIEF_ELNO_ELGA',);
                    
 TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',
                   RESULTAT=RESU,

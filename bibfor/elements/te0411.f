@@ -1,0 +1,183 @@
+      SUBROUTINE TE0411(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
+C    - FONCTION REALISEE:  CALCUL LES CONTRAINTES :
+C                          NORMALE, D'ARC ET DE CONSOLE 
+C                          DES ELEMENTS DE PEAU 3D
+C    - ARGUMENTS:
+C        DONNEES:      OPTION       -->  OPTION DE CALCUL
+C                      NOMTE        -->  NOM DU TYPE ELEMENT
+C
+C    - OPTION CALCULEE : ARC_CONSOLE
+C ----------------------------------------------------------------------
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER ISIG,IARC,NNOP,NDIM,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,I,IANG
+      INTEGER IGEOM,J,IFONC,INO,IADZI,IAZK24
+      REAL*8 PREC,XX1(3),ALPHA,BETA,PI,A(3),B(3),C(3)
+      REAL*8 SIGG(3,3),MLG(3,3),MTMP(3,3),SIGL(3,3),R8DGRD,D(3),AD(3)
+      REAL*8 AB(3),AC(3),NORME,X1(3),X2(3),X3(3),MGL(3,3),DET,PS
+      REAL*8 DFF(162),VTAN1(3),VTAN2(3),NORX3
+      CHARACTER*8 ELREFE,KNUNOE,KNUMAI
+      PARAMETER(PREC=1.0D-10)
+C
+      CALL TECAEL(IADZI,IAZK24)
+      KNUMAI=ZK24(IAZK24+2)(1:8)
+      CALL ELREF1(ELREFE)
+      CALL ELREF4(' ','RIGI',NDIM,NNOP,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+
+      CALL JEVECH('PSIG3D' ,'L',ISIG)
+      CALL JEVECH('PCAMASS','L',IANG)
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PARCCON','E',IARC)
+
+      ALPHA = ZR(IANG)*R8DGRD()
+      BETA  = ZR(IANG+1)*R8DGRD()
+      XX1(1)=COS(ALPHA)*COS(BETA)
+      XX1(2)=SIN(ALPHA)*COS(BETA)
+      XX1(3)=SIN(BETA)
+C
+C     CALCUL DES DERIVEES DES FONCTIONS DE FORMES AUX NOEUDS DE L'ELREFE
+      CALL DFFNO ( ELREFE, NDIM, NNOP, NNOS, DFF )
+
+C     BOUCLE SUR LES NOEUDS DE L'ELEMENT
+      DO 10 INO=1,NNOP
+
+C --- 1. DEFINITION DU REPERE LOCAL (X1,X2,X3)
+C     =======================================
+C     VECTEUR X1: DIRECTION DE LA CONTRAINTE D'ARC
+C     VECTEUR X2: DIRECTION DE LA CONTRAINTE DE CONSOLE
+C     VECTEUR X3: DIRECTION DE LA CONTRAINTE NORMALE
+
+C -   1.1 VECTEUR X3
+C     -------------
+C     CALCUL DES 2 VECTEURS TANGENTS : VTAN1, VTAN2
+      DO 12 I=1,3
+         VTAN1(I) = 0.D0
+         VTAN2(I) = 0.D0
+ 12   CONTINUE
+
+      DO 20 IFONC=1,NNOP
+        VTAN1(1)=VTAN1(1)+
+     &          ZR(IGEOM-1+3*(IFONC-1)+1)*DFF((INO-1)*NNOP*2+IFONC)
+        VTAN1(2)=VTAN1(2)+
+     &          ZR(IGEOM-1+3*(IFONC-1)+2)*DFF((INO-1)*NNOP*2+IFONC)
+        VTAN1(3)=VTAN1(3)+
+     &          ZR(IGEOM-1+3*(IFONC-1)+3)*DFF((INO-1)*NNOP*2+IFONC)
+        VTAN2(1)=VTAN2(1)+
+     &          ZR(IGEOM-1+3*(IFONC-1)+1)*DFF((INO-1)*NNOP*2+NNOP+IFONC)
+        VTAN2(2)=VTAN2(2)+
+     &          ZR(IGEOM-1+3*(IFONC-1)+2)*DFF((INO-1)*NNOP*2+NNOP+IFONC)
+        VTAN2(3)=VTAN2(3)+
+     &          ZR(IGEOM-1+3*(IFONC-1)+3)*DFF((INO-1)*NNOP*2+NNOP+IFONC)
+ 20   CONTINUE
+
+C     CALCUL DU VECTEUR NORMAL AU NOEUD INO + NORMALISATION
+      CALL PROVEC(VTAN1,VTAN2,X3)
+      CALL NORMEV(X3,NORX3)
+      IF(NORX3.LT.PREC)THEN 
+        KNUNOE=ZK24(IAZK24+2+INO)(1:8)
+        CALL UTMESS('F','TE0411','IL EST IMPOSSIBLE DE '//
+     &       'CALCULER LA NORMALE AU NOEUD '//KNUNOE//
+     &       ' DE LA MAILLE '//KNUMAI// 
+     &       '. DES ARETES DOIVENT ETRE CONFONDUES.')
+       ENDIF
+C
+C -   1.2 VECTEUR X1
+C     -------------
+      CALL PROVEC(X3,XX1,X1)
+      CALL NORMEV(X1,NORME)
+      IF(NORME.LT.PREC)THEN
+        CALL UTMESS('F','TE0411','IL EST IMPOSSIBLE DE'//
+     &  ' CALCULER LA CONTRAINTE D''ARC.'//
+     &  ' LA NORMALE A L''ELEMENT ET LE VECTEUR OBTENU A PARTIR'//
+     &  ' DU MOT-CLE ''ANGL_REP'' SONT COLINEAIRES')
+      ENDIF
+
+C -   1.3 VECTEUR X2
+C     -------------
+      CALL PROVEC(X3,X1,X2)
+      CALL NORMEV(X2,NORME)
+C --- 2. DETERMINATION DES MATRICES DE PASSAGE : 
+C     =======================================
+C     MGL: GLOBAL --> LOCAL
+C     MLG: LOCAL  --> GLOBAL (MLG=TRANSPOSEE(MGL))
+      DET =   X1(1)*X2(2)*X3(3) + X1(2)*X2(3)*X3(1) + X1(3)*X2(1)*X3(2)
+     &      - X1(3)*X2(2)*X3(1) - X1(1)*X2(3)*X3(2) - X1(2)*X2(1)*X3(3)
+      IF(ABS(DET-1.D0).GT.PREC)CALL UTMESS('F','TE0411','STOP')
+
+      MGL(1,1) = X1(1) 
+      MGL(2,1) = X2(1)
+      MGL(3,1) = X3(1)
+      MGL(1,2) = X1(2)  
+      MGL(2,2) = X2(2)
+      MGL(3,2) = X3(2)
+      MGL(1,3) = X1(3) 
+      MGL(2,3) = X2(3)
+      MGL(3,3) = X3(3)   
+
+      MLG(1,1) = X1(1) 
+      MLG(2,1) = X1(2)
+      MLG(3,1) = X1(3)
+      MLG(1,2) = X2(1)  
+      MLG(2,2) = X2(2)
+      MLG(3,2) = X2(3)
+      MLG(1,3) = X3(1) 
+      MLG(2,3) = X3(2)
+      MLG(3,3) = X3(3)   
+
+C --- DETERMINATION DES CONTRAINTES NORMALE D'ARC ET DE CONSOLE
+C     =========================================================
+
+      SIGG(1,1)=ZR(ISIG+6*(INO-1))
+      SIGG(2,2)=ZR(ISIG+6*(INO-1)+1)
+      SIGG(3,3)=ZR(ISIG+6*(INO-1)+2)
+      SIGG(1,2)=ZR(ISIG+6*(INO-1)+3)
+      SIGG(1,3)=ZR(ISIG+6*(INO-1)+4)
+      SIGG(2,3)=ZR(ISIG+6*(INO-1)+5)
+      SIGG(2,1)=  SIGG(1,2)
+      SIGG(3,1)=  SIGG(1,3)
+      SIGG(3,2)=  SIGG(2,3)
+      CALL PMAT(3,SIGG,MLG,MTMP)
+      CALL PMAT(3,MGL,MTMP,SIGL)
+      ZR(IARC+3*(INO-1))  =SIGL(1,1)
+      ZR(IARC+3*(INO-1)+1)=SIGL(2,2)
+      ZR(IARC+3*(INO-1)+2)=SIGL(3,3)
+
+ 10   CONTINUE
+
+      END

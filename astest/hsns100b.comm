@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE SOUMISE A UN GRADIENT DE TEMPERATURE DANS L'EPAISSEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,9 +74,9 @@ MO=AFFE_MODELE(    MAILLAGE=M,AFFE=(
   )
 
 CARAC=AFFE_CARA_ELEM(  MODELE=MO,
-           COQUE=_F( COQUE_NCOU=5,
-       GROUP_MA = 'TOUT',
- EPAIS = 0.10,  A_CIS = 1.E+5) )
+                       COQUE=_F( GROUP_MA = 'TOUT',
+                                 COQUE_NCOU=5,
+                                 EPAIS = 0.10,  A_CIS = 1.E+5) )
 
 ACIER=DEFI_MATERIAU(       ELAS=_F( E = 2.,  NU = 0.3, ALPHA = 1.E-2),
            ECRO_LINE=_F( D_SIGM_EPSI = .2, SY = 10000.) )
@@ -125,9 +125,8 @@ U2=STAT_NON_LINE(
               )
 
 U2=CALC_ELEM( reuse=U2,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=U2,
+              OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+              RESULTAT=U2,
               )
 
 U2=STAT_NON_LINE( reuse=U2,
@@ -153,16 +152,14 @@ U2=STAT_NON_LINE( reuse=U2,
               )
 
 U2=CALC_ELEM( reuse=U2,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=U2,
-                        NUME_ORDRE=4,
+              OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+              RESULTAT=U2,
+              NUME_ORDRE=4,
               )
 
 U2=CALC_ELEM( reuse=U2,   RESULTAT=U2,
-
                     TOUT_ORDRE='OUI',
-                 NUME_COUCHE=1,  NIVE_COUCHE='SUP',
+                    REPE_COQUE =_F( NUME_COUCHE=1,  NIVE_COUCHE='SUP',),
                   OPTION='EPSI_ELNO_DEPL'
                     )
 
@@ -170,10 +167,9 @@ U2=CALC_ELEM( reuse=U2,   RESULTAT=U2,
 #NECESSITE DE REPARTIR LES OPTIONS SUIVANT LES ELEMENTS
 
 U2=CALC_ELEM( reuse=U2,   RESULTAT=U2,
-
                   MAILLE=('M1','M2','M3',),
                  TOUT_ORDRE='OUI',
-                 NUME_COUCHE=1,  NIVE_COUCHE='SUP',
+                 REPE_COQUE =_F( NUME_COUCHE=1,  NIVE_COUCHE='SUP',),
                   OPTION='DEGE_ELNO_DEPL'
                     )
 

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,6 +105,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+      CALL MATFPE(-1)
 
       SAFE=.TRUE.
 C     LE BOOLEEN "SAFE" PERMET DE BASCULER ENTRE LES 2 ROUTINES LAPACK
@@ -182,5 +184,7 @@ C     ------------------------------------------------------------
           CALL JEDETR('&&CALSVD.IWORK')
       END IF
 
+C
+      CALL MATFPE(1)
 
       END

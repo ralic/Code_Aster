@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,7 +84,7 @@ CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
 #
 CALC_ELEM( reuse=RESU, RESULTAT=RESU,
            OPTION='SIGM_ELNO_DEPL',
-           NIVE_COUCHE='INF'          )
+           REPE_COQUE=_F( NIVE_COUCHE='INF',),)
 
 #
 CALC_ELEM( reuse=RESU, RESULTAT=RESU,     
@@ -468,8 +468,8 @@ CALC_ELEM( reuse=U3, RESULTAT=U3,
 CALC_ELEM( reuse=U3,  RESULTAT=U3,     
            NUME_ORDRE=4,
            OPTION='SIGM_ELNO_COQU',
-           NUME_COUCHE=1,
-           NIVE_COUCHE='INF'        )
+           REPE_COQUE =_F( NUME_COUCHE=1,
+                           NIVE_COUCHE='INF',),        )
 
 CALC_ELEM( reuse=U3, RESULTAT=U3,      
            NUME_ORDRE=4,

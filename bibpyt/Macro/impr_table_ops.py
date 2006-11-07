@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,8 +145,9 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
          if not p in tab.para:
             UTMESS('A', 'IMPR_TABLE', 'Paramètre absent de la table : %s' % p)
       
-      # sélection des paramètres
-      timp=tab[nom_para]
+      # sélection des paramètres et suppression des colonnes vides
+      timp = tab[nom_para]
+      timp = timp.SansColonneVide()
       
       # passage des mots-clés de mise en forme à la méthode Impr
       kargs=args.copy()

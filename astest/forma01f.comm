@@ -1,10 +1,11 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE PABHHHH N.TARDIEU
 #
 #
 DEBUT(CODE=_F(NOM='FORMA01F',
               NIV_PUB_WEB='INTERNET',),);
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE 
+
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +23,15 @@ DEBUT(CODE=_F(NOM='FORMA01F',
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+#        TUYAUTERIE COMPORTANT UN COUDE
+#     MODELISATION PAR DES ELEMENTS COQUES DKT
+#     ----------------------------------------
+#
+#
+#
+#
+
+
 #        GEOMETRIE COMPORTANT UN COUDE
 #     MODELISATION PAR DES ELEMENTS COQUES DKT
 #            PRODUIT PAR GMSH
@@ -52,6 +62,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                   GROUP_MA='GM29',),
                                _F(NOM='EFOND',
                                   GROUP_MA='GM28',),),);
+                                  
 # ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
 #
 #
@@ -62,6 +73,13 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 CREA_GROUP_NO=_F(GROUP_MA='GM31',
                                  NOM='A1',),);
 
+
+# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
+#
+#
+#
+
+
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
                    ORIE_NORM_COQUE=_F(GROUP_MA='TUYAU',
@@ -69,25 +87,46 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                                       GROUP_NO='A1',),
                    );
 
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='ENCAST',),
+                               _F(GROUP_MA='EFOND',),
+                               _F(OPTION='PLAN',                             
+                                  NOM='PEXT',                                
+                                  POINT=(3.6,3.6,0.0,),                      
+                                  VECT_NORMALE=(0.0,1.0,0.0,),               
+                                  PRECISION=0.001,),                         
+                               _F(INTERSEC=('EFOND','PEXT',),                
+                                  NOM='PB',),),);                            
+
+
+# Creation de groupe de mailles en parties courantes du tubes
+# Horizontal  et Vertical
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='TUBEH5',
+                                  OPTION='BANDE',
+                                  POINT=(2.5,0,0),
+                                  DIST=0.1,
+                                  VECT_NORMALE=(1,0,0,),),
+                               _F(NOM='TUBEH',
+                                  INTERSEC=('TUBEH5','TUYAU',), ),
+                                 ),);
+                                 
+                                
 #
 # DEFINITION DES ELEMENTS FINIS UTILISES
-#
-#
-#
 
 
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(GROUP_MA=('TUYAU','EFOND',),
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DKT',),);
-
 # DEFINITION DU MATERIAU UTILISE
-#
-#
-#
 
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=204000000000.0,
+ACIER=DEFI_MATERIAU(ELAS=_F(E=204.E9,
                             NU=0.3,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
@@ -96,17 +135,15 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 #
 # CARACTERISTIQUES DES COQUES
 #
-#
-#
 
 
 CARA_COQ=AFFE_CARA_ELEM(MODELE=MODMECA,
                         COQUE=_F(GROUP_MA=('TUYAU','EFOND',),
-                                 EPAIS=0.02,
-                                 ANGL_REP=(0.0,-90.0,),),);
+                                 EPAIS=0.02,),);
 #
 # DEFINITION DES CONDITIONS AUX LIMITES
 #    ENCASTREMENT SUR LA SECTION ENCAST
+#
 #
 #
 #
@@ -127,7 +164,8 @@ BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
 #
 # DEFINITION DES CHARGEMENTS
 #    CHARGEMENT 1 : FY=100KN (FX,FZ,MX,MY,MZ NULS)
-#    CHARGEMENT 2 : PRESSION INTERNE DE 15 MPA ET EFFET DE FOND
+#    CHARGEMENT 2 : PRESSION INTERNE DE 15 MPA 
+#
 #
 #
 #
@@ -139,15 +177,16 @@ EPTUB = 0.02;
 REXT = 0.2;
 
 
-RMOY=REXT-(EPTUB/2);
+RMOY=REXT-(EPTUB/2)
 
-FYREP=FYTOT/2./pi/RMOY;
+FYREP=FYTOT/2./pi/RMOY
 
-RINT=RMOY-(EPTUB/2);
+RINT=RMOY-(EPTUB/2)
 
-SINT=pi*(RINT*RINT);
+SINT=pi*(RINT*RINT)
 #
 # 2*PI*R*FY = 100 KN
+#
 #
 #
 #
@@ -160,11 +199,12 @@ CHARG1=AFFE_CHAR_MECA(MODELE=MODMECA,
 # 2*PI*R*FX = PINT * SINT ;
 #
 #
+#
 
-PINT = 15000000.0;
+PINT = 15.E6
 
 
-PRES=PINT*RINT/RMOY;
+PRES=PINT*RINT/RMOY
 
 CHARG2=AFFE_CHAR_MECA(MODELE=MODMECA,
                       FORCE_COQUE=_F(GROUP_MA='TUYAU',
@@ -176,16 +216,6 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
                     EXCIT=(_F(CHARGE=BLOQUAGE,),
                            _F(CHARGE=CHARG1,),),);
 
-RESU1=CALC_ELEM(reuse =RESU1,
-                MODELE=MODMECA,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARA_COQ,
-                OPTION='SIGM_ELNO_DEPL',
-                RESULTAT=RESU1,);
-#
-#
-#
-
 
 RESU2=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT,
@@ -193,20 +223,7 @@ RESU2=MECA_STATIQUE(MODELE=MODMECA,
                     EXCIT=(_F(CHARGE=BLOQUAGE,),
                            _F(CHARGE=CHARG2,),),);
 
-RESU2=CALC_ELEM(reuse =RESU2,
-                MODELE=MODMECA,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARA_COQ,
-                OPTION='SIGM_ELNO_DEPL',
-                RESULTAT=RESU2,
-                NIVE_COUCHE='SUP',);
 
-RESU2=CALC_ELEM(reuse =RESU2,
-                MODELE=MODMECA,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARA_COQ,
-                OPTION='EQUI_ELNO_SIGM',
-                RESULTAT=RESU2,);
 
 IMPR_RESU(MODELE=MODMECA,
           RESU=(_F(RESULTAT=RESU1,
@@ -216,16 +233,75 @@ IMPR_RESU(MODELE=MODMECA,
                    NOM_CHAM='DEPL',
                    GROUP_MA='EFOND',),),);
 
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=(_F(GROUP_MA='EFOND',),
-                               _F(OPTION='PLAN',
-                                  NOM='PEXT',
-                                  POINT=(3.6,3.6,0.0,),
-                                  VECT_NORMALE=(0.0,1.0,0.0,),
-                                  PRECISION=0.001,),
-                               _F(INTERSEC=('EFOND','PEXT',),
-                                  NOM='PB',),),);
+                   
+# RESULTANTE DES EFFORTS ET REACTIONS
+
+RESU1=CALC_NO(reuse =RESU1,
+              RESULTAT=RESU1,
+              OPTION='FORC_NODA');
+
+REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
+                             GROUP_NO='ENCAST',
+                             RESULTAT=RESU1,
+                             NOM_CHAM='FORC_NODA',
+                             RESULTANTE=('DX','DY','DZ',),
+                             MOMENT=('DRX','DRY','DRZ',),
+                             POINT=(0.0,0.0,0.0,),
+                             OPERATION='EXTRACTION',),);
+
+FAPP=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
+                             GROUP_NO='EFOND',
+                             RESULTAT=RESU1,
+                             NOM_CHAM='FORC_NODA',
+                             RESULTANTE=('DX','DY','DZ',),
+                             MOMENT=('DRX','DRY','DRZ',),
+                             POINT=(3.6,3.6,0.0,),
+                             OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=REAC,);
+
+IMPR_TABLE(TABLE=FAPP,);
+
+
+#  pour tester VECTEUR et ANGL_REP dans CALC_ELEM
+
+RESU1=CALC_ELEM(reuse =RESU1,
+                OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),
+                RESULTAT=RESU1,
+                REPE_COQUE=_F(NIVE_COUCHE='SUP',VECTEUR=(0.,0.,1.)),
+                );
+
+RESU2=CALC_ELEM(reuse =RESU2,
+                OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),
+                RESULTAT=RESU2,
+                REPE_COQUE=_F(NIVE_COUCHE='SUP',VECTEUR=(0.,0.,1.)),
+                );
+
+
+RESU2=CALC_ELEM(OPTION='SIGM_ELNO_DEPL',
+                 RESULTAT=RESU2,reuse=RESU2,
+                 GROUP_MA='TUBEH',
+                 REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY',VECTEUR=(0.,1.,0.)),
+                 ),)
+ 
+
+# TEST_RESU
+
+# solution analytique tube droit et libre sous pression
+
+Sxx=PRES*RMOY/EPTUB
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CMP='SIXX',TYPE_TEST='MAX',
+                   VALE=Sxx,PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE'),)
+
+
+
+# utile seulement pour les TEST_RESU
+
 
 TABDEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB1',
                                 GROUP_NO='PB',
@@ -241,9 +317,6 @@ TABDEP2=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB2',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=TABDEP1,);
-
-IMPR_TABLE(TABLE=TABDEP2,);
 
 TEST_TABLE(TABLE=TABDEP1,
            NOM_PARA='DX',
@@ -287,45 +360,13 @@ TEST_TABLE(TABLE=TABDEP2,
            REFERENCE='NON_REGRESSION',
            VERSION='6.3.20',);
 
-RESU1=CALC_NO(reuse =RESU1,
-              RESULTAT=RESU1,
-              OPTION='FORC_NODA',
-              MODELE=MODMECA,
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=CARA_COQ,);
 
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA='ENCAST',),);
-
-REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
-                             GROUP_NO='ENCAST',
-                             RESULTAT=RESU1,
-                             NOM_CHAM='FORC_NODA',
-                             RESULTANTE=('DX','DY','DZ',),
-                             MOMENT=('DRX','DRY','DRZ',),
-                             POINT=(0.0,0.0,0.0,),
-                             OPERATION='EXTRACTION',),);
-
-FAPP=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
-                             GROUP_NO='EFOND',
-                             RESULTAT=RESU1,
-                             NOM_CHAM='FORC_NODA',
-                             RESULTANTE=('DX','DY','DZ',),
-                             MOMENT=('DRX','DRY','DRZ',),
-                             POINT=(3.6,3.6,0.0,),
-                             OPERATION='EXTRACTION',),);
-
-IMPR_TABLE(TABLE=REAC,);
-
-IMPR_TABLE(TABLE=FAPP,);
-
-IMPR_RESU(MODELE=MODMECA,FORMAT='GMSH',VERSION=1.2,UNITE=30,
+IMPR_RESU(MODELE=MODMECA,FORMAT='GMSH',VERSION=1.2,UNITE=37,
           RESU=(_F(RESULTAT=RESU1,
                    NOM_CHAM='DEPL',),
                 _F(RESULTAT=RESU1,
                    NOM_CHAM='SIGM_ELNO_DEPL',
                    NOM_CMP=('SIXX','SIYY'),),),);
 
+
 FIN();
-#

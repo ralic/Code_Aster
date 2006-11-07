@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF CALCULEL  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -242,6 +242,15 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           LPAIN(1) = 'PDEFORR'
           LCHIN(1) = CHEPS
           LPAOUT(1) = 'PDEFOEQ'
+        ELSE IF (OPTIO2.EQ.'ARCO_ELNO_SIGM') THEN
+          LPAIN(1) = 'PSIG3D'
+          LCHIN(1) = CHSIG
+          LPAIN(2) = 'PCAMASS'
+          LCHIN(2) = CHEPS
+          LPAIN(3) = 'PGEOMER'
+          LCHIN(3) = CHGEOM
+          NBIN = 3
+          LPAOUT(1) = 'PARCCON'
         ELSE
           LPAIN(1) = 'PDEPLAR'
           IF (OPTIO2.EQ.'SIGM_ELNO_COQU') THEN

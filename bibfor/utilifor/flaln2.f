@@ -1,7 +1,7 @@
       SUBROUTINE FLALN2( LTRANS, NA, NW, SMIN, CA, A, LDA, D1, D2, B,
      &                   LDB, WR, WI, X, LDX, SCALE, XNORM, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -186,6 +186,8 @@ C     .. DATA STATEMENTS ..
      &                   3, 2, 1 /
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
+C
+      CALL MATFPE(-1)
 C
 C     COMPUTE BIGNUM
 C
@@ -528,6 +530,8 @@ C
       END IF
 C
  1000 CONTINUE
+C
+      CALL MATFPE(1)
 C
 C     END OF FLALN2
 C

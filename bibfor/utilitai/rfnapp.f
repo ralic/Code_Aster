@@ -1,0 +1,101 @@
+      SUBROUTINE RFNAPP (NAPPE)
+      IMPLICIT NONE
+      CHARACTER*19  NAPPE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C EXTRAIT UNE FONCTION D UNE NAPPE (ATTENTION, PAS D INTERPOLATION)
+C POUR LE PARAMETRE DONNE
+C ----------------------------------------------------------------------
+C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER       ZI
+      COMMON/IVARJE/ZI(1)
+      REAL*8        ZR
+      COMMON/RVARJE/ZR(1)
+      COMPLEX*16    ZC
+      COMMON/CVARJE/ZC(1)
+      LOGICAL       ZL
+      COMMON/LVARJE/ZL(1)
+      CHARACTER*8   ZK8
+      CHARACTER*16         ZK16
+      CHARACTER*24                 ZK24
+      CHARACTER*32                         ZK32
+      CHARACTER*80                                 ZK80
+      COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM
+C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
+      INTEGER      IFM,NIV
+      INTEGER      NV, NP, NC, NPAR, JPARA, INDIC, JPROL, LPRO, NBVR
+      INTEGER      JVAL, LVAL, IVAL
+      REAL*8       VALP, PREC, VPAR, DELTA
+      CHARACTER*8  K8B, CRIT
+      CHARACTER*16 NOMCMD, TYPFON
+      CHARACTER*19 NOMFON
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
+C
+      CALL GETRES(NOMFON,TYPFON,NOMCMD)
+C
+      CALL GETVR8 ( ' ', 'VALE_PARA_FONC', 0,1,1, VALP, NV )
+      CALL GETVR8 ( ' ', 'PRECISION'     , 0,1,1, PREC, NP )
+      CALL GETVTX ( ' ', 'CRITERE'       , 0,1,1, CRIT, NC )
+
+      CALL JELIRA(NAPPE//'.PARA','LONUTI',NPAR,K8B)
+      CALL JEVEUO(NAPPE//'.PARA','L',JPARA)
+
+      DO 10 INDIC=1,NPAR
+         VPAR=ZR(JPARA+INDIC-1)
+         IF     ( CRIT .EQ. 'RELATIF' ) THEN
+            DELTA=ABS((VPAR-VALP)/VALP)
+            IF (DELTA . LE . PREC) GOTO 20
+         ELSEIF ( CRIT .EQ. 'ABSOLU' ) THEN
+            DELTA=ABS(VPAR-VALP)
+            IF (DELTA . LE . PREC) GOTO 20
+         ENDIF
+ 10   CONTINUE
+      CALL U2MESS('F','UTILITAI5_90')
+ 20   CONTINUE
+C
+C     --- REMPLISSAGE DU .PROL ---
+C
+      CALL JEVEUO(NAPPE//'.PROL','L',JPROL)
+      CALL WKVECT(NOMFON//'.PROL','G V K16',5,LPRO)
+      ZK16(LPRO)   = 'FONCTION'
+      ZK16(LPRO+1) = ZK16(JPROL+5+INDIC*2-1)
+      ZK16(LPRO+2) = ZK16(JPROL+5)
+      ZK16(LPRO+3) = ZK16(JPROL+3)
+      ZK16(LPRO+4) = ZK16(JPROL+5+INDIC*2)
+
+      CALL JEVEUO(JEXNUM(NAPPE//'.VALE',INDIC),'L',JVAL)
+      CALL JELIRA(JEXNUM(NAPPE//'.VALE',INDIC),'LONMAX',NBVR,K8B)
+      CALL WKVECT(NOMFON//'.VALE','G V R',NBVR,LVAL)
+      DO 30 IVAL=1,NBVR
+         ZR(LVAL+IVAL-1)=ZR(JVAL+IVAL-1)
+ 30   CONTINUE
+C
+C     --- CREATION D'UN TITRE ---
+      CALL TITRE
+      CALL FOATTR(' ',1,NOMFON)
+      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)
+C
+      CALL JEDEMA()
+      END

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -240,7 +240,7 @@ COUPLA=STAT_NON_LINE(
 
 COUPLA=CALC_ELEM(    reuse=COUPLA,
                      OPTION=( 'SIEF_ELNO_ELGA',
-                              'EPGR_ELNO',
+                              'EPFP_ELNO',
                               'EPSP_ELNO', ),
                      RESULTAT=COUPLA )
 
@@ -263,7 +263,7 @@ RELEVE_1=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION'),
                    _F(  RESULTAT = COUPLA,
                             INTITULE = 'EPSF',
-                            NOM_CHAM = 'EPGR_ELNO',
+                            NOM_CHAM = 'EPFP_ELNO',
                             TOUT_CMP = 'OUI',
                             LIST_INST = LINST,
                             PRECISION = 1.E-8,
@@ -336,7 +336,7 @@ RELEVE_2=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION'),
                    _F(  RESULTAT = COUPLA,
                             INTITULE = 'EPSF',
-                            NOM_CHAM = 'EPGR_ELNO',
+                            NOM_CHAM = 'EPFP_ELNO',
                             TOUT_CMP = 'OUI',
                             LIST_INST = LINST,
                             PRECISION = 1.E-8,
@@ -478,7 +478,7 @@ COUPLA2=STAT_NON_LINE(
 COUPLA2=CALC_ELEM(    reuse=COUPLA2,
                      OPTION=( 'EPSI_ELNO_DEPL',
                               'SIEF_ELNO_ELGA',
-                              'EPGR_ELNO',
+                              'EPFP_ELNO',
                               'EPSP_ELNO', ),
                      RESULTAT=COUPLA2 )
 
@@ -501,7 +501,7 @@ RELEVE_3=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION'),
                    _F(  RESULTAT = COUPLA2,
                             INTITULE = 'EPSF',
-                            NOM_CHAM = 'EPGR_ELNO',
+                            NOM_CHAM = 'EPFP_ELNO',
                             TOUT_CMP = 'OUI',
                             LIST_INST = LINST,
                             PRECISION = 1.E-8,
@@ -589,7 +589,7 @@ COUPLA3=STAT_NON_LINE(
 
 COUPLA3=CALC_ELEM( reuse=COUPLA3,          
                    OPTION=( 'SIEF_ELNO_ELGA',
-                            'EPGR_ELNO',
+                            'EPFP_ELNO',
                             'EPSP_ELNO', ),
                    RESULTAT=COUPLA3 )
 
@@ -612,7 +612,7 @@ RELEVE_4=POST_RELEVE_T(ACTION=(
                             OPERATION = 'EXTRACTION'),
                    _F(  RESULTAT = COUPLA3,
                             INTITULE = 'EPSF',
-                            NOM_CHAM = 'EPGR_ELNO',
+                            NOM_CHAM = 'EPFP_ELNO',
                             TOUT_CMP = 'OUI',
                             LIST_INST = LINST,
                             PRECISION = 1.E-8,

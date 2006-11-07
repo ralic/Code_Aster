@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -156,7 +156,7 @@ DEPLPES=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-           NIVE_COUCHE='INF'
+           REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
 
@@ -169,7 +169,7 @@ DEPLROT=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-           NIVE_COUCHE='INF'
+           REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
 # ------------------------------------------------------------------
@@ -195,7 +195,7 @@ DEPLDIL=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
            EXCIT=_F( CHARGE = CHDIL),
-           NIVE_COUCHE='INF'
+           REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
 
@@ -218,7 +218,7 @@ DEPLDILT=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
 CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
            EXCIT=_F( CHARGE = CHDIL),
-             NIVE_COUCHE='INF'
+             REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
 # ------------------------------------------------------------------
@@ -232,7 +232,7 @@ DEPLDI2=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-           NIVE_COUCHE='INF'
+           REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
 
@@ -245,7 +245,7 @@ DEPLDI2T=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
-           NIVE_COUCHE='INF'
+           REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
 #---------------------------------------------------------------------
@@ -517,10 +517,10 @@ TEST_RESU(RESU=(
 
 #---------------------------------------------------------------------
 
-T_POT=POST_ELEM(    RESULTAT=U,
-                      CHARGE=CHDI3,
-                 NIVE_COUCHE='INF',
-                    ENER_POT=_F( TOUT = 'OUI',)  )
+T_POT=POST_ELEM(  RESULTAT=U,
+                  CHARGE=CHDI3,
+                  NIVE_COUCHE='INF',
+                  ENER_POT=_F( TOUT = 'OUI',)  )
 
 IMPR_TABLE ( TABLE=T_POT )
 

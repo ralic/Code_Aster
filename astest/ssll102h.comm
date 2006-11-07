@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -104,24 +104,24 @@ CHARGE3=AFFE_CHAR_MECA(         MODELE=POUTMODE,
 RESU=MACRO_ELAS_MULT(             MODELE=POUTMODE,
                                 CHAM_MATER=POUTAF_M,
                                  CARA_ELEM=CARELEM,
-                          CHAR_MECA_GLOBAL=COND_LIM,CAS_CHARGE=(
-                          _F( NOM_CAS = 'CHARGE NUMERO 1',
-                                      CHAR_MECA = CHARGE1,
-                                      OPTION = ('DEGE_ELNO_DEPL',)),
-                          _F( NOM_CAS = 'CHARGE NUMERO 2',
-                                      CHAR_MECA = CHARGE2,
-                                      OPTION = ('DEGE_ELNO_DEPL',),
-                                      NIVE_COUCHE = 'SUP'),
-                          _F( NOM_CAS = 'CHARGE NUMERO 3',
-                                      CHAR_MECA = CHARGE3,
-                                      OPTION = ('DEGE_ELNO_DEPL',)))
+                          CHAR_MECA_GLOBAL=COND_LIM,
+                          CAS_CHARGE=(_F( NOM_CAS = 'CHARGE NUMERO 1',
+                                          CHAR_MECA = CHARGE1,
+                                          OPTION = 'DEGE_ELNO_DEPL'),
+                                      _F( NOM_CAS = 'CHARGE NUMERO 2',
+                                          CHAR_MECA = CHARGE2,
+                                          OPTION = 'DEGE_ELNO_DEPL',
+                                          NIVE_COUCHE = 'SUP',),
+                                      _F( NOM_CAS = 'CHARGE NUMERO 3',
+                                          CHAR_MECA = CHARGE3,
+                                          OPTION = 'DEGE_ELNO_DEPL'),),
                         )
 
 #
 RESU=CALC_ELEM( reuse=RESU,       MODELE=POUTMODE,
                       CHAM_MATER=POUTAF_M,
                        CARA_ELEM=CARELEM,
-                     NIVE_COUCHE='SUP',
+                     REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                           OPTION=('EFGE_ELNO_DEPL',
                                   'SIGM_ELNO_DEPL',
                                   ),

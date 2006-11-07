@@ -1,5 +1,4 @@
-
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DSQ - B/A = 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -237,17 +236,16 @@ MESTAT=MECA_STATIQUE(MODELE=MO,
                      CARA_ELEM=EP,
                      EXCIT=_F(CHARGE=CHME,),);
 
-EFSUP=CALC_ELEM(
-                GROUP_MA='PLAQ1',
+EFSUP=CALC_ELEM(GROUP_MA='PLAQ1',
                 OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=MESTAT,
-                PLAN='MAIL',);
+                REPE_COQUE=_F(PLAN='MAIL',),);
 
 EFINF=CALC_ELEM(
                 GROUP_MA='PLAQ2',
                 OPTION='EFGE_ELNO_DEPL',
                 RESULTAT=MESTAT,
-                PLAN='MAIL',);
+                REPE_COQUE=_F(PLAN='MAIL',),);
 
 CALC_NO(reuse =EFSUP,
               RESULTAT=EFSUP,
@@ -338,7 +336,6 @@ MESTAT1=MECA_STATIQUE(MODELE=MO1,
                        );
 
 CALC_ELEM( reuse= MESTAT1 ,RESULTAT= MESTAT1 , 
-                       
                        OPTION='EFGE_ELNO_DEPL',);
 
 CALC_NO(reuse =MESTAT1,
@@ -355,12 +352,9 @@ EFF1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=MESTAT1,
                 NOM_CHAM='EFGE_NOEU_DEPL',);
+
 #  PLAQUE BICOUCHE SERT DE REFERENCE
 #
-#
-#
-
-
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP1,
                       GROUP_NO='A3',
                       NOM_CMP='DX',

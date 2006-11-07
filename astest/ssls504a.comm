@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # DATE   : 13/11/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -26,24 +26,14 @@
 #         - MODELISATION AVEC DES ELEMENTS 'DST'(QUAD4)
 #---------------------------------------------------------------------
 #
-#
-#
-
-
 DEBUT(CODE=_F(NOM='SSLS504A',NIV_PUB_WEB='INTERNET'),);
 #
 PRE_GIBI ();
 #
-#
-#
-
-
 MA=LIRE_MAILLAGE();
 #
 #
 #
-
-
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
@@ -55,17 +45,14 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 #
 #
 #
-
-
 CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
-                       COQUE=(
-                       _F(GROUP_MA='TOUT_ELT',
-             EPAIS=0.1,
-             ANGL_REP=(0.0,0.0),),
-             _F(GROUP_MA='COTE_AB',EPAIS=0.1,),
-             _F(GROUP_MA='COTE_BC',EPAIS=0.1,),
-             _F(GROUP_MA='COTE_CD',EPAIS=0.1,),
-             _F(GROUP_MA='COTE_DA',EPAIS=0.1,),),)
+                       COQUE=( _F( GROUP_MA='TOUT_ELT',
+                                   EPAIS=0.1,
+                                   ANGL_REP=(0.0,0.0),),
+                               _F( GROUP_MA='COTE_AB',EPAIS=0.1,),
+                               _F( GROUP_MA='COTE_BC',EPAIS=0.1,),
+                               _F( GROUP_MA='COTE_CD',EPAIS=0.1,),
+                               _F( GROUP_MA='COTE_DA',EPAIS=0.1,),),)
 #
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
@@ -73,8 +60,6 @@ CAR_ELE=AFFE_CARA_ELEM(MODELE=MO,
 #
 #
 #
-
-
 MAT=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=25.0,
                                E_T=1.0,
                                NU_LT=0.25,
@@ -84,8 +69,6 @@ MAT=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=25.0,
 #
 #
 #
-
-
 MULTI=DEFI_COQU_MULT(COUCHE=(_F(EPAIS=0.025000000000000001,
                                 MATER=MAT,
                                 ORIENTATION=0.0,),
@@ -98,8 +81,6 @@ MULTI=DEFI_COQU_MULT(COUCHE=(_F(EPAIS=0.025000000000000001,
 #
 #
 #
-
-
 CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                        AFFE=_F(TOUT='OUI',
                                MATER=MULTI,),);
@@ -110,8 +91,6 @@ CHAM_MAT=AFFE_MATERIAU(MAILLAGE=MA,
 #
 #
 #
-
-
 CHA=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_MA='COTE_AB',
                                 DZ=0.0,
@@ -139,8 +118,6 @@ CHAOLD=AFFE_CHAR_MECA_F(MODELE=MO,
 #
 #
 #
-
-
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHAM_MAT,
                    CARA_ELEM=CAR_ELE,
@@ -163,12 +140,10 @@ DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 #
 
 
-C2_M=CALC_ELEM(
-               OPTION='SIGM_ELNO_DEPL',
+C2_M=CALC_ELEM(OPTION='SIGM_ELNO_DEPL',
                RESULTAT=RESU,
-               
-               NUME_COUCHE=2,
-               NIVE_COUCHE='MOY',);
+               REPE_COQUE =_F( NUME_COUCHE=2,
+                               NIVE_COUCHE='MOY',),);
 
 C2_M=CALC_NO(reuse =C2_M,
              RESULTAT=C2_M,
@@ -183,13 +158,10 @@ SIG_C2_M=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                     NUME_ORDRE=1,);
 
 
-C2_S=CALC_ELEM(
-                OPTION='SIGM_ELNO_DEPL',
+C2_S=CALC_ELEM(OPTION='SIGM_ELNO_DEPL',
                 RESULTAT=RESU,
-                
-                 NUME_COUCHE=2,
-                 NIVE_COUCHE='SUP'
-)
+                REPE_COQUE =_F( NUME_COUCHE=2,
+                                NIVE_COUCHE='SUP',),);
 
 C2_S=CALC_NO(reuse =C2_S,
               RESULTAT=C2_S,
@@ -209,12 +181,10 @@ SIG_C2_S=CREA_CHAMP(    RESULTAT=C2_S,
 #
 
 
-C3_S=CALC_ELEM(
-               OPTION='SIGM_ELNO_DEPL',
+C3_S=CALC_ELEM(OPTION='SIGM_ELNO_DEPL',
                RESULTAT=RESU,
-               
-               NUME_COUCHE=3,
-               NIVE_COUCHE='SUP',);
+               REPE_COQUE =_F( NUME_COUCHE=3,
+                               NIVE_COUCHE='SUP',),);
 
 C3_S=CALC_NO(reuse =C3_S,
              RESULTAT=C3_S,
@@ -238,8 +208,6 @@ SIG_C3_S=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
 #
 #
 #
-
-
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=SIG_C2_M,
                       GROUP_NO='D',
                       NOM_CMP='SIXZ',
@@ -270,7 +238,3 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=SIG_C2_M,
 
 
 FIN();
-#
-# 
-#
-#

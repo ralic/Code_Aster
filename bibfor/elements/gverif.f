@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 06/11/2006   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -742,7 +742,7 @@ C VERIFICATION COHERENCE LEVRE SUP / FOND
           CALL JEVEUO(RESU//'.FOND      .NOEU' ,'L',MM1)
         ELSE
           CALL JELIRA(RESU//'.FOND_SUP  .NOEU' , 'LONMAX', NBNO, K8B)
-          CALL JEVEUO(RESU//'.FOND_SUP      .NOEU' ,'L',MM1)
+          CALL JEVEUO(RESU//'.FOND_SUP  .NOEU' ,'L',MM1)
         ENDIF
         DO 610 I=1,NBNO
           COMPTA = 0
@@ -824,7 +824,7 @@ C VERIFICATION COHERENCE LEVRE INF / FOND
           CALL JEVEUO(RESU//'.FOND      .NOEU' ,'L',MM1)
         ELSE
           CALL JELIRA(RESU//'.FOND_INF  .NOEU' , 'LONMAX', NBNO, K8B)
-          CALL JEVEUO(RESU//'.FOND_INF      .NOEU' ,'L',MM1)
+          CALL JEVEUO(RESU//'.FOND_INF  .NOEU' ,'L',MM1)
         ENDIF
         DO 711 I=1,NBNO
           COMPTA = 0

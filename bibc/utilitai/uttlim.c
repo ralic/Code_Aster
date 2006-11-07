@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTLIM UTILITAI  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF UTTLIM UTILITAI  DATE 03/11/2006   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -38,12 +38,12 @@ void DEFP(UTTLIM, uttlim, double *t_lim)
 #ifdef _USE_RLIMIT
    struct rlimit rlp;
 #endif
+   tmax = ((double) LONG_MAX)/2;
    if (strlen(g_tpmax) > 0) {
       sscanf(g_tpmax,"%d",&itpm);
       *t_lim = (double)itpm;
    }
    else {
-      tmax = ((double) LONG_MAX)/2;
 #ifdef _USE_RLIMIT
       getrlimit(RLIMIT_CPU,&rlp);
       *t_lim = (double)rlp.rlim_max;

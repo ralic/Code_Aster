@@ -3,8 +3,7 @@
      &     WORKL, WORKD )
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +19,6 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
-C ======================================================================
 C ======================================================================
 C TOLE CRP_20
 C
@@ -228,6 +226,8 @@ C
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
 C     %-----------------------%
+C
+      CALL MATFPE(-1)
 C
       RBID=0.D0
       IF (FIRST) THEN
@@ -507,6 +507,7 @@ C
       END IF
 C
  9000 CONTINUE
+      CALL MATFPE(1)
 C 
 C
 C     %---------------%

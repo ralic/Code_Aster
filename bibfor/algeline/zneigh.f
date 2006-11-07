@@ -2,8 +2,7 @@
      &                   Q, LDQ, WORKL, RWORK, IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,6 +180,8 @@ C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
 C     %-----------------------%
 C
+      CALL MATFPE(-1)
+C
 C     %-------------------------------%
 C     | INITIALIZE TIMING STATISTICS  |
 C     | & MESSAGE LEVEL FOR DEBUGGING |
@@ -261,6 +262,7 @@ C
 C
 C
  9000 CONTINUE
+      CALL MATFPE(1)
 C
 C     %---------------%
 C     | END OF ZNEIGH |

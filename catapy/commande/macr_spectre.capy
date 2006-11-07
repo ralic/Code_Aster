@@ -1,0 +1,70 @@
+#& MODIF COMMANDE  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+from Macro.macr_spectre_ops import macr_spectre_ops
+
+MACR_SPECTRE=MACRO(nom="MACR_SPECTRE",op=macr_spectre_ops,sd_prod=table_sdaster,
+                       reentrant='n', UIinfo={"groupes":("Outils métier",)},
+                       fr="calcul de spectre, post-traitement de séisme",
+         MAILLAGE      =SIMP(statut='o',typ=maillage_sdaster,),
+         PLANCHER      =FACT(statut='o',max='**',
+            regles=(AU_MOINS_UN('NOEUD','GROUP_NO' ),),
+            NOM           =SIMP(statut='o',typ='TXM',),
+            GROUP_NO      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+            NOEUD         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'), ),
+         NOM_CHAM      =SIMP(statut='o',typ='TXM' ,into=('ACCE','DEPL')),
+         CALCUL        =SIMP(statut='o',typ='TXM' ,into=('ABSOLU','RELATIF'),position='global'),
+         b_acce  =BLOC( condition = "NOM_CHAM=='ACCE'",
+           regles=(UN_PARMI('LIST_FREQ','FREQ'),),
+           AMOR_SPEC     =SIMP(statut='o',typ='R',max='**'),
+           LIST_INST     =SIMP(statut='f',typ=listr8_sdaster ),
+           LIST_FREQ     =SIMP(statut='f',typ=listr8_sdaster ),
+           FREQ          =SIMP(statut='f',typ='R',max='**'),
+           NORME         =SIMP(statut='f',typ='R',defaut=9.81),  
+           RESU          =FACT(statut='o',max='**',
+                regles=(UN_PARMI('RESU_GENE','RESULTAT'),),
+                RESU_GENE     =SIMP(statut='f',typ=tran_gene),
+                RESULTAT      =SIMP(statut='f',typ=(dyna_trans,evol_noli)),
+                b_calc  =BLOC( condition = "CALCUL=='RELATIF'",
+                   ACCE_X        =SIMP(statut='o',typ=fonction_sdaster),
+                   ACCE_Y        =SIMP(statut='o',typ=fonction_sdaster),
+                   ACCE_Z        =SIMP(statut='o',typ=fonction_sdaster),), ),
+           IMPRESSION    =FACT(statut='f',
+                TRI           =SIMP(statut='f',typ='TXM',defaut='AMOR_SPEC',into=("AMOR_SPEC","DIRECTION",),),
+                FORMAT        =SIMP(statut='f',typ='TXM',defaut='TABLEAU',into=("TABLEAU","XMGRACE",),),
+                UNITE         =SIMP(statut='f',typ='I',val_min=10,val_max=90,defaut=29,
+                                    fr="Unité logique définissant le fichier (fort.N) dans lequel on écrit"),
+                b_pilote = BLOC(condition = "FORMAT == 'XMGRACE'",
+                   PILOTE        =SIMP(statut='f',typ='TXM',defaut='',
+                                 into=('','POSTSCRIPT','EPS','MIF','SVG','PNM','PNG','JPEG','PDF','INTERACTIF'),),),
+                TOUT          =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON",),),
+                              ),
+         ),
+         b_depl  =BLOC( condition = "NOM_CHAM=='DEPL'",
+           LIST_INST     =SIMP(statut='f',typ=listr8_sdaster),  
+           RESU          =FACT(statut='o',max=3,
+                regles=(UN_PARMI('RESU_GENE','RESULTAT'),),
+                RESU_GENE     =SIMP(statut='f',typ=tran_gene),
+                RESULTAT      =SIMP(statut='f',typ=(dyna_trans,evol_noli)),
+                b_calc  =BLOC( condition = "CALCUL=='ABSOLU'",
+                   DEPL_X        =SIMP(statut='o',typ=fonction_sdaster),
+                   DEPL_Y        =SIMP(statut='o',typ=fonction_sdaster),
+                   DEPL_Z        =SIMP(statut='o',typ=fonction_sdaster),),),
+         ),
+)

@@ -1,7 +1,7 @@
       SUBROUTINE MGAUSS(CARA,A,B,DIM,NORDRE,NB,DET,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,6 +79,8 @@ C ----------------------------------------------------------------------
       CHARACTER*4 CARA2
       LOGICAL LTRANS,LSTOP,LDET,LRET
 C----------------------------------------------------------------------
+      CALL MATFPE(-1)
+C
       CARA2 = CARA
       CALL ASSERT((CARA2(1:1).EQ.'N') .OR. (CARA2(1:1).EQ.'T'))
       CALL ASSERT((CARA2(2:2).EQ.'F') .OR. (CARA2(2:2).EQ.'C'))
@@ -257,4 +259,7 @@ C       ENTRE LA VALEUR CALCULEE X ET SA VALEUR EXACTE
 
   120 CONTINUE
  1001 FORMAT (10 ('='),A,10 ('='))
+C
+      CALL MATFPE(1)
+C
       END

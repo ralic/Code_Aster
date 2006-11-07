@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_elas_mult_ops Macro  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -242,8 +242,8 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
            CALC_ELEM(reuse=nomres,
                      RESULTAT=nomres,
                      MODELE=MODELE,
-                     NIVE_COUCHE=m['NIVE_COUCHE'],
-                     NUME_COUCHE=m['NUME_COUCHE'],
+                     REPE_COQUE=_F(NIVE_COUCHE=m['NIVE_COUCHE'],
+                                   NUME_COUCHE=m['NUME_COUCHE'],),
                      OPTION=tuple(liste_el),
                      **motscles)
         if nbno:

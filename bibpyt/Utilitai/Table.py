@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF Table Utilitai  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -361,6 +361,18 @@ class Table(TableBase):
             ip=self.para.index(p)
             self.type[ip]=_typaster(obj[p], self.type[ip])
       self.rows.append(obj)
+
+# ------------------------------------------------------------------------------
+   def SansColonneVide(self):
+      """Retourne une copie de la table dans laquelle on a supprimé les colonnes
+      vides (les lignes vides sont automatiquement supprimées).
+      """
+      tab = self.copy()
+      lp = tab.para[:]
+      for para in lp:
+         if len(tab[para]) == 0:
+            bid = lp.pop(0)
+      return tab[lp]
 
 # ------------------------------------------------------------------------------
    def __setitem__(self, k_para, k_value):

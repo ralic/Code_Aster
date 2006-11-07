@@ -4,7 +4,7 @@
      &                   TOL  , RESID , NCV   , V     ,
      &                   LDV  , IPARAM, IPNTR , WORKD ,
      &                   WORKL, LWORKL, RWORK , INFO  )
-C MODIF ALGELINE  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -367,6 +367,8 @@ C
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
 C     %-----------------------%
+C
+      CALL MATFPE(-1)
 C
 C     %------------------------%
 C     | SET DEFAULT PARAMETERS |
@@ -923,6 +925,7 @@ C
       END IF
 C
  9000 CONTINUE
+      CALL MATFPE(1)
 C
 C
 C     %---------------%

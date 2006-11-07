@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 06/11/2006   AUTEUR GALENNE E.GALENNE 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,18 +111,11 @@ OUTMES=MECA_STATIQUE(SENSIBILITE=(THETAS,),
                      MODELE=MO,
                      CHAM_MATER=CM,
                      EXCIT=_F( CHARGE = CH),
-                     INFO=2,);
-
-DEPMES = CREA_CHAMP(OPERATION='EXTR',
-                    TYPE_CHAM='NOEU_DEPL_R',
-                    RESULTAT=OUTMES,
-                    NOM_CHAM='DEPL',
-                    NUME_ORDRE=1,
-                     INFO=2, )
+                     INFO=1,);
 
 CALC_ELEM( reuse= OUTMES ,RESULTAT= OUTMES ,
               SENSIBILITE=(THETAS,),
-              INFO=2,
+              INFO=1,
               OPTION=('SIGM_ELNO_DEPL', ),);
 
 
@@ -175,50 +168,42 @@ THETAF=CALC_THETA(      MODELE=MO,
 
 # CALCULS DE G ET DG PROPREMENT DIT
 
-G1=CALC_G(MODELE=MO,
-                  DEPL = DEPMES,
+G1=CALC_G(RESULTAT = OUTMES,
                   THETA=_F(THETA=THETAF),
                   EXCIT=(_F(CHARGE=CH),_F(CHARGE=F1),_F(CHARGE=F2),),
                   SYME_CHAR='SYME',
                   COMP_ELAS=_F( RELATION = 'ELAS',
-                              DEFORMATION = 'PETIT'),
-                  CHAM_MATER=CM)
+                              DEFORMATION = 'PETIT'),)
 IMPR_TABLE(TABLE=G1)
 
 G1=CALC_G(reuse=G1,
                   SENSIBILITE=(THETAS,),
-                  MODELE=MO,
                   RESULTAT=OUTMES,
                   THETA=_F(THETA=THETAF),
                   EXCIT=(_F(CHARGE=CH),_F(CHARGE=F1),_F(CHARGE=F2),),
                   SYME_CHAR='SYME',
                   COMP_ELAS=_F( RELATION = 'ELAS',
-                                DEFORMATION = 'PETIT'),
-                  CHAM_MATER=CM)
+                                DEFORMATION = 'PETIT'),)
 
 IMPR_TABLE(TABLE=G1,SENSIBILITE=(THETAS,))
 
-G2=CALC_G(MODELE=MO,
-                  DEPL = DEPMES,
+G2=CALC_G(RESULTAT=OUTMES,
                   THETA=_F(THETA=THETAF),
                   EXCIT=_F(CHARGE=CH,),
                   SYME_CHAR='SYME',
                   COMP_ELAS=_F( RELATION = 'ELAS',
                               DEFORMATION = 'GREEN'),
-                  CHAM_MATER=CM,
                   ETAT_INIT=_F( SIGM = SIG3))
 IMPR_TABLE(TABLE=G2)
 
 G2=CALC_G( reuse=G2,
                    SENSIBILITE=(THETAS,),
-                   MODELE=MO,
                    RESULTAT=OUTMES,
                    THETA=_F(THETA=THETAF),
                    EXCIT=_F( CHARGE=CH,),
                    SYME_CHAR='SYME',
                    COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'GREEN'),
-                   CHAM_MATER=CM,
                    ETAT_INIT=_F( SIGM = SIG3))
 IMPR_TABLE(TABLE=G2,SENSIBILITE=(THETAS,))
 
@@ -285,12 +270,6 @@ OUTMES1=MECA_STATIQUE(MODELE=MO1,
                       CHAM_MATER=CM1,
                       EXCIT=_F( CHARGE = CH1),);
 
-DEPMES1 = CREA_CHAMP(OPERATION='EXTR',
-                    TYPE_CHAM='NOEU_DEPL_R',
-                    RESULTAT=OUTMES1,
-                    NOM_CHAM='DEPL',
-                    NUME_ORDRE=1 )
-
 CALC_ELEM( reuse= OUTMES1 ,RESULTAT= OUTMES1 ,
               OPTION=('SIGM_ELNO_DEPL',),)
 
@@ -333,24 +312,20 @@ F21=AFFE_CHAR_MECA_F(           MODELE=MO1,
 
 # CALCULS DE G* PROPREMENT DIT
 
-G3=CALC_G(         MODELE=MO1,
-                         DEPL = DEPMES1,
+G3=CALC_G(       RESULTAT = OUTMES1,
                             THETA=_F(THETA=THETAF),
                         EXCIT=(_F(CHARGE=CH1),_F(CHARGE=F11),_F(CHARGE=F21),),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
-                       CHAM_MATER=CM1,
                            OPTION='CALC_G')
 
-G4=CALC_G(         MODELE=MO1,
-                         DEPL = DEPMES1,
+G4=CALC_G(         RESULTAT = OUTMES1,
                             THETA=_F(THETA=THETAF),
                            EXCIT=_F(CHARGE=CH1,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'GREEN'),
-                       CHAM_MATER=CM1,
                            OPTION='CALC_G',
                        ETAT_INIT=_F( SIGM = SIG6))
 

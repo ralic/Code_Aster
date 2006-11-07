@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 4 NOEUDS STAT_NON_LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,10 +25,10 @@ DEBUT(CODE=_F(  NOM = 'SSLL106F',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 MA=LIRE_MAILLAGE( )
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+               CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
-MO=AFFE_MODELE(        MAILLAGE=MA,
- AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'TUYAU_3M')
+MO=AFFE_MODELE(  MAILLAGE=MA,
+                 AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'TUYAU_3M')
                         )
 
 #------CARACTERISTIQUES ELEMENTAIRES----------------------
@@ -37,9 +37,9 @@ MO=AFFE_MODELE(        MAILLAGE=MA,
 CAREL=AFFE_CARA_ELEM(   MODELE=MO,
                  VERIF='MAILLE',
                  POUTRE=_F(  GROUP_MA = 'TOUT', SECTION = 'CERCLE',
-                 CARA = ('R', 'EP',),
-                 MODI_METRIQUE = 'OUI',
-                 VALE = (0.04, 0.008,)),
+                             CARA = ('R', 'EP',),
+                             MODI_METRIQUE = 'OUI',
+                             VALE = (0.04, 0.008,)),
  ORIENTATION=_F( GROUP_NO = 'A', CARA = 'GENE_TUYAU', VALE = (0., 0., -1.,))
                              )
 
@@ -135,10 +135,8 @@ U1=STAT_NON_LINE(
               )
 
 U1=CALC_ELEM( reuse=U1,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','DEGE_ELNO_DEPL'),
-                          RESULTAT=U1,
-              )
+              OPTION=( 'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','DEGE_ELNO_DEPL'),
+              RESULTAT=U1, )
 
 TEST_RESU(RESU=(
 
@@ -163,18 +161,18 @@ _F( RESULTAT = U1, NUME_ORDRE = 2,
 U1=CALC_ELEM( reuse=U1,   
                     TOUT_ORDRE='OUI',
                    OPTION=('SIGM_ELNO_TUYO',),
-                    NUME_COUCHE=1,
-                   NIVE_COUCHE='SUP',
-                     ANGLE=90,
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',
+                                   ANGLE=90, ),
                     RESULTAT=U1
                    )
 
 U1=CALC_ELEM( reuse=U1,   
                     TOUT_ORDRE='OUI',
                    OPTION=('VARI_ELNO_TUYO',),
-                    NUME_COUCHE=1,
-                   NIVE_COUCHE='SUP',
-                     ANGLE=90,
+                   REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',
+                                   ANGLE=90, ),
                     RESULTAT=U1
                    )
 
@@ -573,15 +571,4 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    REFERENCE='ANALYTIQUE',),),);
 
 
-                   
-      
-      
-      
-
-
-
-
 FIN()
-#
-#
-#

@@ -6,7 +6,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,8 +201,6 @@ C=======================================================================
       IF (K8B(1:3).EQ.'OUI') EXIPLA = .TRUE.
       IF (EXIPLA) THEN
         CALL GETVID(' ','CARA_ELEM',1,1,1,K8B,N1)
-        CALL GETVIS(' ','NUME_COUCHE',1,1,1,IBID,N2)
-        CALL GETVTX(' ','NIVE_COUCHE',1,1,1,K8B,N3)
         IF (N1.EQ.0.AND.CARA.EQ.' ') THEN
           CALL U2MESS('A','CALCULEL2_94')
           GO TO 530
@@ -318,8 +316,9 @@ C
      &                CHCARA,CHHARM,IRET)
           IF (IRET.NE.0) GO TO 530
           NOMA = CHGEOM(1:8)
-          CALL MECHNC(NOMA,' ',0,CHNUMC)
-
+          CHNUMC = '&&'//NOMPRO//'.NUMC'
+          CHFREQ = '&&'//NOMPRO//'.FREQ'
+          CALL MECHN2 ( NOMA, CHNUMC, CHFREQ )
 
 C    ------------------------------------------------------------------
 C    -- OPTION "ERRE_ELEM_TEMP"
@@ -397,6 +396,7 @@ C BOUCLE SUR LES PAS DE TEMPS
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
               CALL MECARA(CARA,EXICAR,CHCARA)
+              CALL MECHC1(MODELE,MATE,EXICAR,CHCARA)
 C RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR
               CALL JENONU(JEXNOM(RESUCO//'           .NOVA',
      &                    'PARM_THETA'),IAD)
@@ -572,6 +572,7 @@ C CALCUL
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
               CALL MECARA(CARA,EXICAR,CHCARA)
+              CALL MECHC1(MODELE,MATE,EXICAR,CHCARA)
 C RECUPERATION DU NOM DU CHAMP_GD = LERES1(OPTION,IORDR)
 C LERES1 = NOM USER DE LA SD CORRESPONDANT AU RESULTAT DE CALC_ELEM
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -668,6 +669,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    RESUCO,IORDR)
               CALL JEVEUO(KCHA,'L',JCHA)
               CALL MECARA(CARA,EXICAR,CHCARA)
+              CALL MECHC1(MODELE,MATE,EXICAR,CHCARA)
               K4B = 'TEMP'
               CALL RSEXC2(1,1,RESUCO,K4B,IORDR,CHAMGD,OPTION,IRET)
               IF (IRET.GT.0) GO TO 771
@@ -709,6 +711,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
               CALL MECARA(CARA,EXICAR,CHCARA)
+              CALL MECHC1(MODELE,MATE,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'TEMP',IORDR,CHTEMP,OPTION,IRET)
               IF (IRET.GT.0) GO TO 352
               CALL RSEXC2(1,1,RESUCO,'META_ELNO_TEMP',IORDR,CHMETA,
@@ -811,8 +814,7 @@ C
           CALL MECHAM(OPTION,MODELE,NCHAR,ZK8(JCHA),CARA,NH,CHGEOM,
      &                CHCARA,CHHARM,IRET)
           IF (IRET.NE.0) GO TO 530
-          NOMA = CHGEOM(1:8)
-          CALL MECHNC(NOMA,' ',0,CHNUMC)
+
 C    ------------------------------------------------------------------
 C    -- OPTIONS "PRES_ELNO_DBEL","PRES_ELNO_REEL","PRES_ELNO_IMAG"
 C               "INTE_ELNO_ACTI","INTE_ELNO_REAC"
@@ -830,6 +832,7 @@ C    ------------------------------------------------------------------
      &                    RESUCO,IORDR)
               CALL JEVEUO(KCHA,'L',JCHA)
               CALL MECARA(CARA,EXICAR,CHCARA)
+              CALL MECHC1(MODELE,MATE,EXICAR,CHCARA)
               CALL RSEXC2(1,1,RESUCO,'PRES',IORDR,CHPRES,OPTION,IRET)
               TYPE = 'PRES'
               IF (IRET.GT.0) GO TO 773

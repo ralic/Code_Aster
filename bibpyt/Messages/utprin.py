@@ -1,4 +1,4 @@
-#@ MODIF utprin Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF utprin Messages  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,8 +44,8 @@ def utprin(typmess,unite,idmess,valk,vali,valr):
    if aster.onFatalError() == 'EXCEPTION':
       if typmess in ('E', 'F', 'Z'):
          typmess = 'EXCEPTION'
-   elif typmess == 'Z':
-      typmess = 'S'
+   if typmess == 'Z':
+      typmess = 'EXCEPTION'
    
    unite   = unite.strip()
    idmess  = idmess.strip()

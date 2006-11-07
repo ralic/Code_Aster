@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,17 +98,16 @@ REST=CALC_NO( reuse=REST,     RESULTAT=REST,
 
 # LES CONTRAINTES LOCALES SONT UNIFORMES
 # A UN NIVEAU D'EPAISSEUR DONNE
-REST=CALC_ELEM( reuse=REST,
+REST=CALC_ELEM( reuse=REST, RESULTAT=REST,
                       TOUT_ORDRE='OUI',
                      OPTION=('EPEQ_ELNO_TUYO',
                              'SIEQ_ELNO_TUYO',
                              'EPSI_ELNO_TUYO',
                              'SIGM_ELNO_TUYO',
                              'VARI_ELNO_TUYO',),
-                      NUME_COUCHE=1,
-                     NIVE_COUCHE='SUP',
-                       ANGLE=90,
-                      RESULTAT=REST
+                     REPE_COQUE =_F( NUME_COUCHE=1,
+                                     NIVE_COUCHE='SUP',
+                                     ANGLE=90,),
                    )
 
 # TEST PAR RAPPORT A LA SOLUTION ANALYTIQUE
@@ -247,15 +246,14 @@ TEST_RESU(RESU=(
 
 # LES CONTRAINTES LOCALES SONT EXTREMES POUR ANGLE=90 ET 270
 # A CAUSE DU CHOIX DE LA GENERATRICE
-RESM=CALC_ELEM( reuse=RESM,
+RESM=CALC_ELEM( reuse=RESM,  RESULTAT=RESM,
                       TOUT_ORDRE='OUI',
                      OPTION=('SIGM_ELNO_TUYO',
                              'VARI_ELNO_TUYO',
                              'DEGE_ELNO_DEPL'),
-                      NUME_COUCHE=1,
-                     NIVE_COUCHE='SUP',
-                       ANGLE=90,
-                      RESULTAT=RESM
+                 REPE_COQUE =_F( NUME_COUCHE=1,
+                                 NIVE_COUCHE='SUP',
+                                 ANGLE=90,),
                    )
 
 DRZB=RECU_FONCTION(RESULTAT=RESM,

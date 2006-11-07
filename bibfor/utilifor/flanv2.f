@@ -1,6 +1,6 @@
       SUBROUTINE FLANV2( A, B, C, D, RT1R, RT1I, RT2R, RT2I, CS, SN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -75,6 +75,8 @@ C     .. EXTERNAL FUNCTIONS ..
       REAL*8   DLAPY2
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
+C
+      CALL MATFPE(-1)
 C
 C     INITIALIZE CS AND SN
 C
@@ -179,6 +181,8 @@ C
          RT1I = SQRT( ABS( B ) )*SQRT( ABS( C ) )
          RT2I = -RT1I
       END IF
+C
+      CALL MATFPE(1)
 C
 C     END OF FLANV2
 C

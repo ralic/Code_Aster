@@ -1,7 +1,7 @@
       SUBROUTINE FLRSYL( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB, C,
      &                   LDC, SCALE, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -129,6 +129,8 @@ C     .. EXTERNAL FUNCTIONS ..
       REAL*8 DDOT, DLANGE, R8MIEM, R8PREM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
+C
+      CALL MATFPE(-1)
 C
 C DUE TO CRS513
       DUM(1) = 0.D0
@@ -922,6 +924,7 @@ C
       END IF
 C
  1000 CONTINUE
+      CALL MATFPE(1)
 C
 C     END OF FLRSYL
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE INFINIE SOUMISE A DES FLUX ANTISYMETRIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,26 +27,22 @@ DEBUT(  CODE=_F( NOM = 'TPLS100A',NIV_PUB_WEB='INTERNET'))
 M=LIRE_MAILLAGE( )
 
 M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
-  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+              CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
-MO=AFFE_MODELE( 
-                       MAILLAGE=M, 
-                      AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
-                                      MODELISATION = 'COQUE'))
+MO=AFFE_MODELE( MAILLAGE=M, 
+                AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
+                         MODELISATION = 'COQUE'))
 
 EPANT=AFFE_CARA_ELEM( MODELE=MO,
-                           COQUE=_F( 
-       GROUP_MA = 'TOUT',
-EPAIS = 4.) )
+                      COQUE=_F( GROUP_MA = 'TOUT',
+                                EPAIS = 4.) )
 
 MAANT=DEFI_MATERIAU( THER=_F( RHO_CP = 1.0,LAMBDA = 4.5))
 
 EPANT2=AFFE_CARA_ELEM( MODELE=MO,
-                           COQUE=_F( 
-       GROUP_MA = 'TOUT',
-
-                                  EPAIS = 4.,  
-                                  ANGL_REP = (30.,0.,)) )
+                       COQUE=_F( GROUP_MA = 'TOUT',
+                                 EPAIS = 4.,  
+                                 ANGL_REP = (30.,0.,)) )
 
 #
 # DEFINITION DU MATERIAU HOMOGENEISE MAANT2 ANALOGUE AU 
@@ -55,8 +51,7 @@ EPANT2=AFFE_CARA_ELEM( MODELE=MO,
 # POLYNOMES DE LAGRANGE.
 #
 
-MAANT2=DEFI_MATERIAU(  
-                                       THER_COQUE=_F( 
+MAANT2=DEFI_MATERIAU(  THER_COQUE=_F( 
    COND_LMM = 9.6,  COND_TMM = 9.6,  COND_LMP = 1.2,   COND_TMP = 1.2,
    COND_LPP = 2.4,  COND_TPP = 2.4,  COND_LSI = -0.6,  COND_TSI = -0.6,
    COND_NMM = 6.0,   COND_NMP = -3.0,  COND_NPP = 2.625,   COND_NSI = 0.375,
@@ -74,10 +69,9 @@ VAL30=DEFI_CONSTANTE(   VALE=30.)
 
 VALM30=DEFI_CONSTANTE(   VALE=-30.)
 
-CHANTF=AFFE_CHAR_THER_F( 
-           MODELE=MO,
-          TEMP_IMPO=_F( TOUT = 'OUI',TEMP = VAL0),
-          FLUX_REP=_F( GROUP_MA = 'GRSD2',FLUN_SUP = VAL30,FLUN_INF = VALM30))
+CHANTF=AFFE_CHAR_THER_F(  MODELE=MO,
+                          TEMP_IMPO=_F( TOUT = 'OUI',TEMP = VAL0),
+                          FLUX_REP=_F( GROUP_MA = 'GRSD2',FLUN_SUP = VAL30,FLUN_INF = VALM30))
 
 TEMPE=THER_LINEAIRE(MODELE=MO,
                     CARA_ELEM=EPANT,
@@ -85,20 +79,15 @@ TEMPE=THER_LINEAIRE(MODELE=MO,
                     EXCIT=_F(CHARGE = CHANTF),
                     );
       
-TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,
-                MODELE=MO,
-                CARA_ELEM=EPANT,
-                CHAM_MATER=CMANT,
-                NIVE_COUCHE='SUP',
-                OPTION='FLUX_ELNO_TEMP',
-                );
+TEMPE=CALC_ELEM( reuse=TEMPE,RESULTAT=TEMPE,
+                 REPE_COQUE=_F(NIVE_COUCHE='SUP',),
+                 OPTION='FLUX_ELNO_TEMP',  );
 
-MEANT2=CALC_MATR_ELEM( 
-                    MODELE=MO,CHARGE=CHANTF,CHAM_MATER=CMANT2,
-                      CARA_ELEM=EPANT2, OPTION='RIGI_THER'    )
 
-VEANT2=CALC_VECT_ELEM(  CHARGE=CHANTF,
-                            OPTION='CHAR_THER' )
+MEANT2=CALC_MATR_ELEM(  MODELE=MO,CHARGE=CHANTF,CHAM_MATER=CMANT2,
+                        CARA_ELEM=EPANT2, OPTION='RIGI_THER'    )
+
+VEANT2=CALC_VECT_ELEM(  CHARGE=CHANTF,  OPTION='CHAR_THER' )
 
 NUANT2=NUME_DDL(   MATR_RIGI=MEANT2 )
 
@@ -176,27 +165,17 @@ TEST_RESU(RESU=(
 # MEME CAS TEST AVEC THER_LINEAIRE
 
 
-CHANT=AFFE_CHAR_THER( 
-           MODELE=MO,
-          TEMP_IMPO=_F( TOUT = 'OUI',TEMP = 0.),
-          FLUX_REP=_F( GROUP_MA = 'GRSD2',FLUN_SUP = 30., FLUN_INF = -30.))
+CHANT=AFFE_CHAR_THER(  MODELE=MO,
+                       TEMP_IMPO=_F( TOUT = 'OUI',TEMP = 0.),
+                       FLUX_REP=_F( GROUP_MA = 'GRSD2',FLUN_SUP = 30., FLUN_INF = -30.))
 
-TEMPA2=THER_LINEAIRE( 
-               MODELE=MO,
-               CHAM_MATER=CMANT2,    CARA_ELEM=EPANT2,
-              EXCIT=_F(  CHARGE = CHANT) )
+TEMPA2=THER_LINEAIRE(  MODELE=MO,
+                       CHAM_MATER=CMANT2,    CARA_ELEM=EPANT2,
+                       EXCIT=_F(  CHARGE = CHANT) )
 
-#TEMPA2=CALC_ELEM( reuse=TEMPA2,
-#               MODELE=MO, 
-#              EXCIT=_F( CHARGE = CHANT), 
-#               RESULTAT=TEMPA2,
-#               CARA_ELEM=EPANT2,
-#              NIVE_COUCHE='SUP',
-#               CHAM_MATER=CMANT2, 
-#              OPTION='FLUX_ELNO_TEMP' )
 
-LR8=DEFI_LIST_REEL(        DEBUT=0.,
-       INTERVALLE=_F(    JUSQU_A = 1., NOMBRE = 20)
+LR8=DEFI_LIST_REEL(  DEBUT=0.,
+                     INTERVALLE=_F(  JUSQU_A = 1., NOMBRE = 20)
                        )
 
 TEMPA4=THER_LINEAIRE( 

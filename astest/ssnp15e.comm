@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE 3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,8 +38,8 @@ MO=AFFE_MODELE(
 
 CARAC=AFFE_CARA_ELEM(  MODELE=MO,
            COQUE=_F( COQUE_NCOU=2,
-       GROUP_MA = 'TOUT',
- EPAIS = 1.,  A_CIS = 0.83333333333333))
+                     GROUP_MA = 'TOUT',
+                     EPAIS = 1.,  A_CIS = 0.83333333333333))
 
 ACIER=DEFI_MATERIAU(
                 ELAS=_F( E = 195000., NU = 0.3),
@@ -112,17 +112,12 @@ U=STAT_NON_LINE(
                 RESI_LINE_RELA = 1.E-3)
               )
 
-U=CALC_ELEM( reuse=U,
-                     TOUT_ORDRE='OUI',
-                     NUME_COUCHE=1,
-                     NIVE_COUCHE='SUP',
-                    OPTION=(
-                            'VARI_ELNO_ELGA',
-                            'SIEF_ELNO_ELGA',
-                            'SIGM_ELNO_COQU',
-                            ),
-                     RESULTAT=U
-                  )
+U=CALC_ELEM( reuse=U,  RESULTAT=U,
+             TOUT_ORDRE='OUI',
+             REPE_COQUE =_F( NUME_COUCHE=1,
+                             NIVE_COUCHE='SUP', ),
+             OPTION=('VARI_ELNO_ELGA', 'SIEF_ELNO_ELGA', 'SIGM_ELNO_COQU' ),
+             )
 
 TEST_RESU(RESU=(
 
@@ -223,7 +218,4 @@ TEST_RESU(RESU=(_F(
                    VALE = 0.931E+02,      PRECISION = 1.E-02))
             )
 
-IMPR_RESU(RESU=_F(RESULTAT=U))
-
 FIN()
-#

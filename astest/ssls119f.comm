@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 18/07/2001
 # AUTEUR : P. MASSIN
@@ -69,9 +69,9 @@ RESU=MECA_STATIQUE(CHAM_MATER=CHAM_MAT,
                    EXCIT=_F(CHARGE=CHA,),);
 
 RESU=CALC_ELEM(reuse =RESU,
-               NIVE_COUCHE='MOY',
                RESULTAT=RESU,
-               NUME_COUCHE=1,
+               REPE_COQUE =_F( NUME_COUCHE=1,
+                               NIVE_COUCHE='MOY',),
                OPTION='SIGM_ELNO_DEPL',
                TOUT_ORDRE='OUI',);
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
 # TITRE MELANGE 3D-PLAQUE-POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -235,7 +235,7 @@ DEPF=CALC_ELEM(reuse =DEPF,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='SIGM_ELNO_DEPL',
-               NIVE_COUCHE='SUP',
+               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
 DEPF=CALC_ELEM(reuse =DEPF,
@@ -243,7 +243,7 @@ DEPF=CALC_ELEM(reuse =DEPF,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='EPSI_ELNO_DEPL',
-               NIVE_COUCHE='SUP',
+               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
 DEPC=CALC_ELEM(reuse =DEPC,
@@ -258,7 +258,7 @@ DEPC=CALC_ELEM(reuse =DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='SIGM_ELNO_DEPL',
-               NIVE_COUCHE='SUP',
+               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
 DEPC=CALC_ELEM(reuse =DEPC,
@@ -266,7 +266,7 @@ DEPC=CALC_ELEM(reuse =DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
                OPTION='EPSI_ELNO_DEPL',
-               NIVE_COUCHE='SUP',
+               REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPF,
