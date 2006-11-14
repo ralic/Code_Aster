@@ -5,7 +5,7 @@ C
       REAL*8        SOM(9),XINT(*),YINT(*),RINT(*),BETA(*)              
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/1999   AUTEUR KXBADNG A.ADOBES 
+C MODIF ALGELINE  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C ----------------------------------------------------------------------
       REAL*8       ALPH12,ALPH23,LONG12,LONG23                          
       REAL*8       X0,Y0
       REAL*8       PI                                                   
+      REAL*8       TRIGOM
 C ----------------------------------------------------------------------
 C                                                                       
 C --- LECTURE DES DIMENSIONS                                            
@@ -102,7 +103,7 @@ C
          ELSE IF (X12/SQRT(LONG12).LT.-1.D0) THEN
             ALPH12=PI
          ELSE
-            ALPH12 = ACOS(X12/SQRT(LONG12))                       
+            ALPH12 = TRIGOM('ACOS',X12/SQRT(LONG12))
          ENDIF
          IF (Y12.LT.0.D0) THEN                                          
             ALPH12 = PI-ALPH12                                          
@@ -113,7 +114,7 @@ C
          ELSE IF (X23/SQRT(LONG23).LT.-1.D0) THEN
             ALPH23=PI
          ELSE
-            ALPH23 = ACOS(X23/SQRT(LONG23))                      
+            ALPH23 = TRIGOM('ACOS',X23/SQRT(LONG23))
          ENDIF
          IF (Y23.LT.0.D0) THEN                                          
             ALPH23 = PI-ALPH23                                          

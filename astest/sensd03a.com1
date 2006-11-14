@@ -1,10 +1,5 @@
 POURSUITE( CODE=_F(NOM = 'SENSD03A',),)
 #
-# Formules pour la comparaison dérivée / differences finies
-#
-VERIF=FORMULE(NOM_PARA=('DY_EPS', 'DY_REF', 'DYDPS'),
-                VALE='abs ((DY_EPS - DY_REF)/(sensible[i]*epsilon) - DYDPS)')
-#
 # 5. Test par differences finies
 #
 MATD   = [None]*nbps
@@ -17,6 +12,8 @@ TDIFR  = [None]*nbps
 TDIFI  = [None]*nbps
 TCOMPR = [None]*nbps
 TCOMPI = [None]*nbps
+VERIF  = [None]*nbps
+
 epsilon = 1.E-3
 for i in range(nbps):
    eps=[1.]*nbps
@@ -75,6 +72,12 @@ for i in range(nbps):
    # )
    #       / (sensible[i]*epsilon)
 
+#
+# Formules pour la comparaison dérivée / differences finies
+#
+   VERIF[i]=FORMULE(NOM_PARA=('DY_EPS', 'DY_REF', 'DYDPS'),
+                   VALE='abs ((DY_EPS - DY_REF)/%f - DYDPS)' %(sensible[i]*epsilon))
+
    TCOMPR[i]=CALC_TABLE(TABLE=TSREF_R,
                         SENSIBILITE=PS[i],
                         ACTION=(_F(OPERATION='RENOMME',
@@ -91,7 +94,7 @@ for i in range(nbps):
                                    NOM_PARA=('DY', 'DY_EPS'),),
                                 _F(OPERATION='OPER',
                                    NOM_PARA='DIFF',
-                                   FORMULE=VERIF),
+                                   FORMULE=VERIF[i]),
                                 _F(OPERATION='EXTR',
                                    NOM_PARA=('NOEUD', 'NUME_ORDRE', 'FREQ', 'DYDPS', 'DIFF', 'DY_REF', 'DY_EPS'),),),
                         TITRE='Comparaison entre dérivée / differences finies')
@@ -121,7 +124,7 @@ for i in range(nbps):
                                    NOM_PARA=('DY', 'DY_EPS'),),
                                 _F(OPERATION='OPER',
                                    NOM_PARA='DIFF',
-                                   FORMULE=VERIF),
+                                   FORMULE=VERIF[i]),
                                 _F(OPERATION='EXTR',
                                    NOM_PARA=('NOEUD', 'NUME_ORDRE', 'FREQ', 'DYDPS', 'DIFF', 'DY_REF', 'DY_EPS'),),),
                         TITRE='Comparaison entre dérivée / differences finies')
@@ -143,7 +146,7 @@ for i in range(nbps):
    #           VALE_C = complex(diff.real,diff.imag), REFERENCE = 'NON_REGRESSION' )))
 
    DETRUIRE(CONCEPT=_F(NOM=(MATD[i], CHD[i], CHMATD[i], MATELR[i], MATASR[i],
-                            DYHD[i], TDIFR[i], TDIFI[i], TCOMPR[i], TCOMPI[i],),),)
+                            DYHD[i], TDIFR[i], TDIFI[i], TCOMPR[i], TCOMPI[i],VERIF[i]),),)
 #
 # 6. Test_Resu en dur
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 14/11/2006   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ MAILL2=DEFI_GROUP(reuse =MAILL2,
                                  _F(NOM='NRESU',
                                     DIFFE=('POUTRE2','LCC1'),),
                                  ),
-                  INFO=2
+                  INFO=1
                   );
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL2,
@@ -105,6 +105,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MODE,
 #                              DIST_ESCL=31.75,
                               RECHERCHE = 'NOEUD_BOUCLE',
                               TOLE_PROJ_EXT=0.25,
+                              SANS_NOEUD_QUAD='NON',
                               ),
                   INFO=2);
 

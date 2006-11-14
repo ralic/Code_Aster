@@ -3,7 +3,7 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,8 @@ C
 
 C ----------------------------------------------------------------------
 C
+      CALL MATFPE(-1)
+C
       CALL JEMARQ()
 C     RECUPERATION DE L'ADRESSE DES COORDONNEES ET DU NOMBRE DE POINTS
       COORJV=GEOMI(1:19)//'.VALE'
@@ -89,4 +91,6 @@ C     BOUCLE SUR TOUS LES POINTS
  10   CONTINUE
 
       CALL JEDEMA()
+      CALL MATFPE(1)
+C
       END

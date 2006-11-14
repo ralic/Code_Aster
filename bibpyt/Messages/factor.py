@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF factor Messages  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,6 +82,16 @@ Matrice non factorisable :
   pour le noeud tardif %(k1)s et la composante %(k2)s
   Il s'agit sans doute d'une relation entre ddls surabondante.
   La relation concerne les noeuds imprimés ci-dessus dans le fichier MESSAGE.
+"""),
+
+42: _("""
+Matrice non factorisable :
+  Le solveur MUMPS considère la matrice comme numériquement singulière.
+  (Mais il n'en dit pas plus)
+
+Conseil :
+  Il s'agit peut-etre d'un manque de conditions aux limites,
+  ou au contraire, de redondances entre de trop nombreuses conditions.
 """),
 
 51: _("""

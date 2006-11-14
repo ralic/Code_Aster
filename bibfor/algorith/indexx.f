@@ -2,7 +2,7 @@
 C
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/05/96   AUTEUR KXBADNG T.FRIOU 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,9 +52,10 @@ C
               INDX(I+1) = INDX(I)
  12       CONTINUE
           I = 0
- 2        INDX(I+1) = INDXT
+ 2        CONTINUE
+          INDX(I+1) = INDXT
  13     CONTINUE
-        IF (JSTACK .EQ. 0 ) RETURN
+        IF (JSTACK .EQ. 0 ) GOTO 9999
         IR = ISTACK(JSTACK)
         L  = ISTACK(JSTACK-1)
         JSTACK = JSTACK - 2
@@ -93,7 +94,8 @@ C
       INDX(I) = INDX(J)
       INDX(J) = ITEMP
       GOTO 3
- 5    INDX(L) = INDX(J)
+ 5    CONTINUE
+      INDX(L) = INDX(J)
       INDX(J) = INDXT
       JSTACK = JSTACK + 2
       IF (IR-I+1 .GE. J-L) THEN
@@ -106,4 +108,5 @@ C
       ENDIF
       ENDIF
       GOTO 1
+9999  CONTINUE
       END

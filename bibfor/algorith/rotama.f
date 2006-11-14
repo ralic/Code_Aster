@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,8 @@ C
      &              P1MX, P1MY, P1MZ, CA, SA, P1M, PREC, R8DGRD, DNRM2
 C ----------------------------------------------------------------------
 C
+      CALL MATFPE(-1)
+C
       CALL JEMARQ()
       COORJV=GEOMI(1:19)//'.VALE'
       CALL JEVEUO(COORJV,'E',IADCOO)
@@ -102,4 +104,6 @@ C     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
          ENDIF
       ENDIF
       CALL JEDEMA()
+      CALL MATFPE(1)
+C
       END

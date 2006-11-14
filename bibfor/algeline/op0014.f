@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C     ----------------------
          ZK24(JSLVK-1+3)=KTYPR
          CALL AMUMPS('DETR_MAT',' ',MFAC,' ',' ',' ',IRET)
          CALL AMUMPS('PRERES',SOLVEU,MFAC,' ',' ',' ',IRET)
-         CALL ASSERT(IRET.EQ.3)
+         IF (IRET.NE.0) CALL U2MESS('F','FACTOR_42')
          GO TO 9999
       END IF
 

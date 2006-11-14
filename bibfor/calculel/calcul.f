@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -260,6 +260,8 @@ C     -- VERIF PAS DE DOUBLONS DANS LPAIN2 :
             NOU2 = NOU2 + 1
             LPAOU2(NOU2) = LPAOU(I)
             LCHOU2(NOU2) = LCHOU(I)
+C           -- ON INTERDIT LA CREATION DU CHAMP ' ' :
+            CALL ASSERT(LCHOU2(NOU2).NE.' ')
             GO TO 60
    50     CONTINUE
         END IF

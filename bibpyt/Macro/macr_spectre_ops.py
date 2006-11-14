@@ -1,4 +1,4 @@
-#@ MODIF macr_spectre_ops Macro  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_spectre_ops Macro  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,15 +101,16 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
   ### boucle 4 sur les résultats
               l_fonc=[]
               for resu in RESU :
-
                   ### Récupération des fonctions
                   motscles={}
-                  if resu['RESU_GENE']!=None : motscles['RESU_GENE'] = resu['RESU_GENE']
+                  if resu['RESU_GENE']!=None :
+                     if CALCUL=='ABSOLU' :
+                        UTMESS('F', macro, 'Pas de calcul absolu avec tran_gene')
+                     motscles['RESU_GENE'] = resu['RESU_GENE']
+
                   if resu['RESULTAT' ]!=None :
                     motscles['RESULTAT']  = resu['RESULTAT']
-                    if CALCUL=='ABSOLU' :
-                       UTMESS('F', macro, 'Pas de calcul relatif avec dyna_trans ou evol_noli')
-
+                  
                   __spo=RECU_FONCTION(NOM_CHAM     = NOM_CHAM,
                                       TOUT_ORDRE   = 'OUI',
                                       NOM_CMP      = 'D'+dd,

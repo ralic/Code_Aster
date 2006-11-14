@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF calculel5 Messages  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,12 +54,8 @@ cata_msg={
  il faut donner "maille"
 """),
 
-9: _("""
- le mot cle "nume_cmp" doit etre supprime en sta 5.5
-"""),
-
 10: _("""
- nbnocp trop grand, contacter l'asistance
+ nbnocp est trop grand, contacter l'assistance
 """),
 
 11: _("""
@@ -223,4 +219,21 @@ cata_msg={
  car la maille maitre en vis à vis de ce noeud possède ce meme noeud dans sa connectivité.
  On ne l'écrit donc pas.
 """),
+
+50: _("""
+ Présence de coques orthotropes, les mots clés ANGL_REP ou VECTEUR
+ du mot clé facteur REPE_COQUE ne sont pas traités.
+"""),
+
+51: _("""
+ Le repère de post-traitement a été défini dans la commande AFFE_CARA_ELEM mot clé facteur COQUE.
+ Il est conseillé de définir ce repère à l'aide du mot clé ANGL_REP ou VECTEUR du mot clé 
+ facteur REPE_COQUE de la commande CALC_ELEM.
+"""),
+
+52: _("""
+ Présence de GRILLE dans la modélisation, les mots clés ANGL_REP ou VECTEUR
+ du mot clé facteur REPE_COQUE ne sont pas traités.
+"""),
+
 }

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z) 
 C       -----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C                    T(1) = DIRECTION PRINCIPALE MAJEURE (EN DEGRE)
 C       -----------------------------------------------------------
         REAL*8    S(4) , T(4) , PI , A1 , A2 , A3 , A4 , A5
 C       ------------------------------------------------------------
-      PI = 4.D0 * ATAN(1.D0)
+      PI = 4.D0 * ATAN2(1.D0,1.D0)
       A1 = S(1) + S(2)
       A2 = S(1) - S(2)
       A4 = S(3)
@@ -63,7 +63,7 @@ C       ------------------------------------------------------------
       T(1) = ( A1 + A5 ) / 2.D0
       T(2) = ( A1 - A5 ) / 2.D0
       T(3) = S(3)
-      T(4) = ATAN( 2.D0 * A4 / A2 ) * 90.D0 / PI
+      T(4) = ATAN2( 2.D0 * A4 , A2 ) * 90.D0 / PI
       IF ( A2 .GE. 1.D-8 ) GOTO 10
       T(4) = T(4) + 90.D0 * ABS(A4) / A4
   10  CONTINUE

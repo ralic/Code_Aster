@@ -8,7 +8,7 @@ C
       REAL*8        A(2*NBTRON*NBCYL,*),B(*)                            
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/1999   AUTEUR KXBADNG A.ADOBES 
+C MODIF ALGELINE  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C ----------------------------------------------------------------------
       REAL*8       COEF,COEF1,COEF2                                     
       REAL*8       RAYK,RAYI,ARG                                        
       REAL*8       PI                                                   
+      REAL*8 TRIGOM
 C ----------------------------------------------------------------------
 C                                                                       
 C --- LECTURE DES DIMENSIONS                                            
@@ -90,7 +91,7 @@ C
                                                                         
                IF (DC.NE.0.D0) THEN                                     
                   IF (ABS(ABS(DC)-ABS(XINT(K)-XINT(I))).GT.EPSIT)THEN   
-                     FIC = ACOS((XINT(K)-XINT(I))/DC)                   
+                     FIC = TRIGOM('ACOS',(XINT(K)-XINT(I))/DC)
                      IF ((YINT(K)-YINT(I)).LT.0.D0) THEN                
                         FIC = 2.D0*PI-FIC                               
                      ENDIF                                              
@@ -135,7 +136,7 @@ C
 C                                                                       
                IF (DC.NE.0.D0) THEN                                     
                   IF (ABS(ABS(DC)-ABS(XINT(K)-XINT(I))).GT.EPSIT)THEN   
-                     FIC = ACOS((XINT(K)-XINT(I))/DC)                   
+                     FIC = TRIGOM('ACOS',(XINT(K)-XINT(I))/DC)
                      IF ((YINT(K)-YINT(I)).LT.0.D0) THEN                
                         FIC = 2.D0*PI-FIC                               
                      ENDIF                                              

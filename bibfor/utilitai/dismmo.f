@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C
       INTEGER IBID,IALIEL,IAMACO,IANOMA,IASSSA,ICO,IGREL
-      INTEGER ILMACO,INO,IRET,ITYPEL,N1,NBGREL,NEL,NUMAIL,NUMGLM
+      INTEGER ILMACO,INO,IRET,ITYPEL,N1,NBGREL,NEL
 C
       CHARACTER*1   K1BID
       CHARACTER*4   PHEN4, TYTM
@@ -60,11 +60,6 @@ C
       CHARACTER*19  NOLIG
       CHARACTER*32  REPK, K32BID
 C DEB ------------------------------------------------------------------
-C
-C -----  FONCTIONS FORMULES
-C     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
-C                     IMA ETANT UNE MAILLE DU MAILLAGE.
-      NUMGLM(NUMAIL,INO)=ZI(IAMACO-1+ZI(ILMACO+NUMAIL-1)+INO-1)
 C
       CALL JEMARQ()
       NOMOB = NOMOBZ
@@ -240,7 +235,7 @@ C     -----------------------------------------------------------------
      &         (QUESTI.EQ.'EXI_THM_CT').OR.(QUESTI.EQ.'EXI_THM_VR').OR.
      &         (QUESTI.EQ.'EXI_TUYAU' ).OR.(QUESTI.EQ.'EXI_COQ3D' ).OR.
      &         (QUESTI.EQ.'EXI_COQ1D' ).OR.(QUESTI.EQ.'EXI_PLAQUE').OR.
-     &         (QUESTI.EQ.'EXI_COQUE' ).OR.
+     &         (QUESTI.EQ.'EXI_COQUE' ).OR.(QUESTI.EQ.'EXI_GRILLE').OR.
      &         (QUESTI.EQ.'EXI_GRAD_VARI')
      &        ) THEN
 C     -----------------------------------------------------------------

@@ -2,7 +2,7 @@
      +                   RESUFK,LAMOR,KTYP)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -247,6 +247,7 @@ C     ------------------------------------------------------------------
          DO 70 IFREQ = 1, NFREQ
             IRESO = RESUFI(IFREQ,1)
             FFF   = RESUFR(IFREQ,1)
+            CHA   = RESUFR(IFREQ,2)
             AM    = RESUFR(IFREQ,3)
             ITERB = RESUFI(IFREQ,2)
             PREC  = RESUFR(IFREQ,14)

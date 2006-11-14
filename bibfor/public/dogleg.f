@@ -4,7 +4,7 @@
       REAL*8     DELTA,R(LR),DIAG(N),QTB(N),X(N),WA1(N),WA2(N)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PUBLIC  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF PUBLIC  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C-----------------------------------------------------------------------
 C COPYRIGHT (C) ARGONNE NATIONAL LABORATORY. MINPACK PROJECT. MARCH 1980
 C               BURTON S. GARBOW, KENNETH E. HILLSTROM, JORGE J. MORE
@@ -59,6 +59,8 @@ C-----------------------------------------------------------------------
       REAL*8  R8PREM,DNRM2
       DATA    ONE, ZERO / 1.0D0, 0.0D0 /
 C     ------------------------------------------------------------------
+C
+      CALL MATFPE(-1)
 C
 C     EPSMCH IS THE MACHINE PRECISION.
 C
@@ -167,5 +169,7 @@ C
  140  CONTINUE
 C
 C     LAST CARD OF SUBROUTINE DOGLEG.
+C
+      CALL MATFPE(1)
 C
       END

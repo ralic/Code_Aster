@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CAVITE 2D CALCUL DE SENSIBILITE (LOI DE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
-DEBUT(CODE=_F(NOM='SENSM14A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON')
+DEBUT(CODE=_F(NOM='SENSM14A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 #
 #......................................................................
 # CREUSEMENT D'UNE CAVITE CIRCULAIRE
@@ -31,43 +31,32 @@ DEBUT(CODE=_F(NOM='SENSM14A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='
 #
 
 #
-# 1. Definition/memorisation des fonctions constantes
 #
-
-PS_UN = DEFI_CONSTANTE(VALE = 1.0);
-MEMO_NOM_SENSI(NOM_UN = PS_UN);
-
-PS_ZERO = DEFI_CONSTANTE(VALE = 0.0);
-MEMO_NOM_SENSI(NOM_ZERO = PS_ZERO);
-
-#
-# 2. Definition du dictionnaire des parametres
+# 1. Definition du dictionnaire des parametres
 #
 
 mot_cle = [ "E", "NU", "ALPHA", "P_ULTM", "SY", "H" ]
 sensible = [ 5800.0E6,  0.3,  0.328, 1.225E-2, 2.11E6, 1.7E10 ]
 
 #
-# 3. Definition des parametres sensibles
+# 2. Definition des parametres sensibles
 #
 
 n = len(sensible)
 PS = [None]*n
 for i in range(n):
   PS[i] = DEFI_PARA_SENSI(VALE = sensible[i]);
-  MEMO_NOM_SENSI(NOM = _F(NOM_SD = PS[i].nom,
-                          PARA_SENSI = PS[i],
-                          NOM_COMPOSE = PS_UN.nom));
 
 #
-# 4. Maillage
+# 3. Maillage
 #
 
 PRE_GIBI();
 MAILLAGE = LIRE_MAILLAGE();
 
+
 #
-# 5. Modele
+# 4. Modele
 #
 
 MODEMECA = AFFE_MODELE(MAILLAGE = MAILLAGE,
@@ -103,7 +92,7 @@ MAILLAGE = DEFI_GROUP(reuse = MAILLAGE,
                      );
 
 #
-# 6. Mise en place des materiaux
+# 5. Mise en place des materiaux
 #
 
 SOL = DEFI_MATERIAU(ELAS_FO = _F(E = PS[0],
@@ -117,54 +106,16 @@ SOL = DEFI_MATERIAU(ELAS_FO = _F(E = PS[0],
                                          H = PS[5])
                    );
 
-SOLS = [None]*n
-for i in range(n):
-  PSFONC = [PS_ZERO]*n
-  PSFONC[i] = PS_UN
-  SOLS[i] = DEFI_MATERIAU(ELAS_FO = _F(E = PSFONC[0],
-                                       NU = PSFONC[1],
-                                       RHO = 2764.0,
-                                      ),
-                          DRUCK_PRAGER_FO = _F(ECROUISSAGE = 'LINEAIRE',
-                                               ALPHA = PSFONC[2],
-                                               P_ULTM = PSFONC[3],
-                                               SY = PSFONC[4],
-                                               H = PSFONC[5])
-                                              );
-  if i<2 :
-    MEMO_NOM_SENSI(NOM = _F(NOM_SD = 'SOL',
-                            PARA_SENSI = PS[i],
-                            NOM_COMPOSE = SOLS[i].nom,
-                            MOT_CLE = mot_cle[i],
-                            MOT_FACT='ELAS_FO',
-                            VALEUR = PS[i].nom ),);
-  else :
-    MEMO_NOM_SENSI(NOM = _F(NOM_SD = 'SOL',
-                            PARA_SENSI = PS[i],
-                            NOM_COMPOSE = SOLS[i].nom,
-                            MOT_CLE = mot_cle[i],
-                            MOT_FACT='DRUCK_PRAGER_FO',
-                            VALEUR = PS[i].nom ),);
 
 #
-# 7. Affectation des materiaux
+# 6. Affectation des materiaux
 #
 
 MATEMAIL = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
                          AFFE = _F(TOUT='OUI', MATER = SOL));
-CHMS = [None]*n
-for i in range(n):
-  CHMS[i] = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
-                          AFFE = _F(TOUT='OUI', MATER = SOLS[i]));
-  MEMO_NOM_SENSI(NOM = _F(NOM_SD = 'MATEMAIL',
-                          PARA_SENSI = PS[i],
-                          NOM_COMPOSE = CHMS[i].nom,
-                          MOT_CLE = 'MATER',
-                          MOT_FACT = 'AFFE',
-                          VALEUR = 'SOL' ));
 
 #
-# 8. Chargements
+# 7. Chargements
 #
 
 TEMPS = DEFI_LIST_REEL(DEBUT = 0.0,
@@ -226,13 +177,9 @@ PRES_CAV = AFFE_CHAR_MECA(MODELE = MODEMECA,
                          );
 
 #
-# 9. Calcul
+# 8. Calcul
 #
 
-for i in range(n):
-  MEMO_NOM_SENSI(NOM = _F(NOM_SD = 'RES',
-                          PARA_SENSI = PS[i],
-                          NOM_COMPOSE = ('RES_'+PS[i].nom)));
 
 RES = STAT_NON_LINE(MODELE = MODEMECA,
                     CHAM_MATER = MATEMAIL,
@@ -256,25 +203,44 @@ RES = STAT_NON_LINE(MODELE = MODEMECA,
                     SENSIBILITE= tuple(PS),
                    );
 
+RES=CALC_ELEM(reuse=RES,RESULTAT=RES,
+              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),)
 
-
-
-
-
-
+RES=CALC_ELEM(reuse=RES,RESULTAT=RES,
+              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+              SENSIBILITE=tuple(PS))
 
 #
-# Verification par differences finies (deplacements)
+# 8.1 - Verification par differences finies (deplacements)
 #
+SOL2   = [None]*n
+SOL3   = [None]*n
+MATMA2 = [None]*n
+MATMA3 = [None]*n
+RES2   = [None]*n
+RES3   = [None]*n
+DX_M   = [None]*n*4
+DX_P   = [None]*n*4
+DY_M   = [None]*n*4
+DY_P   = [None]*n*4
+VERIX  = [None]*n
+VERIY  = [None]*n
+TDEPX  = [None]*n*4
+TDEPY  = [None]*n*4
+DXRES  = [None]*n*4
+DYRES  = [None]*n*4
 
 epsilon = 1.E-5
+
+
 for i in range(n):
   eps2 = [1.]*n
   eps3 = [1.]*n
   eps2[i]=1.0 + epsilon
   eps3[i]=1.0 - epsilon
 
-  SOL2 = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps2[0],
+
+  SOL2[i] = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps2[0],
                                  NU = sensible[1]*eps2[1],
                                  RHO = 2764.0,
                                 ),
@@ -285,7 +251,7 @@ for i in range(n):
                                          H = sensible[5]*eps2[5])
                       );
 
-  SOL3 = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps3[0],
+  SOL3[i] = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps3[0],
                                  NU = sensible[1]*eps3[1],
                                  RHO = 2764.0,
                                 ),
@@ -296,14 +262,14 @@ for i in range(n):
                                          H = sensible[5]*eps3[5])
                       );
 
-  MATEMA2 = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
-                          AFFE = _F(TOUT='OUI', MATER = SOL2));
+  MATMA2[i] = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
+                          AFFE = _F(TOUT='OUI', MATER = SOL2[i]));
 
-  MATEMA3 = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
-                          AFFE = _F(TOUT='OUI', MATER = SOL3));
+  MATMA3[i] = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
+                          AFFE = _F(TOUT='OUI', MATER = SOL3[i]));
 
-  RES2 = STAT_NON_LINE(MODELE = MODEMECA,
-                      CHAM_MATER = MATEMA2,
+  RES2[i] = STAT_NON_LINE(MODELE = MODEMECA,
+                      CHAM_MATER = MATMA2[i],
                       EXCIT = (_F(CHARGE = CALDEP,),
                                _F(CHARGE = FCAVITE, FONC_MULT = COEF2),
                                #_F(CHARGE = PRES_CAV, FONC_MULT = COEF2),
@@ -323,8 +289,8 @@ for i in range(n):
                                        ITER_GLOB_MAXI = 20,),
                      );
 
-  RES3 = STAT_NON_LINE(MODELE = MODEMECA,
-                      CHAM_MATER = MATEMA3,
+  RES3[i] = STAT_NON_LINE(MODELE = MODEMECA,
+                      CHAM_MATER = MATMA3[i],
                       EXCIT = (_F(CHARGE = CALDEP,),
                                _F(CHARGE = FCAVITE, FONC_MULT = COEF2),
                                #_F(CHARGE = PRES_CAV, FONC_MULT = COEF2),
@@ -343,66 +309,155 @@ for i in range(n):
                       CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-06,
                                        ITER_GLOB_MAXI = 20),
                      );
+ 
+  VERIX[i]=FORMULE(NOM_PARA=('DX_M', 'DX_P','DXRES'),
+               VALE='abs ((DX_P - DX_M)/%e -  DXRES)' %(2*sensible[i]*epsilon))
+
+  VERIY[i]=FORMULE(NOM_PARA=('DY_M', 'DY_P','DYRES'),
+               VALE='abs ((DY_P - DY_M)/%e -  DYRES)' %(2*sensible[i]*epsilon))
+
 
   for j in range(1, 4):
-    for k in ['DX', 'DY']:
-      TAB_REF = POST_RELEVE_T(ACTION = _F(INTITULE = 'SENSIBILITE',
+      l=j-1+3*i
+
+      DXRES[l] = POST_RELEVE_T(ACTION = _F(INTITULE = 'DX_RES',
                                           NOEUD = 'N1000',
-                                          RESULTAT = RES3,
+                                          RESULTAT = RES,
                                           NOM_CHAM = 'DEPL',
                                           NUME_ORDRE = j,
-                                          NOM_CMP = k,
+                                          NOM_CMP = 'DX',
+                                          SENSIBILITE=PS[i],
                                           OPERATION = 'EXTRACTION'));
 
-      TAB_DIF = POST_RELEVE_T(ACTION = _F(INTITULE = 'SENSIBILITE',
+      DX_M[l] = POST_RELEVE_T(ACTION = _F(INTITULE = 'DX_moins',
                                           NOEUD = 'N1000',
-                                          RESULTAT = RES2,
+                                          RESULTAT = RES3[i],
                                           NOM_CHAM = 'DEPL',
                                           NUME_ORDRE = j,
-                                          NOM_CMP = k,
+                                          NOM_CMP = 'DX',
                                           OPERATION = 'EXTRACTION'));
 
-      diff = (TAB_DIF[k,1]-TAB_REF[k,1])/(2*sensible[i]*epsilon)
-      CRIT = 'RELATIF'
-      PREC = 1.E-2
-      if diff == 0.:
-          CRIT = 'ABSOLU'
-          PREC = 0.         
-      TEST_RESU(RESU=(
-       _F(RESULTAT = RES, NUME_ORDRE = j,
-          NOM_CHAM = 'DEPL', NOEUD = 'N1000',
-          CRITERE = CRIT, PRECISION = PREC,
-          NOM_CMP = k,   SENSIBILITE = PS[i],
-          VALE = diff, REFERENCE = 'NON_REGRESSION' )))
-    
-      DETRUIRE( CONCEPT =_F(NOM = TAB_REF ))
-      DETRUIRE( CONCEPT =_F(NOM = TAB_DIF ))
-  DETRUIRE( CONCEPT =_F(NOM = RES2 ))
-  DETRUIRE( CONCEPT =_F(NOM = SOL2 ))
-  DETRUIRE( CONCEPT =_F(NOM = MATEMA2 ))
-  DETRUIRE( CONCEPT =_F(NOM = RES3 ))
-  DETRUIRE( CONCEPT =_F(NOM = SOL3 ))
-  DETRUIRE( CONCEPT =_F(NOM = MATEMA3 ))
+      DX_P[l] = POST_RELEVE_T(ACTION = _F(INTITULE = 'DX_PLUS',
+                                          NOEUD = 'N1000',
+                                          RESULTAT = RES2[i],
+                                          NOM_CHAM = 'DEPL',
+                                          NUME_ORDRE = j,
+                                          NOM_CMP = 'DX',
+                                          OPERATION = 'EXTRACTION'));
+
+      DYRES[l] = POST_RELEVE_T(ACTION = _F(INTITULE = 'DY_RES',
+                                          NOEUD = 'N1000',
+                                          RESULTAT = RES,
+                                          NOM_CHAM = 'DEPL',
+                                          NUME_ORDRE = j,
+                                          NOM_CMP = 'DY',
+                                          SENSIBILITE=PS[i],
+                                          OPERATION = 'EXTRACTION'));
+
+      DY_M[l] = POST_RELEVE_T(ACTION = _F(INTITULE = 'DX_moins',
+                                          NOEUD = 'N1000',
+                                          RESULTAT = RES3[i],
+                                          NOM_CHAM = 'DEPL',
+                                          NUME_ORDRE = j,
+                                          NOM_CMP = 'DY',
+                                          OPERATION = 'EXTRACTION'));
+
+      DY_P[l] = POST_RELEVE_T(ACTION = _F(INTITULE = 'DX_PLUS',
+                                          NOEUD = 'N1000',
+                                          RESULTAT = RES2[i],
+                                          NOM_CHAM = 'DEPL',
+                                          NUME_ORDRE = j,
+                                          NOM_CMP = 'DY',
+                                          OPERATION = 'EXTRACTION'));
 
 
+      TDEPX[l]   = CALC_TABLE(
+                         TABLE=DXRES[l],
+                         SENSIBILITE=PS[i],
+                         ACTION=(_F(OPERATION='RENOMME', NOM_PARA=( 'DX', 'DXRES')),
+                                 _F(OPERATION='COMB', TABLE=DX_P[l],  NOM_PARA=('NOEUD','INST'),),
+                                 _F(OPERATION='RENOMME', NOM_PARA=( 'DX', 'DX_P')),
+                                 _F(OPERATION='COMB', TABLE=DX_M[l],  NOM_PARA=('NOEUD','INST'),),
+                                 _F(OPERATION='RENOMME', NOM_PARA=( 'DX', 'DX_M')),
+                                 _F(OPERATION='OPER', NOM_PARA='DIFF', FORMULE=VERIX[i]),
+                                 _F(OPERATION='EXTR',
+                                    NOM_PARA=('NOEUD','NUME_ORDRE','INST','DIFF','DX_M','DX_P','DXRES'),),
+                             ))
+      IMPR_TABLE(TABLE=TDEPX[l])
+
+      TEST_TABLE(
+        TABLE     = TDEPX[l],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-6,
+        REFERENCE = 'AUTRE_ASTER',)
+
+      TDEPY[l]   = CALC_TABLE(
+                         TABLE=DYRES[l],
+                         SENSIBILITE=PS[i],
+                         ACTION=(_F(OPERATION='RENOMME', NOM_PARA=( 'DY', 'DYRES')),
+                                 _F(OPERATION='COMB', TABLE=DY_P[l],  NOM_PARA=('NOEUD','INST'),),
+                                 _F(OPERATION='RENOMME', NOM_PARA=( 'DY', 'DY_P')),
+                                 _F(OPERATION='COMB', TABLE=DY_M[l],  NOM_PARA=('NOEUD','INST'),),
+                                 _F(OPERATION='RENOMME', NOM_PARA=( 'DY', 'DY_M')),
+                                 _F(OPERATION='OPER', NOM_PARA='DIFF', FORMULE=VERIY[i]),
+                                 _F(OPERATION='EXTR',
+                                 NOM_PARA=('NOEUD','NUME_ORDRE','INST','DIFF','DY_M','DY_P','DYRES'),),
+                               ))
+      IMPR_TABLE(TABLE=TDEPY[l])
+      TEST_TABLE(
+        TABLE     = TDEPY[l],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-6,
+        REFERENCE = 'AUTRE_ASTER',)
 
 
-
-
+SOL4   = [None]*n
+SOL5   = [None]*n
+MATMA4 = [None]*n
+MATMA5 = [None]*n
+RES4   = [None]*n
+RES5   = [None]*n
+TBX   = [None]*n*4
+TDX   = [None]*n*4
+TSX   = [None]*n*4
+TXX   = [None]*n*4
+TBY   = [None]*n*4
+TDY   = [None]*n*4
+TSY   = [None]*n*4
+TYY   = [None]*n*4
+TBZ   = [None]*n*4
+TDZ   = [None]*n*4
+TSZ   = [None]*n*4
+TZZ   = [None]*n*4
+TBT   = [None]*n*4
+TDT   = [None]*n*4
+TST   = [None]*n*4
+TXY   = [None]*n*4
+VERXX  = [None]*n
+VERYY  = [None]*n
+VERZZ  = [None]*n
+VERXY  = [None]*n
 
 
 #
-# Verification par differences finies (contraintes)
-#
+# 8.2 - Verification par differences finies (contraintes)
+# -------------------------------------------------------
 
 epsilon = 1.E-5
+
 for i in range(n):
   eps2 = [1.]*n
   eps3 = [1.]*n
   eps2[i]=1.0 + epsilon
   eps3[i]=1.0 - epsilon
 
-  SOL2 = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps2[0],
+  SOL4[i] = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps2[0],
                                  NU = sensible[1]*eps2[1],
                                  RHO = 2764.0,
                                 ),
@@ -413,7 +468,7 @@ for i in range(n):
                                          H = sensible[5]*eps2[5])
                       );
 
-  SOL3 = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps3[0],
+  SOL5[i] = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps3[0],
                                  NU = sensible[1]*eps3[1],
                                  RHO = 2764.0,
                                 ),
@@ -424,14 +479,38 @@ for i in range(n):
                                          H = sensible[5]*eps3[5])
                       );
 
-  MATEMA2 = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
-                          AFFE = _F(TOUT='OUI', MATER = SOL2));
+  MATMA4[i] = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
+                          AFFE = _F(TOUT='OUI', MATER = SOL4[i]));
 
-  MATEMA3 = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
-                          AFFE = _F(TOUT='OUI', MATER = SOL3));
+  MATMA5[i] = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
+                          AFFE = _F(TOUT='OUI', MATER = SOL5[i]));
 
-  RES2 = STAT_NON_LINE(MODELE = MODEMECA,
-                      CHAM_MATER = MATEMA2,
+  RES4[i] = STAT_NON_LINE(MODELE = MODEMECA,
+                      CHAM_MATER = MATMA4[i],
+                      EXCIT = (_F(CHARGE = CALDEP,),
+                               _F(CHARGE = FCAVITE, FONC_MULT = COEF2),
+                               #_F(CHARGE = PRES_CAV, FONC_MULT = COEF2),
+                               _F(CHARGE = CALEXT, FONC_MULT = COEF1),
+                               _F(CHARGE = CALHAU, FONC_MULT = COEF1),
+                              ),
+                      COMP_INCR = _F(RELATION = 'DRUCKER_PRAGER',
+                                       RESI_INTE_RELA = 1E-06,
+                                       ITER_INTE_MAXI = 5,
+                                       ITER_INTE_PAS = 10,),
+                      INCREMENT = _F(LIST_INST = TEMPS,
+                                     SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
+                                     SUBD_PAS_MINI = 1,),
+                      NEWTON = _F(MATRICE = 'TANGENTE',
+                                  REAC_ITER = 1),
+                      CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-06,
+                                       ITER_GLOB_MAXI = 20),
+                     );
+   
+  RES4[i]=CALC_ELEM(reuse=RES4[i],RESULTAT=RES4[i],OPTION='SIEF_ELNO_ELGA')
+
+
+  RES5[i] = STAT_NON_LINE(MODELE = MODEMECA,
+                      CHAM_MATER = MATMA5[i],
                       EXCIT = (_F(CHARGE = CALDEP,),
                                _F(CHARGE = FCAVITE, FONC_MULT = COEF2),
                                #_F(CHARGE = PRES_CAV, FONC_MULT = COEF2),
@@ -451,89 +530,510 @@ for i in range(n):
                                        ITER_GLOB_MAXI = 20),
                      );
 
-  RES3 = STAT_NON_LINE(MODELE = MODEMECA,
-                      CHAM_MATER = MATEMA3,
-                      EXCIT = (_F(CHARGE = CALDEP,),
-                               _F(CHARGE = FCAVITE, FONC_MULT = COEF2),
-                               #_F(CHARGE = PRES_CAV, FONC_MULT = COEF2),
-                               _F(CHARGE = CALEXT, FONC_MULT = COEF1),
-                               _F(CHARGE = CALHAU, FONC_MULT = COEF1),
+  RES5[i]=CALC_ELEM(reuse=RES5[i],RESULTAT=RES5[i],OPTION='SIEF_ELNO_ELGA')
+
+
+  VERXX[i]=FORMULE(NOM_PARA=('SIXX_M', 'SIXX_P','SIXXS'),
+               VALE='abs ((SIXX_P - SIXX_M)/%e -  SIXXS)' %(2*sensible[i]*epsilon))
+  VERYY[i]=FORMULE(NOM_PARA=('SIYY_M', 'SIYY_P','SIYYS'),
+               VALE='abs ((SIYY_P - SIYY_M)/%e -  SIYYS)' %(2*sensible[i]*epsilon))
+  VERZZ[i]=FORMULE(NOM_PARA=('SIZZ_M', 'SIZZ_P','SIZZS'),
+               VALE='abs ((SIZZ_P - SIZZ_M)/%e -  SIZZS)' %(2*sensible[i]*epsilon))
+  VERXY[i]=FORMULE(NOM_PARA=('SIXY_M', 'SIXY_P','SIXYS'),
+               VALE='abs ((SIXY_P - SIXY_M)/%e -  SIXYS)' %(2*sensible[i]*epsilon))
+
+
+
+  for j in range(1, 4):   
+    l=j-1+3*i
+    TBX[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES5[i],
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIXX',
+                            OPERATION='EXTRACTION',),);
+
+
+    TDX[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES4[i],
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIXX',
+                            OPERATION='EXTRACTION',),);
+
+    TSX[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES,
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIXX',
+                            OPERATION='EXTRACTION',
+                            SENSIBILITE=PS[i]),);
+
+    TXX[l]=CALC_TABLE(TABLE=TSX[l],
+                        SENSIBILITE=PS[i],
+                        ACTION=(_F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIXX', 'SIXXS'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TDX[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIXX', 'SIXX_P'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TBX[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIXX', 'SIXX_M'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE= VERXX[i]),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DIFF', 'SIXXS','SIXX_P', 'SIXX_M'),),
                               ),
-                      COMP_INCR = _F(RELATION = 'DRUCKER_PRAGER',
-                                       RESI_INTE_RELA = 1E-06,
-                                       ITER_INTE_MAXI = 5,
-                                       ITER_INTE_PAS = 10,),
-                      INCREMENT = _F(LIST_INST = TEMPS,
-                                     SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                                     SUBD_PAS_MINI = 1,),
-                      NEWTON = _F(MATRICE = 'TANGENTE',
-                                  REAC_ITER = 1),
-                      CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-06,
-                                       ITER_GLOB_MAXI = 20),
-                     );
+                        TITRE='Comparaison entre derivee / differences finies')
 
-  for j in range(1, 4):
-    for k in ['SIXX', 'SIYY', 'SIZZ', 'SIXY']:
-      TAB_REF = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-                           OPERATION = 'EXTR',
-                           RESULTAT = RES3,
-                           NOM_CHAM = 'SIEF_ELGA',
-                           NUME_ORDRE = j
-                          )
-      TAB_REFNP = TAB_REF.EXTR_COMP(k, [], 1)
-
-      TAB_DIF = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-                           OPERATION = 'EXTR',
-                           RESULTAT = RES2,
-                           NOM_CHAM = 'SIEF_ELGA',
-                           NUME_ORDRE = j
-                          )
-      TAB_DIFNP = TAB_DIF.EXTR_COMP(k, [], 1)
-
-      diff = (TAB_DIFNP.valeurs[3 * 90 + 1 - 4]-TAB_REFNP.valeurs[3 * 90 + 1 - 4])/(2*sensible[i]*epsilon)
-      CRIT = 'RELATIF'
-      PREC = 1.E-2
-      if diff == 0.:
-          CRIT = 'ABSOLU'
-          PREC = 0. 
-      if i>1 :
-        TEST_RESU(RESU=(
-           _F(RESULTAT = RES,   NUME_ORDRE = j,
-              NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M90', POINT = 1,
-              CRITERE = CRIT, PRECISION = PREC,
-              NOM_CMP = k,   SENSIBILITE = PS[i],
-              VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
-
+    IMPR_TABLE(TABLE=TXX[l])
+    if i==0 or i==3 or i==4 or i==5:
+      TEST_TABLE(
+        TABLE     = TXX[l],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-5,
+        REFERENCE = 'AUTRE_ASTER',)
+    elif i==1 :
+      if j==1 :
+        TEST_TABLE(
+          TABLE     = TXX[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 0.1,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==2 :
+        TEST_TABLE(
+          TABLE     = TXX[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 0.6,
+          REFERENCE = 'AUTRE_ASTER',)
       else :
-        if i<1 :
-          if j>1 :
-            TEST_RESU(RESU=(
-               _F(RESULTAT = RES,   NUME_ORDRE = j,
-                  NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M90', POINT = 1,
-                  CRITERE = CRIT, PRECISION = PREC,
-                  NOM_CMP = k,   SENSIBILITE = PS[i],
-                  VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
-        else :
-          if j>1 :     
-            TEST_RESU(RESU=(
-               _F(RESULTAT = RES,   NUME_ORDRE = j,
-                  NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M90', POINT = 1,
-                  CRITERE = CRIT, PRECISION = PREC,
-                  NOM_CMP = k,   SENSIBILITE = PS[i],
-                  VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
-      
-      DETRUIRE( CONCEPT =_F(NOM = TAB_REF ))
-      DETRUIRE( CONCEPT =_F(NOM = TAB_DIF ))
-  DETRUIRE( CONCEPT =_F(NOM = RES2 ))
-  DETRUIRE( CONCEPT =_F(NOM = SOL2 ))
-  DETRUIRE( CONCEPT =_F(NOM = MATEMA2 ))
-  DETRUIRE( CONCEPT =_F(NOM = RES3 ))
-  DETRUIRE( CONCEPT =_F(NOM = SOL3 ))
-  DETRUIRE( CONCEPT =_F(NOM = MATEMA3 ))
+        TEST_TABLE(
+          TABLE     = TXX[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 26,
+          REFERENCE = 'AUTRE_ASTER',)
+    elif i==2 :
+      if j==1 :
+        TEST_TABLE(
+          TABLE     = TXX[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 1.E-6,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==2 :
+        TEST_TABLE(
+          TABLE     = TXX[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 5.,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==3 :
+        TEST_TABLE(
+          TABLE     = TXX[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 16.,
+          REFERENCE = 'AUTRE_ASTER',)
+
+    TBY[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES5[i],
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIYY',
+                            OPERATION='EXTRACTION',),);
+
+
+    TDY[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES4[i],
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIYY',
+                            OPERATION='EXTRACTION',),);
+
+    TSY[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES,
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIYY',
+                            OPERATION='EXTRACTION',
+                            SENSIBILITE=PS[i]),);
+
+    TYY[l]=CALC_TABLE(TABLE=TSY[l],
+                        SENSIBILITE=PS[i],
+                        ACTION=(_F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIYY', 'SIYYS'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TDY[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIYY', 'SIYY_P'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TBY[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIYY', 'SIYY_M'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE= VERYY[i]),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DIFF', 'SIYYS','SIYY_P', 'SIYY_M'),),
+                               ),
+                          TITRE='Comparaison entre derivee / differences finies')
+
+    IMPR_TABLE(TABLE=TYY[l])
+    if i==0 or i==3 or i==4 or i==5:
+      TEST_TABLE(
+        TABLE     = TYY[l],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-6,
+        REFERENCE = 'AUTRE_ASTER',)
+    elif i==1 :
+      if j==1 :
+        TEST_TABLE(
+          TABLE     = TYY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 0.5,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==2 :
+        TEST_TABLE(
+          TABLE     = TYY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 3.,
+          REFERENCE = 'AUTRE_ASTER',)
+      else :
+        TEST_TABLE(
+          TABLE     = TYY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 7.,
+          REFERENCE = 'AUTRE_ASTER',)
+    if i==2 :
+      if j==1 :
+        TEST_TABLE(
+          TABLE     = TYY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 1.E-6,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==2 :
+        TEST_TABLE(
+          TABLE     = TYY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 2.,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==3 :
+        TEST_TABLE(
+          TABLE     = TYY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 10.,
+          REFERENCE = 'AUTRE_ASTER',)
+
+    TBZ[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES5[i],
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIZZ',
+                            OPERATION='EXTRACTION',),);
+
+
+    TDZ[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES4[i],
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIZZ',
+                            OPERATION='EXTRACTION',),);
+
+    TSZ[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES,
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIZZ',
+                            OPERATION='EXTRACTION',
+                            SENSIBILITE=PS[i]),);
+
+    TZZ[l]=CALC_TABLE(TABLE=TSZ[l],
+                        SENSIBILITE=PS[i],
+                        ACTION=(_F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIZZ', 'SIZZS'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TDZ[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIZZ', 'SIZZ_P'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TBZ[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIZZ', 'SIZZ_M'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE= VERZZ[i]),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DIFF', 'SIZZS','SIZZ_P', 'SIZZ_M'),),
+                               ),
+                       TITRE='Comparaison entre derivee / differences finies')
+
+    IMPR_TABLE(TABLE=TZZ[l])
+    
+    if i==0 or i==3 or i==4 or i==5:
+      TEST_TABLE(
+        TABLE     = TZZ[l],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-6,
+        REFERENCE = 'AUTRE_ASTER',)
+    elif i==1 :
+      if j==1 :
+        TEST_TABLE(
+          TABLE     = TZZ[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 0.2,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==2 :
+        TEST_TABLE(
+          TABLE     = TZZ[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 1.,
+          REFERENCE = 'AUTRE_ASTER',)
+      else :
+        TEST_TABLE(
+          TABLE     = TZZ[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 2.,
+          REFERENCE = 'AUTRE_ASTER',)
+    elif i==2 :
+      if j==1 :
+        TEST_TABLE(
+          TABLE     = TZZ[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 1.E-6,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==2 :
+        TEST_TABLE(
+          TABLE     = TZZ[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 2.,
+          REFERENCE = 'AUTRE_ASTER',)
+      else :
+        TEST_TABLE(
+          TABLE     = TZZ[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 10.,
+          REFERENCE = 'AUTRE_ASTER',)
+
+    TBT[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES5[i],
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIXY',
+                            OPERATION='EXTRACTION',),);
+
+
+    TDT[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES4[i],
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIXY',
+                            OPERATION='EXTRACTION',),);
+
+    TST[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES,
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIXY',
+                            OPERATION='EXTRACTION',
+                            SENSIBILITE=PS[i]),);
+
+    TXY[l]=CALC_TABLE(TABLE=TST[l],
+                        SENSIBILITE=PS[i],
+                        ACTION=(_F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIXY', 'SIXYS'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TDT[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIXY', 'SIXY_P'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TBT[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIXY', 'SIXY_M'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE= VERXY[i]),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DIFF', 'SIXYS','SIXY_P', 'SIXY_M'),),
+                               ),
+                         TITRE='Comparaison entre derivee / differences finies')
+
+    IMPR_TABLE(TABLE=TXY[l])
+    
+    if i==0 or i==3 or i==4 or i==5:
+      TEST_TABLE(
+        TABLE     = TXY[l],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-6,
+        REFERENCE = 'AUTRE_ASTER',)
+    elif i==1 :
+      if j==1 :
+        TEST_TABLE(
+          TABLE     = TXY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 0.1,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==2 :
+        TEST_TABLE(
+          TABLE     = TXY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 9.,
+          REFERENCE = 'AUTRE_ASTER',)
+      else :
+        TEST_TABLE(
+          TABLE     = TXY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 4.,
+          REFERENCE = 'AUTRE_ASTER',)
+    elif i==2 :
+      if j==1 :
+        TEST_TABLE(
+          TABLE     = TXY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 1.E-6,
+          REFERENCE = 'AUTRE_ASTER',)
+      if j==2 :
+        TEST_TABLE(
+          TABLE     = TXY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 13.,
+          REFERENCE = 'AUTRE_ASTER',)
+      else :
+        TEST_TABLE(
+          TABLE     = TXY[l],
+          NOM_PARA  = 'DIFF',
+          TYPE_TEST = 'MAX',
+          VALE      = 0.,
+          CRITERE   = 'ABSOLU',
+          PRECISION = 2.,
+          REFERENCE = 'AUTRE_ASTER',)
 
 #
-# Verification par differences finies (plasticite)
-#
+# 8.3 - Verification par differences finies (plasticite)
+# -----------------------------------------------------
+SOL6   = [None]*n
+SOL7   = [None]*n
+MATMA6 = [None]*n
+MATMA7 = [None]*n
+RES6   = [None]*n
+RES7   = [None]*n
+VERV1  = [None]*n
+TBV   = [None]*n*4
+TDV   = [None]*n*4
+TSV   = [None]*n*4
+TV1   = [None]*n*4
 
 epsilon = 1.E-5
 for i in range(n):
@@ -542,7 +1042,7 @@ for i in range(n):
   eps2[i]=1.0 + epsilon
   eps3[i]=1.0 - epsilon
 
-  SOL2 = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps2[0],
+  SOL6[i] = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps2[0],
                                  NU = sensible[1]*eps2[1],
                                  RHO = 2764.0,
                                 ),
@@ -553,7 +1053,7 @@ for i in range(n):
                                          H = sensible[5]*eps2[5])
                       );
 
-  SOL3 = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps3[0],
+  SOL7[i] = DEFI_MATERIAU(ELAS = _F(E = sensible[0]*eps3[0],
                                  NU = sensible[1]*eps3[1],
                                  RHO = 2764.0,
                                 ),
@@ -564,14 +1064,14 @@ for i in range(n):
                                          H = sensible[5]*eps3[5])
                       );
 
-  MATEMA2 = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
-                          AFFE = _F(TOUT = 'OUI', MATER = SOL2));
+  MATMA6[i] = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
+                          AFFE = _F(TOUT = 'OUI', MATER = SOL6[i]));
 
-  MATEMA3 = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
-                          AFFE = _F(TOUT='OUI', MATER = SOL3));
+  MATMA7[i]= AFFE_MATERIAU(MAILLAGE = MAILLAGE,
+                          AFFE = _F(TOUT='OUI', MATER = SOL7[i]));
 
-  RES2 = STAT_NON_LINE(MODELE = MODEMECA,
-                      CHAM_MATER = MATEMA2,
+  RES6[i] = STAT_NON_LINE(MODELE = MODEMECA,
+                      CHAM_MATER = MATMA6[i],
                       EXCIT = (_F(CHARGE = CALDEP,),
                                _F(CHARGE = FCAVITE, FONC_MULT = COEF2),
                                #_F(CHARGE = PRES_CAV, FONC_MULT = COEF2),
@@ -591,8 +1091,11 @@ for i in range(n):
                                        ITER_GLOB_MAXI = 20),
                      );
 
-  RES3 = STAT_NON_LINE(MODELE = MODEMECA,
-                      CHAM_MATER = MATEMA3,
+  RES6[i]=CALC_ELEM(reuse=RES6[i],RESULTAT=RES6[i],OPTION='VARI_ELNO_ELGA')
+
+
+  RES7[i] = STAT_NON_LINE(MODELE = MODEMECA,
+                      CHAM_MATER = MATMA7[i],
                       EXCIT = (_F(CHARGE = CALDEP,),
                                _F(CHARGE = FCAVITE, FONC_MULT = COEF2),
                                #_F(CHARGE = PRES_CAV, FONC_MULT = COEF2),
@@ -610,47 +1113,76 @@ for i in range(n):
                                   REAC_ITER = 1),
                       CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-06,
                                        ITER_GLOB_MAXI = 20),
-                     );
+                     ); 
+  
+  RES7[i]=CALC_ELEM(reuse=RES7[i],RESULTAT=RES7[i],OPTION='VARI_ELNO_ELGA')
+
+  VERV1[i]=FORMULE(NOM_PARA=('V1_M', 'V1_P','V1S'),
+           VALE='abs ((V1_P - V1_M)/%e -  V1S)' %(2*sensible[i]*epsilon))
 
   for j in range(1, 4):
-    TAB_REF = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
-                         OPERATION = 'EXTR',
-                         RESULTAT = RES3,
-                         NOM_CHAM = 'VARI_ELGA',
-                         NUME_ORDRE = j
-                        )
-    TAB_REFNP = TAB_REF.EXTR_COMP('V1', [], 1)
+    l=j-1+3*i
 
-    TAB_DIF = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
-                         OPERATION = 'EXTR',
-                         RESULTAT = RES2,
-                         NOM_CHAM = 'VARI_ELGA',
-                         NUME_ORDRE = j
-                        )
-    TAB_DIFNP = TAB_DIF.EXTR_COMP('V1', [], 1)
+    TBV[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES7[i],
+                            NOM_CHAM='VARI_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='V1',
+                            OPERATION='EXTRACTION',),);
 
-    diff = (TAB_DIFNP.valeurs[3 * 90 + 1 - 4]-TAB_REFNP.valeurs[3 * 90 + 1 - 4])/(2*sensible[i]*epsilon)
-    CRIT = 'RELATIF'
-    PREC = 1.E-2
-    if diff == 0.:
-        CRIT = 'ABSOLU'
-        PREC = 0. 
 
-    TEST_RESU(RESU=(
-       _F(  RESULTAT = RES,   NUME_ORDRE = j,
-            NOM_CHAM = 'VARI_ELGA', MAILLE = 'M90', POINT = 1,
-            CRITERE = CRIT, PRECISION = PREC,
-            NOM_CMP = 'V1',   SENSIBILITE = PS[i],
-            VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
+    TDV[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES6[i],
+                            NOM_CHAM='VARI_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='V1',
+                            OPERATION='EXTRACTION',),);
 
-    DETRUIRE( CONCEPT =_F(NOM = TAB_REF ))
-    DETRUIRE( CONCEPT =_F(NOM = TAB_DIF ))
-  DETRUIRE( CONCEPT =_F(NOM = RES2 ))
-  DETRUIRE( CONCEPT =_F(NOM = SOL2 ))
-  DETRUIRE( CONCEPT =_F(NOM = MATEMA2 ))
-  DETRUIRE( CONCEPT =_F(NOM = RES3 ))
-  DETRUIRE( CONCEPT =_F(NOM = SOL3 ))
-  DETRUIRE( CONCEPT =_F(NOM = MATEMA3 ))
+    TSV[l] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N48',
+                            MAILLE='M90',
+                            RESULTAT=RES,
+                            NOM_CHAM='VARI_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='V1',
+                            OPERATION='EXTRACTION',
+                            SENSIBILITE=PS[i]),);
+
+    TV1[l]=CALC_TABLE(TABLE=TSV[l],
+                        SENSIBILITE=PS[i],
+                        ACTION=(_F(OPERATION='RENOMME',
+                                   NOM_PARA=('V1', 'V1S'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TDV[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('V1', 'V1_P'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TBV[l],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('V1', 'V1_M'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE= VERV1[i]),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DIFF', 'V1S','V1_P', 'V1_M'),),
+                              ),
+                        TITRE='Comparaison entre derivee / differences finies')
+
+    IMPR_TABLE(TABLE=TV1[l],)
+    TEST_TABLE(
+        TABLE     = TV1[l],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-6,
+        REFERENCE = 'AUTRE_ASTER',)
 
 FIN()
 

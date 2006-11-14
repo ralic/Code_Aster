@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,8 +153,8 @@ C        --- CALCUL SUIVANT LA METHODE CHOISIE ---
 C
          IF ( OPTION .EQ. 'COURONNE' ) THEN
 C
-            CALL GCOURO ( THETA, NOMA, NOMNO,COORN,NBNO,TRAV1,TRAV2,
-     &                    TRAV3,DIR,ZK8(IADRNO),FOND,DIREC,STOK4)
+            CALL GCOURO ( 'G', THETA, NOMA, NOMNO,COORN,NBNO,TRAV1,
+     &                   TRAV2,TRAV3,DIR,ZK8(IADRNO),FOND,DIREC,STOK4)
 C
          ELSE
 C
@@ -203,8 +203,8 @@ C        --- CALCUL SUIVANT LA METHODE CHOISIE ---
 C
          IF ( OPTION .EQ. 'COURONNE' ) THEN
 C
-            CALL GCOU2D ( THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO), RINF,
-     &                    RSUP, MODULE, DIR )
+            CALL GCOU2D ( 'G',THETA, NOMA, NOMNO, NOEUD, ZR(IADRCO),
+     &                   RINF, RSUP, MODULE, DIR )
 C
          ELSE
 C

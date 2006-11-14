@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2864,8 +2864,10 @@ PyObject *args;
    if (actif >= -1  && actif <= 1) {
       CALL_MATFPE(&actif);
    } else {
-      MYABORT("Valeur incorrecte : seuls 0 et 1 sont valides.");
+      MYABORT("Valeur incorrecte : seuls -1 et 1 sont valides.");
    }
+   Py_INCREF( Py_None ) ;
+   return Py_None;
 }
 
 /* ---------------------------------------------------------------------- */

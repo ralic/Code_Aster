@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -335,7 +335,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   GROUP_NO='PA4',
                   VALE=-0.84121016905,
                   CRITERE='RELATIF',
-                  PRECISION=5.5e-4,
+                  PRECISION=8.e-4,
                   REFERENCE='NON_REGRESSION',
                   VERSION='7.3.23',),);
 #
@@ -369,7 +369,7 @@ TEST_TABLE(TABLE=REACEN2,
            NOM_PARA='DY',
            VALE=17492.3070431,
            CRITERE='RELATIF',
-           PRECISION=5e-4,
+           PRECISION=8e-4,
            REFERENCE='NON_REGRESSION',
            VERSION='7.3.23',);
 

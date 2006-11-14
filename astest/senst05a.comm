@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE Sensibilite par rapport a la chaleur volumique et emissivite
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 #
-DEBUT( CODE=_F(  NOM = 'SENST05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,PAR_LOT='NON' )
+DEBUT( CODE=_F(  NOM ='SENST05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') )
 #
 #
 #          J    BORD_SU1       BORD_SU2    
@@ -59,20 +59,11 @@ DEBUT( CODE=_F(  NOM = 'SENST05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,PAR
 #   * L'ecart qui est teste est un ecart relatif par rapport a la valeur par
 #     differences finies.
 #
-# 1. Definition/memorisation des fonctions constantes
-#
-PS_UN=DEFI_CONSTANTE(VALE=1.0,);
-MEMO_NOM_SENSI ( NOM_UN = PS_UN ) ;
-#
-PS_ZERO=DEFI_CONSTANTE(VALE=0.0,);
-MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
 #
 # 2. Definition des parametres sensibles et des autres parametres
 #
 PS1=DEFI_PARA_SENSI(VALE=2.0,);
-MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS1,NOM_SD='PS1',),);
 PS2=DEFI_PARA_SENSI(VALE=0.3,);
-MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS2,NOM_SD='PS2',),);
 #
 EPSA=1.E-6;
 A1=DEFI_CONSTANTE(VALE=30.0);
@@ -95,23 +86,7 @@ MAILLAGE=LIRE_MAILLAGE();
 # 3.1. Mise en place du materiau, de sa derivee et de ses translates
 #
 MAT=DEFI_MATERIAU(THER_NL=_F(  LAMBDA = LAMB, RHO_CP = PS1));
-#                       
-MEMO_NOM_SENSI(NOM=(_F(NOM_SD='MAT',
-                      PARA_SENSI=PS1,
-                      NOM_COMPOSE='MAT_PS1',
-                      VALEUR='PS1',
-                      MOT_FACT='THER_NL',
-                      MOT_CLE='RHO_CP',),));
-MAT_PS1=DEFI_MATERIAU(THER_NL=_F( LAMBDA = PS_ZERO,RHO_CP = PS_UN))
-#
 CMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,AFFE=_F(TOUT='OUI',MATER=MAT));
-MEMO_NOM_SENSI(NOM=(_F(NOM_SD='CMAT',
-                      PARA_SENSI=PS1,
-                      NOM_COMPOSE='CMAT_PS1',
-                      VALEUR='MAT',
-                      MOT_FACT='AFFE',
-                      MOT_CLE='MATER',)));
-CMAT_PS1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,AFFE=_F(TOUT='OUI',MATER=MAT_PS1))
 #
 MATP=DEFI_MATERIAU(THER_NL=_F(  LAMBDA = LAMB, RHO_CP = PS1P));
 CMATP=AFFE_MATERIAU(MAILLAGE=MAILLAGE,AFFE=_F(TOUT='OUI',MATER=MATP));
@@ -135,14 +110,6 @@ CH_0=AFFE_CHAR_THER_F(MODELE=MODEPLAN,
 #
 CH_1=AFFE_CHAR_THER_F(MODELE=MODEPLAN,RAYONNEMENT=_F(GROUP_MA='BORD_DRO',
                      SIGMA=A3,EPSILON=PS2,TEMP_EXT=A4));
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_1',
-                      PARA_SENSI=PS2,
-                      NOM_COMPOSE='CH_1_PS2',
-                      VALEUR='PS2',
-                      MOT_FACT='RAYONNEMENT',
-                      MOT_CLE='EPSILON',));
-CH_1_PS2=AFFE_CHAR_THER_F(MODELE=MODEPLAN,RAYONNEMENT=_F(GROUP_MA='BORD_DRO',
-                          SIGMA=PS_ZERO,EPSILON=PS_UN,TEMP_EXT=PS_ZERO));
 #
 # 3.4 Chargements translates pour differences finies
 #
@@ -153,12 +120,6 @@ CH_1M=AFFE_CHAR_THER_F(MODELE=MODEPLAN,RAYONNEMENT=_F(GROUP_MA='BORD_DRO',
 #
 # 4.1. Calcul standard + 2 calculs de sensibilite
 #
-MEMO_NOM_SENSI(NOM=(_F(NOM_SD='RETH',
-                       PARA_SENSI=PS1,
-                       NOM_COMPOSE='RETH_PS1'),
-                    _F(NOM_SD='RETH',
-                       PARA_SENSI=PS2,
-                       NOM_COMPOSE='RETH_PS2')));
 LR8=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=_F(JUSQU_A = 10.,NOMBRE=2));
 RETH=THER_NON_LINE(MODELE=MODEPLAN,
                    CHAM_MATER=CMAT,
@@ -218,12 +179,6 @@ RETH2P=THER_NON_LINE(MODELE=MODEPLAN,
 #
 # 4.3. Releve des temperatures (ou sensibilite de temperature)
 #
-MEMO_NOM_SENSI(NOM=(_F(NOM_SD='RLTH',
-                       PARA_SENSI=PS1,
-                       NOM_COMPOSE='RLTH_PS1'),
-                    _F(NOM_SD='RLTH',
-                       PARA_SENSI=PS2,
-                       NOM_COMPOSE='RLTH_PS2')));
 RLTH=POST_RELEVE_T(ACTION=(_F(RESULTAT = RETH,
                               INTITULE='TEMPERATURE',
                               NOM_CHAM='TEMP',
@@ -246,7 +201,6 @@ RLTH=POST_RELEVE_T(ACTION=(_F(RESULTAT = RETH,
                               SENSIBILITE=(PS2),),
                            )
                    );
-###IMPR_TABLE( TABLE=RLTH,NOM_PARA=('NOEUD','INST','TEMP',),);
 IMPR_TABLE( TABLE=RLTH,SENSIBILITE=(PS1),
             NOM_PARA=('NOEUD','INST','TEMP',),);
 IMPR_TABLE( TABLE=RLTH,SENSIBILITE=(PS2),
@@ -276,93 +230,78 @@ RLTH2P=POST_RELEVE_T(ACTION=_F(RESULTAT = RETH2P,
                    GROUP_NO=('I','CENTRE','J'),
                    NOM_CMP=('TEMP')));
 #
-# 5. Boucle Python de comparaison difference finie/derivee analytique
+# 5. Calcul de l'ecart entre la derivee et la difference finie
 #
-for nume_ordre_k in range(3):
-#
-  k1 = 3*nume_ordre_k+1
-  if nume_ordre_k == 0 :
-    aux='ABSOLU'
-    raux=1.e-8
-  else :
-    aux='RELATIF'
-    raux=1.e-4
-#
-# 5.1. point 'I'
-#
-  temp=RLTH['TEMP',k1]
-#
-  tempm=RLTH1M['TEMP',k1]
-  tempp=RLTH1P['TEMP',k1]
-  dfps1 = (tempp-tempm)/(200.*EPSA)
-  tempm=RLTH2M['TEMP',k1]
-  tempp=RLTH2P['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*EPSA)
-#
-  TEST_RESU(RESU=(
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('I'),
-          CRITERE = aux, PRECISION = raux,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
-          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('I'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
-          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
-                 )
-            ) ;
-#
-# 5.2. point 'CENTRE'
-#
-  k1=k1+1
-  temp=RLTH['TEMP',k1]
-#
-  tempm=RLTH1M['TEMP',k1]
-  tempp=RLTH1P['TEMP',k1]
-  dfps1 = (tempp-tempm)/(200.*EPSA)
-  tempm=RLTH2M['TEMP',k1]
-  tempp=RLTH2P['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*EPSA)
-#
-  TEST_RESU(RESU=(
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('CENTRE'),
-          CRITERE = aux, PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
-          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('CENTRE'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-8,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
-          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
-                 )
-            ) ;
-#
-# 5.3. point 'J'
-#
-  k1=k1+1
-  temp=RLTH['TEMP',k1]
-#
-  tempm=RLTH1M['TEMP',k1]
-  tempp=RLTH1P['TEMP',k1]
-  dfps1 = (tempp-tempm)/(200.*EPSA)
-  tempm=RLTH2M['TEMP',k1]
-  tempp=RLTH2P['TEMP',k1]
-  dfps2 = (tempp-tempm)/(2.*EPSA)
-#
-  TEST_RESU(RESU=(
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('J'),
-          CRITERE = aux, PRECISION = 1.E-4,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS1,
-          VALE = dfps1, REFERENCE = 'AUTRE_ASTER' ),
-     _F(  RESULTAT = RETH,   NUME_ORDRE = nume_ordre_k,
-          NOM_CHAM = 'TEMP',  GROUP_NO=('J'),
-          CRITERE = 'RELATIF', PRECISION = 1.E-4,
-          NOM_CMP = 'TEMP',   SENSIBILITE = PS2,
-          VALE = dfps2, REFERENCE = 'AUTRE_ASTER' ),
-                 )
-            ) ;
-#
+# 5.1. Pour PS1
+
+VER_PS1 = FORMULE(NOM_PARA=('TEMP_M', 'TEMP_P', 'DTEMP'),
+                 VALE='abs((TEMP_P - TEMP_M)/(200.*EPSA) - DTEMP)')
+
+# renomme les temperatures en T+ et T-
+
+T1moins = CALC_TABLE(
+   TABLE=RLTH1M,
+   ACTION=_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'TEMP_M')),)
+T1plus = CALC_TABLE(
+   TABLE=RLTH1P,
+   ACTION=_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'TEMP_P')),)
+T1res = CALC_TABLE(
+   TABLE=RLTH,
+   SENSIBILITE=PS1,
+   ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'DTEMP')),
+           _F(OPERATION='COMB', TABLE=T1moins, NOM_PARA=('NOEUD','INST'),),
+           _F(OPERATION='COMB', TABLE=T1plus,  NOM_PARA=('NOEUD','INST'),),
+           _F(OPERATION='OPER', NOM_PARA='DIFF', FORMULE=VER_PS1),
+           _F(OPERATION='EXTR', NOM_PARA=('NOEUD','INST','DTEMP','DIFF','TEMP_M','TEMP_P'),),
+),)
+
+IMPR_TABLE(TABLE=T1res,
+           UNITE=6,)
+
+TEST_TABLE(
+   TABLE     = T1res,
+   NOM_PARA  = 'DIFF',
+   TYPE_TEST = 'MAX',
+   VALE      = 0.,
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-8,
+   REFERENCE = 'AUTRE_ASTER',
+)
+
+
+# 5.2. Pour PS2
+
+VER_PS2 = FORMULE(NOM_PARA=('TEMP_M', 'TEMP_P', 'DTEMP'),
+                 VALE='abs((TEMP_P - TEMP_M)/(2.*EPSA) - DTEMP)')
+
+# renomme les temperatures en T+ et T-
+T2moins = CALC_TABLE(
+   TABLE=RLTH2M,
+   ACTION=_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'TEMP_M')),)
+T2plus = CALC_TABLE(
+   TABLE=RLTH2P,
+   ACTION=_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'TEMP_P')),)
+T2res = CALC_TABLE(
+   TABLE=RLTH,
+   SENSIBILITE=PS2,
+   ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('TEMP', 'DTEMP')),
+           _F(OPERATION='COMB', TABLE=T2moins, NOM_PARA=('NOEUD','INST'),),
+           _F(OPERATION='COMB', TABLE=T2plus,  NOM_PARA=('NOEUD','INST'),),
+           _F(OPERATION='OPER', NOM_PARA='DIFF', FORMULE=VER_PS2),
+           _F(OPERATION='EXTR', NOM_PARA=('NOEUD','INST','DTEMP','DIFF','TEMP_M','TEMP_P'),),
+),)
+
+IMPR_TABLE(TABLE=T2res,
+           UNITE=6,)
+
+TEST_TABLE(
+   TABLE     = T2res,
+   NOM_PARA  = 'DIFF',
+   TYPE_TEST = 'MAX',
+   VALE      = 0.,
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-7,
+   REFERENCE = 'AUTRE_ASTER',
+)
+
 FIN();

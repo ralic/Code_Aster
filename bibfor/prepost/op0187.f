@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/06/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 14/11/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C     ------------------------------------------------------------------
      &        JMAGP,JGM,JTYP,JTYPF,NBNOMX,NBCO,NBTCO,JCO,JCOF,JINGM,
      &        JREFE,JVAL,NBMAGT,JNBNIM,JNBSEM,NBSEM,JNGMF,IPOMA,INUMA,
      &        IREGM,NUMAF,NUMSE,NBUTI,JJ,JNBNFG,ITET,JCNS,NMVTNF,I1,I2,
-     &        JPIN,NUMNI,INO,KTET,IMA,JC,NBNIM,ICNS,NLIG,IOCC,NBNONO,
+     &        JPIN,NUMNI,INO,KTET,IMA,JC,NBNIM,ICNS,NLIG,NBNONO,
      &        NBHEA,NTET,TYPSE,IC,DIM,JFACE,IFACE,JMMF,J1,J2,J3,KMMF,
      &        NXIS,NBNIS,JNIS,JNISID,JCOFE,INIS,NUISP,NUISM,NBCNS,NBPIN,
      &        JCORF,ILOC,JNBSE,IIND,JSE,JIIND,JIINDP,NBGEL,NBMAGL,JCOFL,
@@ -59,7 +59,8 @@ C     ------------------------------------------------------------------
      &        NBTNO,JH20N,JH20M,JCOR,NUNO,NBNH20,NCO,NTGEO,IAD,IMX,
      &        NBTGNO,NBNOGP,JNO,NBNOF,JNOGP,JGPNO,JNIM,II,I1000,NB1000,
      &        NBMANI,JMANIS,JNDNIS,JLNNO,JINDNS,JNNEW,NBNOIS,IRE,JMX,
-     &        NBNOSO,NBNOMI,JNX,NBHECT,NBCTIP,NBHEAV,JHECT,JCTIP
+     &        NBNOSO,NBNOMI,JNX,NBHECT,NBCTIP,NBHEAV,JHECT,JCTIP,DIMTO,
+     &        IILON,NBLON
       REAL*8  XNIS,YNIS,ZNIS,XNXIS,YNXIS,ZNXIS,EPS
       PARAMETER(EPS=1.D-10)
       CHARACTER*1 KBID
@@ -88,7 +89,8 @@ C     ON VERIFIE QUE LE MODELE EST COMPATIBLE AVEC LA METHODE XFEM
         CALL UTFINM()
       ENDIF
 C
-      CALL DISMOI('F','DIM_GEOM',MO,'MODELE',DIM,K8B,IRET)  
+      CALL DISMOI('F','DIM_GEOM',MO,'MODELE',DIM,K8B,IRET)
+
       LIEL=MO//'.MODELE    .LIEL'
       CALL JELIRA(LIEL,'NMAXOC',NBGREL,KBID)
 C
@@ -195,34 +197,43 @@ C
 C     ON PARCOURT LE LIGREL:
       CALL JEVEUO(FISS//'.TOPOSE.LON.CELV','L',JLON)
       CALL JEVEUO(FISS//'.TOPOSE.CNS.CELV','L',JCNS)
-      IOCC=0
       KK=0
       IICNS=0
       IIPIN=0
       IIHEA=0
+      IILON=0
       NBSE=0
       NBNI=0
       NBNOIS=0
       NBMANI=0
+      NBLON=8
       DO 40 I=1,NBGREL
          CALL JEVEUO(JEXNUM(LIEL,I),'L',IGREL)
          CALL JELIRA(JEXNUM(LIEL,I),'LONMAX',NBMAGL,KBID)
          NUTYEL=ZI(IGREL+NBMAGL-1)
          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NOTYPE)
+         CALL DISMOI('F','DIM_TOPO',NOTYPE,'TYPE_ELEM',DIMTO,K8B,IRET)
          IFACE=0
          IF(DIM.EQ.3)THEN
-             IF(NOTYPE(1:6).NE.'MECA_X') GOTO 40
-             IF(NOTYPE(8:11).EQ.'FACE' .OR. NOTYPE(9:12).EQ.'FACE' .OR.
-     &          NOTYPE(10:13).EQ.'FACE')THEN
-                NBCNS=18
-                NBPIN=9
-                NBHEA=6
+           IF(DIMTO.EQ.3)THEN
+             NBCNS=128
+             NBPIN=33
+             NBHEA=36
+           ELSE
+             NBCNS=18
+             NBPIN=9
+             NBHEA=6
+             IF(NOTYPE(1:9).EQ.'MECA_FACE')THEN
+               IICNS=IICNS+NBCNS*(NBMAGL-1)
+               IIPIN=IIPIN+NBPIN*(NBMAGL-1)
+               IIHEA=IIHEA+NBHEA*(NBMAGL-1)
+               IILON=IILON+NBLON*(NBMAGL-1)
+               GOTO 40
+             ELSEIF(NOTYPE(8:11).EQ.'FACE' .OR. NOTYPE(9:12).EQ.'FACE'
+     &         .OR. NOTYPE(10:13).EQ.'FACE')THEN
                 IFACE=1
-             ELSE
-                NBCNS=128
-                NBPIN=33
-                NBHEA=36
              ENDIF
+           ENDIF
          ELSE
              IF(NOTYPE(8:9).NE.'_X')GOTO 40
              NBCNS=18
@@ -232,11 +243,10 @@ C     ON PARCOURT LE LIGREL:
          DO 50 J=1,NBMAGL-1
            IMA=ZI(IGREL+J-1)
            ZI(JMMF+IMA-1)=0 
-           IOCC=IOCC+1
-           I1=ZI(JLON+8*(IOCC-1))
+           I1=ZI(JLON+IILON)
            IF(I1.NE.0)THEN
 C            LA MAILLE X-FEM N'EST PAS ELOIGNEE DE LA FISSURE:
-             I2=ZI(JLON+8*(IOCC-1)+I1+1)
+             I2=ZI(JLON+IILON+I1+1)
              KK=KK+1
              ZI(JNDNIS+KK-1)=0
              IF(I2.GT.0)THEN
@@ -247,7 +257,7 @@ C               NOEUDS D'INTERSECTION QUE DES NOEUDS SOMMETS
                    ZI(JNIM+II-1)=0
  144            CONTINUE
                 DO 145 I1000=1,NBCNS
-                   ILOC=ZI(JCNS+(IOCC-1)*NBCNS+I1000-1)
+                   ILOC=ZI(JCNS+IICNS+I1000-1)
                    IF(ILOC.GT.1000)THEN
                       ZI(JNIM+ILOC-1001)=1
                    ENDIF
@@ -276,7 +286,7 @@ C            NOMBRE DE POINTS D'INTERSECTION
 C            NOMBRE DE SOUS-ELEMENTS
              JJ=0
              DO 45 JL=1,I1
-                JJ=JJ+ZI(JLON+8*(IOCC-1)+JL)
+                JJ=JJ+ZI(JLON+IILON+JL)
  45          CONTINUE
              ZI(JNBSEM+KK-1)=JJ
              ZI(JJSE+KK-1)=NBSE
@@ -321,6 +331,7 @@ C            LINEARISER
           IICNS=IICNS+NBCNS
           IIPIN=IIPIN+NBPIN
           IIHEA=IIHEA+NBHEA
+          IILON=IILON+NBLON
  50    CONTINUE
  40   CONTINUE
 C

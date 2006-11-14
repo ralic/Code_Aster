@@ -1,12 +1,13 @@
-      SUBROUTINE GCOU2D ( RESU, NOMA, NOMNO, NOEUD, COOR, RINF,
+      SUBROUTINE GCOU2D ( BASE, RESU, NOMA, NOMNO, NOEUD, COOR, RINF,
      &                    RSUP, MODULE, DIR )
       IMPLICIT   NONE
       REAL*8              RINF, RSUP, MODULE, DIR(3), COOR(*)
+      CHARACTER*1         BASE
       CHARACTER*8               NOMA,        NOEUD
       CHARACTER*24        RESU,       NOMNO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +96,7 @@ C
 C  .DESC
       CHAMNO = RESU(1:19)//'.DESC'
       CALL DISMOI('F','NB_EC','DEPL_R','GRANDEUR',NEC,K8B,IBID)
-      CALL WKVECT ( CHAMNO, 'G V I', 2+NEC, IDESC )
+      CALL WKVECT ( CHAMNO, BASE//' V I', 2+NEC, IDESC )
 C
       CALL JEECRA ( CHAMNO, 'DOCU', 0, 'CHNO' )
       CALL JENONU ( JEXNOM('&CATA.GD.NOMGD','DEPL_R'), NUMA )
@@ -105,13 +106,13 @@ C
 C
 C  .REFE
       CHAMNO = RESU(1:19)//'.REFE'
-      CALL WKVECT ( CHAMNO, 'G V K24', 2, IREFE )
+      CALL WKVECT ( CHAMNO, BASE//' V K24', 2, IREFE )
       ZK24(IREFE+1-1) = NOMA//'                '
 C
 C  .VALE
       CHAMNO = RESU(1:19)//'.VALE'
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBEL,K8B,IERD)
-      CALL WKVECT ( CHAMNO, 'G V R', 2*NBEL, ITHETA )
+      CALL WKVECT ( CHAMNO, BASE//' V R', 2*NBEL, ITHETA )
 C
 C     --- CALCUL DE THETA ---
 C

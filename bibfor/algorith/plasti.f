@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -287,13 +287,15 @@ C
         CALL LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,0,
      1                TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
      2                ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
-        IF(MOD.NE.'3D') THEN
-           SIGD(5)=0.D0
-           SIGD(6)=0.D0
-           EPSDT(5)=0.D0
-           EPSDT(6)=0.D0
-           DEPST(5)=0.D0
-           DEPST(6)=0.D0
+        IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
+           IF(MOD.NE.'3D') THEN
+              SIGD(5)=0.D0
+              SIGD(6)=0.D0
+              EPSDT(5)=0.D0
+              EPSDT(6)=0.D0
+              DEPST(5)=0.D0
+              DEPST(6)=0.D0
+           ENDIF
         ENDIF
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C

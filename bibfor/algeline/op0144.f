@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -348,7 +348,7 @@ C --------AU PREMIER PASSAGE CREATION DU PROF_CHNO
   90          CONTINUE
               IDEC = IDEC + 6
   80        CONTINUE
-            CALL PTEEQU(CHAM19,LONG,NUMGD)
+            CALL PTEEQU(CHAM19,'G',LONG,NUMGD)
             PRCHNO = CHAM19
           ELSE
             ZK24(JCREFE+1) = PRCHNO

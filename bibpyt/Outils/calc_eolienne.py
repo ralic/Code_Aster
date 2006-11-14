@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Outils  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_eolienne Outils  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1293,9 +1293,6 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                                     NUME_INST_FIN=1,),)
 
       RESU=CALC_ELEM( reuse =RESU,
-                      MODELE=__MO[j],
-                      CHAM_MATER=__affmat[j],
-                      CARA_ELEM=CARA[j],
                       RESULTAT=RESU,
                       OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_SIEF','SIPO_ELNO_SIEF',),)
 
@@ -1309,15 +1306,10 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                           NIVE_COUCHE='MOY',
                         );
       RESU=CALC_ELEM( reuse =RESU,
-                      MODELE=__MO[j],
-                      CHAM_MATER=__affmat[j],
-                      CARA_ELEM=CARA[j],
                       RESULTAT=RESU,
                       OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),)
 
       RESU = CALC_NO( reuse =RESU,
-                      CHAM_MATER=__affmat[j],
-                      CARA_ELEM=CARA[j],
                       RESULTAT=RESU,
                       OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM',),);        
 
@@ -1330,16 +1322,11 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                                  _F(CHARGE=LIMIT,),),
                         );
       RESU=CALC_ELEM( reuse =RESU,
-                      MODELE=__MO[j],
-                      CHAM_MATER=__affmat[j],
-                      CARA_ELEM=CARA[j],
                       RESULTAT=RESU,
-                      NIVE_COUCHE='MOY',
+                      REPE_COQUE=_F(NIVE_COUCHE='MOY',),
                       OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',));
 
       RESU = CALC_NO( reuse =RESU,
-                      CHAM_MATER=__affmat[j],
-                      CARA_ELEM=CARA[j],
                       RESULTAT=RESU,
                       OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM',),);         
 

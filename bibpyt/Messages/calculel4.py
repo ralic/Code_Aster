@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF calculel4 Messages  DATE 14/11/2006   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -375,7 +375,8 @@ cata_msg={
 """),
 
 89: _("""
- erreur: un element du maillage possede tous ses sommets sur une frontiere. il faut au moins un sommet interne
+ erreur: un element du maillage possede tous ses sommets sur une frontiere. il faut au moins un sommet interne.
+Pour pouvoir utiliser ZZ2 il faut remailler le coin de telle facon que tous les trg aient au moins un sommet interieur.
 """),
 
 90: _("""

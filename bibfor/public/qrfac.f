@@ -5,7 +5,7 @@
       REAL*8     A(LDA,N), RDIAG(N), ACNORM(N), WA(N)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PUBLIC  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF PUBLIC  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C-----------------------------------------------------------------------
 C COPYRIGHT (C) ARGONNE NATIONAL LABORATORY. MINPACK PROJECT. MARCH 1980
 C               BURTON S. GARBOW, KENNETH E. HILLSTROM, JORGE J. MORE
@@ -78,6 +78,8 @@ C-----------------------------------------------------------------------
 C
       DATA  ONE, P05, ZERO / 1.0D0, 5.0D-2, 0.0D0 /
 C     ------------------------------------------------------------------
+C
+      CALL MATFPE(-1)
 C
 C     EPSMCH IS THE MACHINE PRECISION.
 C
@@ -155,5 +157,7 @@ C
   110    CONTINUE
 C
 C     LAST CARD OF SUBROUTINE QRFAC.
+C
+      CALL MATFPE(1)
 C
       END

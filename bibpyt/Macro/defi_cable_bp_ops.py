@@ -1,4 +1,4 @@
-#@ MODIF defi_cable_bp_ops Macro  DATE 05/09/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF defi_cable_bp_ops Macro  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,7 +54,7 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
      Ecriture de la macro DEFI_CABLE_BP
   """
   from Accas import _F
-  import aster,string
+  import aster,string, types
   from Utilitai.Utmess import UTMESS
   ier=0
 
@@ -150,7 +150,12 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
 
         if i.has_key('GROUP_MA') == 1: 
           __CAB = i['GROUP_MA']
-          motscle2= {'CREA_GROUP_NO': [{'LONGUEUR': LONGUEUR, 'RAYON': RAYON, 'OPTION': 'TUNNEL', 'GROUP_MA': [ GROUP_MA_BETON, __CAB ], 'GROUP_MA_AXE': __CAB, 'NOM': __NOM1}]}
+
+          if type(GROUP_MA_BETON) in [types.TupleType, types.ListType]: gma = list(GROUP_MA_BETON)
+          else:                                                         gma = [ GROUP_MA_BETON ]
+          gma.insert(0, __CAB)
+
+          motscle2= {'CREA_GROUP_NO': [{'LONGUEUR': LONGUEUR, 'RAYON': RAYON, 'OPTION': 'TUNNEL', 'GROUP_MA': gma, 'GROUP_MA_AXE': __CAB, 'NOM': __NOM1}]}
         if i.has_key('MAILLE') == 1: 
           echo_mess=[]
           echo_mess.append( ' \n' )
@@ -166,16 +171,15 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
           __PC1 = i['NOEUD_ANCRAGE'][0]
           motscle2['CREA_GROUP_NO'][0]['NOEUD_ORIG'] = __PC1
 
-
         DEFI_GROUP( reuse=MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     INFO=INFO,
                     ALARME='NON',
                     **motscle2
                    ) ;
-    
+
       # CREATION DU DEUXIEME TUNNEL
-    
+
       if dCONE['PRESENT'][1] == 'OUI':
         __NB = __NB + 1
         __NOM2 = __NOM + str( int(__NB) )
@@ -185,7 +189,12 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
 
         if i.has_key('GROUP_MA') == 1: 
           __CAB = i['GROUP_MA']
-          motscle2= {'CREA_GROUP_NO': [{'LONGUEUR': LONGUEUR, 'RAYON': RAYON, 'OPTION': 'TUNNEL', 'GROUP_MA': [ GROUP_MA_BETON, __CAB ], 'GROUP_MA_AXE': __CAB, 'NOM': __NOM2}]}
+
+          if type(GROUP_MA_BETON) in [types.TupleType, types.ListType]: gma = list(GROUP_MA_BETON)
+          else:                                                         gma = [ GROUP_MA_BETON ]
+          gma.insert(0, __CAB)
+
+          motscle2= {'CREA_GROUP_NO': [{'LONGUEUR': LONGUEUR, 'RAYON': RAYON, 'OPTION': 'TUNNEL', 'GROUP_MA': gma, 'GROUP_MA_AXE': __CAB, 'NOM': __NOM2}]}
         if i.has_key('MAILLE') == 1: 
           echo_mess=[]
           echo_mess.append( ' \n' )

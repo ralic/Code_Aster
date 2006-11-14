@@ -2,9 +2,10 @@
       IMPLICIT  REAL*8 (A-H,O-Z)
       REAL*8 THETA,PAS,ALPHA1,ALPHA2,RCARTE,D,PI,RHO,RAD
       REAL*8 THET(801),RAYO(801)
+      REAL*8 TRIGOM
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/04/98   AUTEUR ACBHHCD G.DEVESA 
+C MODIF PREPOST  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +34,7 @@ C**********************************************************
       PAS = 360.D0/N
       THETA = 0.D0
       ALPHA1 = 20.D0
-      ALPHA2 = ASIN(D/RCARTE)*180.D0/PI  
+      ALPHA2 = TRIGOM('ASIN',D/RCARTE)*180.D0/PI
       DO 1 I=1,(N+1)
          IF ((THETA.LT.ALPHA1).OR.(THETA.GT.(360.D0-ALPHA1))) THEN
             RHO=D/TAN(ALPHA1*PI/180.D0)/COS(THETA*PI/180.D0)

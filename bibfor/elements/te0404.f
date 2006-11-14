@@ -2,7 +2,7 @@
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -79,11 +79,17 @@ C     CALCUL DE LA PLUS PETITE DISTANCE ENTRE LES NOEUDS SOMMETS
         
          XI = ZR(IGEOM-1+ND*(I-1)+1)
          YI = ZR(IGEOM-1+ND*(I-1)+2)
-         ZII = ZR(IGEOM-1+ND*(I-1)+3)
          
          XJ = ZR(IGEOM-1+ND*(J-1)+1)
          YJ = ZR(IGEOM-1+ND*(J-1)+2)
-         ZJ = ZR(IGEOM-1+ND*(J-1)+3)
+         
+         IF(ND.EQ.3) THEN
+            ZII = ZR(IGEOM-1+ND*(I-1)+3)
+            ZJ = ZR(IGEOM-1+ND*(J-1)+3)
+         ELSE
+            ZII = 0.D0
+            ZJ = 0.D0
+         ENDIF
          
          DISTIJ = SQRT((XJ-XI)**2+(YJ-YI)**2+(ZJ-ZII)**2)
          IF ((DISTIJ.LE.DMIN).AND.(DISTIJ.NE.0)) DMIN = DISTIJ

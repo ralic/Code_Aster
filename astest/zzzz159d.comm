@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE (VALIDATION SENSIBILITE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,6 +90,7 @@ RESU=MACR_RECAL(
          GRAPHIQUE = _F(UNITE=90,
                         FORMAT='XMGRACE',
                         INTERACTIF='NON',),
+         SUIVI_ESCLAVE    = 'OUI',
          INFO=2,
          );
 

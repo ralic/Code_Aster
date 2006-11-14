@@ -1,0 +1,270 @@
+POURSUITE( CODE=_F(  NOM = 'SENSD06A'), )
+
+#
+# 5. Test par differences finies
+#
+epsilon=1.E-3
+MATD   = [None]*n
+CHD    = [None]*n
+CHMAT  = [None]*n
+MATELR = [None]*n
+MATASR = [None]*n
+DYTD   = [None]*n
+TDIFR  = [None]*n 
+TDIFC  = [None]*n
+TDEPLR = [None]*n
+TDIFC  = [None]*n
+VERIDY = [None]*n
+VERISI = [None]*n
+TCONTR = [None]*n
+
+for i in range(n):
+  eps=[1.]*n
+  eps[i]=1.0+epsilon
+  MATD[i]=DEFI_MATERIAU(ELAS=_F(E=sensible[0]*eps[0],
+                             RHO=2400.,
+                             NU=sensible[1]*eps[1],
+                             ))
+
+  CHD[i]=AFFE_CHAR_MECA(MODELE=MO,
+                     FORCE_NODALE=(_F(GROUP_NO='OPPOSE',
+                                      FX=sensible[2]*eps[2],
+                                      FY=sensible[3]*eps[3]))
+                                      );
+
+  CHMAT[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',MATER=MATD[i],),);
+
+  MATELR[i]=CALC_MATR_ELEM(MODELE=MO,OPTION='RIGI_MECA',
+                          CHAM_MATER=CHMAT[i],    
+                          CHARGE=CLIM)
+
+  MATASR[i]=ASSE_MATRICE(MATR_ELEM=MATELR[i],NUME_DDL=NUM)
+
+  DYTD[i]=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT[i],
+                      MATR_MASS=MATASSM,MATR_RIGI=MATASR[i],
+                      INCREMENT=_F(LIST_INST=L_INST,),
+                      EXCIT=(_F(FONC_MULT=FC,CHARGE=CHD[i]),),
+                      NEWMARK=_F(),)
+
+  TDIFR[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                                GROUP_NO=('OPPOSE'),
+                                RESULTAT=DYTD[i],
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=10,
+                                NOM_CMP='DY',
+                                OPERATION='EXTRACTION',
+                                FORMAT_C='REEL',
+                                ),);
+
+  IMPR_TABLE(TABLE=TDIFR[i])
+#
+# Formules pour la comparaison derivee / differences finies
+#
+  VERIDY[i]=FORMULE(NOM_PARA=('DY_EPS', 'DY_REF', 'DYDPS'),
+                   VALE='abs ((DY_EPS - DY_REF)/%f - DYDPS)' %(sensible[i]*epsilon))
+
+  TDEPLR[i]=CALC_TABLE(TABLE=TSREF_R,
+                       SENSIBILITE=PS[i],
+                       ACTION=(_F(OPERATION='RENOMME',
+                                  NOM_PARA=('DY', 'DYDPS'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T_REF_R,
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DY', 'DY_REF'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=TDIFR[i],
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DY', 'DY_EPS'),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='DIFF',
+                                  FORMULE=VERIDY[i]),
+                               _F(OPERATION='EXTR',
+                                  NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DYDPS', 'DIFF', 'DY_REF', 'DY_EPS'),),),
+                        TITRE='Comparaison entre derivee / differences finies')
+  IMPR_TABLE(TABLE=TDEPLR[i])
+  TEST_TABLE(
+     TABLE     = TDEPLR[i],
+     NOM_PARA  = 'DIFF',
+     TYPE_TEST = 'MAX',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 1.E-6,
+     REFERENCE = 'AUTRE_ASTER',)
+
+
+#  diff=(T_DIF['DY',1]-T_REF['DY',1])/(sensible[i]*epsilon)
+
+  DYTD[i] = CALC_ELEM(
+                 reuse = DYTD[i],
+                 MODELE = MO,
+                 RESULTAT = DYTD[i],
+                 CHAM_MATER = CHMAT[i],
+                 EXCIT=(_F(FONC_MULT=FC,CHARGE=CHD[i]),),
+                 OPTION = 'SIGM_ELNO_DEPL',
+                 );
+
+  TDIFC[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                                GROUP_NO=('OPPOSE'),
+                                RESULTAT=DYTD[i],
+                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                NUME_ORDRE=10,
+                                MAILLE ='M14',
+                                NOM_CMP = 'SIXX',
+                                OPERATION='EXTRACTION',
+                                FORMAT_C='REEL',
+                                ),);
+
+#  diffc=(T_DIFC['SIXX',1]-T_REFC['SIXX',1])/(sensible[i]*epsilon)
+
+#
+# Formules pour la comparaison derivee / differences finies
+#
+  VERISI[i]=FORMULE(NOM_PARA=('SIXX_EPS', 'SIXX_REF', 'SIXX_DPS'),
+                   VALE='abs ((SIXX_EPS - SIXX_REF)/%f - SIXX_DPS)' %(sensible[i]*epsilon))
+
+  TCONTR[i]=CALC_TABLE(TABLE=TSREF_C,
+                       SENSIBILITE=PS[i],
+                       ACTION=(_F(OPERATION='RENOMME',
+                                  NOM_PARA=('SIXX', 'SIXX_DPS'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T_REF_C,
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('SIXX', 'SIXX_REF'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=TDIFC[i],
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('SIXX', 'SIXX_EPS'),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='DIFF',
+                                  FORMULE=VERISI[i]),
+                               _F(OPERATION='EXTR',
+                                  NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST',
+				  'SIXX_DPS', 'DIFF', 'SIXX_REF', 'SIXX_EPS'),),),
+                        TITRE='Comparaison entre derivee / differences finies')
+  IMPR_TABLE(TABLE=TCONTR[i])
+  TEST_TABLE(
+     TABLE     = TCONTR[i],
+     NOM_PARA  = 'DIFF',
+     TYPE_TEST = 'MAX',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 1.5E-3,
+     REFERENCE = 'AUTRE_ASTER',)
+
+  DETRUIRE(CONCEPT=_F(NOM=MATD[i]))   
+  DETRUIRE(CONCEPT=_F(NOM=CHD[i]))
+  DETRUIRE(CONCEPT=_F(NOM=CHMAT[i]))
+  DETRUIRE(CONCEPT=_F(NOM=MATELR[i]))
+  DETRUIRE(CONCEPT=_F(NOM=MATASR[i]))
+  DETRUIRE(CONCEPT=_F(NOM=DYTD[i]))
+  DETRUIRE(CONCEPT=_F(NOM=TDIFR[i]))
+  DETRUIRE(CONCEPT=_F(NOM=TDIFC[i]))
+  DETRUIRE(CONCEPT=_F(NOM=TDEPLR[i]))
+  DETRUIRE(CONCEPT=_F(NOM=VERIDY[i]))
+  DETRUIRE(CONCEPT=_F(NOM=VERISI[i]))
+  DETRUIRE(CONCEPT=_F(NOM=TCONTR[i]))
+
+'''
+
+#
+# 6. Test_Resu en dur
+#
+DYTFX=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
+                    MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
+                    INCREMENT=_F(LIST_INST=L_INST,),
+                    EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_2),),
+                    NEWMARK=_F(),)
+
+DYTFX = CALC_ELEM(
+                 reuse = DYTFX,
+                 MODELE = MO,
+                 RESULTAT = DYTFX,
+                 CHAM_MATER = CHMAT,
+                 EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_2),),
+                 OPTION = 'SIGM_ELNO_DEPL',
+                 );
+
+DYTFY=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
+                    MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
+                    INCREMENT=_F(LIST_INST=L_INST,),
+                    EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_3),),
+                    NEWMARK=_F(),)
+
+DYTFY = CALC_ELEM(
+                 reuse = DYTFY,
+                 MODELE = MO,
+                 RESULTAT = DYTFY,
+                 CHAM_MATER = CHMAT,
+                 EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_3),),
+                 OPTION = 'SIGM_ELNO_DEPL',
+                 );
+
+OPPSXX = RECU_FONCTION(RESULTAT=DYTFX,
+                     NOM_CHAM='SIGM_ELNO_DEPL',
+                     MAILLE ='M14',
+                     NOM_CMP = 'SIXX',
+                     GROUP_NO='OPPOSE',
+                     INTERPOL='LIN',);
+
+OPPSYY = RECU_FONCTION(RESULTAT=DYTFY,
+                     NOM_CHAM='SIGM_ELNO_DEPL',
+                     MAILLE ='M14',
+                     NOM_CMP = 'SIYY',
+                     GROUP_NO='OPPOSE',
+                     INTERPOL='LIN',);
+
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=DYT,NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',GROUP_NO='OPPOSE',
+                   CRITERE='RELATIF',PRECISION=5.E-3,
+                   NOM_CMP='DX',   
+                   VALE=(3.70E-10),REFERENCE='NON_REGRESSION',VERSION='7.1.3'),
+
+                _F(RESULTAT=DYT,NUME_ORDRE=10,
+                   NOM_CHAM='VITE',GROUP_NO='OPPOSE',
+                   CRITERE='RELATIF',PRECISION=5.E-3,
+                   NOM_CMP='DY',SENSIBILITE=PS_0,        
+                   VALE=(-6.11E-17),REFERENCE='NON_REGRESSION',VERSION='7.1.3'),
+
+                _F(RESULTAT=DYT,NUME_ORDRE=10,
+                   NOM_CHAM='ACCE',GROUP_NO='OPPOSE',
+                   CRITERE='RELATIF',PRECISION=5.E-3,
+                   NOM_CMP='DX',SENSIBILITE=PS_1,        
+                   VALE=(3.35E-02),REFERENCE='NON_REGRESSION',VERSION='7.1.3'),
+
+                _F(RESULTAT=DYT,NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',GROUP_NO='OPPOSE',
+                   CRITERE='RELATIF',PRECISION=5.E-3,
+                   NOM_CMP='DX',SENSIBILITE=PS_2,        
+                   VALE=(3.85E-11),REFERENCE='NON_REGRESSION',VERSION='7.1.3'),
+
+                _F(RESULTAT=DYT,NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',GROUP_NO='OPPOSE',
+                   CRITERE='RELATIF',PRECISION=5.E-3,
+                   NOM_CMP='DY',SENSIBILITE=PS_3,        
+                   VALE=(3.43E-11),REFERENCE='NON_REGRESSION',VERSION='7.1.3'),
+
+                _F(RESULTAT = DYT,   NUME_ORDRE = 10,
+                    SENSIBILITE=(PS_2),
+                    NOM_CHAM = 'SIGM_ELNO_DEPL',   GROUP_NO = 'OPPOSE',
+                    CRITERE = 'RELATIF', PRECISION = 5.E-3,MAILLE ='M14',
+                    NOM_CMP = 'SIXX',    VALE = 3.29,
+                    REFERENCE = 'NON_REGRESSION',VERSION='7.1.13'),
+
+                _F(RESULTAT = DYT,   NUME_ORDRE = 10,
+                    SENSIBILITE=(PS_3),
+                    NOM_CHAM = 'SIGM_ELNO_DEPL',   GROUP_NO = 'OPPOSE',
+                    CRITERE = 'RELATIF', PRECISION = 5.E-3,MAILLE ='M14',
+                    NOM_CMP = 'SIYY',    VALE = 3.46,
+                    REFERENCE = 'NON_REGRESSION',VERSION='7.1.13'),
+
+                ),);
+'''
+FIN()
+

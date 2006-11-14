@@ -1,6 +1,6 @@
       SUBROUTINE INITE2(IMPR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,22 +44,20 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 
-      INTEGER NBTE,TE,NUM
+      INTEGER NBTE,TE
       CHARACTER*16 NOMTE
-      CHARACTER*8 NOMNUM
       CHARACTER*8 IBID
 
 
       CALL JEMARQ()
       WRITE (IMPR,*) '=========================================='
-      WRITE (IMPR,*) 'TYPE_ELEMENT    NUM_INIT  NOM_OBJET_CREE '
+      WRITE (IMPR,*) 'TYPE_ELEMENT     NOM_OBJET_CREE '
       WRITE (IMPR,*) '=========================================='
       CALL JELIRA('&CATA.TE.NOMTE','NOMMAX',NBTE,IBID)
 
 
       DO 1050,TE = 1,NBTE
         CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
-
         DO 10,KK = 1,NMAXOB
           K24TAB(KK) = ' '
           ITABL(KK) = 0
@@ -68,18 +66,15 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
         CALL INI002(NOMTE,NMAXOB,ITABL,K24TAB,NVAL)
         IF (NVAL.GT.0) WRITE (IMPR,*) ' '
         DO 1030,K = 1,NVAL
-          IF (ITABL(K).NE.0) WRITE (IMPR,1001) NOMTE,NUM,'"',K24TAB(K),
-     &        '"'
+          IF (ITABL(K).NE.0) WRITE (IMPR,1001) NOMTE,'"',K24TAB(K),'"'
  1030   CONTINUE
         GO TO 1050
 
  1040   CONTINUE
-        CALL CODENT(NUM,'D',NOMNUM)
-        CALL U2MESK('F','CALCULEL2_62',1,NOMNUM)
  1050 CONTINUE
 
 
  1060 CONTINUE
- 1001 FORMAT (1X,A16,1X,I3,5X,A1,A24,A1)
+ 1001 FORMAT (1X,A16,1X,5X,A1,A24,A1)
       CALL JEDEMA()
       END

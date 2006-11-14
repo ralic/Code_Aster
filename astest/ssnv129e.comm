@@ -1,4 +1,5 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 14/11/2006   AUTEUR TARDIEU N.TARDIEU 
+
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,259 +24,182 @@
 #
 
 DEBUT( CODE=_F( NOM = 'SSNV129E',NIV_PUB_WEB='INTERNET') )
-#
+
+
 PRE_GIBI();
-#
-MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),)
-#
-MO=AFFE_MODELE(
-                           MAILLAGE=MA1,
-                           AFFE = ( _F(
-                                 GROUP_MA     = 'Q21',
-                                 PHENOMENE    = 'MECANIQUE',
-                                 MODELISATION = 'DKT',),
-                                    _F(
-                                 GROUP_MA     = 'Q1',
-                                 PHENOMENE    = 'MECANIQUE',
-                                 MODELISATION = 'DKT'),),
-                        )
-#
-MA1=DEFI_GROUP(reuse     = MA1,
-                MAILLAGE = MA1,
-                CREA_GROUP_NO=(
-                              _F(GROUP_MA='Q1',),
-                              _F(GROUP_MA='Q21',),
-                              _F(GROUP_MA='DR1',),
-                              _F(GROUP_MA='DR2',),
-                              _F(GROUP_MA='DR3',),
-                              _F(GROUP_MA='DR4',),
-                              _F(GROUP_MA='DR24',),
-                              _F(GROUP_MA='DR23',),
-                              _F(GROUP_MA='DR22',),
-                              _F(GROUP_MA='DR21',),
-                              )
-);
-#
-CAREL=AFFE_CARA_ELEM(   MODELE=MO,
-                              COQUE=(_F( GROUP_MA = 'Q21',
-                                     EPAIS = 0.5,),
-                                    _F( GROUP_MA = 'Q1',
-                                     EPAIS = 0.5,),),
-                           );
-#
-MAT=DEFI_MATERIAU(
-                            ELAS=_F(
-                                  E = 2.E+11,
-                                  NU = 0.3,
-                               )
-                          )
-#
-CHMAT=AFFE_MATERIAU(
-                           MAILLAGE = MA1,
-                           AFFE = _F(
-                                 TOUT  = 'OUI',
-                                 MATER = MAT)
-                           )
-#
-CHA1=AFFE_CHAR_MECA(
-                     MODELE=MO,
-                     DDL_IMPO=(
-                     _F(  NOEUD    = 'N177',     DX = 0.,  DY = 0.0,),
-                     _F(  NOEUD    = 'N177',     DRX = 0., DRY = 0.0, DRZ = 0.0,),
-                     _F(  NOEUD    = 'N466',     DX = 0.,  DY = 0.0,),
-                     _F(  NOEUD    = 'N466',     DRX = 0., DRY = 0.0, DRZ = 0.0,),
-                     _F(  GROUP_NO = 'DR1',      DY = 0.,  DZ = 0.0,),
-                     _F(  GROUP_NO = 'DR2',      DX = 0.0, DZ = 0.0,),
-                     _F(  GROUP_NO = 'DR3',      DY = 0.,  DZ = 0.0,),
-                     _F(  GROUP_NO = 'DR4',      DX = 0.0, DZ = 0.0,),
-                     _F(  GROUP_NO = 'DR1',      DRY = 0.0,),
-                     _F(  GROUP_NO = 'DR2',      DRX = 0.,),
-                     _F(  GROUP_NO = 'DR3',      DRY = 0.0,),
-                     _F(  GROUP_NO = 'DR4',      DRX = 0.,),
-                     _F(  GROUP_NO = 'DR21',     DY = 0.,  DZ = 0.0,),
-                     _F(  GROUP_NO = 'DR22',     DX = 0.0, DZ = 0.0,),
-                     _F(  GROUP_NO = 'DR23',     DY = 0.,  DZ = 0.0,),
-                     _F(  GROUP_NO = 'DR24',     DX = 0.0, DZ = 0.0,),
-                     _F(  GROUP_NO = 'DR21',     DRY = 0.0,),
-                     _F(  GROUP_NO = 'DR22',     DRX = 0.,),
-                     _F(  GROUP_NO = 'DR23',     DRY = 0.0,),
-                     _F(  GROUP_NO = 'DR24',     DRX = 0.,),),
-                     PRES_REP = _F( GROUP_MA = 'Q21', PRES = -2.5E+8, ),
-                     )
-#
-CHA2=AFFE_CHAR_MECA(
-                     MODELE=MO,
-                     CONTACT=_F(  
-                                  METHODE='GCP',
-                                  RESI_ABSO=1.E-8,
-                                  APPARIEMENT    = 'MAIT_ESCL',
-                                  RECHERCHE      = 'NOEUD_BOUCLE',
-                                  GROUP_MA_MAIT     = 'Q1',
-                                  GROUP_MA_ESCL     = 'Q21',
-                                  REAC_GEOM      = 'SANS',
-                                  SANS_GROUP_NO  = ('DR1','DR2','DR3','DR4',
-                                                    'DR21','DR22','DR23','DR24',),
-                                       ),
-                           )
-#
-RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
-            PROL_GAUCHE='LINEAIRE',   PROL_DROITE='LINEAIRE',
-            VALE=(0.0,0.0,1.0,1.0,) )
-
-#
-L_INST=DEFI_LIST_REEL(
-                       DEBUT      = 0.0,
-                       INTERVALLE = _F( JUSQU_A = 1., NOMBRE = 1)
-                           )
-
-L_INST2 = DEFI_LIST_REEL(
-                       DEBUT      = 0.0,
-                       INTERVALLE = _F( JUSQU_A = 1., NOMBRE = 5)
-                           )
-#
-RESU=STAT_NON_LINE(
-                    MODELE     = MO,
-                    CARA_ELEM  = CAREL,
-                    CHAM_MATER = CHMAT,
-                    EXCIT      = ( _F(
-                               CHARGE    = CHA1,
-                               FONC_MULT = RAMPE),
-                                   _F( CHARGE = CHA2,),
-                                 ),
-                    COMP_INCR  = _F(
-                               RELATION   = 'ELAS',
-                                   ),
-                    NEWTON     = _F(
-                               MATRICE    = 'TANGENTE',
-                               REAC_ITER  = 1,
-                                   ),
-                    INCREMENT  = _F(
-                               LIST_INST     = L_INST,
-                                   ),
-                    SOLVEUR    = _F( 
-                               METHODE     = 'MULT_FRONT',
-                               RENUM       = 'METIS',
-                                   ),
-                               CONVERGENCE = _F(
-                                           ITER_GLOB_MAXI = 10),
-                    INFO       = 1
-              )
-#
-
-RESU = CALC_ELEM( reuse = RESU,
-                  OPTION='VARI_ELNO_ELGA',
-                  RESULTAT=RESU)
-
-RESU = CALC_ELEM( reuse = RESU,
-                  REPE_COQUE=_F(NIVE_COUCHE='INF',),
-                  OPTION='SIGM_ELNO_COQU',
-                  RESULTAT=RESU)
-
-TEST_RESU(RESU=(  _F( 
-                     RESULTAT   = RESU,
-                     NUME_ORDRE = 1, 
-                     NOM_CHAM   = 'DEPL', 
-                     NOEUD      = 'N177', 
-                     NOM_CMP    = 'DZ', 
-                     VALE       = -3.45688E-1, 
-                     PRECISION  = 1.E-3,
-                     CRITERE    = 'RELATIF',
-                     REFERENCE='NON_REGRESSION',
-                     VERSION = '6.2.8',
-                    ),
-               _F( 
-                     RESULTAT   = RESU, 
-                     NUME_ORDRE = 1, 
-                     NOM_CHAM   = 'DEPL', 
-                     NOEUD      = 'N132', 
-                     NOM_CMP    = 'DZ', 
-                     VALE       = -2.89049E-1, 
-                     PRECISION  = 1.E-3,
-                     CRITERE    = 'RELATIF',
-                     REFERENCE='NON_REGRESSION',
-                     VERSION = '6.2.8',
-                    ),
-               _F( 
-                     RESULTAT   = RESU, 
-                     NUME_ORDRE = 1, 
-                     NOM_CHAM   = 'DEPL', 
-                     NOEUD      = 'N204', 
-                     NOM_CMP    = 'DZ', 
-                     VALE       = -2.79981E-1, 
-                     PRECISION  = 1.E-3, 
-                     CRITERE    = 'RELATIF',
-                     REFERENCE='NON_REGRESSION',
-                     VERSION = '6.2.8',
-                    ),
-               _F( 
-                     RESULTAT   = RESU, 
-                     NUME_ORDRE = 1, 
-                     NOM_CHAM   = 'DEPL', 
-                     NOEUD      = 'N211', 
-                     NOM_CMP    = 'DZ', 
-                     VALE       = -2.46718E-1, 
-                     PRECISION  = 1.E-3,
-                     CRITERE    = 'RELATIF',
-                     REFERENCE='NON_REGRESSION',
-                     VERSION = '6.2.8',
-                    ))
-       )
 
 
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
 
 
-TEST_RESU(RESU=(  _F( 
-                     RESULTAT   = RESU,
-                     NUME_ORDRE = 1, 
-                     NOM_CHAM   = 'SIGM_ELNO_COQU', 
-                     MAILLE     = 'M120',
-                     NOEUD      = 'N177', 
-                     NOM_CMP    = 'SIYY', 
-                     VALE       = 7.64909E+09, 
-                     PRECISION  = 1.E-3,
-                     CRITERE    = 'RELATIF',
-                     REFERENCE='NON_REGRESSION',
-                     VERSION = '6.2.8',
-                    ),
-               _F( 
-                     RESULTAT   = RESU, 
-                     NUME_ORDRE = 1, 
-                     NOM_CHAM   = 'SIGM_ELNO_COQU', 
-                     MAILLE     = 'M72',
-                     NOEUD      = 'N132', 
-                     NOM_CMP    = 'SIYY', 
-                     VALE       = 6.62155E+09, 
-                     PRECISION  = 1.E-3,
-                     CRITERE    = 'RELATIF',
-                     REFERENCE='NON_REGRESSION',
-                     VERSION = '6.2.8',
-                    ),
-               _F( 
-                     RESULTAT   = RESU, 
-                     NUME_ORDRE = 1, 
-                     NOM_CHAM   = 'SIGM_ELNO_COQU', 
-                     MAILLE     = 'M149',
-                     NOEUD      = 'N204', 
-                     NOM_CMP    = 'SIYY', 
-                     VALE       = 6.40333E+09, 
-                     PRECISION  = 1.E-3, 
-                     CRITERE    = 'RELATIF',
-                     REFERENCE='NON_REGRESSION',
-                     VERSION = '6.2.8',
-                    ),
-               _F( 
-                     RESULTAT   = RESU, 
-                     NUME_ORDRE = 1, 
-                     NOM_CHAM   = 'SIGM_ELNO_COQU', 
-                     MAILLE     = 'M156',
-                     NOEUD      = 'N211', 
-                     NOM_CMP    = 'SIYY', 
-                     VALE       = 5.72974E+09, 
-                     PRECISION  = 1.E-3,
-                     CRITERE    = 'RELATIF',
-                     REFERENCE='NON_REGRESSION',
-                     VERSION = '6.2.8',
-                    ))
-       )
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA='Q21',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(GROUP_MA='Q1',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),),);
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                     COQUE=(_F(GROUP_MA='Q21',
+                               EPAIS=0.5,),
+                            _F(GROUP_MA='Q1',
+                               EPAIS=0.5,),),);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
+                          NU=0.3,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+CHA1=AFFE_CHAR_MECA(MODELE=MO,
+                    PRES_REP=_F(GROUP_MA='Q21',
+                                PRES=-250000000.0,),);
+
+CHA0=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=(_F(GROUP_NO='CENTE1',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),
+                               _F(GROUP_NO='CENTE2',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),
+                               _F(GROUP_NO=('DR1','DR21',),
+                                  DX=0.0,
+                                  DZ=0.0,
+                                  DRY=0.0,),
+                               _F(GROUP_NO=('DR2','DR22',),
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,),
+                               _F(GROUP_NO=('DR3','DR23',),
+                                  DX=0.0,
+                                  DZ=0.0,
+                                  DRY=0.0,),
+                               _F(GROUP_NO=('DR4','DR24',),
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,),),);
+
+CHA2=AFFE_CHAR_MECA(MODELE=MO,
+                    CONTACT=_F(METHODE='GCP',
+                               RESI_ABSO=1.E-8,
+                               GROUP_MA_MAIT= 'Q1',
+                               GROUP_MA_ESCL= 'Q21',
+                               REAC_GEOM='SANS',
+                               SANS_GROUP_NO=('DR1','DR2','DR3','DR4',
+                                              'DR21','DR22','DR23','DR24',),
+                                      ),)
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CAREL,
+                   EXCIT=(_F(CHARGE=CHA1,
+                             FONC_MULT=RAMPE,),
+                          _F(CHARGE=CHA0,),
+                          _F(CHARGE=CHA2,),),
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   INFO=1,);
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION='SIGM_ELNO_COQU',
+               REPE_COQUE=_F(NIVE_COUCHE='INF'),);
+
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             OPTION='SIGM_NOEU_COQU',);
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='GMSH',
+          UNITE=37,
+          RESU=(_F(RESULTAT=RESU,
+                   NOM_CHAM='DEPL',),
+                _F(RESULTAT=RESU,
+                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CMP=('SIXX','SIYY','SIXY',),)
+                ));
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='CENTE1',
+                   VALE=-0.3426875,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CMP='SIYY',
+                   GROUP_NO='CENTE1',
+                   VALE=7648100000.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='ANALYTIQUE',),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CMP='SIXY',
+                   GROUP_NO='A1',
+                   VALE=-3.2916909693770E+09,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-07,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.19',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CMP='SIXY',
+                   GROUP_NO='A3',
+                   VALE=-3.2916909693770E+09,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-07,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.19',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CMP='SIXY',
+                   GROUP_NO='B1',
+                   VALE=3.2916909693770E+09,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-07,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.19',),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CMP='SIXY',
+                   GROUP_NO='B3',
+                   VALE=3.2916909693770E+09,
+                   CRITERE='RELATIF',
+                   PRECISION=1e-07,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.3.19',),),);
 
 FIN();

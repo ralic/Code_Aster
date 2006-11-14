@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,10 +27,10 @@ C     ------------------------------------------------------------------
       X=DBLE(H)
       Y=DIMAG(H)
       PHASE=0.D0
-      IF((X.GT.0.D0).AND.(Y.GE.0.D0)) PHASE=ATAN(Y/X)
-      IF((X.LT.0.D0).AND.(Y.GE.0.D0)) PHASE=ATAN(Y/X)+PI
-      IF((X.LT.0.D0).AND.(Y.LE.0.D0)) PHASE=ATAN(Y/X)+PI
-      IF((X.GT.0.D0).AND.(Y.LE.0.D0)) PHASE=ATAN(Y/X)+2.D0*PI
+      IF((X.GT.0.D0).AND.(Y.GE.0.D0)) PHASE=ATAN2(Y,X)
+      IF((X.LT.0.D0).AND.(Y.GE.0.D0)) PHASE=ATAN2(Y,X)+PI
+      IF((X.LT.0.D0).AND.(Y.LE.0.D0)) PHASE=ATAN2(Y,X)+PI
+      IF((X.GT.0.D0).AND.(Y.LE.0.D0)) PHASE=ATAN2(Y,X)+2.D0*PI
       IF((X.EQ.0.D0).AND.(Y.LT.0.D0)) PHASE=3.D0*PI/2.D0
       IF((X.EQ.0.D0).AND.(Y.GT.0.D0)) PHASE=PI/2.D0
       IF((X.EQ.0.D0).AND.(Y.EQ.0.D0)) PHASE=0.D0

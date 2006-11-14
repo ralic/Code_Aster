@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE O.BOITEAU
 # TITRE Validation de la sensibilite par rapport au coefficient d'echan
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -8,7 +8,7 @@
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
 #    ge convectif et a la conductivite en thermique lineaire transitoire
-DEBUT(  CODE=_F(  NOM = 'SENST04A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON'  )
+DEBUT(  CODE=_F(  NOM = 'SENST04A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 #
 # Cas-test inspire du cas test TTLP100A traitant la reponse thermique
 # transitoire lineaire de deux plaques separees par un jeu dans lequel
@@ -53,21 +53,11 @@ DEBUT(  CODE=_F(  NOM = 'SENST04A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR
 # DETAILS:
 #   * La difference finie est une difference non centree a droite avec
 #     eps=1.0e-5.
-
-# 1. Definition/memorisation des fonctions constantes
-#
-PS_UN=DEFI_CONSTANTE(VALE=1.0,);
-MEMO_NOM_SENSI ( NOM_UN = PS_UN ) ;
-#
-PS_ZERO=DEFI_CONSTANTE(VALE=0.0,);
-MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
 #
 # 2. Definition des parametres sensibles et des autres parametres
 #
 PS1=DEFI_PARA_SENSI(VALE=80.0,);
-MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS1,NOM_SD='PS1',),);
 PS2=DEFI_PARA_SENSI(VALE=40.0,);
-MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS2,NOM_SD='PS2',),);
 #
 PS1P=FORMULE(NOM_PARA='INST',VALE='80.00001');
 PS2P=DEFI_CONSTANTE(VALE=40.00001);
@@ -91,23 +81,9 @@ MODTHER=AFFE_MODELE( MAILLAGE=MAIL,AFFE=_F(  TOUT = 'OUI',
 #
 # 3.1. Mise en place des materiaux (std et sensible)
 #
+
 MAT=DEFI_MATERIAU(THER_FO=_F(LAMBDA=PS2,RHO_CP=A5))
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='MAT',
-                      PARA_SENSI=PS2,
-                      NOM_COMPOSE='MAT_PS2',
-                      VALEUR='PS2',
-                      MOT_FACT='THER_FO',
-                      MOT_CLE='LAMBDA',));
-MAT_PS2=DEFI_MATERIAU(THER_FO=_F(LAMBDA = PS_UN,
-                                 RHO_CP = PS_ZERO))
 CMAT=AFFE_MATERIAU(MAILLAGE=MAIL,AFFE=_F(TOUT='OUI',MATER=MAT))
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='CMAT',
-                      PARA_SENSI=PS2,
-                      NOM_COMPOSE='CMAT_PS2',
-                      VALEUR='MAT',
-                      MOT_FACT='AFFE',
-                      MOT_CLE='MATER',));
-CMAT_PS2=AFFE_MATERIAU(MAILLAGE=MAIL,AFFE=_F(TOUT='OUI',MATER=MAT_PS2))
 #
 # 3.1.1. materiaux translates pour differences finies
 #
@@ -125,15 +101,6 @@ CH_0=AFFE_CHAR_THER_F(MODELE=MODTHER,TEMP_IMPO=(
 CH_1=AFFE_CHAR_THER_F(MODELE=MODTHER,
                       ECHANGE_PAROI=_F(GROUP_MA_1='INTERG',
                       GROUP_MA_2='INTERD',COEF_H=PS1));
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_1',
-                      PARA_SENSI=PS1,
-                      NOM_COMPOSE='CH_1_PS1',
-                      VALEUR='PS1',
-                      MOT_FACT='ECHANGE_PAROI',
-                      MOT_CLE='COEF_H',));
-CH_1_PS1=AFFE_CHAR_THER_F(MODELE=MODTHER,
-                          ECHANGE_PAROI=_F(GROUP_MA_1='INTERG',
-                          GROUP_MA_2='INTERD',COEF_H=PS_UN));
 #
 # 3.2.3 Chargement translate pour differences finies
 #
@@ -149,12 +116,6 @@ TEMPINIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                      MAILLAGE=MAIL,AFFE=(
                     _F(GROUP_MA='PLAQG',NOM_CMP='TEMP',VALE=A1),
                     _F(GROUP_MA='PLAQD',NOM_CMP='TEMP',VALE=A2)))
-MEMO_NOM_SENSI(NOM=(_F(NOM_SD='RESU',
-                       PARA_SENSI=PS1,
-                       NOM_COMPOSE='RESU_PS1'),
-                    _F(NOM_SD='RESU',
-                       PARA_SENSI=PS2,
-                       NOM_COMPOSE='RESU_PS2')));
 RESU=THER_LINEAIRE(MODELE=MODTHER,CHAM_MATER=CMAT,
                     EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1)),
                     TEMP_INIT=_F(CHAM_NO=TEMPINIT),
@@ -210,7 +171,7 @@ TEST_RESU(RESU=(
         SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
         NOM_CMP='TEMP',VALE=TINTDS1(0.75))));
 #
-# 5.1.2 TEST_FONCTION sur les sensibilites par differences finies
+# 5.1.2 TEST_TABLE sur les sensibilites par differences finies
 #
 RLTH=POST_RELEVE_T(ACTION=_F(RESULTAT=RESU,
                    INTITULE='TEMPERATURE',NUME_ORDRE=50,
@@ -222,31 +183,74 @@ RLTH1P=POST_RELEVE_T(ACTION=_F(RESULTAT=RESU1P,
                    NOM_CHAM='TEMP',OPERATION='EXTRACTION',
                    GROUP_NO=('A','B','C','D'),
                    NOM_CMP=('TEMP')));
-temp=RLTH['TEMP',1]
-tempp=RLTH1P['TEMP',1]
-temdf3 = (tempp-temp)/eps1
-DFN3=FORMULE(NOM_PARA='BIDON',VALE=str(eval('temdf3')) )
-temp=RLTH['TEMP',2]
-tempp=RLTH1P['TEMP',2]
-temdf5 = (tempp-temp)/eps1
-DFN5=FORMULE(NOM_PARA='BIDON',VALE=str(eval('temdf5')) )  
-temp=RLTH['TEMP',3]
-tempp=RLTH1P['TEMP',3]
-temdf101 = (tempp-temp)/eps1
-DFN101=FORMULE(NOM_PARA='BIDON',VALE=str(eval('temdf101')) )  
-temp=RLTH['TEMP',4]
-tempp=RLTH1P['TEMP',4]
-temdf103 = (tempp-temp)/eps1
-DFN103=FORMULE(NOM_PARA='BIDON',VALE=str(eval('temdf103')) )
-TEST_FONCTION(VALEUR=(
-    _F(FONCTION=DFN3,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=TINTGS1(0.25),REFERENCE='ANALYTIQUE'),
-    _F(FONCTION=DFN5,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=TINTGS1(0.495),REFERENCE='ANALYTIQUE'),
-    _F(FONCTION=DFN101,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=TINTDS1(0.505),REFERENCE='ANALYTIQUE'),
-    _F(FONCTION=DFN103,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=TINTDS1(0.75),REFERENCE='ANALYTIQUE')));    
+
+DERI_ECH=FORMULE(NOM_PARA=('TEMPR', 'TEMPP'),
+                   VALE='((TEMPP - TEMPR)/eps1)')
+
+TEMP_ECH=CALC_TABLE(TABLE=RLTH,
+                    ACTION=(_F(OPERATION='RENOMME',
+                                NOM_PARA=('TEMP', 'TEMPR'),),
+                             _F(OPERATION='COMB',
+                                TABLE=RLTH1P,
+                                NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                             _F(OPERATION='RENOMME',
+                                NOM_PARA=('TEMP', 'TEMPP'),),
+                             _F(OPERATION='OPER',
+                                NOM_PARA='DERIVEE',
+                                FORMULE=DERI_ECH),
+                             _F(OPERATION='EXTR',
+                                NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'TEMPR', 'TEMPP', 'DERIVEE'),),),
+                           TITRE='Comparaison entre derivee / differences finies')
+IMPR_TABLE(TABLE=TEMP_ECH)
+
+
+TEST_TABLE(
+   TABLE     = TEMP_ECH,
+   NOM_PARA  = 'DERIVEE',
+   FILTRE    =_F(
+                 NOM_PARA='NOEUD',
+                 VALE_K='N3',
+                 ),
+   VALE      = TINTGS1(0.25),
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-6,
+   REFERENCE = 'ANALYTIQUE',)
+TEST_TABLE(
+   TABLE     = TEMP_ECH,
+   NOM_PARA  = 'DERIVEE',
+   FILTRE    =_F(
+                 NOM_PARA='NOEUD',
+                 VALE_K='N5',
+                 ),
+   VALE      = TINTGS1(0.495),
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-6,
+   REFERENCE = 'ANALYTIQUE',)
+
+TEST_TABLE(
+   TABLE     = TEMP_ECH,
+   NOM_PARA  = 'DERIVEE',
+   FILTRE    =_F(
+                 NOM_PARA='NOEUD',
+                 VALE_K='N101',
+                 ),
+   VALE      = TINTDS1(0.505),
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-6,
+   REFERENCE = 'ANALYTIQUE',)
+   
+TEST_TABLE(
+   TABLE     = TEMP_ECH,
+   NOM_PARA  = 'DERIVEE',
+   FILTRE    =_F(
+                 NOM_PARA='NOEUD',
+                 VALE_K='N103',
+                 ),
+   VALE      = TINTDS1(0.75),
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-6,
+   REFERENCE = 'ANALYTIQUE',)
+
 #
 # 5.2 Verifications analytiques des sensibilites par rapport
 #     a la conductivite thermique
@@ -274,38 +278,81 @@ TEST_RESU(RESU=(
         SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
         NOM_CMP='TEMP',VALE=TINTDS2(0.75))));
 #
-# 5.2.2 TEST_FONCTION sur les sensibilites par differences finies
+# 5.2.2 TEST_TABLE sur les sensibilites par differences finies
 #
 RLTH2P=POST_RELEVE_T(ACTION=_F(RESULTAT=RESU2P,
                    INTITULE='TEMPERATURE',NUME_ORDRE=50,
                    NOM_CHAM='TEMP',OPERATION='EXTRACTION',
                    GROUP_NO=('A','B','C','D'),
                    NOM_CMP=('TEMP')));
-temp=RLTH['TEMP',1]
-tempp=RLTH2P['TEMP',1]
-temdf3b = (tempp-temp)/eps2
-DFN3B=FORMULE(NOM_PARA='BIDON',VALE=str(eval('temdf3b')) )
-temp=RLTH['TEMP',2]
-tempp=RLTH2P['TEMP',2]
-temdf5b = (tempp-temp)/eps2
-DFN5B=FORMULE(NOM_PARA='BIDON',VALE=str(eval('temdf5b')) )  
-temp=RLTH['TEMP',3]
-tempp=RLTH2P['TEMP',3]
-temdf11b = (tempp-temp)/eps2
-DFN11B=FORMULE(NOM_PARA='BIDON',VALE=str(eval('temdf11b')) )  
-temp=RLTH['TEMP',4]
-tempp=RLTH2P['TEMP',4]
-temdf13b = (tempp-temp)/eps2
-DFN13B=FORMULE(NOM_PARA='BIDON',VALE=str(eval('temdf13b')) )    
-TEST_FONCTION(VALEUR=(
-    _F(FONCTION=DFN3B,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=TINTGS2(0.25),REFERENCE='ANALYTIQUE'),
-    _F(FONCTION=DFN5B,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=TINTGS2(0.495),REFERENCE='ANALYTIQUE'),
-    _F(FONCTION=DFN11B,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=TINTDS2(0.505),REFERENCE='ANALYTIQUE'),
-    _F(FONCTION=DFN13B,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
-       VALE_REFE=TINTDS2(0.75),REFERENCE='ANALYTIQUE')));
+
+DERI_LAM=FORMULE(NOM_PARA=('TEMPR', 'TEMPP'),
+                   VALE='((TEMPP - TEMPR)/eps1)')
+
+TEMP_LAM=CALC_TABLE(TABLE=RLTH,
+                    ACTION=(_F(OPERATION='RENOMME',
+                               NOM_PARA=('TEMP', 'TEMPR'),),
+                            _F(OPERATION='COMB',
+                                TABLE=RLTH2P,
+                                NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                            _F(OPERATION='RENOMME',
+                               NOM_PARA=('TEMP', 'TEMPP'),),
+                            _F(OPERATION='OPER',
+                               NOM_PARA='DERIVEE',
+                               FORMULE=DERI_LAM),
+                            _F(OPERATION='EXTR',
+                               NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'TEMPR', 'TEMPP', 'DERIVEE'),),),
+                         TITRE='Comparaison entre derivee / differences finies')
+IMPR_TABLE(TABLE=TEMP_LAM)
+
+
+TEST_TABLE(
+   TABLE     = TEMP_LAM,
+   NOM_PARA  = 'DERIVEE',
+   FILTRE    =_F(
+                 NOM_PARA='NOEUD',
+                 VALE_K='N3',
+                 ),
+   VALE      = TINTGS2(0.25),
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-6,
+   REFERENCE = 'ANALYTIQUE',)
+TEST_TABLE(
+   TABLE     = TEMP_LAM,
+   NOM_PARA  = 'DERIVEE',
+   FILTRE    =_F(
+                 NOM_PARA='NOEUD',
+                 VALE_K='N5',
+                 ),
+   VALE      = TINTGS2(0.495),
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-6,
+   REFERENCE = 'ANALYTIQUE',)
+
+TEST_TABLE(
+   TABLE     = TEMP_LAM,
+   NOM_PARA  = 'DERIVEE',
+   FILTRE    =_F(
+                 NOM_PARA='NOEUD',
+                 VALE_K='N101',
+                 ),
+   VALE      = TINTDS2(0.505),
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-6,
+   REFERENCE = 'ANALYTIQUE',)
+   
+TEST_TABLE(
+   TABLE     = TEMP_LAM,
+   NOM_PARA  = 'DERIVEE',
+   FILTRE    =_F(
+                 NOM_PARA='NOEUD',
+                 VALE_K='N103',
+                 ),
+   VALE      = TINTDS2(0.75),
+   CRITERE   = 'ABSOLU',
+   PRECISION = 1.E-6,
+   REFERENCE = 'ANALYTIQUE',)
+
 #
 # 5.3 Verifications analytiques des sensibilites par rapport au
 #     au coefficient d'echange des composantes X et Y du flux

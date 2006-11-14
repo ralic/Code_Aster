@@ -1,7 +1,7 @@
       SUBROUTINE PIPEDP(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,EPSM,SIGM,VIM,
      &                  EPSP, EPSD, ELGEOM, A0, A1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,8 @@ C ----------------------------------------------------------------------
    
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
+      CALL MATFPE(-1)
+C
 C --  OPTION ET MODELISATION
 
       NDIMSI = 2*NDIM 
@@ -323,5 +325,7 @@ C
             ENDIF
          ENDIF
       ENDIF
+C
+      CALL MATFPE(1)
 C
       END

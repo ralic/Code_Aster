@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 14/11/2006   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,14 +49,14 @@ C     ------------------------------------------------------------------
 
       INTEGER IRET,IBID,JLICHA,NBSY,NBORDR,JNOCMP,IORD,JFISS,ICHA,JLON,
      &        IOR,JORD,JCNSV1,JCNSD1,JCNSK1,JNO,NUMNOE,JCNSV2,JCNSD2,
-     &        JJCNS,IICNS,JNOLOC,IIHEA,JJHEA,JHEA,JLNNO,NBHEA,
+     &        JJCNS,IICNS,JNOLOC,IIHEA,JJHEA,JHEA,JLNNO,NBHEA,DIMTO,
      &        JCNSK2,NBCMP,JDIM,JCNSC2,I,JCNSL1,JCNSL2,K,KK,JCO,JCNSC1,
      &        JINST,JCESV,JCESD,JCESK,JCESL,JCESC,IAD,NBMX,J,NBCHIN,
      &        KX,KY,KZ,IDX,IDY,IDZ,JCNS,I1000,NB1000,JNIM,II,ILOC,
-     &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,IOCC,I1,IGREL,DEBXHT,
+     &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,I1,IGREL,DEBXHT,NBLON,
      &        ID,NBTNIM,JLNONX,NUM,NUNXP,NUNXM,NBNOAJ,NUNX,NUNOI,NBCNS,
      &        JTYPMA,NBNOSO,NBHEAV,NBCTIP,NBHECT, JWXFEM, NBINMX,FINXHT,
-     &        NCESV,NBPT,NBSP,NBCP,ICP,DIM,JMMF,J1,J2,J3,KMMF
+     &        NCESV,NBPT,NBSP,NBCP,ICP,DIM,JMMF,J1,J2,J3,KMMF,IILON
       REAL*8  INST,EPS,R8B,RBID
       PARAMETER(EPS=1.D-10, NBINMX=9)
       CHARACTER*1  KBID
@@ -333,27 +333,34 @@ C             TABLEAU DE POSITION DANS '.TOPOSE.HEAVTO': ZI(JJHEA)
               DO 139 I=1,ZI(JDIM+2)
                  ZI(JINDMF+I-1)=0
  139          CONTINUE
-              IOCC=0
+
+              NBLON=8
               NBTNIM=0
               IICNS=0
               IIHEA=0
+              IILON=0
               KK=0
-
 C             BOUCLE SUR LES GRELS:
               DO 140 I=1,NBGREL
                  CALL JEVEUO(JEXNUM(LIEL,I),'L',IGREL)
                  CALL JELIRA(JEXNUM(LIEL,I),'LONMAX',NBMAGL,KBID)
                  CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',
      &                ZI(IGREL+NBMAGL-1)),NOTYPE)
+                 CALL DISMOI('F','DIM_TOPO',NOTYPE,'TYPE_ELEM',DIMTO,
+     &                K8B,IRET)
                  IF(DIM.EQ.3)THEN
-                  IF(NOTYPE(1:6).NE.'MECA_X') GOTO 140
-                   IF(NOTYPE(8:11).EQ.'FACE' .OR. NOTYPE(9:12).EQ.'FACE'
-     &               .OR. NOTYPE(10:13).EQ.'FACE')THEN
-                     NBCNS=18
-                     NBHEA=6
-                   ELSE
+                   IF(DIMTO.EQ.3)THEN
                      NBCNS=128
                      NBHEA=36
+                   ELSE
+                     NBCNS=18
+                     NBHEA=6
+                     IF(NOTYPE(1:9).EQ.'MECA_FACE')THEN
+                        IICNS=IICNS+NBCNS*(NBMAGL-1)
+                        IIHEA=IIHEA+NBHEA*(NBMAGL-1)
+                        IILON=IILON+NBLON*(NBMAGL-1)
+                        GOTO 140
+                     ENDIF
                    ENDIF
                  ELSE
                    IF(NOTYPE(8:9).NE.'_X')GOTO 140
@@ -364,11 +371,10 @@ C                BOUCLE SUR LES MAILLES DU GREL:
                  DO 150 J=1,NBMAGL-1
                     IMA=ZI(IGREL+J-1)
                     ZI(JMMF+IMA-1)=0
-                    IOCC=IOCC+1
-                    I1=ZI(JLON+8*(IOCC-1))
+                    I1=ZI(JLON+IILON)
                     IF(I1.NE.0)THEN
                        KK=KK+1
-                       NBNIM=ZI(JLON+8*(IOCC-1)+I1+1)
+                       NBNIM=ZI(JLON+IILON+I1+1)
                        IF(NBNIM.GT.0)THEN
                           CALL WKVECT('&&OP0196.1000','V V I',NBNIM,
      &                         JNIM)
@@ -376,7 +382,7 @@ C                BOUCLE SUR LES MAILLES DU GREL:
                              ZI(JNIM+II-1)=0
  144                      CONTINUE
                           DO 145 I1000=1,NBCNS
-                             ILOC=ZI(JCNS+(IOCC-1)*NBCNS+I1000-1)
+                             ILOC=ZI(JCNS+IICNS+I1000-1)
                              IF(ILOC.GT.1000)THEN
                                 ZI(JNIM+ILOC-1001)=1
                              ENDIF
@@ -396,6 +402,7 @@ C                BOUCLE SUR LES MAILLES DU GREL:
                     ENDIF
                  IICNS=IICNS+NBCNS
                  IIHEA=IIHEA+NBHEA
+                 IILON=IILON+NBLON
  150             CONTINUE
  140          CONTINUE
 C

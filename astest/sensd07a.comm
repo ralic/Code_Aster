@@ -1,4 +1,4 @@
-# MODIF  DATE 19/12/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE SENSIBILITE EN DYNAMIQUE NON LINEAIRE (3D-VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,8 +21,7 @@
 # RESPONSABLE CAMBIER S.CAMBIER
 # ======================================================================
 
-DEBUT( CODE=_F(  NOM = 'SENSD07A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-       PAR_LOT='NON' )
+DEBUT( CODE=_F(  NOM = 'SENSD07A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 
 # ----------------------------------------------------------------------
 #                 *-------------------------------*
@@ -69,30 +68,24 @@ coef_char=1.E7
 epsilon=1.E-5
 
 lis_amor = DEFI_LIST_REEL(VALE=(0.07 ),)
-#      
-# 1. Definition/memorisation des fonctions constantes
 #
-PS_UN=DEFI_CONSTANTE(VALE=1.0,);
-MEMO_NOM_SENSI ( NOM_UN = PS_UN ) ;
-#
-PS_ZERO=DEFI_CONSTANTE(VALE=0.0,);
-MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
-
-#
-# 2. Definition des parametres sensibles
+# 1. Definition des parametres sensibles
 #
 mot_cle =[     "E" ,    "NU" , "D_SIGM_EPSI",    "SY"      ,"FORCE_NODALE" ]
 sensible=[   1.E5  ,    0.3  ,  cste_dsde   ,    cste_sigy,  100.*coef_char]
+sensibl2=[   1.E5  ,    0.3  ,  cste_dsde   ,    cste_sigy,   100.]
 mot_fact=['ELAS_FO','ELAS_FO','ECRO_LINE_FO','ECRO_LINE_FO','FORCE_NODALE']
 
 n=len(sensible)
 PS=[None]*n
+PS2=[None]*n
 
 for i in range(n):
   PS[i]=DEFI_PARA_SENSI(VALE=sensible[i])
-  MEMO_NOM_SENSI ( NOM=_F(NOM_SD=PS[i].nom,
-                          PARA_SENSI=PS[i],
-                          NOM_COMPOSE=PS_UN.nom ),);
+  PS2[i]=DEFI_PARA_SENSI(VALE=sensibl2[i])
+#
+# 2. Definition de constantes
+#
 
 ALPHA=DEFI_CONSTANTE(VALE=cste_alpha,);
 BETA=DEFI_CONSTANTE(VALE=cste_beta,);
@@ -128,44 +121,12 @@ MAT=DEFI_MATERIAU(ELAS_FO=_F(E=PS[0],
                   ECRO_LINE_FO=_F(D_SIGM_EPSI=PS[2],
                                  SY=PS[3],),);
 
-MATS=[None]*n
-for i in range(n):
-  if mot_cle[i]!="FORCE_NODALE":
-    PSFONC=[PS_ZERO]*n
-    PSFONC[i]=PS_UN
-    MATS[i]=DEFI_MATERIAU(ELAS_FO=_F(E=PSFONC[0],
-                                   RHO=2400.,
-                                   NU=PSFONC[1],
-                                   AMOR_ALPHA=ALPHA,
-                                   AMOR_BETA=BETA,
-                                   ),
-                  ECRO_LINE_FO=_F(D_SIGM_EPSI=PSFONC[2],
-                                 SY=PSFONC[3],),);
-    MEMO_NOM_SENSI ( NOM=_F(NOM_SD='MAT',
-                          PARA_SENSI=PS[i],
-                          NOM_COMPOSE=MATS[i].nom,
-                          MOT_CLE=mot_cle[i],
-                          MOT_FACT=mot_fact[i],
-                          VALEUR=PS[i].nom ),);
 #
 # 3.3. Affectation des materiaux
 #
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                     AFFE=_F(TOUT='OUI',MATER=MAT,),);
 
-CHMS=[None]*n
-for i in range(n):
-  if mot_cle[i]!="FORCE_NODALE":
-    CHMS[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                        AFFE=_F(TOUT='OUI',MATER=MATS[i],),);
-    MEMO_NOM_SENSI ( NOM=_F(NOM_SD='CHMAT',
-                          PARA_SENSI=PS[i],
-                          NOM_COMPOSE=CHMS[i].nom,
-                          MOT_CLE='MATER',
-                          MOT_FACT='AFFE',
-                          VALEUR='MAT' ),);
-    
-#
 # 3.4. Chargements
 #
 CLIM=AFFE_CHAR_MECA(MODELE=MO,
@@ -178,24 +139,6 @@ CH=AFFE_CHAR_MECA_F(MODELE=MO,
                                    FY=FY,
                                    FZ=FZ))
                                    );
-CHS=[None]*n
-for i in range(n):
-  if mot_cle[i]=="FORCE_NODALE":
-    PSFONC=[PS_ZERO]*n
-    PSFONC[i]=PS_UN
-    CHS[i]=AFFE_CHAR_MECA_F(MODELE=MO,
-                    FORCE_NODALE=(_F(GROUP_NO='OPPOSE',
-                                     FX=PSFONC[4],
-                                     FY=PS_ZERO,
-                                     FZ=PS_ZERO))
-                                       );
-                                       
-    MEMO_NOM_SENSI ( NOM=_F(NOM_SD='CH',
-                          PARA_SENSI=PS[i],
-                          NOM_COMPOSE=CHS[i].nom,
-                          MOT_CLE=mot_cle[i],
-                          MOT_FACT=mot_fact[i],
-                          VALEUR=PS[i].nom ),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=I_DEBUT,INTERVALLE=_F(JUSQU_A=I_FIN,NOMBRE=10))
 L_INST1=DEFI_LIST_REEL(DEBUT=I_DEBUT,INTERVALLE=_F(JUSQU_A=I_FIN/2,NOMBRE=5))
@@ -221,10 +164,6 @@ MODE=MODE_ITER_SIMULT(  MATR_A=MATASSR,   MATR_B=MATASSM,
 #
 # 4. Calcul
 #
-for i in range(n):
-  MEMO_NOM_SENSI(NOM=_F(NOM_SD='DYT',
-                        PARA_SENSI=PS[i],
-                        NOM_COMPOSE=('DYT_'+PS[i].nom)),);
 
 FC=DEFI_FONCTION(NOM_PARA='INST',
                  PROL_DROITE='CONSTANT',
@@ -268,19 +207,36 @@ T_REF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                       OPERATION='EXTRACTION',
                       ),);
 
-#IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
-#                  RESULTAT=DYT,
-#                  SENSIBILITE=tuple(PS),
-#                  ),);
+TSREF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                      GROUP_NO=('OPPOSE'),
+                      RESULTAT=DYT,
+                      NOM_CHAM=nom_cham,
+                      NUME_ORDRE=10,
+                      NOM_CMP=('DX','DY','DZ'),
+                      OPERATION='EXTRACTION',
+                      SENSIBILITE=tuple(PS),
+                      ),);
 
 #
 # 5. Test par differences finies
 #
+MATD   = [None]*n
+CHMATD = [None]*n
+CHD    = [None]*n
+DYTD   = [None]*n
+T_DIF  = [None]*n
+VERIDX = [None]*n
+VERIDY = [None]*n
+VERIDZ = [None]*n
+TCOMDX = [None]*n
+TCOMDY = [None]*n
+TCOMDZ = [None]*n
+
 
 for i in range(n):
   eps=[1.]*n
   eps[i]=1.0+epsilon
-  MAT2=DEFI_MATERIAU(ELAS=_F(E=sensible[0]*eps[0],
+  MATD[i]=DEFI_MATERIAU(ELAS=_F(E=sensible[0]*eps[0],
                              RHO=2400. ,
                              NU=sensible[1]*eps[1],
                              AMOR_ALPHA =cste_alpha,
@@ -289,21 +245,21 @@ for i in range(n):
                                  SY=sensible[3]*eps[3],),
                                 );
 
-  CHMAT2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                       AFFE=_F(TOUT='OUI',MATER=MAT2,),);
+  CHMATD[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',MATER=MATD[i],),);
 
-  CH2=AFFE_CHAR_MECA(MODELE=MO,
+  CHD[i]=AFFE_CHAR_MECA(MODELE=MO,
                     FORCE_NODALE=(_F(GROUP_NO='OPPOSE',
                                      FX=sensible[4]*eps[4],
                                      FY=30.*coef_char,
                                      FZ=10.*coef_char))
                                    );
 
-  DYT2=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT2,
+  DYTD[i]=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMATD[i],
                    AMOR_MODAL=_F(  MODE_MECA = MODE,  REAC_VITE = 'OUI',
                             LIST_AMOR = lis_amor),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
-                   EXCIT=(_F(FONC_MULT=FC,CHARGE=CH2), 
+                   EXCIT=(_F(FONC_MULT=FC,CHARGE=CHD[i]), 
                           _F( CHARGE = CLIM),),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8,
@@ -311,61 +267,112 @@ for i in range(n):
                                   ITER_GLOB_MAXI=1000,),
                    NEWMARK=_F(),)                              
 
-  T_DIF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+  T_DIF[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                   GROUP_NO=('OPPOSE'),
-                                  RESULTAT=DYT2,
+                                  RESULTAT=DYTD[i],
                       NOM_CHAM=nom_cham,
                                    NUME_ORDRE=10,
                                   NOM_CMP=('DX','DY','DZ'),
                                   OPERATION='EXTRACTION',
                                   ),);
 
-  diff_X=(T_DIF['DX',1]-T_REF['DX',1])/(sensible[i]*epsilon)
-  diff_Y=(T_DIF['DY',1]-T_REF['DY',1])/(sensible[i]*epsilon)
-  diff_Z=(T_DIF['DZ',1]-T_REF['DZ',1])/(sensible[i]*epsilon)
+  VERIDX[i]=FORMULE(NOM_PARA=('DX_EPS', 'DX_REF', 'DXDPS'),
+                   VALE='abs ((DX_EPS - DX_REF)/%e - DXDPS)' %(sensible[i]*epsilon))
+  VERIDY[i]=FORMULE(NOM_PARA=('DY_EPS', 'DY_REF', 'DYDPS'),
+                   VALE='abs ((DY_EPS - DY_REF)/%e - DYDPS)' %(sensible[i]*epsilon))
+  VERIDZ[i]=FORMULE(NOM_PARA=('DZ_EPS', 'DZ_REF', 'DZDPS'),
+                   VALE='abs ((DZ_EPS - DZ_REF)/%e - DZDPS)' %(sensible[i]*epsilon))
 
-  tole=5.E-3
-  TEST_RESU(RESU=(
-                  _F(RESULTAT=DYT,NUME_ORDRE=10,
-                      NOM_CHAM=nom_cham,
-                     GROUP_NO='OPPOSE',
-                     CRITERE='RELATIF',PRECISION=tole,
-                     NOM_CMP='DX',
-                     SENSIBILITE=PS[i],
-                     VALE=diff_X, 
-                     REFERENCE='AUTRE_ASTER')))
+  TCOMDX[i]=CALC_TABLE(TABLE=TSREF,
+                       SENSIBILITE=PS[i],
+                       ACTION=(_F(OPERATION='RENOMME',
+                                  NOM_PARA=('DX', 'DXDPS'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T_REF,
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DX', 'DX_REF'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T_DIF[i],
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DX', 'DX_EPS'),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='DIFF',
+                                  FORMULE=VERIDX[i]),
+                               _F(OPERATION='EXTR',
+                                  NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DXDPS', 'DIFF', 'DX_REF', 'DX_EPS'),),),
+                           TITRE='Comparaison entre derivee / differences finies')
 
-  crit = 'RELATIF'
-  if mot_cle[i]=="FORCE_NODALE" : 
-      tole = 1.E-12
-      crit = 'ABSOLU'
-  else : tole=5.E-3
-  # Le reajustement de la tolerance sur les differences finies est necessaire
-  # car les valeurs tres faibles sont sensibles a la non convergence parfaite
-  # du calcul. (ceci explique le test ci dessus)
-  TEST_RESU(RESU=(
-                  _F(RESULTAT=DYT,NUME_ORDRE=10,
-                      NOM_CHAM=nom_cham,
-                      GROUP_NO='OPPOSE',
-                     CRITERE=crit,PRECISION=tole,
-                     NOM_CMP='DY',
-                     SENSIBILITE=PS[i],
-                     VALE=diff_Y, 
-                     REFERENCE='AUTRE_ASTER')))
+  
+  TEST_TABLE(
+     TABLE     = TCOMDX[i],
+     NOM_PARA  = 'DIFF',
+     TYPE_TEST = 'MAX',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 2.E-6,
+     REFERENCE = 'AUTRE_ASTER',)
 
-  if mot_cle[i]=="FORCE_NODALE" : tole=150.E-2
-  else : tole=5.E-3
-  TEST_RESU(RESU=(
-                  _F(RESULTAT=DYT,NUME_ORDRE=10,
-                      NOM_CHAM=nom_cham,
-                      GROUP_NO='OPPOSE',
-                     CRITERE='RELATIF',PRECISION=tole,
-                     NOM_CMP='DZ',
-                     SENSIBILITE=PS[i],
-                     VALE=diff_Z, 
-                     REFERENCE='AUTRE_ASTER')))
+  TCOMDY[i]=CALC_TABLE(TABLE=TSREF,
+                       SENSIBILITE=PS[i],
+                       ACTION=(_F(OPERATION='RENOMME',
+                                  NOM_PARA=('DY', 'DYDPS'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T_REF,
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DY', 'DY_REF'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T_DIF[i],
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DY', 'DY_EPS'),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='DIFF',
+                                  FORMULE=VERIDY[i]),
+                               _F(OPERATION='EXTR',
+                                  NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DYDPS', 'DIFF', 'DY_REF', 'DY_EPS'),),),
+                           TITRE='Comparaison entre derivee / differences finies')
 
-  DETRUIRE(CONCEPT=_F(NOM=(MAT2,CHMAT2,DYT2,T_DIF,CH2,)),INFO=1)
+  TEST_TABLE(
+     TABLE     = TCOMDY[i],
+     NOM_PARA  = 'DIFF',
+     TYPE_TEST = 'MAX',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 1.E-6,
+     REFERENCE = 'AUTRE_ASTER',)
+
+  TCOMDZ[i]=CALC_TABLE(TABLE=TSREF,
+                       SENSIBILITE=PS[i],
+                       ACTION=(_F(OPERATION='RENOMME',
+                                  NOM_PARA=('DZ', 'DZDPS'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T_REF,
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DZ', 'DZ_REF'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=T_DIF[i],
+                                  NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('DZ', 'DZ_EPS'),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='DIFF',
+                                  FORMULE=VERIDZ[i]),
+                               _F(OPERATION='EXTR',
+                                  NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'DZDPS', 'DIFF', 'DZ_REF', 'DZ_EPS'),),),
+                           TITRE='Comparaison entre derivee / differences finies')
+
+  TEST_TABLE(
+     TABLE     = TCOMDZ[i],
+     NOM_PARA  = 'DIFF',
+     TYPE_TEST = 'MAX',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 1.E-6,
+     REFERENCE = 'AUTRE_ASTER',)
 
 #
 # 6. Test_Resu en dur
@@ -381,7 +388,7 @@ TEST_RESU(RESU=(
                    NOM_CHAM='DEPL',GROUP_NO='OPPOSE',
                    CRITERE='RELATIF',PRECISION=5.E-3,
                    NOM_CMP='DX',
-                   SENSIBILITE=PS_0,        
+                   SENSIBILITE=PS_0, 
                    VALE=(-2.4739E-13),REFERENCE='NON_REGRESSION',VERSION='7.2.12'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=10,
@@ -421,52 +428,42 @@ TEST_RESU(RESU=(
 
                 ),)
 
-#
+
 # 7. VERIFICATION EN REGIME LINEAIRE (coef_char=1.)
 #    VALEURS DE REFERENCES ISSUES DE DYNA_LINE_TRAN
 #
-coef_char=1.
-DETRUIRE(CONCEPT=_F(NOM=(PS[4],FY,FZ,CH)),INFO=1)
-PS[4]=DEFI_PARA_SENSI(VALE=100.*coef_char)
-FY=DEFI_CONSTANTE(VALE=30.*coef_char,);
-FZ=DEFI_CONSTANTE(VALE=10.*coef_char,);
-CH=AFFE_CHAR_MECA_F(MODELE=MO,
+FY2=DEFI_CONSTANTE(VALE=30.,);
+FZ2=DEFI_CONSTANTE(VALE=10.,);
+CH2=AFFE_CHAR_MECA_F(MODELE=MO,
                   FORCE_NODALE=(_F(GROUP_NO='OPPOSE',
-                                   FX=PS[4],
-                                   FY=FY,
-                                   FZ=FZ))
+                                   FX=PS2[4],
+                                   FY=FY2,
+                                   FZ=FZ2))
                                    );
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='DYL',
-                        PARA_SENSI=PS[0],
-                        NOM_COMPOSE=('DYL_'+PS[0].nom)),);
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='DYL',
-                        PARA_SENSI=PS[1],
-                        NOM_COMPOSE=('DYL_'+PS[1].nom)),);
-MEMO_NOM_SENSI(NOM=_F(NOM_SD='DYL',
-                        PARA_SENSI=PS[4],
-                        NOM_COMPOSE=('DYL_'+PS[4].nom)),);
-#VECT=CALC_VECT_ELEM(CHARGE=CH,OPTION='CHAR_MECA')
-#MATELEC=CALC_MATR_ELEM(MODELE=MO,OPTION='AMOR_MECA',
-#                       RIGI_MECA=MATELER,MASS_MECA=MATELEM,
-#                       CHAM_MATER=CHMAT,
-#                       CHARGE= CLIM   )
-#MATASSC=ASSE_MATRICE(MATR_ELEM=MATELEC,NUME_DDL=NUM)
-#DYL=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
-#                   MATR_MASS=MATASSM,MATR_RIGI=MATASSR,MATR_AMOR=MATASSC,
-#                   INCREMENT=_F(LIST_INST=L_INST,),
-#                   SENSIBILITE=(PS[0],PS[1],PS[4]),
-#                     EXCIT=( _F(FONC_MULT=FC,CHARGE=CH),                            ), 
-#                   NEWMARK=_F(),)
-DYL=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,
-                   SENSIBILITE=(PS[0],PS[1],PS[4]),
+
+MAT2=DEFI_MATERIAU(ELAS_FO=_F(E=PS2[0],
+                             RHO=2400. ,
+                             NU=PS2[1],
+                             AMOR_ALPHA=ALPHA ,
+                             AMOR_BETA=BETA,),
+                  ECRO_LINE_FO=_F(D_SIGM_EPSI=PS2[2],
+                                 SY=PS2[3],),);
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI',MATER=MAT2,),);
+
+
+DYL=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT2,
+                   SENSIBILITE=tuple(PS2),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
-                   EXCIT=(_F(FONC_MULT=FC,CHARGE=CH), 
+                   EXCIT=(_F(FONC_MULT=FC,CHARGE=CH2), 
                           _F( CHARGE = CLIM),),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-8,
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                   RESI_GLOB_MAXI = 2.E-7,
                                   ITER_GLOB_MAXI=1000,),
                    NEWMARK=_F(),)                              
+
 TEST_RESU(RESU=(
                 _F(RESULTAT=DYL,NUME_ORDRE=10,
                    NOM_CHAM='DEPL',GROUP_NO= 'OPPOSE',
@@ -478,28 +475,28 @@ TEST_RESU(RESU=(
                    NOM_CHAM='VITE',GROUP_NO='OPPOSE',
                    CRITERE='RELATIF',PRECISION=5.E-3,
                    NOM_CMP='DX',
-                   SENSIBILITE=PS_0,        
+                   SENSIBILITE=PS2[0],        
                    VALE=(-1.0577E-14),REFERENCE='AUTRE_ASTER',VERSION='7.2.12'),
 
                 _F(RESULTAT=DYL,NUME_ORDRE=10,
                    NOM_CHAM='VITE',GROUP_NO='OPPOSE',
                    CRITERE='RELATIF',PRECISION=5.E-3,
                    NOM_CMP='DY',
-                   SENSIBILITE=PS_1,        
+                   SENSIBILITE=PS2[1],        
                    VALE=(-4.4996E-10),REFERENCE='AUTRE_ASTER',VERSION='7.2.12'),
 
                 _F(RESULTAT=DYL,NUME_ORDRE=10,
                    NOM_CHAM='VITE',GROUP_NO='OPPOSE',
                    CRITERE='RELATIF',PRECISION=5.E-2,
                    NOM_CMP='DY',
-                   SENSIBILITE=PS_4,        
+                   SENSIBILITE=PS2[4],        
                    VALE=(-9.9810E-13),REFERENCE='AUTRE_ASTER',VERSION='7.2.12'),
 
                 _F(RESULTAT=DYL,NUME_ORDRE=10,
                    NOM_CHAM='VITE',GROUP_NO='OPPOSE',
                    CRITERE='RELATIF',PRECISION=5.E-3,
                    NOM_CMP='DZ',
-                   SENSIBILITE=PS_4,        
+                   SENSIBILITE=PS2[4],        
                    VALE=(2.3704E-12),REFERENCE='AUTRE_ASTER',VERSION='7.2.12'),
                  ))
 

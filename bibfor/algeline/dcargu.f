@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/10/96   AUTEUR KXBADNG N.GAY 
+C MODIF ALGELINE  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +39,9 @@ C
           DCARGU = 0.D0
         ENDIF
       ELSE IF (DBLE(C).GT.0.D0) THEN
-        DCARGU = DBLE(ATAN(DIMAG(C)/DBLE(C)))
+        DCARGU = DBLE(ATAN2(DIMAG(C),DBLE(C)))
       ELSE IF (DBLE(C).LT.0.D0) THEN
-        DCARGU = DBLE(ATAN(DIMAG(C)/DBLE(C))) + PI
+        DCARGU = DBLE(ATAN2(DIMAG(C),DBLE(C))) + PI
       ENDIF
       IF (DCARGU.LT.0.D0) DCARGU = DCARGU + 2.D0*PI
 C

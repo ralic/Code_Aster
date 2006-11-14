@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,8 +22,7 @@
 #
 #
 DEBUT(CODE=_F( NOM = 'SENSM12A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-          BASE=_F( FICHIER = 'GLOBALE',LONG_REPE = 15000), 
-          PAR_LOT='NON')
+          BASE=_F( FICHIER = 'GLOBALE',LONG_REPE = 15000),)
 #
 #......................................................................
 # PLAQUE EN COMPRESSION SIMPLE EN DEFORMATIONS PLANES
@@ -48,12 +47,7 @@ MA=MODI_MAILLAGE( reuse=MA,
              INFO=1);
 
 FORCES = DEFI_PARA_SENSI(VALE=1.0E8)
-S9999999=DEFI_PARA_SENSI(VALE=0.0)
-S9999998=DEFI_PARA_SENSI(VALE=1.0)
-MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='S9999998',
-                        PARA_SENSI=FORCES,
-                        NOM_SD='FORCES'),
-              )
+
 FORCE1 = DEFI_CONSTANTE(VALE=1.0E8)
 E1 = DEFI_CONSTANTE(VALE=5800.0E6)
 NU1 = DEFI_CONSTANTE(VALE=0.3)
@@ -90,23 +84,6 @@ CHAS=AFFE_CHAR_MECA_F(MODELE=MO,
                                 DX=ZERO,),
                                      ),
                    );
-S9999997=AFFE_CHAR_MECA_F(MODELE=MO,
-                          FORCE_NODALE=_F(FY=S9999998,
-                                          NOEUD=('N3','N4',)),
-                          VERI_NORM='OUI',
-                          DDL_IMPO=(_F(DY=S9999999,
-                                       GROUP_MA='AB'),
-                                    _F(DX=S9999999,
-                                       NOEUD=('N1','N2','N3','N4',))),
-                          INFO=1,
-                         )
-MEMO_NOM_SENSI(NOM=_F(MOT_CLE=('FY',),
-                      PARA_SENSI=FORCES,
-                      NOM_SD='CHAS',
-                      VALEUR=('FORCES',),
-                      NOM_COMPOSE='S9999997',
-                      MOT_FACT=('FORCE_NODALE',)),
-              )
 
 CHA1=AFFE_CHAR_MECA_F(MODELE=MO,
                    FORCE_NODALE = _F(NOEUD = ('N3','N4'),
@@ -127,10 +104,6 @@ F=DEFI_FONCTION(NOM_PARA='INST',
                 VALE=(0.0,  0.0,
                       1.0,  1.0),
                       );
-MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='S9999996',
-                        PARA_SENSI=FORCES,
-                        NOM_SD='RESUS'),
-              )
 
 RESUS=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -233,96 +206,149 @@ RESU2=CALC_ELEM( reuse=RESU2,
                           RESULTAT=RESU2,
               )
 
+VERIF=FORMULE(NOM_PARA=('SIYY_EPS', 'SIYY_REF', 'SIYYDPS'),
+                    VALE='abs ((abs(SIYY_EPS - SIYY_REF))/%e - SIYYDPS)' %(1.E8*epsilon) )
+
+
+TBF  = [None]*6
+TBDI = [None]*6
+TBFS = [None]*6
+TBSY = [None]*6
 
 for j in range(1, 6):
 
-  TAB_REF = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-                       OPERATION = 'EXTR',
-                       RESULTAT = RESU1,
-                       NOM_CHAM = 'SIEF_ELGA',
-                       NUME_ORDRE = j
-                      )
+  TBF[j]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N1',
+                            MAILLE='M1',
+                            RESULTAT=RESU1,
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIYY',
+                            OPERATION='EXTRACTION',),);
 
-  TAB_REFNP = TAB_REF.EXTR_COMP('SIYY', [], 1)
 
-  TAB_DIF = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
-                       OPERATION = 'EXTR',
-                       RESULTAT = RESU2,
-                       NOM_CHAM = 'SIEF_ELGA',
-                       NUME_ORDRE = j
-                      )
-  TAB_DIFNP = TAB_DIF.EXTR_COMP('SIYY',[])
+  TBDI[j] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N1',
+                            MAILLE='M1',
+                            RESULTAT=RESU2,
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIYY',
+                            OPERATION='EXTRACTION',),);
 
-  diff = (TAB_DIFNP.valeurs[0]-TAB_REFNP.valeurs[0])/(1.0E8*epsilon)
+  TBFS[j] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N1',
+                            MAILLE='M1',
+                            RESULTAT=RESUS,
+                            NOM_CHAM='SIEF_ELNO_ELGA',
+                            SENSIBILITE = FORCES,
+                            NUME_ORDRE=j,
+                            NOM_CMP='SIYY',
+                            OPERATION='EXTRACTION',),);
 
-  TEST_RESU(RESU=(_F(RESULTAT = RESUS,   NUME_ORDRE = j,
-                     NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M1', POINT = 1,
-                     CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                     NOM_CMP = 'SIYY',   SENSIBILITE = FORCES,
-                     VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
+  TBSY[j]=CALC_TABLE(TABLE=TBFS[j],
+                        SENSIBILITE=FORCES,
+                        ACTION=(_F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIYY', 'SIYYDPS'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TBF[j],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIYY', 'SIYY_REF'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TBDI[j],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIYY', 'SIYY_EPS'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE= VERIF),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'SIYYDPS', 'DIFF', 'SIYY_REF', 'SIYY_EPS'),),),
+                   TITRE='Comparaison entre derivee / differences finies')
+ 
+  
+  
+  TEST_TABLE(
+        TABLE     = TBSY[j],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-5,
+        REFERENCE = 'AUTRE_ASTER',)
 
-  DETRUIRE( CONCEPT =_F(NOM = TAB_REF ))
-  DETRUIRE( CONCEPT =_F(NOM = TAB_DIF ))
+
+VERI2=FORMULE(NOM_PARA=('V1_EPS', 'V1_REF', 'V1DPS'),
+                    VALE='abs ((abs(V1_EPS - V1_REF))/%e - V1DPS)' %(1.E8*epsilon))
+
+TVF  = [None]*6
+TVDI = [None]*6
+TVFS = [None]*6
+TV1 =  [None]*6
 
 for j in range(1, 6):
 
-  TAB_REF = CREA_CHAMP(TYPE_CHAM = 'ELNO_SIEF_R',
-                       OPERATION = 'EXTR',
-                       RESULTAT = RESU1,
-                       NOM_CHAM = 'SIEF_ELNO_ELGA',
-                       NUME_ORDRE = j
-                      )
+  TVF[j]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N1',
+                            MAILLE='M1',
+                            RESULTAT=RESU1,
+                            NOM_CHAM='VARI_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='V1',
+                            OPERATION='EXTRACTION',),);
 
-  TAB_REFNP = TAB_REF.EXTR_COMP('SIYY', [], 1)
 
-  TAB_DIF = CREA_CHAMP(TYPE_CHAM = 'ELNO_SIEF_R',
-                       OPERATION = 'EXTR',
-                       RESULTAT = RESU2,
-                       NOM_CHAM = 'SIEF_ELNO_ELGA',
-                       NUME_ORDRE = j
-                      )
-  TAB_DIFNP = TAB_DIF.EXTR_COMP('SIYY',[])
+  TVDI[j] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N1',
+                            MAILLE='M1',
+                            RESULTAT=RESU2,
+                            NOM_CHAM='VARI_ELNO_ELGA',
+                            NUME_ORDRE=j,
+                            NOM_CMP='V1',
+                            OPERATION='EXTRACTION',),);
 
-  diff = (TAB_DIFNP.valeurs[0]-TAB_REFNP.valeurs[0])/(1.0E8*epsilon)
+  TVFS[j] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N1',
+                            MAILLE='M1',
+                            RESULTAT=RESUS,
+                            NOM_CHAM='VARI_ELNO_ELGA',
+                            SENSIBILITE = FORCES,
+                            NUME_ORDRE=j,
+                            NOM_CMP='V1',
+                            OPERATION='EXTRACTION',),);
 
-  TEST_RESU(RESU=(_F(RESULTAT = RESUS,   NUME_ORDRE = j,
-                     NOM_CHAM = 'SIEF_ELNO_ELGA', MAILLE = 'M1', NOEUD = 'N1',
-                     CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                     NOM_CMP = 'SIYY',   SENSIBILITE = FORCES,
-                     VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
-
-  DETRUIRE( CONCEPT =_F(NOM = TAB_REF ))
-  DETRUIRE( CONCEPT =_F(NOM = TAB_DIF ))
-
-for j in range(1, 6):
-
-  TAB_REF = CREA_CHAMP(TYPE_CHAM = 'ELNO_VARI_R',
-                       OPERATION = 'EXTR',
-                       RESULTAT = RESU1,
-                       NOM_CHAM = 'VARI_ELNO_ELGA',
-                       NUME_ORDRE = j
-                      )
-
-  TAB_REFNP = TAB_REF.EXTR_COMP('V1', [], 1)
-
-  TAB_DIF = CREA_CHAMP(TYPE_CHAM = 'ELNO_VARI_R',
-                       OPERATION = 'EXTR',
-                       RESULTAT = RESU2,
-                       NOM_CHAM = 'VARI_ELNO_ELGA',
-                       NUME_ORDRE = j
-                      )
-  TAB_DIFNP = TAB_DIF.EXTR_COMP('V1',[])
-
-  diff = (TAB_DIFNP.valeurs[0]-TAB_REFNP.valeurs[0])/(1.0E8*epsilon)
-
-  TEST_RESU(RESU=(_F(RESULTAT = RESUS,   NUME_ORDRE = j,
-                     NOM_CHAM = 'VARI_ELNO_ELGA', MAILLE = 'M1', NOEUD = 'N1',
-                     CRITERE = 'RELATIF', PRECISION = 1.E-2,
-                     NOM_CMP = 'V1',   SENSIBILITE = FORCES,
-                     VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
-
-  DETRUIRE( CONCEPT =_F(NOM = TAB_REF ))
-  DETRUIRE( CONCEPT =_F(NOM = TAB_DIF ))
+  TV1[j]=CALC_TABLE(TABLE=TVFS[j],
+                        SENSIBILITE=FORCES,
+                        ACTION=(_F(OPERATION='RENOMME',
+                                   NOM_PARA=('V1', 'V1DPS'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TVF[j],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('V1', 'V1_REF'),),
+                                _F(OPERATION='COMB',
+                                   TABLE=TVDI[j],
+                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('V1', 'V1_EPS'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE= VERI2),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'V1DPS', 'DIFF', 'V1_REF', 'V1_EPS'),),),
+                       TITRE='Comparaison entre derivee / differences finies')
+ 
+  
+  
+  TEST_TABLE(
+        TABLE     = TV1[j],
+        NOM_PARA  = 'DIFF',
+        TYPE_TEST = 'MAX',
+        VALE      = 0.,
+        CRITERE   = 'ABSOLU',
+        PRECISION = 1.E-5,
+        REFERENCE = 'AUTRE_ASTER',)
 
 
 FIN();

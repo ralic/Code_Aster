@@ -9,7 +9,7 @@
      *          WA1(N),WA2(N),WA3(N),WA4(N),GEOM1(*),CFPCD1(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PUBLIC  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF PUBLIC  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_21
 C-----------------------------------------------------------------------
 C COPYRIGHT (C) ARGONNE NATIONAL LABORATORY. MINPACK PROJECT. MARCH 1980
@@ -165,6 +165,8 @@ C
       DATA   ONE,   P1,     P5,     P001,   P0001,  ZERO
      *     / 1.0D0, 1.0D-1, 5.0D-1, 1.0D-3, 1.0D-4, 0.0D0 /
 C     ------------------------------------------------------------------
+C
+      CALL MATFPE(-1)
 C
 C     EPSMCH IS THE MACHINE PRECISION.
 C
@@ -450,4 +452,7 @@ C
       IFLAG = 0
       IF (NPRINT .GT. 0) CALL GFRESD(DZ,D2Z,DT,X,FVEC,COEF1,FLUID,
      +                                        GEOM1,CFPCD1,ITDASH,URM1)
+C
+      CALL MATFPE(1)
+C
       END

@@ -1,4 +1,5 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+
+# MODIF  DATE 14/11/2006   AUTEUR BOYERE E.BOYERE 
 # TITRE TP DYNAMIQUE TRANSITOIRE NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,9 +19,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE BOYERE E.BOYERE
-#
 
-DEBUT(CODE=_F(NOM ='FORMA12B',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='FORMA12B',
+              NIV_PUB_WEB='INTERNET',),);
 
 MA=LIRE_MAILLAGE();
 
@@ -38,17 +39,23 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                        POUTRE=_F(GROUP_MA='TOUT',
                                  SECTION='RECTANGLE',
                                  CARA=('HY','HZ',),
-                                 VALE=(0.050000000000000003,0.050000000000000003,),),);
+                                 VALE=(0.05,0.05,),),);
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
-                          NU=0.29999999999999999,
+MAT=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                          NU=0.3,
                           RHO=7800.0,),
-           ECRO_LINE=_F( D_SIGM_EPSI = 1.E10, SY = 150.E6),
-       VMIS_POUTRE=_F( NP = 3.75E5,
-                MEY = 3125., MPY = 4687.5, CAY = 0.84, CBY = 0.002,
-                MEZ = 3125., MPZ = 4687.5, CAZ = 0.84, CBZ = 0.002,
-                MPX = 1.E10),
-                          );
+                  ECRO_LINE=_F(D_SIGM_EPSI=90000000000.0,
+                               SY=150000000.0,),
+                  VMIS_POUTRE=_F(NP=375000.0,
+                                 MEY=3125.0,
+                                 MPY=4687.5,
+                                 CAY=0.84,
+                                 CBY=0.002,
+                                 MEZ=3125.0,
+                                 MPZ=4687.5,
+                                 CAZ=0.84,
+                                 CBZ=0.002,
+                                 MPX=10000000000.0,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
@@ -68,8 +75,6 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
 #
 #
 #
-#
-
 
 MELR1=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MO,
@@ -86,16 +91,12 @@ MELM1=CALC_MATR_ELEM(OPTION='MASS_MECA',
 #
 #
 #
-#
-
 
 NUM1=NUME_DDL(MATR_RIGI=MELR1,);
 # ASSEMBLAGE DES MATRICES DE RIGIDITE ET DE MASSE
 #
 #
 #
-#
-
 
 MATASSR1=ASSE_MATRICE(MATR_ELEM=MELR1,
                       NUME_DDL=NUM1,);
@@ -107,8 +108,6 @@ MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,
 #
 #
 #
-#
-
 
 FREQ=MODE_ITER_SIMULT(MATR_A=MATASSR1,
                       MATR_B=MATASSM1,
@@ -116,26 +115,26 @@ FREQ=MODE_ITER_SIMULT(MATR_A=MATASSR1,
                       CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                    NMAX_FREQ=11,),
                       TITRE='1/ METHODE DE SORENSEN',);
-
 # TEST_RESU UNIQUEMENT POUR FAIRE CAS TEST
-TEST_RESU(RESU=(_F(RESULTAT=FREQ,
-                   NUME_ORDRE=1,
-                   PARA='FREQ',
-                   VALE=167.638,
-                   PRECISION=1e-05,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='7.3.19',)))
 
+TEST_RESU(RESU=_F(RESULTAT=FREQ,
+                  NUME_ORDRE=1,
+                  PARA='FREQ',
+                  VALE=167.638,
+                  PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='7.3.19',),);
 
 EXCIT=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_NODALE=_F(NOEUD='B',
-                                     FY=1.E4,),);
+                                     FY=10000.0,),);
 
-EVOLF = FORMULE(NOM_PARA='INST',VALE='sin(121*INST)');
+EVOLF = FORMULE(VALE='sin(121*INST)',
+                NOM_PARA='INST',);
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=0.2,
-                                   PAS=10.E-04,),);
+                                   PAS=0.001,),);
 
 FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
                      CHARGE=EXCIT,
@@ -153,104 +152,82 @@ MACRO_PROJ_BASE(BASE=FREQ,
                 VECT_ASSE_GENE=_F(VECTEUR=CO('FEGENE'),
                                   VECT_ASSE=FASSE,),);
 
-DYNAEL=DYNA_NON_LINE(
-                      MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      CARA_ELEM=CARELEM,
-                      NEWMARK=_F(),
-                      AMOR_MODAL=_F(
-                           MODE_MECA = FREQ,
-                           AMOR_REDUIT = ( 0.02,0.02,0.03,0.04,0.05 ),
-                                        ),
-                  EXCIT=(
-                     _F( CHARGE = CH1, ),
-                     _F( CHARGE = EXCIT, FONC_MULT = EVOLF),
-                        ),
-                  COMP_INCR=(
-                     #_F( RELATION = 'VMIS_POU_LINE',TOUT='OUI',),
-                     _F( RELATION = 'ELAS',TOUT='OUI',),
-                           ),
-                      NEWTON=_F( MATRICE = 'TANGENTE',
-                                REAC_ITER = 1),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                     ITER_GLOB_MAXI=50,
-                                     ARRET='OUI',),
-                      INCREMENT=_F(LIST_INST=LINST,),
-                      ARCHIVAGE=_F(LIST_INST=LINST,
-                      ARCH_ETAT_INIT='OUI'),                      
-                     );
-                     
+DYNAEL=DYNA_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CARELEM,
+                     EXCIT=(_F(CHARGE=CH1,),
+                            _F(CHARGE=EXCIT,
+                               FONC_MULT=EVOLF,),),
+                     AMOR_MODAL=_F(MODE_MECA=FREQ,
+                                   AMOR_REDUIT=(0.02,0.02,0.03,0.04,0.05,),),
+                     COMP_INCR=_F(RELATION='ELAS',
+                                  TOUT='OUI',),
+                     INCREMENT=_F(LIST_INST=LINST,),
+                     NEWMARK=_F(),
+                     NEWTON=_F(MATRICE='TANGENTE',
+                               REAC_ITER=1,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                    ITER_GLOB_MAXI=50,
+                                    ARRET='OUI',),
+                     ARCHIVAGE=_F(LIST_INST=LINST,
+                                  ARCH_ETAT_INIT='OUI',),);
 
 DTYBEL=RECU_FONCTION(RESULTAT=DYNAEL,
-                   NOM_CHAM='DEPL',
-                   LIST_INST=LINST,
-                   PRECISION=9.9999999999999995E-08,
-                   NOM_CMP='DY',
-                   NOEUD='B',);
+                     LIST_INST=LINST,
+                     PRECISION=1e-07,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DY',
+                     NOEUD='B',);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DTYBEL,
-                        VALE_PARA=.15,
-                        VALE_REFE=-2.52556E-03,
+                        VALE_PARA=0.1,
+                        VALE_REFE=-0.001789867,
                         PRECISION=0.001,
                         REFERENCE='NON_REGRESSION',),);
 
-IMPR_FONCTION(
-            TITRE='DIRECT',
-            FORMAT='TABLEAU',
-            COURBE=_F(FONCTION=DTYBEL,),);
-            
-DYNANL=DYNA_NON_LINE(
-                      MODELE=MO,
-                      CHAM_MATER=CHMAT,
-                      CARA_ELEM=CARELEM,
-                      NEWMARK=_F(),
-                      AMOR_MODAL=_F(
-                           MODE_MECA = FREQ,
-                           AMOR_REDUIT = ( 0.02,0.02,0.03,0.04,0.05 ),
-                                        ),
-                  EXCIT=(
-                     _F( CHARGE = CH1, ),
-                     _F( CHARGE = EXCIT, FONC_MULT = EVOLF),
-                        ),
-                  COMP_INCR=(
-                     _F( RELATION = 'VMIS_POU_LINE',TOUT='OUI',
-                                     RESO_INTE = 'RUNGE_KUTTA_4',
-                                     ITER_INTE_MAXI = 500),
-                     #_F( RELATION = 'ELAS',TOUT='OUI',),
-                           ),
-                      NEWTON=_F( MATRICE = 'TANGENTE',
-                                REAC_ITER = 1),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                     ITER_GLOB_MAXI=50,
-                                     ARRET='OUI',),
-                     # INCREMENT=_F(LIST_INST=LINST,),
-    INCREMENT=_F(LIST_INST=LINST,
-                 SUBD_COEF_PAS_1=1.0,
-                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
-                 SUBD_PAS_MINI=1.E-5,
-                 EVOLUTION='CHRONOLOGIQUE',
-                 ),
-                      ARCHIVAGE=_F(LIST_INST=LINST,
-                      ARCH_ETAT_INIT='OUI'),                      
-                     );
-                     
+DYNANL=DYNA_NON_LINE(MODELE=MO,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CARELEM,
+                     EXCIT=(_F(CHARGE=CH1,),
+                            _F(CHARGE=EXCIT,
+                               FONC_MULT=EVOLF,),),
+                     AMOR_MODAL=_F(MODE_MECA=FREQ,
+                                   AMOR_REDUIT=(0.02,0.02,0.03,0.04,0.05,),),
+                     COMP_INCR=_F(RELATION='VMIS_POU_LINE',
+                                  TOUT='OUI',
+                                  ITER_INTE_MAXI=500,
+                                  RESO_INTE='RUNGE_KUTTA_4',),
+                     INCREMENT=_F(LIST_INST=LINST,
+                                  EVOLUTION='CHRONOLOGIQUE',
+                                  SUBD_METHODE='UNIFORME',
+                                  SUBD_COEF_PAS_1=1.0,
+                                  SUBD_PAS=5,
+                                  SUBD_PAS_MINI=1e-05,),
+                     NEWMARK=_F(),
+                     NEWTON=_F(MATRICE='TANGENTE',
+                               REAC_ITER=1,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                    ITER_GLOB_MAXI=50,
+                                    ARRET='OUI',),
+                     ARCHIVAGE=_F(LIST_INST=LINST,
+                                  ARCH_ETAT_INIT='OUI',),);
 
 DTYBNL=RECU_FONCTION(RESULTAT=DYNANL,
-                   NOM_CHAM='DEPL',
-                   LIST_INST=LINST,
-                   PRECISION=1.0E-07,
-                   NOM_CMP='DY',
-                   NOEUD='B',);
+                     LIST_INST=LINST,
+                     PRECISION=1e-07,
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DY',
+                     NOEUD='B',);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=DTYBNL,
-                        VALE_PARA=.15,
-                        VALE_REFE=-1.18661E-03,
-                        PRECISION=.05,
+                        VALE_PARA=0.1,
+                        VALE_REFE=-0.00143,
+                        PRECISION=0.1,
                         REFERENCE='NON_REGRESSION',),);
 
-IMPR_FONCTION(
-            TITRE='DIRECT',
-            FORMAT='TABLEAU',
-            COURBE=_F(FONCTION=DTYBNL,),);
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=38,
+              COURBE=(_F(FONCTION=DTYBEL,),
+                      _F(FONCTION=DTYBNL,)))
 
 FIN();

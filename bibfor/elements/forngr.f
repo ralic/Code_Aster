@@ -1,5 +1,5 @@
       SUBROUTINE FORNGR ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 14/11/2006   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -477,6 +477,7 @@ C            LA VALEUR SIGM_REFE A CHAQUE CMP SUCCESSIVEMENT
 C            POUR CHAQUE POINT D'INTEGRATION
 
                   CALL R8INIR(5,0.D0,SIGTMP,1)
+                  CALL R8INIR(51,0.D0,EFFINT,1)
 
                   DO 155 I=1,5
 
@@ -491,7 +492,6 @@ C
                     DO 156 J=1,51
 
                        FTEMP(J) = FTEMP(J)+ABS(EFFINT(J))
-
  156                CONTINUE
 
  155              CONTINUE

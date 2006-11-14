@@ -4,7 +4,7 @@
       CHARACTER*8 MODELE,CARA,MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C     ------------------------------------------------------------------
       CALL MECHTE(MODELE,0,CHARG,MATE,EXITIM,TIME,CHTREF,CHTEMP)
 
       CALL MEMARE('V',MATEL,MODELE,' ',CARA,OPTION)
-      CALL WKVECT(MATEL//'.LISTE_RESU','G V K24',1,JLIRES)
+      CALL WKVECT(MATEL//'.LISTE_RESU','V V K24',1,JLIRES)
 
       LPAOUT(1) = 'PMATUUR'
       LCHOUT(1) = MATEL//'.ME001'

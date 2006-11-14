@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C
 C
       REAL*8  AUX,B2,U,P,Q,R,DEUXR,RPUIS3
       REAL*8  INVA,INVA2,INV3,DISC,X,Y,PHI,COND
+      REAL*8 TRIGOM
 C
       PI=R8PI()
       R1  = 0.0D0
@@ -190,7 +191,7 @@ C
                     MULT3 = 1
                     NBR   = 3
 C
-                    PHI = ACOS(U)
+                    PHI = TRIGOM('ACOS', U)
 C
                     Y  = -DEUXR*COS(PHI*INV3)
                     R1 = X + Y

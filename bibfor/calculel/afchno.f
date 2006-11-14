@@ -7,7 +7,7 @@
       CHARACTER*(*)     CHAMN, GRAN, NOMA, BASE, TYPVAL, KVAL(*)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C
 C
 C     --- AFFECTATION DU .DEEQ DE L'OBJET PROF_CHNO ---
 C
-      CALL PTEEQU ( CHAMNO, LONVAL, NUMGD )
+      CALL PTEEQU ( CHAMNO, BASE, LONVAL, NUMGD )
 C
       CALL JEDEMA()
       END

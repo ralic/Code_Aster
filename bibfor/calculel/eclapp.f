@@ -4,7 +4,7 @@
       INTEGER NDIM, NNO2
       REAL*8  COOR(NDIM,NNO2), LONMIN
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,9 +38,8 @@ C ----------------------------------------------------------------------
       INTEGER I
       PARAMETER (PREC = 1.D-5)
 C ----------------------------------------------------------------------
-
-      
-      
+      CALL MATFPE(-1)
+C
       IF (NNO2.EQ.4) THEN
       
         DO 10 I = 1,NDIM
@@ -103,4 +102,7 @@ C      ELEMENTS EPAIS
       ENDIF
 
  9999 CONTINUE
+C
+      CALL MATFPE(1)
+C
       END

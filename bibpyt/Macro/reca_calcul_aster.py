@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -447,6 +447,8 @@ class CALCUL_ASTER:
           x.write('\nFIN();\n')
           x.close()
 
+#          os.system("cat %s" % self.new_export)
+
           # Lancement du calcul Aster esclave
           cmd = '%s %s' % (as_run, self.new_export)
           self.Lancement_Commande(cmd)
@@ -847,6 +849,8 @@ Message:
 
        for dico in l_tmp:
 
+         print dico
+
          # répertoires
          if dico['isrep']:
 
@@ -886,6 +890,10 @@ Message:
               if self.UNITE_GRAPHIQUE and dico['ul'] == str(self.UNITE_GRAPHIQUE): l_fr.remove(dico)
               else:
                  dico['path'] = os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
+
+           # Tous les autres fichiers en Donnees
+           elif lab == 'data':
+             dico['path'] = os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
 
            # sinon on garde la ligne
        setattr(prof, lab, l_fr)

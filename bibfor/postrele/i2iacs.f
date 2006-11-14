@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C
       INTEGER NBRAC,ORD1,ORD2
       REAL*8  COEF2,COEF1,COEF0,RAC1,RAC2,DELTAX,DELTAY
       REAL*8  INVR,XS,YS,AUX
+      REAL*8 TRIGOM
 C
       LOGICAL LSR10,LS1R1,LSR20,LS1R2,LE0R11,LE0R21
       LOGICAL LSA1I,LSSA1,LSA2I,LSSA2,LEIA1S,LEIA2S
@@ -132,7 +133,7 @@ C
 C
             ENDIF
 C
-            A1 = ACOS (AUX)
+            A1 = TRIGOM('ACOS', AUX)
 C
             IF ( ABS(YS-YC) .LT. EPSI ) THEN
 C
@@ -209,7 +210,7 @@ C
 C
             ENDIF
 C
-            A1 = ACOS (AUX)
+            A1 = TRIGOM('ACOS', AUX)
 C
             IF ( ABS(YS-YC) .LT. EPSI ) THEN
 C
@@ -263,7 +264,7 @@ C
 C
             ENDIF
 C
-            A1 = ACOS (AUX)
+            A1 = TRIGOM('ACOS', AUX)
 C
             IF ( ABS(YS-YC) .LT. EPSI ) THEN
 C
@@ -317,7 +318,7 @@ C
 C
             ENDIF
 C
-            A1 = ACOS (AUX)
+            A1 = TRIGOM('ACOS', AUX)
 C
             IF ( ABS(YS-YC) .LT. EPSI ) THEN
 C
@@ -348,7 +349,7 @@ C
 C
             ENDIF
 C
-            A2 = ACOS (AUX)
+            A2 = TRIGOM('ACOS', AUX)
 C
             IF ( ABS(YS-YC) .LT. EPSI ) THEN
 C

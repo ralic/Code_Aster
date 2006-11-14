@@ -3,7 +3,7 @@
       INTEGER REPI,IERD
       CHARACTER*(*) QUESTI,CODMES,REPKZ,NOMOBZ
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,8 +52,8 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER DIMGE(3)
       LOGICAL MELANG
-      CHARACTER*1 K1BID
-      CHARACTER*8 KBID
+      CHARACTER*1  K1BID
+      CHARACTER*8  KBID
       CHARACTER*16 NOMTE,PHENOM,NOMODL
       CHARACTER*19 NOMOB
       CHARACTER*32 REPK
@@ -77,13 +77,12 @@ C     -----------------------------------
         IF (IRET.GT.0) REPK = 'OUI'
 
 C     -----------------------------------------------------------------
-      ELSE IF ((QUESTI.EQ.'EXI_RDM') .OR. (QUESTI.EQ.'EXI_POUX') .OR.
-     &         (QUESTI.EQ.'EXI_THM_CT') .OR.
-     &         (QUESTI.EQ.'EXI_THM_VR') .OR.
-     &         (QUESTI.EQ.'EXI_TUYAU') .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
-     &         (QUESTI.EQ.'EXI_COQ1D') .OR.
-     &         (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE').OR.
-     &         (QUESTI.EQ.'EXI_GRAD_VARI') ) THEN
+      ELSEIF ((QUESTI.EQ.'EXI_RDM')    .OR. (QUESTI.EQ.'EXI_POUX')  .OR.
+     &        (QUESTI.EQ.'EXI_THM_CT') .OR. (QUESTI.EQ.'EXI_THM_VR').OR.
+     &        (QUESTI.EQ.'EXI_TUYAU')  .OR. (QUESTI.EQ.'EXI_COQ3D') .OR.
+     &        (QUESTI.EQ.'EXI_COQ1D')  .OR. (QUESTI.EQ.'EXI_GRILLE').OR.
+     &        (QUESTI.EQ.'EXI_PLAQUE') .OR. (QUESTI.EQ.'EXI_COQUE') .OR.
+     &        (QUESTI.EQ.'EXI_GRAD_VARI') ) THEN
 C     -----------------------------------------------------------------
         CALL JEEXIN(NOMOB//'.LIEL',IRET)
         IF (IRET.GT.0) THEN
@@ -96,55 +95,54 @@ C     -----------------------------------------------------------------
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
 
             IF (QUESTI.EQ.'EXI_RDM') THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
-              NOMODL = REPK(1:16)
-              IF ((NOMODL(1:3).EQ.'DKT') .OR. (NOMODL.EQ.'DST') .OR.
-     &            (NOMODL.EQ.'Q4G') .OR. (NOMODL(1:5).EQ.'CABLE') .OR.
-     &            (NOMODL(1:4).EQ.'POU_') .OR. (NOMODL.EQ.'BARRE') .OR.
-     &            (NOMODL(1:4).EQ.'DIS_') .OR.
-     &            (NOMODL(1:5).EQ.'TUYAU') .OR.
-     &            (NOMODL(3:7).EQ.'_DIS_') .OR.
-     &            (NOMODL(1:6).EQ.'GRILLE') .OR.
-     &            (NOMODL(1:5).EQ.'COQUE')) THEN
+              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+              IF ((NOMODL(1:3).EQ.'DKT').OR.(NOMODL(1:3).EQ.'DST') .OR.
+     &            (NOMODL(1:3).EQ.'Q4G').OR.(NOMODL(1:5).EQ.'CABLE').OR.
+     &            (NOMODL(1:4).EQ.'POU_').OR.(NOMODL(1:5).EQ.'BARRE')
+     &            .OR. (NOMODL(1:4).EQ.'DIS_')
+     &            .OR. (NOMODL(1:5).EQ.'TUYAU') 
+     &            .OR. (NOMODL(3:7).EQ.'_DIS_') 
+     &            .OR. (NOMODL(1:6).EQ.'GRILLE')
+     &            .OR. (NOMODL(1:5).EQ.'COQUE')) THEN
                 REPK = 'OUI'
                 GO TO 40
               END IF
 
             ELSEIF (QUESTI.EQ.'EXI_COQUE') THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
-              NOMODL = REPK(1:16)
+              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
               IF ( NOMODL(1:5).EQ.'COQUE' ) THEN
                 REPK = 'OUI'
                 GO TO 40
               END IF
 
-            ELSE IF (QUESTI.EQ.'EXI_GRAD_VARI')THEN
+            ELSEIF (QUESTI.EQ.'EXI_GRILLE') THEN
+              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+              REPK = 'NON'
+              IF ( NOMODL(1:6).EQ.'GRILLE' ) THEN
+                REPK = 'OUI'
+                GO TO 40
+              END IF
 
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
-              NOMODL = REPK(1:16)
+            ELSE IF (QUESTI.EQ.'EXI_GRAD_VARI')THEN
+              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
               I7 = INDEX(NOMODL,'GRAD_VARI')
               IF (I7.NE.0) THEN
                 REPK = 'OUI'
                 GO TO 40
               END IF
 
-
             ELSE IF ((QUESTI.EQ.'EXI_COQ3D') .OR.
      &               (QUESTI.EQ.'EXI_COQ1D')) THEN
-
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
-              NOMODL = REPK(1:16)
-
+              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
               IF (NOMODL(1:8).EQ.'COQUE_3D') THEN
                 REPK = 'OUI'
                 GO TO 40
               END IF
 
             ELSE IF (QUESTI.EQ.'EXI_PLAQUE') THEN
-              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
-              NOMODL = REPK(1:16)
-              IF ((NOMODL(1:3).EQ.'DKT') .OR. (NOMODL.EQ.'DST') .OR.
-     &            (NOMODL.EQ.'Q4G')) THEN
+              CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,NOMODL,IERD)
+              IF ((NOMODL(1:3).EQ.'DKT') .OR. (NOMODL(1:3).EQ.'DST')
+     &             .OR.(NOMODL(1:3).EQ.'Q4G')) THEN
                 REPK = 'OUI'
                 GO TO 40
               END IF
@@ -167,7 +165,6 @@ C     -----------------------------------------------------------------
                 GO TO 40
               END IF
 
-
             ELSE IF (QUESTI.EQ.'EXI_THM_CT') THEN
               I7 = INDEX(NOMTE,'THM_LI')
               IF (I7.NE.0) THEN
@@ -178,25 +175,22 @@ C     -----------------------------------------------------------------
                   REPK = 'OUI'
                   GO TO 40
                 END IF
-
               END IF
-            ELSE
-              IF (QUESTI.EQ.'EXI_THM_VR') THEN
-                I7 = INDEX(NOMTE,'THM_NOSY')
-                IF (I7.NE.0) THEN
+
+            ELSE IF (QUESTI.EQ.'EXI_THM_VR') THEN
+              I7 = INDEX(NOMTE,'THM_NOSY')
+              IF (I7.NE.0) THEN
+                REPK = 'OUI'
+                GO TO 40
+              ELSE
+                IF (NOMTE(1:2).EQ.'SN') THEN
                   REPK = 'OUI'
                   GO TO 40
-                ELSE
-                  IF (NOMTE(1:2).EQ.'SN') THEN
-                    REPK = 'OUI'
-                    GO TO 40
-                  END IF
                 END IF
-
-
-              ELSE
-                CALL U2MESS('F','CALCULEL_2')
               END IF
+
+            ELSE
+              CALL U2MESS('F','CALCULEL_2')
             END IF
    10     CONTINUE
         ELSE

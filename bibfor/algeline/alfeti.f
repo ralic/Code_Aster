@@ -3,7 +3,7 @@
      &                  ACMA,ACSM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,8 @@ C DECLARATION VARIABLES LOCALES
      &             LACSM
 
 C CORPS DU PROGRAMME
+      CALL MATFPE(-1)
+C
       CALL JEMARQ()
 
 C----------------------------------------------------------------------
@@ -977,5 +979,8 @@ C----  4.3.4  TEMPS INTERMEDIAIRES: INIT DES VECTEURS DE MONITORING
           ZR(MBID+I-1)=0.D0
   301   CONTINUE
       ENDIF
+C
+      CALL MATFPE(1)
+C
       CALL JEDEMA()
       END

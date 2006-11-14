@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,8 +83,8 @@ CHAR_U2=AFFE_CHAR_MECA(    MODELE=MODELE,
                                          PRES = 1.)
                         )
 
-DEPL_1=AFFE_CHAR_MECA(    MODELE=MODELE,
-                              FACE_IMPO=_F(  MAILLE = 'M2',
+DEPL_1=AFFE_CHAR_CINE(    MODELE=MODELE,
+                              MECA_IMPO=_F(  MAILLE = 'M2',
                                           DY = 0.)
                            )
 
@@ -128,6 +128,12 @@ U1=CALC_ELEM( reuse=U1,
                           RESULTAT=U1,
               )
 
+U1 = CALC_NO( reuse      =  U1         ,
+              RESULTAT   =  U1         ,
+              MODELE     =  MODELE     ,
+              CHAM_MATER =  CHMAT      ,
+              OPTION     = ('REAC_NODA',),)
+
 #***********************************************************************
 #    INCREMENTS DE TEMPS
 #***********************************************************************
@@ -137,9 +143,9 @@ TEMPS2=DEFI_LIST_REEL(   DEBUT=4.,
                                         _F(  JUSQU_A = 4.150,   NOMBRE = 15,),
                                         _F(  JUSQU_A = 4.600,   NOMBRE = 9, ),
                                         _F(  JUSQU_A = 4.650,   NOMBRE = 10,),
-                                        _F(  JUSQU_A = 4.730,   NOMBRE = 4, ),
-                                        _F(  JUSQU_A = 4.800,   NOMBRE = 14,),
-                                        _F(  JUSQU_A = 5.000,   NOMBRE = 40,),
+                                        _F(  JUSQU_A = 4.700,   NOMBRE = 4, ),
+#                                        _F(  JUSQU_A = 4.800,   NOMBRE = 14,),
+#                                        _F(  JUSQU_A = 5.000,   NOMBRE = 40,),
                     ))
 
 #***********************************************************************
@@ -192,7 +198,8 @@ U2=STAT_NON_LINE(
                 SIGM = SIG_INI,
                 VARI = VAR_INI),
                          INCREMENT=_F( 
-                LIST_INST = TEMPS2),
+                LIST_INST = TEMPS2,
+                INST_FIN  = 4.5),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER = 1,
@@ -213,6 +220,37 @@ U2=CALC_NO(  reuse      = U2,
              OPTION     = ('SIEF_NOEU_ELGA',),
                )
 
+############################################################################
+# --- POST-TRAITEMENT -----------------------------------------------------#
+############################################################################
+DEP      = POST_RELEVE_T ( ACTION    =_F( INTITULE   = 'DEPL'  ,
+                                         RESULTAT   =  U2   ,
+                                         NOEUD   = ('N4',)  ,
+                                         NOM_CHAM   = 'DEPL'  ,
+                                         NOM_CMP    = ( 'DY','DX') ,
+                                         OPERATION  = 'EXTRACTION',),);
+
+IMPR_TABLE ( TABLE = DEP ,
+             TRI   = (_F( NOM_PARA = 'INST'    ,
+                          ORDRE    = 'CROISSANT' ,),),
+             PAGINATION = 'INST' ,
+             NOM_PARA=('INST','DY','DX',),
+            ); 
+
+SIG     = POST_RELEVE_T ( ACTION    =_F( INTITULE   = 'SIEF_NOEU_ELGA'  ,
+                                         RESULTAT   =  U2   ,
+                                         NOEUD   = ('N4',)  ,
+                                         NOM_CHAM   = 'SIEF_NOEU_ELGA'  ,
+                                         NOM_CMP    = ( 'SIXX','SIYY',) ,
+                                         OPERATION  = 'EXTRACTION',),);
+
+IMPR_TABLE ( TABLE = SIG ,
+             TRI   = (_F( NOM_PARA = 'INST'    ,
+                          ORDRE    = 'CROISSANT' ,),),
+             PAGINATION = 'INST' ,
+             NOM_PARA=('INST','SIXX','SIYY',),
+            );
+
 #-------------------------
 #    TEST_RESU AU POINT 4
 #-------------------------
@@ -220,21 +258,25 @@ U2=CALC_NO(  reuse      = U2,
 RODEPX=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DX',
+                     INST = 4.5,
                      NOEUD='N4',
                      TITRE='DEP X',);
 RODEPY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='DEPL',
                      NOM_CMP='DY',
+                     INST = 4.5,
                      NOEUD='N4',
                      TITRE='DEP Y',);
 ROSIGX=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='SIEF_NOEU_ELGA',
                      NOM_CMP='SIXX',
+                     INST = 4.5,
                      NOEUD='N4',
                      TITRE='SIG X',);
 ROSIGY=RECU_FONCTION(RESULTAT=U2,
                      NOM_CHAM='SIEF_NOEU_ELGA',
                      NOM_CMP='SIYY',
+                     INST = 4.5,
                      NOEUD='N4',
                      TITRE='SIG Y',);
 
@@ -245,87 +287,33 @@ TEST_RESU(RESU=(
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIXX',
-                      NUME_ORDRE = 5,
+                      INST       = 4.5,
                       PRECISION  = 1.E-3,
                       REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = -2.0),
+                      VERSION    = '8.3.21',
+                      VALE       = -2.00),
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIZZ',
-                      NUME_ORDRE = 5,
+                      INST       = 4.5,
                       REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
+                      VERSION    = '8.3.21',
                       PRECISION  = 1.E-3,
-                      VALE       = -2.0),
+                      VALE       = -2.00),
 
 # CONTRAINTE SIYY
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
-                      NUME_ORDRE = 5,
+                      INST       = 4.5,
                       REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
+                      VERSION    = '8.3.21',
                       PRECISION  = 1.E-3,
-                      VALE       = -1.07188E+01),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
-                      NOM_CMP    = 'SIYY',
-                      NUME_ORDRE = 10,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      PRECISION  = 1.E-3,
-                      VALE       = -9.79273E+00),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
-                      NOM_CMP    = 'SIYY',
-                      NUME_ORDRE = 16,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      PRECISION  = 1.E-3,
-                      VALE       = -9.12683E+00),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
-                      NOM_CMP    = 'SIYY',
-                      NUME_ORDRE = 25,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      PRECISION  = 1.E-2,
-                      VALE       = -6.2269619704757E+00),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
-                      NOM_CMP    = 'SIYY',
-                      NUME_ORDRE = 30,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      PRECISION  = 1.E-3,
-                      VALE       = -6.0965109226695E+00),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
-                      NOM_CMP    = 'SIYY',
-                      NUME_ORDRE = 40,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = -5.9964879131357E+00),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
-                      NOM_CMP    = 'SIYY',
-                      NUME_ORDRE = 49,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = -5.9966994353181E+00))
+                      VALE       = -6.66),)
            )
 
 TEST_RESU(RESU=(
@@ -335,77 +323,22 @@ TEST_RESU(RESU=(
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DX',
-                      NUME_ORDRE = 1,
+                      INST       = 4.5,
                       PRECISION  = 1.E-3,
                       REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = 2.16000E-03),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DX',
-                      NUME_ORDRE = 10,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = 1.15057E-02),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DX',
-                      NUME_ORDRE = 40,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = 8.0477459850549E-02),
+                      VERSION    = '8.3.21',
+                      VALE       = 5.65000E-02),
 
 # DEPLACEMENT DY
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DY',
-                      NUME_ORDRE = 1,
+                      INST       = 4.5,
                       PRECISION  = 1.E-3,
                       REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = -8.00000E-03),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DY',
-                      NUME_ORDRE = 5,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      PRECISION  = 1.E-3,
-                      VALE       = -1.38666E-02),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DY',
-                      NUME_ORDRE = 10,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      PRECISION  = 1.E-3,
-                      VALE       = -2.12000E-02),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DY',
-                      NUME_ORDRE = 25,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = -1.20000E-01),
-                 _F(  RESULTAT   = U2,
-                      NOEUD      = 'N4',
-                      NOM_CHAM   = 'DEPL',
-                      NOM_CMP    = 'DY',
-                      NUME_ORDRE = 48,
-                      PRECISION  = 1.E-3,
-                      REFERENCE  = 'NON_REGRESSION',
-                      VERSION    = '6.2.24',
-                      VALE       = -1.55000E-01),
-)
+                      VERSION    = '8.3.21',
+                      VALE       = -1.00000E-01),)
 )
 
 FIN()

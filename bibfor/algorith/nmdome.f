@@ -1,7 +1,7 @@
       SUBROUTINE NMDOME(MODELE,MATE,CARELE,LISCHA,NBPASE,INPSCO,
      &                  RESULT, NUORD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,6 +122,7 @@ C====
 
       CALL JEMARQ()
       CALL GETRES(K8BID,TYPE,NOMCMD)
+
       IEXCIT = 1
 C              12345678
       BLAN8 = '        '
@@ -646,10 +647,13 @@ C ---- CHARGES DE TYPE ARLEQUIN
   110         CONTINUE
             ELSE
               EXIARL = .TRUE.
-              CALL WKVECT('&&POIDS_MAILLE','V V R',N1,I1)
-              DO 120 J = 1,N1
-                ZR(I1-1+J) = ZR(I0-1+J)
-  120         CONTINUE
+              call jeexin('&&POIDS_MAILLE',IRET)
+              IF (IRET.EQ.0) THEN
+                CALL WKVECT('&&POIDS_MAILLE','V V R',N1,I1)
+                DO 120 J = 1,N1
+                  ZR(I1-1+J) = ZR(I0-1+J)
+  120           CONTINUE
+              ENDIF
             END IF
           END IF
 

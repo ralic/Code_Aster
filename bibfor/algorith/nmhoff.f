@@ -1,6 +1,6 @@
       SUBROUTINE NMHOFF (NDIM,IMATE,INST,EPSM,DEPS,OPTION,SIGP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,8 @@ C --------------------------------------------------------------------
 C -----------------------------------------------------------------
 
 
+      CALL MATFPE(-1)
+C
 C -- INITIALISATION
 
       NDIMSI = 2*NDIM
@@ -105,4 +107,6 @@ C -- CALCUL DE DSIDEP(6,6)
         END IF
       END IF
 
+      CALL MATFPE(1)
+C
       END

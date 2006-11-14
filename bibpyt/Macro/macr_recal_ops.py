@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -201,7 +201,8 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    if os.environ.has_key('ASTER_ROOT'):
       sys.path.append(os.path.join(os.environ['ASTER_ROOT'], 'ASTK', 'ASTK_SERV', 'lib'))
    else:
-      sys.path.append(os.path.join(aster.repout, '..', 'ASTK', 'ASTK_SERV', 'lib'))
+      try:    sys.path.append(os.path.join(aster.repout, '..', 'ASTK', 'ASTK_SERV', 'lib'))
+      except: pass
    try:
       from as_profil import ASTER_PROFIL
    except:

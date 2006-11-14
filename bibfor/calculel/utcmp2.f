@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMGD, MCFAC, NOMCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32      JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER      IBID, N1, JNUCP, N2, JNOCP, I, J, II, NBCPT, JNUC2,
+      INTEGER      IBID, N1, N2, JNOCP, I, J, II, NBCPT, JNUC2,
      &             JNOC2, IVAL, IRET, IANCMP, LGNCMP
       LOGICAL      MULT
       CHARACTER*8  K8B
@@ -52,79 +52,28 @@ C
       CALL GETRES ( K8B, K8B, NOMCMD )
 C
       NBNUCP = 0
-C     CALL GETVIS ( MCFAC, 'NUME_CMP', IOCC,1,0, IBID, N1)
       N1=0
-      IF ( N1 .NE. 0 ) THEN
-         CALL U2MESS('A','CALCULEL5_9')
-         NBNUCP = -N1
-         CALL WKVECT ('&&UTCMP2.NUME_CMP', 'V V I', NBNUCP, JNUCP )
-C        CALL GETVIS ( MCFAC, 'NUME_CMP', IOCC,1,NBNUCP, ZI(JNUCP), N1)
-         N1=0
-      ENDIF
 C
       NBNOCP = 0
-      CALL GETVTX ( MCFAC, 'NOM_CMP', IOCC,1,0, K8B, N2 )
-      IF ( N2 .NE. 0 ) THEN
-         NBNOCP = -N2
-         CALL WKVECT ('&&UTCMP2.NOM_CMP', 'V V K8', NBNOCP, JNOCP )
-         CALL GETVTX ( MCFAC, 'NOM_CMP', IOCC,1,NBNOCP, ZK8(JNOCP), N2)
-      ENDIF
-C
+      CALL GETVTX (MCFAC, 'NOM_CMP', IOCC,1,0, K8B, N2 )
+      NBNOCP = -N2
+      CALL WKVECT ('&&UTCMP2.NOM_CMP', 'V V K8',MAX(NBNOCP,1),JNOCP)
+      CALL GETVTX (MCFAC,'NOM_CMP',IOCC,1,NBNOCP,ZK8(JNOCP),N2)
+
       IF ( NOMGD(1:6) .EQ. 'VARI_R' ) THEN
          MULT = .FALSE.
-         IF ( NBNUCP .NE. 0 ) THEN
-            IF ( NBNOCP .EQ. 1 ) THEN
-               NBCPT = NBNUCP
-               MULT = .TRUE.
-            ELSE
-               IF ( NBNOCP .NE. NBNUCP ) THEN
-                  CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
-                  CALL UTIMPI('L','NOMBRE DE NUME_CMP ',1,NBNUCP)
-                CALL UTIMPI('S',' DOIT ETRE EGAL AU NOMBRE DE NOM_CMP ',
-     &                           1,NBNOCP)
-                  CALL UTFINM()
-               ENDIF
-               NBCPT = NBNOCP
-            ENDIF
-         ELSE
-            NBCPT = NBNOCP
-         ENDIF
+         NBCPT = NBNOCP
          CALL WKVECT ('&&UTCMP2.NUME_CMP2', 'V V I' , NBCPT, JNUC2 )
          CALL WKVECT ('&&UTCMP2.NOM_CMP2' , 'V V K8', NBCPT, JNOC2 )
          II = 0
          DO 10 I = 1 , NBNOCP
             IF ( ZK8(JNOCP+I-1)(1:5) .EQ. 'VARI_' ) THEN
-               IF ( NBNUCP .NE. 0 ) THEN
-                  CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
-               CALL UTIMPK('L','ON NE PEUT PAS AVOIR ',1,ZK8(JNOCP+I-1))
-                CALL UTIMPK('S',' ET UTILISER LE MOT CLE ',1,'NUME_CMP')
-                  CALL UTFINM()
-               ENDIF
                K8B = ZK8(JNOCP+I-1)(6:8)//'     '
             ELSEIF ( ZK8(JNOCP+I-1)(1:4) .EQ. 'VARI' ) THEN
-               IF ( MULT ) THEN
-                  DO 20 J = 1 , NBNUCP
-                     II = II + 1
-                     K8B = 'V'//'       '
-                     CALL CODENT( ZI(JNUCP+J-1) , 'G' , K8B(2:8)  )
-                     ZK8(JNOC2+II-1) = K8B
-                     ZI (JNUC2+II-1) = ZI(JNUCP+J-1)
- 20               CONTINUE
-                  GOTO 22
-               ENDIF
-               IF ( NBNUCP .EQ. 0 ) THEN
-                  IVAL = 1
-               ELSE
-                  IVAL = ZI(JNUCP+I-1)
-               ENDIF
+               IF ( MULT ) GOTO 22
+               IF ( NBNUCP .EQ. 0 )  IVAL = 1
                GOTO 12
             ELSEIF ( ZK8(JNOCP+I-1)(1:1) .EQ. 'V' ) THEN
-               IF ( NBNUCP .NE. 0 ) THEN
-                  CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
-               CALL UTIMPK('L','ON NE PEUT PAS AVOIR ',1,ZK8(JNOCP+I-1))
-                CALL UTIMPK('S',' ET UTILISER LE MOT CLE ',1,'NUME_CMP')
-                  CALL UTFINM()
-               ENDIF
                K8B = ZK8(JNOCP+I-1)(2:8)//' '
             ELSE
                CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
@@ -167,11 +116,9 @@ C
          CALL KNINCL ( 8, NOMCMP, NBNOCP, ZK8(IANCMP), LGNCMP, IRET )
       ENDIF
 C
-      IF ( NBNOCP .GT. 50 ) THEN
-         CALL U2MESS('F','CALCULEL5_10')
-      ENDIF
+      IF ( NBNOCP .GT. 50 )  CALL U2MESS('F','CALCULEL5_10')
 C
-      IF ( N1 .NE. 0 )  CALL JEDETR ( '&&UTCMP2.NUME_CMP' )
+      CALL JEDETR ( '&&UTCMP2.NUME_CMP' )
       CALL JEDETR ( '&&UTCMP2.NOM_CMP' )
 C
       CALL JEDEMA()

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,6 +107,8 @@ C
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
+      CALL MATFPE(-1)
+C
       CALL JEMARQ()
 C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -178,4 +180,6 @@ C
       CALL JEDEMA()
 C
 C --- FIN DE PROJKN.
+      CALL MATFPE(1)
+C
       END

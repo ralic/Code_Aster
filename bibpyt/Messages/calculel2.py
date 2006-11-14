@@ -1,21 +1,21 @@
-#@ MODIF calculel2 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF calculel2 Messages  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -27,11 +27,11 @@ cata_msg={
 """),
 
 3: _("""
- le champ_s:  %(k1)s n'existe pas. 
+ le champ_s:  %(k1)s n'existe pas.
 """),
 
 4: _("""
- types scalaires(i/r/c/...) differents pour :  %(k1)s  et  %(k2)s 
+ types scalaires(i/r/c/...) differents pour :  %(k1)s  et  %(k2)s
 """),
 
 5: _("""
@@ -39,7 +39,7 @@ cata_msg={
 """),
 
 6: _("""
- on ne sait pas renommer la cmp:  %(k1)s 
+ on ne sait pas renommer la cmp:  %(k1)s
 """),
 
 7: _("""
@@ -67,7 +67,7 @@ cata_msg={
 """),
 
 13: _("""
- il manque la cmp: %(k1)s  sur le noeud: %(k2)s 
+ il manque la cmp: %(k1)s  sur le noeud: %(k2)s
 """),
 
 14: _("""
@@ -103,7 +103,7 @@ cata_msg={
 """),
 
 22: _("""
- composante :  %(k1)s  inexistante au catalogue pour la grandeur : %(k2)s 
+ composante :  %(k1)s  inexistante au catalogue pour la grandeur : %(k2)s
 """),
 
 23: _("""
@@ -123,7 +123,7 @@ cata_msg={
 """),
 
 27: _("""
- le maillage associe au champ: %(k1)s  est different de celui associe au ligrel:  %(k2)s 
+ le maillage associe au champ: %(k1)s  est different de celui associe au ligrel:  %(k2)s
 """),
 
 28: _("""
@@ -131,11 +131,11 @@ cata_msg={
 """),
 
 29: _("""
- la grandeur associee au champ  %(k1)s : %(k2)s  n est pas celle associee au parametre  %(k3)s : %(k4)s  (option: %(k5)s 
+ la grandeur associee au champ  %(k1)s : %(k2)s  n est pas celle associee au parametre  %(k3)s : %(k4)s  (option: %(k5)s
 """),
 
 30: _("""
-  on n'arrive pas a etendre la carte:  %(k1)s 
+  on n'arrive pas a etendre la carte:  %(k1)s
 """),
 
 31: _("""
@@ -183,11 +183,11 @@ cata_msg={
 """),
 
 42: _("""
- le type_elem:  %(k1)s  n'a pas le nombre de points de gauss declare dans la routine eclau1. nom_cham= %(k2)s 
+ le type_elem:  %(k1)s  n'a pas le nombre de points de gauss declare dans la routine eclau1. nom_cham= %(k2)s
 """),
 
 43: _("""
- nombre de noeuds > 27 
+ nombre de noeuds > 27
 """),
 
 44: _("""
@@ -195,19 +195,19 @@ cata_msg={
 """),
 
 45: _("""
- famille de pg "liste" interdite: %(k1)s 
+ famille de pg "liste" interdite: %(k1)s
 """),
 
 46: _("""
-  mode ligne  %(k1)s  /= mode colonne  %(k2)s 
+  mode ligne  %(k1)s  /= mode colonne  %(k2)s
 """),
 
 47: _("""
-  le mode  %(k1)s  de code  %(k2)s  reference le mode  %(k3)s  dont le code :  %(k4)s  > 3 
+  le mode  %(k1)s  de code  %(k2)s  reference le mode  %(k3)s  dont le code :  %(k4)s  > 3
 """),
 
 48: _("""
-  pour le mode  %(k1)s  nombre de points  %(k2)s  < argument k :  %(k3)s 
+  pour le mode  %(k1)s  nombre de points  %(k2)s  < argument k :  %(k3)s
 """),
 
 49: _("""
@@ -219,7 +219,7 @@ cata_msg={
 """),
 
 51: _("""
- cham_elem etendu a faire ... 
+ cham_elem etendu a faire ...
 """),
 
 52: _("""
@@ -227,7 +227,7 @@ cata_msg={
 """),
 
 53: _("""
-  inutile de comprimer 1 telle carte 
+  inutile de comprimer 1 telle carte
 """),
 
 54: _("""
@@ -259,11 +259,9 @@ cata_msg={
 """),
 
 61: _("""
- l option que l on calcule ne connait pas le parametre :  %(k1)s erreur probable dans un catalogue(typelem)
-"""),
-
-62: _("""
-  on ne trouve pas de routine ininpq npq doit etre compris entre 1 et 100 ici : npq = %(k1)s 
+ Erreur développeur :
+ L'option que l'on calcule ne connait pas le paramètre :  %(k1)s
+ Erreur probable dans un catalogue(typelem)
 """),
 
 63: _("""
@@ -279,7 +277,7 @@ cata_msg={
 """),
 
 66: _("""
-  type_scalaire inconnu:  %(k1)s 
+  type_scalaire inconnu:  %(k1)s
 """),
 
 67: _("""
@@ -291,11 +289,11 @@ cata_msg={
 """),
 
 69: _("""
- le parametre: %(k1)s  n'est pas un parametre de l'option: %(k2)s 
+ le parametre: %(k1)s  n'est pas un parametre de l'option: %(k2)s
 """),
 
 70: _("""
- le parametre: %(k1)s  n'est pas un parametre de l'option: %(k2)s  pour le type_element:  %(k3)s 
+ le parametre: %(k1)s  n'est pas un parametre de l'option: %(k2)s  pour le type_element:  %(k3)s
 """),
 
 71: _("""
@@ -363,11 +361,11 @@ cata_msg={
 """),
 
 87: _("""
- impossible lire  %(k1)s 
+ impossible lire  %(k1)s
 """),
 
 88: _("""
- option  %(k1)s  non disponible sur les elements du modele- pas de champ cree 
+ option  %(k1)s  non disponible sur les elements du modele- pas de champ cree
 """),
 
 89: _("""
@@ -379,7 +377,7 @@ cata_msg={
 """),
 
 91: _("""
- exicha different de 0 et 1 
+ exicha different de 0 et 1
 """),
 
 92: _("""
@@ -395,11 +393,11 @@ cata_msg={
 """),
 
 95: _("""
- impossible de calculer un resultat derive pour le type  %(k1)s 
+ impossible de calculer un resultat derive pour le type  %(k1)s
 """),
 
 96: _("""
- impossible de trouver le resultat derive associe au resultat  %(k1)s  et au parametre sensible  %(k2)s 
+ impossible de trouver le resultat derive associe au resultat  %(k1)s  et au parametre sensible  %(k2)s
 """),
 
 97: _("""

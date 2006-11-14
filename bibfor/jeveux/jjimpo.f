@@ -1,7 +1,7 @@
       SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -198,10 +198,12 @@ C
          NL = NM / NB
          ND = MOD(NM,NB)
          WRITE ( FMT,'(I2,''(A1,'',I2,''A1,A1)'')' ) NB,LT
-         WRITE ( UNIT , '(I7,'' - '','//FMT//')')
-     &        ( NB*(L-1)+1,
+         DO 2,L=1,NL
+           WRITE ( UNIT , '(I7,'' - '','//FMT//')')
+     &         NB*(L-1)+1,
      &      ('>',(K1ZON( JI+LT*((K-1)+(L-1)*NB)+J-1 ),J=1,LT),'<',
-     &                                      K= 1,NB ) , L = 1,NL )
+     &                                      K= 1,NB )
+2        CONTINUE
          IF ( ND .NE. 0 ) THEN
             WRITE ( UNIT , '(I7,'' - '','//FMT//')') NB*NL+1,
      &        ('>',(K1ZON (JI +LT*((K-1)+NL*NB)+J-1),J=1,LT),'<',K=1,ND)

@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 31/10/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_algo Macro  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,10 +21,11 @@
 
 import Numeric, MLab
 from Numeric import take, size
-import copy,os
+import copy, os
 import LinearAlgebra 
 
 try:
+  import aster
   from Cata.cata import INFO_EXEC_ASTER
   from Cata.cata import DETRUIRE
   from Accas import _F
@@ -153,7 +154,6 @@ def lambda_init(matrix):
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 
-#def Levenberg_bornes(self,val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):  
 def Levenberg_bornes(val,Dim,val_init,borne_inf,borne_sup,A,erreur,l,ul_out):  
    """
       On resoud le système par contraintes actives:
@@ -292,8 +292,14 @@ def calcul_etat_final(para,A,iter,max_iter,prec,residu,Messg):
 
    if ((iter < max_iter) or (residu < prec)):
       Hessien = Numeric.matrixmultiply(Numeric.transpose(A),A)
+
+      # Desactive temporairement les FPE qui pourraient etre generees (a tord!) par blas
+      aster.matfpe(-1)
       valeurs_propres,vecteurs_propres = LinearAlgebra.eigenvectors(Hessien) 
 #      valeurs_propres,vecteurs_propres = MLab.eig(Hessien) 
       sensible=Numeric.nonzero(Numeric.greater(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-1))
       insensible=Numeric.nonzero(Numeric.less(abs(valeurs_propres/max(abs(valeurs_propres))),1.E-2))
+      # Reactive les FPE
+      aster.matfpe(1)
+
       Messg.affiche_calcul_etat_final(para,Hessien,valeurs_propres,vecteurs_propres,sensible,insensible)

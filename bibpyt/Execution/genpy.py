@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF genpy Execution  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,10 +193,8 @@ class genpy:
           st.append(`val`)
         st.append(',')
       st.append(trail)
-
       st=string.join(st,'')
 
-      st = st + trail
     elif type(node.valeur) == types.InstanceType :
       node.valeur.accept(self)
       if hasattr(node.etape,'sdprods') and node.valeur in node.etape.sdprods:
@@ -225,7 +223,8 @@ class genpy:
     for data in node.data:
       data.accept(self)
       l.append(self._result)
-    self._result=l
+    if len(l)==1 : self._result=l[0]
+    else         : self._result=l
 
   def visitMCFACT(self,node):
     fact={}
