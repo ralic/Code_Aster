@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/11/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF PREPOST  DATE 20/11/2006   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -545,8 +545,13 @@ C             --------------------------------------
               ZR(JINST)=INST
 C             DESTRUCTION DU CHAMP_S
               CALL DETRSD('CHAM_NO_S',CHS)
+              CALL JEDETR('&&OP0196.MA_MO_FISS')
+              CALL JEDETR('&&OP0196.MAIL_XFEM')
+              CALL JEDETR('&&'//NOMPRO//'.IND_MAIL')
+              CALL JEDETR('&&OP0196.POSI_CNS')
+              CALL JEDETR('&&OP0196.POSI_HEA')
+              CALL JEDETR('&&OP0196.LIST_NO_NX')
  20        CONTINUE
-
 
 C       2.2  TRAITEMENT DES CONTRAINTES
 C       ================================

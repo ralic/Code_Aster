@@ -4,10 +4,11 @@
      >                    NMATYP, JFAMMA, JNUMTY,
      >                    TABAUX,
      >                    NOMGRO, NUMGRO, NUMENT,
-     >                    INFMED, NIVINF, IFM )
+     >                    INFMED, NIVINF, IFM,
+     >                    VECGRM, NBCGRM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 31/01/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF MODELISA  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +66,7 @@ C
 C 0.1. ==> ARGUMENTS
 C
       INTEGER FID 
-      INTEGER NBRFAM, CARAFA(3,NBRFAM)
+      INTEGER NBRFAM, CARAFA(3,NBRFAM), NBCGRM
       INTEGER NBNOEU, FAMNOE(NBNOEU)
       INTEGER NMATYP(NTYMAX), JFAMMA(NTYMAX), JNUMTY(NTYMAX)
       INTEGER TABAUX(*)
@@ -73,7 +74,7 @@ C
       INTEGER IFM, NIVINF
 C
       CHARACTER*(*) NOMGRO, NUMGRO, NUMENT
-      CHARACTER*(*) NOMAMD
+      CHARACTER*(*) NOMAMD, VECGRM
 C
 C 0.2. ==> COMMUNS
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -145,7 +146,8 @@ C
      >                NMATYP, JFAMMA, JNUMTY,
      >                ZI(ADVALA), ZK80(ADNOGR), TABAUX,
      >                NOMGRO, NUMGRO, NUMENT,
-     >                INFMED, NIVINF, IFM )
+     >                INFMED, NIVINF, IFM,
+     >                VECGRM, NBCGRM )
 C
     3 CONTINUE
 C

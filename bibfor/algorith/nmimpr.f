@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPR(PHASE,NATURZ,ARGZ,ARGR,ARGI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,6 +127,7 @@ C ======================================================================
       IF (RANG.EQ.0) THEN
 
         IF (PHASE.EQ.'INIT') THEN      
+          UNITM = 0
           CALL NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
           IMPINF = IMPRCO(1:14)//'INFO'
           CALL JEVEUO(IMPINF,'L',JIMPIN)

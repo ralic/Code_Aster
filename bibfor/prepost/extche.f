@@ -1,13 +1,13 @@
       SUBROUTINE EXTCHE(NCHME2,NMAILE,NUMMAI,NCMP,NBM,NBC,INDIC,NSSCHE,
-     &                  MCF,IOCC)
+     &                  MCF,IOCC, NBNAC, NNOEUD )
       IMPLICIT   NONE
-      INTEGER NBM,NBC,NUMMAI(*),IOCC
-      CHARACTER*6 INDIC
-      CHARACTER*8 NMAILE(*),NCMP(*)
-      CHARACTER*19 NCHMEL,NSSCHE,NCHME2
+      INTEGER       NBM, NBC, NUMMAI(*), IOCC, NBNAC, NNOEUD(*)
+      CHARACTER*6   INDIC
+      CHARACTER*8   NMAILE(*), NCMP(*)
+      CHARACTER*19  NCHMEL, NSSCHE, NCHME2
       CHARACTER*(*) MCF
 C*********************************************************************
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -293,7 +293,7 @@ C   ------------------------------
           DO 30 I = 1,3
             AXEZ(I) = AXEZ(I)*XNORMZ
    30     CONTINUE
-          CALL RVCHE2(NCHMEL,NOMJV,NBM,NUMMAI,ORIG,AXEZ)
+          CALL RVCHE2(NCHMEL,NOMJV,NBM,NUMMAI,ORIG,AXEZ,NBNAC,NNOEUD)
           CALL JEVEUO(NOMJV,'L',AVALE)
         END IF
       END IF

@@ -1,10 +1,11 @@
-      SUBROUTINE RVCHE2 ( CHELEZ, NOMJV, NBEL, NUMAIL, ORIG, AXEZ )
+      SUBROUTINE RVCHE2 ( CHELEZ, NOMJV, NBEL, NUMAIL, ORIG, AXEZ,
+     &                    NBNAC, NNOEUD )
       IMPLICIT   NONE
-      INTEGER             NBEL, NUMAIL(*)
+      INTEGER             NBEL, NUMAIL(*), NBNAC, NNOEUD(*)
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              ORIG(3), AXEZ(3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,13 +49,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &              NCOU, IACHML, ICOU, INO, ICMPT, NBGREL, IER, DIGDEL,
      &              NUMXX, NUMYY, NUMZZ, NUMXY, NUMXZ, NUMYZ, NUDDL, I,
      &              JLONGR, JLIGR, JPNT, IPOIN, IANOMA, NUNOE,AXYZM,
-     &              JCNX,IMODEL,ILONG
+     &              JCNX,IMODEL,ILONG, IND, INDIIS
       REAL*8        SG(6), SL(6), PGL(3,3), PSCAL
-      REAL*8        XNORMR, EPSI, AXER(3), AXET(3)
-      CHARACTER*8   K8B, NOMCMP, NOMMA
+      REAL*8        XNORMR, EPSI, AXER(3), AXET(3), R8VIDE
+      CHARACTER*8   K8B, NOMCMP, NOMMA, NONOEU, NOMAIL
       CHARACTER*16  OPTION
       CHARACTER*19  CHELM, NOLIGR
-      LOGICAL       EXISDG
+      LOGICAL       EXISDG, INIVID
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -139,6 +140,17 @@ C
             DO 32 INO = 1, NNOE
 C
                NUNOE = ZI(JCNX-1+ZI(JPNT-1+IEL)-1+INO)
+               INIVID = .FALSE.
+               IF ( NBNAC .NE. 0 ) THEN
+                  IND = INDIIS ( NNOEUD, NUNOE, 1, NBNAC )
+                  IF ( IND.EQ. 0 ) THEN
+                     INIVID = .TRUE.
+                     DO 730 I = 1,6
+                       SL(I) = R8VIDE()
+ 730                 CONTINUE
+                     GOTO 732
+                  ENDIF
+               ENDIF
 C
                AXER(1) = ZR(AXYZM+3*(NUNOE-1)  ) - ORIG(1)
                AXER(2) = ZR(AXYZM+3*(NUNOE-1)+1) - ORIG(2)
@@ -152,8 +164,12 @@ C
                   XNORMR = XNORMR + AXER(I)*AXER(I)
  40            CONTINUE
                IF ( XNORMR .LT. EPSI ) THEN
-              CALL UTDEBM('F','RVCHE2','NOEUD CONFONDU AVEC L''ORIGINE')
-                  CALL UTIMPI('L',' NOEUD NUMERO : ',1,NUNOE)
+                 CALL JENUNO(JEXNUM(NOMMA//'.NOMMAI',IMAIL),NOMAIL)
+                 CALL JENUNO(JEXNUM(NOMMA//'.NOMNOE',NUNOE),NONOEU)
+                  CALL UTDEBM('F','RVCHE2','NOEUD SUR L''AXE_Z')
+                  CALL UTIMPK('L',' MAILLE : ',1,NOMAIL)
+                  CALL UTIMPK('L','  NOEUD : ',1,NONOEU)
+             CALL UTIMPR('L','  COORDONNEES : ',3,ZR(AXYZM+3*(NUNOE-1)))
                   CALL UTFINM
                ENDIF
                XNORMR =  1.0D0 / SQRT( XNORMR )
@@ -168,8 +184,12 @@ C
  44            CONTINUE
                XNORMR =  SQRT( XNORMR )
                IF ( XNORMR .LT. EPSI ) THEN
+                 CALL JENUNO(JEXNUM(NOMMA//'.NOMMAI',IMAIL),NOMAIL)
+                 CALL JENUNO(JEXNUM(NOMMA//'.NOMNOE',NUNOE),NONOEU)
                   CALL UTDEBM('F','RVCHE2','NOEUD SUR L''AXE_Z')
-                  CALL UTIMPI('L',' NOEUD NUMERO : ',1,NUNOE)
+                  CALL UTIMPK('L',' MAILLE : ',1,NOMAIL)
+                  CALL UTIMPK('L','  NOEUD : ',1,NONOEU)
+             CALL UTIMPR('L','  COORDONNEES : ',3,ZR(AXYZM+3*(NUNOE-1)))
                   CALL UTFINM
                ENDIF
                DO 46 I = 1,3
@@ -178,20 +198,23 @@ C
                   PGL(3,I) = AXET(I)
  46            CONTINUE
 C
-               NUMXX = 0
-               NUMYY = 0
-               NUMZZ = 0
-               NUMXY = 0
-               NUMXZ = 0
-               NUMYZ = 0
                SG(1) = 0.0D0
                SG(2) = 0.0D0
                SG(3) = 0.0D0
                SG(4) = 0.0D0
                SG(5) = 0.0D0
                SG(6) = 0.0D0
+C
+ 732           CONTINUE
+               NUMXX = 0
+               NUMYY = 0
+               NUMZZ = 0
+               NUMXY = 0
+               NUMXZ = 0
+               NUMYZ = 0
                NUDDL = IACHML-1+NCMPP*ICOEF*(INO-1)
      &                                     +(ICOU-1)*NCMPP*ICOEF*NNOE
+C
                ICMPT = 0
                DO 34 ICMP = 1, NCMPMX
                   IF ( EXISDG( TABEC, ICMP ) ) THEN
@@ -237,7 +260,9 @@ C
                   ENDIF
   34           CONTINUE
 C
-               CALL UTPSGL ( 1 , 3 , PGL , SG , SL )
+               IF ( .NOT. INIVID ) THEN
+                  CALL UTPSGL ( 1 , 3 , PGL , SG , SL )
+               ENDIF
 C
                IF ( NUMXX.NE.0 ) ZR(IAVALE-1+NUMXX) = SL(1)
                IF ( NUMYY.NE.0 ) ZR(IAVALE-1+NUMYY) = SL(3)

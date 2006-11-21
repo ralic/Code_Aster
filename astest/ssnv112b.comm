@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -226,7 +226,5 @@ TEST_RESU(RESU=(
                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
              ),
             );
-FIN( )
-#
 FIN( )
 #

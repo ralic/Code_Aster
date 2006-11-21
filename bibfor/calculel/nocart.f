@@ -2,7 +2,7 @@
      &                  NMLIGZ, NCMP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF CALCULEL  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,11 +119,8 @@ C     -------------------------------
 
       CALL JEVEUO(CHIN//'.NOLI','E',NOLI)
       IF ((CODE.EQ.-1) .OR. (CODE.EQ.-3)) THEN
-         IF (NOMLIG(1:8).NE.' ') THEN
-            ZK24(NOLI-1+NEDIT) = NOMLIG
-         ELSE
-            CALL U2MESS('F','CALCULEL_33')
-         END IF
+         CALL ASSERT(NOMLIG(1:8).NE.' ')
+         ZK24(NOLI-1+NEDIT) = NOMLIG
       END IF
 
 C     APPEL A EDITGD QUI REMPLIT .VALE ET MET A JOUR  LE DESC_GRANDEUR

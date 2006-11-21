@@ -2,10 +2,10 @@
      &                    NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
      &                    GRPNOE,GRPMAI,CONNEX,TITRE,FORMM,TYPMAI,
      &                    ADAPMA,IFM,NROFIC,NIVINF,INFMED,
-     &                    NBNOEU, NBMAIL, NBCOOR )
+     &                    NBNOEU, NBMAIL, NBCOOR, VECGRM, NBCGRM )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,10 +44,10 @@ C
 C     IN
 C
       INTEGER IFM, NIVINF
-      INTEGER NROFIC, INFMED
+      INTEGER NROFIC, INFMED, NBCGRM
       CHARACTER*32 NOMAMD
       CHARACTER*24 COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
-      CHARACTER*24 FORMM,  TITRE,  NOMMAI, NOMNOE, TYPMAI
+      CHARACTER*24 FORMM,  TITRE,  NOMMAI, NOMNOE, TYPMAI, VECGRM
       CHARACTER*24 ADAPMA
       CHARACTER*8 NOMU
 C
@@ -268,7 +268,8 @@ C
      &              GRPNOE, GRPMAI, NBGRNO, NBGRMA,
      &              TYPGEO, NOMTYP, NMATYP,
      &              SAUX06,
-     &              INFMED )
+     &              INFMED,
+     &              VECGRM, NBCGRM )
 C
 C====
 C 8. LES EQUIVALENCES

@@ -1,6 +1,6 @@
       SUBROUTINE TE0011(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,8 +36,8 @@ C.......................................................................
       CHARACTER*16 NOMTE,OPTION,PHENOM
       REAL*8 B(486),BTDB(81,81),D(36),JACGAU
       REAL*8 REPERE(7),XYZGAU(3),INSTAN,NHARM
-      REAL*8 HYDRG,SECHG
-      INTEGER NBSIGM,IGEOM, IPOIDS, IVF, IDFDE,IRET
+      REAL*8 HYDRG,SECHG,BARY(3)
+      INTEGER NBSIGM,IGEOM, IPOIDS, IVF, IDFDE,IRET,IDIM
       LOGICAL LSENS
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -104,7 +104,17 @@ C      -------------------------------------------------
 
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+
+      BARY(1) = 0.D0
+      BARY(2) = 0.D0
+      BARY(3) = 0.D0
+      DO 150 I = 1,NNO
+        DO 140 IDIM = 1,NDIM
+          BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+ 140    CONTINUE
+ 150  CONTINUE
+      CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 
 C ---  BOUCLE SUR LES POINTS D'INTEGRATION
 C      -----------------------------------
@@ -149,7 +159,6 @@ C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
         CALL DMATMC(MODELI,ZI(IMATE),TEMPG,HYDRG,SECHG,INSTAN,REPERE,
      &              XYZGAU,NBSIG,D,LSENS)
-
 C  --      MATRICE DE RIGIDITE ELEMENTAIRE BT*D*B
 C          ---------------------------------------
         CALL BTDBMC(B,D,JACGAU,NDIM,MODELI,NNO,NBSIG,PHENOM,BTDB)

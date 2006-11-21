@@ -1,7 +1,7 @@
       SUBROUTINE OP0001 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,18 +69,20 @@ C
 C
 C ----- DECLARATIONS
 C
-      INTEGER         I,N1,IAUX,NIV,IFL,IFM,IOC,ITOUT
-      INTEGER         IADIME, NBNOEU, NBMAIL, NBCOOR
-      INTEGER         NOCC, NBVAL, IRET, INFMED
-      CHARACTER*8     NOMU, NOMG, TOTM, FMT, VERI
+      INTEGER         I,N1,IAUX,NIV,IFL,IFM,IOC,ITOUT, IVGRM, IBID
+      INTEGER         IADIME, NBNOEU, NBMAIL, NBCOOR, NBCGRM
+      INTEGER         NBVAL, IRET, INFMED
+      CHARACTER*8     NOMU, TOTM, FMT, VERI
       CHARACTER*16    CONCEP
       CHARACTER*24    COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
       CHARACTER*24    FORMM, TITRE, NOMMAI, NOMNOE, TYPMAI
-      CHARACTER*24    ADAPMA
+      CHARACTER*24    ADAPMA, VECGRM
       CHARACTER*32    NOMAMD
       REAL*8          DTOL
+      INTEGER         LXLGUT, ILNG
 
       CALL JEMARQ ( )
+      VECGRM = '&&OP0001.VECGRM'
 C
 C --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
 C
@@ -101,6 +103,22 @@ C                   12345678901234567890123456789012
           NOMAMD = '                                '
         ENDIF
         CALL GETVIS (' ','INFO_MED',0,1,1,INFMED,IAUX)
+C
+C   --- LECTURE DES CORRESPONDANCES NOM MED - NOM ASTER
+C
+        CALL GETFAC('RENOMME',NBCGRM)
+        IF ( NBCGRM.GT.0 ) THEN
+           CALL WKVECT(VECGRM, 'V V K32', NBCGRM*2, IVGRM)
+           DO 100 I=1, NBCGRM
+              CALL GETVTX('RENOMME','NOM_MED',I,1,1,
+     &                    ZK32(IVGRM-1+I*2-1),IBID)
+              CALL GETVTX('RENOMME','NOM'    ,I,1,1,
+     &                    ZK32(IVGRM-1+I*2),IBID)
+              ILNG = LXLGUT(ZK32(IVGRM-1+I*2))
+              CALL ASSERT(ILNG.GT.0 .AND. ILNG.LE.8)
+ 100       CONTINUE
+        ENDIF
+      
       ENDIF
 C
 C
@@ -135,7 +153,7 @@ C     ---------------------------------
      &                  NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
      &                  GRPNOE,GRPMAI,CONNEX,TITRE,FORMM,TYPMAI,
      &                  ADAPMA,IFM,IFL,NIV,INFMED,NBNOEU,NBMAIL,
-     &                  NBCOOR )
+     &                  NBCOOR,VECGRM,NBCGRM)
       ENDIF
 C
 C --- CALCUL D'UNE ABSCISSE CURVILIGNE SUR LE MAILLAGE :

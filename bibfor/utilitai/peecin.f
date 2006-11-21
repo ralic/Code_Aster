@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/11/2006   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,12 +144,14 @@ C        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
         IF (TYPRES(1:9).NE.'EVOL_NOLI') THEN
           CALL JEVEUO(RESUL//'           .REFD','L',JREF)
           NOMMAS = ZK24(JREF+1)(1:8)
+          IF (NOMMAS.EQ.' ') GOTO 5
           CALL DISMOI('A','SUR_OPTION',NOMMAS,'MATR_ASSE',IBID,OPT,IE)
           IF (IE.NE.0) THEN
             CALL U2MESS('A','UTILITAI3_71')
           ELSE
             IF (OPT(1:14).EQ.'MASS_MECA_DIAG') INUME = 0
           END IF
+    5     CONTINUE
         END IF
 C        --- ON VERIFIE SI L'UTILISATEUR A DEMANDE L'UTILISATION ---
 C        --- D'UNE MATRICE DE MASSE DIAGONALE                    ---

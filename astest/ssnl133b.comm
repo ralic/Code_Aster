@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/11/2006   AUTEUR ABBAS M.ABBAS 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,7 @@ FORCE=AFFE_CHAR_MECA(MODELE=MO,
 FORCE_F=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.,0.,10.0,10.0,),);
 tfin = 10.0;
-
+tsuiv = 5.0;
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(JUSQU_A=tfin,
@@ -91,7 +91,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    COMP_INCR=_F(RELATION='ELAS',
                                 DEFORMATION='REAC_GEOM',),
                    INCREMENT=_F(LIST_INST=TEMPS,
-                                INST_FIN=tfin,
+                                INST_FIN=tsuiv,
                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.0E-6,),
                    NEWTON=_F(MATRICE='TANGENTE',
@@ -102,6 +102,37 @@ RESO=STAT_NON_LINE(MODELE=MO,
                                SELECTION='ANGL_INCR_DEPL',
                                GROUP_NO='LAME',
                                NOM_CMP=('DX','DZ',),),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
+                                  ITER_GLOB_MAXI=50,),
+                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+
+# POURSUITE
+
+RESO=STAT_NON_LINE(MODELE=MO,
+                   reuse=RESO,
+                   CHAM_MATER=MAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=FORCE,
+                             TYPE_CHARGE='FIXE_PILO',),),
+                   COMP_INCR=_F(RELATION='ELAS',
+                                DEFORMATION='REAC_GEOM',),
+                   INCREMENT=_F(LIST_INST=TEMPS,
+                                INST_FIN=tfin,
+                                SUBD_METHODE='UNIFORME',
+                                SUBD_PAS=4,
+                                SUBD_PAS_MINI=1.0E-6,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   PILOTAGE=_F(TYPE='LONG_ARC',
+                               COEF_MULT=0.1,
+                               ETA_PILO_MAX=5.0,
+                               SELECTION='ANGL_INCR_DEPL',
+                               GROUP_NO='LAME',
+                               NOM_CMP=('DX','DZ',),),
+                       ETAT_INIT = _F (EVOL_NOLI=RESO ,
+                                     INST_ETAT_INIT=tsuiv, 
+                                      ) ,                                 
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);

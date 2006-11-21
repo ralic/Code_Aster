@@ -1,5 +1,5 @@
-# MODIF  DATE 06/03/2000   AUTEUR DURAND C.DURAND 
-# TITRE CHOC D'UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
+# MODIF  DATE 20/11/2006   AUTEUR DEVESA G.DEVESA 
+# TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # ======================================================================
 # CAS_TEST__: SDNL104B
 #
-# CALCUL DE LA REPONSE TRANSITOIRE NON-LINEAIRE D'UNE POUTRE EN FLEXION
+# CALCUL DE LA REPONSE TRANSITOIRE NON-LINEAIRE D UNE POUTRE EN FLEXION
 # CHOQUANT SUR UN APPUI ELASTIQUE PAR SOUS-STRUCTURATION
 #
 DEBUT(  CODE=_F( NOM = 'SDNL104B',NIV_PUB_WEB='INTERNET'))
@@ -257,7 +257,7 @@ F_PROJ=PROJ_VECT_BASE(            BASE=RESGEN,
                             VECT_ASSE_GENE=F_GENE)
 
 #
-# DEFINITION DE L'OBSTACLE
+# DEFINITION DE L OBSTACLE
 #
 OBSTACLE=DEFI_OBSTACLE( TYPE='CERCLE')
 
@@ -327,6 +327,10 @@ TRAN_GE3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
 LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
                            INTERVALLE=_F( JUSQU_A = 1.,
                                        NOMBRE = 10))
+                                       
+LIST_R2=DEFI_LIST_REEL(       DEBUT=0.1,
+                           INTERVALLE=_F( JUSQU_A = 1.,
+                                       NOMBRE = 9))                                       
 
 #
 TRAN1=REST_BASE_PHYS(   RESU_GENE=TRAN_GE1,
@@ -411,7 +415,66 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   CRITERE = 'RELATIF',    PRECISION = 7.E-2,
                   NOEUD = 'NO12',           NOM_CMP = 'DY', 
                   VALE = 3.45755E-01))
+                  
+mod1=REST_BASE_PHYS(RESU_GENE=RESGEN,
+                    SOUS_STRUC='COTE1',
+                    TOUT_ORDRE='OUI');
+                    
+resu_dy1=REST_BASE_PHYS(   RESU_GENE=TRAN_GE1,
+                            TOUT_CHAM='OUI',
+                             LIST_INST=LIST_R,
+                             INTERPOL='LIN',
+                             MODE_MECA=mod1 )
+                             
+                  
+t_cin1=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
+                            ),
+                MODELE=BARRE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARA,
+                RESULTAT=resu_dy1,
+                LIST_INST=LIST_R2,
+                ); 
+                
+# IMPR_TABLE(TABLE=t_cin1,)
 
+TEST_TABLE(      TABLE=t_cin1,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 11,),),
+                   REFERENCE='NON_REGRESSION',  
+                   NOM_PARA='TOTALE', 
+                   VALE=1.93800E-02, 
+                   PRECISION=0.001)               
+        
+mod2=REST_BASE_PHYS(RESU_GENE=RESGEN,
+                    SOUS_STRUC='COTE2',
+                    TOUT_ORDRE='OUI');
+                    
+resu_dy2=REST_BASE_PHYS(   RESU_GENE=TRAN_GE1,
+                            TOUT_CHAM='OUI',
+                             LIST_INST=LIST_R,
+                             INTERPOL='LIN',
+                             MODE_MECA=mod2 )
+                             
+                  
+t_cin2=POST_ELEM(ENER_CIN=_F(GROUP_MA='TOUT',
+                            ),
+                MODELE=BARRE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARA,
+                RESULTAT=resu_dy2,
+                LIST_INST=LIST_R2,
+                ); 
+                
+# IMPR_TABLE(TABLE=t_cin2,) 
+
+TEST_TABLE(      TABLE=t_cin2,
+                   FILTRE=(_F(  NOM_PARA = 'LIEU', VALE_K = 'TOUT',),
+                           _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 11,),),
+                   REFERENCE='NON_REGRESSION',  
+                   NOM_PARA='TOTALE', 
+                   VALE=4.93814E-02, 
+                   PRECISION=0.001)               
 #
 FIN()
 #

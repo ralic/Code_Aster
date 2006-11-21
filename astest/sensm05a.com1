@@ -14,7 +14,7 @@ TB_SIY = [None]*n
 VER_DY = [None]*n
 V_EPXY = [None]*n
 V_SIYY = [None]*n
-epsilon=1.E-3
+epsilon=1.E-5
 for i in range(n):
   eps=[1.]*n
   eps[i]=1.0 + epsilon
@@ -44,7 +44,7 @@ for i in range(n):
                  reuse = RES2[i],
                  RESULTAT = RES2[i],
                  OPTION = 'SIGM_ELNO_DEPL')
-		 
+
   TB_DY[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                GROUP_NO=('OPPOSE'),
                                RESULTAT=RES2[i],
@@ -55,7 +55,7 @@ for i in range(n):
 
   VER_DY[i]=FORMULE(NOM_PARA=('DY_EPS', 'DY_REF', 'DYDPS'),
                     VALE='abs ((DY_EPS - DY_REF)/%f - DYDPS)' %(sensible[i]*epsilon))
-		 
+
   TAB_DY[i]=CALC_TABLE(TABLE=TAB_REFS,
                         SENSIBILITE=PS[i],
                         ACTION=(_F(OPERATION='RENOMME',
@@ -112,15 +112,15 @@ for i in range(n):
                                 _F(OPERATION='COMB',
                                    TABLE=TB_EPS[i],
                                    NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
-				_F(OPERATION='RENOMME',
-				   NOM_PARA=('EPXY', 'EPXY_EPS'),),
-				_F(OPERATION='OPER',
-				   NOM_PARA='DIFF',
-				   FORMULE=V_EPXY[i]),
-				_F(OPERATION='EXTR',
-				   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'EPXYDPS', 'DIFF', 'EPXY_REF', 'EPXY_EPS'),),),
-			TITRE='Comparaison entre derivee / differences finies'
-			)
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('EPXY', 'EPXY_EPS'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE=V_EPXY[i]),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'EPXYDPS', 'DIFF', 'EPXY_REF', 'EPXY_EPS'),),),
+                        TITRE='Comparaison entre derivee / differences finies'
+                        )
 
   TEST_TABLE(
       TABLE     = TBEPXY[i],
@@ -158,24 +158,24 @@ for i in range(n):
                                 _F(OPERATION='COMB',
                                    TABLE=TB_SIY[i],
                                    NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
-				_F(OPERATION='RENOMME',
-				   NOM_PARA=('SIYY', 'SIYY_EPS'),),
-				_F(OPERATION='OPER',
-				   NOM_PARA='DIFF',
-				   FORMULE= V_SIYY[i]),
-				_F(OPERATION='EXTR',
-				   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'SIYYDPS', 'DIFF', 'SIYY_REF', 'SIYY_EPS'),),),
-			TITRE='Comparaison entre derivee / differences finies')
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('SIYY', 'SIYY_EPS'),),
+                                _F(OPERATION='OPER',
+                                   NOM_PARA='DIFF',
+                                   FORMULE= V_SIYY[i]),
+                                _F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'SIYYDPS', 'DIFF', 'SIYY_REF', 'SIYY_EPS'),),),
+                        TITRE='Comparaison entre derivee / differences finies')
 
   IMPR_TABLE(TABLE=TBSIYY[i])
-			
+
   TEST_TABLE(
       TABLE     = TBSIYY[i],
       NOM_PARA  = 'DIFF',
       TYPE_TEST = 'MAX',
       VALE      = 0.,
       CRITERE   = 'ABSOLU',
-      PRECISION = 3.5E-3,
+      PRECISION = 3E-2,
       REFERENCE = 'AUTRE_ASTER',)
 
   DETRUIRE( CONCEPT =_F(NOM = TAB_DY[i]))
@@ -196,100 +196,100 @@ TEST_RESU(RESU=(
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_0,
-        VALE = 2.4293905342868E-09, REFERENCE = 'NON_REGRESSION' )))
+        VALE = 4.5901527818041E-09, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = RES,   NUME_ORDRE = 1,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_1,
-        VALE = -7.5626529471683E-09, REFERENCE = 'NON_REGRESSION' )))
+        VALE = -2.0472799462843E-09, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = RES,   NUME_ORDRE = 1,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_2,
-        VALE = -2.9508876027760E-10, REFERENCE = 'NON_REGRESSION' )))
+        VALE = -3.6134234206261E-09, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = RES,   NUME_ORDRE = 1,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_3,
-        VALE = -8.4239107751554E-04, REFERENCE = 'NON_REGRESSION' )))
+        VALE = -1.7275613963771E-03, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = RES,   NUME_ORDRE = 1,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_4,
-        VALE = 1.0775321899662E-05, REFERENCE = 'NON_REGRESSION' )))
+        VALE = -1.8013896331517E-03, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = RES,   NUME_ORDRE = 1,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_5,
-        VALE = 2.0653103649623E-05, REFERENCE = 'NON_REGRESSION' )))
+        VALE = -3.6680183665795E-03, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = RES,   NUME_ORDRE = 1,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_6,
-        VALE = -2.5910680787136E-09, REFERENCE = 'NON_REGRESSION' )))
+        VALE = -2.3824947614840E-09, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = RES,   NUME_ORDRE = 1,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_7,
-        VALE = 5.6274647519574E-10, REFERENCE = 'NON_REGRESSION' )))
+        VALE = 8.0519359536012E-10, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
    _F(  RESULTAT = RES,   NUME_ORDRE = 1,
         NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
         CRITERE = 'RELATIF', PRECISION = 1.E-6,
         NOM_CMP = 'DY',   SENSIBILITE = PS_8,
-        VALE = -1.1579216129805E-09, REFERENCE = 'NON_REGRESSION' )))
+        VALE = -7.1049586638029E-10, REFERENCE = 'NON_REGRESSION' )))
 
 TEST_RESU(RESU=(
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_2,
           NOM_CHAM = 'EPSI_ELNO_DEPL',  NOEUD = 'N256' ,
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
-          NOM_CMP = 'EPXY',    VALE = 7.3983446E-13,
+          NOM_CMP = 'EPXY',    VALE = -1.2698419373902E-11,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_3,
           NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N256',
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
-          NOM_CMP = 'EPXY',    VALE = 1.67E-06,
+          NOM_CMP = 'EPXY',    VALE = -3.5836848704063E-06,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_6,
           NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N256',
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
-          NOM_CMP = 'EPXY',    VALE = -1.31465E-10,
+          NOM_CMP = 'EPXY',    VALE = -1.3187809605825E-10,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_2,
           NOM_CHAM = 'SIGM_ELNO_DEPL',  NOEUD = 'N256' ,
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
-          NOM_CMP = 'SIYY',    VALE = 5.122777E-06,
+          NOM_CMP = 'SIYY',    VALE = -4.4117698496351E-04,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_3,
           NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N256',
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
-          NOM_CMP = 'SIYY',    VALE = -1.0285E+01,
+          NOM_CMP = 'SIYY',    VALE = -1.6089388160469E+02,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_6,
           NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N256',
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
-          NOM_CMP = 'SIYY',    VALE = 1.500725E-06,
+          NOM_CMP = 'SIYY',    VALE = 1.8009447746660E-05,
           REFERENCE = 'NON_REGRESSION' ),
          ),)
 

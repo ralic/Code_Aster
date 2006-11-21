@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 # TITRE  PARALLEPEPIPEDE ISOTROPE TRANSVERSE SOUS SON PROPRE POIDS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,17 +89,17 @@ TEST_RESU(RESU=(
               NOEUD = 'N12',      NOM_CMP = 'DY',            VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'RELATIF',
               PRECISION = 1.E-3,
-              NOEUD = 'N12',      NOM_CMP = 'DZ',            VALE = -1.707308E-6),
+              NOEUD = 'N12',      NOM_CMP = 'DZ',            VALE = -1.71591615E-6),
      # D 
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'RELATIF',
               PRECISION = 1.E-3,
-              NOEUD = 'N18',      NOM_CMP = 'DX',            VALE = -1.721655E-7),
+              NOEUD = 'N18',      NOM_CMP = 'DX',            VALE = -6.88662E-8),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'ABSOLU',
               PRECISION = 1.E-10,
               NOEUD = 'N18',      NOM_CMP = 'DY',            VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'RELATIF',
-              PRECISION = 3.E-3,
-              NOEUD = 'N18',      NOM_CMP = 'DZ',            VALE = 1.434713E-8),
+              PRECISION = 5.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DZ',            VALE = 5.73885E-9),
      # E 
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'ABSOLU',
               PRECISION = 1.E-10,
@@ -116,10 +116,10 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DX',            VALE = 0.),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'ABSOLU',
               PRECISION = 1.E-10,
-              NOEUD = 'N70',      NOM_CMP = 'DY',            VALE = -1.721655E-7),
+              NOEUD = 'N70',      NOM_CMP = 'DY',            VALE = -6.88662E-8),
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'RELATIF', 
-              PRECISION = 2.E-3,
-              NOEUD = 'N70',      NOM_CMP = 'DZ',            VALE = 1.4347125E-8),
+              PRECISION = 5.E-3,
+              NOEUD = 'N70',      NOM_CMP = 'DZ',            VALE = 5.73885E-9),
      # CONTRAINTES EN A , E ET X
             
             _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE CREUX THERMOVISCOPLASTICITE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,33 +123,4 @@ TEST_RESU(
 
      
            
-FIN()
-TEST_RESU( 
-          RESU=(
-                _F(RESULTAT = RESU,
-                   NUME_ORDRE =38,
-                   NOM_CHAM ='SIEF_NOEU_ELGA',
-                   GROUP_NO ='B',
-                   NOM_CMP ='SIXX',
-                   VALE= 0.,
-                   CRITERE='ABSOLU',
-                   REFERENCE='ANALYTIQUE'),
-                 _F(RESULTAT = RESU,
-                   NUME_ORDRE =38,
-                   NOM_CHAM ='SIEF_NOEU_ELGA',
-                   GROUP_NO ='B',
-                   NOM_CMP ='SIYY',
-                   VALE= 2.7912E-4,
-                   PRECISION=1.5E-2,
-                   REFERENCE='ANALYTIQUE'),
-                 _F(RESULTAT = RESU,
-                   NUME_ORDRE =38,
-                   NOM_CHAM ='SIEF_NOEU_ELGA',
-                   GROUP_NO ='B',
-                   NOM_CMP ='SIZZ',
-                   VALE= 6.666E-4,
-                   PRECISION=5.E-3,
-                   REFERENCE='ANALYTIQUE'))
-                   
-         )
 FIN()

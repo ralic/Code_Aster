@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/11/2006   AUTEUR FLANDI L.FLANDI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -134,13 +134,13 @@ C     * NPG   = NOMBRE DE POINTS D'INTEGRATION
 C     * NBSIG = NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C     ---------------------------------------------------
       NDIM = NBDIM(NOMTE)
-      ELREFA = (NDIM.EQ.3) .AND. (NOMTE(3:4).NE.'FO')
-      IF (ELREFA) THEN
+C      ELREFA = (NDIM.EQ.3) .AND. (NOMTE(3:4).NE.'FO')
+C      IF (ELREFA) THEN
         CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
-      ELSE
-        NNO = NBNOEU(' ')
-        NNOS = NBNOSO(NOMTE)
-      END IF
+C      ELSE
+C        NNO = NBNOEU(' ')
+C        NNOS = NBNOSO(NOMTE)
+C      END IF
       NBSIG = NBSIGM(MODELI)
 C
       DO 10 I = 1, MXCMEL
@@ -184,7 +184,11 @@ C        ---------------------------------------
          ELSE
             NBPAR2  = 1
             NOMPR2 = 'TEMP'
-            VALPR2 = ZR(ITEMP2)
+            VALPR2 = ZERO
+            DO 21 I = 1, NNO
+               VALPR2 = VALPR2 + ZR(ITEMP2 - 1 + I)
+  21        CONTINUE
+            VALPR2 = VALPR2 / NNO              
          ENDIF
 C
 C ---    EVALUATION DES DONNEES MATERIAUX POUR LA TEMPERATURE ITEMP2
@@ -322,9 +326,9 @@ C ---    NORMALISEE (CENDO) - NORMALISATION PAR XES = 2ES
 C        ---------------------------------------------------------
          DO 80 IGAU = 1, NPG
             SENDO(IGAU) = (COE1*SIGEQ(IGAU)**DEUX
-     &                     +COE2*TRSIG(IGAU)**DEUX)**UNDEMI
+     &                     +COE2*TRSIG(IGAU)*TRSIG(IGAU))**UNDEMI
             CENDO(IGAU) = (COE1*SIGEQ(IGAU)**DEUX
-     &                     +COE2*TRSIG(IGAU)**DEUX)/XES
+     &                     +COE2*TRSIG(IGAU)*TRSIG(IGAU))/XES
   80     CONTINUE
 C
 C ---    CALCUL DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE (DOMLE)

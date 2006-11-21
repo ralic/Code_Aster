@@ -6,7 +6,7 @@
      &                   ACCINI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2004   AUTEUR LAMARCHE S.LAMARCHE 
+C MODIF ALGORITH  DATE 20/11/2006   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,10 +37,13 @@ C TOLE CRP_21
       INTEGER           NEQ,    NBPASE, NBMODS
            
 C ----------------------------------------------------------------------
+C
 C     CREATION DES VECTEURS D'INCONNUS
 C 
 C ----------------------------------------------------------------------
+C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -55,8 +58,9 @@ C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-
+C
       INTEGER     NRPASE,IAUX,JAUX,JDEPEN,JVITEN,JACCEN
 
 
@@ -80,7 +84,7 @@ C -- CREATION DES CHAMPS DERIVES +
  6    CONTINUE
 
       CALL VTCREB(DEPDEL,NUMEDD,'V','R',NEQ)
-      CALL VTCREB(DEPOLD,NUMEDD,'V','R',NEQ)
+C      CALL VTCREB(DEPOLD,NUMEDD,'V','R',NEQ)
       CALL VTCREB(DDEPLA,NUMEDD,'V','R',NEQ)
       CALL VTCREB(DEPPIL(1),NUMEDD,'V','R',NEQ)
       CALL VTCREB(DEPPIL(2),NUMEDD,'V','R',NEQ)

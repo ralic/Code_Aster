@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -467,47 +467,3 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 
 
 FIN()
-L_INST5=DEFI_LIST_REEL(
-               DEBUT=0.0,INTERVALLE=(_F(JUSQU_A= 1.,
-                                                NOMBRE = 20,),
-              ),);
-
-#
-
-REST5=STAT_NON_LINE( MODELE=MODELE,
-                    CHAM_MATER=CHMAT1,
-                    EXCIT=(_F(CHARGE=CHART,),),
-                COMP_INCR=_F(
-                 RELATION = 'CORR_ACIER',
-                 RESI_INTE_RELA=1.E-6,
-                 ITER_INTE_MAXI=50,
-                 TOUT='OUI',
-                ),
-               INCREMENT=_F(
-                LIST_INST = LINST3,
-                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                SUBD_PAS_MINI=1.E-06,
-                ),
-                NEWTON=_F(
-                 MATRICE = 'TANGENTE',
-                  REAC_INCR = 1,
-                 REAC_ITER = 1),
-                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-06,
-                               ITER_GLOB_MAXI= 50),
-               );
-
-
-REST5=CALC_ELEM( reuse=REST,
-            OPTION=('SIEF_ELNO_ELGA',),
-                RESULTAT=REST,
-              )
-
-TEST_RESU(
-           RESU=_F(  RESULTAT = REST,       INST = 1.,
-             NOM_CHAM = 'DEPL',  REFERENCE = 'NON_REGRESSION',
-             GROUP_NO = 'PAFA', NOM_CMP = 'DZ', VALE = 2.3E-02)
-             )
-
-
-FIN( )
-

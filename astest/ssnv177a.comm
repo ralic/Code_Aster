@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,6 +194,10 @@ nb=EPSI_xx.valeurs.shape[0]
 
 print 'nb = ',nb
 
+# on desactive temporairement l'interception des floating point exceptions
+# levees par blas/lapack (bug libMKL)
+aster.matfpe(-1)
+
 tenseurD=N.zeros((2,2),N.Float)
 tenseurD[0,0]=D_xx.valeurs[0]
 tenseurD[0,1]=D_xy.valeurs[0]
@@ -220,6 +224,8 @@ angle_endo=180/pi*N.arccos(evectors_endo[0,0])
 print angle_defi
 print angle_endo
 
+# on reactive
+aster.matfpe(1)
 
 ROT_EPSI=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(1.,angle_defi),

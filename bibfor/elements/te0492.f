@@ -1,6 +1,6 @@
       SUBROUTINE TE0492 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,8 @@ C ......................................................................
 C
       CHARACTER*8        MODELI
       REAL*8             BSIGMA(81), SIGTH(162), REPERE(7), INSTAN
-      REAL*8             NHARM, RBID
-      INTEGER            NBSIGM
+      REAL*8             NHARM, RBID,XYZ(3)
+      INTEGER            NBSIGM,IDIM
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -85,7 +85,17 @@ C      ------------------------
 C
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+
+      XYZ(1) = 0.D0
+      XYZ(2) = 0.D0
+      XYZ(3) = 0.D0
+      DO 150 I = 1,NNO
+        DO 140 IDIM = 1,NDIM
+          XYZ(IDIM) = XYZ(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+ 140    CONTINUE
+ 150  CONTINUE
+      CALL ORTREP(ZI(IMATE),NDIM,XYZ,REPERE)
 C
 C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
 C      --------------------------------------------------

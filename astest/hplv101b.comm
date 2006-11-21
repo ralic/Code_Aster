@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - 3D - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,6 +67,8 @@ MATOO=DEFI_MATERIAU(
 #
 
 MAI=LIRE_MAILLAGE( )
+
+IMPR_RESU(FORMAT='CASTEM',RESU=_F(MAILLAGE=MAI),);
 
 DEFI_GROUP( reuse=MAI,   MAILLAGE=MAI,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -375,13 +377,13 @@ TEST_RESU(CHAM_NO=(
                NOEUD = 'N3',       NOM_CMP = 'TEMP',  VALE = -0.500000000),
      # DEPLACEMENTS
             _F(  CHAM_GD = DEM_KIOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = -5.242083333),
+              NOEUD = 'N4',       NOM_CMP = 'DZ',REFERENCE='ANALYTIQUE',VALE = -6.63044894366),
             _F(  CHAM_GD = DEM_KIOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = -5.242083333),
+              NOEUD = 'N8',       NOM_CMP = 'DZ',REFERENCE='ANALYTIQUE',VALE = -6.63044894366),
              _F(  CHAM_GD = DEF_KSOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = 43.01129375),
+              NOEUD = 'N4',       NOM_CMP = 'DZ',REFERENCE='ANALYTIQUE',VALE = 54.4028335827),
             _F(  CHAM_GD = DEF_KSOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
-              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = 43.01129375))
+              NOEUD = 'N8',       NOM_CMP = 'DZ',REFERENCE='ANALYTIQUE',VALE = 54.4028335827))
             )
 
 TEST_TABLE(      TABLE=TTOO,       NOM_PARA='TOTALE',

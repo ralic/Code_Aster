@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C
              NOMRC=ZK16(IANORC-1+IRC)(1:10)
 C
 C            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
-             IF ((IRC.EQ.3).AND.(NOMRC.EQ.' ')) GO TO 13
+             IF (NOMRC(5:10).EQ.'_COQMU') GO TO 13
 C
              IF (NOMRC(1:4).NE.'ELAS') GO TO 11
              CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
@@ -183,7 +183,7 @@ C
              NOMRC=ZK16(IANORC-1+IRC)(1:10)
 C
 C            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
-             IF ((IRC.EQ.3).AND.(NOMRC.EQ.' ')) GO TO 23
+             IF (NOMRC(5:10).EQ.'_COQMU') GO TO 23
 C
              IF (NOMRC(1:4).NE.'THER') GO TO 21
              CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
@@ -222,7 +222,7 @@ C
              NOMRC=ZK16(IANORC-1+IRC)(1:10)
 C
 C            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
-             IF ((IRC.EQ.3).AND.(NOMRC.EQ.' ')) GO TO 33
+             IF (NOMRC(5:10).EQ.'_COQMU') GO TO 33
 C
              IF (NOMRC(1:4).NE.'ELAS') GO TO 31
              CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)
@@ -261,7 +261,7 @@ C
              NOMRC=ZK16(IANORC-1+IRC)(1:10)
 C
 C            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
-             IF ((IRC.EQ.3).AND.(NOMRC.EQ.' ')) GO TO 43
+             IF (NOMRC(5:10).EQ.'_COQMU') GO TO 43
 C
              IF (NOMRC(1:4).NE.'ELAS') GO TO 41
              CALL JEVEUO(MATER//'.'//NOMRC//'.VALK','L',IAVALK)

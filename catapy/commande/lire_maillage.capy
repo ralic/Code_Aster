@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,19 +39,24 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
          ),
 #
          b_format_med =BLOC( condition = " ( FORMAT == 'MED' ) " ,
-                           fr="Informations complémentaires pour la lecture MED.",
-                           ang="Further information for MED readings.",
+                             fr="Informations complémentaires pour la lecture MED.",
+                             ang="Further information for MED readings.",
 #
 # Pour une lecture dans un fichier MED, on peut préciser le nom sous lequel
 # le maillage y a été enregistré. Par défaut, on va le chercher sous le nom du concept à créer.
+            NOM_MED    = SIMP(statut='f',typ='TXM',
+                              fr="Nom du maillage dans le fichier MED.",
+                              ang="Name of the mesh into the MED file.",),
+            INFO_MED   = SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 #
-              NOM_MED    = SIMP(statut='f',typ='TXM',
-                            fr="Nom du maillage dans le fichier MED.",
-                            ang="Name of the mesh into the MED file.",),
-#
-              INFO_MED   = SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
-#
-                           ) ,
+            RENOMME = FACT(statut='f', max='**',
+                                 fr="Renommer un nom de groupe MED",
+                 NOM_MED     = SIMP(statut='o', typ=grma,
+                                    fr="Nom du groupe dans le fichier MED"),
+                 NOM         = SIMP(statut='o', typ=grma, validators=LongStr(1,8),
+                                    fr="Nom du groupe dans le maillage ASTER"),
+            ),
+         ),
 #
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 #

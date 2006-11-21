@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,13 +77,8 @@ C
 C
       IF ( QUESTI .EQ. 'TYPE_CHAMP' ) THEN
          CALL JELIRA ( NOMOB//'.DESC', 'DOCU', IBID, K8BID )
-         IF ( K8BID(1:4) .EQ. 'RESL' ) THEN
-            REPK = 'RESL'
-         ELSE
-            CALL U2MESS('F','CALCULEL_33')
-            IERD = 1
-            GOTO 9999
-         ENDIF
+         CALL ASSERT(K8BID(1:4) .EQ. 'RESL')
+         REPK = 'RESL'
 C
       ELSEIF ( QUESTI .EQ. 'TYPE_SUPERVIS' ) THEN
          CALL JELIRA ( NOMOB//'.DESC', 'DOCU', IBID, K8BID )

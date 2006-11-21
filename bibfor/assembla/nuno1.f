@@ -4,7 +4,7 @@
       INTEGER I,ILIGR,NUNO
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +48,8 @@ C-----------------------------------------------------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C----------------------------------------------------------------------
-
-      IF ((I.LE.0) .OR. (I.GT.N)) THEN
-        CALL U2MESS('F','CALCULEL_33')
-      END IF
+      
+      CALL ASSERT((I.GT.0) .AND. (I.LE.N))
       J = ZI(INUM21+I)
       IF (J.EQ.0) THEN
         ILIGR = 0

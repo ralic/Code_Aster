@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/04/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,11 +62,11 @@ C
       PARAMETER          (MXCMEL = 162)
       PARAMETER          (NBNOMX = 27)
       PARAMETER          (NBCONT =  6)
-      INTEGER            NBSIGM, IHARMO, NH
+      INTEGER            NBSIGM, IHARMO, NH, IDIM
       REAL*8             EPSI(NBCONT), EPSIM(NBCONT), DELTA(NBCONT)
       REAL*8             INSTAN, NHARM, REPERE(7)
       REAL*8             ENERPG(NBNOMX), EPSS(MXCMEL)
-      REAL*8             D1(36), XYZGAU(3)
+      REAL*8             D1(36), XYZGAU(3),BARY(3)
       REAL*8             EPSSM(MXCMEL), SIGMM(NBCONT), SIGMA(NBCONT)
       REAL*8             INTEG1, INTEG2, INTEG
       REAL*8             DFDX(9), DFDY(9)
@@ -110,7 +110,17 @@ C        ------------------------
 C
 C ----   RECUPERATION  DES DONNEES RELATIVES AU REPERE D'ORTHOTROPIE
 C        -----------------------------------------------------------
-        CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+
+        BARY(1) = 0.D0
+        BARY(2) = 0.D0
+        BARY(3) = 0.D0
+        DO 150 I = 1,NNO
+          DO 140 IDIM = 1,NDIM
+            BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+ 140      CONTINUE
+ 150    CONTINUE
+        CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 C
 C ----   RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
 C        --------------------------------------------------

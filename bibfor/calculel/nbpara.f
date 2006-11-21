@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,9 +59,7 @@ C DEB-------------------------------------------------------------------
           IF (STATUT.EQ.'IN ') THEN
             NBPARA = ZI(OPTMOD-1+2)
           ELSE
-            IF (STATUT.NE.'OUT') THEN
-              CALL U2MESS('F','CALCULEL_33')
-            END IF
+            CALL ASSERT(STATUT.EQ.'OUT')
             NBPARA = ZI(OPTMOD-1+3)
           END IF
         END IF

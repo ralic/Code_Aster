@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,7 +59,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &        ITEMPS,IDEFO,IMATE,IRET,NBCMP,IDIM
       REAL*8 EPVC(135),EPSNO(135),REPERE(7),TEMPE(27),HYDR(27),SECH(27)
       REAL*8 INSTAN,TREF,SREF,TEMPG,EPSSE(6),EPSTH(6),EPSHY(6)
-      REAL*8 HYDRG, SECHG,XYZGAU(3)
+      REAL*8 HYDRG, SECHG,XYZGAU(3),XYZ(3)
       CHARACTER*8 MODELI
       CHARACTER*16 OPTIO2
 C DEB ------------------------------------------------------------------
@@ -92,7 +92,16 @@ C      ----------------------------------------------
 
 C --- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 C     ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+C     COORDONNEES DU BARYCENTRE ( POUR LE REPERE CYLINDRIQUE )
+      XYZ(1) = 0.D0
+      XYZ(2) = 0.D0
+      XYZ(3) = 0.D0
+      DO 300 I = 1,NNO
+        DO 310 IDIM = 1,NDIM
+          XYZ(IDIM) = XYZ(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+ 310    CONTINUE
+ 300  CONTINUE
+      CALL ORTREP(ZI(IMATE),NDIM,XYZ,REPERE)
 
 C ---- RECUPERATION DE L'INSTANT DE CALCUL :
 C      -----------------------------------

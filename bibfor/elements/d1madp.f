@@ -1,6 +1,6 @@
       SUBROUTINE  D1MADP(MATER,TEMPE,INSTAN,REPERE,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,12 +135,14 @@ C
           NU13 = VALRES(5)
           NU23 = VALRES(6)
           NU21  = E2*NU12/E1
+          NU31 = E3*NU13/E1
+          NU32 = E3*NU23/E2
 C
           D1ORTH(1,1) =  UN/E1
           D1ORTH(1,2) = -NU21/E2
-          D1ORTH(1,3) = -NU13/E3
+          D1ORTH(1,3) = -NU31/E3
           D1ORTH(2,2) =  UN/E2
-          D1ORTH(2,3) = -NU23/E3
+          D1ORTH(2,3) = -NU32/E3
           D1ORTH(3,3) =  UN/E3
           D1ORTH(2,1) =  D1ORTH(1,2)
           D1ORTH(3,1) =  D1ORTH(1,3)
@@ -190,10 +192,11 @@ C
           E3   = VALRES(2)
           NU12 = VALRES(3)
           NU13 = VALRES(4)
+          NU31 = E3*NU13/E1
 C
           D1ORTH(1,1) =  UN/E1
           D1ORTH(1,2) = -NU12/E1
-          D1ORTH(1,3) = -NU13/E3
+          D1ORTH(1,3) = -NU31/E3
           D1ORTH(2,1) =  D1ORTH(1,2)
           D1ORTH(2,2) =  D1ORTH(1,1)
           D1ORTH(2,3) =  D1ORTH(1,3)

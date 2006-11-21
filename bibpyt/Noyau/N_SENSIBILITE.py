@@ -1,4 +1,4 @@
-#@ MODIF N_SENSIBILITE Noyau  DATE 22/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_SENSIBILITE Noyau  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,6 +161,9 @@ class DERIVABLE(REGLE):
          concept = [concept,]
       l_ps = obj["SENSIBILITE"]
       for co in concept:
+         if concept is None:
+            text = "Concept non défini (None) sous le mot-clé %s" % self.mocle
+            return text, 0
          if not l_ps:
             # pas de sensibilité
             if hasattr(co,"sensi") and not co.sensi.get('nominal'):

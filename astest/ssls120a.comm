@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE : COQUE MINCE CYLINDRIQUE SOUS PRESSION HYDROSTATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,19 +45,24 @@ Nu = 0.3
 ACIER1=DEFI_MATERIAU( ELAS=_F( E  = E,
                                NU = Nu, ),);
 
-NuLT = 0.0142857143
-ET   = 2.1E11
-EL   = 4.E10
-NuTL = NuLT*ET/EL
-
+EL=2.1E11
+ET=4.E10
+EN=2.1E11
+GLT=0.45E10
+GTN=0.45E10
+GLN=0.35E10
+NULT=0.075
+NULN=0.075
+NUTN=0.0142857143
 ACIER2=DEFI_MATERIAU(   ELAS_ORTH=_F(  E_L   = EL,
                                        E_T   = ET,
-                                       E_N   = 2.1E11,
-                                       G_LT  = 0.45E10,
-                                       G_TN  = 0.35E10,
-                                       NU_LT = NuLT,
-                                       NU_LN = 0.075,
-                                       NU_TN = 0.075,
+                                       E_N   = EN,
+                                       G_LT  = GLT,
+                                       G_TN  = GTN,
+                                       G_LN  = GLN,
+                                       NU_LT = NULT,
+                                       NU_LN = NULN,
+                                       NU_TN = NUTN,
                                        )
                       )
 
@@ -70,7 +75,7 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MAIL,
 
 CARAELE=AFFE_CARA_ELEM(MODELE=MODMECA,
                        MASSIF=_F(GROUP_MA='VIROLE',
-                                ANGL_REP=(0.0,90.0),),);
+                                ANGL_REP=(0.0),),);
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
                        DDL_IMPO=(_F(GROUP_NO='PM',
@@ -146,9 +151,11 @@ TEST_RESU(RESU=_F(RESULTAT=ELAS1,
 
 # CAS ORTHOTROPE : SOLUTION ANALYTIQUE
 
-
-DZMAX2 = (-(NuLT*ET/EL)*P*R*L)/ET/h/2.
-
+Nuthetaz=NUTN*EN/ET
+Etheta=EN
+Er=EL
+DZMAX2 = (-(Nuthetaz)*P*R*L)/Etheta/h/2.
+DXMAX2  = P*R**2/(h*Er)
 
 ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                     CHAM_MATER=CHMAT2,
@@ -157,9 +164,7 @@ ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=PH,),),);
 
 CALC_ELEM( reuse= ELAS2 ,RESULTAT= ELAS2 ,                     
-           REPE_COQUE =_F( NUME_COUCHE=1,),
-           OPTION='SIGM_ELNO_DEPL',);
-
+                    OPTION='SIGM_ELNO_DEPL',);
 
 TEST_RESU(RESU=_F(RESULTAT=ELAS2,
                   NUME_ORDRE=1,
@@ -182,10 +187,10 @@ TEST_RESU(RESU=_F(RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   GROUP_NO='PM',
-                  VALE=DXMAX,PRECISION=0.01,
+                  VALE=DXMAX2,PRECISION=0.01,
                   REFERENCE='ANALYTIQUE',),);
 
-TEST_RESU(RESU=_F(RESULTAT=ELAS1,
+TEST_RESU(RESU=_F(RESULTAT=ELAS2,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIGM_ELNO_DEPL',
                   NOM_CMP='SIZZ',
@@ -207,8 +212,7 @@ ELAS3=STAT_NON_LINE(MODELE=MODMECA,
                            _F(CHARGE=PH,),),);
 
 CALC_ELEM( reuse= ELAS3 ,RESULTAT= ELAS3 ,                     
-           REPE_COQUE =_F( NUME_COUCHE=1,),
-           OPTION='SIEF_ELNO_ELGA',);
+                    OPTION='SIEF_ELNO_ELGA',);
 
 
 TEST_RESU(RESU=_F(RESULTAT=ELAS3,
@@ -232,7 +236,7 @@ TEST_RESU(RESU=_F(RESULTAT=ELAS3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
                   GROUP_NO='PM',
-                  VALE=DXMAX,PRECISION=0.01,
+                  VALE=DXMAX2,PRECISION=0.01,
                   REFERENCE='ANALYTIQUE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=ELAS3,

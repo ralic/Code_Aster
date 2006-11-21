@@ -1,6 +1,6 @@
       SUBROUTINE RERCMK(NU,MO,MA,NLILI,NM,NL,NBNTT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -269,7 +269,7 @@ C     ----------------------------------------------------------------
             IF (ZI(IANBCO-1+K).LT.ZI(IANBCO-1+I)) I=K
          END IF
  51   CONTINUE
-      IF (I.EQ.0) CALL U2MESS('F','CALCULEL_33')
+      CALL ASSERT(I.NE.0)
 C
       IINEW=IINEW+1
       ZI(IANEW1-1+I)=IINEW

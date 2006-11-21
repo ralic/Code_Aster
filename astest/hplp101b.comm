@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FISSURE AU CENTRE D'UNE PLAQUE MINCE RECTANGULAIRE FAISANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,82 +108,3 @@ TEST_TABLE(       TABLE=DG0,
                       REFERENCE='ANALYTIQUE',
                       PRECISION=0.0005    )
 FIN()
-
-THETA01=CALC_THETA(       MODELE=MO,
-                          THETA_2D=_F(  GROUP_NO = ('P0',),
-                                     MODULE = 1.,
-                                     R_INF = 7.50E-5,
-                                     R_SUP = 1.125E-4),
-                         DIRECTION=(1., 0., 0.,)
-                     )
-
-G1=CALC_G(        RESULTAT=DEP,
-                          THETA=_F(THETA=THETA01),
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT'),
-                          SYME_CHAR='SANS'
-                     )
-
-DG1=CALC_G(      RESULTAT=DEP,
-                         SENSIBILITE = (FORC), 
-                         THETA=_F(THETA=THETA01),
-                         SYME_CHAR='SANS',
-                          COMP_ELAS=_F( RELATION = 'ELAS',
-                                      DEFORMATION = 'PETIT')
-                      )
-
-TEST_TABLE(       TABLE=DG1,
-                       NOM_PARA='G',
-                          SENSIBILITE = (FORC), 
-                      REFERENCE='ANALYTIQUE',
-                           VALE=1.06E-2,
-                      PRECISION=0.0005    )
-
-#
-#  DERIVEE PAR RAPPORT A E
-#
-
-DEP2=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
-                      SENSIBILITE = (YOUNG), 
-                              EXCIT=_F( CHARGE = CH),
-                   )
-
-DEP2=CALC_ELEM(reuse=DEP2,RESULTAT=DEP2,   
-                          SENSIBILITE = (YOUNG), 
-              OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
-
-
-DG2=CALC_G(     RESULTAT=DEP2,
-                        SENSIBILITE = (YOUNG), 
-                        THETA=_F(THETA=THETA0),
-                        SYME_CHAR='SANS',
-                         COMP_ELAS=_F( RELATION = 'ELAS',
-                                      DEFORMATION = 'PETIT')
-                      )
-
-TEST_TABLE(       TABLE=DG2,
-                       NOM_PARA='G',
-                          SENSIBILITE = (YOUNG), 
-                      REFERENCE='ANALYTIQUE',
-                           VALE=-5.3E-3,
-                      PRECISION=0.0005    )
-
-
-DG3=CALC_G(     RESULTAT=DEP2,
-                        SENSIBILITE = (YOUNG), 
-                        THETA=_F(THETA=THETA01),
-                        SYME_CHAR='SANS',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                      DEFORMATION = 'PETIT')
-                      )
-
-TEST_TABLE(       TABLE=DG3,
-                       NOM_PARA='G',
-                           VALE=-5.3E-3,
-                          SENSIBILITE = (YOUNG), 
-                      REFERENCE='ANALYTIQUE',
-                      PRECISION=0.0005    )
-
-
-FIN()
-

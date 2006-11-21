@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF modelisa5 Messages  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,14 +100,6 @@ cata_msg={
 
 20: _("""
  med: erreur effami numero  %(k1)s 
-"""),
-
-21: _("""
- impossible de lire ce fichier.
-"""),
-
-22: _("""
- la famille  %(k1)s n'a ni groupe, ni attribut.
 """),
 
 23: _("""

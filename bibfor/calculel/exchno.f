@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C     --------------------------------
 C       4.1 ON CHERCHE NNO SUR LE 1ER ELEMENT :
 C       ---------------------------------------
         IMA = NUMAIL(IGR,1)
-        IF (IMA.EQ.0) CALL U2MESS('F','CALCULEL_33')
+        CALL ASSERT(IMA.NE.0)
         IF (IMA.GT.0) THEN
           NNO = ZI(ILMACO-1+IMA+1) - ZI(ILMACO-1+IMA)
         ELSE

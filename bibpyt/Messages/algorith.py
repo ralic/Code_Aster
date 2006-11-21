@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 17/10/2006   AUTEUR MABBAS M.ABBAS 
+#@ MODIF algorith Messages  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,8 @@ cata_msg={
 """),
 
 12: _("""
- option acce_absolu mal traitee en multi appuis
+ Dans le cas où les différents mouvements d'appui sont corrélés et dépendants, 
+ les resultats ACCE_ABSOLU sont faux.
 """),
 
 13: _("""

@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 12/09/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 20/11/2006   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -3112,7 +3112,8 @@ class PRE_STANLEY :
     """
       Sortir proprement de l'interface
     """
-    self.rootTk.after_cancel(self.after_id)
+    try:    self.rootTk.after_cancel(self.after_id)
+    except: pass
     self.rootTk.destroy()
 
 

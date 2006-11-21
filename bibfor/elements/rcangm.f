@@ -1,9 +1,9 @@
-      SUBROUTINE RCANGM ( NDIM, ANGMAS )
+      SUBROUTINE RCANGM ( NDIM,COOR, ANGMAS )
       IMPLICIT NONE
       INTEGER  NDIM
-      REAL*8   ANGMAS(7)
+      REAL*8   ANGMAS(7),COOR(3)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,10 @@ C ======================================================================
 C ......................................................................
 C    - ORIENTATION DU MASSIF
 C      
-C      
+C   IN      NDIM    I      : DIMENSION DU PROBLEME
+C   IN      COOR    R        COORDONNEE DU POINT 
+C                            (CAS CYLINDRIQUE)
+C   OUT     ANGMAS  R      : ANGLE NAUTIQUE ( OU EULERIEN )
 C ......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -41,8 +44,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER  ICAMAS, IRET
-      REAL*8   R8NNEM, R8DGRD, R8VIDE
+      INTEGER  ICAMAS, IRET, I
+      REAL*8   R8NNEM, R8DGRD, R8VIDE,P(3,3),XG(3),YG(3),ORIG(3),DIRE(3)
+      REAL*8   ALPHA,BETA
 C     ------------------------------------------------------------------
 
       CALL TECACH ( 'NNO', 'PCAMASS', 1, ICAMAS, IRET )
@@ -50,7 +54,7 @@ C     ------------------------------------------------------------------
 
       IF (IRET.EQ.0) THEN
          CALL R8INIR ( 7, 0.D0, ANGMAS ,1 )
-         IF (ZR(ICAMAS).GT.0.D0) THEN
+         IF (ZR(ICAMAS).EQ.1.D0) THEN
             ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
             IF ( NDIM .EQ. 3 ) THEN
                ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
@@ -63,12 +67,30 @@ C           ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
                ANGMAS(7) = ZR(ICAMAS+6)*R8DGRD()
                ANGMAS(4) = 2.D0
             ENDIF
-         ELSE
-            ANGMAS(1)=R8VIDE()
-            IF ( NDIM .EQ. 3 ) THEN
-               ANGMAS(2) = R8VIDE()
-               ANGMAS(3) = R8VIDE()
-            ENDIF
+         ELSE IF ( ZR(ICAMAS).EQ.-1.D0) THEN
+
+C ON TRANSFORME LA DONNEE DU REPERE CYLINDRIQUE EN ANGLE NAUTIQUE
+C (EN 3D, EN 2D ON MET A 0)
+
+           IF (NDIM.EQ.3) THEN
+             ALPHA=ZR(ICAMAS+1)*R8DGRD()
+             BETA =ZR(ICAMAS+2)*R8DGRD()
+             DIRE(1) = COS(ALPHA)*COS(BETA)
+             DIRE(2) = SIN(ALPHA)*COS(BETA)
+             DIRE(3) = -SIN(BETA)
+             ORIG(1)=ZR(ICAMAS+4)
+             ORIG(2)=ZR(ICAMAS+5)
+             ORIG(3)=ZR(ICAMAS+6)
+             CALL UTRCYL(COOR,DIRE,ORIG,P)
+             DO 1 I=1,3
+               XG(I)=P(1,I)
+               YG(I)=P(2,I)
+    1        CONTINUE     
+             CALL ANGVXY(XG, YG, ANGMAS)
+           ELSE
+             CALL U2MESS('A','ELEMENTS2_38')
+             CALL R8INIR ( 7, 0.D0, ANGMAS ,1 )
+           ENDIF
          ENDIF
 C
       ELSEIF (IRET.EQ.1) THEN

@@ -7,7 +7,7 @@
       CHARACTER*(*)           BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,9 +104,7 @@ C
       CALL LXLIIS(K8DEBU,IDEBU,IER1)
       K8MAXI = ZK8(IATAVA-1+3)
       CALL LXLIIS(K8MAXI,IMAXI,IER2)
-      IF ((ABS(IER1)+ABS(IER2)).NE.0) THEN
-         CALL U2MESS('F','CALCULEL_33')
-      END IF
+      CALL ASSERT((ABS(IER1)+ABS(IER2)).EQ.0)
       IF (IER2.NE.0) THEN
          IER = 20
          GO TO 9998

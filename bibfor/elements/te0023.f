@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,12 +51,12 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       CHARACTER*8 MODELI
-      REAL*8 SIGMA(162),CONTNO(162),REPERE(7)
+      REAL*8 SIGMA(162),CONTNO(162),REPERE(7),BARY(3)
       REAL*8 NHARM,INSTAN,ZERO,DEPLA(81),SIGM2(162)
       LOGICAL LSENS
       INTEGER JGANO,NBSIGM,NITER,I,ICONT,IDEPL,ITER,IDEPLC,IDFDE,
      &        IGEOM,IMATE,J,INO,IPOIDS,ITEMPE,ITREF,IVF,NBINCO,
-     &        NBSIG,NDIM,NNO,NNOS,NPG,IDEPS,IGAU,IRET
+     &        NBSIG,NDIM,NNO,NNOS,NPG,IDEPS,IGAU,IRET,IDIM
 C     ------------------------------------------------------------------
 
       MODELI(1:2) = NOMTE(3:4)
@@ -92,7 +92,17 @@ C      ------------------------
 
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+
+      BARY(1) = 0.D0
+      BARY(2) = 0.D0
+      BARY(3) = 0.D0
+      DO 150 I = 1,NNO
+        DO 140 IDIM = 1,NDIM
+          BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+ 140    CONTINUE
+ 150  CONTINUE
+      CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 C      --------------------------------------------------

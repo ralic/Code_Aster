@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,8 +21,7 @@
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #
 #
-DEBUT(CODE=_F( NOM = 'SENSM12A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-          BASE=_F( FICHIER = 'GLOBALE',LONG_REPE = 15000),)
+DEBUT(CODE=_F( NOM = 'SENSM12A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 #
 #......................................................................
 # PLAQUE EN COMPRESSION SIMPLE EN DEFORMATIONS PLANES
@@ -48,10 +47,8 @@ MA=MODI_MAILLAGE( reuse=MA,
 
 FORCES = DEFI_PARA_SENSI(VALE=1.0E8)
 
-FORCE1 = DEFI_CONSTANTE(VALE=1.0E8)
 E1 = DEFI_CONSTANTE(VALE=5800.0E6)
 NU1 = DEFI_CONSTANTE(VALE=0.3)
-PS2 = DEFI_PARA_SENSI(VALE=0.0)
 ALPHA1 = DEFI_CONSTANTE(VALE=0.33)
 P_ULTM1 = DEFI_CONSTANTE(VALE=0.01)
 SY1 = DEFI_CONSTANTE(VALE=2.57E6)
@@ -85,16 +82,6 @@ CHAS=AFFE_CHAR_MECA_F(MODELE=MO,
                                      ),
                    );
 
-CHA1=AFFE_CHAR_MECA_F(MODELE=MO,
-                   FORCE_NODALE = _F(NOEUD = ('N3','N4'),
-                   FY = FORCE1),
-                   DDL_IMPO=(
-                             _F(GROUP_MA='AB',
-                                DY=ZERO,),
-                             _F(NOEUD=('N1','N2','N3','N4',),
-                                DX=ZERO,),
-                                     ),
-                   );
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
@@ -138,33 +125,47 @@ RESUS=CALC_ELEM( reuse=RESUS,
                           RESULTAT=RESUS,
               )
 
+# Extraction de contrainte YY et de sa derivee
+TSIGN = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                               NOEUD='N1',
+                               MAILLE='M1',
+                               RESULTAT=RESUS,
+                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CMP='SIYY',
+                               OPERATION='EXTRACTION',),);
 
-RESU1=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHA1,
-                            FONC_MULT=F,),
-                   COMP_INCR=_F(RELATION='DRUCKER_PRAGER',
-                                RESI_INTE_RELA = 1.E-8),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.,
-                                SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-                                SUBD_PAS_MINI=1.E-4,
-                                SUBD_COEF_PAS_1=1.0,),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             PREDICTION='ELASTIQUE',
-                             REAC_ITER=1,),
-                   CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8),
-                   ARCHIVAGE=_F(LIST_INST=L_INST,
-                                ARCH_ETAT_INIT='OUI',),
-                   INFO=1);
+TSIGN = POST_RELEVE_T(reuse=TSIGN,
+                     ACTION=_F(INTITULE='SENSIBILITE',
+                               NOEUD='N1',
+                               MAILLE='M1',
+                               RESULTAT=RESUS,
+                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CMP='SIYY',
+                               SENSIBILITE=FORCES,
+                               OPERATION='EXTRACTION',),);
 
-RESU1=CALC_ELEM( reuse=RESU1,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=RESU1,
-              )
+# Extraction de la 1ere variable interne et de sa derivee
+TVARN = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                               NOEUD='N1',
+                               MAILLE='M1',
+                               RESULTAT=RESUS,
+                               NOM_CHAM='VARI_ELNO_ELGA',
+                               NOM_CMP='V1',
+                               OPERATION='EXTRACTION',),);
+
+TVARN = POST_RELEVE_T(reuse=TVARN,
+                     ACTION=_F(INTITULE='SENSIBILITE',
+                               NOEUD='N1',
+                               MAILLE='M1',
+                               RESULTAT=RESUS,
+                               NOM_CHAM='VARI_ELNO_ELGA',
+                               NOM_CMP='V1',
+                               SENSIBILITE=FORCES,
+                               OPERATION='EXTRACTION',),);
 
 
+
+# calcul avec P + epsilon
 epsilon = 1.0E-4
 eps = 1.0 + epsilon
 
@@ -206,150 +207,134 @@ RESU2=CALC_ELEM( reuse=RESU2,
                           RESULTAT=RESU2,
               )
 
-VERIF=FORMULE(NOM_PARA=('SIYY_EPS', 'SIYY_REF', 'SIYYDPS'),
-                    VALE='abs ((abs(SIYY_EPS - SIYY_REF))/%e - SIYYDPS)' %(1.E8*epsilon) )
 
+def ecart(diff, deriv):
+   """
+      Retourne l'ecart relatif entre les derivees si la reference est non nulle,
+      la difference finie sinon.
+   """
+   if abs(deriv) > 1.e-3:
+      res = abs(diff - deriv)/deriv
+   else:
+      res = deriv
+   return res
 
-TBF  = [None]*6
-TBDI = [None]*6
-TBFS = [None]*6
-TBSY = [None]*6
+# deux formules pour garder dans la table l'estimation de la derivee
+DCALC = FORMULE(NOM_PARA=('VNOM', 'VPLUS'),
+                VALE='(VPLUS - VNOM)/%f' % (1.0E8*epsilon))
 
-for j in range(1, 6):
+VERIF = FORMULE(NOM_PARA=('DERIV', 'DCALC'),
+                VALE='ecart(DCALC, DERIV)')
+   
 
-  TBF[j]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
-                            NOEUD='N1',
-                            MAILLE='M1',
-                            RESULTAT=RESU1,
-                            NOM_CHAM='SIEF_ELNO_ELGA',
-                            NUME_ORDRE=j,
-                            NOM_CMP='SIYY',
-                            OPERATION='EXTRACTION',),);
+# Extraction de la contrainte YY avec P + epsilon
+TSIGP=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                              NOEUD='N1',
+                              MAILLE='M1',
+                              RESULTAT=RESU2,
+                              NOM_CHAM='SIEF_ELNO_ELGA',
+                              NOM_CMP='SIYY',
+                              OPERATION='EXTRACTION',),)
 
+# table de comparaison pour les contraintes
+# Principe :
+# - On part de la table qui contient la derivee,
+# - on renomme la colonne de la derivee en DERIV,
+# - on fusionne avec la table de la valeur en p+epsilon,
+# - que l'on renomme en VPLUS,
+# - on insere la table avec la valeur nominale,
+# - que l'on renomma en VNOM,
+# - on estime la derivee (VPLUS - VNOM)/deltap = DCALC,
+# - on calcule l'ecart entre DCALC et DERIV (en relatif ou absolu),
+# - on limite les colonnes de la table.
+TCS  = CALC_TABLE(TABLE=TSIGN,
+                  SENSIBILITE=FORCES,
+                  ACTION=(_F(OPERATION='RENOMME',
+                              NOM_PARA=('SIYY', 'DERIV'),),
+                           _F(OPERATION='COMB',
+                              TABLE=TSIGP,
+                              NOM_PARA=('NOEUD','INST'),),
+                           _F(OPERATION='RENOMME',
+                              NOM_PARA=('SIYY', 'VPLUS'),),
+                           _F(OPERATION='COMB',
+                              TABLE=TSIGN,
+                              NOM_PARA=('NOEUD','INST'),),
+                           _F(OPERATION='RENOMME',
+                              NOM_PARA=('SIYY', 'VNOM'),),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='DCALC',
+                              FORMULE=DCALC),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='DIFF',
+                              FORMULE=VERIF),
+                           _F(OPERATION='EXTR',
+                              NOM_PARA=('NOEUD','INST','VNOM','VPLUS','DCALC','DERIV','DIFF'),),),)
 
-  TBDI[j] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
-                            NOEUD='N1',
-                            MAILLE='M1',
-                            RESULTAT=RESU2,
-                            NOM_CHAM='SIEF_ELNO_ELGA',
-                            NUME_ORDRE=j,
-                            NOM_CMP='SIYY',
-                            OPERATION='EXTRACTION',),);
+IMPR_TABLE(TABLE=TCS)
 
-  TBFS[j] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
-                            NOEUD='N1',
-                            MAILLE='M1',
-                            RESULTAT=RESUS,
-                            NOM_CHAM='SIEF_ELNO_ELGA',
-                            SENSIBILITE = FORCES,
-                            NUME_ORDRE=j,
-                            NOM_CMP='SIYY',
-                            OPERATION='EXTRACTION',),);
+IMPR_TABLE(TABLE=TCS,
+            FILTRE=_F(NOM_PARA='DIFF',
+                     CRIT_COMP='ABS_MAXI'),
+            TITRE="Max de l'ecart")
 
-  TBSY[j]=CALC_TABLE(TABLE=TBFS[j],
-                        SENSIBILITE=FORCES,
-                        ACTION=(_F(OPERATION='RENOMME',
-                                   NOM_PARA=('SIYY', 'SIYYDPS'),),
-                                _F(OPERATION='COMB',
-                                   TABLE=TBF[j],
-                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
-                                _F(OPERATION='RENOMME',
-                                   NOM_PARA=('SIYY', 'SIYY_REF'),),
-                                _F(OPERATION='COMB',
-                                   TABLE=TBDI[j],
-                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
-                                _F(OPERATION='RENOMME',
-                                   NOM_PARA=('SIYY', 'SIYY_EPS'),),
-                                _F(OPERATION='OPER',
-                                   NOM_PARA='DIFF',
-                                   FORMULE= VERIF),
-                                _F(OPERATION='EXTR',
-                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'SIYYDPS', 'DIFF', 'SIYY_REF', 'SIYY_EPS'),),),
-                   TITRE='Comparaison entre derivee / differences finies')
- 
-  
-  
-  TEST_TABLE(
-        TABLE     = TBSY[j],
-        NOM_PARA  = 'DIFF',
-        TYPE_TEST = 'MAX',
-        VALE      = 0.,
-        CRITERE   = 'ABSOLU',
-        PRECISION = 1.E-5,
-        REFERENCE = 'AUTRE_ASTER',)
+TEST_TABLE(TABLE=TCS,
+            NOM_PARA='DIFF',
+            FILTRE=_F(NOM_PARA='DIFF',
+                     CRIT_COMP='ABS_MAXI'),
+            VALE=0.,
+            CRITERE='ABSOLU',
+            PRECISION=1.e-3,
+            REFERENCE='AUTRE_ASTER',)
 
+# Extraction de la 1ere variable interne avec P + epsilon
+TVARP=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                              NOEUD='N1',
+                              MAILLE='M1',
+                              RESULTAT=RESU2,
+                              NOM_CHAM='VARI_ELNO_ELGA',
+                              NOM_CMP='V1',
+                              OPERATION='EXTRACTION',),)
 
-VERI2=FORMULE(NOM_PARA=('V1_EPS', 'V1_REF', 'V1DPS'),
-                    VALE='abs ((abs(V1_EPS - V1_REF))/%e - V1DPS)' %(1.E8*epsilon))
+# table de comparaison pour la 1ere variable interne
+TCV =  CALC_TABLE(TABLE=TVARN,
+                  SENSIBILITE=FORCES,
+                  ACTION=(_F(OPERATION='RENOMME',
+                              NOM_PARA=('V1', 'DERIV'),),
+                           _F(OPERATION='COMB',
+                              TABLE=TVARP,
+                              NOM_PARA=('NOEUD','INST'),),
+                           _F(OPERATION='RENOMME',
+                              NOM_PARA=('V1', 'VPLUS'),),
+                           _F(OPERATION='COMB',
+                              TABLE=TVARN,
+                              NOM_PARA=('NOEUD','INST'),),
+                           _F(OPERATION='RENOMME',
+                              NOM_PARA=('V1', 'VNOM'),),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='DCALC',
+                              FORMULE=DCALC),
+                           _F(OPERATION='OPER',
+                              NOM_PARA='DIFF',
+                              FORMULE=VERIF),
+                           _F(OPERATION='EXTR',
+                              NOM_PARA=('NOEUD','INST','VNOM','VPLUS','DCALC','DERIV','DIFF'),),),)
 
-TVF  = [None]*6
-TVDI = [None]*6
-TVFS = [None]*6
-TV1 =  [None]*6
+IMPR_TABLE(TABLE=TCV)
 
-for j in range(1, 6):
+IMPR_TABLE(TABLE=TCV,
+            FILTRE=_F(NOM_PARA='DIFF',
+                     CRIT_COMP='ABS_MAXI'),
+            TITRE="Max de l'ecart")
 
-  TVF[j]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
-                            NOEUD='N1',
-                            MAILLE='M1',
-                            RESULTAT=RESU1,
-                            NOM_CHAM='VARI_ELNO_ELGA',
-                            NUME_ORDRE=j,
-                            NOM_CMP='V1',
-                            OPERATION='EXTRACTION',),);
-
-
-  TVDI[j] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
-                            NOEUD='N1',
-                            MAILLE='M1',
-                            RESULTAT=RESU2,
-                            NOM_CHAM='VARI_ELNO_ELGA',
-                            NUME_ORDRE=j,
-                            NOM_CMP='V1',
-                            OPERATION='EXTRACTION',),);
-
-  TVFS[j] = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
-                            NOEUD='N1',
-                            MAILLE='M1',
-                            RESULTAT=RESUS,
-                            NOM_CHAM='VARI_ELNO_ELGA',
-                            SENSIBILITE = FORCES,
-                            NUME_ORDRE=j,
-                            NOM_CMP='V1',
-                            OPERATION='EXTRACTION',),);
-
-  TV1[j]=CALC_TABLE(TABLE=TVFS[j],
-                        SENSIBILITE=FORCES,
-                        ACTION=(_F(OPERATION='RENOMME',
-                                   NOM_PARA=('V1', 'V1DPS'),),
-                                _F(OPERATION='COMB',
-                                   TABLE=TVF[j],
-                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
-                                _F(OPERATION='RENOMME',
-                                   NOM_PARA=('V1', 'V1_REF'),),
-                                _F(OPERATION='COMB',
-                                   TABLE=TVDI[j],
-                                   NOM_PARA=('NUME_ORDRE', 'NOEUD'),),
-                                _F(OPERATION='RENOMME',
-                                   NOM_PARA=('V1', 'V1_EPS'),),
-                                _F(OPERATION='OPER',
-                                   NOM_PARA='DIFF',
-                                   FORMULE= VERI2),
-                                _F(OPERATION='EXTR',
-                                   NOM_PARA=('NOEUD', 'NUME_ORDRE', 'INST', 'V1DPS', 'DIFF', 'V1_REF', 'V1_EPS'),),),
-                       TITRE='Comparaison entre derivee / differences finies')
- 
-  
-  
-  TEST_TABLE(
-        TABLE     = TV1[j],
-        NOM_PARA  = 'DIFF',
-        TYPE_TEST = 'MAX',
-        VALE      = 0.,
-        CRITERE   = 'ABSOLU',
-        PRECISION = 1.E-5,
-        REFERENCE = 'AUTRE_ASTER',)
-
+TEST_TABLE(TABLE=TCV,
+            NOM_PARA='DIFF',
+            FILTRE=_F(NOM_PARA='DIFF',
+                     CRIT_COMP='ABS_MAXI'),
+            VALE=0.,
+            CRITERE='ABSOLU',
+            PRECISION=1.e-3,
+            REFERENCE='AUTRE_ASTER',)
+   
 
 FIN();
 

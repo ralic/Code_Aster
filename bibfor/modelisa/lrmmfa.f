@@ -3,10 +3,11 @@
      &                    GRPNOE, GRPMAI, NBGRNO, NBGRMA,
      &                    TYPGEO, NOMTYP, NMATYP,
      &                    PREFIX,
-     &                    INFMED )
+     &                    INFMED,
+     &                    VECGRM, NBCGRM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +57,7 @@ C
 C 0.1. ==> ARGUMENTS
 C
       INTEGER FID
-      INTEGER NBNOEU, NBMAIL, NBGRNO, NBGRMA
+      INTEGER NBNOEU, NBMAIL, NBGRNO, NBGRMA, NBCGRM
       INTEGER TYPGEO(NTYMAX), NMATYP(NTYMAX)
       INTEGER INFMED
 C
@@ -64,7 +65,7 @@ C
       CHARACTER*8 NOMTYP(NTYMAX)
       CHARACTER*(*) NOMAMD
 C
-      CHARACTER*24 GRPNOE, GRPMAI
+      CHARACTER*24 GRPNOE, GRPMAI, VECGRM
 C
 C 0.2. ==> COMMUNS
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -239,7 +240,8 @@ C
      &              NMATYP, JFAMMA, JNUMTY,
      &              ZI(ADTABA),
      &              NOMGRO, NUMGRO, NUMENT,
-     &              INFMED, NIVINF, IFM )
+     &              INFMED, NIVINF, IFM,
+     &              VECGRM, NBCGRM )
 C
 C 4.4. ==> MENAGE PARTIEL
 C

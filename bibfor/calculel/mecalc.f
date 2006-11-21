@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,6 +94,7 @@ C PARAMETRES D'APPELS
       NBIN = 1
       LCHIN(1) = CHDEP2
       LCHOUT(1) = CHELE2
+      POUX = 'NON'
 
       IF (TYPESE.EQ.-1) THEN
         IAUX = 0

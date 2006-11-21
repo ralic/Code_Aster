@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  MURAKAMI 9.70 FISSURE CIRCULAIRE PERPENDICULAIRE A L'INTERFACE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,7 +168,7 @@ TEST_TABLE(       TABLE=GLO1_LE5,
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N71'),
                        VALE=0.260275E-5,
-                  PRECISION=0.11       )
+                  PRECISION=0.12       )
 
 TEST_TABLE(       TABLE=GLO1_LE5,
                    NOM_PARA='G_LOCAL',
@@ -182,28 +182,28 @@ TEST_TABLE(       TABLE=GLO1_LE5,
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N112'),
                        VALE=0.34881E-5,
-                  PRECISION=0.07       )
+                  PRECISION=0.08       )
 
 TEST_TABLE(       TABLE=GLO1_LE5,
                    NOM_PARA='G_LOCAL',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N106'),
                        VALE=0.32246E-5,
-                  PRECISION=0.07       )
+                  PRECISION=0.08      )
 
 TEST_TABLE(       TABLE=GLO1_LE5,
                    NOM_PARA='G_LOCAL',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N357'),
                        VALE=0.31052E-5,
-                  PRECISION=0.11       )
+                  PRECISION=0.12       )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G_LOCAL',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N71'),
                        VALE=0.260275E-5,
-                  PRECISION=0.114      )
+                  PRECISION=0.12      )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G_LOCAL',
@@ -217,21 +217,21 @@ TEST_TABLE(       TABLE=GLO2_LE5,
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N112'),
                        VALE=0.34881E-5,
-                  PRECISION=0.07       )
+                  PRECISION=0.08       )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G_LOCAL',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N106'),
                        VALE=0.32246E-5,
-                  PRECISION=0.07       )
+                  PRECISION=0.08       )
 
 TEST_TABLE(       TABLE=GLO2_LE5,
                    NOM_PARA='G_LOCAL',
                      FILTRE=_F(  NOM_PARA = 'NOEUD',
                               VALE_K = 'N357'),
                        VALE=0.31052E-5,
-                  PRECISION=0.111      )
+                  PRECISION=0.12      )
 
 FIN()
 #

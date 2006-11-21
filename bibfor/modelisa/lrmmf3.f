@@ -4,10 +4,11 @@
      &                    NMATYP, JFAMMA, JNUMTY,
      &                    VAATFA, NOGRFA, TABAUX,
      &                    NOMGRO, NUMGRO, NUMENT,
-     &                    INFMED, NIVINF, IFM )
+     &                    INFMED, NIVINF, IFM,
+     &                    VECGRM, NBCGRM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +87,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER FID
+      INTEGER FID, NBCGRM
       INTEGER RANGFA, CARAFA(3,*)
       INTEGER NBNOEU, FAMNOE(NBNOEU)
       INTEGER NMATYP(NTYMAX), JFAMMA(NTYMAX), JNUMTY(NTYMAX)
@@ -97,7 +98,7 @@ C
 C
       CHARACTER*(*) NOMGRO, NUMGRO, NUMENT
       CHARACTER*80 NOGRFA(*)
-      CHARACTER*(*) NOMAMD
+      CHARACTER*(*) NOMAMD, VECGRM
 C
 C 0.2. ==> COMMUNS
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -116,18 +117,21 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'LRMMF3' )
 C
-      INTEGER CODRET
+      INTEGER CODRET, I
       INTEGER IAUX, JAUX, KAUX,JAU2
-      INTEGER ITYP, INDIK8, INOM, ITMP
-      INTEGER NUMFAM
+      INTEGER ITYP, INDIK8, INOM, ITMP, IVGRM
+      INTEGER NUMFAM, MI(2)
       INTEGER NBATTR, NBGROU, NBENFA
       INTEGER IDATFA(200)
       INTEGER ADNOMG, ADNUMG, ADNUME
-      LOGICAL IERR
+      INTEGER ILMED, ILNEW
+      LOGICAL IERR, RENOMM, ERRGM
+      REAL*8  MR
+      CHARACTER*80 KBID, NEWGRM
 C
       CHARACTER*2 SAUX02
       CHARACTER*8 SAUX08, K8B
-      CHARACTER*32 NOMFAM
+      CHARACTER*32 NOMFAM, MK(3)
       CHARACTER*200 DESCAT(200)
 C
       INTEGER LXLGUT
@@ -138,6 +142,13 @@ C
       IF ( NIVINF.GE.2 ) THEN
         WRITE (IFM,1001) NOMPRO
  1001 FORMAT( 60('-'),/,'DEBUT DU PROGRAMME ',A)
+      ENDIF
+C
+C====
+C 0. TABLEAU DE CORRESPONDANCE NOM MED - NOM ASTER
+C====
+      IF ( NBCGRM .GT. 0 ) THEN
+         CALL JEVEUO(VECGRM, 'L', IVGRM)
       ENDIF
 C
 C====
@@ -175,72 +186,95 @@ C====
 C
       IF ( NUMFAM.NE.0 ) THEN
 C
+        CALL U2MESG('I','MAILLAGE_5',1,NOMFAM,1,NUMFAM,0,MR)
+C
 C 2.0. ==> CONTROLE DE LA LONGUEUR DES NOMS DES GROUPES
-C          C'EST TEMPORAIRE. ESPERONS-LE.
 C
         IF ( NBGROU.GT.0 ) THEN
 C
-          KAUX = 0
           DO 20 , IAUX = 1 , NBGROU
+C   2.0.1. --- RENOMMAGE PAR L'UTILISATEUR
+            RENOMM = .FALSE.
+            ERRGM  = .FALSE.
+            IF ( NBCGRM .GT. 0 ) THEN
+               ILMED = LXLGUT(NOGRFA(IAUX))
+               DO 910 I=1, NBCGRM
+                  KBID = ZK32(IVGRM-1+I*2-1)
+                  ILNEW = LXLGUT(KBID)
+                  IF (NOGRFA(IAUX)(1:ILMED) .EQ. KBID(1:ILNEW)) THEN
+                     KBID = ZK32(IVGRM-1+I*2)
+                     ILNEW = LXLGUT(KBID)
+                     RENOMM = .TRUE.
+                     MK(1) = NOGRFA(IAUX)
+                     MK(2) = KBID(1:ILNEW)
+                     CALL U2MESG('I','MAILLAGE_7',2,MK,1,IAUX,0,MR)
+                     NEWGRM = KBID(1:ILNEW)
+                  ENDIF
+C
+C          --- VERIFIER QUE LES NOUVEAUX NOMS N'EXISTENT PAS DEJA
+                  KBID = ZK32(IVGRM-1+I*2)
+                  ILNEW = LXLGUT(KBID)
+                  IF (NOGRFA(IAUX)(1:ILMED) .EQ. KBID(1:ILNEW)) THEN
+                     ERRGM = .TRUE.
+                     MK(1) = ZK32(IVGRM-1+I*2-1)
+                     MK(2) = KBID(1:ILNEW)
+                     CALL U2MESK('E','MAILLAGE_8',2,MK)
+                  ENDIF
+ 910           CONTINUE
+            ENDIF
+            IF ( .NOT. RENOMM ) THEN
+               CALL U2MESG('I','MAILLAGE_6',1,NOGRFA(IAUX),1,IAUX,0,MR)
+            ELSE
+               NOGRFA(IAUX) = NEWGRM
+            ENDIF
+            IF ( ERRGM ) THEN
+               CALL U2MESS('F', 'MAILLAGE_9')
+            ENDIF
+C
+C   2.0.2. --- CONTROLE QUE LA LONGUEUR <= 8
             JAUX = LXLGUT(NOGRFA(IAUX))
             IF ( JAUX.GT.8 ) THEN
-              K8B = NOGRFA(IAUX)(1:8)
               JAU2 = LXLGUT(NOMFAM)
-              CALL UTDEBM('I','LRMMF3','LE NOM DE GROUPE ')
-              CALL UTIMPI('S','NUMERO',1,IAUX )
-              CALL UTIMPK('S','DE LA FAMILLE ',1,NOMFAM(1:JAU2))
-              CALL UTIMPK('S',' EST TROP LONG. IL SERA TRONQUE.',0,' ')
-              CALL UTIMPK('L','NOUVEAU NOM DU GROUPE: ',1,K8B)
-              CALL UTFINM()
+              MI(1) = IAUX
+              MK(1) = NOMFAM(1:JAU2)
+              MK(2) = NOGRFA(IAUX)
+              MK(3) = NOGRFA(IAUX)(1:8)
+              CALL U2MESG('A', 'MAILLAGE_1', 3, MK, 1, MI, 0, MR)
 C
+C   2.0.3. --- CONTROLE QUE LE NOM EST NON VIDE
             ELSEIF(JAUX.EQ.0)THEN
               JAU2 = LXLGUT(NOMFAM)
-              CALL UTDEBM('F','LRMMF3','LE NOM DE GROUPE ')
-              CALL UTIMPI('S','NUMERO ',1,IAUX)
-              CALL UTIMPK('S','DE LA FAMILLE ',1,NOMFAM(1:JAU2))
-              CALL UTIMPK('S',' EST VIDE.',0,' ')
-              CALL UTFINM()
+              MI(1) = IAUX
+              MK(1) = NOMFAM(1:JAU2)
+              CALL U2MESG('F', 'MAILLAGE_2', 1, MK, 1, MI, 0, MR)
             ENDIF
    20     CONTINUE
-C
-          IF ( KAUX.GT.0 ) THEN
-            WRITE (IFM,2002)
-            CALL U2MESS('F','MODELISA5_21')
-          ENDIF
-C
- 2002 FORMAT (/,'CELA EST CONFORME AUX CONVENTIONS MED : ',
-     &  'LE NOM D''UN GROUPE DOIT ETRE AU PLUS DE 80 CARACTERES.',
-     &/,'MAIS CODE_ASTER NE SAIT TRAITER QUE DES NOMS D''AU',
-     &  ' PLUS 8 CARACTERES.',
-     &/,'DECLAREZ UNE ANOMALIE')
 C
         ENDIF
 C
 C 2.1. ==> IL FAUT AU MOINS UN GROUPE OU UN ATTRIBUT
 C
         IF ( NBGROU.EQ.0 .AND. NBATTR.EQ.0 ) THEN
-          CALL U2MESK('F','MODELISA5_22',1,NOMFAM)
+          CALL U2MESK('F','MAILLAGE_4',1,NOMFAM)
         ENDIF
 C
 C 2.2. ==> COHERENCE DES NOMBRES DE GROUPES OU D'ATTRIBUTS
 C
-        IAUX = 0
+        MK(1) = NOMFAM
         IF ( NBGROU.NE.CARAFA(1,RANGFA) ) THEN
-          IAUX = IAUX + 1
-          WRITE (IFM,2201) NOMFAM, 'GROUPES', CARAFA(1,RANGFA), NBGROU
+          MI(1) = CARAFA(1,RANGFA)
+          MI(2) = NBGROU
+          MK(2) = 'groupes'
         ENDIF
         IF ( NBATTR.NE.CARAFA(2,RANGFA) ) THEN
-          IAUX = IAUX + 1
-          WRITE (IFM,2201) NOMFAM, 'ATTRIBUTS', CARAFA(2,RANGFA), NBATTR
+          MI(1) = CARAFA(2,RANGFA)
+          MI(2) = NBATTR
+          MK(2) = 'attributs'
         ENDIF
-        IF ( IAUX.GT.0 ) THEN
-          CALL U2MESS('F','MODELISA5_21')
+        IF ( ( NBGROU.NE.CARAFA(1,RANGFA) ) .OR. 
+     &       ( NBATTR.NE.CARAFA(2,RANGFA) ) ) THEN
+          CALL U2MESG('F','MAILLAGE_3', 2, MK, 2, MI, 0, MR)
         ENDIF
-C
- 2201 FORMAT (/,'FAMILLE ',A,
-     &  ' : PROBLEMES SUR LES NOMBRES DE ',A,
-     &/,'SELON LE PROGRAMME MED DE LECTURE, ON EN TROUVE',
-     &  I4,' OU',I4)
 C
 C 2.3. ==> CREATION :
 C        COLLECTION INVERSE       FAM I -> NUMNO(MA)X,NUMNO(MA)Y..
@@ -339,24 +373,25 @@ C
           ELSE
 C
             DO 252 , IAUX = 1 , NBGROU
-              K8B = NOGRFA(IAUX)(1:8)
-              INOM = INDIK8 ( ZK8(ADNOMG), K8B, 1, IAUX )
-              IF ( INOM .NE. 0 ) THEN
-                IERR = .TRUE.
-                CALL UTDEBM('E','LRMMF3','LE NOM DE GROUPE ')
-                CALL UTIMPI('S','NUMERO ',1,IAUX )
-                CALL UTIMPK('S',' EST EN DOUBLE.',0,' ')
-                ITMP = LXLGUT(NOGRFA(IAUX))
-                CALL UTIMPK('L','PREMIER NOM MED  : ',1,
-     &                      NOGRFA(IAUX)(1:ITMP))
-                ITMP = LXLGUT(NOGRFA(INOM))
-                CALL UTIMPK('L','SECOND NOM MED   : ',1,
-     &                      NOGRFA(INOM)(1:ITMP))
-                CALL UTIMPK('L','NOM ASTER RETENU : ',1,K8B)
-                CALL UTFINM()
-              ENDIF
-              ZK8(ADNOMG-1+IAUX) = K8B
-              ZI(ADNUMG-1+IAUX) = JAUX
+C
+               K8B = NOGRFA(IAUX)(1:8)
+               INOM = INDIK8 ( ZK8(ADNOMG), K8B, 1, IAUX )
+               IF ( INOM .NE. 0 ) THEN
+                  IERR = .TRUE.
+                  CALL UTDEBM('E','LRMMF3','LE NOM DE GROUPE ')
+                  CALL UTIMPI('S','NUMERO ',1,IAUX )
+                  CALL UTIMPK('S',' EST EN DOUBLE.',0,' ')
+                  ITMP = LXLGUT(NOGRFA(IAUX))
+                  CALL UTIMPK('L','PREMIER NOM MED  : ',1,
+     &                        NOGRFA(IAUX)(1:ITMP))
+                  ITMP = LXLGUT(NOGRFA(INOM))
+                  CALL UTIMPK('L','SECOND NOM MED   : ',1,
+     &                        NOGRFA(INOM)(1:ITMP))
+                  CALL UTIMPK('L','NOM ASTER RETENU : ',1,K8B)
+                  CALL UTFINM()
+               ENDIF
+               ZK8(ADNOMG-1+IAUX) = K8B
+               ZI(ADNUMG-1+IAUX) = JAUX
   252       CONTINUE
 C
           ENDIF

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 20/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C         ISDVER EST UTILISE PAR LA ROUTINE VERIS3
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
       CHARACTER*16 NOMCMD,CBID,MEMOIR, CMPIN, CMPOUT
-      INTEGER SEGJVX,LSEGJV, LOUT
+      INTEGER SEGJVX,LSEGJV, LOUT,SDVERI
       REAL*8 VPARJV
 C
 C     --- OPTIONS PAR DEFAUT ---
@@ -73,8 +73,13 @@ C
       CALL GETVTX('DEBUG','SDVERI',1,1,1,REPONS,L)
       CALL GETRES(CBID,CBID,NOMCMD)
       IF ( REPONS .EQ. 'OUI') THEN
-         ISDVER=1
-         CALL U2MESS('I','SUPERVIS_24')
+         IF (SDVERI().EQ.1) THEN
+           ISDVER=1
+           CALL U2MESS('I','SUPERVIS_24')
+         ELSE
+           ISDVER=0
+           CALL U2MESS('A','SUPERVIS_42')
+         ENDIF
       ELSE
          ISDVER=0
       ENDIF

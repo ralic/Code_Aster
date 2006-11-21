@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (QUAD8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 # ----------------------------------------------------------------------
 # CYLINDRE EN FLEXION FOURIER HARMONIQUE 1 
 #  TEST DE L'ORTHOTROPIE (EN FAIT ISOTROPIE TRANSVERSE AVEC PLAN 
-#                           D'ISOTROPIE (R,THETA))
+#                           D'ISOTROPIE (R,Z))
 #
 # MODELISATION : ELEMENTS MECANIQUE AXIS_FOURIER (QUAD8)
 # MAILLAGE     : ALIBABA ==> ASTER
@@ -40,7 +40,7 @@ MO=AFFE_MODELE(        MAILLAGE=M,
                                        PHENOMENE = 'MECANIQUE',    
                                        MODELISATION = 'AXIS_FOURIER', ))
 
-MA=DEFI_MATERIAU( ELAS_ORTH=_F(  E_L = 144.,    E_T = 72.,     E_N = 144., 
+MA=DEFI_MATERIAU( ELAS_ORTH=_F(  E_L = 144.,    E_T = 144.,     E_N = 72., 
                                  NU_LT = 0.3,   NU_LN = 0.3,   NU_TN = 0.3, 
                                  G_LT = 10., 
                                  G_LN = 55.384615, 
@@ -92,40 +92,40 @@ TEST_RESU(RESU=(
            NOEUD = 'N2',        NOM_CMP = 'DZ', VALE = -2.6041666666666E-4,   ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N4',        NOM_CMP = 'DX',           VALE = 0.0625,      ),
+           NOEUD = 'N4',        NOM_CMP = 'DX',           VALE = 0.03125,      ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N4',        NOM_CMP = 'DZ',           VALE = 0.0625,      ),
+           NOEUD = 'N4',        NOM_CMP = 'DZ',           VALE = 0.03125,      ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N7',        NOM_CMP = 'DX',           VALE = 0.25,        ),
+           NOEUD = 'N7',        NOM_CMP = 'DX',           VALE = 0.125,        ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N7',        NOM_CMP = 'DZ',           VALE = 0.25,        ),
+           NOEUD = 'N7',        NOM_CMP = 'DZ',           VALE = 0.125,        ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N9',        NOM_CMP = 'DY',   VALE = -0.083333333333333,  ),
+           NOEUD = 'N9',        NOM_CMP = 'DY',   VALE = -0.0416666666665,  ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N10',       NOM_CMP = 'DX',           VALE = 0.5625,      ),
+           NOEUD = 'N10',       NOM_CMP = 'DX',           VALE = 0.28125,      ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N10',       NOM_CMP = 'DZ',           VALE = 0.5625,      ),
+           NOEUD = 'N10',       NOM_CMP = 'DZ',           VALE = 0.28125,      ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N12',       NOM_CMP = 'DY',           VALE = -0.125,      ),
+           NOEUD = 'N12',       NOM_CMP = 'DY',           VALE = -0.0625,      ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N13',       NOM_CMP = 'DX',           VALE = 1.,          ),
+           NOEUD = 'N13',       NOM_CMP = 'DX',           VALE = 0.5           ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N13',       NOM_CMP = 'DZ',           VALE = 1.,          ),
+           NOEUD = 'N13',       NOM_CMP = 'DZ',           VALE = 0.5,          ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N14',       NOM_CMP = 'DY', VALE = -0.08333333333333333,  ),
+           NOEUD = 'N14',       NOM_CMP = 'DY', VALE = -0.0416666666665,  ),
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='DEPL',
            CRITERE = 'RELATIF',  PRECISION = 1.E-6, 
-           NOEUD = 'N15',       NOM_CMP = 'DY', VALE = -0.16666666666666666,  ),
+           NOEUD = 'N15',       NOM_CMP = 'DY', VALE = -0.08333333333333333,  ),
    # CONTRAINTES
               
             _F(  RESULTAT = RESU, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',

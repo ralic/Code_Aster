@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE ORTHOTROPE EN TRACTION UNIAXIALE HORS AXES D'ORTHOTROPIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -208,6 +208,130 @@ TEST_RESU(CHAM_ELEM=(
                           VALE = -4.33E3,
                           REFERENCE='ANALYTIQUE',PRECISION = 0.005))
           )
-#
+
+
+LISTE=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+                                    
+DEFNL=STAT_NON_LINE(MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARA,
+                    EXCIT=_F( CHARGE = CHARGT),
+                    COMP_INCR=_F(RELATION='ELAS'),
+                    INCREMENT=_F(LIST_INST=LISTE),
+           NEWTON=_F(MATRICE='ELASTIQUE'),
+                    );
+CALC_ELEM( reuse= DEFNL ,RESULTAT= DEFNL ,                              
+                         OPTION='SIEF_ELNO_ELGA',  )
+
+UNL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=DEFNL,
+                 NUME_ORDRE=1
+                  )
+
+TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = UNL,
+                        NOEUD = 'N171',
+                        NOM_CMP = 'DX',
+                        VALE = 0.,
+                        REFERENCE='ANALYTIQUE',PRECISION = 0.01,
+                        CRITERE = 'ABSOLU'),
+              _F(  CHAM_GD = UNL,
+                        NOEUD = 'N171',
+                        NOM_CMP = 'DY',
+                        VALE = -2.292E-7,
+                        REFERENCE='ANALYTIQUE',PRECISION = 0.001),
+              _F(  CHAM_GD = UNL,
+                        NOEUD = 'N336',
+                        NOM_CMP = 'DX',
+                        VALE = 5.917E-7,
+                        REFERENCE='ANALYTIQUE',PRECISION = 0.001),
+              _F(  CHAM_GD = UNL,
+                        NOEUD = 'N336',
+                        NOM_CMP = 'DY',
+                        VALE = -5.028E-7,
+                        REFERENCE='ANALYTIQUE',PRECISION = 0.006),
+              _F(  CHAM_GD = UNL,
+                        NOEUD = 'N345',
+                        NOM_CMP = 'DX',
+                        VALE = 5.917E-7,
+                        REFERENCE='ANALYTIQUE',PRECISION = 0.007),
+              _F(  CHAM_GD = UNL,
+                        NOEUD = 'N345',
+                        NOM_CMP = 'DY',
+                        VALE = -7.319E-7,
+                        REFERENCE='ANALYTIQUE',PRECISION = 0.007))
+          )
+
+DEFNL2=MODI_REPERE(RESULTAT=DEFNL,
+                 MODI_CHAM=_F(NOM_CHAM='SIEF_ELNO_ELGA',
+                              NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
+                              TYPE_CHAM='TENS_2D',),
+                 DEFI_REPERE=_F(REPERE='UTILISATEUR',
+                                ANGL_NAUT=(30.0),),)
+                                
+SIGNL=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA', RESULTAT=DEFNL2,
+                 NUME_ORDRE=1
+                  )
+TEST_RESU(CHAM_ELEM=(
+# SIG B
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M46',
+                          NOEUD = 'N171',
+                          NOM_CMP = 'SIXX',
+                          VALE = 7.5E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.003),
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M46',
+                          NOEUD = 'N171',
+                          NOM_CMP = 'SIYY',
+                          VALE = 2.5E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M46',
+                          NOEUD = 'N171',
+                          NOM_CMP = 'SIXY',
+                          VALE = -4.33E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
+# SIG C
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M59',
+                          NOEUD = 'N336',
+                          NOM_CMP = 'SIXX',
+                          VALE = 7.5E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M59',
+                          NOEUD = 'N336',
+                          NOM_CMP = 'SIYY',
+                          VALE = 2.5E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M59',
+                          NOEUD = 'N336',
+                          NOM_CMP = 'SIXY',
+                          VALE = -4.33E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
+# SIG D
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M150',
+                          NOEUD = 'N345',
+                          NOM_CMP = 'SIXX',
+                          VALE = 7.5E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M150',
+                          NOEUD = 'N345',
+                          NOM_CMP = 'SIYY',
+                          VALE = 2.5E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.005),
+              _F(  CHAM_GD = SIGNL,
+                          MAILLE = 'M150',
+                          NOEUD = 'N345',
+                          NOM_CMP = 'SIXY',
+                          VALE = -4.33E3,
+                          REFERENCE='ANALYTIQUE',PRECISION = 0.005))
+          )
 FIN()
 #

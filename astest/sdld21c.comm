@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,6 @@
 #
 #CAS_TEST__:SDLD21C
 #
-
 
 DEBUT(CODE=_F(NOM='SDLD21C', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -197,7 +196,10 @@ TEST_RESU(RESU=(_F(RESULTAT=MODESN,
                    NOM_CMP='DX',
                    NUME_ORDRE=3,
                    NOEUD='P1',
-                   VALE_C=('RI',-6.45598E-03,6.45598E-03),
+#              --- ON TESTE LA VALEUR ABSOLUE (MODULE)
+                   VALE_ABS='OUI',
+                   VALE_C=('RI',6.45598E-03,6.45598E-03),
+#              ---
                    CRITERE='RELATIF',
                    PRECISION=0.001,
                    REFERENCE='NON_REGRESSION',
@@ -223,9 +225,3 @@ TEST_RESU(RESU=(_F(RESULTAT=MODESN,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.3.14'),),)
 FIN();
-#
-#
-#
-#
-#
-

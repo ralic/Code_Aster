@@ -1,6 +1,6 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,8 +31,9 @@ C ......................................................................
 C
       CHARACTER*8      MODELI
       CHARACTER*4      FAMI
-      REAL*8           SIGMA(54), REPERE(7),SIGM2(54)
+      REAL*8           SIGMA(54), REPERE(7),SIGM2(54),BARY(3)
       REAL*8           NHARM, INSTAN, DEPLA(36),CONTNO(54)
+      INTEGER          IDIM
       LOGICAL          LSENS
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -93,7 +94,17 @@ C      ------------------------
 C
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+
+      BARY(1) = 0.D0
+      BARY(2) = 0.D0
+      BARY(3) = 0.D0
+      DO 160 I = 1,NNO
+        DO 150 IDIM = 1,NDIM
+          BARY(IDIM) = BARY(IDIM)+ZR(IGEOM+IDIM+NDIM*(I-1)-1)/NNO
+ 150    CONTINUE
+ 160  CONTINUE
+      CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 C
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
 C      --------------------------------------------------

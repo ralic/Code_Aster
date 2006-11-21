@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith8 Messages  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,11 +99,8 @@ cata_msg={
 """),
 
 20: _("""
- la definition du repere d orthotropie ne peut se faire que via le mot cle angl_rep d affe_cara_elem
-"""),
-
-21: _("""
- modelisation c_plan non supporte
+ La définition du repère d'orthotropie a été mal faite.
+ Utilisez soit ANGL_REP  soit ANGL_AXE de la commande AFFE_CARA_ELEM mot clé facteur MASSIF
 """),
 
 22: _("""

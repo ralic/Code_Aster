@@ -7,7 +7,7 @@
       COMPLEX*16                          VALC,REFC(NBREF)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C ----------------------------------------------------------------------
       CHARACTER*12 K12
       CHARACTER*17 K17
       REAL*8       ERR, ZERO, CENT, EPSR, TMPR, MINVR, MINVC, TMPC
-      COMPLEX*16   ZEROC
+      COMPLEX*16   ZEROC, VTC
       LOGICAL      LOK
 C     ------------------------------------------------------------------
 C
@@ -163,19 +163,29 @@ C
          ENDIF
 C
       ELSEIF ( TYPE(1:1) .EQ. 'C' ) THEN
-         MINVC=ABS(VALC-REFC(1))
+         VTC = REFC(1)
+         IF ( SSIGNE .EQ. 'OUI' ) THEN
+            VALC = ABS(VALC)
+            VTC  = ABS(VTC)
+         ENDIF
+         MINVC=ABS(VALC-VTC)
          IMIN=1
+C    --- NBREF > 1 N'EST PAS GERE PAR LE SUPERVISEUR...
          DO 30 I=1,NBREF-1
-           TMPC=ABS(VALC-REFC(I+1))
-           IF(TMPC.LT.MINVC)THEN
-             TMPC=MINVC
-             IMIN=I+1
-           ENDIF
+            VTC = REFC(I+1)
+            IF ( SSIGNE .EQ. 'OUI' )  VTC = ABS(VTC)
+            TMPC=ABS(VALC-VTC)
+            IF(TMPC.LT.MINVC)THEN
+               TMPC=MINVC
+               IMIN=I+1
+            ENDIF
  30      CONTINUE
+         VTC = REFC(IMIN)
+         IF ( SSIGNE .EQ. 'OUI' )  VTC = ABS(VTC)
          IF ( RELA .EQ. 'RELA' ) THEN
-            LOK = ( ABS(VALC-REFC(IMIN)) .LE. EPSI * ABS(REFC(IMIN)))
-            IF ( REFC(IMIN) .NE. ZEROC ) THEN
-               ERR = ABS(VALC - REFC(IMIN)) /  ABS(REFC(IMIN)) *CENT
+            LOK = ( ABS(VALC-VTC) .LE. EPSI * ABS(VTC))
+            IF ( VTC .NE. ZEROC ) THEN
+               ERR = ABS(VALC - VTC) /  ABS(VTC) *CENT
             ELSE
                ERR = 999.999999D0
             ENDIF
@@ -191,13 +201,13 @@ C
             ENDIF
             EPSR = EPSI*CENT
             IF (ABS(EPSR).GT.1.0D-03 .AND. ABS(EPSR).LT.1.0D+03) THEN
-               WRITE(IFIC,1210) K17, EPSR, REFC(IMIN)
+               WRITE(IFIC,1210) K17, EPSR, VTC
             ELSE
-               WRITE(IFIC,1212) K17, EPSR, REFC(IMIN)
+               WRITE(IFIC,1212) K17, EPSR, VTC
             ENDIF
          ELSE
-            LOK = ( ABS(VALC - REFC(IMIN)) .LE. EPSI )
-            ERR =   ABS(VALC - REFC(IMIN))
+            LOK = ( ABS(VALC - VTC) .LE. EPSI )
+            ERR =   ABS(VALC - VTC)
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
                IF (ERR.LT.-99.9D0) THEN
@@ -209,9 +219,9 @@ C
                WRITE(IFIC,1206) TESTOK, K12, ERR, VALC
             ENDIF
             IF (ABS(EPSI).GT.1.0D-03 .AND. ABS(EPSI).LT.1.0D+03) THEN
-               WRITE(IFIC,1214) K17, EPSI, REFC(IMIN)
+               WRITE(IFIC,1214) K17, EPSI, VTC
             ELSE
-               WRITE(IFIC,1216) K17, EPSI, REFC(IMIN)
+               WRITE(IFIC,1216) K17, EPSI, VTC
             ENDIF
          ENDIF
       ENDIF

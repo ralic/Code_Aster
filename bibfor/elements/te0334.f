@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,12 @@ C     ------------------------
 
 C --- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 C     ------------------------------------------------------------
-      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+C     ON FOURNIT UN REPRE BIDON A EPSVMC CAR DE TOUTE FACON ON NE
+C     TRAITE PAS LE CAS ORTHOTROPE
+C     
+      DO 200 I=1,7
+        REPERE(I)=0.D0
+200   CONTINUE
 
 C --- RECUPERATION DES TEMPERATURES AUX NOEUDS DE L'ELEMENT :
 C     -----------------------------------------------------

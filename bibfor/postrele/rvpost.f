@@ -13,7 +13,7 @@
       LOGICAL TRIDIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,10 +122,19 @@ C
      +                     NBCPN,'NUMERO',SSCH19, MCF, IOCC )
 C
             ELSE
+               CALL JEEXIN(NLSNAC,IBID)
+               IF (IBID.GT.0) THEN
+                  CALL JELIRA(NLSNAC,'LONMAX',NBNAC,K8B)
+                  CALL JEVEUO(NLSNAC,'L',JLSNAC)
+               ELSE
+                  JLSNAC = 1
+                  NBNAC = 0
+               ENDIF
                CALL JELIRA(NLSMAC,'LONMAX',NBMAC,K8B)
                CALL JEVEUO(NLSMAC,'L',JLSMAC)
                CALL EXTCHE(NCH19,K8B,ZI(JLSMAC),ZK8(JCMPNC),NBMAC,
-     +                     NBCPN,'NUMERO',SSCH19, MCF, IOCC )
+     +                     NBCPN,'NUMERO',SSCH19, MCF, IOCC,
+     +                     NBNAC, ZI(JLSNAC) )
             ENDIF
 C
            CALL GETVR8('ACTION','VECT_Y',IOCC,1,3,VECTY,NY)

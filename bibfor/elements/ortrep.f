@@ -1,6 +1,6 @@
-      SUBROUTINE ORTREP (MATER, NDIM, REPERE)
+      SUBROUTINE ORTREP (MATER, NDIM, COOR, REPERE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      ORTREP   -- RECUPERATION DES DONNEES UTILISATEUR
 C                  DEFINISSANT LE REPERE D'ORTHOTROPIE
@@ -36,17 +36,23 @@ C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    MATER          IN      I        MATERIAU
 C    NDIM           IN      I        DIMENSION DE LA MODELISATION
-C                                    (2 OU 3)
+C    COOR           IN      R        COORDONNEE DU POINT 
+C                                    (CAS CYLINDRIQUE)
 C    REPERE(7)      OUT     R        VALEURS DEFINISSANT LE REPERE
 C                                    D'ORTHOTROPIE
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           REAL*8       REPERE(7)
+           REAL*8       REPERE(7),COOR(3)
+           INTEGER      MATER,NDIM
+
 C -----  VARIABLES LOCALES
+           INTEGER      NBRES,I,IRET,ICAMAS
            PARAMETER         ( NBRES=9 )
            CHARACTER*2  CODRET(NBRES)
            CHARACTER*16 PHENOM
+           REAL*8       P(3,3),XG(3),YG(3),ORIG(3),DIRE(3)
+           REAL*8       ALPHA,BETA,R8DGRD,ANGMAS(3)
 C.========================= DEBUT DECLARATIONS NORMALISEES  JEVEUX ====
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
@@ -69,18 +75,16 @@ C
 C
 C ---- INITIALISATIONS :
 C      ----------------
-      ZERO = 0.0D0
-      UN   = 1.0D0
-C
+
       DO 10 I = 1, 7
-         REPERE(I) = ZERO
+         REPERE(I) = 0.0D0
  10   CONTINUE
 C
       CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
 C
       IF (IRET.NE.0) THEN
 C     --------------------
-         REPERE(1) = UN
+         REPERE(1) = 1.D0
 C
       ELSE
 C     ----
@@ -99,7 +103,7 @@ C
 C
             REPERE(1) = ZR(ICAMAS)
 C
-            IF (ZR(ICAMAS).GT.ZERO) THEN
+            IF (ZR(ICAMAS).GT.0.0D0) THEN
 C
 C ----      ANGLES NAUTIQUES
 C           ----------------
@@ -108,21 +112,27 @@ C           ----------------
                 REPERE(4) = ZR(ICAMAS+3)*R8DGRD()
             ELSE
 C
+C-----      LES INFORMATIONS FOURNIES SONT POUR UN REPERE
+C-----      CYLINDRIQUES. ON TRANSFORME DIRECTEMENT 
+C-----      EN REPERE LOCAL CARTESIEN
               ALPHA=ZR(ICAMAS+1)*R8DGRD()
               BETA =ZR(ICAMAS+2)*R8DGRD()
-C
-C ---- DIRECTION DE L'AXE DE SYMETRIE (ET D'ORTHOTROPIE)
-C      ------------------------------------------------
-              REPERE(2)=  COS(ALPHA)*COS(BETA)
-              REPERE(3)=  SIN(ALPHA)*COS(BETA)
-              REPERE(4)= -SIN(BETA)
-C
-C ---- POINT DE L'AXE DE SYMETRIE
-C      --------------------------
-              REPERE(5)=ZR(ICAMAS+4)
-              REPERE(6)=ZR(ICAMAS+5)
-              REPERE(7)=ZR(ICAMAS+6)
-C
+              DIRE(1) = COS(ALPHA)*COS(BETA)
+              DIRE(2) = SIN(ALPHA)*COS(BETA)
+              DIRE(3) = -SIN(BETA)
+              ORIG(1)=ZR(ICAMAS+4)
+              ORIG(2)=ZR(ICAMAS+5)
+              ORIG(3)=ZR(ICAMAS+6)
+              CALL UTRCYL(COOR,DIRE,ORIG,P)
+              DO 1 I=1,3
+                XG(I)=P(1,I)
+                YG(I)=P(2,I)
+    1         CONTINUE     
+              CALL ANGVXY(XG, YG, ANGMAS)
+              REPERE(1)=1.D0
+              REPERE(2)=ANGMAS(1)
+              REPERE(3)=ANGMAS(2)
+              REPERE(4)=ANGMAS(3)
            ENDIF
         ENDIF
 C
@@ -140,7 +150,7 @@ C
 C
             REPERE(1) = ZR(ICAMAS)
 C
-            IF (ZR(ICAMAS).GT.ZERO) THEN
+            IF (ZR(ICAMAS).GT.0.0D0) THEN
 C
 C ----      ANGLE NAUTIQUE
 C           --------------
