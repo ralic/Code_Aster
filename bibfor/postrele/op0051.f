@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C
       INTEGER      ICHEF, IE, IOCC, IRET, IVCHF, JACC, JACCIS, JACCR8,
      &             JCHEF, JTAC, JVAC, N1, NBACCE, NBCHEF, NBPOST,
      &             NBRESU, NBVCHF, IBID
+      INTEGER JCHEFN
       INTEGER NRPASS, NBPASS, ADRECG
 C
       REAL*8       EPSI
@@ -66,9 +67,10 @@ C
       CHARACTER*6  MCF
       CHARACTER*8  K8B, RESUCO, CRITER
       CHARACTER*8 NOPASE, LERES0
-      CHARACTER*16 NOMCMD, CONCEP, NCHEFF, NCHSYM, OPTION
+      CHARACTER*16 NOMCMD, CONCEP, NCHEFF, NCHEFN, NCHSYM, OPTION
+      CHARACTER*18 SENSOP
       CHARACTER*19 LATAB1, TABLE1
-      CHARACTER*19 NCH19
+      CHARACTER*19 NCH19, NCH19N
       CHARACTER*24 XNUMCP, XNOMCP, VNOMCH, VCODOP, XNOVAR
       CHARACTER*24 NACCIS, NACCR8, NCH24, NLSMAC, NLSNAC
       CHARACTER*24 NORECG
@@ -82,6 +84,7 @@ C
       CALL JEMARQ()
 C               12   345678   9012345678901234
       NCHEFF = '&&'//NOMPRO//'.CHAMP19'
+      NCHEFN = '&&'//NOMPRO//'.CHAMPNO'
       XNOMCP = '&&'//NOMPRO//'.NOM.COMPOSANTES'
       XNOVAR = '&&'//NOMPRO//'.NOM.VARI       '
       XNUMCP = '&&'//NOMPRO//'.NUM.COMPOSANTES'
@@ -153,6 +156,7 @@ C
         RESUCO = '        '
         CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1, RESUCO, NBRESU )
 C
+C 3.1. ==> SENSIBILITE
 C        --- NOMBRE DE PASSAGES POUR LA SENSIBILITE ---
 C
         IAUX = IOCC
@@ -165,7 +169,15 @@ C
         CALL PSRESE ( MCF, IAUX, IBID, TABLE1, JAUX,
      &                NBPASS, NORECG, IRET )
 C
+C        --- SENSIBILITE ET MODULE ---
+C
         IF ( IRET.EQ.0 ) THEN
+C
+        CALL GETVTX ( MCF, 'SENSIBILITE_OPTION', IOCC, 1, 1,
+     &                SENSOP, IAUX)
+        IF ( IAUX.EQ.0 ) THEN
+          SENSOP = 'MODULE_SENSIBILITE'
+        ENDIF
 C
         CALL JEVEUO ( NORECG, 'L', ADRECG )
 C
@@ -187,6 +199,7 @@ C                  1234567890123456789
          NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
 CGN         PRINT *,'. LATAB1 = ', LATAB1
 CGN         PRINT *,'. NOPASE = ', NOPASE
+CGN         PRINT *,'. RESUCO = ', RESUCO
 C
 C        --- SAISIE DES CHAMPS EFFECTIFS A POST-TAITER ---
 C
@@ -218,6 +231,12 @@ C
             CALL RVGCHF ( EPSI, CRITER,
      &                    LERES0, RESUCO, NOPASE, NCHSYM, CODACC,
      &                    ZI(JACCIS), ZR(JACCR8), NBACCE, NCHEFF, CA )
+C
+            IF ( SENSOP.EQ.'SENSIBILITE_MODULE' ) THEN
+              CALL RVGCHF ( EPSI, CRITER,
+     &                      RESUCO, RESUCO, '        ', NCHSYM, CODACC,
+     &                      ZI(JACCIS), ZR(JACCR8), NBACCE, NCHEFN, CA )
+            ENDIF
 C
             CALL JEDETR ( NACCIS )
             CALL JEDETR ( NACCR8 )
@@ -351,14 +370,22 @@ C
      &                                          'LONMAX',NBCHEF,K8B)
                   CALL JEVEUO(JEXNUM(NCHEFF//'.LSCHEFF',IVCHF),
      &                                                    'L',JCHEF)
+                  IF ( SENSOP.EQ.'SENSIBILITE_MODULE' ) THEN
+                    CALL JEVEUO(JEXNUM(NCHEFN//'.LSCHEFF',IVCHF),
+     &                                                    'L',JCHEFN)
+                  ENDIF
 C
                   DO 410, ICHEF = 1, NBCHEF
 C
                      NCH19 = ZK24(JCHEF + ICHEF-1)(1:19)
+                     IF ( SENSOP.EQ.'SENSIBILITE_MODULE' ) THEN
+                       NCH19N = ZK24(JCHEFN + ICHEF-1)(1:19)
+                     ENDIF
 C
                      CALL RVPOST ( MCF, IOCC, DIM, IVCHF, ICHEF, NCHEFF,
-     &                             XNOMCP, LERES0, NCH19, NLSMAC,
-     &                             NLSNAC, LATAB1, XNOVAR )
+     &                             XNOMCP,
+     &                             LERES0, NCH19, NCH19N, SENSOP,
+     &                             NLSMAC, NLSNAC, LATAB1, XNOVAR )
 C
  410              CONTINUE
 C
@@ -378,6 +405,12 @@ C
          CALL JEDETR ( NCHEFF//'.TYPACCE' )
          CALL JEDETR ( NCHEFF//'.VALACCE' )
          CALL JEDETR ( NCHEFF//'.LSCHEFF' )
+         IF ( SENSOP.EQ.'SENSIBILITE_MODULE' ) THEN
+           CALL JEDETR ( NCHEFN//'.NOMRESU' )
+           CALL JEDETR ( NCHEFN//'.TYPACCE' )
+           CALL JEDETR ( NCHEFN//'.VALACCE' )
+           CALL JEDETR ( NCHEFN//'.LSCHEFF' )
+         ENDIF
 C
    30   CONTINUE
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============

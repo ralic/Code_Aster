@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,8 @@ C
          CALL JEVECH('PCADISK','L',JDC)
          CALL JEVECH('PMATUUR','E',JDM)
       ELSEIF (OPTION.EQ.'MASS_MECA'.OR. OPTION.EQ.'MASS_MECA_DIAG'
-     &         .OR. OPTION.EQ.'MASS_FLUI_STRU') THEN
+     &         .OR. OPTION.EQ.'MASS_MECA_EXPLI'
+     &         .OR.OPTION.EQ.'MASS_FLUI_STRU') THEN
          CALL JEVECH('PCADISM','L',JDC)
          CALL JEVECH('PMATUUR','E',JDM)
       ELSEIF (OPTION.EQ.'AMOR_MECA') THEN

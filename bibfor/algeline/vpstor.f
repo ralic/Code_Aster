@@ -10,7 +10,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGELINE  DATE 28/11/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,7 @@ C
 C
       LREFD = .TRUE.
       LNUME = .TRUE.
+      LSTOCK = .FALSE.
       REFD(1:8) = MODES
 C On teste l'existence du REFD
       CALL JEEXIN(REFD,IER)

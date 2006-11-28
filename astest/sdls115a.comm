@@ -1,4 +1,4 @@
-# MODIF  DATE 11/04/2006   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,6 +165,7 @@ RESU1 = DYNA_TRAN_EXPLI(
                        MODELE=MOD1,
                        CHAM_MATER= CHMAT,
                        CARA_ELEM = CELE1,
+                       MASS_DIAG='NON',
                        COMP_INCR=_F(
                                     RELATION ='ELAS',                                   ),
                        INCREMENT=_F( LIST_INST = INST1,

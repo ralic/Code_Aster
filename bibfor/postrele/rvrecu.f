@@ -1,10 +1,11 @@
-      SUBROUTINE RVRECU ( MCF, IOCC, CHAMP, NOMVEC )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE RVRECU ( MCF, IOCC, CHAMP, CHAMPN, SENSOP, NOMVEC )
+      IMPLICIT NONE
       INTEGER                  IOCC
-      CHARACTER*(*)       MCF,       CHAMP, NOMVEC
+      CHARACTER*18 SENSOP
+      CHARACTER*(*)       MCF,       CHAMP, CHAMPN, NOMVEC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +25,7 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C IN  IOCC   : INDICE DE L' OCCURENCE
 C IN  CHAMP  : NOM DU CHAMP A TRAITER
+C IN  SENSOP : OPTION POUR LA SENSIBILITE
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -45,8 +47,13 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       CHARACTER*1   TYPE
       CHARACTER*8   K8B, FORM
-      CHARACTER*19  NCH19
+      CHARACTER*19  NCH19, NCH19N
       CHARACTER*24  VECTEU
+C
+      REAL*8 A, B, C
+      REAL*8 R8VIDE, R8PREM
+      REAL*8 EPSIL, RUNDF
+      INTEGER I, IBID, JVAL, JVALN, KVAL, N1, NEQ 
 C
 C==================== CORPS DE LA ROUTINE =============================
 C
@@ -63,12 +70,34 @@ C
 C
       CALL GETVTX ( MCF, 'FORMAT_C', IOCC, 1, 1, FORM, N1 )
 C
+      IF ( SENSOP.EQ.'SENSIBILITE_MODULE' ) THEN
+        NCH19N = CHAMPN
+        CALL JEVEUO (NCH19N//'.VALE', 'L', JVALN )
+        EPSIL = R8PREM( )
+        RUNDF = R8VIDE()
+      ENDIF
+C
       IF ( FORM .EQ. 'MODULE' ) THEN
-        DO 10 I = 0 , NEQ-1
-           A =  DBLE( ZC(JVAL+I) )
-           B = DIMAG( ZC(JVAL+I) )
-           ZR(KVAL+I) = SQRT( A*A + B*B )
- 10     CONTINUE
+C
+        IF ( SENSOP.EQ.'MODULE_SENSIBILITE' ) THEN
+          DO 11 I = 0 , NEQ-1
+            A = DBLE( ZC(JVAL+I) )
+            B = DIMAG( ZC(JVAL+I) )
+            ZR(KVAL+I) = SQRT( A*A + B*B )
+   11     CONTINUE
+        ELSE
+          DO 12 I = 0 , NEQ-1
+            A = DBLE( ZC(JVALN+I) )
+            B = DIMAG( ZC(JVALN+I) )
+            C = A*A + B*B
+            IF ( C.LT.EPSIL ) THEN
+              C = RUNDF
+            ELSE
+              C = ( A*DBLE(ZC(JVAL+I)) + B*DIMAG(ZC(JVAL+I)) ) / SQRT(C)
+            ENDIF
+            ZR(KVAL+I) = C
+   12     CONTINUE
+        ENDIF
 C
       ELSEIF ( FORM .EQ. 'REEL' ) THEN
         DO 20 I = 0 , NEQ-1

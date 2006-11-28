@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/10/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -329,7 +329,7 @@ MACR_FIABILITE = MACRO ( nom="MACR_FIABILITE",op=macr_fiabilite_ops,
                                fr="Valeur minimale.",
                                ang="Minimal value."),
 #
-         VALE_MAX   = SIMP(statut="o",typ="R.",max=1,
+         VALE_MAX   = SIMP(statut="o",typ="R",max=1,
                                fr="Valeur maximale.",
                                ang="Maximal value."),
 #

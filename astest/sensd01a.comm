@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2006   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE S.CAMBIER
 # TITRE Sensibilite au chargement/condition limite dans DYNA_LYNE_HARM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,6 +126,7 @@ DTZ2=RECU_FONCTION(RESULTAT=DYHA,
 RLTH=POST_RELEVE_T(ACTION=(_F(RESULTAT = DYHA,
                               INTITULE='BIDON',
                               SENSIBILITE=(F1),
+                              SENSIBILITE_OPTION='SENSIBILITE_MODULE',
                               NOM_CHAM='DEPL',
                               OPERATION='EXTRACTION',
                               NOEUD='NO5',

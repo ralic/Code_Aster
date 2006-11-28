@@ -1,19 +1,10 @@
-      SUBROUTINE RVPOST(MCF,IOCC,DIM,I1,I2,NCHEFF,XNOMCP,NRESU,
-     +                  NCH19,NLSMAC,NLSNAC,NOMTAB,XNOVAR)
-      IMPLICIT   NONE
-      INTEGER               IOCC,    I1,I2
-      CHARACTER*2            DIM
-      CHARACTER*8            NRESU
-      CHARACTER*16                         NCHEFF
-      CHARACTER*19                 NCH19,                       NOMTAB
-      CHARACTER*24         XNOMCP,NLSMAC,NLSNAC,XNOVAR
-      CHARACTER*(*)     MCF
-      INTEGER NY
-      REAL*8 VECTY(3)
-      LOGICAL TRIDIM
+      SUBROUTINE RVPOST ( MCF, IOCC, DIM, I1, I2, NCHEFF,
+     >                    XNOMCP,
+     >                    NRESU, NCH19, NCH19N, SENSOP,
+     >                    NLSMAC, NLSNAC, NOMTAB, XNOVAR)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,9 +29,21 @@ C IN  DIM    : K : '2D' OU '3D'
 C IN  I1, I2 : I : REPERAGE DU CHAMP DANS UNE SD RESULTAT_COMPOSE
 C IN  XNOMCP : K : NOM DE LA COLLECTION DES NOMS DE CMP
 C IN  NCH19  : K : NOM DU CHAMP A TRAITER
+C IN  NCH19N : K : NOM DU CHAMP NOMINAL QUAND ON TRAITE UNE DERIVEE
+C IN  SENSOP : K : OPTION POUR LA SENSIBILITE
 C IN  NLSMAC : K : NOM DU VECTEUR DES MAILLES ACTIVES
 C IN  NLSNAC : K : NOM DU VECTEUR DES NOEUDS ACTIFS
 C     ------------------------------------------------------------------
+      IMPLICIT   NONE
+C
+      INTEGER IOCC, I1, I2
+      CHARACTER*2 DIM
+      CHARACTER*8 NRESU
+      CHARACTER*16 NCHEFF
+      CHARACTER*18 SENSOP
+      CHARACTER*19 NCH19, NCH19N, NOMTAB
+      CHARACTER*24 XNOMCP, NLSMAC, NLSNAC, XNOVAR
+      CHARACTER*(*) MCF
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -60,9 +63,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      GD, I, IDIR, IE, NIV, IRET, ISD, JCMPCD, JCMPNC,
-     +             JDIR, JLSMAC, JLSNAC, JNOMCP, JSDEV, JSDLI, JVEC1,
-     +             JVEC2, N, N0, N1, N2, N3, NBCAC, NBCPN, NBCRB,
-     +             NBMAC, NBNAC, NBOPER, NBSD, NR, IFM ,IBID
+     >             JDIR, JLSMAC, JLSNAC, JNOMCP, JSDEV, JSDLI, JVEC1,
+     >             JVEC2, N, N0, N1, N2, N3, NBCAC, NBCPN, NBCRB,
+     >             NBMAC, NBNAC, NBOPER, NBSD, NR, IFM ,IBID
+      INTEGER NY
+      REAL*8 VECTY(3)
+      LOGICAL TRIDIM
       CHARACTER*24 LSCPNC, QUANT, SDLIEU, SDEVAL, LSCPCD
       CHARACTER*24 SDEV, SDLI, SDMOYE, SDMAIL
       CHARACTER*19 SDPOST, EVAL, LIEU, SDNEWR, SSCH19
@@ -104,7 +110,7 @@ C
 10       CONTINUE
          GD = ZI(N1 + 1-1)
          IF (NIV.GT.1) CALL RVINFO(IFM,IOCC,I1,I2,'B',NCHEFF)
-         IF ( NRESU.EQ.' ' ) NRESU = NCH19
+         IF ( NRESU.EQ.' ' ) NRESU = NCH19(1:8)
          CALL RVCPNC(MCF,IOCC,NCH19,GD,DOCU,NBCAC,LSCPCD,LSCPNC,
      +               REPERE,OPTION,QUANT,IDIR,ZR(JDIR),IRET)
 C        /* POSSIBILITE AGRANDISSEMENT DE LSCPCD => ON REFAIT JEVEUO */
@@ -118,8 +124,9 @@ C
             IF ( DOCU .EQ. 'CHNO' ) THEN
                CALL JELIRA(NLSNAC,'LONMAX',NBNAC,K8B)
                CALL JEVEUO(NLSNAC,'L',JLSNAC)
-               CALL EXTCHN(NCH19,K8B,ZI(JLSNAC),ZK8(JCMPNC),NBNAC,
-     +                     NBCPN,'NUMERO',SSCH19, MCF, IOCC )
+               CALL EXTCHN(NCH19,NCH19N, SENSOP,
+     >                     K8B,ZI(JLSNAC),ZK8(JCMPNC),
+     >                     NBNAC,NBCPN,'NUMERO',SSCH19, MCF, IOCC )
 C
             ELSE
                CALL JEEXIN(NLSNAC,IBID)
@@ -132,9 +139,10 @@ C
                ENDIF
                CALL JELIRA(NLSMAC,'LONMAX',NBMAC,K8B)
                CALL JEVEUO(NLSMAC,'L',JLSMAC)
-               CALL EXTCHE(NCH19,K8B,ZI(JLSMAC),ZK8(JCMPNC),NBMAC,
-     +                     NBCPN,'NUMERO',SSCH19, MCF, IOCC,
-     +                     NBNAC, ZI(JLSNAC) )
+               CALL EXTCHE(NCH19,NCH19N, SENSOP,
+     >                     K8B,ZI(JLSMAC),ZK8(JCMPNC),
+     >                     NBMAC,NBCPN,'NUMERO',SSCH19, MCF, IOCC,
+     >                     NBNAC, ZI(JLSNAC) )
             ENDIF
 C
            CALL GETVR8('ACTION','VECT_Y',IOCC,1,3,VECTY,NY)
@@ -175,7 +183,7 @@ C
                 ENDIF
 C
                 IF ( IRET .NE. 0 ) THEN
-                   SDPOST = '&&RVPOST.SD.FINAL.POST'
+                   SDPOST = '&&RVPOST.FINAL.POST'
                    DO 100, ISD = 1, NBSD, 1
                       IF ( REPERE(1:1) .NE. 'G'.AND. .NOT.TRIDIM ) THEN
                          CALL JEVEUO(JEXNUM(SDNEWR//'.VEC1',ISD),'L',

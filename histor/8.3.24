@@ -1,0 +1,838 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 28/11/2006 - 15:30:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010298 DU 2006-11-23 10:28:14
+TYPE express concernant Code_Aster (VERSION 8.3)
+TITRE
+   SDLD21c : suite de la fiche 10270, TEST_RESU sur une deformee modale complexe
+FONCTIONNALITE
+   Dans la fiche 10270, Mathieu a permis de faire une TEST_RESU sur la valeur absolue d'une
+   valeur complexe.
+   C'etait necessaire pour le cas test SDLD21c ou l'on teste le deplacement de
+   differentes
+   deformees modales calculees en complexe (calcul de modes avec amortissement).
+   Or on ne peut pas savoir dans quel sens le calcul va orienter le mode. D'ou la valeur
+   absolue.
+   
+   Je complete le travail de Mathieu pour etendre la valeur absolue a tous les TEST_RESU
+   sur
+   les deplacements des modes.
+   Sinon on risque de recuperer des NOOK de facon repetee et chaotique.
+   
+   Emmanuel
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdld21c
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mcourtoi     COURTOIS Mathieu       DATE 28/11/2006 - 14:26:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010303 DU 2006-11-23 17:17:21
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Tests sensd** en erreur en 8.3.23 sous Calibre
+FONCTIONNALITE
+   Ces tests plantent dans MODE_ITER_SIMULT en 8.3.23 sous Linux Calibre4 :
+   sensd08a
+   sensd08b
+   sensd09a
+   sensd09b
+   sensd10a
+   sensd10b
+   sensd10c
+   sensd10d
+   sensd11a
+   sensd11b
+   sensd11c
+   sensd11d
+   
+   Dans vpstor.f, la variable booleenne LSTOCK n'est initialisee que sous un IF. Si elle
+   vaut
+   TRUE, on cherche fait un DISMOI sur une SD qui n'existe pas...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tous les tests MODE_ITER_SIMULT sur toutes les machines
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010314 DU 2006-11-27 12:01:13
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test sslv134f  en version NEW8.3.23 sous linux Calibre 4 et Rocks
+FONCTIONNALITE
+   Dans la routine mmaxkl, il faut dimensionner le vecteur qui stocke le type de chargement
+   SIGNE/NON_SIGNE au nombre de numeros d'ordre, LONVEC, (et non le nombre d'occurence du
+   mcfact SIGNES).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv134f sous Linux
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 28/11/2006 - 14:26:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010313 DU 2006-11-27 10:41:29
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test sslv134a en version NEW8.3.23 sous linux Calibre 4
+FONCTIONNALITE
+   Fiche sans suite : ok en 8.3.23 en debug et nodebug sur claut617.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv134a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET N.             DATE 27/11/2006 - 14:41:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009293 DU 2005-12-20 12:20:31
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   Cas test fdlv108a
+FONCTIONNALITE
+   Comme l'anoncait le (vieux) commentaire de 1995, on peut desormais tester un objet
+   jeveux :
+   
+   TEST_RESU / OBJET
+   
+   Un rapide IMPR_CO des matr_asse_gene montre qu'il semble que seul l'objet reel 'xxxx
+   .VALM' contienne une grandeur caracteristique du calcul destinee a etre testee.
+   
+   J'ajoute les 3 test_resu pour les matrices MASSAJ, AMORAJ, RIGIAJ.
+   
+   Ce serait bien qu'un jour quelqu'un exploite ces matrices pour un vrai calcul qui
+   aboutirait a un test pertinent sur des grandeurs physiques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   fdlv108a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR gnicolas     Gerald NICOLAS         DATE 27/11/2006 - 17:09:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010285 DU 2006-11-20 15:55:35
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   POST_RELEVE_T
+FONCTIONNALITE
+   Pour un resultat harmonique, les champs de resultats se presentent sous forme complexe.
+   Par exemple, la composante DX du deplacement s'exprime en DXr + i.DXi. Quand on demande
+   la
+   sensibilite dans l'operateur de calcul, on obtient egalement un champ complexe : Dxr' +
+   i.DXi' ; DXr'(DXi' resp.) est la derivee de DXr (DXi resp.) par rapport au parametre
+   voulu.
+   
+   En lancant POST_RELEVE_T sur le champ de resultat et en demandant le MODULE, on obtient
+   sqrt(DXr**2 + DXi**2). Je ne change rien au fonctionnement de l'operateur.
+   
+   En lancant POST_RELEVE_T sur le champ de resultat derive et en demandant le MODULE,
+   l'utilisateur doit desormais preciser ce qu'il veut :
+   MODULE_SENSIBILITE : on recupere le module de la derivee du champ, i.e. sqrt(DXr'**2 +
+   DXi'**2)
+   SENSIBILITE_MODULE : on recupere la derivee du module champ, i.e. (DXr*DXr' +
+   DXi*DXi') /
+   sqrt(DXr**2 + DXi**2). Dans les cas ou le module du champ est nul, la focntion n'est pas
+   derivable. On renvoie alors une valeur indefinie attribuee par R8VIDE().
+   
+   Le choix entre les deux options se fait par le mot-cle SENSIBILITE_OPTION. La donnee de
+   ce
+   mot-cle est filtree par un bloc ; il n'est requis que si les 3 conditions suivantes sont
+   remplies : resultat dynamique, sensibilite, module.
+   
+   J'en profite pour ajouter la reference de la documentation dans l'en-tete du catalogue.
+   
+   En terme de programmation, les modifications ont lieu sur 2 plans. Le programme RVRECU est
+   modifie pour faire le bon calcul. Le programme op0051 est modifie poour savoir quel est
+   le
+   choix. Entre les 2, il y a transmission de cette information.
+   
+   =============================================
+   J'en profite pour corriger une erreur de syntaxe dans le catalogue de MACR_FIABILITE :
+   typ="R" au lieu de typ="R."
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 6.2.26
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.21
+VALIDATION
+   sensd01a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM MARC              DATE 28/11/2006 - 11:23:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009930 DU 2006-07-24 06:43:29
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   test ssnv504h en version 8.3.7 sous linux Rocks
+FONCTIONNALITE
+   * pour ssnv504 f,g,j:
+   le message annonce une erreur memoire. En changeant la taille memoire dans le .para
+   (de
+   2000 MO a 256Mo),
+   ca   passe un peu mieux.
+   
+   * pour ssnv504 h :
+   sur calibre (clp50b1), le calcul s'arrete au prmier pas de temps car on atteind le
+   nombre maximum
+   d'iterations de contact. Ce premier pas de temps pose pb car les deformations dans le
+   lopin sont
+   quasi-nulles (pb cv residu).
+   on augmente iter_cont_maxi de 30 a 50 pour qu'il y ait detection du flip-flop et
+   passage du
+   premier pas de temps.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR smichel      MICHEL-PONNELLE S.     DATE 28/11/2006 - 12:58:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010317 DU 2006-11-27 17:00:30
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   resultats faux pour les options EPFP_ELXX et EPFD_ELXX avec beton_umlv
+FONCTIONNALITE
+   Le calcul des deformations de fluage (propre et de dessiccation) pour le modele
+   BETON_UMLV_FP, se fait via l'appel a lcumvi qui les calculent a partir des variables
+   internes. Le probleme etait que l'on transmettait a cette fonction ZR(IVARI). En
+   consequence, les valeurs de deformations calculees correspondaient toujours au 1er
+   point
+   de Gauss. Le resultat etait donc faux des que la solution n'etait plus homogene.
+   On corrige donc le te0528 en passant a la fonction lcumvi ZR(IVARI+(IGAU-1)*NBVARI)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.3.19
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude personnelle
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 27/11/2006 - 16:55:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010292 DU 2006-11-22 08:00:32
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   AFFE_CHAR_CINE : resultats faux pour certains ddls
+FONCTIONNALITE
+   En regardant la fiche 10237, je me suis convaincu que AFFE_CHAR_CINE / MECA_IMPO pouvait
+   entrainer des resultats faux (ou des arrets intempestifs) lorsqu'on utilisait les ddls de
+   rang eleve (> 30) dans le catalogue de la grandeur DEPL_R car la fiche 8794 n'a pas
+   ete
+   realisee correctement.
+   
+   
+   Risque de resultats FAUX :
+   --------------------------
+   utilisation de AFFE_CHAR_CINE / MECA_IMPO avec les ddls :
+   E4Y     E4Z     GONF    UI2     UI3     UI4     UI5     UI6     UO2     UO3     UO4
+   UO5     UO6     VI2     VI3     VI4     VI5     VI6     VO2     VO3     VO4     VO5
+   VO6     WI1     WI2     WI3     WI4     WI5     WI6     WO      WO1     WO2     WO3
+   WO4     WO5     WO6
+   
+   
+   
+   
+   Remarques :
+   ----------
+   1) Pour que les utilisateurs ne se posent pas la question : "Pourquoi permettre E3Z et
+   interdire E4Z ?"
+   
+   
+   J'interdis les 18 ddls peu utilises (mais qui ne presentent pas de risques particuliers
+   car de rang <=30) :
+   DCX     DCY     DCZ     E1X     E1Y     E1Z     E2X     E2Y     E2Z     E3X     E3Y
+   E3Z     E4X     H1X     H1Y     H1Z     PRE1    PRE2
+   
+   
+   2) On ne fait rien pour affe_char_cine_f car l'evolution 8794 avait ete oubliee dans
+   cette
+   commande.
+   
+   
+   
+   
+   Correction faite :
+   -------------------
+   Je blinde donc la version 8 en interdisant les ddls autres que ceux utilises actuellement
+   dans les tests (ce sont ceux qui existent en version 7) :
+   DRX     DRY     DRZ     DX      DY      DZ      GRX    PRES   TEMP   PHI
+   
+   
+   
+   
+   Impact documentaire : U4.44.03 (affe_char_cine)
+   --------------------
+   
+   
+   Liste des fichiers impactes par la correction de la fiche:  10292
+   affe_char_cine.capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.1
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.03
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009952 DU 2006-08-18 16:12:05
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   COEF_RIGI_DRZ sur DKT
+FONCTIONNALITE
+   Solution retenue suite a RTA du 22/11/2006
+   -------------------------------------------
+   
+   Nouvelle option :
+   MASS_MECA            coherente
+   MASS_MECA_DIAG       diagonale avec coherence COEF_RIGI_DRZ
+   >>>    MASS_MECA_EXPLI      diagonale + glute pour les coques
+   
+   
+   - MASS_MECA_DIAG :  Mdrz : revenir avec COEF_RIGI_DRZ.
+   
+   
+   - MASS_MECA_EXPLI : nouvelle option pour tous les elements qui calculent deja
+   MASS_MECA_DIAG :
+   * pour les elements DKT :
+   Mdrz = 0.5 (Mdrx + Mdry)
+   * pour tous les autres elements :
+   MASS_MECA_EXPLI = MASS_MECA_DIAG.
+   
+   
+   MASS_MECA_EXPLI est utilise uniquement dans le fortran de DYNA_TRAN_EXPLI si
+   MASS_DIAG='OUI' (routine nminit.f).
+   
+   Impact Doc :
+   ------------
+   U4.53.02 : DYNA_LINE_TRAN pas d'explicite avec des elements de plaques et coques
+   (sauf SHB8).
+   
+   U4.53.03 : DYNA_TRAN_EXPLI :
+   MASS_DIAG = | OUI  : on prend MASS_MECA_EXPLI   (defaut)
+   | NON  : on prend MASS_MECA
+   Dire que MASS_DIAG='NON' est deconseille avec les coques DKT.
+   
+   
+   
+   - acceleration initiale fausse (matrice de masse singuliere) dans DYNA_NON_LINE :
+   => on ameliore le message d'alarme.
+   
+   
+   
+   Resultats (un peu) faux depuis 8.3.3 si :
+   -----------------------------------------
+   - modelisation DKT
+   - utilisation de DYNA_NON_LINE
+   
+   
+   Validation :
+   -------------
+   passage des 7 tests utilisant DYNA_TRAN_EXPLI
+   
+   
+   Remarques :
+   - pour les tests sdls115a et sdnv100f on force DYNA_TRAN_EXPLI/MASS_DIAG='NON'
+   car sinon, on obtient des RESU_NOOK sur des valeurs analytiques.
+   Une fiche est emise concernant ce probleme (10295)
+   
+   
+   - test sdls116a (D. Markovic) :
+   On modifie le test sdls116a de sorte que le resultat  puisse etre (plus
+   facilement) compare avec un resultat d'Europlexus, le test etant actuellement en
+   "non-regression". Ainsi, on remplace le chargement sinusoidal en temps avec une rampe
+   lineaire. Le reste (maillage, la nature du chargement etc.) reste essentiellement le
+   meme.
+   
+   
+   nb_jours_trav: 6.5
+   JP : 1
+   NG : 0.5
+   RTA: 1
+   DM : 3
+   XD : 1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.3.3
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.53.03, U4.53.02
+VALIDATION
+   SDLS116A + tous les tests DYNA_TRAN_EXPLI
+NB_JOURS_TRAV  : 6.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 27/11/2006 - 11:32:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010293 DU 2006-11-22 12:58:58
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Tests zmat004a et ssnv194a en version NEW8.3.23 sur Bull
+FONCTIONNALITE
+   Les angles d'Euler n'etaient plus pris en compte depuis la restit de cette semaine
+   (8.3.23), a cause de la mauvaise imbrication de IF... ELSE IF dans la routine RCANGM.f.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv194a, zmat004a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 27/11/2006 - 11:32:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009174 DU 2005-11-07 00:00:00
+TYPE aide utilisation concernant Code_Aster (VERSION 8.1)
+TITRE
+   AOM CONTACT - REAC_GEOM
+FONCTIONNALITE
+   Reponse de Mickael
+   
+   NB_RESOL est un parametre avance qui disparaitra du catalogue
+   d'AFFE_CHAR_MECA, etant trop difficile a gerer par un utilisateur,
+   meme averti. Il influe sur la vitesse de resolution du fait qu'il
+   prend les seconds membres de la resolution du contact (complement de
+   Schur) de maniere plus ou moins importante (par paquets plus ou moins
+   gros), par un   compromis entre vitesse et memoire. Le probleme est
+   donc resolu de maniere un peu differente, pouvant influer sur la
+   vitesse de convergence.
+   La difficulte sur REAC_GEOM est connue, la partie "automatique" n'est
+   pas parfaite et provoque parfois des comportements un peu etranges
+   (fiche 8385), ce n'est pas le premier utilisateur a se plaindre.
+   C'est une bonne solution que de regler "a la main" le nombre
+   d'iterations de reactualisations geometriques dans ce cas. Une alarme
+   permettant a l'utilisateur de s'apercevoir si son choix est coherent
+   ou pas mais ne le dispensant pas de verifier la qualite du resultat.
+   Une simple verifiation visuelle permet de s'assurer de la
+   reactualisation geometrique. On voit immediatement l'interpenetration
+   provoquee par une mauvaise reactualisation geometrique (NB: penser a
+   ne pas amplifier les deplacements dans la visu).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test AOM
+NB_JOURS_TRAV  : 4.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mjbhhpe      FLEJOU J.L.            DATE 27/11/2006 - 11:32:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010124 DU 2006-10-09 08:52:11
+TYPE anomalie concernant Code_Aster (VERSION 8.0)
+TITRE
+   Echec de l'utilisation de la fonction COQ_POU associee a un comportement de type
+FONCTIONNALITE
+   Reponse de Jean-Luc Flejou :
+   
+   Cela vient du fait que la loi 'VMIS_ISOT_LINE' n'existe pas pour les poutres.
+   (par contre ce comportement existe en POU_D_TGM et POU_D_EM. Pour les POU_D_E / POU_D_T,
+   utiliser VMIS_POU_LINE).
+   
+   Quand on fait tourner l'exemple en version 8, on a le joli message :
+   !---------------------------------------------------------!
+   ! <F> <ELEMENTS3_61>                                      !
+   !                                                         !
+   !  loi  VMIS_ISOT_LINE  indisponible pour les pou_d_e/d_t !
+   !                                                         !
+   ! Cette erreur est fatale. Le code s'arrete.              !
+   !---------------------------------------------------------!
+   
+   Avant la version 8.0.8 du 16/02/2005, il n'y avait pas de test sur la loi de comportement
+   et aster se vautrait. En STA8, NEW8 il y a le joli message d'erreur.
+   
+   Comme il n'y a pas de risque d'erreur lors de l'utilisation en 7, et que l'on stabilise la
+   8 dans quelques jours, je propose de classer la fiche en resolu.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage du cas
+NB_JOURS_TRAV  : 0.02
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR assire       ASSIRE A.              DATE 27/11/2006 - 13:39:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009862 DU 2006-06-22 10:10:10
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : DeltaCad
+TITRE
+   CALC_ELEM sur SD DYNA_TRANS
+FONCTIONNALITE
+   Anomalie
+   --------
+   Un plantage s'est produit dans CALC_ELEM (routine mecalm.f) au moment ou l'on
+   recupere la sur-option (MASS_MECA / MASS_MECA_DIAG).
+   Cette sur-option est obtenue par un appel a DISMOI, a partir de la matrice de masse
+   assemblee.
+   Dans certain cas, comme en sous-structuration dynamique, on ne dispose pas de la matrice
+   de masse assemblee. Ainsi le code s'interrompt brutalement dans l'appel a DISMOI en raison
+   d'un objet manquant construit a partir de la matrice assemblee.
+   
+   Correction
+   ----------
+   Il a ete convenu de renseigner une SUR_OPTION par defaut dans CALC_ELEM.
+   Cette sur-option est initialisee a MASS_MECA.
+   Ainsi lorsque la matrice de masse ne peut etre recuperee, alors la sur-option
+   vaut MASS_MECA.
+   
+   Validation
+   ----------
+   - cas-test sdnl104b : introduction d'un CALC_ELEM/OPTION='SIGM_ELNO_DEPL'
+   puis d'un TEST_RESU/'NON_REGRESSION'.
+   - liste restreinte
+   
+   Impact
+   ------
+   fortran: mecalm.f
+   cas-test: sdnl104b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte, sdnl104b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 27/11/2006 - 18:30:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008783 DU 2005-06-16 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TMA : CS
+TITRE
+   elements discrets + irradiation
+FONCTIONNALITE
+   Dans le te0047, plusieurs comportements sont traites :
+   - comportement elastique => appel a DISIEF
+   - comportement corniere  => appel a DICORN, DISIEF
+   - comportement armement  => appel a DIARME, DISIEF
+   - comportement contact   => appel a DICOUL
+   - comportement combu     => appel a DICRGR
+   - comportement choc      => appel a DICHOC, DISIEF
+   - comportement gouj2E    => appel a DIGOUJ, DISIEF
+   
+   Pour tous ces comportements sauf dans la routine DISIEF, on ne traite
+   qu'un seul point de
+   gauss, et pour le type de maille SEG2 on affecte la valeur calculee au
+   deuxieme point de
+   gauss .
+   L'objectif initiale de cette fiche devait affecter 1 point de gauss
+   pour les elements
+   discrets de type SEG2.
+   Apres avoir realise cet evolution, la validation donnait 1 test NOOK
+   (test miss06a): les
+   efforts generalises sur un discret de type SEG2 sont NOOK.
+   En fait la notion de point de gauss n'existe pas au sens des elements
+   isoparametriques
+   pour ces elements discrets. On calcule des grandeurs aux noeuds.
+   Le passage gauss-noeud est une recopie des grandeurs calculees aux
+   soi-disants points de
+   gauss aux noeuds.
+   Dans la routine DISIEF (calcul des efforts generalises ou forces
+   nodales) le code calcule
+   des grandeurs aux noeuds et affecte celles-ci dans le champ SIEF_ELGA.
+   Pour les elements discrets de type POI1 : 1 point de gauss situe au
+   noeud.
+   Pour les elements discrets de type SEG2 : 2 points de gauss situes aux
+   noeuds.
+   Le champ SIEF_ELGA est en fait un champ SIEF_ELNO.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste contenant des discrets
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR g8bhhxd      DESROCHES X.           DATE 27/11/2006 - 18:30:48
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010297 DU 2006-11-23 07:56:13
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   NEW8.3.23, le test hslv304b s'arrete en ERREUR (Alphaserver)
+FONCTIONNALITE
+   Il s'agit du SAV de la fiche 9148.
+   Dans le te284, on fait appel a une routine pour modifier
+   la dimension du probleme en axis
+   fourier. Ainsi la "dimension" (parametre NDIM) devient
+   egale a 3. Or les noeuds ont
+   seulement deux coordonnees et il y a donc debordement.
+   Il faut utiliser DIMCOO a la place
+   de NDIM dans la ligne incriminee ainsi que dans la
+   boucle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hslv304b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR voldoire     VOLDOIRE F.            DATE 22/11/2006 - 18:01:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010117 DU 2006-10-06 13:51:44
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   Loi Labord_1D : calcul faux des taux de restit Y1 et Y2
+FONCTIONNALITE
+   Modification du Fortran
+   Loi LABORD_1D (poutres PMF)
+   Conformite avec la doc R7.01.07.
+   
+   Routine nmcb1d.f : modifiee
+   - on decommente les deux lignes qui actualisent les seuils
+   Cela met a jour les vari V3 et V4, qui sont les taux de restitution d'energie Y1 et Y2.
+   
+   CAS TEST modifie :
+   on a ajoute le test_resu de non-regression de V3 et V4 a deux instants differents dans
+   :
+   
+   ssnl120a Reponse cyclique de la loi de comportement du beton (modele de La Borderie)
+   [V6.02.120]
+   
+   Mais pas dans les autres tests de cette loi (ssnl119 ni sdnl130).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.11
+VALIDATION
+   tests
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF fdlv108a                       durand C.DURAND           159    115    106
+ CASTEST MODIF fiab001a                     gnicolas G.NICOLAS          128      8      7
+ CASTEST MODIF sdld21c                        boyere E.BOYERE           231      5      1
+ CASTEST MODIF sdls115a                       pellet J.PELLET           210      2      1
+ CASTEST MODIF sdls116a                       pellet J.PELLET           164     39     34
+ CASTEST MODIF sdnd102c                       pellet J.PELLET           243      2      1
+ CASTEST MODIF sdnd102d                       pellet J.PELLET           237      3      1
+ CASTEST MODIF sdnl104b                      rezette C.REZETTE          493     14      1
+ CASTEST MODIF sdnv100f                       pellet J.PELLET           391      2      1
+ CASTEST MODIF sdnv107a                       pellet J.PELLET           618      2      1
+ CASTEST MODIF sensd01a                     gnicolas G.NICOLAS          252      2      1
+ CASTEST MODIF ssnl120a                     voldoire F.VOLDOIRE         164     17      1
+ CASTEST MODIF ssnv194a                        proix J-M.PROIX          198      1      1
+ CASTEST MODIF ssnv504f                         kham M.KHAM             301      1      1
+ CASTEST MODIF ssnv504g                         kham M.KHAM             303      1      1
+ CASTEST MODIF ssnv504h                         kham M.KHAM             233      2      2
+ CASTEST MODIF ssnv504j                         kham M.KHAM             262      2      2
+ CASTEST MODIF zmat004a                        proix J-M.PROIX          429      1      1
+CATALOGU AJOUT options/mass_meca_expli        pellet J.PELLET            53     53      0
+CATALOGU MODIF options/mass_meca_diag         pellet J.PELLET            45     11      1
+CATALOGU MODIF typelem/gener_me2db1           pellet J.PELLET           208      3      3
+CATALOGU MODIF typelem/gener_me2dg_1          pellet J.PELLET           355      3      3
+CATALOGU MODIF typelem/gener_me2dg_2          pellet J.PELLET           371      3      3
+CATALOGU MODIF typelem/gener_me2dt0           pellet J.PELLET           162      3      3
+CATALOGU MODIF typelem/gener_me2dt1           pellet J.PELLET           165      3      3
+CATALOGU MODIF typelem/gener_me2fl2           pellet J.PELLET            98      3      3
+CATALOGU MODIF typelem/gener_me2fp2           pellet J.PELLET            86      3      3
+CATALOGU MODIF typelem/gener_me2fs1           pellet J.PELLET            43      3      3
+CATALOGU MODIF typelem/gener_me2tr0           pellet J.PELLET           165      3      3
+CATALOGU MODIF typelem/gener_me2tr1           pellet J.PELLET           168      3      3
+CATALOGU MODIF typelem/gener_me3d_3           pellet J.PELLET           680      3      3
+CATALOGU MODIF typelem/gener_me3df3           pellet J.PELLET            61      3      3
+CATALOGU MODIF typelem/gener_me3dg_1          pellet J.PELLET           325      3      3
+CATALOGU MODIF typelem/gener_me3dg_3          pellet J.PELLET           357      3      3
+CATALOGU MODIF typelem/gener_me3fl3           pellet J.PELLET           106      3      3
+CATALOGU MODIF typelem/gener_meafo2           pellet J.PELLET           168      3      3
+CATALOGU MODIF typelem/gener_meafs1           pellet J.PELLET            43      3      3
+CATALOGU MODIF typelem/gener_meax_2           pellet J.PELLET           599      3      3
+CATALOGU MODIF typelem/gener_meaxf2           pellet J.PELLET            67      3      3
+CATALOGU MODIF typelem/gener_meaxs2           pellet J.PELLET           548      3      3
+CATALOGU MODIF typelem/gener_mebar1           pellet J.PELLET           214      3      3
+CATALOGU MODIF typelem/gener_mecab1           pellet J.PELLET           157      3      3
+CATALOGU MODIF typelem/gener_mecap1           pellet J.PELLET           147      3      3
+CATALOGU MODIF typelem/gener_mecpg2           pellet J.PELLET           344      3      3
+CATALOGU MODIF typelem/gener_mecpl2           pellet J.PELLET           612      3      3
+CATALOGU MODIF typelem/gener_mecq32           pellet J.PELLET           271      3      3
+CATALOGU MODIF typelem/gener_mecqd1           pellet J.PELLET           200      3      3
+CATALOGU MODIF typelem/gener_medit0           pellet J.PELLET           174      3      3
+CATALOGU MODIF typelem/gener_medit1           pellet J.PELLET           171      3      3
+CATALOGU MODIF typelem/gener_medkg1           pellet J.PELLET           216      3      1
+CATALOGU MODIF typelem/gener_medkt2           pellet J.PELLET           314      3      1
+CATALOGU MODIF typelem/gener_medpg2           pellet J.PELLET           346      3      3
+CATALOGU MODIF typelem/gener_medpl2           pellet J.PELLET           631      3      3
+CATALOGU MODIF typelem/gener_medtr0           pellet J.PELLET           182      3      3
+CATALOGU MODIF typelem/gener_medtr1           pellet J.PELLET           220      3      3
+CATALOGU MODIF typelem/gener_mefls1           pellet J.PELLET            54      3      3
+CATALOGU MODIF typelem/gener_mefls2           pellet J.PELLET            49      2      1
+CATALOGU MODIF typelem/gener_megri2           pellet J.PELLET           205      3      3
+CATALOGU MODIF typelem/gener_megrm2           pellet J.PELLET           163      3      3
+CATALOGU MODIF typelem/gener_mepct1           pellet J.PELLET           227      4      1
+CATALOGU MODIF typelem/gener_mepde1           pellet J.PELLET           265      4      1
+CATALOGU MODIF typelem/gener_mepdg1           pellet J.PELLET           213      3      3
+CATALOGU MODIF typelem/gener_mepdt1           pellet J.PELLET           260      4      1
+CATALOGU MODIF typelem/gener_mepgd1           pellet J.PELLET           196      3      3
+CATALOGU MODIF typelem/gener_mepmf1           pellet J.PELLET           190      4      1
+CATALOGU MODIF typelem/gener_mepmf2           pellet J.PELLET           221      3      3
+CATALOGU MODIF typelem/gener_meshb3           pellet J.PELLET           331      3      3
+CATALOGU MODIF typelem/gener_metu61           pellet J.PELLET           269      3      3
+CATALOGU MODIF typelem/gener_mv2d_2           pellet J.PELLET           329      3      3
+CATALOGU MODIF typelem/gener_mv3d_3           pellet J.PELLET           411      3      3
+CATALOGU MODIF typelem/mecpqs4                pellet J.PELLET           530      3      3
+CATALOGU MODIF typelem/mecptr3                pellet J.PELLET           564      3      3
+CATALOGU MODIF typelem/medpqs4                pellet J.PELLET           544      3      3
+CATALOGU MODIF typelem/medpqs8                pellet J.PELLET           546      3      3
+CATALOGU MODIF typelem/met3seg3               pellet J.PELLET           260      3      3
+CATALOGU MODIF typelem/met3seg4               pellet J.PELLET           260      3      3
+CATALOPY MODIF commande/affe_char_cine        pellet J.PELLET            77      2     61
+CATALOPY MODIF commande/dyna_tran_expli       pellet J.PELLET           345      2      2
+CATALOPY MODIF commande/macr_fiabilite      gnicolas G.NICOLAS          379      2      2
+CATALOPY MODIF commande/post_releve_t       gnicolas G.NICOLAS          156     32      3
+ FORTRAN MODIF algeline/vpstor              courtois M.COURTOIS         338      2      1
+ FORTRAN MODIF algorith/accel0                pellet J.PELLET           234      7      3
+ FORTRAN MODIF algorith/nminit                pellet J.PELLET           434      2      2
+ FORTRAN MODIF calculel/mecalm               rezette C.REZETTE         2797      9      7
+ FORTRAN MODIF elements/dkqmas                pellet J.PELLET           241      3      2
+ FORTRAN MODIF elements/dktmas                pellet J.PELLET           230      3      2
+ FORTRAN MODIF elements/dsqmas                pellet J.PELLET           330      3      2
+ FORTRAN MODIF elements/dstmas                pellet J.PELLET           305      3      2
+ FORTRAN MODIF elements/nmcb1d              voldoire F.VOLDOIRE         125      5      7
+ FORTRAN MODIF elements/poefgr                pellet J.PELLET           190      3      2
+ FORTRAN MODIF elements/q4gmas                pellet J.PELLET           155      3      2
+ FORTRAN MODIF elements/rcangm                 proix J-M.PROIX          104      3      3
+ FORTRAN MODIF elements/te0012                pellet J.PELLET           225      4      2
+ FORTRAN MODIF elements/te0031                pellet J.PELLET           383     14     10
+ FORTRAN MODIF elements/te0041                pellet J.PELLET           357      3      2
+ FORTRAN MODIF elements/te0141                pellet J.PELLET           187      6      3
+ FORTRAN MODIF elements/te0284               salmona L.SALMONA          162      4      4
+ FORTRAN MODIF elements/te0409                pellet J.PELLET           346     11      7
+ FORTRAN MODIF elements/te0528                michel S.MICHEL           238      3      4
+ FORTRAN MODIF postrele/op0051              gnicolas G.NICOLAS          429     38      5
+ FORTRAN MODIF postrele/rvpost              gnicolas G.NICOLAS          290     32     24
+ FORTRAN MODIF postrele/rvrecu              gnicolas G.NICOLAS          117     36      7
+ FORTRAN MODIF prepost/extche               gnicolas G.NICOLAS          474     12      5
+ FORTRAN MODIF prepost/extchn               gnicolas G.NICOLAS          426     10      5
+ FORTRAN MODIF utilitai/mmaxkl              courtois M.COURTOIS         296      3      6
+  PYTHON MODIF Macro/macr_fiabilite_ops     gnicolas G.NICOLAS          359     82     47
+  PYTHON MODIF Messages/algorith              pellet J.PELLET           416      8      5
+  PYTHON MODIF Messages/mecanonline           pellet J.PELLET           359     25      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1          53        53               +53
+ MODIF :  107       31626       776     560      +216
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  108       31679       829     560      +269 

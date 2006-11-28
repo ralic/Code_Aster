@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,14 +58,14 @@ C
       INTEGER ICONTM, JCRET
       INTEGER JMATE,  LZI,     NNO,    JGEOM, JMATR
       INTEGER JENER,  I,      JFREQ,   IACCE
-      INTEGER IVECT,  NDDL,    NVEC,   NDIM,  IRET, N1, NI
+      INTEGER IVECT,  NDDL,    NVEC,   NDIM,  IRET, N1, NI, N2
       LOGICAL LCOELA
       CHARACTER*2  CODRE2(33)
       CHARACTER*10 PHENOM
 C
       REAL*8 PGL(3,3)  ,XYZL(3,4),BSIGMA(24), EFFGT(32)
       REAL*8 VECLOC(24),ENER(3),  MATP(24,24),MATV(300)
-      REAL*8 T2EV(4), T2VE(4), T1VE(9), COEF
+      REAL*8 T2EV(4), T2VE(4), T1VE(9)
 C
 C     ---> POUR DKT MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
@@ -135,6 +135,7 @@ C
 C
       ELSE IF (OPTION.EQ.'MASS_MECA' .OR.
      &         OPTION.EQ.'MASS_MECA_DIAG' .OR.
+     &         OPTION.EQ.'MASS_MECA_EXPLI' .OR.
      &         OPTION.EQ.'M_GAMMA' .OR.
      &         OPTION.EQ.'ECIN_ELEM_DEPL') THEN
 C     --------------------------------------
@@ -160,7 +161,8 @@ C     --------------------------------------
           CALL UTPSLG(NNO,6,PGL,MATLOC,MATV)
           CALL VECMA(MATV,NVEC,MATP,NDDL)
           CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
-        ELSE IF (OPTION.EQ.'MASS_MECA_DIAG') THEN
+        ELSE IF (OPTION.EQ.'MASS_MECA_DIAG'.OR.
+     &           OPTION.EQ.'MASS_MECA_EXPLI') THEN
           CALL JEVECH('PMATUUR','E',JMATR)
           NDDL = 6*NNO
           NDIM = NDDL* (NDDL+1)/2
@@ -169,19 +171,21 @@ C     --------------------------------------
    30     CONTINUE
 
 
+          IF (OPTION.EQ.'MASS_MECA_EXPLI') THEN
 C     CORRECTION DES TERMES CORRESPONDANT AU DDL 6,
 C     NON PREVU PAR LA THEORIE DKT ON RAJOUTE
 C     UN TERME DIAGONAL NON ZERO, EGAL AU CELUI DU DDL 5
 C     CETTE CORRECTION A ETE INSPIRE PAR LA DEMARCHE DANS EUROPLEXUS
-
-          COEF = 1.0D0
           DO 35 J = 1,NNO
             N1 = 6*(J-1) + 5
+            N2 = 6*(J-1) + 4
             NI = 6*J
             NDIM = (NI + 1)*NI/2
             N1   = (N1 + 1)*N1/2
-            ZR(JMATR-1+ NDIM) = ZR(JMATR-1+ N1) * COEF
+            N2   = (N2 + 1)*N2/2
+            ZR(JMATR-1+NDIM)=(ZR(JMATR-1+ N1)+ZR(JMATR-1+ N2))*0.5D0
    35     CONTINUE
+          ENDIF
 
 
         END IF

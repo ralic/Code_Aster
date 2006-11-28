@@ -1,4 +1,4 @@
-# MODIF  DATE 11/07/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ANALYSE FIABILISTE - EXEMPLE DE COUPLAGE AVEC MEFISTO
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,12 +103,13 @@ RESUFIAB = MACR_FIABILITE(
               T_SPHERE = 'NON',
            );
 #
-# Le retour de la macro est un concept de type LISTR8. On le transforme
-# en une fonction pour le test de non regression.
-###IMPR_CO(CO=RESUFIAB) ;
+###IMPR_CO(CONCEPT=_F(NOM=RESUFIAB)) ;
+# Le retour de la macro est un concept de type LISTR8. Il contient
+# une seule valeur : la probabilite de defailance.
+# On transforme cette liste en une fonction pour le test de non regression.
 #
 LR_BIDON = DEFI_LIST_REEL ( VALE = ( 1. ) , );
-###IMPR_CO(CO=LR_BIDON) ;
+###IMPR_CO(CONCEPT=_F(NOM=LR_BIDON)) ;
 #
 R_FIAB = DEFI_FONCTION ( NOM_PARA  = 'INST',
                          VALE_PARA = LR_BIDON,
@@ -116,10 +117,10 @@ R_FIAB = DEFI_FONCTION ( NOM_PARA  = 'INST',
                          INFO = 1 );
 #
 TEST_FONCTION ( VALEUR =_F( FONCTION  = R_FIAB,
-                            PRECISION = 1.E-6,
+                            PRECISION = 1.E-3,
                             VALE_PARA = 1.,
                             REFERENCE = 'ANALYTIQUE',
-                            VALE_REFE = 0.,
+                            VALE_REFE = 0.278,
                             CRITERE   = 'ABSOLU',
                           ),
               ) ;

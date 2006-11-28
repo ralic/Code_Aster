@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 28/11/2006   AUTEUR KHAM M.KHAM 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -186,7 +186,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=1,
                    PARA='ITER_GLOB',
                    VALE_I=1,
-                   PRECISION=1.E-3,
+                   PRECISION=1.E0,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=3,

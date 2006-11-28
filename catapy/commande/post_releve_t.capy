@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f',
             fr="Extraire des valeurs de composantes de champs de grandeurs pour y effectuer des calculs (moyenne,invariants,..)"
                +" ou pour les exprimer dans d'autres repères",
-            UIinfo={"groupes":("Post traitements",)},
+            docu="U4.81.21",UIinfo={"groupes":("Post traitements",)},
 
          ACTION          =FACT(statut='o',max='**',
                                regles=(UN_PARMI('RESULTAT','CHAM_GD'),), 
@@ -33,8 +33,16 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
            RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_ther,evol_noli,dyna_trans,
                                                  mode_meca,mode_flamb,mode_acou,base_modale,mode_stat,
                                                  mult_elas,fourier_elas,fourier_ther,dyna_harmo,acou_harmo)),
-
-           b_sensibilite   =BLOC(condition="RESULTAT != None",
+#
+#  1. Sensibilité
+#  1.1. Cas d'un résultat réel
+#       Cas d'un résultat harmonique dont on veut partie réelle ou imaginaire
+#
+           b_sensibilite   =BLOC(condition=" (RESULTAT != None) and \
+                                      (   AsType(RESULTAT) in (evol_elas,evol_ther,evol_noli,dyna_trans, \
+                                                               mode_meca,mode_flamb,mode_acou,base_modale,mode_stat, \
+                                                               mult_elas,fourier_elas,fourier_ther) or \
+                                        ( AsType(RESULTAT) in (dyna_harmo,acou_harmo) and FORMAT_C != 'MODULE' ) )",
                                  fr="Définition des paramètres de sensibilité",
                                  ang="Definition of sensitivity parameters",
              regles=(CONCEPT_SENSIBLE("SEPARE"), REUSE_SENSIBLE(),
@@ -42,6 +50,27 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
              SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                    fr="Liste des paramètres de sensibilité.",
                                    ang="List of sensitivity parameters"),
+
+           ),
+#
+#  1.2. Cas d'un résultat harmonique dont on veut le module
+#
+           b_sensibilite_harmo =BLOC(condition=" (RESULTAT != None) and \
+                                      ( AsType(RESULTAT) in (dyna_harmo,acou_harmo) and FORMAT_C == 'MODULE' )",
+                                     fr="Définition des paramètres de sensibilité",
+                                     ang="Definition of sensitivity parameters",
+             regles=(CONCEPT_SENSIBLE("SEPARE"), REUSE_SENSIBLE(),
+                     DERIVABLE('RESULTAT'),),
+             SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
+                                   fr="Liste des paramètres de sensibilité.",
+                                   ang="List of sensitivity parameters"),
+               b_sensibilite_harmo =BLOC(condition=" SENSIBILITE != None",
+                                         fr="Option pour la sensibilite",
+                                         ang="Option for sensitivity",
+               SENSIBILITE_OPTION =SIMP(statut='o',typ='TXM',into=("MODULE_SENSIBILITE","SENSIBILITE_MODULE",),
+                                        fr="Option : module de la dérivée ou dérivée du module",
+                                        ang="Option : modulus of derivative or derivative of modulus"),
+               ),
            ),
 
            b_extrac        =BLOC(condition = "RESULTAT != None",fr="extraction des résultats",

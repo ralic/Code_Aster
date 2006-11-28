@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ ENTETE__ ELEMENT__ MVAXQS8          MAILLE__ QUAD8
    ENS_NOEUD__  EN1     =     1  2  3  4
 
 MODE_LOCAL__
-    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
@@ -83,9 +83,9 @@ MODE_LOCAL__
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
-    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL   
+    EERREUR  = ERREUR   ELEM__         (ERREST   NUEST    SIGCAL
                                         TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
-    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   
+    EERRENO  = ERREUR   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL
                                         TERMRE   TERMR2   TERMNO   TERMN2   TERMSA   TERMS2   )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
@@ -248,8 +248,8 @@ OPTION__
                                      MVECTUR  PVECTUR
     MASS_MECA           82    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
-    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    MASS_MECA_EXPLI     -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
@@ -271,9 +271,9 @@ OPTION__
     QIRE_ELEM_SIGM      378   IN__   ECONTNO  PCONTNOP ECONTNO  PCONTNOD CREFERI  PFORCEP  CREFERI  PFORCED
                                      EFORCER  PFRVOLUP EFORCER  PFRVOLUD NGEOMER  PGEOMER  CMATERC  PMATERC
                                      CPESANR  PPESANRP CPESANR  PPESANRD CREFERI  PPRESSP  CREFERI  PPRESSD
-                                     CROTATR  PROTATRP CROTATR  PROTATRD CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  
+                                     CROTATR  PROTATRP CROTATR  PROTATRD CTEMPSR  PTEMPSR  EVOISIN  PVOISIN
                                      CCONSTR  PCONSTR
-                              OUT__  EERREUR  PERREUR  
+                              OUT__  EERREUR  PERREUR
     QIRE_ELNO_ELEM      379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
     RAPH_MECA           545   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR

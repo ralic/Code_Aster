@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/11/2006   AUTEUR KHAM M.KHAM 
 # TITRE EXTRUSION D'UN LOPIN CONTACT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,7 +134,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                                MODL_AXIS='OUI',
                                CONTACT_INIT='OUI',
                                ITER_GEOM_MAXI=3,
-                               ITER_CONT_MAXI=30,
+                               ITER_CONT_MAXI=50,
                                GROUP_MA_MAIT='SMAI1',
                                GROUP_MA_ESCL='SESC1',),),
                   );

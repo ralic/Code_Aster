@@ -1,21 +1,22 @@
-#@ MODIF mecanonline Messages  DATE 20/11/2006   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline Messages  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+# -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 def _(x) : return x
 
@@ -47,7 +48,7 @@ cata_msg={
 """),
 
 7: _("""
- Le champ de deplacement Dirichlet differentiel n'est pas trouve dans le concept EVOL_NOLI  %(k1)s 
+ Le champ de deplacement Dirichlet differentiel n'est pas trouve dans le concept EVOL_NOLI  %(k1)s
 """),
 
 8: _("""
@@ -63,7 +64,7 @@ cata_msg={
 """),
 
 11: _("""
- Pas de numero d'ordre trouve dans le concept EVOL_NOLI nomme %(k1)s 
+ Pas de numero d'ordre trouve dans le concept EVOL_NOLI nomme %(k1)s
 """),
 
 12: _("""
@@ -79,7 +80,7 @@ cata_msg={
 """),
 
 15: _("""
- Le champ de deplacement DEPL_R (ou sa derivee) n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s 
+ Le champ de deplacement DEPL_R (ou sa derivee) n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s
 """),
 
 16: _("""
@@ -87,19 +88,19 @@ cata_msg={
 """),
 
 17: _("""
- Le champ de contraintes SIEF_R (ou sa derivee) n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s 
+ Le champ de contraintes SIEF_R (ou sa derivee) n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s
 """),
 
 18: _("""
- Le champ de variables internes VARI_R (ou sa derivee) n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s 
+ Le champ de variables internes VARI_R (ou sa derivee) n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s
 """),
 
 19: _("""
- Le champ de variables non locales VARI_NONL (ou sa derive) n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s 
+ Le champ de variables non locales VARI_NONL (ou sa derive) n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s
 """),
 
 20: _("""
- Le champ de Lagrangiens non locaux LANL_ELGA n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s 
+ Le champ de Lagrangiens non locaux LANL_ELGA n'est pas trouve dans le concept EVOL_NOLI nomme %(k1)s
 """),
 
 21: _("""
@@ -235,7 +236,7 @@ cata_msg={
 """),
 
 54: _("""
- Erreur dans la decoupe initiale des pas 
+ Erreur dans la decoupe initiale des pas
 """),
 
 55: _("""
@@ -243,7 +244,7 @@ cata_msg={
 """),
 
 56: _("""
- Le nom du champ NOM_CHAMP de la variable de commande est obligatoire pour le decoupage 
+ Le nom du champ NOM_CHAMP de la variable de commande est obligatoire pour le decoupage
 """),
 
 57: _("""
@@ -295,7 +296,13 @@ cata_msg={
 """),
 
 69: _("""
- La matrice masse est non inversible => acceleration initiale nulle - avez-vous bien affecte une masse a tous les elements ?
+ Problème rencontré :
+   la matrice de masse est non inversible.
+   On ne peut donc pas s'en servir pour calculer l'accélération initiale.
+   => on initialise l'accélération à zéro.
+
+ Conseils :
+   Avez-vous bien affecté une masse sur tous les éléments ?
 """),
 
 70: _("""
@@ -329,7 +336,23 @@ cata_msg={
 77: _("""
  Vous faites une reprise de calcul avec PILOTAGE en longueur d'arc et avec l'option ANGL_INCR_DEPL mais il n'y pas assez d'informations dans
  la structure de donnees resultats. Il vous faut en effet au moins les deux derniers champs deplacements solutions.
- Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la SD resultat (modifiez vos options d'ARCHIVAGE). 
+ Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la SD resultat (modifiez vos options d'ARCHIVAGE).
+"""),
+
+78: _("""
+ Problème rencontré :
+   la matrice de masse est quasi-singulière.
+   On se sert de cette matrice pour calculer l'accélération initiale.
+   => l'accélération initiale calculée est peut etre excessive en quelques noeuds.
+
+ Conseils :
+   Ces éventuelles perturbations initiales sont en général sans influence sur
+   la suite du calcul car elles sont localisées.
+   Néanmoins, il peut etre bénéfique de laisser ces perturbations s'amortir au
+   début du calcul en faisant plusieurs pas avec chargement transitoire nul,
+   avec, eventuellement, un schéma d'integration choisi volontairement très
+   dissipatif (par exemple HHT avec alpha=-0.3).
+   On peut ensuite reprendre en poursuite avec un schéma moins dissipatif si besoin est.
 """),
 
 

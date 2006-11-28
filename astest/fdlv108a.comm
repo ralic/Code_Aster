@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 27/11/2006   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DE COEFFICIENTS AJOUTES A MASSE VOLUMIQUE VARIABLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,134 +17,143 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-
 #      CALCUL DE DIVERS COEFF AJOUTES EN ECOULEMENT
-
 #                POUR DES DOMAINES FLUIDES A RHO DIFFERENTS
-
 #                   (IE A TEMPERATURES DIFFERENTES)
-
 #                      CALCUL 3D
-
 #                CALCUL MODAL EN EAU
 
-#
-DEBUT(CODE=_F( NOM = 'FDLV108A',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='FDLV108A',
+              NIV_PUB_WEB='INTERNET',),);
 
-PRE_IDEAS(  )
+PRE_IDEAS();
 
-MAYA=LIRE_MAILLAGE(  )
-
+MAYA=LIRE_MAILLAGE();
 # CARACTERISTIQUES DE LA STRUCTURE: CYLINDRES CONCENTRIQUES
 # SEPARES PAR UN FLUIDE ANNULAIRE
 
+ACIER=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
+                            NU=0.3,
+                            RHO=7800.0,),);
 
-ACIER=DEFI_MATERIAU( ELAS=_F( RHO = 7800.,  NU = 0.3, E = 2.E11))
+DOMSTRUC=AFFE_MATERIAU(MAILLAGE=MAYA,
+                       AFFE=_F(GROUP_MA='INTERFAC',
+                               MATER=ACIER,),);
 
-DOMSTRUC=AFFE_MATERIAU(  MAILLAGE=MAYA,
-                            AFFE=_F( GROUP_MA = 'INTERFAC', MATER = ACIER) )
+STRUCTUR=AFFE_MODELE(MAILLAGE=MAYA,
+                     AFFE=_F(GROUP_MA='INTERFAC',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='DKT',),);
 
-STRUCTUR=AFFE_MODELE( MAILLAGE=MAYA,
-                          AFFE=_F( GROUP_MA = 'INTERFAC',
-                       MODELISATION = 'DKT', PHENOMENE = 'MECANIQUE')  )
+CARA=AFFE_CARA_ELEM(MODELE=STRUCTUR,
+                    COQUE=_F(GROUP_MA='INTERFAC',
+                             EPAIS=0.001,),);
 
-CARA=AFFE_CARA_ELEM(  MODELE=STRUCTUR,
-                        COQUE=_F( GROUP_MA = 'INTERFAC', EPAIS = 1.E-3) )
+CHARGS=AFFE_CHAR_MECA(MODELE=STRUCTUR,
+                      DDL_IMPO=(_F(GROUP_NO='NOEXT',
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                                _F(GROUP_NO='NOINT',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),),);
 
-CHARGS=AFFE_CHAR_MECA( MODELE=STRUCTUR,DDL_IMPO=(
-                          _F(  GROUP_NO = 'NOEXT',
-                                     DY = 0.,   DZ = 0.,
-                           DRX = 0.,  DRY = 0.,  DRZ = 0.),
-                          _F(  GROUP_NO = 'NOINT',
-                                     DX = 0.,  DY = 0.,  DZ = 0.,
-                                     DRX = 0.,  DRY = 0.,  DRZ = 0.))  )
+MEL_KSTR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=STRUCTUR,
+                        CHAM_MATER=DOMSTRUC,
+                        CARA_ELEM=CARA,
+                        CHARGE=CHARGS,);
 
-MEL_KSTR=CALC_MATR_ELEM( MODELE=STRUCTUR,
-                               CARA_ELEM=CARA,
-                              CHAM_MATER=DOMSTRUC,  OPTION='RIGI_MECA',
-                               CHARGE=CHARGS       )
+MEL_MSTR=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=STRUCTUR,
+                        CHAM_MATER=DOMSTRUC,
+                        CARA_ELEM=CARA,
+                        CHARGE=CHARGS,);
 
-MEL_MSTR=CALC_MATR_ELEM( MODELE=STRUCTUR,
-                               CARA_ELEM=CARA,
-                              CHAM_MATER=DOMSTRUC,  OPTION='MASS_MECA',
-                               CHARGE=CHARGS       )
+NUSTR=NUME_DDL(MATR_RIGI=MEL_KSTR,);
 
-NUSTR=NUME_DDL(MATR_RIGI=MEL_KSTR)
+MATASKS=ASSE_MATRICE(MATR_ELEM=MEL_KSTR,
+                     NUME_DDL=NUSTR,);
 
-MATASKS=ASSE_MATRICE( MATR_ELEM=MEL_KSTR,  NUME_DDL=NUSTR)
-
-MATASMS=ASSE_MATRICE( MATR_ELEM=MEL_MSTR,  NUME_DDL=NUSTR)
-
+MATASMS=ASSE_MATRICE(MATR_ELEM=MEL_MSTR,
+                     NUME_DDL=NUSTR,);
 #CALCUL DES MODES MECANIQUES
 
-MODES=MODE_ITER_SIMULT( MATR_A=MATASKS,  MATR_B=MATASMS,
-                             CALC_FREQ=_F( OPTION = 'BANDE',
-                                        FREQ = (20.,30.,))
-                                  )
+MODES=MODE_ITER_SIMULT(MATR_A=MATASKS,
+                       MATR_B=MATASMS,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(20.0,30.0,),),);
 
-TEST_RESU(RESU=_F( RESULTAT = MODES, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
-                CRITERE = 'RELATIF', PRECISION = 3.E-2,
-                NUME_ORDRE = 1,  VALE = 22.54)
-               )
-
+TEST_RESU(RESU=_F(RESULTAT=MODES,
+                  NUME_ORDRE=1,
+                  PARA='FREQ',
+                  VALE=22.54,
+                  CRITERE='RELATIF',
+                  PRECISION=0.03,
+                  REFERENCE='ANALYTIQUE',),);
 # AFFECTATION DU DEPLACEMENT AU CYLINDRE EXTERNE
 # ROTATION AUTOUR D UN PIVOT EN AVAL DE L ECOULEMENT
 
-CHAMNO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', 
-MAILLAGE=MAYA,AFFE=(
-                        _F( GROUP_NO = 'GRNO5',
-                               NOM_CMP = ('DX','DY','DZ',),
-                                VALE = (0.,0.,0.,)),
-                        _F( GROUP_NO = 'GRNO4',
-                               NOM_CMP = ('DX','DY','DZ',),
-                                VALE = (12.5,0.,0.,)),
-                         _F( GROUP_NO = 'GRNO3',
-                               NOM_CMP = ('DX','DY','DZ',),
-                                VALE = (25.,0.,0.,)),
-                         _F( GROUP_NO = 'GRNO2',
-                               NOM_CMP = ('DX','DY','DZ',),
-                                VALE = (37.5,0.,0.,)),
-                        _F( GROUP_NO = 'GRNO1',
-                               NOM_CMP = ('DX','DY','DZ',),
-                                VALE = (50.,0.,0.,))),
-
-                              NUME_DDL=NUSTR)
-
-#NOUVELLE METHODE AVEC MACRO_MATR_AJOU-COEFF NON TESTABLES
-# TANT QUE EL 95-231 N AURA PAS RECU DE REPONSE -ATTENTE
-# DE POUVOIR TESTER LES OBJETS JEVEUX DS TEST_RESU
-
+CHAMNO=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  NUME_DDL=NUSTR,
+                  OPERATION='AFFE',
+                  MAILLAGE=MAYA,
+                  AFFE=(
+                  _F(GROUP_NO='GRNO5',
+                     NOM_CMP=('DX','DY','DZ',),
+                     VALE=(0.0,0.0,0.0,),),
+                  _F(GROUP_NO='GRNO4',
+                     NOM_CMP=('DX','DY','DZ',),
+                     VALE=(12.5,0.0,0.0,),),
+                  _F(GROUP_NO='GRNO3',
+                     NOM_CMP=('DX','DY','DZ',),
+                     VALE=(25.0,0.0,0.0,),),
+                  _F(GROUP_NO='GRNO2',
+                     NOM_CMP=('DX','DY','DZ',),
+                     VALE=(37.5,0.0,0.0,),),
+                  _F(GROUP_NO='GRNO1',
+                     NOM_CMP=('DX','DY','DZ',),
+                     VALE=(50.0,0.0,0.0,),),),);
 
 MACRO_MATR_AJOU(MAILLAGE=MAYA,
-                  GROUP_MA_FLUIDE='FLUIDE',
-                  GROUP_MA_INTERF='INTERFAC',FLUIDE=(
-                  _F( RHO = 1000.,
-                          GROUP_MA = 'FLUID1'),
-                   _F( RHO = 750.,
-                          GROUP_MA = 'FLUID2')),
-                  INFO=2,
-                  MODELISATION='3D',DDL_IMPO=(
-                  _F( GROUP_NO = 'TEMPIMPO',
-                            PRES_FLUIDE = 0.),
-                  _F( GROUP_NO = 'NOSORT',
-                            PRES_SORTIE = 0.)),
-                  ECOULEMENT=_F( GROUP_MA_1 = 'ENTREE',
-                              GROUP_MA_2 = 'SORTIE',
-                               VNOR_1 = -4.,
-                               
-                               VNOR_2 = 5.33),
+                GROUP_MA_FLUIDE='FLUIDE',
+                GROUP_MA_INTERF='INTERFAC',
+                MODELISATION='3D',
+                FLUIDE=(_F(RHO=1000.0,
+                           GROUP_MA='FLUID1',),
+                        _F(RHO=750.0,
+                           GROUP_MA='FLUID2',),),
+                DDL_IMPO=(_F(GROUP_NO='TEMPIMPO',
+                             PRES_FLUIDE=0.0,),
+                          _F(GROUP_NO='NOSORT',
+                             PRES_SORTIE=0.0,),),
+                ECOULEMENT=_F(GROUP_MA_1='ENTREE',
+                              GROUP_MA_2='SORTIE',
+                              VNOR_1=-4.0,
+                              VNOR_2=5.33,),
+                DEPL_IMPO=CHAMNO,
+                MATR_MASS_AJOU=CO('MASSAJ'),
+                MATR_RIGI_AJOU=CO('RIGIAJ'),
+                MATR_AMOR_AJOU=CO('AMORAJ'),
+                INFO=2,);
 
-                  MATR_MASS_AJOU=CO("MASSAJ"),
-                  MATR_AMOR_AJOU=CO("AMORAJ"),
-                  MATR_RIGI_AJOU=CO("RIGIAJ"),
+TEST_RESU(OBJET=_F(NOM='MASSAJ             .VALM',
+                   S_R=1608230000.0,
+                   REFERENCE = 'NON_REGRESSION',),)
 
-                  DEPL_IMPO=CHAMNO
-                  )
-
-#MACRO_MATR_AJOU
-
+TEST_RESU(OBJET=_F(NOM='AMORAJ             .VALM',
+                   S_R=-393555000.0,
+                   REFERENCE = 'NON_REGRESSION',),)
 
 
+TEST_RESU(OBJET=_F(NOM='RIGIAJ             .VALM',
+                   S_R=3496300.0,
+                   REFERENCE = 'NON_REGRESSION',),)
 
-FIN( )
-#
+FIN();

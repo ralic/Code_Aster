@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,6 +125,7 @@ MODE=NORM_MODE(reuse=MODE,  MODE=MODE,   NORME='MASS_GENE' )
 # -------------
 TRAN_DY=DYNA_TRAN_EXPLI(  MODELE=MODELE,
                 CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
+                MASS_DIAG='NON',
                AMOR_MODAL=_F(  MODE_MECA = MODE,  REAC_VITE = 'NON',
                             AMOR_REDUIT = 0.0),
                PROJ_MODAL=_F(MODE_MECA = MODE),

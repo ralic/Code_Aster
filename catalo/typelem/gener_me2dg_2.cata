@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ ENTETE__ ELEMENT__ MGCPTR6          MAILLE__ TRIA6
    ENS_NOEUD__  EN1     =     1  2  3
 
 MODE_LOCAL__
-    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
@@ -71,8 +71,8 @@ MODE_LOCAL__
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDFEQNO  = EPSI_R   ELNO__ IDEN__  (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG )
-    EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )    
-    EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )                                        
+    EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
+    EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
@@ -239,12 +239,12 @@ OPTION__
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CMATERC  PMATERC  NTEMPER  PTEMPER
                                      CTEMPSR  PTEMPSR  CTEREFE  PTEREF   ZVARIPG  PVARIGR
                               OUT__  EDEFONO  PDEFOPL
-    EPVC_ELGA           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF 
-                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR    
-                              OUT__  EDFVCPG  PDEFOVC                              
-    EPVC_ELNO           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF  
+    EPVC_ELGA           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
-                              OUT__  EDFVCNO  PDEFOVC  
+                              OUT__  EDFVCPG  PDEFOVC
+    EPVC_ELNO           529   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                              OUT__  EDFVCNO  PDEFOVC
     EQUI_ELGA_EPME      336   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
     EQUI_ELGA_EPSI      336   IN__   EDEFOPG  PDEFORR
@@ -293,8 +293,8 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     MASS_MECA           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX   OUT__  XXXXXX   XXXXXX
+    MASS_MECA_EXPLI     -1    IN__   XXXXXX   XXXXXX   OUT__  XXXXXX   XXXXXX
     MASS_ZZ1            -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX

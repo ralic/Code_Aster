@@ -1,33 +1,36 @@
-#@ MODIF algorith Messages  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
+#@ MODIF algorith Messages  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
 
 cata_msg={
 
-1: _("""
- matrice masse non inversible => acceleration initiale nulle  - avez-vous bien affecte une masse a tous les elements ?
-"""),
 
 2: _("""
- matrice masse non inversible=> acceleration initiale nulleavez-vous bien affecte une masse a tous les elements ?
+ Problème rencontré :
+   la matrice de masse est non inversible.
+   On ne peut donc pas s'en servir pour calculer l'accélération initiale.
+   => on initialise l'accélération à zéro.
+
+ Conseils :
+   Avez-vous bien affecté une masse sur tous les éléments ?
 """),
 
 3: _("""
@@ -67,16 +70,16 @@ cata_msg={
 """),
 
 12: _("""
- Dans le cas où les différents mouvements d'appui sont corrélés et dépendants, 
+ Dans le cas où les différents mouvements d'appui sont corrélés et dépendants,
  les resultats ACCE_ABSOLU sont faux.
 """),
 
 13: _("""
- le vect_elem n'existe pas :  %(k1)s 
+ le vect_elem n'existe pas :  %(k1)s
 """),
 
 14: _("""
- champ non renseigne. il faut avoir utilise corich('e',...) sur:  %(k1)s 
+ champ non renseigne. il faut avoir utilise corich('e',...) sur:  %(k1)s
 """),
 
 15: _("""
@@ -96,11 +99,11 @@ cata_msg={
 """),
 
 21: _("""
- le noeud  %(k1)s  n'appartient pas au maillage :  %(k2)s 
+ le noeud  %(k1)s  n'appartient pas au maillage :  %(k2)s
 """),
 
 22: _("""
- le groupe  %(k1)s  n'appartient pas au maillage :  %(k2)s 
+ le groupe  %(k1)s  n'appartient pas au maillage :  %(k2)s
 """),
 
 23: _("""
@@ -108,7 +111,7 @@ cata_msg={
 """),
 
 24: _("""
- le nombre de cas  doit etre superieur a deux pour etre  combine 
+ le nombre de cas  doit etre superieur a deux pour etre  combine
 """),
 
 25: _("""
@@ -128,7 +131,7 @@ cata_msg={
 """),
 
 29: _("""
-  vous avez deja donne un spectre pour le support  %(k1)s 
+  vous avez deja donne un spectre pour le support  %(k1)s
 """),
 
 30: _("""
@@ -136,19 +139,19 @@ cata_msg={
 """),
 
 31: _("""
- le noeud  %(k1)s  ne fait pas parti du maillage :  %(k2)s 
+ le noeud  %(k1)s  ne fait pas parti du maillage :  %(k2)s
 """),
 
 32: _("""
-  la numerotation n'est pas coherente avec le  modele generalise  si vous avez active l'option initial dans  nume_ddl_gene faite de meme ici !  on arrete tout 
+  la numerotation n'est pas coherente avec le  modele generalise  si vous avez active l'option initial dans  nume_ddl_gene faite de meme ici !  on arrete tout
 """),
 
 33: _("""
- dimensionement 
+ dimensionement
 """),
 
 34: _("""
- il y a incohrence entre la loi de couplage de defi_materiau  %(k1)s  et la loi de couplage dans stat_non_line  %(k2)s 
+ il y a incohrence entre la loi de couplage de defi_materiau  %(k1)s  et la loi de couplage dans stat_non_line  %(k2)s
 """),
 
 35: _("""
@@ -156,35 +159,35 @@ cata_msg={
 """),
 
 36: _("""
- barsoum, hexa : bug ! 
+ barsoum, hexa : bug !
 """),
 
 37: _("""
- barsoum, penta : bug ! 
+ barsoum, penta : bug !
 """),
 
 38: _("""
- barsoum, pyram : bug ! 
+ barsoum, pyram : bug !
 """),
 
 39: _("""
- barsoum, quad : bug ! 
+ barsoum, quad : bug !
 """),
 
 40: _("""
- barsoum, tetra : bug ! 
+ barsoum, tetra : bug !
 """),
 
 41: _("""
- barsoum, tria : bug ! 
+ barsoum, tria : bug !
 """),
 
 42: _("""
- beton_double_dp: increment de deformation plastique en traction negatif --> redecoupage auto du pas de temps 
+ beton_double_dp: increment de deformation plastique en traction negatif --> redecoupage auto du pas de temps
 """),
 
 43: _("""
- beton_double_dp: increment de deformation plastique en compression negatif --> redecoupage auto du pas de temps 
+ beton_double_dp: increment de deformation plastique en compression negatif --> redecoupage auto du pas de temps
 """),
 
 44: _("""
@@ -192,7 +195,7 @@ cata_msg={
 """),
 
 45: _("""
- integration elastoplastique de loi beton_double_dp : la condition d applicabilite sur la taille des elements n est pas respectee en compression pour la maille:  %(k1)s 
+ integration elastoplastique de loi beton_double_dp : la condition d applicabilite sur la taille des elements n est pas respectee en compression pour la maille:  %(k1)s
 """),
 
 46: _("""
@@ -200,7 +203,7 @@ cata_msg={
 """),
 
 47: _("""
- integration elastoplastique de loi beton_double_dp : la condition d applicabilite sur la taille des elements n est pas respectee en traction pour la maille:  %(k1)s 
+ integration elastoplastique de loi beton_double_dp : la condition d applicabilite sur la taille des elements n est pas respectee en traction pour la maille:  %(k1)s
 """),
 
 48: _("""
@@ -240,7 +243,7 @@ cata_msg={
 """),
 
 57: _("""
- le materiau depend de la temperature! il n'y a pas de champ de temperature ! le calcul est impossible 
+ le materiau depend de la temperature! il n'y a pas de champ de temperature ! le calcul est impossible
 """),
 
 58: _("""
@@ -280,7 +283,7 @@ cata_msg={
 """),
 
 67: _("""
- option secante non valide 
+ option secante non valide
 """),
 
 68: _("""
@@ -344,7 +347,7 @@ cata_msg={
 """),
 
 83: _("""
- il y a plusieurs charges contenant des conditions de contact 
+ il y a plusieurs charges contenant des conditions de contact
 """),
 
 84: _("""

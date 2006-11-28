@@ -1,5 +1,5 @@
 
-# MODIF  DATE 14/03/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,6 +131,7 @@ L_CONT=DEFI_LIST_REEL(DEBUT=2.E-5,
 U=DYNA_TRAN_EXPLI(MODELE=MODE,
                   CHAM_MATER=CM,
                   CARA_ELEM=CARA,
+                  MASS_DIAG='NON',
                   EXCIT=_F(CHARGE=CH,
                            FONC_MULT=RAMPE,),
                   COMP_INCR=_F(RELATION='DIS_CHOC',

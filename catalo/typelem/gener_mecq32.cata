@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -162,7 +162,7 @@ OPTION__
                                      CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
-                                     ZVARIPG  PVARIPR  MVECTUR  PVECTUR  CCACO3D  PCACO3D  
+                                     ZVARIPG  PVARIPR  MVECTUR  PVECTUR  CCACO3D  PCACO3D
     FULL_MECA_ELAS      414   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLA  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
@@ -170,14 +170,14 @@ OPTION__
                                      CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
-                                     ZVARIPG  PVARIPR  MVECTUR  PVECTUR  CCACO3D  PCACO3D  
+                                     ZVARIPG  PVARIPR  MVECTUR  PVECTUR  CCACO3D  PCACO3D
     MASS_INER           417   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           406   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR
-    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    MASS_MECA_EXPLI     -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
@@ -194,14 +194,14 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
                                      CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
-                                     ZVARIPG  PVARIMR  CCACO3D  PCACO3D  
+                                     ZVARIPG  PVARIMR  CCACO3D  PCACO3D
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  EREFCO   PREFCO   NTEMPER  PTEMPER
                               OUT__  MVECTUR  PVECTUR
     RIGI_MECA           401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPEF  PTEMPEF
                                      NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                              OUT__  MMATUUR  PMATUUR  CCACO3D  PCACO3D 
+                              OUT__  MMATUUR  PMATUUR  CCACO3D  PCACO3D
     RIGI_MECA_ELAS      414   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLA  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
@@ -218,7 +218,7 @@ OPTION__
     RIGI_MECA_SENSI     401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPEF  PTEMPEF
                                      NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                                      DDL_MECA PVAPRIN  CMATERC  PMATSEN
-                              OUT__  MVECTUR  PVECTUR 
+                              OUT__  MVECTUR  PVECTUR
     RIGI_MECA_SENS_C    401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPEF  PTEMPEF
                                      NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
                                      NDEPLAC  PVAPRIN  CMATERC  PMATSEN

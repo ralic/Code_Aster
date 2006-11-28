@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ ENTETE__ ELEMENT__ MECA_SHB8        MAILLE__ HEXA8
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4
 
 MODE_LOCAL__
-    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
@@ -244,8 +244,8 @@ OPTION__
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR
-    MASS_MECA_DIAG      12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
-                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_DIAG      12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  OUT__  MMATUUR  PMATUUR
+    MASS_MECA_EXPLI     12    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
@@ -296,7 +296,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_TANG      530   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      EDEFONO  PDEFAMR  EDEFONO  PDEFAPR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
-                                     NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC 
+                                     NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
                                      CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR

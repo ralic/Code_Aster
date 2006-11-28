@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,7 +99,9 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         CALL RHOEQU(RHO,RHOS,RHOFI,RHOFE,CM,PHII,PHIE)
 
       ELSE IF (OPTION.EQ.'MASS_MECA' .OR.
-     &         OPTION.EQ.'MASS_MECA_DIAG' .OR. OPTION.EQ.'M_GAMMA') THEN
+     &         OPTION.EQ.'MASS_MECA_DIAG' .OR.
+     &         OPTION.EQ.'MASS_MECA_EXPLI' .OR.
+     &         OPTION.EQ.'M_GAMMA') THEN
         CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,NOMRES,
      &              VALRES,CODRES,'FM')
         E = VALRES(1)
@@ -118,7 +120,8 @@ C     --- RECUPERATION DES ORIENTATIONS ---
 C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
 
       KANL = 1
-      IF (OPTION.EQ.'MASS_MECA_DIAG') KANL = 0
+      IF (OPTION.EQ.'MASS_MECA_DIAG' .OR.
+     &    OPTION.EQ.'MASS_MECA_EXPLI') KANL = 0
       IF (NOMTE(1:13).EQ.'MECA_POU_D_EM') THEN
         CALL PMFMAS(NOMTE,RHO,KANL,MLV)
       ELSE

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/06/2006   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -529,6 +529,7 @@ EVINT=CALC_FONC_INTERP(FONCTION=EVOL_FY, NOM_PARA = 'INST',
 DYTREX=DYNA_TRAN_EXPLI(MODELE=MODELE3,
                      CARA_ELEM=PARAM3,
                      CHAM_MATER=CHAMAT,
+                     MASS_DIAG='NON',
                      EXCIT=(
                             _F(CHARGE=EXCIMO3,
                                FONC_MULT=EVINT,),),

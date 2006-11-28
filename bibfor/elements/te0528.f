@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 28/11/2006   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -129,12 +129,11 @@ C     -----------------------------------
 C POUR BETON_UMLV_FP LE FLUAGE DE DESSICCATION VAUT 
 C                    [V9 V10 V11 V18 V19 V20] 
 
-         CALL LCUMVI('FD',ZR(IVARI),EPSTMP)
-
+         CALL LCUMVI('FD',ZR(IVARI+(IGAU-1)*NBVARI),EPSTMP)
+         
          DO 182 I=1,NBSIG
            EPSFL(NBSIG*(IGAU-1)+I)=EPSTMP(I)
   182    CONTINUE         
-                             
   140   CONTINUE
 
 C     --------------------------------------------------------     
@@ -166,7 +165,7 @@ C        EPFP12 = V12+V13
 C        EPFP13 = V14+V15
 C        EPFP14 = V16+V17       
        
-         CALL LCUMVI('FP',ZR(IVARI),EPSTMP)
+         CALL LCUMVI('FP',ZR(IVARI+(IGAU-1)*NBVARI),EPSTMP)
 
          DO 185 I=1,NBSIG
            EPSFL(NBSIG*(IGAU-1)+I)=EPSTMP(I)

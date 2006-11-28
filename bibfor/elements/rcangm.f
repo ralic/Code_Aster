@@ -3,7 +3,7 @@
       INTEGER  NDIM
       REAL*8   ANGMAS(7),COOR(3)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,7 @@ C     ------------------------------------------------------------------
 
       IF (IRET.EQ.0) THEN
          CALL R8INIR ( 7, 0.D0, ANGMAS ,1 )
-         IF (ZR(ICAMAS).EQ.1.D0) THEN
+         IF (ZR(ICAMAS).GT.0.D0) THEN
             ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
             IF ( NDIM .EQ. 3 ) THEN
                ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
@@ -67,7 +67,7 @@ C           ECRITURE DES ANGLES D'EULER A LA FIN LE CAS ECHEANT
                ANGMAS(7) = ZR(ICAMAS+6)*R8DGRD()
                ANGMAS(4) = 2.D0
             ENDIF
-         ELSE IF ( ZR(ICAMAS).EQ.-1.D0) THEN
+         ELSE IF ( ABS(ZR(ICAMAS)+1.D0).LT.1.D-3) THEN
 
 C ON TRANSFORME LA DONNEE DU REPERE CYLINDRIQUE EN ANGLE NAUTIQUE
 C (EN 3D, EN 2D ON MET A 0)

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ ENTETE__ ELEMENT__ MECA_POU_C_T     MAILLE__ SEG2
    ELREFE__  SE2    GAUSS__  RIGI=FPG2   FPG_LISTE__  MATER = (RIGI)
 
 MODE_LOCAL__
-    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CABSCUR  = ABSC_R   ELEM__         (ABSC1    ABSC2    )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAARPO  = CAARPO   ELEM__         (RCOURB   ORIE_ARC C_FLEX   I_SIGM   C_FLEX_Y I_SIGM_Y
@@ -152,6 +152,9 @@ OPTION__
                                      CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_DIAG      141   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  NTEMPER  PTEMPER
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_EXPLI     141   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX

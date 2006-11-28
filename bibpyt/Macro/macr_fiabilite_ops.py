@@ -1,4 +1,4 @@
-#@ MODIF macr_fiabilite_ops Macro  DATE 29/08/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_fiabilite_ops Macro  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,18 +92,22 @@ def macr_fiabilite_ops(self, INFO,
 # 2.1. ==> Création du répertoire pour l'exécution du logiciel de fiabilité
 #
     Nom_Rep_local = "tmp_fiabilite"
-    Rep_Calc_LOGICIEL_local = os.path.join(".",Nom_Rep_local)
-    Rep_Calc_LOGICIEL_global = os.path.join(Rep_Calc_ASTER,Nom_Rep_local)
+    Rep_Calc_LOGICIEL_local = os.path.join(".", Nom_Rep_local)
+    Rep_Calc_LOGICIEL_global = os.path.join(Rep_Calc_ASTER, Nom_Rep_local)
 #
     try :
       os.mkdir(Rep_Calc_LOGICIEL_global)
-    except os.error,erreur_partiel :
+    except os.error, erreur_partiel :
       self.cr.warn("Code d'erreur de mkdir : " + str(erreur_partiel[0]) + " : " + erreur_partiel[1])
       self.cr.fatal("Impossible de créer le répertoire de travail pour le logiciel de fiabilité : "+Rep_Calc_LOGICIEL_global)
       erreur = erreur + 1
       break
 #
-# 2.2. ==> On crée un fichier annexe pour transmettre des données à la procédure
+# 2.2. ==> On définit un fichier pour les résultats du calcul de fiabilité
+#
+    FIC_RESU_FIABILITE = os.path.join(Rep_Calc_LOGICIEL_global, "resu_fiabilite")
+#
+# 2.3. ==> On crée un fichier annexe pour transmettre des données à la procédure
 #          de lancement des calculs ASTER par le LOGICIEL.
 #          Ce fichier est créé dans le répertoire d'exécution du logiciel de fiabilité.
 #          On fait ainsi car les arguments passés ont du mal à transiter via l'exécutable.
@@ -146,7 +150,7 @@ def macr_fiabilite_ops(self, INFO,
 #
     valeurs_lois = { }
 #
-    for m in VARIABLE :
+    for la_variable in VARIABLE :
 #
       v_moy_physique = None
       v_moy_loi = None
@@ -157,33 +161,33 @@ def macr_fiabilite_ops(self, INFO,
 # 3.1.1. ==> loi uniforme : transfert des min et max
 #            on définit une moyennne comme étant la médiane des extremes.
 #
-      if m["LOI"] == "UNIFORME" :
-        v_moy_physique = 0.5 * ( m["VALE_MIN"] + m["VALE_MAX"] )
-        v_min_loi = m["VALE_MIN"]
-        v_max_loi = m["VALE_MAX"]
+      if la_variable["LOI"] == "UNIFORME" :
+        v_moy_physique = 0.5 * ( la_variable["VALE_MIN"] + la_variable["VALE_MAX"] )
+        v_min_loi = la_variable["VALE_MIN"]
+        v_max_loi = la_variable["VALE_MAX"]
 #
 # 3.1.2. ==> loi normale : transfert des moyennne et écart-type.
 #
-      elif m["LOI"] == "NORMALE" :
-        v_moy_loi = m["VALE_MOY"]
+      elif la_variable["LOI"] == "NORMALE" :
+        v_moy_loi = la_variable["VALE_MOY"]
         v_moy_physique = v_moy_loi
-        sigma_loi = m["ECART_TYPE"]
+        sigma_loi = la_variable["ECART_TYPE"]
 #
 # 3.1.3. ==> loi lognormale : identité du min, conversion pour le reste
 #
-      elif m["LOI"] == "LOGNORMALE" :
-        v_min_loi = m["VALE_MIN"]
-        if m["VALE_MOY_PHY"] is None :
-          v_moy_loi = m["VALE_MOY"]
-          sigma_loi = m["ECART_TYPE"]
+      elif la_variable["LOI"] == "LOGNORMALE" :
+        v_min_loi = la_variable["VALE_MIN"]
+        if la_variable["VALE_MOY_PHY"] is None :
+          v_moy_loi = la_variable["VALE_MOY"]
+          sigma_loi = la_variable["ECART_TYPE"]
           aux = Numeric.exp(0.5*sigma_loi*sigma_loi+v_moy_loi)
           v_moy_physique = v_min_loi + aux
         else :
-          v_moy_physique = m["VALE_MOY_PHY"]
-          aux = m["ECART_TYPE_PHY"]/(m["VALE_MOY_PHY"]-m["VALE_MIN"])
+          v_moy_physique = la_variable["VALE_MOY_PHY"]
+          aux = la_variable["ECART_TYPE_PHY"]/(la_variable["VALE_MOY_PHY"]-la_variable["VALE_MIN"])
           aux1 = 1. + aux*aux
           aux2 = Numeric.sqrt(aux1)
-          v_moy_loi = Numeric.log((m["VALE_MOY_PHY"]-m["VALE_MIN"])/aux2)
+          v_moy_loi = Numeric.log((la_variable["VALE_MOY_PHY"]-la_variable["VALE_MIN"])/aux2)
           aux2 = Numeric.log(aux1)
           sigma_loi = Numeric.sqrt(aux2)
 #
@@ -191,23 +195,23 @@ def macr_fiabilite_ops(self, INFO,
 #            on définit une moyennne comme étant la médiane des extremes.
 #
       else :
-        v_moy_loi = m["VALE_MOY"]
-        v_min_loi = m["VALE_MIN"]
-        v_max_loi = m["VALE_MAX"]
-        sigma_loi = m["ECART_TYPE"]
-        v_moy_physique = 0.5 * ( m["VALE_MIN"] + m["VALE_MAX"] )
+        v_moy_loi = la_variable["VALE_MOY"]
+        v_min_loi = la_variable["VALE_MIN"]
+        v_max_loi = la_variable["VALE_MAX"]
+        sigma_loi = la_variable["ECART_TYPE"]
+        v_moy_physique = 0.5 * ( la_variable["VALE_MIN"] + la_variable["VALE_MAX"] )
 #
-      d = { }
-      d["v_moy_physique"] = v_moy_physique
-      d["v_moy_loi"] = v_moy_loi
-      d["v_min_loi"] = v_min_loi
-      d["v_max_loi"] = v_max_loi
-      d["sigma_loi"] = sigma_loi
-      valeurs_lois[m] = d
+      dico = { }
+      dico["v_moy_physique"] = v_moy_physique
+      dico["v_moy_loi"] = v_moy_loi
+      dico["v_min_loi"] = v_min_loi
+      dico["v_max_loi"] = v_max_loi
+      dico["sigma_loi"] = sigma_loi
+      valeurs_lois[la_variable] = dico
 #
 #____________________________________________________________________
 #
-# 4. Création des fichiers pour le logiciel de fiabilite
+# 4. Création des fichiers de donnees pour le logiciel de fiabilite
 #____________________________________________________________________
 #
     if ( LOGICIEL == "MEFISTO" ) :
@@ -225,8 +229,8 @@ def macr_fiabilite_ops(self, INFO,
 #
     else :
 #
-     self.cr.warn("Logiciel de fiabilité : "+LOGICIEL)
-     erreur = 10
+      self.cr.warn("Logiciel de fiabilité : "+LOGICIEL)
+      erreur = 10
 #
 # 4.3. ==> Arret en cas d'erreur
 #
@@ -246,12 +250,13 @@ def macr_fiabilite_ops(self, INFO,
 #____________________________________________________________________
 #
 #
-    VERSION=string.replace(VERSION,"_",".")
-    VERSION=string.replace(VERSION,"N","n")
+    VERSION = string.replace(VERSION, "_", ".")
+    VERSION = string.replace(VERSION, "N", "n")
 #
     EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_LOGICIEL_global, # nom du repertoire
                                 LOGICIEL,                 # nom du logiciel de fiabilité
                                 VERSION,                  # version du logiciel de fiabilité
+                                FIC_RESU_FIABILITE,       # fichier des résultats du logiciel de fiabilité
                                ),
                     LOGICIEL = fiabilite
                    )
@@ -269,16 +274,46 @@ def macr_fiabilite_ops(self, INFO,
       erreur = 100
     self.cr.fatal(messages_erreur[erreur])
 #
-# 6.2. ==> Si tout va bien, on crée une liste de réels pour le retour
-#          A terme, il serait intéressant d'y mettre les résultats
-#          de l'analyse fiabiliste. Pour le moment, on se contente de
-#          mettre une valeur nulle qui permet de faire un test dans
-#          les commandes appelantes.
+# 6.2. ==> Si tout va bien, on crée une liste de réels pour le retour.
+#          Si le fichier n'a pas été rempli, on met une valeur nulle unique.
 #
-  aux = [float(erreur)]
+  if os.path.isfile(FIC_RESU_FIABILITE) :
+    liste_reel = []
+    fic = open(FIC_RESU_FIABILITE, "r")
+    tout = fic.readlines()
+    fic.close
+    for ligne in tout:
+      liste_reel.append(float(ligne[:-1]))
+  else :
+    liste_reel = [0.]
 #
-  self.DeclareOut("nomres",self.sd)
-  nomres = DEFI_LIST_REEL( VALE = aux , INFO = 1 )
+  self.DeclareOut("nomres", self.sd)
+  nomres = DEFI_LIST_REEL( VALE = liste_reel , INFO = 1 )
+#
+# 6.3. ==> Menage du répertoire créé pour le calcul fiabiliste
+#
+  liste = os.listdir(Rep_Calc_LOGICIEL_global)
+##  print liste
+#
+  for nomfic in liste :
+    fic_total = os.path.join(Rep_Calc_LOGICIEL_global, nomfic)
+#
+    if os.path.isdir(fic_total) :
+      liste_bis = os.listdir(fic_total)
+      for nomfic_bis in liste_bis :
+        fic_total_bis = os.path.join(fic_total, nomfic_bis)
+        if os.path.islink(fic_total_bis) :
+          os.unlink (fic_total_bis)
+        else :
+          os.chmod  (fic_total_bis, 0755)
+          os.remove (fic_total_bis)
+      os.rmdir (fic_total)
+#
+    elif os.path.isfile(fic_total) :
+      os.chmod  (fic_total, 0755)
+      os.remove (fic_total)
+#
+  os.rmdir (Rep_Calc_LOGICIEL_global)
 #
   return
 #
@@ -316,8 +351,8 @@ if __name__ == "__main__" :
   Liste = os.listdir(Rep_Calc_LOGICIEL_global)
 #
   for nomfic in Liste :
-    fic_total = os.path.join(Rep_Calc_LOGICIEL_global,nomfic)
-    os.chmod  (fic_total,0755)
+    fic_total = os.path.join(Rep_Calc_LOGICIEL_global, nomfic)
+    os.chmod  (fic_total, 0755)
     os.remove (fic_total)
   os.rmdir (Rep_Calc_LOGICIEL_global)
 #

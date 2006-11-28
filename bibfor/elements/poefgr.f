@@ -5,7 +5,7 @@
 C TOLE CRP_6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,7 +165,8 @@ C      IF ( RHO .NE. ZERO ) THEN
       CALL JEVECH('PSUROPT','L',LOPT)
       SUROPT = ZK24(LOPT)
       IF (SUROPT(1:4).EQ.'MASS') THEN
-        IF (SUROPT.EQ.'MASS_MECA_DIAG') KANL = 0
+        IF (SUROPT.EQ.'MASS_MECA_DIAG' .OR.
+     &      SUROPT.EQ.'MASS_MECA_EXPLI' ) KANL = 0
         IF (SUROPT.EQ.'MASS_MECA     ') KANL = 1
         IF (SUROPT.EQ.'MASS_FLUI_STRU') KANL = 1
         IF (KANL.EQ.2) THEN

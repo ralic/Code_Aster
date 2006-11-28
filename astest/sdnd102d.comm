@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,6 +108,7 @@ CHAM_NO=AFFE_CHAR_MECA(  MODELE=MODELE,
 # -------------
 TRAN_DY=DYNA_TRAN_EXPLI(  MODELE=MODELE,
                 CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
+                MASS_DIAG='NON',
                EXCIT=(_F(  CHARGE = CON_LIM),            
                       _F(  CHARGE = CHAM_NO,
                             FONC_MULT= ACCELER1 )),
@@ -173,6 +174,7 @@ TEST_FONCTION(VALEUR=(
 # ----------------------------------------
 TRAN_DYT=DYNA_TRAN_EXPLI(  MODELE=MODELE,
                 CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
+                MASS_DIAG='NON',
                EXCIT=(_F(  CHARGE = CON_LIM),            
                       _F(  CHARGE = CHAM_NO,
                             FONC_MULT= ACCELER1 )),

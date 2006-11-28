@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ ENTETE__ ELEMENT__ MECA_POU_D_EM    MAILLE__ SEG2
    ELREFE__  SE2    GAUSS__  RIGI=FPG2   FPG_LISTE__  MATER = (RIGI)
 
 MODE_LOCAL__
-    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     ) 
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     ECAFIEL  = CAFI_R   ELEM__         (XG       YG       AIRE     )
     CCAGNPO  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1      EY1
@@ -34,8 +34,8 @@ MODE_LOCAL__
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
-    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1    
-                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5     
+    CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
+                                        XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5
                                         KIT6     KIT7     KIT8     KIT9     )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
@@ -84,15 +84,15 @@ OPTION__
     CHAR_MECA_TEMP_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF
-                              OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_SECH_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC  
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_SECH_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  NTEMPER  PTEMPER  ENBSP_I  PNBSP_I
                                      CTEMPSR  PTEMPSR  ECAFIEL  PFIBRES
-                              OUT__  MVECTUR  PVECTUR  
-    CHAR_MECA_HYDR_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC  
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_HYDR_R    150   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES 
-                              OUT__  MVECTUR  PVECTUR  
+                                     ENBSP_I  PNBSP_I  ECAFIEL  PFIBRES
+                              OUT__  MVECTUR  PVECTUR
     DEGE_ELNO_DEPL      537   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  ECAFIEL  PFIBRES
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
                                      CTEREFE  PTEREF
@@ -129,6 +129,9 @@ OPTION__
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_DIAG      141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
+                              OUT__  MMATUUR  PMATUUR
+    MASS_MECA_EXPLI     141   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
