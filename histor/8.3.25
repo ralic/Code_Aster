@@ -1,0 +1,127 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 04/12/2006 - 16:10:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010335 DU 2006-12-01 07:29:09
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test ssnl128a en version NEW8.3.24 sous Calibre 4
+FONCTIONNALITE
+   C'etait effectivement du a Deborst : dans ce test (POU_D_TGM + comportement
+   GRAN_IRRA_LOG)
+   on a 2 STAT_NON_LINE : l'un avec DEBORST, l'autre sans (resolution 1D directe).
+   
+   A l'instant final, on tend vers un etat de contraintes nul. STAT_NON_LINE utilise alors
+   RESI_GLOB_MAXI pour la convergence. Mais dans le cas DEBORST, cela ne converge pas a
+   cause
+   des iterations supplementaires pour assurer que
+   SIYY (et SIZZ) < epsilon*Norme(SIGMA), avec epsilon = RESI_INTE_RELA=1.E-6
+   
+   Il faut donc, quand on verifie que l'on a un etat de contraintes planes ou 1D, prendre
+   en
+   compte la situation ou l'ensemble du tenseur des contraintes est nul.
+   Dans la routine NMCPL2, je remplace donc :
+   
+   PRECR=CRIT(3)*SIGPEQ
+   IF (ABS(SIGP(3)).GT.PRECR) IRET=3 (ce qui signifie : on continue les iterations)
+   
+   par :
+   IF (SIGPEQ.LT.SIGNUL) THEN
+   PRECR=CRIT(3)
+   ELSE
+   PRECR=CRIT(3)*SIGPEQ
+   ENDIF
+   IF (ABS(SIGP(3)).GT.PRECR) IRET=3
+   avec SIGNUL=RESI_INTE_RELA.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SSNL128A
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 04/12/2006 - 16:10:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010116 DU 2006-10-06 11:28:53
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   test ssnv505h sous linux Rocks et Bull
+FONCTIONNALITE
+   Et bien, en fait, c'est METIS+MULT_FRONT qui pose probleme.
+   Apres instrumentation dans tous les sens et affichages.
+   Il suffit de mettre RENUM='MDA' pour que le cas-test soit bon. A
+   rapprocher de la correction en 8.3.22 sur l'option de compil
+   --parallel
+   
+   Les PMF n'ont rien a voir, les differences constatees sur les matrices
+   elementaires sont dans l'epaisseur du trait de la precision machine.
+   
+   On passe le cas-test en MDA
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv505h
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 04/12/2006 - 16:10:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010334 DU 2006-12-01 07:25:09
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test forma12b en version NEW8.3.24 sous Calibre 4
+FONCTIONNALITE
+   En analysant ce test avec Emmanuel, nous avons constate que la resolution interne du
+   comportement VMIS_POU_LINE etait faite via RUNGE_KUTTA_4. En choisissant une resolution
+   implicite, le test converge sans probleme sur Calibre 4, Bull, Rocks.
+   
+   On modifie donc ce test en prenant RESO_INTE='IMPLICITE' (valeur par defaut).
+   
+   De plus les donnees materiau sont maintenant calculees analytiquement a partir de la
+   limite d'elasticite Sy et des dimensions de la section.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma12b sur Calibre
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF forma12b                        proix J-M.PROIX          244     19      8
+ CASTEST MODIF ssnl128a                        proix J-M.PROIX          588      1      1
+ CASTEST MODIF ssnv505h                        proix J-M.PROIX          445      2      2
+ FORTRAN MODIF algorith/nmcpl2                 proix J-M.PROIX          195     11      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    4        1472        33      14       +19
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    4        1472        33      14       +19 

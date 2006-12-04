@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/12/2006   AUTEUR PROIX J-M.PROIX 
 #
 # TITRE VALIDATION DE POU_D_TGM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -249,7 +249,7 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
                        _F(CHARGE=CHCON,),
-                      ),
+                      ),SOLVEUR=_F(RENUM='MDA'),
                 COMP_INCR=_F(RELATION='ELAS',
                              DEFORMATION='REAC_GEOM',),
                 INCREMENT=_F(LIST_INST=L_INST,

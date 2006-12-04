@@ -1,5 +1,5 @@
 
-# MODIF  DATE 14/11/2006   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 04/12/2006   AUTEUR PROIX J-M.PROIX 
 # TITRE TP DYNAMIQUE TRANSITOIRE NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,18 +41,28 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                                  CARA=('HY','HZ',),
                                  VALE=(0.05,0.05,),),);
 
+SY=150.E6
+
+HY=0.05
+HZ=0.05
+
+
+NP= HY*HZ*SY
+MEY= SY*HY*HZ*HZ/6.;
+MPY= 1.5*MEY ;
+
 MAT=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
                           NU=0.3,
                           RHO=7800.0,),
                   ECRO_LINE=_F(D_SIGM_EPSI=90000000000.0,
                                SY=150000000.0,),
-                  VMIS_POUTRE=_F(NP=375000.0,
-                                 MEY=3125.0,
-                                 MPY=4687.5,
+                  VMIS_POUTRE=_F(NP=NP,
+                                 MEY=MEY,
+                                 MPY=MPY,
                                  CAY=0.84,
                                  CBY=0.002,
-                                 MEZ=3125.0,
-                                 MPZ=4687.5,
+                                 MEZ=MEY,
+                                 MPZ=MPY,
                                  CAZ=0.84,
                                  CBZ=0.002,
                                  MPX=10000000000.0,),);
@@ -196,7 +206,7 @@ DYNANL=DYNA_NON_LINE(MODELE=MO,
                      COMP_INCR=_F(RELATION='VMIS_POU_LINE',
                                   TOUT='OUI',
                                   ITER_INTE_MAXI=500,
-                                  RESO_INTE='RUNGE_KUTTA_4',),
+                                  ),
                      INCREMENT=_F(LIST_INST=LINST,
                                   EVOLUTION='CHRONOLOGIQUE',
                                   SUBD_METHODE='UNIFORME',
@@ -204,7 +214,8 @@ DYNANL=DYNA_NON_LINE(MODELE=MO,
                                   SUBD_PAS=5,
                                   SUBD_PAS_MINI=1e-05,),
                      NEWMARK=_F(),
-                     NEWTON=_F(MATRICE='TANGENTE',
+                     NEWTON=_F(
+                               MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                     ITER_GLOB_MAXI=50,
