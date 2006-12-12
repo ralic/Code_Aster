@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (PENTA15 HEXA20)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -210,19 +210,27 @@ M = DEFI_GROUP(reuse = M,
                CREA_GROUP_NO =_F(NOM = 'MSOMMET',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA = 'VOLUME'))
+
+CH_AC1=AFFE_CHAR_CINE(MODELE=MO, INFO=2,
+                  MECA_IMPO=(                             
+                         _F(  GROUP_NO = 'FACEAB',     DX = 0., ),
+                         _F(  GROUP_NO = 'FACSUP',     DZ = 0., ),
+                         _F(  GROUP_NO = 'FACINF',     DZ = 0., ),),
+                  )
+CH_AC2=AFFE_CHAR_CINE(MODELE=MO, INFO=2,
+                  MECA_IMPO=(                             
+                         _F(  GROUP_NO = 'MSOMMET',  GONF = 0., ) ),
+                  )
 CH2=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=(                             
-                         _F(  GROUP_NO = 'FACEAB',   DX = 0.,     ),
-                         _F(  GROUP_NO = 'FACSUP',   DZ = 0.,     ),
-                         _F(  GROUP_NO = 'FACINF',   DZ = 0.,     ),
-                         _F(  GROUP_NO = 'MSOMMET',     GONF = 0.) ),
                   FACE_IMPO=_F(  GROUP_MA = 'FACEEF',   DNOR = 0.,   ),
                   PRES_REP =_F(  GROUP_MA = 'FACEAE',   PRES = 60., )
                   )
 EVOL2   = STAT_NON_LINE (
              MODELE= MO,
              CHAM_MATER= CM,
-             EXCIT= (_F(CHARGE= CH2,
+             EXCIT= (_F(CHARGE= CH_AC1,),
+                     _F(CHARGE= CH_AC2,),
+                     _F(CHARGE= CH2,
                         FONC_MULT= RAMPE),
                      ),
              INCREMENT= _F(
@@ -235,7 +243,10 @@ EVOL2   = STAT_NON_LINE (
              NEWTON= _F(
                REAC_ITER= 1,
                ),
-            ) ;             
+            ) ; 
+
+IMPR_RESU( RESU=_F( RESULTAT= EVOL2, NOM_CHAM='DEPL', INST = 1., ) , )
+            
 EVOL2 = CALC_ELEM (reuse=EVOL2,
               RESULTAT= EVOL2,
              

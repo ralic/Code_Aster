@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/11/2006   AUTEUR MARKOVIC D.MARKOVIC 
+#& MODIF COMMANDE  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                    fr="Définition des paramètres décrivant le comportement d un matériau",
-                   reentrant='n',
+                   reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
        regles=(EXCLUS('ELAS','ELAS_FO','ELAS_FLUI','ELAS_ISTR','ELAS_ISTR_FO','ELAS_ORTH',
                       'ELAS_ORTH_FO','ELAS_COQUE','ELAS_COQUE_FO',
@@ -51,6 +51,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                PRESENT_PRESENT('CABLE','ELAS'),
                EXCLUS('GLRC_DAMAGE','GLRC_DM'),
                ),
+           MATER      =SIMP(statut='f',typ=mater_sdaster),
 #
 # comportement élastique
 #

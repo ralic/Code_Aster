@@ -1,0 +1,368 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 11/12/2006 - 09:44:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010367 DU 2006-12-07 15:13:39
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   bug combinaison de fonctions (CALC_FONCTION)
+FONCTIONNALITE
+   En cas de combinaison de fonctions, un bug faisait qu'a droite, on limitait le domaine de
+   definition a la borne la plus faible des deux fonctions alors que le prolongement etait
+   autorise.
+   
+   Au dela de cette valeur, l'evaluation de la fonction resultat est differente, le
+   prolongement lineaire etant active plus tot d'ou RESU_FAUX...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.0.20
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   pas d'ajout dans zzzz100a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010374 DU 2006-12-11 08:27:39
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Acces a certains attributs du jdc
+FONCTIONNALITE
+   Pour une commande de debug a venir, Jacot a besoin d'acceder en lecture + modification
+   a
+   certains attributs du JDC, le premier etant sdveri.
+   
+   On ajoute donc deux methodes get/set_jdc_attr dans E_JDC.py avec les passerelles
+   JDCGET/JDCSET dans astermodule.c.
+   
+   On en profit pour homogeneiser les valeurs et remplacer les oui/non par 1/0 sauf pour
+   par_lot (car utilise en plusieurs endroits).
+   
+   Seuls les attributs suivants sont modifiables : 'jxveri', 'sdveri', 'impr_macro'.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   perso car pas encore utilise
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 12/12/2006 - 10:04:35
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010237 DU 2006-11-09 15:06:02
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TMA : CS
+TITRE
+   AFFE_CHAR_CINE et nouveaux DDLS : Resultats faux
+FONCTIONNALITE
+   Apres avoir supprime en NEW8 (et NEW7) certains DDLS de la commande AFFE_CHAR_CINE
+   (fiche
+   10292), on les retablit en version 9.
+   
+   
+   Details :
+   ----------
+   routine charci.f
+   creation d'un CHAM_NO_S de degres imposes
+   - creation d'un cham_no_s suivant la grandeur
+   - boucle sur les occurences du mot cle facteur :
+   - lecture des entites geometriques (reliem -> listno)
+   - lecture des ddls imposes : DX, ..., U4X :
+   - affectation du ddl sur les noeuds de listno dans le cham_no_s
+   - si INFO=2 => impressin du cham_no_s
+   
+   routine chcsur.f : creation de la charge cinematique a partir d'un CHAM_NO_S
+   
+   L'ajout de nouveaux degres de liberte a contraindre se fait en les ajoutant dans le
+   catalogue de la commande AFFE_CHAR_CINE. Il n'y a rien d'autre a faire.
+   
+   catalogue de commande affe_char_cine.capy : reprise de la liste des composantes a partir
+   de la STA8
+   
+   catalogue de grandeur_simple__.cata : mise a niveau des grandeurs TEMP_R, TEMP_C et
+   TEMP_F
+   
+   impact doc D4.06.09 :
+   pour l'objet .DEFI
+   .DEFI(1+3*(IBLOC-1)+2) = numero de la composante pour le noeud (et non pas numero dans
+   le
+   catalogue de la grandeur).
+   .DEFI(1+3*(IBLOC-1)+3) = 1  pour une charge reelle ou complexe
+   = 2  pour une charge fonction
+   
+   Validation :
+   passage de la liste des 39 cas tests validant AFFE_CHAR_CINE
+   dans le test sslv130a, remplacement d'AFFE_CHAR_MECA par un AFFE_CHAR_CINE
+   CH_ACC=AFFE_CHAR_CINE(MODELE=MO, INFO=2,
+   MECA_IMPO=( _F( GROUP_NO = 'FACEAB',     DX = 0., ),
+   _F( GROUP_NO = 'FACSUP',     DZ = 0., ),
+   _F( GROUP_NO = 'FACINF',     DZ = 0., ),
+   _F( GROUP_NO = 'MSOMMET',  GONF = 0., ) ), )
+   le parametre GONF est a la 69ieme position dans la grandeur DEPL_R
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.09
+VALIDATION
+   sslv130a et passage des tests validant AFFE_CHAR_CINE
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 12/12/2006 - 10:04:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010101 DU 2006-10-03 11:11:41
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TMA : CS
+TITRE
+   RIGI_MECA* - Champs d'entree inconnus
+FONCTIONNALITE
+   Les champs d'entree suivants:
+   PCAARPO
+   PCAPOUF
+   PCASECT
+   PDEPLAR
+   PHARMON
+   sont en entree des options RIGI_MECA et RIGI_MECA_ELAS mais ne sont
+   pas renseignees dans
+   la
+   liste des champs a passer a CALCUL dans MERIMO.
+   
+   % le champ PCAARPO concerne les elements 'POU_C_T'
+   Ces elements ne font que du lineaire (calcul modal et meca_statique).
+   En non lineaire avec STAT_NON_LINE, le code emet un message Fatal :
+   Le TYPE_ELEMENT:  MECA_POU_C_T  ne sait pas encore calculer
+   l'OPTION:  RIGI_MECA_TANG.
+   
+   % le champ PCAPOUF concerne les elements '3D_FAISCEAU'
+   Ces elements ne font que du calcul modal (2 options MASS_MECA et
+   RIGI_MECA).
+   2 cas tests sdlv111a et b valident cette modelisation.
+   
+   % le champ PCASECT est le champ OUT des options CARA_SECT_POUT3,
+   CARA_CISA, CARA_GAUCHI et
+   CARA_TORSION.
+   Ce champ n'a rien a faire dans le catalogue rigi_meca.cata
+   
+   % le champ PDEPLAR ne sert a rien.
+   Ce champ n'a rien a faire dans le catalogue rigi_meca.cata
+   
+   % le champ PHARMON concerne la modelisation 'AXIS_FOURIER'.
+   Cette modelisation ne fait que du lineaire. Ce champ transmet le
+   numero d'harmonique.
+   
+   La routine MERIMO calcule les matrices elementaires et les termes
+   elementaires du residu.
+   Cette routine est dedie non-lineaire. Il est normal que les champs
+   PCAARPO, PCAPOUF et PHARMON
+   ne soient pas dans MERIMO.
+   
+   On a supprime les champs PCASECT et PDEPLAR du catalogue
+   rigi_meca.cata
+   Les tests des listes complete et validation sont OK.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Listes Complete et Validation
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 12/12/2006 - 10:04:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010300 DU 2006-11-23 14:06:04
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   engendre_test plus pratique
+FONCTIONNALITE
+   L'evolution permet d'engendrer les TEST_RESU a incorporer directement dans le
+   fichier de commandes pour :
+   - des concepts CHAMP (CHAM_NO et CHAM_ELEM)
+   - des concepts SD_RESULTAT (tous les champs et numeros d'ordre de la SD)
+   - des concepts TABLE (toutes les colonnes)
+   
+   Exemples :
+   -----------
+   
+   1) CHAM_NO, CHAM_ELEM :
+   ENGENDRE_TEST (  CO = (CHAMNO2, CHAMEL1 ), )
+   
+   ecrit (dans le fichier resultat par defaut) :
+   TEST_RESU(CHAM_NO=
+   _F( CHAM_GD= CHAMNO2 ,
+   REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+   TYPE_TEST= 'SOMM_ABS', VALE=  2.4112668951814E+03 ),
+   )
+   TEST_RESU(CHAM_ELEM=
+   _F( CHAM_GD= CHAMEL1 ,
+   REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+   TYPE_TEST= 'SOMM_ABS', VALE=  1.6467228987954E+04 ),
+   )
+   
+   2) SD table :
+   ENGENDRE_TEST (  CO = TABLE1 )
+   
+   TEST_TABLE( TABLE= TABLE1  , NOM_PARA= 'MASSE',
+   REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+   TYPE_TEST= 'SOMM_ABS', VALE=  1.0261189481187E+07 )
+   
+   3) une SD resultat :
+   ENGENDRE_TEST (  CO = THLIN )
+   
+   TEST_RESU(RESU=(
+   _F( RESULTAT= THLIN   , NOM_CHAM= 'TEMP', NUME_ORDRE=      0,
+   REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+   TYPE_TEST= 'SOMM_ABS', VALE=  1.2365022775219E+03 ),
+   _F( RESULTAT= THLIN   , NOM_CHAM= 'TEMP', NUME_ORDRE=      1,
+   REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+   TYPE_TEST= 'SOMM_ABS', VALE=  1.3197140441034E+03 ),
+   _F( RESULTAT= THLIN   , NOM_CHAM= 'TEMP', NUME_ORDRE=      2,
+   REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
+   TYPE_TEST= 'SOMM_ABS', VALE=  1.4574770197303E+03 ),
+   ),)
+   
+   Details :
+   ---------
+   Ajout d'un mot cle a la commande ENGENDRE_TEST :
+   FORMAT          =SIMP(statut='f',typ='TXM',into=("OBJET",) ),
+   definition de bloc selon la valeur du mot cle FORMAT :
+   b_aster     =BLOC( condition = "FORMAT==None",
+   CO
+   =SIMP(statut='o',typ=(cham_gd_sdaster,resultat_sdaster,table_sdaster),
+   validators=NoRepeat(),max='**'),
+   TYPE_TEST
+   =SIMP(statut='f',typ='TXM',defaut="SOMM_ABS",into=("SOMM","SOMM_ABS","MAX","MIN") ),
+   ),
+   b_objet     =BLOC( condition = "FORMAT=='OBJET'",
+   regles=(UN_PARMI('TOUT','CO'),),
+   TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+   CO              =SIMP(statut='f',typ=assd,validators=NoRepeat(),max='**'),
+   TYPE_TEST
+   =SIMP(statut='f',typ='TXM',defaut="SOMME",into=("SOMME","RESUME") ),
+   ),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.92.11
+VALIDATION
+   cas tests *200*
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE J.P.          DATE 12/12/2006 - 10:04:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009377 DU 2006-01-19 15:22:42
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   DEFI_MATERIAU reentrant
+FONCTIONNALITE
+   La commande DEFI_MATERIAU devient reentrant mais chaque comportement reste unique.
+   On ne permet pas de remplacer un comportement deja present dans le materiau.
+   
+   Exemple d'utilisation (cas test forma01h) :
+   le materiau n'est que thermique puis apres le THER_LINEAIRE et avant le MECA_STATIQUE, on
+   ajoute
+   le materiau ELAS :
+   
+   ACIER_TH=DEFI_MATERIAU(THER=_F(LAMBDA=54.6,
+   RHO_CP=3710000.0,),);
+   
+   CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
+   AFFE=_F(TOUT='OUI', MATER=ACIER_TH, TEMP_REF=20.0,),);
+   ...
+   
+   TEMPE=THER_LINEAIRE(MODELE=MODETH, ...
+   ...
+   
+   ACIER_TH=DEFI_MATERIAU( reuse=ACIER_TH, MATER=ACIER_TH,
+   ELAS=_F(E=204000000000.0,
+   NU=0.3,
+   ALPHA=1.092e-05,),);
+   
+   RESUT=MECA_STATIQUE(MODELE=MODMECA, ...
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.43.01, U4.43.02
+VALIDATION
+   forma01h, ssnv101c
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF cabri01a                        vivan L.VIVAN            327      7      7
+ CASTEST MODIF fdlv106a                        vivan L.VIVAN            485      3      3
+ CASTEST MODIF fdlv107a                        vivan L.VIVAN            632      4      3
+ CASTEST MODIF forma01h                        vivan L.VIVAN            359      8      5
+ CASTEST MODIF sdlx201a                        vivan L.VIVAN            598      7      3
+ CASTEST MODIF ssla200a                        vivan L.VIVAN           1332    104     87
+ CASTEST MODIF ssla200b                        vivan L.VIVAN           1349    104     91
+ CASTEST MODIF sslp200a                        vivan L.VIVAN           1271    112     95
+ CASTEST MODIF sslp200b                        vivan L.VIVAN           1271    111     94
+ CASTEST MODIF sslp201a                        vivan L.VIVAN           1197    102     89
+ CASTEST MODIF sslp201b                        vivan L.VIVAN           1198    101     89
+ CASTEST MODIF ssls200a                        vivan L.VIVAN            263     27     21
+ CASTEST MODIF sslv130a                        vivan L.VIVAN            399     17      6
+ CASTEST MODIF sslv200a                        vivan L.VIVAN           1299    142    139
+ CASTEST MODIF sslv200b                        vivan L.VIVAN           1272    168    161
+ CASTEST MODIF ssnv101c                        vivan L.VIVAN            424     30     38
+ CASTEST MODIF ssnv200a                        vivan L.VIVAN            244      3      1
+ CASTEST MODIF ttna200a                        vivan L.VIVAN            606      7      5
+ CASTEST MODIF ttnp200a                        vivan L.VIVAN            600      6      4
+ CASTEST MODIF zzzz131a                        vivan L.VIVAN            538      2      2
+CATALOGU MODIF compelem/grandeur_simple__      vivan L.VIVAN            617      8      2
+CATALOGU MODIF options/rigi_meca               vivan L.VIVAN             47      7      6
+CATALOPY MODIF commande/affe_char_cine         vivan L.VIVAN            136     61      2
+CATALOPY MODIF commande/defi_materiau          vivan L.VIVAN           2592      3      2
+CATALOPY MODIF commande/engendre_test          vivan L.VIVAN             40     14      4
+       C MODIF supervis/astermodule         courtois M.COURTOIS        3501     52      2
+ FORTRAN AJOUT calculel/engtce                 vivan L.VIVAN            144    144      0
+ FORTRAN AJOUT calculel/engtcn                 vivan L.VIVAN            144    144      0
+ FORTRAN AJOUT calculel/engtrs                 vivan L.VIVAN            189    189      0
+ FORTRAN AJOUT calculel/engttb                 vivan L.VIVAN            158    158      0
+ FORTRAN MODIF calculel/op0178                 vivan L.VIVAN            194     63     20
+ FORTRAN MODIF modelisa/charci                 vivan L.VIVAN            236    106     39
+ FORTRAN MODIF modelisa/chcsur                 vivan L.VIVAN            162    107    192
+ FORTRAN MODIF modelisa/op0005                 vivan L.VIVAN            181     65     19
+ FORTRAN MODIF modelisa/op0101                 vivan L.VIVAN             96     13     28
+ FORTRAN MODIF modelisa/op0108                 vivan L.VIVAN             89     14     29
+  PYTHON MODIF Cata/ops                     courtois M.COURTOIS         451     18     19
+  PYTHON MODIF Execution/E_ETAPE            courtois M.COURTOIS         261      5      5
+  PYTHON MODIF Execution/E_JDC              courtois M.COURTOIS         306     26      1
+  PYTHON MODIF Utilitai/t_fonction          courtois M.COURTOIS         636      2      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4         635       635              +635
+ MODIF :   36       25209      1629    1315      +314
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   40       25844      2264    1315      +949 

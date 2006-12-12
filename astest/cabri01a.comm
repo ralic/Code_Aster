@@ -1,4 +1,4 @@
-# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE TEST DE NON REGRESSION DU MAILLAGE CABRI
@@ -245,9 +245,9 @@ for i in range(nbre_cas):
                        VERI_MAIL = _F(VERIF = 'OUI',),
                                );
  
-   ENGENDRE_TEST(CO = MAIL[i],
-              TYPE_TEST = 'SOMME',
-              );
+   ENGENDRE_TEST(FORMAT='OBJET',
+                 CO = MAIL[i],
+                 TYPE_TEST = 'SOMME',  );
               
    for j in range(7):
      TEST_TEXT = MAIL_TEST[i*7+j]
@@ -288,9 +288,9 @@ MAIL_A = MACR_CABRI_MAIL(EXEC_MAILLAGE=_F(LOGICIEL='GIBI2000',
                                );
 
  
-ENGENDRE_TEST(CO = MAIL_A,
-            TYPE_TEST = 'SOMME',
-            );
+ENGENDRE_TEST(FORMAT='OBJET',
+              CO = MAIL_A,
+              TYPE_TEST = 'SOMME', );
 
 i = 1              
 for j in range(7):

@@ -3,7 +3,7 @@
       INTEGER             IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/09/2005   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,45 +49,92 @@ C
       INTEGER            NMOCL
       PARAMETER         (NMOCL=200)
       CHARACTER*16       MOTCLE(NMOCL)
-      INTEGER            NBMCLE,NBOBM,JNBOBJ,NIV,IBID,IOCC
+      INTEGER            NBMCLE,NBOBM,JNBOBJ,NIV,IBID,IOCC,N1
       INTEGER            JTYPFO,IRC,JVALRM,JVALCM,JVALKM,JNOMRC
       INTEGER            IND,IFM,I,K,NBRCME,NBMOCL
       INTEGER            LXLGUT,NBR,NBC,NBK,NBK2
-      CHARACTER*8        NOMMAT
+      INTEGER            NBMATI,JNORCI,KRC,INDK16
+      CHARACTER*8        K8B,MATOUT,MATIN,SCHOUT
       CHARACTER*16       NOMRC,TYPMAT,MATERI,K16BID
-      CHARACTER*19       NOOBRC
+      CHARACTER*19       NOOBRC,NOBRCI,NOBRCO
       CHARACTER*1        K1BID
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+      CALL GETRES ( MATOUT, TYPMAT, MATERI )
+C
       NBRCME = 0
-      CALL GETRES (NOMMAT, TYPMAT, MATERI)
-      CALL GETMAT (NBRCME,MOTCLE)
-      CALL WKVECT(NOMMAT//'.MATERIAU.NOMRC','G V K16',NBRCME,JNOMRC)
+      CALL GETMAT ( NBRCME, MOTCLE )
+C
+      MATIN = ' '
+      NBMATI = 0
+      CALL GETVID ( ' ', 'MATER', 1,1,1, MATIN, N1 )
+      IF ( N1 .NE. 0 ) THEN
+C
+C ------ ON VERIFIE QUE L'ON A QUE DES NOUVEAUX MATERIAUX
+C
+         CALL JEVEUO(MATIN//'.MATERIAU.NOMRC','L',JNORCI)
+         CALL JELIRA(MATIN//'.MATERIAU.NOMRC','LONMAX',NBMATI,K8B)
+         DO 10 IRC = 1, NBRCME
+            NOMRC = MOTCLE(IRC)
+            IND = INDK16 ( ZK16(JNORCI), NOMRC, 1, NBMATI )
+            IF ( IND .NE. 0 ) THEN
+               CALL UTMESS('F','OP0005','MATE EXISTANT '//NOMRC)
+            ENDIF
+ 10      CONTINUE
+C
+C ------ ON COPIE TOUT SUR LA VOLATILE 
+C
+         SCHOUT = '&&OP0005'
+         CALL JEDUPC ( 'G', MATIN, 1, 'V', SCHOUT, .FALSE. )
+         CALL JEVEUO ( SCHOUT//'.MATERIAU.NOMRC', 'L', JNORCI )
+         IF (MATOUT.EQ.MATIN) CALL JEDETC ( 'G', MATIN, 1 )
+      ENDIF
+C
+C --- ON DUPLIQUE MATIN DANS MATOUT
+C
+      IF ( NBMATI .NE. 0 ) THEN
+         CALL JEDUPC ( 'V', SCHOUT, 1, 'G', MATOUT, .FALSE. )
+         CALL JEDETR ( MATOUT//'.MATERIAU.NOMRC' )
+      ENDIF
+C
+      CALL WKVECT ( MATOUT//'.MATERIAU.NOMRC', 'G V K16',
+     &                                     NBRCME+NBMATI, JNOMRC )
+C
+      DO 20 IRC = 1, NBMATI
+         ZK16(JNOMRC+IRC-1) = ZK16(JNORCI+IRC-1)
+ 20   CONTINUE
+C
       CALL WKVECT('&&OP0005.NBOBJE','V V I'  ,NBRCME,JNBOBJ)
       CALL WKVECT('&&OP0005.TYPFON','V V L'  ,NBRCME,JTYPFO)
-      DO 100 IRC = 1, NBRCME
-        NOMRC=MOTCLE(IRC)
-        IND = INDEX(NOMRC,'_FO')
-        IF (IND .GT. 0 ) THEN
-          NOMRC(IND:IND+2) = '   '
-          ZL(JTYPFO+IRC-1) = .TRUE.
-        ELSE
-          ZL(JTYPFO+IRC-1) = .FALSE.
-        ENDIF
-        ZK16(JNOMRC+IRC-1) = NOMRC
-        NOOBRC=NOMMAT//'.'//NOMRC(1:10)
 C
-        IF (ZL(JTYPFO+IRC-1)) THEN
-          IND=LXLGUT(NOMRC)+1
-          NOMRC(IND:IND+2) = '_FO'
-        ENDIF
-        CALL GETMJM(NOMRC,1,0,K16BID,K16BID,NBOBM)
-        NBOBM = - NBOBM
+      KRC = NBMATI
+      DO 100 IRC = 1, NBRCME
+         NOMRC = MOTCLE(IRC)
+         IND = INDEX(NOMRC,'_FO')
+         IF (IND .GT. 0 ) THEN
+            NOMRC(IND:IND+2) = '   '
+            ZL(JTYPFO+IRC-1) = .TRUE.
+         ELSE
+            ZL(JTYPFO+IRC-1) = .FALSE.
+         ENDIF
+         KRC = KRC + 1
+         ZK16(JNOMRC+KRC-1) = NOMRC
+         NOOBRC=MATOUT//'.'//NOMRC(1:10)
+C
+         IF (ZL(JTYPFO+IRC-1)) THEN
+            IND=LXLGUT(NOMRC)+1
+            NOMRC(IND:IND+2) = '_FO'
+         ENDIF
+         CALL GETMJM ( NOMRC, 1, 0, K16BID, K16BID, NBOBM )
+         NBOBM = - NBOBM
+C
         CALL WKVECT(NOOBRC//'.VALR','G V R' ,  NBOBM,JVALRM)
         CALL WKVECT(NOOBRC//'.VALC','G V C' ,  NBOBM,JVALCM)
         CALL WKVECT(NOOBRC//'.VALK','G V K8',2*NBOBM,JVALKM)
-        CALL RCSTOC(NOMMAT,NOMRC,NBOBM,ZR(JVALRM),ZC(JVALCM),
+C
+        CALL RCSTOC(MATOUT,NOMRC,NBOBM,ZR(JVALRM),ZC(JVALCM),
      &              ZK8(JVALKM),NBR,NBC,NBK)
         CALL JEECRA(NOOBRC//'.VALR','LONUTI', NBR, ' ')
         CALL JEECRA(NOOBRC//'.VALC','LONUTI', NBC, ' ')
@@ -98,15 +145,15 @@ C
       CALL INFNIV ( IFM , NIV )
 C
       WRITE (IFM,'(1X)')
-      WRITE (IFM,'(1X,2A)') 'MATERIAU : ', NOMMAT
-      CALL JEVEUO(NOMMAT//'.MATERIAU.NOMRC', 'L', JNOMRC)
+      WRITE (IFM,'(1X,2A)') 'MATERIAU : ', MATOUT
+      CALL JEVEUO(MATOUT//'.MATERIAU.NOMRC', 'L', JNOMRC)
       WRITE (IFM,'(1X,A,A16)') 'RELATION DE COMPORTEMENT: ',ZK16(JNOMRC)
       WRITE (IFM,'(27X,A16)') (ZK16(JNOMRC+K-1),K=2,NBRCME)
       WRITE (IFM,'(1X)')
 C
       IF ( NIV .EQ. 2 ) THEN
-        DO 30 K=1,NBRCME
-          NOOBRC=NOMMAT//'.'//ZK16(JNOMRC+K-1)(1:10)
+        DO 200 K=1,NBRCME
+          NOOBRC=MATOUT//'.'//ZK16(JNOMRC+K-1)(1:10)
           CALL JEVEUO(NOOBRC//'.VALR', 'L', JVALRM)
           CALL JEVEUO(NOOBRC//'.VALC', 'L', JVALCM)
           CALL JEVEUO(NOOBRC//'.VALK', 'L', JVALKM)
@@ -125,11 +172,10 @@ C
           WRITE(IFM,'(5(3X,A8,5X))') (ZK8(JVALKM-1+I),
      &                I = NBR+NBC+NBK+1, NBR+NBC+2*NBK)
           WRITE(IFM,'(1X)')
- 30     CONTINUE
+ 200    CONTINUE
       ENDIF
 C
-      CALL ANIVER(NOMMAT)
-C
+      CALL ANIVER(MATOUT)
 C
       CALL JEDEMA()
       END

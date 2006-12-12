@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,7 +65,7 @@ CARA=AFFE_CARA_ELEM(   MODELE=MO,
                                  ANGL_REP = (10.,-20.,))       )
 
 TEMPLIN=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MA,
+                    MAILLAGE=MA,
              AFFE=_F( TOUT = 'OUI',
                    NOM_CMP = ('TEMP_INF','TEMP','TEMP_SUP',),
                    VALE = (12., 18.,  26.,)))
@@ -89,10 +89,26 @@ CHME2=AFFE_CHAR_MECA(  MODELE=MO,
 
 # ------------------------------------------------------------------
 MESTAT=MECA_STATIQUE(       MODELE=MO,
-              CARA_ELEM=CARA,    CHAM_MATER=CHMAT,EXCIT=(
-                  _F( CHARGE = CHPES),
-                  _F( CHARGE = CHME2))
+              CARA_ELEM=CARA,    CHAM_MATER=CHMAT,
+                      EXCIT=(_F( CHARGE = CHPES),
+                             _F( CHARGE = CHME2))
            )
+
+MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,        
+                      OPTION=( 'SIEF_ELGA_DEPL', 'SIGM_ELNO_DEPL',
+                               'EPSI_ELNO_DEPL', 'EFGE_ELNO_DEPL', )
+                     )
+
+MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,
+                MAILLE=('Q1','T1','Q2','Q3','T3',),
+                      OPTION='DEGE_ELNO_DEPL'        )
+
+MESTAT=CALC_NO( reuse=MESTAT,    RESULTAT=MESTAT, 
+                         OPTION=( 'EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL',
+                                 )
+                   )
+
+ENGENDRE_TEST (  CO = MESTAT, )
 
 TEST_RESU( RESU=_F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
                      NOM_CHAM = 'DEPL',
@@ -100,11 +116,6 @@ TEST_RESU( RESU=_F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
               VALE = 4.6891508740240E+04)
             )
-
-MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,        
-                      OPTION=( 'SIEF_ELGA_DEPL', 'SIGM_ELNO_DEPL',
-                               'EPSI_ELNO_DEPL', 'EFGE_ELNO_DEPL', )
-                     )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
                      NOM_CHAM = 'SIEF_ELGA_DEPL',
@@ -128,21 +139,12 @@ TEST_RESU(RESU=( _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
               VALE = 1.8660521476424E+05))
             )
 
-MESTAT=CALC_ELEM( reuse=MESTAT,      RESULTAT=MESTAT,
-                MAILLE=('Q1','T1','Q2','Q3','T3',),
-                      OPTION='DEGE_ELNO_DEPL'        )
-
 TEST_RESU( RESU=_F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
                      NOM_CHAM = 'DEGE_ELNO_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-12, VERSION = '5.03.14',
               VALE = 2.6755379426528E+04)
             )
-
-MESTAT=CALC_NO( reuse=MESTAT,    RESULTAT=MESTAT, 
-                         OPTION=( 'EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL',
-                                 )
-                   )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
                      NOM_CHAM = 'EPSI_NOEU_DEPL',
@@ -156,9 +158,16 @@ TEST_RESU(RESU=( _F(  RESULTAT = MESTAT,    NUME_ORDRE = 1,
               VALE = 6.0574940591445E+04))
             )
 
+# ----------------------------------------------------------------------
+
 MASS2=POST_ELEM(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
                     RESULTAT=MESTAT,
                      ENER_POT=_F( MAILLE = ('Q1','T1','Q2','Q3','T3',)))
+
+MASS3=POST_ELEM(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
+                    RESULTAT=MESTAT,   MASS_INER=_F( TOUT = 'OUI') )
+
+ENGENDRE_TEST (  CO = (MASS2,MASS3) )
 
 TEST_TABLE(      TABLE=MASS2,       NOM_PARA='TOTALE',
                 TYPE_TEST='SOMM_ABS',
@@ -169,9 +178,6 @@ TEST_TABLE(      TABLE=MASS2,       NOM_PARA='POUR_CENT',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-11, VERSION='5.03.14',
                 VALE=1.8713731513779E+03     )
-
-MASS3=POST_ELEM(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
-                    RESULTAT=MESTAT,   MASS_INER=_F( TOUT = 'OUI') )
 
 TEST_TABLE(      TABLE=MASS3,       NOM_PARA='MASSE',
                 TYPE_TEST='SOMM_ABS',

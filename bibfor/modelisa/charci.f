@@ -1,11 +1,11 @@
-      SUBROUTINE CHARCI(CHCINE,MFACT,NOC,NDDL,NOMDDL,TYPE)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*) CHCINE,MFACT,NOMDDL(*)
-      CHARACTER*1 TYPE
-      INTEGER NOC,NDDL
+      SUBROUTINE CHARCI ( CHCINE, MFACT, NOC, MO, TYPE)
+      IMPLICIT NONE
+      CHARACTER*(*)       CHCINE, MFACT, MO 
+      CHARACTER*1         TYPE
+      INTEGER             NOC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C OBJET :
 C        TRAITEMENT DES MOTS CLES FACTEURS DE L'OPERATEUR
+C        CREATION D'UN CHAM_NO_S CONTENANT LES DEGRES IMPOSES
 C
 C-----------------------------------------------------------------------
 C VAR  CHCINE  K*19    : NOM DE LA CHARGE CINEMATIQUE
@@ -33,9 +34,7 @@ C                        MOTS CLES ADMIS : MECA_IMPO
 C                                          THER_IMPO
 C                                          ACOU_IMPO
 C IN   NOC     I       : NOMBRE D'OCCURRENCE DU MOT_CLE FACTEUR
-C IN   NDDL    I       : DIMENSION DE NOMDDL
-C IN   NOMDDL  K*16(*) : TABLEAU DES NOMS DES DEGRES DE LIBERTE QUI
-C                        PEUVENT ETRE IMPOSES
+C IN   MO      K*      : NOM DU MODELE
 C IN   TYPE    K*1     : 'R','C' OU 'F' TYPE DES MOTS CLES
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -54,28 +53,38 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*2 TYP
-      CHARACTER*8 MA,MO,MCLE
-      CHARACTER*16 OPER,MFAC,KBID,MOTCLE(5)
-      CHARACTER*19 CHCI,LIGRMO
-      CHARACTER*24 CINO,CNUDDL,CVLDDL
-      CHARACTER*24 NPROL
-      CHARACTER*8 K8BID
+      INTEGER       IBID, IFM, NIV, ICMP, CMP, IER, INO, NBNO, NUNO,
+     +              IOC, JCNSV, JCNSL, IDINO, NBOBM, JDDL, JTYP, N,
+     +              IDNDDL, IDVDDL, NBDDL, IDDL, I, IDPROL, IDTYPE,
+     +              ILA, INDIK8, NBCMP, JCMP
+      CHARACTER*2   TYP
+      CHARACTER*8   K8B, MA, MCLE, NOMGD, NOGDSI, GDCNS
+      CHARACTER*16  MFAC, K16B, MOTCLE(5), PHENOM
+      CHARACTER*19  CHCI, CNS
+      CHARACTER*24  CINO, CNUDDL, CVLDDL, NPROL
+      CHARACTER*80  TITRE
       DATA NPROL/'                   .PROL'/
 C --- DEBUT -----------------------------------------------------------
 C
       CALL JEMARQ()
-      IF (NOC.EQ.0.D0) GOTO 9999
+C
+      IF ( NOC .EQ. 0 ) GOTO 9999
+C
+      CALL INFNIV ( IFM, NIV )
+C
       CHCI = CHCINE
       MFAC = MFACT
-      CALL DISMOI('F','NOM_MODELE',CHCI,'CHARGE',   IBID, MO,  IER)
-      CALL DISMOI('F','NOM_MAILLA',MO,  'MODELE',   IBID, MA,  IER)
-      CALL DISMOI('F','PHENOMENE' ,MO,  'MODELE',   IBID, KBID,IER)
-      CALL DISMOI('F','NUM_GD',    KBID,'PHENOMENE',NGD,  KBID,IER)
+C
+      CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IER)
+      CALL DISMOI('F','PHENOMENE',MO,'MODELE',IBID,PHENOM,IER)
+      CALL DISMOI('F','NOM_GD',PHENOM,'PHENOMENE',IBID,NOMGD,IER)
+      CALL DISMOI('F','NOM_GD_SI',NOMGD,'GRANDEUR',IBID,NOGDSI,IER)
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOGDSI),'L',JCMP)
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOGDSI),'LONMAX',NBCMP,K8B)
 
 C --- NOM DE TABLEAUX DE TRAVAIL GERES PAR JEVEUX
 
-      CINO = '&&CHARCI.INO'
+      CINO   = '&&CHARCI.INO'
       CNUDDL = '&&CHARCI.NUMDDL'
       CVLDDL = '&&CHARCI.VALDDL'
 
@@ -86,51 +95,69 @@ C --- NOM DE TABLEAUX DE TRAVAIL GERES PAR JEVEUX
       MOTCLE(5) = 'TOUT            '
 
       IF (TYPE.EQ.'F') THEN
-         TYP = 'K8'
+         TYP   = 'K8'
+         GDCNS = NOMGD
+         GDCNS(5:6) = '_F'
       ELSE IF (TYPE.EQ.'R') THEN
          TYP = TYPE
+         GDCNS = NOMGD
       ELSE IF (TYPE.EQ.'C') THEN
          TYP = TYPE
+         GDCNS = NOMGD
       ELSE
           CALL U2MESS('F','MODELISA4_2')
       ENDIF
+C 
+C --- CREATION D'UN CHAM_NO_S
+C
+      CNS = 'CHARCI.CHAM_NO_S'
+      CALL CNSCRE ( MA, GDCNS, NBCMP, ZK8(JCMP), 'V', CNS )
+C
+C --- REMPLISSAGE DU CHAM_NO_S
+C
+      CALL JEVEUO ( CNS//'.CNSV', 'E', JCNSV )
+      CALL JEVEUO ( CNS//'.CNSL', 'E', JCNSL )
 
       DO 100 IOC = 1,NOC
 
 C ----- NOEUDS A CONTRAINDRE :
-        CALL RELIEM(' ',MA,'NU_NOEUD',MFAC,IOC,5,MOTCLE,MOTCLE,
-     &              CINO,NINO)
-        CALL JEVEUO(CINO,'L',IDINO)
+
+        CALL RELIEM ( ' ', MA, 'NU_NOEUD', MFAC, IOC, 5, MOTCLE, MOTCLE,
+     &                CINO, NBNO )
+        CALL JEVEUO ( CINO, 'L', IDINO )
 
 C ----- DDL A CONTRAINDRE :
-        CALL GETMJM ( MFAC, IOC,0, KBID, KBID, NBOBM )
+
+        CALL GETMJM ( MFAC, IOC,0, K16B, K16B, NBOBM )
         NBOBM = -NBOBM
         CALL WKVECT ( '&&CHARCI.NOM', 'V V K16', NBOBM, JDDL )
         CALL WKVECT ( '&&CHARCI.TYP', 'V V K8' , NBOBM, JTYP )
-        CALL GETMJM ( MFAC,IOC,NBOBM,ZK16(JDDL),ZK8(JTYP),N)
+        CALL GETMJM ( MFAC, IOC, NBOBM, ZK16(JDDL), ZK8(JTYP), N )
 
 C ----- LECTURE DES MOTS CLES RELATIFS AUX VALEURS IMPOSEES
 
-        CALL WKVECT(CNUDDL,' V V I',NDDL,IDNDDL)
-        CALL WKVECT(CVLDDL,' V V '//TYP,NDDL,IDVDDL)
+        CALL WKVECT ( CNUDDL, ' V V K8'   , NBOBM, IDNDDL )
+        CALL WKVECT ( CVLDDL, ' V V '//TYP, NBOBM, IDVDDL )
         NBDDL = 0
-        DO 110 IDDL = 1,NBOBM
-          KBID = ZK16(JDDL+IDDL-1)
+        DO 110 IDDL = 1 , NBOBM
+          K16B = ZK16(JDDL+IDDL-1)
           DO 112 I = 1,5
-             IF (KBID.EQ.MOTCLE(I)) GOTO 110
+             IF (K16B.EQ.MOTCLE(I)) GOTO 110
  112      CONTINUE
+C
+          ZK8(IDNDDL+NBDDL) = K16B(1:8)
+C
+C ------- VERIFICATION QUE LA COMPOSANTEEXISTE DANS LA GRANDEUR
+          ICMP = INDIK8( ZK8(JCMP), K16B(1:8), 1, NBCMP )
+          IF ( ICMP .EQ. 0 ) CALL U2MESS('F','MODELISA4_3')
+C
           IF (TYPE.EQ.'R')
-     &             CALL GETVR8(MFAC,KBID,IOC,1,1, ZR(IDVDDL+NBDDL),ILA)
+     &             CALL GETVR8(MFAC,K16B,IOC,1,1, ZR(IDVDDL+NBDDL),ILA)
           IF (TYPE.EQ.'C')
-     &             CALL GETVC8(MFAC,KBID,IOC,1,1, ZC(IDVDDL+NBDDL),ILA)
+     &             CALL GETVC8(MFAC,K16B,IOC,1,1, ZC(IDVDDL+NBDDL),ILA)
           IF (TYPE.EQ.'F')
-     &             CALL GETVID(MFAC,KBID,IOC,1,1,ZK8(IDVDDL+NBDDL),ILA)
-          IF (ILA.NE.0) THEN
-            ZI(IDNDDL+NBDDL) = INDIK8(NOMDDL,KBID(1:8),1,NDDL)
-            IF (ZI(IDNDDL+NBDDL).EQ.0)
-     &                          CALL U2MESS('F','MODELISA4_3')
-            NBDDL = NBDDL+1
-          ENDIF
+     &             CALL GETVID(MFAC,K16B,IOC,1,1,ZK8(IDVDDL+NBDDL),ILA)
+          NBDDL = NBDDL+1
  110    CONTINUE
 
 C --- ON RECHERCHE SI UNE QUAND ON A DES FONCT. IL Y EN A UNE = F(TPS)
@@ -153,9 +180,40 @@ C
         ENDIF
  122    CONTINUE
 
-        CALL CHCSUR(CHCI,MO,NGD,0,NINO,ZI(IDINO),NBDDL,ZI(IDNDDL),
-     &              CVLDDL,TYPE)
+C ----- AFFECTATION DANS LE CHAM_NO_S
 
+        IF ( TYPE .EQ. 'R') THEN
+          DO 130 CMP = 1, NBDDL
+            K8B = ZK8(IDNDDL-1+CMP)
+            ICMP = INDIK8( ZK8(JCMP), K8B, 1, NBCMP )
+            DO 132 INO = 1 , NBNO
+               NUNO = ZI(IDINO-1+INO)
+               ZR(JCNSV+(NUNO-1)*NBCMP+ICMP-1) = ZR(IDVDDL-1+CMP)
+               ZL(JCNSL+(NUNO-1)*NBCMP+ICMP-1) = .TRUE.
+ 132        CONTINUE
+ 130      CONTINUE
+        ELSEIF ( TYPE .EQ. 'C') THEN
+          DO 140 CMP = 1, NBDDL
+            K8B = ZK8(IDNDDL-1+CMP)
+            ICMP = INDIK8( ZK8(JCMP), K8B, 1, NBCMP )
+            DO 142 INO = 1 , NBNO
+               NUNO = ZI(IDINO-1+INO)
+               ZC(JCNSV+(NUNO-1)*NBCMP+ICMP-1) = ZC(IDVDDL-1+CMP)
+               ZL(JCNSL+(NUNO-1)*NBCMP+ICMP-1) = .TRUE.
+ 142        CONTINUE
+ 140      CONTINUE
+        ELSEIF ( TYPE .EQ. 'F') THEN
+          DO 150 CMP = 1, NBDDL
+            K8B = ZK8(IDNDDL-1+CMP)
+            ICMP = INDIK8( ZK8(JCMP), K8B, 1, NBCMP )
+            DO 152 INO = 1 , NBNO
+               NUNO = ZI(IDINO-1+INO)
+               ZK8(JCNSV+(NUNO-1)*NBCMP+ICMP-1) = ZK8(IDVDDL-1+CMP)
+                ZL(JCNSL+(NUNO-1)*NBCMP+ICMP-1) = .TRUE.
+ 152        CONTINUE
+ 150      CONTINUE
+        ENDIF
+C
         CALL JEDETR ( CINO   )
         CALL JEDETR ( CNUDDL )
         CALL JEDETR ( CVLDDL )
@@ -163,6 +221,15 @@ C
         CALL JEDETR ( '&&CHARCI.TYP' )
 
  100  CONTINUE
+C
+C --- IMPRESSION
+C
+      TITRE = '******* IMPRESSION DU CHAMP DES DEGRES IMPOSES *******'
+      IF ( NIV .EQ. 2 ) CALL IMPRSD ( 'CHAMP_S', CNS, IFM, TITRE )
+C
+C --- CREATION DE LA SD AFFE_CHAR_CINE
+C
+      CALL CHCSUR ( CHCINE, CNS, TYPE, MO, NOGDSI )
 
  9999 CONTINUE
       CALL JEDEMA()

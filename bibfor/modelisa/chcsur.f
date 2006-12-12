@@ -1,13 +1,11 @@
-      SUBROUTINE CHCSUR(CHCINE,NOMMO,GD,IIMA,NINO,NUNO,NDDL,NUDDL,
-     &                   NOMVAL,TYPE)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*) CHCINE,NOMMO
-      CHARACTER*24 NOMVAL
-      CHARACTER*1 TYPE
-      INTEGER GD,IIMA,NINO,NUNO(*),NDDL,NUDDL(*)
+      SUBROUTINE CHCSUR ( CHCINE, CNSZ, TYPE, MO, NOMGD )
+      IMPLICIT NONE
+      CHARACTER*1         TYPE
+      CHARACTER*8         NOMGD
+      CHARACTER*(*)       CHCINE, CNSZ, MO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,26 +23,16 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-C OBJET : CREATION OU ENRICHISSEMENT D"UNE CHARGE CINEMATIQUE.
+C OBJET : CREATION D"UNE CHARGE CINEMATIQUE.
 C        1) LE .REFE DE LA CHARGE DOIT DEJA EXISTER
 C        2) MISE A JOUR DE : .DEFI  .VALE .VALF
 C-----------------------------------------------------------------------
-C VAR  CHCINE  K*19    : NOM DE LA CHARGE CINEMATIQUE
-C IN   NOMMO   K*8     : NOM UTILISATEUR DU MODELE
-C IN   GD      I       : NUMERO DE LA GRANDEUR.
-C IN   IIMA    I       : SI IIMA/= 0 ALORS IIMA=NB_NO_MAILLAGE ET ON
-C                                    TRAITE TOUS LES NO DU MAILLA
-C                        SI IIMA = 0 ALORS ON NE TRAITE QUE LES NO DE
-C                                    LA LISTE NUNO
-C IN   NINO    I       : DIMENSION DE NUNO (0 SI IIMA/=0)
-C IN   NUNO    I(*)    : LISTE DES NUMEROS DES NOEUDS A TRAITER
-C IN   NDDL    I       : DIMENSION DE NUDDL
-C IN   NUDDL   I(*)    : LISTE DES NUMEROS DANS LE CATALO.DES GD.
-C                        DES DDLS A IMPOSER
-C IN   NOMVAL  K*24    : NOM DE L'OBJET JEVEUX CONTENANT LES VALEURS A
-C                        IMPOSER ( NOMVAL(IDDL)= VALEUR A IMPOSE POUR LE
-C                        DDL DE NUMERO NUDDL(IDDL) )
-C IN   TYPE    K*1     : 'R','C' OU 'F' TYPE DE L'OBJET NOMVAL
+C OUT  CHCINE  K*19    : NOM DE LA CHARGE CINEMATIQUE
+C IN   CNS     K*19    : NOM D'UN CHAM_NO_S CONTENANT LES DEGRES IMPOSES
+C IN   TYPE    K*1     : 'R','C' OU 'F' TYPE DE LA CHARGE
+C IN   MO      K*      : NOM DU MODELE
+C IN   NOMGD   K*      : NOM DE LA GRANDEUR
+C-----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
@@ -62,186 +50,113 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*8 MO,KBID
-      CHARACTER*16 NOMDDL
-      CHARACTER*19 CHCI,LIGRMO
-      CHARACTER*24 CDEFI,CVALE,CVALF
-      CHARACTER*24 CNOCMP,CNUCMP
-      DATA CDEFI/'                   .DEFI'/
-      DATA CVALE/'                   .VALE'/
-      DATA CVALF/'                   .VALF'/
+C
+      INTEGER       NBLOC, IBLOC, ICMP, NCMP, INO, NBNO, NBEC, IER, II,
+     +              JCNSD, JCNSV, JCNSL, IDEFI, IVALE, IVALF, IAPRNM
+      LOGICAL       EXISDG
+      CHARACTER*8   K8B, NOMO
+      CHARACTER*19  CHCI, CNS
+      CHARACTER*24  CDEFI, CVALE, CVALF
+C
+      DATA CDEFI /'                   .DEFI'/
+      DATA CVALE /'                   .VALE'/
+      DATA CVALF /'                   .VALF'/
+C
 C --- DEBUT -----------------------------------------------------------
 C
       CALL JEMARQ()
+C
+      NOMO = MO
+      CALL DISMOI ( 'F', 'NB_EC', NOMGD, 'GRANDEUR', NBEC, K8B, IER )
+      CALL JEVEUO ( NOMO//'.MODELE    .PRNM', 'L', IAPRNM )
+C
       CHCI = CHCINE
-      MO = NOMMO
-      CDEFI(1:19)=CHCI
-      CVALE(1:19)=CHCI
-      CVALF(1:19)=CHCI
-      CALL DISMOI('F','NOM_LIGREL',MO,'MODELE',IBID,LIGRMO,IER)
-C --- NOM DE TABLEAUX DE TRAVAIL GERES PAR JEVEUX
+      CNS  = CNSZ
+      CDEFI(1:19) = CHCI
+      CVALE(1:19) = CHCI
+      CVALF(1:19) = CHCI
 C
-      CNOCMP = '&&CHCSUR.&NOEUDCMP'
-      CNUCMP = '&&CHCSUR.&NUMCMP'
-      IF (IIMA.NE.0) NINO = IIMA
-
-C --- ANCIENNES DIMENSION DE CDEFI
+      CALL JEVEUO ( CNS//'.CNSD', 'L', JCNSD )
+      CALL JEVEUO ( CNS//'.CNSV', 'L', JCNSV )
+      CALL JEVEUO ( CNS//'.CNSL', 'L', JCNSL )
 C
-      CALL JEEXIN(CDEFI,IERDEF)
-      IF (IERDEF.EQ.0) THEN
-        NUTI = 0
-        NUTIN = 0
-        IDEFI = 0
-      ELSE
-        CALL JEVEUO(CDEFI,'L',IDEFI)
-        NUTI = ZI(IDEFI)
-        NUTIN = NUTI
-      ENDIF
-      CALL WKVECT(CNOCMP,'V V I',2*NINO*NDDL,INOCMP)
-      CALL WKVECT(CNUCMP,'V V I',NDDL,INUCMP)
-      CALL JEVEUO(LIGRMO//'.PRNM','L',IPRNM)
-      INO = 0
-      NEC = NBEC(GD)
-      MXCMP = NBCMP(GD)
-      DO 1 KNO = 1,NINO
-        INOOLD = INO
-        IF (IIMA.EQ.0) THEN
-          INO = NUNO(KNO)
-        ELSE
-          INO = KNO
-        ENDIF
-C --- CALCUL DE LA CORRESPONDANCE NUM DE DDL DANS LE CATA.DES GRD.
-C     ET NUM DE CMP DANS LE NOEUD POUR LE MODELE MO
-        IF (KNO .NE.1) THEN
-          DO 11 IEC = 1,NEC
-            IF (ZI(IPRNM-1+NEC*(INO-1)+IEC).NE.
-     &          ZI(IPRNM-1+NEC*(INOOLD-1)+IEC))GO TO 12
-11        CONTINUE
-C --- SI ON A LES MEMES ENT.CODES QUE POUR LE NOEUD D'AVANT NUCMP EST
-C     LE MEME
-          GOTO 101
-        ENDIF
-12      CONTINUE
-        DO 10 I = 1,NDDL
-          J = NUDDL(I)
-          DO 100 IEC = 1,NEC
-            NIEC = ZI(IPRNM-1+NEC*(INO-1)+IEC)
-            IF (NIEC.EQ.0) GOTO 10
-            JCMP = 0
-            NBCOMP = 30
-            NBECRE = MOD(MXCMP,30)
-            IF (IEC.EQ.NEC.AND.NBECRE.GT.0) NBCOMP = NBECRE
-            DO 1000 JJ = 1,NBCOMP
-              K = IAND(NIEC,2**JJ)
-              IF (K.NE.0) JCMP = JCMP+1
-              IF (JJ.EQ.J) THEN
-                IF (K.EQ.0) CALL U2MESS('F','MODELISA4_11')
-                ZI(INUCMP-1+I) = JCMP
-                GO TO 10
-              ENDIF
-1000        CONTINUE
-100       CONTINUE
-10      CONTINUE
-101     CONTINUE
-C --- CALCUL DU TABLEAU INTERMEDIAIRE NOCMP
-C     NOCMP((INO-1)*NDDL+I,1)= NDEFI
-C     NOCMP((INO-1)*NDDL+I,2)= NUCMP(I)
-C     OU NDEFI L'ADRESSE DU DDL_IMPOSE REPRESENTANT LE COUPLE(INO,I)
-C     DANS .DEFI .VALE ET .VALF (ENRICHI)
-C     ON DOIT AVOIR NOCMP((INO-1)*NDDL+,2)=DEFI(1+NDEFI+2)
+      NBNO = ZI(JCNSD)
+      NCMP = ZI(JCNSD+1)
 C
-        CALL CHDEFI(INO,KNO,NDDL,ZI(INUCMP),NUTI,ZI(IDEFI+1),ZI(INOCMP)
-     &              ,NUTIN)
-1     CONTINUE
-      CALL JEDETR(CNUCMP)
-      IF (NUTIN.GT.NUTI) THEN
-C --- IL FAUT AGRANDIR .DEFI ET .VALE ET .VALF
+      NBLOC = 0
+      DO 100 ICMP = 1, NCMP
+         DO 110 INO = 1 , NBNO
+            IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) NBLOC = NBLOC + 1
+ 110     CONTINUE
+ 100  CONTINUE
 C
-        IF (IERDEF.EQ.0) THEN
-          CALL WKVECT(CDEFI,'G V I',(3*NUTIN+1),IDEFI)
-        ELSE
-          CALL JEVEUO(CDEFI,'E',IDEFI)
-          CALL JUVECA(CDEFI,(3*NUTIN+1))
-          CALL JEVEUO(CDEFI,'E',IDEFI)
-        ENDIF
-        ZI(IDEFI) = NUTIN
-        CALL JEEXIN(CVALE,IRET)
-        IF (IRET.NE.0) THEN
-          CALL JEVEUO(CVALE,'E',IVALE)
-          CALL JUVECA(CVALE,NUTIN)
-          CALL JEVEUO(CVALE,'E',IVALE)
-        ELSE IF (TYPE.EQ.'R') THEN
-          CALL WKVECT(CVALE,'G V R',NUTIN,IVALE)
-        ELSE IF (TYPE.EQ.'C') THEN
-          CALL WKVECT(CVALE,'G V C',NUTIN,IVALE)
-        ENDIF
-        CALL JEEXIN(CVALF,IRET)
-        IF (IRET.NE.0) THEN
-          CALL JEVEUO(CVALF,'E',IVALF)
-          CALL JUVECA(CVALF,NUTIN)
-          CALL JEVEUO(CVALF,'E',IVALF)
-        ELSE IF (TYPE.EQ.'F') THEN
-          CALL WKVECT(CVALF,'G V K8',NUTIN,IVALF)
-        ENDIF
-      ELSE
-        IF ((TYPE.EQ.'R').OR.(TYPE.EQ.'C')) THEN
-          CALL JEVEUO(CVALE,'E',IVALE)
-        ELSE IF (TYPE.EQ.'F') THEN
-          CALL JEVEUO(CVALF,'E',IVALF)
-        ENDIF
-      ENDIF
-C --- ON REMPLI LES .DEFI .VALE OU .VALF
+C --- CREATION DE LA SD 
 C
-      CALL JEVEUO(NOMVAL,'L',IVLDDL)
+      CALL WKVECT ( CDEFI, 'G V I', (3*NBLOC+1), IDEFI )
       IF (TYPE.EQ.'R') THEN
-        DO 2 KNO = 1, NINO
-          IF (IIMA.EQ.0) THEN
-            INO = NUNO(KNO)
-          ELSE
-            INO = KNO
-          ENDIF
-          DO 20 IDDL = 1, NDDL
-            NNO = 2*(NDDL*(KNO-1)+IDDL-1)
-            NIMP = ZI(INOCMP+NNO)
-            ZI(IDEFI+3*(NIMP-1)+1)=INO
-            ZI(IDEFI+3*(NIMP-1)+2)=ZI(INOCMP+NNO+1)
-            ZI(IDEFI+3*(NIMP-1)+3)= 1
-            ZR(IVALE-1+NIMP)=ZR(IVLDDL-1+IDDL)
-20        CONTINUE
-2       CONTINUE
+         CALL WKVECT ( CVALE, 'G V R' , NBLOC, IVALE )
       ELSE IF (TYPE.EQ.'C') THEN
-        DO 3 KNO = 1, NINO
-          IF (IIMA.EQ.0) THEN
-            INO = NUNO(KNO)
-          ELSE
-            INO = KNO
-          ENDIF
-          DO 30 IDDL = 1, NDDL
-            NNO = 2*(NDDL*(KNO-1)+IDDL-1)
-            NIMP = ZI(INOCMP+NNO)
-            ZI(IDEFI+3*(NIMP-1)+1)=INO
-            ZI(IDEFI+3*(NIMP-1)+2)=ZI(INOCMP+NNO+1)
-            ZI(IDEFI+3*(NIMP-1)+3)= 1
-            ZC(IVALE-1+NIMP)=ZC(IVLDDL-1+IDDL)
-30        CONTINUE
-3       CONTINUE
+         CALL WKVECT ( CVALE, 'G V C' , NBLOC, IVALE )
       ELSE IF (TYPE.EQ.'F') THEN
-        DO 4 KNO = 1, NINO
-          IF (IIMA.EQ.0) THEN
-            INO = NUNO(KNO)
-          ELSE
-            INO = KNO
-          ENDIF
-          DO 40 IDDL = 1, NDDL
-            NNO = 2*(NDDL*(KNO-1)+IDDL-1)
-            NIMP = ZI(INOCMP+NNO)
-            ZI(IDEFI+3*(NIMP-1)+1)=INO
-            ZI(IDEFI+3*(NIMP-1)+2)=ZI(INOCMP+NNO+1)
-            ZI(IDEFI+3*(NIMP-1)+3)= 2
-            ZK8(IVALF-1+NIMP)=ZK8(IVLDDL-1+IDDL)
-40        CONTINUE
-4       CONTINUE
+         CALL WKVECT ( CVALF, 'G V K8', NBLOC, IVALF )
       ENDIF
-      CALL JEDETR(CNOCMP)
+C
+C --- ON REMPLIT LES .DEFI .VALE OU .VALF
+C
+      ZI(IDEFI) = NBLOC
+C
+      IBLOC = 0
+      IF (TYPE.EQ.'R') THEN
+         DO 120 INO = 1, NBNO
+            II = 0
+            DO 122 ICMP = 1, NCMP
+               IF (EXISDG(ZI(IAPRNM-1+NBEC*(INO-1)+1),ICMP)) THEN
+                  II = II + 1
+                  IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
+                     IBLOC = IBLOC + 1
+                     ZI(IDEFI+3*(IBLOC-1)+1) = INO
+                     ZI(IDEFI+3*(IBLOC-1)+2) = II
+                     ZI(IDEFI+3*(IBLOC-1)+3) = 1
+                     ZR(IVALE-1+IBLOC) = ZR(JCNSV+(INO-1)*NCMP+ICMP-1)
+                  ENDIF
+               ENDIF
+ 122        CONTINUE
+ 120     CONTINUE
+C
+      ELSE IF (TYPE.EQ.'C') THEN
+         DO 130 INO = 1, NBNO
+            II = 0
+            DO 132 ICMP = 1, NCMP
+               IF (EXISDG(ZI(IAPRNM-1+NBEC*(INO-1)+1),ICMP)) THEN
+                  II = II + 1
+                  IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
+                     IBLOC = IBLOC + 1
+                     ZI(IDEFI+3*(IBLOC-1)+1) = INO
+                     ZI(IDEFI+3*(IBLOC-1)+2) = II
+                     ZI(IDEFI+3*(IBLOC-1)+3) = 1
+                     ZC(IVALE-1+IBLOC) = ZC(JCNSV+(INO-1)*NCMP+ICMP-1)
+                  ENDIF
+               ENDIF
+ 132        CONTINUE
+ 130     CONTINUE
+C
+      ELSE IF (TYPE.EQ.'F') THEN
+         DO 140 INO = 1, NBNO
+            II = 0
+            DO 142 ICMP = 1, NCMP
+               IF (EXISDG(ZI(IAPRNM-1+NBEC*(INO-1)+1),ICMP)) THEN
+                  II = II + 1
+                  IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
+                     IBLOC = IBLOC + 1
+                     ZI(IDEFI+3*(IBLOC-1)+1) = INO
+                     ZI(IDEFI+3*(IBLOC-1)+2) = II
+                     ZI(IDEFI+3*(IBLOC-1)+3) = 2
+                     ZK8(IVALF-1+IBLOC) = ZK8(JCNSV+(INO-1)*NCMP+ICMP-1)
+                  ENDIF
+               ENDIF
+ 142        CONTINUE
+ 140     CONTINUE
+      ENDIF
+C
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF OPTIONS  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,20 +26,21 @@ OPTION__
         PTEMPEF  TEMP_F
         PTEMPSR  INST_R
         PVARCPR  VARI_R  <<  PVARCPR : VARIABLES DE COMMANDE  >>
-        PDEPLAR  DEPL_R
         PCAGNPO  CAGNPO
         PCACOQU  CACOQU
         PCADISK  CADISK
         PCAORIE  CAORIE
-        PCASECT  CASECT
-        PCAARPO  CAARPO
-        PHARMON  HARMON
         PCAGNBA  CAGNBA
         PCAMASS  CAMASS
-        PCAPOUF  CAPOUF
         PCAGEPO  CAGEPO
         PNBSP_I  NBSP_I
         PFIBRES  CAFI_R
+% que lineaire : concerne les poutres courbes
+        PCAARPO  CAARPO
+% que lineaire : numero d'harmonique
+        PHARMON  HARMON
+% que lineaire : modelisation 3D_FAISCEAU
+        PCAPOUF  CAPOUF
    OUT__
         PMATUUR  MDEP_R  RESL__
         PMATUNS  MDNS_R  RESL__

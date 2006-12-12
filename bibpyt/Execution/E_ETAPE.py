@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,7 +129,7 @@ class ETAPE:
 
       if (not isinstance(self.parent,MACRO_ETAPE)) or \
          (self.parent.nom=='INCLUDE'             ) or \
-         (self.jdc.impr_macro=='OUI'             ) :
+         (self.jdc.impr_macro==1                 ) :
          echo_mess=[]
          decalage="  "  # blancs au debut de chaque ligne affichee
          echo_mess.append( '\n' )
@@ -171,7 +171,7 @@ class ETAPE:
       """
       if (not isinstance(self.parent,MACRO_ETAPE)) or \
          (self.parent.nom=='INCLUDE'             ) or \
-         (self.jdc.impr_macro=='OUI'             ) :
+         (self.jdc.impr_macro==1                 ) :
          decalage="  "  # blancs au debut de chaque ligne affichee
          echo_mess=[decalage]
          if cpu_user != None :
@@ -192,7 +192,7 @@ class ETAPE:
              - construction, 
              - verification, 
              - execution
-      en une seule passe. Utilise en mode par_lot='NON'
+      en une seule passe. Utilise en mode PAR_LOT='NON'
 
       L'attribut d'instance executed indique que l'etape a deja ete executee
       Cette methode peut etre appelee plusieurs fois mais l'execution proprement
@@ -236,7 +236,7 @@ class ETAPE:
       Cette methode realise l execution complete d une etape, en mode commande par commande : 
              - construction, 
              - execution
-      en une seule passe. Utilise en mode par_lot='NON'
+      en une seule passe. Utilise en mode PAR_LOT='NON'
 
       L'attribut d'instance executed indique que l'etape a deja ete executee
       Cette methode peut etre appelee plusieurs fois mais l'execution proprement

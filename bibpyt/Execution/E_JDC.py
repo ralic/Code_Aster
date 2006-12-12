@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 17/10/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF E_JDC Execution  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,6 +37,10 @@ import aster
 class JDC:
    """
    """
+   # attributs accessibles depuis le fortran par les méthodes génériques
+   # get_jdc_attr et set_jdc_attr
+   l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro')
+   
    def Exec(self):
       """
           Execution en fonction du mode d execution
@@ -278,4 +282,25 @@ class JDC:
       liste=[]
       for e in self.etapes : e.get_liste_etapes(liste)
       return liste
+
+   def get_jdc_attr(self, attr):
+      """
+         Retourne la valeur d'un des attributs "aster"
+      """
+      if attr not in self.l_jdc_attr:
+         self.cr.exception("Erreur de programmation :\n"\
+                           "attribut '%s' non autorisé" % attr)
+      return getattr(self, attr)
+
+   def set_jdc_attr(self, attr, value):
+      """
+         Positionne un des attributs "aster"
+      """
+      if attr not in self.l_jdc_attr:
+         self.cr.exception("Erreur de programmation :\n"\
+                           "attribut '%s' non autorisé" % attr)
+      if type(value) not in (types.IntType, types.LongType):
+         self.cr.exception("Erreur de programmation :\n"\
+                           "valeur non entière : %s" % str(value))
+      setattr(self, attr, value)
 

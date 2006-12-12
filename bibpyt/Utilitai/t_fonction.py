@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 25/09/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF t_fonction Utilitai  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,7 +165,7 @@ class t_fonction :
        else                                  : f_g=self
     val_min    =f_g.vale_x[0]
     prol_gauche=f_g.para['PROL_GAUCHE']
-    if self.vale_x[0]>other.vale_x[0]:
+    if self.vale_x[-1]>other.vale_x[-1]:
        if other.para['PROL_DROITE']!='EXCLU' : f_d=self
        else                                  : f_d=other
     else :

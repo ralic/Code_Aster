@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,13 +18,23 @@
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
 ENGENDRE_TEST=PROC(nom="ENGENDRE_TEST",op=178,
-            UIinfo={"groupes":("Impression",)},
-      fr="Engendre des tests pour la non régression du code (pour développeurs)",
-      regles=(UN_PARMI('TOUT','CO'),),
+                   UIinfo={"groupes":("Impression",)},
+                   fr="Engendre des tests pour la non régression du code (pour développeurs)",
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  
-         TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         CO              =SIMP(statut='f',typ=assd,validators=NoRepeat(),max='**'),
-         TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut="SOMME",into=("SOMME","RESUME") ),
-         FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE12.5"),
-         PREC_R          =SIMP(statut='f',typ='TXM',defaut="1.E-5"),
+         FORMAT          =SIMP(statut='f',typ='TXM',into=("OBJET",) ),
+         FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE20.13"),
+         PREC_R          =SIMP(statut='f',typ='TXM',defaut="1.E-10"),
+#============================================================================
+         b_aster     =BLOC( condition = "FORMAT==None",
+            CO              =SIMP(statut='o',typ=(cham_gd_sdaster,resultat_sdaster,table_sdaster),
+                                  validators=NoRepeat(),max='**'),
+            TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut="SOMM_ABS",into=("SOMM","SOMM_ABS","MAX","MIN") ),
+         ),
+#============================================================================
+         b_objet     =BLOC( condition = "FORMAT=='OBJET'",
+                            regles=(UN_PARMI('TOUT','CO'),),
+            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+            CO              =SIMP(statut='f',typ=assd,validators=NoRepeat(),max='**'),
+            TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut="SOMME",into=("SOMME","RESUME") ),
+         ),
 )  ;

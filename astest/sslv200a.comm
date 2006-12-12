@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 # TITRE TEST DE NON-REGRESSION D'ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -322,6 +322,8 @@ THLIN=THER_LINEAIRE(        MODELE=MOTH,
                            INCREMENT=_F(  LIST_INST = LR1),
                                EXCIT=_F(  CHARGE = CHTHF) )
 
+ENGENDRE_TEST (  CO = THLIN, )
+
 TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
                      TYPE_TEST = 'SOMM_ABS',
                      NOM_CHAM = 'TEMP',
@@ -337,6 +339,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = THLIN,   NUME_ORDRE = 0,
                      NOM_CHAM = 'TEMP',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  9.3469644801437E+02  )   )   )
+
 
 CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
@@ -529,15 +532,22 @@ MSLIN=MECA_STATIQUE(        MODELE=MO,
                           )
 
 CALC_ELEM( reuse= MSLIN ,RESULTAT= MSLIN ,         
-                           LIST_INST=LR1,
-                           OPTION=(
-                            'SIGM_ELNO_DEPL',
+                          LIST_INST=LR1,
+                          OPTION=( 'EPSG_ELGA_DEPL', 'EPSG_ELNO_DEPL',
+                                   'SIGM_ELNO_DEPL',
                                    'EPME_ELNO_DEPL', 'EPME_ELGA_DEPL',
                                    'EPOT_ELEM_DEPL', 'EPSI_ELGA_DEPL',
                                    'EPSI_ELNO_DEPL', 'EQUI_ELNO_SIGM',
                                    'EQUI_ELGA_SIGM', 'EQUI_ELNO_EPSI',
                                    'EQUI_ELGA_EPSI',  )
                         )
+
+CALC_NO( reuse=MSLIN,  RESULTAT=MSLIN,
+         OPTION=( 'SIGM_NOEU_DEPL', 'EPSI_NOEU_DEPL', 
+                  'EQUI_NOEU_SIGM', 'EQUI_NOEU_EPSI',  ),
+       )
+
+ENGENDRE_TEST (  CO = MSLIN )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'DEPL',
@@ -720,70 +730,6 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  1.6779807198124E+09  )   )
             )
-
-# VALIDATION DE PROJ_CHAMP/METHODE:'ELEM' EN 3D :
-
-MSLINP=PROJ_CHAMP(RESULTAT=MSLIN,     METHODE='ELEM',
-                     MODELE_1=MO,        MODELE_2=MO  )
-
-TEST_RESU(RESU=( _F(  RESULTAT = MSLINP,    NUME_ORDRE = 1,
-                     NOM_CHAM = 'DEPL',
-                     TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-      VALE=  1.1843510093244E+09 ),
-                   _F(  RESULTAT = MSLINP,    NUME_ORDRE = 2,
-                     NOM_CHAM = 'DEPL',
-                     TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-      VALE=  1.2008234992993E+09 ),
-                   _F(  RESULTAT = MSLINP,    NUME_ORDRE = 3,
-                     NOM_CHAM = 'DEPL',
-                     TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-      VALE=  1.2172952262462E+09 )   )
-            )
-
-CALC_NO(reuse =MSLIN,
-              RESULTAT=MSLIN,
-              OPTION='SIGM_NOEU_DEPL',);
-
-TABME0=MACR_LIGN_COUPE(   RESULTAT    = MSLIN,
-                   LIGN_COUPE  =   _F( NB_POINTS  = 10,
-                                       COOR_ORIG  = (0.53531E+01,0.77826E+01,0.99437E+00),
-                                       COOR_EXTR  = (0.22327E+01,0.69743E+01,0.18483E+01), ),
-                     )
-
-IMPR_TABLE ( TABLE = TABME0,
-             FORMAT='ASTER',
-             UNITE=39
-             )
-
-DEFI_FICHIER(ACTION='LIBERER',UNITE=39)
-
-TABME1=LIRE_TABLE( UNITE=39,
-                   FORMAT='ASTER', 
-                   NUME_TABLE=1,
-                   SEPARATEUR=' ',)
-
-TEST_TABLE(    TABLE=TABME1,
-               FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',
-                            VALE = 1.48204),
-                       _F(  NOM_PARA = 'INST',
-                            VALE = 5.50E+00),     ),
-               NOM_PARA='SIXX',
-      VALE=  3.36517E+04   ,
-               REFERENCE = 'NON_REGRESSION',
-          )
-
-
-# ----------------------------------------------------------------------
-#   POST_TRAITEMENT DU CALCUL
-# ----------------------------------------------------------------------
-CALC_ELEM( reuse=MSLIN,       
-                           OPTION=( 'EPSG_ELGA_DEPL', 'EPSG_ELNO_DEPL', ),
-                          RESULTAT=MSLIN,
-                    )
-
 TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
                      NOM_CHAM = 'SIEF_ELGA_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
@@ -981,10 +927,6 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    NUME_ORDRE = 1,
       VALE=  1.6779807198124E+09  )   )
             )
 
-CALC_NO( reuse=MSLIN,       OPTION=( 'EPSI_NOEU_DEPL', 'EQUI_NOEU_SIGM',
-                                  'EQUI_NOEU_EPSI',  ),
-                       RESULTAT=MSLIN,)
-
 TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    INST = 11.5,
                      NOM_CHAM = 'EPSI_NOEU_DEPL',
                      TYPE_TEST = 'SOMM_ABS',
@@ -1007,80 +949,171 @@ TEST_RESU(RESU=( _F(  RESULTAT = MSLIN,    INST = 11.5,
       VALE=  4.3139271154417E+08  )   )
             )
 
+# VALIDATION DE PROJ_CHAMP/METHODE:'ELEM' EN 3D :
+
+MSLINP=PROJ_CHAMP(RESULTAT=MSLIN,     METHODE='ELEM',
+                     MODELE_1=MO,        MODELE_2=MO  )
+
+ENGENDRE_TEST (  CO = MSLINP, )
+
+TEST_RESU(RESU=( _F(  RESULTAT = MSLINP,    NUME_ORDRE = 1,
+                     NOM_CHAM = 'DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
+      VALE=  1.1843510093244E+09 ),
+                   _F(  RESULTAT = MSLINP,    NUME_ORDRE = 2,
+                     NOM_CHAM = 'DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
+      VALE=  1.2008234992993E+09 ),
+                   _F(  RESULTAT = MSLINP,    NUME_ORDRE = 3,
+                     NOM_CHAM = 'DEPL',
+                     TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
+      VALE=  1.2172952262462E+09 )   )
+            )
+
+TABME0=MACR_LIGN_COUPE(   RESULTAT    = MSLIN,
+                   LIGN_COUPE  =   _F( NB_POINTS  = 10,
+                                       COOR_ORIG  = (0.53531E+01,0.77826E+01,0.99437E+00),
+                                       COOR_EXTR  = (0.22327E+01,0.69743E+01,0.18483E+01), ),
+                     )
+
+IMPR_TABLE ( TABLE = TABME0,
+             FORMAT='ASTER',
+             UNITE=39
+             )
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=39)
+
+TABME1=LIRE_TABLE( UNITE=39,
+                   FORMAT='ASTER', 
+                   NUME_TABLE=1,
+                   SEPARATEUR=' ',)
+
+TEST_TABLE(    TABLE=TABME1,
+               FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.48204),
+                       _F(  NOM_PARA = 'INST',
+                            VALE = 5.50E+00),     ),
+               NOM_PARA='SIXX',
+      VALE=  3.36517E+04   ,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+# ----------------------------------------------------------------------
+
 CHAMNO1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=MSLIN,
+                     NOM_CHAM='DEPL', RESULTAT=MSLIN,
                        INST=0.7,
                        INTERPOL='LIN'
                         )
+
+CHAMNO2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                     NOM_CHAM='DEPL', RESULTAT=MSLIN,
+                         TYPE_MAXI='NORM_TRAN',
+                         TYPE_RESU='INST',
+                         LIST_INST=LR1    )
+
+CHAMEL1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                     NOM_CHAM='SIEF_ELGA_DEPL', RESULTAT=MSLIN,
+                       INST=1.8,
+                       INTERPOL='LIN'
+                        )
+
+CHAMEL2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_EPSI_R',
+                     NOM_CHAM='EPSI_ELGA_DEPL', RESULTAT=MSLIN,
+                       INST=4.1,
+                       INTERPOL='LIN'
+                        )
+
+CHAMEL3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                     NOM_CHAM='SIGM_ELNO_DEPL', RESULTAT=MSLIN,
+                       INST=1.8,
+                       INTERPOL='LIN'
+                        )
+
+CHAMEL4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
+                     NOM_CHAM='EPSI_ELNO_DEPL', RESULTAT=MSLIN,
+                       INST=4.1,
+                       INTERPOL='LIN'
+                        )
+
+CHAMEL5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                      NOM_CHAM='EQUI_ELNO_SIGM', RESULTAT=MSLIN,
+                        INST=3.4,
+                        INTERPOL='LIN' )
+
+CHAMEL6=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_EPSI_R',
+                      NOM_CHAM='EPSI_ELGA_DEPL', RESULTAT=MSLIN,
+                        TYPE_MAXI='MINI',
+                        TYPE_RESU='VALE',
+                        TOUT_ORDRE='OUI' )
+
+CHAMEL7=CALC_CHAM_ELEM(    MODELE=MO,
+                             CHAM_MATER=CHMAT,
+                              CARA_ELEM=CARA1,
+                             GROUP_MA='GMA20',
+                             OPTION='COOR_ELGA' )
+
+ENGENDRE_TEST (  CO = (CHAMNO1, CHAMNO2 ), )
+ENGENDRE_TEST (  CO = (CHAMEL1,CHAMEL2,CHAMEL3,CHAMEL4,CHAMEL5,CHAMEL6,CHAMEL7 ), )
 
 TEST_RESU( CHAM_NO=_F(  CHAM_GD = CHAMNO1,
                         TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  1.2034009242515E+09  )   )
 
-CHAMEL1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
-NOM_CHAM='SIEF_ELGA_DEPL', RESULTAT=MSLIN,
-                       INST=1.8,
-                       INTERPOL='LIN'
-                        )
+TEST_RESU( CHAM_NO=_F(  CHAM_GD = CHAMNO2,
+                        TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
+      VALE=  1.4934107053345E+07  )   )
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL1,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  1.6337386984238E+09  )   )
 
-CHAMEL2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_EPSI_R',
-NOM_CHAM='EPSI_ELGA_DEPL', RESULTAT=MSLIN,
-                       INST=4.1,
-                       INTERPOL='LIN'
-                        )
-
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL2,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  8.8697408887889E+08  )   )
-
-CHAMEL3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIGM_ELNO_DEPL', RESULTAT=MSLIN,
-                       INST=1.8,
-                       INTERPOL='LIN'
-                        )
 
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL3,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  1.6534875994225E+09  )   )
 
-CHAMEL4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-NOM_CHAM='EPSI_ELNO_DEPL', RESULTAT=MSLIN,
-                       INST=4.1,
-                       INTERPOL='LIN'
-                        )
-
 TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL4,
                           TYPE_TEST = 'SOMM_ABS',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  9.0485714411969E+08 )   )
 
-CHAMELG=CALC_CHAM_ELEM(    MODELE=MO,
-                             CHAM_MATER=CHMAT,
-                              CARA_ELEM=CARA1,
-                             GROUP_MA='GMA20',
-                             OPTION='COOR_ELGA' )
+TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL5,
+                          TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
+      VALE=   4.0921851354068E+09  )   )
 
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMELG,
+TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL6,
+                          TYPE_TEST = 'SOMM_ABS',
+       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
+      VALE=  8.9071012444036E+08  )   )
+
+TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL7,
                           MAILLE = 'M72',
                           POINT = 7,
                           NOM_CMP = 'Y',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  4.0833723366647E+00  )   )
 
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMELG,
+TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL7,
                           MAILLE = 'M190',
                           POINT = 27,
                           NOM_CMP = 'X',
        REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
       VALE=  9.0715681732884E+00  )   )
+
+# --------------------------------------------------------------------
 
 TABLE1=POST_ELEM(        MODELE=MO,
                         CHAM_MATER=CHMAT,
@@ -1089,6 +1122,14 @@ TABLE1=POST_ELEM(        MODELE=MO,
                          _F( GROUP_MA = 'GMA21'),
                          _F( TOUT = 'OUI'),
                          _F( MAILLE = 'M54')) )
+
+TABLE2=POST_ELEM(     RESULTAT=MSLIN,
+                              INST=5.5,
+                          ENER_POT=_F( TOUT = 'OUI',
+                                    GROUP_MA = 'GMA21',
+                                    MAILLE = ('M44', 'M99',)) )
+
+ENGENDRE_TEST (  CO=(TABLE1,TABLE2), )
 
 TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='MASSE',
                 TYPE_TEST='SOMM_ABS',
@@ -1170,12 +1211,6 @@ TEST_TABLE(      TABLE=TABLE1,       NOM_PARA='GAMMA',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-9,
       VALE=  4.3470495576859E+01  )
 
-TABLE2=POST_ELEM(     RESULTAT=MSLIN,
-                              INST=5.5,
-                          ENER_POT=_F( TOUT = 'OUI',
-                                    GROUP_MA = 'GMA21',
-                                    MAILLE = ('M44', 'M99',)) )
-
 TEST_TABLE(      TABLE=TABLE2,       NOM_PARA='NUME_ORDRE',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-9,
@@ -1190,38 +1225,6 @@ TEST_TABLE(      TABLE=TABLE2,       NOM_PARA='POUR_CENT',
                 TYPE_TEST='SOMM_ABS',
        REFERENCE='NON_REGRESSION', PRECISION=1.E-9,
       VALE=  1.0848950794158E+02  )
-
-CHAMEL13=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='EQUI_ELNO_SIGM', RESULTAT=MSLIN,
-                        INST=3.4,
-                        INTERPOL='LIN' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL13,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-      VALE=   4.0921851354068E+09  )   )
-
-CHAMEL14=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_EPSI_R',
-NOM_CHAM='EPSI_ELGA_DEPL', RESULTAT=MSLIN,
-                        TYPE_MAXI='MINI',
-                        TYPE_RESU='VALE',
-                        TOUT_ORDRE='OUI' )
-
-TEST_RESU( CHAM_ELEM=_F(  CHAM_GD = CHAMEL14,
-                          TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-      VALE=  8.9071012444036E+08  )   )
-
-CHAMNO3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=MSLIN,
-                         TYPE_MAXI='NORM_TRAN',
-                         TYPE_RESU='INST',
-                         LIST_INST=LR1    )
-
-TEST_RESU( CHAM_NO=_F(  CHAM_GD = CHAMNO3,
-                        TYPE_TEST = 'SOMM_ABS',
-       REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-9,
-      VALE=  1.4934107053345E+07  )   )
 
 LR3=DEFI_LIST_REEL(         DEBUT=0.,
                          INTERVALLE=_F(  JUSQU_A = 10.,

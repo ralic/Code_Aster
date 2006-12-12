@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE */
+/* MODIF astermodule supervis  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1315,7 +1315,7 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)
         {
-                printf( "<F> GETVTX : numero d'occurence (IOCC=%d) \n",*iocc) ;
+                printf( "<F> GETVTX : numero d'occurence (IOCC=%ld) \n",*iocc) ;
                 printf( "             commande : %s\n",PyString_AsString(PyObject_CallMethod(commande,"retnom",""))) ;
                 printf( "             mot-cle facteur : %s\n",mfc) ;
                 printf( "             mot-cle simple  : %s\n",mcs) ;
@@ -2649,6 +2649,56 @@ PyObject *args;
 
         Py_INCREF( Py_None ) ;
         return Py_None;
+}
+
+/* ------------------------------------------------------------------ */
+INTEGER DEFS(JDCGET,jdcget,char *attr, int l_attr)
+{
+/*
+   Permet de récupérer la valeur d'un attribut du jdc.
+*/
+   PyObject *jdc, *val;
+   INTEGER value;
+   
+   jdc = PyObject_GetAttrString(commande, "jdc");
+   if (jdc == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+
+   val = PyObject_CallMethod(jdc, "get_jdc_attr", "s#", attr, l_attr);
+   if (val == NULL){
+      printf("attribut inexistant dans le jdc : '%s'\n\n", attr);
+      MYABORT("erreur dans JDCGET");
+   }
+   
+   if (!PyInt_Check(val))
+      MYABORT("Seuls les attributs de type entier peuvent etre récupérés !");
+   
+   value = PyInt_AsLong(val);
+   
+   Py_XDECREF(jdc);
+   Py_XDECREF(val);
+   
+   return value;
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSP(JDCSET,jdcset,char *attr, int l_attr, INTEGER *value)
+{
+/*
+   Permet de positionner la valeur d'un attribut du jdc à `value`.
+*/
+   PyObject *jdc, *res;
+   
+   jdc = PyObject_GetAttrString(commande, "jdc");
+   if (jdc == NULL)
+      MYABORT("Impossible de récupérer l'attribut 'jdc' !");
+   
+   res = PyObject_CallMethod(jdc, "set_jdc_attr", "s#l", attr, l_attr, *value);
+   if (res == NULL)
+      MYABORT("erreur dans JDCSET");
+   
+   Py_XDECREF(jdc);
+   Py_XDECREF(res);
 }
 
 /* ------------------------------------------------------------------ */

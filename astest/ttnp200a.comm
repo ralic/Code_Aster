@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2005   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -197,13 +197,13 @@ MAILLAGE=MA,
                                       VALE = (-0.2, 0.3,  0.8, )) )
 
 CHAMNO2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
-MAILLAGE=MA,
+                    MAILLAGE=MA,
                                AFFE=_F(  GROUP_NO = 'GNO2',
                                       NOM_CMP = ('DX', 'DY', 'DZ',),
                                       VALE = (0.8,  0.2,  0.1, )) )
 
 CHAMNO3=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MA,AFFE=(
+                    MAILLAGE=MA,AFFE=(
                                _F(  NOEUD = ( 'N73',  'N49',  'N74', ),
                                       NOM_CMP = 'TEMP',
                                       VALE = 2.8),
@@ -212,7 +212,7 @@ MAILLAGE=MA,AFFE=(
                                       VALE = 0.7)) )
 
 CHAMNO4=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MA,AFFE=(
+                    MAILLAGE=MA,AFFE=(
                                _F(  TOUT = 'OUI',
                                       NOM_CMP = 'TEMP',
                                       VALE = 0.),
@@ -415,6 +415,8 @@ THNL6=CALC_META( reuse=THNL6,  MODELE=MO,
                       ETAT_INIT=_F( META_INIT_ELNO = CARTE),
                       COMP_INCR=_F( RELATION = 'ACIER', TOUT = 'OUI')
                    )
+
+ENGENDRE_TEST (  CO = (THNL1, THNL6, THL10) )
 
 TEST_RESU(RESU=(
                           _F(

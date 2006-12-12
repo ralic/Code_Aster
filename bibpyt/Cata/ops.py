@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,6 +38,19 @@ try:
 except:
    pass
 
+def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG):
+   """Fonction sdprod partie commune à DEBUT et POURSUITE.
+   (on stocke un entier au lieu du logique)
+   """
+   jdc.par_lot    = PAR_LOT
+   jdc.impr_macro = int(IMPR_MACRO == 'OUI')
+   jdc.jxveri     = int(DEBUG != None and DEBUG['JXVERI'] == 'OUI')
+   jdc.sdveri     = int(DEBUG != None and DEBUG['SDVERI'] == 'OUI')
+   jdc.fico       = None
+   if CODE != None:
+      jdc.fico = CODE['NOM']
+
+
 def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
    """
        Fonction sdprod de la macro DEBUT
@@ -46,15 +59,8 @@ def DEBUT(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande DEBUT ne peut exister qu'au niveau jdc")
 
-   self.jdc.impr_macro=IMPR_MACRO
-   self.jdc.jxveri=0
-   if DEBUG!=None :
-      if DEBUG['JXVERI']=='OUI' : self.jdc.jxveri=1
-   self.jdc.set_par_lot(PAR_LOT)
-   if CODE!=None :
-      self.jdc.fico=CODE['NOM']
-   else:
-      self.jdc.fico=None
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG)
+
 
 def build_debut(self,**args):
    """
@@ -84,15 +90,8 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
-   self.jdc.impr_macro=IMPR_MACRO
-   self.jdc.set_par_lot(PAR_LOT)
-   self.jdc.jxveri=0
-   if DEBUG!=None :
-      if DEBUG['JXVERI']=='OUI' : self.jdc.jxveri=1
-   if CODE!=None :
-      self.jdc.fico=CODE['NOM']
-   else:
-      self.jdc.fico=None
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG)
+   
    if (self.codex and os.path.isfile("glob.1") or os.path.isfile("bhdf.1")):
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation

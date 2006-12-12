@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /CVARJE/ZC(1)
       LOGICAL ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8,TYPTES
+      CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
@@ -39,14 +39,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      CHARACTER*8 KBID
-      CHARACTER*24 NOMFI,OBJ
-      CHARACTER*10 FORMR,PRECI
-      CHARACTER*100 FORM1
-      CHARACTER*3 TYPE
-      INTEGER RESUME,SOMMI,LONUTI,LONMAX,NI
-      LOGICAL ULEXIS
-      REAL*8  SOMMR
+      INTEGER        RESUME, SOMMI, LONUTI, LONMAX, NI
+      REAL*8         SOMMR
+      LOGICAL        ULEXIS
+      CHARACTER*3    TYPE
+      CHARACTER*8    KBID, FORMAT, TYPTES
+      CHARACTER*10   FORMR,PRECI
+      CHARACTER*19   NOMSD
+      CHARACTER*24   NOMFI,OBJ
+      CHARACTER*100  FORM1
 
 
       CALL JEMARQ()
@@ -62,11 +63,54 @@ C
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
          CALL ULOPEN ( IFIC, ' ', NOMFI, 'NEW', 'O' )
       ENDIF
+C
+      FORMAT = 'ASTER'
+      CALL GETVTX ( ' ', 'FORMAT'   , 0,1,1, FORMAT, IBID )
+C
+      CALL GETVTX ( ' ', 'FORMAT_R' , 0,1,1, FORMR  ,IBID )
+      CALL GETVTX ( ' ', 'PREC_R'   , 0,1,1, PRECI  ,IBID )
+      CALL GETVTX ( ' ', 'TYPE_TEST', 0,1,1, TYPTES ,IBID )
+C
+C ---- FORMAT TEST_RESU / STANDARD
+C
+      IF ( FORMAT .EQ. 'ASTER' ) THEN
+         CALL GETVID ( ' ', 'CO', 1,1,0, KBID, N1 )
+         NCO =-N1
+         CALL WKVECT ( '&&OP0178.LCO', 'V V K8', NCO, IALICO )
+         CALL GETVID ( ' ', 'CO', 1,1,NCO, ZK8(IALICO), IBID )
 
-      CALL GETVTX ( ' ', 'FORMAT_R' , 0,1,1, FORMR  ,IBID)
-      CALL GETVTX ( ' ', 'PREC_R'   , 0,1,1, PRECI  ,IBID)
-      CALL GETVTX ( ' ', 'TYPE_TEST', 0,1,1, TYPTES ,IBID)
-
+         DO 100 ICO = 1,NCO
+            NOMSD = ZK8(IALICO+ICO-1)(1:8)//'           '
+C
+            CALL EXISD ( 'RESULTAT', NOMSD, IRET )
+            IF ( IRET .EQ. 1 ) THEN
+               CALL ENGTRS ( IFIC, NOMSD, TYPTES, PRECI, FORMR )
+               GOTO 100
+            ENDIF
+C
+            CALL EXISD ( 'TABLE', NOMSD, IRET )
+            IF ( IRET .EQ. 1 ) THEN
+               CALL ENGTTB ( IFIC, NOMSD, TYPTES, PRECI, FORMR )
+               GOTO 100
+            ENDIF
+C
+            CALL EXISD ( 'CHAM_ELEM', NOMSD, IRET )
+            IF ( IRET .EQ. 1 ) THEN
+               CALL ENGTCE ( IFIC, NOMSD, TYPTES, PRECI, FORMR )
+               GOTO 100
+            ENDIF
+C
+            CALL EXISD ( 'CHAM_NO', NOMSD, IRET )
+            IF ( IRET .EQ. 1 ) THEN
+               CALL ENGTCN ( IFIC, NOMSD, TYPTES, PRECI, FORMR )
+               GOTO 100
+            ENDIF
+ 100     CONTINUE
+         CALL JEDETR ( '&&OP0178.LCO' )
+C
+C ---- FORMAT TEST_RESU / OBJET
+C
+      ELSE
 
 C     -- CAS : TOUT:'OUI'
 C    -----------------------------------------
@@ -98,10 +142,8 @@ C             -- TEST_RESU/S_I(OU S_R) :
             END IF
           END IF
    10   CONTINUE
-
       END IF
-
-
+C
 C     -- CAS : CO: L_CO
 C    -----------------------------------------
       CALL GETVID(' ','CO',0,1,0,KBID,N1)
@@ -137,15 +179,16 @@ C               -- TEST_RESU/S_I(OU S_R) :
               END IF
             END IF
    20     CONTINUE
-
           CALL JEDETR('&&OP0178.LISTE')
    30   CONTINUE
-
       END IF
-
-
+      ENDIF
+C
+ 9999 CONTINUE
+C
       CALL JEDEMA()
-
+C
  1001 FORMAT ('_F(NOM=''',A24,''',RESUME =',I15,',PRECISION=0.,),')
  1003 FORMAT ('_F(NOM=''',A24,''',S_I=',I15,',PRECISION=0.,),')
+C
       END
