@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*3 KSTOP,MUMPS
+      CHARACTER*24 VALK(2)
       CHARACTER*8 MATASS,MATFAC,TYPE,PRECON,KTYPR
       CHARACTER*16 CONCEP,NOMCMD,METHOD
       CHARACTER*19 MASS,MFAC,SOLVEU
@@ -107,10 +108,9 @@ C     --- EXISTENCE / COMPATIBILITE DES MATRICES ---
       IF (IRET.NE.0) THEN
         CALL VRREFE(MASS,MFAC,IER1)
         IF (IER1.NE.0) THEN
-          CALL UTMESS('F','FACT_LDLT','LES MATRICES "'//MATASS//
-     &                '" ET "'//MATFAC//
-     &                '" N''ONT PAS LE MEME DOMAINE DE DEFINITION')
-C        CALL U2MESK('F','ALGELINE2_18', 2 ,VALK)
+           VALK(1) = MATASS
+           VALK(2) = MATFAC
+           CALL U2MESK('F','ALGELINE2_18', 2 ,VALK)
         ELSE IF (MFAC.NE.MASS) THEN
           IF (ILDEB.EQ.1 .AND. IBDEB.EQ.1) THEN
             CALL MTCOPY(MASS,MFAC,IRET)

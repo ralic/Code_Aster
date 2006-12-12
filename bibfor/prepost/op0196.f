@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/11/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,6 @@ C
       CHS   ='&&'//NOMPRO//'.CHS_MA  '
       CHNO  ='&&'//NOMPRO//'.DEP_INIT'
       CHNOS ='&&'//NOMPRO//'.CHS_EXTR'
-      CH    ='&&'//NOMPRO//'.CH_MA   '
       CHOUT ='&&'//NOMPRO//'.DEP_RESU'
       CHAMS ='&&'//NOMPRO//'.CHAMS   '
 C
@@ -259,7 +258,7 @@ C
 C             CALCUL DES DEPLACEMENTS AUX NOEUDS X-FEM
               CALL ASSERT(NBCHIN.LE.NBINMX)
               CALL CALCUL('S',OPTION,LIGREL,NBCHIN,LCHIN,LPAIN,1,LCHOUT,
-     &                    LPAOUT,'G')
+     &                    LPAOUT,'V')
 C
 C             PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
               CALL CELCES ( LCHOUT(1), 'V', CHAMS )
@@ -536,11 +535,12 @@ C
  777          CONTINUE
 C
 C              CALL IMPRSD('CHAMP',CHS,8,'--- CHAMP DEPL ---')
+              CALL RSEXCH(RESUC1,'DEPL',IORD,CH,IRET)
               CALL CNSCNO(CHS,' ','NON','G',CH)
 C
 C             3 - AJOUT DU CHAMP DANS LA SD RESULTAT
 C             --------------------------------------
-              CALL RSNOCH(RESUC1,'DEPL',IORD,CH)
+              CALL RSNOCH(RESUC1,'DEPL',IORD,' ')
               CALL RSADPA(RESUC1,'E',1,'INST',IORD,0,JINST,KBID)
               ZR(JINST)=INST
 C             DESTRUCTION DU CHAMP_S

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/12/2005   AUTEUR F1BHHAJ J.ANGLES 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE FATIGUE-COMPTAGE DE CYCLES RAINFLOW-DOMMAGE-EQUIVALENTS-C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,6 +118,27 @@ DEPL=CALC_ELEM( reuse=DEPL,
                                                'EQUI_ELNO_SIGM',
                                                'EQUI_ELNO_EPSI',  ),
                                   RESULTAT=DEPL )
+
+MACR_ECLA_PG(   MODELE_INIT = CPLAN,  RESU_INIT = DEPL,
+                NOM_CHAM = ('EQUI_ELGA_EPSI',), LIST_INST=LINST  ,
+                RESULTAT = CO("U2B"), MAILLAGE = CO("MA2"),
+                 )
+
+DEFI_FICHIER(UNITE=38)
+
+IMPR_RESU(UNITE=38,RESU=_F(RESULTAT=U2B,NOM_CHAM='EQUI_ELGA_EPSI',MAILLAGE=MA2),)
+
+DEFI_FICHIER (ACTION='LIBERER',UNITE=38)
+
+TEST_FICHIER(FICHIER='fort.38',
+             NB_CHIFFRE=4,
+             EPSILON=1.E-4,
+             VALE_K='0c5d6b1c733e329fda499a0b6044a022',
+             EXPR_IGNORE = ('ASTER','INSTANT','ORDRE',),
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.3.22',
+             INFO=1);
+
 
 F_MANSON=DEFI_FONCTION(      NOM_PARA='EPSI',
                               PROL_DROITE='LINEAIRE',

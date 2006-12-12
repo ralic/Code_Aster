@@ -6,7 +6,7 @@
         INTEGER                                         IVR(*)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C       --- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C       ---  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
         CHARACTER*16    CMD,CAR,NOM
+        CHARACTER*24    VALK(2)
         REAL*8          X1(3),  X2(3),  X3(3), ANGL(3)
         REAL*8          ALPHA,  BETA,   GAMMA
         REAL*8          R8DGRD, DGRD
@@ -96,10 +97,9 @@ C
 C ------ SI LA MAILLE N EST PAS UN SEG2 > RETURN
             IF(NUTYMA.NE.NTSEG)THEN
               IF( IVR(1) .EQ. 1 )THEN
-              CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     &        'D ORIENTATION DU TYPE '//CAR//
-     &        ' SUR LA MAILLE '//NOM//' QUI N EST PAS UN SEG2')
-C        CALL U2MESK('A','MODELISA_87', 2 ,VALK)
+               VALK(1) = CAR
+               VALK(2) = NOM
+               CALL U2MESK('A','MODELISA_87', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -107,10 +107,9 @@ C        CALL U2MESK('A','MODELISA_87', 2 ,VALK)
 C ------ SI LA MAILLE (SEG2) EST DE LONGUEUR NULLE > RETURN
             IF(LG.EQ.0)THEN
               IF( IVR(1) .EQ. 1 )THEN
-              CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     &        'D ORIENTATION DU TYPE '//CAR//
-     &        'SUR LA MAILLE '//NOM//' DE LONGUEUR NULLE')
-C        CALL U2MESK('A','MODELISA_88', 2 ,VALK)
+               VALK(1) = CAR
+               VALK(2) = NOM
+               CALL U2MESK('A','MODELISA_88', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -124,9 +123,9 @@ C - NOEUD
 C
 C ------ PAS D AFFECTATION SUR UN NOEUD POI1 > RETURN
             IF( IVR(2) .EQ. 1 )THEN
-            CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     &      'D ORIENTATION DU TYPE '//CAR//' SUR LE NOEUD '//NOM)
-C        CALL U2MESK('A','MODELISA_89', 2 ,VALK)
+             VALK(1) = CAR
+             VALK(2) = NOM
+             CALL U2MESK('A','MODELISA_89', 2 ,VALK)
               IER = IER + 1
             ENDIF
           GOTO 9999
@@ -147,10 +146,9 @@ C
 C ------ SI LA MAILLE (SEG2) EST DE LONGUEUR NON NULLE > RETURN
             IF(LG.EQ.1)THEN
               IF( IVR(1) .EQ. 1 ) THEN
-              CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     &        'D ORIENTATION DU TYPE '//CAR//' SUR LA MAILLE '//NOM//
-     &        ' DE LONGUEUR NON NULLE')
-C        CALL U2MESK('A','MODELISA_90', 2 ,VALK)
+               VALK(1) = CAR
+               VALK(2) = NOM
+               CALL U2MESK('A','MODELISA_90', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -184,10 +182,9 @@ C
 C ------ SI LA MAILLE (SEG2) EST DE LONGUEUR NON NULLE > RETURN
             IF(LG.EQ.1)THEN
               IF( IVR(1) .EQ. 1 )THEN
-              CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     &        'D ORIENTATION DU TYPE '//CAR//' SUR LA MAILLE '//NOM//
-     &        ' DE LONGUEUR NON NULLE')
-C        CALL U2MESK('A','MODELISA_90', 2 ,VALK)
+               VALK(1) = CAR
+               VALK(2) = NOM
+               CALL U2MESK('A','MODELISA_90', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -229,10 +226,9 @@ C
 C ------ SI LA MAILLE N EST PAS UN SEG2 > RETURN
             IF(NUTYMA.NE.NTSEG)THEN
               IF( IVR(1) .EQ. 1 )THEN
-              CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     &        'D ORIENTATION DU TYPE '//CAR//
-     &        ' SUR LA MAILLE '//NOM//' QUI N EST PAS SEG2')
-C        CALL U2MESK('A','MODELISA_91', 2 ,VALK)
+               VALK(1) = CAR
+               VALK(2) = NOM
+               CALL U2MESK('A','MODELISA_91', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -240,10 +236,9 @@ C        CALL U2MESK('A','MODELISA_91', 2 ,VALK)
 C ------ SI LA MAILLE (SEG2) EST DE LONGUEUR NULLE > GOTO 9999
             IF(LG.EQ.0)THEN
               IF( IVR(1) .EQ. 1 )THEN
-              CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     &        'D ORIENTATION DU TYPE '//CAR//
-     &        'SUR LA MAILLE '//NOM//' DE LONGUEUR NULLE')
-C        CALL U2MESK('A','MODELISA_88', 2 ,VALK)
+               VALK(1) = CAR
+               VALK(2) = NOM
+               CALL U2MESK('A','MODELISA_88', 2 ,VALK)
                 IER = IER + 1
               ENDIF
             GOTO 9999
@@ -261,9 +256,9 @@ C - NOEUD
 C
 C ------ PAS D AFFECTATION SUR UN NOEUD POI1 > RETURN
             IF( IVR(2) .EQ. 1 ) THEN
-            CALL UTMESS('A',CMD,'ORIENTATION : PAS D AFFECTATION '//
-     &      'D ORIENTATION DU TYPE '//CAR//' SUR LE NOEUD '//NOM)
-C        CALL U2MESK('A','MODELISA_89', 2 ,VALK)
+             VALK(1) = CAR
+             VALK(2) = NOM
+             CALL U2MESK('A','MODELISA_89', 2 ,VALK)
               IER = IER + 1
             ENDIF
           GOTO 9999

@@ -1,7 +1,7 @@
       SUBROUTINE CESCRE(BASEZ,CESZ,TYPCEZ,MAZ,NOMGDZ,NCMPG,LICMP,NPG,
      &                  NSPT,NCMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,6 +97,7 @@ C     ------------------
       CHARACTER*4 TYPCES
       CHARACTER*8 MA,NOMGD,NOMCMP
       CHARACTER*19 CES
+      CHARACTER*24 VALK(2)
       INTEGER GD,NCMPMX,IBID,NBMA,JCMPGD,ICMP,JCMP,JCESK,JCESD
       INTEGER INDIK8,JCESC,K,JCESL,JCESV,NCMPG,IMA,JLCONX,DECAL
       INTEGER NPTMA,NBNOMA,NSPTMA,NCMPMA,NCMP2,JLICMP,IRET
@@ -181,11 +182,11 @@ C     --------------------------------------------------
             JCMP = 1
           END IF
         END IF
-        IF (JCMP.EQ.0) CALL UTMESS('F','CESCRE',
-     &                             'LA CMP:'//ZK8(JLICMP-1+ICMP)//
-     &                             ' N''APPARTIENT PAS A LA GRANDEUR:'//
-     &                             NOMGD)
-C        CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
+        IF (JCMP.EQ.0) THEN
+          VALK(1) = ZK8(JLICMP-1+ICMP)
+          VALK(2) = NOMGD
+          CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
+        ENDIF
    40 CONTINUE
 
 

@@ -1,7 +1,7 @@
       SUBROUTINE GVER2D(NOMA,NOCC,OPTION,MOTFAZ,NOMNO,NOEUD,RINF,
      &                  RSUP,MODULE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/11/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNOM,JEXNUM
       CHARACTER*80 ZK80
       CHARACTER*8  K8BID
@@ -142,9 +143,9 @@ C
              CALL JEEXIN(JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),IRET)
 C
              IF(IRET.EQ.0) THEN
-               CALL UTMESS('F','GVER2D','LE GROUPE '//ZK8(JJJ+IGR-1)
-     &                    //' N'' APPARTIENT PAS AU MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','ALGORITH_22', 2 ,VALK)
+                VALK(1) = ZK8(JJJ+IGR-1)
+                VALK(2) = NOMA
+                CALL U2MESK('F','ALGORITH_22', 2 ,VALK)
              ELSE
 C
                CALL JELIRA (JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),'LONMAX',
@@ -171,9 +172,9 @@ C
 C
               CALL JENONU(JEXNOM(NOMNO,ZK8(JJJ+I-1)),IRET)
               IF(IRET.EQ.0) THEN
-                 CALL UTMESS('F','GVER2D','LE NOEUD '//ZK8(JJJ+I-1)
-     &                  //' N APPARTIENT PAS AU MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','ELEMENTS_90', 2 ,VALK)
+                  VALK(1) = ZK8(JJJ+I-1)
+                  VALK(2) = NOMA
+                  CALL U2MESK('F','ELEMENTS_90', 2 ,VALK)
               ELSE
                  CALL JENUNO(JEXNUM(NOMNO,IRET),NOEUD)
               ENDIF

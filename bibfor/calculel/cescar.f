@@ -1,0 +1,132 @@
+      SUBROUTINE CESCAR(CESZ,CARTZ,BASZ)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PELLET J.PELLET
+      IMPLICIT NONE
+      CHARACTER*(*) CARTZ,CESZ,BASZ
+C ------------------------------------------------------------------
+C BUT: TRANSFORMER UN CHAM_ELEM_S (DE TYPE ELEM)  EN CARTE
+C ATTENTION : CETTE ROUTINE EST COUTEUSE POUR LES GROS MAILLAGES
+C             JACQUES DEVRA L'AMELIORER PLUTARD
+C ------------------------------------------------------------------
+C     ARGUMENTS:
+C CESZ   IN/JXOUT K19 : SD CHAM_ELEM_S A TRANSFORMER
+C CARTZ  IN/JXIN  K19 : SD CARTE A CREER
+C BASZ   IN       K1  : BASE DE CREATION POUR CARTZ : G/V
+C-----------------------------------------------------------------------
+
+C---- COMMUNS NORMALISES  JEVEUX
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32,JEXNOM,JEXNUM,JEXATR
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ------------------------------------------------------------------
+      INTEGER JCE1K,JCE1D,JCE1C,JCE1L,JCE1V,NBMAM,NCMP1,NCMPMX
+      INTEGER JNCMP,JVALV,IAD1,KCMP,NCMPMA,NBPT,NBSP,IMA,IBID
+      LOGICAL EXISDG
+      CHARACTER*1 KBID,BASE
+      CHARACTER*8 MA,NOMGD
+      CHARACTER*3 TSCA
+      CHARACTER*19 CART,CES1
+C     ------------------------------------------------------------------
+      CALL JEMARQ()
+      CALL IMPRSD('CHAMP',CESZ,6,'AJACOT CESCAR IN:')
+
+
+      CES1 = CESZ
+      CART = CARTZ
+      BASE = BASZ
+
+
+
+C     1- RECUPERATION D'INFORMATIONS DANS CES1 :
+C     ------------------------------------------
+      CALL JEVEUO(CES1//'.CESK','L',JCE1K)
+      CALL JEVEUO(CES1//'.CESD','L',JCE1D)
+      CALL JEVEUO(CES1//'.CESC','L',JCE1C)
+      CALL JEVEUO(CES1//'.CESV','L',JCE1V)
+      CALL JEVEUO(CES1//'.CESL','L',JCE1L)
+
+      MA = ZK8(JCE1K-1+1)
+      NOMGD = ZK8(JCE1K-1+2)
+      NBMAM = ZI(JCE1D-1+1)
+      NCMP1 = ZI(JCE1D-1+2)
+
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
+      CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX,KBID,IBID)
+      CALL ASSERT(TSCA.EQ.'R')
+
+
+      CALL ALCART(BASE,CART,MA,NOMGD)
+      CALL JEVEUO(CART//'.NCMP','E',JNCMP)
+      CALL JEVEUO(CART//'.VALV','E',JVALV)
+
+      DO 20,IMA = 1,NBMAM
+        NBPT = ZI(JCE1D-1+5+4* (IMA-1)+1)
+        NBSP = ZI(JCE1D-1+5+4* (IMA-1)+2)
+        CALL ASSERT(NBPT.EQ.1)
+        CALL ASSERT(NBSP.EQ.1)
+
+C       -- NCMPMA : NBRE DE CMPS SUR LA MAILLE :
+        NCMPMA = 0
+        DO 10,KCMP = 1,NCMP1
+          CALL CESEXI('C',JCE1D,JCE1L,IMA,1,1,KCMP,IAD1)
+          CALL ASSERT(IAD1.NE.0)
+          IF (IAD1.GT.0) THEN
+            NCMPMA = NCMPMA + 1
+            ZK8(JNCMP-1+NCMPMA) = ZK8(JCE1C-1+KCMP)
+
+            IF (TSCA.EQ.'R') THEN
+              ZR(JVALV-1+NCMPMA) = ZR(JCE1V-1+IAD1)
+            ELSEIF (TSCA.EQ.'C') THEN
+              ZC(JVALV-1+NCMPMA) = ZC(JCE1V-1+IAD1)
+            ELSEIF (TSCA.EQ.'I') THEN
+              ZI(JVALV-1+NCMPMA) = ZI(JCE1V-1+IAD1)
+            ELSEIF (TSCA.EQ.'K8') THEN
+              ZK8(JVALV-1+NCMPMA) = ZK8(JCE1V-1+IAD1)
+            ELSEIF (TSCA.EQ.'K16') THEN
+              ZK16(JVALV-1+NCMPMA) = ZK16(JCE1V-1+IAD1)
+            ELSEIF (TSCA.EQ.'K24') THEN
+              ZK24(JVALV-1+NCMPMA) = ZK24(JCE1V-1+IAD1)
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+   10   CONTINUE
+
+C       -- S'IL EXISTE DES VALEURS SUR LA MAILLE :
+        IF (NCMPMA.EQ.0) GOTO 20
+        CALL NOCART(CART,3,KBID,'NUM',1,KBID,IMA,' ',NCMPMA)
+
+   20 CONTINUE
+
+      CALL JEDEMA()
+      CALL IMPRSD('CHAMP',CARTZ,6,'AJACOT CESCAR OUT:')
+      CALL JXVERI('AJACOT', ' ')
+      END

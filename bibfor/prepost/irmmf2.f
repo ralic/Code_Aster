@@ -5,7 +5,7 @@
      &                    NUFAEN, NUFACR, NOGRFA, NOFAEX, TABAUX,
      &                    INFMED, NIVINF, IFM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,6 +102,7 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
+      CHARACTER*24 VALK(2)
       PARAMETER ( NOMPRO = 'IRMMF2' )
 C
       INTEGER NTYMAX
@@ -370,10 +371,9 @@ C
 C
             IF ( CODRET.NE.0 ) THEN
               CALL CODENT ( CODRET,'G',SAUX08 )
-              CALL UTMESS ('F',NOMPRO,
-     &        'MED: FAMILLE DE '//NOMTYP(ITYP)//
-     &        ', ERREUR EFFAME NUMERO '//SAUX08)
-C        CALL U2MESK('F','PREPOST2_92', 2 ,VALK)
+               VALK(1) = NOMTYP(ITYP)
+               VALK(2) = SAUX08
+               CALL U2MESK('F','PREPOST2_92', 2 ,VALK)
             ENDIF
 C
           ENDIF

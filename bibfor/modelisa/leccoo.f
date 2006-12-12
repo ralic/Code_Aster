@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C
         CHARACTER*16    CMD
         COMMON          /OPMAIL/        CMD
         CHARACTER*(*)   CV
+        CHARACTER*24 VALK(3)
         IRTETI = 0
 C
         IFM = IUNIFI('MESSAGE')
@@ -64,9 +65,10 @@ C
         IF(NBG.GE.1)WRITE(IFM,*)' ----- LECCOO'
         DO 6 J = 1 , NBM
         IF(DIM(J).NE.0.AND.J.NE.I)THEN
-        CALL UTMESS('E',CMD,CNL//' MOT CLE LU "'//MCL(I)//
-     &  '" INCOMPATIBLE AVEC "'//MCL(J)//'"')
-C        CALL U2MESK('E','MODELISA4_77', 3 ,VALK)
+         VALK(1) = CNL
+         VALK(2) = MCL(I)
+         VALK(3) = MCL(J)
+         CALL U2MESK('E','MODELISA4_77', 3 ,VALK)
         IER = 1
         GOTO 2
         ENDIF

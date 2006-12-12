@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*16 MOTFAC,CONCEP,OPER
       CHARACTER*19 LISREL
       CHARACTER*24 TRAV,GROUNO,NOEUMA
+      CHARACTER*24 VALK(3)
       CHARACTER*15 COORDO
       CHARACTER*19 LIGRMO
       CHARACTER*1 K1BID,NOMPAR(3)
@@ -110,9 +111,9 @@ C        -------------------------------------------------------
         DO 20 IGR = 1,NGR
           CALL JEEXIN(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),IRET)
           IF (IRET.EQ.0) THEN
-            CALL UTMESS('F',MOTFAC,'LE GROUPE '//ZK8(JJJ+IGR-1)//
-     &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
+             VALK(1) = ZK8(JJJ+IGR-1)
+             VALK(2) = NOMA
+             CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
           ELSE
             CALL JELIRA(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),'LONMAX',N1,K1BID)
             NBGT = NBGT + N1
@@ -123,9 +124,10 @@ C        CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
         DO 30 INO = 1,NNO
           CALL JENONU(JEXNOM(NOEUMA,ZK8(JJJ+INO-1)),IRET)
           IF (IRET.EQ.0) THEN
-            CALL UTMESS('F',MOTFAC,MOTCLE//' '//ZK8(JJJ+INO-1)//
-     &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','MODELISA2_96', 3 ,VALK)
+             VALK(1) = MOTCLE
+             VALK(2) = ZK8(JJJ+INO-1)
+             VALK(3) = NOMA
+             CALL U2MESK('F','MODELISA2_96', 3 ,VALK)
           END IF
    30   CONTINUE
    40 CONTINUE

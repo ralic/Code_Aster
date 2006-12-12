@@ -17,7 +17,7 @@ C
       LOGICAL                                   LRESU,LCOR
       LOGICAL           LSUP,LINF,              LMAX,LMIN,LMOD,LGMSH
 C-----------------------------------------------------------------------
-C MODIF PREPOST  DATE 07/11/2006   AUTEUR BOYERE E.BOYERE 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -103,6 +103,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 CH16
       CHARACTER*19 NOCH19,KNACC
       CHARACTER*24 NOMST
+      CHARACTER*24 VALK(2)
       LOGICAL      LORDR,LCHABS,LCHAM1
       INTEGER      NBCHCA,NBACC,NBCARA,NORDEN,IORDEN,IORDR1,NUORD1
       INTEGER      LGCONC,NBCHEN,LGCH16
@@ -246,13 +247,9 @@ C             DU CHAMP CHAM(ISY) POUR LE NO. D'ORDRE ORDR(IORDR)
             CH16=CHAM(ISY)
             LGCH16=LXLGUT(CH16)
             LGCONC=LXLGUT(NOMCO)
-            CALL UTMESS('A','IRECRI',' POUR CERTAINS NUMEROS'//
-     &        ' D''ORDRE LE CHAMP '//CH16(1:LGCH16)//
-     &        ' N''EST PAS PRESENT DANS LA SD_RESULTAT '//
-     &        NOMCO(1:LGCONC)//'==> DES FICHIERS DE VALEURS'//
-     &        ' VIDES SERONT GENERES AFIN DE RESPECTER LE'//
-     &        ' FORMAT ENSIGHT.')
-C        CALL U2MESK('A','PREPOST2_48', 2 ,VALK)
+             VALK(1) = CH16(1:LGCH16)
+             VALK(2) = NOMCO(1:LGCONC)
+             CALL U2MESK('A','PREPOST2_48', 2 ,VALK)
           ENDIF
   12    CONTINUE
         DO 14 ISY=1,NBCHAM

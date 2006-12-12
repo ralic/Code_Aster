@@ -1,6 +1,6 @@
       SUBROUTINE DISMRS(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*4 DOCU
+      CHARACTER*24 VALK(2)
       CHARACTER*8 K8BID
       CHARACTER*19 NOMCH
 C
@@ -80,9 +81,9 @@ C
             CALL JELIRA ( OBJDES, 'DOCU', IBID, DOCU )
             CALL RSDOCU ( DOCU , REPK, IRET )
             IF ( IRET .NE. 0 ) THEN
-               CALL UTMESS(CODMES,'DISMRS','TYPE DE RESULTAT INCONNU: '
-     &                   //DOCU//' POUR L''OBJET : '//NOMOB)
-C        CALL U2MESK(CODMES,'UTILITAI_68', 2 ,VALK)
+                VALK(1) = DOCU
+                VALK(2) = NOMOB
+                CALL U2MESK(CODMES,'UTILITAI_68', 2 ,VALK)
                IERD=1
                GO TO 9999
             ENDIF

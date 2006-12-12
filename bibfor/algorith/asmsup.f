@@ -8,7 +8,7 @@
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMSY, CONCEP, NOMCMD, MONACC, MONPAR
       CHARACTER*19 CHAM19
       CHARACTER*24 OBJ1, OBJ2
+      CHARACTER*24 VALK(2)
       CHARACTER*8  K8BID
       CHARACTER*1  K1BID
 C     ------------------------------------------------------------------
@@ -165,9 +166,9 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
              CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
              IF (IRET.EQ.0) THEN
               IER = IER + 1
-              CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEU//
-     &                    ' NE FAIT PAS PARTI DU MAILLAGE : '//NOMA)
-C        CALL U2MESK('E','ALGORITH_31', 2 ,VALK)
+               VALK(1) = NOEU
+               VALK(2) = NOMA
+               CALL U2MESK('E','ALGORITH_31', 2 ,VALK)
               GOTO 46
              ENDIF
              DO 48 IS = 1,NBSUP
@@ -190,9 +191,9 @@ C        CALL U2MESK('E','ALGORITH_31', 2 ,VALK)
               CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
               IF (IRET .EQ. 0) THEN
                IER = IER + 1
-               CALL UTMESS('E',MOTFAC,'LE GROUPE '//GRNOEU//
-     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
-C        CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
+                VALK(1) = GRNOEU
+                VALK(2) = NOMA
+                CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
                GOTO 50
               ELSE
                CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,

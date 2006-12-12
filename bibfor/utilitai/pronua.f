@@ -1,7 +1,7 @@
       SUBROUTINE PRONUA(METHOD,NUAG1,NUAG2)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,7 @@ C VARIABLES LOCALES :
       REAL*8 VAL2R
       COMPLEX*16 VAL2C
       CHARACTER*19 NUA1,NUA2
+      CHARACTER*24 VALK(2)
       CHARACTER*8 NOGD
       CHARACTER*3 TYSCA
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -67,21 +68,20 @@ C DEB-------------------------------------------------------------------
 
       NX1 = ZI(INUAI1-1+2)
       NX2 = ZI(INUAI2-1+2)
-      IF (NX1.NE.NX2) CALL UTMESS('F','PRONUA',
-     &                            'LES 2 NUAGES :'//NUA1//' ET '//NUA2//
-     &                            ' DOIVENT AVOIR LE MEME NOMBRE '//
-     &                            'DE COORDONNEES.')
-C        CALL U2MESK('F','UTILITAI3_89', 2 ,VALK)
-
+      IF (NX1.NE.NX2) THEN
+        VALK(1) = NUA1
+        VALK(2) = NUA2
+        CALL U2MESK('F','UTILITAI3_89', 2 ,VALK)
+      ENDIF
       NP1 = ZI(INUAI1-1+1)
       NP2 = ZI(INUAI2-1+1)
       GD1 = ZI(INUAI1-1+4)
       GD2 = ZI(INUAI2-1+4)
-      IF (GD1.NE.GD2) CALL UTMESS('F','PRONUA',
-     &                            'LES 2 NUAGES :'//NUA1//' ET '//NUA2//
-     &                            ' DOIVENT AVOIR LA MEME GRANDEUR '//
-     &                            'ASSOCIEE.')
-C        CALL U2MESK('F','UTILITAI3_90', 2 ,VALK)
+      IF (GD1.NE.GD2) THEN
+         VALK(1) = NUA1
+         VALK(2) = NUA2
+         CALL U2MESK('F','UTILITAI3_90', 2 ,VALK)
+      ENDIF
       CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD1),NOGD)
       CALL DISMOI('F','TYPE_SCA',NOGD,'GRANDEUR',IBID,TYSCA,IERD)
 

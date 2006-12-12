@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -248,9 +248,6 @@ C-----------------------------------------------------------------------
       IF (OPTION(1:9).EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
         DO 00200 ITER= 1,ITMAX
 C
-           IF (ITER.GT.1) THEN
-C           CALL UTMESS('F','NMVEEI','ITER>1')
-           ENDIF
           CALL NMVECD ( IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,
      &                  P, NP, BETA, NB, EP, RM, DM,
      &                  DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,

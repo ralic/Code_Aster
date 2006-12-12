@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD,NOMSY,CHNOTZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*16 NOMS2
       CHARACTER*19 NOMD2,CHNOTE
+      CHARACTER*24 VALK(2) 
       CHARACTER*1 K1BID
       INTEGER NORMAX,IRETOU,NORDR,IRANG,JORDR,IRET,IBID,JTACH
 C ----------------------------------------------------------------------
@@ -88,11 +89,11 @@ C     -----------------------------------------------------
 C     -- ON VERIFIE LE NOM SYMBOLIQUE :
 C     -------------------------------------------
       CALL JENONU(JEXNOM(NOMD2//'.DESC',NOMS2),IRET)
-      IF (IRET.EQ.0) CALL UTMESS('F','RSNOCH',
-     &                           'NOM DE CHAMP INTERDIT : '//NOMS2//
-     &                           ' POUR LE RESULTAT : '//NOMD2)
-C        CALL U2MESK('F','UTILITAI4_43', 2 ,VALK)
-
+      IF (IRET.EQ.0) THEN
+        VALK(1) = NOMS2
+        VALK(2) = NOMD2
+        CALL U2MESK('F','UTILITAI4_43', 2 ,VALK)
+      ENDIF
 
 C     -- SI LE NOM DU CHAMP (CHNOTE) N'EST PAS DONNE, ON PREND CELUI
 C        QUE RSEXCH LUI DONNERAIT :
@@ -110,10 +111,6 @@ C     --- ON STOCKE LE NOM DU CHAMP :
 C     ------------------------------
       CALL JENONU(JEXNOM(NOMD2//'.DESC',NOMS2),IBID)
       CALL JEVEUO(JEXNUM(NOMD2//'.TACH',IBID),'E',JTACH)
-
-C     IF (ZK24(JTACH+IRANG-1) (1:19).NE.' ') CALL UTMESS('F','RSNOCH',
-C    &    'LA PLACE EST PRISE.')
-
 
       ZK24(JTACH+IRANG-1) (1:19) = CHNOTE
 

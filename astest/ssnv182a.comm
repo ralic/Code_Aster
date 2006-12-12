@@ -1,25 +1,24 @@
-# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV182A',
-              NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNV182A', NIV_PUB_WEB='INTERNET',),);
 
 PRE_GIBI();
 
@@ -32,34 +31,34 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=_F(NOM='VOLQUAD',
                                      GROUP_MA='VOL',),);
-             
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('VOL',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D_XFEM',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);        
+                              MODELISATION='3D',),),);
 
 PENTE=0.0
 B=10.-10.*PENTE
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-PENTE*Y-B');
-LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-100. ');                      
+LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-100. ');
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(
                                  FONC_LT=LT,
-                                 FONC_LN=LN,               
+                                 FONC_LN=LN,
                                  ),
                     GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI=(2.5 ,0. ,2.5 ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  PT_ORIGIN=(-0.5,0.,1.5 ),),
                     CONTACT=_F(INTEGRATION='GAUSS',
-                               COEF_REGU_CONT=100., 
-                               ITER_CONT_MAXI=4,   
-                               CONTACT_INIT='OUI',    
+                               COEF_REGU_CONT=100.,
+                               ITER_CONT_MAXI=4,
+                               CONTACT_INIT='OUI',
                                COEF_ECHELLE=1.,
 #                               FROTTEMENT='SANS',
                                FROTTEMENT='COULOMB',
@@ -73,8 +72,8 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 CHLN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                 OPERATION='EXTR',
                 NOM_CHAM='LNNO',
-                     FISSURE=FISS,);                 
-                    
+                     FISSURE=FISS,);
+
 IMPR_RESU(FORMAT='IDEAS',
           UNITE=30,
           RESU=_F(MAILLAGE=MAILLAG1,
@@ -105,9 +104,9 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                        _F(GROUP_MA='SURFSUP',
                                           DX=0.0,
                                                       DY=0.0,
-                                                    DZ=-1.E-6,),),     
+                                                    DZ=-1.E-6,),),
                     INFO=1,);
-          
+
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                                 INFO=1,);
@@ -117,9 +116,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMAT,              
-                   EXCIT=(_F(CHARGE=CH1,), 
-                          _F(CHARGE=CHXFEM,),),                  
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CH1,),
+                          _F(CHARGE=CHXFEM,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INST,),
@@ -155,7 +154,7 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                     'N2021','N2001','N2002','N2003','N2004','N2005','N2006','N2007',
                                     'N2008','N2009','N2010','N2011','N2012','N2013','N2014','N2015',
                                     'N2016','N2017','N2018','N2019','N2020','N2491',),
-                           
+
 #                             GROUP_NO='VOLQUAD',
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
@@ -182,7 +181,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
@@ -190,7 +189,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);      
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -198,7 +197,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -206,15 +205,15 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);      
-           
+           REFERENCE='ANALYTIQUE',);
+
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F2',
            TYPE_TEST='MAX',
            VALE=LA2REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-12,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F2',
@@ -223,7 +222,7 @@ TEST_TABLE(TABLE=LAG,
            CRITERE='ABSOLU',
            PRECISION=1.E-12,
            REFERENCE='ANALYTIQUE',);
-     
+
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
 DEPL=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
@@ -241,5 +240,5 @@ DEFI_FICHIER(UNITE=82)
 
 IMPR_RESU(FORMAT='IDEAS',UNITE=82,RESU=_F(RESULTAT=DEPL))
 
-FIN();                  
+FIN();
 

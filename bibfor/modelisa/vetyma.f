@@ -1,6 +1,6 @@
       SUBROUTINE VETYMA(NOMA,LISTMA,NBMA,LISTGR,NBGR,OPTION,NDIM,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8,TYPE,KIMA,NOMA8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24,TYPMA,GRPMA,OPTIOZ
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
       CHARACTER*1 K1BID
@@ -79,17 +80,15 @@ C  MOT-CLE MAILLE
                LISTMZ = LISTMA(I)
                IF(NDIM.EQ.2.AND.TYPE(1:3).NE.'SEG') THEN
                   NERR=NERR+1
-                  CALL UTMESS('A','VETYMA','LA MAILLE DE NOM : '
-     &            //LISTMZ//' N''EST PAS DE TYPE SEGMENT, ELLE NE '
-     &            //'SERA PAS AFFECTEE PAR '//OPTIOZ)
-C        CALL U2MESK('A','MODELISA7_86', 2 ,VALK)
+                   VALK(1) = LISTMZ
+                   VALK(2) = OPTIOZ
+                   CALL U2MESK('A','MODELISA7_86', 2 ,VALK)
                ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'QUAD'.
      &                          AND.TYPE(1:4).NE.'TRIA') THEN
                   NERR=NERR+1
-                  CALL UTMESS('A','VETYMA','LA MAILLE DE NOM : '
-     &            //LISTMZ//' N''EST PAS DE TYPE TRIA OU QUAD,'
-     &            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
-C        CALL U2MESK('A','MODELISA7_87', 2 ,VALK)
+                   VALK(1) = LISTMZ
+                   VALK(2) = OPTIOZ
+                   CALL U2MESK('A','MODELISA7_87', 2 ,VALK)
                ENDIF
 1           CONTINUE
             IF(NBMA.EQ.NERR) THEN
@@ -109,27 +108,23 @@ C  MOT-CLE GROUP_MA
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IADTYP)),TYPE)
                IF(NDIM.EQ.2.AND.TYPE(1:3).NE.'SEG') THEN
                   NERR=NERR+1
-                  CALL UTMESS('A','VETYMA','LA MAILLE DE NUMERO : '
-     &            //KIMA//' N''EST PAS DE TYPE SEGMENT, ELLE NE '
-     &            //'SERA PAS AFFECTEE PAR '//OPTIOZ)
-C        CALL U2MESK('A','MODELISA7_89', 2 ,VALK)
+                   VALK(1) = KIMA
+                   VALK(2) = OPTIOZ
+                   CALL U2MESK('A','MODELISA7_89', 2 ,VALK)
                ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'QUAD'.
      &                          AND.TYPE(1:4).NE.'TRIA'.
      &                          AND.TYPE(1:3).NE.'SEG') THEN
                   NERR=NERR+1
-                  CALL UTMESS('A','VETYMA','LA MAILLE DE NUMERO : '
-     &            //KIMA//' N''EST PAS DE TYPE TRIA OU QUAD,'
-     &            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
-C        CALL U2MESK('A','MODELISA7_90', 2 ,VALK)
+                   VALK(1) = KIMA
+                   VALK(2) = OPTIOZ
+                   CALL U2MESK('A','MODELISA7_90', 2 ,VALK)
                ENDIF
 3              CONTINUE
             IF(NBMA.EQ.NERR) THEN
               LISTGZ = LISTGR(I)
-              CALL UTMESS('A','VETYMA','ERREUR DANS LES NOMS DE MAILLE'
-     &         //' DU GROUP_MA: '//LISTGZ
-     &         //' DU MOT-CLE FACTEUR '//OPTIOZ//' : AUCUNE N''EST DU '
-     &         //'BON TYPE')
-C        CALL U2MESK('A','MODELISA7_91', 2 ,VALK)
+               VALK(1) = LISTGZ
+               VALK(2) = OPTIOZ
+               CALL U2MESK('A','MODELISA7_91', 2 ,VALK)
             ENDIF
 2           CONTINUE
          ENDIF
@@ -146,19 +141,17 @@ C  MOT-CLE MAILLE
                IF(NDIM.EQ.2.AND.TYPE(1:4).NE.'QUAD'.
      &                      AND.TYPE(1:4).NE.'TRIA') THEN
                   NERR=NERR+1
-                  CALL UTMESS('A','VETYMA','LA MAILLE DE NOM : '
-     &            //LISTMZ//' N''EST PAS DE TYPE TRIA OU QUAD,'
-     &            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
-C        CALL U2MESK('A','MODELISA7_87', 2 ,VALK)
+                   VALK(1) = LISTMZ
+                   VALK(2) = OPTIOZ
+                   CALL U2MESK('A','MODELISA7_87', 2 ,VALK)
                ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'HEXA'.
      &                          AND.TYPE(1:4).NE.'PENT'.
      &                          AND.TYPE(1:4).NE.'PYRA'.
      &                          AND.TYPE(1:4).NE.'TETR') THEN
                   NERR=NERR+1
-                  CALL UTMESS('A','VETYMA','LA MAILLE DE NOM : '
-     &            //LISTMZ//' N''EST PAS UNE MAILLE 3D,'
-     &            //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
-C        CALL U2MESK('A','MODELISA7_92', 2 ,VALK)
+                   VALK(1) = LISTMZ
+                   VALK(2) = OPTIOZ
+                   CALL U2MESK('A','MODELISA7_92', 2 ,VALK)
                ENDIF
 10           CONTINUE
             IF(NBMA.EQ.NERR) THEN
@@ -178,28 +171,24 @@ C  MOT-CLE GROUP_MA
                  IF(NDIM.EQ.2.AND.TYPE(1:4).NE.'QUAD'.
      &                        AND.TYPE(1:4).NE.'TRIA') THEN
                    NERR=NERR+1
-                   CALL UTMESS('A','VETYMA','LA MAILLE DE NUMERO : '
-     &             //KIMA//' N''EST PAS DE TYPE TRIA OU QUAD,'
-     &             //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
-C        CALL U2MESK('A','MODELISA7_90', 2 ,VALK)
+                    VALK(1) = KIMA
+                    VALK(2) = OPTIOZ
+                    CALL U2MESK('A','MODELISA7_90', 2 ,VALK)
                  ELSEIF(NDIM.EQ.3.AND.TYPE(1:4).NE.'HEXA'.
      &                            AND.TYPE(1:4).NE.'PENT'.
      &                            AND.TYPE(1:4).NE.'PYRA'.
      &                            AND.TYPE(1:4).NE.'TETR') THEN
                     NERR=NERR+1
-                    CALL UTMESS('A','VETYMA','LA MAILLE DE NUMERO : '
-     &              //KIMA//' N''EST PAS UNE MAILLE 3D,'
-     &              //' ELLE NE SERA PAS AFFECTEE PAR '//OPTIOZ)
-C        CALL U2MESK('A','MODELISA7_93', 2 ,VALK)
+                     VALK(1) = KIMA
+                     VALK(2) = OPTIOZ
+                     CALL U2MESK('A','MODELISA7_93', 2 ,VALK)
                  ENDIF
 30             CONTINUE
                IF(NBMA.EQ.NERR) THEN
                LISTGZ = LISTGR(I)
-               CALL UTMESS('A','VETYMA','ERREUR DANS LES NOMS DE MAILLE'
-     &          //' DU GROUP_MA: '//LISTGZ
-     &          //' DU MOT-CLE FACTEUR '//OPTIOZ//' : AUCUNE N''EST DU '
-     &          //'BON TYPE')
-C        CALL U2MESK('A','MODELISA7_91', 2 ,VALK)
+                VALK(1) = LISTGZ
+                VALK(2) = OPTIOZ
+                CALL U2MESK('A','MODELISA7_91', 2 ,VALK)
                ENDIF
 20         CONTINUE
         ENDIF

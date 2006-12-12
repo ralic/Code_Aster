@@ -5,7 +5,7 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 C     ------------------------------------------------------------------
-C IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A UTMESS.
+C IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A U2MESS, U2MESK
 C IN  NOMF   : NOM DE LA FONCTION OU DE LA NAPPE
 C IN  NBPU   : NOMBRE DE PARAMETRES DANS NOMPU ET VALPU
 C IN  NOMPU  : NOMS DES PARAMETRES "UTILISATEUR"

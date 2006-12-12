@@ -6,7 +6,7 @@
       LOGICAL           TRONC,MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  K8B, RESU, NOEU, CMP, NOMCMP(3)
       CHARACTER*16 NOMSY, CONCEP, NOMCMD, ACCES(3), MONACC, MONPAR
       CHARACTER*19 CHEXTR, CHEXT2
+      CHARACTER*24 VALK(2)
       COMPLEX*16   CBID
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
@@ -213,10 +214,9 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
             ENDIF
             IF (IRT.NE.0) THEN
                IER = IER + 1
-               CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
-     &                                   '" ET "'//CHEXT2//'" N''ONT'//
-     &                           ' PAS LE MEME DOMAINE DE DEFINITION.')
-C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
+                VALK(1) = CHEXTR
+                VALK(2) = CHEXT2
+                CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
             ENDIF
  32      CONTINUE
          IF ( MONOAP ) THEN
@@ -236,10 +236,9 @@ C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                         ENDIF
                         IF (IRT.NE.0) THEN
                            IER = IER + 1
-                      CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
-     &                                   '" ET "'//CHEXT2//'" N''ONT'//
-     &                           ' PAS LE MEME DOMAINE DE DEFINITION.')
-C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
+                       VALK(1) = CHEXTR
+                       VALK(2) = CHEXT2
+                       CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                         ENDIF
                      ENDIF
                   ENDIF
@@ -265,10 +264,9 @@ C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                         ENDIF
                         IF (IRT.NE.0) THEN
                            IER = IER + 1
-                      CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
-     &                                   '" ET "'//CHEXT2//'" N''ONT'//
-     &                           ' PAS LE MEME DOMAINE DE DEFINITION.')
-C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
+                       VALK(1) = CHEXTR
+                       VALK(2) = CHEXT2
+                       CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                         ENDIF
                      ENDIF
                      IF ( TRONC ) THEN
@@ -285,10 +283,9 @@ C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                            ENDIF
                            IF (IRT.NE.0) THEN
                               IER = IER + 1
-                      CALL UTMESS('E','ASVERI','LES CHAMPS "'//CHEXTR//
-     &                                   '" ET "'//CHEXT2//'" N''ONT'//
-     &                           ' PAS LE MEME DOMAINE DE DEFINITION.')
-C        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
+                       VALK(1) = CHEXTR
+                       VALK(2) = CHEXT2
+                       CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                            ENDIF
                         ENDIF
                      ENDIF

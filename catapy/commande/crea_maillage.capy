@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # RESPONSABLE MCOURTOI M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,10 +43,10 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
                  EXCLUS('COQU_VOLU','CREA_GROUP_MA'),
                  EXCLUS('COQU_VOLU','DETR_GROUP_MA'),
                  ),
-                 
+
          # le MAILLAGE est inutile si ECLA_PG
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster ),
-         
+
          CREA_POI1       =FACT(statut='f',max='**',fr="Création de mailles de type POI1 à partir de noeuds",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD' ),),
            NOM_GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -147,8 +147,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            SHRINK          =SIMP(statut='f',typ='R',defaut= 0.9, fr="Facteur de réduction" ),
            TAILLE_MIN      =SIMP(statut='f',typ='R',defaut= 0.0, fr="Taille minimale d'un coté" ),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("SIEF_ELGA","VARI_ELGA","SIEF_ELGA_DEPL","FLUX_ELGA_TEMP",) ),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
          ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
 #

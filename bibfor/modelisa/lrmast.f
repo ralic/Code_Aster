@@ -12,7 +12,7 @@ C     OUT
       INTEGER         NBNOEU,NBMAIL,NBCOOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -186,6 +186,7 @@ C
         CHARACTER*14    CNL
         CHARACTER*16    CMD,K16NOM
         CHARACTER*24    GRPNOV, GRPMAV, CONXV
+        CHARACTER*24 VALK(2)
         CHARACTER*24    NOMDBG(50,NBMDBG)
         CHARACTER*80    CV,     DAT
 C
@@ -574,11 +575,9 @@ C
                 CALL JENONU(JEXNOM(NOMNOE,NOM),NUM)
                 ZI(JGCNX+J-1) = NUM
                 IF(NUM.EQ.0)THEN
-                CALL UTMESS('E',CMD,'TRANSCODAGE : '//
-     &          'LE NOEUD '//NOM//' DECLARE DANS '//
-     &          'LA CONNECTIVITE DE LA MAILLE '//NOMN//' N EXISTE '//
-     &          'PAS DANS LES COORDONNEES')
-C        CALL U2MESK('E','MODELISA5_4', 2 ,VALK)
+                 VALK(1) = NOM
+                 VALK(2) = NOMN
+                 CALL U2MESK('E','MODELISA5_4', 2 ,VALK)
                 IER = 1
                 ENDIF
  550            CONTINUE
@@ -607,18 +606,16 @@ C         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
              CALL JENONU(JEXNOM(NOMNOE,NOM1),NUM)
              IF ( NUM .EQ. 0 )THEN
                 IER = IER + 1
-                CALL UTMESS('E',CMD,'TRANSCODAGE : LE NOEUD '//NOM1//
-     &                      ' DECLARE DANS LE GROUP_NO: '//NOMG//
-     &                      ' N''EXISTE PAS DANS LES COORDONNEES')
-C        CALL U2MESK('E','MODELISA5_5', 2 ,VALK)
+                 VALK(1) = NOM1
+                 VALK(2) = NOMG
+                 CALL U2MESK('E','MODELISA5_5', 2 ,VALK)
                 GOTO 610
              ENDIF
              ZI(JNOEU2-1+NUM)=ZI(JNOEU2-1+NUM)+1
              IF (ZI(JNOEU2-1+NUM)  .GE. 2 ) THEN
-                CALL UTMESS('A',CMD,'LE NOEUD : '//NOM1//
-     &        ' EST EN DOUBLE DANS LE GROUP_NO: '//NOMG//
-     &        '. ON ELIMINE LES DOUBLONS')
-C        CALL U2MESK('A','MODELISA5_6', 2 ,VALK)
+                 VALK(1) = NOM1
+                 VALK(2) = NOMG
+                 CALL U2MESK('A','MODELISA5_6', 2 ,VALK)
                 GOTO 610
              ENDIF
              NBNO1 = NBNO1 + 1
@@ -657,18 +654,16 @@ C         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTS ---
              CALL JENONU(JEXNOM(NOMMAI,NOM1),NUM)
              IF ( NUM .EQ. 0 ) THEN
                 IER = IER + 1
-                CALL UTMESS('E',CMD,'TRANSCODAGE : LA MAILLE '//NOM1//
-     &                      ' DECLARE DANS LE GROUP_MA: '//NOMG//
-     &                      ' N''EXISTE PAS DANS LES CONNECTIVITEES')
-C        CALL U2MESK('E','MODELISA5_7', 2 ,VALK)
+                 VALK(1) = NOM1
+                 VALK(2) = NOMG
+                 CALL U2MESK('E','MODELISA5_7', 2 ,VALK)
                 GOTO 710
              ENDIF
              ZI(JMAIL2-1+NUM)=ZI(JMAIL2-1+NUM)+1
              IF (ZI(JMAIL2-1+NUM)  .GE. 2 ) THEN
-                CALL UTMESS('A',CMD,'LA MAILLE : '//NOM1//
-     &         ' EST EN DOUBLE DANS LE GROUP_MA: '//NOMG//
-     &         '. ON ELIMINE LES DOUBLONS')
-C        CALL U2MESK('A','MODELISA5_8', 2 ,VALK)
+                 VALK(1) = NOM1
+                 VALK(2) = NOMG
+                 CALL U2MESK('A','MODELISA5_8', 2 ,VALK)
                 GOTO 710
              ENDIF
              NBMA1 = NBMA1 + 1

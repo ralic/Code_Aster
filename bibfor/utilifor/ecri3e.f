@@ -6,7 +6,7 @@ C      INTEGER       TYPE, N, CRAY2IEG, BITOFF, STRIDE, IERR , I
       CHARACTER*8   CRAYCH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,10 +30,6 @@ C      BITOFF = 0
 C      STRIDE = 1
 C      TYPE   = 1
 C      IERR = CRAY2IEG ( TYPE, N, ICRAY, BITOFF, II3E, STRIDE, CRAYCH )
-C
-C      IF ( IERR .LT. 0 ) THEN
-C         CALL UTMESS('F','ECRI3E','ERREUR DE CONVERSION')
-C      ENDIF
 C
       DO 10 I=1,N
          II3E(I) = ICRAY(I)

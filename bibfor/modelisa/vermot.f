@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C       ----------------------------------------------------------------
         CHARACTER*16    CMD , NOM
         CHARACTER*8     MCL
         CHARACTER*(*)   CV
+        CHARACTER*24 VALK(2)
         COMMON          /OPMAIL/        CMD
 C
         IRTETI = 0
@@ -42,9 +43,9 @@ C
         IF(IV.GT.16)JV=16
         IF(IV.LE.16)JV=IV
         NOM = CV(1:JV)
-        CALL UTMESS('E',CMD,CNL//' UN IDENTIFICATEUR EST ATTENDU : '//
-     &  '                            "'//NOM(1:JV)//'" N EN EST PAS UN')
-C        CALL U2MESK('E','MODELISA7_81', 2 ,VALK)
+         VALK(1) = CNL
+         VALK(2) = NOM(1:JV)
+         CALL U2MESK('E','MODELISA7_81', 2 ,VALK)
         IER = 1
         IRTETI = 1
         GOTO 9999

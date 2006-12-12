@@ -4,7 +4,7 @@
       CHARACTER*(*)     CODMES,QUESTI,NOMOB,TYPECO,     REPK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ------------------------------------------------------------------
 C     IN:
-C       CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A UTMESS.
+C       CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A U2MESK.
 C       QUESTI : TEXTE PRECISANT LA QUESTION POSEE
 C       NOMOB  : NOM D'UN OBJET DE CONCEPT DONNE
 C       TYPECO : TYPE DU CONCEPT NOMOB

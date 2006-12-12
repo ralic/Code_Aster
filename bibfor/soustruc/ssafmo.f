@@ -1,6 +1,6 @@
       SUBROUTINE SSAFMO(MO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
@@ -98,9 +99,9 @@ C     -----------------------
         NOSMA=ZK8(IALMAI-1+I)
         CALL JENONU(JEXNOM(MA//'.SUPMAIL',NOSMA),IMAS)
         IF (IMAS.EQ.0) THEN
-          CALL UTMESS('F','SSAFMO','LA MAILLE : '//NOSMA
-     &              //' N EXISTE PAS DANS LE MAILLAGE : '//MA)
-C        CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
+           VALK(1) = NOSMA
+           VALK(2) = MA
+           CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
         ELSE
           ZI(IASSSA-1+IMAS)=1
         END IF

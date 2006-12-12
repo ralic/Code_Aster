@@ -1,5 +1,5 @@
       SUBROUTINE OP0019(IER)
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +65,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 CONCEP,CMD,MCLF(NBMCF),MCLE(4)
       CHARACTER*16 NOMELE(NBTEL),NOMEL1(NBEL1),NOMEL2(NBEL2)
       CHARACTER*24 MLGNMA,MLGNNO,MLGGNO,MLGGMA
+      CHARACTER*24 VALK(5)
       CHARACTER*24 MODNOM,MODNEM,NOMOBJ,TMPLST,TMPLMA,TMPLNO
       CHARACTER*19 CARTCF
       CHARACTER*24 TMPNCF
@@ -325,11 +326,12 @@ C     ---------------------------------------------------------------
             DO 70 J = 1,NG
               CALL JENONU(JEXNOM(NOMOBJ,ZK8(JDLS+J-1)),IRET)
               IF (IRET.EQ.0) THEN
-                CALL UTMESS('A',CMD,MCLF(ICLF)//'OCCURENCE '//KIOC//
-     &                      ' : LE '//MCLE(ICLE)//' "'//ZK8(JDLS+J-1)//
-     &                      '" NE FAIT PAS PARTIE DU MAILLAGE "'//NOMA//
-     &                      '"')
-C        CALL U2MESK('A','MODELISA5_58', 5 ,VALK)
+                 VALK(1) = MCLF(ICLF)
+                 VALK(2) = KIOC
+                 VALK(3) = MCLE(ICLE)
+                 VALK(4) = ZK8(JDLS+J-1)
+                 VALK(5) = NOMA
+                 CALL U2MESK('A','MODELISA5_58', 5 ,VALK)
               END IF
    70       CONTINUE
    80     CONTINUE

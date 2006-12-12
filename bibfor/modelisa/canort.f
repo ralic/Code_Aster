@@ -1,7 +1,7 @@
       SUBROUTINE CANORT(NOMA,NBMA,LISTI,LISTK,NDIM,NBNO,NUNO,L)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,7 @@ C
       CHARACTER*8  MK,NOMTYP,NOMNOE,K8BID
       CHARACTER*19 NOMT19
       CHARACTER*24 NOMOBJ,NOMOB2,CONINV,PARA
+      CHARACTER*24 VALK(2)
       CHARACTER*32 JEXNOM,JEXNUM
       CHARACTER*1  K1B
       REAL*8       DFSE2(4),DFSE3(9),R8RDDG,ARMIN,PREC
@@ -586,12 +587,9 @@ C              UNE VERIFICATION ULTERIEURE
                IF (ABS(ANGL).GT.10.0D0) THEN
                   CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO),NOMNOE)
                   CALL CODREE(ABS(ANGL),'G',KANGL)
-                  CALL UTMESS('A','CANORT','L''ANGLE '//
-     &                       'FORME PAR LE VECTEUR NORMAL COURANT '
-     &                     //'A 1 FACE ET LE VECTEUR NORMAL MOYEN,'
-     &                     //' AU NOEUD '//NOMNOE//', EST SUPERIEUR'
-     &                     //' A 10 DEGRES ET VAUT '//KANGL//' DEGRES.')
-C        CALL U2MESK('A','MODELISA3_29', 2 ,VALK)
+                   VALK(1) = NOMNOE
+                   VALK(2) = KANGL
+                   CALL U2MESK('A','MODELISA3_29', 2 ,VALK)
                ENDIF
   7         CONTINUE
          ELSE IF (NDIM.EQ.3) THEN
@@ -620,12 +618,9 @@ C        CALL U2MESK('A','MODELISA3_29', 2 ,VALK)
                IF (ABS(ANGL).GT.10.0D0) THEN
                   CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO),NOMNOE)
                   CALL CODREE(ABS(ANGL),'G',KANGL)
-                  CALL UTMESS('A','CANORT','L''ANGLE '//
-     &                       'FORME PAR LE VECTEUR NORMAL COURANT '
-     &                     //'A 1 FACE ET LE VECTEUR NORMAL MOYENNE,'
-     &                     //' AU NOEUD '//NOMNOE//', EST SUPERIEUR'
-     &                     //' A 10 DEGRES ET VAUT '//KANGL//' DEGRES.')
-C        CALL U2MESK('A','MODELISA3_31', 2 ,VALK)
+                   VALK(1) = NOMNOE
+                   VALK(2) = KANGL
+                   CALL U2MESK('A','MODELISA3_31', 2 ,VALK)
                ENDIF
   8         CONTINUE
          END IF

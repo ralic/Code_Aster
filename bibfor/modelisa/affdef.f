@@ -5,7 +5,7 @@
       CHARACTER*24      TMP
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C       -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
         PARAMETER       ( NR = 4 ,      NC = 2,    NG = 8 )
         PARAMETER       ( NT = 4 ,      NE =12,    ND = 6 )
         PARAMETER       ( NX = 10,      NY = 8,    NZ = 4 )
-        CHARACTER*16    CMD
+        CHARACTER*24 VALK(3)
         REAL*8          R8MAEM, R8PI,   TST,    PI
         INTEGER         OGEN(NG),       OREC(NR),       OCER(NC)
         INTEGER         OTPE(NT)
@@ -81,7 +81,6 @@ C       -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
 C       ----------------------------------------------------------------
 C
       CALL JEMARQ()
-        CMD = 'AFFE_CARA_ELEM'
         TST = R8MAEM()
 C
         CALL JEVEUO(JEXNOM(TMP,NOM),'E',JDGE)
@@ -92,10 +91,9 @@ C
           IF(ISEC.EQ.0)THEN
             DO 20 J = 1 , NG
             IF(ZR(JDGE+OGEN(J)-1).EQ.TST)THEN
-            CALL UTMESS('A',CMD,'POUTRE'//
-     &      ' : MAILLE '//NOM//' : SECTION GENERALE'//
-     &      ' : IL MANQUE LA CARACTERISTIQUE '//TAB(OGEN(J)))
-C        CALL U2MESK('A','MODELISA_77', 2 ,VALK)
+             VALK(1) = NOM
+             VALK(2) = TAB(OGEN(J))
+             CALL U2MESK('A','MODELISA_77', 2 ,VALK)
             IER = IER + 1
             ENDIF
  20         CONTINUE
@@ -104,12 +102,9 @@ C - TYMOSHENKO
      &           NEL.EQ.NTEL(5) .OR. NEL.EQ.NTEL(6) )THEN
               DO 50 J = 1 , NT
                 IF(ZR(JDGE+OTPE(J)-1).EQ.TST)THEN
-                CALL UTMESS('A',CMD,'POUTRE'//
-     &          ' : MAILLE '//NOM//
-     &          ' : SECTION GENERALE'//
-     &          ' : ELEMENT POUTRE DE TIMOSHENKO'//
-     &          ' : IL MANQUE LA CARACTERISTIQUE '//TAB(OTPE(J)))
-C        CALL U2MESK('A','MODELISA_78', 2 ,VALK)
+                 VALK(1) = NOM
+                 VALK(2) = TAB(OTPE(J))
+                 CALL U2MESK('A','MODELISA_78', 2 ,VALK)
                 ENDIF
  50           CONTINUE
             ENDIF
@@ -120,10 +115,9 @@ C
           IF(ISEC.EQ.1)THEN
             DO 30 J = 1 , NR
             IF(ZR(JDGE+OREC(J)-1).EQ.TST)THEN
-            CALL UTMESS('A',CMD,'POUTRE'//
-     &      ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
-     &      ' : IL MANQUE  LA CARACTERISTIQUE '//TAB(OREC(J)))
-C        CALL U2MESK('A','MODELISA_79', 2 ,VALK)
+             VALK(1) = NOM
+             VALK(2) = TAB(OREC(J))
+             CALL U2MESK('A','MODELISA_79', 2 ,VALK)
             IER = IER + 1
             ENDIF
  30         CONTINUE
@@ -134,10 +128,9 @@ C
           IF(ISEC.EQ.2)THEN
             DO 40 J = 1 , NC
             IF(ZR(JDGE+OCER(J)-1).EQ.TST)THEN
-            CALL UTMESS('A',CMD,'POUTRE'//
-     &      ' : MAILLE '//NOM//' : SECTION CERCLE'//
-     &      ' :  IL MANQUE  LA CARACTERISTIQUE '//TAB(OCER(J)))
-C        CALL U2MESK('A','MODELISA_80', 2 ,VALK)
+             VALK(1) = NOM
+             VALK(2) = TAB(OCER(J))
+             CALL U2MESK('A','MODELISA_80', 2 ,VALK)
             IER = IER + 1
             ENDIF
  40         CONTINUE
@@ -149,11 +142,9 @@ C
           DO 130 J = 1 , NX
             IF(ZR(JDGE+PGEN(J)-1).NE.TST)THEN
               IF(ZR(JDGE+PGEN(J)-1).LE.0.D0)THEN
-              CALL UTMESS('A',CMD,'POUTRE'//
-     &        ' : MAILLE '//NOM//' : SECTION GENERALE'//
-     &        ' : LA VALEUR DE '//TAB(PGEN(J))//' DOIT'//
-     &        ' ETRE  STRICTEMENT POSITIVE')
-C        CALL U2MESK('A','MODELISA_81', 2 ,VALK)
+               VALK(1) = NOM
+               VALK(2) = TAB(PGEN(J))
+               CALL U2MESK('A','MODELISA_81', 2 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF
@@ -166,11 +157,9 @@ C
           DO 110 J = 1 , NY
             IF(ZR(JDGE+PREC(J)-1).NE.TST)THEN
               IF(ZR(JDGE+PREC(J)-1).LE.0.D0)THEN
-              CALL UTMESS('A',CMD,'POUTRE'//
-     &        ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
-     &        ' : LA VALEUR DE '//TAB(PREC(J))//' DOIT'//
-     &        ' ETRE STRICTEMENT POSITIVE')
-C        CALL U2MESK('A','MODELISA_82', 2 ,VALK)
+               VALK(1) = NOM
+               VALK(2) = TAB(PREC(J))
+               CALL U2MESK('A','MODELISA_82', 2 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF
@@ -183,11 +172,9 @@ C
           DO 120 J = 1 , NZ
             IF(ZR(JDGE+PCER(J)-1).NE.TST)THEN
               IF(ZR(JDGE+PCER(J)-1).LE.0.D0)THEN
-              CALL UTMESS('A',CMD,'POUTRE'//
-     &        ' : MAILLE '//NOM//' : SECTION CERCLE'//
-     &        ' :  LA VALEUR DE '//TAB(PCER(J))//' DOIT'//
-     &        ' ETRE STRICTEMENT POSITIVE')
-C        CALL U2MESK('A','MODELISA_83', 2 ,VALK)
+               VALK(1) = NOM
+               VALK(2) = TAB(PCER(J))
+               CALL U2MESK('A','MODELISA_83', 2 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF
@@ -232,11 +219,10 @@ C
             ZR(JDGE+DREC(J)-1) = ZR(JDGE+OREC(J)-1) / 2.D0
             ELSE
               IF(ZR(JDGE+DREC(J)-1).GT.(ZR(JDGE+OREC(J)-1)/2.D0))THEN
-              CALL UTMESS('A',CMD,'POUTRE'//
-     &        ' : MAILLE '//NOM//' : SECTION RECTANGLE'//
-     &        ' : LA VALEUR DE '//TAB(DREC(J))//' NE DOIT '//
-     &        'PAS DEPASSER '//TAB(OREC(J))//'/2  !!! M ENFIN QUOI !')
-C        CALL U2MESK('A','MODELISA_84', 3 ,VALK)
+               VALK(1) = NOM
+               VALK(2) = TAB(DREC(J))
+               VALK(3) = TAB(OREC(J))
+               CALL U2MESK('A','MODELISA_84', 3 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF
@@ -251,11 +237,10 @@ C
             ZR(JDGE+DCER(J)-1) = ZR(JDGE+OCER(J)-1)
             ELSE
               IF(ZR(JDGE+DCER(J)-1).GT.ZR(JDGE+OCER(J)-1))THEN
-              CALL UTMESS('A',CMD,'POUTRE'//
-     &        ' : MAILLE '//NOM//' : SECTION CERCLE'//
-     &        ' :  LA VALEUR DE '//TAB(DCER(J))//' NE DOIT '//
-     &        'PAS DEPASSER CELLE DE '//TAB(OCER(J))//' !!! AARG !!')
-C        CALL U2MESK('A','MODELISA_85', 3 ,VALK)
+               VALK(1) = NOM
+               VALK(2) = TAB(DCER(J))
+               VALK(3) = TAB(OCER(J))
+               CALL U2MESK('A','MODELISA_85', 3 ,VALK)
               IER = IER + 1
               ENDIF
             ENDIF

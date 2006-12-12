@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C SENSIBILITE
       CHARACTER*8  NOPASE
       CHARACTER*19 RESUT,LAFON1
       CHARACTER*24 NORECG
+      CHARACTER*24 VALK(2)
       INTEGER NBPASS,ADRECG,NRPASS
 C SENSIBILITE
 C     ------------------------------------------------------------------
@@ -106,10 +107,9 @@ C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
            ELSE
              CALL PSRENC ( RESUT, NOPASE, RESU, IRET )
              IF ( IRET.NE.0 ) THEN
-               CALL UTMESS ('F', 'OP0090',
-     &    'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU
-     &    RESULTAT '//RESUT//' ET AU PARAMETRE SENSIBLE '//NOPASE)
-C        CALL U2MESK('F','CALCULEL2_96', 2 ,VALK)
+                VALK(1) = RESUT
+                VALK(2) = NOPASE
+                CALL U2MESK('F','CALCULEL2_96', 2 ,VALK)
              ENDIF
           ENDIF
 

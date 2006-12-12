@@ -4,7 +4,7 @@
       CHARACTER*(*)    NOMZ, LIMANZ(LONLIM), TYPZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       INTEGER IGR,IRET,INO,IMA
       CHARACTER*8   NOMA, LIMANO, TYPE
       CHARACTER*24  NOEUMA, GRNOMA, MAILMA, GRMAMA
+      CHARACTER*24 VALK(2)
 C ----------------------------------------------------------------------
 C
       NOMA = NOMZ
@@ -73,9 +74,9 @@ C        -------------------------------------------------------
               LIMANO = LIMANZ(IGR)
               CALL JEEXIN (JEXNOM(GRNOMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
-                CALL UTMESS('S','VERIMA','LE GROUP_NO '//LIMANO//
-     &                      ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('S','MODELISA7_75', 2 ,VALK)
+                 VALK(1) = LIMANO
+                 VALK(2) = NOMA
+                 CALL U2MESK('S','MODELISA7_75', 2 ,VALK)
               ENDIF
 10        CONTINUE
 C
@@ -88,9 +89,9 @@ C        -------------------------------------------------------
               LIMANO = LIMANZ(INO)
               CALL JENONU (JEXNOM(NOEUMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
-                CALL UTMESS('S','VERIMA','LE NOEUD '//LIMANO//
-     &                     ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('S','MODELISA7_76', 2 ,VALK)
+                 VALK(1) = LIMANO
+                 VALK(2) = NOMA
+                 CALL U2MESK('S','MODELISA7_76', 2 ,VALK)
               ENDIF
  20         CONTINUE
 C
@@ -103,9 +104,9 @@ C        -------------------------------------------------------
               LIMANO = LIMANZ(IGR)
               CALL JEEXIN (JEXNOM(GRMAMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
-                CALL UTMESS('S','VERIMA','LE GROUP_MA '//LIMANO//
-     &                      ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('S','MODELISA7_77', 2 ,VALK)
+                 VALK(1) = LIMANO
+                 VALK(2) = NOMA
+                 CALL U2MESK('S','MODELISA7_77', 2 ,VALK)
               ENDIF
  30         CONTINUE
 C
@@ -118,9 +119,9 @@ C        -------------------------------------------------------
               LIMANO = LIMANZ(IMA)
               CALL JENONU (JEXNOM(MAILMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
-                CALL UTMESS('S','VERIMA','LA MAILLE '//LIMANO//
-     &                     ' NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('S','MODELISA7_78', 2 ,VALK)
+                 VALK(1) = LIMANO
+                 VALK(2) = NOMA
+                 CALL U2MESK('S','MODELISA7_78', 2 ,VALK)
               ENDIF
  40        CONTINUE
 C

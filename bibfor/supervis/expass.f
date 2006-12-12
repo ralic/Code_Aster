@@ -4,7 +4,7 @@
       INTEGER                  IPASS , ICMDEB , IERTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     --- VARIABLES LOCALES --------------------------------------------
       CHARACTER*4   CH4, CI4
+      CHARACTER*24 VALK(3)
       CHARACTER*8   NOMRES
       CHARACTER*16  CONCEP , NOMCMD
       LOGICAL       LDBG
@@ -93,10 +94,10 @@ C           --- VERIFICATIONS SUPPLEMENTAIRES ---
                IERTOT = IERTOT + IERCMD
                IERCM2=ABS(IERCMD)
                CALL CODENT(IERCM2,'D',CH4)
-               CALL UTMESS('E','EXECUTION DES COMMANDES (ERREUR 01)',
-     &                        'COMMANDE N '//CI4//' :  "'//NOMCMD//
-     &                        '"  :  '//CH4//' ERREUR(S) DETECTEE(S)')
-C        CALL U2MESK('E','SUPERVIS_4', 3 ,VALK)
+                VALK(1) = CI4
+                VALK(2) = NOMCMD
+                VALK(3) = CH4
+                CALL U2MESK('E','SUPERVIS_4', 3 ,VALK)
             ENDIF
 C
          ELSEIF( IPASS .EQ. 2 ) THEN

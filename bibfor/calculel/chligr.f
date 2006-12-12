@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     VARIABLES LOCALES:
 C     ------------------
       CHARACTER*4 TYCH
+      CHARACTER*24 VALK(3)
       CHARACTER*8 NOMA,MA,KBID
       CHARACTER*16 FPG1,FPG2
       CHARACTER*19 CES,CHELV
@@ -128,10 +129,10 @@ C     ------------------------------------------------------------
               CALL DISMOI('F','NOM_MAILLA',CHEL1,'CHAM_ELEM',
      &                    IBID,MA,IBID)
               CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),NOMA)
-              CALL UTMESS('F','CHLIGR','INCOHERENCE DES'
-     &        //' FAMILLES DE POINTS DE GAUSS POUR LA MAILLE '
-     &        //NOMA//' ('//FPG1//'/'//FPG2//')')
-C        CALL U2MESK('F','CALCULEL_91', 3 ,VALK)
+               VALK(1) = NOMA
+               VALK(2) = FPG1
+               VALK(3) = FPG2
+               CALL U2MESK('F','CALCULEL_91', 3 ,VALK)
            END IF
 20       CONTINUE
          CALL JEDETR('&&CHLIGR.CHEL2')

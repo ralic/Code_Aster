@@ -3,7 +3,7 @@
       CHARACTER*8       MASSE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMSY, CONCEP, NOMCMD, MONACC, MONPAR,MESNOE
       CHARACTER*19 CHAM19
       CHARACTER*24 OBJ1, OBJ2
+      CHARACTER*24 VALK(2)
       CHARACTER*8  K8BID
       CHARACTER*1  K1BID
       REAL*8       R8VIDE
@@ -191,9 +192,9 @@ C
            CALL JEEXIN(JEXNOM(OBJ1,NOREF),IRE2)
            IF ((IRE1+IRE2).EQ.0) THEN
              IER = IER + 1
-             CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOREF//
-     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
-C        CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
+              VALK(1) = NOREF
+              VALK(2) = NOMA
+              CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
              GOTO 9999
            ENDIF
            IF (IRE2.NE.0) THEN
@@ -201,12 +202,6 @@ C        CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
              CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN)),NOREF)
            ENDIF
 
-C               IER = IER + 1
-C               CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEREF//
-C     +                             ' N''EST PAS UN NOEUD SUPPORT.')
-C               GOTO 9999
-C          ENDIF
-C 90      CONTINUE
           ZK8(JNREF+ICAS-1) = NOREF
           ZI(JREF+ICAS-1)= 1
         ENDIF

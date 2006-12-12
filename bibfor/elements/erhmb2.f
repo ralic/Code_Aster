@@ -7,7 +7,7 @@
      &                  TERCLM,TERCLH)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,6 @@ C ......................................................................
 C
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES :
-C       MESSAGE : UTMESS.
 C       UTILITAIRES : FOINTE
 C     FONCTION INTRINSEQUE :
 C       SQRT.

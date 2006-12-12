@@ -8,7 +8,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,11 +102,12 @@ C -----------------
       CHARACTER*8   RESU, NOMOBJ, VECGEN, K8TYP, KBID
       CHARACTER*16  TYPRES, NOMCMD
       CHARACTER*24  NOMFON
+      CHARACTER*24 VALK(2)
 C
 C ROUTINES EXTERNES
 C -----------------
 C     EXTERNAL      CHVERI, GETRES, JEDEMA, JELIRA, JEMARQ, JEVEUO,
-C    &              MDITM2, UTMESS, WKVECT
+C    &              MDITM2, WKVECT
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -318,11 +319,9 @@ C
          ELSE IF ( NOECHO(IC,9).EQ.'BI_CERCL' .OR.
      &             NOECHO(IC,9).EQ.'BI_PLANY' .OR.
      &             NOECHO(IC,9).EQ.'BI_PLANZ' ) THEN
-            CALL UTMESS('F','MDITM1','IMPOSSIBLE DE TRAITER LE '//
-     &                  'TYPE D OBSTACLE CHOISI AVEC METHODE ITMI'//
-     &                  ', (OBSTACLE DE TYPE '// NOECHO(IC,9) //
-     &                  ' AU NOEUD ' // NOECHO(IC,1) // ').' )
-C        CALL U2MESK('F','ALGORITH5_51', 2 ,VALK)
+             VALK(1) = NOECHO(IC,9)
+             VALK(2) = NOECHO(IC,1)
+             CALL U2MESK('F','ALGORITH5_51', 2 ,VALK)
          ELSE
             ZI(JTYPCH+IC-1) = 3
             NOMOBJ = NOECHO(IC,9)

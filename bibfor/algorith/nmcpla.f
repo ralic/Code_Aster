@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -434,11 +434,6 @@ C               NOMAIL = ZK24(IAZK24-1+3)(1:8)
 C               CALL CODREE(ABS(EPSICV),'E',DCV)
 C               CALL CODENT(ITER,'G',CITER)
                IRET = 1
-C               CALL UTMESS('I','NMCPLA_7',
-C     &           'COUPLAGE FLUAGE/FISSURATION : NOMBRE D ITERATIONS '
-C     &           //' MAX (' // CITER // ') DEPASSE - NON CONVERGENCE '
-C     &           // 'DU COUPLAGE A LA MAILLE '// NOMAIL
-C     &           // ' RESIDU RELATIF : ' // DCV )
                GOTO 9999
             ENDIF
          ENDIF

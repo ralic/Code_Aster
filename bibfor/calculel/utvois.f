@@ -3,7 +3,7 @@
      &                  IDFDX,IDFDX2,IDFDY,IDFDY2,NPGF,NPGF2,LLUMPE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,6 @@ C OUT IDFDY/2  : IDEM EN Y
 C OUT NPGF/2   : NBRE POINT DE GAUSS FACE 1 ET 2 (POUR PENTAEDRE)
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       MSG:UTMESS.
 C       JEVEUX: JEEXIN,JEVEUO.
 C     FONCTIONS INTRINSEQUES:
 C       AUCUNE.

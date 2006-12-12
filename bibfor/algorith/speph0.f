@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 K8B,MODMEC,MODSTA,NOEUD,NOMA,CMP,TYPAR(NBPAR)
       CHARACTER*16 MOVREP,OPTCAL,OPTCHA,NOPAR(NBPAR),NOPAOU(2),KVAL(2),
      &             TYPCHA,ACCES,TYPMEC,NOCHAM,OPTCH1,MAILLE
-      CHARACTER*24 CHAM19,NOMFON, VALK(2)
+      CHARACTER*24 CHAM19,NOMFON
+      CHARACTER*24 VALK(3)
 
       DATA NOPAOU/'NUME_ORDRE_I','NUME_ORDRE_J'/
       DATA NOPAR/'NOM_CHAM','OPTION','DIMENSION','NOEUD_I','NOM_CMP_I',
@@ -208,9 +209,9 @@ C     --- RECUPERATION DU NUMERO DU DDL ---
           IF (INOEUD.EQ.0) THEN
             CALL U2MESK('F','ALGORITH10_70',1,NOEUD)
           ELSE IF (IDDL.EQ.0) THEN
-            CALL UTMESS('F','SPEPH0','LA COMPOSANTE '//CMP//
-     &                  ' DU NOEUD '//NOEUD//' N''EXISTE PAS.')
-C        CALL U2MESK('F','ALGORITH10_71', 2 ,VALK)
+             VALK(1) = CMP
+             VALK(2) = NOEUD
+             CALL U2MESK('F','ALGORITH10_71', 2 ,VALK)
           END IF
           ZI(INDDL+I-1) = IDDL
    30   CONTINUE
@@ -227,10 +228,10 @@ C        CALL U2MESK('F','ALGORITH10_71', 2 ,VALK)
           CMP = ZK8(ICMPN+I-1)
           CALL UTCHDL(CHAM19,NOMA,MAILLE,NOEUD,NUPO,0,IVARI,CMP,IDDL)
           IF (IDDL.EQ.0) THEN
-            CALL UTMESS('F','SPEPH0','LA COMPOSANTE '//CMP//
-     &                  ' DU NOEUD '//NOEUD//' POUR LA MAILLE '//
-     &                  MAILLE//' N''EXISTE PAS.')
-C        CALL U2MESK('F','ALGORITH10_73', 3 ,VALK)
+             VALK(1) = CMP
+             VALK(2) = NOEUD
+             VALK(3) = MAILLE
+             CALL U2MESK('F','ALGORITH10_73', 3 ,VALK)
           END IF
           ZI(INDDL+I-1) = IDDL
    40   CONTINUE

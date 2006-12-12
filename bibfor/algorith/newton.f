@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,6 +93,7 @@ C -----------------
      &             TETAES
       CHARACTER*10 KB10
       CHARACTER*3  KB3
+      CHARACTER*24 VALK(2)
 C DEBUG
       INTEGER      ICYCL, IDT, ILAST, ITBACK
       REAL*8       DT00, DTMIN, EPSDTC, TDT, SCALV, VGLO(3), VGLO0(3)
@@ -106,7 +107,7 @@ C ROUTINES EXTERNES
 C -----------------
 C     EXTERNAL     ADIMVE, CALCMD, CALCMI, CALFMN, CALFNL, CALND1,
 C    &             CALND2, COUPLA, ESTIVD, INIPAN, PRBRED, PROJMD,
-C    &             PROJVD, SOMMMA, TESTCH, UTMESS
+C    &             PROJVD, SOMMMA, TESTCH
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -207,8 +208,8 @@ C DEBUG
 C ------ ON VALIDE L'INSTANT N+1 EN CAS D'ELOIGNEMENT DU CHANGEMENT DE
 C ------ CONFIGURATION
          IF ( DT.EQ.1.0D+10 ) THEN
-C     &      CALL UTMESS('F','NEWTON','PREMIER AJUSTEMENT DU PAS '//
-C     &      'DE TEMPS, CAS 2 : INCREMENT TEMPOREL INDETERMINE')
+C   PREMIER AJUSTEMENT DU PAS DE TEMPS, 
+C   CAS 2 : INCREMENT TEMPOREL INDETERMINE
             DT  = DT0
             DTC = 0.0D0
             TC  = TC + DT0
@@ -359,11 +360,9 @@ C
          IF ( NITNEW.GT.NITMAX ) THEN
             WRITE(KB3,'(I3)') NITMAX
             WRITE(KB10,'(1PD10.4)') TC
-            CALL UTMESS('F','NEWTON','PAS DE CONVERGENCE DE ' //
-     &                  'L''ALGORITHME DE NEWTON EN '// KB3 //
-     &                  ' ITERATIONS A L''INSTANT '// KB10 // '. IL'//
-     &                  ' FAUT REDUIRE LA RIGIDITE NORMALE, OU LE JEU.')
-C        CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)
+             VALK(1) = KB3
+             VALK(2) = KB10
+             CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)
          ENDIF
 C
 C ------ AJUSTEMENT DU PAS DE TEMPS ET DE L'INSTANT N+1
@@ -412,11 +411,9 @@ C
          IF ( NITNEW.GT.NITMAX ) THEN
             WRITE(KB3,'(I3)') NITMAX
             WRITE(KB10,'(1PD10.4)') TC
-            CALL UTMESS('F','NEWTON','PAS DE CONVERGENCE DE ' //
-     &                  'L''ALGORITHME DE NEWTON EN '// KB3 //
-     &                  ' ITERATIONS A L''INSTANT '// KB10 // '. IL'//
-     &                  ' FAUT REDUIRE LA RIGIDITE NORMALE, OU LE JEU.')
-C        CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)
+             VALK(1) = KB3
+             VALK(2) = KB10
+             CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)
          ENDIF
 C
 C ------ ON SE PLACE A L'INSTANT N+1 SI LA VITESSE NE CHANGE PAS DE SENS
@@ -471,8 +468,8 @@ C
 C ------ ON VALIDE L'INSTANT N+1 EN CAS D'ELOIGNEMENT DU CHANGEMENT DE
 C ------ CONFIGURATION
          IF ( DT.EQ.1.0D+10 ) THEN
-C     &      CALL UTMESS('F','NEWTON','AJUSTEMENT DU PAS DE TEMPS, '//
-C     &      'CAS 2 : INCREMENT TEMPOREL INDETERMINE')
+C     AJUSTEMENT DU PAS DE TEMPS,
+C     CAS 2 : INCREMENT TEMPOREL INDETERMINE
             DT  = DT0
             DTC = DTC0
             TC  = TC + DT0
@@ -541,11 +538,9 @@ C
          IF ( NITNEW.GT.NITMAX ) THEN
             WRITE(KB3,'(I3)') NITMAX
             WRITE(KB10,'(1PD10.4)') TC
-            CALL UTMESS('F','NEWTON','PAS DE CONVERGENCE DE ' //
-     &                  'L''ALGORITHME DE NEWTON EN '// KB3 //
-     &                  ' ITERATIONS A L''INSTANT '// KB10 // '. IL'//
-     &                  ' FAUT REDUIRE LA RIGIDITE NORMALE, OU LE JEU.')
-C        CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)
+             VALK(1) = KB3
+             VALK(2) = KB10
+             CALL U2MESK('F','ALGORITH6_53', 2 ,VALK)
          ENDIF
 C
 C ------ ON SE PLACE A L'INSTANT N+1

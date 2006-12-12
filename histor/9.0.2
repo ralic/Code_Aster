@@ -1,0 +1,868 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 13/12/2006 - 08:17:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010309 DU 2006-11-24 12:37:45
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   quelques bugs dans POSt_MAIL_XFEM et POST_CHAM_XFEM
+FONCTIONNALITE
+   A l'occasion de la mise a jour par Samuel de la docD de la SD FISS_XFEM, j'ai mis a jour
+   le catalogue des SD (et les routines de verification pour cette SD).
+   Puis pour verifier la coherence de la docD et du catalogue de la SD, j'ai passe 14
+   tests
+   XFEM en SDVERI='OUI'
+   
+   
+   Pour que ces 14 tests soient OK, j'ai du corriger 4 anomalies :
+   1) un  bug dans op0196.f (POST_CHAM_XFEM) :
+   les cham_no 'DEPL' de la SD_RESULTAT etaient tous crees avec le meme nom !
+   => le transitoire contenait pour tous les instants du calcul le meme champ de
+   deplacement.
+   => RESULTATS FAUX
+   2) je corrige un petit bug dans op0187.f (POST_MAIL_XFEM) :
+   Il faut ecrire 'CHNO' dans le champ DOCU de l'objet '.COORDO  .DESC'
+   3) je corrige un petit bug dans op0187.f (POST_MAIL_XFEM) :
+   l'objet COORDO.VALE doit etre redimensionne a 3*NBNO
+   4) je corrige un petit bug dans op0196.f (POST_CHAM_XFEM) :
+   le cham_elem '.DEP_RESU' etait cree par erreur sur la base globale
+   
+   
+   Details :
+   ---------
+   1) On met a jour le catalogue des SD pour XFEM
+   => modif routines verij1.f et verij6.f
+   2) Suite a un probleme d'agla CRP + recursivite :
+   - je renomme 2 routines :
+   verij7.f -> verija.f
+   verij2.f -> verijb.f
+   Les 2 nouvelles routines sont mises dans F90/recursive/*.f + fermeture/*.f.
+   La fonctionalite SDVERI='OUI' devient donc indisponible si l'on n'a pas de
+   compilateur
+   f90.
+   
+   
+   2) On met SDVERI='OUI' dans 14 tests XFEM :
+   adls102a     ascou01a        sslv311a        ssnv173a        ssnv173b  ssnv173c
+   ssnv182a   ssnv182d   ssnv185g        ssnv185i  ssnv185j   ssnv186d   ssnv191a   ssnv191b
+   
+   En NEW8 :
+   ---------
+   On se contente de reporter ces petites corrections en NEW8, sans basculer les tests en
+   SDVERI='OUI.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.10.02
+VALIDATION
+   14 tests XFEM en SDVERI='OUI'
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010331 DU 2006-11-30 16:41:48
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   une routine de transformation CHAM_ELEM_S -> CARTE
+FONCTIONNALITE
+   Le developpement de Luc Davenne (responsable F. Voldoire) concernant les poutres
+   multifibres (plusieurs materiaux par maille) necessite de fusionner des cartes de
+   comportement (comme celle crees par la routine nmdorc.f).
+   
+   Pour cela, il faut developper une routines inverse de CARCES.
+   
+   CARCES : CARTE  -> CHAM_ELEM_S  (existe)
+   CESCAR : CHAM_LEME_S -> CARTE   (a ecrire)
+   
+   
+   la nouvelle routine CESCAR permet de transformer un CHAM_ELEM_S / ELEM en une CARTE.
+   
+   Validation : un petit test perso : dans charme.f, on prend la carte de pression, on la
+   transforme en cham_elem_s (carces.f), puis on la retransforme en carte (cescar.f). Le test
+   va jusqu'au bout et est OK. Ce qui valide les 2 routines "reciproques".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.00.01
+VALIDATION
+   perso
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010332 DU 2006-11-30 16:46:44
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Traitement des doubles Lagrange avec Mumps
+FONCTIONNALITE
+   Probleme:
+   ----------
+   
+   
+   Le solveur Mumps a ete introduit dans Aster pour sa capacite a "pivoter" pendant la
+   factorisation lorsque les pivots deviennent trop petits. Cette propriete peut etre
+   necessaire pour factoriser
+   les matrices non definies-positives.
+   
+   
+   Mais cette propriete a aussi un cout car elle remet en cause l'ordre d'elimination qui
+   a
+   ete determine lors de la factorisation symbolique.
+   
+   
+   Dans Code_Aster, les solveusr MULT_FRONT et LDLT ne pivotent pas et c'est pourquoi, on est
+   obliges de "dedoubler" les ddls de Lagrange de dualisation des conditions aux limites.
+   On
+   fait ainsi disparaitre certains "zero" sur la diagonale de la matrice.
+   
+   
+   On peut se demander si le dedoublement des Lagrange (necessite par MULT_FRONT et LDLT)
+   n'est pas un inconvenient pour MUMPS (car on lui cache des termes diagonaux nuls).
+   
+   
+   
+   
+   Solution proposee :
+   -------------------
+   
+   
+   On propose de conserver les 2 ddls de Lagrange (pour limiter l'impact sur le reste du
+   code) mais de s'arranger pour que le 2eme ddl soit quasiment oublie :
+   
+   
+   ---------------------          ---------------------
+   | u  |  v  | l1 | l2  |        | u  |  v  | l1 | l2  |
+   ---------------------          ---------------------
+   u |    |     |  a | a   |      u |    |     |  a |     |
+   ---------------------          ---------------------
+   v |    |     |  b | b   |  ->  v |    |     |  b |     |
+   ---------------------          ---------------------
+   l1| a  |  b  | -1 |  1  |      l1| a  |  b  |  0 |     |
+   ---------------------          ---------------------
+   l2| a  |  b  |  1 | -1  |      l2|    |     |    | -1  |
+   ---------------------          ---------------------
+   
+   
+   Avantages pour Mumps :
+   * les ddls lambda2 (l2) sont decouples des autres
+   * mumps est informe que le terme diagonal (l1xl1) est nul.
+   
+   
+   
+   
+   
+   
+   Modification des catalogues des commandes acceptant MUMPS comme solveur :
+   On ajoute un nouveau mot cle : SOLVEUR / ELIM_LAGR2
+   SOLVEUR=_F(
+   METHODE='MUMPS',
+   ELIM_LAGR2= /'OUI' (defaut)
+   /'NON'
+   PCENT_PIVOT=10     (defaut)   # auparavant : 80
+   
+   
+   
+   
+   IMPACT_DOCUMENTAIRE :
+   ---------------------
+   U4.50.01   (mot cle solveur)
+   D4.06.11   (SD SOLVEUR)
+   .SLVK(6) : ELIM_LAGR2 = /OUI/NON
+   OUI : on elimine le 2eme lagrange
+   
+   
+   
+   
+   Validation :
+   -------------
+   Le nouveau mot cle est-il interessant ?
+   Mon 1er essai a ete tres decevant : un cube nxnxn dont on bloque toute une face :
+   - pour n=3 et n=7 il y a un leger avantage pour ELIM_LAGR2= 'OUI'
+   - mais pour n=20, la factorisation est plus couteuse (37,8 -> 40,2s)
+   
+   
+   Heureusement, il y a le test ssnv192a (XFEM):
+   ELIM_LAGR2= 'NON' :
+   - temps pour la factorisation : 16.52s
+   - nb pivotages "tardifs"      : 46218
+   - PCENT_PIVOT minimal         : 60
+   
+   
+   ELIM_LAGR2= 'OUI' :
+   - temps pour la factorisation : 4.87s
+   - nb pivotages "tardifs"      : 0
+   - PCENT_PIVOT minimal         : 0
+   
+   
+   Rassure par ssnv192a, j'ai fait passer sur clpaster tous les tests MUMPS (sauf les 3 qui
+   se plantent actuellement).
+   J'ai obtenu les resultats suivants :
+   avant      apres
+   ---------------------------------
+   mac3c01a       542.82     569.33
+   mumps01a         1.95       1.93
+   mumps02a         2.01       1.96
+   mumps04a         1.81       1.84
+   ssnv173c         2.23       2.21
+   ssnv182c       147.00     126.87
+   ssnv182d         2.52       2.53
+   ssnv182e         3.59       3.52
+   ssnv182f         3.78       3.82
+   ssnv185b        87.99      83.62
+   ssnv185c       141.49     139.22
+   ssnv185d        80.11      77.45
+   ssnv185e        38.45      19.39   **
+   ssnv185f       178.53     141.11
+   ssnv185g       102.71      97.90
+   ssnv185h        82.42      95.97
+   ssnv185i        19.05      14.01
+   ssnv185j        43.68      43.62
+   ssnv186a        12.40      10.85
+   ssnv186b         9.73       9.18
+   ssnv186c        12.78      11.93
+   ssnv186d        12.44      11.56
+   ssnv186f         3.50       3.59
+   ssnv186g         3.97       3.98
+   ssnv186h         4.03       3.85
+   ssnv191a         2.75       2.73
+   ssnv191b         2.91       2.92
+   ssnv192a        58.78      48.36
+   -----------------------------------
+   TOTAL         1590.      1518.
+   
+   
+   Remarque :
+   J'ai aussi essaye de passer ces 28 tests avec ELIM_LAGR2='OUI' et PCENT_PIVOT=10
+   Seuls 2 tests (mac3c01a et ssnv185h) se sont arretes avec le message "augmenter
+   PCENT_PIVOT".
+   Ce qui semble montrer que ELIM_LAGR2='OUI' permet bien d'economiser de la memoire,
+   puisque la valeur de PCENT_PIVOT par defaut avait ete mise a 80 et que de nombreux
+   tests
+   utilisaient 250.
+   
+   
+   Modification des tests :
+   - on choisit ELIM_LAGR2= 'OUI' (defaut)
+   - dans mumps01a, on utilise les 2 valeurs de ELIM_LAGR2 = 'OUI'/'NON'
+   - pour les 2 tests mac3c01a et ssnv185h, on est obliges de mettre PCENT_PIVOT=50
+   
+   
+   
+   
+   Details :
+   -----------
+   - je supprime les UTMESS du fortran 90 (-> U2MESG)
+   - routines amumpr.f et amumpc.f :
+   * prise en compte de ELIM_LAGR2 :
+   - on modifie les termes de la matrice dus aux "doubles lagrange"  :
+   * Apres la resolution, je force la valeur des lAGR2 a 0 sinon les options de
+   non-lineaires
+   BTLA_R et BU_R deviennent fausses et STAT_NON_LINE ne converge plus.
+   
+   
+   NB_JOURS_TRAV: 2.5
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.50.01 D4.06.11
+VALIDATION
+   tous tests MUMPS
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010370 DU 2006-12-08 08:24:46
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   menage UTMESS -> U2MESK (morceau)
+FONCTIONNALITE
+   suite a un pb d'agla, Francis Lebouvier ne peut pas restituer toutes les routines
+   modifiees dans le cadre de la fiche 10093.
+   Je propose donc d'en restituer un paquet de mon cote :
+   
+   sources restitues :
+   --------------------
+   acevba.f  asexc2.f  canort.f  chveri.f  eclpgm.f  gveri1.f  irdrec.f  leccoo.f  mditmi.f
+   acevdi.f  asmsup.f  caundf.f  cmcovo.f  eclpgr.f  gverif.f  irdrer.f  lecint.f  mecalm.f
+   acevor.f  assach.f  caver1.f  cmmoma.f  ecrfre.f  gverig.f  irecri.f  lmacvg.f  mefgec.f
+   affbar.f  assthm.f  cescel.f  cnscno.f  entcod.f  hbrcvx.f  irmhdf.f  lrcame.f  mefgri.f
+   affdef.f  asveri.f  cesexi.f  cocali.f  expass.f  immeca.f  irmmf2.f  lrcmva.f  mmerro.f
+   affori.f  caelca.f  chligr.f  conini.f  fetcrf.f  inscvg.f  irtitr.f  lrcmve.f  mtcopy.f
+   affpou.f  caliai.f  chprec.f  cvmcvg.f  fgvdmg.f  irch19.f  jevech.f  lrmast.f alchml.f
+   caliob.f  chsut1.f  debcal.f  focrr0.f  irdeec.f  lchbvp.f  lrmhdf.f asefen.f  calirg.f
+   chtpcn.f  digouj.f  focrr2.f  irdeer.f  lcplbe.f  mdchdl.f asenap.f  calyrg.f  chveno.f
+   dismrs.f  gver2d.f  irdepl.f  lcpllg.f  mditm1.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010093 DU 2006-10-02 16:53:02
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   Le basculement UTMESS -> U2MESS n'a pas ete fait completement.
+FONCTIONNALITE
+   L'objectif de la la fiche est de terminer le basculement des :
+   
+   a) UTMESS vers U2MESK pour les messages contenant des variables. La majorite
+   des routines ont ete modifiees a l'aide  d'un script.
+   
+   Exemple :
+   
+   AVANT
+   CALL UTMESS('I','VISCOCHABOCHE','ERREUR D INTEGRATION'//
+   &          '- ESSAI D INTEGRATION  NUMERO '//CINTG//
+   &          '- CONVERGENCE VERS  UNE SOLUTION NON CONFORME '//
+   &          '- INCREMENT DE DEFORMATION CUMULEE NEGATIVE = -'//CDP//
+   &          '- REDECOUPAGE DU PAS DE TEMPS')
+   C        CALL U2MESK('I','ALGORITH2_55', 2 ,VALK)
+   
+   APRES
+   VALK(1) = CINTG
+   VALK(2) = CDP
+   CALL U2MESK('I','ALGORITH2_55', 2 ,VALK)
+   
+   
+   b) UTMESS vers U2MESS pour les messages ne contenant pas de variables
+   Les messages contenus dans ces UTMESS ont ete transferes dans les fichiers
+   messages python.
+   Ce menage n'etait pas prevu initialement ... mais certains programmeurs peu
+   scrupuleux
+   ont continuer a introduire de nouveaux UTMESS ces dernieres semaines.
+   
+   Remarques pour Francis :
+   ------------------------
+   1) les message CRS_xxx ne sont a prendre en compte que si ils sont precedes du message
+   "Compilation refusee ..."
+   2) Si tu ne peux pas tout restituer lundi (pb Agla non resolu par JPL), soit tu
+   distribues
+   autour de toi (je peux en prendre un paquet) soit on attend une semaine. Je ne reemets
+   pas
+   de fiche pour ca.
+   3) A cause d'un bug de l'agla egalement, il ne faut pas retirer le UTMESS de la routine
+   ASSERT.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010221 DU 2006-11-06 12:52:43
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   MACR_ECLA_PG pour tous les champs ELGA
+FONCTIONNALITE
+   Objectif
+   --------
+   - Analyser l'etendue de ECLA_PG aux cham_elga.
+   - Lever, si possible, la restriction faite sur les types des cham_elga.
+   
+   Auparavant, les commandes CREA_RESU(ECLA_PG) CREA_MAILLAGE(ECLA_PG) et la
+   macro-commande MACR_ECLA_PG restreignaient l'etendue des champs elga a 4 types de champs:
+   'SIEF_ELGA','VARI_ELGA','SIEF_ELGA_DEPL','FLUX_ELGA_TEMP'.
+   
+   Apres analyse du source fortran appele par ces commandes, on a pu constater que la prise
+   en compte des autres types de
+   champs elga n'etait pas proscrite. Hormis le filtrage au niveau des catalogues de
+   commandes, rien n'interdisait le traitement d'autres champ elga.
+   
+   Developpement
+   -------------
+   La realisation a donc consiste a :
+   - lever la restriction au niveau des catalogues de commandes crea_maillage.capy,
+   macr_ecla_pg.capy, crea_resu.capy.
+   - introduire une verification dans les fortrans eclpgr.f et eclpgm.f sur le type de champ
+   : ELGA
+   
+   Ainsi les 30 champs suivants peuvent etre consideres par ECLA_PG:
+   ALPHO_ELGA_EPSP, ALPHP_ELGA_ALPHO, DCHA_ELGA_SIGM, DURT_ELGA_META,
+   ENDO_ELGA, ENEL_ELGA, EPVC_ELGA, EPFD_ELGA, EPFP_ELGA, EPME_ELGA_DEPL,
+   EPMG_ELGA_DEPL, EPSG_ELGA_DEPL, EPSI_ELGA_DEPL, EPSP_ELGA, EQUI_ELGA_EPME,
+   EQUI_ELGA_EPSI, EQUI_ELGA_SIGM, ETOT_ELGA, EXTR_ELGA_VARI, FLUX_ELGA_TEMP,
+   LANL_ELGA, META_ELGA_TEMP, PMPB_ELGA_SIEF, RADI_ELGA_SIGM, SIEF_ELGA,
+   SIEF_ELGA_DEPL, SOUR_ELGA_ELEC, VARI_ELGA, VARI_ELGA_ZAC.
+   
+   Remarque: les seules restrictions (verifiees par Aster) sont:
+   - la limitation aux champs reels
+   - les sous-points contenus dans les champs ne sont pas pris en compte
+   
+   Validation
+   ---------
+   - restitution du cas-test szlz105a dans lequel nous avons introduit MACR_ELGA_PG pour
+   valider EQUI_ELGA_SIGM sur le maillage eclate.
+   - passage de l'etude fournie a la fiche AL 10222 (ECLA_PG avec SIEF_ELGA_DEPL): la aussi,
+   on a post-traite le champ EQUI_ELGA_SIGM sur le maillage eclate.
+   
+   Documentation
+   -------------
+   modification de la doc U4.44.14 (macr_ecla_pg)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.14
+VALIDATION
+   szlz105a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010060 DU 2006-09-21 11:46:23
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   AFFE_CHAR_MECA sur maille de bord avec plus d'une maille support
+FONCTIONNALITE
+   Objectif
+   --------
+   Le but est d'assouplir MODI_MAILLAGE/ORIE_PEAU_xxxx pour traiter le cas des mailles
+   volumiques dupliquees.
+   
+   L'evolution a consiste a appliquer la convention suivante:
+   - si plusieurs mailles support bordent la meme maille de peau mais qu'elles sont du meme
+   cote : ok, la maille de peau est donc oriente de sorte que la normale soit sortante par
+   rapport aux mailles support.
+   - si plusieurs mailles support bordent la meme maille de peau mais qu'elles sont de part
+   et d'autre de la maille de peau, alors une erreur fatale est emise car on ne peut pas
+   orienter logiquement la maille de peau.
+   
+   Impact
+   ------
+   oriem0.f, utmasu.f
+   
+   A faire en version d'exploitation (NEW8) :
+   ------------------------------------------
+   Il faut supprimer l'alarme "La maille de peau s'appuie sur plus d'une maille support" de
+   la routine utmasu.f (L124). Car cette alarme n'est en principe declanchee que lorsque
+   les
+   mailles multiples ont la meme connectivite. Il n'y a donc pas de probleme
+   d'orientation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE J.P.          DATE 13/12/2006 - 08:17:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010373 DU 2006-12-11 06:43:01
+TYPE express concernant agla (VERSION *)
+TITRE
+   Probleme avec csh sur Bull : Word too long
+FONCTIONNALITE
+   On change la syntaxe du script segldr_aster.exesh pour passer du C-shell au Korn-shell. Ce
+   qui permet de contourner la limitation a 10240 caracteres pour les listes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   recompilation et link de bibfor/algorith (1582 routines)
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF adls102a                       pellet J.PELLET           200      2      2
+ CASTEST MODIF ascou01a                       pellet J.PELLET           328      2      2
+ CASTEST MODIF mac3c01a                       pellet J.PELLET           425      4      4
+ CASTEST MODIF mumps01a                       pellet J.PELLET            84      3      3
+ CASTEST MODIF mumps02a                       pellet J.PELLET            52      2      2
+ CASTEST MODIF mumps04a                       pellet J.PELLET           187      3      3
+ CASTEST MODIF sslv311a                       pellet J.PELLET           419      2      2
+ CASTEST MODIF ssnv173a                       pellet J.PELLET           344      2      3
+ CASTEST MODIF ssnv173b                       pellet J.PELLET           642      2      3
+ CASTEST MODIF ssnv173c                       pellet J.PELLET           172      3      4
+ CASTEST MODIF ssnv182a                       pellet J.PELLET           244      2      3
+ CASTEST MODIF ssnv182d                       pellet J.PELLET           205      3      4
+ CASTEST MODIF ssnv182e                       pellet J.PELLET           184      2      2
+ CASTEST MODIF ssnv182f                       pellet J.PELLET           201      2      2
+ CASTEST MODIF ssnv185b                       pellet J.PELLET           274      2      2
+ CASTEST MODIF ssnv185c                       pellet J.PELLET           346      2      2
+ CASTEST MODIF ssnv185d                       pellet J.PELLET           271      2      2
+ CASTEST MODIF ssnv185e                       pellet J.PELLET           221      2      2
+ CASTEST MODIF ssnv185f                       pellet J.PELLET           204      2      3
+ CASTEST MODIF ssnv185g                       pellet J.PELLET           291      2      2
+ CASTEST MODIF ssnv185h                       pellet J.PELLET           381      2      2
+ CASTEST MODIF ssnv185i                       pellet J.PELLET           274      3      3
+ CASTEST MODIF ssnv185j                       pellet J.PELLET           250      3      3
+ CASTEST MODIF ssnv186a                       pellet J.PELLET           169      2      2
+ CASTEST MODIF ssnv186b                       pellet J.PELLET           195      2      2
+ CASTEST MODIF ssnv186c                       pellet J.PELLET           181      2      2
+ CASTEST MODIF ssnv186d                       pellet J.PELLET           168      3      3
+ CASTEST MODIF ssnv186f                       pellet J.PELLET           172      2      2
+ CASTEST MODIF ssnv186g                       pellet J.PELLET           180      2      2
+ CASTEST MODIF ssnv186h                       pellet J.PELLET           181      2      2
+ CASTEST MODIF ssnv191a                       pellet J.PELLET           475      4      6
+ CASTEST MODIF ssnv191b                       pellet J.PELLET           491      4      6
+ CASTEST MODIF ssnv192a                       pellet J.PELLET           414      2      2
+ CASTEST MODIF szlz105a                       pellet J.PELLET           320     22      1
+CATALOPY MODIF commande/crea_maillage         pellet J.PELLET           155      2      3
+CATALOPY MODIF commande/crea_resu             pellet J.PELLET           133      2      3
+CATALOPY MODIF commande/dyna_line_tran        pellet J.PELLET           158      3      2
+CATALOPY MODIF commande/dyna_non_line         pellet J.PELLET           414      5      3
+CATALOPY MODIF commande/macr_ecla_pg          pellet J.PELLET            61      2      3
+CATALOPY MODIF commande/meca_statique         pellet J.PELLET           102      3      2
+CATALOPY MODIF commande/nume_ddl              pellet J.PELLET            45      2      1
+CATALOPY MODIF commande/stat_non_line         pellet J.PELLET           384      5      3
+CATALOPY MODIF commande/ther_lineaire         pellet J.PELLET            96      3      2
+CATALOPY MODIF commande/ther_non_line         pellet J.PELLET           119      3      2
+FORTRAN90 AJOUT recursive/verija               pellet J.PELLET           103    103      0
+FORTRAN90 AJOUT recursive/verijb               pellet J.PELLET           155    155      0
+FORTRAN90 MODIF mumps/amumpc                   pellet J.PELLET           530     56     42
+FORTRAN90 MODIF mumps/amumpr                   pellet J.PELLET           531     55     44
+FORTRAN90 MODIF mumps/amumps                   pellet J.PELLET           278      4      6
+ FORTRAN AJOUT calculel/cescar                pellet J.PELLET           132    132      0
+ FORTRAN MODIF algeline/chveri                pellet J.PELLET           218     14     21
+ FORTRAN MODIF algeline/cmcovo                pellet J.PELLET           606      7      6
+ FORTRAN MODIF algeline/cmmoma                pellet J.PELLET           217      7      7
+ FORTRAN MODIF algeline/creso3                pellet J.PELLET           139     11      4
+ FORTRAN MODIF algeline/lcpllg                pellet J.PELLET           302     11     16
+ FORTRAN MODIF algeline/mefgec                pellet J.PELLET           125      5      4
+ FORTRAN MODIF algeline/mefgri                pellet J.PELLET            73      5      4
+ FORTRAN MODIF algeline/mtcopy                pellet J.PELLET           103      5      4
+ FORTRAN MODIF algeline/op0014                pellet J.PELLET           202      5      5
+ FORTRAN MODIF algeline/op0015                pellet J.PELLET           188      5      5
+ FORTRAN MODIF algeline/op0032                pellet J.PELLET           223      5      5
+ FORTRAN MODIF algeline/op0044                pellet J.PELLET           768      9      8
+ FORTRAN MODIF algeline/op0045                pellet J.PELLET          1058      9     11
+ FORTRAN MODIF algeline/resldl                pellet J.PELLET           133      1      4
+ FORTRAN MODIF algeline/tldlg3                pellet J.PELLET           387      2      3
+ FORTRAN MODIF algeline/vpbosc                pellet J.PELLET           260      2      2
+ FORTRAN MODIF algeline/vpbost                pellet J.PELLET           257      2      2
+ FORTRAN MODIF algeline/vpcntl                pellet J.PELLET           211      2      2
+ FORTRAN MODIF algeline/vpcrea                pellet J.PELLET           135     11     14
+ FORTRAN MODIF algeline/vpsor1                pellet J.PELLET           382      4      4
+ FORTRAN MODIF algeline/vpsorc                pellet J.PELLET           349      4      4
+ FORTRAN MODIF algeline/vpsorn                pellet J.PELLET           380      3      3
+ FORTRAN MODIF algeline/vtcop1                pellet J.PELLET           218     20     15
+ FORTRAN MODIF algeline/wpsorc                pellet J.PELLET           397      3      3
+ FORTRAN MODIF algeline/wpsorn                pellet J.PELLET           426      3      3
+ FORTRAN MODIF algorith/alitmi                pellet J.PELLET           492      2      2
+ FORTRAN MODIF algorith/asefen                pellet J.PELLET           219     11     10
+ FORTRAN MODIF algorith/asenap                pellet J.PELLET           250      5     10
+ FORTRAN MODIF algorith/asexc2                pellet J.PELLET           353      8      7
+ FORTRAN MODIF algorith/asmsup                pellet J.PELLET           226      8      7
+ FORTRAN MODIF algorith/assthm                pellet J.PELLET           439      5      7
+ FORTRAN MODIF algorith/asveri                pellet J.PELLET           300     14     17
+ FORTRAN MODIF algorith/betcvx                pellet J.PELLET           230      1     28
+ FORTRAN MODIF algorith/betinc                pellet J.PELLET           123      1     11
+ FORTRAN MODIF algorith/calcmd                pellet J.PELLET           403      2      2
+ FORTRAN MODIF algorith/calfmn                pellet J.PELLET            71      2      2
+ FORTRAN MODIF algorith/calnd2                pellet J.PELLET           171      2      2
+ FORTRAN MODIF algorith/calres                pellet J.PELLET           156      2      2
+ FORTRAN MODIF algorith/caltol                pellet J.PELLET            85      1      4
+ FORTRAN MODIF algorith/cfneg                 pellet J.PELLET           395      1      2
+ FORTRAN MODIF algorith/conini                pellet J.PELLET           291      5      4
+ FORTRAN MODIF algorith/cresol                pellet J.PELLET           379     10      5
+ FORTRAN MODIF algorith/cvmcvg                pellet J.PELLET           315     14     23
+ FORTRAN MODIF algorith/d2geom                pellet J.PELLET           189      1      2
+ FORTRAN MODIF algorith/defttr                pellet J.PELLET           100      2      2
+ FORTRAN MODIF algorith/estitr                pellet J.PELLET            91      2      2
+ FORTRAN MODIF algorith/estivd                pellet J.PELLET            83      1      5
+ FORTRAN MODIF algorith/ftest2                pellet J.PELLET            99      2      2
+ FORTRAN MODIF algorith/gfguid                pellet J.PELLET           242      1      8
+ FORTRAN MODIF algorith/hbrcvx                pellet J.PELLET           111      6      4
+ FORTRAN MODIF algorith/inscvg                pellet J.PELLET           297     14     23
+ FORTRAN MODIF algorith/irrcvx                pellet J.PELLET            84      4      3
+ FORTRAN MODIF algorith/lchbvp                pellet J.PELLET            75      6      4
+ FORTRAN MODIF algorith/lcplbe                pellet J.PELLET           892     34     53
+ FORTRAN MODIF algorith/lcrous                pellet J.PELLET           374      3      5
+ FORTRAN MODIF algorith/lcumef                pellet J.PELLET           148      1      7
+ FORTRAN MODIF algorith/lmacvg                pellet J.PELLET           317     14     23
+ FORTRAN MODIF algorith/mdchdl                pellet J.PELLET           106      8      7
+ FORTRAN MODIF algorith/mditm1                pellet J.PELLET           397      6      7
+ FORTRAN MODIF algorith/mditm2                pellet J.PELLET           509      2      2
+ FORTRAN MODIF algorith/mditmi                pellet J.PELLET           376     16     26
+ FORTRAN MODIF algorith/mdtr74                pellet J.PELLET           730      1      4
+ FORTRAN MODIF algorith/mmerro                pellet J.PELLET           151     14     21
+ FORTRAN MODIF algorith/nddoet                pellet J.PELLET           484      5      4
+ FORTRAN MODIF algorith/newton                pellet J.PELLET           623     16     21
+ FORTRAN MODIF algorith/nmcpla                pellet J.PELLET           446      1      6
+ FORTRAN MODIF algorith/nmdete                pellet J.PELLET           248      5      7
+ FORTRAN MODIF algorith/nmdoet                pellet J.PELLET           412      5      4
+ FORTRAN MODIF algorith/nmelnl                pellet J.PELLET           445      1      2
+ FORTRAN MODIF algorith/nmelru                pellet J.PELLET           214      1      2
+ FORTRAN MODIF algorith/nmimpm                pellet J.PELLET           531      2      3
+ FORTRAN MODIF algorith/nmthmc                pellet J.PELLET           460     14     17
+ FORTRAN MODIF algorith/nmveei                pellet J.PELLET           411      1      4
+ FORTRAN MODIF algorith/ntdoed                pellet J.PELLET           130      2      2
+ FORTRAN MODIF algorith/ntinit                pellet J.PELLET           248      5      4
+ FORTRAN MODIF algorith/ntoptc                pellet J.PELLET           140      5      4
+ FORTRAN MODIF algorith/nxacmv                pellet J.PELLET           576      2      2
+ FORTRAN MODIF algorith/op0048                pellet J.PELLET           391      1      5
+ FORTRAN MODIF algorith/op0166                pellet J.PELLET           259      5      5
+ FORTRAN MODIF algorith/op0191                pellet J.PELLET           182      5      5
+ FORTRAN MODIF algorith/parmtr                pellet J.PELLET            77      1      4
+ FORTRAN MODIF algorith/pipeds                pellet J.PELLET           488      1      4
+ FORTRAN MODIF algorith/posvar                pellet J.PELLET           319      5      4
+ FORTRAN MODIF algorith/prlgma                pellet J.PELLET           138      2      2
+ FORTRAN MODIF algorith/projmd                pellet J.PELLET            75      2      2
+ FORTRAN MODIF algorith/rbph01                pellet J.PELLET           217      8      7
+ FORTRAN MODIF algorith/speph0                pellet J.PELLET           376     10      9
+ FORTRAN MODIF algorith/transi                pellet J.PELLET           157      2      2
+ FORTRAN MODIF algorith/tstjac                pellet J.PELLET            84      1      5
+ FORTRAN MODIF algorith/tstpar                pellet J.PELLET            93      1      4
+ FORTRAN MODIF algorith/vechth                pellet J.PELLET           706      2      2
+ FORTRAN MODIF algorith/vetnth                pellet J.PELLET           389      2      2
+ FORTRAN MODIF algorith/xprls0                pellet J.PELLET           487      7      6
+ FORTRAN MODIF algorith/xstan2                pellet J.PELLET           244      5      9
+ FORTRAN MODIF assembla/nudeeq                pellet J.PELLET           207      5      5
+ FORTRAN MODIF calculel/alchml                pellet J.PELLET           349     11     11
+ FORTRAN MODIF calculel/assach                pellet J.PELLET           243     16     21
+ FORTRAN MODIF calculel/caundf                pellet J.PELLET           215      6      5
+ FORTRAN MODIF calculel/cescel                pellet J.PELLET           519     25     27
+ FORTRAN MODIF calculel/cescre                pellet J.PELLET           279      7      6
+ FORTRAN MODIF calculel/cesexi                pellet J.PELLET           133     14     13
+ FORTRAN MODIF calculel/chligr                pellet J.PELLET           156      6      5
+ FORTRAN MODIF calculel/chnucn                pellet J.PELLET           269      7      4
+ FORTRAN MODIF calculel/chsut1                pellet J.PELLET           144      5      5
+ FORTRAN MODIF calculel/chtpcn                pellet J.PELLET           208      5     12
+ FORTRAN MODIF calculel/cnscno                pellet J.PELLET           285     13     11
+ FORTRAN MODIF calculel/cnsprm                pellet J.PELLET           335      8      6
+ FORTRAN MODIF calculel/crcnct                pellet J.PELLET           137      7      5
+ FORTRAN MODIF calculel/debcal                pellet J.PELLET           395     13     12
+ FORTRAN MODIF calculel/eclpgm                pellet J.PELLET           393      7      6
+ FORTRAN MODIF calculel/eclpgr                pellet J.PELLET           351     11     10
+ FORTRAN MODIF calculel/entcod                pellet J.PELLET            91     14     13
+ FORTRAN MODIF calculel/jevech                pellet J.PELLET           164     17     21
+ FORTRAN MODIF calculel/me2mme                pellet J.PELLET           735      2      1
+ FORTRAN MODIF calculel/meama2                pellet J.PELLET           130      1      8
+ FORTRAN MODIF calculel/mearcc                pellet J.PELLET           175      6      6
+ FORTRAN MODIF calculel/mecalg                pellet J.PELLET           479      2      2
+ FORTRAN MODIF calculel/mecalm                pellet J.PELLET          2785     39     51
+ FORTRAN MODIF calculel/mechc2                pellet J.PELLET           126      2      3
+ FORTRAN MODIF calculel/nopar2                pellet J.PELLET           149     14     12
+ FORTRAN MODIF calculel/op0100                pellet J.PELLET           993      5      5
+ FORTRAN MODIF calculel/pjfuco                pellet J.PELLET           156      7      5
+ FORTRAN MODIF calculel/rcvarc                pellet J.PELLET           207      5      4
+ FORTRAN MODIF calculel/resth2                pellet J.PELLET           252      2      2
+ FORTRAN MODIF calculel/resthe                pellet J.PELLET           263      2      2
+ FORTRAN MODIF calculel/sepach                pellet J.PELLET           189     22     26
+ FORTRAN MODIF calculel/teattr                pellet J.PELLET           128      7      4
+ FORTRAN MODIF calculel/tecach                pellet J.PELLET           328     21     25
+ FORTRAN MODIF calculel/thaclm                pellet J.PELLET           870      5      5
+ FORTRAN MODIF calculel/utest0                pellet J.PELLET           189      5      5
+ FORTRAN MODIF calculel/utest1                pellet J.PELLET           195      6      5
+ FORTRAN MODIF calculel/utest4                pellet J.PELLET           331     10      9
+ FORTRAN MODIF calculel/uthk                  pellet J.PELLET           357      1      2
+ FORTRAN MODIF calculel/utnbnv                pellet J.PELLET           109      1      3
+ FORTRAN MODIF calculel/utnono                pellet J.PELLET           115      8      7
+ FORTRAN MODIF calculel/utnorm                pellet J.PELLET           172      1      2
+ FORTRAN MODIF calculel/utvois                pellet J.PELLET           269      1      2
+ FORTRAN MODIF calculel/verigd                pellet J.PELLET           126      8      7
+ FORTRAN MODIF calculel/vrcin1                pellet J.PELLET           264      8      6
+ FORTRAN MODIF calculel/vrcomp                pellet J.PELLET           247      6      4
+ FORTRAN MODIF calculel/zzglo1                pellet J.PELLET           214      2      2
+ FORTRAN MODIF cataelem/caver1                pellet J.PELLET           266     38     44
+ FORTRAN MODIF elements/crgdm                 pellet J.PELLET           130      2      3
+ FORTRAN MODIF elements/digouj                pellet J.PELLET           195      5      4
+ FORTRAN MODIF elements/erhmb2                pellet J.PELLET           430      1      2
+ FORTRAN MODIF elements/fetcrf                pellet J.PELLET          1521      9     11
+ FORTRAN MODIF elements/gldloc                pellet J.PELLET           176      2      3
+ FORTRAN MODIF elements/gnormf                pellet J.PELLET           467      1      2
+ FORTRAN MODIF elements/gver2d                pellet J.PELLET           208      8      7
+ FORTRAN MODIF elements/gveri1                pellet J.PELLET           471      6      4
+ FORTRAN MODIF elements/gverif                pellet J.PELLET           886      6      4
+ FORTRAN MODIF elements/gverig                pellet J.PELLET           313      8      7
+ FORTRAN MODIF elements/te0003                pellet J.PELLET           936      2      4
+ FORTRAN MODIF elements/te0044                pellet J.PELLET           211      5      5
+ FORTRAN MODIF elements/te0096                pellet J.PELLET          1191      1      2
+ FORTRAN MODIF elements/te0118                pellet J.PELLET           406      8      6
+ FORTRAN MODIF elements/te0204                pellet J.PELLET           756      1      2
+ FORTRAN MODIF elements/te0249                pellet J.PELLET           167      2      2
+ FORTRAN MODIF elements/te0250                pellet J.PELLET           185      2      2
+ FORTRAN MODIF elements/te0313                pellet J.PELLET           186      2      3
+ FORTRAN MODIF elements/te0401                pellet J.PELLET           218      1      4
+ FORTRAN MODIF elements/te0406                pellet J.PELLET           413      1      4
+ FORTRAN MODIF elements/te0411                pellet J.PELLET           179      7     11
+ FORTRAN MODIF elements/te0497                pellet J.PELLET           416      1      2
+ FORTRAN MODIF elements/te0538                pellet J.PELLET           143      5      4
+ FORTRAN MODIF elements/te0581                pellet J.PELLET           104      7      6
+ FORTRAN MODIF elements/zerofo                pellet J.PELLET           120      1      3
+ FORTRAN MODIF jeveux/jeinif                  pellet J.PELLET           615      7      6
+ FORTRAN MODIF jeveux/jelihd                  pellet J.PELLET           579      6      5
+ FORTRAN MODIF modelisa/aceat3                pellet J.PELLET           343      1      5
+ FORTRAN MODIF modelisa/acevba                pellet J.PELLET           205     28     33
+ FORTRAN MODIF modelisa/acevdi                pellet J.PELLET           198     12     11
+ FORTRAN MODIF modelisa/acevor                pellet J.PELLET           105      5      5
+ FORTRAN MODIF modelisa/affbar                pellet J.PELLET           247     32     46
+ FORTRAN MODIF modelisa/affdef                pellet J.PELLET           252     31     46
+ FORTRAN MODIF modelisa/affori                pellet J.PELLET           269     26     31
+ FORTRAN MODIF modelisa/affpou                pellet J.PELLET           150      8     11
+ FORTRAN MODIF modelisa/asmaco                pellet J.PELLET           553     17     14
+ FORTRAN MODIF modelisa/caarle                pellet J.PELLET           504      1      4
+ FORTRAN MODIF modelisa/caelca                pellet J.PELLET           390     23     32
+ FORTRAN MODIF modelisa/caliai                pellet J.PELLET           304      9      7
+ FORTRAN MODIF modelisa/caliob                pellet J.PELLET           297      9      7
+ FORTRAN MODIF modelisa/calirg                pellet J.PELLET           154     11     10
+ FORTRAN MODIF modelisa/calyrg                pellet J.PELLET           155     11     10
+ FORTRAN MODIF modelisa/canorm                pellet J.PELLET           180      2      7
+ FORTRAN MODIF modelisa/canort                pellet J.PELLET           632      8     13
+ FORTRAN MODIF modelisa/cazocc                pellet J.PELLET           329      2      3
+ FORTRAN MODIF modelisa/chprec                pellet J.PELLET           279     18     17
+ FORTRAN MODIF modelisa/chveno                pellet J.PELLET           435     14     28
+ FORTRAN MODIF modelisa/cocali                pellet J.PELLET           127      8      9
+ FORTRAN MODIF modelisa/conjac                pellet J.PELLET           158      2      2
+ FORTRAN MODIF modelisa/conors                pellet J.PELLET           170      2      2
+ FORTRAN MODIF modelisa/immeca                pellet J.PELLET           514      5      5
+ FORTRAN MODIF modelisa/leccoo                pellet J.PELLET           143      6      4
+ FORTRAN MODIF modelisa/lecgrp                pellet J.PELLET           149      5      3
+ FORTRAN MODIF modelisa/lecint                pellet J.PELLET            98      8      6
+ FORTRAN MODIF modelisa/lrmast                pellet J.PELLET           712     17     22
+ FORTRAN MODIF modelisa/lrmhdf                pellet J.PELLET           309      5      4
+ FORTRAN MODIF modelisa/lrmmf3                pellet J.PELLET           412      2      5
+ FORTRAN MODIF modelisa/op0006                pellet J.PELLET           283      8      8
+ FORTRAN MODIF modelisa/op0019                pellet J.PELLET           471      8      6
+ FORTRAN MODIF modelisa/op0146                pellet J.PELLET           384     13     13
+ FORTRAN MODIF modelisa/oriem0                pellet J.PELLET           143     89     18
+ FORTRAN MODIF modelisa/oriema                pellet J.PELLET           182      5      6
+ FORTRAN MODIF modelisa/orilma                pellet J.PELLET           181      5      6
+ FORTRAN MODIF modelisa/ornorm                pellet J.PELLET           216      5      6
+ FORTRAN MODIF modelisa/orvlma                pellet J.PELLET           256      5      6
+ FORTRAN MODIF modelisa/palim2                pellet J.PELLET           150      5      4
+ FORTRAN MODIF modelisa/palim3                pellet J.PELLET           147      5      4
+ FORTRAN MODIF modelisa/palima                pellet J.PELLET           189     22     15
+ FORTRAN MODIF modelisa/palino                pellet J.PELLET           160     17     11
+ FORTRAN MODIF modelisa/pamano                pellet J.PELLET           423     19     17
+ FORTRAN MODIF modelisa/patrma                pellet J.PELLET           231      7      4
+ FORTRAN MODIF modelisa/pmfd00                pellet J.PELLET           750      9      9
+ FORTRAN MODIF modelisa/rapo3d                pellet J.PELLET           757      8      8
+ FORTRAN MODIF modelisa/rapoco                pellet J.PELLET           785     11     13
+ FORTRAN MODIF modelisa/rctrac                pellet J.PELLET           470      5      4
+ FORTRAN MODIF modelisa/tfveri                pellet J.PELLET           361      1     12
+ FORTRAN MODIF modelisa/topoca                pellet J.PELLET           491     12     15
+ FORTRAN MODIF modelisa/vafcar                pellet J.PELLET           154     15     15
+ FORTRAN MODIF modelisa/verima                pellet J.PELLET           131     14     13
+ FORTRAN MODIF modelisa/veripl                pellet J.PELLET           124      5      7
+ FORTRAN MODIF modelisa/vermot                pellet J.PELLET            78      5      4
+ FORTRAN MODIF modelisa/vetyma                pellet J.PELLET           198     32     43
+ FORTRAN MODIF postrele/op0051                pellet J.PELLET           428      5      6
+ FORTRAN MODIF postrele/rc32sp                pellet J.PELLET           285      1      3
+ FORTRAN MODIF postrele/rvpara                pellet J.PELLET           627      9      8
+ FORTRAN MODIF prepost/ecrfre                 pellet J.PELLET           341      8      9
+ FORTRAN MODIF prepost/fgvdmg                 pellet J.PELLET           200      9      8
+ FORTRAN MODIF prepost/irch19                 pellet J.PELLET           176     11     14
+ FORTRAN MODIF prepost/irdeec                 pellet J.PELLET           735     49     69
+ FORTRAN MODIF prepost/irdeer                 pellet J.PELLET           637     42     58
+ FORTRAN MODIF prepost/irdepl                 pellet J.PELLET           411     21     28
+ FORTRAN MODIF prepost/irdrec                 pellet J.PELLET           594     34     47
+ FORTRAN MODIF prepost/irdrer                 pellet J.PELLET           501     27     36
+ FORTRAN MODIF prepost/irecri                 pellet J.PELLET           469      5      8
+ FORTRAN MODIF prepost/irmac2                 pellet J.PELLET            93      1      3
+ FORTRAN MODIF prepost/irmhdf                 pellet J.PELLET           297      5      4
+ FORTRAN MODIF prepost/irmmf2                 pellet J.PELLET           392      5      5
+ FORTRAN MODIF prepost/irtitr                 pellet J.PELLET           187      8     10
+ FORTRAN MODIF prepost/lrcame                 pellet J.PELLET           634      5      4
+ FORTRAN MODIF prepost/lrcmva                 pellet J.PELLET           282      5      4
+ FORTRAN MODIF prepost/lrcmve                 pellet J.PELLET           279      5      4
+ FORTRAN MODIF prepost/op0106                 pellet J.PELLET           809      5      8
+ FORTRAN MODIF prepost/op0114                 pellet J.PELLET           341      8      9
+ FORTRAN MODIF prepost/op0151                 pellet J.PELLET           370      9      7
+ FORTRAN MODIF prepost/op0176                 pellet J.PELLET           208      5      5
+ FORTRAN MODIF prepost/op0182                 pellet J.PELLET           395      3      3
+ FORTRAN MODIF prepost/op0187                 pellet J.PELLET           905      5      1
+ FORTRAN MODIF prepost/op0196                 pellet J.PELLET           566      4      4
+ FORTRAN MODIF prepost/utmasu                 pellet J.PELLET           157     15     19
+ FORTRAN MODIF soustruc/asmael                pellet J.PELLET           418      8      5
+ FORTRAN MODIF soustruc/ss2mme                pellet J.PELLET           158      8      7
+ FORTRAN MODIF soustruc/ssafmo                pellet J.PELLET           123      5      4
+ FORTRAN MODIF soustruc/sscgma                pellet J.PELLET           491      5      4
+ FORTRAN MODIF soustruc/sscgno                pellet J.PELLET           520      5      4
+ FORTRAN MODIF soustruc/ssdein                pellet J.PELLET           249      5      4
+ FORTRAN MODIF soustruc/ssdeu1                pellet J.PELLET           140     12      8
+ FORTRAN MODIF soustruc/ssdmdn                pellet J.PELLET           154      8     10
+ FORTRAN MODIF soustruc/ssdmgn                pellet J.PELLET           268      7      4
+ FORTRAN MODIF soustruc/ssdmrm                pellet J.PELLET           229     12     11
+ FORTRAN MODIF stbtrias/slegro                pellet J.PELLET           348      5      4
+ FORTRAN MODIF supervis/expass                pellet J.PELLET           123      6      5
+ FORTRAN MODIF supervis/gcecco                pellet J.PELLET           245      2      2
+ FORTRAN MODIF supervis/gcuopr                pellet J.PELLET           144      1      2
+ FORTRAN MODIF supervis/sigcpu                pellet J.PELLET            27      2      2
+ FORTRAN MODIF utilifor/ecri3e                pellet J.PELLET            38      1      5
+ FORTRAN MODIF utilifor/ecrr3e                pellet J.PELLET            39      1      5
+ FORTRAN MODIF utilifor/utexcp                pellet J.PELLET            35      1      2
+ FORTRAN MODIF utilitai/dismoi                pellet J.PELLET           137      2      2
+ FORTRAN MODIF utilitai/dismrs                pellet J.PELLET           144      5      4
+ FORTRAN MODIF utilitai/errlic                pellet J.PELLET            70      1      3
+ FORTRAN MODIF utilitai/exithm                pellet J.PELLET            74      1      2
+ FORTRAN MODIF utilitai/fetskp                pellet J.PELLET           492      1      9
+ FORTRAN MODIF utilitai/focrr0                pellet J.PELLET           201      8      8
+ FORTRAN MODIF utilitai/focrr2                pellet J.PELLET           409     11     12
+ FORTRAN MODIF utilitai/fointe                pellet J.PELLET           343      2      2
+ FORTRAN MODIF utilitai/juveca                pellet J.PELLET           179     40     36
+ FORTRAN MODIF utilitai/nurota                pellet J.PELLET           260      5      4
+ FORTRAN MODIF utilitai/op0003                pellet J.PELLET           260      9      9
+ FORTRAN MODIF utilitai/op0036                pellet J.PELLET           295      5      5
+ FORTRAN MODIF utilitai/op0150                pellet J.PELLET           894      5      4
+ FORTRAN MODIF utilitai/op0192                pellet J.PELLET           239      5      4
+ FORTRAN MODIF utilitai/op0195                pellet J.PELLET           245     15     11
+ FORTRAN MODIF utilitai/peair1                pellet J.PELLET           280      5      5
+ FORTRAN MODIF utilitai/pecapo                pellet J.PELLET           391      1      3
+ FORTRAN MODIF utilitai/peingl                pellet J.PELLET           698     20     25
+ FORTRAN MODIF utilitai/pronua                pellet J.PELLET           204     12     12
+ FORTRAN MODIF utilitai/pstypr                pellet J.PELLET           273      5      4
+ FORTRAN MODIF utilitai/pstyst                pellet J.PELLET           173      5      6
+ FORTRAN MODIF utilitai/rfhge2                pellet J.PELLET           190      5      4
+ FORTRAN MODIF utilitai/rfrcha                pellet J.PELLET           181      5      4
+ FORTRAN MODIF utilitai/rfresu                pellet J.PELLET           175      5      5
+ FORTRAN MODIF utilitai/rfrgen                pellet J.PELLET           296      5      4
+ FORTRAN MODIF utilitai/rschor                pellet J.PELLET           133      5      6
+ FORTRAN MODIF utilitai/rsexc1                pellet J.PELLET            65      5      4
+ FORTRAN MODIF utilitai/rsnoch                pellet J.PELLET           119      7     10
+ FORTRAN MODIF utilitai/semeco                pellet J.PELLET           458      5      4
+ FORTRAN MODIF utilitai/tellme                pellet J.PELLET           127      5      6
+ FORTRAN MODIF utilitai/titreb                pellet J.PELLET           484      4      7
+ FORTRAN MODIF utilitai/ulopen                pellet J.PELLET           225     20     25
+ FORTRAN MODIF utilitai/ulposi                pellet J.PELLET            95      8      7
+ FORTRAN MODIF utilitai/utchdl                pellet J.PELLET           310     19     19
+ FORTRAN MODIF utilitai/utidea                pellet J.PELLET            75      1      7
+ FORTRAN MODIF utilitai/utmfpe                pellet J.PELLET            27      2      2
+ FORTRAN MODIF utilitai/utncmp                pellet J.PELLET           138      5      4
+ FORTRAN MODIF utilitai/verij1                pellet J.PELLET          2325    164    118
+ FORTRAN MODIF utilitai/verij3                pellet J.PELLET           203      2      2
+ FORTRAN MODIF utilitai/verij5                pellet J.PELLET           435     29     29
+ FORTRAN MODIF utilitai/verij6                pellet J.PELLET          1433    622    599
+ FORTRAN MODIF utilitai/veris3                pellet J.PELLET           202      3      3
+ FORTRAN MODIF utilitai/verisd                pellet J.PELLET            40      2      2
+ FORTRAN MODIF utilitai/vsdrst                pellet J.PELLET            66      2      2
+ FORTRAN SUPPR utilitai/verij2                pellet J.PELLET           103      0    103
+ FORTRAN SUPPR utilitai/verij7                pellet J.PELLET           155      0    155
+  PYTHON AJOUT Messages/algeline4             pellet J.PELLET            30     30      0
+  PYTHON MODIF Messages/algorith11            pellet J.PELLET           349      7      1
+  PYTHON MODIF Messages/calculel5             pellet J.PELLET           252     14      1
+  PYTHON MODIF Messages/elements4             pellet J.PELLET           307     33      1
+  PYTHON MODIF Messages/factor                pellet J.PELLET           208     99      2
+  PYTHON MODIF Messages/from_c                pellet J.PELLET            37      6      1
+  PYTHON MODIF Messages/jeveux                pellet J.PELLET           167      7      1
+  PYTHON MODIF Messages/modelisa7             pellet J.PELLET           417     11      1
+  PYTHON MODIF Messages/prepost4              pellet J.PELLET           425     12      1
+  PYTHON MODIF Messages/utilitai5             pellet J.PELLET           287      9      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4         420       420              +420
+ MODIF :  369      115609      3651    3648        +3
+ SUPPR :    2         258               258      -258
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  375      116287      4071    3906      +165 

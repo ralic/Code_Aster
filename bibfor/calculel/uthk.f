@@ -1,7 +1,7 @@
       SUBROUTINE UTHK(NOMTE,IGEOM,HK,NDIM,NOE,NSOMM,ITYP,INO,NIV,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,6 @@ C IN NIV/IFM : PARAMETRES D'IMPRESSION
 C OUT HK    : DIAMETRE DE L'ELEMENT K
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       MSG: UTMESS.
 C       ENVIMA: R8MIEM.
 C       RESOLUTION SYSTEME PAR GAUSS: MGAUSS.
 C

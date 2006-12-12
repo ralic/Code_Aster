@@ -1,7 +1,7 @@
       SUBROUTINE ZZGLO1 (CHAMP,OPTION,INST,NIVEAU,IORDR,RESUCO)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C IN  IORDR    :  NUMERO D'ORDRE
 C IN  RESUCO   :  SD RESULTAT.
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       MESSAGE:UTMESS,INFNIV.
+C       MESSAGE:INFNIV.
 C       JEVEUX:JEMARQ,JELIRA,JEVEUO,JEDEMA.
 C       ASTER:IUNIFI,CELVER.
 C       ENVIMA:R8MIEM.

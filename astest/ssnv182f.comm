@@ -1,22 +1,22 @@
 
-# MODIF  DATE 12/06/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTENT AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV182F',
@@ -33,30 +33,30 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=_F(NOM='SURFQUAD',
                                      GROUP_MA='SURF',),);
-             
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN_X',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN',),),);       
+                              MODELISATION='D_PLAN',),),);
 
 
 THETA=-30./180.*pi
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='(Y-10)*cos(THETA)-sin(THETA)*(X-10)');
-LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X*cos(THETA)-Y*sin(THETA)-100');                 
+LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X*cos(THETA)-Y*sin(THETA)-100');
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(
                                  FONC_LT=LT,
-                                 FONC_LN=LN,               
+                                 FONC_LN=LN,
                                  ),
                     GROUP_MA_ENRI='SURF',
                     CONTACT=_F(INTEGRATION='GAUSS',
-                               COEF_REGU_CONT=100., 
-                               ITER_CONT_MAXI=4,   
+                               COEF_REGU_CONT=100.,
+                               ITER_CONT_MAXI=4,
                                CONTACT_INIT='OUI',
                                ALGO_LAGR='NON',
                                COEF_ECHELLE=1.,
@@ -90,9 +90,9 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                                           DY=0.0,),
                                        _F(GROUP_MA='LIG3',
                                           DX=0.0,
-                                          DY=-1.E-6,),),     
+                                          DY=-1.E-6,),),
                     INFO=1,);
-          
+
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                                 INFO=1,);
@@ -102,9 +102,9 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMAT,              
-                   EXCIT=(_F(CHARGE=CHXFEM,),                                           
-                          _F(CHARGE=CH1,),),  
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CHXFEM,),
+                          _F(CHARGE=CH1,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='SURF',),
                    INCREMENT=_F(LIST_INST=L_INST,
@@ -112,7 +112,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CONVERGENCE=(_F(ARRET='OUI',
                                   RESI_GLOB_RELA=1E-9)),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,),
+                              ),
                    NEWTON=_F(REAC_ITER=10,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
@@ -171,7 +171,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=1.E-4,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
@@ -179,7 +179,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LAREF,
            CRITERE='RELATIF',
            PRECISION=1.E-4,
-           REFERENCE='ANALYTIQUE',);      
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -187,7 +187,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-4,
-           REFERENCE='ANALYTIQUE',);     
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
@@ -195,7 +195,7 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=1.E-4,
-           REFERENCE='ANALYTIQUE',);      
+           REFERENCE='ANALYTIQUE',);
 
-FIN();                  
+FIN();
 

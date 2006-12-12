@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -121,9 +122,11 @@ C         ---------------------------------------------------
 
 C         VERIFICATION DU TYPE DE CELMOD : ELGA/ELNO/ELEM :
           CALL JEVEUO(CELMOD//'.CELK','L',IB)
-          IF (ZK24(IB-1+3).NE.TYCHR) CALL UTMESS('F','OP0195',
-     &    'OPTION= '//OPTIO2//' INCOMPATIBLE AVEC TYPE_CHAM= '//TYCHR)
-C        CALL U2MESK('F','UTILITAI3_24', 2 ,VALK)
+          IF (ZK24(IB-1+3).NE.TYCHR) THEN
+             VALK(1) = OPTIO2
+             VALK(2) = TYCHR
+             CALL U2MESK('F','UTILITAI3_24', 2 ,VALK)
+          ENDIF
         END IF
       END IF
 
@@ -139,9 +142,9 @@ C     -----------------------------------------
           IF (NOMGD.NE.'GEOM_R') CALL U2MESK('F','UTILITAI3_25',1,OPERA)
           CALL CNONOR ( MO, NOMGD, 'G', CHOU )
         ELSE
-          CALL UTMESS('F','OP0195','OPERATION= '//OPERA//
-     &                ' INCOMPATIBLE AVEC TYPE_CHAM= '//TYCHR)
-C        CALL U2MESK('F','UTILITAI3_26', 2 ,VALK)
+           VALK(1) = OPERA
+           VALK(2) = TYCHR
+           CALL U2MESK('F','UTILITAI3_26', 2 ,VALK)
         END IF
 
 
@@ -184,10 +187,11 @@ C     -----------------------------------------
 C     -----------------------------------------
         CALL GETVID(' ','CHAM_GD',0,1,1,CHIN,IB)
         CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD2,IB)
-        IF (NOMGD.NE.NOMGD2) CALL UTMESS('F','OP0195',
-     &                            'GRANDEURS DIFFERENTES POUR :'//CHIN//
-     &                            'ET :'//TYCHR1)
-C        CALL U2MESK('F','UTILITAI3_27', 2 ,VALK)
+        IF (NOMGD.NE.NOMGD2) THEN
+           VALK(1) = CHIN
+           VALK(2) = TYCHR1
+           CALL U2MESK('F','UTILITAI3_27', 2 ,VALK)
+        ENDIF
         CALL CHPCHD(CHIN,TYCHR,CELMOD,PROL0,'G',CHOU)
 
 

@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,13 +63,12 @@ C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'TELLME' )
 C
       INTEGER JVALE, IBID, IAUX, LONG, LTYP
 C
       CHARACTER*19 NOMFON, NOMCAR
       CHARACTER*24 REPK, K24BID
+      CHARACTER*24 VALK(2)
       CHARACTER*8  K8B, TYPE
 C
 C     ------------------------------------------------------------------
@@ -109,9 +108,9 @@ C
   111      CONTINUE
          ELSE
            CODRET = 1
-           CALL UTMESS ( CODMES, NOMPRO,
-     &           'LE TABLEAU'//NOMCAR//'.VALE" EST DE TYPE '//TYPE)
-C        CALL U2MESK(CODMES,'UTILITAI4_88', 2 ,VALK)
+            VALK(1) = NOMCAR
+            VALK(2) = TYPE
+            CALL U2MESK(CODMES,'UTILITAI4_88', 2 ,VALK)
          ENDIF
 C
 C 1.N. ==> QUESTION INCONNUE

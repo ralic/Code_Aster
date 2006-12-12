@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(3)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 
@@ -89,10 +90,9 @@ C     -- RECHERCHE DE LA CHAINE NOMPAR AVEC MEMOIRE SUR TOUT 'CALCUL'
 
 
       IF (IPARG.EQ.0) THEN
-        CALL UTMESS('E','JEVECH','LE PARAMETRE:'//NOMPAR//
-     &              ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
-     &              OPTION)
-C        CALL U2MESK('E','CALCULEL2_69', 2 ,VALK)
+         VALK(1) = NOMPAR
+         VALK(2) = OPTION
+         CALL U2MESK('E','CALCULEL2_69', 2 ,VALK)
         CALL CONTEX(OPTION,0,' ',' ',0)
       END IF
 
@@ -101,21 +101,19 @@ C        CALL U2MESK('E','CALCULEL2_69', 2 ,VALK)
       LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
 
       IF (LGCATA.EQ.-1) THEN
-        CALL UTMESS('E','JEVECH','LE PARAMETRE:'//NOMPAR//
-     &              ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
-     &              OPTION//' POUR '//'LE TYPE_ELEMENT: '//NOMTE)
-C        CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
+         VALK(1) = NOMPAR
+         VALK(2) = OPTION
+         VALK(3) = NOMTE
+         CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
         CALL CONTEX(OPTION,0,NOMPAR,' ',0)
       END IF
 
 
       IF (IACHLO.EQ.-1) THEN
-        CALL UTMESS('E','JEVECH','ERREUR :'//
-     &              'ON NE TROUVE PAS DANS LES ARGUMENTS DE LA ROUTINE'
-     &              //' CALCUL DE CHAMP A ASSOCIER AU PARAMETRE:'//
-     &              NOMPAR//' (OPTION:'//OPTION//' TYPE_ELEMENT:'//
-     &              NOMTE//')')
-C        CALL U2MESK('E','CALCULEL2_71', 3 ,VALK)
+         VALK(1) = NOMPAR
+         VALK(2) = OPTION
+         VALK(3) = NOMTE
+         CALL U2MESK('E','CALCULEL2_71', 3 ,VALK)
         CALL CONTEX(OPTION,0,NOMPAR,' ',0)
 
       END IF
@@ -150,12 +148,10 @@ C     ----------------------------------------------------------
      &        (ZL(ILCHLO+DECAEL-1+KK),KK=1,LONCHL)
 
 
-            CALL UTMESS('E','JEVECH','ERREUR :'//
-     &                'ON N''A PAS PU EXTRAIRE TOUTES LES CMPS VOULUES '
-     &                  //'DU CHAMP ASSOCIE AU PARAMETRE:'//NOMPAR//
-     &                  ' (OPTION:'//OPTION//' TYPE_ELEMENT:'//NOMTE//
-     &                  ')')
-C        CALL U2MESK('E','CALCULEL2_73', 3 ,VALK)
+             VALK(1) = NOMPAR
+             VALK(2) = OPTION
+             VALK(3) = NOMTE
+             CALL U2MESK('E','CALCULEL2_73', 3 ,VALK)
 
             CALL TECAEL(IADZI,IAZK24)
             WRITE (6,*) 'MAILLE: ',ZK24(IAZK24-1+3)

@@ -8,7 +8,7 @@
       COMPLEX*16           REFC(NBREF)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       REAL*8        VALR
       COMPLEX*16    VALC
       CHARACTER*1   TYPREZ
+      CHARACTER*24 VALK(3)
       CHARACTER*4   TYPE
       CHARACTER*5   SUFV
       CHARACTER*19  CHAM19
@@ -90,10 +91,10 @@ C     =========================
       CALL JELIRA ( CHAM19//SUFV ,'TYPE', IBID, TYPE )
       IF ( TYPE(1:1) .NE. TYPREZ ) THEN
          WRITE(IFIC,*) 'NOOK '
-         CALL UTMESS('A','UTEST1','LE CHAMP '//CHAM19//' EST A VALEURS '
-     +                       //'DE TYPE  "'//TYPE//'"  ET LA VALEUR '
-     +                       //'DE REFERENCE DE TYPE  "'//TYPREZ//'".')
-C        CALL U2MESK('A','CALCULEL5_13', 3 ,VALK)
+          VALK(1) = CHAM19
+          VALK(2) = TYPE
+          VALK(3) = TYPREZ
+          CALL U2MESK('A','CALCULEL5_13', 3 ,VALK)
          GOTO 9999
       ENDIF
 C

@@ -15,7 +15,7 @@ C
       REAL*8            BORSUP,     BORINF
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,7 @@ C
       CHARACTER*19 CHAMN
       CHARACTER*24 NOMNU,NOLILI
       CHARACTER*24 FICH
+      CHARACTER*24 VALK(4)
       CHARACTER*80 TITMAI,BIDON
       REAL*8       FREQ
 C     ------------------------------------------------------------------
@@ -240,9 +241,9 @@ C        LE NOM DU CHAM_GD EST DANS LA VARIABLE NOMSYM
      &       NCMPMX,ZR(JVALE),NOMGD,ZK8(IAD),NOSY16,ZI(JNU),
      &       LRESU,NBCMP,NOMCMP,NIVE)
         ELSE
-          CALL UTMESS('E','IRDEPL','  DESOLE ON NE SAIT PAS ECRIRE LE '
-     &       //'CHAMP AUX NOEUDS '//CHAMN//' AU FORMAT '//FORMA)
-C        CALL U2MESK('E','PREPOST2_36', 2 ,VALK)
+           VALK(1) = CHAMN
+           VALK(2) = FORMA
+           CALL U2MESK('E','PREPOST2_36', 2 ,VALK)
         END IF
 C
       ELSE IF (FORM(1:5).EQ.'IDEAS') THEN
@@ -297,22 +298,18 @@ C         MAILLAGE DONT ON DEMANDE L'IMPRESSION.
           LGNMA1=LXLGUT(NOMMA)
           LGNMA2=LXLGUT(NOMACM)
           IF(.NOT.LRESU) THEN
-            CALL UTMESS('A','IRDEPL','LE MAILLAGE '//
-     &            NOMMA(1:LGNMA1)//' ASSOCIE AU CHAM_GD '//
-     &            NOSY16(1:LGCH16)//' EST DIFFERENT DU MAILLAGE '//
-     &            NOMACM(1:LGNMA2)//' EN OPERANDE DE LA COMMANDE'//
-     &            ' !!!! ATTENTION !!!!')
-C        CALL U2MESK('A','PREPOST2_37', 3 ,VALK)
+             VALK(1) = NOMMA(1:LGNMA1)
+             VALK(2) = NOSY16(1:LGCH16)
+             VALK(3) = NOMACM(1:LGNMA2)
+             CALL U2MESK('A','PREPOST2_37', 3 ,VALK)
           ELSE
             NOMSDR=NOMSD
             LGCONC=LXLGUT(NOMSDR)
-            CALL UTMESS('A','IRDEPL','LE MAILLAGE '//
-     &            NOMMA(1:LGNMA1)//' ASSOCIE AU CHAMP '//
-     &            NOSY16(1:LGCH16)//' DU CONCEPT '//
-     &            NOMSDR(1:LGCONC)//' EST DIFFERENT DU MAILLAGE '//
-     &            NOMACM(1:LGNMA2)//' EN OPERANDE DE LA COMMANDE'//
-     &            ' !!!! ATTENTION !!!!')
-C        CALL U2MESK('A','PREPOST2_38', 4 ,VALK)
+             VALK(1) = NOMMA(1:LGNMA1)
+             VALK(2) = NOSY16(1:LGCH16)
+             VALK(3) = NOMSDR(1:LGCONC)
+             VALK(4) = NOMACM(1:LGNMA2)
+             CALL U2MESK('A','PREPOST2_38', 4 ,VALK)
           ENDIF
         ENDIF
         FICH='./RESU_ENSIGHT/lisez-moi'
@@ -392,20 +389,16 @@ C
  9997 CONTINUE
       LGCH16=LXLGUT(NOSY16)
       IF(.NOT.LRESU) THEN
-         CALL UTMESS('A','IRDEPL','AUCUNE DES COMPOSANTES '//
-     &        'DEMANDEES SOUS LE MOT-CLE NOM_CMP POUR L''IMPRESSION '//
-     &        'DU CHAM_GD '//NOSY16(1:LGCH16)//
-     &        ' N''EST PRESENTE DANS LA GRANDEUR '//NOMGD)
-C        CALL U2MESK('A','PREPOST2_40', 2 ,VALK)
+          VALK(1) = NOSY16(1:LGCH16)
+          VALK(2) = NOMGD
+          CALL U2MESK('A','PREPOST2_40', 2 ,VALK)
       ELSE
          NOMSDR=NOMSD
          LGCONC=LXLGUT(NOMSDR)
-         CALL UTMESS('A','IRDEPL','AUCUNE DES COMPOSANTES '//
-     &        'DEMANDEES SOUS LE MOT-CLE NOM_CMP POUR L''IMPRESSION '//
-     &        'DU CHAMP '//NOSY16(1:LGCH16)//' DU CONCEPT '//
-     &        NOMSDR(1:LGCONC)//' N''EST PRESENTE DANS LA '//
-     &        'GRANDEUR '//NOMGD)
-C        CALL U2MESK('A','PREPOST2_41', 3 ,VALK)
+          VALK(1) = NOSY16(1:LGCH16)
+          VALK(2) = NOMSDR(1:LGCONC)
+          VALK(3) = NOMGD
+          CALL U2MESK('A','PREPOST2_41', 3 ,VALK)
       ENDIF
  9998 CONTINUE
       CALL JEDETR('&&IRDEPL.ENT_COD')

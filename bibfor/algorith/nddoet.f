@@ -16,7 +16,7 @@
       CHARACTER*16  OPMASS
       CHARACTER*14  PILOTE
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 20/11/2006   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -87,6 +87,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*16 OPT
       CHARACTER*19 LISINS
       CHARACTER*24 LIGRMO,EVOL,LCHIN(1),LCHOUT(2),RESUID, STRUCT
+      CHARACTER*24 VALK(2)
       CHARACTER*24 K24BID,LIGRDE,TYPE,CHAMP,CHGEOM,CHGRFL
       DATA CHGRFL /'&&OP0070.GRAPPE_FLUIDE  '/
 C ----------------------------------------------------------------------
@@ -233,9 +234,9 @@ C ======================================================================
               CALL UTDEBM ( 'A','NMDOET', 'CODE DE RETOUR DE PSRENC' )
               CALL UTIMPI ( 'S', ': ', 1, IRET )
               CALL UTFINM
-              CALL UTMESS ( 'F','NMDOET', 'LA DERIVEE DE '//EVOL//
-     &            ' PAR RAPPORT A '//NOPASE//' EST INTROUVABLE.')
-C        CALL U2MESK('F','ALGORITH6_40', 2 ,VALK)
+               VALK(1) = EVOL
+               VALK(2) = NOPASE
+               CALL U2MESK('F','ALGORITH6_40', 2 ,VALK)
             ENDIF
             STRUCT = RESUID
           ELSE

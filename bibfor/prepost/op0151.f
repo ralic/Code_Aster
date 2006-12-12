@@ -3,7 +3,7 @@
         INTEGER         IER
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,7 @@ C       ---------------------------------------------------------------
         CHARACTER*16    TYPEQ,TYPOI,TYPDG,OPTION
         CHARACTER*19    NOMSD,CHELEM,CHELRS,LIGREL
         CHARACTER*24    NOMLOC
+        CHARACTER*24 VALK(3)
 C
         CHARACTER*72    KVAL
         COMPLEX*16      CVAL
@@ -284,16 +285,17 @@ C
 C
       CALL JENONU(JEXNOM(NOMSD//'.DESC',NOMSYM),NUMSYM)
         IF(NUMSYM.EQ.0) THEN
-          CALL UTMESS('F','CALC_FATIGUE','L''OPTION '//NOMSYM//'N''A'//
-     &      '  PAS ETE CALCULEE DANS LA SD '//NOMSD)
-C        CALL U2MESK('F','PREPOST4_5', 2 ,VALK)
+           VALK(1) = NOMSYM
+           VALK(2) = NOMSD
+           CALL U2MESK('F','PREPOST4_5', 2 ,VALK)
         ENDIF
       CALL JEVEUO(JEXNUM(NOMSD//'.TACH',NUMSYM),'L',IVCH)
       CHELRS = ZK24(IVCH)(1:19)
       IF(CHELRS.EQ.' ') THEN
-        CALL UTMESS('F','CALC_FATIGUE','LE CHAMP "'//CHELRS//
-     &   '" ('//NOMSYM//') N''A PAS ETE NOTE DANS LA SD '//NOMSD)
-C        CALL U2MESK('F','PREPOST4_6', 3 ,VALK)
+         VALK(1) = CHELRS
+         VALK(2) = NOMSYM
+         VALK(3) = NOMSD
+         CALL U2MESK('F','PREPOST4_6', 3 ,VALK)
       ENDIF
       CALL JEVEUO ( CHELRS//'.CELK','L',JCELK )
       LIGREL=ZK24(JCELK-1+1)

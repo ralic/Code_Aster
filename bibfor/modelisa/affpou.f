@@ -8,7 +8,7 @@
       CHARACTER*24      TMP,TMPF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,12 +65,11 @@ C     ------ DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
       COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32       JEXNOM,  JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
-      CHARACTER*16  CMD
+      CHARACTER*24 VALK(2)
       REAL*8        R8MAEM, TST
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CMD = 'AFFE_CARA_ELEM'
       TST = R8MAEM()
 C
       CALL JENONU(JEXNOM(TMP,NOM),NUM)
@@ -81,17 +80,15 @@ C     --- TESTS D'ECRASEMENT DE SECTION ---
          IIVAR = NINT(ZR(JDGE+22))
          IISEC = NINT(ZR(JDGE+35))
          IF (IIVAR.NE.IVAR) THEN
-            CALL UTMESS('A',CMD,'OCCURENCE '//IOC//'DE "POUTRE" ('//
-     &                                'MAILLE '//NOM//') ECRASEMENT '//
-     &                'D UN TYPE DE VARIATION DE SECTION PAR UN AUTRE')
-C        CALL U2MESK('A','MODELISA_92', 2 ,VALK)
+             VALK(1) = IOC
+             VALK(2) = NOM
+             CALL U2MESK('A','MODELISA_92', 2 ,VALK)
             IER = IER + 1
          ENDIF
          IF (IISEC.NE.ISEC) THEN
-            CALL UTMESS('A',CMD,'OCCURENCE '//IOC//'DE "POUTRE" ('//
-     &                                'MAILLE '//NOM//') ECRASEMENT '//
-     &                'D UN TYPE DE GEOMETRIE DE SECTION PAR UN AUTRE')
-C        CALL U2MESK('A','MODELISA_93', 2 ,VALK)
+             VALK(1) = IOC
+             VALK(2) = NOM
+             CALL U2MESK('A','MODELISA_93', 2 ,VALK)
             IER = IER + 1
          ENDIF
 C

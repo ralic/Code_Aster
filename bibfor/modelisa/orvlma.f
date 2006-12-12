@@ -6,7 +6,7 @@
       REAL*8              VECT(*), PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*2   KDIM
       CHARACTER*8   TYPEL, NOMAIL
       CHARACTER*24  MAILMA, NOMAVO
+      CHARACTER*24 VALK(2)
 C
       PASORI(IMA) = ZI(LORI-1+IMA).EQ.0
 C
@@ -121,11 +122,9 @@ C
           DIME1 = .TRUE.
         ELSE
           CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
-          CALL UTMESS('F','ORVLMA','IMPOSSIBILITE, LA MAILLE '//
-     &                NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
-     &                'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
-     &              //'EN 2D, ET ELLE EST DE TYPE : '//TYPEL)
-C        CALL U2MESK('F','MODELISA5_94', 2 ,VALK)
+           VALK(1) = NOMAIL
+           VALK(2) = TYPEL
+           CALL U2MESK('F','MODELISA5_94', 2 ,VALK)
         ENDIF
         IF (DIME1.AND.DIME2) CALL U2MESS('F','MODELISA5_98')
   10  CONTINUE

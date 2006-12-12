@@ -4,7 +4,7 @@
       REAL*8 COOR(*),NORMAL(3)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C OUT NORMALE R8 : NORMALE CALCULEE
 C
 C ROUTINES APPELLEES :
 C     NORMEV     PROVEC
-C     JENUNO     JEXNUM     UTMESS
+C     JENUNO     JEXNUM
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -66,11 +66,6 @@ C DEBUT ----------------------------------------------------------------
       CALL JENUNO(JEXNUM('&CATA.TM.NBNO',ITYP),NOMTM)
       IF (NOMTM(1:3).EQ.'SEG') THEN
         IF (NDIM.EQ.3) THEN
-
-C          IF ((COOR(3).NE.0.0D0) .OR. (COOR(6).NE.0.0D0)) THEN
-C            CALL UTMESS('F','CANORM ',
-C     +                  'PROBLEME DE CALCUL DE NORMALE POUR DES SEG'//
-C     +                  'ELLE NE PEUT ETRE CALCULEE EN 3D')
             NORMAL(1) = COOR(4) - COOR(1)
             NORMAL(2) = COOR(5) - COOR(2)
             NORMAL(3) = COOR(6) - COOR(3)

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     INTRINSIC  ABS
 C
 C ROUTINES EXTERNES
 C -----------------
-C     EXTERNAL   DISBUT, FORNOR, FORTAN, INITMA, INITVE, PRMAVE, UTMESS
+C     EXTERNAL   DISBUT, FORNOR, FORTAN, INITMA, INITVE, PRMAVE
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C

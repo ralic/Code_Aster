@@ -4,7 +4,7 @@
      &                  NBGRPA,IDEB,JDEB,NUMORD,TPSNP1,CRITHE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,6 +79,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*14 NUPOSS
       CHARACTER*16 TYPRES,NOMCMD
       CHARACTER*24 TEMPIN,TEMPI0,VTEMP,VTEMPM,RESUIN,RESUID,NOOJB
+      CHARACTER*24 VALK(2)
 C ---------------------------------------------------------------------
 
 C====
@@ -181,9 +182,9 @@ C VRAI STATIONNAIRE (.NOT.LOSTAT) OU IL Y'A RIEN A FAIRE
               CALL UTDEBM ( 'A', NOMPRO, 'CODE DE RETOUR DE PSRENC' )
               CALL UTIMPI ( 'S', ': ', 1, IRET )
               CALL UTFINM
-              CALL UTMESS ( 'F', NOMPRO, 'LA DERIVEE DE '//RESUIN//
-     &            ' PAR RAPPORT A '//NOPASE//' EST INTROUVABLE.')
-C        CALL U2MESK('F','ALGORITH6_40', 2 ,VALK)
+               VALK(1) = RESUIN
+               VALK(2) = NOPASE
+               CALL U2MESK('F','ALGORITH6_40', 2 ,VALK)
             ENDIF
           ENDIF
 

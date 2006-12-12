@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,NLN,NLJ,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C ----------------------------------------------------------------------
       CHARACTER*6  KIOC
       CHARACTER*8  K8B, CAR(NBCAR), NOMU, TOU, CARORI(NCO)
       CHARACTER*16 CMD, CONCEP
+      CHARACTER*24 VALK(2)
       DATA CARORI  /'VECT_Y   ','VECT_X_Y ','ANGL_NAUT','ANGL_VRIL'/
 C     ------------------------------------------------------------------
 C
@@ -84,10 +85,9 @@ C -- VALE
          IF (NVAL.GT.0) THEN
             IF ((K.EQ.1.AND.NVAL.NE.3) .OR. (K.EQ.2.AND.NVAL.NE.6) .OR.
      &          (K.EQ.3.AND.NVAL.NE.3) .OR. (K.EQ.4.AND.NVAL.NE.1) )THEN
-               CALL UTMESS('E',CMD,'ORIENTATION : OCCURENCE '//KIOC//
-     &                 ' : VAL : '//CARORI(K)//' : NOMBRE DE VALEURS'//
-     &                                            ' ENTREES INCORRECT')
-C        CALL U2MESK('E','MODELISA_60', 2 ,VALK)
+                VALK(1) = KIOC
+                VALK(2) = CARORI(K)
+                CALL U2MESK('E','MODELISA_60', 2 ,VALK)
                IER = IER + 1
             ENDIF
          ENDIF

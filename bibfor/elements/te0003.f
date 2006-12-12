@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C IN NOMTE  : NOM DU TYPE D'ELEMENT
 
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       MESSAGE:UTMESS,INFNIV,UTDEBM,UTIMPI,UTFINM.
+C       MESSAGE:INFNIV,UTDEBM,UTIMPI,UTFINM.
 C       JEVEUX:JEMARQ,JEDEMA,JEVETE,JEVEUO,JELIRA,JENUNO.
 C       CHAMP LOCAUX:JEVECH,TECACH.
 C       ENVIMA:R8PREM,R8MIEM.
@@ -326,7 +326,6 @@ C---------------------------------
       TERMVO = 0.D0
       TERMV1 = 0.D0
       AUX = 0.D0
-C INIT. POUR UTMESS 11
       LMAJ = .FALSE.
       DO 70 KP = 1,NPG1
 
@@ -391,7 +390,6 @@ C---------------------------------
           IF (TABNIV(6).EQ.2) WRITE (IFM,*) 'TERMVO SOUR_R',TERBUF
         END IF
 
-C FLAG POUR UTMESS 11
         IF (TERBUF.GT.PREC) LMAJ = .TRUE.
 C CALCUL PRELIMINAIRE POUR TERMNO (TERME SOURCE DE NORMALISATION)
         AUX = TERBUF

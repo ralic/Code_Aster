@@ -4,7 +4,7 @@ C        IMPLICIT REAL*8 (A-H,O-Z)
          IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,6 +80,7 @@ C
         REAL*8          VERIFC, VERIFT, FC0, FT0, MEPSI, FCP, FTP
         REAL*8          DDPT0, DDPC0, FTRAC2, FTRAC1, FCOMP1, FCOMP2
         CHARACTER*10    CTOL,  CITER, CERR
+        CHARACTER*24 VALK(3)
         INTEGER         IRTETI
         LOGICAL         CONVER
 C       ----------------------------------------------------------------
@@ -235,13 +236,10 @@ C                    MESSAGE D'ALARME SI ERR2 EST INSUFFISANT
                         CALL CODENT(ITER1,'G',CITER)
                         CALL CODREE(TOLER,'E',CTOL)
                         CALL CODREE((ERR/CSEC),'E',CERR)
-                        CALL UTMESS ('A','LCPLBE',' NON CONVERGENCE '//
-     &                  'A ITERATION MAXI '//CITER//
-     &                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
-     &                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
-     &                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
-     &                  'LA CONVERGENCE.')
-C        CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
+                         VALK(1) = CITER
+                         VALK(2) = CERR
+                         VALK(3) = CTOL
+                         CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
                      ENDIF
                   ELSE
 C     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -249,12 +247,10 @@ C                    MESSAGE D'ALARME - ON POURSUIT AVEC RESO STANDARD
                      CALL CODENT(ITER1,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL CODREE((ERR/CSEC),'E',CERR)
-                     CALL UTMESS ('A','LCPLBE',' ERREUR'//
-     &                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
-     &                 ' - POUR LA LOI BETON_DOUBLE_DP '//
-     &                 ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
+                      VALK(1) = CITER
+                      VALK(2) = CERR
+                      VALK(3) = CTOL
+                      CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
                   ENDIF
                ELSE
 C     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -401,13 +397,10 @@ C                    MESSAGE D'ALARME SI ERR2 EST INSUFFISANT
                         CALL CODENT(ITER2,'G',CITER)
                         CALL CODREE(TOLER,'E',CTOL)
                         CALL CODREE((ERR/CSEC),'E',CERR)
-                        CALL UTMESS ('A','LCPLBE',' NON CONVERGENCE '//
-     &                  'A ITERATION MAXI '//CITER//
-     &                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
-     &                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
-     &                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
-     &                  'LA CONVERGENCE.')
-C        CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
+                         VALK(1) = CITER
+                         VALK(2) = CERR
+                         VALK(3) = CTOL
+                         CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
                      ENDIF
                   ELSE
 C     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -415,12 +408,10 @@ C                    MESSAGE D'ALARME - ON POURSUIT AVEC RESO STANDARD
                      CALL CODENT(ITER2,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL CODREE((ERR/CSEC),'E',CERR)
-                     CALL UTMESS ('A','LCPLBE',' ERREUR'//
-     &                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
-     &                 ' - POUR LA LOI BETON_DOUBLE_DP '//
-     &                 ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
+                      VALK(1) = CITER
+                      VALK(2) = CERR
+                      VALK(3) = CTOL
+                      CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
                   ENDIF
                ELSE
 C     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -576,13 +567,10 @@ C                    MESSAGE D'ALARME SI ERR2 EST INSUFFISANT
                         CALL CODENT(ITER3,'G',CITER)
                         CALL CODREE(TOLER,'E',CTOL)
                         CALL CODREE((ERR/CSEC),'E',CERR)
-                        CALL UTMESS ('A','LCPLBE',' NON CONVERGENCE '//
-     &                  'A ITERATION MAXI '//CITER//
-     &                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
-     &                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
-     &                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
-     &                  'LA CONVERGENCE.')
-C        CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
+                         VALK(1) = CITER
+                         VALK(2) = CERR
+                         VALK(3) = CTOL
+                         CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
                      ENDIF
                   ELSE
 C     -->>           NB MAX D'ITERATIONS DEPASSE  -->> FIN
@@ -590,12 +578,10 @@ C                    MESSAGE D'ALARME - ON POURSUIT AVEC RESO STANDARD
                      CALL CODENT(ITER3,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL CODREE((ERR/CSEC),'E',CERR)
-                     CALL UTMESS ('A','LCPLBE',' ERREUR'//
-     &                 ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &                 ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
-     &                 ' - POUR LA LOI BETON_DOUBLE_DP '//
-     &                 ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
+                      VALK(1) = CITER
+                      VALK(2) = CERR
+                      VALK(3) = CTOL
+                      CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
                   ENDIF
                ELSE
 C     -->>        NOUVELLE ITERATION -->> RETOUR
@@ -818,25 +804,20 @@ C                  MESSAGE D'ALARME SI ERR2 EST INSUFFISANT
                      CALL CODENT(ITER4,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
                      CALL CODREE((ERR/CSEC),'E',CERR)
-                        CALL UTMESS ('A','LCPLBE',' NON CONVERGENCE '//
-     &                  'A ITERATION MAXI '//CITER//
-     &                  ' - ERREUR CALCULEE ' //CERR// ' > '//CTOL//
-     &                  'MAIS TRES FAIBLES INCREMENTS DE NEWTON '//
-     &                  'POUR LA LOI BETON_DOUBLE_DP - ON ACCEPTE '//
-     &                  'LA CONVERGENCE.')
-C        CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
+                         VALK(1) = CITER
+                         VALK(2) = CERR
+                         VALK(3) = CTOL
+                         CALL U2MESK('A','ALGORITH4_73', 3 ,VALK)
                    ENDIF
                  ELSE
 C     -->>         NB MAX D'ITERATIONS DEPASSE  -->> FIN
                    CALL CODENT(ITER4,'G',CITER)
                    CALL CODREE(TOLER,'E',CTOL)
                    CALL CODREE((ERR/CSEC),'E',CERR)
-                   CALL UTMESS ('A','LCPLBE',' ERREUR'//
-     &               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &               ' - ERREUR CALCULEE ' //CERR// ' > ' //CTOL//
-     &               ' - POUR LA LOI BETON_DOUBLE_DP '//
-     &               ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
+                    VALK(1) = CITER
+                    VALK(2) = CERR
+                    VALK(3) = CTOL
+                    CALL U2MESK('A','ALGORITH4_74', 3 ,VALK)
                    NSEUIL = 4
                    GOTO 5
                 ENDIF

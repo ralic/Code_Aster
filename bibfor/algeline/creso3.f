@@ -1,7 +1,7 @@
-      SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,EPS,
-     &           ISTOP)
+      SUBROUTINE CRESO3(SOLVEZ,SYMZ,PCPIVZ,KTYPZ,KTYPSZ,KTYPRZ,
+     &           KLAG2,EPS,ISTOP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
       CHARACTER*(*) SOLVEZ
-      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ
+      CHARACTER*(*)  KTYPZ,KTYPSZ,KTYPRZ,SYMZ,KLAG2
       INTEGER PCPIVZ ,ISTOP
       REAL*8 EPS
 C ----------------------------------------------------------
@@ -35,6 +35,8 @@ C                  ' ' -> DEFAUT
 C IN K   KTYPSZ   : TYPE DE SCALING /SANS/AUTO
 C                  ' ' -> DEFAUT
 C IN K   KTYPRZ   : TYPE DE RENUMEROTATION /AMD/AMF/PORD/METIS/QAMD/AUTO
+C                  ' ' -> DEFAUT
+C IN K   KLAG2   : ELIMINATION 2EME LAGRANGE : /OUI/NON
 C                  ' ' -> DEFAUT
 C IN R   EPS     : ERREUR MAX RELATIVE ACCEPTEE POUR LA SOLUTION
 C                  0.  -> DEFAUT
@@ -102,6 +104,10 @@ C     TYPE_RENUM :
 C     ------------
       IF (KTYPRN.EQ.' ') KTYPRN='AUTO'
 
+C     ELIM_LAG2 :
+C     ------------
+      IF (KLAG2.EQ.' ') KLAG2='OUI'
+
 C     ERRE_RELA_MAX :
 C     ------------
       IF (EPSMAX.EQ.0.D0) EPSMAX=1.D-6
@@ -118,6 +124,7 @@ C     ---------------------------------------------------
       ZK24(ISLVK-1+3) = KTYPR
       ZK24(ISLVK-1+4) = KTYPRN
       ZK24(ISLVK-1+5) = SYME
+      ZK24(ISLVK-1+6) = KLAG2
 
       ZI(ISLVI-1+1) = -9999
       ZI(ISLVI-1+2) = PCPIV

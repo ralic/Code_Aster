@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IBID, LREFE1, LREFE2
       INTEGER      IFM,NIV
       CHARACTER*1  TYPE,COLI,K1BID
+      CHARACTER*24 VALK(2)
       CHARACTER*4  INTERP(2), INTRES
       CHARACTER*8  K8B, CRIT, NOEUD, CMP, NOMA, NOMACC,  BASEMO
       CHARACTER*8  MONMOT(2), NOGNO, NONMOT
@@ -207,9 +208,9 @@ C
          ELSEIF ( IDDL .EQ. 0 ) THEN
             LG1 = LXLGUT(NOEUD)
             LG2 = LXLGUT(CMP)
-          CALL UTMESS('F','RFRGEN','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
-     &                  'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
-C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
+           VALK(1) = CMP(1:LG2)
+           VALK(2) = NOEUD(1:LG1)
+           CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
          ENDIF
 C
 C        --- RECHERCHE SI UNE ACCELERATION D'ENTRAINEMENT EXISTE ---

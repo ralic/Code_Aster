@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF POSTRELE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       CHARACTER*19 NCH19, NCH19N
       CHARACTER*24 XNUMCP, XNOMCP, VNOMCH, VCODOP, XNOVAR
       CHARACTER*24 NACCIS, NACCR8, NCH24, NLSMAC, NLSNAC
-      CHARACTER*24 NORECG
+      CHARACTER*24 NORECG, VALK(2)
       LOGICAL      TROUVE
 C     ------------------------------------------------------------------
 C
@@ -210,10 +210,9 @@ C
             ELSE
               CALL PSRENC ( RESUCO, NOPASE, LERES0, IRET )
               IF ( IRET.NE.0 ) THEN
-                CALL UTMESS ('F','OP0051',
-     &  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
-     &  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
-C        CALL U2MESK('F','CALCULEL2_96', 2 ,VALK)
+                VALK(1) = RESUCO
+                VALK(2) = NOPASE
+                CALL U2MESK('F','CALCULEL2_96', 2 ,VALK)
               ENDIF
             ENDIF
 C

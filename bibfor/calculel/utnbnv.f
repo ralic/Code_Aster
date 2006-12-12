@@ -1,7 +1,7 @@
       SUBROUTINE UTNBNV(TYPMAV,NBSV,NBNV)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,6 @@ C IN TYPMAV  : NOM DE LA MAILLE VOISINE.
 C OUT NBSV   : TYPE DE MAILLE VOISINE (POUR 2D, TRAITEMENT MAILLE SYM.).
 C OUT NBNV   : NOMBRE DE NOEUDS.
 C   -------------------------------------------------------------------
-C     SUBROUTINES APPELLEES:
-C       MSG:UTMESS.
 C
 C     FONCTIONS INTRINSEQUES:
 C       AUCUNE.

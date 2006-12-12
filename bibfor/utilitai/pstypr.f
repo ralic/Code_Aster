@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - TYPE DE SENSIBILITE - RECUPERATION
 C     *          *           ***                   *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,7 @@ C
 C
       CHARACTER*8 SAUX08
       CHARACTER*24 SAUX24
+      CHARACTER*24 VALK(2)
       CHARACTER*24 STTSEK, STTSEI
       CHARACTER*80 SAUX80
 C
@@ -199,9 +200,9 @@ C
           IF ( ( LGTYPS.NE.JAUX ) .OR.
      &         ( TYPEPS(1:LGTYPS).NE.ZK80(ADTSKK)(1:LGTYPS) ) ) THEN
             CALL U2MESK('A','UTILITAI3_99',1,NOPASE(1:8))
-            CALL UTMESS ( 'A', NOMPRO,
-     &      'ON A '//SAUX80(1:LGTYPS)//' ET '//ZK80(ADTSKK)(1:JAUX))
-C        CALL U2MESK('A','UTILITAI4_1', 2 ,VALK)
+             VALK(1) = SAUX80(1:LGTYPS)
+             VALK(2) = ZK80(ADTSKK)(1:JAUX)
+             CALL U2MESK('A','UTILITAI4_1', 2 ,VALK)
             CALL U2MESS('F','UTILITAI4_2')
           ENDIF
         ENDIF

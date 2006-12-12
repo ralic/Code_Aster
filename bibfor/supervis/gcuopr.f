@@ -3,7 +3,7 @@
       INTEGER             ICODE , ICMDCT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,6 @@ CCAR     LONUTI = LONUTI + 1
 CCAR     CALL JEECRA ( KRESU , 'LONUTI', LONUTI , CBID )
 CCAR     ICMDCT = LONUTI
       ELSE
-C        -- ON OTE LE CALL UTMESS A CAUSE DE LA RECURSIVITE
          CALL JXABOR()
       ENDIF
       CALL JEDEMA()

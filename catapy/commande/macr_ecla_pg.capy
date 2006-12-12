@@ -1,27 +1,27 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
 from Macro.macr_ecla_pg_ops import macr_ecla_pg_ops
 
 def macr_ecla_pg_prod(self,RESULTAT,MAILLAGE,RESU_INIT,**args):
-  self.type_sdprod(RESULTAT,AsType(RESU_INIT))   
+  self.type_sdprod(RESULTAT,AsType(RESU_INIT))
   self.type_sdprod(MAILLAGE,maillage_sdaster)
   return None
 
@@ -29,27 +29,26 @@ def macr_ecla_pg_prod(self,RESULTAT,MAILLAGE,RESU_INIT,**args):
 MACR_ECLA_PG=MACRO(nom="MACR_ECLA_PG",op=macr_ecla_pg_ops,sd_prod=macr_ecla_pg_prod, reentrant='n',
              UIinfo={"groupes":("Post traitements",)},
              fr="Permettre la visualisation des champs aux points de Gauss d'une SD_RESULTAT sans lissage ni interpolation",
-                    
+
 
              # SD résultat ,modèle et champs à "éclater" :
              RESU_INIT       =SIMP(statut='o',typ=resultat_sdaster,fr="RESULTAT à éclater",),
              MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster,fr="MODELE à éclater"),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                                   into=("SIEF_ELGA","VARI_ELGA","SIEF_ELGA_DEPL","FLUX_ELGA_TEMP",) ),
-                                   
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
+
              # paramètres numériques de la commande :
              SHRINK          =SIMP(statut='f',typ='R',defaut= 0.9, fr="Facteur de réduction" ),
              TAILLE_MIN      =SIMP(statut='f',typ='R',defaut= 0.0, fr="Taille minimale d'un coté" ),
-             
+
              # concepts produits par la commande :
              RESULTAT        =SIMP(statut='o',typ=CO,fr="SD_RESULTAT résultat de la commande"),
              MAILLAGE        =SIMP(statut='o',typ=CO,fr="MAILLAGE associé aux cham_no de la SD_RESULTAT"),
-                     
-             # Sélection éventuelle d'un sous-ensemble des éléments à visualiser :           
+
+             # Sélection éventuelle d'un sous-ensemble des éléments à visualiser :
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             
+
              # Sélection des numéros d'ordre :
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),

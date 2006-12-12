@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C      CHARACTER*8  LSTGMA(1000), LSTBRD(1000),NOMCHA(1000),NOMSD(1000)
       CHARACTER*19 SDFETI
       CHARACTER*24 NOMSDA,NOMSDB,NOMSDI,NOMSDG,NOMSDM,NOMSDH,NOMSDJ,
      &             NOMSLN,NOMSLI,NOMSLM
+      CHARACTER*24 VALK(3)
       CHARACTER*32 JEXNOM
 
       INTEGER      NBID,ITMP,JVALE,NBGRMN,IALIK8,IALII1,IALII2,
@@ -1098,11 +1099,10 @@ C CAS DU LIAISON INTER-SOUS-DOMAINES
      &                  NUMSD).AND.(NB1.EQ.1)) THEN
                           CALL JENUNO(JEXNUM(NOMNOE,NDTAR),NOMN)
                           CALL JENUNO(JEXNUM(NOMNOE,ZI(IAUX2)),NOMN1)
-                          CALL UTMESS('F','FETCRF',' LE LIAISON_*** DE '
-     &                      //ZK8(NOMCHA-1+ICH)//' IMPLIQUE LES NOEUDS '
-     &                      //'PHYSIQUES '//NOMN//' ET '//NOMN1// 'ET '
-     &                      //'TRAVERSE L''INTERFACE')
-C        CALL U2MESK('F','ELEMENTS_64', 3 ,VALK)
+                           VALK(1) = ZK8(NOMCHA-1+ICH)
+                           VALK(2) = NOMN
+                           VALK(3) = NOMN1
+                           CALL U2MESK('F','ELEMENTS_64', 3 ,VALK)
                         ENDIF
                         IF (ZI(IAUX2+2).LT.2) THEN
                           ZI(IAUX2)=NDTAR
@@ -1132,11 +1132,9 @@ C CHARGE TOUCHANT L'INTERFACE
                       IAUX0=ILIDDL+3*(-NDTAR-1)
                       IF (ZI(IAUX0+2).GT.1) THEN
                         CALL JENUNO(JEXNUM(NOMNOE,ZI(IAUX0)),NOMN)
-                        CALL UTMESS('F','FETCRF',' LE LIAISON_*** DE '
-     &                      //ZK8(NOMCHA-1+ICH)//' IMPLIQUE LE NOEUD '
-     &                      //'PHYSIQUE '//NOMN// 'ET TOUCHE L''INTER'
-     &                      //'FACE')
-C        CALL U2MESK('F','ELEMENTS_65', 2 ,VALK)
+                         VALK(1) = ZK8(NOMCHA-1+ICH)
+                         VALK(2) = NOMN
+                         CALL U2MESK('F','ELEMENTS_65', 2 ,VALK)
                       ENDIF
                       GOTO 206
                     ENDIF

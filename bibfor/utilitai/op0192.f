@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C
       CHARACTER*72 REP
 C
       CHARACTER*24 NCMPVA, NCMPVM
+      CHARACTER*24 VALK(2)
 C
 C DEB ------------------------------------------------------------------
 C====
@@ -136,9 +137,9 @@ C
 C
         CALL GETVTX(' ',LCMPVM,0,1,0,REP,IAUX)
         IF ( -IAUX.NE.NBCMPV ) THEN
-          CALL UTMESS ('F',NOMPRO,LCMPVA//' ET '//LCMPVM//' : NOMBRE '//
-     &                 'DE COMPOSANTES INCOMPATIBLE.')
-C        CALL U2MESK('F','UTILITAI2_95', 2 ,VALK)
+           VALK(1) = LCMPVA
+           VALK(2) = LCMPVM
+           CALL U2MESK('F','UTILITAI2_95', 2 ,VALK)
         ENDIF
 C
         IF ( NBCMPV.GT.0 ) THEN

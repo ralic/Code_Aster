@@ -2,24 +2,24 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/11/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE  CRP_20 
+C TOLE  CRP_20
 C     =================================================================
 C                      OPERATEUR POST_MAIL_XFEM
 C                      ------------------------
@@ -73,7 +73,7 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-C     ===========================================     
+C     ===========================================
 C      1. RECUPERATION DES CONCEPTS UTILISATEURS
 C         ET CREATION DES TABLEAUX DE TRAVAIL
 C     ===========================================
@@ -112,8 +112,8 @@ C --- NOMBRE DE MAILLES DU MAILLAGE INITIAL :  NBTMA
       NBTNO=ZI(JDIMI)
 C     NOMBRE DE MAILLES X-FEM :  NBMF
 C     ON DESIGNERA PAR MAILLES X-FEM LES MAILLES VOISINES DE LA FISSURES
-C     & LES MAILLES TRAVERSEES PAR LA FISSURE 
-C     (ON ECARTE DONC LES MAILLES DU LIGREL QUI SONT ELOIGNEES 
+C     & LES MAILLES TRAVERSEES PAR LA FISSURE
+C     (ON ECARTE DONC LES MAILLES DU LIGREL QUI SONT ELOIGNEES
 C      DE LA FISSURE)
       CALL JEVEUO(MO//'.FISS','L',JFISS)
       FISS=ZK8(JFISS)
@@ -155,7 +155,7 @@ C     NOMBRE DE MAILLES FISSUREES
       NBMF=NBHEAV+NBCTIP+NBHECT
 C
 C --- CREATION DE TABLEAUX DE TRAVAIL ET RECUPERATION DE DIMENSIONS:
-C     T1 - TABLEAU DES MAILLES X-FEM :ZI(JWXFEM)     
+C     T1 - TABLEAU DES MAILLES X-FEM :ZI(JWXFEM)
       CALL WKVECT('&&OP0187.MAIL_XFEM','V V I',NBMF,JWXFEM)
 C     T2 - TABLEAU INDICATEUR DES MAILLES X-FEM
       CALL WKVECT('&&OP0187.MAIL_INDI_FISS','V V I',NBTMA,JIND)
@@ -242,7 +242,7 @@ C     ON PARCOURT LE LIGREL:
          ENDIF
          DO 50 J=1,NBMAGL-1
            IMA=ZI(IGREL+J-1)
-           ZI(JMMF+IMA-1)=0 
+           ZI(JMMF+IMA-1)=0
            I1=ZI(JLON+IILON)
            IF(I1.NE.0)THEN
 C            LA MAILLE X-FEM N'EST PAS ELOIGNEE DE LA FISSURE:
@@ -342,7 +342,7 @@ C     ON AJUSTE LE NOMBRE DE MAILLES FISSUREES (CELLES DU MODELE XFEM)
       DO 5 I=1,NBTMA
         IF(ZI(JMMF+I-1).EQ.1)KMMF=KMMF+1
  5    CONTINUE
-      NBMF=NBMF-KMMF    
+      NBMF=NBMF-KMMF
       NBMNF=NBTMA-NBMF
 C
 C     ===============================================================
@@ -370,7 +370,7 @@ C --- CREATION DES OBJETS: '.DIME','.NOMNOE','.COORDO'
       CALL JECREO(COORDO//'.VALE','G V R')
       CALL JEECRA(COORDO//'.VALE','LONMAX',NCO,' ')
       CALL JEVEUO(COORDO//'.VALE','E',JCORF)
- 
+
       TMP='NOMTMP'
       CALL JECREO(TMP//'.NOMNOE','V N K8')
       CALL JEECRA(TMP//'.NOMNOE','NOMMAX',ZI(JDIM),KBID)
@@ -391,12 +391,13 @@ C
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD','GEOM_R'),NTGEO)
       CALL JECREO(COORDO//'.DESC','G V I')
       CALL JEECRA(COORDO//'.DESC','LONMAX',3,' ')
+      CALL JEECRA(COORDO//'.DESC','DOCU',0,'CHNO')
       CALL JEVEUO(COORDO//'.DESC','E',IAD)
       ZI(IAD)   =  NTGEO
       ZI(IAD+1) = -3
       ZI(IAD+2) = 14
 
-      
+
 C
 C --- CREATION DES OBJETS : '.NOMMAI','.TYPMAIL','.CONNEX'
       CONNEX=MAF//'.CONNEX'
@@ -471,7 +472,7 @@ C     QUI NE NECESSITENT AUCUNE MODIFICATION
             CALL JEVEUO(JEXNOM(GRPNO,NOMGNO),'E',JNO)
             DO 68 J=1,NBNOF
                CALL JENUNO(JEXNUM(MA //'.NOMNOE',ZI(JNOGP+J-1)),NOMNO)
-               CALL JENONU(JEXNOM(TMP //'.NOMNOE',NOMNO),ZI(JNO+J-1))   
+               CALL JENONU(JEXNOM(TMP //'.NOMNOE',NOMNO),ZI(JNO+J-1))
  68         CONTINUE
             CALL JEDETR('&&OP0187.NO_GROUP')
  66      CONTINUE
@@ -576,7 +577,7 @@ C        - UTILE POUR LA NUMEROTATION DES NOEUDS D'INTER :ZI(JNUNO)
          ENDIF
 C
 C        II- ON PARCOURT LES SOUS-ELEMENTS
-C        ---------------------------------  
+C        ---------------------------------
          DO 110 J=1,NBSEM
             IMA=IMA+1
             CALL CODENT(IMA,'G',CH)
@@ -594,9 +595,9 @@ C        ---------------------------------
             CALL JEECRA(JEXNUM(CONNEX,NUMSE),'LONMAX',NTET,KBID)
             CALL JEVEUO(JEXNUM(CONNEX,NUMSE),'E',JCOF)
             KTET=0
-C     
+C
 C           III- ON PARCOURT LES NOEUDS DES SOUS-ELEMENTS
-C           ---------------------------------------------        
+C           ---------------------------------------------
             DO 150 ITET=1,NTET
 C              NUMERO LOCAL DU NOEUD DU SOUS-ELEMENT: ICNS
                ICNS=ZI(JCNS+ZI(JJCNS+I-1)+NTET*(J-1)+ITET-1)
@@ -618,7 +619,7 @@ C                 SI LE NOEUD N'A PAS ETE RENSEIGNE, ON LE CREE
                            ZI(JNUNO+ILOC-1)=INO
                         ENDIF
                         CALL CODENT(ZI(JNUNO+ILOC-1),'G',CH)
-                        NOMNI='NXP'//CH(1:LEN(CH))  
+                        NOMNI='NXP'//CH(1:LEN(CH))
                         CALL JECROC(JEXNOM(TMP//'.NOMNOE',NOMNI))
                         CALL JENONU(JEXNOM(TMP//'.NOMNOE',NOMNI),NUMNI)
                         ZI(JINDNP+ILOC-1)= NUMNI
@@ -626,7 +627,7 @@ C                 SI LE NOEUD N'A PAS ETE RENSEIGNE, ON LE CREE
                            II=II+1
                            ZI(JNX+II-1)=NUMNI
                         ENDIF
-C                       COORDONNEES                     
+C                       COORDONNEES
                         ZR(JCORF+3*(NUMNI-1))=
      &                      ZR(JPIN+ZI(JJPIN+I-1)+DIM*(ILOC-1))
                         ZR(JCORF+3*(NUMNI-1)+1)=
@@ -655,7 +656,7 @@ C                 SI LE NOEUD N'A PAS ETE RENSEIGNE, ON LE CREE
                            ZI(JNUNO+ILOC-1)=INO
                         ENDIF
                         CALL CODENT(ZI(JNUNO+ILOC-1),'G',CH)
-                        NOMNI='NXM'//CH(1:LEN(CH))  
+                        NOMNI='NXM'//CH(1:LEN(CH))
                         CALL JECROC(JEXNOM(TMP//'.NOMNOE',NOMNI))
                         CALL JENONU(JEXNOM(TMP//'.NOMNOE',NOMNI),NUMNI)
                         ZI(JINDNM+ILOC-1)= NUMNI
@@ -663,7 +664,7 @@ C                 SI LE NOEUD N'A PAS ETE RENSEIGNE, ON LE CREE
                            II=II+1
                            ZI(JNX+II-1)=NUMNI
                         ENDIF
-C                       COORDONNEES                     
+C                       COORDONNEES
                         ZR(JCORF+3*(NUMNI-1))=
      &                      ZR(JPIN+ZI(JJPIN+I-1)+DIM*(ILOC-1))
                         ZR(JCORF+3*(NUMNI-1)+1)=
@@ -691,7 +692,7 @@ C                 D'INTERSECTION
 C                 ---------------------------------------------------
                   IF(ZI(JNDNIS+I-1).NE.0)THEN
 C
-C                    III-2.1.1 SI LE TETRA EST EN-DESSOUS DE LA FISSURE 
+C                    III-2.1.1 SI LE TETRA EST EN-DESSOUS DE LA FISSURE
 C                    --------------------------------------------------
                      IF(ZI(JHTET+J-1).EQ.-1)THEN
 C
@@ -730,7 +731,7 @@ C                       ---------------------------
                            ZI(JCOF+KTET-1)=ZI(JCO+ICNS-1)
                         ENDIF
 C
-C                    III-2.1.2 SI LE TETRA EST AU-DESSUS DE LA FISSURE 
+C                    III-2.1.2 SI LE TETRA EST AU-DESSUS DE LA FISSURE
 C                    --------------------------------------------------
                      ELSE
                         ZI(JCOF+KTET-1)=ZI(JCO+ICNS-1)
@@ -745,7 +746,7 @@ C                 -------------------------------------
                ENDIF
  150        CONTINUE
  110     CONTINUE
-C      
+C
 C        ACTUALISATION DES CONNECTIVITES POUR LES MAILLES POSSEDANT
 C        DES NOEUDS D'INTERSECTION QUI SONT NOEUDS SOMMETS
          IF(LMNIS)THEN
@@ -771,6 +772,7 @@ C        DES NOEUDS D'INTERSECTION QUI SONT NOEUDS SOMMETS
                       XNXIS=ZR(JCORF+3*(NXIS-1))
                       YNXIS=ZR(JCORF+3*(NXIS-1)+1)
                       ZNXIS=ZR(JCORF+3*(NXIS-1)+2)
+       CALL JXVERI(' ','AJACOT')
                       IF(ABS(XNIS-XNXIS).LT.EPS)THEN
                          IF(ABS(YNIS-YNXIS).LT.EPS)THEN
                             IF(ABS(ZNIS-ZNXIS).LT.EPS)THEN
@@ -829,7 +831,7 @@ C        DES NOEUDS D'INTERSECTION QUI SONT NOEUDS SOMMETS
          ENDIF
  100  CONTINUE
 C
-C    --- CREATION DE L' OBJETS: '.NOMNOE'  
+C    --- CREATION DE L' OBJETS: '.NOMNOE'
       CALL JECREO(MAF//'.NOMNOE','G N K8')
       CALL JEVEUO(MA//'.DIME','L',JDIMI)
       NBNONO=NBNONO+ZI(JDIMI)-NBNH20
@@ -840,6 +842,8 @@ C    --- CREATION DE L' OBJETS: '.NOMNOE'
  777   CONTINUE
        CALL JEVEUO(MAF//'.DIME','E',JDIM)
        ZI(JDIM)=NBNONO
+       CALL JUVECA(COORDO//'.VALE',3*NBNONO)
+       CALL JXVERI(' ','AJACOT')
 C
 C
 C     ================================================================

@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,6 +75,7 @@ C
       CHARACTER*8   K8B, RESU, NOCMP(50), TYPARA(100), NOMCMP
       CHARACTER*16  K16B, NOMSY, TYSD
       CHARACTER*24  NOMOBJ, CHEXTR, NOPARA(100), KNUME
+      CHARACTER*24 VALK(3)
       CHARACTER*24  NORECG
       CHARACTER*24  K24BID
 C
@@ -94,10 +95,10 @@ C
         IF ( NOPASE.EQ.' ' ) THEN
           CALL U2MESK('I','POSTRELE_58',1,NOMTAB)
         ELSE
-          CALL UTMESS('I',NOMPRO,'INITIALISATION DE LA TABLE ASSOCIEE '
-     & //' A LA TABLE '//NOMTAB//' ET AU PARAMETRE SENSIBLE '//NOPASE
-     & //'CONNUE SOUS LE NOM DE CONCEPT '//LATAB1)
-C        CALL U2MESK('I','POSTRELE_59', 3 ,VALK)
+           VALK(1) = NOMTAB
+           VALK(2) = NOPASE
+           VALK(3) = LATAB1
+           CALL U2MESK('I','POSTRELE_59', 3 ,VALK)
         ENDIF
       ENDIF
 C               12   345678   9012345678901234
@@ -606,9 +607,9 @@ C
 C
       IF ( NIV.GE.2 ) THEN
         DO 1789 , N1 = 1 , NBP
-          CALL UTMESS('I',NOMPRO,
-     &    'PARAMETRE '//NOPARA(N1)//'DE TYPE '//TYPARA(N1))
-C        CALL U2MESK('I','POSTRELE_61', 2 ,VALK)
+           VALK(1) = NOPARA(N1)
+           VALK(2) = TYPARA(N1)
+           CALL U2MESK('I','POSTRELE_61', 2 ,VALK)
  1789   CONTINUE
       ENDIF
 C

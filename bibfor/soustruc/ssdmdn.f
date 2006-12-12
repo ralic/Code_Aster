@@ -1,6 +1,6 @@
       SUBROUTINE SSDMDN ( MAG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C ----------------------------------------------------------------------
@@ -129,10 +130,9 @@ C
           CALL JENONU(JEXNOM(MAL//'.NOMNOE',NOMNOL),INOL)
           KK= INDIIS(ZI(IALINO),INOL,1,NBNOEX)
           IF (KK.EQ.0) THEN
-            CALL UTMESS('A','SSDMDN',
-     &       ' LE NOEUD : '//NOMNOL//' N''APPARTIENT PAS A LA MAILLE :'
-     &        //NOSMA)
-C        CALL U2MESK('A','SOUSTRUC_59', 2 ,VALK)
+             VALK(1) = NOMNOL
+             VALK(2) = NOSMA
+             CALL U2MESK('A','SOUSTRUC_59', 2 ,VALK)
             GO TO 1
           END IF
 C
@@ -140,11 +140,9 @@ C
           IF (ZI(IANCNF-1+INO).EQ.INO) THEN
             ZK8(IANON2-1+INO)= NOMNOG
           ELSE
-            CALL UTMESS('A','SSDMDN',
-     &        ' LE NOEUD : '//NOMNOL//' DE LA MAILLE : '//NOSMA//
-     &        ' A ETE ELIMINE (RECOLLEMENT).'//
-     &        ' ON NE PEUT DONC LE RENOMMER.')
-C        CALL U2MESK('A','SOUSTRUC_60', 2 ,VALK)
+             VALK(1) = NOMNOL
+             VALK(2) = NOSMA
+             CALL U2MESK('A','SOUSTRUC_60', 2 ,VALK)
           END IF
         END IF
  1    CONTINUE

@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C
         INTEGER         DIM(NBM),       NBT(NBM),       DEBLIG
         CHARACTER*14    CNL
         CHARACTER*16    CMD
+        CHARACTER*24    VALK(2)
         COMMON          /OPMAIL/        CMD
         CHARACTER*(*)   CV
         IRTETI = 0
@@ -121,8 +122,9 @@ C
 C
  9      CONTINUE
         IF((NBTAV-NBT(NUMTCL)).EQ.0)THEN
-        CALL UTMESS('A',CMD,CNL//' LE GROUPE '//NOM//' EST VIDE')
-C        CALL U2MESK('A','MODELISA4_80', 2 ,VALK)
+          VALK(1) = CNL
+          VALK(2) = NOM
+          CALL U2MESK('A','MODELISA4_80', 2 ,VALK)
         IER = 1
         GOTO 2
         ENDIF

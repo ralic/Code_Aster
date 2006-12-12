@@ -5,7 +5,7 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C
       INTEGER      NUNOE,NEQ2,JDESC1,JDESC2,JREFE1,JREFE2,JDEEQ1,JDEEQ2
       INTEGER      NNOMX,NCPMX,JTRAV1,NUNO2,NUCP2,NUNO1,NUCP1
       CHARACTER*1    K1B, TYP1, TYP2
+      CHARACTER*24 VALK(4)
       CHARACTER*19   CH1, CH2
 
 C     ------------------------------------------------------------------
@@ -92,9 +93,10 @@ C     -------------------------------------------------
                  ZC(JVALE2+IEQ1) = ZC(JVALE1+IEQ1)
  12           CONTINUE
            ELSE
-              CALL UTMESS('F','VTCOPY','LES CHAM_NOS '//CH1//' ET '//
-     &                         CH2//' SONT DE TYPE INCONNU '//TYP1)
-C        CALL U2MESK('F','ALGELINE3_93', 3 ,VALK)
+               VALK(1) = CH1
+               VALK(2) = CH2
+               VALK(3) = TYP1
+               CALL U2MESK('F','ALGELINE3_93', 3 ,VALK)
            ENDIF
         ELSE
            IF ( TYP1 .EQ. 'R' .AND.  TYP2 .EQ. 'C' ) THEN
@@ -102,10 +104,11 @@ C        CALL U2MESK('F','ALGELINE3_93', 3 ,VALK)
                  ZC(JVALE2+IEQ1) = ZR(JVALE1+IEQ1)
  14           CONTINUE
            ELSE
-              CALL UTMESS('F','VTCOPY','LE CHAM_NO '//CH1//
-     &                ' DE TYPE '//TYP1//' NE PEUT ETRE COPIE DANS '//
-     &                       'LE CHAM_NO '//CH2//' DE TYPE '//TYP2)
-C        CALL U2MESK('F','ALGELINE3_94', 4 ,VALK)
+               VALK(1) = CH1
+               VALK(2) = TYP1
+               VALK(3) = CH2
+               VALK(4) = TYP2
+               CALL U2MESK('F','ALGELINE3_94', 4 ,VALK)
            ENDIF
         ENDIF
         GOTO 9999
@@ -183,9 +186,10 @@ C     -------------------------------------------
               END IF
  22         CONTINUE
          ELSE
-            CALL UTMESS('F','VTCOPY','LES CHAM_NOS '//CH1//' ET '//
-     &                         CH2//' SONT DE TYPE INCONNU '//TYP1)
-C        CALL U2MESK('F','ALGELINE3_93', 3 ,VALK)
+             VALK(1) = CH1
+             VALK(2) = CH2
+             VALK(3) = TYP1
+             CALL U2MESK('F','ALGELINE3_93', 3 ,VALK)
          ENDIF
 C
       ELSEIF ( TYP1 .EQ. 'R' .AND.  TYP2 .EQ. 'C' ) THEN
@@ -201,10 +205,11 @@ C
  24      CONTINUE
 C
       ELSE
-         CALL UTMESS('F','VTCOPY','LE CHAM_NO '//CH1//' DE TYPE '//
-     &                TYP1//' NE PEUT ETRE COPIE DANS LE CHAM_NO '//
-     &                CH2//' DE TYPE '//TYP2)
-C        CALL U2MESK('F','ALGELINE3_94', 4 ,VALK)
+          VALK(1) = CH1
+          VALK(2) = TYP1
+          VALK(3) = CH2
+          VALK(4) = TYP2
+          CALL U2MESK('F','ALGELINE3_94', 4 ,VALK)
       ENDIF
       CALL JEDETR ( '&&VTCOPY.TRAV1' )
 C

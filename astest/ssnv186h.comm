@@ -1,22 +1,22 @@
 
-# MODIF  DATE 02/05/2006   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV186H',
@@ -33,28 +33,28 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
                     CREA_GROUP_NO=_F(NOM='SURFQUAD',
                                      GROUP_MA='SURF',),);
-             
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN_X',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN',),),);       
+                              MODELISATION='C_PLAN',),),);
 
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-17.5');
-LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X-100');                 
+LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X-100');
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(
                                  FONC_LT=LT,
-                                 FONC_LN=LN,               
+                                 FONC_LN=LN,
                                  ),
                     GROUP_MA_ENRI='SURF',
-                    CONTACT=_F(COEF_REGU_CONT=100., 
-                               ITER_CONT_MAXI=4,   
-                               CONTACT_INIT='OUI',    
-                               ALGO_LAGR='VERSION2',    
+                    CONTACT=_F(COEF_REGU_CONT=100.,
+                               ITER_CONT_MAXI=4,
+                               CONTACT_INIT='OUI',
+                               ALGO_LAGR='VERSION2',
                                COEF_ECHELLE=1.E11,
                                FROTTEMENT='COULOMB',
                                COULOMB=1.0,
@@ -81,7 +81,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                                 TEMP_REF=0.0,),);
 
 PRES=100.
-FCTPRES=FORMULE(NOM_PARA=('X','Y'),VALE='(PRES-(X-10.)*(X-10.)/2.)*E/(1e6)');  
+FCTPRES=FORMULE(NOM_PARA=('X','Y'),VALE='(PRES-(X-10.)*(X-10.)/2.)*E/(1e6)');
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(GROUP_MA='LIG1',
@@ -94,7 +94,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
 CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
                      PRES_REP=_F(GROUP_MA='LIG3',
                                  PRES=FCTPRES,),);
-                                            
+
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
                                 INFO=1,);
@@ -104,7 +104,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMAT,              
+                   CHAM_MATER=CHAMPMAT,
                    EXCIT=( _F(CHARGE=CHXFEM,),
                            _F(CHARGE=CH1,),
                            _F(CHARGE=CHF,),),
@@ -112,13 +112,13 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='SURF',),
                    INCREMENT=_F(LIST_INST=L_INST,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,),
+                              ),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
-                   
-                   
+
+
 IMPR_RESU(MODELE=MODELEK,FORMAT='ASTER',UNITE=20,
-            RESU=(_F( MAILLAGE=MAILLAG2,),),);                   
+            RESU=(_F( MAILLAGE=MAILLAG2,),),);
 
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                               NOEUD=('NS1061','NS1059','NS1058','NS1062','NS1063',
@@ -130,7 +130,7 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                      'NS1096','NS1095','NS1098','NS1099',
                                      'NS1102','NS1101','NS1104','NS1105',
                                      'NS1108','NS1107','NS1110','NS1111',
-                                     'NS1114','NS1113','NS1116','NS1117',                                     
+                                     'NS1114','NS1113','NS1116','NS1117',
                                      ),
                              RESULTAT=UTOT1,
                              NOM_CHAM='DEPL',
@@ -140,14 +140,14 @@ LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
 
 IMPR_TABLE(TABLE=LAG,);
 
-    
+
 # TESTS
 
 # CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
 LAREF=-9.52844E-05
 
 TEST_TABLE(TABLE=LAG,
-           NOM_PARA='LAGS_C',            
+           NOM_PARA='LAGS_C',
            FILTRE=(_F(NOM_PARA='COOR_X',
                       CRIT_COMP='EQ',
                       VALE=10.,),
@@ -165,7 +165,7 @@ TEST_TABLE(TABLE=LAG,
 LA1REF=0.
 
 TEST_TABLE(TABLE=LAG,
-           NOM_PARA='LAGS_F1',            
+           NOM_PARA='LAGS_F1',
            FILTRE=(_F(NOM_PARA='COOR_X',
                       CRIT_COMP='EQ',
                       VALE=10.,),
@@ -176,6 +176,6 @@ TEST_TABLE(TABLE=LAG,
            VALE=LA1REF,
            CRITERE='ABSOLU',
            PRECISION=5.E-3,
-           REFERENCE='ANALYTIQUE',);           
-           
-FIN();           
+           REFERENCE='ANALYTIQUE',);
+
+FIN();

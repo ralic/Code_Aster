@@ -4,7 +4,7 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -328,8 +328,7 @@ C        --- NOM SYMBOLIQUE POUR UN CHAMP D'UN RESULTAT ---
                CGEN = K16BID
                IGEN = LXLGUT(K16BID)
             ELSE
-              CALL UTMESS('A',CVAL(:IVAL),PARA(1)//
-     &                             ' N''EST PAS UN CHAMP DE RESULTAT ')
+              CALL U2MESK('A','UTILITAI5_91',1,PARA(1))
             ENDIF
          GOTO 9000
 C
@@ -343,8 +342,7 @@ C        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
                CALL CODENT(IBID,'G',CGEN(1:16))
                IGEN = LXLGUT(CGEN(1:16))
             ELSE
-              CALL UTMESS('A',CVAL(:IVAL),PARA(1)//
-     &                             ' N''EST PAS UN CHAMP DE RESULTAT ')
+               CALL U2MESK('A','UTILITAI5_91',1,PARA(1))
             ENDIF
          GOTO 9000
 C
@@ -358,8 +356,7 @@ C        --- ACCES ---
             CALL RSUTOR(PARA(1)(1:8),PARA(2)(1:19),K16BID,IBID,IRET)
             CALL ASSERT(IRET.EQ.1)
             IF (IRET.NE.1 ) THEN
-              CALL UTMESS('A',CVAL(:IVAL),PARA(1)//
-     &                             ' N''EST PAS UN CHAMP DE RESULTAT ')
+              CALL U2MESK('A','UTILITAI5_91',1,PARA(1))
               GOTO 9001
             ENDIF
             DO 191  IACC=1,NBACCE

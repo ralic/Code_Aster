@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 CONCEP,NOMCMD
       CHARACTER*19 XSOL19,VCIN19,MAT19,PCHN1,PCHN2,SOLVEU
       CHARACTER*24 VXSOL,VXCIN
+      CHARACTER*24 VALK(2)
       COMPLEX*16   CBID
       REAL*8       EPS,RBID
 C     ------------------------------------------------------------------
@@ -98,10 +99,9 @@ C
 C        --- VERIFICATION DES COMPATIBILITES --
          CALL VRREFE(SECMBR,XSOL,IRET)
          IF (IRET.NE.0) THEN
-            CALL UTMESS('F','RESO_LDLT',
-     &                      SECMBR//' ET '//XSOL//' N''ONT PAS LE '//
-     &                  'MEME DOMAINE DE DEFINITION.')
-C        CALL U2MESK('F','ALGELINE2_23', 2 ,VALK)
+             VALK(1) = SECMBR
+             VALK(2) = XSOL
+             CALL U2MESK('F','ALGELINE2_23', 2 ,VALK)
          ENDIF
       ELSE
 C        --- CREATION DU VECTEUR SOLUTION ---

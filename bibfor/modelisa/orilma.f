@@ -7,7 +7,7 @@
       REAL*8              PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*2   KDIM
       CHARACTER*8   K8B, TPMAIL, NOMAIL, TYP3D
       CHARACTER*24  MAILMA, NOMOB1
+      CHARACTER*24 VALK(2)
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -124,11 +125,9 @@ C
         ELSEIF (TPMAIL(1:3).EQ.'SEG') THEN
            DIME1 = .TRUE.
         ELSE
-           CALL UTMESS('F','ORILMA','IMPOSSIBILITE, LA MAILLE '//
-     &                NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
-     &                'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
-     &              //'EN 2D, ET ELLE EST DE TYPE : '//TPMAIL)
-C        CALL U2MESK('F','MODELISA5_94', 2 ,VALK)
+            VALK(1) = NOMAIL
+            VALK(2) = TPMAIL
+            CALL U2MESK('F','MODELISA5_94', 2 ,VALK)
         ENDIF
         IF (DIME1.AND.DIME2) CALL U2MESS('F','MODELISA5_98')
 C

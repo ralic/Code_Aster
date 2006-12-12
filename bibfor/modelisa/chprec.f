@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ CC      CHARACTER*8 LERESU, NOPASE
       CHARACTER*16 K16BID,NOMCMD,NOMCH,ACCES,TYSD,TYCHLU,TYCH
       CHARACTER*19 CHEXTR,NOCH19,KNUM
       CHARACTER*24 NORECG
+      CHARACTER*24 VALK(3)
       CHARACTER*8 K8BID,MA,FIS
 C     ------------------------------------------------------------------
 
@@ -99,10 +100,10 @@ C
      &              IBID,NOMGD,IE)
 
         IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD)) THEN
-           CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
-     &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
-     &     TYCH(1:4)//'_'//NOMGD)
-C        CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
+            VALK(1) = TYCHLU
+            VALK(2) = TYCH(1:4)
+            VALK(3) = NOMGD
+            CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
         END IF
         CALL COPISD('CHAMP_GD','G',MA//'.COORDO',NOCH19)
         GO TO 20
@@ -135,10 +136,10 @@ C
                CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
 
                IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD))THEN
-                   CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//
-     &             TYCHLU//'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP'//
-     &             'EXTRAIT : '//TYCH(1:4)//'_'//NOMGD)
-C        CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
+                    VALK(1) = TYCHLU
+                    VALK(2) = TYCH(1:4)
+                    VALK(3) = NOMGD
+                    CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
                END IF
                CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
                GOTO 20
@@ -207,10 +208,10 @@ C
               CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
 
               IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD)) THEN
-           CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
-     &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
-     &     TYCH(1:4)//'_'//NOMGD)
-C        CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
+            VALK(1) = TYCHLU
+            VALK(2) = TYCH(1:4)
+            VALK(3) = NOMGD
+            CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
             END IF
 
               CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
@@ -246,10 +247,10 @@ C         ===========================
               CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
 
               IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD)) THEN
-           CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
-     &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
-     &     TYCH(1:4)//'_'//NOMGD)
-C        CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
+            VALK(1) = TYCHLU
+            VALK(2) = TYCH(1:4)
+            VALK(3) = NOMGD
+            CALL U2MESK('F','MODELISA4_18', 3 ,VALK)
             END IF
 
             CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)

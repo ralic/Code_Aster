@@ -1,27 +1,27 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE TEST OSCILLATEUR FLUIDE-ELASTIQUE MERIDIEN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # ----------------------------------------------------------------------
 #               OSCILLATEUR FLUIDE-ELASTIQUE MERIDIEN
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F( NOM = 'ADLS102A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='ADLS102A', NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),);
 
 MAYA=LIRE_MAILLAGE()
 
@@ -42,30 +42,30 @@ MODELE=AFFE_MODELE(  MAILLAGE=MAYA,AFFE=(
                              MODELISATION = '2D_DIS_T'),
                       _F( GROUP_NO = ('MASSPONC',),
                              PHENOMENE = 'MECANIQUE',
-                             MODELISATION = '2D_DIS_T'),),                             
+                             MODELISATION = '2D_DIS_T'),),
 
                   )
 
 # ----------------------------------------------------------------------
 #  DEFINITION DES MATERIAUX
 
-EAU=DEFI_MATERIAU(  FLUIDE=_F( 
+EAU=DEFI_MATERIAU(  FLUIDE=_F(
                               RHO = 0.750E+03,CELE_R = 1.0E+03),
                  )
-                 
-ACIER=DEFI_MATERIAU(  ELAS=_F( 
+
+ACIER=DEFI_MATERIAU(  ELAS=_F(
                          E = 2.000000000E+12,NU = 0.3E+00,
                          RHO = 0.000000000E+03,ALPHA = 0.000000000E+00)
                    )
 
-FICTIF=DEFI_MATERIAU(  ELAS=_F( 
+FICTIF=DEFI_MATERIAU(  ELAS=_F(
                          E = 2.000000000E+12,NU = 0.3E+00,
                          RHO = 0.000000000E+03,ALPHA = 0.000000000E+00)
                    )
-                   
+
 #
-# ----------------------------------------------------------------------                   
-#  AFFECTATION DES MATERIAUX 
+# ----------------------------------------------------------------------
+#  AFFECTATION DES MATERIAUX
 
 CHAMPMAT=AFFE_MATERIAU(   MAILLAGE=MAYA,AFFE=(
                _F(  GROUP_MA = 'EFLUIDE', MATER = EAU),
@@ -73,7 +73,7 @@ CHAMPMAT=AFFE_MATERIAU(   MAILLAGE=MAYA,AFFE=(
                                           MATER = EAU),
                _F(  GROUP_MA = ('E_P_IN','ES_P_IN','E_P_OU'),
                                           MATER = FICTIF),
-               _F(  GROUP_MA = 'E_PISTON', MATER = ACIER),), 
+               _F(  GROUP_MA = 'E_PISTON', MATER = ACIER),),
                       )
 #
 # ----------------------------------------------------------------------
@@ -85,8 +85,8 @@ CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,
                         REPERE='GLOBAL',VALE=(0.,50.E+09,),),
                      _F( GROUP_NO='MASSPONC',
                         CARA='M_T_D_N',
-                        VALE=200.E+03),          
-                    _F( GROUP_MA='AMORPONC', 
+                        VALE=200.E+03),
+                    _F( GROUP_MA='AMORPONC',
                          CARA='A_T_D_N',
                         REPERE='GLOBAL',VALE=(37.5E+04,0.,),),
                     ),)
@@ -101,15 +101,15 @@ CHARGS=AFFE_CHAR_MECA( MODELE=MODELE,
            DDL_IMPO=(_F( GROUP_NO='MASSPONC',
                          DX=0.,),
                      _F( GROUP_MA='AMORPONC',
-                         DY=0.,),),                                              
+                         DY=0.,),),
            LIAISON_SOLIDE=(_F( GROUP_MA=('E_PISTON',),),
                            _F( GROUP_MA=('E_P_IN',),),
                            _F( GROUP_MA=('E_P_OU',),),),
                     )
-                    
+
 #
 # ----------------------------------------------------------------------
-# 
+#
 KE=CALC_MATR_ELEM(  MODELE=MODELE,
                     OPTION='RIGI_MECA',
                     CHARGE=CHARGS,
@@ -133,13 +133,13 @@ AE=CALC_MATR_ELEM( MODELE=MODELE,
                    CHARGE=CHARGS,
                  )
 
-VE=CALC_VECT_ELEM( 
+VE=CALC_VECT_ELEM(
                    OPTION='CHAR_MECA',
                    CHARGE=CHARGS,
                    CHAM_MATER=CHAMPMAT,
                    CARA_ELEM=CARA_ELE,
                  )
-                 
+
 NUM=NUME_DDL(  MATR_RIGI=KE ,)
 
 STIFF=ASSE_MATRICE(  MATR_ELEM=KE,  NUME_DDL=NUM ,)
@@ -149,7 +149,7 @@ MASS=ASSE_MATRICE(  MATR_ELEM=ME,  NUME_DDL=NUM ,)
 AMOR=ASSE_MATRICE(  MATR_ELEM=AE,  NUME_DDL=NUM, )
 
 VECT=ASSE_VECTEUR(  VECT_ELEM=VE,  NUME_DDL=NUM ,)
- 
+
 #
 # ----------------------------------------------------------------------
 # DEFINITION DU TEMPS DE CALCUL ET DU PAS DE TEMPS
@@ -165,7 +165,7 @@ TEMPARCH=DEFI_LIST_ENTI(DEBUT=1,
                        INTERVALLE=_F(JUSQU_A=2000,
                                      PAS=1,),
                       )
-                      
+
 # CALCUL DE LA REPONSE TRANSITOIRE
 
 DYNA=DYNA_LINE_TRAN(EXCIT=_F(VECT_ASSE=VECT,
@@ -184,15 +184,15 @@ DYNA=DYNA_LINE_TRAN(EXCIT=_F(VECT_ASSE=VECT,
 #----------------------
 #
 TEST_RESU(RESU=(
- _F( 
+ _F(
     RESULTAT = DYNA, GROUP_NO='MASSPONC', NOM_CHAM = 'DEPL',
        NOM_CMP = 'DY',
-       INST = 20.15E-03, VALE = -1.3536E-03, 
+       INST = 20.15E-03, VALE = -1.3536E-03,
        REFERENCE = 'NON_REGRESSION', VERSION = '6.04.01'),
- _F( 
+ _F(
        RESULTAT = DYNA, GROUP_NO='MASSPONC', NOM_CHAM = 'DEPL',
        NOM_CMP = 'DY',
-       INST = 26.05E-03, VALE = -0.42071E-03, 
+       INST = 26.05E-03, VALE = -0.42071E-03,
        REFERENCE = 'NON_REGRESSION', VERSION = '6.04.01'),),
          )
 #

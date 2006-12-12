@@ -4,7 +4,7 @@
       CHARACTER*(*)     CHAM,NOPASE,NOMA,FORM
       CHARACTER*80      TITRE
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +46,7 @@ C
       CHARACTER*16  DATE,TYPRES
       CHARACTER*19  CHAM19
       CHARACTER*24  DATEUR
+      CHARACTER*24 VALK(2)
       CHARACTER*28  NOFIEN
       CHARACTER*80  TITSUP(7),TITENS(2),STITR
       LOGICAL       LEXP
@@ -143,11 +144,9 @@ C           GEOMETRIE './RESU_ENSIGHT/'//NOMMA//'.geo'
             OPEN(UNIT=IFI,ERR=23,STATUS='OLD',FILE=NOFIEN,IOSTAT=IOS2)
    23       CONTINUE
             IF(IOS2.EQ.0) THEN
-              CALL UTMESS('A','IMPR_RESU','LE MAILLAGE '
-     &              //NOMMA(1:LGNOMA)//' A DEJA ETE ECRIT AU FORMAT'//
-     &              ' ENSIGHT: LE CONTENU DU FICHIER '
-     &              //NOFIEN(1:19+LGNOMA)//' SERA ECRASE.')
-C        CALL U2MESK('A','PREPOST3_7', 2 ,VALK)
+               VALK(1) = NOMMA(1:LGNOMA)
+               VALK(2) = NOFIEN(1:19+LGNOMA)
+               CALL U2MESK('A','PREPOST3_7', 2 ,VALK)
             ELSE
               GO TO 99
             ENDIF
@@ -179,10 +178,9 @@ C
         ENDIF
         GO TO 100
    99   CONTINUE
-        CALL UTMESS('F','IMPR_RESU','PROBLEME A L''OUVERTURE DU'//
-     &       ' FICHIER "'//NOFIEN(1:19+LGNOMA)//'" POUR IMPRESSION'//
-     &       ' DU MAILLAGE '//NOMMA//' AU FORMAT ENSIGHT')
-C        CALL U2MESK('F','PREPOST3_8', 2 ,VALK)
+         VALK(1) = NOFIEN(1:19+LGNOMA)
+         VALK(2) = NOMMA
+         CALL U2MESK('F','PREPOST3_8', 2 ,VALK)
   100   CONTINUE
       ENDIF
       CALL JEDEMA()

@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,6 @@ C
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
 C       JEVEUX AND CO: JEMARQ, JEDEMA, JEVETE, JEVECH, TECACH.
-C       MSG: UTMESS.
 C       ENVIMA: R8PREM
 C       MATERIAUX: RCCOMA, RCVALA.
 C       ELEMENTS FINIS: NMGEOM, PPGANO, D2GEOM.

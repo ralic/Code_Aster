@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,6 +55,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*1 TYPE
+      CHARACTER*24 VALK(2)
       CHARACTER*8 K8B,NOMA,NOGD,NOMOBJ,NOMACC
       CHARACTER*16 NOMCMD,TYPCON,TYPCHA,TYPRES
       CHARACTER*19 LISTR,PROFCH,PROFC2,CH1,CH2
@@ -172,9 +173,9 @@ C               ----- EXTRACTION SUR UN "CHAM_NO" -----
         ELSE IF (IDDL1.EQ.0) THEN
           LG1 = LXLGUT(NOEUD)
           LG2 = LXLGUT(CMP)
-        CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
-     &                'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
-C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
+         VALK(1) = CMP(1:LG2)
+         VALK(2) = NOEUD(1:LG1)
+         CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
         END IF
         IDDL2 = IDDL1
         DO 20 IORDR = 0,NBINST - 1
@@ -242,10 +243,9 @@ C           -------------------------
             ELSE IF (IDDL1.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
               LG2 = LXLGUT(CMP)
-              CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//
-     &                    '" DU '//'NOEUD "'//NOEUD(1:LG1)//
-     &                    '" N''EXISTE PAS.')
-C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
+               VALK(1) = CMP(1:LG2)
+               VALK(2) = NOEUD(1:LG1)
+               CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
             END IF
             IDDL2 = IDDL1
           END IF
@@ -269,10 +269,9 @@ C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
             ELSE IF (IDDL2.EQ.0) THEN
               LG1 = LXLGUT(NOEUD)
               LG2 = LXLGUT(CMP)
-              CALL UTMESS('F','FOCRR2','LA COMPOSANTE "'//CMP(1:LG2)//
-     &                    '" DU '//'NOEUD "'//NOEUD(1:LG1)//
-     &                    '" N''EXISTE PAS.')
-C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
+               VALK(1) = CMP(1:LG2)
+               VALK(2) = NOEUD(1:LG1)
+               CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
             END IF
           END IF
 

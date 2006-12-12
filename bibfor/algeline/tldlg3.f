@@ -2,7 +2,7 @@
      &                  NDECI,ISINGU,NPVNEG,IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,8 +100,7 @@ C     ------------------------------------------------------------------
       METRES = METREZ
 
       IF ( METRES.NE.'LDLT' .AND. METRES.NE.'MULT_FRO' ) THEN
-         CALL UTMESS ('F','TLDLG3','SEULES LES METHODES DE RESOLUTION '
-     +                //'"LDLT" ET "MULT_FRONT" SONT AUTORISEES.')
+         CALL U2MESS ('F','ALGELINE4_1')
       ENDIF
 
 C     -- DDLS ELIMINES :

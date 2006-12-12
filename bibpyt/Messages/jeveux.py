@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,6 +155,12 @@ cata_msg={
 30: _("""
      Objet de collection JEVEUX inexistant : >%(k1)s<
      l'objet n'a pas été créé ou il a été détruit
+"""),
+
+31: _("""
+     Erreur programmeur :
+     La routine JUVECA n'a pas prévu de redimensionner l'objet :%(k1)s
+     de type :%(k2)s
 """),
 
 }

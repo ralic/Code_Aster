@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
+#@ MODIF modelisa7 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -401,7 +401,17 @@ cata_msg={
 95: _("""
  pb de groupe mailles enrichies
 """),
+
 96: _("""
  seules les chargement mecaniques peuvent etre des fonctions 
 """),
+
+97: _("""
+ SANS_GROUP_NO : intégration aux noeuds obligatoire.
+"""),
+
+98: _("""
+ Erreur lors de la vérification des noms de groupes.
+"""),
+
 }

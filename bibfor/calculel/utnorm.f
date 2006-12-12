@@ -3,7 +3,7 @@
      &                  LAXI,JACOB,IFM,NIV)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,6 @@ C OUT XN/YN/JAC : VALEUR DES COORD DE LA NORMALE EXTERNE ET DU
 C                 JACOBIEN AUX POINTS CI-DESSUS
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       MSG:UTMESS.
 C       ENVIMA:R8MIEM.
 C
 C     FONCTIONS INTRINSEQUES:

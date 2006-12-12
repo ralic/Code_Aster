@@ -6,7 +6,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,6 +101,7 @@ C
 C
       CHARACTER*8 SAUX08
       CHARACTER*24 NTCMPL
+      CHARACTER*24 VALK(2)
 C
       CALL INFNIV ( IFM, NIVINF )
 C
@@ -186,9 +187,9 @@ C            FICHIER.
 C
           SAUX08 = ZK16(ADNCFI-1+IAUX)(1:8)
           IF ( LXLGUT(ZK16(ADNCFI-1+IAUX)).GT.8 ) THEN
-            CALL UTMESS( 'A',NOMPRO,'NOM DE COMPOSANTE TRONQUEE A 8 '//
-     &        'CARACTERES ('//ZK16(ADNCFI-1+IAUX)//' >>> '//SAUX08//')')
-C        CALL U2MESK('A','PREPOST3_27', 2 ,VALK)
+             VALK(1) = ZK16(ADNCFI-1+IAUX)
+             VALK(2) = SAUX08
+             CALL U2MESK('A','PREPOST3_27', 2 ,VALK)
           ENDIF
           NRCMP = INDIK8 ( NOMCMR, SAUX08, 1, NCMPRF )
 C

@@ -8,7 +8,7 @@
       CHARACTER*24      TMP,TMPF
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     -------  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
       REAL*8       TST, R8MAEM, PI, R8PI, ZERO
       REAL*8       HY, HZ, EPY, EPZ, HYI, HZI, E, RE, RI
       CHARACTER*8   RESU
+      CHARACTER*24 VALK(2)
       CHARACTER*16  CONCEP, CMD
       LOGICAL      SECPLE
 C     ------------------------------------------------------------------
@@ -75,10 +76,9 @@ C --- TESTS D ECRASEMENT DE SECTION
          CALL JEVEUO(JEXNOM(TMP,NOMMAI),'E',JDGE)
          IISEC = NINT(ZR(JDGE+NBO-1))
          IF (IISEC.NE.ISEC) THEN
-            CALL UTMESS('A',CMD,'OCCURENCE '//KIOC//'DE "BARRE" ('//
-     &                             'MAILLE '//NOMMAI//') ECRASEMENT '//
-     &                'D UN TYPE DE GEOMETRIE DE SECTION PAR UN AUTRE')
-C        CALL U2MESK('A','MODELISA_69', 2 ,VALK)
+             VALK(1) = KIOC
+             VALK(2) = NOMMAI
+             CALL U2MESK('A','MODELISA_69', 2 ,VALK)
             IER = IER + 1
             GOTO 9999
          ENDIF
@@ -138,18 +138,15 @@ C
 C --- COMPLETUDE DES DONNES GENERALES
       IF (ISEC.EQ.0) THEN
          IF (ZR(JDGE).EQ.TST) THEN
-            CALL UTMESS('A',CMD,'BARRE'//
-     &                    ' : MAILLE '//NOMMAI//' : SECTION GENERALE'//
-     &                      ' : IL MANQUE LA CARACTERISTIQUE '//EXP(1))
-C        CALL U2MESK('A','MODELISA_70', 2 ,VALK)
+             VALK(1) = NOMMAI
+             VALK(2) = EXP(1)
+             CALL U2MESK('A','MODELISA_70', 2 ,VALK)
             IER = IER + 1
          ENDIF
          IF (ZR(JDGE).LE.ZERO) THEN
-            CALL UTMESS('A',CMD,'BARRE'//
-     &                    ' : MAILLE '//NOMMAI//' : SECTION GENERALE'//
-     &                            ' : LA VALEUR DE '//EXP(1)//' DOIT'//
-     &                                  ' ETRE  STRICTEMENT POSITIVE.')
-C        CALL U2MESK('A','MODELISA_71', 2 ,VALK)
+             VALK(1) = NOMMAI
+             VALK(2) = EXP(1)
+             CALL U2MESK('A','MODELISA_71', 2 ,VALK)
             IER = IER + 1
          ENDIF
 C
@@ -157,36 +154,30 @@ C --- COMPLETUDE DES DONNES GEOMETRIQUES RECTANGLE
       ELSEIF (ISEC.EQ.1) THEN
          DO 40 J = 1 , 2
             IF (ZR(JDGE+J).EQ.TST) THEN
-               CALL UTMESS('A',CMD,'BARRE'//
-     &                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
-     &                   ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(1+J))
-C        CALL U2MESK('A','MODELISA_72', 2 ,VALK)
+                VALK(1) = NOMMAI
+                VALK(2) = EXP(1+J)
+                CALL U2MESK('A','MODELISA_72', 2 ,VALK)
                IER = IER + 1
             ENDIF
             IF (ZR(JDGE+J).LE.ZERO) THEN
-               CALL UTMESS('A',CMD,'BARRE'//
-     &                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
-     &                          ' : LA VALEUR DE '//EXP(1+J)//' DOIT'//
-     &                                  ' ETRE  STRICTEMENT POSITIVE.')
-C        CALL U2MESK('A','MODELISA_73', 2 ,VALK)
+                VALK(1) = NOMMAI
+                VALK(2) = EXP(1+J)
+                CALL U2MESK('A','MODELISA_73', 2 ,VALK)
                IER = IER + 1
             ENDIF
  40      CONTINUE
          IF ( .NOT. SECPLE ) THEN
             DO 42 J = 3 , 4
                IF (ZR(JDGE+J).EQ.TST) THEN
-                  CALL UTMESS('A',CMD,'BARRE'//
-     &                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
-     &                   ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(1+J))
-C        CALL U2MESK('A','MODELISA_72', 2 ,VALK)
+                   VALK(1) = NOMMAI
+                   VALK(2) = EXP(1+J)
+                   CALL U2MESK('A','MODELISA_72', 2 ,VALK)
                   IER = IER + 1
                ENDIF
                IF (ZR(JDGE+J).LE.ZERO) THEN
-                  CALL UTMESS('A',CMD,'BARRE'//
-     &                   ' : MAILLE '//NOMMAI//' : SECTION RECTANGLE'//
-     &                          ' : LA VALEUR DE '//EXP(1+J)//' DOIT'//
-     &                                  ' ETRE  STRICTEMENT POSITIVE.')
-C        CALL U2MESK('A','MODELISA_73', 2 ,VALK)
+                   VALK(1) = NOMMAI
+                   VALK(2) = EXP(1+J)
+                   CALL U2MESK('A','MODELISA_73', 2 ,VALK)
                   IER = IER + 1
                ENDIF
  42         CONTINUE
@@ -195,27 +186,22 @@ C
 C --- COMPLETUDE DES DONNES GEOMETRIQUES CERCLE
       ELSEIF(ISEC.EQ.2)THEN
          IF (ZR(JDGE+5).EQ.TST) THEN
-            CALL UTMESS('A',CMD,'BARRE'//
-     &                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
-     &                     ' : IL MANQUE  LA CARACTERISTIQUE '//EXP(5))
-C        CALL U2MESK('A','MODELISA_74', 2 ,VALK)
+             VALK(1) = NOMMAI
+             VALK(2) = EXP(5)
+             CALL U2MESK('A','MODELISA_74', 2 ,VALK)
             IER = IER + 1
          ENDIF
          IF (ZR(JDGE+5).LE.ZERO) THEN
-            CALL UTMESS('A',CMD,'BARRE'//
-     &                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
-     &                            ' : LA VALEUR DE '//EXP(5)//' DOIT'//
-     &                                  ' ETRE  STRICTEMENT POSITIVE.')
-C        CALL U2MESK('A','MODELISA_75', 2 ,VALK)
+             VALK(1) = NOMMAI
+             VALK(2) = EXP(5)
+             CALL U2MESK('A','MODELISA_75', 2 ,VALK)
             IER = IER + 1
          ENDIF
          IF ( .NOT. SECPLE ) THEN
             IF (ZR(JDGE+6).LE.ZERO) THEN
-               CALL UTMESS('A',CMD,'BARRE'//
-     &                      ' : MAILLE '//NOMMAI//' : SECTION CERCLE'//
-     &                            ' : LA VALEUR DE '//EXP(6)//' DOIT'//
-     &                                               ' ETRE POSITIVE.')
-C        CALL U2MESK('A','MODELISA_76', 2 ,VALK)
+                VALK(1) = NOMMAI
+                VALK(2) = EXP(6)
+                CALL U2MESK('A','MODELISA_76', 2 ,VALK)
                IER = IER + 1
             ENDIF
          ENDIF

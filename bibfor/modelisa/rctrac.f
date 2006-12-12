@@ -1,7 +1,7 @@
       SUBROUTINE RCTRAC(JMAT,NOMRC,NOMCL,TEMP,JPROL,JVALE,NBVALE,E)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8        RPRIM1, RP1
       REAL*8        RPRIM2, RP2
       CHARACTER*8   NOMCL2
+      CHARACTER*24 VALK(2)
       CHARACTER*1   PRO1, PRO2
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
@@ -442,9 +443,9 @@ C
           ENDIF
         ENDIF
       ELSE
-        CALL UTMESS ('F','RCTRAC_11','CONCEPT DE TYPE : '//ZK16(JPRO)
-     &             //' INTERDIT POUR LA COURBE DE TRACTION' // NOMCL2)
-C        CALL U2MESK('F','MODELISA6_91', 2 ,VALK)
+         VALK(1) = ZK16(JPRO)
+         VALK(2) = NOMCL2
+         CALL U2MESK('F','MODELISA6_91', 2 ,VALK)
       ENDIF
 C
 C --- CONSTRUCTION DE LA COURBE R(P) POUR TRACTION

@@ -6,10 +6,11 @@
       CHARACTER*8  CONCEP
       CHARACTER*16 TYPCON
       CHARACTER*7  STATUT
+      CHARACTER*24 VALK(2)
       INTEGER   INUMEX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +58,8 @@ C     EMETTANT UN MESSAGE D'ALARME
       ELSEIF (ICODE.GT.100) THEN
          CALL GETRES(CONCEP,TYPCON,NOMCMD)
          CALL GETTCO(NOMSD,TYSD)
-         CALL UTMESS('F','RSEXC1','TYPE : '//TYSD//
-     &                       ' INCOMPATIBLE AVEC L''OPTION : '//OPTION)
-C        CALL U2MESK('F','CALCULEL3_27', 2 ,VALK)
+          VALK(1) = TYSD
+          VALK(2) = OPTION
+          CALL U2MESK('F','CALCULEL3_27', 2 ,VALK)
       ENDIF
       END

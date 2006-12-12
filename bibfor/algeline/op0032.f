@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C
      &             LPROD, IFR, IRET, ICOMP, IERX, NBFREQ
       LOGICAL      ULEXIS
       CHARACTER*19 MASSE , RAIDE
+      CHARACTER*24 VALK(2)
       CHARACTER*8  CBID
       CHARACTER*16 CONCEP, NOMCMD, TYPRES, FICHIE
       CHARACTER*19 DYNAM
@@ -104,10 +105,9 @@ C     --- CONTROLE DES REFERENCES ---
       CALL GETVID(' ','MATR_B',1,1,1,MASSE,L)
       CALL VRREFE(MASSE,RAIDE,IRET)
       IF ( IRET .NE. 0 ) THEN
-         CALL UTMESS('F','IMPR_STURM',
-     &                   'LES  MATRICES  "'//RAIDE//'"  ET  "'//MASSE//
-     &                   '"  N''ONT PAS LE MEME DOMAINE DE DEFINITION.')
-C        CALL U2MESK('F','ALGELINE2_30', 2 ,VALK)
+          VALK(1) = RAIDE
+          VALK(2) = MASSE
+          CALL U2MESK('F','ALGELINE2_30', 2 ,VALK)
       ENDIF
 C
 C     CREATION DE LA MATRICE DYNAMIQUE

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MAILLA, MOMANU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        CDG(3),DDOT
       CHARACTER*8   MA, NOMAIL, NONO1, NONO2, NONO3
       CHARACTER*24  TYPMAI, CONNEX, COOVAL,CANOMA,CANONO
+      CHARACTER*24 VALK(4)
 
       REAL*8  COO1(3),COO2(3),COO3(3),THETA,EPSI,T13(3),T32(3),TEST
       REAL*8 NORMEN,NORME1,NORME2,N(3),OM(3),OC(3),C2,C6,T2,T6,T12(3)
@@ -149,12 +150,11 @@ C           VERIF QUE LE 3EME NOEUD EST BIEN AU MILIEU
                WRITE(IFM,*) 'DISTANCE N1-N3= ',NORME1
                WRITE(IFM,*) 'DISTANCE N2-N3= ',NORME2
                WRITE(IFM,*) 'TOLERANCE = ',EPSI
-               CALL UTMESS('F','CMMOMA',
-     &         ' LE NOEUD '//NONO3//' N EST PAS EQUIDISTANT DES '//
-     &         ' NOEUDS '//NONO1//' ET '//NONO2//
-     &         ' POUR LA MAILLE :'//NOMAIL//'. AMELIOREZ LE '//
-     &         ' MAILLAGE. ON ARRETE POUR EVITER DES RESULTATS FAUX')
-C        CALL U2MESK('F','ALGELINE_23', 4 ,VALK)
+                VALK(1) = NONO3
+                VALK(2) = NONO1
+                VALK(3) = NONO2
+                VALK(4) = NOMAIL
+                CALL U2MESK('F','ALGELINE_23', 4 ,VALK)
             ENDIF
 
             IF(NORMEN.LE.EPSI) THEN

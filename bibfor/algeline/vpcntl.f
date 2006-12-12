@@ -4,7 +4,7 @@
      &   TYPRES, STURM, NBLAGR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C            0 TOUT C'EST BIEN PASSE
 C            > 0 NOMBRE D'ERREURS TROUVEES
 C     ------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C        INFNIV, UTDEBM, UTIMPK, UTIMPI, UTIMPR, UTFINM,UTMESS,OMEGA2,
+C        INFNIV, UTDEBM, UTIMPK, UTIMPI, UTIMPR, UTFINM, OMEGA2,
 C        VPSTUR,
 C     FONCTIONS INTRINSEQUES:
 C        ABS, SIGN

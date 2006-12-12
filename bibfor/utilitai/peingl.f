@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,6 +147,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*16 TYPRES,OPTION,NOPARR(NBPARR),LIGRMO,COMPT
       CHARACTER*19 KNUM,LIGREL,KINS,COMPOR
       CHARACTER*24 CHGEOM,CHCARA(15),CHHARM,CHVARI,CHDEPL
+      CHARACTER*24 VALK(2)
       CHARACTER*24 CHSIG,LCHIN(10),LCHOUT(2)
       CHARACTER*24 CHTEMP,CHTREF,MLGGMA,MLGNMA
       CHARACTER*24 CHSIGM,CHDEPM,CHBID
@@ -262,10 +263,9 @@ C ---  NUMERO D'ORDRE COURANT :
 C      ----------------------
         CALL RSEXCH(RESUL,'COMPORTEMENT',NUMORD,COMPOR,IRET)
         IF (IRET.GT.0) THEN
-          CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
-     &                ' DOIT COMPORTER LA RELATION DE COMPORTEMENT '//
-     &                'AU NUMERO D''ORDRE '//KIORD//' .')
-C        CALL U2MESK('F','UTILITAI3_78', 2 ,VALK)
+           VALK(1) = RESUL
+           VALK(2) = KIORD
+           CALL U2MESK('F','UTILITAI3_78', 2 ,VALK)
         END IF
 
 CCC---RECUPERATION DU COMPOR PAR ETENCA
@@ -342,10 +342,9 @@ C ---  NUMERO D'ORDRE COURANT :
 C      ----------------------
         CALL RSEXCH(RESUL,'SIEF_ELGA',NUMORD,CHSIG,IRET)
         IF (IRET.GT.0) THEN
-          CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
-     &                ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
-     &                'AU NUMERO D''ORDRE '//KIORD//' .')
-C        CALL U2MESK('F','CALCULEL3_17', 2 ,VALK)
+           VALK(1) = RESUL
+           VALK(2) = KIORD
+           CALL U2MESK('F','CALCULEL3_17', 2 ,VALK)
         END IF
 
 C --- SI LE NUMERO COURANT EST INFERIEUR A NBORDR ON RECUPERE LES
@@ -356,10 +355,9 @@ C --- CONTRAINTES DE L INSTANT PRECEDENT
           CALL CODENT(NUMORM,'G',KIORDM)
           CALL RSEXCH(RESUL,'SIEF_ELGA',NUMORM,CHSIGM,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
-     &                  ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
-     &                  'AU NUMERO D''ORDRE '//KIORDM//' .')
-C        CALL U2MESK('F','CALCULEL3_17', 2 ,VALK)
+             VALK(1) = RESUL
+             VALK(2) = KIORDM
+             CALL U2MESK('F','CALCULEL3_17', 2 ,VALK)
           END IF
         END IF
 
@@ -370,10 +368,9 @@ C      ----------------------
         IVARI=1
         IF (IRET.GT.0) THEN
            IF (OPTION.NE.'ENER_ELAS') THEN
-              CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
-     &                ' DOIT COMPORTER UN CHAMP DE VARIABLES INTERNES '
-     &                //'AU NUMERO D''ORDRE '//KIORD//' .')
-C        CALL U2MESK('F','UTILITAI3_79', 2 ,VALK)
+               VALK(1) = RESUL
+               VALK(2) = KIORD
+               CALL U2MESK('F','UTILITAI3_79', 2 ,VALK)
            ELSE
 C CREATION D'UN CHAMP DE VARIABLES INTERNES NUL
               IVARI=0
@@ -388,10 +385,9 @@ C ---  NUMERO D'ORDRE COURANT :
 C      ----------------------
         CALL RSEXCH(RESUL,'DEPL',NUMORD,CHDEPL,IRET)
         IF (IRET.GT.0) THEN
-          CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
-     &                ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
-     &                'AU NUMERO D''ORDRE '//KIORD//' .')
-C        CALL U2MESK('F','CALCULEL3_11', 2 ,VALK)
+           VALK(1) = RESUL
+           VALK(2) = KIORD
+           CALL U2MESK('F','CALCULEL3_11', 2 ,VALK)
         END IF
 
 C ---  RECUPERATION DU CHAMP DES DEPLACEMENTS ASSOCIE AU
@@ -400,10 +396,9 @@ C      ----------------------
         IF (IORD.GT.1) THEN
           CALL RSEXCH(RESUL,'DEPL',NUMORM,CHDEPM,IRET)
           IF (IRET.GT.0) THEN
-            CALL UTMESS('F','PEINGL','LE RESULTAT '//RESUL//
-     &                  ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
-     &                  'AU NUMERO D''ORDRE '//KIORDM//' .')
-C        CALL U2MESK('F','CALCULEL3_11', 2 ,VALK)
+             VALK(1) = RESUL
+             VALK(2) = KIORDM
+             CALL U2MESK('F','CALCULEL3_11', 2 ,VALK)
           END IF
         END IF
 

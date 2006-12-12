@@ -4,7 +4,7 @@
       CHARACTER*1 BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       CHARACTER*8 MA1,MA2,KBID
+      CHARACTER*24 VALK(2)
       INTEGER I1,I2,I3,J1,J2,J3,K
       INTEGER INO2,IATMP1,DECA1,DECA2,DECA3,NBNO,LONT,NBNO2
       INTEGER I1NB,I2NB,I3NB,I1NU,I2NU,I3NU,I1CF,I2CF,I3CF,I1OU2
@@ -71,10 +72,11 @@ C     ----------------------
       DO 10,K = 1,2
         MA1 = ZK8(I1-1+K)
         MA2 = ZK8(I2-1+K)
-        IF (MA1.NE.MA2) CALL UTMESS('F','PJFUCO',
-     &                              ' MAILLAGES NON IDENTIQUES : '//
-     &                              MA1//' ET '//MA2)
-C        CALL U2MESK('F','CALCULEL4_65', 2 ,VALK)
+        IF (MA1.NE.MA2) THEN
+           VALK(1) = MA1
+           VALK(2) = MA2
+           CALL U2MESK('F','CALCULEL4_65', 2 ,VALK)
+        ENDIF
    10 CONTINUE
       CALL JEDUPO(C1//'.PJEF_NO',BASE,C3//'.PJEF_NO',.FALSE.)
 

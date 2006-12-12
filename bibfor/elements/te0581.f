@@ -1,7 +1,7 @@
       SUBROUTINE TE0581 ( OPTION , NOMTE )
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,6 +55,7 @@ C VARIABLES LOCALES
 C -----------------
       INTEGER       JTAB1(7),JTAB2(7),JTAB3(7),IRET
       INTEGER       J1,J2,J3,NBCMP,NBSP,NBSP2,NBSP1,NBPT
+      CHARACTER*24  VALK(2)
       REAL*8 V1,V2
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -63,11 +64,11 @@ C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
       CALL TECACH('ONN','PEPCON2',7,JTAB2,IRET)
       CALL TECACH('ONN','PEPCON3',7,JTAB3,IRET)
 
-      IF ( JTAB1(1)*JTAB2(1)*JTAB3(1).EQ.0 )
-     &   CALL UTMESS('F','TE0581','OPTION '//OPTION//' NON ACTIVE '//
-     &   'POUR UN ELEMENT DE TYPE '//NOMTE)
-C        CALL U2MESK('F','ELEMENTS4_38', 2 ,VALK)
-
+      IF ( JTAB1(1)*JTAB2(1)*JTAB3(1).EQ.0 ) THEN
+         VALK(1) = OPTION
+         VALK(2) = NOMTE
+         CALL U2MESK('F','ELEMENTS4_38', 2 ,VALK)
+      ENDIF
       IF (( JTAB1(2).NE.JTAB2(2) ).OR.( JTAB1(3).NE.JTAB2(3) ))
      &   CALL U2MESK('F','ELEMENTS4_39',1,OPTION)
 

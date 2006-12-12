@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,6 +107,7 @@ C -----------------
       CHARACTER*19  CARTE, NOMRC
       CHARACTER*24  CADESC, CAPTMA, CAVALK, CAVALR, MODMAI, RCVALK,
      &              RCVALR
+      CHARACTER*24  VALK(2)
 C
       REAL*8        R8PREM
 C
@@ -163,11 +164,9 @@ C
       IF ( IAS.EQ.0 ) THEN
          WRITE(K3MAI,'(I3)') NUMAIL
          WRITE(K3CAB,'(I3)') ICABL
-         CALL UTMESS('F','CAELCA','LES CARACTERISTIQUES '//
-     &               'MATERIELLES N ONT PAS ETE AFFECTEES A LA '//
-     &               'MAILLE NO'//K3MAI//' APPARTENANT AU CABLE NO'//
-     &                K3CAB)
-C        CALL U2MESK('F','MODELISA2_49', 2 ,VALK)
+          VALK(1) = K3MAI
+          VALK(2) = K3CAB
+          CALL U2MESK('F','MODELISA2_49', 2 ,VALK)
       ENDIF
 C
       CALL DISMOI('F','NB_CMP_MAX','NEUT_F','GRANDEUR',NBCMP,K8B,IER)
@@ -187,11 +186,9 @@ C
          IF ( IAS.EQ.0 ) THEN
             WRITE(K3MAI,'(I3)') NUMAIL
             WRITE(K3CAB,'(I3)') ICABL
-            CALL UTMESS('F','CAELCA','LES CARACTERISTIQUES '//
-     &                  'MATERIELLES N ONT PAS ETE AFFECTEES A LA '//
-     &                  'MAILLE NO'//K3MAI//' APPARTENANT AU CABLE NO'//
-     &                   K3CAB)
-C        CALL U2MESK('F','MODELISA2_49', 2 ,VALK)
+             VALK(1) = K3MAI
+             VALK(2) = K3CAB
+             CALL U2MESK('F','MODELISA2_49', 2 ,VALK)
          ENDIF
          IDEBGD=NBCMP*(IAS-1)+1
          K8B = ZK8(JVALK+IDEBGD-1)
@@ -319,10 +316,9 @@ C
       IF ( IAS.EQ.0 ) THEN
          WRITE(K3MAI,'(I3)') NUMAIL
          WRITE(K3CAB,'(I3)') ICABL
-         CALL UTMESS('F','CAELCA','LES CARACTERISTIQUES GEOMETRIQUES '//
-     &               'N ONT PAS ETE AFFECTEES A LA MAILLE NO'//K3MAI//
-     &               ' APPARTENANT AU CABLE NO'//K3CAB)
-C        CALL U2MESK('F','MODELISA2_57', 2 ,VALK)
+          VALK(1) = K3MAI
+          VALK(2) = K3CAB
+          CALL U2MESK('F','MODELISA2_57', 2 ,VALK)
       ENDIF
 C
       ICODE = ZI(JDESC+3+2*IASMAX+NBEC*(IAS-1))
@@ -334,10 +330,9 @@ C
       IF ( IRANV.EQ.0 ) THEN
          WRITE(K3MAI,'(I3)') NUMAIL
          WRITE(K3CAB,'(I3)') ICABL
-         CALL UTMESS('F','CAELCA','L AIRE DE LA SECTION DROITE N A '//
-     &               'PAS ETE AFFECTEE A LA MAILLE NO'//K3MAI//
-     &               ' APPARTENANT AU CABLE NO'//K3CAB)
-C        CALL U2MESK('F','MODELISA2_58', 2 ,VALK)
+          VALK(1) = K3MAI
+          VALK(2) = K3CAB
+          CALL U2MESK('F','MODELISA2_58', 2 ,VALK)
       ENDIF
 C
       SA = ZR(JVALR+NCABA*(IAS-1)+IRANV-1)
@@ -345,10 +340,9 @@ C
       IF ( SA.LE.0.0D0 ) THEN
          WRITE(K3MAI,'(I3)') NUMAIL
          WRITE(K3CAB,'(I3)') ICABL
-         CALL UTMESS('F','CAELCA','VALEUR INVALIDE POUR L AIRE DE LA '//
-     &               'SECTION DROITE AFFECTEE A LA MAILLE NO'//K3MAI//
-     &               ' APPARTENANT AU CABLE NO'//K3CAB)
-C        CALL U2MESK('F','MODELISA2_59', 2 ,VALK)
+          VALK(1) = K3MAI
+          VALK(2) = K3CAB
+          CALL U2MESK('F','MODELISA2_59', 2 ,VALK)
       ENDIF
 C
 C.... ON VERIFIE QUE LA MEME AIRE DE SECTION DROITE A ETE AFFECTEE
@@ -363,11 +357,9 @@ C
          IF ( IAS.EQ.0 ) THEN
             WRITE(K3MAI,'(I3)') NUMAIL
             WRITE(K3CAB,'(I3)') ICABL
-            CALL UTMESS('F','CAELCA','LES CARACTERISTIQUES '//
-     &                  'GEOMETRIQUES N ONT PAS ETE AFFECTEES A LA '//
-     &                  'MAILLE NO'//K3MAI//' APPARTENANT AU CABLE NO'//
-     &                   K3CAB)
-C        CALL U2MESK('F','MODELISA2_57', 2 ,VALK)
+             VALK(1) = K3MAI
+             VALK(2) = K3CAB
+             CALL U2MESK('F','MODELISA2_57', 2 ,VALK)
          ENDIF
 C
          ICODE = ZI(JDESC+3+2*IASMAX+NBEC*(IAS-1))
@@ -379,10 +371,9 @@ C
          IF ( IRANV.EQ.0 ) THEN
             WRITE(K3MAI,'(I3)') NUMAIL
             WRITE(K3CAB,'(I3)') ICABL
-            CALL UTMESS('F','CAELCA','L AIRE DE LA SECTION DROITE '//
-     &                  'N A PAS ETE AFFECTEE A LA MAILLE NO'//K3MAI//
-     &                  ' APPARTENANT AU CABLE NO'//K3CAB)
-C        CALL U2MESK('F','MODELISA2_58', 2 ,VALK)
+             VALK(1) = K3MAI
+             VALK(2) = K3CAB
+             CALL U2MESK('F','MODELISA2_58', 2 ,VALK)
          ENDIF
          RBID = ZR(JVALR+NCABA*(IAS-1)+IRANV-1)
          IF ( DBLE(ABS(RBID-SA))/SA.GT.EPS ) THEN

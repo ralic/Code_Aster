@@ -1,6 +1,6 @@
       SUBROUTINE SSDEIN(UL,UG,MAIL,NOCAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*16 ZK16
       CHARACTER*19 UG2,UL2
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C ----------------------------------------------------------------------
@@ -178,9 +179,9 @@ C     -------------------------
       IF (NOCAS(1:1).NE.' ') THEN
         CALL JEEXIN(JEXNOM(NOMACR//'.LICA',NOCAS),IRET)
         IF (IRET.EQ.0) THEN
-          CALL UTMESS('A','SSDEIN','CAS DE CHARGE : '
-     &     //NOCAS//' INEXISTANT SUR LE MACR_ELEM_STAT : '//NOMACR)
-C        CALL U2MESK('A','SOUSTRUC_46', 2 ,VALK)
+           VALK(1) = NOCAS
+           VALK(2) = NOMACR
+           CALL U2MESK('A','SOUSTRUC_46', 2 ,VALK)
         ELSE
           CALL JEVEUO(JEXNOM(NOMACR//'.LICA',NOCAS),'L',IALICA)
           CALL JEVEUO(JEXNOM(NOMACR//'.LICH',NOCAS),'L',IALICH)

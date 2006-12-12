@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR()
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C ---------------------------------------------------------------------
       CHARACTER*16 TYPRE2 ,OPTIO,PARAM
       CHARACTER*19 LIGREL,CH1,CH2S,CH2,PRCHNO
       CHARACTER*24 NOMFPG
+      CHARACTER*24 VALK(2)
 C     FONCTIONS FORMULES :
 C     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA
       NBNOMA(IMA) = ZI(ILMACO-1+IMA+1) - ZI(ILMACO-1+IMA)
@@ -131,6 +132,7 @@ C          PRCHNO
         PRCHNO=NOOJB(1:19)
 
         NOMSY1 = LICHAM(ISY)
+        IF(NOMSY1(6:9).NE.'ELGA') CALL U2MESS('F','CALCULEL2_41')
 
         DO 80,I = 1,NBORDR
           IORDR = ZI(JORDR+I-1)
@@ -213,11 +215,9 @@ C            DE POINTS DE GAUSS
              DO 130 ICH=1,NBSY
                CALL CELFPG ( CH1, NOMFPG, ICH, IRET2 )
                IF (IRET2.EQ.1) THEN
-                 CALL UTMESS('I','ECLPGR','POUR LE MODELE '//MO1
-     &            //' ON NE PEUT PAS VISUALISER LES CHAMPS ENSEMBLE '
-     &            //LICHAM(1)
-     &            //' ... CAR LES FAMILLES DE PG SONT DIFFERENTES')
-C        CALL U2MESK('I','CALCULEL2_33', 2 ,VALK)
+                  VALK(1) = MO1
+                  VALK(2) = LICHAM(1)
+                  CALL U2MESK('I','CALCULEL2_33', 2 ,VALK)
                ENDIF
 130          CONTINUE
              CALL JEEXIN ( NOMFPG, IRET1 )
@@ -255,10 +255,11 @@ C           ---------------------------
      &                    NTERM1, NSOMM1, CSOMM1, TYMA, NBNO2, CONNX,
      &                    MXNBN2, MXNBPG, MXNBPI, MXNBTE )
             IF (NPG1.NE.0) THEN
-              IF (NBPG.NE.NPG1) CALL UTMESS('F','ECLPGR',
-     &  'LE TYPE_ELEM: '//NOMTE//' N''A PAS LE NOMBRE DE POINTS DE'
-     &  //' GAUSS DECLARE DANS LA ROUTINE ECLAU1. NOM_CHAM='//NOMSY1)
-C        CALL U2MESK('F','CALCULEL2_42', 2 ,VALK)
+              IF (NBPG.NE.NPG1) THEN
+                 VALK(1) =  NOMTE
+                 VALK(2) = NOMSY1
+                 CALL U2MESK('F','CALCULEL2_42', 2 ,VALK)
+              ENDIF
             ELSE
 C            -- ON IGNORE LES AUTRES ELEMENTS :
               NBPG = 0

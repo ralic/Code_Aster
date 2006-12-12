@@ -1,21 +1,21 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV185B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
@@ -52,12 +52,12 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='3D_XFEM',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);  
-                              
+                              MODELISATION='3D',),),);
+
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
-                       );                          
+                       );
 
 # PARAMETRES DE LA FISSURE : 0 < a < 6.5 -> influt sur le choix Rsup !
 #                            b = 10.
@@ -66,7 +66,7 @@ b=10.
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y');
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
@@ -75,7 +75,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     CONTACT=_F(ALGO_LAGR='NON',),);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
-        
+
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
 
 #----------------------------------------------
@@ -98,7 +98,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 #                   CHARGEMENTS
 #----------------------------------------------
 
-PRES=-1.E6 
+PRES=-1.E6
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    DDL_IMPO=(_F(NOEUD='N3751',DX=0.0,DY=0.0,DZ=0.0,),
                              _F(NOEUD='N9276',DZ=0.0,),
@@ -114,16 +114,16 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMA1,              
-                   EXCIT=(_F(CHARGE=CHXFEM,),                                           
+                   CHAM_MATER=CHAMPMA1,
+                   EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CH1,),
-                          _F(CHARGE=CH2,),),  
+                          _F(CHARGE=CH2,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
                                 INST_FIN=1.0,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,),
+                              ),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
@@ -164,7 +164,7 @@ coef=(pi*a)/(2.*b)
 fab=sqrt(tan(coef)/coef)*(0.752+0.37*(1.-sin(coef))**3+2.02*a/b)/cos(coef)
 K1REF=-PRES*sqrt(pi*a)*fab
 
-if a==2 : 
+if a==2 :
    prec = 0.003
 else :
    prec=0.01
@@ -172,7 +172,7 @@ else :
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1_LOCAL',
-              TYPE_TEST='MAX',               
+              TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=prec,
@@ -180,7 +180,7 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1_LOCAL',
-              TYPE_TEST='MIN',               
+              TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=prec,
@@ -214,7 +214,7 @@ TEST_TABLE(TABLE=TABDEP,
            CRITERE='RELATIF',
            PRECISION=PREC,
            REFERENCE = 'NON_REGRESSION',
-           VERSION = '8.2.14'),     
+           VERSION = '8.2.14'),
 
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='COOR_Y',
@@ -223,7 +223,7 @@ TEST_TABLE(TABLE=TABDEP,
            CRITERE='RELATIF',
            PRECISION=PREC,
            REFERENCE = 'NON_REGRESSION',
-           VERSION = '8.2.14'),      
+           VERSION = '8.2.14'),
 
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='COOR_Z',
@@ -232,7 +232,7 @@ TEST_TABLE(TABLE=TABDEP,
            CRITERE='RELATIF',
            PRECISION=PREC,
            REFERENCE = 'NON_REGRESSION',
-           VERSION = '8.2.14'),       
+           VERSION = '8.2.14'),
 
 
 #------------------------------------------------------------------------
@@ -255,7 +255,7 @@ TEST_RESU(RESU=(_F(  RESULTAT=DEPL,NUME_ORDRE=1,
                      CRITERE = 'ABSOLU',
                      VALE = 4.5495E-04,
                      REFERENCE = 'NON_REGRESSION',
-                     VERSION = '8.2.8'),                          
+                     VERSION = '8.2.8'),
                 _F(  RESULTAT=DEPL,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DY',
                      TYPE_TEST='SOMM_ABS',

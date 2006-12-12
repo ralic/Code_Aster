@@ -1,6 +1,6 @@
       SUBROUTINE NUDEEQ(PRCHNO,NEQ,GDS,IDDLAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8,K8BID,MA,BASE,NONO,NOCMP
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24,LIGREL
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       CHARACTER*1 K1BID
@@ -191,10 +192,9 @@ C     -------------------------------------------------------
             CALL JENUNO(JEXNUM(MA//'.NOMNOE',NUNO),NONO)
             CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GDS),'L',JNCMP)
             NOCMP = ZK8(JNCMP-1+NUCMP)
-            CALL UTMESS('E','NUDEEQ','LE NOEUD: '//NONO//
-     &                  'COMPOSANTE: '//NOCMP//
-     &                  ' EST BLOQUE PLUSIEURS FOIS.')
-C        CALL U2MESK('E','ASSEMBLA_26', 2 ,VALK)
+             VALK(1) = NONO
+             VALK(2) = NOCMP
+             CALL U2MESK('E','ASSEMBLA_26', 2 ,VALK)
           END IF
    50   CONTINUE
    60 CONTINUE

@@ -1,6 +1,6 @@
       SUBROUTINE SSDMGN(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C ----------------------------------------------------------------------
+      CHARACTER*24 VALK(2)
 C
       CALL JEMARQ()
       CALL JEVEUO(MAG//'.DIME','L',IADIME)
@@ -81,9 +82,11 @@ C     -----------------------------------
           CALL GETVID('DEFI_GROUP_NO','SUPER_MAILLE',IOCC,1,1,NOSMA,N2)
           IF (N2.EQ.1) THEN
             CALL JEEXIN(JEXNOM(MAG//'.SUPMAIL',NOSMA),IRET)
-            IF (IRET.EQ.0) CALL UTMESS('F','SSDMGN','LA MAILLE : '
-     &         //NOSMA//' N EXISTE PAS DANS LE MAILLAGE : '//MAG)
-C        CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
+            IF (IRET.EQ.0) THEN
+              VALK(1) = NOSMA
+              VALK(2) = MAG
+              CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
+            ENDIF
             CALL JENONU(JEXNOM(MAG//'.SUPMAIL',NOSMA),NUSMA)
           END IF
 C

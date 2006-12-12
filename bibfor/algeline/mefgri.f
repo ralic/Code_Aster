@@ -1,7 +1,7 @@
       SUBROUTINE MEFGRI(NTYPG,NBGTOT,ZG,HG,ITYPG,ZMIN,ZMAX)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C-----------------------------------------------------------------------
       REAL*8        ZG(NBGTOT), HG(NTYPG), ZMIN, ZMAX
 C
       CHARACTER*3   K3IG, K3JG
+      CHARACTER*24 VALK(2)
       LOGICAL       INTNUL
 C-----------------------------------------------------------------------
 C
@@ -60,9 +61,9 @@ C
                IF ( .NOT.INTNUL ) THEN
                   WRITE(K3IG,'(I3.3)') IG
                   WRITE(K3JG,'(I3.3)') JG
-                  CALL UTMESS('F','MEFGRI','LES GRILLES NUMERO '//K3IG//
-     &                        ' ET NUMERO '//K3JG//' SE RECOUVRENT')
-C        CALL U2MESK('F','ALGELINE_84', 2 ,VALK)
+                   VALK(1) = K3IG
+                   VALK(2) = K3JG
+                   CALL U2MESK('F','ALGELINE_84', 2 ,VALK)
                ENDIF
   21        CONTINUE
   20     CONTINUE

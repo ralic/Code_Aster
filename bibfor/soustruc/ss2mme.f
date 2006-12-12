@@ -1,6 +1,6 @@
       SUBROUTINE SS2MME(MO,VECEL,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
@@ -116,9 +117,9 @@ C       -----------------------
           NOSMA=ZK8(IALMAI-1+I)
           CALL JENONU(JEXNOM(MA//'.SUPMAIL',NOSMA),IMAS)
           IF (IMAS.EQ.0) THEN
-            CALL UTMESS('F','SS2MME','LA MAILLE : '//NOSMA
-     &                //' N EXISTE PAS DANS LE MAILLAGE : '//MA)
-C        CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
+             VALK(1) = NOSMA
+             VALK(2) = MA
+             CALL U2MESK('F','SOUSTRUC_26', 2 ,VALK)
           ELSE
             ZI(IALSCH-1+IMAS)=1
           END IF
@@ -138,9 +139,9 @@ C
           CALL JEEXIN(JEXNOM(NOMACR//'.LICA',NOMCAS),IRET)
           IF (IRET.EQ.0) THEN
             IER0=1
-            CALL UTMESS('E','SS2MME','LA MAILLE : '//NOSMA
-     &                //' NE CONNAIT PAS LE CHARGEMENT : '//NOMCAS)
-C        CALL U2MESK('E','SOUSTRUC_28', 2 ,VALK)
+             VALK(1) = NOSMA
+             VALK(2) = NOMCAS
+             CALL U2MESK('E','SOUSTRUC_28', 2 ,VALK)
           END IF
  3      CONTINUE
 C

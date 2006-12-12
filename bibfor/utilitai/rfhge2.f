@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMCMD, TYPCON, NOMCHA, NOMSY,TYPBAS
       CHARACTER*19 NOMFON, KNUME, KINST, RESU, MATRAS, FONCT
       CHARACTER*24 CHAMP
+      CHARACTER*24 VALK(2)
       COMPLEX*16   CREP,CBID
 C     ------------------------------------------------------------------
 C
@@ -140,9 +141,9 @@ C
       ELSEIF ( IDDL .EQ. 0 ) THEN
          LG1 = LXLGUT(NOEUD)
          LG2 = LXLGUT(CMP)
-         CALL UTMESS('F','RFHGE2','LA COMPOSANTE "'//CMP(1:LG2)//'" '//
-     &               'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
-C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
+          VALK(1) = CMP(1:LG2)
+          VALK(2) = NOEUD(1:LG1)
+          CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
       ENDIF
 C
 C     --------------------------------------------------------------

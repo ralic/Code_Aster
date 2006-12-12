@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,8 +104,9 @@ C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*4      Z
       PARAMETER      ( Z = 'INIT' )
-      CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU,VALK(2)
+      CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU
       CHARACTER*16     K16BID
+      CHARACTER*24     VALK(3)
       CHARACTER*75     CMESS
       INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2), LGBL
       INTEGER          VALI(7)
@@ -416,10 +417,10 @@ C
         IADADD(1)  = CARA(JCARA(IC) + 6 )
         IADADD(2)  = CARA(JCARA(IC) + 7 )
         IF ( CVERSU .NE. CVERSB ) THEN
-          CALL JVMESS ( 'A' ,'JEINIF' , ' LA BASE '//NOMBAS(IC)
-     &     //' A ETE CONSTITUEE AVEC LA VERSION '//CVERSB//' ET VOUS'
-     &     //' UTILISEZ LA VERSION '//CVERSU)
-C        CALL U2MESK('A','JEVEUX_08', 3 ,VALK)
+           VALK(1) = NOMBAS(IC)
+           VALK(2) = CVERSB
+           VALK(3) = CVERSU
+           CALL U2MESK('A','JEVEUX_08', 3 ,VALK)
         ENDIF
 
         IF ( NBLOC .EQ. 0 ) THEN

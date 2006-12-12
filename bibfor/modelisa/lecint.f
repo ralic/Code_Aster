@@ -2,7 +2,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C
         INTEGER         DEBLIG
         CHARACTER*14    CNL
         CHARACTER*16    CMD,NOM
+        CHARACTER*24    VALK(2)
         COMMON          /OPMAIL/        CMD
         CHARACTER*(*)   CV
 C
@@ -58,9 +59,9 @@ C
         IF(ICL.EQ.1)CALL CODENT(IV,'G',NOM)
         IF(ICL.EQ.2)WRITE(NOM,'(F14.6)')RV
         IF(ICL.EQ.3.OR.ICL.EQ.4)NOM = CV(1:IV)
-        CALL UTMESS('E',CMD,CNL//' ERREUR DE SYNTAXE : MOT CLE "'//NOM//
-     &  '" NON RECONNU')
-C        CALL U2MESK('E','MODELISA4_81', 2 ,VALK)
+        VALK(1) = CNL
+        VALK(2) = NOM
+        CALL U2MESK('E','MODELISA4_81', 2 ,VALK)
         IER = 1
         GOTO 5
 C
@@ -69,8 +70,9 @@ C       ON SORT PAR FIN OU FINSF OU FIN DE FICHIER
 C
  6      CONTINUE
         NOM = CV(1:IV)
-        CALL UTMESS('I',CMD,CNL//' MOT CLE "'//NOM//'" IGNORE')
-C        CALL U2MESK('I','MODELISA4_82', 2 ,VALK)
+        VALK(1) = CNL
+        VALK(2) = NOM
+        CALL U2MESK('I','MODELISA4_82', 2 ,VALK)
 C
  5      CONTINUE
         DEBLIG = -1

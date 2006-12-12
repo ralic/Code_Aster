@@ -1,5 +1,5 @@
       SUBROUTINE PMFD00()
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +65,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 LIMCLS(3),LTYMCL(3),PHENO
       CHARACTER*19 CESDEC,LIGRMO,CELBID
       CHARACTER*24 MODNOM
+      CHARACTER*24 VALK(3)
       CHARACTER*24 MLGNMA
       CHARACTER*24 MLGCNX,MLGTMS,MLGCOO
       CHARACTER*24 VPOINT,VNBFIB,VCARFI
@@ -174,10 +175,9 @@ C ---     ON RECUPERE LE NOM EVENTUEL DE LA SECTION POUR LES MESSAGES
             KNS='PONCT_'//KIOC
           ENDIF
           CALL CODENT(NBV,'G',KNBV)
-          CALL UTMESS('F',CMD,'AFFE_FIBRE POUR "'//KNS//
-     &          '": IL Y A '//KNBV//' VALEURS POUR "VALE",'//
-     &          ' CE DEVRAIT ETRE UN MULTIPLE DE 3')
-C        CALL U2MESK('F','MODELISA6_26', 2 ,VALK)
+           VALK(1) = KNS
+           VALK(2) = KNBV
+           CALL U2MESK('F','MODELISA6_26', 2 ,VALK)
         END IF
         CALL GETVEM(NOMA,'GROUP_MA','AFFE_FIBRE','GROUP_MA',IOC,1,0,K8B,
      &              NGM)
@@ -219,10 +219,10 @@ C ---   NOMBRE DE FIBRES = NOMBRE DE MAILLES CONCERNEES
             IF (NUTYMA.NE.NTTRI3 .AND. NUTYMA.NE.NTQUA4) THEN
               CALL CODENT(NUMMAI,'G',KNUMAI)
               CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),KTYMA)
-              CALL UTMESS('F',CMD,'DANS LE MAILLAGE "'//NOMAS//
-     &                    '" LA MAILLE "'//KNUMAI//'" EST DE TYPE "'//
-     &                    KTYMA//'" (NI TRIA3 NI QUAD4)')
-C        CALL U2MESK('F','MODELISA6_27', 3 ,VALK)
+               VALK(1) = NOMAS
+               VALK(2) = KNUMAI
+               VALK(3) = KTYMA
+               CALL U2MESK('F','MODELISA6_27', 3 ,VALK)
             END IF
           ELSE
 C ---        ON DEDUIT LES SEG2 DU NB DE FIBRES

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NOM='SSNV185H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 #---------------------------------------------------------
 
 #*********************************************************
-#                    GEOMETRIE 
+#                    GEOMETRIE
 #                    *********
 #     Parametres a modifier avec le maillage
 #*********************************************************
@@ -212,7 +212,7 @@ MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
                        );
-                       
+
 LN=FORMULE(NOM_PARA=('X','Y','Z'),
            VALE='(Z-L)*cos(ALPHA)-Y*sin(ALPHA)');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),
@@ -241,7 +241,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
-          
+
 #---------------------------------------------------------
 #                   MATERIAU
 #---------------------------------------------------------
@@ -280,7 +280,7 @@ CHRIG2=AFFE_CHAR_MECA(MODELE=MODELEK,
                          DDL_IMPO=( _F(GROUP_NO='SURFGAU', DY=0.0,),
                                   ), );
 
-                      
+
 CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
                       PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
 
@@ -300,11 +300,11 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
                                 INST_FIN=1.0,),
-                   SOLVEUR=_F(METHODE='MUMPS', SCALING='SANS', PCENT_PIVOT=250,),
+                   SOLVEUR=_F(METHODE='MUMPS', SCALING='SANS', PCENT_PIVOT=50 ),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
-                   
+
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
@@ -352,7 +352,7 @@ for i in range(0,nbc) :
               CRITERE='RELATIF',
               PRECISION=0.06,
               REFERENCE='ANALYTIQUE',);
-              
+
 
 #----------------------------------------------
 #         EDITION DE FICHIERS GMSH

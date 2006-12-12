@@ -1,6 +1,6 @@
       SUBROUTINE DEBCAL(NOMOP,LIGREL,NIN,LCHIN,LPAIN,NOUT,LCHOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -86,6 +86,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24,NOPRNO,KBI2,OBJDES
+      CHARACTER*24 VALK(5)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       CHARACTER*1 K1BID
@@ -149,12 +150,11 @@ C     -------------------------------------------------------------
         CHIN = LCHIN(I)
         IF (.NOT. (ZL(IACHIX-1+I))) GO TO 30
         CALL DISMOI('F','NOM_MAILLA',CHIN,'CHAMP',IBID,MA2,IERD)
-        IF (MA2.NE.MA) CALL UTMESS('F','DEBCAL',
-     &                             'LE MAILLAGE ASSOCIE AU CHAMP:'//
-     &                             CHIN//
-     &                     ' EST DIFFERENT DE CELUI ASSOCIE AU LIGREL: '
-     &                             //LIGREL)
-C        CALL U2MESK('F','CALCULEL2_27', 2 ,VALK)
+        IF (MA2.NE.MA) THEN
+          VALK(1) = CHIN
+          VALK(2) = LIGREL
+          CALL U2MESK('F','CALCULEL2_27', 2 ,VALK)
+        ENDIF
    30 CONTINUE
 
 
@@ -298,11 +298,12 @@ C            AU PARAMETRE, ON ARRETE TOUT :
         IF (IGD.NE.ZI(DESC)) THEN
           CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',IGD),K8BI1)
           CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',ZI(DESC)),K8BI2)
-          CALL UTMESS('F','DEBCAL','LA GRANDEUR ASSOCIEE AU CHAMP '//
-     &                CHIN//':'//K8BI2//
-     &                ' N EST PAS CELLE ASSOCIEE AU PARAMETRE '//
-     &                NOMPAR//':'//K8BI1//' (OPTION:'//NOMOP)
-C        CALL U2MESK('F','CALCULEL2_29', 5 ,VALK)
+           VALK(1) = CHIN
+           VALK(2) = K8BI2
+           VALK(3) = NOMPAR
+           VALK(4) = K8BI1
+           VALK(5) = NOMOP
+           CALL U2MESK('F','CALCULEL2_29', 5 ,VALK)
         END IF
 
         CALL JEEXIN(CHIN//'.VALE',IRET)

@@ -3,7 +3,7 @@
       CHARACTER*(*) MATIN,MATOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8 NOMDDL
       CHARACTER*19 MATI19,MATO19,KBID
       CHARACTER*24 NMATOU,NMATIN
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
       DATA NOMDDL/'        '/
 C     ------------------------------------------------------------------
@@ -67,9 +68,9 @@ C     --- CONTROLE DES REFERENCES ---
       MATI19 = MATIN
       MATO19 = MATOUT
       IF (IER.NE.0) THEN
-        CALL UTMESS('F','MTCOPY','LES "MATASS" "'//MATI19//'"  ET  "'//
-     &              MATO19//'"  N''ONT LE MEME DOMAINE DE DEFINITION.')
-C        CALL U2MESK('F','ALGELINE2_11', 2 ,VALK)
+         VALK(1) = MATI19
+         VALK(2) = MATO19
+         CALL U2MESK('F','ALGELINE2_11', 2 ,VALK)
 
       ELSE
 C        --- TYPE DES VALEURS, NOMBRE DE BLOCS, LONGUEUR D'UN BLOC ---

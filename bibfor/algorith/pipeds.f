@@ -1,7 +1,7 @@
       SUBROUTINE PIPEDS(NDIM, TYPMOD, TAU,IMATE, SIGM, VIM,EPSM,
      &                  EPSPC, EPSDC, ETAMIN,ETAMAX,A0, A1,A2,A3,ETAS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -323,7 +323,6 @@ C -- CAS A UNE SOLUTION
           CALL CRITET(EPSP,EPSD,X(3),LAMBDA,DEUXMU,FPD,SEUIL,
      &             Y(3),Z(3))
 200     CONTINUE
-C        CALL UTMESS('F','PIPEDS-1 ','NOMBRE MAX D''ITERATIONS ATTEINT')
         GOTO 666
 201     CONTINUE
 C        write (6,*) 'ITER-3 = ',ITER
@@ -407,7 +406,6 @@ C       write (6,*) 'ITER-4 = ',ITER
      &             Y(3),Z(3))
 400       CONTINUE
           GOTO 666
-C          CALL UTMESS('F','PIPEDS-2 ','NOMBRE MAX ITERATIONS ATTEINT')
 401       CONTINUE
 C          write (6,*) 'ITER-5 = ',ITER
           ETA1=X(3)
@@ -432,7 +430,6 @@ C          write (6,*) 'ITER-5 = ',ITER
      &             Y(3),Z(3))
 500       CONTINUE
           GOTO 666
-C          CALL UTMESS('F','PIPEDS-3 ','NOMBRE MAX ITERATIONS ATTEINT')
 501       CONTINUE
 C          write (6,*) 'ITER-5b = ',ITER
           ETA2=X(3)

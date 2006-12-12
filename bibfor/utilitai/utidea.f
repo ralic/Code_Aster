@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,8 +41,6 @@ C
       ELSEIF ( NOMMAI .EQ. 'TRIA6'   ) THEN
         ITYPE = 72
       ELSEIF ( NOMMAI .EQ. 'TRIA7'   ) THEN
-C        CALL UTMESS('A','UTIDEA','TRIA7 ELEMENT INEXISTANT DANS'
-C     +            //' IDEAS, CONVERTI EN TRIA6')
         ITYPE = 72
       ELSEIF ( NOMMAI .EQ. 'TRIA9'   ) THEN
         ITYPE = 73
@@ -51,8 +49,6 @@ C     +            //' IDEAS, CONVERTI EN TRIA6')
       ELSEIF ( NOMMAI .EQ. 'QUAD8'   ) THEN
         ITYPE = 75
       ELSEIF ( NOMMAI .EQ. 'QUAD9'   ) THEN
-C        CALL UTMESS('A','UTIDEA','QUAD9 ELEMENT INEXISTANT DANS'
-C     +            //' IDEAS, CONVERTI EN QUA8')
         ITYPE = 75
       ELSEIF ( NOMMAI .EQ. 'QUAD12'  ) THEN
         ITYPE = 76
@@ -69,8 +65,6 @@ C     +            //' IDEAS, CONVERTI EN QUA8')
       ELSEIF ( NOMMAI .EQ. 'HEXA20'  ) THEN
         ITYPE = 116
       ELSEIF ( NOMMAI .EQ. 'HEXA27'  ) THEN
-C        CALL UTMESS('A','UTIDEA','HEXA27 ELEMENT INEXISTANT DANS'
-C     +            //' IDEAS, CONVERTI EN HEXA20')
         ITYPE = 116
       ELSEIF ( NOMMAI .EQ. 'PYRAM5'  ) THEN
         ITYPE = 6000

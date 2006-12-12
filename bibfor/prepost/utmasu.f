@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,12 +61,12 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       P1,P2,P3,P4, JM3D, INDIIS, NBMAT, IRET, IM1, IM2
       INTEGER       IMA, NUMA, NNOE, INO, NBM, I, K, INDI, NNOEM, NNOE1
-      INTEGER       IFM , NIV
+      INTEGER       IFM , NIV, IPOS, ITYPMA, NUTYMA
       INTEGER       LISNOE(27)
       LOGICAL       FIRST
       CHARACTER*1   TYPERR
-      CHARACTER*8   K8B, NOMAIL, NOMA1, NOMA2
-      CHARACTER*24  NOMAVO
+      CHARACTER*8   K8B, NOMAIL, TYPE
+      CHARACTER*24  NOMAVO,VALK(4)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -77,6 +77,7 @@ C --- APPEL A LA CONNECTIVITE :
 C     -----------------------
       CALL JEVEUO ( JEXATR(MAIL//'.CONNEX','LONCUM'), 'L', P2 )
       CALL JEVEUO ( MAIL//'.CONNEX', 'L', P1 )
+      CALL JEVEUO ( MAIL//'.TYPMAIL','L',ITYPMA)
 C
 C --- CREATION DE LA SD :
 C     -----------------
@@ -93,6 +94,7 @@ C --- ON REMPLIT LA SD :
 C     -----------------
       DO 100 IMA = 1, NLIMA
          NUMA = LIMA(IMA)
+         NUTYMA=ZI(ITYPMA+NUMA-1)
          NNOE = ZI(P2+NUMA)-ZI(P2-1+NUMA)
          IF ( NNOE .GT. 27 ) CALL U2MESS('F','PREPOST4_88')
          DO 80 INO = 1,NNOE
@@ -118,22 +120,16 @@ C     -----------------
             ELSE
                IM1 = ZI(JM3D+IMA-1)
                NNOE1 = ZI(P2+IM1) - ZI(P2-1+IM1)
-               CALL ORIEM0 ( MAIL, COOR, ZI(P1+ZI(P2+IM1-1)-1), NNOE1,
-     &                       ZI(P1+ZI(P2+IM2-1)-1), NNOEM, PREC, IRET )
-               IF ( IRET .EQ. 0 ) THEN
-                  TYPERR = 'A'
-               ELSE
-                  TYPERR = 'F'
+               CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPE)
+               CALL ORIEM0 ( TYPE, MAIL, COOR, ZI(P1+ZI(P2+IM1-1)-1),
+     &              NNOE1, ZI(P1+ZI(P2+IM2-1)-1), NNOEM, LISNOE, NNOE,
+     &              PREC, IRET, IPOS )
+               IF ( IPOS .NE. 0 ) THEN
+                 CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),VALK(1))
+                 CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM1),VALK(2))
+                 CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM2),VALK(3))
+                 CALL U2MESK('F','PREPOST4_97',3,VALK)
                ENDIF
-               CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),NOMAIL)
-               CALL UTDEBM(TYPERR,'UTMASU','LA MAILLE DE PEAU '//
-     &              NOMAIL//' S''APPUIE SUR PLUS D''UNE MAILLE '//
-     &              'SUPPORT')
-               CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM1),NOMA1)
-               CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM2),NOMA2)
-               CALL UTIMPK('L',' MAILLE SUPPORT 1 : ',1,NOMA1)
-               CALL UTIMPK('L',' MAILLE SUPPORT 2 : ',1,NOMA2)
-               CALL UTFINM
             ENDIF
 C
  10      CONTINUE

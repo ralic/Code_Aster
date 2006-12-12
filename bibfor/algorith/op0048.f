@@ -3,7 +3,7 @@
       INTEGER IERR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,10 +139,6 @@ C
           CALL GETVID('EXCIT','CHARGE',   IVEC,1,1,CHANNO,L)
           IF ( L.EQ.1 ) NCHAR = NCHAR + 1
  120    CONTINUE
-C        IF ( NVECA .NE. 0 .AND. NCHAR .NE. 0 ) THEN
-C        CALL UTMESS ('F',''OP0048'','IMPOSSIBLE DE COMBINER LES MOTS'
-C     &                 //' CLES CHARGE ET VECT_ASSE')
-C        ENDIF
         IF ( NVECA .NE. 0 ) THEN
 C
 C ------- LISTE DE VECT_ASSE DECRIVANT LE CHARGEMENT

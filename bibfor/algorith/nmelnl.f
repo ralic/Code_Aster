@@ -3,7 +3,7 @@
      &                   DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,6 @@ C OUT DENERG(2)  : DERIVEE LAGRANGIENNE DE LA DERIVEE EN TEMPERATURE.
 C OUT DSIG : DERIVEE LAGRANGIENNE DU TENSEUR DES CONTRAINTES (SI DG).
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       MSG: UTMESS.
 C       ENVIMA: R8MIEM, R8PREM.
 C       MATERIAUX: RCVALA, RCTRAC, RCFONC.
 C       DIVERS: NMCRI1, ZEROFO, NMELRU.

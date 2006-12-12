@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,65 +163,38 @@ C
               GOTO 9999
            ENDIF
            IF(LASTS.EQ.22.AND.NSEUIL.GT.0) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: SOLUTION '
-C     &            //'NON VALIDE AVEC PROJECTION AU SOMMET DU CONE DE '
-C     &            //'TRACTION')
                NSEUIL = 33
                GOTO 9999
            ENDIF
            IF(LASTS.EQ.22.AND.DLAMBT.LT.ZERO) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: INCREMENT '
-C     &            //'DE DEFORMATION PLASTIQUE NEGATIF LORS DE LA '
-C     &            //'PROJECTION AU SOMMET DU CONE DE TRACTION')
                NSEUIL = 33
                GOTO 9999
            ENDIF
            IF(LASTS.EQ.11.AND.NSEUIL.GT.0) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: SOLUTION '
-C     &            //'NON VALIDE AVEC PROJECTION AU SOMMET DU CONE DE '
-C     &            //'COMPRESSION')
                NSEUIL = 44
                GOTO 9999
            ENDIF
            IF(LASTS.EQ.11.AND.DLAMBC.LT.ZERO) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: INCREMENT '
-C     &            //'DE DEFORMATION PLASTIQUE NEGATIF LORS DE LA '
-C     &            //'PROJECTION AU SOMMET DU CONE DE COMPRESSION')
                NSEUIL = 44
                GOTO 9999
            ENDIF
            IF(LASTS.EQ.33.AND.NSEUIL.GT.0) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: SOLUTION '
-C     &            //'NON VALIDE AVEC PROJECTION AU SOMMET DES CONES '
-C     &            //'DE COMPRESSION ET DE TRACTION')
                NSEUIL = 11
                GOTO 9999
            ENDIF
            IF(LASTS.EQ.33.AND.DLAMBC.LT.ZERO) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: INCREMENT '
-C     &            //'DE DEFORMATION PLASTIQUE NEGATIF EN COMPRESSION '
-C     &            //'LORS DE LA PROJECTION AU SOMMET DES CONES DE '
-C     &            //'COMPRESSION ET DE TRACTION')
                NSEUIL = 11
                GOTO 9999
            ENDIF
            IF(LASTS.EQ.33.AND.DLAMBT.LT.ZERO) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: INCREMENT '
-C     &            //'DE DEFORMATION PLASTIQUE NEGATIF EN TRACTION '
-C     &            //'LORS DE LA PROJECTION AU SOMMET DES CONES DE '
-C     &            //'COMPRESSION ET DE TRACTION')
                NSEUIL = 11
                GOTO 9999
            ENDIF
            IF(LASTS.EQ.4.AND.NSEUIL.LT.0) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: PROBLEME DE '
-C     &            //'CONVERGENCE SANS PROJECTION AU SOMMET DES CONES')
                NSEUIL = 4
                GOTO 9999
            ENDIF
            IF(LASTS.EQ.44.AND.NSEUIL.LT.0) THEN
-C               CALL UTMESS('A','BETCVX','BETON_DOUBLE_DP: PROBLEME DE '
-C     &            //'CONVERGENCE AVEC PROJECTION AU SOMMET DES CONES')
                NSEUIL = 44
                GOTO 9999
            ENDIF

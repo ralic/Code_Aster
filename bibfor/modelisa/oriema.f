@@ -7,8 +7,9 @@
       REAL*8              COOR(*)
       LOGICAL             REORIE
       CHARACTER*8         NOMAIL, TPMAIL, TYP3D
+      CHARACTER*24 VALK(2)
 C.======================================================================
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,11 +97,9 @@ C
          IF (NDIM.EQ.3) GOTO 9999
          NBNSM = 2
       ELSE
-         CALL UTMESS('F','ORIEMA','IMPOSSIBILITE, LA MAILLE '//
-     &              NOMAIL//' DOIT ETRE UNE MAILLE DE PEAU, I.E. '//
-     &              'DE TYPE "QUAD" OU "TRIA" EN 3D OU DE TYPE "SEG" '
-     &              //'EN 2D, ET ELLE EST DE TYPE : '//TPMAIL)
-C        CALL U2MESK('F','MODELISA5_94', 2 ,VALK)
+          VALK(1) = NOMAIL
+          VALK(2) = TPMAIL
+          CALL U2MESK('F','MODELISA5_94', 2 ,VALK)
       ENDIF
 C
 C --- CENTRE DE GRAVITE DE LA MAILLE DE PEAU

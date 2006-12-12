@@ -1,6 +1,6 @@
       SUBROUTINE VRCIN1(MODELE,CHMAT,CARELE,INST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*16 NOMSYM
       CHARACTER*19 CART2,CHS,CESMOD,CELMOD,LIGRMO,MNOGA,DCELI
       CHARACTER*19 CES1,CNS1
+      CHARACTER*24 VALK(3)
       CHARACTER*80 K80, K80PRE
 C ----------------------------------------------------------------------
 
@@ -222,11 +223,12 @@ C         -- VERIFICATION DE NOMCH :
           CALL ASSERT(ITROU.GT.0)
           NOMGD=ZK8(JCVGD-1+ITROU)
           CALL DISMOI('F','NOM_GD',NOMCH,'CHAMP',IBID,NOMGD2,IRET)
-          IF (NOMGD.NE.NOMGD2) CALL UTMESS('F','VRCIN1','LA GRANDEUR'//
-     &                           ' POUR LA VARIABLE: '//VARC//
-     &                           ' DOIT ETRE: '//NOMGD//
-     &                           ' MAIS ELLE EST: '//NOMGD2)
-C        CALL U2MESK('F','CALCULEL5_39', 3 ,VALK)
+          IF (NOMGD.NE.NOMGD2) THEN
+             VALK(1) = VARC
+             VALK(2) = NOMGD
+             VALK(3) = NOMGD2
+             CALL U2MESK('F','CALCULEL5_39', 3 ,VALK)
+          ENDIF
           CALL DISMOI('F','TYPE_CHAMP',NOMCH,'CHAMP',IBID,TYCH,IRET)
 
 

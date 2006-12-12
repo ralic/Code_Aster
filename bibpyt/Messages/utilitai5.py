@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF utilitai5 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -274,6 +274,14 @@ cata_msg={
 
 90: _("""
  On ne trouve pas le VALE_PARA_FONC exact dans la liste de la nappe
+"""),
+
+91: _("""
+ %(k1)s n'est pas un champ de résultat.
+"""),
+
+92: _("""
+ Interpolation LOG et complexe en ordonnées sont incompatibles !
 """),
 
 }

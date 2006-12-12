@@ -3,7 +3,7 @@
      &                 LLF,LLF1,LLF2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -240,7 +240,6 @@ C ======================================================================
                   ENDIF
                ENDIF
  20         CONTINUE
-C            CALL UTMESS ('F','CPNOTE_2','CAS IMPOSSIBLE')
          ENDIF
  10   CONTINUE
       IF (DEKLN.EQ.0) THEN

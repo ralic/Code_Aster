@@ -8,7 +8,7 @@ C
 C TOLE CRP_6
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C                CYLINDRE
 C ----------------------------------------------------------------------
       INTEGER      I,J
       CHARACTER*3  NOTE,NOT2
+      CHARACTER*24 VALK(2)
 C ----------------------------------------------------------------------
 C
 C --- LECTURE DES DIMENSIONS
@@ -90,9 +91,9 @@ C
                IF ((RINT(J)+RINT(I)).GE.D(J,I)) THEN
                   WRITE(NOTE(1:3),'(I3.3)') I
                   WRITE(NOT2(1:3),'(I3.3)') J
-                  CALL UTMESS('F','MEFGEC','LES CYLINDRES '// NOTE //
-     &                          ' ET '//NOT2//' SE TOUCHENT')
-C        CALL U2MESK('F','ALGELINE_80', 2 ,VALK)
+                   VALK(1) = NOTE
+                   VALK(2) = NOT2
+                   CALL U2MESK('F','ALGELINE_80', 2 ,VALK)
                ENDIF
             ENDIF
 

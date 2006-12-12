@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,6 +87,7 @@ C -----------------
      &              NOSUI1, NOSUI2, NOSUIV, NOVOIS, TYANCR(2)
       CHARACTER*8   VK(4), NOGRNO(2), PRESEN(2)
       CHARACTER*24  CONXMA, GRMAMA, NOMAMA, NONOMA, TYMAMA
+      CHARACTER*24 VALK(3)
       CHARACTER*24  PARAM(5)
       DATA          PARAM /'NUME_CABLE              ',
      &                     'NOEUD_CABLE             ',
@@ -246,11 +247,9 @@ C
                NBCHEM = NBCHEM + 1
                IF ( NBCHEM.GT.2 ) THEN
                   WRITE(K3B,'(I3)') ICABL
-                  CALL UTMESS('F','TOPOCA','CARACTERISATION DE LA '//
-     &                        'TOPOLOGIE DU CABLE NO'//K3B//' : IL '//
-     &                        'EXISTE PLUS DE DEUX CHEMINS POSSIBLES '//
-     &                        'AU DEPART DU NOEUD '//NOANCR(1))
-C        CALL U2MESK('F','MODELISA7_55', 2 ,VALK)
+                   VALK(1) = K3B
+                   VALK(2) = NOANCR(1)
+                   CALL U2MESK('F','MODELISA7_55', 2 ,VALK)
                ENDIF
                ISUIV0(NBCHEM) = ISUIV
             ENDIF
@@ -259,10 +258,9 @@ C        CALL U2MESK('F','MODELISA7_55', 2 ,VALK)
 C
       IF ( NBCHEM.EQ.0 ) THEN
          WRITE(K3B,'(I3)') ICABL
-         CALL UTMESS('F','TOPOCA','CARACTERISATION DE LA TOPOLOGIE '//
-     &               'DU CABLE NO'//K3B//' : IL N EXISTE AUCUN '//
-     &               'CHEMIN POSSIBLE AU DEPART DU NOEUD '//NOANCR(1))
-C        CALL U2MESK('F','MODELISA7_56', 2 ,VALK)
+          VALK(1) = K3B
+          VALK(2) = NOANCR(1)
+          CALL U2MESK('F','MODELISA7_56', 2 ,VALK)
       ENDIF
 C
       NOSUI1 = ZK8(JNONOD+ISUIV0(1)-1)
@@ -401,11 +399,10 @@ C 3.1 AMBIGUITE SI DEUX CHEMINS CONTINUS POSSIBLES
 C ---
       IF ( OK1 .AND. OK2 ) THEN
          WRITE(K3B,'(I3)') ICABL
-         CALL UTMESS('F','TOPOCA','CARACTERISATION DE LA '//
-     &               'TOPOLOGIE DU CABLE NO'//K3B//' : '//
-     &               'DEUX CHEMINS CONTINUS POSSIBLES DE '//NOANCR(1)//
-     &               ' A '//NOANCR(2)//' : AMBIGUITE')
-C        CALL U2MESK('F','MODELISA7_57', 3 ,VALK)
+          VALK(1) = K3B
+          VALK(2) = NOANCR(1)
+          VALK(3) = NOANCR(2)
+          CALL U2MESK('F','MODELISA7_57', 3 ,VALK)
 C
 C 3.2 MISE A JOUR DES OBJETS DE SORTIE
 C ---

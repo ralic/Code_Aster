@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHAM19 , NOMOBJ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C
      &              NNOE, JCELD, NBGREL, IREPE, IMAIL, NBEL, JMOD,
      &              IMODEL,ILONG,IDESCR
       CHARACTER*4   TYCH
+      CHARACTER*24 VALK(2)
       CHARACTER*8   K8B, NOMA
       CHARACTER*19  CH19, PRNO, NOLIGR
       LOGICAL       EXISDG
@@ -120,9 +121,9 @@ C     ==================================================================
   20     CONTINUE
 C
       ELSE
-         CALL UTMESS('F','UTNCMP','ON NE SAIT PAS TRAITER'//
-     &               ' LE CHAMP DE TYPE: '//TYCH//' CHAMP : '//CH19)
-C        CALL U2MESK('F','ALGORITH9_69', 2 ,VALK)
+          VALK(1) = TYCH
+          VALK(2) = CH19
+          CALL U2MESK('F','ALGORITH9_69', 2 ,VALK)
       ENDIF
 C
       IF ( NCMP.EQ.0) CALL U2MESS('F','UTILITAI5_53')

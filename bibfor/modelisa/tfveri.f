@@ -1,7 +1,7 @@
       SUBROUTINE TFVERI(CMD,NOMMCF,NBOCC,ITYPFL)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,17 +107,6 @@ C                  JPAS = IOCC
             IF(NTPAS.EQ.0.OR.NTRES.NE.NBOCC.OR.NPAS.EQ.0) THEN
                CALL U2MESS('E','MODELISA7_20')
             ENDIF
-C            CALL GETVTX(NOMMCF,'TYPE_PAS',JPAS,1,1,TPAS,IBID)
-C            IF (TPAS .EQ. TYPAS(2)) THEN
-C               DO 40 IOCC = 1,NBOCC
-C                  CALL GETVIS(NOMMCF,'TYPE_RESEAU',IOCC,1,1,TRES,IBID)
-C                  IF (TRES .GT. 4) THEN
-C                     CALL UTMESS('E',CMD,'<FAISCEAU_TRANS> : MAUVAIS'//
-C     &                          ' CHOIX DE  TYPE DE RESEAU POUR UN'//
-C     &                          ' PAS TRIANGULAIRE')
-C                  ENDIF
-C  40           CONTINUE
-C            ENDIF
 C
 C ------1.2.SI NON PRISE EN COMPTE DU COUPLAGE
 C

@@ -3,7 +3,7 @@
      &                    TEMMOZ, EXITMP )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,7 @@ C
       CHARACTER*16       TYSD
       CHARACTER*19       CH19
       CHARACTER*24       NOM24,LIGRMO
+      CHARACTER*24 VALK(2)
 C
       COMPLEX*16         CBID
 C
@@ -144,9 +145,9 @@ C
           K8BID = TEMPE
           CALL PSRENC ( K8BID, NOPASE, TEMPE, IRET )
           IF ( IRET.NE.0 ) THEN
-            CALL UTMESS('F', NOMPRO,' ON NE TROUVE PAS LE RESULTAT '//
-     &                 'DERIVE ASSOCIE A '//K8BID//' ET '//NOPASE(1:8))
-C        CALL U2MESK('F','ALGORITH7_17', 2 ,VALK)
+             VALK(1) = K8BID
+             VALK(2) = NOPASE(1:8)
+             CALL U2MESK('F','ALGORITH7_17', 2 ,VALK)
           ENDIF
         ENDIF
 C
@@ -162,7 +163,6 @@ C 2.3.1. ==> ON RECUPERE UN CALCUL THERMIQUE PREALABLE
 C
         IF ( TYSD(1:9).EQ.'EVOL_THER' ) THEN
 C
-CCC        CALL UTMESS('I', NOMPRO,'ON PASSE PAR 2.3.1 ')
           CALL DISMOI('F','NB_CHAMP_UTI',TEMPE,'RESULTAT',NBCHAM,
      &                K8BID,IERD)
 C
@@ -194,7 +194,6 @@ C
      &            (TYSD(1:6).EQ.'CARTE_') .OR.
      &            (TYSD(1:10).EQ.'CHAM_ELEM_')) THEN
 C
-CCC        CALL UTMESS('I', NOMPRO,'ON PASSE PAR 2.3.2 ')
           CH19 = TEMPE
           CALL COPISD('CHAMP_GD','V',CH19(1:19),TEMMOI)
           EXITMP = .TRUE.
@@ -238,7 +237,6 @@ C===
 C
       IF ( CHPNUL ) THEN
 C
-CCC          CALL UTMESS('I', NOMPRO,'ON PASSE PAR CHPNUL DE 4')
         ZERO = 0.D0
         CALL MECACT('V',TEMMOI,'MODELE',LIGRMO,'TEMP_R',1,'TEMP',IBID,
      &               ZERO,CBID,K8BID)

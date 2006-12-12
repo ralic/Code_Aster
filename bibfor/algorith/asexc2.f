@@ -10,7 +10,7 @@
       LOGICAL          CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  K8B, SPECT, NOEU, GRNOEU, NOMSP0(3), NOMPU(2)
       CHARACTER*9  NIVEAU
       CHARACTER*24 VALE, OBJ1, OBJ2
+      CHARACTER*24 VALK(2)
       CHARACTER*8  K8BID
       CHARACTER*1 K1BID
 C     ------------------------------------------------------------------
@@ -176,9 +177,9 @@ C
                   CALL JENONU(JEXNOM(OBJ2,NOEU),IRET)
                   IF (IRET.EQ.0) THEN
                      IER = IER + 1
-                     CALL UTMESS('E',MOTFAC,'LE NOEUD '//NOEU//
-     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
-C        CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
+                      VALK(1) = NOEU
+                      VALK(2) = NOMA
+                      CALL U2MESK('E','ALGORITH_21', 2 ,VALK)
                      GOTO 20
                   ENDIF
                   DO 22 IS = 1,NSUPP(ID)
@@ -209,9 +210,9 @@ C
                   CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
                   IF (IRET .EQ. 0) THEN
                      IER = IER + 1
-                     CALL UTMESS('E',MOTFAC,'LE GROUPE '//GRNOEU//
-     &                        ' N''APPARTIENT PAS AU MAILLAGE : '//NOMA)
-C        CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
+                      VALK(1) = GRNOEU
+                      VALK(2) = NOMA
+                      CALL U2MESK('E','ALGORITH_22', 2 ,VALK)
                      GOTO 30
                   ENDIF
                   CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K1BID)

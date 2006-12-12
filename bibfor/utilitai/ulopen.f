@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHIE, NAME, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C     ------------------------------------------------------------------
 C     CONSERVER LA COHERENCE AVEC IBIMPR
       CHARACTER*16  NOMPR (MXIMPR)
       CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
+      CHARACTER*24 VALK(3)
       INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
       DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
      &                      'ERREUR'  ,  'MED'      /
@@ -106,31 +107,30 @@ C
                     IF ( DDNAME(I).EQ.NAME16 .OR. NAME16.EQ.' ') THEN
                       GOTO 9999
                     ENDIF
-                    CALL UTMESS('E','ULOPEN01','UNITE LOGIQUE '//K4B//
-     &               ' ASSOCIEE AU NOM '//DDNAME(I)//
-     &               ' ET AU FICHIER '//NAMEFI(I)(1:80))
-C        CALL U2MESK('E','UTILITAI5_11', 3 ,VALK)
+                     VALK(1) = K4B
+                     VALK(2) = DDNAME(I)
+                     VALK(3) = NAMEFI(I)(1:80)
+                     CALL U2MESK('E','UTILITAI5_11', 3 ,VALK)
                     CALL U2MESK('F','UTILITAI5_12',1,NAME16)
                   ELSE
-                    CALL UTMESS('E','ULOPEN02','UNITE LOGIQUE '//K4B//
-     &               ' DEJA UTILISEE EN ACCES '//ACCEFI(I)//
-     &               ' PAR LE FICHIER '//NAMEFI(I)(1:80))
-C        CALL U2MESK('E','UTILITAI5_13', 3 ,VALK)
+                     VALK(1) = K4B
+                     VALK(2) = ACCEFI(I)
+                     VALK(3) = NAMEFI(I)(1:80)
+                     CALL U2MESK('E','UTILITAI5_13', 3 ,VALK)
                     CALL U2MESS('F','UTILITAI5_14')
                   ENDIF
                 ENDIF
               ELSE
-                CALL UTMESS('E','ULOPEN03','UNITE LOGIQUE '//K4B//
-     &               ' DEJA UTILISEE EN MODE BINAIRE PAR LE FICHIER '
-     &               //NAMEFI(I)(1:80))
-C        CALL U2MESK('E','UTILITAI5_15', 2 ,VALK)
+                 VALK(1) = K4B
+                 VALK(2) = NAMEFI(I)(1:80)
+                 CALL U2MESK('E','UTILITAI5_15', 2 ,VALK)
                 CALL U2MESS('F','UTILITAI5_16')
               ENDIF
             ELSE
-              CALL UTMESS('F','ULOPEN04','UNITE LOGIQUE '//K4B//
-     &                    ' DEJA UTILISEE PAR LE FICHIER '//
-     &           NAMEFI(I)(1:80)//' ASSOCIEE AU NOM '//DDNAME(I))
-C        CALL U2MESK('F','UTILITAI5_17', 3 ,VALK)
+               VALK(1) = K4B
+               VALK(2) = NAMEFI(I)(1:80)
+               VALK(3) = DDNAME(I)
+               CALL U2MESK('F','UTILITAI5_17', 3 ,VALK)
             ENDIF
           ENDIF
  10     CONTINUE
@@ -148,9 +148,9 @@ C
             OPEN ( UNIT=UNIT, FILE=NAMELL, IOSTAT=IER2 )
 
             IF ( IER2 .NE. 0 ) THEN
-              CALL UTMESS('F','ULOPEN05','UNITE LOGIQUE '//K4B//
-     &               ', PROBLEME LORS DE L''OPEN '//NAMELL(1:80))
-C        CALL U2MESK('F','UTILITAI5_18', 2 ,VALK)
+               VALK(1) = K4B
+               VALK(2) = NAMELL(1:80)
+               CALL U2MESK('F','UTILITAI5_18', 2 ,VALK)
             ENDIF
             CALL ULPOSI ( UNIT, K1ACCE, IERR)
             IF ( IERR .GT. 0 ) THEN
@@ -214,11 +214,6 @@ C              IF ( TYPEFI(I) .EQ. 'A' ) THEN
                 ETATFI(I) = 'F'
                 MODIFI(I) = ' '
                 GOTO 9999
-C              ELSE
-C                CALL UTMESS('F','ULOPEN21','LE FICHIER ASSOCIE'
-C     &                  //'A L''UNITE LOGIQUE '//K4B//' N''EST PAS DE '
-C     &                  //'TYPE ASCII')
-C              ENDIF
             ELSE
               CALL U2MESK('F','UTILITAI5_23',1,K4B)
             ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE TE0249(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C              ---> NOMTE  : NOM DU TYPE ELEMENT
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       04/04/02 (OB): CORRECTION BUG CALCUL TPG EN LUMPE
-C       + MODIFS FORMELLES: IMPLICIT NONE, LAXI, LCOEF, UTMESS...
+C       + MODIFS FORMELLES: IMPLICIT NONE, LAXI, LCOEF, ...
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE

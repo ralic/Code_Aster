@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,7 @@ C     EXTERNAL      ACCELE, ADIMVE, ALITMI, CALTOL, CALVOL, DEFMCF,
 C    &              DEFTTR, ECRBAS, ECRCHO, ECRGEN, INIALG, INIPAR,
 C    &              INIPCT, MDALLO, MDCHOF, MDITM3, PROJMP,
 C    &              PROJVD, SOMMVE, TRANSI, UTDEBM, UTFINM, UTIMPI,
-C    &              UTIMPR, UTMESS, UTTCPU, VARDEP,
+C    &              UTIMPR, UTTCPU, VARDEP,
 C    &              GETRES, JEDEMA, JELIRA, JEMARQ, JEVEUO
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

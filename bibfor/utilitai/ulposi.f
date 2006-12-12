@@ -1,6 +1,6 @@
       SUBROUTINE ULPOSI ( UNIT, POSI, IERR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16     KACC
       CHARACTER*4      K4B
       CHARACTER*1      K1
+      CHARACTER*24 VALK(2)
       INTEGER          IOS,IEND
       LOGICAL          LOP,LNOM
 C     ------------------------------------------------------------------
@@ -48,9 +49,9 @@ C
       IF ( LOP ) THEN
         IF ( KACC .NE. 'SEQUENTIAL' ) THEN
           IERR=101
-          CALL UTMESS('E','ULPOSI','TYPE D''ACCES INCONNU "'
-     &                  //KACC//'", UNITE '//K4B )
-C        CALL U2MESK('E','UTILITAI5_24', 2 ,VALK)
+           VALK(1) = KACC
+           VALK(2) = K4B
+           CALL U2MESK('E','UTILITAI5_24', 2 ,VALK)
         ELSE
           IF ( .NOT. LNOM ) THEN
             IERR=102
@@ -85,9 +86,9 @@ C
         IERR = 0
       ELSE
         IERR = 105
-        CALL UTMESS('E','ULPOSI','POSITIONNEMENT INCONNU "'//K1
-     &              //'", UNITE '//K4B )
-C        CALL U2MESK('E','UTILITAI5_28', 2 ,VALK)
+         VALK(1) = K1
+         VALK(2) = K4B
+         CALL U2MESK('E','UTILITAI5_28', 2 ,VALK)
       ENDIF
 C
  9999 CONTINUE

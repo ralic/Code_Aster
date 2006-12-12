@@ -4,7 +4,7 @@
       INTEGER                    IMPR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
 C     ECRITURE DES CONCEPTS UTILISATEURS EXISTANT DANS L'ETUDE
 C     ------------------------------------------------------------------
 C IN  IMPR   : IS  : NUMERO LOGIQUE D'IMPRESSION SI IMPR>0 SINON VOIR
-C IN  CODE   : CH1 : CODE POUR UTMESS SI IMPR=0, INUTILISE SI IMPR >0
+C IN  CODE   : CH1 : CODE POUR UTDEBM SI IMPR=0, INUTILISE SI IMPR >0
 C IN  NOMOBJ : CH8 : NOM DU CONCEPT A EDITER, (SI '  ', ALORS TOUS)
 C     ------------------------------------------------------------------
       CHARACTER*24    KINFO , KRESU, KSTAT

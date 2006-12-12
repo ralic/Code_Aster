@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,39 +6,39 @@
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 
-DEBUT(CODE=_F(NOM = 'SSLV311A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM = 'SSLV311A', NIV_PUB_WEB='INTERNET',),);
 
 MA=LIRE_MAILLAGE();
 
 
 MA2=CREA_MAILLAGE(MAILLAGE=MA,
                   QUAD_LINE=_F(TOUT='OUI',),);
-                 
-                  
-MA2=DEFI_GROUP(reuse=MA2,        
+
+
+MA2=DEFI_GROUP(reuse=MA2,
                MAILLAGE=MA2,
                CREA_GROUP_NO=_F(GROUP_MA = ('SSUP_S','FACE2',),),
                CREA_GROUP_MA=_F(NOM='GRMAXP',OPTION='BANDE',POINT=(0.3,0.0,0.0),VECT_NORMALE=(1.,0.,0.),DIST=0.3,),
               );
-             
+
 #IMPR_RESU(FORMAT='RESULTAT',
 #          RESU=_F(MAILLAGE=MA2,));
 
-                                   
+
 MO=AFFE_MODELE(MAILLAGE=MA2,
                AFFE=_F( TOUT = 'OUI',
                         PHENOMENE = 'MECANIQUE',
@@ -79,17 +79,17 @@ CL=AFFE_CHAR_MECA(MODELE=MO,
 
 
 FNX=DEFI_FONCTION(NOM_PARA='X',
-                  VALE=(-2.0, -2.0*(500.*500.*7800.), 
+                  VALE=(-2.0, -2.0*(500.*500.*7800.),
                         2.0, 2.0*(500.*500.*7800.)));
 
-                  
+
 FNY=DEFI_FONCTION(NOM_PARA='Y',
-                  VALE=(-2.0, -2.0*(500.*500.*7800.), 
+                  VALE=(-2.0, -2.0*(500.*500.*7800.),
                         2.0, 2.0*(500.*500.*7800.)));
-                        
+
 
 FNZ=DEFI_FONCTION(NOM_PARA='Z',
-                  VALE=(-2.0, 0.0, 
+                  VALE=(-2.0, 0.0,
                         2.0, 0.0));
 
 
@@ -109,33 +109,33 @@ CHAMDEPL=MECA_STATIQUE(MODELE=MO,
                        EXCIT=(_F( CHARGE = CL),
                               _F( CHARGE = CH))
                       );
-                                       
+
 
 
 ###############################
 # DEFINITION DE LA FISSURE
 ###############################
 
-FISS1=DEFI_FISS_XFEM(MODELE=MO,  
+FISS1=DEFI_FISS_XFEM(MODELE=MO,
                      DEFI_FISS=_F(
                                  GROUP_MA_FISS='LEVREINF',
-                                 GROUP_MA_FOND='LFF',               
+                                 GROUP_MA_FOND='LFF',
                                  ),
                      GROUP_MA_ENRI='GRMAXP',
-                     ORIE_FOND=_F(PFON_INI=(9.99995E-02, 
-                                            9.94462E-06, 
+                     ORIE_FOND=_F(PFON_INI=(9.99995E-02,
+                                            9.94462E-06,
                                             4.99901E-02,),
                                   VECT_ORIE=(0.0, 1.0, 0.0),
-                                  PT_ORIGIN=(0.0, 
-                                             0.0, 
+                                  PT_ORIGIN=(0.0,
+                                             0.0,
                                              0.0),),
                      INFO=1,
                      CONTACT=_F(),
-                     );                     
+                     );
 
-          
+
 ###################################
-# CALCUL DE G ET DES K LOCAUX 
+# CALCUL DE G ET DES K LOCAUX
 ###################################
 
 
@@ -143,7 +143,7 @@ RAY_INF1=DEFI_CONSTANTE(   VALE=0.00075);
 
 RAY_SUP1=DEFI_CONSTANTE(   VALE=0.0025);
 
-                      
+
 GLO1=CALC_G(RESULTAT=CHAMDEPL,
             SYME_CHAR='SYME',
             COMP_ELAS=_F(RELATION='ELAS',),
@@ -187,9 +187,9 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 3),
            VALE=629.E+5,
            PRECISION=0.10,
-           REFERENCE = 'ANALYTIQUE')   
-           
-           
+           REFERENCE = 'ANALYTIQUE')
+
+
 TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1_LOCAL',
            FILTRE=_F(  NOM_PARA = 'NUM_PT',
@@ -197,15 +197,15 @@ TEST_TABLE(TABLE=GLO1,
            VALE=664.E+5,
            PRECISION=0.03,
            REFERENCE = 'ANALYTIQUE')
-           
-           
+
+
 TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1_LOCAL',
            FILTRE=_F(  NOM_PARA = 'NUM_PT',
                        VALE_I = 5),
            VALE=698.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')           
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -214,7 +214,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 6),
            VALE=727.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -223,8 +223,8 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 7),
            VALE=756.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
-           
+           REFERENCE = 'ANALYTIQUE')
+
 
 TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1_LOCAL',
@@ -232,8 +232,8 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 8),
            VALE=791.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
-           
+           REFERENCE = 'ANALYTIQUE')
+
 
 TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1_LOCAL',
@@ -241,7 +241,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 9),
            VALE=820.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')              
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -250,7 +250,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 10),
            VALE=854.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')              
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -259,7 +259,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 11),
            VALE=889.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -268,7 +268,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 12),
            VALE=918.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -277,7 +277,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 13),
            VALE=947.E+5,
            PRECISION=0.04,
-           REFERENCE = 'ANALYTIQUE')   
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -286,7 +286,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 14),
            VALE=964.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -295,7 +295,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 15),
            VALE=975.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -304,7 +304,7 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 16),
            VALE=975.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
+           REFERENCE = 'ANALYTIQUE')
 
 
 TEST_TABLE(TABLE=GLO1,
@@ -313,21 +313,21 @@ TEST_TABLE(TABLE=GLO1,
                        VALE_I = 17),
            VALE=964.E+5,
            PRECISION=0.03,
-           REFERENCE = 'ANALYTIQUE')   
+           REFERENCE = 'ANALYTIQUE')
 
 ###################################
-# VERIFICATION : SOLUTION IDENTIQUE AVEC ROTATION 
+# VERIFICATION : SOLUTION IDENTIQUE AVEC ROTATION
 ###################################
 CH2=AFFE_CHAR_MECA(MODELE=MO,
                   ROTATION=(500., 0., 0., 1.,)
-                 ); 
+                 );
 
 CHAMDEP2=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F( CHARGE = CL),
                               _F( CHARGE = CH2))
                       );
-                                       
+
 GLO2=CALC_G(RESULTAT=CHAMDEP2,
             SYME_CHAR='SYME',
             COMP_ELAS=_F(RELATION='ELAS',),
@@ -358,7 +358,7 @@ TEST_TABLE(TABLE=GLO1,
            VALE=8.0514485705379E+07,
            PRECISION=1.E-6,
            REFERENCE = 'NON_REGRESSION',
-           VERSION='8.2.1', ) 
+           VERSION='8.2.1', )
 
 TEST_TABLE(TABLE=GLO1,
            NOM_PARA='K1_LOCAL',

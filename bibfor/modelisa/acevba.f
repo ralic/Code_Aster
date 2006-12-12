@@ -3,7 +3,7 @@
       INTEGER           NBOCC,NLM,NLG,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     -----  DEBUT COMMUNS NORMALISES  JEVEUX  -----------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        R8B, R8MAME, TST
       CHARACTER*8   K8B, KIOC, KI, NOMU
+      CHARACTER*24 VALK(3)
       CHARACTER*16  K16B, SEC, TOU, CONCEP, CMD
 C     ------------------------------------------------------------------
 C
@@ -100,18 +101,17 @@ C -- CARA
                  NCMAX = ZI(JTYPE+L-1)*NSECBA
                  CALL CODENT(NCMAX,'G',KI)
                  IF (NCAR.GT.NCMAX .AND. L.NE.2) THEN
-                    CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//KIOC//
-     &                         ' : "CARA" : '//KI//' ARGUMENTS MAXI'//
-     &                     ' POUR UNE SECTION "'//ZK16(JSECT+L-1)//'"')
-C        CALL U2MESK('E','MODELISA_44', 3 ,VALK)
+                     VALK(1) = KIOC
+                     VALK(2) = KI
+                     VALK(3) = ZK16(JSECT+L-1)
+                     CALL U2MESK('E','MODELISA_44', 3 ,VALK)
                     IER = IER + 1
                  ENDIF
                  IF (L.EQ.2) THEN
                     IF (NCAR.GT.4) THEN
-                       CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//KIOC//
-     &                              ' : "CARA" :  4  ARGUMENTS MAXI'//
-     &                     ' POUR UNE SECTION "'//ZK16(JSECT+L-1)//'"')
-C        CALL U2MESK('E','MODELISA_45', 2 ,VALK)
+                        VALK(1) = KIOC
+                        VALK(2) = ZK16(JSECT+L-1)
+                        CALL U2MESK('E','MODELISA_45', 2 ,VALK)
                        IER = IER + 1
                     ENDIF
                     IRECH = 0
@@ -119,10 +119,9 @@ C        CALL U2MESK('E','MODELISA_45', 2 ,VALK)
                     DO 30 I = 1,NCAR
                        IF (ZK8(JCARA+I-1)(1:2).EQ.'H ') THEN
                           IF (IRECH.EQ.2) THEN
-                             CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//
-     &                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
-     &                   ' ARGUMENT "H" INCOMPATIBLE AVEC "HY" OU "HZ"')
-C        CALL U2MESK('E','MODELISA_46', 2 ,VALK)
+                              VALK(1) = KIOC
+                              VALK(2) = ZK16(JSECT+L-1)
+                              CALL U2MESK('E','MODELISA_46', 2 ,VALK)
                              IER = IER + 1
                           ENDIF
                           IRECH = 1
@@ -130,20 +129,18 @@ C        CALL U2MESK('E','MODELISA_46', 2 ,VALK)
                        IF (ZK8(JCARA+I-1)(1:2).EQ.'HY' .OR.
      &                                ZK8(JCARA+I-1)(1:2).EQ.'HZ') THEN
                           IF (IRECH.EQ.1) THEN
-                             CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//
-     &                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
-     &                  ' ARGUMENT "HY" OU "HZ" INCOMPATIBLE AVEC "H" ')
-C        CALL U2MESK('E','MODELISA_47', 2 ,VALK)
+                              VALK(1) = KIOC
+                              VALK(2) = ZK16(JSECT+L-1)
+                              CALL U2MESK('E','MODELISA_47', 2 ,VALK)
                              IER = IER + 1
                           ENDIF
                           IRECH = 2
                        ENDIF
                        IF (ZK8(JCARA+I-1)(1:3).EQ.'EP ') THEN
                            IF (IRECE.EQ.1) THEN
-                             CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//
-     &                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
-     &                ' ARGUMENT "EP" INCOMPATIBLE AVEC "EPY" OU "EPZ"')
-C        CALL U2MESK('E','MODELISA_48', 2 ,VALK)
+                              VALK(1) = KIOC
+                              VALK(2) = ZK16(JSECT+L-1)
+                              CALL U2MESK('E','MODELISA_48', 2 ,VALK)
                               IER = IER + 1
                            ENDIF
                            IRECE = 2
@@ -151,10 +148,9 @@ C        CALL U2MESK('E','MODELISA_48', 2 ,VALK)
                         IF (ZK8(JCARA+I-1)(1:3).EQ.'EPX' .OR.
      &                               ZK8(JCARA+I-1)(1:3).EQ.'EPY') THEN
                            IF (IRECE.EQ.2) THEN
-                             CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//
-     &                          KIOC//' : SECTION "'//ZK16(JSECT+L-1)//
-     &                ' ARGUMENT "EPY" OU "EPZ" INCOMPATIBLE AVEC "EP"')
-C        CALL U2MESK('E','MODELISA_49', 2 ,VALK)
+                              VALK(1) = KIOC
+                              VALK(2) = ZK16(JSECT+L-1)
+                              CALL U2MESK('E','MODELISA_49', 2 ,VALK)
                               IER = IER + 1
                            ENDIF
                            IRECE = 1
@@ -169,19 +165,18 @@ C -- VALE
          IF (NVAL.GT.0) THEN
             IF (NVAL.NE.NCARA) THEN
                CALL CODENT(NCARA,'G',KI)
-               CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//KIOC//' : '//
-     &              '"CARA" : NOMBRE DE VALEURS ENTREES INCORRECT :'//
-     &                                              ' IL EN FAUT '//KI)
-C        CALL U2MESK('E','MODELISA_50', 2 ,VALK)
+                VALK(1) = KIOC
+                VALK(2) = KI
+                CALL U2MESK('E','MODELISA_50', 2 ,VALK)
                IER = IER + 1
             ELSE
                DO 70 I = 1 , NVAL
                   CALL CODENT(I,'G',KI)
                   IF (ZR(JVALE+I-1).EQ.TST) THEN
-                     CALL UTMESS('E',CMD,'BARRE : OCCURENCE '//KIOC//
-     &              ' : SECTION "'//ZK16(JSECT+L-1)//' : VALEUR '//KI//
-     &                   ' DE "VALE" NON ADMISE (VALEUR TEST INTERNE)')
-C        CALL U2MESK('E','MODELISA_51', 3 ,VALK)
+                      VALK(1) = KIOC
+                      VALK(2) = ZK16(JSECT+L-1)
+                      VALK(3) = KI
+                      CALL U2MESK('E','MODELISA_51', 3 ,VALK)
                      IER = IER + 1
                   ENDIF
  70            CONTINUE

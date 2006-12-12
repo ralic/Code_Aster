@@ -9,7 +9,7 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C ======================================================================
       REAL*8        FITER, DKOOH(6,6), EPSF(6), I1, TRACEG, TROIS
       REAL*8        EVP, EVPS
       CHARACTER*10  CTOL, CITER
+      CHARACTER*24 VALK(2)
 C ======================================================================
 C --- INITIALISATION DE PARAMETRE --------------------------------------
 C ======================================================================
@@ -146,11 +147,9 @@ C ======================================================================
             IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1 ) THEN
                CALL CODENT(ITER,'G',CITER)
                CALL CODREE(TOLER,'E',CTOL)
-               CALL UTMESS ('I','LAIGLE',' ERREUR'//
-     &         ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &         ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     &         ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
+                VALK(1) = CITER
+                VALK(2) = CTOL
+                CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
                IRTETI = 3
                GOTO 100
             ELSE
@@ -229,11 +228,9 @@ C ======================================================================
                   IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1 ) THEN
                      CALL CODENT(ITER,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
-                     CALL UTMESS ('I','LAIGLE',' ERREUR'//
-     &               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     &               ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
+                      VALK(1) = CITER
+                      VALK(2) = CTOL
+                      CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
                      IRTETI = 3
                      GOTO 100
                   ELSE
@@ -275,11 +272,9 @@ C ======================================================================
                   IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1 ) THEN
                      CALL CODENT(ITER,'G',CITER)
                      CALL CODREE(TOLER,'E',CTOL)
-                     CALL UTMESS ('I','LAIGLE',' ERREUR'//
-     &               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     &               ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
+                      VALK(1) = CITER
+                      VALK(2) = CTOL
+                      CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
                      IRTETI = 3
                      GOTO 100
                   ELSE

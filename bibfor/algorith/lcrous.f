@@ -3,7 +3,7 @@
      &                   SIGF, VINF, IRTET)
         IMPLICIT NONE
 C       ================================================================
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -359,15 +359,13 @@ C -- ERREURS--------------------------------------------------------
 C
 C -- PROBABLEMENT UN INCREMENT TROP GRAND DE DEFORMATION-----------
  50   CONTINUE
-C      CALL UTMESS('I','LCROUS','DIFFICULTE DANS LE CALCUL DE L '//
-C     &    'INCREMENT MAXIMAL DE POROSITE : REDECOUPAGE')
+
       IRTET=1
       GOTO 9999
 C
 C -- NON CONVERGENCE------------------------------------------------
  60   CONTINUE
-C      CALL UTMESS('I','LCROUS','NON CONVERGENCE : REDECOUPAGE '//
-C     &     'INTERNE : SI POSSIBLE, AUGMENTER ITER_INTE_MAXI')
+
       IRTET=1
       GOTO 9999
 C

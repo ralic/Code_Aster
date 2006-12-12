@@ -1,21 +1,21 @@
-#@ MODIF prepost4 Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF prepost4 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -23,7 +23,7 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- la methode 'taheri_manson' ne peut pas etre utilisee avec l'option %(k1)s 
+ la methode 'taheri_manson' ne peut pas etre utilisee avec l'option %(k1)s
 """),
 
 2: _("""
@@ -35,15 +35,15 @@ cata_msg={
 """),
 
 4: _("""
- la methode 'taheri_mixte' ne peut pas etre utilisee avec l'option %(k1)s 
+ la methode 'taheri_mixte' ne peut pas etre utilisee avec l'option %(k1)s
 """),
 
 5: _("""
- l'option  %(k1)s n'a  pas ete calculee dans la sd  %(k2)s 
+ l'option  %(k1)s n'a  pas ete calculee dans la sd  %(k2)s
 """),
 
 6: _("""
- le champ " %(k1)s " ( %(k2)s ) n'a pas ete note dans la sd  %(k3)s 
+ le champ " %(k1)s " ( %(k2)s ) n'a pas ete note dans la sd  %(k3)s
 """),
 
 7: _("""
@@ -79,7 +79,7 @@ cata_msg={
 """),
 
 15: _("""
- probleme extraction pour la table  %(k1)s 
+ probleme extraction pour la table  %(k1)s
 """),
 
 16: _("""
@@ -363,11 +363,11 @@ cata_msg={
 """),
 
 86: _("""
-  seuil / v0  > 1 
+  seuil / v0  > 1
 """),
 
 87: _("""
-  ***** arret du calcul ***** 
+  ***** arret du calcul *****
 """),
 
 88: _("""
@@ -375,7 +375,7 @@ cata_msg={
 """),
 
 89: _("""
- type non traite  %(k1)s 
+ type non traite  %(k1)s
 """),
 
 90: _("""
@@ -409,6 +409,17 @@ La ligne lue dans le fichier doit ressembler à ceci :
 95: _("""
 On a lu un objet dit composé (car type d'élément = 0) qui serait
 composé de 0 sous-objet !
+"""),
+
+96: _("""
+ Type de concept invalide.
+"""),
+
+97: _("""
+ Erreur Utilisateur :
+ La maille de peau : %(k1)s ne peut pas etre réorientée.
+ Car elle est inserrée entre 2 mailles "support" placées de part et d'autre : %(k2)s et %(k3)s.
+
 """),
 
 }

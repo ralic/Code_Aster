@@ -4,7 +4,7 @@
       CHARACTER*(*)      MODES,MASSE, AMOR, RAIDE, NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C
       CHARACTER*16  NOMCMD
       CHARACTER*19  NUMDDL,CHAMNO,NUMAT(3), NOMAT(3)
       CHARACTER*24  VALE, REFD
+      CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C     ------------------------------------------------------------------
@@ -117,20 +118,16 @@ C On remplie les champs relatifs aux matrices assemblees
          IF ( IER.NE.0 ) THEN
            CALL GETRES(CBID,CBID,NOMCMD)
            IF ( ZK24(LMODE+2)(1:8) .NE. ' ' ) THEN
-              CALL UTMESS('F','VPCREA',
-     &        'LE CONCEPT MODE "'//REFD(1:8)//'" A ETE CREE AVEC '//
-     &        'LES MATRICES    MATR_A: '//ZK24(LMODE)(1:8)//
-     &                      ', MATR_B: '//ZK24(LMODE+1)(1:8)//
-     &                      ', MATR_C: '//ZK24(LMODE+2)(1:8)//
-     &        ' ET NON AVEC CELLES  PASSEES EN ARGUMENTS.')
-C        CALL U2MESK('F','ALGELINE3_61', 4 ,VALK)
+               VALK(1) = REFD(1:8)
+               VALK(2) = ZK24(LMODE)(1:8)
+               VALK(3) = ZK24(LMODE+1)(1:8)
+               VALK(4) = ZK24(LMODE+2)(1:8)
+               CALL U2MESK('F','ALGELINE3_61', 4 ,VALK)
            ELSE
-              CALL UTMESS('F','VPCREA',
-     &        'LE CONCEPT MODE "'//REFD(1:8)//'" A ETE CREE AVEC '//
-     &        'LES MATRICES    MATR_A: '//ZK24(LMODE)(1:8)//
-     &                      ', MATR_B: '//ZK24(LMODE+1)(1:8)//
-     &        ' ET NON AVEC CELLES  PASSEES EN ARGUMENTS.')
-C        CALL U2MESK('F','ALGELINE3_62', 3 ,VALK)
+               VALK(1) = REFD(1:8)
+               VALK(2) = ZK24(LMODE)(1:8)
+               VALK(3) = ZK24(LMODE+1)(1:8)
+               CALL U2MESK('F','ALGELINE3_62', 3 ,VALK)
            ENDIF
          ENDIF
       ENDIF

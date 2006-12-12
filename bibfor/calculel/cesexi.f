@@ -1,6 +1,6 @@
       SUBROUTINE CESEXI(STOP,JCESD,JCESL,IMA,IPT,ISPT,ICMP,IAD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(4)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -106,22 +107,22 @@ C     ------------------------------------------------------------------
         CALL U2MESK('F','CALCULEL_68',1,K8MAIL)
 
    30   CONTINUE
-        CALL UTMESS('F','CESEXI','NUMERO DE POINT INVALIDE: '//K8PT//
-     &              ' (<1 OU >NBPT)'//' POUR LA MAILLE: '//K8MAIL)
-C        CALL U2MESK('F','CALCULEL_69', 2 ,VALK)
+         VALK(1) = K8PT
+         VALK(2) = K8MAIL
+         CALL U2MESK('F','CALCULEL_69', 2 ,VALK)
 
    40   CONTINUE
-        CALL UTMESS('F','CESEXI','NUMERO DE SOUS_POINT INVALIDE: '//
-     &              K8SPT//' (<1 OU >NBSPT)'//' POUR LA MAILLE: '//
-     &              K8MAIL//' ET POUR LE POINT: '//K8PT)
-C        CALL U2MESK('F','CALCULEL_70', 3 ,VALK)
+         VALK(1) = K8SPT
+         VALK(2) = K8MAIL
+         VALK(3) = K8PT
+         CALL U2MESK('F','CALCULEL_70', 3 ,VALK)
 
    50   CONTINUE
-        CALL UTMESS('F','CESEXI','NUMERO DE CMP INVALIDE: '//K8CMP//
-     &              ' (<1 OU >NBCMP)'//' POUR LA MAILLE: '//K8MAIL//
-     &              ' POUR LE POINT: '//K8PT//
-     &              ' ET POUR LE SOUS_POINT: '//K8SPT)
-C        CALL U2MESK('F','CALCULEL_71', 4 ,VALK)
+         VALK(1) = K8CMP
+         VALK(2) = K8MAIL
+         VALK(3) = K8PT
+         VALK(4) = K8SPT
+         CALL U2MESK('F','CALCULEL_71', 4 ,VALK)
 
 
       ELSE

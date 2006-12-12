@@ -1,6 +1,6 @@
       SUBROUTINE NUROTA (NU, COMPO, NURO, REAROT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,7 @@ C --------- VARIABLES LOCALES ------------------------------------------
       CHARACTER*16  COMPT
       CHARACTER*19  LIGRMO
       CHARACTER*24  NOLILI
+      CHARACTER*24 VALK(2)
       LOGICAL       EXISDG
 C --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 C
@@ -197,9 +198,9 @@ C ---  A LA GRANDEUR DEPL_R                                ---
 C
       IDRZ = INDIK8(ZK8(IANCMP),NOCMP,1,NCMPMX)
       IF (IDRZ.EQ.0) THEN
-         CALL UTMESS('F','NUROTA','LE DDL : '//NOCMP//
-     &                   'N''EXISTE PAS DANS LA GRANDEUR : '//NOMGD)
-C        CALL U2MESK('F','UTILITAI2_64', 2 ,VALK)
+          VALK(1) = NOCMP
+          VALK(2) = NOMGD
+          CALL U2MESK('F','UTILITAI2_64', 2 ,VALK)
       ENDIF
 C
 C --- RECUPERATION DU .PRNO ASSOCIE AU MAILLAGE  ---

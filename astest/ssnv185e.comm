@@ -1,21 +1,21 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV185E',NIV_PUB_WEB='INTERNET',));
@@ -48,13 +48,13 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                  MAILLAGE=MAILLAG2,
                  CREA_GROUP_NO=(_F(NOM='NXFEM',NOEUD=('N501','N502','N503','N504','N505','N506','N1069',
                                                       'N534','N535','N536','N537','N538','N539','N1072',
-                                                      
+
                                                       'N512','N513','N514','N515','N516','N517','N1070',
                                                       'N545','N546','N547','N548','N549','N550','N1073',
-                                                      
+
                                                       'N523','N524','N525','N526','N527','N528','N1071',
                                                       'N556','N557','N558','N559','N560','N561','N1074',
-                                                      
+
                                                       'N1286','N1287','N1288','N1289','N1290','N1291','N1292',
                                                       'N1297','N1298','N1299','N1300','N1301','N1302','N1303',),),
                                 _F(NOM='NCLA',DIFFE=('VOL','NXFEM',),),
@@ -72,8 +72,8 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='3D_XFEM',),
                            _F(GROUP_MA=('SURFINF','SURFSUP',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),),);  
-                              
+                              MODELISATION='3D',),),);
+
 MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
                        MAILLAGE=MAILLAG2,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
@@ -82,7 +82,7 @@ MAILLAG2=MODI_MAILLAGE(reuse =MAILLAG2,
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+5.');
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
+FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI= (0. ,5. ,15. ),
@@ -116,7 +116,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 
 R = FORMULE(NOM_PARA=('X','Y','Z'),VALE='sqrt((Y-5.)**2+(Z-15.)**2)');
 T = FORMULE(NOM_PARA=('X','Y','Z'),VALE='atan2(Z-15.,-Y+5.)');
-   
+
 coef=(1+nu)/(E*sqrt(2.*pi))
 
 OUAUX1 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-1.*coef*sqrt(R(X,Y,Z))*cos(T(X,Y,Z)/2.)*(3.-4.*nu-cos(T(X,Y,Z)))');
@@ -133,10 +133,10 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                   DCZ=0., E1Z=coef*(4.-4.*nu), E2Z=0.,              E3Z=0.,       E4Z=-1.*coef,),
                                _F(NOEUD=('N536','N547','N558','N1299',),DCX=0.,DCY= 2.80089E-15,DCZ= 1.01787E-11,H1X=0.,H1Y=-3.20989E-09,H1Z=1.86346E-08,),
                                _F(NOEUD=('N503','N514','N525','N1288',),DCX=0.,DCY=-2.80089E-15,DCZ=-1.01787E-11,H1X=0.,H1Y= 3.20989E-09,H1Z=1.86346E-08,),
-                           
+
                                _F(NOEUD=('N537','N548','N559','N1300',),DCX=0.,DCY= 2.28933E-15,DCZ= 1.84271E-12,H1X=0.,H1Y=-2.53273E-09,H1Z=2.40571E-08,),
                                _F(NOEUD=('N504','N515','N526','N1289',),DCX=0.,DCY=-2.28933E-15,DCZ=-1.84271E-12,H1X=0.,H1Y= 2.53273E-09,H1Z=2.40571E-08,),
-                            
+
                                _F(NOEUD=('N538','N549','N560','N1301',),DCX=0.,DCY= 1.96578E-15,DCZ= 5.80554E-13,H1X=0.,H1Y=-2.15205E-09,H1Z=2.84648E-08,),
                                _F(NOEUD=('N505','N516','N527','N1290',),DCX=0.,DCY=-1.96578E-15,DCZ=-5.80554E-13,H1X=0.,H1Y= 2.15205E-09,H1Z=2.84648E-08,),
 
@@ -146,7 +146,7 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                _F(NOEUD=('N1072','N1073','N1074','N1303',),DCX=0.,DCY= 1.58404E-15,DCZ= 1.2106E-13,H1X=0.,H1Y=-1.72255E-09,H1Z=3.56825E-08,),
                                _F(NOEUD=('N1069','N1070','N1071','N1292',),DCX=0.,DCY=-1.58404E-15,DCZ=-1.2106E-13,H1X=0.,H1Y= 1.72255E-09,H1Z=3.56825E-08,),
                                  ),
-                     );               
+                     );
 
 
 #----------------------------------------------
@@ -156,17 +156,17 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
-                   CHAM_MATER=CHAMPMA1,              
-                   EXCIT=(_F(CHARGE=CHXFEM,),                                           
+                   CHAM_MATER=CHAMPMA1,
+                   EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CHF,),
                           _F(CHARGE=CH,),
-                          ),  
+                          ),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
                    INCREMENT=_F(LIST_INST=L_INS1,
                                 INST_FIN=1.0,),
                    SOLVEUR=_F(METHODE='MUMPS',
-                              PCENT_PIVOT=250,),
+                              ),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
@@ -203,7 +203,7 @@ K1REF=1.
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1_LOCAL',
-              TYPE_TEST='MAX',               
+              TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
@@ -211,7 +211,7 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1_LOCAL',
-              TYPE_TEST='MIN',               
+              TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,

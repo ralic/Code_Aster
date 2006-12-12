@@ -4,7 +4,7 @@
      &                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,6 +94,7 @@ C
       CHARACTER*32  NOMAMD
       CHARACTER*200 NOFIMD
       CHARACTER*255 KFIC
+      CHARACTER*24 VALK(2)
 C
       LOGICAL EXISTM
 C
@@ -177,9 +178,9 @@ C                         1234567890123456
         SAUX16(EDLEAJ) = 'LECTURE/ECRITURE'
         SAUX16(EDCREA) = 'CREATION.       '
         CALL CODENT ( EDMODE,'G',SAUX08 )
-        CALL UTMESS ('I',NOMPRO,
-     &  'OUVERTURE DU FICHIER MED EN MODE '//SAUX08//SAUX16(EDMODE))
-C        CALL U2MESK('I','PREPOST2_88', 2 ,VALK)
+         VALK(1) = SAUX08
+         VALK(2) = SAUX16(EDMODE)
+         CALL U2MESK('I','PREPOST2_88', 2 ,VALK)
       ENDIF
 C
       CALL EFOUVR (FID, NOFIMD, EDMODE, CODRET)

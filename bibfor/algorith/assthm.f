@@ -12,7 +12,7 @@
      &                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,8 +34,6 @@ C TOLE CRP_21
 C ======================================================================
       IMPLICIT      NONE
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER (NOMPRO='ASSTHM')
 C
       INTEGER       DIMMAT,NPG,IPOID2,IVF2,IDFDE2,DIMUEL,NNOM
       PARAMETER    (DIMMAT=120)
@@ -63,6 +61,7 @@ C
       CHARACTER*3   MODINT
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  OPTION,COMPOR(*),THMC,LOI
+      CHARACTER*24 VALK(2)
 C
 C =====================================================================
 C.......................................................................
@@ -291,10 +290,9 @@ C ======================================================================
          LOI = 'LIQU_AD_GAZ_VAPE'
       ENDIF
       IF (THMC.NE.LOI) THEN
-         CALL UTMESS('F',NOMPRO,'IL Y A INCOHRENCE ENTRE LA LOI'//
-     &         ' DE COUPLAGE DE DEFI_MATERIAU '//LOI//' ET LA LOI'//
-     &         ' DE COUPLAGE DANS STAT_NON_LINE '//THMC)
-C        CALL U2MESK('F','ALGORITH_34', 2 ,VALK)
+          VALK(1) = LOI
+          VALK(2) = THMC
+          CALL U2MESK('F','ALGORITH_34', 2 ,VALK)
       ENDIF
 C =====================================================================
 C --- BOUCLE SUR LES POINTS D'INTEGRATION -----------------------------

@@ -2,7 +2,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24,NOOJB
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -115,10 +116,11 @@ C     --------------------------------------------
       DO 10,ICMP1 = 1,NCMP1
         NOMCMP = ZK8(JCNSC-1+ICMP1)
         ICMP = INDIK8(ZK8(JCMPGD),NOMCMP,1,NCMPMX)
-        IF (ICMP.EQ.0) CALL UTMESS('F','CNSCNO','LA CMP:'//NOMCMP//
-     &                             ' N''APPARTIENT PAS A LA GRANDEUR:'//
-     &                             NOMGD)
-C        CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
+        IF (ICMP.EQ.0) THEN
+           VALK(1) = NOMCMP
+           VALK(2) = NOMGD
+           CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
+        ENDIF
         ZI(JNUCMP-1+ICMP) = ICMP1
         ZI(JNUCM1-1+ICMP1) = ICMP
    10 CONTINUE
@@ -213,9 +215,9 @@ C     -----------------------------------
           IF (ICMP1.EQ.0 ) THEN
             IF (PROL0.EQ.'NON') THEN
                CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
-               CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
-     &                  ' SUR LE NOEUD:'//NOMNO)
-C        CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
+                VALK(1) = NOMCMP
+                VALK(2) = NOMNO
+                CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
             ELSE
                CALL ASSERT(PROL0.EQ.'OUI')
                IF (TSCA.EQ.'R') THEN
@@ -252,9 +254,9 @@ C        CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
           ELSE
             IF (PROL0.EQ.'NON') THEN
                CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
-               CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
-     &                  ' SUR LE NOEUD:'//NOMNO)
-C        CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
+                VALK(1) = NOMCMP
+                VALK(2) = NOMNO
+                CALL U2MESK('F','CALCULEL2_13', 2 ,VALK)
             ELSE
                CALL ASSERT(PROL0.EQ.'OUI')
                IF (TSCA.EQ.'R') THEN

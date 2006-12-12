@@ -1,7 +1,7 @@
       SUBROUTINE CAUNDF(CODE,OPT,TE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER IUNDF,IISNAN
       REAL*8 RNNEM,R8NNEM
       CHARACTER*8 KNNEM
+      CHARACTER*24 VALK(3)
 
 C DEB-------------------------------------------------------------------
 
@@ -192,10 +193,10 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
             ARRET = .TRUE.
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
             CALL JENUNO(JEXNUM('&CATA.OP.NOMOPT',OPT),NOMOPT)
-            CALL UTMESS('E','CAUNDF','INCOHERENCE FORTRAN/CATALOGUE'//
-     &                  ' TYPE_ELEMENT: '//NOMTE//' OPTION: '//NOMOPT//
-     &                  ' PARAMETRE: '//NOMPAR)
-C        CALL U2MESK('E','CALCULEL_42', 3 ,VALK)
+             VALK(1) = NOMTE
+             VALK(2) = NOMOPT
+             VALK(3) = NOMPAR
+             CALL U2MESK('E','CALCULEL_42', 3 ,VALK)
 
           END IF
 

@@ -1,4 +1,4 @@
-#@ MODIF from_c Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF from_c Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,4 +29,9 @@ cata_msg={
 2: _("""
  &feti.liste.sd.mpib existe deja !
 """),
+
+3: _("""
+ En parallèle, il faut au moins un sous-domaine par processeur !
+"""),
+
 }

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/10/2006   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*16 NOMCMD, TYPFON, VERIF
       CHARACTER*19 NOMFON, LISTPA, LISTFO
       CHARACTER*24 NOMMAS
+      CHARACTER*24 VALK(2)
       CHARACTER*1  K1BID
 C     ------------------------------------------------------------------
 C
@@ -208,14 +209,14 @@ C
          CALL JELIRA(LISTFO//'.VALE','LONMAX',NBCOU2,K1BID)
          IF (NBCOU2.NE.NBCOUP) THEN
            IF (NBCOU2.LT.NBCOUP) THEN
-             CALL UTMESS('F','OP0003','IL MANQUE DES VALEURS DANS '//
-     &                  LISTFO//' ,LISTE PLUS PETITE QUE '//LISTPA)
-C        CALL U2MESK('F','UTILITAI2_70', 2 ,VALK)
+              VALK(1) = LISTFO
+              VALK(2) = LISTPA
+              CALL U2MESK('F','UTILITAI2_70', 2 ,VALK)
            ENDIF
            IF (NBCOUP.LT.NBCOU2) THEN
-             CALL UTMESS('F','OP0003','IL MANQUE DES VALEURS DANS '//
-     &                  LISTPA//' ,LISTE PLUS PETITE QUE '//LISTFO)
-C        CALL U2MESK('F','UTILITAI2_70', 2 ,VALK)
+              VALK(1) = LISTPA
+              VALK(2) = LISTFO
+              CALL U2MESK('F','UTILITAI2_70', 2 ,VALK)
            ENDIF
          ENDIF
          NBVAL = NBCOUP * 2
@@ -235,8 +236,7 @@ C     --- VERIFICATION QUE LES VALEURS SONT >=0 SI INTERPOLATION 'LOG'
 C     JE NE VOIS PAS A QUOI CELA PEUT CORRESPONDRE SUR UNE FONCTION
 C     A VALEURS COMPLEXES, MAIS AUTANT LE LAISSER POSSIBLE
       IF (INTERP(2).EQ.'LOG'.AND.(NBVC.NE.0)) THEN
-         CALL UTMESS('F','OP0003','INTERPOLATION "LOG" ET COMPLEXES '//
-     +                          'EN ORDONNEE SONT INCOMPATIBLES !')
+         CALL U2MESS('F','UTILITAI5_92')
       ENDIF
       IF ((INTERP(1).EQ.'LOG'.AND.MIN1.LE.0.D0)
      &.OR.(INTERP(2).EQ.'LOG'.AND.(MIN2.LE.0.D0))) THEN

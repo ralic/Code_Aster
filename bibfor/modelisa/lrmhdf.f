@@ -5,7 +5,7 @@
      &                    NBNOEU, NBMAIL, NBCOOR, VECGRM, NBCGRM )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,6 +49,7 @@ C
       CHARACTER*24 COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
       CHARACTER*24 FORMM,  TITRE,  NOMMAI, NOMNOE, TYPMAI, VECGRM
       CHARACTER*24 ADAPMA
+      CHARACTER*24 VALK(2)
       CHARACTER*8 NOMU
 C
 C     OUT
@@ -185,9 +186,9 @@ C
         IAUX = 1
         CALL MDEXMA ( NOFIMD, NOMAMD, IAUX, EXISTM, NDIM, CODRET )
         IF ( .NOT.EXISTM ) THEN
-          CALL UTMESS ( 'F', NOMPRO,
-     &   'MAILLAGE '//NOMAMD//' INCONNU DANS '//NOFIMD )
-C        CALL U2MESK('F','PREPOST3_12', 2 ,VALK)
+           VALK(1) = NOMAMD
+           VALK(2) = NOFIMD
+           CALL U2MESK('F','PREPOST3_12', 2 ,VALK)
         ENDIF
 C
       ENDIF

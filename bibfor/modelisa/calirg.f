@@ -9,7 +9,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C
       INTEGER       IGEOM2,NBNO2,INO2,NUNO2,NNOMX,IER,K,KK
       REAL*8        TRAN(3),ANGL(3),CENTR(3),COOR2(3),ZERO,UN,R8DGRD
       CHARACTER*16  MOTFAC
+      CHARACTER*24 VALK(2)
       CHARACTER*1   KB
 C
 C ----------------------------------------------------------------------
@@ -97,9 +98,9 @@ C     -------------------------------------------------------
       CALL GETVR8(MOTFAC,'TRAN',IOCC,1,NDIM,TRAN,NTRAN)
       IF (NTRAN .LT. 0) THEN
         CALL CODENT(NDIM,'G',KB)
-        CALL UTMESS('F','CALIRG','LE MOT CLE "TRAN" SOUS LE MOT CLE'
-     &    //' FACTEUR '//MOTFAC//' N''ADMET QUE '//KB//' VALEURS')
-C        CALL U2MESK('F','MODELISA3_14', 2 ,VALK)
+         VALK(1) = MOTFAC
+         VALK(2) = KB
+         CALL U2MESK('F','MODELISA3_14', 2 ,VALK)
       ENDIF
 C
       IF (NDIM .EQ. 3) THEN
@@ -110,9 +111,9 @@ C
       CALL GETVR8(MOTFAC,'ANGL_NAUT',IOCC,1,NANGMX,ANGL,NANGL)
       IF (NANGL .LT. 0) THEN
         CALL CODENT(NANGMX,'G',KB)
-        CALL UTMESS('F','CALIRG','LE MOT CLE "ANGL_NAUT" SOUS LE MOT'
-     &    //' CLE FACTEUR '//MOTFAC//' N''ADMET QUE '//KB//' VALEURS')
-C        CALL U2MESK('F','MODELISA3_15', 2 ,VALK)
+         VALK(1) = MOTFAC
+         VALK(2) = KB
+         CALL U2MESK('F','MODELISA3_15', 2 ,VALK)
       ENDIF
       DO 30 K=1,3
         ANGL(K) = ANGL(K)*R8DGRD()
@@ -121,9 +122,9 @@ C
       CALL GETVR8(MOTFAC,'CENTRE',IOCC,1,NDIM,CENTR,NCENTR)
       IF (NCENTR .LT. 0) THEN
         CALL CODENT(NDIM,'G',KB)
-        CALL UTMESS('F','CALIRG','LE MOT CLE "CENTRE" SOUS LE MOT'
-     &    //' CLE FACTEUR '//MOTFAC//' N''ADMET QUE '//KB//' VALEURS')
-C        CALL U2MESK('F','MODELISA3_16', 2 ,VALK)
+         VALK(1) = MOTFAC
+         VALK(2) = KB
+         CALL U2MESK('F','MODELISA3_16', 2 ,VALK)
       ENDIF
 C
 C --- DETERMINATION DE LA MATRICE DE ROTATION DE LA TRANSFORMATION :

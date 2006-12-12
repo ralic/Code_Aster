@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 ALPHA,BETA,GAMMA
       REAL*8 UL(12),PGL(3,3),KLC(12,12),MAT(78)
       CHARACTER*16 CH16,CI16
+      CHARACTER*24 VALK(2)
 
 C     ------------------------------------------------------------------
 
@@ -123,10 +124,9 @@ C     ------------------------------------------------------------------
       ELSE
         CH16 = OPTION
         CI16 = NOMTE
-        CALL UTMESS('F','TE0044_01',
-     &              'ELEMENT DISCRET (TE0044): L''OPTION "'//CH16//
-     &              '" EST INCONNUE POUR LE TYPE "'//CI16//'"')
-C        CALL U2MESK('F','ELEMENTS2_89', 2 ,VALK)
+         VALK(1) = CH16
+         VALK(2) = CI16
+         CALL U2MESK('F','ELEMENTS2_89', 2 ,VALK)
       END IF
 
 C     --- MATRICE DE ROTATION PGL ---

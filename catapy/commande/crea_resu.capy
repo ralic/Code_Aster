@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,8 +72,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
 
            ECLA_PG         =FACT(statut='o',
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                                   into=("SIEF_ELGA","VARI_ELGA","SIEF_ELGA_DEPL","FLUX_ELGA_TEMP",) ),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
              MODELE_INIT     =SIMP(statut='o',typ=modele_sdaster),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),

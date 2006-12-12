@@ -8,7 +8,7 @@
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -280,8 +280,6 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
           END IF
         END IF
 
-C      ELSE
-C        CALL UTMESS('F','RC32SP','PB AVEC TYPEKE')
       END IF
 
       END

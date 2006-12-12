@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 MAILL2,GD2,NOCMP
       CHARACTER*1 BAS2
       CHARACTER*4 TYSCA
+      CHARACTER*24 VALK(2)
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
@@ -87,10 +88,11 @@ C     ------------------------------------
       DO 1, ICMP=1,NBCMP
         NOCMP=LICMP(ICMP)
         ITROU=INDIK8(ZK8(IANCMP),NOCMP,1,NBCMP2)
-        IF (ITROU.EQ.0) CALL UTMESS('F','CRCNCT','COMPOSANTE : '
-     &    //NOCMP//' INEXISTANTE AU CATALOGUE POUR LA GRANDEUR :'
-     &    //GD2)
-C        CALL U2MESK('F','CALCULEL2_22', 2 ,VALK)
+        IF (ITROU.EQ.0) THEN
+           VALK(1) = NOCMP
+           VALK(2) = GD2
+           CALL U2MESK('F','CALCULEL2_22', 2 ,VALK)
+        ENDIF 
  1    CONTINUE
       CALL DISMOI('F','NB_EC',GD2,'GRANDEUR',NEC,KBID,IED)
       CALL DISMOI('F','TYPE_SCA',GD2,'GRANDEUR',IBID,TYSCA,IED)

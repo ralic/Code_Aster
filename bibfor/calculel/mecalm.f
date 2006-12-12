@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/11/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*19 TABP,TABD
       CHARACTER*19 INFCHA
       CHARACTER*19 CHDYNR,CHACCE,MASSE,REFE,COMPOR
-      CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN,VALK,KCHAP,KCHAD
+      CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN,KBID19,KCHAP,KCHAD
       CHARACTER*24 CHAMGD,CHSIG,CHSIGP,CHSIGD,CHSIGN,CHEPSP
       CHARACTER*24 CHEPS,CHDEPL,CHSGPN,CHSGDN
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHTIME,CHMETA
@@ -125,7 +125,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 BLAN24,CHBID,CHSEQ,CHEEQ,CHCMP
       CHARACTER*24 CHTEM1,CHTRF1,CHTIM1,CHELE1
       CHARACTER*24 CHTEM2,CHTRF2,CHTIM2,CHELE2
-      CHARACTER*24 CHEND2,CHS,CHSIGF
+      CHARACTER*24 CHEND2,CHS,CHSIGF,VALK(2)
       CHARACTER*19 CHVARC,CHVREF
 
       REAL*8 COEF,VALRES,VALIM,INST,TIME,R8B
@@ -152,6 +152,7 @@ C     --- VARIABLES LOCALES ---
       CALL JERECU('V')
 C               123456789012345678901234
       BLAN24 = '                        '
+      KBID19 = '                   '
 C               12   345678   90123
       INPSCO = '&&'//NOMPRO//'_PSCO'
 C               12   345678   9012345678901234
@@ -358,10 +359,9 @@ C DETERMINATION DU CHAMP DERIVE LERES0 ASSOCIE A (RESUCO,NOPASE)
 
           CALL PSRENC(RESUCO,NOPASE,LERES0,IRET)
           IF (IRET.NE.0) THEN
-            CALL UTMESS('A',NOMPRO,
-     &   'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
-     &                  //RESUCO//' ET AU PARAMETRE SENSIBLE '//NOPASE)
-C        CALL U2MESK('A','CALCULEL2_96', 2 ,VALK)
+            VALK(1) = RESUCO
+            VALK(2) = NOPASE
+            CALL U2MESK('A','CALCULEL2_96', 2 ,VALK)
             GO TO 490
           END IF
 
@@ -764,9 +764,9 @@ C ---- VERIF SENSIBILITE FIN
             ELSE IF (TYSD.EQ.'DYNA_HARMO') THEN
               TYPE = 'VITE'
             ELSE
-              CALL UTMESS('A',NOMPRO,' OPTION '//OPTION//' NON '//
-     &                    'TRAITEE POUR UN RESULTAT DE TYPE '//TYSD)
-C        CALL U2MESK('A','CALCULEL3_6', 2 ,VALK)
+              VALK(1) = OPTION
+              VALK(2) = TYSD
+              CALL U2MESK('A','CALCULEL3_6', 2 ,VALK)
               GO TO 440
             END IF
             CHMASS = '&&'//NOMPRO//'.MASD'
@@ -1005,12 +1005,9 @@ C ---- VERIF SENSIBILITE FIN
 C
                 IF (IRET1.GT.0 .AND. IRET2.GT.0 .AND. IRET3.GT.0.
      &              AND. IRET4.GT.0) THEN
-                  CALL UTMESS('A',NOMPRO,'ATTENTION : LES CHAMPS '//
-     &               'SIEF_ELGA_DEPL, SIEF_ELGA, SIGM_ELNO_COQU ET' //
-     &                 'SIGM_ELNO_DEPL '        //
-     &                'SONT ABSENTS : ON NE PEUT PAS CALCULER L''OPTION'
-     &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
-C        CALL U2MESK('A','CALCULEL3_8', 2 ,VALK)
+                  VALK(1) = OPTION
+                  VALK(2) = TYSD
+                  CALL U2MESK('A','CALCULEL3_8', 2 ,VALK)
                   CALL JEDEMA
                   GO TO 440
                 END IF
@@ -1024,11 +1021,9 @@ C          CHAMP D'ENTREE POUR ELEMENTS ISOPARAMETRIQUES
 C          CHAMP D'ENTREE POUR COQUES
                   IF (EXIPLA) THEN
                     IF (IRET4.GT.0) THEN
-                      CALL UTMESS('A',NOMPRO,'ATTENTION : LE CHAMP '//
-     &                 ' SIGM_ELNO_DEPL EST ABSENT : '        //
-     &                ' ON NE PEUT PAS CALCULER L''OPTION'
-     &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
-C        CALL U2MESK('A','CALCULEL3_9', 2 ,VALK)
+                      VALK(1) = OPTION
+                      VALK(2) = TYSD
+                      CALL U2MESK('A','CALCULEL3_9', 2 ,VALK)
                       CALL JEDEMA
                       GO TO 440
                     ELSE
@@ -1041,11 +1036,9 @@ C        CALL U2MESK('A','CALCULEL3_9', 2 ,VALK)
                   END IF
                   IF (EXIPLA) THEN
                     IF (IRET3.GT.0) THEN
-                      CALL UTMESS('A',NOMPRO,'ATTENTION : LE CHAMP '//
-     &                 ' SIGM_ELNO_COQU EST ABSENT : '        //
-     &                ' ON NE PEUT PAS CALCULER L''OPTION'
-     &                        //OPTION//' AVEC LA SD DE TYPE '//TYSD)
-C        CALL U2MESK('A','CALCULEL3_10', 2 ,VALK)
+                      VALK(1) =  OPTION
+                      VALK(2) =  TYSD
+                      CALL U2MESK('A','CALCULEL3_10', 2 ,VALK)
                       CALL JEDEMA
                       GO TO 440
                     ELSE
@@ -1289,10 +1282,9 @@ C           ---------------------------------------------------------
                 CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
                 IF (IRET1.GT.0) THEN
                   CALL CODENT(IORDR,'G',KIORD)
-                  CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
-     &                      ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
-     &                      'AU NUMERO D''ORDRE '//KIORD//' .')
-C        CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
+                  VALK(1) = RESUCO
+                  VALK(2) = KIORD
+                  CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
                   GO TO 192
                 ENDIF
               ENDIF
@@ -1386,9 +1378,9 @@ C--- BOUCLE SUR LES NUMEROS D'ORDRE
 C--- CALCULE LE COEFFICIENT S
 C----- RECUPERE ERRE_ABSO DANS LA TABLE A PARTIR DU NUMERO D'ORDRE
             CALL TBLIVA (TABP,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
-     &                   0.D0,'ERRE_ABSO',CTYPE,VALI,ERP,VALC,VALK,IRET)
+     &                 0.D0,'ERRE_ABSO',CTYPE,VALI,ERP,VALC,KBID19,IRET)
             CALL TBLIVA (TABD,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
-     &                   0.D0,'ERRE_ABSO',CTYPE,VALI,ERD,VALC,VALK,IRET)
+     &                 0.D0,'ERRE_ABSO',CTYPE,VALI,ERD,VALC,KBID19,IRET)
             S=SQRT(ERD/ERP)
 C----- CREE UNE CARTE CONSTANTE
             CHS='&&OP0069.CH_NEUT_R'
@@ -1947,10 +1939,9 @@ C           -------------------------------------------------
      &                    OPTION,IRET2)
                  IF (IRET2.GT.0) THEN
                     CALL CODENT(IORDR,'G',KIORD)
-                    CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
-     &                      ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
-     &                      'AU NUMERO D''ORDRE '//KIORD//' .')
-C        CALL U2MESK('A','CALCULEL3_17', 2 ,VALK)
+                    VALK(1) = RESUCO
+                    VALK(2) = KIORD
+                    CALL U2MESK('A','CALCULEL3_17', 2 ,VALK)
                     GO TO 321
                  END IF
               ENDIF
@@ -1964,10 +1955,9 @@ C           -----------------------------------------------
      &                      OPTION,IRET1)
                 IF (IRET1.GT.0) THEN
                   CALL CODENT(IORDRM,'G',KIORDM)
-                  CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
-     &                        ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '
-     &                        //'AU NUMERO D''ORDRE '//KIORDM//' .')
-C        CALL U2MESK('A','CALCULEL3_17', 2 ,VALK)
+                  VALK(1) = RESUCO
+                  VALK(2) = KIORDM
+                  CALL U2MESK('A','CALCULEL3_17', 2 ,VALK)
                   GO TO 321
                 END IF
               END IF
@@ -1977,10 +1967,9 @@ C           ---------------------------------------------------------
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
               IF (IRET1.GT.0) THEN
                 CALL CODENT(IORDR,'G',KIORD)
-                CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
-     &                      ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '//
-     &                      'AU NUMERO D''ORDRE '//KIORD//' .')
-C        CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
+                VALK(1) = RESUCO
+                VALK(2) = KIORD
+                CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
                 GO TO 321
               END IF
 
@@ -1992,10 +1981,9 @@ C           ------------------------------------------------
      &                      IRET1)
                 IF (IRET1.GT.0) THEN
                   CALL CODENT(IORDRM,'G',KIORDM)
-                  CALL UTMESS('A',NOMPRO,'LE RESULTAT '//RESUCO//
-     &                        ' DOIT COMPORTER UN CHAMP DE DEPLACEMENT '
-     &                        //'AU NUMERO D''ORDRE '//KIORDM//' .')
-C        CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
+                  VALK(1) = RESUCO
+                  VALK(2) = KIORDM
+                  CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
                   GO TO 321
                 END IF
               END IF
@@ -2789,9 +2777,9 @@ C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
       GO TO 530
   520 CONTINUE
-      CALL UTMESS('A',NOMPRO,'TYPE : '//TYSD//
-     &            ' INCOMPATIBLE AVEC L''OPTION : '//OPTION)
-C        CALL U2MESK('A','CALCULEL3_27', 2 ,VALK)
+      VALK(1) = TYSD
+      VALK(2) = OPTION
+      CALL U2MESK('A','CALCULEL3_27', 2 ,VALK)
   530 CONTINUE
       CALL JEDEMA()
       END

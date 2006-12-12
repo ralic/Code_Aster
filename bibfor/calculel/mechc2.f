@@ -3,7 +3,7 @@
       CHARACTER*(*)       CHGEOM, CHMASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,8 +62,7 @@ C
          IF ( NA+NVEC .NE. 0 )  AFAIRE = .TRUE.
  100  CONTINUE
       IF ( .NOT. AFAIRE ) THEN
-         CALL UTMESS('F','MECHC2','L''UN DES MOTS-CLE "ANGL_REP" '//
-     &    'OU "VECTEUR" EST A FOURNIR POUR L''OPTION "ARCO_ELNO_SIGM"')
+         CALL U2MESS('F','CALCULEL5_55')
       ENDIF
 C
       CALL ALCART ( 'V', CARTE, NOMA, 'CAMASS' )

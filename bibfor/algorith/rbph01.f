@@ -8,7 +8,7 @@
       LOGICAL             TOUSNO, MULTAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8   BLANC, MODE
       CHARACTER*16  CHAMP(8)
       CHARACTER*19  NOMCHA
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
 C     ------------------------------------------------------------------
@@ -174,9 +175,9 @@ C
             ELSE
                CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
                IF ( IRET .NE. 0 ) THEN
-                CALL UTMESS('F','RBPH01','LE CHAMP '//TYPE(I)//' N''A'//
-     &                      ' PAS ETE CALCULE DANS LE MODE_MECA '//MODE)
-C        CALL U2MESK('F','ALGORITH10_16', 2 ,VALK)
+                 VALK(1) = TYPE(I)
+                 VALK(2) = MODE
+                 CALL U2MESK('F','ALGORITH10_16', 2 ,VALK)
                ENDIF
                TYPREF(I) = NOMCHA
             ENDIF
@@ -201,9 +202,9 @@ C
             ELSE
                CALL RSEXCH ( BASEMO, TYPE(I), 1, NOMCHA, IRET )
                IF ( IRET .NE. 0 ) THEN
-                CALL UTMESS('F','RBPH01','LE CHAMP '//TYPE(I)//' N''A'//
-     &                      ' PAS ETE CALCULE DANS LE MODE_MECA '//MODE)
-C        CALL U2MESK('F','ALGORITH10_16', 2 ,VALK)
+                 VALK(1) = TYPE(I)
+                 VALK(2) = MODE
+                 CALL U2MESK('F','ALGORITH10_16', 2 ,VALK)
                ENDIF
                TYPREF(I) = NOMCHA
             ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE VERIGD(NOMGDZ,LCMP,NCMP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -98,9 +99,9 @@ C     -----------------------------------------------------------
       IF (NOMGD(1:5).NE.'VARI_') THEN
         CALL KNINCL(8,LCMP2,NCMP,ZK8(JCMPGD),NCMPMX,I1)
         IF (I1.GT.0) THEN
-          CALL UTMESS('A','VERIGD','LA CMP: '//LCMP2(I1)//
-     &                ' N''EST PAS UNE CMP DE '//NOMGD)
-C        CALL U2MESK('A','CALCULEL5_36', 2 ,VALK)
+           VALK(1) = LCMP2(I1)
+           VALK(2) = NOMGD
+           CALL U2MESK('A','CALCULEL5_36', 2 ,VALK)
           IRET = 3
           GO TO 30
         END IF
@@ -109,9 +110,9 @@ C       -- POUR NOMGD=VARI_* : CMP='V1','V2',..,'V999'
         DO 20,K = 1,NCMP
           CALL LXLIIS(LCMP2(K) (2:8),IBID,I1)
           IF ((LCMP2(K) (1:1).NE.'V') .OR. (I1.GT.0)) THEN
-            CALL UTMESS('A','VERIGD','LA CMP: '//LCMP2(K)//
-     &                  ' N''EST PAS UNE CMP DE '//NOMGD)
-C        CALL U2MESK('A','CALCULEL5_36', 2 ,VALK)
+             VALK(1) = LCMP2(K)
+             VALK(2) = NOMGD
+             CALL U2MESK('A','CALCULEL5_36', 2 ,VALK)
             IRET = 3
             GO TO 30
           END IF

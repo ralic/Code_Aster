@@ -1,6 +1,6 @@
       SUBROUTINE OP0191(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C
       CHARACTER*16 CONCEP, NOMCMD, K16BID, OPTION, TYSD
       CHARACTER*19 KNUM  , RESUIN, RESUOU
       CHARACTER*24 NOMPAR, CHAMP0, CHAMP1
+      CHARACTER*24 VALK(2)
 C ---------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -131,10 +132,9 @@ C
             ELSE IF (TYCH(1:2).EQ.'EL') THEN
                CALL CHRPEL( CHAMP1, REPERE, NBCMP, IOC, TYPE, OPTION )
             ELSE
-               CALL UTMESS('A','OP0191','ON NE SAIT PAS TRAITER'//
-     &                     ' LE CHAMP DE TYPE: '//TYCH//' CHAMP : '
-     &                     //CHAMP1)
-C        CALL U2MESK('A','ALGORITH9_69', 2 ,VALK)
+                VALK(1) = TYCH
+                VALK(2) = CHAMP1
+                CALL U2MESK('A','ALGORITH9_69', 2 ,VALK)
             ENDIF
 C
             CALL RSNOCH ( RESUOU, OPTION, IORDR, ' ' )

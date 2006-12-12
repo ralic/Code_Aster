@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,6 +90,7 @@ C ---------
       CHARACTER*19  LIRELA, NUNOBE, XNOCA, YNOCA, ZNOCA, TABLCA
       INTEGER       NBNOBE, ICABL, NBNOCA(*)
       CHARACTER*24  NCNCIN, NMABET
+      CHARACTER*24 VALK(2)
 C
 C VARIABLES LOCALES
 C -----------------
@@ -481,10 +482,9 @@ C 2.2.4  SORTIE EN ERREUR FATALE SI ECHEC PERSISTANT
 C .....
          IF ( IMMER.LT.0 ) THEN
             WRITE(K3B,'(I3)') ICABL
-            CALL UTMESS('F','IMMECA','IMMERSION DU CABLE NO'//K3B//
-     &                  ' DANS LA STRUCTURE BETON : LE NOEUD '//NNOECA//
-     &                  ' SE TROUVE A L''EXTERIEUR DE LA STRUCTURE')
-C        CALL U2MESK('F','MODELISA4_71', 2 ,VALK)
+             VALK(1) = K3B
+             VALK(2) = NNOECA
+             CALL U2MESK('F','MODELISA4_71', 2 ,VALK)
          ENDIF
 C
 C 2.2.5  DETERMINATION DES RELATIONS CINEMATIQUES

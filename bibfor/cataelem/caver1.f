@@ -1,6 +1,6 @@
       SUBROUTINE CAVER1()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CATAELEM  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CATAELEM  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8,PARA,TYPMAI
       CHARACTER*16 ZK16,NOMOPT,NOMTE
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(4)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       CHARACTER*8 KBID,GD1,GD2,TGD1(10),TGD2(10),TYPOUT,TYPOU2
@@ -102,11 +103,10 @@ C              ON NE TRAQUE PAS LES ERREURS SI NUCALC=0,-1 OU -2
             PARA = ZK8(IAOPNO-1+IPARA)
             IMOLO = ZI(IAOPMO-1+3+IPARA)
             IF (IMOLO.EQ.0) THEN
-                CALL UTMESS('E','CAVER1','MODE LOCAL INCORRECT '//
-     &                      ' POUR LE PARAMETRE: '//PARA//
-     &                      ' POUR L OPTION: '//NOMOPT//
-     &                      ' POUR LE TYPE: '//NOMTE )
-C        CALL U2MESK('E','CATAELEM_3', 3 ,VALK)
+                 VALK(1) = PARA
+                 VALK(2) = NOMOPT
+                 VALK(3) = NOMTE
+                 CALL U2MESK('E','CATAELEM_3', 3 ,VALK)
                 IER = IER + 1
                 GO TO 10
             END IF
@@ -117,19 +117,17 @@ C        CALL U2MESK('E','CATAELEM_3', 3 ,VALK)
             IGDOP = ZI(IADESC-1+4+ITROU)
             IF ((ITROU.EQ.0) .OR. (IGDOP.NE.IGD)) THEN
               IF (ITROU.EQ.0) THEN
-                CALL UTMESS('E','CAVER1','LE PARAMETRE : '//PARA//
-     &                      ' POUR L OPTION : '//NOMOPT//
-     &                      ' EXISTE POUR LE TYPE : '//NOMTE//
-     &                      'MAIS N EXISTE PAS DANS L OPTION.')
-C        CALL U2MESK('E','CATAELEM_4', 3 ,VALK)
+                 VALK(1) = PARA
+                 VALK(2) = NOMOPT
+                 VALK(3) = NOMTE
+                 CALL U2MESK('E','CATAELEM_4', 3 ,VALK)
                 IER = IER + 1
               END IF
               IF (IGDOP.NE.IGD) THEN
-                CALL UTMESS('E','CAVER1','LE PARAMETRE : '//PARA//
-     &                      ' POUR L OPTION : '//NOMOPT//
-     &                      ' ET POUR LE TYPE_ELEMENT : '//NOMTE//
-     &                      'N EST PAS ASSOCIE A LA BONNE GRANDEUR.')
-C        CALL U2MESK('E','CATAELEM_5', 3 ,VALK)
+                 VALK(1) = PARA
+                 VALK(2) = NOMOPT
+                 VALK(3) = NOMTE
+                 CALL U2MESK('E','CATAELEM_5', 3 ,VALK)
                 IER = IER + 1
               END IF
             END IF
@@ -150,11 +148,10 @@ C              ---------------------------------------------------
             END IF
             IF (NBPT2.GE.0) THEN
               IF (NBPT2.NE.NBNO) THEN
-                CALL UTMESS('E','CAVER1','LE PARAMETRE : '//PARA//
-     &                      ' POUR L OPTION : '//NOMOPT//
-     &                      ' ET POUR LE TYPE_ELEMENT : '//NOMTE//
-     &                      'N A PAS LE BON NOMBRE DE NOEUDS.')
-C        CALL U2MESK('E','CATAELEM_6', 3 ,VALK)
+                 VALK(1) = PARA
+                 VALK(2) = NOMOPT
+                 VALK(3) = NOMTE
+                 CALL U2MESK('E','CATAELEM_6', 3 ,VALK)
                 IER = IER + 1
               END IF
             END IF
@@ -170,11 +167,10 @@ C         ------------------------------------------------------
             PARA = ZK8(IAOPNO-1+NBINTE+IPARA)
             IMOLO = ZI(IAOPMO-1+3+NBINTE+IPARA)
             IF (IMOLO.EQ.0) THEN
-                CALL UTMESS('E','CAVER1','MODE LOCAL INCORRECT '//
-     &                      ' POUR LE PARAMETRE: '//PARA//
-     &                      ' POUR L OPTION: '//NOMOPT//
-     &                      ' POUR LE TYPE: '//NOMTE )
-C        CALL U2MESK('E','CATAELEM_3', 3 ,VALK)
+                 VALK(1) = PARA
+                 VALK(2) = NOMOPT
+                 VALK(3) = NOMTE
+                 CALL U2MESK('E','CATAELEM_3', 3 ,VALK)
                 IER = IER + 1
                 GO TO 20
             END IF
@@ -184,19 +180,17 @@ C        CALL U2MESK('E','CATAELEM_3', 3 ,VALK)
             IGDOP = ZI(IADESC-1+4+NBIN+ITROU)
             IF ((ITROU.EQ.0) .OR. (IGDOP.NE.IGD)) THEN
               IF (ITROU.EQ.0) THEN
-                CALL UTMESS('E','CAVER1','LE PARAMETRE : '//PARA//
-     &                      ' POUR L OPTION : '//NOMOPT//
-     &                      ' EXISTE POUR LE TYPE : '//NOMTE//
-     &                      'MAIS N EXISTE PAS DANS L OPTION.')
-C        CALL U2MESK('E','CATAELEM_4', 3 ,VALK)
+                 VALK(1) = PARA
+                 VALK(2) = NOMOPT
+                 VALK(3) = NOMTE
+                 CALL U2MESK('E','CATAELEM_4', 3 ,VALK)
                 IER = IER + 1
               END IF
               IF (IGDOP.NE.IGD) THEN
-                CALL UTMESS('E','CAVER1','LE PARAMETRE : '//PARA//
-     &                      ' POUR L OPTION : '//NOMOPT//
-     &                      ' ET POUR LE TYPE_ELEMENT : '//NOMTE//
-     &                      'N EST PAS ASSOCIE A LA BONNE GRANDEUR.')
-C        CALL U2MESK('E','CATAELEM_5', 3 ,VALK)
+                 VALK(1) = PARA
+                 VALK(2) = NOMOPT
+                 VALK(3) = NOMTE
+                 CALL U2MESK('E','CATAELEM_5', 3 ,VALK)
                 IER = IER + 1
               END IF
             END IF
@@ -218,11 +212,11 @@ C           ---------------------------------------------------
             END IF
 
             IF (TYPOUT.NE.TYPOU2) THEN
-              CALL UTMESS('E','CAVER1','LE PARAMETRE : '//PARA//
-     &                 ' POUR L OPTION : '//NOMOPT//
-     &                 ' ET POUR LE TYPE_ELEMENT : '//NOMTE//
-     &                 ' N EST PAS DU BON TYPE: '//TYPOU2)
-C        CALL U2MESK('E','CATAELEM_7', 4 ,VALK)
+               VALK(1) = PARA
+               VALK(2) = NOMOPT
+               VALK(3) = NOMTE
+               VALK(4) = TYPOU2
+               CALL U2MESK('E','CATAELEM_7', 4 ,VALK)
 C             IER = IER + 1
             END IF
    20     CONTINUE
@@ -255,9 +249,9 @@ C    ----------------------------------------------------------
    80     CONTINUE
         END IF
         IF (ERROR) THEN
-          CALL UTMESS('E','CAVER1','LES GRANDEURS :'//GD1//' ET '//GD2//
-     &                ' DOIVENT AVOIR EXACTEMENT LES MEMES CMPS.')
-C        CALL U2MESK('E','CATAELEM_8', 2 ,VALK)
+           VALK(1) = GD1
+           VALK(2) = GD2
+           CALL U2MESK('E','CATAELEM_8', 2 ,VALK)
           IER = IER + 1
         END IF
    90 CONTINUE

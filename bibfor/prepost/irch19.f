@@ -6,7 +6,7 @@
      &                    LRESU,FORMR,NIVE )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,13 +86,12 @@ C
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'IRCH19' )
 C
       CHARACTER*8   TYCH, NOMGD
       CHARACTER*8   NOMSD8, NOSIM8, NOMPA8
       CHARACTER*16  NOSY16
       CHARACTER*19  CH19
+      CHARACTER*24 VALK(2)
       INTEGER       LGNOGD,LGCH16,IBID,IERD,IFI,LXLGUT,
      &              NUMCMP(100)
 C
@@ -112,9 +111,9 @@ C
       ELSEIF ( TYCH(1:4).EQ. 'CART' ) THEN
          GOTO 9999
       ELSE
-         CALL UTMESS('A',NOMPRO,'ON NE SAIT PAS IMPRIMER'//
-     &               ' LE CHAMP DE TYPE: '//TYCH//' CHAMP : '//CH19)
-C        CALL U2MESK('A','PREPOST_87', 2 ,VALK)
+          VALK(1) = TYCH
+          VALK(2) = CH19
+          CALL U2MESK('A','PREPOST_87', 2 ,VALK)
       ENDIF
 C
 C     --- NOM DE LA GRANDEUR ASSOCIEE AU CHAMP CH19
@@ -133,11 +132,9 @@ C     -- POUR LE FORMAT "ENSIGHT" ON VERIFIE LE CHAMP:
 C     -------------------------------------------------
       IF((FORM(1:7).EQ.'ENSIGHT') .AND. (TYCH(1:2).EQ.'EL')) THEN
         LGNOGD=LXLGUT(NOMGD)
-        CALL UTMESS('A',NOMPRO,' ON NE SAIT PAS IMPRIMER'//
-     &       ' AU FORMAT ENSIGHT LE CHAMP '//NOSY16(1:LGCH16)//
-     &       ' CORRESPONDANT A LA GRANDEUR :'//NOMGD(1:LGNOGD)//
-     &        '. IL FAUT IMPRIMER DES CHAMPS AUX NOEUDS A CE FORMAT.')
-C        CALL U2MESK('A','PREPOST_88', 2 ,VALK)
+         VALK(1) = NOSY16(1:LGCH16)
+         VALK(2) = NOMGD(1:LGNOGD)
+         CALL U2MESK('A','PREPOST_88', 2 ,VALK)
         GO TO 9999
       ENDIF
 C
@@ -171,9 +168,9 @@ C
  9999 CONTINUE
 C
       IF ( IERD.NE.0 ) THEN
-        CALL UTMESS ('A',NOMPRO,'ON NE SAIT PAS IMPRIMER'//
-     &               ' LE CHAMP '//CH19//' AU FORMAT '//FORM(1:7))
-C        CALL U2MESK('A','PREPOST_90', 2 ,VALK)
+         VALK(1) = CH19
+         VALK(2) = FORM(1:7)
+         CALL U2MESK('A','PREPOST_90', 2 ,VALK)
       ENDIF
 C
       END

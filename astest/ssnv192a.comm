@@ -1,27 +1,27 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE SOUS CONTACT XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-              
+
 
 DEBUT(CODE=_F(NOM='SSNV192A',
               NIV_PUB_WEB='INTERNET',),);
-              
+
 #----------------------------------------------
 #                   PARAMETRES
 #----------------------------------------------
@@ -90,7 +90,7 @@ fonction = 0;
 # fonction=1 : la pression PRES est une fonction de l espace
 #
 PRES = -1.;
-FCTPRES = FORMULE(NOM_PARA=('X','Y','Z'),VALE='PRES*Y'); 
+FCTPRES = FORMULE(NOM_PARA=('X','Y','Z'),VALE='PRES*Y');
 #************************************************************
 
 
@@ -133,7 +133,7 @@ MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
                                         RAYON=PRECIS),
                                     ),
                       INFO=1, );
-                      
+
 if blocage == 2 :
    MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
                         MAILLAGE=MAILLAG1,
@@ -246,7 +246,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        AFFE=_F(TOUT='OUI',
                                MATER=ACIER,
                                TEMP_REF=0.0,),);
-                               
+
 #----------------------------------------------
 #         BLOCAGE DES MODES RIGIDES
 #----------------------------------------------
@@ -277,7 +277,7 @@ elif blocage == 2 :
                                          DDL=('DZ','DZ',),
                                          COEF_MULT=(1.0,1.0),
                                          COEF_IMPO=0.0,),
-                                     
+
                                       _F(GROUP_NO=('NOEUD2','NOEUD2S',),
                                          DDL=('DX','DX',),
                                          COEF_MULT=(1.0,1.0),
@@ -286,7 +286,7 @@ elif blocage == 2 :
                                          DDL=('DZ','DZ',),
                                          COEF_MULT=(1.0,1.0),
                                          COEF_IMPO=0.0,),
-                                     
+
                                       _F(GROUP_NO=('NOEUD3','NOEUD3S',),
                                          DDL=('DZ','DZ',),
                                          COEF_MULT=(1.0,1.0),
@@ -325,7 +325,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELEK,
                                  INST_FIN=1.0,),
                     NEWTON=_F(REAC_ITER=1,),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=250,
+
                                RESI_RELA=-1.,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,);
@@ -380,14 +380,14 @@ K1REF =  P/(B*sqrt(W))*FAW;
 for i in range(0,n) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1_LOCAL',
-              TYPE_TEST='MIN',               
+              TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
               REFERENCE='ANALYTIQUE',);
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1_LOCAL',
-              TYPE_TEST='MAX',               
+              TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
@@ -397,14 +397,14 @@ for i in range(0,n) :
 for i in range(0,n) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1_LOCAL',
-              TYPE_TEST='MIN',               
+              TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
               REFERENCE='ANALYTIQUE',);
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1_LOCAL',
-              TYPE_TEST='MAX',               
+              TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,

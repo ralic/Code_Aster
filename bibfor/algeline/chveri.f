@@ -6,7 +6,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C ARGUMENTS
       REAL*8       ORIG(6,*)
       REAL*8       ALPHA(2,*), BETA(2,*), GAMMA(2,*)
       CHARACTER*8  NOECHO(NP2,*)
+      CHARACTER*24 VALK(2)
 C
 C VARIABLES LOCALES
       INTEGER      IC, TYPOBS, NBS, INO1, JCOOR1, I, J, K, NBNO, IER
@@ -120,11 +121,9 @@ C        TEST DE LA POSITION INITIALES ET DE L'ORIGINE
          IF (DNORM .LT. 0.D0) THEN
              CALL U2MESS('A','ALGELINE_8')
              WRITE(INUM,'(I3.3)') IC
-             CALL UTMESS('A','CHVERI','L''ORIGINE DE L''OBSTACLE '//
-     &                   'EST MAL POSITIONNEE PAR RAPPORT AU NOEUD '//
-     &                   'DE CHOC DE NUMERO ' // INUM // ', DE NOM ' //
-     &                    NOMNOE // ', PAR RAPPORT AU JEU.')
-C        CALL U2MESK('A','ALGELINE_9', 2 ,VALK)
+              VALK(1) = INUM
+              VALK(2) = NOMNOE
+              CALL U2MESK('A','ALGELINE_9', 2 ,VALK)
          ENDIF
 C
 C
@@ -136,11 +135,9 @@ C
          IF ( ABS(XLOC(1)).GT.EPSI .OR. ABS(XLOC(3)).GT.EPSI ) THEN
              CALL U2MESS('A','ALGELINE_8')
              WRITE(INUM,'(I3.3)') IC
-             CALL UTMESS('A','CHVERI','L''ORIGINE DE L''OBSTACLE '//
-     &                   'EST MAL POSITIONNEE PAR RAPPORT AU NOEUD '//
-     &                   'DE CHOC DE NUMERO ' // INUM // ', DE NOM ' //
-     &                    NOMNOE // ', DANS LE PLAN NORMAL AU CHOC.')
-C        CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
+              VALK(1) = INUM
+              VALK(2) = NOMNOE
+              CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
          ENDIF
 C
 C     --- OBSTACLE PLAN PARALLELE A ZLOCAL ---
@@ -150,11 +147,9 @@ C
          IF ( ABS(XLOC(1)).GT.EPSI .OR. ABS(XLOC(2)).GT.EPSI ) THEN
              CALL U2MESS('A','ALGELINE_8')
              WRITE(INUM,'(I3.3)') IC
-             CALL UTMESS('A','CHVERI','L''ORIGINE DE L''OBSTACLE '//
-     &                   'EST MAL POSITIONNEE PAR RAPPORT AU NOEUD '//
-     &                   'DE CHOC DE NUMERO ' // INUM // ', DE NOM ' //
-     &                    NOMNOE // ', DANS LE PLAN NORMAL AU CHOC.')
-C        CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
+              VALK(1) = INUM
+              VALK(2) = NOMNOE
+              CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
          ENDIF
 C
 C     --- OBSTACLE CIRCULAIRE OU DISCRETISE---
@@ -164,11 +159,9 @@ C
          IF ( ABS(XLOC(1)).GT.EPSI ) THEN
              CALL U2MESS('A','ALGELINE_8')
              WRITE(INUM,'(I3.3)') IC
-             CALL UTMESS('A','CHVERI','L''ORIGINE DE L''OBSTACLE '//
-     &                   'EST MAL POSITIONNEE PAR RAPPORT AU NOEUD '//
-     &                   'DE CHOC DE NUMERO ' // INUM // ', DE NOM ' //
-     &                    NOMNOE // ', DANS LE PLAN NORMAL AU CHOC.')
-C        CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
+              VALK(1) = INUM
+              VALK(2) = NOMNOE
+              CALL U2MESK('A','ALGELINE_10', 2 ,VALK)
          ENDIF
 C
       ENDIF

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/10/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,6 +82,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNOM,JEXNUM
       CHARACTER*80 ZK80
       CHARACTER*8  K8BID
@@ -211,9 +212,9 @@ C
 C
             CALL JEEXIN(JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),IRET)
             IF(IRET.EQ.0) THEN
-               CALL UTMESS('F','GVERIG','LE GROUPE '//ZK8(JJJ+IGR-1)
-     &                      //' N APPARTIENT PAS AU MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','ELEMENTS2_23', 2 ,VALK)
+                VALK(1) = ZK8(JJJ+IGR-1)
+                VALK(2) = NOMA
+                CALL U2MESK('F','ELEMENTS2_23', 2 ,VALK)
             ELSE
 C LES NOEUDS DE CE GROUP_NO DOIVENT APPARTENIR A GAMMO
 C
@@ -259,9 +260,9 @@ C
 C
             CALL JENONU(JEXNOM(NOMNO,ZK8(JJJ+I-1)),IRET)
             IF(IRET.EQ.0) THEN
-                CALL UTMESS('F','GVERIG','LE NOEUD '//ZK8(JJJ+I-1)
-     &                       //' N APPARTIENT PAS AU MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','ELEMENTS_90', 2 ,VALK)
+                 VALK(1) = ZK8(JJJ+I-1)
+                 VALK(2) = NOMA
+                 CALL U2MESK('F','ELEMENTS_90', 2 ,VALK)
             ELSE
 C LES NOEUDS DOIVENT APPARTENIR A GAMMO
               CALL JENUNO(JEXNUM(NOMNO,IRET),NOEUD1)

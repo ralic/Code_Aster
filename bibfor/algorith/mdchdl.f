@@ -5,7 +5,7 @@
       CHARACTER*8         NOECHO(NBNLI,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C OUT : IER    : NIVEAU D'ERREUR
 C     ------------------------------------------------------------------
       INTEGER       NUNOE, NUDDL
       CHARACTER*8   NUME1, NOEU1, NUME2, NOEU2
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
       NUME1 = NOECHO(ILIAI,3)
@@ -45,9 +46,9 @@ C
       CALL POSDDL ('NUME_DDL',NUME1,NOEU1,'DX',NUNOE,NUDDL)
       IF (NUNOE.EQ.0) THEN
          IER = IER + 1
-         CALL UTMESS('E','MDCHOC','LE NOEUD '//NOEU1//
-     &           ' N''EST PAS UN NOEUD DU MAILLAGE '//NOECHO(ILIAI,4))
-C        CALL U2MESK('E','ALGORITH5_27', 2 ,VALK)
+          VALK(1) = NOEU1
+          VALK(2) = NOECHO(ILIAI,4)
+          CALL U2MESK('E','ALGORITH5_27', 2 ,VALK)
       ENDIF
       IF (NUDDL.EQ.0) THEN
          IER = IER + 1
@@ -73,9 +74,9 @@ C
          CALL POSDDL ('NUME_DDL',NUME2,NOEU2,'DX',NUNOE,NUDDL)
          IF (NUNOE.EQ.0) THEN
             IER = IER + 1
-            CALL UTMESS('E','MDCHOC','LE NOEUD '//NOEU2//
-     &            ' N''EST PAS UN NOEUD DU MAILLAGE '//NOECHO(ILIAI,8))
-C        CALL U2MESK('E','ALGORITH5_27', 2 ,VALK)
+             VALK(1) = NOEU2
+             VALK(2) = NOECHO(ILIAI,8)
+             CALL U2MESK('E','ALGORITH5_27', 2 ,VALK)
          ENDIF
          IF (NUDDL.EQ.0) THEN
             IER = IER + 1

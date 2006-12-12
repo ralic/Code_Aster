@@ -1,6 +1,6 @@
       SUBROUTINE TE0118(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,6 +94,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &            ZJ,VTI,VTMAX,SIGMNI(3),NORM12,NORM14,NORM15,R8PREM,
      &            TOLENI
       CHARACTER*8 TYPMA,NOMAIL
+      CHARACTER*24 VALK(3)
 
       PARAMETER   (TOLENI=1.D-6)
 
@@ -155,11 +156,12 @@ C     ON CHERCHE LE NOEUDS SOMMET OU VT EST MAXIMALE
          ZR(ICFL) = DMIN / VTMAX
 
       ELSE
-         IF (TYPMA(1:5).NE.'TETRA'.AND.TYPMA(1:4).NE.'HEXA')
-     &    CALL UTMESS('F','TE0118','L''OPTION '//OPTION//' N''EST '
-     &    //'DISPONIBLE QU''AVEC DES ELEMENTS TETRA OU HEXA. OR, '
-     &    //'LA MAILLE '//NOMAIL//' EST DE TYPE '//TYPMA//'.')
-C        CALL U2MESK('F','ELEMENTS3_19', 3 ,VALK)
+         IF (TYPMA(1:5).NE.'TETRA'.AND.TYPMA(1:4).NE.'HEXA') THEN
+           VALK(1) = OPTION
+           VALK(2) = NOMAIL
+           VALK(3) = TYPMA
+           CALL U2MESK('F','ELEMENTS3_19', 3 ,VALK)
+         ENDIF
       ENDIF
 
 C-----------------------------------------------------------------------

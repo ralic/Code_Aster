@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,6 +64,7 @@ C     ------------------------------------------------------------------
       INTEGER IMOLO,JMOLO,ISPT,JLPT,JLCUPT,NBPT,IPT,ICO
       INTEGER K,IADG,KCMP,CUMU,NBSPT,ADIEL,LGCATA,NCDYN
       CHARACTER*1 AOF
+      CHARACTER*24 VALK(2)
       CHARACTER*8 K8B,NOCMP,NOMAIZ,NONOEZ,NOMMAZ,NOMGD
       CHARACTER*16 NOMCMD
       CHARACTER*19 NOLIGR,CHM19Z,NCMP
@@ -118,9 +119,9 @@ C     -------------------------------------------------------
 
       END IF
       IF (ICMP.EQ.0) THEN
-        CALL UTMESS(AOF,'UTCHDL','COMPOSANTE '//NOCMP//'INEXISTANTE '//
-     &              'POUR LA GRANDEUR '//NOMGD)
-C        CALL U2MESK(AOF,'UTILITAI5_30', 2 ,VALK)
+         VALK(1) = NOCMP
+         VALK(2) = NOMGD
+         CALL U2MESK(AOF,'UTILITAI5_30', 2 ,VALK)
         IDDL=0
         GOTO 9999
       END IF
@@ -130,10 +131,9 @@ C     3. ON VERIFIE LA MAILLE : IMA
 C     -----------------------------
       CALL JENONU(JEXNOM(NOMMAZ//'.NOMMAI',NOMAIZ),IMA)
       IF (IMA.LE.0) THEN
-        CALL UTMESS(AOF,'UTCHDL','LA MAILLE:'//NOMAIZ//
-     &                          'N''APPARTIENT PAS AU MAILLAGE:'//
-     &                          NOMMAZ)
-C        CALL U2MESK(AOF,'UTILITAI5_31', 2 ,VALK)
+         VALK(1) = NOMAIZ
+         VALK(2) = NOMMAZ
+         CALL U2MESK(AOF,'UTILITAI5_31', 2 ,VALK)
         IDDL=0
         GOTO 9999
       END IF
@@ -148,18 +148,18 @@ C     ------------------------------------------
         END IF
         CALL JENONU(JEXNOM(NOMMAZ//'.NOMNOE',NONOEZ),INO)
         IF (INO.LE.0) THEN
-          CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
-     &                'N''APPARTIENT PAS AU MAILLAGE:'//NOMMAZ)
-C        CALL U2MESK(AOF,'UTILITAI5_33', 2 ,VALK)
+           VALK(1) = NONOEZ
+           VALK(2) = NOMMAZ
+           CALL U2MESK(AOF,'UTILITAI5_33', 2 ,VALK)
         END IF
 C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         CALL JEVEUO(JEXNUM(NOMMAZ//'.CONNEX',IMA),'L',IACONX)
         CALL JELIRA(JEXNUM(NOMMAZ//'.CONNEX',IMA),'LONMAX',NBNO,K8B)
         IPO = INDIIS(ZI(IACONX),INO,1,NBNO)
         IF (IPO.LE.0) THEN
-          CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
-     &                'N''APPARTIENT PAS A LA MAILLE:'//NOMAIZ)
-C        CALL U2MESK(AOF,'SOUSTRUC_59', 2 ,VALK)
+           VALK(1) = NONOEZ
+           VALK(2) = NOMAIZ
+           CALL U2MESK(AOF,'SOUSTRUC_59', 2 ,VALK)
         END IF
         NUPO2 = IPO
       ELSE
@@ -170,11 +170,11 @@ C        CALL U2MESK(AOF,'SOUSTRUC_59', 2 ,VALK)
 C     5. CALCUL DE IGR ET IEL :
 C     ------------------------------------------
       CALL NUMEL2(CHM19Z,IMA,IGR,IEL)
-      IF ((IGR.LE.0) .OR.(IEL.LE.0))
-     & CALL UTMESS(AOF,'UTCHDL','LA MAILLE:'//NOMAIZ//
-     &                          'N''EST PAS AFFECTEE DANS LE LIGREL:'//
-     &                          NOLIGR)
-C        CALL U2MESK(AOF,'UTILITAI5_34', 2 ,VALK)
+      IF ((IGR.LE.0) .OR.(IEL.LE.0)) THEN
+         VALK(1) = NOMAIZ
+         VALK(2) = NOLIGR
+        CALL U2MESK(AOF,'UTILITAI5_34', 2 ,VALK)
+      ENDIF
       NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
       ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
       NCDYN = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+2)

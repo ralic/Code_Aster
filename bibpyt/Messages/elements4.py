@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+#@ MODIF elements4 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -269,7 +269,39 @@ cata_msg={
 62: _("""
   erreur: element non 2d
 """),
+
 63: _("""
   l'option %(k1)s n'est pas disponible pour le comportement %(k2)s 
 """),
+
+64: _("""
+  Il est impossible de calculer la normale au noeud %(k1)s de la maille %(k2)s.
+  Des aretes doivent etre confondues.
+"""),
+
+65: _("""
+  Comportement inattendu : %(k1)s.
+"""),
+
+66: _("""
+  Il est impossible de calculer la contrainte d'arc.
+  La normale à l'élément et le vecteur obtenu à partir du mot-clé ANGL_REP sont colinéaires.
+"""),
+
+67: _("""
+ stop
+"""),
+
+68: _("""
+ Nombre d'itérations internes insuffisant.
+"""),
+
+69: _("""
+ La vitesse de convection ne doit pas etre nulle.
+"""),
+
+70: _("""
+ Erreur de programmation : condition non respectée !
+"""),
+
 }

@@ -1,7 +1,7 @@
       CHARACTER*8 FUNCTION NOPAR2(NOMOPT,NOMGD,STATUT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ------------------
       CHARACTER*16 NOMOP2
       CHARACTER*8  NOMGD2
       CHARACTER*8  STATU2,OUTROU
+      CHARACTER*24 VALK(3)
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       CHARACTER*8 ZK8
@@ -123,17 +124,18 @@ C DEB-------------------------------------------------------------------
         CALL ASSERT(.FALSE.)
       END IF
 
-      IF (NBTROU.EQ.0) CALL UTMESS('F','NOPAR2','IL N Y A PAS '//
-     &      'DE PARAMETRE '//STATU2//' ASSOCIE A LA GRANDEUR:'
-     &                             //NOMGD2//' DANS '//'L OPTION:'//
-     &                             NOMOP2)
-C        CALL U2MESK('F','CALCULEL3_84', 3 ,VALK)
-      IF (NBTROU.GT.1) CALL UTMESS('F','NOPAR2','IL Y A PLUSIEURS '//
-     &       'PARAMETRES '//STATU2//' ASSOCIES A LA GRANDEUR:'
-     &                             //NOMGD2//' DANS '//'L OPTION:'//
-     &                             NOMOP2)
-C        CALL U2MESK('F','CALCULEL3_85', 3 ,VALK)
-
+      IF (NBTROU.EQ.0) THEN
+         VALK(1) = STATU2
+         VALK(2) = NOMGD2
+         VALK(3) = NOMOP2
+         CALL U2MESK('F','CALCULEL3_84', 3 ,VALK)
+      ENDIF
+      IF (NBTROU.GT.1) THEN
+        VALK(1) = STATU2
+        VALK(2) = NOMGD2
+        VALK(3) = NOMOP2
+        CALL U2MESK('F','CALCULEL3_85', 3 ,VALK)
+      ENDIF
       IF (OUTROU.EQ.'OUT') THEN
         NOPAR2=ZK8(IAOPPA-1+NBIN+ITROU)
 

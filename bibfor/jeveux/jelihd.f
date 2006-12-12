@@ -1,6 +1,6 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,6 +151,7 @@ C ----------------------------------------------------------------------
       INTEGER          LIDBAS      , LIDEFF
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*8      CIDBAS(LIDBAS)
+      CHARACTER*24     VALK(3)
       CHARACTER*32     NOMSYS,D32
       INTEGER          KAT(LIDBAS) , LSO(LIDBAS) , LGBL
       LOGICAL          LEXP
@@ -252,10 +253,10 @@ C
       NBLUTI(IC) = CARA(JCARA(IC) + 4 )
       LONGBL(IC) = CARA(JCARA(IC) + 5 )
       IF ( CVERSU .NE. CVERSB ) THEN
-          CALL JVMESS ( 'A' ,'JELIHD06' , ' LA BASE '//NOMBAS(IC)
-     &     //' A ETE CONSTITUEE AVEC LA VERSION '//CVERSB//' ET VOUS'
-     &     //' UTILISEZ LA VERSION '//CVERSU)
-C        CALL U2MESK('A','JEVEUX_08', 3 ,VALK)
+         VALK(1) = NOMBAS(IC)
+         VALK(2) = CVERSB
+         VALK(3) = CVERSU
+         CALL U2MESK('A','JEVEUX_08', 3 ,VALK)
       ENDIF
 C
       LMARQ = 2 * NREMAX(IC) * LOIS

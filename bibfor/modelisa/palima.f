@@ -4,7 +4,7 @@
       INTEGER                                   IOCC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8  K8BID,NOMA
       CHARACTER*16 MCF,MCGM,MCM
       CHARACTER*24 LISTE,LMA,LGRMA,NOMAGR,NOMAMA,NOMATY,LN
+      CHARACTER*24 VALK(4)
 C --- DEBUT
       CALL JEMARQ()
       NOMA = NOMAZ
@@ -85,10 +86,11 @@ C --- DEBUT
         DO 1 I = 1,NGR
           CALL JENONU(JEXNOM(NOMAGR,ZK8(IGRMA-1+I)),IRET)
           IF (IRET .EQ. 0) THEN
-            CALL UTMESS('E','PALIMA_1','SOUS '//MCF//' : ( '//
-     &                  MCGM//' LE GROUPE '//ZK8(IGRMA-1+I)//
-     &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('E','MODELISA6_13', 4 ,VALK)
+             VALK(1) = MCF
+             VALK(2) = MCGM
+             VALK(3) = ZK8(IGRMA-1+I)
+             VALK(4) = NOMA
+             CALL U2MESK('E','MODELISA6_13', 4 ,VALK)
             IER = IER + 1
           ELSE
             CALL JELIRA(JEXNOM(NOMAGR,ZK8(IGRMA-1+I)),'LONMAX',N,K8BID)
@@ -97,9 +99,11 @@ C        CALL U2MESK('E','MODELISA6_13', 4 ,VALK)
           ENDIF
 1       CONTINUE
       ENDIF
-      IF (IER.NE.0) CALL UTMESS('F','PALIMA_2','SOUS '//MCF//
-     &         ' : ( '//MCGM//' ARRET SUR ERREUR(S) UTILISATEUR.')
-C        CALL U2MESK('F','MODELISA6_14', 2 ,VALK)
+      IF (IER.NE.0) THEN
+        VALK(1) = MCF
+        VALK(2) = MCGM
+        CALL U2MESK('F','MODELISA6_14', 2 ,VALK)
+      ENDIF
       LMA   = '&&PALIMA.LISTEMA'
       CALL GETVID(MCFACT,MCMA,IOCC,1,0,K8BID,NMA)
       NMA = -NMA
@@ -131,10 +135,11 @@ C        CALL U2MESK('F','MODELISA6_14', 2 ,VALK)
           IMA = IMA +1
           CALL JENONU(JEXNOM(NOMAMA,ZK8(ILMA+J-1)),NUMA)
           IF (NUMA .EQ. 0) THEN
-            CALL UTMESS('E','PALIMA_3','SOUS '//MCF//' : ( '//
-     &                  MCM//' : LA MAILLE '//ZK8(ILMA-1+J)//
-     &                  'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('E','MODELISA6_15', 4 ,VALK)
+             VALK(1) = MCF
+             VALK(2) = MCM
+             VALK(3) = ZK8(ILMA-1+J)
+             VALK(4) = NOMA
+             CALL U2MESK('E','MODELISA6_15', 4 ,VALK)
             IER = IER + 1
           ELSE
             CALL JEVEUO(NOMATY,'L',IATYMA)
@@ -147,9 +152,11 @@ C        CALL U2MESK('E','MODELISA6_15', 4 ,VALK)
 4       CONTINUE
         CALL JEDETR(LMA)
       ENDIF
-      IF (IER.NE.0) CALL UTMESS('F','PALIMA_4','SOUS '//MCF//
-     &  ' : ( '//MCM//' ARRET SUR ERREUR(S) UTILISATEUR.')
-C        CALL U2MESK('F','MODELISA6_14', 2 ,VALK)
+      IF (IER.NE.0) THEN
+        VALK(1) = MCF
+        VALK(2) = MCM
+        CALL U2MESK('F','MODELISA6_14', 2 ,VALK)
+      ENDIF
 C
 C --- TRI DES MAILLES PAR PAQUET AYANT MEME TYPEMAIL
 C

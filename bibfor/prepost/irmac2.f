@@ -4,7 +4,7 @@
       CHARACTER*8        KTYPE, GTYPE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,8 +68,6 @@ CCC         GTYPE = 'QUA9'
          ITYCA = 15
          GTYPE = 'CU20'
       ELSEIF ( KTYPE .EQ. 'HEXA27'  ) THEN
-CCC        CALL UTMESS('A','IRMACA','HEXA27 ELEMENT INEXISTANT DANS '//
-CCC     +                            'CASTEM')
          ITYCA = 33
          GTYPE = 'CU27'
       ELSEIF ( KTYPE .EQ. 'PENTA6'  ) THEN

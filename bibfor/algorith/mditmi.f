@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C -----------------
       CHARACTER*14  NUMDDL
       CHARACTER*19  BASEFL
       CHARACTER*24  FSIC, CHREFE
+      CHARACTER*24 VALK(3)
 C
 C FONCTIONS INTRINSEQUES
 C ----------------------
@@ -89,7 +90,7 @@ C ROUTINES EXTERNES
 C -----------------
 C     EXTERNAL      COPMOD, DISMOI, GETVID, GETVIS, GETVR8, GETVTX,
 C    &              JEDEMA, JELIRA, JEMARQ, JEVEUO, MDCONF, RSADPA,
-C    &              RSORAC, UTDEBM, UTFINM, UTIMPI, UTIMPK, UTMESS,
+C    &              RSORAC, UTDEBM, UTFINM, UTIMPI, UTIMPK,
 C    &              WKVECT
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -154,11 +155,10 @@ C
       ELSE IF ( NBMODE.GT.NBM0 ) THEN
          NBMODE = NBM0
          WRITE(K4B,'(I4)') NBM0
-       CALL UTMESS('A','MDITMI','NB_MODE EST SUPERIEUR AU NOMBRE DE '//
-     &               'MODES DU CONCEPT '//NOMBM//'. ON IMPOSE DONC '//
-     &               'NB_MODE = '//K4B//', I.E. EGAL AU NOMBRE DE '//
-     &               'MODES DU CONCEPT '//NOMBM//'.')
-C        CALL U2MESK('A','ALGORITH5_56', 3 ,VALK)
+        VALK(1) = NOMBM
+        VALK(2) = K4B
+        VALK(3) = NOMBM
+        CALL U2MESK('A','ALGORITH5_56', 3 ,VALK)
       ENDIF
 C
       CALL GETVIS ( ' ', 'NB_MODE_DIAG', 0,1,1, NBMD, N1 )
@@ -275,13 +275,9 @@ C
             IF ( ZR(KFREQ+2*(J-1)+2*NBMCFC*(NUMVIF-1)).LT.0.0D0 ) THEN
                WRITE(K3IV,'(I3)') NUMVIF
                WRITE(K3IM,'(I3)') IM
-             CALL UTMESS('F','MDITMI','LE CALCUL DES PARAMETRES DU '//
-     &                     'MODE NO'//K3IM//' PAR L''OPERATEUR '//
-     &                     '<CALC_FLUI_STRU> N''A PAS CONVERGE POUR '//
-     &                     'LA VITESSE NO'//K3IV//'. LE CALCUL DE LA '//
-     &                     'REPONSE DYNAMIQUE DE LA SRUCTURE N''EST '//
-     &                     'DONC PAS POSSIBLE.')
-C        CALL U2MESK('F','ALGORITH5_58', 2 ,VALK)
+              VALK(1) = K3IM
+              VALK(2) = K3IV
+              CALL U2MESK('F','ALGORITH5_58', 2 ,VALK)
             ELSE
                ZR(JPULS+IM-1) = DEUXPI * ZR(KFREQ+2*(J-1)
      &                                      +2*NBMCFC*(NUMVIF-1))
@@ -360,23 +356,17 @@ C
          NBMP = NBMCFC
          IF ( ICOUPL.EQ.1 ) THEN
             WRITE(K4B,'(I4)') NBMP
-          CALL UTMESS('A','MDITMI','PAS DE MOT-CLE <NB_MODE_FLUI>. '//
-     &         'LES '//K4B//' MODES DU CONCEPT '//BASEFL(1:8)//' '//
-     &         'SONT PRIS EN COMPTE POUR LE CALCUL DU SAUT DE FORCE '//
-     &         'FLUIDELASTIQUE D''AMORTISSEMENT AU COURS DES PHASES '//
-     &         'DE CHOC.')
-C        CALL U2MESK('A','ALGORITH5_59', 2 ,VALK)
+           VALK(1) = K4B
+           VALK(2) = BASEFL(1:8)
+           CALL U2MESK('A','ALGORITH5_59', 2 ,VALK)
          ENDIF
       ELSE IF ( NBMP.GT.NBMCFC ) THEN
          NBMP = NBMCFC
          IF ( ICOUPL.EQ.1 ) THEN
             WRITE(K4B,'(I4)') NBMP
-          CALL UTMESS('A','MDITMI','NB_MODE_FLUI EST PLUS GRAND QUE '//
-     &         'LE NOMBRE DE MODES DU CONCEPT '//BASEFL(1:8)//'. '//
-     &          K4B//' MODES SONT PRIS EN COMPTE POUR LE CALCUL '//
-     &         'DU SAUT DE FORCE FLUIDELASTIQUE D''AMORTISSEMENT AU '//
-     &         'COURS DES PHASES DE CHOC.')
-C        CALL U2MESK('A','ALGORITH5_60', 2 ,VALK)
+           VALK(1) = BASEFL(1:8)
+           VALK(2) = K4B
+           CALL U2MESK('A','ALGORITH5_60', 2 ,VALK)
          ENDIF
       ENDIF
 C

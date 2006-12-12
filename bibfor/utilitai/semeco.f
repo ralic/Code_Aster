@@ -7,7 +7,7 @@ C     SENSIBILITE - MEMORISATION DES CORRESPONDANCES
 C     **            **               **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,6 +135,7 @@ C
       CHARACTER*8 NOSIM8, NOPAS8, NOCOM8, SAUX08
       CHARACTER*18 NOMMEM
       CHARACTER*24 NOMMCL, NOMVAL, NOMMFA
+      CHARACTER*24 VALK(2)
 C
       DATA SAUX06 / 'NOSIMP', 'NOPASE', 'NOCOMP' /
 C     ------------------------------------------------------------------
@@ -238,9 +239,9 @@ C
         DO 32 , IAUX = 1 , NUTI - 1
           IF ( (ZK80(ADMMEM+2*IAUX-2) (1: 8).EQ.NOSIM8 ) .AND.
      &         (ZK80(ADMMEM+2*IAUX-2) (9:16).EQ.NOPAS8) ) THEN
-            CALL UTMESS ( 'F', NOMPRO, 'LA DERIVEE DE '//NOSIM8(1:8)//
-     &              ' PAR RAPPORT A '//NOPAS8(1:8)//' EST DEJA NOMMEE.')
-C        CALL U2MESK('F','UTILITAI4_55', 2 ,VALK)
+             VALK(1) = NOSIM8(1:8)
+             VALK(2) = NOPAS8(1:8)
+             CALL U2MESK('F','UTILITAI4_55', 2 ,VALK)
           ENDIF
    32   CONTINUE
 C

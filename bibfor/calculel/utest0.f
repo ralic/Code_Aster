@@ -8,7 +8,7 @@
       COMPLEX*16           REFC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*19  NOMTAB
       CHARACTER*17  LABEL1, LABEL2
       CHARACTER*24  INPAR
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -82,10 +83,9 @@ C
 C
       IF ( TYPE(1:1) .NE. TYPREZ ) THEN
          WRITE(IFIC,*) 'NOOK '
-         CALL UTMESS('A','UTEST1','LE PARAMETRE EST A VALEURS '
-     +                       //'DE TYPE  "'//TYPE//'"  ET LA VALEUR '
-     +                       //'DE REFERENCE DE TYPE  "'//TYPREZ//'".')
-C        CALL U2MESK('A','CALCULEL5_11', 2 ,VALK)
+          VALK(1) = TYPE
+          VALK(2) = TYPREZ
+          CALL U2MESK('A','CALCULEL5_11', 2 ,VALK)
          GOTO 9999
       ENDIF
 C

@@ -1,6 +1,6 @@
       SUBROUTINE SSDEU1(MOTCLE,NOMA,NBNO,ILISTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       LOGICAL ZL
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
+      CHARACTER*24 ZK24,VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C ----------------------------------------------------------------------
@@ -89,9 +89,11 @@ C     ------------
            DO 100 I=1,N3
              CALL JENONU(JEXNOM(NOMA//'.NOMNOE',ZK8(IAWK1-1+I)),
      &                    ILISTE(I))
-             IF (ILISTE(I).EQ.0) CALL UTMESS('F','SSDEU1','NOEUD : '//
-     &         ZK8(IAWK1-1+I)//' INEXISTANT DANS LE MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','SOUSTRUC_48', 2 ,VALK)
+             IF (ILISTE(I).EQ.0) THEN
+                VALK(1) = ZK8(IAWK1-1+I)
+                VALK(2) = NOMA
+                CALL U2MESK('F','SOUSTRUC_48', 2 ,VALK)
+             ENDIF
  100       CONTINUE
          END IF
       END IF
@@ -112,9 +114,11 @@ C     ---------------
          ICO=NBNO
          DO 101 I=1,N3
             CALL JEEXIN(JEXNOM(NOMA//'.GROUPENO',ZK8(IAWK1-1+I)),IRET)
-            IF (IRET.EQ.0) CALL UTMESS('F','SSDEU1','GROUP_NO : '//
-     &          ZK8(IAWK1-1+I)//' INEXISTANT DANS LE MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','SOUSTRUC_49', 2 ,VALK)
+            IF (IRET.EQ.0) THEN
+               VALK(1) = ZK8(IAWK1-1+I)
+               VALK(2) = NOMA
+               CALL U2MESK('F','SOUSTRUC_49', 2 ,VALK)
+            ENDIF
             CALL JELIRA(JEXNOM(NOMA//'.GROUPENO',ZK8(IAWK1-1+I)),
      &                  'LONMAX',N4,KBID)
             NBNO= NBNO+N4

@@ -1,6 +1,6 @@
       SUBROUTINE SSDMRM ( MAG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
       LOGICAL ZL
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16,OPTION
-      CHARACTER*24 ZK24
+      CHARACTER*24 ZK24,VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C ----------------------------------------------------------------------
@@ -143,10 +143,11 @@ C           POUR NE PAS LE DETRUIRE A CHAQUE FOIS, ON ALLOUE PLUS GRAND
 C
             DJ=MIN(DI,DJ)
 C
-            IF (NBNORI.NE.NBNORJ) CALL UTMESS('A','SSDMRM',
-     &      'LES GROUP_NO A RECOLLER : '//NOGNOI//' ET '//NOGNOJ//
-     &      ' N''ONT PAS LE MEME NOMBRE DE NOEUDS.')
-C        CALL U2MESK('A','SOUSTRUC_67', 2 ,VALK)
+            IF (NBNORI.NE.NBNORJ) THEN
+              VALK(1) = NOGNOI
+              VALK(2) = NOGNOJ
+              CALL U2MESK('A','SOUSTRUC_67', 2 ,VALK)
+            ENDIF
             NBNORE= MIN(NBNORI,NBNORJ)
 C
 C
@@ -208,11 +209,11 @@ C           --------------------------------------
  631            CONTINUE
  63           CONTINUE
 C
-              IF (NBNORE.NE.ICO) CALL UTMESS('A','SSDMRM',
-     &        'POUR LE RECOLLEMENT GEOMETRIQUE DES GROUP_NO : '
-     &        //NOGNOI//' ET '//NOGNOJ//
-     &        ' CERTAINS NOEUDS NE SONT PAS APPARIES')
-C        CALL U2MESK('A','SOUSTRUC_68', 2 ,VALK)
+              IF (NBNORE.NE.ICO) THEN
+                 VALK(1) = NOGNOI
+                 VALK(2) = NOGNOJ
+                 CALL U2MESK('A','SOUSTRUC_68', 2 ,VALK)
+              ENDIF
 C
             END IF
 C

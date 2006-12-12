@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,6 +130,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(3)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
@@ -156,10 +157,9 @@ C     -------------------------------------------------
       IPARG = INDIK8(ZK8(IAOPPA),NOMPAR,1,NPARIO)
       IF (IPARG.EQ.0) THEN
         IF (STPCAT) THEN
-          CALL UTMESS('E','TECAC2','LE PARAMETRE:'//NOMPAR//
-     &                ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
-     &                OPTION)
-C        CALL U2MESK('E','CALCULEL2_69', 2 ,VALK)
+           VALK(1) = NOMPAR
+           VALK(2) = OPTION
+           CALL U2MESK('E','CALCULEL2_69', 2 ,VALK)
           CALL CONTEX(OPTION,0,' ',' ',0)
         END IF
         IRET = 1
@@ -182,31 +182,29 @@ C     -- SI LGCATA=-1 : LE PARAMETRE N'EXISTE PAS POUR LE TYPE_ELEMENT
 C     -------------------------------------------------
       IF (IACHLO.EQ.-1) THEN
         IF (STPEXI) THEN
-          CALL UTMESS('E','TECAC2','ERREUR DE PROGRAMMATION :'//
-     &               'ON NE TROUVE PAS DANS LES ARGUMENTS DE LA ROUTINE'
-     &                //' CALCUL DE CHAMP A ASSOCIER AU PARAMETRE:'//
-     &                NOMPAR//' (OPTION:'//OPTION//' TYPE_ELEMENT:'//
-     &                NOMTE//')')
-C        CALL U2MESK('E','CALCULEL4_95', 3 ,VALK)
+           VALK(1) = NOMPAR
+           VALK(2) = OPTION
+           VALK(3) = NOMTE
+           CALL U2MESK('E','CALCULEL4_95', 3 ,VALK)
           CALL CONTEX(OPTION,0,NOMPAR,' ',0)
         END IF
 
         IF (LGCATA.EQ.-1) THEN
           IF (STPCAT) THEN
-            CALL UTMESS('E','TECAC2','LE PARAMETRE:'//NOMPAR//
-     &                  ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
-     &                  OPTION//' POUR '//'LE TYPE_ELEMENT: '//NOMTE)
-C        CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
+             VALK(1) = NOMPAR
+             VALK(2) = OPTION
+             VALK(3) = NOMTE
+             CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
             CALL CONTEX(OPTION,0,NOMPAR,' ',0)
           END IF
         END IF
       ELSE
         IF (LGCATA.EQ.-1) THEN
           IF (STPCAT) THEN
-            CALL UTMESS('E','TECAC2','LE PARAMETRE:'//NOMPAR//
-     &                  ' N''EST PAS UN '//'PARAMETRE DE L''OPTION:'//
-     &                  OPTION//' POUR '//'LE TYPE_ELEMENT: '//NOMTE)
-C        CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
+             VALK(1) = NOMPAR
+             VALK(2) = OPTION
+             VALK(3) = NOMTE
+             CALL U2MESK('E','CALCULEL2_70', 3 ,VALK)
             CALL CONTEX(OPTION,0,NOMPAR,' ',0)
           END IF
         ELSE
@@ -254,12 +252,10 @@ C     ----------------------------------------------------------
             IF (STPINC) THEN
               WRITE (6,*) 'ERREUR TECAC2 ZL :',NOMPAR,
      &          (ZL(ILCHLO+DECAEL-1+KK),KK=1,LONCHL)
-              CALL UTMESS('E','TECAC2','ERREUR DE PROGRAMMATION :'//
-     &                'ON N''A PAS PU EXTRAIRE TOUTES LES CMPS VOULUES '
-     &                    //'DU CHAMP GLOBAL ASSOCIE AU PARAMETRE:'//
-     &                    NOMPAR//' (OPTION:'//OPTION//
-     &                    ' TYPE_ELEMENT:'//NOMTE//')')
-C        CALL U2MESK('E','CALCULEL4_96', 3 ,VALK)
+               VALK(1) = NOMPAR
+               VALK(2) = OPTION
+               VALK(3) = NOMTE
+               CALL U2MESK('E','CALCULEL4_96', 3 ,VALK)
               CALL CONTEX(OPTION,0,NOMPAR,' ',0)
             ELSE
               IRET = 3

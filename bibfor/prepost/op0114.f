@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C
       CHARACTER*16 CONCEP, NOMCMD , NOMSY
       CHARACTER*19 KVEC, KVAL, KNUME
       CHARACTER*24 NPRNO, REFD, VALE, SCDI, SCBL, NOPARA(NBPARA)
+      CHARACTER*24 VALK(2)
       CHARACTER*24 REFA
       REAL*8       R8B, UN, COEF, PREC, OMEGA, ZETA
 C     ------------------------------------------------------------------
@@ -244,10 +245,9 @@ C        --- VERIFICATION DES GROUPES DE NOEUDS ET COMPTAGE NDMAX ---
                CALL JEEXIN (JEXNOM(NOMA//'.GROUPENO',
      &                      ZK8(JGROU+IGR-1)),IRET)
                IF (IRET .EQ. 0) THEN
-                 CALL UTMESS('F','IMPRESSION','LE GROUPE '//
-     &                       ZK8(JGROU+IGR-1)//
-     &                      'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA)
-C        CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
+                  VALK(1) = ZK8(JGROU+IGR-1)
+                  VALK(2) = NOMA
+                  CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
                ELSE
                  CALL JELIRA (JEXNOM(NOMA//'.GROUPENO',
      &                        ZK8(JGROU+IGR-1)),'LONMAX',N1,K1B)
@@ -272,10 +272,9 @@ C       --- LECTURE DES NOEUDS DU MOT CLE NOEUD ---
               CALL JENONU (JEXNOM(NOMA//'.NOMNOE',ZK8(JNOEUD+INO-1)),
      &                     IRET)
               IF (IRET .EQ. 0) THEN
-              CALL UTMESS('F','IMPRESSION','NOEUD'//' '//
-     &                    ZK8(JNOEUD+INO-1)//
-     &                    'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('F','PREPOST3_83', 2 ,VALK)
+               VALK(1) = ZK8(JNOEUD+INO-1)
+               VALK(2) = NOMA
+               CALL U2MESK('F','PREPOST3_83', 2 ,VALK)
               ENDIF
  80        CONTINUE
 C       --- LECTURE DES NOEUDS DU MOT CLE GROUP_NO ---

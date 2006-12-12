@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  MA,NONO,NOGNO,NOGNO2,K8B,KPOS,NOM1,PREFIX
       CHARACTER*16 CONCEP,CMD,OPTION, MOTCLE, TYPMCL, MOTFAC
       CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO,LISNOM
+      CHARACTER*24 VALK(2)
       CHARACTER*80 CARD
 C     ------------------------------------------------------------------
 
@@ -384,9 +385,9 @@ C         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
             CALL JENONU(JEXNOM(NOMNOE,NOM1),NUM)
             ZI(JNOEU2-1+NUM) = ZI(JNOEU2-1+NUM) + 1
             IF (ZI(JNOEU2-1+NUM).EQ.2) THEN
-              CALL UTMESS('A',CMD,'NOEUD EN DOUBLE : '//NOM1//
-     &                            ' DANS LE GROUP_NO: '//NOGNO)
-C        CALL U2MESK('A','SOUSTRUC_39', 2 ,VALK)
+               VALK(1) = NOM1
+               VALK(2) = NOGNO
+               CALL U2MESK('A','SOUSTRUC_39', 2 ,VALK)
               GOTO 20
             END IF
             NBNO = NBNO + 1

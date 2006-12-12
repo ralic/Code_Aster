@@ -4,7 +4,7 @@
       CHARACTER*(*)       MCFACT,       NOMAZ, NOMVEI, NOMVEK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   NOMA, PRFM, NOMMAI, KNUME, GRPMA, K8B
       CHARACTER*16  TYMOCL(NBMC), MOTCLE(NBMC)
       CHARACTER*24  NOMAMA, NOMJV
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -97,9 +98,9 @@ C
          CALL JENONU ( JEXNOM(NOMAMA,NOMMAI), NUMA)
          IF ( NUMA .EQ. 0 ) THEN
             IER = IER + 1
-            CALL UTMESS('E','PALIM3','LA MAILLE '//NOMMAI//
-     &                       ' NE FAIT PAS PARTIE DU MAILLAGE '//NOMA )
-C        CALL U2MESK('E','MODELISA6_10', 2 ,VALK)
+             VALK(1) = NOMMAI
+             VALK(2) = NOMA
+             CALL U2MESK('E','MODELISA6_10', 2 ,VALK)
          ELSE
             IF ( LNUME ) THEN
                CALL CODENT ( NUME, 'G', KNUME )

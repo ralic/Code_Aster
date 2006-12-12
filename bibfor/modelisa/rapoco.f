@@ -1,7 +1,7 @@
       SUBROUTINE RAPOCO(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*19 LIGRMO
       CHARACTER*19 LIGREL
       CHARACTER*24 LCHIN(4),LCHOUT(2),NOLILI,LISMAI
+      CHARACTER*24 VALK(2)
       CHARACTER*24 LISNOE,NOEUMA,VALE1,GRNOMA,VALE2
       INTEGER NTYPEL(NMOCL),DG,ICMP(6),NIV,IFM
       REAL*8 IG(6),COORIG(3),AXEPOU(3)
@@ -254,11 +255,9 @@ C     -----------------------------------------------
         CALL GETVEM(NOMA,'GROUP_NO',MOTFAC,'GROUP_NO_2',IOCC,1,0,K8BID,
      &              NBGNO)
         IF (NBGNO.EQ.0) THEN
-          CALL UTMESS('F','RAPOCO','IL FAUT INDIQUER LE MOT-CLE '//
-     &                '''NOEUD_2'' OU ''GROUP_NO_2'''//
-     &                ' APRES LE MOT-FACTEUR '//MOTFAC//
-     &                ' POUR L''OPTION '//OPTION)
-C        CALL U2MESK('F','MODELISA6_48', 2 ,VALK)
+           VALK(1) = MOTFAC
+           VALK(2) = OPTION
+           CALL U2MESK('F','MODELISA6_48', 2 ,VALK)
         END IF
       END IF
 
@@ -346,10 +345,9 @@ C ---     NUMERO DU NOEUD COURANT DE LA LISTE
         DO 40 J = 4,6
           ICMP(J) = INDIK8(NOMCMP,CMP(J),1,NDDLA)
           IF (.NOT.EXISDG(DG,ICMP(J))) THEN
-            CALL UTMESS('F','RAPOCO','IMPOSSIBILITE,LE NOEUD '//
-     &                  ZK8(ILISNO+I-1)//'NE PORTE PAS LE DDL DE '//
-     &                  'ROTATION '//CMP(J))
-C        CALL U2MESK('F','MODELISA6_54', 2 ,VALK)
+             VALK(1) = ZK8(ILISNO+I-1)
+             VALK(2) = CMP(J)
+             CALL U2MESK('F','MODELISA6_54', 2 ,VALK)
           END IF
    40   CONTINUE
    50 CONTINUE
@@ -361,9 +359,9 @@ C     ---------------------------------------------------
       DO 60 J = 1,6
         ICMP(J) = INDIK8(NOMCMP,CMP(J),1,NDDLA)
         IF (.NOT.EXISDG(DG,ICMP(J))) THEN
-          CALL UTMESS('F','RAPOCO','IMPOSSIBILITE,LE NOEUD POUTRE '//
-     &                NOEPOU//' DEVRAIT PORTER LE DDL '//CMP(J))
-C        CALL U2MESK('F','MODELISA6_45', 2 ,VALK)
+           VALK(1) = NOEPOU
+           VALK(2) = CMP(J)
+           CALL U2MESK('F','MODELISA6_45', 2 ,VALK)
         END IF
    60 CONTINUE
 

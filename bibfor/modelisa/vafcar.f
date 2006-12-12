@@ -9,7 +9,7 @@
       CHARACTER*8       NOMU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C         CARAC MASSIF      >  ELEMENT THERMIQUE
 C ----------------------------------------------------------------------
       CHARACTER*16  CONCEP, CMD
       CHARACTER*17  TPGE
+      CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
       TPG    = TPGZ
       NOMOBJ = NMOBJZ
@@ -50,11 +51,10 @@ C --- VERIFICATION DE L AFFECTATION DE LA MAILLE PAR UN ELEMENT
       TPGE = TPG//' '//NOMOBJ
       IF (NUTYEL.EQ.0) THEN
          IF ( IVR(1).EQ.1 .OR. IVR(2).EQ.1 ) THEN
-            CALL UTMESS('A',CMD,'OCCURENCE '//KIOC//' DE '//MCLF//':'//
-     &                 ' IMPOSSIBLE D AFFECTER LES VALEURS DEMANDEES'//
-     &            ' SUR LE(LA)'//TPGE//' QUI N A PAS ETE AFFECTE(E) '//
-     &                                                'PAR UN ELEMENT')
-C        CALL U2MESK('A','MODELISA7_63', 3 ,VALK)
+             VALK(1) = KIOC
+             VALK(2) = MCLF
+             VALK(3) = TPGE
+             CALL U2MESK('A','MODELISA7_63', 3 ,VALK)
             IER = IER + 1
          ENDIF
          GOTO 9999
@@ -99,11 +99,10 @@ C
          IF (NUTYEL.EQ.NTYELE(I)) GOTO 20
  10   CONTINUE
       IF ( IVR(1).EQ.1 .OR. IVR(2).EQ.1 ) THEN
-         CALL UTMESS('A',CMD,'OCCURENCE '//KIOC//' DE '//MCLF//':'//
-     &             ' IMPOSSIBLE D AFFECTER LES VALEURS DEMANDEES SUR'//
-     &            ' LE(LA) '//TPGE//' QUI NE SUPPORTE PAS UN ELEMENT'//
-     &                                                  ' DU BON TYPE')
-C        CALL U2MESK('A','MODELISA7_64', 3 ,VALK)
+          VALK(1) = KIOC
+          VALK(2) = MCLF
+          VALK(3) = TPGE
+          CALL U2MESK('A','MODELISA7_64', 3 ,VALK)
          IER = IER + 1
       ENDIF
       GOTO 9999
@@ -140,10 +139,11 @@ C --- CAS PARTICULIER DES ELEMENTS DISCRETS
      &            .AND.        (NUTYEL.EQ.NTYELE(NPO+1+L1)
      &                   .AND.  NUTYEL.NE.NTYELE(NPO+L1)))    ) THEN
                IF ( IVR(1).EQ.1 .OR. IVR(2).EQ.1 ) THEN
-               CALL UTMESS('A',CMD,'OCCURENCE '//KIOC//' DE '//MCLF//
-     &               ' : LE(LA)'//TPGE//' NE SUPPORTE PAS UN ELEMENT'//
-     &                  ' COMPATIBLE AVEC LA CARACTERISTIQUE '//CARZ)
-C        CALL U2MESK('A','MODELISA7_65', 4 ,VALK)
+                VALK(1) = KIOC
+                VALK(2) = MCLF
+                VALK(3) = TPGE
+                VALK(4) = CARZ
+                CALL U2MESK('A','MODELISA7_65', 4 ,VALK)
                  IER = IER + 1
                ENDIF
             ENDIF

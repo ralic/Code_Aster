@@ -1,6 +1,6 @@
       INTEGER FUNCTION ENTCOD ( ADMODL, LCMODL, NEC, MODE, K, L )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C
 C-----------------------------------------------------------------------
       INTEGER     ADMODL, LCMODL, MODE, M1, M2, CODE, CODE1
       CHARACTER*8 K8B1,K8B2,K8B3,K8B4
+      CHARACTER*24 VALK(4)
 C
 C     COMMUNS   JEVEUX
 C
@@ -46,10 +47,9 @@ C
             IF (M1.NE.M2) THEN
                CALL CODENT(M1,'D',K8B1)
                CALL CODENT(M2,'D',K8B2)
-               CALL UTMESS('F',' ENTCOD 1',
-     &                     ' MODE LIGNE '//K8B1//' /= MODE COLONNE '//
-     &                     K8B2)
-C        CALL U2MESK('F','CALCULEL2_46', 2 ,VALK)
+                VALK(1) = K8B1
+                VALK(2) = K8B2
+                CALL U2MESK('F','CALCULEL2_46', 2 ,VALK)
             END IF
          END IF
          IADM1 = ADMODL + ZI(LCMODL+M1-1) - 1
@@ -59,10 +59,11 @@ C        CALL U2MESK('F','CALCULEL2_46', 2 ,VALK)
             CALL CODENT(CODE,'D',K8B2)
             CALL CODENT(M1,'D',K8B3)
             CALL CODENT(CODE1,'D',K8B4)
-            CALL UTMESS('F',' ENTCOD 2',' LE MODE '//K8B1//' DE CODE '//
-     &                  K8B2//' REFERENCE LE MODE '//K8B3//
-     &                  ' DONT LE CODE : '//K8B4//' > 3 ')
-C        CALL U2MESK('F','CALCULEL2_47', 4 ,VALK)
+             VALK(1) = K8B1
+             VALK(2) = K8B2
+             VALK(3) = K8B3
+             VALK(4) = K8B4
+             CALL U2MESK('F','CALCULEL2_47', 4 ,VALK)
          END IF
       ELSE
          IADM1 = IADM
@@ -76,10 +77,10 @@ C
             CALL CODENT(M1,'D',K8B1)
             CALL CODENT(N2,'D',K8B2)
             CALL CODENT(K,'D',K8B3)
-            CALL UTMESS('F',' ENTCOD 3',' POUR LE MODE '//K8B1//
-     &                  ' NOMBRE DE POINTS '//K8B2//' < ARGUMENT K : '//
-     &                  K8B3)
-C        CALL U2MESK('F','CALCULEL2_48', 3 ,VALK)
+             VALK(1) = K8B1
+             VALK(2) = K8B2
+             VALK(3) = K8B3
+             CALL U2MESK('F','CALCULEL2_48', 3 ,VALK)
          END IF
          IAD = 4 + NEC* (K-1) + L
       ELSE

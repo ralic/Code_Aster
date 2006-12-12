@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/11/2006   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C
       CHARACTER*8   K8B, MOTCLE, GROUPE, NOEUD, MAILLE, TYPE, NOMGRP(2)
       CHARACTER*8   NOEUG
       CHARACTER*24  GRPNOE, COOVAL, NCNCIN
+      CHARACTER*24 VALK(3)
       CHARACTER*24  OBJ1, OBJ2, OBJ4, OBJ5, TRAV
       LOGICAL       LFON
       PARAMETER(PREC=1.D0)
@@ -482,9 +483,10 @@ C
       DO 200 INO = 1, NBOBJ
          CALL JENONU (JEXNOM(OBJ2,ZK8(JJJ+INO-1)),IRET)
          IF(IRET .EQ. 0) THEN
-            CALL UTMESS('E','GVERIF',MOTCLE//' '//ZK8(JJJ+INO-1)//
-     &                     'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('E','MODELISA2_96', 3 ,VALK)
+             VALK(1) = MOTCLE
+             VALK(2) = ZK8(JJJ+INO-1)
+             VALK(3) = NOMA
+             CALL U2MESK('E','MODELISA2_96', 3 ,VALK)
             IER = IER + 1
          ENDIF
  200  CONTINUE

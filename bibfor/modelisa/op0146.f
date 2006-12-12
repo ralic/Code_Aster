@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C
       CHARACTER*19  BASE, NOMFON, SPECTR, TYPFLU
       CHARACTER*24  VALI, VITE, FREQ, NUMO, PROL, VALE, VATE
       CHARACTER*24  FSVI, FSVK, BASREF, PVITE
+      CHARACTER*24 VALK(3)
 C
       DATA NOPAR / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
      &             'NUME_VITE_FLUI' , 'VITE_FLUIDE' ,
@@ -187,14 +188,14 @@ C
             DO 30 IZ = 1,NZEX
                IF(NOMZON.EQ.ZK8(LFSVK+3+IZ)) GOTO 31
   30        CONTINUE
-            CALL UTMESS('F',CMD,'LE SPECTRE DE NOM '//ZK8(LSPEC+IS-1)//
-     &      ' EST ASSOCIE A LA ZONE '//NOMZON// ' QUI N EXISTE PAS'//
-     &      ' DANS LE CONCEPT '// TYPFLU )
-C        CALL U2MESK('F','MODELISA5_74', 3 ,VALK)
+             VALK(1) = ZK8(LSPEC+IS-1)
+             VALK(2) = NOMZON
+             VALK(3) = TYPFLU
+             CALL U2MESK('F','MODELISA5_74', 3 ,VALK)
   31        CONTINUE
-            CALL UTMESS('I',CMD,'LE SPECTRE DE NOM '//ZK8(LSPEC+IS-1)//
-     &       ' EST ASSOCIE A LA ZONE DE NOM '// ZK8(LFSVK+IZ+3) )
-C        CALL U2MESK('I','MODELISA5_75', 2 ,VALK)
+             VALK(1) = ZK8(LSPEC+IS-1)
+             VALK(2) = ZK8(LFSVK+IZ+3)
+             CALL U2MESK('I','MODELISA5_75', 2 ,VALK)
   40     CONTINUE
 C
 C --- 2.2.ON VERIFIE QUE TOUS LES SPECTRES SONT ASSOCIES A DES ZONES ---
@@ -208,11 +209,10 @@ C
             NOMPRO = ZK16(LNOZO+IS-1)
             NOMZON = ZK16(LNOZO+JS-1)
             IF(NOMPRO.EQ.NOMZON) THEN
-               CALL UTMESS('F',CMD,'LES SPECTRES DE NOMS '//
-     &         ZK8(LSPEC+IS-1) //' ET '// ZK8(LSPEC+JS-1) //' SONT'//
-     &       ' ASSOCIES AU MEME PROFIL DE VITESSE, DE NOM ' //
-     &       NOMZON )
-C        CALL U2MESK('F','MODELISA5_77', 3 ,VALK)
+                VALK(1) = ZK8(LSPEC+IS-1)
+                VALK(2) = ZK8(LSPEC+JS-1)
+                VALK(3) = NOMZON
+                CALL U2MESK('F','MODELISA5_77', 3 ,VALK)
             ENDIF
   60       CONTINUE
   50     CONTINUE

@@ -4,7 +4,7 @@
       CHARACTER*(*)     MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C
       CHARACTER*16  MGRMA1, MGRMA2, MGRNO1, MGRNO2
       CHARACTER*16  MMAIL1, MMAIL2, MNOEU1, MNOEU2
       CHARACTER*24  NOEUMA, GRNOMA, MAILMA, GRMAMA, LISTYP, LISNOE
+      CHARACTER*24 VALK(9)
       INTEGER IOCC,LONLIS,NLIAI,IDIMAX,IDIM1,IDIM2,IDIM3,IDIM4,IDIMP1
       INTEGER N1MAX,NG,JJJ,NGR,IGR,JGRO,NBMAIL,M,NUMAIL,N1,NBMA,NMAI
       INTEGER IMA,N2,N3,NBNO,NNO,IER,JLIST,INDNOE,JDES,INO,IN,JIND,IN1
@@ -161,11 +162,10 @@ C              -----------------------------------------------------
  21                 CONTINUE
  22                 CONTINUE
                     IF (INDIC.EQ.0) THEN
-                      CALL UTMESS('F','PAMANO','LA MAILLE '//NOMAIL
-     &               //' DU GROUP_MA '//ZK8(JJJ+IGR-1)
-     &               //'DONNE APRES LE MOT CLE '//MOTCLE//'N''A '
-     &               //'PAS UN TYPE GEOMETRIQUE AUTORISE.')
-C        CALL U2MESK('F','MODELISA6_17', 3 ,VALK)
+                       VALK(1) = NOMAIL
+                       VALK(2) = ZK8(JJJ+IGR-1)
+                       VALK(3) = MOTCLE
+                       CALL U2MESK('F','MODELISA6_17', 3 ,VALK)
                     ENDIF
                   ENDIF
                   CALL JENONU(JEXNOM(NOMA//'.NOMMAI',NOMAIL),IBID)
@@ -209,11 +209,9 @@ C              ----------------------------------------------------
  31              CONTINUE
  32              CONTINUE
                  IF (INDIC.EQ.0) THEN
-                   CALL UTMESS('F','PAMANO','LA MAILLE '//
-     &                  ZK8(JJJ+IMA-1)
-     &               //'DONNE APRES LE MOT CLE '//MOTCLE//'N''A '
-     &               //'PAS UN TYPE GEOMETRIQUE AUTORISE.')
-C        CALL U2MESK('F','MODELISA6_18', 2 ,VALK)
+                    VALK(1) = ZK8(JJJ+IMA-1)
+                    VALK(2) = MOTCLE
+                    CALL U2MESK('F','MODELISA6_18', 2 ,VALK)
                   ENDIF
                ENDIF
                CALL JENONU(JEXNOM(NOMA//'.NOMMAI',ZK8(JJJ+IMA-1)),IBID)
@@ -270,12 +268,16 @@ C
 C     -- MOTCLE NON ADMIS
 C        -------------------------------------------------------
       ELSE
-         CALL UTMESS('F','PAMANO',' MOT CLE NON ADMIS :'//MOTCLE//
-     &                ' LES MOTS-CLES ADMISSIBLES SONT : '//MGRMA1//
-     &                ' OU '//MGRMA2//' OU '//MGRNO1//' OU '//
-     &                MGRNO2//' OU '//MMAIL1//' OU '//MMAIL2//
-     &                ' OU '//MNOEU1// 'OU '//MNOEU2)
-C        CALL U2MESK('F','MODELISA6_19', 9 ,VALK)
+          VALK(1) = MOTCLE
+          VALK(2) = MGRMA1
+          VALK(3) = MGRMA2
+          VALK(4) = MGRNO1
+          VALK(5) = MGRNO2
+          VALK(6) = MMAIL1
+          VALK(7) = MMAIL2
+          VALK(8) = MNOEU1
+          VALK(9) = MNOEU2
+          CALL U2MESK('F','MODELISA6_19', 9 ,VALK)
       ENDIF
 C
 C     -- IDIMAX = MAJORANT DE LA LONGUEUR DE LA LISTE DE NOEUDS

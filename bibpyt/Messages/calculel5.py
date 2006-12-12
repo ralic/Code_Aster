@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
+#@ MODIF calculel5 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -234,6 +234,19 @@ cata_msg={
 52: _("""
  Présence de GRILLE dans la modélisation, les mots clés ANGL_REP ou VECTEUR
  du mot clé facteur REPE_COQUE ne sont pas traités.
+"""),
+
+53: _("""
+ La super_maille %(k1)s n'existe pas dans le maillage %(k2)s.
+"""),
+
+54: _("""
+ La maille %(k1)s doit etre une maille de peau de type QUAD ou TRIA
+ car on est en 3D et elle est de type %(k2)s.
+"""),
+
+55: _("""
+ L'un des mots-cles ANGL_REP ou VECTEUR est à fournir pour l'option ARCO_ELNO_SIGM.
 """),
 
 }

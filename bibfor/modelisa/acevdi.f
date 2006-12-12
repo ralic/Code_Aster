@@ -4,7 +4,7 @@
       CHARACTER*(*)           NOMAZ,NOMOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
       CHARACTER*8   K8B, NOMU, NOMA, NOMO, NOMAIL, TYPEL, NOGRM
       CHARACTER*16  REP, TOU, CONCEP, CMD, MCF
       CHARACTER*24  GRMAMA, MAILMA, CARA
+      CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
       CALL GETRES(NOMU,CONCEP,CMD)
 C
@@ -154,11 +155,11 @@ C
                NUTYMA = ZI(IDTYMA+NUMA-1)
                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)
                IF (TYPEL(1:4).NE.TYPE) THEN
-                  CALL UTMESS('F','ACEVDI','IMPOSSIBILITE, LA MAILLE '//
-     &                        NOMAIL//' DOIT ETRE UNE MAILLE DE TYPE '//
-     &                        TYPE //', ET ELLE EST DE TYPE : '//TYPEL//
-     &                        ' POUR LA CARACTERISTIQUE '//CARA)
-C        CALL U2MESK('F','MODELISA_56', 4 ,VALK)
+                   VALK(1) = NOMAIL
+                   VALK(2) = TYPE
+                   VALK(3) = TYPEL
+                   VALK(4) = CARA
+                   CALL U2MESK('F','MODELISA_56', 4 ,VALK)
                ENDIF
  12         CONTINUE
             CALL JEDETR ( '&&ACEVDI.MAILLE' )
@@ -178,11 +179,11 @@ C
                   CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',NUTYMA),TYPEL)
                   IF (TYPEL(1:4).NE.TYPE) THEN
                      CALL JENUNO(JEXNUM(MAILMA,NUMA),NOMAIL)
-                  CALL UTMESS('F','ACEVDI','IMPOSSIBILITE, LA MAILLE '//
-     &                        NOMAIL//' DOIT ETRE UNE MAILLE DE TYPE '//
-     &                        TYPE //', ET ELLE EST DE TYPE : '//TYPEL//
-     &                        ' POUR LA CARACTERISTIQUE '//CARA)
-C        CALL U2MESK('F','MODELISA_56', 4 ,VALK)
+                   VALK(1) = NOMAIL
+                   VALK(2) = TYPE
+                   VALK(3) = TYPEL
+                   VALK(4) = CARA
+                   CALL U2MESK('F','MODELISA_56', 4 ,VALK)
                   ENDIF
  16            CONTINUE
  14         CONTINUE

@@ -8,7 +8,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16      OPTION, COMPOR(*),NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,15 +52,16 @@ C
       REAL*8       DFL(6),FL(6)
       REAL*8       NU,DUM,RBID,RESU,VALPAP
       CHARACTER*8  NOMPAR,TYPE
+      CHARACTER*24 VALK(2)
       LOGICAL      PLASTI
 C
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       LGPG = MAX(JTAB(6),1)*JTAB(7)
 C
       IF (NC .NE. 2) THEN
-         CALL UTMESS('F','ELEMENTS DISCRET (TE0047) ',
-     &  'TYPE ELEMENT '//NOMTE//' INCOMPATIBLE AVEC '//COMPOR(1))
-C        CALL U2MESK('F','ELEMENTS_31', 2 ,VALK)
+          VALK(1) = NOMTE
+          VALK(2) = COMPOR(1)
+          CALL U2MESK('F','ELEMENTS_31', 2 ,VALK)
       ENDIF
 
 C --- CALCUL ELASTIQUE

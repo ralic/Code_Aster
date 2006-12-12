@@ -4,7 +4,7 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -291,12 +291,10 @@ C       CAS OU IL FAUT FAIRE UN CUMUL DANS LE MAILLAGE COMPLET
 
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
      &             R8B, 'KY', K8B, IBID, KY, C16B, K8B, IRET )
-C         IF ( IRET .NE. 0 ) CALL UTMESS('F','PECAPO','Y A UN BUG 10')
           IF ( IRET .NE. 0 ) KY=0.D0
 
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,
      &           R8B, 'KZ', K8B, IBID, KZ, C16B, K8B, IRET )
-C         IF ( IRET .NE. 0 ) CALL UTMESS('F','PECAPO','Y A UN BUG 11')
           IF ( IRET .NE. 0 ) KZ=0.D0
 
           CALL TBLIVA ( RESU, 1, 'LIEU', IBID, R8B, C16B, NOMAIL, K8B,

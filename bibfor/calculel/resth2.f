@@ -3,7 +3,7 @@
      &  CHGEOM,CHSOUR,OPT1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C OUT OPT1   : OPTION DE CALCUL (ERRE_ELEM_TEMP_R/F)
 C
 C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
-C       MESSAGE:UTMESS,UTDEBM,UTFINM.
+C       MESSAGE:UTDEBM,UTFINM.
 C       JEVEUX:JEMARQ,JEDEMA,JEDETR,MEGEOM,DISMOI,EXISD,ETENCA.
 C       ELEMENTS FINIS:CALCUL,RESVOI.
 C

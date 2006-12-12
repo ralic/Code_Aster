@@ -3,7 +3,7 @@
       CHARACTER*(*)      LIS1Z, LIS2Z, TYPZ
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C
       CHARACTER*1        K1BID
       CHARACTER*2        TYPE
       CHARACTER*24       LIS1, LIS2
+      CHARACTER*24 VALK(2)
 C
       CALL JEMARQ()
       LIS1   = LIS1Z
@@ -69,10 +70,9 @@ C
 C
       CALL JEEXIN(LIS2, IRET)
       IF (IRET.EQ.0) THEN
-          CALL UTMESS('F','COCALI',' LA LISTE :'//LIS2//
-     &                ' A CONCATENER AVEC LA LISTE '//LIS1//
-     &                ' DOIT EXISTER ')
-C        CALL U2MESK('F','MODELISA4_25', 2 ,VALK)
+           VALK(1) = LIS2
+           VALK(2) = LIS1
+           CALL U2MESK('F','MODELISA4_25', 2 ,VALK)
       ELSE
           CALL JEVEUO(LIS2, 'L', IDLIS2)
           CALL JELIRA(LIS2, 'LONMAX', LONLI2, K1BID)
@@ -81,10 +81,9 @@ C
       CALL JEEXIN(LIS1, IRET)
       IF (IRET.EQ.0) THEN
          IF (LONLI2.EQ.0) THEN
-             CALL UTMESS('F','COCALI',' ON NE PEUT PAS AFFECTER '
-     &                 //'LA LISTE DE LONGUEUR NULLE'//LIS2//
-     &                ' A LA LISTE '//LIS1//' QUI N''EXISTE PAS')
-C        CALL U2MESK('F','MODELISA4_26', 2 ,VALK)
+              VALK(1) = LIS2
+              VALK(2) = LIS1
+              CALL U2MESK('F','MODELISA4_26', 2 ,VALK)
          ELSE
            IF (TYPE.EQ.'K8') THEN
              CALL WKVECT(LIS1, 'V V K8', LONLI2, IDLIS1)

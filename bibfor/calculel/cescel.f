@@ -1,6 +1,6 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROL0,NNCP,BASEZ,CELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,6 +93,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 OPTION
       CHARACTER*19 CES,CEL,LIGREL,DCEL
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
+      CHARACTER*24 VALK(3)
 
       NUMAIL(IGR,IEL) = ZI(IALIEL-1+ZI(ILLIEL+IGR-1)+IEL-1)
 C     ------------------------------------------------------------------
@@ -155,10 +156,11 @@ C     -----------------------------------------------------------------
         DO 10,ICMP1 = 1,NCMP1
           NOMCMP = ZK8(JCESC-1+ICMP1)
           ICMP = INDIK8(ZK8(JCMPGD),NOMCMP,1,NCMPMX)
-          IF (ICMP.EQ.0) CALL UTMESS('F','CESCEL','LA CMP:'//NOMCMP//
-     &                               ' N''APPARTIENT PAS A LA GRANDEUR:'
-     &                               //NOMGD)
-C        CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
+          IF (ICMP.EQ.0) THEN
+             VALK(1) = NOMCMP
+             VALK(2) = NOMGD
+             CALL U2MESK('F','CALCULEL_52', 2 ,VALK)
+          ENDIF
           ZI(JNUCM2-1+ICMP) = ICMP1
           ZI(JNUCM1-1+ICMP1) = ICMP
    10   CONTINUE
@@ -259,12 +261,12 @@ C       -- NBRE DE CMPS "DYNAMIQUES" (POUR VARI_R) :
 C     2.4 ALLOCATION DU CHAM_ELEM :
 C     ----------------------------------------------
       CALL ALCHML(LIGREL,OPTION,NOMPAR,BASE,CEL,IRET,DCEL)
-      IF (IRET.EQ.1) CALL UTMESS('F','CESCEL','LE PARAMETRE: '//NOMPAR//
-     &                           ' DE L''OPTION: '//OPTION//
-     &                           ' N''EST PAS CONNU '//
-     &                           'DES TYPE_ELEM DU LIGREL: '//LIGREL)
-C        CALL U2MESK('F','CALCULEL_54', 3 ,VALK)
-
+      IF (IRET.EQ.1) THEN
+        VALK(1) = NOMPAR
+        VALK(2) = OPTION
+        VALK(3) = LIGREL
+        CALL U2MESK('F','CALCULEL_54', 3 ,VALK)
+      ENDIF
 
 C     3- ON REMPLIT LE .CELV :
 C     ===================================================
@@ -359,10 +361,9 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                       GO TO 120
                     ELSE
                       CALL JENUNO(JEXNUM(MA//'.NOMMAI',NUMA),NOMMA)
-                      CALL UTMESS('F','CESCEL','NOMBRES DE POINTS'//
-     &                      ' DIFFERENTS POUR LA MAILLE: '//NOMMA//
-     &                      ' CHAM_ELEM DE: '//NOMGD)
-C        CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
+                       VALK(1) = NOMMA
+                       VALK(2) = NOMGD
+                       CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
                     END IF
                   END IF
 
@@ -380,10 +381,9 @@ C        CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
                       ELSE
                         NOMCMP = ZK8(JCMPGD-1+ICMP)
                         CALL JENUNO(JEXNUM(MA//'.NOMMAI',NUMA),NOMMA)
-                        CALL UTMESS('F','CESCEL',
-     &                              'IL MANQUE LA CMP:'//NOMCMP//
-     &                              ' SUR LA MAILLE:'//NOMMA)
-C        CALL U2MESK('F','CALCULEL_58', 2 ,VALK)
+                         VALK(1) = NOMCMP
+                         VALK(2) = NOMMA
+                         CALL U2MESK('F','CALCULEL_58', 2 ,VALK)
                       END IF
                     END IF
 
@@ -445,10 +445,9 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                 GO TO 190
               ELSE
                 CALL JENUNO(JEXNUM(MA//'.NOMMAI',NUMA),NOMMA)
-                CALL UTMESS('F','CESCEL','NOMBRES DE POINTS'//
-     &                      ' DIFFERENTS POUR LA MAILLE: '//NOMMA//
-     &                      ' CHAM_ELEM DE: '//NOMGD)
-C        CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
+                 VALK(1) = NOMMA
+                 VALK(2) = NOMGD
+                 CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
               END IF
             END IF
 
@@ -470,10 +469,9 @@ C        CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
                       NOMCMP = 'V'
                       CALL CODENT(ICMP,'G',NOMCMP(2:8))
                       CALL JENUNO(JEXNUM(MA//'.NOMMAI',NUMA),NOMMA)
-                      CALL UTMESS('F','CESCEL',
-     &                            'IL MANQUE LA CMP:'//NOMCMP//
-     &                            ' SUR LA MAILLE:'//NOMMA)
-C        CALL U2MESK('F','CALCULEL_58', 2 ,VALK)
+                       VALK(1) = NOMCMP
+                       VALK(2) = NOMMA
+                       CALL U2MESK('F','CALCULEL_58', 2 ,VALK)
                     END IF
                   END IF
 

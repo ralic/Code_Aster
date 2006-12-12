@@ -1,6 +1,6 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -590,6 +590,7 @@ C ====================================================================
               END IF
             END IF
 
+            CHVARC='&&ME2MME.CHVARC'
             CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
            OPTION = 'CHAR_MECA_TEMP_R'
             LPAIN(2) = 'PMATERC'

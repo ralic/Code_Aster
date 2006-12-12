@@ -4,7 +4,7 @@ C TOLE CRS_505 CRS_507
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
         REAL*8          TER(100), ERR
         REAL*8          DER(10),  DP
         CHARACTER*10    CDP,      CTOL,  CITER, CINTG
+        CHARACTER*24 VALK(2)
         SAVE            ITSUP,TER
         COMMON /TDIM/   NDT , NDI
 C       ----------------------------------------------------------------
@@ -145,12 +146,9 @@ C
                 IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1) THEN
                 CALL CODENT(INTG,'G',CINTG)
                 CALL CODREE(ABS(DP),'E',CDP)
-                CALL UTMESS('I','VISCOCHABOCHE','ERREUR D INTEGRATION'//
-     &          '- ESSAI D INTEGRATION  NUMERO '//CINTG//
-     &          '- CONVERGENCE VERS  UNE SOLUTION NON CONFORME '//
-     &          '- INCREMENT DE DEFORMATION CUMULEE NEGATIVE = -'//CDP//
-     &          '- REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('I','ALGORITH2_55', 2 ,VALK)
+                 VALK(1) = CINTG
+                 VALK(2) = CDP
+                 CALL U2MESK('I','ALGORITH2_55', 2 ,VALK)
                 IRTETI = 3
                 GOTO 9999
                 ELSE
@@ -245,12 +243,9 @@ C
                         IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1) THEN
                         CALL CODENT(ITER,'G',CITER)
                         CALL CODREE(TOLER,'E',CTOL)
-                        CALL UTMESS ('I','VISCOCHABOCHE',' ERREUR'//
-     &                  ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &                  ' - CONVERGENCE REGULIERE MAIS TROP LENTE'//
-     &                  ' - ERREUR > '//CTOL//
-     &                  '- REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('I','ALGORITH2_56', 2 ,VALK)
+                         VALK(1) = CITER
+                         VALK(2) = CTOL
+                         CALL U2MESK('I','ALGORITH2_56', 2 ,VALK)
                         IRTETI = 3
                         GOTO 9999
                        ELSE
@@ -269,11 +264,9 @@ C
                     IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1) THEN
                     CALL CODENT(ITER,'G',CITER)
                     CALL CODREE(TOLER,'E',CTOL)
-                    CALL UTMESS ('I','VISCOCHABOCHE',' ERREUR'//
-     &              ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &              ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     &              ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
+                     VALK(1) = CITER
+                     VALK(2) = CTOL
+                     CALL U2MESK('I','ALGORITH2_57', 2 ,VALK)
                     IRTETI = 3
                     GOTO 9999
                     ELSE
@@ -293,11 +286,9 @@ C
                   IF ( ICOMP .EQ. 0 .OR. ICOMP .EQ. 1) THEN
                   CALL CODENT(ITER,'G',CITER)
                   CALL CODREE(TOLER,'E',CTOL)
-                  CALL UTMESS ('I','VISCOCHABOCHE',' ERREUR'//
-     &            ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     &            ' - ERREUR > '//CTOL//
-     &            ' - REDECOUPAGE DU PAS DE TEMPS')
-C        CALL U2MESK('I','ALGORITH2_58', 2 ,VALK)
+                   VALK(1) = CITER
+                   VALK(2) = CTOL
+                   CALL U2MESK('I','ALGORITH2_58', 2 ,VALK)
                   IRTETI = 3
                   GOTO 9999
                   ELSE

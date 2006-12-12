@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 EPSI,VALR
       COMPLEX*16 VALC
       CHARACTER*1 TYPE
+      CHARACTER*24 VALK(2)
       CHARACTER*8 K8B,CRIT,MAILLE,NOMA,INTRES
       CHARACTER*8 NOEUD,CMP,NOGMA,NOGNO,NOMGD
       CHARACTER*16 NOMCMD,TYPCON,NOMACC,TYPCHA,NOMCHA
@@ -107,9 +108,9 @@ C       ----------------------------------
           ELSE IF (IDDL.EQ.0) THEN
             LG1 = LXLGUT(NOEUD)
             LG2 = LXLGUT(CMP)
-            CALL UTMESS('F','RFRCHA','LA COMPOSANTE "'//CMP(1:LG2)//
-     &        '" '//'DU NOEUD "'//NOEUD(1:LG1)//'" N''EXISTE PAS.')
-C        CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
+             VALK(1) = CMP(1:LG2)
+             VALK(2) = NOEUD(1:LG1)
+             CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
           END IF
           CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
           CALL FOCSTE(NOMFON,NOMACC(09:12),ZR(LVALE+IDDL-1),'G')

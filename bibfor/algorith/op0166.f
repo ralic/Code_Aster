@@ -1,7 +1,7 @@
       SUBROUTINE OP0166 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C
       CHARACTER*19  LMA, LNO, LMA1, LNO1, LMA2, LNO2
       CHARACTER*19  LERES1
       CHARACTER*24 NORECG
+      CHARACTER*24 VALK(2)
 C
       LOGICAL ELTF
 C DEB ------------------------------------------------------------------
@@ -129,10 +130,9 @@ C
 C
           CALL PSRENC ( RESUIN, NOPASE, LERES0, IRET )
           IF ( IRET.NE.0 ) THEN
-            CALL UTMESS ('A', 'OP0166',
-     &  'IMPOSSIBLE DE TROUVER LE RESULTAT DERIVE ASSOCIE AU RESULTAT '
-     &  //RESUIN//' ET AU PARAMETRE SENSIBLE '//NOPASE)
-C        CALL U2MESK('A','CALCULEL2_96', 2 ,VALK)
+             VALK(1) = RESUIN
+             VALK(2) = NOPASE
+             CALL U2MESK('A','CALCULEL2_96', 2 ,VALK)
             GOTO 30
           ENDIF
 C

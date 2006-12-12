@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  APPAR
       CHARACTER*19  NOMT19
       CHARACTER*24  GRMAMA, MAILMA, PARA
+      CHARACTER*24 VALK(2)
 C
       DATA MCFT / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  ,
      &            'EFFE_FOND'  , 'CONTACT'  /
@@ -238,11 +239,9 @@ C                   -----------------------------
      &                .OR. TYPEL(1:4) .EQ. 'QUAD') THEN
                       NDIM1 = 3
                       IF(NDIM .NE. NDIM1) THEN
-                         CALL UTMESS('F','CHVENO','IMPOSSIBILITE, '
-     &                   //'LA MAILLE '//NOMAIL//' DOIT ETRE UNE MAILLE'
-     &                   //' DE PEAU DE TYPE "QUAD" OU "TRIA" CAR ON'
-     &                   //' EST EN 3D ET ELLE EST DE TYPE : '//TYPEL)
-C        CALL U2MESK('F','MODELISA4_21', 2 ,VALK)
+                          VALK(1) = NOMAIL
+                          VALK(2) = TYPEL
+                          CALL U2MESK('F','MODELISA4_21', 2 ,VALK)
                       ENDIF
 C
 C ---               CAS D'UNE MAILLE SEG
@@ -250,16 +249,9 @@ C                   --------------------
                     ELSE IF(TYPEL(1:3) .EQ. 'SEG') THEN
                       NDIM1 = 2
                       IF(NDIM .NE. NDIM1 .AND. NOC1.EQ.0) THEN
-C                        CALL UTMESS('F','CHVENO','IMPOSSIBILITE, '
-C     +                  //'LA MAILLE '//NOMAIL//' DOIT ETRE UNE MAILLE'
-C     +                  //' DE PEAU DE TYPE "SEG" CAR ON EST EN 2D ET'
-C     +                  //' ELLE EST DE TYPE : '//TYPEL)
-                         CALL UTMESS('F','CHVENO','IMPOSSIBILITE, '
-     &                   //' SOIT LA MAILLE '//NOMAIL//' DOIT ETRE UNE '
-     &                   //' MAILLE DE PEAU DE TYPE "SEG" CAR ON EST '
-     &                   //' EN 2D ET ELLE EST DE TYPE : '//TYPEL
-     &                 //', SOIT IL FAUT RENSEIGNER "VECT_POU_Z" EN 3D')
-C        CALL U2MESK('F','MODELISA4_22', 2 ,VALK)
+                          VALK(1) = NOMAIL
+                          VALK(2) = TYPEL
+                          CALL U2MESK('F','MODELISA4_22', 2 ,VALK)
                       ENDIF
 C
                     ENDIF
@@ -364,12 +356,9 @@ C                      -----------------------------
      &                   .OR. TYPEL(1:4) .EQ. 'QUAD') THEN
                          NDIM1 = 3
                          IF(NDIM .NE. NDIM1) THEN
-                           CALL UTMESS('F','CHVENO','IMPOSSIBILITE,'
-     &                     //' LA MAILLE '//NOMAIL//' DOIT ETRE UNE'
-     &                     //' MAILLE DE PEAU DE TYPE "QUAD" OU'
-     &                     //' "TRIA" CAR ON EST EN 3D ET ELLE EST'
-     &                     //' DE TYPE : '//TYPEL)
-C        CALL U2MESK('F','MODELISA4_21', 2 ,VALK)
+                            VALK(1) = NOMAIL
+                            VALK(2) = TYPEL
+                            CALL U2MESK('F','MODELISA4_21', 2 ,VALK)
                          ENDIF
 C
 C ---                  CAS D'UNE MAILLE SEG
@@ -377,12 +366,9 @@ C                      --------------------
                        ELSE IF(TYPEL(1:3) .EQ. 'SEG') THEN
                          NDIM1 = 3
                          IF(NDIM .NE. NDIM1) THEN
-                           CALL UTMESS('F','CHVENO','IMPOSSIBILITE,'
-     &                     //' LA MAILLE '//NOMAIL//' DOIT ETRE UNE'
-     &                     //' MAILLE DE PEAU DE TYPE "SEG" CAR ON'
-     &                     //' EST EN 2D ET ELLE EST DE TYPE : '
-     &                     //TYPEL)
-C        CALL U2MESK('F','MODELISA4_23', 2 ,VALK)
+                            VALK(1) = NOMAIL
+                            VALK(2) = TYPEL
+                            CALL U2MESK('F','MODELISA4_23', 2 ,VALK)
                          ENDIF
                        ENDIF
 C

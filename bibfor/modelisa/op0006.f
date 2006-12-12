@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 NOMGD2,CHAMGD,EVOL,NOCMP1,NOCMP2
       CHARACTER*16 MOTCLE(2),TYPE,NOMCMD,NOMCHA,PROLGA,PROLDR
       LOGICAL GETEXM,EXIST
-      CHARACTER*24 MESMAI,CVNOM,CVVAR,CVGD,CVCMP,CVDEF
+      CHARACTER*24 MESMAI,CVNOM,CVVAR,CVGD,CVCMP,CVDEF,VALK(3)
       PARAMETER (NMXFAC=20,NMXCMP=20)
       CHARACTER*16 MOTFAC(NMXFAC),LIMFAC(NMXFAC),MOFAC
       CHARACTER*19 CART1,CART2
@@ -226,12 +226,12 @@ C         ------------------------------------------------------------
             CALL GETVTX('AFFE_VARC','PROL_DROITE',IOCC,1,1,PROLDR,N1)
 C           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
           END IF
-          IF (ERRGD) CALL UTMESS('A','OP0006','LA GRANDEUR'//
-     &                           ' ASSOCIEE AU MOT CLE: '//MOFAC//
-     &                           ' DOIT ETRE: '//NOMGD//
-     &                           ' MAIS ELLE EST: '//NOMGD2)
-C        CALL U2MESK('A','MODELISA5_50', 3 ,VALK)
-
+          IF (ERRGD) THEN
+             VALK(1) = MOFAC
+             VALK(2) = NOMGD
+             VALK(3) = NOMGD2
+             CALL U2MESK('A','MODELISA5_50', 3 ,VALK)
+          ENDIF
 
 C         2-5 ECRITURE DANS LES CARTES :
 C         ------------------------------------------------------------

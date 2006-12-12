@@ -11,7 +11,7 @@
       INTEGER           NTCMP,IMPR
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,7 @@ C       ---------------------------------------------------------------
       CHARACTER*19    CHEQUI
       CHARACTER*24    NOMDMG,NOMPIC
       CHARACTER*24    NOMITV,NOMRTV
+      CHARACTER*24 VALK(3)
 C
       REAL*8          DOMMAG
 C
@@ -111,9 +112,9 @@ C --    VECTEUR DES NBORD NOMS DE CHAMPS POUR L OPTION NOMSYM
 C
       CALL JENONU(JEXNOM(NOMSD//'.DESC',NOMSYM),NUMSYM)
       IF(NUMSYM.EQ.0) THEN
-        CALL UTMESS('F','CALC_FATIGUE','L''OPTION DE CALCUL "'//
-     &    NOMSYM//'" N''EXISTE PAS DANS LA STRUCTURE DE DONNEES'//NOMSD)
-C        CALL U2MESK('F','PREPOST_51', 2 ,VALK)
+         VALK(1) = NOMSYM
+         VALK(2) = NOMSD
+         CALL U2MESK('F','PREPOST_51', 2 ,VALK)
       ENDIF
       CALL JEVEUO(JEXNUM(NOMSD//'.TACH',NUMSYM),'L',IVCH)
 C
@@ -137,10 +138,10 @@ C
             CHEQUI = ZK24(IVCH+IORD-1)(1:19)
 C
             IF(CHEQUI.EQ.' ') THEN
-              CALL UTMESS('F','CALC_FATIGUE','LE CHAMP "'//CHEQUI//
-     &        '" POUR'//' L''OPTION DE CALCUL "'//NOMSYM//'", N''A PAS'
-     &        //' ETE NOTEE DANS LA STRUCTURE DE DONNEES'//NOMSD)
-C        CALL U2MESK('F','PREPOST_52', 3 ,VALK)
+               VALK(1) = CHEQUI
+               VALK(2) = NOMSYM
+               VALK(3) = NOMSD
+               CALL U2MESK('F','PREPOST_52', 3 ,VALK)
             ENDIF
 C
             CALL JEVEUO(CHEQUI//'.CELV','L',IVORD)

@@ -1,6 +1,6 @@
       SUBROUTINE LCHBVP(SIGD,VP,VECP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ C --- : VECP   :  VECTEURS PROPRES DU DEVIATEUR DE SIGD ---------------
 C =====================================================================
       REAL*8        SEB(6),DEUX,SE(6),AUX,TU(6),TOL,TOLDYN,JACAUX(3)
       CHARACTER*10  CVP1,CVP2,CVP3
+      CHARACTER*24 VALK(3)
       INTEGER       NDT,NDI,NPERM,TTRIJ,OTRIJ,NITJAC
 C ======================================================================
       PARAMETER   (DEUX = 2.0D0)
@@ -65,9 +66,10 @@ C -- MATRICE UNITE POUR JACOBI ----------------------------------------
           CALL CODREE(VP(1),'E',CVP1)
           CALL CODREE(VP(2),'E',CVP2)
           CALL CODREE(VP(3),'E',CVP3)
-          CALL UTMESS('F','LCHBVP','VALEURS PROPRES NON//
-     &               ORDONNEES'//CVP1//CVP2//CVP3)
-C        CALL U2MESK('F','ALGORITH3_89', 3 ,VALK)
+           VALK(1) = CVP1
+           VALK(2) = CVP2
+           VALK(3) = CVP3
+           CALL U2MESK('F','ALGORITH3_89', 3 ,VALK)
       ENDIF
 C ======================================================================
       END

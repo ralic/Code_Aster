@@ -5,7 +5,7 @@
       INTEGER             ILEV
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C
       CHARACTER*4   TYPMA,TYPM
       CHARACTER*8   K8B, MOTCLE, GROUPE, MAILLE, TYPE
       CHARACTER*24  OBJ1,OBJ2,OBJ3,TRAV
+      CHARACTER*24 VALK(3)
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -187,9 +188,10 @@ C
       DO 200 INO = 1, NBOBJ
          CALL JENONU (JEXNOM(OBJ2,ZK8(JJJ+INO-1)),IRET)
          IF(IRET .EQ. 0) THEN
-            CALL UTMESS('E','GVERI1',MOTCLE//' '//ZK8(JJJ+INO-1)//
-     &                     'NE FAIT PAS PARTIE DU MAILLAGE : '//NOMA )
-C        CALL U2MESK('E','MODELISA2_96', 3 ,VALK)
+             VALK(1) = MOTCLE
+             VALK(2) = ZK8(JJJ+INO-1)
+             VALK(3) = NOMA
+             CALL U2MESK('E','MODELISA2_96', 3 ,VALK)
             IER = IER + 1
          ENDIF
  200  CONTINUE

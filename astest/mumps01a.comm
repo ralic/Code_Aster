@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE validation du solveur MUMPS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,7 +59,7 @@ TEST_RESU( RESU=_F(  RESULTAT = RESU0,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL', REFER
 # ----------------------------------------------------
 RESU1=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',), )
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU1,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=5.e-2 ))
 
@@ -75,7 +75,7 @@ TEST_RESU( RESU=_F(  RESULTAT = RESU3,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERE
 # -----------------------------------------------------
 RESU4=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,
                            EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
-                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='NONSYM',RESI_RELA=-1.,), )
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='NONSYM',RESI_RELA=-1.,ELIM_LAGR2='NON',PCENT_PIVOT=80,), )
 TEST_RESU( RESU=_F(  RESULTAT = RESU4,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
                   GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=5.e-2 ))
 

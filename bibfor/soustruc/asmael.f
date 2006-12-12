@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C
       CHARACTER*8  KBID
       CHARACTER*8  NOMA,NONO,NOSMA,NOGMA,NOGNO,NOMACR
       CHARACTER*16 KBI1,KBI2
+      CHARACTER*24 VALK(3)
       LOGICAL      LOK
       REAL*8       X,Y,Z,DREFE,DIJ
 C     ------------------------------------------------------------------
@@ -399,10 +400,12 @@ C     ----------------------------------------------------------------
           Y=ZR(IACOO2-1+3*(I-1)+2)-ZR(IACOO2-1+3*(J-1)+2)
           Z=ZR(IACOO2-1+3*(I-1)+3)-ZR(IACOO2-1+3*(J-1)+3)
           DIJ= SQRT(X**2+Y**2+Z**2)
-          IF (DIJ.GT.1.0D-6*DREFE) CALL UTMESS('A','OP0105','LE NOEUD:'
-     &        //ZK8(IANON2-1+I)//' N''A PAS LES MEMES COORDONNEES'
-     &        //' DANS LES MAILLAGES: '//MA1//' ET '//MA2)
-C        CALL U2MESK('A','SOUSTRUC_6', 3 ,VALK)
+          IF (DIJ.GT.1.0D-6*DREFE) THEN
+            VALK(1) = ZK8(IANON2-1+I)
+            VALK(2) = MA1
+            VALK(3) = MA2
+            CALL U2MESK('A','SOUSTRUC_6', 3 ,VALK)
+          ENDIF
         END IF
  52   CONTINUE
 C
