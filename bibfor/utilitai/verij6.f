@@ -4,7 +4,7 @@
       CHARACTER*(*) COUI
       INTEGER VCO(*),NVU,NTROU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER J1,I1,N1,N2,K,K2,IBID,IEXI,J2,NUORD
       CHARACTER*4 TYCH
       CHARACTER*5 SUFFIX
-      CHARACTER*8 CH8,KBID,FONC,TYMAT
+      CHARACTER*8 CH8,KBID,FONC,TYMAT,FISS1
       CHARACTER*13 CH13
       CHARACTER*14 CH14
       CHARACTER*16 TYP2SD,CH16
@@ -253,26 +253,15 @@ C     ------------------------------
         CALL VERIJB('C','OJB',CH8//'.SSSA',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH8//'.FISS',PN,VCO,M80,NVU,NTROU)
 
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.AI',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.BA',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.CF',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.LO',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.PI',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.CNS',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.CRI',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.HEA',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.LON',PN,VCO,M80,NVU,
-     &              NTROU)
-        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.PIN',PN,VCO,M80,NVU,
-     &              NTROU)
+        CALL JEEXIN(CH8//'.FISS',IEXI)
+        IF (IEXI.EQ.0) GOTO 177
+        CALL JEVEUO(CH8//'.FISS','L',J1)
+        CALL JELIRA(CH8//'.FISS','LONMAX',N1,KBID)
+        CALL ASSERT(N1.EQ.1)
+        FISS1 = ZK8(J1-1+1)
+        IF (FISS1.EQ.' ') GOTO 177
+        CALL VERIJB('I_FISS','FISS_XFEM',FISS1,PN,VCO,M80,NVU,NTROU)
+  177   CONTINUE
 
 
       ELSEIF (TYP2SD.EQ.'MACR_ELEM_STAT') THEN
@@ -1385,6 +1374,10 @@ C     --------------------------------
      &              NTROU)
         CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.PI',PN,VCO,M80,NVU,
      &              NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.PRO.MES_EL',PN,VCO,M80,NVU,
+     &              NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.PRO.NORMAL',PN,VCO,M80,NVU,
+     &              NTROU)
 
         CALL VERIJB('C','CHAM_NO',CH8//'.BASLOC',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','CHAM_NO',CH8//'.GRLNNO',PN,VCO,M80,NVU,NTROU)
@@ -1397,13 +1390,19 @@ C     --------------------------------
 
         CALL VERIJB('C','OJB',CH8//'.CARAFOND       ',PN,VCO,M80,NVU,
      &              NTROU)
-        CALL VERIJB('C','OJB',CH8//'.CONTACT.CARACF ',PN,VCO,M80,NVU,
+        CALL VERIJB('C','OJB',CH8//'.CONTACT.CARACF',PN,VCO,M80,NVU,
      &              NTROU)
-        CALL VERIJB('C','OJB',CH8//'.CONTACT.ECPDON ',PN,VCO,M80,NVU,
+        CALL VERIJB('C','OJB',CH8//'.CONTACT.ECPDON',PN,VCO,M80,NVU,
      &              NTROU)
-        CALL VERIJB('C','OJB',CH8//'.CONTACT.METHCO ',PN,VCO,M80,NVU,
+        CALL VERIJB('C','OJB',CH8//'.CONTACT.METHCO',PN,VCO,M80,NVU,
      &              NTROU)
-        CALL VERIJB('C','OJB',CH8//'.CONTACT.XFEM   ',PN,VCO,M80,NVU,
+        CALL VERIJB('C','OJB',CH8//'.CONTACT.XFEM',PN,VCO,M80,NVU,
+     &              NTROU)
+        CALL VERIJB('C','OJB',CH8//'.CONTACT.LISEQ',PN,VCO,M80,NVU,
+     &              NTROU)
+        CALL VERIJB('C','OJB',CH8//'.CONTACT.LISRL',PN,VCO,M80,NVU,
+     &              NTROU)
+        CALL VERIJB('C','OJB',CH8//'.CONTACT.LISCO',PN,VCO,M80,NVU,
      &              NTROU)
         CALL VERIJB('C','OJB',CH8//'.FONDFISS       ',PN,VCO,M80,NVU,
      &              NTROU)
@@ -1420,6 +1419,8 @@ C     --------------------------------
         CALL VERIJB('C','OJB',CH8//'.MAILFISS  .HECT',PN,VCO,M80,NVU,
      &              NTROU)
         CALL VERIJB('C','OJB',CH8//'.MAILFISS .INDIC',PN,VCO,M80,NVU,
+     &              NTROU)
+        CALL VERIJB('C','OJB',CH8//'.LISNOH',PN,VCO,M80,NVU,
      &              NTROU)
 
 

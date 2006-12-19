@@ -1,25 +1,29 @@
-#& MODIF COMMUN  DATE 07/11/2006   AUTEUR MARKOVIC D.MARKOVIC 
+#& MODIF COMMUN  DATE 18/12/2006   AUTEUR VOLDOIRE F.VOLDOIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            RELATION        =SIMP(statut='o',typ='TXM',defaut="VMIS_ISOT_TRAC",
                                  into=( "ELAS",
+# Spécial Discrets : début
+                                        "DIS_VISC",
+                                        "DIS_ECRO_CINE",
+# Spécial Discrets : fin
                                         "ELAS_HYPER",
                                         "VMIS_ISOT_TRAC",
                                         "VISC_ISOT_TRAC",
@@ -129,11 +133,16 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "POLYCRISTAL",
                                         "ZMAT",
                                         "GATT_MONERIE",
+                                        "MULTIFIBRE",
                                      ) ),
+# Spécial discrets : début
+          DIS_VISC       =SIMP(statut='c',typ='I',defaut=12,into=(12,)),
+          DIS_ECRO_CINE  =SIMP(statut='c',typ='I',defaut=18,into=(18,)),
+# Spécial discrets : fin
           ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           ELAS_HYPER      =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           SANS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          CORR_ACIER      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),        
+          CORR_ACIER      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           VMIS_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           VISC_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           VMIS_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
@@ -150,7 +159,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           JOINT_BA        =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           RUPT_FRAG       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           CZM_EXP_REG      =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
-          CZM_EXP          =SIMP(statut='c',typ='I',defaut=7,into=(7,)),                              
+          CZM_EXP          =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           META_P_IL         =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           META_P_IL_PT       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           META_P_IL_RE       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
@@ -239,11 +248,11 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            b_monox     = BLOC(condition = "RELATION == 'MONOCRISTAL' ",
                                  fr="SD issue de DEFI_COMPOR",
                    COMPOR =SIMP(statut='o',typ=compor_sdaster,max=1),),
-#          
+#
            b_polyx     = BLOC(condition = "RELATION == 'POLYCRISTAL' ",
                                  fr="SD issue de DEFI_COMPOR",
                    COMPOR =SIMP(statut='o',typ=compor_sdaster,max=1),),
-#          
+#
            b_zmat      = BLOC(condition = "RELATION == 'ZMAT' ",
                                  fr="Comportement de la bibliotheque Zmat",
                    NB_VARI =SIMP(statut='o',typ='I',max=1),
@@ -293,8 +302,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "NADAI_B",
                                        "BETON_DOUBLE_DP",
                                        ),),
-                            
-                                        
+
+
            ELAS_THER       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            GAZ             =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
            LIQU_SATU       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),

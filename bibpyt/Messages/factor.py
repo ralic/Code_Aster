@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF factor Messages  DATE 18/12/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,18 +57,16 @@ Matrice non factorisable :
 Matrice non factorisable :
   pivot presque nul à la ligne : %(i1)d
   nombre de décimales perdues  : %(i2)d
-  pour le noeud tardif %(k1)s et la composante %(k2)s
-  Il s'agit sans doute d'une relation de blocage surabondante.
-  blocage concerné : %(k4)s
+  Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
+  La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
 """),
 
 #-----------------------------------------------------------------------------------------------
 31: _("""
 Matrice non factorisable :
   pivot vraiment nul à la ligne : %(i1)d
-  pour le noeud tardif %(k1)s et la composante %(k2)s
-  Il s'agit sans doute d'une relation de blocage surabondante.
-  blocage concerné : %(k4)s
+  Il s'agit sans doute d'une relation linéaire entre ddls surabondante.
+  La liste des noeuds concernés par cette relation est imprimée ci-dessus dans le fichier MESSAGE.
 """),
 
 
@@ -77,18 +75,16 @@ Matrice non factorisable :
 Matrice non factorisable :
   pivot presque nul à la ligne : %(i1)d
   nombre de décimales perdues  : %(i2)d
-  pour le noeud tardif %(k1)s et la composante %(k2)s
-  Il s'agit sans doute d'une relation entre ddls surabondante.
-  La relation concerne les noeuds imprimés ci-dessus dans le fichier MESSAGE.
+  Il s'agit sans doute d'une relation de blocage surabondante.
+  blocage concerné : %(k4)s
 """),
 
 #-----------------------------------------------------------------------------------------------
 41: _("""
 Matrice non factorisable :
   pivot vraiment nul à la ligne : %(i1)d
-  pour le noeud tardif %(k1)s et la composante %(k2)s
-  Il s'agit sans doute d'une relation entre ddls surabondante.
-  La relation concerne les noeuds imprimés ci-dessus dans le fichier MESSAGE.
+  Il s'agit sans doute d'une relation de blocage surabondante.
+  blocage concerné : %(k4)s
 """),
 
 #-----------------------------------------------------------------------------------------------

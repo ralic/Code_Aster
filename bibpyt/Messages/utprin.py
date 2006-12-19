@@ -1,4 +1,4 @@
-#@ MODIF utprin Messages  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF utprin Messages  DATE 18/12/2006   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,11 +40,14 @@ def utprin(typmess,unite,idmess,valk,vali,valr):
    import aster
    from Utilitai.Utmess import UTMESS
 
+   # en cas d'erreur, si on lève une exception au lieu de s'arreter
+   # on n'affiche pas le type de l'erreur pour ne pas fausser le diagnostic
    typmess = typmess.strip()
    if aster.onFatalError() == 'EXCEPTION':
-      if typmess in ('E', 'F', 'Z'):
+      if typmess in ('E', 'F'):
          typmess = 'EXCEPTION'
-   if typmess == 'Z':
+   # dans tous les cas, pour S et Z (exception), on affiche EXCEPTION.
+   if typmess in ('Z', 'S'):
       typmess = 'EXCEPTION'
    
    unite   = unite.strip()

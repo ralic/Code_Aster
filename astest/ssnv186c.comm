@@ -1,4 +1,4 @@
-# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE LBB CONDITION ET CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV186C',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(NOM='SSNV186C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
 

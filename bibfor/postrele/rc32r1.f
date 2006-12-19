@@ -3,22 +3,22 @@
       CHARACTER*8         NOMRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
@@ -44,10 +44,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       IBID, NPAR2, NPAR1, NPAR4, NPAR6, IM, IG, IS, I3,
-     +              IRET, NBSIGR, VALEI(2), JNUMGR, JNSITU, JNSG, JVALE,
+     +              IRET, NBSIGR, VALEI(3), JNUMGR, JNSITU, JNSG, JVALE,
      +              JPMPB, NBGR, IOC, NUMGR, IS1, IS2, JREAS, JRESS, N1,
      +              JSEIGR, JCOMBI, IOC1, IOC2, IOCS, II, NPAR0
-      PARAMETER    ( NPAR0 = 39, NPAR2 = 7, NPAR1 = 15, NPAR4 = 15, 
+      PARAMETER    ( NPAR0 = 39, NPAR2 = 7, NPAR1 = 15, NPAR4 = 15,
      +               NPAR6 = 13 )
       REAL*8        UTOT, VALER(2)
       COMPLEX*16    C16B
@@ -61,7 +61,7 @@ C
 C     ------------------------------------------------------------------
       DATA LIEU   / 'ORIG' , 'EXTR' /
 C
-      DATA NOPAR0 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' ,  
+      DATA NOPAR0 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' ,
      +              'PM_MAX', 'PB_MAX', 'PMPB_MAX', 'SM' ,
      +              'SN/3SM' , 'SN_MAX' , 'SN*_MAX' , 'SP_MAX',
      +              'KE_MAX', 'SALT_MAX', 'FACT_USAGE_CUMU',
@@ -75,27 +75,27 @@ C
      +              'SP_ETAT_B_B', 'SALT_ETAT_B_B' /
       DATA TYPAR0 / 'K8', 'K8', 'I', 'K8',  'R', 'R', 'R', 'R', 'R',
      +              'R', 'R', 'R', 'R', 'R', 'R', 'I', 'I', 'I', 'R',
-     +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8', 
+     +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'K8', 'K8',
      +              'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'  /
 C
 C --- PARAMETRES FACTEUR D'USAGE
 C
-      DATA NOPAR2 / 'TYPE', 'NUME_GROUPE', 'LIEU', 'NUME_SITU_K', 
+      DATA NOPAR2 / 'TYPE', 'NUME_GROUPE', 'LIEU', 'NUME_SITU_K',
      +              'NUME_SITU_L', 'FACT_USAGE' , '%_FACT_USAGE' /
 C
 C --- PARAMETRES POUR LE CALCUL DU FACTEUR D'USAGE
 C
-      DATA NOPAR1 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU', 
+      DATA NOPAR1 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU',
      +              'NUME_SITU_I', 'NUME_SITU_J', 'SN' ,
      +                     'SP_ETAT_A_A', 'SALT_ETAT_A_A' ,
      +                     'SP_ETAT_B_A', 'SALT_ETAT_B_A' ,
      +                     'SP_ETAT_A_B', 'SALT_ETAT_A_B' ,
      +                     'SP_ETAT_B_B', 'SALT_ETAT_B_B' /
-C    
+C
 C --- PARAMETRES POUR CHAQUE SITUATION
 C
-      DATA NOPAR4 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' , 
-     +              'NUME_SITU', 'PM' , 'PB' , 'PMPB', 'SN', 'SN*', 
+      DATA NOPAR4 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU' ,
+     +              'NUME_SITU', 'PM' , 'PB' , 'PMPB', 'SN', 'SN*',
      +              'SP', 'KE_MECA', 'KE_THER', 'SALT', 'FACT_USAGE'  /
 C
 C --- PARAMETRES POUR LES MAXIMA

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 18/12/2006   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,9 @@ C ---------------------------------------------------------
         I =1
         DO 10 J = 1, NMCL
           IF(MOTCLE(J).NE.'MAILLE'.AND.MOTCLE(J).NE.'GROUP_MA'.AND.
-     &       MOTCLE(J).NE.'DNOR'.AND.MOTCLE(J).NE.'DTAN') THEN
+     &       MOTCLE(J).NE.'DNOR'.AND.MOTCLE(J).NE.'DTAN'.AND.
+     &       MOTCLE(J).NE.'SANS_GROUP_MA'.AND.
+     &       MOTCLE(J).NE.'SANS_MAILLE') THEN
             MOTCLE(I) = MOTCLE(J)
             I = I + 1
           ENDIF

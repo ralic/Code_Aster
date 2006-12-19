@@ -1,0 +1,431 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 18/12/2006 - 14:55:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010380 DU 2006-12-12 17:28:18
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   AFFE_CHAR_MECA, FACE_IMPO + SANS_GROUP_MA
+FONCTIONNALITE
+   Si dans AFFE_CHAR_MECA, on fait DDL_IMPO et FACE_IMPO+SANS_GROUP_MA ou SANS_MAILLE, ca
+   plante salement.
+   
+   En effet, on essaie de faire GETVR8 sur les valeurs de ces mots-cles qui sont des chaines
+   de caracteres !
+   
+   Je doute que SANS_GROUP_MA/SANS_MAILLE aient ete testes lors de la restit 8.2.17... ou
+   pas
+   en presence de DDL_IMPO (ce qui est le but du SANS_GROUP_MA me semble-t-il).
+   
+   Pour corriger, j'ajoute SANS_GROUP_MA et SANS_MAILLE dans ddlfac.f dans la liste des
+   mots-cles qui ne contiennent pas de ddl.
+   
+   Ajout d'un nouveau test fourni par JP 'zzzz219a' qui teste les 2 mots-cles.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz219a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010387 DU 2006-12-14 17:30:53
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.2 - zzzz107a en erreur <S>
+FONCTIONNALITE
+   Suite a la suppression de quelques UTMESS('S', ...) remplaces par des U2MESS, le test
+   s'arrete en ERREUR_<S>.
+   
+   Pour les erreurs <S>, UTMESS affichait le message sans le "<S>", puis exception levee par
+   Python via UEXCEP.
+   Alors que U2MESS/UTPRIN affichait le message avec "<S>" avant de lever l'exception.
+   
+   Le calcul allait jusqu'au bout normalement, mais le diagnostic etait <S> alors que
+   l'exception avait ete recuperee comme prevu.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz107a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN P.              DATE 18/12/2006 - 13:39:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010369 DU 2006-12-07 18:11:41
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Matrice non symetrique pour DEFORMATION: 'GREEN'
+FONCTIONNALITE
+   Dans le cadre de la collaboration avec IFP, on veut
+   pouvoir prendre en compte des comportements non
+   symetriques (matrices tangentes non symetriques) avec une
+   deformation de type green (pour les besoins IFP).
+   On procede par analogie avec ce qui est fait pour
+   nmpl2d et nmpl3d qui permettent l'utilisation de
+   matrices non symetriques.
+   On reporte donc les modifications equivalentes
+   dans nmgr2d et nmgr3d en passant le logical MATSYM
+   produit dans les te0100 et te0545 (en 2D), te0139 et
+   te0546 (en 3D), et te0539 (2D-3D),
+   et passe en argument dans nmgr2d et nmgr3d de la meme
+   maniere que pour nmpl2d et nmpl3d.
+   Pour la validation, on prend les tests
+   ssnv135a en 3D (CJS) et ssnv158a en 2D (Laigle):
+   on utilise alors green sans matrice symetrique et avec
+   matrice symetrique, on verifie que les resultats
+   sont les memes (non-regression), mais qu'avec matrice non
+   symetrique la convergence est meilleure.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.04.135,V6.04.158
+VALIDATION
+   Cas-tests ssnv135a ssnv158a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 18/12/2006 - 12:45:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010386 DU 2006-12-14 12:44:02
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   tests XFEM a passer en SDVERI=OUI
+FONCTIONNALITE
+   Lors de ma derniere restitution, j'ai du retirer en catastrophe SDVERI='OUI' dans
+   certains
+   tests (essentiellement XFEM).
+   
+   
+   Je repare mon erreur pour les retablir.
+   
+   
+   Liste des tests :
+   adls102a        ascou01a        mumps02a        mumps04a
+   sslv311a        ssnv173a        ssnv173b        ssnv173c        ssnv182a        ssnv182d
+   ssnv182e        ssnv182f        ssnv185b        ssnv185c        ssnv185d        ssnv185e
+   ssnv185f        ssnv185g        ssnv185h        ssnv185i        ssnv185j        ssnv186a
+   ssnv186b        ssnv186c        ssnv186d        ssnv186f        ssnv186g        ssnv186h
+   ssnv191a        ssnv191b        ssnv192a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010394 DU 2006-12-18 08:04:55
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   erreurs de compil detectees par g77 -Wall
+FONCTIONNALITE
+   Je me suis apercu (avec Lionel Vivan) que le compilateur g77 emettait un warning lors de
+   la compilation de rc32r1.f pour signaler qu'un tableau dimensionne a 2 etait utilise
+   pour
+   l'indice 3.
+   
+   J'ai donc compile toutes les routines f77 d'aster pour voir si g77 detecterait d'autres
+   anomalies.
+   La recolte est heureusement maigre :
+   - rc32r1.f : debordement du tableau VALEI
+   - irmpga.f : format incorrect ligne 162
+   - vechde.f : debordement des tableaux LCHIN et LPAIN
+   
+   Correction (en NEW9 et NEW8) :
+   On corrige les 3 petites bevues.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 18/12/2006 - 12:45:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010371 DU 2006-12-08 09:36:16
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : CS
+TITRE
+   Test rccm04a en version NEW9.0 sur Bull
+FONCTIONNALITE
+   Avec la version NEW9 sur la machine de reference Bull, le test rccm04a s'arrete de
+   facon
+   aleatoire en erreur dans la commande POST_RCCM.
+   Correction : dans la routine rc32r1, le vecteur VALEI est dimensionne a 2 et on ecrit
+   en
+   position 3.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rccm04a
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR vabhhts      PELLET Jacques         DATE 18/12/2006 - 12:45:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010388 DU 2006-12-15 07:37:36
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   test szlz105a en version NEW9.0.2 sous Calibre4 et Rocks
+FONCTIONNALITE
+   Cette fiche est une suite malheureuse a la fiche 10221 (rendre plus general
+   MACR_ECLA_PG).
+   
+   
+   Le TEST_FICHIER ajoute pour valider la fiche 10221 est mal habile. En effet, le fichier
+   teste contient :
+   
+   
+   CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  EQUI_ELGA_EPSI
+   NUMERO D'ORDRE: 1 INST:  1.00000E+00
+   NOEUD        INVA_2       PRIN_1       PRIN_2       PRIN_3       INVA_2SG     VECT_1_X
+   VECT_1_Y     VECT_1_Z     VECT_2_X     VECT_2_Y     VECT_2_Z     VECT_3_X      VECT_3_Y
+   VECT_3_Z
+   N1        2.60052E+00 -9.00180E-01 -9.00180E-01  3.00060E+00  2.60052E+00  0.00000E+00
+   0.00000E+00  1.00020E+00  0.00000E+00  1.00020E+00  0.00000E+00  1.00020E+00 0.00000E+00
+   0.00000E+00
+   N2        2.60104E+00 -9.00360E-01 -9.00360E-01  3.00120E+00  2.60104E+00  0.00000E+00
+   0.00000E+00  1.00040E+00  0.00000E+00  1.00040E+00  0.00000E+00  1.00040E+00  0.00000E+00
+   0.00000E+00
+   ...
+   
+   
+   On voit que les contraintes principales PRIN_1 et PRIN_2 sont identiques. Les vecteurs
+   propres associes (VECT_1 et VECT_2) sont donc arbitraires et les resultats dependent
+   de la
+   machine.
+   
+   
+   Correction :
+   -------------
+   Je modifie le test pour remplacer le TEST_FICHIER par quelques TEST_RESU non ambigus.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test casse
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR voldoire     VOLDOIRE F.            DATE 18/12/2006 - 18:36:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009368 DU 2006-01-18 14:55:29
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Elements de ressort en viscoelasticite et ecrouissage mixte
+FONCTIONNALITE
+   RESTITUTION FICHE 009368
+   TYPE evolution concernant Code_Aster (VERSION 9)
+   TMA :
+   TITRE
+   Elements de ressort en viscoelasticite et ecrouissage mixte
+   
+   REMARQUE : la demande initiale d'ALEXIS COURTOIS est poursuivie dans la fiche N°
+   [issue10389] Elements de ressort en viscoelasticite de ZENER.
+   
+   FONCTIONNALITE
+   
+   Dans le cadre du projet OMERSI, on a developpe des lois de comportement pour elements
+   discrets. Les
+   travaux engages concernent :
+   T1. loi de comportement visqueuse non lineaire pour elements discrets
+   F_visq=C.V^alpha
+   T2. loi de comportement elastoplastique a ecrouissage cinematique non lineaire non
+   lineaire pour elements discrets
+   
+   Ces 2 lois sont definies composantes par composantes du torseur des efforts resultants.
+   
+   Ce developpement touche a la fois les modelisations DIS_TR et DIS_T.
+   RTA tenue avec Luc Davenne le 11/12/2006 (fiche 9368)
+   
+   VOCABULAIRE :
+   
+   MATERIAU et RELATION  :
+   DIS_VISC
+   etc pour les 6 directions
+   parametres : PUIS_DX, COEF_DX
+   
+   DIS_ECRO_CINE
+   parametres : LIMY_DX, KCIN_DX, LIMU_DX, PUIS_DX
+   etc pour les 6 directions
+   ============================================================================
+   IMPACT SUR LE CODE :
+   
+   c_comp_incr. capy : ajout nouvelle relation " DIS_VISC DIS_ECRO_CINE"
+   defi_materiau.capy : ajout nouveau materiau " DIS_VISC DIS_ECRO_CINE"
+   gener_me2dt0.cata : ajout CINSTPR et PINSTPR PINSTPR, pour te0047
+   gener_me2dt1.cata : ajout CINSTPR et PINSTPR PINSTPR, pour te0047
+   gener_me2tr0.cata : ajout CINSTPR et PINSTPR PINSTPR, pour te0047
+   gener_me2tr1.cata : ajout CINSTPR et PINSTPR PINSTPR, pour te0047
+   gener_medit0.cata : ajout PINSTPR PINSTPR, pour te0047
+   gener_medit1.cata : ajout PINSTPR PINSTPR, pour te0047
+   gener_medtr0.cata : ajout PINSTPR PINSTPR, pour te0047
+   gener_medtr1.cata : ajout PINSTPR PINSTPR, pour te0047
+   te0047.f : ajout du comportement " DIS_VISC DIS_ECRO_CINE"
+   dinon2.f : Nouveau fortran. Comportement visqueux
+   dinon3.f : Nouveau fortran. Comportement cinematique
+   dinona.f : Nouveau fortran. Actualisation de la tangente au comportement
+   dinonc.f : Nouveau fortran. Gestion des mots clefs des comportements et affectation des
+   valeurs
+   dinosi.f : Nouveau fortran. Calcul des efforts generalises, forces nodales,
+   discrets.py : Nouveau. Dictionnaire des messages lies aux discrets
+   
+   
+   
+   
+   ============================================================================
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   
+   IMPACT_DOCUMENTAIRE :  DEFI MATERIAU U4.43.01; COMP_INCR U4.43.01.
+   Nouveau paragraphe dans R5.03.17
+   Tests :  V6.07.103, V6.07.104
+   
+   VALIDATION
+   CAS TESTS
+   COMP003a,b et doc V6.07.103 :
+   DISCRETS AVEC COMPORTEMENT VISQUEUX 3D et 2D : T ET TR SUR NOEUD ET SEG2
+   COMP004a,b et doc V6.07.104 :
+   TITRE DISCRETS AVEC COMPORTEMENT CINEMATIQUE 3D et 2D : T ET TR SUR NOEUD ET SEG2
+   
+   NB_JOURS_TRAV  : 25
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.43.01, U4.51.11, R5.03.17, V6.07.103, V6.07.104
+VALIDATION
+   comp003 et comp004 (nouveaux)
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT comp003a                     voldoire F.VOLDOIRE         367    367      0
+ CASTEST AJOUT comp003b                     voldoire F.VOLDOIRE         312    312      0
+ CASTEST AJOUT comp004a                     voldoire F.VOLDOIRE         442    442      0
+ CASTEST AJOUT comp004b                     voldoire F.VOLDOIRE         273    273      0
+ CASTEST AJOUT zzzz219a                     courtois M.COURTOIS          85     85      0
+ CASTEST MODIF adls102a                       pellet J.PELLET           200      2      2
+ CASTEST MODIF ascou01a                       pellet J.PELLET           328      2      2
+ CASTEST MODIF mumps02a                       pellet J.PELLET            52      2      2
+ CASTEST MODIF mumps04a                       pellet J.PELLET           187      2      2
+ CASTEST MODIF sslv311a                       pellet J.PELLET           419      2      2
+ CASTEST MODIF ssnv135a                       massin P.MASSIN          1747    629      6
+ CASTEST MODIF ssnv158a                       massin P.MASSIN           948    519      1
+ CASTEST MODIF ssnv173a                       pellet J.PELLET           344      2      2
+ CASTEST MODIF ssnv173b                       pellet J.PELLET           642      2      2
+ CASTEST MODIF ssnv173c                       pellet J.PELLET           172      2      2
+ CASTEST MODIF ssnv182a                       pellet J.PELLET           244      2      2
+ CASTEST MODIF ssnv182d                       pellet J.PELLET           205      2      2
+ CASTEST MODIF ssnv182e                       pellet J.PELLET           183      2      3
+ CASTEST MODIF ssnv182f                       pellet J.PELLET           200      2      3
+ CASTEST MODIF ssnv185b                       pellet J.PELLET           274      2      2
+ CASTEST MODIF ssnv185c                       pellet J.PELLET           346      2      2
+ CASTEST MODIF ssnv185d                       pellet J.PELLET           271      2      2
+ CASTEST MODIF ssnv185e                       pellet J.PELLET           221      2      2
+ CASTEST MODIF ssnv185f                       pellet J.PELLET           204      2      2
+ CASTEST MODIF ssnv185g                       pellet J.PELLET           291      2      2
+ CASTEST MODIF ssnv185h                       pellet J.PELLET           381      2      2
+ CASTEST MODIF ssnv185i                       pellet J.PELLET           274      2      2
+ CASTEST MODIF ssnv185j                       pellet J.PELLET           250      2      2
+ CASTEST MODIF ssnv186a                       pellet J.PELLET           169      2      2
+ CASTEST MODIF ssnv186b                       pellet J.PELLET           195      2      2
+ CASTEST MODIF ssnv186c                       pellet J.PELLET           181      2      2
+ CASTEST MODIF ssnv186d                       pellet J.PELLET           168      2      2
+ CASTEST MODIF ssnv186f                       pellet J.PELLET           171      2      3
+ CASTEST MODIF ssnv186g                       pellet J.PELLET           179      2      3
+ CASTEST MODIF ssnv186h                       pellet J.PELLET           180      2      3
+ CASTEST MODIF ssnv191a                       pellet J.PELLET           475      2      2
+ CASTEST MODIF ssnv191b                       pellet J.PELLET           491      2      2
+ CASTEST MODIF ssnv192a                       pellet J.PELLET           413      2      3
+ CASTEST MODIF szlz105a                       pellet J.PELLET           332     27     15
+CATALOGU MODIF typelem/gener_me2dt0         voldoire F.VOLDOIRE         163      7      6
+CATALOGU MODIF typelem/gener_me2dt1         voldoire F.VOLDOIRE         166      7      6
+CATALOGU MODIF typelem/gener_me2tr0         voldoire F.VOLDOIRE         166      7      6
+CATALOGU MODIF typelem/gener_me2tr1         voldoire F.VOLDOIRE         169      6      5
+CATALOGU MODIF typelem/gener_medit0         voldoire F.VOLDOIRE         174      6      6
+CATALOGU MODIF typelem/gener_medit1         voldoire F.VOLDOIRE         171      5      5
+CATALOGU MODIF typelem/gener_medtr0         voldoire F.VOLDOIRE         182      6      6
+CATALOGU MODIF typelem/gener_medtr1         voldoire F.VOLDOIRE         220      6      6
+CATALOPY MODIF commande/defi_materiau       voldoire F.VOLDOIRE        2685     94      1
+CATALOPY MODIF commun/c_comp_incr           voldoire F.VOLDOIRE         335     10      1
+ FORTRAN AJOUT elements/dinon2              voldoire F.VOLDOIRE         118    118      0
+ FORTRAN AJOUT elements/dinon3              voldoire F.VOLDOIRE         165    165      0
+ FORTRAN AJOUT elements/dinona              voldoire F.VOLDOIRE         107    107      0
+ FORTRAN AJOUT elements/dinonc              voldoire F.VOLDOIRE         146    146      0
+ FORTRAN AJOUT elements/dinosi              voldoire F.VOLDOIRE         110    110      0
+ FORTRAN MODIF algorith/nmgr2d                massin P.MASSIN           378     28      9
+ FORTRAN MODIF algorith/nmgr3d                massin P.MASSIN           388     29      9
+ FORTRAN MODIF algorith/vechde                pellet J.PELLET           589      2      2
+ FORTRAN MODIF elements/te0047              voldoire F.VOLDOIRE         828    281    149
+ FORTRAN MODIF elements/te0100                massin P.MASSIN           275      2      2
+ FORTRAN MODIF elements/te0139                massin P.MASSIN           242      2      2
+ FORTRAN MODIF elements/te0539                massin P.MASSIN           374      3      3
+ FORTRAN MODIF elements/te0545                massin P.MASSIN           251      4      3
+ FORTRAN MODIF elements/te0546                massin P.MASSIN           238      4      2
+ FORTRAN MODIF modelisa/ddlfac              courtois M.COURTOIS          85      4      2
+ FORTRAN MODIF postrele/rc32r1                pellet J.PELLET           269      2      2
+ FORTRAN MODIF prepost/irmpga                 pellet J.PELLET           300      2      2
+ FORTRAN MODIF utilitai/verij6                pellet J.PELLET          1434     27     26
+  PYTHON AJOUT Messages/discrets            voldoire F.VOLDOIRE          58     58      0
+  PYTHON MODIF Messages/factor              courtois M.COURTOIS         204      9     13
+  PYTHON MODIF Messages/utprin              courtois M.COURTOIS         235      6      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   11        2183      2183             +2183
+ MODIF :   59       21858      1796     367     +1429
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   70       24041      3979     367     +3612 

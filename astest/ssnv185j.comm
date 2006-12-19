@@ -1,4 +1,4 @@
-# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNV185J', NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(NOM='SSNV185J', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
 #----------------------------------------------

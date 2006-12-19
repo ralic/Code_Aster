@@ -4,12 +4,12 @@
      &                    TM,TP,TREF,
      &                    DEPLM,DEPLP,
      &                    ANGMAS,
-     &                    SIGM,VIM,
+     &                    SIGM,VIM,MATSYM,
      &                    DFDI,
      &                    PFF,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 18/12/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C TOLE CRP_21
        REAL*8        SIGM(4,NPG),SIGP(4,NPG)
        REAL*8        VIM(LGPG,NPG),VIP(LGPG,NPG)
        REAL*8        MATUU(*),VECTU(2,NNO)
+       LOGICAL       MATSYM
 
 C.......................................................................
 C
@@ -74,6 +75,7 @@ C IN  DEPLP   : DEPLACEMENT A L'INSTANT COURANT
 C IN  ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C IN  SIGM    : CONTRAINTES A L'INSTANT PRECEDENT
 C IN  VIM     : VARIABLES INTERNES A L'INSTANT PRECEDENT
+C IN  MATSYM  : VRAI SI LA MATRICE DE RIGIDITE EST SYMETRIQUE
 C OUT DFDI    : DERIVEE DES FONCTIONS DE FORME  AU DERNIER PT DE GAUSS
 C OUT DEF     : PRODUIT DER. FCT. FORME PAR F   AU DERNIER PT DE GAUSS
 C OUT SIGP    : CONTRAINTES DE CAUCHY (RAPH_MECA ET FULL_MECA)
@@ -101,7 +103,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       LOGICAL GRAND,AXI,RESI,RIGI,CPLAN
 
-      INTEGER KPG,KK,KKD,N,I,M,J,J1,KL,PQ
+      INTEGER KPG,KK,KKD,N,I,M,J,J1,KL,PQ,NMAX
 
       REAL*8 DSIDEP(6,6),F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6),DEPS(6)
       REAL*8 R,SIGMA(6),SIGN(6),SIG(6),SIGG(4),FTF,DETF,FMM(3,3)
@@ -210,7 +212,12 @@ C 5.2.6 - CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
 
         IF (RIGI) THEN
          DO 125 N=1,NNO
-          DO 126 M=1,N
+          IF(MATSYM) THEN
+           NMAX = N
+          ELSE
+           NMAX = NNO
+          ENDIF
+          DO 126 M=1,NMAX
            PFF(1,N,M) =  DFDI(N,1)*DFDI(M,1)
            PFF(2,N,M) =  DFDI(N,2)*DFDI(M,2)
            PFF(3,N,M) = 0.D0
@@ -265,13 +272,13 @@ C 5.4 - CALCUL DE LA MATRICE DE RIGIDITE
             SIG(KL)=SIG(KL)+DEF(3,N,I)*DSIDEP(3,KL)
             SIG(KL)=SIG(KL)+DEF(4,N,I)*DSIDEP(4,KL)
 151        CONTINUE
+           IF(MATSYM) THEN
+            NMAX = N
+           ELSE
+             NMAX = NNO
+           ENDIF
            DO 140 J=1,2
-            DO 130 M=1,N
-             IF (M.EQ.N) THEN
-              J1 = I
-             ELSE
-              J1 = 2
-             ENDIF
+            DO 130 M=1,NMAX
 
 C 5.4.1 - RIGIDITE GEOMETRIQUE
 
@@ -310,12 +317,24 @@ C 5.4.2 - RIGIDITE ELASTIQUE
              TMP2=TMP2+SIG(3)*DEF(3,M,J)
              TMP2=TMP2+SIG(4)*DEF(4,M,J)
 
+            IF(MATSYM) THEN
 C 5.4.3 - STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
+              IF (M.EQ.N) THEN
+               J1 = I
+              ELSE
+               J1 = 2
+              ENDIF
+
              IF (J.LE.J1) THEN
               KKD = (2*(N-1)+I-1) * (2*(N-1)+I) /2
               KK = KKD + 2*(M-1)+J
               MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*POIDS
              END IF
+            ELSE
+C 5.4.4 - STOCKAGE SANS SYMETRIE
+              KK = 2*NNO*(2*(N-1)+I-1) + 2*(M-1)+J
+              MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*POIDS 
+            ENDIF
 
  130        CONTINUE
  140       CONTINUE

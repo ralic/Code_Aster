@@ -1,4 +1,4 @@
-# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE MUMPS EN NON-SYMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'MUMPS04A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F( NOM = 'MUMPS04A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # CE TEST EST UNE COPIE DE SSNV131B : ON FORCE L'USAGE DE MUMPS
 #---------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU SOLVEUR MUMPS POUR UN MODELE DPLAN_INCO
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #       (CE TEST MET EN DEFAUT LE SOLVEUR MULT_FRONT)
 
-DEBUT(CODE=_F(NOM='MUMPS02A',NIV_PUB_WEB='INTERNET') );
+DEBUT(CODE=_F(NOM='MUMPS02A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GIBI();
 MA=LIRE_MAILLAGE();

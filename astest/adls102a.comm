@@ -1,4 +1,4 @@
-# MODIF  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
 # TITRE TEST OSCILLATEUR FLUIDE-ELASTIQUE MERIDIEN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 #               OSCILLATEUR FLUIDE-ELASTIQUE MERIDIEN
 # ----------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='ADLS102A', NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NOM='ADLS102A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAYA=LIRE_MAILLAGE()
 

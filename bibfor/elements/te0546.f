@@ -1,7 +1,7 @@
       SUBROUTINE TE0546(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 18/12/2006   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C ......................................................................
       INTEGER NDDL,KK,NI,MJ,JTAB(7),NNOS
       REAL*8 MATNS(3*27*3*27),R8VIDE,ANGMAS(7),R8DGRD,XYZ(3)
       REAL*8 PFF(6*27*27),DEF(6*27*3),DFDI(3*27),DFDI2(3*27)
+      LOGICAL MATSYM
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -106,6 +107,7 @@ C - PARAMETRES EN SORTIE
       IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA') THEN
         CALL JEVECH('PMATUUR','E',IMATUU)
+        CALL NMTSTM(ZK16(ICOMPO),IMATUU,MATSYM)
       END IF
 
       IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
@@ -218,7 +220,7 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
-     &                ZR(ICONTM),ZR(IVARIM),
+     &                ZR(ICONTM),ZR(IVARIM),MATSYM,
      &                DFDI,PFF,DEF,ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
         ELSE
