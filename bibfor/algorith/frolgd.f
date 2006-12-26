@@ -2,7 +2,7 @@
      &                   DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -124,7 +124,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ZCONV
-      PARAMETER    (ZCONV=4)
+      PARAMETER    (ZCONV=6)
       LOGICAL      TROUAC,DELPOS,GLISS1,GLISS2,LELPIV,LELPI1,LELPI2
       LOGICAL      CFEXCL
       INTEGER      JJC,JDEPDE,LLF,JDIM,NESMAX,LFMIN

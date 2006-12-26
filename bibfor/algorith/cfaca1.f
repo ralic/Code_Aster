@@ -2,7 +2,7 @@
      &                  DEFICO,RESOCO,LMAT,CINE,NBLIAI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,7 +85,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      ZCONV
-      PARAMETER    (ZCONV=4)
+      PARAMETER    (ZCONV=6)
       INTEGER      LG,IBID,IL
       INTEGER      LLIAC,JDECAL,NBDDL,POSIT,JRCINE,IERD
       INTEGER      NEQ,LGBLOC,TAMPON

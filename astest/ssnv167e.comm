@@ -1,5 +1,5 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
 
+# MODIF  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNV167E',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='SSNV167E',
+              NIV_PUB_WEB='INTERNET',),);
 #
 
 PRE_GMSH();
@@ -29,30 +30,28 @@ MA=LIRE_MAILLAGE();
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA=(
-                             _F(NOM='PetitCube',
+              CREA_GROUP_MA=(_F(NOM='PetitCube',
                                 GROUP_MA='GM1',),
                              _F(NOM='Esclave',
                                 GROUP_MA='GM2',),
-                                      _F(NOM='Deplacement',
+                             _F(NOM='Deplacement',
                                 GROUP_MA='GM3',),
                              _F(NOM='GrosCube',
                                 GROUP_MA='GM4',),
                              _F(NOM='Maitre',
                                 GROUP_MA='GM5',),
                              _F(NOM='Blocage',
-                                GROUP_MA='GM6',),
-                                                                 ),);
+                                GROUP_MA='GM6',),),);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=(_F(GROUP_MA=('PetitCube','Esclave','Deplacement','GrosCube','Maitre','Blocage'),
-                        PHENOMENE='MECANIQUE',
-                        MODELISATION='3D',),),);
+               AFFE=_F(GROUP_MA=('PetitCube','Esclave','Deplacement','GrosCube','Maitre','Blocage',),
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
 #
 
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
-                 ORIE_PEAU_3D=_F(GROUP_MA=('Esclave')),
+                 ORIE_PEAU_3D=_F(GROUP_MA='Esclave',),
                  );
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=100000.0,
@@ -66,147 +65,127 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_MA='Blocage',
-                                                  DX=0.,
-                                                  DY=0.,
-                                                  DZ=0.,),
-                                       _F(GROUP_MA='Deplacement',
-                                                  DX=0.,
-                                                  DY=0.,
-                                                  DZ=-0.5,),),);
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(GROUP_MA='Deplacement',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=-0.5,),),);
 #
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='GCP',
-                               RESI_ABSO=1.E-8,
                                GROUP_MA_MAIT='Maitre',
                                GROUP_MA_ESCL='Esclave',
+                               RESI_ABSO=1e-08,
+                               PRE_COND='DIRICHLET',
                                ),
-                    INFO=2,);
-
-
-
+                    INFO=1,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=10,),);
 #
-F=DEFI_FONCTION(NOM_PARA='INST',
-                VALE=(0.0,  0.0,
-                      1.0,  1.0),
-                      );
 
+F=DEFI_FONCTION(NOM_PARA='INST',
+                VALE=(0.0,0.0,
+                      1.0,1.0,
+                      ),);
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHA1,
-                             FONC_MULT=F,
-                                   ),
-                          _F(CHARGE=CHA2,),
-                                   ),
-                   COMP_ELAS=_F(RELATION='ELAS',
-                                ),
-                    CONVERGENCE=_F(ARRET='OUI',
-                                   ITER_GLOB_ELAS=25,
-                                   ITER_GLOB_MAXI=20,
-                                   RESI_GLOB_MAXI=1E-6,
-                                   ),
+                             FONC_MULT=F,),
+                          _F(CHARGE=CHA2,),),
+                   COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-06,
+                                  ITER_GLOB_MAXI=20,
+                                  ITER_GLOB_ELAS=25,
+                                  ARRET='OUI',),
                    INFO=1,);
 
+MATABLE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='INFOS CONTACT',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                NOEUD=('N1','N2','N3','N4','N203','N204','N208','N212',),
+                                TOUT_CMP='OUI',),);
 
-MATABLE=POST_RELEVE_T(ACTION=_F(INTITULE='INFOS CONTACT',
-                            NOEUD=('N1','N2','N3','N4',
- 'N203','N204','N208','N212',
-),
-                            RESULTAT=RESU,
-                            TOUT_CMP='OUI',
-                            NOM_CHAM='DEPL',
-                            OPERATION='EXTRACTION',),);
+IMPR_TABLE(TABLE=MATABLE,);
 
-
-IMPR_TABLE(TABLE=MATABLE);
-
-TEST_RESU(RESU=(
-                 _F(RESULTAT=RESU,
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N1',
-                   VALE=-2.33333E-01,
-                   INST=1,
+                   VALE=-0.233333,
+                   PRECISION=1e-05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.14',
-                   PRECISION = 1.0E-5,
-                   ),
-_F(RESULTAT=RESU,
+                   VERSION='7.2.14',),
+                _F(RESULTAT=RESU,
+                   INST=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N2',
-                   VALE=-2.33333E-01,
-                   INST=1,
+                   VALE=-0.233333,
+                   PRECISION=1e-05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.14',
-                   PRECISION = 1.0E-5,
-                   ),
-_F(RESULTAT=RESU,
+                   VERSION='7.2.14',),
+                _F(RESULTAT=RESU,
+                   INST=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N3',
-                   VALE=-2.33333E-01,
-                   INST=1,
+                   VALE=-0.233333,
+                   PRECISION=1e-05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.14',
-                   PRECISION = 1.0E-5,
-                   ),
-_F(RESULTAT=RESU,
+                   VERSION='7.2.14',),
+                _F(RESULTAT=RESU,
+                   INST=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N4',
-                   VALE=-2.33333E-01,
-                   INST=1,
+                   VALE=-0.233333,
+                   PRECISION=1e-05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.14',
-                   PRECISION = 1.0E-5,
-                   ),   
-                 _F(RESULTAT=RESU,
+                   VERSION='7.2.14',),
+                _F(RESULTAT=RESU,
+                   INST=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N203',
-                   VALE=-1.33333E-01,
-                   INST=1,
+                   VALE=-0.133333,
+                   PRECISION=1e-05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.14',
-                   PRECISION = 1.0E-5,
-                   ),
-_F(RESULTAT=RESU,
+                   VERSION='7.2.14',),
+                _F(RESULTAT=RESU,
+                   INST=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N204',
-                   VALE=-1.33333E-01,
-                   INST=1,
+                   VALE=-0.133333,
+                   PRECISION=1e-05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.14',
-                   PRECISION = 1.0E-5,
-                   ),
-_F(RESULTAT=RESU,
+                   VERSION='7.2.14',),
+                _F(RESULTAT=RESU,
+                   INST=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N208',
-                   VALE=-1.33333E-01,
-                   INST=1,
+                   VALE=-0.133333,
+                   PRECISION=1e-05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.14',
-                   PRECISION = 1.0E-5,
-                   ),
-_F(RESULTAT=RESU,
+                   VERSION='7.2.14',),
+                _F(RESULTAT=RESU,
+                   INST=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='N212',
-                   VALE=-1.33333E-01,
-                   INST=1,
+                   VALE=-0.133333,
+                   PRECISION=1e-05,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.14',
-                   PRECISION = 1.0E-5,
-                   ),                                                         
-                   ),);
+                   VERSION='7.2.14',),),);
+
 FIN();

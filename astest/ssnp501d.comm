@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,6 +99,7 @@ CON=AFFE_CHAR_MECA(MODELE=MO,
                               GROUP_MA_MAIT='LMAI',
                               GROUP_MA_ESCL='LESC',
                               SANS_GROUP_NO=('A','P1'),
+                              PRE_COND='DIRICHLET',
                               ),);
 
 #--------- DEFINITION DES FONCTIONS -----------------

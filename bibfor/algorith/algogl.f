@@ -2,7 +2,7 @@
      &                  RESU,DEPTOT,LICCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/10/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -108,9 +108,9 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ZCONV
-      PARAMETER    (ZCONV=4)
+      PARAMETER    (ZCONV=6)
       INTEGER      ZTOLE
-      PARAMETER    (ZTOLE=6)
+      PARAMETER    (ZTOLE=7)
       CHARACTER*24 K24BID
       COMPLEX*16   CBID
       INTEGER      IBID

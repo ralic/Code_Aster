@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/11/2006   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -593,7 +593,6 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                         into=("AUTOMATIQUE","CONTROLE","SANS")),
                 b_reac_sans     =BLOC(condition = "REAC_GEOM == 'SANS' ",
                                  fr="Paramètre de la réactualisation géométrique",
-                      
                       STOP_REAC_GEOM =SIMP(statut='f',typ='TXM',defaut="NON",
                                            into=("OUI","NON")),
                                  ),
@@ -608,6 +607,12 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                       fr="Paramètre de la réactualisation géométrique auto",
                       NB_REAC_MAXI   =SIMP(statut='o',typ='I',defaut = 10),
                                  ), 
+                PRE_COND         =SIMP(statut='f',typ='TXM',defaut="SANS",
+                      into=("DIRICHLET","SANS"),fr="Choix d'un préconditionneur (accélère la convergence)"),
+                COEF_RESI       =SIMP(statut='f',typ='R',defaut = 1.,val_min=1.,
+                                        fr="Critère_Convergence_Préconditionneur = COEF_RESI*Critère_Convergence_GCP",),
+                RECH_LINEAIRE=SIMP(statut='f',typ='TXM',defaut="ADMISSIBLE",into=("ADMISSIBLE","NON_ADMISSIBLE"),
+                                        fr="Autorise-t-on de sortir du domaine admissible lors de la recherche linéaire",),
                 SANS_NOEUD      =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                 SANS_GROUP_NO   =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                 SANS_NOEUD_QUAD =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),

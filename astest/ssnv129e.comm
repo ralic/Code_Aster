@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,6 +99,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                REAC_GEOM='SANS',
                                SANS_GROUP_NO=('DR1','DR2','DR3','DR4',
                                               'DR21','DR22','DR23','DR24',),
+                               PRE_COND='DIRICHLET',
                                       ),)
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',

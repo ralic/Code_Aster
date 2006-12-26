@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,13 +89,17 @@ CHA=AFFE_CHAR_MECA(VERI_NORM='NON',
                                RESI_ABSO=1.E-8,
                                GROUP_MA_ESCL='POUT1',
                                VECT_NORM_ESCL=(0.0,0.0,-1.0,),
-                               DIST_ESCL=-0.2,),
+                               DIST_ESCL=-0.2,
+                               PRE_COND='DIRICHLET',
+                               ),
                             _F(APPARIEMENT='NODAL',
                                METHODE='GCP',
                                GROUP_MA_MAIT='COQU2',
                                RESI_ABSO=1.E-8,
                                GROUP_MA_ESCL='POUT2',
-                               VECT_NORM_ESCL=(0.0,0.0,-1.0,),),),);
+                               VECT_NORM_ESCL=(0.0,0.0,-1.0,),
+                               PRE_COND='DIRICHLET',
+                               ),),);
 #
 #
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 
 # TITRE CONTACT DE DEUX PLAQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,9 +70,10 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=(_F(METHODE='GCP',
                                 RESI_ABSO=1.E-8,
-                                RECHERCHE = 'NOEUD_BOUCLE',
                                 GROUP_MA_MAIT='AB',
-                                GROUP_MA_ESCL='EF',),),);
+                                GROUP_MA_ESCL='EF',
+                                PRE_COND='DIRICHLET',
+                                ),),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,

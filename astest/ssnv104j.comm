@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
 
 #  TITRE : CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,6 +138,7 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                RECHERCHE = 'NOEUD_BOUCLE',
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
+                               PRE_COND='DIRICHLET',
                                ),);
 #_____________________________________________________________________
 #
