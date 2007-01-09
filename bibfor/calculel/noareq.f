@@ -1,7 +1,7 @@
-      SUBROUTINE NOAREQ(TYPEMA,NOEUD,NARE)
-
+      SUBROUTINE NOAREQ(TYPEMA,NOEUD)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,262 +20,197 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
-C ----------------------------------------------------------------------
-C        NOEUDS DEFINISSANT LES ARETES QUADRATIQUES D'UNE MAILLE
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C CHARACTER*8  TYPEMA  : TYPE DE LA MAILLE
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES DE SORTIE
-C INTEGER  NOEUD(*)    : NOEUDS DES ARETES QUADRATIQUES DE LA MAILLE
-C                       ( NO1.1, NO1.2, NO1.3, NO2.1, NO3.2, ... )
-C                        NO*.1 NO*.2 NO*.3 FORMENT LE SEG3 DE L'ARETE *
-C INTEGER  NARE        : NOMBRE D'ARETES QUADRATIQUES
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      CHARACTER*8 TYPEMA
-      INTEGER NOEUD(*),NARE
-
+      CHARACTER*8  TYPEMA
+      INTEGER      NOEUD(*)  
+C      
+C ----------------------------------------------------------------------
+C
+C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
+C
+C INDICES DES NOEUDS DEFINISSANT LES ARETES QUADRATIQUES D'UNE MAILLE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  TYPEMA : TYPE DE MAILLE
+C OUT NOEUD  : NOEUDS DES ARETES QUADRATIQUES DE LA MAILLE
+C               ( NO1.1, NO1.2, NO1.3, NO2.1, NO3.2, ... )
+C                 NO*.1 NO*.2 NO*.3 FORMENT LE SEG3 DE L'ARETE *
+C                 NO*.3       : NOEUD MILIEU
+C                 NO*.1 NO*.2 : NOEUDS SOMMETS
+C
+C ROUTINE SOEUR : NBAREQ
+C
+C ----------------------------------------------------------------------
+C
       IF (TYPEMA(1:5).EQ.'TRIA6') THEN
-
-        NARE = 3
-
         NOEUD(1) = 1
         NOEUD(2) = 2
         NOEUD(3) = 4
-
         NOEUD(4) = 2
         NOEUD(5) = 3
         NOEUD(6) = 5
-
         NOEUD(7) = 3
         NOEUD(8) = 1
         NOEUD(9) = 6
-
       ELSEIF (TYPEMA(1:5).EQ.'QUAD6') THEN
-
-        NARE = 2
-
         NOEUD(1) = 1
         NOEUD(2) = 2
         NOEUD(3) = 5
-
         NOEUD(4) = 3
         NOEUD(5) = 4
         NOEUD(6) = 6
-
-      ELSEIF ((TYPEMA(1:5).EQ.'QUAD8').OR.(TYPEMA(1:5).EQ.'QUAD9')) THEN
-
-        NARE = 4
-
+      ELSEIF ((TYPEMA(1:5).EQ.'QUAD8').OR.
+     &        (TYPEMA(1:5).EQ.'QUAD9')) THEN
         NOEUD(1) = 1
         NOEUD(2) = 2
         NOEUD(3) = 5
-
         NOEUD(4) = 2
         NOEUD(5) = 3
         NOEUD(6) = 6
-
         NOEUD(7) = 3
         NOEUD(8) = 4
         NOEUD(9) = 7
-
         NOEUD(10) = 4
         NOEUD(11) = 1
         NOEUD(12) = 8
-
       ELSEIF (TYPEMA(1:7).EQ.'TETRA10') THEN
-
-        NARE = 6
-
         NOEUD(1) = 1
         NOEUD(2) = 2
         NOEUD(3) = 5
-
         NOEUD(4) = 2
         NOEUD(5) = 3
         NOEUD(6) = 6
-
         NOEUD(7) = 3
         NOEUD(8) = 1
         NOEUD(9) = 7
-
         NOEUD(10) = 1
         NOEUD(11) = 4
         NOEUD(12) = 8
-
         NOEUD(13) = 4
         NOEUD(14) = 2
         NOEUD(15) = 9
-
         NOEUD(16) = 4
         NOEUD(17) = 3
         NOEUD(18) = 10
-
       ELSEIF ((TYPEMA(1:7).EQ.'PENTA12').OR.
      &        (TYPEMA(1:7).EQ.'PENTA14')) THEN
-
-        NARE = 6
-
         NOEUD(1) = 1
         NOEUD(2) = 2
         NOEUD(3) = 7
-
         NOEUD(4) = 2
         NOEUD(5) = 3
         NOEUD(6) = 8
-
         NOEUD(7) = 3
         NOEUD(8) = 1
         NOEUD(9) = 9
-
         NOEUD(10) = 4
         NOEUD(11) = 5
         NOEUD(12) = 10
-
         NOEUD(13) = 5
         NOEUD(14) = 6
         NOEUD(15) = 11
-
         NOEUD(16) = 6
         NOEUD(17) = 4
         NOEUD(18) = 12
-
       ELSEIF (TYPEMA(1:7).EQ.'PENTA15') THEN
-
-        NARE = 9
-
         NOEUD(1) = 1
         NOEUD(2) = 2
         NOEUD(3) = 7
-
         NOEUD(4) = 2
         NOEUD(5) = 3
         NOEUD(6) = 8
-
         NOEUD(7) = 3
         NOEUD(8) = 1
         NOEUD(9) = 9
-
         NOEUD(10) = 1
         NOEUD(11) = 4
         NOEUD(12) = 10
-
         NOEUD(13) = 2
         NOEUD(14) = 5
         NOEUD(15) = 11
-
         NOEUD(16) = 3
         NOEUD(17) = 6
         NOEUD(18) = 12
-
         NOEUD(19) = 4
         NOEUD(20) = 5
         NOEUD(21) = 13
-
         NOEUD(22) = 5
         NOEUD(23) = 6
         NOEUD(24) = 14
-
         NOEUD(25) = 6
         NOEUD(26) = 4
         NOEUD(27) = 15
-
-      ELSEIF((TYPEMA(1:6).EQ.'HEXA16').OR.(TYPEMA(1:6).EQ.'HEXA18'))THEN
-
-        NARE = 8
-
+      ELSEIF((TYPEMA(1:6).EQ.'HEXA16').OR.
+     &       (TYPEMA(1:6).EQ.'HEXA18')) THEN
         NOEUD(1) = 2
         NOEUD(2) = 3
         NOEUD(3) = 9
-
         NOEUD(4) = 4
         NOEUD(5) = 1
         NOEUD(6) = 10
-
         NOEUD(7) = 1
         NOEUD(8) = 5
         NOEUD(9) = 11
-
         NOEUD(10) = 2
         NOEUD(11) = 6
         NOEUD(12) = 12
-
         NOEUD(13) = 3
         NOEUD(14) = 7
         NOEUD(15) = 13
-
         NOEUD(16) = 4
         NOEUD(17) = 8
         NOEUD(18) = 14
-
         NOEUD(19) = 6
         NOEUD(20) = 7
         NOEUD(21) = 15
-
         NOEUD(22) = 8
         NOEUD(23) = 5
         NOEUD(24) = 16
-
-      ELSEIF((TYPEMA(1:6).EQ.'HEXA20').OR.(TYPEMA(1:6).EQ.'HEXA27'))THEN
-
-        NARE = 12
-
+      ELSEIF((TYPEMA(1:6).EQ.'HEXA20').OR.
+     &       (TYPEMA(1:6).EQ.'HEXA27'))THEN
         NOEUD(1) = 1
         NOEUD(2) = 2
         NOEUD(3) = 9
-
         NOEUD(4) = 2
         NOEUD(5) = 3
         NOEUD(6) = 10
-
         NOEUD(7) = 3
         NOEUD(8) = 4
         NOEUD(9) = 11
-
         NOEUD(10) = 4
         NOEUD(11) = 1
         NOEUD(12) = 12
-
         NOEUD(13) = 1
         NOEUD(14) = 5
         NOEUD(15) = 13
-
         NOEUD(16) = 2
         NOEUD(17) = 6
         NOEUD(18) = 14
-
         NOEUD(19) = 3
         NOEUD(20) = 7
         NOEUD(21) = 15
-
         NOEUD(22) = 4
         NOEUD(23) = 8
         NOEUD(24) = 16
-
         NOEUD(25) = 5
         NOEUD(26) = 6
         NOEUD(27) = 17
-
         NOEUD(28) = 6
         NOEUD(29) = 7
         NOEUD(30) = 18
-
         NOEUD(31) = 7
         NOEUD(32) = 8
         NOEUD(33) = 19
-
         NOEUD(34) = 8
         NOEUD(35) = 5
         NOEUD(36) = 20
-
       ELSE
-
-        CALL U2MESK('F','CALCULEL_28',1,TYPEMA)
-
+          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
+          CALL ASSERT(.FALSE.) 
       ENDIF
 
       END

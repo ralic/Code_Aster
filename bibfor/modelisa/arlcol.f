@@ -1,6 +1,7 @@
-      FUNCTION ARLCOL(VEC1,N1,VEC2,N2,LVEC)
+      LOGICAL FUNCTION ARLCOL(VEC1,N1,VEC2,N2,LVEC)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,30 +18,42 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ----------------------------------------------------------------------
-C      TESTE L'INCLUSION D'UN VECTEUR D'ENTIERS TRIES DANS UN AUTRE
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C INTEGER   VEC1(N1)    : VECTEUR D'ENTIERS TRIES PAR ORDRE CROISSANT
-C INTEGER   N1          : NOMBRE D'ELEMENTS DE VEC1
-C INTEGER   VEC2(N2)    : VECTEUR D'ENTIERS TRIES PAR ORDRE CROISSANT
-C INTEGER   N2          : NOMBRE D'ELEMENTS DE VEC2
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLE DE SORTIE
-C LOGICAL   LVEC(N2)    : .TRUE. SI VEC2(I) SE TROUVE DANS VEC1
-C                         .FALSE. SINON
+      IMPLICIT NONE
+      INTEGER N1,N2
+      INTEGER VEC1(N1),VEC2(N2) 
+      LOGICAL LVEC(N2)           
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C TESTE L'INCLUSION D'UN VECTEUR D'ENTIERS TRIES DANS UN AUTRE
+C
+C ----------------------------------------------------------------------
+C
+C
+C ARLCOL = VEC1(N1) EST INCLU DANS VEC2(N2)
+C
+C IN  VEC1   : VECTEUR D'ENTIERS TRIES PAR ORDRE CROISSANT
+C IN  N1     : NOMBRE D'ELEMENTS DE VEC1
+C IN  VEC2   : VECTEUR D'ENTIERS TRIES PAR ORDRE CROISSANT
+C IN  N2     : NOMBRE D'ELEMENTS DE VEC2
+C OUT LVEC   : .TRUE. SI VEC2(I) SE TROUVE DANS VEC1
+C                 .FALSE. SINON
+C               DE LONGUEUR N2
 C
 C RESULTAT FONCTION
-C LOGICAL   ARLCOL      : .TRUE. SI VEC1 INCLUS DANS VEC2
-C                         .FALSE. SINON
+C   ARLCOL      : .TRUE.  SI VEC1 INCLUS DANS VEC2
+C                 .FALSE. SINON
+C
 C ----------------------------------------------------------------------
-
-      IMPLICIT NONE
-
-C --- VARIABLES
-      LOGICAL ARLCOL,LVEC(*)
-      INTEGER N1,N2,VEC1(*),VEC2(*),V1,V2,I1,I2
-
+C
+      INTEGER V1,V2,I1,I2
+C
+C ----------------------------------------------------------------------
+C
       ARLCOL = .FALSE.
       IF ((N1.LE.0).OR.(N2.LE.0).OR.(N1.GT.N2)) GOTO 30
 

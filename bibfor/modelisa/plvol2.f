@@ -1,6 +1,7 @@
-      FUNCTION PLVOL2(DIM,SC,N,IS,NS)
+      FUNCTION PLVOL2(DIME  ,SC    ,NORM  ,IS    ,NSOM  )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,46 +18,60 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ----------------------------------------------------------------------
-C                     SURFACE D'UN POLYGONE QUELCONQUE
-C ----------------------------------------------------------------------
-C VARIABLES EN ENTREE
-C INTEGER    DIM        : DIMENSION DE L'ESPACE
-C REAL*8     SC(DIM,*)  : COORDONNEES DES SOMMETS
-C REAL*8     N(3)       : (EN 3D) NORMALE SORTANTE DU POLYGONE
-C INTEGER    IS(*)      : INDEX DANS SC DES SOMMETS DU POLYGONE
-C                         ORIENTATION TRIGONOMETRIQUE 
-C                         IS(1) = 0 : DANS L'ORDRE
-C INTEGER    NS         : NOMBRE DE SOMMETS
-C ----------------------------------------------------------------------
-
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-
-C --- FONCTION
+      REAL*8  PLVOL2
+      INTEGER DIME
+      INTEGER NSOM
+      REAL*8  SC(DIME,*)
+      REAL*8  NORM(*)
+      INTEGER IS(*)
+C      
+C ----------------------------------------------------------------------
+C
+C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
+C BOITES ENGLOBANTES + ARBRE BSP
+C
+C SURFACE D'UN POLYGONE QUELCONQUE
+C
+C ----------------------------------------------------------------------
+C 
+C
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  SC     : COORDONNEES DES SOMMETS
+C IN  NSOM   : NOMBRE DE SOMMETS
+C IN  NORM   : (EN 3D) NORMALE SORTANTE DU POLYGONE
+C IN  IS     : INDEX DANS SC DES SOMMETS DU POLYGONE
+C                  ORIENTATION TRIGONOMETRIQUE 
+C                         IS(1) = 0 : DANS L'ORDRE
+C
+C ----------------------------------------------------------------------
+C
       REAL*8  DDOT
-
-C --- VARIABLES
-      INTEGER DIM,IS(*),NS,A,B,I
-      REAL*8  SC(DIM,*),N(*),V,T(3),PLVOL2
+      INTEGER A,B,I
+      REAL*8  V,T(3)
       LOGICAL IR
-
+C
+C ----------------------------------------------------------------------
+C
       IR = IS(1).EQ.0
-
+C
 C --- SURFACE DU POLYGONE
-
+C
       IF (IR) THEN
-        B = NS
+        B = NSOM
       ELSE
-        B = IS(NS)
+        B = IS(NSOM)
       ENDIF
 
       V = 0.D0
-
+C
 C --- CAS 2D
+C
+      IF (DIME.EQ.2) THEN
 
-      IF (DIM.EQ.2) THEN
-
-        DO 10 I = 1, NS
+        DO 10 I = 1, NSOM
          
           A = B
 
@@ -72,9 +87,9 @@ C --- CAS 2D
 
 C --- CAS 3D
 
-      ELSE
+      ELSEIF (DIME.EQ.3) THEN
 
-        DO 20 I = 1, NS
+        DO 20 I = 1, NSOM
          
           A = B
 
@@ -85,10 +100,11 @@ C --- CAS 3D
           ENDIF
 
           CALL PROVEC(SC(1,A),SC(1,B),T)
-          V = V + DDOT(3,N,1,T,1)
+          V = V + DDOT(3,NORM,1,T,1)
         
  20     CONTINUE
-
+      ELSE
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       PLVOL2 = V / 2.D0

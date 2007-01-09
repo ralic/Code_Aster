@@ -1,7 +1,8 @@
-      SUBROUTINE ARLCH0(DIME,IAN,IAC,NNC,ILGN,MX,PREC,EQ,B,NT)
-
+      SUBROUTINE ARLCH0(DIME  ,IAN   ,IAC   ,NNC   ,ILGN  ,
+     &                  MX    ,PREC  ,EQ    ,B     ,NT)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,34 +21,49 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C ----------------------------------------------------------------------
-C      COMPTE NOMBRE DE TERMES NON-NEGLIGEABLES ET ADIMENSIONNEMENT 
-C             DES RELATIONS LINEAIRES DE COUPLAGE ARLEQUIN
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
-C INTEGER   DIME      : DIMENSION DE L'ESPACE
-C LOGICAL   IAN       : .TRUE. SI MODELE MECANIQUE EST DE TYPE COQUE
-C LOGICAL   IAC       : .TRUE. SI MODELE COLLAGE EST DE TYPE COQUE
-C INTEGER   NNC       : NOMBRE DE NOEUDS MAILLES DE COLLAGE
-C INTEGER   ILGN(NNC) : LONGUEUR CUMULEE COLLECTION NOEUDS COLONNES DE B
-C REAL*8    MX(2,NNC) : MAXIMA EN VALEUR ABSOLUE SUIVANT LIGNES DE B
-C                       POUR TRANSLATION ET ROTATION (CF ARLMAX) 
-C REAL*8    PREC      : PRECISION RELATIVE SUR LES TERMES DE B
-C LOGICAL   EQ(5,NNC) : EQUATIONS SELECTIONNEES
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLE D'ENTREE / SORTIE
-C REAL*8    B(*)      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCPL)
-C INTEGER   NT        : NOMBRE DE TERMES NON-NEGLIGEABLES DANS LES 
-C                       RELATIONS LINEAIRES DE COUPLAGE ARLEQUIN
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      INTEGER  DIME,NNC,ILGN(*),NT
+      INTEGER  DIME
+      LOGICAL  IAN,IAC  
+      INTEGER  NNC  
+      REAL*8   B(*)
+      INTEGER  ILGN(*)
+      REAL*8   MX(2,*) 
+      REAL*8   PREC 
+      LOGICAL  EQ(5,*)   
+      INTEGER  NT  
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C COMPTE NOMBRE DE TERMES NON-NEGLIGEABLES ET ADIMENSIONNEMENT 
+C             DES RELATIONS LINEAIRES DE COUPLAGE ARLEQUIN
+C
+C ----------------------------------------------------------------------
+C       
+C
+C IN  DIME   : DIMENSION DE L'ESPACE     
+C IN  IAN    : .TRUE. SI MODELE ZONE MECANIQUE EST DE TYPE COQUE
+C IN  IAC    : .TRUE. SI MODELE ZONE COLLAGE EST DE TYPE COQUE
+C IN  NNC    : NOMBRE DE NOEUDS MAILLES DE COLLAGE
+C IN  ILGN   : LONGUEUR CUMULEE COLLECTION NOEUDS COLONNES DE B
+C IN  MX     : MAXIMA EN VALEUR ABSOLUE SUIVANT LIGNES DE B
+C                       POUR TRANSLATION ET ROTATION (CF ARLMAX) 
+C IN  PREC   : PRECISION RELATIVE SUR LES TERMES DE B
+C IN  EQ     : EQUATIONS DE COUPLAGE SELECTIONNEES (CF ARLCLR)
+C I/O B      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)O 
+C I/O NT     : NOMBRE DE TERMES NON-NEGLIGEABLES DANS LES 
+C                       RELATIONS LINEAIRES DE COUPLAGE ARLEQUIN
+C
+C ----------------------------------------------------------------------
+C
       INTEGER  P0,P1,P2,I,J,K,L,DR,OF
-      REAL*8   B(*),PREC,MX(2,*),R
-      LOGICAL  IAN,IAC,EQ(5,*)
+      REAL*8   R
+C
+C ----------------------------------------------------------------------
+C
 
 C --- PARCOURS DES LIGNES
 

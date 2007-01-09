@@ -1,7 +1,7 @@
       SUBROUTINE OP0143(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,19 +45,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
         INTEGER      OCVECT, OCPRHO, OCPVIS, OCPESA, OCRUGO, OCCAPA,
-     &               OCGRIL, IRET
+     &               OCGRIL, IRET, IFM, NIV
         INTEGER      DIMVI, DIMVK, DIMVR, DIMGM , DIMGR
         INTEGER      IUNIT, UNIT1, UNIT2, IBID1, IBID2, IOCC1, IOCC2
         INTEGER      IRHO, JRHO
         CHARACTER*2  CARAPA(4)
         CHARACTER*3  OUINON
-        CHARACTER*8  K8BID
+        CHARACTER*8  K8BID, CAELEM
         CHARACTER*9  TYPAS(2), TPAS
         CHARACTER*16 CONCEP, CMD, NOMMCF, MCFAC(4)
         CHARACTER*19 NOMU
         CHARACTER*8 NOMU8
         CHARACTER*24 FSIC, FSVI, FSVR, FSVK, FSGM, FSCR , FSGR
-        REAL*8       VECT(3), VALEPA(4)
+        REAL*8       VECT(3), VALEPA(4), DE, EP 
 C
         DATA TYPAS   /'CARRE_LIGN ','TRIA_LIGN'/
         DATA MCFAC   /'FAISCEAU_TRANS ','GRAPPE',
@@ -65,6 +65,7 @@ C
 C=======================================================================
       CALL JEMARQ()
       CALL INFMAJ()
+      CALL INFNIV ( IFM, NIV )
       PI = R8PI()
 C
       CALL GETRES(NOMU,CONCEP,CMD)
@@ -162,19 +163,24 @@ C
                 ZI(LFSVI) = 2
              ENDIF
 C
+C ---------- PAS REDUIT
              CALL GETVR8(NOMMCF,'PAS',JPAS,1,1,PAS ,IBID)
              IF (JCM.EQ.0) THEN
                 IF (ZI(LFSVI).EQ.2) THEN
-                   Y = 1.D0/(1.7D0*PAS)
+C ---------------- RESEAU A PAS TRIANGULAIRE
+                   Y = (0.96D0+0.5D0*PAS)*PAS
                 ELSE
-                   Y = 1.D0/(1.9D0*PAS)
+C ---------------- RESEAU A PAS CARRE
+                   Y = (1.07D0+0.56D0*PAS)*PAS
                 ENDIF
-                ZR(LFSVR) = (PI*(1.D0+Y*Y))/(2.D0*(1.D0-Y*Y))
+                ZR(LFSVR) = (PI*(Y*Y+1.D0))/(2.D0*(Y*Y-1.D0))
+                IF ( NIV .EQ. 2 )   WRITE(IFM,1000) ZR(LFSVR)
              ELSE
                 CALL GETVR8(NOMMCF,'COEF_MASS_AJOU',JCM,1,1,
      &                      ZR(LFSVR),IBID)
              ENDIF
              ZR(LFSVR+1) = PAS
+C
              CALL GETVR8(NOMMCF,'RHO_TUBE',JRHO,1,1,ZR(LFSVR+2),IRHO)
 C
 C --------1.2.SI NON PRISE EN COMPTE DU COUPLAGE
@@ -546,6 +552,8 @@ C       ==========
 
       CALL JEDETC('G','&&OP0143',1)
       CALL JEDETC('G','AJGR2.FLAG',4)
+
+ 1000 FORMAT(1P,'    COEF_MASS_AJOU CALCULE: ',E12.5)
 
       CALL JEDEMA()
       END

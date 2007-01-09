@@ -1,6 +1,7 @@
-      SUBROUTINE ARFACE(FS,NF,AS,FA,NA)
+      SUBROUTINE ARFACE(FS,NFACE,AS,FA,NARE)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,66 +18,79 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ----------------------------------------------------------------------
-C       CALCUL DES ARETES D'UN ENSEMBLE DE FACES 3D QUELCONQUES
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C INTEGER      FS(*)     : CONNECTIVITE DES FACES
-C                         ( NB NOEUDS FACE.1, FACE.1.NO1, FACE.1.NO2,
-C                           ..., NB NOEUDS FACE.2, ... )
-C                           NB NOEUDS FACE.* < 0 : TRIANGLE
-C                           NB NOEUDS FACE.* > 0 : QUADRANGLE
-C INTEGER      NF        : NOMBRE DE FACES
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES DE SORTIE
-C INTEGER      AS(*)     : CONNECTIVITE DES ARETES
-C                         ( NB NOEUDS ARETE.1, ARETE.1.NO1, ARETE.1.NO2,
-C                           ..., NB NOEUDS ARETE.2, ... )
-C INTEGER      FA(*)     : ARETES BORDANT LES FACES
-C                         ( NB ARETES FACE.1, FACE.1.ARETE.1,
+      IMPLICIT NONE
+      INTEGER NFACE,NARE
+      INTEGER FS(*),AS(*),FA(*)
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C CALCUL DES ARETES D'UN ENSEMBLE DE FACES 3D QUELCONQUES
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  FS     : CONNECTIVITE DES FACES
+C                     ( NB NOEUDS FACE.1, FACE.1.NO1, FACE.1.NO2,
+C                       ..., NB NOEUDS FACE.2, ... )
+C                       NB NOEUDS FACE.* < 0 : TRIANGLE
+C                       NB NOEUDS FACE.* > 0 : QUADRANGLE
+C IN  NFACE  : NOMBRE DE FACES
+C OUT AS     : CONNECTIVITE DES ARETES
+C                     ( NB NOEUDS ARETE.1, ARETE.1.NO1, ARETE.1.NO2,
+C                       ..., NB NOEUDS ARETE.2, ... )
+C OUT FA     : ARETES BORDANT LES FACES
+C                     ( NB ARETES FACE.1, FACE.1.ARETE.1,
 C                           FACE.1.ARETE.2, ..., NB ARETES FACE.2, ...)
 C                           SIGNE DE FACE.*.ARETE.* : SENS DE PARCOURS
-C INTEGER      NA        : NOMBRE D'ARETES
+C OUT NARE   : NOMBRE D'ARETES
+C
 C ----------------------------------------------------------------------
-
-      IMPLICIT NONE
-
-C --- VARIABLES
-      INTEGER FS(*),AS(*),FA(*),NA,NF,NSF,NSA,NS2,NARE
-      INTEGER ARE(16),S0,S1,S2,S,I,F,A,P0,P1,P2,Q0,Q1
-
-      P0 = 1
-      Q0 = 0
-      Q1 = 1
-      NA = 0
-
+C
+      CHARACTER*8 TYPEMA
+      INTEGER     NBARE,NSF,NSA,NS2
+      INTEGER     ARE(16),S0,S1,I,F,A,P0,P1,P2,Q0,Q1
+C
+C ----------------------------------------------------------------------
+C 
+      P0   = 1
+      Q0   = 0
+      Q1   = 1
+      NARE = 0
+C
 C --- CALCUL DES ARETES
-
-      DO 10 F = 1, NF
+C
+      DO 10 F = 1, NFACE
 
         NSF = FS(P0)
 
         IF (NSF.EQ.-3) THEN
-          CALL NOARET('TRIA3   ',ARE,NARE)
+          TYPEMA = 'TRIA3   '
         ELSEIF (NSF.LE.-6) THEN
-          CALL NOARET('TRIA6   ',ARE,NARE)
+          TYPEMA = 'TRIA6   '
         ELSEIF (NSF.EQ.4) THEN
-          CALL NOARET('QUAD4   ',ARE,NARE)
+          TYPEMA = 'QUAD4   '
         ELSEIF (NSF.EQ.6) THEN
-          CALL NOARET('QUAD6   ',ARE,NARE)
+          TYPEMA = 'QUAD6   '
         ELSEIF (NSF.GE.8) THEN
-          CALL NOARET('QUAD8   ',ARE,NARE)
+          TYPEMA = 'QUAD8   '
         ELSE
-          CALL U2MESS('F','CALCULEL_15')
+          CALL ASSERT(.FALSE.)
         ENDIF
 
+        CALL NOARE(TYPEMA,ARE)
+        NARE = NBARE(TYPEMA)
+        
         Q0 = Q0 + 1
         FA(Q0) = NARE
 
         P1 = 1
-
-C ----- PARCOURS DES ARETES DE LA FACE F
-
+C
+C --- PARCOURS DES ARETES DE LA FACE F
+C
         DO 20 I = 1, NARE
 
           NSA = ARE(P1)
@@ -84,12 +98,12 @@ C ----- PARCOURS DES ARETES DE LA FACE F
           S1 = FS(P0+ARE(P1+2))
 
           Q0 = Q0 + 1
-
-C ------- TEST EXISTENCE DE L'ARETE (S0,S1)
-
+C
+C --- TEST EXISTENCE DE L'ARETE (S0,S1)
+C
           P2 = 1
 
-          DO 30 A = 1, NA
+          DO 30 A = 1, NARE
 
             NS2 = AS(P2)
 
@@ -104,11 +118,11 @@ C ------- TEST EXISTENCE DE L'ARETE (S0,S1)
             P2 = P2 + NS2 + 1
 
  30       CONTINUE
-
-C ------- NOUVELLE ARETE
-
+C
+C --- NOUVELLE ARETE
+C
           FA(Q0) = A
-          NA = NA + 1
+          NARE = NARE + 1
 
           AS(Q1) = NSA
           AS(Q1+1) = S0

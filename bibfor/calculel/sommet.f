@@ -1,7 +1,7 @@
-      SUBROUTINE SOMMET(PANNOE,DIME,PAN,NSOM,CSOM)
+      SUBROUTINE SOMMET(PANNOE,DIME  ,PAN   ,NSOM  ,CSOM  )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,41 +20,47 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
-C ----------------------------------------------------------------------
-C                    SOMMETS DU CONVEXE ENGLOBANT
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C REAL*8   PANNOE(*)   : PANS TOUCHANT LES NOEUDS PRINCIPAUX DE
-C                        LA MAILLE (CF PANNO)
-C INTEGER  DIME        : DIMENSION DE L'ESPACE
-C REAL*8   PAN(*)      : EQUATION DES PANS DU CONVEXE (CF BOITE)
-C INTEGER  NSOM        : NOMBRE DE NOEUDS PRINCIPAUX DE LA MAILLE
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES DE SORITE
-C REAL*8    CSOM(*)    : COORD. SOMMETS DU CONVEXE (X1,Y1,[Z1],X2,...)
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      INTEGER DIME,NSOM,PANNOE(DIME,*),I,J,K,L,IRET
-      REAL*8  PAN(DIME+2,*),CSOM(DIME,*),A(3,3),DET
-
-      DO 10 I = 1, NSOM
-
+      INTEGER DIME
+      INTEGER NSOM
+      INTEGER PANNOE(DIME,*)
+      REAL*8  PAN(DIME+2,*)
+      REAL*8  CSOM(DIME,*)
+C      
+C ----------------------------------------------------------------------
+C
+C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
+C
+C COORDONNEES DES SOMMETS DU CONVEXE ENGLOBANT D'UNE MAILLE 
+C
+C ----------------------------------------------------------------------
+C 
+C     
+C IN  PANNOE : PANS TOUCHANT LES NOEUDS PRINCIPAUX DE 
+C              LA MAILLE (CF PANNO)
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  PAN    : EQUATION DES PANS DU CONVEXE (CF BOITE)
+C IN  NSOM   : NOMBRE DE NOEUDS PRINCIPAUX DE LA MAILLE
+C OUT CSOM   : COORD. SOMMETS DU CONVEXE (X1,Y1,[Z1],X2,...)
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER ISOM,J,K,L,IRET
+      REAL*8  A(3,3),DET
+C
+C ----------------------------------------------------------------------
+C
+      DO 10 ISOM = 1, NSOM
         DO 20 J = 1, DIME
-
-          L = PANNOE(J,I)
-
+          L = PANNOE(J,ISOM)
           DO 30 K = 1, DIME
             A(K,J) = PAN(K,L)
  30       CONTINUE
-
-          CSOM(J,I) = -PAN(DIME+1,L)
-
+          CSOM(J,ISOM) = -PAN(DIME+1,L)
  20     CONTINUE
-        CALL MGAUSS('TFVP',A,CSOM(1,I),3,DIME,1,DET,IRET)
-
+        CALL MGAUSS('TFVP',A,CSOM(1,ISOM),3,DIME,1,DET,IRET)
  10   CONTINUE
 
       END

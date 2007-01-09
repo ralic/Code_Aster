@@ -1,7 +1,9 @@
-      SUBROUTINE ARLAS0(IM1,IM2,CNX,CNXC,INO1,NI,INO2,INO2C,IJ)
-
+      SUBROUTINE ARLAS0(NUM1  ,NUM2  ,CNX   ,CNXC  ,
+     &                  INO1  ,NI    ,INO2  ,INO2C ,
+     &                  IJ)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,40 +22,50 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C ----------------------------------------------------------------------
-C     POINTEURS DANS LA MATRICE ARLEQUIN MORSE D'UN COUPLE DE MAILLE 
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
-C INTEGER           IM1      : NUMERO DE MAILLE LIGNE (INDEX CNXC) 
-C INTEGER           IM2      : NUMERO DE MAILLE COLONNE (INDEX CNXC)
-C INTEGER           CNX(*)   : COLLECTION CONNECTIVITE DU MAILLAGE
-C INTEGER           CNXC(*)  : LONGUEUR CUMULEE ASSOCIEE A CNX
-C INTEGER           INO1(*)  : LISTE NOEUDS LIGNES (CF ARLFAC)     
-C INTEGER           NI       : LONGUEUR DU VECTEUR INO1
-C INTEGER           INO2(*)  : COLLECTION NOEUDS COLONNES
-C INTEGER           INO2C(*) : LONGUEUR CUMULEE ASSOCIEE A INO2
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLE DE SORTIE
-C INTEGER           IJ(*)    : POINTEURS DANS LA MATRICE MORSE, 
-C                              DEFINIE PAR INO1 ET INO2, POUR LES
-C                              NOEUDS DES MAILLES IM1 ET IM2
-C                             ( POINTEUR (IM1.NO1,IM2.NO1), 
-C                               POINTEUR (IM1.NO1,IM2.NO2), ...,
-C                               POINTEUR (IM1.NO2,IM2.NO1), ... )
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      INTEGER IM1,IM2,CNX(*),CNXC(*),INO1(*),NI,INO2(*),INO2C(*),IJ(*)
+      INTEGER NUM1,NUM2,CNX(*),CNXC(*)
+      INTEGER INO1(*),NI,INO2(*),INO2C(*)
+      INTEGER IJ(*)     
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C GESTION DES RELATIONS LINEAIRES
+C POINTEURS DANS LA MATRICE MORSE D'UN COUPLE DE MAILLE (NUM1,NUM2)
+C
+C ----------------------------------------------------------------------
+C      
+C
+C IN  NUM1    : NUMERO DE MAILLE LIGNE (INDEX CNXC) 
+C IN  NUM2    : NUMERO DE MAILLE COLONNE (INDEX CNXC)
+C IN  CNX     : COLLECTION CONNECTIVITE DU MAILLAGE
+C IN  CNXC    : LONGUEUR CUMULEE ASSOCIEE A CNX
+C IN  INO1    : LISTE NOEUDS LIGNES (CF ARLFAC)     
+C IN  NI      : LONGUEUR DU VECTEUR INO1
+C IN  INO2    : COLLECTION NOEUDS COLONNES
+C IN  INO2C   : LONGUEUR CUMULEE ASSOCIEE A INO2
+C OUT IJ(*)   : POINTEURS DANS LA MATRICE MORSE, 
+C                  DEFINIE PAR INO1 ET INO2, POUR LES
+C                  NOEUDS DES MAILLES NUM1 ET NUM2
+C                 ( POINTEUR (NUM1.NO1,NUM2.NO1), 
+C                   POINTEUR (NUM1.NO1,NUM2.NO2), ...,
+C                   POINTEUR (NUM1.NO2,NUM2.NO1), ... )
+C
+C ----------------------------------------------------------------------
+C
       INTEGER NR1,NR2,P,N1,Q,Q0,N2,D,D0,F,F0,M,NT,I,J,K
-
+C
+C ----------------------------------------------------------------------
+C
       K = 0
 
-      P = CNXC(IM1)
-      NR1 = CNXC(IM1+1) - P
-      Q0 = CNXC(IM2)
-      NR2 = CNXC(IM2+1) - Q0
+      P   = CNXC(NUM1)
+      NR1 = CNXC(NUM1+1) - P
+      Q0  = CNXC(NUM2)
+      NR2 = CNXC(NUM2+1) - Q0
 
       DO 10 I = 1, NR1
 
@@ -100,9 +112,7 @@ C ------- RECHERCHE PAR DICHOTOMIE
             ENDIF
             GOTO 30
           ENDIF
-
 C ------- STOCKAGE
-
           K = K + 1
           IJ(K) = M
 

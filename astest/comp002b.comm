@@ -1,0 +1,207 @@
+# MODIF  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+# RESPONSABLE PROIX J-M.PROIX
+# TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_CIN1_CHAB
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# VISCOPLASTIQUE modele Chaboche
+#......................................................................
+
+
+from Outils.veri_matr_tang import VERI_MATR_TANG
+
+DEBUT(CODE=_F(NOM='COMP002B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
+
+#parametres vitesse de sollicitation
+vitesse = 1.e-5
+
+t_0 = 5.e-2/(8.0*vitesse)
+
+# liste d'archivage
+temps_ar=DEFI_LIST_REEL( VALE =[t_0*i for i in range(9)],)
+
+
+
+#parmetres elastiques
+YOUNG = 200000.0;
+POISSON = 0.3;
+#parametres viscosite
+Minv = 0.0
+Kinv= 3.2841e-4
+N = 11
+# parametres loi de chaboche
+SY = 437.0;
+Rinf = 758.0;
+b = 2.3;
+Cinf = 63767.0
+Gamma0 = 341.0
+# def des materiaux
+ACIER = [None]*3
+#unité en Pa
+C_Pa = 1.e+6
+YOUNG_Pa = YOUNG * C_Pa
+SY_Pa = SY * C_Pa;
+Rinf_Pa = Rinf * C_Pa;
+Cinf_Pa = Cinf * C_Pa;
+Kinv_Pa = Kinv / C_Pa;
+
+
+ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
+                               NU=POISSON,
+			       ALPHA=11.8e-6),
+		    LEMAITRE=_F( N = N,UN_SUR_K = Kinv_Pa ,UN_SUR_M = Minv),
+                    CIN1_CHAB=_F(R_I = Rinf_Pa,
+				 R_0 = SY_Pa,
+				 B  = b,
+				 C_I  = Cinf_Pa,
+				 G_0  = Gamma0,
+					),
+                                 );
+#unité en MPa
+ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                               NU=POISSON,
+			       ALPHA=11.8e-6),
+		       LEMAITRE=_F( N = N,UN_SUR_K = Kinv ,UN_SUR_M = Minv),
+		       CIN1_CHAB=_F(R_I = Rinf,
+				 R_0 = SY,
+				 B  = b,
+				 C_I  = Cinf,
+				 G_0  = Gamma0,
+					),
+                                 );
+
+compor='VISC_CIN1_CHAB'
+
+INCLUDE(UNITE=92)
+
+#Discrétisation du calcul
+Ncal = 7
+#N_pas = 4*[50] + [50, 100, 150, 250, 625, 3125]
+#N_pas = 4*[1] + [1, 5, 25, 125, 625, 3125]
+N_pas = 4*[10] + [10, 25, 50, 125, 625, 3125]
+N_cas = len(N_pas)
+
+label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
+prec_ecart=4*[1.E-10] + [5.E-1] + (N_cas-5)*[11.E-2]   
+prec_tgt=1.e-3
+
+ch_param=['V1','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','V3','V4','V5','V6']
+ch_param2=['V1','VMIS','TRACE']
+
+RESU=[None]*Ncal
+R_SI=[None]*len(ch_param)
+TMP_S=[None]
+
+N_cas = len(N_pas)
+#pointeur matériau
+P_imat = [0] + [1] + (N_cas-2)*[1]
+#pointeur deformation
+P_idef = 2*[0] + [1] + [2] + (N_cas-4)*[0]
+#pointeur Option thermique
+P_opt_ther = ["NON", "OUI"] + (N_cas-2)*["NON"]
+# conditions du calcul thermique
+(inst_th, temp_th) = (3.0*t_0, 100.)
+
+#Boucle sur l'ensemble des calculs
+for i in range(Ncal):
+	N = N_pas[i]
+	imat = P_imat[i]
+	idef = P_idef[i]
+        eps_imp = V_EPS[idef]
+	opt_ther = P_opt_ther[i]
+	temps=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+
+#Résout le pb à déformation imposée
+	RESU[i]=SIMU_POINT_MAT(
+                   COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=3,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                   MATER      = ACIER[imat],  
+		   ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST = temps_ar),
+                   INCREMENT=_F(LIST_INST=temps,),
+                   EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
+                                  EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
+			);
+        R_SI=RENOMME(i,N_pas,label_cal,ch_param,RESU,R_SI)
+
+        DETRUIRE ( CONCEPT = _F (NOM = temps,),)
+        
+# TEST_RESU sur les erreurs relatives 
+prec_zero=[1.E-10, 0.01, 0.01]
+
+TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
+                
+for i in range(Ncal):
+        IMPR_TABLE(TABLE=R_SI[i])
+        
+
+
+
+
+# Test de la matrice tangente sur le calcul le plus fin
+
+i=Ncal-1
+N = N_pas[i]                 
+imat = P_imat[i]             
+idef = P_idef[i]             
+eps_imp = V_EPS[idef]   
+opt_ther = P_opt_ther[i]     
+Linst=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
+                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+
+RESU_TGT=SIMU_POINT_MAT(
+                   COMP_INCR=_F(RELATION=compor, ITER_INTE_MAXI=100,               
+                                TYPE_MATR_TANG='VERIFICATION',
+                                VALE_PERT_RELA=1.E-5,
+                               ),
+                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                   MATER      = ACIER[1],  
+                   INCREMENT=_F(LIST_INST=Linst,),
+                   EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
+                                  EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
+                        );
+
+DIFF_MAT=VERI_MATR_TANG()
+
+IMPR_TABLE(TABLE=DIFF_MAT)
+
+TEST_TABLE(TABLE=DIFF_MAT,
+           NOM_PARA='MAT_DIFF',
+           TYPE_TEST='MAX',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=prec_tgt,
+           REFERENCE='ANALYTIQUE',);     
+
+FIN()

@@ -1,7 +1,7 @@
-      SUBROUTINE ARLPAN(TMA,ARE,NARE,NPAN)
-
+      SUBROUTINE ARLPAN(TYPEMA,ARE,NARE,NPAN)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,31 +20,35 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
-C ----------------------------------------------------------------------
-C              ARETES LINEAIRES DES FACES DES MAILLES 3D
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C CHARACTER*8  TMA  : TYPE DE MAILLE
-C
-C VARIABLE DE SORTIE
-C INTEGER ARE(*)    : ARETES LINEAIRES ASSOCIEES AUX FACES
-C                    ( NB ARETES FACE.1, FACE.1.ARETE.1, FACE.1.ARETE.2,
-C                      ..., NB ARETES FACE.2, FACE.2.ARETE.1, ... )
-C                      FACE.* INDEX SUIVANT PANNO
-C                      ARETE.* INDEX SUIVANT NOARET
-C                      SI ARETE.* > 0 : MEME SENS QUE DANS NOAREL
-C                      SI ARETE.* < 0 : SENS OPPOSE
-C INTEGER NPAN      : NOMBRE DE FACES
-C INTEGER NARE      : NOMBRE D'ARETES
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      CHARACTER*8  TMA
-      INTEGER      ARE(*),NPAN,NARE
-
-      IF (TMA(1:5).EQ.'TETRA') THEN
+      CHARACTER*8  TYPEMA
+      INTEGER      ARE(*),NPAN,NARE      
+C      
+C ----------------------------------------------------------------------
+C
+C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
+C
+C ARETES LINEAIRES DES FACES DES MAILLES 3D
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  TYPEMA : TYPE DE MAILLE
+C OUT ARE    : ARETES LINEAIRES ASSOCIEES AUX FACES
+C                ( NB ARETES FACE.1, FACE.1.ARETE.1, FACE.1.ARETE.2,
+C                  NB ARETES FACE.2, FACE.2.ARETE.1, ... )
+C               FACE.*  INDEX SUIVANT PANNO
+C               ARETE.* INDEX SUIVANT NOARE
+C                      SI ARETE.* > 0 : MEME SENS QUE DANS NOARET
+C                      SI ARETE.* < 0 : SENS OPPOSE
+C OUT NPAN   : NOMBRE DE FACES
+C OUT NARE   : NOMBRE D'ARETES
+C
+C ----------------------------------------------------------------------
+C              
+      IF (TYPEMA(1:5).EQ.'TETRA') THEN
         NARE = 6
         NPAN = 4
         ARE(1) = 3
@@ -63,10 +67,10 @@ C --- VARIABLES
           ARE(14) = 2
           ARE(15) = -6
           ARE(16) = 5
-      ELSEIF (TMA(1:5).EQ.'PENTA') THEN
+      ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
         NARE = 9
         NPAN = 5
-        IF ((TMA(6:7).EQ.'12').OR.(TMA(6:7).EQ.'14')) THEN
+        IF ((TYPEMA(6:7).EQ.'12').OR.(TYPEMA(6:7).EQ.'14')) THEN
           ARE(1) = 3
             ARE(2) = -3
             ARE(3) = -2
@@ -115,10 +119,10 @@ C --- VARIABLES
             ARE(22) = 8
             ARE(23) = 9
         ENDIF
-      ELSEIF (TMA(1:4).EQ.'HEXA') THEN
+      ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN
         NARE = 12
         NPAN = 6
-        IF ((TMA(5:6).EQ.'16').OR.(TMA(5:6).EQ.'18')) THEN
+        IF ((TYPEMA(5:6).EQ.'16').OR.(TYPEMA(5:6).EQ.'18')) THEN
           ARE(1) = 4
             ARE(2) = -4
             ARE(3) = -3
@@ -182,7 +186,7 @@ C --- VARIABLES
             ARE(30) = 12
         ENDIF
       ELSE
-        CALL U2MESS('F','CALCULEL_16')
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       END

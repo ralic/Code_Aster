@@ -1,7 +1,8 @@
-      SUBROUTINE SMPLX2(A,B,DIM,NC,NL,IRET)
-
+      SUBROUTINE SMPLX2(A     ,B     ,DIME  ,NC    ,NL    ,
+     &                  IRET)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,29 +21,40 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C A_UTIL
-C ----------------------------------------------------------------------
-C             TEST SI LE DOMAINE DEFINI PAR LES INEQUATIONS
-C                     T[A] * X + B <= 0 ET X >= 0        
-C                EST NON-VIDE VIA LA METHODE DU SIMPLEXE
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C REAL*8   A(DIM,NL)  : MATRICE DES INEQUATIONS
-C REAL*8   B(NL)      : SECOND MEMBRE DES INEQUATIONS
-C INTEGER  DIM        : DIMENSION DE A
-C INTEGER  NL         : NOMBRE D'INEQUATIONS
-C INTEGER  NC         : NOMBRE DE VARIABLES (NC < DIM)
-C 
-C VARIABLE DE SORTIE
-C LOGICAL  IRET       : .TRUE. SI LE DOMAINE EST NON-VIDE
-C ----------------------------------------------------------------------
-
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-
-C --- VARIABLES
-      INTEGER  NL,DIM,NC,I,I1,J,J0,J1
-      REAL*8   A(DIM,*),B(*),R,R0,R1,R2
+      INTEGER  NL,DIME,NC
+      REAL*8   A(DIME,NL),B(NL)
       LOGICAL  IRET
+C      
+C ----------------------------------------------------------------------
+C
+C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
+C BOITES ENGLOBANTES + ARBRE BSP
+C
+C TEST SI LE DOMAINE DEFINI PAR LES INEQUATIONS
+C                     T[A] * X + B <= 0 ET X >= 0        
+C EST NON-VIDE VIA LA METHODE DU SIMPLEXE
+C
+C ----------------------------------------------------------------------
+C
+C
+C
+C IN  A      : MATRICE DES INEQUATIONS
+C IN  B      : SECOND MEMBRE DES INEQUATIONS
+C IN  DIME   : DIMENSION DE A
+C IN  NL     : NOMBRE D'INEQUATIONS
+C IN  NC     : NOMBRE DE VARIABLES (NC < DIM)
+C OUT IRET   : .TRUE. SI LE DOMAINE EST NON-VIDE
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER  I,I1,J,J0,J1
+      REAL*8   R,R0,R1,R2
+C
+C ----------------------------------------------------------------------
+C
 
       I1 = NC + 1
       IRET = .TRUE.

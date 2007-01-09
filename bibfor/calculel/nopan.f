@@ -1,7 +1,7 @@
-      SUBROUTINE NOPAN(TYPEMA,PAN,NPAN)
-
+      SUBROUTINE NOPAN(TYPEMA,NOEPAN)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,547 +21,566 @@ C
 C
 C ======================================================================
 C TOLE CRP_20
+C RESPONSABLE ABBAS M.ABBAS
 C
-C ----------------------------------------------------------------------
-C         NOEUDS DEFINISSANT LES PANS (2D = ARETES, 3D = FACES)
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C CHARACTER*8       TYPEMA     : TYPE DE MAILLE
-C
-C VARIABLES D'ENTREE/SORTIE
-C INTEGER           PAN(*)     : NOEUDS  DEFINISSANT LES PANS
-C                                ( NOMBRE NOEUDS PAN 1, N1, N2, ...
-C                                  ..., NOMBRE NOEUDS PAN 2, ...)
-C                                  EN 3D, NB NOEUDS < 0 : TRIANGLE
-C                                         NB NOEUDS > 0 : QUADRANGLE
-C INTEGER           NPAN       : NOMBRE DE PANS
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      CHARACTER*8 TYPEMA
-      INTEGER PAN(*),NPAN
-
+      CHARACTER*8  TYPEMA
+      INTEGER      NOEPAN(*)
+C      
+C ----------------------------------------------------------------------
+C
+C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
+C
+C NOEUDS DEFINISSANT LES PANS 
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  TYPEMA : TYPE DE MAILLE
+C OUT NOEPAN : NOEUDS DEFINISSANT LES PANS
+C                   ( NOMBRE NOEUDS NOEPAN 1, N1, N2, ...
+C                     NOMBRE NOEUDS NOEPAN 2, N1, N2, ...)
+C                     EN 3D, NB NOEUDS < 0 : TRIANGLE
+C                            NB NOEUDS > 0 : QUADRANGLE
+C
+C NB: 
+C   EN 2D, UN PAN EST UNE ARETE
+C   EN 3D, UN PAN EST UNE FACE
+C
+C ROUTINE SOEUR : NBPAN
+C
+C ----------------------------------------------------------------------
+C
       IF (TYPEMA(1:3).EQ.'SEG') THEN
-        NPAN = 2
-          PAN(1) = 1
-            PAN(2) = 1
-          PAN(3) = 1
-            PAN(4) = 2
+        NOEPAN(1) = 1
+          NOEPAN(2) = 1
+        NOEPAN(3) = 1
+          NOEPAN(4) = 2
       ELSEIF (TYPEMA(1:4).EQ.'TRIA') THEN
-        NPAN = 3
         IF (TYPEMA(5:5).EQ.'3') THEN
-          PAN(1) = 2
-            PAN(2) = 1
-            PAN(3) = 2
-          PAN(4) = 2
-            PAN(5) = 2
-            PAN(6) = 3
-          PAN(7) = 2
-            PAN(8) = 3
-            PAN(9) = 1
+          NOEPAN(1) = 2
+            NOEPAN(2) = 1
+            NOEPAN(3) = 2
+          NOEPAN(4) = 2
+            NOEPAN(5) = 2
+            NOEPAN(6) = 3
+          NOEPAN(7) = 2
+            NOEPAN(8) = 3
+            NOEPAN(9) = 1
         ELSEIF (TYPEMA(5:5).EQ.'6') THEN
-          PAN(1) = 3
-            PAN(2) = 1
-            PAN(3) = 2
-            PAN(4) = 4
-          PAN(5) = 3
-            PAN(6) = 2
-            PAN(7) = 3
-            PAN(8) = 5
-          PAN(9) = 3
-            PAN(10) = 3
-            PAN(11) = 1
-            PAN(12) = 6
+          NOEPAN(1) = 3
+            NOEPAN(2)  = 1
+            NOEPAN(3)  = 2
+            NOEPAN(4)  = 4
+          NOEPAN(5) = 3
+            NOEPAN(6)  = 2
+            NOEPAN(7)  = 3
+            NOEPAN(8)  = 5
+          NOEPAN(9) = 3
+            NOEPAN(10) = 3
+            NOEPAN(11) = 1
+            NOEPAN(12) = 6
+        ELSE
+          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
+          CALL ASSERT(.FALSE.) 
         ENDIF
       ELSEIF (TYPEMA(1:4).EQ.'QUAD') THEN
-        NPAN = 4
         IF (TYPEMA(5:5).EQ.'4') THEN
-          PAN(1) = 2
-            PAN(2) = 1
-            PAN(3) = 2
-          PAN(4) = 2
-            PAN(5) = 2
-            PAN(6) = 3
-          PAN(7) = 2
-            PAN(8) = 3
-            PAN(9) = 4
-          PAN(10) = 2
-            PAN(11) = 4
-            PAN(12) = 1
+          NOEPAN(1) = 2
+            NOEPAN(2)  = 1
+            NOEPAN(3)  = 2
+          NOEPAN(4) = 2
+            NOEPAN(5)  = 2
+            NOEPAN(6)  = 3
+          NOEPAN(7) = 2
+            NOEPAN(8)  = 3
+            NOEPAN(9)  = 4
+          NOEPAN(10) = 2
+            NOEPAN(11) = 4
+            NOEPAN(12) = 1
         ELSEIF (TYPEMA(5:5).EQ.'6') THEN
-          PAN(1) = 3
-            PAN(2) = 1
-            PAN(3) = 2
-            PAN(4) = 5
-          PAN(5) = 2
-            PAN(6) = 2
-            PAN(7) = 3
-          PAN(8) = 3
-            PAN(9) = 3
-            PAN(10) = 4
-            PAN(11) = 6
-          PAN(12) = 2
-            PAN(13) = 4
-            PAN(14) = 1
+          NOEPAN(1) = 3
+            NOEPAN(2)  = 1
+            NOEPAN(3)  = 2
+            NOEPAN(4)  = 5
+          NOEPAN(5) = 2
+            NOEPAN(6)  = 2
+            NOEPAN(7)  = 3
+          NOEPAN(8) = 3
+            NOEPAN(9)  = 3
+            NOEPAN(10) = 4
+            NOEPAN(11) = 6
+          NOEPAN(12) = 2
+            NOEPAN(13) = 4
+            NOEPAN(14) = 1
         ELSEIF ((TYPEMA(5:5).EQ.'8').OR.(TYPEMA(5:5).EQ.'9')) THEN
-          PAN(1) = 3
-            PAN(2) = 1
-            PAN(3) = 2
-            PAN(4) = 5
-          PAN(5) = 3
-            PAN(6) = 2
-            PAN(7) = 3
-            PAN(8) = 6
-          PAN(9) = 3
-            PAN(10) = 3
-            PAN(11) = 4
-            PAN(12) = 7
-          PAN(13) = 3
-            PAN(14) = 4
-            PAN(15) = 1
-            PAN(16) = 8
+          NOEPAN(1) = 3
+            NOEPAN(2)  = 1
+            NOEPAN(3)  = 2
+            NOEPAN(4)  = 5
+          NOEPAN(5) = 3
+            NOEPAN(6)  = 2
+            NOEPAN(7)  = 3
+            NOEPAN(8)  = 6
+          NOEPAN(9) = 3
+            NOEPAN(10) = 3
+            NOEPAN(11) = 4
+            NOEPAN(12) = 7
+          NOEPAN(13) = 3
+            NOEPAN(14) = 4
+            NOEPAN(15) = 1
+            NOEPAN(16) = 8
+        ELSE
+          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
+          CALL ASSERT(.FALSE.)          
         ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'TETRA') THEN
-        NPAN = 4
         IF (TYPEMA(6:6).EQ.'4') THEN
-          PAN(1) = -3
-            PAN(2) = 1
-            PAN(3) = 3
-            PAN(4) = 2
-          PAN(5) = -3
-            PAN(6) = 1
-            PAN(7) = 2
-            PAN(8) = 4
-          PAN(9) = -3
-            PAN(10) = 1
-            PAN(11) = 4
-            PAN(12) = 3
-          PAN(13) = -3
-            PAN(14) = 2
-            PAN(15) = 3
-            PAN(16) = 4
+          NOEPAN(1) = -3
+            NOEPAN(2)  = 1
+            NOEPAN(3)  = 3
+            NOEPAN(4)  = 2
+          NOEPAN(5) = -3
+            NOEPAN(6)  = 1
+            NOEPAN(7)  = 2
+            NOEPAN(8)  = 4
+          NOEPAN(9) = -3
+            NOEPAN(10) = 1
+            NOEPAN(11) = 4
+            NOEPAN(12) = 3
+          NOEPAN(13) = -3
+            NOEPAN(14) = 2
+            NOEPAN(15) = 3
+            NOEPAN(16) = 4
         ELSEIF (TYPEMA(6:7).EQ.'10') THEN
-          PAN(1) = -6
-            PAN(2) = 1
-            PAN(3) = 3
-            PAN(4) = 2
-            PAN(5) = 7
-            PAN(6) = 6
-            PAN(7) = 5
-          PAN(8) = -6
-            PAN(9) = 1
-            PAN(10) = 2
-            PAN(11) = 4
-            PAN(12) = 5
-            PAN(13) = 9
-            PAN(14) = 8
-          PAN(15) = -6
-            PAN(16) = 1
-            PAN(17) = 4
-            PAN(18) = 3
-            PAN(19) = 8
-            PAN(20) = 10
-            PAN(21) = 7
-          PAN(22) = -6
-            PAN(23) = 2
-            PAN(24) = 3
-            PAN(25) = 4
-            PAN(26) = 6
-            PAN(27) = 10
-            PAN(28) = 9
+          NOEPAN(1) = -6
+            NOEPAN(2)  = 1
+            NOEPAN(3)  = 3
+            NOEPAN(4)  = 2
+            NOEPAN(5)  = 7
+            NOEPAN(6)  = 6
+            NOEPAN(7)  = 5
+          NOEPAN(8) = -6
+            NOEPAN(9)  = 1
+            NOEPAN(10) = 2
+            NOEPAN(11) = 4
+            NOEPAN(12) = 5
+            NOEPAN(13) = 9
+            NOEPAN(14) = 8
+          NOEPAN(15) = -6
+            NOEPAN(16) = 1
+            NOEPAN(17) = 4
+            NOEPAN(18) = 3
+            NOEPAN(19) = 8
+            NOEPAN(20) = 10
+            NOEPAN(21) = 7
+          NOEPAN(22) = -6
+            NOEPAN(23) = 2
+            NOEPAN(24) = 3
+            NOEPAN(25) = 4
+            NOEPAN(26) = 6
+            NOEPAN(27) = 10
+            NOEPAN(28) = 9
+        ELSE
+          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
+          CALL ASSERT(.FALSE.) 
         ENDIF
       ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
-        NPAN = 5
         IF (TYPEMA(6:6).EQ.'6') THEN
-          PAN(1) = -3
-            PAN(2) = 1
-            PAN(3) = 3
-            PAN(4) = 2
-          PAN(5) = 4
-            PAN(6) = 1
-            PAN(7) = 2
-            PAN(8) = 5
-            PAN(9) = 4
-          PAN(10) = 4
-            PAN(11) = 2
-            PAN(12) = 3
-            PAN(13) = 6
-            PAN(14) = 5
-          PAN(15) = 4
-            PAN(16) = 1
-            PAN(17) = 4
-            PAN(18) = 6
-            PAN(19) = 3
-          PAN(20) = -3
-            PAN(21) = 4
-            PAN(22) = 5
-            PAN(23) = 6
+          NOEPAN(1) = -3
+            NOEPAN(2)  = 1
+            NOEPAN(3)  = 3
+            NOEPAN(4)  = 2
+          NOEPAN(5) = 4
+            NOEPAN(6)  = 1
+            NOEPAN(7)  = 2
+            NOEPAN(8)  = 5
+            NOEPAN(9)  = 4
+          NOEPAN(10) = 4
+            NOEPAN(11) = 2
+            NOEPAN(12) = 3
+            NOEPAN(13) = 6
+            NOEPAN(14) = 5
+          NOEPAN(15) = 4
+            NOEPAN(16) = 1
+            NOEPAN(17) = 4
+            NOEPAN(18) = 6
+            NOEPAN(19) = 3
+          NOEPAN(20) = -3
+            NOEPAN(21) = 4
+            NOEPAN(22) = 5
+            NOEPAN(23) = 6
         ELSEIF (TYPEMA(6:7).EQ.'12') THEN
-          PAN(1) = -6
-            PAN(2) = 1
-            PAN(3) = 3
-            PAN(4) = 2
-            PAN(5) = 9
-            PAN(6) = 8
-            PAN(7) = 7
-          PAN(8) = 6
-            PAN(9) = 1
-            PAN(10) = 2
-            PAN(11) = 5
-            PAN(12) = 4
-            PAN(13) = 7
-            PAN(14) = 10
-          PAN(15) = 6
-            PAN(16) = 2
-            PAN(17) = 3
-            PAN(18) = 6
-            PAN(19) = 5
-            PAN(20) = 8
-            PAN(21) = 11
-          PAN(22) = 6
-            PAN(23) = 3
-            PAN(24) = 1
-            PAN(25) = 4
-            PAN(26) = 6
-            PAN(27) = 9
-            PAN(28) = 12
-          PAN(29) = -6
-            PAN(30) = 4
-            PAN(31) = 5
-            PAN(32) = 6
-            PAN(33) = 10
-            PAN(34) = 11
-            PAN(35) = 12
+          NOEPAN(1) = -6
+            NOEPAN(2)  = 1
+            NOEPAN(3)  = 3
+            NOEPAN(4)  = 2
+            NOEPAN(5)  = 9
+            NOEPAN(6)  = 8
+            NOEPAN(7)  = 7
+          NOEPAN(8) = 6
+          NOEPAN(9) = 1
+          NOEPAN(10) = 2
+          NOEPAN(11) = 5
+          NOEPAN(12) = 4
+          NOEPAN(13) = 7
+          NOEPAN(14) = 10
+          NOEPAN(15) = 6
+          NOEPAN(16) = 2
+          NOEPAN(17) = 3
+          NOEPAN(18) = 6
+          NOEPAN(19) = 5
+          NOEPAN(20) = 8
+          NOEPAN(21) = 11
+          NOEPAN(22) = 6
+          NOEPAN(23) = 3
+          NOEPAN(24) = 1
+          NOEPAN(25) = 4
+          NOEPAN(26) = 6
+          NOEPAN(27) = 9
+          NOEPAN(28) = 12
+          NOEPAN(29) = -6
+          NOEPAN(30) = 4
+          NOEPAN(31) = 5
+          NOEPAN(32) = 6
+          NOEPAN(33) = 10
+          NOEPAN(34) = 11
+          NOEPAN(35) = 12
         ELSEIF (TYPEMA(6:7).EQ.'14') THEN
-          PAN(1) = -7
-            PAN(2) = 1
-            PAN(3) = 3
-            PAN(4) = 2
-            PAN(5) = 9
-            PAN(6) = 8
-            PAN(7) = 7
-            PAN(8) = 13
-          PAN(9) = 6
-            PAN(10) = 1
-            PAN(11) = 2
-            PAN(12) = 5
-            PAN(13) = 4
-            PAN(14) = 7
-            PAN(15) = 10
-          PAN(16) = 6
-            PAN(17) = 2
-            PAN(18) = 3
-            PAN(19) = 6
-            PAN(20) = 5
-            PAN(21) = 8
-            PAN(22) = 11
-          PAN(23) = 6
-            PAN(24) = 3
-            PAN(25) = 1
-            PAN(26) = 4
-            PAN(27) = 6
-            PAN(28) = 9
-            PAN(29) = 12
-          PAN(30) = -7
-            PAN(31) = 4
-            PAN(32) = 5
-            PAN(33) = 6
-            PAN(34) = 10
-            PAN(35) = 11
-            PAN(36) = 12
-            PAN(37) = 14
+          NOEPAN(1) = -7
+          NOEPAN(2) = 1
+          NOEPAN(3) = 3
+          NOEPAN(4) = 2
+          NOEPAN(5) = 9
+          NOEPAN(6) = 8
+          NOEPAN(7) = 7
+          NOEPAN(8) = 13
+          NOEPAN(9) = 6
+          NOEPAN(10) = 1
+          NOEPAN(11) = 2
+          NOEPAN(12) = 5
+          NOEPAN(13) = 4
+          NOEPAN(14) = 7
+          NOEPAN(15) = 10
+          NOEPAN(16) = 6
+          NOEPAN(17) = 2
+          NOEPAN(18) = 3
+          NOEPAN(19) = 6
+          NOEPAN(20) = 5
+          NOEPAN(21) = 8
+          NOEPAN(22) = 11
+          NOEPAN(23) = 6
+          NOEPAN(24) = 3
+          NOEPAN(25) = 1
+          NOEPAN(26) = 4
+          NOEPAN(27) = 6
+          NOEPAN(28) = 9
+          NOEPAN(29) = 12
+          NOEPAN(30) = -7
+          NOEPAN(31) = 4
+          NOEPAN(32) = 5
+          NOEPAN(33) = 6
+          NOEPAN(34) = 10
+          NOEPAN(35) = 11
+          NOEPAN(36) = 12
+          NOEPAN(37) = 14
         ELSEIF (TYPEMA(6:7).EQ.'15') THEN
-          PAN(1) = -6
-            PAN(2) = 1
-            PAN(3) = 3
-            PAN(4) = 2
-            PAN(5) = 9
-            PAN(6) = 8
-            PAN(7) = 7
-          PAN(8) = 8
-            PAN(9) = 1
-            PAN(10) = 2
-            PAN(11) = 5
-            PAN(12) = 4
-            PAN(13) = 7
-            PAN(14) = 11
-            PAN(15) = 13
-            PAN(16) = 10
-          PAN(17) = 8
-            PAN(18) = 2
-            PAN(19) = 3
-            PAN(20) = 6
-            PAN(21) = 5
-            PAN(22) = 8
-            PAN(23) = 12
-            PAN(24) = 14
-            PAN(25) = 11
-          PAN(26) = 8
-            PAN(27) = 1
-            PAN(28) = 4
-            PAN(29) = 6
-            PAN(30) = 3
-            PAN(31) = 10
-            PAN(32) = 15
-            PAN(33) = 12
-            PAN(34) = 9
-          PAN(35) = -6
-            PAN(36) = 4
-            PAN(37) = 5
-            PAN(38) = 6
-            PAN(39) = 13
-            PAN(40) = 14
-            PAN(41) = 15
+          NOEPAN(1) = -6
+          NOEPAN(2) = 1
+          NOEPAN(3) = 3
+          NOEPAN(4) = 2
+          NOEPAN(5) = 9
+          NOEPAN(6) = 8
+          NOEPAN(7) = 7
+          NOEPAN(8) = 8
+          NOEPAN(9) = 1
+          NOEPAN(10) = 2
+          NOEPAN(11) = 5
+          NOEPAN(12) = 4
+          NOEPAN(13) = 7
+          NOEPAN(14) = 11
+          NOEPAN(15) = 13
+          NOEPAN(16) = 10
+          NOEPAN(17) = 8
+          NOEPAN(18) = 2
+          NOEPAN(19) = 3
+          NOEPAN(20) = 6
+          NOEPAN(21) = 5
+          NOEPAN(22) = 8
+          NOEPAN(23) = 12
+          NOEPAN(24) = 14
+          NOEPAN(25) = 11
+          NOEPAN(26) = 8
+          NOEPAN(27) = 1
+          NOEPAN(28) = 4
+          NOEPAN(29) = 6
+          NOEPAN(30) = 3
+          NOEPAN(31) = 10
+          NOEPAN(32) = 15
+          NOEPAN(33) = 12
+          NOEPAN(34) = 9
+          NOEPAN(35) = -6
+          NOEPAN(36) = 4
+          NOEPAN(37) = 5
+          NOEPAN(38) = 6
+          NOEPAN(39) = 13
+          NOEPAN(40) = 14
+          NOEPAN(41) = 15
+        ELSE
+          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
+          CALL ASSERT(.FALSE.)  
         ENDIF
       ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN
-        NPAN = 6
         IF (TYPEMA(5:5).EQ.'8') THEN
-          PAN(1) = 4
-            PAN(2) = 1
-            PAN(3) = 4
-            PAN(4) = 3
-            PAN(5) = 2
-          PAN(6) = 4
-            PAN(7) = 1
-            PAN(8) = 2
-            PAN(9) = 6
-            PAN(10) = 5
-          PAN(11) = 4
-            PAN(12) = 2
-            PAN(13) = 3
-            PAN(14) = 7
-            PAN(15) = 6
-          PAN(16) = 4
-            PAN(17) = 3
-            PAN(18) = 4
-            PAN(19) = 8
-            PAN(20) = 7
-          PAN(21) = 4
-            PAN(22) = 4
-            PAN(23) = 1
-            PAN(24) = 5
-            PAN(25) = 8
-          PAN(26) = 4
-            PAN(27) = 5
-            PAN(28) = 6
-            PAN(29) = 7
-            PAN(30) = 8
+          NOEPAN(1) = 4
+          NOEPAN(2) = 1
+          NOEPAN(3) = 4
+          NOEPAN(4) = 3
+          NOEPAN(5) = 2
+          NOEPAN(6) = 4
+          NOEPAN(7) = 1
+          NOEPAN(8) = 2
+          NOEPAN(9) = 6
+          NOEPAN(10) = 5
+          NOEPAN(11) = 4
+          NOEPAN(12) = 2
+          NOEPAN(13) = 3
+          NOEPAN(14) = 7
+          NOEPAN(15) = 6
+          NOEPAN(16) = 4
+          NOEPAN(17) = 3
+          NOEPAN(18) = 4
+          NOEPAN(19) = 8
+          NOEPAN(20) = 7
+          NOEPAN(21) = 4
+          NOEPAN(22) = 4
+          NOEPAN(23) = 1
+          NOEPAN(24) = 5
+          NOEPAN(25) = 8
+          NOEPAN(26) = 4
+          NOEPAN(27) = 5
+          NOEPAN(28) = 6
+          NOEPAN(29) = 7
+          NOEPAN(30) = 8
         ELSEIF (TYPEMA(5:6).EQ.'16') THEN
-          PAN(1) = 6
-            PAN(2) = 1
-            PAN(3) = 4
-            PAN(4) = 3
-            PAN(5) = 2
-            PAN(6) = 10
-            PAN(7) = 9
-          PAN(8) = 6
-            PAN(9) = 2
-            PAN(10) = 6
-            PAN(11) = 5
-            PAN(12) = 1
-            PAN(13) = 12
-            PAN(14) = 11
-          PAN(15) = 8
-            PAN(16) = 2
-            PAN(17) = 3
-            PAN(18) = 7
-            PAN(19) = 6
-            PAN(20) = 9
-            PAN(21) = 13
-            PAN(22) = 15
-            PAN(23) = 12
-          PAN(24) = 6
-            PAN(25) = 4
-            PAN(26) = 8
-            PAN(27) = 7
-            PAN(28) = 3
-            PAN(29) = 14
-            PAN(30) = 13
-          PAN(31) = 8
-            PAN(32) = 4
-            PAN(33) = 1
-            PAN(34) = 5
-            PAN(35) = 8
-            PAN(36) = 10
-            PAN(37) = 11
-            PAN(38) = 16
-            PAN(39) = 14
-          PAN(40) = 6
-            PAN(41) = 6
-            PAN(42) = 7
-            PAN(43) = 8
-            PAN(44) = 5
-            PAN(45) = 15
-            PAN(46) = 16
+          NOEPAN(1) = 6
+          NOEPAN(2) = 1
+          NOEPAN(3) = 4
+          NOEPAN(4) = 3
+          NOEPAN(5) = 2
+          NOEPAN(6) = 10
+          NOEPAN(7) = 9
+          NOEPAN(8) = 6
+          NOEPAN(9) = 2
+          NOEPAN(10) = 6
+          NOEPAN(11) = 5
+          NOEPAN(12) = 1
+          NOEPAN(13) = 12
+          NOEPAN(14) = 11
+          NOEPAN(15) = 8
+          NOEPAN(16) = 2
+          NOEPAN(17) = 3
+          NOEPAN(18) = 7
+          NOEPAN(19) = 6
+          NOEPAN(20) = 9
+          NOEPAN(21) = 13
+          NOEPAN(22) = 15
+          NOEPAN(23) = 12
+          NOEPAN(24) = 6
+          NOEPAN(25) = 4
+          NOEPAN(26) = 8
+          NOEPAN(27) = 7
+          NOEPAN(28) = 3
+          NOEPAN(29) = 14
+          NOEPAN(30) = 13
+          NOEPAN(31) = 8
+          NOEPAN(32) = 4
+          NOEPAN(33) = 1
+          NOEPAN(34) = 5
+          NOEPAN(35) = 8
+          NOEPAN(36) = 10
+          NOEPAN(37) = 11
+          NOEPAN(38) = 16
+          NOEPAN(39) = 14
+          NOEPAN(40) = 6
+          NOEPAN(41) = 6
+          NOEPAN(42) = 7
+          NOEPAN(43) = 8
+          NOEPAN(44) = 5
+          NOEPAN(45) = 15
+          NOEPAN(46) = 16
         ELSEIF (TYPEMA(5:6).EQ.'18') THEN
-          PAN(1) = 6
-            PAN(2) = 1
-            PAN(3) = 4
-            PAN(4) = 3
-            PAN(5) = 2
-            PAN(6) = 10
-            PAN(7) = 9
-          PAN(8) = 6
-            PAN(9) = 2
-            PAN(10) = 6
-            PAN(11) = 5
-            PAN(12) = 1
-            PAN(13) = 12
-            PAN(14) = 11
-          PAN(15) = 9
-            PAN(16) = 2
-            PAN(17) = 3
-            PAN(18) = 7
-            PAN(19) = 6
-            PAN(20) = 9
-            PAN(21) = 13
-            PAN(22) = 15
-            PAN(23) = 12
-            PAN(24) = 17
-          PAN(25) = 6
-            PAN(26) = 4
-            PAN(27) = 8
-            PAN(28) = 7
-            PAN(29) = 3
-            PAN(30) = 14
-            PAN(31) = 13
-          PAN(32) = 9
-            PAN(33) = 4
-            PAN(34) = 1
-            PAN(35) = 5
-            PAN(36) = 8
-            PAN(37) = 10
-            PAN(38) = 11
-            PAN(39) = 16
-            PAN(40) = 14
-            PAN(41) = 18
-          PAN(42) = 6
-            PAN(43) = 6
-            PAN(44) = 7
-            PAN(45) = 8
-            PAN(46) = 5
-            PAN(47) = 15
-            PAN(48) = 16
+          NOEPAN(1) = 6
+          NOEPAN(2) = 1
+          NOEPAN(3) = 4
+          NOEPAN(4) = 3
+          NOEPAN(5) = 2
+          NOEPAN(6) = 10
+          NOEPAN(7) = 9
+          NOEPAN(8) = 6
+          NOEPAN(9) = 2
+          NOEPAN(10) = 6
+          NOEPAN(11) = 5
+          NOEPAN(12) = 1
+          NOEPAN(13) = 12
+          NOEPAN(14) = 11
+          NOEPAN(15) = 9
+          NOEPAN(16) = 2
+          NOEPAN(17) = 3
+          NOEPAN(18) = 7
+          NOEPAN(19) = 6
+          NOEPAN(20) = 9
+          NOEPAN(21) = 13
+          NOEPAN(22) = 15
+          NOEPAN(23) = 12
+          NOEPAN(24) = 17
+          NOEPAN(25) = 6
+          NOEPAN(26) = 4
+          NOEPAN(27) = 8
+          NOEPAN(28) = 7
+          NOEPAN(29) = 3
+          NOEPAN(30) = 14
+          NOEPAN(31) = 13
+          NOEPAN(32) = 9
+          NOEPAN(33) = 4
+          NOEPAN(34) = 1
+          NOEPAN(35) = 5
+          NOEPAN(36) = 8
+          NOEPAN(37) = 10
+          NOEPAN(38) = 11
+          NOEPAN(39) = 16
+          NOEPAN(40) = 14
+          NOEPAN(41) = 18
+          NOEPAN(42) = 6
+          NOEPAN(43) = 6
+          NOEPAN(44) = 7
+          NOEPAN(45) = 8
+          NOEPAN(46) = 5
+          NOEPAN(47) = 15
+          NOEPAN(48) = 16
         ELSEIF (TYPEMA(5:6).EQ.'20') THEN
-          PAN(1) = 8
-            PAN(2) = 1
-            PAN(3) = 4
-            PAN(4) = 3
-            PAN(5) = 2
-            PAN(6) = 12
-            PAN(7) = 11
-            PAN(8) = 10
-            PAN(9) = 9
-          PAN(10) = 8
-            PAN(11) = 1
-            PAN(12) = 2
-            PAN(13) = 6
-            PAN(14) = 5
-            PAN(15) = 9
-            PAN(16) = 14
-            PAN(17) = 17
-            PAN(18) = 13
-          PAN(19) = 8
-            PAN(20) = 2
-            PAN(21) = 3
-            PAN(22) = 7
-            PAN(23) = 6
-            PAN(24) = 10
-            PAN(25) = 15
-            PAN(26) = 18
-            PAN(27) = 14
-          PAN(28) = 8
-            PAN(29) = 3
-            PAN(30) = 4
-            PAN(31) = 8
-            PAN(32) = 7
-            PAN(33) = 11
-            PAN(34) = 16
-            PAN(35) = 19
-            PAN(36) = 15
-          PAN(37) = 8
-            PAN(38) = 4
-            PAN(39) = 1
-            PAN(40) = 5
-            PAN(41) = 8
-            PAN(42) = 12
-            PAN(43) = 13
-            PAN(44) = 20
-            PAN(45) = 16
-          PAN(46) = 8
-            PAN(47) = 5
-            PAN(48) = 6
-            PAN(49) = 7
-            PAN(50) = 8
-            PAN(51) = 17
-            PAN(52) = 18
-            PAN(53) = 19
-            PAN(54) = 20
+          NOEPAN(1) = 8
+          NOEPAN(2) = 1
+          NOEPAN(3) = 4
+          NOEPAN(4) = 3
+          NOEPAN(5) = 2
+          NOEPAN(6) = 12
+          NOEPAN(7) = 11
+          NOEPAN(8) = 10
+          NOEPAN(9) = 9
+          NOEPAN(10) = 8
+          NOEPAN(11) = 1
+          NOEPAN(12) = 2
+          NOEPAN(13) = 6
+          NOEPAN(14) = 5
+          NOEPAN(15) = 9
+          NOEPAN(16) = 14
+          NOEPAN(17) = 17
+          NOEPAN(18) = 13
+          NOEPAN(19) = 8
+          NOEPAN(20) = 2
+          NOEPAN(21) = 3
+          NOEPAN(22) = 7
+          NOEPAN(23) = 6
+          NOEPAN(24) = 10
+          NOEPAN(25) = 15
+          NOEPAN(26) = 18
+          NOEPAN(27) = 14
+          NOEPAN(28) = 8
+          NOEPAN(29) = 3
+          NOEPAN(30) = 4
+          NOEPAN(31) = 8
+          NOEPAN(32) = 7
+          NOEPAN(33) = 11
+          NOEPAN(34) = 16
+          NOEPAN(35) = 19
+          NOEPAN(36) = 15
+          NOEPAN(37) = 8
+          NOEPAN(38) = 4
+          NOEPAN(39) = 1
+          NOEPAN(40) = 5
+          NOEPAN(41) = 8
+          NOEPAN(42) = 12
+          NOEPAN(43) = 13
+          NOEPAN(44) = 20
+          NOEPAN(45) = 16
+          NOEPAN(46) = 8
+          NOEPAN(47) = 5
+          NOEPAN(48) = 6
+          NOEPAN(49) = 7
+          NOEPAN(50) = 8
+          NOEPAN(51) = 17
+          NOEPAN(52) = 18
+          NOEPAN(53) = 19
+          NOEPAN(54) = 20
         ELSEIF (TYPEMA(5:6).EQ.'27') THEN
-          PAN(1) = 9
-            PAN(2) = 1
-            PAN(3) = 4
-            PAN(4) = 3
-            PAN(5) = 2
-            PAN(6) = 12
-            PAN(7) = 11
-            PAN(8) = 10
-            PAN(9) = 9
-            PAN(10) = 21
-          PAN(11) = 9
-            PAN(12) = 1
-            PAN(13) = 2
-            PAN(14) = 6
-            PAN(15) = 5
-            PAN(16) = 9
-            PAN(17) = 14
-            PAN(18) = 17
-            PAN(19) = 13
-            PAN(20) = 22
-          PAN(21) = 9
-            PAN(22) = 2
-            PAN(23) = 3
-            PAN(24) = 7
-            PAN(25) = 6
-            PAN(26) = 10
-            PAN(27) = 15
-            PAN(28) = 18
-            PAN(29) = 14
-            PAN(30) = 23
-          PAN(31) = 9
-            PAN(32) = 3
-            PAN(33) = 4
-            PAN(34) = 8
-            PAN(35) = 7
-            PAN(36) = 11
-            PAN(37) = 16
-            PAN(38) = 19
-            PAN(39) = 15
-            PAN(40) = 24
-          PAN(41) = 9
-            PAN(42) = 4
-            PAN(43) = 1
-            PAN(44) = 5
-            PAN(45) = 8
-            PAN(46) = 12
-            PAN(47) = 13
-            PAN(48) = 20
-            PAN(49) = 16
-            PAN(50) = 25
-          PAN(51) = 9
-            PAN(52) = 5
-            PAN(53) = 6
-            PAN(54) = 7
-            PAN(55) = 8
-            PAN(56) = 17
-            PAN(57) = 18
-            PAN(58) = 19
-            PAN(59) = 20
-            PAN(60) = 26
+          NOEPAN(1) = 9
+          NOEPAN(2) = 1
+          NOEPAN(3) = 4
+          NOEPAN(4) = 3
+          NOEPAN(5) = 2
+          NOEPAN(6) = 12
+          NOEPAN(7) = 11
+          NOEPAN(8) = 10
+          NOEPAN(9) = 9
+          NOEPAN(10) = 21
+          NOEPAN(11) = 9
+          NOEPAN(12) = 1
+          NOEPAN(13) = 2
+          NOEPAN(14) = 6
+          NOEPAN(15) = 5
+          NOEPAN(16) = 9
+          NOEPAN(17) = 14
+          NOEPAN(18) = 17
+          NOEPAN(19) = 13
+          NOEPAN(20) = 22
+          NOEPAN(21) = 9
+          NOEPAN(22) = 2
+          NOEPAN(23) = 3
+          NOEPAN(24) = 7
+          NOEPAN(25) = 6
+          NOEPAN(26) = 10
+          NOEPAN(27) = 15
+          NOEPAN(28) = 18
+          NOEPAN(29) = 14
+          NOEPAN(30) = 23
+          NOEPAN(31) = 9
+          NOEPAN(32) = 3
+          NOEPAN(33) = 4
+          NOEPAN(34) = 8
+          NOEPAN(35) = 7
+          NOEPAN(36) = 11
+          NOEPAN(37) = 16
+          NOEPAN(38) = 19
+          NOEPAN(39) = 15
+          NOEPAN(40) = 24
+          NOEPAN(41) = 9
+          NOEPAN(42) = 4
+          NOEPAN(43) = 1
+          NOEPAN(44) = 5
+          NOEPAN(45) = 8
+          NOEPAN(46) = 12
+          NOEPAN(47) = 13
+          NOEPAN(48) = 20
+          NOEPAN(49) = 16
+          NOEPAN(50) = 25
+          NOEPAN(51) = 9
+          NOEPAN(52) = 5
+          NOEPAN(53) = 6
+          NOEPAN(54) = 7
+          NOEPAN(55) = 8
+          NOEPAN(56) = 17
+          NOEPAN(57) = 18
+          NOEPAN(58) = 19
+          NOEPAN(59) = 20
+          NOEPAN(60) = 26
+        ELSE
+          WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
+          CALL ASSERT(.FALSE.)  
         ENDIF
       ELSE
-        CALL U2MESK('F','CALCULEL_28',1,TYPEMA)
+        WRITE(6,*) 'MAILLE INCONNUE: ',TYPEMA
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       END

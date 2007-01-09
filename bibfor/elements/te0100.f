@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/12/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,9 @@ C ......................................................................
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
       REAL*8  R8VIDE,ANGMAS(7),R8DGRD,BARY(3)
       LOGICAL MATSYM,LTEATT
+C     POUR TGVERI
+      REAL*8 SDEPL(3*9),SVECT(3*9),SCONT(6*9),SMATR(3*9*3*9),EPSILO
+      REAL*8 VARIA(2*3*9*3*9)
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -170,9 +173,11 @@ C        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
         END IF
 
       ELSE
-
-
+      
 C - HYPO-ELASTICITE
+
+C      Pour le calcul de la matrice tangente par perturbation
+ 1000 CONTINUE
 
         IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
 CCDIR$ IVDEP
@@ -265,8 +270,21 @@ C 7.3 - GRANDES DEFORMATIONS FORMULATION CO-ROTATIONNELLE ZMAT
         ELSE
           CALL U2MESK('F','ELEMENTS3_16',1,ZK16(ICOMPO+2))
         END IF
-
+        
+        IF (CODRET.NE.0) GOTO 2000
+        
+C       Calcul éventuel de la matrice TGTE par PERTURBATION
+        CALL TGVERI(OPTION,ZR(ICARCR),ZK16(ICOMPO),NNO,ZR(IGEOM),NDIM,
+     &              NDIM*NNO,ZR(IDEPLP),SDEPL,
+     &              ZR(IVECTU),SVECT,4*NPG1,ZR(ICONTP),SCONT,
+     &              NPG1*LGPG,ZR(IVARIP),ZR(IVARIX),
+     &              ZR(IMATUU),SMATR,MATSYM,EPSILO,VARIA,IRET)
+        IF (IRET.NE.0) GOTO 1000
+        
       END IF
+
+ 2000  CONTINUE
+ 
       IF (OPTION(1:9).EQ.'FULL_MECA' .OR.
      &    OPTION(1:9).EQ.'RAPH_MECA') THEN
         CALL JEVECH('PCODRET','E',JCRET)

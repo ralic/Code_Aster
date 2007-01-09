@@ -1,0 +1,817 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 09/01/2007 - 09:51:16
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008766 DU 2005-06-13 00:00:00
+TYPE anomalie concernant Code_Aster (VERSION 8.1)
+TITRE
+   AFFE_CHAR_MECA / ARLEQUIN
+FONCTIONNALITE
+   Avec les modifications importantes dans le cadre de la fiche 10347, la         
+   correction du bug a été faite par modification du filtrage des mailles         
+   Arlequin pour exclure les mailles SEG dans le cadre des éléments 3D.     
+   On procède aussi à une duplication de CONOEU en COSOLI (qui retourne 
+   les coordonnees des noeuds pour un élément solide) et COCOQU (qui  
+   retourne les coordonnées des noeuds pour un élément de coque extrudé)  
+   scalaire correpondant à l'epaisseur).    
+   Dans le cadre des coques, on utilise leur demi épaisseur pour   
+   transformer les éléments plats (QUAD, TRIA) en éléments 3D par   
+   extension suivant la normale au feuillet mmoyen.        
+   L'étude passe a priori bien que les performances soient calamiteuses        
+   (plus de 600 secondes dans AFFE_CHAR_MECA).        
+   On garde néanmoins l'étude sous le coude pour une rétro-ingénierie sur        
+   les performances de l'opérateur qui a été instrumenté en conséquence.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test lui meme
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010347 DU 2006-12-05 08:35:11
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   ARLEQUIN - Mise au carre
+FONCTIONNALITE
+   Mise au carré de la programmation d'Arlequin.                
+                   
+   La première phase consiste à:                
+   a/ réorganiser les sources                 
+   b/ à en ré-écrire une partie                
+   c/ à instrumenter le code pour rendre le déboguage plus facile                
+   d/ à écrire les docs D.                
+                 
+   La méthode Arlequin souffre d'une programmation illisible, et peu              
+   maintenable. Les algorithmes (en particulier              
+   l'appariement et le calcul des termes de couplage) fait appel à des              
+   méthodes très évoluées (mise en boîte, arbre binaire type BSP,             
+   sous-intégration par morceaux). Or la programmation est             
+   foncièrement incompréhensible: stratégie d'optimisation du code, noms             
+   de variables limités à deux caractères, manipulation d'adresses JEVEUX             
+   en direct, nom des SDs peu explicatifs, algorithmes très difficiles à        
+   comprendre.             
+   En contrepartie, nous avons une ébauche de doc D, pas mal de             
+   commentaires dans les routines (en particulier sur le contenu des SD)             
+   , une organisation bien factorisée en général et un imapct d'ARlequin      
+   très local.             
+   Dans cette première phase:           
+   - ré-écriture de la routine principale d'Arlequin (CAARLE), création           
+   de sous-routines pour décharger la programmation de CAARLE (objectif:      
+   moins de dix variables)          
+   - branchement des niveaux d'impression INFO=2 et d'un mode déboguage      
+   avancé (ARLIMP)           
+   Creation de routines d'impression pour debug (INFO = 2):            
+        
+   - boitim: boites d'encadrement des mailles            
+   - arbrim: arbre de partition binaire de l'espace           
+   - arlnim: normales et tangentes dans le cas des coques           
+   - grmaim: graphe de voisinage maille/mailles voisines         
+   - appimp: graphe d'appariement maille -> mailles           
+   - morsim: matrices morses pour couplage      
+   - quadim: SD d'intégration numérique (type de schéma, maillles      
+   déocupées)      
+   - arlimp: routine centralisée d'affichage pour Arlequin.     
+        
+   Plus affichages divers et variés des différentes étapes quand INFO=2.     
+        
+   - ré-écriture de quelques routines. Lecture des données,           
+   création des boîtes d'appariement.           
+   - identification des SDs, création et destruction dans des routines           
+   dédiées      
+   - création  du catalogue de messages arlequin.py           
+   - carte RESPONSABLE sur toutes les routines         
+   - création de deux docs D: mise en oeuvre de la méthode ARLEQUIN et SD       
+   utilisées par ARLEQUIN      
+   - fin de la rédaction de la doc R     
+        
+   Separation de la partie pure Arlequin des routines plus generales                       
+   pouvant servir à autre chose. C'est le cas de l'algorithme                       
+   d'appariement qui utilise une technologie de type boîtes                       
+   englobantes+arbre de partition binaire de l'espace (BSP)                       
+   Les routines liées à ces problèmes spécifiques sont rendues                       
+   independantes d'Arlequin sur leurs entrees/sorties                       
+                          
+   Pour la mise en boite (qui a besoin d'une liste de mailles et de     
+   normales lisses si elements coques):                       
+   boitcr: cree la SD contenant les boites                       
+   boitif: imprime le contenu de la SD pour debogagge                       
+   boite : routine d'aiguillage principale pour la mise en boite                       
+   boit2d: routine de mise en boite pour les elements 2D                       
+   boit3d: routine de mise en boite pour les elements 3D                       
+   boitel: routine de mise en boite des elements lineaire                       
+   boitea: correction des boites pour prise en compte des aretes sur                       
+   elements quadratiques                       
+   boiteq: correction des boites pour prise en compte des faces sur                       
+   elements quadratiques                       
+   tmacoq: transformation des elements coques 2D5 ou 1D5 en elements 3D                     
+   ou 2D par extrusion du feuillet moyen. Cette routine necessite la                     
+   creation d'un champ de normales aux coques (routine lisnor)                      
+   nbpan : retourne le nombre de pans de la boite pour un element (en 2D                    
+   aretes, en 3D, faces)                    
+   nbsom : retourne le nombre de sommets de la boite pour un element                    
+   (sans noeuds quadratiques, une boite est toujours un rectangle ou un                    
+   "cube" lineaire)                    
+   nbareq: retourne le nombre d'aretes quadratiques (ie supportnat des                    
+   noeuds milieux)                    
+   cosoli: retourne les coordonnees des noeuds pour un element solide                  
+   cocoqu: retourne les coordonnes des noeuds pour un element coque (donc                  
+   apres extrusion)                  
+   nocoqu: donne l'element extrude correspondant à un element coque                  
+   noareq: donne les noeuds (indice) definissant les aretes quadratiques                
+   panarq: donne les pans (indice) touchant des aretes quadratiques                
+   panno : donne les pans (indice) touchant les noeuds sommets               
+   sommet: donne les coordonnees des sommets de la boite encadrant la              
+   maille              
+   oriem2: reordonne les noeuds d'une maille pour respecter l'ordre de            
+   l'element de reference Aster            
+   Appel à d'autres routines generales:           
+   - fonctions de forme (forme0, forme2, forme3, forme4)             
+   - mgauss         
+   On sait mettre en boite:     
+   - 1D5: SEG3 (extrude en QUAD6)     
+   - 2D : TRIA3, TRIA6, TRIA7    
+          QUAD4, QUAD8, QUAD9     
+   - 2D5: TRIA3 (extrude en PENTA6)    
+          TRIA6 (extrude en PENTA12)    
+          TRIA7 (extrude en PENTA14)    
+          QUAD4 (extrude en HEXA8)     
+          QUAD8 (extrude en HEXA16)     
+          QUAD9 (extrude en HEXA18)     
+   - 3D : TETRA4, TETRA10    
+          PENTA5, PENTA15    
+          HEXA8 , HEXA20, HEXA27    
+            
+   Pour l'arbre BSP (qui a besoin d'une SD boite):        
+   arbrcr: cree la SD contenant l'arbre       
+   arbrim: imprime le contenu de la SD pour debogagge          
+   bissec: realise l'arbre BSP       
+   hasard: routine utilitaire pour generer un nombre pseudo-aleatoire
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R3.03.08,D9.00.00
+VALIDATION
+   Cas-tests Arlequin existant + nouveaux (fiche 8800)
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND C.              DATE 09/01/2007 - 09:51:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010418 DU 2007-01-04 10:13:55
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   harmonisation catalogue CALC_FONCTION / MACR_SPECTRE
+FONCTIONNALITE
+   en cohérence avec la commande CALC_FONCTION qu'elle appelle, rendre le mot clé NORME
+   obligatoire dans le catalogue de MACR_SPECTRE, sans valeur par défaut.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdll138a
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR mabbas       ABBAS M.               DATE 09/01/2007 - 09:51:20
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008800 DU 2005-06-22 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   ARLEQUIN - Nouveaux cas-tests
+FONCTIONNALITE
+   * Poutre cantilever.                                         
+                                            
+   Ajout d'une modelisation à sslp104  (sslp104c).                                                
+   Valide le raccord 3D-coque. Avec MECA_STATIQUE et STAT_NON_LINE.                                                
+   Comparaisons: flèche et contrainte par rapport à la solution                                              
+   analytique (écart: 2% sur depl, 14% sur contraintes). Arlequin ne                                              
+   fonctionnant pas avec tous types de maillage, en particulier                                              
+   quadratiques, ceci explique les "mauvais" résultats en contraintes.                                         
+                         
+   Le test SSLP104C est passé avec renumérotation "MDA". Plantage si   
+   "METIS".    
+       
+                               
+   * Plaque trouée en élasticité.                                         
+                                           
+   Création d'un nouveau cas-test (ssnp135abc).                                          
+   Modèle C_PLAN. Avec MECA_STATIQUE et STAT_NON_LINE.                                         
+   Comparaisons: contraintes et déplacements.                                               
+   Ecart par rapport à analytique: contrainte entre 1% et 6%                                          
+   Ecart par rapport à solution sans arlequin (maillage "équivalent"):                                            
+   contraintee moins de 3% -déplacements moins de 1%                                              
+   Ecart MECA_STATIQUE/STAT_NON_LINE: moins de 1E-12 (tombe dans                                         
+   l'imprécision machine).                                       
+                                         
+   * Plaque fissurée 2D en mode 1                                      
+                                         
+   Création d'un nouveau cas-test (sslp108ab).                                          
+   Modèle 2D C_PLAN. Avec MECA_STATIQUE et les operateurs de                         
+   post-traitement de la mécanique de la rupture                                    
+   Comparaisons: valeurs méca. rupture et contraintes.                                  
+   Ecart par rapport à solution sans arlequin (maillage "équivalent"):                                 
+   Méca rupture  G: 1.5% K1: 0.005% K2: 5%  G_IRWIN: 1%                          
+   Contraintes: moins de 4%                                                                          
+               
+   * Plaque trouée en plasticité.                                         
+                                           
+   Création d'un nouveau cas-test (ssnp135de).                                          
+   Modèle C_PLAN. Avec STAT_NON_LINE.  Plasticité jusqu'au seuil de 3.5.            
+   La plasticité est confinée dans le patch (la plaque et la zone de           
+   raccordement sont élastiques).            
+   Pilotage nécessaire ensuite de 3.5 à 5.4 (normal)                                      
+   Comparaisons: contraintes et déplacements.                                                                      
+   Ecart par rapport à solution sans arlequin (maillage "équivalent"):                                            
+   contraintes moins de 7% -déplacements moins de 2%  AVANT 3.5                
+   contraintes moins de 5% -gros écarts sur déplacements APRES 3.5             
+                   
+   * Tuyau coudé         
+        
+   Creation d'un nouveau cas-test (sslv145a)     
+   Valide raccord 3D-Coque. Modèle équivalent à forma01a.         
+   MECA_STATIQUE. Test déplacements/contraintes non-regression
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.03.135;V3.02.108;V3.04.144;V3.04.145
+VALIDATION
+   ssnp104c,ssnp135abcde;sslp108ab;sslv144ab;sslv145a
+NB_JOURS_TRAV  : 4.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR jmbhh01      PROIX J.M.             DATE 09/01/2007 - 16:17:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007413 DU 2003-12-04 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.2)
+TITRE
+   verification des operateurs tangents de SNL
+FONCTIONNALITE
+   Restitution d'une fonctionnalité développée par Eric Lorentz, pour vérifier les matrices
+   tangentes cohérentes des comportements.
+   -------------------------------------------------------------------------------------------------------------------------------
+    
+   Le développement consiste a introduire dans les routines TE qui calculent FULL_MECA (ici
+   TE0100 pour le 2D et TE0139 pour le 3D), 
+   après l'appel à NMCOMP, un appel à une nouvelle routine, TGVERI :
+   
+   1000      CONTINUE
+             CALL NMPL3D(NNO,NPG,IPOIDS,IVF,IDFDE,       => appel classique à NMCOMP pour
+   l'élément
+             ........................)
+   C         Calcul de la matrice TGTE par PERTURBATION          
+             CALL TGVERI(OPTION,ZR(ICARCR),.......,IRET)                 
+             IF (IRET.NE.0) GOTO 1000        
+                                 
+   PS. Les autres routines TE (coques, tuyaux, PMF, grilles, THM, INCO, etc...) n'ont pas été
+   modifiées. 
+   Il faudra le faire au cas par cas en particulier pour calculer la valeur de la perturbation).
+   
+   La routine TGVERI stocke la solution "basique" calculée par NMCOMP, et ensuite perturbe
+   chaque DDL de l'accroissement de déplacement
+   DEPLPR en ajoutant (ou retranchant) un petit "epsilon", et sort avec IRET=1, tant que l'on
+   n'a pas épuisé le nombre de DDL.
+   Pour chaque perturbation, on calcule les forces nodales (sortie de NMPL3D). Il suffit
+   alors au bout du compte de calculer la
+   matrice tangente par différences finies. Ceci fonctionne avec des matrices symétriques ou
+   non (c'est NMTSTM qui le dit).
+   La matrice obtenue est stockée, ainsi que la matrice tangente cohérente, ce qui permet de
+   les comparer.
+   De plus un module python permet cette comparaison de façon aisée, ainsi que le test de
+   symétrie de la matrice.
+   
+   Ajouts par rapport au source initial d'Eric :
+   
+   - Pour que cela puisse fonctionner indépendamment des unités, la perturbation "epsilon"
+   est calculée de façon relative à la norme
+   max de l'accroissement de déplacement sur l'élément : epsilon= perturb * max(deplpr(i)),
+   ou "perturb" est fourni par l'utilisateur
+   sous le mot-clé VALE_PERT_RELA (1.E-5 par défaut) sous COMP_INCR. Pour les TE0100 et
+   TE0139, donc en mecanique pure, avec seulement
+   des DDL de déplacement, on calcule de la façon suivante :
+   
+           MAXDEP=0.D0                                       
+           MAXGEO=0.D0                                       
+           DO 555 I=1,NDDL                                 
+              MAXDEP=MAX(MAXDEP,ABS(DEPLP(I)))          
+   555     CONTINUE                                          
+           DO 556 I=1,NNO*NDIM                                 
+              MAXGEO=MAX(MAXGEO,ABS(GEOM(I)))           
+   556     CONTINUE  
+           PERTU=CARCRI(7) (VALE_PERT_RELA, 1.E-5 par défaut)                               
+          
+           IF (MAXDEP.GT.PERTU*MAXGEO) THEN                          
+              EPSILO=PERTU*MAXDEP                            
+           ELSE                                              
+              EPSILO=PERTU*MAXGEO                            
+           ENDIF                                             
+   
+   - Ce calcul peut être effectué en vue de vérifier la matrice tangente (souci développeur)
+   mais aussi pour obtenir un opérateur 
+   tangent dans le cas ou il n'y en a pas (redecoupage local de pas de temps, integration
+   explicite). Pour distinguer ces deux cas, on a introduit
+   un nouveau mot-clé de COMP_INCR :  TYPE_MATR_TANG 
+   =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION")). 
+   En l'absence de ce mot-clé, le matrice tangente est calculée de façon classique.
+   
+   Exemples et validation :
+   
+   - Pour les utilisateurs qui veulent une matrice tangente : il suffit de mettre
+   TYPE_MATR_TANG="PERTURBATION" (et bien sûr REAC_ITER > 0).
+    Exemple : COMP002A, avec le comportement VENDOCHAB, en explicite.
+   
+   - Pour les développeurs qui veulent vérifier une matrice tangente : il suffit de mettre
+   TYPE_MATR_TANG="VERIFICATION" (et bien sur REAC_ITER =1), sur
+   un problème de taille raisonnable : un élément suffit ! (seuls les dernières matrices sont
+   conservées). 
+   
+   On restitue de plus une nouvelle MACRO (intégrant le module python d'Eric), qui permet de
+   sortir automatiquement les différences entre matrice cohérente et
+   matrice par perturbation, et aussi les défauts de symétrie pour une matrice symétrique.
+   Cette macro, et le module correspondant, sont restitués dans 
+   bibpyt/Outils. Pour l'utiliser il faut donc faire :  from Outils.verif_matrice_tangente
+   import VERIF_MATRICE_TANGENTE
+   
+   VERI_MATR_TANG=MACRO(nom="VERI_MATR_TANG",op=veri_matr_tang_ops,sd_prod=table_sdaster,
+                          docu="",reentrant='n',
+       fr="verification de la matrice tangente : symétrie et différence par rapport a la
+   matrice calculée par perturbation",
+            regles=(AU_MOINS_UN('SYMETRIE','DIFFERENCE')),
+            SYMETRIE        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+            DIFFERENCE      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+            PRECISION       =SIMP(statut='f',typ='R',defaut=1.E-4 ),
+   )  ;
+   
+   Cette macro produit une table contenant les termes différents des matrices tangente et
+   cohérente.
+   
+   Exemple : COMP002A, avec le comportement VENDOCHAB, en implicite 
+   
+   Impact documentaire : U4.51.11, D5.04.01 (introduire un nouveau comportement)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.11
+VALIDATION
+   COMP001, comp002
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009897 DU 2006-07-04 13:51:02
+TYPE evolution concernant Code_Aster (VERSION 2.x)
+TITRE
+   tests de recette de lois de comportement
+FONCTIONNALITE
+   Suite au travail de Principia, restitution d'un ensemble de tests de lois de comportement,
+   en 3D et 2D-C_PLAN. Pour ce faire, je modifie SIMU_POINT_MAT, pour prendre en compte le
+   mot-clé ARCHIVAGE, et les modélisations 2D (D_PLAN, C_PLAN).
+   
+   Les tests restitués sont des tests typiques de lois de comportement, comprenant pour
+   chaque modélisation plusieurs STAT_NON_LINE (7 dans les tests restitués), avec un trajet
+   de chargement non radial dans l'espace des déformations. Les 7 calculs permettent de
+   vérifier d'une part la robustesse de l'intégration, par rapport au pas de temps, et la
+   justesse en étudiant des problèmes équivalent :
+   
+   - robustesse : 
+   --------------
+   pour chaque segment du trajet de déformation imposée, discrétisation en 1, puis 5, puis 25
+   pas de temps. La solution de référence correspond à la discrétisation fine.
+   
+   - problèmes équivalents : 
+   -------------------------
+   - passage de MPa en Pa pour les unités qui en dépendent
+   - rotation imposée au chargement
+   - symétrie imposée au chargement
+   Par contre, la prise en compte de la variation des coefficients avec la température n'est
+   pas encore restituée, en attente de la fin du chantier "variables de commande"
+   
+   - de plus on teste la matrice tangente (cf fiche 7413).
+   
+   Les modélisations restitués pour COMP001, regroupant tous les comportements
+   élastoplastiques, sont :
+   - A : VMIS_ISOT_LINE en 3D, et en C_PLAN
+   - B : VMIS_ISOT_TRAC en 3D, et en C_PLAN
+   - C : VMIS_CINE_LINE en 3D
+   - D : VMIS_ECMI_LINE en 3D, et en C_PLAN
+   - E : VMIS_ECMI_TRAC en 3D, et en C_PLAN
+   - F : VMIS_CIN1_CHAB en 3D
+   - G : VMIS_CIN2_CHAB en 3D
+   - H : VMIS_ISOT_PUIS en 3D (reprise de l'ancien test COMP002A, mais pas de test complet,
+   car sensibilité  au pas de temps et a changement d'unité)
+   
+   Les modélisations restitués pour COMP002, regroupant tous les comportements
+   élasto-visco-plastiques, sont :
+   - A : VENDOCHAB en 3D qui reprend l'ancien test COMP001A
+   - B : VISC_CIN1_CHAB en 3D
+   - C : VISC_CIN2_CHAB en 3D
+   
+   REMARQUE : Les comportements LEMAITRE, VISC_TAHERI ne sont pas restitués à cause d'une
+   trop grande sensibilité au pas de temps (qui peut être contournée) et au changement
+   d'unité (à élucider).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.07.101
+VALIDATION
+   comp001
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010416 DU 2006-12-29 11:38:38
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Plus de souplesse pour le critere de contraintes planes, methode de Borst
+FONCTIONNALITE
+   Suite de fiche 10196 :
+   
+   cette fiche faisait état d'un problème de convergence avec ENDO_ISOT_BETON avec des
+   éléments de plaque. Je l'avais classée dans suite, car dans l'étude jointe, si on enlevait
+   la vérification sur SIZZ, le problème convergence était inchangé, et ne venait donc pas de
+   DEBORST. Suite à cela, Shahrokh m'a fourni deux nouvelles études plus intéressantes pour
+   disgnostiquer les difficultés de convergence.
+   
+   Cette fois, l'analyse montre que la convergence est atteinte pour l'algorithme de Newton,
+   mais pas pour DEBORST, ce qui conduit à un redécoupage excessif du pas de temps. 
+   
+   En conséquence, je propose une amélioration très simple de ce critère de convergence, en
+   dissociant la précision relative à l'intégration de la loi de comportement de celle
+   utilisée pour vérifier l'hypothèse des contraints planes. Pour ce faire, un nouveau
+   mot-clé sous COMP_INCR est ajouté : RESI_DEBORST. Il a une valeur par défaut de 1.E-6.
+   
+   Dans l'étude jointe, si on utilise 1.E-4, les instants critiques passent sans problème. Il
+   y a des problèmes de convergence (non liés à deborst) a des instants ultérieurs. Cela
+   permettra donc de poursuivre les études de plaques en béton, ou autres, avec comportements
+   adoucissants, en contraintes planes, mais toujours avec matrice tangente.
+   
+   Validation dans SSNV101B (VMIS_CIN2_CHAB) : avec RESI_DEBORST=1.E-4, on passe de 208
+   itérations au total à 182, et les résultats sont toujours OK.
+   
+   En ce qui concerne la matrice sécante, la méthode Deborst actuelle n'est pas adaptée, il
+   faut y travailler (dans le cadre de Biloba ou Omersi) (Emettre une fiche dans ce sens)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.11
+VALIDATION
+   etude jointe, SSNV101B
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010382 DU 2006-12-13 17:12:24
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.1, le test ssll400a termine NOOK (Bull)
+FONCTIONNALITE
+   Le problème de signe vient simplement du mode de calcul des contraintes SIGM_ELNO_DEPL
+   dans les poutres : SIXX est calculé comme le maximum des contraintes dues au moment de
+   flexion (cf. page 67 de R3.08.01) multiplié par l signe de l'effrot normal. Ici (cas de
+   flexion pure) l'effrt normal est nul. Le signe de SIXX est donc indéterminé (et dépend de
+   la machine). Par contre la valeur absolue est elle parfaitement déterminée.
+   
+   On utilise un TEST_RESU avec 2 valeurs possibles pour tous les tests de SIXX.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssll400a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kxbadng      ADOBES A.              DATE 09/01/2007 - 11:06:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010342 DU 2006-12-04 08:56:24
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   Amelioration du mode de calcul du coefficient de masse ajoutee pour les vibrations de
+tubes de GV
+FONCTIONNALITE
+   L'évolution 10342 est liée à l'évolution 10364. Grâce à ces deux évolutions, la 
+   valeur de la masse volumique équivalente utilisée pour la méthode de Connors 
+   devient la même que celle utilisée pour le calcul fluide élastique classique, 
+   et ce dans les deux cas possibles :
+   
+   cas 1 - l'utilisateur a attribué manuellement une valeur de coefficient de 
+   masse ajoutée à l'aide du mot-cle "COEF_MASS_AJOU" de l'operateur 
+   DEFI_FLUI_STRU,
+   
+   cas 2 - l'utilisateur a laissé Code_Aster calculer automatiquement la valeur de 
+   ce coefficient.
+   
+   En outre, dans le second cas, le coefficient de masse ajoutée est calculé en 
+   accord avec la formulation la plus récente reconnue par la communauté 
+   scientifique du domaine. Cette formulation est inscrite dans la doc, ce qui 
+   n'était pas le cas précédemment. L'impact sur les résultats en termes de 
+   rapports d'instabilité est très faible (de l'ordre du pourcent). Dans les cas-
+   tests concernés, les valeurs de non régression sont modifiées pour tenir compte 
+   des nouveaux résultats.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.25.01, R4.07.04, V2.02.117, V2.02.134, V2.02.136, V5.02.112
+VALIDATION
+   31 cas tests validant DEFI_FLUI_STRU
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010364 DU 2006-12-07 10:42:54
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   Prise en compte dans Connors d'un coefficient de masse ajoutee introduit manuellement
+par l'utilisateur par l'operateur DEFI_FLUI_STRU
+FONCTIONNALITE
+   L'évolution 10364 est liée à l'évolution 10342. Grâce à ces deux évolutions, la 
+   valeur de la masse volumique équivalente utilisée pour la méthode de Connors 
+   devient la même que celle utilisée pour le calcul fluide élastique classique, 
+   et ce dans les deux cas possibles :
+   
+   cas 1 - l'utilisateur a attribué manuellement une valeur de coefficient de 
+   masse ajoutée à l'aide du mot-cle "COEF_MASS_AJOU" de l'operateur 
+   DEFI_FLUI_STRU,
+   
+   cas 2 - l'utilisateur a laissé Code_Aster calculer automatiquement la valeur de 
+   ce coefficient.
+   
+   En outre, dans le second cas, le coefficient de masse ajoutée est calculé en 
+   accord avec la formulation la plus récente reconnue par la communauté 
+   scientifique du domaine. Cette formulation est inscrite dans la doc, ce qui 
+   n'était pas le cas précédemment. L'impact sur les résultats en termes de 
+   rapports d'instabilité est très faible (de l'ordre du pourcent). Dans les cas-
+   tests concernés, les valeurs de non régression sont modifiées pour tenir compte 
+   des nouveaux résultats.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage des 31 cas tests validant DEFI_STRU_STRU
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010379 DU 2006-12-12 16:50:14
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : CS
+TITRE
+   DEFI_FLUI_STRU/Connors : erreur dans le calcul du coefficient de masse ajoutee
+FONCTIONNALITE
+   Dans la routine connor.f, l'une des étapes du calcul du coefficient de masse 
+   ajoutée consiste à calculer un diamètre équivalent deq obtenu comme suit (où de 
+   désigne le diamètre extérieur du tube) : 
+   
+   si le pas est carré : (deq/de)=(1.07+0.56p)p
+   
+   si le pas est triangulaire : (deq/de)=(0.96+0.5p)p
+   
+   Où p désigne le pas réduit, c'est à dire le pas du faisceau divisé par le 
+   diamètre extérieur des tubes.
+   
+   Dans la routine connor.f, on avait bien appliqué les formules ci-dessus mais en 
+   confondant pas et "pas réduit". Cette erreur a été corrigée.
+   
+   L'impact sur les résultats est de l'ordre du pourcent et les valeurs de non 
+   régression des cas-tests concernés ont été modifiées en conséquence.
+   
+   Ce bogue a été corrigé en même temps qu'ont été livrées les évolutions 10364 et 
+   10342.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage des cas tests validant DEFI_FLUI_STRU
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT comp001b                        proix J-M.PROIX          364    364      0
+ CASTEST AJOUT comp001c                        proix J-M.PROIX          189    189      0
+ CASTEST AJOUT comp001d                        proix J-M.PROIX          343    343      0
+ CASTEST AJOUT comp001e                        proix J-M.PROIX          482    482      0
+ CASTEST AJOUT comp001f                        proix J-M.PROIX          196    196      0
+ CASTEST AJOUT comp001g                        proix J-M.PROIX          206    206      0
+ CASTEST AJOUT comp001h                        proix J-M.PROIX          158    158      0
+ CASTEST AJOUT comp002b                        proix J-M.PROIX          207    207      0
+ CASTEST AJOUT comp002c                        proix J-M.PROIX          211    211      0
+ CASTEST AJOUT sslp104c                        abbas M.ABBAS            274    274      0
+ CASTEST AJOUT sslp108a                        abbas M.ABBAS            211    211      0
+ CASTEST AJOUT sslp108b                        abbas M.ABBAS            286    286      0
+ CASTEST AJOUT sslv145a                        abbas M.ABBAS            321    321      0
+ CASTEST AJOUT ssnp135a                        abbas M.ABBAS            163    163      0
+ CASTEST AJOUT ssnp135b                        abbas M.ABBAS            223    223      0
+ CASTEST AJOUT ssnp135c                        abbas M.ABBAS            281    281      0
+ CASTEST AJOUT ssnp135d                        abbas M.ABBAS            431    431      0
+ CASTEST AJOUT ssnp135e                        abbas M.ABBAS            504    504      0
+ CASTEST MODIF comp001a                        proix J-M.PROIX          334    305    251
+ CASTEST MODIF comp002a                        proix J-M.PROIX          297    230     95
+ CASTEST MODIF sdll117a                        vivan L.VIVAN           1430     65    109
+ CASTEST MODIF sdll134a                        vivan L.VIVAN            276      7      8
+ CASTEST MODIF sdll136a                        vivan L.VIVAN            645      7     13
+ CASTEST MODIF sdll138a                        abbas M.ABBAS            661      2      1
+ CASTEST MODIF sdnl112a                        vivan L.VIVAN            294      5     10
+ CASTEST MODIF sdnl112b                        vivan L.VIVAN            455     10     45
+ CASTEST MODIF sdnl112c                        vivan L.VIVAN            486     14     40
+ CASTEST MODIF ssll400a                        proix J-M.PROIX         1836     10     10
+ CASTEST MODIF ssnv101b                        proix J-M.PROIX          156      2      1
+CATALOGU MODIF compelem/grandeur_simple__      proix J-M.PROIX          619      4      2
+CATALOGU MODIF typelem/gener_me3d_3            proix J-M.PROIX          680      2      2
+CATALOGU MODIF typelem/gener_meax_2            proix J-M.PROIX          599      2      2
+CATALOGU MODIF typelem/gener_meaxs2            proix J-M.PROIX          548      2      2
+CATALOGU MODIF typelem/gener_mecpl2            proix J-M.PROIX          612      2      2
+CATALOGU MODIF typelem/gener_mecq32            proix J-M.PROIX          271      2      2
+CATALOGU MODIF typelem/gener_mecqd1            proix J-M.PROIX          200      2      2
+CATALOGU MODIF typelem/gener_medkt2            proix J-M.PROIX          314      2      2
+CATALOGU MODIF typelem/gener_medpl2            proix J-M.PROIX          631      2      2
+CATALOGU MODIF typelem/gener_metu61            proix J-M.PROIX          269      2      2
+CATALOGU MODIF typelem/mecptr3                 proix J-M.PROIX          564      2      2
+CATALOGU MODIF typelem/medpqs8                 proix J-M.PROIX          546      2      2
+CATALOGU MODIF typelem/met3seg3                proix J-M.PROIX          260      2      2
+CATALOGU MODIF typelem/met3seg4                proix J-M.PROIX          260      2      2
+CATALOPY MODIF commande/macr_spectre           abbas M.ABBAS             70      2      2
+CATALOPY MODIF commande/simu_point_mat         proix J-M.PROIX          145     34      1
+CATALOPY MODIF commun/c_comp_incr              proix J-M.PROIX          344     10      1
+       C MODIF supervis/astermodule            abbas M.ABBAS           3501      1      1
+ FORTRAN AJOUT algorith/tgveri                 proix J-M.PROIX          246    246      0
+ FORTRAN AJOUT calculel/appaim                 abbas M.ABBAS            117    117      0
+ FORTRAN AJOUT calculel/appari                 abbas M.ABBAS            519    519      0
+ FORTRAN AJOUT calculel/arbrcr                 abbas M.ABBAS            120    120      0
+ FORTRAN AJOUT calculel/arbrds                 abbas M.ABBAS             46     46      0
+ FORTRAN AJOUT calculel/arbrim                 abbas M.ABBAS            127    127      0
+ FORTRAN AJOUT calculel/arlapf                 abbas M.ABBAS            156    156      0
+ FORTRAN AJOUT calculel/arlbsp                 abbas M.ABBAS             83     83      0
+ FORTRAN AJOUT calculel/arlcab                 abbas M.ABBAS             59     59      0
+ FORTRAN AJOUT calculel/arlcar                 abbas M.ABBAS             84     84      0
+ FORTRAN AJOUT calculel/arlcbo                 abbas M.ABBAS             48     48      0
+ FORTRAN AJOUT calculel/arlcmo                 abbas M.ABBAS            101    101      0
+ FORTRAN AJOUT calculel/arlcou                 abbas M.ABBAS            107    107      0
+ FORTRAN AJOUT calculel/arlcqu                 abbas M.ABBAS             76     76      0
+ FORTRAN AJOUT calculel/arlcvp                 abbas M.ABBAS             88     88      0
+ FORTRAN AJOUT calculel/arldsd                 abbas M.ABBAS            112    112      0
+ FORTRAN AJOUT calculel/arlfc0                 abbas M.ABBAS             71     71      0
+ FORTRAN AJOUT calculel/arlgdg                 abbas M.ABBAS            146    146      0
+ FORTRAN AJOUT calculel/arlgei                 abbas M.ABBAS             88     88      0
+ FORTRAN AJOUT calculel/arlger                 abbas M.ABBAS             95     95      0
+ FORTRAN AJOUT calculel/arlim2                 abbas M.ABBAS            111    111      0
+ FORTRAN AJOUT calculel/arlimp                 abbas M.ABBAS            101    101      0
+ FORTRAN AJOUT calculel/arlnim                 abbas M.ABBAS            145    145      0
+ FORTRAN AJOUT calculel/arlpar                 abbas M.ABBAS            175    175      0
+ FORTRAN AJOUT calculel/arltim                 abbas M.ABBAS            151    151      0
+ FORTRAN AJOUT calculel/boitfi                 abbas M.ABBAS            279    279      0
+ FORTRAN AJOUT calculel/cocoqu                 abbas M.ABBAS             87     87      0
+ FORTRAN AJOUT calculel/conoe2                 abbas M.ABBAS             86     86      0
+ FORTRAN AJOUT calculel/cosoli                 abbas M.ABBAS             64     64      0
+ FORTRAN AJOUT calculel/grmaim                 abbas M.ABBAS            106    106      0
+ FORTRAN AJOUT calculel/isbord                 abbas M.ABBAS             57     57      0
+ FORTRAN AJOUT calculel/isbox                  abbas M.ABBAS             64     64      0
+ FORTRAN AJOUT calculel/morsim                 abbas M.ABBAS            152    152      0
+ FORTRAN AJOUT calculel/nbare                  abbas M.ABBAS             58     58      0
+ FORTRAN AJOUT calculel/nbsom                  abbas M.ABBAS             58     58      0
+ FORTRAN AJOUT calculel/pondim                 abbas M.ABBAS             98     98      0
+ FORTRAN AJOUT calculel/quadim                 abbas M.ABBAS            174    174      0
+ FORTRAN AJOUT modelisa/arlbbs                 abbas M.ABBAS            129    129      0
+ FORTRAN AJOUT modelisa/arlbo0                 abbas M.ABBAS            133    133      0
+ FORTRAN AJOUT modelisa/arlboi                 abbas M.ABBAS            109    109      0
+ FORTRAN AJOUT modelisa/arlchr                 abbas M.ABBAS             82     82      0
+ FORTRAN AJOUT modelisa/arlelt                 abbas M.ABBAS            121    121      0
+ FORTRAN AJOUT modelisa/arlfil                 abbas M.ABBAS             77     77      0
+ FORTRAN AJOUT modelisa/arllcc                 abbas M.ABBAS            226    226      0
+ FORTRAN AJOUT modelisa/arllec                 abbas M.ABBAS            135    135      0
+ FORTRAN AJOUT modelisa/arllpo                 abbas M.ABBAS            133    133      0
+ FORTRAN AJOUT modelisa/arlmed                 abbas M.ABBAS             94     94      0
+ FORTRAN AJOUT modelisa/arlnor                 abbas M.ABBAS            105    105      0
+ FORTRAN AJOUT modelisa/arlpon                 abbas M.ABBAS            101    101      0
+ FORTRAN AJOUT modelisa/boit2d                 abbas M.ABBAS            310    310      0
+ FORTRAN AJOUT modelisa/boit3d                 abbas M.ABBAS            349    349      0
+ FORTRAN AJOUT modelisa/boitcr                 abbas M.ABBAS            139    139      0
+ FORTRAN AJOUT modelisa/boitds                 abbas M.ABBAS             46     46      0
+ FORTRAN AJOUT modelisa/boitim                 abbas M.ABBAS            238    238      0
+ FORTRAN AJOUT modelisa/nbareq                 abbas M.ABBAS             67     67      0
+ FORTRAN AJOUT modelisa/nbpan                  abbas M.ABBAS             63     63      0
+ FORTRAN AJOUT modelisa/noare                  abbas M.ABBAS            475    475      0
+ FORTRAN MODIF algeline/connor                 vivan L.VIVAN            270     27     42
+ FORTRAN MODIF algeline/mmprod                 abbas M.ABBAS            245      1      1
+ FORTRAN MODIF algeline/mtprod                 abbas M.ABBAS            247      4      2
+ FORTRAN MODIF algorith/nmcpl2                 proix J-M.PROIX          199     10      6
+ FORTRAN MODIF algorith/nmdorc                 proix J-M.PROIX          577     84     89
+ FORTRAN MODIF calculel/arface                 abbas M.ABBAS            141     52     38
+ FORTRAN MODIF calculel/arlpan                 abbas M.ABBAS            192     29     25
+ FORTRAN MODIF calculel/arlpnd                 abbas M.ABBAS            566    217    177
+ FORTRAN MODIF calculel/arlsup                 abbas M.ABBAS            217     76     55
+ FORTRAN MODIF calculel/bissec                 abbas M.ABBAS            352     74     67
+ FORTRAN MODIF calculel/boitea                 abbas M.ABBAS            124     81     79
+ FORTRAN MODIF calculel/boite                  abbas M.ABBAS            109     67    363
+ FORTRAN MODIF calculel/boitel                 abbas M.ABBAS            186    133    148
+ FORTRAN MODIF calculel/boiteq                 abbas M.ABBAS            490     58     40
+ FORTRAN MODIF calculel/cerne                  abbas M.ABBAS             78     38     29
+ FORTRAN MODIF calculel/conoeu                 abbas M.ABBAS             65     43     70
+ FORTRAN MODIF calculel/coquno                 abbas M.ABBAS            135     24     37
+ FORTRAN MODIF calculel/cotang                 abbas M.ABBAS            355     63    141
+ FORTRAN MODIF calculel/dedans                 abbas M.ABBAS             81     34     32
+ FORTRAN MODIF calculel/elbord                 abbas M.ABBAS            378    124    118
+ FORTRAN MODIF calculel/grmama                 abbas M.ABBAS            200     77     74
+ FORTRAN MODIF calculel/hasard                 abbas M.ABBAS             91     32     23
+ FORTRAN MODIF calculel/lisnor                 abbas M.ABBAS            271    200    186
+ FORTRAN MODIF calculel/minclu                 abbas M.ABBAS            117     63     68
+ FORTRAN MODIF calculel/minter                 abbas M.ABBAS            131     69     51
+ FORTRAN MODIF calculel/nafint                 abbas M.ABBAS            228    120    115
+ FORTRAN MODIF calculel/noareq                 abbas M.ABBAS            216     31     96
+ FORTRAN MODIF calculel/nopan                  abbas M.ABBAS            586    529    510
+ FORTRAN MODIF calculel/npgaus                 abbas M.ABBAS            106     30     27
+ FORTRAN MODIF calculel/panarq                 abbas M.ABBAS            153     30     32
+ FORTRAN MODIF calculel/panno                  abbas M.ABBAS            126     24     61
+ FORTRAN MODIF calculel/refere                 abbas M.ABBAS            151     70     50
+ FORTRAN MODIF calculel/smplx2                 abbas M.ABBAS            157     31     19
+ FORTRAN MODIF calculel/sommet                 abbas M.ABBAS             66     33     27
+ FORTRAN MODIF calculel/tangnt                 abbas M.ABBAS            143     94    135
+ FORTRAN MODIF elements/te0100                 proix J-M.PROIX          293     20      2
+ FORTRAN MODIF elements/te0139                 proix J-M.PROIX          259     19      2
+ FORTRAN MODIF modelisa/arete3                 abbas M.ABBAS            107     35     22
+ FORTRAN MODIF modelisa/arlapp                 abbas M.ABBAS            110     66    366
+ FORTRAN MODIF modelisa/arlas0                 abbas M.ABBAS            121     41     31
+ FORTRAN MODIF modelisa/arlas1                 abbas M.ABBAS            107     44     31
+ FORTRAN MODIF modelisa/arlas2                 abbas M.ABBAS            152     55     37
+ FORTRAN MODIF modelisa/arlas3                 abbas M.ABBAS            169     58     40
+ FORTRAN MODIF modelisa/arlas4                 abbas M.ABBAS            248     71     49
+ FORTRAN MODIF modelisa/arlass                 abbas M.ABBAS             81     45     29
+ FORTRAN MODIF modelisa/arlch0                 abbas M.ABBAS            154     39     23
+ FORTRAN MODIF modelisa/arlch1                 abbas M.ABBAS            110     67     56
+ FORTRAN MODIF modelisa/arlch2                 abbas M.ABBAS            143     76     85
+ FORTRAN MODIF modelisa/arlch3                 abbas M.ABBAS            109     66     57
+ FORTRAN MODIF modelisa/arlch4                 abbas M.ABBAS            155     76     84
+ FORTRAN MODIF modelisa/arlcha                 abbas M.ABBAS            347    177    141
+ FORTRAN MODIF modelisa/arlclr                 abbas M.ABBAS            222    102     52
+ FORTRAN MODIF modelisa/arlcol                 abbas M.ABBAS            112     30     17
+ FORTRAN MODIF modelisa/arlcpl                 abbas M.ABBAS            560    368    279
+ FORTRAN MODIF modelisa/arldeg                 abbas M.ABBAS             97     53     37
+ FORTRAN MODIF modelisa/arlfam                 abbas M.ABBAS            311    154    127
+ FORTRAN MODIF modelisa/arlfc1                 abbas M.ABBAS            351    114    106
+ FORTRAN MODIF modelisa/arlfc2                 abbas M.ABBAS            402    113    103
+ FORTRAN MODIF modelisa/arlfg                  abbas M.ABBAS            111     57     46
+ FORTRAN MODIF modelisa/arlflt                 abbas M.ABBAS             61     39    223
+ FORTRAN MODIF modelisa/arlmax                 abbas M.ABBAS            115     47     39
+ FORTRAN MODIF modelisa/arlte                  abbas M.ABBAS            121     61     48
+ FORTRAN MODIF modelisa/arlver                 abbas M.ABBAS            233    164    197
+ FORTRAN MODIF modelisa/caarle                 abbas M.ABBAS            240    184    448
+ FORTRAN MODIF modelisa/echmap                 abbas M.ABBAS            174     88     81
+ FORTRAN MODIF modelisa/echmc2                 abbas M.ABBAS             76     39     32
+ FORTRAN MODIF modelisa/echmc3                 abbas M.ABBAS            423    132    186
+ FORTRAN MODIF modelisa/intmad                 abbas M.ABBAS            272    197    172
+ FORTRAN MODIF modelisa/intmam                 abbas M.ABBAS            374    267    242
+ FORTRAN MODIF modelisa/nocoqu                 abbas M.ABBAS            168     47     64
+ FORTRAN MODIF modelisa/op0143                 vivan L.VIVAN            559     15      7
+ FORTRAN MODIF modelisa/oriem2                 abbas M.ABBAS            181    134    116
+ FORTRAN MODIF modelisa/oriem3                 abbas M.ABBAS            199     94     80
+ FORTRAN MODIF modelisa/plcent                 abbas M.ABBAS            107     39     45
+ FORTRAN MODIF modelisa/plint2                 abbas M.ABBAS            314    134    112
+ FORTRAN MODIF modelisa/plint3                 abbas M.ABBAS            650    243    213
+ FORTRAN MODIF modelisa/pltri2                 abbas M.ABBAS            243     66     54
+ FORTRAN MODIF modelisa/pltri3                 abbas M.ABBAS            170     85     69
+ FORTRAN MODIF modelisa/plvol2                 abbas M.ABBAS            112     45     29
+ FORTRAN MODIF modelisa/plvol3                 abbas M.ABBAS             75     33     26
+ FORTRAN MODIF modelisa/tmacoq                 abbas M.ABBAS             86     36     44
+  PYTHON AJOUT Messages/arlequin               abbas M.ABBAS            106    106      0
+  PYTHON AJOUT Outils/veri_matr_tang           proix J-M.PROIX          269    269      0
+  PYTHON MODIF Macro/simu_point_mat_ops        proix J-M.PROIX          431    123     19
+  PYTHON MODIF Messages/algorith11             proix J-M.PROIX          364     16      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   77       13012     13012            +13012
+ MODIF :  112       35631      7680    8018      -338
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  189       48643     20692    8018    +12674 

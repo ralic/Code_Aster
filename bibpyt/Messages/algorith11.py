@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith11 Messages  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,6 +344,21 @@ cata_msg={
 
 81: _("""
  STOP_SINGULIER=DECOUPE nécessite la subdivision automatique du pas de temps (SUBD_PAS).
+"""),
+82: _("""
+ nmvpir erreur dir grandissement. Angle ALPHA %(k1)s. Angle BETA %(k2)s.
+"""),
+83: _("""
+ Arret par manque de temps CPU.
+"""),
+84: _("""
+ on ne sait pas deriver par rapport au concept %(k1)s
+"""),
+85: _("""
+ On veut affecter un comportement %(k1)s avec la relation %(k2)s sur une maille deja affectee par un autre comportement %(k3)s %(k4)s
+"""),
+86: _("""
+ Perturbation trop petite, calcul impossible
 """),
 
 }

@@ -1,0 +1,211 @@
+# MODIF  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+# TITRE PLAQUE FISSURE 2D EN MODE 1 AVEC METHODE ARLEQUIN - MODELE DE REFERENCE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(  CODE=_F(  NOM = 'SSLP108A',NIV_PUB_WEB='INTERNET') );
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE();
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                GROUP_NO_FOND='P0',),
+                 INFO=1,);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
+                          NU=0.3,
+                          ALPHA=0.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+
+BL=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=_F(GROUP_MA='L2',
+                              LIAISON='ENCASTRE',),);
+
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  FORCE_CONTOUR=(_F(GROUP_MA='L1',
+                                    FY=1.E8,
+                                    FX=1.E8,),
+                                 _F(GROUP_MA='L3',
+                                    FY=-1.E8,
+                                    FX=-1.E8),),);
+
+### CALCUL STATIQUE
+
+RESU=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=BL,),
+                          _F(CHARGE=CH,),),);
+
+### POST-TRAITEMENT GENERAL
+
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('EQUI_ELNO_SIGM','SIGM_ELNO_DEPL',),);
+
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             OPTION=('EQUI_NOEU_SIGM','SIGM_NOEU_DEPL',),);
+
+LIGAM=INTE_MAIL_2D(MAILLAGE=MA,
+                   DEFI_CHEMIN=_F(GROUP_MA='LPOP11',),);
+
+BHAUT=INTE_MAIL_2D(MAILLAGE=MA,
+                   DEFI_CHEMIN=_F(GROUP_MA='L1',),);
+                   
+SIYY_LIG=POST_RELEVE_T(ACTION=_F(INTITULE='SIYY_LIG',
+                                 CHEMIN=LIGAM,
+                                 RESULTAT=RESU,
+                                 NOM_CHAM='SIGM_NOEU_DEPL',
+                                 NOM_CMP='SIYY',
+                                 MOYE_NOEUD='NON',
+                                 OPERATION='EXTRACTION',),);
+
+DEPL_H=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL_H',
+                               CHEMIN=BHAUT,
+                               RESULTAT=RESU,
+                               NOM_CHAM='DEPL',
+                               NOM_CMP='DY',
+                               OPERATION='EXTRACTION',),);
+
+### POST-TRAITEMENT MECA. RUPTURE
+
+DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESU,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,);
+
+FOND1=DEFI_FOND_FISS(MAILLAGE=MA,
+                     FOND_FISS=_F(GROUP_NO='P0',),
+                     NORMALE=(0.0,-1.0,0.0,),);
+
+THETA01=CALC_THETA(MODELE=MO,
+                   DIRECTION=(-1.0,0.0,0.0,),
+                   THETA_2D=_F(GROUP_NO='P0',
+                               MODULE=1.0,
+                               R_INF=2e-05,
+                               R_SUP=0.00014,),);
+
+GK01=CALC_G(RESULTAT=RESU,
+            THETA=_F(THETA=THETA01,),
+            EXCIT=(_F(CHARGE=BL,),
+                   _F(CHARGE=CH,),
+                   ),
+            SYME_CHAR='SANS',
+            OPTION='CALC_G');
+
+GK02=CALC_G(RESULTAT=RESU,
+            THETA=_F(THETA=THETA01,FOND_FISS=FOND1,),
+            EXCIT=(_F(CHARGE=BL,),
+                   _F(CHARGE=CH,),),
+            SYME_CHAR='SANS',
+            OPTION='CALC_K_G');
+
+#IMPR_TABLE(TABLE=DEPL_H);
+#IMPR_TABLE(TABLE=SIYY_LIG);
+#IMPR_TABLE(TABLE=GK01);
+#IMPR_TABLE(TABLE=GK02);
+
+### TESTS VALEURS DEPLACEMENTS
+## NON REGRESSION
+
+TEST_TABLE(TABLE=DEPL_H,
+           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=2.29000E-03),
+           NOM_PARA='DY',
+           VALE = -8.6620168273920E-07,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',); 
+                             
+### TESTS VALEURS CONTRAINTES
+## NON REGRESSION
+
+TEST_TABLE(TABLE=SIYY_LIG,
+           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+           NOM_PARA='SIYY',
+           VALE = 2.3323694256527E+09,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);                         
+ 
+TEST_TABLE(TABLE=SIYY_LIG,
+           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=4.00000E-04),
+           NOM_PARA='SIYY',
+           VALE = 1.7080323018584E+08,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);            
+           
+TEST_TABLE(TABLE=SIYY_LIG,
+           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=8.00000E-04),
+           NOM_PARA='SIYY',
+           VALE = 1.2403223557972E+08,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);  
+
+### TESTS VALEURS MECA. RUPTURE
+## NON-REGRESSION
+            
+TEST_TABLE(TABLE=GK01,
+           NOM_PARA='G',
+           VALE=3.6368893124329E+02,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);    
+           
+TEST_TABLE(TABLE=GK02,
+           NOM_PARA='G',
+           VALE=3.6368893124329E+02,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);    
+    
+TEST_TABLE(TABLE=GK02,
+           NOM_PARA='K1',
+           VALE=8.1612080595607E+06,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);             
+            
+TEST_TABLE(TABLE=GK02,
+           NOM_PARA='K2',
+           VALE=-2.4773868786652E+06,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);  
+           
+TEST_TABLE(TABLE=GK02,
+           NOM_PARA='G_IRWIN',
+           VALE=3.6371381369010E+02,
+           PRECISION=1E-12,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.4',);   
+
+FIN();

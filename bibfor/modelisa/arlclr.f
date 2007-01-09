@@ -1,6 +1,8 @@
-      SUBROUTINE ARLCLR(DIME,IOC,NNO,NOMC,NOMT,EQ)
+      SUBROUTINE ARLCLR(MOTCLE,IOCC  ,MAIL  ,NOMARL,DIME  ,
+     &                  NOMC  ,TANG  )
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,25 +19,47 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ----------------------------------------------------------------------
-C FILTRE EQUATIONS COUPLAGE ARLEQUIN REDONDANTES AVEC CONDITIONS LIMITES
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C INTEGER       DIME    : DIMENSION DE L'ESPACE
-C INTEGER       IOC     : OCCURENCE DU MOT CLEF ARLEQUIN
-C INTEGER       NNO     : NOMBRE DE NOEUDS DU MAILLAGE
-C CHARACTER*10  NOMC    : NOM DE LA ZONE DE COLLAGE
-C CHARACTER*10  NOMT    : NOM DE L'OBJET TANGENTES LISSEES
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLE DE SORTIE
-C LOGICAL       EQ(5,*) : .FALSE. SI L'EQUATION CORRESPONDANTE N'EST PAS
-C                         A CONSIDERER
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
+      CHARACTER*16 MOTCLE
+      INTEGER      IOCC
+      CHARACTER*8  NOMARL,MAIL  
+      INTEGER      DIME
+      INTEGER      NNO    
+      CHARACTER*10 NOMC,TANG
+C
+C ATTENTION !!! ROUTINE DECONNECTEE, IL FAUT CORRIGER LES 'EQ' EN
+C COMMENTAIRE
+C
 
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C FILTRE EQUATIONS COUPLAGE ARLEQUIN REDONDANTES AVEC CONDITIONS LIMITES
+C
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  MAIL   : NOM UTISATEUR DU MAILLAGE
+C IN  MOTCLE : MOT-CLEF FACTEUR POUR ARLEQUIN
+C IN  IOCC   : OCCURRENCE DU MOT CLEF-FACTEUR ARLEQUIN
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  NOMC   : NOM DE LA ZONE DE COLLAGE
+C IN  TANG   : NOM DE L'OBJET TANGENTES LISSEES
+C I/O NOMARL : NOM DE LA SD PRINCIPALE ARLEQUIN
+C
+C SD PRODUITE: NOMARL(1:8)//'.EXCLU'
+C  VECTEUR DE LOGICAL INDIQUANT SI UN NOEUD COLLE EST A EXCLURE
+C  DES RELATIONS POUR ARLEQUIN
+C
+C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C
+      CHARACTER*32       JEXNOM,JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -50,52 +74,78 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C      
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-C --- VARIABLES
-      CHARACTER*10 NOMC,NOMT
-      CHARACTER*8  CLIM
-      INTEGER      DIME,IOC,NNO,CMP,NCL,NL,N,NO,INO,NU(6)
-      INTEGER      I,J,K,P0,P1,P2,P3,P4,P5,P6,P7,Q0
-      LOGICAL      EQ(5,*)
+C
+      CHARACTER*8  CLIM,K8BID
+      INTEGER      CMP,NCL,NL,N,NO,INO,IRET,JARLEQ,IBID,JDIM
+      INTEGER      I,J,K,P0,P1,P2,P3,P4,P5,P6,P7,Q0,NC
       REAL*8       R1,R2
-
-C --- TABLE
-      CHARACTER*16 TECMP(6)
+      INTEGER      IFM,NIV   
+      INTEGER      NTECMP
+      PARAMETER    (NTECMP=6)    
+      CHARACTER*16 TECMP(NTECMP)
+      INTEGER       NU(NTECMP)
+C            
       DATA TECMP / 'D_DEPL_R_DX ','D_DEPL_R_DY ','D_DEPL_R_DZ ',
-     &             'D_DEPL_R_DRX','D_DEPL_R_DRY','D_DEPL_R_DRZ' /
-
-C --- INITIALISATION
-
+     &             'D_DEPL_R_DRX','D_DEPL_R_DRY','D_DEPL_R_DRZ' /    
+C
+C ----------------------------------------------------------------------
+C 
       CALL JEMARQ()
-
-      DO 10 I = 1, 6
+      CALL INFNIV(IFM,NIV)      
+C
+C --- CREATION DE L'OBJET NOMARL(1:8)//'.EXCLU'
+C
+      CALL JELIRA(NOMC(1:10)//'.INO','LONMAX',NC,K8BID)
+      CALL JEDETR(NOMARL(1:8)//'.EXCLU')
+      CALL WKVECT(NOMARL(1:8)//'.EXCLU', 'V V L', 5*NC, JARLEQ )
+C
+      DO 90 I = 1, 5*NC
+        ZL(JARLEQ-1+I) = .TRUE.
+ 90   CONTINUE
+C
+      CALL JEVEUO(MAIL(1:8)//'.DIME','L',JDIM)
+      NNO  = ZI(JDIM)
+C
+C --- NUMERO DES DDLS
+C
+      DO 10 I = 1, NTECMP
         CALL JENONU(JEXNOM('&CATA.TE.NOMTE',TECMP(I)),NU(I))
  10   CONTINUE
-
+C
+C --- CREATION OBJET TEMPORAIRE
+C
       CALL WKVECT('&&ARLCLR.DICO','V V I',NNO,Q0)
-      DO 20 I = 1, NNO
-        ZI(Q0-1+I) = 0
- 20   CONTINUE
-
-      CALL JELIRA(NOMC//'.INO','LONMAX',NL,ZK8)
-      CALL JEVEUO(NOMC//'.INO','L',P0)
+C
+C --- LECTURE DONNEES COLLAGE
+C  
+      CALL JELIRA(NOMC(1:10)//'.INO','LONMAX',NL,K8BID)
+      CALL JEVEUO(NOMC(1:10)//'.INO','L',P0)
       DO 30 I = 1, NL
         ZI(Q0-1+ZI(P0)) = I
         P0 = P0 + 1
  30   CONTINUE
-        
-      CALL JEEXIN(NOMT,I)
-      IF (I.NE.0) CALL JEVEUO(NOMT,'L',P7)
-
-      CALL GETVID('ARLEQUIN','COND_LIM',IOC,1,0,ZK8,NCL)
+C
+C --- LECTURE DONNEES NORMALES
+C        
+      CALL JEEXIN(TANG,IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEVEUO(TANG,'L',P7)
+      ENDIF  
+C
+      CALL GETVID(MOTCLE,'COND_LIM',IOCC,1,0,K8BID,NCL)
+      
+      IF (NCL.NE.0) THEN
+        CALL U2MESS('F','ARLEQUIN_14')
+      ENDIF
 
       DO 40 I = 1, -NCL
 
 C ----- LECTURE DONNEES
 
-        CALL GETVID('ARLEQUIN','COND_LIM',IOC,1,I,CLIM,ZI)
-        CALL JELIRA(CLIM//'.CHME.LIGRE.LIEL','NMAXOC',NL,ZK8)
+        CALL GETVID(MOTCLE,'COND_LIM',IOCC,1,I,CLIM,IBID)
+        CALL JELIRA(CLIM//'.CHME.LIGRE.LIEL','NMAXOC',NL,K8BID)
         CALL JEVEUO(CLIM//'.CHME.LIGRE.LIEL','L',P0)
         CALL JEVEUO(JEXATR(CLIM//'.CHME.LIGRE.LIEL','LONCUM'),'L',P1)
         CALL JEVEUO(CLIM//'.CHME.LIGRE.NEMA','L',P2)
@@ -137,13 +187,13 @@ C --------- CAS DES TRANSLATIONS
 
             IF (CMP.LE.DIME) THEN
 
-              EQ(CMP,NO) = .FALSE.
+C              EQ(CMP,NO) = .FALSE.
 
 C --------- CAS DES ROTATIONS 2D
 
             ELSEIF (DIME.EQ.2) THEN
 
-              EQ(3,NO) = .FALSE.
+C              EQ(3,NO) = .FALSE.
 
 C --------- CAS DES ROTATIONS 3D
 
@@ -153,9 +203,9 @@ C --------- CAS DES ROTATIONS 3D
               R2 = ABS(ZR(P7+6*INO+CMP-10))
 
               IF (R1.GT.R2) THEN
-                EQ(4,NO) = .FALSE.
+C                EQ(4,NO) = .FALSE.
               ELSE
-                EQ(5,NO) = .FALSE.
+C                EQ(5,NO) = .FALSE.
               ENDIF
 
             ENDIF
@@ -163,9 +213,9 @@ C --------- CAS DES ROTATIONS 3D
  60       CONTINUE
  
  40   CONTINUE
-
-C --- DESALLOCATION
-
+C
+C --- DESALLOCATIONS
+C
       CALL JEDETR('&&ARLCLR.DICO')
       CALL JEDEMA()
 

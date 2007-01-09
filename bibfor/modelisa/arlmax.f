@@ -1,7 +1,8 @@
-      SUBROUTINE ARLMAX(DIME,IAN,IAC,NNC,B,ILGN,MX)
-
+      SUBROUTINE ARLMAX(DIME  ,IAN   ,IAC   ,NNC   ,B     ,
+     &                  ILGN  ,MX)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,56 +21,65 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C ----------------------------------------------------------------------
-C  CALCUL DES MAXIMA EN VALEUR ABSOLUE DES TERMES SUIVANT LES LIGNES DE 
-C  LA MATRICE ARLEQUIN MORSE POUR L'ADIMENSIONNEMENT DES RELATIONS LIN. 
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
-C INTEGER   DIME      : DIMENSION DE L'ESPACE
-C LOGICAL   IAN       : .TRUE. SI MODELE MECANIQUE EST DE TYPE COQUE
-C LOGICAL   IAC       : .TRUE. SI MODELE COLLAGE EST DE TYPE COQUE
-C INTEGER   NNC       : NOMBRE DE NOEUDS MAILLES DE COLLAGE
-C REAL*8    B(*)      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)
-C INTEGER   ILGN(NNC) : LONGUEUR CUMULEE COLLECTION NOEUDS COLONNES DE B
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES DE SORTIE
-C REAL*8    MX(2,NNC) : MAXIMA EN VALEUR ABSOLUE TERMES DE LA MATRICE
+      IMPLICIT NONE
+      INTEGER  DIME
+      LOGICAL  IAN,IAC  
+      INTEGER  NNC  
+      REAL*8   B(*)
+      INTEGER  ILGN(*)
+      REAL*8   MX(2,*)      
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C CALCUL DES MAXIMA EN VALEUR ABSOLUE DES TERMES SUIVANT LES LIGNES DE 
+C  LA MATRICE ARLEQUIN MORSE POUR L'ADIMENSIONNEMENT DES RELATIONS LIN. 
+C
+C ----------------------------------------------------------------------
+C      
+C
+C IN  DIME   : DIMENSION DE L'ESPACE     
+C IN  IAN    : .TRUE. SI MODELE ZONE MECANIQUE EST DE TYPE COQUE
+C IN  IAC    : .TRUE. SI MODELE ZONE COLLAGE EST DE TYPE COQUE
+C IN  NNC    : NOMBRE DE NOEUDS MAILLES DE COLLAGE
+C IN  B      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)
+C IN  ILGN   : LONGUEUR CUMULEE COLLECTION NOEUDS COLONNES DE B
+C OUT MX     : MAXIMA EN VALEUR ABSOLUE TERMES DE LA MATRICE
 C                       ARLEQUIN MORSE POUR NOEUDS DU DOMAINE DE COLLAGE
 C                       SUIVANT LES DDLS DE TRANSLATION ET DE ROTATION
 C                       ( MAX.LIGNE.1.TRANSLATION, MAX.LIGNE.1.ROTATION,
 C                         MAX.LIGNE.2.TRANSLATION, ... )
+C
 C ----------------------------------------------------------------------
-
-      IMPLICIT NONE
-
-C --- VARIABLES
-      INTEGER  DIME,NNC,ILGN(*)
+C 
       INTEGER  P0,P1,P2,I,J,K,L,DR
-      REAL*8   B(*),MX(2,*),R
-      LOGICAL  IAN,IAC
-      
+      REAL*8   R
+C
+C ----------------------------------------------------------------------
+C     
       DR = 2*DIME - 3
       P1 = ILGN(1)
       P2 = 0
-
+C
       DO 10 I = 1, NNC
-
         P0 = P1
         P1 = ILGN(I+1)
-
-        DO 10 J = 1, P1-P0
-
-C ------- COUPLAGE TRANSLATION / TRANSLATION
-
+        DO 11 J = 1, P1-P0
+C        
+C --- COUPLAGE TRANSLATION / TRANSLATION
+C
           DO 20 K = 1, DIME
             DO 20 L = 1, DIME
               P2 = P2 + 1
               R = ABS(B(P2))
               IF (R.GT.MX(1,I)) MX(1,I) = R
  20       CONTINUE
-
-C ------- COUPLAGE ROTATION / TRANSLATION
-
+C
+C --- COUPLAGE ROTATION / TRANSLATION
+C
           IF (IAC) THEN
             DO 30 K = 2, DIME
               DO 30 L = 1, DIME
@@ -78,9 +88,9 @@ C ------- COUPLAGE ROTATION / TRANSLATION
                 IF (R.GT.MX(2,I)) MX(2,I) = R
  30         CONTINUE
           ENDIF
-
-C ------- COUPLAGE TRANSLATION / ROTATION
-
+C
+C --- COUPLAGE TRANSLATION / ROTATION
+C
           IF (IAN) THEN
             DO 40 K = 1, DIME
               DO 40 L = 1, DR 
@@ -88,9 +98,9 @@ C ------- COUPLAGE TRANSLATION / ROTATION
                 R = ABS(B(P2))
                 IF (R.GT.MX(1,I)) MX(1,I) = R 
  40         CONTINUE
-
-C --------- COUPLAGE ROTATION / ROTATION
-
+C
+C --- COUPLAGE ROTATION / ROTATION
+C
             IF (IAC) THEN
               DO 50 K = 2, DIME
                 DO 50 L = 1, DR
@@ -99,9 +109,7 @@ C --------- COUPLAGE ROTATION / ROTATION
                   IF (R.GT.MX(2,I)) MX(2,I) = R
  50           CONTINUE
             ENDIF
-
           ENDIF
-
+ 11     CONTINUE
  10   CONTINUE
-
       END

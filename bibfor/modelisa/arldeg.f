@@ -1,7 +1,8 @@
-      SUBROUTINE ARLDEG(TMA0,TMA1,TMA2,TYPEMA,NUMERO,NMAMA,NF,FAM)
-
+      SUBROUTINE ARLDEG(TMA0  ,TMA1  ,TMA2  ,TYPEMA,NUMERO,
+     &                  NMAMA ,NFAM  ,FAM)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,61 +21,76 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C ----------------------------------------------------------------------
-C SELECTION DE LA FAMILLE DE QUADRATURE POUR INTEGRER COUPLAGE ARLEQUIN
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
-C CHARACTER*8    TMA0      : TYPE DE LA MAILLE SUPPORT INTEGRATION  
-C CHARACTER*8    TMA1      : TYPE D'UNE MAILLE DE DISCRETISATION  
-C CHARACTER*8    TMA2      : TYPE DE L'AUTRE MAILLE DE DISCRETISATION
-C
-C VARIABLES D'ENTREE / SORTIE 
-C CHARACTER*8    TYPEMA(NF) : TYPE DE LA MAILLE SUPPORT (TMS) POUR 
-C                             CHAQUE FAMILLE (TMS FAM.1, TMS FAM.2, ...)
-C INTEGER        NUMERO(NF) : NUMERO DE LA FORMULE D'INTEGRATION (NFI)
-C                             (NFI FAM.1, NFI FAM.2, ...)
-C INTEGER        NMAMA(NF)  : NOMBRE DE COUPLES DE MAILLE (NCM) ASSOCIE
-C                             A CHAQ FAMILLE (NCM FAM.1, NCM FAM.2, ...)
-C INTEGER        NF         : NOMBRE DE FAMILLES DE QUADRATURE
-C
-C VARIABLES DE SORTIE
-C INTEGER        FAM        : NUMERO DE LA FAMILLE
-C ----------------------------------------------------------------------
-
+C RESPONSABLE ABBAS M.ABBAS
+C 
       IMPLICIT NONE
-
-C --- VARIABLES
-      CHARACTER*8 TMA0,TMA1,TMA2,TYPEMA(*)
-      INTEGER     NUMERO(*),NMAMA(*),NF,FAM
+      CHARACTER*8 TMA0
+      CHARACTER*8 TMA1
+      CHARACTER*8 TMA2
+      CHARACTER*8 TYPEMA(*)
+      INTEGER     NUMERO(*)
+      INTEGER     NMAMA(*)
+      INTEGER     NFAM
+      INTEGER     FAM  
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C SELECTION DE LA FAMILLE DE QUADRATURE POUR INTEGRER COUPLAGE ARLEQUIN
+C
+C ----------------------------------------------------------------------
+C
+C 
+C IN  TMA0   : TYPE DE LA MAILLE SUPPORT INTEGRATION  
+C IN  TMA1   : TYPE D'UNE MAILLE DE DISCRETISATION  
+C IN  TMA2   : TYPE DE L'AUTRE MAILLE DE DISCRETISATION
+C I/O TYPEMA : TYPE DE LA MAILLE SUPPORT (TMS) POUR 
+C              CHAQUE FAMILLE (TMS FAM.1, TMS FAM.2, ...)
+C I/O NUMERO : NUMERO DE LA FORMULE D'INTEGRATION (NFI)
+C              (NFI FAM.1, NFI FAM.2, ...)
+C I/O NMAMA  : NOMBRE DE COUPLES DE MAILLE (NCM) ASSOCIE
+C              A CHAQ FAMILLE (NCM FAM.1, NCM FAM.2, ...)
+C I/O NFAM   : NOMBRE DE FAMILLES DE QUADRATURE
+C OUT FAM    : NUMERO DE LA FAMILLE
+C
+C ----------------------------------------------------------------------
+C
       INTEGER     TYPEDG,FG,I,D0(4),D1(4),D2(4)
-
+      LOGICAL     ISEXIS
+C      
+C ----------------------------------------------------------------------
+C
 C --- DEGRE DU POLYNOME A INTEGRER
-
+C
       TYPEDG = 0
+      ISEXIS = .FALSE.
       CALL FORMEN(TMA0,TYPEDG,D0)
       CALL FORMEN(TMA1,TYPEDG,D1)
       CALL FORMEN(TMA2,TYPEDG,D2)
       I = D1(1)+D2(1)+D0(3)
-
+C
 C --- CHOIX DE LA FORMULE D'INTEGRATION
-
+C
       CALL NPGAUS(TMA0,I,FG)
-
+C
 C --- RECHERCHE SI LA FAMILLE (TMA1,FG) EXISTE DEJA
-
-      DO 10 I = 1, NF
-        IF ((TMA0.EQ.TYPEMA(I)).AND.(FG.EQ.NUMERO(I))) GOTO 20
+C
+      DO 10 I = 1, NFAM
+        IF ((TMA0.EQ.TYPEMA(I)).AND.(FG.EQ.NUMERO(I))) THEN
+          ISEXIS = .TRUE.
+          GOTO 20
+        ENDIF
  10   CONTINUE
-
-C --- NOUVELLE FAMILLE
-
-      NF = NF + 1
-      TYPEMA(NF) = TMA0
-      NUMERO(NF) = FG
-      I = NF
-
  20   CONTINUE
-
+C
+      IF (.NOT.ISEXIS) THEN
+        NFAM         = NFAM + 1
+        TYPEMA(NFAM) = TMA0
+        NUMERO(NFAM) = FG
+        I            = NFAM
+      ENDIF
+C
       NMAMA(I) = NMAMA(I) + 1
       FAM = I
 

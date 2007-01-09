@@ -1,7 +1,8 @@
-      SUBROUTINE BOITEQ(CNOEUD,NOEPAN,NPAN,MINMAX,PAN)
-
+      SUBROUTINE BOITEQ(CNOEUD,NOEPAN,NPAN  ,NHQUA ,MINMAX,
+     &                  PAN   )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,58 +21,75 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C ----------------------------------------------------------------------
-C     CORRECTION DE BOITEL PRENANT EN COMPTE LES FACES QUADRATIQUES
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
-C REAL*8   CNOEUD(3,*)    : COORD. NOEUDS DE LA MAILLE (CF CONOEU)
-C INTEGER  NOEPAN(*)      : NOEUDS DEFINISSANT LES PANS (CF NOPAN)
-C INTEGER  NPAN           : NOMBRE DE PANS DE LA MAILLE
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES D'ENTREE/SORTIE
-C REAL*8   MINMAX(2,3)    : BOITE ENGLOBANT LA MAILLE SUIVANT X,Y,Z
-C REAL*8   PAN(5,*)       : EQUATION DES PANS DU CONVEXE ENGLOBANT
-C                           ET INSCRIT DE LA MAILLE (CF BOITE)
+      IMPLICIT NONE 
+      REAL*8  CNOEUD(3,*)
+      INTEGER NOEPAN(*)
+      INTEGER NPAN
+      REAL*8  MINMAX(2,*)
+      REAL*8  PAN(5,*)  
+      INTEGER NHQUA  
+C      
+C ----------------------------------------------------------------------
+C
+C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
+C
+C CORRECTION DES BOITES PRENANT EN COMPTE LES FACES QUADRATIQUES
+C 
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  CNOEUD : COORD. NOEUDS DE LA MAILLE 
+C               DIM: (DIME,*)   (X1, [Y1, Z1], X2, ...)
+C IN  NOEPAN : NOEUDS DEFINISSANT LES PANS (CF NOPAN)
+C IN  NPAN   : NOMBRE DE PANS DE LA MAILLE
+C IN  NHQUA  : ECHANTILLONNAGE DES FACES POUR MISE EN BOITE ELEMENTS
+C              QUADRATIQUES
+C I/O MINMAX : BOITE ENGLOBANT LA MAILLE SUIVANT X,Y,[Z]
+C               DIM: (2,DIME) 
+C I/O PAN    : EQUATION DES PANS DU CONVEXE ENGLOBANT
+C              ET INSCRIT DE LA MAILLE (CF BOITE)
+C               DIM: (DIME+2,*) 
+C
 C ---------------------------------------------------------------------
-
-      IMPLICIT NONE
-
-C --- PARAMETRES
-      INTEGER N
-      PARAMETER (N = 8)
-      REAL*8  HT,HQ,HT2,HT3,HQ2,HQ3,HQ4,R8MAX
-      PARAMETER (HT = 1.D0/N)
-      PARAMETER (HQ = 2.D0/N)
-      PARAMETER (HT2 = (HT**2)/8.D0)
-      PARAMETER (HT3 = (HT**3)/4.D0)
-      PARAMETER (HQ2 = (HQ**2)/8.D0)
-      PARAMETER (HQ3 = (HQ**3)/8.D0)
-      PARAMETER (HQ4 = 3.D0*(HQ**4)/64.D0)
-      PARAMETER (R8MAX = 1.D92) 
-
-C --- VARIABLES
-      INTEGER NOEPAN(*),NPAN,NNO,P0,I,J,I1,J1,NC
-      REAL*8 CNOEUD(3,*),MINMAX(2,*),PAN(5,*)
+C
+      REAL*8  HT,HQ,HT2,HT3,HQ2,HQ3,HQ4,R8MAEM
+C
+      INTEGER NNO,P0,I,J,I1,J1,NC 
       REAL*8 XMIN(2,3),XMAX(2,3),MM(2,3),XRMIN(2,6),XRMAX(2),R(6),RM,S
       REAL*8 M0(2),M(3),W0(9),W20(3,9),W2(3),W30(2,9),W3(2),W40(9),W4
       CHARACTER*8 TYPEMA
-
-      P0 = 1
-
+C
+C ---------------------------------------------------------------------
+C
+C --- INITIALISATIONS
+C
+      P0  = 1
+      HT  = 1.D0/NHQUA
+      HQ  = 2.D0/NHQUA
+      HT2 = (HT**2)/8.D0
+      HT3 = (HT**3)/4.D0
+      HQ2 = (HQ**2)/8.D0
+      HQ3 = (HQ**3)/8.D0
+      HQ4 = 3.D0*(HQ**4)/64.D0
+C
+     
       DO 10 I = 1, NPAN
 
 C ----- INITIALISATION
 
         DO 20 J = 1, 3
-          MM(1,J) = R8MAX
-          MM(2,J) = -R8MAX
+          MM(1,J) = R8MAEM()
+          MM(2,J) = -R8MAEM()
  20     CONTINUE
 
         DO 30 J = 1, NPAN
-          R(J) = R8MAX
+          R(J) = R8MAEM()
  30     CONTINUE
 
-        RM = -R8MAX
+        RM = -R8MAEM()
 
         NNO = NOEPAN(P0) 
         P0 = P0 + 1
@@ -87,12 +105,12 @@ C ----- FACE TRIANGULAIRE
           ENDIF
 
           M0(2) = -0.5D0*HT
-          DO 40 J1 = 1, N
+          DO 40 J1 = 1, NHQUA
 
             M0(2) = M0(2) + HT
             M0(1) = -0.5D0*HT
 
-            DO 40 I1 = 1, (N + 1 - J1)
+            DO 40 I1 = 1, (NHQUA + 1 - J1)
 
 C ----------- ECHANTILLONAGE DU TRIANGLE
  
@@ -243,12 +261,12 @@ C ----- FACE QUADRILATAIRE
           ENDIF
 
           M0(2) = -1.D0 - 0.5D0*HQ
-          DO 100 J1 = 1, N
+          DO 100 J1 = 1, NHQUA
 
             M0(2) = M0(2) + HQ
             M0(1) = -1.D0 - 0.5D0*HQ
 
-            DO 100 I1 = 1, N
+            DO 100 I1 = 1, NHQUA
 
 C ----------- ECHANTILLONAGE DU QUADRANGLE
  

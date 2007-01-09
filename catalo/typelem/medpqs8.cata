@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    )
-    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC PERTURB   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1
                                         XXXX2    KIT1     KIT2     KIT3     KIT4     KIT5

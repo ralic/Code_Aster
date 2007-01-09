@@ -1,6 +1,8 @@
-      SUBROUTINE PLTRI2(DIM,SC,N,IS,NS,TRI,NTRI)
+      SUBROUTINE PLTRI2(DIME  ,SC    ,NORM  ,IS    ,NSOM  ,
+     &                  PRECTR,TRI   ,NTRI)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,70 +19,81 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ----------------------------------------------------------------------
-C         TRIANGULATION D'UN POLYGONE QUELCONQUE PAR ESSORILLAGE
-C ----------------------------------------------------------------------
-C VARIABLES EN ENTREE
-C INTEGER    DIM        : DIMENSION DE L'ESPACE
-C REAL*8     SC(DIM,*)  : COORDONNEES DES SOMMETS
-C REAL*8     N(3)       : (EN 3D) NORMALE SORTANTE DU POLYGONE
-C INTEGER    NS         : NOMBRE DE SOMMETS
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES D'ENTREE / SORTIE
-C INTEGER    IS(*)      : INDEX DANS SC DES SOMMETS DU POLYGONE
-C
-C VARIABLES DE SORTIE
-C INTEGER    TRI(3,*)   : CONNECTIVITE TRIANGULATION (INDEX DANS SC)
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- PARAMETRE
-      REAL*8  PREC
-      PARAMETER (PREC = 1.D-7)
-
-C --- FONCTIONS
+      INTEGER DIME
+      INTEGER NSOM
+      REAL*8  SC(DIME,*)
+      REAL*8  NORM(*)
+      REAL*8  PRECTR
+      INTEGER IS(*)
+      INTEGER TRI(3,*)
+      INTEGER NTRI
+C      
+C ----------------------------------------------------------------------
+C
+C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
+C BOITES ENGLOBANTES + ARBRE BSP
+C
+C TRIANGULATION D'UN POLYGONE QUELCONQUE PAR ESSORILLAGE
+C ESSORILLAGE: COUPER LES OREILLES DE CERTAINS CHIENS EN POINTE
+C MERCI CHRISTOPHE DURAND POUR CETTE DEFINITION
+C
+C ----------------------------------------------------------------------
+C 
+C
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  SC     : COORDONNEES DES SOMMETS
+C IN  NSOM   : NOMBRE DE SOMMETS
+C IN  NORM   : (EN 3D) NORMALE SORTANTE DU POLYGONE
+C I/O IS     : INDEX DANS SC DES SOMMETS DU POLYGONE
+C IN  PRECTR : PRECISION POUR TRIANGULATION
+C OUT NTRI   : NOMBRE DE TRIANGLES OBTENUS
+C OUT TRI    : CONNECTIVITE TRIANGULATION (INDEX DANS SC)
+C
+C ----------------------------------------------------------------------
+C
       REAL*8  PROVE2,DDOT,PLVOL2
-
-C --- VARIABLES
-      INTEGER IS(*),TRI(3,*),DIM,NS,NTRI,N0,I,J,K,A,B,C,D,E,F
-      REAL*8  SC(DIM,*),N(*),V(3),R0,R1,R2,SM
-
-      N0 = NS
+      INTEGER N0,I,J,K,A,B,C,D,E,F
+      REAL*8  V(3),R0,R1,R2,SM
+C
+C ----------------------------------------------------------------------
+C
+      N0   = NSOM
       NTRI = 0
 
       IF (N0.LT.3) GOTO 80
 
 C --- VERIFICATION ORIENTATION
       
-      IF (DIM.EQ.3) THEN
+      IF (DIME.EQ.3) THEN
 
         R0 = 0.D0
-        B = IS(NS)
+        B  = IS(NSOM)
 
-        DO 10 I = 1, NS
-          A = B
-          B = IS(I)
-          R0 = R0 + N(1)*SC(2,A)*SC(3,B) - N(2)*SC(1,A)*SC(3,B)
-     &            + N(2)*SC(3,A)*SC(1,B) - N(3)*SC(2,A)*SC(1,B)
-     &            + N(3)*SC(1,A)*SC(2,B) - N(1)*SC(3,A)*SC(2,B)
+        DO 10 I = 1, NSOM
+          A  = B
+          B  = IS(I)
+          R0 = R0 + NORM(1)*SC(2,A)*SC(3,B) - NORM(2)*SC(1,A)*SC(3,B)
+     &            + NORM(2)*SC(3,A)*SC(1,B) - NORM(3)*SC(2,A)*SC(1,B)
+     &            + NORM(3)*SC(1,A)*SC(2,B) - NORM(1)*SC(3,A)*SC(2,B)
  10     CONTINUE
 
         IF (R0.LT.0.D0) THEN
 
-          DO 20 I = 1, NS/2
-            A = IS(NS+1-I)
-            IS(NS+1-I) = IS(I)
+          DO 20 I = 1, NSOM/2
+            A = IS(NSOM+1-I)
+            IS(NSOM+1-I) = IS(I)
             IS(I) = A
  20       CONTINUE
             
         ENDIF
 
       ENDIF
-
 C --- SURFACE DU POLYGONE
 
-      SM = PREC*PLVOL2(DIM,SC,N,IS,NS)
+      SM = PRECTR*PLVOL2(DIME  ,SC    ,NORM  ,IS    ,NSOM  )
 
 C --- TRIANGULATION
 
@@ -97,11 +110,11 @@ C --- TRIANGULATION
 
 C --- ALIGNEMENT DE B, C ET D
 
-      IF (DIM.EQ.2) THEN
+      IF (DIME.EQ.2) THEN
         R2 = PROVE2(SC(1,B),SC(1,D),SC(1,C))
       ELSE
         CALL PROVE3(SC(1,B),SC(1,D),SC(1,C),V)
-        R2 = DDOT(3,N,1,V,1)
+        R2 = DDOT(3,NORM,1,V,1)
       ENDIF
 
       IF (ABS(R2).LT.SM) THEN
@@ -122,7 +135,7 @@ C --- ORIENTATION INTERIEURE DE LA DIAGONALE BD
 
       A = IS(1+MOD(I-1,N0))
 
-      IF (DIM.EQ.2) THEN
+      IF (DIME.EQ.2) THEN
 
         R0 = PROVE2(SC(1,A),SC(1,B),SC(1,C))
         R1 = PROVE2(SC(1,B),SC(1,D),SC(1,A))
@@ -130,13 +143,13 @@ C --- ORIENTATION INTERIEURE DE LA DIAGONALE BD
       ELSE
 
         CALL PROVE3(SC(1,A),SC(1,B),SC(1,C),V)
-        R0 = DDOT(3,N,1,V,1)
+        R0 = DDOT(3,NORM,1,V,1)
         CALL PROVE3(SC(1,B),SC(1,D),SC(1,A),V)
-        R1 = DDOT(3,N,1,V,1)
+        R1 = DDOT(3,NORM,1,V,1)
 
       ENDIF
-
-      IF (R0.GE.0.D0) THEN
+       
+      IF (R0.GE.0.D0) THEN 
         IF ((R1.LE.0.D0).OR.(R2.GE.0.D0)) GOTO 30
       ELSE
         IF ((R1.LT.0.D0).AND.(R2.GT.0.D0)) GOTO 30
@@ -153,7 +166,7 @@ C --- PAS D'INTERSECTION DE LA DIAGONALE BD
         K = K + 1
         F = IS(1+MOD(K,N0))
 
-        IF (DIM.EQ.2) THEN
+        IF (DIME.EQ.2) THEN
 
           R1 = PROVE2(SC(1,B),SC(1,D),SC(1,E))
           R2 = PROVE2(SC(1,B),SC(1,D),SC(1,F))
@@ -161,16 +174,16 @@ C --- PAS D'INTERSECTION DE LA DIAGONALE BD
         ELSE
 
           CALL PROVE3(SC(1,B),SC(1,D),SC(1,E),V)
-          R1 = DDOT(3,N,1,V,1)
+          R1 = DDOT(3,NORM,1,V,1)
           CALL PROVE3(SC(1,B),SC(1,D),SC(1,F),V)
-          R2 = DDOT(3,N,1,V,1)
+          R2 = DDOT(3,NORM,1,V,1)
       
         ENDIF
 
         IF (((R1.GT.0.D0).AND.(R2.GT.0.D0))
      &  .OR.((R1.LT.0.D0).AND.(R2.LT.0.D0))) GOTO 50
 
-        IF (DIM.EQ.2) THEN
+        IF (DIME.EQ.2) THEN
 
           R1 = PROVE2(SC(1,E),SC(1,F),SC(1,B))
           R2 = PROVE2(SC(1,E),SC(1,F),SC(1,D))
@@ -178,9 +191,9 @@ C --- PAS D'INTERSECTION DE LA DIAGONALE BD
         ELSE
 
           CALL PROVE3(SC(1,E),SC(1,F),SC(1,B),V)
-          R1 = DDOT(3,N,1,V,1)
+          R1 = DDOT(3,NORM,1,V,1)
           CALL PROVE3(SC(1,E),SC(1,F),SC(1,D),V)
-          R2 = DDOT(3,N,1,V,1)
+          R2 = DDOT(3,NORM,1,V,1)
         
         ENDIF
 
@@ -191,8 +204,9 @@ C --- PAS D'INTERSECTION DE LA DIAGONALE BD
 
  50   CONTINUE
 
+C
 C --- ESSORILLAGE DU POLYGONE SUIVANT LA DIAGONALE BD
-
+C
       NTRI = NTRI + 1
       TRI(1,NTRI) = B
       TRI(2,NTRI) = C
@@ -205,25 +219,23 @@ C --- ESSORILLAGE DU POLYGONE SUIVANT LA DIAGONALE BD
  60   CONTINUE
 
       IF (N0.GT.3) GOTO 30
-
+C
 C --- DERNIER TRIANGLE
-
+C
  70   CONTINUE
 
-      IF (DIM.EQ.2) THEN
+      IF (DIME.EQ.2) THEN
         R0 = PROVE2(SC(1,IS(1)),SC(1,IS(2)),SC(1,IS(3)))
       ELSE
         CALL PROVE3(SC(1,IS(1)),SC(1,IS(2)),SC(1,IS(3)),V)
-        R0 = DDOT(3,N,1,V,1)
+        R0 = DDOT(3,NORM,1,V,1)
       ENDIF
 
-      IF ((NTRI.EQ.0).OR.(R0.GT.SM)) THEN
-     
+      IF ((NTRI.EQ.0).OR.(R0.GT.SM)) THEN     
         NTRI = NTRI + 1
         TRI(1,NTRI) = IS(1)
         TRI(2,NTRI) = IS(2)
         TRI(3,NTRI) = IS(3)
-
       ENDIF
 
  80   CONTINUE

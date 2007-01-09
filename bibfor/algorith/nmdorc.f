@@ -17,11 +17,12 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
+C RESPONSABLE PROIX J-M.PROIX
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -58,7 +59,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
       INTEGER INV,DIMANV,NBMONO,NUNIT,ITEINT,ITEPAS,NUMGD,JACMP,NBCRIT
       INTEGER JCRIT,JVALC
-      REAL*8 RBID,RESI,THETA,R8VIDE
+      REAL*8 RBID,RESI,THETA,R8VIDE,PERT,RESID
       COMPLEX*16 CBID
       LOGICAL      BUG, NIVO
       CHARACTER*1  K1BID
@@ -69,11 +70,11 @@ C    DIMAKI = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       PARAMETER (NCMPMA=7+DIMAKI+DIMANV)
       LOGICAL EXIST,GETEXM,EXICP,EXI1D,CRILOC
       CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2),SDCOMP
-      CHARACTER*16 COMP,DEFO,MOCLEF(2),K16BID,NOMCMD,MOCLES(2)
+      CHARACTER*16 COMP,DEFO,MOCLEF(2),K16BID,NOMCMD,MOCLES(2),TYPMAT
       CHARACTER*16 VALCMP(NCMPMA),TXCP,TX1D,RESO
       CHARACTER*19 COMPOR
       CHARACTER*24 LIGRMO,MODELE,MESMAI
-      CHARACTER*50 CHAIN1, CHAIN2
+      CHARACTER*50 CHAIN1, CHAIN2, VALK(4)
 C    POUR COMPORTEMENT KIT_
       INTEGER NBVEL(DIMAKI)
       INTEGER NBNVI(DIMANV)
@@ -176,20 +177,16 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
                     CHAIN2(2:9) = K8B
                     CHAIN2(32:47) = ZK16(JMAIL+IMA-1)
                     IF (.NOT.BUG) THEN
-                      CALL UTDEBM('E','NMDORC','DONNEES INCOMPATIBLES:')
+                      CALL U2MESS('E','ALGORITH_25')
                     END IF
                     IF (.NOT.NIVO) THEN
                       NIVO = .TRUE.
-                      CALL UTIMPK('L',
-     &                            ' ON VEUT AFFECTER UN COMPORTEMENT ',
-     &                            1,MOCLEF(I))
-                      CALL UTIMPK('S',' AVEC UNE RELATION ',1,COMP)
-                      CALL UTIMPK('S',' SUR UNE MAILLE DEJA AFFECTEE '
-     &                              //'PAR UN AUTRE COMPORTEMENT',
-     &                            0,K8B)
-                      CALL UTIMPK('L',CHAIN1,0,K8B)
+                      VALK(1)=MOCLEF(I)
+                      VALK(2)=COMP
+                      VALK(3)=CHAIN1
+                      VALK(4)=CHAIN2
+                      CALL U2MESK ('E', 'ALGORITH11_85', 4, VALK)
                     END IF
-                    CALL UTIMPK('L',CHAIN2,0,K8B)
                     BUG = .TRUE.
                   END IF
    20           CONTINUE
@@ -212,21 +209,16 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
                       CHAIN2(2:9) = K8B
                       CHAIN2(32:47) = ZK16(JMAIL+IMA-1)
                       IF (.NOT.BUG) THEN
-                        CALL UTDEBM('E','NMDORC',
-     &                              'DONNEES INCOMPATIBLES:')
+                          CALL U2MESS('E','ALGORITH_25')
                       END IF
                       IF (.NOT.NIVO) THEN
                         NIVO = .TRUE.
-                        CALL UTIMPK('L',
-     &                              ' ON VEUT AFFECTER UN COMPORTEMENT '
-     &                              ,1,MOCLEF(I))
-                        CALL UTIMPK('S',' AVEC UNE RELATION ',1,COMP)
-                        CALL UTIMPK('S',' SUR UNE MAILLE DEJA AFFECTEE '
-     &                              //'PAR UN AUTRE COMPORTEMENT',
-     &                            0,K8B)
-                        CALL UTIMPK('L',CHAIN1,0,K8B)
+                      VALK(1)=MOCLEF(I)
+                      VALK(2)=COMP
+                      VALK(3)=CHAIN1
+                      VALK(4)=CHAIN2
+                      CALL U2MESK ('E', 'ALGORITH11_85', 4, VALK)
                       END IF
-                      CALL UTIMPK('L',CHAIN2,0,K8B)
                       BUG = .TRUE.
                     END IF
    40             CONTINUE
@@ -244,21 +236,16 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
                       CHAIN2(2:9) = K8B
                       CHAIN2(32:47) = ZK16(JMAIL+IMA-1)
                       IF (.NOT.BUG) THEN
-                        CALL UTDEBM('E','NMDORC',
-     &                              'DONNEES INCOMPATIBLES:')
+                         CALL U2MESS('E','ALGORITH_25')
                       END IF
                       IF (.NOT.NIVO) THEN
                         NIVO = .TRUE.
-                        CALL UTIMPK('L',
-     &                              ' ON VEUT AFFECTER UN COMPORTEMENT '
-     &                              ,1,MOCLEF(I))
-                        CALL UTIMPK('S',' AVEC UNE RELATION ',1,COMP)
-                        CALL UTIMPK('S',' SUR UNE MAILLE DEJA AFFECTEE '
-     &                              //'PAR UN AUTRE COMPORTEMENT',
-     &                            0,K8B)
-                        CALL UTIMPK('L',CHAIN1,0,K8B)
+                      VALK(1)=MOCLEF(I)
+                      VALK(2)=COMP
+                      VALK(3)=CHAIN1
+                      VALK(4)=CHAIN2
+                      CALL U2MESK ('E', 'ALGORITH11_85', 4, VALK)
                       END IF
-                      CALL UTIMPK('L',CHAIN2,0,K8B)
                       BUG = .TRUE.
                     END IF
    60             CONTINUE
@@ -268,7 +255,6 @@ C    UN COMPORTEMENT NE DISPOSE PAS DEJA D'UN COMPORTEMENT
    70     CONTINUE
    80   CONTINUE
         IF (BUG) THEN
-          CALL UTFINM()
           CALL U2MESS('F','MODELISA4_1')
         END IF
         CALL ALCART('V',COMPOR,NOMA,NOMGRD)
@@ -347,24 +333,6 @@ C  POUR COMPORTEMENT KIT_
                 ENDIF
   120         CONTINUE
 
-              EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
-              EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
-              IF (EXICP) THEN
-                CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
-                IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4
-              END IF
-              IF (EXI1D) THEN
-                CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
-                IF (TX1D.EQ.'DEBORST') THEN
-                   IF(TXCP.EQ.'DEBORST')THEN
-                      CALL U2MESS('F','ALGORITH7_58')
-                   ELSE
-                      NBVARI = NBVARI + 4
-                      TXCP=TX1D
-                   ENDIF
-                ENDIF
-              END IF
-
               IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
      &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
                 DO 122 INV = 1, DIMANV
@@ -423,24 +391,6 @@ C   AUTRES COMPORTEMENTS : NOMBRE DE VARIABLES INTERNES
                   CALL GETVIS(MOCLEF(I),'UNITE',K,1,1,NUNIT,N1)
                   WRITE (ZK16(JVALV-1+6),'(I16)') NUNIT
                 ENDIF
-C   CPLAN DEBORST  ET COMP1D DEBORST
-                EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
-                EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
-                IF (EXICP) THEN
-                   CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
-                   IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4
-                END IF
-                IF (EXI1D) THEN
-                   CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
-                   IF (TX1D.EQ.'DEBORST') THEN
-                      IF(TXCP.EQ.'DEBORST')THEN
-                          CALL U2MESS('F','ALGORITH7_58')
-                      ELSE
-                         NBVARI = NBVARI + 4
-                         TXCP=TX1D
-                      ENDIF
-                   ENDIF
-                END IF
             END IF
             
 C RELATION SIMO_MIEHE POUR VMIS_ISOT_XXX ET META_XXX_IL
@@ -463,19 +413,43 @@ C ET META_XXX_INL
               END IF
             END IF
 
+C           CPLAN DEBORST  ET COMP1D DEBORST                         
+C           DEBORST SEULEMENT EN COMP_INCR                           
+            IF ((I.EQ.1) .AND. (CRILOC)) THEN            
+              EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')                
+              EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')                    
+              IF (EXICP) THEN                                        
+                 CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)  
+                 IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4          
+              END IF                                                 
+              IF (EXI1D) THEN                                        
+                 CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)      
+                 IF (TX1D.EQ.'DEBORST') THEN                         
+                    IF(TXCP.EQ.'DEBORST')THEN                        
+                        CALL U2MESS('F','ALGORITH7_58')              
+                    ELSE                                             
+                       NBVARI = NBVARI + 4                           
+                       TXCP=TX1D                                     
+                    ENDIF                                            
+                 ENDIF                                               
+              END IF                                                 
+            END IF                                                   
 
             EXIST = GETEXM(MOCLEF(I),'DEFORMATION')
             IF (EXIST) THEN
               CALL GETVTX(MOCLEF(I),'DEFORMATION',K,1,1,DEFO,N1)
             END IF
 
+C ======================================================================
+C --- ON STOCKE LE NOMBRE DE VARIABLES INTERNES PAR RELATION -----------
+C --- DE COMPORTEMENT --------------------------------------------------
+C ======================================================================
+
             ZK16(JVALV-1+1) = COMP
             WRITE (ZK16(JVALV-1+2),'(I16)') NBVARI
             ZK16(JVALV-1+3) = DEFO
             ZK16(JVALV-1+4) = MOCLEF(I)
             ZK16(JVALV-1+5) = TXCP
-CCC            ZK16(JVALV-1+6) = ' '
-CCC            ZK16(JVALV-1+7) = ' '
 
 C  POUR COMPORTEMENT KIT_
 
@@ -486,13 +460,6 @@ C  POUR COMPORTEMENT KIT_
                 ZK16(JVALV-1+ICOMEL+7) = '        '
               END IF
   140       CONTINUE
-
-
-
-C ======================================================================
-C --- ON STOCKE LE NOMBRE DE VARIABLES INTERNES PAR RELATION -----------
-C --- DE COMPORTEMENT --------------------------------------------------
-C ======================================================================
             IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
      &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
                DO 180 INV = 1, DIMANV
@@ -520,7 +487,6 @@ C ======================================================================
                 CALL GETVIS('COMP_INCR','ITER_INTE_PAS' ,1,1,1,ITEPAS,
      &                       IRET)
                 ZR(JVALC) = ITEINT
-C la variable  ZR(JVALC+1) n'est pas utilisee
                 ZR(JVALC+1) = 0
                 ZR(JVALC+2) = RESI
                 ZR(JVALC+3) = THETA
@@ -532,9 +498,12 @@ C la variable  ZR(JVALC+1) n'est pas utilisee
      &                    NBCRIT)
               ENDIF
               CALL JEDETR(MESMAI)
+              
             ELSE
+            
+C  POUR COMPORTEMENT DIFFERENTS DE KIT_
+
 C ------- PAR DEFAUT C'EST TOUT='OUI'
-C            CALL GETVTX ( MOCLEF(I), 'TOUT'  , K,1,1, OUI   , NT )
               CALL NOCART(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
               IF (CRILOC) THEN
 C    LECTURE DES PARAMETRES
@@ -542,17 +511,43 @@ C    LECTURE DES PARAMETRES
                 CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
                 CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
      &                    IRET)
-
-
                 IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
      &             CALL U2MESS('A','ALGORITH7_60')
-
                 CALL GETVIS(MOCLEF(I),'ITER_INTE_PAS' ,K,1,1,ITEPAS,
      &                       IRET)
-                ZR(JVALC) = ITEINT
-C la variable  ZR(JVALC+1) n'est pas utilisee
-                ZR(JVALC+1) = 0
+
+
+C               CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
+                RESID=1.D-6                     
+                IF (I.EQ.1) THEN
+                    IF ((EXICP)) THEN
+                    CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
+                       IF (TXCP.EQ.'DEBORST') THEN
+                          CALL GETVR8(MOCLEF(I),'RESI_DEBORST',K,1,1,
+     &                            RESID,IRET)
+                    ENDIF           
+                    ENDIF           
+
+C  dans la variable  ZR(JVALC+1) on stocke le type de matrice tangente
+                    CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,
+     &                          TYPMAT ,IRET)
+                    IF (IRET.EQ.0) THEN
+                       ZR(JVALC+1) = 0
+                    ELSE
+                       CALL GETVR8(MOCLEF(I),'VALE_PERT_RELA',K,1,1,
+     &                             PERT,IRET)
+                        ZR(JVALC+6) = PERT
+                       IF (TYPMAT.EQ.'PERTURBATION') THEN
+                          ZR(JVALC+1) = 1
+                       ELSEIF (TYPMAT.EQ.'VERIFICATION') THEN
+                          ZR(JVALC+1) = 2
+                       ENDIF
+                    ENDIF
+                ENDIF       
+                    
+                ZR(JVALC)   = ITEINT
                 ZR(JVALC+2) = RESI
+                ZR(JVALC+7) = RESID
                 ZR(JVALC+3) = THETA
                 ZR(JVALC+4) = ITEPAS
                 IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0

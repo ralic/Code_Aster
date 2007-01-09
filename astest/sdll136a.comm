@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/01/2007   AUTEUR VIVAN L.VIVAN 
 # TITRE CALCUL D USURE SUR UN TUBE GV SOUMIS A UNE EXCITATION ALEATOIRE MULTIDIRECTIONNELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -427,8 +427,7 @@ TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PRECISION=5E-6,
                    NUME_ORDRE = 1,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.03.06',
-                   VALE = 2.24553)
+                   VALE = 2.2450024596776 )
           )
 TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PARA = 'FREQ',
@@ -436,8 +435,7 @@ TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PRECISION=5E-6,
                    NUME_ORDRE = 2,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.03.06',
-                   VALE = 5.57156)
+                   VALE = 5.5700496364930 )
           )
 TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PARA = 'FREQ',
@@ -445,8 +443,7 @@ TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PRECISION=5E-6,
                    NUME_ORDRE = 3,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.03.06',
-                   VALE = 6.82426)
+                   VALE = 6.8222106670320 )
           )
 TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PARA = 'FREQ',
@@ -454,8 +451,7 @@ TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PRECISION=5E-6,
                    NUME_ORDRE = 4,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.03.06',
-                   VALE = 1.33391E+01)
+                   VALE = 1.3335456845172E+01)
           )
 TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PARA = 'FREQ',
@@ -463,8 +459,7 @@ TEST_RESU(  RESU=_F( RESULTAT = MODES2,
                    PRECISION=5E-6,
                    NUME_ORDRE = 5,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.03.06',
-                   VALE = 1.46486E+01)
+                   VALE = 1.4643943760230E+01)
           )
 
 
@@ -644,8 +639,7 @@ TEST_TABLE(        TABLE=USURE,
                    PRECISION=2E-3,
                    NOM_PARA='PUIS_USUR_GLOBAL',
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.03.17',
-                   VALE=6.77424E-02    )
+                   VALE=6.7720580581516E-02    )
 
 
 FIN( );

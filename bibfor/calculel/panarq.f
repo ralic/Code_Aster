@@ -1,7 +1,7 @@
-      SUBROUTINE PANARQ(TYPEMA,PAN,NARE)
-
+      SUBROUTINE PANARQ(TYPEMA,PAN)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,43 +20,42 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
-C ----------------------------------------------------------------------
-C        PANS TOUCHANT LES ARETES QUADRATIQUES D'UN TYPE DE MAILLE
-C ----------------------------------------------------------------------
-C VARIABLE D'ENTREE
-C CHARACTER*8  TYPEMA          : TYPE DE MAILLE
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES DE SORTIE
-C INTEGER      PAN(DIM-1,NARE) : PANS TOUCHANT LES ARETES QUADRATIQUES
-C                               (PAN1.1,[PAN1.2],PAN2.1,[PAN2.2],...)
-C                                PAN*.1 [ET PAN*.2] TOUCHE[NT] L'ARETE
-C                                QUADRATIQUE *
-C INTEGER      NARE            : NOMBRE D'ARETES QUADRATIQUES
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      CHARACTER*8 TYPEMA
-      INTEGER     PAN(*),NARE
-
+      CHARACTER*8  TYPEMA
+      INTEGER      PAN(*)
+C      
+C ----------------------------------------------------------------------
+C
+C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
+C
+C INDICES DES PANS TOUCHANT LES ARETES QUADRATIQUES D'UN TYPE DE MAILLE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  TYPEMA : TYPE DE MAILLE
+C OUT PAN    : PANS TOUCHANT LES ARETES QUADRATIQUES (DIM-1,NARE)
+C               (PAN1.1,[PAN1.2],PAN2.1,[PAN2.2],...)
+C               PAN*.1 [ET PAN*.2] TOUCHE[NT] L'ARETE QUADRATIQUE *
+C
+C ----------------------------------------------------------------------
+C
       IF (TYPEMA(1:5).EQ.'TRIA6') THEN
-        NARE = 3
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 3
       ELSEIF (TYPEMA(1:5).EQ.'QUAD6') THEN
-        NARE = 2
         PAN(1) = 1
         PAN(2) = 3
-      ELSEIF ((TYPEMA(1:5).EQ.'QUAD8').OR.(TYPEMA(1:5).EQ.'QUAD9')) THEN
-        NARE = 4
+      ELSEIF ((TYPEMA(1:5).EQ.'QUAD8').OR.
+     &        (TYPEMA(1:5).EQ.'QUAD9')) THEN
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 3
         PAN(4) = 4
       ELSEIF (TYPEMA(1:7).EQ.'TETRA10') THEN
-        NARE = 6
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 1
@@ -69,9 +68,8 @@ C --- VARIABLES
         PAN(10) = 4
         PAN(11) = 3
         PAN(12) = 4
-      ELSEIF ((TYPEMA(1:7).EQ.'PENTA12')
-     &    .OR.(TYPEMA(1:7).EQ.'PENTA14')) THEN
-        NARE = 6
+      ELSEIF ((TYPEMA(1:7).EQ.'PENTA12').OR.
+     &        (TYPEMA(1:7).EQ.'PENTA14')) THEN
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 1
@@ -85,7 +83,6 @@ C --- VARIABLES
         PAN(11) = 5
         PAN(12) = 4
       ELSEIF (TYPEMA(1:7).EQ.'PENTA15') THEN
-        NARE = 9
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 1
@@ -104,8 +101,8 @@ C --- VARIABLES
         PAN(16) = 3
         PAN(17) = 5
         PAN(18) = 4
-      ELSEIF((TYPEMA(1:6).EQ.'HEXA16').OR.(TYPEMA(1:6).EQ.'HEXA18'))THEN
-        NARE = 8
+      ELSEIF ((TYPEMA(1:6).EQ.'HEXA16').OR.
+     &        (TYPEMA(1:6).EQ.'HEXA18')) THEN
         PAN(1) = 1
         PAN(2) = 3
         PAN(3) = 1
@@ -122,8 +119,8 @@ C --- VARIABLES
         PAN(14) = 6
         PAN(15) = 5
         PAN(16) = 6
-      ELSEIF((TYPEMA(1:6).EQ.'HEXA20').OR.(TYPEMA(1:6).EQ.'HEXA27'))THEN
-        NARE = 12
+      ELSEIF ((TYPEMA(1:6).EQ.'HEXA20').OR.
+     &        (TYPEMA(1:6).EQ.'HEXA27')) THEN
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 1
@@ -149,7 +146,8 @@ C --- VARIABLES
         PAN(23) = 5
         PAN(24) = 6
       ELSE
-        CALL U2MESK('F','CALCULEL_28',1,TYPEMA)
+        WRITE(6,*) 'TYPEMA: ',TYPEMA      
+        CALL ASSERT(.FALSE.)
       ENDIF
 
       END

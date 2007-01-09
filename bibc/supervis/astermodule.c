@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

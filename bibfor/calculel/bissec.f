@@ -1,7 +1,7 @@
-      SUBROUTINE BISSEC(NOMZ)
-
+      SUBROUTINE BISSEC(NOMARB,NOMBOI)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 31/10/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,19 +20,30 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C A_UTIL
-C ----------------------------------------------------------------------
-C     CONSTRUCTION D'UN ARBRE DE PARTITION BINAIRE DE L'ESPACE (BSP)
-C ----------------------------------------------------------------------
-C VARIABLE D'ENTREE
-C CHARACTER*(10)   NOMZ   :  SD DOMAINE
+C RESPONSABLE ABBAS M.ABBAS
 C 
-C SD D'ENTREE
-C NOM.BOITE      : SD BOITES ENGLOBANTES (CF BOITE)
+      IMPLICIT NONE
+      CHARACTER*16   NOMBOI,NOMARB
+C     
+C ----------------------------------------------------------------------
 C
-C SD DE SORTIE
-C NOM.ARBRE.LIMA : VECTEUR LISTE DE MAILLE (MA1, MA2, ...)
-C NOM.ARBRE.CELL : TABLEAU D'ARBORESCENCE A 3 COLONNES
+C ROUTINE ARLEQUIN
+C
+C CONSTRUCTION D'UN ARBRE DE PARTITION BINAIRE DE L'ESPACE (BSP)
+C
+C ----------------------------------------------------------------------
+C
+C
+C I/O NOMMED : NOM DE LA SD DE STOCKAGE MAILLES DE LA ZONE MEDIATRICE 
+C
+C ON ENRICHIT NOMMED(1:10)   
+C     IN : NOMMED(1:10)//'.GROUPEMA': LISTE DES MAILLES
+C     IN : NOMMED(1:10)//'.BOITE'   : LISTE DES BOITES ENGLOBANTES
+C     IN : NOMMED(1:10)//'.GRMAMA'  : GRAPHE MAILLE/MAILLE
+C     IN : NOMMED(1:10)//'.CNCINV'  : CONNECTIVITE INVERSE
+C     OUT: NOMMED(1:10)//'.ARBRE'   : ARBRE DE PARTITION
+C       ARBRE.LIMA : VECTEUR LISTE DE MAILLE (MA1, MA2, ...)
+C       ARBRE.CELL : TABLEAU D'ARBORESCENCE A 3 COLONNES
 C                 ( CELL1.1, CELL1.2, CELL1.3, CELL2.1, CELL2.2, ... )
 C                  SI CELL*.1 > 0  
 C                     CELL*.1 : POINTEUR PAN DANS NOM.BOITE.PAN
@@ -44,14 +55,9 @@ C                  SI CELL*.1 < 0
 C                     CELL*.1 : - NOMBRE DE MAILLES CANDIDATES
 C                     CELL*.2 : POINTEUR DANS NOM.ARBRE.LIMA DES MAILLES
 C                               CANDIDATES
-C ---------------------------------------------------------------------
-C                  POUR SON UTILISATION : CF CERNE
-C ---------------------------------------------------------------------
-
-      IMPLICIT NONE
-
+C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -66,65 +72,60 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C      
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-C --- PARAMETRES
-      INTEGER IMAX,NMIN
-      PARAMETER (IMAX = 15)
-      PARAMETER (NMIN = 8)
-      REAL*8  GAMMA0,GAMMA1,PREC
-      PARAMETER (GAMMA0 = 0.17D0)
-      PARAMETER (GAMMA1 = 0.90D0)
-      PARAMETER (PREC = 1.D-8)
-
-C --- GENERATEUR PSEUDO-ALEATOIRE
-      INTEGER GRAIN0,GRAIN1,GRAINS(32),GRAMAX
-      PARAMETER (GRAMAX = 2147483647)
-
-C --- VARIABLES
-      INTEGER        DIME,NMA,NLIMA,NGAMA,NGAMA0,NGAM00,NGAM01,L0,LN
-      INTEGER        NCELL,DCELL,FCELL,ICELL,IPAN,IPAN0,IMA,ILIMA
+C 
+      INTEGER        IMAX,NMIN
+      REAL*8         GAMMA0,GAMMA1,PREC   
+      INTEGER        DIME,NMA,NGAMA,NGAMA0,NGAM00,NGAM01,L0,LN
+      INTEGER        DCELL,FCELL,ICELL,IPAN,IPAN0,IMA,ILIMA
       INTEGER        NN,NP,NZ,NN0,NP0,NSOM,NPAN,ISOM,MODNMA,MODPAN
-      INTEGER        H,I,J,K,L,P0,P1,P2,P3,P4,P5,P6,Q0,Q1,Q2,Q3,Q4
-      CHARACTER*(*)  NOMZ
-      CHARACTER*10   NOM
+      INTEGER        I,J,K,L,P4,P5,Q3,Q4
+      INTEGER        JINFO
       REAL*8         R,R0
-
-      NOM = NOMZ
-
-C --- LECTURE DONNEES
-  
+      INTEGER        IFM,NIV
+      INTEGER        NCELL
+      INTEGER        P0,P1,P2,Q0,Q1,Q2,P6
+C --- GENERATEUR PSEUDO-ALEATOIRE
+      INTEGER        GRAIN0,GRAIN1,GRAINS(32),GRAMAX
+      PARAMETER      (GRAMAX = 2147483647)      
+C      
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      CALL JEVEUO(NOM//'.BOITE.DIME','L',P0)
-      CALL JEVEUO(NOM//'.BOITE.PAN','L',P1)
-      CALL JEVEUO(NOM//'.BOITE.SOMMET','L',P2)
-
-      DIME = ZI(P0)
-      NMA = ZI(P0+1)
-
-C --- ALLOCATIONS
-
-      H = (LOG(1.D0*NMIN/NMA))/LOG(0.5D0+0.5D0*GAMMA0)
-      H = MAX(H,0) + 1
-      NLIMA = ((1.D0+GAMMA0)**H)*NMA
-      NCELL = (2**H)-1
-      CALL WKVECT(NOM//'.ARBRE.LIMA','V V I',NLIMA,Q0)
-      CALL WKVECT(NOM//'.ARBRE.CELL','V V I',NCELL*3,Q1)
-      CALL WKVECT('&&BISSEC.LIMA','V V I',NMA,Q2)
-
-C --- INITIALISATION
- 
+      CALL INFNIV(IFM,NIV) 
+C
+C --- LECTURE SD ARBRE
+C
+      CALL JEVEUO(NOMARB(1:16)//'.LIMA','E',Q0)
+      CALL JEVEUO(NOMARB(1:16)//'.CELL','E',Q1)
+      CALL JEVEUO(NOMARB(1:16)//'.INFO','L',JINFO)            
+C
+C --- LECTURE SD BOITES
+C
+      CALL JEVEUO(NOMBOI(1:16)//'.DIME'  ,'L',P0)
+      CALL JEVEUO(NOMBOI(1:16)//'.PAN'   ,'L',P1)
+      CALL JEVEUO(NOMBOI(1:16)//'.SOMMET','L',P2)
+      DIME   = ZI(P0)      
+C
+C --- INITIALISATIONS
+C  
       GRAIN0 = 0
       GRAIN1 = 0
-      DO 10 I = 1, NMA
-        ZI(Q0-1+I) = I
- 10   CONTINUE
-      DCELL = 0
-      FCELL = 1
-      ZI(Q1) = -NMA
-      ZI(Q1+1) = 1
-      ZI(Q1+2) = NLIMA
-
+      DCELL  = 0
+      FCELL  = 1    
+      NMA    = NINT(ZR(JINFO + 1))
+      NMIN   = NINT(ZR(JINFO + 2))
+      GAMMA0 =      ZR(JINFO + 3)
+      GAMMA1 =      ZR(JINFO + 4)
+      PREC   =      ZR(JINFO + 5)
+      IMAX   = NINT(ZR(JINFO + 6))     
+      NCELL  = NINT(ZR(JINFO + 8))   
+C      
+C --- CREATION SD TEMPORAIRE
+C 
+      CALL WKVECT('&&BISSEC.LIMA','V V I',NMA,Q2)
+C
  20   CONTINUE
 
 C --- BISSECTION
@@ -336,9 +337,15 @@ C ----------- SOMMETS DU CONVEXE ASSOCIE DU MEME COTE ?
         GOTO 20
 
       ENDIF
-
+C
+C --- IMPRESSIONS
+C
+      IF (NIV.GE.2) THEN
+        CALL ARBRIM(IFM,NOMARB)
+      ENDIF      
+C
 C --- DESALLOCATION
-
+C
       CALL JEDETR('&&BISSEC.LIMA')
       CALL JEDEMA()
 

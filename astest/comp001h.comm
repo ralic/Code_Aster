@@ -1,0 +1,158 @@
+# MODIF  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+# TITRE TEST EN 3D VMIS_ISOT_PUIS, UTILISANT SIMU_PONT_MAT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='COMP001H',NIV_PUB_WEB='INTERNET',),);
+
+YOUNG=200000.0
+SY=437.0
+POISSON=0.3
+APUI=1.3
+NPUI=3.5
+CALIBRE=4.5
+CTAUC= CALIBRE*(1.+POISSON)/YOUNG
+CTRAC= CALIBRE/YOUNG
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                            NU=POISSON),
+                    ECRO_PUIS=_F(A_PUIS=APUI,
+                                 N_PUIS=NPUI,
+                                 SY=SY,
+                                 ),);
+
+INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=2.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=3.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=4.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=5.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=6.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=7.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=8.0,
+                                    NOMBRE=10,)))
+
+
+CHARGE=DEFI_FONCTION(NOM_PARA='INST',VALE=
+      (0.0,          0.0,
+       0.1,         -400.0,
+       3000000.0,   -400.0,),);
+
+TRACE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(
+                           0.0,    0.0,
+                           1.0,  150.0,
+                           2.0,  300.0,
+                           3.0,  300.0,
+                           4.0,    0.0,
+                           5.0, -300.0,
+                           6.0, -200.0,
+                           7.0, -150.0,
+                           8.0,    0.0))
+                   
+
+DEVIE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(
+                           0.0,    0.0,
+                           1.0,    0.0,
+                           2.0,  100.0,
+                           3.0,    0.0,
+                           4.0,    0.0,
+                           5.0,    0.0,
+                           6.0, -100.0,
+                           7.0,    0.0,
+                           8.0,    0.0,))
+
+TAUXY=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(
+                           0.0,    0.0,
+                           1.0,  100.0,
+                           2.0,   40.0,
+                           3.0,    0.0,
+                           4.0,    0.0,
+                           5.0,    0.0,
+                           6.0,  -40.0,
+                           7.0, -100.0,
+                           8.0,    0.0))
+                   
+
+EPS_XX=CALC_FONCTION(COMB=(_F(FONCTION=TRACE, COEF=CTRAC),
+                           _F(FONCTION=DEVIE, COEF=CTRAC)))
+
+EPS_XY=CALC_FONCTION(COMB=(_F(FONCTION=TAUXY, COEF=CTAUC)))
+
+EPS_YY=CALC_FONCTION(COMB=(_F(FONCTION=TRACE, COEF=CTRAC),
+                           _F(FONCTION=DEVIE, COEF=CTRAC)))
+
+RESUXX=SIMU_POINT_MAT(
+   COMP_INCR=_F(RELATION='VMIS_ISOT_PUIS',                        
+                DEFORMATION='PETIT',                         
+                ITER_INTE_MAXI=20,                           
+                ),                 
+   NEWTON=_F(MATRICE='TANGENTE',                       
+             REAC_ITER=1),                             
+   CONVERGENCE=_F(ITER_GLOB_MAXI=20,),                  
+   MATER = ACIER,
+   INCREMENT=_F(
+      LIST_INST  =INSTANTS,
+      SUBD_METHODE    ='UNIFORME',
+      SUBD_PAS        = 4,
+      SUBD_COEF_PAS_1 = 1.0,
+      SUBD_PAS_MINI   = 0.00000001,
+   ),
+   EPSI_IMPOSE=_F( EPXX = EPS_XX, EPYY= EPS_YY, EPXY = EPS_XY),
+)
+
+IMPR_TABLE(TABLE = RESUXX)
+
+
+
+TEST_TABLE(TABLE=RESUXX,INFO=2,
+   FILTRE=_F(NOM_PARA='INST',VALE=1.0),                 
+   NOM_PARA='V1',                                            
+   VALE= 3.88005E-03,                                 
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='INST',VALE=3.0),                
+   NOM_PARA='V1',                                            
+   VALE= 4.92898E-02,
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='INST',VALE=5.0),                
+   NOM_PARA='V1',                                            
+   VALE= 6.17232E-02,
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='INST',VALE=7.0),                
+   NOM_PARA='V1',                                            
+   VALE= 9.49589E-02,
+   REFERENCE='NON_REGRESSION',)                             
+TEST_TABLE(TABLE=RESUXX,                                     
+   FILTRE=_F(NOM_PARA='INST',VALE=8.0),                
+   NOM_PARA='V1',                                            
+   VALE=9.49589E-02,
+   REFERENCE='NON_REGRESSION',)
+
+FIN()

@@ -1,6 +1,8 @@
-      SUBROUTINE ARETE3(FS,OF,NF,AS,AF,NA)
+      SUBROUTINE ARETE3(FS,OF,NF,
+     &                  AS,AF,NA)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,38 +19,49 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ----------------------------------------------------------------------
-C              ARETES D'UN ENSEMBLE DE FACES TRIANGULAIRES
-C ----------------------------------------------------------------------
-C VARIABLES EN ENTREE
-C INTEGER    FS(3,*)  : SOMMETS DES FACES TRIANGLES
-C INTEGER    OF       : OFFSET DANS FS 
-C INTEGER    NF       : NOMBRE DE FACES CONSIDEREES
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES EN SORTIE
-C INTEGER    AS(2,*)  : SOMMETS COMPOSANT LES ARETES
-C INTEGER    AF(2,*)  : FACES ADJACENTES AUX ARETES (INDEX DANS FS)
-C                       AF(2,I) = 0 : ARETE SITUEE SUR LE BORD
-C INTEGER    NA       : NOMBRE D'ARETES
-C
-C DIMENSIONNEMENT
-C NA : 2*NF + 1
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      INTEGER FS(3,*),OF,NF,AS(2,*),AF(2,*)
-      INTEGER NA,F,A,S0,S1,S2,S3,I,J
-
+      INTEGER FS(3,*)
+      INTEGER OF
+      INTEGER NF
+      INTEGER AS(2,*)
+      INTEGER AF(2,*)
+      INTEGER NA
+C      
+C ----------------------------------------------------------------------
+C
+C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
+C BOITES ENGLOBANTES + ARBRE BSP
+C
+C ARETES D'UN ENSEMBLE DE FACES TRIANGULAIRES
+C
+C ----------------------------------------------------------------------
+C 
+C
+C IN  FS     : SOMMETS DES FACES TRIANGLES
+C IN  OF     : OFFSET DANS FS 
+C IN  NF     : NOMBRE DE FACES CONSIDEREES
+C OUT AS     : SOMMETS COMPOSANT LES ARETES
+C OUT AF     : FACES ADJACENTES AUX ARETES (INDEX DANS FS)
+C                       AF(2,I) = 0 : ARETE SITUEE SUR LE BORD
+C OUT NA     : NOMBRE D'ARETES NA = 2*NF + 1
+C
+C 
+C ----------------------------------------------------------------------
+C
+      INTEGER F,A,S0,S1,S2,S3,I,J
+C 
+C ----------------------------------------------------------------------
+C
 C --- INITIALISATION
 
       DO 10 I = 1, 2*NF + 1
         AF(2,I) = 0
  10   CONTINUE
-
+C
 C --- CALCUL DES ARETES
-
+C
       NA = 0
 
       DO 20 J = 1, NF

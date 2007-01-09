@@ -1,7 +1,8 @@
-      SUBROUTINE GRMAMA(MAIL,NGRNMZ,NMA,DM,BASE,NGRMMZ)
-
+      SUBROUTINE GRMAMA(NGRINV,NMA  ,DIMVAR,BASE  ,
+     &                  NGRMM ,DEGMAX) 
+C         
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,31 +21,39 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C A_UTIL
-C ----------------------------------------------------------------------
-C                CREATION DU GRAPHE MAILLE / MAILLE
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C CHARACTER*8   MAIL     : SD MAILLAGE  
-C CHARACTER*(*) NGRNMZ   : SD CONNECTIVITE INVERSE (CF CNCINV)    
-C INTEGER       NMA      : NOMBRE DE MAILLES
-C INTEGER       DM       : DIMENSION MINIMALE (DEFAUT = 1)
-C CHARACTER*1   BASE     : BASE DE CREATION DE NGRMMZ
-C CHARACTER*(*) NGRMMZ   : NOM DE L'OBJET GRAPHE MAILLE/MAILLE
+C RESPONSABLE ABBAS M.ABBAS
 C
-C SD DE SORTIE
-C NGRMMZ : (XC V I NUMERO VARIABLE)
+      IMPLICIT NONE
+      CHARACTER*1   BASE
+      CHARACTER*24  NGRINV,NGRMM        
+      INTEGER       NMA,DIMVAR,DEGMAX            
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C CREATION DU GRAPHE MAILLE / MAILLE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NGRINV : SD CONNECTIVITE INVERSE (CF CNCINV)    
+C IN  NMA    : NOMBRE DE MAILLES
+C IN  DIMVAR : DIMENSION MINIMALE (DEFAUT = 1)
+C IN  BASE   : BASE DE CREATION DE NGRMMZ
+C IN  NGRMM  : NOM DE L'OBJET GRAPHE MAILLE/MAILLE
+C OUT NGRMM  : (XC V I NUMERO VARIABLE)
 C          MAILLE -> LISTE DES MAILLES VOISINES  
 C          (IE. DIFFERENTES ET PARTAGEANT UN NOEUD)
 C             [MAILLE I] (IMA1,IMA2,...)
-C ----------------------------------------------------------------------
-C      LA NUMEROTATION DES MAILLES EST FAITE DANS LIMA (CF CNCINV)   
-C ----------------------------------------------------------------------
-
-      IMPLICIT NONE
-
+C OUT DEGMAX : DEGRE MAXIMUM DU GRAPHE
+C
+C NB: LA NUMEROTATION DES MAILLES EST FAITE DANS LIMA (CF CNCINV)   
+C
+C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C
+      CHARACTER*32       JEXNUM ,JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -59,65 +68,50 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C     
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-C --- VARIABLES
-      CHARACTER*1   BASE
-      CHARACTER*8   MAIL
-      CHARACTER*24  NGRNM,NGRMM
-      CHARACTER*(*) NGRNMZ,NGRMMZ
-      INTEGER       NNO,NMA,NARE,N,IMA1,IMA2,DM
-      INTEGER       I,J,K,L,L0,P0,P1,P2,Q0,Q1,Q2
-
-C --- LECTURE DONNEES
-      
-      IF (NMA.LE.1) GOTO 80
-
-      CALL JEMARQ()
-
-      NGRNM = NGRNMZ
-      NGRMM = NGRMMZ 
-
-      CALL JEVEUO(MAIL//'.DIME','L',P1)
-      NNO = ZI(P1)
-      CALL JEVEUO(NGRNM,'L',P1)
-      CALL JEVEUO(JEXATR(NGRNM,'LONCUM'),'L',P2)
-
+C  
+      CHARACTER*8   K8BID
+      INTEGER       NNO,NARE
+      INTEGER       IMA1,IMA2
+      INTEGER       INO
+      INTEGER       IAD1,IAD2
+      INTEGER       I,J,K,L,L0,P0,P1,P2,Q0,Q1,Q2,N     
+C      
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()  
+C
+C --- LECTURE DES DONNEES
+C       
+      CALL JELIRA(NGRINV,'NMAXOC',NNO,K8BID)    
+      CALL JEVEUO(NGRINV,'L',P1)
+      CALL JEVEUO(JEXATR(NGRINV,'LONCUM'),'L',P2)
+C
 C --- MAJORATION NOMBRE D'ARETES DU GRAPHE MAILLE/MAILLE
-
+C
       NARE = 0
-
       DO 10 I = 1, NNO
-
         N = ZI(P2+I)-ZI(P2-1+I)
-
         IF (N.GT.1) THEN
-
-          IF (DM.EQ.1) THEN
+          IF (DIMVAR.EQ.1) THEN
             NARE = NARE + N*(N-1)
-          ELSEIF (DM.EQ.2) THEN
+          ELSEIF (DIMVAR.EQ.2) THEN
             NARE = NARE + (N-1)**2
-          ELSEIF (DM.EQ.3) THEN
+          ELSEIF (DIMVAR.EQ.3) THEN
             NARE = NARE + N*(N-1)/2
           ENDIF
-
         ENDIF
-
  10   CONTINUE
-      
+C     
 C --- ALLOCATION OBJETS TEMPORAIRES
-
-      CALL WKVECT('&&GRMAMA.NVOISIN','V V I',NMA,Q0)
-      CALL WKVECT('&&GRMAMA.LISTE.ENTETE','V V I',NMA,Q1)
+C
+      CALL WKVECT('&&GRMAMA.NVOISIN'      ,'V V I',NMA   ,Q0)
+      CALL WKVECT('&&GRMAMA.LISTE.ENTETE' ,'V V I',NMA   ,Q1)
       CALL WKVECT('&&GRMAMA.LISTE.RESERVE','V V I',2*NARE,Q2)
-  
-      DO 20 I = 1, NMA
-        ZI(Q0-1+I) = 0
-        ZI(Q1-1+I) = 0
- 20   CONTINUE
-
+C
 C --- ECRITURE LISTE
-      
+C      
       NARE = 0
 
       DO 30 I = 1, NNO
@@ -162,20 +156,18 @@ C --- ECRITURE LISTE
  40     CONTINUE
 
  30   CONTINUE
-
+C
 C --- ALLOCATION GRAPHE MAILLE/MAILLE 
-
+C
       CALL JECREC(NGRMM,BASE//' V I','NU','CONTIG','VARIABLE',NMA)
       CALL JEECRA(NGRMM,'LONT',NARE,' ')
-      
+C     
 C --- COPIE LISTE -> GRAPHE MAILLE/MAILLE
-
-      DO 60 I = 1, NMA
-
+C
+      DO 60 I = 1, NMA   
         CALL JECROC(JEXNUM(NGRMM,I))
         CALL JEECRA(JEXNUM(NGRMM,I),'LONMAX',ZI(Q0-1+I),' ')
         CALL JEVEUO(JEXNUM(NGRMM,I),'E',Q2)
-
         L = ZI(Q1-1+I)
  70     CONTINUE
         ZI(Q2) = ZI(L)
@@ -183,15 +175,26 @@ C --- COPIE LISTE -> GRAPHE MAILLE/MAILLE
         L = ZI(L+1)
         IF (L.NE.0) GOTO 70
         
- 60   CONTINUE
-
+ 60   CONTINUE      
+C
+C --- DEGRE MAXIMUM DU GRAPHE
+C 
+      IAD1 = ZI(P2)
+      DO 100 INO = 1, NNO
+        IAD2 = ZI(P2+INO)
+        IF ((IAD2-IAD1).GT.DEGMAX) THEN
+          DEGMAX = IAD2 - IAD1
+        ENDIF  
+        IAD1 = IAD2
+ 100  CONTINUE 
+C                          
 C --- DESALLOCATION
-
+C
       CALL JEDETR('&&GRMAMA.NVOISIN')
       CALL JEDETR('&&GRMAMA.LISTE.ENTETE')
       CALL JEDETR('&&GRMAMA.LISTE.RESERVE')
-      CALL JEDEMA()
-
  80   CONTINUE
-
+C
+      CALL JEDEMA()
+C      
       END

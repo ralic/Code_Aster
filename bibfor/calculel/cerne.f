@@ -1,7 +1,8 @@
-      SUBROUTINE CERNE(M,DIM,CELL,PAN,NMA,ILIMA)
-
+      SUBROUTINE CERNE(M     ,DIME   ,CELL  ,PAN   ,NMA   ,
+     &                 ILIMA )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,41 +21,49 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C A_UTIL
-C ----------------------------------------------------------------------
-C                       APPARIEMENT POINT / MAILLE
-C    DESCENTE DE L'ARBRE PRODUIT PAR LA PARTITION BINAIRE DE L'ESPACE
-C           POUR ISOLER UN PETIT ENSEMBLE DE MAILLES CANDIDATES
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
-C REAL*8   M(DIM)        : COORDONNEES DU POINT A APPARIER  
-C INTEGER  DIM           : DIMENSION DE L'ESPACE
-C INTEGER  CELL(3,*)     : CELLULES DE L'ARBRE (CF BISSEC) 
-C REAL*8   PAN(*)        : EQUATIONS DES PANS (2D=DROITES, 3D=PLANS)
-C                          (CF BOITE)
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES DE SORTIE
-C INTEGER  NMA           : NOMBRE DE MAILLES CANDIDATES TROUVEES
-C INTEGER  ILIMA         : POINTEUR DANS ARBRE.LIMA VERS CES MAILLES
-C                          (CF BISSEC)
-C ---------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- FONCTIONS
+      REAL*8  M(*)
+      INTEGER DIME
+      INTEGER CELL(3,*)
+      INTEGER NMA
+      INTEGER ILIMA
+      REAL*8  PAN(*)
+C      
+C ----------------------------------------------------------------------
+C
+C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
+C BOITES ENGLOBANTES + ARBRE  BSP
+C
+C APPARIEMENT POINT / MAILLE
+C DESCENTE DE L'ARBRE PRODUIT PAR LA PARTITION BINAIRE DE L'ESPACE
+C POUR ISOLER UN PETIT ENSEMBLE DE MAILLES CANDIDATES
+C
+C ----------------------------------------------------------------------
+C
+C 
+C IN  M      : COORDONNEES DU POINT A APPARIER  
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  CELL   : CELLULES DE L'ARBRE (CF BISSEC) 
+C IN  PAN    : EQUATIONS DES PANS (2D=DROITES, 3D=PLANS)
+C OUT NMA    : NOMBRE DE MAILLES CANDIDATES TROUVEES
+C OUT ILIMA  : POINTEUR DANS ARBRE.LIMA VERS CES MAILLES
+C
+C
+C ---------------------------------------------------------------------
+C
       REAL*8  DDOT
-
-C --- VARIABLES
-      INTEGER DIM,CELL(3,*),NMA,ILIMA,ICELL,IPAN
-      REAL*8  M(*),PAN(*),R
-
-C --- DESCENTE DE L'ARBRE
-
+      INTEGER ICELL,IPAN
+      REAL*8  R
+C
+C ---------------------------------------------------------------------
+C
       ICELL = 1
  10   CONTINUE
-      IPAN = CELL(1,ICELL)
+      IPAN  = CELL(1,ICELL)
       IF (IPAN.GT.0) THEN
-        R = DDOT(DIM,M,1,PAN(IPAN),1) + PAN(IPAN+DIM)
+        R = DDOT(DIME,M,1,PAN(IPAN),1) + PAN(IPAN+DIME)
         IF (R.LE.0.D0) THEN 
           ICELL = CELL(2,ICELL)
         ELSE
@@ -62,8 +71,8 @@ C --- DESCENTE DE L'ARBRE
         ENDIF
         GOTO 10
       ENDIF
-
-      NMA = -CELL(1,ICELL)
+C
+      NMA   = -CELL(1,ICELL)
       ILIMA = CELL(2,ICELL) 
-
+C
       END

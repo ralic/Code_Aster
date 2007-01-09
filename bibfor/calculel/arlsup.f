@@ -1,6 +1,7 @@
-      SUBROUTINE ARLSUP(DIM,NOM,BC,APP)
+      SUBROUTINE ARLSUP(DIME  ,PRECBO,NOMGRP,BC    ,APP)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,28 +18,35 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ----------------------------------------------------------------------
-C     RECONSTRUCTION ZONE DE SUPERPOSITION A PARTIR ZONE DE COLLAGE
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C INTEGER      DIM        : DIMENSION DE L'ESPACE
-C CHARCTER*10  NOM        : NOM SD DOMAINE CONSIDERE
-C REAL*8       BC(2,DIM)  : BOITE ENGLOBANT ZONE DE COLLAGE (CF. CAARLE)
-C LOGICAL      APP(*)     : .TRUE. SSI MAILLE * APPARIEE (INDEX GLOBAL)
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLE DE SORTIE 
-C LOGICAL      APP(*)     : .TRUE. SSI MAILLE * DANS ZONE SUPERPOSITION
-C                                      INDEX GLOBAL
-C SD D'ENTREE
-C NOM.GROUPEMA : LISTE DES MAILLES DOMAINE 
-C NOM.BOITE    : SD BOITES ENGLOBANTES (CF BOITE)
-C NOM.GRMAMA   : SD GRAPHE MAILLE -> MAILLES VOISINES (CF GRMAMA)
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
+      REAL*8       PRECBO
+      CHARACTER*10 NOMGRP
+      INTEGER      DIME
+      REAL*8       BC(2,*)
+      LOGICAL      APP(*)      
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C RECONSTRUCTION ZONE DE SUPERPOSITION A PARTIR ZONE DE COLLAGE
+C
+C ----------------------------------------------------------------------
+C      
+C    
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  PRECBO : PRECISION RELATIVE POUR TESTER LA BOITE ENGLOBANTE
+C IN  BC     : BOITE ENGLOBANT LA ZONE DE RECOUVREMENT
+C IN  NOMGRP : NOMGRP DE LA SD DE STOCKAGE MAILLES 
+C I/O APP(*) : IN  - .TRUE. SSI MAILLE * APPARIEE (INDEX GLOBAL)
+C              OUT - .TRUE. SSI MAILLE * DANS ZONE SUPERPOSITION
+C
+C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C
+      CHARACTER*32       JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -53,51 +61,64 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C      
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-C --- PARAMETRES (VOIR BOITE)
-      REAL*8        PREC,C1,C2
-      PARAMETER     (PREC = 1.D-4)
-      PARAMETER     (C1 = (1+PREC)/(1+2.D0*PREC))
-      PARAMETER     (C2 = PREC/(1+2.D0*PREC))
-
-C --- VARIABLES
-      CHARACTER*10 NOM
-      INTEGER      DIM,NMA,NC,MA,IMA,DIM2,I,J,K
+C
+      REAL*8       PREC,C1,C2
+      INTEGER      NMA,NC,MA,IMA,DIM2,I,J,K
       INTEGER      A0,A1,A2,A3,A4,P0,P1,Q0,Q1,Q2,Q3
-      REAL*8       BC(2,*),MX(3),MN(3),R,R1,R2
-      LOGICAL      APP(*)
-
-      DIM2 = 2*DIM
-
-C --- LECTURE DONNEES
-
+      REAL*8       MX(3),MN(3),R,R1,R2
+      CHARACTER*16 NOMBOI
+      CHARACTER*8  K8BID
+      CHARACTER*24 NGRMA,GRMAMA
+C      
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
-      CALL JELIRA(NOM//'.GROUPEMA','LONMAX',NMA,ZK8)
-      IF (NMA.EQ.1) GOTO 110
-
-      CALL JEVEUO(NOM//'.GROUPEMA','L',A0)
-      CALL JEVEUO(NOM//'.BOITE.MINMAX','L',A1)
-      CALL JEVEUO(NOM//'.BOITE.MMGLOB','L',A2)
-      CALL JEVEUO(NOM//'.GRMAMA','L',A3)
-      CALL JEVEUO(JEXATR(NOM//'.GRMAMA','LONCUM'),'L',A4)
-
+C
+C --- INITIALISATIONS
+C      
+      DIM2 = 2*DIME   
+      PREC = SQRT(PRECBO)
+      C1   = (1+PREC)/(1+2.D0*PREC)
+      C2   = PREC/(1+2.D0*PREC)
+C
+C --- LECTURE DONNEES GROUPE DE MAILLES
+C
+      NGRMA  = NOMGRP(1:10)//'.GROUPEMA'           
+      CALL JELIRA(NGRMA,'LONMAX',NMA,K8BID)
+      IF (NMA.EQ.1) THEN
+        GOTO 999
+      ELSE
+        CALL JEVEUO(NGRMA,'L',A0)
+      ENDIF  
+C
+C --- LECTURE DONNEES BOITES 
+C      
+      NOMBOI = NOMGRP(1:10)//'.BOITE' 
+      CALL JEVEUO(NOMBOI(1:16)//'.MINMAX','L',A1)
+      CALL JEVEUO(NOMBOI(1:16)//'.MMGLOB','L',A2)
+C
+C --- LECTURE GRAPHE MAILLE/MAILLE
+C
+      GRMAMA = NOMGRP(1:10)//'.GRMAMA'      
+      CALL JEVEUO(GRMAMA,'L',A3)
+      CALL JEVEUO(JEXATR(GRMAMA,'LONCUM'),'L',A4)
+C
+C --- ALLOCATION OBJETS TEMPORAIRES
+C
       CALL WKVECT('&&ARLSUP.CMP','V V I',NMA,Q0)
       CALL WKVECT('&&ARLSUP.PILE','V V I',NMA,Q1)
 
 C --- 1. CALCUL DES COMPOSANTES CONNEXES DES ZONES NON APPARIEES
 
       DO 10 I = 1, NMA
-
         IMA = ZI(A0-1+I)
-
         IF (APP(IMA)) THEN
           ZI(Q0-1+I) = -1
         ELSE
           ZI(Q0-1+I) = 0
         ENDIF
-
  10   CONTINUE
 
       NC = 0
@@ -143,7 +164,7 @@ C --- 2. COMPOSANTES CONNEXES APPARTENANT A LA ZONE DE RECOUVREMENT
 C ----- 2.1. BOITE ENGLOBANT LA COMPOSANTE CONNEXE I
 
         P0 = A2
-        DO 60 J = 1, DIM
+        DO 60 J = 1, DIME
           MX(J) = ZR(P0)
           MN(J) = ZR(P0+1)
           P0 = P0 + 2
@@ -155,7 +176,7 @@ C ----- 2.1. BOITE ENGLOBANT LA COMPOSANTE CONNEXE I
 
           P0 = A1+DIM2*(J-1)
 
-          DO 80 K = 1, DIM
+          DO 80 K = 1, DIME
 
             R1 = ZR(P0)
             R2 = ZR(P0+1)
@@ -172,7 +193,7 @@ C ----- 2.1. BOITE ENGLOBANT LA COMPOSANTE CONNEXE I
 
 C ----- 2.2. INCLUSION STRICTE DANS BOITE ENGLOBANT ZONE COLLAGE ?
 
-        DO 90 J = 1, DIM
+        DO 90 J = 1, DIME
           IF (.NOT.((BC(1,J).LT.MN(J)).AND.(BC(2,J).GT.MX(J)))) GOTO 50
  90     CONTINUE
 
@@ -183,13 +204,13 @@ C ----- 2.3. MARQUAGE VECTEUR APP
  100    CONTINUE
 
  50   CONTINUE
-
+C
 C --- DESALLOCATIONS
-
+C
       CALL JEDETR('&&ARLSUP.CMP')
       CALL JEDETR('&&ARLSUP.PILE')
 
- 110  CONTINUE
+ 999  CONTINUE
 
       CALL JEDEMA()
 

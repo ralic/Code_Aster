@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE POUTRE DE SECTION CIRCULAIRE VARIABLE,
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -391,7 +391,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
                     NOM_CMP = 'SIXX',
-                    VALE = 127324.0E0,
+                    VALE = (127324.0E0,-127324.0E0,),
                     PRECISION = 1.E-5,
                     CRITERE = 'RELATIF')
           )
@@ -650,7 +650,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
                     NOM_CMP = 'SIXX',
-                    VALE = 127323.95E0,
+                    VALE = (127323.95E0,-127323.95E0),
                     PRECISION = 1.E-5,
                     CRITERE = 'RELATIF')
           )
@@ -664,7 +664,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
                     NOM_CMP = 'SIXX',
-                    VALE = 1018591.60E0,
+                    VALE = (1018591.60E0,-1018591.60E0),
                     PRECISION = 1.E-5,
                     CRITERE = 'RELATIF')
           )
@@ -851,7 +851,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
                     NOM_CMP = 'SIXX',
-                    VALE = 63662.0E0,
+                    VALE = (63662.0E0,-63662.0E0),
                     PRECISION = 1.E-5,
                     CRITERE = 'RELATIF')
           )
@@ -865,7 +865,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
                     NOM_CMP = 'SIXY',
-                    VALE = 3183.1E0,
+                    VALE = (3183.1E0,-3183.1E0,),
                     PRECISION = 0.001,
                     CRITERE = 'RELATIF')
           )
@@ -1102,7 +1102,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
                     NOM_CMP = 'SIXX',
-                    VALE = 2.4E6,
+                    VALE = (2.4E6,-2.4E6,),
                     PRECISION = 1.E-5,
                     CRITERE = 'RELATIF')
           )
@@ -1366,7 +1366,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
                     NOM_CMP = 'SIXX',
-                    VALE = 1.2E6,
+                    VALE = (1.2E6,-1.2E6),
                     PRECISION = 1.E-5,
                     CRITERE = 'RELATIF')
           )
@@ -1380,7 +1380,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
                     NOM_CMP = 'SIXX',
-                    VALE = 4.8E6,
+                    VALE = (-4.8E6,4.8E6,),
                     PRECISION = 1.E-5,
                     CRITERE = 'RELATIF')
           )
@@ -1581,7 +1581,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
                     NOM_CMP = 'SIXX',
-                    VALE = 1.2E6,
+                    VALE = (1.2E6,-1.2E6,),
                     PRECISION = 1.E-5,
                     CRITERE = 'RELATIF')
           )

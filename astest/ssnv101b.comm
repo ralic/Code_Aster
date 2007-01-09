@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (CHABOCHE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,6 +109,7 @@ SOLNL=STAT_NON_LINE(
                 TYPE_CHARGE = 'FIXE_CSTE'),
                          COMP_INCR=_F( 
                 RELATION = 'VMIS_CIN2_CHAB',ALGO_C_PLAN='DEBORST',
+                RESI_DEBORST=1.E-4,
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 200,RESI_INTE_RELA=1.E-6,
                 TOUT = 'OUI'),

@@ -1,8 +1,9 @@
-      SUBROUTINE ARLPND(DIM,MAIL,NOM1,CINE1,NOM2,CINE2,R1,
-     &                  NORM,BC,NTM,APP,PND)
-      IMPLICIT NONE
+      SUBROUTINE ARLPND(MAIL  ,DIME  ,NOMARL,TYPMAI,NOMC  ,
+     &                  NOM1  ,NOM2  ,POND  ,NORM  ,BC    ,
+     &                  CINE1 ,CINE2 )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,35 +21,47 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_20
-C ----------------------------------------------------------------------
-C              METHODE ARLEQUIN : PONDERATION DES MAILLES
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C INTEGER       DIM             : DIMENSION DE L'ESPACE
-C CHARACTER*8   MAIL            : NOM DU MAILLAGE  
-C CHARACTER*10  NOM1            : NOM SD DOMAINE 1
-C CHARACTER*8   CINE1           : CINEMATIQUE DOMAINE 1 (CF ARLVER)
-C CHARACTER*10  NOM2            : NOM SD DOMAINE 2
-C CHARACTER*8   CINE2           : CINEMATIQUE DOMAINE 2 (CF ARLVER)
-C REAL*8        R1              : PONDERATION DOMAINE 1 DANS ZONE DE 
-C                                 SUPERPOSITION
-C CHARACTER*10  NORM            : NORMALES LISSEES COQUE (CF LISNOR)
-C REAL*8        BC(2,*)         : BOITE ENGLOBANT ZONE DE SUPERPOSITION
-C CHARACTER*8   NTM(*)          : VECTEUR NOMS TYPES DE MAILLE
-C LOGICAL       APP(*)          : .TRUE. SI MAILLE REELLEMENT APPARIEE
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES D'ENTREE/SORTIE
-C REAL*8        PND(*)          : VECTEUR DE PONDERATION DES MAILLES
-C
-C SD D'ENTREE
-C NOM1.NOM2     : SD GRAPHE D'APPARIEMENT (CF ARLAPP)
-C NOM1.GROUPEMA : LISTE DES MAILLES DOMAINE 1
-C NOM1.BOITE    : SD BOITES ENGLOBANTES (CF BOITE)
-C NOM2.GROUPEMA : LISTE DES MAILLES DOMAINE 2
-C NOM2.BOITE    : SD BOITES ENGLOBANTES (CF BOITE)
+      IMPLICIT NONE
+      INTEGER      DIME
+      CHARACTER*16 TYPMAI
+      CHARACTER*8  MAIL
+      CHARACTER*8  NOMARL
+      REAL*8       BC(2,*)       
+      CHARACTER*10 NOM1,NOM2,NOMC
+      CHARACTER*10 NORM
+      CHARACTER*8  CINE1,CINE2   
+      REAL*8       POND 
+C      
 C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C PONDERATION DES MAILLES
+C
+C ----------------------------------------------------------------------
+C      
+C
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  MAIL   : NOM UTILISATEUR DU MAILLAGE
+C IN  BC     : BOITE ENGLOBANT LA ZONE DE RECOUVREMENT
+C IN  NOMARL : NOM DE LA SD PRINCIPALE ARLEQUIN
+C IN  NOM1   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_1 
+C IN  NOM2   : NOM DE LA SD DE STOCKAGE MAILLES GROUP_MA_2 
+C IN  NOMC   : NOM DE LA SD POUR LE COLLAGE 
+C IN  NORM   : NOM DE LA SD POUR STOCKAGE DES NORMALES
+C IN  TYPMAI : SD CONTENANT NOM DES TYPES ELEMENTS (&&CATA.NOMTM)
+C IN  CINE1  : CINEMATIQUE DU PREMIER GROUPE DE MAILLE
+C IN  CINE1  : CINEMATIQUE DU SECOND GROUPE DE MAILLE
+C IN  POND   : VALEUR DE LA PONDERATION 
+C
+C ON MODIFIE LE VECTEUR DE PONDERATION DES MAILLES NOMPOI
+C
+C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C
+      CHARACTER*32       JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -63,179 +76,199 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C      
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-C --- FONCTION
-      REAL*8       INTMAD,PROVE2
-
-C --- VARIABLES
-      CHARACTER*10 NOM1,NOM2,NORM
-      CHARACTER*8  K8B,NTM(*),MAIL,CINE1,CINE2,TM
-      INTEGER      DIM,NM1,NM2,NMS1,NMS2,NINT,NNT,NPA,NNH,NNO,NNI,NH
-      INTEGER      NF,NS,NA,M1,IM1,M2,IM2,P0,P1,P2,Q0,Q1,Q2,I,J,K,N
-      INTEGER      A0,A1,A2,A3,A4,B0,B1,B2,B3,B4,B5,B6,B7,E0,E1,E2
-      INTEGER      C0,C1,C2,C3,C4,C5,C6,C7,D0,D1,D2,D3,D4,D5
-      INTEGER      JARLNH, JDIME
-      REAL*8       BC(2,*),PND(*),R,R1,R2,NO(81)
-      LOGICAL      APP(*)
-
+C
+      REAL*8        INTMAD,ARLGER
+      CHARACTER*8   K8BID,TYPEMA
+      INTEGER       ARLGEI
+      REAL*8        PRECBO,PRECFR
+      INTEGER       NM1,NM2,NMS1,NMS2,NINT,NNT,NNO,NNI,NHINT
+      INTEGER       IRET,LCOQUE
+      INTEGER       NFACE,NARE,M1,IM1,M2,IM2,P0,P1,P2,Q0,Q1,Q2,I,J,K,N
+      INTEGER       A0,A1,A2,A3,B0,B1,B2,B3,B4,B5,B6,B7,E0,E1,E2
+      INTEGER       C0,C1,C2,C3,C4,C5,C6,C7,D0,D1,D2,D3,D4,D5
+      INTEGER       JDIME,JNORM,JCOLM,JPP,JPOIM,JTYPMM
+      REAL*8        NO(81),R
+      INTEGER       IFM,NIV
+      CHARACTER*16  NOMBO1,NOMBO2 
+      CHARACTER*24  NGRMA1,NGRMA2,NOMPOI,NOMCOL,NOMAPP             
+C      
 C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
-      R2 = 1.D0 - R1
-
-C --- LECTURE DONNEES
-
-      CALL JEVEUO(MAIL//'.COORDO    .VALE','L', A0)
-      CALL JEVEUO(MAIL//'.CONNEX','L',A1)
-      CALL JEVEUO(JEXATR(MAIL//'.CONNEX','LONCUM'),'L',A2)
-      CALL JEVEUO(MAIL//'.TYPMAIL','L',A3)
-      CALL JEVEUO(MAIL//'.DIME','L',JDIME)
+      CALL INFNIV(IFM,NIV)
+C
+C --- INITIALISATIONS ET PARAMETRES
+C
+      NHINT  = ARLGEI(NOMARL,'NHINT ')
+      PRECBO = ARLGER(NOMARL,'PRECBO')
+      PRECFR = ARLGER(NOMARL,'PRECFR')              
+C
+C --- LECTURE DONNEES TYPE DE MAILLE
+C
+      CALL JEVEUO(TYPMAI,'L',JTYPMM)      
+C
+C --- LECTURE DONNEES COLLAGE
+C      
+      NOMCOL = NOMC(1:10)//'.MAILLE'
+      CALL JEVEUO(NOMCOL(1:24),'E',JCOLM)      
+C
+C --- LECTURE DONNEES MAILLAGE
+C
+      CALL JEVEUO(MAIL(1:8)//'.COORDO    .VALE','L', A0)
+      CALL JEVEUO(MAIL(1:8)//'.CONNEX','L',A1)
+      CALL JEVEUO(JEXATR(MAIL(1:8)//'.CONNEX','LONCUM'),'L',A2)
+      CALL JEVEUO(MAIL(1:8)//'.TYPMAIL','L',A3)
+      CALL JEVEUO(MAIL(1:8)//'.DIME','L',JDIME)
       NNT = ZI(JDIME)
-
-      CALL JEEXIN(NORM,I)
-      IF (I.NE.0) THEN
-        CALL JEVEUO(NORM,'L',A4)
+C
+C --- LECTURE DONNEES NORMALES
+C
+      CALL JEEXIN(NORM,IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEVEUO(NORM,'L',JNORM)
       ELSE
-        A4 = A0
+        JNORM = A0
       ENDIF
-
-      CALL JEVEUO(NOM1//'.GROUPEMA','L',B0)
-      CALL JELIRA(NOM1//'.GROUPEMA','LONMAX',NM1,K8B)
-      CALL JEVEUO(NOM1//'.'//NOM2,'L',B1)
-      CALL JELIRA(NOM1//'.'//NOM2,'LONT',N,K8B)
-      CALL JEVEUO(JEXATR(NOM1//'.'//NOM2,'LONCUM'),'L',B2)
-      CALL JEVEUO(NOM1//'.BOITE.DIME','L',B3)
-      CALL JEVEUO(NOM1//'.BOITE.PAN','L',B4)
-
-      CALL JEVEUO(NOM2//'.GROUPEMA','L',C0)
-      CALL JELIRA(NOM2//'.GROUPEMA','LONMAX',NM2,K8B)
+C
+C --- LECTURE DONNEES GROUPE DE MAILLES
+C
+      NGRMA1 = NOM1(1:10)//'.GROUPEMA'
+      NGRMA2 = NOM2(1:10)//'.GROUPEMA'
+      CALL JEVEUO(NGRMA1,'L',B0)
+      CALL JEVEUO(NGRMA2,'L',C0) 
+      CALL JELIRA(NGRMA1,'LONMAX',NM1,K8BID)
+      CALL JELIRA(NGRMA2,'LONMAX',NM2,K8BID)      
+C
+C --- LECTURE DONNEES BOITES APPARIEMENT
+C      
+      NOMBO1 = NOM1(1:10)//'.BOITE'
+      NOMBO2 = NOM2(1:10)//'.BOITE'         
+      CALL JEVEUO(NOMBO1(1:16)//'.DIME','L',B3)
+      CALL JEVEUO(NOMBO1(1:16)//'.PAN','L',B4)
+      CALL JEVEUO(NOMBO2(1:16)//'.DIME','L',C3)
+      CALL JEVEUO(NOMBO2(1:16)//'.PAN','L',C4)      
+C
+C --- LECTURE GRAPHE APPARIEMENT
+C   
+      NOMAPP = NOMARL(1:8)//'.GRAPH'
+      CALL JEVEUO(JEXATR(NOMAPP,'LONCUM'),'L',B2)
+      CALL JEVEUO(NOMAPP,'L',B1)
+      CALL JELIRA(NOMAPP,'LONT',N,K8BID)
+C
+C --- LECTURE VECTEUR PONDERATION MAILLES
+C
+      CALL JEVEUO(NOMARL(1:8)//'.POIDS','L',JPP)
+      NOMPOI = ZK24(JPP)
+      CALL JEVEUO(NOMPOI,'E',JPOIM)
+C
+C --- VECTEURS DE TRAVAIL
+C
       CALL WKVECT('&&ARLPND.MAMINV','V V I',N,C1)
       CALL WKVECT('&&ARLPND.MAMINV.LONCUM','V V I',NM2+1,C2)
-      CALL JEVEUO(NOM2//'.BOITE.DIME','L',C3)
-      CALL JEVEUO(NOM2//'.BOITE.PAN','L',C4)
-
-      CALL JEVEUO('&&ARL.NH','L',JARLNH)
-      NH = ZI(JARLNH+1)
-
-C --- VECTEURS DE TRAVAIL
-
       CALL WKVECT('&&ARLPND.TMP1','V V I',NM1+1,Q1)
       CALL WKVECT('&&ARLPND.TMP2','V V I',NM2+1,Q2)
       CALL WKVECT('&&ARLPND.DICO','V V I',NNT,D0)
-
+C
 C --- 1.1 POINTEURS DU GRAPHE D'APPARIEMENT INVERSE
-
-      DO 10 M2 = 1, NM2
-        ZI(C2+M2) = 0
- 10   CONTINUE
-
+C
       P1 = ZI(B2)
-
       DO 20 M1 = 1, NM1
-
         P0 = P1
         P1 = ZI(B2+M1)
-
-        DO 20 I = P0, P1-1
-
+        DO 21 I = P0, P1-1
           M2 = ZI(B1-1+I)
           IF (M2.NE.0) ZI(C2+M2) = ZI(C2+M2) + 1
-
+ 21     CONTINUE
  20   CONTINUE
-
+C
       P2 = 1
       ZI(C2) = 1
       ZI(Q2) = 1
 
       DO 30 M2 = 1, NM2
-
         P2 = P2 + ZI(C2+M2)
         ZI(C2+M2) = P2
         ZI(Q2+M2) = P2
-
  30   CONTINUE
-
+C
 C --- 1.2. SOMMETS DU GRAPHE DU GRAPHE D'APPARIEMENT INVERSE
-
+C
       P1 = ZI(B2)
-
       DO 40 M1 = 1, NM1
-
         P0 = P1
         P1 = ZI(B2+M1)
-
-        DO 40 I = P0, P1-1
-
+        DO 41 I = P0, P1-1
           M2 = ZI(B1-1+I)
           IF (M2.EQ.0) GOTO 40
-
           P2 = ZI(Q2-1+M2)
           ZI(C1-1+P2) = M1
           ZI(Q2-1+M2) = P2 + 1
-
+ 41     CONTINUE
  40   CONTINUE
-
+C
 C --- 2.1. RECONSTITUTION DE LA ZONE DE SUPERPOSITION
-
-      CALL ARLSUP(DIM,NOM1,BC,APP)
-      CALL ARLSUP(DIM,NOM2,BC,APP)
-
+C
+      CALL ARLSUP(DIME  ,PRECBO,NOM1,BC,ZL(JCOLM))
+      CALL ARLSUP(DIME  ,PRECBO,NOM2,BC,ZL(JCOLM))
+C
 C --- 2.2. GROUPES DE MAILLES TOUCHANT LA ZONE DE SUPERPOSITION
-
+C
       NMS1 = 0
       NMS2 = 0
 
       DO 60 I = 1, NM1
-        IF (APP(ZI(B0-1+I))) NMS1 = NMS1 + 1 
+        IF (ZL(JCOLM-1+ZI(B0-1+I))) NMS1 = NMS1 + 1 
  60   CONTINUE
       
       DO 70 I = 1, NM2
-        IF (APP(ZI(C0-1+I))) NMS2 = NMS2 + 1
+        IF (ZL(JCOLM-1+ZI(C0-1+I))) NMS2 = NMS2 + 1
  70   CONTINUE
 
       CALL WKVECT('&&ARLPND.RECOUVRE.1','V V I',NMS1,B5)
       CALL WKVECT('&&ARLPND.RECOUVRE.2','V V I',NMS2,C5)
-
+C
       P0 = Q1
       Q0 = B5
       DO 80 I = 1, NM1
         IM1 = ZI(B0-1+I)
-        IF (.NOT.APP(IM1)) GOTO 80
-        PND(IM1) = R1
+        IF (.NOT.ZL(JCOLM-1+IM1)) GOTO 80
+        ZR(JPOIM+IM1-1) = POND
         ZI(P0) = IM1
         ZI(Q0) = I
         P0 = P0 + 1
         Q0 = Q0 + 1
  80   CONTINUE
-
+C
       P0 = Q2
       Q0 = C5
       DO 90 I = 1, NM2
         IM2 = ZI(C0-1+I)
-        IF (.NOT.APP(IM2)) GOTO 90
-        PND(IM2) = R2
+        IF (.NOT.ZL(JCOLM-1+IM2)) GOTO 90
+        ZR(JPOIM+IM2-1) = 1.D0 - POND
         ZI(P0) = IM2
         ZI(Q0) = I
         P0 = P0 + 1
         Q0 = Q0 + 1
  90   CONTINUE
-
+C
 C --- 2.3. ELEMENTS BORDANT LA ZONE DE SUPERPOSITION
-
-      CALL ELBORD(MAIL,CINE1,ZI(Q1),NMS1,NTM,'V','&&ARLPND.RECOUVRE.1')
-      CALL ELBORD(MAIL,CINE2,ZI(Q2),NMS2,NTM,'V','&&ARLPND.RECOUVRE.2')
+C
+      CALL ELBORD(MAIL  ,CINE1 ,ZI(Q1),NMS1,ZK8(JTYPMM),
+     &            'V','&&ARLPND.RECOUVRE.1')
+      CALL ELBORD(MAIL  ,CINE2 ,ZI(Q2),NMS2,ZK8(JTYPMM),
+     &            'V','&&ARLPND.RECOUVRE.2')
  
       CALL JEVEUO('&&ARLPND.RECOUVRE.1.BORD','L',B6)
-      CALL JELIRA('&&ARLPND.RECOUVRE.1.BORD','LONMAX',NMS1,K8B)
+      CALL JELIRA('&&ARLPND.RECOUVRE.1.BORD','LONMAX',NMS1,K8BID)
       CALL JEVEUO('&&ARLPND.RECOUVRE.1.IPAN','L',B7)
-
       CALL JEVEUO('&&ARLPND.RECOUVRE.2.BORD','L',C6)
-      CALL JELIRA('&&ARLPND.RECOUVRE.2.BORD','LONMAX',NMS2,K8B)
+      CALL JELIRA('&&ARLPND.RECOUVRE.2.BORD','LONMAX',NMS2,K8BID)
       CALL JEVEUO('&&ARLPND.RECOUVRE.2.IPAN','L',C7)
-      
+C      
 C --- 2.4.1. POINTEURS DANS STRUCTURE .1.IPAN
-
+C
       Q0 = 1
       P0 = B7
       ZI(Q1) = 1
@@ -329,9 +362,9 @@ C --- 3.1.2 DIMENSIONNEMENT POUR MAILLE 2 / DOMAINE 1
 C --- 3.2 ALLOCATIONS
 
       NINT = 4*NINT + 4
-      N = NH*NH
-      I = NINT + 6
-      J = NH + 1
+      N    = NHINT*NHINT
+      I    = NINT + 6
+      J    = NHINT + 1
 
       CALL WKVECT('&&ARLPND.INT','V V I',2*NINT,D1)
       CALL WKVECT('&&ARLPND.FS','V V I',10*NINT,D2)
@@ -347,15 +380,17 @@ C --- 4.1. INTERSECTION MAILLES 1 / DOMAINE 2
 
       DO 180 I = 1, NMS1
 
-        M1 = ZI(B5-1+ZI(B6-1+I))        
-        IM1 = ZI(B0-1+M1)
-        TM = NTM(ZI(A3-1+IM1))
-        CALL TMACOQ(TM,DIM,J)
-        CALL CONOEU(IM1,ZI(A1),ZI(A2),ZR(A0),ZR(A4),DIM,J,NO,NNO)
+        M1     = ZI(B5-1+ZI(B6-1+I))        
+        IM1    = ZI(B0-1+M1)
+        TYPEMA = ZK8(JTYPMM-1+ZI(A3-1+IM1))
+        CALL TMACOQ(TYPEMA,DIME,LCOQUE)
+        CALL CONOEU(IM1,ZI(A1),ZI(A2),ZR(A0),ZR(JNORM),
+     &              DIME,LCOQUE,NO,NNO)
+
 
 C ----- 4.1.1. LISTE DES FACES BORDANT DOMAINE 2
 
-        NF = 0
+        NFACE = 0
         Q0 = D1
         P0 = ZI(B2-1+M1)
         P1 = ZI(B2+M1)-1
@@ -367,7 +402,7 @@ C ----- 4.1.1. LISTE DES FACES BORDANT DOMAINE 2
 
           P2 = ZI(Q2-1+M2)
           N = ZI(Q2+M2) - P2
-          NF = NF + N
+          NFACE = NFACE + N
 
           P2 = C7 + 2*(P2-1)
 
@@ -380,7 +415,7 @@ C ----- 4.1.1. LISTE DES FACES BORDANT DOMAINE 2
 
  190    CONTINUE
 
-        IF (NF.EQ.0) GOTO 180
+        IF (NFACE.EQ.0) GOTO 180
 
 C ----- 4.1.2. NOEUDS, ARETES ET FACES DE LA FRONTIERE DU DOMAINE 2
 
@@ -388,30 +423,32 @@ C ----- 4.1.2. NOEUDS, ARETES ET FACES DE LA FRONTIERE DU DOMAINE 2
           ZI(D0-1+J) = 0
  200    CONTINUE
 
-        IF (DIM.EQ.2) THEN
-
-          CALL NAFINT(ZI(D1),NF,ZI(C0),ZI(C3),ZR(C4),DIM,CINE2,ZI(A3),
-     &         ZR(A0),ZR(A4),ZI(A1),ZI(A2),NTM,ZI(D0),ZR(D3),NNI,ZI(D4))
-          NA = NF
-          
+        IF (DIME.EQ.2) THEN
+          CALL NAFINT(ZI(D1),NFACE ,ZI(C0)     ,ZI(C3),ZR(C4)   ,
+     &                DIME  ,CINE2 ,ZI(A3)     ,ZR(A0),ZR(JNORM),
+     &                ZI(A1),ZI(A2),ZK8(JTYPMM),ZI(D0),ZR(D3)   ,
+     &                PRECFR,NNI   ,ZI(D4))
+          NARE = NFACE
         ELSE
-
-          CALL NAFINT(ZI(D1),NF,ZI(C0),ZI(C3),ZR(C4),DIM,CINE2,ZI(A3),
-     &         ZR(A0),ZR(A4),ZI(A1),ZI(A2),NTM,ZI(D0),ZR(D3),NNI,ZI(D2))
-          CALL ARFACE(ZI(D2),NF,ZI(D4),ZI(D5),NA)
-
+          CALL NAFINT(ZI(D1),NFACE ,ZI(C0)     ,ZI(C3),ZR(C4)   ,
+     &                DIME  ,CINE2 ,ZI(A3)     ,ZR(A0),ZR(JNORM),
+     &                ZI(A1),ZI(A2),ZK8(JTYPMM),ZI(D0),ZR(D3)   ,
+     &                PRECFR,NNI   ,ZI(D2))
+          CALL ARFACE(ZI(D2),NFACE,ZI(D4),ZI(D5),NARE)
         ENDIF
 
 C ----- 4.1.3 RATIO VOLUME DANS ZONE DE RECOUVREMENT / VOLUME MAILLE
 
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
-        IF (DIM.EQ.2) THEN
+        IF (DIME.EQ.2) THEN
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
-
-        P0 = B4+(DIM+2)*(ZI(B3+2*M1)-1)
-        R = INTMAD(DIM,NH,TM,NO,NNO,ZR(P0),ZR(D3),NNI,ZI(D4),NA,
-     &             ZI(D2),ZI(D5),NF,ZR(E0),ZI(E1),ZL(E2))
-        PND(IM1) = 1.D0 - R2*R
+  
+          P0 = B4+(DIME+2)*(ZI(B3+2*M1)-1)
+          R  = INTMAD(DIME  ,NOMARL,
+     &                TYPEMA,NO    ,NNO   ,ZR(P0),
+     &                ZR(D3),NNI   ,ZI(D4),NARE  ,ZI(D2),   
+     &                ZI(D5),NFACE ,ZR(E0),ZI(E1),ZL(E2))
+          ZR(JPOIM+IM1-1) = 1.D0 - (1.D0 - POND)*R
 
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
         ENDIF
@@ -423,38 +460,35 @@ C --- 4.2. INTERSECTION MAILLES 2 / DOMAINE 1
 
       DO 210 I = 1, NMS2
 
-        M2 = ZI(C5-1+ZI(C6-1+I))
-        IM2 = ZI(C0-1+M2)
-        TM = NTM(ZI(A3-1+IM2))
-        CALL TMACOQ(TM,DIM,J)
-        CALL CONOEU(IM2,ZI(A1),ZI(A2),ZR(A0),ZR(A4),DIM,J,NO,NNO)
-
+        M2     = ZI(C5-1+ZI(C6-1+I))
+        IM2    = ZI(C0-1+M2)      
+        TYPEMA = ZK8(JTYPMM-1+ZI(A3-1+IM2))
+        CALL TMACOQ(TYPEMA,DIME,LCOQUE)
+        CALL CONOEU(IM2,ZI(A1),ZI(A2),ZR(A0),ZR(JNORM),
+     &              DIME,LCOQUE,NO,NNO)
+     
 C ----- 4.2.1. LISTE DES FACES BORDANT DOMAINE 1
 
-        NF = 0
+        NFACE = 0
         Q0 = D1
         P0 = ZI(C2-1+M2)
         P1 = ZI(C2+M2)-1
 
         DO 220 J = P0, P1
-
           M1 = ZI(C1-1+J)
           P2 = ZI(Q1-1+M1)
           N = ZI(Q1+M1) - P2
-          NF = NF + N
-
+          NFACE = NFACE + N
           P2 = B7 + 2*(P2-1)
-
-          DO 220 K = 1, N
-            
+          DO 221 K = 1, N
             ZI(Q0) = ZI(P2)
             ZI(Q0+1) = ZI(P2+1)
             Q0 = Q0 + 2
             P2 = P2 + 2
-
+ 221      CONTINUE
  220    CONTINUE
 
-        IF (NF.EQ.0) GOTO 210
+        IF (NFACE.EQ.0) GOTO 210
 
 C ----- 4.2.2. NOEUDS, ARETES ET FACES DE LA FRONTIERE DU DOMAINE 1
 
@@ -462,30 +496,32 @@ C ----- 4.2.2. NOEUDS, ARETES ET FACES DE LA FRONTIERE DU DOMAINE 1
           ZI(D0-1+J) = 0
  230    CONTINUE
 
-        IF (DIM.EQ.2) THEN
-
-          CALL NAFINT(ZI(D1),NF,ZI(B0),ZI(B3),ZR(B4),DIM,CINE1,ZI(A3),
-     &         ZR(A0),ZR(A4),ZI(A1),ZI(A2),NTM,ZI(D0),ZR(D3),NNI,ZI(D4))
-          NA = NF
-          
+        IF (DIME.EQ.2) THEN
+          CALL NAFINT(ZI(D1),NFACE ,ZI(B0)     ,ZI(B3),ZR(B4),
+     &                DIME  ,CINE1 ,ZI(A3)     ,ZR(A0),ZR(JNORM),
+     &                ZI(A1),ZI(A2),ZK8(JTYPMM),ZI(D0),ZR(D3),
+     &                PRECFR,NNI   ,ZI(D4))
+          NARE = NFACE 
         ELSE
-
-          CALL NAFINT(ZI(D1),NF,ZI(B0),ZI(B3),ZR(B4),DIM,CINE1,ZI(A3),
-     &         ZR(A0),ZR(A4),ZI(A1),ZI(A2),NTM,ZI(D0),ZR(D3),NNI,ZI(D2))
-          CALL ARFACE(ZI(D2),NF,ZI(D4),ZI(D5),NA)
-
+          CALL NAFINT(ZI(D1),NFACE ,ZI(B0)     ,ZI(B3),ZR(B4),
+     &                DIME  ,CINE1 ,ZI(A3)     ,ZR(A0),ZR(JNORM),
+     &                ZI(A1),ZI(A2),ZK8(JTYPMM),ZI(D0),ZR(D3),
+     &                PRECFR,NNI   ,ZI(D2))
+          CALL ARFACE(ZI(D2),NFACE,ZI(D4),ZI(D5),NARE)
         ENDIF
 
 C ----- 4.2.3 RATIO VOLUME DANS ZONE DE RECOUVREMENT / VOLUME MAILLE
 
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
-        IF (DIM.EQ.2) THEN 
+        IF (DIME.EQ.2) THEN 
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
 
-        P0 = C4+(DIM+2)*(ZI(C3+2*M2)-1)
-        R = INTMAD(DIM,NH,TM,NO,NNO,ZR(P0),ZR(D3),NNI,ZI(D4),NA,
-     &             ZI(D2),ZI(D5),NF,ZR(E0),ZI(E1),ZL(E2))
-        PND(IM2) = 1.D0 - R1*R
+          P0 = C4+(DIME+2)*(ZI(C3+2*M2)-1)
+          R  = INTMAD(DIME  ,NOMARL,
+     &                TYPEMA,NO    ,NNO   ,ZR(P0),
+     &                ZR(D3),NNI   ,ZI(D4),NARE  ,ZI(D2),
+     &                ZI(D5),NFACE ,ZR(E0),ZI(E1),ZL(E2))
+          ZR(JPOIM+IM2-1) = 1.D0 - POND*R
 
 C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
         ENDIF
@@ -496,7 +532,11 @@ C --- (PROVISOIRE) CORRECTION A FAIRE DANS ALGORITHME 3D D'INTERSECTION
 C --- DESALLOCATIONS
 
  240  CONTINUE
-
+C
+C --- NETTOYAGE DU GRAPHE APPARIEMENT
+C    
+      CALL ARLDSD('GRAPHE',NOMAPP)   
+      
       CALL JEDETR('&&ARLPND.MAMINV')
       CALL JEDETR('&&ARLPND.MAMINV.LONCUM')
       CALL JEDETR('&&ARLPND.TMP1')

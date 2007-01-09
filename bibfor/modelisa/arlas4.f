@@ -1,7 +1,9 @@
-      SUBROUTINE ARLAS4(DIM,L2,NORM,TANG,MA1,NN1,MA2,NN2,IJ,CK,C)
-
+      SUBROUTINE ARLAS4(DIME  ,LCARA ,NN1   ,NN2   ,IJ    ,
+     &                  MA1   ,MA2   ,NORM  ,TANG  ,CK    ,
+     &                  C)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,52 +22,70 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C                                                                       
 C                                                                       
 C ======================================================================
-C ----------------------------------------------------------------------
-C  ASSEMBLAGE MATRICE ELEMENTAIRE ARLEQUIN MAILLE COQUE / MAILLE COQUE
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE 
-C INTEGER  DIM                    : DIMENSION DE L'ESPACE             
-C REAL*8   L2                     : PARAMETRE L*L/2
-C REAL*8   NORM(DIM,*)            : NORMALES LISSEES COQUE (CF LISNOR)
-C REAL*8   TANG(DIM,DIM-1,*)      : TANGENTES LISSEES COQUE (CF LISNOR)
-C INTEGER  MA1(*)                 : CONNECTIVITE MAILLE 1
-C INTEGER  NN1                    : NOMBRE DE NOEUDS MAILLE 1
-C INTEGER  MA2(*)                 : CONNECTIVITE MAILLE 2
-C INTEGER  NN2                    : NOMBRE DE NOEUDS MAILLE 2   
-C INTEGER  IJ(NN2/2,NN1/2)        : POINTEURS DANS C (CF ARLAS0)
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLE D'ENTREE/SORTIE
-C REAL*8   CK(*)                  : MATRICES ELEMENTAIRES (CF ARLTE)
-C REAL*8   C(*)                   : MATRICE MORSE (CF ARLFAC)
+      IMPLICIT NONE
+      INTEGER  DIME,NN1,NN2
+      INTEGER  IJ(NN2/2,*)
+      INTEGER  MA1(*)
+      INTEGER  MA2(*)      
+      REAL*8   LCARA
+      REAL*8   NORM(DIME,*)
+      REAL*8   CK(*),C(*)
+      REAL*8   TANG(DIME*(DIME-1),*)
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C GESTION DES RELATIONS LINEAIRES
+C ASSEMBLAGE MATRICE ELEMENTAIRE ARLEQUIN 
+C   MAILLE COQUE / MAILLE COQUE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  LCARA  : LONGUEUR CARACTERISTIQUE POUR TERME DE COUPLAGE
+C IN  NN1    : NOMBRE DE NOEUDS MAILLE 1
+C IN  NN2    : NOMBRE DE NOEUDS MAILLE 2
+C IN  IJ     : POINTEURS DANS C (CF ARLAS0)
+C IN  MA1    : CONNECTIVITE MAILLE 1
+C IN  MA2    : CONNECTIVITE MAILLE 2
+C IN  TANG   : NORMALES LISSEES POUR COQUE (CF LISNOR)
+C IN  NORM   : TANGENTES LISSEES POUR COQUE (CF LISNOR)
+C IN  CK     : MATRICES ELEMENTAIRES (CF ARLTE)
+C I/O C      : MATRICE MORSE (CF ARLFAC)
 C
 C MATRICE PONCTUELLE DANS C : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...,
 C                              T1.X2, T1.Y2, [T1.Z2, T2.X2, ...],
 C        (N X X1.*2).1, [(N X X1.*2).2, ...,] (N X Y1.*2).1, ...,
 C        (N X T1.*2).1, [(N X T1.*2).2, ..., (N X T2.*2).1, ...] )
+C
 C ----------------------------------------------------------------------
-
-      IMPLICIT NONE
-      
-C --- VARIABLES
-      INTEGER DIM,NN1,NN2,IJ(NN2/2,*),MA1(*),MA2(*),NR1,NR2,NN12,IN1,IN2
+C
+      INTEGER NR1,NR2,NN12,IN1,IN2
       INTEGER D,D2,DT,DR,DTR,D2N2,NOCOQ1(2,9),NOCOQ2(2,9),I1,I2,J1,J2
       INTEGER I,J,K,P,P1,P2,P3,P4,P5,P6,Q,Q1,Q2,Q3,Q4,Q5,Q6
-      REAL*8  NORM(DIM,*),TANG(DIM*(DIM-1),*),CK(*),C(*)
       REAL*8  C1(9),B2(9),C2(6),B3(9),C3(9),B4(9),C4(6)
-      REAL*8  L2,TR1,TR2,TR3,TR4,R1,R2,R3,R4,S1,S2,S3,S4
-
-      IF (DIM.EQ.2) THEN
+      REAL*8  TR1,TR2,TR3,TR4,R1,R2,R3,R4,S1,S2,S3,S4
+C
+C ----------------------------------------------------------------------
+C
+      IF (DIME.EQ.2) THEN
         D2 = 4
         DT = 2
         DR = 2
         DTR = 1
         D = 9
-      ELSE
+      ELSE IF (DIME.EQ.3) THEN
         D2 = 9
         DT = 6
         DR = 9
         DTR = 6
         D = 30
+      ELSE
+        CALL ASSERT(.FALSE.)         
       ENDIF
 
       NR1 = NN1/2
@@ -75,8 +95,8 @@ C --- VARIABLES
 
 C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE CK
 
-      CALL NOCOQU(DIM,NR1,NOCOQ1)
-      CALL NOCOQU(DIM,NR2,NOCOQ2)
+      CALL NOCOQU(DIME,NR1,NOCOQ1)
+      CALL NOCOQU(DIME,NR2,NOCOQ2)
 
       DO 10 I = 1, NR1
 
@@ -117,14 +137,14 @@ C ------- CALCUL DE LA TRACE DE CK++, CK-+, CK+- ET CK--
           TR4 = 0.D0
 
           P = 1
-          DO 20 K = 1, DIM
+          DO 20 K = 1, DIME
 
             TR1 = TR1 + CK(Q1+P)
             TR2 = TR2 + CK(Q2+P)
             TR3 = TR3 + CK(Q3+P)
             TR4 = TR4 + CK(Q4+P)
 
-            P = P + DIM + 1
+            P = P + DIME + 1
 
  20       CONTINUE
           
@@ -142,10 +162,10 @@ C ------- CALCUL DES MATRICES PONCTUELLES C1, C2, C3 ET C4
             S3 = CK(Q3)
             S4 = CK(Q4)
 
-            C1(K) = L2*(S1+S2+S3+S4)
-            B2(K) = L2*(S1-S2+S3-S4)
-            B3(K) = L2*(S1+S2-S3-S4)
-            B4(K) = L2*(S1-S2-S3+S4)
+            C1(K) = LCARA*(S1+S2+S3+S4)
+            B2(K) = LCARA*(S1-S2+S3-S4)
+            B3(K) = LCARA*(S1+S2-S3-S4)
+            B4(K) = LCARA*(S1-S2-S3+S4)
 
  30       CONTINUE
 
@@ -154,27 +174,29 @@ C ------- CALCUL DES MATRICES PONCTUELLES C1, C2, C3 ET C4
           S3 = CK(P3)
           S4 = CK(P4)
 
-          R1 = S1 + S2 + S3 + S4 + L2*(TR1+TR2+TR3+TR4)
-          R2 = S1 - S2 + S3 - S4 + L2*(TR1-TR2+TR3-TR4)
-          R3 = S1 + S2 - S3 - S4 + L2*(TR1+TR2-TR3-TR4)
-          R4 = S1 - S2 - S3 + S4 + L2*(TR1-TR2-TR3+TR4)
+          R1 = S1 + S2 + S3 + S4 + LCARA*(TR1+TR2+TR3+TR4)
+          R2 = S1 - S2 + S3 - S4 + LCARA*(TR1-TR2+TR3-TR4)
+          R3 = S1 + S2 - S3 - S4 + LCARA*(TR1+TR2-TR3-TR4)
+          R4 = S1 - S2 - S3 + S4 + LCARA*(TR1-TR2-TR3+TR4)
  
           P = 1
-          DO 40 K = 1, DIM
+          DO 40 K = 1, DIME
 
             C1(P) = C1(P) + R1
             B2(P) = B2(P) + R2
             B3(P) = B3(P) + R3
             B4(P) = B4(P) + R4
 
-            P = P + DIM + 1
+            P = P + DIME + 1
 
  40       CONTINUE  
 
-          CALL MMPROD(B2,DIM,0,DIM,0,DIM,TANG(1,IN1),DIM,0,0,DIM-1,C2)
-          CALL MMPROD(B4,DIM,0,DIM,0,DIM,TANG(1,IN1),DIM,0,0,DIM-1,B2)
+          CALL MMPROD(B2,DIME,0,DIME,0,DIME,TANG(1,IN1),
+     &                DIME,0,0,DIME-1,C2)
+          CALL MMPROD(B4,DIME,0,DIME,0,DIME,TANG(1,IN1),
+     &                DIME,0,0,DIME-1,B2)
 
-          IF (DIM.EQ.2) THEN
+          IF (DIME.EQ.2) THEN
 
             R1 = NORM(1,IN2)
             R2 = NORM(2,IN2)
@@ -186,15 +208,15 @@ C ------- CALCUL DES MATRICES PONCTUELLES C1, C2, C3 ET C4
           ELSE
 
             P = 1
-            DO 50 K = 1, DIM
+            DO 50 K = 1, DIME
               CALL PROVEC(NORM(1,IN2),B3(P),C3(P))
-              P = P + DIM
+              P = P + DIME
  50         CONTINUE
 
             P = 1
-            DO 60 K = 2, DIM
+            DO 60 K = 2, DIME
               CALL PROVEC(NORM(1,IN2),B2(P),C4(P))
-              P = P + DIM
+              P = P + DIME
  60         CONTINUE
 
           ENDIF

@@ -1,6 +1,8 @@
-      SUBROUTINE ECHMC2(NS,ARE,NARE,NH,OS,SEG,NSEG)
+      SUBROUTINE ECHMC2(NSOM  ,NOEARE,NARE  ,NH    ,OS    ,
+     &                  SEG   ,NSEG)
+C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,53 +19,58 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ----------------------------------------------------------------------
-C  CONNECTIVITE DE L'ECHANTILLONNAGE PRODUIT PAR LA ROUTINE ECHMAP (2D)
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C INTEGER      NS              : NOMBRE DE SOMMETS
-C INTEGER      ARE(*)          : CONNECTIVITE DES ARETES (CF. NOARET)
-C INTEGER      NARE            : NOMBRE D'ARETES
-C INTEGER      NH              : NOMBRE D'ECHANTILLONNAGE (NH .GE. 1)
-C INTEGER      OS              : OFFSET SOMMET
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES DE SORTIE
-C INTEGER      SEG(2,*)        : CONNECTIVITE DES SEGMENTS
-C INTEGER      NSEG            : NOMBRE DE SEGMENTS 
-C
-C DIMENSION
-C NSEG : NARE*NH 
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      INTEGER SEG(2,*),NSEG,NH,OS,NNP,N0,N1,I,J,P0,NS,ARE(*),NARE
-
-      P0 = 1
+      INTEGER     NSOM
+      INTEGER     NOEARE(*)    
+      INTEGER     NARE   
+      INTEGER     NH  
+      INTEGER     OS 
+      INTEGER     SEG(2,*)
+      INTEGER     NSEG         
+C      
+C ----------------------------------------------------------------------
+C
+C APPARIEMENT DE DEUX GROUPES DE MAILLE PAR LA METHODE
+C BOITES ENGLOBANTES + ARBRE BSP
+C
+C CONNECTIVITE DE L'ECHANTILLONNAGE PRODUIT PAR LA ROUTINE ECHMAP (2D)
+C
+C ----------------------------------------------------------------------
+C      
+C
+C IN  NSOM   : NOMBRE DE SOMMETS
+C IN  NOEARE : CONNECTIVITE DES ARETES (CF NOARET)
+C IN  NARE   : NOMBRE D'ARETES
+C IN  NH     : NOMBRE DE POINT D'ECHANTILLONNAGE 
+C IN  OS     : OFFSET SOMMET
+C OUT SEG    : CONNECTIVITE DES SEGMENTS
+C OUT NSEG   : NOMBRE DE SEGMENTS NSEG = NARE*NH  
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER NNP,N0,N1,I,J,P0
+C
+C ----------------------------------------------------------------------
+C
+      P0   = 1
       NSEG = 0
-      N0 = NS + OS
-   
-      DO 10 I = 1, NARE
-                    
-        NNP = ARE(P0)
-        N1 = ARE(P0+1) + OS
-  
-        DO 20 J = 2, NH
-          
-          N0 = N0 + 1
-          NSEG = NSEG + 1
+      N0   = NSOM + OS
+C   
+      DO 10 I = 1, NARE                  
+        NNP = NOEARE(P0)
+        N1  = NOEARE(P0+1) + OS
+        DO 20 J = 2, NH  
+          N0          = N0 + 1
+          NSEG        = NSEG + 1
           SEG(1,NSEG) = N1
           SEG(2,NSEG) = N0
-          N1 = N0
-
- 20       CONTINUE
-
-          NSEG = NSEG + 1
-          SEG(1,NSEG) = N1
-          SEG(2,NSEG) = ARE(P0+2) + OS
-          P0 = P0 + NNP + 1
-
- 10     CONTINUE
-
+          N1          = N0
+ 20     CONTINUE
+        NSEG        = NSEG + 1
+        SEG(1,NSEG) = N1
+        SEG(2,NSEG) = NOEARE(P0+2) + OS
+        P0          = P0 + NNP + 1
+ 10   CONTINUE
       END

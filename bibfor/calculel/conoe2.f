@@ -1,0 +1,86 @@
+      SUBROUTINE CONOE2(IMA   ,CONNEX,LONCUM,COORD,EPAIS,
+     &                  DIME  ,TYPMAZ,CNOEUD,NBNO)
+C     
+C RESPONSABLE ABBAS M.ABBAS
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT NONE
+      INTEGER IMA,CONNEX(*),LONCUM(*)
+      INTEGER DIME,NBNO
+      REAL*8  COORD(3,*),EPAIS,CNOEUD(DIME,*)
+      CHARACTER*(*) TYPMAZ
+C      
+C ----------------------------------------------------------------------
+C
+C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
+C
+C RETOURNE LES COORDONNEES DES NOEUDS DE LA MAILLE
+C AVEC EVENTUELLE EXTRUSION POUR LES COQUES: UTILISATION DE L'EPAISSEUR
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  IMA    : NUMERO DE LA MAILLE
+C IN  CONNEX : CONNEXITE DES MAILLES
+C IN  LONCUM : LONGUEUR CUMULEE DE CONNEX
+C IN  EPAIS  : DEMI-EPAISSEUR DE LA COQUE
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  COORD  : COORDONNEES DES NOEUDS
+C IN  TYPMAI : SOLIDE -> MAILLE TYPE SOLIDE
+C              COQUE -> MAILLE TYPE COQUE 
+C OUT CNOEUD : COORD DES NOEUDS (X1, [Y1, Z1], X2, ...)
+C OUT NBNO   : NOMBRE DE NOEUDS
+C
+C ----------------------------------------------------------------------
+C     
+      REAL*8  R      
+      INTEGER NOECOQ(2,9),INO,IDIM,K1,K2,NUNO,JDEC
+      CHARACTER*8 TYPMAI      
+C
+C ----------------------------------------------------------------------
+C     
+      JDEC   = LONCUM(IMA)
+      NBNO   = LONCUM(IMA+1) - JDEC
+      TYPMAI = TYPMAZ
+C
+      IF (TYPMAI(1:6).EQ.'SOLIDE') THEN
+        DO 10 INO = 1, NBNO       
+          NUNO = CONNEX(JDEC-1+INO)
+          DO 11 IDIM = 1, DIME
+            CNOEUD(IDIM,INO) = COORD(IDIM,NUNO)
+ 11       CONTINUE
+ 10     CONTINUE
+      ELSEIF (TYPMAI(1:5).EQ.'COQUE') THEN    
+        CALL NOCOQU(DIME,NBNO,NOECOQ)
+        DO 20 INO = 1, NBNO
+          NUNO = CONNEX(JDEC-1+INO)
+          K1   = NOECOQ(1,INO)
+          K2   = NOECOQ(2,INO)
+          DO 21 IDIM = 1, DIME
+            R = COORD(IDIM,NUNO)
+            CNOEUD(IDIM,K1) = R - EPAIS 
+            CNOEUD(IDIM,K2) = R + EPAIS
+ 21       CONTINUE
+ 20     CONTINUE
+        NBNO = 2*NBNO
+      ELSE
+        CALL ASSERT(.FALSE.)  
+      ENDIF
+      END

@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+#@ MODIF simu_point_mat_ops Macro  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
-               SUIVI_DDL,SIGM_IMPOSE,EPSI_IMPOSE, INFO, **args) :
+          SUIVI_DDL,ARCHIVAGE,SIGM_IMPOSE,EPSI_IMPOSE,MODELISATION, INFO, **args) :
 
   """Simulation de la reponse d'un point materiel"""
 
@@ -50,15 +50,21 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
   EPS={}
   SIG={}
   
-  CMP_EPS=['EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ']
-  CMP_SIG=['SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
-  
+  if MODELISATION=="3D":
+      nbsig=6
+      CMP_EPS=['EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ']
+      CMP_SIG=['SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
+  else:
+      nbsig=3
+      CMP_EPS=['EPXX','EPYY','EPXY']
+      CMP_SIG=['SIXX','SIYY','SIXY']
+      
   if SIGM_IMPOSE:        
      SIG=SIGM_IMPOSE[0].cree_dict_valeurs(SIGM_IMPOSE[0].mc_liste)
      for i in SIG.keys():
          if SIG[i]==None : SIG[i]=__fonczero
   else:
-     for i in range(6):
+     for i in range(nbsig):
          SIG[CMP_SIG[i]]=__fonczero
 
   if EPSI_IMPOSE:        
@@ -66,10 +72,10 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
 #      for i in EPS.keys():
 #          if EPS[i]==None : EPS[i]=__fonczero
   else:
-     for i in range(6):
+     for i in range(nbsig):
          EPS[CMP_EPS[i]]=None
          
-  for index in range(6):
+  for index in range(nbsig):
       iks=CMP_SIG[index]
       ike=CMP_EPS[index]
       if EPS[ike]!=None and SIG[iks] != __fonczero :
@@ -78,25 +84,46 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
 #   print 'EPS=',EPS
 #   print 'SIG=',SIG
 # -- Definition du maillage
+  if MODELISATION=="3D":
 
-  texte_ma = """
-    COOR_3D                                               
-      P0  0.0   0.0   0.0       
-      P1  1.0   0.0   0.0      
-      P2  0.0   1.0   0.0      
-      P3  0.0   0.0   1.0      
-    FINSF
-    TRIA3
-      F1   P0 P3 P2
-      F2   P0 P1 P3
-      F3   P0 P2 P1
-      F4   P1 P2 P3    
-    FINSF
-    TETRA4
-      VOLUME = P0 P1 P2 P3
-    FINSF
-    FIN
-  """
+     texte_ma = """
+       COOR_3D                                            
+         P0  0.0   0.0   0.0       
+         P1  1.0   0.0   0.0      
+         P2  0.0   1.0   0.0      
+         P3  0.0   0.0   1.0      
+       FINSF
+       TRIA3
+         F1   P0 P3 P2
+         F2   P0 P1 P3
+         F3   P0 P2 P1
+         F4   P1 P2 P3    
+       FINSF
+       TETRA4
+         VOLUME = P0 P1 P2 P3
+       FINSF
+       FIN
+     """
+  
+  else :
+  
+     texte_ma = """
+       COOR_2D                                            
+         P0  0.0   0.0
+         P1  1.0   0.0
+         P2  0.0   1.0
+       FINSF
+       SEG2
+         S1   P2 P0
+         S2   P0 P1
+         S3   P1 P2
+       FINSF
+       TRIA3
+         VOLUME = P0 P1 P2
+       FINSF
+       FIN
+     """
+  
   UL = UniteAster()
   umail = UL.Libre(action='ASSOCIER', nom='simu.mail' )
   
@@ -118,20 +145,19 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
       )
     )
 
+  if MODELISATION=="3D":
 
-  __MO = AFFE_MODELE(
-    MAILLAGE = __MA, 
-    AFFE     = _F(
-      MAILLE       = ('VOLUME','F1','F2','F3','F4'), 
-      PHENOMENE    = 'MECANIQUE', 
-      MODELISATION = '3D'
-      )
-    )
-
-
+     __MO = AFFE_MODELE(
+       MAILLAGE = __MA, 
+       AFFE     = _F(
+         MAILLE       = ('VOLUME','F1','F2','F3','F4'), 
+         PHENOMENE    = 'MECANIQUE', 
+         MODELISATION = '3D',
+         )
+       )
 # -- Mouvement de corps rigide
 
-  __C_RIGIDE = AFFE_CHAR_MECA(
+     __C_RIGIDE = AFFE_CHAR_MECA(
     MODELE = __MO,
     DDL_IMPO = _F(NOEUD = 'P0',DX = 0,DY = 0,DZ = 0),
     LIAISON_DDL = (
@@ -140,10 +166,31 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
       _F(NOEUD=('P3','P2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
       )
     )
+  else:
+
+
+     __MO = AFFE_MODELE(
+    MAILLAGE = __MA, 
+    AFFE     = _F(
+      MAILLE       = ('VOLUME','S1','S2','S3'), 
+      PHENOMENE    = 'MECANIQUE', 
+      MODELISATION = MODELISATION
+      )
+    )
+    
+     __C_RIGIDE = AFFE_CHAR_MECA(
+    MODELE = __MO,
+    DDL_IMPO = _F(NOEUD = 'P0',DX = 0,DY = 0),
+    LIAISON_DDL = (
+      _F(NOEUD=('P2','P1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
+      )
+    )
+
+
 
 # -- Chargement en deformation
 
-  __E = [None]*6
+  __E = [None]*nbsig
 
   __E[0] = AFFE_CHAR_MECA(
     MODELE = __MO,
@@ -154,96 +201,133 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
     MODELE = __MO,
     DDL_IMPO = _F(NOEUD='P2', DY=1)
     )
+  if MODELISATION=="3D": 
      
-  __E[2] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    DDL_IMPO = _F(NOEUD='P3', DZ=1)
-    )
-     
-  __E[3] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    DDL_IMPO = _F(NOEUD='P1', DY=1)
-    )
-     
-  __E[4] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    DDL_IMPO = _F(NOEUD='P1', DZ=1)
-    )
-     
-  __E[5] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    DDL_IMPO = _F(NOEUD='P2', DZ=1)
-    )
-     
+      __E[2] = AFFE_CHAR_MECA(
+         MODELE = __MO,
+         DDL_IMPO = _F(NOEUD='P3', DZ=1)
+         )
+    
+      __E[3] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        DDL_IMPO = _F(NOEUD='P1', DY=1)
+        )
+         
+      __E[4] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        DDL_IMPO = _F(NOEUD='P1', DZ=1)
+        )
+         
+      __E[5] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        DDL_IMPO = _F(NOEUD='P2', DZ=1)
+        )
+  else:
+      __E[2] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        DDL_IMPO = _F(NOEUD='P1', DY=1)
+        )
+       
      
 # -- Chargement en contrainte
 
-  __S = [None]*6
+  __S = [None]*nbsig
   
-  r33 = 3**-0.5
+  if MODELISATION=="3D": 
+   
   
-  __S[0] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    FORCE_FACE = (
-      _F(MAILLE='F1', FX=-1),
-      _F(MAILLE='F4', FX= r33),
-      )
-    )
+      r33 = 3**-0.5
+      
+      __S[0] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_FACE = (
+          _F(MAILLE='F1', FX=-1),
+          _F(MAILLE='F4', FX= r33),
+          )
+        )
+         
+      __S[1] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_FACE = (
+          _F(MAILLE='F2', FY=-1),
+          _F(MAILLE='F4', FY= r33),
+          )
+        )
+         
+      __S[2] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_FACE = (
+          _F(MAILLE='F3', FZ=-1),
+          _F(MAILLE='F4', FZ= r33),
+          )
+        )
+         
+      __S[3] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_FACE = (
+          _F(MAILLE='F1', FY=-1),
+          _F(MAILLE='F2', FX=-1),
+          _F(MAILLE='F4', FX= r33, FY=r33),
+          )
+        )
+         
+      __S[4] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_FACE = (
+          _F(MAILLE='F1', FZ=-1),
+          _F(MAILLE='F3', FX=-1),
+          _F(MAILLE='F4', FX= r33, FZ=r33),
+          )
+        )
+         
+      __S[5] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_FACE = (
+          _F(MAILLE='F2', FZ=-1),
+          _F(MAILLE='F3', FY=-1),
+          _F(MAILLE='F4', FY= r33, FZ=r33),
+          )
+        )
      
-  __S[1] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    FORCE_FACE = (
-      _F(MAILLE='F2', FY=-1),
-      _F(MAILLE='F4', FY= r33),
-      )
-    )
-     
-  __S[2] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    FORCE_FACE = (
-      _F(MAILLE='F3', FZ=-1),
-      _F(MAILLE='F4', FZ= r33),
-      )
-    )
-     
-  __S[3] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    FORCE_FACE = (
-      _F(MAILLE='F1', FY=-1),
-      _F(MAILLE='F2', FX=-1),
-      _F(MAILLE='F4', FX= r33, FY=r33),
-      )
-    )
-     
-  __S[4] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    FORCE_FACE = (
-      _F(MAILLE='F1', FZ=-1),
-      _F(MAILLE='F3', FX=-1),
-      _F(MAILLE='F4', FX= r33, FZ=r33),
-      )
-    )
-     
-  __S[5] = AFFE_CHAR_MECA(
-    MODELE = __MO,
-    FORCE_FACE = (
-      _F(MAILLE='F2', FZ=-1),
-      _F(MAILLE='F3', FY=-1),
-      _F(MAILLE='F4', FY= r33, FZ=r33),
-      )
-    )
-     
-     
+  else:
+
+      r22 = 2**-0.5
+  
+      __S[0] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_CONTOUR = (
+          _F(MAILLE='S1', FX=-1),
+          _F(MAILLE='S3', FX= r22),
+          )
+        )
+         
+      __S[1] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_CONTOUR = (
+          _F(MAILLE='S2', FY=-1),
+          _F(MAILLE='S3', FY= r22),
+          )
+        )
+         
+      __S[2] = AFFE_CHAR_MECA(
+        MODELE = __MO,
+        FORCE_CONTOUR = (
+          _F(MAILLE='S1', FY=-1),
+          _F(MAILLE='S2', FX=-1),
+          _F(MAILLE='S3', FX= r22, FY=r22),
+          )
+        )
+        
 # -- Construction de la charge
 
   l_char = [  _F(CHARGE=__C_RIGIDE)  ]
   
-  for i in xrange(6) :
+  for i in xrange(nbsig) :
     ike=CMP_EPS[i]
     if EPS[ike]:
        l_char.append(  _F(CHARGE=__E[i],FONC_MULT=EPS[ike])  )
        
-  for i in xrange(6) :
+  for i in xrange(nbsig) :
     iks=CMP_SIG[i]
     l_char.append(  _F(CHARGE=__S[i],FONC_MULT=SIG[iks])  )
       
@@ -257,12 +341,14 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
   if   SUIVI_DDL   : 
      motscles['SUIVI_DDL']   = SUIVI_DDL.List_F()
      
+  if   ARCHIVAGE   : 
+     motscles['ARCHIVAGE']   = ARCHIVAGE.List_F()
+     
 
   __EVOL = STAT_NON_LINE(
     MODELE = __MO, 
     CHAM_MATER = __CHMAT, 
-    EXCIT = l_char,
-    ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI'),**motscles)
+    EXCIT = l_char,**motscles)
 
 
   __EVOL = CALC_ELEM(reuse = __EVOL,
@@ -312,13 +398,31 @@ def simu_point_mat_ops(self, COMP_INCR, MATER, INCREMENT, NEWTON,CONVERGENCE,
         ),
       )
     )
+    
+  __REP_INV = POST_RELEVE_T(
+    ACTION = (
+      _F(
+        INTITULE  = 'INV',
+        RESULTAT  =  __EVOL,
+        NOM_CHAM  = 'SIEF_ELNO_ELGA',
+        INVARIANT  = 'OUI',
+        OPERATION = 'EXTRACTION',
+        NOEUD     = 'P0'
+        ),
+      )
+    )
+  __REP_INV=CALC_TABLE( TABLE=__REP_INV,reuse=__REP_INV,
+           ACTION=_F(OPERATION='EXTR',NOM_PARA=('INST','TRACE','VMIS'), ) )
+
   self.DeclareOut('REPONSE',self.sd)
+  
   REPONSE=CALC_TABLE( TABLE=__REP_EPSI,
-           ACTION=_F(OPERATION='COMB',TABLE=__REP_SIGM,NOM_PARA=('INST'), ) )
-
-  REPONSE=CALC_TABLE(reuse=REPONSE, TABLE=REPONSE,
-           ACTION=_F(OPERATION='COMB',TABLE=__REP_VARI,NOM_PARA=('INST'), ) )
-
+           ACTION=(
+                   _F(OPERATION='COMB',TABLE=__REP_SIGM,NOM_PARA=('INST'), ),
+                   _F(OPERATION='COMB',TABLE=__REP_INV ,NOM_PARA=('INST'), ),
+                   _F(OPERATION='COMB',TABLE=__REP_VARI,NOM_PARA=('INST'), ),
+                    )
+                   )
 
   return ier
   

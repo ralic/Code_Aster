@@ -1,54 +1,66 @@
-      SUBROUTINE ARLVER(MOD,LGMA,NGMA,NOMZ,MODEL,CINE,DM)
-
+      SUBROUTINE ARLVER(MODELE,LGMA  ,NBGMA,NOMSD,MODEL,
+     &                  CINE  ,DIMVAR)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C (AT YOUR OPTION) ANY LATER VERSION.
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-C
-C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C                                                                       
+C                                                                       
 C ======================================================================
-C ----------------------------------------------------------------------
-C  FILTRE, REGROUPEMENT, VERIFICATION GROUPES DE MAILLES POUR ARLEQUIN
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C CHARACTER*8    MOD        :  SD MODELE
-C CHARACTER*8    LGMA(NGMA) :  NOMS DES GROUPES DE MAILLES
-C CHARACTER*(10) NOMZ       :  SD DOMAINE
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES D'ENTREE/SORTIE
-C INTEGER        NGMA       :  ENTREE : NOMBRE DE GROUPES DE MAILLES
-C                              SORTIE : NOMBRE DE MAILLES DANS .GROUPEMA
+      IMPLICIT NONE
+      CHARACTER*8   MODELE
+      CHARACTER*8   LGMA(*)
+      INTEGER       NBGMA
+      CHARACTER*10  NOMSD
+      CHARACTER*8   MODEL      
+      CHARACTER*8   CINE
+      INTEGER       DIMVAR
+C      
+C ----------------------------------------------------------------------
 C
-C VARIABLES DE SORTIE
-C CHARACTER*8    MODEL      :  MODELISATION ASSOCIEE AUX MAILLES
-C                              '3D','AXIS', 'CPLAN' OU 'DPLAN'
-C CHARACTER*8    CINE       :  CINEMATIQUE ASSOCIEE AUX MAILLES
-C                              'SOLIDE' OU 'COQUE'
-C INTEGER        DM         :  DIMENSION DE LA VARIETE
-C                              SI SOLIDE : DIMENSION DE L'ESPACE
-C                              SI COQUE  : DIMENSION DE L'ESPACE - 1
+C ROUTINE ARLEQUIN
+C
+C FILTRE, REGROUPEMENT, VERIFICATION GROUPES DE MAILLES
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  MODELE : NOM DU MODELE
+C IN  LGMA   : NOMS DES GROUPES DE MAILLES
+C IN  NOMSD  : SD DOMAINE
+C I/O NBGMA  : EN ENTREE -> NOMBRE DE GROUPES DE MAILLES
+C              EN SORTIE -> NOMBRE DE MAILLES DANS .GROUPEMA
+C OUT MODEL  : MODELISATION ASSOCIEE AUX MAILLES
+C                '3D','AXIS', 'CPLAN' OU 'DPLAN'
+C OUT CINE   :  CINEMATIQUE ASSOCIEE AUX MAILLES
+C                'SOLIDE' OU 'COQUE'
+C                UN POUR CHAQUE GROUPE + ZONE DE COLLAGE
+C OUT DIMVAR : DIMENSION DE LA VARIETE POUR LES DEUX GROUPES
+C                SI SOLIDE : DIMENSION DE L'ESPACE
+C                SI COQUE  : DIMENSION DE L'ESPACE - 1
 C
 C SD DE SORTIE
-C NOM.GROUPEMA : LISTE TRIEE DES MAILLES DU DOMAINE NOM (MA1,MA2,...)
-C ---------------------------------------------------------------------
-
-      IMPLICIT NONE
-
+C NOM.GROUPEMA : LISTE TRIEE DES MAILLES DU DOMAINE NOM (MA1,MA2,...) 
+C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C
+      CHARACTER*32       JEXNUM , JEXNOM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -63,204 +75,159 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-C --- VARIABLES
-      CHARACTER*8   MOD,LGMA(*),MODEL,CINE,MODELZ,CINEZ,MAIL
-      CHARACTER*10  NOM
-      CHARACTER*16  NOMTE
-      CHARACTER*(*) NOMZ
-      INTEGER       DM,NGMA,NMA,NTOT,NLI,IMA,ILI,N,P0,P1,P2,Q0,Q1,Q2,I,J
-
-      NOM = NOMZ
-
-C --- LECTURE DONNEES
-
+C
+      CHARACTER*8  NOMA,K8BID,NOMMAI
+      CHARACTER*16 NOMTE,MODTE,CINTE
+      INTEGER      NBMA,NTOT,NBLIGR,NUMA,NINIT 
+      INTEGER      ICOMPT,IGMA,IMA,ILIGR,IRET
+      INTEGER      JMAIL,JREPE,JCOMPT,JTE,JGMA,JGROUP,JTYEL
+      LOGICAL      ELTOK,ARLELT
+      INTEGER      IFM,NIV      
+C
+C ---------------------------------------------------------------------
+C
       CALL JEMARQ()
-      CALL JEVEUO(MOD//'.MODELE    .NOMA','L',P0)
-      MAIL = ZK8(P0)
-      CALL JEVEUO(MOD//'.MODELE    .REPE','L',P1)
-      CALL JELIRA(MOD//'.MODELE    .LIEL','NMAXOC',NLI,ZK8)
-      CALL JEVEUO(MOD//'.MAILLE','L',P2)
-
-C --- ALLOCATION OBJET TEMPORAIRE
-
-      CALL WKVECT('&&ARLVER.COMPTEUR','V V I',NLI,Q0)
-      CALL WKVECT('&&ARLVER.TE','V V I',NLI,Q1)
-
-      DO 10 I = 1, NLI
-        ZI(Q0-1+I) = 0
- 10   CONTINUE
-
-C --- LIEL UTILISEES PAR LGMA
-
-      DO 20 I = 1, NGMA
-
-        CALL JEEXIN(JEXNOM(MAIL//'.GROUPEMA',LGMA(I)),J)
-        IF (J.EQ.0) THEN
-          CALL U2MESK('F','MODELISA2_9',1,LGMA(I))
+      CALL INFNIV(IFM,NIV)      
+C
+C --- INITIALISATIONS
+C
+      NINIT = 0
+      CINTE = ' '
+      MODTE = ' '
+C
+C --- ACCES MODELE
+C
+      CALL JEVEUO(MODELE(1:8)//'.MODELE    .NOMA','L',JMAIL)      
+      CALL JEVEUO(MODELE(1:8)//'.MODELE    .REPE','L',JREPE)  
+      CALL JELIRA(MODELE(1:8)//'.MODELE    .LIEL','NMAXOC',NBLIGR,K8BID)
+      CALL JEVEUO(MODELE(1:8)//'.MAILLE','L',JTYEL)
+C
+C --- NOM DU MAILLAGE
+C
+      NOMA = ZK8(JMAIL)
+C      
+C --- ALLOCATION OBJETS TEMPORAIRES
+C
+      CALL WKVECT('&&ARLVER.COMPTEUR','V V I',NBLIGR,JCOMPT)
+      CALL WKVECT('&&ARLVER.TE','V V I',NBLIGR,JTE)
+C
+C --- COMPTER LE NOMBRE DE MAILLES AFFECTEES A CHAQUE TYPE D'ELEMENT
+C --- DONNER LE NUMERO ABSOLU DU NUMERO D'ELEMENT AFFECTE A CHAQUE TYPE
+C
+      DO 20 IGMA = 1, NBGMA
+        CALL JEEXIN(JEXNOM(NOMA(1:8)//'.GROUPEMA',LGMA(IGMA)),IRET)
+        IF (IRET.EQ.0) THEN
+          CALL U2MESG ('F','ARLEQUIN_2',1,LGMA(IGMA),0,0,0,0.D0)
         ENDIF
-
-        CALL JEVEUO(JEXNOM(MAIL//'.GROUPEMA',LGMA(I)),'L',P0)
-        CALL JELIRA(JEXNOM(MAIL//'.GROUPEMA',LGMA(I)),'LONMAX',NMA,ZK8)
-
-        DO 20 J = 1, NMA
-
-          IMA = ZI(P0-1+J)
-          ILI = ZI(P1+2*(IMA-1))
-
-          IF (ILI.NE.0) THEN
-
-            N = ZI(Q0-1+ILI)
-            IF (N.EQ.0) ZI(Q1-1+ILI) = ZI(P2-1+IMA)
-            ZI(Q0-1+ILI) = N + 1
-
+        CALL JEVEUO(JEXNOM(NOMA(1:8)//'.GROUPEMA',LGMA(IGMA)),'L',JGMA)
+        CALL JELIRA(JEXNOM(NOMA(1:8)//'.GROUPEMA',LGMA(IGMA)),'LONMAX',
+     &              NBMA,K8BID)
+        NINIT = NINIT + NBMA
+        DO 20 IMA = 1, NBMA
+          NUMA  = ZI(JGMA-1+IMA)                 
+          ILIGR = ZI(JREPE+2*(NUMA-1))
+          IF (ILIGR.NE.0) THEN
+            IF (ZI(JCOMPT-1+ILIGR).EQ.0) THEN
+              ZI(JTE-1+ILIGR) = ZI(JTYEL-1+NUMA)
+            ENDIF           
+            ZI(JCOMPT-1+ILIGR) = ZI(JCOMPT-1+ILIGR) + 1
           ENDIF
-
  20   CONTINUE
-
-C --- VERIFICATION COHERENCE MODELISATION / CINEMATIQUE
-
+C
+C --- VERIFICATION COHERENCE MODELISATION / CINEMATIQUE 
+C
       NTOT = 0
-
-      DO 30 ILI = 1, NLI
-
-        N = ZI(Q0-1+ILI)
-        IF (N.EQ.0) GOTO 30
-
-        CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ZI(Q1-1+ILI)),NOMTE)
-
-        IF (NOMTE(1:4).EQ.'MEDP') THEN
-
-          MODELZ = 'DPLAN'
-          CINEZ = 'SOLIDE'
-          IF ((NOMTE(5:6).EQ.'TR').OR.(NOMTE(5:6).EQ.'QU')) GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'MECP') THEN
-
-          MODELZ = 'CPLAN'
-          CINEZ = 'SOLIDE'
-          IF ((NOMTE(5:6).EQ.'TR').OR.(NOMTE(5:6).EQ.'QU')) GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'MEAX') THEN
-
-          MODELZ = 'AXIS'
-          CINEZ = 'SOLIDE'
-          IF ((NOMTE(5:6).EQ.'TR').OR.(NOMTE(5:6).EQ.'QU')) GOTO 40
-
-        ELSEIF (NOMTE(1:5).EQ.'MECA_') THEN
-
-          MODELZ = '3D'
-          CINEZ = 'SOLIDE'
-          IF ((NOMTE(6:9).EQ.'TETR').OR.
-     &        (NOMTE(6:9).EQ.'PENT').OR.
-     &        (NOMTE(6:9).EQ.'HEXA')) GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'METD') THEN
-
-          MODELZ = 'DPLAN'
-          CINEZ = 'COQUE'
-          GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'METC') THEN
-
-          MODELZ = 'CPLAN'
-          CINEZ = 'COQUE'
-          GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'MECX') THEN
-
-          MODELZ = 'AXIS'
-          CINEZ = 'COQUE'
-          GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'MEDK') THEN
-
-          MODELZ = '3D'
-          CINEZ = 'COQUE'
-          GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'MEDS') THEN
-
-          MODELZ = '3D'
-          CINEZ = 'COQUE'
-          GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'MEQ4') THEN
-
-          MODELZ = '3D'
-          CINEZ = 'COQUE'
-          GOTO 40
-
-        ELSEIF (NOMTE(1:4).EQ.'MEC3') THEN
-
-          MODELZ = '3D'
-          CINEZ = 'COQUE'
-          GOTO 40
-
-        ENDIF
-
-        ZI(Q0-1+ILI) = 0
-        GOTO 30
-
- 40     CONTINUE
-
-        IF (NTOT.EQ.0) THEN
-          MODEL = MODELZ
-          CINE = CINEZ
-        ELSE
-          IF (MODELZ.NE.MODEL) CALL U2MESS('F','MODELISA2_10')
-          IF (CINEZ.NE.CINE) CALL U2MESS('F','MODELISA2_11')
-        ENDIF
-
-        NTOT = NTOT + N
-
- 30   CONTINUE
-
-      IF (NTOT.EQ.0) CALL U2MESS('F','MODELISA2_12')
-
-C --- DIMENSION DE LA VARIETE
-
-      IF (MODEL(1:2).EQ.'3D') THEN
-        DM = 3
-      ELSE
-        DM = 2
-      ENDIF
-
-      IF (CINE(1:5).EQ.'COQUE') DM = DM - 1
-
-C --- ALLOCATION .GROUPEMA
-
-      CALL WKVECT(NOM//'.GROUPEMA','V V I',NTOT,Q1)
-
-C --- COPIE DES MAILLES VALIDES
-
-      Q2 = Q1
-
-      DO 50 I = 1, NGMA
-
-        CALL JEVEUO(JEXNOM(MAIL//'.GROUPEMA',LGMA(I)),'L',P0)
-        CALL JELIRA(JEXNOM(MAIL//'.GROUPEMA',LGMA(I)),'LONMAX',NMA,ZK8)
-
-        DO 50 J = 1, NMA
-
-          IMA = ZI(P0-1+J)
-          ILI = ZI(P1+2*(IMA-1))
-
-          IF ((ILI.NE.0).AND.(ZI(Q0-1+ILI).NE.0)) THEN
-            ZI(Q2) = IMA
-            Q2 = Q2 + 1
+      DO 30 ILIGR = 1, NBLIGR
+        IF (ZI(JCOMPT-1+ILIGR).NE.0) THEN 
+          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ZI(JTE-1+ILIGR)),NOMTE)
+          ELTOK = ARLELT(NOMTE,MODTE,CINTE)
+          IF (.NOT.ELTOK) THEN
+            ZI(JCOMPT-1+ILIGR) = 0
+            GOTO 30 
+          ELSE            
+            IF (NTOT.EQ.0) THEN
+              MODEL = MODTE
+              CINE  = CINTE
+            ELSE
+              IF (MODTE.NE.MODEL) THEN
+                CALL U2MESS('F','ARLEQUIN_3')
+              ENDIF
+              IF (CINTE.NE.CINE) THEN
+                CALL U2MESS('F','ARLEQUIN_4')
+              ENDIF 
+            ENDIF
+            NTOT = NTOT + ZI(JCOMPT-1+ILIGR)
           ENDIF
-
+        ENDIF
+ 30   CONTINUE
+C
+C --- AUCUNE MAILLE DU GROUPE N'EST UTILISABLE
+C 
+      IF (NTOT.EQ.0) THEN 
+        CALL U2MESS('F','ARLEQUIN_5')
+      ENDIF   
+C
+C --- DIMENSION DE LA VARIETE
+C
+      IF (MODEL(1:2).EQ.'3D') THEN
+        DIMVAR = 3
+      ELSE 
+        DIMVAR = 2
+      ENDIF
+      IF (CINE(1:5).EQ.'COQUE') THEN 
+        DIMVAR = DIMVAR - 1
+      ENDIF
+C      
+      IF (NIV.GE.2) THEN
+        WRITE(IFM,*) '<ARLEQUIN> ... NOMBRE DE MAILLES INITIALES : ',
+     &                NINIT
+        WRITE(IFM,*) '<ARLEQUIN> ... TRI DES MAILLES VALIDES...'
+      ENDIF       
+C      
+C --- ALLOCATION .GROUPEMA
+C
+      CALL WKVECT(NOMSD//'.GROUPEMA','V V I',NTOT,JGROUP)
+C
+C --- COPIE DES MAILLES VALIDES
+C
+      ICOMPT = 0
+      DO 50 IGMA = 1, NBGMA
+        CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',LGMA(IGMA)),'L',JGMA)
+        CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',LGMA(IGMA)),'LONMAX',
+     &              NBMA,ZK8)
+        DO 50 IMA = 1, NBMA
+          NUMA  = ZI(JGMA-1+IMA)
+          ILIGR = ZI(JREPE+2*(NUMA-1))
+          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ZI(JTE-1+ILIGR)),NOMTE)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMA),NOMMAI)
+          IF ((ILIGR.NE.0).AND.(ZI(JCOMPT-1+ILIGR).NE.0)) THEN
+            ZI(JGROUP+ICOMPT) = NUMA
+            ICOMPT = ICOMPT + 1
+          ENDIF
  50   CONTINUE
-
-      NGMA = NTOT
-      CALL TRI(ZI(Q1),ZI,0,NGMA)
-
-C --- DESALLOCATION
-
+C
+      IF (ICOMPT.NE.NTOT) THEN
+        CALL ASSERT(.FALSE.)
+      ENDIF
+      NBGMA = NTOT
+      CALL TRI(ZI(JGROUP),ZI(JGROUP),0,NBGMA)
+C
+      IF (NIV.GE.2) THEN
+        WRITE(IFM,*) '<ARLEQUIN> ... MODELISATION              : ',
+     &                MODEL
+        WRITE(IFM,*) '<ARLEQUIN> ... CINEMATIQUE               : ',
+     &                CINE
+        WRITE(IFM,*) '<ARLEQUIN> ... NOMBRE DE MAILLES FINALES : ',
+     &                NTOT 
+      ENDIF         
+C
+C --- MENAGE 
+C
       CALL JEDETR('&&ARLVER.COMPTEUR')
       CALL JEDETR('&&ARLVER.TE')
+C
       CALL JEDEMA()
 
       END

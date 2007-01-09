@@ -1,7 +1,8 @@
-      SUBROUTINE CONOEU(MA,CONNEX,LONCUM,COORD,NORMAL,DIME,L,CNOEUD,NNO)
-
+      SUBROUTINE CONOEU(NUMA  ,CONNEX,LONCUM,COORD,NORMAL,
+     &                  DIME  ,LCOQUE,CNOEUD,NBNO)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,75 +19,47 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C ----------------------------------------------------------------------
-C                COORDONNEES DES NOEUDS DE LA MAILLE MA 
-C ----------------------------------------------------------------------
-C VARIABLES D'ENTREE
-C INTEGER  MA                 : NUMERO DE LA MAILLE
-C INTEGER  CONNEX(*)          : CONNEXITE DES MAILLES
-C INTEGER  LONCUM(*)          : LONGUEUR CUMULEE DE CONNEX
-C REAL*8   COORD(3,*)         : COORDONNEES DES NOEUDS
-C REAL*8   NORMAL(DIME,*)     : COORDONNEES DES NORMALES (CF LISNOR)
-C INTEGER  DIME               : DIMENSION DE L'ESPACE
-C INTEGER  L                  : L = 0 -> MAILLE TYPE SOLIDE
-C                               L = 1 -> MAILLE TYPE COQUE (CF TMACOQ)
-C                   
-C VARIABLES DE SORTIE
-C REAL*8    CNOEUD(DIME,NNO)  : COORD DES NOEUDS (X1, [Y1, Z1], X2, ...)
-C INTEGER   NNO               : NOMBRE DE NOEUDS
-C ----------------------------------------------------------------------
-     
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
+      INTEGER NUMA,CONNEX(*),LONCUM(*)
+      INTEGER DIME,LCOQUE,NBNO
+      REAL*8  COORD(3,*),NORMAL(DIME,*),CNOEUD(DIME,*)
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE ARLEQUIN
+C
+C COORDONNEES DES NOEUDS DE LA MAILLE
+C EVENTUELLE EXTRUSION POUR LES COQUES: UTILISATION DES NORMALES
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NUMA   : NUMERO DE LA MAILLE
+C IN  CONNEX : CONNEXITE DES MAILLES
+C IN  LONCUM : LONGUEUR CUMULEE DE CONNEX
+C IN  DIME   : DIMENSION DE L'ESPACE
+C IN  NORMAL : COORDONNEES DES NORMALES (CF LISNOR)
+C IN  COORD  : COORDONNEES DES NOEUDS
+C IN  LCOQUE : LCOQUE = 0 -> MAILLE TYPE SOLIDE
+C              LCOQUE = 1 -> MAILLE TYPE COQUE 
+C OUT CNOEUD : COORD DES NOEUDS (X1, [Y1, Z1], X2, ...)
+C OUT NBNO   : NOMBRE DE NOEUDS
+C
+C ----------------------------------------------------------------------
+C        
+      NBNO = LONCUM(NUMA+1) - LONCUM(NUMA)
+C
+      IF (LCOQUE.EQ.0) THEN
+        CALL COSOLI(NUMA  ,CONNEX,LONCUM,COORD ,DIME  ,
+     &              CNOEUD)
 
-C --- VARIABLES
-      INTEGER MA,CONNEX(*),LONCUM(*),DIME,L,NNO
-      INTEGER NOECOQ(2,9),I,J,K1,K2,INO,P0
-      REAL*8  COORD(3,*),NORMAL(DIME,*),CNOEUD(DIME,*),R,S
-
-      P0 = LONCUM(MA)
-      NNO = LONCUM(MA+1)-P0
-
-C --- MAILLE TYPE SOLIDE A PARTIR DE LA SD. MAILLAGE
-
-      IF (L.EQ.0) THEN
-
-        DO 10 I = 1, NNO
-       
-          INO = CONNEX(P0)
-          P0 = P0 + 1
-
-          DO 10 J = 1, DIME
-
-            CNOEUD(J,I) = COORD(J,INO)
- 
- 10     CONTINUE
-
-C --- MAILLE TYPE COQUE A PARTIR DE LA SD. MAILLAGE
-
-      ELSEIF (L.EQ.1) THEN
-
-        CALL NOCOQU(DIME,NNO,NOECOQ)
-
-        DO 20 I = 1, NNO
-
-          INO = CONNEX(P0)
-          P0 = P0 + 1
-
-          K1 = NOECOQ(1,I)
-          K2 = NOECOQ(2,I)
-
-          DO 20 J = 1, DIME
-
-            R = COORD(J,INO)
-            S = NORMAL(J,INO)
-
-            CNOEUD(J,K1) = R - S 
-            CNOEUD(J,K2) = R + S
-
- 20     CONTINUE
-
-        NNO = 2*NNO
-
+      ELSEIF (LCOQUE.EQ.1) THEN
+        CALL COCOQU(NUMA  ,CONNEX,LONCUM,COORD ,'VARIABLE',
+     &              0.D0  ,NORMAL,DIME  ,CNOEUD)
+        NBNO = 2*NBNO
+      ELSE
+        CALL ASSERT(.FALSE.)  
       ENDIF
-
       END

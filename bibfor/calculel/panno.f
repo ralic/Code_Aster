@@ -1,7 +1,7 @@
-      SUBROUTINE PANNO(TYPEMA,PAN,NSOM)
-
+      SUBROUTINE PANNO(TYPEMA,PAN  )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,144 +20,107 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C
 C
 C ======================================================================
-C ----------------------------------------------------------------------
-C        PANS TOUCHANT LES NOEUDS PRINCIPAUX D'UN TYPE DE MAILLE
-C ----------------------------------------------------------------------
-C VARIABLE D'ENTREE
-C CHARACTER*8  TYPEMA         : TYPE DE MAILLE
+C RESPONSABLE ABBAS M.ABBAS
 C
-C VARIABLES D'ENTREE/SORTIE
-C REAL*8       PAN(DIM,NSOM)  : PANS TOUCHANT LES NOEUDS PRINCIPAUX
-C                              ( PAN1.1, PAN1.2, [PAN1.3], PAN2.1, ... )
-C                                PAN*.1 PAN*.2 [PAN*.3] TOUCHENT LE
-C                                NOEUD *
-C INTEGER      NSOM           : NOMBRE DE NOEUDS PRINCIPAUX
-C ----------------------------------------------------------------------
-
       IMPLICIT NONE
-
-C --- VARIABLES
-      CHARACTER*8 TYPEMA
-      INTEGER PAN(*),NSOM
-
+      CHARACTER*8  TYPEMA
+      INTEGER      PAN(*)     
+C      
+C ----------------------------------------------------------------------
+C
+C CONSTRUCTION DE BOITES ENGLOBANTES POUR UN GROUPE DE MAILLES
+C
+C INDICES DES PANS TOUCHANT LES NOEUDS PRINCIPAUX D'UN TYPE DE MAILLE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  TYPEMA : TYPE DE MAILLE
+C OUT PAN    : PANS TOUCHANT LES NOEUDS PRINCIPAUX (DIM,NSOM)
+C               POUR CHAQUE NOEUD, LES NUMEROS DES PANS LE TOUCHANT
+C                EN 2D: DEUX PANS (ARETES) TOUCHENT LE NOEUD
+C                EN 3D: TROIS PANS (FACES) TOUCHENT LE NOEUD
+C                 ( PAN1.1, PAN1.2, [PAN1.3], PAN2.1, ... )
+C                   PAN*.1 PAN*.2 [PAN*.3] TOUCHENT LE
+C                   NOEUD *
+C
+C ----------------------------------------------------------------------
+C
       IF (TYPEMA(1:4).EQ.'TRIA') THEN
-
-        NSOM = 3
-
         PAN(1) = 3
         PAN(2) = 1
-
         PAN(3) = 1
         PAN(4) = 2
-
         PAN(5) = 2
         PAN(6) = 3
-
       ELSEIF (TYPEMA(1:4).EQ.'QUAD') THEN
-
-        NSOM = 4
-
         PAN(1) = 4
         PAN(2) = 1
-
         PAN(3) = 1
         PAN(4) = 2
-
         PAN(5) = 2
         PAN(6) = 3
-
         PAN(7) = 3
         PAN(8) = 4
-
       ELSEIF (TYPEMA(1:5).EQ.'TETRA') THEN
-
-        NSOM = 4
-
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 3
-
         PAN(4) = 1
         PAN(5) = 2
         PAN(6) = 4
-
         PAN(7) = 1
         PAN(8) = 3
         PAN(9) = 4
-
         PAN(10) = 2
         PAN(11) = 3
         PAN(12) = 4
-
       ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
-
-        NSOM = 6
-
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 4
-
         PAN(4) = 1
         PAN(5) = 2
         PAN(6) = 3
-
         PAN(7) = 1
         PAN(8) = 3
         PAN(9) = 4
-
         PAN(10) = 5
         PAN(11) = 2
         PAN(12) = 4
-
         PAN(13) = 5
         PAN(14) = 2
         PAN(15) = 3
-
         PAN(16) = 5
         PAN(17) = 3
         PAN(18) = 4
-
-
       ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN
-
-        NSOM = 8
-
         PAN(1) = 1
         PAN(2) = 2
         PAN(3) = 5
-
         PAN(4) = 1
         PAN(5) = 2
         PAN(6) = 3
-
         PAN(7) = 1
         PAN(8) = 3
         PAN(9) = 4
-
         PAN(10) = 1
         PAN(11) = 4
         PAN(12) = 5
-
         PAN(13) = 2
         PAN(14) = 5
         PAN(15) = 6
-
         PAN(16) = 2
         PAN(17) = 3
         PAN(18) = 6
-
         PAN(19) = 3
         PAN(20) = 4
         PAN(21) = 6
-
         PAN(22) = 4
         PAN(23) = 5
         PAN(24) = 6
-
       ELSE
-
-        CALL U2MESK('F','CALCULEL_28',1,TYPEMA)
-
+        WRITE(6,*) 'TYPEMA: ',TYPEMA
+        CALL ASSERT(.FALSE.)
       ENDIF
-
       END
