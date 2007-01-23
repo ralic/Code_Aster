@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF utilitai4 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,7 +175,14 @@ cata_msg={
 """),
 
 39: _("""
-  le materiau fourni par l'utilisateur est different de celui present dans la sd resultat, on poursuit les calculs avec le materiau fourni par l'utilisateur.
+  -> Le matériau fourni par l'utilisateur est différent de celui présent dans
+     la Structure de Données Résultat. On poursuit les calculs avec le matériau
+     fourni par l'utilisateur.
+  -> Risque & Conseil : Vérifiez si le matériau fourni dans la commande est
+     bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
+     (ex: calcul des contraintes: CALC_ELEM) avec un matériau différent de
+     celui utilisé pour calculer les déplacements, températures,...
+
 """),
 
 40: _("""

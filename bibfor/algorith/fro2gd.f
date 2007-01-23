@@ -2,7 +2,7 @@
      &                    DEPTOT,ITERAT,LREAC,DEPDEL,RESU,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,8 +110,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      ZCONV
-      PARAMETER    (ZCONV=6)
+      INTEGER      CFDISI
       LOGICAL      TROUAC,DELPOS,LELPIV,CFEXCL
       INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,ITEMAX
       INTEGER      II,JJ,KK,IOTE,ILIAC,NUMIN,IZONE,ITEMUL,ISTO
@@ -133,8 +132,8 @@ C
       CHARACTER*24 CONTNO,CONTMA,APCOFR,FROTE,APJEFX
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL
       INTEGER      JNOCO,JMACO,JAPCOF,IFRO,JAPJFX
-      CHARACTER*24 NOZOCO,CONVCO,APMEMO,ATMU
-      INTEGER      JZOCO,JCONV,JAPMEM,JATMU
+      CHARACTER*24 NOZOCO,APMEMO,ATMU
+      INTEGER      JZOCO,JAPMEM,JATMU
 C
 C ======================================================================
 C
@@ -162,7 +161,6 @@ C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
       CONTNO   = DEFICO(1:16)//'.NOEUCO'
-      CONVCO   = DEFICO(1:16)//'.CONVCO'
       NOZOCO   = DEFICO(1:16)//'.NOZOCO'
       CONTMA   = DEFICO(1:16)//'.MAILCO'
       APPARI   = RESOCO(1:14)//'.APPARI'
@@ -185,7 +183,6 @@ C ======================================================================
       CONVEC   = RESOCO(1:14)//'.CONVEC'
 C ======================================================================
       CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(CONVCO,'L',JCONV)
       CALL JEVEUO(NOZOCO,'L',JZOCO)
       CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(APPARI,'L',JAPPAR)
@@ -243,9 +240,9 @@ C ======================================================================
       NBLIAI = NESCL
       NEQ    = ZI(LMAT+2)
       IZONE  = 1
-      ITEMUL = ZI(JCONV+ZCONV*(IZONE-1)+2)
+      ITEMUL = CFDISI(DEFICO,'ITER_MULT_MAXI',IZONE)
       ITEMAX = ITEMUL*NBLIAI
-      ISTO   = ZI(JCONV+ZCONV*(IZONE-1))
+      ISTO   = CFDISI(DEFICO,'STOP_SINGULIER',IZONE)
       NESMAX = 0
       XJVMAX = 0.0D0
       TYPEAJ = 'A'

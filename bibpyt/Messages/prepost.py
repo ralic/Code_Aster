@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF prepost Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -323,7 +323,9 @@ cata_msg={
 """),
 
 76: _("""
- on ne peut pas traiter plus de 999 variables internes
+  -> Il y a des groupes de noeuds dans le maillage %(k1)s.
+     Ils  n'apparaitront pas dans le fichier géométrie ENSIGHT.
+     Seuls des groupes de mailles peuvent y etre intégrés.
 """),
 
 77: _("""

@@ -1,7 +1,7 @@
       FUNCTION CFEXCL(JAPPAR,JAPMEM,IESCL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       LOGICAL      CFEXCL
@@ -39,7 +40,6 @@ C              SINON, LE NOEUD EST BON
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -57,28 +57,27 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      ZAPMEM
-      PARAMETER    (ZAPMEM=4)
-      INTEGER      NUMSUP
-      CHARACTER*8  NOMSUP
-      INTEGER      POSNOE,TYPSUP
+      INTEGER      CFMMVD,ZAPME,ZAPPA
+      INTEGER      POSNOE
+C
 C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
+C
+      ZAPPA  = CFMMVD('ZAPPA')
+      ZAPME  = CFMMVD('ZAPME')
 C     
 C --- RECUPERATION DU NUMERO DE NOEUD ABSOLU DU NOEUD ESCLAVE
 C
-      POSNOE = ZI(JAPPAR+3*(IESCL-1)+1)
+      POSNOE = ZI(JAPPAR+ZAPPA*(IESCL-1)+1)
 C
 C --- VERIFICATION QUE CE NOEUD N'EST PAS EXCLU
 C   
-      IF (ZI(JAPMEM+ZAPMEM*(POSNOE-1)).LT.0) THEN
+      IF (ZI(JAPMEM+ZAPME*(POSNOE-1)).LT.0) THEN
         CFEXCL = .TRUE.
       ELSE
         CFEXCL = .FALSE.
       ENDIF
-
-C
-C ----------------------------------------------------------------------
 C
       CALL JEDEMA()
 

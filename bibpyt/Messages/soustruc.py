@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+#@ MODIF soustruc Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -111,7 +111,13 @@ cata_msg={
 """),
 
 23: _("""
- noeuds confondus
+  On cherche à classer une liste de noeuds par abscisses croissantes
+  de leur projection sur un segment de droite.
+  2 noeuds ont la meme projection sur la droite.
+  Le classement est donc arbitraire.
+
+  -> Risque & Conseil :
+     Vérifiez votre maillage.
 """),
 
 24: _("""

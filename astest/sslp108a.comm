@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE FISSURE 2D EN MODE 1 AVEC METHODE ARLEQUIN - MODELE DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,7 +139,7 @@ TEST_TABLE(TABLE=DEPL_H,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=2.29000E-03),
            NOM_PARA='DY',
            VALE = -8.6620168273920E-07,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',); 
                              
@@ -150,7 +150,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
            NOM_PARA='SIYY',
            VALE = 2.3323694256527E+09,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);                         
  
@@ -158,7 +158,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=4.00000E-04),
            NOM_PARA='SIYY',
            VALE = 1.7080323018584E+08,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);            
            
@@ -166,7 +166,7 @@ TEST_TABLE(TABLE=SIYY_LIG,
            FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=8.00000E-04),
            NOM_PARA='SIYY',
            VALE = 1.2403223557972E+08,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);  
 
@@ -176,35 +176,35 @@ TEST_TABLE(TABLE=SIYY_LIG,
 TEST_TABLE(TABLE=GK01,
            NOM_PARA='G',
            VALE=3.6368893124329E+02,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);    
            
 TEST_TABLE(TABLE=GK02,
            NOM_PARA='G',
            VALE=3.6368893124329E+02,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);    
     
 TEST_TABLE(TABLE=GK02,
            NOM_PARA='K1',
            VALE=8.1612080595607E+06,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);             
             
 TEST_TABLE(TABLE=GK02,
            NOM_PARA='K2',
            VALE=-2.4773868786652E+06,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);  
            
 TEST_TABLE(TABLE=GK02,
            NOM_PARA='G_IRWIN',
            VALE=3.6371381369010E+02,
-           PRECISION=1E-12,
+           PRECISION=1E-10,
            REFERENCE='NON_REGRESSION',
            VERSION='9.0.4',);   
 

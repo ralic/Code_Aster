@@ -2,7 +2,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,10 +24,8 @@ C ======================================================================
 
       CHARACTER*24 DEFICO
       CHARACTER*24 RESOCO
-
       CHARACTER*8  NOMA
       INTEGER      JCNSVR
-
 C
 C ======================================================================
 C ROUTINE APPELEE PAR : CFRESU
@@ -61,24 +59,16 @@ C
 C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C
-      INTEGER      ZTOLE
-      PARAMETER    (ZTOLE=7)
-      INTEGER      ZCONV
-      PARAMETER    (ZCONV=6)
-      INTEGER      ZAPPAR
-      PARAMETER    (ZAPPAR=3)
-      INTEGER      ZCMP
-      PARAMETER    (ZCMP=19)
-
-      CHARACTER*24 TOLECO,CONVCO,CONTNO,CONTMA,APPARI
-      INTEGER      JTOLE,JCONV,JNOCO,JMACO,JAPPAR
+      INTEGER      CFMMVD,CFDISI,ZAPPA,ZRESU
+      CHARACTER*24 CONTNO,CONTMA,APPARI
+      INTEGER      JNOCO,JMACO,JAPPAR
       CHARACTER*8  NOMESC,NOMMAI
       INTEGER      POSESC,NUMESC,POSMAI,NUMMAI
       INTEGER      IZONE,INTERP
       INTEGER      NESCL,NBLIAI,ILIAI
       INTEGER      IFM,NIV
       LOGICAL      ARRET
-      REAL*8       JEU,JEUREF
+      REAL*8       JEU,JEUREF,CFDISR
 C
 C ----------------------------------------------------------------------
 C
@@ -90,27 +80,26 @@ C
 C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
-      TOLECO = DEFICO(1:16)//'.TOLECO'
-      CONVCO = DEFICO(1:16)//'.CONVCO'
       APPARI = RESOCO(1:14)//'.APPARI'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
       CONTMA = DEFICO(1:16)//'.MAILCO'
 C ======================================================================
-      CALL JEVEUO(TOLECO,'L',JTOLE)
-      CALL JEVEUO(CONVCO,'L',JCONV)
+
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(CONTNO,'L',JNOCO )
       CALL JEVEUO(CONTMA,'L',JMACO )
-
-
+      ZAPPA = CFMMVD('ZAPPA')
+      ZRESU = CFMMVD('ZRESU')
+C      
 C -- ALARME OU ERREUR ?
-      IF (ZI(JCONV+ZCONV*(IZONE-1)+3).EQ.1) THEN
+C
+      IF (CFDISI(DEFICO,'STOP_INTERP',IZONE).EQ.1) THEN
         ARRET = .TRUE.
       ELSE
         ARRET = .FALSE.
       ENDIF
 C --- JEU MINIMUM POUR DECLARER INTERPENETRATION
-      JEUREF = ZR(JTOLE+ZTOLE*(IZONE-1)+3)
+      JEUREF = CFDISR(DEFICO,'TOLE_INTERP',IZONE)
 
       NESCL  = ZI(JAPPAR)
       NBLIAI = NESCL
@@ -120,11 +109,11 @@ C --- JEU MINIMUM POUR DECLARER INTERPENETRATION
 C
 C --- RECHERCHE CONNECTIVITE
 C
-        POSESC = ZI(JAPPAR+ZAPPAR*(ILIAI-1)+1)
+        POSESC = ZI(JAPPAR+ZAPPA*(ILIAI-1)+1)
         NUMESC = ZI(JNOCO+POSESC-1)
 
         CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMESC),NOMESC)
-        POSMAI = ZI(JAPPAR+ZAPPAR*(ILIAI-1)+2)
+        POSMAI = ZI(JAPPAR+ZAPPA*(ILIAI-1)+2)
 C
 C --- PREPARATION DES CHAINES POUR LES NOMS
 C
@@ -138,7 +127,7 @@ C
 C
 C --- VALEUR DU JEU
 C
-        JEU = ZR(JCNSVR-1+ (NUMESC-1)*ZCMP+2 )
+        JEU = ZR(JCNSVR-1+ (NUMESC-1)*ZRESU+2 )
         IF (NIV.GE.2) THEN
           WRITE (IFM,2001) ' DU  NOEUD <',NOMESC,'> AVEC <',NOMMAI,
      &                     '> * JEU:',JEU
@@ -155,9 +144,9 @@ C
       IF (INTERP.GE.1) THEN
         WRITE (IFM,3000) INTERP,JEUREF
         IF (ARRET) THEN
-          CALL U2MESS('F','ALGORITH_93')
+          CALL U2MESS('F','CONTACT_93')
         ELSE
-          CALL U2MESS('A','ALGORITH_93')
+          CALL U2MESS('A','CONTACT_93')
         ENDIF
       ENDIF
 

@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -265,11 +265,27 @@ cata_msg={
 """),
 
 63: _("""
- la maille  %(k1)s  porte un element fini de bord. mais elle ne borde aucun element ayant une "rigidite". cela peut entrainer des problemes de "pivot nul" lors de la resolution.
+  -> La maille %(k1)s porte un élément fini de bord, mais elle ne borde
+     aucun élément ayant une "rigidité".
+
+  -> Risque & Conseil :
+     Cela peut entrainer des problèmes de "pivot nul" lors de la résolution.
+     Si la résolution des systèmes linéaires ne pose pas de problèmes, vous
+     pouvez ignorer ce message.
+     Sinon, vérifier la définition du modèle (AFFE_MODELE) en évitant l'utilisation
+     de l'opérande TOUT='OUI'.
 """),
 
 64: _("""
- le modele  %(k1)s n'a pas d'elements calculant de la rigidite.)
+  -> Le modèle %(k1)s n'a pas d'éléments calculant de la rigidité.
+
+  -> Risque & Conseil :
+     Ce modèle ne poura donc pas (en général) etre utilisé pour faire des calculs.
+     Vérifier la définition du modèle (AFFE_MODELE) et assurez-vous que les
+     types de mailles du maillage (SEG2, TRIA3, QUAD4, ...) sont compatibles avec votre
+     modélisation.
+     Exemple d'erreur : affecter une modélisation "3D" sur un maillage formé de facettes.
+
 """),
 
 65: _("""
@@ -385,7 +401,11 @@ cata_msg={
 """),
 
 93: _("""
- vous avez renseigne un des mots-cles fonc_mult_*, coef_mult_*, phas_deg, puis_puls, or votre charge ne contient pas d'effort reparti sur des poutres. ces mots-cles seront donc ignores
+  -> Vous avez renseigné un des mots-clés fonc_mult_*, coef_mult_*,
+     phas_deg, puis_puls, or votre charge ne contient pas d'effort réparti
+     sur des poutres. Ces mots-clés seront donc ignorés.
+  -> Risque & Conseil :
+
 """),
 
 94: _("""

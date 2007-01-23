@@ -1,4 +1,4 @@
-#@ MODIF algeline Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF algeline Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,7 +123,11 @@ cata_msg={
 """),
 
 27: _("""
- il y a au moins un point d'une zone dont la vitesse reduite locale est exterieure a la zone de vitesses reduites exploree experimentalement
+  -> Il y a au moins un point d'une zone dont la vitesse réduite locale est
+     extérieure à la zone des vitesses réduites explorées expérimentalement.
+  -> Risque & Conseil :
+     Les valeurs sont extrapolees en dehors des donnees d'essais.
+     Les resultats du calcul seront a prendre avec circonspection.
 """),
 
 28: _("""

@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF elements2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,7 +167,13 @@ cata_msg={
 """),
 
 38: _("""
- angl_axe non traite en 2d
+  ->  L'option ANGL_AXE n'est pas prise en compte en 2D mais seulement
+      en 3D.
+  -> Risque & Conseil :
+     Ce mot clé utilisé dans l'opérateur AFFE_CARA_ELEM (MASSIF), permet
+     de définir des axes locaux pour lesquels on utilise une propriété de
+     symétrie de révolution, ou d'isotropie transverse. En 2D, on peut définir
+     un repère d'orthotropie via ANGL_REP.
 """),
 
 39: _("""
@@ -303,7 +309,12 @@ cata_msg={
 """),
 
 72: _("""
-  la reactualisation de la geometrie (deformation : petit_reac sous le mot cle comp_incr) est deconseillee pour les elements de plaque.
+  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
+     le mot clé COMP_INCR) est déconseillée pour les éléments de type plaque. Les
+     grandes rotations ne sont pas modélisées correctement.
+  -> Risque & Conseil :
+     En présence de grands déplacements et grandes rotations, il est préférable
+     d'utiliser la modélisation COQUE_3D, avec DEFORMATION='GREEN_GR'
 """),
 
 73: _("""

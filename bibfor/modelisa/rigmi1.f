@@ -1,6 +1,6 @@
-      SUBROUTINE RIGMI1(NOMA,NOGR,IFREQ,NFREQ,IFMIS,RIGMA,RIGTO)
+      SUBROUTINE RIGMI1(NOMA,NOGR,IFREQ,NFREQ,IFMIS,RIGMA,RIGMA2,RIGTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 23/01/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
       INTEGER      IFMIS
       INTEGER      IFREQ, NFREQ
       CHARACTER*8  NOMA, NOGR
-      REAL*8       RIGMA(*), RIGTO(*)
+      REAL*8       RIGMA(*), RIGMA2(*), RIGTO(*)
 C      REAL*8       FREQ, RIGMA(*), RIGTO(*)
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -114,6 +114,10 @@ C      CALL JEVEUO(JEXNOM(MAGRMA,NOGR),'L',LDGM)
 C
       DO 34 IN = 0,NB-1
          IM = ZI(LDGM+IN)
+         CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
+         DO 38 II = 1, NBNO
+            IF (ZI(LDNM).EQ.ZI(IDNO+II-1)) I1 = II
+ 38      CONTINUE         
          R1 = RIGMA(3*IN+1)
          R2 = RIGMA(3*IN+2)
          R3 = RIGMA(3*IN+3)
@@ -122,9 +126,9 @@ C
          RIGTO(3*(IM-1)+2) = R2 + RIGTO(3*(IM-1)+2)
          RIGTO(3*(IM-1)+3) = R3 + RIGTO(3*(IM-1)+3)
 
-         R1 = RIGTO(3*(IM-1)+1)
-         R2 = RIGTO(3*(IM-1)+2)
-         R3 = RIGTO(3*(IM-1)+3)
+         R1 = RIGTO(3*(IM-1)+1) + RIGMA2(3*(I1-1)+1)
+         R2 = RIGTO(3*(IM-1)+2) + RIGMA2(3*(I1-1)+2)
+         R3 = RIGTO(3*(IM-1)+3) + RIGMA2(3*(I1-1)+3)
 
          RIGMA(3*IN+1) = R1
          RIGMA(3*IN+2) = R2

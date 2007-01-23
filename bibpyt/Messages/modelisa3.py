@@ -1,4 +1,4 @@
-#@ MODIF modelisa3 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF modelisa3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -170,9 +170,6 @@ cata_msg={
  erreur a l appel de la routine etenca pour extension de la carte  %(k1)s 
 """),
 
-38: _("""
- erreur symetrique
-"""),
 
 39: _("""
  liaison unilaterale ni reelle, ni fonction
@@ -194,69 +191,17 @@ cata_msg={
  trop de grandeurs dans la liaison unilaterale
 """),
 
-44: _("""
- ne correspond a aucune methode                                    du mot cle formulation
-"""),
 
-45: _("""
- ne correspond a aucune methode                                    du mot cle integration
-"""),
 
-46: _("""
- ne correspond a aucune methode du mot cle                                      frottement
-"""),
 
-47: _("""
- ne correspond a aucune methode de contact-frottement             
-"""),
 
-48: _("""
- methode de contact differentes pour les zones de contact
-"""),
 
-49: _("""
- ne correspond a aucune methode du mot cle                         appariement
-"""),
 
-50: _("""
- ne correspond a aucune methode du mot cle projection             
-"""),
 
-51: _("""
- ne correspond a aucune methode du mot cle recherche
-"""),
 
-52: _("""
- ne correspond a aucune methode du mot cle lissage
-"""),
 
-53: _("""
- ne correspond a aucune methode du mot cle normale
-"""),
 
-54: _("""
-  on ne peut pas utiliser une direction d'appariement fixe si l'appariement n'est pas nodal
-"""),
 
-55: _("""
- la commande vect_y n'intervient pas en 2d.
-"""),
-
-56: _("""
- la commande vect_orie_pout n'intervient pas en 2d.
-"""),
-
-57: _("""
- ne correspond a aucune methode du mot cle reac_geom
-"""),
-
-58: _("""
- ne correspond a aucune methode du mot cle                         stopsingulier
-"""),
-
-59: _("""
- ne correspond a aucune methode du mot cle                         sans_noeud_quad
-"""),
 
 60: _("""
  on ne donne le mot facteur "convection" qu"une fois au maximum

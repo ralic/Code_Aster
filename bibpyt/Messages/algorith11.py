@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+#@ MODIF algorith11 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -243,7 +243,11 @@ cata_msg={
 """),
 
 56: _("""
- les valeurs de contact au noeud  %(k1)s  differe selon la maille sur laquelle ce noeud se trouve.
+  -> Lors de l'enregistrement du champ d'archivage du contact, il s'est avéré
+     que les valeurs de contact au noeud %(k1)s différents selon la maille sur
+     laquelle se trouve ce noeud.
+  -> Risque & Conseil :
+     Ce message est normal si le contact est activé sur la fissure.
 """),
 
 57: _("""
@@ -251,7 +255,13 @@ cata_msg={
 """),
 
 58: _("""
- aucun point du fond de fissure n'a ete trouve. verifier les definitions des level sets. suite des calculs risquee...
+  -> Aucun point du fond de fissure n'a été trouvé !
+  -> Risque & Conseil :
+     Ce message est normal si vous souhaitiez définir une interface (et non une fissure).
+     Si vous souhaitiez définir une fissure, la définition des level sets (Méthode XFEM)
+     ne permet pas de trouver de points du fond de fissure à l'intèrieur de la structure.
+     Il doit y avoir une erreur lors de la définition de la level set tangente.
+     Vérifier la définition des level sets.
 """),
 
 59: _("""
@@ -263,7 +273,13 @@ cata_msg={
 """),
 
 61: _("""
- pfon_ini loin de fond_fiss
+  -> Lors de l'orientation des points du fond de fissure, le point du fond de
+     fissure initial (PFON_INI) est trop loin du fond de fissure.
+  -> Risque & Conseil :
+     Le point initial qui en résulte amène surement à une orientation du fond
+     de fissure erronée.
+     Veuillez redéfinir le point du fond de fissure initial (mot clé PFON_INI).
+
 """),
 
 62: _("""

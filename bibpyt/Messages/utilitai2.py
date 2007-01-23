@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF utilitai2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -363,7 +363,14 @@ cata_msg={
 """),
 
 87: _("""
- le maillage doit etre issu d'ideas pour garantir la coherence entre le maillage et les resultats lus
+  -> Le maillage doit etre issu d'IDEAS pour garantir la cohérence entre
+     le maillage et les résultats lus.
+
+  -> Risque & Conseil :
+     Vous récupérez des résultats au format IDEAS, ces résultats sont donnés
+     aux noeuds par leur nom, et/ou aux mailles par leurs noms. Il faut
+     vérifier que les résultats lus ont été obtenus avec le meme maillage
+     que celui lu par aster (LIRE_MAILLAGE).
 """),
 
 88: _("""

@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,13 +24,10 @@ cata_msg={
 
 
 2: _("""
- Problème rencontré :
-   la matrice de masse est non inversible.
-   On ne peut donc pas s'en servir pour calculer l'accélération initiale.
-   => on initialise l'accélération à zéro.
-
- Conseils :
-   Avez-vous bien affecté une masse sur tous les éléments ?
+  -> La matrice de masse est non inversible.
+     On suppose alors que l'accélération initiale est nulle.
+  -> Risque & Conseil :
+     Verifiez qu'une masse a bien été affectée à tous les éléments.
 """),
 
 3: _("""
@@ -45,21 +42,9 @@ cata_msg={
  gradients confondus
 """),
 
-6: _("""
- on ne peut utiliser le solveur gcpc
-"""),
 
-7: _("""
- denom est negatif : contacter les developpeurs
-"""),
 
-8: _("""
- le pas d'avancement est negatif
-"""),
 
-9: _("""
- des noeuds se decollent plus que la valeur d'alarme_jeu:
-"""),
 
 10: _("""
  impossible de diagonaliser la matrice de raideur en choc
@@ -70,8 +55,11 @@ cata_msg={
 """),
 
 12: _("""
- Dans le cas où les différents mouvements d'appui sont corrélés et dépendants,
- les resultats ACCE_ABSOLU sont faux.
+  -> L'option 'ACCE_ABSOLU' est incorrectement traitée en multi appuis.
+     Sauf si les mouvements sont corrélés.
+  -> Risque & Conseil :
+     Assurez-vous que les mouvements sont décorrélés et indépendants.
+
 """),
 
 13: _("""
@@ -207,7 +195,11 @@ cata_msg={
 """),
 
 48: _("""
- integration elastoplastique de loi multi-critere beton_double_dp : la contrainte equivalente est nulle pour la maille:  %(k1)s calcul de la matrice tangente impossible.
+  -> Intégration élastoplastique de loi multi-critères beton_double_dp :
+     la contrainte équivalente est nulle pour la maille %(k1)s: le calcul
+     de la matrice tangente est impossible.
+  -> Risque & Conseil :
+
 """),
 
 49: _("""
@@ -310,17 +302,10 @@ cata_msg={
  obstacle de type discret mal defini (un angle > pi).
 """),
 
-74: _("""
- erreur de dimensionnement : le nombre de noeuds est superieur a 9
-"""),
 
-75: _("""
- un poi1 ne peut pas etre une maille maitre
-"""),
 
-76: _("""
- on ne peut pas avoir plus de 3 ddls impliques dans la meme relation unilaterale
-"""),
+
+
 
 77: _("""
  pb a la resolution du systeme
@@ -346,29 +331,12 @@ cata_msg={
  erreur pgmeur 1
 """),
 
-83: _("""
- il y a plusieurs charges contenant des conditions de contact
-"""),
 
-84: _("""
- melange 2d et 3d dans le contact
-"""),
 
-85: _("""
- melange dimensions maillage dans le contact
-"""),
 
-86: _("""
- code methode contact incorrect (dvlp)
-"""),
 
-87: _("""
- norme tangentielle                        de frottement negative
-"""),
 
-88: _("""
- ne pas utiliser reac_incr=0 avec le frottement
-"""),
+
 
 89: _("""
  vecteur diagnostic absent (dvlp)
@@ -386,9 +354,7 @@ cata_msg={
  cas impossible
 """),
 
-93: _("""
- interpenetrations des surfaces
-"""),
+
 
 94: _("""
  pas possible

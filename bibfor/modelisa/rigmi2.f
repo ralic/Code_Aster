@@ -1,6 +1,6 @@
-      SUBROUTINE RIGMI2(NOMA,NOGR,IFREQ,NFREQ,IFMIS,RIGMA,RIGTO)
+      SUBROUTINE RIGMI2(NOMA,NOGR,IFREQ,NFREQ,IFMIS,RIGMA,RIGMA2,RIGTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/08/2004   AUTEUR ACBHHCD G.DEVESA 
+C MODIF MODELISA  DATE 23/01/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
       INTEGER      IFMIS
       INTEGER      IFREQ, NFREQ
       CHARACTER*8  NOMA, NOGR
-      REAL*8       RIGMA(*), RIGTO(*)
+      REAL*8       RIGMA(*), RIGMA2(*), RIGTO(*)
 C      REAL*8       FREQ, RIGMA(*), RIGTO(*)
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -45,7 +45,6 @@ C
       CHARACTER*8  K8B
       CHARACTER*8  NOMGR, NOMMAI
       CHARACTER*24 MLGNMA, MAGRMA, MANOMA, TABRIG
-      REAL*8       Z0
 
 C
       CALL JEMARQ()
@@ -55,7 +54,6 @@ C
       MANOMA = NOMA//'.CONNEX'
       MLGNMA = NOMA//'.NOMMAI'
       NOEMAX = 0
-      Z0 = 0.D0
 C
 
       CALL JELIRA(JEXNOM(MAGRMA,NOGR),'LONMAX',NB,K8B)
@@ -143,19 +141,25 @@ C
             IF (ZI(LDNM).EQ.ZI(IDNO+II-1)) I1 = II
             IF (ZI(LDNM+1).EQ.ZI(IDNO+II-1)) I2 = II
  38      CONTINUE 
-         RIGMA(3*IN+1) = 0.25D0*ZR(JRIG+(3*I2-3)*NBMODE+3*I1-3)*
+         RIGMA(3*IN+1) = 0.5D0*ZR(JRIG+(3*I2-3)*NBMODE+3*I1-3)*
      +    (ZR(ISOTO+3*I1-3)/ZR(ISOPA+3*I1-3) + 
      +     ZR(ISOTO+3*I2-3)/ZR(ISOPA+3*I2-3)+0.D0)
-         RIGMA(3*IN+2) = 0.25D0*ZR(JRIG+(3*I2-2)*NBMODE+3*I1-2)*
+         RIGMA(3*IN+2) = 0.5D0*ZR(JRIG+(3*I2-2)*NBMODE+3*I1-2)*
      +    (ZR(ISOTO+3*I1-2)/ZR(ISOPA+3*I1-2) + 
      +     ZR(ISOTO+3*I2-2)/ZR(ISOPA+3*I2-2)+0.D0)
-         RIGMA(3*IN+3) = 0.25D0*ZR(JRIG+(3*I2-1)*NBMODE+3*I1-1)*
+         RIGMA(3*IN+3) = 0.5D0*ZR(JRIG+(3*I2-1)*NBMODE+3*I1-1)*
      +    (ZR(ISOTO+3*I1-1)/ZR(ISOPA+3*I1-1) + 
      +     ZR(ISOTO+3*I2-1)/ZR(ISOPA+3*I2-1)+0.D0)         
  34   CONTINUE
 C
+      CALL R8INIR(3*NBNO,0.D0,RIGMA2,1)
       DO 35 IN = 0,NB-1
          IM = ZI(LDGM+IN)
+         CALL JEVEUO(JEXNUM(MANOMA,ZI(LDGM+IN)),'L',LDNM)
+         DO 39 II = 1, NBNO
+            IF (ZI(LDNM).EQ.ZI(IDNO+II-1)) I1 = II
+            IF (ZI(LDNM+1).EQ.ZI(IDNO+II-1)) I2 = II
+ 39      CONTINUE 
          R1 = RIGMA(3*IN+1)
          R2 = RIGMA(3*IN+2)
          R3 = RIGMA(3*IN+3)
@@ -171,13 +175,18 @@ C
          RIGMA(3*IN+1) = R1
          RIGMA(3*IN+2) = R2
          RIGMA(3*IN+3) = R3
+         RIGMA2(3*(I1-1)+1) = R1 + RIGMA2(3*(I1-1)+1)
+         RIGMA2(3*(I1-1)+2) = R2 + RIGMA2(3*(I1-1)+2)
+         RIGMA2(3*(I1-1)+3) = R3 + RIGMA2(3*(I1-1)+3)         
+         RIGMA2(3*(I2-1)+1) = R1 + RIGMA2(3*(I2-1)+1)
+         RIGMA2(3*(I2-1)+2) = R2 + RIGMA2(3*(I2-1)+2)
+         RIGMA2(3*(I2-1)+3) = R3 + RIGMA2(3*(I2-1)+3)    
          CALL JENUNO(JEXNUM(MLGNMA,IM),NOMMAI)
-         WRITE(IFR,1000) NOMMAI,Z0,Z0,Z0,Z0,Z0,Z0,R1,Z0,Z0,Z0,Z0,R2,
-     +                   Z0,Z0,Z0,Z0,Z0,R3,Z0,Z0,Z0
+         WRITE(IFR,1000) NOMMAI,-R1,-R2,-R3
  35   CONTINUE
 C
- 1000 FORMAT(2X,'_F ( MAILLE=''',A8,''',',1X,'CARA= ''K_T_L'' , ',
-     +      /7X,'VALE=(',7(/1X,3(1X,1PE12.5,',')),/1X,'),',
+ 1000 FORMAT(2X,'_F ( MAILLE=''',A8,''',',1X,'CARA= ''K_T_D_L'' , ',
+     +      /7X,'VALE=(',1X,3(1X,1PE12.5,','),1X,'),',
      +      /'   ),')
 
  9999 CONTINUE

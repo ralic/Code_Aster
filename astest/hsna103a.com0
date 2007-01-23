@@ -1,0 +1,91 @@
+POURSUITE(CODE=_F(NOM='HSNA103A'))
+
+nbcop = 30      
+l_copeaux = ['COPS_%d' % k for k in range(1, nbcop+1)]
+
+# GP CRITIQUES
+
+gp23 =0.802924931
+gp35 =0.802924931
+gp100=1.13328052
+gp150=1.73059404
+gp200=2.58727503
+gp300=2.58727503
+
+tab = POST_GP(RESULTAT=SIG,
+              RESU_THER=THERMIK2,
+              MODELE=MO_MECA,
+              MATER=MAT_M,
+              COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
+                           DEFORMATION='PETIT'),
+         
+              EXCIT=(_F(CHARGE=CH_THER,),
+                     _F(CHARGE=CH_MECA,),
+                     _F(CHARGE=CLIM,)),
+              SYME_CHAR='SYME',
+              CRIT_MAXI_GP='ABSOLU',
+              DIRECTION=(1., 0., 0.),
+              THETA_2D=(_F(GROUP_NO='PFOND_0',
+                           R_INF=0.25,  
+                           R_SUP=0.5),
+                        _F(GROUP_NO='PFOND_0',
+                           R_INF=0.5,
+                           R_SUP=1.),   
+                        _F(GROUP_NO='PFOND_0',
+                           R_INF=1.,
+                           R_SUP=2.),
+                        _F(GROUP_NO='PFOND_0',
+                           R_INF=2.,
+                           R_SUP=5.),
+                           ),
+              
+              GROUP_MA=l_copeaux,
+              PAS_ENTAILLE=0.02,
+              RAYON_AXIS = 55.,
+              PREDICTION=_F(GP_CRIT=(gp23,gp35,gp100,gp150,gp200,gp300,),
+                            TEMP   =(23.,35.,100.,150.,200.,300.,),),
+              TABL_RESU=CO('tabpredi'),
+              INFO=2)
+
+IMPR_TABLE(TABLE=tab)
+IMPR_TABLE(TABLE=tabpredi)
+
+
+TEST_TABLE(TABLE=tabpredi,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1120.),
+           NOM_PARA='GPMAX',
+           VERSION= '9.0.5',
+           REFERENCE='NON_REGRESSION',
+           PRECISION = 1.0E-4,
+           CRITERE = 'RELATIF', 
+           VALE=7.14718E-01)
+
+TEST_TABLE(TABLE=tabpredi,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1120.),
+           NOM_PARA='PREDICTION',
+           VERSION= '9.0.5',
+           REFERENCE='NON_REGRESSION',
+           VALE_I=0)
+           
+TEST_TABLE(TABLE=tabpredi,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1130.),
+           NOM_PARA='GPMAX',
+           VERSION= '9.0.5',
+           REFERENCE='NON_REGRESSION',
+           PRECISION = 1.0E-4,
+           CRITERE = 'RELATIF', 
+           VALE=8.11561E-01)
+
+TEST_TABLE(TABLE=tabpredi,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=1130.),
+           NOM_PARA='PREDICTION',
+           VERSION= '9.0.5',
+           REFERENCE='NON_REGRESSION',
+           VALE_I=1)
+
+FIN()
+

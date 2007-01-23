@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa7 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -371,7 +371,8 @@ cata_msg={
 """),
 
 88: _("""
- erreur dans les noms de maille du mot-cle facteur  %(k1)s  : aucune n'est du bon type
+  -> Erreur dans les mailles du mot-clé facteur %(k1)s :
+     aucune maille n'est du bon type. Elles sont toutes ignorées.
 """),
 
 89: _("""
@@ -406,9 +407,7 @@ cata_msg={
  seules les chargement mecaniques peuvent etre des fonctions 
 """),
 
-97: _("""
- SANS_GROUP_NO : intégration aux noeuds obligatoire.
-"""),
+
 
 98: _("""
  Erreur lors de la vérification des noms de groupes.

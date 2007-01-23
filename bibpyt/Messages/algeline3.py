@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algeline3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -283,7 +283,12 @@ cata_msg={
 """),
 
 66: _("""
- la matrice de raideur est numeriquement singuliere (malgre la strategie de decalage) la borne minimale de la bande est une valeur propre. on poursuit tout de meme
+  -> La borne minimale de la bande de fréquences est une valeur propre !
+     Malgré la stratégie de décalage, la matrice de raideur est numériquement
+     singulière.
+  -> Risque & Conseil :
+     Augmenter (ou diminuer) la fréquence (ou la charge critique dans le cas du calcul de
+     flambement) qui définit la borne minimale de la bande de fréquence.
 """),
 
 67: _("""

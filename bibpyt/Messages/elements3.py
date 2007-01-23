@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF elements3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,7 +63,13 @@ cata_msg={
 """),
 
 11: _("""
- attention vous avez une loi de comportement inelastique et vous etes en contraintes planes, la composante du tenseur de deformations epzz que vous allez calculer n'est valable que tant que vous restez dans le domaine elastique.
+  -> Attention vous avez une loi de comportement inélastique et vous etes
+     en contraintes planes, la composante du tenseur de déformations EPZZ que
+     vous allez calculer n'est valable que tant que vous restez dans le
+     domaine élastique. Les autres composantes EPXX, EPYY, EPXY sont correctes.
+  -> Risque & Conseil :
+     Si le comportement est effectivement non linéaire, il ne faut pas utiliser
+     la valeur de EPZZ calculée par cette option.
 """),
 
 12: _("""
@@ -251,7 +257,14 @@ cata_msg={
 """),
 
 58: _("""
-  la reactualisation de la geometrie (deformation : petit_reac sous le mot cle comp_incr) est deconseillee pour les elements pou_d_t et pou_d_e .
+  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
+     le mot clé COMP_INCR) est déconseillée pour les éléments POU_D_T et POU_D_E.
+  -> Risque & Conseil :
+     En présence de grands déplacements et grandes rotations, avec une loi de comportement
+     non linéaire, il est préférable  d'utiliser la modélisation POU_D_TGM
+     (poutre multi-fibres) avec DEFORMATION=REAC_GEOM. Si le comportement reste
+     élastique, il est également possible d'utiliser la modélisation POU_D_T_GD avec
+     DEFORMATION='GREEN_GR'.
 """),
 
 59: _("""
@@ -327,7 +340,13 @@ cata_msg={
 """),
 
 77: _("""
- attention vous etes en contraintes planes, et vous utilisez la loi de comportement  %(k1)s . la  composante du tenseur des deformations plastiques  epzz est calculee avec epzz = -(epxx + epyy) . verifiez que cette expression est vraie avec votre loi de comportement.
+  -> Attention vous etes en contraintes planes, et vous utilisez la loi
+     de comportement %(k1)s. La composante du tenseur des déformations
+     plastiques EPZZ est calculée en supposant l'incompressibilité des
+     déformations plastiques : EPZZ = -(EPXX + EPYY).
+  -> Risque & Conseil :
+     Vérifiez que cette expression est valide avec votre loi de comportement.
+
 """),
 
 78: _("""
@@ -395,7 +414,15 @@ cata_msg={
 """),
 
 94: _("""
-  la reactualisation de la geometrie (deformation : petit_reac sous le mot cle comp_incr) est deconseillee pour les elements de coque_3d.
+  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC' sous
+     le mot clé COMP_INCR) est déconseillée pour les éléments COQUE_3D.
+  -> Risque & Conseil :
+     Le calcul des déformations à l'aide de PETIT_REAC n'est qu'une
+     approximation des hypothèses des grands déplacements. Elle nécessite
+     d'effectuer de très petits incréments de chargement. Pour prendre en
+     compte correctement les grands déplacements et surtout les grandes
+     rotations, il est recommandé d'utiliser DEFORMATION='GREEN_GR'.
+
 """),
 
 95: _("""

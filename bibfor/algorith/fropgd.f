@@ -2,7 +2,7 @@
      &           RESU,DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,8 +118,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      ZCONV
-      PARAMETER    (ZCONV=6)
+      INTEGER      CFDISI
       LOGICAL      TROUAC,DELPOS,LELPIV,CFEXCL
       INTEGER      IFM,NIV
       INTEGER      IBID,IER,II,JJ,KK,JJC,LL,IZONE
@@ -149,8 +148,8 @@ C
       INTEGER      JAPJFY,JAPJFX,JAPMEM
       CHARACTER*24 NDIMCO,CONTNO,CONTMA,APCOFR,FROTE,PENAL,COMAFO
       INTEGER      JDIM,JNOCO,JMACO,JAPCOF,IFRO,IPENA,ICOMA
-      CHARACTER*24 CONVCO,APPARI,APPOIN,APCOEF,APJEU,APDDL
-      INTEGER      JCONV,JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL
+      CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL
+      INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL
 C
 C ======================================================================
 C
@@ -179,7 +178,6 @@ C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
       APPARI = RESOCO(1:14)//'.APPARI'
       CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONVCO = DEFICO(1:16)//'.CONVCO'
       COCO   = RESOCO(1:14)//'.COCO'
       CONTMA = DEFICO(1:16)//'.MAILCO'
       APPARI = RESOCO(1:14)//'.APPARI'
@@ -212,7 +210,6 @@ C ======================================================================
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(COCO,'E',JCOCO)
       CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(CONVCO,'L',JCONV)
       CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(APPOIN,'L',JAPPTR)
@@ -275,9 +272,9 @@ C ======================================================================
       RESIGR = CONV(20)
       NEQ    = ZI(LMAT+2)
       IZONE  = 1
-      ITEMUL = ZI(JCONV+ZCONV*(IZONE-1)+2)
+      ITEMUL = CFDISI(DEFICO,'ITER_MULT_MAXI',IZONE)
       ITEMAX = ITEMUL*NBLIAI
-      ISTO   = ZI(JCONV+ZCONV*(IZONE-1))
+      ISTO   = CFDISI(DEFICO,'STOP_SINGULIER',IZONE)
       INDIC  = 0
       INDFAC = 1
       SPLIAI = 0

@@ -2,7 +2,7 @@
 
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,17 +66,16 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      ZAPMEM
-      PARAMETER    (ZAPMEM=4)
+      INTEGER      CFMMVD,ZAPME
       INTEGER      IFM,NIV
       INTEGER      NUMSUP
       CHARACTER*8  NOMSUP
 C ----------------------------------------------------------------------
       CALL JEMARQ()
-C
       CALL INFNIV(IFM,NIV)
 C
-      ZI(JAPMEM+ZAPMEM*(POSSUP-1)) = TYPSUP
+      ZAPME = CFMMVD('ZAPME')
+      ZI(JAPMEM+ZAPME*(POSSUP-1)) = TYPSUP
 C
       IF (NIV.GE.2) THEN
         NUMSUP = ZI(JNOCO+POSSUP-1)

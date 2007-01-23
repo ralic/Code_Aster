@@ -1,9 +1,7 @@
       SUBROUTINE ALGOGL(DEFICO,RESOCO,MATASS,LMAT,LDSCON,NOMA,CINE,
      &                  RESU,DEPTOT,LICCVG)
 C
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
-C
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2005 IFP - MARTIN GUITTON         WWW.CODE-ASTER.ORG
@@ -21,9 +19,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_20
-C ======================================================================
+C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
       CHARACTER*19 MATASS
@@ -89,7 +87,6 @@ C                       (4) CONTACT/FROTTEMENT: MATRICE SINGULIERE
 C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
 C
-      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -107,20 +104,17 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      ZCONV
-      PARAMETER    (ZCONV=6)
-      INTEGER      ZTOLE
-      PARAMETER    (ZTOLE=7)
+      INTEGER      CFDISI
+      REAL*8       CFDISR
       CHARACTER*24 K24BID
       COMPLEX*16   CBID
       INTEGER      IBID
       LOGICAL      TROUAC,DELPOS,LELPIV,CFEXCL
-      CHARACTER*19 MATAS1,MATPRE
       INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,IZONE
       INTEGER      II,KK,ITER,ILIAC,NEQMAX,IALARM
       INTEGER      JRESU,JDEPP
       INTEGER      INDIC,LLMIN
-      INTEGER      LLIAC,JDECAL,LLF,LLF1,LLF2
+      INTEGER      JDECAL,LLF,LLF1,LLF2
       INTEGER      INDFAC,AJLIAI,SPLIAI,POSIT,SPAVAN
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBDDL,NDIM,NESMAX
       REAL*8       R8MAEM,AJEU,RHO,RHORHO,AADELT,VAL,R8PREM
@@ -130,12 +124,12 @@ C
       CHARACTER*24 MACONT
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,NOZOCO
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JZOCO
-      CHARACTER*24 CONTNO,CONTMA,CONVCO,TOLECO,APMEMO
-      INTEGER      JNOCO,JMACO,JCONV,JTOLE,JAPMEM
+      CHARACTER*24 CONTNO,CONTMA,TOLECO,APMEMO
+      INTEGER      JNOCO,JMACO,JTOLE,JAPMEM
       CHARACTER*19 LIAC,MU,DELT0,DELTA,COCO,LIOT,ATMU
       INTEGER      JLIAC,JMU,JDELT0,JDELTA,JCOCO,JLIOT,JATMU
-      CHARACTER*19 CHASEC,CHASOL,SOLVEU
-      INTEGER      JCHSEC,JCHSOL,JSLVK
+      CHARACTER*19 SOLVEU
+      INTEGER      JSLVK
       INTEGER      ITEMAX,ISTO,ITEMUL
 C
 C ----------------------------------------------------------------------
@@ -166,7 +160,6 @@ C ======================================================================
       CONTNO = DEFICO(1:16)//'.NOEUCO'
       CONTMA = DEFICO(1:16)//'.MAILCO'
       NOZOCO = DEFICO(1:16)//'.NOZOCO'
-      CONVCO = DEFICO(1:16)//'.CONVCO'
       APPARI = RESOCO(1:14)//'.APPARI'
       APPOIN = RESOCO(1:14)//'.APPOIN'
       APCOEF = RESOCO(1:14)//'.APCOEF'
@@ -188,7 +181,6 @@ C ======================================================================
       CALL JEVEUO(NOZOCO,'L',JZOCO)
       CALL JEVEUO(CONTNO,'L',JNOCO)
       CALL JEVEUO(CONTMA,'L',JMACO)
-      CALL JEVEUO(CONVCO,'L',JCONV)
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(APPOIN,'L',JAPPTR)
       CALL JEVEUO(APCOEF,'L',JAPCOE)
@@ -248,8 +240,8 @@ C ======================================================================
       IZONE  = 1
       ITEMUL = 2
       ITEMAX = ITEMUL*NBLIAI
-      ISTO   = ZI(JCONV+ZCONV*(IZONE-1))
-      ALJEU  = ZR(JTOLE+ZTOLE*(IZONE-1)+3)
+      ISTO   = CFDISI(DEFICO,'STOP_SINGULIER',IZONE)
+      ALJEU  = CFDISR(DEFICO,'ALARME_JEU',IZONE)
       NESMAX = 0
       LLF    = 0
       LLF1   = 0
@@ -305,7 +297,7 @@ C ======================================================================
             IF (AJEU.GT.ALJEU) THEN
               IALARM = IALARM+1
               IF (IALARM.EQ.1) THEN
-                CALL U2MESS('A','ALGORITH_9')
+                CALL U2MESS('A','CONTACT_9')
               ENDIF
               CALL CFIMP2(IFM,NOMA,II,TYPEC0,'N','ALJ',AJEU,
      &                    JAPPAR,JNOCO,JMACO)

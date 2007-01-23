@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF modelisa4 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,12 @@ cata_msg={
 """),
 
 4: _("""
- melange de modelisations planes et volumiques (ou presence de sous-tructures statiques)
+  -> Le modèle contient un mélange de modélisations planes et volumiques
+     ou bien il contient des sous-structures statiques.
+
+  -> Risque & Conseil :
+     Sur ce genre de modèle, on ne sait pas déterminer s'il est 2D ou 3D.
+     Parfois, cela empeche de faire le "bon choix".
 """),
 
 5: _("""
@@ -43,7 +48,8 @@ cata_msg={
 """),
 
 6: _("""
- - chckma phase de verification du maillage - presence de noeuds orphelins
+  -> Phase de vérification du maillage : présence de noeuds orphelins.
+     Les noeuds orphelins sont des noeuds qui n'appartiennent à aucune maille.
 """),
 
 7: _("""
@@ -51,11 +57,23 @@ cata_msg={
 """),
 
 8: _("""
- - chckma phase de verification du maillage - presence de mailles doubles
+  -> Phase de vérification du maillage : présence de mailles doubles (ou triples, ...)
+     Les mailles multiples sont des mailles de noms différents qui ont la meme connectivité
+     (elles s'appuient sur les memes noeuds).
+
+  -> Risque & Conseil :
+     Le risque est de modéliser 2 fois (ou plus) l'espace. On peut par exemple avoir
+     un modèle 2 fois trop lourd ou 2 fois trop rigide.
+     Remarque : les mailles concernées sont imprimées dans le fichier "message".
+     Sur ce maillage, il est imprudent d'affecter des quantités avec le mot clé TOUT='OUI'.
 """),
 
 9: _("""
- - chckma phase de verification du maillage - presence de mailles aplaties
+  -> Phase de vérification du maillage : présence de mailles aplaties.
+
+  -> Risque & Conseil :
+     Vérifiez votre maillage. La présence de telles mailles peut conduire à des
+     problèmes de convergence et nuire à la qualité des résultats.
 """),
 
 10: _("""
@@ -187,7 +205,12 @@ cata_msg={
 """),
 
 42: _("""
- probleme dans le cas 3d ou les noeuds sont alignes et ou pourtant on arrive a trouver 3 noeuds formant un triangle de surface non-nulle
+  -> Mélange de mailles quadratiques avec des QUAD8. Aster supprime la liaison
+     sur le noeud milieu des QUAD8
+  -> Risque & Conseil :
+     Le problème de contact avec des mailles quadratiques est mal traité dans Aster, vous risquez d'obtenir des 
+     pressions de contact oscillantes entre noeuds milieux et noeuds sommets. Essayez, dans la mesure du possible, 
+     d'utiliser des éléments linéaires.
 """),
 
 43: _("""

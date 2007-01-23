@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF calculel3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,7 +163,10 @@ cata_msg={
 """),
 
 36: _("""
- le materiau depend de la temperature et il n'y a pas de champ de temperature,moralite le calcul est impossible sauf pour les cas thm.
+  -> Le matériau dépend de la température or aucun champ de température
+     n'a été défini. Les calculs seront donc impossibles sauf si vous utilisez
+     une modélisation THM.
+
 """),
 
 37: _("""
@@ -179,7 +182,12 @@ cata_msg={
 """),
 
 40: _("""
- le modele a probablement besoin d un champ de materiaux (mot-cle cham_mater).
+  -> Le modèle a probablement besoin d'un champ de matériau (mot-clé CHAM_MATER).
+
+  -> Risque & Conseil :
+     Ce message peut aider à comprendre un éventuel problème ultérieur lors de calculs élémentaires
+     nécessitant des caractéristiques matérielles.
+     Vérifier si votre modélisation nécessite un CHAM_MATER.
 """),
 
 41: _("""

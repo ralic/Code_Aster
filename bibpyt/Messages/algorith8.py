@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+#@ MODIF algorith8 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -264,7 +264,13 @@ cata_msg={
 """),
 
 62: _("""
- le materiau depend de la temperature mais il n'y a pas de champ de temperature.
+  -> Le matériau dépend de la température mais il n'y a pas de champ de
+     température.
+  -> Risque & Conseil :
+     Vérifier si le problème que vous traitez nécessite bien un champ de
+     température.
+     La présence du champ de température permet de prendre en compte
+     l'évolution des caractéristiques mécaniques en fonction de la température.
 """),
 
 63: _("""

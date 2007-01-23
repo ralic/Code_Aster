@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE POUTRE CANTILEVER . VALIDATION DE LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ TEST_TABLE(TABLE=DPL_2D,
            REFERENCE= 'NON_REGRESSION',
            VERSION = '9.0.4',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-10,);
+           PRECISION = 1E-6,);
               
 # CONTRAINTE DE TRACTION SIXX en suivant Z et X
 # Solution theorique  
@@ -169,7 +169,7 @@ TEST_TABLE(TABLE=SIXX_Z,
            REFERENCE= 'NON_REGRESSION',
            VERSION = '9.0.4',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-10,);
+           PRECISION = 0.00005,);
            
            
 # L INSTANT EST EGAL A LA VALEUR DE LA TRACTION SUR HAUT
@@ -232,7 +232,7 @@ TEST_TABLE(TABLE=DPL_2DN,
            REFERENCE= 'NON_REGRESSION',
            VERSION = '9.0.4',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-10,);
+           PRECISION = 1E-6,);
 
 TEST_TABLE(TABLE=DPL_2DN,
            NOM_PARA='DZ',
@@ -240,7 +240,7 @@ TEST_TABLE(TABLE=DPL_2DN,
            VALE = -1.7942266587517E-02,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 2E-10,);
+           PRECISION = 2E-6,);
 
 SIXX_ZN=POST_RELEVE_T(ACTION=_F(INTITULE='SIXX',
                                INST = 1.0,
@@ -261,7 +261,7 @@ TEST_TABLE(TABLE=SIXX_ZN,
            REFERENCE= 'NON_REGRESSION',
            VERSION = '9.0.4',
            CRITERE = 'RELATIF',
-           PRECISION = 1E-10,);
+           PRECISION = 0.00005,);
            
 TEST_TABLE(TABLE=SIXX_ZN,
            FILTRE = _F(NOM_PARA='COOR_Z',VALE=Z),
@@ -269,6 +269,6 @@ TEST_TABLE(TABLE=SIXX_ZN,
            VALE = 3.7065127737457E+07,
            REFERENCE= 'AUTRE_ASTER',
            CRITERE = 'RELATIF',
-           PRECISION = 2E-10,);           
+           PRECISION = 0.00005,);           
 
 FIN();

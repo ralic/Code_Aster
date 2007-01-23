@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith7 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,7 +103,12 @@ cata_msg={
 """),
 
 21: _("""
- critere de convergence lache
+  -> Critère de convergence est lache !
+  -> Risque & Conseil : La valeur de RESI_GLOB_RELA est supérieure a 10-4.
+     Cela peut nuire à la qualité de la solution. Vous ne vérifiez pas l'équilibre de manière rigoureuse.
+
+
+
 """),
 
 22: _("""
@@ -203,7 +208,11 @@ cata_msg={
 """),
 
 46: _("""
- la definition des parametres rho_min et rho_excl est contradictoire, on prend rho_min a rho_excl
+  -> La définition des paramètres rho_min et rho_excl est contradictoire.
+     On choisit de prendre rho_min à rho_excl.
+  -> Risque & Conseil :
+     RHO_MIN ne doit pas etre compris entre -RHO_EXCL et RHO_EXCL
+
 """),
 
 47: _("""
@@ -259,7 +268,12 @@ cata_msg={
 """),
 
 60: _("""
- critere de convergence pour integrer le comportement resi_inte_rela lache
+  -> Le critère de convergence pour intégrer le comportement 'RESI_INTE_RELA'
+     est lache (très supérieur à la valeur par défaut).
+  -> Risque & Conseil :
+     Cela peut nuire à la qualité de la solution et à la convergence.
+
+
 """),
 
 61: _("""
@@ -367,7 +381,12 @@ cata_msg={
 """),
 
 87: _("""
- pour le traitement du contact avec x-fem, le solveur mumps est vivement recommande.
+  -> Pour le traitement du contact avec X-FEM, le solveur mumps est vivement
+     recommandé.
+  -> Risque & Conseil :
+     Pour XFEM, la matrice produite est parfois non définie positive. Seul un solveur qui pivote peut alors résoudre 
+     le problème. Il est donc préférable d'utiliser MUMPS (mot-clef SOLVEUR) pour ne pas finir en erreur du type 
+     "PIVOT NUL" avec le solveur MULT_FRONT ou LDLT.
 """),
 
 88: _("""

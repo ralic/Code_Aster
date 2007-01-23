@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR PROIX J-M.PROIX 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -58,7 +58,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER JNOMA,JVALV,K,N1,NBMA,NBMO1,NBVARI,NC1,NC2
       INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
       INTEGER INV,DIMANV,NBMONO,NUNIT,ITEINT,ITEPAS,NUMGD,JACMP,NBCRIT
-      INTEGER JCRIT,JVALC
+      INTEGER JCRIT,JVALC,IMPEXP,TYPTGT
       REAL*8 RBID,RESI,THETA,R8VIDE,PERT,RESID
       COMPLEX*16 CBID
       LOGICAL      BUG, NIVO
@@ -467,6 +467,49 @@ C  POUR COMPORTEMENT KIT_
  180           CONTINUE
             ENDIF
 
+C  LECTURE DES PARAMETRES DE CONVERGENCE A STOCKER DANS CARCRI
+
+            IF (CRILOC) THEN                                          
+               CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO,IRET)      
+               CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
+               CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
+     &                   IRET)
+               IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
+     &           CALL U2MESS('A','ALGORITH7_60')
+               ITEPAS = 0      
+               CALL GETVIS('COMP_INCR','ITER_INTE_PAS' ,1,1,1,ITEPAS,
+     &                      IRET)                                
+               IF(RESO(1:9) .EQ.'IMPLICITE')     IMPEXP = 0       
+               IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') IMPEXP = 1      
+               IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') IMPEXP = 2     
+
+C              CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
+               RESID=1.D-6                                         
+               IF (I.EQ.1) THEN                                    
+                   CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
+                      IF (TXCP.EQ.'DEBORST') THEN               
+                         CALL GETVR8(MOCLEF(I),'RESI_DEBORST',K,1,1,
+     &                           RESID,IRET) 
+                   ENDIF                                 
+C                  dans ZR(JVALC+1) on stocke le type de matrice tgte
+                   CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,
+     &                         TYPMAT ,IRET)       
+                   IF (IRET.EQ.0) THEN                
+                      TYPTGT = 0       
+                   ELSE 
+                      IF (TYPMAT.EQ.'PERTURBATION') THEN  
+                         TYPTGT = 1            
+                      ELSEIF (TYPMAT.EQ.'VERIFICATION') THEN 
+                         TYPTGT = 2                       
+                      ENDIF                             
+                      CALL GETVR8(MOCLEF(I),'VALE_PERT_RELA',K,1,1,
+     &                            PERT,IRET)            
+                   ENDIF            
+               ENDIF        
+            ENDIF
+                                                          
+C  STOCKAGE DE LA CARTE CARCRI
+
             CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF(I),K,2,MOCLES,
      &                  TYPMCL,MESMAI,NBMA)
             IF (NBMA.NE.0) THEN
@@ -474,26 +517,14 @@ C  POUR COMPORTEMENT KIT_
               CALL NOCART(COMPOR,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NCMPMA)
               IF (CRILOC) THEN
-                CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO,IRET)
-                CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
-                CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
-     &                    IRET)
-
-
-                IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
-     &            CALL U2MESS('A','ALGORITH7_60')
-
-                ITEPAS = 0
-                CALL GETVIS('COMP_INCR','ITER_INTE_PAS' ,1,1,1,ITEPAS,
-     &                       IRET)
-                ZR(JVALC) = ITEINT
-                ZR(JVALC+1) = 0
+                ZR(JVALC)   = ITEINT
+                ZR(JVALC+1) = TYPTGT
                 ZR(JVALC+2) = RESI
                 ZR(JVALC+3) = THETA
                 ZR(JVALC+4) = ITEPAS
-                IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0
-                IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') ZR(JVALC+5) = 1
-                IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') ZR(JVALC+5) = 2
+                ZR(JVALC+5) = IMPEXP
+                ZR(JVALC+6) = PERT
+                ZR(JVALC+7) = RESID
                 CALL NOCART(CARCRI,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',
      &                    NBCRIT)
               ENDIF
@@ -501,61 +532,21 @@ C  POUR COMPORTEMENT KIT_
               
             ELSE
             
-C  POUR COMPORTEMENT DIFFERENTS DE KIT_
-
 C ------- PAR DEFAUT C'EST TOUT='OUI'
               CALL NOCART(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
               IF (CRILOC) THEN
-C    LECTURE DES PARAMETRES
-                CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO  ,IRET)
-                CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
-                CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
-     &                    IRET)
-                IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
-     &             CALL U2MESS('A','ALGORITH7_60')
-                CALL GETVIS(MOCLEF(I),'ITER_INTE_PAS' ,K,1,1,ITEPAS,
-     &                       IRET)
-
-
-C               CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
-                RESID=1.D-6                     
-                IF (I.EQ.1) THEN
-                    IF ((EXICP)) THEN
-                    CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
-                       IF (TXCP.EQ.'DEBORST') THEN
-                          CALL GETVR8(MOCLEF(I),'RESI_DEBORST',K,1,1,
-     &                            RESID,IRET)
-                    ENDIF           
-                    ENDIF           
-
-C  dans la variable  ZR(JVALC+1) on stocke le type de matrice tangente
-                    CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,
-     &                          TYPMAT ,IRET)
-                    IF (IRET.EQ.0) THEN
-                       ZR(JVALC+1) = 0
-                    ELSE
-                       CALL GETVR8(MOCLEF(I),'VALE_PERT_RELA',K,1,1,
-     &                             PERT,IRET)
-                        ZR(JVALC+6) = PERT
-                       IF (TYPMAT.EQ.'PERTURBATION') THEN
-                          ZR(JVALC+1) = 1
-                       ELSEIF (TYPMAT.EQ.'VERIFICATION') THEN
-                          ZR(JVALC+1) = 2
-                       ENDIF
-                    ENDIF
-                ENDIF       
-                    
                 ZR(JVALC)   = ITEINT
+                ZR(JVALC+1) = TYPTGT
                 ZR(JVALC+2) = RESI
-                ZR(JVALC+7) = RESID
                 ZR(JVALC+3) = THETA
                 ZR(JVALC+4) = ITEPAS
-                IF(RESO(1:9) .EQ.'IMPLICITE')     ZR(JVALC+5) = 0
-                IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') ZR(JVALC+5) = 1
-                IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') ZR(JVALC+5) = 2
+                ZR(JVALC+5) = IMPEXP
+                ZR(JVALC+6) = PERT
+                ZR(JVALC+7) = RESID
                 CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
               ENDIF
-            END IF
+                
+            ENDIF
 
   150     CONTINUE
 

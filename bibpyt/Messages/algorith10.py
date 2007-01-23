@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith10 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,21 +106,8 @@ cata_msg={
  dist_refe est obligatoire a la premiere occurence de reco_global
 """),
 
-22: _("""
- l'appariement par la methode des territoires n'est pas operationnel
-"""),
 
-23: _("""
- l'appariement par la methode hierarchique n'est pas operationnel
-"""),
 
-24: _("""
- erreur de dimensionnement : nombre maximal de noeuds esclaves
-"""),
-
-25: _("""
- erreur de dimensionnement des tableaux apcoef et apddl
-"""),
 
 26: _("""
  la recherche directe de la maille la plus proche n'est pas operationnelle
@@ -134,13 +121,7 @@ cata_msg={
  la recherche par boites n'est pas operationnelle
 """),
 
-29: _("""
- la recherche nodale par boites n'est pas operationnel
-"""),
 
-30: _("""
- l'appariement nodal par boites n'est pas operationnel
-"""),
 
 31: _("""
  la bande de frequence retenue ne comporte pas de modes propres

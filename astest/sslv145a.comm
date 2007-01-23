@@ -1,4 +1,4 @@
-# MODIF  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU RACCORD 3D-COQUE AVEC LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -220,7 +220,7 @@ TEST_TABLE(TABLE=DEPL2,
            NOM_PARA='DX',
            VALE = -1.8054157613817E-01,
            CRITERE= 'RELATIF',
-           PRECISION=1E-8,
+           PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',); 
 
@@ -230,7 +230,7 @@ TEST_TABLE(TABLE=DEPL2,
            NOM_PARA='DY',
            VALE = 4.7598471831257E-02,
            CRITERE= 'RELATIF',
-           PRECISION=1E-8,
+           PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',);
            
@@ -239,7 +239,7 @@ TEST_TABLE(TABLE=DEPL2,
            NOM_PARA='DZ',
            VALE = 0,
            CRITERE= 'ABSOLU',
-           PRECISION=1E-8,
+           PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',); 
            
@@ -260,7 +260,7 @@ TEST_TABLE(TABLE=SIGM1,
            NOM_PARA='SIXX',
            VALE = -4.7339031158235E+08,
            CRITERE= 'RELATIF',
-           PRECISION=1E-8,
+           PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',); 
            
@@ -269,7 +269,7 @@ TEST_TABLE(TABLE=SIGM1,
            NOM_PARA='SIYY',
            VALE = -1.5779677052745E+09,
            CRITERE= 'RELATIF',
-           PRECISION=1E-8,
+           PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',); 
            
@@ -278,7 +278,7 @@ TEST_TABLE(TABLE=SIGM1,
            NOM_PARA='SIXY',
            VALE = 2.2633300955843E+08,
            CRITERE= 'RELATIF',
-           PRECISION=1E-8,
+           PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',); 
                                  
@@ -296,7 +296,7 @@ TEST_TABLE(TABLE=SIGM2,
            NOM_PARA='SIXX',
            VALE = 1.2378305316156E+08,
            CRITERE= 'RELATIF',
-           PRECISION=1E-8,
+           PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',); 
            
@@ -305,7 +305,7 @@ TEST_TABLE(TABLE=SIGM2,
            NOM_PARA='SIYY',
            VALE = -1.4069526952971E+07,
            CRITERE= 'RELATIF',
-           PRECISION=1E-8,
+           PRECISION=1E-6,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',); 
            
@@ -314,7 +314,7 @@ TEST_TABLE(TABLE=SIGM2,
            NOM_PARA='SIXY',
            VALE = -8.4280848779111E+06,
            CRITERE= 'RELATIF',
-           PRECISION=1E-7,
+           PRECISION=1E-5,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.20',); 
                              

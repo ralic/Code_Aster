@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,12 @@ cata_msg={
 """),
 
 13: _("""
- le noeud se trouve sur l axe du repere cylindrique. on prend le noeud moyen de l element.
+  -> Lors du passage au repère cylindrique, un noeud a été localisé sur l'axe
+     du repère cylindrique. Code_Aster utilise dans ce cas le centre de gravité de
+     l'élément pour le calcul de la matrice de passage en repère cylindrique.
+  -> Risque & Conseil :
+     Si ce centre de gravité se trouve également sur l'axe du repère, le calcul
+     s'arrete en erreur fatale.
 """),
 
 14: _("""
@@ -391,7 +396,14 @@ cata_msg={
 """),
 
 94: _("""
- nume_inst_fin n'appartient pas a la liste d'instants : on s'arrete a la fin de la liste
+  -> Le numéro d'ordre correspondant à l'instant final de calcul NUME_INST_FIN
+     n'appartient pas à la liste des numéros d'ordre.
+     Dans ce cas, Aster considère pour numéro d'ordre final, le dernier de
+     la liste fournie.
+  -> Risque & Conseil :
+     Afin d'éviter des pertes de résultats, assurez-vous que le numéro d'ordre
+     associé à l'instant NUME_INST_FIN appartienne bien à la liste des numéros
+     d'ordre.
 """),
 
 95: _("""

@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calculel Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,13 @@ cata_msg={
 """),
 
 30: _("""
-  Le TYPE_ELEMENT:  %(k1)s  ne sait pas encore calculer l'OPTION:  %(k2)s.
+  -> Le TYPE_ELEMENT %(k1)s  ne sait pas encore calculer l'OPTION:  %(k2)s.
+     On ne calcule donc rien sur les éléments de ce type.
+
+  -> Risque & Conseil :
+     Vérifiez que l'option incomplètement calculée est bien une option de post-traitement
+     et que le déficit de calcul n'entraine pas de résultats faux.
+
 """),
 
 32: _("""

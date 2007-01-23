@@ -3,7 +3,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,12 +77,9 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      ZMETH
-      PARAMETER    (ZMETH=8)
-      INTEGER      ZAPMEM
-      PARAMETER    (ZAPMEM=4)
-      CHARACTER*24 METHCO,NDIMCO,PZONE,PSURNO,CONTNO,DDLCO
-      INTEGER      JMETH,JDIM,JZONE,JSUNO,JNOCO,JDDL
+      INTEGER      CFMMVD,CFDISI,ZAPME
+      CHARACTER*24 NDIMCO,PZONE,PSURNO,CONTNO,DDLCO
+      INTEGER      JDIM,JZONE,JSUNO,JNOCO,JDDL
       CHARACTER*24 SANSNO,PSANS,APMEMO,APPARI,NORINI
       INTEGER      JSANS,JPSANS,JAPMEM,JAPPAR,JNRINI
       CHARACTER*24 APCOEF,APCOFR,APJEFX,APJEFY,PDDL,APDDL,PNOMA
@@ -117,7 +114,6 @@ C
       DDLCO  = DEFICO(1:16)//'.DDLCO'
       DDLCO  = DEFICO(1:16)//'.DDLCO'
       MANOCO = DEFICO(1:16)//'.MANOCO'
-      METHCO = DEFICO(1:16)//'.METHCO'
       NDIMCO = DEFICO(1:16)//'.NDIMCO'
       NOMACO = DEFICO(1:16)//'.NOMACO'
       PDDL   = DEFICO(1:16)//'.PDDLCO'
@@ -143,7 +139,6 @@ C ======================================================================
       CALL JEVEUO(CONTNO,'L',JNOCO )
       CALL JEVEUO(DDLCO, 'L',JDDL )
       CALL JEVEUO(MANOCO,'L',JMANO)
-      CALL JEVEUO(METHCO,'L',JMETH)
       CALL JEVEUO(NDIMCO,'E',JDIM )
       CALL JEVEUO(NOMACO,'L',JNOMA )
       CALL JEVEUO(PDDL  ,'L',JPDDL )
@@ -173,17 +168,19 @@ C ======================================================================
 C
 C --- INITIALISATION DE VARIABLES
 C
+      ZAPME  = CFMMVD('ZAPME')
 C
 C --- NORMALE MOYENNES
 C
-      MOYEN = 0
-      IF (ZI(JMETH+ZMETH*(IZONE-1)+8).EQ.1) THEN
+      IF (CFDISI(DEFICO,'NORMALE',IZONE).EQ.1) THEN
         MOYEN = 1
+      ELSE
+        MOYEN = 0  
       ENDIF
 C
 C --- NORMALE DEFINIE PAR USER (VECT_Y)
 C
-      TANGDF = ZI(JMETH+ZMETH*(IZONE-1)+2)
+      TANGDF = CFDISI(DEFICO,'VECT_Y',IZONE)
 C
 C --- NOMBRE MAXIMUM DE NOEUDS ESCLAVES ET DIMENSION DU PROBLEME
 C
@@ -246,7 +243,7 @@ C
           DO 10 K = 1,NSANS
             IF (NUMNOE.EQ.ZI(JSANS+JDEC+K-1)) THEN
               ZI(JDIM+8+IZONE) = ZI(JDIM+8+IZONE) - 1
-              ZI(JAPMEM+ZAPMEM* (POSNOE-1)) = -1
+              ZI(JAPMEM+ZAPME* (POSNOE-1)) = -1
               GO TO 50
             END IF
    10     CONTINUE
@@ -258,7 +255,7 @@ C
           DO 20 KM = 1,NBNOM
             POSNOM   = JDECM + KM
             NUMNOM   = ZI(JNOCO+POSNOM-1)
-            ZI(JAPMEM+ZAPMEM* (POSNOM-1)) = 0
+            ZI(JAPMEM+ZAPME* (POSNOM-1)) = 0
             COORM(1) = ZR(JCOOR+3* (NUMNOM-1))
             COORM(2) = ZR(JCOOR+3* (NUMNOM-1)+1)
             COORM(3) = ZR(JCOOR+3* (NUMNOM-1)+2)
@@ -314,14 +311,14 @@ C
           DO 60 K = 1,NSANS
             IF (NUMNOE.EQ.ZI(JSANS+JDEC+K-1)) THEN
               ZI(JDIM+8+IZONE) = ZI(JDIM+8+IZONE) - 1
-              ZI(JAPMEM+ZAPMEM* (POSNOE-1)) = -1
+              ZI(JAPMEM+ZAPME* (POSNOE-1)) = -1
               GO TO 110
             END IF
    60     CONTINUE
 C
 C --- ANCIEN NOEUD MAITRE LE PLUS PROCHE
 C
-          OLDPOS = ZI(JAPMEM+ZAPMEM* (POSNOE-1)+1)
+          OLDPOS = ZI(JAPMEM+ZAPME* (POSNOE-1)+1)
 C
 C --- BOUCLE SUR LES MAILLES CONTENANT CET ANCIEN NOEUD
 C
@@ -340,7 +337,7 @@ C
             DO 70 K = 1,NBNO
               POSNOM   = ZI(JNOMA+JDEC+K-1)
               NUMNOM   = ZI(JNOCO+POSNOM-1)
-              ZI(JAPMEM+ZAPMEM* (POSNOM-1)) = 0
+              ZI(JAPMEM+ZAPME* (POSNOM-1)) = 0
               COORM(1) = ZR(JCOOR+3* (NUMNOM-1))
               COORM(2) = ZR(JCOOR+3* (NUMNOM-1)+1)
               COORM(3) = ZR(JCOOR+3* (NUMNOM-1)+2)
@@ -377,7 +374,7 @@ C ---  A DES BOITES VOISINES DU NOEUD ESCLAVE CONSIDERE
 C
       ELSE IF (REAAPP.EQ.3) THEN
 C
-          CALL U2MESS('F','ALGORITH10_30')
+          CALL U2MESS('F','CONTACT_30')
 C
       END IF
 C ----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF modelisa2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,11 +99,17 @@ cata_msg={
 """),
 
 21: _("""
- le group_ma :  %(k1)s  est present dans les 2 maillages. conflit de noms.
+  -> Le group_ma %(k1)s est présent dans les 2 maillages que l'on assemble.
+     Il y a conflit de noms. Le group_ma du 2eme maillage est renommé.
+  -> Risque & Conseil :
+     Vérifiez que le nom du group_ma retenu est bien celui souhaité.
 """),
 
 22: _("""
- le group_no :  %(k1)s  est present dans les 2 maillages. conflit de noms.
+  -> Le group_no %(k1)s est présent dans les 2 maillages que l'on assemble.
+     Il y a conflit de noms. Le group_no du 2eme maillage est renommé.
+  -> Risque & Conseil :
+     Vérifiez que le nom du group_no retenu est bien celui souhaité.
 """),
 
 23: _("""

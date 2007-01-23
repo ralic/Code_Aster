@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 18/12/2006   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF factor Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,10 +38,16 @@ Matrice non factorisable :
 
 #-----------------------------------------------------------------------------------------------
 20: _("""
-Matrice non factorisable :
-  pivot presque nul à la ligne : %(i1)d
-  nombre de décimales perdues  : %(i2)d
-  pour le noeud %(k1)s et la composante %(k2)s
+  -> Matrice non factorisable :
+     Le pivot est presque nul à la ligne %(i1)d pour le noeud %(k1)s et
+     la composante %(k2)s.
+     Pour information, le nombre de décimales perdues est de %(i2)d.
+
+  -> Conseil & Risque :
+     Il s'agit peut etre d'un mouvement de corps rigide mal bloqué.
+     Vérifiez les conditions aux limites.
+     Si vous faites du contact, il ne faut pas que la
+     structure ne "tienne" que par le contact.
 """),
 
 #-----------------------------------------------------------------------------------------------

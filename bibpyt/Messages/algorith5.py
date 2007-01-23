@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF algorith5 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -359,15 +359,32 @@ cata_msg={
 """),
 
 86: _("""
- convergence forcee  sur boucle contraintes actives lors du traitement du contact
+  -> Il y a convergence forcée sur boucle contraintes actives lors du traitement
+     du contact.
+  -> Risque & Conseil :
+     La convergence forcée se déclenche lorsque le problème a du mal à converger. Il y a des risques que le problème 
+     soit un peu moins bien traité. Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles. S'il y des 
+     interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
 """),
 
 87: _("""
- convergence forcee  sur boucle seuil frottement lors du traitement du contact
+  -> Il y a convergence forcée sur boucle seuil frottement lors du traitement du
+     contact.
+  -> Risque & Conseil :
+     La convergence forcée se déclenche lorsque le problème a du mal à converger. Il y a des risques que le problème 
+     soit un peu moins bien traité. La condition de frottement de Coulomb est peut etre mal prise en compte. Risque de 
+     résultats faux sur les forces d'adhérence. Essayez de découper plus finement en temps votre problème.
 """),
 
 88: _("""
- convergence forcee  sur boucle de geometrie lors du traitement du contact
+  -> Il y a convergence forcée sur boucle de géométrie lors du traitement du
+     contact.
+  -> Risque & Conseil :
+     La convergence forcée se déclenche lorsque le problème a du mal à converger
+     lors de grands glissements relatifs entre deux surfaces de contact.
+     Il y a des risques que le problème soit un peu moins bien traité.
+     Vérifiez bien que vous n'avez pas d'interpénétration entre les mailles.
+      S'il y des interpénétrations intempestives, tentez de découper plus finement en temps votre problème.
 """),
 
 89: _("""

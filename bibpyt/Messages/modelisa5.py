@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa5 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -207,7 +207,11 @@ cata_msg={
 """),
 
 49: _("""
- - phase de verification du maillage desactivee
+  -> La phase de vérification du maillage a été volontairement désactivée.
+
+  -> Risque & Conseil :
+     Soyez sur de votre maillage. Si des mailles dégénérées sont présentes elles
+     ne seront pas détectées. Cela pourra nuire à la qualité des résultats.
 """),
 
 50: _("""
@@ -223,7 +227,13 @@ cata_msg={
 """),
 
 53: _("""
- le maillage est 3d mais les elements du modele sont 2d.
+  -> Le maillage est 3D mais les éléments du modèle sont 2D.
+
+  -> Risque & Conseil :
+     Si les facettes supportant les éléments ne sont pas dans un plan Z = cste,
+     les résultats seront faux.
+     Assurez-vous de la cohérence entre les mailles à affecter et la
+     modélisation souhaitée dans la commande AFFE_MODELE.
 """),
 
 54: _("""

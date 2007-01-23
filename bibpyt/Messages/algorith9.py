@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith9 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -335,7 +335,13 @@ cata_msg={
 """),
 
 79: _("""
- la condition de stabilite n'a pu etre calculee pour aucun element.
+  -> La condition de stabilité n'a pu etre calculée pour aucun élément.
+  -> Risque & Conseil :
+     Vous prenez le risque de sortir du cadre de la stabilité conditionnelle du schéma de temps explicite. Vérifiez bien
+     que vos éléments finis ont une taille et un matériau (module de Young) compatibles avec le respect de la condition 
+     de Courant vis-à-vis du pas de temps que vous avez imposé (temps de propagation des ondes dans la maille, voir 
+     documentation). Si c'est le cas, lever l'arret fatal en utilisant l'option "STOP_CFL", à vos risques et périls 
+     (risques de résultats faux).
 """),
 
 80: _("""

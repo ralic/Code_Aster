@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF algorith6 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,13 @@ cata_msg={
 """),
 
 19: _("""
- cas non prevu on initialise la correspondance au noeud le plus proche
+  -> Code Aster a détecté des mailles de type différent lors de la
+     correspondance entre les maillages des deux modèles (mesuré/numérique).
+     Ce cas n'est pas prévu, Code Aster initialise la correspondance au noeud
+     le plus proche.
+  -> Risque & Conseil :
+     ???
+
 """),
 
 20: _("""
@@ -407,7 +413,14 @@ cata_msg={
 """),
 
 97: _("""
- les variables de commandes initiales induisent des contraintes incompatibles
+  -> Les variables de commandes initiales induisent des contraintes
+     incompatibles.
+  -> Risque & Conseil : Ce message apparait si l'état initial
+    (avant le premier instant de calcul) est tel que les variables de commande
+    (température, hydratation, séchage...) conduisent à des contraintes
+     non équilibrées. Dans le cas de la température, vérifiez que la valeur
+     TEMP_REF correspond à la température de l'état initial.
+
 """),
 
 98: _("""

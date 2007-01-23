@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF elements Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,7 +179,12 @@ cata_msg={
 """),
 
 40: _("""
- l'axe de reference est normal a un element de plaque. vous ne pourrez calculer les  les contraintes.
+  -> L'axe de référence pour le calcul du repère local est normal à un
+     au moins un élément de plaque.
+  -> Risque & Conseil :
+     Il faut modifier l'axe de référence (axe X par défaut) en utilisant
+     ANGL_REP ou VECTEUR.
+
 """),
 
 41: _("""
@@ -223,7 +228,12 @@ cata_msg={
 """),
 
 51: _("""
- le type de comportement :  %(k1)s n'est pas prevu.
+  -> Le type de comportement %(k1)s n'est pas prévu pour le calcul de
+     SIGM_ELNO_DEPL. Les seuls comportements autorisés sont :
+     ELAS, ELAS_COQUE, ou ELAS_ORTH
+  -> Risque & Conseil :
+     Pour les autres comportements, utiliser SIEF_ELNO_ELGA (efforts)
+     ou SIGM_ELNO_COQU (contraintes en un point de l'épaisseur).
 """),
 
 52: _("""

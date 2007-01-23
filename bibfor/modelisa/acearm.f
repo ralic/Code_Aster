@@ -1,7 +1,7 @@
       SUBROUTINE ACEARM(NOMA,NOMO,LMAX,NOEMAF,NBOCC,IVR,
      +                  IFM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/07/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF MODELISA  DATE 23/01/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER    ( NBCAR = 100, NBVAL = 1000, NRD = 2 )
       INTEGER      JDC(3), JDV(3), ULISOP
-      REAL*8       VAL(NBVAL), ETA, VALE(21)
+      REAL*8       VAL(NBVAL), ETA, VALE(3)
       CHARACTER*1  KMA(3)
       CHARACTER*6  KI
       CHARACTER*8  K8B, NOMU, CAR(NBCAR), CARA
@@ -69,6 +69,8 @@ C
       CALL GETRES(NOMU,CONCEP,CMD)
       MLGNMA = NOMA//'.NOMMAI'
       CALL WKVECT('&&TMPRIGMA','V V R',3*LMAX,IRGMA)
+      CALL WKVECT('&&TMPRIGM2','V V R',3*LMAX,IRGM2)
+      CALL WKVECT('&&TMPRIGM3','V V R',3*LMAX,IRGM3)
       CALL WKVECT('&&TMPRIPTO','V V R',3*NOEMAF,IRPTO)
       CALL WKVECT('&&TMPRILTO','V V R',3*NOEMAF,IRLTO)
       CALL WKVECT('&&TMPTABMP','V V K8',LMAX,ITBMP)
@@ -135,6 +137,10 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ)
 C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
+         IF (NGL.NE.0) THEN
+           CALL RIGMI2(NOMA,NOGL,IFREQ,NFREQ,IFMIS,ZR(IRGM2),
+     +                 ZR(IRGM3),ZR(IRLTO))
+         ENDIF
          CARA = 'K_T_D_N'
          IF (NGP.NE.0) THEN
            CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
@@ -142,7 +148,7 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
            CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
            NBPO = NMA
            CALL RIGMI1(NOMA,NOGP,IFREQ,NFREQ,IFMIS,ZR(IRGMA),
-     +                 ZR(IRPTO))
+     +                 ZR(IRGM3),ZR(IRPTO))
            DO 21 IN = 0,NMA-1
             CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
             ZK8(ITBMP+IN) = NOMMAI
@@ -156,25 +162,24 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
  41        CONTINUE
          ENDIF
 C
-         CARA = 'K_T_L'
+         CARA = 'K_T_D_L'
          IF (NGL.NE.0) THEN
+           COEF=20.D0
            CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGL),'LONMAX',
      +                 NMA,K8B)
            CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGL),'L',LDGM)
            NBLI = NMA
-           CALL RIGMI2(NOMA,NOGL,IFREQ,NFREQ,IFMIS,ZR(IRGMA),
-     +                 ZR(IRLTO))
            DO 22 IN = 0,NMA-1
             CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
             ZK8(ITBMP+IN) = NOMMAI
  22        CONTINUE
-           CALL R8INIR(21,0.D0,VALE,1)
+           CALL R8INIR(3,0.D0,VALE,1)
            DO 42 I = 1,NBLI
              IV = 1
              JD = ITBMP + I - 1
-             VALE(7)=ZR(IRGMA+3*I-3)
-             VALE(12)=ZR(IRGMA+3*I-2)
-             VALE(18)=ZR(IRGMA+3*I-1)
+             VALE(1)=-ZR(IRGM2+3*I-3)*COEF
+             VALE(2)=-ZR(IRGM2+3*I-2)*COEF
+             VALE(3)=-ZR(IRGM2+3*I-1)*COEF
              CALL AFFDIS(NDIM,IREP,ETA,CARA,VALE,JDC,
      +                   JDV,IVR,IV,KMA,NCMP2,L,IFM)
              CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP2)
@@ -183,6 +188,8 @@ C
  30   CONTINUE
 C
       CALL JEDETR('&&TMPRIGMA')
+      CALL JEDETR('&&TMPRIGM2')
+      CALL JEDETR('&&TMPRIGM3')
       CALL JEDETR('&&TMPRIGTO')
       CALL JEDETR('&&TMPAMOTO')
       CALL JEDETR('&&ACEARM.RIGM')

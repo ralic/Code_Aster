@@ -2,7 +2,7 @@
      &                  NOMA,NEWGEO,DEFICO,RESOCO,IESCL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,10 +79,7 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      ZAPPAR
-      PARAMETER    (ZAPPAR=3)
-      INTEGER      ZAPMEM
-      PARAMETER    (ZAPMEM=4)
+      INTEGER      CFMMVD,ZAPPA,ZAPME
       CHARACTER*24 NDIMCO,PZONE,PSURNO,CONTNO
       INTEGER      JDIM,JZONE,JSUNO,JNOCO
       CHARACTER*24 PSANS,SANSNO,APMEMO,APPARI,PMANO
@@ -138,6 +135,8 @@ C ======================================================================
       CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)
       CALL JEVEUO(APPARI,'E',JAPPAR)
       CALL JEVEUO(APMEMO,'E',JAPMEM)
+      ZAPME = CFMMVD('ZAPME')
+      ZAPPA = CFMMVD('ZAPPA')
 C
 C --- ISURFE : NUMERO DE LA SURFACE ESCLAVE
 C --- ISURFM : NUMERO DE LA SURFACE MAITRE
@@ -203,7 +202,7 @@ C
           DO 20 NDM = 1,NBNOM
             POSNOM = JDECM + NDM
             NUMNOM = ZI(JNOCO+POSNOM-1)
-            ZI(JAPMEM+ZAPMEM* (POSNOM-1)) = 0
+            ZI(JAPMEM+ZAPME* (POSNOM-1)) = 0
             COORM(1) = ZR(JCOOR+3* (NUMNOM-1))
             COORM(2) = ZR(JCOOR+3* (NUMNOM-1)+1)
             COORM(3) = ZR(JCOOR+3* (NUMNOM-1)+2)
@@ -225,18 +224,18 @@ C
 C --- STOCKAGE DANS APPARI ET APMEMO.
 C
 
-          ZI(JAPPAR+ZAPPAR* (IESCL-1)+1)  = POSNOE
-          ZI(JAPPAR+ZAPPAR* (IESCL-1)+2)  = -POSMIN
-          ZI(JAPPAR+ZAPPAR* (IESCL-1)+3)  = REACTU
+          ZI(JAPPAR+ZAPPA* (IESCL-1)+1)  = POSNOE
+          ZI(JAPPAR+ZAPPA* (IESCL-1)+2)  = -POSMIN
+          ZI(JAPPAR+ZAPPA* (IESCL-1)+3)  = REACTU
 
 
-          ZI(JAPMEM+ZAPMEM* (POSNOE-1))   = 1
-          ZI(JAPMEM+ZAPMEM* (POSNOE-1)+1) = POSMIN
-          ZI(JAPMEM+ZAPMEM* (POSNOE-1)+2) = 0
-          ZI(JAPMEM+ZAPMEM* (POSNOE-1)+3) = 0
+          ZI(JAPMEM+ZAPME* (POSNOE-1))   = 1
+          ZI(JAPMEM+ZAPME* (POSNOE-1)+1) = POSMIN
+          ZI(JAPMEM+ZAPME* (POSNOE-1)+2) = 0
+          ZI(JAPMEM+ZAPME* (POSNOE-1)+3) = 0
 
           IF (POSMIN.NE.0) THEN
-            ZI(JAPMEM+ZAPMEM* (POSMIN-1)) = 0
+            ZI(JAPMEM+ZAPME* (POSMIN-1)) = 0
           ENDIF
 C
 C --- CALL CFJEUM PAR CHMANO
@@ -279,7 +278,7 @@ C
 C
 C --- ANCIEN NOEUD MAITRE LE PLUS PROCHE
 C
-          OLDPOS = ZI(JAPMEM+ZAPMEM* (POSNOE-1)+1)
+          OLDPOS = ZI(JAPMEM+ZAPME* (POSNOE-1)+1)
 C
 C --- BOUCLE SUR LES MAILLES CONTENANT CET ANCIEN NOEUD
 C
@@ -299,7 +298,7 @@ C
             DO 70 KM = 1,NBNO
               POSNOM   = ZI(JNOMA+JDEC+KM-1)
               NUMNOM   = ZI(JNOCO+POSNOM-1)
-              ZI(JAPMEM+ZAPMEM* (POSNOM-1)) = 0
+              ZI(JAPMEM+ZAPME* (POSNOM-1)) = 0
               COORM(1) = ZR(JCOOR+3* (NUMNOM-1))
               COORM(2) = ZR(JCOOR+3* (NUMNOM-1)+1)
               COORM(3) = ZR(JCOOR+3* (NUMNOM-1)+2)
@@ -317,16 +316,16 @@ C
 C
 C --- STOCKAGE DANS APPARI ET APMEMO
 C
-          ZI(JAPPAR+ZAPPAR* (IESCL-1)+1)  = POSNOE
-          ZI(JAPPAR+ZAPPAR* (IESCL-1)+2)  = POSMIN
-          ZI(JAPPAR+ZAPPAR* (IESCL-1)+3)  = REACTU
+          ZI(JAPPAR+ZAPPA* (IESCL-1)+1)  = POSNOE
+          ZI(JAPPAR+ZAPPA* (IESCL-1)+2)  = POSMIN
+          ZI(JAPPAR+ZAPPA* (IESCL-1)+3)  = REACTU
 
-          ZI(JAPMEM+ZAPMEM* (POSNOE-1))   = 1
-          ZI(JAPMEM+ZAPMEM* (POSNOE-1)+1) = POSMIN
-          ZI(JAPMEM+ZAPMEM* (POSNOE-1)+2) = 0
-          ZI(JAPMEM+ZAPMEM* (POSNOE-1)+3) = 0
+          ZI(JAPMEM+ZAPME* (POSNOE-1))   = 1
+          ZI(JAPMEM+ZAPME* (POSNOE-1)+1) = POSMIN
+          ZI(JAPMEM+ZAPME* (POSNOE-1)+2) = 0
+          ZI(JAPMEM+ZAPME* (POSNOE-1)+3) = 0
 
-          ZI(JAPMEM+ZAPMEM* (POSMIN-1))   = 0
+          ZI(JAPMEM+ZAPME* (POSMIN-1))   = 0
 C
 C --- CALL CFJEUM PAR CHMANO
 C
@@ -340,7 +339,7 @@ C ======================================================================
 C
       ELSE IF (REAAPP.EQ.3) THEN
 C
-          CALL U2MESS('F','ALGORITH10_29')
+          CALL U2MESS('F','CONTACT_29')
 C
       END IF
 C ----------------------------------------------------------------------
