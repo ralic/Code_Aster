@@ -1,4 +1,4 @@
-#@ MODIF modelisa3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa3 Messages  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,11 +135,17 @@ cata_msg={
 """),
 
 29: _("""
- l'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyen, au noeud  %(k1)s , est superieur a 10 degres et vaut  %(k2)s  degres.
+ L'angle forme par le vecteur normal courant a 1 face et le vecteur normal moyen, au noeud  %(k1)s , est superieur a 10 degres et vaut  %(k2)s  degres.
 """),
 
 30: _("""
- la norme du vecteur normal moyenne est presque nulle. les facettes concourantes  au noeud  %(k1)s  ne definissent pas une normale moyenne fiable . il y a un probleme dans la definition de vos mailles de bord .
+Erreur d'utilisation :
+ La norme du vecteur normal (moyenne des normales des éléments concourants) est presque nulle.
+ Les facettes concourantes au noeud  %(k1)s ne definissent pas une normale fiable.
+ Il y a un probleme dans la definition des mailles de bord .
+
+Suggestion :
+ Avez-vous pensé à réorienter les mailles de bord avec l'operateur MODI_MAILLAGE
 """),
 
 31: _("""

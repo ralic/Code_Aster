@@ -1,4 +1,4 @@
-# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 29/01/2007   AUTEUR DESROCHES X.DESROCHES 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -48,9 +48,14 @@ DEFI_GROUP( reuse=MA, MAILLAGE=MA,
 #      TETRA10  PENTA15   HEXA20 HEXA27  PYRAM13
 
 MO=AFFE_MODELE(    MAILLAGE=MA,
-                         AFFE=_F(  TOUT = 'OUI',
+                         AFFE=(
+                               _F(  TOUT = 'OUI',
                                 PHENOMENE = 'MECANIQUE',
-                                MODELISATION = ('3D','3D_SI')) )
+                                MODELISATION = '3D') ,
+                               _F(  GROUP_MA = 'VCUB20',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D_SI'), 
+                                ) )
 
 MOTH=AFFE_MODELE(    MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',

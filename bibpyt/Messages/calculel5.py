@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -248,5 +248,34 @@ cata_msg={
 55: _("""
  L'un des mots-cles ANGL_REP ou VECTEUR est à fournir pour l'option ARCO_ELNO_SIGM.
 """),
+
+56: _("""
+ La combinaison 'fonction multiplicatrice' et 'chargement de type fonction' n'est pas autorisée car 
+ votre chargement %(k1)s contient une charge exprimée par une formule.
+ Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction' 
+ (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP).
+ On poursuit sans tenir compte de la fonction multiplicatrice.
+"""),
+
+57: _("""
+ La combinaison de chargements de meme type n'est pas autorisée car l'un des chargements 
+ contient une charge exprimée par une formule.
+ Pour réaliser cette combinaison, vous devez transformer votre charge 'formule' en charge 'fonction' 
+ (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP) 
+"""),
+
+58: _("""
+ La combinaison de chargements de type 'déformation initiale' n'a aucun sens physique.'
+"""),
+
+59: _("""
+ La combinaison de chargements de type 'pesanteur' n'a aucun sens physique.'
+"""),
+
+60: _("""
+ La combinaison de chargements de type 'rotation' est déconseillée.
+ Veuillez plutot utiliser un chargement de type 'force interne'.
+"""),
+
 
 }

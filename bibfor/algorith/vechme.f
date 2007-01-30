@@ -2,7 +2,7 @@
      &                  TEMPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 30/01/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,9 +103,9 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (NCHINX=20)
 
       INTEGER NBCHMX
-      PARAMETER (NBCHMX=16)
+      PARAMETER (NBCHMX=17)
 
-      INTEGER JLCHIN,EXICHA,JFISS
+      INTEGER JLCHIN,EXICHA,JFISS,ISIGI
       INTEGER IER,JCHAR,JINF,JLVE,LONLIS
       INTEGER IBID,IRET,NCHAR,ILVE,K,ICHA,II,IEXIS
       INTEGER NUMCHM,NUMORD,NCHIN,NBNOLI,JNOLI,IAUX
@@ -133,19 +133,19 @@ CC      CHARACTER*24 VAPRIN
 
       DATA NOMLIG/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',
      &     '.F1D1D','.PESAN','.ROTAT','.PRESS','.FELEC','.FCO3D',
-     &     '.FCO2D','.EPSIN','.FLUX','.VEASS'/
+     &     '.FCO2D','.EPSIN','.FLUX','.VEASS','.SIINT'/
       DATA NOMOPF/'FORC_F','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',
      &     'FF1D1D','PESA_R','ROTA_R','PRES_F','FRELEC','FFCO3D',
-     &     'FFCO2D','EPSI_F','FLUX_F','      '/
+     &     'FFCO2D','EPSI_F','FLUX_F','      ',' '/
       DATA NOMPAF/'FORNOF','FF3D3D','FF2D3D','FF1D3D','FF2D2D','FF1D2D',
      &     'FF1D1D','PESANR','ROTATR','PRESSF','FRELEC','FFCO3D',
-     &     'FFCO2D','EPSINF','FLUXF','      '/
+     &     'FFCO2D','EPSINF','FLUXF','      ',' '/
       DATA NOMOPR/'FORC_R','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',
      &     'FR1D1D','PESA_R','ROTA_R','PRES_R','FRELEC','FRCO3D',
-     &     'FRCO2D','EPSI_R','FLUX_R','      '/
+     &     'FRCO2D','EPSI_R','FLUX_R','      ',' '/
       DATA NOMPAR/'FORNOR','FR3D3D','FR2D3D','FR1D3D','FR2D2D','FR1D2D',
      &     'FR1D1D','PESANR','ROTATR','PRESSR','FRELEC','FRCO3D',
-     &     'FRCO2D','EPSINR','FLUXR','      '/
+     &     'FRCO2D','EPSINR','FLUXR','      ',' '/
 
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -361,13 +361,22 @@ C           DANS LIGRCS.
                 ELSE IF (NUMCHM.EQ.3) THEN
                   OPTION = 'CHAR_'//TYPCAL//'_'//NOMOPF(K)
                   LPAIN(1) = 'P'//NOMPAF(K)
+                ELSE IF (NUMCHM.EQ.55) THEN
+                  OPTION = 'FORC_NODA'
+                  CALL JEVEUO(LIGRCH(1:13)//'.SIINT.VALE','L',ISIGI)
+                  LPAIN(1) = 'PCONTMR'
+                  LCHIN(1) = ZK8(ISIGI)
+                  LPAIN(17) = 'PDEPLMR'
+                  LCHIN(17) = ' '
+                  LPAIN(18) = 'PCOMPOR'
+                  LCHIN(18) = ' '
                 ELSE IF (NUMCHM.GE.4) THEN
                   GO TO 40
                 END IF
                 CALL GCNCO2(NEWNOM)
                 RESUEL(10:16) = NEWNOM(2:8)
                 CALL CORICH('E',RESUEL,ICHA,IBID)
-                NCHIN = 16
+                NCHIN = 18
                 IF (TYPCAL.EQ.'DLAG') THEN
                   NCHIN = NCHIN + 1
                   LPAIN(NCHIN) = 'PVECTTH'

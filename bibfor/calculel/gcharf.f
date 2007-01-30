@@ -1,0 +1,319 @@
+      SUBROUTINE GCHARF (ICHAR,FONC1,CHAR1,FONC2,CHAR2,CHARG)
+      IMPLICIT NONE
+      CHARACTER*19    CHAR1,CHAR2,CHARG
+      INTEGER         ICHAR
+      LOGICAL         FONC1,FONC2
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C     BUT : EFFECTUE LA FUSION DE 2 CHARGES DE MEME TYPE
+C           (ROUTINE SPECIFIQUE A L'OPERATEUR CALC_G,
+C            APPELEE PAR GCHARG)
+C
+C     IN :    FONC     :  = .TRUE. SI LE CHARGEMENT EST 'FONCTION'
+C                         = .FALSE. SI LE CHARGEMENT EST 'SCALAIRE'
+C             CHAR1    :  CHARGE 1 (ASSOCIEE A FONC1)
+C             CHAR2    :  CHARGE 2(ASSOCIEE A FONC2)
+C             ICHAR    :  OCCURENCE DU CHARGEMENT DANS GCHARG
+C     IN/OUT  CHARG    :  CHARGE 1  +  CHARGE 2
+C ======================================================================
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32     JEXNOM, JEXNUM, JEXATR
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C ----------------------------------------------------------------------
+C
+      INTEGER IRET,IBID,JZCAR1,NBMA,P1,P2,NMAZO,JDES1,JDES2,JDES,
+     &        NBZO1,IMA,IZO,NUMA,NBZO2,JZCAR2,IZO1,IZO2,II,NBZO,IEC,
+     &        NUZO1,NUZO2,JZCAR,JMA,JVAL,NCMPMX,JK24,NBMAZ,ILIM,JMAZO,
+     &        JNUMZ,NUZO,K,JVAL1,ICMP,JVAL2,KK
+      CHARACTER*8 MA,NOMA,K8B,VAL1,VAL2,NOMFCT,NOMS2F
+      CHARACTER*19  CHARG1,CHARG2
+      CHARACTER*40 ACCES
+      LOGICAL S2F
+      
+      CALL JEMARQ()
+
+      NOMFCT='&&FF0000'
+      NOMS2F='&&SF0000'
+      CALL CODENT(ICHAR,'D0',NOMFCT(5:6))
+      CALL CODENT(ICHAR,'D0',NOMS2F(5:6))
+
+C
+C --- 1.PREPARATION (ALLOCATION DE TABLEAUX DE TRAVAIL ...)
+C     -----------------------------------------------------
+C
+      CALL JEVEUO(CHAR1//'.NOMA','L',JMA)
+      MA=ZK8(JMA)
+      CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,K8B,IRET)
+
+C --  1.1 LORS D'UNE COMBINAISON DE CHARGEMENT 'SCALAIRE'/'FONCTION'
+C         LE CHARGEMENT 'SCALAIRE' EST TRANSFORME EN CHARGEMENT
+C         'FONCTION' (CONSTANT)
+      S2F=.FALSE.
+      IF(FONC1 .AND. .NOT.FONC2)THEN
+        CHARG1=CHAR1
+        CHARG2=NOMS2F
+        CALL GCHS2F(CHAR2,CHAR1,CHARG2)
+        FONC2=.TRUE.
+        S2F=.TRUE.
+      ELSEIF(.NOT.FONC1 .AND. FONC2)THEN
+        CHARG1=NOMS2F
+        CHARG2=CHAR2
+        CALL GCHS2F(CHAR1,CHAR2,CHARG1)
+        FONC1=.TRUE.
+        S2F=.TRUE.
+      ELSE
+        CHARG1=CHAR1
+        CHARG2=CHAR2
+      ENDIF
+
+      CALL JEVEUO(CHARG1//'.DESC','L',JDES1)
+      CALL JEVEUO(CHARG2//'.DESC','L',JDES2)
+      CALL ASSERT(ZI(JDES1).EQ.ZI(JDES2))
+
+C --  1.2 TABLEAUX : MAILLES -> NUM_ZONE D'AFFECTATION (CARTE_1)
+C                    MAILLES -> NUM_ZONE D'AFFECTATION (CARTE_2)
+      CALL WKVECT('&&GCHARF_ZONE.CART1','V V I',NBMA,JZCAR1)
+      CALL WKVECT('&&GCHARF_ZONE.CART2','V V I',NBMA,JZCAR2)      
+
+      DO 5 IMA=1,NBMA
+        ZI(JZCAR1+IMA-1)=0
+        ZI(JZCAR2+IMA-1)=0
+ 5    CONTINUE
+      
+      CALL JEVEUO(JEXATR(CHARG1//'.LIMA','LONCUM'),'L',P2)
+      CALL JEVEUO(CHARG1//'.LIMA','L',P1)
+      CALL JELIRA(CHARG1//'.LIMA','ACCES',IBID,ACCES)
+      CALL ASSERT(ACCES(1:2).EQ.'NU')
+
+      NBZO1=ZI(JDES1+3-1)
+      DO 10 IZO=1,NBZO1
+         NMAZO=ZI(P2+IZO)-ZI(P2+IZO-1)
+         DO 20 IMA=1,NMAZO
+           NUMA=ZI(P1+ZI(P2+IZO-1)-1+IMA-1)
+           ZI(JZCAR1+NUMA-1)=IZO
+           CALL JENUNO(JEXNUM(MA//'.NOMMAI',NUMA),K8B)
+ 20      CONTINUE
+ 10   CONTINUE
+
+      CALL JEVEUO(JEXATR(CHARG2//'.LIMA','LONCUM'),'L',P2)
+      CALL JEVEUO(CHARG2//'.LIMA','L',P1)
+      CALL JELIRA(CHARG2//'.LIMA','ACCES',IBID,ACCES)
+      CALL ASSERT(ACCES(1:2).EQ.'NU')
+
+      NBZO2=ZI(JDES2+3-1)
+      DO 30 IZO=1,NBZO2
+         NMAZO=ZI(P2+IZO)-ZI(P2+IZO-1)
+         DO 40 IMA=1,NMAZO
+           NUMA=ZI(P1+ZI(P2+IZO-1)-1+IMA-1)
+           ZI(JZCAR2+NUMA-1)=IZO
+           CALL JENUNO(JEXNUM(MA//'.NOMMAI',NUMA),K8B)
+ 40      CONTINUE
+ 30   CONTINUE
+
+C --  1.3 TABLEAUX : ZONE_CARTE_1 x ZONE_CARTE_2 -> NB MAILLES AFFECTEES
+C                    ZONE_CARTE_1 x ZONE_CARTE_2 -> NUM DE LA ZONE
+      CALL WKVECT('&&GCHARF_NB_MAILLE_ZONE','V V I',NBZO1*NBZO2,JMAZO)
+      CALL WKVECT('&&GCHARF_NUM_ZONE_CARTE','V V I',NBZO1*NBZO2,JNUMZ)
+
+      DO 50 IZO2=1,NBZO2
+        DO 60 IZO1=1,NBZO1
+          ZI(JMAZO+NBZO1*(IZO2-1)+IZO1-1)=0
+ 60     CONTINUE
+ 50   CONTINUE
+
+      DO 70 IMA=1,NBMA
+        NUZO1=ZI(JZCAR1+IMA-1)
+        NUZO2=ZI(JZCAR2+IMA-1)
+        II=NBZO1*(NUZO2-1)+NUZO1
+        ZI(JMAZO+II-1)=ZI(JMAZO+II-1)+1
+ 70   CONTINUE
+
+C     NOMBRE DE ZONES AFFECTEES POUR LA NOUVELLE CARTE:
+      NBZO=0
+      DO 80 IZO=1,NBZO1*NBZO2
+        ZI(JNUMZ+IZO-1)=0
+        IF(  ZI(JMAZO+IZO-1).NE.0) THEN
+          NBZO=NBZO+1
+          ZI(JNUMZ+IZO-1)=NBZO
+        ENDIF
+ 80   CONTINUE
+
+C --  1.4 TABLEAU: MAILLES -> NUM_ZONE D'AFFECTATION (NOUVELLE CARTE)
+      CALL WKVECT('&&GCHARF_ZONE.CARTE','V V I',NBMA,JZCAR)
+
+      DO 85 IMA=1,NBMA
+        NUZO1=ZI(JZCAR1+IMA-1)
+        NUZO2=ZI(JZCAR2+IMA-1)
+        II=NBZO1*(NUZO2-1)+NUZO1
+        ZI(JZCAR+IMA-1)=ZI(JNUMZ+II-1)
+ 85   CONTINUE
+
+C
+C --- 2. ALLOCATION DE LA NOUVELLE CARTE
+C     ----------------------------------
+
+C     STOCKAGE DE MA:
+      CALL WKVECT(CHARG//'.NOMA','V V K8',1,JMA)
+      ZK8(JMA-1+1) = MA
+
+C     ALLOCATION DE NOLI
+      CALL WKVECT(CHARG//'.NOLI','V V K24',1,JK24)
+      ZK24(JK24)='                        '
+
+C     ALLOCATION DE DESC:
+      CALL WKVECT(CHARG//'.DESC','V V I',3+NBZO*3,JDES)
+      CALL JEECRA(CHARG//'.DESC','DOCU',IBID,'CART')
+      ZI(JDES-1+1) = ZI(JDES1-1+1)
+      ZI(JDES-1+2) = NBZO
+      ZI(JDES-1+3) = NBZO
+      DO 90 IZO=1,NBZO
+        ZI(JDES-1+3+2*IZO-1)= 3
+        ZI(JDES-1+3+2*IZO)  = IZO
+        ZI(JDES-1+3+2*NBZO+IZO)= ZI(JDES1-1+3+2*NBZO1+1)
+ 90   CONTINUE
+
+C     ALLOCATION DE VALE:
+      CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',ZI(JDES1)),'LONMAX',
+     &     NCMPMX,K8B)
+      IF(.NOT.FONC1 .AND. .NOT.FONC2) THEN
+        CALL WKVECT(CHARG//'.VALE','V V R',NBZO*NCMPMX,JVAL)
+      ELSEIF(FONC1)THEN
+        CALL WKVECT(CHARG//'.VALE','V V K8',NBZO*NCMPMX,JVAL)
+      ELSEIF(FONC2)THEN
+        CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',ZI(JDES2)),'LONMAX',
+     &     NCMPMX,K8B)
+        CALL WKVECT(CHARG//'.VALE','V V K8',NBZO*NCMPMX,JVAL)
+      ENDIF
+
+C     ALLOCATION DE LIMA :
+      CALL JECREC(CHARG//'.LIMA','V V I','NU','CONTIG',
+     &               'VARIABLE',NBZO)
+      CALL JEECRA(CHARG//'.LIMA','LONT',NBMA,' ')
+
+
+C --- 3. REMPLISSAGE DE LIMA ET VALE
+C     ------------------------------
+
+C --  3.1 LIMA
+
+      DO 100 IZO=1,NBZO1*NBZO2
+        IF(  ZI(JMAZO+IZO-1).NE.0) THEN
+          NUZO=ZI(JNUMZ+IZO-1)
+          CALL JECROC(JEXNUM(CHARG//'.LIMA',NUZO))
+          CALL JEECRA(JEXNUM(CHARG//'.LIMA',NUZO),'LONMAX',
+     &        ZI(JMAZO+IZO-1),K8B)
+          CALL JEVEUO(JEXNUM(CHARG//'.LIMA',NUZO),'E',ILIM)
+          K=0
+          DO 110 IMA=1,NBMA
+            IF(ZI(JZCAR+IMA-1).EQ.NUZO)THEN
+              K=K+1
+              ZI(ILIM+K-1)=IMA
+            ENDIF
+ 110      CONTINUE
+        ENDIF
+ 100   CONTINUE
+
+
+C --  3.2 VALE 
+C
+C     3.2.1 CHARGEMENTS 'SCALAIRES'
+      IF(.NOT.FONC1 .AND. .NOT.FONC2) THEN
+
+      CALL JEVEUO(CHARG1//'.VALE','L',JVAL1)
+      CALL JEVEUO(CHARG2//'.VALE','L',JVAL2)
+      K=0
+      DO 120 IZO2=1,NBZO2
+        DO 130 IZO1=1,NBZO1
+          II=NBZO1*(IZO2-1)+IZO1
+          IF(ZI(JMAZO+II-1).NE.0)THEN
+             DO 140 ICMP=1,NCMPMX
+               K=K+1
+               ZR(JVAL+K-1)=   ZR(JVAL1+NCMPMX*(IZO1-1)+ICMP-1)
+     &                       + ZR(JVAL2+NCMPMX*(IZO2-1)+ICMP-1)
+ 140         CONTINUE
+          ENDIF
+ 130   CONTINUE
+ 120  CONTINUE
+
+C     3.2.1 CHARGEMENTS 'FONCTION'
+      ELSEIF(FONC1 .AND. FONC2) THEN
+        CALL JEVEUO(CHARG1//'.VALE','L',JVAL1)
+        CALL JEVEUO(CHARG2//'.VALE','L',JVAL2)
+        K=0
+        KK=0
+        DO 150 IZO2=1,NBZO2
+          DO 160 IZO1=1,NBZO1
+            II=NBZO1*(IZO2-1)+IZO1
+            IF(ZI(JMAZO+II-1).NE.0)THEN
+              DO 170 ICMP=1,NCMPMX
+                K=K+1
+                VAL1=ZK8(JVAL1+NCMPMX*(IZO1-1)+ICMP-1)
+                VAL2=ZK8(JVAL2+NCMPMX*(IZO2-1)+ICMP-1)
+                IF( VAL1(1:7).EQ.'&FOZERO' .AND. 
+     &              VAL2(1:7).EQ.'&FOZERO'  )THEN
+                  ZK8(JVAL+K-1)='&FOZERO'
+                ELSEIF( VAL1(1:6).EQ.'GLOBAL' .OR. 
+     &              VAL2(1:6).EQ.'GLOBAL'  )THEN
+                  ZK8(JVAL+K-1)='GLOBAL'
+                ELSEIF(VAL1(1:7).EQ.'&FOZERO')THEN
+                  ZK8(JVAL+K-1)=VAL2
+                ELSEIF(VAL2(1:7).EQ.'&FOZERO')THEN
+                  ZK8(JVAL+K-1)=VAL1
+                ELSEIF( VAL1(1:1).EQ.' ' .OR. 
+     &              VAL2(1:1).EQ.' '  )THEN
+                  ZK8(JVAL+K-1)='        '
+                ELSE
+                  KK=KK+1
+                  CALL CODENT(KK,'D0',NOMFCT(7:8))
+                  CALL GCHFUS(VAL1,VAL2,NOMFCT)
+                  ZK8(JVAL+K-1)=NOMFCT
+                ENDIF
+ 170          CONTINUE
+            ENDIF               
+ 160      CONTINUE
+ 150    CONTINUE              
+
+      ENDIF
+
+      IF(S2F)CALL JEDETC('V','&&SF',1)
+      CALL JEDETR('&&GCHARF_NUM_ZONE_CARTE')
+      CALL JEDETR('&&GCHARF_NB_MAILLE_ZONE')
+      CALL JEDETR('&&GCHARF_ZONE.CART1')
+      CALL JEDETR('&&GCHARF_ZONE.CART2')
+      CALL JEDETR('&&GCHARF_ZONE.CARTE')
+
+
+      CALL JEDEMA()
+      
+      END

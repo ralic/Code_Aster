@@ -1,7 +1,7 @@
       SUBROUTINE TE0545(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/12/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 29/01/2007   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ......................................................................
       INTEGER IVECTU,ICONTP,IVARIP,LI,NNOS,JGANO
       INTEGER IVARIX,IRET,IDIM
       INTEGER NDDL,KK,NI,MJ,JTAB(7),IADZI,IAZK24,JCRET,CODRET
-      REAL*8  MATNS(2*9*2*9),XYZ(3)
+      REAL*8  XYZ(3)
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
       REAL*8  R8VIDE,ANGMAS(7),R8DGRD
       LOGICAL MATSYM,LTEATT
@@ -119,7 +119,6 @@ C PARAMETRES EN SORTIE
 
       IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA') THEN
-        CALL JEVECH('PMATUUR','E',IMATUU)
         CALL NMTSTM(ZK16(ICOMPO),IMATUU,MATSYM)
       END IF
 
@@ -205,20 +204,8 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
      &                VECT1,VECT2,ZR(ICONTP),ZR(IVARIP),
-     &                MATNS,ZR(IVECTU),CODRET)
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
-C        SYMETRISATION DE MATNS DANS MATUU
-          IF (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL') THEN
-            NDDL = 2*NNO
-            KK = 0
-            DO 40 NI = 1,NDDL
-              DO 30 MJ = 1,NI
-                ZR(IMATUU+KK) = (MATNS((NI-1)*NDDL+MJ)+
-     &                          MATNS((MJ-1)*NDDL+NI))/2.D0
-                KK = KK + 1
-   30         CONTINUE
-   40       CONTINUE
-          END IF
 
 C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         ELSE IF (ZK16(ICOMPO+2) .EQ.'GREEN') THEN

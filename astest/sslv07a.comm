@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -520,7 +520,10 @@ TB1=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
                                       COOR_ORIG= (0., 0.0, 1.5),
                                       COOR_EXTR= (0.5, 0.0, 1.5),
                                     ) )
-
+IMPR_TABLE ( TABLE = TB1,
+             FORMAT='ASTER',
+             UNITE=44
+             )
 
 TEST_TABLE(   TABLE=TB1,
               FILTRE=(_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 10,),
@@ -545,7 +548,7 @@ TB2=MACR_LIGN_COUPE( RESULTAT= RESU,
 
 IMPR_TABLE ( TABLE = TB2,
              FORMAT='ASTER',
-             UNITE=40
+             UNITE=40,
              )
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=40)
@@ -669,6 +672,115 @@ TEST_TABLE(    TABLE=TAB3,
                VALE= 0., CRITERE='ABSOLU',PRECISION=1.E-8,
                REFERENCE = 'NON_REGRESSION',
           )
+# =====================================================================
+#
+# validation de MACR_LIGN_COUPE en repere local sur un CHAM_ELEM
+
+TB4=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
+                     NOM_CHAM= 'SIEF_ELNO_ELGA',
+                     LIGN_COUPE = _F( NB_POINTS= 4,
+                                      COOR_ORIG= (0., 0., 1.5),
+                                      COOR_EXTR= (0., 0.5, 1.5),
+                                    ) )
+IMPR_TABLE ( TABLE = TB4,
+             FORMAT='ASTER',
+             UNITE=43
+             )
+
+TB6=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
+                     NOM_CHAM= 'SIEF_ELNO_ELGA',
+                     LIGN_COUPE = _F( NB_POINTS= 4,VECT_Y=(-1.,0.,0.),
+                                      COOR_ORIG= (0., 0., 1.5),
+                                      COOR_EXTR= (0., 0.5, 1.5),
+                                    ) )
+IMPR_TABLE ( TABLE = TB6,
+             FORMAT='ASTER',
+             UNITE=46
+             )
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=43)
+
+TAB4=LIRE_TABLE( UNITE=43,
+                   FORMAT='ASTER',
+                   NUME_TABLE=1,
+                   SEPARATEUR=' ',)
+
+TEST_TABLE(    TABLE=TAB4,
+               FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 5.E-01),
+                       _F(  NOM_PARA = 'INST',
+                            VALE = 2.E-01,),),
+               NOM_PARA='SIYY',
+               VALE= 3.93987E-04,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=46)
+
+TAB6=LIRE_TABLE( UNITE=46,
+                   FORMAT='ASTER',
+                   NUME_TABLE=1,
+                   SEPARATEUR=' ',)
+
+TEST_TABLE(    TABLE=TAB6,
+               FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 5.E-01),
+                       _F(  NOM_PARA = 'INST',
+                            VALE = 2.E-01,),),
+               NOM_PARA='SIXX',
+               VALE= 3.93987E-04,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+
+# =====================================================================
+#
+# validation de MACR_LIGN_COUPE en repere local avec plusieurs 
+# occurences de LIGN_COUPE
+
+TB5=MACR_LIGN_COUPE( RESULTAT= RESU,
+                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     LIGN_COUPE =( _F( NB_POINTS= 4,VECT_Y=(0.,0.,1.),
+                                      COOR_ORIG= (0.0, 0.0, 0.0),
+                                      COOR_EXTR= (0.0, 0.5, 1.5),),
+                                   _F( NB_POINTS= 4,VECT_Y=(-1.,0.,0.),
+                                      COOR_ORIG= (0.0, 0.0, 0.0),
+                                      COOR_EXTR= (0.0, 0.5, 1.5),), ),)
+
+#
+IMPR_TABLE ( TABLE = TB5,
+             FORMAT='ASTER',
+             UNITE=42
+             )
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=42)
+
+TAB5=LIRE_TABLE( UNITE=42,
+                   FORMAT='ASTER',
+                   NUME_TABLE=1,
+                   SEPARATEUR=' ',)
+
+TEST_TABLE(    TABLE=TAB5,
+               FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 5.27046E-01),
+                       _F(  NOM_PARA = 'INTITULE',
+                            VALE_K ='l.coupe1' ,),),
+               NOM_PARA='SIYY',
+               VALE= 3.82591E+03,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB5,
+               FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 5.27046E-01),
+                       _F(  NOM_PARA = 'INTITULE',
+                            VALE_K ='l.coupe2' ,),),
+               NOM_PARA='SIZZ',
+               VALE= 3.82591E+03,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+
 
 
 FIN();

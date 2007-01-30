@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 18/09/2006   AUTEUR ROMEO R.FERNANDES 
+%& MODIF COMPELEM  DATE 29/01/2007   AUTEUR DESROCHES X.DESROCHES 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -111,7 +111,9 @@ PHENOMENE_MODELISATION__
 
        MODELISATION__ '3D_SI'            DIM__ 3 3   CODE__ '3DS'
               MAILLE__ HEXA20    ELEMENT__ MECA_HEXS20
+              MAILLE__ HEXA8     ELEMENT__ MECA_HEXS8
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
+              MAILLE__ QUAD4     ELEMENT__ MECA_FACE4
 
        MODELISATION__ '3D'               DIM__ 3 3   CODE__ '3D_'
               MAILLE__ HEXA8     ELEMENT__ MECA_HEXA8

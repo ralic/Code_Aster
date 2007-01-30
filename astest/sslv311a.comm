@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,10 +93,14 @@ FNZ=DEFI_FONCTION(NOM_PARA='Z',
                         2.0, 0.0));
 
 
-CH=AFFE_CHAR_MECA_F(MODELE=MO,
+CH1=AFFE_CHAR_MECA_F(MODELE=MO,
                     FORCE_INTERNE=_F(TOUT='OUI',
                                      FX=FNX,
-                                     FY=FNY,
+                                     FY=FNY,)
+                   );
+
+CH2=AFFE_CHAR_MECA_F(MODELE=MO,
+                    FORCE_INTERNE=_F(TOUT='OUI',
                                      FZ=FNZ,)
                    );
 
@@ -107,7 +111,8 @@ CH=AFFE_CHAR_MECA_F(MODELE=MO,
 CHAMDEPL=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F( CHARGE = CL),
-                              _F( CHARGE = CH))
+                              _F( CHARGE = CH1,),
+                              _F( CHARGE = CH2,),)
                       );
 
 
@@ -318,14 +323,14 @@ TEST_TABLE(TABLE=GLO1,
 ###################################
 # VERIFICATION : SOLUTION IDENTIQUE AVEC ROTATION
 ###################################
-CH2=AFFE_CHAR_MECA(MODELE=MO,
+CH3=AFFE_CHAR_MECA(MODELE=MO,
                   ROTATION=(500., 0., 0., 1.,)
                  );
 
 CHAMDEP2=MECA_STATIQUE(MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F( CHARGE = CL),
-                              _F( CHARGE = CH2))
+                              _F( CHARGE = CH3))
                       );
 
 GLO2=CALC_G(RESULTAT=CHAMDEP2,

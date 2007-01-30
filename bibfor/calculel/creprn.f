@@ -1,6 +1,6 @@
       SUBROUTINE CREPRN(LIGREZ,MOLOCZ,BASEZ,PRNMZ,PRNSZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -231,9 +231,8 @@ C              ------------------------------
                     ZI(IAPRNM-1+NEC* (NUNOEL-1)+L) =
      &                          IOR(ZI(IAPRNM-1+NEC* (NUNOEL-1)+L),IEC)
                   ELSE
-                    NUNOEL = -NUNOEL
-                    ZI(IAPRNS-1+NEC* (NUNOEL-1)+
-     &                L) = IOR(ZI(IAPRNS-1+NEC* (NUNOEL-1)+L),IEC)
+                    ZI(IAPRNS-1+NEC* (-NUNOEL-1)+
+     &                L) = IOR(ZI(IAPRNS-1+NEC* (-NUNOEL-1)+L),IEC)
                   END IF
    50           CONTINUE
    60         CONTINUE

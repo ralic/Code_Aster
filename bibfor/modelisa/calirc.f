@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -314,9 +314,9 @@ C           NNO1: NB DE NOEUD_MAIT LIES A INO2
                 ZR(IDCOEF+INO1) = COEF1
 C               SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
                 IF (NUNO1.EQ.NUNO2) THEN
-                  IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-6) THEN
+                  IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-2) THEN
                     CALL U2MESK('A','CALCULEL5_49',1,NONO1)
-                    GOTO 120
+                    GOTO 119
                   ENDIF
                 ENDIF
    70         CONTINUE
@@ -352,6 +352,7 @@ C           -----------------------------------------------------
      &                        ZK8(IDNOMN),BETA)
   110           CONTINUE
               END IF
+  119         CONTINUE
               IDECAL = IDECAL + NNO1
   120       CONTINUE
 
@@ -479,9 +480,9 @@ C           NNO1: NB DE NOEUD_MAIT LIES A INO2
               ZR(IDCOEF+INO1) = COEF1
 C             SI LA RELATION EST UNE TAUTOLOGIE, ON NE L'ECRIT PAS :
               IF (NUNO1.EQ.NUNO2) THEN
-                IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-6) THEN
+                IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-2) THEN
                   CALL U2MESK('A','CALCULEL5_49',1,NONO1)
-                  GOTO 270
+                  GOTO 269
                 ENDIF
               ENDIF
   250       CONTINUE
@@ -497,6 +498,8 @@ C           -----------------------------------------------------
      &                  TYPCOE,FONREE,TYPLAG,1.D-6,LISREL)
             CALL IMPREL(MOTFAC,NNO1+1,ZR(IDCOEF),ZK8(IDNOMD),
      &                  ZK8(IDNOMN),BETA)
+
+  269       CONTINUE
             IDECAL = IDECAL + NNO1
   270     CONTINUE
         ELSE

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 30/01/2007   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -687,6 +687,12 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              FX              =SIMP(statut='f',typ='R' ),
              FY              =SIMP(statut='f',typ='R' ),
              FZ              =SIMP(statut='f',typ='R' ),
+           ),
+
+         SIGM_INTERNE   =FACT(statut='f',max='**',
+             fr="Applique des contraintes volumiques (2D ou 3D) à un domaine volumique",
+             #INST            =SIMP(statut='f',typ='R' ),
+             SIGM            =SIMP(statut='o',typ=(cham_elem,carte_sdaster)),
            ),
 
          PRES_REP        =FACT(statut='f',max='**',

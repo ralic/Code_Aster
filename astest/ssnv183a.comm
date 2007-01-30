@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/09/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 30/01/2007   AUTEUR PROIX J-M.PROIX 
 # TITRE ESSAI DE FLUAGE EN 3D VENDOCHAB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -401,6 +401,159 @@ IMPR_TABLE(TABLE=TABR,UNITE=29,
 IMPR_TABLE(TABLE=TABD,UNITE=29,
            FORMAT='TABLEAU',
            NOM_PARA=('INST','V9',),);
+
+####
+# TEST DE SIGM_INTERNE
+####
+
+SIG_CART=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
+                  OPERATION='AFFE',
+                  MODELE=EPD3,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
+                          VALE=(0.,0.,200.,0.,0.,0.),),);
+
+
+SIG_CHAM=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                  OPERATION='AFFE',
+                  MODELE=EPD3,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
+                          VALE=(0.,0.,200.,0.,0.,0.),),);
+
+
+
+CL=AFFE_CHAR_MECA(MODELE=EPD3,
+                        DDL_IMPO=(_F(NOEUD='N1',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,),
+                                  _F(NOEUD='N2',
+                                     DY=0.0,
+                                     DZ=0.0,),
+                                  _F(NOEUD='N3',
+                                     DZ=0.0,),
+                                  _F(NOEUD='N4',
+                                     DX=0.0,
+                                     DZ=0.0,),
+                                  _F(NOEUD='N5',
+                                     DX=0.0,
+                                     DY=0.0,),
+                                  _F(NOEUD='N6',
+                                     DY=0.0,),
+                                  _F(NOEUD='N8',
+                                     DX=0.0,),),
+                                    );
+CHA_CART=AFFE_CHAR_MECA(MODELE=EPD3,
+                        SIGM_INTERNE=_F(SIGM=SIG_CART),            
+                                    );
+
+CHA_CHAM=AFFE_CHAR_MECA(MODELE=EPD3,
+                        SIGM_INTERNE=_F(SIGM=SIG_CHAM),            
+                                    );
+
+
+MS_PRES=MECA_STATIQUE(MODELE=EPD3,
+                    CHAM_MATER=MAT,
+                    EXCIT=_F(CHARGE=COND_LIM,),
+                        );
+                    
+MS_CART=MECA_STATIQUE(MODELE=EPD3,
+                    CHAM_MATER=MAT,
+                    EXCIT=(
+                    _F(CHARGE=CL),
+                    _F(CHARGE=CHA_CART),
+                        ))
+                    
+MS_CHAM=MECA_STATIQUE(MODELE=EPD3,
+                    CHAM_MATER=MAT,
+                    EXCIT=(
+                    _F(CHARGE=CL),
+                    _F(CHARGE=CHA_CHAM),
+                        ))
+
+SNL_CART=STAT_NON_LINE(MODELE=EPD3,
+                    CHAM_MATER=MAT,
+                    EXCIT=(
+                    _F(CHARGE=CL),
+                    _F(CHARGE=CHA_CART,FONC_MULT=COEF_TR,),
+                             ),
+                    COMP_INCR=_F(RELATION='VENDOCHAB',
+                                 ITER_INTE_MAXI=60,
+                                 RESO_INTE='RUNGE_KUTTA_2',),
+                    INCREMENT=_F(LIST_INST=LINST,NUME_INST_FIN=82),
+                    NEWTON=_F(MATRICE='ELASTIQUE',PREDICTION='EXTRAPOL'),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=60),)
+
+SNL_CHAM=STAT_NON_LINE(MODELE=EPD3,
+                    CHAM_MATER=MAT,
+                    EXCIT=(
+                    _F(CHARGE=CL),
+                    _F(CHARGE=CHA_CHAM,FONC_MULT=COEF_TR,),
+                             ),
+                    COMP_INCR=_F(RELATION='VENDOCHAB',
+                                 ITER_INTE_MAXI=60,
+                                 RESO_INTE='RUNGE_KUTTA_2',),
+                    INCREMENT=_F(LIST_INST=LINST,NUME_INST_FIN=82),
+                    NEWTON=_F(MATRICE='ELASTIQUE',PREDICTION='EXTRAPOL'),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=60),)
+
+SNL_CHAM=CALC_ELEM(reuse =SNL_CHAM,
+                 MODELE=EPD3,
+                 CHAM_MATER=MAT,
+                 RESULTAT=SNL_CHAM,
+                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+                 
+SNL_CART=CALC_ELEM(reuse =SNL_CART,
+                 MODELE=EPD3,
+                 CHAM_MATER=MAT,
+                 RESULTAT=SNL_CART,
+                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+                 
+TEST_RESU(RESU=_F(RESULTAT=MS_PRES,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N8',
+                   NUME_ORDRE=1,
+                   VALE=4.00000E-03,
+                   REFERENCE='ANALYTIQUE',),)
+                   
+TEST_RESU(RESU=_F(RESULTAT=MS_CART,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N8',
+                   NUME_ORDRE=1,
+                   VALE=4.00000E-03,
+                   REFERENCE='ANALYTIQUE',),)
+                   
+TEST_RESU(RESU=_F(RESULTAT=MS_CHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N8',
+                   NUME_ORDRE=1,
+                   VALE=4.00000E-03,
+                   REFERENCE='ANALYTIQUE',),)
+                   
+TEST_RESU(RESU=_F(RESULTAT=SNL_CART,
+                   NUME_ORDRE=82,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V9',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=0.0152596,
+                   PRECISION=0.006,
+                   REFERENCE='ANALYTIQUE',),)
+
+TEST_RESU(RESU=_F(RESULTAT=SNL_CHAM,
+                   NUME_ORDRE=82,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V9',
+                   MAILLE='MA1',
+                   NOEUD='N1',
+                   VALE=0.0152596,
+                   PRECISION=0.006,
+                   REFERENCE='ANALYTIQUE',),)
+                   
 
 FIN();
 #

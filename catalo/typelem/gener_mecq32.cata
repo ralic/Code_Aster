@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+%& MODIF TYPELEM  DATE 30/01/2007   AUTEUR SALMONA L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -197,7 +197,7 @@ OPTION__
                                      ZVARIPG  PVARIMR  CCACO3D  PCACO3D
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  EREFCO   PREFCO   NTEMPER  PTEMPER
+                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
     RIGI_MECA           401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPEF  PTEMPEF
                                      NTEMPER  PTEMPER  CTEMPSR  PTEMPSR

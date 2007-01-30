@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF elements4 Messages  DATE 29/01/2007   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -302,6 +302,23 @@ cata_msg={
 
 70: _("""
  Erreur de programmation : condition non respectée !
+"""),
+
+71: _("""
+  te0140, calcul de sensibilite : actuellement on ne derive que les pou_d_e
+"""),
+
+72: _("""
+   rcvala ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8  
+"""),
+
+73: _("""
+   élément MECA_HEXS8:COMP_ELAS non implanté, utiliser COMP_INCR RELATION='ELAS'  
+"""),
+
+74: _("""
+   attention l'élément MECA_HEXS8 ne fonctionne correctement que sur les parallélipipèdes.
+  Sur les elements quelconques on peut obtenir des resultats faux.   
 """),
 
 }

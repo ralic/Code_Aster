@@ -1,6 +1,6 @@
       SUBROUTINE RERCMK(NU,MO,MA,NLILI,NM,NL,NBNTT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 21/11/2006   AUTEUR DURAND C.DURAND 
+C MODIF ASSEMBLA  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -262,7 +262,8 @@ C     "I= MIN(NBCO)"
 C     ----------------------------------------------------------------
       I=0
       DO 51, K=1,NBNTT
-         IF((ZI(IANBCO-1+K).EQ.0).OR.(ZI(IANEW1-1+K).NE.0)) GO TO 51
+         IF (ZI(IAEXI1+K).EQ.0) GO TO 51
+         IF (ZI(IANEW1-1+K).NE.0) GO TO 51
          IF (I.EQ.0) THEN
             I=K
          ELSE

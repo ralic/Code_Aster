@@ -1,5 +1,5 @@
       SUBROUTINE FORNPD ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 30/01/2007   AUTEUR SALMONA L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,10 +94,7 @@ C
       HIC  =  EPAIS/NBCOU
 C
       CALL JEVECH('PMATERC','L',IMATE)
-      NOMRES(1) = 'E'
-      NOMRES(2) = 'NU'
-      CALL TECACH ('ONN','PTEMPER',8,ITAB,IRET)
-      ITEMPE=ITAB(1)
+
       IF (OPTION.EQ.'FORC_NODA') THEN
          CALL JEVECH('PCONTMR','L',ICONTM)
       ELSEIF (OPTION.EQ.'REFE_FORC_NODA') THEN
@@ -107,35 +104,9 @@ C
 C
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
 C
-      IF ( PHENOM .EQ. 'ELAS' )  THEN
-         NBV=2
-         NOMRES(1)='E'
-         NOMRES(2)='NU'
-      ELSE
+      IF ( PHENOM .NE. 'ELAS' )  THEN
          CALL U2MESS('F','ELEMENTS_42')
       ENDIF
-C
-      IF ( ITEMPE .EQ. 0 ) THEN
-         NBPAR  = 0
-         NOMPAR = ' '
-         VALPAR = 0.D0
-      ELSE
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-         TPG1   = 0.D0
-         DO 21 I = 1,NB2
-            CALL DXTPIF(ZR(ITEMPE+3*(I-1)),ZL(ITAB(8)+3*(I-1)))
-            TMOY(I) = ZR(ITEMPE  +3*(I-1))
-            TINF(I) = ZR(ITEMPE+1+3*(I-1))
-            TSUP(I) = ZR(ITEMPE+2+3*(I-1))
-            TPG1 = TPG1 + TMOY(I) +
-     &     ( TSUP(I) + TINF(I) - 2*TMOY(I) ) / 6.D0
- 21      CONTINUE
-         VALPAR = TPG1 / NB2
-      ENDIF
-C
-      CALL RCVALA(ZI(IMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
-     &                                            VALRES,CODRET, 'FM')
 C
       CALL VECTAN(NB1,NB2,ZR(JGEOM),ZR(LZR),VECTA,VECTN,VECTPT)
 C

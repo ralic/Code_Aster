@@ -1,7 +1,7 @@
       SUBROUTINE NMDOME(MODELE,MATE,CARELE,LISCHA,NBPASE,INPSCO,
      &                  RESULT, NUORD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/11/2006   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 30/01/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*19 LIGR, EXCIT, LISCH2
       CHARACTER*24 LIGRCH,LCHIN,NOMFCT,K24BID,CONTA
       CHARACTER*24 NOMCHA,CHARSE,MATES
-      LOGICAL NONMEC,EXITHE,EXIANE,EXISEC,EXIARL
+      LOGICAL NONMEC,EXITHE,EXIANE,EXISEC,EXIARL,EXISIN
       LOGICAL EXCHSE
 
 C --- NOMBRE MAXIMUM DE RESUELEM POUR LES FORCES DE LAPLACE : NBCHMX
@@ -103,18 +103,18 @@ C --- NOMBRE MAXIMUM DE RESUELEM POUR LES FORCES DE LAPLACE : NBCHMX
 C --- NOMBRE MAXIMUM DE TYPE DE CHARGE                       : NBTYCH
 
       INTEGER NBTYCH
-      PARAMETER (NBTYCH=17)
+      PARAMETER (NBTYCH=18)
 
       CHARACTER*6 NOMLIG(NBTYCH)
       CHARACTER*8 TYPEPS(-2:NBTYCH)
 
       DATA NOMLIG/'.FORNO','.F3D3D','.F2D3D','.F1D3D','.F2D2D','.F1D2D',
      &     '.F1D1D','.PESAN','.ROTAT','.PRESS','.FELEC','.FCO3D',
-     &     '.FCO2D','.EPSIN','.FLUX','.VEASS','.ONDPL'/
+     &     '.FCO2D','.EPSIN','.FLUX','.VEASS','.ONDPL','.SIINT'/
       DATA TYPEPS/'MATERIAU','CARAELEM','DIRICHLE','FORCE   ',
      &     'FORCE   ','FORCE   ','FORCE   ','FORCE   ','FORCE   ',
      &     'FORCE   ','.PESAN','.ROTAT','FORCE   ','.FELEC','FORCE   ',
-     &     'FORCE   ','.EPSIN','.FLUX','.VEASS','.ONDPL'/
+     &     'FORCE   ','.EPSIN','.FLUX','.VEASS','.ONDPL','.SIINT'/
 C ----------------------------------------------------------------------
 C====
 C 1. PREALABLES
@@ -271,9 +271,11 @@ C
                  CALL JEDETR(LISCH2//'.INFC')
                  CALL JEDETR(LISCH2//'.FCHA')
               ENDIF
-              CALL WKVECT(LISCH2//'.LCHA','V V K24',  NCHAR1,JLCHA1)
+              CALL WKVECT(LISCH2//'.LCHA','V V K24',MAX(NCHAR1,1),
+     &                    JLCHA1)
               CALL WKVECT(LISCH2//'.INFC','V V IS',4*NCHAR1+7,JINFC1)
-              CALL WKVECT(LISCH2//'.FCHA','V V K24',  NCHAR1,IFCHA1)
+              CALL WKVECT(LISCH2//'.FCHA','V V K24',MAX(NCHAR1,1),
+     &                    IFCHA1)
 C
               ZI(JINFC1) = NCHAR1
               INCHA1 = 0
@@ -482,6 +484,8 @@ C 3.2.5. ==> CHARGES DU TYPE NEUMANN (FORCE)
             IF (IRET.NE.0) THEN
               IF (NOMLIG(K).EQ.'.ONDPL') THEN
                 ZI(JINF+NCHAR+ICH) = 6
+              ELSEIF (NOMLIG(K).EQ.'.SIINT') THEN
+                ZI(JINF+NCHAR+ICH) = 55
               ELSE IF (TYPCHA.EQ.'FIXE_PIL') THEN
                 ZI(JINF+NCHAR+ICH) = 5
                 IF (NOMLIG(K).NE.'.VEASS') THEN
@@ -576,6 +580,18 @@ C ---- CHARGE DU TYPE DEFO ANELASTIQUES
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
               CALL U2MESK('F','ALGORITH7_33',1,ZK24(IALICH-1+ICH) (1:8))
             END IF
+          END IF
+
+C ---- CHARGE DU TYPE SIGM_INTERNE
+          EXISIN=.FALSE.
+          LCHIN = LIGRCH(1:13)//'.SIINT.DESC'
+          CALL JEEXIN(LCHIN,IRET)
+          IF (IRET.NE.0) THEN
+            IF (EXISIN) THEN
+              CALL U2MESS('F','ALGORITH7_32')
+            END IF
+            EXISIN = .TRUE.
+            ZI(JINF+4*NCHAR+4) = 99
           END IF
 
 

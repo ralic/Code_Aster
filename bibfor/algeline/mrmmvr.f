@@ -1,12 +1,12 @@
       SUBROUTINE MRMMVR ( CUMUL,NOMMAT,ADIA,HCOL,NEQ,VECT,XSOL,NBVECT)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       CHARACTER*(*)       CUMUL
       INTEGER                          ADIA(*),HCOL(*),NEQ,NBVECT
       CHARACTER*(*)             NOMMAT
       REAL*8                   VECT(NEQ,NBVECT), XSOL(NEQ,NBVECT)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,16 +50,23 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       REAL*8        ZERO
+      CHARACTER*1 KBID
       CHARACTER*19  NOM19
       CHARACTER*24  VALM
       CHARACTER*32  JEXNUM
+      INTEGER KFIN, LMAT, NV, KI, KDEB,I,J,NBLOC
 C     ------------------------------------------------------------------
 C
 C
 C
       CALL JEMARQ()
       NOM19 = NOMMAT
+
       VALM  = NOM19//'.VALM'
+      CALL JELIRA(VALM,'NMAXOC',NBLOC,KBID)
+      CALL ASSERT(NBLOC.EQ.1.OR.NBLOC.EQ.2)
+      IF (NBLOC.EQ.2) CALL U2MESS('F','ALGELINE4_2')
+
       ZERO  = 0.D0
       IF ( CUMUL .EQ. 'ZERO' ) THEN
          DO 10 I= 1, NBVECT

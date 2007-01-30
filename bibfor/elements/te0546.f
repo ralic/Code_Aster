@@ -1,7 +1,7 @@
       SUBROUTINE TE0546(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/12/2006   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 29/01/2007   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C ......................................................................
       INTEGER IVECTU,ICONTP,IVARIP,LI,JCRET,CODRET
       INTEGER IVARIX,ICAMAS,IDIM
       INTEGER NDDL,KK,NI,MJ,JTAB(7),NNOS
-      REAL*8 MATNS(3*27*3*27),R8VIDE,ANGMAS(7),R8DGRD,XYZ(3)
+      REAL*8 R8VIDE,ANGMAS(7),R8DGRD,XYZ(3)
       REAL*8 PFF(6*27*27),DEF(6*27*3),DFDI(3*27),DFDI2(3*27)
       LOGICAL MATSYM
 
@@ -106,7 +106,6 @@ C - PARAMETRES EN SORTIE
 
       IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
      &    OPTION(1:9).EQ.'FULL_MECA') THEN
-        CALL JEVECH('PMATUUR','E',IMATUU)
         CALL NMTSTM(ZK16(ICOMPO),IMATUU,MATSYM)
       END IF
 
@@ -189,22 +188,9 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
-     &                DFDI,DFDI2,
-     &                ZR(ICONTP),ZR(IVARIP),MATNS,ZR(IVECTU),CODRET)
+     &                DFDI,DFDI2,ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
-C        SYMETRISATION DE MATNS DANS MATUU
-          IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
-     &        OPTION(1:9).EQ.'FULL_MECA') THEN
-            NDDL = 3*NNO
-            KK = 0
-            DO 40 NI = 1,NDDL
-              DO 30 MJ = 1,NI
-                ZR(IMATUU+KK) = (MATNS((NI-1)*NDDL+MJ)+
-     &                          MATNS((MJ-1)*NDDL+NI))/2.D0
-                KK = KK + 1
-   30         CONTINUE
-   40       CONTINUE
-          END IF
 
 C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         ELSE IF (ZK16(ICOMPO+2) (1:5).EQ.'GREEN') THEN

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 29/01/2007   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,6 +142,7 @@ VECTEUR__
 MATRICE__
     MMATUUC = MDEP_C NDEPLAC NDEPLAC
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
     MMATVVR = MVAR_R DDL_NLOC DDL_NLOC
 
 OPTION__
@@ -276,8 +277,8 @@ OPTION__
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
                                      CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
-                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
-                                     MVECTUR  PVECTUR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
+                                     ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     FULL_MECA_ELAS      546   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
@@ -371,7 +372,9 @@ OPTION__
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
                                      CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR
-                              OUT__  MMATUUR  PMATUUR
+                              OUT__  MMATUNS PMATUNS MMATUUR  PMATUUR
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM 
+                              OUT__  MMATUUR  PSYM
     SIEF_ELGA_DEPL      22    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  ECONTPG  PCONTRR

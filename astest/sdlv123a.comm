@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/01/2007   AUTEUR REZETTE C.REZETTE 
 
 DEBUT(CODE=_F(NOM='SDLV123A',
               NIV_PUB_WEB='INTERNET',),);
@@ -47,15 +47,20 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                        AFFE=(_F(GROUP_MA=('SUT',),
                                 MATER=acier,),),);
 
-CH_P=AFFE_CHAR_MECA(MODELE=MODELE,
+FPRES=DEFI_CONSTANTE(NOM_RESU='PRES',
+                     VALE=100000000.0,)
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,)
+
+CH_P=AFFE_CHAR_MECA_F(MODELE=MODELE,
                         DDL_IMPO=(_F(GROUP_NO='LP2P4',
-                                     DY=0.0,),
+                                     DY=ZERO,),
                                    _F(GROUP_NO='LP1P111',
-                                      DX=0.0,),
+                                      DX=ZERO,),
                                   _F(GROUP_NO='P4',
-                                     DX=0.0,DY=0.0,),),
+                                     DX=ZERO,DY=ZERO,),),
                         PRES_REP=_F(GROUP_MA='LP1P2',
-                                    PRES=100000000.0,),);
+                                    PRES=FPRES,),);
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.E-6,1.0,0.1,1.0,),);
@@ -136,21 +141,24 @@ THETA3=CALC_THETA( MODELE=MODELE,
 G1=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA1),
-                    EXCIT=_F(CHARGE=CH_P,),
-                    SYME_CHAR='SYME'
+                    SYME_CHAR='SYME',
+                    EXCIT=_F(CHARGE=CH_P,
+                             FONC_MULT=FONC,),
                   )
 
 G2=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA2),
-                    EXCIT=_F(CHARGE=CH_P,),
+                    EXCIT=_F(CHARGE=CH_P,
+                             FONC_MULT=FONC,),
                     SYME_CHAR='SYME'
                   )
 
 G3=CALC_G(          RESULTAT=evol,
                     TOUT_ORDRE='OUI',
                     THETA=_F(THETA=THETA3),
-                    EXCIT=_F(CHARGE=CH_P,),
+                    EXCIT=_F(CHARGE=CH_P,
+                             FONC_MULT=FONC,),
                     SYME_CHAR='SYME'
                   )
 
@@ -158,7 +166,8 @@ G3=CALC_G(          RESULTAT=evol,
 G4=CALC_G(          THETA=_F(THETA=THETA1),
                     RESULTAT=evol,
                     NUME_ORDRE=5,
-                    EXCIT=_F(CHARGE=CH_P,),
+                    EXCIT=_F(CHARGE=CH_P,
+                             FONC_MULT=FONC,),
                     SYME_CHAR='SYME'
                   )
 

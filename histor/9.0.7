@@ -1,0 +1,1025 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES X.           DATE 29/01/2007 - 10:56:12
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009115 DU 2005-10-18 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   Element HEXAS8 sous-integre stabilise
+FONCTIONNALITE
+   L'élément hexahèdrique à 8 noeuds sous-intégré à 1 point 
+   d'intégration introduit des modes parasites associés à 
+   une énergie nulle (modes de sablier) et peut conduire à 
+   une singularité de la matrice de raideur globale pour 
+   certaines conditions aux limites.
+   Cette déficience du rang de la matrice de raideur, due à 
+   la sous-intégration, doit donc être comblée en rajoutant 
+   à la rigidité élémentaire une matrice dite de stabilisa-
+   tion. C'est l'objet de la méthode ASM (Assumed Strain 
+   Method) développée ici.
+   La principale caractéristique de cette méthode est que 
+   l'opérateur gradient discrétisé B ne dérive pas 
+   nécessairement du champ de déplacement et des relations 
+   classiques reliant la déformation au déplacement. En 
+   effet, cette méthode ASM consiste à projeter l'opérateur 
+   gradient discrétisé sur un sous-espace approprié afin 
+   d'éviter les différents types de blocage.
+   Cet élément donne des résultats corrects sur des problè-
+   mes où l'HEXA8 standard bloque (flexion, cisaillement).
+   Voir le cas-test SSNV196. De plus il donne des gains 
+   significatifs en temps calcul.
+   Il présente cependant un inconvénient en statique(le 
+   même que l'élément 2D analogue QUAD4 sous-intégré 
+   stabilisé) :
+   lorsque les éléments ne sont pas parallélipipédiques, 
+   les résultats sont affectés, voire faux si les éléments
+   sont dégénérés. La solution préconisée est alors d'avoir 
+   recours sur ces mailles à l'HEXA8 standard (à 8 points 
+   de Gauss).
+   En dynamique explicite par contre, cet inconvénient ne 
+   subsiste pas. Mais la restitution actuelle ne concerne 
+   que la statique.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.04.196 R3.06.11 U3.14.01
+VALIDATION
+   SSNV196
+NB_JOURS_TRAV  : 60.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN P.              DATE 29/01/2007 - 13:19:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010405 DU 2006-12-21 09:37:56
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.3, le test ssnp122a s'arrete en ERREUR (BLR)
+FONCTIONNALITE
+   Effectivement, le travail n'était pas complet suite 
+   à mes modifications
+   antérieures et certains éléments étaient restés de côté
+   leur catalogue étant moins complet.
+   Quelques modifications génériques dans le te0545 et dans
+   le catalogue des éléments gener_mv2d_2. 
+   Les modifications sont aussi reportées en 3D dans le te0546
+   et dans le catalogue des éléments gener_nv3d_3 (mais clairement
+   il n'y a pas de test équivalent au ssnp122a en 3D).
+   Dans gener_mv2d_2 (gener_mv3d_3) le catalogue
+   ne connaissait pas la possibilité d'utiliser des matrices
+   non symétriques (et accessoirement de les symétriser via
+   le te0222 si l'on en a envie).
+   Je rajoute donc dans ce catalogue:
+       MMATUNS = MDNS_R DDL_MECA DDL_MECA
+   et
+       SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM 
+                                 OUT__  MMATUUR  PSYM
+   qui permet d'utiliser SOLVEUR_F(SYME='OUI')
+   
+   Comme j'ai activé l'utilisation des matrices non symétriques
+   pour les grands déplacements on peut supprimer le bloc dans les
+   te0545 et te0546: 
+           SYMETRISATION DE MATNS DANS MATUU
+             IF (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL') THEN
+               NDDL = 2*NNO
+               KK = 0
+               DO 40 NI = 1,NDDL
+                 DO 30 MJ = 1,NI
+                   ZR(IMATUU+KK) = (MATNS((NI-1)*NDDL+MJ)+
+        &                          MATNS((MJ-1)*NDDL+NI))/2.D0
+                   KK = KK + 1
+      30         CONTINUE
+      40       CONTINUE
+             END IF
+   pour le comportement SIMO_MIEHE
+   et remplacer le bloc 
+             CALL NMGP2D ou NMGP3D(NNO,NPG1,IPOIDS,IVF,IDFDE,
+        &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+        &                LGPG,ZR(ICARCR),
+        &                ZR(IINSTM),ZR(IINSTP),
+        &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+        &                ZR(IDEPLM),ZR(IDEPLP),
+        &                ANGMAS,
+        &                ZR(ICONTM),ZR(IVARIM),
+        &                VECT1,VECT2,ZR(ICONTP),ZR(IVARIP),
+        &                MATNS,ZR(IVECTU),CODRET)
+   par
+             CALL NMGP2D ou NMGP3D(NNO,NPG1,IPOIDS,IVF,IDFDE,
+        &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+        &                LGPG,ZR(ICARCR),
+        &                ZR(IINSTM),ZR(IINSTP),
+        &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+        &                ZR(IDEPLM),ZR(IDEPLP),
+        &                ANGMAS,
+        &                ZR(ICONTM),ZR(IVARIM),
+        &                VECT1,VECT2,ZR(ICONTP),ZR(IVARIP),
+        &                ZR(IMATUU),ZR(IVECTU),CODRET)
+   En faisant ces modifications, tout est désormais OK.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp122a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 29/01/2007 - 13:08:23
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010227 DU 2006-11-08 13:57:34
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   portage BULL et test_resu SOMM_ABS
+FONCTIONNALITE
+   Lors du portage sur machine BULL en version 8.3.21 les tests suivants sont devenus NOOK:
+   ssla200a
+   ssla200b
+   sslp201a
+   sslp201b
+   
+   Dans l'urgence, on a alors augmenter les tolérances. 
+   
+   Le calme revenu, on regarde de plus près :
+   -----------------------------------------------------
+   1) on retire tous les mots clés VERSION de ces 4 tests
+   2) on met comme référence les valeurs obtenues actuellement sur bull
+       => sur cette machine, toutes les erreurs relatives sont < 1.e-12 % (ce qui est normal !)
+   
+   3) on fait passer ces tests sur clpaster  :
+                                                                                            
+                                               
+       ssla200a :
+       ----------
+       => toutes les erreurs relatives sont < 1.e-11 %  SAUF :
+          les champs de déplacement de MSLINP (résultat de PROJ_CHAMP) (erreur ~ 0.008 %)
+          En regardant de plus près, on constate que les champs de déplacement sont
+   franchement différents sur 2 noeuds (N140 et N163).
+          J'ai regardé de plus près le noeud N140 : Il appartient à 2 mailles :
+          C'est un noeud sommet d'un QUAD4 et c'est un noeud milieu d'un TRIA6 (bonjour la
+   qualité de ce maillage pourri !)
+                                                                                            
+                                               
+          La maille la plus proche de N140 peut etre arbitrairement le QUAD ou le TRIA6 (dist=0)
+          Si on tombe sur le QUAD4, la valeur affectée à N140 sera exactement la valeur du
+   noeud N140
+          Mais si par malheur, on tombe sur le TRIA6 (à bords courbes), la valeur affectée au
+   noeud milieu sera une combinaison des valeurs portées par les noeuds du TRIA6, ce qui
+   explique l'écart observé sur les 2 plateformes.
+                                                                                            
+                                               
+       Comme PROJ_CHAMP / METHODE='ELEM' est testé actuellement dans 38 tests différents,
+   j'estime que l'on peut supprimer le PROJ_CHAMP de ce test car le maillage est vraiment
+   trop tordu.
+                                                                                            
+                                               
+       ssla200b :
+       ----------
+       => le maillage est le meme que ssla200a (aussi pourri)
+          On adopte donc la meme stratégie : on supprime le PROJ_CHAMP
+                                                                                            
+                                               
+       sslp201a :
+       ----------
+       => l'erreur la plus grande est de 2.44e-8 %
+          Elle est tout à fait acceptable et on ne modifie pas ce test
+                                                                                            
+                                               
+       sslp201b :
+       ----------
+       => l'erreur la plus grande est de 5.7e-8 %
+          Elle est tout à fait acceptable et on ne modifie pas ce test
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests incriminxc3xa9s
+NB_JOURS_TRAV  : 0.6
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010249 DU 2006-11-10 16:52:40
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   AFFE_CHAR_CINE  /= 0 + CONTACT => rxc3xa9sultats faux
+FONCTIONNALITE
+   AFFE_CHAR_CINE (/= 0) + Contact => résultats faux
+    -------------------------------------------------------
+                                                                                            
+                         
+    Dans l'étude fournie par Nicolas, le chargement utilise :
+      - du contact
+      - des déplacements imposés (/= 0) par AFFE_CHAR_CINE
+                                                                                            
+                         
+   On s'aperçoit alors que les résultats de STAT_NON_LINE ne sont les memes que ceux que l'on
+   obtient avec AFFE_CHAR_MECA/DDL_IMPO.
+                                                                                            
+                         
+   Nicolas a trouvé le bug :
+   Dans la routine cfaca1.f, on fait une résolution avec les charges cinématiques non nulles,
+   alors que cette résolution doit calculer une CORRECTION du déplacement (contact) qui doit
+   etre nulle sur les ddls imposés.
+                                                                                            
+                         
+   La correction consiste donc simplement à ignorer les charges cinématiques dans la routine
+   cfaca1.f
+                                                                                            
+                         
+                                                                                            
+                         
+   Résultats faux si :
+   -------------------
+     + STAT_NON_LINE
+     + CONTACT
+     + AFFE_CHAR_CINE / MECA_IMPO  non nul
+                                                                                            
+                         
+                                                                                            
+                         
+   Validation :
+   ------------
+   Suite à cette correction, le test va jusqu'au bout et ses résultats sont les memes que
+   ceux obtenus avec AFFE_CHAR_MECA.
+                                                                                            
+                         
+                                                                                            
+                         
+   Correction à reporter en NEW8 :
+   -------------------------------
+   routine cfaca1.f :
+   (Attention à ajouter le WKVECT après le calcul de NEQ)
+                                                                                            
+                         
+   134d131
+   <       CALL JEVEUO(CINE(1:19)//'.VALE'    ,'L',JRCINE)
+   139a137,140
+   > C --- CHARGE CINEMATIQUE NULLE
+   > C
+   >       CALL WKVECT('&&CFACA1.CHCINE0','V V R',NEQ,JRCINE)
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 7.1.3
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.1.3
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude fournie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010254 DU 2006-11-14 08:26:06
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   amelioration message d'erreur
+FONCTIONNALITE
+   Amélioration du message MODELISA3_30 :
+    --------------------------------------
+                                                                                            
+                           
+    Grace à Sylvie Michel-Ponnelle, le message d'erreur MODELISA3_30 s'améliore :
+                                                                                            
+                           
+   Erreur d'utilisation :
+    La norme du vecteur normal (moyenne des normales des éléments concourants) est presque nulle.
+    Les facettes concourantes au noeud  %(k1)s ne définissent pas une normale fiable.
+    Il y a un problème dans la définition des mailles de bord .
+                                                                                            
+                           
+   Suggestion :
+    Avez-vous pensé à réorienter les mailles de bord avec l'opérateur MODI_MAILLAGE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010299 DU 2006-11-23 13:12:45
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NUME_DDL(RENUM='RCMK', METHODE='LDLT', : erreur fatale
+FONCTIONNALITE
+   L'étude fournie se plante dans NUME_DDL/RENUM='RCMK'
+   
+    La routine rercmk.f n'avait pas prévu le cas de noeuds isolés portant des éléments
+   discrets nodaux.
+    En effet ces éléments ne permettent pas de propager la recherche des noeuds voisins.
+                                                                                            
+                              
+    Validation :
+    ------------
+    On enrichit le test sslp100a.comm pour tester le cas des éléments discrets nodaux isolés.
+                                                                                            
+                              
+                                                                                            
+                              
+    Correction à faire en 8 et 9 :
+    -----------------------------
+    2 lignes à changer dans rercmk.f :
+   265c265,266
+   <          IF((ZI(IANBCO-1+K).EQ.0).OR.(ZI(IANEW1-1+K).NE.0)) GO TO 51
+   ---
+   >          IF (ZI(IAEXI1+K).EQ.0) GO TO 51
+   >          IF (ZI(IANEW1-1+K).NE.0) GO TO 51
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslp100a
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010390 DU 2006-12-15 15:14:45
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Segmentation Fault dans UTMASU.F
+FONCTIONNALITE
+   Le problème venait d'une erreur de programmation dans la routine utmavo.f :
+    La liste des mailles voisines est une collection contigue dont certains éléments sont de
+   longueur nulle.
+    Lors de la déclaration de la longueur de chaque élément (JEECRA/LONMAX), on se protégeait
+   de la longueur nulle en remplaçant 0 par 1.
+    Mais dans la déclaration du LONT de la collection, on ne faisait pas la meme correction.
+    Dans la routine utmasu.f, on exploitait alors la collection au delà de sa longueur réelle.
+                                                                                            
+                           
+    Je me suis persuadé que cette erreur ne devait pas entrainer de résultats faux mais
+   plutot des "segmentation fault".
+                                                                                            
+                           
+    Correction à faire en 8 et 9
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie sur clpaster
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010424 DU 2007-01-08 14:33:30
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   LIAISON_MAIL : pb xc3xa9limination noeuds communs
+FONCTIONNALITE
+   L'évolution 10099 (LIAISON_MAIL plus sympa) n'a pas été correctement réalisée.
+   
+   Il y a 2 problèmes différents dans la routine calirc.f :
+                                                                                            
+                           
+       * 1 bug :
+       ---------
+         Quand on retire un noeud de la liste des noeuds à éliminer
+          message d'alarme CALCULEL5_49:
+            La relation linéaire destinée à éliminer le noeud esclave N8729 est une
+   tautologie car la maille maitre en vis à vis de ce noeud possède ce meme noeud dans sa
+   connectivité.
+            On ne l'écrit donc pas.
+                                                                                            
+                           
+         On "saute" le noeud mais on oublie d'incrémenter le décalage dans la structure de
+   donnée CORRES.
+         Les relations écrites par la suite sont alors toutes fausses.
+    
+       * 1 petit defaut :
+       ------------------
+         Un noeud est retiré de la liste si :
+           - on le relie à une maille dont la connectivité contient ce noeud
+           - si le coefficient de ce noeud dans la relation vaut presque 1. (à 1.d-6 près)
+                                                                                            
+                           
+         La deuxième condition est là pour nous protéger en cas d'un LIAISON_MAIL avec
+   transformation géométrique.
+                                                                                            
+                           
+         Malheureusement, LIAISON_MAIL utilise l'algorithme (imprécis) de PROJ_CHAMP pour
+   apparier les noeuds à liaisonner. Cette imprécision peut etre sensible si les bords des
+   éléments sont courbes ou si les hexaèdres (par exemple) ne sont pas des pavés droits.
+         Dans l'étude fournie par Patrick, après correction du bug (voir plus haut), je me
+   suis apperçu que 2 noeuds qui auraient du etre retirés de la liste ne l'avaient pas été.
+   En regardant de plus près, je me suis rendu compte que le coefficient pour ces 2 noeuds
+   était de l'ordre de 0.995 et donc pas assez proche de 1.
+         J'ai donc décidé d'assouplir la tolérance 1.d-6 -> 1.d-2 car je pense que 1% est une
+   mesure optimiste de la précision des relations linéaires écrites par LIAISON_MAIL.
+                                                                                            
+                           
+                                                                                            
+                           
+   Résultats faux :
+   ----------------
+   Pour les versions [8.3.17 -> 9.0.5]
+   LIAISON_MAIL écrivait des relations linéaires fausses dès que certains noeuds étaient
+   retirés de la liste des noeuds esclaves (message d'alarme CALCULEL5_49).
+                                                                                            
+                           
+                                                                                            
+                           
+   Correction à reporter en NEW8
+   ------------------------------
+   routine calirc.f :
+                                                                                            
+                           
+   317c317
+   <                   IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-6) THEN
+   ---
+   >                   IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-2) THEN
+   319c319
+   <                     GOTO 120
+   ---
+   >                     GOTO 119
+   354a355
+   >   119         CONTINUE
+   482c483
+   <                 IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-6) THEN
+   ---
+   >                 IF(ABS(ZR(IDCOEF+INO1)-1.D0).LT.1.D-2) THEN
+   484c485
+   <                   GOTO 270
+   ---
+   >                   GOTO 269
+   499a501,502
+   >
+   >   269       CONTINUE
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 8.3.17
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.0
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude fournie
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010425 DU 2007-01-08 16:05:24
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   un bug dans creprn.f
+FONCTIONNALITE
+   Le bug se trouve vers la ligne 234 de la routine :
+   Dans le cas des noeuds de Lagrange, on change le signe de NUNOEL mais comme ce changement
+   de signe est fait dans la boucle sur les entiers codés, les noeuds tardifs se transmutent
+   en noeuds physiques pour les entiers codés 2,3,...
+                                                                                            
+                           
+   Conséquences du bug :
+   1) les ddls portés par les noeuds les Lagrange sont affectés par erreur sur les noeuds
+   physiques de meme numéros (pour les ddls codés sur les entiers codés 2,3,...)
+   2) Heureusement pour nous, les noeuds de Lagrange ne portent que le ddl LAGR et ce ddl est
+   en position 20 dans le catalogue des grandeurs. Il est donc stocké sur le 1er entier codé.
+                                                                                            
+                           
+   Donc le bug n'a pas d'autre conséquence que de faire :
+      ZI(IAD)=IOR(ZI(IAD),0) (c.a.d. ZI(IAD)=ZI(IAD)) pour des adresses IAD invalides.
+                                                                                            
+                           
+   Tant que IAD est dans l'espace JEVEUX alloué par memdis, cela est licite, mais avec le
+   futur développement de Jean-Pierre (jeveux "dynamique" avec multiples "malloc"), le
+   système signale une "segmentation fault" : on n'a pas le droit d'écrire dans ZI(IAD).
+                                                                                            
+                           
+   A corriger également en NEW8
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test shls200a
+NB_JOURS_TRAV  : 0.4
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010426 DU 2007-01-08 16:33:35
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   la routine mrmult.f est fausse pour les matrices rxc3xa9elles non symxc3xa9triques
+FONCTIONNALITE
+   Suite à une discussion avec Clément Chavant, je me suis persuadé qu'il fallait blinder la
+   routine mrmult.f car sa programmation suppose implicitement que les matrices réelles
+   étaient symétriques.
+   
+   Je propose simplement d'arreter les utilisateurs qui tenteraient de s'en servir avec des
+   matrices non symétriques. 
+   
+   Je ne pense pas que cette fonctionnalité (potentiellement dangereuse) soit utilisable dans
+   la version NEW9 actuelle d'Aster et en conséquence, je ne coche pas la rubrique "resultats
+   faux".
+   
+   Mais si le passage des tests devaient me donner tort ....
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010458 DU 2007-01-18 12:46:14
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   COMB_MATR_ASSE : on peut amxc3xa9liorer le catalogue
+FONCTIONNALITE
+   Sous le mot clé facteur CALC_AMOR_GENE, les 2 mots clés RIGI_GENE et MASS_GENE sont
+   obligatoires.
+   
+   Il n'y a pas lieu de corrier la doc U. Elle en tient déjà compte.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009539 DU 2006-03-09 10:40:04
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   CREA_CHAMP TYPE_CHAM='ELNO_HYDR_R'
+FONCTIONNALITE
+   En accord avec Sylvie Michel-Ponnelle (voir réaction précédente), je classe la fiche sans
+   suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX J.M.             DATE 30/01/2007 - 09:26:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010275 DU 2006-11-17 13:01:22
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Opxc3xa9rateur chargement volumique issu d'un champ de contrainte
+FONCTIONNALITE
+   Cette évolution consiste à introduire dans AFFE_CHAR_MECA :   
+                    SIGM_INTERNE=F(SIGM=chsig), 
+   avec chsig un champ de contraintes (carte ou chamelem elga) construit par CREA_CHAMP ou
+   calculé par ailleurs.
+   
+   Ce champ de contraintes "internes", imposé, est effectivement utilisé comme second membre
+   dans les résolutions de MECA_STATIQUE et STAT_NON_LINE. 
+   
+   Pour tester ce développement, j'ai repris le test SSNV183A, qui est un test de fluage sur
+   un cube en 3D, en remplaçant la pression imposée par un tenseur de contraintes constant
+   (donc div(sigma)=0). Les résultats sont identiques à ceux d'origine.
+   
+   Quelques précisions :
+   - capy : ajout simple de SIGM_INTERNE dans affe_char_meca.capy
+   - fort : stockage du nom du champ de contraintes dans une carte de K8 (charme.f,
+   cbsint.f). 
+   - Ajout dans NMDOME des caractéristiques de ce chargement.
+   - Calcul de l'option FORC_NODA dans VECHME pour ce champ de contraintes.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   ssnv183
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 30/01/2007 - 09:26:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010248 DU 2006-11-10 16:38:52
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   AFFE_CHAR_CINE et REAC_NODA
+FONCTIONNALITE
+   AFFE_CHAR_CINE se plante brutalement dans CALC_NO
+   -------------------------------------------------
+                                                                                            
+                           
+   Il y a effectivement un bug dans CALC_NO (routine nmdome.f) dans le cas où la seule charge
+   est de type CHAR_CINE.
+   On cherche à créer 2 objets de longueur 0.
+                                                                                            
+                           
+   Correction :
+   ------------
+   On se protège en faisant :   
+   CALL WKVECT(LISCH2//'.FCHA','V V K24',MAX(NCHAR1,1),IFCHA1)
+                                                                                            
+                           
+   Validation :
+   ------------
+   L'etude fournie va jusqu'au bout et les résultats sont les memes qu'avec une charge
+   ordinaire (dualisée)
+                                                                                            
+                           
+                                                                                            
+                           
+   Correction à reporter en  NEW8 :
+   --------------------------------
+   nmdome.f
+    
+    
+   -------> fichier : nmdome.f -------------------------------
+   274c274,277
+   <               CALL WKVECT(LISCH2//'.LCHA','V V K24',  NCHAR1,JLCHA1)
+   ---
+   >               CALL WKVECT(LISCH2//'.LCHA','V V K24',MAX(NCHAR1,1),
+   >      &                    JLCHA1)
+   >               CALL WKVECT(LISCH2//'.FCHA','V V K24',MAX(NCHAR1,1),
+   >      &                    IFCHA1)
+   276d278
+   <               CALL WKVECT(LISCH2//'.FCHA','V V K24',  NCHAR1,IFCHA1)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   xc3xa9tude fournie
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 29/01/2007 - 17:04:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010220 DU 2006-11-06 12:19:52
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   CALC_G : traitement des charges
+FONCTIONNALITE
+   Objectifs:
+   --------- 
+   Enrichir l'operateur CALC_G afin de permettre:
+   1) la combinaison "chargement fonction" et "fonction multiplicatrice"
+   2) la prise en compte de plusieurs chargements de meme type (par exemple 2 pressions, ou 2
+   charges volumiques ...)
+   
+   Terminologie des types des chargements:
+   --------------------------------------
+   Le chargement a fournir a CALC_G est du type:
+   - scalaire: des que le chargement est issu de AFFE_CHAR_MECA
+   - fonction: si le chargement est issu de AFFE_CHAR_MECA_F et lorsque les composantes des
+   charges sont affectees par des fonctions (issus de DEFI_FONCTION ou DEFI_CONSTANTE).
+   - formule : si le chargement est issu de AFFE_CHAR_MECA_F et lorsque les composantes des
+   charges sont affectees par des formules (issus de FORMULE).
+   
+   Développement
+   -------------
+   1) conception d'une nouvelle routine gcharm.f dont le but est de combiner une fonction
+   multiplicatrice avec un chargement'scalaire' ou 'fonction'.
+   Le chargement 'formule' n'est pas autorise pour l'instant. Une fiche d'evolution a ete
+   emise sur la manipulation des formules (10450) qui permettra ulterieurement de lever cette
+   restriction.
+   
+   2) conception d'une nouvelle routine gcharf.f dont le but est de combiner les charges de
+   même type lorsque la combinaison a reellement un sens physique.
+   Les combinaisons possibles:
+   - combinaison de forces volumiques (type .CHME.F3D3D)
+   - combinaison de forces surfaciques/linéiques (types .CHME.F2D2D,.CHME.F2D3D ou
+   .CHME.F1D2D) et de pressions réparties (type .CHME.PRESS)
+   Les combinaisons qui ne sont pas prevues:
+   - combinaison de pesanteurs (type .CHME.PESAN)
+   - combinaison de deformations initiales (type .CHME.EPSIN)
+   - combinaison de rotations (type .CHME.ROTAT): il est conseille de transformer le deuxieme
+   chargement de rotation en forces internes pour realiser cette combinaison. 
+   
+   Attention: si l'une des charges a combiner est de type 'formule', le code emet un message
+   d'erreur.
+   
+   La routine gcharf fait appel a d'autres nouvelles routines:
+   - gverfo.f : determine si le chargement est de type 'formule'
+   - gchfus.f : effectue la fusion de 2 charges 'fonctions' appliquees sur la meme zone.
+   - gchs2f.f : transforme une charge 'scalaire' en charge 'fonction' (constante).
+   
+   
+   Resumer des types de combinaisons :
+   'scalaire' et 'scalaire' : operationnel
+   'scalaire' et 'fonction' : operationnel
+   'fonction' et 'fonction' : operationnel
+   'formule'  et 'xxxxx'    : non operationnel.
+   
+   Impact
+   ------
+   fortran: gcharf.f,gcharg.f,gcharm.f,gchfus.f,gchs2f.f,gverfo.f.
+   python: calculel5.py
+   
+   Validation
+   ----------
+   1) cas-test SDLV123A pour valider la combinaison "chargement fonction" et "fonction
+   multiplicatrice" : le chargement CH_P fourni a CALC_G a ete modifie pour que les charges,
+   qui le compose soient de type fonction. Ainsi, le chargement pris en compte par CALC_G
+   contient une fonction multiplicatrice et un chargement de type fonction. 
+   
+   2) cas-test SSLV311A pour valider la combinaison de chargements de meme type : 
+   Le chargement initial CH de forces volumiques a ete decompose en 2 chargements CH1 et CH2
+   tel que l'un contienne l'affectation des composantes FX et FY, l'autre contienne
+   l'affectation de la composante FZ. Ainsi, le chargement pris en compte par CALC_G contient
+   plusieurs charges de meme type (.CHME.F3D3D)
+   
+   3) tous les cas-tests utilisants la commande CALC_G
+   
+   Documentation
+   -------------
+   maj de la Doc U4 de CALC_G
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.03
+VALIDATION
+   sdlv123a, sslv311a
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 29/01/2007 - 17:04:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010049 DU 2006-09-18 11:33:16
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+   Temps DEFI_FISS_XFEM dans ssnv166c
+FONCTIONNALITE
+   Objectif
+   -------
+   Determiner la cause de l'augmentation de temps CPU lors du traitement de la
+   commande DEFI_FISS_XFEM dans le cas-test ssnv166c depuis la version 8.3.11.
+   Pourquoi cette commande consomme actuellement 268s alors qu'elle n'en consommait que 21s ?
+   
+   Méthodologie & Analyse
+   ----------------------
+   Nous avons passé le cas-test ssnv166c en STA7 (ancienne NEW7.7.10) et en NEW9
+   après avoir intrumenté certaines routines de DEFI_FISS_XFEM par des appels à UTTCPU.
+   
+   Nous avons comparé le temps CPU de la boucle 3 de la routine xinils
+   (STA7) à son équivalent (NEW9), la boucle 3 de la routine xls3d :
+   - temps CPU consommé dans la boucle 3 (STA7) : 7.8 s
+   - temps CPU consommé dans la boucle 3 (NEW9) : 209.2 s
+   
+   Pourtant le contenu de ces boucles est quasiment identique à la différence :
+   - d'un appel à JENUNO (NEW9) pour initialiser le nombre de noeuds sommets de la maille en
+   cours.
+   - d'appels à la routine DDOT (NEW9) pour calculer le produit scalaire au lieu de PSCAL(STA7)
+   
+   Conséquence:
+   L'appel à JENUNO est responsable de l'augmentation du temps CPU.
+   En effet, cet appel survient dans les boucles imbriquées suivantes:
+   b11 = 'boucle sur les noeuds du maillage (boucle 11)'= 13630 itérations
+   b3  = 'boucle sur les segments du fond de fissure (boucle 3)'=39 itérations
+   b31 = 'boucle sur des mailles (boucle 31)= 440 itérations
+   Résultat : b11 x b3 x b31 = 13630 * 39 * 440 = 234 millions d'appels à JENUNO
+   
+   Confirmation sur la responsabilité de JENUNO:
+   a)Pour le cas-test ssnv166c, les mailles 2d du maillage sont linéaires, ainsi le nombre de
+   noeuds sommets correspond au nombre de noeuds de la maille en cours. Ainsi l'appel à
+   JENUNO est inutile dans ce cas.
+   On a donc supprimé cet appel et on a initialisé NNOS=NBNOMA.
+   Résultat : temps CPU consommé dans la boucle 3 (NEW9) : 8.0 s
+   b)via le profiling:
+   on a lancé l'étude avec l'exécutable d'Aster profilé pour générer le précieux fichier
+   gmon.out, qui a permis avec la commande gprof de produire le listing du profiling: on
+   retrouve bel et bien le fait que les appels à jenuno dans xinils sont coûteux étant donné
+   qu'ils représentent plus du tiers des instructions totales:
+   -----------------------------------------------
+                  30.73   39.97       1/1           xinils_ [7]
+   [8]     80.5   30.73   39.97       1         xls3d_ [8]
+                  21.86    9.78 233890800/234464068     jenuno_ [9]
+                   4.82    0.00 233890800/262460741     jexnum_ [15]
+                   1.45    0.00 22598540/22601441     normev_ [20]
+                   1.22    0.00 22066970/22097169     padist_ [22]
+                   0.84    0.00 44133940/44135430     provec_ [23]
+                   0.00    0.00       1/117254      jedema_ [49]
+                   0.00    0.00       1/517645      jeveuo_ [38]
+                   0.00    0.00       1/117256      jemarq_ [173]
+                   0.00    0.00   27260/112416      r8maem_ [427]
+   -----------------------------------------------
+   
+   
+   Correction
+   ----------
+   On a reporté l'appel à JENUNO de XLS3D à l'extérieur des boucles imbriquées.
+   On a donc construit un tableau en amont dimensionné au nombre de mailles du fond de
+   fissure dont les valeurs correspondent au nombre de noeuds sommets.
+   
+   Suite à cette correction, les 269.24 s de DEFI_FISS_XFEM ont été réduit en 60.67 s.
+   
+   
+   Impact
+   ------
+   fortran: xls3d
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv166c
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR durand       DURAND C.              DATE 29/01/2007 - 17:04:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010290 DU 2006-11-21 18:37:59
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   MACR_LIGNE_COUPE en repxc3xa8re local
+FONCTIONNALITE
+   Objectif
+   --------
+   L'objet de la demande repose sur 4 points:
+   1. extraire en local n'importe quel type de contraintes (notamment
+   SIEF_ELNO_ELGA)puisqu'on peut le faire en global.
+   2. emettre une alarme lorsque le champ n'est pas pris en compte par le changement de
+   repère et poursuivre en repère global.
+   3. sans objet
+   4. exprimer les résultats dans le repère local propre à chaque ligne de coupe lorsque
+   plusieurs lignes de coupes sont définies. 
+   
+   Développement:
+   -------------
+   L'enrichissement du fichier python macr_lign_coupe_ops.py a été nécessaire pour introduire
+   les actions ci-dessus.
+   1. la liste des noms de champ disponible a été enrichie par SIEF_ELNO_ELGA
+   2. une alarme est dorénavant émise lorsque le champ n'est pas pris en compte par le
+   changement de repère et le calcul est effectué en repère global.
+   4. le fichier macr_lign_coupe_ops.py a été restructuré de sorte à ce que les commandes
+   POST_RELEVE_T et CREA_TABLE soient incluses dans la boucle contenant la commande
+   MODI_REPERE. Ainsi, les résultats locaux sont exprimés
+   dans le repère local associé à la ligne de coupe définie par l'utilisateur.
+   
+   Validation:
+   ----------
+   enrichissement du cas-test sslv07a:
+   - ajout de 2 commandes MACR_LIGN_COUPE pour tester le cham_elem SIEF_ELNO_ELGA un repère
+   local, l'une avec la présence du mot-clé VECT_Y, l'autre pas (pour la comparaison). 
+   - ajout d'un autre commande MACR_LIGN_COUPE telle que le mot-clé facteur LIGN_COUPE
+   comporte 2 occurences.
+   Pour chaque occurence, une ligne de coupe commune et un repère local différent ont été
+   définis.
+   Des TEST_TABLE ont été introduits pour assurer la non régression.
+   - passage d'une liste restreinte aux cas-tests contenant la macro
+   MACR_LIGN_COUPE (7 cas-tests).
+   
+   Impact:
+   ------
+   fichier python: macr_lign_coupe_ops.py 
+   cas-test: sslv07a
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 8.1.6
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.1.6
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   SSLV07a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS M.               DATE 30/01/2007 - 14:16:11
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010139 DU 2006-10-16 16:02:39
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : CS
+TITRE
+   MECA_NON_LINE - Catalogue forces de reference
+FONCTIONNALITE
+   Le calcul de l'option REFE_FORC_NODA servant à évaluer la force de  
+   référence pour la  
+   convergence avec le critère de contrainte généralisé est effectué via  
+   la routine NMREFE.  
+   Or la liste des arguments passée à calcul est surdimensionnée et  
+   plusieurs champs sont  
+   vides ou ne sont appelés par aucun te.  
+   On fait donc le ménage dans les arguments et dans le catalogue de  
+   l'option.  
+     
+   Après ménage, il reste 9 champs (!!!) :  
+     
+   PGEOMER PREFCO commun a tous les types d'éléments  
+   PCOMPOR PCACOQU PDEPLMR pour les éléments COQUE_3D  
+   PMATERC PNBSP_I PCAORIE PCAGEPO pour les éléments tuyaux   
+   les elements poutres ne supportant pas cette option.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage de la liste restreinte
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnv196a                    desroches X.DESROCHES        127    127      0
+ CASTEST AJOUT ssnv196b                    desroches X.DESROCHES        124    124      0
+ CASTEST AJOUT ssnv196c                    desroches X.DESROCHES        124    124      0
+ CASTEST MODIF sdlv123a                      rezette C.REZETTE          244     20     11
+ CASTEST MODIF ssla200a                       pellet J.PELLET          1310    253    275
+ CASTEST MODIF ssla200b                       pellet J.PELLET          1326    258    281
+ CASTEST MODIF sslp100a                       pellet J.PELLET           159     10      5
+ CASTEST MODIF sslp201a                       pellet J.PELLET          1197    110    110
+ CASTEST MODIF sslp201b                       pellet J.PELLET          1198    220    220
+ CASTEST MODIF sslv07a                       rezette C.REZETTE          787    115      3
+ CASTEST MODIF sslv200b                    desroches X.DESROCHES       1277      8      3
+ CASTEST MODIF sslv311a                      rezette C.REZETTE          424     11      6
+ CASTEST MODIF ssnp122a                       massin P.MASSIN           237      2      1
+ CASTEST MODIF ssnv183a                        proix J-M.PROIX          559    154      1
+CATALOGU AJOUT typelem/meca_hexs8          desroches X.DESROCHES        579    579      0
+CATALOGU MODIF compelem/phenomene_modelisation__  desroches X.DESROCHES        985      3      1
+CATALOGU MODIF options/refe_forc_noda        salmona L.SALMONA           47      1     26
+CATALOGU MODIF typelem/gener_mecq32          salmona L.SALMONA          271      2      2
+CATALOGU MODIF typelem/gener_mv2d_2           massin P.MASSIN           332      7      4
+CATALOGU MODIF typelem/gener_mv3d_3           massin P.MASSIN           414      7      4
+CATALOPY MODIF commande/affe_char_meca         proix J-M.PROIX         1032      7      1
+CATALOPY MODIF commande/comb_matr_asse        pellet J.PELLET            62      3      3
+ FORTRAN AJOUT algorith/caatdb             desroches X.DESROCHES         67     67      0
+ FORTRAN AJOUT algorith/cast3d             desroches X.DESROCHES        203    203      0
+ FORTRAN AJOUT algorith/nmas3d             desroches X.DESROCHES        459    459      0
+ FORTRAN AJOUT algorith/nmasf3             desroches X.DESROCHES        259    259      0
+ FORTRAN AJOUT calculel/gcharf               rezette C.REZETTE          319    319      0
+ FORTRAN AJOUT calculel/gcharm               rezette C.REZETTE          117    117      0
+ FORTRAN AJOUT calculel/gchfus               rezette C.REZETTE           89     89      0
+ FORTRAN AJOUT calculel/gchs2f               rezette C.REZETTE          131    131      0
+ FORTRAN AJOUT calculel/gverfo               rezette C.REZETTE           78     78      0
+ FORTRAN AJOUT elements/calcdq             desroches X.DESROCHES        122    122      0
+ FORTRAN AJOUT elements/invjac             desroches X.DESROCHES        103    103      0
+ FORTRAN AJOUT elements/te0392             desroches X.DESROCHES        291    291      0
+ FORTRAN AJOUT elements/te0395             desroches X.DESROCHES        124    124      0
+ FORTRAN AJOUT elements/te0407             desroches X.DESROCHES        166    166      0
+ FORTRAN AJOUT modelisa/cbsint                 proix J-M.PROIX          101    101      0
+ FORTRAN MODIF algeline/mrmmvr                pellet J.PELLET            99      9      2
+ FORTRAN MODIF algeline/mrmult                pellet J.PELLET           108      4      4
+ FORTRAN MODIF algeline/resoud                pellet J.PELLET           246     26      9
+ FORTRAN MODIF algorith/cfaca1                pellet J.PELLET           339      9      6
+ FORTRAN MODIF algorith/cfacat                pellet J.PELLET            77      3      4
+ FORTRAN MODIF algorith/nmdome                 proix J-M.PROIX          807     23      7
+ FORTRAN MODIF algorith/nmrefe               salmona L.SALMONA          139     18     40
+ FORTRAN MODIF algorith/vechme                 proix J-M.PROIX          462     18      9
+ FORTRAN MODIF algorith/xls3d                rezette C.REZETTE          313     21     13
+ FORTRAN MODIF assembla/rercmk                pellet J.PELLET           399      3      2
+ FORTRAN MODIF calculel/creprn                pellet J.PELLET           309      3      4
+ FORTRAN MODIF calculel/gcharg               rezette C.REZETTE          467    253    199
+ FORTRAN MODIF elements/fornpd               salmona L.SALMONA          244      3     32
+ FORTRAN MODIF elements/te0545                massin P.MASSIN           238      3     16
+ FORTRAN MODIF elements/te0546                massin P.MASSIN           224      4     18
+ FORTRAN MODIF modelisa/calirc                pellet J.PELLET           536      8      5
+ FORTRAN MODIF modelisa/charme                 proix J-M.PROIX          384      5      1
+ FORTRAN MODIF modelisa/op0018             desroches X.DESROCHES        649      4      1
+ FORTRAN MODIF prepost/utmavo                 pellet J.PELLET           214      2      2
+  PYTHON MODIF Macro/macr_lign_coupe_ops     rezette C.REZETTE          418     47      7
+  PYTHON MODIF Messages/algeline4             pellet J.PELLET            38      9      1
+  PYTHON MODIF Messages/calculel5            rezette C.REZETTE          281     30      1
+  PYTHON MODIF Messages/elements4          desroches X.DESROCHES        324     18      1
+  PYTHON MODIF Messages/modelisa3             pellet J.PELLET           371      9      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   19        3583      3583             +3583
+ MODIF :   42       19547      1723    1344      +379
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   61       23130      5306    1344     +3962 
