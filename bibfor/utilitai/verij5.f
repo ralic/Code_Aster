@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD,M80
       INTEGER NVU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,30 +76,8 @@ C     ------------------------------
       ELSEIF (TYP2SD.EQ.'LIGREL') THEN
 C     ------------------------------
         CH19 = NOMSD
-
-        CALL JELIRA(CH19//'.NOMA','DOCU',IBID,KBID)
-        CALL ASSERT(KBID.EQ.' ' .OR. KBID.EQ.'THER' .OR. KBID.EQ.'MECA')
         CALL JEVEUO(CH19//'.NOMA','L',JNOMA)
         CALL VERIJA('O','MAILLAGE',ZK8(JNOMA-1+1) (1:8),M80,NVU,NOBJ)
-
-        CALL JEEXIN(CH19//'.LIEL',I1)
-        IF (I1.GT.0) THEN
-        ENDIF
-
-
-
-      ELSEIF (TYP2SD.EQ.'MODELE') THEN
-C     ------------------------------
-        CH8 = NOMSD
-        CALL VERIJA('O','LIGREL',CH8//'.MODELE',M80,NVU,NOBJ)
-        CALL JEEXIN(CH8//'.MAILLE',I1)
-        CALL JEEXIN(CH8//'.SSSA',I2)
-        CALL ASSERT(I1+I2.GT.0)
-        IF (I1.GT.0) THEN
-
-        ENDIF
-        IF (I2.GT.0) THEN
-        ENDIF
 
 
       ELSEIF (TYP2SD.EQ.'MODELE_GENE') THEN
@@ -140,7 +118,6 @@ C     ------------------------------
 C     ------------------------------
         CH19 = NOMSD
         CALL JEVEUO(CH19//'.DESC','L',JDESC)
-
         CALL JEVEUO(CH19//'.REFE','L',JREFE)
         CALL VERIJA('O','MAILLAGE',ZK24(JREFE-1+1),M80,NVU,NOBJ)
 C       -- SI CHAM_NO "CONSTANT" : PAS DE PROF_CHNO:
@@ -275,17 +252,6 @@ C       EXCEP2) UNE MATRICE FETI N'A PAS DE .VALM :
         IF (ZK24(JREFA-1+9).EQ.'MR') CALL ASSERT(I1.EQ.2)
 
 
-        IF (ZK24(JREFA-1+8).EQ.' ' .OR. ZK24(JREFA-1+8).EQ.'ASSE') THEN
-        ENDIF
-
-        IF (ZK24(JREFA-1+3).EQ.' ') THEN
-
-        ELSEIF (ZK24(JREFA-1+3).EQ.'ELIML') THEN
-
-        ELSEIF (ZK24(JREFA-1+3).EQ.'ELIMF') THEN
-        ENDIF
-
-
       ELSEIF (TYP2SD.EQ.'MATR_ASSE_GENE') THEN
 C     -----------------------------------
         CH19 = NOMSD
@@ -335,9 +301,6 @@ C       CALL VERIJA('O','????',ZK24(JREFA-1+1),M80,NVU,NOBJ)
         IF (ZK24(JREFA-1+9).EQ.'MS') CALL ASSERT(I1.EQ.1)
         IF (ZK24(JREFA-1+9).EQ.'MR') CALL ASSERT(I1.EQ.2)
 
-        IF (ZK24(JREFA-1+8).EQ.' ' .OR. ZK24(JREFA-1+8).EQ.'ASSE') THEN
-        ENDIF
-
 
       ELSEIF (TYP2SD.EQ.'SOLVEUR') THEN
 C     -----------------------------------
@@ -347,19 +310,6 @@ C     -----------------------------------
         CALL ASSERT(METRES.EQ.'FETI' .OR. METRES.EQ.'GCPC' .OR.
      &              METRES.EQ.'LDLT' .OR. METRES.EQ.'MULT_FRO' .OR.
      &              METRES.EQ.'MUMPS')
-
-
-
-      ELSEIF (TYP2SD.EQ.'NUME_EQUA') THEN
-C     -----------------------------------
-        CH19 = NOMSD
-        CALL VERIJA('O','PROF_CHNO',CH19,M80,NVU,NOBJ)
-
-
-      ELSEIF (TYP2SD.EQ.'NUME_EQGE') THEN
-C     -----------------------------------
-        CH19 = NOMSD
-        CALL VERIJA('O','PROF_VGEN',CH19,M80,NVU,NOBJ)
 
 
       ELSEIF (TYP2SD.EQ.'NUME_DDL') THEN
@@ -426,7 +376,34 @@ C     -----------------------------------
         CALL ASSERT(ZI(JSMDE-1+5).EQ.0)
         CALL ASSERT(ZI(JSMDE-1+6).EQ.0)
 
+      ELSEIF (TYP2SD.EQ.'TRAN_GENE') THEN
+C     -----------------------------------
 
+        CALL VSDTRG(NOMSD,M80,NVU,NOBJ)
+
+
+      ELSEIF (TYP2SD.EQ.'INTERF_DYNA_CLAS') THEN
+C     -----------------------------------
+
+        CALL VSDIDC(NOMSD,M80,NVU,NOBJ)
+
+
+      ELSEIF (TYP2SD.EQ.'SPECTRE') THEN
+C     -----------------------------------
+
+        CALL VSDSPE(NOMSD,M80,NVU,NOBJ)
+
+
+      ELSEIF (TYP2SD.EQ.'TYPE_FLUI_STRU') THEN
+C     -----------------------------------
+
+        CALL VSDTFS(NOMSD,M80,NVU,NOBJ)
+
+
+      ELSEIF (TYP2SD.EQ.'MELASFLU') THEN
+C     -----------------------------------
+
+        CALL VSDCFS(NOMSD,M80,NVU,NOBJ)
 
       ENDIF
 

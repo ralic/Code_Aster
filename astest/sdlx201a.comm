@@ -1,4 +1,4 @@
-# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F( NOM = 'SDLX201A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F( NOM = 'SDLX201A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
 # ================================================
 #
@@ -133,7 +133,7 @@ MOD1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 7),
                          VERI_MODE=_F(  STOP_ERREUR = 'NON',
-                                        SEUIL = 1.5E-2, 
+                                        SEUIL = 1.5E-2,
                                         PREC_SHIFT = 0.008)
                           )
 
@@ -238,7 +238,8 @@ MODN8=NORM_MODE(   MODE=MOD1,
 BASMOD=DEFI_BASE_MODALE(RITZ=_F(MODE_MECA=MOD1,),
                         NUME_REF=NU,)
 
-MODB1=NORM_MODE(   MODE=BASMOD,   NORME='MASS_GENE', MASSE=MASAS, RAIDE=RIGAS, )                  
+DEBUG(SDVERI='NON') # fiche 9158
+MODB1=NORM_MODE(   MODE=BASMOD,   NORME='MASS_GENE', MASSE=MASAS, RAIDE=RIGAS, )
 
 MODB2=NORM_MODE(   MODE=BASMOD,   NORME='RIGI_GENE', MASSE=MASAS, RAIDE=RIGAS, )
 
@@ -257,6 +258,7 @@ MODB7=NORM_MODE(   MODE=BASMOD, MASSE=MASAS, RAIDE=RIGAS,
 
 MODB8=NORM_MODE(   MODE=BASMOD, MASSE=MASAS, RAIDE=RIGAS,
              AVEC_CMP=('DX', 'DZ', 'DRZ', ))
+DEBUG(SDVERI='OUI') # fiche 9158
 
 
 #-----------------------------------------------------------------------

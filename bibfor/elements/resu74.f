@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,6 +192,14 @@ C
          CALL DCOPY(NBCHOC*NBINST,ZR(JVINT1),1,ZR(JVINT),1)
          CALL DCOPY(NBCHOC*(NBSAU2-1),ZR(JVINT2+NBCHOC),1,
      +                              ZR(JVINT+NBCHOC*NBINST),1)
+
+         CALL JEVEUO(NOMRES//'           .ICHO' ,'E',JICHO2)
+         CALL JEVEUO(TRAN//'           .ICHO' ,'E',JICHO1)
+         CALL WKVECT(RESU//'           .ICHO','G V I',NBCHOC*NBSAUV
+     +                                              ,JICHO)
+         CALL COPVIS(NBCHOC*NBINST,ZI(JICHO1),ZI(JICHO))
+         CALL COPVIS(NBCHOC*(NBSAU2-1),ZI(JICHO2+NBCHOC),
+     +                              ZI(JICHO+NBCHOC*NBINST))
       ENDIF
 C
 C     --- DUPLICATION ---
@@ -217,6 +225,8 @@ C
      +               'G',TRAN//'           .DLOC',.FALSE.)
        CALL JEDUPO(RESU//'           .VCHO',
      +               'G',TRAN//'           .VCHO',.FALSE.)
+       CALL JEDUPO(RESU//'           .ICHO',
+     +               'G',TRAN//'           .ICHO',.FALSE.)
 C      VARIABLES INTERNES (FLAMBAGE)
        CALL JEDUPO(RESU//'           .VINT',
      +               'G',TRAN//'           .VINT',.FALSE.)

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) LOBJAV,LOBJAP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,6 @@ C     DERNSD : TYPE DE LA SD DE PLUS BAS NIVEAU (PARCOURS DE L'ARBRE)
       CHARACTER*16 DERNSD,PRCATA
       COMMON /VERIJK/DERNSD,PRCATA
 
-      INTEGER          ISDVER
-      COMMON /DEBUI1/  ISDVER
       INTEGER NBOBJ,IOBJ
 
       CHARACTER*16 SDP, SDU,NOMCMD
@@ -59,11 +57,11 @@ C     DERNSD : TYPE DE LA SD DE PLUS BAS NIVEAU (PARCOURS DE L'ARBRE)
 C ----------------------------------------------------------------------
 C    POUR VERIFIER LA SD PRODUITE PAR LA COMMANDE COURANTE
 C ----------------------------------------------------------------------
-C     IF (ISDVER.NE.1) GO TO 9999
       NOMSD=' '
       SDU=' '
       NOMCMD=' '
       CALL GETRES(NOMSD,SDU,NOMCMD)
+
 C     AJACOT :
 C     PRCATA='OUI'/'NON' : pour imprimer les caracteristiques des objets
 C                          jeveux rencontres et permettre de produire

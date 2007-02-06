@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE PABHHHH N.TARDIEU
 #
 #
@@ -23,62 +23,20 @@ DEBUT(CODE=_F(NOM='FORMA01F',
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-#        TUYAUTERIE COMPORTANT UN COUDE
-#     MODELISATION PAR DES ELEMENTS COQUES DKT
-#     ----------------------------------------
-#
-#
-#
-#
-
 
 #        GEOMETRIE COMPORTANT UN COUDE
 #     MODELISATION PAR DES ELEMENTS COQUES DKT
-#            PRODUIT PAR GMSH
+#            PRODUIT PAR SALOME
 #     ----------------------------------------
-#
-#  GM30 <=> TUYAU
-#  GM28 <=> EFOND
-#  GM31 <=> A1
-#  GM27 <=> ENCAST
-#  GM29 <=> SYMETRIE
-#
 
 
-PRE_GMSH();
-
-MAIL=LIRE_MAILLAGE();
-# RENOMMAGE DES GROUPES
-#
-
-
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_MA=(_F(NOM='TUYAU',
-                                  GROUP_MA='GM30',),
-                               _F(NOM='ENCAST',
-                                  GROUP_MA='GM27',),
-                               _F(NOM='SYMETRIE',
-                                  GROUP_MA='GM29',),
-                               _F(NOM='EFOND',
-                                  GROUP_MA='GM28',),),);
-                                  
-# ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
-#
-#
-
-
-MAIL=DEFI_GROUP(reuse =MAIL,
-                MAILLAGE=MAIL,
-                CREA_GROUP_NO=_F(GROUP_MA='GM31',
-                                 NOM='A1',),);
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
 
 
 # ORIENTATION DES NORMALES AUX COQUES RENTRANTES DANS LE TUYAU
 #
 #
 #
-
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
@@ -149,18 +107,18 @@ CARA_COQ=AFFE_CARA_ELEM(MODELE=MODMECA,
 #
 
 
-BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODMECA,
-                        DDL_IMPO=(_F(GROUP_MA='ENCAST',
-                                     DX=0.0,
-                                     DY=0.0,
-                                     DZ=0.0,
-                                     DRX=0.0,
-                                     DRY=0.0,
-                                     DRZ=0.0,),
-                                  _F(GROUP_MA='SYMETRIE',
-                                     DZ=0.0,
-                                     DRX=0.0,
-                                     DRY=0.0,),),);
+BLOQUAGE=AFFE_CHAR_CINE(MODELE=MODMECA,
+                        MECA_IMPO=(_F(GROUP_MA='ENCAST',
+                                      DX=0.0,
+                                      DY=0.0,
+                                      DZ=0.0,
+                                      DRX=0.0,
+                                      DRY=0.0,
+                                      DRZ=0.0,),
+                                   _F(GROUP_MA='SYMETRIE',
+                                      DZ=0.0,
+                                      DRX=0.0,
+                                      DRY=0.0,),),);
 #
 # DEFINITION DES CHARGEMENTS
 #    CHARGEMENT 1 : FY=100KN (FX,FZ,MX,MY,MZ NULS)
@@ -361,7 +319,7 @@ TEST_TABLE(TABLE=TABDEP2,
            VERSION='6.3.20',);
 
 
-IMPR_RESU(MODELE=MODMECA,FORMAT='GMSH',VERSION=1.2,UNITE=37,
+IMPR_RESU(MODELE=MODMECA,FORMAT='MED',
           RESU=(_F(RESULTAT=RESU1,
                    NOM_CHAM='DEPL',),
                 _F(RESULTAT=RESU1,

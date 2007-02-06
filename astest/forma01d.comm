@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 05/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,9 +34,7 @@ DEBUT(CODE=_F(NOM='FORMA01D',NIV_PUB_WEB='INTERNET'),);
 #
 
 
-PRE_GIBI();
-
-MAIL=LIRE_MAILLAGE( );
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
 #
 # DEFINITION DES ELEMENTS FINIS UTILISES
 #
@@ -120,12 +118,12 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                     NMAX_FREQ=5,),);
 #
-# ECRITURE DES MODES AU FORMAT CASTEM
+# ECRITURE DES MODES AU FORMAT MED
 #
 #
 
 
-IMPR_RESU(MODELE=MODELE,FORMAT='CASTEM',
+IMPR_RESU(MODELE=MODELE,FORMAT='MED',
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=MODES,
                   NOM_CHAM='DEPL',),);
@@ -286,6 +284,14 @@ DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
                    OPTION='SIPO_ELNO_DEPL',
                    RESULTAT=DYNATRAN,);
 
+#
+# CALCUL DES CONTRAINTES DUES AUX EFFORTS GENERALISES AUX NOEUDS
+#
+
+DYNATRAN=CALC_NO(reuse =DYNATRAN,
+                 OPTION='SIPO_NOEU_DEPL',
+                 RESULTAT=DYNATRAN,);
+
 # INSTANT DES MAX :
 #
 
@@ -344,15 +350,34 @@ IMPR_RESU(MODELE=MODELE,FORMAT='RESULTAT',
 
 # TEST_RESU UNIQUEMENT POUR FAIRE TEST
 
-TEST_RESU(RESU=_F(RESULTAT=DYNATRAN,
-                  NUME_ORDRE=21,
-                  NOM_CHAM='SIPO_ELNO_DEPL',
-                  NOM_CMP='SN',
-                  MAILLE='M10',
-                  NOEUD='N7',
-                  VALE=-6.2035597042013003E4,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='5.07',),);
+TEST_RESU(RESU=(_F(RESULTAT=DYNATRAN,
+                   INST=2.,
+                   NOM_CHAM='SIPO_NOEU_DEPL',
+                   NOM_CMP='SN',
+                   GROUP_NO='PA',
+                   VALE=-4.7673318453025E+06,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION=(0.21E-2,1.E-6,),
+                   VERSION='8.04',),
+                _F(RESULTAT=DYNATRAN,
+                   INST=2.,
+                   NOM_CHAM='SIPO_NOEU_DEPL',
+                   NOM_CMP='SVY',
+                   GROUP_NO='PA',
+                   VALE=2.2156744703267E+07,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION=(3.1E-2,1.E-6,),
+                   VERSION='8.04',),
+                _F(RESULTAT=DYNATRAN,
+                   INST=2.,
+                   NOM_CHAM='SIPO_NOEU_DEPL',
+                   NOM_CMP='SMFZ',
+                   GROUP_NO='PA',
+                   VALE=-2.5165671972143E+08,
+                   REFERENCE='NON_REGRESSION',
+                   PRECISION=(0.05E-2,1.E-6,),
+                   VERSION='8.04',),
+                  ));
 
 FIN();
 #

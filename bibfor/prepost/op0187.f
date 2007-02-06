@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -772,7 +772,6 @@ C        DES NOEUDS D'INTERSECTION QUI SONT NOEUDS SOMMETS
                       XNXIS=ZR(JCORF+3*(NXIS-1))
                       YNXIS=ZR(JCORF+3*(NXIS-1)+1)
                       ZNXIS=ZR(JCORF+3*(NXIS-1)+2)
-       CALL JXVERI(' ','AJACOT')
                       IF(ABS(XNIS-XNXIS).LT.EPS)THEN
                          IF(ABS(YNIS-YNXIS).LT.EPS)THEN
                             IF(ABS(ZNIS-ZNXIS).LT.EPS)THEN
@@ -843,7 +842,6 @@ C    --- CREATION DE L' OBJETS: '.NOMNOE'
        CALL JEVEUO(MAF//'.DIME','E',JDIM)
        ZI(JDIM)=NBNONO
        CALL JUVECA(COORDO//'.VALE',3*NBNONO)
-       CALL JXVERI(' ','AJACOT')
 C
 C
 C     ================================================================

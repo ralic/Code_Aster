@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 20/11/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF supervis Messages  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,6 +188,34 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 42: _("""
  DEBUG/SDVERI demandé par l'utilisateur mais indisponible sur cette machine
  car le compilateur fortran77 n'accepte pas les fonctions récursives.
+"""),
+
+43: _("""
+ Debug SDVERI suspendu
+"""),
+
+44: _("""
+ Debug JEVEUX demandé
+"""),
+
+45: _("""
+ Debug JEVEUX suspendu
+"""),
+
+46: _("""
+ Debug JXVERI demandé
+"""),
+
+47: _("""
+ Debug JXVERI suspendu
+"""),
+
+48: _("""
+ Debug IMPR_MACRO demandé
+"""),
+
+49: _("""
+ Debug IMPR_MACRO suspendu
 """),
 
 }

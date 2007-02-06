@@ -4,7 +4,7 @@
       CHARACTER*(*) OBZ,VERIF,KARGZ
       INTEGER NOBJ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,10 +42,11 @@ C ----------------------------------------------------------------------
       CHARACTER*1  XOUS, GENR, KBID,TMES
       CHARACTER*8  TYSCA ,STOCK,KARG2
       CHARACTER*12  VERIF2
-      CHARACTER*24  VALK(2)
+      CHARACTER*24  VALK(4)
       CHARACTER*80  KARG
       CHARACTER*4 DOCU,DOCU2
-      INTEGER I1,I2,IBID,I3, I4,LTYP,IEXI,K,ITROU
+      INTEGER I1,I2,IBID,I3, I4,LTYP,IEXI,K,ITROU,VALI(4)
+      REAL*8 VALR(4)
       LOGICAL CONTIG
 
 C -DEB------------------------------------------------------------------
@@ -66,6 +67,7 @@ C -DEB------------------------------------------------------------------
 
 
 C ---VERIFICATION DE XOUS :
+C ----------------------------------
       IF (VERIF.EQ.'XOUS') THEN
         CALL JELIRA(OB,'XOUS',IBID,XOUS)
         STOCK=' '
@@ -98,31 +100,45 @@ C      KARG CONTIENT AU PLUS 10 CHAMPS "XOUS" SEPARES PAR DES "/"
          I1=I1+I2
          CALL ASSERT(I1.LE.70)
 31     CONTINUE
+       IF (GENR.NE.KARG) THEN
+           VALK(1)=OB
+           VALK(2)=KARG
+           VALK(3)=XOUS
+           CALL U2MESK('F','SDVERI_32',3,VALK)
+       ENDIF
 32     CONTINUE
 
 
 
 C ---VERIFICATION DE GENR :
+C ----------------------------------
       ELSE IF (VERIF.EQ.'GENR') THEN
         CALL JELIRA(OB,'GENR',IBID,GENR)
         IF (GENR.EQ.'E') GENR='V'
         IF (GENR.NE.KARG) THEN
            VALK(1)=OB
            VALK(2)=KARG
-           CALL U2MESK('F','SDVERI_31',2,VALK)
+           VALK(3)=GENR
+           CALL U2MESK('F','SDVERI_31',3,VALK)
         ENDIF
 
 
 
 C ---VERIFICATION DU LONMAX D'UN VECTEUR
+C ---------------------------------------
       ELSE IF (VERIF.EQ.'LONMAX') THEN
         CALL JELIRA(OB,'LONMAX',I2,KBID)
         READ(KARG,'(I)') I3
-        IF (I2.NE.I3)
-     &     CALL U2MESK('F','SDVERI_17',1,OB)
+        IF (I2.NE.I3) THEN
+           VALK(1)=OB
+           VALI(1)=I3
+           VALI(2)=I2
+           CALL U2MESG('F','SDVERI_17',1,VALK,2,VALI,0,VALR)
+        ENDIF
 
 
 C ---VERIFICATION DE TYPE :
+C ----------------------------------
       ELSE IF (VERIF.EQ.'TYPE') THEN
        TYSCA=' '
        CALL JELIRA(OB,'TYPE',IBID,TYSCA(1:1))
@@ -156,11 +172,13 @@ C      KARG CONTIENT AU PLUS 10 CHAMPS "TYSCA" SEPARES PAR DES "/"
        IF(ITROU.EQ.0) THEN
          VALK(1)=OB
          VALK(2)=KARG
-         CALL U2MESK('F','SDVERI_29',2,VALK)
+         VALK(3)=TYSCA
+         CALL U2MESK('F','SDVERI_29',3,VALK)
        ENDIF
 
 
 C ---VERIFICATION DE DOCU :
+C ----------------------------------
       ELSE IF (VERIF.EQ.'DOCU') THEN
        CALL JELIRA(OB,'DOCU',IBID,DOCU)
 C      KARG CONTIENT AU PLUS 10 CHAMPS "DOCU" SEPARES PAR DES "/"
@@ -189,12 +207,14 @@ C      KARG CONTIENT AU PLUS 10 CHAMPS "DOCU" SEPARES PAR DES "/"
        IF(ITROU.EQ.0) THEN
          VALK(1)=OB
          VALK(2)=KARG
-         CALL U2MESK('F','SDVERI_27',2,VALK)
+         VALK(3)=DOCU
+         CALL U2MESK('F','SDVERI_27',3,VALK)
        ENDIF
 
 
 
-C ---RETOUR CODE ERREUR
+C ---AUTRE IMPREVU :
+C ----------------------------------
       ELSE
         CALL U2MESK('F','SDVERI_25',1,VERIF2)
       ENDIF

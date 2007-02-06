@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
                COECA2(I,J) = COEF2(I,J)
   50        CONTINUE
   40     CONTINUE
-         CALL WKVECT(NOM1,'G V I',1,IFLAG)
+         CALL WKVECT(NOM1,'V V I',1,IFLAG)
          ZI(IFLAG+1-1) = 1
 C        FERMETURE DU FICHIER
          CALL ULOPEN(-UNIT,' ',' ',' ',' ')

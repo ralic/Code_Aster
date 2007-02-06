@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,13 +75,13 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*19 LERES0,RESUCO,KNUM,INFCHA,LIGREL
       CHARACTER*19 CHDEP2,CHAMS0,CHAMS1,PRFCHN
       CHARACTER*24 CHAMNO,NUME,VFONO,VAFONO,SIGMA,CHDEPL
-      CHARACTER*24 VALK(2)
       CHARACTER*24 MODELE,MATER,CARAC,CHARGE,FOMULT,INFOCH
       CHARACTER*24 VECHMP,VACHMP,CNCHMP,VEFPIP,VAFPIP,CNFPIP,MASSE
       CHARACTER*24 VECGMP,VACGMP,CNCGMP,BIDON,CHTREF,CHTEMP
       CHARACTER*24 K24BID,CHELEM,CHACCE,VRENO,VARENO
       CHARACTER*24 COMPOR,CHVIVE,CHACVE,MESMAI,MESNOE
-      CHARACTER*24 NORECG,VAPRIN,STYPSE,NOOJB, K24B
+      CHARACTER*24 NORECG,VAPRIN,STYPSE,NOOJB, K24B,VALK(3)
+      CHARACTER*8 KIORD
 
       LOGICAL EXITIM, LBID
 C     ------------------------------------------------------------------
@@ -104,9 +104,9 @@ C     ------------------------------------------------------------------
       CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,N0)
 
       IF (RESUC1.NE.RESUCO(1:8)) THEN
-         VALK(1) = RESUC1
-         VALK(2) = RESUCO
-         CALL U2MESK('F','PREPOST3_79', 2 ,VALK)
+        VALK(1)=RESUC1
+        VALK(2)=RESUCO
+        CALL U2MESK('F','PREPOST3_79', 2 ,VALK)
       END IF
 
       CALL GETTCO(RESUCO(1:8),TYSD)
@@ -222,7 +222,7 @@ C EN OUTPUT --> INFCHA ET INPSCO
           CARAC = ' '
           CHARGE = ' '
           MATER = ' '
-C   SUPPRESSION DE LA LIGNE SUIVANTE	
+C   SUPPRESSION DE LA LIGNE SUIVANTE
 C          MODELE = '&&'//NOMPRO
           MODELE = ' '
           NUORD  = ZI(JORDR)
@@ -258,7 +258,7 @@ C INFO. RELATIVE AUX CHARGES
           END IF
           CALL GETVID(' ','MODELE',1,1,1,MODELE,N0)
           IF (N0.NE.0) THEN
-            CALL EXLIMA(' ','G',MODELE,LERES0,LIGREL)
+            CALL EXLIMA(' ','V',MODELE,LERES0,LIGREL)
           END IF
         END IF
 
@@ -365,49 +365,41 @@ C       ================================================================
               IORDR = ZI(JORDR+I-1)
               CALL RSEXCH(LERES0,OPTIO2,IORDR,CHELEM,IRET)
               IF (IRET.NE.0) THEN
-                CALL UTDEBM('A',OPER,'CHAMP ')
-                CALL UTIMPK('S',' INEXISTANT ',1,OPTIO2)
-                CALL UTIMPI('S',' NUME_ORDRE ',1,IORDR)
-                CALL UTIMPK('L',' POUR LE CALCUL DE L''OPTION ',1,
-     &                      OPTION)
-                CALL UTFINM
+                CALL CODENT(IORDR,'G',KIORD)
+                VALK(1)=OPTIO2
+                VALK(2)=KIORD
+                VALK(3)=OPTION
+                CALL U2MESK('A','PREPOST5_4',3,VALK)
                 GO TO 100
               END IF
               CALL RSEXCH(LERES0,OPTION,IORDR,CHAMNO,IRET)
               IF (IRET.EQ.101) THEN
-                CALL UTDEBM('A',OPER,'OPTION ILLICITE POUR ')
-                CALL UTIMPK('S',' LE RESULTAT ',1,LERES0)
-                CALL UTIMPI('L',' NUME_ORDRE ',1,IORDR)
-                CALL UTIMPK('S',' POUR LE CALCUL DE L''OPTION ',1,
-     &                      OPTION)
-                CALL UTFINM
+                CALL CODENT(IORDR,'G',KIORD)
+                VALK(1)=LERES0
+                VALK(2)=KIORD
+                VALK(3)=OPTION
+                CALL U2MESK('A','PREPOST5_5',3,VALK)
                 GO TO 100
               ELSE IF (IRET.GT.110) THEN
-                CALL UTDEBM('A',OPER,'NUME_ORDRE ')
-                CALL UTIMPI('S',' TROP GRAND ',1,IORDR)
-                CALL UTIMPK('S',' POUR LE CALCUL DE L''OPTION ',1,
-     &                      OPTION)
-                CALL UTFINM
+                CALL CODENT(IORDR,'G',KIORD)
+                VALK(1)=KIORD
+                VALK(2)=OPTION
+                CALL U2MESK('A','PREPOST5_6',2,VALK)
                 GO TO 100
               ELSE IF (IRET.GT.111) THEN
-                CALL UTDEBM('A',OPER,'OPTION ILLICITE POUR ')
-                CALL UTIMPK('S',' LE RESULTAT ',1,LERES0)
-                CALL UTIMPI('L',' NUME_ORDRE TROP GRAND ',1,IORDR)
-                CALL UTIMPK('S',' POUR LE CALCUL DE L''OPTION ',1,
-     &                      OPTION)
-                CALL UTFINM
+                CALL CODENT(IORDR,'G',KIORD)
+                VALK(1)=LERES0
+                VALK(2)=KIORD
+                VALK(3)=OPTION
+                CALL U2MESK('A','PREPOST5_7',3,VALK)
                 GO TO 100
               END IF
               CALL JEEXIN(CHAMNO(1:19)//'.REFE',IRET)
               IF (IRET.NE.0) THEN
-                CALL UTDEBM('A',OPER,'L''OPTION')
-                CALL UTIMPK('S',' ',1,OPTION)
-                CALL UTIMPK('S',' EST DEJA CALCULEE ',0,OPTION)
-                CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
-                CALL UTIMPK('L','ON LA RECALCULE CAR LES DONNEES',0,
-     &                      OPTION)
-                CALL UTIMPK('S',' PEUVENT ETRE DIFFERENTES',0,OPTION)
-                CALL UTFINM
+                CALL CODENT(IORDR,'G',KIORD)
+                VALK(1)=OPTION
+                VALK(2)=KIORD
+                CALL U2MESK('A','PREPOST5_1',2,VALK)
                 CALL DETRSD('CHAM_NO',CHAMNO(1:19))
                 CALL DETRSD('PROF_CHNO',CHAMNO(1:19))
               END IF
@@ -470,7 +462,7 @@ C       ================================================================
                  NBCHAR = 0
                  ICHAR = 1
               END IF
-              CALL EXLIMA(' ','G',MODELE,LERES0,LIGREL)
+              CALL EXLIMA(' ','V',MODELE,LERES0,LIGREL)
 
               VECHMP = ' '
               VACHMP = ' '
@@ -493,25 +485,20 @@ C       ================================================================
               IF (IRET.NE.0) THEN
                 CALL RSEXCH(LERES0,'SIEF_ELGA_DEPL',IORDR,SIGMA,IRET2)
                 IF (IRET2.NE.0) THEN
-                  CALL UTDEBM('A',OPER,'CHAMP ')
-                  CALL UTIMPK('S',' INEXISTANT ',1,
-     &                        'SIEF_ELGA OU '//'SIEF_ELGA_DEPL')
-                  CALL UTIMPI('S',' NUME_ORDRE ',1,IORDR)
-                  CALL UTIMPK('L',' POUR LE CALCUL DE L''OPTION ',1,
-     &                        OPTION)
-                  CALL UTFINM
+                CALL CODENT(IORDR,'G',KIORD)
+                VALK(1)=KIORD
+                VALK(2)=OPTION
+                CALL U2MESK('A','PREPOST5_2',2,VALK)
                   GO TO 229
                 END IF
               END IF
 
               CALL RSEXCH(LERES0,'DEPL',IORDR,CHDEPL,IRET)
               IF (IRET.NE.0) THEN
-                CALL UTDEBM('A',OPER,'CHAMP ')
-                CALL UTIMPK('S',' INEXISTANT ',1,'DEPL')
-                CALL UTIMPI('S',' NUME_ORDRE ',1,IORDR)
-                CALL UTIMPK('L',' POUR LE CALCUL DE L''OPTION ',1,
-     &                      OPTION)
-                CALL UTFINM
+                CALL CODENT(IORDR,'G',KIORD)
+                VALK(1)=KIORD
+                VALK(2)=OPTION
+                CALL U2MESK('A','PREPOST5_3',2,VALK)
                 GO TO 229
               ELSE
 
@@ -565,14 +552,10 @@ C           --- CREATION DE LA STRUCTURE CHAM_NO ---
               CALL RSEXCH(LERES0,OPTION,IORDR,CHAMNO,IRET)
               CALL JEEXIN(CHAMNO(1:19)//'.REFE',IRET)
               IF (IRET.NE.0) THEN
-                CALL UTDEBM('A',OPER,'L''OPTION')
-                CALL UTIMPK('S',' ',1,OPTION)
-                CALL UTIMPK('S',' EST DEJA CALCULEE ',0,OPTION)
-                CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
-                CALL UTIMPK('L','ON LA RECALCULE CAR LES DONNEES',0,
-     &                      OPTION)
-                CALL UTIMPK('S',' PEUVENT ETRE DIFFERENTES',0,OPTION)
-                CALL UTFINM
+                CALL CODENT(IORDR,'G',KIORD)
+                VALK(1)=OPTION
+                VALK(2)=KIORD
+                CALL U2MESK('A','PREPOST5_1',2,VALK)
                 CALL DETRSD('CHAM_NO',CHAMNO(1:19))
               END IF
               CALL VTCREB(CHAMNO,NUME,'G','R',NEQ)
@@ -753,7 +736,7 @@ C           --- TRAITEMENT DE EVOL_NOLI ---
 
 C               --- CALCUL DES MATRICES ELEMENTAIRES DE MASSE
                   CALL MEMAM2(OPTIO2,MODELE,NBCHAR,ZK8(ICHAR),MATER,
-     &                        CARAC,EXITIM,TIME,CHACCE,VRENO,'V',LIGREL)
+     &                 CARAC,EXITIM,TIME,CHACCE,VRENO,'V',LIGREL)
 
 C               --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
                   CALL ASASVE(VRENO,NUME,'R',VARENO)

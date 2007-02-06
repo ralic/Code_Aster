@@ -2,7 +2,7 @@
      &                  TEMPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 05/02/2007   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (NOMPRO='VECHME')
 
       INTEGER NCHINX
-      PARAMETER (NCHINX=20)
+      PARAMETER (NCHINX=40)
 
       INTEGER NBCHMX
       PARAMETER (NBCHMX=17)
@@ -368,11 +368,13 @@ C           DANS LIGRCS.
                   LCHIN(1) = ZK8(ISIGI)
                   LPAIN(17) = 'PDEPLMR'
                   LCHIN(17) = ' '
-                  LPAIN(18) = 'PCOMPOR'
-                  LCHIN(18) = ' '
                 ELSE IF (NUMCHM.GE.4) THEN
                   GO TO 40
                 END IF
+C               PCOMPOR UTILE POUR POUTRES MULTI-FIBRES. ON PREND
+C               LA CARTE QUI EST DANS MATE               
+                LPAIN(18) = 'PCOMPOR'
+                LCHIN(18) =  MATE(1:8)//'.COMPOR'
                 CALL GCNCO2(NEWNOM)
                 RESUEL(10:16) = NEWNOM(2:8)
                 CALL CORICH('E',RESUEL,ICHA,IBID)
@@ -406,6 +408,7 @@ C             -- SI .VEASS, IL N'Y A PAS DE CALCUL A LANCER
                   CALL JEVEUO(LCHIN(1),'L',JLCHIN)
                   CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),RESUEL)
                 ELSE
+                  CALL ASSERT(NCHIN.LE.NCHINX)
                   CALL CALCUL(STOP,OPTION,LIGREL,NCHIN,LCHIN,LPAIN,1,
      &                        RESUEL,PAOUT,'V')
                 END IF

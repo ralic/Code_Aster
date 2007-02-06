@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,16 +46,10 @@ C     ----- DEBUT COMMON DE DEBUG JEVEUX
       REAL*8           TBLOC
       COMMON /RTBLJE/  TBLOC
 
-C     COMMON DEBUI1  : INF. GENERALES DES COMMANDES DEBUT/POURSUITE :
-C       - ISDVER :  /0 -> SDVERI='NON'
-C                   /1 -> SDVERI='OUI'
-C         ISDVER EST UTILISE PAR LA ROUTINE VERIS3
-      INTEGER          ISDVER
-      COMMON /DEBUI1/  ISDVER
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
-      CHARACTER*16 NOMCMD,CBID,MEMOIR, CMPIN, CMPOUT
-      INTEGER SEGJVX,LSEGJV, LOUT,SDVERI
+      CHARACTER*16 CBID,MEMOIR, CMPIN, CMPOUT
+      INTEGER SEGJVX,LSEGJV, LOUT,SDVERI,L,NCODE
       REAL*8 VPARJV
 C
 C     --- OPTIONS PAR DEFAUT ---
@@ -63,54 +57,72 @@ C     --- OPTIONS PAR DEFAUT ---
       REPONS = 'NON'
       MEMOIR = 'RAPIDE'
       TBLOC=800.D0
-C
+
+C     -- DEBUG / JXVERI :
+C     -----------------------------------------------------
       CALL GETVTX('DEBUG','JXVERI',1,1,1,REPONS,L)
-      CALL GETRES(CBID,CBID,NOMCMD)
       IF ( REPONS .EQ. 'OUI') THEN
          CALL U2MESS('I','SUPERVIS_23')
+C        LE "FLAG" JXVERI=OUI EST POSTIONNE DANS LE JDC
+C        VOIR ROUTINE EXPASS.F
       ENDIF
 
+
+C     -- DEBUG / SDVERI :
+C     -----------------------------------------------------
       CALL GETVTX('DEBUG','SDVERI',1,1,1,REPONS,L)
-      CALL GETRES(CBID,CBID,NOMCMD)
+      IF (L.EQ.0) THEN
+        CALL GETFAC('CODE',NCODE)
+        IF (NCODE.GT.0) THEN
+C          UN JOUR, ON METTRA 'OUI' PAR DEFAUT ...
+           REPONS='NON'
+        ELSE
+           REPONS='NON'
+        ENDIF
+      ENDIF
+
       IF ( REPONS .EQ. 'OUI') THEN
+C        -- SI SDVERI EST POSSIBLE SUR CETTE PLATEFORME :
          IF (SDVERI().EQ.1) THEN
-           ISDVER=1
+           CALL JDCSET('sdveri', 1)
            CALL U2MESS('I','SUPERVIS_24')
          ELSE
-           ISDVER=0
+           CALL JDCSET('sdveri', 0)
            CALL U2MESS('A','SUPERVIS_42')
          ENDIF
       ELSE
-         ISDVER=0
+         CALL JDCSET('sdveri', 0)
       ENDIF
 
+
+C     -- DEBUG / JEVEUX :
+C     -----------------------------------------------------
       CALL GETVTX('DEBUG','JEVEUX',1,1,1,REPONS,L)
-      CALL GETRES(CBID,CBID,NOMCMD)
-      IF ( REPONS.NE.'OUI' .AND. REPONS.NE.'NON') THEN
-         CALL UTDEBM('E','IBDBGS','ARGUMENT ERRONE POUR LE MOT '//
-     &                      'CLE "DEBUG JEVEUX" ')
-         CALL UTIMPK('S',':',1,REPONS)
-         CALL UTIMPK('L','LES ARGUMENTS AUTORISES SONT',1,'OUI')
-         CALL UTIMPK('S',',',1,'NON')
-         CALL UTFINM()
-      ENDIF
+      CALL ASSERT ( REPONS.EQ.'OUI' .OR. REPONS.EQ.'NON')
       IF ( REPONS .EQ. 'OUI') THEN
          CALL U2MESS('I','SUPERVIS_12')
          IDEBUG = 1
       ENDIF
-C
+
+
+C     -- DEBUG / ENVIMA :
+C     -----------------------------------------------------
       CALL GETVTX('DEBUG','ENVIMA',1,1,1,REPONS,L)
       IF ( REPONS .EQ. 'TES' ) THEN
          IFI = IUNIFI ( 'RESULTAT' )
          CALL IMPVEM  ( IFI )
       ENDIF
-C
+
+C     -- ERREUR / ERREUR_F :
+C     -----------------------------------------------------
       CMPIN='ABORT'
       CALL GETVTX('ERREUR','ERREUR_F',1,1,1,CMPIN, L)
       IF(L.EQ.1)THEN
          CALL ONERRF(CMPIN, CMPOUT, LOUT)
       ENDIF
-C
+
+C     -- MEMOIRE / GESTION ...  :
+C     -----------------------------------------------------
       CALL GETVTX('MEMOIRE','GESTION',1,1,1,MEMOIR,L)
       CALL GETVIS('MEMOIRE','TYPE_ALLOCATION',1,1,1,ISEG,L)
       IF (L.LE.0) ISEG = SEGJVX(-1)
@@ -124,7 +136,6 @@ C
 
       CALL GETVR8('MEMOIRE','TAILLE_BLOC',1,1,1,TBLOC,L)
 
-      CALL GETRES(CBID,CBID,NOMCMD)
       IF ( MEMOIR(1:8).NE.'COMPACTE' .AND.
      &     MEMOIR(1:6).NE.'RAPIDE') THEN
          CALL UTDEBM('E','IBDBGS','ARGUMENT ERRONE POUR LE MOT '//
@@ -157,6 +168,7 @@ C
         CALL UTIMPR('S',' ',1,RVAL)
         CALL UTFINM()
       ENDIF
-C
+
+
       CALL JEDEMA()
       END

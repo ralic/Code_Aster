@@ -3,7 +3,7 @@
       INTEGER             IERR
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,6 +190,7 @@ C
          CALL WKVECT(NOMRES//'           .VALE','G V R',NBMO,IVALE)
          CALL WKVECT(NOMRES//'           .REFE','G V K24',2,IAREFE)
          CALL WKVECT(NOMRES//'           .DESC','G V I',3,IADESC)
+         CALL JEECRA(NOMRES//'           .DESC','DOCU',IBID,'VGEN')
 C
 C --- REMPLISSAGE DU .REFE ET .VALE
 C

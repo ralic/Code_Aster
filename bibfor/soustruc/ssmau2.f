@@ -1,6 +1,6 @@
       SUBROUTINE SSMAU2(NOMU,OPTION)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF SOUSTRUC  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 KBID
       CHARACTER*8 NOMO,PROMES
       INTEGER IDBG
-      LOGICAL MODIF
+      LOGICAL MOSTRU
 
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
@@ -74,16 +74,20 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 
       IF (OPTIO2(1:9).EQ.'MASS_MECA') THEN
         MATAS = NOMU//'.MASSMECA'
-      ELSE IF (OPTIO2(1:9).EQ.'AMOR_MECA') THEN
+
+      ELSEIF (OPTIO2(1:9).EQ.'AMOR_MECA') THEN
         MATAS = NOMU//'.AMORMECA'
+
       ELSE
         CALL JXABOR()
-      END IF
+      ENDIF
 
-      MODIF = .TRUE.
-      CALL DISMOI('F',
-     &    'NOM_PROJ_MESU',NOMU,'MACR_ELEM_STAT',IBID,PROMES,IER)
-      IF (PROMES .EQ. ' ') MODIF = .FALSE.
+C     -- MODSTRU=.TRUE. : CAS MODIFICATION STRUCTURALE
+      MOSTRU = .TRUE.
+      CALL DISMOI('F','NOM_PROJ_MESU',NOMU,'MACR_ELEM_STAT',IBID,PROMES,
+     &            IER)
+      IF (PROMES.EQ.' ') MOSTRU = .FALSE.
+
 
       CALL JEVEUO(NOMU//'.DESM','E',IADESM)
       NDDLE = ZI(IADESM-1+4)
@@ -94,7 +98,7 @@ C     -------------------------------------------------------
       LGBLPH = MIN(4*1024*1024,NDDLE*NDDLI)
       NBLPH = (NDDLE*NDDLI-1)/LGBLPH + 1
       NLBLPH = LGBLPH/NDDLI
-      CALL JECREC(NOMU//'.TMP_IE','G V R','NU','DISPERSE','CONSTANT',
+      CALL JECREC(NOMU//'.TMP_IE','V V R','NU','DISPERSE','CONSTANT',
      &            NBLPH)
       CALL JEECRA(NOMU//'.TMP_IE','LONMAX',LGBLPH,KBID)
       DO 10,J = 1,NBLPH
@@ -111,197 +115,197 @@ C     ---------------------------------------------------
       CALL JEVEUO(MATAS(1:19)//'.&INT','E',LMAT)
       CALL MTDSC2(ZK24(ZI(LMAT+1)),'SCDI','L',IASCDI)
       CALL JEVEUO(ZK24(ZI(LMAT+1)) (1:19)//'.REFA','L',JREFA)
-      CALL JEVEUO(ZK24(JREFA-1+2)(1:14)//'.SLCS.SCHC','L',IASCHC)
+      CALL JEVEUO(ZK24(JREFA-1+2) (1:14)//'.SLCS.SCHC','L',IASCHC)
       CALL JEVEUO(STOCK//'.SCIB','L',IASCIB)
 
       CALL WKVECT(NOMU//'.MP_EE','G V R', (NDDLE* (NDDLE+1)/2),IAMPEE)
 
 
-      IF (MODIF) THEN
-C CREATION DE LA MATRICE POUR MODIFICATION STRUCTURALE
+      IF (MOSTRU) THEN
+C       CREATION DE LA MATRICE POUR MODIFICATION STRUCTURALE
         CALL CRMEMA(PROMES,IAMPEE)
+
       ELSE
 
-      IBLOLD = 0
-      DO 30,J = 1,NDDLE
-        IBLO = ZI(IASCIB-1+NDDLI+J)
-        SCDI = ZI(IASCDI-1+NDDLI+J)
-        SCHC = ZI(IASCHC-1+NDDLI+J)
-        IF (IBLO.NE.IBLOLD) THEN
-          IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
-          CALL JEVEUO(JEXNUM(MATAS//'.UALF',IBLO),'L',JUALF)
-        END IF
-        IBLOLD = IBLO
+        IBLOLD = 0
+        DO 30,J = 1,NDDLE
+          IBLO = ZI(IASCIB-1+NDDLI+J)
+          SCDI = ZI(IASCDI-1+NDDLI+J)
+          SCHC = ZI(IASCHC-1+NDDLI+J)
+          IF (IBLO.NE.IBLOLD) THEN
+            IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
+            CALL JEVEUO(JEXNUM(MATAS//'.UALF',IBLO),'L',JUALF)
+          ENDIF
+          IBLOLD = IBLO
 CCDIR$ IVDEP
-        DO 20,I = MAX(1,J+1-SCHC),J
-          II = (J-1)*J/2 + I
-          ZR(IAMPEE-1+II) = ZR(JUALF-1+SCDI+I-J)
-   20   CONTINUE
+          DO 20,I = MAX(1,J+1-SCHC),J
+            II = (J-1)*J/2 + I
+            ZR(IAMPEE-1+II) = ZR(JUALF-1+SCDI+I-J)
+   20     CONTINUE
 
-   30 CONTINUE
-      IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
+   30   CONTINUE
+        IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
 
 C     -- CALCUL DE MP_EE = MP_EE + M_EI*PHI_IE + PHI_EI*M_IE :
 C     --------------------------------------------------------
-      IBLOLD = 0
-      DO 120,J = 1,NDDLE
-        IBLO = ZI(IASCIB-1+NDDLI+J)
-        SCDI = ZI(IASCDI-1+NDDLI+J)
-        SCHC = ZI(IASCHC-1+NDDLI+J)
-        IF (IBLO.NE.IBLOLD) THEN
-          IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
-          CALL JEVEUO(JEXNUM(MATAS//'.UALF',IBLO),'L',JUALF)
-        END IF
-        IBLOLD = IBLO
+        IBLOLD = 0
+        DO 120,J = 1,NDDLE
+          IBLO = ZI(IASCIB-1+NDDLI+J)
+          SCDI = ZI(IASCDI-1+NDDLI+J)
+          SCHC = ZI(IASCHC-1+NDDLI+J)
+          IF (IBLO.NE.IBLOLD) THEN
+            IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
+            CALL JEVEUO(JEXNUM(MATAS//'.UALF',IBLO),'L',JUALF)
+          ENDIF
+          IBLOLD = IBLO
 
-        I = 0
-        DO 60,IBLPH = 1,NBLPH
-          CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
-          DO 50,IIBLPH = 1,NLBLPH
-            I = I + 1
-            IF (I.GT.J) THEN
-              CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
-              GO TO 70
-            END IF
-            IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
-            II = (J-1)*J/2 + I
-            KK = 0
+          I = 0
+          DO 60,IBLPH = 1,NBLPH
+            CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
+            DO 50,IIBLPH = 1,NLBLPH
+              I = I + 1
+              IF (I.GT.J) THEN
+                CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+                GOTO 70
+
+              ENDIF
+              IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
+              II = (J-1)*J/2 + I
+              KK = 0
 CCDIR$ IVDEP
-            DO 40,K = NDDLI + J + 1 - SCHC,NDDLI
-              KK = KK + 1
-              ZR(IAMPEE-1+II) = ZR(IAMPEE-1+II) -
-     &                          ZR(IAPHIE-1+K)*ZR(JUALF-1+SCDI-SCHC+KK)
-   40       CONTINUE
-   50     CONTINUE
-          CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
-   60   CONTINUE
-   70   CONTINUE
+              DO 40,K = NDDLI + J + 1 - SCHC,NDDLI
+                KK = KK + 1
+                ZR(IAMPEE-1+II) = ZR(IAMPEE-1+II) -
+     &                            ZR(IAPHIE-1+K)*ZR(JUALF-1+SCDI-SCHC+
+     &                            KK)
+   40         CONTINUE
+   50       CONTINUE
+            CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+   60     CONTINUE
+   70     CONTINUE
 
 
 C        SYMETRIE:
-        I = 0
-        DO 100,IBLPH = 1,NBLPH
-          IF (I+NLBLPH.LT.J) THEN
-            I = I + NLBLPH
-            GO TO 100
-          END IF
-          CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
-          DO 90,IIBLPH = 1,NLBLPH
-            I = I + 1
-            IF (I.LT.J) GO TO 90
-            IF (I.GT.NDDLE) THEN
-              CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
-              GO TO 110
-            END IF
-            IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
-            II = (I* (I-1)/2) + J
-            KK = 0
+          I = 0
+          DO 100,IBLPH = 1,NBLPH
+            IF (I+NLBLPH.LT.J) THEN
+              I = I + NLBLPH
+              GOTO 100
+
+            ENDIF
+            CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
+            DO 90,IIBLPH = 1,NLBLPH
+              I = I + 1
+              IF (I.LT.J) GOTO 90
+              IF (I.GT.NDDLE) THEN
+                CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+                GOTO 110
+
+              ENDIF
+              IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
+              II = (I* (I-1)/2) + J
+              KK = 0
 CCDIR$ IVDEP
-            DO 80,K = NDDLI + J + 1 - SCHC,NDDLI
-              KK = KK + 1
-              ZR(IAMPEE-1+II) = ZR(IAMPEE-1+II) -
-     &                          ZR(IAPHIE-1+K)*ZR(JUALF-1+SCDI-SCHC+KK)
-   80       CONTINUE
-   90     CONTINUE
-          CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
-  100   CONTINUE
-  110   CONTINUE
+              DO 80,K = NDDLI + J + 1 - SCHC,NDDLI
+                KK = KK + 1
+                ZR(IAMPEE-1+II) = ZR(IAMPEE-1+II) -
+     &                            ZR(IAPHIE-1+K)*ZR(JUALF-1+SCDI-SCHC+
+     &                            KK)
+   80         CONTINUE
+   90       CONTINUE
+            CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+  100     CONTINUE
+  110     CONTINUE
 
-  120 CONTINUE
+  120   CONTINUE
 
 
-      IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
+        IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
 
 
 C     -- CALCUL DE TMP_IE = M_II*PHI_IE :
 C     -----------------------------------
-      I = 0
-      DO 180,IBLPH = 1,NBLPH
-        CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
-        CALL JEVEUO(JEXNUM(NOMU//'.TMP_IE',IBLPH),'E',IATMI0)
-        DO 160,IIBLPH = 1,NLBLPH
-          I = I + 1
-          IF (I.GT.NDDLE) GO TO 170
-          IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
-          IATMIE = IATMI0 + (IIBLPH-1)*NDDLI
+        I = 0
+        DO 180,IBLPH = 1,NBLPH
+          CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
+          CALL JEVEUO(JEXNUM(NOMU//'.TMP_IE',IBLPH),'E',IATMI0)
+          DO 160,IIBLPH = 1,NLBLPH
+            I = I + 1
+            IF (I.GT.NDDLE) GOTO 170
+            IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
+            IATMIE = IATMI0 + (IIBLPH-1)*NDDLI
 
-          IBLOLD = 0
-          DO 150,J = 1,NDDLI
-            IBLO = ZI(IASCIB-1+J)
-            SCDI = ZI(IASCDI-1+J)
-            SCHC = ZI(IASCHC-1+J)
-            IF (IBLO.NE.IBLOLD) THEN
-              IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',
-     &                              IBLOLD))
-              CALL JEVEUO(JEXNUM(MATAS//'.UALF',IBLO),'L',JUALF)
-            END IF
-            IBLOLD = IBLO
+            IBLOLD = 0
+            DO 150,J = 1,NDDLI
+              IBLO = ZI(IASCIB-1+J)
+              SCDI = ZI(IASCDI-1+J)
+              SCHC = ZI(IASCHC-1+J)
+              IF (IBLO.NE.IBLOLD) THEN
+                IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',
+     &                                IBLOLD))
+                CALL JEVEUO(JEXNUM(MATAS//'.UALF',IBLO),'L',JUALF)
+              ENDIF
+              IBLOLD = IBLO
 
-            KK = 0
+              KK = 0
 CCDIR$ IVDEP
-            DO 130,K = J + 1 - SCHC,J
-              KK = KK + 1
-              ZR(IATMIE-1+J) = ZR(IATMIE-1+J) -
-     &                         ZR(IAPHIE-1+K)*ZR(JUALF-1+SCDI-SCHC+KK)
-  130       CONTINUE
-            KK = 0
+              DO 130,K = J + 1 - SCHC,J
+                KK = KK + 1
+                ZR(IATMIE-1+J) = ZR(IATMIE-1+J) -
+     &                           ZR(IAPHIE-1+K)*ZR(JUALF-1+SCDI-SCHC+KK)
+  130         CONTINUE
+              KK = 0
 CCDIR$ IVDEP
-            DO 140,K = J + 1 - SCHC,J - 1
-              KK = KK + 1
-              ZR(IATMIE-1+K) = ZR(IATMIE-1+K) -
-     &                         ZR(IAPHIE-1+J)*ZR(JUALF-1+SCDI-SCHC+KK)
-  140       CONTINUE
-  150     CONTINUE
-          IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
+              DO 140,K = J + 1 - SCHC,J - 1
+                KK = KK + 1
+                ZR(IATMIE-1+K) = ZR(IATMIE-1+K) -
+     &                           ZR(IAPHIE-1+J)*ZR(JUALF-1+SCDI-SCHC+KK)
+  140         CONTINUE
+  150       CONTINUE
+            IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.UALF',IBLOLD))
 
-  160   CONTINUE
-  170   CONTINUE
-        CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
-        CALL JELIBE(JEXNUM(NOMU//'.TMP_IE',IBLPH))
-  180 CONTINUE
+  160     CONTINUE
+  170     CONTINUE
+          CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+          CALL JELIBE(JEXNUM(NOMU//'.TMP_IE',IBLPH))
+  180   CONTINUE
 
 
 C     -- CALCUL DE MP_EE = MP_EE + PHI_EI*TMP_IE:
 C     -------------------------------------------
 
-      I = 0
-      DO 250,IBLPH = 1,NBLPH
-        CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
-        DO 230,IIBLPH = 1,NLBLPH
-          I = I + 1
-          IF (I.GT.NDDLE) GO TO 240
-          IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
-          J = 0
-          DO 220,JBLPH = 1,NBLPH
-            CALL JEVEUO(JEXNUM(NOMU//'.TMP_IE',JBLPH),'L',IATMI0)
-            DO 200,JJBLPH = 1,NLBLPH
-              J = J + 1
-              IF (J.GT.I) GO TO 210
-              IATMIE = IATMI0 + (JJBLPH-1)*NDDLI
-              II = (I-1)*I/2 + J
+        I = 0
+        DO 250,IBLPH = 1,NBLPH
+          CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
+          DO 230,IIBLPH = 1,NLBLPH
+            I = I + 1
+            IF (I.GT.NDDLE) GOTO 240
+            IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
+            J = 0
+            DO 220,JBLPH = 1,NBLPH
+              CALL JEVEUO(JEXNUM(NOMU//'.TMP_IE',JBLPH),'L',IATMI0)
+              DO 200,JJBLPH = 1,NLBLPH
+                J = J + 1
+                IF (J.GT.I) GOTO 210
+                IATMIE = IATMI0 + (JJBLPH-1)*NDDLI
+                II = (I-1)*I/2 + J
 CCDIR$ IVDEP
-              DO 190,K = 1,NDDLI
-                ZR(IAMPEE-1+II) = ZR(IAMPEE-1+II) -
-     &                            ZR(IAPHIE-1+K)*ZR(IATMIE-1+K)
-  190         CONTINUE
-  200       CONTINUE
-  210       CONTINUE
-            CALL JELIBE(JEXNUM(NOMU//'.TMP_IE',IBLPH))
-  220     CONTINUE
-  230   CONTINUE
-  240   CONTINUE
-        CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
-  250 CONTINUE
+                DO 190,K = 1,NDDLI
+                  ZR(IAMPEE-1+II) = ZR(IAMPEE-1+II) -
+     &                              ZR(IAPHIE-1+K)*ZR(IATMIE-1+K)
+  190           CONTINUE
+  200         CONTINUE
+  210         CONTINUE
+              CALL JELIBE(JEXNUM(NOMU//'.TMP_IE',IBLPH))
+  220       CONTINUE
+  230     CONTINUE
+  240     CONTINUE
+          CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+  250   CONTINUE
 
-  260 CONTINUE
-      CALL JEDETR(NOMU//'.TMP_IE')
-
-
-C FIN TEST SUR MODIF
+  260   CONTINUE
       ENDIF
 
-      CALL JELIBE(ZK24(JREFA-1+2)(1:14)//'.SLCS.SCHC')
-
-
+      CALL JEDETR(NOMU//'.TMP_IE')
       CALL JEDEMA()
       END

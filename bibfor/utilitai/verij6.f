@@ -4,7 +4,7 @@
       CHARACTER*(*) COUI
       INTEGER VCO(*),NVU,NTROU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,9 +123,11 @@ C     ------------------------------
         CALL VERIJB('C','OJB',CH19//'.DESC',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH19//'.MASG',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH19//'.FACT',PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','OJB',CH8//'.VCN',PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','OJB',CH8//'.VEN',PN,VCO,M80,NVU,NTROU)
 
-        CALL JEEXIN(CH19//'.0001',IEXI)
-        IF (IEXI.EQ.0) GOTO 20
+C        CALL JEEXIN(CH19//'.0001',IEXI)
+C        IF (IEXI.EQ.0) GOTO 20
         CALL JEVEUO(CH19//'.0001','L',J1)
         CALL JELIRA(CH19//'.0001','LONMAX',N1,KBID)
         DO 10,K = 1,N1
@@ -147,7 +149,7 @@ C     ------------------------------
    40   CONTINUE
 
         CALL JEEXIN(CH8//'.TB000000  .0004',IEXI)
-        IF (IEXI.EQ.0) GOTO 40
+        IF (IEXI.EQ.0) GOTO 60
         CALL JEVEUO(CH8//'.TB000000  .0004','L',J1)
         CALL JELIRA(CH8//'.TB000000  .0004','LONMAX',N1,KBID)
         DO 50,K = 1,N1
@@ -158,7 +160,7 @@ C     ------------------------------
    60   CONTINUE
 
         CALL JEEXIN(CH8//'.TB000000  .0005',IEXI)
-        IF (IEXI.EQ.0) GOTO 40
+        IF (IEXI.EQ.0) GOTO 80
         CALL JEVEUO(CH8//'.TB000000  .0005','L',J1)
         CALL JELIRA(CH8//'.TB000000  .0005','LONMAX',N1,KBID)
         DO 70,K = 1,N1
@@ -167,8 +169,6 @@ C     ------------------------------
      &                NTROU)
    70   CONTINUE
    80   CONTINUE
-   90   CONTINUE
-
 
       ELSEIF (TYP2SD.EQ.'L_TABLE') THEN
 C     ------------------------------
@@ -901,6 +901,7 @@ C     --------------------------------
         CALL VERIJB('C','OJB',CH19//'.VARE',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH19//'.VATE',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH19//'.VAVF',PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','OJB',CH19//'.NNOE',PN,VCO,M80,NVU,NTROU)
 
 
       ELSEIF (TYP2SD.EQ.'SD_FETI') THEN
@@ -1264,17 +1265,6 @@ C     --------------------------------
         CALL VERIJB('C','OJB',CH19//'.FSVK',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH19//'.FSVR',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH19//'.FSGR',PN,VCO,M80,NVU,NTROU)
-
-
-      ELSEIF (TYP2SD.EQ.'TYPE_FLUI_STRU') THEN
-C     --------------------------------
-        CH19 = NOMSD
-        CALL VERIJB('C','OJB',CH19//'.FSCR',PN,VCO,M80,NVU,NTROU)
-        CALL VERIJB('C','OJB',CH19//'.FSGM',PN,VCO,M80,NVU,NTROU)
-        CALL VERIJB('C','OJB',CH19//'.FSIC',PN,VCO,M80,NVU,NTROU)
-        CALL VERIJB('C','OJB',CH19//'.FSVI',PN,VCO,M80,NVU,NTROU)
-        CALL VERIJB('C','OJB',CH19//'.FSVK',PN,VCO,M80,NVU,NTROU)
-        CALL VERIJB('C','OJB',CH19//'.FSVR',PN,VCO,M80,NVU,NTROU)
 
 
       ELSEIF (TYP2SD.EQ.'TRAN_GENE') THEN

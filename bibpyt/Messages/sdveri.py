@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF sdveri Messages  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,112 +67,145 @@ cata_msg={
 """),
 
 12: _("""
-  erreur modg.desc comp 3
+  erreur MODG.DESC comp 3
 """),
 
 13: _("""
- composante 5 de           l objet modg.lidf non valide
+ composante 5 de  l'objet MODG.LIDF non valide
 """),
 
 14: _("""
- matrice de liaison 1 de   l objet modg.lima non valide
+ matrice de liaison 1 de   l'objet MODG.LIMA non valide
 """),
 
 15: _("""
- matrice de liaison 2 de   l objet modg.lima non valide
+ matrice de liaison 2 de   l'objet MODG.LIMA non valide
 """),
 
 16: _("""
- matrice de liaison 3 de   l objet modg.lima non valide
+ matrice de liaison 3 de   l'objet MODG.LIMA non valide
 """),
 
 17: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- L'objet JEVEUX %(k1)s a un LONMAX incorrect
+ L'objet JEVEUX '%(k1)s' a un LONMAX incorrect.
+ LONMAX attendu : %(i1)d
+ LONMAX trouvé  : %(i2)d
 """),
 
 18: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- La collection JEVEUX %(k1)s n'a pas le bon nombre d'objets (NUTIOC)
+ La collection JEVEUX '%(k1)s' n'a pas le bon nombre d'objets (NUTIOC)
 """),
 
 19: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- Le  pointeur de noms JEVEUX %(k1)s n'a pas la bonne longueur (NOMUTI)
+ Le  pointeur de noms JEVEUX '%(k1)s' n'a pas la bonne longueur (NOMUTI)
 """),
 
 20: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- L'objet JEVEUX %(k1)s devrait etre de type entier
+ L'objet JEVEUX '%(k1)s' devrait etre de type entier
 """),
 
 21: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- L'objet JEVEUX %(k1)s devrait etre de type réel
+ L'objet JEVEUX '%(k1)s' devrait etre de type réel
 """),
 
 22: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- L'objet JEVEUX %(k1)s devrait etre de type complexe
+ L'objet JEVEUX '%(k1)s' devrait etre de type complexe
 """),
 
 23: _("""
  Erreur de programmation :
- L'objet JEVEUX %(k1)s est interdit dans les structures de données de type %(k2)s
+ L'objet JEVEUX '%(k1)s' est interdit dans les structures de données de type '%(k2)s'
  On le détruit.
 """),
 
 24: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- L'objet JEVEUX %(k1)s devrait etre de type %(k2)s.
+ L'objet JEVEUX '%(k1)s' devrait etre de type '%(k2)s'.
 """),
 
 25: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- La vérification %(k1)s n'est pas programmée.
+ La vérification '%(k1)s' n'est pas programmée.
 """),
 
 26: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- L'objet %(k1)s est obligatoire dans la SD mais il n'existe pas.
+ L'objet '%(k1)s' est obligatoire dans la SD mais il n'existe pas.
 """),
 
 27: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- L'objet JEVEUX %(k1)s a un champ DOCU incorrect : %(k2)s
+ L'objet JEVEUX '%(k1)s' a un champ DOCU incorrect.
+ Le champ DOCU attendu est : '%(k2)s'
+ Le champ DOCU trouvé  est : '%(k3)s'
 """),
 
 28: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- Le type de SD %(k1)s n'est pas encore programmé
+ Le type de SD '%(k1)s' n'est pas encore programmé
 """),
 
 29: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- L'objet JEVEUX %(k1)s a un type incorrect : %(k2)s
-"""),
-
-31: _("""
- Erreur de programmation :
- Vérification d'une structure de donnée :
- L'objet JEVEUX %(k1)s a un genr incorrect : %(k2)s
+ L'objet JEVEUX '%(k1)s' a un type incorrect.
+ Le type attendu est : '%(k2)s'
+ Le type trouvé  est : '%(k3)s'
 """),
 
 30: _("""
  Erreur de programmation :
  Vérification d'une structure de donnée :
- La Structure de donnée %(k1)s de type %(k2)s est obligatoire mais elle est vide
+ La Structure de donnée '%(k1)s' de type %(k2)s est obligatoire mais elle est vide
 """),
+
+31: _("""
+ Erreur de programmation :
+ Vérification d'une structure de donnée :
+ L'objet JEVEUX '%(k1)s' a un GENR incorrect.
+ GENR attendu est : '%(k2)s'
+ GENR trouvé  est : '%(k3)s'
+"""),
+
+32: _("""
+ Erreur de programmation :
+ Vérification d'une structure de donnée :
+ L'objet JEVEUX '%(k1)s' a un XOUS incorrect.
+ XOUS attendu est : '%(k2)s'
+ XOUS trouvé  est : '%(k3)s'
+"""),
+
+31: _("""
+ Erreur de programmation :
+ Concept de type inconnu %(k1)s
+"""),
+
+32: _("""
+ Erreur de programmation :
+ Type de configuration inconnu pour le mot clé FAISCEAU_AXIAL
+"""),
+
+33: _("""
+ Erreur de programmation :
+ Type de spectre incorrect
+"""),
+
+
 }

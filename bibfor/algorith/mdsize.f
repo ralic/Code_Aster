@@ -5,7 +5,7 @@ C
       LOGICAL       LPSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/06/97   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF ALGORITH  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,9 +44,11 @@ C
      +   CALL JEECRA(NOMRES//'           .PTEM' ,'LONUTI',NBSAUV,K8BID)
       IF (NBCHOC.GT.0) THEN
          NBSTOC = 3 * NBCHOC * NBSAUV
+         NBSTO1 = NBCHOC * NBSAUV
          CALL JEECRA(NOMRES//'           .FCHO' ,'LONUTI',NBSTOC,K8BID)
          CALL JEECRA(NOMRES//'           .DLOC' ,'LONUTI',NBSTOC,K8BID)
          CALL JEECRA(NOMRES//'           .VCHO' ,'LONUTI',NBSTOC,K8BID)
+         CALL JEECRA(NOMRES//'           .ICHO' ,'LONUTI',NBSTO1,K8BID)
       ENDIF
       IF (NBREDE.GT.0) THEN
          NBSTOC = NBREDE * NBSAUV

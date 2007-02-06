@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 05/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #
 DEBUT(CODE=_F(NOM='FORMA01A', NIV_PUB_WEB='INTERNET',),);
@@ -24,8 +24,8 @@ DEBUT(CODE=_F(NOM='FORMA01A', NIV_PUB_WEB='INTERNET',),);
 #        TUYAUTERIE COMPORTANT UN COUDE
 #     MODELISATION PAR DES ELEMENTS POUTRES
 #     -------------------------------------
-#      CALCUL 1 : LECTURE MAILLAGE GMSH, SANS COEF FLEX
-#      CALCUL 2 : LECTURE MAILLAGE GMSH, POU_D_T + POU_C_T, AVEC COEF FLEX
+#      CALCUL 1 : LECTURE MAILLAGE MED, SANS COEF FLEX
+#      CALCUL 2 : LECTURE MAILLAGE MED, POU_D_T + POU_C_T, AVEC COEF FLEX
 #
 #
 
@@ -38,27 +38,13 @@ REXT = 0.2;
 LG = 3.0;
 
 #
-# INTERFACE AVEC GMSH ET LECTURE DU MAILLAGE
+# LECTURE DU MAILLAGE AU FORMAT MED
 #
 #
 #
 
-PRE_GMSH(UNITE_GMSH=18,);
+MAIL=LIRE_MAILLAGE(FORMAT='MED');
 
-MAIL=LIRE_MAILLAGE();
-
-MAIL=DEFI_GROUP(reuse =MAIL,
-              MAILLAGE=MAIL,
-              CREA_GROUP_NO=(
-              _F(GROUP_NO='GM101',NOM='PA'),
-              _F(GROUP_NO='GM102',NOM='PB'),
-              ),
-              CREA_GROUP_MA=(
-              _F(GROUP_MA='GM103',NOM='TUY1'),
-              _F(GROUP_MA='GM105',NOM='TUY2'),
-              _F(GROUP_MA='GM104',NOM='COUDE'),
-              _F(TOUT='OUI',NOM='TOUT'),
-              ),);
 
 # DEFINITION DES ELEMENTS FINIS UTILISES
 #
@@ -94,7 +80,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 
 
 CARA_POU=AFFE_CARA_ELEM(MODELE=MODMECA,
-                        POUTRE=_F(GROUP_MA='TOUT',
+                        POUTRE=_F(GROUP_MA=('TUY1','TUY2','COUDE'),
                                   SECTION='CERCLE',
                                   CARA=('R','EP',),
                                   VALE=(REXT,EPTUB,),),
@@ -174,7 +160,7 @@ IMPR_RESU(MODELE=MODMECA,
 # ECRITURE DES RESULTATS AU FORMAT GMSH
 #
 #
-IMPR_RESU(MODELE=MODMECA,FORMAT='GMSH' ,UNITE=50,
+IMPR_RESU(MODELE=MODMECA,FORMAT='MED' ,
           RESU=(_F(MAILLAGE=MAIL,
                    RESULTAT=RESU1,
                    NOM_CHAM=('DEPL','EFGE_ELNO_DEPL',),),),);
@@ -206,20 +192,7 @@ LAMBDA=(EPTUB*RC)/(RMOY*RMOY)
 
 FRCCM=1.65/LAMBDA
 
-MAIL2=LIRE_MAILLAGE();
-
-MAIL2=DEFI_GROUP(reuse =MAIL2,
-              MAILLAGE=MAIL2,
-              CREA_GROUP_NO=(
-              _F(GROUP_NO='GM101',NOM='PA'),
-              _F(GROUP_NO='GM102',NOM='PB'),
-              ),
-              CREA_GROUP_MA=(
-              _F(GROUP_MA='GM103',NOM='TUY1'),
-              _F(GROUP_MA='GM105',NOM='TUY2'),
-              _F(GROUP_MA='GM104',NOM='COUDE'),
-              _F(TOUT='OUI',NOM='TOUT'),
-              ),);
+MAIL2=LIRE_MAILLAGE(FORMAT='MED');
 
 
 #
@@ -274,7 +247,7 @@ CHARGT2=AFFE_CHAR_MECA(MODELE=MODMECA2,
 #
 
 CARAFLEX=AFFE_CARA_ELEM(MODELE=MODMECA2,
-                        POUTRE=_F(GROUP_MA='TOUT',
+                        POUTRE=_F(GROUP_MA=('TUY1','TUY2','COUDE'),
                                   SECTION='CERCLE',
                                   CARA=('R','EP',),
                                   VALE=(REXT,EPTUB,),),
@@ -299,7 +272,7 @@ IMPR_RESU(MODELE=MODMECA2,
                    NOM_CHAM='DEPL',
                    GROUP_NO='PB',),),)
 
-IMPR_RESU(MODELE=MODMECA2,FORMAT='GMSH',UNITE=51,
+IMPR_RESU(MODELE=MODMECA,FORMAT='MED' ,UNITE=81,
           RESU=(_F(RESULTAT=RESU2,
                    NOM_CHAM='DEPL',),),)
 

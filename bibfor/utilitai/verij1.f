@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD,TYPSD,M80
       INTEGER NOBJ,NVU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1506,8 +1506,16 @@ C----------------------------------------
         CALL VERIJ3(OUF,NOMS8//'           .VITE','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VITE','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VITE','TYPE','R8',NOBJ)
-        OUF = VERIJ4(OF,'O')
+        OUF = VERIJ4(OF,'F')
         CALL VERIJA(OUF,'L_TABLE',NOMS8,M80,NVU,NOBJ)
+        OUF = VERIJ4(OF,'F')
+        CALL VERIJ3(OUF,NOMS8//'.VCN','XOUS','S',NOBJ)
+        CALL VERIJ3(OUF,NOMS8//'.VCN','GENR','V',NOBJ)
+        CALL VERIJ3(OUF,NOMS8//'.VCN','TYPE','R8',NOBJ)
+        OUF = VERIJ4(OF,'F')
+        CALL VERIJ3(OUF,NOMS8//'.VEN','XOUS','S',NOBJ)
+        CALL VERIJ3(OUF,NOMS8//'.VEN','GENR','V',NOBJ)
+        CALL VERIJ3(OUF,NOMS8//'.VEN','TYPE','R8',NOBJ)
 
       ELSEIF (TYP2SD.EQ.'MODELE') THEN
 C----------------------------------------
@@ -1933,22 +1941,22 @@ C----------------------------------------
         CALL VERIJ3(OUF,NOMS8//'           .VAIN','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VAIN','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VAIN','TYPE','I',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .VAIN','LONMAX','1',NOBJ)
-        OUF = VERIJ4(OF,'O')
+        OUF = VERIJ4(OF,'F')
         CALL VERIJ3(OUF,NOMS8//'           .VARE','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VARE','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VARE','TYPE','R8',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .VARE','LONMAX','12',NOBJ)
         OUF = VERIJ4(OF,'O')
         CALL VERIJ3(OUF,NOMS8//'           .VATE','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VATE','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VATE','TYPE','K16',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .VATE','LONMAX','13',NOBJ)
-        OUF = VERIJ4(OF,'O')
+        OUF = VERIJ4(OF,'F')
         CALL VERIJ3(OUF,NOMS8//'           .VAVF','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VAVF','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS8//'           .VAVF','TYPE','K8',NOBJ)
-        CALL VERIJ3(OUF,NOMS8//'           .VAVF','LONMAX','1',NOBJ)
+        OUF = VERIJ4(OF,'F')
+        CALL VERIJ3(OUF,NOMS8//'           .NNOE','XOUS','S',NOBJ)
+        CALL VERIJ3(OUF,NOMS8//'           .NNOE','GENR','V',NOBJ)
+        CALL VERIJ3(OUF,NOMS8//'           .NNOE','TYPE','K8',NOBJ)
 
       ELSEIF (TYP2SD.EQ.'SQUELETTE') THEN
 C----------------------------------------
@@ -2288,15 +2296,15 @@ C----------------------------------------
         CALL VERIJ3(OUF,NOMS19//'.FSIC','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.FSIC','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.FSIC','TYPE','I',NOBJ)
-        OUF = VERIJ4(OF,'O')
+        OUF = VERIJ4(OF,'F')
         CALL VERIJ3(OUF,NOMS19//'.FSVI','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.FSVI','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.FSVI','TYPE','I',NOBJ)
-        OUF = VERIJ4(OF,'O')
+        OUF = VERIJ4(OF,'F')
         CALL VERIJ3(OUF,NOMS19//'.FSVK','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.FSVK','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.FSVK','TYPE','K8',NOBJ)
-        OUF = VERIJ4(OF,'O')
+        OUF = VERIJ4(OF,'F')
         CALL VERIJ3(OUF,NOMS19//'.FSVR','XOUS','S',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.FSVR','GENR','V',NOBJ)
         CALL VERIJ3(OUF,NOMS19//'.FSVR','TYPE','R8',NOBJ)

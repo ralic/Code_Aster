@@ -1,45 +1,41 @@
+
 # TITRE TRAVAUX PRATIQUES FORMATION DE BASE 
 #        TUYAUTERIE COMPORTANT UN COUDE
 #     MODELISATION PAR DES ELEMENTS MASSIFS
 #         AVEC STRATIFICATION THERMIQUE
 #     -------------------------------------
 
-#
-POURSUITE(CODE=_F(  NOM = 'FORMA01C'))
-#
+POURSUITE(CODE=_F(NOM='FORMA01C',),);
 
 COURBE=INTE_MAIL_3D(MAILLAGE=MAIL,
-                    DEFI_SEGMENT=_F(ORIGINE=(0.0,3.0,0.1),
-                                    EXTREMITE=(0.0,3.0,0.2),),
+                    DEFI_SEGMENT=_F(ORIGINE=(0.0,3.0,0.1,),
+                                    EXTREMITE=(0.0,3.0,0.2,),),
                     INFO=2,);
 
-TABDEPT=POST_RELEVE_T(ACTION=_F(INTITULE='DEPBT',
-                                CHEMIN=COURBE,
+TABDEPT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='DEPBT',
                                 RESULTAT=TEMPE,
                                 NOM_CHAM='TEMP',
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
-
-TABDEP0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB0',
                                 CHEMIN=COURBE,
+                                TOUT_CMP='OUI',),);
+
+TABDEP0=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                INTITULE='DEPB0',
                                 RESULTAT=RESUT,
                                 NOM_CHAM='DEPL',
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                CHEMIN=COURBE,
+                                TOUT_CMP='OUI',),);
 
 IMPR_TABLE(TABLE=TABDEPT,);
 
 IMPR_TABLE(TABLE=TABDEP0,);
 
-TITRE='TEMPERATURE AU TRAVERS DE LA PAROI';
+TITRE = 'TEMPERATURE AU TRAVERS DE LA PAROI';
 
-IMPR_TABLE(
-   FORMAT='XMGRACE',
-   UNITE=29,
-   TABLE=TABDEPT,
-   NOM_PARA=('ABSC_CURV','TEMP'),
-   TITRE=TITRE,
-)
+IMPR_TABLE(TABLE=TABDEPT,
+           FORMAT='XMGRACE',
+           UNITE=29,
+           NOM_PARA=('ABSC_CURV','TEMP',),
+           TITRE=TITRE,);
 
-FIN()
-#
+FIN();

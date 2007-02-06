@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 05/02/2007   AUTEUR ZENTNER I.ZENTNER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,6 @@ GENE_VARI_ALEA=MACRO(nom="GENE_VARI_ALEA",
            VALE_MOY   = SIMP(statut='f', typ='R', defaut=0.),
            BORNE_INF  = SIMP(statut='f', typ='R', defaut=-1.),
            BORNE_SUP  = SIMP(statut='f', typ='R', defaut=1.),
-           COEF_VAR   = SIMP(statut='f', typ='R', defaut=0.1,val_min=0.),
              ),
    INIT_ALEA       =SIMP(statut='f',typ='I'),
 )

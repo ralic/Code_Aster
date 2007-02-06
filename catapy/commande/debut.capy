@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,15 +37,18 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
            LONG_ENRE       =SIMP(fr="longueur des enregistrements",statut='f',typ='I'),
            LONG_REPE       =SIMP(fr="longueur du répertoire",statut='f',typ='I'),
          ),
+
          IMPRESSION      =FACT(statut='f',min=1,max=3,
            FICHIER         =SIMP(statut='o',typ='TXM'),
            UNITE           =SIMP(statut='o',typ='I'),
          ),
+
          CATALOGUE       =FACT(statut='f',min=1,max=10,
            FICHIER         =SIMP(statut='o',typ='TXM'),
            TITRE           =SIMP(statut='f',typ='TXM'),
            UNITE           =SIMP(statut='f',typ='I'),
          ),
+
          CODE            =FACT(fr="définition d un nom pour l'ensemble d'une étude",
                                statut='f',min=1,max=1,
            NOM             =SIMP(statut='o',typ='TXM'),
@@ -53,20 +56,23 @@ DEBUT=MACRO(nom="DEBUT",op=ops.build_debut ,repetable='n',
            VISU_EFICAS     =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI'),
            UNITE           =SIMP(statut='f',typ='I',defaut=15),
          ),
+
          ERREUR          =FACT(fr="comportement en cas d'erreur",statut='f',min=1,max=1,
            ERREUR_F        =SIMP(statut='f',typ='TXM',into=('ABORT','EXCEPTION'),defaut='ABORT'),
          ),
+
          DEBUG           =FACT(fr="option de déboggage reservée aux développeurs",
                                statut='f',min=1,max=1,
            JXVERI          =SIMP(fr="vérifie l intégrité de la segmentation mémoire",
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
            SDVERI          =SIMP(fr="vérifie la conformité des SD produites par les commandes",
-                                 statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
+                                 statut='f',typ='TXM',into=('OUI','NON')),
            JEVEUX          =SIMP(fr="force les déchargement sur disque",
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
            ENVIMA          =SIMP(fr="imprime les valeurs définies dans ENVIMA",
                                  statut='f',typ='TXM',into=('TEST',)),
          ),
+
          MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='f',min=1,max=1,
            GESTION         =SIMP(statut='f',typ='TXM',into=('COMPACTE','RAPIDE'),defaut='RAPIDE'),
            TYPE_ALLOCATION =SIMP(statut='f',typ='I',into=(1,2,3,4),defaut=1),
