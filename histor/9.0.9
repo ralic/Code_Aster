@@ -1,0 +1,826 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bodel        BODEL Charles          DATE 06/02/2007 - 09:54:38
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010443 DU 2007-01-12 08:05:05
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   erreur mathematique dans MACRO_VISU_MEIDEE
+FONCTIONNALITE
+   Une erreur s'est glissée dans MACRO_VISU_MEIDEE option "fludela", dans le 
+   calcul des coefficients de raideur ajoutée, ligne 649 de meidee_fludela.py. 
+   
+   Erreur corrigée, fiche résolue
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.90.01, U4.90.02, R4.07.06
+VALIDATION
+   sdls139a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET N.             DATE 09/02/2007 - 09:53:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010490 DU 2007-02-01 14:14:07
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   FFT : prise en compte complxc3xa8te d'un signal avec nombre quelconque d'xc3xa9chantillons
+FONCTIONNALITE
+   On permet l'appel à l'algorithme acceptant un nombre quelconque d'échantillons avec l'ajout 
+   d'une option COMPLET dans METHODE pour la FFT dans CALC_FONCTION :
+   METHODE=
+   SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE","COMPLET"))
+   
+   Les options existantes : PROL_ZERO et TRONCATURE sont conservées.
+   Fichiers impactés :
+   t_fonctions.py
+   calc_fonction.capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.32.04, V1.01.100
+VALIDATION
+   zzzz100b
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR markovic     MARKOVIC D.            DATE 09/02/2007 - 09:52:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010340 DU 2006-12-01 10:42:07
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Multifissuration avec XFEM
+FONCTIONNALITE
+   Le développement a été réalisé en collaboration avec IFP 
+   (Ionel Nistor et Martin Guiton)
+   et consiste à modifier les SD fissure et modèle de sorte 
+   que la gestion de plusieurs
+   fissures soit aussi aisée du point de vue d'utilisateur 
+   que de développeur. La plupart du
+   travail a été effectuée par Ionel Nistor (post-doc IFP), 
+   assisté et suivi de très près par
+   Damijan Markovic, Samuel Géniaut, Patrick Massin et 
+   Jacques Pellet.
+   
+   La multi-fissuration hérite toutes les fonctionnalités 
+   existantes pour une fissure, sauf
+   la propagation. L'architecture proposée y étant adaptée, 
+   l'extension de la propagation aux
+   structures multi-fissurées est prévue pour une des 
+   prochaines évolutions de la méthode.
+   
+   Historique de l'évolution de  XFEM en Code-Aster  - 
+   Multi-fissuration
+   
+   
+   L'analyse de structures comportant plusieurs fissures 
+   est devenue possible en Code-Aster suite à l'évolution 
+   présentée par la suite. Les conditions de l'analyse sont 
+   les mêmes que jusqu'à là, c'est-à-dire élasticité 
+   statique avec contact frottant. Le module de post-
+   traitement a évolué aussi étant donc possible la 
+   représentation graphique du champ "déplacements" pour 
+   une structure contenant multiples fissures. La 
+   limitation dont l'utilisateur doit tenir compte concerne 
+   le positionnement des fissures dans le maillage. En 
+   effet les fissure ne doivent pas s'intersecter (pas 
+   encore!) et ne pas s'approcher à moins de quatre mailles 
+   (autrement dit, une maille doit "voir" une seule fissure 
+   pour l'instant).
+   Les modifications/ajouts dans les sources d'Aster pour 
+   rendre possible cette évolution sont présentées en ceux 
+   qui suivent.
+   
+   
+   1. Au niveau du fichier de commande:
+   
+   - la définition de plusieurs fissures se fait en 
+   multipliant les appels de l'opérateur DEFI_FISS_XFEM, un 
+   pour chaque nouvelle fissure;
+   -  le mot clé "CONTACT" doit soit être présent pour 
+   toutes les fissures, soit être absents pour toutes les 
+   fissures. La présence de contact seulement pour une 
+   partie de fissure mène à un arret fatal, déclenché sous
+   STAT_NON_LINE.
+   -  la liste de noms des fissures est fournie à 
+   l'opérateur MODI_M²ODELE_XFEM, la syntaxe a été modifié. 
+   L'argument du mot-clé FISSURE est la liste de fissures 
+   (ex: FISSURE=(FISS1, FISS2);
+   
+   
+   2. Création de nouvelles routines:
+   
+   -  afin de pouvoir lancé l'analyse pour un modèle 
+   contenant plusieurs fissures, la SD FISS_XFEM a du être 
+   enrichie. L'idée retenue a été de concaténer les champs 
+   élémentaires et nodaux présents dans cette SD (définis 
+   sur la fissure jusqu'à ici), opération imposée par 
+   l'opérateur STAT_NON_LINE qui n'accepte que un seul 
+   champ par type de données;
+   - dans les champs globaux résultants, l'information 
+   contenue au niveau d'un  noeud ou d'un élément concerne 
+   seulement la fissure dont ce noeud/élément voit;
+   -  deux nouvelles routines ont été crées dans ce but: 
+   xconel.f (concaténation de champs élémentaires) et 
+   xconno.f (concaténation de champs nodaux).
+   
+   
+   
+   3. Modification de l'opérateur  MODI_MODELE_XFEM 
+   (op0113.f): 
+   
+   
+   - introduction d'un objet JEVEUX pour récupérer le 
+   nombre de fissures présentes dans le modèle;
+   - boucle sur les fissures afin de initialiser le 
+   maillage XFEM tenant compte de toutes les fissures;
+   - boucle sur les fissures afin calculer les champs 
+   élémentaires liés au découpage des éléments coupés par 
+   la fissure et au contact (TOPOSE et CONTACT);
+   - appel des routines de concaténation des champs 
+   élémentaires et  nodaux de la SD FISS_XFEM.
+   
+   
+   
+   
+    4. Modification de la routine de routine préparation de 
+   données pour le calcul des matrices élémentaires et des 
+   seconds membre de type contact-frottant (xconli.f ):
+   
+   - des boucles sur le fissures ont été introduites afin 
+   de créer la structure de données pour le contact 
+   frottant qui tient compte de toutes les fissure. La 
+   composition de cette SD se fait à partir d'objets de 
+   type vecteur, donc l'appel des routines de concaténation 
+   n'est plus possible.
+   
+   5. Modification de la routine de création des relations 
+   linéaires qui annulent les ddl en trop (caxfem.f):
+   
+   - on boucle sur les fissures pour appliquer au maillage 
+   du modèle la liste de  relations nécessaires 
+   (correspondante à chaque fissure) pour la mise à zéro 
+   des ddl en trop; 
+   - c'est ici qu'il faut réfléchir sur les changement à 
+   faire afin que les fissures  puissent s'approcher dans 
+   le maillage à moins de quatre éléments (modification SD 
+   FISS_XFEM?).
+   
+   
+   6. Modification dans les routines xdelco.f, xreacl.f, 
+   xmmmbca.f, xmmcme.f, merimo.f, vefnme.f    
+   
+   
+   
+   7. Une autre routine rajoutée, xcordo.f (appelée par 
+   nmfonc.f) pour synchroniser les parametres 
+   ITER_CONT_MAXI, ITER_FROT_MAXI, ITER_GEOM_MAXI 
+   (sous CONTACT sous DEFI_FISS_XFEM)
+   On modifie les SD 'FISS'.CONTACT avec les valeurs 
+   maximales. Branchement sous nmfonc.f conseillé par MA.
+   
+   
+   
+   - les appels aux champs de la SD FISS_XFEM ont été 
+   modifiés avec des appels aux champs globaux (résultats 
+   de la concaténation);
+   - un nouvel argument d'entrée (FISS) a été ajouté pour 
+   xdelco.f (cette routine étant appelée dans la boucle sur 
+   les fissures introduite en caxfem.f)
+   -	des modifications ont été faits pour rendre ces 
+   opérateurs disponibles en multi fissuration. Il s'agit 
+   notamment de l'introduction des objets JEVEUX pour 
+   récupérer le nombre et les noms des fissures, des 
+   boucles sur les fissures afin d'ajouter la contribution 
+   de chaque une dans le nouveau maillage, etc;
+   -	concernant 
+   
+   Liste de routines impactées:
+   
+   -	op0113.f
+   -	op0187.f
+   -	op0196.f
+   -	merimo.f
+   -       nmfonc.f
+   -	xdelco.f
+   -	xreacl.f
+   -	xmmmbca.f
+   -	xmmcme.f
+   -	vefnme.f
+   -	caxfem.f
+   -	xconli.f 
+   Catalogue Python impacté:
+   
+   -	modi_modele_xfem.capy
+   
+   Nouvelles routines ajoutées:
+   
+   -	 xconel.f 
+   -	 xconno.f 
+            xcordo.f
+   
+   Nouvelle routine de message, dédiée à X-FEM
+   
+            xfem.py
+   avec 5 nouveaux messages.
+   
+   Liste de cas-tests pour la validation
+   
+   -	ssnv195a: deux fissures planes horizontales, 
+   sans contact, chargement en traction, les fissures 
+   coupent complètement le maillage
+   -	ssnv195b: deux fissures planes horizontales, 
+   avec contact frottant, chargement en compression, 
+   validation de la pression de contact, les fissures 
+   coupent complètement le maillage;
+   -	ssnv195c: deux fissures planes obliques, avec 
+   contact frottant, chargement mixte (traction sur une 
+   fissure et compression sur l'autre)
+   -	ssnv195d: comme ssnv195a, mais en 2D
+   -	ssnv185k: deux fissures débouchantes dans une 
+   plaque 3D, calcul des facteurs d?intensité de 
+   contraintes.
+   
+   Jornees travaillees :
+   
+   Ionel NISTOR - 40
+   Damijan MARKOVIC - 25
+   Samuel GENIAUT - 3
+   Patrick MASSIN - 1
+   Jacques PELLET - 2
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.08,D4.06.02,D4.10.02,U4.41.11,R7.02.12
+VALIDATION
+   ssnv185k,ssnv195a,ssnv195b,ssnv195c,ssnv195d
+NB_JOURS_TRAV  : 70.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR torkhani     TORKHANI M.            DATE 09/02/2007 - 07:26:25
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010315 DU 2006-11-27 14:54:46
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CONTACT METHODE CONTINUE ET PRISE EN COMPTE D'USURE DE TYPE ARCHARD
+FONCTIONNALITE
+   TITRE CONTACT METHODE CONTINUE ET PRISE EN COMPTE D'USURE DE     
+         TYPE ARCHARD
+      
+   FONCTIONNALITE
+   
+   Dans le cadre de la methode continue du traitement de contact, on propose de developper un
+   modele d'usure se basant sur la loi phenomenologique d'Archard. Ce modèle est restreint au
+   cas de contact frottant. Pour l'instant, seule la surface esclave est usée.
+   On reflechira à la façon dont on peut repartir les profondeurs d'usure entre la surface
+   maître et esclave ainsi qu'à la notion de puissance d'usure pour ces modèles.
+   
+   Concretement, l'idee essentielle de ce modele consiste à inclure numeriquement une
+   variable interne quantifiant l'usure développee à l'interface de contact comme un
+   champ-jeu Dhn supplémentaire correctif du jeu geometrique.
+      
+                 Dhn = (Kwear/Hwear)*Lambda*norme([u_tangent[)
+   	      
+   où:
+      hn la profondeur d'usure
+      Kwear un coefficient d'usure
+      Hwear la dureté du materiau 
+      Lambda la pression de contact
+      [u_tangent] le saut du deplacement tangentiel
+      
+   La profondeur d'usure hn est donnée dans la SD VALE_CONT. 
+   Avec POST_RELEVE_T, par exemple, on peut accéder à la profondeur d'usure en un noeud en
+   écrivant :
+   
+   PRFUSU=POST_RELEVE_T(ACTION=_F(INTITULE='USURE',
+                                  GROUP_NO='',
+                                  RESULTAT=,
+                                  NOM_CHAM='VALE_CONT',
+                                  NUME_ORDRE=,
+                                  NOM_CMP=('HN',),
+                                  OPERATION='EXTRACTION',),);
+   
+   Pour la validation, on s'interesse à l'usure par phenomenes de "fretting" (chargement
+   cyclique de cisaillement).
+   
+   La demarche adoptee est parfaitement adaptable à d'autres 
+   phenomenes d'usure (labourage, abrasion ...) moyennant 
+   l'implantation d'un modele d'usure coherent.
+      
+   DOC_U : U4.44.01-I1	
+      EXPL_ : Ajout d'un nouveau mot-cle USURE dans AFFE_CHAR_MECA/
+      CONTACT/METHODE='CONTINUE' :
+      
+      b_frottement  =BLOC(condition="FROTTEMENT=='COULOMB'",
+                      fr="Paramètres du frottement de Coulomb",
+      CONTACT = _F(METHODE = CONTINUE, 
+         USURE=SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","ARCHARD",),),
+      b_usure       =BLOC(condition = "USURE == 'ARCHARD' ",fr=
+                     "Parametres de la loi d'usured'Archard",
+          K               =SIMP(statut='o',typ='R',),
+          H               =SIMP(statut='o',typ='R',),),
+      
+   Si on veut utiliser la loi d'usure (ie USURE = 'ARCHARD'),on doit obligatoirement
+   renseigner les paramètres K et H.
+          
+   DOC_D : D4.06.14-D
+      EXPL_ : Modification de la structure de donnée 
+              "DEFICO.CARACF".
+   
+   DOC_V : V6.04.128-D
+      EXPL_ : AJOUT de cas_tests SSNV128S (2D lineaire),
+              SSNV128T (2D quadratique) et SSNV128U (3D 
+              lineaire): Plaque avec contact et frottement sur      
+              un plan rigide.
+   
+   
+   DOC_R : R5.03.52-A
+      EXPL_ : Prise en compte d'usure dans le traitement du 
+               contact frottant par la methode continue
+      
+   DETAILS
+   
+       1) Routines modifiees
+          La routine CAZOCC permet de stocker les paramètres de 
+          la loi d'usure dans le tableau CARACF.
+          
+          Dans la nouvelle routine INIUSU, on initialise les 
+          cartes USUMOI, USUPLU et USUFIX servant au stockage  
+          et à l'incrementation des valeurs des profondeurs 
+          d'usure calculees a partir de la loi phenomelogique 
+          d'usure de type Archard selon la relation donnee 
+          ci-haut.
+          Dans la routine MAJUSU, on calcule les cartes de
+          profondeur d'usure à convergence et on les stocke
+          dans la SD JEUSUR = DEFICO(1:16) // '.JEUSUR'.
+          
+          Dans les routines elementaires MMCMEM, MMMBCA 
+          et TE0365.f, on corrige la distance orientee 
+          signee (jeu geometrique) par un champ-jeu 
+          supplementaire quantifiant la profondeur d'usure.
+          Dans la routine TE0364.f, on ajoute aux matrices 
+          elementaires de contact les nouveaux termes issus
+          de la discretisation de la profondeur d'ususre par 
+          un schema de type Euler Implicite.
+   
+          Pour les autres routines, il s'agit d'une simple 
+          repercussion de la creation des cartes d'usure et de 
+          l'extension de tableaux servant au stockage des 
+          informations pertinentes a passer aux routines 
+          elementaires.
+   
+       2) Il s'en suit aussi des modifications dans les 
+          catalogues gener_cmcfz1.cata, gener_cmcfz2.cata, 
+          rigi_cont.cata, rigi_frot.cata, char_meca_cont.cata 
+          et char_meca_frot.cata afin de prendre en compte la 
+          nouvelle carte d'usure comme variable interne a 
+          l'element de contact. Le catalogue  
+          grandeur_simple__.cata est aussi modifie pour 
+          l'extension de INFC_R (nouvelle variable HN pour 
+          profondeur d'usure)
+          
+       
+       3) Le catalogue de commandes affe_char_meca.capy a ete 
+          modifie pour prendre en compte les mots-cles USURE
+          et les parametres correspondants.   
+   
+       4) Cas-test: Ajout de 3 nouvelles versions du cas-test 
+                    SSNV128 pour la prise en compte d'usure de 
+                    type Archard dans le traitement du contact 
+   		 frottant par la methode continue: SSNV128S,
+                    SSNV128T et SSNV128U.
+                    
+                    
+        
+      Impact: - CARACO, CAZOCO, CAZOCC, MMMJEU, MMMJEU, MAJUSU, 
+                NMIBLE, NMTBLE, NMDEPL, OP0070, MMCMEM, MMMBCA, 
+                MAPPAR, RECHCO, MMMRES, TE0364, TE0365, INIUSU,
+                SURFCO.
+                
+              - AFFE_CHAR_MECA et les catalogues 
+                gener_cmcfz1.cata, gener_cmcfz2.cata,
+                rigi_cont.cata, rigi_frot.cata, 
+                char_meca_cont.cata et char_meca_frot.cata
+                et grandeur_simple__.cata.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.44.01-I1, V6.04.128-D, R5.03.52-A, D4.06.14-D
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010322 DU 2006-11-28 16:50:25
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Detection automatique des redondances entre les conditions de contact mxc3xa9thode continue et les conditions aux limites de type DDL_IMPO et LIAISON_DDL
+FONCTIONNALITE
+   TITRE Detection automatique des redondances entre les 
+         conditions de contact méthode continue et les 
+         conditions aux limites de type DDL_IMPO et 
+         LIAISON_DDL.
+      
+   FONCTIONNALITE
+   
+   Le traitement du contact avec la méthode continue peut engendrer des relations
+   surabondantes avec les conditions aux limites de type DDL_IMPO et LIAISON_DDL sur la
+   surface de contact esclave. 
+   Il serait intéréssant de rendre la tâche de détection de ces 
+   pivots nuls transparente à l'utilisateur de la méthode continue.
+   
+   Dans le cadre d'un travail sur les compatibilités dans la gestion du contact, initié avec
+   l'IFP (post-doc de C. Zammali), on propose d'améliorer et mettre à disposition de
+   l'utilisateur de la méthode continue un outil de détection automatique des pivots nuls dus
+   aux relations de contact redondantes avec certaines conditions aux limites de type
+   DDL_IMPO et LIAISON_DDL.
+   
+   L'utilisateur est averti que l'outil automatique ne concerne que les redondances entre
+   relations de contact et certaines 
+   configurations de conditions aux limites de type DDL_IMPO et 
+   LIAIASON_DDL.  
+   En effet, on traite uniquement des liaisons faisant intervenir un noeud (DDL_IMPO) ou deux
+   noeuds (LIAISON_DDL) et portant exclusivement sur des relations simples faisant intervenir
+   les axes du repère principal (DX, DY ou DZ). L'extension à des configurations plus
+   generales se fera dans le cadre d'une prochaine restitution.
+   
+   On ajoute (dans AFFE_CHAR_MECA sous CONTACT, METHODE CONTINUE) un mot-clé
+   EXCLUSION_PIV_NUL qui vaut 'NON' par défaut et qui vaut 'OUI' si on décide d'activer
+   l'outil de détection automatique.
+   Dans ce cas, un message sur les noeuds qui sont élimines du contact est donné à
+   l'Utilisateur de la methode continue.
+   
+   Les developpements réalisés et restitués (dans le cadre de la thèse de M.Torkhani)
+   jusqu'ici autour des redondances contact frottant-certaines conditions aux limites
+   (exemples: redondance adhérence/symétrie, redondance contact/raccord surfacique par
+   LIAISON_MAIL fiche 9833 et redondance contact/Fond de fissure avec elements de Barsoum
+   fiche 9834) resteront opérationnels.
+   On pourra, par la suite envisager de rendre le traitement de toutes les redondances
+   trasparent à l'utilisateur de la méthode continue. 
+   Ce qui lui évitera le recours à des solveurs spécifiques pour matrices singulières.
+      
+   DOC_D : D4.06.14-D
+      EXPL_ : Modification de la structure de donnée 
+              "DEFICO.CARACF".
+   
+   DOC_V : V6.04.128-D
+      EXPL_ : AJOUT d'une nouvelle version du cas_test SSNV128: 
+              Plaque avec contact et frottement sur un plan 
+              rigide SSNV128V.
+   
+   DOC_R : R5.03.52-A
+      EXPL_ : Gestion des relations surabondantes dans le 
+              traitement du contact par la methode continue.
+      
+   DETAILS
+   
+       1) Routines modifiees
+          
+          Dans la nouvelle routine REDNEX, on stocke dans des 
+          objets temporaires les noeuds impliques dans des 
+          relations cinematiques de type DDL_IMPO et 
+          LIAISON_DDL. Ces noeuds sont detectes dans le 
+          NUME_DDL.DEEQ.
+          
+          Dans la nouvelle routine REDCEX, on detecte les 
+          noeuds impliqués à la fois dans des relations de 
+          contact et des relations cimenamtiques.
+          On compare par la suite la direction portée par le 
+          DDL de conditions ux limites à la direction normale 
+          de traitement du contact. Si le risque de redondance 
+          existe (ie. mêmes directions à la précision numérique 
+          près), les noeuds concernés sont exclus de 
+          l'algorithme de contact (dans MMMBCA.f et TE036*.f).
+          
+          Pour les autres routines, il s'agit d'une simple 
+          repercussion de l'extension de tableaux servant 
+          au stockage des informations pertinentes a passer 
+          aux routines elementaires (noeud à exclure ou pas).
+   
+       2) Il s'en suit aussi des modifications dans les 
+          catalogues gener_cmcfz1.cata, gener_cmcfz2.cata pour 
+          l'extension de la carte de contact.
+          
+   
+       4) Cas-test: Ajout d'une nouvelle version du cas-test 
+                    SSNV128 pour la gestion des relations 
+                    surabondantes en contact methode continue.
+                    Redondance entre CONTACT_INIT = 'OUI' 
+                    (contact initialement établi) et DDL_IMPO.
+        
+       5) Impact: - CARACO, CAZOCO, CAZOCC, REDCEX, REDNEX,
+                    NMIBLE, NMTBLE, NMDEPL, OP0070, MMMBCA, 
+                    MAPPAR, RECHCO, MMMRES, TE0364, TE0365,
+                    SURFCO.
+                  
+                  - gener_cmcfz1.cata, gener_cmcfz2.cata,
+                    affe_char_meca.cont.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.04.128-D, R5.03.52-A, D4.06.14-D
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010343 DU 2006-12-04 11:25:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Stabilisation de la mxc3xa9thode continue : Vers une unification des formalismes Lagrangien classique et Lagrangien augmentxc3xa9
+FONCTIONNALITE
+   TITRE Stabilisation de la méthode continue : Vers une 
+         unification des formalismes Lagrangien classique et 
+         Lagrangien augmenté
+      
+   FONCTIONNALITE
+   
+   La méthode continue est pénalisée (par sa mise en oeuvre de part sa formulation) par un
+   problème de conditionnement du à la présence dans les systèmes discrétisés de termes non
+   homogènes (multiplicateurs de Lagrange et degrés de liberté classiques de déplacement
+   stockés dans les mêmes blocs de matrices à inverser).
+   Ceci est du au formalisme quasi-augmenté utilisé pour l'écriture faible des équations de
+   contact/frottement.
+   
+   On propose une nouvelle formulation qui unifie les méthodes 
+   de contact 'Lagrangien classique', 'Lagrangien stabilisé' et 
+   'Lagrangien augmenté' envue de leur codage informatique. 
+   L'utilisateur (averti) pourra passer d'une méthode à une autre  par un "simple" choix des
+   paramètres et ce selon les besoins de modélisations et de résolutions numériques.
+   
+   On crée des blocs de méthodes distinctes (Lagrangien, Lagrangien stabilisé et Lagrangien
+   augmenté) avec les paramètres appelables correspondants.
+   Chaque bloc est appelé par le mot-clé ALGO_CONT (pour le contact) et ALGO_FROT (pour le
+   frottement). 
+   
+   1) Par défaut, ALGO_CONT = 'LAGRANGIEN'. On appelle alors la méthode continue telle
+   qu'elle est programmée à l'état actuel dans Code_Aster et on renseigne COEF_REGU_CONT pour
+   le contact et COEF_REGU_FROT pour le frottement.
+   
+   2) Par ALGO_CONT = 'STABILISE' et ALGO_FROT = 'STABILISE', on appelle la méthode
+   lagrangienne stabilisée (sans augmentation). On doit alors donner :
+   
+    - pour le contact, les deux paramètres COEF_REGU_CONT et 
+      COEF_STAB_CONT (paramètre d'homogénéisation des blocs de 
+      contact du système discrétisé tangent).Par défaut, 
+      COEF_REGU_CONT = COEF_STAB_CONT et on retouve alors la 
+      méthode lagrangienne classique pour le contact.
+      
+    - pour le frottement les deux paramètres COEF_REGU_FROT et 
+      COEF_STAB_FROT (paramètre d'homogénéisation des 
+      blocs de frottement du système discrétisé tangent). 
+      Par défaut, COEF_REGU_FROT = COEF_STAB_FROT et on retouve 
+      alors la méthode lagrangienne classique pour le   
+      frottement.
+   
+   3) Par ALGO_CONT = 'AUGMENTE', on appelle la méthode 
+      lagrangienne augmentée et on doit donner :
+   
+    - pour le contact, les trois paramètres COEF_REGU_CONT,
+      COEF_STAB_CONT (paramètre d'homogénéisation des blocs de 
+      contact du système discrétisé tangent) et COEF_PENA_CONT 
+      (paramètre d'augmentation). 
+      Par défaut, COEF_REGU_CONT = COEF_STAB_CONT = 
+      COEF_PENA_CONT et on retrouve alors la méthode continue 
+      pour le contact.
+      
+    - pour le frottement, les trois paramètres COEF_REGU_FROT,
+      COEF_STAB_FROT (paramètre de stabilisation par 
+      homogénéisation des blocs du système discrétisé tangent)  
+      et COEF_PENA_FROT. 
+      Par défaut, COEF_REGU_FROT = COEF_STAB_FROT = 
+      COEF_PENA_FROT et on retrouve alors la méthode continue 
+      pour le frottement.
+   
+   DOC_D : D4.06.14-D
+      EXPL_ : Modification de la structure de donnée 
+              "DEFICO.CARACF".
+      
+   DOC_U : U4.44.01-I1	
+      EXPL_ : Ajout de 2 nouveaux mot-cles ALGO_CONT et 
+              ALGO_FROT dans AFFE_CHAR_MECA/CONTACT/                      
+              METHODE='CONTINUE'
+              
+   ALGO_CONT =SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",
+                  into=("LAGRANGIEN","AUGMENTE","STABILISE") ),
+      
+   b_CONT_LAGR =BLOC(condition="ALGO_CONT=='LAGRANGIEN' ",
+                fr="Parametres de la formulation Lagrangienne",
+    COEF_REGU_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),),
+      
+   b_CONT_STAB =BLOC(condition = "ALGO_CONT == 'STABILISE' ",
+                fr="Parametres du Lagrangien stabilisé",
+    COEF_REGU_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+    COEF_STAB_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+      
+   b_CONT_AUGM =BLOC(condition = "ALGO_CONT == 'AUGMENTE' ",
+               fr="Parametres du Lagrangien augmenté",
+    COEF_REGU_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+    COEF_STAB_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+    COEF_PENA_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+           
+   
+   ALGO_FROT =SIMP(statut='f',typ='TXM',defaut="LAGRANGIEN",                       
+                  into=("LAGRANGIEN","AUGMENTE","STABILISE") ),
+      
+   b_FROT_LAGR =BLOC(condition = "ALGO_FROT == 'LAGRANGIEN' ",
+               fr="Parametres de la formulation Lagrangienne",
+    COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+      
+   b_FROT_STAB =BLOC(condition = "ALGO_FROT == 'STABILISE' ",
+               fr="Parametres du Lagrangien stabilisé",
+    COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+    COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+      
+   b_FROT_AUGM =BLOC(condition = "ALGO_FROT == 'AUGMENTE' ",
+               fr="Parametres du Lagrangien augmenté",
+    COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+    COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+    COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),),
+      
+          
+   DOC_V : V5.03.100-A
+      EXPL_ : AJOUT d'une nouvelle version SDNV100I du cas_test 
+              SDNV100:Impact d'une poutre sur une paroi rigide.
+   
+   DOC_R : R5.03.52-A
+      EXPL_ : Méthode hybride stabilisée de traitement de 
+              contact.
+              + heuristiques de choix des paramètres.
+      
+   DETAILS
+   
+       1) Routines modifiees
+          La routine CAZOCC permet de stocker les paramètres de 
+          la méthode de traitement de contact dans le tableau 
+          CARACF.
+          
+          Dans les routines elementaires TE0364, 
+          et TE0365.f, on modifie les sous-routines de calcul 
+          des matrices et seconds membres de contributions au 
+          contact frottemant pour tenir compte des nouvelles 
+          variantes de la méthode continue.
+   
+          Pour les autres routines, il s'agit d'une simple 
+          repercussion de l'extension de tableaux servant au 
+          stockage des informations pertinentes a passer aux 
+          routines élémentaires. 
+          
+   
+       2) Il s'en suit aussi des modifications dans les 
+          catalogues gener_cmcfz1.cata, gener_cmcfz2.cata pour 
+          l'extension de la carte de contact.
+          
+       
+       3) Le catalogue de commandes affe_char_meca.capy a ete 
+          modifie pour prendre en compte les mots-cles 
+          ALGO_CONT, ALGO_FROT et les blocs définissant les 
+          nouvelles variantes de la méthode continue avec les 
+          paramètres correspondants.
+   
+       4) Cas-test: Ajout d'une nouvelle version du cas-test 
+                    SDNV100 pour tester la méthode stabilisée :   
+                    SDNV100I.
+                    
+                    
+        
+      Impact: - CARACO, CAZOCO, CAZOCC, MMMAA0, MMMAA1, MMMAB1 
+                MMMAB2, MMVEC0, MMVEC1, MMVEF1, RECHCO, MMMRES, 
+                TE0364, TE0365, INIUSU, SURFCO.
+                
+              - AFFE_CHAR_MECA et les catalogues 
+                gener_cmcfz1.cata, gener_cmcfz2.cata.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.44.01-I1, V5.03.100-A, R5.03.52-A, D4.06.14-D
+VALIDATION
+   liste restreinte
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdnv100i                     torkhani M.TORKHANI         371    371      0
+ CASTEST AJOUT ssnv128s                     torkhani M.TORKHANI         217    217      0
+ CASTEST AJOUT ssnv128t                     torkhani M.TORKHANI         220    220      0
+ CASTEST AJOUT ssnv128u                     torkhani M.TORKHANI         228    228      0
+ CASTEST AJOUT ssnv128v                     torkhani M.TORKHANI         205    205      0
+ CASTEST AJOUT ssnv185k                     markovic D.MARKOVIC         308    308      0
+ CASTEST AJOUT ssnv195a                     markovic D.MARKOVIC         386    386      0
+ CASTEST AJOUT ssnv195b                     markovic D.MARKOVIC         305    305      0
+ CASTEST AJOUT ssnv195c                     markovic D.MARKOVIC         450    450      0
+ CASTEST AJOUT ssnv195d                     markovic D.MARKOVIC         331    331      0
+ CASTEST MODIF sdls139a                        bodel C.BODEL            780    101     13
+ CASTEST MODIF zzzz100b                      greffet N.GREFFET          332     78      2
+CATALOGU MODIF compelem/grandeur_simple__   torkhani M.TORKHANI         621      4      2
+CATALOGU MODIF options/char_meca_cont       torkhani M.TORKHANI          43      2      1
+CATALOGU MODIF options/char_meca_frot       torkhani M.TORKHANI          43      2      1
+CATALOGU MODIF options/rigi_cont            torkhani M.TORKHANI          41      2      1
+CATALOGU MODIF options/rigi_frot            torkhani M.TORKHANI          41      2      1
+CATALOGU MODIF typelem/gener_cmcfz1         torkhani M.TORKHANI          74      9      2
+CATALOGU MODIF typelem/gener_cmcfz2         torkhani M.TORKHANI         162      9      2
+CATALOPY MODIF commande/affe_char_meca      torkhani M.TORKHANI        1057     29      4
+CATALOPY MODIF commande/calc_fonction        greffet N.GREFFET          154      2      2
+CATALOPY MODIF commande/modi_modele_xfem    markovic D.MARKOVIC          28      3      4
+ FORTRAN AJOUT algorith/iniusu              torkhani M.TORKHANI         206    206      0
+ FORTRAN AJOUT algorith/majusu              torkhani M.TORKHANI         587    587      0
+ FORTRAN AJOUT algorith/redcex              torkhani M.TORKHANI         226    226      0
+ FORTRAN AJOUT algorith/rednex              torkhani M.TORKHANI         185    185      0
+ FORTRAN AJOUT algorith/xconel              markovic D.MARKOVIC         213    213      0
+ FORTRAN AJOUT algorith/xconno              markovic D.MARKOVIC         189    189      0
+ FORTRAN AJOUT algorith/xcordo              markovic D.MARKOVIC         131    131      0
+ FORTRAN MODIF algorith/cfresu              torkhani M.TORKHANI         446      8      5
+ FORTRAN MODIF algorith/conlig              torkhani M.TORKHANI         122     13      4
+ FORTRAN MODIF algorith/mappar              torkhani M.TORKHANI         372     28      5
+ FORTRAN MODIF algorith/merimo              markovic D.MARKOVIC         456      9     10
+ FORTRAN MODIF algorith/mmacon              torkhani M.TORKHANI         175      6      4
+ FORTRAN MODIF algorith/mmcart              torkhani M.TORKHANI         229     29      3
+ FORTRAN MODIF algorith/mmcmem              torkhani M.TORKHANI         175     12      9
+ FORTRAN MODIF algorith/mminfp              torkhani M.TORKHANI         260     22      1
+ FORTRAN MODIF algorith/mmmaa0              torkhani M.TORKHANI          86     11      4
+ FORTRAN MODIF algorith/mmmaa1              torkhani M.TORKHANI         359    102      5
+ FORTRAN MODIF algorith/mmmab1              torkhani M.TORKHANI         331     40      5
+ FORTRAN MODIF algorith/mmmab2              torkhani M.TORKHANI         289     42     13
+ FORTRAN MODIF algorith/mmmbca              torkhani M.TORKHANI         345     44      5
+ FORTRAN MODIF algorith/mmmjeu              torkhani M.TORKHANI         102      9      8
+ FORTRAN MODIF algorith/mmmres              torkhani M.TORKHANI        1051    166    160
+ FORTRAN MODIF algorith/mmvec0              torkhani M.TORKHANI          85     11      4
+ FORTRAN MODIF algorith/mmvec1              torkhani M.TORKHANI         218     45      6
+ FORTRAN MODIF algorith/mmvef1              torkhani M.TORKHANI         193     14      7
+ FORTRAN MODIF algorith/nmdepl              torkhani M.TORKHANI         319     10      3
+ FORTRAN MODIF algorith/nmfonc              markovic D.MARKOVIC         253     11      9
+ FORTRAN MODIF algorith/nmible              torkhani M.TORKHANI         219     41      4
+ FORTRAN MODIF algorith/nmtble              torkhani M.TORKHANI         216     17      6
+ FORTRAN MODIF algorith/op0070              torkhani M.TORKHANI         975     15      5
+ FORTRAN MODIF algorith/op0113              markovic D.MARKOVIC         412    100     56
+ FORTRAN MODIF algorith/rechco              torkhani M.TORKHANI         392      1      1
+ FORTRAN MODIF algorith/ttprsm              torkhani M.TORKHANI         152     31      5
+ FORTRAN MODIF algorith/vechme              markovic D.MARKOVIC         465      5      5
+ FORTRAN MODIF algorith/vefnme              markovic D.MARKOVIC         245     10     10
+ FORTRAN MODIF algorith/xconli              markovic D.MARKOVIC         329    123     37
+ FORTRAN MODIF algorith/xmmbca              markovic D.MARKOVIC         165      6      6
+ FORTRAN MODIF algorith/xmmcme              markovic D.MARKOVIC         158      9      9
+ FORTRAN MODIF algorith/xreacl              markovic D.MARKOVIC         116      5      5
+ FORTRAN MODIF elements/te0364              torkhani M.TORKHANI         412     89     16
+ FORTRAN MODIF elements/te0365              torkhani M.TORKHANI         387     41     16
+ FORTRAN MODIF elements/te0510              markovic D.MARKOVIC         196      4      7
+ FORTRAN MODIF modelisa/caraco              torkhani M.TORKHANI         170      1      1
+ FORTRAN MODIF modelisa/caxfem              markovic D.MARKOVIC         123     27     24
+ FORTRAN MODIF modelisa/cazocc              torkhani M.TORKHANI         394     74     10
+ FORTRAN MODIF modelisa/cazoco              torkhani M.TORKHANI         510      2      2
+ FORTRAN MODIF modelisa/cfmmvd              torkhani M.TORKHANI          91      4      4
+ FORTRAN MODIF modelisa/xdelco              markovic D.MARKOVIC         184      2      5
+ FORTRAN MODIF prepost/op0187               markovic D.MARKOVIC         980    128     51
+ FORTRAN MODIF prepost/op0196               markovic D.MARKOVIC         590     61     37
+ FORTRAN MODIF utilitai/verij1              markovic D.MARKOVIC        2367     39      5
+ FORTRAN MODIF utilitai/verij6              markovic D.MARKOVIC        1452     29      1
+  PYTHON AJOUT Messages/xfem                markovic D.MARKOVIC          54     54      0
+  PYTHON MODIF Macro/macro_visu_meidee_ops      bodel C.BODEL            147      2      4
+  PYTHON MODIF Meidee/meidee_fludela           bodel C.BODEL           1739     23     10
+  PYTHON MODIF Meidee/meidee_test              bodel C.BODEL            176      1      2
+  PYTHON MODIF Stanley/__init__                bodel C.BODEL             21      1      1
+  PYTHON MODIF Utilitai/t_fonction           greffet N.GREFFET          655     21      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   18        4812      4812             +4812
+ MODIF :   62       23680      1787     652     +1135
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   80       28492      6599     652     +5947 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/11/2006   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 09/02/2007   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
                           'LISS_ENVELOP','INVERSE','ABS'),),
          FFT             =FACT(statut='f',fr="Transformée de Fourier ou de son inverse",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c) ),
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE") ),
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE","COMPLET") ),
            b_syme          =BLOC ( condition = " AsType(FONCTION)==fonction_c ",
              SYME           =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI' ),  
            ),

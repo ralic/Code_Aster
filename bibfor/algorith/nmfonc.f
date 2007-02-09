@@ -2,7 +2,7 @@
      &                  FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
 C
       INTEGER      IBID,NOCC
-      INTEGER      TYPALC,TYPALF
+      INTEGER      TYPALC,TYPALF,NFIS
       INTEGER      JSOLVE,IFISS,IXFEM,ICONT,IUNIL
       INTEGER      ICONTX
       REAL*8       R8VIDE
@@ -143,12 +143,16 @@ C ----------------------------------------------------------------------
 
 C --- X-FEM ET CONTACT (METHODE CONTINUE)
       IF (FONACT(6)) THEN
-        CALL JEVEUO(MODELE(1:8)//'.FISS','L',IFISS)
-        CALL JEEXIN(ZK8(IFISS)//'.CONTACT.XFEM',ICONTX)
-        DEFICO(1:16)=ZK8(IFISS)//'.CONTACT'
         CALL  JEVEUO (SOLVEU//'.SLVK','L',JSOLVE)
-        IF (ZK24(JSOLVE)(1:5).NE.'MUMPS') CALL U2MESS('A','ALGORITH7_87'
-     &)
+        IF (ZK24(JSOLVE)(1:5).NE.'MUMPS') 
+     &                 CALL U2MESS('A','ALGORITH7_87')
+        
+        CALL JEVEUO(MODELE(1:8)//'.NFIS','L',NFIS)
+        NFIS = ZI(NFIS)
+        CALL JEVEUO(MODELE(1:8)//'.FISS','L',IFISS)
+        CALL XCORDO(IFISS,NFIS,DEFICO)
+        CALL JEVEUO(ZK8(IFISS)//'.CONTACT.XFEM','L',ICONTX)
+
         IF (ICONTX.NE.0) THEN
           FONACT(5) = .TRUE.
           FONACT(9) = .TRUE.
@@ -245,7 +249,5 @@ C
           CALL U2MESS('F','ALGORITH7_94')
         ENDIF
       ENDIF
-
-
 
       END

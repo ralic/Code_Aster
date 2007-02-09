@@ -1,8 +1,9 @@
       SUBROUTINE MMMBCA(NOMA,DEFICO,OLDGEO,DEPPLU,
-     &                  INST,MMCVCA,DECOL)
+     &                  INST,MMCVCA,DECOL,USUFIX,VECNTD,
+     &                  NEQ,VECNTX,VECNTY,VECNTZ,PREMIE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,12 +22,14 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*8   NOMA
+      CHARACTER*19  USUFIX
       CHARACTER*24  DEFICO
       CHARACTER*24  OLDGEO
       CHARACTER*24  DEPPLU
       REAL*8        INST(5)
       LOGICAL       DECOL
-      LOGICAL       MMCVCA
+      LOGICAL       MMCVCA,PREMIE
+      CHARACTER*32  JEXNUM,JEXNOM
 C      
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : NMTBLE
@@ -70,20 +73,25 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      CFMMVD,ZMAES,ZTABF
       INTEGER      IFM,NIV       
-      INTEGER      NBNO,IER,NDIM
+      INTEGER      NBNO,IER,NDIM,GD,NEQ
+      INTEGER      VECNTD(1,*),VECNTX(1,*),VECNTY(1,*),VECNTZ(1,*)
       INTEGER      XAINI,XSINI,XSEND
       INTEGER      NTMA,K,XA,XS,NUMA,IBID
       INTEGER      NTPC,IMA,POSMA,NBN,IPC,POSMM,IZONE
       REAL*8       XI,YI,TAU1(3),TAU2(3),GEOMM(3),GEOME(3),LAMBDC
       REAL*8       JEU,NORM(3),XPG,YPG
       REAL*8       GEOLDM(3),GEOLDE(3),JEUVIT,DT,ASPERI,R8BID    
+      REAL*8       PRFUSU
+      CHARACTER*8  NOMGD,K1BID
       CHARACTER*24 COTAMA,MAESCL,TABFIN,NDIMCO,JEUCON
       INTEGER      JMACO,JMAESC,JTABF,JDIM,JJEU   
       CHARACTER*24 JEUSUP,FLIFLO 
       INTEGER      JJSUP,JFLIP           
       CHARACTER*24 NEWGEO,K24BID,K24BLA
-      LOGICAL      LCOMPL,LGLISS,LVITES,LBID
+      LOGICAL      LCOMPL,LGLISS,LVITES,LBID,LUSURE,EXNOE,LPIVAU
+      LOGICAL      LRACLQ
       INTEGER      FLINBR,FLIPOI,FLIMAI,FLIMAX
+      INTEGER      JVALEX,NCMPU,NCMPMX
       DATA         K24BLA /' '/
 C
 C ----------------------------------------------------------------------
@@ -120,6 +128,7 @@ C
       OLDGEO = NOMA//'.COORDO'
       NEWGEO = '&&MMMBCA.ACTUGEO'
       CALL VTGPLD(OLDGEO,1.0D0,DEPPLU,'V',NEWGEO)
+      CALL JEVEUO(USUFIX//'.VALE','L',JVALEX)
 C
 C --- INITIALISATIONS
 C      
@@ -129,6 +138,11 @@ C
       NBNO   = ZR(JTABF)      
       NTPC   = 0 
       MMCVCA = .TRUE.  
+      NCMPU = 1
+      NOMGD = 'NEUT_R'
+      CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMGD),GD)
+      CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K1BID)
+C      NCMPMX = 90
 C     
 C --- CREATION DE LA SD POUR LE FLIP-FLOP
 C
@@ -160,7 +174,13 @@ C
         CALL MMINFP(IZONE,DEFICO,K24BLA,'ASPERITE',
      &              IBID,ASPERI,K24BID,LBID)                 
         CALL MMINFP(IZONE,DEFICO,K24BLA,'GLISSIERE',
-     &              IBID,R8BID,K24BID,LGLISS)  
+     &              IBID,R8BID,K24BID,LGLISS)
+        CALL MMINFP(IZONE,DEFICO,K24BLA,'USURE',
+     &              IBID,R8BID,K24BID,LUSURE)  
+        CALL MMINFP(IZONE,DEFICO,K24BLA,'RACC_LINE_QUAD',
+     &              IBID,R8BID,K24BID,LRACLQ)
+        CALL MMINFP(IZONE,DEFICO,K24BLA,'EXCLUSION_PIV_NUL',
+     &              IBID,R8BID,K24BID,LPIVAU)
 C      
 C --- BOUCLE SUR LES POINTS DE CONTACT
 C              
@@ -212,7 +232,12 @@ C
 C --- CALCUL DU JEU ACTUALISE (PRISE EN COMPTE DE DIST_ESCL)
 C --- AU POINT DE CONTACT 
 C            
-          JEU    = ZR(JJSUP+IZONE-1)
+          IF (LUSURE) THEN
+            PRFUSU = ZR(JVALEX+(NTPC+IPC-1))
+            JEU    = ZR(JJSUP+IZONE-1) - ABS(PRFUSU)
+          ELSE
+            JEU    = ZR(JJSUP+IZONE-1)
+          END IF
           DO 10 K = 1,3
             JEU = JEU + (GEOME(K)-GEOMM(K))*NORM(K)
    10     CONTINUE
@@ -221,6 +246,19 @@ C
 C --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE: ON SORT DIRECT 
 C         
           IF (ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+22) .EQ. 1.D0) THEN
+            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
+            GOTO 20
+          END IF
+C  
+C --- NOEUDS EXCLUS PAR DETECTION AUTOMATIQUE DE REDONDANCES
+C         
+          EXNOE= .FALSE.
+          IF (LPIVAU) THEN 
+          CALL REDCEX(DEFICO,NOMA,IPC,POSMA,IZONE,NORM,VECNTD,
+     &                  NEQ,VECNTX,VECNTY,VECNTZ,EXNOE,IFM,
+     &                  PREMIE)
+          END IF  
+          IF (EXNOE) THEN
             ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
             GOTO 20
           END IF
@@ -281,6 +319,7 @@ C
      &                LVITES,LGLISS,LCOMPL,JEU,JEUVIT,LAMBDC)
       
         ENDIF
+        JVALEX = JVALEX + (NCMPMX - NCMPU)
    20   CONTINUE
         NTPC = NTPC + NBN
    30 CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF t_fonction Utilitai  DATE 09/02/2007   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -413,6 +413,8 @@ class t_fonction :
        vale_y=self.vale_y.tolist()
        vale_y=vale_y+[0.]*(2**(n+1)-len(self.vale_x))
        vale_y=array(vale_y)
+    elif   methode=='COMPLET'  : 
+       vale_y=self.vale_y
     vect=FFT.fft(vale_y)
     pasfreq =1./(pas*(len(vect)-1))
     vale_x  =[pasfreq*i for i in range(len(vect))]
@@ -471,10 +473,27 @@ class t_fonction_c(t_fonction) :
        vale_fon1.reverse()
        vale_fonc=vale_fonc+vale_fon1
        vale_fonc=array(vale_fonc)
-    if   syme=='OUI' and len(self.vale_x)!=2**n :
+    if   syme=='OUI' and methode!='COMPLET' and  len(self.vale_x)!=2**n :
        raise FonctionError, 'fonction complexe : FFT : syme=OUI et nombre de points<>2**n'
-    part1=vale_fonc[:len(vale_fonc)/2+1]
-    part2=vale_fonc[1:len(vale_fonc)/2]
+    if  methode!='COMPLET' :
+       part1=vale_fonc[:len(vale_fonc)/2+1]
+       part2=vale_fonc[1:len(vale_fonc)/2]
+    if methode=='COMPLET' :
+       mil=int(len(self.vale_x)/2)
+       mil2=int((len(self.vale_x)+1)/2)
+       vale_fonc=self.vale_y
+       if syme=='OUI' : 
+          mil=int(len(self.vale_x)/2)
+          mil2=int((len(self.vale_x)+1)/2)
+       elif syme=='NON' : 
+          part2=vale_fonc[1:-1]
+          part2=part2.tolist()
+          part2.reverse()
+          vale_fonc=array(vale_fonc.tolist()+part2)
+          mil=int(len(self.vale_x)/2)*2
+          mil2=int((len(self.vale_x)+1)/2)*2-1
+       part1=vale_fonc[:mil+1]
+       part2=vale_fonc[1:mil2]
     part2=conjugate(part2)
     part2=part2.tolist()
     part2.reverse()

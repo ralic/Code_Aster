@@ -1,10 +1,10 @@
-      SUBROUTINE MMMJEU(NDIM,JEUSUP,ICOMPL,NORM,BETA,GAMMA,DELTAT,
-     &                  GEOME,GEOMM,
-     &                  DEPLE,DEPLM,DEPLME,DEPLMM, 
-     &                  VITME,VITMM,ACCME,ACCMM,    
-     &                  JEU,JDEPP,JDEPM,JEVITP)
+      SUBROUTINE MMMJEU(NDIM,JEUSUP,ICOMPL,NORM,BETA,GAMMA,
+     &                  DELTAT,GEOME,GEOMM,DEPLE,DEPLM,
+     &                  DEPLME,DEPLMM,VITME,VITMM,ACCME, 
+     &                  ACCMM,JEU,JDEPP,JDEPM,JEVITP,
+     &                  VALUSU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
 C TOLE CRP_21
       IMPLICIT NONE
       INTEGER NDIM 
-      REAL*8  JEUSUP
+      REAL*8  JEUSUP,VALUSU
       REAL*8  NORM(3)
       INTEGER ICOMPL
       REAL*8  BETA,GAMMA,DELTAT
@@ -45,6 +45,7 @@ C !!!! METTRE A JOUR !!!!!
 C
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  JEUSUP : JEU SUPPLEMENTAIRE PAR DIST_ESCL/DIST_MAIT
+C IN  VALUSU : JEU SUPPLEMENTAIRE PAR PROFONDEUR D'USURE
 C IN  ICOMPL : VAUT 1 SI CALCUL DE LA COMPLIANCE
 C IN  BETA   : PARAMETRE POUR COMPLIANCE
 C IN  GAMMA  : PARAMETRE POUR COMPLIANCE
@@ -76,7 +77,7 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
-      JEU    = JEUSUP
+      JEU    = JEUSUP - ABS(VALUSU)
       JDEPP  = 0.D0
       JDEPM  = 0.D0
       JEVITM = 0.D0 

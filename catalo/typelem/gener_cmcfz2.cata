@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/06/2006   AUTEUR MABBAS M.ABBAS 
+%& MODIF TYPELEM  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -135,7 +135,10 @@ MODE_LOCAL__
                                         X19      X20      X21      X22      X23      X24
                                         X25      X26      X27      X28      X29      X30
                                         X31      X32      X33      X34      X35      X36
-                                        X37      X38      X39    )
+                                        X37      X38      X39      X40      X41      X42
+                                        X43      X44      X45      X46      X47      X48
+                                        X49      X50   )
+    ENEUTR   = NEUT_R   ELNO__ IDEN__  (X1    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -145,11 +148,15 @@ MATRICE__
 
 OPTION__
     CHAR_MECA_CONT      365   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
+                                     ENEUTR   PUSULAR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FROT      365   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
+                                     ENEUTR   PUSULAR
                               OUT__  MVECTUR  PVECTUR
     RIGI_CONT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
+                                     ENEUTR   PUSULAR
                               OUT__  MMATUUR  PMATUUR
     RIGI_FROT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PCHDYNR
+                                     ENEUTR   PUSULAR
                               OUT__  MMATUUR  PMATUUR
 

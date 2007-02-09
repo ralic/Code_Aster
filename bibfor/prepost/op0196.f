@@ -2,7 +2,7 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,14 +53,15 @@ C     ------------------------------------------------------------------
      &        JCNSK2,NBCMP,JDIM,JCNSC2,I,JCNSL1,JCNSL2,K,KK,JCO,JCNSC1,
      &        JINST,JCESV,JCESD,JCESK,JCESL,JCESC,IAD,NBMX,J,NBCHIN,
      &        KX,KY,KZ,IDX,IDY,IDZ,JCNS,I1000,NB1000,JNIM,II,ILOC,
-     &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,I1,IGREL,DEBXHT,NBLON,
+     &        NBGREL,NBMAGL,IMA,NBNIM,JINDMF,I1,IGREL,DEBXHT,
      &        ID,NBTNIM,JLNONX,NUM,NUNXP,NUNXM,NBNOAJ,NUNX,NUNOI,NBCNS,
      &        JTYPMA,NBNOSO,NBHEAV,NBCTIP,NBHECT, JWXFEM, NBINMX,FINXHT,
-     &        NCESV,NBPT,NBSP,NBCP,ICP,DIM,JMMF,J1,J2,J3,KMMF,IILON
+     &        NCESV,NBPT,NBSP,NBCP,ICP,DIM,JMMF,J1,J2,J3,KMMF,
+     &        JNFIS,NFIS,IFIS,ADLON,ADCNS,JLOND,JCNSD
       REAL*8  INST,EPS,R8B,RBID
       PARAMETER(EPS=1.D-10, NBINMX=9)
       CHARACTER*1  KBID
-      CHARACTER*8  MO,RESUCO,RESUC1,MA,LDEP(3),NOMNOE,NOMNOI,
+      CHARACTER*8  MO,RESUCO,RESUC1,MA,LDEP(3),NOMNOE,NOMNOI,FISS,
      &             LPAIN(NBINMX),LPAOUT(1),K8B,NOMA,TYPMA,CHNUM
       CHARACTER*16 K16B,TYSD,OPTION,NOTYPE,NOMCHA
       CHARACTER*19 CHS,CHNO,CHNOS,CH,CHOUT,CHAMS
@@ -117,6 +118,11 @@ C --- NOM DU MAILLAGE ET NOM DU CHAMPS D'ENTREE: MA , LICHAM
       CALL GETVTX(' ','NOM_CHAM',1,1,0,ZK16(JLICHA),NBSY)
       NBSY=-NBSY
       CALL GETVTX(' ','NOM_CHAM',1,1,NBSY,ZK16(JLICHA),IRET)
+      
+C     RECUPERATION DU NOMBRE DE FISSURES DANS MODELE
+      CALL JEVEUO(MO//'.NFIS','L',JNFIS)
+      NFIS = ZI(JNFIS)       
+      
 C
 C --- CREATION DE LA NOUVELLE SD RESULTAT
       CALL RSCRSD(RESUC1,TYSD,NBORDR)
@@ -153,8 +159,6 @@ C             EXTRACTION DES DEPLACEMENTS
               CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,KBID)
               INST=ZR(JINST)
               CALL RSEXCH(RESUCO,NOMCHA,IORD,CHNO,IRET)
-C
-C              CALL IMPRSD('CHAMP',CHNO,8,'--- CHAMP DEPL SD_RES---')
 C
 C             PASSAGE : CHAMP --> CHAMP_S
               CALL CNOCNS(CHNO,'V',CHNOS)
@@ -224,6 +228,7 @@ C
                  ENDIF
  40           CONTINUE
  45           CONTINUE
+
 C
 C             2 - DETERMINATION DES DEPLACEMENTS AUX NOEUDS X-FEM
 C             ---------------------------------------------------
@@ -237,19 +242,19 @@ C             PREPARATION AVANT L'APPEL A CALCUL
               LPAIN(2)='PDEPLPR'
               LCHIN(2)=CHNO
               LPAIN(3)='PPINTTO'
-              LCHIN(3)=ZK8(JFISS)//'.TOPOSE.PINTTO'
+              LCHIN(3)=MO//'.TOPOSE.PINTTO'
               LPAIN(4)='PCNSETO'
-              LCHIN(4)=ZK8(JFISS)//'.TOPOSE.CNSETO'
+              LCHIN(4)=MO//'.TOPOSE.CNSETO'
               LPAIN(5)='PHEAVTO'
-              LCHIN(5)=ZK8(JFISS)//'.TOPOSE.HEAVTO'
+              LCHIN(5)=MO//'.TOPOSE.HEAVTO'
               LPAIN(6)='PLONCHA'
-              LCHIN(6)=ZK8(JFISS)//'.TOPOSE.LONCHAM'
+              LCHIN(6)=MO//'.TOPOSE.LONCHAM'
               LPAIN(7)='PLSN'
-              LCHIN(7)=ZK8(JFISS)//'.LNNO'
+              LCHIN(7)=MO//'.LNNO'
               LPAIN(8)='PLST'
-              LCHIN(8)=ZK8(JFISS)//'.LTNO'
+              LCHIN(8)=MO//'.LTNO'
               LPAIN(9)='PBASLOR'
-              LCHIN(9)=ZK8(JFISS)//'.BASLOC'
+              LCHIN(9)=MO//'.BASLOC'
               NBCHIN=9
 
               LPAOUT(1)='PDEXFEM'
@@ -269,12 +274,14 @@ C             PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
               CALL JEVEUO(CHAMS//'.CESL','L',JCESL)
               CALL JEVEUO(CHAMS//'.CESC','L',JCESC)
 C
-              CALL JEVEUO(ZK8(JFISS)//'.TOPOSE.LON.CELV','L',JLON)
-              CALL JEVEUO(ZK8(JFISS)//'.TOPOSE.CNS.CELV','L',JCNS)
+              CALL JEVEUO(MO//'.TOPOSE.LON.CELV','L',JLON)
+              CALL JEVEUO(MO//'.TOPOSE.LON.CELD','L',JLOND)
+              CALL JEVEUO(MO//'.TOPOSE.CNS.CELV','L',JCNS)
+              CALL JEVEUO(MO//'.TOPOSE.CNS.CELD','L',JCNSD)
+      
               LIEL=MO//'.MODELE    .LIEL'
               CALL JELIRA(LIEL,'NMAXOC',NBGREL,KBID)
-              CALL JEVEUO(ZK8(JFISS)//'.LNNO      .VALE','L',JLNNO)
-
+              CALL JEVEUO(MO//'.LNNO      .VALE','L',JLNNO)
               CALL JEVEUO(ZK8(JCNSK1)//'.DIME','L',JDIM)
               CALL WKVECT('&&OP0196.MA_MO_FISS','V V I',ZI(JDIM+2),JMMF)
               DO 9 I=1,ZI(JDIM+2)
@@ -282,40 +289,50 @@ C
  9            CONTINUE
 
 C             NOMBRE DE MAILLES XFEM : NBMX
-              HEAV=ZK8(JFISS)//'.MAILFISS  .HEAV'
-              CALL JEEXIN(HEAV,IRET)
-              IF(IRET.NE.0)THEN
-                CALL JELIRA(HEAV,'LONMAX',NBHEAV,KBID)
-                CALL JEVEUO(HEAV,'E',J1)
-                DO 8 I=1,NBHEAV
-                  ZI(JMMF+ZI(J1+I-1)-1)=1
- 8              CONTINUE
-              ELSE
-                NBHEAV=0
-              ENDIF
-              CTIP=ZK8(JFISS)//'.MAILFISS  .CTIP'
-              CALL JEEXIN(CTIP,IRET)
-              IF(IRET.NE.0)THEN
-                CALL JELIRA(CTIP,'LONMAX',NBCTIP,KBID)
-                CALL JEVEUO(CTIP,'E',J2)
-                DO 7 I=1,NBCTIP
-                  ZI(JMMF+ZI(J2+I-1)-1)=1
- 7              CONTINUE
-              ELSE
-                NBCTIP=0
-              ENDIF
-              HECT=ZK8(JFISS)//'.MAILFISS  .HECT'
-              CALL JEEXIN(HECT,IRET)
-              IF(IRET.NE.0)THEN
-                CALL JELIRA(HECT,'LONMAX',NBHECT,KBID)
-                CALL JEVEUO(HECT,'E',J3)
-                DO 6 I=1,NBHECT
-                 ZI(JMMF+ZI(J3+I-1)-1)=1
- 6              CONTINUE
-              ELSE
-                NBHECT=0
-              ENDIF
-              NBMX=NBHEAV+NBCTIP+NBHECT
+C             INITIALISATION DE NBMF A ZERO
+
+              NBMX=0
+C             ON BOUCLE SUR LES FISSURES
+
+              DO 2000 IFIS=1, NFIS
+     
+                CALL JEVEUO(MO//'.FISS','L',JFISS)
+                FISS=ZK8(JFISS-1+IFIS)
+                HEAV=FISS//'.MAILFISS  .HEAV'
+                CALL JEEXIN(HEAV,IRET)
+                IF(IRET.NE.0)THEN
+                  CALL JELIRA(HEAV,'LONMAX',NBHEAV,KBID)
+                  CALL JEVEUO(HEAV,'E',J1)
+                  DO 8 I=1,NBHEAV
+                    ZI(JMMF+ZI(J1+I-1)-1)=1
+   8              CONTINUE
+                ELSE
+                  NBHEAV=0
+                ENDIF
+                CTIP=FISS//'.MAILFISS  .CTIP'
+                CALL JEEXIN(CTIP,IRET)
+                IF(IRET.NE.0)THEN
+                  CALL JELIRA(CTIP,'LONMAX',NBCTIP,KBID)
+                  CALL JEVEUO(CTIP,'E',J2)
+                  DO 7 I=1,NBCTIP
+                    ZI(JMMF+ZI(J2+I-1)-1)=1
+   7              CONTINUE
+                ELSE
+                  NBCTIP=0
+                ENDIF
+                HECT=FISS//'.MAILFISS  .HECT'
+                CALL JEEXIN(HECT,IRET)
+                IF(IRET.NE.0)THEN
+                  CALL JELIRA(HECT,'LONMAX',NBHECT,KBID)
+                  CALL JEVEUO(HECT,'E',J3)
+                  DO 6 I=1,NBHECT
+                   ZI(JMMF+ZI(J3+I-1)-1)=1
+   6              CONTINUE
+                ELSE
+                  NBHECT=0
+                ENDIF
+                NBMX=NBMX+NBHEAV+NBCTIP+NBHECT
+ 2000         CONTINUE
 
 C             TABLEAU DES MAILLES XFEM
               CALL WKVECT('&&OP0196.MAIL_XFEM','V V I',NBMX,JWXFEM)
@@ -328,16 +345,14 @@ C             TABLEAU DE POSITION DANS '.TOPOSE.CSETTO': ZI(JJCNS)
               CALL WKVECT('&&OP0196.POSI_CNS','V V I',NBMX,JJCNS)
 C             TABLEAU DE POSITION DANS '.TOPOSE.HEAVTO': ZI(JJHEA)
               CALL WKVECT('&&OP0196.POSI_HEA','V V I',NBMX,JJHEA)
-              CALL JEVEUO(ZK8(JFISS)//'.TOPOSE.HEA.CELV','L',JHEA)
+              CALL JEVEUO(MO//'.TOPOSE.HEA.CELV','L',JHEA)
               DO 139 I=1,ZI(JDIM+2)
                  ZI(JINDMF+I-1)=0
  139          CONTINUE
-
-              NBLON=8
+ 
               NBTNIM=0
               IICNS=0
               IIHEA=0
-              IILON=0
               KK=0
 C             BOUCLE SUR LES GRELS:
               DO 140 I=1,NBGREL
@@ -355,10 +370,7 @@ C             BOUCLE SUR LES GRELS:
                      NBCNS=18
                      NBHEA=6
                      IF(NOTYPE(1:9).EQ.'MECA_FACE')THEN
-                        IICNS=IICNS+NBCNS*(NBMAGL-1)
-                        IIHEA=IIHEA+NBHEA*(NBMAGL-1)
-                        IILON=IILON+NBLON*(NBMAGL-1)
-                        GOTO 140
+                     GOTO 140
                      ENDIF
                    ENDIF
                  ELSE
@@ -367,41 +379,52 @@ C             BOUCLE SUR LES GRELS:
                    NBHEA=6
                  ENDIF
 C                BOUCLE SUR LES MAILLES DU GREL:
-                 DO 150 J=1,NBMAGL-1
+                 DO 150 J=1,NBMAGL
                     IMA=ZI(IGREL+J-1)
-                    ZI(JMMF+IMA-1)=0
-                    I1=ZI(JLON+IILON)
-                    IF(I1.NE.0)THEN
-                       KK=KK+1
-                       NBNIM=ZI(JLON+IILON+I1+1)
-                       IF(NBNIM.GT.0)THEN
-                          CALL WKVECT('&&OP0196.1000','V V I',NBNIM,
-     &                         JNIM)
-                          DO 144 II=1,NBNIM
-                             ZI(JNIM+II-1)=0
- 144                      CONTINUE
-                          DO 145 I1000=1,NBCNS
-                             ILOC=ZI(JCNS+IICNS+I1000-1)
-                             IF(ILOC.GT.1000)THEN
-                                ZI(JNIM+ILOC-1001)=1
-                             ENDIF
- 145                      CONTINUE
-                          NB1000=0
-                          DO 146 II=1,NBNIM
-                             NB1000=NB1000+ZI(JNIM+II-1)
- 146                      CONTINUE
-                          NBNIM=NB1000
-                          CALL JEDETR('&&OP0196.1000')
-                       ENDIF
+                    IF (ZI(JMMF+IMA-1).EQ. 1) THEN
+                      ZI(JMMF+IMA-1)=0
+                      ADLON = ZI(JLOND-1+ZI(JLOND-1+I +4) + 4 + 
+     &                                            4*(J-1) + 4)
+                      ADCNS = ZI(JCNSD-1+ZI(JCNSD-1+I +4) + 4 + 
+     &                                            4*(J-1) + 4)
+                      IF (ADLON .EQ. 0) THEN
+                        I1 = 0
+                      ELSE             
+                        I1 = ZI(JLON-1 + ADLON)
+                      ENDIF  
+
+C                      IF(I1.NE.0)THEN
+                        KK=KK+1
+                        NBNIM = ZI(JLON-1 +ADLON + I1 + 1)
+
+                        IF(NBNIM.GT.0)THEN
+                           CALL WKVECT('&&OP0196.1000','V V I',
+     &                                 NBNIM,JNIM)
+                           DO 144 II=1,NBNIM
+                              ZI(JNIM+II-1)=0
+ 144                       CONTINUE
+                           DO 145 I1000=1,NBCNS
+                              ILOC=ZI(JCNS-1+ADCNS+I1000-1)
+                              IF(ILOC.GT.1000)THEN
+                                 ZI(JNIM+ILOC-1001)=1
+                              ENDIF
+ 145                       CONTINUE
+                           NB1000=0
+                           DO 146 II=1,NBNIM
+                              NB1000=NB1000+ZI(JNIM+II-1)
+ 146                       CONTINUE
+                           NBNIM=NB1000
+                           CALL JEDETR('&&OP0196.1000')
+                        ENDIF
                        NBTNIM=NBTNIM+NBNIM
                        ZI(JWXFEM+KK-1)=IMA
                        ZI(JINDMF+IMA-1)=NBNIM
                        ZI(JJCNS+KK-1)=IICNS
                        ZI(JJHEA+KK-1)=IIHEA
-                    ENDIF
-                 IICNS=IICNS+NBCNS
-                 IIHEA=IIHEA+NBHEA
-                 IILON=IILON+NBLON
+C                     ENDIF
+                     IICNS=IICNS+NBCNS
+                     IIHEA=IIHEA+NBHEA
+                   ENDIF                    
  150             CONTINUE
  140          CONTINUE
 C
@@ -479,6 +502,7 @@ C                  JNOLOC: INDICE SIGNIFIANT QUE LE NOEUD EST SOMMET
                         ZI(JNOLOC+ZI(JCNS+ZI(JJCNS+I-1)+II-1)-1)=1
                      ENDIF
  781              CONTINUE
+
                  IF(ZI(JINDMF+ZI(JWXFEM+I-1)-1).NE.0)THEN
 C
                     DO 779 J=1,2*ZI(JINDMF+ZI(JWXFEM+I-1)-1)
@@ -534,7 +558,7 @@ C
                  CALL JEDETR('&&OP0196.NO_LOC')
  777          CONTINUE
 C
-C              CALL IMPRSD('CHAMP',CHS,8,'--- CHAMP DEPL ---')
+
               CALL RSEXCH(RESUC1,'DEPL',IORD,CH,IRET)
               CALL CNSCNO(CHS,' ','NON','G',CH)
 C

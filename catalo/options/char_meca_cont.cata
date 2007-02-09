@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF OPTIONS  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,7 @@ OPTION__
         PCONFR   NEUT_R
         PDEPLAR  DEPL_R
         PCHDYNR  DEPL_R
+        PUSULAR  NEUT_R
         PINDCOI  NEUT_I
         PDONCO   XCONTAC     
         PLSN     NEUT_R

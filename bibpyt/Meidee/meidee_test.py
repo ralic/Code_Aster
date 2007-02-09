@@ -1,4 +1,4 @@
-#@ MODIF meidee_test Meidee  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_test Meidee  DATE 06/02/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,6 @@ def TestMeidee(macro,
                mess,
                out,
                objects,
-               MODELE_CALCUL,
                MODELE_COMMANDE,
                BASE,
                MODELE_MESURE,

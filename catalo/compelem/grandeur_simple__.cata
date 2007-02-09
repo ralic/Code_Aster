@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+%& MODIF COMPELEM  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -411,12 +411,14 @@ GRANDEUR_SIMPLE__
         RX     : COMPOSANTE X DE LA SOMME RN RTG ET RTA
         RY     : COMPOSANTE Y DE LA SOMME RN RTG ET RTA
         RZ     : COMPOSANTE Z DE LA SOMME RN RTG ET RTA
-        R      : NORME DE R_TOT >>
+        R      : NORME DE R_TOT
+        HN     : PROFONDEUR USURE >>
     INFC_R   = R    CONT     JEU      RN    RNX   RNY  RNZ
                     GLIX     GLIY     GLI
                     RTAX     RTAY     RTAZ
                     RTGX     RTGY     RTGZ
                     RX       RY       RZ    R
+                    HN
     INST_R   = R    INST     DELTAT   THETA    KHI      R        RHO
     INTE_R   = R    INTX     INTY     INTZ
     IRRA_R   = R    IRRA

@@ -1,7 +1,7 @@
        SUBROUTINE TE0364(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,25 +51,28 @@ C
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
-      INTEGER I,J,IJ
-      REAL*8 COEFFF,COEFFA,COEFCA,COEASP,CN
+      INTEGER I,J,K,IJ
       INTEGER NNE,NNM,NDDL,NDIM,INDCO,INADH,INDASP,ICOMPL,INDM
       INTEGER IGEOM,IDEPL,IMATT,JPCF,CMP,IAXIS
       INTEGER IDEPM,IFROTT,IFORM
-      INTEGER INI1,INI2,INI3,INDNOR,INDRAC
+      INTEGER INI1,INI2,INI3,INDNOR,INDRAC,IUSURE,INDPIV
       INTEGER INDNOB,IMA,IMABAR,TYPBAR
       INTEGER IRET
+      INTEGER IUSUP,TYALGC,TYALGF
+      REAL*8 COEFFF,COEFFA,COEFCA,COEASP,CN
+      REAL*8 COEFFS,COEFCS,COEFFP,COEFCP
       REAL*8 XPR,YPR,XPC,YPC,HPG,LAMBDA
       REAL*8 MMAT(81,81),TAU1(3),TAU2(3),NORM(3)
       REAL*8 RESE(3),NRESE
       REAL*8 DELTAT,ASPERI,JEU
       REAL*8 DELTA,ALPHA,JEUSUP
-      REAL*8 GEOMM(3),GEOME(3)
+      REAL*8 GEOMM(3),GEOME(3),C(3,3)
       REAL*8 DEPLME(6),DEPLM(6),DEPLE(6),DEPLMM(6)
       REAL*8 R8BID,R8BID6(6)
       REAL*8 MPROJ(3,3)
       REAL*8 FFPC(9),DFFPC(2,9),DDFFPC(3,9),JACOBI
       REAL*8 FFPR(9),DFFPR(2,9),DDFFPR(3,9)
+      REAL*8 PRFUSU,KW,HW,DISSIP,LAGSCP,GEOMI(3),BIDON(3),VECT(3)
       CHARACTER*8 ESC,MAIT
 C
 C ----------------------------------------------------------------------
@@ -138,12 +141,25 @@ C
       INDNOB   = NINT(ZR(JPCF-1+36))
       TYPBAR   = NINT(ZR(JPCF-1+38))
       INDRAC   = NINT(ZR(JPCF-1+39))
+      IUSURE   = NINT(ZR(JPCF-1+40))
+      KW       = ZR(JPCF-1+41)
+      HW       = ZR(JPCF-1+42)
+      INDPIV   = NINT(ZR(JPCF-1+43))
+      TYALGC   = NINT(ZR(JPCF-1+44))
+      COEFCS   = ZR(JPCF-1+45)
+      COEFCP   = ZR(JPCF-1+46)
+      TYALGF   = NINT(ZR(JPCF-1+47))
+      COEFFS   = ZR(JPCF-1+48)
+      COEFFP   = ZR(JPCF-1+49)
 C
 C --- RECUPERATION DE LA GEOMETRIE ET DES CHAMPS DE DEPLACEMENT
 C
       CALL JEVECH('PGEOMER','E',IGEOM)
       CALL JEVECH('PDEPL_P','E',IDEPL)
       CALL JEVECH('PDEPL_M','L',IDEPM)
+      IF (IUSURE .EQ. 1) THEN
+        CALL JEVECH('PUSULAR','L',IUSUP)
+      END IF
 C
 C --- REACTUALISATION DE LA GEOMETRIE
 C
@@ -183,11 +199,62 @@ C
      &            GEOME,GEOMM,
      &            DEPLE,DEPLM,DEPLME,DEPLMM,
      &            R8BID6,R8BID6,R8BID6,R8BID6)
+C  -----
+C ------------------------------------------------------------
+C CALCUL USURE IMPLICITE
+C ------------------------------------------------------------
+C CALCUL DE !![[U]]_TAU!!      
+
+      IF (IUSURE .EQ. 1) THEN
+        PRFUSU = ZR(IUSUP-1+1)
+        DO 321 I = 1,NDIM
+          DO 311 J = 1,NDIM
+            C(I,J) = -1.D0*NORM(I)*NORM(J)
+311       CONTINUE
+321     CONTINUE
+
+        DO 331 I = 1,NDIM
+          C(I,I) = 1 + C(I,I)
+331     CONTINUE
+
+        DO 312 I = 1,NDIM
+          GEOMI (I)= (DEPLE(I)-DEPLM(I)) - (DEPLME(I)-DEPLMM(I))
+          BIDON (I)= 0.D00
+          VECT  (I)= 0.D00
+312     CONTINUE
+
+        DO 332 I=1,NDIM
+          DO 342  K=1,NDIM
+            BIDON(I)=C(I,K)*GEOMI(K) + BIDON(I)
+342       CONTINUE
+332     CONTINUE
+      
+        DISSIP = 0.D0
+        DO 352 K = 1,NDIM
+          DISSIP = DISSIP + (BIDON(K)*BIDON(K))
+352     CONTINUE
+        DISSIP = SQRT(DISSIP)
+
+C CALCUL DE !![[U]]_TAU!!
+
+        DO 372 I=1,3
+          DO 382  J=1,3
+            VECT(I)=C(I,J)*BIDON(J)+VECT(I)
+382       CONTINUE
+372     CONTINUE
+      ELSE
+        PRFUSU = 0.D0
+      END IF
+C ------------------------------------------------------------
+C CALCUL USURE
+C ------------------------------------------------------------
+
 C
 C --- COEFFICIENT ACCELERATION POUR FORMULATION EN VITESSE
 C
       IF (IFORM .EQ. 2) THEN
         COEFCA = COEFCA/DELTAT
+        COEFCS = COEFCS/DELTAT
       ENDIF
 C
 C --- TRAITEMENT EN FOND DE FISSURE
@@ -225,7 +292,9 @@ C
 C
 C --- CALCUL DES MATRICES DE CONTACT
 C
+      
       IF (OPTION.EQ.'RIGI_CONT') THEN
+      IF (INDPIV.EQ.1)    INDCO = 0
 
         IF (INDASP.EQ.0) THEN
 C
@@ -233,7 +302,7 @@ C --- CALCUL DE LA MATRICE A - CAS SANS CONTACT (HORS ASPERITES)
 C
           CALL MMMAA0(NDIM,NNE,
      &                HPG,FFPC,JACOBI,
-     &                COEFCA,
+     &                TYALGC,COEFCA,COEFCS,COEFCP,
      &                MMAT)
           GOTO 740
         ELSE IF (INDASP.EQ.1) THEN
@@ -245,15 +314,16 @@ C
      &                  GEOME,GEOMM,
      &                  DEPLE,DEPLM,DEPLME,DEPLMM,
      &                  R8BID6,R8BID6,R8BID6,R8BID6,
-     &                  JEU,R8BID,R8BID,R8BID)
+     &                  JEU,R8BID,R8BID,R8BID,PRFUSU)
 C
 C --- CALCUL DE LA MATRICE A - CAS DU CONTACT
 C
             CALL MMMAA1(NDIM,NNE,NNM,
      &                  IMA,IMABAR,INDNOB,INDRAC,
      &                  HPG,FFPC,FFPR,JACOBI,
-     &                  COEFCA,ICOMPL,COEASP,ASPERI,JEU,NORM,
-     &                  MMAT)
+     &                  TYALGC,COEFCA,COEFCS,COEFCP,ICOMPL,
+     &                  COEASP,ASPERI,JEU,NORM,IUSURE,KW,HW,
+     &                  DISSIP,VECT,DEPLE,MMAT)
 C
 C --- CONTRIBUTION DE LA COMPLIANCE A LA MATRICE A - CAS DU CONTACT
 C
@@ -271,7 +341,7 @@ C --- CALCUL DE LA MATRICE A - CAS SANS CONTACT
 C
             CALL MMMAA0(NDIM,NNE,
      &                  HPG,FFPC,JACOBI,
-     &                  COEFCA,
+     &                  TYALGC,COEFCA,COEFCS,COEFCP,
      &                  MMAT)
           ENDIF
         ELSE
@@ -282,6 +352,7 @@ C
         IF (COEFFF.EQ.0.D0) INDCO = 0
         IF (LAMBDA.EQ.0.D0) INDCO = 0
         IF (IFROTT.NE.3)    INDCO = 0
+        IF (INDPIV.EQ.1)    INDCO = 0
 
         IF (INDCO.EQ.0) THEN
 C
@@ -297,8 +368,9 @@ C
 C ---  ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C
           CALL TTPRSM(NDIM,DEPLE,DEPLM,
-     &                COEFFA,NORM,TAU1,TAU2,
-     &                INADH,MPROJ,RESE,NRESE)
+     &                TYALGF,COEFFA,COEFFS,COEFFP,
+     &                NORM,TAU1,TAU2,INADH,MPROJ,
+     &                RESE,NRESE)
           IF (INADH.EQ.1) THEN
 C
 C --- CALCUL DE B ET DE BT - CAS ADHERENT
@@ -306,16 +378,17 @@ C
             CALL MMMAB1(NDIM,NNE,NNM,
      &                  INDM,INI1,INI2,INI3,CMP,
      &                  HPG,FFPC,FFPR,JACOBI,
-     &                  LAMBDA,COEFFA,COEFFF,TAU1,TAU2,
-     &                  MPROJ,MMAT)
+     &                  LAMBDA,TYALGF,COEFFA,COEFFS,COEFFP,
+     &                  COEFFF,TAU1,TAU2,MPROJ,MMAT)
           ELSE IF (INADH.EQ.0) THEN
 C
 C --- CALCUL DE B ET DE BT - CAS GLISSANT
 C
             CALL MMMAB2(NDIM,NNE,NNM,
      &                  HPG,FFPC,FFPR,JACOBI,
-     &                  LAMBDA,COEFFA,COEFFF,TAU1,TAU2,RESE,NRESE,
-     &                  MPROJ,MMAT)
+     &                  LAMBDA,TYALGF,COEFFA,COEFFS,COEFFP,
+     &                  COEFFF,TAU1,TAU2,RESE,NRESE,MPROJ,
+     &                  MMAT)
           END IF
         ELSE
           CALL U2MESS('F','ELEMENTS3_80')

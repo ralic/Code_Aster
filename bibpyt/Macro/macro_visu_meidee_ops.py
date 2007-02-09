@@ -1,4 +1,4 @@
-#@ MODIF macro_visu_meidee_ops Macro  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#@ MODIF macro_visu_meidee_ops Macro  DATE 06/02/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,6 @@
 # pour la gestion de l'interface graphique dans meidee_iface
 
 def macro_visu_meidee_ops( self,
-                           MODELE_CALCUL   = None,
                            BASE            = None,
                            MODELE_MESURE   = None,
                            MODELE_COMMANDE = None,
@@ -43,12 +42,12 @@ def macro_visu_meidee_ops( self,
                            **args ):
     ier = 0
 
+    from Utilitai.UniteAster import UniteAster
     from Meidee.meidee_correlation import InterfaceCorrelation
     from Meidee.meidee_fludela import InterfaceFludela, InterfaceDisplay
     from Meidee.meidee_turbulent import InterfaceTurbulent
     from Meidee.meidee_iface import MessageBox, TabbedWindow
     from Meidee.meidee_cata import MeideeObjects
-    from Utilitai.UniteAster import UniteAster
     from Tkinter import Tk
     from Accas import _F
     import aster
@@ -131,7 +130,6 @@ def macro_visu_meidee_ops( self,
                    mess,
                    out,
                    objects,
-                   MODELE_CALCUL = MODELE_CALCUL,  # modele numérique d'expansion
                    BASE = BASE,                    # resultat (mode_meca) associe. Base d'expansion
                    MODELE_MESURE = MODELE_MESURE,  # modele exp, les noeuds correspondent aux capteurs
                    MODELE_COMMANDE = MODELE_COMMANDE,  # les points d'application des forces

@@ -3,7 +3,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -80,10 +80,10 @@ C
       REAL*8       TESTMU,TESTCF
       REAL*8       VAL1,VAL2,VARC,R8PREM,R8MIEM
       REAL*8       R,RX,RY,RZ
-      REAL*8       RN,RNX,RNY,RNZ
+      REAL*8       RN,RNX,RNY,RNZ,HN
       REAL*8       RTAX,RTAY,RTAZ,RTGX,RTGY,RTGZ
       CHARACTER*2  TYPEC0,TYPLIA
-      CHARACTER*8  LICMPR(19),NOMCMP(19)
+      CHARACTER*8  LICMPR(20),NOMCMP(20)
       CHARACTER*19 COCO,LIAC,ATMU,AFMU,MU,CONVEC
       INTEGER      JCOCO,JLIAC,JATMU,JAFMU,JMU,LMAT,JVECC
       CHARACTER*24 APPARI,NDIMCO,CONTNO,APPOIN
@@ -103,7 +103,7 @@ C ----------------------------------------------------------------------
      &     'RTAX','RTAY','RTAZ',
      &     'RTGX','RTGY','RTGZ',
      &     'RX'  ,'RY'  ,'RZ'  ,
-     &     'R'/
+     &     'R'   ,'HN'/
 C
 C ----------------------------------------------------------------------
 C
@@ -148,7 +148,7 @@ C ======================================================================
       ZRESU  = CFMMVD('ZRESU')
       
 C --- CHANGEZ LA TAILLE DE LICMPR,NOMCMP   
-      IF (ZRESU.GT.19) CALL ASSERT(.FALSE.)
+      IF (ZRESU.GT.20) CALL ASSERT(.FALSE.)
       
 
 C ======================================================================
@@ -328,11 +328,13 @@ C
                     RTGX = 0.0D0
                     RTGY = 0.0D0
                     RTGZ = 0.0D0
+                    HN   = 0.0D0
                  ELSE
                     VARC = 2.0D0
                     RTAX   = 0.0D0
                     RTAY   = 0.0D0
                     RTAZ   = 0.0D0
+                    HN     = 0.0D0
                  ENDIF
               ENDIF
            ELSE 
@@ -412,6 +414,7 @@ C
          ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+17) = RY
          ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+18) = RZ
          ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+19) = R
+         ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+20) = HN
 C
 C --- DONNEES DU FROTTEMENT
 C

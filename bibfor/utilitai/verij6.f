@@ -4,7 +4,7 @@
       CHARACTER*(*) COUI
       INTEGER VCO(*),NVU,NTROU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -247,6 +247,7 @@ C     ------------------------------
 C     ------------------------------
         CH8 = NOMSD
         CALL VERIJB('C','LIGREL',CH8//'.MODELE',PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','MODELE_XFEM',CH8,PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH8//'.NOEUD_UTIL',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH8//'.MAILLE',PN,VCO,M80,NVU,NTROU)
         CALL VERIJB('C','OJB',CH8//'.NOEUD',PN,VCO,M80,NVU,NTROU)
@@ -262,6 +263,33 @@ C     ------------------------------
         IF (FISS1.EQ.' ') GOTO 177
         CALL VERIJB('I_FISS','FISS_XFEM',FISS1,PN,VCO,M80,NVU,NTROU)
   177   CONTINUE
+
+      ELSEIF (TYP2SD.EQ.'MODELE_XFEM') THEN
+C----------------------------------------
+        CH8 = NOMSD
+        CALL VERIJB('C','CHAM_NO',CH8//'.BASLOC',PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','OJB'    ,CH8//'.FISS'  ,PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_NO',CH8//'.LNNO'  ,PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_NO',CH8//'.LTNO'  ,PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','OJB'    ,CH8//'.NFIS'  ,PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.AI',
+     &              PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.BA',
+     &              PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.CF',
+     &              PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.LO',
+     &              PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOFAC.PI',
+     &              PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.CNS',
+     &              PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.HEA',
+     &              PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.LON',
+     &              PN,VCO,M80,NVU,NTROU)
+        CALL VERIJB('C','CHAM_ELEM',CH8//'.TOPOSE.PIN',
+     &              PN,VCO,M80,NVU,NTROU)
 
 
       ELSEIF (TYP2SD.EQ.'MACR_ELEM_STAT') THEN

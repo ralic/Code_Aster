@@ -1,10 +1,12 @@
       SUBROUTINE MMMAA1(NDIM,NNE,NNM,
      &                  IMA,IMABAR,INDNOB,INDRAC,
      &                  HPG,FFPC,FFPR,JACOBI,
-     &                  COEFCA,ICOMPL,COEASP,ASPERI,JEU,NORM,
+     &                  TYALGC,COEFCA,COEFCS,COEFCP,ICOMPL,
+     &                  COEASP,ASPERI,JEU,NORM,IUSURE,KWEAR,
+     &                  HWEAR,DISSIP,VECT,DEPLE,
      &                  MMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,14 +23,17 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_21
+C
       IMPLICIT NONE
       INTEGER  NDIM,NNE,NNM
       INTEGER  IMA,IMABAR,INDNOB,INDRAC
       REAL*8   MMAT(81,81)
       REAL*8   HPG,FFPC(9),FFPR(9),JACOBI
-      REAL*8   NORM(3)
-      REAL*8   COEFCA,COEASP,JEU,ASPERI
-      INTEGER  ICOMPL 
+      REAL*8   NORM(3),VECT(3),DEPLE(6)
+      REAL*8   COEFCA,COEFCS,COEFCP,COEASP
+      REAL*8   ASPERI,KWEAR,HWEAR,DISSIP,JEU
+      INTEGER  ICOMPL,IUSURE,TYALGC
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : TE0364
@@ -48,6 +53,9 @@ C IN  FFPC   : FONCTIONS DE FORME DU POINT DE CONTACT
 C IN  FFPR   : FONCTIONS DE FORME DE LA PROJECTION DU POINT DE CONTACT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  COEFCA : COEF_REGU_CONT
+C IN  COEFFS : COEF_STAB_CONT
+C IN  COEFFP : COEF_PENA_CONT
+C IN  TYALGC : TYPE D'ALGORITHME DE CONTACT
 C IN  ICOMPL : INDICATEUR DE COMPLIANCE 
 C IN  COEASP : PARAMETRE E_N POUR LA COMPLIANCE
 C IN  ASPERI : VALEUR DE L'ASPERITE 
@@ -114,8 +122,16 @@ C
           DO 70 K = 1,NDIM
             II = (2*NDIM)*(I-1)+NDIM+1
             JJ = (2*NDIM)*(J-1)+K
-            MMAT(II,JJ) = -HPG*FFPC(I)*FFPC(J)*JACOBI*NORM(K)
-            MMAT(JJ,II) = -HPG*FFPC(I)*FFPC(J)*JACOBI*NORM(K)
+            IF (IUSURE .EQ. 1 .AND. DISSIP .NE. 0.D0) THEN
+                 MMAT(II,JJ) = -HPG*FFPC(I)*FFPC(J)*JACOBI*NORM(K)*
+     &                    (1+((KWEAR/HWEAR)*DISSIP*COEFCA))
+                 MMAT(JJ,II) = -HPG*FFPC(I)*FFPC(J)*JACOBI*NORM(K)+
+     &                    (HPG*FFPC(I)*FFPC(J)*JACOBI*VECT(K)*
+     &                    (KWEAR/(HWEAR*DISSIP))*DEPLE(NDIM+1))
+            ELSE
+                 MMAT(II,JJ) = -HPG*FFPC(I)*FFPC(J)*JACOBI*NORM(K)
+                 MMAT(JJ,II) = -HPG*FFPC(I)*FFPC(J)*JACOBI*NORM(K)
+            END IF
    70     CONTINUE
    80   CONTINUE
    90 CONTINUE
@@ -159,8 +175,16 @@ C
           DO 100 K = 1,NDIM
             II = (2*NDIM)*(I-1)+NDIM+1
             JJ = (2*NDIM)*NNE+NDIM*(J-1)+K          
-            MMAT(II,JJ) = HPG*FFPC(I)*FFPR(J)*JACOBI*NORM(K)
-            MMAT(JJ,II) = HPG*FFPC(I)*FFPR(J)*JACOBI*NORM(K)
+            IF (IUSURE .EQ. 1 .AND. DISSIP .NE. 0.D0) THEN
+                 MMAT(II,JJ) = HPG*FFPC(I)*FFPR(J)*JACOBI*NORM(K)*
+     &                   (1-((KWEAR/HWEAR)*DISSIP*COEFCA))
+                 MMAT(JJ,II) = HPG*FFPC(I)*FFPR(J)*JACOBI*NORM(K)+
+     &                   (HPG*FFPC(I)*FFPR(J)*JACOBI*VECT(K)*
+     &                   (KWEAR/(HWEAR*DISSIP))*DEPLE(NDIM+1))
+            ELSE
+                 MMAT(II,JJ) = HPG*FFPC(I)*FFPR(J)*JACOBI*NORM(K)
+                 MMAT(JJ,II) = HPG*FFPC(I)*FFPR(J)*JACOBI*NORM(K)
+            END IF
   100     CONTINUE
   110   CONTINUE
   120 CONTINUE
@@ -206,8 +230,23 @@ C
             DO 130 L = 1,NDIM
               II = (2*NDIM)*(I-1)+L
               JJ = (2*NDIM)*(J-1)+K            
-              MMAT(II,JJ) = (COEFCA+(ICOMPL*COEASP*2*(JEU-ASPERI)))*
+              IF (IUSURE .EQ. 1 .AND. DISSIP .NE. 0.D0) THEN
+                MMAT(II,JJ) = (COEFCA+(ICOMPL*COEASP*2*(JEU-ASPERI)))*
+     &                       HPG*FFPC(I)*NORM(L)*FFPC(J)*JACOBI*
+     &                       NORM(K)-(COEFCA*HPG*FFPC(I)*FFPC(J)*
+     &                       JACOBI*NORM(K)*(KWEAR/(HWEAR*DISSIP))*
+     &                       VECT(L)*DEPLE(NDIM+1))
+              ELSE
+                IF (TYALGC .EQ. 1) THEN
+                MMAT(II,JJ) = (COEFCA+(ICOMPL*COEASP*2*(JEU-ASPERI)))*
      &                       HPG*FFPC(I)*NORM(L)*FFPC(J)*JACOBI*NORM(K)
+                ELSEIF (TYALGC .EQ. 2) THEN
+                MMAT(II,JJ) = 0.D0
+                ELSEIF (TYALGC .EQ. 3) THEN
+                MMAT(II,JJ) = (COEFCP+(ICOMPL*COEASP*2*(JEU-ASPERI)))*
+     &                       HPG*FFPC(I)*NORM(L)*FFPC(J)*JACOBI*NORM(K)
+                END IF
+              END IF
   130       CONTINUE
   140     CONTINUE
   150   CONTINUE
@@ -220,9 +259,24 @@ C
           DO 180 K = 1,NDIM
             DO 170 L = 1,NDIM
               II = (2*NDIM)*(I-1)+L
-              JJ = (2*NDIM)*NNE+NDIM*(J-1)+K              
+              JJ = (2*NDIM)*NNE+NDIM*(J-1)+K   
+            IF (IUSURE .EQ. 1 .AND. DISSIP .NE. 0.D0) THEN           
+              MMAT(II,JJ) = -(COEFCA+(ICOMPL*COEASP*2*(JEU-ASPERI)))*
+     &                      HPG*FFPC(I)*NORM(L)*FFPR(J)*JACOBI*
+     &                      NORM(K)+(COEFCA*HPG*FFPC(I)*FFPR(J)*
+     &                      JACOBI*NORM(K)*(KWEAR/(HWEAR*DISSIP))*
+     &                      VECT(L)*DEPLE(NDIM+1))
+            ELSE
+                   IF (TYALGC .EQ. 1) THEN
               MMAT(II,JJ) = -(COEFCA+(ICOMPL*COEASP*2*(JEU-ASPERI)))*
      &                      HPG*FFPC(I)*NORM(L)*FFPR(J)*JACOBI*NORM(K)
+              ELSEIF (TYALGC .EQ. 2) THEN
+              MMAT(II,JJ) = 0.D0
+              ELSEIF (TYALGC .EQ. 3) THEN
+              MMAT(II,JJ) = -(COEFCP+(ICOMPL*COEASP*2*(JEU-ASPERI)))*
+     &                      HPG*FFPC(I)*NORM(L)*FFPR(J)*JACOBI*NORM(K)
+              END IF
+            END IF
   170       CONTINUE
   180     CONTINUE
   190   CONTINUE
@@ -236,8 +290,23 @@ C
             DO 210 L = 1,NDIM
               II = (2*NDIM)*NNE+NDIM*(I-1)+L
               JJ = (2*NDIM)*(J-1)+K             
+              IF (IUSURE .EQ. 1 .AND. DISSIP .NE. 0.D0) THEN
+                MMAT(II,JJ) = -(COEFCA+(COEASP*ICOMPL*2*(JEU-ASPERI)))*
+     &                      HPG*FFPR(I)*NORM(L)*FFPC(J)*JACOBI*   
+     &                      NORM(K)+(COEFCA*HPG*FFPR(I)*FFPC(J)*
+     &                      JACOBI*NORM(K)*(KWEAR/(HWEAR*DISSIP))*
+     &                      VECT(L)*DEPLE(NDIM+1))
+              ELSE
+                   IF (TYALGC .EQ. 1) THEN
               MMAT(II,JJ) = -(COEFCA+(COEASP*ICOMPL*2*(JEU-ASPERI)))*
      &                      HPG*FFPR(I)*NORM(L)*FFPC(J)*JACOBI*NORM(K)
+              ELSEIF (TYALGC .EQ. 2) THEN
+              MMAT(II,JJ) = 0.D0
+              ELSEIF (TYALGC .EQ. 3) THEN
+              MMAT(II,JJ) = -(COEFCP+(COEASP*ICOMPL*2*(JEU-ASPERI)))*
+     &                      HPG*FFPR(I)*NORM(L)*FFPC(J)*JACOBI*NORM(K)
+              END IF
+              END IF
   210       CONTINUE
   220     CONTINUE
   230   CONTINUE
@@ -251,12 +320,40 @@ C
             DO 250 L = 1,NDIM
               II = (2*NDIM)*NNE+NDIM*(I-1)+L
               JJ = (2*NDIM)*NNE+NDIM*(J-1)+K
-              MMAT(II,JJ) = (COEFCA+(COEASP*ICOMPL*2*(JEU-ASPERI)))*
+              IF (IUSURE .EQ. 1 .AND. DISSIP .NE. 0.D0) THEN
+                MMAT(II,JJ) = (COEFCA+(COEASP*ICOMPL*2*(JEU-ASPERI)))*
+     &                      HPG*FFPR(I)*NORM(L)*FFPR(J)*JACOBI*
+     &                      NORM(K)-(COEFCA*HPG*FFPR(I)*FFPR(J)*
+     &                      JACOBI*NORM(K)*(KWEAR/(HWEAR*DISSIP))*
+     &                      VECT(L)*DEPLE(NDIM+1))
+              ELSE
+                     IF (TYALGC .EQ. 1) THEN
+                MMAT(II,JJ) = (COEFCA+(COEASP*ICOMPL*2*(JEU-ASPERI)))*
      &                      HPG*FFPR(I)*NORM(L)*FFPR(J)*JACOBI*NORM(K)
+                ELSEIF (TYALGC .EQ. 2) THEN
+                MMAT(II,JJ) = 0.D0
+                ELSEIF (TYALGC .EQ. 3) THEN
+                MMAT(II,JJ) = (COEFCP+(COEASP*ICOMPL*2*(JEU-ASPERI)))*
+     &                      HPG*FFPR(I)*NORM(L)*FFPR(J)*JACOBI*NORM(K)
+                END IF
+              END IF
   250       CONTINUE
   260     CONTINUE
   270   CONTINUE
   280 CONTINUE   
 C
+C ---- MATRICE USURE COUPLAGE LAMBDA-LAMBDA
+C
+      IF (IUSURE .EQ. 1 .AND. DISSIP .NE. 0.D0) THEN
+      DO 64 I = 1,NNE
+        DO 54 J = 1,NNE
+          II = (2*NDIM)*(I-1)+NDIM+1
+          JJ = (J-1)*(2*NDIM)+NDIM+1
+          MMAT(II,JJ) = HPG*FFPC(J)*FFPC(I)*JACOBI*
+     &                 ((KWEAR/HWEAR)*DISSIP)
+   54   CONTINUE
+   64 CONTINUE
+      END IF
+      
       CALL JEDEMA()      
       END

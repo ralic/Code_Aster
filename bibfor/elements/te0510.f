@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER       NINTER,NFACE,CFACE(5,3),AR(12,2),NBAR,IN,IA,NA,NB
       INTEGER       I,J,NLI,IMAX,NABS,K
       REAL*8        LONGAR,AL,ND(3),GRLT(3),TAU1(3),TAU2(3),NORME,PS
-      REAL*8        POINT(3),NORM2,LSN,MAX
+      REAL*8        NORM2,LSN,MAX
       INTEGER       NDIM,IBID
 C......................................................................
 
@@ -152,17 +152,15 @@ C       INITIALISATION TAU1 POUR CAS 2D
 
         CALL NORMEV(ND,NORME)
         PS=DDOT(NDIM,GRLT,1,ND,1)
-        DO 133 J=1,NDIM
+       DO 133 J=1,NDIM
           TAU1(J)=GRLT(J)-PS*ND(J)
  133    CONTINUE
+
         CALL NORMEV(TAU1,NORME)
 
         IF (NORME.LT.1.D-12) THEN
           CALL U2MESS('A','ELEMENTS4_5')
-          DO 1341 K=1,NDIM
-            POINT(K)=ZR(JPTINT-1+NDIM*(NLI-1)+K)
- 1341     CONTINUE
-          CALL UTIMPR('L',' POINT ',3,POINT )
+
 C         ESSAI AVEC LE PROJETE DE OX
           TAU1(1)=1.D0-ND(1)*ND(1)
           TAU1(2)=0.D0-ND(1)*ND(2)
@@ -193,7 +191,6 @@ C       ARCHIVAGE DE BASECO
 
       CALL JEDETR(PINTER)
       CALL JEDETR(AINTER)
-C ----------------------------------------------------------------------
 
       CALL JEDEMA()
       END

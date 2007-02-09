@@ -2,7 +2,7 @@
      &                  TEMPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/02/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -393,13 +393,13 @@ C               POUR LES ELEMENTS DE BORD X-FEM
                 IF (IER.NE.0) THEN
                   CALL JEVEUO(MODELE(1:8)//'.FISS','L',JFISS)
                   LPAIN(NCHIN + 1) = 'PPINTTO'
-                  LCHIN(NCHIN + 1) = ZK8(JFISS)//'.TOPOSE.PINTTO'
+                  LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOSE.PINTTO'
                   LPAIN(NCHIN + 2) = 'PCNSETO'
-                  LCHIN(NCHIN + 2) = ZK8(JFISS)//'.TOPOSE.CNSETO'
+                  LCHIN(NCHIN + 2) = MODELE(1:8)//'.TOPOSE.CNSETO'
                   LPAIN(NCHIN + 3) = 'PHEAVTO'
-                  LCHIN(NCHIN + 3) = ZK8(JFISS)//'.TOPOSE.HEAVTO'
+                  LCHIN(NCHIN + 3) = MODELE(1:8)//'.TOPOSE.HEAVTO'
                   LPAIN(NCHIN + 4) = 'PLONCHA'
-                  LCHIN(NCHIN + 4) = ZK8(JFISS)//'.TOPOSE.LONCHAM'
+                  LCHIN(NCHIN + 4) = MODELE(1:8)//'.TOPOSE.LONCHAM'
                   NCHIN = NCHIN + 4
                 ENDIF
 

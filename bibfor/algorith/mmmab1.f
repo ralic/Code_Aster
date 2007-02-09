@@ -1,10 +1,10 @@
       SUBROUTINE MMMAB1(NDIM,NNE,NNM,
      &                  INDM,INI1,INI2,INI3,CMP,
      &                  HPG,FFPC,FFPR,JACOBI,
-     &                  LAMBDA,COEFFA,COEFFF,TAU1,TAU2,
-     &                  MPROJ,MMAT)     
+     &                  LAMBDA,TYALGF,COEFFA,COEFFS,COEFFP,
+     &                  COEFFF,TAU1,TAU2,MPROJ,MMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,11 +21,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_21
+C
       IMPLICIT NONE
       INTEGER  NDIM,NNE,NNM
       REAL*8   HPG,FFPC(9),FFPR(9),JACOBI  
-      INTEGER  INDM,INI1,INI2,INI3,CMP 
-      REAL*8   LAMBDA,COEFFF,COEFFA 
+      INTEGER  INDM,INI1,INI2,INI3,CMP,TYALGF 
+      REAL*8   LAMBDA,COEFFF,COEFFA,COEFFS,COEFFP
       REAL*8   TAU1(3),TAU2(3)     
       REAL*8   MMAT(81,81)  
       REAL*8   MPROJ(3,3)
@@ -51,6 +53,9 @@ C IN  FFPR   : FONCTIONS DE FORME DE LA PROJECTION DU POINT DE CONTACT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  LAMBDA : VALEUR DU SEUIL_INIT
 C IN  COEFFA : COEF_REGU_FROT
+C IN  COEFFS : COEF_STAB_FROT
+C IN  COEFFP : COEF_PENA_FROT
+C IN  TYALGF : TYPE D'ALGORITHME DE FROTTEMENT
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 C IN  TAU1   : PREMIERE TANGENTE
 C IN  TAU2   : SECONDE TANGENTE
@@ -185,8 +190,15 @@ C
             DO 370 K = 1,NDIM
               II = (2*NDIM)*(I-1)+L
               JJ = (J-1)*(2*NDIM)+K           
-              MMAT(II,JJ) =
+              IF (TYALGF .EQ. 1) THEN 
+                MMAT(II,JJ) =
      &          -COEFFA*COEFFF*HPG*LAMBDA*FFPC(I)*FFPC(J)*JACOBI*E(L,K)
+              ELSEIF (TYALGF .EQ. 2) THEN
+                MMAT(II,JJ) = 0.D0
+              ELSEIF (TYALGF .EQ. 3) THEN
+                MMAT(II,JJ) =
+     &          -COEFFP*COEFFF*HPG*LAMBDA*FFPC(I)*FFPC(J)*JACOBI*E(L,K)
+              END IF
  370        CONTINUE
  380      CONTINUE
  390    CONTINUE
@@ -200,9 +212,17 @@ C
             DO 410 K = 1,NDIM
               II = (2*NDIM)*(I-1)+L
               JJ = (2*NDIM)*NNE+(J-1)*NDIM+K             
-              MMAT(II,JJ) =
+              IF (TYALGF .EQ. 1) THEN
+                MMAT(II,JJ) =
      &          COEFFA * COEFFF * LAMBDA * HPG * FFPC(I) * FFPR(J) *
      &          JACOBI * E(L,K)
+              ELSEIF (TYALGF .EQ. 2) THEN
+                MMAT(II,JJ) = 0.D0
+              ELSEIF (TYALGF .EQ. 3) THEN
+                MMAT(II,JJ) =
+     &          COEFFP * COEFFF * LAMBDA * HPG * FFPC(I) * FFPR(J) *
+     &          JACOBI * E(L,K)
+              END IF
  410        CONTINUE
  420      CONTINUE
  430    CONTINUE
@@ -216,9 +236,17 @@ C
             DO 450 K = 1,NDIM
               II = (2*NDIM)*NNE+NDIM*(I-1)+L
               JJ = (2*NDIM)*(J-1)+K              
-              MMAT(II,JJ) =
+              IF (TYALGF .EQ. 1) THEN
+                MMAT(II,JJ) =
      &          COEFFA * COEFFF * LAMBDA * HPG * FFPR(I) * FFPC(J) *
      &          JACOBI * E(L,K)
+              ELSEIF (TYALGF .EQ. 2) THEN
+                MMAT(II,JJ) = 0.D0
+              ELSEIF (TYALGF .EQ. 3) THEN
+                MMAT(II,JJ) =
+     &          COEFFP * COEFFF * LAMBDA * HPG * FFPR(I) * FFPC(J) *
+     &          JACOBI * E(L,K)
+              END IF
  450        CONTINUE
  460      CONTINUE
  470    CONTINUE
@@ -233,8 +261,15 @@ C
             DO 490 K = 1,NDIM
               II = NNE*(2*NDIM)+NDIM*(I-1)+L
               JJ = NNE*(2*NDIM)+NDIM*(J-1)+K
-              MMAT(II,JJ) =
+              IF (TYALGF .EQ. 1) THEN
+                MMAT(II,JJ) =
      &          -COEFFA*COEFFF*LAMBDA*HPG*FFPR(I)*FFPR(J)*JACOBI*E(L,K)
+              ELSEIF (TYALGF .EQ. 2) THEN
+                MMAT(II,JJ) = 0.D0
+              ELSEIF (TYALGF .EQ. 3) THEN
+                MMAT(II,JJ) =
+     &          -COEFFP*COEFFF*LAMBDA*HPG*FFPR(I)*FFPR(J)*JACOBI*E(L,K)
+              END IF
  490        CONTINUE
  500      CONTINUE
  510    CONTINUE

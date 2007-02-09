@@ -2,10 +2,10 @@
      &                  IMA,IMABAR,INDNOB,INDRAC,
      &                  HPG,FFPC,FFPR,JACOBI, 
      &                  JDEPM,JDEPP,DEPLE,
-     &                  COEFCA,ICOMPL,IFORM,COEASP,ASPERI,JEU,NORM,
-     &                  VTMP)
+     &                  TYALGC,COEFCA,COEFCS,COEFCP,ICOMPL,
+     &                  IFORM,COEASP,ASPERI,JEU,NORM,VTMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,12 +25,12 @@ C ======================================================================
 C TOLE CRP_21
       IMPLICIT NONE
       INTEGER  NDIM,NNE,NNM
-      INTEGER  ICOMPL,IFORM
+      INTEGER  ICOMPL,IFORM,TYALGC
       INTEGER  IMA,IMABAR,INDRAC,INDNOB
       REAL*8   HPG,FFPC(9),JACOBI,FFPR(9)
-      REAL*8   DEPLE(6)
+      REAL*8   DEPLE(6),JEU,NORM(3)
       REAL*8   JDEPP,JDEPM      
-      REAL*8   ASPERI,COEFCA,COEASP,JEU,NORM(3)      
+      REAL*8   ASPERI,COEFCA,COEFCS,COEFCP,COEASP   
       REAL*8   VTMP(81)   
 C
 C ----------------------------------------------------------------------
@@ -58,6 +58,9 @@ C IN  FFPC   : FONCTIONS DE FORME DU POINT DE CONTACT
 C IN  FFPR   : FONCTIONS DE FORME DE LA PROJECTION DU POINT DE CONTACT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  COEFCA : COEF_REGU_CONT
+C IN  COEFFS : COEF_STAB_CONT
+C IN  COEFFP : COEF_PENA_CONT
+C IN  TYALGC : TYPE D'ALGORITHME DE CONTACT
 C IN  ICOMPL : INDICATEUR DE COMPLIANCE 
 C IN  IFORM  : TYPE DE FORMUALTIOn (DEPL/VITE)
 C IN  COEASP : PARAMETRE E_N POUR LA COMPLIANCE
@@ -99,9 +102,19 @@ C
         DO 70 I = 1,NNE
           DO 60 J = 1,NDIM
             II = (I-1)*(2*NDIM)+J
+            IF (TYALGC .EQ. 1) THEN
             VTMP(II) = -HPG*JACOBI*
      &                 (DEPLE(NDIM+1)-COEFCA*JEU-(COEASP*ICOMPL*
      &                 (JEU-ASPERI)**2))*FFPC(I)*NORM(J)
+            ELSEIF (TYALGC .EQ. 2) THEN
+            VTMP(II) = -HPG*JACOBI*
+     &                 (DEPLE(NDIM+1)-(COEASP*ICOMPL*
+     &                 (JEU-ASPERI)**2))*FFPC(I)*NORM(J)
+            ELSEIF (TYALGC .EQ. 3) THEN
+            VTMP(II) = -HPG*JACOBI*
+     &                 (DEPLE(NDIM+1)-COEFCP*JEU-(COEASP*ICOMPL*
+     &                 (JEU-ASPERI)**2))*FFPC(I)*NORM(J)
+            END IF
    60     CONTINUE
    70   CONTINUE
 C
@@ -110,9 +123,19 @@ C
         DO 90 I = 1,NNM
           DO 80 J = 1,NDIM
             II = NNE*(2*NDIM)+(I-1)*(NDIM)+J           
+            IF (TYALGC .EQ. 1) THEN
             VTMP(II) = HPG*JACOBI*
      &                 (DEPLE(NDIM+1)-COEFCA*JEU-(COEASP*ICOMPL*
      &                 (JEU-ASPERI)**2))*FFPR(I)*NORM(J)
+            ELSEIF (TYALGC .EQ. 2) THEN
+            VTMP(II) = HPG*JACOBI*
+     &                 (DEPLE(NDIM+1)-(COEASP*ICOMPL*
+     &                 (JEU-ASPERI)**2))*FFPR(I)*NORM(J)
+            ELSEIF (TYALGC .EQ. 3) THEN
+            VTMP(II) = HPG*JACOBI*
+     &                 (DEPLE(NDIM+1)-COEFCP*JEU-(COEASP*ICOMPL*
+     &                 (JEU-ASPERI)**2))*FFPR(I)*NORM(J)
+            END IF
    80     CONTINUE
    90   CONTINUE
 C
@@ -149,9 +172,17 @@ C
         DO 71 I = 1,NNE
           DO 61 J = 1,NDIM
             II = (I-1)*(2*NDIM)+J          
+            IF (TYALGC .EQ. 1) THEN
             VTMP(II) = -HPG*JACOBI*
      &                 (DEPLE(NDIM+1)-COEFCA*(JDEPP-JDEPM))*
      &                  FFPC(I)*NORM(J)
+            ELSEIF (TYALGC .EQ. 2) THEN
+            VTMP(II) = -HPG*JACOBI*DEPLE(NDIM+1)*FFPC(I)*NORM(J)
+            ELSEIF (TYALGC .EQ. 3) THEN
+            VTMP(II) = -HPG*JACOBI*
+     &                 (DEPLE(NDIM+1)-COEFCP*(JDEPP-JDEPM))*
+     &                  FFPC(I)*NORM(J)
+            END IF
    61     CONTINUE
    71   CONTINUE
 C
@@ -160,9 +191,17 @@ C
         DO 91 I = 1,NNM
           DO 81 J = 1,NDIM
             II = NNE*(2*NDIM)+(I-1)*(NDIM)+J           
+            IF (TYALGC .EQ. 1) THEN
             VTMP(II) = HPG*JACOBI*
      &                 (DEPLE(NDIM+1)-COEFCA*(JDEPP-JDEPM))*
      &                  FFPR(I)*NORM(J)
+            ELSEIF (TYALGC .EQ. 2) THEN
+            VTMP(II) = HPG*JACOBI*DEPLE(NDIM+1)*FFPR(I)*NORM(J)
+            ELSEIF (TYALGC .EQ. 3) THEN
+            VTMP(II) = HPG*JACOBI*
+     &                 (DEPLE(NDIM+1)-COEFCP*(JDEPP-JDEPM))*
+     &                  FFPR(I)*NORM(J)
+            END IF
    81     CONTINUE
    91   CONTINUE
 C

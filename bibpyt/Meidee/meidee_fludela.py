@@ -1,4 +1,4 @@
-#@ MODIF meidee_fludela Meidee  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_fludela Meidee  DATE 06/02/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ try:
     from Meidee.meidee_iface import VLabelledItem, HLabelledItem, Compteur, MacWindow, CreaTable
     from Cata.cata import modele_sdaster , mode_meca, matr_asse_depl_r, maillage_sdaster
     from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
-    from Cata.cata import CREA_CHAMP, RECU_TABLE, DETRUIRE, CREA_TABLE, DEFI_FONCTION
+    from Cata.cata import CREA_CHAMP, RECU_TABLE, DETRUIRE, CREA_TABLE, DEFI_FONCTION, MAC_MODES
     ##from Meidee.TkPlotCanvas import *
     import aster
     import Numeric
@@ -662,8 +662,8 @@ class MeideeFludela:
             amor_ajou_vit_adim_lin = ['####']*nb_mod
         xsi_vit_ajou = 1./(2.*(xm+xmi+xma)*(2*pi*freq_eau))*amor_ajou_vit_dim_mod
 
-        mass_mod = xm+xmi # masse modale en air
-        raid_ajou_dim_mod = mass_mod*(2*pi*freq_air) - (xm + xma + xmi)*(2*pi*freq_eau)
+        mass_mod = xm # masse modale en air
+        raid_ajou_dim_mod = mass_mod*(2*pi*freq_air)*(2*pi*freq_air)*((freq_vit*freq_vit)/(freq_eau*freq_eau) - 1)
         if is_valid:
             raid_ajou_dim_lin  = (1./long_eq)*raid_ajou_dim_mod 
             raid_ajou_adim_lin = 1./((1./2)*self.rho_flu_ext*U*U*long_eq)*raid_ajou_dim_mod
@@ -1665,6 +1665,11 @@ class Fimen:
 def calc_meidee_longeq( resultat,
                         *args ):
 
+    """! Calcul de la longueur equivalente. La poutre le long de laquelle
+         on fait le calcul doit etre dirigee selon l'axe y. Ici, la deformee
+         peut etre dans les trois directions (x, y et z), mais dans le reste
+         de Meidee, on ne considere en general que les deformation selon dx.
+    """
 
     ind_mod  = [ int(m) for m in resultat.get_modes()[3][:,0] ]
     nom_maya = resultat.maya_name
@@ -1672,13 +1677,18 @@ def calc_meidee_longeq( resultat,
     maya_x   = [maya[ind] for ind in range(0,len(maya),3)]
     maya_y   = [maya[ind] for ind in range(1,len(maya),3)]
     maya_z   = [maya[ind] for ind in range(2,len(maya),3)]
-    ordo     = Numeric.sort(maya_x)
+    ordo     = Numeric.argsort(maya_y)
+    print "maya_x = ", maya_x
+    print "maya_y = ", maya_y
+    print "ordo = ", ordo
     no1      = aster.getvectjev( nom_maya.ljust(8)+'.NOMNOE         ' )
+    print "no1 = ", no1
     maya     = []
-    for ind_may in range(len(maya_x)):
-        place = maya_x.index(ordo[ind_may])
+    for ind_may in range(len(maya_y)):
+        place = ordo[ind_may]
+        print [int(no1[place][1:]),maya_x[place],maya_y[place],maya_z[place]]
         maya.append([int(no1[place][1:]),maya_x[place],maya_y[place],maya_z[place]])
-        # coordonnées du maillage rangées par ordre des x croissants
+        # coordonnées du maillage rangées par ordre des y croissants
     maya = Numeric.array(maya)
     long_eq = []
     for ind in ind_mod:
@@ -1691,7 +1701,7 @@ def calc_meidee_longeq( resultat,
         chano_x = __PHI.EXTR_COMP('DX',[],1)
         chano_y = __PHI.EXTR_COMP('DY',[],1)
         chano_z = __PHI.EXTR_COMP('DZ',[],1)
-        no2 = list(chano_x.noeud)
+        no2 = list(chano_y.noeud)
         ## Contient [ x,y,z, ux, uy, uz ]
         liste = []
         for no in range(len(no1)):
@@ -1701,9 +1711,12 @@ def calc_meidee_longeq( resultat,
                               maya[no,3], chano_x.valeurs[place],
                               chano_y.valeurs[place], chano_z.valeurs[place]])
             except ValueError:
-                UTMESS('A', 'MACRO_VISU_MEIDEE', "Le maillage et les déformées ne sont pas compatibles")
+                UTMESS('A', 'MACRO_VISU_MEIDEE', "Le maillage et les deformees ne sont pas compatibles")
                 pass
         data = Numeric.array(liste)
+        if ind == 1:
+            print "data = "
+            print data
 
         calc = 0
         for ind_no in range(1,data.shape[0]):

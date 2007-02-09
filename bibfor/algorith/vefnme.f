@@ -11,7 +11,7 @@
       CHARACTER*8 VECELE,NEWNOM
 
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -188,15 +188,15 @@ C     -- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE
 C     CADRE X-FEM
       CALL JEEXIN(MODELE(1:8)//'.FISS',IER)
       IF (IER.NE.0) THEN
-        CALL JEVEUO(MODELE(1:8)//'.FISS','L',JFISS)
-        FISS=ZK8(JFISS)
-        PINTTO=FISS//'.TOPOSE.PINTTO'
-        CNSETO=FISS//'.TOPOSE.CNSETO'
-        HEAVTO=FISS//'.TOPOSE.HEAVTO'
-        LONCHA=FISS//'.TOPOSE.LONCHAM'
-        BASLOC=FISS//'.BASLOC'
-        LSN   =FISS//'.LNNO'
-        LST   =FISS//'.LTNO'
+        
+        PINTTO=MODELE(1:8)//'.TOPOSE.PINTTO'
+        CNSETO=MODELE(1:8)//'.TOPOSE.CNSETO'
+        HEAVTO=MODELE(1:8)//'.TOPOSE.HEAVTO'
+        LONCHA=MODELE(1:8)//'.TOPOSE.LONCHAM'
+        BASLOC=MODELE(1:8)//'.BASLOC'
+        LSN   =MODELE(1:8)//'.LNNO'
+        LST   =MODELE(1:8)//'.LTNO'
+        
       ELSE
         PINTTO='&&VEFNME.PINTTO.BID'
         CNSETO='&&VEFNME.CNSETO.BID'

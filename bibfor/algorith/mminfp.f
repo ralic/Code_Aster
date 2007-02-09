@@ -1,7 +1,7 @@
       SUBROUTINE MMINFP(IZ,DEFICO,RESOCO,QUESTI,
      &                  IREP,RREP,KREP,LREP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,9 +112,30 @@ C
         ELSE
           LREP(1) = .TRUE.
         ENDIF
+      ELSEIF (QUESTI(1:14).EQ.'RACC_LINE_QUAD') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF)
+        IF (ZR(JCMCF+ZCMCF*(IZONE-1)+12) .EQ. 0.D0) THEN
+          LREP(1) = .FALSE.
+        ELSE
+          LREP(1) = .TRUE.
+        ENDIF
+      ELSEIF (QUESTI(1:17).EQ.'EXCLUSION_PIV_NUL') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF)
+        IF (ZR(JCMCF+ZCMCF*(IZONE-1)+22) .EQ. 0.D0) THEN
+          LREP(1) = .FALSE.
+        ELSE
+          LREP(1) = .TRUE.
+        ENDIF
       ELSEIF (QUESTI(1:10).EQ.'COMPLIANCE') THEN
         CALL JEVEUO(CARACF,'L',JCMCF)
         IF (ZR(JCMCF+ZCMCF*(IZONE-1)+7) .EQ. 0.D0) THEN
+          LREP(1) = .FALSE.
+        ELSE
+          LREP(1) = .TRUE.
+        ENDIF
+      ELSEIF (QUESTI(1:5).EQ.'USURE') THEN
+        CALL JEVEUO(CARACF,'L',JCMCF)
+        IF (ZR(JCMCF+ZCMCF*(IZONE-1)+13) .EQ. 0.D0) THEN
           LREP(1) = .FALSE.
         ELSE
           LREP(1) = .TRUE.
