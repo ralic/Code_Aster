@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,16 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            MATER           =SIMP(statut='o',typ=mater_sdaster,max=1),
+         ),
+
+         #  affectation de comportement (multifibres pour l'instant):
+         #  ----------------------------------------------
+         AFFE_COMPOR        =FACT(statut='f',max='**',
+           regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           COMPOR          =SIMP(statut='o',typ=compor_sdaster,max=1),
          ),
 
          #  affectation des variables de commande :

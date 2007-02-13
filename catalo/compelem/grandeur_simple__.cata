@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+%& MODIF COMPELEM  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -250,8 +250,8 @@ GRANDEUR_SIMPLE__
 <<  DOMMAG   : DOMMAGE
        DOMA     :
        TRIAX    : TAUX DE TRIAXIALITE
-       SI_ENDO  : CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT
-       COENDO   : CONTRAINTE EQUIVALENTE D'ENDOMMAGEMENT NORMALISEE
+       SI_ENDO  : CONTRAINTE EQUIVALENTE D ENDOMMAGEMENT
+       COENDO   : CONTRAINTE EQUIVALENTE D ENDOMMAGEMENT NORMALISEE
        DOM_LEM  : ENDOMMAGEMENT DE LEMAITRE
        D_CUMULE : ENDOMMAGEMENT DE LEMAITRE  CUMULE >>
     DOMMAG   = R    DOMA     TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE
@@ -274,13 +274,13 @@ GRANDEUR_SIMPLE__
                     P2DZ     TEMP     TEDX     TEDY     TEDZ     DX       DY       DZ
                     VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X VECT_3_Y
                     VECT_3_Z EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR
-<<  ERREUR  : GRANDEUR LIEE A L'ESTIMATEUR D'ERREUR EN RESIDU
-     Pour chaque élément :
+<<  ERREUR  : GRANDEUR LIEE A L ESTIMATEUR D ERREUR EN RESIDU
+     Pour chaque element :
        ERREST : erreur absolue
        NUEST  : erreur relative
        SIGCAL : norme du tenseur des contraintes
-       TERMRE : erreur absolue du résidu de l'équation d'équilibre
-       TERMR2 : erreur relative du résidu de l'équation d'équilibre
+       TERMRE : erreur absolue du résidu de l equation d equilibre
+       TERMR2 : erreur relative du résidu de l equation d equilibre
        TERMSA : erreur absolue des sauts de contraintes sur chaque bord
        TERMS2 : erreur relative des sauts de contraintes sur chaque bord
        TERMNO : erreur absolue des sauts entre les contraintes normales
@@ -332,9 +332,9 @@ GRANDEUR_SIMPLE__
        NBRUP2  : NOMBRE DE CYCLES AVANT RUPTURE (FONCTION DE SIGEQ2 ET D UNE
                  COURBE DE WOHLER)
        ENDO2   : ENDOMMAGEMENT ASSOCIE A NBRUP2 (ENDO2=1/NBRUP2)
-       VMIS    : MESURE D'AMPLITUDE DE CONTRAINTE SELON LE CRITERE
+       VMIS    : MESURE D AMPLITUDE DE CONTRAINTE SELON LE CRITERE
                  DE VON MISES
-       TRESCA  : MESURE D'AMPLITUDE DE CONTRAINTE SELON LE CRITERE
+       TRESCA  : MESURE D AMPLITUDE DE CONTRAINTE SELON LE CRITERE
                  DE TRESCA >>
     FACY_R   = R    DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1  EPNMAX1  EPNMOY1
                     SIGEQ1   NBRUP1   ENDO1    DTAUM2   VNM2X    VNM2Y    VNM2Z    SINMAX2
@@ -429,7 +429,19 @@ GRANDEUR_SIMPLE__
     MATE_F   = K8   MATE
     SPMA_R   = R    MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX  NPCOUMIN NPCOUMAX
                     NPSECMIN NPSECMAX
-    NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC
+%
+%   COMPOSANTES CARACTERISTIQUES DES ELEMENTS A SOUS-POINTS
+%
+<<  NBSP_I : CARACTERISTIQUES DES SOUS-POINTS :
+                COQ_NCOU : NOMBRE DE COUCHES (COQUE)
+                GRI_NCOU : NOMBRE DE COUCHES (GRILLE)
+                TUY_NCOU : NOMBRE DE COUCHES (TUYAU)
+                TUY_NSEC : NOMBRE DE SECTEURS (TUYAU)
+                NBGRFI : NOMBRE DE GROUPES DE FIBRES (POUTRE MULTI-FIBRE)
+                NUG* : NUMEROS DES GROUPES DE FIBRES (DE 1 A 10)>>
+    NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC  NBGRFI    NUG1
+                    NUG2     NUG3     NUG4     NUG5     NUG6     NUG7     NUG8    NUG9
+                    NUG10
     NEUT_F   = K8   X1       X2       X3       X4       X5       X6       X7       X8
                     X9       X10      X11      X12      X13      X14      X15      X16
                     X17      X18      X19      X20      X21      X22      X23      X24

@@ -1,15 +1,15 @@
       SUBROUTINE MERIME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
-     &                  MATELZ,NH,BASEZ)
+     &                  COMPOR,MATELZ,NH,BASEZ)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NCHAR,NH
       REAL*8 TIME
       CHARACTER*(*) MODELZ,CARAZ,MATELZ
       CHARACTER*8 MODELE,CARA,MATEL
-      CHARACTER*(*) LCHAR(*),MATE,BASEZ
+      CHARACTER*(*) LCHAR(*),MATE,BASEZ,COMPOR
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,7 @@ C IN  : EXITIM : VRAI SI L'INSTANT EST DONNE
 C IN  : TIME   : INSTANT DE CALCUL
 C IN  : NH     : NUMERO D'HARMONIQUE DE FOURIER
 C IN  : BASEZ  : NOM DE LA BASE
+C IN  : COMPOR : COMPOR POUR LES MULTIFIBRE (POU_D_EM)
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -171,8 +172,10 @@ C     -- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE: TEMP_R/TEMP_F
         LCHIN(21) = CHCARA(1) (1:8)//'.CANBSP'
         LPAIN(22) = 'PFIBRES'
         LCHIN(22) = CHCARA(1) (1:8)//'.CAFIBR'
+        LPAIN(23) = 'PCOMPOR'
+        LCHIN(23) = COMPOR
 
-        CALL CALCUL('S',OPTION,LIGRMO,22,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
+        CALL CALCUL('S',OPTION,LIGRMO,23,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
      &              BASE)
 
         ZK24(JLIRES-1+1) = LCHOUT(1)

@@ -1,23 +1,23 @@
-#@ MODIF E_JDC Execution  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
 
 
@@ -34,20 +34,22 @@ from Noyau.N_ASSD import ASSD
 from Noyau.N_ENTITE import ENTITE
 import aster
 
+from SD import basetype
+
 class JDC:
    """
    """
    # attributs accessibles depuis le fortran par les méthodes génériques
    # get_jdc_attr et set_jdc_attr
    l_jdc_attr = ('jxveri', 'sdveri', 'impr_macro')
-   
+
    def Exec(self):
       """
           Execution en fonction du mode d execution
       """
       # initexec est defini dans le package Build et cette fonction (Exec)
       # ne peut etre utilisee que si le module E_JDC est assemble avec le
-      # Build. 
+      # Build.
       self.initexec()
       for e in self.etapes:
         if CONTEXT.debug :
@@ -118,70 +120,42 @@ class JDC:
        l_etapes=self.get_liste_etapes()
        l_etapes.reverse()
        for e in l_etapes :
-           if hasattr(e,'cpu_user_0') :
-              etape_finale=e
-              etape_finale.cpu_user=times()[0]-etape_finale.cpu_user_0
-              etape_finale.cpu_syst=times()[1]-etape_finale.cpu_syst_0
-              etape_finale.AfficheFinCommande(etape_finale.cpu_user,etape_finale.cpu_syst)
+           if self.timer.timers.has_key(id(e)):
+              e.AfficheFinCommande()
               break
 
-       #recuperation du temps total du job
-       #les attributs cpu_user et cpu_syst du jdc avaient ete initialises
-       #par la methode set_icmd de la commande de demarrage (DEBUT ou POURSUITE)
-       cpu_total_user=times()[0]-self.cpu_user
-       cpu_total_syst=times()[1]-self.cpu_syst
+       # affiche le récapitulatif du timer
+       cpu_total_user, cpu_total_syst, elapsed_total = self.timer.StopAndGetTotal()
 
-       echo_resu=[]
-       echo_resu.append( '\n' )
-       echo_resu.append( '***********************************************************\n')
-       echo_resu.append( '* COMMANDE         *       USER *    SYSTEME *      TOTAL *\n')
-       echo_resu.append( '***********************************************************\n')
-       for e in self.get_liste_etapes() :
-         if hasattr(e,"cpu_user") :
-            texte='* '+e.nom.ljust(17)
-            texte=texte+ ':'+fpformat.fix(e.cpu_user,2).rjust(11)
-            texte=texte+' :'+fpformat.fix(e.cpu_syst,2).rjust(11)
-            texte=texte+' :'+fpformat.fix(e.cpu_user+e.cpu_syst,2).rjust(11)+' *\n'
-            echo_resu.append( texte )
-       echo_resu.append( '***********************************************************\n')
-       texte='* TOTAL_JOB        '
-       texte=texte+ ':'+fpformat.fix(cpu_total_user,2).rjust(11)
-       texte=texte+' :'+fpformat.fix(cpu_total_syst,2).rjust(11)
-       texte=texte+' :'+fpformat.fix(cpu_total_user+cpu_total_syst,2).rjust(11)+' *\n'
-       echo_resu.append( texte )
-       echo_resu.append( '***********************************************************\n')
-       texte_final=string.join(echo_resu)
-       aster.affiche('RESULTAT',texte_final)
+       aster.affiche('RESULTAT', repr(self.timer))
        aster.fclose(8)
 
-       tempsMax=self.args.get("tempsMax")
-       if tempsMax!=None :
-          cpu_restant=tempsMax-cpu_total_syst-cpu_total_user
+       tempsMax = self.args.get("tempsMax")
+       if tempsMax != None :
+          cpu_restant = tempsMax - cpu_total_syst - cpu_total_user
        else:
-          cpu_restant=0.
-       echo_mess=[]
-       decalage="  "  # blancs au debut de chaque ligne affichee
-       echo_mess.append( '\n' )
-       echo_mess.append( decalage )
-       echo_mess.append("#  ---------------------------------------------------------------------------\n")
-       echo_mess.append( '\n' )
-       echo_mess.append( ' <I> <INFORMATION TEMPS D\'EXECUTION> (EN SECONDE)\n')
-       echo_mess.append( '     TEMPS CPU TOTAL ..............  '+fpformat.fix(cpu_total_syst+cpu_total_user,2).rjust(12)+'\n')
-       echo_mess.append( '     TEMPS CPU USER TOTAL .........  '+fpformat.fix(cpu_total_user,2).rjust(12)+'\n')
-       echo_mess.append( '     TEMPS CPU SYSTEME TOTAL ......  '+fpformat.fix(cpu_total_syst,2).rjust(12)+'\n')
-       echo_mess.append( '     TEMPS CPU RESTANT ............  '+fpformat.fix(cpu_restant,2).rjust(12)+'\n')
-       texte_final=string.join(echo_mess)
-       aster.affiche('MESSAGE',texte_final)
+          cpu_restant = 0.
+
+       texte_final = """
+
+  <I> <INFORMATION TEMPS D'EXECUTION> (EN SECONDE)
+      TEMPS CPU TOTAL ..............    %10.2f
+      TEMPS CPU USER TOTAL .........    %10.2f
+      TEMPS CPU SYSTEME TOTAL ......    %10.2f
+      TEMPS CPU RESTANT ............    %10.2f
+""" % (cpu_total_user+cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
+
+       aster.affiche('MESSAGE', texte_final)
        aster.fclose(6)
 
    def traiter_fin_exec(self,mode,etape=None):
        """ Cette methode realise un traitement final lorsque la derniere commande
-           a été exécutée. L'argument etape indique la derniere etape executee en traitement 
+           a été exécutée. L'argument etape indique la derniere etape executee en traitement
            par lot (si mode == 'par_lot').
 
            Le traitement réalisé est la sauvegarde du contexte courant : concepts produits
            plus autres variables python.
-           Cette sauvegarde est réalisée par un pickle du dictionnaire python contenant 
+           Cette sauvegarde est réalisée par un pickle du dictionnaire python contenant
            ce contexte.
        """
 
@@ -198,18 +172,18 @@ class JDC:
           # Le contexte courant est obtenu à partir du contexte des constantes
           # et du contexte des concepts
 
-          # On retire du contexte des constantes les concepts produits 
+          # On retire du contexte des constantes les concepts produits
           # par les commandes (exécutées et non exécutées)
           context=self.const_context
           for key,value in context.items():
               if isinstance(value,ASSD) :
                  del context[key]
 
-          # On ajoute a ce contexte les concepts produits par les commandes 
+          # On ajoute a ce contexte les concepts produits par les commandes
           # qui ont été réellement exécutées (du début jusqu'à etape)
           context.update(self.get_contexte_avant(etape))
 
-       # On élimine du contexte courant les objets qui ne supportent pas 
+       # On élimine du contexte courant les objets qui ne supportent pas
        # le pickle (version 2.2)
        context=self.filter_context(context,mode)
        # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
@@ -218,18 +192,21 @@ class JDC:
 
    def filter_context(self,context,mode):
        """
-          Cette methode construit un dictionnaire a partir du dictionnaire context 
-          passé en argument en supprimant tous les objets python que l'on ne veut pas 
+          Cette methode construit un dictionnaire a partir du dictionnaire context
+          passé en argument en supprimant tous les objets python que l'on ne veut pas
           ou ne peut pas sauvegarder pour une poursuite ultérieure
           Le dictionnaire résultat est retourné par la méthode
        """
        d={}
        for key,value in context.items():
            if key in ('aster','__builtins__') :continue
-           if type(value) in (types.ModuleType,types.ClassType,types.FunctionType) :continue
+           if type(value) in (types.ModuleType,types.ClassType,types.FunctionType) :
+              continue
+           if issubclass(type(value), basetype.MetaType):
+              continue
+           if issubclass(type(value), types.TypeType):
+              continue
            if isinstance(value,ENTITE) :continue
-           #if type(value) == types.ClassType and issubclass(value,ASSD) :continue
-           #if type(value) == types.ClassType and issubclass(value,ENTITE) :continue
            # Enfin on conserve seulement les objets que l'on peut pickler individuellement.
            try:
               pickle.dumps(value)
@@ -268,7 +245,7 @@ class JDC:
       os.abort()
 
    def fini_jdc(self):
-      """ Cette methode execute la commande FIN du catalogue 
+      """ Cette methode execute la commande FIN du catalogue
           pour terminer proprement le JDC
       """
       self.set_par_lot("NON")
@@ -299,7 +276,7 @@ class JDC:
       if attr not in self.l_jdc_attr:
          self.cr.exception("Erreur de programmation :\n"\
                            "attribut '%s' non autorisé" % attr)
-      if type(value) not in (types.IntType, types.LongType):
+      if type(value) not in (int, long):
          self.cr.exception("Erreur de programmation :\n"\
                            "valeur non entière : %s" % str(value))
       setattr(self, attr, value)

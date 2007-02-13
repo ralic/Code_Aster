@@ -1,8 +1,8 @@
-      SUBROUTINE NM1DCO(FAMI,KPG,KSP,OPTION,IMATE,TM,TP,E,SIGM,
+      SUBROUTINE NM1DCO(FAMI,KPG,KSP,OPTION,IMATE,MATERI,TM,TP,E,SIGM,
      &                  EPSM,DEPS,VIM,SIGP,VIP,DSDE,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -54,7 +54,7 @@ C     ------------------------------------------------------------------
       REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU,EPSPM,CORRM
       REAL*8 SIGP,DSDE,RBID,RESI,CRILDC(3)
       CHARACTER*16 OPTION
-      CHARACTER*(*) FAMI
+      CHARACTER*(*) FAMI,MATERI
       INTEGER IMATE,IRET,CODRET,KPG,KSP
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
@@ -71,7 +71,6 @@ C     ------------------------------------------------------------------
       REAL*8 VAR2,VAR3,RV,FINI,FDINI,FPLAS2,EPSMAX
       LOGICAL DCONV,PCONV,MELAS
       INTEGER ITER,ITEMAX,ICHAR,NCHAR,I,J,IBID
-
       FB2 = 'FM'
       NBPAR = 1
       NOMPAR = 'TEMP'
@@ -82,15 +81,15 @@ C     ------------------------------------------------------------------
 
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
       VALPAR = TP
-      CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'D_CORR',
-     &              DC,CODRES,FB2)
-      CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'ECRO_K',
-     &              K,CODRES,FB2)
-      CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'ECRO_M',
-     &              M,CODRES,FB2)
-      CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'SY',
-     &              SY,CODRES,FB2)
-      CALL RCVALA(IMATE,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,'NU',
+      CALL RCVALA(IMATE,MATERI,'CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,
+     &              'D_CORR',DC,CODRES,FB2)
+      CALL RCVALA(IMATE,MATERI,'CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,
+     &              'ECRO_K',K,CODRES,FB2)
+      CALL RCVALA(IMATE,MATERI,'CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,
+     &              'ECRO_M',M,CODRES,FB2)
+      CALL RCVALA(IMATE,MATERI,'CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,
+     &              'SY',SY,CODRES,FB2)
+      CALL RCVALA(IMATE,MATERI,'ELAS',NBPAR,NOMPAR,VALPAR,1,'NU',
      &              V,CODRES,FB2)
 
 C --- PARAMETRES DE CONVERGENCE
@@ -203,8 +202,8 @@ C    *****ENDOMMAGEMENT*********************
 
       VIP(1) = P
       VIP(2) = D
-      IF ((OPTION.EQ.'RIGI_MECA_TANG').OR.
-     &    (OPTION.EQ.'FULL_MECA')) THEN
+C      IF ((OPTION.EQ.'RIGI_MECA_TANG').OR.
+C     &    (OPTION.EQ.'FULL_MECA')) THEN
         IF (VIM(3).LT.0.5D0) THEN
           DSDE = E
         ELSE
@@ -228,7 +227,7 @@ C    *****ENDOMMAGEMENT*********************
           END IF
         END IF
 C     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT
-      END IF
+C      END IF
       IF(MELAS)  DSDE=(1.D0-D)*DSDE
 
  9999 CONTINUE

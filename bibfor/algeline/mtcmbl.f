@@ -8,7 +8,7 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -107,7 +107,7 @@ C     -----------------------------------------------------------------
       DO 10 I = 1,NBCOMB
         CALL ASSERT(TYPCST(I).EQ.'R'.OR.TYPCST(I).EQ.'C')
         MATI=LIMAT(I)
-C       CALL VERISD('MATR_ASSE',MATI)
+C       CALL CHEKSD('sd_matr_asse',MATI,IRET)
         CALL JEVEUO(MATI//'.REFA','L',JREFAI)
         IF (ZK24(JREFAI-1+3).EQ.'ELIMF') CALL MTMCHC(MATI,'ELIML')
         CALL MTDSCR(MATI)
@@ -120,7 +120,7 @@ C       CALL VERISD('MATR_ASSE',MATI)
         IF (SYMI) CALL ASSERT(NBLOC.EQ.1)
         IF ((.NOT.SYMI).AND.SYMR) CALL U2MESS('F','ALGELINE2_8')
         IF (MATI.EQ.MATRES) REUTIL=.TRUE.
-C       CALL VERISD('MATRICE',MATI)
+C       CALL CHEKSD('sd_matr_asse',MATI,IRET)
    10 CONTINUE
 
 
@@ -211,5 +211,5 @@ C     =========================================================
       CALL JEDETR('&&MTCMBL.LISPOINT')
 
       CALL JEDEMA()
-C     CALL VERISD('MATRICE',MATRES)
+C     CALL CHEKSD('sd_matr_asse',MATRES,IRET)
       END

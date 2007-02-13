@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE FLAMBEMENT D'UNE POUTRE DROITE MULTI-FIBRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,46 +40,11 @@ MO = AFFE_MODELE(
          MODELISATION= 'POU_D_TGM'),
 ))
 
-# DEFINITION DES MATERIAUX
-#            DES CARACTERISTIQUES ELASTIQUES et PLASTIQUES DES POUTRES
-# Comportement du materiau : E360.
-MAT0001 = DEFI_MATERIAU(
-   ELAS =_F( E= 2.100000e+11, NU= 3.000000e-01, RHO= 7.850000e+03,
-             ALPHA= 6.700000e-06),
-   ECRO_LINE= _F( D_SIGM_EPSI = 1.0E+08 ,
-                  SY= 400.0E+06),
-)
-
-
-# -------------------------------------------------------
-# Affectation des materiaux
-CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO, 
-   AFFE=(
-# Pour les poutres ou les barres ou les cables
-# Elements avec le materiau : E360.
-_F( GROUP_MA= ('S002','S001',
-),MATER= MAT0001 ),
-))
-
-
-# AFFECTATION DES CARACTERISTIQUES DES ELEMENTS
-CAREL = AFFE_CARA_ELEM( MODELE= MO,
-# Sections de spref /RE40X20 de modele POU_D_TGM
-POUTRE=(
-   _F(SECTION= 'GENERALE', GROUP_MA=('S002','S001',),
-   CARA= ( 'A','IY','IZ','AY',
-           'AZ','EY','EZ','JX',
-           'JG','IYR2','IZR2'),
-   PREC_INERTIE=6.7e-2,
-   VALE= ( 8.000000e-04,2.666667e-08,1.066667e-07,1.191790e+00,
-           1.172840e+00,0.000000e+00,0.000000e+00,7.093682e-08,
-           1.438125e-12,0.000000e+00,0.000000e+00 ) ),
-),
-
-AFFE_FIBRE = (
+GF=DEFI_GEOM_FIBRE(
+FIBRE = (
 #  Sections: /RE40X20, modele: POU_D_TGM, Epa: 4, lar: 8
   _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
-      GROUP_MA = ('S002',),
+      GROUP_FIBRE = ('SECF2',),
       VALE = ( 
 # Nombre de fibre : 32
         -1.75000e-02,  -7.50000e-03,   2.50000e-05,
@@ -148,7 +113,7 @@ AFFE_FIBRE = (
 
 #  Sections: /RE40X20, modele: POU_D_TGM, Epa: 4, lar: 8
   _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
-      GROUP_MA = ('S001',),
+      GROUP_FIBRE = ('SECF1',),
       VALE = ( 
 # Nombre de fibre : 32
         -1.75000e-02,  -7.50000e-03,   2.50000e-05,
@@ -190,7 +155,50 @@ AFFE_FIBRE = (
          2.00000e-02,  -1.00000e-02,   0.00000e+00,
            ), ),
 ),
+            )
 
+# DEFINITION DES MATERIAUX
+#            DES CARACTERISTIQUES ELASTIQUES et PLASTIQUES DES POUTRES
+# Comportement du materiau : E360.
+MAT0001 = DEFI_MATERIAU(
+   ELAS =_F( E= 2.100000e+11, NU= 3.000000e-01, RHO= 7.850000e+03,
+             ALPHA= 6.700000e-06),
+   ECRO_LINE= _F( D_SIGM_EPSI = 1.0E+08 ,
+                  SY= 400.0E+06),
+)
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT0001,
+                  MULTIFIBRE=(_F(GROUP_FIBRE=('SECF1','SECF2'),
+                                 MATER=MAT0001, RELATION='VMIS_ISOT_LINE'),))
+
+
+# -------------------------------------------------------
+# Affectation des materiaux
+CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO, 
+   AFFE=(
+# Pour les poutres ou les barres ou les cables
+# Elements avec le materiau : E360.
+_F( GROUP_MA= ('S002','S001'),MATER= MAT0001 ),
+      ),
+AFFE_COMPOR=_F(GROUP_MA=('S001','S002'),COMPOR=COMPF));
+
+
+# AFFECTATION DES CARACTERISTIQUES DES ELEMENTS
+CAREL = AFFE_CARA_ELEM( MODELE= MO,
+# Sections de spref /RE40X20 de modele POU_D_TGM
+POUTRE=(
+   _F(SECTION= 'GENERALE', GROUP_MA=('S002','S001',),
+   CARA= ( 'A','IY','IZ','AY',
+           'AZ','EY','EZ','JX',
+           'JG','IYR2','IZR2'),
+   PREC_INERTIE=6.7e-2,
+   VALE= ( 8.000000e-04,2.666667e-08,1.066667e-07,1.191790e+00,
+           1.172840e+00,0.000000e+00,0.000000e+00,7.093682e-08,
+           1.438125e-12,0.000000e+00,0.000000e+00 ) ),
+),
+GEOM_FIBRE=GF,
+MULTIFIBRE=(_F(GROUP_MA='S002',GROUP_FIBRE='SECF2'),
+            _F(GROUP_MA='S001',GROUP_FIBRE='SECF1'),),
 ORIENTATION=(
 # Pour les poutres
    _F(GROUP_MA= 'S002', CARA= 'ANGL_VRIL',
@@ -259,7 +267,7 @@ STNL = STAT_NON_LINE(
    INCREMENT= _F(LIST_INST = TEMPS),
    NEWTON= _F(MATRICE = 'TANGENTE', REAC_ITER= 1),
    COMP_INCR=(
-   _F(RELATION= 'VMIS_ISOT_LINE', 
+   _F(RELATION= 'MULTIFIBRE', 
       DEFORMATION= 'PETIT',
       GROUP_MA=('S002','S001',)),
    ),

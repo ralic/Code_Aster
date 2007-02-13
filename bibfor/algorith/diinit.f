@@ -1,9 +1,9 @@
       SUBROUTINE DIINIT(INSTAN, PARTPS, DERNIE, RESULT,NBOBSE,NUMINI,
      &                 LOBSER,NUOBSE,NOMTAB,MAILL2,NBOBAR,LISINS,
-     &                 LISOBS,MATE,CARELE,CMD)
+     &                 LISOBS,MATE,CARELE,CMD, SUIVCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C TOLE CRP_20
       REAL*8        INSTAN
       CHARACTER*8   RESULT,MAILL2
       CHARACTER*19  PARTPS,NOMTAB,LISOBS,LISINS
-      CHARACTER*24  CARELE
+      CHARACTER*24  CARELE,SUIVCO
 
 C ----------------------------------------------------------------------
 C
@@ -559,7 +559,7 @@ C        PAREIL QUE DANS NMDOCN
 C ======================================================================
 C   OBSERVATION
 C ======================================================================
-      CALL DYOBSE(NBINST,LISINS,LISOBS,NBOBSE,RESULT)
+      CALL DYOBSE(NBINST,LISINS,LISOBS,NBOBSE,SUIVCO,RESULT)
 
       IF ( NBOBSE .NE. 0 ) THEN
          NUOBSE = 0

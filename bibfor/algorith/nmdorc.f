@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -68,17 +68,24 @@ C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
 C    DIMAKI = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       PARAMETER (DIMANV=4)
       PARAMETER (NCMPMA=7+DIMAKI+DIMANV)
-      LOGICAL EXIST,GETEXM,EXICP,EXI1D,CRILOC
-      CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2),SDCOMP
+      LOGICAL EXIST,GETEXM,EXICP,EXI1D,CRILOC,EXIFIB
+      CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2),SDCOMP,CHMAT
       CHARACTER*16 COMP,DEFO,MOCLEF(2),K16BID,NOMCMD,MOCLES(2),TYPMAT
       CHARACTER*16 VALCMP(NCMPMA),TXCP,TX1D,RESO
-      CHARACTER*19 COMPOR
+      CHARACTER*19 COMPOR,CHS(2),CHS3
       CHARACTER*24 LIGRMO,MODELE,MESMAI
       CHARACTER*50 CHAIN1, CHAIN2, VALK(4)
 C    POUR COMPORTEMENT KIT_
       INTEGER NBVEL(DIMAKI)
       INTEGER NBNVI(DIMANV)
       CHARACTER*16 COMEL(DIMAKI)
+
+      REAL*8 LCOER(2)
+      COMPLEX*16 LCOEC(2)
+      LOGICAL LCUMU(2),LCOC(2)
+      DATA LCUMU/.FALSE.,.FALSE./
+      DATA LCOC/.FALSE.,.FALSE./
+      DATA LCOER/1.D0,1.D0/
 
       DATA NOMGRD/'COMPOR  '/
       DATA NOMCMP/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',
@@ -91,6 +98,7 @@ C     ------------------------------------------------------------------
       CALL GETRES(K8B,K16BID,NOMCMD)
 C                           1234567890123
       CRILOC=.FALSE.
+      EXIFIB=.FALSE.
       IF (NOMCMD(1:13).NE.'THER_LINEAIRE') THEN
 
         COMPOR = '&&NMDORC.COMPOR'
@@ -124,7 +132,7 @@ C                           1234567890123
 C    -----------------------------------------------------------
 C     POUR LA COMMANDE CALC_G
 C     SI AUCUN DES DEUX COMPORTEMENTS COMP_ELAS ET COMP_INCR N'EST
-C     SPECIFIE PAR L'UTILISATEUR, ON CREE UNE CARTE PAR DEFAUT 
+C     SPECIFIE PAR L'UTILISATEUR, ON CREE UNE CARTE PAR DEFAUT
 C     AVEC LES CARACTERISTIQUES SUIVANTES :
 C          COMP_ELAS ( RELATION    : ELAS
 C                      DEFORMATION : PETIT
@@ -381,6 +389,11 @@ C  POUR COMPORTEMENT KIT_
                 NBVARI=ZI(ICPRI-1+3)
                 ZK16(JVALV-1+6) = SDCOMP
                 WRITE (ZK16(JVALV-1+7),'(I16)') NBMONO
+CCC MULTIFIBRE
+
+            ELSEIF (COMP(1:8).EQ.'MULTIFIB') THEN
+                 EXIFIB=.TRUE.
+
 
             ELSE
 C   AUTRES COMPORTEMENTS : NOMBRE DE VARIABLES INTERNES
@@ -392,7 +405,7 @@ C   AUTRES COMPORTEMENTS : NOMBRE DE VARIABLES INTERNES
                   WRITE (ZK16(JVALV-1+6),'(I16)') NUNIT
                 ENDIF
             END IF
-            
+
 C RELATION SIMO_MIEHE POUR VMIS_ISOT_XXX ET META_XXX_IL
 C ET META_XXX_INL
 
@@ -413,27 +426,27 @@ C ET META_XXX_INL
               END IF
             END IF
 
-C           CPLAN DEBORST  ET COMP1D DEBORST                         
-C           DEBORST SEULEMENT EN COMP_INCR                           
-            IF ((I.EQ.1) .AND. (CRILOC)) THEN            
-              EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')                
-              EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')                    
-              IF (EXICP) THEN                                        
-                 CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)  
-                 IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4          
-              END IF                                                 
-              IF (EXI1D) THEN                                        
-                 CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)      
-                 IF (TX1D.EQ.'DEBORST') THEN                         
-                    IF(TXCP.EQ.'DEBORST')THEN                        
-                        CALL U2MESS('F','ALGORITH7_58')              
-                    ELSE                                             
-                       NBVARI = NBVARI + 4                           
-                       TXCP=TX1D                                     
-                    ENDIF                                            
-                 ENDIF                                               
-              END IF                                                 
-            END IF                                                   
+C           CPLAN DEBORST  ET COMP1D DEBORST
+C           DEBORST SEULEMENT EN COMP_INCR
+            IF ((I.EQ.1) .AND. (CRILOC)) THEN
+              EXICP = GETEXM(MOCLEF(I),'ALGO_C_PLAN')
+              EXI1D = GETEXM(MOCLEF(I),'ALGO_1D')
+              IF (EXICP) THEN
+                 CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
+                 IF (TXCP.EQ.'DEBORST') NBVARI = NBVARI + 4
+              END IF
+              IF (EXI1D) THEN
+                 CALL GETVTX(MOCLEF(I),'ALGO_1D',K,1,1,TX1D,N1)
+                 IF (TX1D.EQ.'DEBORST') THEN
+                    IF(TXCP.EQ.'DEBORST')THEN
+                        CALL U2MESS('F','ALGORITH7_58')
+                    ELSE
+                       NBVARI = NBVARI + 4
+                       TXCP=TX1D
+                    ENDIF
+                 ENDIF
+              END IF
+            END IF
 
             EXIST = GETEXM(MOCLEF(I),'DEFORMATION')
             IF (EXIST) THEN
@@ -469,45 +482,45 @@ C  POUR COMPORTEMENT KIT_
 
 C  LECTURE DES PARAMETRES DE CONVERGENCE A STOCKER DANS CARCRI
 
-            IF (CRILOC) THEN                                          
-               CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO,IRET)      
+            IF (CRILOC) THEN
+               CALL GETVTX(MOCLEF(I),'RESO_INTE',K,1,1,RESO,IRET)
                CALL GETVR8(MOCLEF(I),'RESI_INTE_RELA',K,1,1,RESI,IRET)
                CALL GETVIS(MOCLEF(I),'ITER_INTE_MAXI',K,1,1,ITEINT,
      &                   IRET)
                IF (RESI.NE.R8VIDE()  .AND. RESI.GT.1.0001D-6)
      &           CALL U2MESS('A','ALGORITH7_60')
-               ITEPAS = 0      
+               ITEPAS = 0
                CALL GETVIS('COMP_INCR','ITER_INTE_PAS' ,1,1,1,ITEPAS,
-     &                      IRET)                                
-               IF(RESO(1:9) .EQ.'IMPLICITE')     IMPEXP = 0       
-               IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') IMPEXP = 1      
-               IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') IMPEXP = 2     
+     &                      IRET)
+               IF(RESO(1:9) .EQ.'IMPLICITE')     IMPEXP = 0
+               IF(RESO(1:13).EQ.'RUNGE_KUTTA_2') IMPEXP = 1
+               IF(RESO(1:13).EQ.'RUNGE_KUTTA_4') IMPEXP = 2
 
 C              CPLAN DEBORST  ET COMP1D DEBORST SEULEMENT EN COMP_INCR
-               RESID=1.D-6                                         
-               IF (I.EQ.1) THEN                                    
+               RESID=1.D-6
+               IF (I.EQ.1) THEN
                    CALL GETVTX(MOCLEF(I),'ALGO_C_PLAN',K,1,1,TXCP,N1)
-                      IF (TXCP.EQ.'DEBORST') THEN               
+                      IF (TXCP.EQ.'DEBORST') THEN
                          CALL GETVR8(MOCLEF(I),'RESI_DEBORST',K,1,1,
-     &                           RESID,IRET) 
-                   ENDIF                                 
+     &                           RESID,IRET)
+                   ENDIF
 C                  dans ZR(JVALC+1) on stocke le type de matrice tgte
                    CALL GETVTX(MOCLEF(I),'TYPE_MATR_TANG',K,1,1,
-     &                         TYPMAT ,IRET)       
-                   IF (IRET.EQ.0) THEN                
-                      TYPTGT = 0       
-                   ELSE 
-                      IF (TYPMAT.EQ.'PERTURBATION') THEN  
-                         TYPTGT = 1            
-                      ELSEIF (TYPMAT.EQ.'VERIFICATION') THEN 
-                         TYPTGT = 2                       
-                      ENDIF                             
+     &                         TYPMAT ,IRET)
+                   IF (IRET.EQ.0) THEN
+                      TYPTGT = 0
+                   ELSE
+                      IF (TYPMAT.EQ.'PERTURBATION') THEN
+                         TYPTGT = 1
+                      ELSEIF (TYPMAT.EQ.'VERIFICATION') THEN
+                         TYPTGT = 2
+                      ENDIF
                       CALL GETVR8(MOCLEF(I),'VALE_PERT_RELA',K,1,1,
-     &                            PERT,IRET)            
-                   ENDIF            
-               ENDIF        
+     &                            PERT,IRET)
+                   ENDIF
+               ENDIF
             ENDIF
-                                                          
+
 C  STOCKAGE DE LA CARTE CARCRI
 
             CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF(I),K,2,MOCLES,
@@ -529,9 +542,9 @@ C  STOCKAGE DE LA CARTE CARCRI
      &                    NBCRIT)
               ENDIF
               CALL JEDETR(MESMAI)
-              
+
             ELSE
-            
+
 C ------- PAR DEFAUT C'EST TOUT='OUI'
               CALL NOCART(COMPOR,1,K8B,K8B,0,K8B,IBID,K8B,NCMPMA)
               IF (CRILOC) THEN
@@ -545,7 +558,7 @@ C ------- PAR DEFAUT C'EST TOUT='OUI'
                 ZR(JVALC+7) = RESID
                 CALL NOCART(CARCRI,1,K8B,K8B,0,K8B,IBID,K8B,NBCRIT)
               ENDIF
-                
+
             ENDIF
 
   150     CONTINUE
@@ -558,6 +571,28 @@ C ------- PAR DEFAUT C'EST TOUT='OUI'
         IF (CRILOC) THEN
           CALL JEDETR(CARCRI(1:19)//'.NCMP')
           CALL JEDETR(CARCRI(1:19)//'.VALV')
+        ENDIF
+
+C SI PRESENCE DE MULTIFIBRE, ON FUSIONNE LES CARTES
+C   S'IL EXISTE UNE FOIS MULTIFIBRE LA CARTE A ETE CREEE DANS RCCOMP
+C   DE AFFE_MATERIAU / AFFE_COMPOR
+
+          IF(EXIFIB)THEN
+C ON RECUPERE LA CARTE ET ON EN FAIT UN CHAM_ELEM_S
+            CALL GETVID(' ','CHAM_MATER',1,1,1,CHMAT,N1)
+            CHS(1)='&&NMDORC.CHS1'
+            CHS(2)='&&NMDORC.CHS2'
+            CHS3='&&NMDORC.CHS3'
+            CALL CARCES(COMPOR,'ELEM',' ','V',CHS(1),IBID)
+            CALL CARCES(CHMAT//'.COMPOR','ELEM',' ','V',CHS(2),IBID)
+            CALL DETRSD('CARTE',COMPOR)
+            CALL CESFUS(2,CHS,LCUMU,LCOER,LCOEC,LCOC,'V',CHS3)
+            CALL CESCAR(CHS3,COMPOR,'V')
+            CALL DETRSD('CHAM_ELEM_S',CHS(1))
+            CALL DETRSD('CHAM_ELEM_S',CHS(2))
+            CALL DETRSD('CHAM_ELEM_S',CHS3)
+C REMARQUE : ON GARDE LA CARTE CHMAT//'.COMPOR' CAR ELLE SERA UTILE POUR
+C            LE CALCUL DES OPTIONS (ELLE RESTE LIEE A CHMAT)
         ENDIF
 
         COMPOZ = COMPOR

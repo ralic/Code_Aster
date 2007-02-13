@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE TRANSITOIRE D'UN POTEAU ENCASTRE LIBRE (ACCELERA. IMPO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 #  1 RESSORT  1 MASSE  --   K = 3.942E+7   M = 43.8E+3
 # ----------------------------------------------------------------------
 #
-DEBUT( CODE=_F(  NOM = 'SDLL06A',NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F(  NOM = 'SDLL06A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI') )
 
 MAILLAGE=LIRE_MAILLAGE( )
 

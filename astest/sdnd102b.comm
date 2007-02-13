@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -208,13 +208,18 @@ TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                          _F(NOM_CHAM='DEPL_ABSOLU',
                             NOM_CMP='DX',
                             LIST_INST= L_INST,
-                            NOEUD='NO1',),
+                            NOEUD='NO1',SUIVI_DDL='NON'),
                           _F(NOM_CHAM='VITE_ABSOLU',
                             NOM_CMP='DX',
-                            NOEUD='NO1',),
+                            NOEUD='NO1',SUIVI_DDL='NON'),
                           _F(NOM_CHAM='ACCE_ABSOLU',
                             NOM_CMP='DX',
-                            NOEUD='NO1',),),
+                            NOEUD='NO1',SUIVI_DDL='NON'),
+                         _F(NUME_SUIVI=1,
+                            NOM_CHAM='DEPL_ABSOLU',
+                            NOM_CMP='DX',
+                            NOEUD='NO1',SUIVI_DDL='OUI'),
+                            ),
                NEWMARK=_F(), 
                CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-8,
                              ITER_GLOB_MAXI = 20),   

@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,CUMUL,
      &                  BASE,TYPE,MATAZ)
-C MODIF ASSEMBLA  DATE 17/10/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ASSEMBLA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -19,12 +19,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT NONE   
+      IMPLICIT NONE
       CHARACTER*(*) BASE,MATAZ,TLIMAT(*),LICOEF,NU
-      INTEGER       NBMAT,TYPE      
+      INTEGER       NBMAT,TYPE
       CHARACTER*(*) SOLVEU,INFCHA
       CHARACTER*4   CUMUL
-      
+
 
 C-----------------------------------------------------------------------
 
@@ -223,7 +223,7 @@ C     -------------------
 
 
 
-C     CALL VERISD('MATRICE',MATAS)
+C     CALL CHEKSD('sd_matr_asse',MATAS,IRET)
       CALL JEDETR('&&ASMATR.LMATEL')
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()

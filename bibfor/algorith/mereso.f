@@ -3,9 +3,9 @@
      &                    ITPS, PARTPS,
      &                    NUMEDD, VECASS,
      &                    ASSMAT, SOLVEU, MATASS, MAPREC,
-     &                    BASE, TPS1, TPS2, TPS3 )
+     &                    BASE, TPS1, TPS2, TPS3, COMPOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +48,12 @@ C IN  SOLVEU  : METHODE DE RESOLUTION 'LDLT' OU 'GCPC'
 C IN/OUT  MAPREC  : MATRICE PRECONDITIONNEE
 C IN  BASE    : BASE DE TRAVAIL
 C IN/OUT TPS1,2,3 : TEMPS DE CALCUL
+C IN  COMPOR : COMPOR POUR LES MULTIFIBRE (POU_D_EM)
 C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       30/01/04 (OB): MODIF CRITER POUR SOLVEUR FETI.
 C-----------------------------------------------------------------------
+C TOLE CRP_21
 C
       IMPLICIT NONE
 
@@ -64,7 +66,7 @@ C 0.1. ==> ARGUMENTS
       CHARACTER*19 VECASS
       CHARACTER*19 MATASS, MAPREC
       CHARACTER*24 MODELE, CARELE, FOMULT
-      CHARACTER*24 NUMEDD
+      CHARACTER*24 NUMEDD, COMPOR
       CHARACTER*(*) INPSCO
       CHARACTER*(*) MATE
 
@@ -194,7 +196,7 @@ C====
      &              NUMEDD, ASSMAT, SOLVEU,
      &              VECASS, MATASS, MAPREC, CNCHCI,
      &              TYPESE, STYPSE, NOPASE, VAPRIN, REPRIN,
-     &              BASE, TPS1, TPS2, TPS3 )
+     &              BASE, TPS1, TPS2, TPS3, COMPOR )
 
 C====
 C 4. RESOLUTION AVEC VECASS COMME SECOND MEMBRE

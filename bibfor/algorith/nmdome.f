@@ -1,7 +1,7 @@
       SUBROUTINE NMDOME(MODELE,MATE,CARELE,LISCHA,NBPASE,INPSCO,
      &                  RESULT, NUORD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C              12345678
 C====
 C 2. LECTURES
 C====
-
+      IF   (NOMCMD.EQ.'LIRE_RESU') GOTO 500
       IF ( (NOMCMD.EQ.'CALC_ELEM').OR.
      &     (NOMCMD.EQ.'CALC_NO'  ).OR.
      &     (NOMCMD.EQ.'POST_ELEM')) THEN
@@ -235,7 +235,7 @@ C               LES CARACTERISTIQUES
 C====
 C 3. LES CHARGES
 C====
-
+ 500  CONTINUE
 C 3.1. ==> DECOMPTE DU NOMBRE DE CHARGES
 
       CALL GETFAC('EXCIT',NEXCI)
@@ -663,7 +663,7 @@ C ---- CHARGES DE TYPE ARLEQUIN
   110         CONTINUE
             ELSE
               EXIARL = .TRUE.
-              call jeexin('&&POIDS_MAILLE',IRET)
+              CALL JEEXIN('&&POIDS_MAILLE',IRET)
               IF (IRET.EQ.0) THEN
                 CALL WKVECT('&&POIDS_MAILLE','V V R',N1,I1)
                 DO 120 J = 1,N1
@@ -675,14 +675,52 @@ C ---- CHARGES DE TYPE ARLEQUIN
 
 C ---- FONCTIONS MULTIPLICATIVES DES CHARGES
 
-         IF (NOMCMD.NE.'DYNA_LINE_HARM') THEN
+       IF (   NOMCMD.EQ.'DYNA_LINE_HARM' .OR.
+     &      ( NOMCMD.EQ.'LIRE_RESU' .AND. TYPE.EQ.'DYNA_HARMO' ) ) THEN
+
+          CALL GETVID('EXCIT','FONC_MULT_C',ICH,1,1,NOMFCT,N1)
+          CALL GETVID('EXCIT','FONC_MULT',ICH,1,1,NOMFCT,N11)
+
+          IF ((N1.EQ.0).AND.(N11.EQ.0)) THEN
+            CALL CODENT( ICH , 'D0' , KNUM  )
+            NOMFCT = '&&NC'//KNUM
+            CALL GETVC8('EXCIT','COEF_MULT_C',ICH,1,1,CCOEF,N2)
+            IF ( N2 .EQ. 0 ) THEN
+              CALL GETVR8('EXCIT','COEF_MULT',ICH,1,1,COEF,N3)
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
+              ZK16(JPRO)   = 'CONSTANT'
+              ZK16(JPRO+1) = 'LIN LIN '
+              ZK16(JPRO+2) = 'TOUTPARA'
+              ZK16(JPRO+3) = 'TOUTRESU'
+              ZK16(JPRO+4) = 'CC      '
+              CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
+              ZR(JVAL)   = 1.0D0
+              ZR(JVAL+1) = COEF
+              ZR(JVAL+2) = 0.D0
+            ELSE
+              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
+              ZK16(JPRO)   = 'CONSTANT'
+              ZK16(JPRO+1) = 'LIN LIN '
+              ZK16(JPRO+2) = 'TOUTPARA'
+              ZK16(JPRO+3) = 'TOUTRESU'
+              ZK16(JPRO+4) = 'CC      '
+              CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
+              ZR(JVAL)   = 1.0D0
+              ZR(JVAL+1) = DBLE( CCOEF )
+              ZR(JVAL+2) = DIMAG( CCOEF )
+           ENDIF
+         ENDIF
+         ZK24(IALIFC+ICH-1) = NOMFCT
+
+       ELSE
 
           IF (IEXCIT.EQ.1) THEN
             CALL GETVID('EXCIT','FONC_MULT',INDIC,1,1,K24BID,N1)
           ENDIF
 
           IF (NOMCMD.EQ.'DYNA_NON_LINE'.OR.
-     &     NOMCMD.EQ.'DYNA_TRAN_EXPLI') THEN
+     &     NOMCMD.EQ.'DYNA_TRAN_EXPLI'.OR.
+     &     NOMCMD.EQ.'LIRE_RESU') THEN
             CALL GETVID('EXCIT','ACCE',INDIC,1,1,K24BID,N2)
           ELSE
             N2 = 0
@@ -731,43 +769,8 @@ C      PAS DE FONCTIONS MULTIPLICATRICES -> CREATION FCT CSTE = 1
               CALL U2MESK('F','ALGORITH7_38',1,ZK24(IALICH-1+ICH) (1:8))
             END IF
           END IF
-        ELSE
+        ENDIF
 
-          CALL GETVID('EXCIT','FONC_MULT_C',ICH,1,1,NOMFCT,N1)
-          CALL GETVID('EXCIT','FONC_MULT',ICH,1,1,NOMFCT,N11)
-
-          IF ((N1.EQ.0).AND.(N11.EQ.0)) THEN
-            CALL CODENT( ICH , 'D0' , KNUM  )
-            NOMFCT = '&&NC'//KNUM
-            CALL GETVC8('EXCIT','COEF_MULT_C',ICH,1,1,CCOEF,N2)
-            IF ( N2 .EQ. 0 ) THEN
-              CALL GETVR8('EXCIT','COEF_MULT',ICH,1,1,COEF,N3)
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
-              ZK16(JPRO)   = 'CONSTANT'
-              ZK16(JPRO+1) = 'LIN LIN '
-              ZK16(JPRO+2) = 'TOUTPARA'
-              ZK16(JPRO+3) = 'TOUTRESU'
-              ZK16(JPRO+4) = 'CC      '
-              CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
-              ZR(JVAL)   = 1.0D0
-              ZR(JVAL+1) = COEF
-              ZR(JVAL+2) = 0.D0
-            ELSE
-              CALL WKVECT(NOMFCT(1:19)//'.PROL','V V K16',5,JPRO)
-              ZK16(JPRO)   = 'CONSTANT'
-              ZK16(JPRO+1) = 'LIN LIN '
-              ZK16(JPRO+2) = 'TOUTPARA'
-              ZK16(JPRO+3) = 'TOUTRESU'
-              ZK16(JPRO+4) = 'CC      '
-              CALL WKVECT(NOMFCT(1:19)//'.VALE','V V R',3,JVAL)
-              ZR(JVAL)   = 1.0D0
-              ZR(JVAL+1) = DBLE( CCOEF )
-              ZR(JVAL+2) = DIMAG( CCOEF )
-           ENDIF
-         ENDIF
-         ZK24(IALIFC+ICH-1) = NOMFCT
-
-       ENDIF
 
   130   CONTINUE
 
@@ -776,7 +779,7 @@ C      PAS DE FONCTIONS MULTIPLICATRICES -> CREATION FCT CSTE = 1
 C ----------------------------------------------------------------------
 C                         VERIFICATIONS GLOBALES
 C ----------------------------------------------------------------------
-
+        IF( NOMCMD.EQ.'LIRE_RESU')GOTO 9999
 C -- EN PRESENCE DE PILOTAGE, VERIFIER QU'IL Y A DES CHARGES PILOTEES
 
         IF (NOMCMD.EQ.'STAT_NON_LINE') THEN
@@ -802,6 +805,7 @@ C -- VERIFICATION QU'IL N'Y A QUE DES CHARGES MECANIQUES
 
       END IF
 
-C
+C 
+ 9999 CONTINUE
       CALL JEDEMA()
       END

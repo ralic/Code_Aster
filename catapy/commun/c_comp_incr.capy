@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 09/01/2007   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -103,6 +103,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "GRILLE_PINTO_MEN",
                                         "PINTO_MENEGOTTO",
                                         "CJS",
+                                        "HUJEUX",
                                         "CAM_CLAY",
                                         "BARCELONE",
                                         "LAIGLE",
@@ -221,6 +222,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           DIS_GOUJ2E_ELAS =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           PINTO_MENEGOTTO =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           CJS             =SIMP(statut='c',typ='I',defaut=16,into=(16,)),
+          HUJEUX       =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
           CAM_CLAY        =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           BARCELONE       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           LAIGLE          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
@@ -265,6 +267,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
 # MECA
                                        "ELAS",
                                        "CJS",
+                                       "HUJEUX",
                                        "CAM_CLAY",
                                        "BARCELONE",
                                        "LAIGLE",

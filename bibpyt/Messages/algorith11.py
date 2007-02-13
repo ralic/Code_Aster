@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith11 Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -375,6 +375,10 @@ cata_msg={
 """),
 86: _("""
  Perturbation trop petite, calcul impossible
+"""),
+87: _("""
+ *** Champ déjà existant ***
+ Le champ %(k1)s à l'instant %(r1)g est remplacé par le champ %(k2)s à l'instant %(r2)g avec la précision %(r3)g.
 """),
 
 }

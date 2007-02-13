@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C----------------------------------------------------------------------
       CALL JEMARQ()
       MAT = MATAS
       CALL JXVERI(' ',' ')
-C     CALL VERISD('MATRICE',MAT)
+C     CALL CHEKSD('sd_matr_asse',MAT,IRET)
       CALL JEEXIN(MAT//'.CCVA',IER)
       CALL ASSERT(IER.EQ.0)
       CALL JEEXIN(MAT//'.CCID',IER)
@@ -309,6 +309,6 @@ C---------------------------------------------------------------------
  9999 CONTINUE
       CALL JEDETR('&&ASMCHC.REMPLIS')
       CALL JEDETR('&&ASMCHC.ELIM')
-C     CALL VERISD('MATRICE',MAT)
+C     CALL CHEKSD('sd_matr_asse',MAT,IRET)
       CALL JEDEMA()
       END

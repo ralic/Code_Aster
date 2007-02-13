@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*19 TABP,TABD
       CHARACTER*19 INFCHA
       CHARACTER*19 CHDYNR,CHACCE,MASSE,REFE,COMPOR
-      CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN,KBID19,KCHAP,KCHAD
+      CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN,VALK,KCHAP,KCHAD
       CHARACTER*24 CHAMGD,CHSIG,CHSIGP,CHSIGD,CHSIGN,CHEPSP
       CHARACTER*24 CHEPS,CHDEPL,CHSGPN,CHSGDN
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHTIME,CHMETA
@@ -125,7 +125,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 BLAN24,CHBID,CHSEQ,CHEEQ,CHCMP
       CHARACTER*24 CHTEM1,CHTRF1,CHTIM1,CHELE1
       CHARACTER*24 CHTEM2,CHTRF2,CHTIM2,CHELE2
-      CHARACTER*24 CHEND2,CHS,CHSIGF,VALK(2)
+      CHARACTER*24 CHEND2,CHS,CHSIGF
       CHARACTER*19 CHVARC,CHVREF
 
       REAL*8 COEF,VALRES,VALIM,INST,TIME,R8B
@@ -144,7 +144,7 @@ C     --- VARIABLES LOCALES ---
       COMPLEX*16 CZERO
       PARAMETER (CZERO= (0.D0,0.D0))
 
-
+      CHARACTER*24 VALKM(2)
 
 
       CALL JEMARQ()
@@ -152,7 +152,6 @@ C     --- VARIABLES LOCALES ---
       CALL JERECU('V')
 C               123456789012345678901234
       BLAN24 = '                        '
-      KBID19 = '                   '
 C               12   345678   90123
       INPSCO = '&&'//NOMPRO//'_PSCO'
 C               12   345678   9012345678901234
@@ -359,9 +358,9 @@ C DETERMINATION DU CHAMP DERIVE LERES0 ASSOCIE A (RESUCO,NOPASE)
 
           CALL PSRENC(RESUCO,NOPASE,LERES0,IRET)
           IF (IRET.NE.0) THEN
-            VALK(1) = RESUCO
-            VALK(2) = NOPASE
-            CALL U2MESK('A','CALCULEL2_96', 2 ,VALK)
+            VALKM(1)=RESUCO
+            VALKM(2)=NOPASE
+            CALL U2MESK('A','CALCULEL2_96', 2 ,VALKM)
             GO TO 490
           END IF
 
@@ -418,7 +417,7 @@ C    ------------------------------------------------------------------
      &        OPTION.EQ.'EPME_ELNO_DEPL' .OR.
      &        OPTION.EQ.'EPME_ELGA_DEPL' .OR.
      &        OPTION.EQ.'EPVC_ELNO'      .OR.
-     &        OPTION.EQ.'EPVC_ELGA'      .OR.     
+     &        OPTION.EQ.'EPVC_ELGA'      .OR.
      &        OPTION.EQ.'EPMG_ELNO_DEPL' .OR.
      &        OPTION.EQ.'EPMG_ELGA_DEPL' .OR.
      &        OPTION.EQ.'EFGE_ELNO_DEPL' .OR.
@@ -656,6 +655,12 @@ C=======================================================================
               CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
+C -- POUR LES POUTRES MULTIFIBRES ON A BESOIN DE COMPOR ISSU DE MATERIAU
+C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
+              IF(OPTIO2.EQ.'EFGE_ELNO_DEPL'.OR.
+     &           OPTIO2.EQ.'SIEF_ELGA_DEPL')THEN
+                COMPOR=MATE(1:8)//'.COMPOR'
+              ENDIF
               IF (OPTION.EQ.'SIGM_ELNO_SIEF' .OR.
      &            OPTION.EQ.'SIPO_ELNO_SIEF') THEN
                 CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
@@ -764,9 +769,9 @@ C ---- VERIF SENSIBILITE FIN
             ELSE IF (TYSD.EQ.'DYNA_HARMO') THEN
               TYPE = 'VITE'
             ELSE
-              VALK(1) = OPTION
-              VALK(2) = TYSD
-              CALL U2MESK('A','CALCULEL3_6', 2 ,VALK)
+              VALKM(1)=OPTION
+              VALKM(2)=TYSD
+              CALL U2MESK('A','CALCULEL3_6', 2 ,VALKM)
               GO TO 440
             END IF
             CHMASS = '&&'//NOMPRO//'.MASD'
@@ -867,9 +872,9 @@ C    ------------------------------------------------------------------
 C    -- OPTIONS "EPSP_ELNO","EPSP_ELGA"
 C    ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'EPSP_ELNO' .OR.
-     &             OPTION.EQ.'EPSP_ELGA' .OR. 
+     &             OPTION.EQ.'EPSP_ELGA' .OR.
      &             OPTION.EQ.'EPFP_ELNO' .OR.
-     &             OPTION.EQ.'EPFP_ELGA' .OR. 
+     &             OPTION.EQ.'EPFP_ELGA' .OR.
      &             OPTION.EQ.'EPFD_ELNO' .OR.
      &             OPTION.EQ.'EPFD_ELGA'     ) THEN
 C ---- VERIF SENSIBILITE
@@ -1005,9 +1010,9 @@ C ---- VERIF SENSIBILITE FIN
 C
                 IF (IRET1.GT.0 .AND. IRET2.GT.0 .AND. IRET3.GT.0.
      &              AND. IRET4.GT.0) THEN
-                  VALK(1) = OPTION
-                  VALK(2) = TYSD
-                  CALL U2MESK('A','CALCULEL3_8', 2 ,VALK)
+                  VALKM(1)=OPTION
+                  VALKM(2)=TYSD
+                  CALL U2MESK('A','CALCULEL3_8', 2 ,VALKM)
                   CALL JEDEMA
                   GO TO 440
                 END IF
@@ -1021,9 +1026,9 @@ C          CHAMP D'ENTREE POUR ELEMENTS ISOPARAMETRIQUES
 C          CHAMP D'ENTREE POUR COQUES
                   IF (EXIPLA) THEN
                     IF (IRET4.GT.0) THEN
-                      VALK(1) = OPTION
-                      VALK(2) = TYSD
-                      CALL U2MESK('A','CALCULEL3_9', 2 ,VALK)
+                      VALKM(1)=OPTION
+                      VALKM(2)=TYSD
+                      CALL U2MESK('A','CALCULEL3_9', 2 ,VALKM)
                       CALL JEDEMA
                       GO TO 440
                     ELSE
@@ -1036,9 +1041,9 @@ C          CHAMP D'ENTREE POUR COQUES
                   END IF
                   IF (EXIPLA) THEN
                     IF (IRET3.GT.0) THEN
-                      VALK(1) =  OPTION
-                      VALK(2) =  TYSD
-                      CALL U2MESK('A','CALCULEL3_10', 2 ,VALK)
+                      VALKM(1)=OPTION
+                      VALKM(2)=TYSD
+                      CALL U2MESK('A','CALCULEL3_10', 2 ,VALKM)
                       CALL JEDEMA
                       GO TO 440
                     ELSE
@@ -1170,7 +1175,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEDEMA()
   180       CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "ARCO_ELNO_SIGM" 
+C    -- OPTION "ARCO_ELNO_SIGM"
 C    ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'ARCO_ELNO_SIGM') THEN
 C ---- VERIF SENSIBILITE
@@ -1226,10 +1231,7 @@ C --------- VERIFICATION DU PERIMETRE D'UTILISATION
             CALL GETVTX(' ','GROUP_MA',1,1,1,K8B,N1)
             CALL GETVTX(' ','MAILLE'  ,1,1,1,K8B,N2)
             IF (N1+N2.NE.0) THEN
-               CALL UTDEBM('A',NOMPRO,
-     &                  '! TOUT = OUI OBLIGATOIRE AVEC '//OPTION//'!')
-               CALL UTIMPK('L','PAS DE CALCUL DE CHAMP D''ERREUR',0,K8B)
-               CALL UTFINM
+               CALL U2MESK('A','CALCULEL5_61',1,OPTION)
                GOTO 530
             ENDIF
 C--- RECHERCHE DES VOISINS
@@ -1266,12 +1268,16 @@ C--- VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
               CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,
      &                                            LIGRCH,IERD)
               IF (LIGRCH.NE.LIGRMO) THEN
-                 CALL UTDEBM('A',NOMPRO,'LE CHAMP DE CONTRAINTES '//
-     &                       'N''A PAS ETE CALCULE SUR TOUT LE MODELE')
-                 CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,
-     &                           OPTION)
-                 CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
-                 CALL UTFINM
+C                 CALL UTDEBM('A',NOMPRO,'LE CHAMP DE CONTRAINTES '//
+C     &                       'N''A PAS ETE CALCULE SUR TOUT LE MODELE')
+C                 CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,
+C     &                           OPTION)
+C                 CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
+C                 CALL UTFINM
+                 CALL CODENT(IORDR,'G',KIORD)
+                 VALKM(1)=OPTION
+                 VALKM(2)=KIORD
+                 CALL U2MESK('A','CALCULEL5_62',2,VALKM)
                  GOTO 192
               ENDIF
 C ---       POUR DE LA THM :
@@ -1282,9 +1288,9 @@ C           ---------------------------------------------------------
                 CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
                 IF (IRET1.GT.0) THEN
                   CALL CODENT(IORDR,'G',KIORD)
-                  VALK(1) = RESUCO
-                  VALK(2) = KIORD
-                  CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
+                  VALKM(1)=RESUCO
+                  VALKM(2)=KIORD
+                  CALL U2MESK('A','CALCULEL3_11', 2 ,VALKM)
                   GO TO 192
                 ENDIF
               ENDIF
@@ -1378,9 +1384,9 @@ C--- BOUCLE SUR LES NUMEROS D'ORDRE
 C--- CALCULE LE COEFFICIENT S
 C----- RECUPERE ERRE_ABSO DANS LA TABLE A PARTIR DU NUMERO D'ORDRE
             CALL TBLIVA (TABP,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
-     &                 0.D0,'ERRE_ABSO',CTYPE,VALI,ERP,VALC,KBID19,IRET)
+     &                   0.D0,'ERRE_ABSO',CTYPE,VALI,ERP,VALC,VALK,IRET)
             CALL TBLIVA (TABD,1,'NUME_ORDR',IORDR,RBID,CBID,KBID,'EGAL',
-     &                 0.D0,'ERRE_ABSO',CTYPE,VALI,ERD,VALC,KBID19,IRET)
+     &                   0.D0,'ERRE_ABSO',CTYPE,VALI,ERD,VALC,VALK,IRET)
             S=SQRT(ERD/ERP)
 C----- CREE UNE CARTE CONSTANTE
             CHS='&&OP0069.CH_NEUT_R'
@@ -1432,11 +1438,15 @@ C--- VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
      &                                            LIGRCD,IERD)
               IF ((LIGRCP.NE.LIGRMO).OR.
      &            (LIGRCD.NE.LIGRMO)) THEN
-                 CALL UTDEBM('A',NOMCMD,'LE CHAMP DE CONTRAINTES '//
-     &                       'N''A PAS ETE CALCULE SUR TOUT LE MODELE')
-              CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,OPTION)
-                 CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
-                 CALL UTFINM
+C                 CALL UTDEBM('A',NOMCMD,'LE CHAMP DE CONTRAINTES '//
+C     &                       'N''A PAS ETE CALCULE SUR TOUT LE MODELE')
+C              CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,OPTION)
+C                 CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
+C                 CALL UTFINM
+                 CALL CODENT(IORDR,'G',KIORD)
+                 VALKM(1)=OPTION
+                 VALKM(2)=KIORD
+                 CALL U2MESK('A','CALCULEL5_62',2,VALKM)
                  GOTO 602
               ENDIF
 
@@ -1871,9 +1881,10 @@ C ---- VERIF SENSIBILITE
             IF(CODSEN.NE.0) GO TO 900
 C ---- VERIF SENSIBILITE FIN
             IF (NBORDR.EQ.1) THEN
-              CALL UTDEBM('A',NOMPRO,'IL FAUT AU MOINS 2 NUME_ORDRE ')
-              CALL UTIMPK('S','POUR TRAITER L''OPTION ',1,OPTION)
-              CALL UTFINM
+C              CALL UTDEBM('A',NOMPRO,'IL FAUT AU MOINS 2 NUME_ORDRE ')
+C              CALL UTIMPK('S','POUR TRAITER L''OPTION ',1,OPTION)
+C              CALL UTFINM
+              CALL U2MESK('A','CALCULEL5_63',1,OPTION)
               GO TO 440
             END IF
             DO 310,IAUX = 1,NBORDR - 1
@@ -1939,9 +1950,9 @@ C           -------------------------------------------------
      &                    OPTION,IRET2)
                  IF (IRET2.GT.0) THEN
                     CALL CODENT(IORDR,'G',KIORD)
-                    VALK(1) = RESUCO
-                    VALK(2) = KIORD
-                    CALL U2MESK('A','CALCULEL3_17', 2 ,VALK)
+                    VALKM(1)=RESUCO
+                    VALKM(2)=KIORD
+                    CALL U2MESK('A','CALCULEL3_17', 2 ,VALKM)
                     GO TO 321
                  END IF
               ENDIF
@@ -1955,9 +1966,9 @@ C           -----------------------------------------------
      &                      OPTION,IRET1)
                 IF (IRET1.GT.0) THEN
                   CALL CODENT(IORDRM,'G',KIORDM)
-                  VALK(1) = RESUCO
-                  VALK(2) = KIORDM
-                  CALL U2MESK('A','CALCULEL3_17', 2 ,VALK)
+                  VALKM(1)=RESUCO
+                  VALKM(2)=KIORDM
+                  CALL U2MESK('A','CALCULEL3_17', 2 ,VALKM)
                   GO TO 321
                 END IF
               END IF
@@ -1967,9 +1978,9 @@ C           ---------------------------------------------------------
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHDEPL,OPTION,IRET1)
               IF (IRET1.GT.0) THEN
                 CALL CODENT(IORDR,'G',KIORD)
-                VALK(1) = RESUCO
-                VALK(2) = KIORD
-                CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
+                  VALKM(1)=RESUCO
+                  VALKM(2)=KIORD
+                CALL U2MESK('A','CALCULEL3_11', 2 ,VALKM)
                 GO TO 321
               END IF
 
@@ -1981,9 +1992,9 @@ C           ------------------------------------------------
      &                      IRET1)
                 IF (IRET1.GT.0) THEN
                   CALL CODENT(IORDRM,'G',KIORDM)
-                  VALK(1) = RESUCO
-                  VALK(2) = KIORDM
-                  CALL U2MESK('A','CALCULEL3_11', 2 ,VALK)
+                  VALKM(1)=RESUCO
+                  VALKM(2)=KIORDM
+                  CALL U2MESK('A','CALCULEL3_11', 2 ,VALKM)
                   GO TO 321
                 END IF
               END IF
@@ -2066,10 +2077,11 @@ C     ------------------------------------------------------------------
      &             OPTION.EQ.'ENDO_ELGA') THEN
 C
             IF (NBORDR.EQ.1) THEN
-               CALL UTDEBM('A',NOMPRO,
-     &                                'IL FAUT AU MOINS 2 NUME_ORDRE ')
-               CALL UTIMPK('S','POUR TRAITER L''OPTION ',1,OPTION)
-               CALL UTFINM
+C               CALL UTDEBM('A',NOMPRO,
+C     &                                'IL FAUT AU MOINS 2 NUME_ORDRE ')
+C               CALL UTIMPK('S','POUR TRAITER L''OPTION ',1,OPTION)
+C               CALL UTFINM
+               CALL U2MESK('A','CALCULEL5_63',1,OPTION)
                GO TO 440
             END IF
 
@@ -2777,9 +2789,9 @@ C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
       GO TO 530
   520 CONTINUE
-      VALK(1) = TYSD
-      VALK(2) = OPTION
-      CALL U2MESK('A','CALCULEL3_27', 2 ,VALK)
+        VALKM(1)=TYSD
+        VALKM(2)=OPTION
+        CALL U2MESK('A','CALCULEL3_27', 2 ,VALKM)
   530 CONTINUE
       CALL JEDEMA()
       END

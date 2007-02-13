@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,10 +58,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       REAL*8       PGL(3,3), FE(14), FR(14), FI(14), FGR(14), FGI(14)
       REAL*8       FER(12), FEI(12), XL, RAD, ANGARC, ANGS2, ANG,A,A2
-      REAL*8       PGL1(3,3), PGL2(3,3),CARSEC(6)
+      REAL*8       PGL1(3,3), PGL2(3,3)
       CHARACTER*16 CH16
       INTEGER NNO,NC,NC1,NNOC,NCC,LX,LRCOU,LORIEN,LSECT,ITYPE,LSECT2
-      INTEGER LVECT,I ,NBFIB,NCARFI,JACF,JNF
+      INTEGER LVECT,I
 C     ------------------------------------------------------------------
       NNO = 2
       NC  = 6
@@ -102,15 +102,10 @@ C     --- MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE LOCAL: PGL ---
 
       IF(NOMTE.EQ.'MECA_POU_D_EM')THEN
 C ----- POUTRES MULTIFIBRES
-C     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
-        CALL JEVECH('PNBSP_I','L',JNF)
-        NBFIB = ZI(JNF)
-        CALL JEVECH('PFIBRES','L',JACF)
-        NCARFI = 3
-        CALL PMFITG(NBFIB,NCARFI,ZR(JACF),CARSEC)
-        A=CARSEC(1)
-        A2=CARSEC(1)
+C ---- C'EST TRAITE A UN NIVEAU PLUS BAS (DANS PTFORP)
         ITYPE=0
+        A=0.D0
+        A2=0.D0
       ELSE
 
 

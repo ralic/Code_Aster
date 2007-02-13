@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF iniast utilitai  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF iniast utilitai  DATE 13/02/2007   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,13 +33,14 @@ INTEGER DEFPPP(INIAST, iniast, long *r1, long *r2, long *r3)
 {
    long ier,ivers,iutil,iniv,ilog,v[6],vrand;
    int a1,a2,a3,delta;
-   char vdate[9];
+   char vdate[17];
 #ifndef _NO_EXPIR
    void STDCALL(ERRLIC, errlic)(void);
 #endif
    
-   vdate[8] = '\0';
+   vdate[16] = '\0';
    CALL_VERSIO(&ivers,&iutil,&iniv,&vdate[0],&ilog);
+   
    sscanf(vdate,"%d/%d/%d",&a1,&a2,&a3);
    CALL_DATE(&v[0]);
 /* calcul du nombre de jours à la louche */

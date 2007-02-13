@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMON DE DEBUG JEVEUX
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
       CHARACTER*16 CBID,MEMOIR, CMPIN, CMPOUT
-      INTEGER SEGJVX,LSEGJV, LOUT,SDVERI,L,NCODE
+      INTEGER SEGJVX,LSEGJV, LOUT,L,NCODE
       REAL*8 VPARJV
 C
 C     --- OPTIONS PAR DEFAUT ---
@@ -82,14 +82,8 @@ C          UN JOUR, ON METTRA 'OUI' PAR DEFAUT ...
       ENDIF
 
       IF ( REPONS .EQ. 'OUI') THEN
-C        -- SI SDVERI EST POSSIBLE SUR CETTE PLATEFORME :
-         IF (SDVERI().EQ.1) THEN
-           CALL JDCSET('sdveri', 1)
-           CALL U2MESS('I','SUPERVIS_24')
-         ELSE
-           CALL JDCSET('sdveri', 0)
-           CALL U2MESS('A','SUPERVIS_42')
-         ENDIF
+         CALL JDCSET('sdveri', 1)
+         CALL U2MESS('I','SUPERVIS_24')
       ELSE
          CALL JDCSET('sdveri', 0)
       ENDIF

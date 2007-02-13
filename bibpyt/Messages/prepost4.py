@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost4 Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -421,5 +421,13 @@ composé de 0 sous-objet !
  Car elle est inserrée entre 2 mailles "support" placées de part et d'autre : %(k2)s et %(k3)s.
 
 """),
+98: _("""
+Numero d'ordre trop grand %(k1)s pour le calcul de l'option %(k2)s
+"""),
+
+99: _("""
+Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le calcul de l'option %(k3)s
+"""),
+
 
 }

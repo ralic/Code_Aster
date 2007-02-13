@@ -1,30 +1,30 @@
-#@ MODIF E_ETAPE Execution  DATE 11/12/2006   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-#                                                                       
-#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+#
+#
 # ======================================================================
-
 
 """
 """
 # Modules Python
-import types,sys,os
+import sys
+import os
 from os import times
 
 # Modules Eficas
@@ -33,6 +33,7 @@ from Noyau.N_Exception import AsException
 from Noyau.N_MACRO_ETAPE import MACRO_ETAPE
 import genpy
 import aster
+from SD import checksd
 
 class ETAPE:
    """
@@ -61,15 +62,15 @@ class ETAPE:
       Retour : iertot = nombre d erreurs
 
       """
-
-      if CONTEXT.debug : 
+      
+      if CONTEXT.debug :
            prbanner(" appel de l operateur %s numero %s " % (self.definition.nom,self.definition.op))
 
       # On n'execute pas les etapes qui n'ont pas de numero d'operateur associé
       if self.definition.op is None :return 0
 
-      assert(type(self.modexec)==types.IntType),"type(self.modexec)="+`type(self.modexec)`
-      assert(type(self.definition.op)==types.IntType),"type(self.definition.op)="+`type(self.definition.op)`
+      assert(type(self.modexec)==int),"type(self.modexec)="+`type(self.modexec)`
+      assert(type(self.definition.op)==int),"type(self.definition.op)="+`type(self.definition.op)`
 
       ier=0
 
@@ -81,29 +82,37 @@ class ETAPE:
       if self.icmd is not None:
           # appel de la methode oper dans le module codex
           if (self.modexec == 2) and (self.definition.op_init==None):
-             self.AfficheTexteCommande()       
+             self.AfficheTexteCommande()
+             if self.sd and self.jdc.sdveri:
+                l_before = checksd.get_list_objects()
+
           ier=self.codex.oper(self,self.jdc.jxveri,self.modexec,self.icmd)
+
           if (self.modexec == 2) and (self.definition.op_init==None):
-             self.cpu_user=times()[0]-self.cpu_user_0
-             self.cpu_syst=times()[1]-self.cpu_syst_0
+             # vérification de la SD produite
+             if self.sd and self.jdc.sdveri:
+                self.jdc.sd_checker = checksd.check(self.jdc.sd_checker, self.sd, l_before)
              # affichage du texte de la commande
-             self.AfficheFinCommande(self.cpu_user,self.cpu_syst)       
+             self.AfficheFinCommande()
       else:
           if self.modexec == 2:
              # affichage du texte de la commande
-             self.AfficheTexteCommande()       
+             self.AfficheTexteCommande()
 
-      if CONTEXT.debug : 
+      if CONTEXT.debug :
            prbanner(" fin d execution de l operateur %s numero %s " % (self.definition.nom,
                                                                        self.definition.op))
       return ier
 
    def AfficheTexteCommande( self, sortie=sys.stdout ) :
-      """ 
+      """
       Methode : ETAPE.AfficheTexteCommande
       Intention : afficher sur la sortie standard (par defaut) le cartouche de
                       la commande avant son execution.
       """
+      # top départ du chrono de la commande
+      self.jdc.timer.Start(id(self), name=self.nom)
+      
       # impression du fichier .code : compte rendu des commandes et
       # mots clés activés par l'ETAPE
       if self.jdc.fico!=None :
@@ -112,15 +121,15 @@ class ETAPE:
         self.accept(v)
         chaine = ' %-10s%-20s' % (self.jdc.fico, self.nom)
         for mc in v.args.keys():
-            if type(v.args[mc]) in types.StringTypes:
+            if type(v.args[mc]) in (str, unicode):
               chainec = '%s %-20s%-20s%-20s\n' % (chaine, '--', mc, v.args[mc])
               ficode.write(chainec)
-            elif type(v.args[mc]) == types.ListType:
+            elif type(v.args[mc]) == list:
               for mcs in v.args[mc]:
                  for mcf in mcs.keys():
                   chainec = '%s%-20s%-20s%s\n' % (chaine, mc, mcf, mcs[mcf])
                   ficode.write(chainec)
-            elif type(v.args[mc]) == types.DictType:
+            elif type(v.args[mc]) == dict:
                 mcs = v.args[mc]
                 for mcf in mcs.keys():
                   chainec = '%s%-20s%-20s%s\n' % (chaine, mc, mcf, mcs[mcf])
@@ -142,7 +151,7 @@ class ETAPE:
             type_concept = self.sd.__class__.__name__
          else:
             type_concept = ''
-         
+
          if self.icmd != None:
             echo_mess.append("""   #  COMMANDE NO :  %04d            CONCEPT DE TYPE : %s
     #  -------------                  -----------------""" % (self.icmd, type_concept))
@@ -150,7 +159,7 @@ class ETAPE:
             # commande non comptabilisée (INCLUDE)
             echo_mess.append("""   #  COMMANDE :
     #  ----------""")
-            
+
          # recuperation du texte de la commande courante dans la chaine
          # commande_formatee
          v=genpy.genpy(defaut='avec')
@@ -163,18 +172,21 @@ class ETAPE:
 
       return
 
-   def AfficheFinCommande( self , cpu_user, cpu_syst, sortie=sys.stdout ) :
-      """ 
+   def AfficheFinCommande( self, avec_temps=True, sortie=sys.stdout ) :
+      """
       Methode : ETAPE.AfficheFinCommande
-      Intention : afficher sur la sortie standard (par defaut) la fin du 
+      Intention : afficher sur la sortie standard (par defaut) la fin du
                   cartouche de la commande apres son execution.
       """
-      if (not isinstance(self.parent,MACRO_ETAPE)) or \
-         (self.parent.nom=='INCLUDE'             ) or \
-         (self.jdc.impr_macro==1                 ) :
+      voir = (not isinstance(self.parent,MACRO_ETAPE)) or \
+             (self.parent.nom=='INCLUDE'             ) or \
+             (self.jdc.impr_macro==1                 )
+      # stop pour la commande
+      cpu_user, cpu_syst, elapsed = self.jdc.timer.StopAndGet(id(self), hide=not voir)
+      if voir :
          decalage="  "  # blancs au debut de chaque ligne affichee
          echo_mess=[decalage]
-         if cpu_user != None :
+         if avec_temps:
             echo_fin = "%s  #  FIN COMMANDE NO : %04d   DUREE TOTALE:%12.2fs (SYST:%12.2fs)" \
                % (decalage, self.icmd, cpu_syst+cpu_user, cpu_syst)
          else :
@@ -187,10 +199,10 @@ class ETAPE:
       return
 
    def Execute(self):
-      """ 
-      Cette methode realise l execution complete d une etape, en mode commande par commande : 
-             - construction, 
-             - verification, 
+      """
+      Cette methode realise l execution complete d une etape, en mode commande par commande :
+             - construction,
+             - verification,
              - execution
       en une seule passe. Utilise en mode PAR_LOT='NON'
 
@@ -232,9 +244,9 @@ class ETAPE:
           pass
 
    def BuildExec(self):
-      """ 
-      Cette methode realise l execution complete d une etape, en mode commande par commande : 
-             - construction, 
+      """
+      Cette methode realise l execution complete d une etape, en mode commande par commande :
+             - construction,
              - execution
       en une seule passe. Utilise en mode PAR_LOT='NON'
 

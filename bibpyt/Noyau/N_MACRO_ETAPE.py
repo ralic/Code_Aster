@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,7 +130,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
             if sd != None and self.reuse == None:
                # On ne nomme le concept que dans le cas de non reutilisation 
                # d un concept
-               sd.nom=nom
+               sd.set_name(nom)
          self.reset_current_step()
       except AsException,e:
          self.reset_current_step()
@@ -341,7 +341,10 @@ Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
             raise AsException("""Erreur interne. 
 Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
          co.etape=self
-         co.__class__ = t
+         # affectation du bon type du concept et
+         # initialisation de sa partie "sd"
+         co.change_type(t)
+         
          self.sdprods.append(co)
 
       elif co.etape== self:
@@ -645,7 +648,7 @@ Le type demande (%s) et le type du concept (%s) devraient etre derives""" %(t,co
              new_sd = etp.sd.__class__(etape=new_etp)
              new_etp.sd = new_sd
              if etp.reuse:
-                new_sd.nom = etp.sd.nom
+                new_sd.set_name(etp.sd.nom)
              else:
                 self.NommerSdprod(new_sd,etp.sd.nom)
           new_etp.copy_intern(etp)

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
 # TITRE CYLINDRE EN 3D (PENTA6 HEXA8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,82 +31,76 @@
 # ----------------------------------------------------------------------
 #
 
-DEBUT( CODE=_F( NOM = 'SSLV04A',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM = 'SSLV04A',NIV_PUB_WEB='INTERNET'));
 
-PRE_GIBI()
+PRE_GIBI();
 
-M=LIRE_MAILLAGE()
+M=LIRE_MAILLAGE();
 
-DEFI_GROUP(reuse=M,       MAILLAGE=M,
-                  CREA_GROUP_NO=_F( NOM = 'DIRI', GROUP_MA = 'DIRI'))
+DEFI_GROUP(reuse=M, MAILLAGE=M,
+           CREA_GROUP_NO=_F(NOM = 'DIRI', GROUP_MA = 'DIRI'));
 
-MO=AFFE_MODELE(            MAILLAGE=M,
-                                   VERIF='MAILLE',
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         PHENOMENE = 'MECANIQUE',
-                                         MODELISATION = '3D'))
+MO=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT = 'OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = '3D'));
 
-MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,
-                                         NU = 0.3,
-                                         ALPHA = 0.) )
+MA=DEFI_MATERIAU(ELAS=_F(E = 200000.,
+                         NU = 0.3,
+                         ALPHA = 0.));
 
-CM=AFFE_MATERIAU(        MAILLAGE=M,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         MATER = MA))
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT = 'OUI',
+                         MATER = MA))
 
-CH=AFFE_CHAR_MECA(         MODELE=MO,DDL_IMPO=(
-                              _F(  GROUP_NO = 'DIRI',  DY = 0.),
-                              _F(  GROUP_NO = 'F',     DZ = 0.)),
-                             FACE_IMPO=_F(  GROUP_MA = 'DNOR',  DNOR = 0.),
-                              PRES_REP=_F(  GROUP_MA = 'PRES',  PRES = 60.))
+CH=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(_F(GROUP_NO = 'DIRI', DY = 0.),
+                                      _F(GROUP_NO = 'F',    DZ = 0.)),
+                            FACE_IMPO=_F(GROUP_MA = 'DNOR', DNOR = 0.),
+                            PRES_REP =_F(GROUP_MA = 'PRES', PRES = 60.));
 
-
-nor_DNOR = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
+nor_DNOR = CREA_CHAMP(TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
-                      GROUP_MA  = 'DNOR'  );
+                      GROUP_MA  = 'DNOR');
 
-IMPR_RESU( RESU=_F( CHAM_GD= nor_DNOR ), );
+IMPR_RESU(RESU=_F(CHAM_GD= nor_DNOR));
 
 TEST_RESU(CHAM_NO=(
-           _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
-               GROUP_NO = 'E',    VALE = -0.707 ,   NOM_CMP = 'X'),
-           _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
-               GROUP_NO = 'E',    VALE =  0.707 ,   NOM_CMP = 'Y'),
-           _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
-               GROUP_NO = 'F',    VALE = -0.707 ,   NOM_CMP = 'X'),
-           _F( CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
-               GROUP_NO = 'F',    VALE =  0.707 ,   NOM_CMP = 'Y'),
-                ), ) ;
+           _F(CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
+              GROUP_NO = 'E', VALE = -0.707, NOM_CMP = 'X'),
+           _F(CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
+              GROUP_NO = 'E', VALE =  0.707, NOM_CMP = 'Y'),
+           _F(CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
+              GROUP_NO = 'F', VALE = -0.707, NOM_CMP = 'X'),
+           _F(CHAM_GD = nor_DNOR, REFERENCE = 'ANALYTIQUE',
+              GROUP_NO = 'F', VALE =  0.707, NOM_CMP = 'Y')));
          
-nor_PRES = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
+nor_PRES = CREA_CHAMP(TYPE_CHAM = 'NOEU_GEOM_R',
                       OPERATION = 'NORMALE',
                       MODELE    = MO,
                       GROUP_MA  = 'PRES'  );
 
-IMPR_RESU( RESU=_F( CHAM_GD= nor_PRES ), );
+IMPR_RESU(RESU=_F(CHAM_GD= nor_PRES ));
 
 TEST_RESU(CHAM_NO=(
-           _F( CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE',
-               GROUP_NO = 'A',    VALE = -1. ,      NOM_CMP = 'X'),
-           _F( CHAM_GD = nor_PRES,   CRITERE = 'ABSOLU',   PRECISION = 1.5E-2,
-               GROUP_NO = 'A',    VALE =  0. ,      NOM_CMP = 'Y'),
-           _F( CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE',   PRECISION = 1.5E-2,
-               GROUP_NO = 'E',    VALE = -0.707 ,   NOM_CMP = 'X'),
-           _F( CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE',   PRECISION = 1.5E-2,
-               GROUP_NO = 'E',    VALE = -0.707 ,   NOM_CMP = 'Y'),
-                ), ) ;
+           _F(CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE',
+              GROUP_NO = 'A', VALE = -1. , NOM_CMP = 'X'),
+           _F(CHAM_GD = nor_PRES, CRITERE = 'ABSOLU', PRECISION = 1.5E-2,
+              GROUP_NO = 'A', VALE =  0. , NOM_CMP = 'Y'),
+           _F(CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE', PRECISION = 1.5E-2,
+              GROUP_NO = 'E', VALE = -0.707, NOM_CMP = 'X'),
+           _F(CHAM_GD = nor_PRES, REFERENCE = 'ANALYTIQUE', PRECISION = 1.5E-2,
+              GROUP_NO = 'E', VALE = -0.707, NOM_CMP = 'Y')));
          
-RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
-                          EXCIT=_F(  CHARGE = CH),
-                      )
+RESU=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE = CH));
 
-CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,              
-                          
-                      OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
+CALC_ELEM(reuse= RESU , RESULTAT= RESU,              
+                        OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL'));
 
-CALC_NO( reuse=RESU,                      RESULTAT=RESU,
-                     OPTION=('EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL',))
+CALC_NO(reuse=RESU, RESULTAT=RESU,
+                    OPTION=('EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL'));
 
 TEST_RESU(RESU=(
    # DEPLACEMENTS
@@ -301,12 +295,26 @@ TEST_RESU(RESU=(
 #----------------------------------------------------------------
 # VALIDATION DE L'OPTION ARCO_ELNO_SIGM
 
-CALC_ELEM( reuse= RESU ,
-           RESULTAT= RESU ,
-           GROUP_MA='PRES',
-           REPE_COQUE=_F( GROUP_MA='PRES',
-                          ANGL_REP=(0.,90.),),
-           OPTION='ARCO_ELNO_SIGM',);
+CALC_ELEM(reuse= RESU ,
+          RESULTAT= RESU ,
+          GROUP_MA='PRES',
+          REPE_COQUE=_F(GROUP_MA='PRES',
+                        ANGL_REP=(0.,90.)),
+          OPTION='ARCO_ELNO_SIGM',);
+
+CALC_NO(reuse= RESU ,
+        RESULTAT= RESU ,
+        GROUP_MA='PRES',
+        OPTION='ARCO_NOEU_SIGM',);
+
+# tab_sig=POST_RELEVE_T(ACTION=_F(INTITULE='ARCO_NOEU_SIGM',
+#                                 GROUP_NO='A',
+#                                 RESULTAT=RESU,
+#                                 NOM_CHAM='ARCO_NOEU_SIGM',
+#                                 NOM_CMP=('SI_ARC','SI_CONS','SI_NORM'),
+#                                 OPERATION='EXTRACTION'));
+# 
+# IMPR_TABLE(TABLE=tab_sig);
 
 #-----------------------------------------------------------------
 
@@ -315,23 +323,23 @@ TEST_RESU(RESU=(
     # ARCO_ELNO_SIGM
 
            _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_NOEU_SIGM',   NUME_ORDRE = 1,
  GROUP_NO = 'A', MAILLE='M1380',  VALE = 100.,      NOM_CMP = 'SI_ARC'),
            _F(        CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 5.E-1,
- RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_NOEU_SIGM',   NUME_ORDRE = 1,
  GROUP_NO = 'A', MAILLE='M1380',   VALE = 0.,      NOM_CMP = 'SI_CONS'),
            _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.5E-2,
- RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_NOEU_SIGM',   NUME_ORDRE = 1,
  GROUP_NO = 'A',  MAILLE='M1380',  VALE = -60.,      NOM_CMP = 'SI_NORM'),
 
            _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_NOEU_SIGM',   NUME_ORDRE = 1,
  GROUP_NO = 'E', MAILLE='M1351',   VALE = 100.,      NOM_CMP = 'SI_ARC'),
            _F(        CRITERE = 'ABSOLU',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-1,
- RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_NOEU_SIGM',   NUME_ORDRE = 1,
  GROUP_NO = 'E', MAILLE='M1351',   VALE = 0.,      NOM_CMP = 'SI_CONS'),
            _F(        CRITERE = 'RELATIF',    REFERENCE='ANALYTIQUE',   PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'ARCO_ELNO_SIGM',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'ARCO_NOEU_SIGM',   NUME_ORDRE = 1,
  GROUP_NO = 'E', MAILLE='M1351',  VALE = -60.,      NOM_CMP = 'SI_NORM'),
 
            ),)

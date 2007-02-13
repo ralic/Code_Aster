@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
 
-import os, sys, types, copy, math
+import os, sys, copy, math
 from glob import glob
 import Numeric
 
@@ -158,6 +158,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
    import Macro
    from Cata import cata
    from Cata.cata import DEFI_LIST_REEL, CREA_TABLE, TEST_TABLE
+   from Cata.cata import OPER, MACRO
 
    from Macro import reca_message
    from Macro import reca_algo
@@ -179,15 +180,15 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU
 
    # Declaration de toutes les commandes Aster
    for k,v in cata.__dict__.items() :
-     if type(v)==types.InstanceType:
-        if v.__class__.__name__ in ('OPER','MACRO'):
-           self.current_context[k]= v
+      if isinstance(v, (OPER, MACRO)):
+         self.current_context[k]= v
    self.current_context['_F']=cata.__dict__['_F']
 
    macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC, 
              ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
              GRAPHIQUE, SUIVI_ESCLAVE, METHODE, INFO, **args)
 
+   aster.onFatalError(prev_onFatalError)
    return
 
 
@@ -427,8 +428,8 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
       if not mode_python: Ecriture_Fonctionnelle(output_file='./fort.1900', type_fonctionnelle=type_fonctionnelle, fonctionnelle=fonctionnelle)
 
       # Fichier bilan
-      if type(fonctionnelle) == types.FloatType: txt = '---> fonctionnelle : '       + str(fonctionnelle)
-      else:                                      txt = '---> norme fonctionnelle : ' + str( math.sqrt( (Numeric.sum( [x**2 for x in fonctionnelle] )) ) )
+      if type(fonctionnelle) == float: txt = '---> fonctionnelle : '       + str(fonctionnelle)
+      else:                            txt = '---> norme fonctionnelle : ' + str( math.sqrt( (Numeric.sum( [x**2 for x in fonctionnelle] )) ) )
       Mess.ecrire(txt)
 
       # Affichage de la valeur de la fonctionnelle

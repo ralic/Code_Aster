@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,11 +18,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+__version__ = "$Name:  $"
+__Id__ = "$Id: cata_aster_v6.py,v 1.12 2001/01/16 15:55:05 iliade Exp $"
+
 import Accas
 from Accas import *
 from Accas import _F
-import string
-from types import TupleType, ListType, StringType, InstanceType
 import Numeric
 from math import sin,cos,tan,asin,acos,atan2,atan,sinh,cosh,tanh,exp,log,log10
 from math import sqrt,pi
@@ -32,11 +33,6 @@ try:
   import aster
 except:
   pass
-
-__version__="$Name:  $"
-__Id__="$Id: cata_aster_v6.py,v 1.12 2001/01/16 15:55:05 iliade Exp $"
-
-EnumTypes = (ListType, TupleType)
 
 # -----------------------------------------------------------------------------
 JdC = JDC_CATA(code='ASTER',
@@ -52,14 +48,14 @@ class entier   (ASSD):
 
    def __adapt__(self,validator):
       if validator.name == "list":
-          #validateur liste,cardinalité
-          return (self,)
+         #validateur liste,cardinalité
+         return (self,)
       elif validator.name == "type":
-          #validateur type
-          return validator.adapt(self.valeur or 0)
+         #validateur type
+         return validator.adapt(self.valeur or 0)
       else:
-          #validateur into et valid
-          return self
+         #validateur into et valid
+         return self
 
 class reel(ASSD):
    def __init__(self,valeur=None,**args):
@@ -71,15 +67,14 @@ class reel(ASSD):
 
    def __adapt__(self,validator):
       if validator.name == "list":
-          #validateur liste,cardinalité
-          return (self,)
+         #validateur liste,cardinalité
+         return (self,)
       elif validator.name == "type":
-          #validateur type
-          return validator.adapt(self.valeur or 0.)
+         #validateur type
+         return validator.adapt(self.valeur or 0.)
       else:
-          #validateur into et valid
-          return self
-
+         #validateur into et valid
+         return self
 
 # -----------------------------------------------------------------------------
 # Type geometriques
@@ -89,377 +84,81 @@ class ma  (GEOM):pass
 class grma(GEOM):pass
 
 # -----------------------------------------------------------------------------
-# Autres
-class cabl_precont    (ASSD):pass
-class cara_elem       (ASSD):pass
-class cham_mater      (ASSD):pass
-class char_acou       (ASSD):pass
-class char_cine_acou  (ASSD):pass
-class char_cine_meca  (ASSD):pass
-class char_cine_ther  (ASSD):pass
-class char_meca       (ASSD):pass
-class char_ther       (ASSD):pass
-class compor_sdaster  (ASSD):pass
-class courbe_sdaster  (ASSD):pass
-class fiss_xfem       (ASSD):pass
-class fond_fiss       (ASSD):pass
-class interf_dyna_clas(ASSD):pass
-class interspfact     (ASSD):pass
-class listis_sdaster  (ASSD):pass
-class melasflu_sdaster(ASSD):pass
-class nume_ddl_sdaster(ASSD):pass
-class nume_ddl_gene   (ASSD):pass
-class sd_feti_sdaster (ASSD):pass
-class spectre_sdaster (ASSD):pass
-class surface_sdaster (ASSD):pass
-class tran_gene       (ASSD):pass
-class type_flui_stru  (ASSD):pass
+from SD.co_cabl_precont     import cabl_precont
+from SD.co_cara_elem        import cara_elem
+from SD.co_cham_mater       import cham_mater
+from SD.co_char_acou        import char_acou
+from SD.co_char_cine_acou   import char_cine_acou
+from SD.co_char_cine_meca   import char_cine_meca
+from SD.co_char_cine_ther   import char_cine_ther
+from SD.co_char_meca        import char_meca
+from SD.co_char_ther        import char_ther
+from SD.co_compor           import compor_sdaster
+from SD.co_courbe           import courbe_sdaster
+from SD.co_fiss_xfem        import fiss_xfem
+from SD.co_fond_fiss        import fond_fiss
+from SD.co_interf_dyna_clas import interf_dyna_clas
+from SD.co_gfibre           import gfibre_sdaster
+from SD.co_listis           import listis_sdaster
+from SD.co_melasflu         import melasflu_sdaster
+from SD.co_mode_cycl        import mode_cycl
+from SD.co_nume_ddl_gene    import nume_ddl_gene
+from SD.co_nume_ddl         import nume_ddl_sdaster
+from SD.co_sd_feti          import sd_feti_sdaster
+from SD.co_spectre          import spectre_sdaster
+from SD.co_surface          import surface_sdaster
+from SD.co_tran_gene        import tran_gene
+from SD.co_type_flui_stru   import type_flui_stru
 
 # -----------------------------------------------------------------------------
 # modeles :
-class modele_sdaster  (ASSD):pass
-class modele_gene     (ASSD):
-  def LIST_SOUS_STRUCT(self) :
-    """ retourne la liste des sous structures du modele generalise
-        la liste des macro-elements sous-jacents"""
-    if self.par_lot():
-      raise Accas.AsException("Erreur dans modele_gene.LIST_SOUS_STRUCT en PAR_LOT='OUI'")
-    nommodgen=self.get_name()
-    ncham=nommodgen+(8-len(nommodgen))*' '
-    ssno=aster.getvectjev(ncham+(14-len(ncham))*' '+'.MODG.SSNO')
-    ssme=aster.getcolljev(ncham+(14-len(ncham))*' '+'.MODG.SSME')
-    return [([ssno[ind], ssme[ind+1]]) for ind in range(len(ssno))]
-  def LIST_LIAIS_STRUCT(self) :
-    """ retourne la liste des liaisons entre sous structures du modele generalise sous la forme :
-        [ (ss1, nom_liais1,  ss2 , nom_liais2), ...] """
-    if self.par_lot() :
-      raise Accas.AsException("Erreur dans modele_gene.LIST_LIAIS_STRUCT en PAR_LOT='OUI'")
-    nommodgen=self.get_name()
-    ncham=nommodgen+(8-len(nommodgen))*' '
-    lidf=aster.getcolljev(ncham+(14-len(ncham))*' '+'.MODG.LIDF')
-    return [([(lidf[ind][indb]) for indb in range(4)]) for ind in lidf]
-
+from SD.co_modele      import modele_sdaster
+from SD.co_modele_gene import modele_gene
 
 # -----------------------------------------------------------------------------
 # materiau
-class mater_sdaster(ASSD):
-   def RCVALE(self, phenomene, nompar=(), valpar=(), nomres=(), stop='F'):
-      """Appel à la routine fortran RCVALE pour récupérer les valeurs des
-      propriétés du matériau.
-      """
-      if self.par_lot() :
-         raise Accas.AsException("Erreur dans mater.RCVALE en PAR_LOT='OUI'")
-      from Utilitai.Utmess import UTMESS
-      # vérification des arguments
-      if not type(nompar) in EnumTypes:
-         nompar = [nompar,]
-      if not type(valpar) in EnumTypes:
-         valpar = [valpar,]
-      if not type(nomres) in EnumTypes:
-         nomres = [nomres,]
-      nompar = tuple(nompar)
-      valpar = tuple(valpar)
-      nomres = tuple(nomres)
-      if len(nompar) != len(valpar):
-         UTMESS('F', 'RCVALE', """Arguments incohérents :
-      Nom des paramètres : %s
-   Valeur des paramètres : %s""" \
-         % (', '.join(nompar), ', '.join([repr(v) for v in valpar])))
-      if len(nomres) < 1:
-         UTMESS('F', 'RCVALE', 'Argument invalide : "nomres" vide !')
-      # appel à l'interface Python/C
-      return aster.rcvale(self.nom, phenomene, nompar, valpar, nomres, stop)
+from SD.co_mater import mater_sdaster
 
 # -----------------------------------------------------------------------------
 # macro-elements :
-class macr_elem_dyna  (ASSD):
-  def NBRE_MODES(self) :
-    """ retourne le nombre de modes total, dynamiques et d'interface """
-    if self.par_lot() :
-      raise Accas.AsException("Erreur dans macr_elem_dyna.NBRE_MODES en PAR_LOT='OUI'")
-    nommacr=self.get_name()
-    ncham=nommacr+(8-len(nommacr))*' '
-    ncham=nommacr+(8-len(nommacr))*' '+'.MAEL'
-    nombase=aster.getvectjev(ncham+'_REFE')[0]
-    nbmode=Numeric.array(aster.getvectjev(nombase[0:8]+(19-len(nombase[0:8]))*' '+'.UTIL'))
-    nbmodtot=nbmode[1]
-    nbmoddyn=nbmode[2]
-    nbmodint=nbmode[3]
-    return [nbmodtot,nbmoddyn,nbmodint]
-
-  def EXTR_MATR_GENE(self,typmat) :
-    """ retourne les valeurs des matrices generalisees reelles
-    dans un format Numerical Array
-        typmat='MASS_GENE' pour obtenir la matrice de masse generalisee
-        typmat='RIGI_GENE' pour obtenir la matrice de raideur generalisee
-        typmat='AMOR_GENE' pour obtenir la matrice d'amortissement generalisee
-        Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs """
-    if self.par_lot() :
-      raise Accas.AsException("Erreur dans macr_elem_dyna.EXTR_MATR_GENE en PAR_LOT='OUI'")
-
-    nommacr=self.get_name()
-    if (typmat=='MASS_GENE') :
-       ext='.MAEL_MASS'
-    elif (typmat=='RIGI_GENE') :
-       ext='.MAEL_RAID'
-    elif (typmat=='AMOR_GENE') :
-       ext='.MAEL_AMOR'
-    else:
-       raise Accas.AsException("Le type de la matrice est incorrect")
-    ncham=nommacr+(8-len(nommacr))*' '+ext
-    desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
-
-    # On teste si le DESC du vecteur existe
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou \
-       est mal cree par Code Aster")
-
-    tmp=Numeric.array(aster.getvectjev(ncham+'_VALE'))
-    matrice=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
-    for j in range(desc[1]+1):
-      for i in range(j):
-        k=j*(j-1)/2+i
-        matrice[j-1,i]=tmp[k]
-    matrice=(matrice+Numeric.transpose(matrice))
-    for i in range(desc[1]):
-      matrice[i,i]=0.5*matrice[i,i]
-    return matrice
-
-  def RECU_MATR_GENE(self,typmat,matrice) :
-    """ envoie les valeurs d'un Numerical Array dans des matrices generalisees
-    reelles definies dans jeveux
-        typmat='MASS_GENE' pour obtenir la matrice de masse generalisee
-        typmat='RIGI_GENE' pour obtenir la matrice de raideur generalisee
-        typmat='AMOR_GENE' pour obtenir la matrice d'amortissement generalisee
-        Attributs ne retourne rien """
-    if self.par_lot() :
-      raise Accas.AsException("Erreur dans macr_elem_dyna.RECU_MATR_GENE en PAR_LOT='OUI'")
-    from Utilitai.Utmess import UTMESS
-
-    # avertissement generique
-    UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
-
-    nommacr=self.get_name()
-    if (typmat=='MASS_GENE') :
-       ext='.MAEL_MASS'
-    elif (typmat=='RIGI_GENE') :
-       ext='.MAEL_RAID'
-    elif (typmat=='AMOR_GENE') :
-       ext='.MAEL_AMOR'
-    else:
-       raise Accas.AsException("Le type de la matrice \
-                                est incorrect")
-    ncham=nommacr+(8-len(nommacr))*' '+ext
-    desc=Numeric.array(aster.getvectjev(ncham+'_DESC'))
-
-    # On teste si le DESC de la matrice jeveux existe
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou \
-                                est mal cree par Code Aster")
-    Numeric.asarray(matrice)
-
-    # On teste si la matrice python est de dimension 2
-    if (len(Numeric.shape(matrice))<>2):
-       raise Accas.AsException("La dimension de la matrice \
-                                est incorrecte")
-
-    # On teste si les tailles de la matrice jeveux et python sont identiques
-    if (tuple([desc[1],desc[1]])<>Numeric.shape(matrice)) :
-       raise Accas.AsException("La dimension de la matrice \
-                                est incorrecte")
-    taille=desc[1]*desc[1]/2.0+desc[1]/2.0
-    tmp=Numeric.zeros([int(taille)],Numeric.Float)
-    for j in range(desc[1]+1):
-      for i in range(j):
-        k=j*(j-1)/2+i
-        tmp[k]=matrice[j-1,i]
-    aster.putvectjev(ncham+'_VALE',len(tmp),tuple((
-    range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
-    return
-
-class macr_elem_stat  (ASSD):pass
-
+from SD.co_macr_elem_dyna import macr_elem_dyna
+from SD.co_macr_elem_stat import macr_elem_stat
 
 # -----------------------------------------------------------------------------
 # liste :
-class listr8_sdaster   (ASSD):
-   def Valeurs(self) :
-      """
-      Retourne la liste des valeurs : [val1, ..., valN]
-      """
-      if not self.par_lot():
-         vale='%-19s.VALE' % self.get_name()
-         t_vale = aster.getvectjev(vale)
-         if t_vale == None:
-            UTMESS('F', 'listr8.Valeurs', "Objet '%s' inexistant" % vale)
-         return list(t_vale)
-      else:
-         raise Accas.AsException("Erreur dans listr8.Valeurs en PAR_LOT='OUI'")
-
-
-# -----------------------------------------------------------------------------
-# post-traitement :
-class post_comp_cham_el :
-  def __init__(self,valeurs,maille=None,point=None,sous_point=None) :
-    self.valeurs=valeurs
-    self.maille=maille
-    self.point=point
-    self.sous_point=sous_point
-
-class post_comp_cham_no :
-  def __init__(self,valeurs,noeud=None) :
-    self.valeurs=valeurs
-    self.noeud=noeud
+from SD.co_listr8 import listr8_sdaster
 
 # -----------------------------------------------------------------------------
 # maillage :
-class maillage_sdaster(ASSD):
-  def LIST_GROUP_NO(self) :
-      """ retourne la liste des groupes de noeuds sous la forme :
-        [ (gno1, nb noeuds  gno1), ...] """
-      if self.par_lot() :
-         raise Accas.AsException("Erreur dans maillage.LIST_GROUP_NO en PAR_LOT='OUI'")
-      nommail=self.get_name()
-      dic_gpno=aster.getcolljev(nommail.ljust(8)+".GROUPENO")
-      return [(gpno.strip(),len(dic_gpno[gpno])) for gpno in dic_gpno]
-  def LIST_GROUP_MA(self) :
-      """ retourne la liste des groupes de mailles sous la forme :
-        [ (gma1, nb mailles gma1, dime max des mailles gma1), ...] """
-      if self.par_lot() :
-         raise Accas.AsException("Erreur dans maillage.LIST_GROUP_MA en PAR_LOT='OUI'")
-      nommail=self.get_name()
-      nommail=nommail.ljust(8)
-      ngpma=[]
-      ltyma =aster.getvectjev("&CATA.TM.NOMTM")
-      catama=aster.getcolljev("&CATA.TM.TMDIM")
-      dic_gpma=aster.getcolljev(nommail+".GROUPEMA")
-      dimama=[catama[ltyma[ma-1]][0] for ma in aster.getvectjev(nommail+".TYPMAIL")]
-      for grp in dic_gpma.keys():
-         dim=max([dimama[ma-1] for ma in dic_gpma[grp]])
-         ngpma.append((grp.strip(),len(dic_gpma[grp]),dim))
-      return ngpma
-
-class squelette     (maillage_sdaster):pass
-
+from SD.co_maillage  import maillage_sdaster
+from SD.co_squelette import squelette
 
 # -----------------------------------------------------------------------------
-# champ_gd/carte
-class cham_gd_sdaster(ASSD):pass
-class carte_sdaster  (cham_gd_sdaster):pass
+# champs
+from SD.co_champ     import cham_gd_sdaster
+from SD.co_cham_no   import cham_no_sdaster
+from SD.co_carte     import carte_sdaster
+from SD.co_cham_elem import cham_elem
 
 # -----------------------------------------------------------------------------
-# cham_elem
-class cham_elem(cham_gd_sdaster):
-  def EXTR_COMP(self,comp,lgma,topo=0) :
-      """ retourne les valeurs de la composante comp du champ sur la liste
-        de groupes de mailles lgma avec eventuellement l'info de la
-        topologie si topo>0. Si lgma est une liste vide, c'est equivalent
-        a un TOUT='OUI' dans les commandes aster
-        Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs
-        Si on a demande la topo  :
-          - self.maille  : numero de mailles
-          - self.point   : numero du point dans la maille
-          - self.sous_point : numero du sous point dans la maille """
-      if self.par_lot() :
-         raise Accas.AsException("Erreur dans cham_elem.EXTR_COMP en PAR_LOT='OUI'")
-
-      ncham=self.get_name()
-      ncham=ncham+(8-len(ncham))*' '
-      nchams=ncham[0:7]+'S'
-      ncmp=comp+(8-len(comp))*' '
-
-      aster.prepcompcham(ncham,nchams,ncmp,"EL      ",topo,lgma)
-
-      valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
-
-      if (topo>0) :
-         maille=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.M'))
-         point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.P'))
-         sous_point=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.SP'))
-      else :
-         maille=None
-         point=None
-         sous_point=None
-
-      aster.prepcompcham("__DETR__",nchams,ncmp,"EL      ",topo,lgma)
-
-      return post_comp_cham_el(valeurs,maille,point,sous_point)
+# resultat : (evol_sdaster,mode_stat,mode_meca)
+from SD.co_resultat     import resultat_sdaster, resultat_jeveux
+from SD.co_resultat_dyn import resultat_dyn
+from SD.co_base_modale  import base_modale
 
 # -----------------------------------------------------------------------------
-# cham_no :
-class cham_no_sdaster(cham_gd_sdaster):
-
-  def EXTR_COMP(self,comp,lgno,topo=0) :
-      """ retourne les valeurs de la composante comp du champ sur la liste
-        de groupes de noeuds lgno avec eventuellement l'info de la
-        topologie si topo>0. Si lgno est une liste vide, c'est equivalent
-        a un TOUT='OUI' dans les commandes aster
-        Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs
-        Si on a demande la topo (i.e. self.topo = 1) :
-          - self.noeud  : numero de noeud """
-      if self.par_lot() :
-         raise Accas.AsException("Erreur dans cham_no.EXTR_COMP en PAR_LOT='OUI'")
-
-      ncham=self.get_name()
-      ncham=ncham+(8-len(ncham))*' '
-      nchams=ncham[0:7]+'S'
-      ncmp=comp+(8-len(comp))*' '
-
-      aster.prepcompcham(ncham,nchams,ncmp,"NO      ",topo,lgno)
-
-      valeurs=Numeric.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
-
-      if (topo>0) :
-         noeud=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.N'))
-      else :
-         noeud=None
-
-      aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
-
-      return post_comp_cham_no(valeurs,noeud)
+class acou_harmo    (resultat_dyn):pass
+class dyna_harmo    (resultat_dyn):pass
+class dyna_trans    (resultat_dyn):pass
+class harm_gene     (resultat_dyn):pass
+class mode_acou     (resultat_dyn):pass
+class mode_flamb    (resultat_dyn):pass
+class mode_gene     (resultat_dyn):pass
 
 # -----------------------------------------------------------------------------
-# resultat_sdaster : (evol_sdaster,mode_stat,mode_meca)
-class resultat_sdaster(ASSD):
-  def LIST_CHAMPS (self) :
-    if self.par_lot() :
-      raise Accas.AsException("Erreur dans resultat.LIST_CHAMPS en PAR_LOT='OUI'")
-    return aster.GetResu(self.get_name(), "CHAMPS")
-  def LIST_NOM_CMP (self) :
-    if self.par_lot() :
-      raise Accas.AsException("Erreur dans resultat.LIST_NOM_CMP en PAR_LOT='OUI'")
-    return aster.GetResu(self.get_name(), "COMPOSANTES")
-  def LIST_VARI_ACCES (self) :
-    if self.par_lot() :
-      raise Accas.AsException("Erreur dans resultat.LIST_VARI_ACCES en PAR_LOT='OUI'")
-    return aster.GetResu(self.get_name(), "VARI_ACCES")
-  def LIST_PARA (self) :
-    if self.par_lot() :
-      raise Accas.AsException("Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'")
-    return aster.GetResu(self.get_name(), "PARAMETRES")
-
-class resultat_jeveux(resultat_sdaster):
-   """Classe permettant d'accéder à un resultat jeveux qui n'a pas d'ASSD associée,
-   c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""
-   def __init__(self,nom_jeveux):
-      self.nom=nom_jeveux
-
-# -----------------------------------------------------------------------------
-class acou_harmo    (resultat_sdaster):pass
-class base_modale   (resultat_sdaster):pass
 class comb_fourier  (resultat_sdaster):pass
-class dyna_harmo    (resultat_sdaster):pass
-class dyna_trans    (resultat_sdaster):pass
 class fourier_elas  (resultat_sdaster):pass
 class fourier_ther  (resultat_sdaster):pass
-class harm_gene     (resultat_sdaster):pass
-class mode_acou     (resultat_sdaster):pass
-class mode_cycl     (resultat_sdaster):pass
-class mode_flamb    (resultat_sdaster):pass
-class mode_gene     (resultat_sdaster):pass
 class mult_elas     (resultat_sdaster):pass
 class theta_geom    (resultat_sdaster):pass
 
@@ -474,684 +173,52 @@ class evol_varc(evol_sdaster):pass
 
 # -----------------------------------------------------------------------------
 # resultat_sdaster/mode_stat :
-class mode_stat(resultat_sdaster):pass
+class mode_stat(resultat_dyn):pass
 class mode_stat_depl(mode_stat):pass
 class mode_stat_acce(mode_stat):pass
 class mode_stat_forc(mode_stat):pass
 
-
 # -----------------------------------------------------------------------------
 # resultat_sdaster/mode_meca :
-class mode_meca(resultat_sdaster):pass
+class mode_meca(resultat_dyn):pass
 class mode_meca_c(mode_meca):pass
 
-
 # -----------------------------------------------------------------------------
-# types 'fonction' :
-class fonction_class(ASSD):
-   def Valeurs(self):pass
-   def Parametres(self):
-      """
-      Retourne un dictionnaire contenant les parametres de la fonction ;
-      le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourne,
-      le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
-      """
-      if not self.par_lot():
-        TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
-        objev = '%-19s.PROL' % self.get_name()
-        prol = aster.getvectjev(objev)
-        if prol == None:
-           UTMESS('F', 'fonction.Parametres', "Objet '%s' inexistant" % objev)
-        dico={
-         'INTERPOL'    : [prol[1][0:3],prol[1][4:7]],
-         'NOM_PARA'    : string.strip(prol[2][0:16]),
-         'NOM_RESU'    : string.strip(prol[3][0:16]),
-         'PROL_DROITE' : TypeProl[prol[4][1]],
-         'PROL_GAUCHE' : TypeProl[prol[4][0]],
-        }
-      elif hasattr(self,'etape') and self.etape.nom=='DEFI_FONCTION' :
-        dico={
-         'INTERPOL'    : self.etape['INTERPOL'],
-         'NOM_PARA'    : self.etape['NOM_PARA'],
-         'NOM_RESU'    : self.etape['NOM_RESU'],
-         'PROL_DROITE' : self.etape['PROL_DROITE'],
-         'PROL_GAUCHE' : self.etape['PROL_GAUCHE'],
-        }
-        if   type(dico['INTERPOL'])==TupleType :
-                  dico['INTERPOL']=list(dico['INTERPOL'])
-        elif type(dico['INTERPOL'])==StringType :
-                  dico['INTERPOL']=[dico['INTERPOL'],]
-        if len(dico['INTERPOL'])==1 :
-           dico['INTERPOL']=dico['INTERPOL']*2
-      else:
-         raise Accas.AsException("Erreur dans fonction.Parametres en PAR_LOT='OUI'")
-      return dico
-   def Trace(self,FORMAT='TABLEAU',**kargs):
-      """Tracé d'une fonction"""
-      if self.par_lot() :
-         raise Accas.AsException("Erreur dans fonction.Trace en PAR_LOT='OUI'")
-      from Utilitai.Graph import Graph
-      gr=Graph()
-      gr.AjoutCourbe(Val=self.Valeurs(),
-            Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU']])
-      gr.Trace(FORMAT=FORMAT,**kargs)
-
-class fonction_sdaster(fonction_class):
-   def convert(self,arg='real'):
-      """
-      Retourne un objet de la classe t_fonction
-      représentation python de la fonction
-      """
-      from Utilitai.t_fonction import t_fonction,t_fonction_c
-      if arg=='real' :
-        return t_fonction(self.Absc(),
-                          self.Ordo(),
-                          self.Parametres())
-      elif arg=='complex' :
-        return t_fonction_c(self.Absc(),
-                            self.Ordo(),
-                            self.Parametres())
-   def Valeurs(self) :
-      """
-      Retourne deux listes de valeurs : abscisses et ordonnees
-      """
-      if not self.par_lot():
-        vale = '%-19s.VALE' % self.get_name()
-        lbl = aster.getvectjev(vale)
-        if lbl == None:
-           UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % vale)
-        lbl = list(lbl)
-        dim = len(lbl)/2
-        lx = lbl[0:dim]
-        ly = lbl[dim:2*dim]
-      elif hasattr(self, 'etape') and self.etape.nom == 'DEFI_FONCTION' :
-         if self.etape['VALE'] != None:
-            lbl = list(self.etape['VALE'])
-            dim = len(lbl)
-            lx = [lbl[i] for i in range(0,dim,2)]
-            ly = [lbl[i] for i in range(1,dim,2)]
-         elif self.etape['VALE_PARA']!=None:
-            lx = self.etape['VALE_PARA'].Valeurs()
-            ly = self.etape['VALE_FONC'].Valeurs()
-      else:
-         raise Accas.AsException("Erreur (fonction.Valeurs) : ne fonctionne en " \
-               "PAR_LOT='OUI' que sur des fonctions produites par DEFI_FONCTION " \
-               "dans le jdc courant.")
-      return [lx, ly]
-   def Absc(self):
-      """Retourne la liste des abscisses"""
-      return self.Valeurs()[0]
-   def Ordo(self):
-      """Retourne la liste des ordonnées"""
-      return self.Valeurs()[1]
-   def __call__(self,val):
-      ### Pour EFICAS : substitution de l'instance de classe
-      ### parametre par sa valeur
-      if type(val)==InstanceType:
-         val=val.valeur
-      ###
-      __ff=self.convert()
-      return __ff(val)
-
-class para_sensi(fonction_sdaster): pass
-
-class fonction_c(fonction_class):
-   def convert(self,arg='real'):
-      """
-      Retourne un objet de la classe t_fonction ou t_fonction_c,
-      représentation python de la fonction complexe
-      """
-      from Utilitai.t_fonction import t_fonction,t_fonction_c
-      if arg=='real' :
-        return t_fonction(self.Absc(),
-                          self.Ordo(),
-                          self.Parametres())
-      elif arg=='imag' :
-        return t_fonction(self.Absc(),
-                          self.OrdoImg(),
-                          self.Parametres())
-      elif arg=='modul' :
-        modul=Numeric.sqrt(Numeric.array(self.Ordo())**2+Numeric.array(self.OrdoImg())**2)
-        return t_fonction(self.Absc(),
-                          modul,
-                          self.Parametres())
-      elif arg=='phase' :
-        phase=Numeric.arctan2(Numeric.array(self.OrdoImg()),Numeric.array(self.Ordo()))
-        phase=phase*180./pi
-        return t_fonction(self.Absc(),
-                          phase,
-                          self.Parametres())
-      elif arg=='complex' :
-        return t_fonction_c(self.Absc(),
-                            map(complex,self.Ordo(),self.OrdoImg()),
-                            self.Parametres())
-   def Valeurs(self) :
-      """
-      Retourne trois listes de valeurs : abscisses, parties reelles et imaginaires.
-      """
-      if not self.par_lot():
-         vale = '%-19s.VALE' % self.get_name()
-         lbl = aster.getvectjev(vale)
-         if lbl == None:
-            UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % vale)
-         lbl = list(lbl)
-         dim=len(lbl)/3
-         lx=lbl[0:dim]
-         lr=[]
-         li=[]
-         for i in range(dim):
-            lr.append(lbl[dim+2*i])
-            li.append(lbl[dim+2*i+1])
-      elif hasattr(self, 'etape') and self.etape.nom == 'DEFI_FONCTION':
-         lbl=list(self.etape['VALE_C'])
-         dim=len(lbl)
-         lx=[lbl[i] for i in range(0,dim,3)]
-         lr=[lbl[i] for i in range(1,dim,3)]
-         li=[lbl[i] for i in range(2,dim,3)]
-      else:
-         raise Accas.AsException("Erreur (fonction_c.Valeurs) : ne fonctionne en " \
-               "PAR_LOT='OUI' que sur des fonctions produites par DEFI_FONCTION " \
-               "dans le jdc courant.")
-      return [lx, lr, li]
-   def Absc(self):
-      """Retourne la liste des abscisses"""
-      return self.Valeurs()[0]
-   def Ordo(self):
-      """Retourne la liste des parties réelles des ordonnées"""
-      return self.Valeurs()[1]
-   def OrdoImg(self):
-      """Retourne la liste des parties imaginaires des ordonnées"""
-      return self.Valeurs()[2]
-   def Trace(self,FORMAT='TABLEAU',**kargs):
-      """Tracé d'une fonction complexe"""
-      if self.par_lot() :
-         raise Accas.AsException("Erreur dans fonction_c.Trace en PAR_LOT='OUI'")
-      from Utilitai.Graph import Graph
-      gr=Graph()
-      gr.AjoutCourbe(Val=self.Valeurs(),
-       Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU'],'IMAG'])
-      gr.Trace(FORMAT=FORMAT,**kargs)
-   def __call__(self,val):
-      ### Pour EFICAS : substitution de l'instance de classe
-      ### parametre par sa valeur
-      if type(val)==InstanceType:
-         val=val.valeur
-      ###
-      __ff=convert(self)
-      return __ff(val)
-
-class nappe_sdaster(fonction_class):
-   def convert(self):
-      """
-      Retourne un objet de la classe t_nappe, représentation python de la nappe
-      """
-      from Utilitai.t_fonction import t_fonction,t_nappe
-      para=self.Parametres()
-      vale=self.Valeurs()
-      l_fonc=[]
-      i=0
-      for pf in para[1] :
-          para_f={'INTERPOL'    : pf['INTERPOL_FONC'],
-                  'PROL_DROITE' : pf['PROL_DROITE_FONC'],
-                  'PROL_GAUCHE' : pf['PROL_GAUCHE_FONC'],
-                  'NOM_PARA'    : para[0]['NOM_PARA_FONC'],
-                  'NOM_RESU'    : para[0]['NOM_RESU'],
-                 }
-          l_fonc.append(t_fonction(vale[1][i][0],vale[1][i][1],para_f))
-          i+=1
-      return t_nappe(vale[0],
-                     l_fonc,
-                     para[0])
-   def Valeurs(self):
-      """
-      Retourne la liste des valeurs du parametre,
-      et une liste de couples (abscisses,ordonnees) de chaque fonction.
-      """
-      if self.par_lot():
-         raise Accas.AsException("Erreur dans nappe.Valeurs en PAR_LOT='OUI'")
-      nsd = '%-19s' % self.get_name()
-      dicv=aster.getcolljev(nsd+'.VALE')
-      # les cles de dicv sont 1,...,N (indice du parametre)
-      lpar=aster.getvectjev(nsd+'.PARA')
-      if lpar == None:
-         UTMESS('F', 'fonction.Valeurs', "Objet '%s' inexistant" % (nsd+'.PARA'))
-      lval=[]
-      for k in range(len(dicv)):
-         lbl=dicv[k+1]
-         dim=len(lbl)/2
-         lval.append([lbl[0:dim],lbl[dim:2*dim]])
-      return [list(lpar),lval]
-   def Parametres(self):
-      """
-      Retourne un dictionnaire contenant les parametres de la nappe,
-      le type jeveux (NAPPE) n'est pas retourne,
-      le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel,
-      et une liste de dictionnaire des parametres de chaque fonction.
-      """
-      if self.par_lot():
-         raise Accas.AsException("Erreur dans nappe.Parametres en PAR_LOT='OUI'")
-      TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
-      objev = '%-19s.PROL' % self.get_name()
-      prol=aster.getvectjev(objev)
-      if prol == None:
-         UTMESS('F', 'fonction.Parametres', "Objet '%s' inexistant" % objev)
-      dico={
-         'INTERPOL'      : [prol[1][0:3],prol[1][4:7]],
-         'NOM_PARA'      : string.strip(prol[2][0:16]),
-         'NOM_RESU'      : string.strip(prol[3][0:16]),
-         'PROL_DROITE'   : TypeProl[prol[4][1]],
-         'PROL_GAUCHE'   : TypeProl[prol[4][0]],
-         'NOM_PARA_FONC' : string.strip(prol[5][0:4]),
-      }
-      lparf=[]
-      nbf=(len(prol)-6)/2
-      for i in range(nbf):
-         dicf={
-            'INTERPOL_FONC'    : [prol[6+i*2][0:3],prol[6+i*2][4:7]],
-            'PROL_DROITE_FONC' : TypeProl[prol[7+i*2][1]],
-            'PROL_GAUCHE_FONC' : TypeProl[prol[7+i*2][0]],
-         }
-         lparf.append(dicf)
-      return [dico,lparf]
-   def Absc(self):
-      """Retourne la liste des abscisses"""
-      return self.Valeurs()[0]
-   def Trace(self,FORMAT='TABLEAU',**kargs):
-      """Tracé d'une nappe"""
-      if self.par_lot():
-         raise Accas.AsException("Erreur dans nappe.Trace en PAR_LOT='OUI'")
-      from Utilitai.Graph import Graph
-      gr=Graph()
-      lv=self.Valeurs()[1]
-      dp=self.Parametres()[0]
-      for lx,ly in lv:
-         gr.AjoutCourbe(Val=[lx,ly], Lab=[dp['NOM_PARA_FONC'],dp['NOM_RESU']])
-      gr.Trace(FORMAT=FORMAT,**kargs)
+# fonctions / nappe / para_sensi
+from SD.co_fonction import fonction_sdaster, para_sensi, fonction_c, nappe_sdaster
 
 # -----------------------------------------------------------------------------
 # matr_asse :
-class matr_asse(ASSD):pass
-class matr_asse_gene(matr_asse):pass
+from SD.co_matr_asse      import matr_asse
+from SD.co_matr_asse_gene import matr_asse_gene
+from SD.co_matr_asse_gene import matr_asse_gene_r
+from SD.co_matr_asse_gene import matr_asse_gene_c
 
-class matr_asse_gene_r(matr_asse_gene):
-  def EXTR_MATR_GENE(self) :
-    """ retourne les valeurs de la matrice generalisee reelle
-    dans un format Numerical Array
-        Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs """
-    if self.par_lot():
-       raise Accas.AsException("Erreur dans matr_asse_gene.EXTR_MATR_GENE en PAR_LOT='OUI'")
-
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-    # On teste si le DESC de la matrice existe
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou \
-                                est mal cree par Code Aster")
-    # Si le stockage est plein
-    if desc[2]==2 :
-      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
-      valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
-      for j in range(desc[1]+1):
-        for i in range(j):
-          k=j*(j-1)/2+i
-          valeur[j-1,i]=tmp[k]
-      valeur=(valeur+Numeric.transpose(valeur))
-      for i in range(desc[1]):
-        valeur[i,i]=0.5*valeur[i,i]
-    # Si le stockage est diagonal
-    elif desc[2]==1 :
-      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
-      valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Float)
-      for i in range(desc[1]):
-        valeur[i,i]=tmp[i]
-    # Sinon on arrete tout
-    else:
-      raise KeyError
-    return valeur
-
-  def RECU_MATR_GENE(self,matrice) :
-    """ envoie les valeurs d'un Numerical Array dans des matrices
-    generalisees reelles definies dans jeveux
-        Attributs ne retourne rien """
-    if self.par_lot():
-       raise Accas.AsException("Erreur dans matr_asse_gene.RECU_MATR_GENE en PAR_LOT='OUI'")
-    from Utilitai.Utmess import UTMESS
-
-    # avertissement generique
-    UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
-
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-
-    # On teste si le DESC de la matrice existe
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou \
-                                est mal cree par Code Aster")
-    Numeric.asarray(matrice)
-
-    # On teste si la dimension de la matrice python est 2
-    if (len(Numeric.shape(matrice))<>2) :
-       raise Accas.AsException("La dimension de la matrice est incorrecte ")
-
-    # On teste si les tailles des matrices jeveux et python sont identiques
-    if (tuple([desc[1],desc[1]])<>Numeric.shape(matrice)) :
-       raise Accas.AsException("La taille de la matrice est incorrecte ")
-
-    # Si le stockage est plein
-    if desc[2]==2 :
-      taille=desc[1]*desc[1]/2.0+desc[1]/2.0
-      tmp=Numeric.zeros([int(taille)],Numeric.Float)
-      for j in range(desc[1]+1):
-        for i in range(j):
-          k=j*(j-1)/2+i
-          tmp[k]=matrice[j-1,i]
-      aster.putcolljev(ncham+(19-len(ncham))*' '+'.VALM',len(tmp),tuple((\
-      range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
-    # Si le stockage est diagonal
-    elif desc[2]==1 :
-      tmp=Numeric.zeros(desc[1],Numeric.Float)
-      for j in range(desc[1]):
-          tmp[j]=matrice[j,j]
-      aster.putcolljev(ncham+(19-len(ncham))*' '+'.VALM',len(tmp),tuple((\
-      range(1,len(tmp)+1))),tuple(tmp),tuple(tmp),1)
-    # Sinon on arrete tout
-    else:
-      raise KeyError
-    return
-
-
-class matr_asse_gene_c(matr_asse_gene):
-  def EXTR_MATR_GENE(self) :
-    """ retourne les valeurs de la matrice generalisee complexe
-    dans un format Numerical Array
-        Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs """
-    if self.par_lot():
-       raise Accas.AsException("Erreur dans matr_asse_gene_c.EXTR_MATR_GENE en PAR_LOT='OUI'")
-
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou \
-       est mal cree par Code Aster ")
-    # Si le stockage est plein
-    if desc[2]==2 :
-      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
-      valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Complex)
-      for j in range(desc[1]+1):
-        for i in range(j):
-          k=j*(j-1)/2+i
-          valeur[j-1,i]=tmp[k]
-      valeur=(valeur+Numeric.transpose(valeur))
-      for i in range(desc[1]):
-        valeur[i,i]=0.5*valeur[i,i]
-    # Si le stockage est diagonal
-    elif desc[2]==1 :
-      tmp=Numeric.array(aster.getcolljev(ncham+(19-len(ncham))*' '+'.VALM')[1])
-      valeur=Numeric.zeros([desc[1],desc[1]],Numeric.Complex)
-      for i in range(desc[1]):
-        valeur[i,i]=tmp[i]
-    # Sinon on arrete tout
-    else:
-      raise KeyError
-    return valeur
-
-  def RECU_MATR_GENE(self,matrice) :
-    """ envoie les valeurs d'un Numerical Array dans des matrices
-    generalisees reelles definies dans jeveux
-        Attributs ne retourne rien """
-    if self.par_lot():
-       raise Accas.AsException("Erreur dans matr_asse_gene_c.RECU_MATR_GENE en PAR_LOT='OUI'")
-    from Utilitai.Utmess import UTMESS
-
-    # avertissement generique
-    UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
-
-    Numeric.asarray(matrice)
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-
-    # On teste si le DESC de la matrice existe
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou \
-       est mal cree par Code Aster")
-    Numeric.asarray(matrice)
-
-    # On teste si la dimension de la matrice python est 2
-    if (len(Numeric.shape(matrice))<>2) :
-       raise Accas.AsException("La dimension de la matrice est incorrecte ")
-
-    # On teste si la taille de la matrice jeveux et python est identique
-    if (tuple([desc[1],desc[1]])<>Numeric.shape(matrice)) :
-       raise Accas.AsException("La taille de la matrice est incorrecte ")
-
-    # Si le stockage est plein
-    if desc[2]==2 :
-      taille=desc[1]*desc[1]/2.0+desc[1]/2.0
-      tmpr=Numeric.zeros([int(taille)],Numeric.Float)
-      tmpc=Numeric.zeros([int(taille)],Numeric.Float)
-      for j in range(desc[1]+1):
-        for i in range(j):
-          k=j*(j-1)/2+i
-          tmpr[k]=matrice[j-1,i].real
-          tmpc[k]=matrice[j-1,i].imag
-      aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALM',len(tmpr),tuple((\
-                       range(1,len(tmpr)+1))),tuple(tmpr),tuple(tmpc),1)
-    # Si le stockage est diagonal
-    elif desc[2]==1 :
-      tmpr=Numeric.zeros(desc[1],Numeric.Float)
-      tmpc=Numeric.zeros(desc[1],Numeric.Float)
-      for j in range(desc[1]):
-          tmpr[j]=matrice[j,j].real
-          tmpc[j]=matrice[j,j].imag
-      aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALM',len(tmpr),tuple((\
-                       range(1,len(tmpr)+1))),tuple(tmpr),tuple(tmpc),1)
-    # Sinon on arrete tout
-    else:
-      raise KeyError
-    return
-
-# -----------------------------------------------------------------------------
-class matr_asse_gd(matr_asse):pass
-class matr_asse_depl_c(matr_asse_gd):pass
-class matr_asse_depl_r(matr_asse_gd):pass
-class matr_asse_pres_c(matr_asse_gd):pass
-class matr_asse_pres_r(matr_asse_gd):pass
-class matr_asse_temp_c(matr_asse_gd):pass
-class matr_asse_temp_r(matr_asse_gd):pass
+from SD.co_matr_asse_gd import matr_asse_gd, \
+                               matr_asse_depl_r, matr_asse_depl_c, \
+                               matr_asse_pres_r, matr_asse_pres_c, \
+                               matr_asse_temp_r, matr_asse_temp_c
 
 # -----------------------------------------------------------------------------
 # matr_elem :
-class matr_elem(ASSD):pass
-class matr_elem_depl_c(matr_elem):pass
-class matr_elem_depl_r(matr_elem):pass
-class matr_elem_pres_c(matr_elem):pass
-class matr_elem_temp_r(matr_elem):pass
+from SD.co_matr_elem import matr_elem, \
+                            matr_elem_depl_r, matr_elem_depl_c, \
+                                              matr_elem_pres_c, \
+                            matr_elem_temp_r
 
 # -----------------------------------------------------------------------------
 # table :
-class table_sdaster(ASSD):
-   def __getitem__(self,key):
-      from Utilitai.Utmess import UTMESS
-      if self.par_lot():
-         raise Accas.AsException("Erreur dans table.__getitem__ en PAR_LOT='OUI'")
-      requete = '%-24s' % key[0]
-      tblp = '%-19s.TBLP' % self.get_name()
-      tabnom = aster.getvectjev(tblp)
-      if tabnom == None:
-         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tblp)
-      for i in range(len(tabnom)) :
-         if tabnom[i]==requete: break
-      resu=aster.getvectjev(tabnom[i+2])
-      if resu == None:
-         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tabnom[i+2])
-      exist=aster.getvectjev(tabnom[i+3])
-      if exist == None:
-         UTMESS('F', 'TABLE[]', "Objet '%s' inexistant" % tabnom[i+3])
-      if key[1]>len(resu) or exist[key[1]-1]==0:
-         raise KeyError
-      else:
-         return resu[key[1]-1]
-   
-   def TITRE(self):
-      """Retourne le titre d'une table Aster
-      (Utile pour récupérer le titre et uniquement le titre d'une table dont
-      on souhaite manipuler la dérivée).
-      """
-      if self.par_lot():
-         raise Accas.AsException("Erreur dans table.TITRE en PAR_LOT='OUI'")
-      titj=aster.getvectjev('%-19s.TITR' % self.get_name())
-      if titj<>None:
-         titr='\n'.join(titj)
-      else:
-         titr=''
-      return titr
-      
-   def EXTR_TABLE(self) :
-      """Produit un objet Table à partir du contenu d'une table Aster
-      """
-      def Nonefy(l1,l2) :
-          if l2==0 : return None
-          else     : return l1
-      if self.par_lot():
-         raise Accas.AsException("Erreur dans table.EXTR_TABLE en PAR_LOT='OUI'")
-      from Utilitai.Table import Table
-      # titre
-      titr = self.TITRE()
-      # récupération des paramètres
-      v_tblp = aster.getvectjev('%-19s.TBLP' % self.get_name())
-      if v_tblp == None:
-         # retourne une table vide
-         return Table(titr=titr)
-      tabnom=list(v_tblp)
-      nparam=len(tabnom)/4
-      lparam=[tabnom[4*i:4*i+4] for i in range(nparam)]
-      dval={}
-      # liste des paramètres et des types
-      lpar=[]
-      ltyp=[]
-      for i in lparam :
-         value=list(aster.getvectjev(i[2]))
-         exist=aster.getvectjev(i[3])
-         dval[string.strip(i[0])]=map(Nonefy,value,exist)
-         lpar.append(string.strip(i[0]))
-         ltyp.append(string.strip(i[1]))
-      n=len(dval[lpar[0]])
-      # contenu : liste de dict
-      lisdic=[]
-      for i in range(n) :
-        d={}
-        for p in lpar : d[p]=dval[p][i]
-        lisdic.append(d)
-      return Table(lisdic, lpar, ltyp, titr)
+from SD.co_table import table_sdaster, table_jeveux
+from SD.co_table_fonction import table_fonction
 
 # -----------------------------------------------------------------------------
-class table_fonction(table_sdaster):
-   """Table contenant en plus une colonne FONCTION et/ou FONCTION_C dont les
-   valeurs des cellules sont des noms de fonction_sdaster ou fonction_c.
-   """
-
-class table_jeveux(table_sdaster):
-   """Classe permettant d'accéder à une table jeveux qui n'a pas d'ASSD associée,
-   c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""
-   def __init__(self,nom_jeveux):
-      self.nom=nom_jeveux
-
-# -----------------------------------------------------------------------------
-# vect_asse :
-class vect_asse(ASSD):pass
-
-class vect_asse_gene(vect_asse):
-  def EXTR_VECT_GENE_R(self) :
-    """ retourne les valeurs du vecteur generalisee
-    dans un format Numerical Array
-        Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs """
-    if self.par_lot():
-       raise Accas.AsException("Erreur dans vect_asse_gene_r.EXTR_VECT_GENE en PAR_LOT='OUI'")
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    valeur=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'))
-    return valeur
-
-  def RECU_VECT_GENE_R(self,vecteur) :
-    """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
-    reel definie dans jeveux
-        Attributs ne retourne rien """
-    if self.par_lot():
-       raise Accas.AsException("Erreur dans vect_asse_gene_r.RECU_VECT_GENE en PAR_LOT='OUI'")
-    from Utilitai.Utmess import UTMESS
-
-    # avertissement generique
-    UTMESS('A','RECU_VECT_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
-
-    Numeric.asarray(vecteur)
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-    # On teste si le DESC du vecteur existe
-    if (desc==None):
-       raise Accas.AsException("L'objet vecteur n'existe pas ou \
-       est mal cree par Code Aster")
-    # On teste si la taille du vecteur jeveux et python est identique
-    if desc[1]<>Numeric.shape(vecteur)[0] :
-       raise Accas.AsException("La taille du vecteur python est incorrecte")
-    aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',len(vecteur),tuple((\
-    range(1,len(vecteur)+1))),tuple(vecteur),tuple(vecteur),1)
-    return
-
-  def EXTR_VECT_GENE_C(self) :
-    """ retourne les valeurs du vecteur generalisee
-    dans un format Numerical Array
-        Attributs retourne
-          - self.valeurs : Numeric.array contenant les valeurs """
-    if self.par_lot():
-       raise Accas.AsException("Erreur dans vect_asse_gene_c.EXTR_VECT_GENE en PAR_LOT='OUI'")
-
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    valeur=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'),Numeric.Complex)
-
-    return valeur
-
-  def RECU_VECT_GENE_C(self,vecteur) :
-    """ envoie les valeurs d'un Numerical Array dans un vecteur generalise
-    complexe definie dans jeveux
-        Attributs ne retourne rien """
-    if self.par_lot():
-       raise Accas.AsException("Erreur dans vect_asse_gene_c.RECU_VECT_GENE en PAR_LOT='OUI'")
-    from Utilitai.Utmess import UTMESS
-
-    # avertissement generique
-    UTMESS('A','RECU_VECT_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
-
-    Numeric.asarray(vecteur)
-    ncham=self.get_name()
-    ncham=ncham+(8-len(ncham))*' '
-    desc=Numeric.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-    # On teste si le DESC de la matrice existe
-    if (desc==None):
-       raise Accas.AsException("L'objet vecteur n'existe pas ou \
-       est mal cree par Code Aster")
-    # On teste si la taille de la matrice jeveux et python est identique
-    if desc[1]<>Numeric.shape(vecteur)[0] :
-       raise Accas.AsException("La taille du vecteur python est incorrecte")
-    tmpr=vecteur.real
-    tmpc=vecteur.imag
-    aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',len(tmpr),tuple((
-    range(1,len(tmpr)+1))),tuple(tmpr),tuple(tmpc),1)
-    return
+# vect_asse_gene :
+from SD.co_vect_asse_gene import vect_asse_gene
 
 # -----------------------------------------------------------------------------
 # vect_elem :
-class vect_elem(ASSD):pass
-class vect_elem_depl_r(vect_elem):pass
-class vect_elem_pres_c(vect_elem):pass
-class vect_elem_pres_r(vect_elem):pass
-class vect_elem_temp_r(vect_elem):pass
+from SD.co_vect_elem import vect_elem, \
+                            vect_elem_depl_r, \
+                            vect_elem_pres_r, vect_elem_pres_c, \
+                            vect_elem_temp_r
 

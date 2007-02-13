@@ -7,7 +7,7 @@
       CHARACTER*14        NUGENE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C     CALL VERISD('MATRICE',MATRAS)
+C     CALL CHEKSD('sd_matr_asse',MATRAS,IRET)
 C
       ZERO = 0.D0
       RESU = ' '
@@ -171,6 +171,6 @@ C
 C
 
       CALL UALFVA(RESU,'G')
-C     CALL VERISD('MATRICE',RESU)
+C     CALL CHEKSD('sd_matr_asse',RESU,IRET)
       CALL JEDEMA()
       END

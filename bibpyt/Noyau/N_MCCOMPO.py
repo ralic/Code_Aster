@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MCCOMPO Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,6 @@
     des OBJECT composites
 """
 
-import types
 from copy import copy
 import N_OBJECT
 

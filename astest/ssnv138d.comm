@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES ROTATIONS SSNV138A
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,9 +42,23 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 MATE=DEFI_MATERIAU(ELAS=_F(E=12.0E+6,
                            NU=0.3,),);
 
+GF=DEFI_GEOM_FIBRE(
+   SECTION =_F(GROUP_FIBRE='SECF',
+             GROUP_MA_SECT='SECT',
+             MAILLAGE_SECT=MA_SECT,
+            COOR_AXE_POUTRE=(0.,0.,),),)
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MATE,
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MATE,
+                                 RELATION='ELAS',DEFORMATION='REAC_GEOM',),
+                     )
+
+
 CH_MAT=AFFE_MATERIAU(MAILLAGE=MA,
-                     AFFE=_F(GROUP_MA='AB',
-                             MATER=MATE,),);
+                  AFFE=_F(TOUT='OUI',MATER=MATE,),
+                  AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF),
+                 );
+
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
                     POUTRE=_F(GROUP_MA='AB',
@@ -54,10 +68,9 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                     ORIENTATION=_F(GROUP_MA='AB',
                                    CARA='ANGL_VRIL',
                                    VALE=0.0,),
-                    AFFE_SECT=_F(GROUP_MA='AB',
-                                 GROUP_MA_SECT='SECT',
-                                 MAILLAGE_SECT=MA_SECT,
-                                 COOR_AXE_POUTRE=(0.0,0.0,),),);
+                      GEOM_FIBRE=GF,
+                      MULTIFIBRE=_F(GROUP_MA='AB',
+                                   GROUP_FIBRE='SECF'),);
 
 CL=AFFE_CHAR_MECA(MODELE=MO,
                   DDL_IMPO=(_F(GROUP_NO='PA',
@@ -88,8 +101,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=MOMENT,
                              FONC_MULT=MOMENT_F,),),
-                   COMP_INCR=_F(RELATION='ELAS',
-                                DEFORMATION='REAC_GEOM',),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',),
                    INCREMENT=_F(LIST_INST=TEMPS,
                                 INST_FIN=tfin,
                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,

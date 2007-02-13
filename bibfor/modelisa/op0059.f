@@ -3,7 +3,7 @@
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,14 @@ C     COMMANDE:  DEFI_COMPOR
       INTEGER NCPRI,NCPRK,NCPRR,JCPRK,JCPRR,JCPRI,NVIT,LMK,IFVOL,IPL
       INTEGER IMONO,NBMONO,INDIK8,NVLOC
 
+      CHARACTER*1 K1BID
+      INTEGER NBOCCI,IDGF,IBID,NBG,NBGMAX,IMG,IG,IG1,JNFG,IAFF,ITOR
+      INTEGER NBVF,NBV,N1,ICP
+      CHARACTER*8 SDGF,K8BID,KGROUP,MATOR
+      CHARACTER*16 NOMREL,ALGO1D,DEFO
+      CHARACTER*24 VNBFIG,RNOMGF,VALK(2)
+      LOGICAL EXI1D,EXIST,GETEXM
+
 C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON / IVARJE / ZI(1)
@@ -50,6 +58,7 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM
 
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
@@ -58,6 +67,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CALL GETRES(COMPOR,TYPE,OPER)
       CALL GETFAC('MONOCRISTAL',NBOCCM)
       CALL GETFAC('POLYCRISTAL',NBOCCP)
+      CALL GETFAC('MULTIFIBRE',NBOCCI)
 
       IF (NBOCCM.GT.0) THEN
          COMDES='&&OP0059.TABLETX'
@@ -269,6 +279,92 @@ C         NOMBRE DE VAR INT TOTAL + 8 (TENSEUR B OU EVP + NORME+INDIC)
          ZI(IPI-1+NCPRI)=NVLOC
          ZK16(IPK)=LOCA
 
+C  MULTIFIBRE
+C organisation de CPRK :
+C      On ne stocke les noms des groupes, materiau, relation, algo,
+C      defo et nb de fibre pour chaque groupe
+
+      ELSEIF(NBOCCI.GT.0)THEN
+C on recupere les renseignements dans la SD_GROUP_FIBRE :
+C noms de tous les groupes, nb maxi de groupes, nb de fibres par groupe
+        NBVF=0
+        CALL GETVID(' ','GEOM_FIBRE',0,1,1,SDGF,IBID)
+        VNBFIG = SDGF//'.NB_FIBRE_GROUPE'
+        RNOMGF = SDGF//'.NOMS_GROUPES'
+        CALL JEVEUO(VNBFIG,'L',JNFG)
+        CALL JELIRA(VNBFIG,'LONMAX',NBGMAX,K1BID)
+        CALL WKVECT(COMPOR//'.CPRK','G V K16',6*NBGMAX+1,IMK)
+        CALL WKVECT('&&OP0059.NOMS_GROUPES', 'V V K8',NBGMAX,IMG)
+        CALL WKVECT('&&OP0059.VERIF_AFFECT', 'V V I',NBGMAX,IAFF)
+        DO 50 IG=1,NBGMAX
+           ZI(IAFF-1+IG)=0
+ 50     CONTINUE
+        DO 25 IOCC=1,NBOCCI
+          CALL GETVTX('MULTIFIBRE','GROUP_FIBRE',IOCC,1,0,K8BID,NBG)
+          NBG=-NBG
+          CALL GETVTX('MULTIFIBRE','GROUP_FIBRE',IOCC,1,NBG,ZK8(IMG),
+     &                   IBID)
+          CALL GETVID('MULTIFIBRE','MATER',IOCC,1,1,MATERI,IBID)
+          CALL GETVTX('MULTIFIBRE','RELATION',IOCC,1,1,NOMREL,IBID)
+          CALL GETVIS('MULTIFIBRE',NOMREL,IOCC,1,1,NBV,IBID)
+          EXI1D = GETEXM('MULTIFIBRE','ALGO_1D')
+          IF (EXI1D) THEN
+             CALL GETVTX('MULTIFIBRE','ALGO_1D',IOCC,1,1,ALGO1D,IBID)
+             IF (ALGO1D.EQ.'DEBORST') THEN
+                 NBV = NBV + 4
+             ENDIF
+          END IF
+          EXIST = GETEXM('MULTIFIBRE','DEFORMATION')
+          IF (EXIST) THEN
+            CALL GETVTX('MULTIFIBRE','DEFORMATION',IOCC,1,1,DEFO,IBID)
+          END IF
+        
+          DO 27 IG=1,NBG
+C numero correspondant au nom
+            CALL JENONU(JEXNOM(RNOMGF,ZK8(IMG+IG-1)),IG1)
+            IF(IG1.EQ.0)THEN
+              CALL U2MESK('F','MODELISA8_8',1,ZK8(IMG+IG-1))
+            ENDIF
+            ICP=IMK-1+(IG1-1)*6
+            ZK16(ICP+1  )=ZK8(IMG+IG-1)
+            ZK16(ICP+2)=MATERI
+            ZK16(ICP+3)=NOMREL
+            IF (EXI1D) THEN
+               ZK16(ICP+4)=ALGO1D
+            ELSE
+               ZK16(ICP+4)='ANALYTIQUE'
+            ENDIF
+            IF (EXIST) THEN
+               ZK16(ICP+5)=DEFO
+            ELSE
+               ZK16(ICP+5)='PETIT'
+            ENDIF
+            WRITE(ZK16(ICP+6),'(I16)')ZI(JNFG-1+IG1)
+            ZI(IAFF-1+IG1)=1
+ 27       CONTINUE
+C on met à jour le nombre de variables internes maxi
+          NBVF=MAX(NBVF,NBV)
+ 25     CONTINUE
+C Verif tout affecte au moins une fois
+C On marque par VIDE les groupes non affectes
+        DO 51 IG=1,NBGMAX
+          IF(ZI(IAFF-1+IG).EQ.0)THEN
+            CALL JENUNO(JEXNUM(RNOMGF,IG),KGROUP)
+            ICP=IMK-1+(IG-1)*6
+            ZK16(ICP+1  )=KGROUP
+            ZK16(ICP+2)='VIDE'
+          ENDIF
+ 51     CONTINUE
+C On recupere le nom du materiau pour la torsion et on le met à la fin
+        CALL GETVID(' ','MATER_SECT',0,1,1,MATOR,IBID)
+        ZK16(IMK-1+NBGMAX*6+1)=MATOR
+
+C type 3 = multifibre
+C on met le nombre de groupes mais plus vraiment utile maintenant
+        CALL WKVECT(COMPOR//'.CPRI', 'G V I',3,IMI)
+        ZI(IMI)=3
+        ZI(IMI+1)=NBVF
+        ZI(IMI+2)=NBGMAX
       ENDIF
 
 C FIN ------------------------------------------------------------------

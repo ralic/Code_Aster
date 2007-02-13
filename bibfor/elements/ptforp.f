@@ -8,7 +8,7 @@
       REAL*8            A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +57,9 @@ C
       INTEGER      IFCX,I,J,NNOC,NCC,LX,IORIEN,IDEPLA,IDEPLP,LMATE,LPESA
       INTEGER      LFORC,ITEMPS,NBPAR,IER,IRET,ICOER,ICOEC,IRETR,IRETC
       CHARACTER*8  NOMPAV(1)
-      REAL*8       VALPAV(1),FCX,VITE2,VP(3),ANGLE(3)
+      REAL*8       VALPAV(1),FCX,VITE2,VP(3),ANGLE(3),CASECT(6)
       LOGICAL      OKVENT
+      REAL*8  DIMAG,DDOT,R8MIEM
 C     ------------------------------------------------------------------
       DATA         NOMPAR/'X','Y','Z','INST'/
       DATA         NOMPAV/'VITE'/
@@ -123,19 +124,33 @@ C
       IF ( OPTION.EQ.'CHAR_MECA_PESA_R') THEN
 C
          CALL JEVECH('PMATERC','L',LMATE)
-         IF ( IST .EQ. 1 ) THEN
-            CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
-     &                              'RHO',RHO,CODRET, 'FM' )
+         CALL JEVECH('PPESANR','L',LPESA)
+         IF(NOMTE(1:13).EQ.'MECA_POU_D_EM')THEN
+            IF (IST.EQ.1)THEN
+              CALL PMFITX(ZI(LMATE),2,CASECT,R8BID)
+            ELSE
+              CALL PMFITX(ZI(LMATE),3,CASECT,R8BID)
+            ENDIF
+            RHO=CASECT(1)
+            COEF1=1.D0
+            COEF2=1.D0
          ELSE
-            CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
-     &                              'RHO',RHO,CODRET, BL2 )
-            IF (CODRET.NE.'OK' ) RHO = ZERO
+           IF ( IST .EQ. 1 ) THEN
+             CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
+     +                              'RHO',RHO,CODRET, 'FM' )
+           ELSE
+             CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
+     +                              'RHO',RHO,CODRET, BL2 )
+             IF (CODRET.NE.'OK' ) RHO = ZERO
+           ENDIF
+C          ---A CAUSE DES CHARGEMENTS VARIABLE ---
+           COEF1 = A
+           COEF2 = A2
          ENDIF
 C
-         CALL JEVECH('PPESANR','L',LPESA)
          DO 20 I=1,3
-             Q(I)   = RHO *  ZR(LPESA) * ZR(LPESA+I)
-             Q(I+6) = RHO *  ZR(LPESA) * ZR(LPESA+I)
+           Q(I)   = RHO *  ZR(LPESA) * ZR(LPESA+I)
+           Q(I+6) = RHO *  ZR(LPESA) * ZR(LPESA+I)
 20       CONTINUE
 C
 C        ---UN CAS DE CHARGE DE PESANTEUR SE PASSE EN REPERE GLOBAL ---
@@ -146,10 +161,6 @@ C        --- PASSAGE REPERE LOCAL DU VECTEUR FORCE ---
          ELSE
             CALL UTPVGL ( NNO, NC, PGL, Q(1), QQ(1) )
          ENDIF
-C
-C        ---A CAUSE DES CHARGEMENTS VARIABLE ---
-         COEF1 = A
-         COEF2 = A2
 C
          GLOBAL = .TRUE.
 C

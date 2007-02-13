@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -736,7 +736,7 @@ C           --- TRAITEMENT DE EVOL_NOLI ---
 
 C               --- CALCUL DES MATRICES ELEMENTAIRES DE MASSE
                   CALL MEMAM2(OPTIO2,MODELE,NBCHAR,ZK8(ICHAR),MATER,
-     &                 CARAC,EXITIM,TIME,CHACCE,VRENO,'V',LIGREL)
+     &                 CARAC,COMPOR,EXITIM,TIME,CHACCE,VRENO,'V',LIGREL)
 
 C               --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
                   CALL ASASVE(VRENO,NUME,'R',VARENO)

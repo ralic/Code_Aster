@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -337,7 +337,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                              NOM_VARI =SIMP(statut='o',typ='TXM',min= 1,max=1,fr="nom de la variable à extraire",
                          into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",
                                "SEUIL_HYD","IND_HYD","PCOHE","COMP_ROC","SEUIL_ISO","ANG_DEV","X11","X22","X33","X12","X13","X23",
-                               "DIST_DEV","DEV_SUR_CRIT","DIST_ISO","NB_ITER","ARRET","NB_REDE","SIGNE"),),
+                               "DIST_DEV","DEV_SUR_CRIT","DIST_ISO","NB_ITER","ARRET","NB_REDE","SIGNE",
+                               "RDEV_1","RDEV_2","RDEV_3","RISO","EPSIVPLA","IND_1","IND_2","IND_3","IND_4",),),
                             ),
                EXCIT           =FACT(statut='f',max='**',
                                       regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
@@ -392,7 +393,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                    NOM_VARI =SIMP(statut='o',typ='TXM',min= 1,max=1,fr="nom de la variable à extraire",
                          into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",
                                "SEUIL_HYD","IND_HYD","PCOHE","COMP_ROC","SEUIL_ISO","ANG_DEV","X11","X22","X33","X12","X13","X23",
-                               "DIST_DEV","DEV_SUR_CRIT","DIST_ISO","NB_ITER","ARRET","NB_REDE","SIGNE"),),
+                               "DIST_DEV","DEV_SUR_CRIT","DIST_ISO","NB_ITER","ARRET","NB_REDE","SIGNE",
+                               "RDEV_1","RDEV_2","RDEV_3","RISO","EPSIVPLA","IND_1","IND_2","IND_3","IND_4"),),
                             ),
                            ),
                               

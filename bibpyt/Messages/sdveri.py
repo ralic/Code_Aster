@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sdveri Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,6 +205,12 @@ cata_msg={
 33: _("""
  Erreur de programmation :
  Type de spectre incorrect
+"""),
+
+34: _("""
+ Erreur de programmation :
+ Il ne faut plus utiliser la routine VERISD.
+ Il faut maintenant utiliser CHEKSD.
 """),
 
 

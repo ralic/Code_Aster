@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai5 Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -283,5 +283,17 @@ cata_msg={
 92: _("""
  Interpolation LOG et complexe en ordonnées sont incompatibles !
 """),
+
+93: _("""
+ Le stockage dans la SD résultat du modèle, du champ materiau 
+ et des caractéristiques élémentaires  n'est pas possible 
+ pour une SD résultat de type %(k1)s. 
+"""),
+
+94: _("""
+ Le stockage de la SD charge dans la SD résultat n'est pas
+ possible pour une SD résultat de type %(k1)s. 
+"""),
+
 
 }

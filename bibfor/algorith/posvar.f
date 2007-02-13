@@ -4,8 +4,10 @@
       CHARACTER*24 VARI
       CHARACTER*24 VALK(2)
       INTEGER NDIM, NUME
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C ======================================================================
+C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,11 +24,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C=======================================================================
-C=======================================================================
 C --- RECUPERATION DE L ADRESSE DE LA VARIABLE INTERNE NOMMEE
-
-
 C   COMPOR  IN   K16 : COMPORTEMENT
 C   NDIM    IN    I  : DIMENSION DU PROBLEME
 C   VARI    IN   K16 : NOM DE LA VARIABLE INTERNE CHERCHE
@@ -308,7 +306,55 @@ C----- INDICATEUR D ETAT
       ELSE
          NUME=0
       ENDIF
+      
+C-----LA LOI MECANIQUE EST HUJEUX
 
+      IF (MECA(1:6).EQ.'HUJEUX') THEN
+C----- ECROUISSAGE DEVIATOIRE MECANISME 1
+         IF (VARI(1:6).EQ.'RDEV_1') THEN
+            NUME=ADVIME
+            GOTO 9999
+C----- ECROUISSAGE DEVIATOIRE MECANISME 2
+         ELSEIF (VARI(1:6).EQ.'RDEV_2') THEN
+            NUME=ADVIME+1
+            GOTO 9999
+C----- ECROUISSAGE DEVIATOIRE MECANISME 3
+         ELSEIF (VARI(1:6).EQ.'RDEV_3') THEN
+            NUME=ADVIME+2
+            GOTO 9999
+C----- ECROUISSAGE ISOTROPE MECANISME 4
+         ELSEIF (VARI(1:4).EQ.'RISO') THEN
+            NUME=ADVIME+3
+            GOTO 9999
+C----- DEFORMATION PLASTIQUE VOLUMIQUE
+         ELSEIF (VARI(1:8).EQ.'EPSIVPLA') THEN
+            NUME=ADVIME+4
+            GOTO 9999
+C----- INDICATEUR D'ETAT MECANISME 1
+         ELSEIF (VARI(1:5).EQ.'IND_1') THEN
+            NUME=ADVIME+5
+            GOTO 9999
+C----- INDICATEUR D'ETAT MECANISME 2
+         ELSEIF (VARI(1:5).EQ.'IND_2') THEN
+            NUME=ADVIME+6
+            GOTO 9999
+C----- INDICATEUR D'ETAT MECANISME 3
+         ELSEIF (VARI(1:5).EQ.'IND_3') THEN
+            NUME=ADVIME+7
+            GOTO 9999
+C----- INDICATEUR D'ETAT MECANISME 4
+         ELSEIF (VARI(1:5).EQ.'IND_4') THEN
+            NUME=ADVIME+8
+            GOTO 9999
+         ELSE
+            NUME=-1
+            GOTO 9999
+         ENDIF
+         
+      ELSE
+         NUME=0
+      ENDIF
+      
 9999  CONTINUE
 
       IF (NUME.EQ.-1) THEN

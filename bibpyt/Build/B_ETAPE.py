@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_ETAPE Build  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@
 """
 """
 # Modules Python
-import types,string,repr
+import repr
 import traceback
 from os import times
 
@@ -31,10 +31,9 @@ from os import times
 import Noyau.N_FONCTION
 from Noyau.N_utils import prbanner
 from Noyau.N_utils import AsType
-from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_ASSD
+from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_ASSD,N_ENTITE
 from Noyau import N_FACT,N_BLOC,N_SIMP
 from Noyau.N_Exception import AsException
-from Noyau.N_ASSD import ASSD
 import B_utils
 from B_CODE import CODE
 import B_OBJECT
@@ -54,15 +53,11 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
    def set_icmd(self,icmd):
       """
       Demande au jdc un numero de commande unique.
-      Declenche le top de mesure du temps de la commande en cours (attributs 'cpu_user_0' et 'cpu_syst_0').
 
       @param icmd: entier indiquant l'incrément de numero de commande demandé (en général 1)
       """
       if icmd is not None:
           self.icmd=self.jdc.icmd=self.jdc.icmd+icmd
-          #top de mesure du temps pour la commande courante
-          self.cpu_user_0=times()[0]
-          self.cpu_syst_0=times()[1]
       else:
           self.icmd=None
       self.affiche_cmd()
@@ -106,12 +101,12 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
 
       # self ne peut etre qu'un objet de type ETAPE
 
-      nom_cmd=string.ljust(self.definition.nom,8)
+      nom_cmd=self.definition.nom.ljust(8)
       nom_concept=" "
       type_concept=" "
       if self.sd != None:
-        nom_concept=string.ljust(self.sd.get_name(),8)
-        type_concept=string.upper(self.sd.__class__.__name__)
+        nom_concept=self.sd.get_name().ljust(8)
+        type_concept=self.sd.__class__.__name__.upper()
 
       assert(nom_concept!=None),"getres : nom_concept est Vide (None)"
       if CONTEXT.debug :
@@ -129,7 +124,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
       if CONTEXT.debug : prbanner("getfac %s " %(nom_motfac,))
 
-      nomfac=string.strip(nom_motfac)
+      nomfac=nom_motfac.strip()
       taille=0
       for child in self.mc_liste:
           if child.nom == nomfac :
@@ -150,7 +145,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           assert(hasattr(self,'definition'))
           assert(hasattr(self.definition,'entites'))
           if self.definition.entites.has_key(nomfac) :
-                  assert(type(self.definition.entites[nomfac]) == types.InstanceType)
+                  assert isinstance(self.definition.entites[nomfac], N_ENTITE.ENTITE)
                   assert(hasattr(self.definition.entites[nomfac],'statut'))
                   if self.definition.entites[nomfac].statut == 'd' :
                           taille=1
@@ -176,8 +171,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
       if CONTEXT.debug : prbanner("getexm '%s' '%s' "%(nom_motfac,nom_motcle))
 
-      nom_motfac=string.strip(nom_motfac)
-      nom_motcle=string.strip(nom_motcle)
+      nom_motfac=nom_motfac.strip()
+      nom_motcle=nom_motcle.strip()
       assert(nom_motfac!="" or nom_motcle!="")
 
       presence=0
@@ -212,7 +207,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       valeur=self.Traite_value(valeur,"TX")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVTX',nom_motfac,iocc,nom_motcle,valeur)
-         for k in valeur[1] : assert(type(k)==types.StringType)
+         for k in valeur[1] : assert(type(k) == str)
       # il faut prendre en compte le catalogue : 'TXM' --> on retourne la chaine en majuscules,
       # 'TX' --> on la retourne telle qu'elle est
       return valeur
@@ -221,8 +216,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
           Méthode générique pour retourner la valeur de nom_motfac/nom_motcle
       """
-      nom_motfac=string.strip(nom_motfac)
-      nom_motcle=string.strip(nom_motcle)
+      nom_motfac=nom_motfac.strip()
+      nom_motcle=nom_motcle.strip()
 
       valeur=self.get_valeur_motcle(nom_motfac,iocc,nom_motcle)
       if valeur == None:
@@ -287,9 +282,9 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
       # utile pour getvid
 
-      if type(valeur)==types.InstanceType :
+      if isinstance(valeur, N_ASSD.ASSD):
          return valeur.nom
-      elif type(valeur)==types.TupleType :
+      elif type(valeur) == tuple:
          l=[]
          for obj in valeur :
              l.append(self.transforme_valeur_nom(obj))
@@ -315,7 +310,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       for k in tup_avant :
           if isinstance(k,N_ASSD.ASSD):
               k=k.valeur
-          if type(k) in ( types.TupleType ,types.ListType) :
+          if type(k) in (tuple, list) :
               if leType == "C8" and k[0] in ("MP","RI") :
                  # on est en presence d'un complexe isolé
                  list_apres.append( k )
@@ -360,7 +355,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       longueurs=[]
       k=0
       for  chaine in tup[1] :
-          assert(type(chaine)==types.StringType)
+          assert(type(chaine) == str)
           longueurs.append(len(chaine))
           k = k+1
       assert(k==tup[0])
@@ -380,7 +375,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       valeur=self.Traite_value(valeur,"IS")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVIS',nom_motfac,iocc,nom_motcle,valeur)
-         for k in valeur[1] : assert(type(k)==types.IntType),type(k)
+         for k in valeur[1] : assert(type(k) == int), type(k)
       return valeur
 
    def getoper(self):
@@ -394,7 +389,6 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
          Cette methode retourne un reel aleatoire
       """
-
       if self.jdc.alea==None :
       # le generateur n'a pas ete initialise, on l'initialise
          bidon=self.iniran(0)
@@ -418,14 +412,14 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          Cette methode permet d'appeler une formule python depuis le fortran
          Elle évalue les concepts FORMULE
       """
-      nom_param   =map(string.strip,nom_param)
+      nom_param = [p.strip() for p in nom_param]
       if not hasattr(self,"func_dic"):
          self.func_dic={}
 
       if self.func_dic.has_key(nom_fonction):
          objet_sd =self.func_dic[nom_fonction]
       else:
-         objet_sd =self.parent.get_sd_avant_etape(string.strip(nom_fonction),self)
+         objet_sd =self.parent.get_sd_avant_etape(nom_fonction.strip(),self)
          self.func_dic[nom_fonction]=objet_sd
 
       if len(nom_param)!=len(val) :
@@ -442,7 +436,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       except:
            traceback.print_exc()
            print 75*'!'
-           print '! '+string.ljust('Erreur evaluation formule '+objet_sd.nom,72)+'!'
+           print '! ' + ('Erreur evaluation formule '+objet_sd.nom).ljust(72) + '!'
            print 75*'!'
            return None
       return res
@@ -457,7 +451,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       valeur=self.Traite_value(valeur,"R8")
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVR8',nom_motfac,iocc,nom_motcle,valeur)
-         for k in valeur[1] : assert(type(k)==types.FloatType),`k`+" n'est pas un float"
+         for k in valeur[1] : assert(type(k) == float),`k`+" n'est pas un float"
       return valeur
 
    def getvc8(self,nom_motfac,nom_motcle,iocc,iarg,mxval):
@@ -484,8 +478,8 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       """
       if CONTEXT.debug : prbanner("getvid %s %s %d %d %d" %(nom_motfac,nom_motcle,iocc,iarg,mxval))
 
-      nom_motfac=string.strip(nom_motfac)
-      nom_motcle=string.strip(nom_motcle)
+      nom_motfac=nom_motfac.strip()
+      nom_motcle=nom_motcle.strip()
 
       valeur=self.get_valeur_motcle_pour_getvid(nom_motfac,iocc,nom_motcle)
       if valeur == None:
@@ -510,7 +504,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       #XXX est ce IS ou LS ????
       if CONTEXT.debug :
          B_utils.TraceGet( 'GETVLS',nom_motfac,iocc,nom_motcle,valeur)
-         for k in valeur[1] : assert(type(k)==types.IntType)
+         for k in valeur[1] : assert(type(k) == int)
       return valeur
 
    def gettco( self , nom_concept ) :
@@ -520,7 +514,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
           Intention : retourne le type d'un concept a partir de son nom  passe
                 en argument. Cette methode est a l'usage du superviseur Aster
       """
-      no=string.strip(nom_concept)
+      no=nom_concept.strip()
       valeur=None
 
       try :
@@ -536,7 +530,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
                # pour les macros. Il y a aussi ceux de self.sdprods
          assert(objet_sd != None)
          valeur=B_utils.Typast(AsType(objet_sd))
-         valeur=string.upper(valeur)
+         valeur=valeur.upper()
       except :
          raise AsException("Probleme dans gettco: %s, %s ; Objet introuvable!" % (self.nom,nom_concept))
          valeur=' '
@@ -562,7 +556,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
         val=eval(nom,self.jdc.const_context,self.parent.g_context)
         if val is None :
            return 0,0
-        if isinstance(val,ASSD):
+        if isinstance(val, N_ASSD.ASSD):
            return self.getsdval(val)
         if val is not None:
            return 1,val
@@ -601,7 +595,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
            typ    : liste des types des sous mots cles
            nbarg  : nombre total d arguments du mot cle facteur(a priori ne doit etre utilise que par le superviseur)
       """
-      motfac=string.strip(motfac)
+      motfac=motfac.strip()
       if motfac!='' :
          mcfact=self.get_mocle(motfac)
          if mcfact==None :
@@ -616,16 +610,16 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       for name in dico_mcsimp.keys() :
          if dico_mcsimp[name] != None :
             lmc.append(name)
-            if type(dico_mcsimp[name]) in (types.ListType,types.TupleType) : obj=dico_mcsimp[name][0]
-            else                                                           : obj=dico_mcsimp[name]
-            if type(obj)==types.InstanceType :
-               lty.append(obj.__class__.__name__)
-            if isinstance(obj,complex)           : lty.append('C8')
-            if type(obj)==types.FloatType        : lty.append('R8')
-            if type(obj)==types.StringType       :
-                if string.strip(obj) in ('RI','MP') : lty.append('C8')
-                else                                : lty.append('TX')
-            if type(obj) in (types.IntType,types.LongType)      :
+            if type(dico_mcsimp[name]) in (list, tuple) : obj=dico_mcsimp[name][0]
+            else                                        : obj=dico_mcsimp[name]
+            if isinstance(obj, (N_ASSD.ASSD, N_ENTITE.ENTITE, N_MCLIST.MCList)):
+               lty.append(type(obj).__name__)
+            if isinstance(obj,complex)                  : lty.append('C8')
+            if type(obj) == float                       : lty.append('R8')
+            if type(obj) == str:
+                if obj.strip() in ('RI','MP')           : lty.append('C8')
+                else                                    : lty.append('TX')
+            if type(obj) in (int, long)      :
             ### on gere le cas d un reel entre par l utilisateur sans le '.' distinctif d un entier
             ### pour ca on teste la presence de R8 dans la liste des types attendus cote catalogue
                                                child=mcfact.definition.get_entite(name)
@@ -675,10 +669,10 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
             Retourner l indicateur d existence du concept vid avant
             la commande en cours
       """
-      objet_sd = self.parent.get_sd_avant_etape(string.strip(resul),self)
+      objet_sd = self.parent.get_sd_avant_etape(resul.strip(),self)
       if not objet_sd:
             ret=0
-      elif string.upper(B_utils.Typast(AsType(objet_sd))) == string.strip(concep):
+      elif B_utils.Typast(AsType(objet_sd)).upper() == concep.strip():
             ret=1
       else:
             ret=-1

@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 13/02/2007   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -322,27 +322,14 @@ cata_msg={
  attention, mode instable
 """),
 
-76: _("""
- schema inconnu
-"""),
 
-77: _("""
- la liste d'instants fournie ne respecte pas la condition de stabilite.
-"""),
 
-78: _("""
- la condition de stabilite n'a pas pu etre calculee pour tous les elements. elle peut etre trop grande.
-"""),
 
-79: _("""
-  -> La condition de stabilité n'a pu etre calculée pour aucun élément.
-  -> Risque & Conseil :
-     Vous prenez le risque de sortir du cadre de la stabilité conditionnelle du schéma de temps explicite. Vérifiez bien
-     que vos éléments finis ont une taille et un matériau (module de Young) compatibles avec le respect de la condition 
-     de Courant vis-à-vis du pas de temps que vous avez imposé (temps de propagation des ondes dans la maille, voir 
-     documentation). Si c'est le cas, lever l'arret fatal en utilisant l'option "STOP_CFL", à vos risques et périls 
-     (risques de résultats faux).
-"""),
+
+
+
+
+
 
 80: _("""
  pour utiliser le comportement "hydr" il faut surcharger le code en "mode developpement" avec les routines "permea" et "satura".

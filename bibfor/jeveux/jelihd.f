@@ -1,6 +1,6 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF JEVEUX  DATE 12/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,8 +151,8 @@ C ----------------------------------------------------------------------
       INTEGER          LIDBAS      , LIDEFF
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*8      CIDBAS(LIDBAS)
-      CHARACTER*24     VALK(3)
       CHARACTER*32     NOMSYS,D32
+      CHARACTER*24     VALK(3)
       INTEGER          KAT(LIDBAS) , LSO(LIDBAS) , LGBL
       LOGICAL          LEXP
       DATA CIDBAS  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,
@@ -272,16 +272,15 @@ C
       CALL JJECRS (KAT(1),IC,1,0,'E',IMARQ(JMARQ(IC)+2*1-1))
       CALL JJHRSV (IDTS,NCAR,KAT(1))
 C
+      NBENRG(IC) = MIN ( LFIC/(LONGBL(IC)*LOIS) , NBLMAX(IC) )
+      NBEX   = NBLMAX(IC)/NBENRG(IC)+1
       IF ( LCRA ) THEN
-       NBENRG(IC) = MIN ( LFIC/(LONGBL(IC)*LOIS) , NBLMAX(IC) )
-       NBEX   = NBLMAX(IC)/NBENRG(IC)+1
        LONIND = NBEX*(NBENRG(IC)/512+1)*512 * LOIS
        CALL JJALLS (LONIND,'V','I',LOIS,Z,INDEF,IADRS,KINDEF(IC))
        KAT(17) = KINDEF(IC)
        JINDEF(IC) = IADRS
        CALL JJECRS (KAT(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
       ELSE
-        NBENRG(IC) = NBLMAX(IC)
         JINDEF(IC) = 1
       ENDIF
 C

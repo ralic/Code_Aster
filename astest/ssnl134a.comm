@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,19 +48,31 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=720.0,
                     ECRO_LINE=_F(SY=10.44,
                       D_SIGM_EPSI=72.0,),);
 
+GF=DEFI_GEOM_FIBRE(
+   SECTION =_F(GROUP_FIBRE='SECF',
+             GROUP_MA_SECT='SECT',
+             MAILLAGE_SECT=M_SECT,
+            COOR_AXE_POUTRE=(0.,0.,),),)
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=ACIER,
+                                 RELATION='VMIS_ISOT_LINE',DEFORMATION='REAC_GEOM',),
+                     )
+
 MATER=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(GROUP_MA='OMEGA',
-                            MATER=ACIER,),);
+                    AFFE=_F(GROUP_MA='OMEGA',MATER=ACIER,),
+                  AFFE_COMPOR=_F(GROUP_MA='OMEGA',COMPOR=COMPF),
+                    );
 
 CARACT=AFFE_CARA_ELEM(MODELE=MOD_TGM,
                       POUTRE=_F(GROUP_MA='OMEGA',
                                 SECTION='GENERALE',
                                 CARA=('A','IY','IZ','AY','AZ','JX','JG','IYR2','IZR2',),
                                 VALE=(6.0,4.5,2.0,1.2,1.2,8.0,0.0,0.0,0.0,),),
-                      AFFE_SECT=_F(GROUP_MA='OMEGA',
-                                   GROUP_MA_SECT='SECT',
-                                   MAILLAGE_SECT=M_SECT,
-                                   COOR_AXE_POUTRE=(0.0,0.0,),),);
+                      GEOM_FIBRE=GF,
+                      MULTIFIBRE=_F(GROUP_MA='OMEGA',
+                                   GROUP_FIBRE='SECF'),);
+
 #Conditions aux limites (bi-encastrement) et chargement
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MOD_TGM,
@@ -95,8 +107,8 @@ RESO2=STAT_NON_LINE(MODELE=MOD_TGM,
                     EXCIT=(_F(CHARGE=LIAISON,),
                            _F(CHARGE=FORCE,
                               TYPE_CHARGE='FIXE_PILO',),),
-                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                 DEFORMATION='REAC_GEOM',),
+                    COMP_INCR=_F(RELATION='MULTIFIBRE',
+                                 ),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=tfin,
                                  SUBD_METHODE='UNIFORME', SUBD_PAS=4,

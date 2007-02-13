@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/11/2006   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,17 +51,17 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER       MXPARA, IBID, IER, LG, ICOMPT, IRET, NBFAC, IOCC,
      &              NUMINI, NUMFIN, N0, N1, N2, N3, NIS, NBINST, IP,
-     &              NBVAL, NUME, IADESC, IGD, L, I, J, JC,
+     &              NBVAL, NUME, IADESC, IGD, L, I, J, JC, JCHAM,
      &              JCOOR, IAD, JINST, JVAL, JNOMF, IAREFE,
      &              JDEEQ, LPROL, NBPF, INO, NBV
       PARAMETER   ( MXPARA = 10 )
       INTEGER       RSMXNO, NBTROU,JCPT,NBR,IVMX,K
-      REAL*8        VALPU(MXPARA), RBID, TPS, PREC
+      REAL*8        VALPU(MXPARA), RBID, TPS, PREC, VALR(3)
       COMPLEX*16    CBID
       LOGICAL       LNCAS, IDENSD, LFONC
       CHARACTER*6   TYPEGD
       CHARACTER*8   K8B, RESU, NOMF, NOMA, TYPMOD, CRITER
-      CHARACTER*8   MODELE, MATERI, CARELE, BLAN8
+      CHARACTER*8   MODELE, MATERI, CARELE, BLAN8, VALK(2)
       CHARACTER*16  NOMP(MXPARA), TYPE, OPER, ACCES, K16B
       CHARACTER*19  NOMCH , CHAMP, CHAMP1, LISTR8, EXCIT, PCHN1
       CHARACTER*24  K24, LINST, NSYMB, TYPRES, LCPT,
@@ -98,6 +98,8 @@ C
       ICOMPT = -1
       PROFCH = ' '
 C
+      CALL WKVECT('&&CRTYPE.CHAMPS','V V K8',NBFAC,JCHAM)
+
       DO 100 IOCC = 1,NBFAC
 C
         MODELE = BLAN8
@@ -110,6 +112,7 @@ C
         CALL GETVID ('AFFE', 'CARA_ELEM' , IOCC,1,1, CARELE, N1 )
 C
         CALL GETVID ( 'AFFE', 'CHAM_GD'  , IOCC,1,1, CHAMP , N1 )
+        ZK8(JCHAM+IOCC-1)=CHAMP(1:8)
 C
         CALL DISMOI ('F','TYPE_SUPERVIS',CHAMP,'CHAMP',IBID,K24 ,IER)
         CALL DISMOI ('F','NOM_MAILLA'   ,CHAMP,'CHAMP',IBID,NOMA,IER)
@@ -295,11 +298,13 @@ C
           TPS    = ZR(JINST+ J - 1)
           CALL RSEXCH ( RESU, NSYMB, ICOMPT, NOMCH, IRET )
           IF ( IRET .EQ. 0 ) THEN
-             CALL UTDEBM('A',OPER,'*** CHAMP DEJA EXISTANT ***')
-             CALL UTIMPK('L','IL SERA REMPLACE PAR LE CHAMP',1,
-     &                                                     CHAMP(1:8) )
-             CALL UTIMPR('S',' POUR L''INSTANT ',1,TPS)
-             CALL UTFINM()
+            CALL RSADPA ( RESU,'L',1,'INST',ICOMPT,0,IAD,K8B)
+            VALK(1)=ZK8(JCHAM+ICOMPT-1)
+            VALK(2)=CHAMP(1:8)
+            VALR(1)=ZR(IAD)
+            VALR(2)=TPS
+            VALR(3)=PREC
+            CALL U2MESG ('A','ALGORITH11_87',2,VALK,0,0,3,VALR)
           ELSEIF ( IRET .EQ. 110 ) THEN
             CALL RSAGSD ( RESU, 0 )
             CALL RSEXCH ( RESU, NSYMB, ICOMPT, NOMCH, IRET )
@@ -380,6 +385,8 @@ C           ----------------------------------
         CALL JEDETR ( LCPT )
 C
  100  CONTINUE
+
+      CALL JEDETR('&&CRTYPE.CHAMPS')
 C     ------------------------------------------------------------------
       CALL JEDEMA()
       END

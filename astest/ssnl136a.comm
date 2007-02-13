@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE GRANDS DEPLACEMENTS DE L'ARC A ANGLE D'OUVERTURE 45 DEGRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,9 +42,22 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 ACIER=DEFI_MATERIAU(ELAS=_F(E=1.0E+7,
                             NU=0.,),);
 
+GF=DEFI_GEOM_FIBRE(
+   SECTION =_F(GROUP_FIBRE='SECF',
+             GROUP_MA_SECT='SECT',
+             MAILLAGE_SECT=MA_SECT,
+            COOR_AXE_POUTRE=(0.,0.,),),)
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=ACIER,
+                                 RELATION='ELAS',DEFORMATION='REAC_GEOM',),
+                     )
+
+
 MAT=AFFE_MATERIAU(MAILLAGE=MA,
-                  AFFE=_F(TOUT='OUI',
-                          MATER=ACIER,),);
+                  AFFE=_F(TOUT='OUI',MATER=ACIER,),
+                  AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF),
+                 );
 
 CARA=AFFE_CARA_ELEM(MODELE=MO,
                     POUTRE=_F(GROUP_MA='AB',
@@ -54,10 +67,10 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                     ORIENTATION=_F(GROUP_MA='AB',
                                    CARA='ANGL_VRIL',
                                    VALE=0.,),
-                    AFFE_SECT=_F(GROUP_MA='AB',
-                                 GROUP_MA_SECT='SECT',
-                                 MAILLAGE_SECT=MA_SECT,
-                                 COOR_AXE_POUTRE=(0.,0.,),),);
+                    GEOM_FIBRE=GF,
+                    MULTIFIBRE=_F(GROUP_MA='AB',
+                                 GROUP_FIBRE='SECF',),);
+
 #0.3333333333333,
 #0.0069444444444,),),
 
@@ -87,8 +100,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CL,),
                           _F(CHARGE=FORCE,
                              FONC_MULT=F_FORCE,),),
-                   COMP_INCR=_F(RELATION='ELAS',
-                                DEFORMATION='REAC_GEOM',),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE'),
                    INCREMENT=_F(LIST_INST=TEMPS,
                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=1.0E-6,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/12/2006   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 #
 # TITRE VALIDATION DE POU_D_TGM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -69,20 +69,32 @@ MODE=AFFE_MODELE(MAILLAGE=MAILL1,
 
 MPOUTRE=DEFI_MATERIAU(ELAS=_F(E=6.8948E3,NU=0.33333,RHO=7800.,),);
 
+GF=DEFI_GEOM_FIBRE(
+   SECTION =_F(GROUP_FIBRE='SECF',
+             GROUP_MA_SECT='SECTION',
+             MAILLAGE_SECT=MA_SECT,
+            COOR_AXE_POUTRE=(0.,0.,),),)
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MPOUTRE,
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MPOUTRE,
+                                 RELATION='ELAS',DEFORMATION='REAC_GEOM',),
+                     )
+
+
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
-                 AFFE=_F(GROUP_MA=('POU1','POU2'),
-                         MATER=MPOUTRE,),);
+                  AFFE=_F(GROUP_MA=('POU1','POU2'),MATER=MPOUTRE),
+                  AFFE_COMPOR=_F(GROUP_MA=('POU1','POU2'),COMPOR=COMPF),
+                 );
                          
-CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,INFO=2,
+CHAMPCAR=AFFE_CARA_ELEM(MODELE=MODE,INFO=1,
                       POUTRE=_F(GROUP_MA=('POU1','POU2'),
                                 SECTION='GENERALE',
                                 CARA=('A','IY','IZ','AY','AZ','JX','JG','IYR2','IZR2',),
                                 VALE=(645.16,5.54975E3,2.167872E5,1.2,1.2,
                                       5.08,0.0,0.0,0.),),
-                      AFFE_SECT=_F(GROUP_MA=('POU1','POU2'),
-                                   GROUP_MA_SECT='SECTION',
-                                   MAILLAGE_SECT=MA_SECT,
-                                   COOR_AXE_POUTRE=(0.0,0.0,),),);
+                      GEOM_FIBRE=GF,
+                      MULTIFIBRE=_F(GROUP_MA=('POU1','POU2'),
+                                   GROUP_FIBRE='SECF',),);
 
 # ---------- CONDITIONS AUX LIMITES --------------
 
@@ -138,8 +150,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                           FONC_MULT=RAMPE,),
                        _F(CHARGE=CHLAG,),
                       ),
-                COMP_INCR=_F(RELATION='ELAS',
-                             DEFORMATION='REAC_GEOM',),
+                COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
                              SUBD_METHODE='UNIFORME',
@@ -249,9 +260,9 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
                        _F(CHARGE=CHCON,),
-                      ),SOLVEUR=_F(RENUM='MDA'),
-                COMP_INCR=_F(RELATION='ELAS',
-                             DEFORMATION='REAC_GEOM',),
+                      ),
+                SOLVEUR=_F(RENUM='MDA'),
+                COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
                              SUBD_METHODE='UNIFORME',
@@ -357,8 +368,7 @@ USIG=STAT_NON_LINE(MODELE=MODE,
                           FONC_MULT=RAMPE,),
                        _F(CHARGE=CHSIG,),
                       ),
-                COMP_INCR=_F(RELATION='ELAS',
-                             DEFORMATION='REAC_GEOM',),
+                COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,
 #                             INST_FIN=1.,
                              SUBD_METHODE='UNIFORME',

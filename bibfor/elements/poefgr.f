@@ -5,7 +5,7 @@
 C TOLE CRP_6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 UL(12),FE(12),MLV(78),MLC(12,12),FEI(12)
       REAL*8 PGL(3,3),PGL1(3,3),PGL2(3,3)
       CHARACTER*24 SUROPT
+      REAL*8 TRIGOM
 C     ------------------------------------------------------------------
       ZERO = 0.D0
       DEUX = 2.D0
@@ -73,7 +74,7 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
         CALL JEVECH('PCAARPO','L',LRCOU)
         RAD = ZR(LRCOU)
         ANGARC = ZR(LRCOU+1)
-        ANGS2 = ASIN(XL/ (DEUX*RAD))
+        ANGS2 = TRIGOM('ASIN',XL/ (DEUX*RAD))
         XL = RAD*ANGS2*DEUX
       END IF
 
@@ -172,7 +173,12 @@ C      IF ( RHO .NE. ZERO ) THEN
         IF (KANL.EQ.2) THEN
           CALL U2MESK('A','ELEMENTS2_44',1,SUROPT)
         END IF
-        CALL POMASS(NOMTE,E,XNU,RHO,KANL,MLV)
+        IF (NOMTE(1:13).EQ.'MECA_POU_D_EM') THEN
+          CALL JEVECH ( 'PMATERC', 'L', LMATER )
+          CALL PMFMAS(NOMTE,ZI(LMATER),KANL,MLV)
+        ELSE
+          CALL POMASS(NOMTE,E,XNU,RHO,KANL,MLV)
+        ENDIF
         CALL VECMA(MLV,78,MLC,12)
         CALL JEVECH('PCHDYNR','L',LDYNA)
         IF (ITYPE.EQ.10) THEN

@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_SENSIBILITE_DERIVATION Build  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,8 @@
 """
 
 """
-import types
+
+from Noyau.N_ASSD import ASSD
 
 class SENSIBILITE_DERIVATION :
    """
@@ -390,7 +391,7 @@ class SENSIBILITE_DERIVATION :
 #
 #      1. La valeur est un reel isolé : sa dérivée est le réel associé
 #
-       if type(mcsimp.valeur) == types.FloatType :
+       if type(mcsimp.valeur) == float:
          if self.reel is not None :
            mcsimp.valeur = self.reel
 #
@@ -402,18 +403,18 @@ class SENSIBILITE_DERIVATION :
 #
 #      3. La valeur est un objet : sa dérivée est la fonction nulle
 #
-       elif type(mcsimp.valeur) == types.InstanceType :
+       elif isinstance(mcsimp.valeur, ASSD):
          if isinstance(mcsimp.valeur,new_jdc.g_context['fonction_sdaster']) :
            mcsimp.valeur = self.fonction_0["ps"]
 #
 #      4. La valeur est une liste ou un tuple : on applique les étapes 1, 2 et 3 à chacun
 #         de ses éléments et on reconstitue une liste ou un tuple avec les dérivés.
 #
-       elif type(mcsimp.valeur) in (types.ListType,types.TupleType) :
+       elif type(mcsimp.valeur) in (list, tuple) :
          aux = [ ]
          for val in mcsimp.valeur :
 ###         print '........ val = ',val, " de type ",type(val)
-           if type(val) == types.FloatType :
+           if type(val) == float:
              if self.reel is not None :
                val_nouv = self.reel
              else :
@@ -421,7 +422,7 @@ class SENSIBILITE_DERIVATION :
            elif val in self.d_nom_s_c.keys() :
              mcf_mcs_val_derive = (mcfact,mcsimp,mcsimp.valeur)
              val_nouv = self.d_nom_s_c[val]
-           elif type(val) == types.InstanceType :
+           elif isinstance(val, ASSD):
 ###         print '........ val.nom =", val.nom
              if isinstance(val,new_jdc.g_context['fonction_sdaster']) :
                val_nouv = self.fonction_0["ps"]
@@ -430,7 +431,7 @@ class SENSIBILITE_DERIVATION :
            else :
              val_nouv = val
            aux.append(val_nouv)
-         if type(mcsimp.valeur) is types.ListType :
+         if type(mcsimp.valeur) is list:
            mcsimp.valeur = aux
          else :
            mcsimp.valeur = tuple(aux)
@@ -555,7 +556,7 @@ class SENSIBILITE_DERIVATION :
              mcf_aux = mot_cle[0].nom
            else :
              mcf_aux = " "
-           if type(mot_cle[2]) in (types.ListType,types.TupleType) :
+           if type(mot_cle[2]) in (list, tuple) :
              laux = mot_cle[2]
            else :
              laux = [mot_cle[2]]

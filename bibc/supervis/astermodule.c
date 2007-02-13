@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS */
+/* MODIF astermodule supervis  DATE 13/02/2007   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -24,9 +24,9 @@
 #include "Python.h"
 #include <math.h>
 #include <ctype.h>
-
+#include <string.h>
 #include "aster.h"
-
+#include <Numeric/arrayobject.h>
 
 /* --- declarations des interfaces des fonctions de ce fichier --- */
 
@@ -207,7 +207,7 @@ static char *NomCas          = "        ";
  */
 /* exceptions de base */
 static PyObject *AsterError = (PyObject*)0 ; /* Ce type d'exception est levee sur appel de XFINI avec le parametre 21 */
-static PyObject *FatalError = (PyObject*)0 ; /* Ce type d'exception (derive de AsterError) est levee sur appel de XFINI avec le parametre 20 */
+static PyObject *FatalError = (PyObject*)0 ; /* Ce type d'exception est levee sur appel de XFINI avec le parametre 20 */
 
 /* exceptions particularisées */
 static PyObject *NonConvergenceError = (PyObject*)0 ;           /* Exception non convergence */
@@ -220,9 +220,10 @@ static PyObject *ArretCPUError = (PyObject*)0 ;                 /* Exception man
 
 void initExceptions(PyObject *dict)
 {
+        /* type d'exception ERREUR <S> */
         AsterError = PyErr_NewException("aster.error", NULL, NULL);
         if(AsterError != NULL) PyDict_SetItemString(dict, "error", AsterError);
-        /* type d'exception Fatale derivee de AsterError */
+        /* type d'exception ERREUR <F> */
         FatalError = PyErr_NewException("aster.FatalError", NULL, NULL);
         if(FatalError != NULL) PyDict_SetItemString(dict, "FatalError", FatalError);
 
@@ -1073,6 +1074,29 @@ void DEFSSSPSPPPP(UTPRIN,utprin,_IN char *typmess,_IN int ltype,_IN char *unite,
         Py_DECREF(tup_valk);
         Py_DECREF(tup_vali);
         Py_DECREF(tup_valr);
+        Py_DECREF(res);
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSSP(CHEKSD,cheksd,_IN char *nomsd,_IN int lnom, _IN char *typsd,_IN int ltyp,
+                         _OUT INTEGER *iret)
+{
+   /*
+      Interface Fortran/C pour vérifier que la structure de données `nomsd`
+      est conforme au type `typsd`.
+      
+      Exemple d'appel :
+         CALL CHEKSD('MA', 'sd_maillage', IRET)
+   */
+   PyObject *res;
+   
+   res = PyObject_CallMethod(static_module,"checksd","s#s#",nomsd,lnom,typsd,ltyp);
+   if (!res) {
+      MYABORT("erreur lors de l'appel à la méthode CHECKSD");
+   }
+   *iret = (INTEGER)PyLong_AsLong(res);
+   
+   Py_DECREF(res);
 }
 
 /* ------------------------------------------------------------------ */
@@ -3232,6 +3256,103 @@ return PyInt_FromLong(ier);
 
 
 /* ------------------------------------------------------------------ */
+#define CALL_JELST3(a,b,c,d)  CALLSSPP(JELST3,jelst3,a,b,c,d)
+DEFSSPP(JELST3,jelst3, char* base, int base_len, char*dest, int dest_len,
+	INTEGER* nmax, INTEGER* total );
+
+
+
+
+static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
+{
+	INTEGER nmax, total;
+	char* base;
+	PyObject* the_list, *pystr;
+	char dummy[25];
+	char *tmp, *ptr;
+	int tmpsize, i;
+	
+	if (!PyArg_ParseTuple(args, "s",&base))
+		return NULL;
+
+	if (strlen(base)!=1) {
+		MYABORT("le type de base doit etre 1 caractere" );
+	}
+
+	memset( dummy, ' ', 24 );
+	dummy[24] = 0;
+	nmax = 0;
+	/* premier appel avec nmax==0 pour connaitre le total */
+	CALL_JELST3( base, dummy, &nmax, &total );
+	tmpsize = 24*total*sizeof(char);
+	tmp = (char*)malloc( tmpsize+1 );
+	memset( tmp, ' ', tmpsize );
+	tmp[tmpsize] = 0;
+	nmax = total;
+	/* second appel après allocation mémoire */
+	CALL_JELST3( base, tmp, &nmax, &total );
+	
+	the_list = PyList_New(total);
+	for( i=0, ptr=tmp; i<total;++i, ptr+=24 ) {
+		pystr = PyString_FromStringAndSize( ptr, 24 );
+		PyList_SetItem( the_list, i, pystr );
+	}
+	free( tmp );
+	return the_list;
+}
+
+#define CALL_JELIRA(a,b,c,d)  CALLSSPS(JELIRA,jelira,a,b,c,d)
+DEFSSPS(JELIRA,jelira, char* base, int base_len, char*dest, int dest_len,
+                       INTEGER* nmax, char* res, int res_len );
+
+
+/* ------------------------------------------------------------------ */
+static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
+{
+	char *nomobj, *attr;
+	char charval[33];
+	INTEGER intval = 0;
+	
+	memset( charval, ' ', 32 );
+	charval[32]=0;
+	if (!PyArg_ParseTuple(args, "ss",&nomobj,&attr))
+		return NULL;
+	CALL_JELIRA( nomobj, attr, &intval, charval );
+	
+	return Py_BuildValue( "is", intval, charval );
+}
+
+#define CALL_JEEXIN(a,b)  CALLSP(JEEXIN,jeexin,a,b)
+DEFSP(JEEXIN,jeexin, char* nomlu, int nomlu_len, INTEGER* iret );
+
+
+static PyObject *jeveux_exists( PyObject* self, PyObject* args)
+{
+	char *nomobj;
+	char tmpbuf[33];
+	int l;
+	INTEGER intval = 0;
+	
+	if (!PyArg_ParseTuple(args, "s",&nomobj))
+		return NULL;
+	strncpy( tmpbuf, nomobj, 32 );
+	l = strlen( nomobj );
+	memset( tmpbuf+l, ' ', 32-l );
+	tmpbuf[32]=0;
+		
+	CALL_JEEXIN( tmpbuf, &intval );
+	
+	if (intval==0) {
+		Py_INCREF( Py_False );
+		return Py_False;
+	} else {
+		Py_INCREF( Py_True );
+		return Py_True;
+	}
+}
+
+
+/* ------------------------------------------------------------------ */
 static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
 {
         /*
@@ -3308,6 +3429,9 @@ static PyMethodDef aster_methods[] = {
                 {"putcolljev",   aster_putcolljev,   METH_VARARGS, putcolljev_doc},
                 {"getcolljev",   aster_getcolljev,   METH_VARARGS, getcolljev_doc},
                 {"GetResu",      aster_GetResu,      METH_VARARGS},
+                {"jeveux_getobjects", jeveux_getobjects,    METH_VARARGS},
+                {"jeveux_getattr", jeveux_getattr,    METH_VARARGS},
+                {"jeveux_exists", jeveux_exists, METH_VARARGS},
                 {NULL,                NULL}/* sentinel */
 };
 

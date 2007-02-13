@@ -1,4 +1,4 @@
-#@ MODIF N_ETAPE Noyau  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_ETAPE Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,7 +131,7 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
             if sd != None and self.reuse == None:
                # On ne nomme le concept que dans le cas de non reutilisation 
                # d un concept
-               sd.nom=nom
+               sd.set_name(nom)
       except AsException,e:
          raise AsException("Etape ",self.nom,'ligne : ',self.appel[0],
                               'fichier : ',self.appel[1],e)
@@ -400,7 +400,7 @@ Causes possibles :
           if self.reuse == None :
              new_etape.parent.NommerSdprod(new_sd,self.sd.nom)
           else :
-             new_sd.nom = self.sd.nom
+             new_sd.set_name(self.sd.nom)
        new_etape.copy_intern(self)
        return new_etape
 

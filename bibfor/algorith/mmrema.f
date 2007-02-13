@@ -3,7 +3,7 @@
      &                  POSMIN,JEUMIN,NMIN,T1MIN,T2MIN,
      &                  XIMIN,YIMIN,PROJIN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,7 +87,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER JDEC,JDEC1,ITEMAX
-      INTEGER POSMA,IMA,NBMA,K,I,NPTOL
+      INTEGER POSMA,IMA,NBMA,K,I
       INTEGER INO,POSNNO(10),IBID,NIVERR,NNO   
       INTEGER NUMA,NO(9),NDIM
       REAL*8 JEU,R8GAEM,TAU1(3),TAU2(3),TOLEOU,R8BID,EPSMAX
@@ -96,7 +96,7 @@ C
       CHARACTER*24 CONTNO,CONTMA,MANOCO,PMANO,PNOMA,NOMACO
       INTEGER      JNOCO,JMACO,JMANO,JPOMA,JPONO,JNOMA,JCOOR 
       CHARACTER*24 K24BID,K24BLA
-      LOGICAL      LDIST,LBID 
+      LOGICAL      LDIST,LBID,LDMIN
       DATA K24BLA /' '/         
 C
 C ----------------------------------------------------------------------
@@ -121,7 +121,6 @@ C
 C --- INITIALISATIONS
 C
       JEUMIN = R8GAEM()
-      NPTOL  = 0    
       PROJIN = .TRUE.
       POSMIN = 0          
       DO 64 I=1,30
@@ -145,7 +144,6 @@ C
       JDEC = ZI(JPOMA+POSNO-1)
 
       DO 50 IMA = 1,NBMA
-        LDIST = .TRUE.      
         POSMA = ZI(JMANO+JDEC+IMA-1)
         NUMA  = ZI(JMACO+POSMA-1)
         CALL MMELTY(NOMA,NUMA,ALIAS,NNO,NDIM)
@@ -199,17 +197,12 @@ C
      &                IBID,R8BID,K24BID)          
         ENDIF 
 C
-C --- SI RABATTEMENT (CAS DU SEGMENT UNIQUEMENT)
-C               
-        IF (.NOT. LDIST) THEN
-          NPTOL = NPTOL+1
-        ENDIF
-C
 C --- SI JEU (AVANT CORRECTION) < JEU MINIMUM, STOCKER LES VALEURS
 C
         IF (JEU.LT.JEUMIN) THEN
           POSMIN = POSMA
           JEUMIN = JEU
+          LDMIN  = LDIST
           DO 40 K = 1,3
             T1MIN(K) = TAU1(K)
             T2MIN(K) = TAU2(K)
@@ -222,9 +215,9 @@ C
 C
 C --- TRAITEMENT DU CAS DU RABATTEMENT
 C
-      IF (NPTOL.EQ.1 .AND. NBMA.EQ.1) PROJIN=.FALSE.
-      IF (TOLEOU.EQ.-1.D0) PROJIN=.TRUE.
-      IF (DIRAPP) PROJIN=.TRUE.
+      IF (.NOT.LDMIN) PROJIN = .FALSE.
+      IF (TOLEOU.EQ.-1.D0) PROJIN = .TRUE.
+      IF (DIRAPP) PROJIN = .TRUE.
 
 C ----------------------------------------------------------------------
 

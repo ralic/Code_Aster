@@ -2,7 +2,7 @@
      &                    CHASOL, CRITEZ)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,9 +89,9 @@ C CORPS DU PROGRAMME
       CHSECM = CHSECZ
       CHCINE = CHCINZ
       CRITER = CRITEZ
-C     CALL VERISD('MATRICE',MATAS)
-C     CALL VERISD('CHAM_NO',CHSECM)
-C     CALL VERISD('SOLVEUR',SOLVEU)
+C     CALL CHEKSD('sd_matr_asse',MATAS,IRET)
+C     CALL CHEKSD('sd_cham_no',CHSECM,IRET)
+C     CALL CHEKSD('sd_solveur',SOLVEU,IRET)
 
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
       CALL JEVEUO(SOLVEU//'.SLVR','L',ISLVR)

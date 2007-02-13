@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,8 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
                     reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('POUTRE','BARRE','COQUE','CABLE','DISCRET','DISCRET_2D','MASSIF',
-                             'GRILLE','AFFE_SECT','AFFE_FIBRE','RIGI_PARASOL'),),
+                             'GRILLE','MULTIFIBRE','RIGI_PARASOL'),
+                             PRESENT_PRESENT('MULTIFIBRE','GEOM_FIBRE'),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          INFO            =SIMP(statut='f',typ='I', defaut= 1 ,into=(1,2) ),
          VERIF           =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=("MAILLE","NOEUD") ),
@@ -544,38 +545,18 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
          ),
          
 #============================================================================
-         AFFE_SECT     =FACT(statut='f',max='**',
-              regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
-                      AU_MOINS_UN('TOUT_SECT','GROUP_MA_SECT','MAILLE_SECT'),
-                      PRESENT_ABSENT('TOUT_SECT','GROUP_MA_SECT','MAILLE_SECT'),),
-
-              NOM             =SIMP(statut='f',typ='TXM'),
-
-              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-
-              TOUT_SECT         =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-              GROUP_MA_SECT     =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-              MAILLE_SECT       =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-
-              MAILLAGE_SECT     =SIMP(statut='o',typ=maillage_sdaster),
-              COOR_AXE_POUTRE    =SIMP(statut='o',typ='R',min=2,max=2),
-         ),
-
-
-#============================================================================
-         AFFE_FIBRE     =FACT(statut='f',max='**',
+         GEOM_FIBRE = SIMP(statut='f',max=1,typ=gfibre_sdaster,
+                   fr="Donner le nom de la SD regroupant tous les groupes de fibres (issue de DEFI_GEOM_FIBRE)"),
+         MULTIFIBRE     =FACT(statut='f',max='**',
               regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),),
 
-              NOM             =SIMP(statut='f',typ='TXM'),
-
               GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
               MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
 
-              CARA              =SIMP(statut='f',typ='TXM',defaut='SURFACE',into=('SURFACE','DIAMETRE',)),
-              VALE              =SIMP(statut='o',typ='R',max='**'),
-              COOR_AXE_POUTRE    =SIMP(statut='o',typ='R',min=2,max=2),
+              GROUP_FIBRE     =SIMP(statut='o',typ='TXM',max='**'),
+
          ),
+
 
 
 ) ;

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
                 LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
                 NUME_INIT       =SIMP(statut='f',typ='I', val_min=1),
                 NUME_FIN        =SIMP(statut='f',typ='I', val_min=1),
-                PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
+                PRECISION       =SIMP(statut='f',typ='R',defaut= 0. ),
                 CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
              ),
              b_fourier       =BLOC(condition = "((TYPE_RESU == 'FOURIER_ELAS') or (TYPE_RESU == 'FOURIER_THER')) ",

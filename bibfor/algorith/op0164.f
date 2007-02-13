@@ -6,7 +6,7 @@ C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2006   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
          NBMODD = ZI(JVAL+2)
          NBMODS = ZI(JVAL+3)
       ENDIF
-      
+
       NBMODE = NBMODD + NBMODS
       TABRIG = '&&OP0164.RIGM'
       TABFRQ = '&&OP0164.FREQ'
@@ -146,19 +146,19 @@ C
         ENDIF
     3   CONTINUE
         IFREQ = NFREQ
-    7   CONTINUE    
+    7   CONTINUE
         DO 5 I = 1, IFREQ-1
-          READ(IFMIS) A(1)      
+          READ(IFMIS) A(1)
     5   CONTINUE
         READ(IFMIS) ((ZR(JRIG+2*(I2-1)*NBMODS+2*I1-2),
      &                ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1),
      &                I1=1,NBMODS),I2=1,NBMODS)
-        DO 6 I1 = 1, NBMODS 
+        DO 6 I1 = 1, NBMODS
         DO 6 I2 = 1, NBMODS
           ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1)=
      &   -ZR(JRIG+2*(I2-1)*NBMODS+2*I1-1)
     6   CONTINUE
-      ENDIF 
+      ENDIF
 C
 C ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 C
@@ -237,7 +237,7 @@ C
              PARTI = ZR(JRIG+2*(II-1)*NBMODS+2*JJ-1)
              ZC(LDBLO+I*(I-1)/2+J-1) = DCMPLX(PARTR,PARTI)
              PARTR = ZR(JRIG+2*(JJ-1)*NBMODS+2*II-2)
-             PARTI = ZR(JRIG+2*(JJ-1)*NBMODS+2*II-1) 
+             PARTI = ZR(JRIG+2*(JJ-1)*NBMODS+2*II-1)
              ZC(LDBLO2+I*(I-1)/2+J-1) = DCMPLX(PARTR,PARTI)
            ENDIF
 C
@@ -247,7 +247,7 @@ C
       CALL JELIBE ( JEXNUM(RESU//'.VALM', 2) )
       CALL JEDETR(TABRIG)
       CALL JEDETR(TABFRQ)
-C     CALL VERISD('MATRICE',RESU)
+C     CALL CHEKSD('sd_matr_asse',RESU,IRET)
 C
       CALL JEDEMA()
       END

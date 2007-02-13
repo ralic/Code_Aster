@@ -1,4 +1,4 @@
-#@ MODIF B_SENSIBILITE_JDC Build  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_SENSIBILITE_JDC Build  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,10 +299,9 @@ class SENSIBILITE_JDC :
         new_jdc = self.jdc.definition(cata=self.jdc.cata,appli=self.jdc.appli,procedure="#\n",context_ini=context_ini)
         new_jdc.actif_status=1
 #
-#### CD : Je suis oblige de reaffecter les attributs cpu au new_jdc. Ca ne me plait pas trop.
-#### CD : il y aurait sans doute moyen de faire mieux (via __init__ du N_JDC)
-        new_jdc.cpu_user=self.jdc.cpu_user
-        new_jdc.cpu_syst=self.jdc.cpu_syst
+        # Le timer étant initialisé dans l'ops, on le transmet au nouveau jdc
+        # (sinon il faudrait passer par N_JDC.JDC.__init__)
+        new_jdc.timer = self.jdc.timer
 #
         new_jdc.compile()
         if not new_jdc.cr.estvide(): 

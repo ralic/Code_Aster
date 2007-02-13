@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF N_ASSD Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,9 +24,8 @@
 """
 
 """
-import string
 
-class ASSD:
+class ASSD(object):
    """
       Classe de base pour definir des types de structures de donnees ASTER
       equivalent d un concept ASTER
@@ -57,21 +56,33 @@ class ASSD:
         self.id = self.parent.reg_sd(self)
       else :
         self.id = self.parent.o_register(self)
-
+      
+      # initialise la partie "sd"
+      super(ASSD, self).__init__(nomj='?&?&?&?&')
+      
    def __getitem__(self,key):
       return self.etape[key]
 
+   def set_name(self, nom):
+      """Positionne le nom de self (et appelle sd_init)
+      """
+      self.nom = nom
+      # test car FORMULE n'a pas de SD associée
+      meth = getattr(super(ASSD, self), 'set_name', None)
+      if meth:
+         meth(nom)
+   
    def get_name(self):
       """
           Retourne le nom de self, éventuellement en le demandant au JDC
       """
       if not self.nom :
-        try:
-          self.nom=self.parent.get_name(self) or self.id
-        except:
-          self.nom=""
-      if string.find(self.nom,'sansnom') != -1 or self.nom == '':
-        self.nom = self.id
+         try:
+            self.nom=self.parent.get_name(self) or self.id
+         except:
+            self.nom=""
+      if self.nom.find('sansnom') != -1 or self.nom == '':
+         self.nom = self.id
       return self.nom
 
    def supprime(self):

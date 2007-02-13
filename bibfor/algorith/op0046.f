@@ -1,7 +1,7 @@
       SUBROUTINE OP0046 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -120,6 +120,7 @@ C
      &             LISCHA, METHOD, SOLVEU, PARMET, PARCRI,
      &             CARCRI, MODEDE, SOLVDE,
      &             NBPASE, K8B, INPSCO, PARCON )
+
 C
 C -- VERIFICATION QUE LE CHARGEMENT N EST PAS UN CHARGEMENT DE CONTACT
 C
@@ -158,7 +159,7 @@ C
       CALL MESTAT ( MODELE, FOMULT, LISCHA,
      &              MATE,   CARELE,
      &              LISTPS, SOLVEU,
-     &              NBPASE, INPSCO )
+     &              NBPASE, INPSCO, COMPOR )
 C
 C ---- CALCUL DE L'OPTION SIEF_ELGA_DEPL OU RIEN
 C
@@ -238,7 +239,7 @@ C
      &               CHTREF,CHTIME,K24B,CHHARM,CHSIG,CHEPS,
      &               CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
      &               K24B,K24B,CHAMEL,LIGREL,BASE,
-     &               CHVARC,CHVREF,K24B,K24B,
+     &               CHVARC,CHVREF,K24B,COMPOR,
      &               K24B, K24B, K8B, IBID, IRET )
 
 

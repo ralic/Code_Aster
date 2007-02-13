@@ -7,10 +7,10 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
@@ -103,6 +103,7 @@ C --- RECUPERATION DES DONNEES MATERIAU DANS DEFI_MATERIAU -------------
 C ======================================================================
       IF (  (MECA.EQ.'ELAS')            .OR.
      &      (MECA.EQ.'CJS')             .OR.
+     &      (MECA.EQ.'HUJEUX')             .OR.
      &      (MECA.EQ.'CAM_CLAY')        .OR.
      &      (MECA.EQ.'BARCELONE')       .OR.
      &      (MECA.EQ.'LAIGLE')          .OR.
@@ -196,6 +197,17 @@ C ======================================================================
         MECTRU = .TRUE.
         TINI = T - DT
         CALL NMCJS(  TYPMOD,  IMATE, COMPOR, CRIT,
+     &                      INSTAM, INSTAP,
+     &                      TINI,T, TREF,
+     &                      DEFGEM(ADDEME+NDIM),DEPS,
+     &                      CONGEM(ADCOME), VINTM, OPTION,
+     &                      CONGEP(ADCOME), VINTP,
+     &                      DSDEME,IRET)
+      ENDIF
+      IF (MECA.EQ.'HUJEUX') THEN
+        MECTRU = .TRUE.
+        TINI = T - DT
+        CALL NMHUJ(TYPMOD,  IMATE, COMPOR, CRIT,
      &                      INSTAM, INSTAP,
      &                      TINI,T, TREF,
      &                      DEFGEM(ADDEME+NDIM),DEPS,

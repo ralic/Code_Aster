@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF genpy Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,9 +26,10 @@
    une chaine de caracteres representative de cette commande
 """
 # Modules Python
-import types,string,sys
+import sys
 
 # Modules Eficas
+from Noyau.N_ASSD import ASSD
 import E_utils
 
 class genpy:
@@ -158,50 +159,50 @@ class genpy:
           mcf.supprime()
 
   def evalMCSIMP(self,object):
-    if type(object) == types.TupleType :
+    if type(object) == tuple:
       st = '('
       for val in object :
-        if type(val) == types.FloatType :
+        if type(val) == float:
           st = st + E_utils.repr_float(val)
         else :
           st = st + `val`
         st = st +','
       st = st + ')'
-    elif type(object) == types.FloatType :
+    elif type(object) == float:
       st = E_utils.repr_float(object)
     else :
       st=`object`
     return st
 
   def visitMCSIMP(self,node):
-    if type(node.valeur) in (types.TupleType,types.ListType) :
+    if type(node.valeur) in (tuple, list) :
       st = ['(',]
       # Si la liste est trop longue, on ne l'imprime pas completement
       listVal=node.valeur
       trail=')'
 
       for val in listVal :
-        if type(val)  == types.InstanceType :
+        if isinstance(val, ASSD):
           val.accept(self)
           if hasattr(node.etape,'sdprods') and val in node.etape.sdprods:
             st = st.append("CO('"+ self.sdname+ "')")
           else:
             st.append(self.sdname)
-        elif type(val) == types.FloatType :
+        elif type(val) == float:
           st.append(E_utils.repr_float(val))
         else :
           st.append(`val`)
         st.append(',')
       st.append(trail)
-      st=string.join(st,'')
+      st=''.join(st)
 
-    elif type(node.valeur) == types.InstanceType :
+    elif isinstance(node.valeur, ASSD):
       node.valeur.accept(self)
       if hasattr(node.etape,'sdprods') and node.valeur in node.etape.sdprods:
         st="CO('"+self.sdname+"')"
       else:
         st = self.sdname
-    elif type(node.valeur) == types.FloatType :
+    elif type(node.valeur) == float:
       st = E_utils.repr_float(node.valeur)
     elif node.definition.type[0] == 'shell':
       # Texte FORMULE
@@ -272,7 +273,7 @@ class genpy:
     return self.setap
 
   def __format(self,object):
-    if type(object) == types.ListType:
+    if type(object) == list:
       #MCList
       self.line=self.line+'('
       self.indent.append(len(self.line))
@@ -287,7 +288,7 @@ class genpy:
       self.line=self.line+')'
       del self.indent[-1]
       self.indent_courant=self.indent[-1]
-    elif type(object) == types.DictType:
+    elif type(object) == dict:
       #MCFACT
       self.line=self.line+'_F('
       self.indent.append(len(self.line))
@@ -306,7 +307,7 @@ class genpy:
     else:
       #MCSIMP
       if '\n' in object:
-        self.line=self.line+string.replace(object,'\n','\n'+' '*self.indent_courant)
+        self.line=self.line+object.replace('\n','\n'+' '*self.indent_courant)
       else:
         self.line=self.line+object
 

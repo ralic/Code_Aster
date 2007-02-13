@@ -1,4 +1,4 @@
-#@ MODIF N_MCSIMP Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MCSIMP Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,6 @@
     de type ENTITE
 """
 
-import types
 from copy import copy
 
 from Noyau.N_ASSD import ASSD,assd
@@ -107,7 +106,7 @@ class MCSIMP(N_OBJECT.OBJECT):
       objet = self.makeobjet()
       # il faut copier les listes et les tuples mais pas les autres valeurs
       # possibles (réel,SD,...)
-      if type(self.valeur) in (types.ListType,types.TupleType):
+      if type(self.valeur) in (list, tuple):
          objet.valeur = copy(self.valeur)
       else:
          objet.valeur = self.valeur
@@ -131,13 +130,12 @@ class MCSIMP(N_OBJECT.OBJECT):
           ou alors une liste vide
       """
       l=[]
-      if type(self.valeur) == types.InstanceType:
-        #XXX Est ce différent de isinstance(self.valeur,ASSD) ??
-        if issubclass(self.valeur.__class__,ASSD) : l.append(self.valeur)
-      elif type(self.valeur) in (types.TupleType,types.ListType):
+      if isinstance(self.valeur, ASSD):
+         l.append(self.valeur)
+      elif type(self.valeur) in (list, tuple):
         for val in self.valeur :
-           if type(val) == types.InstanceType:
-              if issubclass(val.__class__,ASSD) : l.append(val)
+           if isinstance(val, ASSD):
+              l.append(val)
       return l
 
    def get_sd_mcs_utilisees(self):
@@ -161,7 +159,7 @@ class MCSIMP(N_OBJECT.OBJECT):
           comme valeur.
       """
       lval=self.valeur
-      if type(self.valeur) not in (types.TupleType,types.ListType):
+      if type(self.valeur) not in (list, tuple):
         lval=(self.valeur,)
       if co in lval:return [self,]
       return []
@@ -172,7 +170,7 @@ class MCSIMP(N_OBJECT.OBJECT):
           associés au mot cle simple
       """
       lval=self.valeur
-      if type(self.valeur) not in (types.TupleType,types.ListType):
+      if type(self.valeur) not in (list, tuple):
         lval=(self.valeur,)
       l=[]
       for c in lval:

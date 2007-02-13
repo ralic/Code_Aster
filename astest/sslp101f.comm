@@ -1,4 +1,4 @@
-# MODIF  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DES DERIVEES DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 # CONTRAINTES PLANES
 #
-DEBUT(CODE=_F(NOM='SSLP101F',NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSLP101F',NIV_PUB_WEB='INTERNET',))
 
 MA=LIRE_MAILLAGE(  )
 
@@ -84,7 +84,6 @@ G1=CALC_G(              RESULTAT=CHAMDEPL,
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),)
 
-DEBUG(SDVERI='NON') # DGE1 est vide  (merci la sensibilite)
 DGE1=CALC_G(            RESULTAT=CHAMDEPL,
                         THETA=_F(THETA=THETA1),
                         SENSIBILITE = (YOUNG,),

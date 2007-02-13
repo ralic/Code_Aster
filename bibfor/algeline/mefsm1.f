@@ -8,7 +8,7 @@
       CHARACTER*19        NOMNUM, NOMSTO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C
 
       CALL UALFVA(MATRGE,'G')
 
-C     CALL VERISD('MATRICE',MATRGE)
+C     CALL CHEKSD('sd_matr_asse',MATRGE,IRET)
 
       CALL JEDEMA()
 C

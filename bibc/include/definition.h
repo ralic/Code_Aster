@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF definition include  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF definition include  DATE 13/02/2007   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -97,6 +97,8 @@
 #define CALLSPSP(UN,LN,a,b,c,d)                    F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(c))
 #define DEFSSPP(UN,LN,a,la,b,lb,c,d)               STDCALL(UN,LN)(a,b,c,d,la,lb)
 #define CALLSSPP(UN,LN,a,b,c,d)                    F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b))
+#define DEFSSPS(UN,LN,a,la,b,lb,c,d,ld)               STDCALL(UN,LN)(a,b,c,d,la,lb,ld)
+#define CALLSSPS(UN,LN,a,b,c,d)                       F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b),strlen(d))
 #define DEFPPPSP(UN,LN,a,b,c,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,e,ld)
 #define CALLPPPSP(UN,LN,a,b,c,d,e)                 F_FUNC(UN,LN)(a,b,c,d,e,strlen(d))
 #define DEFPSSSS(UN,LN,a,b,lb,c,lc,d,ld,e,le)               STDCALL(UN,LN)(a,b,c,d,e,lb,lc,ld,le)
@@ -178,6 +180,8 @@
 #define CALLSPSP(UN,LN,a,b,c,d)                    F_FUNC(UN,LN)(a,strlen(a),b,c,strlen(c),d)
 #define DEFSSPP(UN,LN,a,la,b,lb,c,d)               STDCALL(UN,LN)(a,la,b,lb,c,d)
 #define CALLSSPP(UN,LN,a,b,c,d)                    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d)
+#define DEFSSPS(UN,LN,a,la,b,lb,c,d,ld)               STDCALL(UN,LN)(a,la,b,lb,c,d,ld)
+#define CALLSSPS(UN,LN,a,b,c,d)                       F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d))
 #define DEFPPPSP(UN,LN,a,b,c,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,ld,e)
 #define CALLPPPSP(UN,LN,a,b,c,d,e)                 F_FUNC(UN,LN)(a,b,c,d,strlen(d),e)
 #define DEFPSSSS(UN,LN,a,b,lb,c,lc,d,ld,e,le)               STDCALL(UN,LN)(a,b,lb,c,lc,d,ld,e,le)

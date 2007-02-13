@@ -5,11 +5,12 @@
      &                   SIGM,VIM,
      &                   OPTION,ANGMAS,TAMPON,
      &                   SIGP,VIP,DSIDEP,CODRET)
-C
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C ======================================================================
+C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +23,7 @@ C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_20
@@ -37,7 +38,6 @@ C TOLE CRP_21
       REAL*8             SIGM(*), VIM(*), SIGP(*), VIP(*)
       REAL*8             TAMPON(*)
       REAL*8             ANGMAS(*)
-
 C ----------------------------------------------------------------------
 C     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE POUR LES
 C     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -548,6 +548,17 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
      &                     DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP,
      &                     CODRET)
             ENDIF
+C --- hujeux
+          ELSEIF ( COMPOR(1)(1:6) .EQ. 'HUJEUX' ) THEN
+            IF ( INT(CRIT(6)) .NE. 0 )  THEN
+              CALL U2MESS('F','ALGORITH6_82')
+            ELSE
+              CALL NMHUJ (TYPMOD,  IMATE, COMPOR, CRIT,
+     &                    INSTAM, INSTAP, TM, TP, TREF, EPSM,
+     &                    DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP,
+     &                    CODRET)
+            ENDIF
+
         ELSEIF ( COMPOR(1)(1:9) .EQ. 'CAM_CLAY ') THEN
         IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/02/2007   AUTEUR BOYERE E.BOYERE 
 # TITRE  TEST DES ELEMENTS DE LA MODELISATION 3D_FAISCEAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -196,7 +196,7 @@ RESA=MODE_ITER_SIMULT(
                 CALC_FREQ=_F(  OPTION = 'BANDE',
                                FREQ = ( 3.0,  9.3, ),
                                SEUIL_FREQ = 0.,),
-                VERI_MODE=_F(SEUIL=2.E-6),
+                VERI_MODE=_F(SEUIL=4.E-6),
                      )
 
 RESB=MODE_ITER_SIMULT(

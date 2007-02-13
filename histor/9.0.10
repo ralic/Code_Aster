@@ -1,0 +1,1788 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bodel        BODEL Charles          DATE 13/02/2007 - 14:21:20
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009858 DU 2006-06-21 14:57:11
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Message d'erreur non aproprixc3xa9 avec EXTR_COMP
+FONCTIONNALITE
+   Rappel des faits : lorsqu'on demande à EXTR_COMP d'extraire un champ une composante qui
+   n'existe pas dans un champ (exemple, un champ DRZ pour un champ de déplacement sur un
+   modèle ne possédant que des DDL de translation), on obtient des résultats faux : soit
+   zéro, soit parfois même le résultat d'un EXTR_COMP exécuté auparavant.
+   
+   Dans  prcoch.f, qui est exécuté par EXTR_COMP, on va chercher les composantes qui nous
+   intéressent (l270). Je rajoute un message d'erreur si la composante recherchée n'est pas
+   trouvée.
+   
+   Le message d'erreur est mis dans Messages/champs.py : "La composante "NOCMP" du champ
+   n'existe pas"
+   
+   Fiche résolue
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   pas de validation
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 12/02/2007 - 17:42:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010372 DU 2006-12-08 09:40:29
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Test sdlv111a en version NEW9.0 sur Bull
+FONCTIONNALITE
+   En NEW9 sur la BULL, dans le cas test sdlv111a, le calcul modal avec la méthode 'JACOBI'
+   s'arrete avec une precision de 3.33E-6 sur un des modes.
+   Je fais donc passer la tolerance sur la precision du calcul modal de 2.E-6 a 4.E-6.
+   
+   eb
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdlv111a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET N.             DATE 13/02/2007 - 11:10:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010515 DU 2007-02-08 16:43:14
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   DYNA_TRAN_EXPLI : nom de la maille ou est obtenue la condition de Courant (CFL)
+FONCTIONNALITE
+   On modifie la routine pascou.f pour récupérer le nom de la maille qui impose la condition de 
+   Courant.
+   Ce nom est ensuite écrit dans le fichier .mess, à la suite de la valeur du pas de temps 
+   limite.
+   
+   Ensuite, afin de se conformer au passage total des messages par les routines u2mes..., on 
+   modifie en conséquence les deux routines de calcul de la condition de Courant (pascou.f et 
+   pascom.f).
+   On regroupe aussi tous leurs messages dans nouveau catalogue de message : dynamique.py (les 
+   anciens messages pour la CFL existants sont transférés de algorith9.py).
+   
+   Fichiers impactés :
+   pascou.f
+   pascom.f
+   algorith9.py
+   dynamique.py (création)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Cas test personnel
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010078 DU 2006-09-28 11:14:33
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   DYNA_TRAN_EXPLI - Amortissement
+FONCTIONNALITE
+   Pour l'amortissement de Rayleigh, on construit la matrice : C=alpha.K+beta.M.
+   On a donc bien besoin d'avoir la matrice de masse M et celle de raideur K.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Pas de restitution donc pas de validation
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM MARC              DATE 12/02/2007 - 13:43:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010435 DU 2007-01-10 16:01:44
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   codhybar: développement de hujeux (phase 1)
+FONCTIONNALITE
+   hujeux fonctionne en thm, de la même manière que les autres 
+   lois de comportement.
+   j'ai des cas-tests de validation de triaxiaux non-drainés, 
+   qui sont nickels,
+   mais je n'ai pas voulu les restituer, car on a du 
+   bidouiller certains paramètres pour que ça corresponde avec 
+   gefdyn: en effet, il y a une phase de décharge au début de 
+   l'essai, qui n'est pas encore gérée par le hujeux d'aster, 
+   et il a fallu changer artificiellement le paramètre réglant 
+   le seuil cyclique dans gefdyn pour que les solutions 
+   collent.
+   ça marche donc comme il faut en hm, mais je n'ai pas voulu 
+   restituer un cas-test truqué, sachant qu'il sera bien 
+   entendu restitué (et proprement) quand on aura développé ce 
+   qui manque.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.04.197 U4.43.01 U4.51.11 R7.01.23
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010469 DU 2007-01-23 13:48:21
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   Calcul des contraintes d'arc et de console (ARCO_*_SIGM)
+FONCTIONNALITE
+   Voici l'histor définitif répondant à la fiche 9734
+   après les modifications apportées par la fiche 9889
+   sur l'option REPE_COQUE.
+   
+   Du point de vue de la programmation, il n'y a rien
+   de plus, hormis l'ajout de l'option ARCO_NOEU_SIGM
+   dans CALC_NO, et la modification du cas-test
+   sslv04a pour tester le CALC_NO avec cette dernière option.
+   
+   
+   =============== histor pour fiche 9734 ================
+   -----------
+   description
+   -----------
+   
+   -- 1
+   En mécanique des barrages, il peut être intéressant de 
+   calculer
+   les contraintes d'arc et de console sur les parrements du 
+   barrage (parois du barrage).
+   
+   Ces contraintes d'arc et de console correspondent 
+   respectivement
+   à la composante horizontale (sigma_hh) et verticale 
+   (sigma_vv)
+   calculée sur un élément de surface du barrage. Elles
+   s'obtiennent donc par un changement du repère global vers un
+   repère local tangent à la surface élémentaire autour du 
+   point considéré.
+   
+   -- 2
+   Dans ASTER, Les contraintes d'arc et de console sont 
+   calculées par appel dans CALC_ELEM de 
+   l'option 'ARCO_ELNO_SIGM.
+   Celles-ci  necessitent d'orienter localement le repere en 
+   chaque noeud  des mailles surfaciques.
+   Pour déterminer sans ambiguité ce repere local, on se donne 
+   un vecteur vertical défini dans CALC_ELEM sous le mot-clé 
+   facteur REPE_COQUE,
+   soit par ses angles nautiques (ANGL_REP), soit par ses 
+   composantes cartésiennes (VECTEUR).
+   
+   La syntaxe est la suivante:
+   
+   CALC_ELEM( OPTION='ARCO_ELNO_SIGM',           
+       REPE_COQUE=_F(GROUP_MA = 'PRES', # Groupe de
+                                          mailles de peau
+                                          pour calcul des
+                                          sigma arc
+                 /   ANGL_REP=(0.,90.),  # coordonnées
+                                           nautiques
+                 /   VECTEUR=(0.,0.,1.), # coordonnées
+                                           cartésiennes
+                           )               du vecteur vertical
+            )
+   
+   -- 3
+   Le champ au noeud correspondant est obtenu par CALC_NO
+   avec l'option ARCO_NOEU_SIGM
+   
+   -- 4
+   Les champs ARCO_ELNO_SIGM et ARCO_NOEU_SIGM ont pour 
+   composantes (SI_ARC, SI_CONS, SI_NORM)
+   
+   -------------
+   programmation
+   -------------
+   
+   l'opération clé du calcul se trouve dans mearcc.f:
+   
+     1. récupération les mailles 3D supportant des mailles de 
+        peau
+   
+     2. filtrage de celles coincidant avec le group_ma 'PRES'
+        donné par l'utilisateur(il s'agit de mailles de peau)
+   
+     3. creation d'un nouveau cham_elem sur les 
+        mailles 2D du group_ma 'PRES'
+   
+   Puis appel au te0411 par mecalc: calcul des contraintes 
+   d'arc.
+   
+   -----------------
+   impacts sources
+   -----------------
+   
+   6 fortrans sont impactés:
+   * 4 sont modifiés: mearch mecalc mecalm racrsd
+   * 2 sont ajoutés: mearcc te0411
+   
+   3 catalogues sont impactés:
+   * 2 sont modifiés: grandeur_simple__.cata, gener_me3d_2.cata
+   * 1 est ajouté: arco_elno_sigm.cata
+   
+   2 commandes sont modifiées: calc_elem, calc_no
+   
+   ----------
+   validation
+   ----------
+   
+   modification de 4 cas-tests: sslv04a,b,c,d
+   "cylindre creux en contraintes planes"
+   
+   ---------------------
+   impacts documentaires
+   ---------------------
+   
+   doc U: U4.81.01 (calc_elem) U4.81.02 (calc_no)
+   doc V: V3.04.004
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.02
+VALIDATION
+   cas-test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010402 DU 2006-12-20 12:21:22
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   METHODE='CONTINUE'
+FONCTIONNALITE
+   Après vérification, la projection hors-zone ne fonctionnait 
+   que dans le cas de surfaces de contact 1D (seg2 et seg3): 
+   certainement un développement introduit pour un besoin 
+   spécifique (je pense notamment à sagrappe, donc mea culpa 
+   puisque j'en étais le commanditaire).
+   
+   Je complète donc le test de projection hors zone pour 
+   surface 2d (quad et tria).
+   
+   2 routines sont impactées:
+   
+   - majust: où on teste la projection hors zone
+   - mappar: où, pour les noeuds esclaves projetés hors zone,
+             on met un flag pour dire à mmmbca de ne pas les
+             traiter
+   
+   Il n'y a pas de cas-test testant la projection hors-zone. 
+   Peut-être doit-on en inventer un...
+   
+   Pas d'impact documentaire.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : v8
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : v9
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE J.P.          DATE 12/02/2007 - 16:12:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010504 DU 2007-02-05 15:41:35
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   TAILLE TROP FAIBLE DU REPERTOIRE DE                                                       
+Taille trop faible du rxc3xa9pertoire de travail
+FONCTIONNALITE
+   Le problème ne se produit que lorsqu'on effectue une poursuite avec une base HDF. Le
+   nombre d'enregistrements n'était pas recalculé en fonction de la taille maximum de fichier.
+   
+   Dans la routine JELIHD, les instructions 275 et 276 ont été remontées en 274 et 275 et
+   l'affectation ligne 284 supprimée.
+   
+      273	C
+      274	      NBENRG(IC) = MIN ( LFIC/(LONGBL(IC)*LOIS) , NBLMAX(IC) )
+      275	      NBEX   = NBLMAX(IC)/NBENRG(IC)+1
+      276	      IF ( LCRA ) THEN
+      277	       LONIND = NBEX*(NBENRG(IC)/512+1)*512 * LOIS
+      278	       CALL JJALLS (LONIND,'V','I',LOIS,Z,INDEF,IADRS,KINDEF(IC))
+      279	       KAT(17) = KINDEF(IC)
+      280	       JINDEF(IC) = IADRS
+      281	       CALL JJECRS (KAT(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
+      282	      ELSE
+      283	        JINDEF(IC) = 1
+      284	      ENDIF
+   
+   Après correction, l'étude associée tourne jusqu'au bout et construit glob.1 et glob.2
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude fournie avec la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS M.               DATE 12/02/2007 - 16:12:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010473 DU 2007-01-25 15:47:36
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.6, les cas tests ssnv504a,c,e,f et g s'arrêtent en arrêt anormal (BL)
+FONCTIONNALITE
+   Le catalogue contact.py est bizarrement vide. 
+   L'alarme appelée dans ces cas-test (méthode glissière) échoue donc en 
+   erreur fatale. 
+   On rend le contact.py complet pour corriger
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv504a,c,e,f,g
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 13/02/2007 - 17:15:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010507 DU 2007-02-06 08:25:50
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   restitution des tests de 9960 et 9961
+FONCTIONNALITE
+   Lors de ma restit de cette semaine, j'ai oublié en chemin les tests modifiés par lionel
+   Salmona dans le cadre des fiches 9960 et 9961.
+                                                   
+   Je restitue donc ces tests cette semaine.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   passage des tests
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010526 DU 2007-02-09 17:38:41
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   catalogue des SD Fortran en python (1)
+FONCTIONNALITE
+   Un catalogue Python des Structures de Données Fortran (1) :
+   -----------------------------------------------------------
+                                                                                            
+                           
+   Par rapport aux objectifs du chantier :
+      - description des objets JEVEUX en python :                       OUI
+      - possibilité de vérifier les SD produites par les commandes :    OUI
+      - accès en lecture depuis python des objets JEVEUX :              OUI
+      - accès en écriture depuis python des objets JEVEUX :             NON
+      - ménage dans les SD mal documentées :                            NON
+                                                                                            
+                           
+                                                                                            
+                           
+                                                                                            
+                           
+   Ce catalogue décrit les objets JEVEUX constituant les SD Aster :
+      - R/C/K8/...
+      - vecteur / collection / pointeur de nom
+      - LONMAX (si constant), champ 'DOCU', ...
+                                                                                            
+                           
+   Exemple :
+   ---------
+                                                                                            
+                           
+   -------------------------------------------------------------------------------------------------------
+   class sd_maillage(sd_titre):
+   #-------------------------------
+       nomj = SDNom(fin=8)
+                                                                                            
+                           
+       DIME = AsVI(lonmax=6, )
+                                                                                            
+                           
+       # un sd_maillage a toujours des noeuds :
+       NOMNOE = AsObject(genr='N', xous='S', type='K', ltyp=8, )
+       coordo = sd_cham_no(SDNom(nomj='.COORDO'))
+                                                                                            
+                           
+       # normalement, un sd_maillage a toujours une "sd_l_table" mais POST_MAIL_XFEM ...
+       lt = Facultatif(sd_l_table(SDNom(nomj='')))
+                                                                                            
+                           
+       # si le sd_maillage a des groupes :
+       GROUPENO = Facultatif(AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE',
+   type='I', ))
+       GROUPEMA = Facultatif(AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE',
+   type='I', ))
+                                                                                            
+                           
+       # si le sd_maillage a des mailles :
+       CONNEX  = Facultatif(AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE',
+   type='I', ))
+       TYPMAIL = Facultatif(AsVI())
+       NOMMAI  = Facultatif(AsObject(genr='N', xous='S', type='K', ltyp=8, ))
+       ...
+   -------------------------------------------------------------------------------------------------------
+                                                                                            
+                           
+   Organisation des fichiers :
+   ---------------------------
+                                                                                            
+                           
+   bibpyt/SD/sd_xxxx.py :
+      - description des objets JEVEUX des SD
+      - fonctions chech_xxxxi
+                                                                                            
+                           
+   bibpyt/SD/co_*.py :
+      - héritage (ASSD, sd_xxxx)
+      - méthodes particulières aux ASSD
+                                                                                            
+                           
+                                                                                            
+                           
+   Validation:
+   -----------
+   Les (90) tests qui "tournaient" avec SDVERI=OUI (en fortran), tournent toujours.
+                                                                                            
+                           
+   NB_JOURS_TRAV:
+   --------------
+   40 : JP + MC + Logilab
+                                                                                            
+                           
+   Je profite de cet histor pour remercier chaleureusement :
+      - Ludovic Aubry (Logilab) pour avoir imaginé et mis en oeuvre cette jolie "solution"
+      - Mathieu Courtois pour tout le complément (par rapport à la version Logilab) :
+         - fusion des classes ASSD et sd_xxxx
+         - routine fortran CHEKSD (remplaçante de VERISD)
+         - organisation des fichiers python
+         - dictionnaire des SD vérifiées (pour éviter de refaire 10 fois la meme chose)
+         - ...
+                                                                                            
+                           
+                                                                                            
+                           
+   Détails :
+   ----------
+     - je débranche le SDVERI='OUI' fait dans le fortran
+     - il faudra un jour détruire :
+         - verij*.f
+         - vsd*.f
+         - SDVERI dans config.txt
+     - il reste à recoder en python les routines vsdxxx.f
+     - Sur les tests ayant beaucoup de pas de temps, le cout de SDVERI peut etre plus
+   important que le calcul !
+         sdld22b : 7s -> 200 s
+         => il faudra regarder de plus près si l'on veut que SDVERI soit utilisé par défaut
+   dans les tests.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.01.01
+VALIDATION
+   tests SDVERI=OUI
+NB_JOURS_TRAV  : 40.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 13/02/2007 - 17:15:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010463 DU 2007-01-19 17:03:06
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Correction du bug de l'an 2000 ;-)
+FONCTIONNALITE
+   En juillet 1999, M. X a anticipé le passage à l'an 2000 en codant l'année dans versio.f
+   sur 4 caractères : 99 ==> 1999.
+   La date passe donc d'un CHARACTER*8 à un CHARACTER*16... sauf que dans iniast.c, on laisse
+   "char vdate[9];" (8+1 pour le marqueur \0).
+   
+   Il faut donc mettre dans iniast.c :
+      char vdate[17];
+   
+   Le compilateur gcc 4.1.2 de la distribution Ubuntu 6.10 (edgy) active la SSP : Stack
+   Smashing Protection. On plante alors à la première exécution (compilation du catalogue
+   d'éléments) avec un message "stack smashing detected".
+   Pour info :
+   - options de compilation : -f[no-]stack-protector
+   - explication : http://www.debian-administration.org/tag/ssp
+   
+   D'après cette doc, je comprends que c'était sans conséquence puisque les variables
+   écrasées sont calculées juste après le CALL VERSIO.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   installation sur Ubuntu edgy
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010522 DU 2007-02-09 12:28:47
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   TOTAL_JOB pourrait compter le temps CPU des processus "fils"
+FONCTIONNALITE
+   Actuellement, le temps passé dans les commandes ne tient pas compte du temps cpu et
+   système dépensés dans les processus fils (EXEC_LOGICIEL, metis...).
+   
+   Pour cela, je réutilise un module présent dans as_run. Je lui ajoute un format 'aster' (en
+   plus du format par défaut 'as_run') de manière à ce que le tableau récapitulatif ait
+   toujours le meme look et les memes labels (notamment TOTAL_JOB pour les grep !).
+   
+   Un objet "timer" est stocké dans le jdc, on ne stocke plus rien dans les étapes.
+   
+   Plus rien dans B_ETAPE, les tops de départ et de fin sont dans E_ETAPE. C'est E_JDC qui
+   demande l'affiche du tableau récapitulatif.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz159a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010528 DU 2007-02-12 08:04:02
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Portabilite sous windows
+FONCTIONNALITE
+   Afin de faciliter la compilation sous windows, je modifie aster_depend.h pour utiliser un
+   flag "standard" -DWIN32 dans la compilation du C.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   toujours compilable sous Linux !
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX J.M.             DATE 13/02/2007 - 17:15:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010307 DU 2006-11-24 09:40:15
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TMA : DeltaCad
+TITRE
+   Poursuite avec CHAM_EXCLU=VARI_ELGA apres un CPU_LIMIT
+FONCTIONNALITE
+   Anomalie
+   -------
+   Lorsque le temps CPU est suffisant, tous les champs aux derniers instants
+   d'archivage sont stockés, y compris les champs exclus (CHAM_EXCLU), 
+   ce qui permet de faire une poursuite.
+   Lorsque le temps CPU est insuffisant pour effectuer les calculs de STAT_NON_LINE aux
+   instants de calcul, le stockage des champs en présence d'ARCHIVAGE est perturbé:
+   - si le dernier instant de calcul avant fermeture intempestive de la base coincide avec un
+   instant d'archivage -> tous les champs sont stockés sauf les champs exclus.
+   - si le dernier instant de calcul avant fermeture intempestive de la base ne
+   coincide pas avec un instant d'archivage -> les champs a l'instant N ne sont donc pas
+   archivés,les derniers champs stockés sont ceux de l'instant N-1 où fort logiquement les
+   champs exclus sont absents.
+   L'abscence dans la base des champs exclus est préjudiciable à une éventuelle poursuite.
+   
+   Correction:
+   ----------
+   Actuellement, on sauvegarde les champs au pas de temps précedent lorsqu'il manque du temps
+   pour achever les calculs,mais en conservant le critère d'exclusion de champ ce qui ne
+   convient pas pour une eventuelle poursuite.
+   Nous avons donc forcé l'archivage afin que les champs exclus soient sauvegardés à
+   l'instant précédent la fermeture de la base.
+   Pour cela, nous avons modifié la fonction DIINCL de sorte à lui faire passer la variable
+   FORCE de sa routine d'appel NMARCH qui lui indique si on force l'archivage ou pas.
+   Ainsi dans le cas où le champ est a exclure et que le temps CPU n'est pas suffisant pour
+   réaliser tous les calculs, l'archivage des champs à l'instant précédent la fermeture de la
+   base est effectué.
+   
+   Impact
+   ------
+   fortran: diincl, nmarch
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+   etude jointe
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE J.P.          DATE 13/02/2007 - 17:15:07
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010328 DU 2006-11-30 08:18:44
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   LIRE_RESU et Stanley
+FONCTIONNALITE
+   Les fichiers sont sur Bull dans /home/rezette/E10328:
+   ./src: op0150.f, nmdome.f, ntdoth.f
+   ./catapy: lire_resu.capy
+   
+   histor (proposition)
+   ======
+   Objectif
+   --------
+   LIRE_RESU permet de constuire un resultat Aster. Cependant, ce resultat n'est pas
+   exploitable avec Stanley car il ne contient pas l'information CHAM_MATER et CARA_ELEM.
+   L'évolution a consisté à introduire les mot-clés facultatifs CHAM_MATER et CARA_ELEM dans
+   LIRE_RESU afin que les chaines de caractères fournis à ces mots-clés soient stockées dans
+   la SD résultat produite par cet opérateur.
+   On a profité de cette évolution pour stocker également le nom du MODELE,
+   et pour introduire le mot-clé EXCIT afin de stocker pour certains types
+   de SD résultat, la SD charge.
+   Bilan des mots-clés concernés par le stockage en fonction du type de résultat:
+   MODELE,CHAM_MATER,CARA_ELEM,EXCIT -> sd evol_ther, evol_elas, evol_noli
+   MODELE,CHAM_MATER,CARA_ELEM -> sd dyna_trans, dyna_harmo, mode_meca
+   aucun stockage pour : les sd evol_char, harm_gene.
+   
+   Validation
+   ----------
+   Restitution du cas-test zzzz161a: 
+   - ajout de EXCIT, CHAM_MATER et MODELE dans LIRE_RESU -> concept RESUTRQ2
+   - suppression de ces mots-clés dans le CALC_ELEM réutilisant le concept RESUTRQ2.
+   Vérification interne sur le cas-test zzzz162a:
+   - Stanley fonctionne sur le résultat obtenu
+   
+   Impact
+   ------
+   fortran: op0150.f, nmdome.f, ntdoth.f
+   catapy: lire_resu.capy
+   
+   Documentation:
+   -------------
+   U7.02.01: ajout des mots-clés CHAM_MATER,CARA_ELEM,EXCIT dans la syntaxe de LIRE_RESU et
+   description de ceux-ci.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.02.01
+VALIDATION
+   zzzz161a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010255 DU 2006-11-14 16:42:08
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   CREA_RESU mot clxc3xa9 PRECISION=1.d-3 par dxc3xa9faut
+FONCTIONNALITE
+   bjectif
+   --------
+   Dans la plus part des commandes qui utilisent une SD_RESULTAT evol_xxxx, le mot clé INST
+   est associé à un mot clé PRECISION (1.d-3 par défaut).
+   
+   Dans ces commandes, il s'agit de récupérer dans evol_xxx existant, le champ correspondant
+   à l'instant spécifié.
+   La tolérance assez grossière (1.d-3 par défaut) permet à l'utilisateur de ne pas "taper"
+   toutes les décimales de son instant. Si un transitoire contient les instants : 1.0000001
+   et 1.0000002, l'utilisateur sera obligé de modifier PRECISION=1.d-8 pour ne pas
+   sélectionner 2 instants involontairement.
+   
+   La commande CREA_RESU est différente. L'instant fourni ne sert pas à récupérer un champ
+   dans la SD : c'est un attribut qu'il faut associer au champ que l'on stocke dans la
+   SD_RESULTAT. En général, les champs que l'on stocke correspondent tous à des instants
+   différents. 
+   
+   Donc si je fais :
+     U1= CREA_RESU( OPERATION='AFFE', AFFE= (
+          _F( INST=1.000001, CHAMP=ch1),
+          _F( INST=1.000002, CHAMP=ch2),)
+   
+   ce n'est pas pour écraser ch1 par ch2 !!!
+   
+   L'évolution à consisté à mettre PRECISION=0. par défaut pour éviter cet écrasement.
+   Dans le cas très rare ou l'utilisateur souhaiterait écraser l'un de ces champs, il devra
+   utiliser le mot clé PRECISION.
+   
+   Ainsi en tenant compte de l'évolution dans l'exemple précédent, la SD résultat contiendra
+   2 champs. Par contre, si l'utilisateur veut remplacer le champ ch1 par le champ ch2, il
+   suffit de renseigner dans la deuxième occurence du mot-clé facteur AFFE le mot-cle PRECISION 
+   avec pour valeur 0.001 par exemple.
+   
+   Dans le cas d'un remplacement de champ, le message d'alarme a été enrichi: on y précise le
+   noms des champs concernés avec leurs instants de stockage, et la précision fournie par
+   l'utilisateur:
+    *** Champ déjà existant *** 
+    Le champ ch1 à l'instant 1.000001 est remplacé par le champ ch2 à l'instant
+    1.000001  avec la précision 0.001. 
+   
+   Impact
+   ------
+   fortran: crtype.f
+   catapy: crea_resu.capy
+   bibpyt/Messages: algorith11.py
+   
+   Validation
+   ----------
+   validation informatique réalisé à partir du cas-test ssll102a
+   
+   Documentation
+   -------------
+   Doc U4.44.12 (CREA_RESU): éclaircissement sur le fonctionnement de CREA_RESU/AFFE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.12
+VALIDATION
+   ssll102a
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS M.               DATE 13/02/2007 - 17:15:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009892 DU 2006-07-03 15:20:28
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   STAT_NON_LINE - SUIVI_DDL/OBSERVATION
+FONCTIONNALITE
+   OBJECTIF: 
+   ======== 
+   Réaliser la fusion des mots-clés facteurs OBSERVATION et SUIVI_DDL 
+   dans les opérateurs 
+   STAT_NON_LINE et DYNA_NON_LINE. 
+    
+   Le mot clé facteur 'OBSERVATION' a été conservé et il a été enrichi du 
+   mot clé simple 
+   SUIVI_DDL(='OUI ou 'NON') : 
+   Si  SUIVI_DDL = NON on est dans le mode OBSERVATION comme ce qui 
+   existait auparavant. 
+   Si  SUIVI_DDL = OUI on est dans le mode SUIVI_DDL comme ce qui 
+   existait auparavant. 
+      
+   La syntaxe du mot-clé facteur OBSERVATION est la suivante: 
+    
+    
+   SYNTAXE: 
+   ======= 
+   f  OBSERVATION = _F( 
+       o    NOM_CHAM   =  nomcham, 
+       o    NOM_CMP    =  nomcmp, 
+       o    SUIVI_DDL  =  /OUI 
+                          /NON  [defaut], 
+       f    / NOEUD      =  noeud, 
+            / GROUP_NO   =  groupno, 
+            / MAILLE     =  maille, 
+            / GROUP_MA   =  groupma, 
+              POINT      =  point, 
+    
+   C  SUIVI_DDL ='OUI': 
+   C  ---------------- 
+       o    NUME_SUIVI   =  nume, 
+       f    / VALE_MIN     =  vmin, 
+            / VALE_MAX     =  vmax, 
+    
+   C  SUIVI_DDL ='NON': 
+   C  ---------------- 
+       f    / INST         =  inst, 
+            / LIST_INST    =  linst, 
+            / PAS_OBSE     =  pas, 
+            / LIST_ARCH    =  larch, 
+       f    PRECISION    =  / prec, 
+                            / 0.001   [defaut], 
+       f    CRITERE      =  / crit, 
+                            / 'RELATIF' [defaut] 
+    
+   Règles: si SUIVI_DDL ='OUI': 
+    - nomcmp ne peut comporter qu'une seule composante, 
+    - GROUP_MA n'est pas accepté. 
+    
+   EXEMPLE: extrait du cas-test ssnv104e: 
+   ======= 
+   a) Ancienne syntaxe: 
+    
+   RESU=STAT_NON_LINE(MODELE=MO, 
+                      CHAM_MATER=CHMAT, 
+                      EXCIT=_F(CHARGE=CHA2, 
+                               FONC_MULT=RAMPE,), 
+                      COMP_ELAS=_F(RELATION='ELAS',), 
+                      INCREMENT=_F(LIST_INST=L_INST,), 
+                      OBSERVATION=(_F(NOM_CHAM='DEPL', 
+                                      NOM_CMP='DY',PAS_OBSE=1, 
+                                      NOEUD='N81',), 
+                                   _F(NOM_CHAM='SIEF_ELGA', 
+                                      POINT = 1, 
+                                      NOM_CMP='SIYY', 
+                                      MAILLE='M1',), 
+                               ),  
+                      SUIVI_DDL=(_F(NUME_SUIVI = 1, 
+                                    NOM_CHAM   = 'DEPL', 
+                                    NOM_CMP    = 'DX', 
+                                    GROUP_NO   = 'SUIV', 
+                                   ), 
+                                 _F(NUME_SUIVI = 2, 
+                                    NOM_CHAM   = 'SIEF_ELGA', 
+                                    NOM_CMP    = 'SIXX', 
+                                    MAILLE     = 'M1', 
+                                    POINT      = 1, 
+                                   ),       
+                                 _F(NUME_SUIVI = 3, 
+                                    NOM_CHAM   = 'SIEF_ELGA', 
+                                    NOM_CMP='SIXX', 
+                                    VALE_MAX='OUI', 
+                                   ),       
+                                ), 
+   ...   
+        
+   b) Nouvelle syntaxe 
+    
+   RESU=STAT_NON_LINE(MODELE=MO, 
+                      CHAM_MATER=CHMAT, 
+                      EXCIT=_F(CHARGE=CHA2, 
+                               FONC_MULT=RAMPE,), 
+                      COMP_ELAS=_F(RELATION='ELAS',), 
+                      INCREMENT=_F(LIST_INST=L_INST,), 
+                      OBSERVATION=(_F(NOM_CHAM='DEPL', 
+                                      NOM_CMP='DY',PAS_OBSE=1, 
+                                      NOEUD='N81', 
+                                      SUIVI_DDL='NON',), 
+                                   _F(NOM_CHAM='SIEF_ELGA', 
+                                      POINT = 1, 
+                                      NOM_CMP='SIYY', 
+                                      MAILLE='M1',), 
+                                       
+                                   _F(NUME_SUIVI = 1, 
+                                      NOM_CHAM = 'DEPL',  
+                                      NOM_CMP = 'DX',  
+                                      GROUP_NO = 'SUIV', 
+                                      SUIVI_DDL='OUI',), 
+                                   _F(NUME_SUIVI = 2 
+                                      NOM_CHAM = 'SIEF_ELGA',  
+                                      NOM_CMP = 'SIXX',  
+                                      MAILLE = 'M1', 
+                                      POINT = 1, 
+                                      SUIVI_DDL='OUI'),     
+                                   _F(NUME_SUIVI = 3, 
+                                      NOM_CHAM = 'SIEF_ELGA', 
+                                      NOM_CMP='SIXX', 
+                                      VALE_MAX='OUI', 
+                                      SUIVI_DDL='OUI'), 
+                                ),       
+   ... 
+    
+   DEVELOPPEMENT: 
+   ============= 
+    
+   1)catapy: stat_non_line.capy et dyna_non_line.capy 
+    ------- 
+   modification de leur mot-clé facteur OBSERVATION et suppression de 
+   leur mot-clé facteur 
+   SUIVI_DDL. 
+    
+   2) bibfor: 
+   --------- 
+   a) mise à jour des routines op0070.f, dyobse.f, dyobs1.f, dyobs2.f, 
+   dyobs3.f, diinit.f, 
+   nminit.f 
+   b) fusion des routines :  
+      dyobar.f et suiddl.f --> dyobar.f 
+      dyobs1.f et suilec.f --> dyobs1.f 
+      dyobs2.f et suicsd.f --> dyobs2.f 
+   c) suppression des routines inutiles:  suiddl.f, suilec.f, suicsd.f, 
+   suiini.f 
+    
+       
+    
+   VALIDATION: 
+   ========== 
+   1) restitution du cas-test ssnv104e après mise à jour du mot-clé 
+   OBSERVATION (comme dans 
+   l'exemple ci-dessus). 
+   2) restitution du cas-test sdnd102b après ajout de 
+   OBSERVATION/SUIVI_DDL dans DYNA_NON_LINE. 
+   On a vérifié que le suivi_ddl restait inchangé avant et après cette 
+   évolution. 
+   3) mise à jour du cas-test fdnv100a 
+   4) passage de la liste restreinte 
+    
+   DOCUMENTATION: 
+   ============= 
+   - U4.53.01 (Opérateur DYNA_NON_LINE): 
+     EXPL_: enrichissement sur l'utilisation du mot-clé OBSERVATION 
+   - U4.51.03 (Opérateur STAT_NON_LINE): 
+     Suppression du mot-clé SUIVI_DDL dans cette documentation. 
+     Pour le mot clé OBSERVATION, la doc de STAT_NON_LINE renvoie à la 
+   doc de    
+     DYNA_NON_LINE.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03,U4.53.01
+VALIDATION
+   ssnv104e,sdnd102b
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR voldoire     VOLDOIRE F.            DATE 13/02/2007 - 17:15:08
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009141 DU 2005-10-25 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   Ameliorations POU_D_EM
+FONCTIONNALITE
+   RESTITUTION FICHE 009141
+   TYPE evolution concernant Code_Aster (VERSION 9)
+   TMA : 
+   TITRE
+   Ameliorations POU_D_EM
+   FONCTIONNALITE
+   
+   Dans le cadre du projet OMERSI, on ameliore la modelisation POU_D_EM existante. Les
+   travaux engages concernent :
+   T1. l'affectation de plusieurs materiaux a un support EF (SEG2) unique afin de ne plus
+   avoir a dupliquer les mailles (acier + beton, par exemple)
+   T2. l'enrichissement de la deformation axiale
+   T3. la prise en compte correcte de la torsion en lineaire
+   
+   Remarque : on renonce (provisoirement) à la dernière tâche : 
+   "T4. l'introduction de l'effort tranchant non lineaire".
+   Les travaux sont realises en partenariat avec le ENS-C/LMT (Luc Davenne).
+   Ref. arex : EL 2005-275
+   
+   Ce développement touche à la fois les modélisations POU_D_EM et POU_D_TGM.
+   RTA tenue avec Luc Davenne le 14/11/2006 (fiche 9141)
+   RTA tenue avec Luc Davenne le 05/10/2006 (fiches 9141 et 9229)
+   RTA tenue avec Luc Davenne le 17/11/2005 (fiche 9141)
+   _________________
+   
+   Histor des modifications faites pour pouvoir prendre en compte plusieurs matériaux
+   (un par groupe de fibre) sur un élément poutre multifibre (Tâche T1).
+   
+   On définit une nouvelle structure de données gfibre_sdaster où l'on met la géométrie des
+   fibres 
+   regroupées en groupes de fibres.
+   On crée cette structure avec l'opérateur DEFI_GEOM_FIBRE (nouveau, op0119.f)
+   Chaque groupe de fibre a un nom (et un numéro par un répertoire de noms)
+   On affecte un matériau et un comportement à chaque groupe de fibre à l'aide de
+   DEFI_COMPOR (op0059.f, modifié).
+   On a défini une structure de données COMPOR adaptée aux multifibres.
+   Comme pour les monocristaux et polycristaux, ce sont 3 vecteurs : 
+   un de K16, un de I et un de R mais les renseignements dedans n'ont rien à voir avec les
+   cristaux
+   (voir SD COMPOR plus bas)
+   Avec AFFE_CARA_ELEM (op0019.f modifié) on affecte des groupes de fibres aux éléments poutres
+   (une section droite est composée d'un ou plusieurs groupes de fibres).
+   Dans nmdorc.f (STAT_NON_LINE) on rassemble tout ça pour que tout aille au niveau des TE.
+   
+   ------------------------------------------------------------------------------
+   Structure de données gfibre_sdaster
+   123456789012345678901234
+   NOMGF   .NOMS_GROUPES       RN   Repertoire des noms de groupes de fibres
+   NOMGF   .NB_FIBRE_GROUPE    LI   Nombre de fibres pour chaque groupe
+   NOMGF   .CARFI              LR   Caracteristiques des fibres (Y, Z, AIRE) pour chaque fibre
+   NOMGF   .POINTEUR           LI   Pointeur sur la fibre debut de chaque groupe
+   
+   ------------------------------------------------------------------------------
+   Structure de données compor_sdaster adaptée aux multifibres
+   123456789012345678901234
+   COMPO   .CPRK               LK16  Liste de quadruplets de K16 (4 valeurs par groupe) (voir
+   ci-dessous)
+   COMPO   .CPRI               LI    2 entiers (voir ci-dessous)
+   COMPO   .CPRR               LR    Non utilisé pour les multifibres
+   
+   CPRK contient :
+   1) pour chaque groupe 6 valeurs :
+        le nom du groupe,
+        le materiau,
+        la relation
+        le type d'algo 1D (ANALYTIQUE par defaut)
+        le type de deformation (PETIT par defaut)
+        le nombre de fibres de ce groupe
+   2) a la fin
+        le nom du materiau pour la torsion (voir doc DEFI_COMPOR modifiée)
+   CPRI contient 3 valeurs :
+        le numéro 3 (pour des tests d'assertion)
+        le nombre maxi de variable internes pour toutes les relations
+        le nombre de groupes de fibres,
+   
+   -------------------------------------------------------------------------------
+   Dans nmdorc, on met dans la carte COMPOR en position 6 (XXX1) "COMPO   .CPRK"
+   
+   Au niveau des TE, en relisant la carte COMPOR on a accès à COMPOR.CPRK dans lequel on retrouve
+   les renseignements utiles.
+   
+   -------------------------------------------------------------------------------
+   Modification des catalogues commandes CAPY :
+   
+   accas.capy : on ajoute "class gfibre_sdaster (ASSD):pass" pour definir la nouvelle SD
+   gfibre_sdaster
+   
+   defi_geom_fibre.capy : création du catalogue pour définir les groupes de fibres
+   - avec mots-clés facteurs SECTION et FIBRE et mot clé simple GROUP_FIBRE
+   
+   affe_cara_elem.capy : modification du catalogue 
+   - on enlève les mots clés AFFE_SECT et AFFE_FIBRE
+   - on ajoute le mot clé facteur MULTIFIBRE et mot clé simple GEOM_FIBRE
+   
+   defi_compor.capy : modification
+   - on ajoute les mots-clés simples GEOM_FIBRE et MATER_TORSION
+   - on ajoute le mot-clé facteur MULTIFIBRE
+   
+   c_comp_incr.capy : modification du catalogue
+   - ajout de la relation "MULTIFIBRE"
+   
+   affe_materiau.capy : modification
+   - ajout du mot clé facteur AFFE_COMPOR
+   
+   -------------------------------------------------------------------------------
+   Modification des fichiers de Messages PY :
+   
+   Il restait pas mal de messages UTMESS, UTDEBM et UTFINM qui ne concerne pas pour la
+   pluspart les developpements PMF, mais que j'ai du traiter pour pouvoir restituer!!!
+   
+   Ajout de messages dans :
+   algorith11.py
+   calculel5.py
+   elements4.py
+   modelisa7.py
+   prepost4.py
+   
+   Création des fichiers :
+   modelisa8.py
+   prepost5.py
+   
+   -------------------------------------------------------------------------------
+   Modification de catalogues elements CATA :
+   
+   grandeur_simple__.cata : modification
+   - ajout de NBGRFI et NUG1 à NUG10 pour la grandeur NBSP_I
+   
+   gener_mepmf1.cata      : modification
+   - ajout de NBGRFI et NUG1 à NUG10 pour le champ    ENBSP_I
+   Il y a donc actuellement 10 groupes de fibres maxi par élément poutre.
+   C'est écrit en dur en fortran dans la routine pmfd00.f et pas ailleurs.
+   PARAMETER (NGMXEL=10)
+   Si on doit augmenter cette limite, il suffit donc de modifier les 2 catalogues et
+   cette ligne dans pmfd00.f
+   Attention, dans pmfd01.f, quand on crée la carte, on est limité à 99 groupes pour l'instant
+   Si on veut plus de 99 groupes, il faut donc aussi modifier un peu pmfd01.f
+   - ajout de la carte COMPOR pour les options EFGE_ELNO_DEPL, SIEF_ELGA_DEPL,RIGI_MECA,
+   MASS_MECA, MASS_MECA_DIAG, M_GAMA
+   
+   gener_mepmf2.cata      : modification
+   - ajout de NBGRFI et NUG1 pour le champ    ENBSP_I
+   - On ne met qu'un groupe ici car il ne doit y avoir qu'un groupe de fibre par élément poutre
+   pour les POU_D_TGM
+   - ajout de XXX1 et XXX2 (et les KIT pendant qu'on y est) pour le carte COMPOR
+   
+   mass_meca_diag.cata et m_gamma.cata: modifiés
+   efge_elno_depl.cata et sief_elga_depl.cata: modifiés
+   char_meca_pesa_r.cata, char_meca_sech_r.cata, char_meca_hydr_r.cata: modifiés
+   - ajout de la carte CCOMPOR en IN
+   - cette carte est utile pour ces options dans gener_mepmf1.cata
+   - pour mass_meca.cata et char_meca_temp_r CCOMPOR y était déjà.
+   
+   
+   =============================================================================
+   Modification du Fortran
+   
+   op0119.f : créé
+   Concerne DEFI_GEOM_FIBRE
+   - C'est une partie des lignes concernant AFFE_SECT et AFFE_FIBRE anciennement dans
+   AFFE_CARA_ELEM
+   - Ces lignes étaient dans pmdd00.f
+   
+   
+   op0019.f, pmfd00.f et pmfd01.f : modifiés
+   Concernent AFFE_CARA_ELEM
+   - On y a enlevé les lignes concernant la création des fibres
+   - pmfd00.f sert à déterminer les éléments poutres affectés par l'occurrence 
+   - dans pmfd00.f on vérifie PREC_AIRE et PREC_INERTIE  
+   - pmfd01.f sert pour crée les cartes NBSP_I et CAFIBR
+   - CAFIBR est toujours composée par une suite de (Y, Z, AIRE) pour chaque fibre dans l'ordre
+   d'apparition regroupées par groupes (aussi dans l'ordre d'apparition).
+   - op0019.f : modification annecdotique (juste le commentaire avant l'appel à pmfd00)
+   
+   op0059.f : modifié
+   Concerne DEFI_COMPOR
+   - ajout de la partie concernant le multifibre en bas
+   - ajout des déclarations correspondantes
+   
+   
+   te0535.f : très modifié
+   Concerne RIGI_MECA_TANG, RAPH_MECA et FULL_MECA pour les POU_D_EM
+   - complètement remanié pour traiter tous les groupes de fibre ici, chacun avec son
+   comportement
+   - complètement remanié pour tenir compte du modes incompatible ajouté (noeud bulle)
+   - une partie du travail externalisé dans une nouvelle routine : pmfmcf.f
+   
+   pmfmcf.f : créé
+   Appelée par te0535
+   - fait le travail au niveau d'un point de gauss. Rend te0535 plus lisible
+   
+   pmffft.f : créé
+   Appelée par te0535
+   - calcule la matrice v x vtranspose avec stockage en triangle inférieur
+   
+   pmfitx.f : créé
+   Appelée par pmfmas, par pmfrig et ptforp.f
+   - calcule une intégrale sur la section en multipliant par E ou par RHO constant par groupe de
+   fibre
+   
+   pmfdge.f et pmfpti.f : modifiés
+   - pour tenir compte de G, dérivée de la fonction de forme du mode incompatible
+   
+   
+   matela.f : modifié
+   - il fallait passer le matériau en second argument pour l'appel à rcvala
+   - ça impacte quelque routines où on met un argument blanc ou non:
+   te0247.f, te0404.f, te0516.f, te0537.f et nmvmpo.f
+   
+   
+   te0516.f et te0517.f : modifiés
+   Concerne les éléments POU_D_TGM
+   - Pour ces éléments, on ne peut avoir qu'un groupe de fibre par élément poutre
+   - On met donc un petit test de sécurité qui vérifie ça au début
+   - Modification de l'appel à pmfcom, tenir compte de la sd compor
+   
+   
+   pmfrig.f : modifié
+   Concerne l'option RIGI_MECA des POU_D_EM
+   - Pour cette option on ne fait pas de mode incompatible pour l'instant (assez lourd à
+   programmer)
+   
+   te0537.f : modifié
+   Concerne les options XXXX_XXXX_DEPL
+   - on met le ddl incompatible à zero car dans le calcul RIGI_MECA on ne peut pas traiter
+   de mode incompatible (itérations). On pourrait peut-etre mais encore beaucoup de travail...
+   - on fait ce qu'il faut pour l'option SIEF_ELGA_DEPL pour tenir compte des différents
+   matériaux.
+   
+   te0141.f, pmfmas.f : modifiés
+   Concerne les options M_GAMMA, MASS_MECA, MASS_INER
+   - passage de ICDMAT au lieu de RHO en argument de l'appel à pmfmas depuis te0141
+   - boucle par groupes de fibre dans pmfmas, donc lecture de SD CMPOR par COMPOR
+   
+   op0009.f : modifié
+   Concerne CALC_MATR_ELEM
+   - on cree une crte COMPOR (partielle) avec mfdorc avant d'appeler memame
+   
+   te0150.f : modifié
+   Concerne CHAR_MECA_TEMP_R
+   - pour l'instant on récupère la 
+   
+   te0146.f, ptforp.f : modifié
+   Concerne l'option CHAR_MECA_PESA_R
+   - modifications pour tenir compte de COMPOR et des différents groupes de fibres
+   
+   op0007.f : non modifié
+   Concerne AFFE_CHAR_MECA
+   
+   mfdorc.f : créé
+   - fabrique une carte COMPOR partielle, on ne remplit que la position 6 (XXX1)
+   - cette carte est utile pour memame (option MASS_MECA), merime et te0140 (RIGI_MECA)
+   
+   te0140.f : modifié
+   Concerne l'option RIGI_MECA
+   - modification de l'appel à pmfrig et non lecture de E et NU par rcvala si pou_d_em
+   
+   te0142.f : modifié
+   Concerne l'option EFGE_ELNO_DEPL
+   - modification de l'appel à pmfrig et non lecture de E et NU par rcvala si pou_d_em
+   
+   mecalm.f, nmlect.f, merime.f, mestat.f, mereso.f, meacmv.f; op0046.f : modifiés
+   Concerne MECA_STATIQUE et les options EFGE_ELNO_DEPL et SIEF_ELGA_DEPL
+   - pour passer COMPOR aux options pour savoir quel matériau pour quel groupe de fibre
+   
+   ssrige.f, vechde.f et nmco1d.f: modifiés
+   - mofification de l'appel à merime
+   
+   vechme.f, meacmv.f : modifiés
+   Concerne AFFE_CHAR_MECA
+   et les options CHAR_MECA_PESA_R, CHAR_MECA_TEMP_R, CHAR_MECA_SCHE_R et CHAR_MECA_HYDR_R
+   - pour passer COMPOR aux options pour savoir quel matériau pour quel groupe de fibre
+   
+   vectme.f, vecyme.f, vecsme.f : modifiés
+   Concerne le calcul des options CHAR_MECA_TEMP_R, CHAR_MECA_HYDR_R et
+   CHAR_MECA_SECH_R
+   - passage de COMPOR en argument (appelé par macmv.f) et dans les LCHIN
+   
+   chtota.f, dlfext.f et chstnl.f : modifiés
+   - ajout de COMPOR dans l'appel à vectme
+   
+   op0106.f : modifié
+   Concerne CALC_NO option REAC_NODA en EVOL_NOLI et DYNA => calcul avec option M_GAMMA
+   - on met COMPOR dans l'appel à memam2
+   
+   memam2.f : modifié 
+   Concenre l'option M_GAMMA
+   - ajout de COMPOR dans les LCHIN
+   
+   nm1dci.f, nm1dis.f, nmco1d.f, nmiclb.f, nm1dco.f, nm1vil.f : modifiés
+   - pour passer le matériau en argument aux appels RCVALA
+   
+   nm1tra.f : NON MODIFIE
+   - car plus bas dans rctrac.f on vérifie qu'il n'y a qu'un matériau par maille
+   
+   comp1d.f : NON MODIFIE
+   - si on passait le matériau en argument, il faudrait modifier plusieurs dizaines
+   de routines de comportement 3D, en plus il y a un probleme car on relit le materiau dans
+   comp1d
+   - ça fonctionne si on ne met qu'un matériau par élément, et sans dupliquer les
+   mailles.
+   
+   
+   op0006.f : modifie
+   concerne DEFI_MATERIAU
+   appel à rccomp pour le noveau mot-clé AFFE_COMPOR
+   
+   rccomp.f : nouveau
+   lecture du mot clé AFFE_COMPOR de DEFI_MATERIAU
+   création de la carte COMPOR
+   
+   cesfus.f : modifie
+   ajout des K16 dans la fusion
+   
+   cescar.f : cree et modifie
+   Cree par Jacques. J'ai mis en commentaire le CALL ASSERT(TSCA.EQ.'R')
+   Peut-etre est-ce deja corrige par Jacques en V9
+   
+   
+   ============================================================================
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE :  U4.26.01 (DEFI_GEOM_FIBRE) U4.43.06 (DEFI_COMPOR), U4.42.01
+   (AFFE_CARA_ELEM), 
+                          V3.01.111, V2.02.130,
+   V2.02.132,V6.02.119,V5.02.130,V3.01.102,V3.01.105,V6.02.106,
+                          V6.02.120, V6.02.122, V6.02.123
+   VALIDATION
+   CAS TESTS
+   
+   - ssll111a  OK [V3.01.111]
+   Réponse statique d'une poutre en béton armé (section en T) à comportement linéaire
+   
+   - sdll130b [V2.02.130]
+   Réponse sismique d'une poutre en béton armé (section rectangulaire) à comportement linéaire
+   
+   - sdll132a [V2.02.132]
+   Modes propres d'une charpente en poutres multi-fibres (POU_D_TGM et POU_D_EM)
+   
+   - ssnl119a,ssnl119b  OK [V6.02.119]
+   Réponse statique d'une poutre en béton armé (section rectangulaire) à comportement non
+   linéaire
+   -> Tolérences modifiées pour passer en ok par rapport à la référence autre code (eficos)
+   
+   - sdnl130a [V5.02.130]
+   Réponse sismique d'une poutre en béton armé (section rectangulaire) à comportement non
+   linéaire
+   
+   - sdll122a Titre : ?
+   Pas de doc mais les fichiers sont la
+   
+   - ssll102j Poutre encastrée soumise à des efforts unitaires (POU_D_TGM) [V3.01.102]
+   Doc pas à jour (s'arrete à i) mais les fichiers sont la
+   
+   - ssll105e Flambement élastique d'une structure en L (POU_D_TGM) [V3.01.105]
+   Pas de e sur le site ni dans la doc
+   
+   - ssnl106g, ssnl106h  Poutre élastoplastique en traction et flexion pure (POU_D_TGM) OK
+   [V6.02.106]
+   
+   AUTRES TESTS PASSES NON FONCIEREMENT MODIFIES :
+   
+   
+   mac3c01a : MAC3COEUR 5x5 ASSEMBLAGES (fichier *.27 : lecture maillage et elts finis
+   
+   
+   ssnl120a Réponse cyclique de la loi de comportement du béton (modèle de La Borderie)
+   [V6.02.120]
+   ssnl122a Poutre cantilever Multi-Fibres soumise à un effort (POU_D_TGM) [V6.02.122]
+   ssnl123a Flambement d'une poutre Multi-Fibres (POU_D_TGM) [V6.02.123]
+   ssnl127b 
+   ssnl127c 
+   ssnl128a Pas de doc sur le site
+   ssnl132a Pas de doc sur le site
+   ssnl132b Pas de doc sur le site
+   ssnl133b Pas de doc sur le site
+   ssnl134a Pas de doc sur le site
+   ssnl135a Pas de doc sur le site
+   ssnl135b Pas de doc sur le site
+   ssnl135c Pas de doc sur le site
+   ssnl136a Pas de doc sur le site
+   ssnl502d Poutre en flambement
+   ssnv138d Plaque Cantilever en grandes rotations soumise à un moment
+   ssnv142c 
+   ssnv505h 
+   
+   NB_JOURS_TRAV  : 76
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.26.01, U4.43.06, U4.42.01, V3.01.111, V2.02.130, R3.08.08
+VALIDATION
+   tests
+NB_JOURS_TRAV  : 76.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnv197a                         kham M.KHAM             529    529      0
+ CASTEST AJOUT ssnv197b                         kham M.KHAM             530    530      0
+ CASTEST AJOUT ssnv197c                         kham M.KHAM             530    530      0
+ CASTEST MODIF fdnv100a                       pellet J.PELLET           330      2      2
+ CASTEST MODIF mac3c01a                       pellet J.PELLET           422      8     11
+ CASTEST MODIF sdld102a                       pellet J.PELLET           838      2      2
+ CASTEST MODIF sdld102c                       pellet J.PELLET           338      2      2
+ CASTEST MODIF sdll06a                        pellet J.PELLET           227      2      2
+ CASTEST MODIF sdll110a                       pellet J.PELLET           502      2      2
+ CASTEST MODIF sdll115a                       pellet J.PELLET          1437      2      2
+ CASTEST MODIF sdll115b                       pellet J.PELLET           783      2      2
+ CASTEST MODIF sdll116a                       pellet J.PELLET          4989      2      2
+ CASTEST MODIF sdll117a                       pellet J.PELLET          1430      2      2
+ CASTEST MODIF sdll121a                       pellet J.PELLET           514      2      2
+ CASTEST MODIF sdll122a                       pellet J.PELLET           157     38     27
+ CASTEST MODIF sdll130b                       pellet J.PELLET           299     31     30
+ CASTEST MODIF sdll132a                       pellet J.PELLET           671     83     65
+ CASTEST MODIF sdll136a                       pellet J.PELLET           645      2      2
+ CASTEST MODIF sdll137a                       pellet J.PELLET           453      7      1
+ CASTEST MODIF sdls103a                       pellet J.PELLET           390      2      2
+ CASTEST MODIF sdls105b                       pellet J.PELLET           304      2      2
+ CASTEST MODIF sdlv111a                       boyere E.BOYERE           252      2      2
+ CASTEST MODIF sdnd102a                       pellet J.PELLET           371      2      2
+ CASTEST MODIF sdnd102b                       pellet J.PELLET           465      9      4
+ CASTEST MODIF sdnl104b                       pellet J.PELLET           479     12     26
+ CASTEST MODIF sdnl130a                       pellet J.PELLET           150     62     47
+ CASTEST MODIF sdnv101a                       pellet J.PELLET          1363      2      2
+ CASTEST MODIF sensd09b                       pellet J.PELLET           192      2      2
+ CASTEST MODIF shll100a                       pellet J.PELLET           697      5      5
+ CASTEST MODIF ssll102j                       pellet J.PELLET           127     16      8
+ CASTEST MODIF ssll105e                       pellet J.PELLET           155     21     27
+ CASTEST MODIF ssll111a                       pellet J.PELLET           234     89     56
+ CASTEST MODIF sslp101f                       pellet J.PELLET           336      2      3
+ CASTEST MODIF sslv04a                          kham M.KHAM             512     64     56
+ CASTEST MODIF sslv110c                       pellet J.PELLET           387      2      3
+ CASTEST MODIF sslv135c                        bodel C.BODEL            784      1      1
+ CASTEST MODIF ssnl106g                       pellet J.PELLET           254     23      9
+ CASTEST MODIF ssnl106h                       pellet J.PELLET           253     22      9
+ CASTEST MODIF ssnl119a                       pellet J.PELLET           426    205    171
+ CASTEST MODIF ssnl120a                       pellet J.PELLET           174     22     12
+ CASTEST MODIF ssnl122a                       pellet J.PELLET           348     48     40
+ CASTEST MODIF ssnl123a                       pellet J.PELLET           374     49     41
+ CASTEST MODIF ssnl127b                       pellet J.PELLET           460     35     37
+ CASTEST MODIF ssnl127c                       pellet J.PELLET           475     28     14
+ CASTEST MODIF ssnl128a                       pellet J.PELLET           608     43     23
+ CASTEST MODIF ssnl132a                       pellet J.PELLET           906    110     81
+ CASTEST MODIF ssnl132b                       pellet J.PELLET           954    106     57
+ CASTEST MODIF ssnl133b                       pellet J.PELLET           239     22     11
+ CASTEST MODIF ssnl134a                       pellet J.PELLET           436     21      9
+ CASTEST MODIF ssnl135a                       pellet J.PELLET           731    175    147
+ CASTEST MODIF ssnl135b                       pellet J.PELLET           736    180    147
+ CASTEST MODIF ssnl135c                       pellet J.PELLET           740    178    146
+ CASTEST MODIF ssnl136a                       pellet J.PELLET           247     21      9
+ CASTEST MODIF ssnl502d                       pellet J.PELLET           541     21     11
+ CASTEST MODIF ssnv104e                       pellet J.PELLET           250     12     11
+ CASTEST MODIF ssnv138d                       pellet J.PELLET           304     21      9
+ CASTEST MODIF ssnv142c                       pellet J.PELLET           200     22      9
+ CASTEST MODIF ssnv505h                       pellet J.PELLET           455     25     15
+ CASTEST MODIF zzzz113b                       pellet J.PELLET          1162      4      9
+ CASTEST MODIF zzzz161a                       pellet J.PELLET           264      4      5
+ CASTEST MODIF zzzz200b                       pellet J.PELLET          1117      2      2
+ CASTEST SUPPR ssnl119b.comm                  pellet J.PELLET           193      0    193
+CATALOGU MODIF compelem/grandeur_simple__     pellet J.PELLET           633     22     10
+CATALOGU MODIF options/char_meca_hydr_r       pellet J.PELLET            43      2      1
+CATALOGU MODIF options/char_meca_pesa_r       pellet J.PELLET            44      2      1
+CATALOGU MODIF options/char_meca_sech_r       pellet J.PELLET            43      2      1
+CATALOGU MODIF options/efge_elno_depl         pellet J.PELLET            93      4      1
+CATALOGU MODIF options/mass_meca_diag         pellet J.PELLET            46      2      1
+CATALOGU MODIF options/m_gamma                pellet J.PELLET            41      2      1
+CATALOGU MODIF options/rigi_meca              pellet J.PELLET            49      3      1
+CATALOGU MODIF options/sief_elga_depl         pellet J.PELLET            93      4      1
+CATALOGU MODIF typelem/gener_mepmf1           pellet J.PELLET           193     13     10
+CATALOGU MODIF typelem/gener_mepmf2           pellet J.PELLET           223      5      3
+CATALOPY AJOUT commande/defi_geom_fibre       pellet J.PELLET            52     52      0
+CATALOPY MODIF commande/affe_cara_elem        pellet J.PELLET           562      8     27
+CATALOPY MODIF commande/affe_materiau         pellet J.PELLET           188     11      1
+CATALOPY MODIF commande/calc_elem               kham M.KHAM             501      5      3
+CATALOPY MODIF commande/calc_no                 kham M.KHAM             106      3      2
+CATALOPY MODIF commande/crea_resu             pellet J.PELLET           133      2      2
+CATALOPY MODIF commande/defi_compor           pellet J.PELLET           188    131      5
+CATALOPY MODIF commande/defi_materiau           kham M.KHAM            2704     20      1
+CATALOPY MODIF commande/dyna_non_line         pellet J.PELLET           413     24     25
+CATALOPY MODIF commande/lire_resu             pellet J.PELLET           205     33      1
+CATALOPY MODIF commande/stat_non_line         pellet J.PELLET           382     21     23
+CATALOPY MODIF commun/c_comp_incr               kham M.KHAM             347      4      1
+CATALOPY MODIF entete/accas                   pellet J.PELLET           224     84   1017
+       C MODIF supervis/astermodule           pellet J.PELLET          3625    129      5
+       C MODIF utilitai/iniast                pellet J.PELLET            60      4      3
+ FORTRAN AJOUT algorith/hujci1                  kham M.KHAM             195    195      0
+ FORTRAN AJOUT algorith/hujcrd                  kham M.KHAM              79     79      0
+ FORTRAN AJOUT algorith/hujcri                  kham M.KHAM              51     51      0
+ FORTRAN AJOUT algorith/hujddd                  kham M.KHAM             283    283      0
+ FORTRAN AJOUT algorith/hujela                  kham M.KHAM             113    113      0
+ FORTRAN AJOUT algorith/hujiid                  kham M.KHAM             365    365      0
+ FORTRAN AJOUT algorith/hujjid                  kham M.KHAM             634    634      0
+ FORTRAN AJOUT algorith/hujksi                  kham M.KHAM              73     73      0
+ FORTRAN AJOUT algorith/hujmat                  kham M.KHAM              93     93      0
+ FORTRAN AJOUT algorith/hujmid                  kham M.KHAM             230    230      0
+ FORTRAN AJOUT algorith/hujncv                  kham M.KHAM              46     46      0
+ FORTRAN AJOUT algorith/hujnvi                  kham M.KHAM              71     71      0
+ FORTRAN AJOUT algorith/hujpla                  kham M.KHAM             257    257      0
+ FORTRAN AJOUT algorith/hujprj                  kham M.KHAM              61     61      0
+ FORTRAN AJOUT algorith/hujtel                  kham M.KHAM              87     87      0
+ FORTRAN AJOUT algorith/hujtid                  kham M.KHAM             280    280      0
+ FORTRAN AJOUT algorith/nmhuj                   kham M.KHAM             321    321      0
+ FORTRAN AJOUT elements/pmffft                pellet J.PELLET            56     56      0
+ FORTRAN AJOUT elements/pmfitx                pellet J.PELLET           108    108      0
+ FORTRAN AJOUT elements/pmfmcf                pellet J.PELLET            82     82      0
+ FORTRAN AJOUT modelisa/op0119                pellet J.PELLET           286    286      0
+ FORTRAN AJOUT modelisa/rccomp                pellet J.PELLET           130    130      0
+ FORTRAN AJOUT utilitai/jelst3                pellet J.PELLET            68     68      0
+ FORTRAN MODIF algeline/amogen                pellet J.PELLET           172      4      4
+ FORTRAN MODIF algeline/mefsm1                pellet J.PELLET            99      2      2
+ FORTRAN MODIF algeline/mtcmbl                pellet J.PELLET           215      4      4
+ FORTRAN MODIF algeline/preres                pellet J.PELLET           225      2      2
+ FORTRAN MODIF algeline/resoud                pellet J.PELLET           246      4      4
+ FORTRAN MODIF algorith/assgcy                pellet J.PELLET           162      2      2
+ FORTRAN MODIF algorith/assgen                pellet J.PELLET           371      2      2
+ FORTRAN MODIF algorith/calcme                  kham M.KHAM             439     14      2
+ FORTRAN MODIF algorith/chstnl                pellet J.PELLET           129      2      2
+ FORTRAN MODIF algorith/chtota                pellet J.PELLET           110      3      3
+ FORTRAN MODIF algorith/crsolv                pellet J.PELLET            86      2      2
+ FORTRAN MODIF algorith/crtype                pellet J.PELLET           392     16      9
+ FORTRAN MODIF algorith/diincl                pellet J.PELLET            96      9      2
+ FORTRAN MODIF algorith/diinit                pellet J.PELLET           576      4      4
+ FORTRAN MODIF algorith/dlfext                pellet J.PELLET           375      2      6
+ FORTRAN MODIF algorith/dyobar                pellet J.PELLET           562    330     56
+ FORTRAN MODIF algorith/dyobs1                pellet J.PELLET           335    105     16
+ FORTRAN MODIF algorith/dyobs2                pellet J.PELLET           335    147     49
+ FORTRAN MODIF algorith/dyobs3                pellet J.PELLET           189      9      4
+ FORTRAN MODIF algorith/dyobse                pellet J.PELLET           180     25     13
+ FORTRAN MODIF algorith/mappar                  kham M.KHAM             369     15     18
+ FORTRAN MODIF algorith/mdallr                pellet J.PELLET           137      3      3
+ FORTRAN MODIF algorith/meacmv                pellet J.PELLET           478     13     12
+ FORTRAN MODIF algorith/mereso                pellet J.PELLET           278      6      4
+ FORTRAN MODIF algorith/mestat                pellet J.PELLET           308      8      5
+ FORTRAN MODIF algorith/mmrema                  kham M.KHAM             225      7     14
+ FORTRAN MODIF algorith/nm1dci                pellet J.PELLET           115      5      4
+ FORTRAN MODIF algorith/nm1dis                pellet J.PELLET           157      6      5
+ FORTRAN MODIF algorith/nm1vil                pellet J.PELLET           247      9      8
+ FORTRAN MODIF algorith/nmarch                pellet J.PELLET           360     13     12
+ FORTRAN MODIF algorith/nmasse                pellet J.PELLET            77      5      4
+ FORTRAN MODIF algorith/nmco1d                pellet J.PELLET           138      3      3
+ FORTRAN MODIF algorith/nmcomp                  kham M.KHAM             691     15      4
+ FORTRAN MODIF algorith/nmdome                pellet J.PELLET           811     46     42
+ FORTRAN MODIF algorith/nmdorc                pellet J.PELLET           603     39      4
+ FORTRAN MODIF algorith/nmiclb                pellet J.PELLET           158      4      4
+ FORTRAN MODIF algorith/nminit                pellet J.PELLET           426      2     10
+ FORTRAN MODIF algorith/nmlect                pellet J.PELLET           160      6      2
+ FORTRAN MODIF algorith/nmthmc                  kham M.KHAM             462      6      4
+ FORTRAN MODIF algorith/nmtstm                  kham M.KHAM              70      8      2
+ FORTRAN MODIF algorith/nmvcfo                pellet J.PELLET           220     10      7
+ FORTRAN MODIF algorith/nmvmpo                pellet J.PELLET           321      4      4
+ FORTRAN MODIF algorith/nmvpir                pellet J.PELLET           578      8      7
+ FORTRAN MODIF algorith/ntdoth                pellet J.PELLET           392      3      2
+ FORTRAN MODIF algorith/numer2                pellet J.PELLET           131      2      2
+ FORTRAN MODIF algorith/op0027                pellet J.PELLET           252      3      3
+ FORTRAN MODIF algorith/op0046                pellet J.PELLET           280      4      3
+ FORTRAN MODIF algorith/op0070                pellet J.PELLET           977     11      9
+ FORTRAN MODIF algorith/op0164                pellet J.PELLET           253      2      2
+ FORTRAN MODIF algorith/pascom               greffet N.GREFFET          120      6     10
+ FORTRAN MODIF algorith/pascou               greffet N.GREFFET          188     21     18
+ FORTRAN MODIF algorith/posvar                  kham M.KHAM             365     51      5
+ FORTRAN MODIF algorith/projmc                pellet J.PELLET           176      3      3
+ FORTRAN MODIF algorith/projmr                pellet J.PELLET           160      3      3
+ FORTRAN MODIF algorith/vechde                pellet J.PELLET           589      2      2
+ FORTRAN MODIF algorith/vecsme                pellet J.PELLET           182      8      6
+ FORTRAN MODIF algorith/vectme                pellet J.PELLET           173      8      6
+ FORTRAN MODIF algorith/vecyme                pellet J.PELLET           187      8      6
+ FORTRAN MODIF assembla/asmatr                pellet J.PELLET           230      2      2
+ FORTRAN MODIF assembla/asmchc                pellet J.PELLET           314      3      3
+ FORTRAN MODIF assembla/assmam                pellet J.PELLET          1134      3      3
+ FORTRAN MODIF assembla/assmmn                pellet J.PELLET           897      2      2
+ FORTRAN MODIF assembla/mtmchc                pellet J.PELLET           232      3      3
+ FORTRAN MODIF assembla/ualfva                pellet J.PELLET           176      2      2
+ FORTRAN MODIF calculel/cescar                pellet J.PELLET           129      5      8
+ FORTRAN MODIF calculel/cesfus                pellet J.PELLET           382      8      3
+ FORTRAN MODIF calculel/mecalm                pellet J.PELLET          2797     74     62
+ FORTRAN MODIF calculel/memam2                pellet J.PELLET           146      6      4
+ FORTRAN MODIF calculel/merime                pellet J.PELLET           215      7      4
+ FORTRAN MODIF calculel/op0009                pellet J.PELLET           200      9      7
+ FORTRAN MODIF elements/majust                  kham M.KHAM              95     16      2
+ FORTRAN MODIF elements/matela                pellet J.PELLET            65      5      4
+ FORTRAN MODIF elements/pmfcom                pellet J.PELLET           288     34     22
+ FORTRAN MODIF elements/pmfdge                pellet J.PELLET            49      6      4
+ FORTRAN MODIF elements/pmfmas                pellet J.PELLET            76      9     22
+ FORTRAN MODIF elements/pmfpti                pellet J.PELLET            57      6      3
+ FORTRAN MODIF elements/pmfrig                pellet J.PELLET            84      9     30
+ FORTRAN MODIF elements/poefgr                pellet J.PELLET           196      8      2
+ FORTRAN MODIF elements/ptforp                pellet J.PELLET           382     20      9
+ FORTRAN MODIF elements/te0140                pellet J.PELLET           213      7      7
+ FORTRAN MODIF elements/te0141                pellet J.PELLET           188      4      3
+ FORTRAN MODIF elements/te0142                pellet J.PELLET           152     17      5
+ FORTRAN MODIF elements/te0146                pellet J.PELLET           158      6     11
+ FORTRAN MODIF elements/te0150                pellet J.PELLET           358     29     22
+ FORTRAN MODIF elements/te0247                pellet J.PELLET           351      5      5
+ FORTRAN MODIF elements/te0404                pellet J.PELLET           135      2      2
+ FORTRAN MODIF elements/te0516                pellet J.PELLET           619     15      7
+ FORTRAN MODIF elements/te0517                pellet J.PELLET           284      4      3
+ FORTRAN MODIF elements/te0535                pellet J.PELLET           353    132     65
+ FORTRAN MODIF elements/te0537                pellet J.PELLET           230     65     34
+ FORTRAN MODIF jeveux/jelihd                lefebvre J-P.LEFEBVRE       578      3      4
+ FORTRAN MODIF modelisa/atasmo                pellet J.PELLET           286      2      2
+ FORTRAN MODIF modelisa/nm1dco                pellet J.PELLET           234     15     16
+ FORTRAN MODIF modelisa/op0006                pellet J.PELLET           287      5      1
+ FORTRAN MODIF modelisa/op0019                pellet J.PELLET           471      2      2
+ FORTRAN MODIF modelisa/op0059                pellet J.PELLET           372     97      1
+ FORTRAN MODIF modelisa/pmfd00                pellet J.PELLET           306    136    580
+ FORTRAN MODIF modelisa/pmfd01                pellet J.PELLET           190     55     24
+ FORTRAN MODIF prepost/op0106                 pellet J.PELLET           792      2      2
+ FORTRAN MODIF prepost/prcoch                  bodel C.BODEL            332     10      1
+ FORTRAN MODIF soustruc/ssrige                pellet J.PELLET           123      2      2
+ FORTRAN MODIF supervis/debut                 pellet J.PELLET            89      9      4
+ FORTRAN MODIF supervis/execop                pellet J.PELLET           133      1     17
+ FORTRAN MODIF supervis/ibdbgs                pellet J.PELLET           168      2      8
+ FORTRAN MODIF utilitai/op0150                pellet J.PELLET           973     91     12
+ FORTRAN MODIF utilitai/verisd                pellet J.PELLET            28      2     14
+ FORTRAN SUPPR algorith/suicsd                pellet J.PELLET           277      0    277
+ FORTRAN SUPPR algorith/suiddl                pellet J.PELLET           444      0    444
+ FORTRAN SUPPR algorith/suiini                pellet J.PELLET            85      0     85
+ FORTRAN SUPPR algorith/suilec                pellet J.PELLET           246      0    246
+       H MODIF include/aster_depend           pellet J.PELLET           144     13      6
+       H MODIF include/aster                  pellet J.PELLET            83      1      1
+       H MODIF include/definition             pellet J.PELLET           238      5      1
+  PYTHON AJOUT Messages/compor1                 kham M.KHAM              67     67      0
+  PYTHON AJOUT Messages/dynamique            greffet N.GREFFET           63     63      0
+  PYTHON AJOUT Messages/modelisa8             pellet J.PELLET            68     68      0
+  PYTHON AJOUT Messages/prepost5              pellet J.PELLET            55     55      0
+  PYTHON AJOUT SD/ascheckers                  pellet J.PELLET            70     70      0
+  PYTHON AJOUT SD/asnom                       pellet J.PELLET           133    133      0
+  PYTHON AJOUT SD/asojb                       pellet J.PELLET           304    304      0
+  PYTHON AJOUT SD/basetype                    pellet J.PELLET           156    156      0
+  PYTHON AJOUT SD/checksd                     pellet J.PELLET            78     78      0
+  PYTHON AJOUT SD/co_base_modale              pellet J.PELLET            28     28      0
+  PYTHON AJOUT SD/co_cabl_precont             pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_cara_elem                pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_carte                    pellet J.PELLET            28     28      0
+  PYTHON AJOUT SD/co_cham_elem                pellet J.PELLET            72     72      0
+  PYTHON AJOUT SD/co_cham_mater               pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_cham_no                  pellet J.PELLET            69     69      0
+  PYTHON AJOUT SD/co_champ                    pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_char_acou                pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_char_cine_acou           pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_char_cine_meca           pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_char_cine_ther           pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_char_meca                pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_char_ther                pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_compor                   pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_courbe                   pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_fiss_xfem                pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_fonction                 pellet J.PELLET           318    318      0
+  PYTHON AJOUT SD/co_fond_fiss                pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_gfibre                   pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_interf_dyna_clas         pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_listis                   pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_listr8                   pellet J.PELLET            40     40      0
+  PYTHON AJOUT SD/co_macr_elem_dyna           pellet J.PELLET           131    131      0
+  PYTHON AJOUT SD/co_macr_elem_stat           pellet J.PELLET            27     27      0
+  PYTHON AJOUT SD/co_maillage                 pellet J.PELLET            53     53      0
+  PYTHON AJOUT SD/co_mater                    pellet J.PELLET            54     54      0
+  PYTHON AJOUT SD/co_matr_asse_gd             pellet J.PELLET            45     45      0
+  PYTHON AJOUT SD/co_matr_asse_gene           pellet J.PELLET           211    211      0
+  PYTHON AJOUT SD/co_matr_asse                pellet J.PELLET            27     27      0
+  PYTHON AJOUT SD/co_matr_elem                pellet J.PELLET            40     40      0
+  PYTHON AJOUT SD/co_melasflu                 pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_mode_cycl                pellet J.PELLET            27     27      0
+  PYTHON AJOUT SD/co_modele_gene              pellet J.PELLET            47     47      0
+  PYTHON AJOUT SD/co_modele                   pellet J.PELLET            27     27      0
+  PYTHON AJOUT SD/co_nume_ddl_gene            pellet J.PELLET            27     27      0
+  PYTHON AJOUT SD/co_nume_ddl                 pellet J.PELLET            27     27      0
+  PYTHON AJOUT SD/co_resultat_dyn             pellet J.PELLET            28     28      0
+  PYTHON AJOUT SD/co_resultat                 pellet J.PELLET            53     53      0
+  PYTHON AJOUT SD/co_sd_feti                  pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_spectre                  pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_squelette                pellet J.PELLET            28     28      0
+  PYTHON AJOUT SD/co_surface                  pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_table_fonction           pellet J.PELLET            30     30      0
+  PYTHON AJOUT SD/co_table                    pellet J.PELLET           117    117      0
+  PYTHON AJOUT SD/co_tran_gene                pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_type_flui_stru           pellet J.PELLET            26     26      0
+  PYTHON AJOUT SD/co_vect_asse_gene           pellet J.PELLET           107    107      0
+  PYTHON AJOUT SD/co_vect_elem                pellet J.PELLET            38     38      0
+  PYTHON AJOUT SD/__init__                    pellet J.PELLET            32     32      0
+  PYTHON AJOUT SD/sd_base_modale              pellet J.PELLET            31     31      0
+  PYTHON AJOUT SD/sd_cabl_precont             pellet J.PELLET            36     36      0
+  PYTHON AJOUT SD/sd_cara_elem                pellet J.PELLET            44     44      0
+  PYTHON AJOUT SD/sd_carte                    pellet J.PELLET            36     36      0
+  PYTHON AJOUT SD/sd_cham_elem                pellet J.PELLET            39     39      0
+  PYTHON AJOUT SD/sd_cham_gene                pellet J.PELLET            29     29      0
+  PYTHON AJOUT SD/sd_cham_mater               pellet J.PELLET            49     49      0
+  PYTHON AJOUT SD/sd_cham_no                  pellet J.PELLET            54     54      0
+  PYTHON AJOUT SD/sd_champ                    pellet J.PELLET            68     68      0
+  PYTHON AJOUT SD/sd_char_acou                pellet J.PELLET            35     35      0
+  PYTHON AJOUT SD/sd_char_cine                pellet J.PELLET            32     32      0
+  PYTHON AJOUT SD/sd_char_contact             pellet J.PELLET            72     72      0
+  PYTHON AJOUT SD/sd_char_meca                pellet J.PELLET            73     73      0
+  PYTHON AJOUT SD/sd_char_ther                pellet J.PELLET            51     51      0
+  PYTHON AJOUT SD/sd_char_unilate             pellet J.PELLET            34     34      0
+  PYTHON AJOUT SD/sd_compor1                  pellet J.PELLET            41     41      0
+  PYTHON AJOUT SD/sd_compor                   pellet J.PELLET            28     28      0
+  PYTHON AJOUT SD/sd_courbe_lm                pellet J.PELLET            29     29      0
+  PYTHON AJOUT SD/sd_courbe                   pellet J.PELLET            35     35      0
+  PYTHON AJOUT SD/sd_courbe_sa                pellet J.PELLET            41     41      0
+  PYTHON AJOUT SD/sd_feti                     pellet J.PELLET            45     45      0
+  PYTHON AJOUT SD/sd_fiss_xfem                pellet J.PELLET            87     87      0
+  PYTHON AJOUT SD/sd_fonction                 pellet J.PELLET            32     32      0
+  PYTHON AJOUT SD/sd_fond_fiss                pellet J.PELLET            35     35      0
+  PYTHON AJOUT SD/sd_formule                  pellet J.PELLET            28     28      0
+  PYTHON AJOUT SD/sd_gfibre                   pellet J.PELLET            32     32      0
+  PYTHON AJOUT SD/sd_interf_dyna_clas         pellet J.PELLET            57     57      0
+  PYTHON AJOUT SD/sd_l_charges                pellet J.PELLET            29     29      0
+  PYTHON AJOUT SD/sd_ligrel                   pellet J.PELLET            34     34      0
+  PYTHON AJOUT SD/sd_liste_rela               pellet J.PELLET            37     37      0
+  PYTHON AJOUT SD/sd_listis                   pellet J.PELLET            32     32      0
+  PYTHON AJOUT SD/sd_listr8                   pellet J.PELLET            33     33      0
+  PYTHON AJOUT SD/sd_l_table                  pellet J.PELLET            39     39      0
+  PYTHON AJOUT SD/sd_macr_elem_dyna           pellet J.PELLET            55     55      0
+  PYTHON AJOUT SD/sd_macr_elem_stat           pellet J.PELLET            53     53      0
+  PYTHON AJOUT SD/sd_maillage                 pellet J.PELLET            62     62      0
+  PYTHON AJOUT SD/sd_mater                    pellet J.PELLET            42     42      0
+  PYTHON AJOUT SD/sd_matr_asse_com            pellet J.PELLET            40     40      0
+  PYTHON AJOUT SD/sd_matr_asse_gd             pellet J.PELLET            38     38      0
+  PYTHON AJOUT SD/sd_matr_asse_gene           pellet J.PELLET            40     40      0
+  PYTHON AJOUT SD/sd_matr_asse                pellet J.PELLET            48     48      0
+  PYTHON AJOUT SD/sd_matr_cine                pellet J.PELLET            33     33      0
+  PYTHON AJOUT SD/sd_matr_elem                pellet J.PELLET            45     45      0
+  PYTHON AJOUT SD/sd_melasflu                 pellet J.PELLET            64     64      0
+  PYTHON AJOUT SD/sd_mode_cycl                pellet J.PELLET            34     34      0
+  PYTHON AJOUT SD/sd_modele_gene              pellet J.PELLET            34     34      0
+  PYTHON AJOUT SD/sd_modele                   pellet J.PELLET            43     43      0
+  PYTHON AJOUT SD/sd_nume_ddl_com             pellet J.PELLET            38     38      0
+  PYTHON AJOUT SD/sd_nume_ddl_gd              pellet J.PELLET            31     31      0
+  PYTHON AJOUT SD/sd_nume_ddl_gene            pellet J.PELLET            33     33      0
+  PYTHON AJOUT SD/sd_nume_ddl                 pellet J.PELLET            47     47      0
+  PYTHON AJOUT SD/sd_nume_eqge                pellet J.PELLET            31     31      0
+  PYTHON AJOUT SD/sd_nume_equa                pellet J.PELLET            30     30      0
+  PYTHON AJOUT SD/sd_obstacle                 pellet J.PELLET            29     29      0
+  PYTHON AJOUT SD/sd_para_sensi               pellet J.PELLET            27     27      0
+  PYTHON AJOUT SD/sd_prof_chno                pellet J.PELLET            31     31      0
+  PYTHON AJOUT SD/sd_prof_vgen                pellet J.PELLET            30     30      0
+  PYTHON AJOUT SD/sd_reperage_1d              pellet J.PELLET            29     29      0
+  PYTHON AJOUT SD/sd_reperage_omega           pellet J.PELLET            35     35      0
+  PYTHON AJOUT SD/sd_resuelem                 pellet J.PELLET            29     29      0
+  PYTHON AJOUT SD/sd_resultat_dyn             pellet J.PELLET            47     47      0
+  PYTHON AJOUT SD/sd_resultat                 pellet J.PELLET            81     81      0
+  PYTHON AJOUT SD/sd_solveur                  pellet J.PELLET            29     29      0
+  PYTHON AJOUT SD/sd_spectre                  pellet J.PELLET            37     37      0
+  PYTHON AJOUT SD/sd_squelette                pellet J.PELLET            30     30      0
+  PYTHON AJOUT SD/sd_stockage                 pellet J.PELLET            33     33      0
+  PYTHON AJOUT SD/sd_stoc_lciel               pellet J.PELLET            31     31      0
+  PYTHON AJOUT SD/sd_stoc_mltf                pellet J.PELLET            44     44      0
+  PYTHON AJOUT SD/sd_stoc_morse               pellet J.PELLET            29     29      0
+  PYTHON AJOUT SD/sd_surface_1d               pellet J.PELLET            36     36      0
+  PYTHON AJOUT SD/sd_surface                  pellet J.PELLET            38     38      0
+  PYTHON AJOUT SD/sd_table_fonction           pellet J.PELLET            50     50      0
+  PYTHON AJOUT SD/sd_table                    pellet J.PELLET            61     61      0
+  PYTHON AJOUT SD/sd_titre                    pellet J.PELLET            27     27      0
+  PYTHON AJOUT SD/sd_tran_gene                pellet J.PELLET            61     61      0
+  PYTHON AJOUT SD/sd_type_flui_stru           pellet J.PELLET            41     41      0
+  PYTHON AJOUT SD/sd_util                     pellet J.PELLET            64     64      0
+  PYTHON AJOUT SD/sd_vect_elem                pellet J.PELLET            29     29      0
+  PYTHON AJOUT Utilitai/as_timer              pellet J.PELLET           251    251      0
+  PYTHON MODIF Build/B_ETAPE                  pellet J.PELLET           696     38     44
+  PYTHON MODIF Build/B_SENSIBILITE_DERIVATION     pellet J.PELLET           632     10      9
+  PYTHON MODIF Build/B_SENSIBILITE_JDC        pellet J.PELLET           496      4      5
+  PYTHON MODIF Build/B_utils                  pellet J.PELLET           198     31     31
+  PYTHON MODIF Cata/ops                       pellet J.PELLET           460     13      4
+  PYTHON MODIF Execution/E_ETAPE              pellet J.PELLET           273     27     15
+  PYTHON MODIF Execution/E_Global             pellet J.PELLET            74     34      2
+  PYTHON MODIF Execution/E_JDC                pellet J.PELLET           283     31     54
+  PYTHON MODIF Execution/E_MACRO_ETAPE        pellet J.PELLET           242      6     10
+  PYTHON MODIF Execution/genpy                pellet J.PELLET           313     15     14
+  PYTHON MODIF Macro/macr_recal_ops           pellet J.PELLET          1026      6      5
+  PYTHON MODIF Macro/reca_calcul_aster        pellet J.PELLET           910      3      2
+  PYTHON MODIF Messages/algorith11            pellet J.PELLET           384      5      1
+  PYTHON MODIF Messages/algorith9            greffet N.GREFFET          413      6     19
+  PYTHON MODIF Messages/calculel5             pellet J.PELLET           294     14      1
+  PYTHON MODIF Messages/champs                 bodel C.BODEL             37      5      1
+  PYTHON MODIF Messages/contact             lefebvre J-P.LEFEBVRE       227    210      2
+  PYTHON MODIF Messages/modelisa7             pellet J.PELLET           418      5      3
+  PYTHON MODIF Messages/prepost4              pellet J.PELLET           433      9      1
+  PYTHON MODIF Messages/sdveri                pellet J.PELLET           217      7      1
+  PYTHON MODIF Messages/utilitai5             pellet J.PELLET           299     13      1
+  PYTHON MODIF Noyau/N_ASSD                   pellet J.PELLET           131     15      4
+  PYTHON MODIF Noyau/N_CO                     pellet J.PELLET            52      3      2
+  PYTHON MODIF Noyau/N_ETAPE                  pellet J.PELLET           413      3      3
+  PYTHON MODIF Noyau/N_JDC                    pellet J.PELLET           458      2      2
+  PYTHON MODIF Noyau/N_MACRO_ETAPE            pellet J.PELLET           675      7      4
+  PYTHON MODIF Noyau/N_MCCOMPO                pellet J.PELLET           416      1      2
+  PYTHON MODIF Noyau/N_MCSIMP                 pellet J.PELLET           178      9     11
+  PYTHON MODIF Noyau/N_utils                  pellet J.PELLET           149     18     18
+  PYTHON MODIF Noyau/N_VALIDATOR              pellet J.PELLET          1198     11      7
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :  165       12380     12380            +12380
+ MODIF :  222       91141      5024    4376      +648
+ SUPPR :    5        1245              1245     -1245
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  392      104766     17404    5621    +11783 

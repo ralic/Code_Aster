@@ -1,8 +1,8 @@
       SUBROUTINE NM1DIS(IMATE,TEMPM,TEMPP,TREF,EM,EP,ALPHAM,ALPHAP,SIGM,
-     &                  DEPS,VIM,OPTION,COMPOR,SIGP,VIP,DSDE)
+     &                  DEPS,VIM,OPTION,COMPOR,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     ------------------------------------------------------------------
       REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU
       REAL*8 SIGP,DSDE,RBID
       CHARACTER*16 OPTION,COMPOR(*)
+      CHARACTER*(*) MATERI
       INTEGER IMATE
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
@@ -75,9 +76,9 @@ C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
       IF ((COMPOR(1).EQ.'VMIS_ISOT_LINE') .OR.
      &   (COMPOR(1).EQ.'GRILLE_ISOT_LINE')) THEN
         VALPAR = TEMPP
-        CALL RCVALA(IMATE,' ','ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,NOMECL,
-     &              VALRES,CODRES,FB2)
-        CALL RCVALA(IMATE,' ','ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALA(IMATE,MATERI,'ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,
+     &              NOMECL,VALRES,CODRES,FB2)
+        CALL RCVALA(IMATE,MATERI,'ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,
      &             NOMECL(2), VALRES(2),CODRES(2),BL2)
         IF (CODRES(2).NE.'OK') VALRES(2) = 0.D0
         ET = VALRES(1)

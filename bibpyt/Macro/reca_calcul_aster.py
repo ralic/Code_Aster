@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -893,9 +893,10 @@ Message:
 
            # Tous les autres fichiers en Donnees
            elif lab == 'data':
-             dico['path'] = os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
+              if dico['type'] not in ('exec', 'ele'):
+                 dico['path'] = os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
 
-           # sinon on garde la ligne
+           # sinon on garde la ligne telle quelle
        setattr(prof, lab, l_fr)
 
      # Ecriture du nouveau fichier export

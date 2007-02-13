@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C----------------------------------------------------------------------
       BASE1 = BASE
       MATDEV = MATAS
       NUDEV = NU
-C     CALL VERISD('NUME_DDL',NU)
+C     CALL CHEKSD(NU,'sd_nume_ddl',IRET)
       INFOFE = 'FFFFFFFFFFFFFFFFFFFFFFFF'
 
 C---- GESTION DES DONNEES D'ENTREE
@@ -1128,7 +1128,7 @@ C========================================
 
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()
-C     CALL VERISD('MATRICE',MATDEV)
+C     CALL CHEKSD(MATDEV,'sd_matr_asse',IRET)
 
  9000 FORMAT (1P,'COEFFICIENT DE CONDITIONNEMENT DES LAGRANGES',E12.5)
       END

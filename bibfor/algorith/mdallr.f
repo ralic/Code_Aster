@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/09/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
 C
       INTEGER          NBMAX, IPAR, IPAR1, IPAR2
       PARAMETER        (NBMAX=50)
-      CHARACTER*24     KPAR(NBMAX)      
+      CHARACTER*24     KPAR(NBMAX)
       CHARACTER*32     JEXNUM
 
       CALL JEMARQ()
@@ -81,10 +81,10 @@ C CREATION DE LA MATRICE GENERALISE SUPPORT
       ZK24(JREFA-1+10) = 'GENE'
       CALL WKVECT(MATGEN//'           .LIME','V V K8',1,LDLIM)
       ZK8(LDLIM)=NUGENE
-      
+
 C recuperation des parametres a garder dans le modele gene
       CALL GETVTX(' ','NOM_PARA',1,1,NBMAX,KPAR,IPAR)
-      
+
       DO 100 IMODE = 1, NBSAUV
 C        --- VECTEUR PROPRE ---
         CALL RSEXCH (RESU2, 'DEPL', IMODE, CHAMNO, IER )
@@ -105,10 +105,10 @@ C        --- VECTEUR PROPRE ---
               ZR(LVALE+IER-1) = VECPR8(IER,IMODE)
           ELSE
               ZC(LVALE+IER-1) = VECPC8(IER,IMODE)
-          ENDIF    
+          ENDIF
  110    CONTINUE
         CALL RSNOCH (RESU2, 'DEPL', IMODE, ' ' )
-        
+
         DO 200 I = 1 , IPAR
            CALL RSADPA(RESU1,'L',1,KPAR(I),IMODE,1,IPAR1,TYP)
            CALL RSADPA(RESU2,'E',1,KPAR(I),IMODE,0,IPAR2,K8B)
@@ -127,8 +127,8 @@ C        --- VECTEUR PROPRE ---
  100  CONTINUE
 
       CALL VPCREA(0,RESU2,' ',' ',' ',' ',IER)
-C     CALL VERISD('NUME_DDL',NUGENE)
-C     CALL VERISD('MATRICE',MATGEN)
+C     CALL CHEKSD('sd_nume_ddl',NUGENE,IRET)
+C     CALL CHEKSD('sd_matr_asse',MATGEN,IRET)
       CALL JEDETC (' ',NUGENE,1)
       CALL JEDETC (' ',MATGEN,1)
 

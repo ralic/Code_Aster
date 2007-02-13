@@ -7,7 +7,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -216,13 +216,13 @@ C
 C
 C CARACTERISTIQUES ELASTIQUES VARIABLES
 C
-      CALL NMASSE(IMATE,INSTAM,TM,
+      CALL NMASSE(IMATE,' ',INSTAM,TM,
      &            EM,NUM,ALPHAM,DEUMUM,TROIKM)
 
 C CONNERIE DE COMMON DEBILE
       DEUXMU = DEUMUM
 
-      CALL NMASSE(IMATE,INSTAP,TP,
+      CALL NMASSE(IMATE,' ',INSTAP,TP,
      &            EP,NUP,ALPHAP,DEUMUP,TROIKP)
 
 C ----------------------------------------------------------------------
@@ -354,10 +354,11 @@ C      DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL
 C      RECUPERATION DU REPERE POUR LE GRANDISSEMENT
          IF (NDIM.EQ.2) THEN
             IF (ANGMAS(2) .NE. 0.D0 ) THEN
-               CALL UTDEBM('F','NMVPIR_2','ERREUR DIR. GRANDISSEMENT')
-               CALL UTIMPR('L','   ANGLE ALPHA = ',1,ANGMAS(1))
-               CALL UTIMPR('L','    ANGLE BETA = ',1,ANGMAS(2))
-               CALL UTFINM()
+               CALL U2MESR('F','ALGORITH11_82',2,ANGMAS(2))
+C               CALL UTDEBM('F','NMVPIR_2','ERREUR DIR. GRANDISSEMENT')
+C               CALL UTIMPR('L','   ANGLE ALPHA = ',1,ANGMAS(1))
+C               CALL UTIMPR('L','    ANGLE BETA = ',1,ANGMAS(2))
+C               CALL UTFINM()
             ENDIF
          ENDIF
          ALPHA = ANGMAS(1)

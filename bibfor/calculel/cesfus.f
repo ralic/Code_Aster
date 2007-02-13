@@ -1,7 +1,7 @@
       SUBROUTINE CESFUS(NBCHS,LICHS,LCUMUL,LCOEFR,LCOEFC,LCOC,BASE,
      & CES3Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,8 @@ C     ------------------------------------------------------------------
       LOGICAL CUMUL
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-
+C        CALL IMPRSD('CHAMP',LICHS(1),6,'cesfus in 1')
+C        CALL IMPRSD('CHAMP',LICHS(2),6,'cesfus in 2')
 
 C     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_ELEM_S "IN",
 C        ON CREE CES3 SOUS UN NOM TEMPORAIRE :
@@ -315,6 +316,8 @@ C               -- SI AFFECTATION :
                     ZL(JCE3V-1+IAD3) = ZL(JCE1V-1+IAD1)
                   ELSE IF (TSCA.EQ.'K8') THEN
                     ZK8(JCE3V-1+IAD3) = ZK8(JCE1V-1+IAD1)
+                  ELSE IF (TSCA.EQ.'K16') THEN
+                    ZK16(JCE3V-1+IAD3) = ZK16(JCE1V-1+IAD1)
                   ELSE
                     CALL U2MESS('F','CALCULEL_39')
                   END IF
@@ -338,6 +341,8 @@ C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
                     ENDIF
                   ELSE IF ((TSCA.EQ.'L') .OR. (TSCA.EQ.'K8')) THEN
                     CALL U2MESS('F','CALCULEL_78')
+C                  ELSE IF (TSCA.EQ.'K16') THEN
+C                    ZK16(JCE3V-1+IAD3) = ZK16(JCE1V-1+IAD1)
                   ELSE
                     CALL U2MESS('F','CALCULEL_39')
                   END IF
@@ -360,7 +365,7 @@ C               -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
 C     6- RECOPIE DE LA SD TEMPORAIRE DANS LE RESULTAT :
 C     -------------------------------------------------
       CALL COPISD('CHAM_ELEM_S',BASE,CES3,CES3Z)
-
+C        CALL IMPRSD('CHAMP',CES3,6,'cesfus out 3')
 
 C     7- MENAGE :
 C     -----------

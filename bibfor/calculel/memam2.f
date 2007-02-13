@@ -1,5 +1,5 @@
-      SUBROUTINE MEMAM2(OPTION,MODELE,NCHAR,LCHAR,MATE,CARA,EXITIM,TIME,
-     &                  CHACCE,VECEL,BASEZ,LIGREZ)
+      SUBROUTINE MEMAM2(OPTION,MODELE,NCHAR,LCHAR,MATE,CARA,COMPOR,
+     &                  EXITIM,TIME,CHACCE,VECEL,BASEZ,LIGREZ)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NCHAR
       REAL*8 TIME
@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C ----------------------------------------------------------------------
       CHARACTER*1 BASE
       CHARACTER*8 K8B,LPAIN(17),LPAOUT(1),NEWNOM
-      CHARACTER*24 LIGRMO,LCHIN(17),LCHOUT(1)
+      CHARACTER*24 LIGRMO,LCHIN(17),LCHOUT(1),COMPOR
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM,VECELZ
 
       CALL JEMARQ()
@@ -122,6 +122,8 @@ C ----------------------------------------------------------------------
       LCHIN(15) = CHCARA(1) (1:8)//'.CANBSP'
       LPAIN(16) = 'PFIBRES'
       LCHIN(16) = CHCARA(1) (1:8)//'.CAFIBR'
+      LPAIN(17) = 'PCOMPOR'
+      LCHIN(17) = COMPOR
 
       LCHOUT(1) = '&&MEMAM2.???????'
       CALL GCNCO2(NEWNOM)

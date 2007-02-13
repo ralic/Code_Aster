@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,12 +38,21 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='POU_D_EM',),);
 
+GF=DEFI_GEOM_FIBRE(
+           SECTION = _F ( GROUP_FIBRE='SEC1',
+                            MAILLAGE_SECT = MASEC , GROUP_MA_SECT = 'SURF1',
+                            COOR_AXE_POUTRE = (0., 0.,)),
+            )
+
 MATR=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
                            NU=0.3,),);
 
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MATR,
+                  MULTIFIBRE=(_F(GROUP_FIBRE='SEC1',MATER=MATR),))
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MATR,),);
+                    AFFE=_F(TOUT='OUI',MATER=MATR,),
+                    AFFE_COMPOR=_F(GROUP_MA = 'G1',COMPOR=COMPF));
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
                      POUTRE=_F(GROUP_MA = 'G1',
@@ -54,11 +63,10 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
                  ORIENTATION=_F(GROUP_MA=('G1'),
                           CARA='ANGL_VRIL', VALE=0.0,),
                           
-                          AFFE_SECT=_F(GROUP_MA='G1',
-                                  GROUP_MA_SECT='SURF1',
-                                  MAILLAGE_SECT=MASEC,
-                                  COOR_AXE_POUTRE=(0.0,0.0,),),
-);
+                          GEOM_FIBRE=GF,
+                          MULTIFIBRE=_F(GROUP_MA='G1',
+                                  GROUP_FIBRE='SEC1'),
+                  );
 
 # ------ TORSION GX : --------------------------------------------------
 

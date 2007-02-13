@@ -1,4 +1,4 @@
-#@ MODIF B_utils Build  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF B_utils Build  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 """
 """
 # Modules Python
-import types,sys,string
+import sys
 
 # Modules Eficas
 from Noyau.N_ASSD import ASSD
@@ -35,7 +35,7 @@ def RETLIST(v,mxval):
        eventuellement negative si supérieure a mxval
        et le deuxieme la liste complete qui sera tronquee a mxval dans le fortran
    """
-   if type(v) in (types.ListType, types.TupleType):
+   if type(v) in (list, tuple):
      if len(v) == 3 and v[0] in ("RI","MP"): # On a affaire a un complexe isole
        ll=1
        l=(v,)
@@ -69,7 +69,7 @@ def TraceGet( nom_fonction , nom_motfac , iocc , nom_motcle , tup , sortie=sys.s
     else :
        for e in tup[1] :
           sortie.write( ' ' )
-          if type(e) == types.StringType :
+          if type(e) == str:
              sortie.write( '"'+e+'"' )
           else :
              sortie.write( `e` )
@@ -82,7 +82,7 @@ def CONVID (v):
       Cette fonction convertit un concept ou une liste de concept
       en chaine de caracteres ou liste de chaines
    """
-   if type(v) in (types.ListType, types.TupleType):
+   if type(v) in (list, tuple):
      l=()
      for e in v:
        l=l+(convid(e),)
@@ -91,7 +91,7 @@ def CONVID (v):
      return convid(v)
 
 def ast_name(concept):
-   return string.ljust(concept.get_name(),8)
+   return concept.get_name().ljust(8)
 
 def convid(e):
    if isinstance(e,ASSD):
@@ -107,28 +107,28 @@ def ReorganisationDe( texte , LongueurSousChaine=80 ) :
                        la sous-chaine (utile) qui le contient est completee par
                        des espaces blancs pour faire une longueur de LongueurSousChaine.
         """
-        assert(type(texte)==types.StringType)
+        assert(type(texte) == str)
 
         # on change les chaines '**' (puissance), 'E+' 'E-' (puissance de 10) pour les
         # proteger lors du decoupage suivant les separateurs
-        texte=string.replace(texte,'**','#1#')
-        texte=string.replace(texte,'E+','#2#')
-        texte=string.replace(texte,'E-','#3#')
-        texte=string.replace(texte,'e+','#4#')
-        texte=string.replace(texte,'e-','#5#')
-        texte=string.replace(texte,'D+','#6#')
-        texte=string.replace(texte,'D-','#7#')
-        texte=string.replace(texte,'d+','#8#')
-        texte=string.replace(texte,'d-','#9#')
+        texte=texte.replace('**','#1#')
+        texte=texte.replace('E+','#2#')
+        texte=texte.replace('E-','#3#')
+        texte=texte.replace('e+','#4#')
+        texte=texte.replace('e-','#5#')
+        texte=texte.replace('D+','#6#')
+        texte=texte.replace('D-','#7#')
+        texte=texte.replace('d+','#8#')
+        texte=texte.replace('d-','#9#')
         # conversion de texte en une liste de sous-chaines
-        liste=string.split('('+string.strip(texte)+')','\n')
+        liste = ('(' + texte.strip() + ')').split('\n')
         # dans le cas d'une chaine trop longue (>LongueurSousChaine) :
         # on eclate suivant les separateurs de la liste l_separ
         l_separ=['+','-','/','*','(',')']
         liste2=[]
         LongueurSousChaine=LongueurSousChaine/2
         for sous_chaine in liste :
-            uneChaine = string.strip( sous_chaine) # elimination des blancs inutiles.
+            uneChaine = sous_chaine.strip() # elimination des blancs inutiles.
             if ( len(uneChaine) > LongueurSousChaine ) :
                liste3=[]
                ttt=uneChaine[:LongueurSousChaine]
@@ -155,22 +155,22 @@ def ReorganisationDe( texte , LongueurSousChaine=80 ) :
         apres = ''
         LongueurSousChaine=LongueurSousChaine*2
         for sous_chaine in liste2 :
-                uneChaine = string.strip( sous_chaine) # elimination des blancs inutiles.
-                uneChaine = string.replace(uneChaine,'#1#','**')
-                uneChaine = string.replace(uneChaine,'#2#','E+')
-                uneChaine = string.replace(uneChaine,'#3#','E-')
-                uneChaine = string.replace(uneChaine,'#4#','e+')
-                uneChaine = string.replace(uneChaine,'#5#','e-')
-                uneChaine = string.replace(uneChaine,'#6#','D+')
-                uneChaine = string.replace(uneChaine,'#7#','D-')
-                uneChaine = string.replace(uneChaine,'#8#','d+')
-                uneChaine = string.replace(uneChaine,'#9#','d-')
+                uneChaine = sous_chaine.strip() # elimination des blancs inutiles.
+                uneChaine = uneChaine.replace('#1#','**')
+                uneChaine = uneChaine.replace('#2#','E+')
+                uneChaine = uneChaine.replace('#3#','E-')
+                uneChaine = uneChaine.replace('#4#','e+')
+                uneChaine = uneChaine.replace('#5#','e-')
+                uneChaine = uneChaine.replace('#6#','D+')
+                uneChaine = uneChaine.replace('#7#','D-')
+                uneChaine = uneChaine.replace('#8#','d+')
+                uneChaine = uneChaine.replace('#9#','d-')
                 if ( len(uneChaine) > LongueurSousChaine ) :
                         sys.stderr.write("ERREUR detectee dans Decoupe\n" )
                         print ">",uneChaine,"<"
                         raise "Decoupe : chaine depassant la limite de "+`LongueurSousChaine`+\
                         ' caracteres'
-                apres = apres + string.ljust(uneChaine,LongueurSousChaine)
+                apres = apres + uneChaine.ljust(LongueurSousChaine)
 
         return apres
 
@@ -179,7 +179,7 @@ def Typast(ty):
       Cette fonction retourne une chaine de caracteres indiquant le type
       du concept ou de la liste de concepts passé en argument (ty)
    """
-   if type(ty) == types.TupleType : 
+   if type(ty) == tuple: 
 #      t=ty[0]
       return [Typast(elem) for elem in ty]
    else : 
@@ -188,7 +188,7 @@ def Typast(ty):
    if t == 'R'  : return "R8 "
    if t == 'C'  : return "C8 "
    if t == 'TXM': return "TX "
-   if type(t)==types.ClassType :
+   if issubclass(t, ASSD):
       if t.__name__ == 'reel'    :return "R8 "
       if t.__name__ == 'entier'  :return "IS "
       if t.__name__ == 'complexe':return "C8 "

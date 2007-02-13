@@ -1,4 +1,4 @@
-#@ MODIF N_CO Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF N_CO Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,27 +25,28 @@ from N_ASSD import ASSD
 from N_Exception import AsException
 from N_VALIDATOR import ValError
 import N_utils
+from SD.asojb import AsBase
 
-class CO(ASSD):
-  def __init__(self,nom):
-    ASSD.__init__(self,etape=None,sd=None,reg='oui')
-    #
-    #  On demande le nommage du concept
-    #
-    if self.parent : 
-       try:
-          self.parent.NommerSdprod(self,nom)
-       except AsException,e:
-          appel=N_utils.callee_where(niveau=2)
-          raise AsException("Concept CO, fichier: ",appel[1]," ligne : ",appel[0],'\n',e)
-    else:
-       self.nom=nom
+class CO(ASSD, AsBase):
+   def __init__(self,nom):
+      ASSD.__init__(self,etape=None,sd=None,reg='oui')
+      #
+      #  On demande le nommage du concept
+      #
+      if self.parent : 
+         try:
+            self.parent.NommerSdprod(self,nom)
+         except AsException,e:
+            appel=N_utils.callee_where(niveau=2)
+            raise AsException("Concept CO, fichier: ",appel[1]," ligne : ",appel[0],'\n',e)
+      else:
+         self.nom=nom
 
-  def __convert__(cls,valeur):
-      if hasattr(valeur,'_etape') :
-         # valeur est un concept CO qui a ete transforme par type_sdprod
-         if valeur.etape == valeur._etape:
-             # le concept est bien produit par l'etape
-             return valeur
-      raise ValError("Pas un concept CO")
-  __convert__=classmethod(__convert__)
+   def __convert__(cls,valeur):
+         if hasattr(valeur,'_etape') :
+            # valeur est un concept CO qui a ete transforme par type_sdprod
+            if valeur.etape == valeur._etape:
+               # le concept est bien produit par l'etape
+               return valeur
+         raise ValError("Pas un concept CO")
+   __convert__=classmethod(__convert__)

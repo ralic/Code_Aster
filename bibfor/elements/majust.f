@@ -1,6 +1,6 @@
       SUBROUTINE MAJUST(ALIAS,XI,YI,TOLEOU,LDIST)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,12 +47,21 @@ C
 C ----------------------------------------------------------------------
 C
 
-      DIST = 1.D0+TOLEOU
+      LDIST = .TRUE.
+      DIST = 1.D0 + 2.D0*TOLEOU
       IF ((ALIAS(1:3).EQ.'SG2') .OR. (ALIAS(1:3).EQ.'SG3')) THEN
-        IF (ABS(XI).GT.DIST)  LDIST = .FALSE.
+
+C ---- PROJECTION OR ZONE
+        IF (ABS(XI).GT.DIST) LDIST = .FALSE.
+
         IF (XI.LT.-1.D0) XI = -1.D0
         IF (XI.GT.1.D0)  XI = 1.D0
       ELSE IF ((ALIAS(1:3).EQ.'TR3') .OR. (ALIAS(1:3).EQ.'TR6')) THEN
+
+C ---- PROJECTION OR ZONE
+        IF (ABS(XI).GT.DIST .OR.
+     &      ABS(YI).GT.DIST) LDIST = .FALSE.
+
         IF (XI.LT.-1.D0) XI = -1.D0
         IF (YI.LT.-1.D0) YI = -1.D0
         IF (((XI-YI+2.D0).LT.-0.D0) .AND. ((XI+YI).GT.-0.D0)) THEN
@@ -72,6 +81,11 @@ C
         END IF
       ELSE IF ((ALIAS(1:3).EQ.'QU4') .OR. (ALIAS(1:3).EQ.'QU8') .OR.
      &    (ALIAS(1:3).EQ.'QU9')) THEN
+
+C ---- PROJECTION OR ZONE
+        IF (ABS(XI).GT.DIST .OR.
+     &      ABS(YI).GT.DIST) LDIST = .FALSE.
+
         IF (XI.LT.-1.D0) XI = -1.D0
         IF (XI.GT.1.D0) XI = 1.D0
         IF (YI.GT.1.D0) YI = 1.D0

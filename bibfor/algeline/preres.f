@@ -1,7 +1,7 @@
       SUBROUTINE PRERES(SOLVEU,BASE,IRET,MATPRE,MATASS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C RECUPERATION DU NIVEAU D'IMPRESSION
 C----------------------------------------------------------------------
       MATAS1=MATASS
       MATAS = MATASS
-C     CALL VERISD('MATRICE',MATAS)
+C     CALL CHEKSD('sd_matr_asse',MATAS,IRET)
       MAPREC = MATPRE
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
       METRES = ZK24(ISLVK)

@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,10 @@ C     -----------------------------------------
 C     1-bis TRAITEMENT DU MOT CLE AFFE_NOEUD :
 C     -----------------------------------------
       CALL RCMATN(CHMAT,NOMAIL)
+
+C     1-ter TRAITEMENT DU MOT CLE AFFE_COMPOR :
+C     -----------------------------------------
+      CALL RCCOMP(CHMAT,NOMAIL,NOMODE)
 
 
 C     2- TRAITEMENT DES VARIABLES DE COMMANDE :

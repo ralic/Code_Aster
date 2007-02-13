@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,7 +86,9 @@ IMPR_RESU(FORMAT='MED',UNITE = 70,RESU=_F(RESULTAT=RESUTRQU,),);
 
 
 RESUTRQ2=LIRE_RESU(
-              MAILLAGE=MAILTRQU,
+              EXCIT  =_F( CHARGE = CHARTRQU),
+              MODELE=MODETRQU,
+              CHAM_MATER=MATETEST,
               TYPE_RESU='EVOL_ELAS',
               FORMAT='MED',
               FORMAT_MED=_F( NOM_CHAM_MED='RESUTRQUDEPL____________________',
@@ -98,9 +100,6 @@ RESUTRQ2=LIRE_RESU(
 # 3.6. Calculs d autres champs
 #
 RESUTRQ2=CALC_ELEM( reuse=RESUTRQ2,   RESULTAT=RESUTRQ2,
-                    MODELE=MODETRQU,
-                    CHAM_MATER=MATETEST,
-                    EXCIT=_F(  CHARGE = CHARTRQU),
                     OPTION=( 'SIGM_ELNO_DEPL',
                              'EPSI_ELNO_DEPL',
                              'ERRE_ELEM_SIGM', )

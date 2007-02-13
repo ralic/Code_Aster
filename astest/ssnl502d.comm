@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE EN FLAMBEMENT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,19 +96,31 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0E+6,
                           NU=0.3,),);
 
+GF=DEFI_GEOM_FIBRE(
+   SECTION =_F(GROUP_FIBRE='SECF',
+             GROUP_MA_SECT='SECT',
+             MAILLAGE_SECT=MA_SECT,
+            COOR_AXE_POUTRE=(0.,0.,),),)
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MAT,
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MAT,
+                                 RELATION='ELAS',DEFORMATION='REAC_GEOM',),
+                     )
+
+
 CH_MAT=AFFE_MATERIAU(MAILLAGE=MA,
-                     AFFE=_F(GROUP_MA='AB',
-                             MATER=MAT,),);
+                  AFFE=_F(TOUT='OUI',MATER=MAT,),
+                  AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF),
+                 );
 
 CARACT=AFFE_CARA_ELEM(MODELE=MO,
                       POUTRE=_F(GROUP_MA='AB',
                                 SECTION='GENERALE',
                                 CARA=('A','IY','IZ','AY','AZ','JX','JG',),
                                 VALE=(0.0003375,1.58203e-07,5.69531e-10,1.2,1.2,2.19201e-09,0.0,),),
-                      AFFE_SECT=_F(GROUP_MA='AB',
-                                   GROUP_MA_SECT='SECT',
-                                   MAILLAGE_SECT=MA_SECT,
-                                   COOR_AXE_POUTRE=(0.0,0.0,),),);
+                      GEOM_FIBRE=GF,
+                      MULTIFIBRE=_F(GROUP_MA='AB',
+                                   GROUP_FIBRE='SECF'),);
 
 LIAISON=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=(_F(GROUP_NO='PA',
@@ -146,8 +158,7 @@ RESO=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=LIAISON,),
                           _F(CHARGE=FORCE,
                              FONC_MULT=FO_MULT,),),
-                   COMP_INCR=_F(RELATION='ELAS',
-                                DEFORMATION='REAC_GEOM',
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',
                                 GROUP_MA='AB',),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=0.95,
@@ -167,8 +178,7 @@ RESO=STAT_NON_LINE(reuse =RESO,
                    EXCIT=(_F(CHARGE=LIAISON,),
                           _F(CHARGE=FORCE,
                              TYPE_CHARGE='FIXE_PILO',),),
-                   COMP_INCR=_F(RELATION='ELAS',
-                                DEFORMATION='REAC_GEOM',),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',),
                    ETAT_INIT=_F(
                    EVOL_NOLI=RESO,),
                    INCREMENT=_F(LIST_INST=L_INST,

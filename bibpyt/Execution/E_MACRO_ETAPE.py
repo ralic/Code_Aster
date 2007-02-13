@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 30/01/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,13 +94,11 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
          E_ETAPE.ETAPE.Exec(self)
 
          if self.icmd!=None :
-            self.cpu_user=times()[0]-self.cpu_user_0
-            self.cpu_syst=times()[1]-self.cpu_syst_0
-            self.AfficheFinCommande(self.cpu_user,self.cpu_syst)       
+            self.AfficheFinCommande()
          else :
-            self.AfficheFinCommande(None,None)       
+            self.AfficheFinCommande(avec_temps=False)
       elif self.nom == 'INCLUDE':
-            self.AfficheFinCommande(None,None)       
+            self.AfficheFinCommande(avec_temps=False)
 
       if hasattr(self,'postexec'):
          self.postexec(self)
@@ -210,11 +208,9 @@ class MACRO_ETAPE(E_ETAPE.ETAPE):
          if hasattr(self,'postexec'):
             self.postexec(self)
          if self.icmd!=None :
-            self.cpu_user=times()[0]-self.cpu_user_0
-            self.cpu_syst=times()[1]-self.cpu_syst_0
-            self.AfficheFinCommande(self.cpu_user,self.cpu_syst)       
+            self.AfficheFinCommande()
          else :
-            self.AfficheFinCommande(None,None)       
+            self.AfficheFinCommande(avec_temps=False)
       except:
          self.reset_current_step()
          raise

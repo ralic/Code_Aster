@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE SENSIBILITE DE MODES PROPRES COMPLEXES D'UNE POUTRE POU_D_E
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 #       PAR RAPPORT AUX PARAMETRES MATERIAU
 #       (CALCUL MODAL PAR ITERATION SIMULTANEE)
 
-DEBUT( CODE=_F(  NOM = 'SENSD09B',NIV_PUB_WEB='INTERNET'), PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
+DEBUT( CODE=_F(  NOM = 'SENSD09B',NIV_PUB_WEB='INTERNET'), PAR_LOT='OUI')
 
 # ----------------------------------------------------------------------
 # Poutre a section circulaire (L=0.4m, r=0.02m, ep=0.02m)

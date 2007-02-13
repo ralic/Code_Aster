@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # TITRE  REPONSE SISMIQUE D'UNE POUTRE EN BETON ARME RECTANGULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,18 +27,12 @@ INCLUDE(UNITE=92,);
 
 # LECTURE MAILLAGE LINEIQUE
 PRE_GIBI();
-POUT=LIRE_MAILLAGE();
+MAPOU=LIRE_MAILLAGE();
 
 # LECTURE MAILLAGE SECTION1
 PRE_GIBI(UNITE_GIBI=18, UNITE_MAILLAGE=21,);
 MASEC=LIRE_MAILLAGE(UNITE=21,);
 
-# ON ENRICHIT LE MAILLAGE LINEIQUE EN MULTIPLIANT LES LIGNES
-MAPOU=CREA_MAILLAGE(MAILLAGE=POUT,
-                    CREA_GROUP_MA=_F(NOM='POU_AC',
-                                     TOUT='OUI',
-                                     PREF_MAILLE='A',
-                                     PREF_NUME=100,),);
 
 MAPOU=DEFI_GROUP(reuse =MAPOU,
                  MAILLAGE=MAPOU,
@@ -70,39 +64,46 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
 #
 
 
+#
+# GEOMETRIE DES FIBRES
+#
+GF=DEFI_GEOM_FIBRE(SECTION = _F( GROUP_FIBRE='BETON',
+                           MAILLAGE_SECT = MASEC, TOUT_SECT = 'OUI',
+                           COOR_AXE_POUTRE = (0., 0.,),),
+                   FIBRE = _F( CARA = 'DIAMETRE',
+                            GROUP_FIBRE='ARMATURE' ,COOR_AXE_POUTRE = (0.,0.,),
+                            VALE =( 0.066, -0.218, 32.E-3,
+                                   -0.066, -0.218, 32.E-3,
+                                    0.066, 0.218, 8.E-3,
+                                   -0.066, 0.218, 8.E-3,),),)
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=BETON,
+           MULTIFIBRE=(_F(GROUP_FIBRE='BETON',MATER=BETON,RELATION='ELAS'),
+              _F(GROUP_FIBRE='ARMATURE',MATER=ACIER,RELATION='ELAS')))
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
-                    AFFE=(_F(GROUP_MA='POUTRE',
-                             MATER=BETON,),
-                          _F(GROUP_MA='POU_AC',
-                             MATER=ACIER,),),);
+                    AFFE=_F(GROUP_MA='POUTRE',MATER=(BETON,ACIER),),
+                    AFFE_COMPOR=_F(GROUP_MA='POUTRE',COMPOR=COMPF))
 #
 # ORIENTATIONS ET RIGIDITE DE TORSION
 #
 
 
 POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
-                     POUTRE=_F(GROUP_MA=('POUTRE','POU_AC'),
+                     POUTRE=_F(GROUP_MA=('POUTRE'),
                                SECTION='RECTANGLE',
                                PREC_AIRE=1.71e-2,
                                PREC_INERTIE=2.948e-1,
                                CARA=('HY','HZ'),
                                VALE=(0.20000000000000001,0.5),),
-                     ORIENTATION=_F(GROUP_MA=('POUTRE','POU_AC'),
+                     ORIENTATION=_F(GROUP_MA=('POUTRE'),
                                     CARA='ANGL_VRIL',
                                     VALE=-90.0,),
-           AFFE_SECT = _F( GROUP_MA = 'POUTRE', NOM='BETON',
-                           MAILLAGE_SECT = MASEC, TOUT_SECT = 'OUI',
-                           COOR_AXE_POUTRE = (0., 0.,),),
-           AFFE_FIBRE = _F( GROUP_MA = 'POU_AC', CARA = 'DIAMETRE',
-                            NOM='ARMATURE' ,COOR_AXE_POUTRE = (0.,0.,),
-                            VALE =( 0.066, -0.218, 32.E-3,
-                                   -0.066, -0.218, 32.E-3,
-                                    0.066, 0.218, 8.E-3,
-                                   -0.066, 0.218, 8.E-3,),),
-
-                                    );
-
-
+                     GEOM_FIBRE=GF,
+                     MULTIFIBRE=_F(GROUP_MA='POUTRE',
+                                    GROUP_FIBRE=('BETON','ARMATURE'),
+                                    )
+                     );
 
 
 BLOCAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
@@ -123,13 +124,13 @@ RIGI_ELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                         MODELE=MOPOU,
                         CHAM_MATER=CHMAT,
                         CARA_ELEM=POUCA,
-                        CHARGE=BLOCAGE,);
+                        CHARGE=BLOCAGE);
 
 MASS_ELE=CALC_MATR_ELEM(OPTION='MASS_MECA',
                         MODELE=MOPOU,
                         CHAM_MATER=CHMAT,
                         CARA_ELEM=POUCA,
-                        CHARGE=BLOCAGE,);
+                        CHARGE=BLOCAGE);
 
 AMOR_ELE=CALC_MATR_ELEM(OPTION='AMOR_MECA',
                         MODELE=MOPOU,
@@ -198,7 +199,7 @@ U1=CALC_ELEM(reuse =U1,
              TOUT='OUI',
              TOUT_ORDRE='OUI',
              OPTION='SIEF_ELGA_DEPL',
-             RESULTAT=U1,);
+             RESULTAT=U1);
 
 U1=CALC_NO(reuse =U1,
            MODELE=MOPOU,
@@ -207,7 +208,7 @@ U1=CALC_NO(reuse =U1,
            OPTION='REAC_NODA',
            CHAM_MATER=CHMAT,
            CARA_ELEM=POUCA,
-           TOUT='OUI',);
+           TOUT='OUI');
 
 # QUELQUES TEST DE RESULTATS, REFERENCE SDLL130A
 TEST_RESU(RESU=(_F(RESULTAT=MODE_MEC,

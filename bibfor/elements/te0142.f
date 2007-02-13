@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,11 +53,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NBRES=4,NBREF=6)
       REAL*8 VALRES(NBRES),VALREF(NBREF)
       CHARACTER*2 CODRES(NBRES),CODREF(NBREF)
-      CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMREF(NBREF)
+      CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMREF(NBREF),MATERI
       CHARACTER*16 CH16
       REAL*8 ZERO,E,NU,ALPHA,RHO
       REAL*8 KLV(78),KLC(12,12)
       CHARACTER*24 SUROPT
+      INTEGER ICOMPO,ISDCOM,NBGFMX
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU','ALPHA','RHO'/
       DATA NOMREF/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
@@ -100,22 +101,33 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         CALL RHOEQU(RHO,RHOS,RHOFI,RHOFE,CM,PHII,PHIE)
 
       ELSE
-        CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
-     &              VALRES,CODRES,'FM')
-        CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
+        IF(NOMTE(1:13).NE.'MECA_POU_D_EM')THEN
+          CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
+     &              NOMRES,VALRES,CODRES,'FM')
+          CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
      &             NOMRES(3), VALRES(3),CODRES(3),'  ')
-        IF (CODRES(3).NE.'OK') VALRES(3) = ZERO
-        IF (CODRES(4).NE.'OK') VALRES(4) = ZERO
-        E = VALRES(1)
-        NU = VALRES(2)
-        ALPHA = VALRES(3)
-        RHO = VALRES(4)
+          IF (CODRES(3).NE.'OK') VALRES(3) = ZERO
+          IF (CODRES(4).NE.'OK') VALRES(4) = ZERO
+          E = VALRES(1)
+          NU = VALRES(2)
+          ALPHA = VALRES(3)
+          RHO = VALRES(4)
+        ELSE
+C    --- RECUPERATION DU MATERIAU TORSION POUR ALPHA
+          CALL JEVECH('PCOMPOR','L',ICOMPO)
+          CALL JEVEUO(ZK16(ICOMPO-1+6),'L',ISDCOM)
+          READ(ZK16(ICOMPO-1+7),'(I16)')NBGFMX
+          MATERI=ZK16(ISDCOM+6*NBGFMX)(1:8)
+          CALL RCVALA(ZI(LMATER),MATERI,'ELAS',NBPAR,NOMPAR,VALPAR,1,
+     +                                  'ALPHA',ALPHA,CODRES,'  ')
+          IF (CODRES(1).NE.'OK') ALPHA = ZERO
+        ENDIF
       END IF
 
 C     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
 
       IF (NOMTE(1:13).EQ.'MECA_POU_D_EM') THEN
-        CALL PMFRIG(NOMTE,E,NU,KLV)
+        CALL PMFRIG(NOMTE,ZI(LMATER),KLV)
       ELSE
         CALL PORIGI(NOMTE,E,NU,KLV)
       END IF

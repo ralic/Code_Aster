@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/10/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,6 +83,38 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
 
          NB_VARI         =SIMP(statut='f',typ='I' ),
+
+         CHAM_MATER      =SIMP(statut='f',typ=cham_mater,),
+         
+         CARA_ELEM       =SIMP(statut='f',typ=cara_elem,),
+
+          b_evol_elas  = BLOC(condition="TYPE_RESU=='EVOL_ELAS'",
+          EXCIT           =FACT(statut='f',max='**',
+            CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
+            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),),
+           ),
+
+          b_evol_ther  = BLOC(condition="TYPE_RESU=='EVOL_THER'",
+          EXCIT           =FACT(statut='f',max='**',
+            CHARGE          =SIMP(statut='o',typ=(char_ther,char_cine_ther)),
+            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),),
+           ),
+
+          b_evol_noli  = BLOC(condition="TYPE_RESU=='EVOL_NOLI'",
+          EXCIT           =FACT(statut='f',max='**',
+           CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
+           FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
+                                 into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI")),
+           DEPL            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           ACCE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           VITE            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           MULT_APPUI      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+           DIRECTION       =SIMP(statut='f',typ='R',max='**'),
+           NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+           GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
+         ),
 
 
 # 1) blocs selon le format choisi :

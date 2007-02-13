@@ -1,4 +1,4 @@
-#@ MODIF champs Messages  DATE 23/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF champs Messages  DATE 13/02/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,10 @@ cata_msg={
 
 2: _("""
  Impossible de récupérer le nom du champ.
+"""),
+
+3: _("""
+ La composante %(k1)s du champ  n'existe pas.
 """),
 
 }

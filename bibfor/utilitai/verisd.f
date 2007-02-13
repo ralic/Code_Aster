@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) TYPESD,NOMSD
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,17 +24,5 @@ C RESPONSABLE VABHHTS J.PELLET
 C ----------------------------------------------------------------------
 C  BUT : FAIRE UN ENSEMBLE DE VERIFICATIONS SUR UNE SD DE TYPE TYPESD
 C-----------------------------------------------------------------------
-
-      INTEGER J1,NVU,NOBJ
-      CHARACTER*24 MEMO80
-
-
-      MEMO80='&&VERISD.MEMO80'
-      CALL WKVECT(MEMO80,'V V K80',200,J1)
-      NOBJ=0
-      NVU=0
-      CALL VERIJA('O',TYPESD,NOMSD,MEMO80,NVU,NOBJ)
-      CALL JEDETR(MEMO80)
-
-9999  CONTINUE
+      CALL U2MESS('F','SDVERI_34')
       END

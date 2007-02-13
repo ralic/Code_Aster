@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,12 +102,13 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
      &         OPTION.EQ.'MASS_MECA_DIAG' .OR.
      &         OPTION.EQ.'MASS_MECA_EXPLI' .OR.
      &         OPTION.EQ.'M_GAMMA') THEN
-        CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,NOMRES,
+        IF(NOMTE(1:13).NE.'MECA_POU_D_EM')THEN
+         CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,NOMRES,
      &              VALRES,CODRES,'FM')
-        E = VALRES(1)
-        XNU = VALRES(2)
-        RHO = VALRES(3)
-
+          E = VALRES(1)
+          XNU = VALRES(2)
+          RHO = VALRES(3)
+        ENDIF
       ELSE
         CH16 = OPTION
         CALL U2MESK('F','ELEMENTS2_47',1,CH16)
@@ -123,7 +124,7 @@ C     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
       IF (OPTION.EQ.'MASS_MECA_DIAG' .OR.
      &    OPTION.EQ.'MASS_MECA_EXPLI') KANL = 0
       IF (NOMTE(1:13).EQ.'MECA_POU_D_EM') THEN
-        CALL PMFMAS(NOMTE,RHO,KANL,MLV)
+        CALL PMFMAS(NOMTE,ZI(LMATER),KANL,MLV)
       ELSE
         CALL POMASS(NOMTE,E,XNU,RHO,KANL,MLV)
       END IF

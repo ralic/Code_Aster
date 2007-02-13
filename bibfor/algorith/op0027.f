@@ -2,7 +2,7 @@
 C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,8 +130,8 @@ C
         CALL WKVECT ( '&&OP0027.VECTTRA2', 'V V R', M, IADR2 )
 
         CALL GEMATG (N, DELTA, ZR(IAK), ZR(IADR), ZR(IADR1), ZR(IADR2))
-C       CALL VERISD('MATRICE',NOMMAT)
-C       CALL VERISD('MATRICE',NOMRES)
+C       CALL CHEKSD('sd_matr_asse',NOMMAT,IRET)
+C       CALL CHEKSD('sd_matr_asse',NOMRES,IRET)
 
 
       ELSE

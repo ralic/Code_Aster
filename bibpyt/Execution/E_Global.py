@@ -1,4 +1,4 @@
-#@ MODIF E_Global Execution  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_Global Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,6 @@
    de astermodule.c.
 """
 
-
 # ------------------------------------------------------------------------
 def utprin(typmess, unite, idmess, valk, vali, valr):
    """
@@ -39,4 +38,37 @@ def utprin(typmess, unite, idmess, valk, vali, valr):
    from Messages import utprin
    utprin.utprin(typmess,unite,idmess,valk,vali,valr)
 
+# ------------------------------------------------------------------------
+def checksd(nomsd, typesd):
+   """Vérifie la validité de la SD `nom_sd` (nom jeveux) de type `typesd`.
+   Exemple : typesd = sd_maillage
+   C'est le pendant de la "SD.checksd.check" à partir d'objets nommés.
+   Code retour :
+      0 : tout est ok
+      1 : erreurs lors du checksd
+      4 : on n'a meme pas pu tester
+   """
+   nomsd  = nomsd.strip()
+   typesd = typesd.lower().strip()
+   
+   # import
+   iret = 4
+   try:
+      sd_module = __import__('SD.%s' % typesd, globals(), locals(), [typesd])
+   except ImportError, msg:
+      UTMESS('F', 'checksd', "Impossible d'importer le catalogue de la SD '%s'" % typesd)
+      return iret
+   
+   # on récupère la classe typesd
+   clas = getattr(sd_module, typesd, None)
+   if clas:
+      objsd = clas(nomj=nomsd)
+      chk = objsd.check()
+      ichk = min([1,] + [level for level, obj, msg in chk.msg])
+      if ichk == 0:
+         iret = 1
+      else:
+         iret = 0
+   
+   return iret
 

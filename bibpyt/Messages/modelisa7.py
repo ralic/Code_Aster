@@ -1,21 +1,21 @@
-#@ MODIF modelisa7 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa7 Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -31,7 +31,7 @@ cata_msg={
 """),
 
 3: _("""
-  la method est de au-yang. on a  besoin du  vecteur de l axe vect_x et de l origine  orig_axe du cylindre       
+  la method est de au-yang. on a  besoin du  vecteur de l axe vect_x et de l origine  orig_axe du cylindre
 """),
 
 4: _("""
@@ -239,11 +239,11 @@ cata_msg={
 """),
 
 55: _("""
- caracterisation de la topologie du cable no %(k1)s  : il existe plus de deux chemins possibles au depart du noeud  %(k2)s 
+ caracterisation de la topologie du cable no %(k1)s  : il existe plus de deux chemins possibles au depart du noeud  %(k2)s
 """),
 
 56: _("""
- caracterisation de la topologie du cable no %(k1)s  : il n existe aucun chemin possible au depart du noeud  %(k2)s 
+ caracterisation de la topologie du cable no %(k1)s  : il n existe aucun chemin possible au depart du noeud  %(k2)s
 """),
 
 57: _("""
@@ -279,7 +279,7 @@ cata_msg={
 """),
 
 65: _("""
- occurence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un element compatible avec la caracteristique  %(k4)s 
+ occurence  %(k1)s  de  %(k2)s  : le(la) %(k3)s  ne supporte pas un element compatible avec la caracteristique  %(k4)s
 """),
 
 66: _("""
@@ -319,23 +319,23 @@ cata_msg={
 """),
 
 75: _("""
- le group_no  %(k1)s  ne fait pas partie du maillage :  %(k2)s 
+ le group_no  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
 
 76: _("""
- le noeud  %(k1)s  ne fait pas partie du maillage :  %(k2)s 
+ le noeud  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
 
 77: _("""
- le group_ma  %(k1)s  ne fait pas partie du maillage :  %(k2)s 
+ le group_ma  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
 
 78: _("""
- la maille  %(k1)s  ne fait pas partie du maillage :  %(k2)s 
+ la maille  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
 
 79: _("""
- le type  %(k1)s d'objets a verifier n'est pas correct : il ne peut etre egal qu'a group_no ou noeud ou group_ma ou maille 
+ le type  %(k1)s d'objets a verifier n'est pas correct : il ne peut etre egal qu'a group_no ou noeud ou group_ma ou maille
 """),
 
 80: _("""
@@ -363,11 +363,11 @@ cata_msg={
 """),
 
 86: _("""
- la maille de nom :  %(k1)s  n'est pas de type segment, elle ne sera pas affectee par  %(k2)s 
+ la maille de nom :  %(k1)s  n'est pas de type segment, elle ne sera pas affectee par  %(k2)s
 """),
 
 87: _("""
- la maille de nom :  %(k1)s  n'est pas de type tria ou quad, elle ne sera pas affectee par  %(k2)s 
+ la maille de nom :  %(k1)s  n'est pas de type tria ou quad, elle ne sera pas affectee par  %(k2)s
 """),
 
 88: _("""
@@ -376,11 +376,11 @@ cata_msg={
 """),
 
 89: _("""
- la maille de numero :  %(k1)s  n'est pas de type segment, elle ne sera pas affectee par  %(k2)s 
+ la maille de numero :  %(k1)s  n'est pas de type segment, elle ne sera pas affectee par  %(k2)s
 """),
 
 90: _("""
- la maille de numero :  %(k1)s  n'est pas de type tria ou quad, elle ne sera pas affectee par  %(k2)s 
+ la maille de numero :  %(k1)s  n'est pas de type tria ou quad, elle ne sera pas affectee par  %(k2)s
 """),
 
 91: _("""
@@ -388,11 +388,11 @@ cata_msg={
 """),
 
 92: _("""
- la maille de nom :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s 
+ la maille de nom :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s
 """),
 
 93: _("""
- la maille de numero :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s 
+ la maille de numero :  %(k1)s  n'est pas une maille 3d, elle ne sera pas affectee par  %(k2)s
 """),
 
 94: _("""
@@ -404,13 +404,15 @@ cata_msg={
 """),
 
 96: _("""
- seules les chargement mecaniques peuvent etre des fonctions 
+ seules les chargement mecaniques peuvent etre des fonctions
 """),
-
-
 
 98: _("""
  Erreur lors de la vérification des noms de groupes.
+"""),
+
+99: _("""
+ Aucun groupe de fibres n'a de comportement.
 """),
 
 }

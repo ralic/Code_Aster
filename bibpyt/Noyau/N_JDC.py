@@ -1,4 +1,4 @@
-#@ MODIF N_JDC Noyau  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_JDC Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -298,7 +298,7 @@ NONE = None
       # ATTENTION : Il ne faut pas ajouter sd dans sds car il s y trouve deja.
       # Ajoute a la creation (appel de reg_sd).
       self.sds_dict[sdnom]=sd
-      sd.nom=sdnom
+      sd.set_name(sdnom)
 
       # En plus si restrict vaut 'non', on insere le concept dans le contexte du JDC
       if restrict == 'non':

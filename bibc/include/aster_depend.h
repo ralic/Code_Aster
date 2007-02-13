@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_depend include  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF aster_depend include  DATE 13/02/2007   AUTEUR PELLET J.PELLET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -44,10 +44,12 @@ Compatibilité ascendantes :
 
 */
 
-#ifndef _POSIX
-#define _POSIX
-#elif defined WIN32 || PPRO_NT
+#if defined WIN32 || PPRO_NT || _WIN32
+#ifndef _WIN32
 #define _WIN32
+#endif
+#else
+#define _POSIX
 #endif
 
 #ifdef HPUX
@@ -70,7 +72,9 @@ Compatibilité ascendantes :
 
 #if defined _USE_64_BITS || LINUX64 || TRU64 || SOLARIS64 || IRIX64
 /* pour compatibilité si on arrive avec LINUX64 */
+#ifndef _USE_64_BITS
 #define _USE_64_BITS
+#endif
 #define INTEGER long
 #define LONG_INTEGER_BITS 64
 #define LONG_INTEGER_MOTS 8
@@ -127,8 +131,11 @@ Compatibilité ascendantes :
 /* --------------------------------------------
    --      TEST DES VALEURS OBLIGATOIRES     --
    -------------------------------------------- */
-#if !(defined _POSIX || _WIN32)
-#error ERREUR
+#if ! defined _POSIX && ! defined _WIN32
+#error ERREUR au moins un parmi _POSIX or _WIN32 !!
+#endif
+#if defined _POSIX && defined _WIN32
+#error ERREUR seulement un parmi _POSIX or _WIN32 !!
 #endif
 
 /* --------------------------------------------

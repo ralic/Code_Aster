@@ -1,21 +1,21 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 16/05/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF N_VALIDATOR Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 """
@@ -25,6 +25,7 @@
 import types
 import string
 import traceback
+from N_ASSD import ASSD
 
 class ValError(Exception):pass
 
@@ -123,9 +124,9 @@ class TypeProtocol(PProtocol):
                 if type(obj)==types.StringType:return obj
             elif type_permis == 'shell':
                 if type(obj)==types.StringType:return obj
-            elif type(type_permis) == types.ClassType:
+            elif issubclass(type_permis, ASSD):
                 if self.is_object_from(obj,type_permis):return obj
-            elif type(type_permis) == types.InstanceType:
+            elif isinstance(type_permis, ASSD):
                 try:
                     if type_permis.__convert__(obj) : return obj
                 except:
@@ -170,7 +171,7 @@ class TypeProtocol(PProtocol):
             except:
                 return 0
         # On accepte les instances de la classe et des classes derivees
-        return type(objet) == types.InstanceType and isinstance(objet,classe)
+        return isinstance(objet,classe)
 
 reelProto=TypeProtocol("reel",typ=('R',))
 
@@ -226,8 +227,8 @@ class MinStr:
 class Valid(PProtocol):
    """
         Cette classe est la classe mere des validateurs Accas
-        Elle doit etre derivee 
-        Elle presente la signature des methodes indispensables pour son bon 
+        Elle doit etre derivee
+        Elle presente la signature des methodes indispensables pour son bon
         fonctionnement et dans certains cas leur comportement par défaut.
 
         @ivar cata_info: raison de la validite ou de l'invalidite du validateur meme
@@ -243,11 +244,11 @@ class Valid(PProtocol):
           la validation demandée par le validateur. Elle est utilisée
           pour produire le compte-rendu de validité du mot clé associé.
        """
-       return "valeur valide" 
+       return "valeur valide"
 
    def aide(self):
        """
-          Cette methode retourne une chaine de caractère qui permet 
+          Cette methode retourne une chaine de caractère qui permet
           de construire un message d'aide en ligne.
           En général, le message retourné est le meme que celui retourné par la
           méthode info.
@@ -286,7 +287,7 @@ class Valid(PProtocol):
            @return: indicateur de validite 1 (valide) ou 0 (invalide)
        """
        raise "Must be implemented"
-   
+
    def verif_item(self,valeur):
        """
           La methode verif du validateur effectue une validation complete de
@@ -405,7 +406,7 @@ class ListVal(Valid):
    def verif(self,valeur):
        """
           Méthode verif pour les validateurs de listes. Cette méthode
-          fait appel à la méthode verif_item sur chaque élément de la 
+          fait appel à la méthode verif_item sur chaque élément de la
           liste. Si valeur est un paramètre, on utilise sa valeur effective
           valeur.valeur.
        """
@@ -713,8 +714,8 @@ class OrVal(Valid):
           qu'on considère que leur union propose un choix. Tous les choix
           proposés par les validateurs sont réunis (opérateur d'union).
           Exemple : Enum(1,2,3) OU entier pair, ne propose pas de choix
-          En revanche, Enum(1,2,3) OU Enum(4,5,6) propose un 
-          choix (1,2,3,4,5,6)       
+          En revanche, Enum(1,2,3) OU Enum(4,5,6) propose un
+          choix (1,2,3,4,5,6)
           """
           validator_into=[]
           for validator in self.validators:
@@ -869,7 +870,7 @@ class AndVal(Valid):
           return into_courant
 
 def do_liste(validators):
-    """ 
+    """
        Convertit une arborescence de validateurs en OrVal ou AndVal
        validators est une liste de validateurs ou de listes ou de tuples
     """
@@ -901,7 +902,7 @@ class RangeVal(ListVal):
       """
           Exemple de classe validateur : verification qu'une valeur
           est dans un intervalle.
-          Pour une liste on verifie que tous les elements sont 
+          Pour une liste on verifie que tous les elements sont
           dans l'intervalle
           Susceptible de remplacer les attributs "vale_min" "vale_max"
           dans les catalogues
@@ -939,7 +940,7 @@ class CardVal(Valid):
       """
       def __init__(self,min='**',max='**'):
           self.min=min
-          self.max=max  
+          self.max=max
           self.cata_info="%s doit etre inferieur a %s" % (min,max)
 
       def info(self):
@@ -1025,7 +1026,7 @@ class PairVal(ListVal):
           return valeur
 
       def verif_item(self,valeur):
-          if type(valeur) == types.InstanceType:
+          if isinstance(valeur, ASSD):
              return 0
           return valeur % 2 == 0
 
@@ -1091,7 +1092,7 @@ def ImpairVal(valeur):
        return 1
 
 ImpairVal.info="valeur impaire"
-    
+
 class F1Val(Valid):
       """
           Exemple de validateur
@@ -1133,6 +1134,7 @@ class FunctionVal(Valid):
       def verif(self,valeur):
           return self.function(valeur)
 
+#MC ca ne devrait plus servir !
 CoercableFuncs = { types.IntType:     int,
                    types.LongType:    long,
                    types.FloatType:   float,
@@ -1147,6 +1149,8 @@ class TypeVal(ListVal):
           Pour une liste on verifie que tous les elements sont du bon type.
       """
       def __init__(self, aType):
+          #MC 01/02/2007 : TypeVal n'est pas encore utilisé
+          #                Je pense qu'il faut remplacer par : issubclass(aType, ASSD)
           if type(aType) != types.TypeType:
              aType=type(aType)
           self.aType=aType
@@ -1181,8 +1185,8 @@ class InstanceVal(ListVal):
           Pour une liste on verifie chaque element de la liste
       """
       def __init__(self,aClass):
-          if type(aClass) == types.InstanceType:
-             aClass=aClass.__class__
+          if isinstance(aClass, ASSD):
+             aClass = type(aClass)
           self.aClass=aClass
 
       def info(self):

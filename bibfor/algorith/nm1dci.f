@@ -1,8 +1,8 @@
       SUBROUTINE NM1DCI(IMATE,TEMPM,TEMPP,TREF,EM,EP,ALPHAM,ALPHAP,SIGM,
-     &                  DEPS,VIM,OPTION,SIGP,VIP,DSDE)
+     &                  DEPS,VIM,OPTION,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     ------------------------------------------------------------------
       REAL*8 SIGM,DEPS,VIM(2)
       REAL*8 SIGP,VIP(2),DSDE,SIELEQ
       CHARACTER*16 OPTION
+      CHARACTER*(*) MATERI
       INTEGER IMATE
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
@@ -63,13 +64,13 @@ C     ------------------------------------------------------------------
       NBPAR = 1
       NOMPAR = 'TEMP'
       FB2 = 'FM'
-      CALL RCVALA(IMATE,' ','ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,NOMECL,
+      CALL RCVALA(IMATE,MATERI,'ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,NOMECL,
      &          VALRES,  CODRES,FB2)
       ETM = VALRES(1)
       HM = EM*ETM/ (EM-ETM)
 
       VALPAR = TEMPP
-      CALL RCVALA(IMATE,' ','ECRO_LINE',NBPAR,NOMPAR,VALPAR,2,NOMECL,
+      CALL RCVALA(IMATE,MATERI,'ECRO_LINE',NBPAR,NOMPAR,VALPAR,2,NOMECL,
      &            VALRES,CODRES,FB2)
       ETP = VALRES(1)
       HP = EP*ETP/ (EP-ETP)
@@ -88,7 +89,7 @@ C     ------------------------------------------------------------------
           VIP(2) = 0.D0
           DSDE = EP
           DP = 0.D0
-          XP = HP/HM*XM 
+          XP = HP/HM*XM
           SIGP = EP* (SIGM/EM+DEPS-DEPSTH)
           VIP(1) = XP
         ELSE

@@ -1,8 +1,8 @@
-      SUBROUTINE DYOBS3(NBOCC,NBPAS,JOBSE,LISINS,NBOBSE)
+      SUBROUTINE DYOBS3(NBOCC,NBPAS,LSUIVI,JOBSE,LISINS,NBOBSE)
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C ======================================================================
       INTEGER       JOBSE(*)
       CHARACTER*(*) LISINS
       INTEGER       NBOBSE
+      LOGICAL       LSUIVI(NBOCC)
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : DYOBSE
@@ -62,7 +63,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IOCC,N1,N2,N3,N4,I,JNUM,LNUM,JINSC
-      INTEGER      IPACH,NUME,IBID,NN1
+      INTEGER      IPACH,NUME,IBID,NN1,IRET,IPREM
       REAL*8       EPSI
       CHARACTER*8  K8B,RELA
       CHARACTER*19 NUMOBS
@@ -81,15 +82,19 @@ C
 C
 C --- BOUCLE SOUR LES DIFFERENTES OCCURRENCES D'OBSERVATION
 C
+      IPREM=0
       DO 10 IOCC = 1 , NBOCC
 C
+         IF(LSUIVI(IOCC))GOTO 10
+
          CALL GETVID( 'OBSERVATION', 'LIST_ARCH',IOCC,1,0,K8B ,N1)
          CALL GETVID( 'OBSERVATION', 'LIST_INST',IOCC,1,0,K8B ,N2)
          CALL GETVR8( 'OBSERVATION', 'INST'     ,IOCC,1,0,EPSI,N3)
          CALL GETVIS( 'OBSERVATION', 'PAS_OBSE' ,IOCC,1,0,IBID,N4)
 
 C
-         IF ( IOCC .EQ. 1 ) THEN
+         IF ( IPREM .EQ. 0 ) THEN
+            IPREM=1
             IF ( N1+N2+N3+N4 .EQ. 0 ) THEN
                CALL U2MESS('F','ALGORITH3_49')
             ENDIF
