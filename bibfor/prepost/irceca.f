@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      NBCMPC,MODSAV,NBELT,JTYPE,DIGDEL,TABEC(10)
       INTEGER      IMODEL,ILONG
       CHARACTER*3  TOTO
+      CHARACTER*24 VALK(2)
       CHARACTER*8  NOMVAR(40),NOMCO,GTYPE,KTYPE,MTYPE,K8B
       CHARACTER*16 CTYPE
       LOGICAL      EXISTE, EXISDG, LMODE, FIRST, LNOCEN
@@ -152,10 +153,9 @@ C
                    GO TO 18
                 ENDIF
  20           CONTINUE
-              CALL UTDEBM('A','IRCECA','ON NE TROUVE PAS LA COMPOSANTE')
-              CALL UTIMPK('S',' ',1,NCMPUT(ICM))
-              CALL UTIMPK('S',' DANS LA GRANDEUR ',1,NOMGD)
-              CALL UTFINM
+              VALK (1) = NCMPUT(ICM)
+              VALK (2) = NOMGD
+              CALL U2MESG('A', 'PREPOST5_26',2,VALK,0,0,0,0.D0)
  18         CONTINUE
           ELSE
             DO 22 I=1,NCMPMX

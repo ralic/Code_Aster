@@ -4,7 +4,7 @@
       CHARACTER*19 RESU,KINST,KRANG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,10 @@ C                             SINON  : NOOK
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
+      INTEGER VALI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
+      REAL*8 VALR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -123,16 +125,14 @@ C     --- RECHERCHE A PARTIR D'UNE FREQUENCE ---
      &              NBORDR,NBTROU,NUTROU,1)
         IF (NBTROU.EQ.0) THEN
           IER = IER + 110
-          CALL UTDEBM('A','RSHARM','PAS DE CHAMPS TROUVE POUR ')
-          CALL UTIMPR('S','LA FREQUENCE ',1,TUSR)
-          CALL UTFINM()
+          VALR = TUSR
+          CALL U2MESG('A', 'UTILITAI6_82',0,' ',0,0,1,VALR)
           GO TO 40
         ELSE IF (NBTROU.NE.1) THEN
           IER = IER + 100
-          CALL UTDEBM('F','RSHARM','PLUSIEURS CHAMPS TROUVES ')
-          CALL UTIMPR('S','POUR LA FREQUENCE ',1,TUSR)
-          CALL UTIMPI('L','NOMBRE DE CHAMPS TROUVES ',1,-NBTROU)
-          CALL UTFINM()
+          VALR = TUSR
+          VALI = -NBTROU
+          CALL U2MESG('F', 'UTILITAI6_83',0,' ',1,VALI,1,VALR)
           GO TO 40
         END IF
         DO 20 IORD = 0,NBORDR - 1

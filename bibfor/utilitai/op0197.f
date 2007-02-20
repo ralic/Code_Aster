@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      NBPARR, NBPARK, NBPARS, NBPART, INFO, KK
+      INTEGER      VALII
       PARAMETER    ( NBPARR = 4, NBPARK = 3, NBPARS=3, NBPART=3 )
       CHARACTER*6  CHTEMP
       CHARACTER*8  TAPAIT, K8BID, CARA, TYPARR(NBPARR), TYPARS(NBPARS),
@@ -66,6 +67,7 @@ C     ------------------------------------------------------------------
      &             NBOLD, ICHCO, ANOMM1, ANOMM2
       REAL*8       MINI, MINIP, VINI, EPSI, MK, MKP, SIGINT, R8BID,
      &             VALR(NBPARR), TEST, PROINT, MAXCS, TPSMIN, TPSMAX
+      REAL*8       VALRR(3)
       COMPLEX*16   C16B
       LOGICAL      CALM, CALS, IMPR, DEPT, RECM, RECS
 C
@@ -201,19 +203,14 @@ C
         CALL RSADPA ( RESU,'L',1,'INST',DEROR,0,IAINST,K8BID)
         TPSMAX = ZR(IAINST)
         IF (ZR(IINST).LT.TPSMIN) THEN
-           CALL UTDEBM('S','OP0197','LE PREMIER INSTANT DE RUPTURE '
-     &          //'N''EST PAS DANS LA LISTE DES INSTANTS DE CALCUL')
-           CALL UTIMPR('L','PREMIER INSTANT DE RUPTURE = ',1,ZR(IINST))
-           CALL UTIMPR('L','PREMIER INSTANT DE CALCUL = ',1,TPSMIN)
-           CALL UTFINM()
+           VALRR (1) = ZR(IINST)
+           VALRR (2) = TPSMIN
+           CALL U2MESG('S', 'UTILITAI6_53',0,' ',0,0,2,VALRR)
         END IF
         IF (ZR(IINST+NBINS-1).GT.TPSMAX) THEN
-           CALL UTDEBM('S','OP0197','LE DERNIER INSTANT DE RUPTURE '
-     &          //'N''EST PAS DANS LA LISTE DES INSTANTS DE CALCUL')
-           CALL UTIMPR('L','DERNIER INSTANT DE RUPTURE = ',1,
-     &          ZR(IINST+NBINS-1))
-           CALL UTIMPR('L','DERNIER INSTANT DE CALCUL = ',1,TPSMAX)
-           CALL UTFINM()
+           VALRR (1) = ZR(IINST+NBINS-1)
+           VALRR (2) = TPSMAX
+           CALL U2MESG('S', 'UTILITAI6_54',0,' ',0,0,2,VALRR)
         END IF
 C
  100  CONTINUE
@@ -317,11 +314,10 @@ C
         MINIP = MINI
 C
 115   CONTINUE
-      CALL UTDEBM('I','OP0197','PARAMETRES INITIAUX DE WEIBULL')
-      CALL UTIMPR('L','EXPOSANT DE LA LOI      =',1,MINI)
-      CALL UTIMPR('L','VOLUME DE REFERENCE     =',1,VINI)
-      CALL UTIMPR('L','CONTRAINTE DE REFERENCE =',1,ZR(ISIGI))
-      CALL UTFINM
+      VALRR (1) = MINI
+      VALRR (2) = VINI
+      VALRR (3) = ZR(ISIGI)
+      CALL U2MESG('I', 'UTILITAI6_55',0,' ',0,0,3,VALRR)
 C
       CALL WKVECT('&&OP0197.NOM_TABLPE','V V K16',NBRESU,ITABW)
       CALL WKVECT('&&OP0197.NOM_TABLIN','V V K16',NBRESU,ITABR)
@@ -610,10 +606,9 @@ C
         CALL U2MESS('F','UTILITAI2_53')
       END IF
 C
-      CALL UTDEBM('I','OP0197','STATISTIQUES RECALAGE :')
-      CALL UTIMPI('L','NOMBRE D''ITERATIONS =',1,NBITE)
-      CALL UTIMPR('L','CONVERGENCE ATTEINTE =',1,TEST)
-      CALL UTFINM
+      VALII = NBITE
+      VALRR (1) = TEST
+      CALL U2MESG('I', 'UTILITAI6_56',0,' ',1,VALII,1,VALRR)
 C
       NOPASE = '        '
       CALL TBIMPR ( TAPAIT, NOPASE, 'EXCEL', IFM, NTPSI+2, ZK16(INOPA),

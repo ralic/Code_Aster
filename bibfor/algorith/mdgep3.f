@@ -1,7 +1,7 @@
       SUBROUTINE MDGEP3(NEQ,NBEXCI,PSIDEL,TEMPS,
      &                  NOMFON,TAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/04/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,7 @@ C .________________.____.______________________________________________.
       CHARACTER*8 NOMFON(2*NBEXCI)
 C ----------------------------------------------------------------------
       CHARACTER*8 NOMPAR, K8BID
+      CHARACTER*24 VALK
       REAL*8 COEF
 C
       K8BID = '        '
@@ -43,10 +44,8 @@ C
       NOMPAR = 'INST'
       DO 10 IEX=1,NBEXCI
          IF (NOMFON(IEX).EQ.K8BID) THEN
-            CALL UTDEBM('A','MDGEP3','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            CALL UTIMPK('L','INCOMPATIBILITE AVEC MULTI APPUI :',
-     +                   1,'CHARGE EN MONO APPUI')
-            CALL UTFINM()
+            VALK = 'CHARGE EN MONO APPUI'
+            CALL U2MESG('A', 'ALGORITH13_44',1,VALK,0,0,0,0.D0)
             GOTO 10
          ENDIF
          CALL FOINTE('F ',NOMFON(IEX),1,NOMPAR,TEMPS,COEF,IER)

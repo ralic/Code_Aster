@@ -2,7 +2,7 @@
      &                  NBMAP, NUMPAQ, TSPAQ, NOMCRI, PROAXE,
      &                  CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,7 @@ C-----------------------------------------------------------------------
       INTEGER       L, NBPG, NBPGP, KWORK, SOMPGW, IMAP
       INTEGER       IPG, NBVEC, NVAL, VNORMX
       INTEGER       ICMP, JAD
+      INTEGER VALI(2)
 C
       REAL*8        FATSOC, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI0
       REAL*8        VALA, VALB, COEFPA, PSEUIL, CUDOMX
@@ -188,14 +189,9 @@ C LES INSTANTS ET TOUS LES PLANS
       CALL JEDISP(1, TDISP2)
       TDISP2 =  (TDISP2 * LOISEM()) / LOR8EM()
       IF (TDISP2 .LT. TNECES ) THEN
-         CALL UTDEBM('F', 'AVGRMA.1', 'LA TAILLE MEMOIRE '//
-     &       ' NECESSAIRE AU VECTEUR DE TRAVAIL DANS '//
-     &       ' LEQUEL NOUS STOCKONS LES COMPOSANTES '//
-     &       ' u ET v DU VECTEUR TAU EST TROP IMPORTANTE '//
-     &       ' PAR RAPPORT A LA PLACE DISPONIBLE.')
-         CALL UTIMPI('L', 'TAILLE DISPONIBLE : ', 1, TDISP2)
-         CALL UTIMPI('L', 'TAILLE NECESSAIRE : ', 1, TNECES)
-         CALL UTFINM( )
+         VALI (1) = TDISP2
+         VALI (2) = TNECES
+         CALL U2MESG('F', 'PREPOST5_8',0,' ',2,VALI,0,0.D0)
       ELSE
          CALL WKVECT( '&&AVGRMA.VECTPG', 'V V R', TNECES, JVECPG )
       ENDIF

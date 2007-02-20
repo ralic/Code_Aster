@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C         GETRES GETFAC GETVXX
 C         IBOPER
 C     ------------------------------------------------------------------
       REAL*8        TEMPS(6)
+      REAL*8 VALR
       CHARACTER*8   NOMRES
       CHARACTER*16  CONCEP, NOMCMD , MOTFAC
 C     ------------------------------------------------------------------
@@ -38,6 +39,7 @@ C     ------------------------------------------------------------------
       PARAMETER          ( MXDFCA = 4 ,       MXCATA = 10 )
       CHARACTER*32  DFNOM(MXDFCA)     , NOM (MXCATA)
       CHARACTER*72  DFTITR(MXDFCA)    , TITRE(MXCATA)
+      CHARACTER*24 VALK
       INTEGER       DFUNIT(MXDFCA)    , UNITE(MXCATA)
 C     ------------------------------------------------------------------
 C     OPTIONS PAR DEFAUT :
@@ -100,10 +102,9 @@ C     --- CATALOGUE DES ELEMENTS ---
          IER = IER + IER1
       ENDIF
       CALL UTTCPU( 1,'FIN',6,TEMPS)
-      CALL UTDEBM('I','CATALOGUE(S) DES ELEMENTS','FIN DE LECTURE')
-      CALL UTIMPR('S',' (DUREE ',1,TEMPS(5))
-      CALL UTIMPK('S',' S.)',0,' ')
-      CALL UTFINM()
+      VALR = TEMPS(5)
+      VALK = ' '
+      CALL U2MESG('I', 'SUPERVIS_52',1,VALK,0,0,1,VALR)
 C
 C     --- VERIFICATION DE LA COMPLETUDE DE L'EXECUTION ---
       DO 900 ICATA = 1 , NBOCC

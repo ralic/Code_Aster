@@ -1,6 +1,6 @@
       SUBROUTINE MLTPRE(NU,BASE,RENUM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,6 +38,7 @@ C ======================================================================
       INTEGER NOEUD, DDL, PERMND, INVPND,SPNDND,DDLMOY,XADJD
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
+      INTEGER VALI(2)
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -128,11 +129,9 @@ C     DATA NOMCOL/'&&MLTPRE.TABLEAU_COLONNE'/
       NEQ = ZI(JSMDE-1+1)
       DO 10 I = 1,NEQ
         IF (ZI(INUEQ+I-1).NE.I) THEN
-          CALL UTDEBM('F','LA NUMEROTATION DEFINIE ',
-     &                'PAR NUEQ N''EST PAS L''IDENTITE.')
-          CALL UTIMPI('L','INDICE',1,I)
-          CALL UTIMPI('L','NUEQ ',1,ZI(INUEQ+I-1))
-          CALL UTFINM()
+          VALI (1) = I
+          VALI (2) = ZI(INUEQ+I-1)
+          CALL U2MESG('F', 'ALGELINE4_23',0,' ',2,VALI,0,0.D0)
         END IF
    10 CONTINUE
       CALL JELIBE(NUZ(1:14)//'.NUME.NUEQ')

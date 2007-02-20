@@ -1,9 +1,10 @@
       SUBROUTINE OPS001( ICMD , ICOND, IER )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            ICMD , ICOND, IER
+      INTEGER VALI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SUPERVIS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +30,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16     CBID, NOMCMD
       CHARACTER*32     NAME
       CHARACTER*8      UNITE,NOMSYM
+      CHARACTER*24 VALK
       PARAMETER             (MXFILE=30)
       COMMON  /SUCC00/ UNITE(MXFILE), NAME(MXFILE)
       COMMON  /SUCN00/ IPASS,IFILE,JCMD
@@ -51,12 +53,9 @@ C
       IFILE = IFILE + 1
 C
       IF ( IFILE .GT. MXFILE ) THEN
-         CALL UTDEBM('E','ANALYSE DES COMMANDES (ERREUR 1C)',
-     &                   'VOUS NE POUVEZ UTILISER PLUS DE')
-         CALL UTIMPI('S',' ',1,MXFILE)
-         CALL UTIMPK('S','NIVEAUX DE PROFONDEUR POUR DES APPELS PAR LA '
-     &                 //'PROCEDURE',1,'CALL')
-         CALL UTFINM()
+         VALI = MXFILE
+         VALK = 'CALL'
+         CALL U2MESG('E', 'SUPERVIS_53',1,VALK,1,VALI,0,0.D0)
          CALL U2MESS('F','SUPERVIS_34')
       ENDIF
 C

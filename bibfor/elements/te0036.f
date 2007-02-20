@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,13 +57,13 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   NOMPAR(4),NOMA,ELREFP
       CHARACTER*16  NOMTE,OPTION
       CHARACTER*24  COOR2D,GEOM2D,COORSE
-      INTEGER       JPINTT,JCNSET,JHEAVT,JLONCH,JCOORS
+      INTEGER       JPINTT,JCNSET,JHEAVT,JLONCH,JCOORS,JLSN,JLST
       INTEGER       IBID,IER,NDIM,NNO,NNOP,NPG,NNOS,JGANO,KPG,KDEC,J
       INTEGER       IPOIDS,IVF,IDFDE,JDFD2,IGEOM,IPRES,ITEMPS,IRES,I
-      INTEGER       DDLH,NFE,DDLC,NNOM,DDLT,DDL,NIT,CPT,IT,NSE,ISE
+      INTEGER       DDLH,NFE,DDLC,NNOM,DDL,NIT,CPT,IT,NSE,ISE
       INTEGER       IN,INO,JCOR2D,IGEO2D,IADZI,IAZK24,JDIM,NDIME,NDDL
-      INTEGER       NSEMAX,IFORC,IRET
-      REAL*8        LPAR(4),Y(3),XG(4),RBID,FE(4),DGDGL(4,3),XE(2)
+      INTEGER       NSEMAX,IFORC,IRET,IG,POS
+      REAL*8        Y(3),XG(4),RBID,FE(4),XE(2),LSNG,LSTG,RG,TG
       REAL*8        PRES,MATR(6561),FF(27),A(3),B(3),C(3),AB(3),AC(3)
       REAL*8        ND(3),NORME,NAB,RB1(3),RB2(3),GLOC(2),N(3)
       REAL*8        AN(3),G(3),HE,POIDS,DDOT,PADIST,FORREP(3)
@@ -72,9 +72,6 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C
       CALL JEMARQ()
-
-      IF (NOMTE(1:12).NE.'MECA_XH_FACE')
-     &  CALL U2MESS('F','ELEMENTS2_78')
 
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
@@ -101,7 +98,18 @@ C     NDIME EST DIMENSION DE L'ELEMENT FINI
       CALL ASSERT(NDIM.EQ.3)
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-      DDLH=NDIM
+      IF (NOMTE(1:12).EQ.'MECA_XH_FACE') THEN
+        DDLH=NDIM
+        NFE=0
+      ELSEIF (NOMTE(1:12).EQ.'MECA_XT_FACE') THEN
+        DDLH=0
+        NFE=4
+      ELSEIF (NOMTE(1:13).EQ.'MECA_XHT_FACE') THEN
+        DDLH=NDIM
+        NFE=4
+      ELSE
+        CALL U2MESS('F','ELEMENTS2_78')
+      ENDIF
 
       IF (NDIME.EQ. 3) THEN
          NSEMAX=6
@@ -142,6 +150,8 @@ C       SI LA PRESSION N'EST CONNUE SUR AUCUN NOEUD, ON LA PREND=0.
       ENDIF
 
 C     PARAMETRES PROPRES A X-FEM
+      CALL JEVECH('PLSN','L',JLSN)
+      CALL JEVECH('PLST','L',JLST)
       CALL JEVECH('PPINTTO','L',JPINTT)
       CALL JEVECH('PCNSETO','L',JCNSET)
       CALL JEVECH('PHEAVTO','L',JHEAVT)
@@ -196,8 +206,6 @@ C         CREATION DU REPERE LOCAL 2D : (AB,Y)
           CALL NORMEV(ND,NORME)
           CALL NORMEV(AB,NAB)
           CALL PROVEC(ND,AB,Y)
-
-C            WRITE(6,*)'ND ',ND
 
 C         COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL 2D
           COOR2D='&&TE0036.COOR2D'
@@ -264,6 +272,29 @@ C           DU POINT DE GAUSS
             ENDIF
 
 
+C           CALCUL DES FONCTIONS D'ENRICHISSEMENT
+C           -------------------------------------
+
+            IF (NFE.GT.0) THEN
+C             LEVEL SETS AU POINT DE GAUSS
+              LSNG = 0.D0
+              LSTG = 0.D0
+              DO 222 INO=1,NNOP
+                LSNG = LSNG + ZR(JLSN-1+INO) * FF(INO)
+                LSTG = LSTG + ZR(JLST-1+INO) * FF(INO)
+ 222          CONTINUE
+
+C             COORDONNÉES POLAIRES DU POINT
+              RG=SQRT(LSNG**2+LSTG**2)
+              TG = HE * ABS(ATAN2(LSNG,LSTG))
+C
+C             FONCTIONS D'ENRICHISSEMENT
+              FE(1)=SQRT(RG)*SIN(TG/2.D0)
+              FE(2)=SQRT(RG)*COS(TG/2.D0)
+              FE(3)=SQRT(RG)*SIN(TG/2.D0)*SIN(TG)
+              FE(4)=SQRT(RG)*COS(TG/2.D0)*SIN(TG)
+            ENDIF
+
 C           CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
 C           -----------------------------------------------
 
@@ -279,7 +310,6 @@ C             CAR LE SECOND MEMBRE SERA ECRIT AVEC UN + (VOIR PLUS BAS)
               FORREP(1) = -PRES * ND(1)
               FORREP(2) = -PRES * ND(2)
               FORREP(3) = -PRES * ND(3)
-
             ELSEIF (OPTION.EQ.'CHAR_MECA_PRES_F') THEN
 
 C             VALEUR DE LA PRESSION
@@ -310,17 +340,28 @@ C             VALEUR DE LA PRESSION
 C           CALCUL EFFECTIF DU SECOND MEMBRE
 C           --------------------------------
 
+            POS=0
             DO 230 INO = 1,NNOP
+C             TERME CLASSIQUE
               DO 231 J=1,NDIM
-                ZR(IRES-1+(NDIM+DDLH)*(INO-1)+J) =
-     &          ZR(IRES-1+(NDIM+DDLH)*(INO-1)+J) +
-     &          FORREP(J) * POIDS * FF(INO)
+                POS=POS+1
+                ZR(IRES-1+POS) = ZR(IRES-1+POS)
+     &                           + FORREP(J) * POIDS * FF(INO)
  231          CONTINUE
+C             TERME HEAVISIDE
               DO 232 J=1,DDLH
-                ZR(IRES-1+(NDIM+DDLH)*(INO-1)+NDIM+J) =
-     &          ZR(IRES-1+(NDIM+DDLH)*(INO-1)+NDIM+J) +
-     &          HE * FORREP(J) * POIDS * FF(INO)
+                POS=POS+1
+                ZR(IRES-1+POS) = ZR(IRES-1+POS)
+     &                           + HE * FORREP(J) * POIDS * FF(INO)
  232          CONTINUE
+C             TERME SINGULIER
+              DO 233 IG=1,NFE
+                DO 234 J=1,NDIM
+                  POS=POS+1
+                  ZR(IRES-1+POS) = ZR(IRES-1+POS) +
+     &                             FE(IG) * FORREP(J) * POIDS * FF(INO)
+ 234            CONTINUE
+ 233          CONTINUE
  230        CONTINUE
 
  200      CONTINUE

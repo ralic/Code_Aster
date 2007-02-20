@@ -3,7 +3,7 @@
       REAL*8              RHO , EPAIS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       JMATE, NBV, JCOQU, IADZI, IAZK24
       REAL*8        R8BID, VALRES(2), R8MAEM
       CHARACTER*2   CODRET(2)
+      CHARACTER*24 VALK(2)
       CHARACTER*8   NOMRES(2), NOMAIL
       CHARACTER*16  PHENOM
 C --DEB
@@ -61,10 +62,9 @@ C
          IF ( RHO .EQ. R8MAEM() ) THEN
             CALL TECAEL ( IADZI, IAZK24 )
             NOMAIL = ZK24(IAZK24-1+3)(1:8)
-            CALL UTDEBM ( 'F', 'DXROEP', 'MANQUE ' )
-            CALL UTIMPK ( 'S', 'LE PARAMETRE ', 1, 'RHO' )
-            CALL UTIMPK ( 'S', 'POUR LA MAILLE ', 1, NOMAIL )
-            CALL UTFINM
+            VALK (1) = 'RHO'
+            VALK (2) = NOMAIL
+            CALL U2MESG('F', 'ELEMENTS4_81',2,VALK,0,0,0,0.D0)
          ENDIF
 C
       ELSEIF ( PHENOM .EQ. 'ELAS'          .OR.

@@ -6,7 +6,7 @@
      &         RUGOSI(8), Z, DZ, X(5), Z0
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ C        DE SA VITESSE DE CHUTE  DZ
 C
 C-----------------------------------------------------------------------
       INTEGER    LWA,IND,IRET,EPS,EPS0,NMAX,I
+      INTEGER    VALI(2)
       PARAMETER  (LWA=100)
 
       REAL*8  A, A0, A1, AC, ROC, CD1, CD2, DH, NUC, EPSLON, P0, P1,
@@ -38,6 +39,7 @@ C-----------------------------------------------------------------------
      &        KCF1, KCF2, CF1, CF2, DCRAY, DTG, LAM, HRUGC, HRUGTG,
      &        GFCORR, XX(3), WA(LWA), FVEC(3), F(5),
      &        PI, R8PI, R8PREM, ZERO, DEMI, UN
+      REAL*8  VALR(6)
 C     ------------------------------------------------------------------
 C
       ROC = FLUID(1)
@@ -184,10 +186,9 @@ C
       CALL HYBRD2 ( 3, XX, FVEC, TOL, WA, LWA, IRET ,LAMEQ, FLUID,
      &               GEOM1, CFPCD1, EPS, EPS0, Z0, Z, DZ )
       IF ( IRET .NE. 1) THEN
-         CALL UTDEBM('A','TUBE_GUIDE','RESOLUTION MAL TERMINEE')
-         CALL UTIMPI('S',' CODE RETOUR ', 1, IRET)
-         CALL UTIMPI('L','   POUR L''ITERATION ', 1, IT)
-         CALL UTFINM()
+         VALI (1) = IRET
+         VALI (2) = IT
+         CALL U2MESG('A', 'ALGORITH13_24',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
       X(1) = XX(1)
@@ -218,11 +219,13 @@ C
  10   CONTINUE
 C
       IF ( S .GT. 1.0D-3 )  THEN
-         CALL UTDEBM('A','TUBE_GUIDE','CALCUL DE L''ERREUR RESIDUEL'//
-     &   'LE DANS LA RESOLUTION DU MODELE DANS LE TUBEGUIDE')
-         CALL UTIMPR('L',' SOMME(F) > 1.0D-3 , SOMME(F) = ', 1, S )
-         CALL UTIMPR('L',' F = ', 5, F )
-         CALL UTFINM
+         VALR (1) = S
+         VALR (2) = F(1)
+         VALR (3) = F(2)
+         VALR (4) = F(3)
+         VALR (5) = F(4)
+         VALR (6) = F(5)
+         CALL U2MESG('A', 'ALGORITH13_25',0,' ',0,0,6,VALR)
       ENDIF
 C
 C----------------------------------------------------------------------

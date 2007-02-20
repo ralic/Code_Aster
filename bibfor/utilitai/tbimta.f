@@ -20,7 +20,7 @@ C ======================================================================
       INTEGER             IFR, NPARIM
       CHARACTER*(*)       TABLE, FORMAR, LIPAIM(*)
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRS_602
 C      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
 C ----------------------------------------------------------------------
@@ -60,6 +60,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16 INPAR, KNPAR, FORMR, FORMD
       CHARACTER*19 NOMTAB
       CHARACTER*24 NOMJV, NOMJVL, LIPACR(2)
+      CHARACTER*24 VALKK(4)
       CHARACTER*80 VK(2), VALK
       CHARACTER*2000 CHAINE, CHAINC
 C     ------------------------------------------------------------------
@@ -114,9 +115,8 @@ C
             ENDIF
  12      CONTINUE
          ERREUR = .TRUE.
-         CALL UTDEBM('A','IMPR_TABLE','ERREUR DANS LES DONNEES')
-         CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-         CALL UTFINM( )
+         VALKK (1) = INPAR
+         CALL U2MESG('A', 'UTILITAI6_98',1,VALKK,0,0,0,0.D0)
  10   CONTINUE
       IF ( ERREUR ) THEN
          CALL U2MESS('F','PREPOST_60')
@@ -463,12 +463,11 @@ C
                CHAINE(IDEB:IFIN) = '    -    '
                IDEB = IFIN + 2
             ELSE
-               CALL UTDEBM('F','TBIMTA','ERREUR DANS LES DONNEES')
-               CALL UTIMPK('L','PARAMETRE : ',1,INPAR )
-               CALL UTIMPK('L','  PLUSIEURS VALEURS TROUVEES',0,' ')
-               CALL UTIMPK('L','POUR LE PARAMETRE ',1,LIPACR(1) )
-               CALL UTIMPK('L','ET LE PARAMETRE ',1,LIPACR(2) )
-               CALL UTFINM( )
+               VALKK (1) = INPAR
+               VALKK (2) = ' '
+               VALKK (3) = LIPACR(1)
+               VALKK (4) = LIPACR(2)
+               CALL U2MESG('F', 'UTILITAI6_99',4,VALKK,0,0,0,0.D0)
             ENDIF
  420     CONTINUE
 C

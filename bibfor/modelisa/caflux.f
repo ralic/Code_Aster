@@ -6,7 +6,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*19  CART1, CART2
       CHARACTER*24  PARA, MESMAI
+      CHARACTER*24 VALK(2)
 C ----------------------------------------------------------------------
 C
 C     VERIFICATION DE L'EXCLUSION :   / FLUN FLUN_INF FLUN_SUP
@@ -194,40 +195,30 @@ C
      &                       MONGRM, K8B, R8B, PARA, K8B,
      &                       IBID, AIRE, C16B, K8B, IRET )
                IF ( IRET .EQ. 1 ) THEN
-                 CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
-                 CALL UTIMPK('L','LE PARAMETRE ',1,PARA)
-                 CALL UTIMPK('S','N EXISTE PAS DANS LA TABLE ',1,NOMTAB)
-                 CALL UTFINM()
+                 VALK (1) = PARA
+                 VALK (2) = NOMTAB
+                 CALL U2MESG('F', 'MODELISA8_34',2,VALK,0,0,0,0.D0)
                ELSEIF ( IRET .EQ. 2 ) THEN
-                 CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
-                 CALL UTIMPK('L','PAS DE VALEUR POUR LE PARAMETRE ',
-     &                            1,PARA)
-                 CALL UTFINM()
+                 VALK (1) = PARA
+                 CALL U2MESG('F', 'MODELISA8_35',1,VALK,0,0,0,0.D0)
                ELSEIF ( IRET .EQ. 3 ) THEN
-                 CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
-                 CALL UTIMPK('L','PLUSIEURS VALEURS POUR LE GROUP_MA ',
-     &                            1,MONGRM)
-                 CALL UTFINM()
+                 VALK (1) = MONGRM
+                 CALL U2MESG('F', 'MODELISA8_36',1,VALK,0,0,0,0.D0)
                END IF
                PARA = 'LONGUEUR'
                CALL TBLIVA ( NOMTAB, 1, 'GROUP_MA', IBID, R8B, C16B,
      &                       MONGRM, K8B, R8B, PARA, K8B,
      &                       IBID, XLONG, C16B, K8B, IRET )
                IF ( IRET .EQ. 1 ) THEN
-                 CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
-                 CALL UTIMPK('L','LE PARAMETRE ',1,PARA)
-                 CALL UTIMPK('S','N EXISTE PAS DANS LA TABLE ',1,NOMTAB)
-                 CALL UTFINM()
+                 VALK (1) = PARA
+                 VALK (2) = NOMTAB
+                 CALL U2MESG('F', 'MODELISA8_34',2,VALK,0,0,0,0.D0)
                ELSEIF ( IRET .EQ. 2 ) THEN
-                 CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
-                 CALL UTIMPK('L','PAS DE VALEUR POUR LE PARAMETRE ',
-     &                            1,PARA)
-                 CALL UTFINM()
+                 VALK (1) = PARA
+                 CALL U2MESG('F', 'MODELISA8_35',1,VALK,0,0,0,0.D0)
                ELSEIF ( IRET .EQ. 3 ) THEN
-                 CALL UTDEBM('F','CAFLUX', 'ERREUR DANS LES DONNEES' )
-                 CALL UTIMPK('L','PLUSIEURS VALEURS POUR LE GROUP_MA ',
-     &                            1,MONGRM)
-                 CALL UTFINM()
+                 VALK (1) = MONGRM
+                 CALL U2MESG('F', 'MODELISA8_36',1,VALK,0,0,0,0.D0)
                END IF
                NCMP1 = NCMP1 + 1
                ZK8(JNCMP1-1 + NCMP1) = 'FLUN'

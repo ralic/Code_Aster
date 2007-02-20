@@ -2,7 +2,7 @@
      &                  RANG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,6 +52,7 @@ C DECLARATION PARAMETRES D'APPELS
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
+      INTEGER VALI(2)
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -155,11 +156,9 @@ C NUMERO D'EQUATION CORRESPONDANTE
 C TESTS DE VALIDITE POUR VERIFIER QUE LES COMPOSANTES SONT PAR ORDRE
 C CROISSANT (RENUMEROTATION MD, MDA ET METIS)         
                   IF (IAUX3.LT.ICMP) THEN
-                    CALL UTDEBM('F',
-     &                'FETING','ICMP DANS LE DESORDRE POUR')
-                    CALL UTIMPI('S',' NOEUD= ',1,IAUX2)
-                    CALL UTIMPI('L',' ET SOUS-DOMAINE= ',1,IDD)
-                    CALL UTFINM
+                    VALI (1) = IAUX2
+                    VALI (2) = IDD
+      CALL U2MESG('F', 'ALGORITH13_13',0,' ',2,VALI,0,0.D0)
                   ELSE IF (IAUX3.GT.ICMP) THEN
                     ICMP=IAUX3                            
                   ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE JJCREC ( ICL , IDA , GENRI , TYPEI , NB , IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ----------------------------------------------------------------------
 C
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -102,6 +102,8 @@ C DEB ------------------------------------------------------------------
         CALL U2MESK('F','JEVEUX_01',1,CMESS)
       ENDIF
       LTYP(JLTYP (ICL) + IDA ) = IV
+      IADM(JIADM (ICL) + 2*IDA-1 ) = 0
+      IADM(JIADM (ICL) + 2*IDA   ) = 0
       IF ( NB .GT. 0 ) THEN
         IF ( GENRI .EQ. 'N' ) THEN
           LONG ( JLONG(ICL) + IDA ) = NB
@@ -119,8 +121,9 @@ C DEB ------------------------------------------------------------------
           LONO(JLONO (ICL) + IDA ) = NB
         ENDIF
         NBL = LONO(JLONO (ICL) + IDA ) * IV
-        CALL JJALLT(NBL,GENRI,TYPEI,IV,'INIT',IADMI)
-        IADM(JIADM (ICL) + IDA ) = IADMI
+        CALL JJALLT(NBL,GENRI,TYPEI,IV,'INIT',IADMI,IADYN)
+        IADM(JIADM (ICL) + 2*IDA-1 ) = IADMI
+        IADM(JIADM (ICL) + 2*IDA   ) = IADYN
         CALL JJECRS (IADMI,ICL,IDA,0,'E',IMARQ(JMARQ(ICL)+2*IDA-1) )
         IF ( GENRI .EQ. 'N' ) THEN
           NHC = JJPREM(NB)

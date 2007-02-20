@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
       CHARACTER*24 GEOM2
+      CHARACTER*24 VALK(2)
       CHARACTER*1 KB
       REAL*8 RBID
 C ----------------------------------------------------------------------
@@ -197,11 +198,9 @@ C        ---------------------------------------------
           CALL RELIEM(MO,NOMA,'NU_MAILLE',MOTFAC,IOCC,2,MOTCLE,TYMOCL,
      &                '&&CALIRC.LIMANU2',NBMA2)
           IF (NBMA2.EQ.0) THEN
-            CALL UTDEBM('F','CALIRC','LA DIRECTION NORMALE EST '//
-     &        'CALCULEE SUR LA FACE ESCLAVE. IL FAUT DONNER DES MAIILES'
-     &                  )
-            CALL UTIMPK('S',' DE FACETTES, MOTS CLES : ',2,MOTCLE)
-            CALL UTFINM()
+            VALK(1) = MOTCLE(1)
+            VALK(2) = MOTCLE(2)
+            CALL U2MESG('F', 'MODELISA8_49',2,VALK,0,0,0,0.D0)
           END IF
           CALL JEVEUO('&&CALIRC.LIMANU2','L',IDMAI2)
 

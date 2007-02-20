@@ -1,6 +1,6 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CFT_720 CRP_18 CRS_508
+C TOLE CFT_720 CRP_18 CRS_508 CRS_505
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             ICLAS , NRMAX
 C ----------------------------------------------------------------------
@@ -32,7 +32,7 @@ C ----------------------------------------------------------------------
      &                 (IDOCU,DOCU),(IORIG,ORIG),(IRNOM,RNOM)
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -46,38 +46,41 @@ C
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
      &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C ----------------------------------------------------------------------
       CHARACTER *32    CLEL,CLE
       CHARACTER *75    CMESS
       CHARACTER *4     Z
       INTEGER          JCOD,KADHC,JNOM,KADNO,LOREP,IADRS(20),KAT(20)
-      INTEGER          LGNOM,NUTI,LSO(20),IMQ(2),IADDI(2)
+      INTEGER          LGNOM,NUTI,LSO(20),IMQ(2),IADDI(2),KDY(20),IBID
       PARAMETER       (NBATT=12,NBTOT=NBATT+2,LGNOM=32)
-      INTEGER          NUMATT(NBTOT)
+      INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT)
       DATA NUMATT,Z   /2,3,4,5,6,8,9,10,11,12,16,7,13,20,'INIT'/
 C DEB ------------------------------------------------------------------
       IPGCA = IPGC
       IPGC  = -2
       IC = ICLAS
+      KAT (17)= 0
+      KDY (17)= 0
 C
 C --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEAU REPERTOIRE
 C
       LHCOD  = JJPREM ( NRMAX )
-      CALL JJALLS (LHCOD*LOIS ,'V','I',LOIS,'INIT',HCOD,JCOD,KADHC)
+      CALL JJALLS(LHCOD*LOIS ,'V','I',LOIS,'INIT',HCOD,JCOD,KADHC,KHCDY)
       CALL JJECRS (KADHC,IC,13,0,'E',IMQ)
-      CALL JJALLS (NRMAX*LGNOM,'V','K',LGNOM,'NOINIT',IRNOM,JNOM,KADNO)
+      CALL JJALLS (NRMAX*LGNOM,'V','K',LGNOM,'NOINIT',IRNOM,
+     &             JNOM,KADNO,KNODY)
       CALL JJECRS (KADNO,IC,7,0,'E',IMQ)
       DO 60 I = 1,NRMAX
         RNOM( JNOM - 1 + I ) = '?'
@@ -147,43 +150,49 @@ C
  200  CONTINUE
 C
       KAT (7)            = KADNO
+      KDY (7)            = KNODY
       LONG(JLONG(IC)+7)  = NRMAX
       LSO (7)            = LHCOD*LOIS
       KAT (13)           = KADHC
+      KDY (13)           = KHCDY
       LONG(JLONG(IC)+13) = LHCOD
       LSO (13)           = NRMAX*LGNOM
 C
 C --- ALLOCATION DES DIFFERENTS SEGMENTS DE VALEURS :
 C
       LON = 2*NREMAX(IC)*LOIS
-      CALL JJALLS ( LON,'V','I',LOIS,Z,IMARQ,IADRS(16),KAT(16))
+      CALL JJALLS ( LON,'V','I',LOIS,Z,IMARQ,IADRS(16),KAT(16),KDY(16))
       CALL JJECRS (KAT(16),IC,16,0,'E',IMQ)
       LON = NREMAX(IC) * LEN(GENR(1))
-      CALL JJALLS (LON,'V','K',LEN(GENR(1)),Z,IGENR,IADRS(3),KAT( 3))
+      CALL JJALLS (LON,'V','K',LEN(GENR(1)),Z,IGENR,IADRS(3),KAT(3),
+     &             KDY(3))
       CALL JJECRS (KAT( 3),IC, 3,0,'E',IMQ)
       LON = NREMAX(IC) * LEN(TYPE(1))
-      CALL JJALLS (LON,'V','K',LEN(TYPE(1)),Z,ITYPE,IADRS(4),KAT( 4))
+      CALL JJALLS (LON,'V','K',LEN(TYPE(1)),Z,ITYPE,IADRS(4),KAT(4),
+     &             KDY(4))
       CALL JJECRS (KAT( 4),IC, 4,0,'E',IMQ)
       LON = NREMAX(IC) * LEN(DOCU(1))
-      CALL JJALLS (LON,'V','K',LEN(DOCU(1)),Z,IDOCU,IADRS(5),KAT( 5))
+      CALL JJALLS (LON,'V','K',LEN(DOCU(1)),Z,IDOCU,IADRS(5),KAT(5),
+     &             KDY(5))
       CALL JJECRS (KAT( 5),IC, 5,0,'E',IMQ)
       LON = NREMAX(IC) * LEN(ORIG(1))
-      CALL JJALLS (LON,'V','K',LEN(ORIG(1)),Z,IORIG,IADRS(6),KAT( 6))
+      CALL JJALLS (LON,'V','K',LEN(ORIG(1)),Z,IORIG,IADRS(6),KAT(6),
+     &             KDY(6))
       CALL JJECRS (KAT( 6),IC, 6,0,'E',IMQ)
       LON = NREMAX(IC) * LOIS
-      CALL JJALLS ( 2*LON,'V','I',LOIS,Z,IADD,IADRS(2) ,KAT( 2))
+      CALL JJALLS ( 2*LON,'V','I',LOIS,Z,IADD,IADRS(2) ,KAT(2),KDY(2))
       CALL JJECRS (KAT( 2),IC, 2,0,'E',IMQ)
-      CALL JJALLS ( LON,'V','I',LOIS,Z,LTYP,IADRS(8) ,KAT( 8))
+      CALL JJALLS ( LON,'V','I',LOIS,Z,LTYP,IADRS(8) ,KAT(8),KDY(8))
       CALL JJECRS (KAT( 8),IC, 8,0,'E',IMQ)
-      CALL JJALLS ( LON,'V','I',LOIS,Z,LONG,IADRS(9) ,KAT( 9))
+      CALL JJALLS ( LON,'V','I',LOIS,Z,LONG,IADRS(9) ,KAT( 9),KDY(9))
       CALL JJECRS (KAT( 9),IC, 9,0,'E',IMQ)
-      CALL JJALLS ( LON,'V','I',LOIS,Z,LONO,IADRS(10),KAT(10))
+      CALL JJALLS ( LON,'V','I',LOIS,Z,LONO,IADRS(10),KAT(10),KDY(10))
       CALL JJECRS (KAT(10),IC,10,0,'E',IMQ)
-      CALL JJALLS ( LON,'V','I',LOIS,Z,DATE,IADRS(11),KAT(11))
+      CALL JJALLS ( LON,'V','I',LOIS,Z,DATE,IADRS(11),KAT(11),KDY(11))
       CALL JJECRS (KAT(11),IC,11,0,'E',IMQ)
-      CALL JJALLS ( LON,'V','I',LOIS,Z,LUTI,IADRS(12),KAT(12))
+      CALL JJALLS ( LON,'V','I',LOIS,Z,LUTI,IADRS(12),KAT(12),KDY(12))
       CALL JJECRS (KAT(12),IC,12,0,'E',IMQ)
-      CALL JJALLS ( LON,'V','I',LOIS,Z,IADM,IADRS(20),KAT(20))
+      CALL JJALLS ( 2*LON,'V','I',LOIS,Z,IADM,IADRS(20),KAT(20),KDY(20))
       CALL JJECRS (KAT(20),IC,20,0,'E',IMQ)
       DO 300 K=1,NREUTI(IC)
         GENR(IADRS( 3)-1+K) =  GENR(JGENR(IC)+K)
@@ -195,16 +204,23 @@ C
         LONO(IADRS(10)-1+K) =  LONO(JLONO(IC)+K)
         DATE(IADRS(11)-1+K) =  DATE(JDATE(IC)+K)
         LUTI(IADRS(12)-1+K) =  LUTI(JLUTI(IC)+K)
-        IADM(IADRS(20)-1+K) =  IADM(JIADM(IC)+K)
  300  CONTINUE
       DO 310 K=1,2*NREUTI(IC)
+        IADM (IADRS(20)-1+K) =  IADM (JIADM(IC)+K)
         IADD (IADRS( 2)-1+K) =  IADD (JIADD(IC)+K)
         IMARQ(IADRS(16)-1+K) =  IMARQ(JMARQ(IC)+K)
  310  CONTINUE
+      DO 315 I = 1,NBTOT
+        IL     = NUMATT(I)
+        IDM(I) = IADM(JIADM(IC)+2*IL-1)
+        IDY(I) = IADM(JIADM(IC)+2*IL  )
+ 315  CONTINUE
       DO 320 I = 1,NBTOT
-        IL = NUMATT(I)
-        IADMI = IADM(JIADM(IC)+IL)
-        IF (IADMI .GT. 0) CALL JJLIBP (IADMI)
+        IF (IDY(I) .NE. 0) THEN
+          CALL HPDEALLC (IDY(I),IBID,IBID)
+        ELSE IF (IDM(I) .NE. 0) THEN
+          CALL JJLIBP (IDM(I))
+        ENDIF
  320  CONTINUE
 C
       JIADD(IC) = IADRS( 2) - 1
@@ -229,7 +245,7 @@ C
         IF (IL .EQ. 13 ) THEN
           LONG(JLONG(IC)+IL) = LHCOD
           LONO(JLONO(IC)+IL) = LHCOD
-        ELSE IF (IL .EQ. 16 .OR. IL .EQ. 2) THEN
+        ELSE IF (IL .EQ. 16 .OR. IL .EQ. 2 .OR. IL .EQ. 20) THEN
           LONG(JLONG(IC)+IL) = 2*NRMAX
           LONO(JLONO(IC)+IL) = 2*NRMAX
         ELSE
@@ -241,7 +257,8 @@ C
           LONO(JLONO(IC)+IL) = ((1+LLOC/LOIS)*LOIS)/LTYP(JLTYP(IC)+IL)
         ENDIF
         LSO(IL) = LONO(JLONO(IC)+IL) * LTYP(JLTYP(IC)+IL)
-        IADM(JIADM(IC)+IL) = KAT(IL)
+        IADM(JIADM(IC)+2*IL-1) = KAT(IL)
+        IADM(JIADM(IC)+2*IL  ) = KDY(IL)
  325  CONTINUE
 C
       DO 330 I = 1,NBTOT

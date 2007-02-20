@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C
 C  BUT:      < RESTITUTI0N MAC-NEAL ECLATEE >
 C
@@ -57,6 +57,7 @@ C
       CHARACTER*16  DEPL,TYPESD,TYPSUP(2)
       CHARACTER*19  CHAMVA,NUMDDL,MATRIX,MASS
       CHARACTER*24  FLEXDR,FLEXGA,FLEXAX,TETGD,TETAX
+      CHARACTER*24  VALK(3)
       COMPLEX*16    DEPHC
       REAL*8        PARA(2),DEPI,R8DEPI,FACT,GENEK,BETA
 C
@@ -72,11 +73,10 @@ C
 C----------------VERIFICATION DU TYPE DE STRUCTURE RESULTAT-------------
 C
       IF(TYPESD.NE.TYPSUP(1) .AND. TYPESD.NE.TYPSUP(2))THEN
-        CALL UTDEBM('F','REMNEC',
-     &                  'ARRET SUR TYPE DE RESULTAT NON SUPPORTE')
-        CALL UTIMPK('L',' TYPE DONNE --> ',1,TYPESD)
-        CALL UTIMPK('L',' TYPES SUPPORTES --> ',2,TYPSUP)
-        CALL UTFINM
+        VALK (1) = TYPESD
+        VALK (2) = TYPSUP(1)
+        VALK (3) = TYPSUP(2)
+        CALL U2MESG('F', 'ALGORITH14_42',3,VALK,0,0,0,0.D0)
       ENDIF
 C
 C--------------------------RECUPERATION DU .DESC------------------------
@@ -115,9 +115,8 @@ C      CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
       MASS = ZK24(LLREF+1)
       CALL MTEXIS ( MASS, IER )
       IF(IER.EQ.0) THEN
-        CALL UTDEBM('F','REMNEC','ARRET SUR MATRICE INEXISTANTE')
-        CALL UTIMPK('L','MATRICE:',1,MASS(1:8))
-        CALL UTFINM()
+        VALK (1) = MASS(1:8)
+        CALL U2MESG('F', 'ALGORITH14_43',1,VALK,0,0,0,0.D0)
       ENDIF
       CALL MTDSCR(MASS)
       CALL JEVEUO(MASS(1:19)//'.&INT','E',LMASS)

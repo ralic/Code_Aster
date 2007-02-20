@@ -6,7 +6,7 @@
      &         DT, X(5), YY(2), Z0, L2, L3, FPTG2, FFTG2, FRTG2
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,6 +32,7 @@ C
 C-----------------------------------------------------------------------
 C  
       INTEGER N2,LWA,SGU1,IRET,I
+      INTEGER VALI(2)
       PARAMETER (N2=6,LWA=30)
 C
       REAL*8  A, A1, AA0, AC, ROC, CD0, CD1, CD2, DH, NUC, PI, S
@@ -44,6 +45,7 @@ C
       REAL*8  HRUGC, HRUGTG
       REAL*8  R8PREM, R8PI, ZERO, DEMI, UN
       REAL*8  FVEC(2), WA(LWA), F(N2), Y(6), COEF1(5)
+      REAL*8  VALR(7)
 C     ------------------------------------------------------------------
 C
       ROC = FLUID(1)
@@ -160,10 +162,9 @@ C
       CALL HYBRD1 ( 2, YY, FVEC, TOL, WA, LWA, IRET, COEF1 , FLUID,
      +              GEOM1, CFPCD1,  DZ, D2Z, DT, ITDASH, URM1 ) 
       IF ( IRET .NE. 1 ) THEN
-         CALL UTDEBM('A','DASHPOT','RESOLUTION MAL TERMINEE')
-         CALL UTIMPI('S',' CODE RETOUR ', 1, IRET)
-         CALL UTIMPI('L','   POUR L''ITERATION ', 1, IT)
-         CALL UTFINM()
+         VALI (1) = IRET
+         VALI (2) = IT
+         CALL U2MESG('A', 'ALGORITH13_22',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
       Y(1) = YY(1)
@@ -218,11 +219,14 @@ C
  10   CONTINUE
 C
       IF ( S .GT. 1.0D-3 )  THEN
-         CALL UTDEBM('A','DASHPOT','CALCUL DE L''ERREUR RESIDUELLE'//
-     +   ' DANS LA RESOLUTION DU MODELE DANS LE DASHPOT')
-         CALL UTIMPR('L',' SOMME(F) > 1.0D-3 , SOMME(F) = ', 1, S )
-         CALL UTIMPR('L',' F = ', 6, F )
-         CALL UTFINM
+         VALR (1) = S
+         VALR (2) = F(1)
+         VALR (3) = F(2)
+         VALR (4) = F(3)
+         VALR (5) = F(4)
+         VALR (6) = F(5)
+         VALR (7) = F(6)
+         CALL U2MESG('A', 'ALGORITH13_23',0,' ',0,0,7,VALR)
       ENDIF
 C
 C

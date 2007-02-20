@@ -6,7 +6,7 @@
       CHARACTER*8         CRIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C IN  : CRIT   : CRITERE DE RECHERCHE
 C ----------------------------------------------------------------------
       INTEGER      NBTROU, I, J
       REAL*8       RVAL
+      REAL*8 VALR
       LOGICAL      TROUVE
       CHARACTER*8  K8B
       CHARACTER*16 TYPCON, NOMCMD
@@ -74,15 +75,11 @@ C               ENDIF
             ENDIF
  20      CONTINUE
          IF ( NBTROU .EQ. 0 ) THEN
-            CALL UTDEBM ( 'F', 'DYARC1', 'DONNEES ERRONEES' )
-            CALL UTIMPR ( 'L','PAS D''INSTANT DE CALCUL POUR '//
-     &                    'L''INSTANT D''ARCHIVAGE: ', 1, RVAL )
-            CALL UTFINM ( )
+            VALR = RVAL
+            CALL U2MESG('F', 'ALGORITH12_97',0,' ',0,0,1,VALR)
          ELSEIF ( NBTROU .NE. 1 ) THEN
-            CALL UTDEBM ( 'F', 'DYARC1', 'DONNEES ERRONEES' )
-            CALL UTIMPR ( 'L','PLUSIEURS INSTANTS DE CALCUL POUR '//
-     &                    'L''INSTANT D''ARCHIVAGE: ',  1, RVAL )
-            CALL UTFINM ( )
+            VALR = RVAL
+            CALL U2MESG('F', 'ALGORITH12_98',0,' ',0,0,1,VALR)
          ENDIF
  10   CONTINUE
 C

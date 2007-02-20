@@ -8,7 +8,7 @@
       CHARACTER*16 TYPCON
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,10 +48,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'EXTRS2' )
-C
       INTEGER LXLGUT
+      INTEGER VALI(2)
 C
       INTEGER I,J,IRE1,IRE2,IADIN,IADOU,IRET
       CHARACTER*3 TYPE
@@ -59,6 +57,7 @@ C
       CHARACTER*16 NOPARA
       CHARACTER*19 RESUIN,RESUOU
       CHARACTER*24 CHAMIN,CHAMOU
+      CHARACTER*24 VALK
 C     ------------------------------------------------------------------
 
       CALL JEMARQ( )
@@ -94,11 +93,10 @@ C
           IF (IRE2.EQ.0) THEN
           ELSE IF (IRE2.EQ.100) THEN
           ELSE
-            CALL UTDEBM('F',NOMPRO,'APPEL ERRONE')
-            CALL UTIMPI('L','NUMERO D''ORDRE',1,NUORDR(J))
-            CALL UTIMPI('L','CODE RETOUR DE RSEXCH :',1,IRE2)
-            CALL UTIMPK('L','PB CHAM_NO',1,CHAMOU)
-            CALL UTFINM()
+            VALI (1) = NUORDR(J)
+            VALI (2) = IRE2
+            VALK = CHAMOU
+            CALL U2MESG('F', 'PREPOST5_18',1,VALK,2,VALI,0,0.D0)
           END IF
           CALL COPISD('CHAMP_GD','G',CHAMIN,CHAMOU)
           CALL RSNOCH(RESUOU,NOMSYM,NUORDR(J),' ')

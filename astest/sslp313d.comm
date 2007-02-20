@@ -1,4 +1,4 @@
-# MODIF  DATE 20/12/2005   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG3,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=_F(GROUP_MA='TOT',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='C_PLAN_X',),);  
+                             MODELISATION='C_PLAN_XFEM',),);  
                   
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                     DEFI_FISS=_F(

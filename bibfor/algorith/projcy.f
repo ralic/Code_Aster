@@ -1,6 +1,6 @@
       SUBROUTINE PROJCY(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,13 +48,12 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6      PGC
       CHARACTER*8 NOMRES,BASMOD,INTF,TYPINT,MAILLA
       CHARACTER*24 REPMAT,SOUMAT
+      CHARACTER*24 VALK
       LOGICAL NOOK
 C
 C-----------------------------------------------------------------------
-      DATA PGC /'PROJCY'/
       DATA NOOK /.TRUE./
 C-----------------------------------------------------------------------
 C
@@ -99,10 +98,8 @@ C
 C--------------AUTRE CAS -----------------------------------------------
 C
       IF(NOOK) THEN
-        CALL UTDEBM('F',PGC,
-     &'TYPE INTERFACE NON SUPPORTEE EN CYCLIQUE')
-        CALL UTIMPK('L','TYPE INTERFACE --> ',1,TYPINT)
-        CALL UTFINM
+        VALK = TYPINT
+        CALL U2MESG('F', 'ALGORITH14_3',1,VALK,0,0,0,0.D0)
       ENDIF
 C
  9999 CONTINUE

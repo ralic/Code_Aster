@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,9 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER      NBEC,GD
+      INTEGER VALI
       REAL*8       RBID
+      REAL*8 VALR
       LOGICAL      FCT
       CHARACTER*1  K1BID,BASE
       CHARACTER*2  TYPVAL
@@ -54,6 +56,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*14 NONUME
       CHARACTER*16 TYPE,OPER,TYPCO, MOTCLF, MOTCLE(4)
       CHARACTER*24 NOMNOE,REFE,VALE,NUEQ,CHAMNO,PRCHNO,MESNOE
+      CHARACTER*24 VALK(2)
 C
       DATA REFE/'                   .REFE'/
       DATA VALE/'                   .VALE'/
@@ -83,10 +86,8 @@ C --- RECUPERATION DES ARGUMENTS DE LA COMMANDE
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD',GRAN),NUMGD)
 
       IF (NUMGD.EQ.0) THEN
-        CALL UTDEBM('F',OPER,'LA GRANDEUR INTRODUITE EN OPERANDE'//
-     &              ' NE FIGURE PAS DANS LE CATALOGUE DES GRANDEURS')
-        CALL UTIMPK('L','GRANDEUR',1,GRAN)
-        CALL UTFINM
+                  VALK (1) = GRAN
+        CALL U2MESG('F', 'UTILITAI6_1',1,VALK,0,0,0,0.D0)
 
       ELSE
         CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',NUMGD),'L',IACMP)
@@ -139,11 +140,8 @@ C
         IF (NBFCT.NE.0) THEN
           FCT = .TRUE.
           IF (TSCA.NE.'K8') THEN
-            CALL UTDEBM('F',OPER,'INCOHERENCE DANS LES DONNEES: '//
-     &           'ON CHERCHE A CREER UN CHAMP DE VALEURS FONCTIONS '//
-     &           'ALORS QUE LA GRANDEUR N''EST PAS DE TYPE FONCTION ')
-            CALL UTIMPK('L','GRANDEUR DE LA COMMANDE : ',1,GRAN)
-            CALL UTFINM
+                  VALK (1) = GRAN
+            CALL U2MESG('F', 'UTILITAI6_2',1,VALK,0,0,0,0.D0)
           END IF
         END IF
 C
@@ -151,10 +149,8 @@ C
         NBVAR = MAX(-NBVAR,-NBFCT)
 C
         IF (NBVAR.GT.NBCMP) THEN
-          CALL UTDEBM('F',OPER,'LA LISTE DE COMPOSANTES ET LA LISTE '//
-     &                      'DES VALEURS N''ONT PAS LA MEME DIMENSION')
-          CALL UTIMPI('L','OCCURENCE DE AFFE NUMERO ',1,IOCC)
-          CALL UTFINM
+                  VALI = IOCC
+          CALL U2MESG('F', 'UTILITAI6_3',0,' ',1,VALI,0,0.D0)
         END IF
 C
         IF (NBCMP.NE.0) THEN
@@ -163,12 +159,10 @@ C
           DO 10 I = 1,NBCMP
             CALL VERICP(ZK8(IACMP),ZK8(JCMP+I-1),NBCOMP,IRET)
             IF (IRET.NE.0) THEN
-              CALL UTDEBM('F',OPER,
-     &                'UNE COMPOSANTE N''APPARTIENT PAS A LA GRANDEUR')
-              CALL UTIMPI('L','OCCURENCE DE AFFE NUMERO ',1,IOCC)
-              CALL UTIMPK('L','GRANDEUR   : ',1,GRAN)
-              CALL UTIMPK('L','COMPOSANTE : ',1,ZK8(JCMP+I-1))
-              CALL UTFINM
+                  VALI = IOCC
+                  VALK (1) = GRAN
+                  VALK (2) = ZK8(JCMP+I-1)
+              CALL U2MESG('F', 'UTILITAI6_4',2,VALK,1,VALI,0,0.D0)
             END IF
    10     CONTINUE
           CALL JEDETR('&&CNOAFF.LISTE_COMP')
@@ -186,12 +180,9 @@ C ---   EST LA MEME QUE CELLE DE LA COMMANDE
         CALL DISMOI('F','NOM_GD',NONUME,'NUME_DDL',IBID,NOMGD,IERD)
         CALL DISMOI('F','NOM_GD_SI',NOMGD,'GRANDEUR',IBID,NOGDSI,IERD)
         IF (NOGDSI.NE.GRAN) THEN
-          CALL UTDEBM('F',OPER,'LE NUME_DDL EN ENTREE NE S''APPUIE '//
-     &               'PAS SUR LA MEME GRANDEUR QUE CELLE DE LA COMMANDE'
-     &                )
-          CALL UTIMPK('L','GRANDEUR ASSOCIEE AU NUME_DDL',1,NOGDSI)
-          CALL UTIMPK('L','GRANDEUR DE LA COMMANDE : ',1,GRAN)
-          CALL UTFINM
+                  VALK (1) = NOGDSI
+                  VALK (2) = GRAN
+          CALL U2MESG('F', 'UTILITAI6_5',2,VALK,0,0,0,0.D0)
         END IF
       END IF
 
@@ -266,10 +257,9 @@ C  PROLONGEMENT DANS LE CAS D'UNE MEME FONCTION POUR TTES LES CMP
             IF (NBCMP.GT.NBFCT) THEN
                DO 60 ICMP = NBFCT+1,NBCMP
                   ZK8(JFCT-1+ICMP) = ZK8(JFCT+NBFCT-1)
-                  CALL UTDEBM('A',OPER,'ON A AFFECTE ')
-                  CALL UTIMPK('S','LA FONCTION ',1,ZK8(JFCT+NBFCT-1))
-              CALL UTIMPK('S',' POUR LA COMPOSANTE ',1,ZK8(JCMP+ICMP-1))
-                  CALL UTFINM
+                  VALK (1) = ZK8(JFCT+NBFCT-1)
+                  VALK (2) = ZK8(JCMP+ICMP-1)
+                  CALL U2MESG('A', 'UTILITAI6_6',2,VALK,0,0,0,0.D0)
    60          CONTINUE
             END IF
          ELSE
@@ -283,10 +273,9 @@ C  PROLONGEMENT DANS LE CAS D'UNE MEME VALEUR POUR TTES LES CMP
            IF (NBCMP.GT.NBVAL) THEN
               DO 70 ICMP = NBVAL+1,NBCMP
                  ZR(JVALR-1+ICMP) = ZR(JVALR+NBVAL-1)
-                 CALL UTDEBM('A',OPER,'ON A AFFECTE ')
-                 CALL UTIMPR('S','LA VALEUR ',1,ZR(JVALR+NBVAL-1))
-              CALL UTIMPK('S',' POUR LA COMPOSANTE ',1,ZK8(JCMP+ICMP-1))
-                 CALL UTFINM
+                  VALR = ZR(JVALR+NBVAL-1)
+                  VALK (1) = ZK8(JCMP+ICMP-1)
+                 CALL U2MESG('A', 'UTILITAI6_7',1,VALK,0,0,1,VALR)
    70         CONTINUE
            END IF
         END IF
@@ -413,14 +402,9 @@ C     SI LA COMPOSANTE FIGURE DANS LE PROF_CHNO
                   ZK8(LVALE-1+ZI(I1)) = ZK8(JVAL+ (INO-1)*NBCOMP-1+IC)
                   I1 = I1 + 1
                 ELSE
-                  CALL UTDEBM('F',OPER,
-     &                        'ON CHERCHE A AFFECTER SUR UN NOEUD UNE'//
-     &                       ' COMPOSANTE QUI N''EST PAS DANS LE PROFIL'
-     &                        //' NOEUD D''ENTREE')
-                  CALL JENUNO(JEXNUM(NOMNOE,INO),NOMN)
-                  CALL UTIMPK('L','NOEUD :',1,NOMN)
-                  CALL UTIMPK('L','COMPOSANTE :',1,ZK8(IACMP-1+IC))
-                  CALL UTFINM
+                  VALK (1) = NOMN
+                  VALK (2) = ZK8(IACMP-1+IC)
+                  CALL U2MESG('F', 'UTILITAI6_8',2,VALK,0,0,0,0.D0)
                 END IF
               ELSE
 C     LA COMPOSANTE N'EST PAS AFFECTEE DANS LA COMMANDE
@@ -446,14 +430,9 @@ C     SI LA COMPOSANTE FIGURE DANS LE PROF_CHNO
                   ZR(LVALE-1+ZI(I1)) = ZR(JVAL+ (INO-1)*NBCOMP-1+IC)
                   I1 = I1 + 1
                 ELSE
-                  CALL UTDEBM('F',OPER,
-     &                        'ON CHERCHE A AFFECTER SUR UN NOEUD UNE'//
-     &                       ' COMPOSANTE QUI N''EST PAS DANS LE PROFIL'
-     &                        //' NOEUD D''ENTREE')
-                  CALL JENUNO(JEXNUM(NOMNOE,INO),NOMN)
-                  CALL UTIMPK('L','NOEUD :',1,NOMN)
-                  CALL UTIMPK('L','COMPOSANTE :',1,ZK8(IACMP-1+IC))
-                  CALL UTFINM
+                  VALK (1) = NOMN
+                  VALK (2) = ZK8(IACMP-1+IC)
+                  CALL U2MESG('F', 'UTILITAI6_8',2,VALK,0,0,0,0.D0)
                 END IF
               ELSE
 C     LA COMPOSANTE N'EST PAS AFFECTEE DANS LA COMMANDE

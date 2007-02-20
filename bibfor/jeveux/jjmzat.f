@@ -1,6 +1,6 @@
       SUBROUTINE JJMZAT ( ICLAS , IDAT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C     ==================================================================
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -39,15 +39,16 @@ C
       CHARACTER*32     RNOM
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C DEB ------------------------------------------------------------------
       LTYP( JLTYP(ICLAS) + IDAT ) = 0
       LONG( JLONG(ICLAS) + IDAT ) = 0
       DATE( JDATE(ICLAS) + IDAT ) = 0
       IADD( JIADD(ICLAS) + 2*IDAT-1 ) = 0
       IADD( JIADD(ICLAS) + 2*IDAT   ) = 0
-      IADM( JIADM(ICLAS) + IDAT ) = 0
+      IADM( JIADM(ICLAS) + 2*IDAT-1 ) = 0
+      IADM( JIADM(ICLAS) + 2*IDAT   ) = 0
       LONO( JLONO(ICLAS) + IDAT ) = 0
       LUTI( JLUTI(ICLAS) + IDAT ) = 0
       GENR( JGENR(ICLAS) + IDAT ) = ' '
@@ -57,7 +58,7 @@ C DEB ------------------------------------------------------------------
       IMARQ(JMARQ(ICLAS) + 2*IDAT-1 ) = 0
       IADMAR = IMARQ(JMARQ(ICLAS) + 2*IDAT)
       IF ( IADMAR.GT.0 ) THEN
-        ISZON(JISZON+KDESMA+IADMAR-1) = 0
+        ISZON(JISZON+KDESMA(1)+IADMAR-1) = 0
         IMARQ(JMARQ(ICLAS) + 2*IDAT)  = 0
       ENDIF
 C FIN ------------------------------------------------------------------

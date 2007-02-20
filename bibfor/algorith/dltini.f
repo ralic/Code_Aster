@@ -8,7 +8,7 @@
       INTEGER NRPASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
       COMMON / IVARJE / ZI(1)
       REAL*8            ZR
+      REAL*8 VALR
       COMMON / RVARJE / ZR(1)
       COMPLEX*16        ZC
       COMMON / CVARJE / ZC(1)
@@ -57,7 +58,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER JAUX,IERR
+      INTEGER VALI
       CHARACTER*8   K8B, NOMRES, DYNA, CRIT, DYNA1
+      CHARACTER*24 VALK
       CHARACTER*16  TYPRES, NOMCMD
       CHARACTER*19  CHAMP, CHAM2, RESULT
       COMPLEX*16    C16B
@@ -91,18 +94,14 @@ C     NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
                CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
      &                                        PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.LT.0) THEN
-                  CALL UTDEBM('F','DLTINI','PLUSIEURS CHAMPS '
-     &                           //'CORRESPONDANT A L''ACCES DEMANDE.')
-                  CALL UTIMPK('L','RESULTAT ',1,DYNA)
-                  CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
-                  CALL UTIMPI('S',', NOMBRE :',1,-NBTROU)
-                  CALL UTFINM()
+              VALK = DYNA
+              VALR = TEMPS
+              VALI = -NBTROU
+      CALL U2MESG('F', 'ALGORITH12_83',1,VALK,1,VALI,1,VALR)
                ELSEIF (NBTROU.EQ.0) THEN
-                  CALL UTDEBM('F','DLTINI','PAS DE CHAMP '//
-     &                             'CORRESPONDANT A UN ACCES DEMANDE.')
-                  CALL UTIMPK('L','RESULTAT ',1,DYNA)
-                  CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
-                  CALL UTFINM()
+              VALK = DYNA
+              VALR = TEMPS
+                  CALL U2MESG('F', 'ALGORITH12_84',1,VALK,0,0,1,VALR)
                ENDIF
             ENDIF
          ENDIF
@@ -160,10 +159,7 @@ C
               DO 10 IEQ=1,NEQ
                 ZR(JVALE-1+IEQ)=0.D0
 10            CONTINUE
-              CALL UTDEBM('A','DLTINI',
-     &          'DEPLACEMENTS INITIAUX IMPOSES NULS POUR LES '//
-     &          'CALCULS DE SENSIBILITE')
-              CALL UTFINM()
+              CALL U2MESG('A', 'ALGORITH12_85',0,' ',0,0,0,0.D0)
             ENDIF
             CALL DCOPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ELSE
@@ -184,10 +180,7 @@ C
               DO 20 IEQ=1,NEQ
                 ZR(JVALE-1+IEQ)=0.D0
 20            CONTINUE
-              CALL UTDEBM('A','DLTINI',
-     &          'VITESSES INITIALES IMPOSEES NULLES POUR LES '//
-     &          'CALCULS DE SENSIBILITE')
-              CALL UTFINM()
+              CALL U2MESG('A', 'ALGORITH12_86',0,' ',0,0,0,0.D0)
             ENDIF
             CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ELSE

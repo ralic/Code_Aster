@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,6 +94,7 @@ C     TYPE MANIPULEES DANS LE SOUS PROGRAMME
 C-----------------------------------------------------------------------
       INTEGER ZZCONX,ZZNBNE,ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG,ZZNELS
       INTEGER ZZNEMA,ZZPRNO,IZZPRN,JVAL(2)
+      INTEGER VALI(2)
       CHARACTER*1 K1BID
 
 C---- FONCTION D ACCES AU CHAMP CONNEX DE LA TYPE MAILLA DE TYPE
@@ -449,10 +450,9 @@ C       ---------------------
      &                            MODE,NEC,NCMP,N1,K1,NDDL1,
      &                            POSDDL(1,K1))
                       IF (NDDL1.GT.NDDLMA) THEN
-                        CALL UTDEBM('F','ASSMMN','11')
-                        CALL UTIMPI('L','  NDDL : ',1,NDDL1)
-                        CALL UTIMPI('S',' > NDDL_MAX :',1,NDDLMA)
-                        CALL UTFINM()
+                          VALI (1) = NDDL1
+                          VALI (2) = NDDLMA
+      CALL U2MESG('F', 'ASSEMBLA_50',0,' ',2,VALI,0,0.D0)
                       END IF
 
                       NUMLOC(K1,1) = N1
@@ -583,10 +583,9 @@ C       ------------------------------------
      &                            MODE,NEC,NCMP,N1,K1,NDDL1,
      &                            POSDDL(1,K1))
                       IF (NDDL1.GT.NDDLMA) THEN
-                        CALL UTDEBM('F','ASSMMN','11')
-                        CALL UTIMPI('L','  NDDL : ',1,NDDL1)
-                        CALL UTIMPI('S',' > NDDL_MAX :',1,NDDLMA)
-                        CALL UTFINM()
+                          VALI (1) = NDDL1
+                          VALI (2) = NDDLMA
+      CALL U2MESG('F', 'ASSEMBLA_50',0,' ',2,VALI,0,0.D0)
                       END IF
 
                       NUMLOC(K1,1) = N1
@@ -703,10 +702,9 @@ C     ------------------------------------------------------------------
                         END IF
 
                         IF (NDDL1.GT.NDDLMA) THEN
-                          CALL UTDEBM('F','ASSMMN','12')
-                          CALL UTIMPI('L','  NDDL : ',1,NDDL1)
-                          CALL UTIMPI('S',' > NDDL_MAX :',1,NDDLMA)
-                          CALL UTFINM()
+                          VALI (1) = NDDL1
+                          VALI (2) = NDDLMA
+      CALL U2MESG('F', 'ASSEMBLA_52',0,' ',2,VALI,0,0.D0)
                         END IF
 
                       ELSE
@@ -715,10 +713,9 @@ C     ------------------------------------------------------------------
      &                              MODE,NEC,NCMP,N1,K1,NDDL1,
      &                              POSDDL(1,K1))
                         IF (NDDL1.GT.NDDLMA) THEN
-                          CALL UTDEBM('F','ASSMMN','13')
-                          CALL UTIMPI('L','- NDDL : ',1,NDDL1)
-                          CALL UTIMPI('S',' > NDDL_MAX :',1,NDDLMA)
-                          CALL UTFINM()
+                          VALI (1) = NDDL1
+                          VALI (2) = NDDLMA
+      CALL U2MESG('F', 'ASSEMBLA_53',0,' ',2,VALI,0,0.D0)
                         END IF
 
                       END IF

@@ -2,7 +2,7 @@
      &                  NOMNOE, COOR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER LXLGUT
 
       CHARACTER*8  NOMND
+      CHARACTER*24 VALK
       CHARACTER*80 KNUME
 C ----------------------------------------------------------------------
 
@@ -83,9 +84,8 @@ C      DECLARATION DU NOEUD CREE
         IF (IRET.EQ.0) THEN
           CALL JECROC(JEXNOM(NOMNOE,NOMND))
         ELSE
-          CALL UTDEBM('F','CMLQND','ERREUR DONNEES')
-          CALL UTIMPK('L','NOEUD DEJA EXISTANT : ',1,NOMND)
-          CALL UTFINM
+          VALK = NOMND
+          CALL U2MESG('F', 'PREPOST5_11',1,VALK,0,0,0,0.D0)
         END IF
 
  10   CONTINUE

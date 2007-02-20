@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,8 @@ C
       COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
 C
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C
       INTEGER          NUMEC
       COMMON /INUMJE/  NUMEC
@@ -51,10 +51,10 @@ C
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C     -----------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDMARQ     , IDNOM      ,             IDLONG     ,
      &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C
       CHARACTER *75   CMESS
@@ -151,15 +151,14 @@ C
       IF ( GENRI .EQ. 'V' )  JLON = 2
       IF ( GENRI .EQ. 'N' )  JLON = 3
 C
-      CALL JVRINI ( UNIT )
-      CALL JVDEBM ( 'X' , 'JEIMPA' , 'IMPRESSION DES '//
-     &              'ATTRIBUTS DE >'//NOML32(1:24)//'<'  )
-      CALL JVIMPK ( 'L' , ' ' , 1 , COML )
+      WRITE(UNIT,'(A)') 'JEIMPA  IMPRESSION DES ATTRIBUTS DE >'
+     &                  //NOML32(1:24)//'<'  
+      WRITE(UNIT,'(A1,A72)')  ' ',COML 
       IF ( IRET .EQ. 3 ) THEN
          IF ( NOML32(25:32) .EQ. NOME ) THEN
-            CALL JVIMPK ( 'S' , 'NOM OC' , 1 , NOMEC )
+            WRITE(UNIT,'(A,A8)') 'NOM OC',NOMEC
          ELSE IF ( NOML32(25:32) .EQ. NUME ) THEN
-            CALL JVIMPI ( 'S' , 'NUM OC' , 1 , NUMEC )
+            WRITE(UNIT,'(A,I8)') 'NUM OC',NUMEC
          ENDIF
       ENDIF
       IF ( IRET . EQ. 2 ) THEN
@@ -168,9 +167,9 @@ C
         DO 10 K = 1 , NNACI
            CALL JELIRA ( NOML32 , NAC(K) , IVAL , CVAL )
            IF ( TAC(K) .EQ. 'I' ) THEN
-             CALL JVIMPI ( 'S' , NAC(K) , 1 , IVAL )
+             WRITE(UNIT,'(A8,I8)') NAC(K),IVAL
            ELSE
-             CALL JVIMPK ( 'S' , NAC(K) , 1 , CVAL(1:LAC(K)) )
+             WRITE(UNIT,'(A8,A)')  NAC(K),CVAL(1:LAC(K))
            ENDIF
    10   CONTINUE
       ENDIF
@@ -188,15 +187,12 @@ C
      &         ( IRET.EQ.1 .AND. (K.GT.11)                    ) ) THEN
             CALL JELIRA ( NOML32 , NAO(K) , IVAL , CVAL )
             IF ( TAO(K) .EQ. 'I' ) THEN
-              CALL JVIMPI ( 'S' , NAO(K) , 1 , IVAL )
+              WRITE(UNIT,'(A8,I8)') NAO(K),IVAL 
             ELSE
-              CALL JVIMPK ( 'S' , NAO(K) , 1 , CVAL(1:LAO(K)) )
+              WRITE(UNIT,'(A8,A)') NAO(K),CVAL(1:LAO(K))
             ENDIF
           ENDIF
    20 CONTINUE
-      CALL JVFINM
-      IUL = 0
-      CALL JVRINI ( IUL )
       IF ( LCOL ) THEN
          CALL JJLIDE ( 'JEIMPA' , NOML32(1:24) , 2 )
       ENDIF

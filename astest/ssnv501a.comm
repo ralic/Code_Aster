@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,10 +228,12 @@ MFLAN=DEFI_MATERIAU(ELAS=_F(E=6.9004E4,
                     TRACTION=_F(SIGM=SI,),);
 
 MMATRICE=DEFI_MATERIAU(ELAS=_F(E=1.E7,
-                               NU=0.29999999999999999,),);
+                               NU=0.29999999999999999,),
+                       ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.)        );
 
 MPOINCON=DEFI_MATERIAU(ELAS=_F(E=1.E7,
-                               NU=0.29999999999999999,),);
+                               NU=0.29999999999999999,),
+                         ECRO_LINE=_F(SY=1.E15,D_SIGM_EPSI=0.)      );
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
                  AFFE=(_F(GROUP_MA='FLAN',
@@ -320,7 +322,7 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                                   ITER_INTE_MAXI=20,
                                   ITER_INTE_PAS=10,
                                   GROUP_MA='FLAN',),
-                               _F(RELATION='ELAS',
+                               _F(RELATION='VMIS_ISOT_LINE',
                                   DEFORMATION='SIMO_MIEHE',
                                   GROUP_MA='SOLIDE',),),
                     INCREMENT=_F(LIST_INST=L_INST,INST_FIN=0.75,
@@ -328,6 +330,7 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                                  SUBD_PAS_MINI=9.9999999999999995E-07,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
+                    SOLVEUR=_F(SYME='OUI'),          
                     CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
                                    ITER_GLOB_MAXI=200),
                     INFO=1,);

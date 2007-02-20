@@ -2,7 +2,7 @@
      &                  DEPMOI,SIGMOI,VARMOI,VARDEM,LAGDEM,NBPASE,
      &                  INPSCO,DEPOLD,NUMEDD,NEQ,PILOTE)
 
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,6 +69,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       LOGICAL LBID,EVONOL,PILOT
       INTEGER N1,N2,REENTR,NOCC,NUME,NCHOUT,JINST,IRET,IBID,I
+      INTEGER VALI
       INTEGER NBR,NRPASE,IAUX,JAUX, IER
       REAL*8 VALCMP(4),PREC,R8VIDE,RBID,INST
       COMPLEX*16 CBID
@@ -174,9 +175,8 @@ C      ACCES PAR NUMERO D'ORDRE
             CALL PSNSLE ( INPSCO, IAUX, JAUX, NOPASE )
             CALL PSRENC ( EVOL, NOPASE, RESUID, IRET )
             IF ( IRET.NE.0 ) THEN
-              CALL UTDEBM ( 'A','NMDOET', 'CODE DE RETOUR DE PSRENC' )
-              CALL UTIMPI ( 'S', ': ', 1, IRET )
-              CALL UTFINM
+              VALI = IRET
+              CALL U2MESG('A', 'ALGORITH13_65',0,' ',1,VALI,0,0.D0)
                VALK(1) = EVOL
                VALK(2) = NOPASE
                CALL U2MESK('F','ALGORITH6_40', 2 ,VALK)

@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,6 +59,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
       INTEGER IBID,GD,NBEC,INCMP
+      INTEGER VALI(2)
       INTEGER IACELK,JCELD,NEC,ICMP,NCMPMX,IANCMP,INDIK8,IMA
       INTEGER INO,IACONX,NBNO,IPO,INDIIS,NUPO2,IGR,IEL
       INTEGER IMOLO,JMOLO,ISPT,JLPT,JLCUPT,NBPT,IPT,ICO
@@ -282,12 +283,10 @@ C     ----------------------------
         IPT = NUPO2
 
         IF (ICMP.GT.NCDYN) THEN
-          CALL UTDEBM(AOF,'UTCHDL','LE NUMERO '//
-     &                'DE LA COMPOSANTE (POUR VARI_R) EST TROP GRAND.')
-          CALL UTIMPK('S','MAILLE:',1,NOMAIZ)
-          CALL UTIMPI('S','NUM. CMP MAXI:',1,NCDYN)
-          CALL UTIMPI('S','NUM. CMP DEMANDEE:',1,ICMP)
-          CALL UTFINM()
+          VALK(1) = NOMAIZ
+          VALI (1) = NCDYN
+          VALI (2) = ICMP
+          CALL U2MESG('AOF', 'UTILITAI7_5',1,VALK,2,VALI,0,0.D0)
           IDDL=0
           GO TO 9999
         ELSE

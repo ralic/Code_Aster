@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C
       CHARACTER*8   NOMNO1,NOMNO2,SST1,SST2,SS1,SS2,MACRO1,MACRO2
       CHARACTER*8   LIAI1,LIAI2,NOEUD1,NOEUD2,K8BID
       CHARACTER*24  MDGENE,MDLIAI,MDNOMS,BAMO1,BAMO2,INTF1,INTF2
+      CHARACTER*24 VALK(4)
       CHARACTER*24  LINO1,LINO2,MAYA1,MAYA2
 C
 C-----------------------------------------------------------------------
@@ -115,13 +116,11 @@ C
      &          (SS1.EQ.SST2.AND.SS2.EQ.SST1.AND.
      &           NOMNO1.EQ.NOEUD2.AND.NOMNO2.EQ.NOEUD1)) THEN
 C
-       CALL UTDEBM('F','VECHBN','NON-LINEARITE INCOMPATIBLE AVEC '//
-     &                          'LA DEFINITION DU MODELE GENERALISE')
-       CALL UTIMPK('L','NOEUD_1      : ',1,NOMNO1)
-       CALL UTIMPK('L','SOUS_STRUC_1 : ',1,SST1)
-       CALL UTIMPK('L','NOEUD_2      : ',1,NOMNO2)
-       CALL UTIMPK('L','SOUS_STRUC_2 : ',1,SST2)
-       CALL UTFINM()
+       VALK (1) = NOMNO1
+       VALK (2) = SST1
+       VALK (3) = NOMNO2
+       VALK (4) = SST2
+       CALL U2MESG('F', 'ALGORITH14_69',4,VALK,0,0,0,0.D0)
 C
             ENDIF
 C

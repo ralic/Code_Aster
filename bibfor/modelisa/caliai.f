@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C IN/JXVAR : CHARGE : NOM D'UNE SD CHARGE
 C ----------------------------------------------------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
+      INTEGER VALI(2)
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -169,13 +170,9 @@ C        SUR LE DDL 'TEMP'
         END IF
 
         IF (N1.NE.(N2+N3)) THEN
-          CALL UTDEBM('F','CALIAI','LE NOMBRE DE DDLS FIGURANT DANS'//
-     &            ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE'//
-     &            ' COEF_MULT/COEF_MULT_FONC :'
-     &                )
-          CALL UTIMPI('S',' ',1,ABS(N1))
-          CALL UTIMPI('S',' ',1,ABS(N2+N3))
-          CALL UTFINM()
+            VALI (1) = ABS(N1)
+            VALI (2) = ABS(N2+N3)
+          CALL U2MESG('F', 'MODELISA8_46',0,' ',2,VALI,0,0.D0)
         END IF
 
 
@@ -228,12 +225,9 @@ C           -- ON VERIFIE QUE LE NOMBRE DE NOEUDS DES GROUP_NO
 C              EST EGAL AU NOMBRE DE DDLS DE LA RELATION :
 C              -----------------------------------------
           IF (N1.NE.INDNOE) THEN
-            CALL UTDEBM('F','CALIAI','LE NOMBRE DE DDLS FIGURANT DANS'//
-     &               ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE NOEUDS :'
-     &                  )
-            CALL UTIMPI('S',' ',1,ABS(N1))
-            CALL UTIMPI('S',' ',1,INDNOE)
-            CALL UTFINM()
+            VALI (1) = ABS(N1)
+            VALI (2) = INDNOE
+            CALL U2MESG('F', 'MODELISA8_47',0,' ',2,VALI,0,0.D0)
           END IF
 
 C           AFFECTATION A LA LISTE DE RELATIONS
@@ -269,12 +263,9 @@ C           -- ON VERIFIE QUE LE NOMBRE DE NOEUDS DE LA LISTE DE
 C              NOEUDS EST EGAL AU NOMBRE DE DDLS DE LA RELATION :
 C              ------------------------------------------------
           IF (N1.NE.NBNO) THEN
-            CALL UTDEBM('F','CALIAI','LE NOMBRE DE DDLS FIGURANT DANS'//
-     &               ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE NOEUDS :'
-     &                  )
-            CALL UTIMPI('S',' ',1,ABS(N1))
-            CALL UTIMPI('S',' ',1,NBNO)
-            CALL UTFINM()
+            VALI (1) = ABS(N1)
+            VALI (2) = NBNO
+            CALL U2MESG('F', 'MODELISA8_48',0,' ',2,VALI,0,0.D0)
           END IF
           CALL AFRELA(ZR(JCMUR),ZC(JCMUC),ZK8(JDDL),ZK8(JLIST1),
      &                ZI(JDIME),ZR(JDIREC),NBNO,BETA,BETAC,BETAF,TYPCOE,

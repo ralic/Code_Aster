@@ -5,7 +5,7 @@
       INTEGER                                              IOCC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -53,6 +54,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8    CRES
+      CHARACTER*24 VALK
       CHARACTER*16   NOMCMD, CBID, MOTCLE
       CHARACTER*8    NOMRES,CONCEP
 C     ------------------------------------------------------------------
@@ -63,11 +65,9 @@ C
          CALL GETFAC(MOTFAC, NBOCC)
          IF ( IOCC .GT. NBOCC .OR. IOCC .LT. 1 ) THEN
             CALL GETRES(NOMRES,CONCEP,NOMCMD)
-            CALL UTDEBM('A','TITREA'//'.TITRE (ERREUR 01)',
-     +                     ' NUMERO D''OCCURRENCE INVALIDE ')
-            CALL UTIMPI('S',' ',1,IOCC)
-            CALL UTIMPK('S','POUR LE MOT CLE FACTEUR',1,MOTFAC)
-            CALL UTFINM()
+            VALI = IOCC
+            VALK = MOTFAC
+            CALL U2MESG('A', 'UTILITAI7_4',1,VALK,1,VALI,0,0.D0)
             GOTO 9999
          ENDIF
       ENDIF

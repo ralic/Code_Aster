@@ -1,7 +1,7 @@
       SUBROUTINE  PRASMP (OPTION,NUGENE,TMINBL,NOMPRN,MODGEN,
      &TMNOBL,TMADBL,KNOMBL,INUMBL,SSMAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,18 +79,17 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6      PGC
       CHARACTER*8 MODGEN,NOMPRN,NOMMCL,KBID
       CHARACTER*14 NUGENE
       CHARACTER*19 PRGENE,STOLCI
       CHARACTER*9  OPTION,RIGOPT,MASOPT,AMOOPT,KSST
       CHARACTER*24 TMADBL,TMNOBL,TMINBL,KNOMBL(*)
+      CHARACTER*24 VALK
       CHARACTER*10 ADNOM
       INTEGER      INUMBL(*)
       CHARACTER*1 K1BID
 C
 C-----------------------------------------------------------------------
-      DATA PGC /'PRASMP'/
       DATA RIGOPT,MASOPT,AMOOPT/'RIGI_GENE','MASS_GENE','AMOR_GENE'/
       DATA KSST /'&SOUSSTR'/
 C-----------------------------------------------------------------------
@@ -159,10 +158,8 @@ C
         IF (OPTION.EQ.AMOOPT) THEN
             CALL JEEXIN(KNOMBL(IBL1),IRET)
             IF (IRET.EQ.0) THEN
-                CALL UTDEBM('F',PGC,
-     &   'MATRICE D''AMORTISSEMENT NON CREEE')
-                CALL UTIMPK('L','DANS LE MACRO-ELEMENT : ',1,NOMMCL)
-                CALL UTFINM
+                VALK = NOMMCL
+                CALL U2MESG('F', 'ALGORITH13_99',1,VALK,0,0,0,0.D0)
             ENDIF
         ENDIF
 C

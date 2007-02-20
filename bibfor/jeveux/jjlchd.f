@@ -1,6 +1,6 @@
       SUBROUTINE JJLCHD (ID, IC, IDFIC, IDTS, NGRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +41,11 @@ C ----------------------------------------------------------------------
       INTEGER          N
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       INTEGER          JLTYP   , JLONG   , JDATE   , JIADD   , JIADM   ,
-     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ
+     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ  
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       CHARACTER*1      GENR    , TYPE
@@ -60,8 +60,8 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
 C
@@ -73,12 +73,12 @@ C
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+      INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
+     &               IDMARQ     , IDNOM      ,              IDLONG     ,
+     &               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C     ------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
@@ -92,6 +92,7 @@ C     ------------------------------------------------------------------
       INTEGER          IADMI,IADDI(2),LTYPI,LONOI,ISTA1,ISTA2,LTYPB,LON
       INTEGER          IBACOL,IRET,K,IX,IXIADD,IXIADM,IXMARQ,IXDESO,IDGC
       INTEGER          IBIADM,IBMARQ,IBLONO,IDT1,IDT2,NBVAL,KITAB,IXLONO
+      INTEGER          IADYN
       DATA             NREP / 'T_HCOD' , 'T_NOM' /
       DATA             D32 /'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
 C DEB ------------------------------------------------------------------
@@ -107,13 +108,15 @@ C DEB ------------------------------------------------------------------
       LTYPI  = LTYP (JLTYP(IC) + ID)
       LON    = LONO (JLONO(IC) + ID)
       LONOI  = LON * LTYPI
-      IADM (JIADM(IC) + ID) = 0
+      IADM (JIADM(IC) + 2*ID-1) = 0
+      IADM (JIADM(IC) + 2*ID  ) = 0
       IADD (JIADD(IC) + 2*ID-1) = 0
       IADD (JIADD(IC) + 2*ID  ) = 0
 C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
-      CALL JJLIHD (IDTS,LON,LONOI,GENRI,TYPEI,LTYPI,
-     &             IC,ID,0,IMARQ(JMARQ(IC)+2*ID-1),IBACOL)
-      IADM (JIADM(IC)+ID) = IBACOL
+      CALL JJLIHD (IDTS,LON,LONOI,GENRI,TYPEI,LTYPI,IC,ID,
+     &             0,IMARQ(JMARQ(IC)+2*ID-1),IBACOL,IADYN)
+      IADM (JIADM(IC)+2*ID-1) = IBACOL
+      IADM (JIADM(IC)+2*ID  ) = IADYN
 C
       DO 20 K = IDIADD,IDNUM
 C     ----------- OBJETS ATTRIBUTS DE COLLECTION
@@ -137,21 +140,23 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
             IF (K.EQ.IDIADM .OR. K.EQ.IDMARQ .OR. K.EQ.IDIADD) THEN
 C --------- MISE EN MEMOIRE SANS LECTURE SUR FICHIER HDF
               CALL JJALLS(LONOI, GENRI, TYPEI, LTYPI, 'INIT',
-     &                    ITAB, JCTAB, IADMI )
+     &                    ITAB, JCTAB, IADMI ,IADYN)
               CALL JJECRS (IADMI,IC,IX,0,'E',IMARQ(JMARQ(IC)+2*IX-1))
             ELSE
 C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE SUR FICHIER HDF
-              CALL JJLIHD (IDA,LON,LONOI,GENRI,TYPEI,LTYPI,
-     &                     IC,IX,0,IMARQ(JMARQ(IC)+2*IX-1),IADMI)
+              CALL JJLIHD (IDA,LON,LONOI,GENRI,TYPEI,LTYPI,IC,IX,
+     &                     0,IMARQ(JMARQ(IC)+2*IX-1),IADMI,IADYN)
             ENDIF
-            IADM(JIADM(IC)+IX) = IADMI
+            IADM(JIADM(IC)+2*IX-1) = IADMI
+            IADM(JIADM(IC)+2*IX  ) = IADYN
             IRET = HDFCLD(IDA)
           ELSE
 C-------- ON TRAITE UN REPERTOIRE DE NOMS
             IDGR=HDFOPG(IDFIC,NOMO)
             IDT1=HDFOPD(IDFIC,NOMO,NREP(1))
             IDT2=HDFOPD(IDFIC,NOMO,NREP(2))
-            CALL JJALLS(LONOI,GENRI,TYPEI,LTYPI,'INIT',ITAB,JCTAB,IADMI)
+            CALL JJALLS(LONOI,GENRI,TYPEI,LTYPI,'INIT',ITAB,JCTAB,IADMI,
+     &                  IADYN)
             CALL JJECRS(IADMI,IC,IX,0,'E',IMARQ(JMARQ(IC)+2*IX-1))
             IRET=HDFTSD(IDT1,TYPEB,LTYPB,NBVAL)
             CALL JJHRSV(IDT1,NBVAL,IADMI)
@@ -164,7 +169,8 @@ C
             KITAB=JK1ZON+(IADMI-1)*LOIS+ISZON(JISZON+IADMI-1+IDENO)+1
             IRET=HDFRSV(IDT2,NBVAL,K1ZON(KITAB),ICONV)
             IRET=HDFCLG(IDGR)
-            IADM(JIADM(IC)+IX) = IADMI
+            IADM(JIADM(IC)+2*IX-1) = IADMI
+            IADM(JIADM(IC)+2*IX  ) = IADYN
             IRET = HDFCLD(IDT2)
           ENDIF
         ENDIF
@@ -183,16 +189,17 @@ C       RELECTURE DU $$DESO
         LONOI = LON  * LTYPI
         NOMO  = RNOM(JRNOM(IC) + IXDESO)
         IDA = HDFOPD(IDFIC,NGRP,NOMO)
-        CALL JJLIHD(IDA,LON,LONOI,GENRI,TYPEI,LTYPI,
-     &              IC,IXDESO,0,IMARQ(JMARQ(IC)+2*IXDESO-1),IADMI)
-        IADM(JIADM(IC)+IXDESO) = IADMI
+        CALL JJLIHD(IDA,LON,LONOI,GENRI,TYPEI,LTYPI,IC,IXDESO,
+     &              0,IMARQ(JMARQ(IC)+2*IXDESO-1),IADMI,IADYN)
+        IADM(JIADM(IC)+2*IXDESO-1) = IADMI
+        IADM(JIADM(IC)+2*IXDESO  ) = IADYN
         IRET = HDFCLD(IDA)
       ELSE
 C       COLLECTION DISPERSEE, IL FAUT RELIRE LES OBJETS STOCKES SUR LE
 C       FICHIER HDF DANS LE GROUPE ASSOCIE ET UNIQUEMENT ACTUALISER LES
 C       ADRESSES MEMOIRE DANS L'OBJET SYSTEME $$IADM
-        IBIADM = IADM(JIADM(IC)+IXIADM)
-        IBMARQ = IADM(JIADM(IC)+IXMARQ)
+        IBIADM = IADM(JIADM(IC)+2*IXIADM-1)
+        IBMARQ = IADM(JIADM(IC)+2*IXMARQ-1)
         IXLONO = ISZON (JISZON + IBACOL + IDLONO)
         GENRI  = GENR(JGENR(IC)+IXDESO)
         TYPEI  = TYPE(JTYPE(IC)+IXDESO)
@@ -206,15 +213,16 @@ C       ADRESSES MEMOIRE DANS L'OBJET SYSTEME $$IADM
           IF (IXLONO .EQ. 0) THEN
             LONOI = LONO (JLONO(IC) + IXDESO) * LTYPI
           ELSE
-            IBLONO = IADM  (JIADM(IC) + IXLONO)
+            IBLONO = IADM  (JIADM(IC) + 2*IXLONO-1)
             LONOI  = ISZON (JISZON + IBLONO - 1 + K) * LTYPI
           ENDIF
           IF (LONOI .GT. 0) THEN
             IDO=HDFOPD(IDFIC,NGRC,NOMO)
             IRET=HDFTSD(IDO,TYPEB,LTYPB,LON)
-            CALL JJLIHD (IDO,LON,LONOI,GENRI,TYPEI,LTYPI,
-     &                   IC,K,ID,ISZON(JISZON+IBMARQ-1+2*K-1),IADMI)
-            ISZON(JISZON+IBIADM-1+K) = IADMI
+            CALL JJLIHD (IDO,LON,LONOI,GENRI,TYPEI,LTYPI,IC,K,
+     &                   ID,ISZON(JISZON+IBMARQ-1+2*K-1),IADMI,IADYN)
+            ISZON(JISZON+IBIADM-1+2*K-1) = IADMI
+            ISZON(JISZON+IBIADM-1+2*K  ) = IADYN
             NUMEC = K
             CALL JJLIDE ('JELIBE' , RNOM(JRNOM(IC)+ID)//'$$XNUM  ' , 2)
             IRET = HDFCLD(IDO)

@@ -1,6 +1,6 @@
       SUBROUTINE  STRMAG (NUGENE,TYPROF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR ,JEVTBL
+      REAL*8 VALR(2)
       COMMON  /RVARJE/ ZR(1)
       COMPLEX*16       ZC
       COMMON  /CVARJE/ ZC(1)
@@ -49,7 +50,6 @@ C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      CHARACTER*6      PGC
       CHARACTER*8 NOMPRN,MODGEN,SST(2),NOMMCL
       CHARACTER*19 STOMOR,STOLCI,PRGENE
       CHARACTER*14 NUGENE
@@ -57,8 +57,6 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 TYPROF
       CHARACTER*1 K1BID
 
-C-----------------------------------------------------------------------
-      DATA PGC /'STRMAG'/
 C-----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -199,12 +197,9 @@ C---------------DETERMINATION DE LA TAILLE MAX D'UNE COLONNE------------
 
       IF(LCOLMX.GT.NTBLOC) THEN
         NTBLOC=LCOLMX
-        CALL UTDEBM('I',PGC,
-     &'TAILLE DE BLOC INSUFFISANTE')
-        RTBL=LCOLMX/1.D+3
-        CALL UTIMPR('L','TAILLE DE BLOC DEMANDEE (KR8):',1,RTBLOC)
-        CALL UTIMPR('L','TAILLE DE BLOC UTILISEE (KR8):',1,RTBL)
-        CALL UTFINM
+        VALR (1) = RTBLOC
+        VALR (2) = LCOLMX/1.D+3
+        CALL U2MESG('I', 'ALGORITH14_66',0,' ',0,0,2,VALR)
       ENDIF
 
       WRITE(IFIMES,*)'+++ HAUTEUR MAXIMUM D''UNE COLONNE: ',LCOLMX

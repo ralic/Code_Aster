@@ -1,6 +1,6 @@
       SUBROUTINE JERAZO ( NOMLU , NI , I1 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C ----------------------------------------------------------------------
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -76,10 +76,10 @@ C -------------------------------------------------
       CHARACTER *1     TYPEI , GENRI
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDMARQ     , IDNOM      ,             IDLONG     ,
      &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       NOML32 = NOMLU
@@ -111,7 +111,7 @@ C ----     IRET = 2
          IXDESO = ISZON ( JISZON + IBACOL + IDDESO )
          IF ( NOML8 .EQ. '$$XATR  ') THEN
             IXLONO = NUMATR
-            IBLONO = IADM ( JIADM(ICLACO) + IXLONO )
+            IBLONO = IADM ( JIADM(ICLACO) + 2*IXLONO-1 )
             GENRI  = GENR ( JGENR(ICLACO) + IXLONO )
             LTYPI  = LTYP ( JLTYP(ICLACO) + IXLONO )
             LONOI  = LONO ( JLONO(ICLACO) + IXLONO ) * LTYPI
@@ -140,7 +140,7 @@ C            ----------- COLLECTION DISPERSEE
       IF ( INAT .EQ. 3 .AND. IXIADD .EQ. 0 ) THEN
         IXLONO = ISZON ( JISZON + IBACOL + IDLONO )
         IF ( IXLONO .GT. 0 ) THEN
-          IBLONO = IADM  ( JIADM(ICLACO) + IXLONO )
+          IBLONO = IADM  ( JIADM(ICLACO) + 2*IXLONO-1 )
           LONOI  = ISZON(JISZON+IBLONO-1+IDATOC+1) -
      &                      ISZON(JISZON+IBLONO-1+IDATOC  )
           IF ( LONOI .GT. 0 ) THEN

@@ -11,7 +11,7 @@
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,6 +53,7 @@ C
 C ---------------------------------------------------------------------
       INTEGER       K, ITRIA3, IQUAD4
       CHARACTER*32  JEXNOM
+      CHARACTER*24 VALK(4)
 C ---------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -199,12 +200,11 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
          CALL ECLACO(6,MXNBN2,CONNX,NBNO2,  6,9,10,8,0,0,0,0)
 
        ELSE
-         CALL UTDEBM('I','ECLA2D','ON NE SAIT PAS ENCORE DECOUPER')
-         CALL UTIMPK('S',' LE TYPE_ELEMENT : ', 1, NOMTE )
-         CALL UTIMPK('S',' EN SOUS-ELEMENTS', 0, NOMTE )
-         CALL UTIMPK('L','   ELREFA  : ', 1, ELREFA )
-         CALL UTIMPK('L','   FAMILLE : ', 1, FAPG  )
-         CALL UTFINM( )
+        VALK (1) = NOMTE
+        VALK (2) = NOMTE
+        VALK (3) = ELREFA
+        VALK (4) = FAPG
+         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
 
        ENDIF
 
@@ -422,21 +422,19 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
          CALL ECLACO(9,MXNBN2,CONNX,NBNO2,  13,14,15,16,0,0,0,0)
 
        ELSE
-         CALL UTDEBM('I','ECLA2D','ON NE SAIT PAS ENCORE DECOUPER')
-         CALL UTIMPK('S',' LE TYPE_ELEMENT : ', 1, NOMTE )
-         CALL UTIMPK('S',' EN SOUS-ELEMENTS', 0, NOMTE )
-         CALL UTIMPK('L','   ELREFA  : ', 1, ELREFA )
-         CALL UTIMPK('L','   FAMILLE : ', 1, FAPG  )
-         CALL UTFINM( )
+        VALK (1) = NOMTE
+        VALK (2) = NOMTE
+        VALK (3) = ELREFA
+        VALK (4) = FAPG
+         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
 
        ENDIF
 
       ELSE
-        CALL UTDEBM('I','ECLA2D','ON NE SAIT PAS ENCORE DECOUPER')
-        CALL UTIMPK('S',' LE TYPE_ELEMENT : ', 1, NOMTE )
-        CALL UTIMPK('S',' EN SOUS-ELEMENTS', 0, NOMTE )
-        CALL UTIMPK('L','   ELREFA : ', 1, ELREFA )
-        CALL UTFINM( )
+        VALK (1) = NOMTE
+        VALK (2) = NOMTE
+        VALK (3) = ELREFA
+        CALL U2MESG('I', 'CALCULEL5_78',3,VALK,0,0,0,0.D0)
 
       ENDIF
 

@@ -6,7 +6,7 @@
       CHARACTER*(*)       BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,6 +51,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &             NBMA2, JDEC, IG, IND
       LOGICAL      LOGIC
       CHARACTER*1  K1B, BASE
+      CHARACTER*24 VALK
       CHARACTER*8  K8B, NOMG, TYPM, NIMA
       CHARACTER*16 KNUME
       CHARACTER*24 NOMMAI, TYPMAI, CONNEX, NODIME, NOMNOE, GRPNOE,
@@ -261,9 +262,8 @@ C
             IF (IRET.EQ.0) THEN
                CALL JECROC(JEXNOM(NOMMAI,NIMA))
             ELSE
-               CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
-               CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NIMA)
-               CALL UTFINM
+               VALK = NIMA
+               CALL U2MESG('F', 'ALGELINE4_14',1,VALK,0,0,0,0.D0)
             END IF
 C
 C 5.2.1. ==> TYPE DE MAILLE ET CONNECTIVITE
@@ -308,9 +308,8 @@ C
                IF (IRET.EQ.0) THEN
                    CALL JECROC(JEXNOM(NOMMAI,NOMG))
                ELSE
-                  CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
-                  CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NOMG)
-                  CALL UTFINM
+               VALK = NOMG
+                  CALL U2MESG('F', 'ALGELINE4_15',1,VALK,0,0,0,0.D0)
                ENDIF
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
@@ -361,9 +360,8 @@ C
                CALL JECROC ( JEXNOM( GRPNOE, NOMG ) )
             ELSE
 C           --- NE DEVRAIT PAS ARRIVER !
-               CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
-               CALL UTIMPK('L','GROUP_NO DEJA EXISTANT : ',1,NOMG)
-               CALL UTFINM
+               VALK = NOMG
+               CALL U2MESG('F', 'ALGELINE4_16',1,VALK,0,0,0,0.D0)
             END IF
             CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO,' ')
             CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)

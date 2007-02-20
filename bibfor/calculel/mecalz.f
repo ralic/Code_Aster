@@ -6,7 +6,7 @@
       CHARACTER*(*) CHARGE,LIGREL,BASE,CHELEM(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16 OPTIO2
       CHARACTER*1 BASE2
       CHARACTER*24 LCHIN(10),LCHOUT(10)
+      CHARACTER*24 VALK
 C DEB-------------------------------------------------------------------
 
       BASE2 = BASE
@@ -148,9 +149,8 @@ C DEB-------------------------------------------------------------------
         NBIN = 8
 
       ELSE
-        CALL UTDEBM('F','MECALZ',' ')
-        CALL UTIMPK('S','OPTION INCONNUE',1,OPTIO2)
-        CALL UTFINM()
+        VALK = OPTIO2
+        CALL U2MESG('F', 'CALCULEL6_11',1,VALK,0,0,0,0.D0)
       END IF
 
       CALL CALCUL('S',OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,NBOUT,LCHOUT,

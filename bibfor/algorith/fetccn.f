@@ -1,7 +1,7 @@
       SUBROUTINE FETCCN(CHAMN1,CHAMN2,CHAMN3,CHAMN4,TYPCUM,CHAMNR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C DECLARATION PARAMETRES D'APPELS
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
+      INTEGER VALI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -167,9 +168,8 @@ C----------------------------------------------------------------------
               ZR(JR+K) = ZR(J1+K) + ZR(J2+K) + ZR(J3+K) + ZR(J4+K)
     6       CONTINUE
           ELSE
-            CALL UTDEBM ('A','FETCCN', 'MAUVAISE VALEUR DE TYPCUM')
-            CALL UTIMPI ('S', ': ', 1, TYPCUM)
-            CALL UTFINM
+            VALI = TYPCUM
+            CALL U2MESG('A', 'ALGORITH13_12',0,' ',1,VALI,0,0.D0)
             CALL U2MESS('F','MODELISA_67')
           ENDIF
 C MONITORING

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER       IBID  , NDIMF , NBNOI , NBNOF , NBINST, IAD
+      INTEGER VALI
       INTEGER       JINST , IORD  , JCNSVL, JCNSLE, NBVAL
       INTEGER       JCNSVE, AXYZMF, JTBCOR, JTBRES
       INTEGER       IMIN  , IMAX  , INOI  , INOF  , INDICE, JTBPDG
@@ -58,6 +59,7 @@ C
       CHARACTER*19  TABCOR, TABVAL, TABPDG, TABRES, TABNOE
       CHARACTER*19  CNOINR, CNSINR
       CHARACTER*24  KNUM  , TABL2
+      CHARACTER*24 VALK
 C
       CALL JEMARQ()
 C
@@ -83,9 +85,8 @@ C
       NDIMF = 3
       IF ( K8B.EQ.'OUI' ) NDIMF = 2
       IF ( NDIMF.NE.3 ) THEN
-         CALL UTDEBM('F','RS1D3D','LE MAILLAGE FINAL N''EST PAS 3D')
-         CALL UTIMPK('L',' MAILLAGE : ',1,NOMMAF)
-         CALL UTFINM()
+            VALK = NOMMAF
+         CALL U2MESG('F', 'ALGORITH12_68',1,VALK,0,0,0,0.D0)
       ENDIF
       CALL JEVEUO ( NOMMAF//'.COORDO    .VALE', 'L', AXYZMF )
 C
@@ -142,9 +143,7 @@ C
             RMAX = MAX(RVAL,RMAX)
             RMIN = MIN(RVAL,RMIN)
             IF ( RMIN.NE.0.0D0 ) THEN
-               CALL UTDEBM('F','RS1D3D','L ORIGINE DU MAILLAGE 1D '//
-     &                                  'N EST PAS 0')
-               CALL UTFINM()
+               CALL U2MESG('F', 'ALGORITH12_69',0,' ',0,0,0,0.D0)
             ENDIF
  2       CONTINUE
 C
@@ -200,9 +199,7 @@ C
             GOTO 3
  5          CONTINUE
             IF ((RMAX-RMIN).EQ.0.0D0) THEN
-               CALL UTDEBM('F','RS1D3D','LES NOEUDS DU MAILLAGE SONT '//
-     &                      'CONFONDUS')
-               CALL UTFINM()
+               CALL U2MESG('F', 'ALGORITH12_70',0,' ',0,0,0,0.D0)
             ENDIF
             LAMBDA = ( RVAL - RMIN )/( RMAX - RMIN )
             ZR(JCNSVE-1+(INOF-1)+1)=(1-LAMBDA)*ZR(JCNSVL-1+(IMIN-1)+1)+
@@ -215,11 +212,8 @@ C
             IF (RVAL.LT.0.0D0) THEN
                IF (PGAUCH.EQ.'EXCLU') THEN
                   CALL JENUNO(JEXNUM(NOMMAF//'.NOMNOE',INO),NOM1)
-                  CALL UTDEBM('F','RS1D3D','LE NOEUD SE TROUVE EN'//
-     &                        ' DEHORS DU DOMAINE DE DEFINITION AVEC'//
-     &                        ' UN PROFIL GAUCHE DE TYPE EXCLU')
-                  CALL UTIMPK('L',' NOEUD : ',1,NOM1)
-                  CALL UTFINM()
+            VALK = NOM1
+                  CALL U2MESG('F', 'ALGORITH12_71',1,VALK,0,0,0,0.D0)
                ELSE IF (PGAUCH.EQ.'CONSTANT') THEN
                   INOMIN = ZI(JTBRES)
                   ZR(JCNSVE-1+(INO-1)+1) = ZR(JCNSVL-1+(INOMIN-1)+1)
@@ -237,11 +231,8 @@ C
             ELSE
                IF (PDROIT.EQ.'EXCLU') THEN
                   CALL JENUNO(JEXNUM(NOMMAF//'.NOMNOE',INO),NOM1)
-                  CALL UTDEBM('F','RS1D3D','LE NOEUD SE TROUVE EN'//
-     &                        ' DEHORS DU DOMAINE DE DEFINITION AVEC'//
-     &                        ' UN PROFIL DROIT DE TYPE EXCLU')
-                  CALL UTIMPK('L',' NOEUD : ',1,NOM1)
-                  CALL UTFINM()
+            VALK = NOM1
+                  CALL U2MESG('F', 'ALGORITH12_72',1,VALK,0,0,0,0.D0)
                ELSE IF (PDROIT.EQ.'CONSTANT') THEN
                   INOMAX = ZI(JTBRES-1+NBNOI)
                   ZR(JCNSVE-1+(INO-1)+1) = ZR(JCNSVL-1+(INOMAX-1)+1)
@@ -261,10 +252,9 @@ C
 C
          CALL RSEXCH (RESU, 'TEMP', IORD, CNOINR, IBID)
          IF (IBID.NE.100) THEN
-            CALL UTDEBM('F','RS1D3D','PROBLEME POUR STOKER LE CHAMP ')
-            CALL UTIMPK('S','DANS LE RESULTAT : ',1,RESU)
-            CALL UTIMPI('S',', POUR LE NUME_ORDRE : ',1,IORD)
-            CALL UTFINM()
+            VALK = RESU
+            VALI = IORD
+            CALL U2MESG('F', 'ALGORITH12_73',1,VALK,1,VALI,0,0.D0)
          ENDIF
          CALL CNSCNO ( CNSINR,' ','NON', 'G', CNOINR )
          CALL RSNOCH ( RESU, 'TEMP', IORD, ' ')

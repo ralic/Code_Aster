@@ -7,7 +7,7 @@
       CHARACTER*(*)       CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
+      REAL*8 VALR
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -62,6 +63,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   K8B, NOMN
       CHARACTER*19  NOMT19
       CHARACTER*24  NOMNOE
+      CHARACTER*24 VALK(2)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
       NOMNOE  = NOMA//'.NOMNOE         '
@@ -132,11 +134,10 @@ C                         SITUEE ENTRE LES POINTS A ET B ---
          IF ( C.LT.0.0D0 .OR. C2.GT.AB2 ) THEN
             IF (ECART.GT.R8PREM()) THEN
                CALL JENUNO( JEXNUM(NOMNOE,INOD),NOMN)
-               CALL UTDEBM('A','OREINO','NOEUD ')
-               CALL UTIMPK('S',' ',1,NOMN)
-               CALL UTIMPK('S','  EN DEHORS DU SEGMENT',0,NOMN)
-               CALL UTIMPR('L','  ABSCISSE CURVILIGNE',1,C)
-               CALL UTFINM
+               VALK (1) = NOMN
+               VALK (2) = NOMN
+               VALR = C
+               CALL U2MESG('A', 'SOUSTRUC_86',2,VALK,0,0,1,VALR)
                IER = IER + 1
             ENDIF
          ENDIF

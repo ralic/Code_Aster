@@ -3,7 +3,7 @@
       CHARACTER*24  LISPAS, LIBINT, LINBPA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,10 @@ C OUT : NPATOT : NOMBRE TOTAL DE PAS DE CALCUL
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
+      INTEGER VALI
       COMMON / IVARJE / ZI(1)
       REAL*8            ZR
+      REAL*8 VALR(4)
       COMMON / RVARJE / ZR(1)
       COMPLEX*16        ZC
       COMMON / CVARJE / ZC(1)
@@ -45,6 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8   K8B, NOMRES, DYNA, LI, CRIT
+      CHARACTER*24 VALK
       CHARACTER*16  TYPRES, NOMCMD
       CHARACTER*8   CTYPE
       COMPLEX*16    C16B
@@ -72,18 +75,14 @@ C
                CALL RSORAC(DYNA,'INST',IBID,TEMPS,K8B,C16B,
      &                                        PREC,CRIT,NUME,1,NBTROU)
                IF (NBTROU.LT.0) THEN
-                  CALL UTDEBM('F','DLTINS','PLUSIEURS CHAMPS '
-     &                           //'CORRESPONDANT A L''ACCES DEMANDE.')
-                  CALL UTIMPK('L','RESULTAT ',1,DYNA)
-                  CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
-                  CALL UTIMPI('S',', NOMBRE :',1,-NBTROU)
-                  CALL UTFINM()
+         VALK = DYNA
+         VALR (1) = TEMPS
+         VALI = -NBTROU
+      CALL U2MESG('F', 'ALGORITH12_87',1,VALK,1,VALI,1,VALR)
                ELSEIF (NBTROU.EQ.0) THEN
-                  CALL UTDEBM('F','DLTINS','PAS DE CHAMP '//
-     &                             'CORRESPONDANT A UN ACCES DEMANDE.')
-                  CALL UTIMPK('L','RESULTAT ',1,DYNA)
-                  CALL UTIMPR('S',', ACCES "INST": ',1,TEMPS)
-                  CALL UTFINM()
+         VALK = DYNA
+         VALR (1) = TEMPS
+                  CALL U2MESG('F', 'ALGORITH12_88',1,VALK,0,0,1,VALR)
                ENDIF
             ENDIF
          ELSE
@@ -125,11 +124,9 @@ C           --- DANS QUEL INTERVALLE SE SITUE LE TEMPS ---
             DO 100 IINT = 1,NBGRPA
                IF (TEMPS.LT.ZR(JBINT+IINT)) GOTO 102
  100        CONTINUE
-            CALL UTDEBM('F','DLTINS',
-     &         'INSTANT DE REPRISE SUPERIEUR A LA LISTE DES INSTANTS')
-            CALL UTIMPR('L','   INSTANT DE REPRISE: ',1,TEMPS)
-            CALL UTIMPR('L','   INSTANT MAX: ',1,ZR(JBINT+NBGRPA))
-            CALL UTFINM()
+         VALR (1) = TEMPS
+         VALR (2) = ZR(JBINT+NBGRPA)
+            CALL U2MESG('F', 'ALGORITH12_89',0,' ',0,0,2,VALR)
  102        CONTINUE
             EPS = ZR(JLPAS+IINT-1) / 10.D0
             IF (ABS(ZR(JBINT+IINT)-TEMPS).LT.EPS) IINT = IINT + 1
@@ -164,12 +161,11 @@ C           --- POUR LE PREMIER INTERVALLE ---
             DO 120 IV = NBPD,NBPF
                IF (ABS(ZR(JVALE+IV)-TEMPS).LT.EPS) GOTO 122
  120        CONTINUE
-            CALL UTDEBM('F','DLTINS','ON N''A PAS TROUVE L''INSTANT')
-            CALL UTIMPR('L','   INSTANT DE REPRISE: ',1,TEMPS)
-            CALL UTIMPR('L','   PAS DE TEMPS: ',1, ZR(JLPAS+IINT-1))
-            CALL UTIMPR('L','   BORNE MIN: ',1,ZR(JBINT+IINT-1))
-            CALL UTIMPR('L','   BORNE MAX: ',1,ZR(JBINT+IINT))
-            CALL UTFINM()
+         VALR (1) = TEMPS
+         VALR (2) = ZR(JLPAS+IINT-1)
+         VALR (3) = ZR(JBINT+IINT-1)
+         VALR (4) = ZR(JBINT+IINT)
+            CALL U2MESG('F', 'ALGORITH12_90',0,' ',0,0,4,VALR)
  122        CONTINUE
             ZI(JNBP2) = NBPF - IV
             ZR(JLPA2) = ZR(JLPAS+IINT-1)
@@ -213,11 +209,9 @@ C
          ENDIF
 C
          IF (TFIN.LT.ZR(JBINT)) THEN
-            CALL UTDEBM('F','DLTINS',
-     &           'INSTANT FINAL INFERIEUR A LA LISTE DES INSTANTS')
-            CALL UTIMPR('L','   INSTANT FINAL: ',1,TFIN)
-            CALL UTIMPR('L','   INSTANT MIN  : ',1,ZR(JBINT))
-            CALL UTFINM()
+         VALR (1) = TFIN
+         VALR (2) = ZR(JBINT)
+            CALL U2MESG('F', 'ALGORITH12_91',0,' ',0,0,2,VALR)
          ELSEIF (TFIN.GE.ZR(JBINT+NBGRPA)) THEN
             GOTO 9999
          ENDIF
@@ -249,12 +243,11 @@ C        --- POUR LE DERNIER INTERVALLE ---
          DO 230 IV = NBPD,NBPF
             IF (ABS(ZR(JVALE+IV)-TFIN).LT.EPS) GOTO 232
  230     CONTINUE
-         CALL UTDEBM('F','DLTINS','ON N''A PAS TROUVE L''INSTANT')
-         CALL UTIMPR('L','   INSTANT FINAL: ',1,TFIN)
-         CALL UTIMPR('L','   PAS DE TEMPS: ',1, ZR(JLPAS+IINT-1))
-         CALL UTIMPR('L','   BORNE MIN: ',1,ZR(JBINT+IINT-1))
-         CALL UTIMPR('L','   BORNE MAX: ',1,ZR(JBINT+IINT))
-         CALL UTFINM()
+         VALR (1) = TFIN
+         VALR (2) = ZR(JLPAS+IINT-1)
+         VALR (3) = ZR(JBINT+IINT-1)
+         VALR (4) = ZR(JBINT+IINT)
+         CALL U2MESG('F', 'ALGORITH12_92',0,' ',0,0,4,VALR)
  232     CONTINUE
          ZI(JNBP2+IINT-1) = IV - NBPD
          LISPAS = '&&OP0048.LI_LPASF'

@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IBID, IDEBUT, IREST, III, IPDT
+      INTEGER VALI(2)
       CHARACTER*8  RESU
       CHARACTER*16 NOMCMD,CONCEP
 C     ------------------------------------------------------------------
@@ -73,13 +74,9 @@ C
       CALL GETVIS('INTERVALLE','JUSQU_A',IOCC,1,1,ZI(JBOR+IOCC),N1)
          III = ZI(JBOR+IOCC) - ZI(JBOR-1+IOCC)
          IF (III.LE.0) THEN
-            CALL UTDEBM('F','OP0022',
-     +                   'LES INTERVALLES DOIVENT ETRE CROISSANTS.')
-            CALL UTIMPI('L',
-     +      '   VALEUR DE LA BORNE PRECEDENTE : ',1,ZI(JBOR+IOCC-1))
-            CALL UTIMPI('L',
-     +      '   VALEUR DE LA BORNE : ',1,ZI(JBOR+IOCC))
-            CALL UTFINM( )
+               VALI (1) = ZI(JBOR+IOCC-1)
+               VALI (2) = ZI(JBOR+IOCC)
+            CALL U2MESG('F', 'ALGORITH13_78',0,' ',2,VALI,0,0.D0)
          ENDIF
          CALL GETVIS('INTERVALLE','PAS',IOCC,1,0,IBID,NP)
          IF (NP.NE.0) THEN
@@ -87,11 +84,9 @@ C
             JNBP = INT( III / JPAS )
             IREST = III - JNBP * JPAS
             IF (IREST.NE.0) THEN
-               CALL UTDEBM('F','OP0022','L''INTERVALLE ENTRE LES '//
-     +                     'DEUX DERNIERS INSTANTS NE SERA PAS EGAL')
-               CALL UTIMPI('S',' AU PAS COURANT : ',1,JPAS)
-               CALL UTIMPI('S',', POUR L''INTERVALLE ',1,IOCC)
-               CALL UTFINM( )
+               VALI (1) = JPAS
+               VALI (2) = IOCC
+               CALL U2MESG('F', 'ALGORITH13_79',0,' ',2,VALI,0,0.D0)
             ENDIF
          ELSE
             CALL GETVIS('INTERVALLE','NOMBRE',IOCC,1,1,JNBP,N1)
@@ -99,10 +94,9 @@ C
                IPDT = INT( III / JNBP )
                IREST = III - JNBP * IPDT
                IF (IREST.NE.0) THEN
-                  CALL UTDEBM('F','OP0022','LE NOMBRE DE PAS EST')
-                  CALL UTIMPI('S',' TROP GRAND : ',1,JNBP)
-                  CALL UTIMPI('S',', POUR L''INTERVALLE ',1,IOCC)
-                  CALL UTFINM( )
+               VALI (1) = JNBP
+               VALI (2) = IOCC
+                  CALL U2MESG('F', 'ALGORITH13_80',0,' ',2,VALI,0,0.D0)
                ENDIF
             ENDIF
          ENDIF
@@ -123,12 +117,9 @@ C
          CALL GETVIS(' ','VALE' ,0,1,NBVALE,ZI(KVAL),NV)
          DO 4 I = 1,NBVALE-1
             IF (ZI(KVAL+I-1).GE.ZI(KVAL+I)) THEN
-               CALL UTDEBM('F','OP0022',
-     +                     'LES VALEURS DOIVENT ETRE CROISSANTES.')
-               CALL UTIMPI('L',
-     +                     '  VALEUR PRECEDENTE : ',1,ZI(KVAL+I-1))
-               CALL UTIMPI('L','  VALEUR : ',1,ZI(KVAL+I))
-               CALL UTFINM( )
+               VALI (1) = ZI(KVAL+I-1)
+               VALI (2) = ZI(KVAL+I)
+               CALL U2MESG('F', 'ALGORITH13_81',0,' ',2,VALI,0,0.D0)
             ENDIF
             ZI(JPAS+I-1) = ZI(KVAL+I) - ZI(KVAL+I-1)
             ZI(JNBP+I-1) = 1

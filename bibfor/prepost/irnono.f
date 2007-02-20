@@ -1,7 +1,7 @@
       SUBROUTINE IRNONO(NOMA,NBNOE,NBNO,NONOE,NBGR,NOGRN,
      &                  NUMNO,NBNOT,INDNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
@@ -74,9 +75,8 @@ C     --- RECUPERATION DU NUMERO DE NOEUD ----
         DO 12 INOE=1,NBNO
           CALL JENONU(JEXNOM(NOMMA//'.NOMNOE',NONOE(INOE)),INO)
           IF (INO.EQ.0) THEN
-            CALL UTDEBM('A','IRNONO',' ON NE TROUVE PAS LE NOEUD ')
-            CALL UTIMPK('S',':',1,NONOE(INOE))
-            CALL UTFINM
+            VALK (1) = NONOE(INOE)
+            CALL U2MESG('A', 'PREPOST5_38',1,VALK,0,0,0,0.D0)
             NONOE(INOE) = ' '
           ELSE
             ZI(JTOPO-1+2) = ZI(JTOPO-1+2) + 1
@@ -100,18 +100,16 @@ C     --- RECUPERATION DU NUMERO DE NOEUD ----
         DO 13 IGR=1,NBGR
           CALL JEEXIN(JEXNOM(NOMMA//'.GROUPENO',NOGRN(IGR)),IRET)
           IF (IRET.EQ.0) THEN
-            CALL UTDEBM('A','IRNONO',' ON NE TROUVE PAS LE GROUPE ')
-            CALL UTIMPK('S',':',1,NOGRN(IGR))
-            CALL UTFINM
+            VALK (1) = NOGRN(IGR)
+            CALL U2MESG('A', 'PREPOST5_39',1,VALK,0,0,0,0.D0)
             NOGRN(IGR) = ' '
           ELSE
             CALL JELIRA(JEXNOM(NOMMA//'.GROUPENO',NOGRN(IGR)),
      &                       'LONMAX',NBN,K8BID)
             IF(NBN.EQ.0) THEN
-            CALL UTDEBM('A','IRNONO',' LE GROUPE')
-            CALL UTIMPK('S',' ',1,NOGRN(IGR))
-            CALL UTIMPK('S','NE CONTIENT AUCUN NOEUD ',0,' ')
-            CALL UTFINM
+            VALK (1) = NOGRN(IGR)
+            VALK (2) = ' '
+            CALL U2MESG('A', 'PREPOST5_40',2,VALK,0,0,0,0.D0)
             NOGRN(IGR) = ' '
             ELSE
               ZI(JTOPO-1+4) = ZI(JTOPO-1+4) + 1

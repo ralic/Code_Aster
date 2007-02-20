@@ -1,6 +1,6 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRS_508 CRS_512 CRS_513
+C TOLE CRP_18 CRS_508 CRS_512 CRS_513 CRS_505
       IMPLICIT NONE
       INTEGER            IDTS,NBVAL,IADMI
 C ----------------------------------------------------------------------
@@ -41,8 +41,8 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
 C ----------------------------------------------------------------------
-      INTEGER          IRET,JADR,KADM,NBV,K,LONOI,LTYPI
-      INTEGER          HDFTSD,HDFRSV,HDFCLD,IR,KITAB,ICONV
+      INTEGER          IRET,JADR,KADM,NBV,K,LONOI,LTYPI,IBID
+      INTEGER          HDFTSD,HDFRSV,HDFCLD,IR,KITAB,ICONV,IADYN
       CHARACTER*1      TYPEI
       CHARACTER*75     CMESS
 C DEB ------------------------------------------------------------------
@@ -56,7 +56,7 @@ C DEB ------------------------------------------------------------------
         ICONV = 1
         IF ( LOIS .LT. LTYPI ) THEN
           LONOI = NBVAL*LTYPI
-          CALL JJALLS(LONOI,'V',TYPEI,LOIS,'INIT',ZI,JADR,KADM)
+          CALL JJALLS(LONOI,'V',TYPEI,LOIS,'INIT',ZI,JADR,KADM,IADYN)
           ISZON(JISZON+KADM-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+KADM-4)-4) = ISTAT(4)
           IR = ISZON(JISZON + KADM - 3 )
@@ -65,7 +65,11 @@ C DEB ------------------------------------------------------------------
           DO 1 K=1,NBV
             ISZON(JISZON+IADMI-1+K)=ISZON(JISZON+KADM-1+K)
  1        CONTINUE
-          CALL JJLIBP (KADM)
+          IF (IADYN .NE. 0) THEN
+            CALL HPDEALLC (IADYN, IBID, IBID)
+          ELSE IF (KADM .NE. 0) THEN
+            CALL JJLIBP (KADM)
+          ENDIF
         ELSE
           IR = ISZON(JISZON + IADMI - 3 )
           KITAB = JK1ZON+(IADMI-1)*LOIS+IR+1

@@ -1,6 +1,6 @@
       SUBROUTINE REFE80(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,10 +52,10 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6      PGC
       CHARACTER*8 NOMRES,BASMOD,INTF,MAILLA
       CHARACTER*10 TYPBAS(3)
       CHARACTER*24 BLANC
+      CHARACTER*24 VALK(3)
 C
 C-----------------------------------------------------------------------
 C
@@ -64,7 +64,6 @@ C
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      PGC='REFE80'
       BLANC='   '
       BASMOD=BLANC
 C
@@ -78,12 +77,10 @@ C
       IDESC=ZI(LLUTI)
 C
         IF(IDESC.NE.1) THEN
-          CALL UTDEBM('F',PGC,
-     &' ARRET SUR BASE MODALE DE TYPE ILLICITE')
-          CALL UTIMPK('L','BASE MODALE --> ',1,BASMOD)
-          CALL UTIMPK('L','TYPE --> ',1,TYPBAS(IDESC))
-          CALL UTIMPK('L','TYPE  ATTENDU --> ',1,TYPBAS(1))
-          CALL UTFINM
+          VALK (1) = BASMOD
+          VALK (2) = TYPBAS(IDESC)
+          VALK (3) = TYPBAS(1)
+          CALL U2MESG('F', 'ALGORITH14_13',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 C--------------------RECUPERATION DES CONCEPTS AMONTS-------------------

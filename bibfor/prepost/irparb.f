@@ -4,7 +4,7 @@
       INTEGER                NBIN,            NBOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  ZK8,TOUPAR
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
       REAL*8       ZR
@@ -68,10 +69,9 @@ C       --- VERIFICATION DE L'EXISTANCE DU PARAMETRE
            CALL RSEXPA(RESU8,2,PARIN(I),IRET)
            IF (IRET.EQ.0) THEN
               CALL GETRES(CBID,CBID,NOMCMD)
-              CALL UTDEBM('A','IRPARB',' ')
-              CALL UTIMPK('S','LE PARAMETRE ',1,PARIN(I))
-              CALL UTIMPK('S','N''EXISTE PAS',0,' ')
-              CALL UTFINM()
+              VALK (1) = PARIN(I)
+              VALK (2) = ' '
+              CALL U2MESG('A', 'PREPOST5_41',2,VALK,0,0,0,0.D0)
             ELSE
               NBOUT = NBOUT + 1
               ZK16(LPOUT+NBOUT-1) = PARIN(I)

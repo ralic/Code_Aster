@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA      '
@@ -51,6 +51,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
+      REAL*8 VALR(3)
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -108,13 +109,10 @@ C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
             TSUP = ZR(ITEMP+2+3* (I-1))
 
             IF ((T.NE.TINF) .OR. (T.NE.TSUP) .OR. (TINF.NE.TSUP)) THEN
-              CALL UTDEBM('A','TE0221',' LORSQU''IL Y A VARIATION '//
-     &      'DE TEMPERATURE DANS L''EPAISSEUR, UTILISER "STAT_NON_LINE"'
-     &                    )
-              CALL UTIMPR('L','  TEMPERATURE INF: ', 1, TINF )
-              CALL UTIMPR('L','  TEMPERATURE MOY: ', 1, T    )
-              CALL UTIMPR('L','  TEMPERATURE SUP: ', 1, TSUP )
-              CALL UTFINM()
+              VALR (1) = TINF
+              VALR (2) = T
+              VALR (3) = TSUP
+              CALL U2MESG('A', 'ELEMENTS4_93',0,' ',0,0,3,VALR)
             END IF
             TPG = TPG + (T+ (TSUP+TINF-2*T)/6.D0)*ZR(IVF+K+I-1)
    20     CONTINUE

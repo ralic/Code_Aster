@@ -1,6 +1,6 @@
       SUBROUTINE  GMEELT(IMOD, NBTYMA, NOMAIL, NBNOMA, NUCONN, NBMAIL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C -----  VARIABLES LOCALES
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       INTEGER            ZI
+      INTEGER VALI(2)
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -162,11 +163,9 @@ C     ---------------------------------
         NUMGRO = ZI(JINDMA+I-1)
         IF ( NUMGRO .GE. 1000000 ) THEN
            IER = IER + 1
-           CALL UTDEBM('E','GMEELT','LE NUMERO DU GROUPE DE MAILLES')
-           CALL UTIMPI('S',' EST TROP GRAND: ',1,NUMGRO)
-           CALL UTIMPI('L',
-     &         ' LE NUMERO DU GROUPE DOIT ETRE INFERIEUR A ',1,1000000)
-           CALL UTFINM
+           VALI (1) = NUMGRO
+           VALI (2) = 1000000
+           CALL U2MESG('E', 'PREPOST5_21',0,' ',2,VALI,0,0.D0)
            GOTO 60
         ENDIF
         CALL CODENT(NUMGRO,'G',CHGROU(3:8))

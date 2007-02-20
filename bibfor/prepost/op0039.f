@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -45,6 +45,7 @@ C 0.3. ==> VARIABLES LOCALES
 C
 C
       INTEGER NOCC, IOCC, IOC2
+      INTEGER VALI
       INTEGER IFC, IFI
       INTEGER VERSIO
       INTEGER INFMAI
@@ -82,6 +83,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 NOMCMD,K16BID,FORMR,FICH,TYRES
       CHARACTER*19 NOCH19,KNUM,RESU19
       CHARACTER*24 NOMJV
+      CHARACTER*24 VALK(2)
       CHARACTER*24 NORECG
       CHARACTER*80 TITRE
 C
@@ -451,10 +453,9 @@ C
                CALL RSEXCH (LERESU,ZK16(JNOSY+I),ZI(JORDR+J),
      &                      NOCH19,IRET)
                IF ( IRET .NE. 0 ) THEN
-                  CALL UTDEBM('A','OP0039','CHAMP INEXISTANT')
-                  CALL UTIMPK('L',' NOM_CHAM ',1,ZK16(JNOSY+I))
-                  CALL UTIMPI('S',' NUME_ORDRE ',1,ZI(JORDR+J))
-                  CALL UTFINM
+               VALK (1) = ZK16(JNOSY+I)
+               VALI = ZI(JORDR+J)
+                  CALL U2MESG('A', 'PREPOST5_60',1,VALK,1,VALI,0,0.D0)
                ENDIF
  14          CONTINUE
  16        CONTINUE
@@ -477,10 +478,9 @@ C                   TRAITEMENT PARTICULIER POUR LA GRANDEUR VARI_R
                ENDIF
  17          CONTINUE
              IF ( NBCMPT .EQ. 0 ) THEN
-               CALL UTDEBM('A','OP0039','LA COMPOSANTE')
-               CALL UTIMPK('S',' ',1,ZK8(JVCMP+ICMP))
-             CALL UTIMPK('S',' N''EXISTE DANS AUCUN DES CHAMPS',0,K1BID)
-               CALL UTFINM
+               VALK (1) = ZK8(JVCMP+ICMP)
+               VALK (2) = K1BID
+               CALL U2MESG('A', 'PREPOST5_61',2,VALK,0,0,0,0.D0)
              ENDIF
  15        CONTINUE
            ENDIF

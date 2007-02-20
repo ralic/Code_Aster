@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMF, VEC(*), TYPFON, NOMPF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       LNOVA, IPA
+      INTEGER VALI(2)
       CHARACTER*8   K8B
+      CHARACTER*24 VALK
       CHARACTER*19  NOMFON
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -83,19 +85,16 @@ C
    12    CONTINUE
 C
       ELSE
-         CALL UTDEBM('F','FONBPA','ERREUR DE PROGRAMMATION')
-         CALL UTIMPK('L','TYPE DE FONCTION INCONNU ',1,VEC(1))
-         CALL UTFINM()
+         VALK = VEC(1)
+         CALL U2MESG('F', 'UTILITAI6_36',1,VALK,0,0,0,0.D0)
       ENDIF
 C
       IF ( NBPF .GT. MXPF ) THEN
          NOMFON = NOMF
-         CALL UTDEBM('F','FONBPA','ERREUR  ')
-         CALL UTIMPK('L','LA FONCTION ',1,NOMFON)
-         CALL UTIMPI('S',' A ',1,NBPF)
-         CALL UTIMPI('S',' ARGUMENTS, LE MAXIMUM EXPLOITABLE EST ',
-     +                                                          1,MXPF)
-         CALL UTFINM()
+         VALK = NOMFON
+         VALI (1) = NBPF
+         VALI (2) = MXPF
+         CALL U2MESG('F', 'UTILITAI6_37',1,VALK,2,VALI,0,0.D0)
       ENDIF
 C
       CALL JEDEMA()

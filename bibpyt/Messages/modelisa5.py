@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa5 Messages  DATE 20/02/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -417,6 +417,7 @@ cata_msg={
 """),
 
 99: _("""
- 1 seul connexe
+ impossibilité de vérifier l'orientation des mailles de bord : on trouve des groupes de mailles disjoints dans la liste de mailles de bords fournie.
+ vérifier que les groupes de mailles de bord définis forment un ensemble connexe.
 """),
 }

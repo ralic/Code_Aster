@@ -5,7 +5,7 @@
       REAL*8              ORIG(3), AXEZ(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        VALED(3), VALD(3), VALER(3), VALR(3), PSCAL
       REAL*8        XNORMR, EPSI, AXER(3), AXET(3), PGL(3,3)
       CHARACTER*8   K8B, NOMCMP, NOMAIL
+      CHARACTER*24 VALK
       CHARACTER*19  PRNO, DEPLA
       LOGICAL       EXISDG
 C     ------------------------------------------------------------------
@@ -93,9 +94,8 @@ C
  36      CONTINUE
          IF ( XNORMR .LT. EPSI ) THEN
             CALL JENUNO(JEXNUM(NOMAIL//'.NOMNOE',NUNOE),K8B)
-            CALL UTDEBM('F','RVCHN2','NOEUD CONFONDU AVEC L''ORIGINE')
-            CALL UTIMPK('L',' NOEUD : ',1,K8B)
-            CALL UTFINM
+            VALK = K8B
+            CALL U2MESG('F', 'POSTRELE1_57',1,VALK,0,0,0,0.D0)
          ENDIF
          XNORMR =  SQRT( XNORMR )
          DO 38 I = 1,3
@@ -110,9 +110,8 @@ C
          XNORMR =  SQRT( XNORMR )
          IF ( XNORMR .LT. EPSI ) THEN
             CALL JENUNO(JEXNUM(NOMAIL//'.NOMNOE',NUNOE),K8B)
-            CALL UTDEBM('F','RVCHN2','NOEUD SUR L''AXE_Z')
-            CALL UTIMPK('L',' NOEUD : ',1,K8B)
-            CALL UTFINM
+            VALK = K8B
+            CALL U2MESG('F', 'POSTRELE1_58',1,VALK,0,0,0,0.D0)
          ENDIF
          DO 34 I = 1,3
             PGL(1,I) = AXER(I)

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID, NEQ, LMATR, LMATM, IFM, NIV
+      INTEGER VALI
       INTEGER      NIVE, VERSIO
       REAL*8       R8B, ZERO, UN, COEF(3)
       CHARACTER*8  K8B, RESU, NOMMA, MONAXE, FORMAR
@@ -53,6 +54,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 NOMCMD, CONCEP, ACCES(3)
       CHARACTER*19 CHAMNO, RAIDE, RAILDL, MASSE, AMOR,NUMEDD
       CHARACTER*24  VALE
+      CHARACTER*24 VALK
       LOGICAL      DEPLIM, FORCIM, ACCUNI, ACCDDL, DIRECT
       LOGICAL      LMOD,LBID
       COMPLEX*16   C16B
@@ -106,9 +108,8 @@ C
       CALL JEVEUO(RAILDL(1:19)//'.&INT','E',LMATR)
       CALL TLDLGG(1,LMATR,1,NEQ,0,NDECI,ISINGU,NPVNEG,IRET)
       IF (IRET.EQ.2) THEN
-       CALL UTDEBM('F','OP0093','PROBLEME(S) RENCONTRE(S) LORS DE LA')
-         CALL UTIMPK('S',' FACTORISATION DE LA MATRICE :',1,RAIDE)
-         CALL UTFINM()
+                  VALK = RAIDE
+       CALL U2MESG('F', 'ALGELINE4_37',1,VALK,0,0,0,0.D0)
       ENDIF
 C
 C
@@ -261,10 +262,9 @@ C              --- LE VECTEUR ---
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
-                  CALL UTDEBM('F','OP0093','APPEL ERRONE :')
-                  CALL UTIMPI('L','   CODE RETOUR DE RSEXCH :',1,IERD)
-                  CALL UTIMPK('L','   PB CHAM_NO',1,CHAMNO)
-                  CALL UTFINM()
+                  VALI = IERD
+                  VALK = CHAMNO
+                  CALL U2MESG('F', 'ALGELINE4_38',1,VALK,1,VALI,0,0.D0)
                ENDIF
                VALE(1:19)  = CHAMNO
                VALE(20:24) = '.VALE'
@@ -299,10 +299,9 @@ C              --- LE VECTEUR ---
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
-                  CALL UTDEBM('F','OP0093','APPEL ERRONE :')
-                  CALL UTIMPI('L','   CODE RETOUR DE RSEXCH :',1,IERD)
-                  CALL UTIMPK('L','   PB CHAM_NO',1,CHAMNO)
-                  CALL UTFINM()
+                  VALI = IERD
+                  VALK = CHAMNO
+                  CALL U2MESG('F', 'ALGELINE4_38',1,VALK,1,VALI,0,0.D0)
                ENDIF
                VALE(1:19)  = CHAMNO
                VALE(20:24) = '.VALE'
@@ -337,10 +336,9 @@ C              --- LE VECTEUR ---
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
-                  CALL UTDEBM('F','OP0093','APPEL ERRONE :')
-                  CALL UTIMPI('L','   CODE RETOUR DE RSEXCH :',1,IERD)
-                  CALL UTIMPK('L','   PB CHAM_NO',1,CHAMNO)
-                  CALL UTFINM()
+                  VALI = IERD
+                  VALK = CHAMNO
+                  CALL U2MESG('F', 'ALGELINE4_38',1,VALK,1,VALI,0,0.D0)
                ENDIF
                VALE(1:19)  = CHAMNO
                VALE(20:24) = '.VALE'
@@ -424,10 +422,9 @@ C              --- LE VECTEUR ---
                IF ( IERD .EQ. 100 ) THEN
                   CALL VTCREM(CHAMNO,RAIDE,'G','R')
                ELSE
-                  CALL UTDEBM('F','OP0093','APPEL ERRONE :')
-                  CALL UTIMPI('L','   CODE RETOUR DE RSEXCH :',1,IERD)
-                  CALL UTIMPK('L','   PB CHAM_NO',1,CHAMNO)
-                  CALL UTFINM()
+                  VALI = IERD
+                  VALK = CHAMNO
+                  CALL U2MESG('F', 'ALGELINE4_38',1,VALK,1,VALI,0,0.D0)
                ENDIF
                VALE(1:19)  = CHAMNO
                VALE(20:24) = '.VALE'

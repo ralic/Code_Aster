@@ -7,7 +7,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -159,11 +159,9 @@ C        -------------------------------------------------------------
         NVERI2 = NOEUD .EQ. ' '
         NVERI3 = NPOINT .EQ. 0
         IF (NVERI1 .OR. (NVERI2.AND.NVERI3)) THEN
-        CALL UTDEBM('F','FOCRR0','POUR UN "NOM_CHAM",IL FAUT DONNER :')
-          CALL UTIMPK('L','   - UNE MAILLE OU UN GROUP_MA',0,K8B)
-          CALL UTIMPK('L','   - UN NOEUD OU UN GROUP_NO OU UN POINT.',0,
-     &                K8B)
-          CALL UTFINM()
+        VALK (1) = K8B
+        VALK (2) = K8B
+        CALL U2MESG('F', 'UTILITAI6_15',2,VALK,0,0,0,0.D0)
         END IF
         CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAM_ELEM',IBID,NOMA,IE)
         CALL DISMOI('F','NOM_GD',CHAM19,'CHAM_ELEM',IBID,NOGD,IE)

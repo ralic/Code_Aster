@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,8 +40,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      N1, N2, N3, N4, IOCC, NBPOST
+      INTEGER VALI(3)
       REAL*8       R8B
       CHARACTER*8  K8B, RESU, NOMRES
+      CHARACTER*24 VALK(4)
       CHARACTER*16 NOMCMD, CONCEP, TYPRES
 C
 C=======================================================================
@@ -65,26 +67,19 @@ C     /* QUANTITE (IE : SOMME) */
             N2 = -N2
             IF ( N2 .NE. 0 ) THEN
                IF (((N1.NE.2).AND.(N1.NE.3)) .OR. (N1.NE.N2)) THEN
-                CALL UTDEBM('E','RVVSUP','MOTS CLES RESULTANTE SOMME')
-                  CALL UTIMPI('L','OCCURENCE DE "ACTION" NUMERO : ',
-     +                         1,IOCC)
-                  CALL UTIMPK('L','LES LISTES ARGUMENTS DES MOTS CLES'
-     +                     //' RESULTANTE ET MOMENT DOIVENT ETRE DE'
-     +                     //' MEME LONGUEUR',1,' ')
-                  CALL UTIMPI('L','CETTE LONGUEUR EST : ',1,2)
-                  CALL UTIMPI('S','OU ',1,3)
-                  CALL UTFINM
+                  VALI (1) = IOCC
+                  VALI (2) = 2
+                  VALI (3) = 3
+                  VALK (1) = ' '
+                CALL U2MESG('E', 'POSTRELE1_75',1,VALK,3,VALI,0,0.D0)
                ENDIF
                CALL GETVR8('ACTION','POINT',IOCC,1,0,R8B,N1)
                N1 = -N1
                IF ( (N1.NE.2) .AND. (N1.NE.3) ) THEN
-                CALL UTDEBM('E','RVVSUP','MOTS CLES RESULTANTE SOMME')
-                  CALL UTIMPI('L','OCCURENCE DE "ACTION" NUMERO : ',
-     +                         1,IOCC)
-                  CALL UTIMPI('L','LA LISTE ARGUMENTS DU MOT CLE'
-     +                  //' POINT DOIT ETRE DE LONGUEUR ',1,2)
-                  CALL UTIMPI('S','OU ',1,3)
-                  CALL UTFINM
+                  VALI (1) = IOCC
+                  VALI (2) = 2
+                  VALI (3) = 3
+                CALL U2MESG('E', 'POSTRELE1_76',0,' ',3,VALI,0,0.D0)
                ENDIF
             ENDIF
          ENDIF
@@ -110,29 +105,23 @@ C     /* COHERENCE ACCES DANS RESULTAT */
      +             ((TYPRES(1:4) .EQ. 'EVOL') .OR.
      +              (TYPRES(6:10) .EQ. 'TRANS') .OR.
      +              (TYPRES(11:15) .EQ. 'TRANS') ) ) THEN
-                  CALL UTDEBM('E','RVVSUP','ACCES INCOHERENT')
-                  CALL UTIMPI('L','"ACTION" OCCURENCE : ',1,IOCC)
-                  CALL UTIMPK('L','LE CONCEPT ARGUMENT DE '
-     +                             //'NOM : ',1,NOMRES)
-                  CALL UTIMPK('S','ET DE TYPE : ', 1,TYPRES)
-                  CALL UTIMPK('L','NE PEUT PAS ETRE '//
-     +                              'ACCEDER NI PAR ',1,'FREQ')
-                  CALL UTIMPK('S',' NI PAR ',1,'MODE')
-                  CALL UTFINM
+                  VALI (1) = IOCC
+                  VALK (1) = NOMRES
+                  VALK (2) = TYPRES
+                  VALK (3) = 'FREQ'
+                  VALK (4) = 'MODE'
+                  CALL U2MESG('E', 'POSTRELE1_77',4,VALK,1,VALI,0,0.D0)
                ENDIF
                IF ( (N2 .NE. 0) .AND.
      +             ((TYPRES(1:4)   .EQ. 'MODE' ) .OR.
      +              (TYPRES(1:4)   .EQ. 'BASE' ) .OR.
      +              (TYPRES(6:10)  .EQ. 'HARMO') .OR.
      +              (TYPRES(11:15) .EQ. 'HARMO') ) ) THEN
-                  CALL UTDEBM('E','RVVSUP','ACCES INCOHERENT')
-                  CALL UTIMPI('L','"ACTION" OCCURENCE : ',1,IOCC)
-                  CALL UTIMPK('L','LE CONCEPT ARGUMENT DE '
-     +                             //'NOM : ',1,NOMRES)
-                  CALL UTIMPK('S','ET DE TYPE : ', 1,TYPRES)
-                  CALL UTIMPK('L','NE PEUT PAS ETRE '//
-     +                              'ACCEDER PAR ',1,'INSTANT')
-                  CALL UTFINM
+                  VALI (1) = IOCC
+                  VALK (1) = NOMRES
+                  VALK (2) = TYPRES
+                  VALK (3) = 'INSTANT'
+                  CALL U2MESG('E', 'POSTRELE1_78',3,VALK,1,VALI,0,0.D0)
                ENDIF
             ENDIF
          ENDIF

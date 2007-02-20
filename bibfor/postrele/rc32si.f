@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,11 +45,11 @@ C
       INTEGER      N1, NBSITU, IOCC, IBID, NUME, II, NOCC, NSCY,
      &             JNBOCC, JNUMGR, JPRESA, JPRESB, NBCHAR, JCHAR,
      &             JNSITU, JCOMBI, JPASSA, JNBGR, IG, NUMPAS(2),
-     &             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR
+     &             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR,
+     &             NBM,VALI(3)
       CHARACTER*8  K8B, KNUME, OUINON
       CHARACTER*16 MOTCLF
 C DEB ------------------------------------------------------------------
-C      CALL JEMARQ()
 C
       MOTCLF = 'SITUATION'
 C
@@ -174,8 +174,9 @@ C
          CALL GETVIS ( MOTCLF, 'NUME_RESU_THER', IOCC,1,0, IBID, N1 )
          NBTH = -N1
          CALL JECROC (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME))
+         NBM = MAX(1,NBTH)
          CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
-     &                                      'LONMAX', MAX(1,NBTH),' ')
+     &                                      'LONMAX',NBM ,' ')
 C
          IF ( NBTH .EQ. 0 ) THEN
             CALL JEECRA (JEXNOM('&&RC3200.SITU_THERMIQUE',KNUME),
@@ -232,12 +233,10 @@ C ------------ A-T-ON UN SEISME DANS CE GROUPE ?
                CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME',IOCC,1,1,NSCY,N1)
                IF ( N1 .NE. 0 ) THEN
                   IF ( ZI(JSEIGR+IG-1) .NE. 0 ) THEN
-                     CALL UTDEBM('F','RC32SI',
-     &                         'PLUSIEURS SEISMES DANS LE MEME GROUPE')
-                     CALL UTIMPI('L','   GROUPE NUMERO: ',1,NUMGR)
-                     CALL UTIMPI('L','   OCCURENCE SITUATION ',1,IOCC)
-                     CALL UTIMPI('S',' ET ',1,ZI(JSEIGR+IG-1))
-                     CALL UTFINM()
+                     VALI(1) = NUMGR
+                     VALI(2) = IOCC
+                     VALI(3) = ZI(JSEIGR+IG-1)
+                     CALL U2MESI('F','POSTRELE1_79',3,VALI)
                   ENDIF
                   ZI(JSEIGR+IG-1) = IOCC
                ENDIF
@@ -248,5 +247,4 @@ C
 C
       CALL JEDETR ( '&&RC32SI.NUME_GROUP' )
 C
-C      CALL JEDEMA( )
       END

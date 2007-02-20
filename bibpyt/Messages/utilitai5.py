@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai5 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -295,5 +295,26 @@ cata_msg={
  possible pour une SD résultat de type %(k1)s. 
 """),
 
+95: _("""
+  le noeud %(k1)s ne supporte pas la composante %(k2)s 
+"""),
+
+96: _("""
+  le noeud %(k1)s le noeud %(k2)s ne supporte pas la composante %(k3)s 
+"""),
+
+97: _("""
+ le type de champ  %(k1)s n''est pas accepte.  %(k2)s 
+ veuillez consulter la %(k3)s 
+ doc u correspondante %(k4)s 
+"""),
+
+98: _("""
+ le champ  %(k1)s n''est pas de type  %(k2)s 
+"""),
+
+99: _("""
+ le champ  %(k1)s n''a pas la grandeur  %(k2)s 
+"""),
 
 }

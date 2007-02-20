@@ -1,6 +1,6 @@
       SUBROUTINE FACMTR (MATIN,MATOUT,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/08/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*19 MATIN,MATOUT
+      CHARACTER*24 VALK
       LOGICAL HPLOG
 C
 C-----------------------------------------------------------------------
@@ -67,9 +68,8 @@ C---------CONTROLE D'EXISTENCE DE LA MATRICE----------------------------
 C
       CALL MTEXIS(MATIN,IER)
       IF(IER.EQ.0) THEN
-        CALL UTDEBM('F','FACMTR','ARRET SUR MATRICE INEXISTANTE')
-        CALL UTIMPK('L','MATRICE',1,MATIN)
-        CALL UTFINM
+        VALK = MATIN
+        CALL U2MESG('F', 'ALGORITH13_9',1,VALK,0,0,0,0.D0)
       ENDIF
 C
 C
@@ -87,9 +87,8 @@ C
         CALL MTCOPY(MATIN,MATOUT,IER)
 C
         IF(IER.GT.0) THEN
-          CALL UTDEBM('F','FACMTR','PROBLEME DE DUPLICATION DE MATRICE')
-          CALL UTIMPK('L','MATRICE: ',1,MATIN)
-          CALL UTFINM
+        VALK = MATIN
+          CALL U2MESG('F', 'ALGORITH13_10',1,VALK,0,0,0,0.D0)
         ENDIF
 C
 C--------------ALLOCATION DESCRIPTEUR DE LA MATRICE---------------------
@@ -108,9 +107,7 @@ C
 C------------------------ETUDE DU CODE RETOUR---------------------------
 C
       IF(IRE.GT.1) THEN
-        CALL UTDEBM('F','FACMTR',' ARRET PROBLEME DE FACTORISATION:
-     &PRESENCE DE MODES DE CORPS RIGIDE')
-        CALL UTFINM
+        CALL U2MESG('F', 'ALGORITH13_11',0,' ',0,0,0,0.D0)
         IER=-1
       ELSEIF (IRE.EQ.1) THEN
         IER=-2

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/10/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       VALPAR(4), DIST , EXCENT , PR
       LOGICAL      GLOBAL, LOCAPR
       CHARACTER*8  NOMPAR(4), MOPLAN, NOMAIL
+      CHARACTER*24 VALK
 C DEB ------------------------------------------------------------------
 C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
@@ -135,9 +136,8 @@ C              ------------------------------
             IF ( PR .NE. 0.D0 ) THEN
                CALL TECAEL ( IADZI, IAZK24 )
                NOMAIL = ZK24(IAZK24-1+3)(1:8)
-               CALL UTDEBM ('F','TE0032','LA PRESSION DOIT ETRE NULLE')
-               CALL UTIMPK ('S',' POUR LA MAILLE ', 1, NOMAIL )
-               CALL UTFINM
+               VALK = NOMAIL
+               CALL U2MESG('F', 'ELEMENTS4_92',1,VALK,0,0,0,0.D0)
             ENDIF
   222    CONTINUE
          GOTO 9999

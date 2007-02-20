@@ -5,7 +5,7 @@
      &                    PREFIX,
      &                    INFMED, MODNUM, NUMNOA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,6 +102,7 @@ C
       PARAMETER ( NOMPRO = 'LRMMMA' )
 C
       INTEGER EDMAIL
+      INTEGER VALI(2)
       PARAMETER (EDMAIL=0)
       INTEGER EDFUIN
       PARAMETER (EDFUIN=0)
@@ -242,12 +243,9 @@ C
           DO 231 , IMATYP = 1 , NMATYP(ITYP)
             IMA = ZI(JNUMTY(ITYP)+IMATYP-1)
             IF ( IMA.GT.NBMAIL ) THEN
-              CALL UTDEBM ('F',NOMPRO,'LE NUMERO DE LA MAILLE DE TYPE '
-     &            //NOMTYP(ITYP)//' EST SUPERIEUR AU NOMBRE TOTAL DE '
-     &            //'MAILLES :')
-              CALL UTIMPI ('L', 'NUMERO DE LA MAILLE : ', 1, IMA)
-              CALL UTIMPI ('L', 'NOMBRE DE MAILLES   : ', 1, NBMAIL)
-              CALL UTFINM()
+              VALI (1) = IMA
+              VALI (2) = NBMAIL
+              CALL U2MESG('F', 'MODELISA8_67',0,' ',2,VALI,0,0.D0)
             ENDIF
             ZK8(JNOMMA+IMA-1) = ZK16(JNOMTY(ITYP)+IMATYP-1)(1:8)
             ZI (JTYPMA+IMA-1) = ITYP

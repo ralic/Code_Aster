@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,11 +39,12 @@ MO=AFFE_MODELE(MAILLAGE=M,
                VERIF='MAILLE',
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='AXIS_INCO',),);
+                       MODELISATION='AXIS_INCO_GD',),);
 
 MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          NU=0.4999,
-                         ALPHA=0.0,),);
+                         ALPHA=0.0,),
+                 ECRO_LINE=_F(SY=1.E10, D_SIGM_EPSI=0.)        );
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
@@ -73,19 +74,27 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    EXCIT=(_F(CHARGE=CLIM,),
                           _F(CHARGE=CH,
                              FONC_MULT=RAMPE,),),
-                   COMP_INCR=_F(RELATION='ELAS',
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                 DEFORMATION='SIMO_MIEHE',),
                    INCREMENT=_F(LIST_INST=L_INST1,),
                    NEWTON=_F(REAC_ITER=1,),
-                   SOLVEUR=_F(RENUM='MD',),);
+                   SOLVEUR=_F(METHODE='MUMPS'),);
 
 EVOL=CALC_ELEM(reuse =EVOL,
                RESULTAT=EVOL,
-               OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','EQUI_ELNO_EPSI','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+               OPTION=(
+               #'EPSI_ELNO_DEPL',
+               'SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',
+               #'EQUI_ELNO_EPSI','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',
+               ),);
 
 EVOL=CALC_NO(reuse =EVOL,
              RESULTAT=EVOL,
-             OPTION=('EPSI_NOEU_DEPL','SIEF_NOEU_ELGA','EQUI_NOEU_EPSI','EQUI_NOEU_SIGM',),);
+             OPTION=(
+             #'EPSI_NOEU_DEPL',
+             'SIEF_NOEU_ELGA',
+             #'EQUI_NOEU_EPSI',
+             'EQUI_NOEU_SIGM',),);
 #---------------------------------------------------------------
 # POSTTRAITEMENT ETUDE 1
 #---------------------------------------------------------------
@@ -264,28 +273,28 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  INST=1.0,
-                  NOM_CHAM='ERRE_ELEM_SIGM',
-                  NOM_CMP='NUEST',
-                  MAILLE='M2',
-                  POINT=1,
-                  VALE=0.0405641695723,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
-
-TEST_RESU(RESU=_F(RESULTAT=EVOL,
-                  INST=1.0,
-                  NOM_CHAM='ERRE_ELNO_ELEM',
-                  NOM_CMP='ERREST',
-                  MAILLE='M2',
-                  GROUP_NO='A',
-                  VALE=7.34831459848e-05,
-                  CRITERE='RELATIF',
-                  PRECISION=0.001,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.2.15',),);
-
+# TEST_RESU(RESU=_F(RESULTAT=EVOL,
+#                   INST=1.0,
+#                   NOM_CHAM='ERRE_ELEM_SIGM',
+#                   NOM_CMP='NUEST',
+#                   MAILLE='M2',
+#                   POINT=1,
+#                   VALE=0.0405641695723,
+#                   CRITERE='RELATIF',
+#                   PRECISION=0.001,
+#                   REFERENCE='NON_REGRESSION',
+#                   VERSION='8.2.15',),);
+# 
+# TEST_RESU(RESU=_F(RESULTAT=EVOL,
+#                   INST=1.0,
+#                   NOM_CHAM='ERRE_ELNO_ELEM',
+#                   NOM_CMP='ERREST',
+#                   MAILLE='M2',
+#                   GROUP_NO='A',
+#                   VALE=7.34831459848e-05,
+#                   CRITERE='RELATIF',
+#                   PRECISION=0.001,
+#                   REFERENCE='NON_REGRESSION',
+#                   VERSION='8.2.15',),);
+STANLEY()
 FIN();

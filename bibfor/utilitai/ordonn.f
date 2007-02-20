@@ -5,7 +5,7 @@
       INTEGER      IRET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C     ----------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       REAL*8       XT
       CHARACTER*16 TYPFON
       CHARACTER*24 CHVAL,CHBID
+      CHARACTER*24 VALK(3)
       CHARACTER*32 JEXNUM,MESS
 C     ------------------------------------------------------------------
 C
@@ -158,20 +159,20 @@ C     --------------------------------------------
 C
  999  CONTINUE
       IF(IMES.EQ.4)THEN
-         CALL UTDEBM('F','ORDONN','LES ABSCISSES '//MESS)
-         CALL UTIMPK('S',' ',1,NOMFON)
-         CALL UTIMPK('L','NE SONT PAS MONOTONES.',0,CHBID)
-         CALL UTFINM()
+         VALK (1) = MESS
+         VALK (2) = NOMFON
+         VALK (3) = CHBID
+         CALL U2MESG('F', 'UTILITAI6_57',3,VALK,0,0,0,0.D0)
       ELSEIF(IMES.EQ.2)THEN
-         CALL UTDEBM('A','ORDONN','LES ABSCISSES '//MESS)
-         CALL UTIMPK('S',' ',1,NOMFON)
-         CALL UTIMPK('L','ONT ETE REORDONNEES.',0,CHBID)
-         CALL UTFINM()
+         VALK (1) = MESS
+         VALK (2) = NOMFON
+         VALK (3) = CHBID
+         CALL U2MESG('A', 'UTILITAI6_58',2,VALK,0,0,0,0.D0)
       ELSEIF(IMES.EQ.1)THEN
-         CALL UTDEBM('A','ORDONN','L ORDRE DES ABSCISSES '//MESS)
-         CALL UTIMPK('S',' ',1,NOMFON)
-         CALL UTIMPK('L','A ETE INVERSE.',0,CHBID)
-         CALL UTFINM()
+         VALK (1) = MESS
+         VALK (2) = NOMFON
+         VALK (3) = CHBID
+         CALL U2MESG('A', 'UTILITAI6_59',2,VALK,0,0,0,0.D0)
       ENDIF
       CALL JEDEMA()
       END

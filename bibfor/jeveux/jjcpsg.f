@@ -1,6 +1,6 @@
       SUBROUTINE JJCPSG ( RPART , ICODE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ----------------------------------------------------------------------
       COMMON /ISTAJE/  ISTAT(4)
 C ----------------------------------------------------------------------
       CHARACTER *75    CMESS
-      INTEGER          IADPAR
+      INTEGER          IADPAR,VALI(2)
 C DEB ------------------------------------------------------------------
       IF ( ICODE .EQ. 1 ) THEN
         IF ( RPART .LE. 0.D0 .OR. RPART .GT. 1.D0 ) THEN
@@ -49,15 +49,9 @@ C DEB ------------------------------------------------------------------
         IADPAR = LISZON * (1.0D0 - RPART)
         IADP   = ISZON(JISZON + LISZON - 4 )
         IF ( IADPAR+16 .GT. LISZON .OR. IADPAR .LT. IADP+12 ) THEN
-          CMESS = 'LA VALEUR DU RAPPORT ENTRE PARTITIONS NE '
-     &          //'CONVIENT PAS'
-          CALL JVDEBM('S','JJCPSG02',CMESS)
-          CMESS=' LA LONGUEUR DE LA PARTITION 1 DOIT ETRE AU MINIMUM DE'
-          CALL JVIMPI('L',CMESS,1,IADP)
-          CALL JVIMPK('L',' MOTS',0,' ')
-          CALL JVIMPI('S',' (ENVIRON ',1,(IADP+12)*100/LISZON)
-          CALL JVIMPK('S',' %)',0,' ')
-          CALL JVFINM()
+          VALI(1) = IADP
+          VALI(2) =(IADP+12)*100/LISZON
+          CALL U2MESI('F','JEVEUX_37',2,VALI)
         ENDIF
         ISZON(JISZON + LISZON - 4 ) = IADPAR + 3
         ISZON(JISZON + IADPAR + 3 ) = 0

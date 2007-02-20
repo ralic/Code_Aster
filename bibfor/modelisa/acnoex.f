@@ -4,7 +4,7 @@
       CHARACTER*4         TYPE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/02/98   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 C8
       CHARACTER*24 MLGGMA, MLGNMA, MLGCNX,C24
+      CHARACTER*24 VALK
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL DISMOI('I','NB_NO_MAILLA',NOMA,'MAILLAGE',NBN,C24,IR)
@@ -104,10 +105,8 @@ C
             ELSE IF (NO2.EQ.0) THEN
                 NO2 = IN
             ELSE
-               CALL UTDEBM('E','ACNOEX','  ')
-               CALL UTIMPK('L','L''ENSEMBLE DES MAILLES'//
-     +           'COMPORTE PLUS DE 2 EXTREMITES',0,' ')
-               CALL UTFINM( )
+         VALK = ' '
+               CALL U2MESG('E', 'MODELISA8_25',1,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
   56  CONTINUE
@@ -116,10 +115,8 @@ C     CAS OU LES EXTREMITES DE L'ARC SONT IDENTIQUES
 C     ARC FERME 
 C     
       IF(NO1.EQ.NO2) THEN
-         CALL UTDEBM('E','ACNOEX','DEFI_ARC')
-         CALL UTIMPK('L','L''ENSEMBLE DES MAILLES'//
-     +           ' FORME UN CERCLE : A SUBDIVISER ',0,' ')
-         CALL UTFINM( )
+         VALK = ' '
+         CALL U2MESG('E', 'MODELISA8_26',1,VALK,0,0,0,0.D0)
       ENDIF
       CALL JEDETR('&&ACNOEX')
       CALL JEDEMA()

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C
       CHARACTER*9  OPTION
       CHARACTER*19 RAID,MASS,AMOR
       CHARACTER*24 NOMMAT,NOMREP,NOMFAM,NOMFAP,NOMFAD
+      CHARACTER*24 VALK
 C
       DATA BLANC /'        '/
 C-----------------------------------------------------------------------
@@ -97,9 +98,8 @@ C
 C - SINON
 C
       ELSE
-         CALL UTDEBM('F',NOMCON,'ARRET SUR OPTION DE CALCUL INCONNUE')
-         CALL UTIMPK('L','   OPTION : ',1,OPTION)
-         CALL UTFINM
+         VALK = OPTION
+         CALL U2MESG('F', 'ALGORITH13_83',1,VALK,0,0,0,0.D0)
       ENDIF
 C
 C --- CALCUL DES FORCES D'INERTIES

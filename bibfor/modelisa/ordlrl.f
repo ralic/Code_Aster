@@ -1,7 +1,7 @@
       SUBROUTINE ORDLRL (LIGRCZ, LISREZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ------
 C
 C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*19       LIGRCH,LISREL
+      CHARACTER*24 VALK(2)
       PARAMETER    (NMOCL = 300)
       COMPLEX*16    COPROC, RAPCOC
       CHARACTER*4   TYPCOE
@@ -66,6 +67,7 @@ C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*9   NOMTE
       CHARACTER*19  LIGRMO
       INTEGER       DG
+      INTEGER VALI(2)
       LOGICAL       EXISDG
       CHARACTER*1 K1BID
 C --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
@@ -103,10 +105,9 @@ C
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K1BID)
       NDDLA = NBCMP-1
       IF (NDDLA.GT.NMOCL) THEN
-        CALL UTDEBM('F','ORDLRL','NOMBRE DE CMPS SUPERIEUR AU MAX')
-        CALL UTIMPI('L','NMAXCMP= ',1,NMOCL)
-        CALL UTIMPI('L','NCMP   = ',1,NDDLA)
-        CALL UTFINM()
+                 VALI (1) = NMOCL
+                 VALI (2) = NDDLA
+        CALL U2MESG('F', 'MODELISA8_73',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
       DO 1 I=1,NBCMP
@@ -214,10 +215,9 @@ C
                CMP = ZK8(IDDL+INO-1)
                ICMP = INDIK8(NOMCMP,CMP,1,NBCMP)
                IF (.NOT.EXISDG(ZI(JPRNM-1+(IN-1)*NBEC+1),ICMP)) THEN
-                 CALL UTDEBM('F','ORDLRL','LE DDL')
-                 CALL UTIMPK('S',CMP,1,'EST INTERDIT POUR LE NOEUD')
-                 CALL UTIMPK('S',NOMNOE,1,' ' )
-                 CALL UTFINM()
+                 VALK (1) = 'EST INTERDIT POUR LE NOEUD'
+                 VALK (2) = ' '
+                 CALL U2MESG('F', 'MODELISA8_74',2,VALK,0,0,0,0.D0)
                ENDIF
  50      CONTINUE
 C

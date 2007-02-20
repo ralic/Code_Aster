@@ -6,7 +6,7 @@
       REAL*8                         CONST(2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/05/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8      ZK8
       CHARACTER*16              ZK16
       CHARACTER*24                        ZK24
+      CHARACTER*24 VALK(3)
       CHARACTER*32                                  ZK32
       CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -81,11 +82,10 @@ C
                   ENDIF
  100           CONTINUE
             ELSE
-               CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
-               CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
-               CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
-               CALL UTIMPK('L','   TYPE CONSTANTE: ',1,TYPCST(1:1))
-               CALL UTFINM()
+         VALK (1) = TYPRES
+         VALK (2) = TYPMAT
+         VALK (3) = TYPCST(1:1)
+               CALL U2MESG('F', 'ALGELINE4_25',3,VALK,0,0,0,0.D0)
             ENDIF
          ELSEIF ( TYPMAT .EQ. 'C' ) THEN
             IF ( TYPCST(1:1) .EQ. 'R') THEN
@@ -104,17 +104,15 @@ C
                   ENDIF
  120           CONTINUE
             ELSE
-               CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
-               CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
-               CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
-               CALL UTIMPK('L','   TYPE CONSTANTE: ',1,TYPCST(1:1))
-               CALL UTFINM()
+         VALK (1) = TYPRES
+         VALK (2) = TYPMAT
+         VALK (3) = TYPCST(1:1)
+               CALL U2MESG('F', 'ALGELINE4_25',3,VALK,0,0,0,0.D0)
             ENDIF
          ELSE
-            CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
-            CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
-            CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
-            CALL UTFINM()
+         VALK (1) = TYPRES
+         VALK (2) = TYPMAT
+            CALL U2MESG('F', 'ALGELINE4_27',2,VALK,0,0,0,0.D0)
          ENDIF
 C
 C --- MATRICE COMPLEXE EN RESULTAT
@@ -137,11 +135,10 @@ C
                   ENDIF
  210           CONTINUE
             ELSE
-               CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
-               CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
-               CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
-               CALL UTIMPK('L','   TYPE CONSTANTE: ',1,TYPCST(1:1))
-               CALL UTFINM()
+         VALK (1) = TYPRES
+         VALK (2) = TYPMAT
+         VALK (3) = TYPCST(1:1)
+               CALL U2MESG('F', 'ALGELINE4_25',3,VALK,0,0,0,0.D0)
             ENDIF
          ELSEIF ( TYPMAT .EQ. 'R' ) THEN
             IF ( TYPCST(1:1).EQ. 'R') THEN
@@ -160,22 +157,19 @@ C
                   ENDIF
  240           CONTINUE
             ELSE
-               CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
-               CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
-               CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
-               CALL UTIMPK('L','   TYPE CONSTANTE: ',1,TYPCST(1:1))
-               CALL UTFINM()
+         VALK (1) = TYPRES
+         VALK (2) = TYPMAT
+         VALK (3) = TYPCST(1:1)
+               CALL U2MESG('F', 'ALGELINE4_25',3,VALK,0,0,0,0.D0)
             ENDIF
          ELSE
-            CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
-            CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
-            CALL UTIMPK('L','   TYPE MATRICE  : ',1,TYPMAT)
-            CALL UTFINM()
+         VALK (1) = TYPRES
+         VALK (2) = TYPMAT
+            CALL U2MESG('F', 'ALGELINE4_27',2,VALK,0,0,0,0.D0)
          ENDIF
       ELSE
-         CALL UTDEBM('F','MTXCNL','COMBINAISON NON PREVUE')
-         CALL UTIMPK('L','   TYPE RESULTAT : ',1,TYPRES)
-         CALL UTFINM()
+         VALK (1) = TYPRES
+         CALL U2MESG('F', 'ALGELINE4_31',1,VALK,0,0,0,0.D0)
 C
       ENDIF
 

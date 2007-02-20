@@ -5,7 +5,7 @@
       REAL*8              SN3, SN4, ALPHAA, ALPHAB, SN6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,10 @@ C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI(3)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
+      REAL*8 VALR
       COMMON  /RVARJE/ ZR(1)
       COMPLEX*16       ZC
       COMMON  /CVARJE/ ZC(1)
@@ -45,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      IOCC, JCHTH, IAD, ICMP, NBCMP, DECAL, JCESD, JCESV,
+      INTEGER      JCHTH, IAD, ICMP, NBCMP, DECAL, JCESD, JCESV,
      &             JCESL, NBINST, JINST, I, IBID, IRET, ITH
       REAL*8       INST, EPSI, TMOY(2), VMOY, TA, TB, TAB,
      &             DT1, DT1MAX, TABMAX
@@ -54,6 +56,7 @@ C
       CHARACTER*8  K8B, TBMOYE(2)
       CHARACTER*16 NOPARA(2)
       CHARACTER*24 NOMOBJ, CHTEMP
+      CHARACTER*24 VALK(2)
 C
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -78,11 +81,10 @@ C
          ICMP = 2
          IAD = DECAL + (IPT-1)*NBCMP + ICMP
          IF (.NOT.ZL(JCESL-1+IAD)) THEN
-            CALL UTDEBM('F','RCSN01','ERREUR DONNEES ')
-            CALL UTIMPI('L','POUR LA SITUATION NUMERO ',1,IOCS)
-            CALL UTIMPI('L','SUR LA MAILLE NUMERO ',1,ADRM(1))
-            CALL UTIMPI('L','IL MANQUE LE RESU_THER',1,0)
-            CALL UTFINM
+               VALI (1) = IOCS
+               VALI (2) = ADRM(1)
+               VALI (3) = 0
+            CALL U2MESG('F', 'POSTRELE1_36',0,' ',3,VALI,0,0.D0)
          ENDIF
          TBMOYE(1) = ZK8(JCESV-1+IAD)
 C
@@ -91,11 +93,10 @@ C
             ICMP = 2
             IAD = DECAL + (IPT-1)*NBCMP + ICMP
             IF (.NOT.ZL(JCESL-1+IAD)) THEN
-               CALL UTDEBM('F','RCSN01','ERREUR DONNEES ')
-               CALL UTIMPI('L','POUR LA SITUATION NUMERO ',1,IOCS)
-               CALL UTIMPI('L','SUR LA MAILLE NUMERO ',1,ADRM(2))
-               CALL UTIMPI('L','IL MANQUE RESU_THER_MOYE',1,0)
-               CALL UTFINM
+               VALI (1) = IOCS
+               VALI (2) = ADRM(2)
+               VALI (3) = 0
+               CALL U2MESG('F', 'POSTRELE1_37',0,' ',3,VALI,0,0.D0)
             ENDIF
             TBMOYE(2) = ZK8(JCESV-1+IAD)
          ENDIF
@@ -125,34 +126,31 @@ C
      &                    'MOMENT_0', 'RELATIF', EPSI, 'TEMP', K8B,
      &                    IBID, TMOY(1), CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
-               CALL UTDEBM('F','RCSN01','PROBLEME POUR RECUPERER ')
-               CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(1))
-               CALL UTIMPK('S',' LA QUANTITE ',1,'MOMENT_0')
-               CALL UTIMPR('S',' POUR L''INSTANT ',1,INST)
-               CALL UTFINM
+               VALK (1) = TBMOYE(1)
+               VALK (2) = 'MOMENT_0'
+               VALR = INST
+               CALL U2MESG('F', 'POSTRELE1_38',2,VALK,0,0,1,VALR)
             ENDIF
             IF ( NBM .GT. 1 ) THEN
                CALL TBLIVA ( TBMOYE(2), 2, NOPARA, IBID, INST, CBID,
      &                    'MOMENT_0', 'RELATIF', EPSI, 'TEMP', K8B,
      &                    IBID, TMOY(2), CBID, K8B, IRET )
                IF (IRET.NE.0) THEN
-                  CALL UTDEBM('F','RCSN01','PROBLEME POUR RECUPERER ')
-                  CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(2))
-                  CALL UTIMPK('S',' LA QUANTITE ',1,'MOMENT_0')
-                  CALL UTIMPR('S',' POUR L''INSTANT ',1,INST)
-                  CALL UTFINM
+               VALK (1) = TBMOYE(2)
+               VALK (2) = 'MOMENT_0'
+               VALR = INST
+                  CALL U2MESG('F', 'POSTRELE1_39',2,VALK,0,0,1,VALR)
                ENDIF
             ENDIF
             CALL TBLIVA ( TBMOYE(1), 2, NOPARA, IBID, INST, CBID,
      &                    'MOMENT_1', 'RELATIF', EPSI, 'TEMP', K8B,
      &                    IBID, VMOY, CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
-               CALL UTDEBM('F','RCSN01','PROBLEME POUR RECUPERER ')
-               CALL UTIMPK('S',' DANS LA TABLE ',1,TBMOYE(1))
-               CALL UTIMPK('S',' LA QUANTITE ',1,'MOMENT_1')
-               CALL UTIMPR('S',' POUR L''INSTANT ',1,INST)
-               CALL UTIMPI('L','OCCURRENCE ',1,IOCC)
-               CALL UTFINM
+               VALK (1) = TBMOYE(1)
+               VALK (2) = 'MOMENT_1'
+               VALR = INST
+               VALI (1) = IOCS
+               CALL U2MESG('F', 'POSTRELE1_40',2,VALK,1,VALI,1,VALR)
             ENDIF
 C
 C --------- DT1: AMPLITUDE DE LA VARIATION ENTRE LES 2 ETATS STABILISES

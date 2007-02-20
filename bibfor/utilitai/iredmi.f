@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,7 @@ C     INTERFACE ASTER - MISS3D : PROCEDURE  IMPR_MACR_ELEM
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI(2)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -178,10 +179,9 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
             CALL JEVEUO(LISTAM//'           .VALE','L',JAMOR)
          ENDIF
          IF (NBAMOR.GT.NBMODE) THEN
-            CALL UTDEBM('F','IREDMI','TROP D''AMORTISSEMENTS MODAUX')
-            CALL UTIMPI('L','   NOMBRE D''AMORTISSEMENTS : ',1,NBAMOR)
-            CALL UTIMPI('L','   NOMBRE DE MODES : ',1,NBMODE)
-            CALL UTFINM( )
+            VALI (1) = NBAMOR
+            VALI (2) = NBMODE
+            CALL U2MESG('F', 'UTILITAI6_44',0,' ',2,VALI,0,0.D0)
          ENDIF
          IF (NBAMOR.LT.NBMODE) THEN
             CALL WKVECT('&&IREDMI.AMORTISSEMEN2','V V R',NBMODE,JAMO2)

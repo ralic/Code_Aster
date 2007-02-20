@@ -1,7 +1,7 @@
       SUBROUTINE PAQMAI(NOMSD, NOMU, NOMMAI, NOMMET, NOMCRI,
      &                  TYPCHA, PROAXE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C-----------------------------------------------------------------------
       INTEGER       JEPSV, JEPSD, JEPSL
       INTEGER       I, KWORK, SOMPGW, KCMP, SOMPGS, SOMPGI, JMAIL, JGRMA
       INTEGER       N, NINIT, NBPGGM, NBMAGM, NMEMO,NNCP
+      INTEGER VALI(2)
 C
       REAL*8        R8B, VAL1
 C
@@ -257,13 +258,9 @@ C                                 DANS LE PAQUET
             ENDIF
 
          ELSEIF ( ( TPAQ .GE. TDISP ) .AND. (IMA .LT. 3) ) THEN
-            CALL UTDEBM('F', 'PAQMAI.2', 'LA TAILLE MEMOIRE '//
-     &                   ' NECESSAIRE AU VECTEUR DE TRAVAIL '//
-     &                   ' EST TROP IMPORTANTE '//
-     &                   ' PAR RAPPORT A LA PLACE DISPONIBLE.')
-            CALL UTIMPI('L', 'TAILLE DISPONIBLE : ', 1, TDISP)
-            CALL UTIMPI('L', 'TAILLE NECESSAIRE : ', 1, TPAQ)
-            CALL UTFINM( )
+            VALI (1) = TDISP
+            VALI (2) = TPAQ
+            CALL U2MESG('F', 'PREPOST5_67',0,' ',2,VALI,0,0.D0)
 
 C 2/ STOCKAGE DES NUMEROS DES PAQUETS, DE LA TAILLE DES PAQUETS,
 C    DU NUMERO DE LA PREMIERE MAILLE DE CHAQUE PAQUET DE MAILLES,
@@ -299,12 +296,9 @@ C DE TRAVAIL (JRWORK).
  100  CONTINUE
 
       IF ( NBPAQ .GT. NBPMAX ) THEN
-            CALL UTDEBM('F', 'PAQMAI.3', 'LA TAILLE DU VECTEUR '//
-     &                  'CONTENANT LES CARACTERISTIQUES DES ' //
-     &                  'PAQUETS DE MAILLES EST TROP PETITE.')
-            CALL UTIMPI('L', 'NB DE PAQUETS MAXI : ', 1, NBPMAX)
-            CALL UTIMPI('L', 'NB DE PAQUETS REELS: ', 1, NBPAQ)
-            CALL UTFINM( )
+            VALI (1) = NBPMAX
+            VALI (2) = NBPAQ
+            CALL U2MESG('F', 'PREPOST5_68',0,' ',2,VALI,0,0.D0)
       ENDIF
 
 C TRAITEMENT DES PAQUETS DE MAILLES.

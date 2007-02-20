@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -228,9 +228,8 @@ C     --- ON NE FAIT QU'UNE EXTRACTION ---
 C         ===========================
       ELSE
         IF (INTERP(1:3).EQ.'LIN') THEN
-          CALL UTDEBM('F','CHPREC','INTERPOLATION INTERDITE')
-          CALL UTIMPK('L','POUR UN RESULTAT DE TYPE : ',1,TYSD)
-          CALL UTFINM()
+          VALK(1) = TYSD
+          CALL U2MESG('F', 'MODELISA8_55',1,VALK,0,0,0,0.D0)
         ELSE
           KNUM = '&&'//NOMPRO//'.NUME_ORDRE'
           CALL GETVR8(' ','PRECISION',1,1,1,EPSI,NP)

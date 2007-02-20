@@ -1,6 +1,6 @@
       REAL*8 FUNCTION LCROYI ()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,30 +30,32 @@ C *  - LA BORNE INFERIEURE EST TELLE QUE YINF =LOG(SIG1*G/R(PM+DPSUP) *
 C *********************************************************************
 
 C ----------------------------------------------------------------------
-C  COMMON SIMO - MIEHE
+C  COMMON LOI DE COMPORTEMENT ROUSSELIER
+
+      INTEGER ITEMAX, JPROLP, JVALEP, NBVALP
+      REAL*8  PREC,YOUNG,NU,ALPHA,SIGY,SIG1,ROUSD,F0,FCR,ACCE
+      REAL*8  PM,RPM,FONC,FCD,DFCDDJ,DPMAXI
+      COMMON /LCROU/ PREC,YOUNG,NU,ALPHA,SIGY,SIG1,ROUSD,F0,FCR,ACCE,
+     &               PM,RPM,FONC,FCD,DFCDDJ,DPMAXI,
+     &               ITEMAX, JPROLP, JVALEP, NBVALP
+C ----------------------------------------------------------------------
+C  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
 
       INTEGER IND1(6),IND2(6)
       REAL*8  KR(6),RAC2,RC(6)
       REAL*8  LAMBDA,MU,DEUXMU,UNK,TROISK,COTHER
       REAL*8  JM,DJ,JP,DJDF(3,3)
-      REAL*8  BEM(6),ETR(6),DVETR(6),EQETR,TRETR,DETRDF(6,3,3)
-      REAL*8  SIGMA(6),DSIGDE(6,6),DSIGDJ(6)
-      COMMON /LCSMC/
+      REAL*8  ETR(6),DVETR(6),EQETR,TRETR,DETRDF(6,3,3)
+      REAL*8  DTAUDE(6,6)
+
+      COMMON /GDCLC/
      &          IND1,IND2,KR,RAC2,RC,
      &          LAMBDA,MU,DEUXMU,UNK,TROISK,COTHER,
      &          JM,DJ,JP,DJDF,
-     &          BEM,ETR,DVETR,EQETR,TRETR,DETRDF,
-     &          SIGMA,DSIGDE,DSIGDJ
+     &          ETR,DVETR,EQETR,TRETR,DETRDF,
+     &          DTAUDE
 C ----------------------------------------------------------------------
-C  COMMON LOI DE COMPORTEMENT ROUSSELIER
 
-      INTEGER ITEMAX, JPROLP, JVALEP, NBVALP
-      REAL*8  PREC,YOUNG,NU,ALPHA,SIGY,SIG1,ROUSD,F0,FCR,ACCE
-      REAL*8  PM,RPM,FONC,FCD,DFCDDJ
-      COMMON /LCROU/ PREC,YOUNG,NU,ALPHA,SIGY,SIG1,ROUSD,F0,FCR,ACCE,
-     &               PM,RPM,FONC,FCD,DFCDDJ,
-     &               ITEMAX, JPROLP, JVALEP, NBVALP
-C ----------------------------------------------------------------------
       INTEGER ITER
       REAL*8  Y,E,DP,RP,S,DS,YINF,YSUP,R8BID,PENTE,AIRE
 

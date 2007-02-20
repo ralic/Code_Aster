@@ -6,7 +6,7 @@
       CHARACTER*24   CNFEDO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,6 +64,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER      NBNO, NLILI, K, I, II, IT, NDIM, IER, IVA1, IVA2
+      INTEGER VALI(2)
       INTEGER      IDDEPD, IDEPMO, IAPRNO, JIFL, JFFL, IDIM, NEC
       INTEGER      IVAL, INO, INO1, INO2, IDVALE, IDVITE, IDACCE
       INTEGER      IZONE, IPNOEU, IDNOEU
@@ -72,9 +73,10 @@ C
       INTEGER      IARCH, IPLAQ, IFMEC, IFTG, ICDG, IIMPF, IIMPN
       INTEGER      IMIL, DISTND
       REAL*8       FPMEC, FFMEC, FFPLAQ, FPTG1, FFTG1, FPTG2, FFTG2
+      REAL*8 VALR(4)
       REAL*8       FRTG2, ZERO, Z, DZ, D2Z, MA, G, VDIR(3)
       REAL*8       XA12, XA1, XA2, COTE, Z1, Z2, AA12, AA1, AA2
-      REAL*8       LDOME, LGDC, HGC, LCHUT, ZMAX, Z0, ZM1, INST
+      REAL*8       LDOME, LGDC, HGC, LCHUT, ZMAX, Z0, ZM1
       REAL*8       FARCHI, FPLAQ, FMEC, FTG, FFTG
       REAL*8       DIST(100), FF, R8VIDE, VDGC(3)
       LOGICAL      LDIGC
@@ -191,16 +193,13 @@ C     ----------------------------------
       ZMAX  = LCHUT - Z0 - Z
       IF ( ZMAX .LE. 0.D0 ) THEN
          IT = ZI(JIFL-1+3)
-         CALL UTDEBM('A','FORCE_FLUIDE','GRAPPE BLOQUEE')
-         CALL UTIMPI('L','   ITERATION ', 1, IT-1)
-         CALL UTIMPR('S',', Z = ', 1, ZM1)
-         CALL UTIMPI('L','   ITERATION ', 1, IT)
-         CALL UTIMPR('S',', Z = ', 1, Z)
-         INST = ( IT - 1 ) * DT
-         CALL UTIMPR('L','   TEMPS DE CHUTE COMPRIS ENTRE ', 1, INST)
-         INST = IT * DT
-         CALL UTIMPR('S',' ET ', 1, INST)
-         CALL UTFINM()
+         VALI (1) = IT-1
+         VALI (2) = IT
+         VALR (1) = ZM1
+         VALR (2) = Z
+         VALR (3) = ( IT - 1 ) * DT
+         VALR (4) = IT * DT
+         CALL U2MESG('A', 'ALGORITH13_66',0,' ',2,VALI,4,VALR)
          GOTO 9999
       ENDIF
 C

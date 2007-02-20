@@ -5,7 +5,7 @@
       CHARACTER*24        CHTH(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI(4)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -108,11 +109,9 @@ C
             ITHS = LITHS(IT1)
             IF (ITH.EQ.ITHS) GOTO 6
 10       CONTINUE
-         CALL UTDEBM('F','RC36TH','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA SITUATION NUMERO ',1,IOCS)
-         CALL UTIMPI('L','ON N''A PAS PU RECUPERER LE "RESU_THER"'//
-     &                   ' CORRESPONDANT AU NUMERO ',1,ITHS)
-         CALL UTFINM
+                  VALI (1) = IOCS
+                  VALI (2) = ITHS
+         CALL U2MESG('F', 'POSTRELE1_2',0,' ',2,VALI,0,0.D0)
 6        CONTINUE
 
          CALL GETVID ( MOTCLF,'TABL_RESU_THER' ,IOCC,1,1,TBTHER,N1)
@@ -155,11 +154,10 @@ C
                      ZL (JCESL-1+IAD) = .TRUE.
                      ZK8(JCESV-1+IAD) = TBTHER
                   ELSE
-                     CALL UTDEBM('F','RC36TH','ERREUR DONNEES ')
-                     CALL UTIMPI('L','POUR LA SITUATION NUMERO ',1,IOCS)
-                     CALL UTIMPI('L','SUR LA MAILLE NUMERO ',1,IMA)
-                     CALL UTIMPI('L','IL Y A PLUSIEURS RESU_THER',1,0)
-                     CALL UTFINM
+                  VALI (1) = IOCS
+                  VALI (2) = IMA
+                  VALI (3) = 0
+      CALL U2MESG('F', 'POSTRELE1_3',0,' ',3,VALI,0,0.D0)
                   ENDIF
                   ICMP = 2
                   IAD = DECAL + (IPT-1)*NBCMP + ICMP
@@ -182,12 +180,11 @@ C
                            ZL (JCESL-1+IAD) = .TRUE.
                            ZK8(JCESV-1+IAD) = TBTHER
                         ELSE
-                           CALL UTDEBM('F','RC36TH','ERREUR DONNEES')
-                           CALL UTIMPI('L','SITUATION NUMERO ',1,IOCS)
-                           CALL UTIMPI('L','MAILLE NUMERO ',1,IMA)
-                           CALL UTIMPI('L','NOEUD NUMERO ',1,INO)
-                           CALL UTIMPI('L','PLUSIEURS RESU_THER',1,0)
-                           CALL UTFINM
+                  VALI (1) = IOCS
+                  VALI (2) = IMA
+                  VALI (3) = INO
+                  VALI (4) = 0
+      CALL U2MESG('F', 'POSTRELE1_4',0,' ',4,VALI,0,0.D0)
                         ENDIF
                         ICMP = 2
                         IAD = DECAL + (IPT-1)*NBCMP + ICMP
@@ -224,11 +221,10 @@ C    VERIF QUE TOUTES LES MAILLES ANALYSEES SONT AFFECTEES
             DO 9 ICMP=1,2
                IAD = DECAL + (IPT-1)*NBCMP + ICMP
                IF (.NOT.ZL(JCESL-1+IAD)) THEN
-                  CALL UTDEBM('F','RC36TH','ERREUR DONNEES ')
-                  CALL UTIMPI('L','POUR LA SITUATION NUMERO ',1,IOCS)
-                  CALL UTIMPI('L','SUR LA MAILLE NUMERO ',1,IMA)
-                  CALL UTIMPI('L','AUCUN RESU_THER',1,0)
-                  CALL UTFINM
+                  VALI (1) = IOCS
+                  VALI (2) = IMA
+                  VALI (3) = 0
+                  CALL U2MESG('F', 'POSTRELE1_5',0,' ',3,VALI,0,0.D0)
                ENDIF
  9          CONTINUE
  8       CONTINUE

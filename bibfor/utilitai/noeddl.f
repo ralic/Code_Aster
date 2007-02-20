@@ -5,7 +5,7 @@
       CHARACTER*(*)                LNONOE(NBNOE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER      NBEC, GD
       CHARACTER*8  NOMMA, NOMNO, K8BID
       CHARACTER*24 NOMNU
+      CHARACTER*24 VALK(2)
 C ----------------------------------------------------------------------
 C
 C     - MISE A ZERO DE IVEC:
@@ -77,10 +78,9 @@ C
          NOMNO = LNONOE(IN)
          CALL JENONU(JEXNOM(NOMMA//'.NOMNOE',NOMNO),NUNOE)
          IF (NUNOE.EQ.0) THEN
-           CALL UTDEBM('E','NOEDDL','ERREUR DANS LA RECHERCHE DU NOEUD')
-            CALL UTIMPK('L','      NOM DU NOEUD : ',1,NOMNO)
-            CALL UTIMPK('L','   NOM DU MAILLAGE : ',1,NOMMA)
-            CALL UTFINM( )
+           VALK (1) = NOMNO
+           VALK (2) = NOMMA
+           CALL U2MESG('E', 'UTILITAI6_47',2,VALK,0,0,0,0.D0)
          ENDIF
          IEQ   = ZI(IAPRNO-1+(NEC+2)*(NUNOE-1)+1)
          NBCMP = ZI(IAPRNO-1+(NEC+2)*(NUNOE-1)+2)

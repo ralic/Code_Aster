@@ -1,7 +1,7 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
-C TOLE CRP_18 CRS_508 CRS_512
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C TOLE CRP_18 CRS_508 CRS_512 CRS_505
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -55,17 +55,17 @@ C
       CHARACTER *24                     NOMCO
       CHARACTER *32    NOMUTI , NOMOS ,         NOMOC , BL32
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
 C     ------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+      INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
+     &               IDMARQ     , IDNOM      ,             IDLONG     ,
+     &               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C     ------------------------------------------------------------------
       INTEGER          LIDBAS      , LIDEFF
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
@@ -91,25 +91,28 @@ C
         IXLONO = ISZON( JISZON + IBACOL + IDLONO )
         IXDESO = ISZON( JISZON + IBACOL + IDDESO )
         IXMARQ = ISZON( JISZON + IBACOL + IDMARQ )
-        IF ( IXIADM .GT. 0 ) THEN
-          IBIADM = IADM ( JIADM(IC) + IXIADM )
-          IBIADD = IADM ( JIADM(IC) + IXIADD )
-          IBMARQ = IADM ( JIADM(IC) + IXMARQ )
+        IF ( IXIADM .NE. 0 ) THEN
+          IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
+          IBIADD = IADM ( JIADM(IC) + 2*IXIADD-1 )
+          IBMARQ = IADM ( JIADM(IC) + 2*IXMARQ-1 )
           NMAX   = ISZON(JISZON+IBACOL+IVNMAX )
           DO 10 K = 1,NMAX
             IADMAR = ISZON( JISZON + IBMARQ -1 + 2*K )
-            IF ( IADMAR .GT. 0 ) THEN
-              ISZON(JISZON+KDESMA+IADMAR-1) = 0
+            IF ( IADMAR .NE. 0 ) THEN
+              ISZON(JISZON+KDESMA(1)+IADMAR-1) = 0
             ENDIF
-            IADMOC = ISZON( JISZON + IBIADM + K - 1 )
-            IF ( IADMOC .GT. 0 ) THEN
+            IADMOC = ISZON( JISZON + IBIADM - 1 + 2*K-1 )
+            IADYOC = ISZON( JISZON + IBIADM - 1 + 2*K   )
+            IF ( IADYOC .NE. 0 ) THEN
+              CALL  HPDEALLC ( IADYOC , IBID , IBID )
+            ELSE IF ( IADMOC .NE. 0 ) THEN
               CALL JJLIBP ( IADMOC )
             ENDIF
             IADDI(1) = ISZON( JISZON + IBIADD - 1 + 2*K-1 )
             IADDI(2) = ISZON( JISZON + IBIADD - 1 + 2*K   )
             IF ( IADDI(1) .GT. 0 ) THEN
               IF ( IXLONO .GT. 0 ) THEN
-                IBLONO=IADM(JIADM(IC)+IXLONO)
+                IBLONO=IADM(JIADM(IC)+2*IXLONO-1)
                 LONOI =ISZON(JISZON+IBLONO+K-1)*LTYP(JLTYP(IC)+IXDESO)
               ELSE
                 LONOI = LONO(JLONO(IC)+IXDESO)*LTYP(JLTYP(IC)+IXDESO)
@@ -124,8 +127,11 @@ C
             NOM32 = RNOM ( JRNOM(IC) + ID(K) )
             IF ( NOM32(1:24) .EQ. CRNOM(1:24) .OR.
      &           NOM32(25:26) .EQ. '&&'       ) THEN
-              IADMI = IADM (JIADM(IC) + ID(K) )
-              IF ( IADMI .GT. 0 ) THEN
+              IADMI = IADM (JIADM(IC) + 2*ID(K)-1 )
+              IADYN = IADM (JIADM(IC) + 2*ID(K)   )
+              IF ( IADYN .NE. 0 ) THEN
+                CALL  HPDEALLC ( IADYN , IBID , IBID )
+              ELSE IF ( IADMI .NE. 0 ) THEN
                 CALL JJLIBP ( IADMI )
               ENDIF
               IADDI(1) = IADD (JIADD(IC) + 2*ID(K)-1 )
@@ -150,7 +156,12 @@ C
           ENDIF
 2       CONTINUE
         CRNOM = RNOM ( JRNOM(IC) + IDO )
-        CALL JJLIBP ( IBACOL)
+        IADYN = IADM (JIADM(IC) + 2*IDO)
+        IF ( IADYN .NE. 0 ) THEN
+          CALL  HPDEALLC (IADYN , IBID , IBID)
+        ELSE   
+          CALL JJLIBP (IBACOL)
+        ENDIF
         IADDI(1) = IADD (JIADD(IC) + 2*IDO-1)
         IADDI(2) = IADD (JIADD(IC) + 2*IDO  )
         IF ( IADDI(1) .GT. 0 ) THEN
@@ -175,12 +186,15 @@ C
 C    ON TRAITE LES OBJETS SIMPLES
 C
         IF ( CGENR .NE. 'X' ) THEN
-          IADMI = IADM (JIADM(IC) + IDO)
-          IF ( IADMI .GT. 0 ) THEN
+          IADMI = IADM (JIADM(IC) + 2*IDO-1)
+          IADYN = IADM (JIADM(IC) + 2*IDO  )
+          IF ( IADYN .NE. 0 ) THEN
+            CALL  HPDEALLC ( IADYN , IBID , IBID )
+          ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
           ENDIF
-          IADDI(1) = IADD (JIADD(IC) + 2*IDO-1 )
-          IADDI(2) = IADD (JIADD(IC) + 2*IDO   )
+          IADDI(1) = IADD (JIADD(IC) + 2*IDO-1)
+          IADDI(2) = IADD (JIADD(IC) + 2*IDO  )
           IF ( IADDI(1) .GT. 0 ) THEN
             LONOI = LONO(JLONO(IC)+IDO)*LTYP(JLTYP(IC)+IDO)
             CALL JXLIBD ( 0, IDO , IC , IADDI , LONOI )

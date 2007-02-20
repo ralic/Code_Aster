@@ -1,7 +1,7 @@
       SUBROUTINE  REFE99 (NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C
       CHARACTER*8  MECA
       CHARACTER*19 NUMDDL,NUMBIS
       CHARACTER*24 RAID,MASS,INTF,AMOR
+      CHARACTER*24 VALK(4)
 C
 C-----------------------------------------------------------------------
 C
@@ -91,12 +92,11 @@ C
           NUMBIS(15:19)='.NUME'
           IF(NUMBIS(1:19).NE.NUMDDL(1:19)) THEN
             RESUL = ZK8(LTMOME-1+I)
-            CALL UTDEBM('F',PGC,'ARRET SUR PROBLEME COHERENCE')
-            CALL UTIMPK('L',' MODE_MECA DONNE --> ',1,RESUL)
-            CALL UTIMPK('L',' NUMEROTATION ASSOCIEE --> ',1,NUMBIS(1:8))
-            CALL UTIMPK('L',' INTERF_DYNA DONNEE --> ',1,INTF)
-            CALL UTIMPK('L',' NUMEROTATION ASSOCIEE --> ',1,NUMDDL(1:8))
-            CALL UTFINM
+            VALK (1) = RESUL
+            VALK (2) = NUMBIS(1:8)
+            VALK (3) = INTF
+            VALK (4) = NUMDDL(1:8)
+            CALL U2MESG('F', 'ALGORITH14_24',4,VALK,0,0,0,0.D0)
           ENDIF
 10      CONTINUE
         CALL JEDETR('&&'//PGC//'.MODE_MECA')

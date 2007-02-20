@@ -8,7 +8,7 @@
       INTEGER           NBPARI, NBPARR, NBPARK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,6 +84,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8   K8B
       CHARACTER*16  NOMCMD
       CHARACTER*24  VALE, NOMJV
+      CHARACTER*24 VALK(2)
       COMPLEX*16    C16B
       LOGICAL       RECUNP
 C     ------------------------------------------------------------------
@@ -125,10 +126,9 @@ C     --- RECUPERATION DE NEQ ---
       CALL RSEXCH(MODES,NOMSY,ZI(LNUMOR),VALE(1:19),IRET)
       IF (IRET.NE.0) THEN
          CALL GETRES(K8B,K8B,NOMCMD)
-         CALL UTDEBM('F','VPRECU'//'.VPRECU','CHAMP INEXISTANT')
-         CALL UTIMPK('S',' ',1,VALE(1:19))
-         CALL UTIMPK('L','IMPOSSIBLE DE RECUPERER NEQ',0,' ')
-         CALL UTFINM()
+            VALK (1) = VALE(1:19)
+            VALK (2) = ' '
+         CALL U2MESG('F', 'ALGELINE4_79',2,VALK,0,0,0,0.D0)
        ELSE
          CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
          IF (IBID.GT.0) THEN
@@ -147,9 +147,8 @@ C     --- CREATION DES OBJETS DE NOM NOMVEC ET NOMVAL ---
       ELSEIF ( TYPMOD(1:1) .EQ. 'C' ) THEN
          CALL WKVECT(NOMVEC,'V V C',NEQ*NBMODE,LMODE)
       ELSE
-         CALL UTDEBM('F','VPRECU','TYPE DE VALEURS INCONNU ')
-         CALL UTIMPK('S',' ',1,TYPMOD(1:1) )
-         CALL UTFINM()
+            VALK (1) = TYPMOD(1:1)
+         CALL U2MESG('F', 'ALGELINE4_80',1,VALK,0,0,0,0.D0)
       ENDIF
 C
 C        --- VECTEUR PROPRE ---
@@ -158,9 +157,8 @@ C        --- VECTEUR PROPRE ---
          CALL RSEXCH ( MODES, NOMSY, NORDR, VALE(1:19), IRET)
          IF (IRET.NE.0) THEN
             CALL GETRES(K8B,K8B,NOMCMD)
-            CALL UTDEBM('E','VPRECU'//'.VPRECU','CHAMP INEXISTANT')
-            CALL UTIMPK('L','PB CHAMP  ',1,VALE(1:19))
-            CALL UTFINM()
+            VALK (1) = VALE(1:19)
+            CALL U2MESG('E', 'ALGELINE4_81',1,VALK,0,0,0,0.D0)
          ELSE
             CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
             IF (IBID.GT.0) THEN

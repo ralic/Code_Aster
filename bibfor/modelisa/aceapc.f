@@ -3,7 +3,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE DEFI_ARC
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -53,6 +54,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 TOU, MCLEPT(3), MCLEPC(3)
       CHARACTER*19 CARTAR
       CHARACTER*24 TMPNAR, TMPVAR, MLGGMA, MLGNMA, MLGCNX, MLGCOO,C24
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IFM  = IUNIFI('MESSAGE')
@@ -168,12 +170,9 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   ENDIF
                   IF (ABS(XRC1-XRC2).GT.TOLE) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E','ACEAPC','MOT CLE FACTEUR ')
-                  CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,IOC)
-                  CALL UTIMPK('S',', GROUP_MA : ',1,ZK8(JDLS))
-                  CALL UTIMPK('L','LE CENTRE N''EST PAS VRAIMENT'//
-     &                            ' LE CENTRE DU CERCLE',0,' ')
-                  CALL UTFINM( )
+                     VALI = IOC
+                     VALK (1) = ZK8(JDLS)
+                  CALL U2MESG('E', 'MODELISA8_9',2,VALK,1,VALI,0,0.D0)
                   XRC1 = ZERO
                   ENDIF
                   PHI = 2.D0*ASIN(DM/XRC1)
@@ -219,12 +218,10 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   ENDIF
                   IF (ABS(TX1-TX2).GT.TOLE) THEN
                      IER = IER + 1
-                     CALL UTDEBM('E','ACEAPC','MOT CLE FACTEUR ')
-                     CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,IOC)
-                     CALL UTIMPK('S',', GROUP_MA : ',1,ZK8(JDLS))
-                     CALL UTIMPK('L','LE POINT DE TANGENCE N EST'//
-     &                 'PAS EQUIDISTANT DES POINTS EXTREMITES',0,' ')
-                     CALL UTFINM( )
+                     VALI = IOC
+                     VALK (1) = ZK8(JDLS)
+                     VALK (2) = ' '
+      CALL U2MESG('E', 'MODELISA8_10',2,VALK,1,VALI,0,0.D0)
                   ENDIF
                   PHIS2 = PI / 2.D0 - ASIN( DM / TX1 )
                   RR   = DM / SIN( PHIS2 )
@@ -306,12 +303,10 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
                   ENDIF
                   IF (ABS(XRC1-XRC2).GT.TOLE) THEN
                      IER = IER + 1
-                     CALL UTDEBM('E','ACEAPC','MOT CLE FACTEUR ')
-                     CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,IOC)
-                     CALL UTIMPK('S',', MAILLE : ',1,ZK8(JDLS))
-                     CALL UTIMPK('L','LE CENTRE N''EST PAS VRAIMENT'//
-     &                               ' LE CENTRE DU CERCLE',0,' ')
-                     CALL UTFINM( )
+                     VALI = IOC
+                     VALK (1) = ZK8(JDLS)
+                     VALK (2) = ' '
+      CALL U2MESG('E', 'MODELISA8_11',2,VALK,1,VALI,0,0.D0)
                      XRC1 = ZERO
                   ENDIF
                   PHI = 2.D0*ASIN(DM/XRC1)
@@ -353,12 +348,10 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
                   ENDIF
                   IF (ABS(TX1-TX2).GT.TOLE) THEN
                      IER = IER + 1
-                     CALL UTDEBM('E','ACEAPC','MOT CLE FACTEUR ')
-                     CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,IOC)
-                     CALL UTIMPK('S',', GROUP_MA : ',1,ZK8(JDLS))
-                     CALL UTIMPK('L','LE POINT DE TANGENCE N EST'//
-     &                 'PAS EQUIDISTANT DES POINTS EXTREMITES',0,' ')
-                     CALL UTFINM( )
+                     VALI = IOC
+                     VALK (1) = ZK8(JDLS)
+                     VALK (2) = ' '
+      CALL U2MESG('E', 'MODELISA8_10',2,VALK,1,VALI,0,0.D0)
                   ENDIF
                   PHIS2 = PI / 2.D0 - ASIN( DM / TX1 )
                   RR   = DM / SIN( PHIS2 )

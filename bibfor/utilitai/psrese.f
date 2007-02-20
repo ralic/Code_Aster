@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - RESULTAT - SENSIBILITE
 C     *          *           **         **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,10 +77,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'PSRESE' )
-C
       INTEGER LXLGUT
+      INTEGER VALI
 C
       INTEGER NBPASE
       INTEGER ADRECG, IAUX
@@ -102,9 +100,8 @@ C
 C
       ELSE
 C
-        CALL UTDEBM ( 'A', NOMPRO, 'TYPRES DOIT VALOIR 1 OU 2,' )
-        CALL UTIMPI ( 'S', 'MAIS ON A DONNE ', 1, TYPRES )
-        CALL UTFINM
+        VALI = TYPRES
+        CALL U2MESG('A', 'UTILITAI6_66',0,' ',1,VALI,0,0.D0)
         CALL U2MESS('F','MODELISA_67')
 C
       ENDIF

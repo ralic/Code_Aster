@@ -1,6 +1,6 @@
       SUBROUTINE TE0449(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,17 +151,7 @@ C FORMATTAGE DES INCONNUES
      &                ZR(ICONTM),ZR(IVARIM),ZR(ICONTP),ZR(IVARIP),
      &                FINTU, FINTA, KUU,KUA, KAA,CODRET)
         ELSE IF (ZK16(ICOMPO+2) (1:10).EQ.'SIMO_MIEHE') THEN
-           CALL NIGP2D(NNO1,NNO2,NPG1,IPOIDS,IVF1,IVF2,IDFDE1,
-     &                TRAV1,TRAV2,ZR(IGEOM),TYPMOD,
-     &                OPTION,ZI(IMATE),ZK16(ICOMPO),LGPG,ZR(ICARCR),
-     &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                DEPLM,DDEPL,
-     &                ANGMAS,
-     &                GONFLM,DGONFL,
-     &                ZR(ICONTM),ZR(IVARIM),ZR(ICONTP),ZR(IVARIP),
-     &                FINTU, FINTA, KUU,KUA, KAA,CODRET)
-
+        CALL U2MESS('F','ELEMENTS5_9')
         ELSE
           CALL U2MESK('F','ELEMENTS3_16',1,ZK16(ICOMPO+2))
         END IF

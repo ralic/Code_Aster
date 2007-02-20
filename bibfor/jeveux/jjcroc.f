@@ -1,6 +1,6 @@
       SUBROUTINE JJCROC ( KNAT , ICRE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -65,11 +65,11 @@ C
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+      INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
+     &               IDMARQ     , IDNOM      ,              IDLONG     ,
+     &               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
@@ -89,8 +89,8 @@ C
 C ------ REPERTOIRE DE NOM
 C
         LTYPI   = LTYP (JLTYP(ICLAOS) + IDATOS )
-        IADMI   = IADM( JIADM(ICLAOS) + IDATOS )
-        IF ( IADMI .GT. 0 ) THEN
+        IADMI   = IADM( JIADM(ICLAOS) + 2*IDATOS-1 )
+        IF ( IADMI .NE. 0 ) THEN
           KADM  = IADMI
           JITAB = JISZON + KADM - 1
           KITAB = JK1ZON + ( KADM - 1 ) * LOIS
@@ -129,7 +129,7 @@ C
 C
 C ----- COLLECTION
 C
-        IBACOL = IADM(JIADM(ICLACO)+IDATCO)
+        IBACOL = IADM(JIADM(ICLACO)+2*IDATCO-1)
         IC     = ICLACO
         IF ( KNAT .EQ. NUME ) THEN
 C
@@ -138,7 +138,7 @@ C
           IXNUM   = ISZON(JISZON+IBACOL+IDNUM )
           IXNOM   = ISZON(JISZON+IBACOL+IDNOM )
           IF ( IXNUM .NE. 0 ) THEN
-            IBNUM = IADM(JIADM(IC)+IXNUM)
+            IBNUM = IADM(JIADM(IC)+2*IXNUM-1)
             NMAX   = ISZON(JISZON+IBNUM  )
             NUTI   = ISZON(JISZON+IBNUM+1)
           ELSE IF ( IXNOM .NE. 0 ) THEN
@@ -150,9 +150,7 @@ C
             NUTI   = LUTI ( JLUTI(IC) + IXNOM )
           ENDIF
           IF ( NUMEC .LE. 0 .OR. NUMEC .GT. NMAX ) THEN
-            CALL JVDEBM ( 'S', 'JJCROC03', 'NUMERO D''OBJET INVALIDE ')
-            CALL JVIMPI ( 'S' , ':' , 1 , NUMEC )
-            CALL JVFINM
+            CALL U2MESI('F','JEVEUX_38',1,NUMEC)
           ENDIF
           NUTIEX = NUTI
           IDATOC = 0
@@ -185,7 +183,7 @@ C
             NUTI    = LUTI (JLUTI(IC)+IXNOM )
             NUTIEX = NUTI
             IF ( NOMEC .NE. NOMOC .OR. ICRE .EQ. -3 ) THEN
-              IBNOM   = IADM ( JIADM(IC) + IXNOM  )
+              IBNOM   = IADM ( JIADM(IC) + 2*IXNOM-1  )
               JITAB   = JISZON + IBNOM - 1
               KITAB   = JK1ZON + ( IBNOM - 1 ) * LOIS
               NOM     = RNOM (JRNOM(IC)+IXNOM )(1:24)

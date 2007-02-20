@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 29/01/2007   AUTEUR DESROCHES X.DESROCHES 
+%& MODIF COMPELEM  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -139,6 +139,29 @@ PHENOMENE_MODELISATION__
               MAILLE__ TETRA10   ELEMENT__ MECA_X_TETRA10
               MAILLE__ QUAD8     ELEMENT__ MECA_X_FACE8
               MAILLE__ TRIA6     ELEMENT__ MECA_X_FACE6
+%-------------------------------------------------------------------
+% modelisations 3d X-FEM non affectables par AFFE_MODELE
+       MODELISATION__ '3D_XH'            DIM__ 3 3   CODE__ '3X1'
+              MAILLE__ HEXA20    ELEMENT__ MECA_XH_HEXA8
+              MAILLE__ PENTA15   ELEMENT__ MECA_XH_PENTA6
+              MAILLE__ TETRA10   ELEMENT__ MECA_XH_TETRA4
+              MAILLE__ QUAD8     ELEMENT__ MECA_XH_FACE4
+              MAILLE__ TRIA6     ELEMENT__ MECA_XH_FACE3
+
+       MODELISATION__ '3D_XT'            DIM__ 3 3   CODE__ '3X2'
+              MAILLE__ HEXA20    ELEMENT__ MECA_XT_HEXA8
+              MAILLE__ PENTA15   ELEMENT__ MECA_XT_PENTA6
+              MAILLE__ TETRA10   ELEMENT__ MECA_XT_TETRA4
+              MAILLE__ QUAD8     ELEMENT__ MECA_XT_FACE4
+              MAILLE__ TRIA6     ELEMENT__ MECA_XT_FACE3
+
+       MODELISATION__ '3D_XHT'           DIM__ 3 3   CODE__ '3X3'
+              MAILLE__ HEXA20    ELEMENT__ MECA_XHT_HEXA8
+              MAILLE__ PENTA15   ELEMENT__ MECA_XHT_PENTA6
+              MAILLE__ TETRA10   ELEMENT__ MECA_XHT_TETRA4
+              MAILLE__ QUAD8     ELEMENT__ MECA_XHT_FACE4
+              MAILLE__ TRIA6     ELEMENT__ MECA_XHT_FACE3
+%-------------------------------------------------------------------
 
        MODELISATION__ 'SHB8'             DIM__ 3 3   CODE__ 'SHB'
               MAILLE__ HEXA8     ELEMENT__ MECA_SHB8
@@ -163,6 +186,13 @@ PHENOMENE_MODELISATION__
               MAILLE__ TETRA10   ELEMENT__ MINC_TETRA10
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
               MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
+              MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
+
+       MODELISATION__ '3D_INCO_GD'        DIM__ 3 3   CODE__ '3GI'
+              MAILLE__ TETRA10   ELEMENT__ GDIN_TETRA10
+              MAILLE__ HEXA20    ELEMENT__ GDIN_HEXA20
+              MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
+              MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
 
        MODELISATION__ 'DKT'              DIM__ 2 3   CODE__ 'DKT'
@@ -215,6 +245,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ MIAXQU8
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
+       MODELISATION__ 'AXIS_INCO_GD'     DIM__ 2 2   CODE__ 'AGI'
+              ATTRIBUT__  AXIS=OUI
+              MAILLE__ TRIA6     ELEMENT__ GIAXTR6
+              MAILLE__ QUAD8     ELEMENT__ GIAXQU8
+              MAILLE__ SEG3      ELEMENT__ MEAXSE3
+
        MODELISATION__ 'D_PLAN_SI'        DIM__ 2 2   CODE__ 'DPS'
               MAILLE__ QUAD8     ELEMENT__ MEDPQS8
               MAILLE__ QUAD4     ELEMENT__ MEDPQS4
@@ -246,13 +282,40 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
-       MODELISATION__ 'C_PLAN_X'          DIM__ 2 2   CODE__ 'CPX'
+       MODELISATION__ 'C_PLAN_XFEM'          DIM__ 2 2   CODE__ 'CPX'
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_X
               MAILLE__ QUAD8     ELEMENT__ MECPQU8_X
 
-       MODELISATION__ 'D_PLAN_X'          DIM__ 2 2   CODE__ 'DPX'
+       MODELISATION__ 'D_PLAN_XFEM'          DIM__ 2 2   CODE__ 'DPX'
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_X
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_X
+
+%-------------------------------------------------------------------
+% modelisations 2d X-FEM non affectables par AFFE_MODELE
+       MODELISATION__ 'C_PLAN_XH'         DIM__ 2 2   CODE__ 'CX1'
+              MAILLE__ TRIA6     ELEMENT__ MECPTR6_XH
+              MAILLE__ QUAD8     ELEMENT__ MECPQU8_XH
+
+       MODELISATION__ 'D_PLAN_XH'         DIM__ 2 2   CODE__ 'DX1'
+              MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XH
+              MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XH
+
+       MODELISATION__ 'C_PLAN_XT'         DIM__ 2 2   CODE__ 'CX2'
+              MAILLE__ TRIA6     ELEMENT__ MECPTR6_XT
+              MAILLE__ QUAD8     ELEMENT__ MECPQU8_XT
+
+       MODELISATION__ 'D_PLAN_XT'         DIM__ 2 2   CODE__ 'DX2'
+              MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XT
+              MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XT
+
+       MODELISATION__ 'C_PLAN_XHT'        DIM__ 2 2   CODE__ 'CX3'
+              MAILLE__ TRIA6     ELEMENT__ MECPTR6_XHT
+              MAILLE__ QUAD8     ELEMENT__ MECPQU8_XHT
+
+       MODELISATION__ 'D_PLAN_XHT'        DIM__ 2 2   CODE__ 'DX3'
+              MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHT
+              MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHT
+%-------------------------------------------------------------------
 
        MODELISATION__ 'C_PLAN_GRAD_EPSI'   DIM__ 2 2   CODE__ 'CPG'
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
@@ -310,6 +373,11 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'D_PLAN_INCO'      DIM__ 2 2   CODE__ 'PLI'
               MAILLE__ TRIA6     ELEMENT__ MIPLTR6
               MAILLE__ QUAD8     ELEMENT__ MIPLQU8
+              MAILLE__ SEG3      ELEMENT__ MEPLSE3
+
+       MODELISATION__ 'D_PLAN_INCO_GD'      DIM__ 2 2   CODE__ 'PGI'
+              MAILLE__ TRIA6     ELEMENT__ GIPLTR6
+              MAILLE__ QUAD8     ELEMENT__ GIPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
        MODELISATION__ 'CABLE'            DIM__ 1 3   CODE__ 'CAB'

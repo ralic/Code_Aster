@@ -1,6 +1,6 @@
       FUNCTION JJPREM ( NOMBRE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,11 +18,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER  JJPREM , NOMBRE , IV
+      INTEGER  JJPREM , NOMBRE 
 C     ==================================================================
-      CHARACTER *6     PGME
-      PARAMETER      ( PGME = 'JJPREM' )
-      CHARACTER *75    CMESS
       INTEGER          NPRE
       PARAMETER      ( NPRE = 78 )
       INTEGER          JPREM
@@ -31,7 +28,7 @@ C     ==================================================================
       REAL*8           PREM(NPRE) , FACT , R8NOMB
       SAVE             PREM
       PARAMETER      ( FACT = 1.3D0 )
-      INTEGER          IPAS , IPR(NPRE), I, IPREM, J
+      INTEGER          IPAS , IPR(NPRE), I, IPREM, J, VALI(2)
 C
       DATA IPAS /   0 /
       DATA IPR/
@@ -57,12 +54,9 @@ C    Nom du site www.prime-numbers.org
 C
 C     ------------------------------------------------------------------
       IF ( FACT * NOMBRE .GT. IPR(NPRE) ) THEN
-         CMESS = 'TAILLE DE REPERTOIRE DEMANDEE TROP GRANDE'
-         IV = IPR(NPRE)/FACT
-         CALL JVDEBM ( 'S' , PGME//'01' , CMESS )
-         CALL JVIMPI ( 'L' , 'LE MAXIMUM EST :' ,1, IV )
-         CALL JVIMPI ( 'L' , 'LA VALEUR RECLAMEE EST :' ,1, NOMBRE )
-         CALL JVFINM ()
+         VALI(1) = IPR(NPRE)/FACT
+         VALI(2) = NOMBRE
+         CALL U2MESI('F','JEVEUX_39',2,VALI)
       ENDIF
       IF ( IPAS .EQ. 0 ) THEN
          DO 1 I = 1 , NPRE

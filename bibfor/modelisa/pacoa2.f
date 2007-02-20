@@ -4,7 +4,7 @@
       CHARACTER*(*) LISI1Z, LISI2Z, NOMA1Z, NOMA2Z, LISO1Z, LISO2Z
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C     ------- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   NOMA1,NOMA2, M8BLAN
       CHARACTER*8   NOMNO1, NOMNO2, NOMO1, NOMO2
       CHARACTER*24  LISIN1, LISIN2, LISOU1, LISOU2
+      CHARACTER*24 VALK(3)
       CHARACTER*24  NOEUM1,NOEUM2
       INTEGER LONLI1,LONLI2,LONLIS,IRET,IDLOU1,IDLOU2,IDLIN1,IDLIN2,INO1
       INTEGER IDLOU3,IDLOU4,LONMAX,IDLINV,I1,NUNO1,J2,I2,INO2,NUNO2,J1
@@ -150,12 +151,10 @@ C
                ZK8(IDLOU2+I1-1) = NOMNO2
                ZK8(IDLINV+J2-1) = NOMNO1
            ELSE
-               CALL UTDEBM('F','PACOA2','CONFLIT DANS LES VIS_A_VIS '//
-     &                  'DES NOEUDS')
-               CALL UTIMPK('L','LE NOEUD ',1,NOMNO2)
-               CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,NOMNO1)
-               CALL UTIMPK('S','ET ',1,ZK8(IDLINV+J2-1))
-               CALL UTFINM()
+               VALK (1) = NOMNO2
+               VALK (2) = NOMNO1
+               VALK (3) = ZK8(IDLINV+J2-1)
+               CALL U2MESG('F', 'MODELISA8_81',3,VALK,0,0,0,0.D0)
            ENDIF
 10       CONTINUE
       ELSE
@@ -186,12 +185,10 @@ C
                ZK8(IDLOU2+I2-1) = NOMNO2
                ZK8(IDLINV+J1-1) = NOMNO1
            ELSE
-               CALL UTDEBM('F','PACOAP','CONFLIT DANS LES VIS_A_VIS '//
-     &                  'DES NOEUDS')
-               CALL UTIMPK('L','LE NOEUD ',1,NOMNO2)
-               CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,NOMNO1)
-               CALL UTIMPK('S','ET ',1,ZK8(IDLINV+J1-1))
-               CALL UTFINM()
+               VALK (1) = NOMNO2
+               VALK (2) = NOMNO1
+               VALK (3) = ZK8(IDLINV+J1-1)
+               CALL U2MESG('F', 'MODELISA8_82',3,VALK,0,0,0,0.D0)
            ENDIF
 30       CONTINUE
       ENDIF

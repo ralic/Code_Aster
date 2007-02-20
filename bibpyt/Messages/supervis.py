@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF supervis Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -216,6 +216,30 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 
 49: _("""
  Debug IMPR_MACRO suspendu
+"""),
+
+50: _("""
+ la commande a un numero non appelable dans cette version.
+ le numero errone est  %(i1)d 
+"""),
+
+51: _("""
+ la commande a un numero non appelable dans cette version.
+ le numero errone est  %(i1)d 
+"""),
+
+52: _("""
+ fin de lecture (duree  %(r1)f  s.) %(k1)s 
+"""),
+
+53: _("""
+ vous ne pouvez utiliser plus de  %(i1)d 
+ niveaux de profondeur pour des appels par la  procedure %(k1)s 
+"""),
+
+54: _("""
+ la procedure a un numero non appelable dans cette version.
+ le numero errone est  %(i1)d 
 """),
 
 }

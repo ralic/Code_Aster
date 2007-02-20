@@ -4,7 +4,7 @@
       CHARACTER*(*)       MATER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/01/96   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C OUT : PARA   : DEFINITION DES COEFFICIENTS
 C OUT : IER    : CODE RETOUR
 C-----------------------------------------------------------------------
       CHARACTER*24 LOI, MATE, TYPE
+      CHARACTER*24 VALK(3)
 C
       IER = 0
       MATE = MATER
@@ -240,11 +241,10 @@ C
             IER = IER + 1
             LK = LXLGUT(MATE)
             LT = LXLGUT(TYPE)
-            CALL UTDEBM('E','USURE','*** BANQUE DE DONNEES ***')
-            CALL UTIMPK('L',' POUR LE TYPE DE GEOMETRIE ',1,TYPE(1:LT))
-            CALL UTIMPK('L',' LE COUPLE DE MATERIAUX ',1,MATE(1:LK))
-            CALL UTIMPK('S',' NE SE TROUVE PAS DANS LA BANQUE.',0,' ')
-            CALL UTFINM( )
+            VALK (1) = TYPE(1:LT)
+            VALK (2) = MATE(1:LK)
+            VALK (3) = ' '
+            CALL U2MESG('E', 'PREPOST5_77',3,VALK,0,0,0,0.D0)
          ENDIF
 C
 C **********************************************************************
@@ -279,11 +279,10 @@ C        --- 'CST_C_...' ---
             IER = IER + 1
             LK = LXLGUT(MATE)
             LT = LXLGUT(TYPE)
-            CALL UTDEBM('E','USURE','*** BANQUE DE DONNEES ***')
-            CALL UTIMPK('L',' POUR LE TYPE DE GEOMETRIE ',1,TYPE(1:LT))
-            CALL UTIMPK('L',' LE COUPLE DE MATERIAUX ',1,MATE(1:LK))
-            CALL UTIMPK('S',' NE SE TROUVE PAS DANS LA BANQUE.',0,' ')
-            CALL UTFINM( )
+            VALK (1) = TYPE(1:LT)
+            VALK (2) = MATE(1:LK)
+            VALK (3) = ' '
+            CALL U2MESG('E', 'PREPOST5_77',3,VALK,0,0,0,0.D0)
          ENDIF
 C
 C **********************************************************************
@@ -315,11 +314,10 @@ C        --- 'TAUX_RALENTISSEMENT_...' ---
             IER = IER + 1
             LK = LXLGUT(MATE)
             LT = LXLGUT(TYPE)
-            CALL UTDEBM('E','USURE','*** BANQUE DE DONNEES ***')
-            CALL UTIMPK('L',' POUR LE TYPE DE GEOMETRIE ',1,TYPE(1:LT))
-            CALL UTIMPK('L',' LE COUPLE DE MATERIAUX ',1,MATE(1:LK))
-            CALL UTIMPK('S',' NE SE TROUVE PAS DANS LA BANQUE.',0,' ')
-            CALL UTFINM( )
+            VALK (1) = TYPE(1:LT)
+            VALK (2) = MATE(1:LK)
+            VALK (3) = ' '
+            CALL U2MESG('E', 'PREPOST5_77',3,VALK,0,0,0,0.D0)
          ENDIF
 C
       ENDIF

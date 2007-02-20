@@ -5,7 +5,7 @@
       CHARACTER*(*)       RESU, PARAM, TYPE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/05/97   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IPARA, IATAVA, IRE1, IRE2, IDEBU, IMAXI, ILEN, ILOTY
       INTEGER       IBID, IAOBJ, LEN
       CHARACTER*8   K8B, NOMOBJ, K8DEBU, K8MAXI
+      CHARACTER*24 VALK(3)
       CHARACTER*16  NOPARA
       CHARACTER*19  NOMSD
 C     ------------------------------------------------------------------
@@ -65,10 +66,9 @@ C
 C
       CALL JENONU ( JEXNOM(NOMSD//'.NOVA',NOPARA), IPARA )
       IF ( IPARA .EQ. 0 ) THEN
-         CALL UTDEBM('F','EXTRS3','VARIABLE INCONNUE: ')
-         CALL UTIMPK('L','VARIABLE : ',1,NOPARA)
-         CALL UTIMPK('S',' POUR LE RESULTAT : ',1,NOMSD)
-         CALL UTFINM()
+         VALK (1) = NOPARA
+         VALK (2) = NOMSD
+         CALL U2MESG('F', 'UTILITAI6_12',2,VALK,0,0,0,0.D0)
       ENDIF
 C
       CALL JEVEUO ( JEXNUM(NOMSD//'.TAVA',IPARA), 'L', IATAVA )
@@ -78,11 +78,10 @@ C
       K8MAXI = ZK8(IATAVA-1+3)
       CALL LXLIIS ( K8MAXI, IMAXI, IRE2 )
       IF ( ABS(IRE1)+ABS(IRE2) .GT. 0 ) THEN
-         CALL UTDEBM('F','EXTRS3','PROBLEME RENCONTRE LORS DE LA ')
-         CALL UTIMPK('S','RECHERCHE DE LA VARIABLE : ',1,NOPARA)
-         CALL UTIMPK('L','        DEBUT : ',1,K8DEBU)
-         CALL UTIMPK('L','          FIN : ',1,K8MAXI)
-         CALL UTFINM()
+         VALK (1) = NOPARA
+         VALK (2) = K8DEBU
+         VALK (3) = K8MAXI
+         CALL U2MESG('F', 'UTILITAI6_13',3,VALK,0,0,0,0.D0)
       ENDIF
 C
       CALL JEVEUO ( NOMSD//NOMOBJ, CEL, IAOBJ )

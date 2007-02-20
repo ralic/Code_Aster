@@ -7,7 +7,7 @@
       CHARACTER*(*) LITROZ,TYPEM,MOTFAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,9 +73,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER JNO,JMA,KNO,KMA,IACNEX,IEM,NEM,NUMNO,NNO,NMA
+      INTEGER VALI
       INTEGER ITRNO,ITRMA,IMA,INO,NBMA,NBNO,NBNOMA,IMO,IER,JMODEL
       INTEGER LMA,LNO,ITBMA,ITBNO,IRET,INOEM,NTOU,K,IFM,NIV
       CHARACTER*8 KARG,K8B,TYPE2,OUI,NOENT
+      CHARACTER*24 VALK(3)
       CHARACTER*16 MOTFAC,MOTCLE,TYPMCL
 C     ------------------------------------------------------------------
 
@@ -89,11 +91,9 @@ C     --- VERIFICATIONS PRELIMINAIRES ---
 
       IF (TYPEM.NE.'NO_MAILLE' .AND. TYPEM.NE.'NO_NOEUD' .AND.
      &    TYPEM.NE.'NU_MAILLE' .AND. TYPEM.NE.'NU_NOEUD') THEN
-        CALL UTDEBM('F','RELIEM','ERREUR DANS LES PARAMETRES')
-        CALL UTIMPK('L','VALEUR DE TYPEM : ',1,TYPEM)
-        CALL UTIMPK('L','LES VALEURS POSSIBLES SONT NO_MAILLE, '//
-     &              'NO_NOEUD, NU_MAILLE ET NU_NOEUD',0,' ')
-        CALL UTFINM()
+          VALK (1) = TYPEM
+          VALK (2) = ' '
+        CALL U2MESG('F', 'MODELISA8_95',2,VALK,0,0,0,0.D0)
       END IF
 
       TYPE2 = TYPEM(4:)
@@ -102,24 +102,19 @@ C     --- VERIFICATIONS PRELIMINAIRES ---
         TYPMCL = TYMOCL(IMO)
         IF (TYPMCL.EQ.'NOEUD' .OR. TYPMCL.EQ.'GROUP_NO') THEN
           IF (TYPE2.EQ.'MAILLE') THEN
-            CALL UTDEBM('F','RELIEM','ERREUR DANS LES PARAMETRES')
-            CALL UTIMPI('S','POUR L''INDICE : ',1,IMO)
-            CALL UTIMPK('L','LA VALEUR DE TYMOCL EST : ',1,TYPMCL)
-            CALL UTIMPK('L',
-     &                  'LES VALEURS POSSIBLES SONT MAILLE ET GROUP_MA',
-     &                  0,' ')
-            CALL UTIMPK('L','CAR TYPE2 VAUT ',1,'MAILLE')
-            CALL UTFINM()
+          VALI = IMO
+          VALK (1) = TYPMCL
+          VALK (2) = ' '
+          VALK (3) = 'MAILLE'
+            CALL U2MESG('F', 'MODELISA8_96',3,VALK,1,VALI,0,0.D0)
           END IF
         ELSE IF (TYPMCL.NE.'MAILLE' .AND. TYPMCL.NE.'GROUP_MA' .AND.
      &           TYPMCL.NE.'TOUT') THEN
-          CALL UTDEBM('F','RELIEM','ERREUR DANS LES PARAMETRES')
-          CALL UTIMPI('S','POUR L''INDICE : ',1,IMO)
-          CALL UTIMPK('L','LA VALEUR DE TYMOCL EST : ',1,TYPMCL)
-          CALL UTIMPK('L','LES VALEURS POSSIBLES SONT MAILLE, NOEUD,',0,
-     &                ' ')
-          CALL UTIMPK('S','GROUP_MA,GROUP_NO ET TOUT',0,' ')
-          CALL UTFINM()
+          VALI = IMO
+          VALK (1) = TYPMCL
+          VALK (2) = ' '
+          VALK (3) = ' '
+          CALL U2MESG('F', 'MODELISA8_97',3,VALK,1,VALI,0,0.D0)
         END IF
    10 CONTINUE
 

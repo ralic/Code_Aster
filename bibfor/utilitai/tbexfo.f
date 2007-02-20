@@ -5,7 +5,7 @@
      &                    PROLGD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C ----------------------------------------------------------------------
       CHARACTER*4  TYPEX, TYPEY
       CHARACTER*19 NOMTAB, NOMFON
       CHARACTER*24 NOJVX, NOJVLX, NOJVY, NOJVLY, INPAR, JNPAR
+      CHARACTER*24 VALK
 C
 C DEB------------------------------------------------------------------
 C
@@ -93,18 +94,16 @@ C
          JNPAR = ZK24(JTBLP+4*(IPARX-1))
          IF ( INPAR .EQ. JNPAR ) GOTO 12
  10      CONTINUE
-         CALL UTDEBM('F','TBAJPA','ERREUR DANS LES DONNEES')
-         CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-         CALL UTFINM( )
+         VALK = INPAR
+         CALL U2MESG('F', 'UTILITAI6_91',1,VALK,0,0,0,0.D0)
  12   CONTINUE
       INPAR  = PARAY
       DO 14 IPARY = 1 , NBPARA
          JNPAR = ZK24(JTBLP+4*(IPARY-1))
          IF ( INPAR .EQ. JNPAR ) GOTO 16
  14      CONTINUE
-         CALL UTDEBM('F','TBAJPA','ERREUR DANS LES DONNEES')
-         CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-         CALL UTFINM( )
+         VALK = INPAR
+         CALL U2MESG('F', 'UTILITAI6_91',1,VALK,0,0,0,0.D0)
  16   CONTINUE
 C
       TYPEX  = ZK24(JTBLP+4*(IPARX-1)+1)

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMON DE DEBUG JEVEUX
 C ----------------------------------------------------------------------
       CHARACTER*3  REPONS
       CHARACTER*16 CBID,MEMOIR, CMPIN, CMPOUT
-      INTEGER SEGJVX,LSEGJV, LOUT,L,NCODE
+      INTEGER SEGJVX,LSEGJV, LOUT,L,NCODE,IVAL
       REAL*8 VPARJV
 C
 C     --- OPTIONS PAR DEFAUT ---
@@ -127,18 +127,11 @@ C     -----------------------------------------------------
         R8BID = -1.0D0
         RVAL = VPARJV(R8BID)
       ENDIF
+      CALL GETVIS('MEMOIRE','DYNAMIQUE',1,1,1,IVAL,L)
+      CALL JEALDY ( L, IVAL )
 
       CALL GETVR8('MEMOIRE','TAILLE_BLOC',1,1,1,TBLOC,L)
 
-      IF ( MEMOIR(1:8).NE.'COMPACTE' .AND.
-     &     MEMOIR(1:6).NE.'RAPIDE') THEN
-         CALL UTDEBM('E','IBDBGS','ARGUMENT ERRONE POUR LE MOT '//
-     &                   'CLE "MEMOIRE GESTION" ')
-         CALL UTIMPK('S',':',1,MEMOIR)
-         CALL UTIMPK('L','LES ARGUMENTS AUTORISES SONT',1,'COMPACTE')
-         CALL UTIMPK('S',',',1,'RAPIDE')
-         CALL UTFINM()
-      ENDIF
       IF ( MEMOIR(1:8) .EQ. 'COMPACTE') THEN
          CALL U2MESS('I','SUPERVIS_25')
          CALL JETYPR('DEBUT','XD',ISEG,ITAIL,RVAL)
@@ -149,20 +142,12 @@ C     -----------------------------------------------------
         CALL U2MESS('I','SUPERVIS_26')
       ELSE IF (ISEG .EQ. 3) THEN
         CALL U2MESS('I','SUPERVIS_27')
-        CALL UTDEBM('I','IBDBGS','TAILLE DES SEGMENTS')
-        CALL UTIMPI('S',' ',1,ITAIL)
-        CALL UTFINM()
+        CALL U2MESI('I','JEVEUX_44',1,ITAIL)
       ELSE IF (ISEG .EQ. 4) THEN
         CALL U2MESS('I','SUPERVIS_28')
-        CALL UTDEBM('I','IBDBGS','TAILLE DES SEGMENTS')
-        CALL UTIMPI('S',' ',1,ITAIL)
-        CALL UTFINM()
-        CALL UTDEBM('I','IBDBGS',
-     &              'TAILLE DE LA PARTITION PRINCIPALE')
-        CALL UTIMPR('S',' ',1,RVAL)
-        CALL UTFINM()
+        CALL U2MESI('I','JEVEUX_44',1,ITAIL)
+        CALL U2MESR('I','JEVEUX_45',1,RVAL)
       ENDIF
-
 
       CALL JEDEMA()
       END

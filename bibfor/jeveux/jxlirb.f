@@ -1,6 +1,6 @@
       SUBROUTINE JXLIRB ( IC , IADDI , IADMO , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/06/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,10 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     +                 KITLEC    , KITECR    ,             KIADM    ,
      +                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     +                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C
       CHARACTER*2      DN2
@@ -61,7 +61,7 @@ C
 C     ------------------------------------------------------------------
       LOGICAL          LRAB
       CHARACTER*8      NOM
-      INTEGER          LGBL
+      INTEGER          LGBL,VALI(3)
 C DEB ------------------------------------------------------------------
       IERR = 0
       LGBL = 1024*LONGBL(IC)*LOIS
@@ -78,13 +78,10 @@ C
           CALL READDR ( NOM , ISZON(JIECR) ,
      +                  LGBL/LOUA , IADLOC , IERR )
           IF ( IERR .NE. 0 ) THEN
-            CALL JVDEBM ( 'S' , 'JXLIRB_01' ,
-     +                    'ERREUR LECTURE DE L''ENREGISTREMENT')
-            CALL JVIMPI ( 'S' , ':' , 1 , IADDI+I-1 )
-            CALL JVIMPK ( 'L' , 'SUR LA BASE :' , 1 , NOMBAS(IC) )
-            CALL JVIMPI ( 'S' , ' ' , 1 , NUMEXT )
-            CALL JVIMPI ( 'L' , 'CODE RETOUR READDR :', 1 , IERR )
-            CALL JVFINM
+            VALI(1) = IADDI+I-1
+            VALI(2) = NUMEXT
+            VALI(3) = IERR
+            CALL U2MESG('F','JEVEUX_41',1,NOMBAS(IC),3,VALI,0,R8BID)
           ENDIF
    10   CONTINUE
         IACCE (JIACCE(IC)+IADDI)=IACCE(JIACCE(IC)+IADDI) + 1
@@ -96,13 +93,10 @@ C
           CALL READDR ( NOM , ISZON(JIECR),
      +                  LGBL/LOUA , IADLOC , IERR )
           IF ( IERR .NE. 0 ) THEN
-            CALL JVDEBM ( 'S' , 'JXLIRB_02' ,
-     +                  'ERREUR LECTURE DE L''ENREGISTREMENT ENTRELACE')
-            CALL JVIMPI ( 'S' , ':' , 1 , IADDI+NBLENT )
-            CALL JVIMPK ( 'L' , 'SUR LA BASE :' , 1 , NOMBAS(IC) )
-            CALL JVIMPI ( 'S' , ' ' , 1 , NUMEXT )
-            CALL JVIMPI ( 'L' , 'CODE RETOUR READDR :', 1 , IERR )
-            CALL JVFINM
+            VALI(1) = IADDI+I-1
+            VALI(2) = NUMEXT
+            VALI(3) = IERR
+            CALL U2MESG('F','JEVEUX_41',1,NOMBAS(IC),3,VALI,0,R8BID)
           ENDIF
         ENDIF
       ENDIF

@@ -4,7 +4,7 @@
       CHARACTER*(*)     NOMCMP,MATRIC,MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  NOMMA, NOMGR, NOMNOE, KBID, NOMCMD
       CHARACTER*14 NUME
       CHARACTER*24 MANONO, MAGRNO, TEXTE, TEXT1, TEXT2, TEXT3
+      CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -210,11 +211,11 @@ C
             III   = ZI(JIND2+IEQ) * IMODE
             IF (III.NE.0) THEN
             CALL RGNDAS('NUME_DDL',NUME,II,NOMNOE,NOMCMP,KBID,KBID,KBID)
-               CALL UTDEBM('E','MSTGET',TEXTE)
-               CALL UTIMPK('L','   POUR LE MOT CLE : ',1,MOTFAC)
-               CALL UTIMPK('L','             NOEUD : ',1,NOMNOE)
-               CALL UTIMPK('L','        COMPOSANTE : ',1,NOMCMP)
-               CALL UTFINM( )
+               VALK (1) = TEXTE
+               VALK (2) = MOTFAC
+               VALK (3) = NOMNOE
+               VALK (4) = NOMCMP
+               CALL U2MESG('E', 'ALGELINE4_24',4,VALK,0,0,0,0.D0)
                IMODE = 0
             ENDIF
             DDLSTA(II)= MAX(DDLSTA(II),IMODE)

@@ -1,6 +1,6 @@
       SUBROUTINE JXECRB ( IC , IADDI , IADMO , LSO , IDCO , IDOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,10 @@ C     ------------------------------------------------------------------
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C     ------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     +                 KITLEC    , KITECR    ,             KIADM    ,
      +                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     +                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C
       CHARACTER*2      DN2
@@ -66,7 +66,8 @@ C
 C     ------------------------------------------------------------------
       CHARACTER*8      NOM
       LOGICAL          LRAB
-      INTEGER          LGBL
+      INTEGER          LGBL,VALI(3)
+      REAL*8           R8BID
 C DEB ------------------------------------------------------------------
       IB = 0
       IERR = 0
@@ -84,16 +85,10 @@ C     ------------------------------------------------------------------
           CALL WRITDR ( NOM , ISZON(JIECR) ,
      +                  LGBL/LOUA , IADLOC , -1 , IB , IERR )
           IF ( IERR .NE. 0 ) THEN
-            CALL JVDEBM ( 'S' , 'JXECRB01',
-     +                    'ERREUR ECRITURE DE L''ENREGISTREMENT' )
-            CALL JVIMPI ( 'S' , ':' , 1 , IADDI+I-1 )
-            CALL JVIMPK ( 'L' , 'SUR LA BASE :' , 1 , NOMBAS(IC) )
-            CALL JVIMPI ( 'S' , ' ' , 1 , NUMEXT )
-            CALL JVIMPI ( 'L' , 'CODE RETOUR WRITDR :', 1 , IERR )
-            CALL JVIMPK ( 'L' , 'ERREUR PROBABLEMENT PROVOQUEE PAR UNE '
-     +                 //'TAILLE TROP FAIBLE DU REPERTOIRE DE TRAVAIL' ,
-     +                    1 , ' ' )
-            CALL JVFINM
+            VALI(1) = IADDI+I-1
+            VALI(2) = NUMEXT
+            VALI(3) = IERR
+            CALL U2MESG('F','JEVEUX_40',1,NOMBAS(IC),3,VALI,0,R8BID)
           ENDIF
           IUSADI(JUSADI(IC)+3*(IADDI+I-1)-2) = IDCO
           IUSADI(JUSADI(IC)+3*(IADDI+I-1)-1) = IDOS
@@ -107,16 +102,10 @@ C     ------------------------------------------------------------------
           CALL WRITDR ( NOM , ISZON(JIECR) ,
      +                  LGBL/LOUA , IADLOC ,-1, IB , IERR )
           IF ( IERR .NE. 0 ) THEN
-            CALL JVDEBM ( 'S' , 'JXECRB02' ,
-     +              'ERREUR ECRITURE DE L''ENREGISTREMENT ENTRELACE' )
-            CALL JVIMPI ( 'S' , ':' , 1 , IADDI+NBLENT )
-            CALL JVIMPK ( 'L' , 'SUR LA BASE :' , 1 , NOMBAS(IC) )
-            CALL JVIMPI ( 'S' , ' ' , 1 , NUMEXT )
-            CALL JVIMPI ( 'L' , 'CODE RETOUR WRITDR :', 1 , IERR )
-            CALL JVIMPK ( 'L' , 'ERREUR PROBABLEMENT PROVOQUEE PAR UNE '
-     +                 //'TAILLE TROP FAIBLE DU REPERTOIRE DE TRAVAIL' ,
-     +                    1 , ' ' )
-            CALL JVFINM
+            VALI(1) = IADDI+I-1
+            VALI(2) = NUMEXT
+            VALI(3) = IERR
+            CALL U2MESG('F','JEVEUX_40',1,NOMBAS(IC),3,VALI,0,R8BID)
           ENDIF
           IUSADI(JUSADI(IC)+3*(IADDI+NBLENT)-2) = IDCO
           IUSADI(JUSADI(IC)+3*(IADDI+NBLENT)-1) = IDOS

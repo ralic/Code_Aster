@@ -6,7 +6,7 @@
       REAL*8       EPAIS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -296,9 +296,8 @@ C
          IF (IRET.EQ.0) THEN
             CALL JECROC ( JEXNOM(NOMNOE,NOMG) )
          ELSE
-            CALL UTDEBM('F','CMCOVO','ERREUR DONNEES')
-            CALL UTIMPK('L','NOEUD DEJA EXISTANT : ',1,NOMG)
-            CALL UTFINM
+            VALK(1) = NOMG
+            CALL U2MESG('F', 'ALGELINE4_5',1,VALK,0,0,0,0.D0)
          END IF
  40   CONTINUE
 C
@@ -319,9 +318,8 @@ C
             CALL JECROC ( JEXNOM(NOMNOE,NOMG) )
             ZK8(JNONEW+INO-1) = NOMG
          ELSE
-            CALL UTDEBM('F','CMCOVO','ERREUR DONNEES')
-            CALL UTIMPK('L','NOEUD DEJA EXISTANT : ',1,NOMG)
-            CALL UTFINM
+            VALK(1) = NOMG
+            CALL U2MESG('F', 'ALGELINE4_5',1,VALK,0,0,0,0.D0)
          END IF
  50   CONTINUE
 C
@@ -421,9 +419,8 @@ C
          IF (IRET.EQ.0) THEN
             CALL JECROC(JEXNOM(NOMMAI,NOMG))
          ELSE
-            CALL UTDEBM('F','CMCOVO','ERREUR DONNEES')
-            CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NOMG)
-            CALL UTFINM
+            VALK(1) = NOMG
+            CALL U2MESG('F', 'ALGELINE4_7',1,VALK,0,0,0,0.D0)
          END IF
 C
          ZI(IATYMA-1+IMA) = ZI(JTYPM+IMA-1)
@@ -459,9 +456,8 @@ C
          IF (IRET.EQ.0) THEN
             CALL JECROC ( JEXNOM(NOMMAI,NOMG) )
          ELSE
-            CALL UTDEBM('F','CMCOVO','ERREUR DONNEES')
-            CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NOMG)
-            CALL UTFINM
+            VALK(1) = NOMG
+            CALL U2MESG('F', 'ALGELINE4_7',1,VALK,0,0,0,0.D0)
          END IF
 
          CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
@@ -524,9 +520,8 @@ C  -------------------------------------------------------------
           IF (IRET.EQ.0) THEN
             CALL JECROC(JEXNOM(GRPMAI,NOMG))
           ELSE
-            CALL UTDEBM('F','CMCOVO','ERREUR DONNEES')
-            CALL UTIMPK('L','GROUP_MA DEJA EXISTANT : ',1,NOMG)
-            CALL UTFINM
+            VALK(1) = NOMG
+            CALL U2MESG('F', 'ALGELINE4_9',1,VALK,0,0,0,0.D0)
           END IF
           CALL JEVEUO(JEXNUM(GRPMAV,I),'L',JVG)
           CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMAI,K1B)
@@ -542,9 +537,8 @@ C
         IF (IRET.EQ.0) THEN
           CALL JECROC(JEXNOM(GRPMAI,NOMG))
         ELSE
-          CALL UTDEBM('F','CMCOVO','ERREUR DONNEES')
-          CALL UTIMPK('L','GROUP_MA DEJA EXISTANT : ',1,NOMG)
-          CALL UTFINM
+            VALK(1) = NOMG
+          CALL U2MESG('F', 'ALGELINE4_10',1,VALK,0,0,0,0.D0)
         END IF
           CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',NBMA,' ')
           CALL JEVEUO(JEXNOM(GRPMAI,NOMG),'E',JGG)
@@ -567,9 +561,8 @@ C  -------------------------------------------------------------
           IF (IRET.EQ.0) THEN
             CALL JECROC(JEXNOM(GRPNOE,NOMG))
           ELSE
-            CALL UTDEBM('F','CMCOVO','ERREUR DONNEES')
-            CALL UTIMPK('L','GROUP_NO DEJA EXISTANT : ',1,NOMG)
-            CALL UTFINM
+            VALK(1) = NOMG
+            CALL U2MESG('F', 'ALGELINE4_11',1,VALK,0,0,0,0.D0)
           END IF
           CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO,' ')
           CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)

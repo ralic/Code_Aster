@@ -6,7 +6,7 @@
       CHARACTER*(*) LIGRMO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16 MOTCLF,MOTCLE(3)
       CHARACTER*19 CARTE,LIGREL
       CHARACTER*24 LCHIN(2),LCHOUT(2),MESMAI,MESMAP,VALE
+      CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -201,12 +202,11 @@ C ------ AFFECTATION DE LA PRESSION CORRESPONDANTE AUX MAILLES
           CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(IADTYP)),TYPE)
           IF ((TYPE(1:4).NE.'QUAD') .AND. (TYPE(1:4).NE.'TRIA')) THEN
             CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),MAILLE)
-            CALL UTDEBM('A','CAFOND','LA MAILLE ')
-            CALL UTIMPK('S','DE NOM : ',1,MAILLE)
-            CALL UTIMPK('S','N''EST PAS DE TYPE ',1,'QUAD')
-            CALL UTIMPK('S',' OU ',1,'TRIA')
-            CALL UTIMPK('L','ELLE NE SERA PAS AFFECTEE PAR ',1,MOTCLF)
-            CALL UTFINM()
+            VALK (1) = MAILLE
+            VALK (2) = 'QUAD'
+            VALK (3) = 'TRIA'
+            VALK (4) = MOTCLF
+            CALL U2MESG('A', 'MODELISA8_40',4,VALK,0,0,0,0.D0)
           END IF
    10   CONTINUE
         CALL NOCART(CARTE,3,K8B,'NUM',NBMAP,K8B,ZI(JMAP),' ',NCMP)

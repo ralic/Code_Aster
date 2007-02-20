@@ -3,7 +3,7 @@
      &                  TYPERR,SUBERR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C
       CHARACTER*16 PHENO
       INTEGER      JPRNM,JNO,JGD
       CHARACTER*24 GRPNO,NOMNOE
+      CHARACTER*24 VALK(3)
 C
 C ----------------------------------------------------------------------
 C
@@ -109,11 +110,9 @@ C
               ICMP = INDIK8(ZK8(JGD),LISCMP(J),1,NCMPMX)
               IF (.NOT.EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP)) THEN
                 CALL JENUNO(JEXNUM(NOMNOE,INO),NOMNO)
-                CALL UTDEBM(TYPERR,SUBERR,' ')
-                CALL UTIMPK('L','LE NOEUD',1,NOMNO)
-                CALL UTIMPK('S','NE SUPPORTE PAS LA COMPOSANTE',
-     &                      1,LISCMP(J))
-                CALL UTFINM()
+              VALK (1) = NOMNO
+              VALK (2) = LISCMP(J)
+                CALL U2MESG('TYPERR', 'UTILITAI5_95',2,VALK,0,0,0,0.D0)
               ENDIF
   12        CONTINUE
   11      CONTINUE
@@ -125,12 +124,10 @@ C
           DO 21 J=1,NBCMP
             ICMP = INDIK8(ZK8(JGD),LISCMP(J),1,NCMPMX)
             IF (.NOT.EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP)) THEN
-              CALL UTDEBM(TYPERR,SUBERR,' ')
-              CALL UTIMPK('L','LE NOEUD',1,NOMNO)
-              CALL UTIMPK('L','LE NOEUD',1,NOMNO)
-              CALL UTIMPK('S','NE SUPPORTE PAS LA COMPOSANTE',
-     &                    1,LISCMP(J))
-              CALL UTFINM()
+              VALK (1) = NOMNO
+              VALK (2) = NOMNO
+              VALK (3) = LISCMP(J)
+              CALL U2MESG('TYPERR', 'UTILITAI5_96',3,VALK,0,0,0,0.D0)
             ENDIF
   21      CONTINUE
   20    CONTINUE

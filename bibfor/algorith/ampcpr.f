@@ -1,6 +1,6 @@
       SUBROUTINE AMPCPR(CMAT,NB1,NB2,BMAT,N1,N2,I,J,FAC,NPAR,NSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,12 +41,9 @@ C NSYM     /I/: INDICATEUR TRANSPOSITION (-1) MATRICE REELLE OU NON(1)
 C
 C-----------------------------------------------------------------------
 C
-      CHARACTER*6  PGC
       REAL*8 BMAT(N1,N2)
       COMPLEX*16    CMAT(*)
 C
-C-----------------------------------------------------------------------
-      DATA PGC /'AMPCPR'/
 C-----------------------------------------------------------------------
 C
 C   CAS SANS TRANSPOSITION
@@ -56,9 +53,7 @@ C
         JDEB=J
         JFIN=MIN(J+N2-1,NB2)
         IF((J+N2-1).GT.NB2) THEN
-          CALL UTDEBM('F',PGC,
-     &'ARRET DEBORDEMENT ASSEMBLAGE:LIGNE ')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH11_88',0,' ',0,0,0,0.D0)
         ENDIF
         IF(JFIN.LT.JDEB) GOTO 9999
         JJDEB=JDEB-J+1
@@ -66,9 +61,7 @@ C
 C
         IDEB=I
         IF((I+N1-1).GT.NB1) THEN
-          CALL UTDEBM('F',PGC,
-     &'ARRET DEBORDEMENT ASSEMBLAGE:LIGNE ')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH11_88',0,' ',0,0,0,0.D0)
         ENDIF
         IFIN=MIN(I+N1-1,NB1)
         IF(IFIN.LT.IDEB) GOTO 9999
@@ -116,9 +109,7 @@ C
         JDEB=J
         JFIN=MIN(J+N1-1,NB2)
         IF((J+N1-1).GT.NB2) THEN
-          CALL UTDEBM('F',PGC,
-     &'ARRET DEBORDEMENT ASSEMBLAGE:COLONNE ')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH11_90',0,' ',0,0,0,0.D0)
         ENDIF
         IF(JFIN.LT.JDEB) GOTO 9999
         JJDEB=JDEB-J+1
@@ -127,9 +118,7 @@ C
         IDEB=I
         IFIN=MIN(I+N2-1,NB1)
         IF((I+N2-1).GT.NB1) THEN
-          CALL UTDEBM('F',PGC,
-     &'ARRET DEBORDEMENT ASSEMBLAGE:LIGNE ')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH11_88',0,' ',0,0,0,0.D0)
         ENDIF
         IF(IFIN.LT.IDEB) GOTO 9999
         IIDEB=IDEB-I+1

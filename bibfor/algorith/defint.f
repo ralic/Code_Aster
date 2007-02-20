@@ -1,6 +1,6 @@
       SUBROUTINE DEFINT(MAILLA,NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,9 +58,11 @@ C
       CHARACTER*9  NOM,NO,GRNO
       CHARACTER*14 INT
       CHARACTER*24 NOMINT,NOTINT,TYPINT,NOEINT,DDLACT
+      CHARACTER*24 VALK
       CHARACTER*24 TEMGUI,TEMLNO,TEMLGR,TEMMAS
       CHARACTER*80 KAR80
       INTEGER      ICODMA(NBECMX), ICODAC(NBECMX)
+      INTEGER VALI
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -87,9 +89,7 @@ C
       CALL GETFAC(INT,IOC)
 C
       IF(IOC.EQ.0) THEN
-        CALL UTDEBM('A','DEFINT',
-     &'PAS D'' INTERFACE DEFINIE --> UN GAGE!')
-        CALL UTFINM
+        CALL U2MESG('A', 'ALGORITH12_77',0,' ',0,0,0,0.D0)
       ENDIF
 C
       NBINT=0
@@ -146,11 +146,9 @@ C
           CALL LXCAPS(NOMCOU)
           CALL JEEXIN(JEXNOM(NOTINT,NOMCOU),IRET)
           IF(IRET.NE.0) THEN
-            CALL UTDEBM('F','DEFINT',
-     &'ARRET SUR INTERFACE DEJA DEFINIE')
-            CALL UTIMPI('L',' MOT-CLE INTERFACE NUMERO  --> ',1,I)
-            CALL UTIMPK('L',' INTERFACE  --> ',1,NOMCOU)
-            CALL UTFINM
+            VALI = I
+            VALK = NOMCOU
+            CALL U2MESG('F', 'ALGORITH12_78',1,VALK,1,VALI,0,0.D0)
           ENDIF
           CALL GETVID(INT,NO,I,1,0,K8BID,NBVAN)
           CALL GETVID(INT,GRNO,I,1,0,K8BID,NBVAG)

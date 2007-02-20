@@ -8,7 +8,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C
       CHARACTER*32 JEXNUM,JEXNOM
 C
       INTEGER NDGLOF(4),NBNDF,NBF,I,DECF,NDLOC,ADESCM,FACE
+      INTEGER VALI(2)
       LOGICAL FINK,NONVID
 C
 C======================================================================
@@ -99,11 +100,9 @@ C
                CALL I3IFQS(EPSI,K,FACE,DESC,DESCTM,CONEXK,COORDO,SGT,
      +                     ATRV,BTRV,NBPT,LSTPT,FINK,FIND)
             ELSE
-               CALL UTDEBM('F','I3IDKS','FACE A NOMBRE DE SOMMETS '//
-     +                     'NON TRAITE')
-               CALL UTIMPI('L','MAILLE : ',1,K)
-               CALL UTIMPI('S',' FACE : ',1,FACE)
-               CALL UTFINM()
+               VALI (1) = K
+               VALI (2) = FACE
+               CALL U2MESG('F', 'POSTRELE_80',0,' ',2,VALI,0,0.D0)
             ENDIF
          ENDIF
          FINK = ( FINK .OR. (FACE .EQ. NBF) )

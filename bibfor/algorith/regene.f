@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/07/2006   AUTEUR BODEL C.BODEL 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C
       CHARACTER*16 DEPL,NOMPAR(6),TYPREP
       CHARACTER*19 CHAMNO,KINT,KREFE,CHAMNE,RAID,NUMGEN,PROFNO
       CHARACTER*24 CHAMOL,MATRIC,INDIRF,CREFE(2),NUMEDD,BASMO2
+      CHARACTER*24 VALK
 C
 C-----------------------------------------------------------------------
       DATA DEPL   /'DEPL            '/
@@ -117,10 +118,8 @@ C ------ VERIF SQUELETTE
 C
          CALL JEEXIN ( MAILSK//'.INV.SKELETON',IRET)
          IF (IRET.EQ.0) THEN
-            CALL UTDEBM('F','REGENE',
-     &              'LE MAILLAGE N''EST PAS UN MAILLAGE SQUELETTE')
-            CALL UTIMPK('L','MAILLAGE',1,MAILSK)
-            CALL UTFINM
+            VALK = MAILSK
+            CALL U2MESG('F', 'ALGORITH14_29',1,VALK,0,0,0,0.D0)
          ENDIF
          CALL JEVEUO ( MAILSK//'.INV.SKELETON','L',LLINSK)
 C

@@ -6,7 +6,7 @@
       CHARACTER*16        INTERP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       REAL*8    LINLIN, LINLOG, LOGLOG, LOGLIN, X0, X1, Y1, X2, Y2
       REAL*8    EPSI, TOLE, R8PREM
+      REAL*8 VALR(3)
 C ----------------------------------------------------------------------
       LINLIN(X0,X1,Y1,X2,Y2)= Y1+(X0-X1)*(Y2-Y1)/(X2-X1)
       LINLOG(X0,X1,Y1,X2,Y2)=EXP(LOG(Y1)+(X0-X1)*(LOG(Y2)-LOG(Y1))
@@ -64,11 +65,10 @@ C
                RESU = Y(IPT+1)
             ELSE
                IER = 200
-               CALL UTDEBM('A','FOCOLI','INTERPOLATION NON PERMISE.')
-               CALL UTIMPR('L',' VALEUR A INTERPOLER:',1,RVAR)
-               CALL UTIMPR('L','    BORNE INFERIEURE:',1,X(IPT))
-               CALL UTIMPR('L','    BORNE SUPERIEURE:',1,X(IPT+1))
-               CALL UTFINM()
+               VALR (1) = RVAR
+               VALR (2) = X(IPT)
+               VALR (3) = X(IPT+1)
+               CALL U2MESG('A', 'UTILITAI6_14',0,' ',0,0,3,VALR)
             ENDIF
 C
          ELSE

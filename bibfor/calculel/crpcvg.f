@@ -7,7 +7,7 @@
       CHARACTER*(*)       LIMA1, LIMA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/06/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,8 +55,10 @@ C
      +               NUTYP2, NUMGL2, IAMAC2, ILMAC2, 
      +               JCOOR1, JCOOR2, JNUM1, JNUM2
       REAL*8         X1, Y1, Z1, X2, Y2, Z2, V1, V2, V3
+      REAL*8         VALR(3)
       LOGICAL        ERREUR
       CHARACTER*8    K8B, NOMA1, NOMA2
+      CHARACTER*24   VALK(4)
       CHARACTER*24   GRPMA1, GRPMA2, COOVA1, COOVA2, TYPMA1, TYPMA2,
      +               CONNE1, CONNE2
 C
@@ -93,11 +95,9 @@ C
       CALL JELIRA ( JEXNOM(GRPMA1,GMA1), 'LONMAX', NBMA1, K8B )
       CALL JELIRA ( JEXNOM(GRPMA2,GMA2), 'LONMAX', NBMA2, K8B )
       IF ( NBMA1 .NE. NBMA2 ) THEN
-         CALL UTDEBM('F','CRPCVG','ERREURS DONNEES')
-         CALL UTIMPK('L','LE GROUP_MA ', 1, GMA1 )
-         CALL UTIMPK('S',' N''A PAS LE MEME NOMBRE DE MAILLES '//
-     +                   'QUE LE GROUP_MA ', 1, GMA2 )
-         CALL UTFINM()
+               VALK (1) = GMA1
+               VALK (2) = GMA2
+         CALL U2MESG('F', 'CALCULEL5_67',2,VALK,0,0,0,0.D0)
       ENDIF
 C
       CALL JEVEUO ( JEXNOM(GRPMA1,GMA1), 'L', JGMA1 )
@@ -114,11 +114,9 @@ C
          NUTYP1 = ZI(JTYMA1-1+IMA1)
          NUTYP2 = ZI(JTYMA2-1+IMA2)
          IF ( NUTYP1 .NE. NUTYP2 ) THEN
-            CALL UTDEBM('F','CRPCVG','ERREURS DONNEES')
-            CALL UTIMPK('L','LE GROUP_MA ', 1, GMA1 )
-            CALL UTIMPK('S',' N''A PAS LES MEMES TYPES DE MAILLE '//
-     +                      'QUE LE GROUP_MA ', 1, GMA2 )
-            CALL UTFINM()
+               VALK (1) = GMA1
+               VALK (2) = GMA2
+            CALL U2MESG('F', 'CALCULEL5_68',2,VALK,0,0,0,0.D0)
          ENDIF
 C
          DO 20 INO = 1 , NBNOMA(IMA1)
@@ -140,14 +138,14 @@ C
             IF ( ERREUR ) THEN
                CALL JENUNO(JEXNUM(MA1//'.NOMMAI', IMA1 ), NOMA1 )
                CALL JENUNO(JEXNUM(MA2//'.NOMMAI', IMA2 ), NOMA2 )
-               CALL UTDEBM('F','CRPCVG','ERREURS DONNEES : ')
-               CALL UTIMPK('L','LA MAILLE ', 1, NOMA1 )
-               CALL UTIMPK('S',' DU MAILLAGE ', 1, MA1 )
-               CALL UTIMPK('S',' N''EST PAS LA TRANSLATION DE LA '//
-     +                                        'MAILLE ', 1, NOMA2 )
-               CALL UTIMPK('S',' DU MAILLAGE ', 1, MA2 )
-               CALL UTIMPR('L','   VECTEUR TRANSLATION : ', 3, TRAN )
-               CALL UTFINM()
+               VALK (1) = NOMA1
+               VALK (2) = MA1
+               VALK (3) = NOMA2
+               VALK (4) = MA2
+               VALR(1)  = TRAN(1)
+               VALR(2)  = TRAN(2)
+               VALR(3)  = TRAN(3)
+               CALL U2MESG('F', 'CALCULEL5_69',4,VALK,0,0,1,VALR)
             ENDIF
 C
             LINOEU(INO2) = INO1

@@ -3,7 +3,7 @@ C
 C     THERMIQUE - DONNEES EN TEMPS POUR LES DERIVEES
 C     *           **      *                 *
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,6 @@ C   -------------------------------------------------------------------
 C     SUBROUTINES APPELLEES:
 C       JEVEUX: JEMARQ,JEDEMA,JEVEUO,JELIRA.
 C       MANIP. SD: RSEXCH.
-C       MSG: UTDEBM,UTIMPI,UTFINM.
 C
 C     FONCTIONS INTRINSEQUES:
 C       AUCUNE.
@@ -74,11 +73,10 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
 C 0.3. ==> VARIABLES LOCALES
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'NTDOED' )
 
       CHARACTER*8  K8BID
       INTEGER IRET,I,NDDL,JTEMPI
+      INTEGER VALI
 
 C     ------------------------------------------------------------------
 
@@ -116,9 +114,8 @@ C 1.3. ==> LES AUTRES CHOIX QUE STATIONNAIRE SONT INTERDITS
 
         IF ( INITPR.NE.-1 .AND. INITPR.NE.0 ) THEN
 
-          CALL UTDEBM ( 'A', NOMPRO, 'CHOIX IMPOSSIBLE' )
-          CALL UTIMPI ( 'S', 'POUR INITPR : ', 1, INITPR )
-          CALL UTFINM
+          VALI = INITPR
+          CALL U2MESG('A', 'ALGORITH13_71',0,' ',1,VALI,0,0.D0)
           CALL U2MESS('F','MODELISA_67')
 
         ENDIF

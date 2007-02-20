@@ -8,7 +8,7 @@
      &                    VECGRM, NBCGRM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,9 +115,11 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
+      CHARACTER*24 VALK(4)
       PARAMETER ( NOMPRO = 'LRMMF3' )
 C
       INTEGER CODRET, I
+      INTEGER VALI
       INTEGER IAUX, JAUX, KAUX,JAU2
       INTEGER ITYP, INDIK8, INOM, ITMP, IVGRM
       INTEGER NUMFAM, MI(2)
@@ -378,17 +380,14 @@ C
                INOM = INDIK8 ( ZK8(ADNOMG), K8B, 1, IAUX )
                IF ( INOM .NE. 0 ) THEN
                   IERR = .TRUE.
-                  CALL UTDEBM('E','LRMMF3','LE NOM DE GROUPE ')
-                  CALL UTIMPI('S','NUMERO ',1,IAUX )
-                  CALL UTIMPK('S',' EST EN DOUBLE.',0,' ')
+                  VALI = IAUX
+                  VALK (1) = ' '
                   ITMP = LXLGUT(NOGRFA(IAUX))
-                  CALL UTIMPK('L','PREMIER NOM MED  : ',1,
-     &                        NOGRFA(IAUX)(1:ITMP))
+                  VALK (2) = NOGRFA(IAUX)(1:ITMP)
                   ITMP = LXLGUT(NOGRFA(INOM))
-                  CALL UTIMPK('L','SECOND NOM MED   : ',1,
-     &                        NOGRFA(INOM)(1:ITMP))
-                  CALL UTIMPK('L','NOM ASTER RETENU : ',1,K8B)
-                  CALL UTFINM()
+                  VALK (3) = NOGRFA(INOM)(1:ITMP)
+                  VALK (4) = K8B
+                  CALL U2MESG('E', 'MODELISA8_66',4,VALK,1,VALI,0,0.D0)
                ENDIF
                ZK8(ADNOMG-1+IAUX) = K8B
                ZI(ADNUMG-1+IAUX) = JAUX

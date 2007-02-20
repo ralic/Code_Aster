@@ -1,6 +1,6 @@
       SUBROUTINE JJALLC ( ICLASI , IDATCI , CEL , IBACOL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -44,17 +44,17 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
 C ----------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+      INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
+     &               IDMARQ     , IDNOM      ,             IDLONG     ,
+     &               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C     ------------------------------------------------------------------
       CHARACTER*75     CMESS
       CHARACTER*1      GENRI,TYPEI
@@ -72,7 +72,7 @@ C DEB ------------------------------------------------------------------
       TYPEI  = TYPE ( JTYPE(IC) + ID )
       LTYPI  = LTYP ( JLTYP(IC) + ID )
       LONOI  = LONO ( JLONO(IC) + ID ) * LTYPI
-      IADMI  = IADM ( JIADM(IC) + ID )
+      IADMI  = IADM ( JIADM(IC) + 2*ID-1 )
       IADDI(1) = IADD ( JIADD(IC) + 2*ID-1 )
       IADDI(2) = IADD ( JIADD(IC) + 2*ID   )
 C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
@@ -81,18 +81,19 @@ C ------- OBJET CONTENANT LES IDENTIFICATEURS DE LA COLLECTION
         IF ( IADDI(1) .EQ. 0 ) THEN
           IF ( CEL .EQ. 'E' ) THEN
             CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
-     &                   COL , JCOL , IADML )
+     &                   COL , JCOL , IADML, IADYN)
           ELSE
             CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
             CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
         ELSE
           CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT' ,
-     &                 COL , JCOL , IADML )
+     &                 COL , JCOL , IADML ,IADYN)
           CALL JXLIRO ( IC , IADML , IADDI , LONOI )
         ENDIF
         IADMI = IADML
-        IADM (JIADM(IC)+ID) = IADML
+        IADM (JIADM(IC)+2*ID-1) = IADML
+        IADM (JIADM(IC)+2*ID  ) = IADYN
       ELSE
         ISTA1 = ISZON (JISZON+IADMI - 1)
         IS    = JISZON+ISZON(JISZON+IADMI-4)
@@ -120,10 +121,10 @@ C     ----------- OBJETS ATTRIBUTS DE COLLECTION
           IF ( LONOI .EQ. 0 ) THEN
             CALL U2MESK('F','JEVEUX_26',1,RNOM(JRNOM(IC)+IX))
           ENDIF
-          IADMI  = IADM ( JIADM(IC) + IX )
+          IADMI  = IADM ( JIADM(IC) + 2*IX-1 )
           IADDI(1) = IADD ( JIADD(IC) + 2*IX-1 )
           IADDI(2) = IADD ( JIADD(IC) + 2*IX   )
-          IF ( IADMI .GT. 0 ) THEN
+          IF ( IADMI .NE. 0 ) THEN
 C --------- IL N'Y A RIEN A FAIRE
 C
           ELSE IF ( K .NE. IDIADM .AND. K .NE. IDMARQ ) THEN
@@ -132,23 +133,25 @@ C --------- MISE EN MEMOIRE AVEC LECTURE DISQUE
             IF ( IADDI(1) .EQ. 0 ) THEN
               IF ( CEL .EQ. 'E' ) THEN
                 CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'INIT',
-     &                       COL , JCOL , IADML )
+     &                       COL , JCOL , IADML ,IADYN)
               ELSE
                 CMESS = 'IMPOSSIBLE DE LIRE  SANS IMAGE DISQUE'
                 CALL U2MESK('F','JEVEUX_01',1,CMESS)
               ENDIF
             ELSE
               CALL JJALLS( LONOI , GENRI , TYPEI , LTYPI , 'NOINIT',
-     &                     COL , JCOL , IADML )
+     &                     COL , JCOL , IADML ,IADYN)
               CALL JXLIRO ( IC , IADML , IADDI , LONOI )
             ENDIF
             IADMI = IADML
-            IADM (JIADM(IC)+IX) = IADML
+            IADM(JIADM(IC)+2*IX-1) = IADML
+            IADM(JIADM(IC)+2*IX  ) = IADYN
           ELSE
 C --------- MISE EN MEMOIRE SANS LECTURE DISQUE
             CALL JJALLS  ( LONOI , GENRI , TYPEI , LTYPI , 'INIT' ,
-     &                     ITAB , JCTAB , IADMI )
-            IADM( JIADM(IC) + IX ) = IADMI
+     &                     ITAB , JCTAB , IADMI ,IADYN)
+            IADM(JIADM(IC)+2*IX-1) = IADMI
+            IADM(JIADM(IC)+2*IX  ) = IADYN
           ENDIF
           IF ( (K.EQ.IDNOM  .OR. K.EQ.IDLONG  .OR.
      &          K.EQ.IDLONO .OR. K.EQ.IDLUTI)
@@ -165,7 +168,7 @@ C
       LTYPI  = LTYP ( JLTYP(IC) + IX )
       LONOI  = LONO ( JLONO(IC) + IX ) * LTYPI
       IF ( LONOI .GT. 0 ) THEN
-        IADMI  = IADM ( JIADM(IC) + IX )
+        IADMI  = IADM ( JIADM(IC) + 2*IX-1 )
         IF ( IADMI .NE. 0 ) THEN
           CALL JJECRS (IADMI, IC, IX, 0, CEL, IMARQ(JMARQ(IC)+2*IX-1))
         ENDIF

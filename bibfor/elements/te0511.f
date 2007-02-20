@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 ZERO,UN,DEUX,TROIS,UNTIER,DETIER,TRDEMI
       REAL*8 VALPAR,XNU,COE1,COE2,R8VIDE
       CHARACTER*2 CODRES(NBRES)
+      CHARACTER*24 VALK
       CHARACTER*8 MODELI,NOMPAR,NOMRES(NBRES),NOMAIL
       CHARACTER*16 PHENOM
 C.......................................................................
@@ -213,10 +214,8 @@ C        -----------------------------------------------------
           IF (ABS(SIGEQ(IGAU)).LE.R8PREM()) THEN
             CALL TECAEL(IADZI,IAZK24)
             NOMAIL = ZK24(IAZK24-1+3) (1:8)
-            CALL UTDEBM('A','TE0511',
-     &                  'LA CONTRAINTE EQUIVALENTE EST NULLE')
-            CALL UTIMPK('S',' POUR LA MAILLE ',1,NOMAIL)
-            CALL UTFINM()
+            VALK = NOMAIL
+            CALL U2MESG('A', 'ELEMENTS4_98',1,VALK,0,0,0,0.D0)
             DO 70 INO = 1,NNO
               TRIAXN(INO) = R8VIDE()
    70       CONTINUE
@@ -295,10 +294,8 @@ C        -----------------------------------------------------
           IF (ABS(SIGEQ(INO)).LE.R8PREM()) THEN
             CALL TECAEL(IADZI,IAZK24)
             NOMAIL = ZK24(IAZK24-1+3) (1:8)
-            CALL UTDEBM('A','TE0511',
-     &                  'LA CONTRAINTE EQUIVALENTE EST NULLE')
-            CALL UTIMPK('S',' POUR LA MAILLE ',1,NOMAIL)
-            CALL UTFINM()
+            VALK = NOMAIL
+            CALL U2MESG('A', 'ELEMENTS4_98',1,VALK,0,0,0,0.D0)
             DO 140 INDIC = 1,NNO
               TRIAXN(INDIC) = R8VIDE()
   140       CONTINUE

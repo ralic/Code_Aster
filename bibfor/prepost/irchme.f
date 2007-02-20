@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,6 +105,7 @@ C
       INTEGER IAUX
 C
       CHARACTER*8 SAUX08
+      CHARACTER*24 VALK(3)
       CHARACTER*8 UNIINS, MODELE
       CHARACTER*32 NOCHMD
 C
@@ -209,11 +210,10 @@ C
           ENDIF
           CALL JEEXIN ( MODELE//'.MAILLE', IRET)
           IF(IRET.EQ.0)THEN
-            CALL UTDEBM('F','IRCHME','L OBJET')
-            CALL UTIMPK('S',' ',1,MODELE//'.MAILLE')
-            CALL UTIMPK('S',' N EXISTE PAS.',0,' ')
-            CALL UTIMPK('L','VEUILLEZ RENSEIGNER LE MODELE.',0,' ')
-            CALL UTFINM()
+            VALK (1) = MODELE//'.MAILLE'
+            VALK (2) = ' '
+            VALK (3) = ' '
+            CALL U2MESG('F', 'PREPOST5_27',3,VALK,0,0,0,0.D0)
           ENDIF
         ENDIF
 C

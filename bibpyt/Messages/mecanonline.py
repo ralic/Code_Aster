@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+#@ MODIF mecanonline Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION

@@ -1,5 +1,5 @@
       SUBROUTINE BMNBMD(BASMDZ,OPTINZ,NBOUT)
-C MODIF ALGORITH  DATE 12/06/2006   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,15 +53,13 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6 PGC
+      CHARACTER*24 VALK(2)
       CHARACTER*8 BASMOD,INTF
       CHARACTER*8 OPTION
       CHARACTER*(*) BASMDZ, OPTINZ
       INTEGER       IDESC,LLDESC,LLREF,NBOUT,LLUTI
 
 C
-C-----------------------------------------------------------------------
-      DATA PGC /'BMNBMD'/
 C-----------------------------------------------------------------------
 C
 C--------------------RECUPERATION DU TYPE DE BASE-----------------------
@@ -93,11 +91,9 @@ C
            NBOUT=ZI(LLDESC+4)
            GOTO 9999
         ELSE
-           CALL UTDEBM('F',PGC,
-     &'ARRET SUR QUESTION ILLICITE POUR LE TYPE DE BASE')
-          CALL UTIMPK('L',' TYPE DE BASE --> ',1,'CLASSIQUE')
-          CALL UTIMPK('L',' QUESTION --> ',1,OPTION)
-          CALL UTFINM
+           VALK (1) = 'CLASSIQUE'
+           VALK (2) = OPTION
+           CALL U2MESG('F', 'ALGORITH12_23',2,VALK,0,0,0,0.D0)
         ENDIF
       ENDIF
 C
@@ -110,11 +106,9 @@ C
         ELSEIF(OPTION.EQ.'DEFORMEE') THEN
            NBOUT=0
         ELSE
-           CALL UTDEBM('F',PGC,
-     &'ARRET SUR QUESTION ILLICITE POUR LE TYPE DE BASE')
-          CALL UTIMPK('L',' TYPE DE BASE --> ',1,'CYCLIQUE')
-          CALL UTIMPK('L',' QUESTION --> ',1,OPTION)
-          CALL UTFINM
+           VALK (1) = 'CYCLIQUE'
+           VALK (2) = OPTION
+           CALL U2MESG('F', 'ALGORITH12_24',2,VALK,0,0,0,0.D0)
         ENDIF
       ENDIF
 C
@@ -133,11 +127,9 @@ C           NBOUT=NBMOD
            NBOUT=ZI(LLUTI+3)
            GOTO 9999
         ELSE
-           CALL UTDEBM('F',PGC,
-     &'ARRET SUR QUESTION ILLICITE POUR LE TYPE DE BASE')
-          CALL UTIMPK('L',' TYPE DE BASE --> ',1,'RITZ')
-          CALL UTIMPK('L',' QUESTION --> ',1,OPTION)
-          CALL UTFINM
+           VALK (1) = 'RITZ'
+           VALK (2) = OPTION
+           CALL U2MESG('F', 'ALGORITH12_25',2,VALK,0,0,0,0.D0)
         ENDIF
       ENDIF
 C

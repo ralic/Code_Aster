@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_X',),
+                              MODELISATION='C_PLAN_XFEM',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),),);
@@ -191,14 +191,18 @@ TEST_RESU(RESU=(_F(  RESULTAT=DEPL,NUME_ORDRE=1,
                      PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '8.2.13'),
-                _F(  RESULTAT=DEPL,NUME_ORDRE=1,
-                     NOM_CHAM='DEPL',NOM_CMP='DY',
-                     TYPE_TEST='SOMM_ABS',
-                     CRITERE = 'ABSOLU',
-                     VALE = 2.31E-04,
-                     PRECISION=1.E-6,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '8.2.13'),),)
+#  Test suivant mis en commentaire en attente de la refonte 
+#  des operateurs post-traitement X-FEM
+#                 _F(  RESULTAT=DEPL,NUME_ORDRE=1,
+#                      NOM_CHAM='DEPL',NOM_CMP='DY',
+#                      TYPE_TEST='SOMM_ABS',
+#                      CRITERE = 'ABSOLU',
+#                      VALE = 2.31E-04,
+#                      PRECISION=1.E-6,
+#                      REFERENCE = 'NON_REGRESSION',
+#                      VERSION = '8.2.13'),
+                ),
+         );
 
 
 FIN();

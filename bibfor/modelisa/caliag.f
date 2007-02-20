@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 
 C     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_GROUP
@@ -46,6 +46,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
       INTEGER I,J,K,IRET,IER,IOCC,IBID,IFM,NIV,NMOCL
+      INTEGER VALI(2)
       PARAMETER (NMOCL=300)
       REAL*8 RBID,BETA
       COMPLEX*16 BETAC
@@ -145,12 +146,9 @@ C --- SUR LA LISTE 1                                    ---
         CALL GETVR8(MOTFAC,'COEF_MULT_1',IOCC,1,0,RBID,NMULT1)
         NMULT1 = -NMULT1
         IF (NDDL1.NE.NMULT1) THEN
-          CALL UTDEBM('F','CALIAG','LE NOMBRE DE DDL_1 FIGURANT DANS'//
-     &          ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE COEF_MULT_1 :'
-     &                )
-          CALL UTIMPI('S',' ',1,NDDL1)
-          CALL UTIMPI('S',' ',1,NMULT1)
-          CALL UTFINM()
+        VALI (1) = NDDL1
+        VALI (2) = NMULT1
+          CALL U2MESG('F', 'MODELISA8_43',0,' ',2,VALI,0,0.D0)
         END IF
 
         CALL JECROC(JEXNUM(NOMDD1,IOCC))
@@ -190,12 +188,9 @@ C --- SUR LA LISTE 2                                    ---
         CALL GETVR8(MOTFAC,'COEF_MULT_2',IOCC,1,0,RBID,NMULT2)
         NMULT2 = -NMULT2
         IF (NDDL2.NE.NMULT2) THEN
-          CALL UTDEBM('F','CALIAG','LE NOMBRE DE DDL_2 FIGURANT DANS'//
-     &          ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE COEF_MULT_2 :'
-     &                )
-          CALL UTIMPI('S',' ',1,NDDL2)
-          CALL UTIMPI('S',' ',1,NMULT2)
-          CALL UTFINM()
+        VALI (1) = NDDL2
+        VALI (2) = NMULT2
+          CALL U2MESG('F', 'MODELISA8_44',0,' ',2,VALI,0,0.D0)
         END IF
 
         CALL JECROC(JEXNUM(NOMDD2,IOCC))
@@ -243,10 +238,9 @@ C --- NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR ---
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K8BID)
       NDDLA = NBCMP - 1
       IF (NDDLA.GT.NMOCL) THEN
-        CALL UTDEBM('F','CALIAG_03','NOMBRE DE CMPS SUPERIEUR AU MAX')
-        CALL UTIMPI('L','NMAXCMP= ',1,NMOCL)
-        CALL UTIMPI('L','NCMP   = ',1,NDDLA)
-        CALL UTFINM()
+        VALI (1) = NMOCL
+        VALI (2) = NDDLA
+        CALL U2MESG('F', 'MODELISA8_45',0,' ',2,VALI,0,0.D0)
       END IF
       DO 40 I = 1,NDDLA
         NOMCMP(I) = ZK8(INOM-1+I)

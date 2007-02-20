@@ -5,7 +5,7 @@
       CHARACTER*(*)    RESU, MOTCLE, OBJVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16  K16B
       CHARACTER*19  CHAM19
       CHARACTER*24  KNUME
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -84,10 +85,9 @@ C
              IF ( NOPARA .EQ. ZK16(LACCE+IORDR-1) ) GOTO 12
  10      CONTINUE
          K8B = RESU
-         CALL UTDEBM('F', 'RSUTN1', 'LE "NOM_PARA_RESU"')
-         CALL UTIMPK('S', ' ',1, NOPARA )
-         CALL UTIMPK('S','N''EST PAS UN PARAMETRE DU RESULTAT ',1,K8B)
-         CALL UTFINM( )
+         VALK (1) = NOPARA
+         VALK (2) = K8B
+         CALL U2MESG('F', 'UTILITAI6_84',2,VALK,0,0,0,0.D0)
  12      CONTINUE
       ELSE
          CALL U2MESS('F','UTILITAI4_50')

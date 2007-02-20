@@ -3,7 +3,7 @@
      &                  IREX,IFM,SDFETI,NBPROC,RANG,K24LAI,ITPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,6 +81,7 @@ C DECLARATION VARIABLES LOCALES
      &             IVALE,IDECAO,NBDDL,IFETC,J,JVE1,K,GII,INFOL8,ILIMPI,
      &             DIMGI1,NIVMPI,IDISPL,JGI,JGITGI
       INTEGER*4    INFOLA
+      INTEGER VALI(2)
       REAL*8       DDOT,RAUX,RBID
       CHARACTER*8  NOMSD
       CHARACTER*19 CHSMDD
@@ -210,10 +211,9 @@ C PAQUET) VIA LAPACK. A NE FAIRE Qu'AU PREMIER PAS DE TEMPS
             CALL DSPTRF('L',DIMGI,ZR(JGITGI),ZI4(IPIV),INFOLA)
             INFOL8=INFOLA
             IF (INFOL8.NE.0) THEN
-              CALL UTDEBM('F','FETINL','SYSTEME (GI)T*GI PROBABLEMENT')
-              CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
-              CALL UTIMPI('L','PB LAPACK DGETRF: ',1,INFOL8)
-              CALL UTFINM()
+            VALI (1) = I
+            VALI (2) = INFOL8
+              CALL U2MESG('F', 'ALGORITH13_14',0,' ',2,VALI,0,0.D0)
             ENDIF
           ENDIF
           INFOL8=0
@@ -222,10 +222,9 @@ C PAQUET) VIA LAPACK. A NE FAIRE Qu'AU PREMIER PAS DE TEMPS
      &                INFOLA)
           INFOL8=INFOLA          
           IF (INFOL8.NE.0) THEN
-            CALL UTDEBM('F','FETINL','SYSTEME (GI)T*GI PROBABLEMENT')
-            CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
-            CALL UTIMPI('L','PB LAPACK DGETRS: ',1,INFOL8)
-            CALL UTFINM()
+            VALI (1) = I
+            VALI (2) = INFOL8
+            CALL U2MESG('F', 'ALGORITH13_15',0,' ',2,VALI,0,0.D0)
           ENDIF     
 C MONITORING
           IF (INFOFE(1:1).EQ.'T')

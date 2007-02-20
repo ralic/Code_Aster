@@ -1,6 +1,6 @@
       SUBROUTINE OP0100(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C 0.3. ==> VARIABLES LOCALES
 C
       INTEGER IFM,NIV,N1,N2,LONVEC,IORD,NBINST,IBID,I,NVITES,NACCE
+      INTEGER VALI
       INTEGER NRES,NP,NC,NEXCI,L,NCHA,N3,IEXC,IRET,ICHA,IVEC,DIME,NBPRUP
       INTEGER IFOND,LNOFF,TYPESE,JINST,IAUX,JAUX,NBPASS,ADRECG,NRPASE
       INTEGER ADCHSE,ICHAR,NBPASE,NRPASS,NDEG,NBRE,IADNUM,IADRMA,IPROPA
@@ -761,10 +762,9 @@ C
             CALL JEVEUO(VCHAR,'L',ICHA)
             CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
             IF (IRET.NE.0) THEN
-              CALL UTDEBM('F',NOMPRO,'ACCES IMPOSSIBLE ')
-              CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
-              CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
-              CALL UTFINM()
+                VALK (1) = 'DEPL'
+                VALI     = IORD
+              CALL U2MESG('F', 'CALCULEL6_27',1,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL RSADPA(RESUCO,'L',1,'INST',IORD,0,JINST,K8B)
             TIME = ZR(JINST)
@@ -817,10 +817,9 @@ C  -------------------------
             CALL JEVEUO(VCHAR,'L',ICHA)
             CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
             IF (IRET.NE.0) THEN
-              CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE AU MODE PROPRE')
-              CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
-              CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
-              CALL UTFINM()
+                VALK (1) = 'DEPL'
+                VALI = IORD
+              CALL U2MESG('F', 'CALCULEL6_28',1,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8B)
             PULS = ZR(IPULS)
@@ -847,10 +846,9 @@ C
           CALL JEVEUO(VCHAR,'L',ICHA)
           CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
           IF(IRET.NE.0) THEN
-             CALL UTDEBM('F',OPER,'ACCES IMPOSSIBLE ')
-             CALL UTIMPK('L',' CHAMP : ',1,'DEPL')
-             CALL UTIMPI('S',', NUME_ORDRE : ',1,IORD)
-             CALL UTFINM()
+                VALK (1) = 'DEPL'
+                VALI = IORD
+             CALL U2MESG('F', 'CALCULEL6_29',1,VALK,1,VALI,0,0.D0)
           ENDIF
           CALL RSEXCH(RESUCO,'VITE',IORD,CHVITE,IRET)
           IF(IRET.NE.0) THEN
@@ -867,12 +865,10 @@ C         DANS LA SD RESULTAT DERIVE DE TYPE EVOL_ELAS.
             IF (OPTIO1.EQ.'CALC_DG') THEN
               CALL RSEXC2(1,1,LERES0,'DEPL',IORD,CHDESE,OPTIO1,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTDEBM('F',NOMPRO,'LA DERIVEE LAGRANGIENNE')
-                CALL UTIMPI('L','DU DEPLACEMENT D''OCCURRENCE N ',1,
-     &            IORD)
-                CALL UTIMPK('L','EST INEXISTANT DANS LA SD ',1,RESUCO)
-                CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
-                CALL UTFINM()
+                VALI = IORD
+                VALK (1) = RESUCO
+                VALK (2) = NOPASE
+                CALL U2MESG('F', 'CALCULEL6_30',2,VALK,1,VALI,0,0.D0)
               ENDIF
             ENDIF
 C
@@ -884,32 +880,26 @@ C
      &      .OR. OPTIO1.EQ.'CALC_DK_DG_FORC') THEN
               CALL RSEXC2(1,1,LERES0,'DEPL',IORD,CHDESE,OPTIO1,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTDEBM('F',NOMPRO,'LA DERIVEE ')
-                CALL UTIMPI('L','DU DEPLACEMENT D''OCCURRENCE N ',1,
-     &            IORD)
-                CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
-                CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
-                CALL UTFINM()
+                VALI = IORD
+                VALK (1) = RESUCO
+                VALK (2) = NOPASE
+                CALL U2MESG('F', 'CALCULEL6_31',2,VALK,1,VALI,0,0.D0)
               ENDIF
               CALL RSEXC2(1,1,LERES0,'EPSI_ELGA_DEPL',IORD,CHEPSE,
      &                    OPTIO1,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTDEBM('F',NOMPRO,'LA DERIVEE ')
-                CALL UTIMPI('L','DE LA DEFORMATION D''OCCURRENCE N ',1,
-     &            IORD)
-                CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
-                CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
-                CALL UTFINM()
+                VALI = IORD
+                VALK (1) = RESUCO
+                VALK (2) = NOPASE
+                CALL U2MESG('F', 'CALCULEL6_32',2,VALK,1,VALI,0,0.D0)
               ENDIF
               CALL RSEXC2(1,1,LERES0,'SIEF_ELGA_DEPL',IORD,
      &                    CHSISE,OPTIO1,IRET)
               IF (IRET.GT.0) THEN
-                CALL UTDEBM('F',NOMPRO,'LA DERIVEE ')
-                CALL UTIMPI('L','DE LA CONTRAINTE D''OCCURRENCE N ',1,
-     &            IORD)
-                CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
-                CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
-                CALL UTFINM()
+                VALI = IORD
+                VALK (1) = RESUCO
+                VALK (2) = NOPASE
+                CALL U2MESG('F', 'CALCULEL6_33',2,VALK,1,VALI,0,0.D0)
               ENDIF
             ENDIF
 C

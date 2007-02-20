@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,12 +63,14 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /LVARJE/ZL(1)
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       INTEGER ZI
+      INTEGER VALI(3)
       REAL*8 ZR
       COMPLEX*16 ZC
       LOGICAL ZL
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       CHARACTER*1 K1BID
@@ -166,12 +168,11 @@ C        ------- LISTE TARDIVE DE MAILLES ASSOCIEE A LA CARTE:
             DO 40 I = 1,NB
               II = ZI(LIMA-1+I)
               IF (II.LE.0) THEN
-                CALL UTDEBM('F',' ETENCA','PB LISTE DE MAILLES')
-                CALL UTIMPK('L',' CARTE :',1,CHIN)
-                CALL UTIMPI('L',' NUMERO ENTITE :',1,IENT)
-                CALL UTIMPI('L',' POSITION DS LISTE :',1,I)
-                CALL UTIMPI('L',' NUMERO DE MAILLE  :',1,II)
-                CALL UTFINM()
+                VALK = CHIN
+                VALI (1) = IENT
+                VALI (2) = I
+                VALI (3) = II
+                CALL U2MESG('F', 'CALCULEL5_86',1,VALK,3,VALI,0,0.D0)
               END IF
               ZI(PTMA-1+II) = IGD
    40       CONTINUE

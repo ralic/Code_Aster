@@ -4,7 +4,7 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C     ------------------------------------------------------------------
       INTEGER ASTRCT,JMAIL1,JMAIL2,JMAIL3,APTSTR,NBCNX,KCHM,SGCOUR
       INTEGER KTYPCB,KNOMMA,CHM,DEBCHM,FINCHM,IND,IATYMA
       INTEGER NUMSE,NUMM1,NUMM2,IBID,NUMNO,IRET,IDEB,TROUVE
+      INTEGER VALI(3)
       REAL*8 EPSI
       LOGICAL OUVERT
       CHARACTER*1 K1B
@@ -55,6 +56,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 TYPCRB,OPERA
       CHARACTER*24 CONEC,TYPE,NOMMAI,NOMNOE
       CHARACTER*24 GRPMAI,NCHMIN,NMAIL1,NMAIL2,NTPCRB,NNOMMA
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -89,12 +91,11 @@ C----------------------------------------------------------------------
             CALL JEEXIN(JEXNOM(NOMMAI,NOMMA),EXISTE)
             IF (EXISTE.EQ.0) THEN
               IER = IER + 1
-              CALL UTDEBM('E','INTE_MAIL_2D',' ')
-              CALL UTIMPI('L','ERREUR NUMERO : ',1,IER)
-              CALL UTIMPK('L',' ',1,'MAILLES INEXISTANTE')
-              CALL UTIMPI('L','OCCURENCE NUMERO : ',1,OCC)
-              CALL UTIMPI('S',' MAILLE NUMERO : ',1,IM)
-              CALL UTFINM
+            VALI (1) = IER
+            VALI (2) = OCC
+            VALI (3) = IM
+            VALK (1) = 'MAILLES INEXISTANTE'
+              CALL U2MESG('E', 'POSTRELE_69',1,VALK,3,VALI,0,0.D0)
             ELSE
               CALL JENONU(JEXNOM(NOMAIL//'.NOMMAI',NOMMA),IBID)
               CALL JEVEUO(TYPE,'L',IATYMA)
@@ -102,12 +103,11 @@ C----------------------------------------------------------------------
               CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(JTYPM)),TYPM)
               IF (TYPM.NE.'SEG2' .AND. TYPM.NE.'SEG3') THEN
                 IER = IER + 1
-                CALL UTDEBM('E','INTE_MAIL_2D','DEFI_CHEMIN')
-                CALL UTIMPI('L','ERREUR NUMERO ',1,IER)
-                CALL UTIMPI('L','OCCURENCE NUMERO : ',1,OCC)
-                CALL UTIMPI('S',' MAILLE NUMERO : ',1,IM)
-                CALL UTIMPK('L',' MAILLE ',1,'SURFACIQUE(S)')
-                CALL UTFINM
+            VALI (1) = IER
+            VALI (2) = OCC
+            VALI (3) = IM
+            VALK (1) = 'SURFACIQUE(S)'
+                CALL U2MESG('E', 'POSTRELE_70',1,VALK,3,VALI,0,0.D0)
               END IF
             END IF
    10     CONTINUE
@@ -123,12 +123,11 @@ C----------------------------------------------------------------------
             CALL JENONU(JEXNOM(GRPMAI,NOMGR),EXISTE)
             IF (EXISTE.EQ.0) THEN
               IER = IER + 1
-              CALL UTDEBM('E','INTE_MAIL_2D','DEFI_CHEMIN')
-              CALL UTIMPI('L','ERREUR NUMERO : ',1,IER)
-              CALL UTIMPK('L',' ',1,'GROUPE DE MAILLES INEXISTANT')
-              CALL UTIMPI('L','OCCURENCE NUMERO : ',1,OCC)
-              CALL UTIMPI('S',' GROUPE NUMERO : ',1,IG)
-              CALL UTFINM
+            VALI (1) = IER
+            VALI (2) = OCC
+            VALI (3) = IG
+            VALK (1) = 'GROUPE DE MAILLES INEXISTANT'
+              CALL U2MESG('E', 'POSTRELE_71',1,VALK,3,VALI,0,0.D0)
             ELSE
               CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONMAX',NBM,K1B)
               CALL JEVEUO(JEXNOM(GRPMAI,NOMGR),'L',JGRM1)
@@ -138,13 +137,11 @@ C----------------------------------------------------------------------
                 CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(JTYPM)),TYPM)
                 IF (TYPM.NE.'SEG2' .AND. TYPM.NE.'SEG3') THEN
                   IER = IER + 1
-                  CALL UTDEBM('E','INTE_MAIL_2D','DEFI_CHEMIN')
-                  CALL UTIMPI('L','ERREUR NUMERO ',1,IER)
-                  CALL UTIMPI('L','OCCURENCE NUMERO : ',1,OCC)
-                  CALL UTIMPI('S',' GROUPE NUMERO : ',1,IG)
-                  CALL UTIMPK('L','PRESENCE DE MAILLE(S) ',1,
-     &                        'SURFACIQUE(S)')
-                  CALL UTFINM
+            VALI (1) = IER
+            VALI (2) = OCC
+            VALI (3) = IG
+            VALK (1) = 'SURFACIQUE(S)'
+                  CALL U2MESG('E', 'POSTRELE_72',1,VALK,3,VALI,0,0.D0)
                 END IF
    20         CONTINUE
               NBTM = NBTM + NBM
@@ -155,11 +152,8 @@ C----------------------------------------------------------------------
    40 CONTINUE
 
       IF (IER.GT.0) THEN
-        CALL UTDEBM('F','INTE_MAILE_COURBE',' ')
-        CALL UTIMPK('L','LES OBJETS PRECEDEMMENT EVOQUES SONT '//
-     &              'INEXISTANTS OU DE TYPE INCOMPATIBLE',1,
-     &              'ARRET EN ERREUR')
-        CALL UTFINM
+            VALK (1) = 'ARRET EN ERREUR'
+        CALL U2MESG('F', 'POSTRELE_73',1,VALK,0,0,0,0.D0)
       END IF
 
       CALL WKVECT('&INTLISTOTAL','V V I',NBTM,ALSTOT)
@@ -210,11 +204,10 @@ C     --- ON VERIFIE QU'EN 1 NOEUD ON A AU PLUS 2 MAILLES ---
       DO 110 IN = 1,NBTNOE
         IF (ZI(JNOE+IN-1).GT.2) THEN
           CALL JENUNO(JEXNUM(NOMNOE,IN),NOMSE)
-          CALL UTDEBM('F','OP0050','ERREUR DANS LES DONNEES')
-          CALL UTIMPK('L',' AU NOEUD ',1,NOMSE)
-          CALL UTIMPI('S',' ON A ',1,ZI(JNOE+IN-1))
-          CALL UTIMPK('S',' MAILLES',0,' ')
-          CALL UTFINM()
+            VALK (1) = NOMSE
+            VALK (2) = ' '
+            VALI (1) = ZI(JNOE+IN-1)
+          CALL U2MESG('F', 'POSTRELE_74',2,VALK,1,VALI,0,0.D0)
         END IF
   110 CONTINUE
       CALL JEDETR('&&OP0050.VERI_MAIL')
@@ -234,10 +227,8 @@ C     --- CHOIX DE L'ABSCISSE CURVILIGNE 0. ---
           IF (IRET.EQ.10) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOEUD)
           ELSE IF (IRET.EQ.1) THEN
-            CALL UTDEBM('A','INTE_MAIL_2D',
-     &                  'TROP DE NOEUDS DANS LE GROUP_NO')
-            CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
-            CALL UTFINM()
+            VALK (1) = K8B
+            CALL U2MESG('A', 'POSTRELE_75',1,VALK,0,0,0,0.D0)
           END IF
           CALL JENONU(JEXNOM(NOMNOE,K8B),NUMNO)
         END IF

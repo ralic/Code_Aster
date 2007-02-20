@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_12
+C TOLE CRP_12 CRS_505
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       COND
 C     ==================================================================
@@ -34,8 +34,8 @@ C     ------------------------------------------------------------------
       COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
      &                 DN2(N)
 C
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C     ==================================================================
       CHARACTER*8      KCOND , STAOU
       CHARACTER*24     LADATE
@@ -70,12 +70,24 @@ C     -------------  LIBERATION FICHIER --------------------------------
             CALL JELIBF ( STAOU , CLASSE(I:I) )
           ENDIF
    10   CONTINUE
+C       -----------  DESALLOCATION GESTION DES MARQUES -----------------
+        IF ( KDESMA(2) .NE. 0) THEN
+          CALL HPDEALLC (KDESMA(2), IBID, IBID)
+        ELSE IF (KDESMA(1) .NE. 0) THEN
+          CALL JJLIBP (KDESMA(1))
+        ENDIF  
+        IF ( KPOSMA(2) .NE. 0) THEN
+          CALL HPDEALLC (KPOSMA(2), IBID, IBID)
+        ELSE IF (KPOSMA(1) .NE. 0) THEN
+          CALL JJLIBP (KPOSMA(1))
+        ENDIF  
+        KDESMA(1) = 0
+        KDESMA(2) = 0
+        KPOSMA(1) = 0
+        KPOSMA(2) = 0
 C       -----------  DESALLOCATION MEMOIRE -----------------------------
         CALL JXLIBM ( ISZON , LISZON )
 C
-        KDESMA = 0
-        KDESMA = 0
-        KPOSMA = 0
       ELSE
         CALL JXABOR()
       ENDIF

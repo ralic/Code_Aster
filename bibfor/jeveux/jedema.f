@@ -1,7 +1,7 @@
       SUBROUTINE JEDEMA
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -43,8 +43,8 @@ C ----------------------------------------------------------------------
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
@@ -57,22 +57,21 @@ C
 C ----------------------------------------------------------------------
       INTEGER          K,IADMI,IDEB,IFIN,IDOS,IDCO,IC,IS
       CHARACTER *8     KSUF
-C NOUVEAU COMMON D'INIHIBITION DES JEMARQ ET JEDEMA
       CHARACTER *24    D24
       DATA             D24 /'$$$$$$$$$$$$$$$$$$$$$$$$'/
 C DEB ------------------------------------------------------------------
       IF (IPGC .EQ. 0 ) THEN
          CALL U2MESS('F','JEVEUX_06')
       ELSE
-        IDEB = ISZON(JISZON+KPOSMA+IPGC-1)
+        IDEB = ISZON(JISZON+KPOSMA(1)+IPGC-1)
       ENDIF
       IFIN = LGDUTI-1
 C
 C --- ON TRAITE D'ABORD LES COLLECTIONS
 C
       DO 100 K=IDEB,IFIN
-        IADMI = ISZON(JISZON+KDESMA+K)
-        IF (IADMI .GT. 0 ) THEN
+        IADMI = ISZON(JISZON+KDESMA(1)+K)
+        IF (IADMI .NE. 0 ) THEN
           IDOS  = ISZON(JISZON+IADMI-2)
           IS    = ISZON(JISZON+IADMI-4)
           IDCO  = ISZON(JISZON+IS-3)
@@ -97,8 +96,8 @@ C --- ON TRAITE MAINTENANT LES OBJETS SIMPLES
 C --- ET LE $$DESO DES COLLECTIONS CONTIGUES
 C
       DO 200 K=IDEB,IFIN
-        IADMI = ISZON(JISZON+KDESMA+K)
-        IF (IADMI .GT. 0 ) THEN
+        IADMI = ISZON(JISZON+KDESMA(1)+K)
+        IF (IADMI .NE. 0 ) THEN
           IDOS  = ISZON(JISZON+IADMI-2)
           IS    = ISZON(JISZON+IADMI-4)
           IDCO  = ISZON(JISZON+IS-3)
@@ -118,14 +117,14 @@ C
               IMARQ ( JMARQ(IC)+2*IDOS-1 ) = 0
               IMARQ ( JMARQ(IC)+2*IDOS   ) = 0
               ISZON(JISZON+IADMI-1 ) = ISTAT(1)
-              ISZON(JISZON+KDESMA+K) = 0
+              ISZON(JISZON+KDESMA(1)+K) = 0
             ENDIF
           ENDIF
         ENDIF
  200  CONTINUE
       LGPUTI = LGPUTI - 1
       LGDUTI = IDEB
-      ISZON(JISZON+KPOSMA+IPGC-1) = 0
+      ISZON(JISZON+KPOSMA(1)+IPGC-1) = 0
       IPGC = IPGC - 1
  300  CONTINUE
 C FIN ------------------------------------------------------------------

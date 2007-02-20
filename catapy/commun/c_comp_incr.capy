@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+#& MODIF COMMUN  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -145,9 +145,9 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           SANS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           CORR_ACIER      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           VMIS_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          VISC_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          VISC_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           VMIS_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
-          VISC_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          VISC_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           VMIS_ISOT_PUIS  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           VMIS_ECMI_TRAC  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           VMIS_ECMI_LINE  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
@@ -195,8 +195,8 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           LMARC_IRRA      =SIMP(statut='c',typ='I',defaut=20,into=(20,)),
           VISC_TAHERI     =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
           ROUSSELIER      =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
-          ROUSS_PR        =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
-          ROUSS_VISC      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          ROUSS_PR        =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
+          ROUSS_VISC      =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           VMIS_POU_LINE   =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
           VMIS_POU_FLEJOU =SIMP(statut='c',typ='I',defaut=9 ,into=(9,)),
           ASSE_CORN       =SIMP(statut='c',typ='I',defaut=7,into=(7,)),

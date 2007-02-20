@@ -2,7 +2,7 @@
      &                  NBINCR,TABSGR,TABSST,TABGMA,TABNOM)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/03/99   AUTEUR SABJLMA P.LATRUBESSE 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,13 +64,11 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6  PGC
+      CHARACTER*24 VALK(4)
       CHARACTER*8  NOMSST,NOMRES,MAILLA
       CHARACTER*8  TABSGR(*),TABSST(*),TABGMA(*),TABNOM(*)
       CHARACTER*8  K8BID,NOMGR,NOMUT,EXCLU
 C
-C-----------------------------------------------------------------------
-      DATA PGC         /'GMA110'/
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -106,15 +104,11 @@ C     --- RECHERCHE DES NOMS DANS NOM_GROUP_MA ---
          DO 20 IGROLD=1,NBTGRM
             CALL JENUNO(JEXNUM(NOMRES//'.GROUPEMA',IGROLD),K8BID)
             IF (NOMUT .EQ. K8BID) THEN
-               CALL UTDEBM('F',PGC,'CONFLIT DE NOM DE GROUPE DE'//
-     &                             ' MAILLE DANS LE SQUELETTE')
-               CALL UTIMPK('L','LE NOM DE GROUPE : ',1,NOMUT)
-               CALL UTIMPK('L','PROVENANT DE LA SOUS-STRUCTURE : '
-     &                          ,1,NOMSST)
-               CALL UTIMPK('L','ET DU GROUPE DE MAILLE : ',1,
-     &                          NOMGR)
-               CALL UTIMPK('L','EXISTE DEJA. ',0,K8BID)
-               CALL UTFINM
+                  VALK (1) = NOMUT
+                  VALK (2) = NOMSST
+                  VALK (3) = NOMGR
+                  VALK (4) = K8BID
+               CALL U2MESG('F', 'ALGORITH13_26',4,VALK,0,0,0,0.D0)
             ENDIF
   20     CONTINUE
          CALL JECROC(JEXNOM(NOMRES//'.GROUPEMA',NOMUT))
@@ -148,12 +142,10 @@ C --- CERTAINS GROUPES N'ONT PAS ETE TROUVE
                   ENDIF
                ENDIF
                IF (IGR.GT.NBGR) THEN
-                  CALL UTDEBM('F',PGC,'NOM DE GROUPE NON TROUVE')
-                  CALL UTIMPK('L','LE GROUPE : ',1,NOMUT)
-                  CALL UTIMPK('L','N EXISTE PAS ',0,K8BID)
-                  CALL UTIMPK('L','DANS LA SOUS-STRUCTURE : '
-     &                             ,1,NOMSST)
-                  CALL UTFINM
+                  VALK (1) = NOMUT
+                  VALK (2) = K8BID
+                  VALK (3) = NOMSST
+                  CALL U2MESG('F', 'ALGORITH13_27',3,VALK,0,0,0,0.D0)
                ENDIF
             ENDIF
  70      CONTINUE

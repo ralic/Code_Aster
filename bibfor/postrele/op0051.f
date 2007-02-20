@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       PARAMETER ( NOMPRO = 'OP0051' )
 C
       INTEGER IFM, NIV
+      INTEGER VALI
       INTEGER IAUX, JAUX
       INTEGER      ICHEF, IE, IOCC, IRET, IVCHF, JACC, JACCIS, JACCR8,
      &             JCHEF, JTAC, JVAC, N1, NBACCE, NBCHEF, NBPOST,
@@ -72,8 +73,9 @@ C
       CHARACTER*19 LATAB1, TABLE1
       CHARACTER*19 NCH19, NCH19N
       CHARACTER*24 XNUMCP, XNOMCP, VNOMCH, VCODOP, XNOVAR
+      CHARACTER*24 VALK(3)
       CHARACTER*24 NACCIS, NACCR8, NCH24, NLSMAC, NLSNAC
-      CHARACTER*24 NORECG, VALK(2)
+      CHARACTER*24 NORECG
       LOGICAL      TROUVE
 C     ------------------------------------------------------------------
 C
@@ -334,12 +336,11 @@ C
 C
          IF ( .NOT. TROUVE ) THEN
 C
-            CALL UTDEBM('F','OP0051','****************************')
-            CALL UTIMPI('L','* POST_TRAITEMENT NUMERO : ',1,IOCC)
-            CALL UTIMPK('L','* INEXISTENCE DES CHAMP-GD',0,' ')
-            CALL UTIMPK('L','* PAS DE POST-TRAITEMENT',0,' ')
-            CALL UTIMPK('L','****************************',0,' ')
-            CALL UTFINM()
+               VALI = IOCC
+               VALK (1) = ' '
+               VALK (2) = ' '
+               VALK (3) = ' '
+            CALL U2MESG('F', 'POSTRELE_85',3,VALK,1,VALI,0,0.D0)
          ELSE
 C
 C           --- SAISIE DU LIEU DU POST-TRAITEMENT DE L' OCCURENCE ---
@@ -348,15 +349,11 @@ C
 C
             IF ( IRET .EQ. 0 ) THEN
 C
-               CALL UTDEBM('F','OP0051',
-     &                  '****************************************')
-               CALL UTIMPI('L','* POST_TRAITEMENT NUMERO : ',1,IOCC)
-               CALL UTIMPK('L','* AUCUNES MAILLES NE CORRESPONDENT'//
-     &                         ' AUX CRITERES DEMANDES',0,DIM)
-               CALL UTIMPK('L','* PAS DE POST-TRAITEMENT',0,' ')
-               CALL UTIMPK('L',
-     & '********************************************************',0,' ')
-               CALL UTFINM()
+               VALI = IOCC
+               VALK (1) = DIM
+               VALK (2) = ' '
+               VALK (3) = ' '
+               CALL U2MESG('F', 'POSTRELE_86',3,VALK,1,VALI,0,0.D0)
 C
             ELSE
 C

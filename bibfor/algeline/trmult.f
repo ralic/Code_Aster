@@ -5,7 +5,7 @@
       REAL*8        PSIDE(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8       XNORM, DEPL(6)
       CHARACTER*8  NOMGR, NOMNOE
       CHARACTER*24 MAGRNO, MANONO, DEEQ
+      CHARACTER*24 VALK(3)
       CHARACTER*8  KBID
       INTEGER      LMAT, IBID, IORDR, IER
       REAL*8       R8B, EPSI
@@ -144,31 +145,28 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
      &                     CRIT,IORDR,1,NBTROU)
                IF (NBTROU.NE.1) THEN
                   IER = IER + 1
-                  CALL UTDEBM('F','TRMULT','PAS DE MODE STATIQUE POUR')
-                  CALL UTIMPK('L','         LE NOEUD : ',1,ACCES(1:8))
-                  CALL UTIMPK('L',' ET SA COMPOSANTE : ',1,ACCES(9:16))
-                  CALL UTFINM( )
+                  VALK (1) = ACCES(1:8)
+                  VALK (2) = ACCES(9:16)
+                  CALL U2MESG('F', 'ALGELINE4_61',2,VALK,0,0,0,0.D0)
                   GOTO 40
                ENDIF
                CALL RSVPAR(MODSTA,IORDR,'TYPE_DEFO',IBID,R8B,
      &                                  'DEPL_IMPO',IRET)
                IF (IRET.NE.100) THEN
                   IER = IER + 1
-                  CALL UTDEBM('F','TRMULT','POUR LES MODES STATIQUES.')
-                  CALL UTIMPK('L','ON ATTEND UN : ',1,'MODE_STAT')
-                  CALL UTIMPK('L','   NOEUD : ',1,ACCES(1:8))
-                  CALL UTIMPK('L','     CMP : ',1,ACCES(9:16))
-                  CALL UTFINM( )
+                  VALK (1) = 'MODE_STAT'
+                  VALK (2) = ACCES(1:8)
+                  VALK (3) = ACCES(9:16)
+                  CALL U2MESG('F', 'ALGELINE4_62',3,VALK,0,0,0,0.D0)
                   GOTO 40
                ENDIF
                CALL RSEXCH(MODSTA,'DEPL',IORDR,CHAMNO,IRET)
                IF (IRET.NE.0) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E','TRMULT','CHAMP INEXISTANT.')
-                  CALL UTIMPK('L','PB CHAMP : ',1,CHAMNO)
-                  CALL UTIMPK('L','   NOEUD : ',1,ACCES(1:8))
-                  CALL UTIMPK('L','     CMP : ',1,ACCES(9:16))
-                  CALL UTFINM( )
+                  VALK (1) = CHAMNO
+                  VALK (2) = ACCES(1:8)
+                  VALK (3) = ACCES(9:16)
+                  CALL U2MESG('E', 'ALGELINE4_63',3,VALK,0,0,0,0.D0)
                   GOTO 40
                ELSE
                   CALL JEVEUO(CHAMNO//'.VALE','L',IDMST)

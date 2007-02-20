@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -90,7 +90,7 @@ C ---------
       CHARACTER*19  LIRELA, NUNOBE, XNOCA, YNOCA, ZNOCA, TABLCA
       INTEGER       NBNOBE, ICABL, NBNOCA(*)
       CHARACTER*24  NCNCIN, NMABET
-      CHARACTER*24 VALK(2)
+      CHARACTER*24  VALK(2)
 C
 C VARIABLES LOCALES
 C -----------------
@@ -175,10 +175,8 @@ C
          IF ( IRET.EQ.10 ) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOGRNA(1))
          ELSE IF ( IRET.EQ.1 ) THEN
-            CALL UTDEBM('A','IMMECA',
-     &                  'TROP DE NOEUDS DANS LE GROUP_NO')
-            CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
-            CALL UTFINM( )
+            VALK(1) = K8B
+            CALL U2MESG('A', 'MODELISA8_64',1,VALK,0,0,0,0.D0)
          ENDIF
          NOANCR(1) = K8B
 C
@@ -186,10 +184,8 @@ C
          IF ( IRET.EQ.10 ) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOGRNA(1))
          ELSE IF ( IRET.EQ.1 ) THEN
-            CALL UTDEBM('A','IMMECA',
-     &                  'TROP DE NOEUDS DANS LE GROUP_NO')
-            CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
-            CALL UTFINM( )
+            VALK(1) = K8B
+            CALL U2MESG('A', 'MODELISA8_64',1,VALK,0,0,0,0.D0)
          ENDIF
          NOANCR(2) = K8B
       ENDIF

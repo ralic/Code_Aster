@@ -10,7 +10,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/11/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER       JREFD, IMODE, JMODE, IER, NMIN, IMIN, NMAX, IMAX,IEQ
+      INTEGER VALI(3)
       INTEGER       NMIN1, KMODE, NORDR, IBID, I, LADPA, LMODE, LVALE
       INTEGER       INDK24, NBPAST, IRANG,IRET,JMODG,JMACR,JBASM,JRAID
       INTEGER       JMOD2,JMODL,JMATE,JCARA,JLIME,JMERI
@@ -60,6 +61,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16  TYPCON, NOMCMD, NOSY
       CHARACTER*19  CHAMNO
       CHARACTER*24  REFD,NUME,NOPAST(NBPAST)
+      CHARACTER*24 VALK
       CHARACTER*32  JEXNUM
       LOGICAL       LREFD, LNUME, LBASM, LSTOCK
 C     ------------------------------------------------------------------
@@ -263,12 +265,11 @@ C        --- VECTEUR PROPRE ---
             CALL VTCREB(CHAMNO,NUME,'G',TYPE(1:1),NEQ)
           ENDIF
         ELSE
-          CALL UTDEBM('F','VPSTOR'//'.VPSTOR','APPEL ERRONE')
-          CALL UTIMPI('L','MODE NUMERO',1,KMODE)
-          CALL UTIMPI('L','POSITION MODALE',1,JMODE)
-          CALL UTIMPI('L','CODE RETOUR DE RSEXCH :',1,IER)
-          CALL UTIMPK('L','PB CHAM_NO',1,CHAMNO)
-          CALL UTFINM()
+          VALI (1) = KMODE
+          VALI (2) = JMODE
+          VALI (3) = IER
+          VALK = CHAMNO
+          CALL U2MESG('F', 'ALGELINE4_85',1,VALK,3,VALI,0,0.D0)
         ENDIF
         IF (TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE') THEN
            CALL JEECRA (CHAMNO//'.DESC','DOCU',IBID,'VGEN')

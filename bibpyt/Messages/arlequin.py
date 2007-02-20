@@ -1,4 +1,4 @@
-#@ MODIF arlequin Messages  DATE 09/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF arlequin Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

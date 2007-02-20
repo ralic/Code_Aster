@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -45,11 +46,13 @@ C
      &             I, J, K, L, NDIM, JCONT, NCMP
       PARAMETER  ( NCMP = 6 )
       REAL*8       PREC, MOMEN0, MOMEN1
+      REAL*8 VALR
       COMPLEX*16   CBID
       LOGICAL      EXIST
       CHARACTER*8  K8B, CRIT, NOCMP(NCMP), TBSIG(13)
       CHARACTER*16 MOTCLF, VALEK
       CHARACTER*24 ABSCUR
+      CHARACTER*24 VALK(2)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -128,12 +131,11 @@ C
      &                       CBID, K8B, CRIT, PREC, NOCMP(J),
      &                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
                IF (IRET.NE.0) THEN
-                  CALL UTDEBM('F', 'RC32MU', 'PROBLEME POUR RECUPERER')
-                  CALL UTIMPK('S',' DANS LA TABLE ',1, TBSIG(I) )
-                  CALL UTIMPK('L',' LA CONTRAINTE ', 1, NOCMP(J) )
-                  CALL UTIMPR('S',' POUR L''ABSC_CURV ',1,ZR(JABSC+K-1))
-                  CALL UTIMPI('L',' CODE RETOUR ',1,IRET)
-                  CALL UTFINM
+                  VALK (1) = TBSIG(I)
+                  VALK (2) = NOCMP(J)
+                  VALR = ZR(JABSC+K-1)
+                  VALI = IRET
+                  CALL U2MESG('F', 'POSTRELE_91',2,VALK,1,VALI,1,VALR)
                ENDIF
  14         CONTINUE
 C

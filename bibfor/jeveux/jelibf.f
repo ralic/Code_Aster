@@ -1,7 +1,7 @@
       SUBROUTINE JELIBF ( COND , CLAS )
-C COMPIL PARAL
+C TOLE CRS_505
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,22 +23,20 @@ C ======================================================================
 C ----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      LOGICAL          LCRA
-      COMMON /LENVJE/  LCRA
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
      &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
@@ -83,7 +81,8 @@ C ----------------------------------------------------------------------
       CHARACTER*8      KCOND,VALK(1)
       CHARACTER*32     NOMCAR
       CHARACTER*75     CMESS
-      INTEGER          IADCAR,IADDAC(2),LGBL,VALI(7)
+      INTEGER          IADCAR,IADDAC(2),LGBL,VALI(7),IADCDY,IBID,
+     &                 IADDAD(2),KLEC,KECR
       REAL*8           VALR(1)
 C DEB ------------------------------------------------------------------
       KCOND = COND
@@ -111,7 +110,7 @@ C     ----------- DECHARGER TOUTES LES COLLECTIONS -----------------
       DO 10 I = LIDBAS+1 , NREUTI(IC)
         IF ( GENR ( JGENR(IC) + I ) .EQ. 'X' ) THEN
           ICLACO = IC
-          IBACOL = IADM( JIADM(IC) + I )
+          IBACOL = IADM( JIADM(IC) + 2*I-1 )
           IF ( IBACOL .NE. 0 ) THEN
             IDATCO = I
             NOMCO = RNOM ( JRNOM(IC) + I )
@@ -121,7 +120,7 @@ C     ----------- DECHARGER TOUTES LES COLLECTIONS -----------------
    10 CONTINUE
 C     -- DECHARGER TOUS LES OBJETS SIMPLES Y COMPRIS AVEC $$ -------
       DO 20 I = LIDBAS+1 , NREUTI(IC)
-        IADMI = IADM( JIADM(IC) + I )
+        IADMI = IADM( JIADM(IC) + 2*I-1 )
         IF ( IADMI .NE. 0 ) THEN
           IDATOS = I
           NOMOS  = RNOM ( JRNOM(IC) + I )
@@ -129,32 +128,47 @@ C     -- DECHARGER TOUS LES OBJETS SIMPLES Y COMPRIS AVEC $$ -------
         END IF
    20 CONTINUE
 C     ----------- DECHARGER TOUS LES OBJETS SYSTEME ----------------
+      IAD2   = IADM(JIADM(IC) + 2*2-1)
+      IADCAR = IADM(JIADM(IC) + 2*1-1)
+      IADCDY = IADM(JIADM(IC) + 2*1  )
+      IADACC = IADM(JIADM(IC) + 2*LIDEFF-1)
+      IADACY = IADM(JIADM(IC) + 2*LIDEFF  )
+      K2  = IADM(JIADM(IC) + 2*2 )
+      K16 = IADM(JIADM(IC) + 2*16)
+      K18 = IADM(JIADM(IC) + 2*18)
+      K19 = IADM(JIADM(IC) + 2*19)
+      K20 = IADM(JIADM(IC) + 2*20)
+
       IF ( KCOND .NE. 'LIBERE  ' ) THEN
-        NOMCAR = RNOM ( JRNOM(IC) + 1 )
-        IADCAR = IADM ( JIADM(IC) + 1 )
-        IADACC = IADM ( JIADM(IC) + LIDEFF )
-        LACC   = LONO ( JLONO(IC) + LIDEFF )
-        IADDAC(1) = IADD ( JIADD(IC) + 2*LIDEFF-1)
-        IADDAC(2) = IADD ( JIADD(IC) + 2*LIDEFF  )
+
+        NOMCAR = RNOM (JRNOM(IC) + 1)
+        IADCAR = IADM (JIADM(IC) + 2*1-1)
+        LACC   = LONO (JLONO(IC) + LIDEFF)
+        IADDAC(1) = IADD (JIADD(IC) + 2*LIDEFF-1)
+        IADDAC(2) = IADD (JIADD(IC) + 2*LIDEFF  )
+
+        IADADI = IADM (JIADM(IC) + 2*(LIDEFF-1)-1)
+        IADADY = IADM (JIADM(IC) + 2*(LIDEFF-1)  )
+        LADI   = LONO (JLONO(IC) + LIDEFF-1)
+        IADDAD(1) = IADD (JIADD(IC) + 2*(LIDEFF-1)-1)
+        IADDAD(2) = IADD (JIADD(IC) + 2*(LIDEFF-1)  )
+C       
         IDB    = IDEBUG
         IDEBUG = 0
-        DO 30 I = LIDEFF-1 , 2 , -1
-          IADMI = IADM( JIADM(IC) + I )
+        DO 30 I = LIDEFF-2 , 2 , -1
+          IADMI = IADM( JIADM(IC) + 2*I-1 )
           IF ( IADMI .NE. 0 ) THEN
             IDATOS = I
             NOMOS  = RNOM ( JRNOM(IC) + I )
-            CALL JJLIDE ( 'JELIBF' , NOMOS , 1 )
+            CALL JJLIDE ( 'SYSTEM' , NOMOS , 1 )
           END IF
    30   CONTINUE
-        DO 32 I = 2 , LIDEFF-1
-          IADMI = IADM( JIADM(IC) + I )
-          IF ( IADMI .NE. 0 ) THEN
-            CALL JJLIBP ( IADMI )
-          END IF
-   32   CONTINUE
         DO 33 I = LIDBAS+1 , NREUTI(IC)
-          IADMI = IADM( JIADM(IC) + I )
-          IF ( IADMI .NE. 0 ) THEN
+          IADMI = IADM( JIADM(IC) + 2*I-1 )
+          IADYN = IADM( JIADM(IC) + 2*I   )
+          IF ( IADYN .NE. 0 ) THEN
+            CALL HPDEALLC ( IADYN , IBID , IBID )
+          ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
           END IF
    33   CONTINUE
@@ -172,13 +186,34 @@ C       ----------- ACTUALISER CARA
         CARA(JCARA(IC)+1) = NREUTI(IC)
         CARA(JCARA(IC)+3) = NBLMAX(IC)
         CARA(JCARA(IC)+4) = NBLUTI(IC)
-        CARA(JCARA(IC)+6) = IADD(JIADD(IC)+3)
-        CARA(JCARA(IC)+7) = IADD(JIADD(IC)+4)
+        CARA(JCARA(IC)+6) = IADD(JIADD(IC) + 3)
+        CARA(JCARA(IC)+7) = IADD(JIADD(IC) + 4)
         IF ( IADCAR.NE. 0 ) THEN
            IDATOS = 1
            CALL JJLIDE ( 'JELIBF' , NOMCAR , 1 )
            IADCAR = 0
         END IF
+      ENDIF
+C
+C ON PEUT MAINTENANT LIBERER LES ZONES MEMOIRES ASSOCIEES AUX
+C OBJETS DU SYSTEME, ELLES NE SERONT PLUS UTILISEES (3-13):
+C    $$GENR , $$TYPE , $$DOCU , $$ORIG , $$RNOM  , $$LTYP , $$LONG  , 
+C    $$LONO , $$DATE , $$LUTI , $$HCOD 
+C
+      IF ( KCOND .NE. 'LIBERE  ' ) THEN
+        DO 32 I = 3 , LIDEFF-2
+          IADMI = IADM( JIADM(IC) + 2*I-1 )
+          IADYN = IADM( JIADM(IC) + 2*I   )
+          IF ( IADYN .NE. 0 ) THEN
+            CALL HPDEALLC ( IADYN , IBID , IBID )
+          ELSE IF ( IADMI .NE. 0 ) THEN
+            CALL JJLIBP ( IADMI )
+          END IF
+   32   CONTINUE
+      ENDIF
+C      
+C      
+      IF ( KCOND .EQ. 'SAUVE   '  ) THEN
 C       ----------- DECHARGER TAMPON D'ECRITURE ( PETITS OBJETS )
         LGBL = 1024*LONGBL(IC)*LOIS
         IF ( IITECR(IC) .GT. 0 ) THEN
@@ -198,8 +233,28 @@ C       ---- ON DECHARGE MAINTENANT LES STATISTIQUES SUR LES ACCES
         IF ( LITLEC(IC) ) THEN
           CALL JXECRB ( IC,IITLEC(IC),KITLEC(IC)+1,LGBL,0,0)
         ENDIF
-        CALL JJLIBP ( IADACC )
+        IF ( IADACY .NE. 0 ) THEN
+          CALL HPDEALLC ( IADACY , IBID , IBID )
+          IADACY = 0
+        ELSE IF ( IADACC.NE. 0 ) THEN
+          CALL JJLIBP ( IADACC )
+        ENDIF  
         IADACC = 0
+C       ---- ON DECHARGE MAINTENANT LA DESCRIPTION DES ENREGISTREMENTS
+        IDATOS = LIDEFF-1
+        NBIO = NBIO + 1
+        CALL JXECRO (IC,IADADI,IADDAD,LADI,0,LIDEFF-1)
+        IITECR(IC) = 0
+        IF ( LITLEC(IC) ) THEN
+          CALL JXECRB ( IC,IITLEC(IC),KITLEC(IC)+1,LGBL,0,0)
+        ENDIF
+        IF ( IADADY .NE. 0 ) THEN
+          CALL HPDEALLC ( IADADY , IBID , IBID )
+          IADADY = 0
+        ELSE IF ( IADADI .NE. 0 ) THEN
+          CALL JJLIBP ( IADADI )
+        ENDIF  
+        IADADI = 0
 C
 C     GLUTE STAT CODE
 C
@@ -229,22 +284,47 @@ C
       IF ( KCOND .NE. 'LIBERE  ' ) THEN
         IF ( IADCAR.NE. 0 ) THEN
            IDATOS = 1
-           CALL JJLIBP ( IADCAR )
+           IF (IADCDY .NE. 0 ) THEN 
+             CALL HPDEALLC ( IADCDY , IBID , IBID )
+           ELSE
+             CALL JJLIBP ( IADCAR )
+           ENDIF
         END IF
-        IF ( IADACC.NE. 0 ) THEN
-           IDATOS = LIDEFF
-           CALL JJLIBP ( IADACC )
-        END IF
+        IF ( IADACY .NE. 0 ) THEN
+          CALL HPDEALLC ( IADACY , IBID , IBID )
+        ELSE IF ( IADACC.NE. 0 ) THEN
+          CALL JJLIBP ( IADACC )
+        ENDIF  
 C       ----------- CLORE LE FICHIER
         IF ( KSTINI(IC) .NE. 'DUMMY   ' ) THEN
           CALL JXFERM ( IC )
         ENDIF
 C       ----------- LIBERER PLACE
-        CALL JJLIBP ( 1 + KITLEC(IC) / LOIS )
-        CALL JJLIBP ( 1 + KITECR(IC) / LOIS )
-        IF ( LCRA ) CALL JJLIBP ( KINDEF(IC) )
-        CALL JJLIBP ( KIADM (IC) )
-        CALL JJLIBP ( KMARQ (IC) )
+        IF (K18 .NE. 0) THEN
+          CALL HPDEALLC ( K18 , IBID , IBID )
+        ELSE
+          CALL JJLIBP ( 1 + KITLEC(IC) / LOIS )
+        ENDIF
+        IF (K2 .NE. 0) THEN
+          CALL HPDEALLC ( K2 , IBID , IBID )
+        ELSE
+          CALL JJLIBP ( IAD2 )
+        ENDIF
+        IF (K19 .NE. 0) THEN
+          CALL HPDEALLC ( K19 , IBID , IBID )
+        ELSE
+          CALL JJLIBP ( 1 + KITECR(IC) / LOIS )
+        ENDIF
+        IF (K16 .NE. 0) THEN
+          CALL HPDEALLC ( K16 , IBID , IBID )
+        ELSE IF ( KMARQ(IC) .NE. 0 ) THEN
+          CALL JJLIBP ( KMARQ(IC) )
+        ENDIF
+        IF (K20 .NE. 0) THEN
+          CALL HPDEALLC ( K20 , IBID , IBID )
+        ELSE IF ( KIADM(IC) .NE. 0 ) THEN
+          CALL JJLIBP ( KIADM(IC) )
+        ENDIF
 C
         CLASSE(IC:IC) = ' '
         NOMFIC(IC)    = ' '
@@ -261,7 +341,6 @@ C
         LONGBL(IC)    = 0
         KITLEC(IC)    = 0
         KITECR(IC)    = 0
-        KINDEF(IC)    = 0
         KIADM(IC)     = 0
         IITLEC(IC)    = 0
         IITECR(IC)    = 0

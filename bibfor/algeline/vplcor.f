@@ -6,7 +6,7 @@
       REAL*8   SIGNES(NBVECT),VECT(NEQ,NBVECT),PKX(NEQ,NBVECT),PLX(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/02/97   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     -----------------------------------------------------------------
       INTEGER     IEQ, ITO
+      INTEGER VALI(2)
       REAL*8      COEF, XIKXI, XJKXI, XJKXIS
 C     -----------------------------------------------------------------
 C
@@ -102,10 +103,9 @@ C
   60                  CONTINUE
                       XJKXI = XJKXIS
                    ELSE
-                      CALL UTDEBM('A','VPORTH','LA REORTHOGONALISATION')
-                      CALL UTIMPI('S',' DIVERGE APRES ',1,IORTHO)
-                      CALL UTIMPI('S',' ITERATION(S)  ',0,IORTHO)
-                      CALL UTFINM()
+                      VALI (1) = IORTHO
+                      VALI (2) = IORTHO
+      CALL U2MESG('A', 'ALGELINE4_76',0,' ',2,VALI,0,0.D0)
                       GOTO 100
                    ENDIF
 C

@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,12 +57,14 @@ C
       PARAMETER ( NOMPRO = 'LRCMPR' )
 C
       INTEGER IFM, NIVINF
+      INTEGER VALI
 C
       INTEGER ADPROA, ADPROM
       INTEGER LGPROM
       INTEGER IAUX
 C
       CHARACTER*24 NTPROM
+      CHARACTER*24 VALK
 C
 C====
 C 1. PREALABLES
@@ -87,10 +89,9 @@ C====
 C
       CALL EFNPFL ( IDFIMD, NOMPRF, LGPROM, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'PROFIL ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOMPRF )
-        CALL UTIMPI ( 'L', 'ERREUR EFNPFL NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK = NOMPRF
+        VALI = CODRET
+        CALL U2MESG('A', 'PREPOST5_43',1,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST2_12')
       ENDIF
 C
@@ -108,10 +109,9 @@ C
 C
       CALL EFPFLL ( IDFIMD, ZI(ADPROM), NOMPRF, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'PROFIL ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOMPRF )
-        CALL UTIMPI ( 'L', 'ERREUR EFPFLL NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK = NOMPRF
+        VALI = CODRET
+        CALL U2MESG('A', 'PREPOST5_44',1,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST2_12')
       ENDIF
 C

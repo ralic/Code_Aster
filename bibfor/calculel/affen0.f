@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NONUME,TYPVAL
       CHARACTER*16 TYPCO,OPER,TYPCO1,TYPCO2
       CHARACTER*19 CHIN,CHOUT,NOCHNO
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -67,11 +68,9 @@ C   ---   ON S'APPUIE SUR UN "CHAM_NO"
         CALL GETTCO(NOCHNO,TYPCO1)
         CALL GETTCO(CHIN,TYPCO2)
         IF (TYPCO1.NE.TYPCO2) THEN
-          CALL UTDEBM('F',OPER,
-     &                'LES CHAMPS NE SONT PAS DE LA MEME GRANDEUR:')
-          CALL UTIMPK('L','  TYPE DU CHAM_NO ',1,TYPCO1)
-          CALL UTIMPK('L','  TYPE DU CHAM_NO_AFFE ',1,TYPCO2)
-          CALL UTFINM
+          VALK (1) = TYPCO1
+          VALK (2) = TYPCO2
+          CALL U2MESG('F', 'CALCULEL5_64',2,VALK,0,0,0,0.D0)
         END IF
 
         CALL JELIRA(NOCHNO//'.VALE','TYPE',IBID,TYPVAL)

@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*10  MOTFAC
       CHARACTER*14  NUME1, NUME2
       CHARACTER*24  MDGENE, MDSSNO, REFO
+      CHARACTER*24 VALK
 C     ------------------------------------------------------------------
 C
       CALL GETFAC ( 'CHOC', NBCHOC )
@@ -110,10 +111,8 @@ C
             IF (IRET.EQ.10) THEN
                CALL U2MESK('F','ELEMENTS_67',1,NOMGR1)
             ELSEIF (IRET.EQ.1) THEN
-               CALL UTDEBM('A','MDCHGE',
-     &                     'TROP DE NOEUDS DANS LE GROUP_NO')
-               CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOMNO1)
-               CALL UTFINM( )
+                  VALK = NOMNO1
+               CALL U2MESG('A', 'ALGORITH13_37',1,VALK,0,0,0,0.D0)
             ENDIF
             NOECHO(I,1) = NOMNO1
          ENDIF
@@ -143,10 +142,8 @@ C
                IF (IRET.EQ.10) THEN
                   CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
                ELSEIF (IRET.EQ.1) THEN
-                  CALL UTDEBM('A','MDCHGE',
-     &                     'TROP DE NOEUDS DANS LE GROUP_NO')
-                  CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOMNO2)
-                  CALL UTFINM( )
+                  VALK = NOMNO2
+                  CALL U2MESG('A', 'ALGORITH13_38',1,VALK,0,0,0,0.D0)
                ENDIF
                NOECHO(I,5) = NOMNO2
             ENDIF

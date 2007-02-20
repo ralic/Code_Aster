@@ -1,6 +1,6 @@
       SUBROUTINE CHRPEL(CHAMP1, REPERE, NBCMP, ICHAM, TYPE, NOMCH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C
       INTEGER      INOEU , IRET0 , IGRNO , IRET1 , NBGNO , IGNO,NNCP
       LOGICAL      TEST
       REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6),DDOT
+      REAL*8 VALR
       REAL*8       VALET(6) , EPSI    , XNORMR  , PROSCA,  R8DGRD
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3),PGL2(3,3)
       CHARACTER*1  K1B
@@ -65,6 +66,7 @@ C
       CHARACTER*16 OPTION,MOTCLE(2)
       CHARACTER*19 CHAMS1,CHAMS0
       CHARACTER*24 LIGREL,MESMAI
+      CHARACTER*24 VALK(3)
 C
       CALL JEMARQ()
       EPSI = 1.0D-6
@@ -111,13 +113,10 @@ C     ON EXCLUT LES MOT-CLES 'NOEUD' ET 'GROUP_NO'
       ELSE
         GOTO 100
       ENDIF
-      CALL UTDEBM('F','CHRPEL','LE ')
-      CALL UTIMPK('S','MOT-CLE ',1,K8B)
-      CALL UTIMPK('S','EST INCOMPATIBLE AVEC LE CHAMP',1,NOMCH)
-      CALL UTIMPK('S','. UTILISER ''GROUP_MA'' OU ''MAILLE'''
-     &   //' POUR RESTREINDRE LE CHANGEMENT DE REPERE A CERTAINES'
-     &   //' MAILLES.',0,' ')
-      CALL UTFINM()
+                           VALK (1) = K8B
+                           VALK (2) = NOMCH
+                           VALK (3) = ' '
+      CALL U2MESG('F', 'ALGORITH12_42',3,VALK,0,0,0,0.D0)
  100  CONTINUE
       CALL JEDETR('&&CHRPEL.NOEUDS')
       CALL JEDETR('&&CHRPEL.GROUP_NO')
@@ -175,10 +174,8 @@ C
          ELSE
             CALL GETVR8('DEFI_REPERE','ANGL_NAUT',1,1,1,ANGNOT(1),IBID)
             IF (IBID.NE.1) THEN
-               CALL UTDEBM('A','CHRPEL','ETUDE 2D')
-               CALL UTIMPR('L','ANGLE NAUTIQUE UNIQUE : ',1,
-     &                                  ANGNOT(1))
-               CALL UTFINM()
+                           VALR = ANGNOT(1)
+               CALL U2MESG('A', 'ALGORITH12_43',0,' ',0,0,1,VALR)
             ENDIF
          ENDIF
          ANGNOT(1) = ANGNOT(1)*R8DGRD()
@@ -367,9 +364,8 @@ C
                         CALL NORMEV(AXER,XNORMR)
                         IF (XNORMR .LT. EPSI) THEN
                            CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
-                           CALL UTDEBM('F','CHRPEL','NOEUD SUR L AXE_Z')
-                           CALL UTIMPK('L',' NOEUD : ',1,K8B)
-                           CALL UTFINM()
+                           VALK (1) = K8B
+      CALL U2MESG('F', 'ALGORITH12_44',1,VALK,0,0,0,0.D0)
                         ENDIF
                      ENDIF
                      CALL PROVEC(AXEZ,AXER,AXET)
@@ -485,9 +481,8 @@ C
                         CALL NORMEV(AXER,XNORMR)
                         IF (XNORMR .LT. EPSI) THEN
                            CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),K8B)
-                           CALL UTDEBM('F','CHRPEL','NOEUD SUR L AXE_Z')
-                           CALL UTIMPK('L',' NOEUD : ',1,K8B)
-                           CALL UTFINM()
+                           VALK (1) = K8B
+      CALL U2MESG('F', 'ALGORITH12_44',1,VALK,0,0,0,0.D0)
                         ENDIF
                      ENDIF
                      CALL PROVEC(AXEZ,AXER,AXET)

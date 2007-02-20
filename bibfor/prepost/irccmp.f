@@ -1,6 +1,6 @@
       SUBROUTINE IRCCMP(TYP,GD,NCMPMX,NOMCGD,NBCMP,NOMCMP,NBCMPT,JCMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/01/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
@@ -62,10 +63,9 @@ C
            ENDIF
   11    CONTINUE
         IF ( TYP(1:1) .NE. ' ' ) THEN
-            CALL UTDEBM(TYP,'IRCCMP',' ON NE TROUVE PAS LA COMPOSANTE')
-            CALL UTIMPK('S',' ',1,NOMCMP(ICM))
-            CALL UTIMPK('S',' DANS LA GRANDEUR ',1,GD)
-            CALL UTFINM
+            VALK (1) = NOMCMP(ICM)
+            VALK (2) = GD
+            CALL U2MESG('TYP', 'PREPOST5_25',2,VALK,0,0,0,0.D0)
          ENDIF
   10  CONTINUE
 C

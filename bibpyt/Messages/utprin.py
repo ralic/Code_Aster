@@ -1,4 +1,4 @@
-#@ MODIF utprin Messages  DATE 18/12/2006   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utprin Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

@@ -5,7 +5,7 @@
      &                  ACMA,ACSM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/10/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C DECLARATION PARAMETRES D'APPELS
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
       INTEGER ZI
+      INTEGER VALI(2)
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -152,10 +153,9 @@ C REMPLISSAGE DU VECTEUR AUXILIAIRE '&FETI.MAILLE.NUMSD'
           IBUFF = ZI(IFETA+I-1)
           IF (ZI(INUMSD+IBUFF-1).GT.0) THEN
 C MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
-            CALL UTDEBM('F','CRESO1','LA MAILLE DE NUMERO')
-            CALL UTIMPI('S',': ',1,IBUFF)
-            CALL UTIMPI('L','APPARTIENT A PLUSIEURS SOUS-DOMAINES!',0,0)
-            CALL UTFINM()
+                VALI (1) = IBUFF
+                VALI (2) = 0
+            CALL U2MESG('F', 'ELEMENTS4_75',0,' ',2,VALI,0,0.D0)
 
           ELSE
             ZI(INUMSD+IBUFF-1) = NUMSD
@@ -176,11 +176,9 @@ C SOUS-DOMAINE SI ON EST EN SEQUENTIEL
 C MAILLE PAS DANS LA PARTITION FETI
               IF (ZI(IMAIL-1+I).NE.0) THEN
 C MAILLE POURTANT DANS LE MODELE
-                CALL UTDEBM('F','CRESO1','LA MAILLE DU MODELE DE NUMERO'
-     &                      )
-                CALL UTIMPI('S',': ',1,I)
-                CALL UTIMPI('L','APPARTIENT A AUCUN SOUS-DOMAINE !',0,0)
-                CALL UTFINM()
+                VALI (1) = I
+                VALI (2) = 0
+                CALL U2MESG('F', 'ELEMENTS4_76',0,' ',2,VALI,0,0.D0)
               END IF
             END IF
    20     CONTINUE

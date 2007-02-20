@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER   ( NBPARI=1 , NBPARR=15 , NBPARK=1, NBPARA=17 )
       INTEGER       LPAR(3)
+      INTEGER VALI(2)
       REAL*8        R8B, PREC, ZERO, MASTOT
       CHARACTER*1   K1B, TYPMOD
       CHARACTER*3   OUINON
@@ -49,6 +50,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  TYPCON, NOMCMD, CRITFI, NOMPAR(3), NOMSY, NOMPAV
       CHARACTER*19  NUMEDD
       CHARACTER*24  MASSE, AMOR, RAIDE, REFD, MASSI, AMORI, RAIDI, KMODE
+      CHARACTER*24 VALK
       CHARACTER*24  KVEC, KVALI, KVALR, KVALK, NOPARA(NBPARA)
       COMPLEX*16    C16B
 C     ------------------------------------------------------------------
@@ -150,10 +152,9 @@ C
                         GOTO 20
                      ENDIF
  22               CONTINUE
-              CALL UTDEBM('A','OP0168','***** ALARME *****')
-              CALL UTIMPK('L','PAS D''EXTRACTION POUR ',1,MODEIN)
-              CALL UTIMPI('S',' POUR LE NUMERO D''ORDRE ',1,ZI(JME+J-1))
-              CALL UTFINM
+               VALK = MODEIN
+               VALI (1) = ZI(JME+J-1)
+              CALL U2MESG('A', 'ALGELINE4_55',1,VALK,1,VALI,0,0.D0)
  20            CONTINUE
                CALL JEECRA(JEXNUM(KMODE,NBMR),'LONUTI',NBMODE,' ')
                NDIMT = NDIMT + NBMODE
@@ -317,9 +318,8 @@ C
          MODEIN = ZK8(JNOM+I-1)
          CALL JELIRA(JEXNUM(KMODE,I),'LONUTI',NBMODE,K1B)
          IF ( NBMODE .EQ. 0 ) THEN
-            CALL UTDEBM('A','OP0168','***** ALARME *****')
-            CALL UTIMPK('L','PAS DE MODE EXTRAIT POUR ',1,MODEIN)
-            CALL UTFINM
+               VALK = MODEIN
+            CALL U2MESG('A', 'ALGELINE4_56',1,VALK,0,0,0,0.D0)
             GOTO 102
          ENDIF
          CALL JEVEUO(JEXNUM(KMODE,I),'L',JORDR)
@@ -369,10 +369,9 @@ C
             CALL RSADPA(MODEOU,'L',1,'NUME_MODE',IORD,0,JADR,K8B)
             NUME2 = ZI(JADR)
             IF ( NUME1 .EQ. NUME2 ) THEN
-               CALL UTDEBM('A','OP0168','***** ALARME *****')
-               CALL UTIMPI('L','NUME_MODE IDENTIQUE POUR LE',0,IBID)
-               CALL UTIMPI('S',' MODE D''ORDRE ',1,IORD)
-               CALL UTFINM
+               VALI (1) = IBID
+               VALI (2) = IORD
+               CALL U2MESG('A', 'ALGELINE4_57',0,' ',2,VALI,0,0.D0)
             ENDIF
  210     CONTINUE
  200  CONTINUE

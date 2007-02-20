@@ -6,7 +6,7 @@ C     SENSIBILITE - GESTION DES INFORMATIONS POUR UNE COMMANDE
 C     **            *           *                     **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,10 +106,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'SEGICO' )
-C
       INTEGER NBPSCX
+      INTEGER VALI
       PARAMETER ( NBPSCX = 23 )
 C
       INTEGER LXLGUT
@@ -121,6 +119,7 @@ C
       CHARACTER*3 SAUX03
       CHARACTER*8 SAUX08, NOPASE
       CHARACTER*24 NOMSTR
+      CHARACTER*24 VALK(3)
       CHARACTER*24 SAUX24, BLAN24
 C
 C                    123456789012345678901234
@@ -208,12 +207,11 @@ C
           IF ( IRET.NE.0 ) THEN
             SAUX24 = BLAN24
             SAUX24(1:LGNORE) = RESULT(1:LGNORE)
-            CALL UTDEBM ( 'A', NOMPRO, 'CODE RETOUR DE PSRENC' )
-            CALL UTIMPI ( 'S', ' : ', 1, IRET )
-            CALL UTIMPK ( 'L', 'LA DERIVEE DE : ', 1, SAUX24 )
-            CALL UTIMPK ( 'L', 'PAR RAPPORT A : ', 1, NOPASE )
-            CALL UTIMPK ( 'L', 'EST INTROUVABLE.', 0, SAUX08 )
-            CALL UTFINM
+        VALI = IRET
+        VALK (1) = SAUX24
+        VALK (2) = NOPASE
+        VALK (3) = SAUX08
+            CALL U2MESG('A', 'UTILITAI6_85',3,VALK,1,VALI,0,0.D0)
             CODRET = 1
           ENDIF
           JAUX = LXLGUT(SAUX08)
@@ -314,9 +312,8 @@ C====
 C
       ELSE
 C
-        CALL UTDEBM ( 'A', NOMPRO, 'MAUVAISE VALEUR POUR CHOIX' )
-        CALL UTIMPI ( 'L', 'IL FAUT 1,2 OU 3, MAIS PAS ', 1, CHOIX )
-        CALL UTFINM
+        VALI = CHOIX
+        CALL U2MESG('A', 'UTILITAI6_86',0,' ',1,VALI,0,0.D0)
         CALL U2MESS('F','MODELISA_67')
 C
       ENDIF

@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,6 +49,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
       INTEGER NMOCL
+      INTEGER VALI(2)
       PARAMETER (NMOCL=300)
 
       INTEGER I,J,K,N,JLISTI
@@ -199,10 +200,9 @@ C ---------------------------------------------------
         CALL GETMJM('FACE_IMPO',I,0,MOTCLE,TYMOCL,N)
         NMCL = -N
         IF (NMCL.GT.NMOCL) THEN
-          CALL UTDEBM('F','CAFACI','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
-          CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
-          CALL UTIMPI('L','NMOCL  = ',1,NMCL)
-          CALL UTFINM()
+          VALI (1) = NMOCL
+          VALI (2) = NMCL
+          CALL U2MESG('F', 'MODELISA8_32',0,' ',2,VALI,0,0.D0)
         END IF
         CALL GETMJM('FACE_IMPO',I,NMCL,MOTCLE,TYMOCL,N)
         NDDLA = 1
@@ -350,10 +350,9 @@ C ---------------------------------------------------
         CALL GETMJM('FACE_IMPO',I,0,MOTCLE,TYMOCL,N)
         NMCL = -N
         IF (NMCL.GT.NMOCL) THEN
-          CALL UTDEBM('F','CAFACI','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
-          CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
-          CALL UTIMPI('L','NMOCL  = ',1,NMCL)
-          CALL UTFINM()
+          VALI (1) = NMOCL
+          VALI (2) = NMCL
+          CALL U2MESG('F', 'MODELISA8_32',0,' ',2,VALI,0,0.D0)
         END IF
         CALL GETMJM('FACE_IMPO',I,NMCL,MOTCLE,TYMOCL,N)
         NDDLA = 1

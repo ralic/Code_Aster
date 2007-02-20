@@ -1,7 +1,7 @@
       SUBROUTINE CHPVER(KSTOP,NOCHAM,LOCHAM,GDCHAM,IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,6 +39,7 @@ C
       CHARACTER*19 NOCH
       CHARACTER*4  LOCH,TYCH
       CHARACTER*8  GDCH,NOMGD
+      CHARACTER*24 VALK(2)
 
       CALL JEMARQ()
 
@@ -51,10 +52,9 @@ C     VERIFICATION DU TYPE
          IF( (LOCH(3:4).NE.'XX'  .AND.   LOCH.NE.TYCH ) .OR. 
      &       (LOCH(3:4).EQ.'XX'  .AND.   LOCH(1:2).NE.TYCH(1:2)))THEN
             IER=1
-            CALL UTDEBM(KSTOP,'CHPVER','LE CHAMP')
-            CALL UTIMPK('S',' ',1,NOCH(1:8))
-            CALL UTIMPK('S','N''EST PAS DE TYPE ',1,LOCH)
-            CALL UTFINM()
+            VALK (1) = NOCH(1:8)
+            VALK (2) = LOCH
+            CALL U2MESG('KSTOP', 'UTILITAI5_98',2,VALK,0,0,0,0.D0)
          ENDIF
       ENDIF
 
@@ -64,10 +64,9 @@ C     VERIFICATION DE LA GRANDEUR
          CALL DISMOI(KSTOP,'NOM_GD',NOCH,'CHAMP',IBID,NOMGD,IER)
          IF(GDCH.NE.NOMGD)THEN
             IER=1
-            CALL UTDEBM(KSTOP,'CHPVER','LE CHAMP')
-            CALL UTIMPK('S',' ',1,NOCH(1:8))
-            CALL UTIMPK('S','N''A PAS LA GRANDEUR ',1,GDCH)
-            CALL UTFINM()
+            VALK (1) = NOCH(1:8)
+            VALK (2) = GDCH
+            CALL U2MESG('KSTOP', 'UTILITAI5_99',2,VALK,0,0,0,0.D0)
          ENDIF
       ENDIF
 

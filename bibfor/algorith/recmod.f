@@ -7,7 +7,7 @@
       CHARACTER*16        GRDMOD
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C OUT : GRDMOD : TYPE DE GRANDEUR A RECUPERER DANS LES MODES DYN ET STA
 C-----------------------------------------------------------------------
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER         ZI
+      INTEGER VALI
       COMMON  /IVARJE/ZI(1)
       REAL*8          ZR
       COMMON  /RVARJE/ZR(1)
@@ -124,9 +125,8 @@ C
          IMOD1 = ZI(ILMODE+IM-1)
          CALL RSEXCH ( MODMEC, GRDMOD, IMOD1, NOMCHA, IRET )
          IF ( IRET.NE. 0 ) THEN
-            CALL UTDEBM( 'F', 'RECMOD', 'MANQUE LA DEFORMEE MODALE')
-            CALL UTIMPI('L',' POUR LE MODE ',1,IMOD1)
-            CALL UTFINM( )
+            VALI = IMOD1
+            CALL U2MESG('F', 'ALGORITH14_8',0,' ',1,VALI,0,0.D0)
          ENDIF
          CALL JEVEUT ( NOMCHA(1:19)//'.VALE', 'L', ZI(ILAMOD+IM-1) )
  211  CONTINUE

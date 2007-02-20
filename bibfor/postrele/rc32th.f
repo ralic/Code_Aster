@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,11 +47,13 @@ C
      +             JCONT, IRET
       PARAMETER  ( NCMP = 6 )
       REAL*8       PREC(2), MOMEN0, MOMEN1, VALE(2), SIGMLO, SIGMLE
+      REAL*8 VALR
       COMPLEX*16   CBID
       LOGICAL      EXIST
       CHARACTER*8  K8B, CRIT(2), NOCMP(NCMP), TABLE, TABFLE, KNUME
       CHARACTER*16 MOTCLF, VALEK(2)
       CHARACTER*24 INSTAN, ABSCUR, JVORIG, JVEXTR
+      CHARACTER*24 VALK(2)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -91,10 +93,9 @@ C ------ ON RECUPERE LES INSTANTS DANS LA TABLE
 C
          CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
-            CALL UTDEBM('F', 'RC32TH', 'PROBLEME POUR RECUPERER')
-            CALL UTIMPK('S', ' DANS LA TABLE ',1, TABLE )
-            CALL UTIMPK('S', ' LES ', 1, VALEK(1) )
-            CALL UTFINM
+                  VALK (1) = TABLE
+                  VALK (2) = VALEK(1)
+            CALL U2MESG('F', 'POSTRELE_93',2,VALK,0,0,0,0.D0)
          ENDIF
          INSTAN = '&&RC32TH.INSTANT'
          CALL TBEXV1 ( TABLE, VALEK(1), INSTAN, 'V', NBINST, K8B)
@@ -104,10 +105,9 @@ C ------ ON RECUPERE L'ABSC_CURV DANS LA TABLE
 C
          CALL TBEXIP ( TABLE, VALEK(2), EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
-            CALL UTDEBM('F', 'RC32TH', 'PROBLEME POUR RECUPERER')
-            CALL UTIMPK('S', ' DANS LA TABLE ',1, TABLE )
-            CALL UTIMPK('S', ' LES ', 1, VALEK(2) )
-            CALL UTFINM
+                  VALK (1) = TABLE
+                  VALK (2) = VALEK(2)
+            CALL U2MESG('F', 'POSTRELE_94',2,VALK,0,0,0,0.D0)
          ENDIF
          ABSCUR = '&&RC32TH.ABSC_CURV'
          CALL TBEXV1 ( TABLE, VALEK(2), ABSCUR, 'V', NBABSC, K8B)
@@ -138,11 +138,10 @@ C
      +                       CBID, K8B, CRIT, PREC, NOCMP(J), 
      +                       K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
                IF (IRET.NE.0) THEN
-                  CALL UTDEBM('F', 'RC32TH', 'PROBLEME POUR RECUPERER')
-                  CALL UTIMPK('S', ' DANS LA TABLE ',1, TABLE )
-                  CALL UTIMPK('L', ' LA CONTRAINTE ', 1, NOCMP(J) )
-                  CALL UTIMPR('S',' POUR L''ABSC_CURV ',1,ZR(JABSC+K-1))
-                  CALL UTFINM
+                  VALK (1) = TABLE
+                  VALK (2) = NOCMP(J)
+                  VALR = ZR(JABSC+K-1)
+                  CALL U2MESG('F', 'POSTRELE_95',2,VALK,0,0,1,VALR)
                ENDIF
 C
  16          CONTINUE

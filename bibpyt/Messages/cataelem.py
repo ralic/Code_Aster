@@ -1,4 +1,4 @@
-#@ MODIF cataelem Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF cataelem Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

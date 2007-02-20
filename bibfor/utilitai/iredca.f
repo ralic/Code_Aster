@@ -3,7 +3,7 @@
       CHARACTER*8         MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C TOLE CRP_20
       CHARACTER*32      JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBCMPM
+      INTEGER VALI
       PARAMETER    (NBCMPM=10)
       INTEGER       N1, IFMA, NBMAIL, NBNOEU, IER, IMA, INO, NBT, NBM
       INTEGER       JVALE, JREFE, JTYPE, IM, IFMS, IFMM, I, J, K, L
@@ -60,6 +61,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   K8B, NOMA, NONOEU, NOMAIL, INTF, CMP, NOMCMP(6)
       CHARACTER*19  BAMO, NUMDDL, CHAMNO
       CHARACTER*24   COOVAL, NOMNOE
+      CHARACTER*24 VALK(2)
       CHARACTER*24  NOMVE1, NOMVE2, NOMVE3
 C
       REAL*8        PI, R8PI
@@ -212,10 +214,9 @@ C
       DO 100 IM = 0 , NBT-1
          IF ( ZK8(JTYPE+IM) .NE. 'MNEAL   ' ) THEN
             IER = IER + 1
-            CALL UTDEBM('E','IREDCA','ERREUR DANS LES DONNEES')
-            CALL UTIMPK('L','   INTERFACE DE TYPE : ',1,ZK8(JTYPE+IM))
-            CALL UTIMPK('S',' NON VALABLE' ,0, K8B)
-            CALL UTFINM( )
+            VALK (1) = ZK8(JTYPE+IM)
+            VALK (2) = K8B
+            CALL U2MESG('E', 'UTILITAI6_39',2,VALK,0,0,0,0.D0)
          ENDIF
  100  CONTINUE
       IF ( IER .NE. 0 ) CALL U2MESS('F','PREPOST_37')
@@ -240,10 +241,9 @@ C
             CALL POSDDL ('NUME_DDL', NUMDDL, NONOEU, CMP, NUNOE,NUDDL)
             IF ( NUNOE .EQ. 0 ) THEN
                IER = IER + 1
-               CALL UTDEBM('E','IREDCA','ERREUR DANS LES DONNEES')
-               CALL UTIMPK('L','ON NE RETROUVE PAS LE NOEUD ',1,NONOEU)
-               CALL UTIMPK('S',' DANS LA NUMEROTATION',0, K8B )
-               CALL UTFINM( )
+            VALK (1) = NONOEU
+            VALK (2) = K8B
+               CALL U2MESG('E', 'UTILITAI6_40',2,VALK,0,0,0,0.D0)
                GOTO 104
             ENDIF
             IF ( NUDDL .EQ. 0 ) THEN
@@ -282,10 +282,9 @@ C         ENDIF
             IF ( NUMENO .EQ. ZI(JNOEU+I-1) ) GOTO 114
  112     CONTINUE
          IER = IER + 1
-         CALL UTDEBM('E','IREDCA','ERREUR DANS LES DONNEES')
-         CALL UTIMPK('L','   LE NOEUD : ',1,NONOEU)
-         CALL UTIMPK('S',' N''APPARTIENT PAS AU MAILLAGE ',1, NOMA )
-         CALL UTFINM( )
+            VALK (1) = NONOEU
+            VALK (2) = NOMA
+         CALL U2MESG('E', 'UTILITAI6_41',2,VALK,0,0,0,0.D0)
  114     CONTINUE
          INO = INO + 1
 C         ZI(JNODDL+2*(INO-1)) = NUMENO
@@ -357,10 +356,9 @@ C
       DO 120 IM = NBMODE+1 , NBM
          CALL RSEXCH ( BAMO, 'DEPL', IM, CHAMNO, IER )
          IF ( IER .NE. 0 ) THEN
-            CALL UTDEBM('F','IREDCA',' PROBLEME RECUPERATION CHAMNO')
-            CALL UTIMPK('L','   CONCEPT RESULTAT: ',1,BAMO(1:8))
-            CALL UTIMPI('L','   NUMERO ORDRE: ',1,IM)
-            CALL UTFINM
+            VALK (1) = BAMO(1:8)
+            VALI = IM
+            CALL U2MESG('F', 'UTILITAI6_42',1,VALK,1,VALI,0,0.D0)
          ENDIF
          CALL JEVEUO ( CHAMNO//'.VALE' , 'L' , JVALE )
          DO 122 J = 1 , NEQF
@@ -467,10 +465,9 @@ C
       DO 212 IM = 1 , NBMODE
          CALL RSEXCH ( BAMO, 'DEPL', IM, CHAMNO, IER )
          IF ( IER .NE. 0 ) THEN
-            CALL UTDEBM('F','IREDCA',' PROBLEME RECUPERATION CHAMNO')
-            CALL UTIMPK('L','   CONCEPT RESULTAT: ',1,BAMO(1:8))
-            CALL UTIMPI('L','   NUMERO ORDRE: ',1,IM)
-            CALL UTFINM
+            VALK (1) = BAMO(1:8)
+            VALI = IM
+            CALL U2MESG('F', 'UTILITAI6_42',1,VALK,1,VALI,0,0.D0)
          ENDIF
          CALL JEVEUO ( CHAMNO//'.VALE' , 'L' , JVALE )
          DO 214 J = 1 , NEQF

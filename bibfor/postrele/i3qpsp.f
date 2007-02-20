@@ -6,7 +6,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       CHARACTER*32 JEXNUM,JEXNOM
 C
       INTEGER ARETE,ND,NF,NBA,I,IRET
+      INTEGER VALI(3)
       REAL*8  T,NDF,ZERO,UN,X(3),NAB
       REAL*8  A11,A12,A21,A22,B1,B2,R1,R2,R3,T1,T2
       REAL*8  XA,YA,XB,YB,XD,YD,XF,YF,TD,TF
@@ -95,11 +96,10 @@ C
          B1    = XA -XD
          B2    = YA -YD
          IF ( NDF .LE. EPSI*T ) THEN
-            CALL UTDEBM('F','I3QPSP','FACE DEGENREE')
-            CALL UTIMPI('L','MAILLE : ',1,K)
-            CALL UTIMPI('S',' FACE : ',1,F)
-            CALL UTIMPI('S',' ARETE : ',1,ARETE)
-            CALL UTFINM()
+         VALI (1) = K
+         VALI (2) = F
+         VALI (3) = ARETE
+            CALL U2MESG('F', 'POSTRELE_83',0,' ',3,VALI,0,0.D0)
          ELSE
             R1  = MAX(ABS(A11),ABS(A12))
             IF ( ABS(R1) .GT. EPSI ) THEN
@@ -298,9 +298,8 @@ C
          ENDIF
       ENDIF
       IF ( PB ) THEN
-         CALL UTDEBM('F','I3QPSP','FACE DEGENREE')
-         CALL UTIMPI('L','MAILLE : ',1,K)
-         CALL UTIMPI('S',' FACE : ',1,F)
-         CALL UTFINM()
+         VALI (1) = K
+         VALI (2) = F
+         CALL U2MESG('F', 'POSTRELE_84',0,' ',2,VALI,0,0.D0)
       ENDIF
       END

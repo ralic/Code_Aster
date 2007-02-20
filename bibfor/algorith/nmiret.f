@@ -1,7 +1,7 @@
       SUBROUTINE NMIRET ( CODRET , TABRET )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C ----------------------------------------------------------------------
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
       INTEGER            ZI
+      INTEGER VALI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -95,9 +96,8 @@ C
          ELSEIF ( IRET .LT. 11  .AND.  IRET .GT. 0 ) THEN
             TABRET(IRET) = .TRUE.
          ELSE
-            CALL UTDEBM('A','NMIRET',' CODE RETOUR ')
-            CALL UTIMPI('S','NON TRAITE ',1,IRET)
-            CALL UTFINM()
+            VALI = IRET
+            CALL U2MESG('A', 'ALGORITH13_67',0,' ',1,VALI,0,0.D0)
          ENDIF
 C
  20   CONTINUE

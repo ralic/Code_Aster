@@ -6,7 +6,7 @@
       REAL*8                         VAR(*),FON(*),VARRES(*),FONRES(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*19 NOMF
+      CHARACTER*24 VALK(3)
       REAL*8       LINLIN, LINLOG, LOGLIN, LOGLOG
+      REAL*8 VALR(3)
 C     ------------------------------------------------------------------
 C     FONCTION EN LIGNE
 C
@@ -147,16 +149,13 @@ C
          ELSEIF ( CHPROL(5)(1:1) .EQ. 'E' ) THEN
 C           --- EXTRAPOLATION EXCLUE ---
             IER = IER + 1
-            CALL UTDEBM('F','FOINTR','ERREUR EXTRAPOLATION')
-            CALL UTIMPK('L','L''EXTRAPOLATION A GAUCHE DE ',0,' ')
-            CALL UTIMPK('S','LA FONCTION ',1,NOMF)
-            CALL UTIMPK('S',' EST EXCLUE',0,' ')
-            CALL UTFINM()
+            VALK (1) = ' '
+            VALK (2) = NOMF
+            VALK (3) = ' '
+            CALL U2MESG('F', 'UTILITAI6_28',3,VALK,0,0,0,0.D0)
          ELSE
-            CALL UTDEBM('F','FOINTR','ERREUR EXTRAPOLATION')
-            CALL UTIMPK('L','EXTRAPOLATION A GAUCHE INCONNUE',1,
-     &                                                   CHPROL(5)(1:1))
-            CALL UTFINM()
+            VALK (1) = CHPROL(5)(1:1)
+            CALL U2MESG('F', 'UTILITAI6_29',1,VALK,0,0,0,0.D0)
          ENDIF
       ENDIF
 C
@@ -194,21 +193,17 @@ C              --- INTERPOLATION LOG-LIN ---
                      FONRES(IRES) = FON(IVAR+1)
                   ELSE
                      IER = IER + 1
-                     CALL UTDEBM('F','FOINTR (ERREUR.03)',
-     &                                         'ERREUR INTERPOLATION.')
-                  CALL UTIMPK('L','INTERPOLATION NON PERMISE',0,' ')
-                CALL UTIMPR('L','  VALEUR A INTERPOLER:',1,VARRES(IRES))
-                CALL UTIMPR('L','  BORNE INFERIEURE:',1,VAR(IVAR))
-                CALL UTIMPR('L','  BORNE SUPERIEURE:',1,VAR(IVAR+1))
-                  CALL UTFINM()
+            VALK (1) = ' '
+            VALR (1) = VARRES(IRES)
+            VALR (2) = VAR(IVAR)
+            VALR (3) = VAR(IVAR+1)
+                     CALL U2MESG('F', 'UTILITAI6_30',1,VALK,0,0,3,VALR)
                   ENDIF
                ENDIF
             ELSE
                IER = IER + 1
-               CALL UTDEBM('F','FOINTR (ERREUR.03)',
-     &                                         'ERREUR INTERPOLATION.')
-               CALL UTIMPK('L','INTERPOLATION INCONNUE',1, CHPROL(2) )
-               CALL UTFINM()
+            VALK (1) = CHPROL(2)
+               CALL U2MESG('F', 'UTILITAI6_31',1,VALK,0,0,0,0.D0)
             ENDIF
             IRES = IRES + 1
             GOTO 200
@@ -244,16 +239,13 @@ C
          ELSEIF ( CHPROL(5)(2:2) .EQ. 'E' ) THEN
 C           --- EXTRAPOLATION EXCLUE ---
             IER = IER + 2
-            CALL UTDEBM('F','FOINTR','ERREUR EXTRAPOLATION')
-            CALL UTIMPK('L','L''EXTRAPOLATION A DROITE DE ',0,' ')
-            CALL UTIMPK('S','LA FONCTION ',1,NOMF)
-            CALL UTIMPK('S',' EST EXCLUE',0,' ')
-            CALL UTFINM()
+            VALK (1) = ' '
+            VALK (2) = NOMF
+            VALK (3) = ' '
+            CALL U2MESG('F', 'UTILITAI6_32',3,VALK,0,0,0,0.D0)
          ELSE
-            CALL UTDEBM('F','FOINTR','ERREUR EXTRAPOLATION')
-            CALL UTIMPK('L','EXTRAPOLATION A DROITE INCONNUE',1,
-     &                                                   CHPROL(5)(2:2))
-            CALL UTFINM()
+            VALK (1) = CHPROL(5)(2:2)
+            CALL U2MESG('F', 'UTILITAI6_33',1,VALK,0,0,0,0.D0)
          ENDIF
       ENDIF
       GOTO 9999

@@ -5,7 +5,7 @@
       CHARACTER*8         BASEMO
       CHARACTER*14        NU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C      ----FIN DES COMMUNS JEVEUX----------
       CHARACTER*8   NOMA, MAILLA, TYP1
       CHARACTER*14  NU2
       CHARACTER*24  CREFE(2), CHAMP, NOMCHA
+      CHARACTER*24 VALK(4)
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -80,13 +81,11 @@ C
 
 C ------ TEST COMPARANT NOMA A MAILLAGE(NU) 
          IF (NOMA.NE.MAILLA) THEN
-            CALL UTDEBM('F','COPMO2','LES DEUX NUMEROTATIONS N''ONT '//
-     &                               'PAS MEME MAILLAGE D''ORIGINE')
-            CALL UTIMPK('L',' NUMEROTATION 1: ',1,NU)
-            CALL UTIMPK('S',' MAILLAGE 1: ',1,MAILLA)
-            CALL UTIMPK('L',' NUMEROTATION 2: ',1,NU2)
-            CALL UTIMPK('S',' MAILLAGE 2: ',1,NOMA)
-            CALL UTFINM
+            VALK (1) = NU
+            VALK (2) = MAILLA
+            VALK (3) = NU2
+            VALK (4) = NOMA
+            CALL U2MESG('F', 'ALGORITH12_65',4,VALK,0,0,0,0.D0)
          ENDIF
 
          IF ( NU .NE. NU2 ) THEN

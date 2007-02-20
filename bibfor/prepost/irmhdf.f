@@ -4,7 +4,7 @@
      &                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,6 +85,7 @@ C
       INTEGER IAUX, JAUX, NUANOM(NTYMAX,NNOMAX)
       INTEGER LNOMAM
       INTEGER IFM, NIVINF
+      INTEGER VALI
 C
       CHARACTER*1   SAUX01
       CHARACTER*6   SAUX06
@@ -140,10 +141,9 @@ C
 C
       IF ( EXISTM ) THEN
 C
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'MAILLAGE : ', 1, NOMAMD )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = NOMAMD
+        CALL U2MESG('A', 'PREPOST5_33',2,VALK,0,0,0,0.D0)
         CALL U2MESS('A','PREPOST2_87')
 C
 C     ------------------------------------------------------------------
@@ -185,11 +185,10 @@ C                         1234567890123456
 C
       CALL EFOUVR (FID, NOFIMD, EDMODE, CODRET)
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'MAILLAGE : ', 1, NOMAMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFOUVR NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = NOMAMD
+        VALI = CODRET
+        CALL U2MESG('A', 'PREPOST5_34',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_69')
       ENDIF
 C
@@ -274,11 +273,10 @@ C====
 C
       CALL EFFERM ( FID, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'MAILLAGE : ', 1, NOMAMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFFERM NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = NOMAMD
+        VALI = CODRET
+        CALL U2MESG('A', 'PREPOST5_35',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_70')
       ENDIF
 C

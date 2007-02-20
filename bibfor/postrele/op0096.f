@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      TETRA,PENTA,HEXA,I,J,N,M,L,LONG,IFM,INFO,J1,J2
+      INTEGER VALI
       INTEGER      ASDS1,ASDS2,ASDS3,ASDS4,ASDS5,ASDS6,ASDS7,ASDS8
       INTEGER      ASDS9,ASDS10,ASDS11,ASDS12,ASDS13,ASDS14
       INTEGER      ATMP1,ATMP2,ATMP3,ATMP4,ATMP5,ATMP6,ATMP7,ATMP8
@@ -56,6 +57,7 @@ C
       INTEGER      IUNIFI,K,IM1,IF1,IAO1,IAE1,IM2,IF2,IAO2
       INTEGER      JNUMA,IMA,N1,N2,NDIM, IRET, NBPAR, IBID
       REAL*8       EPSI,ZERO,SGT(6),RBI,XA,YA,ZA,XB,YB,ZB, R8B
+      REAL*8       VALR(6)
       REAL*8       NORM, SGTU(6), T, ABSCO, ABSCE, PREC, ARMIN
       COMPLEX*16   C16B
       CHARACTER*1  K1BID
@@ -65,6 +67,7 @@ C
       CHARACTER*16 OPERA,TYPRES,MOTCLE(3)
       CHARACTER*19 NOMT19
       CHARACTER*24 DESCM, NSDS, SD1TMP, SD2TMP
+      CHARACTER*24 VALK(2)
       CHARACTER*24 TEMP1,TEMP2,TEMP3,TEMP4,TEMP5,TEMP6,TEMP7,TEMP8
       CHARACTER*24 TEMP9,TEMP10,TEMP13,TEMP14
       CHARACTER*24 NSDS1,NSDS2,NSDS3,NSDS4,NSDS5,NSDS6,NSDS7
@@ -175,11 +178,9 @@ C
             ENDIF
  10      CONTINUE
          IF ( NORM .LE. EPSI*SGTU(K) ) THEN
-            CALL UTDEBM ('F','OP0096',' ')
-            CALL UTIMPI ('L','DEFI_SEGMENT, OCCURENCE ',1,ISGT)
-            CALL UTIMPR ('L','ORIGINE ET EXTREMITE CONFONDUES A LA '//
-     &                       'PRECISION : ',1,EPSI)
-            CALL UTFINM
+                        VALI = ISGT
+                        VALR (1) = EPSI
+            CALL U2MESG('F', 'POSTRELE_87',0,' ',1,VALI,1,VALR)
          ENDIF
 C
          DO 110, N = 1, NBNMA, 1
@@ -303,11 +304,13 @@ C
 C
          IF ( N .LE. 0 ) THEN
             CALL CODENT(ISGT,'G',CNUM)
-            CALL UTDEBM('A',OPERA(1:13)//'_'//CNUM,'INTERSECTION '
-     &          //'SEGMENT '//CNUM//' MAILLAGE '//NOMAIL//' : VIDE')
-            CALL UTIMPR('L','      ORIGINE   :' ,3,SGTU)
-            CALL UTIMPR('L','      EXTREMITE :' ,3,SGTU(4))
-            CALL UTFINM()
+            VALR (1) = SGTU(1)
+            VALR (2) = SGTU(2)
+            VALR (3) = SGTU(3)
+            VALR (4) = SGTU(4)
+            VALR (5) = SGTU(5)
+            VALR (6) = SGTU(6)
+            CALL U2MESG('A', 'POSTRELE_88',0,' ',0,0,6,VALR)
          ELSE
             CPSGT = CPSGT + 1
             CALL CODENT(CPSGT,'G',CNUM)
@@ -436,15 +439,13 @@ C
                      CALL JEVEUO(JEXNUM(NSDS4,J-1),'L',ASDS4)
                      CALL JENUNO(JEXNUM(NOMMAI,ZI(ASDS4)),NOMM2)
                      IF ( ABSCE .GT. ABSCO ) THEN
-                        CALL UTDEBM('A',OPERA,'IL Y CHEVAUCHEMENT ')
-                        CALL UTIMPK('S','ENTRE LES MAILLES ',1,NOMM2)
-                        CALL UTIMPK('S',' ET ',1,NOMM1)
-                        CALL UTFINM
+                        VALK (1) = NOMM2
+                        VALK (2) = NOMM1
+      CALL U2MESG('A', 'POSTRELE_89',2,VALK,0,0,0,0.D0)
                      ELSE
-                        CALL UTDEBM('A',OPERA,'SAUT D''ABSCISSE ')
-                        CALL UTIMPK('S','ENTRE LES MAILLES ',1,NOMM2)
-                        CALL UTIMPK('S',' ET ',1,NOMM1)
-                        CALL UTFINM
+                        VALK (1) = NOMM2
+                        VALK (2) = NOMM1
+      CALL U2MESG('A', 'POSTRELE_90',2,VALK,0,0,0,0.D0)
                      ENDIF
                   ENDIF
                   ABSCE = ZR(ASDS2+J-1)

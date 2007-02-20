@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,12 +45,14 @@ C     PARAMETRES "MODE_MECA"
 C     PARAMETRES "MODE_FLAMB"
       PARAMETER   ( NBPAFI=1 , NBPAFR=1  , NBPAFK=1, NBPAFT=3  )
       INTEGER       LMAT(2), IBID, IFM , NIV, LDDL2
+      INTEGER VALI
       INTEGER       ADRECG,NRPASS,NBPASS,IRET,IAUX,JAUX,IOCC,LMODS,ISENS
       INTEGER       L1,L2,L3,LMASSE,LRAIDE,LAMOR,LDDL
       REAL*8        R8B, PREC
       COMPLEX*16    C16B
       LOGICAL       LMASIN, LREFE, LBASM, LAMO
       CHARACTER*1   STATUT, TYPMOD
+      CHARACTER*24 VALK(4)
       CHARACTER*8   MODEOU, MODEIN, NOMCMP(7), MASINE, K8B, CRIT, CMP,
      &              PARAKI(2), VALEKI(2), CTYP, FORMAR, NOMA, MAT1, 
      &              MAT2, MAT3
@@ -85,16 +87,11 @@ C
 
       IF ( IEX .GT. 0 ) THEN
          IF ( MODEOU .NE. MODEIN ) THEN
-            CALL UTDEBM('F','OP0037','LE CONCEPT PRODUIT ETANT '//
-     &                  'DEJA EXISTANT, LA NORMALISATION DOIT SE '//
-     &                  'FAIRE EN PLACE ET DONC IL EST IMPOSSIBLE D')
-            CALL UTIMPK('S','"AVOIR COMME CONCEPT PRODUIT ',1,MODEOU)
-            CALL UTIMPK('S','ET ',1,MODEIN)
-            CALL UTIMPK('S','COMME CONCEPT D''ENTREE.',0,' ')
-            CALL UTIMPK('L','COMME LE DIT LA SAGESSE POPULAIRE, ON'//
-     &                  ' NE PEUT AVOIR LE BEURRE ET L''ARGENT DU '//
-     &                  'BEURRE (DE CHARENTE POITOU).',0,' ')
-            CALL UTFINM()
+            VALK (1) = MODEOU
+            VALK (2) = MODEIN
+            VALK (3) = ' '
+            VALK (4) = ' '
+            CALL U2MESG('F', 'ALGELINE4_33',4,VALK,0,0,0,0.D0)
          ENDIF
       ENDIF
 C
@@ -238,10 +235,8 @@ C     --- RECUPERATION DE LA MASSE ---
          CALL TBLIVA ( MASINE, 1, 'LIEU', IBID, R8B, C16B, NOMA, K8B,
      &              R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
          IF ( IRET .EQ. 2 ) THEN
-            CALL UTDEBM('F','OP0037', 'ERREUR DANS LES DONNEES' )
-            CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',
-     &      1,MASINE)
-            CALL UTFINM()
+            VALK (1) = MASINE
+            CALL U2MESG('F', 'ALGELINE4_34',1,VALK,0,0,0,0.D0)
          ELSEIF ( IRET .EQ. 3 ) THEN
             CALL TBEXP2(MASINE,'ENTITE')
             PARAKI(1) = 'LIEU'
@@ -251,10 +246,8 @@ C     --- RECUPERATION DE LA MASSE ---
             CALL TBLIVA ( MASINE, 2, PARAKI, IBID, R8B, C16B, VALEKI,
      &           K8B, R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
             IF ( IRET .NE. 0 ) THEN
-               CALL UTDEBM('F','OP0037', 'ERREUR DANS LES DONNEES' )
-               CALL UTIMPK('L','LA MASSE N EXISTE PAS DANS LA TABLE ',
-     &         1,MASINE)
-               CALL UTFINM()
+            VALK (1) = MASINE
+               CALL U2MESG('F', 'ALGELINE4_35',1,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
          LMASIN = .TRUE.
@@ -322,10 +315,9 @@ C     --- OPTION DE NORMALISATION  ---
             ZK8(LCMP+5) = NOMCMP(7)
             NORM   = 'AVEC_CMP'
          ELSE
-            CALL UTDEBM('F','OP0037','L''OPTION DE NORMALISATION')
-            CALL UTIMPK('S',' ',1,NORM)
-            CALL UTIMPI('S',' N''EST PAS IMPLANTEE.',0,IBID)
-            CALL UTFINM()
+            VALK (1) = NORM
+            VALI = IBID
+            CALL U2MESG('F', 'ALGELINE4_36',1,VALK,1,VALI,0,0.D0)
          ENDIF
       ENDIF
 C

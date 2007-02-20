@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,11 +77,13 @@ C
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
       CHARACTER*24  NTYPAC,NVALAC,NLSCHP, NNORES
+      CHARACTER*24 VALK
       CHARACTER*16  MODACC
       CHARACTER*8   K8BID
       CHARACTER*1   CAR1,CAR2
       INTEGER       N1,N2,N3,I,J,NBORDR,IBID,IORDR,NBTROU
       INTEGER       ALISTE,ATYPAC,AVALAC,ALSCHP,AVALR8,AVALIS,ANORES
+      INTEGER VALI
       REAL*8        RBID
       COMPLEX*16    CBID
 C
@@ -120,10 +122,9 @@ C     /* ACCES A TOUS LES NUMEROS D' ORDRES */
             CALL JEVEUO(JEXNUM(NLSCHP,I),'E',ALSCHP)
             CALL RSEXCH(NOMSD,CHPSYM,IORDR,ZK24(ALSCHP + 1-1),N1)
             IF ( N1 .NE. 0 ) THEN
-               CALL UTDEBM('I','RVGCHF','CHAMP INEXISTANT')
-               CALL UTIMPK('S',' NOM_CHAM= ',1,CHPSYM)
-               CALL UTIMPI('L',' NUME_ORDRE= ',1,IORDR)
-               CALL UTFINM()
+                        VALK = CHPSYM
+                        VALI = IORDR
+               CALL U2MESG('I', 'POSTRELE1_71',1,VALK,1,VALI,0,0.D0)
                ZK24(ALSCHP + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
             ENDIF
 100      CONTINUE
@@ -158,10 +159,9 @@ C        /* CAS D' UNE LISTE DE NUMERO ORDRE */
                CALL RSEXCH(NOMSD,CHPSYM,ZI(AVALAC + J-1),
      >                           ZK24(ALSCHP + 1-1),N2)
                IF ( N2 .NE. 0 ) THEN
-                  CALL UTDEBM('I','RVGCHF','CHAMP INEXISTANT')
-                  CALL UTIMPK('S',' NOM_CHAM= ',1,CHPSYM)
-                  CALL UTIMPI('L',' NUME_ORDRE= ',1,ZI(AVALAC + J-1))
-                  CALL UTFINM()
+                        VALK = CHPSYM
+                        VALI = ZI(AVALAC + J-1)
+                  CALL U2MESG('I', 'POSTRELE1_72',1,VALK,1,VALI,0,0.D0)
                   ZK24(ALSCHP + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
                ENDIF
 410         CONTINUE
@@ -194,10 +194,9 @@ C        /* CAS D' UNE LISTE DE NUMERO DE MODE */
                      CALL RSEXCH(NOMSD,CHPSYM,ZI(ALISTE + J-1),
      >                           ZK24(ALSCHP + J-1),N2)
                      IF ( N2 .NE. 0 ) THEN
-                        CALL UTDEBM('I','RVGCHF','CHAMP INEXISTANT')
-                        CALL UTIMPK('S',' NOM_CHAM= ',1,CHPSYM)
-                      CALL UTIMPI('L',' NUME_ORDRE= ',1,ZI(ALISTE+J-1))
-                        CALL UTFINM()
+                        VALK = CHPSYM
+                        VALI = ZI(ALISTE+J-1)
+      CALL U2MESG('I', 'POSTRELE1_73',1,VALK,1,VALI,0,0.D0)
                         ZK24(ALSCHP + J-1) = '&&CHAMP_EFF_NON_EXISTANT'
                      ENDIF
 810               CONTINUE
@@ -239,10 +238,9 @@ C        /* CAS D' UNE LISTE DE REELS */
                      CALL RSEXCH(NOMSD,CHPSYM,ZI(ALISTE + J-1),
      >                           ZK24(ALSCHP + J-1),N2)
                      IF ( N2 .NE. 0 ) THEN
-                        CALL UTDEBM('I','RVGCHF','CHAMP INEXISTANT')
-                        CALL UTIMPK('S',' NOM_CHAM= ',1,CHPSYM)
-                      CALL UTIMPI('L',' NUME_ORDRE= ',1,ZI(ALISTE+J-1))
-                        CALL UTFINM()
+                        VALK = CHPSYM
+                        VALI = ZI(ALISTE+J-1)
+      CALL U2MESG('I', 'POSTRELE1_73',1,VALK,1,VALI,0,0.D0)
                         ZK24(ALSCHP + J-1) = '&&CHAMP_EFF_NON_EXISTANT'
                      ENDIF
 610               CONTINUE

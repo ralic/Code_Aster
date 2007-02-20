@@ -1,7 +1,7 @@
       SUBROUTINE TABCHS(TABIN,TYPCHS,BASE,NOMGD,MA,MO,OPTION,CHS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
 C      ==> VARIABLES LOCALES
        INTEGER JTBNP,JTBLP,NCMP,JCMP,JCNSL,JCNSV,I,NCMPMX
+       INTEGER VALI(2)
        INTEGER K,IRET,JIND,J,JOBJ1,JOBJ2,JOBJ3,ILI,INOEU,NUNO,ICMP
        INTEGER JTMP,NBVAL,IBID,NBCOMP,IMAI,IPOI,ISPT,JPG,JREPE,IGREL
        INTEGER JMA,JPT,JTYPMA,NUMA,NBPT,JOBJ4,JSSPT,NBMA,JCESD,NBSSP
@@ -82,6 +83,7 @@ C      ==> VARIABLES LOCALES
        CHARACTER*16 TYCH,NOMTE
        CHARACTER*19 LIGREL
        CHARACTER*24 OBJNO,OBJLG,OBJR,OBJTMP,PARA,OBJMA,OBJPT,OBJ4
+       CHARACTER*24 VALK(3)
        CHARACTER*24 OBJMAI,OBJPOI,OBJSSP,MODLOC
        LOGICAL EXIST
 
@@ -104,12 +106,10 @@ C        (V1) PRESENCE DU PARAMETRE NOEUD DANS LA TABLE
          TYPE='K8'
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(.NOT.EXIST)THEN
-            CALL UTDEBM('F','TABCHS','IL MANQUE LE PARAMETRE')
-            CALL UTIMPK('S',' ',1,PARA(1:5))
-            CALL UTIMPK('S','DANS LA TABLE',1,TABIN(1:8))
-            CALL UTIMPK('S','.SA PRESENCE EST INDISPENSABLE A LA'//
-     &           ' CREATION DU CHAMP NODAL.',0,' ')
-            CALL UTFINM()
+                   VALK (1) = PARA(1:5)
+                   VALK (2) = TABIN(1:8)
+                   VALK (3) = ' '
+            CALL U2MESG('F', 'MODELISA8_98',3,VALK,0,0,0,0.D0)
          ENDIF
 
 C        (V2) ON VERIFIE QUE LES NOEUDS FOURNIS DANS LA TABLE
@@ -125,12 +125,10 @@ C        (V3) ABSENCE DU PARAMETRE MAILLE DANS LA TABLE
          TYPE='K8'
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(EXIST)THEN
-            CALL UTDEBM('F','TABCHS','LE PARAMETRE')
-            CALL UTIMPK('S',' ',1,PARA(1:6))
-            CALL UTIMPK('S','NE DOIT PAS APPARAITRE DANS LA'//
-     &           ' TABLE',1,TABIN(1:8))
-            CALL UTIMPK('S','POUR LA CREATION D''UN CHAMP NODAL.',0,' ')
-            CALL UTFINM()
+                   VALK (1) = PARA(1:6)
+                   VALK (2) = TABIN(1:8)
+                   VALK (3) = ' '
+            CALL U2MESG('F', 'MODELISA8_99',3,VALK,0,0,0,0.D0)
          ENDIF
 
          K=1
@@ -191,12 +189,10 @@ C        (V1) PRESENCE DU PARAMETRE MAILLE DANS LA TABLE
          TYPE='K8'
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(.NOT.EXIST)THEN
-            CALL UTDEBM('F','TABCHS','IL MANQUE LE PARAMETRE')
-            CALL UTIMPK('S',' ',1,PARA(1:6))
-            CALL UTIMPK('S','DANS LA TABLE',1,TABIN(1:8))
-            CALL UTIMPK('S','.SA PRESENCE EST INDISPENSABLE A LA'//
-     &           ' CREATION D''UN CHAMP ELEMENTAIRE.',0,' ')
-            CALL UTFINM()
+                   VALK (1) = PARA(1:6)
+                   VALK (2) = TABIN(1:8)
+                   VALK (3) = ' '
+            CALL U2MESG('F', 'MODELISA9_1',3,VALK,0,0,0,0.D0)
          ENDIF
 
 C        (V2) PRESENCE DU PARAMETRE POINT DANS LA TABLE (ELNO/ELGA)
@@ -206,21 +202,17 @@ C             ABSENCE DU PARAMETRE POINT DANS LA TABLE (ELEM)
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(EXIST)THEN
             IF(TYPCHS(1:4).EQ.'ELEM')THEN
-               CALL UTDEBM('F','TABCHS','LE PARAMETRE')
-               CALL UTIMPK('S',' ',1,PARA(1:5))
-               CALL UTIMPK('S','DE LA TABLE',1,TABIN(1:8))
-               CALL UTIMPK('S','EST INCOMPATIBLE A LA'//
-     &            ' CREATION D''UN  CHAMP ELEMENTAIRE CONSTANT.',0,' ')
-               CALL UTFINM()
+                   VALK (1) = PARA(1:5)
+                   VALK (2) = TABIN(1:8)
+                   VALK (3) = ' '
+               CALL U2MESG('F', 'MODELISA9_2',3,VALK,0,0,0,0.D0)
             ENDIF
          ELSE
            IF(TYPCHS(1:4).EQ.'ELNO' .OR. TYPCHS(1:4).EQ.'ELGA')THEN
-              CALL UTDEBM('F','TABCHS','IL MANQUE LE PARAMETRE')
-              CALL UTIMPK('S',' ',1,PARA(1:5))
-              CALL UTIMPK('S','DANS LA TABLE',1,TABIN(1:8))
-              CALL UTIMPK('S','.SA PRESENCE EST INDISPENSABLE A LA'//
-     &             ' CREATION D''UN CHAMP ',1,TYPCHS(1:4))
-              CALL UTFINM()
+                   VALK (1) = PARA(1:5)
+                   VALK (2) = TABIN(1:8)
+                   VALK (3) = TYPCHS(1:4)
+              CALL U2MESG('F', 'MODELISA9_3',3,VALK,0,0,0,0.D0)
            ENDIF
         ENDIF
 
@@ -229,12 +221,10 @@ C        (V3) ABSENCE DU PARAMETRE SOUS_POINT DANS LA TABLE (ELEM,ELNO)
          TYPE='I'
          CALL TBEXIP(TABIN,PARA,EXIST,TYPE)
          IF(EXIST.AND.TYPCHS(1:4).NE.'ELGA')THEN
-            CALL UTDEBM('F','TABCHS','LE PARAMETRE')
-            CALL UTIMPK('S',' ',1,PARA(1:5))
-            CALL UTIMPK('S','DE LA TABLE',1,TABIN(1:8))
-            CALL UTIMPK('S','N''EST VALABLE QUE POUR LA'//
-     &          ' CREATION D''UN CHAMP ',1,TYPCHS(1:4))
-            CALL UTFINM()
+                   VALK (1) = PARA(1:5)
+                   VALK (2) = TABIN(1:8)
+                   VALK (3) = TYPCHS(1:4)
+            CALL U2MESG('F', 'MODELISA9_4',3,VALK,0,0,0,0.D0)
           ENDIF
 
 C        (V4) ON VERIFIE QUE LES MAILLES FOURNIES DANS LA TABLE
@@ -259,13 +249,11 @@ C        (V5) ON VERIFIE LA COHERENCE : POINT/MAILLE
                CALL DISMOI('F','NBNO_TYPMAIL',KTYP,'TYPE_MAILLE',
      &              NBPT,K8B,IRET)
                IF(ZI(JPT+I-1).GT.NBPT)THEN
-                  CALL UTDEBM('F','TABCHS','INCOHERENCE ENTRE MAILLE')
-                  CALL UTIMPK('S',' ET POINT DANS LA TABLE',1,TABIN)
-                  CALL UTIMPK('L','MAILLE :',1,ZK8(JMA))
-                  CALL UTIMPI('L','POINT  :',1,ZI(JPT+I-1))
-                  CALL UTIMPI('L','NOMBRE DE POINTS DE LA MAILLE:'
-     &                 ,1,NBPT)
-                  CALL UTFINM()
+                   VALK (1) = TABIN
+                   VALK (2) = ZK8(JMA)
+                   VALI (1) = ZI(JPT+I-1)
+                   VALI (2) = NBPT
+                  CALL U2MESG('F', 'MODELISA9_5',2,VALK,2,VALI,0,0.D0)
                ENDIF
  45         CONTINUE
          ENDIF
@@ -399,12 +387,10 @@ C ---   REMPLISSAGE DU CHAM_S
                 CALL CESEXI('S',JCESD,JCESL,NUMA,ZI(JOBJP+ILI-1),1,
      &               ICMP,IAD)
                 IF(IAD.GT.0)THEN
-                   CALL UTDEBM('F','TABCHS','PLUSIEURS AFFECTATIONS '//
-     &             'POUR LE MEME POINT D''UNE MAILLE')
-                   CALL UTIMPK('S',' DANS LA TABLE',1,TABIN(1:8))
-                   CALL UTIMPK('L','MAILLE:',1,NOMA)
-                   CALL UTIMPI('L','POINT :',1,ZI(JOBJP+ILI-1))
-                   CALL UTFINM()
+                   VALK (1) = TABIN(1:8)
+                   VALK (2) = NOMA
+                   VALI (1) = ZI(JOBJP+ILI-1)
+                   CALL U2MESG('F', 'MODELISA9_6',2,VALK,1,VALI,0,0.D0)
                 ELSE
                    IAD=-IAD
                 ENDIF
@@ -431,13 +417,11 @@ C ---   REMPLISSAGE DU CHAM_S
                 CALL CESEXI('S',JCESD,JCESL,NUMA,ZI(JOBJP+ILI-1),
      &              ZI(JOBJS+ILI-1),ICMP,IAD)
                 IF(IAD.GT.0)THEN
-                   CALL UTDEBM('F','TABCHS','PLUSIEURS AFFECTATIONS '//
-     &             'POUR LE MEME SOUS-POINT')
-                   CALL UTIMPK('S',' DANS LA TABLE',1,TABIN(1:8))
-                   CALL UTIMPK('L','MAILLE:',1,NOMA)
-                   CALL UTIMPI('L','POINT :',1,ZI(JOBJP+ILI-1))
-                   CALL UTIMPI('L','SOUS-POINT :',1,ZI(JOBJS+ILI-1))
-                   CALL UTFINM()
+                   VALK (1) = TABIN(1:8)
+                   VALK (2) = NOMA
+                   VALI (1) = ZI(JOBJP+ILI-1)
+                   VALI (2) = ZI(JOBJS+ILI-1)
+                   CALL U2MESG('F', 'MODELISA9_7',2,VALK,2,VALI,0,0.D0)
                 ELSE
                    IAD=-IAD
                 ENDIF
@@ -462,11 +446,9 @@ C ---   REMPLISSAGE DU CHAM_S
                 CALL CESEXI('S',JCESD,JCESL,NUMA,1,1,
      &               ICMP,IAD)
                 IF(IAD.GT.0)THEN
-                   CALL UTDEBM('F','TABCHS','PLUSIEURS AFFECTATIONS '//
-     &                  'POUR LA MEME MAILLE')
-                   CALL UTIMPK('S',' DANS LA TABLE',1,TABIN(1:8))
-                   CALL UTIMPK('L','MAILLE:',1,NOMA)
-                   CALL UTFINM()
+                   VALK (1) = TABIN(1:8)
+                   VALK (2) = NOMA
+                   CALL U2MESG('F', 'MODELISA9_8',2,VALK,0,0,0,0.D0)
                 ELSE
                    IAD=-IAD
                 ENDIF

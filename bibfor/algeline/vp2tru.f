@@ -4,11 +4,13 @@
       CHARACTER*1       TY
       CHARACTER*8       METHOD
       INTEGER           NBVECT,MXITER,IER,NITQR
+      INTEGER VALI
       REAL*8            ALPHA(NBVECT),BETA(NBVECT),SIGNES(NBVECT)
       REAL*8            A(NBVECT,*),W(*),Z(*),WK(*)
+      REAL*8 VALR(2)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,12 +75,10 @@ C
             ALPHA(I) = W(2*I-1)
             IF (ABS(W(2*I)).GT.1.D-75) THEN
                WW = W(2*I)/W(2*I-1)
-               CALL UTDEBM('I','RESOLUTION PROBLEME GENERALISE','ON A')
-               CALL UTIMPI('S',' LA ',1,I)
-               CALL UTIMPR('S','-IEME FREQUENCE DU SYSTEME REDUIT '//
-     &                         'EST COMPLEXE = ',2,W(2*I-1) )
-               CALL UTIMPR('L',' ET PARTIE_IMAGINAIRE/REELLE = ',1,WW)
-               CALL UTFINM()
+               VALI = I
+               VALR (1) = W(2*I-1)
+               VALR (2) = WW
+               CALL U2MESG('I', 'ALGELINE4_65',0,' ',1,VALI,2,VALR)
             ENDIF
             BETA(I) = 0.D0
             DO 30 J = 1,NBVECT

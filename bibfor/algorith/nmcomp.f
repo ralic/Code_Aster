@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,16 +97,26 @@ C         XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ
 C
 C  2/ SI DEFORMATION = SIMO_MIEHE
 C
-C      EPSM(3,3) ET DEPS(3,3) MESURENT LE GRADIENT DE LA TRANSFORMATION
-C      EN T- ET ENTRE T- ET T+
+C  INPUT
+C   VIM        VARIABLES INTERNES EN T-
+C   VIP        VARIABLES INTERNES EN T+ DE L'ITERATION PRECEDENTE
+C   EPSM(3,3)    GRADIENT DE LA TRANSFORMATION EN T-
+C   DEPS(3,3)    GRADIENT DE LA TRANSFORMATION DE T- A T+
 C
-C      LES CONTRAINTES (DE CAUCHY) SONT RANGEES DANS L'ORDRE
-C         XX YY ZZ XY XZ YZ
+C OUTPUT SI RESI (RAPH_MECA, FULL_MECA_*)
+C   VIP      VARIABLES INTERNES EN T+
+C   SIGP(6)  CONTRAINTE DE KIRCHHOFF EN T+ RANGES DANS L'ORDRE
+C         XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ 
 C
-C      LA MATRICE TANGENTE EST DE LA FORME
-C         DSIDEP(6, 3,3)  = DSIG(IJ) / DF(K,L)
+C OUTPUT SI RIGI (RIGI_MECA_*, FULL_MECA_*)
+C   DSIDEP(6,3,3) MATRICE TANGENTE D(TAU)/D(FD) * (FD)T  
+C                 (AVEC LES RACINES DE 2)
 C ----------------------------------------------------------------------
 C
+C    POUR LES UTILITAIRES DE CALCUL TENSORIEL
+      INTEGER NDT,NDI
+      COMMON /TDIM/ NDT,NDI
+
       REAL*8 R8BID,R8VIDE
       CHARACTER*16 OPTIO2
       CHARACTER*2 K2BID
@@ -121,6 +131,9 @@ C      CONTRAINTES PLANES
       CALL NMCPL1(COMPOR,TYPMOD,OPTION,VIP,DEPS,OPTIO2,CPL,NVV)
       CP=(CPL.NE.0)
 
+C    DIMENSIONNEMENT POUR LE CALCUL TENSORIEL
+      NDT = 2*NDIM
+      NDI = NDIM
 
 C ----------------------------------------------------------------------
 C                        CAS DES LOIS GRAD_VARI
@@ -253,15 +266,16 @@ C----------------------------------------------------------------------
 
       IF (COMPOR(3).EQ.'SIMO_MIEHE') THEN
         IF (INT(CRIT(6)) .NE. 0) CALL U2MESS('F','ALGORITH6_85')
-        IF ( COMPOR(1) .EQ. 'ELAS            ' .OR.
-     &       COMPOR(1) .EQ. 'VMIS_ISOT_LINE  ' .OR.
+        IF  ( COMPOR(1) .EQ. 'VMIS_ISOT_LINE  ' .OR.
      &       COMPOR(1) .EQ. 'VMIS_ISOT_TRAC  ' .OR.
      &       COMPOR(1) .EQ. 'VISC_ISOT_LINE  ' .OR.
      &       COMPOR(1) .EQ. 'VISC_ISOT_TRAC  ' ) THEN
-          CALL LCGDPI(NDIM,IMATE,COMPOR,CRIT,INSTAM,INSTAP,TM,TP,TREF,
-     &               EPSM,DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP,CODRET)
+          CALL LCPIVM(IMATE,COMPOR,CRIT,INSTAM,INSTAP,TM,TP,TREF,
+     &               EPSM,DEPS,VIM,OPTION,SIGP,VIP,DSIDEP,CODRET)
+        ELSE IF (COMPOR(1).EQ.'ELAS            ') THEN
+           CALL U2MESS('F','COMPOR1_15')
         ELSE IF (COMPOR(1) .EQ. 'ROUSSELIER') THEN
-          CALL LCROLO (NDIM,IMATE,OPTION,CRIT,TM,TP,TREF,
+          CALL LCROLO (IMATE,OPTION,CRIT,TM,TP,TREF,
      &                 EPSM,DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
         ELSE IF (COMPOR(1).EQ. 'META_P_IL       '.OR.
      &           COMPOR(1).EQ. 'META_P_IL_PT    '.OR.
@@ -292,6 +306,7 @@ C----------------------------------------------------------------------
            ELSE
                 CALL U2MESS('F','ALGORITH6_86')
            ENDIF
+           CALL POSTSM(OPTION,EPSM,DEPS,SIGM,SIGP,DSIDEP)
         ELSE
           CALL U2MESS('F','ALGORITH6_87')
         END IF

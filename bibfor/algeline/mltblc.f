@@ -1,7 +1,7 @@
       SUBROUTINE MLTBLC(NBSN,DEBFSN,MXBLOC,SEQ,NBLOC,DECAL,LGBLOC,
      +                  NCBLOC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,6 +32,7 @@ C                                    FACTOR QUI CONTIENT LES BLOCS
       INTEGER NBSN,SEQ(NBSN),DEBFSN(NBSN+1),MXBLOC,NBLOC,DECAL(NBSN)
       INTEGER LGBLOC(*),NCBLOC(*)
       INTEGER I,L,I0,LONG
+      INTEGER VALI(3)
       NBLOC = 1
       I0 = 1
   110 CONTINUE
@@ -39,11 +40,10 @@ C                                    FACTOR QUI CONTIENT LES BLOCS
       DECAL(SEQ(I)) = 1
       LONG = DEBFSN(SEQ(I)+1) - DEBFSN(SEQ(I))
       IF (LONG.GT.MXBLOC) THEN
-          CALL UTDEBM('F','MLTBLC.ERREUR.01','MANQUE DE PLACE MEMOIRE')
-          CALL UTIMPI('L','LONGUEUR DE BLOC INSUFFISANTE: ',1,MXBLOC)
-          CALL UTIMPI('L','LE SUPER-NOEUD ',1,I)
-          CALL UTIMPI('L',' NECCESSITE UN BLOC DE ',1,LONG)
-          CALL UTFINM()
+              VALI (1) = MXBLOC
+              VALI (2) = I
+              VALI (3) = LONG
+          CALL U2MESG('F', 'ALGELINE4_21',0,' ',3,VALI,0,0.D0)
       END IF
 C      DO WHILE (LONG.LE.MXBLOC)
   120 CONTINUE
@@ -53,13 +53,10 @@ C      DO WHILE (LONG.LE.MXBLOC)
           DECAL(SEQ(I)) = LONG + 1
           L = DEBFSN(SEQ(I)+1) - DEBFSN(SEQ(I))
           IF (L.GT.MXBLOC) THEN
-              CALL UTDEBM('F','MLTBLC.ERREUR.02',
-     +                    'MANQUE DE PLACE MEMOIRE')
-              CALL UTIMPI('L','LONGUEUR DE BLOC INSUFFISANTE: ',1,
-     +                    MXBLOC)
-              CALL UTIMPI('L','LE SUPER-NOEUD ',1,I)
-              CALL UTIMPI('L',' NECCESSITE UN BLOC DE ',1,L)
-              CALL UTFINM()
+              VALI (1) = MXBLOC
+              VALI (2) = I
+              VALI (3) = L
+              CALL U2MESG('F', 'ALGELINE4_22',0,' ',3,VALI,0,0.D0)
           END IF
           LONG = LONG + L
           GO TO 120

@@ -5,9 +5,10 @@
       REAL*8              VALGLO(*), VAL(*)
       CHARACTER*(*)       TYPE
       CHARACTER*8         NOCMP(*), KVALGL(*), NCMPGD(*), KVAL(*)
+      CHARACTER*24 VALK
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +47,7 @@ C
 C-----------------------------------------------------------------------
 C
       INTEGER  NOCOAF, ICMP, J, IEC, JJ, IND, INDIK8 , IOR
+      INTEGER VALI(3)
 C
       NOCOAF = 0
       DO 10 ICMP = 1 , NBCMP
@@ -55,10 +57,8 @@ C
             JJ = J -  30 * ( IEC - 1 ) 
             DESC((INO-1)*NEC+IEC) = IOR(DESC((INO-1)*NEC+IEC),2**JJ)
          ELSE
-            CALL UTDEBM('F','AFFENO','COMPOSANTE NON DEFINIE DANS '//
-     +                                                 'LA GRANDEUR.')
-            CALL UTIMPK('L','  COMPOSANTE: ',1,NOCMP(ICMP))
-            CALL UTFINM( )
+        VALK = NOCMP(ICMP)
+            CALL U2MESG('F', 'CALCULEL5_65',1,VALK,0,0,0,0.D0)
          ENDIF
          NOCOAF = NOCOAF + 1
          IND = J + (INO-1)*NCMPMX
@@ -70,13 +70,10 @@ C
  10   CONTINUE
 C
       IF( NOCOAF .NE. NBCMP ) THEN
-        CALL UTDEBM('F','AFFENO : ',
-     + 'LE NOMBRE DE COMPOSANTES AFFECTEES N''EST PAS EGAL '//
-     + 'AU NOMBRE DE COMPOSANTES A AFFECTER')
-        CALL UTIMPI('L','OCCURENCE DE AFFE NUMERO',1,IOC)
-        CALL UTIMPI('L','NBRE DE CMP AFFECTEES : ',1,NOCOAF)
-        CALL UTIMPI('L','NBRE DE CMP A AFFECTER : ',1,NBCMP)
-        CALL UTFINM
+        VALI (1) = IOC
+        VALI (2) = NOCOAF
+        VALI (3) = NBCMP
+        CALL U2MESG('F', 'CALCULEL5_66',0,' ',3,VALI,0,0.D0)
       ENDIF
 C
       END

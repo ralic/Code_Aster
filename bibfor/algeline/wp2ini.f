@@ -12,7 +12,7 @@
       REAL*8            ALPHA(*),BETA(*),SIGNE(*),YH(NEQ,*),YB(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,9 @@ C     ----------- FIN DES COMMUNS NORMALISES JEVEUX -------------------
 C
 C     ------------------------------------------------------------------
       CHARACTER*12 STRG
+      CHARACTER*24 VALK
       INTEGER      AU1,AU2,AU3,AU4,AV,ABAYH,ABAYB,APTBYH,APTBYB
+      INTEGER VALI(4)
       INTEGER      I,J,K,ABYH,ABYB,IO
       REAL*8       A,B,C,SR,SI,DEUXSR,MODS2,INVSI,SI2,D1,D2
       LOGICAL      OC,RO
@@ -294,14 +296,12 @@ C
      +                  + ZR(ABYB+IPS-1)*YB(IPS,J)
   320         CONTINUE
                IF ( ABS(B) .GT. ABS(A) ) THEN
-                  CALL UTDEBM('I','WP2INI','LA REORTHOGONALISATION ')
-                  CALL UTIMPI('S','DIVERGE APRES ',1,IO)
-                  CALL UTIMPI('S',' ITERATION(S)',0,IO)
-                  CALL UTIMPI('L','      VECTEUR TRAITE : ',1,J)
-                  CALL UTIMPI('L','      VECTEUR TESTE  : ',1,I)
-                  CALL UTIMPK('L','ARRET DE LA REORTHOGONALISATION',1,
-     +                        '"ENNUI" POSSIBLE')
-                  CALL UTFINM
+                  VALI (1) = IO
+                  VALI (2) = IO
+                  VALI (3) = J
+                  VALI (4) = I
+                  VALK = '"ENNUI" POSSIBLE'
+                  CALL U2MESG('I', 'ALGELINE4_86',1,VALK,4,VALI,0,0.D0)
                   OC = .TRUE.
                ELSE
                   A  = B

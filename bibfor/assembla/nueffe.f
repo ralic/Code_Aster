@@ -6,7 +6,7 @@
       CHARACTER*1 BASE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,6 +109,7 @@ C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
 C-----------------------------------------------------------------------
       INTEGER ZZCONX,ZZNBNE,ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG,ZZNELS
       INTEGER ZZNEMA,ZZPRNO,IZZPRN,SUIV,SUIVDI,IDSUIV
+      INTEGER VALI(2)
 
 C---- FONCTION D ACCES AU CHAMP CONNEX DE LA S.D. MAILLA DE TYPE
 C     MAILLAGE
@@ -600,13 +601,9 @@ C        --------------
                       NS = SUIV(N0RE+1,J)
                       IF (NS.EQ.N2) THEN
                         IF (ICER1.NE.0) THEN
-                          CALL UTDEBM('F','NUEFFE_1','ERREUR SUR LE '//
-     &                             ' PREMIER LAGRANGE D"UNE LIAISON_DDL'
-     &                                )
-                          CALL UTIMPI('L','ON A MIS 2 FOIS LE PREMIER'//
-     &                                ' LAGRANGE : ',1,N2)
-                          CALL UTIMPI('L','DERRIRE LE NOEUD : ',1,N1)
-                          CALL UTFINM()
+                        VALI (1) = N2
+                        VALI (2) = N1
+      CALL U2MESG('F', 'ASSEMBLA_63',0,' ',2,VALI,0,0.D0)
                         END IF
                         ICER1 = ICER1 + 1
                         ZI(IDSUIV(N0RE+1,J)) = -1
@@ -617,12 +614,9 @@ C        --------------
                     NS = SUIV(N0RE+1,J)
                     IF (NS.EQ.N3) THEN
                       IF (ICER2.NE.0) THEN
-                        CALL UTDEBM('F','NUEFFE_1','ERREUR SUR LE '//
-     &                              ' 2 EME LAGRANGE D"UNE LIAISON_DDL')
-                        CALL UTIMPI('L','ON A MIS 2 FOIS LE 2EME'//
-     &                              ' LAGRANGE : ',1,N3)
-                        CALL UTIMPI('L','DERRIRE LE NOEUD : ',1,N1)
-                        CALL UTFINM()
+                        VALI (1) = N3
+                        VALI (2) = N1
+      CALL U2MESG('F', 'ASSEMBLA_64',0,' ',2,VALI,0,0.D0)
                       END IF
                       ICER2 = ICER2 + 1
                       ZI(IDSUIV(N0RE+1,J)) = -1

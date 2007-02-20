@@ -1,6 +1,6 @@
       SUBROUTINE JEDBUG ( IDB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +39,7 @@ C     ------------------------------------------------------------------
       ENDIF
 C     ------------------------------------------------------------------
       IF ( LTESJE ) THEN
-        CALL JVDEBM ( 'D' , PGMA , 'MODIFICATION D''ENVIRONNEMENT' )
-        CALL JVIMPI ( 'L' , 'IDB'    , 1 , IDB    )
-        CALL JVIMPB ( 'S' , 'LBUGJE' , 1 , LBUGJE )
-        CALL JVIMPB ( 'S' , 'LTESJE' , 1 , LTESJE )
-        CALL JVFINM
+        CALL U2MESI ( 'A', 'JEVEUX_34', 1, IDB )
       END IF
 C     ------------------------------------------------------------------
       END

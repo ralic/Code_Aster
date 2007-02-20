@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C                    NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
 C                    MATER(*,1) = E , NU , ALPHA
 C                    MATER(*,2) = D , SIG1 , PORO_INIT, PORO_CRIT
 C                                            PORO_ACCE, PORO_LIMI
-C                                            AN
+C                                            D_SIGM_EPSI_NORM, BETA
 C                    VARIABLES INTERNES : P , B , E
 C       ----------------------------------------------------------------
 C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
@@ -53,8 +53,8 @@ C
         REAL*8          EPSI, VIND(NVI), F0
         REAL*8          VALPAD, VALPAF, R8BID
 C
-        CHARACTER*8     MOD, NOMC(15) , NOMPAR
-        CHARACTER*2     BL2, FB2, CERR(15)
+        CHARACTER*8     MOD, NOMC(16) , NOMPAR
+        CHARACTER*2     BL2, FB2, CERR(16)
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
 C
@@ -82,9 +82,10 @@ C
           NOMC(10)= 'PORO_ACCE'
           NOMC(11)= 'PORO_LIMI'
           NOMC(12)= 'D_SIGM_EPSI_NORM'
-          NOMC(13)= 'SIGM_0'
-          NOMC(14)= 'EPSI_0'
-          NOMC(15)= 'M'
+          NOMC(13)= 'BETA'
+          NOMC(14)= 'SIGM_0'
+          NOMC(15)= 'EPSI_0'
+          NOMC(16)= 'M'
 C
           NOMPAR = 'TEMP'
           VALPAD = TEMPD
@@ -97,10 +98,10 @@ C
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
-          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPD, 7,
+          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPD, 8,
      &                   NOMC(6),  MATERD(1,2),  CERR(6), FB2 )
-          CALL RCVALA(IMAT,' ',    'VISC_SINH',  0, ' ', R8BID, 3,
-     &                   NOMC(13),  MATERD(8,2),  CERR(13), FB2 )
+          CALL RCVALA(IMAT,' ',    'VISC_SINH',  1, 'TEMP', TEMPD, 3,
+     &                   NOMC(14),  MATERD(9,2),  CERR(14), FB2 )
 C
 C         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
@@ -116,10 +117,10 @@ C
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
-          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPF, 7,
+          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPF, 8,
      &                   NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
-          CALL RCVALA(IMAT,' ',    'VISC_SINH',  0, ' ', R8BID, 3,
-     &                   NOMC(13),  MATERF(8,2),  CERR(13), FB2 )
+          CALL RCVALA(IMAT,' ',    'VISC_SINH',  1, 'TEMP', TEMPF, 3,
+     &                   NOMC(14),  MATERF(9,2),  CERR(14), FB2 )
 C
 C         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)

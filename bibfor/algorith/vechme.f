@@ -2,7 +2,7 @@
      &                  TEMPLU,LIGREZ,VAPRIZ,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER NBCHMX
       PARAMETER (NBCHMX=17)
 
-      INTEGER JLCHIN,EXICHA,JFISS,ISIGI
+      INTEGER JLCHIN,EXICHA,ISIGI
       INTEGER IER,JCHAR,JINF,JLVE,LONLIS
       INTEGER IBID,IRET,NCHAR,ILVE,K,ICHA,II,IEXIS
       INTEGER NUMCHM,NUMORD,NCHIN,NBNOLI,JNOLI,IAUX
@@ -391,7 +391,6 @@ C               LA CARTE QUI EST DANS MATE
 C               POUR LES ELEMENTS DE BORD X-FEM
                 CALL JEEXIN(MODELE(1:8)//'.FISS',IER)
                 IF (IER.NE.0) THEN
-                  CALL JEVEUO(MODELE(1:8)//'.FISS','L',JFISS)
                   LPAIN(NCHIN + 1) = 'PPINTTO'
                   LCHIN(NCHIN + 1) = MODELE(1:8)//'.TOPOSE.PINTTO'
                   LPAIN(NCHIN + 2) = 'PCNSETO'
@@ -400,7 +399,11 @@ C               POUR LES ELEMENTS DE BORD X-FEM
                   LCHIN(NCHIN + 3) = MODELE(1:8)//'.TOPOSE.HEAVTO'
                   LPAIN(NCHIN + 4) = 'PLONCHA'
                   LCHIN(NCHIN + 4) = MODELE(1:8)//'.TOPOSE.LONCHAM'
-                  NCHIN = NCHIN + 4
+                  LPAIN(NCHIN + 5) = 'PLSN'
+                  LCHIN(NCHIN + 5) = MODELE(1:8)//'.LNNO'
+                  LPAIN(NCHIN + 6) = 'PLST'
+                  LCHIN(NCHIN + 6) = MODELE(1:8)//'.LTNO'
+                  NCHIN = NCHIN + 6
                 ENDIF
 
 C             -- SI .VEASS, IL N'Y A PAS DE CALCUL A LANCER

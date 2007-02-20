@@ -2,7 +2,7 @@
      &                   ZCMPLX)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,8 +96,7 @@ C        --- VECTEUR PROPRE ---
             CALL VTCREM (CHAMNO, MATGEN, 'G', 'C' )
           ENDIF
         ELSE
-          CALL UTDEBM('F','MDALLR','APPEL ERRONE')
-          CALL UTFINM()
+          CALL U2MESG('F', 'ALGORITH13_36',0,' ',0,0,0,0.D0)
         ENDIF
         CALL JEVEUO (CHAMNO//'.VALE', 'E', LVALE )
         DO 110 IER = 1, NBMODE

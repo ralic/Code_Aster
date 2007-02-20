@@ -7,7 +7,7 @@
       COMPLEX*16          SIGMA
 C     -----------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C
       INTEGER      LMAT(2), LMATRA,IBID,IERX,ISINGU,NPVNEG,NDECI
       CHARACTER*24 NMAT(2),NMATRA
       REAL*8       ASHIFT, R8DEPI, CONSTC(3),FSHIFT
+      REAL*8 VALR(2)
       CHARACTER*1  TYPCST(2)
       CHARACTER*8  NAMDDL
 C     ------------------------------------------------------------------
@@ -71,11 +72,9 @@ C
 C
       IF (ABS(ASHIFT).GE.1.D0) THEN
          ASHIFT = 0.95D0
-         CALL UTDEBM('I','VPFOPC.01','PROBLEME GENERALISE COMPLEXE')
-         CALL UTIMPR('L','AMORTISSEMENT (REDUIT) DE DECALAGE '//
-     &               'SUPERIEUR EN VALEUR ABSOLU A ',1,1.D0)
-         CALL UTIMPR('L','ON LE RAMENE A LA VALEUR : ',1,0.95D0)
-         CALL UTFINM()
+         VALR (1) = 1.D0
+         VALR (2) = 0.95D0
+         CALL U2MESG('I', 'ALGELINE4_75',0,' ',0,0,2,VALR)
       ENDIF
 
       ASHIFT = (ASHIFT*FSHIFT) / 2.0D0

@@ -1,6 +1,6 @@
       SUBROUTINE GIECAS(NFIC,NDIM,NBOBJ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /LVARJE/ZL(1)
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       INTEGER ZI
+      INTEGER VALI
       REAL*8 ZR
       COMPLEX*16 ZC
       LOGICAL ZL
@@ -110,9 +111,8 @@ C     -----------------------------------------------------------------
         CALL UTTRII(ZI(INUTRI),NBNOTO)
         NBELIM = (NCOO/NDIM)-NBNOTO
         IF (NBELIM.GT.0) THEN
-         CALL UTDEBM('I','GIECAS','NOMBRE DE NOEUD(S) ')
-         CALL UTIMPI('S','ELIMINE(S) DU MAILLAGE ',1,NBELIM)
-         CALL UTFINM( )
+         VALI = NBELIM
+         CALL U2MESG('I', 'PREPOST5_19',0,' ',1,VALI,0,0.D0)
         ENDIF
       ELSE
         NBNOTO=NCOO/NDIM
@@ -217,9 +217,8 @@ C        -- SI L'OBJET EST 1 OBJET SIMPLE , ON ECRIT SES MAILLES:
  2    CONTINUE
       NMELIM = NBELT - NBELC
       IF (NMELIM.GT.0) THEN
-         CALL UTDEBM('I','GIECAS','NOMBRE DE MAILLE(S) ')
-         CALL UTIMPI('S','ELIMINEE(S) DU MAILLAGE ',1,NMELIM)
-         CALL UTFINM( )
+         VALI = NMELIM
+         CALL U2MESG('I', 'PREPOST5_20',0,' ',1,VALI,0,0.D0)
       ENDIF
 C
 C     -----------------------------------------------------------------

@@ -1,7 +1,7 @@
-      SUBROUTINE LCROTG (INDICE,DP,E,DSIGDF)
+      SUBROUTINE LCROTG (INDICE,DP,E,DTAUDF)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,46 +21,48 @@ C ======================================================================
 C RESPONSABLE ADBHHVV V.CANO
       IMPLICIT NONE
       INTEGER  INDICE
-      REAL*8   DP,E(6),DSIGDF(6,3,3)
+      REAL*8   DP,E(6),DTAUDF(6,3,3)
 
 C ***************************************************************
 C *       INTEGRATION DE LA LOI DE ROUSSELIER LOCAL             *
-C * CALCUL DE LA DERIVEE DE SIGMA PAR RAPPORT A DF = DSIGDF     *
-C * SIGMA = SIGMA(TAU - DF)                                     *
+C * CALCUL DE LA DERIVEE DE TAU PAR RAPPORT A DF = DTAUDF       *
+C * TAU = TAU(TAU - DF)                                         *
 C * TAU = TAU(E)                                                *
 C * E = E(ETR)                                                  *
 C * ETR =  ETR(DF)                                              *
-C * DSIGDF = DSIG/DTAU * DTAU/DE * DE/DETR * DETR/DF + DSIG/DDF *
+C * DTAUDF = DTAU/DE * DE/DETR * DETR/DF + DTAU/DDF *
 C ***************************************************************
 
 C IN  INDICE : REGIME DE LA SOLUTION (ELASTIQUE, PLASTIQUE, SING)
 C IN  DP     : INCREMENT DE DEFORMATION PLASTIQUE
 C IN  E      : DEFORMATION ELASTIQUE
-C OUT DSIGDF : DERIVEE DE SIGMA PAR RAPPORT A DF
-C ----------------------------------------------------------------------
-C  COMMON SIMO - MIEHE
-
-      INTEGER IND1(6),IND2(6)
-      REAL*8  KR(6),RAC2,RC(6)
-      REAL*8  LAMBDA,MU,DEUXMU,UNK,TROISK,COTHER
-      REAL*8  JM,DJ,JP,DJDF(3,3)
-      REAL*8  BEM(6),ETR(6),DVETR(6),EQETR,TRETR,DETRDF(6,3,3)
-      REAL*8  SIGMA(6),DSIGDE(6,6),DSIGDJ(6)
-      COMMON /LCSMC/
-     &          IND1,IND2,KR,RAC2,RC,
-     &          LAMBDA,MU,DEUXMU,UNK,TROISK,COTHER,
-     &          JM,DJ,JP,DJDF,
-     &          BEM,ETR,DVETR,EQETR,TRETR,DETRDF,
-     &          SIGMA,DSIGDE,DSIGDJ
+C OUT DTAUDF : DERIVEE DE TAU PAR RAPPORT A DF
 C ----------------------------------------------------------------------
 C  COMMON LOI DE COMPORTEMENT ROUSSELIER
 
       INTEGER ITEMAX, JPROLP, JVALEP, NBVALP
       REAL*8  PREC,YOUNG,NU,ALPHA,SIGY,SIG1,ROUSD,F0,FCR,ACCE
-      REAL*8  PM,RPM,FONC,FCD,DFCDDJ
+      REAL*8  PM,RPM,FONC,FCD,DFCDDJ,DPMAXI
       COMMON /LCROU/ PREC,YOUNG,NU,ALPHA,SIGY,SIG1,ROUSD,F0,FCR,ACCE,
-     &               PM,RPM,FONC,FCD,DFCDDJ,
+     &               PM,RPM,FONC,FCD,DFCDDJ,DPMAXI,
      &               ITEMAX, JPROLP, JVALEP, NBVALP
+C ----------------------------------------------------------------------
+C  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
+
+      INTEGER IND1(6),IND2(6)
+      REAL*8  KR(6),RAC2,RC(6)
+      REAL*8  LAMBDA,MU,DEUXMU,UNK,TROISK,COTHER
+      REAL*8  JM,DJ,JP,DJDF(3,3)
+      REAL*8  ETR(6),DVETR(6),EQETR,TRETR,DETRDF(6,3,3)
+      REAL*8  DTAUDE(6,6)
+
+      COMMON /GDCLC/
+     &          IND1,IND2,KR,RAC2,RC,
+     &          LAMBDA,MU,DEUXMU,UNK,TROISK,COTHER,
+     &          JM,DJ,JP,DJDF,
+     &          ETR,DVETR,EQETR,TRETR,DETRDF,
+     &          DTAUDE
+C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER IJ,KL,K,L,PQ,RS
       REAL*8  TRE,RP,DRDP,AIRE
@@ -200,20 +202,20 @@ C  DE/DETR = DEDETR, DE/DFCD = DEDFCD
 
 
 C 2 - COMPOSITION DES DERIVATIONS :
-C     DSIGDF = DSIGDJ*DJDF + DSIGDE * (DEDETR * DETRDF + DEDJ * DJDF)
+C     DTAUDF = DTAUDE * (DEDETR * DETRDF + DEDJ * DJDF)
 
  1000 CONTINUE
       DO 1100 IJ = 1,6
         DO 1110 K = 1,3
           DO 1120 L = 1,3
-            SUM = DSIGDJ(IJ)*DJDF(K,L)
+            SUM = 0
             DO 1130 PQ = 1,6
               DO 1140 RS = 1,6
-                SUM = SUM + DSIGDE(IJ,PQ)*DEDETR(PQ,RS)*DETRDF(RS,K,L)
+                SUM = SUM + DTAUDE(IJ,PQ)*DEDETR(PQ,RS)*DETRDF(RS,K,L)
  1140         CONTINUE
-              SUM = SUM + DSIGDE(IJ,PQ)*DEDFCD(PQ)*DFCDDJ*DJDF(K,L)
+              SUM = SUM + DTAUDE(IJ,PQ)*DEDFCD(PQ)*DFCDDJ*DJDF(K,L)
  1130       CONTINUE
-            DSIGDF(IJ,K,L) = SUM
+            DTAUDF(IJ,K,L) = SUM
  1120     CONTINUE
  1110   CONTINUE
  1100 CONTINUE

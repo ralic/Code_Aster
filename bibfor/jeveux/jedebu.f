@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU ( NBFI, LZON, IADZON, LMO, CMES, CVIG, IDB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -62,10 +62,10 @@ C
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
      &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
@@ -102,28 +102,27 @@ C ----------------------------------------------------------------------
       COMMON /JENVJE/  MSLOIS
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      LOGICAL          LCRA
-      COMMON /LENVJE/  LCRA
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
       INTEGER          LFIC,MFIC
       COMMON /FENVJE/  LFIC,MFIC
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
+      INTEGER          LDYN , LGDYN
+      COMMON /IDYNJE/  LDYN , LGDYN
 C ----------------------------------------------------------------------
       INTEGER          MXLICI , IPREM  , INIT
       INTEGER          ISPBEM , LBISEM , LOISEM , LOLSEM, LOUAEM
       INTEGER          LOR8EM , LOC8EM , ISNNEM
-      LOGICAL          LCRAEM
       REAL*8           MAXBAS
       PARAMETER      ( MXLICI = 67 )
       CHARACTER *(MXLICI) CLICIT
       DATA CLICIT/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijkl
      &mnopqrstuvwxyz'/
 C DEB ------------------------------------------------------------------
-      CALL JVINIT ( 2 , 80 , 1 )
+C
 C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LFIC = LOFIEM()
       VAL = MAXBAS(-1.0D0)
@@ -138,18 +137,18 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       LOIS = LOISEM()
       LOLS = LOLSEM()
       LOUA = LOUAEM()
-      LCRA = LCRAEM()
       LUNDEF = ISNNEM()
       MSLOIS = LOIS - 1
+      LDYN   = 0
+      LGDYN  = LUNDEF
+      LDYN   = 1
+      LGDYN  = 200
 C -----------------  NOMBRE DE BASES -----------------------------------
       NBFIC = MIN ( NBFI , N , LEN(CLASSE) )
       IF ( NBFIC .LE. 0 ) THEN
          CALL U2MESS('F','JEVEUX_04')
       ELSE IF ( NBFIC .NE. NBFI ) THEN
-         CALL JVDEBM ( 'S' , 'JEDEBU02' ,
-     &                 'LE NOMBRE DE BASES GERABLES EST LIMITE')
-         CALL JVIMPI ( 'S' , ' A ', 1 , N )
-         CALL JVFINM
+         CALL U2MESI('F','JEVEUX_35',1,N)
       ENDIF
 C -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
       KSTAT  = 'XUAD'
@@ -226,7 +225,6 @@ C -------------------  POINTEURS D'ATTRIBUTS  --------------------------
         LONGBL(I) = 0
         KITLEC(I) = 0
         KITECR(I) = 0
-        KINDEF(I) = 0
         KIADM (I) = 0
         IITLEC(I) = 0
         IITECR(I) = 0
@@ -256,9 +254,11 @@ C
          JCLASS(ICHAR( CLICIT(K:K) ) ) = K
  31   CONTINUE
 C
-      KDESMA = 0
+      KDESMA(1) = 0
+      KDESMA(2) = 0
       LGDUTI = 0
-      KPOSMA = 0
+      KPOSMA(1) = 0
+      KPOSMA(2) = 0
       LGPUTI = 0
       IPGC   = 0
       INIT   = 100

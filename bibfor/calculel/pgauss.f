@@ -1,11 +1,13 @@
       SUBROUTINE PGAUSS ( TYPEMA, FG, PG, G, NG, NDIM )
       IMPLICIT NONE
       INTEGER       FG, NG, NDIM
+      INTEGER VALI
       REAL*8        PG(*), G(*)
       CHARACTER*8   TYPEMA
+      CHARACTER*24 VALK
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,10 +48,9 @@ C
          ELSEIF (FG.EQ.4) THEN
             CALL ELRAGA ( 'SE2', 'FPG4', NDIM, NG, G, PG )
          ELSE
-            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
-            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
-            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
-            CALL UTFINM
+         VALK = TYPEMA
+         VALI = FG
+            CALL U2MESG('F', 'CALCULEL6_34',1,VALK,1,VALI,0,0.D0)
          ENDIF
 
       ELSEIF ( TYPEMA(1:3) .EQ. 'TRI' ) THEN
@@ -70,10 +71,9 @@ C
          ELSEIF (FG.EQ.8) THEN
             CALL ELRAGA ( 'TR3', 'FPG12', NDIM, NG, G, PG )
          ELSE
-            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
-            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
-            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
-            CALL UTFINM
+         VALK = TYPEMA
+         VALI = FG
+            CALL U2MESG('F', 'CALCULEL6_34',1,VALK,1,VALI,0,0.D0)
          ENDIF
 
       ELSEIF ( TYPEMA(1:3) .EQ. 'QUA' ) THEN
@@ -109,10 +109,9 @@ C
          ELSEIF (FG.EQ.7) THEN
             CALL ELRAGA ( 'QU4', 'FPG16', NDIM, NG, G, PG )
          ELSE
-            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
-            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
-            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
-            CALL UTFINM
+         VALK = TYPEMA
+         VALI = FG
+            CALL U2MESG('F', 'CALCULEL6_34',1,VALK,1,VALI,0,0.D0)
          ENDIF
 
       ELSEIF ( TYPEMA(1:3) .EQ.  'TET') THEN        
@@ -123,10 +122,9 @@ C
          ELSEIF (FG.EQ.3) THEN
             CALL ELRAGA ( 'TE4', 'FPG15', NDIM, NG, G, PG )
          ELSE 
-            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
-            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
-            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
-            CALL UTFINM
+         VALK = TYPEMA
+         VALI = FG
+            CALL U2MESG('F', 'CALCULEL6_34',1,VALK,1,VALI,0,0.D0)
          ENDIF 
 
       ELSEIF ( TYPEMA(1:3) .EQ. 'PEN' ) THEN
@@ -139,10 +137,9 @@ C
          ELSEIF (FG.EQ.4) THEN
             CALL ELRAGA ( 'PE6', 'FPG21', NDIM, NG, G, PG )
          ELSE
-            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
-            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
-            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
-            CALL UTFINM
+         VALK = TYPEMA
+         VALI = FG
+            CALL U2MESG('F', 'CALCULEL6_34',1,VALK,1,VALI,0,0.D0)
          ENDIF
 
       ELSEIF ( TYPEMA(1:3) .EQ. 'HEX' ) THEN 
@@ -153,10 +150,9 @@ C
          ELSEIF (FG.EQ.3) THEN
             CALL ELRAGA ( 'HE8', 'FPG64', NDIM, NG, G, PG )
          ELSE
-            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
-            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
-            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
-            CALL UTFINM
+         VALK = TYPEMA
+         VALI = FG
+            CALL U2MESG('F', 'CALCULEL6_34',1,VALK,1,VALI,0,0.D0)
          ENDIF
 
       ELSEIF ( TYPEMA(1:3) .EQ. 'PYR' ) THEN 
@@ -167,16 +163,14 @@ C
          ELSEIF (FG.EQ.3) THEN
             CALL ELRAGA ( 'PY5', 'FPG27', NDIM, NG, G, PG )
          ELSE
-            CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
-            CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
-            CALL UTIMPI('L','   FAMILLE D''INTEGRATION ',1,FG)
-            CALL UTFINM
+         VALK = TYPEMA
+         VALI = FG
+            CALL U2MESG('F', 'CALCULEL6_34',1,VALK,1,VALI,0,0.D0)
          ENDIF
 
       ELSE
-         CALL UTDEBM('F','PGAUSS','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   TYPE DE MAILLE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL6_41',1,VALK,0,0,0,0.D0)
       ENDIF
 
       END

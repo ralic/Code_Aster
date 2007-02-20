@@ -1,6 +1,6 @@
       SUBROUTINE JELIBZ ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -53,12 +53,12 @@ C
      +                 DN2(N)
       INTEGER          NRHCOD    , NREMAX    , NREUTI
       COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+      INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
+     +               IDMARQ     , IDNOM      ,              IDLONG     ,
+     +               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     +               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
+     +               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C ----------------------------------------------------------------------
       INTEGER          NCLA1,NCLA2,IBACOL,IBMARQ,IC,ID,IRET,IX
       INTEGER          J,K,MARQI
@@ -81,7 +81,7 @@ C DEB ------------------------------------------------------------------
      &         CRNOM(25:26) .EQ. '$$' ) GOTO 150
           CALL JJCREN ( CRNOM , 0 , IRET )
           IF ( GENR(JGENR(IC)+J) .EQ. 'X' ) THEN
-             IBACOL = IADM(JIADM(IC)+J)
+             IBACOL = IADM(JIADM(IC)+2*J-1)
              IF ( IBACOL .EQ. 0 ) GOTO 150
              ID = ISZON(JISZON + IBACOL + IDIADM)
              IF ( ID .GT. 0 ) THEN
@@ -89,7 +89,7 @@ C
 C ------------- COLLECTION DISPERSEE ( OBJETS DE COLLECTION )
 C
                 IX     = ISZON(JISZON + IBACOL + IDMARQ)
-                IBMARQ = IADM(JIADM(IC)+IX)
+                IBMARQ = IADM(JIADM(IC)+2*IX-1)
                 NMAX   = ISZON(JISZON+IBACOL+IVNMAX )
                 DO 170 K=1,NMAX
                   MARQI = ISZON(JISZON+IBMARQ-1+2*K-1)

@@ -5,7 +5,7 @@
      &                  NOMTAB, NBOBS, NUOBSE, LSUIVI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,6 +101,7 @@ C
       CHARACTER*13 RESULT,CONCEP,NOMCMD
       CHARACTER*16 CHAM,TABK(4),NPARAN(6),NPARAS(7)
       CHARACTER*24 K24BID
+      CHARACTER*24 VALK(2)
       INTEGER      JCHAM,JCOMP,JNUCM,JNOEU,JMAIL,JPOIN,JSUINB,JEXTR
       INTEGER      KCHAM,KCOMP,KNUCM,KNOEU,KMAIL,KPOIN
       INTEGER      SUBTOP,TYPCHA,ICOMP,NBCMP,IMA,NBPT,NBSP,IPT,ISP
@@ -169,11 +170,9 @@ C
           IF ( CHAM(1:11) .EQ. 'DEPL_ABSOLU'.OR.
      &         CHAM(1:11) .EQ. 'VITE_ABSOLU'.OR.
      &         CHAM(1:11) .EQ. 'ACCE_ABSOLU') THEN
-                 CALL UTDEBM('F','SUIDDL','ERREUR FATALE')
-                 CALL UTIMPK('L','LE CHAMP',1,CHAM(1:11))
-                 CALL UTIMPK('S','EST INCOMPATIBLE AVEC'//
-     &            ' LA COMMANDE ',1,NOMCMD(1:13))
-                 CALL UTFINM()
+               VALK (1) = CHAM(1:11)
+               VALK (2) = NOMCMD(1:13)
+                 CALL U2MESG('F', 'ALGORITH12_99',2,VALK,0,0,0,0.D0)
           ENDIF
  10     CONTINUE
       ENDIF
@@ -303,10 +302,9 @@ C
                CALL U2MESS('A','ALGORITH10_79')
                GOTO 15
              ELSEIF(TYPCHA.NE.8 .AND. TYPCHA.NE.9)THEN
-               CALL UTDEBM('F','DYOBAR','ERREUR FATALE')
-               CALL UTIMPK('L','L''ENTITE ',1,TOPO(1:8))
-               CALL UTIMPK('S',' N''EST PAS POSSIBLE ',0,' ')
-               CALL UTFINM()
+               VALK (1) = TOPO(1:8)
+               VALK (2) = ' '
+               CALL U2MESG('F', 'ALGORITH13_1',2,VALK,0,0,0,0.D0)
              ENDIF
            ENDIF
 C

@@ -1,11 +1,12 @@
       SUBROUTINE FOLOCX ( VALE, N, X, PROLGD, I, EPSI, COLI, IER )
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8              VALE(N)
+      REAL*8 VALR(2)
       CHARACTER*(*)                   PROLGD
       CHARACTER*1                                      COLI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,10 +76,9 @@ C     --- PROLONGEMENT A GAUCHE ---
                GOTO 9999
             ENDIF
             IER = 30
-            CALL UTDEBM('E','FOLOCX','ON DEBORDE A GAUCHE')
-            CALL UTIMPR('L','   VALEUR A INTERPOLEE: ',1,X)
-            CALL UTIMPR('L','      BORNE INFERIEURE: ',1,VALE(1))
-            CALL UTFINM( )
+            VALR (1) = X
+            VALR (2) = VALE(1)
+            CALL U2MESG('E', 'UTILITAI6_34',0,' ',0,0,2,VALR)
             GOTO 9999
          ELSEIF ( PROLGD(1:1) .EQ. 'L') THEN
             COLI = 'E'
@@ -102,10 +102,9 @@ C     --- PROLONGEMENT A DROITE ---
                GOTO 9999
             ENDIF
             IER = 40
-            CALL UTDEBM('E','FOLOCX','ON DEBORDE A DROITE')
-            CALL UTIMPR('L','   VALEUR A INTERPOLEE: ',1,X)
-            CALL UTIMPR('L','      BORNE SUPERIEURE: ',1,VALE(N))
-            CALL UTFINM( )
+            VALR (1) = X
+            VALR (2) = VALE(N)
+            CALL U2MESG('E', 'UTILITAI6_35',0,' ',0,0,2,VALR)
             GOTO 9999
          ELSEIF ( PROLGD(2:2) .EQ. 'C' ) THEN
             COLI = 'C'

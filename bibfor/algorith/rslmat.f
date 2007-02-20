@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C                    NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
 C                    MATER(*,1) = E , NU , ALPHA
 C                    MATER(*,2) = D , SIG1 , PORO_INIT, PORO_CRIT
 C                                            PORO_ACCE, PORO_LIMI
-C                                            AN
+C                                            D_SIGM_EPSI_NORM, AN, BETA
 C                    VARIABLES INTERNES : P , B , E
 C       ----------------------------------------------------------------
 C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
@@ -52,8 +52,8 @@ C
         REAL*8          EPSI, VIND(*), F0
         REAL*8          VALPAD, VALPAF
 C
-        CHARACTER*8     MOD, NOMC(13) , NOMPAR
-        CHARACTER*2     BL2, FB2, CERR(13)
+        CHARACTER*8     MOD, NOMC(14) , NOMPAR
+        CHARACTER*2     BL2, FB2, CERR(14)
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
 C
@@ -82,6 +82,7 @@ C
           NOMC(11)= 'PORO_LIMI'
           NOMC(12)= 'D_SIGM_EPSI_NORM'
           NOMC(13)= 'AN'
+          NOMC(14)= 'BETA'
 C
           NOMPAR = 'TEMP'
           VALPAD = TEMPD
@@ -94,7 +95,7 @@ C
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
-          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPD, 8,
+          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPD, 9,
      &                   NOMC(6),  MATERD(1,2),  CERR(6), FB2 )
 C
 C         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
@@ -111,7 +112,7 @@ C
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
-          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPF, 8,
+          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPF, 9,
      &                   NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
 C
 C         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES

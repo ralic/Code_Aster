@@ -5,7 +5,7 @@
       CHARACTER*(*)       MCF , MCS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C     ------------------------------------------------------------------
       INTEGER       N1, IRET
       CHARACTER*8   K8B, NOGNO
       CHARACTER*16  MCNOEU, MCGRNO
+      CHARACTER*24 VALK
 C     ------------------------------------------------------------------
 C
       NOEUD = '        '
@@ -57,9 +58,8 @@ C
          IF ( IRET .EQ. 10 ) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
          ELSEIF ( IRET .EQ. 1 ) THEN
-            CALL UTDEBM('A','UTRENO','TROP DE NOEUDS DANS LE GROUP_NO')
-            CALL UTIMPK('L','  NOEUD UTILISE: ',1, NOEUD )
-            CALL UTFINM( )
+            VALK = NOEUD
+            CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
          ENDIF
       ENDIF
 C

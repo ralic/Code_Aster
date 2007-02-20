@@ -5,7 +5,7 @@
       CHARACTER*24        CHMOME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,12 +46,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8      ZK8
       CHARACTER*16             ZK16
       CHARACTER*24                      ZK24
+      CHARACTER*24 VALK
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER    JCESV, JCESD, JCESL, NBCMP, DECAL, ICMP, IAD
+      INTEGER VALI(2)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -68,11 +70,10 @@ C
       DO 10 ICMP = 1 , 3
          IAD = DECAL + (IPT-1)*NBCMP + ICMP
          IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-            CALL UTDEBM('F','RCMO01','ERREUR DONNEES ')
-            CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-            CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-            CALL UTIMPK('L','IL MANQUE UN ',1,'MOMENT')
-            CALL UTFINM
+            VALI (1) = IMA
+            VALI (2) = IPT
+            VALK = 'MOMENT'
+            CALL U2MESG('F', 'POSTRELE1_35',1,VALK,2,VALI,0,0.D0)
          ENDIF
          VALE(ICMP) = ZR(JCESV-1+IAD)
  10   CONTINUE

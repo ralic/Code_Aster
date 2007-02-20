@@ -7,7 +7,7 @@
       LOGICAL           LMASIN,LBASM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C     ------------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -66,6 +67,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8      ZK8
       CHARACTER*16            ZK16
       CHARACTER*24                    ZK24
+      CHARACTER*24 VALK
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -162,10 +164,8 @@ C
 C
       ELSE
 C
-         CALL UTDEBM('F','VPNORM','L''OPTION DE NORMALISATION')
-         CALL UTIMPK('S',' ',1,NORM)
-         CALL UTIMPI('S',' N''EST PAS IMPLANTEE.',0,IBID)
-         CALL UTFINM()
+         VALK = NORM
+         CALL U2MESG('F', 'ALGELINE4_78',1,VALK,0,0,0,0.D0)
 C
       ENDIF
       IF ( LMASIN ) THEN

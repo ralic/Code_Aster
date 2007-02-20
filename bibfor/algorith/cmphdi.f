@@ -2,7 +2,7 @@
      &NDIMAX,CMAT1,CMAT2,CVECT,CVECT1,ALPHA,BETA,LAMBD1,LAMBD2,
      &INTERV,IFIC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,6 @@ C IFIC     /I/: NUMERO D'UNITE LOGIQUE
 C
 C-----------------------------------------------------------------------
 C
-      CHARACTER*6 PGC
       INTEGER    NDIM,NBMOD,NITER,IFIC
       COMPLEX*16 CK(*),CM(*)
       COMPLEX*16 CEIGEN(NBMOD),CMOD(NDIMAX,NBMOD),CMOD0(NDIM)
@@ -67,12 +66,11 @@ C
       REAL*8     ALPHA(NDIM+1),BETA(NDIM+1),INTERV
       REAL*8     LAMBD1,LAMBD2,XCRIT
       INTEGER    I,J,K,CT,IPIVO
+      INTEGER VALI
       COMPLEX*16 CSHIFT
       REAL*8     ECART
       LOGICAL    SORTIE
 C
-C-----------------------------------------------------------------------
-      DATA PGC /'CMPHDI'/
 C-----------------------------------------------------------------------
 C
       WRITE(IFIC,*)'     '
@@ -119,10 +117,8 @@ C        CALCUL DE LA MATRICE CM*(CK-SHIFT*CM)**-1
 C
         CALL TRLDC(CMAT1,NDIM,IPIVO)
         IF(IPIVO.NE.0) THEN
-           CALL UTDEBM('F',PGC,
-     &          'ARRET SUR PIVOT NUL')
-           CALL UTIMPI('L',' LIGNE --> ',1,IPIVO)
-           CALL UTFINM
+           VALI = IPIVO
+           CALL U2MESG('F', 'ALGORITH12_53',0,' ',1,VALI,0,0.D0)
         ENDIF
 C
 C

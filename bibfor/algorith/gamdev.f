@@ -3,7 +3,7 @@
       REAL*8   ALPHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C     IN: ALPHA    PARAMETRE ALPHA DE LA LOI GAMMA
 C ----------------------------------------------------------------------
       REAL*8   BETA, BETA2, F0, C1, C2, GAMMA2, UN
       REAL*8   V, U, Y, UNIF, PI, GAMM1, VREF, R8PI
+      REAL*8 VALR
 C DEB ------------------------------------------------------------------
 C
       PI = R8PI()
@@ -65,9 +66,8 @@ C
 C
       GAMDEV = Y
       IF (V.LT.0) THEN
-         CALL UTDEBM('A','GAMDEV',' GAMDEV(ALPHA) < 0 ')
-         CALL UTIMPR('L','   GAMDEV(ALPHA) = ', 1, GAMDEV )
-         CALL UTFINM
+         VALR = GAMDEV
+         CALL U2MESG('A', 'ALGORITH13_18',0,' ',0,0,1,VALR)
       ENDIF
 C
       END

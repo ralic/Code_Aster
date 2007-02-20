@@ -1,7 +1,7 @@
       SUBROUTINE CLA110(NOMRES,MODGEN)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,17 +56,17 @@ C   PARAMETER : REPRESENTE LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 C   SOUS-JACENTE TRAITEE
 C
       PARAMETER   (NBCMPM=10)
-      CHARACTER*6  PGC
       CHARACTER*8  NOMRES,MODGEN,TT,NOMSST,MAILLA,NOMCOU
       CHARACTER*16 CSS,CMA,CGR,MAICON,NOMCON
       REAL*8       XANC(3)
       CHARACTER*24 REPNOM,MODROT,MODTRA
+      CHARACTER*24 VALK(2)
       REAL*8       MATROT(NBCMPM,NBCMPM)
       REAL*8       MATBUF(NBCMPM,NBCMPM),MATTMP(NBCMPM,NBCMPM)
       CHARACTER*8  K8BID,NOMGR,EXCLU
 C
 C-----------------------------------------------------------------------
-      DATA PGC,TT      /'CLA110','&&CLA110'/
+      DATA TT      /'&&CLA110'/
       DATA CSS,CMA,CGR /'SOUS_STRUC','MAILLE','GROUP_MA'/
 C-----------------------------------------------------------------------
 C
@@ -83,9 +83,8 @@ C
         CALL GETVTX(CSS,'NOM',I,1,1,NOMSST,IBID)
         CALL JENONU(JEXNOM(REPNOM,NOMSST),NUSST)
         IF (NUSST.EQ.0) THEN
-          CALL UTDEBM('A',PGC,'PROBLEME: SOUS-STRUCTURE INCONNUE')
-          CALL UTIMPK('L',' SOUS-STRUCTURE --> ',1,NOMSST)
-          CALL UTFINM
+               VALK (1) = NOMSST
+          CALL U2MESG('A', 'ALGORITH12_49',1,VALK,0,0,0,0.D0)
         ELSE
           ZI(LTFAC+NUSST-1)=1
         ENDIF
@@ -97,8 +96,7 @@ C
 30    CONTINUE
 C
       IF(NBSTAC.EQ.0) THEN
-        CALL UTDEBM('F',PGC,'PAS DE SOUS-STRUCTURE DANS LE SQUELETTE')
-        CALL UTFINM
+        CALL U2MESG('F', 'ALGORITH12_50',0,' ',0,0,0,0.D0)
       ENDIF
 C
 C-----DEFINITION DES REPERTOIRES DE TRAVAIL-----------------------------
@@ -142,10 +140,9 @@ C           --- RECHERCHE SI LA SOUS-STRUCTURE EXISTE ---
                  GOTO 90
                ENDIF
             ELSE
-               CALL UTDEBM('F',PGC,'NOM DE SOUS-STRUCTURE NON TROUVE')
-               CALL UTIMPK('L','LA SOUS-STRUCTURE : ',1,ZK8(LUTSST-1+I))
-               CALL UTIMPK('L','N EXISTE PAS ',0,K8BID)
-               CALL UTFINM
+               VALK (1) = ZK8(LUTSST-1+I)
+               VALK (2) = K8BID
+               CALL U2MESG('F', 'ALGORITH12_51',2,VALK,0,0,0,0.D0)
             ENDIF
  100     CONTINUE
       ENDIF

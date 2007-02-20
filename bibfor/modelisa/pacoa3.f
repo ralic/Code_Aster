@@ -6,7 +6,7 @@
       REAL*8        DMIN0
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/12/1999   AUTEUR CIBHHBC B.CIREE 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,6 +73,7 @@ C     ------- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   NOMA
       CHARACTER*8   NOMNO1, NOMNO2, NOMNO3, NOMO1, NOMO2
       CHARACTER*24  LISIN1, LISIN2, LISOU1, LISOU2, NOMNOE
+      CHARACTER*24 VALK(3)
       INTEGER IRET,IDLOU1,IDLOU2,INO1, IAGEOM, LONLIM
       INTEGER LONMAX,IDLINV,I1,NUNO1,J2,I2,INO2,NUNO2,J1
 C
@@ -154,13 +155,10 @@ C
                   CALL JENUNO ( JEXNUM(NOMNOE,NUNO1), NOMNO1)
                   CALL JENUNO ( JEXNUM(NOMNOE,NUNO2), NOMNO2)
                   CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLINV+J2-1)), NOMNO3)
-                  CALL UTDEBM('F','PACOA2','CONFLIT DANS LES '//
-     +                     'VIS_A_VIS DES NOEUDS')
-                  CALL UTIMPK('L','LE NOEUD ',1,NOMNO2)
-                  CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,
-     +                         NOMNO1)
-                  CALL UTIMPK('S','ET ',1,NOMNO3)
-                  CALL UTFINM()
+                  VALK (1) = NOMNO2
+                  VALK (2) = NOMNO1
+                  VALK (3) = NOMNO3
+                  CALL U2MESG('F', 'MODELISA8_83',3,VALK,0,0,0,0.D0)
               ENDIF
            ENDIF
 10       CONTINUE
@@ -200,13 +198,10 @@ C
                   CALL JENUNO ( JEXNUM(NOMNOE,NUNO1), NOMNO1)
                   CALL JENUNO ( JEXNUM(NOMNOE,NUNO2), NOMNO2)
                   CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLINV+J1-1)), NOMNO3)
-                  CALL UTDEBM('F','PACOAP','CONFLIT DANS LES '//
-     +                    'VIS_A_VIS DES NOEUDS')
-                  CALL UTIMPK('L','LE NOEUD ',1,NOMNO2)
-                  CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,
-     +                        NOMNO1)
-                  CALL UTIMPK('S','ET ',1,NOMNO3)
-                  CALL UTFINM()
+                  VALK (1) = NOMNO2
+                  VALK (2) = NOMNO1
+                  VALK (3) = NOMNO3
+                  CALL U2MESG('F', 'MODELISA8_84',3,VALK,0,0,0,0.D0)
               ENDIF
            ENDIF
 30       CONTINUE

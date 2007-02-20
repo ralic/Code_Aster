@@ -4,7 +4,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,12 +63,14 @@ C
      +             NBMAX,NBMOD,NBNOT,NBSST,NEQ, NEQS,NNO,NUMO,NUTARS,
      +             LLREF1,LLREF2,LLREF3
       INTEGER      IADPAR(8)
+      INTEGER VALI(2)
       REAL*8       COMPX,COMPY,COMPZ,EFMASX,EFMASY,EFMASZ,FREQ,GENEK,
      +             GENEM,MAT(3,3),OMEG2,RBID
       CHARACTER*8  BASMOD,MACREL,MODGEN,SOUTR,KBID
       CHARACTER*16 DEPL,NOMPAR(8)
       CHARACTER*19 RAID,NUMDDL,NUMGEN,CHAMNE
       CHARACTER*24 CREFE(2),CHAMOL,CHAMBA,INDIRF
+      CHARACTER*24 VALK
       COMPLEX*16   CBID
       CHARACTER*1 K1BID
 C
@@ -90,10 +92,8 @@ C-----VERIF SQUELETTE---------------------------------------------------
 C
       CALL JEEXIN(MAILSK//'.INV.SKELETON',IRET)
       IF(IRET.EQ.0) THEN
-        CALL UTDEBM('F','REGEGL',
-     &              'LE MAILLAGE N''EST PAS UN MAILLAGE SQUELETTE')
-        CALL UTIMPK('L','MAILLAGE',1,MAILSK)
-        CALL UTFINM
+             VALK = MAILSK
+        CALL U2MESG('F', 'ALGORITH14_27',1,VALK,0,0,0,0.D0)
       ENDIF
       CALL JEVEUO(MAILSK//'.INV.SKELETON','L',LLINSK)
 C
@@ -215,12 +215,9 @@ C
             CALL JEVEUO(ZK24(LREFE+4)(1:8)//'.IDC_TYPE','L',
      &                  LTYPE)
             IF (ZK8(LTYPE).EQ.'AUCUN') THEN
-             CALL UTDEBM('A','REGEGL',' AUCUN TYPE D''INTERFACE DEFINI')
-               CALL UTIMPI('S',' POUR LA SOUS STRUCTURE : ',1,K)
-               CALL UTIMPI('L',' PAS DE MODE RIGIDE D''INTERFACE'//
-     &           ' LE CALCUL DE MASSES EFFECTIVES RISQUE D''ETRE'//
-     &           ' IMPRECIS',0,K)
-               CALL UTFINM
+             VALI (1) = K
+             VALI (2) = K
+             CALL U2MESG('A', 'ALGORITH14_28',0,' ',2,VALI,0,0.D0)
             ENDIF
             CALL MGUTDM(MODGEN,KBID,K,'NOM_MACR_ELEM',IBID,MACREL)
             CALL JEVEUO(MACREL//'.MAEL_MASS_VALE','L',LLMASS)

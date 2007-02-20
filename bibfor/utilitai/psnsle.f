@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - NOM DES STRUCTURES - LECTURE
 C     *          *           *       *            **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,10 +64,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'PSNSLE' )
-C
       INTEGER LXLGUT
+      INTEGER VALI(2)
 C
       INTEGER ADPSCO, NBPSCO
       INTEGER LGNOST
@@ -101,12 +99,9 @@ C
 C
         IF ( LGNOST.GT.IAUX ) THEN
 C
-          CALL UTDEBM ( 'A', NOMPRO, 'PROBLEME DE DECLARATION' )
-          CALL UTIMPI (
-     &    'L', 'LA CHAINE NOMSTR EST DE LONGUEUR ', 1, IAUX )
-          CALL UTIMPI ( 'L',
-     &    'ON VEUT Y METTRE '//SAUX24//' DE LONGUEUR ', 1, LGNOST )
-          CALL UTFINM
+        VALI (1) = IAUX
+        VALI (2) = LGNOST
+          CALL U2MESG('A', 'UTILITAI6_64',0,' ',2,VALI,0,0.D0)
           CALL U2MESS('F','MODELISA_67')
 C
         ENDIF
@@ -120,10 +115,9 @@ C 1.3. ==> PROBLEME
 C
       ELSE
 C
-        CALL UTDEBM ( 'A', NOMPRO, 'MAUVAISE VALEUR POUR TYPEST' )
-        CALL UTIMPI ( 'L', 'IL FAUT ENTRE 0 ET ', 1, NBPSCO )
-        CALL UTIMPI ( 'L', 'MAIS ON A DONNE ', 1, TYPEST )
-        CALL UTFINM
+        VALI (1) = NBPSCO
+        VALI (2) = TYPEST
+        CALL U2MESG('A', 'UTILITAI6_65',0,' ',2,VALI,0,0.D0)
         CALL U2MESS('F','MODELISA_67')
 C
       ENDIF

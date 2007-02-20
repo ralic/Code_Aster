@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,6 +26,7 @@ C   PHYSIQUE  OPERATEUR REST_SPEC_PHYS
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
+      INTEGER VALI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -193,10 +194,9 @@ C     --- RECUPERATION DU NUMERO DU DDL ---
 
       CALL RSEXCH(MODMEC,OPTCH1,ZI(ILMODE),CHAM19,IRET)
       IF (IRET.NE.0) THEN
-        CALL UTDEBM('F','SPEPH0','MANQUE LA DEFORMEE MODALE')
-        CALL UTIMPK('L',' NOM_CHAM ',1,OPTCH1)
-        CALL UTIMPI('S',' POUR LE MODE ',1,ZI(ILMODE))
-        CALL UTFINM()
+          VALK (1) = OPTCH1
+          VALI = ZI(ILMODE)
+        CALL U2MESG('F', 'ALGORITH14_62',1,VALK,1,VALI,0,0.D0)
       END IF
 
       CALL WKVECT('&&SPEPH0.NUME_DDL','V V I',NBN,INDDL)
@@ -275,17 +275,15 @@ C     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
         CALL RSORAC(MODSTA,'NOEUD_CMP',IBID,R8B,ACCES,C16B,R8B,K8B,
      &              NUMOD,1,NBTROU)
         IF (NBTROU.NE.1) THEN
-          CALL UTDEBM('F','SPEPH0','DONNEES INCOMPATIBLES :')
-          CALL UTIMPK('L',' POUR LE MODE_STAT  : ',1,MODSTA)
-          CALL UTIMPK('L',' IL MANQUE LE CHAMP : ',1,ACCES)
-          CALL UTFINM()
+          VALK (1) = MODSTA
+          VALK (2) = ACCES
+          CALL U2MESG('F', 'ALGORITH14_63',2,VALK,0,0,0,0.D0)
         END IF
         CALL RSEXCH(MODSTA,OPTCH1,NUMOD,CHAM19,IRET)
         IF (IRET.NE.0) THEN
-          CALL UTDEBM('F','SPEPH0','MANQUE LE MODE STATIQUE')
-          CALL UTIMPK('L',' NOM_CHAM ',1,OPTCH1)
-          CALL UTIMPI('S',' POUR LE MODE ',1,NUMOD)
-          CALL UTFINM()
+          VALK (1) = OPTCH1
+          VALI = NUMOD
+          CALL U2MESG('F', 'ALGORITH14_64',1,VALK,1,VALI,0,0.D0)
         END IF
         CALL JEVEUO(CHAM19(1:19)//'.VALE','L',ISIP)
         DO 50 IN = 1,NBN
@@ -298,10 +296,9 @@ C     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
         NUMOD = ZI(ILMODE+IMR-1)
         CALL RSEXCH(MODMEC,OPTCH1,NUMOD,CHAM19,IRET)
         IF (IRET.NE.0) THEN
-          CALL UTDEBM('F','SPEPH0','MANQUE LA DEFORMEE MODALE')
-          CALL UTIMPK('L',' NOM_CHAM ',1,OPTCH1)
-          CALL UTIMPI('S',' POUR LE MODE ',1,NUMOD)
-          CALL UTFINM()
+          VALK (1) = OPTCH1
+          VALI = NUMOD
+          CALL U2MESG('F', 'ALGORITH14_65',1,VALK,1,VALI,0,0.D0)
         END IF
         CALL JEVEUO(CHAM19(1:19)//'.VALE','L',ISIP)
         IF (TYPMEC.EQ.'MODE_MECA_C') THEN

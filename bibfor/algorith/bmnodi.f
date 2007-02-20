@@ -1,6 +1,6 @@
       SUBROUTINE BMNODI(BASMDZ,INTFZ,NMINTZ,NUMINT,NBDEF,IVCORD,NBDIF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,18 +67,18 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6      PGC
       CHARACTER*8 BASMOD,NOMINT,INTF,BLANC,INTFB
       CHARACTER*8 K8BID
       CHARACTER*(*) BASMDZ,NMINTZ,INTFZ
       CHARACTER*24 NOEINT
+      CHARACTER*24 VALK(3)
       INTEGER IVCORD(NBDEF),IDEC(300)
+      INTEGER VALI
       CHARACTER*10 TYPBAS(3)
       CHARACTER*1 K1BID
 C
 C-----------------------------------------------------------------------
       DATA TYPBAS/'CLASSIQUE','CYCLIQUE','RITZ'/
-      DATA PGC /'BMNODI'/
 C-----------------------------------------------------------------------
 C
 C
@@ -88,10 +88,9 @@ C
       INTF   = INTFZ
       BLANC='        '
       IF(BASMOD.EQ.BLANC.AND.INTF.EQ.BLANC) THEN
-          CALL UTDEBM('F',PGC,'ARRET SUR MANQUE ARGUMENT')
-          CALL UTIMPK('L',' BASE MODALE DONNEE --> ',1,BASMOD)
-          CALL UTIMPK('L',' INTERF_DYNA DONNEE --> ',1,INTF)
-          CALL UTFINM
+          VALK (1) = BASMOD
+          VALK (2) = INTF
+          CALL U2MESG('F', 'ALGORITH12_26',2,VALK,0,0,0,0.D0)
       ENDIF
 C
       NBDIF=NBDEF
@@ -105,22 +104,19 @@ C
         IDESC=ZI(LLUTI)
         NBMOD=ZI(LLUTI+2)
         IF(IDESC.NE.1) THEN
-          CALL UTDEBM('F',PGC,'ARRET SUR TYPE DE BASE INCORRECTE')
-          CALL UTIMPK('L',' BASE MODALE DONNEE --> ',1,BASMOD)
-          CALL UTIMPK('L',' TYPE  BASE MODALE --> ',1,TYPBAS(IDESC))
-          CALL UTIMPK('L',' TYPE ATTENDU --> ',1,TYPBAS(1))
-          CALL UTFINM
+          VALK (1) = BASMOD
+          VALK (2) = TYPBAS(IDESC)
+          VALK (3) = TYPBAS(1)
+          CALL U2MESG('F', 'ALGORITH12_27',3,VALK,0,0,0,0.D0)
         ENDIF
 C
         CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
         INTFB=ZK24(LLREF+4)
         IF(INTF.NE.BLANC.AND.INTF.NE.INTFB) THEN
-          CALL UTDEBM('F',PGC,'ARRET SU INCOHERENCE DONNEES')
-          CALL UTIMPK('L',' BASE MODALE DONNEE --> ',1,BASMOD)
-          CALL UTIMPK('L',' INTERF_DYNA CORRESPONDANTE --> ',1,
-     &                INTFB)
-          CALL UTIMPK('L',' INTERF_DYNA DONNEE --> ',1,INTF)
-          CALL UTFINM
+          VALK (1) = BASMOD
+          VALK (2) = INTFB
+          VALK (3) = INTF
+          CALL U2MESG('F', 'ALGORITH12_28',3,VALK,0,0,0,0.D0)
         ELSE
           INTF=INTFB
         ENDIF
@@ -140,11 +136,9 @@ C----------------RECUPERATION EVENTUELLE DU NUMERO INTERFACE------------
 C
       IF(NUMINT.LT.1) THEN
         IF(NOMINT.EQ.'          ') THEN
-          CALL UTDEBM('F',PGC,
-     &'PROBLEME ARGUMENTS DE DEFINITION INTERFACE')
-          CALL UTIMPK('L',' NOM INTERFACE DONNE',1,NOMINT)
-          CALL UTIMPI('L',' NUMERO INTERFACE DONNE',1,NUMINT)
-          CALL UTFINM
+          VALK (1) = NOMINT
+          VALI = NUMINT
+          CALL U2MESG('F', 'ALGORITH12_29',1,VALK,1,VALI,0,0.D0)
         ELSE
           CALL JENONU(JEXNOM(INTF//'.IDC_NOMS',NOMINT),NUMINT)
         ENDIF

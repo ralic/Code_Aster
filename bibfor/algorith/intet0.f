@@ -1,6 +1,6 @@
       SUBROUTINE INTET0(ANGLE,TET0,IAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,11 +34,8 @@ C IAX      /O/: NUMERO AXE ROTATION (1-X,2-Y,3-Z)
 C
 C-----------------------------------------------------------------------
 C
-      CHARACTER*6 PGC
       REAL*8 TET0(10,10)
 C
-C-----------------------------------------------------------------------
-      DATA PGC /'INTET0'/
 C-----------------------------------------------------------------------
 C
       DO 10 I=1,10
@@ -90,9 +87,7 @@ C
         TET0(9,9)=1.D0
         TET0(10,10)=1.D0
       ELSE
-        CALL UTDEBM('F',PGC,
-     &'AUCUN AXE DEFINI')
-        CALL UTFINM
+        CALL U2MESG('F', 'ALGORITH13_28',0,' ',0,0,0,0.D0)
       ENDIF
 C
 C

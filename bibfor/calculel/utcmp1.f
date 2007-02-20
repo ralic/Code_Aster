@@ -5,7 +5,7 @@
       CHARACTER*(*) MCFAC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/09/2001   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER IBID,N1,N2,IRET,IANCMP,LGNCMP,IVARI
       CHARACTER*8 K8B
+      CHARACTER*24 VALK(2)
       CHARACTER*16 NOMCMD
 C     ------------------------------------------------------------------
 
@@ -60,10 +61,9 @@ C     ------------------------------
         IVARI=IBID
 
         IF ((NOMCMP(1:1).NE.'V').OR.(IRET.NE.0)) THEN
-          CALL UTDEBM('F','UTCMP1','ERREURS DONNEES')
-          CALL UTIMPK('L','COMPOSANTE INCONNUE ',1,NOMCMP)
-          CALL UTIMPK('S',' POUR LA GRANDEUR ',1,'VARI_R')
-          CALL UTFINM()
+          VALK (1) = NOMCMP
+          VALK (2) = 'VARI_R'
+          CALL U2MESG('F', 'CALCULEL6_49',2,VALK,0,0,0,0.D0)
         END IF
       ELSE
         IVARI=0

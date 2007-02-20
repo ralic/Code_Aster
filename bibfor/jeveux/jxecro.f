@@ -1,6 +1,6 @@
       SUBROUTINE JXECRO ( IC , IADMI , IADDI , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,23 +41,21 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     +                 KITLEC    , KITECR    ,             KIADM    ,
      +                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     +                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
-      COMMON /KINDJE/  INDEF(1)
-      COMMON /JINDJE/  JINDEF(N)
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
 C     ------------------------------------------------------------------
-      CHARACTER*75     CMESS
+      REAL*8           R8BID
       INTEGER          IADMO , KADD , LADD ,NDE ,LGBL
       LOGICAL          LPETIT
       PARAMETER      ( NDE = 6)
@@ -121,27 +119,14 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
               IF( NUMEXT .GT. IEXT(IC)-1 ) THEN
                 NUMDEB = IEXT(IC)
                 DO 103 K = NUMDEB,NUMEXT
-                  LINDEF = JINDEF(IC)+K*(NBENRG(IC)/512+1)*512
-                  CALL JXOUVR(IC,K+1,INDEF(LINDEF),NBENRG(IC) )
+                  CALL JXOUVR(IC,K+1)
                   IEXT(IC) = IEXT(IC)+1
  103            CONTINUE
               ENDIF
               GOTO 104
  101        CONTINUE
-            CMESS ='FICHIER SATURE, LE NOMBRE MAXIMUM D''ENREGISTREMENT'
-            CALL JVDEBM ( 'S' , 'JXECRO01' , CMESS )
-            CALL JVIMPI ( 'S' , ' ' , 1 , NBLMAX(IC) )
-            CMESS ='DE LA BASE '//NOMBAS(IC)//' EST ATTEINT, '
-     &            //'IL FAUT RELANCER LE CALCUL EN '
-            CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-            CMESS = 'MODIFIANT LE PARAMETRE NMAX_ENRE DANS DEBUT'
-            CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-            CMESS ='OU EN PASSANT UNE TAILLE MAXIMUM DE BASE SUR LA '
-     &            //'LIGNE DE COMMANDE :'
-            CALL JVIMPK ( 'L' , ' ' , 1 , CMESS )
-            CMESS =' ARGUMENT "-max_base" SUIVI DE LA VALEUR EN Mo'
-            CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-            CALL JVFINM ( )
+            CALL U2MESG('F','JEVEUX_42',1,NOMBAS(IC),1,NBLMAX(IC),
+     &                   0,R8BID)
  104        CONTINUE
             IITECR(IC) = KD
             IUSADI(JUSADI(IC)+ 3*IITECR(IC)-2) = 0
@@ -159,26 +144,14 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
                 IF( NUMEXT .GT. IEXT(IC)-1 ) THEN
                   NUMDEB = IEXT(IC)
                   DO 203 K = NUMDEB,NUMEXT
-                    LINDEF = JINDEF(IC)+K*(NBENRG(IC)/512+1)*512
-                    CALL JXOUVR(IC,K+1,INDEF(LINDEF),NBENRG(IC) )
+                    CALL JXOUVR(IC,K+1)
                     IEXT(IC) = IEXT(IC)+1
  203              CONTINUE
                 ENDIF
                 GOTO 204
  201          CONTINUE
-              CMESS='FICHIER SATURE, LE NOMBRE MAXIMUM '//
-     &              'D''ENREGISTREMENT'
-              CALL JVDEBM ( 'S' , 'JXECRO02' , CMESS )
-              CALL JVIMPI ( 'S' , ' ' , 1 , NBLMAX(IC) )
-              CMESS ='DE LA BASE '//NOMBAS(IC)//' EST ATTEINT, '
-     &              //'IL FAUT RELANCER LE CALCUL EN '
-              CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-              CMESS ='OU EN PASSANT UNE TAILLE MAXIMUM DE BASE SUR LA '
-     &               //'LIGNE DE COMMANDE :'
-              CALL JVIMPK ( 'L' , ' ' , 1 , CMESS )
-              CMESS =' ARGUMENT "-max_base" SUIVI DE LA VALEUR EN Mo'
-              CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-              CALL JVFINM ( )
+              CALL U2MESG('F','JEVEUX_42',1,NOMBAS(IC),1,NBLMAX(IC),
+     &                     0,R8BID)
  204          CONTINUE
               IITECR(IC) = KD
               IUSADI(JUSADI(IC)+ 3*IITECR(IC)-2) = 0
@@ -222,27 +195,13 @@ C
             IF( NUMEXT .GT. IEXT(IC)-1 ) THEN
               NUMDEB = IEXT(IC)
               DO 303 K = NUMDEB,NUMEXT
-                LINDEF = JINDEF(IC)+K*(NBENRG(IC)/512+1)*512
-                CALL JXOUVR(IC,K+1,INDEF(LINDEF),NBENRG(IC) )
+                CALL JXOUVR(IC,K+1)
                 IEXT(IC) = IEXT(IC)+1
  303          CONTINUE
             ENDIF
             GOTO 304
           ENDIF
-          CMESS ='FICHIER SATURE, LE NOMBRE MAXIMUM D''ENREGISTREMENT'
-          CALL JVDEBM ( 'S' , 'JXECRO03' , CMESS )
-          CALL JVIMPI ( 'S' , ' ' , 1 , NBLMAX(IC) )
-          CMESS ='DE LA BASE '//NOMBAS(IC)//' EST ATTEINT, '
-     &           //'IL FAUT RELANCER LE CALCUL EN '
-          CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-          CMESS = 'MODIFIANT LE PARAMETRE NMAX_ENRE DANS DEBUT'
-          CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-          CMESS ='OU EN PASSANT UNE TAILLE MAXIMUM DE BASE SUR LA '
-     &           //'LIGNE DE COMMANDE :'
-          CALL JVIMPK ( 'L' , ' ' , 1 , CMESS )
-          CMESS =' ARGUMENT "-max_base" SUIVI DE LA VALEUR EN Mo'
-          CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-          CALL JVFINM ( )
+          CALL U2MESG('F','JEVEUX_42',1,NOMBAS(IC),1,NBLMAX(IC),0,R8BID)
  304      CONTINUE
           CALL JXECRB (IC, KD, IADMO, LSO, IDCO, IDOS)
         ENDIF

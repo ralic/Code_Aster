@@ -1,6 +1,6 @@
       SUBROUTINE OP0127 (IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,6 @@ C
 C
 C-----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------------
 C
-      CHARACTER*6  PGC
       CHARACTER*8  NOMRES,MODGEN,MODMEC,OPTION
       CHARACTER*16 NOMCON,NOMOPE
       CHARACTER*14 NUGENE
@@ -56,8 +55,6 @@ C
 
 C
 C-----------------------------------------------------------------------
-      DATA PGC /'OP0127'/
-C-----------------------------------------------------------------------
       CALL INFMAJ()
 C
 C-----RECUPERATION DU MODELE AMONT
@@ -66,8 +63,7 @@ C
       CALL GETVID(' ','BASE',1,1,1,MODMEC,IBID2)
 C
       IF (IBID1.EQ.0.AND.IBID2.EQ.0) THEN
-        CALL UTDEBM('F',PGC,'MODELE AMONT NON DEFINI')
-        CALL UTFINM
+        CALL U2MESG('F', 'ALGORITH13_84',0,' ',0,0,0,0.D0)
       ENDIF
 C
       CALL GETVTX(' ','STOCKAGE',0,1,1,TYPROF,IBID2)

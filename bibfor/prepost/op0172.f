@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       IBID, APRNO, IDDL, NCMP, NEC, IERD, GD, NBMODE
+      INTEGER       VALI
       REAL*8        R8B, ZERO, RIGI(6), AMOSOL, SEUIL, AMOMO, POUCEN
+      REAL*8        VALRR(2)
       REAL*8        A(3),B(3),C(3),VALR(6)
       COMPLEX*16    C16B
       CHARACTER*3   REP
@@ -403,12 +405,10 @@ C
          AMOMO = ZR(IAMOMO+IMOD-1)
          IF ( AMOMO .GT. SEUIL ) THEN
             ZR(IAMOMO+IMOD-1) = SEUIL
-            CALL UTDEBM('I','OP0172',
-     &              'LA VALEUR D''AMORTISSEMENT REDUIT EST TROP GRANDE')
-            CALL UTIMPR('L','LA VALEUR D''AMORTISSEMENT : ',1,AMOMO)
-            CALL UTIMPI('L',' DU MODE PROPRE ',1,IMOD)
-            CALL UTIMPR('L',' EST TRONQUEE AU SEUIL : ',1,SEUIL)
-            CALL UTFINM()
+            VALRR (1) = AMOMO
+            VALRR (2) = SEUIL
+            VALI = IMOD
+            CALL U2MESG('I', 'PREPOST5_64',0,' ',1,VALI,2,VALRR)
          ENDIF
  60   CONTINUE
 C

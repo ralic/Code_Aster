@@ -3,7 +3,7 @@
      &                  ACMA,ACSM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER*4          ZI4
       COMMON  / I4VAJE / ZI4(1)
       INTEGER            ZI
+      INTEGER VALI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
+      REAL*8 VALR(2)
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -852,11 +854,10 @@ C----  4.  DIVERS
 C----------------------------------------------------------------------
 C----  4.1 NON CONVERGENCE
       IF (RANG.EQ.0) THEN
-        CALL UTDEBM('F','ALFETI','NON CONVERGENCE')
-        CALL UTIMPI('L','  NOMBRE D''ITERATIONS: ',1,ITER1)
-        CALL UTIMPR('L','  NORME DU RESIDU ABS: ',1,ANORM)
-        CALL UTIMPR('L','  NORME DU RESIDU REL: ',1,ANORM/ANORM0)
-        CALL UTFINM()
+        VALI = ITER1
+        VALR (1) = ANORM
+        VALR (2) = ANORM/ANORM0
+        CALL U2MESG('F', 'ALGELINE4_3',0,' ',1,VALI,2,VALR)
       ENDIF
 
 C----  4.2 FORMAT AFFICHAGE

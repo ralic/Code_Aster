@@ -7,7 +7,7 @@
       REAL*8              RESUFR(NBMODE,*), COEF(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,11 +67,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      IM, IEQ, LACC1, LDYNAM, IBID
+      INTEGER VALI
       CHARACTER*1  TYPCST(2)
       CHARACTER*19 MATMOD
       REAL*8       RNORM, RX1, RX2, CONSTR(4), FR, AM ,ZERO
       COMPLEX*16   XX1, CMPL, XNORM,DCONJG,CZERO
       CHARACTER*24 NMATR(2),NDYNAM
+      CHARACTER*24 VALK
 C     ------------------------------------------------------------------
       DATA        TYPCST/'C','C'/
 C     ------------------------------------------------------------------
@@ -165,10 +167,8 @@ C        --- DU PROBLEME GENERALISE ASSOCIE AU PROBLEME QUADRATIQUE ---
 C
       ELSE
 C
-         CALL UTDEBM('F','WPNORM','L''OPTION DE NORMALISATION')
-         CALL UTIMPK('S',' ',1,NORM)
-         CALL UTIMPI('S',' N''EST PAS IMPLANTEE.',0,IBID)
-         CALL UTFINM()
+         VALK = NORM
+         CALL U2MESG('F', 'ALGELINE4_96',1,VALK,0,0,0,0.D0)
 C
       ENDIF
 C

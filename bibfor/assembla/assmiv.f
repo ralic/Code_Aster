@@ -4,7 +4,7 @@
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C ----------------------------------------------------------------------
       CHARACTER*14 NUM2
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(4)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -93,6 +94,7 @@ C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
 C ----------------------------------------------------------------------
       INTEGER ZZCONX,ZZNBNE,ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG,ZZNELS
       INTEGER ZZNEMA,ZZPRNO,IZZPRN
+      INTEGER VALI(4)
       REAL*8  R8MAEM
 
       ZZCONX(IMAIL,J) = ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
@@ -444,30 +446,26 @@ C------------------------------
      &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                       IF (NDDL1.EQ.0) GO TO 120
                       IF (IAD1.EQ.0) THEN
-                        CALL UTDEBM('F','ASSVEC','1')
-                        CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
-                        CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
-                        CALL UTIMPK('L','   DU VECT_ELEM  :',1,VECEL)
-                        CALL UTIMPK('L','   N''A PAS D''ADRESSE DANS  :'
-     &                              ,1,NUDEV)
-                        CALL UTFINM
+                        VALI (1) = N1
+                        VALK (1) = RESU
+                        VALK (2) = VECEL
+                        VALK (3) = NUDEV
+      CALL U2MESG('F', 'ASSEMBLA_41',3,VALK,1,VALI,0,0.D0)
                       END IF
 
                       IF (IAD1.GT.NEQUA) THEN
-                        CALL UTDEBM('F','ASSVEC','2')
-                        CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
-                        CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
-                        CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
-                        CALL UTIMPI('L','  A 1 ADRESSE  :',1,IAD1)
-                        CALL UTIMPI('S',' > NEQUA :',1,NEQUA)
-                        CALL UTFINM
+                        VALI (1) = N1
+                        VALI (2) = IAD1
+                        VALI (3) = NEQUA
+                        VALK (1) = RESU
+                        VALK (2) = VECEL
+      CALL U2MESG('F', 'ASSEMBLA_42',2,VALK,3,VALI,0,0.D0)
                       END IF
 
                       IF (NDDL1.GT.100) THEN
-                        CALL UTDEBM('F','ASSVEC','3')
-                        CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
-                        CALL UTIMPI('S',' > NDDL_MAX :',1,100)
-                        CALL UTFINM
+                        VALI (1) = NDDL1
+                        VALI (2) = 100
+      CALL U2MESG('F', 'ASSEMBLA_43',0,' ',2,VALI,0,0.D0)
                       END IF
 
                       IF (TYPE.EQ.1) THEN
@@ -498,15 +496,14 @@ CCDIR$ IVDEP
                     N1 = ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA) -
      &                   ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA-1) - 1
                     IF (NNOE.NE.N1) THEN
-                      CALL UTDEBM('F','ASSVEC','4')
-                      CALL UTIMPK('L','--- VECT_ELEM     :',1,VECEL)
-                      CALL UTIMPK('L','--- RESU        :',1,RESU)
-                      CALL UTIMPK('L','--- NOMLI       :',1,NOMLI)
-                      CALL UTIMPI('L','--- GREL NUMERO   :',1,IGR)
-                      CALL UTIMPI('L','--- MAILLE NUMERO :',1,NUMA)
-                      CALL UTIMPI('L','--- NNOE PAR NEMA :',1,N1)
-                      CALL UTIMPI('L','--- NNOE PAR NODE :',1,NNOE)
-                      CALL UTFINM
+                        VALK (1) = VECEL
+                        VALK (2) = RESU
+                        VALK (3) = NOMLI
+                        VALI (1) = IGR
+                        VALI (2) = NUMA
+                        VALI (3) = N1
+                        VALI (4) = NNOE
+      CALL U2MESG('F', 'ASSEMBLA_44',3,VALK,4,VALI,0,0.D0)
                     END IF
 
                     IL = 0
@@ -516,16 +513,13 @@ CCDIR$ IVDEP
                       IF (N1.LT.0) THEN
                         N1 = -N1
                         IF (ILINU.EQ.0) THEN
-                          CALL UTDEBM('F','ASSVEC','5')
-                          CALL UTIMPK('L','--- LE LIGREL :',1,NOMLI)
-                          CALL UTIMPI('S',' REF. PAR LE NOEUD SUPL.  :',
-     &                                1,N1)
-                          CALL UTIMPI('L','--- DE LA MAILLE :',1,NUMA)
-                          CALL UTIMPK('S',' DU RESUELEM  :',1,RESU)
-                          CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
-                          CALL UTIMPK('L','--- N"EST PAS PRESENT'//
-     &                                ' DANS LA NUMEROTATION :',1,NUDEV)
-                          CALL UTFINM
+                        VALK (1) = NOMLI
+                        VALK (2) = RESU
+                        VALK (3) = VECEL
+                        VALK (4) = NUDEV
+                        VALI (1) = N1
+                        VALI (2) = NUMA
+      CALL U2MESG('F', 'ASSEMBLA_45',4,VALK,2,VALI,0,0.D0)
                         END IF
 
                         IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILINU-1)+
@@ -533,10 +527,9 @@ CCDIR$ IVDEP
                         CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILINU,
      &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                         IF (NDDL1.GT.100) THEN
-                          CALL UTDEBM('F','ASSVEC','6')
-                          CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
-                          CALL UTIMPI('S',' > NDDL_MAX :',1,100)
-                          CALL UTFINM
+                        VALI (1) = NDDL1
+                        VALI (2) = 100
+      CALL U2MESG('F', 'ASSEMBLA_46',0,' ',2,VALI,0,0.D0)
                         END IF
 
                       ELSE
@@ -545,32 +538,28 @@ CCDIR$ IVDEP
                         CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILIMNU,
      &                            MODE,NEC,NCMP,N1,K1,NDDL1,ZI(IAPSDL))
                         IF (NDDL1.GT.100) THEN
-                          CALL UTDEBM('F','ASSVEC','7')
-                          CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
-                          CALL UTIMPI('S',' > NDDL_MAX :',1,100)
-                          CALL UTFINM
+                        VALI (1) = NDDL1
+                        VALI (2) = 100
+      CALL U2MESG('F', 'ASSEMBLA_47',0,' ',2,VALI,0,0.D0)
                         END IF
 
                       END IF
 
                       IF (IAD1.EQ.0) THEN
-                        CALL UTDEBM('F','ASSVEC','8')
-                        CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
-                        CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
-                        CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
-                        CALL UTIMPK('L','--- N''A PAS D''ADRESSE'//
-     &                              ' DANS LA NUMEROTATION :',1,NUDEV)
-                        CALL UTFINM
+                        VALI (1) = N1
+                        VALK (1) = RESU
+                        VALK (2) = VECEL
+                        VALK (3) = NUDEV
+      CALL U2MESG('F', 'ASSEMBLA_48',3,VALK,1,VALI,0,0.D0)
                       END IF
 
                       IF (IAD1.GT.NEQUA) THEN
-                        CALL UTDEBM('F','ASSVEC','9')
-                        CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
-                        CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
-                        CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
-                        CALL UTIMPI('L','--- A UNE ADRESSE :',1,IAD1)
-                        CALL UTIMPI('S',' > NEQUA :',1,NEQUA)
-                        CALL UTFINM
+                        VALI (1) = N1
+                        VALI (2) = IAD1
+                        VALI (3) = NEQUA
+                        VALK (1) = RESU
+                        VALK (2) = VECEL
+      CALL U2MESG('F', 'ASSEMBLA_49',2,VALK,3,VALI,0,0.D0)
                       END IF
 
                       IF (TYPE.EQ.1) THEN

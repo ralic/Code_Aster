@@ -4,7 +4,7 @@
      &  DFDI2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C ----------------------------------------------------------------------
       LOGICAL RESI,RIGI,GRAND,AXI
       INTEGER NDIMSI,NDDL,G,COD(27),N,I,M,J,KL,PQ,OS,KK
       INTEGER IU(3,27),IE(6,8)
-      REAL*8  RAC2,LC,C,DEPLM(3,27),DEPLD(3,27),TM,TP,DFDI1(27,3)
+      REAL*8  RAC2,LC,C,DEPLM(3*27),DEPLD(3*27),TM,TP,DFDI1(27,3)
       REAL*8  R,WG,EPSGM(6,2),EPSGD(6,2),GEPSM(6,3),GEPS(6,3),F(3,3)
       REAL*8  B(6,3,27),DE(6),TAMPON(10),SIGMA(6),DSIDEP(6,6,2),T1,T2
       REAL*8  P(6,6),SIGMAM(6),PERT
@@ -129,8 +129,8 @@ C    EXTRACTION DES DEPLACEMENTS
 
       DO 100 N = 1,NNO1
         DO 110 I = 1,NDIM
-          DEPLM(I,N) = DDLM(IU(I,N))
-          DEPLD(I,N) = DDLD(IU(I,N))
+          DEPLM(I+(N-1)*NDIM) = DDLM(IU(I,N))
+          DEPLD(I+(N-1)*NDIM) = DDLD(IU(I,N))
  110    CONTINUE
  100  CONTINUE
 
@@ -251,7 +251,9 @@ C        MATRICE K:U(I,N),E(PQ,M)
                   KK = OS+IE(PQ,M)
                   T1 = 0
                   DO 620 KL = 1,NDIMSI
-                    T1 = T1 + DSIDEP(KL,PQ,2)*VFF2(M,G)*B(KL,I,N)
+C    ????, C EST LA LDC QUI DEVRAIT FAIRE CA  ???
+                    IF (NINT(VIM(2,G)).NE.2) 
+     &                T1 = T1 + DSIDEP(KL,PQ,2)*VFF2(M,G)*B(KL,I,N)
  620              CONTINUE
                   MATR(KK) = MATR(KK) + WG*T1
  610            CONTINUE

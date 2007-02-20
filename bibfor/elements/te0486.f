@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8      ZK8
       CHARACTER*16             ZK16
       CHARACTER*24                      ZK24
+      CHARACTER*24 VALK
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
@@ -85,9 +86,8 @@ C
             IF ( ZR(IPRES+INO) .NE. 0.D0 ) THEN
                CALL TECAEL ( IADZI, IAZK24 )
                NOMAIL = ZK24(IAZK24-1+3)(1:8)
-               CALL UTDEBM ( 'F','TE0486','LA PRESSION DOIT ETRE NULLE')
-               CALL UTIMPK ( 'S',' POUR LA MAILLE ', 1, NOMAIL )
-               CALL UTFINM
+               VALK = NOMAIL
+               CALL U2MESG('F', 'ELEMENTS4_96',1,VALK,0,0,0,0.D0)
             ENDIF
  10      CONTINUE
 C

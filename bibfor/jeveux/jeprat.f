@@ -1,6 +1,6 @@
       SUBROUTINE JEPRAT ( UNIT , NOMLU , CIDATR , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     -----------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -61,8 +61,8 @@ C
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C     ------------------------------------------------------------------
       CHARACTER *75   CMESS
       CHARACTER *32   NOML32
@@ -72,11 +72,11 @@ C     ------------------------------------------------------------------
       INTEGER         IBACOL
       LOGICAL         LCOL
 C     ------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
+      INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
+     &               IDMARQ     , IDNOM      ,             IDLONG     ,
+     &               IDLONO     , IDLUTI     , IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
       CHARACTER*8    CIDNOM(IDNUM)
       INTEGER        IDPAR
@@ -86,14 +86,14 @@ C     ------------------------------------------------------------------
       PARAMETER     ( LIDBAS = 20 )
       CHARACTER*8     CIDBAS(LIDBAS)
       DATA CIDNOM  / '$$DESO  ' , '$$IADD  ' , '$$IADM  ' , '$$MARQ  ' ,
-     &               '$$NOM   ' , '$$REEL  ' , '$$LONG  ' , '$$LONO  ' ,
+     &               '$$NOM   ' , '$$XXXX  ' , '$$LONG  ' , '$$LONO  ' ,
      &               '$$LUTI  ' , '$$NUM   '  /
       DATA CIDPAR  / '&&LONO  ' , '&&LUTI  ' , '&&PART  ' /
       DATA CIDBAS  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,
      &               '$$DOCU  ' , '$$ORIG  ' , '$$RNOM  ' , '$$LTYP  ' ,
      &               '$$LONG  ' , '$$LONO  ' , '$$DATE  ' , '$$LUTI  ' ,
      &               '$$HCOD  ' , '$$USADI ' , '$$ACCE  ' , '$$MARQ  ' ,
-     &               '$$INDX  ' , '$$TLEC  ' , '$$TECR  ' , '$$IADM  ' /
+     &               '$$XXXX  ' , '$$TLEC  ' , '$$TECR  ' , '$$IADM  ' /
 C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
       IPGC   = -2
@@ -110,7 +110,7 @@ C
            IF ( NOM .EQ. CIDBAS(K) ) THEN
               IDATR = K
               IDECI = 0
-              IADMI = IADM ( JIADM(ICLAS) + IDATR )
+              IADMI = IADM ( JIADM(ICLAS) + 2*IDATR-1 )
               GENRI = GENR ( JGENR(ICLAS) + IDATR )
               TYPEI = TYPE ( JTYPE(ICLAS) + IDATR )
               LTYPI = LTYP ( JLTYP(ICLAS) + IDATR )
@@ -143,7 +143,7 @@ C
           IF ( IRET2 .EQ. 0 ) THEN
             CALL U2MESK('F','JEVEUX_26',1,NOML32(1:24))
           ENDIF
-          IADMI  = IADM ( JIADM(ICLAOS) + IDATOS )
+          IADMI  = IADM ( JIADM(ICLAOS) + 2*IDATOS-1 )
           IADMEX = IADMI
           GENRI  = GENR ( JGENR(ICLAOS) + IDATOS )
           TYPEI  = TYPE ( JTYPE(ICLAOS) + IDATOS )
@@ -151,7 +151,7 @@ C
           LONOI  = LONO ( JLONO(ICLAOS) + IDATOS ) * LTYPI
           IF ( IADMEX .EQ. 0 ) THEN
             CALL JJALTY ( TYPEI , LTYPI , 'L' , 1 , JCTAB )
-            IADMI  = IADM ( JIADM(ICLAOS) + IDATOS )
+            IADMI  = IADM ( JIADM(ICLAOS) + 2*IDATOS-1 )
           ENDIF
           IDECI = 0
           CALL JJIMPO(UNIT,IADMI, IDECI, 0, GENRI, TYPEI, LTYPI, LONOI,
@@ -177,7 +177,7 @@ C
  30       CONTINUE
           IXATR = ISZON ( JISZON + IBACOL + IDATR )
           IF ( IXATR .GT. 0 ) THEN
-             IBATR = IADM( JIADM(ICLACO) + IXATR )
+             IBATR = IADM( JIADM(ICLACO) + 2*IXATR-1 )
              IF ( IBATR .EQ. 0 ) THEN
                CMESS = ' SEGMENT DE VALEUR ASSOCIE A L''ATTRIBUT '//
      &                 NOM//' NON ACCESSIBLE '

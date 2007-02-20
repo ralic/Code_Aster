@@ -1,6 +1,6 @@
       SUBROUTINE CONVNU(NUMIN,NUMOUT,NOMVEC,BASE,NEQOUT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/05/98   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,18 +61,18 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6      PGC
       CHARACTER*1 BASE
       CHARACTER*8 MAIIN,MAIOUT
       CHARACTER*8 K8BID
       CHARACTER*19 NUMIN,NUMOUT
       CHARACTER*24 NOMVEC
+      CHARACTER*24 VALK(4)
       LOGICAL ERREUR
 C
       INTEGER IBID
+      INTEGER VALI(2)
 C
 C-----------------------------------------------------------------------
-      DATA PGC /'CONVNU'/
       DATA IBID/0/
 C-----------------------------------------------------------------------
 C
@@ -86,13 +86,11 @@ C
       CALL DISMOI('F','NOM_MAILLA',NUMOUT,'NUME_DDL',NBID,MAIOUT,IRET)
 C
       IF (MAIIN.NE.MAIOUT) THEN
-        CALL UTDEBM('F',PGC,'LES DEUX NUMEROTATIONS N''ONT PAS
-     & MEME MAILLAGE D''ORIGINE')
-        CALL UTIMPK('L',' NUMEROTATION 1:',1,NUMIN)
-        CALL UTIMPK('L','MAILLAGE 1:',1,MAIIN)
-        CALL UTIMPK('L',' NUMEROTATION 2:',1,NUMOUT)
-        CALL UTIMPK('L','MAILLAGE 2:',1,MAIOUT)
-        CALL UTFINM
+        VALK (1) = NUMIN
+        VALK (2) = MAIIN
+        VALK (3) = NUMOUT
+        VALK (4) = MAIOUT
+        CALL U2MESG('F', 'ALGORITH12_62',4,VALK,0,0,0,0.D0)
       ENDIF
 C
 C
@@ -121,11 +119,9 @@ C
           CALL CHEDDL(ZI(LLDEIN),NEQIN,NUNO,ITYP,IRAN,1)
           IF(IRAN.EQ.0) THEN
              ERREUR=.TRUE.
-             CALL UTDEBM('A',PGC,'PERTE INFORMATION SUR DDL PHYSIQUE
-     & A LA CONVERSION DE NUMEROTATION')
-            CALL UTIMPI('L','NOEUD NUMERO: ',1,NUNO)
-            CALL UTIMPI('L','TYPE DDL NUMERO: ',1,ITYP)
-            CALL UTFINM
+        VALI (1) = NUNO
+        VALI (2) = ITYP
+             CALL U2MESG('A', 'ALGORITH12_63',0,' ',2,VALI,0,0.D0)
           ELSE
             ZI(LDCVN+I-1)=IRAN
           ENDIF
@@ -136,8 +132,7 @@ C
 C--------------------------TRAITEMENT ERREUR EVENTUELLE----------------
 C
       IF(ERREUR) THEN
-        CALL UTDEBM('F',PGC,'ARRET SUR PERTE INFORMATION DDL PHYSIQUE')
-        CALL UTFINM
+        CALL U2MESG('F', 'ALGORITH12_64',0,' ',0,0,0,0.D0)
       ENDIF
 C
 C------------------------LIBERATION DES OBJETS -------------------------

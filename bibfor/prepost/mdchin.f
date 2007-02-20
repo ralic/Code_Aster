@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,23 +60,22 @@ C
 C
 C 0.2. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'MDCHIN' )
+      CHARACTER*24 VALK(2)
 C
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
 C
       INTEGER IDFIMD
+      INTEGER VALI
 C====
 C 1. ON OUVRE LE FICHIER EN LECTURE
 C====
 C
       CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFOUVR NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALI = CODRET
+        CALL U2MESG('A', 'PREPOST5_47',1,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_69')
       ENDIF
 C
@@ -94,11 +93,10 @@ C====
 C
       CALL EFFERM ( IDFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFFERM NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = NOCHMD
+        VALI = CODRET
+        CALL U2MESG('A', 'PREPOST5_48',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_70')
       ENDIF
 C

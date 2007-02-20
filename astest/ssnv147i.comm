@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE TRACTION D'UN BARREAU AVEC LOI DE COMPORTEMENT ROUSSELIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -361,7 +361,8 @@ ACIER=DEFI_MATERIAU(               ELAS=_F(   E = 206400.,
                                    TRACTION=_F(   SIGM = ECRISO),
                               ROUSSELIER_FO=_F(   D = D_T,
                                                SIGM_1 = S1_T,
-                                               PORO_INIT = F0_T))
+                                               PORO_INIT = F0_T,
+                                               DP_MAXI = 1.))
 
 ACIER2=DEFI_MATERIAU(          ELAS=_F(   E = 250000.,
                                                NU = .3,
@@ -405,54 +406,39 @@ RAMPE=DEFI_FONCTION(
                         1., 1.,)
              )
 
-REPONSE=STAT_NON_LINE( 
-                     MODELE=MO,
-                 CHAM_MATER=CHMAT,EXCIT=(
-                     
-                _F( CHARGE = LIAISON),
-                _F( CHARGE = TRACTION, FONC_MULT = RAMPE)),
-                  COMP_INCR=_F( 
-                RELATION = 'ROUSSELIER',
-                DEFORMATION = 'SIMO_MIEHE'),
-                 
-                INCREMENT=_F( 
-                LIST_INST = L_INST,
-                INST_FIN = 1.),
-                     NEWTON=_F( 
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-5,
-                ITER_GLOB_MAXI = 50)
-             )
+REPONSE=STAT_NON_LINE( MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=( _F( CHARGE = LIAISON),
+                               _F( CHARGE = TRACTION, FONC_MULT = RAMPE)),
+                       COMP_INCR=_F( RELATION = 'ROUSSELIER',
+                                     DEFORMATION = 'SIMO_MIEHE'),                
+                       INCREMENT=_F( LIST_INST = L_INST,
+                                     INST_FIN = 1.),
+                       NEWTON=_F( MATRICE = 'TANGENTE',
+                                  REAC_ITER = 1),
+                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-5,
+                                       ITER_GLOB_MAXI = 50)
+                       )
 
 REPONSE=STAT_NON_LINE( reuse=REPONSE,
-                  ETAT_INIT=_F( 
-                EVOL_NOLI = REPONSE),
-                     MODELE=MO,
-                 CHAM_MATER=CHMAT,EXCIT=(
-                     
-                _F( CHARGE = LIAISON),
-                _F( CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')),
-                  COMP_INCR=_F( 
-                RELATION = 'ROUSSELIER',
-                DEFORMATION = 'SIMO_MIEHE'),
-                 
-                INCREMENT=_F( 
-                LIST_INST = L_INST,
-                SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
-                SUBD_PAS_MINI = 1.E-6),
-               PILOTAGE=_F( 
-                TYPE = 'DEFORMATION',
-                COEF_MULT = 3.E3,
-                ETA_PILO_MIN = 0.50),
-                     NEWTON=_F( 
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                CONVERGENCE=_F( 
-                RESI_GLOB_RELA = 1.E-5,
-                ITER_GLOB_MAXI = 10)
-             )
+                       ETAT_INIT=_F( EVOL_NOLI = REPONSE),
+                       MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F( CHARGE = LIAISON),
+                              _F( CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')),
+                       COMP_INCR=_F(RELATION = 'ROUSSELIER',
+                                    DEFORMATION = 'SIMO_MIEHE'),
+                       INCREMENT=_F(LIST_INST = L_INST,
+                                    SUBD_METHODE='UNIFORME', SUBD_PAS = 4,
+                                    SUBD_PAS_MINI = 1.E-6),
+                       PILOTAGE=_F(TYPE = 'DEFORMATION',
+                                  COEF_MULT = 3.E3,
+                                  ETA_PILO_MIN = 0.50),
+                       NEWTON=_F( MATRICE = 'TANGENTE',
+                                  REAC_ITER = 1),
+                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5,
+                                     ITER_GLOB_MAXI = 10)
+                         )
 
 TEST_RESU(RESU=(  _F( 
                RESULTAT = REPONSE,
@@ -461,16 +447,18 @@ TEST_RESU(RESU=(  _F(
                GROUP_NO = 'E',
                NOM_CHAM = 'DEPL',
                NOM_CMP = 'DZ',
-               VALE = 2.723E-3), _F( 
+               VALE = 2.72012E-3,
+               PRECISION=1.E-4), 
+               _F( 
                RESULTAT = REPONSE,
                REFERENCE = 'NON_REGRESSION',
-               PRECISION = 0.4E-2,
+               PRECISION = 1.E-4,
                NUME_ORDRE = 21,
                MAILLE = 'M1',
                POINT = 1,
                NOM_CHAM = 'SIEF_ELGA',
                NOM_CMP = 'SIZZ',
-               VALE = 5.858E+02)) 
+               VALE = 5.86395E+02)) 
              )
 
 FIN()

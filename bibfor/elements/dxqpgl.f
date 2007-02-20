@@ -3,7 +3,7 @@
       REAL*8              XYZG(3,*), PGL(3,3)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/12/2001   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
+      REAL*8 VALR
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -145,11 +146,8 @@ C     TESTE SI PSCAL > EPS (1D-4 EN DUR DANS LE FORTRAN)
 C
       IF ( ABS(PSCAL).GT.1.D-4 ) THEN
         CALL TECAEL(IADZI,IAZK24)
-        CALL UTDEBM('A','DXQPGL','ATTENTION : L ELEMENT DE PLAQUE '//
-     >              'QUAD4 DEFINI SUR LA MAILLE :'//ZK24(IAZK24+2)//
-     >      'N EST PAS PLAN ET PEUT CONDUIRE A DES RESULTATS FAUX. ')
-        CALL UTIMPR('L',' DISTANCE AU PLAN : ', 1, ABS(DIST))
-        CALL UTFINM()
+        VALR = ABS(DIST)
+        CALL U2MESG('A', 'ELEMENTS4_80',0,' ',0,0,1,VALR)
       ENDIF
 
       END

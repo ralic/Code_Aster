@@ -2,7 +2,7 @@
      +           (COL,DIAG,XADJ,ADJNCY,N,NNZ,DEB,TAB,SUIV,LMAT,LADJN,
      +            NRL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,7 @@ C-----------
 C--------------------------------------------------------------
 C     VAR. LOCALES
       INTEGER I,J,K,LBD2,J1,J2,II,IT,ITAB,LADJN,IAD
+      INTEGER VALI(2)
       IF(NRL.EQ.0) THEN
 C     PAS DE RELATION LINEAIRE ENTRE PLUSIEURS DDL
          DO  110  J = 1, N
@@ -123,10 +124,9 @@ C     DIAGONAL DANS ADJNCY
  330     CONTINUE
         IF( (XADJ(N+1)-1).GT.LADJN) THEN
 C       TEST D'ESPACE SUFFISANT DANS ADJNCY
-               CALL UTDEBM('F','CALADJ',' MANQUE DE MEMOIRE ')
-               CALL UTIMPI('L','MEMOIRE DISPONIBLE',1,LADJN)
-               CALL UTIMPI('S','ET MEMOIRE NECESSAIRE',1,XADJ(N+1)-1)
-               CALL UTFINM()
+               VALI (1) = LADJN
+               VALI (2) = XADJ(N+1)-1
+               CALL U2MESG('F', 'ALGELINE4_4',0,' ',2,VALI,0,0.D0)
          ENDIF
 C
         IAD=0

@@ -1,6 +1,6 @@
       SUBROUTINE  VERSST (NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER          ZI
+      INTEGER VALI(2)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -52,13 +53,12 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6      PGC
+      CHARACTER*24 VALK(4)
       CHARACTER*8 NOMRES,NMSSTR,NMSST,NMMCLR,NMMCL,BLANC
       LOGICAL PBLOG
       CHARACTER*1 K1BID
 C
 C-----------------------------------------------------------------------
-      DATA PGC /'VERSST'/
       DATA BLANC /'        '/
 C-----------------------------------------------------------------------
 C
@@ -89,22 +89,18 @@ C
         IF(NUMGDR.NE.NUMGD) THEN
           PBLOG=.TRUE.
           CALL JENUNO(JEXNUM(NOMRES//'      .MODG.SSNO',I),NMSST)
-          CALL UTDEBM('E',PGC,
-     &'SOUS-STRUCTURE INCOMPATIBLES ')
-            CALL UTIMPK('L','SOUS-STRUCTURE 1::',1,NMSSTR)
-            CALL UTIMPK('L','MACR_ELEM ASSOCIE:',1,NMMCLR)
-            CALL UTIMPI('L','NUMERO GRANDEUR SOUS-JACENTE:',1,NUMGDR)
-            CALL UTIMPK('L','SOUS-STRUCTURE 2::',1,NMSST)
-            CALL UTIMPK('L','MACR_ELEM ASSOCIE:',1,NMMCL)
-            CALL UTIMPI('L','NUMERO GRANDEUR SOUS-JACENTE:',1,NUMGD)
-            CALL UTFINM
+        VALK (1) = NMSSTR
+        VALK (2) = NMMCLR
+        VALK (3) = NMSST
+        VALK (4) = NMMCL
+        VALI (1) = NUMGDR
+        VALI (2) = NUMGD
+          CALL U2MESG('E', 'ALGORITH14_73',4,VALK,2,VALI,0,0.D0)
         ENDIF
 10    CONTINUE
 C
       IF(PBLOG) THEN
-        CALL UTDEBM('F',PGC,
-     &'ARRET SUR INCOMPATIBILITE DE SOUS-STRUCTURE ')
-        CALL UTFINM
+        CALL U2MESG('F', 'ALGORITH14_74',0,' ',0,0,0,0.D0)
       ENDIF
 C
       CALL WKVECT(NOMRES//'      .MODG.DESC','G V I',3,LDDESC)

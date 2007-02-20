@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,9 +76,9 @@ C
       F0 = MATER(3,2)
       IF (LOI(1:10).EQ.'ROUSS_VISC') THEN
         ANN = 0.D0
-        SIG0  = MATER(8,2)
-        EPS0  = MATER(9,2)
-        MEXPO = MATER(10,2)
+        SIG0  = MATER(9,2)
+        EPS0  = MATER(10,2)
+        MEXPO = MATER(11,2)
       ELSEIF (LOI(1:10).EQ.'ROUSS_PR') THEN
         ANN = MATER(8,2)
         SIG0  = 0.D0

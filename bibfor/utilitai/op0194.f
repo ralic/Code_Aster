@@ -1,7 +1,7 @@
       SUBROUTINE OP0194 ( IER )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,7 @@ C ----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            ZI
+      INTEGER VALI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -46,10 +47,12 @@ C
       INTEGER      IBID, IRET, N1, N2, N3, NUM, NUMPHA, IOP, JOPT, I,
      &             NBOPT, NBORDT, NBTROU
       REAL*8       INST, PREC
+      REAL*8 VALR
       COMPLEX*16   C16B
       CHARACTER*8  K8B, CRIT, TEMPER, TEMPEV, RESULT, MODELE, MATERI
       CHARACTER*16 TYPE, OPER, OPTION, OPT
       CHARACTER*24 COMPOR, LIGRMO, CHMETA, PHASIN, MATE, K24BID
+      CHARACTER*24 VALK
 C
 C      LOGICAL
 C ----------------------------------------------------------------------
@@ -99,18 +102,14 @@ C-ETAT INITIAL
           CALL RSORAC ( TEMPER, 'INST', IBID, INST, K8B, C16B, PREC,
      &                  CRIT, NUM, NBORDT, NBTROU )
           IF (NBTROU.EQ.0) THEN
-            CALL UTDEBM('F',OPER,'PAS DE CHAMP CORRESPONDANT '//
-     &                           'A L''INSTANT DEMANDE.')
-            CALL UTIMPK('L','RESULTAT ',1,TEMPER)
-            CALL UTIMPR('S',', ACCES "INST_INIT" :',1,INST)
-            CALL UTFINM()
+            VALK = TEMPER
+            VALR = INST
+            CALL U2MESG('F', 'UTILITAI6_51',1,VALK,0,0,1,VALR)
           ELSE IF (NBTROU.GT.1) THEN
-            CALL UTDEBM('F',OPER,'PLUSIEURS CHAMPS CORRESPONDANT '//
-     &                           'A L''INSTANT DEMANDE.')
-            CALL UTIMPK('L','RESULTAT ',1,TEMPER)
-            CALL UTIMPR('S',', ACCES "INST_INIT" :',1,INST)
-            CALL UTIMPI('S',', NOMBRE :',1,NBTROU)
-            CALL UTFINM()
+            VALK = TEMPER
+            VALR = INST
+            VALI = NBTROU
+            CALL U2MESG('F', 'UTILITAI6_52',1,VALK,1,VALI,1,VALR)
           ENDIF
         ENDIF
         CALL RSEXCH ( TEMPER, 'META_ELNO_TEMP', NUM, PHASIN, IRET )

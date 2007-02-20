@@ -1,7 +1,7 @@
       SUBROUTINE BMRDDA(BASMOD,INTF,NOMINT,NUMINT,NBDDL,IVDDL,NBDIF,ORD,
      &                  NLIAIS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,14 +67,12 @@ C
       INTEGER IDEC(NBCPMX),IVDDL(NBDDL)
       CHARACTER*1 K1BID
       CHARACTER*4 NLIAI
-      CHARACTER*6 PGC
       CHARACTER*8 BASMOD,NOMINT,INTF,TEMP
       CHARACTER*8 K8BID
       CHARACTER*19 NUMDDL
       CHARACTER*24 NOEINT,ACTINT,ORDOL,ORDOD
+      CHARACTER*24 VALK(2)
 C
-C-----------------------------------------------------------------------
-      DATA PGC /'BMRDDA'/
 C-----------------------------------------------------------------------
 C
 C
@@ -92,10 +90,8 @@ C
         CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
         INTF=ZK24(LLREF+4)
         IF(INTF.EQ.'        ') THEN
-          CALL UTDEBM('F',PGC,
-     &'ARRET SUR BASE MODALE SANS INTERF_DYNA')
-          CALL UTIMPK('L',' BASE MODALE  DONNEE --> ',1,BASMOD)
-          CALL UTFINM
+          VALK (1) = BASMOD
+          CALL U2MESG('F', 'ALGORITH12_35',1,VALK,0,0,0,0.D0)
         ENDIF
         NUMDDL=ZK24(LLREF+3)
 C
@@ -106,11 +102,9 @@ C
           CALL JEVEUO(INTF//'.IDC_REFE','L',LLREF)
           NUMDDL=ZK24(LLREF+1)
         ELSE
-          CALL UTDEBM('F',PGC,
-     &'ARRET SUR MANQUE ARGUMENTS')
-          CALL UTIMPK('L',' BASE MODALE  DONNEE --> ',1,BASMOD)
-          CALL UTIMPK('L',' INTERF_DYNA  DONNEE --> ',1,INTF)
-          CALL UTFINM
+          VALK (1) = BASMOD
+          VALK (2) = INTF
+          CALL U2MESG('F', 'ALGORITH12_36',2,VALK,0,0,0,0.D0)
         ENDIF
       ENDIF
 C

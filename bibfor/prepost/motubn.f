@@ -5,7 +5,7 @@
       CHARACTER*(*)       TABPUS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,13 +39,16 @@ C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*8      ZK8
       CHARACTER*16             ZK16
       CHARACTER*24                      ZK24
+      CHARACTER*24 VALK
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
 
       INTEGER       IBID, I, IRET, NUMELI
+      INTEGER VALI
       REAL*8        ZERO, LPREC(2), ACCES(2)
+      REAL*8 VALR
       COMPLEX*16    C16B
       CHARACTER*8   K8B, LCRIT(2)
       CHARACTER*19  NOMTA
@@ -84,19 +87,17 @@ C
       CALL TBLIVA ( NOMTA, 1,VALEK, IBID,ACCES(1),C16B,K8B,LCRIT(1),
      +              LPREC(1), VALEK(2),K8B,IBID,ACCES(2),C16B,K8B,IRET)
       IF (IRET.NE.0) THEN
-         CALL UTDEBM('F','MOTUBN','PROBLEME DANS '//NOMTA)
-         CALL UTIMPR('L',' TRAITEMENT DE L''INSTANT ',1,DINST)
-         CALL UTIMPK('L',' RECUPERATION DE ',1,VALEK(2))
-         CALL UTFINM()
+            VALR = DINST
+            VALK = VALEK(2)
+         CALL U2MESG('F', 'PREPOST5_57',1,VALK,0,0,1,VALR)
       ENDIF
 C
       CALL TBNULI ( NOMTA, 2, VALEK, IBID , ACCES, C16B, K8B,
      +                                         LPREC, LCRIT, NUMELI )
       IF (NUMELI.LE.0) THEN
-         CALL UTDEBM('F','MOTUBN','PROBLEME DANS '//NOMTA)
-         CALL UTIMPR('L',' TRAITEMENT DE L''INSTANT ',1,DINST)
-         CALL UTIMPK('S',' RECUPERATION "NUMELI" POUR ',1,VALEK(2))
-         CALL UTFINM()
+            VALR = DINST
+            VALK = VALEK(2)
+         CALL U2MESG('F', 'PREPOST5_58',1,VALK,0,0,1,VALR)
       ENDIF
 C
       CALL TBACCE ( NOMTA, NUMELI, VALEK(2),'E', IBID,ZERO,C16B,K8B)
@@ -111,11 +112,9 @@ C
          CALL TBNULI ( NOMTA, 2, VALEK, I , ACCES(1), C16B, K8B,
      +                                     LPREC(1), LCRIT(1), NUMELI )
          IF (NUMELI.LE.0) THEN
-            CALL UTDEBM('F','MOTUBN','PROBLEME DANS '//NOMTA)
-            CALL UTIMPR('L',' TRAITEMENT DE L''INSTANT ',1,DINST)
-            CALL UTIMPI('L',' RECUPERATION "NUMELI" POUR LE SECTEUR ',
-     +                                                             1,I)
-            CALL UTFINM()
+            VALR = DINST
+            VALI = I
+            CALL U2MESG('F', 'PREPOST5_59',0,' ',1,VALI,1,VALR)
          ENDIF
 C
          CALL TBACCE ( NOMTA, NUMELI, 'V_USUR_TUBE_SECT', 'E',

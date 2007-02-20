@@ -6,7 +6,7 @@ C     COMMANDE:  MECA_STATIQUE & STAT_NON_LINE
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,7 @@ C
       CHARACTER*24 BLAN24
       CHARACTER*24 TYPEPS
       CHARACTER*24 COREFE(NBMCRF), MCSREF(NBMCMX)
+      CHARACTER*24 VALK(2)
 C
 C                    123456789012345678901234
       DATA BLAN24 / '                        ' /
@@ -196,10 +197,9 @@ C
           TYPESE = 5
         ELSE
 C
-          CALL UTDEBM ( 'A', NOMPRO, 'SENSIBILITE DEMANDEE' )
-          CALL UTIMPK ( 'S', ' PAR RAPPORT AU CONCEPT :', 1, NOPASE )
-          CALL UTIMPK ( 'L', 'SON TYPE EST INCONNU : ', 1,TYPEPS )
-          CALL UTFINM ()
+          VALK (1) = NOPASE
+          VALK (2) = TYPEPS
+          CALL U2MESG('A', 'UTILITAI6_45',2,VALK,0,0,0,0.D0)
           CALL U2MESS('F','ALGORITH3_39')
 C
         ENDIF

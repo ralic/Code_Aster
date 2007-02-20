@@ -6,7 +6,7 @@
       CHARACTER*19        NOMFON, RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &             IORDR, LACCE, ILON, LXLGUT, NBACC, NBPAR, IAD1, IAD2
       REAL*8       EPSI
       CHARACTER*8  K8B, CRIT, TYPE
+      CHARACTER*24 VALK
       CHARACTER*16 NOMACC
       CHARACTER*19 KNUME
 C     ------------------------------------------------------------------
@@ -67,9 +68,8 @@ C
 C
       ILON = LXLGUT( NOPARA )
       IF ( ILON .GT. 16 ) THEN
-         CALL UTDEBM('A','FOCRR3','PARAMETRE TROP LONG, IL SERA ')
-         CALL UTIMPK('S','TRONQUE: ', 1, NOPARA(1:16) )
-         CALL UTFINM
+         VALK = NOPARA(1:16)
+         CALL U2MESG('A', 'UTILITAI6_27',1,VALK,0,0,0,0.D0)
       ENDIF
 C
 C     --- RECUPERATION DE LA VARIABLE D'ACCES ---

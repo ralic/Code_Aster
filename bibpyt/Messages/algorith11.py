@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith11 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,7 +151,7 @@ cata_msg={
 """),
 
 33: _("""
- mauvais accord entre nombre d appuis et nombre de valeur dans le mot-clef: nume_ordre_i
+ mauvais accord entre nombre d'appuis et nombre de valeur dans le mot-clef: nume_ordre_i
 """),
 
 34: _("""
@@ -379,6 +379,63 @@ cata_msg={
 87: _("""
  *** Champ déjà existant ***
  Le champ %(k1)s à l'instant %(r1)g est remplacé par le champ %(k2)s à l'instant %(r2)g avec la précision %(r3)g.
+"""),
+
+88: _("""
+ &arret debordement assemblage:ligne 
+"""),
+
+89: _("""
+ &arret debordement assemblage:ligne 
+"""),
+
+90: _("""
+ &arret debordement assemblage:colonne 
+"""),
+
+91: _("""
+ &arret debordement assemblage:ligne 
+"""),
+
+92: _("""
+ arret nombre de sous-structure invalide il en faut au minimum: %(i1)d 
+ vous en avez defini: %(i2)d 
+"""),
+
+93: _("""
+ arret nombre de nom de sous-structure invalide il en faut exactement: %(i1)d 
+ vous en avez defini: %(i2)d 
+"""),
+
+94: _("""
+ nombre de macr_elem invalide sous_structure %(k1)s vous en avez defini: %(i1)d 
+ il en faut exactement: %(i2)d 
+"""),
+
+95: _("""
+ nombre d'angles nautiques invalide sous_structure %(k1)s 
+ vous en avez defini: %(i1)d 
+ il en faut exactement:  %(i2)d 
+"""),
+
+96: _("""
+ nombre de translation invalide sous_structure %(k1)s vous en avez defini: %(i1)d 
+ il en faut exactement:  %(i2)d 
+"""),
+
+97: _("""
+ nombre de liaison definies invalide vous en avez defini: %(i1)d 
+ il en faut au minimum: %(i2)d 
+"""),
+
+98: _("""
+ nombre de mot-cle invalide numero liaison: %(i1)d mot-cle: %(k1)s 
+ vous en avez defini: %(i2)d 
+ il en faut exactement: %(i3)d 
+"""),
+
+99: _("""
+ sous-structure indefinie numero liaison: %(i1)d nom sous-structure: %(k1)s 
 """),
 
 }

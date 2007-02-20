@@ -1,7 +1,7 @@
       SUBROUTINE PMPPR(AMAT,NA1,NA2,KA,BMAT,NB1,NB2,KB,
      &                 CMAT,NC1,NC2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,11 +41,8 @@ C NC2      /I/: NOMBRE DE COLONNE DE LA MATRICE RESULTAT
 C
 C-----------------------------------------------------------------------
 C
-      CHARACTER*6 PGC
       REAL*8  AMAT(NA1,NA2),BMAT(NB1,NB2),CMAT(NC1,NC2)
 C
-C-----------------------------------------------------------------------
-      DATA PGC /'PMPPR'/
 C-----------------------------------------------------------------------
 C
 C
@@ -53,14 +50,10 @@ C   CAS SANS TRANSPOSITION
 C
       IF(KA.EQ.1.AND.KB.EQ.1) THEN
         IF(NA2.NE.NB1) THEN
-          CALL UTDEBM('F',PGC,
-     &'PROBLEME DE DIMENSION MATRICE A MUTIPLIER')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH13_91',0,' ',0,0,0,0.D0)
         ENDIF
         IF(NC1.NE.NA1.OR.NC2.NE.NB2) THEN
-          CALL UTDEBM('F',PGC,
-     &'PROBLEME DE DIMENSION MATRICE RESULTAT')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH13_92',0,' ',0,0,0,0.D0)
         ENDIF
         DO 10 I=1,NA1
           DO 20 J=1,NB2
@@ -75,14 +68,10 @@ C
 C
       IF(KA.EQ.-1.AND.KB.EQ.1) THEN
         IF(NA1.NE.NB1) THEN
-          CALL UTDEBM('F',PGC,
-     &'PROBLEME DE DIMENSION MATRICE A MUTIPLIER')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH13_91',0,' ',0,0,0,0.D0)
         ENDIF
         IF(NC1.NE.NA2.OR.NC2.NE.NB2) THEN
-           CALL UTDEBM('F',PGC,
-     &'PROBLEME DE DIMENSION MATRICE RESULTAT')
-          CALL UTFINM
+           CALL U2MESG('F', 'ALGORITH13_94',0,' ',0,0,0,0.D0)
         ENDIF
         DO 40 I=1,NA2
           DO 50 J=1,NB2
@@ -98,14 +87,10 @@ C
 C
       IF(KA.EQ.1.AND.KB.EQ.-1) THEN
         IF(NA2.NE.NB2) THEN
-          CALL UTDEBM('F',PGC,
-     &'PROBLEME DE DIMENSION MATRICE A MUTIPLIER')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH13_91',0,' ',0,0,0,0.D0)
         ENDIF
         IF(NC1.NE.NA1.OR.NC2.NE.NB1) THEN
-          CALL UTDEBM('F',PGC,
-     &'PROBLEME DE DIMENSION MATRICE RESULTAT')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH13_92',0,' ',0,0,0,0.D0)
         ENDIF
         DO 70 I=1,NA1
           DO 80 J=1,NB1
@@ -121,14 +106,10 @@ C
 C
       IF(KA.EQ.-1.AND.KB.EQ.-1) THEN
         IF(NA1.NE.NB2) THEN
-          CALL UTDEBM('F',PGC,
-     &'PROBLEME DE DIMENSION MATRICE A MUTIPLIER')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH13_91',0,' ',0,0,0,0.D0)
         ENDIF
         IF(NC1.NE.NA2.OR.NC2.NE.NB1) THEN
-          CALL UTDEBM('F',PGC,
-     &'PROBLEME DE DIMENSION MATRICE RESULTAT')
-          CALL UTFINM
+          CALL U2MESG('F', 'ALGORITH13_92',0,' ',0,0,0,0.D0)
         ENDIF
         DO 100 I=1,NA2
           DO 110 J=1,NB1

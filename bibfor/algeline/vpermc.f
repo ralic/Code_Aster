@@ -7,7 +7,7 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,6 +58,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8      ZK8
       CHARACTER*16              ZK16
       CHARACTER*24                        ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32                                  ZK32
       CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -65,6 +66,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
       REAL*8       XSEUIL
+      REAL*8 VALR
       REAL*8       DEPI, R8DEPI,AMI,FRI,FREQOM
       COMPLEX*16   FREQ, FREQ2,ANORM1, ANORM2
       INTEGER      IAUX1,IAUX2,IAUX4,I,J,IVEC,NEQ
@@ -91,15 +93,10 @@ C
         AMI = AM(I)
         IF ( ABS(AMI) .EQ. 1.D0) THEN
           ERNORM(I)= 1.D+70
-          CALL UTDEBM('A','VPERMC','CALCUL D'' ERREUR MODALE')
-          CALL UTIMPK('L','UNE VALEUR PROPRE REELLE EST DETECTEE',
-     +         1,' ')
-          CALL UTIMPK('L','A PARTIR DU COUPLE (FREQUENCE,'//
-     +         'AMORTISSEMENT REDUIT) ON NE PEUT PLUS '//
-     +         'L''A RECONSTRUIRE',1,' ')
-          CALL UTIMPR('L','PAR CONVENTION L''ERREUR MODALE EST '//
-     +         'FIXEE A : ',1, 1.0D70)
-          CALL UTFINM()
+          VALK (1) = ' '
+          VALK (2) = ' '
+          VALR = 1.0D70
+          CALL U2MESG('A', 'ALGELINE4_74',2,VALK,0,0,1,VALR)
         ELSE
           FRI = FREQOM(FR(I))*DEPI
           AMI = SQRT(AMI * FRI *FRI * 2)

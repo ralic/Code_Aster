@@ -3,7 +3,7 @@
       IMPLICIT REAL*8  (A-H,O-Z)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       COMPLEX*16    C16B,CBID
       CHARACTER*1   K1BID
       INTEGER       NBSEL,IDSEL,N15,N16,SEL,II
+      INTEGER VALI
       CHARACTER*20  TEMPOR
 C
 C -----------------------------------------------------------------
@@ -160,10 +161,8 @@ C UTILISES
          DO 200 KK=1,NBNUMO
            IF(ZI(IDSEL+JJ-1).EQ.ZI(INUMO+KK-1)) GOTO 100
 200      CONTINUE
-         CALL UTDEBM('F','MAJOU','NUMERO DE MODE DE VOTRE LISTE
-     &               INEXISTANT DANS LES MODES UTILISES:')
-         CALL UTIMPI('S','NUMERO DS VOTRE LISTE :',1,ZI(IDSEL+JJ-1))
-         CALL UTFINM
+         VALI = ZI(IDSEL+JJ-1)
+         CALL U2MESG('F', 'ALGORITH13_35',0,' ',1,VALI,0,0.D0)
 100    CONTINUE
 
 

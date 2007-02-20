@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,10 +56,12 @@ C
      &              JDEEQ, LPROL, NBPF, INO, NBV
       PARAMETER   ( MXPARA = 10 )
       INTEGER       RSMXNO, NBTROU,JCPT,NBR,IVMX,K
+      INTEGER       VALI
       REAL*8        VALPU(MXPARA), RBID, TPS, PREC, VALR(3)
       COMPLEX*16    CBID
       LOGICAL       LNCAS, IDENSD, LFONC
       CHARACTER*6   TYPEGD
+      CHARACTER*24  VALKK(2)
       CHARACTER*8   K8B, RESU, NOMF, NOMA, TYPMOD, CRITER
       CHARACTER*8   MODELE, MATERI, CARELE, BLAN8, VALK(2)
       CHARACTER*16  NOMP(MXPARA), TYPE, OPER, ACCES, K16B
@@ -163,11 +165,9 @@ C
           NUMINI = NUMINI + 1
           CALL RSEXCH ( RESU, NSYMB, NUMINI, NOMCH, IRET )
           IF ( IRET .EQ. 0 ) THEN
-             CALL UTDEBM('A',OPER,'*** CHAMP DEJA EXISTANT ***')
-             CALL UTIMPK('L','IL SERA REMPLACE PAR LE CHAMP',1,
-     &                                                     CHAMP(1:8) )
-             CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,NUMINI)
-             CALL UTFINM()
+             VALKK(1) = CHAMP(1:8)
+             VALI = NUMINI
+             CALL U2MESG('A', 'ALGORITH12_74',1,VALKK,1,VALI,0,0.D0)
           ELSEIF ( IRET .EQ. 110 ) THEN
              CALL RSAGSD ( RESU, 0 )
              CALL RSEXCH ( RESU, NSYMB, NUMINI, NOMCH, IRET )
@@ -299,12 +299,12 @@ C
           CALL RSEXCH ( RESU, NSYMB, ICOMPT, NOMCH, IRET )
           IF ( IRET .EQ. 0 ) THEN
             CALL RSADPA ( RESU,'L',1,'INST',ICOMPT,0,IAD,K8B)
-            VALK(1)=ZK8(JCHAM+ICOMPT-1)
-            VALK(2)=CHAMP(1:8)
+            VALKK(1)=ZK8(JCHAM+ICOMPT-1)
+            VALKK(2)=CHAMP(1:8)
             VALR(1)=ZR(IAD)
             VALR(2)=TPS
             VALR(3)=PREC
-            CALL U2MESG ('A','ALGORITH11_87',2,VALK,0,0,3,VALR)
+            CALL U2MESG ('A','ALGORITH11_87',2,VALKK,0,0,3,VALR)
           ELSEIF ( IRET .EQ. 110 ) THEN
             CALL RSAGSD ( RESU, 0 )
             CALL RSEXCH ( RESU, NSYMB, ICOMPT, NOMCH, IRET )

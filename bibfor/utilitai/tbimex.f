@@ -5,7 +5,7 @@
       CHARACTER*(*)       TABLE, LIPAIM(*), FORMAZ, FORMAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16 FORMR
       CHARACTER*19 NOMTAB
       CHARACTER*24 NOMJV, NOMJVL, INPAR, KNPAR
+      CHARACTER*24 VALK
       CHARACTER*2000 CHAINE, CHAIN2
 C     ------------------------------------------------------------------
 C
@@ -120,9 +121,8 @@ C
             ENDIF
  12      CONTINUE
          ERREUR = .TRUE.
-         CALL UTDEBM('A','IMPR_TABLE','ERREUR DANS LES DONNEES')
-         CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-         CALL UTFINM( )
+         VALK = INPAR
+         CALL U2MESG('A', 'UTILITAI6_96',1,VALK,0,0,0,0.D0)
  10   CONTINUE
       IF ( ERREUR ) THEN
          CALL U2MESS('F','PREPOST_60')

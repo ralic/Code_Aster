@@ -6,7 +6,7 @@
       INTEGER NB, ISPV
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C OUT : ISPV   : SIGNE DU PRODUIT MIXTE  (XCEN-N1).(XCEN-N2),V1
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -59,6 +60,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 C8
       CHARACTER*24 MLGGMA, MLGNMA, MLGCNX,C24
+      CHARACTER*24 VALK
       REAL*8 X1(3), X2(3), XC1(3), XC2(3), PVEC(3)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -81,11 +83,9 @@ C     ------------------------------------------------------------------
             XRC1 = PADIST( 3, X1, XCEN )
             XRC2 = PADIST( 3, X2, XCEN )
             IF ((ABS(XRC1-RC).GT.TOLE).OR.(ABS(XRC2-RC).GT.TOLE)) THEN
-               CALL UTDEBM('E','ACNOCE',' ')
-               CALL UTIMPI('S',', MAILLE : ',1,IM)
-               CALL UTIMPK('L','LA MAILLE N''EST PAS SITUEE'//
-     +                            ' SUR LE CERCLE',0,' ')
-               CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+               CALL U2MESG('E', 'MODELISA8_13',1,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL PROVEC(XC1,XC2,PVEC)
             PS=DDOT(3,PVEC,1,V1,1)
@@ -93,27 +93,22 @@ C     ------------------------------------------------------------------
                IF(ISPV.EQ.0) THEN
                   ISPV = 1
                ELSE IF (ISPV.NE.1) THEN
-                  CALL UTDEBM('E','ACNOCE',' ')
-                  CALL UTIMPI('S',', MAILLE : ',1,IM)
-                  CALL UTIMPK('L','LA MAILLE N''EST PAS ORIENTEE '//
-     +          'DANS LE MEME SENS QUE LES AUTRES SUR LE CERCLE',0,' ')
-                  CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+                  CALL U2MESG('E', 'MODELISA8_14',1,VALK,1,VALI,0,0.D0)
                ENDIF
             ELSE IF (PS.LT.0.D0) THEN
                IF(ISPV.EQ.0) THEN
                   ISPV = -1
                ELSE IF (ISPV.NE.-1) THEN
-                  CALL UTDEBM('E','ACNOCE',' ')
-                  CALL UTIMPI('S',', MAILLE : ',1,IM)
-                  CALL UTIMPK('L','LA MAILLE N''EST PAS ORIENTEE '//
-     +          'DANS LE MEME SENS QUE LES AUTRES SUR LE CERCLE',0,' ')
-                  CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+                  CALL U2MESG('E', 'MODELISA8_14',1,VALK,1,VALI,0,0.D0)
                ENDIF
             ELSE
-               CALL UTDEBM('E','ACNOCE',' ')
-               CALL UTIMPI('S',', MAILLE : ',1,IM)
-               CALL UTIMPK('L','PB PRODUIT SCALAIRE',0,' ')
-               CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+               CALL U2MESG('E', 'MODELISA8_16',1,VALK,1,VALI,0,0.D0)
             ENDIF
   52     CONTINUE
       ELSE IF (TYPE.EQ.'GRMA') THEN
@@ -134,11 +129,9 @@ C     ------------------------------------------------------------------
             XRC1 = PADIST( 3, X1, XCEN )
             XRC2 = PADIST( 3, X2, XCEN )
             IF ((ABS(XRC1-RC).GT.TOLE).OR.(ABS(XRC2-RC).GT.TOLE)) THEN
-               CALL UTDEBM('E','ACNOCE',' ')
-               CALL UTIMPI('S',', MAILLE : ',1,IM)
-               CALL UTIMPK('L','LA MAILLE N''EST PAS SITUEE'//
-     +                            ' SUR LE CERCLE',0,' ')
-               CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+               CALL U2MESG('E', 'MODELISA8_13',1,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL PROVEC(XC1,XC2,PVEC)
             PS=DDOT(3,PVEC,1,V1,1)
@@ -146,27 +139,22 @@ C     ------------------------------------------------------------------
                IF(ISPV.EQ.0) THEN
                   ISPV = 1
                ELSE IF (ISPV.NE.1) THEN
-                  CALL UTDEBM('E','ACNOCE',' ')
-                  CALL UTIMPI('S',', MAILLE : ',1,IM)
-                  CALL UTIMPK('L','LA MAILLE N''EST PAS ORIENTEE '//
-     +          'DANS LE MEME SENS QUE LES AUTRES SUR LE CERCLE',0,' ')
-                  CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+                  CALL U2MESG('E', 'MODELISA8_14',1,VALK,1,VALI,0,0.D0)
                ENDIF
             ELSE IF (PS.LT.0.D0) THEN
                IF(ISPV.EQ.0) THEN
                   ISPV = -1
                ELSE IF (ISPV.NE.-1) THEN
-                  CALL UTDEBM('E','ACNOCE',' ')
-                  CALL UTIMPI('S',', MAILLE : ',1,IM)
-                  CALL UTIMPK('L','LA MAILLE N''EST PAS ORIENTEE '//
-     +          'DANS LE MEME SENS QUE LES AUTRES SUR LE CERCLE',0,' ')
-                  CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+                  CALL U2MESG('E', 'MODELISA8_14',1,VALK,1,VALI,0,0.D0)
                ENDIF
             ELSE
-               CALL UTDEBM('E','ACNOCE',' ')
-               CALL UTIMPI('S',', MAILLE : ',1,IM)
-               CALL UTIMPK('L','PB PRODUIT SCALAIRE',0,' ')
-               CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+               CALL U2MESG('E', 'MODELISA8_16',1,VALK,1,VALI,0,0.D0)
             ENDIF
   54        CONTINUE
   53     CONTINUE
@@ -185,11 +173,9 @@ C     ------------------------------------------------------------------
             XRC1 = PADIST( 3, X1, XCEN )
             XRC2 = PADIST( 3, X2, XCEN )
             IF ((ABS(XRC1-RC).GT.TOLE).OR.(ABS(XRC2-RC).GT.TOLE)) THEN
-               CALL UTDEBM('E','ACNOCE',' ')
-               CALL UTIMPI('S',', MAILLE : ',1,IM)
-               CALL UTIMPK('L','LA MAILLE N''EST PAS SITUEE'//
-     +                            ' SUR LE CERCLE',0,' ')
-               CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+               CALL U2MESG('E', 'MODELISA8_13',1,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL PROVEC(XC1,XC2,PVEC)
             PS=DDOT(3,PVEC,1,V1,1)
@@ -197,27 +183,22 @@ C     ------------------------------------------------------------------
                IF(ISPV.EQ.0) THEN
                   ISPV = 1
                ELSE IF (ISPV.NE.1) THEN
-                  CALL UTDEBM('E','ACNOCE',' ')
-                  CALL UTIMPI('S',', MAILLE : ',1,IM)
-                  CALL UTIMPK('L','LA MAILLE N''EST PAS ORIENTEE '//
-     +          'DANS LE MEME SENS QUE LES AUTRES SUR LE CERCLE',0,' ')
-                  CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+                  CALL U2MESG('E', 'MODELISA8_14',1,VALK,1,VALI,0,0.D0)
                ENDIF
             ELSE IF (PS.LT.0.D0) THEN
                IF(ISPV.EQ.0) THEN
                   ISPV = -1
                ELSE IF (ISPV.NE.-1) THEN
-                  CALL UTDEBM('E','ACNOCE',' ')
-                  CALL UTIMPI('S',', MAILLE : ',1,IM)
-                  CALL UTIMPK('L','LA MAILLE N''EST PAS ORIENTEE '//
-     +          'DANS LE MEME SENS QUE LES AUTRES SUR LE CERCLE',0,' ')
-                  CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+                  CALL U2MESG('E', 'MODELISA8_14',1,VALK,1,VALI,0,0.D0)
                ENDIF
             ELSE
-               CALL UTDEBM('E','ACNOCE',' ')
-               CALL UTIMPI('S',', MAILLE : ',1,IM)
-               CALL UTIMPK('L','PB PRODUIT SCALAIRE',0,' ')
-               CALL UTFINM( )
+               VALI = IM
+               VALK = ' '
+               CALL U2MESG('E', 'MODELISA8_16',1,VALK,1,VALI,0,0.D0)
             ENDIF
   55     CONTINUE
       ENDIF

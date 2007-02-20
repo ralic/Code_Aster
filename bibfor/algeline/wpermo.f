@@ -6,7 +6,7 @@
       REAL*8            FR(*),AM(*),OMECOR,ERNORM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/01/2000   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,8 +64,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
       CHARACTER*19 RAIDE
+      CHARACTER*24 VALK(2)
       CHARACTER*14 NUME
       REAL*8       ANORM1, ANORM2, XSEUIL
+      REAL*8 VALR
       REAL*8       DEPI, R8DEPI
       COMPLEX*16   FREQ, FREQ2
 C     ------------------------------------------------------------------
@@ -90,15 +92,10 @@ C
         AMI = AM(I)
         IF ( ABS(AMI) .EQ. 1.D0) THEN
           ERNORM(I)= 1.D+70
-          CALL UTDEBM('A','WPERMO','CALCUL D'' ERREUR MODALE')
-          CALL UTIMPK('L','UNE VALEUR PROPRE REELLE EST DETECTEE',
-     +         1,' ')
-          CALL UTIMPK('L','A PARTIR DU COUPLE (FREQUENCE,'//
-     +         'AMORTISSEMENT REDUIT) ON NE PEUT PLUS '//
-     +         'L''A RECONSTRUIRE',1,' ')
-          CALL UTIMPR('L','PAR CONVENTION L''ERREUR MODALE EST '//
-     +         'FIXEE A : ',1, 1.0D70)
-          CALL UTFINM()
+          VALK (1) = ' '
+          VALK (2) = ' '
+          VALR = 1.0D70
+          CALL U2MESG('A', 'ALGELINE4_93',2,VALK,0,0,1,VALR)
         ELSE
           FRI = FREQOM(FR(I))*DEPI
           AMI = -ABS(AMI*FRI)/SQRT(1.D0-AMI*AMI)

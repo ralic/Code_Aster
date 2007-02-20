@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
+# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,7 +68,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_X',
+                              MODELISATION='D_PLAN_XFEM',
                               ),
                            _F(GROUP_MA=('LIGINF',),
                               PHENOMENE='MECANIQUE',

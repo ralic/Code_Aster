@@ -1,6 +1,6 @@
       SUBROUTINE JJECRS ( IADMI , ICLAS , IDOS , IDCO , CUS , IMARQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C TOLE CFT_720 CFT_726 CRP_18 CRS_508
+C TOLE CFT_720 CFT_726 CRP_18 CRS_508 CRS_505
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             IADMI , ICLAS , IDOS , IDCO ,       IMARQ(2)
       CHARACTER*(*)                                     CUS
@@ -43,10 +43,10 @@ C ----------------------------------------------------------------------
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C ---                  ISTAT(1)->X , (2)->U , (3)->A , (4)->D
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C ----------------------------------------------------------------------
-      INTEGER          ISTA1,ISTA2,IS,KTEMPO
+      INTEGER          ISTA1,ISTA2,IS,KTEMPO(2),IB
 C DEB ------------------------------------------------------------------
       ISTA1 = ISZON(JISZON+IADMI-1)
       IS    = JISZON+ISZON(JISZON+IADMI-4)
@@ -87,31 +87,36 @@ C
             LSI = LGD
             LGD = 2*LGD
             CALL JJALLS (LGD*LOIS,'V','I',LOIS,'INIT',IADMA,IADRS,
-     +                   KTEMPO )
-            ISZON(JISZON+KTEMPO-1) = ISTAT(2)
-            ISZON(JISZON+ISZON(JISZON+KTEMPO-4)-4) = ISTAT(4)
+     +                   KTEMPO(1) ,KTEMPO(2))
+            ISZON(JISZON+KTEMPO(1)-1) = ISTAT(2)
+            ISZON(JISZON+ISZON(JISZON+KTEMPO(1)-4)-4) = ISTAT(4)
             DO 100 K=1,LSI
-              ISZON(JISZON+KTEMPO+K-1) = ISZON(JISZON+KDESMA+K-1)
+              ISZON(JISZON+KTEMPO(1)+K-1) = ISZON(JISZON+KDESMA(1)+K-1)
  100        CONTINUE
-            CALL JJLIBP ( KDESMA )
-            KDESMA = KTEMPO
+            IF ( KDESMA(2) .NE. 0) THEN
+              CALL HPDEALLC (KDESMA(2), IBID, IBID)
+            ELSE IF (KDESMA(1) .NE. 0) THEN
+              CALL JJLIBP (KDESMA(1))
+            ENDIF  
+            KDESMA(1) = KTEMPO(1)
+            KDESMA(2) = KTEMPO(2)
           ENDIF
           LGDUTI = LGDUTI+1
-          ISZON(JISZON + KDESMA + LGDUTI - 1) = IADMI
+          ISZON(JISZON + KDESMA(1) + LGDUTI - 1) = IADMI
           IMARQ(2) = LGDUTI
         ENDIF
       ELSE IF ( IPGC .EQ. -1 )  THEN
         IF ( IMARQ(1) .NE. -3 ) THEN
           IMARQ(1) = IPGC
           IF ( IMARQ(2) .GT . 0 ) THEN
-            ISZON(JISZON + KDESMA + IMARQ(2) - 1 ) = 0
+            ISZON(JISZON + KDESMA(1) + IMARQ(2) - 1 ) = 0
             IMARQ(2) = 0
           ENDIF
         ENDIF
       ELSE IF ( IPGC .EQ. -3 )  THEN
         IMARQ(1) = IPGC
         IF ( IMARQ(2) .GT . 0 ) THEN
-          ISZON(JISZON + KDESMA + IMARQ(2) - 1 ) = 0
+          ISZON(JISZON + KDESMA(1) + IMARQ(2) - 1 ) = 0
           IMARQ(2) = 0
         ENDIF
       ENDIF

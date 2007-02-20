@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
      &              IDTYMA, NUTYMA, INDIC, NDIM, NDIM1, IER1, NOC,
      &              NOC11,NOC12,NOC1, JCOOR, JTYMA, JNMA, NTRAIT
       INTEGER       JMAB, NBMAPR, NBMABO, JPRI, JBOR, IMPB
+      INTEGER VALI
       PARAMETER    ( NBT = 5 )
       REAL*8        R8B, DNOR, R8PREM, DIR(3), ARMIN, PREC
       LOGICAL       GETEXM, REORIE, MCFL(NBT)
@@ -65,7 +66,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  APPAR
       CHARACTER*19  NOMT19
       CHARACTER*24  GRMAMA, MAILMA, PARA
-      CHARACTER*24 VALK(2)
+      CHARACTER*24  VALK(2)
 C
       DATA MCFT / 'FACE_IMPO'  , 'PRES_REP' , 'FORCE_COQUE'  ,
      &            'EFFE_FOND'  , 'CONTACT'  /
@@ -309,10 +310,9 @@ C
                   NORIEN = NORIE1 + NORIE2
                   IF ( NORIEN .NE. 0 ) THEN
                     IER = IER + 1
-                    CALL UTDEBM('E',CMD,'GROUP_MA')
-                    CALL UTIMPK('S',' ', 1, NOGR)
-                    CALL UTIMPI('S','MAILLES MAL ORIENTEES ',0,NORIEN)
-                    CALL UTFINM()
+                     VALK(1) = NOGR
+                     VALI    = NORIEN
+      CALL U2MESG('E', 'MODELISA8_56',1,VALK,1,VALI,0,0.D0)
                   ENDIF
  212             CONTINUE
 C
@@ -418,9 +418,8 @@ C
                   NORIEN = NORIE1 + NORIE2
                   IF ( NORIEN .NE. 0 ) THEN
                      IER = IER + 1
-                     CALL UTDEBM('E',CMD,'MAILLE MAL ORIENTEE')
-                     CALL UTIMPK('S',': ', 1, NOMAIL)
-                     CALL UTFINM()
+                     VALK(1) = NOMAIL
+                     CALL U2MESG('E', 'MODELISA8_57',1,VALK,0,0,0,0.D0)
                   ENDIF
                   CALL JEDETR('&&CHVENO.NUME_MAILLE')
                ENDIF

@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -167,8 +167,7 @@ C           CAS D'UN NUME_ORDRE
            CALL GETVID(' ','MODE_STAT',1,1,1,MODSTA,NBV)
            IF(NBV.EQ.0) THEN
               IER =IER+1
-              CALL UTDEBM('E','MDRECF','IL MANQUE LES MODES STATIQUES')
-              CALL UTFINM( )
+              CALL U2MESG('E', 'ALGORITH13_46',0,' ',0,0,0,0.D0)
               GOTO 10
            ENDIF
            CALL TRMULT(MODSTA,I,MAILLA,NEQ,IDDEEQ,PSDEL(1,I))
@@ -185,8 +184,7 @@ C           CAS D'UN NUME_ORDRE
            CALL GETVID(' ','MODE_CORR',1,1,1,MODCOR,NBV)
            IF(NBV.EQ.0) THEN
               IER =IER+1
-              CALL UTDEBM('E','MDRECF','IL MANQUE LES MODES CORRIGES')
-              CALL UTFINM( )
+              CALL U2MESG('E', 'ALGORITH13_47',0,' ',0,0,0,0.D0)
               GOTO 10
            ENDIF
            CALL GETVID('EXCIT','D_FONC_DT',I,1,1,FONVIT(I),N3)

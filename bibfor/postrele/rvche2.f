@@ -5,7 +5,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              ORIG(3), AXEZ(3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,8 +51,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &              JLONGR, JLIGR, JPNT, IPOIN, IANOMA, NUNOE,AXYZM,
      &              JCNX,IMODEL,ILONG, IND, INDIIS
       REAL*8        SG(6), SL(6), PGL(3,3), PSCAL
+      REAL*8 VALR
       REAL*8        XNORMR, EPSI, AXER(3), AXET(3), R8VIDE
       CHARACTER*8   K8B, NOMCMP, NOMMA, NONOEU, NOMAIL
+      CHARACTER*24 VALK(2)
       CHARACTER*16  OPTION
       CHARACTER*19  CHELM, NOLIGR
       LOGICAL       EXISDG, INIVID
@@ -89,10 +91,9 @@ C         COMPOSANTE:  NXX NYY NXY MXX MYY MXY
       ELSE IF ( OPTION(1:14) .EQ. 'DEGE_ELNO_DEPL' ) THEN
 C         COMPOSANTE:  N  VY VZ MT MFY MFZ
       ELSE
-         CALL UTDEBM('F','RVCHE2','CHANGEMENT DE REPERE')
-         CALL UTIMPK('L','CHAMP NON TRAITE ',1,CHELM)
-         CALL UTIMPK('L','OPTION DE CALCUL ',1,OPTION)
-         CALL UTFINM
+                  VALK (1) = CHELM
+                  VALK (2) = OPTION
+         CALL U2MESG('F', 'POSTRELE1_51',2,VALK,0,0,0,0.D0)
       ENDIF
 C
       CALL JEDUPO ( CHELM//'.CELV', 'V', NOMJV, .FALSE. )
@@ -166,11 +167,10 @@ C
                IF ( XNORMR .LT. EPSI ) THEN
                  CALL JENUNO(JEXNUM(NOMMA//'.NOMMAI',IMAIL),NOMAIL)
                  CALL JENUNO(JEXNUM(NOMMA//'.NOMNOE',NUNOE),NONOEU)
-                  CALL UTDEBM('F','RVCHE2','NOEUD SUR L''AXE_Z')
-                  CALL UTIMPK('L',' MAILLE : ',1,NOMAIL)
-                  CALL UTIMPK('L','  NOEUD : ',1,NONOEU)
-             CALL UTIMPR('L','  COORDONNEES : ',3,ZR(AXYZM+3*(NUNOE-1)))
-                  CALL UTFINM
+                  VALK (1) = NOMAIL
+                  VALK (2) = NONOEU
+                  VALR = ZR(AXYZM+3*(NUNOE-1))
+                  CALL U2MESG('F', 'POSTRELE1_52',2,VALK,0,0,1,VALR)
                ENDIF
                XNORMR =  1.0D0 / SQRT( XNORMR )
                DO 42 I = 1,3
@@ -186,11 +186,10 @@ C
                IF ( XNORMR .LT. EPSI ) THEN
                  CALL JENUNO(JEXNUM(NOMMA//'.NOMMAI',IMAIL),NOMAIL)
                  CALL JENUNO(JEXNUM(NOMMA//'.NOMNOE',NUNOE),NONOEU)
-                  CALL UTDEBM('F','RVCHE2','NOEUD SUR L''AXE_Z')
-                  CALL UTIMPK('L',' MAILLE : ',1,NOMAIL)
-                  CALL UTIMPK('L','  NOEUD : ',1,NONOEU)
-             CALL UTIMPR('L','  COORDONNEES : ',3,ZR(AXYZM+3*(NUNOE-1)))
-                  CALL UTFINM
+                  VALK (1) = NOMAIL
+                  VALK (2) = NONOEU
+                  VALR = ZR(AXYZM+3*(NUNOE-1))
+                  CALL U2MESG('F', 'POSTRELE1_52',2,VALK,0,0,1,VALR)
                ENDIF
                DO 46 I = 1,3
                   PGL(1,I) = AXER(I)

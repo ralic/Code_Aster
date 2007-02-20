@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/05/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C
 C ----------------------------------------------------------------------
       INTEGER      I, IRET
       CHARACTER*8  NOM
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
       DO 10 I = 1 , NBCMP
@@ -34,10 +35,9 @@ C
          CALL LXLIIS ( NOM(2:8), NUMCMP(I), IRET )
 C
          IF ( IRET .NE. 0 ) THEN
-           CALL UTDEBM('F','UTCMP3','ERREURS DONNEES')
-           CALL UTIMPK('L','COMPOSANTE INCONNUE ',1,NOM)
-           CALL UTIMPK('S',' POUR LA GRANDEUR ',1,'VARI_R')
-           CALL UTFINM()
+           VALK (1) = NOM
+           VALK (2) = 'VARI_R'
+           CALL U2MESG('F', 'PREPOST5_80',2,VALK,0,0,0,0.D0)
          ENDIF
  10   CONTINUE
 C

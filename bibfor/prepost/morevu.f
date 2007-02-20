@@ -5,7 +5,7 @@
       CHARACTER*(*)       TABPUS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,13 +39,16 @@ C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*8      ZK8
       CHARACTER*16             ZK16
       CHARACTER*24                      ZK24
+      CHARACTER*24 VALK
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
 
       INTEGER       IBID, NIS, NBVPU, JINST, NBSS2, JSECT, I, IRET
+      INTEGER VALI
       REAL*8        PREC, VOTUB(12), VOOBS(12), SEC(12)
+      REAL*8 VALR
       COMPLEX*16    C16B
       CHARACTER*8   K8B, CRIT
       CHARACTER*19  NOMTA
@@ -90,33 +93,30 @@ C
      &             'V_USUR_TUBE_CUMU', K8B,IBID,VOTUB(I),C16B,K8B,IRET)
 C                   ----------------
          IF (IRET.NE.0) THEN
-            CALL UTDEBM('F','MOREVU','PROBLEME DANS '//NOMTA)
-            CALL UTIMPR('L',' TRAITEMENT DE L''INSTANT ',1,DINST)
-            CALL UTIMPK('L',' RECUPERATION DE ',1,'V_USUR_TUBE_CUMU')
-            CALL UTIMPI('S',' POUR LE SECTEUR ',1,I)
-            CALL UTFINM()
+            VALR = DINST
+            VALK = 'V_USUR_TUBE_CUMU'
+            VALI = I
+            CALL U2MESG('F', 'PREPOST5_54',1,VALK,1,VALI,1,VALR)
          ENDIF
 C
          CALL TBLIVA ( NOMTA, 2,VALEK, I,DINST,C16B,K8B, CRIT,PREC,
      &             'V_USUR_OBST_CUMU', K8B,IBID,VOOBS(I),C16B,K8B,IRET)
 C                   ----------------
          IF (IRET.NE.0) THEN
-            CALL UTDEBM('F','MOREVU','PROBLEME DANS '//NOMTA)
-            CALL UTIMPR('L',' TRAITEMENT DE L''INSTANT ',1,DINST)
-            CALL UTIMPK('L',' RECUPERATION DE ',1,'V_USUR_OBST_CUMU')
-            CALL UTIMPI('S',' POUR LE SECTEUR ',1,I)
-            CALL UTFINM()
+            VALR = DINST
+            VALK = 'V_USUR_OBST_CUMU'
+            VALI = I
+            CALL U2MESG('F', 'PREPOST5_55',1,VALK,1,VALI,1,VALR)
          ENDIF
 C
          CALL TBLIVA ( NOMTA, 2,VALEK, I,DINST,C16B,K8B, CRIT,PREC,
      &                    'ANGLE_DEBUT', K8B,IBID,SEC(I),C16B,K8B,IRET)
 C                          -----------
          IF (IRET.NE.0) THEN
-            CALL UTDEBM('F','MOREVU','PROBLEME DANS '//NOMTA)
-            CALL UTIMPR('L',' TRAITEMENT DE L''INSTANT ',1,DINST)
-            CALL UTIMPK('L',' RECUPERATION DE ',1,'ANGLE_DEBUT')
-            CALL UTIMPI('S',' POUR LE SECTEUR ',1,I)
-            CALL UTFINM()
+            VALR = DINST
+            VALK = 'ANGLE_DEBUT'
+            VALI = I
+            CALL U2MESG('F', 'PREPOST5_56',1,VALK,1,VALI,1,VALR)
          ENDIF
 C
  10   CONTINUE

@@ -1,6 +1,6 @@
       SUBROUTINE JEEXIN ( NOMLU , IRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -44,10 +44,10 @@ C ----------------------------------------------------------------------
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     +               IDMARQ     , IDNOM      ,             IDLONG     ,
      +               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     +               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       CHARACTER *32    NOML32
@@ -61,7 +61,7 @@ C DEB ------------------------------------------------------------------
         IF ( NOML32(25:32) .EQ. '        ') THEN
            ID = IDATOS
         ELSE
-           IF ( IADM(JIADM(ICLAOS)+IDATOS) .EQ. 0 ) THEN
+           IF ( IADM(JIADM(ICLAOS)+2*IDATOS-1) .EQ. 0 ) THEN
              CALL JXVEUO ('L',ITAB,IRET,JCTAB)
            ENDIF
            CALL JJCROC ( '        ' , ICRE )
@@ -78,14 +78,14 @@ C DEB ------------------------------------------------------------------
           IXNOM  = ISZON(JISZON+IBACOL+IDNOM )
           IXLONG = ISZON(JISZON+IBACOL+IDLONG)
           IF ( IXNUM .NE. 0 ) THEN
-            IBNUM = IADM(JIADM(IC)+IXNUM)
+            IBNUM = IADM(JIADM(IC)+2*IXNUM-1)
             NUTI  = ISZON(JISZON+IBNUM+1)
           ELSE
             NUTI  = LUTI ( JLUTI(IC) + IXNOM )
           ENDIF
           ID = IDATOC
           IF ( IXLONG .NE. 0 ) THEN
-            IBLONG = IADM(JIADM(IC)+IXLONG)
+            IBLONG = IADM(JIADM(IC)+2*IXLONG-1)
             ILONG   = ISZON(JISZON+IBLONG - 1 + IDATOC)
             IF ( ILONG .LE. 0 ) ID = 0
           ELSE

@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF assembla Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,4 +181,138 @@ cata_msg={
 40: _("""
  erreur programmeur : certains type_element ne savent pas calculer les options syme_m?ns_r
 """),
+
+41: _("""
+ 1--- le noeud  : %(i1)d  du resuel    : %(k1)s    du vect_elem  : %(k2)s 
+    n''a pas d''adresse dans  : %(k3)s 
+"""),
+
+42: _("""
+ 2--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
+   a 1 adresse  : %(i2)d 
+  > nequa : %(i3)d 
+"""),
+
+43: _("""
+ 3--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+44: _("""
+ 4--- vect_elem     : %(k1)s --- resu        : %(k2)s --- nomli       : %(k3)s 
+ --- grel numero   : %(i1)d 
+ --- maille numero : %(i2)d 
+ --- nnoe par nema : %(i3)d 
+ --- nnoe par node : %(i4)d 
+"""),
+
+45: _("""
+ 5--- le ligrel : %(k1)s  ref. par le noeud supl.  : %(i1)d 
+ --- de la maille : %(i2)d 
+  du resuelem  : %(k2)s 
+  du vect_elem   : %(k3)s 
+ --- n"est pas present  dans la numerotation : %(k4)s 
+"""),
+
+46: _("""
+ 6--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+47: _("""
+ 7--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+48: _("""
+ 8--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
+ --- n''a pas d''adresse  dans la numerotation : %(k3)s 
+"""),
+
+49: _("""
+ 9--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
+ --- a une adresse : %(i2)d 
+  > nequa : %(i3)d 
+"""),
+
+50: _("""
+ 11  nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+51: _("""
+ 11  nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+52: _("""
+ 12  nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+53: _("""
+ 13- nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+54: _("""
+ 1--- le noeud  : %(i1)d  du resuel    : %(k1)s    du vect_elem  : %(k2)s 
+    n''a pas d''adresse dans  : %(k3)s 
+"""),
+
+55: _("""
+ 2--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
+   a 1 adresse  : %(i2)d 
+  > nequa : %(i3)d 
+"""),
+
+56: _("""
+ 3--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+57: _("""
+ 4--- vect_elem     : %(k1)s --- resu        : %(k2)s --- nomli       : %(k3)s 
+ --- grel numero   : %(i1)d 
+ --- maille numero : %(i2)d 
+ --- nnoe par nema : %(i3)d 
+ --- nnoe par node : %(i4)d 
+"""),
+
+58: _("""
+ 5--- le ligrel : %(k1)s  ref. par le noeud supl.  : %(i1)d 
+ --- de la maille : %(i2)d 
+  du resuelem  : %(k2)s 
+  du vect_elem   : %(k3)s 
+ --- n"est pas present  dans la numerotation : %(k4)s 
+"""),
+
+59: _("""
+ 6--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+60: _("""
+ 7--- nddl :  %(i1)d  > nddl_max : %(i2)d 
+"""),
+
+61: _("""
+ 8--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
+ --- n''a pas d''adresse  dans la numerotation : %(k3)s 
+"""),
+
+62: _("""
+ 9--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
+ --- a une adresse : %(i2)d 
+  > nequa : %(i3)d 
+"""),
+
+63: _("""
+ erreur sur le   premier lagrange d"une liaison_ddl
+ on a mis 2 fois le premier  lagrange :  %(i1)d 
+ derrire le noeud :  %(i2)d 
+"""),
+
+64: _("""
+ erreur sur le   2 eme lagrange d"une liaison_ddl
+ on a mis 2 fois le 2eme  lagrange :  %(i1)d 
+ derrire le noeud :  %(i2)d 
+"""),
+
+65: _("""
+ incoherence dans  le denombrement des ddlsnbre de ddl a priori    : %(i1)d 
+ nbre de ddl a posteriori: %(i2)d 
+"""),
+
 }

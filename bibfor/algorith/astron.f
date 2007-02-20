@@ -9,7 +9,7 @@
       LOGICAL           MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*8  K8B, NOEU, CMP, NOMCMP(3)
+      CHARACTER*24 VALK
       CHARACTER*16 MONACC, ACCES(3), NOMSY2
       CHARACTER*19 CHEXTR
       COMPLEX*16   CBID
@@ -78,10 +79,8 @@ C
       IF (NOMSY(1:4).NE.'ACCE') THEN
          NOMSY2 = NOMSY
          IF (NOMSY(1:4).EQ.'VITE') THEN
-            CALL UTDEBM('A','ASTRON',
-     +                      'CORRECTION STATIQUE NON PRISE EN COMPTE')
-            CALL UTIMPK('L','   POUR L''OPTION : ',1,NOMSY2)
-            CALL UTFINM( )
+            VALK = NOMSY2
+            CALL U2MESG('A', 'ALGORITH12_11',1,VALK,0,0,0,0.D0)
             GOTO 9999
          ENDIF
          IF ( MONOAP ) THEN

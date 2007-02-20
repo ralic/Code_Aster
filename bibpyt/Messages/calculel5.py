@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,5 +290,179 @@ cata_msg={
  Il faut au moins 2 numéros d'ordre pour traiter l'option %(k1)s
 """),
 
+64: _("""
+ les champs ne sont pas de la meme grandeur:  type du cham_no  %(k1)s 
+   type du cham_no_affe  %(k2)s 
+"""),
+
+65: _("""
+ composante non definie dans  la grandeur.  composante:  %(k1)s 
+"""),
+
+66: _("""
+ 
+ le nombre de composantes affectees n'est pas egal  au nombre de composantes a affecter
+ occurence de affe numero %(i1)d 
+ nbre de cmp affectees :  %(i2)d 
+ nbre de cmp a affecter :  %(i3)d 
+"""),
+
+67: _("""
+ erreurs donneesle group_ma  %(k1)s 
+  n'a pas le meme nombre de mailles  que le group_ma  %(k2)s 
+"""),
+
+68: _("""
+ erreurs donneesle group_ma  %(k1)s 
+  n'a pas les memes types de maille  que le group_ma  %(k2)s 
+"""),
+
+69: _("""
+ erreurs donnees : la maille  %(k1)s  du maillage  %(k2)s 
+  n'est pas la translation de la  maille  %(k3)s 
+  du maillage  %(k4)s 
+    vecteur translation :  %(r1)f %(r2)f %(r3)f
+"""),
+
+70: _("""
+ l'instant  de calcul  %(r1)f  n'existe pas dans  %(k1)s 
+"""),
+
+71: _("""
+ plusieurs numeros d'ordre trouves pour l'instant  %(r1)f 
+"""),
+
+72: _("""
+ cette commande est reentrante :   sd resultat en sortie     %(k1)s 
+    sd resultat "resu_final"  %(k2)s 
+"""),
+
+73: _("""
+ la sd resultat en sortie  %(k1)s 
+  doit contenir qu'un seul nume_ordre %(k2)s 
+"""),
+
+74: _("""
+ manque le champ  %(k1)s  dans la sd resultat  %(k2)s 
+  pour le nume_ordre  %(i1)d 
+"""),
+
+75: _("""
+ manque le champ  %(k1)s  dans la sd resultat  %(k2)s 
+  pour le nume_ordre  %(i1)d 
+"""),
+
+76: _("""
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
+    elrefa  :  %(k3)s 
+    famille :  %(k4)s 
+"""),
+
+77: _("""
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
+    elrefa  :  %(k3)s 
+    famille :  %(k4)s 
+"""),
+
+78: _("""
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
+    elrefa :  %(k3)s 
+"""),
+
+79: _("""
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
+    elrefa  :  %(k3)s 
+    famille :  %(k4)s 
+"""),
+
+80: _("""
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
+    elrefa  :  %(k3)s 
+    famille :  %(k4)s 
+"""),
+
+81: _("""
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
+    elrefa  :  %(k3)s 
+    famille :  %(k4)s 
+"""),
+
+82: _("""
+ on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
+    elrefa :  %(k3)s 
+"""),
+
+83: _("""
+ ecla_pg : champ vide nom_cham:  %(k1)s  nume_ordre :  %(i1)d 
+"""),
+
+84: _("""
+ elrefe mal programme nom local cherche (nomte elrefe famille)  %(k1)s 
+ parmi les existants  %(k2)s 
+"""),
+
+85: _("""
+ pb liste de mailles carte : %(k1)s  numero entite : %(i1)d 
+  position ds liste : %(i2)d 
+  numero de maille  : %(i3)d 
+"""),
+
+86: _("""
+ pb liste de mailles carte : %(k1)s  numero entite : %(i1)d 
+  position ds liste : %(i2)d 
+  numero de maille  : %(i3)d 
+"""),
+
+87: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+88: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+89: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+90: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+91: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+92: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+93: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+94: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+95: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+96: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+97: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+98: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
+
+99: _("""
+ famille non disponible    maille de reference  %(k1)s 
+"""),
 
 }

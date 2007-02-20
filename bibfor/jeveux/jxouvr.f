@@ -1,6 +1,6 @@
-      SUBROUTINE JXOUVR ( ICLAS , IDN , INDEF    , NBL )
+      SUBROUTINE JXOUVR ( ICLAS , IDN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX DATE 28/02/96 AUTEUR D6BHHJP J.P.LEFEBVRE
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             ICLAS , IDN , INDEF(*) , NBL
+      INTEGER             ICLAS , IDN 
 C     ==================================================================
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
@@ -32,17 +32,16 @@ C     ==================================================================
       COMMON /KBASJE/  NOMBAS(N)
 C     ------------------------------------------------------------------
       CHARACTER*8      NOM
+      INTEGER          INDX(1) , NBL
 C DEB ------------------------------------------------------------------
+      NBL = 1
       IF ( KSTINI(ICLAS) .NE. 'DUMMY   ' ) THEN
         IERR = 0
         NOM = NOMFIC(ICLAS)(1:4)//'.   '
         CALL CODENT(IDN,'G',NOM(6:7))
-        CALL OPENDR ( NOM , INDEF , NBL , 0 , IERR )
+        CALL OPENDR ( NOM , INDX , NBL , 0 , IERR )
         IF ( IERR .NE. 0 ) THEN
-          CALL JVDEBM ( 'S' , 'JXOUVR_01' ,
-     &                'ERREUR D''OUVERTURE DU FICHIER '//NOMBAS(ICLAS))
-          CALL JVIMPI ( 'L' , 'CODE RETOUR OPENDR :' , 1 , IERR )
-          CALL JVFINM
+          CALL U2MESG ( 'F' ,'JEVEUX_43',1,NOMBAS(ICLAS),1,IERR,0,R8BID)
         ENDIF
       ENDIF
       END

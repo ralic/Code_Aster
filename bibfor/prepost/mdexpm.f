@@ -1,7 +1,7 @@
       SUBROUTINE MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,8 +51,6 @@ C 0.2. ==> COMMUNS
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'MDEXPM' )
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
       INTEGER EDNSTR
@@ -62,9 +60,11 @@ C
 C
       INTEGER IDFIMD, NBMAIE
       INTEGER IAUX, JAUX, KAUX, TYAUX
+      INTEGER VALI(3)
 C
       CHARACTER*32 SAUX32
       CHARACTER*200 DAUX
+      CHARACTER*24 VALK(2)
 C ______________________________________________________________________
 C
 C====
@@ -90,10 +90,9 @@ C 2.1. ==> COMBIEN DE MAILLAGES DANS LE FICHIER
 C
       CALL EFNMAA ( IDFIMD, NBMAIE, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFNMAA NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALI (1) = CODRET
+        CALL U2MESG('A', 'PREPOST5_50',1,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST3_52')
       ENDIF
 C
@@ -110,11 +109,10 @@ C                 12345678901234567890123456789012
         IAUX = 1
         CALL EFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, TYAUX, DAUX, CODRET )
         IF ( CODRET.NE.0 ) THEN
-          CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-          CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-          CALL UTIMPI ( 'L', 'MAILLAGE NUMERO ', 1, 1 )
-          CALL UTIMPI ( 'L', 'ERREUR EFMAAI NUMERO ', 1, CODRET )
-          CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALI (1) = 1
+        VALI (2) = CODRET
+          CALL U2MESG('A', 'PREPOST5_51',1,VALK,2,VALI,0,0.D0)
           CALL U2MESS('F','PREPOST3_53')
         ELSEIF ( TYAUX .NE. EDNSTR ) THEN
           CALL U2MESS('A','PREPOST3_56')
@@ -123,13 +121,12 @@ C
         IAUX = LEN(NOMAMD)
         JAUX = LXLGUT(SAUX32)
         IF ( JAUX.GT.IAUX ) THEN
-          CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-          CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-          CALL UTIMPI ( 'L', 'MAILLAGE NUMERO ', 1, 1 )
-          CALL UTIMPI ( 'L', 'NOMAMD EST DECLARE A ', 1, IAUX )
-          CALL UTIMPK ( 'L', 'LE NOM DE MAILLAGE EST : ', 1, SAUX32 )
-          CALL UTIMPI ( 'L', 'DE LONGUEUR ', 1, JAUX )
-          CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = SAUX32
+        VALI (1) = 1
+        VALI (2) = IAUX
+        VALI (3) = JAUX
+          CALL U2MESG('A', 'PREPOST5_52',2,VALK,3,VALI,0,0.D0)
           CALL U2MESS('F','PREPOST3_57')
         ENDIF
 C
@@ -144,10 +141,9 @@ C 2.3. ==> FERMETURE DU FICHIER
 C
       CALL EFFERM ( IDFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPI ( 'L', 'ERREUR EFFERM NUMERO ', 1, CODRET )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALI (1) = CODRET
+        CALL U2MESG('A', 'PREPOST5_53',1,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST3_49')
       ENDIF
 C

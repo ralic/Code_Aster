@@ -1,6 +1,6 @@
       SUBROUTINE  VERILI (NOMRES,II,FPLI1,FPLI2,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,16 +62,16 @@ C   SOUS-JACENTE TRAITES
 C
       PARAMETER (NBCMPM =  10)
       PARAMETER (NBECMX =  10)
-      CHARACTER*6      PGC
       CHARACTER*8 NOMRES,NOMG,KBID
       CHARACTER*24  FPLI1,FPLI2
+      CHARACTER*24 VALK(6)
       CHARACTER*8 SST1,SST2,INTF1,INTF2,BLANC
       INTEGER IDECP(NBCMPM),IDECM(NBCMPM)
+      INTEGER VALI(2)
       INTEGER ICODP(NBECMX),ICODM(NBECMX)
       CHARACTER*1 K1BID
 C
 C-----------------------------------------------------------------------
-      DATA PGC /'VERILI'/
       DATA BLANC /' '/
 C-----------------------------------------------------------------------
 C
@@ -102,15 +102,13 @@ C
       NBNOE2=IDIM2/(1+NBEC)
 C
       IF(NBNOE1.NE.NBNOE2) THEN
-        CALL UTDEBM('E',PGC,
-     &'PROBLEME DE COHERENCE DE NOMBRE DE NOEUDS D''INTERFACE')
-        CALL UTIMPK('L','SOUS-STRUCTURE1:',1,SST1)
-        CALL UTIMPK('L','INTERFACE1:',1,INTF1)
-        CALL UTIMPI('L','NOMBRE DE NOEUDS INTERFACE1:',1,NBNOE1)
-        CALL UTIMPK('L','SOUS-STRUCTURE2:',1,SST2)
-        CALL UTIMPK('L','INTERFACE2:',1,INTF2)
-        CALL UTIMPI('L','NOMBRE DE NOEUDS INTERFACE2:',1,NBNOE2)
-        CALL UTFINM
+            VALK (1) = SST1
+            VALK (2) = INTF1
+            VALK (3) = SST2
+            VALK (4) = INTF2
+            VALI (1) = NBNOE1
+            VALI (2) = NBNOE2
+        CALL U2MESG('E', 'ALGORITH14_70',4,VALK,2,VALI,0,0.D0)
         IRET=1
         GOTO 9999
       ENDIF
@@ -138,29 +136,23 @@ C
 C
         DO 20 J=1,NBCMPM
           IF(IDECP(J).NE.0) THEN
-            CALL UTDEBM('F',PGC,
-     &'PROBLEME DE COHERENCE DES INTERFACES ORIENTEES')
-            CALL UTIMPK('L','SOUS-STRUCTURE1:',1,SST1)
-            CALL UTIMPK('L','INTERFACE1:',1,INTF1)
-            CALL UTIMPK('L','PRESENCE COMPOSANTE SUR 1:',
-     &1,ZK8(LLNCMP+J-1))
-            CALL UTIMPK('L','SOUS-STRUCTURE2:',1,SST2)
-            CALL UTIMPK('L','INTERFACE2:',1,INTF2)
-            CALL UTIMPK('L','COMPOSANTE INEXISTANTE SUR 2',1,BLANC)
-            CALL UTFINM
+            VALK (1) = SST1
+            VALK (2) = INTF1
+            VALK (3) = ZK8(LLNCMP+J-1)
+            VALK (4) = SST2
+            VALK (5) = INTF2
+            VALK (6) = BLANC
+            CALL U2MESG('F', 'ALGORITH14_71',6,VALK,0,0,0,0.D0)
             IRET=IRET+1
           ENDIF
           IF(IDECM(J).NE.0) THEN
-            CALL UTDEBM('F',PGC,
-     &'PROBLEME DE COHERENCE DES INTERFACES ORIENTEES')
-            CALL UTIMPK('L','SOUS-STRUCTURE2:',1,SST2)
-            CALL UTIMPK('L','INTERFACE2:',1,INTF2)
-            CALL UTIMPK('L','PRESENCE COMPOSANTE SUR 2:',
-     &1,ZK8(LLNCMP+J-1))
-            CALL UTIMPK('L','SOUS-STRUCTURE1:',1,SST1)
-            CALL UTIMPK('L','INTERFACE1:',1,INTF1)
-            CALL UTIMPK('L','COMPOSANTE INEXISTANTE SUR 1',1,BLANC)
-            CALL UTFINM
+            VALK (1) = SST2
+            VALK (2) = INTF2
+            VALK (3) = ZK8(LLNCMP+J-1)
+            VALK (4) = SST1
+            VALK (5) = INTF1
+            VALK (6) = BLANC
+            CALL U2MESG('F', 'ALGORITH14_72',6,VALK,0,0,0,0.D0)
             IRET=IRET+1
           ENDIF
 20      CONTINUE

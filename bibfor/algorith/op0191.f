@@ -1,6 +1,6 @@
       SUBROUTINE OP0191(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------------
 C ----- FIN COMMUNS NORMALISES  JEVEUX  -------------------------------
 C
       INTEGER      N0    , NBORDR, IRET  , NOCC  , I , J  , NP, IORDR
+      INTEGER VALI
       INTEGER      N1    , NBCMP , IORD  , IOC , IBID, NC
       INTEGER      JORDR , NBCHAM, NBNOSY, JPA, IADIN, IADOU
       INTEGER      NBPARA, NBAC  , NBPA  , IFM   , NIV
@@ -110,11 +111,10 @@ C
 C
             CALL RSEXCH( RESUIN, OPTION, IORDR, CHAMP0, IRET)
             IF ( IRET .NE. 0 ) THEN
-               CALL UTDEBM('F','OP0191','CHAMP INEXISTANT')
-               CALL UTIMPK('L',' RESULTAT ', 1, RESUIN )
-               CALL UTIMPK('L',' NOM_CHAM ', 1, OPTION )
-               CALL UTIMPI('L',' NUME_ORDRE ', 1, IORDR )
-               CALL UTFINM
+               VALK (1) = RESUIN
+               VALK (2) = OPTION
+               VALI = IORDR
+               CALL U2MESG('F', 'ALGORITH13_85',2,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL DISMOI( 'F', 'NOM_MAILLA', CHAMP0(1:19), 'CHAMP',
      &                   IBID, NOMMA, IRET)

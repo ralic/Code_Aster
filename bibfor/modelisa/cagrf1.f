@@ -6,7 +6,7 @@
       CHARACTER*8         CHAR, NOMA, FFGR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/11/2006   AUTEUR ZENTNER I.ZENTNER 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,6 +54,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      +              ICOOR, JVAL, JABSC, IAPL, INO, NIV, IFM
       INTEGER       IZONE, IPNOEU, IDNOEU, NG, NOEUDG, NM, INDIK8
       REAL*8        XM1, XM2, YM1, YM2, ZM1, ZM2, XM, YM, ZM, COTE
+      REAL*8 VALR(4)
       REAL*8        S, X1, Y1, Z1, X2, Y2, Z2, X12, Y12, Z12, V1(3)
       REAL*8        PI, R8PI, MGRAPP, MTIGE, MARAIG, MCRAYO, DTIGE, 
      +              LTIGE, ROTIGE, VARAI, RORAI, DCRAY, LCRAY, ROCRAY,
@@ -229,14 +230,11 @@ C
           
        IF ( ABS(ERR).GT.1.D-03 ) THEN
          WRITE(IFM,*) '---------------ATTENTION: --------------------'
-        CALL UTDEBM('A','CAGRF1','LES MASSES ET DENSITES VOLUMIQUES
-     &  DONNEES NE CORRESPONDENT PAS!')     
-         CALL UTIMPR('L','MASSE TOTALE GRAPPE DONNEE:    ',1,MGRAPP)
-         CALL UTIMPR('L','MASSE DE LA TIGE CALCULEE:     ',1,MTIGE)
-         CALL UTIMPR('L','MASSE DE L''ARAIGNEE CALCULEE: ',1,MARAIG)
-         CALL UTIMPR('L','MASSE DU CRAYON CALCULEE:      ',1,MCRAYO)
-        CALL UTIMPR('L','MASSE GRAPPE=TIGE+ARAIGNEE+CRAYON: ',1,MGRAP2)
-         CALL UTFINM()
+         VALR (1) = MTIGE
+         VALR (2) = MARAIG
+         VALR (3) = MCRAYO
+         VALR (4) = MGRAP2
+        CALL U2MESG('A', 'MODELISA8_41',0,' ',0,0,4,VALR)
          WRITE(IFM,*) '---------------------------------------------'
        ENDIF
 C
@@ -244,10 +242,9 @@ C
       ERR = ( LGR - LGR2 ) / LGR
       IF ( ABS(ERR).GT.1.D-03 ) THEN
          WRITE(IFM,*) '---------------ATTENTION: --------------------'
-         CALL UTDEBM('F','CAGRF1','ERREURS DANS LES DONNEES')
-         CALL UTIMPR('L','LONGUEUR MODELISEE: ',1,LGR)
-         CALL UTIMPR('L','LONGUEUR DONNEE   : ',1,LGR2)
-         CALL UTFINM()
+         VALR (1) = LGR
+         VALR (2) = LGR2
+         CALL U2MESG('F', 'MODELISA8_42',0,' ',0,0,2,VALR)
       ENDIF
 C
       CALL JEDEMA()

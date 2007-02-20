@@ -1,6 +1,6 @@
       SUBROUTINE JETASS ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 17/10/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508 CRS_512
+C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508 CRS_512 CRS_505
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*1         CLAS
 C ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -58,10 +58,10 @@ C
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     +                 KITLEC    , KITECR    ,             KIADM    ,
      +                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     +                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       LOGICAL          LITLEC
       COMMON /LFICJE/  LITLEC(N)
@@ -74,15 +74,15 @@ C
      +                 DN2(N)
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     +               IDMARQ     , IDNOM      ,             IDLONG     ,
      +               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     +               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       LOGICAL          LIBRE,ACTU
       CHARACTER*1      KCLAS
-      INTEGER          ITP(1),JITP,IADITP,IADDI(2),IADDIB(2),LGBL
+      INTEGER          ITP(1),JITP,IADITP,IADDI(2),IADDIB(2),LGBL,IADYN
 C DEB ------------------------------------------------------------------
       IADDI(2)  = 0
       IADDIB(2) = 0
@@ -97,7 +97,7 @@ C DEB ------------------------------------------------------------------
       ENDIF
       DO 100 IC=NCLA1,NCLA2
         LGBL = 1024*LONGBL(IC)*LOIS
-        CALL JJALLS(LGBL,'V','I',LOIS,'INIT',ITP,JITP,IADITP)
+        CALL JJALLS(LGBL,'V','I',LOIS,'INIT',ITP,JITP,IADITP,IADYN)
         ISZON(JISZON+IADITP-1) = ISTAT(2)
         ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
 C
@@ -161,7 +161,7 @@ C
                     CALL JJALLC(IC,IDCO,'E',IBACOL)
                     IXIADD = ISZON(JISZON+IBACOL+IDIADD)
                     IF ( IXIADD .GT. 0 ) THEN
-                      IBIADD = IADM(JIADM(IC)+IXIADD)
+                      IBIADD = IADM(JIADM(IC)+2*IXIADD-1)
                       ISZON(JISZON+IBIADD-1+2*IDOS-1) = KLIB
                     ENDIF
 C
@@ -203,7 +203,7 @@ C
                   IXIADD = ISZON(JISZON+IBACOL+IDIADD)
                   KADD = IADD(JIADD(IC)+2*IXIADD-1)
                   IF ( IXIADD .GT. 0 ) THEN
-                    IBIADD = IADM(JIADM(IC)+IXIADD)
+                    IBIADD = IADM(JIADM(IC)+2*IXIADD-1)
                     LADD = ISZON(JISZON+IBIADD-1+2*IDOSL)
                     ISZON(JISZON+IBIADD-1+2*IDOSL-1) = KLIB
                     IF ( KADD .NE. K ) THEN
@@ -243,7 +243,11 @@ C
  400      CONTINUE
           NBLUTI(IC) = KLIB-1
         ENDIF
-        CALL JJLIBP (IADITP)
+        IF (IADYN .NE. 0 ) THEN
+          CALL HPDEALLC (IADYN, IBID, IBID)
+        ELSE IF (IADITP .NE. 0) THEN
+          CALL JJLIBP (IADITP)
+        ENDIF
  100  CONTINUE
 C FIN ------------------------------------------------------------------
       END

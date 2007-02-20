@@ -1,7 +1,7 @@
       SUBROUTINE TE0515(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,11 +42,11 @@ C
       INTEGER IVF,    IDFDE,  JGANO,  INOE,   IADZI,   IAZK24
       INTEGER IND,    IND1,   IND2,   NNI,    JBASLO
 
-      INTEGER  KPG,KK,I,M,J,J1,KL,PQ,KKD,DDLT,NFE,IBID,NDDL
+      INTEGER  KPG,KK,I,M,J,J1,KL,PQ,KKD,DDLT,NFE,IBID,NDDL,IE
       INTEGER  NPGBIS,NNOM, NTET,NBCMP,NDIME,JDIM
       INTEGER  JCOOPG,JDFD2,JCOORS,JCOR2D,IGEO2D
-      REAL*8   DEPLA(3),A(3),B(3),C(3),AB(3),AC(3),Y(3)
-      REAL*8   N(3),AN(3),DDOT,XE(3),FF(4)
+      REAL*8   DEPLA(3),A(3),B(3),C(3),AB(3),AC(3),Y(3),R,T,LSN,LST
+      REAL*8   N(3),AN(3),DDOT,XE(3),FF(4),FE(4)
       REAL*8   ND(3),NORME,NAB,RBID,GLOC(2)
 
       CHARACTER*8 ELREFP,NOMA
@@ -100,15 +100,26 @@ C
         NTET=3
         NSEMAX=3
         DDLH=3
-        DDLT=6
-      ELSEIF(NOMTE(1:13).EQ.'MECA_XHT_FACE' .OR.
-     &   NOMTE(1:12).EQ.'MECA_XT_FACE')THEN
-        CALL U2MESS('F','ELEMENTS2_78')
+        NFE=0
+      ELSEIF(NOMTE(1:13).EQ.'MECA_XHT_FACE') THEN
+        NTET=3
+        NSEMAX=3
+        DDLH=3
+        NFE=4
+      ELSEIF(NOMTE(1:12).EQ.'MECA_XT_FACE')THEN
+        NTET=3
+        NSEMAX=3
+        DDLH=0
+        NFE=4
       ENDIF
+      DDLT=3+DDLH+NFE*3    
+
 C
       CALL ELREF1(ELREFP)
 
 C -   PARAMETRES :
+      CALL JEVECH('PLSN','L',JLSN)
+      CALL JEVECH('PLST','L',JLST)
       CALL JEVECH('PDEPLPR','L',IDEPLR)
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PPINTTO','L',JPINTT)
@@ -150,14 +161,12 @@ C
  18   CONTINUE
 
 
+
 C --- CAS 1 : ELEMENTS VOLUMIQUE OU SURFACIQUE (DIME=DIM)
 C     ===================================================
       IF(.NOT.L2D3D)THEN
 
       CALL JEVECH('PBASLOR','L',JBASLO)
-      CALL JEVECH('PLSN','L',JLSN)
-      CALL JEVECH('PLST','L',JLST)
-
 
 C     RÉCUPÉRATION DE LA SUBDIVISION L'ÉLÉMENT PARENT EN NIT TETRAS
 C     (OU TRIANGLES).
@@ -306,21 +315,50 @@ C           FF AUX NOEUDS DE L'ELREFP DANS LE REPERE LOCAL
             CALL REEREF(ELREFP,NNOP,IGEO2D,GLOC,RBID,.FALSE.,NDIME,RBID,
      &       IBID,IBID,IBID,RBID,RBID,'NON',XE,FF,RBID,RBID,RBID,RBID)
 
+            IF (NFE.GT.0) THEN
+C             LEVEL SETS AU SOMMET
+              LSN = 0.D0
+              LST = 0.D0
+              DO 222 IN=1,NNOP
+                LSN = LSN + ZR(JLSN-1+IN) * FF(IN)
+                LST = LST + ZR(JLST-1+IN) * FF(IN)
+ 222          CONTINUE
+
+C             COORDONNÉES POLAIRES DU SOMMET
+              R = SQRT(LSN**2+LST**2)
+              T = HE * ABS(ATAN2(LSN,LST))
+C
+C             FONCTIONS D'ENRICHISSEMENT
+              FE(1)=SQRT(R)*SIN(T/2.D0)
+              FE(2)=SQRT(R)*COS(T/2.D0)
+              FE(3)=SQRT(R)*SIN(T/2.D0)*SIN(T)
+              FE(4)=SQRT(R)*COS(T/2.D0)*SIN(T)
+            ENDIF
+
               DO 300 IN=1,NNOP
                 CPT2=0
 C               DDLS CLASSIQUES
                 DO 301 I=1,NDIM
-                 CPT2=CPT2+1
-                 DEPLA(I) = DEPLA(I) +
-     &                      FF(IN) * ZR(IDEPLR-1+DDLT*(IN-1)+CPT2)
+                  CPT2=CPT2+1
+                  DEPLA(I) = DEPLA(I) +
+     &                       FF(IN) * ZR(IDEPLR-1+DDLT*(IN-1)+CPT2)
  301            CONTINUE
 
 C               DDLS HEAVISIDE
                 DO 302 I=1,DDLH
-                 CPT2=CPT2+1
-                 DEPLA(I) = DEPLA(I) +
-     &                      HE * FF(IN) * ZR(IDEPLR-1+DDLT*(IN-1)+CPT2)
+                  CPT2=CPT2+1
+                  DEPLA(I) = DEPLA(I) +
+     &                       HE * FF(IN) * ZR(IDEPLR-1+DDLT*(IN-1)+CPT2)
  302            CONTINUE
+
+C               DDLS SINGULIER
+                DO 303 IE=1,NFE
+                  DO 304 J=1,NDIM
+                    CPT2=CPT2+1
+                    DEPLA(I) = DEPLA(I) +
+     &                   FE(IE) * FF(IN) * ZR(IDEPLR-1+DDLT*(IN-1)+CPT2)
+ 304              CONTINUE
+ 303            CONTINUE
  300          CONTINUE
 C
               IF(INO.LT.1000)THEN

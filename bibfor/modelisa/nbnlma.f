@@ -4,7 +4,7 @@
       CHARACTER*8    LITYP(*), NOMA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C      &&NBNLMA.NBN  : NOMBRES D'OCCURENCES DES NOEUDS
 C-----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
+      INTEGER VALI
       COMMON / IVARJE / ZI(1)
       REAL*8            ZR
       COMMON / RVARJE / ZR(1)
@@ -52,6 +53,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8       ZK8
       CHARACTER*16              ZK16
       CHARACTER*24                       ZK24
+      CHARACTER*24 VALK
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
@@ -86,11 +88,9 @@ C --- SI ON SOUHAITE CONTROLEE LE TYPE DE MAILLE DE LIMANU:
    12    CONTINUE
          IF ( NN .EQ. 0 ) THEN
             CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',MI),MK)
-            CALL UTDEBM('F','NBNLMA',' LA MAILLE ' )
-            CALL UTIMPI('S',' DE NUM ',1,MI)
-            CALL UTIMPK('L',' DE NOM ',1,MK//' A UN TYPE NON '//
-     &                                  'CONFORME AU CALCUL ENVISAGE')
-            CALL UTFINM()
+            VALI = MI
+            VALK = MK//' A UN TYPE NON '//'CONFORME AU CALCUL ENVISAGE'
+            CALL U2MESG('F', 'MODELISA8_68',1,VALK,1,VALI,0,0.D0)
          ELSE
              NBNM = NBNM + NN
          END IF

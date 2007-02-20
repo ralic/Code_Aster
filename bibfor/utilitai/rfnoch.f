@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, N, NC, NG, INT, IND, NSST, IRET, JREFE1,
      &              JREFE2
       CHARACTER*8   K8B,NOMA, SST, BASEMO, RAIDE, NOEUD, INTITU, NOGNO
+      CHARACTER*24 VALK
       CHARACTER*16  PARAX,PARAY, NOMCMD, TYPCON
       CHARACTER*19  LISTR, NOMFON, RESU
 C     ------------------------------------------------------------------
@@ -79,9 +80,8 @@ C
          IF (IRET.EQ.10) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
          ELSEIF (IRET.EQ.1) THEN
-            CALL UTDEBM('A','OP0090','TROP DE NOEUDS DANS LE GROUP_NO')
-            CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOEUD)
-            CALL UTFINM()
+            VALK = NOEUD
+            CALL U2MESG('A', 'UTILITAI6_69',1,VALK,0,0,0,0.D0)
          ENDIF
 C
          CALL FOCRCH ( NOMFON, RESU, NOEUD, PARAX, PARAY, 'G', INT,

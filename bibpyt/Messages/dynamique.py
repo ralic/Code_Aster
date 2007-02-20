@@ -1,4 +1,4 @@
-#@ MODIF dynamique Messages  DATE 13/02/2007   AUTEUR GREFFET N.GREFFET 
+#@ MODIF dynamique Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

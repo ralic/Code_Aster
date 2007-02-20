@@ -4,7 +4,7 @@
      &                  COEFCU,CMPGCU,MULTCU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,7 @@ C
        INTEGER        JCOEFG,JCOEFD,JCOEF,JCMPG
        INTEGER        IOCC,INO,ICMP,I
        CHARACTER*24   NOEUCU,NOEUMA,POICU
+       CHARACTER*24 VALK(2)
        INTEGER        JNOEU,JINDIR,JPOIN
        INTEGER        NBNOE,NBND,NBCP,NUMND,EXIST,NBSUP
        INTEGER        JDEBCP,JDEBND
@@ -169,10 +170,9 @@ C
 
             IF (EXIST.EQ.1) THEN
               CALL JENUNO(JEXNUM(NOEUMA,NUMND),NOMNO)
-              CALL UTDEBM('I','CREAUN',' COMPOSANTE EXISTANTE SUR ')
-              CALL UTIMPK('L',' LE NOEUD: ',1,NOMNO)
-              CALL UTIMPK('S',' COMPOSANTE: ',1,CMP)
-              CALL UTFINM()
+              VALK (1) = NOMNO
+              VALK (2) = CMP
+              CALL U2MESG('I', 'MODELISA8_58',2,VALK,0,0,0,0.D0)
 
               ZK8(JCOMPG-1+CPTG) = CMP
               IF (TYPCMP.EQ.1) THEN
@@ -184,10 +184,9 @@ C
             ELSE
               NBSUP = NBSUP + 1
               CALL JENUNO(JEXNUM(NOEUMA,NUMND),NOMNO)
-              CALL UTDEBM('I','CREAUN',' COMPOSANTE INEXISTANTE SUR ')
-              CALL UTIMPK('L',' LE NOEUD: ',1,NOMNO)
-              CALL UTIMPK('S',' COMPOSANTE: ',1,CMP)
-              CALL UTFINM()
+              VALK (1) = NOMNO
+              VALK (2) = CMP
+              CALL U2MESG('I', 'MODELISA8_59',2,VALK,0,0,0,0.D0)
             ENDIF
 
  3000     CONTINUE

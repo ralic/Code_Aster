@@ -5,7 +5,7 @@
       CHARACTER*24        CHMATE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C                VALE(13) = N
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI(2)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -58,6 +59,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8      ZK8
       CHARACTER*16             ZK16
       CHARACTER*24                      ZK24
+      CHARACTER*24 VALK
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
@@ -82,11 +84,10 @@ C
       ICMP = 1
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'E CALCUL')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'E CALCUL'
+         CALL U2MESG('F', 'POSTRELE1_24',1,VALK,2,VALI,0,0.D0)
       ENDIF
       EC = ZR(JCESV-1+IAD)
 C
@@ -95,11 +96,10 @@ C
       ICMP = 2
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'E AMBIANT')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'E AMBIANT'
+         CALL U2MESG('F', 'POSTRELE1_25',1,VALK,2,VALI,0,0.D0)
       ENDIF
       E = ZR(JCESV-1+IAD)
 C
@@ -108,11 +108,10 @@ C
       ICMP = 3
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'NU')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'NU'
+         CALL U2MESG('F', 'POSTRELE1_26',1,VALK,2,VALI,0,0.D0)
       ENDIF
       NU = ZR(JCESV-1+IAD)
 C
@@ -121,11 +120,10 @@ C
       ICMP = 4
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'ALPHA')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'ALPHA'
+         CALL U2MESG('F', 'POSTRELE1_27',1,VALK,2,VALI,0,0.D0)
       ENDIF
       ALPHA = ZR(JCESV-1+IAD)
 C
@@ -156,21 +154,19 @@ C
          ICMP = 2
          IAD = DECMB + (IPT-1)*NBCMP + ICMP
          IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-            CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-            CALL UTIMPI('L','POUR LA MAILLE ',1,IMB)
-            CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-            CALL UTIMPK('L','IL MANQUE LE ',1,'E_B')
-            CALL UTFINM
+         VALI (1) = IMB
+         VALI (2) = IPT
+         VALK = 'E_B'
+            CALL U2MESG('F', 'POSTRELE1_28',1,VALK,2,VALI,0,0.D0)
          ENDIF
          EB = ZR(JCESV-1+IAD)
          ICMP = 4
          IAD = DECMB + (IPT-1)*NBCMP + ICMP
          IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-            CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-            CALL UTIMPI('L','POUR LA MAILLE ',1,IMB)
-            CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-            CALL UTIMPK('L','IL MANQUE LE ',1,'ALPHA_B')
-            CALL UTFINM
+         VALI (1) = IMB
+         VALI (2) = IPT
+         VALK = 'ALPHA_B'
+            CALL U2MESG('F', 'POSTRELE1_29',1,VALK,2,VALI,0,0.D0)
          ENDIF
          ALPHAB = ZR(JCESV-1+IAD)
       ENDIF
@@ -190,11 +186,10 @@ C
       ICMP = 5
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'E_REFE')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'E_REFE'
+         CALL U2MESG('F', 'POSTRELE1_30',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(10) = ZR(JCESV-1+IAD)
 C
@@ -203,11 +198,10 @@ C
       ICMP = 6
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'SM')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'SM'
+         CALL U2MESG('F', 'POSTRELE1_31',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(11) = ZR(JCESV-1+IAD)
 C
@@ -216,11 +210,10 @@ C
       ICMP = 7
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'M')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'M'
+         CALL U2MESG('F', 'POSTRELE1_32',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(12) = ZR(JCESV-1+IAD)
 C
@@ -229,11 +222,10 @@ C
       ICMP = 8
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'N')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'N'
+         CALL U2MESG('F', 'POSTRELE1_33',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(13) = ZR(JCESV-1+IAD)
 C
@@ -243,11 +235,10 @@ C
       ICMP = 9
       IAD = DECMA + (IPT-1)*NBCMP + ICMP
       IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         CALL UTDEBM('F','RCMA01','ERREUR DONNEES ')
-         CALL UTIMPI('L','POUR LA MAILLE ',1,IMA)
-         CALL UTIMPI('S',' ET LE NOEUD ',1,IPT)
-         CALL UTIMPK('L','IL MANQUE LE ',1,'TYPEKE')
-         CALL UTFINM
+         VALI (1) = IMA
+         VALI (2) = IPT
+         VALK = 'TYPEKE'
+         CALL U2MESG('F', 'POSTRELE1_34',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(14) = ZR(JCESV-1+IAD)
 C

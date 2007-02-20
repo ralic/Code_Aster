@@ -3,7 +3,7 @@
      &                    TEMMOZ, EXITMP )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,14 +67,13 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'NMDETE' )
-C
       INTEGER NCHAR, NUCHTH, NBCHAM
+      INTEGER VALI
       INTEGER JCHAR, JINF, JTEMP
       INTEGER IERD, ICORET, IRET, IBID
 C
-      REAL*8 TIME, TIME2
+      REAL*8 TIME
+      REAL*8 VALR
       REAL*8 ZERO
 C
       CHARACTER*1        BASE
@@ -83,7 +82,7 @@ C
       CHARACTER*16       TYSD
       CHARACTER*19       CH19
       CHARACTER*24       NOM24,LIGRMO
-      CHARACTER*24 VALK(2)
+      CHARACTER*24       VALK(2)
 C
       COMPLEX*16         CBID
 C
@@ -176,11 +175,10 @@ C
      &                  'CONSTANT','CONSTANT',1,BASE,ICORET)
 C
             IF (ICORET.GE.10) THEN
-              CALL UTDEBM('F',NOMPRO,'INTERPOLATION TEMPERATURE:')
-              CALL UTIMPK('L','EVOL_THER:',1,TEMPE)
-              CALL UTIMPR('S','INSTANT:',1,TIME2)
-              CALL UTIMPI('L','ICORET:',1,ICORET)
-              CALL UTFINM()
+              VALK(1) = TEMPE
+              VALR    = TIME
+              VALI    = ICORET
+              CALL U2MESG('F', 'ALGORITH13_64',1,VALK,1,VALI,1,VALR)
             ENDIF
             EXITMP = .TRUE.
             CHPNUL = .FALSE.

@@ -1,6 +1,6 @@
       SUBROUTINE JEDETR ( NOMLU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CFT_726 CFT_720 CRP_18 CRS_508  CRS_512
+C TOLE CFT_726 CFT_720 CRP_18 CRS_508  CRS_512 CRS_505
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       NOMLU
 C ----------------------------------------------------------------------
@@ -37,7 +37,7 @@ C ----------------------------------------------------------------------
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -49,21 +49,21 @@ C
       CHARACTER*32     RNOM
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
 C     ------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+      INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
+     &               IDMARQ     , IDNOM      ,              IDLONG     ,
+     &               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C     ------------------------------------------------------------------
       CHARACTER*75    CMESS
       CHARACTER*32    NOML32 , NOM32
-      INTEGER         ICRE , IRET , ID(IDNUM) , IADDI(2)
+      INTEGER         ICRE , IRET , ID(IDNUM) , IADDI(2) , IBID
 C DEB ------------------------------------------------------------------
       NOML32 = NOMLU
       ICRE = 0
@@ -73,8 +73,11 @@ C
         GOTO 9999
       ELSE IF ( IRET .EQ. 1 ) THEN
         IC = ICLAOS
-        IADMI = IADM (JIADM(IC) + IDATOS )
-        IF ( IADMI .GT. 0 ) THEN
+        IADMI = IADM (JIADM(IC) + 2*IDATOS-1 )
+        IADYN = IADM (JIADM(IC) + 2*IDATOS   )
+        IF ( IADYN .NE. 0 ) THEN
+          CALL  HPDEALLC ( IADYN , IBID , IBID )
+        ELSE IF ( IADMI .NE. 0 ) THEN
           CALL JJLIBP ( IADMI )
         ENDIF
         IADDI(1) = IADD (JIADD(IC) + 2*IDATOS-1 )
@@ -103,24 +106,27 @@ C
           IXDESO = ISZON( JISZON + IBACOL + IDDESO )
           IXMARQ = ISZON( JISZON + IBACOL + IDMARQ )
           IF ( IXIADM .GT. 0 ) THEN
-            IBIADM = IADM ( JIADM(IC) + IXIADM )
-            IBMARQ = IADM ( JIADM(IC) + IXMARQ )
+            IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
+            IBMARQ = IADM ( JIADM(IC) + 2*IXMARQ-1 )
             NMAX   = ISZON(JISZON+IBACOL+IVNMAX)
             DO 10 K = 1,NMAX
               IADMAR = ISZON( JISZON + IBMARQ - 1 + 2*K )
-              IF ( IADMAR .GT. 0 ) THEN
-                ISZON(JISZON+KDESMA+IADMAR-1) = 0
+              IF ( IADMAR .NE. 0 ) THEN
+                ISZON(JISZON+KDESMA(1)+IADMAR-1) = 0
               ENDIF
-              IADMOC = ISZON( JISZON + IBIADM + K - 1 )
-              IF ( IADMOC .GT. 0 ) THEN
+              IADMOC = ISZON( JISZON + IBIADM - 1 + 2*K-1 )
+              IADYOC = ISZON( JISZON + IBIADM - 1 + 2*K   )
+              IF ( IADYOC .NE. 0 ) THEN
+                CALL  HPDEALLC ( IADYOC , IBID , IBID )
+              ELSE IF ( IADMOC .NE. 0 ) THEN
                 CALL JJLIBP ( IADMOC )
               ENDIF
-              IBIADD = IADM ( JIADM(IC) + IXIADD )
+              IBIADD = IADM ( JIADM(IC) + 2*IXIADD-1 )
               IADDI(1) = ISZON( JISZON + IBIADD -1 + 2*K-1 )
               IADDI(2) = ISZON( JISZON + IBIADD -1 + 2*K   )
               IF ( IADDI(1) .GT. 0 ) THEN
                 IF ( IXLONO .GT. 0 ) THEN
-                  IBLONO=IADM(JIADM(IC)+IXLONO)
+                  IBLONO=IADM(JIADM(IC)+2*IXLONO-1)
                   LONOI =ISZON(JISZON+IBLONO+K-1)*LTYP(JLTYP(IC)+IXDESO)
                 ELSE
                   LONOI = LONO(JLONO(IC)+IXDESO)*LTYP(JLTYP(IC)+IXDESO)
@@ -135,8 +141,11 @@ C
               NOM32 = RNOM ( JRNOM(IC) + ID(K) )
               IF ( NOM32(1:24) .EQ. NOML32(1:24) .OR.
      &             NOM32(25:26) .EQ. '&&'             ) THEN
-                IADMI = IADM (JIADM(IC) + ID(K) )
-                IF ( IADMI .GT. 0 ) THEN
+                IADMI = IADM (JIADM(IC) + 2*ID(K)-1 )
+                IADYN = IADM (JIADM(IC) + 2*ID(K)   )
+                IF ( IADYN .NE. 0 ) THEN
+                  CALL  HPDEALLC ( IADYN , IBID , IBID )
+                ELSE IF ( IADMI .NE. 0 ) THEN
                   CALL JJLIBP ( IADMI )
                 ENDIF
                 IADDI(1) = IADD (JIADD(IC) + 2*ID(K)-1 )
@@ -160,7 +169,12 @@ C
               CALL JJMZAT ( IC , ID(K) )
             ENDIF
  2        CONTINUE
-          CALL JJLIBP ( IBACOL)
+          IADYN = IADM(JIADM(IC)+2*IDATCO)
+          IF ( IADYN .NE. 0 ) THEN
+            CALL  HPDEALLC ( IADYN , IBID , IBID )
+          ELSE IF ( IADMI .NE. 0 ) THEN
+            CALL JJLIBP ( IBACOL )
+          ENDIF
           IADDI(1) = IADD (JIADD(IC) + 2*IDATCO-1)
           IADDI(2) = IADD (JIADD(IC) + 2*IDATCO  )
           IF ( IADDI(1) .GT. 0 ) THEN
@@ -190,12 +204,12 @@ C
      &              //' REFUSEE'
             CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
-          IBIADD = IADM ( JIADM(IC) + IXIADD )
+          IBIADD = IADM ( JIADM(IC) + 2*IXIADD-1 )
           IADDI(1) = ISZON ( JISZON + IBIADD - 1 + 2*IDATOC-1 )
           IADDI(2) = ISZON ( JISZON + IBIADD - 1 + 2*IDATOC   )
           IF ( IADDI(1) .GT. 0 ) THEN
             IF ( IXLONO .GT. 0 ) THEN
-              IBLONO = IADM(JIADM(IC)+IXLONO)
+              IBLONO = IADM(JIADM(IC)+2*IXLONO-1)
               LONOI = ISZON(JISZON+IBLONO+IDATOC-1)*
      &                      LTYP(JLTYP(IC)+IXDESO)
             ELSE
@@ -204,19 +218,23 @@ C
             CALL JXLIBD ( IDATCO, IDATOC, IC , IADDI , LONOI )
           ENDIF
           ISZON ( JISZON + IBIADD + IDATOC - 1 ) = 0
-          IBMARQ = IADM ( JIADM(IC) + IXMARQ )
+          IBMARQ = IADM ( JIADM(IC) + 2*IXMARQ-1 )
           IADMAR = ISZON( JISZON + IBMARQ - 1 + 2*IDATOC )
-          IF ( IADMAR .GT. 0 ) THEN
-            ISZON(JISZON+KDESMA+IADMAR-1) = 0
+          IF ( IADMAR .NE. 0 ) THEN
+            ISZON(JISZON+KDESMA(1)+IADMAR-1) = 0
           ENDIF
-          IBIADM = IADM ( JIADM(IC) + IXIADM )
-          IADMI = ISZON ( JISZON + IBIADM + IDATOC - 1 )
-          IF ( IADMI .GT. 0 ) THEN
+          IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
+          IADMI = ISZON ( JISZON + IBIADM - 1 + 2*IDATOC-1 )
+          IADYN = ISZON ( JISZON + IBIADM - 1 + 2*IDATOC   )
+          IF ( IADYN .NE. 0 ) THEN
+            CALL  HPDEALLC ( IADYN , IBID , IBID )
+          ELSE IF ( IADMI .NE. 0 ) THEN
             CALL JJLIBP ( IADMI )
           ENDIF
-          ISZON ( JISZON + IBIADM + IDATOC - 1 ) = 0
+          ISZON ( JISZON + IBIADM - 1 + 2*IDATOC-1 ) = 0
+          ISZON ( JISZON + IBIADM - 1 + 2*IDATOC   ) = 0
           IF ( IXLONG .GT. 0 ) THEN
-            IBLONG = IADM ( JIADM(IC) + IXLONG )
+            IBLONG = IADM ( JIADM(IC) + 2*IXLONG-1 )
             ISZON ( JISZON + IBLONG + IDATOC - 1 ) = 0
           ENDIF
           IF (NIVO .GE. 2) THEN

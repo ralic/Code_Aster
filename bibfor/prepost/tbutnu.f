@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMJV, NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,8 +51,10 @@ C
       INTEGER      IBID, NP, NC, N1, N2, JINSTD, JINST, JORDR, II,
      +             NBVAL, NBTROU, NUTROU
       REAL*8       DINST
+      REAL*8 VALR
       COMPLEX*16   CBID
       CHARACTER*8  K8B
+      CHARACTER*24 VALK
       CHARACTER*19 LISTR
 C DEB ------------------------------------------------------------------
 C
@@ -92,15 +94,13 @@ C
          CALL RSINDI('R8  ',JINSTD,JORDR,IBID,DINST,K8B,CBID,PREC,CRIT,
      &               NBVAL,NBTROU,NUTROU,1)
          IF ( NBTROU .LT. 1 ) THEN
-            CALL UTDEBM('F','TBUTNU','ON NE TROUVE PAS ')
-            CALL UTIMPR('S','L''INSTANT ',1,DINST)
-            CALL UTIMPK('S',' DANS LA TABLE ',1,NOMTAB)
-            CALL UTFINM()
+            VALR = DINST
+            VALK = NOMTAB
+            CALL U2MESG('F', 'PREPOST5_74',1,VALK,0,0,1,VALR)
          ELSEIF (NBTROU.GT.1) THEN
-            CALL UTDEBM('F','TBUTNU','ON TROUVE  ')
-            CALL UTIMPR('S',' PLUSIEURS INSTANTS ',1,DINST)
-            CALL UTIMPK('S',' DANS LA TABLE ',1,NOMTAB)
-            CALL UTFINM()
+            VALR = DINST
+            VALK = NOMTAB
+            CALL U2MESG('F', 'PREPOST5_75',1,VALK,0,0,1,VALR)
          ENDIF
  20   CONTINUE
 C

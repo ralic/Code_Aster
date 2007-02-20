@@ -3,7 +3,7 @@
      &                  INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,6 +89,7 @@ C DECLARATION VARIABLES LOCALES
      &             GII,GII1,NBDDL,NBMC,IFETR,IMC,IDD,INFOL8,IBID,IBCAST,
      &             JGI,JGITGI
       INTEGER*4    INFOLA
+      INTEGER VALI(2)
       REAL*8       RAUX,DDOT
       CHARACTER*8  NOMSD
       CHARACTER*24 NOMSDR,SDFETG,K24B
@@ -190,10 +191,9 @@ C VIA LAPACK
      &    INFOLA)
           INFOL8=INFOLA
           IF (INFOL8.NE.0) THEN
-            CALL UTDEBM('F','FETPRJ','SYSTEME (GI)T*GI PROBABLEMENT')
-            CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
-            CALL UTIMPI('L','PB LAPACK DGETRS: ',1,INFOL8)
-            CALL UTFINM()
+            VALI (1) = I
+            VALI (2) = INFOL8
+            CALL U2MESG('F', 'ALGORITH13_16',0,' ',2,VALI,0,0.D0)
           ENDIF
 
           IF (OPTION.EQ.1) THEN

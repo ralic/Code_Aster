@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMGD, MCFAC, NOMCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32      JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER      IBID, N1, N2, JNOCP, I, J, II, NBCPT, JNUC2,
+      INTEGER      IBID, N2, JNOCP, I, J, II, NBCPT, JNUC2,
      &             JNOC2, IVAL, IRET, IANCMP, LGNCMP
       LOGICAL      MULT
       CHARACTER*8  K8B
+      CHARACTER*24 VALK(2)
       CHARACTER*16 NOMCMD
 C     ------------------------------------------------------------------
 C
@@ -52,7 +53,6 @@ C
       CALL GETRES ( K8B, K8B, NOMCMD )
 C
       NBNUCP = 0
-      N1=0
 C
       NBNOCP = 0
       CALL GETVTX (MCFAC, 'NOM_CMP', IOCC,1,0, K8B, N2 )
@@ -76,16 +76,14 @@ C
             ELSEIF ( ZK8(JNOCP+I-1)(1:1) .EQ. 'V' ) THEN
                K8B = ZK8(JNOCP+I-1)(2:8)//' '
             ELSE
-               CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
-               CALL UTIMPK('L','COMPOSANTE INCONNUE ',1,ZK8(JNOCP+I-1))
-               CALL UTIMPK('S',' POUR LA GRANDEUR ',1,'VARI_R')
-               CALL UTFINM()
+               VALK (1) = ZK8(JNOCP+I-1)
+               VALK (2) = 'VARI_R'
+               CALL U2MESG('F', 'CALCULEL6_50',2,VALK,0,0,0,0.D0)
             ENDIF
             CALL LXLIIS ( K8B, IVAL, IRET )
             IF ( IRET .NE. 0 ) THEN
-               CALL UTDEBM('F','UTCMP2','ERREURS DONNEES')
-               CALL UTIMPK('L','COMPOSANTE INCONNUE ',1,ZK8(JNOCP+I-1))
-               CALL UTFINM()
+               VALK (1) = ZK8(JNOCP+I-1)
+               CALL U2MESG('F', 'CALCULEL6_51',1,VALK,0,0,0,0.D0)
             ENDIF
  12         CONTINUE
             K8B = 'V'//'       '

@@ -4,7 +4,7 @@
       CHARACTER*8  NOMO, GRAN, CNO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/04/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,6 +49,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8   K8B, RESU, NOMA, ZCST,TYPMCL(4),NOCMP(3),LISTYP(10)
       CHARACTER*16  MOTCLF, MOTCLE(2)
       CHARACTER*24  NOMNOE, MESMAI
+      CHARACTER*24 VALK(2)
 C ----------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -56,10 +57,8 @@ C
 C
       CALL JENONU ( JEXNOM('&CATA.GD.NOMGD',GRAN), NUMGD )
       IF (NUMGD.EQ.0) THEN
-        CALL UTDEBM('F','CNONOR','LA GRANDEUR INTRODUITE EN OPERANDE'//
-     &                ' NE FIGURE PAS DANS LE CATALOGUE DES GRANDEURS')
-        CALL UTIMPK('L','GRANDEUR: ',1,GRAN)
-        CALL UTFINM
+            VALK (1) = GRAN
+        CALL U2MESG('F', 'UTILITAI6_10',1,VALK,0,0,0,0.D0)
       END IF
       CALL DISMOI ( 'F', 'NB_EC', GRAN, 'GRANDEUR', NEC , K8B, IER )
       CALL JEVEUO ( JEXNOM('&CATA.GD.NOMCMP',GRAN), 'L', IACMP )
@@ -107,11 +106,9 @@ C
       DO 10 I = 1,NBCOMP
          CALL VERICP ( ZK8(IACMP), NOCMP(I), NCMPMX, IRET )
          IF (IRET.NE.0) THEN
-            CALL UTDEBM('F','CNONOR',
-     &                'UNE COMPOSANTE N''APPARTIENT PAS A LA GRANDEUR')
-            CALL UTIMPK('L','GRANDEUR   : ',1,GRAN)
-            CALL UTIMPK('L','COMPOSANTE : ',1,NOCMP(I))
-            CALL UTFINM
+            VALK (1) = GRAN
+            VALK (2) = NOCMP(I)
+            CALL U2MESG('F', 'UTILITAI6_11',2,VALK,0,0,0,0.D0)
          END IF
  10   CONTINUE
 C

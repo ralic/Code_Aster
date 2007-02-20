@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/01/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       INTEGER            ZI
+      INTEGER VALI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -46,10 +47,12 @@ C
       INTEGER        N1, NBCHAM, IORD1,IORD2, NBPERM, JORDR, NBTROU, IP,
      +      IBID, IC, IRET, JLIM1, JLIM2, NBMA, JLINO, NBNO2,NNCP
       REAL*8         INST1, TRAN(3), PREC
+      REAL*8 VALR
       COMPLEX*16     CBID
       CHARACTER*8    K8B, CRIT, RESU1, RESU2, RESU3, MA1, MA2,
      +               GMA1, GMA2
       CHARACTER*16   TYPRES, NOMCMD, CHAM(3), OPTION
+      CHARACTER*24 VALK(2)
       CHARACTER*19   PRCHNO
       CHARACTER*24   CH1, CH2, CHS1, CHS2, LINOEU,
      +               LIMA1, LIMA2, LIGREL, CHSI1(3), CHSI2(3)
@@ -73,14 +76,12 @@ C
          CALL RSORAC ( RESU1, 'INST', IBID, INST1, K8B, CBID, PREC,
      +                 CRIT, IORD1, 1, NBTROU )
          IF ( NBTROU .EQ. 0 ) THEN
-            CALL UTDEBM('F','CRPERM','L''INSTANT ')
-            CALL UTIMPR('S',' DE CALCUL ', 1, INST1 )
-            CALL UTIMPK('S',' N''EXISTE PAS DANS ', 1, RESU1 )
-            CALL UTFINM()
+            VALR = INST1
+            VALK (1) = RESU1
+            CALL U2MESG('F', 'CALCULEL5_70',1,VALK,0,0,1,VALR)
          ELSEIF ( NBTROU .NE. 1 ) THEN
-            CALL UTDEBM('F','CRPERM','PLUSIEURS NUMEROS D''ORDRE ')
-            CALL UTIMPR('S','TROUVES POUR L''INSTANT ', 1, INST1 )
-            CALL UTFINM()
+            VALR = INST1
+            CALL U2MESG('F', 'CALCULEL5_71',0,' ',0,0,1,VALR)
          ENDIF
       ENDIF
       CALL GETVID ( ' ', 'MAILLAGE_INIT'  , 1,1,1, MA1  , N1 )
@@ -104,36 +105,32 @@ C --- VERIFICATIONS SUPPLEMENTAIRES :
 C     -----------------------------
 C
       IF ( RESU2 .NE. RESU3 ) THEN
-         CALL UTDEBM('F','CRPERM','CETTE COMMANDE EST REENTRANTE :')
-         CALL UTIMPK('L','   SD RESULTAT EN SORTIE    ', 1, RESU3 )
-         CALL UTIMPK('L','   SD RESULTAT "RESU_FINAL" ', 1, RESU2 )
-         CALL UTFINM()
+            VALK (1) = RESU3
+            VALK (2) = RESU2
+         CALL U2MESG('F', 'CALCULEL5_72',2,VALK,0,0,0,0.D0)
       ENDIF
 C
       CALL JELIRA ( RESU2//'           .ORDR', 'LONUTI', IBID, K8B)
       IF ( IBID .NE. 1 ) THEN
-         CALL UTDEBM('F','CRPERM','LA SD ')
-         CALL UTIMPK('S','RESULTAT EN SORTIE ', 1, RESU2 )
-         CALL UTIMPK('S',' DOIT CONTENIR QU''UN SEUL NUME_ORDRE',0,K8B)
-         CALL UTFINM()
+            VALK (1) = RESU2
+            VALK (2) = K8B
+         CALL U2MESG('F', 'CALCULEL5_73',2,VALK,0,0,0,0.D0)
       ENDIF
 C
       DO 100 IC = 1 , NBCHAM
          CALL RSEXCH ( RESU1, CHAM(IC), IORD1, CH1, IRET )
          IF ( IRET .NE. 0 ) THEN
-            CALL UTDEBM('F','CRPERM','MANQUE ')
-            CALL UTIMPK('S','LE CHAMP ', 1, CHAM(IC) )
-            CALL UTIMPK('S',' DANS LA SD RESULTAT ', 1, RESU1 )
-            CALL UTIMPI('S',' POUR LE NUME_ORDRE ', 1, IORD1 )
-            CALL UTFINM()
+            VALK (1) = CHAM(IC)
+            VALK (2) = RESU1
+            VALI = IORD1
+            CALL U2MESG('F', 'CALCULEL5_74',2,VALK,1,VALI,0,0.D0)
          ENDIF
          CALL RSEXCH ( RESU2, CHAM(IC), IORD2, CH2, IRET )
          IF ( IRET .NE. 0 ) THEN
-            CALL UTDEBM('F','CRPERM','MANQUE ')
-            CALL UTIMPK('S','LE CHAMP ', 1, CHAM(IC) )
-            CALL UTIMPK('S',' DANS LA SD RESULTAT ', 1, RESU2 )
-            CALL UTIMPI('S',' POUR LE NUME_ORDRE ', 1, IORD2 )
-            CALL UTFINM()
+            VALK (1) = CHAM(IC)
+            VALK (2) = RESU2
+            VALI = IORD2
+            CALL U2MESG('F', 'CALCULEL5_75',2,VALK,1,VALI,0,0.D0)
          ENDIF
 C
          IF ( CHAM(IC) .EQ. 'DEPL' ) THEN

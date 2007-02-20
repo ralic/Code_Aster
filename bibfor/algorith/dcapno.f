@@ -1,6 +1,6 @@
       SUBROUTINE DCAPNO(RESUZ,TYPCHZ,IORD,CHAVAZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +37,7 @@ C
       CHARACTER*(*) RESUZ, TYPCHZ
 C
       INTEGER ZI
+      INTEGER VALI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -53,13 +54,11 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6 PGC
       CHARACTER*8 RESU,TYPCH
       CHARACTER*19 CHACOU
       CHARACTER*24 CHAVAL
+      CHARACTER*24 VALK
 C
-C-----------------------------------------------------------------------
-      DATA PGC/'DCAPNO'/
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -68,10 +67,9 @@ C
       TYPCH = TYPCHZ
       CALL RSEXCH(RESU,TYPCH,IORD,CHACOU,IER)
       IF (IER.NE.0) THEN
-        CALL UTDEBM('F',PGC,' PROBLEME RECUPERATION CHAMNO')
-        CALL UTIMPK('L','CONCEPT RESULTAT: ',1,RESU)
-        CALL UTIMPI('L','NUMERO ORDRE: ',1,IORD)
-        CALL UTFINM
+        VALK = RESU
+        VALI = IORD
+        CALL U2MESG('F', 'ALGORITH12_76',1,VALK,1,VALI,0,0.D0)
       END IF
 
       CHAVAL = CHACOU//'.VALE'

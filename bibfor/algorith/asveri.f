@@ -2,11 +2,12 @@
      &                                  NSUPP,NOMSUP,NDIR,NORDR,NBMODE)
       IMPLICIT  REAL*8 (A-H,O-Z)
       INTEGER           NDIR(*),NORDR(*),NSUPP(*)
+      INTEGER VALI
       CHARACTER*(*)     KNOMSY(*),MECA,PSMO,STAT,NOMSUP(NBSUP,*)
       LOGICAL           TRONC,MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +45,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  K8B, RESU, NOEU, CMP, NOMCMP(3)
       CHARACTER*16 NOMSY, CONCEP, NOMCMD, ACCES(3), MONACC, MONPAR
       CHARACTER*19 CHEXTR, CHEXT2
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(3)
       COMPLEX*16   CBID
 C     ------------------------------------------------------------------
       DATA  NOMCMP / 'DX' , 'DY' , 'DZ' /
@@ -64,21 +65,19 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
      &                                              K8B,IORDR,1,NBTROU)
                IF (NBTROU.NE.1) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-                  CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
-                 CALL UTIMPK('L','   IL MANQUE LE CHAMP : ',1,ACCES(ID))
-                  CALL UTFINM( )
+               VALK (1) = PSMO
+               VALK (2) = ACCES(ID)
+                  CALL U2MESG('E', 'ALGORITH12_12',2,VALK,0,0,0,0.D0)
                   GOTO 10
                ENDIF
                MONPAR = 'ACCE_IMPO'
                CALL RSVPAR(PSMO,IORDR,'TYPE_DEFO',IB,RB,MONPAR,IRET)
                IF (IRET.NE.100) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-                  CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
-                  CALL UTIMPK('L','   POUR LE CHAMP : ',1,ACCES(ID))
-                  CALL UTIMPK('L','   LE TYPE N''EST PAS ',1,MONPAR)
-                  CALL UTFINM( )
+               VALK (1) = PSMO
+               VALK (2) = ACCES(ID)
+               VALK (3) = MONPAR
+                  CALL U2MESG('E', 'ALGORITH12_13',3,VALK,0,0,0,0.D0)
                ENDIF
             ENDIF
  10      CONTINUE
@@ -94,21 +93,19 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
      &                                        R8B,K8B,IORDR,1,NBTROU)
                   IF (NBTROU.NE.1) THEN
                      IER = IER + 1
-                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-                     CALL UTIMPK('L','   POUR LES STATIQUES : ',1,STAT)
-                    CALL UTIMPK('L','   IL MANQUE LE CHAMP : ',1,MONACC)
-                     CALL UTFINM( )
+               VALK (1) = STAT
+               VALK (2) = MONACC
+                   CALL U2MESG('E', 'ALGORITH12_14',2,VALK,0,0,0,0.D0)
                      GOTO 16
                   ENDIF
                   MONPAR = 'DEPL_IMPO'
                   CALL RSVPAR(STAT,IORDR,'TYPE_DEFO',IB,RB,MONPAR,IRET)
                   IF (IRET.NE.100) THEN
                      IER = IER + 1
-                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-                     CALL UTIMPK('L','   POUR LES STATIQUES : ',1,STAT)
-                     CALL UTIMPK('L','   POUR LE CHAMP : ',1,MONACC)
-                     CALL UTIMPK('L','   LE TYPE N''EST PAS ',1,MONPAR)
-                     CALL UTFINM( )
+               VALK (1) = STAT
+               VALK (2) = MONACC
+               VALK (3) = MONPAR
+                   CALL U2MESG('E', 'ALGORITH12_15',3,VALK,0,0,0,0.D0)
                   ENDIF
  16               CONTINUE
                   IF ( TRONC ) THEN
@@ -116,21 +113,19 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
      &                                        R8B,K8B,IORDR,1,NBTROU)
                   IF (NBTROU.NE.1) THEN
                      IER = IER + 1
-                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-                     CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
-                    CALL UTIMPK('L','   IL MANQUE LE CHAMP : ',1,MONACC)
-                     CALL UTFINM( )
+               VALK (1) = PSMO
+               VALK (2) = MONACC
+                   CALL U2MESG('E', 'ALGORITH12_16',2,VALK,0,0,0,0.D0)
                      GOTO 14
                   ENDIF
                   MONPAR = 'ACCE_DDL_IMPO'
                   CALL RSVPAR(PSMO,IORDR,'TYPE_DEFO',IB,RB,MONPAR,IRET)
                   IF (IRET.NE.100) THEN
                      IER = IER + 1
-                   CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-                     CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
-                     CALL UTIMPK('L','   POUR LE CHAMP : ',1,MONACC)
-                     CALL UTIMPK('L','   LE TYPE N''EST PAS ',1,MONPAR)
-                     CALL UTFINM( )
+               VALK (1) = PSMO
+               VALK (2) = MONACC
+               VALK (3) = MONPAR
+                   CALL U2MESG('E', 'ALGORITH12_17',3,VALK,0,0,0,0.D0)
                   ENDIF
                   ENDIF
  14            CONTINUE
@@ -142,9 +137,8 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
       DO 20 IN = 1,NBOPT
          NOMSY = KNOMSY(IN)
          IF (NOMSY(1:4).EQ.'VITE' .AND. .NOT.MONOAP) THEN
-            CALL UTDEBM('E','ASVERI','ON NE SAIT PAS BIEN TRAITER ')
-            CALL UTIMPK('S','L''OPTION DE CALCUL DEMANDEE : ',1,NOMSY)
-            CALL UTFINM( )
+               VALK (1) = NOMSY
+            CALL U2MESG('E', 'ALGORITH12_18',1,VALK,0,0,0,0.D0)
             IER = IER + 1
          ENDIF
          IF (NOMSY(1:4).EQ.'VITE') GOTO 20
@@ -152,10 +146,9 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
          CALL RSUTNC(MECA,NOMSY,0,K8B,IBID,NBTROU)
          IF (NBTROU.EQ.0) THEN
             IER = IER + 1
-            CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-            CALL UTIMPK('L','   POUR LES MODES MECANIQUES : ',1,MECA)
-            CALL UTIMPK('L','   IL MANQUE L''OPTION : ',1,NOMSY)
-            CALL UTFINM( )
+               VALK (1) = MECA
+               VALK (2) = NOMSY
+            CALL U2MESG('E', 'ALGORITH12_19',2,VALK,0,0,0,0.D0)
             GOTO 20
          ENDIF
          DO 22 IM = 1,NBMODE
@@ -163,31 +156,28 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
             IF (IRET.NE.0) THEN
                INUM = NORDR(IM)
                IER = IER + 1
-               CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-               CALL UTIMPK('L','   POUR LES MODES MECANIQUES : ',1,MECA)
-               CALL UTIMPK('L','   POUR L''OPTION : ',1,NOMSY)
-               CALL UTIMPI('L','   IL MANQUE LE CHAMP D''ORDRE ',1,INUM)
-               CALL UTFINM( )
+               VALK (1) = MECA
+               VALK (2) = NOMSY
+               VALI = INUM
+               CALL U2MESG('E', 'ALGORITH12_20',2,VALK,1,VALI,0,0.D0)
             ENDIF
  22      CONTINUE
          IF ( TRONC ) THEN
             CALL RSUTNC(PSMO,NOMSY,0,K8B,IBID,NBTROU)
             IF (NBTROU.EQ.0) THEN
                IER = IER + 1
-               CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-               CALL UTIMPK('L','   POUR LES MODE_CORR : ',1,PSMO)
-               CALL UTIMPK('L','   IL MANQUE L''OPTION : ',1,NOMSY)
-               CALL UTFINM( )
+               VALK (1) = PSMO
+               VALK (2) = NOMSY
+               CALL U2MESG('E', 'ALGORITH12_21',2,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
          IF ( .NOT.MONOAP ) THEN
             CALL RSUTNC(STAT,NOMSY,0,K8B,IBID,NBTROU)
             IF (NBTROU.EQ.0) THEN
                IER = IER + 1
-               CALL UTDEBM('E','ASVERI','DONNEES INCOMPATIBLES :')
-               CALL UTIMPK('L','   POUR LES MODES STATIQUES : ',1,STAT)
-               CALL UTIMPK('L','   IL MANQUE L''OPTION : ',1,NOMSY)
-               CALL UTFINM( )
+               VALK (1) = STAT
+               VALK (2) = NOMSY
+               CALL U2MESG('E', 'ALGORITH12_22',2,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
  20   CONTINUE

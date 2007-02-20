@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,7 +55,7 @@ MO=AFFE_MODELE( MAILLAGE=M,
                 VERIF='MAILLE',
                 AFFE=_F(  GROUP_MA = ('VOLUME','FACEEF','FACEAE'),      
                           PHENOMENE = 'MECANIQUE',    
-                          MODELISATION = '3D_INCO' ))
+                          MODELISATION = '3D_INCO_GD' ))
 
 M=MODI_MAILLAGE( reuse=M,
                  MAILLAGE=M,
@@ -64,7 +64,9 @@ M=MODI_MAILLAGE( reuse=M,
 
 MA=DEFI_MATERIAU( ELAS=_F(  E = 200000.,       
                             NU = 0.49999,      
-                            ALPHA = 0.,    ))
+                            ALPHA = 0.,    ),
+                  ECRO_LINE=_F(D_SIGM_EPSI = 0.,
+                               SY = 1.E10),          )
 
 CM=AFFE_MATERIAU( MAILLAGE=M,
                   AFFE=_F(  TOUT = 'OUI',         
@@ -119,9 +121,9 @@ EVOL   = STAT_NON_LINE (
                LIST_INST= INSTANTS,
                ),
              COMP_INCR= _F(
-               RELATION= 'ELAS',
+               RELATION= 'VMIS_ISOT_LINE',
                DEFORMATION='SIMO_MIEHE'),
-#             SOLVEUR=_F(RENUM='MD'),
+             SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=100),
              NEWTON= _F(
                REAC_ITER= 1,
                ),
@@ -132,8 +134,8 @@ EVOL = CALC_ELEM (reuse=EVOL,
               OPTION= (
                'SIEF_ELNO_ELGA',
                'EQUI_ELNO_SIGM',
-               'ERRE_ELEM_SIGM',
-               'ERRE_ELNO_ELEM',
+#                'ERRE_ELEM_SIGM',
+#                'ERRE_ELNO_ELEM',
            ),   ) ;
 
 EVOL = CALC_NO (reuse=EVOL,
@@ -163,11 +165,11 @@ TEST_RESU(RESU=(
     # CONTRAINTES             
            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
  GROUP_NO = 'A',   NOM_CMP = 'SIYY',      VALE = 99.9566, REFERENCE = 'ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 2.5E-2,
  GROUP_NO = 'A',   NOM_CMP = 'SIXX',      VALE = -59.9955, REFERENCE = 'ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 3.5E-2,
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 2.E-2,
  GROUP_NO = 'A',   NOM_CMP = 'SIZZ',      VALE = 19.9326, REFERENCE = 'ANALYTIQUE'),
-           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',     PRECISION = 4,
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',     PRECISION = 3.,
  GROUP_NO = 'A',   NOM_CMP = 'SIXY',      VALE = 0., REFERENCE = 'ANALYTIQUE'),
 
 
@@ -182,49 +184,49 @@ TEST_RESU(RESU=(
           ) 
 TEST_RESU(RESU=(
     # CONTRAINTES EQUIVALENTES
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 3.E-2,
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'VMIS',      VALE = 138.5226, REFERENCE='ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 3.E-2,
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'TRESCA',      VALE = 159.9521, REFERENCE='ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 2.5E-2,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'PRIN_1',      VALE = -59.9955, REFERENCE='ANALYTIQUE'),
-            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 3.5E-2,
+            _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'PRIN_2',      VALE = 19.9326, REFERENCE='ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 2.E-2,
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'PRIN_3',      VALE = 99.9566, REFERENCE='ANALYTIQUE'),
-           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 3.E-2,
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',    MAILLE = 'M1',      NOM_CMP = 'VMIS_SG',      VALE = 138.5226, REFERENCE='ANALYTIQUE'),
 ),)
 #--------------------------------------------------------------------------------
 #
-#  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-
-TEST_RESU(RESU=(             
-           _F( RESULTAT = EVOL,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELEM_SIGM',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.0001,
-               POINT = 1,
-               MAILLE='M531',    
-               NOM_CMP = 'NUEST',      
-               VALE = 1.5172144847269E+00, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
-             ),
-            );
-
-TEST_RESU(RESU=(             
-           _F( RESULTAT = EVOL,
-               INST = 1.,  
-               NOM_CHAM = 'ERRE_ELNO_ELEM',   
-               CRITERE = 'RELATIF',    
-               PRECISION = 0.0001,
-               GROUP_NO= 'A',
-               MAILLE='M531',    
-               NOM_CMP = 'ERREST',      
-               VALE = 4.6036685268355E-04, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
-             ),
-            );
+# #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
+# 
+# TEST_RESU(RESU=(             
+#            _F( RESULTAT = EVOL,
+#                INST = 1.,  
+#                NOM_CHAM = 'ERRE_ELEM_SIGM',   
+#                CRITERE = 'RELATIF',    
+#                PRECISION = 0.0001,
+#                POINT = 1,
+#                MAILLE='M531',    
+#                NOM_CMP = 'NUEST',      
+#                VALE = 1.5172144847269E+00, 
+#                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
+#              ),
+#             );
+# 
+# TEST_RESU(RESU=(             
+#            _F( RESULTAT = EVOL,
+#                INST = 1.,  
+#                NOM_CHAM = 'ERRE_ELNO_ELEM',   
+#                CRITERE = 'RELATIF',    
+#                PRECISION = 0.0001,
+#                GROUP_NO= 'A',
+#                MAILLE='M531',    
+#                NOM_CMP = 'ERREST',      
+#                VALE = 4.6036685268355E-04, 
+#                REFERENCE = 'NON_REGRESSION',VERSION = '8.1.22'),
+#              ),
+#             );
 FIN( )
 #

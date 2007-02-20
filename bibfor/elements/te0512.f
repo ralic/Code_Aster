@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/11/2006   AUTEUR FLANDI L.FLANDI 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,6 +105,7 @@ C
       REAL*8             XVARI1(MXCVAR),XVARI2(MXCVAR)
       REAL*8             XES,TS
       CHARACTER*2        CODRES(NBRES),CODRE2(NBRES2)
+      CHARACTER*24 VALK
       CHARACTER*8        MODELI,NOMPR2,NOMRES(NBRES),NOMAIL
       CHARACTER*8        NOMRE2(NBRES2)
       CHARACTER*16       PHENO,PHENOM,PHENO2,PHENM2
@@ -308,10 +309,8 @@ C        -----------------------------------------------------
             IF (ABS(SIGEQ(IGAU)).LE.R8PREM()) THEN
                CALL TECAEL ( IADZI, IAZK24 )
                NOMAIL = ZK24(IAZK24-1+3)(1:8)
-               CALL UTDEBM('A','TE0512',
-     &                         'LA CONTRAINTE EQUIVALENTE EST NULLE')
-               CALL UTIMPK ( 'S', ' POUR LA MAILLE ', 1, NOMAIL )
-               CALL UTFINM ()
+               VALK = NOMAIL
+               CALL U2MESG('A', 'ELEMENTS5_1',1,VALK,0,0,0,0.D0)
                DO 72 INO = 1, NNO
                   TRIAXN(INO) = R8VIDE()
   72           CONTINUE

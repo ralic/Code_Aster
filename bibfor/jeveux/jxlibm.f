@@ -1,6 +1,6 @@
       SUBROUTINE JXLIBM ( ISZON , LISZON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 17/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,22 +24,8 @@ C     ==================================================================
       INTEGER          IADA
       COMMON /IALLJE/  IADA
 C     ------------------------------------------------------------------
-      CHARACTER *75    CMESS
+      INTEGER          IBID
 C     ==================================================================
-      IZERO = 0
-      IERR = 0
-      CALL  HPDEALLC ( IADA , IERR , IZERO )
-      IF ( IERR .NE. 0 ) THEN
-         IF      ( IERR .EQ. -3 ) THEN
-         CMESS = 'ADRESSE INCORRECTE'
-         ELSE IF ( IERR .EQ. -4 ) THEN
-         CMESS = 'ZONE DEJA LIBEREE'
-         ELSE IF ( IERR .EQ. -5 ) THEN
-         CMESS = 'ADRESSE DIFFERENTE D''UN DEBUT DE ZONE'
-         ELSE IF ( IERR .EQ. -7 ) THEN
-         CMESS = 'ECRASEMENT DU DEBUT DE LA ZONE SUIVANTE'
-         ENDIF
-         CALL U2MESK('F','JEVEUX_01',1,CMESS)
-      ENDIF
+      CALL  HPDEALLC ( IADA , IBID , IBID )
 C     ==================================================================
       END

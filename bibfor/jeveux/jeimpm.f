@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPM ( CUNIT , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -51,6 +51,8 @@ C ----------------------------------------------------------------------
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
 C
+      INTEGER          NRHCOD    , NREMAX    , NREUTI
+      COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
       INTEGER          ISSTAT
       COMMON /ICONJE/  ISSTAT
       CHARACTER *4     KSTAT
@@ -60,19 +62,18 @@ C
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
 C ----------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     +               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
-C DEB ------------------------------------------------------------------
-
+      INTEGER        IVNMAX     , IDDESO     , IDIADD    , IDIADM     ,
+     +               IDMARQ     , IDNOM      ,             IDLONG     ,
+     +               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     +               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
+     +               IDLONO = 8 , IDLUTI = 9  ,IDNUM  = 10 )
+C ----------------------------------------------------------------------
       CHARACTER*32     NOM32
-      CHARACTER*1      CLA
+      CHARACTER*1      CLA,CGENR
       INTEGER          ICL , K
-C     ------------------------------------------------------------------
-CDEB
+C DEB ------------------------------------------------------------------
+C 
       JULIST = IUNIFI ( CUNIT )
       IF ( JULIST .EQ. 0 ) GOTO 9999
       WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
@@ -86,6 +87,9 @@ CDEB
         WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
         WRITE (JULIST,'(A,I4)') 'PARTITION : ',IZ
         WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
+        WRITE ( JULIST , '(/A,A/)')
+     +        ' CL-  --NUM-- -MA-  -----IADM----- -U- - LON UA -  -S- ',
+     +        '------------- NOM --------------'
    10   CONTINUE
         IS = ISZON ( JISZON + ID )
         IF ( IS .NE. 0 ) THEN
@@ -105,9 +109,9 @@ CDEB
               IM = IMARQ(JMARQ(ICL)+2*IDOS-1)
             ELSE
               NOM32(1:24) = RNOM(JRNOM(ICL)+IDCO)
-              IBACOL = IADM(JIADM(ICL)+IDCO)
+              IBACOL = IADM(JIADM(ICL)+2*IDCO-1)
               IXMARQ = ISZON( JISZON+IBACOL+IDMARQ )
-              IBMARQ = IADM(JIADM(ICL)+IXMARQ)
+              IBMARQ = IADM(JIADM(ICL)+2*IXMARQ-1)
               IM = ISZON(JISZON+IBMARQ-1+2*IDOS-1)
               WRITE ( NOM32(25:32) , '(I8)') IDOS
             ENDIF
@@ -118,19 +122,76 @@ CDEB
             IDCO = 0
             NOM32 = '<<<<         LIBRE          >>>>'
           ENDIF
-          IF ( MOD (K,50) .EQ. 1 ) THEN
-             WRITE ( JULIST , '(/A,A/)')
-     +       ' CL-  --NUM-- -MA- --IADM-- -U- - LON UA -  -S- ',
-     +       '------------- NOM --------------'
-          END IF
           WRITE(JULIST,
-     +    '(1X,A1,1X,I4,1X,I6,1X,I4,1X,I9,1X,A1,1X,I11,2X,A1,2X,A)')
+     +        '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
+     +        'I12,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
      +     CLA,IDCO,IDOS,IM,IDM,KSTAT(ISD:ISD),IL,KSTAT(ISF:ISF),NOM32
           K   = K + 1
           ID  = IS
           GO TO 10
         ENDIF
  100  CONTINUE
+C
+C     ON LISTE MAINTENANT LES OBJETS ALLOUES DYNAMIQUEMENT
+C 
+      WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
+      WRITE (JULIST,'(A)') 'OBJETS ALLOUES DYNAMIQUEMENT '
+      WRITE (JULIST,'(4A)' ) ('--------------------',K=1,4)
+      WRITE ( JULIST , '(/A,A/)')
+     +      ' CL-  --NUM-- -MA-  ---------IADY--------- -U- - LON UA',
+     +      ' -  -S- ------------- NOM --------------'
+      NCLA1 = 1
+      NCLA2 = INDEX ( CLASSE , '$' ) - 1
+      IF (NCLA2 .LT. 0) NCLA2 = N
+      DO 200  IC = NCLA1 , NCLA2 
+        CLA = CLASSE(IC:IC)
+        DO 205 J = 1 , NREMAX(IC)
+          IDCO = 0
+          IADMI = IADM(JIADM(IC)+2*J-1)
+          IADYN = IADM(JIADM(IC)+2*J  )
+          CGENR = GENR(JGENR(IC)+J)
+          NOM32 = RNOM(JRNOM(IC)+J)
+          IF (IADYN .NE. 0) THEN
+            IDM   = IADMI - 4 
+            IM = IMARQ(JMARQ(IC)+2*J-1)
+            IL = ISZON(JISZON+IDM) - 8 - IDM 
+            ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
+            ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
+            WRITE(JULIST,
+     +        '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
+     +        'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
+     +        CLA,IDCO,J,IM,IADYN,KSTAT(ISD:ISD),IL,KSTAT(ISF:ISF),NOM32
+          ENDIF
+          IF (CGENR .EQ. 'X') THEN
+            CALL JJVERN (NOM32 , 0 , IRET)
+            CALL JJALLC (IC , J , 'L' , IBACOL)
+            IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
+            IXMARQ = ISZON ( JISZON + IBACOL + IDMARQ )
+            NMAX   = ISZON ( JISZON + IBACOL + IVNMAX )
+            IF (IXIADM .GT. 0) THEN
+              IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
+              IBMARQ = IADM ( JIADM(IC) + 2*IXMARQ-1 )
+              DO 210 K=1,NMAX
+                IADMOC = ISZON(JISZON + IBIADM - 1 +2*K-1)
+                IADYOC = ISZON(JISZON + IBIADM - 1 +2*K  )
+                IF (IADYOC .NE. 0) THEN
+                   IDM   = IADMOC - 4 
+                   IM = ISZON(JISZON + IBMARQ - 1 + 2*K)
+                   IL = ISZON(JISZON+IDM) - 8 - IDM 
+                   ISD  = ISZON(JISZON + IDM + 3) / ISSTAT
+                   ISF  = ISZON(JISZON + ISZON(JISZON+IDM) - 4) / ISSTAT
+                   WRITE(JULIST,
+     +              '(''|'',A1,''|'',I4,''|'',I8,''|'',I4,''|'','//
+     +              'I20,''|'',A1,''|'',I11,''| '',A1,''| '',A)')
+     +              CLA,J,K,IM,IADYOC,KSTAT(ISD:ISD),IL,
+     +              KSTAT(ISF:ISF),NOM32
+                ENDIF  
+ 210          CONTINUE                  
+            ENDIF
+            CALL JJLIDE ('JEIMPO' , NOM32(1:24) , 2)
+          ENDIF 
+ 205    CONTINUE
+ 200  CONTINUE
  9999 CONTINUE
 C FIN ------------------------------------------------------------------
       END

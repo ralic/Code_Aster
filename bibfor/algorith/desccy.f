@@ -1,6 +1,6 @@
       SUBROUTINE DESCCY(NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ C
 C-----------------------------------------------------------------------
 C
       INTEGER          ZI
+      INTEGER VALI(3)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -51,13 +52,11 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6  PGC
       CHARACTER*8  INTF,KBID,BASMOD,NOMRES
       CHARACTER*24 NOEINT
       CHARACTER*1 K1BID
 C
 C-----------------------------------------------------------------------
-      DATA PGC /'DESCCY'/
       CALL JEMARQ()
       KBID=' '
 C-----------------------------------------------------------------------
@@ -97,11 +96,9 @@ C
       ENDIF
 C
       IF(NBG.NE.NBD) THEN
-        CALL UTDEBM('F',PGC,
-     &'LES DEUX INTERFACES ONT PAS MEME NOMBRE DE NOEUDS')
-        CALL UTIMPI('L','NOMBRE NOEUDS INTERFACE DROITE --> ',1,NBD)
-        CALL UTIMPI('L','NOMBRE NOEUDS INTERFACE GAUCHE --> ',1,NBG)
-        CALL UTFINM
+        VALI (1) = NBD
+        VALI (2) = NBG
+        CALL U2MESG('F', 'ALGORITH12_79',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
 C------COMPTAGE DEFORMEES STATIQUES INTERFACE DROITE GAUCHE-------------
@@ -113,11 +110,9 @@ C
 C--------------TEST SUR NOMBRE DE DDL AUX INTERFACES--------------------
 C
       IF(NBDD.NE.NBDG) THEN
-        CALL UTDEBM('F',PGC,
-     &'LES DEUX INTERFACES ONT PAS MEME NOMBRE DE DEGRES DE LIBERTE')
-        CALL UTIMPI('L','NOMBRE DDL INTERFACE DROITE --> ',1,NBDD)
-        CALL UTIMPI('L','NOMBRE DDL INTERFACE GAUCHE --> ',1,NBDG)
-        CALL UTFINM
+        VALI (1) = NBDD
+        VALI (2) = NBDG
+        CALL U2MESG('F', 'ALGORITH12_80',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
 C-----COMPTAGE NOMBRE DEFORMEES STATIQUE SUR EVENTUELLE INTERFACE AXE---
@@ -143,9 +138,7 @@ C
 C  TEST
 C
       IF(NBMOD2.EQ.0) THEN
-        CALL UTDEBM('F',PGC,
-     &'ARRET SUR BASE MODALE NE COMPORTANT PAS DE MODES PROPRES')
-        CALL UTFINM
+        CALL U2MESG('F', 'ALGORITH12_81',0,' ',0,0,0,0.D0)
       ENDIF
       NBMOD=MIN(NBMOD1,NBMOD2)
 C
@@ -161,13 +154,10 @@ C
 C
       IF(NBMCAL.GT.NBMOD) THEN
         NBTEMP=NBMCAL-NBMOD
-        CALL UTDEBM('A',PGC,'NOMBRE DE MODES PROPRES DEMANDE SUPERIEUR'
-     &//' AU NOMBRE DE MODES DYNAMIQUES DE LA BASE')
-        CALL UTIMPI('L','NOMBRE DE MODES DEMANDES -->',1,NBMCAL)
-        CALL UTIMPI('L','NOMBRE DE MODES DE LA BASE -->',1,NBMOD)
-        CALL UTIMPI('L','NOMBRE DE FREQUENCES DOUTEUSES -->',
-     &1,NBTEMP)
-        CALL UTFINM
+        VALI (1) = NBMCAL
+        VALI (2) = NBMOD
+        VALI (3) = NBTEMP
+        CALL U2MESG('A', 'ALGORITH12_82',0,' ',3,VALI,0,0.D0)
       ENDIF
 C
 C----------------ALLOCATION DE L'OBJET .DESC----------------------------

@@ -2,7 +2,7 @@
      &                    THVRAI, CHTEMP )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,11 +68,13 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       INTEGER ZI
       REAL*8 ZR,TIME2
+      REAL*8 VALR
       COMPLEX*16 ZC,CBID
       LOGICAL ZL
       CHARACTER*8 ZK8,K8BID
       CHARACTER*16 ZK16,TYSD
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 
@@ -80,10 +82,9 @@ C -------------------------------------------------------------------
 
 C DECLARATION VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'MTEMP2' )
 C
       INTEGER NBCHAM,IERD,ICORET,IRET,IBID
+      INTEGER VALI
       CHARACTER*1 BASE
       CHARACTER*19 CHTRE2,CH19
       CHARACTER*16 NOMCHA,TABTYP(4)
@@ -137,12 +138,11 @@ C              ------------------------------------------------
                CALL RSINCH(TEMPE(1:8),NOMCHA,'INST',TIME2,CHTEMP(1:19),
      &                     'CONSTANT','CONSTANT',1,BASE,ICORET)
                IF (ICORET.GE.10) THEN
-                 CALL UTDEBM('F',NOMPRO,'INTERPOLATION TEMPERATURE:')
-                  CALL UTIMPK('L','EVOL_THER:',1,TEMPE(1:8))
-                  CALL UTIMPK('L','NOM SYMBOLIQUE:',1,NOMCHA)
-                  CALL UTIMPR('S','INSTANT:',1,TIME2)
-                  CALL UTIMPI('L','ICORET:',1,ICORET)
-                  CALL UTFINM()
+                 VALK (1) = TEMPE(1:8)
+                 VALK (2) = NOMCHA
+                 VALR = TIME2
+                 VALI = ICORET
+                 CALL U2MESG('F', 'CALCULEL6_16',2,VALK,1,VALI,1,VALR)
                END IF
 
             ELSE

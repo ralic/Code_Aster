@@ -1,6 +1,6 @@
       SUBROUTINE RCFODE(IFON,TEMP,F,DF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
+      REAL*8 VALR
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -128,11 +129,8 @@ C
           DF = (ZR(JV+1)-ZR(JV))/(ZR(JP+1)-ZR(JP))
            F = DF*(TEMP-ZR(JP))+ZR(JV)
         ELSE IF (ZK16(JPRO+4)(1:1).EQ.'E') THEN
-          CALL UTDEBM('F','RCFODE','EVALUATION IMPOSSIBLE '//
-     &         'D UNE FONCTION MATERIAU - ON DEBORDE A GAUCHE '//
-     &         'POUR LA TEMPERATURE ')
-          CALL UTIMPR('S','TEMP :',1,TEMP)
-          CALL UTFINM()
+          VALR = TEMP
+          CALL U2MESG('F', 'MODELISA8_93',0,' ',0,0,1,VALR)
         END IF
         ISAVE = 1
       ELSE IF (TESSUP) THEN
@@ -145,11 +143,8 @@ C
           DF = (ZR(JV)-ZR(JV-1))/(ZR(JP)-ZR(JP-1))
            F = DF*(TEMP-ZR(JP-1))+ZR(JV-1)
         ELSE IF (ZK16(JPRO+4)(2:2).EQ.'E') THEN
-          CALL UTDEBM('F','RCFODE','EVALUATION IMPOSSIBLE '//
-     &         'D UNE FONCTION MATERIAU - ON DEBORDE A DROITE '//
-     &         'POUR LA TEMPERATURE ')
-          CALL UTIMPR('S','TEMP :',1,TEMP)
-          CALL UTFINM()
+          VALR = TEMP
+          CALL U2MESG('F', 'MODELISA8_94',0,' ',0,0,1,VALR)
         END IF
         ISAVE = NBVF - 1
       END IF

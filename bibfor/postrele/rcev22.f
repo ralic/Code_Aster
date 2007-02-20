@@ -7,7 +7,7 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,6 +33,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
+      REAL*8 VALR
       COMMON  /RVARJE/ ZR(1)
       COMPLEX*16       ZC
       COMMON  /CVARJE/ ZC(1)
@@ -62,6 +63,7 @@ C
      +             TABPRE, TABPR0
       CHARACTER*19 NOMF
       CHARACTER*24 INSTAN, ABSCUR
+      CHARACTER*24 VALK(3)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -126,11 +128,10 @@ C
             ENDIF
             CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
             IF ( .NOT. EXIST ) THEN
-               CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-               CALL UTIMPK('S', ' DANS LA TABLE ',1, TABLE )
-               CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-               CALL UTIMPK('S', ' LES ', 1, VALEK(1) )
-               CALL UTFINM
+                  VALK (1) = TABLE
+                  VALK (2) = KINTI
+                  VALK (3) = VALEK(1)
+               CALL U2MESG('F', 'POSTRELE1_6',3,VALK,0,0,0,0.D0)
             ENDIF
             CALL TBEXV1 ( TABLE, VALEK(1), INSTAN, 'V', NBINS0, K8B)
             CALL JEDETR ( INSTAN )
@@ -163,30 +164,27 @@ C
       DO 12 I = 1, 4
          CALL TBEXIP ( TABLE, NOCMP(I), EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
-            CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-            CALL UTIMPK('S', ' DANS LA TABLE ',1, TABLE )
-            CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-            CALL UTIMPK('S', ' LES ', 4, NOCMP(1) )
-            CALL UTFINM
+                  VALK (1) = TABLE
+                  VALK (2) = KINTI
+                  VALK (3) = NOCMP(1)
+            CALL U2MESG('F', 'POSTRELE1_7',3,VALK,0,0,0,0.D0)
          ENDIF
          IF ( FLEXIO ) THEN
             CALL TBEXIP ( TABFLE, NOCMP(I), EXIST, K8B )
             IF ( .NOT. EXIST ) THEN
-            CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-            CALL UTIMPK('S', ' DANS LA TABLE ',1, TABFLE )
-            CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-            CALL UTIMPK('S', ' LES ', 4, NOCMP(1) )
-            CALL UTFINM
+                  VALK (1) = TABFLE
+                  VALK (2) = KINTI
+                  VALK (3) = NOCMP(1)
+            CALL U2MESG('F', 'POSTRELE1_8',3,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
          IF ( LROCHT ) THEN
             CALL TBEXIP ( TABPRE, NOCMP(I), EXIST, K8B )
             IF ( .NOT. EXIST ) THEN
-            CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-            CALL UTIMPK('S', ' DANS LA TABLE ',1, TABPRE )
-            CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-            CALL UTIMPK('S', ' LES ', 4, NOCMP(1) )
-            CALL UTFINM
+                  VALK (1) = TABPRE
+                  VALK (2) = KINTI
+                  VALK (3) = NOCMP(1)
+            CALL U2MESG('F', 'POSTRELE1_9',3,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
  12   CONTINUE
@@ -197,11 +195,10 @@ C --- ON RECUPERE L'ABSC_CURV DANS LA TABLE
 C
       CALL TBEXIP ( TABLE, VALEK(2), EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
-         CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-         CALL UTIMPK('S', ' DANS LA TABLE ',1, TABLE )
-         CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-         CALL UTIMPK('S', ' LES ', 1, VALEK(2) )
-         CALL UTFINM
+                  VALK (1) = TABLE
+                  VALK (2) = KINTI
+                  VALK (3) = VALEK(2)
+         CALL U2MESG('F', 'POSTRELE1_10',3,VALK,0,0,0,0.D0)
       ENDIF
       CALL TBEXV1 ( TABLE, VALEK(2), ABSCUR, 'V', NBABSC, K8B)
 C
@@ -247,11 +244,10 @@ C
             CRIT(1) = 'RELATIF'
             CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
             IF ( .NOT. EXIST ) THEN
-               CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-               CALL UTIMPK('S', ' DANS LA TABLE ',1, TABL0 )
-               CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-               CALL UTIMPK('S', ' LES ', 1, VALEK(1) )
-               CALL UTFINM
+                  VALK (1) = TABL0
+                  VALK (2) = KINTI
+                  VALK (3) = VALEK(1)
+               CALL U2MESG('F', 'POSTRELE1_11',3,VALK,0,0,0,0.D0)
             ENDIF
             CALL TBEXV1 ( TABLE, VALEK(1), INSTAN, 'V', NBINS0, K8B)
             CALL JEVEUO ( INSTAN, 'L', KINST )
@@ -275,12 +271,11 @@ C
      +                      CBID, K8B, CRIT, PREC, NOCMP(J), 
      +                      K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
               IF (IRET.NE.0) THEN
-                CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-                CALL UTIMPK('S', ' DANS LA TABLE ',1, TABL0 )
-                CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-                CALL UTIMPK('L', ' LA CONTRAINTE ', 1, NOCMP(J) )
-                CALL UTIMPR('S',' POUR L''ABSC_CURV ',1,ZR(JABSC+K-1))
-                CALL UTFINM
+                  VALK (1) = TABL0
+                  VALK (2) = KINTI
+                  VALK (3) = NOCMP(J)
+                  VALR = ZR(JABSC+K-1)
+                CALL U2MESG('F', 'POSTRELE1_12',3,VALK,0,0,1,VALR)
               ENDIF
 C
               IF ( FLEXIO ) THEN
@@ -288,12 +283,11 @@ C
      +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
      +                        IBID, ZR(JCOFL+K-1), CBID, K8B, IRET)
                 IF (IRET.NE.0) THEN
-                  CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-                  CALL UTIMPK('S', ' DANS LA TABLE ',1, TABFL0 )
-                  CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-                  CALL UTIMPK('L', ' LA CONTRAINTE ', 1, NOCMP(J) )
-                  CALL UTIMPR('S',' POUR L''ABSC_CURV ',1,ZR(JABSC+K-1))
-                  CALL UTFINM
+                  VALK (1) = TABFL0
+                  VALK (2) = KINTI
+                  VALK (3) = NOCMP(J)
+                  VALR = ZR(JABSC+K-1)
+                  CALL U2MESG('F', 'POSTRELE1_13',3,VALK,0,0,1,VALR)
                 ENDIF
               ENDIF
 C
@@ -302,12 +296,11 @@ C
      +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
      +                        IBID, ZR(JCOPR+K-1), CBID, K8B, IRET)
                 IF (IRET.NE.0) THEN
-                  CALL UTDEBM('F', 'RCEV22', 'PROBLEME POUR RECUPERER')
-                  CALL UTIMPK('S', ' DANS LA TABLE ',1, TABPR0 )
-                  CALL UTIMPK('S', ' INTITULE ',1, KINTI )
-                  CALL UTIMPK('L', ' LA CONTRAINTE ', 1, NOCMP(J) )
-                  CALL UTIMPR('S',' POUR L''ABSC_CURV ',1,ZR(JABSC+K-1))
-                  CALL UTFINM
+                  VALK (1) = TABPR0
+                  VALK (2) = KINTI
+                  VALK (3) = NOCMP(J)
+                  VALR = ZR(JABSC+K-1)
+                  CALL U2MESG('F', 'POSTRELE1_14',3,VALK,0,0,1,VALR)
                 ENDIF
               ENDIF
 C

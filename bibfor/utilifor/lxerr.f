@@ -3,7 +3,7 @@
       CHARACTER*(*)     VAR , TXT
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,15 +33,16 @@ C     ------------------------------------------------------------------
 C FIN LXERR
 C     ------------------------------------------------------------------
       CHARACTER*80 TAMPON
+      CHARACTER*24 VALK(2)
       INTEGER            ILECT, IECR, LRECL, IEOF, ICOL, ILIG
       COMMON /LXCN02/    ILECT, IECR, LRECL, IEOF, ICOL, ILIG
 C
       IF (IECR.GT.0) THEN
          IV = LEN(VAR)
          TAMPON = VAR
-         CALL UTDEBM('E','ERREUR LEXICALE (01)','"'//TAMPON(:IV)//'"  ')
-         CALL UTIMPK('S',TXT,0,' ')
-         CALL UTFINM()
+         VALK(1) = TAMPON(:IV)
+         VALK(2) = TXT
+         CALL U2MESG('E', 'UTILIFOR_9',2,VALK,0,0,0,0.D0)
 C-DEL    WRITE(IECR,'(5A)') ' <E> > ERREUR LEXICALE (01):  "',
 C-DEL+                                            VAR(:IV),'" ',TXT(:IT)
       ENDIF

@@ -11,7 +11,7 @@
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,6 +54,7 @@ C     -----------------------------------------------------------------
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
+      INTEGER VALI(3)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -149,27 +150,17 @@ C
       ENDIF
 C
       IF ( NBCMPP .GT. 0 ) THEN
-         CALL UTDEBM('A','OP0045.WP3VEC : PROBLEME QUADRATIQUE',
-     +               'POUR LE PROBLEME REDUIT')
-         CALL UTIMPI('L','VALEUR(S) PROPRE(S) REELLE(S)        '//
-     +               '          : ',1,NBREEL)
-         CALL UTIMPI('L','VALEUR(S) PROPRE(S) COMPLEXE(S) AVEC '//
-     +               'CONJUGUEE : ',1,NBCMPC)
-         CALL UTIMPI('L','VALEUR(S) PROPRE(S) COMPLEXE(S) SANS '//
-     +               'CONJUGUEE : ',1,NBCMPP)
-         CALL UTFINM()
+         VALI (1) = NBREEL
+         VALI (2) = NBCMPC
+         VALI (3) = NBCMPP
+         CALL U2MESG('A', 'ALGELINE4_89',0,' ',3,VALI,0,0.D0)
       ENDIF
 C
       IF ( NBREEL .GT. 0 ) THEN
-         CALL UTDEBM('I','OP0045.WP3VEC : PROBLEME QUADRATIQUE',
-     +                   'VOTRE PROBLEME EST FORTEMENT AMORTI.')
-         CALL UTIMPI('L','VALEUR(S) PROPRE(S) REELLE(S)        '//
-     +               '          : ',1,NBREEL)
-         CALL UTIMPI('L','VALEUR(S) PROPRE(S) COMPLEXE(S) AVEC '//
-     +               'CONJUGUEE : ',1,NBCMPC)
-         CALL UTIMPI('L','VALEUR(S) PROPRE(S) COMPLEXE(S) SANS '//
-     +               'CONJUGUEE : ',1,NBCMPP)
-         CALL UTFINM()
+         VALI (1) = NBREEL
+         VALI (2) = NBCMPC
+         VALI (3) = NBCMPP
+         CALL U2MESG('I', 'ALGELINE4_90',0,' ',3,VALI,0,0.D0)
       ENDIF
 C
 C --- 1.2. DETERMINATION DE NB FREQUENCES GARDEES

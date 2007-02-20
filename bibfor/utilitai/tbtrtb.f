@@ -7,7 +7,7 @@
       CHARACTER*(*)       TABIN, BASOUT, TABOUT, LIPARA(*), LCRIT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C ----------------------------------------------------------------------
       CHARACTER*4  TYPE, KNUME
       CHARACTER*19 NOMTAB, NOMTA2
       CHARACTER*24 NOMJV, NOJV2, NOMJVL, NOJVL2, INPAR, JNPAR
+      CHARACTER*24 VALK
       LOGICAL      LOK
 C ----------------------------------------------------------------------
 C
@@ -103,17 +104,14 @@ C
             IF ( INPAR .EQ. JNPAR ) THEN
                TYPE   = ZK24(JTBLP+4*(J-1)+1)
                IF ( TYPE(1:1) .EQ. 'C' ) THEN
-                  CALL UTDEBM('F','TBTRTB','ERREUR DANS LES DONNEES')
-                  CALL UTIMPK('L','PAS DE TRI SUR LES COMPLEXES, '//
-     &                            'PARAMETRE: ',1,INPAR)
-                  CALL UTFINM( )
+         VALK = INPAR
+                  CALL U2MESG('F', 'UTILITAI7_2',1,VALK,0,0,0,0.D0)
                ENDIF
                GOTO 10
             ENDIF
  12      CONTINUE
-         CALL UTDEBM('F','TBTRTB','ERREUR DANS LES DONNEES')
-         CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-         CALL UTFINM( )
+         VALK = INPAR
+         CALL U2MESG('F', 'UTILITAI7_3',1,VALK,0,0,0,0.D0)
  10   CONTINUE
 C
       CALL WKVECT ( '&&TBTRTB.TRI' , 'V V I', NBLIGN, JNUME )

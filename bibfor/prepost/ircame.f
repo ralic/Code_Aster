@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,6 +92,7 @@ C
       PARAMETER ( NOMPRO = 'IRCAME' )
 C
       INTEGER NTYMAX
+      INTEGER VALI
       PARAMETER (NTYMAX=48)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
@@ -107,6 +108,7 @@ C
       CHARACTER*8 NOMAAS
       CHARACTER*8 NOMTYP(NTYMAX)
       CHARACTER*24 NTLCMP, NTNCMP, NTUCMP, NTPROA, NMCMFI
+      CHARACTER*24 VALK(2)
       CHARACTER*24 NCAIMI, NCAIMK
       CHARACTER*32 NOMAMD, SAUX32
       CHARACTER*200 NOFIMD
@@ -299,11 +301,10 @@ C
 C
       ELSE
 C
-        CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
-        CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
-        CALL UTIMPK ( 'L', 'CHAMP : ', 1, NOCHMD )
-        CALL UTIMPI ( 'L', 'RETOUR DE MDEXCH : EXISTC = ', 1, EXISTC )
-        CALL UTFINM ()
+        VALK (1) = NOFIMD
+        VALK (2) = NOCHMD
+        VALI = EXISTC
+        CALL U2MESG('A', 'PREPOST5_24',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_73')
 C
       ENDIF

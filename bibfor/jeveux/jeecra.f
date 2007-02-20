@@ -1,6 +1,6 @@
       SUBROUTINE JEECRA ( NOMLU , CATR , IVAL , CVAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -174,11 +174,12 @@ C
                 ENDIF
                 LONO ( JLONO(IC) + ID ) = LONOK
                 LUTI ( JLUTI(IC) + ID ) = 0
-                IF ( IADM(JIADM(IC)+ID) .EQ. 0 ) THEN
+                IF ( IADM(JIADM(IC)+2*ID-1) .EQ. 0 ) THEN
                   NBL = LONOK*LTYPI
                   CALL JJALLS(NBL,GENRI,TYPEI,LTYPI,'INIT',
-     &                        ITAB,JTAB,IADMI)
-                  IADM(JIADM(IC)+ID) = IADMI
+     &                        ITAB,JTAB,IADMI,IADYN)
+                  IADM(JIADM(IC)+2*ID-1) = IADMI
+                  IADM(JIADM(IC)+2*ID  ) = IADYN
                   CALL JJECRS(IADMI,IC,ID,0,'E',IMARQ(JMARQ(IC)+2*ID-1))
                   NHC = JJPREM(IVAL)
                   JITAB = JISZON + IADMI - 1
@@ -211,8 +212,8 @@ C
         ENDIF
       ELSE IF ( IRET .EQ. 3 ) THEN
         IF ( LLONG .AND. .NOT. LCONST ) THEN
-          IBLONG = IADM ( JIADM(IC) + IXLONG )
-          IBLONO = IADM ( JIADM(IC) + IXLONO )
+          IBLONG = IADM ( JIADM(IC) + 2*IXLONG-1 )
+          IBLONO = IADM ( JIADM(IC) + 2*IXLONO-1 )
           IF ( LCONTI ) THEN
             IF ( IDATOC .EQ. 1 ) THEN
               IF ( ISZON (JISZON+IBLONO-1+IDATOC) .EQ. 0 ) THEN
@@ -267,7 +268,7 @@ C           IF ( LONOJ .NE. 0 ) THEN
 C           ENDIF
           ENDIF
         ELSE IF ( LLUTI ) THEN
-          IBLUTI = IADM ( JIADM(IC) + IXLUTI )
+          IBLUTI = IADM ( JIADM(IC) + 2*IXLUTI-1 )
           IF ( CATRLU.EQ.'LONUTI  ' ) THEN
             ISZON ( JISZON + IBLUTI - 1 + IDATOC ) = IVAL
           ENDIF

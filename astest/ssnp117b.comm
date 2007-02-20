@@ -1,0 +1,643 @@
+# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+# TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER (PETIT_REAC)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            PRISE EN COMPTE DE L'ECHAUFFEMENT ADIABATIQUE
+
+# ESSAI TRACTION UNE MAILLE QUAD8
+# MODELISATION D_PLAN
+DEBUT(CODE=_F( NOM = 'SSNP117B',NIV_PUB_WEB='INTERNET',))
+
+#-------------------------------------------------
+# 1. LE MAILLAGE
+#------------------------------------------------- 
+
+MAIL=LIRE_MAILLAGE()
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(GROUP_MA=('L14','L43','L32','L21'),),)
+
+#-------------------------------------------------
+# 2. LES MODELES
+#------------------------------------------------- 
+MOD_MECA=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='D_PLAN',),
+                     MAILLAGE=MAIL)
+
+MOD_THER=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                             PHENOMENE='THERMIQUE',
+                             MODELISATION=('PLAN'),),
+                     MAILLAGE=MAIL,)
+
+#-------------------------------------------------
+# 3. LE MATERIAU
+#------------------------------------------------- 
+SIGM_0 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                  0.002409731, 477.1267177,
+                                  0.010088627, 512.5481424,
+                                  0.020280218, 550.4832447,
+                                  0.030431091, 580.3560802,
+                                  0.040551839, 604.2641624,
+                                  0.050650258, 623.7511615,
+                                  0.060732087, 639.9532866,
+                                  0.07080155,  653.7069759,
+                                  0.080861758, 665.6281229,
+                                  0.090915002, 676.1703617,
+                                  0.100962969, 685.6679458,
+                                  0.111006906, 694.3672945,
+                                  0.121047728, 702.4501998,
+                                  0.131086116, 710.0509006,
+                                  0.138111812, 715.1387392,
+                                  0.141122569, 717.2686429,
+                                  0.151157459, 724.1769214,
+                                  0.201315999, 755.5677203,
+                                  0.301585802, 808.9887868,
+                                  0.401811696, 853.7159011,
+                                  0.502001836, 891.3634826,
+                                  0.602161926, 923.0614179,
+                                  0.702296719, 949.7503941,
+                                  0.802410212, 972.221955,
+                                  0.90250577,  991.1425412,
+                                  1.002586229, 1007.073281,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_20 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                  0.00235425, 466.1414866,
+                                  0.010037174, 502.3605454,
+                                  0.020229048, 540.3515347,
+                                  0.030376951, 569.6362618,
+                                  0.040493242, 592.661955,
+                                  0.050586759, 611.1783598,
+                                  0.060663822, 626.4366938,
+                                  0.070728949, 639.3318481,
+                                  0.080785374, 650.5040235,
+                                  0.090835411, 660.4113738,
+                                  0.100880717, 669.3819275,
+                                  0.110922478, 677.6506978,
+                                  0.120961546, 685.3862068,
+                                  0.130998533, 692.7094438,
+                                  0.138023425, 697.6380571,
+                                  0.141033876, 699.7074152,
+                                  0.151067893, 706.4428294,
+                                  0.201224246, 737.4007256,
+                                  0.301493317, 790.6767962,
+                                  0.401719168, 835.3951714,
+                                  0.501909304, 873.0422773,
+                                  0.602069395, 904.7401882,
+                                  0.702204188, 931.4291631,
+                                  0.80231768, 953.9007239,
+                                  0.902413239, 972.8213101,
+                                  1.002493697, 988.7520496,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_40 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                  0.002309725, 457.3256322,
+                                  0.009995935, 494.1951902,
+                                  0.020187268, 532.0791112,
+                                  0.030331708, 560.6781799,
+                                  0.040443388, 582.790831,
+                                  0.050532126, 600.3609394,
+                                  0.060604742, 614.7389698,
+                                  0.070665976, 626.8633168,
+                                  0.080719122, 637.3862268,
+                                  0.090766471, 646.7612361,
+                                  0.100809616, 655.303888,
+                                  0.110849666, 663.2338944,
+                                  0.120887396, 670.7044124,
+                                  0.130923345, 677.8223739,
+                                  0.137947658, 682.6362207,
+                                  0.140957892, 684.6626027,
+                                  0.150991301, 691.2776171,
+                                  0.201146239, 721.9554003,
+                                  0.301414912, 775.1526494,
+                                  0.401640745, 819.8674678,
+                                  0.501830881, 857.5144287,
+                                  0.601990971, 889.2123339,
+                                  0.702125764, 915.9013086,
+                                  0.802239257, 938.3728695,
+                                  0.902334815, 957.2934557,
+                                  1.002415274, 973.2241952,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_60 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                  0.002273994, 450.2507433,
+                                  0.009963131, 487.6999572,
+                                  0.020153524, 525.3976735,
+                                  0.03029434, 553.2793315,
+                                  0.0404015, 574.4970647,
+                                  0.050485748, 591.1780903,
+                                  0.060554334, 604.7581797,
+                                  0.070612155, 616.2066271,
+                                  0.080662515, 626.178018,
+                                  0.09070765, 635.1146165,
+                                  0.100749068, 643.3154381,
+                                  0.110787792, 650.9828485,
+                                  0.120824515, 658.254,
+                                  0.130859707, 665.2220396,
+                                  0.137883607, 669.9541762,
+                                  0.140893689, 671.950417,
+                                  0.150926679, 678.4825363,
+                                  0.20108071, 708.9806717,
+                                  0.301349168, 762.1352493,
+                                  0.401574993, 806.8486243,
+                                  0.501765129, 844.4955411,
+                                  0.601925219, 876.1934451,
+                                  0.702060012, 902.8824197,
+                                  0.802173505, 925.3539806,
+                                  0.902269063, 944.2745668,
+                                  1.002349522, 960.2053063,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_80 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                  0.002245318, 444.5730119,
+                                  0.009937449, 482.6149615,
+                                  0.020126922, 520.1305321,
+                                  0.03026425, 547.3214382,
+                                  0.040367177, 567.7009795,
+                                  0.050447336, 583.5725974,
+                                  0.060512357, 596.4467559,
+                                  0.070567243, 607.3141736,
+                                  0.080615277, 616.8249053,
+                                  0.090658615, 625.4057162,
+                                  0.100698672, 633.3370107,
+                                  0.11073638, 640.8032541,
+                                  0.120772354, 647.9260192,
+                                  0.130806998, 654.7856468,
+                                  0.137830607, 659.4601503,
+                                  0.140840583, 661.4354423,
+                                  0.150873288, 667.91098,
+                                  0.20102674, 698.2946007,
+                                  0.301295081, 751.4261172,
+                                  0.401520904, 796.1389067,
+                                  0.501711039, 833.78581,
+                                  0.60187113, 865.4837137,
+                                  0.702005923, 892.1726884,
+                                  0.802119415, 914.6442492,
+                                  0.902214974, 933.5648354,
+                                  1.002295432, 949.495575,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                  0.002222306, 440.0165258,
+                                  0.009917957, 478.7554059,
+                                  0.020106943, 516.1746839,
+                                  0.030241175, 542.7525682,
+                                  0.040340304, 562.3801615,
+                                  0.050416848, 577.5359689,
+                                  0.060478783, 589.7989929,
+                                  0.070531189, 600.1754549,
+                                  0.080577307, 609.3068376,
+                                  0.090619204, 617.6023591,
+                                  0.100658199, 625.3233279,
+                                  0.110695136, 632.6368567,
+                                  0.120730556, 639.6500655,
+                                  0.130764807, 646.4318615,
+                                  0.137788212, 651.0659829,
+                                  0.140798115, 653.0268071,
+                                  0.150830626, 659.4639516,
+                                  0.200983711, 689.7748279,
+                                  0.301251989, 742.8938732,
+                                  0.40147781, 787.6064247,
+                                  0.501667946, 825.253324,
+                                  0.601828037, 856.9512276,
+                                  0.701962829, 883.6402023,
+                                  0.802076322, 906.1117631,
+                                  0.902171881, 925.0323493,
+                                  1.002252339, 940.9630888,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_120 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                 0.002203838, 436.35986,
+                                 0.009904029, 475.997754,
+                                 0.020093365, 513.4863224,
+                                 0.030225115, 539.5728164,
+                                 0.040320991, 558.5562253,
+                                 0.050394429, 573.0968955,
+                                 0.060453745, 584.8414377,
+                                 0.070504087, 594.8093159,
+                                 0.080548646, 603.6320059,
+                                 0.090589399, 611.7009462,
+                                 0.100627571, 619.2590669,
+                                 0.110663926, 626.4574122,
+                                 0.12069894, 633.3901698,
+                                 0.130732911, 640.116341,
+                                 0.137756173, 644.7222787,
+                                 0.140766026, 646.673147,
+                                 0.150798406, 653.0843231,
+                                 0.200951258, 683.3490255,
+                                 0.301219502, 736.4613059,
+                                 0.401445322, 781.1737602,
+                                 0.501635458, 818.8206582,
+                                 0.601795548, 850.5185618,
+                                 0.701930341, 877.2075365,
+                                 0.802043834, 899.6790973,
+                                 0.902139392, 918.5996835,
+                                 1.002219851, 934.5304231,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_140 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                 0.002189017, 433.425317,
+                                 0.009895296, 474.2685683,
+                                 0.020086208, 512.0691185,
+                                 0.030216277, 537.822854,
+                                 0.040309517, 556.2844114,
+                                 0.050380365, 570.3123253,
+                                 0.060437503, 581.6255114,
+                                 0.070486151, 591.2579326,
+                                 0.080529454, 599.8318638,
+                                 0.090569304, 607.7221309,
+                                 0.100606843, 615.1548235,
+                                 0.110642761, 622.2666225,
+                                 0.120677477, 629.1404591,
+                                 0.130711247, 635.8269459,
+                                 0.13773441, 640.4132354,
+                                 0.140744229, 642.3572582,
+                                 0.15077652, 648.7508762,
+                                 0.200929223, 678.9862129,
+                                 0.301197449, 732.0948032,
+                                 0.401423269, 776.8072176,
+                                 0.501613405, 814.4541152,
+                                 0.601773495, 846.1520188,
+                                 0.701908288, 872.8409935,
+                                 0.802021781, 895.3125543,
+                                 0.902117339, 914.2331405,
+                                 1.002197797, 930.16388,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_160 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                 0.002177123, 431.0702911,
+                                 0.009891593, 473.5354926,
+                                 0.02008568, 511.964739,
+                                 0.030215024, 537.574785,
+                                 0.04030629, 555.6454401,
+                                 0.050375053, 569.2605858,
+                                 0.060430413, 580.2218528,
+                                 0.070477688, 589.582131,
+                                 0.080519985, 597.9570943,
+                                 0.090559127, 605.7071044,
+                                 0.100596179, 613.043428,
+                                 0.110631769, 620.0902585,
+                                 0.120666267, 626.9209317,
+                                 0.130699894, 633.5790731,
+                                 0.137722988, 638.15164,
+                                 0.140732783, 640.0909458,
+                                 0.150765013, 646.4726618,
+                                 0.200917622, 676.689233,
+                                 0.301185837, 729.7957939,
+                                 0.401411658, 774.5081917,
+                                 0.501601793, 812.1550893,
+                                 0.601761884, 843.8529929,
+                                 0.701896677, 870.5419675,
+                                 0.802010169, 893.0135284,
+                                 0.902105728, 911.9341146,
+                                 1.002186186, 927.8648541,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_180 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                 0.002167577, 429.1803385,
+                                 0.009892929, 473.7999565,
+                                 0.020092147, 513.2451708,
+                                 0.030221843, 538.9248638,
+                                 0.040311814, 556.739157,
+                                 0.05037897, 570.0361063,
+                                 0.060432909, 580.7159833,
+                                 0.070479079, 589.857726,
+                                 0.080520577, 598.07432,
+                                 0.090559164, 605.7144044,
+                                 0.100595842, 612.9766405,
+                                 0.110631185, 619.974594,
+                                 0.120665523, 626.7735411,
+                                 0.130699047, 633.4113496,
+                                 0.137722092, 637.9742857,
+                                 0.14073187, 639.9103244,
+                                 0.15076406, 646.2839274,
+                                 0.200916608, 676.4884152,
+                                 0.301184817, 729.5938483,
+                                 0.401410638, 774.3062392,
+                                 0.501600773, 811.9531367,
+                                 0.601760864, 843.6510403,
+                                 0.701895657, 870.340015,
+                                 0.802009149, 892.8115758,
+                                 0.902104708, 911.732162,
+                                 1.002185166, 927.6629015,),
+                                  PROL_DROITE = 'LINEAIRE',);
+
+SIGM_200 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
+                          VALE = (
+                                 0.002159917, 427.663616,
+                                 0.009899451, 475.0912644,
+                                 0.020106093, 516.0065058,
+                                 0.030237312, 541.9877078,
+                                 0.040326665, 559.6796015,
+                                 0.050392653, 572.7453851,
+                                 0.06044548, 583.2049873,
+                                 0.070490771, 592.1726429,
+                                 0.080531633, 600.2634028,
+                                 0.090569784, 607.8171796,
+                                 0.100606173, 615.0222296,
+                                 0.110641329, 621.9832088,
+                                 0.120675549, 628.7586824,
+                                 0.130708999, 635.3817977,
+                                 0.13773201, 639.937921,
+                                 0.140741776, 641.8716782,
+                                 0.150773938, 648.2397039,
+                                 0.200926446, 678.4363305,
+                                 0.301194652, 731.5411288,
+                                 0.401420472, 776.2535167,
+                                 0.501610608, 813.9004142,
+                                 0.601770699, 845.5983178,
+                                 0.701905491, 872.2872925,
+                                 0.802018984, 894.7588533,
+                                 0.902114543, 913.6794395,
+                                 1.002195001, 929.610179,),
+                                  PROL_DROITE = 'LINEAIRE',);
+SIGM_F=DEFI_NAPPE(NOM_PARA='TEMP',
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',
+                  PARA=(0.,20.,40.,60.,80.,100.,120.,140.,160.,180.,200.),
+                  FONCTION=(SIGM_0,SIGM_20,SIGM_40,SIGM_60,SIGM_80,SIGM_100,SIGM_120,SIGM_140,SIGM_160,SIGM_180,SIGM_200),)
+
+SIGM_1F = DEFI_FONCTION ( NOM_PARA = 'TEMP',
+                          VALE = (0., 575.,
+                                  20., 543.,
+                                  40., 519.,
+                                  60., 500.,
+                                  80., 484.,
+                                  100., 472.,
+                                  120., 462.,
+                                  140., 454.,
+                                  160., 447.,
+                                  180., 442.,
+                                  200., 438.,),
+                                  PROL_DROITE = 'LINEAIRE',
+                                  PROL_GAUCHE = 'CONSTANT',);
+                                  
+PORO_IF = DEFI_CONSTANTE( VALE =  0.0005,)
+
+D_F = DEFI_CONSTANTE ( VALE = 2.0)
+
+ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
+                            E=2.E5,
+                            ALPHA=1.E-6,),
+                    TRACTION=_F(SIGM=SIGM_F,),
+                    ROUSSELIER_FO=_F(PORO_INIT=PORO_IF,
+                                     D=D_F,
+                                     SIGM_1=SIGM_1F,
+                                     BETA = 0.85),
+                    THER =_F( LAMBDA = 0.,
+                              RHO_CP = 5.26   # Nmm/mm3/K
+                                  ),    
+                     )
+
+CHMAT=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
+                               TOUT='OUI',),
+                       MAILLAGE=MAIL,)
+
+#-------------------------------------------------
+# 4. LE CHARGEMENT
+#------------------------------------------------- 
+
+DY_T=DEFI_FONCTION(PROL_GAUCHE='CONSTANT',
+                   NOM_PARA='INST',
+                   VALE=(0.0,0.0,10.0,10.0),
+                   PROL_DROITE='CONSTANT',)
+
+
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MOD_MECA,
+                        DDL_IMPO=(_F(DX=0.0,
+                                     GROUP_NO='L21',),
+                                  _F(DY=0.0,
+                                     GROUP_NO='L14',),),)
+
+CHAR=AFFE_CHAR_MECA_F(MODELE=MOD_MECA,
+                      DDL_IMPO=_F(DY=DY_T,
+                                  GROUP_NO='L32',),)
+
+LINST=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=1.0,
+                                    NOMBRE=8,),
+                                 _F(JUSQU_A=5.0,
+                                    NOMBRE=80,),
+                                 _F(JUSQU_A=10.0,
+                                    NOMBRE=80,),),
+                     DEBUT=0.0,)
+
+#-------------------------------------------------
+# 5. CALCUL DU CHAMP THERMIQUE AU 1ER INSTANT
+#------------------------------------------------- 
+CH_SOU0 = AFFE_CHAR_THER(MODELE=MOD_THER,
+                         SOURCE=_F(SOUR=0.0, TOUT='OUI',),);
+                        
+RESUTH=THER_LINEAIRE(MODELE=MOD_THER,
+                     CHAM_MATER=CHMAT,
+                     EXCIT=_F(CHARGE=CH_SOU0,),
+                     INCREMENT=_F(LIST_INST=LINST,
+                                 NUME_FIN=1,),
+                     TEMP_INIT=_F(VALE = 0.,),);                        
+
+# ------------------------------------------------------------
+#  6. DEBUT DE LA BOUCLE DE RESOLUTION MECANIQUE / THERMIQUE
+# ------------------------------------------------------------
+# recuperation automatique du nombre de pas de temps : 
+# oblige a etre en PAR_LOT='NON' !!
+# ls = LINST.Valeurs();
+# NBPAS = len(ls)-1 ;
+NBPAS = 168
+for k in range(1,NBPAS+1) :
+  CH_TH = AFFE_CHAR_MECA(MODELE=MOD_THER,
+                         TEMP_CALCULEE=RESUTH)
+  if ( k == 1 ) :
+                     
+    RESU=STAT_NON_LINE(CHAM_MATER=CHMAT,
+                       MODELE=MOD_MECA,
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=300,
+                                      RESI_GLOB_MAXI=1.E-06),
+                       COMP_INCR=_F(TOUT='OUI',
+                                    ITER_INTE_MAXI=400,
+                                    ITER_INTE_PAS=-90,
+                                    RELATION='ROUSS_PR',
+                                    DEFORMATION='PETIT_REAC',),
+                       INCREMENT=_F(LIST_INST=LINST,
+                                    NUME_INST_FIN=k,),
+                       RECH_LINEAIRE=_F(
+                                    ITER_LINE_MAXI=3,),
+                       NEWTON=_F(REAC_ITER=1,
+                                 MATRICE='TANGENTE',
+                                 REAC_INCR=1,),
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=CHAR,),
+                              _F(CHARGE=CH_TH),),) 
+
+  else : 
+
+    RESU=STAT_NON_LINE(reuse = RESU,
+                       ETAT_INIT=_F(EVOL_NOLI=RESU),
+                       CHAM_MATER=CHMAT,
+                       MODELE=MOD_MECA,
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=300,
+                                      RESI_GLOB_MAXI=1.E-06),
+                       COMP_INCR=_F(TOUT='OUI',
+                                    ITER_INTE_MAXI=400,
+                                    ITER_INTE_PAS=-90,
+                                    RELATION='ROUSS_PR',
+                                    DEFORMATION='PETIT_REAC',),
+                       INCREMENT=_F(LIST_INST=LINST,
+                                    NUME_INST_FIN=k,),
+                       RECH_LINEAIRE=_F(
+                                    ITER_LINE_MAXI=3,),
+                       NEWTON=_F(REAC_ITER=1,
+                                 MATRICE='TANGENTE',
+                                 REAC_INCR=1,),
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=CHAR,),
+                              _F(CHARGE=CH_TH),),) 
+
+  CH1=CREA_CHAMP(
+               TYPE_CHAM='ELGA_VARI_R',
+               OPERATION='EXTR',
+               RESULTAT=RESU,
+               NOM_CHAM='VARI_ELGA',
+               NUME_ORDRE=k,);                              
+                              
+  DISSIP=CREA_CHAMP(
+                  OPTION='TOU_INI_ELGA',
+                  TYPE_CHAM='ELGA_SOUR_R',
+                  OPERATION='ASSE',
+                  MODELE=MOD_MECA,
+                  ASSE=_F(TOUT='OUI',
+                          CHAM_GD=CH1,
+                          NOM_CMP='V3',
+                          NOM_CMP_RESU='SOUR',
+                   ),); 
+                   
+  CH_SOU=AFFE_CHAR_THER(MODELE=MOD_THER,
+                        SOURCE=_F(SOUR_CALCULEE=DISSIP,),);
+                               
+  RESUTH=THER_LINEAIRE(reuse=RESUTH,
+                    TEMP_INIT=_F(EVOL_THER=RESUTH,NUME_INIT=k),
+                    MODELE=MOD_THER,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=_F(CHARGE=CH_SOU,),
+                    INCREMENT=_F(LIST_INST=LINST,
+                                 NUME_FIN=k+1,),);                              
+  
+  if k < NBPAS :                                   
+    DETRUIRE(CONCEPT=_F(NOM=(CH_SOU,CH1,DISSIP,CH_TH )))                                        
+
+# ------------------------------------------------------------
+#  7. TESTS
+# ------------------------------------------------------------
+TEST_RESU(  RESU=(
+           _F( RESULTAT = RESU,
+               INST = 10.,
+               NOM_CHAM = 'VARI_ELGA',
+               NOM_CMP = 'V1',
+               MAILLE = 'M1',
+               POINT = 1, 
+               VALE = 0.780414,
+               CRITERE = 'ABSOLU',
+               REFERENCE='NON_REGRESSION',
+               PRECISION = 1.E-5),
+           _F( RESULTAT = RESU,
+               INST = 10.,
+               NOM_CHAM = 'VARI_ELGA',
+               NOM_CMP = 'V2',
+               MAILLE = 'M1',
+               POINT = 1, 
+               VALE = 2.200516E-02,
+               CRITERE = 'ABSOLU',
+               REFERENCE='NON_REGRESSION',
+               PRECISION = 1.E-5),
+           _F( RESULTAT = RESU,
+               INST = 10.,
+               NOM_CHAM = 'VARI_ELGA',
+               NOM_CMP = 'V3',
+               MAILLE = 'M1',
+               POINT = 1, 
+               VALE = 5.218681E01,
+               CRITERE = 'ABSOLU',
+               REFERENCE='NON_REGRESSION',
+               PRECISION = 1.E-5),
+           _F( RESULTAT = RESU,
+               INST = 10.,
+               NOM_CHAM = 'VARI_ELGA',
+               NOM_CMP = 'V4',
+               MAILLE = 'M1',
+               POINT = 1, 
+               VALE = 6.105130E1,
+               CRITERE = 'ABSOLU',
+               REFERENCE='NON_REGRESSION',
+               PRECISION = 1.E-5),                   
+               )  )
+TEST_RESU(  RESU=(
+           _F( RESULTAT = RESUTH,
+               INST = 10.,
+               NOM_CHAM = 'TEMP',
+               NOM_CMP = 'TEMP',
+               GROUP_NO = 'P1',
+               VALE = 104.011832,
+               CRITERE = 'ABSOLU',
+               REFERENCE='NON_REGRESSION',
+              PRECISION = 1.E-5),))
+# COMPARAISON AVEC LA VALEUR OBTENUE PAR ASTER/ZMAT 
+# ATTENTION LA VALEUR DE LA DISSIPATION N'EST PAS LA MEME !
+TEST_RESU(  RESU=(
+           _F( RESULTAT = RESUTH,
+               INST = 10.,
+               NOM_CHAM = 'TEMP',
+               NOM_CMP = 'TEMP',
+               GROUP_NO = 'P1',
+               VALE = 100.0000,
+               REFERENCE='AUTRE_ASTER',
+               CRITERE = ('RELATIF','RELATIF'),
+               PRECISION = (4.5E-2,1.E-3),),))
+TEST_RESU(  RESU=(
+           _F( RESULTAT = RESU,
+               INST = 10.,
+               NOM_CHAM = 'VARI_ELGA',
+               NOM_CMP = 'V1',
+               MAILLE = 'M1',
+               POINT = 1, 
+               VALE = 0.781505,
+               REFERENCE='AUTRE_ASTER',
+               CRITERE = ('RELATIF','RELATIF'),
+               PRECISION = (5.E-3,1.E-3),),
+           _F( RESULTAT = RESU,
+               INST = 10.,
+               NOM_CHAM = 'VARI_ELGA',
+               NOM_CMP = 'V2',
+               MAILLE = 'M1',
+               POINT = 1, 
+               VALE = 2.18302E-02,
+               REFERENCE='AUTRE_ASTER',
+               CRITERE = ('RELATIF','RELATIF'),
+               PRECISION = (1.E-2,1.E-3),),))
+     
+FIN()

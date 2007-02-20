@@ -3,7 +3,7 @@
      &                   SIGF, VINF, IRTET)
         IMPLICIT NONE
 C       ================================================================
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,8 @@ C
         REAL*8          MATERF(NMAT,2), TEMPF, UNRHOD, RHOF
         REAL*8          NDEPS, NSIGD, LCNRTS, LCNRTE,DEMUTH
         REAL*8          SEUIL, DSEUIL, PUISS, DPUISS, ASINH
-        REAL*8          DP1, DP2
+        REAL*8          DP1, DP2, BETA
+        REAL*8          TERME1,TERME2,TERME3,SIGEQ,EBLOC,LCIV2S
 C
         LOGICAL         OVERFL
 C
@@ -89,11 +90,13 @@ C
       F0 = MATERF(3,2)
       IF (LOI(1:10).EQ.'ROUSS_VISC') THEN
         ANN = 0.D0
-        SIG0  = MATERF(8,2)
-        EPS0  = MATERF(9,2)
-        MEXPO = MATERF(10,2)
+        BETA  = MATERF(8,2)
+        SIG0  = MATERF(9,2)
+        EPS0  = MATERF(10,2)
+        MEXPO = MATERF(11,2)
       ELSE IF (LOI(1:10).EQ.'ROUSS_PR') THEN
         ANN = MATERF(8,2)
+        BETA= MATERF(9,2)
         SIG0  = 0.D0
         EPS0  = 0.D0
         MEXPO = 0.D0
@@ -118,6 +121,8 @@ C -- CAS DU MATERIAU CASSE----------------------------------------
         ENDIF
         VINF(1)   = PI
         VINF(2)   = UN
+        VINF(3)   = 0.D0
+        VINF(4) =  0.D0  
         VINF(NVI) = UN
         IRTET=0
         GOTO 9999
@@ -345,6 +350,24 @@ C -- CALCUL DE RIELEQ AVEC THETA =1----
       CALL LCPRSV(RIGEQ/RIELEQ,RIGEL,RIGFDV)
       CALL LCSOMH(RIGFDV,RIGM,RIGF)
       CALL LCPRSV(RHOF,RIGF,SIGF)
+      
+C    CALL DE LA DISSIPATION PLASTIQUE  (CF. NOTE HT-26/04/027)    
+C----------------------------------
+       CALL LCPRSV(RHOF,RIGEQ,SIGEQ)
+ 
+       TERME1 =  DP/DT * SIGEQ
+       TERME2 =  RIGM * RHOF * DF/(1.D0-F)/ACC/DT
+       TERME3 =  RHOF*S1*LOG(F0/F*RHOF) *DF/DT 
+       EBLOC =  VIND(4)+((1-BETA)*TERME1+TERME3)*DT
+
+       IF (EBLOC.GE.0.D0) THEN
+         VINF(3) = BETA*TERME1+TERME2-TERME3
+         VINF(4)= EBLOC
+       ELSE
+         VINF(3)= TERME1+TERME2
+         VINF(4)=0.D0
+       ENDIF  
+
       IRTET=0
       GOTO 9999
 C

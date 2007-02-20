@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,7 @@ C ----------------------------------------------------------------------
       REAL*8 RUNDEF,R8VIDE
       LOGICAL DEJFAI
       CHARACTER*4 TYPE,TYPACC
+      CHARACTER*24 VALK(2)
       CHARACTER*5 NOMOBJ
       CHARACTER*8 K8B
       CHARACTER*16 NOPARA
@@ -148,10 +149,9 @@ C                                    DIMENSIONNER LE .PARA ---
         NOPARA = ZK16(JPA+J-1)
         CALL JENONU(JEXNOM(NOMD2//'.NOVA',NOPARA),IPARA)
         IF (IPARA.EQ.0) THEN
-          CALL UTDEBM('F','RSAGSD','PARAMETRE INCONNU: ')
-          CALL UTIMPK('L','PARAMETRE : ',1,NOPARA)
-          CALL UTIMPK('S',' POUR LE RESULTAT : ',1,NOMD2)
-          CALL UTFINM()
+          VALK (1) = NOPARA
+          VALK (2) = NOMD2
+          CALL U2MESG('F', 'UTILITAI6_81',2,VALK,0,0,0,0.D0)
         END IF
         CALL JEVEUO(JEXNUM(NOMD2//'.TAVA',IPARA),'L',IATAVA)
         NOMOBJ = ZK8(IATAVA-1+1) (1:5)

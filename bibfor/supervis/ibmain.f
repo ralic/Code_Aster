@@ -4,7 +4,7 @@
       INTEGER                 IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,6 @@ C     --- INITIALISATION DES ROUTINES DE MESSAGE ---
       CALL PRDEFC( 132 )
       CALL PRINIT( 0 , 0)
       CALL UTINIT( 2 , 80 , 1 )
-      CALL JVINIT( 2 , 80 , 1 )
 C
 C     --- INITIALISATION DE L'ANALYSEUR LEXICAL ET DE L'UNITE DE LECTURE
       CALL LXINIT( LXDELI )

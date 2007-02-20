@@ -8,7 +8,7 @@
       REAL*8 ALPHA(*),BETA(*),SIGNES(*),VECT(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,6 +79,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     -----------------------------------------------------------------
       REAL*8 AI,COEF,BI,XIKXI,XJKXI,XJKXIS
+      REAL*8 VALR(2)
       REAL*8 DSEED
       COMPLEX*16 CBID
       INTEGER JSMDI
@@ -266,11 +267,9 @@ C         --- CALCUL DE ALPHA ET BETA ---
         ALPHA(IVECP1) = XJKXI
         IF (ABS(BETA(IVECP1)).LE. (PRSUDG*ABS(ALPHA(IVECP1)))) THEN
           IVECD = IVECP1
-          CALL UTDEBM('I','VP2INI','DETECTION D''UN TERME NUL SUR'//
-     &                'LA SURDIAGONALE')
-          CALL UTIMPR('L','VALEUR DE BETA  ',1,BETA(IVECP1))
-          CALL UTIMPR('L','VALEUR DE ALPHA ',1,ALPHA(IVECP1))
-          CALL UTFINM()
+          VALR (1) = BETA(IVECP1)
+          VALR (2) = ALPHA(IVECP1)
+          CALL U2MESG('I', 'ALGELINE4_64',0,' ',0,0,2,VALR)
           GO TO 60
         END IF
 

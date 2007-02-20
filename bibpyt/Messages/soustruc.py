@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF soustruc Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -359,4 +359,21 @@ cata_msg={
 83: _("""
  nb ddl interface insuffisant ou nb modes identifies trop eleve, nb ddl interface : %(i1)d ,nb modes identifies : %(i2)d
 """),
+
+84: _("""
+  champ inexistant  base  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d 
+"""),
+
+85: _("""
+  champ inexistant  base  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d 
+"""),
+
+86: _("""
+ noeud   %(k1)s   en dehors du segment %(k2)s   abscisse curviligne %(r1)f 
+"""),
+
+87: _("""
+ trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
+"""),
+
 }

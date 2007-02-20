@@ -16,7 +16,7 @@
       CHARACTER*16  OPMASS
       CHARACTER*14  PILOTE
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,6 +75,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER      IBID,IRETVI,IRETAC,IERR,IAUX,JAUX
+      INTEGER VALI
       INTEGER      JINFC,NBCHAR,N2,NUME,NRPASE
       INTEGER      JCHAR,IACHA2,I,JINST,NCHOUT,IACHAR
       INTEGER      IRET,NOCC,REENTR,N1,NBR
@@ -231,9 +232,8 @@ C ======================================================================
             CALL PSNSLE ( INPSCO, IAUX, JAUX, NOPASE )
             CALL PSRENC ( EVOL, NOPASE, RESUID, IRET )
             IF ( IRET.NE.0 ) THEN
-              CALL UTDEBM ( 'A','NMDOET', 'CODE DE RETOUR DE PSRENC' )
-              CALL UTIMPI ( 'S', ': ', 1, IRET )
-              CALL UTFINM
+              VALI = IRET
+              CALL U2MESG('A', 'ALGORITH13_55',0,' ',1,VALI,0,0.D0)
                VALK(1) = EVOL
                VALK(2) = NOPASE
                CALL U2MESK('F','ALGORITH6_40', 2 ,VALK)

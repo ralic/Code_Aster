@@ -5,7 +5,7 @@
       CHARACTER*(*)     NOMAZ, LISO1Z, LISO2Z
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,7 @@ C     ------- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   NOMA, K8B
       CHARACTER*8   NOMNO1, NOMNO2, NOMNO3
       CHARACTER*24  LISOU1, LISOU2
+      CHARACTER*24 VALK(3)
       CHARACTER*24  NOMNOE,GRPNOE
 C     ------------------------------------------------------------------
 C
@@ -183,12 +184,10 @@ C
             CALL JENUNO ( JEXNUM(NOMNOE,NUNO1), NOMNO1)
             CALL JENUNO ( JEXNUM(NOMNOE,NUNO2), NOMNO2)
             CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLINV+J2-1)), NOMNO3)
-            CALL UTDEBM('F','PACOA1','CONFLIT DANS LES VIS_A_VIS '//
-     &                  'DES NOEUDS')
-            CALL UTIMPK('L','LE NOEUD ',1,NOMNO2)
-            CALL UTIMPK('S',' EST LE VIS-A-VIS DES NOEUDS ',1,NOMNO1)
-            CALL UTIMPK('S',' ET ',1,NOMNO3)
-            CALL UTFINM()
+           VALK (1) = NOMNO2
+           VALK (2) = NOMNO1
+           VALK (3) = NOMNO3
+            CALL U2MESG('F', 'MODELISA8_77',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 10    CONTINUE
@@ -267,12 +266,10 @@ C
             CALL JENUNO ( JEXNUM(NOMNOE,NUNO1), NOMNO1)
             CALL JENUNO ( JEXNUM(NOMNOE,NUNO2), NOMNO2)
             CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLINV+J1-1)), NOMNO3)
-            CALL UTDEBM('F','PACOA1','CONFLIT DANS LES VIS_A_VIS '//
-     &                  'DES NOEUDS')
-            CALL UTIMPK('L','LE NOEUD ',1,NOMNO1)
-            CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,NOMNO2)
-            CALL UTIMPK('S','ET ',1,NOMNO3)
-            CALL UTFINM()
+           VALK (1) = NOMNO1
+           VALK (2) = NOMNO2
+           VALK (3) = NOMNO3
+            CALL U2MESG('F', 'MODELISA8_78',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 40    CONTINUE
@@ -290,25 +287,20 @@ C
                  CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLOU1+I-1)), NOMNO1)
                  CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLOU2+I-1)), NOMNO2)
                  CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLOU4+J-1)), NOMNO3)
-                 CALL UTDEBM('F','PACOA1','CONFLIT DANS LES VIS-A-VIS '
-     &                       //'GENERES SUCCESSIVEMENT ')
-                 CALL UTIMPK('L','LE NOEUD ',1,NOMNO1)
-                 CALL UTIMPK('S',' A POUR VIS-A-VIS LE NOEUD',1,
-     &                           NOMNO2)
-                 CALL UTIMPK('S',' ET LE NOEUD',1,NOMNO3)
-                 CALL UTFINM()
+           VALK (1) = NOMNO1
+           VALK (2) = NOMNO2
+           VALK (3) = NOMNO3
+                 CALL U2MESG('F', 'MODELISA8_79',3,VALK,0,0,0,0.D0)
               ENDIF
            ENDIF
 70      CONTINUE
 C
         IF ( IEXCOR .EQ. 0 ) THEN
            CALL JENUNO ( JEXNUM(NOMNOE,ZI(IDLOU1+I-1)), NOMNO1)
-           CALL UTDEBM('F','PACOA1','CONFLIT DANS LES VIS-A-VIS '
-     &                       //'GENERES SUCCESSIVEMENT ')
-           CALL UTIMPK('L','LE NOEUD DE LA PREMIERE LISTE',1, NOMNO1)
-           CALL UTIMPK('S',' N"EST L"IMAGE D"AUCUN ',0,' ')
-           CALL UTIMPK('S','NOEUD PAR LA CORRESPONDANCE INVERSE',0,' ')
-           CALL UTFINM()
+           VALK (1) = NOMNO1
+           VALK (2) = ' '
+           VALK (3) = ' '
+           CALL U2MESG('F', 'MODELISA8_80',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 60    CONTINUE

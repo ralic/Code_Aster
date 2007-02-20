@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      &              NOMGR1, NOMGR2, K8TYP
       CHARACTER*10  MOTFAC
       CHARACTER*24  MDGENE, REFO
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
       CALL GETFAC ( 'CHOC'     , NBCHOC )
@@ -124,10 +125,9 @@ C
                   CALL JELIRA(JEXNUM(MAILLA//'.CONNEX',NUMAI),'LONMAX',
      &                                                       NBNMA,KBID)
                   IF (NBNMA.NE.2) THEN
-                     CALL UTDEBM('F','MDCHOC','CHOC MAL DEFINI')
-               CALL UTIMPK('L','LA MAILLE DEFINISSANT LE CHOC ',1,MAMAI)
-                     CALL UTIMPK('S',' DOIT ETRE DE TYPE ',1,'SEG2')
-                     CALL UTFINM()
+                  VALK (1) = MAMAI
+                  VALK (2) = 'SEG2'
+      CALL U2MESG('F', 'ALGORITH13_39',2,VALK,0,0,0,0.D0)
                   ENDIF
                   ILIAI = ILIAI + 1
                   CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA)),
@@ -161,10 +161,9 @@ C
      &                                                       NBNMA,KBID)
                      IF (NBNMA.NE.2) THEN
                   CALL JENUNO(JEXNUM(MAILLA//'.NOMMAI',NUMAI),KBID)
-                        CALL UTDEBM('F','MDCHOC','CHOC MAL DEFINI')
-               CALL UTIMPK('L','LA MAILLE DEFINISSANT LE CHOC ',1,KBID)
-                        CALL UTIMPK('S',' DOIT ETRE DE TYPE ',1,'SEG2')
-                        CALL UTFINM()
+                  VALK (1) = KBID
+                  VALK (2) = 'SEG2'
+      CALL U2MESG('F', 'ALGORITH13_40',2,VALK,0,0,0,0.D0)
                      ENDIF
                      ILIAI = ILIAI + 1
                      CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA)),
@@ -196,10 +195,9 @@ C
                   IF (IRET.EQ.10) THEN
                      CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
                   ELSEIF (IRET.EQ.1) THEN
-                     CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
-                     CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR2)
-                     CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOMNO2)
-                     CALL UTFINM( )
+                  VALK (1) = NOMGR2
+                  VALK (2) = NOMNO2
+      CALL U2MESG('A', 'ALGORITH13_41',2,VALK,0,0,0,0.D0)
                   ENDIF
                   NOECHO(ILIAI,5) = NOMNO2
                   LNOUE2 = .TRUE.
@@ -217,10 +215,9 @@ C
          IF (IRET.EQ.10) THEN
             CALL U2MESK('F','ELEMENTS_67',1,NOMGR1)
          ELSEIF (IRET.EQ.1) THEN
-            CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
-            CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR1)
-            CALL UTIMPK('L',' NOEUD UTILISE: ',1,NOMNO1)
-            CALL UTFINM( )
+                  VALK (1) = NOMGR1
+                  VALK (2) = NOMNO1
+            CALL U2MESG('A', 'ALGORITH13_42',2,VALK,0,0,0,0.D0)
          ENDIF
          ILIAI = ILIAI + 1
          NOECHO(ILIAI,1) = NOMNO1
@@ -236,10 +233,9 @@ C
                IF (IRET.EQ.10) THEN
                   CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
                ELSEIF (IRET.EQ.1) THEN
-                  CALL UTDEBM('A','MDCHOC','TROP DE NOEUDS')
-                  CALL UTIMPK('S',' DANS LE GROUP_NO ',1,NOMGR2)
-                  CALL UTIMPK('L',' NOEUD UTILISE: ',1,NOMNO2)
-                  CALL UTFINM( )
+                  VALK (1) = NOMGR2
+                  VALK (2) = NOMNO2
+                  CALL U2MESG('A', 'ALGORITH13_43',2,VALK,0,0,0,0.D0)
                ENDIF
                NOECHO(ILIAI,5) = NOMNO2
                LNOUE2 = .TRUE.

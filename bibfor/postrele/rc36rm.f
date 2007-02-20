@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,9 +47,11 @@ C
       INTEGER      N1, IOCC, IRET, JORD, JNUME, JTYPE, NBORDR, 
      +             JCHAM, NBRESU
       REAL*8       PREC
+      INTEGER VALI(2)
       CHARACTER*8  K8B, RESU, CRIT
       CHARACTER*16 MOTCLF, NOMSYM
       CHARACTER*24 KNUM, NOMCHA, CHAMS0
+      CHARACTER*24 VALK(2)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -75,25 +77,22 @@ C
             CALL GETVTX(MOTCLF,'CRITERE'  ,IOCC,1,1,CRIT,N1)
             CALL RSUTNU(RESU,MOTCLF,IOCC,KNUM,NBORDR,PREC,CRIT,IRET)
             IF (IRET.NE.0) THEN
-               CALL UTDEBM('F','FATIGUE_B3600','PROBLEME RECUPERATION')
-               CALL UTIMPI('S',' POUR L''OCCURRENCE ',1,IOCC)
-               CALL UTIMPK('L',' DANS LE RESULTAT ',1,RESU)
-               CALL UTFINM()
+               VALI (1) = IOCC
+               VALK (1) = RESU
+               CALL U2MESG('F', 'POSTRELE_98',1,VALK,1,VALI,0,0.D0)
             ENDIF
             IF (NBORDR.NE.1) THEN
-               CALL UTDEBM('F','FATIGUE_B3600','PROBLEME DONNEES')
-               CALL UTIMPI('S',' POUR L''OCCURRENCE ',1,IOCC)
-               CALL UTIMPI('L',' UN SEUL NUMERO D''ORDRE ',0,IOCC)
-               CALL UTFINM()
+               VALI (1) = IOCC
+               VALI (2) = IOCC
+               CALL U2MESG('F', 'POSTRELE_99',0,' ',2,VALI,0,0.D0)
             ENDIF
             CALL JEVEUO ( KNUM, 'L', JORD )
             CALL RSEXCH(RESU,NOMSYM,ZI(JORD),NOMCHA,IRET)
             IF (IRET.NE.0) THEN
-               CALL UTDEBM('F','FATIGUE_B3600','PROBLEME DONNEES')
-               CALL UTIMPI('S',' POUR L''OCCURRENCE ',1,IOCC)
-               CALL UTIMPK('L',' DANS LE RESULTAT ',1,RESU)
-               CALL UTIMPK('S',' POUR LE NOM_CHAM ',1,NOMCHA)
-               CALL UTFINM()
+               VALI (1) = IOCC
+               VALK (1) = RESU
+               VALK (2) = NOMCHA
+               CALL U2MESG('F', 'POSTRELE1_1',2,VALK,1,VALI,0,0.D0)
             ENDIF
             CALL JEDETR ( KNUM )
 C

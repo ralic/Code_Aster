@@ -1,6 +1,6 @@
       SUBROUTINE JENUNO ( NOMLU , NOMO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -54,8 +54,8 @@ C
 C ----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          NUMEC
       COMMON /INUMJE/  NUMEC
 C ----------------------------------------------------------------------
@@ -63,10 +63,10 @@ C ----------------------------------------------------------------------
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDMARQ     , IDNOM      ,             IDLONG     ,
      &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ----------------------------------------------------------------------
       CHARACTER *75    CMESS
@@ -104,11 +104,11 @@ C
      &              //CNUMO
             CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
-          IADMI  = IADM ( JIADM(ICLAOS) + IDATOS )
+          IADMI  = IADM ( JIADM(ICLAOS) + 2*IDATOS-1 )
           IADMEX = IADMI
           IF ( IADMEX .EQ. 0 ) THEN
             CALL JXVEUO ( 'L' , ITAB , IRET , JCTAB )
-            IADMI  = IADM ( JIADM(ICLAOS) + IDATOS )
+            IADMI  = IADM ( JIADM(ICLAOS) + 2*IDATOS-1 )
           ENDIF
           KADM   = IADMI
           IDENOM = ISZON ( JISZON + KADM - 1 + IDENO )
@@ -139,7 +139,7 @@ C
      &              //CNUMO
             CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ENDIF
-          IADMI  = IADM ( JIADM(ICLACO) + IXNOM )
+          IADMI  = IADM ( JIADM(ICLACO) + 2*IXNOM-1 )
           KADM   = IADMI
           IDENOM = ISZON ( JISZON + KADM - 1 + IDENO )
           LNOM   = ISZON ( JISZON + KADM - 1 + ILNOM )

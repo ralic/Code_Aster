@@ -5,7 +5,7 @@
       CHARACTER*8       LNOCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,6 +57,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   K8B, NOMMA
       CHARACTER*19  NOMNU, PRNO
       CHARACTER*24  NOLILI
+      CHARACTER*24 VALK
       LOGICAL       EXISDG
 C     ------------------------------------------------------------------
 C
@@ -166,9 +167,8 @@ C
  40     CONTINUE
 C
       ELSE
-        CALL UTDEBM('F','PTEDDL','TYPE DE NUMEROTATION NON CONNUE')
-        CALL UTIMPK('L',' NUMEROTATION:',1,NOMNU)
-        CALL UTFINM
+        VALK = NOMNU
+        CALL U2MESG('F', 'UTILITAI6_68',1,VALK,0,0,0,0.D0)
 C
       ENDIF
 C

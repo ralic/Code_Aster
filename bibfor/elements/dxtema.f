@@ -5,7 +5,7 @@
       CHARACTER*8                     NOMPAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       I, IBID, ITEMPR, ITEMPF, IER ,ITAB(8),IRET
       REAL*8        TPG1, T, TINF, TSUP, VALPU(2)
+      REAL*8 VALR(3)
       CHARACTER*8   NOMU, NOMPU(2)
       CHARACTER*16  CONCEP, NOMCMP
 C     ------------------------------------------------------------------
@@ -80,12 +81,10 @@ C
      &              NOMCMP.NE.'POST_ELEM'     .AND.
      &              NOMCMP.NE.'CALC_NO'       .AND.
      &              NOMCMP.NE.'CALC_ELEM'     ) THEN
-                  CALL UTDEBM('A',NOMCMP,'LORSQU''IL Y A VARIATION '//
-     &    'DE TEMPERATURE DANS L''EPAISSEUR, UTILISER "STAT_NON_LINE"')
-                  CALL UTIMPR('L','  TEMPERATURE INF: ', 1, TINF )
-                  CALL UTIMPR('L','  TEMPERATURE MOY: ', 1, T    )
-                  CALL UTIMPR('L','  TEMPERATURE SUP: ', 1, TSUP )
-                  CALL UTFINM()
+                  VALR (1) = TINF
+                  VALR (2) = T
+                  VALR (3) = TSUP
+                  CALL U2MESG('A', 'ELEMENTS4_83',0,' ',0,0,3,VALR)
                ENDIF
             ENDIF
             TPG1 = TPG1 + T + ( TSUP + TINF - 2*T ) / 6.D0

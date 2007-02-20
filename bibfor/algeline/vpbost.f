@@ -3,7 +3,7 @@
      &   PRECDC, METHOD, OMECOR, STURM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C
       LOGICAL STURM
 C     ------------------------------------------------------------------
       REAL*8 VPINF2, VPMAX2, TOLE, FREQOM, R8PREM
+      REAL*8 VALR
       LOGICAL LOGINF, LOGMAX
       INTEGER NIV, IFM, I
 C     ------------------------------------------------------------------
@@ -146,18 +147,16 @@ C
                 TOLE=(ABS(VPINF2-VPINF)/VPINF)
                 IF (TOLE .LT. PRECDC) THEN
                     CALL U2MESS('A','ALGELINE3_58')
-                    CALL UTDEBM ('A','VPBOST.01','LA VAL. PRO. EST: ')
-                    CALL UTIMPR ('S',' ',1,FREQOM(VPINF2))
-                    CALL UTFINM()
+                   VALR = FREQOM(VPINF2)
+                    CALL U2MESG('A', 'ALGELINE4_70',0,' ',0,0,1,VALR)
                     VPINF = VPINF * (1.D0 - SIGN(PRECDC,VPINF))
                 ENDIF
              ELSE
                 TOLE=ABS(VPINF2-VPINF)
                 IF (TOLE .LT. PRECDC) THEN
                   CALL U2MESS('A','ALGELINE3_58')
-                 CALL UTDEBM ('A','VPBOST.01','LA VAL. PRO. EST: ')
-                 CALL UTIMPR ('S',' ',1,FREQOM(VPINF2))
-                 CALL UTFINM()
+                   VALR = FREQOM(VPINF2)
+                 CALL U2MESG('A', 'ALGELINE4_71',0,' ',0,0,1,VALR)
                  VPINF = VPINF * (1.D0 - SIGN(PRECDC,VPINF))
                 ENDIF
              ENDIF
@@ -177,18 +176,16 @@ C
                TOLE=(ABS(VPMAX2-VPMAX)/VPMAX)
                IF (TOLE .LT. PRECDC) THEN
                   CALL U2MESS('A','ALGELINE3_59')
-                  CALL UTDEBM ('A','VPBOST.01','LA VP EST: ')
-                  CALL UTIMPR ('S',' ',1,FREQOM(VPMAX2))
-                  CALL UTFINM()
+                   VALR = FREQOM(VPMAX2)
+                  CALL U2MESG('A', 'ALGELINE4_72',0,' ',0,0,1,VALR)
                   VPMAX = VPMAX * (1.D0 + SIGN(PRECDC,VPMAX))
                ENDIF
             ELSE
                TOLE=ABS(VPMAX2-VPMAX)
                IF (TOLE .LT. PRECDC) THEN
                    CALL U2MESS('A','ALGELINE3_59')
-                   CALL UTDEBM ('A','VPBOST.01','LA VP EST: ')
-                   CALL UTIMPR ('S',' ',1,FREQOM(VPMAX2))
-                   CALL UTFINM()
+                   VALR = FREQOM(VPMAX2)
+                   CALL U2MESG('A', 'ALGELINE4_73',0,' ',0,0,1,VALR)
                    VPMAX = VPMAX * (1.D0 + SIGN(PRECDC,VPMAX))
                ENDIF
             ENDIF

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C     ----DEBUT DES COMMUNS JEVEUX--------
       CHARACTER*8      ZK8
       CHARACTER*16            ZK16
       CHARACTER*24                    ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -53,6 +54,7 @@ C ----------------------------------------------------------------------
       PARAMETER     ( MXPARA = 10 )
       INTEGER       IPAR(MXPARA), I, J, ITRESU(8)
       INTEGER       FOCI, FOCF, FOMI, FOMF, FOMO
+      INTEGER VALI
       REAL*8        R8B, EPSI, ALPHA, XNORM, DEPL(6)
       COMPLEX*16    CBID
       CHARACTER*1   COLI, K1BID
@@ -404,11 +406,10 @@ C
             DO 110 J = 1,NBMODE
                CALL RSEXCH ( BASEMO, TYPCHA, J, NOMCHA, IRET )
                IF ( IRET .NE. 0 ) THEN
-                  CALL UTDEBM('F','TRAN75','CHAMP INEXISTANT')
-                  CALL UTIMPK('L',' CHAMP: '      ,1, TYPCHA )
-                  CALL UTIMPI('S',', NUME_ORDRE: ',1, J      )
-                  CALL UTIMPK('S',', MODE_MECA: ' ,1, BASEMO )
-                  CALL UTFINM()
+                  VALK (1) = TYPCHA
+                  VALK (2) = BASEMO
+                  VALI = J
+      CALL U2MESG('F', 'ALGORITH14_67',2,VALK,1,VALI,0,0.D0)
                ENDIF
                CALL JEEXIN ( NOMCHA(1:19)//'.VALE', IBID )
                IF (IBID.GT.0) THEN

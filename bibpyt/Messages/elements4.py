@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 29/01/2007   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF elements4 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -319,6 +319,119 @@ cata_msg={
 74: _("""
    attention l'élément MECA_HEXS8 ne fonctionne correctement que sur les parallélipipèdes.
   Sur les elements quelconques on peut obtenir des resultats faux.   
+"""),
+
+75: _("""
+ la maille de numero:  %(i1)d appartient a plusieurs sous-domaines! %(i2)d 
+"""),
+
+76: _("""
+ la maille du modele de numero:  %(i1)d appartient a aucun sous-domaine ! %(i2)d 
+"""),
+
+77: _("""
+ numero de couche  %(i1)d 
+  trop grand par rapport au nombre  de couches autorise pour la maille  %(k1)s 
+"""),
+
+78: _("""
+ numero de couche  %(i1)d 
+  trop grand par rapport au nombre  de couches autorise pour la maille  %(k1)s 
+"""),
+
+79: _("""
+ la loi de comportement n'existe pas pour la  modelisation dktg :  %(k1)s 
+"""),
+
+80: _("""
+ 
+ attention : l element de plaque  quad4 defini sur la maille : zk24(iazk24+2) n est pas plan et peut conduire a des resultats faux. 
+  distance au plan :  %(r1)f 
+"""),
+
+81: _("""
+ manque le parametre  %(k1)s pour la maille  %(k2)s 
+"""),
+
+82: _("""
+ numero de couche  %(i1)d 
+  trop grand par rapport au nombre  de couches autorise pour la maille  %(k1)s 
+"""),
+
+83: _("""
+ utiliser "stat_non_line"  temperature inf:  %(r1)f   temperature moy:  %(r2)f 
+   temperature sup:  %(r3)f 
+"""),
+
+84: _("""
+ famille non disponible    element de reference  %(k1)s 
+                 famille  %(k2)s 
+"""),
+
+85: _("""
+ famille non disponible    element de reference  %(k1)s 
+                 famille  %(k2)s 
+"""),
+
+86: _("""
+ famille non disponible    element de reference  %(k1)s 
+                 famille  %(k2)s 
+"""),
+
+87: _("""
+ famille non disponible    element de reference  %(k1)s 
+                 famille  %(k2)s 
+"""),
+
+88: _("""
+ elrefe non disponible    element de reference  %(k1)s 
+"""),
+
+89: _("""
+ arret sur matrice inexistantematrice %(k1)s 
+"""),
+
+90: _("""
+ elrefe mal programme maille  %(k1)s  type  %(k2)s  nb noeuds  %(i1)d 
+  nb noeuds pour le gano  %(i2)d 
+"""),
+
+91: _("""
+ ! le calcul de cet estimateur !! ne tient pas compte d'eventuelles ! %(i1)d 
+ ! conditions limites non lineaires   ! %(i2)d 
+"""),
+
+92: _("""
+ la pression doit etre nulle pour la maille  %(k1)s 
+"""),
+
+93: _("""
+ utiliser "stat_non_line"  temperature inf:  %(r1)f   temperature moy:  %(r2)f 
+   temperature sup:  %(r3)f 
+"""),
+
+94: _("""
+ la pression doit etre nulle pour la maille  %(k1)s 
+"""),
+
+95: _("""
+ la pression doit etre nulle pour la maille  %(k1)s 
+"""),
+
+96: _("""
+ la pression doit etre nulle pour la maille  %(k1)s 
+"""),
+
+97: _("""
+ la pression doit etre nulle pour la maille  %(k1)s 
+"""),
+
+98: _("""
+ la contrainte equivalente est nulle pour la maille  %(k1)s 
+"""),
+
+99: _("""
+ la contrainte equivalente est nulle pour la maille  %(k1)s 
 """),
 
 }

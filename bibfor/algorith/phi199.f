@@ -7,7 +7,7 @@
       CHARACTER*(*)       MATE, SOLVEZ
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*16  ACCES, MOTCLE(2)
       CHARACTER*19  VECSO1,VESTO1,MAPREC,SOLVEU,CHSOL,CHAMNO
       CHARACTER*24  NOMCHA,NOCHAM,CRITER
+      CHARACTER*24 VALK(3)
 C
       DATA MAPREC   /'&&OP0199.MAPREC'/
       DATA CHSOL    /'&&OP0199.SOLUTION'/
@@ -186,31 +187,28 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
      &                     EPSI,CRIT,IORDR,1,NBTROU)
                IF (NBTROU.NE.1) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E','PHI199','PAS DE MODE STATIQUE POUR')
-                  CALL UTIMPK('L','         LE NOEUD : ',1,ACCES(1:8))
-                  CALL UTIMPK('L',' ET SA COMPOSANTE : ',1,ACCES(9:16))
-                  CALL UTFINM( )
+                  VALK (1) = ACCES(1:8)
+                  VALK (2) = ACCES(9:16)
+                  CALL U2MESG('E', 'ALGORITH13_88',2,VALK,0,0,0,0.D0)
                   GOTO 26
                ENDIF
                CALL RSVPAR(MODSTA,IORDR,'TYPE_DEFO',IBID,RBID,
      &                                  'DEPL_IMPO',IRET)
                IF (IRET.NE.100) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E','PHI199','POUR LES MODES STATIQUES.')
-                  CALL UTIMPK('L','ON ATTEND UN : ',1,'DDL_IMPO')
-                  CALL UTIMPK('L','   NOEUD : ',1,ACCES(1:8))
-                  CALL UTIMPK('L','     CMP : ',1,ACCES(9:16))
-                  CALL UTFINM( )
+                  VALK (1) = 'DDL_IMPO'
+                  VALK (2) = ACCES(1:8)
+                  VALK (3) = ACCES(9:16)
+                  CALL U2MESG('E', 'ALGORITH13_89',3,VALK,0,0,0,0.D0)
                   GOTO 26
                ENDIF
                CALL RSEXCH(MODSTA,'DEPL',IORDR,CHAMNO,IRET)
                IF (IRET.NE.0) THEN
                   IER = IER + 1
-                  CALL UTDEBM('E','PHI199','CHAMP INEXISTANT.')
-                  CALL UTIMPK('L','PB CHAMP : ',1,CHAMNO)
-                  CALL UTIMPK('L','   NOEUD : ',1,ACCES(1:8))
-                  CALL UTIMPK('L','     CMP : ',1,ACCES(9:16))
-                  CALL UTFINM( )
+                  VALK (1) = CHAMNO
+                  VALK (2) = ACCES(1:8)
+                  VALK (3) = ACCES(9:16)
+                  CALL U2MESG('E', 'ALGORITH13_90',3,VALK,0,0,0,0.D0)
                   GOTO 26
                ELSE
                   CALL JEVEUO(CHAMNO//'.VALE','L',IDMST)

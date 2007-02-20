@@ -8,7 +8,7 @@
      &          FPMEC, FFMEC, Z, DZ, D2Z, DT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/11/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,6 +31,7 @@ C     DANS LA MECANISME DE COMMANDE
 C
 C-----------------------------------------------------------------------
       INTEGER  IND, NMAX, I, IMANCH
+      INTEGER VALI
       REAL*8   P2,CDM,CDA,CDML,CDI,CDG
       REAL*8   G,DHM,DHA,ROM,P3,P4,S
       REAL*8   LI,LML,DEML,DIML,DCSP,ROML,NUML,AML,AI,DHML,DHI
@@ -45,6 +46,7 @@ C-----------------------------------------------------------------------
       REAL*8   HRUGC,HRUGTC,HRUGM,HRUGA,HRUGML,HRUGG,HRUGSP
       REAL*8   ROI,NUI,ROA,UN,ZERO, R8PI, DUM, DUI
       REAL*8   F(9)
+      REAL*8 VALR
 C     ------------------------------------------------------------------
 C
       LI   = CARTER(1)
@@ -250,10 +252,8 @@ C
          GOTO 10
       ELSE
          IF (IND.GE.NMAX) THEN
-            CALL UTDEBM('A','MANCHE THERMIQUE ADAPTATEUR',
-     &                      'LAMEQM OU LAMA N''ONT PAS CONVERGE')
-            CALL UTIMPI('S',' POUR L''ITERATION ', 1, IT)
-            CALL UTFINM()
+          VALI = IT
+            CALL U2MESG('A', 'ALGORITH13_19',0,' ',1,VALI,0,0.D0)
          ENDIF
       ENDIF 
 C
@@ -339,10 +339,8 @@ C
          GOTO 15
       ELSE
         IF (IND.GE.NMAX) THEN
-            CALL UTDEBM('A','CARTER/MECANISME DE LEVEE',
-     &                      'LAMEQI OU LAMML N''ONT PAS CONVERGE')
-            CALL UTIMPI('S',' POUR L''ITERATION ', 1, IT)
-            CALL UTFINM()
+          VALI = IT
+            CALL U2MESG('A', 'ALGORITH13_20',0,' ',1,VALI,0,0.D0)
          ENDIF
       ENDIF
 C
@@ -419,10 +417,8 @@ C
 C
       DO 20 I = 1 , 9
         IF ( ABS(F(I)) .GT. 1.0D-3 )  THEN
-          CALL UTDEBM('A','MECANISME','CALCUL DE L''ERREUR RESIDUELLE'//
-     +    ' DANS LA RESOLUTION DU MODELE DANS LE MECANISME DE COMMANDE')
-          CALL UTIMPR('L',' ABS(F) > 1.0D-3 , F = ', 1, F(I) )
-          CALL UTFINM
+          VALR = F(I)
+          CALL U2MESG('A', 'ALGORITH13_21',0,' ',0,0,1,VALR)
         ENDIF
  20   CONTINUE
 C

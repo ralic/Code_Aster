@@ -1,7 +1,7 @@
       SUBROUTINE OP0129 (IER)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C
 C
       INTEGER IRET,IOCC,NBOCC,IBID, IAUX
       INTEGER NBMOCL
+      INTEGER VALI(2)
 C
       CHARACTER*1 SAUX01
       CHARACTER*3 MOTFAC
@@ -98,10 +99,9 @@ C                   1234567890123456
           MOTCLE = 'VALEUR          '
           CALL UTGETV ( MOTFAC, MOTCLE, IOCC, LIVALE, IAUX, TYPE )
           IF ( IAUX.NE.NBMOCL ) THEN
-            CALL UTDEBM ( 'A', NOMPRO, 'ERREURS SUR LES DONNEES' )
-            CALL UTIMPI ( 'L', 'NOMBRE DE MOTS-CLES : ', 1, NBMOCL )
-            CALL UTIMPI ( 'L', 'NOMBRE DE VALEURS   : ', 1, IAUX )
-            CALL UTFINM
+            VALI (1) = NBMOCL
+            VALI (2) = IAUX
+            CALL U2MESG('A', 'UTILITAI6_49',0,' ',2,VALI,0,0.D0)
             CALL U2MESS('F','UTILITAI2_81')
           ENDIF
 
@@ -112,11 +112,9 @@ C                   1234567890123456
           MOTCLE = 'MOT_FACT        '
           CALL UTGETV ( MOTFAC, MOTCLE, IOCC, LIMOFA, IAUX, TYPE )
           IF ( IAUX.NE.NBMOCL ) THEN
-            CALL UTDEBM ( 'A', NOMPRO, 'ERREURS SUR LES DONNEES' )
-            CALL UTIMPI ( 'L', 'NOMBRE DE MOTS-CLES : ', 1, NBMOCL )
-            CALL UTIMPI (
-     &      'L', 'NOMBRE DE MOTS-CLES FACTEURS : ', 1, IAUX )
-            CALL UTFINM
+            VALI (1) = NBMOCL
+            VALI (2) = IAUX
+            CALL U2MESG('A', 'UTILITAI6_50',0,' ',2,VALI,0,0.D0)
             CALL U2MESS('F','UTILITAI2_81')
           ENDIF
 

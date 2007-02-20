@@ -1,6 +1,6 @@
       SUBROUTINE IRMAMA(NOMA,NBMA,NOMAI,NBGR,NOGRM,NUMMAI,NBMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
@@ -68,9 +69,8 @@ C     --- RECUPERATION DU NUMERO DE MAILLE----
         DO 12 IMAI=1,NBMA
           CALL JENONU(JEXNOM(NOMMA//'.NOMMAI',NOMAI(IMAI)),IMA)
           IF (IMA.EQ.0) THEN
-            CALL UTDEBM('A','IRMAMA',' ON NE TROUVE PAS LA MAILLE')
-            CALL UTIMPK('S',' ',1,NOMAI(IMAI))
-            CALL UTFINM
+            VALK (1) = NOMAI(IMAI)
+            CALL U2MESG('A', 'PREPOST5_30',1,VALK,0,0,0,0.D0)
             NOMAI(IMAI) = ' '
           ELSE
             ZI(JTOPO-1+6) = ZI(JTOPO-1+6) + 1
@@ -90,18 +90,16 @@ C     --- RECUPERATION DU NUMERO DE MAILLE----
         DO 13 IGR=1,NBGR
           CALL JEEXIN(JEXNOM(NOMMA//'.GROUPEMA',NOGRM(IGR)),IRET)
           IF (IRET.EQ.0) THEN
-            CALL UTDEBM('A','IRMAMA',' ON NE TROUVE PAS LE GROUPE')
-            CALL UTIMPK('S',' ',1,NOGRM(IGR))
-            CALL UTFINM
+            VALK (1) = NOGRM(IGR)
+            CALL U2MESG('A', 'PREPOST5_31',1,VALK,0,0,0,0.D0)
             NOGRM(IGR) = ' '
           ELSE
             CALL JELIRA(JEXNOM(NOMMA//'.GROUPEMA',NOGRM(IGR)),
      +                       'LONMAX',NBN,K8BID)
             IF(NBN.EQ.0) THEN
-            CALL UTDEBM('A','IRMAMA',' LE GROUPE')
-            CALL UTIMPK('S',' ',1,NOGRM(IGR))
-            CALL UTIMPK('S',' NE CONTIENT AUCUNE MAILLE ',0,' ')
-            CALL UTFINM
+            VALK (1) = NOGRM(IGR)
+            VALK (2) = ' '
+            CALL U2MESG('A', 'PREPOST5_32',2,VALK,0,0,0,0.D0)
             NOGRM(IGR) = ' '
             ELSE
               ZI(JTOPO-1+8) = ZI(JTOPO-1+8) + 1

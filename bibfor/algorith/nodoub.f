@@ -1,6 +1,6 @@
       SUBROUTINE NODOUB(NBL,NBB,NOL,NOB,TYPL,TYPB,MAILLA,DOUBLE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,11 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*6 PGC
+      CHARACTER*24 VALK
       CHARACTER*8 NOMNOE,MAILLA,TYPL,TYPB
       INTEGER NOL(NBL),NOB(NBB)
       LOGICAL DOUBLE
 C
-C-----------------------------------------------------------------------
-      DATA PGC/'NODOUB'/
 C-----------------------------------------------------------------------
 C
 C
@@ -78,10 +76,8 @@ C
           IF (LP.EQ.LCOU) THEN
             DOUBLE = .TRUE.
             CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',LP),NOMNOE)
-            CALL UTDEBM('E',PGC,'LE NOEUD: NOMNOE NE PEUT PAS ETRE '//
-     +                  TYPL//' ET '//TYPB)
-            CALL UTIMPK('L','NOMNOE',1,NOMNOE)
-            CALL UTFINM
+            VALK = NOMNOE
+            CALL U2MESG('E', 'ALGORITH13_69',1,VALK,0,0,0,0.D0)
           END IF
 
           GO TO 20

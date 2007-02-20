@@ -1,6 +1,6 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 31/10/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
       INTEGER NMOCL,IEVOL
+      INTEGER VALI(2)
       PARAMETER (NMOCL=300)
       INTEGER DDLIMP(NMOCL),NDDLI,N,NMCL,I,J,NDDLA,IBID
       INTEGER IER,NBEC,JNOMA,NBNOEU,JPRNM,JVAL
@@ -139,10 +140,9 @@ C ---------------------------------------------------
         CALL GETMJM(MOTFAC,I,0,MOTCLE,TYMOCL,N)
         NMCL = ABS(N)
         IF (NMCL.GT.NMOCL) THEN
-          CALL UTDEBM('F','CADDLI','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
-          CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
-          CALL UTIMPI('L','NMOCL  = ',1,NMCL)
-          CALL UTFINM()
+          VALI (1) = NMOCL
+          VALI (2) = NMCL
+          CALL U2MESG('F', 'MODELISA8_31',0,' ',2,VALI,0,0.D0)
         END IF
         CALL GETMJM(MOTFAC,I,NMCL,MOTCLE,TYMOCL,N)
 

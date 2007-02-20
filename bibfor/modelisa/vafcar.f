@@ -9,7 +9,7 @@
       CHARACTER*8       NOMU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C         CARAC MASSIF      >  ELEMENT THERMIQUE
 C ----------------------------------------------------------------------
       CHARACTER*16  CONCEP, CMD
       CHARACTER*17  TPGE
-      CHARACTER*24 VALK(4)
+      CHARACTER*24  VALK(4)
 C     ------------------------------------------------------------------
       TPG    = TPGZ
       NOMOBJ = NMOBJZ
@@ -90,9 +90,8 @@ C --- VERIFICATION DU BON TYPE DE L ELEMENT
          NPD = NPO + NDI + NCO + NCA + NBA + NMA + 1
          NPF = NPO + NDI + NCO + NCA + NBA + NMA + NGB
       ELSE
-         CALL UTDEBM('A','VAFCAR','MOCLE FACTEUR NON TRAITE :')
-         CALL UTIMPK('S',MCLF,0,' ')
-         CALL UTFINM()
+         VALK(1) = MCLF
+         CALL U2MESG('A', 'MODELISA9_11',1,VALK,0,0,0,0.D0)
       ENDIF
 C
       DO 10 I = NPD , NPF

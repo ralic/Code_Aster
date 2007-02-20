@@ -1,6 +1,6 @@
       SUBROUTINE JELIRA ( NOMLU , CATR , IVAL , CVAL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -57,14 +57,14 @@ C
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
 C
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     &               IDMARQ     , IDNOM      ,             IDLONG     ,
      &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       CHARACTER*75     CMESS
@@ -170,7 +170,7 @@ C
             IF ( IXNOM .GT. 0 ) THEN
               IVA  = LUTI ( JLUTI(IC) + IXNOM )
             ELSE IF ( IXNUM .GT. 0 ) THEN
-              IBNUM = IADM ( JIADM(IC) + IXNUM )
+              IBNUM = IADM ( JIADM(IC) + 2*IXNUM-1 )
               IVA   = ISZON ( JISZON + IBNUM - 1 + 2 )
             ENDIF
           ELSE IF ( CATRLU .EQ. 'NOMUTI  ' ) THEN
@@ -233,7 +233,7 @@ C
             IVA  = LONG ( JLONG(IC) + ID )
           ENDIF
         ELSE IF ( LLONG .AND. IRET .EQ. 3) THEN
-          IB = JISZON + IADM ( JIADM(IC) + IXLONG ) - 1 + IDATOC
+          IB = JISZON + IADM ( JIADM(IC) + 2*IXLONG-1 ) - 1 + IDATOC
           IF ( CATRLU.EQ.'LONMAX  ' .OR. CATRLU.EQ.'NOMMAX  ' ) THEN
             IVA  = ISZON (IB)
           ENDIF
@@ -242,7 +242,7 @@ C
             IVA  = LUTI ( JLUTI(IC) + ID )
           ENDIF
         ELSE IF ( LLUTI .AND. IRET .EQ. 3) THEN
-          IB = JISZON + IADM ( JIADM(IC) + IXLUTI ) - 1 + IDATOC
+          IB = JISZON + IADM ( JIADM(IC) + 2*IXLUTI-1 ) - 1 + IDATOC
           IF ( CATRLU .EQ. 'LONUTI  ' ) THEN
             IVA  = ISZON (IB)
           ENDIF
@@ -250,35 +250,35 @@ C
           IF ( LCONTI .OR. LCONST  ) THEN
             IVA  = LONO( JLONO(IC) + ID )
           ELSE
-            IB = JISZON + IADM ( JIADM(IC) + IXLONO ) - 1 + IDATOC
+            IB = JISZON + IADM ( JIADM(IC) + 2*IXLONO-1 ) - 1 + IDATOC
             IVA  = ISZON (IB)
           ENDIF
         ELSE IF ( CATRLU .EQ. 'IADD    ' ) THEN
           IF ( LCONTI ) THEN
             IVA  = IADD ( JIADD(IC) + 2*ID-1 )
           ELSE
-            IB = JISZON + IADM ( JIADM(IC) + IXIADD ) - 1 + 2*IDATOC-1
+            IB = JISZON + IADM (JIADM(IC) + 2*IXIADD-1) - 1 + 2*IDATOC-1
             IVA  = ISZON(IB)
           ENDIF
         ELSE IF ( CATRLU .EQ. 'LADD    ' ) THEN
           IF ( LCONTI ) THEN
             IVA  = IADD ( JIADD(IC) + 2*ID  )
           ELSE
-            IB = JISZON + IADM ( JIADM(IC) + IXIADD ) - 1 + 2*IDATOC
+            IB = JISZON + IADM (JIADM(IC) + 2*IXIADD-1) - 1 + 2*IDATOC
             IVA  = ISZON(IB)
           ENDIF
         ELSE IF ( CATRLU .EQ. 'IADM    ' ) THEN
           IF ( LCONTI ) THEN
-            IVA  = IADM ( JIADM(IC) + ID )
+            IVA  = IADM ( JIADM(IC) + 2*ID-1 )
           ELSE
             IXIADM  = ISZON ( JISZON + IBACOL + IDIADM )
-            IB = JISZON + IADM ( JIADM(IC) + IXIADM ) - 1 + IDATOC
+            IB = JISZON + IADM (JIADM(IC) + 2*IXIADM-1) - 1 + 2*IDATOC-1
             IVA  = ISZON(IB)
           ENDIF
         ELSE IF ( CATRLU .EQ. 'USAGE   ' ) THEN
           LCV = 3
           IF ( LCONTI ) THEN
-            IADMI = IADM ( JIADM(IC) + ID )
+            IADMI = IADM ( JIADM(IC) + 2*ID-1 )
             IF (IADMI .EQ. 0 ) THEN
               CVA = 'X X'
             ELSE
@@ -289,9 +289,9 @@ C
             ENDIF
           ELSE
             IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
-            IB     = JISZON + IADM ( JIADM(IC) + IXIADM ) - 1 + IDATOC
+            IB     = JISZON + IADM(JIADM(IC)+2*IXIADM-1) -1 + 2*IDATOC-1
             IADMI  = ISZON(IB)
-            IF ( IADMI .GT. 0 ) THEN
+            IF ( IADMI .NE. 0 ) THEN
               CALL JJLIRS ( IADMI, IC, IDATOC, IDATCO, IUU, ISS)
               IU = IUU / ISSTAT
               IS = ISS / ISSTAT

@@ -7,7 +7,7 @@
       CHARACTER*(*) RESU0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,10 +47,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'EXTRS1' )
-C
       INTEGER LXLGUT
+      INTEGER VALI(2)
 C
       INTEGER IORDR, I, J, K, IATACH, IADIN, IADOU, IRE1
       INTEGER KORDR, IUNDF, ISNNEM
@@ -60,6 +58,7 @@ C
       CHARACTER*16 NOPARA
       CHARACTER*19 NOMSDR
       CHARACTER*24 CHAMIN
+      CHARACTER*24 VALK
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ( )
@@ -80,11 +79,10 @@ C
                   IF ( ZK24(IATACH+K-1)(1:1) .EQ. ' ' ) GOTO 122
                   CALL RSEXCH ( NOMSDR, NOMSYM, NUORDR(K), CHAMIN, IRE1)
                   IF ( IRE1 .NE. 0   ) THEN
-                     CALL UTDEBM('F',NOMPRO,'APPEL ERRONE')
-                     CALL UTIMPI('L','NUMERO D''ORDRE',1,NUORDR(K))
-                     CALL UTIMPI('L','CODE RETOUR DE RSEXCH :',1,IRE1)
-                     CALL UTIMPK('L','PB CHAM_NO',1,CHAMIN)
-                     CALL UTFINM()
+               VALI (1) = NUORDR(K)
+               VALI (2) = IRE1
+               VALK = CHAMIN
+      CALL U2MESG('F', 'PREPOST5_16',1,VALK,2,VALI,0,0.D0)
                   ENDIF
                   CALL DETRSD ( 'CHAMP_GD', CHAMIN )
  122           CONTINUE
@@ -96,11 +94,10 @@ C
             IF ( ZK24(IATACH+J-1)(1:1) .EQ. ' ' ) GOTO 130
             CALL RSEXCH ( NOMSDR, NOMSYM, NUORDR(J), CHAMIN, IRE1 )
             IF ( IRE1 .NE. 0   ) THEN
-               CALL UTDEBM('F',NOMPRO,'APPEL ERRONE')
-               CALL UTIMPI('L','NUMERO D''ORDRE',1,NUORDR(J))
-               CALL UTIMPI('L','CODE RETOUR DE RSEXCH :',1,IRE1)
-               CALL UTIMPK('L','PB CHAM_NO',1,CHAMIN)
-               CALL UTFINM()
+               VALI (1) = NUORDR(J)
+               VALI (2) = IRE1
+               VALK = CHAMIN
+               CALL U2MESG('F', 'PREPOST5_17',1,VALK,2,VALI,0,0.D0)
             ENDIF
             IF ( NUARCH(J) .EQ. 0 ) THEN
                CALL DETRSD ( 'CHAMP_GD', CHAMIN )

@@ -1,7 +1,7 @@
       SUBROUTINE MGAUSS(CARA,A,B,DIM,NORDRE,NB,DET,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,10 +73,12 @@ C                              IRET > 0 : PB
 C ----------------------------------------------------------------------
       INTEGER N,NRHS,LDB,LDX,IFM,NIV,I,J,LDA,LDAF
       INTEGER*4 IPIV4(DIM),INF4,IWORK4(DIM)
+      INTEGER VALI(2)
       REAL*8 AF(DIM,DIM),R(DIM),C(DIM),X(DIM,NB),RCOND
       REAL*8 WORK(4*DIM),FERR(NB),BERR(NB),R8NNEM
       CHARACTER*1 FACT,EQUED,TRANS2
       CHARACTER*4 CARA2
+      CHARACTER*24 VALK(2)
       LOGICAL LTRANS,LSTOP,LDET,LRET
 C----------------------------------------------------------------------
       CALL MATFPE(-1)
@@ -206,13 +208,11 @@ C     ---------------------------------------
             IF (IRET.EQ.N+1) THEN
               CALL U2MESS('F','CALCULEL3_79')
             ELSE
-              CALL UTDEBM('F','MGAUSS',' ')
-              CALL UTIMPI('L','L''ELEMENT DIAGONAL U(',1,IRET)
-              CALL UTIMPI('S',',',1,IRET)
-              CALL UTIMPK('S',') DE LA FACTORISATION EST NUL.',1,' ')
-              CALL UTIMPK('L','LA SOLUTION ET LES ESTIMATIONS D'''//
-     &                    'ERREURS NE PEUVENT ETRE CALCULEES.',1,' ')
-              CALL UTFINM()
+              VALI (1) = IRET
+              VALI (2) = IRET
+              VALK (1) = ' '
+              VALK (2) = ' '
+              CALL U2MESG('F', 'CALCULEL6_15',2,VALK,2,VALI,0,0.D0)
             END IF
           ELSE
             CALL U2MESS('F','CALCULEL3_79')

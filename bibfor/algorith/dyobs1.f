@@ -2,7 +2,7 @@
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,6 +66,7 @@ C
       CHARACTER*8  K8B,MO,SDDL
       CHARACTER*16 NOCHP(50)
       CHARACTER*24 GRPNO,NOMNOE,NOMMAI,GRPMA
+      CHARACTER*24 VALK(3)
 C
 C ----------------------------------------------------------------------
 C
@@ -162,11 +163,9 @@ C
             DO 20 INO = 0 , NBNO-1
                CALL JEEXIN ( JEXNOM(NOMNOE,ZK8(JNOE+INO)) , IRET )
                IF ( IRET .EQ. 0 ) THEN
-                  CALL UTDEBM('F','DYOBS1','ERREUR DANS LES DONNEES '//
-     &                         'D''OBSERVATION')
-                  CALL UTIMPK('L','LE NOEUD ',1,ZK8(JNOE+INO))
-                  CALL UTIMPK('S',' N''EXISTE PAS DANS ',1,MAILLA)
-                  CALL UTFINM()
+                  VALK (1) = ZK8(JNOE+INO)
+                  VALK (2) = MAILLA
+                  CALL U2MESG('F', 'ALGORITH13_2',2,VALK,0,0,0,0.D0)
                ENDIF
  20         CONTINUE
          ENDIF
@@ -178,11 +177,9 @@ C
             DO 22 IGNO = 0 , NBGN-1
                CALL JEEXIN ( JEXNOM(GRPNO,ZK8(JGRN+IGNO)) , IRET )
                IF ( IRET .EQ. 0 ) THEN
-                  CALL UTDEBM('F','DYOBS1','ERREUR DANS LES DONNEES'//
-     &                         'D''OBSERVATION')
-                  CALL UTIMPK('L','LE GROUP_NO ',1,ZK8(JGRN+IGNO))
-                  CALL UTIMPK('S',' N''EXISTE PAS DANS ',1,MAILLA)
-                  CALL UTFINM()
+                  VALK (1) = ZK8(JGRN+IGNO)
+                  VALK (2) = MAILLA
+                  CALL U2MESG('F', 'ALGORITH13_3',2,VALK,0,0,0,0.D0)
                ENDIF
  22         CONTINUE
          ENDIF
@@ -194,11 +191,9 @@ C
             DO 24 IMA = 0 , NBMA-1
                CALL JEEXIN ( JEXNOM(NOMMAI,ZK8(JMAI+IMA)) , IRET )
                IF ( IRET .EQ. 0 ) THEN
-                  CALL UTDEBM('F','DYOBS1','ERREUR DANS LES DONNEES '//
-     &                         'D''OBSERVATION')
-                  CALL UTIMPK('L','LA MAILLE ',1,ZK8(JMAI+IMA))
-                  CALL UTIMPK('S',' N''EXISTE PAS DANS ',1,MAILLA)
-                  CALL UTFINM()
+                  VALK (1) = ZK8(JMAI+IMA)
+                  VALK (2) = MAILLA
+                  CALL U2MESG('F', 'ALGORITH13_4',2,VALK,0,0,0,0.D0)
                ENDIF
  24         CONTINUE
          ENDIF
@@ -210,11 +205,9 @@ C
             DO 25 IGMA = 0 , NBGM-1
                CALL JEEXIN ( JEXNOM(GRPMA,ZK8(JGRM+IGMA)) , IRET )
                IF ( IRET .EQ. 0 ) THEN
-                  CALL UTDEBM('F','DYOBS1','ERREUR DANS LES DONNEES'//
-     &                         'D''OBSERVATION')
-                  CALL UTIMPK('L','LE GROUP_MA ',1,ZK8(JGRM+IGMA))
-                  CALL UTIMPK('S',' N''EXISTE PAS DANS ',1,MAILLA)
-                  CALL UTFINM()
+                  VALK (1) = ZK8(JGRM+IGMA)
+                  VALK (2) = MAILLA
+                  CALL U2MESG('F', 'ALGORITH13_5',2,VALK,0,0,0,0.D0)
                ENDIF
  25         CONTINUE
          ENDIF
@@ -238,12 +231,10 @@ C
                ELSE IF (LSUIVI(IOCC))THEN
                   IF( (N7.NE.0) .OR. (N8.NE.0) ) NBPT=NBPT+1
                ELSE
-                  CALL UTDEBM('F','DYOBS1','ERREUR DANS LES DONNEES '//
-     &                         'D''OBSERVATION')
-                  CALL UTIMPK('L','POUR "NOM_CHAM" ',1,NOCHP(I)(1:4))
-                  CALL UTIMPK('S',' IL FAUT RENSEIGNER ',1,'NOEUD')
-                  CALL UTIMPK('S',' OU ',1,'GROUP_NO')
-                  CALL UTFINM()
+                  VALK (1) = NOCHP(I)(1:4)
+                  VALK (2) = 'NOEUD'
+                  VALK (3) = 'GROUP_NO'
+                  CALL U2MESG('F', 'ALGORITH13_6',3,VALK,0,0,0,0.D0)
                ENDIF
 C
             ELSEIF ( NOCHP(I)(1:9) .EQ. 'SIEF_ELGA' .OR.
@@ -279,12 +270,10 @@ C
 
 
                IF ( LSTOP ) THEN
-                  CALL UTDEBM('F','DYOBS1','ERREUR DANS LES DONNEES '//
-     &                         'D''OBSERVATION')
-                  CALL UTIMPK('L','POUR "NOM_CHAM" ',1,NOCHP(I))
-                  CALL UTIMPK('S',' IL FAUT RENSEIGNER ',1,'MAILLE')
-                  CALL UTIMPK('S',' ET ',1,'POINT')
-                  CALL UTFINM()
+                  VALK (1) = NOCHP(I)
+                  VALK (2) = 'MAILLE'
+                  VALK (3) = 'POINT'
+                  CALL U2MESG('F', 'ALGORITH13_7',3,VALK,0,0,0,0.D0)
                ENDIF
 
             ENDIF

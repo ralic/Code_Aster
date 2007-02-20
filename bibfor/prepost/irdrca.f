@@ -11,7 +11,7 @@ C
       LOGICAL        LRESU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,6 +61,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
+      CHARACTER*24 VALK(2)
       CHARACTER*32 ZK32,JEXNUM,JEXNOM
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
@@ -96,10 +97,9 @@ C
                 GO TO 30
              ENDIF
   32      CONTINUE
-          CALL UTDEBM('A','IRDECA',' ON NE TROUVE PAS LA COMPOSANTE')
-          CALL UTIMPK('S',' ',1,NCMPUT(ICM))
-          CALL UTIMPK('S',' DANS LA GRANDEUR ',1,NOMGD)
-          CALL UTFINM
+          VALK (1) = NCMPUT(ICM)
+          VALK (2) = NOMGD
+          CALL U2MESG('A', 'PREPOST5_29',2,VALK,0,0,0,0.D0)
  30     CONTINUE
       ELSE
         DO 2 ICMP = 1,NCMPMX

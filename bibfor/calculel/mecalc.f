@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,6 +71,7 @@ C PARAMETRES D'APPELS
      &            MATERS,NOMA
       CHARACTER*16 OPTIO2,VARI
       CHARACTER*19 CANBSP,CANBVA
+      CHARACTER*24 VALK
       CHARACTER*24 LCHIN(MAXIN),LCHOUT(1),CHDEP2,CHELE2,CHC,CHTHET,
      &             MATSEN,CHNOVA
       INTEGER IAUX,IBID,IRET1,IRET2,IER,IERD,NB,NBIN,IFM,NIV,I,IRET
@@ -414,9 +415,8 @@ C ----------------------------------------------------------------------
                 NBIN = NBIN + NB
               END IF
             ELSE
-              CALL UTDEBM('F',NOMPRO,' ')
-              CALL UTIMPK('S','OPTION INCONNUE',1,OPTIO2)
-              CALL UTFINM()
+              VALK = OPTIO2
+              CALL U2MESG('F', 'CALCULEL6_10',1,VALK,0,0,0,0.D0)
             END IF
           END IF
         END IF

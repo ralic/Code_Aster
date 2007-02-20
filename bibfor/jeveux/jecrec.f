@@ -1,6 +1,6 @@
       SUBROUTINE JECREC (NOMLU, LISTAT, ACCELU, STOCLU, LONGLU, NMAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C     ------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -53,14 +53,14 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C     ------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM       , IDLONG     ,
+     &               IDMARQ     , IDNOM      ,             IDLONG     ,
      &               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5  , IDLONG = 7 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       CHARACTER *75   CMESS
@@ -137,7 +137,7 @@ C     ------------------------------------------------------------------
 C
           NOM32 = NOM24L//'$$IADM  '
           CALL JJCREN( NOM32 , ICRE , IRET )
-          CALL JJCREC( ICLAOS , IDATOS , 'V' , 'I' , NMAX , IBID )
+          CALL JJCREC( ICLAOS , IDATOS , 'V' , 'I' , 2*NMAX , IBID )
           ISZON ( JISZON + IADCOL + IDIADM ) = IDATOS
 C
           NOM32 = NOM24L//'$$MARQ  '
@@ -272,7 +272,7 @@ C     ------------------------------------------------------------------
             END IF
             IPGC = -1
             CALL JXVEUO( 'E' , KNOM , 1 , JNOM )
-            IF ( IADM(JIADM(ICLAOS)+IDATOS) .EQ. 0 ) THEN
+            IF ( IADM(JIADM(ICLAOS)+2*IDATOS-1) .EQ. 0 ) THEN
               KNOM(JNOM + 4 - 1 ) = 0
               KNOM(JNOM + 5 - 1 ) = 0
             END IF

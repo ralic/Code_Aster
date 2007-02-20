@@ -4,7 +4,7 @@
       CHARACTER*8         NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,14 +51,14 @@ C
       INTEGER      N1, NBSITU, IOCC, IBID, JMOMEA,JMOMEB,II,NOCC,JRETH,
      &             JNBOCC, JNUMGR, JPRESA, JPRESB,NBCHAR,JCHAR1,JCHAR2,
      &             JNSITU, JCOMBI, JPASSA, JNBGR, IG, NUMPAS(2), NSCY,
-     &             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR,JCHTH
+     &             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR,JCHTH,
+     &             NBM
       LOGICAL      LSEISM
       CHARACTER*8  K8B, OUINON
       CHARACTER*16 MOTCLF
       CHARACTER*24 CHMOME
 C DEB ------------------------------------------------------------------
-C      CALL JEMARQ()
-C
+
       MOTCLF = 'SITUATION'
 C
       CALL GETFAC ( MOTCLF, NBSITU )
@@ -194,8 +194,9 @@ C
          CALL GETVIS ( MOTCLF, 'NUME_RESU_THER', IOCC,1,0, IBID, N1 )
          NBTH = -N1
          CALL JECROC (JEXNUM('&&RC3600.SITU_THERMIQUE',IOCC))
+         NBM = MAX(1,NBTH)
          CALL JEECRA (JEXNUM('&&RC3600.SITU_THERMIQUE',IOCC),
-     &                                      'LONMAX', MAX(1,NBTH),' ')
+     &                                      'LONMAX',NBM ,' ')
 C
          IF ( NBTH .EQ. 0 ) THEN
             CALL JEECRA (JEXNUM('&&RC3600.SITU_THERMIQUE',IOCC),
@@ -263,5 +264,4 @@ C
 C
       CALL JEDETR ( '&&RC36SI.NUME_GROUP' )
 C
-C      CALL JEDEMA( )
       END

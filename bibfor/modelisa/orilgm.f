@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -60,6 +60,7 @@ C -----  VARIABLES LOCALES
       CHARACTER*16  MOFA2D, MOFA3D, MOFB3D
       CHARACTER*19  NOMT19
       CHARACTER*24  MAMOD, NOMNOE, GRMAMA, PARA
+      CHARACTER*24 VALK
 C
 C ========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -192,15 +193,11 @@ C
                CALL GETVID(MOFB3D,'GROUP_NO',IOCC,1,1,NNOEUD,N3)
                CALL UTNONO(' ',NOMA,'NOEUD',NNOEUD,K8B,IER)
                IF ( IER .EQ. 10 ) THEN
-                  CALL UTDEBM('F',MOFB3D,'ERREUR DONNEES')
-                  CALL UTIMPK('L','LE GROUP_NO N''EXISTE PAS '
-     &                                                      ,1,NNOEUD)
-                  CALL UTFINM()
+                  VALK = NNOEUD
+                  CALL U2MESG('F', 'MODELISA8_75',1,VALK,0,0,0,0.D0)
                ELSEIF ( IER .EQ. 1 ) THEN
-                  CALL UTDEBM('A',MOFB3D,'TROP DE NOEUDS '//
-     &                                             'DANS LE GROUP_NO')
-                  CALL UTIMPK('L','  NOEUD UTILISE: ',1,K8B)
-                  CALL UTFINM( )
+                  VALK = K8B
+                  CALL U2MESG('A', 'MODELISA8_76',1,VALK,0,0,0,0.D0)
                ENDIF
                CALL JENONU ( JEXNOM(NOMNOE,K8B), NOEUD )
             ENDIF

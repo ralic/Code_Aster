@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/01/2007   AUTEUR DESROCHES X.DESROCHES 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C     ------------------------------------------------------------------
 
 C     FONCTIONS "FORMULES" POUR ACCEDER RAPIDEMENT A LA CONNECTIVITE :
       INTEGER ICONX1,ICONX2,ZZCONX,ZZNBNE,IMODEL,D1,D2
+      INTEGER VALI(4)
       ZZCONX(IMAIL,J) = ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
       ZZNBNE(IMAIL) = ZI(ICONX2+IMAIL) - ZI(ICONX2+IMAIL-1)
 C     ------------------------------------------------------------------
@@ -308,12 +309,11 @@ C          ------------------------------------------------------
      &        ZI(JDMA2+NUMAIL-1).EQ.0) ICO = ICO + 1
   150   CONTINUE
         IF (ICO.GT.0) THEN
-          CALL UTDEBM('A','OP0018','POUR L''OCCURENCE DE AFFE  ')
-          CALL UTIMPI('S',' NUMERO ',1,IOC)
-          CALL UTIMPI('S',' ON N''A PAS PU AFFECTER ',1,ICO)
-          CALL UTIMPI('S',' MAILLES DE DIMENSION ',1,D2)
-          CALL UTIMPI('S',' (INFO=2 POUR DETAILS) ',0,D2)
-          CALL UTFINM()
+          VALI (1) = IOC
+          VALI (2) = ICO
+          VALI (3) = D2
+          VALI (4) = D2
+          CALL U2MESG('A', 'MODELISA8_70',0,' ',4,VALI,0,0.D0)
         END IF
   160 CONTINUE
 

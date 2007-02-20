@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,10 +132,8 @@ C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
             IF (IRET.EQ.10) THEN
               CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
             ELSE IF (IRET.EQ.1) THEN
-              CALL UTDEBM('A','RECU_FONCTION',
-     &                    'TROP DE NOEUDS DANS LE GROUP_NO')
-              CALL UTIMPK('L','  NOEUD UTILISE: ',1,NOEUD)
-              CALL UTFINM()
+              VALK(1) = NOEUD
+              CALL U2MESG('A', 'UTILITAI6_74',1,VALK,0,0,0,0.D0)
             END IF
           END IF
           IF (NGM.NE.0) THEN
@@ -143,10 +141,8 @@ C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
             IF (IRET.EQ.10) THEN
               CALL U2MESK('F','ELEMENTS_73',1,NOGMA)
             ELSE IF (IRET.EQ.1) THEN
-              CALL UTDEBM('A','RECU_FONCTION',
-     &                    'TROP DE MAILLES DANS LE GROUP_MA')
-              CALL UTIMPK('L','  MAILLE UTILISEE: ',1,MAILLE)
-              CALL UTFINM()
+              VALK(1) = MAILLE
+              CALL U2MESG('A', 'UTILITAI6_75',1,VALK,0,0,0,0.D0)
             END IF
           END IF
           CALL UTCMP1(NOMGD,' ',1,CMP,IVARI)

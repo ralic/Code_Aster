@@ -1,10 +1,11 @@
       SUBROUTINE FORME0 ( M, TYPEMA, W, NNO )
       IMPLICIT NONE
       CHARACTER*8  TYPEMA
+      CHARACTER*24 VALK
       REAL*8       M(*), W(*)
       INTEGER      NNO
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,24 +52,21 @@ C ---------------------------------------------------------------------
          CALL ELRFVF ( 'TR7', M, 7, W, NNO )
 
       ELSEIF (TYPEMA(1:5).EQ.'TRIW6') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'TW6', M, 6, W, NNO )
 
       ELSEIF (TYPEMA(1:5).EQ.'TRIH3') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'TH3', M, 3, W, NNO )
 
       ELSEIF (TYPEMA(1:5).EQ.'QUAD4') THEN
          CALL ELRFVF ( 'QU4', M, 4, W, NNO )
 
       ELSEIF (TYPEMA(1:5).EQ.'QUAD6') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'QU6', M, 6, W, NNO )
 
       ELSEIF (TYPEMA(1:5).EQ.'QUAD8') THEN
@@ -78,9 +76,8 @@ C ---------------------------------------------------------------------
          CALL ELRFVF ( 'QU9', M, 9, W, NNO )
 
       ELSEIF (TYPEMA(1:5).EQ.'QUAH4') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'QH4', M, 4, W, NNO )
 
       ELSEIF (TYPEMA(1:6).EQ.'TETRA4') THEN
@@ -93,39 +90,34 @@ C ---------------------------------------------------------------------
          CALL ELRFVF ( 'PE6', M, 6, W, NNO )
 
       ELSEIF (TYPEMA(1:7).EQ.'PENTA12') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'P12', M, 12, W, NNO )
 
       ELSEIF (TYPEMA(1:7).EQ.'PENTA14') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'P14', M, 14, W, NNO )
 
       ELSEIF (TYPEMA(1:7).EQ.'PENTA15') THEN
          CALL ELRFVF ( 'P15', M, 15, W, NNO )
 
       ELSEIF (TYPEMA(1:6).EQ.'PENTH6') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'PH6', M, 6, W, NNO )
 
       ELSEIF (TYPEMA(1:5).EQ.'HEXA8') THEN
          CALL ELRFVF ( 'HE8', M, 8, W, NNO )
 
       ELSEIF (TYPEMA(1:6).EQ.'HEXA16') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'H16', M, 16, W, NNO )
 
       ELSEIF (TYPEMA(1:6).EQ.'HEXA18') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'H18', M, 16, W, NNO )
 
       ELSEIF (TYPEMA(1:6).EQ.'HEXA20') THEN
@@ -135,9 +127,8 @@ C ---------------------------------------------------------------------
          CALL ELRFVF ( 'H27', M, 27, W, NNO )
 
       ELSEIF (TYPEMA(1:6).EQ.'HEXAH8') THEN
-         CALL UTDEBM('F','FORME0','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   MAILLE DE REFERENCE ',1,TYPEMA)
-         CALL UTFINM
+         VALK = TYPEMA
+         CALL U2MESG('F', 'CALCULEL5_87',1,VALK,0,0,0,0.D0)
          CALL ELRFVF ( 'HH8', M, 8, W, NNO )
 
       ELSEIF (TYPEMA(1:6).EQ.'PYRAM5') THEN

@@ -3,7 +3,7 @@
       INTEGER            NUOPER, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,7 @@ C     EXECUTION DES OPERATEURS NUMEROTES DE 100 A 199
 C     ------------------------------------------------------------------
 C     EXECUTION OU VERIFICATION DE SYNTAXE        
       INTEGER IVERI 
+      INTEGER VALI
       IVERI=-1
       IF ((IVERIF(IVERI) .GT. 0) ) GOTO 9999
 C     
@@ -39,10 +40,8 @@ C
      +       91, 92, 93, 94, 95, 96, 97, 98, 99 ,100 ) NUOPER - 0100 + 1
 C     ------------------------------------------------------------------
         IER = 1
-        CALL UTDEBM('E','EXECUTION DES COMMANDES (ERREUR 03-EX0100)',
-     +      'LA COMMANDE A UN NUMERO NON APPELABLE DANS CETTE VERSION.')
-        CALL UTIMPI('L','LE NUMERO ERRONE EST ',1,NUOPER)
-        CALL UTFINM( )
+        VALI = NUOPER
+        CALL U2MESG('E', 'SUPERVIS_51',0,' ',1,VALI,0,0.D0)
       GOTO 9999
 C     ------------------------------------------------------------------
   01       CONTINUE

@@ -8,7 +8,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER I,J,DS1,DECF,ADESCM,IRET,NPT,TF,IPOS1,IPOS2
+      INTEGER VALI(2)
       REAL*8  ZERO,UNSUR2,UN,SEUIL,LCARA,TOLE
       REAL*8  A(3,3),FK(4,3),C,R1,S1,T1,R2,S2,T2,NORMAB,X1,X2,SGTF(6)
       REAL*8  E1(3),E2(3),E3(3),CS(3,4),SGTP(6),X(3),R(3),S(3),T(3)
@@ -378,10 +379,9 @@ C              /* SGT PROJETE REDUIT A UN POINT */
       ENDIF
 C
       IF ( PB ) THEN
-         CALL UTDEBM('F','I3IQGS','FACE DEGENEREE')
-         CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-         CALL UTIMPI('S',' FACE : ',1,F)
-         CALL UTFINM()
+         VALI (1) = K
+         VALI (2) = F
+         CALL U2MESG('F', 'POSTRELE_81',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
       IF ( FINK )  NBPT = 0

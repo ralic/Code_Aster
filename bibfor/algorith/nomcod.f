@@ -1,6 +1,6 @@
       SUBROUTINE NOMCOD(NOM,NUM,IC,NC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,13 +34,12 @@ C
 C  NOMNOE='NO'
 C  CALL NOMCOD(NOMNOE,IND,3,8)
 C
-      CHARACTER*6      PGC
+      CHARACTER*24 VALK
 C
       CHARACTER *(*) NOM
       CHARACTER *4 FORMAT
       INTEGER NUM,IC,NC
-C-----------------------------------------------------------------------
-      DATA PGC /'NOMCOD'/
+      INTEGER VALI
 C-----------------------------------------------------------------------
 C
       FORMAT='(IX)'
@@ -55,10 +54,9 @@ C
          ENDIF
  20   CONTINUE
 C
-      CALL UTDEBM('F',PGC,'IMPOSSIBLE DE CODER ')
-      CALL UTIMPI('S','LE NOMBRE : ',1,NUM)
-      CALL UTIMPK('S',' SUR : ',1,NOM)
-      CALL UTFINM
+      VALI = NUM
+      VALK = NOM
+      CALL U2MESG('F', 'ALGORITH13_70',1,VALK,1,VALI,0,0.D0)
 C
  21   CONTINUE
       WRITE (NOM(IC:IC+I-1),FORMAT) NUM

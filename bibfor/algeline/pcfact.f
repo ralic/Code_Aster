@@ -1,6 +1,6 @@
       SUBROUTINE PCFACT(MATAS,NEQU,IN,IP,AC,PRC,VECT,EPSI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ C-----------------------------------------------------------------------
       REAL*8 AC(*),PRC(*),VECT(NEQU)
       CHARACTER*19 MATAS
       INTEGER IN(NEQU),IP(*)
+      INTEGER VALI
 
 
 C     TDEB = SECOND()
@@ -82,11 +83,8 @@ C                   REMISE A 0 PARTIELLE DU VECTEUR AUXILIAIRE
           END IF
 C        ---- TEST DE SINGULARITE
           IF (ABS(CUMUL).LT.EPSI) THEN
-            CALL UTDEBM('F','PCFACT',
-     &                  ' PROBLEME DANS LE PRECONDITIONNEMENT'//
-     &                  ' DE LA MATRICE '//MATAS//'PAR LDLT IMCOMPLET')
-            CALL UTIMPI('L',' PIVOT NUL A LA LIGNE : ',1,I)
-            CALL UTFINM()
+            VALI = I
+            CALL U2MESG('F', 'ALGELINE4_58',0,' ',1,VALI,0,0.D0)
           END IF
           PRC(JFIN) = 1.D0/CUMUL
         END IF

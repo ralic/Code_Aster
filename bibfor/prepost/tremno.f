@@ -4,7 +4,7 @@
       CHARACTER*19        NSSCHE, NOMSD
 C*********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,6 +102,7 @@ C   ------
 C
       INTEGER      I,M,N,IN,IM,NBTND,NBTMAI,ADRM,NBN,NBM,NDLOC,NBCPAC
       INTEGER      ICONEC,LCONEC,ICNCIN,LCNCIN
+      INTEGER VALI
       CHARACTER*24 NCONEC,NCNCIN
       CHARACTER*8  TK8(1),NMAILA
       LOGICAL      TROUVE
@@ -261,10 +262,8 @@ C
 C
          IF ( LNGM .EQ. 0 ) THEN
 C
-            CALL UTDEBM('F','TREMNO','NOEUD NON CONTENU DANS UNE '//
-     +                  'MAILLE SACHANT CALCULER L" OPTION')
-            CALL UTIMPI('L','NOEUD NUMERO : ',1,N)
-            CALL UTFINM()
+            VALI = N
+            CALL U2MESG('F', 'PREPOST5_76',0,' ',1,VALI,0,0.D0)
 C
          ENDIF
 C

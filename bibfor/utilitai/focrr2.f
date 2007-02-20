@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,6 +40,7 @@ C OUT : IER    : CODE RETOUR, = 0 : OK
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
+      INTEGER VALI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
@@ -60,6 +61,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMCMD,TYPCON,TYPCHA,TYPRES
       CHARACTER*19 LISTR,PROFCH,PROFC2,CH1,CH2
       REAL*8 DIMAG
+      REAL*8 VALR(2)
       COMPLEX*16 VALC1,VALC2
       LOGICAL NVERI1,NVERI2,NVERI3
 C     ------------------------------------------------------------------
@@ -185,25 +187,22 @@ C               ----- EXTRACTION SUR UN "CHAM_NO" -----
           CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
      &                IPOSIT)
           IF (IPOSIT.EQ.-2) THEN
-            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
-            CALL UTIMPR('L','INSTANT A INTERPOLER: ',1,RVAL)
-            CALL UTFINM()
+            VALR (1) = RVAL
+            CALL U2MESG('F', 'UTILITAI6_16',0,' ',0,0,1,VALR)
 
 C           -- PROLONGEMENT A GAUCHE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.-1) THEN
-            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
-            CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
-            CALL UTIMPR('L',' BORNE INFERIEURE: ',1,ZR(KINST))
-            CALL UTFINM()
+            VALR (1) = RVAL
+            VALR (2) = ZR(KINST)
+            CALL U2MESG('F', 'UTILITAI6_17',0,' ',0,0,2,VALR)
 
 C           -- PROLONGEMENT A DROITE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.1) THEN
-            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
-            CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
-            CALL UTIMPR('L',' BORNE SUPERIEURE:',1,ZR(KINST+NBORDR-1))
-            CALL UTFINM()
+            VALR (1) = RVAL
+            VALR (2) = ZR(KINST+NBORDR-1)
+            CALL U2MESG('F', 'UTILITAI6_18',0,' ',0,0,2,VALR)
             CALL U2MESS('F','UTILITAI_67')
           END IF
 
@@ -217,20 +216,18 @@ C           -------------------------
           CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
           CALL RSEXCH(RESU,NOMCHA,IP2,CH2,L2)
           IF (L1.GT.0) THEN
-            CALL UTDEBM('F','FOCRR2','CHAM_NO INEXISTANT ')
-            CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
-            CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
-            CALL UTIMPI('S','POUR LE NUME_ORDRE',1,IP1)
-            CALL UTIMPR('L','INSTANT A INTERPOLER',1,RVAL)
-            CALL UTFINM()
+            VALK (1) = NOMCHA
+            VALK (2) = RESU
+            VALI = IP1
+            VALR (1) = RVAL
+            CALL U2MESG('F', 'UTILITAI6_19',2,VALK,1,VALI,1,VALR)
           END IF
           IF (L2.GT.0) THEN
-            CALL UTDEBM('F','FOCRR2','CHAM_NO INEXISTANT ')
-            CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
-            CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
-            CALL UTIMPI('S','POUR LE NUME_ORDRE',1,IP2)
-            CALL UTIMPR('L','INSTANT A INTERPOLER',1,RVAL)
-            CALL UTFINM()
+            VALK (1) = NOMCHA
+            VALK (2) = RESU
+            VALI = IP2
+            VALR (1) = RVAL
+            CALL U2MESG('F', 'UTILITAI6_20',2,VALK,1,VALI,1,VALR)
           END IF
 
           CALL DISMOI('F','PROF_CHNO',CH1,'CHAM_NO',IBID,PROFC2,IE)
@@ -296,11 +293,9 @@ C        -------------------------------------------------------------
         NVERI2 = NOEUD .EQ. ' '
         NVERI3 = NPOINT .EQ. 0
         IF (NVERI1 .OR. (NVERI2.AND.NVERI3)) THEN
-        CALL UTDEBM('F','FOCRR2','POUR UN "NOM_CHAM",IL FAUT DONNER :')
-          CALL UTIMPK('L','   - UNE MAILLE OU UN GROUP_MA',0,K8B)
-          CALL UTIMPK('L','   - UN NOEUD OU UN GROUP_NO OU UN POINT.',0,
-     &                K8B)
-          CALL UTFINM()
+            VALK (1) = K8B
+            VALK (2) = K8B
+        CALL U2MESG('F', 'UTILITAI6_21',2,VALK,0,0,0,0.D0)
         END IF
         CALL DISMOI('F','NOM_MAILLA',CH1,'CHAM_ELEM',IBID,NOMA,IE)
         CALL DISMOI('F','NOM_GD',CH1,'CHAM_ELEM',IBID,NOGD,IE)
@@ -314,25 +309,22 @@ C        -------------------------------------------------------------
           CALL RSBARY(ZR(KINST),NBORDR,.FALSE.,ZL(IALEXI),RVAL,I1,I2,
      &                IPOSIT)
           IF (IPOSIT.EQ.-2) THEN
-            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
-            CALL UTIMPR('L','INSTANT A INTERPOLER: ',1,RVAL)
-            CALL UTFINM()
+            VALR (1) = RVAL
+            CALL U2MESG('F', 'UTILITAI6_16',0,' ',0,0,1,VALR)
 
 C           -- PROLONGEMENT A GAUCHE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.-1) THEN
-            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
-            CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
-            CALL UTIMPR('L',' BORNE INFERIEURE: ',1,ZR(KINST))
-            CALL UTFINM()
+            VALR (1) = RVAL
+            VALR (2) = ZR(KINST)
+            CALL U2MESG('F', 'UTILITAI6_17',0,' ',0,0,2,VALR)
 
 C           -- PROLONGEMENT A DROITE:
 C           -------------------------
           ELSE IF (IPOSIT.EQ.1) THEN
-            CALL UTDEBM('F','FOCRR2','INTERPOLATION IMPOSSIBLE ')
-            CALL UTIMPR('L',' INSTANT A INTERPOLER: ',1,RVAL)
-            CALL UTIMPR('L',' BORNE SUPERIEURE:',1,ZR(KINST+NBORDR-1))
-            CALL UTFINM()
+            VALR (1) = RVAL
+            VALR (2) = ZR(KINST+NBORDR-1)
+            CALL U2MESG('F', 'UTILITAI6_18',0,' ',0,0,2,VALR)
             CALL U2MESS('F','UTILITAI_67')
           END IF
 
@@ -346,20 +338,18 @@ C           -------------------------
           CALL RSEXCH(RESU,NOMCHA,IP1,CH1,L1)
           CALL RSEXCH(RESU,NOMCHA,IP2,CH2,L2)
           IF (L1.GT.0) THEN
-            CALL UTDEBM('F','FOCRR2','CHAM_ELEM INEXISTANT ')
-            CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
-            CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
-            CALL UTIMPI('S','POUR LE NUME_ORDRE',1,IP1)
-            CALL UTIMPR('L','INSTANT A INTERPOLER',1,RVAL)
-            CALL UTFINM()
+            VALK (1) = NOMCHA
+            VALK (2) = RESU
+            VALI = IP1
+            VALR (1) = RVAL
+            CALL U2MESG('F', 'UTILITAI6_25',2,VALK,1,VALI,1,VALR)
           END IF
           IF (L2.GT.0) THEN
-            CALL UTDEBM('F','FOCRR2','CHAM_ELEM INEXISTANT ')
-            CALL UTIMPK('S','POUR L''ACCES',1,NOMCHA)
-            CALL UTIMPK('S','SUR LE RESULTAT',1,RESU)
-            CALL UTIMPI('S','POUR LE NUME_ORDRE',1,IP2)
-            CALL UTIMPR('L','INSTANT A INTERPOLER',1,RVAL)
-            CALL UTFINM()
+            VALK (1) = NOMCHA
+            VALK (2) = RESU
+            VALI = IP2
+            VALR (1) = RVAL
+            CALL U2MESG('F', 'UTILITAI6_26',2,VALK,1,VALI,1,VALR)
           END IF
 
           IF (RBASE.EQ.0.0D0) THEN

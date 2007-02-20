@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/06/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,8 +81,8 @@ C
             DO 30 IEL = 1 , NEL-1
                IF ( NUMAIL .EQ. ZI(IALIEL-1+IEL) ) THEN
                   TRAITE = TRAITE + 1
-                  CALL TEATTR (NOMTE,'C','DIM_TOPO_MODELI',DMO,IER)
-                  CALL TEATTR (NOMTE,'C','DIM_TOPO_MAILLE',DMA,IER)
+                  CALL TEATTR (NOMTE,'S','DIM_TOPO_MODELI',DMO,IER)
+                  CALL TEATTR (NOMTE,'S','DIM_TOPO_MAILLE',DMA,IER)
                   IF ( DMO .EQ. DMA ) THEN
 C                    on a un element principal
                      MABORD(IMA) = 0

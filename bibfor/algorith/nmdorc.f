@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -419,9 +419,10 @@ C ET META_XXX_INL
      &              COMP(1:10).EQ.'META_V_INL') THEN
                   NBVARI = NBVARI + 1
                 END IF
-                IF (COMP(1:9).EQ.'VMIS_ISOT') THEN
+                IF ((COMP(1:9).EQ.'VMIS_ISOT').OR.
+     &                  COMP(1:9).EQ.'VISC_ISOT') THEN
                   CALL GETVIS(MOCLEF(I),COMP,K,1,1,NBVARI,N1)
-                  NBVARI = NBVARI + 1
+                  NBVARI = NBVARI + 6
                 END IF
               END IF
             END IF

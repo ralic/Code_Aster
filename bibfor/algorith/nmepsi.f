@@ -1,7 +1,7 @@
       SUBROUTINE NMEPSI(NDIM,NNO,AXI,GRAND,VFF,R,DFDI,DEPL,F,EPS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C ======================================================================
 
       LOGICAL AXI,GRAND
       INTEGER NDIM,NNO
-      REAL*8  VFF(NNO),R,DFDI(NNO,NDIM),DEPL(3,NNO),F(3,3),EPS(6)
+      REAL*8  VFF(NNO),R,DFDI(NNO,NDIM),DEPL(NDIM,NNO),F(3,3),EPS(6)
 C ----------------------------------------------------------------------
 C                     CALCUL DES DEFORMATIONS
 C
@@ -57,13 +57,13 @@ C - CALCUL DES GRADIENT : GRAD(U)
 
       DO 10 I = 1,NDIM
         DO 20 J = 1,NDIM
-          GRAD(I,J) = DDOT(NNO,DFDI(1,J),1,DEPL(I,1),3)
+          GRAD(I,J) = DDOT(NNO,DFDI(1,J),1,DEPL(I,1),NDIM)
  20     CONTINUE
  10   CONTINUE
 
 
 C - CALCUL DU DEPLACEMENT RADIAL
-      IF (AXI) UR=DDOT(NNO,VFF,1,DEPL,3)
+      IF (AXI) UR=DDOT(NNO,VFF,1,DEPL,NDIM)
 
 
 C - CALCUL DU GRADIENT DE LA TRANSFORMATION F

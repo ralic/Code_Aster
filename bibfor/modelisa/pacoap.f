@@ -5,7 +5,7 @@
       REAL*8        CENTRE(3), THETA(3), T(3)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C     ------- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8   NOMA, M8BLAN
       CHARACTER*8   NOMNO1, NOMNO2, NOMO1, NOMO2
       CHARACTER*24  LISIN1, LISIN2, LISOU1, LISOU2
+      CHARACTER*24 VALK(5)
       CHARACTER*24  NOEUMA
 C --- DEBUT
 C
@@ -169,12 +170,10 @@ C
             ZK8(IDLINV+J2-1) = NOMNO1
         ELSE
             IER = IER + 1
-            CALL UTDEBM('E','PACOAP','CONFLIT DANS LES VIS_A_VIS '//
-     &                  'DES NOEUDS')
-            CALL UTIMPK('L','LE NOEUD ',1,NOMNO2)
-            CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,NOMNO1)
-            CALL UTIMPK('S','ET ',1,ZK8(IDLINV+J2-1))
-            CALL UTFINM()
+           VALK (1) = NOMNO2
+           VALK (2) = NOMNO1
+           VALK (3) = ZK8(IDLINV+J2-1)
+            CALL U2MESG('E', 'MODELISA8_85',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 10    CONTINUE
@@ -225,12 +224,10 @@ C
             ZK8(IDLINV+J1-1) = NOMNO2
         ELSE
             IER = IER + 1
-            CALL UTDEBM('E','PACOAP','CONFLIT DANS LES VIS_A_VIS '//
-     &                  'DES NOEUDS')
-            CALL UTIMPK('L','LE NOEUD ',1,NOMNO1)
-            CALL UTIMPK('S','EST LE VIS-A-VIS DES NOEUDS ',1,NOMNO2)
-            CALL UTIMPK('S','ET ',1,ZK8(IDLINV+J1-1))
-            CALL UTFINM()
+           VALK (1) = NOMNO1
+           VALK (2) = NOMNO2
+           VALK (3) = ZK8(IDLINV+J1-1)
+            CALL U2MESG('E', 'MODELISA8_86',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 40    CONTINUE
@@ -250,31 +247,24 @@ C
               IEXCOR = 1
               IF(ZK8(IDLOU2+I-1).NE.ZK8(IDLOU4+J-1)) THEN
                  IER = IER + 1
-                 CALL UTDEBM('E','PACOAP','CONFLIT DANS LES VIS-A-VIS '
-     &                       //'GENERES SUCCESSIVEMENT ')
-                 CALL UTIMPK('L','A PARTIR DES LISTES ',1,LISIN1)
-                 CALL UTIMPK('S','ET ',1,LISIN2)
-                 CALL UTIMPK('L','LE NOEUD ',1,ZK8(IDLOU1+I-1))
-                 CALL UTIMPK('S','A POUR VIS-A-VIS LE NOEUD',1,
-     &                       ZK8(IDLOU2+I-1))
-                 CALL UTIMPK('S',' ET LE NOEUD',1,ZK8(IDLOU4+J-1))
-                 CALL UTFINM()
+           VALK (1) = LISIN1
+           VALK (2) = LISIN2
+           VALK (3) = ZK8(IDLOU1+I-1)
+           VALK (4) = ZK8(IDLOU2+I-1)
+           VALK (5) = ZK8(IDLOU4+J-1)
+                 CALL U2MESG('E', 'MODELISA8_87',5,VALK,0,0,0,0.D0)
               ENDIF
            ENDIF
 70      CONTINUE
 C
         IF (IEXCOR.EQ.0) THEN
            IER = IER + 1
-           CALL UTDEBM('E','PACOAP','CONFLIT DANS LES VIS-A-VIS '
-     &                       //'GENERES SUCCESSIVEMENT ')
-           CALL UTIMPK('L','A PARTIR DES LISTES ',1,LISIN1)
-           CALL UTIMPK('S','ET ',1,LISIN2)
-           CALL UTIMPK('L','LE NOEUD DE LA PREMIERE LISTE',
-     &                        1,ZK8(IDLOU1+I-1))
-           CALL UTIMPK('S',' N"EST L"IMAGE D"AUCUN ',0,' ')
-           CALL UTIMPK('S','NOEUD PAR LA CORRESPONDANCE INVERSE',
-     &                        0,' ')
-           CALL UTFINM()
+           VALK (1) = LISIN1
+           VALK (2) = LISIN2
+           VALK (3) = ZK8(IDLOU1+I-1)
+           VALK (4) = ' '
+           VALK (5) = ' '
+           CALL U2MESG('E', 'MODELISA8_88',5,VALK,0,0,0,0.D0)
         ENDIF
 C
 60    CONTINUE

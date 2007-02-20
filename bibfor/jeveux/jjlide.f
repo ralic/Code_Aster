@@ -1,6 +1,6 @@
       SUBROUTINE JJLIDE ( NOMAP , NOMLU , ITYPE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CFT_720 CFT_726 CRP_18 CRP_20 CRS_508 CRS_512
+C TOLE CFT_720 CFT_726 CRP_18 CRP_20 CRS_508 CRS_512 CRS_505
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       NOMAP , NOMLU
       INTEGER                             ITYPE
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -48,8 +48,8 @@ C
       CHARACTER*32     RNOM
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C ----------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
@@ -64,12 +64,12 @@ C ----------------------------------------------------------------------
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
 C ----------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
-     &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+      INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
+     &               IDMARQ     , IDNOM      ,              IDLONG     ,
+     &               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
+     &               IDLONO = 8 , IDLUTI = 9 , IDNUM  = 10 )
 C ----------------------------------------------------------------------
       INTEGER          IIADM    ,IIADD    ,IIDOS    ,IIDCO   , IDATE   ,
      &                 IORIG    ,ILONO    ,ILTYP    ,IIMAR   , ISAUV   ,
@@ -82,7 +82,7 @@ C ----------------------------------------------------------------------
       CHARACTER*4      FONC
       CHARACTER*75     CMESS
       CHARACTER*32     NOML32
-      INTEGER          IADMI , IADDI(2) , NLD , IT(NPARM), KT(NPARM)
+      INTEGER          IADMI,IADDI(2),NLD,IT(NPARM), KT(NPARM),IBID
       LOGICAL          LSAUV,LDATE,LMARQ,LLIBP,LTOUT,LATTR,LXU,LAD
 C DEB ------------------------------------------------------------------
       DO 1 K=1,NPARM
@@ -91,21 +91,17 @@ C DEB ------------------------------------------------------------------
       NOML32 = NOMLU
       IADIT = 0
       IASIG = 0
+      IADY1 = 0
+      IADY2 = 0
       IPGCL = IPGC
-      IF ( NOMAP .EQ. 'JELIBE' .OR. NOMAP .EQ. 'JELIBC' ) THEN
+      IF ( NOMAP .EQ. 'JELIBE' ) THEN
         FONC = 'LIBE'
         IF (IDEBUG .EQ. 1) THEN
           FONC = 'DEBG'
         ENDIF
-      ELSE IF ( NOMAP .EQ. 'JELIBT' .OR. NOMAP .EQ. 'JELIBZ') THEN
+      ELSE IF ( NOMAP .EQ. 'JELIBZ') THEN
         FONC = 'LIBE'
         IPGCL = -1
-      ELSE IF ( NOMAP .EQ. 'JELIBS' ) THEN
-        FONC = 'LIBE'
-        IPGCL = -3
-      ELSE IF ( NOMAP .EQ. 'JEDCHG' ) THEN
-        FONC = 'DCHG'
-        IPGCL = 0
       ELSE IF ( NOMAP .EQ. 'JETASS' ) THEN
         FONC = 'TASS'
         IF ( ITYPE.NE.1 ) THEN
@@ -114,6 +110,8 @@ C DEB ------------------------------------------------------------------
         ENDIF
       ELSE IF ( NOMAP .EQ. 'JELIBF' ) THEN
         FONC   = 'LIBF'
+      ELSE IF ( NOMAP .EQ. 'SYSTEM' ) THEN
+        FONC   = 'LIBS'
       ELSE IF ( NOMAP .EQ. 'JEIMPO' .OR. NOMAP .EQ. 'JEIMPA' .OR.
      &          NOMAP .EQ. 'JENUNO' .OR. NOMAP .EQ. 'JENONU' ) THEN
         FONC = 'LIBE'
@@ -132,8 +130,8 @@ C
       IF ( ITYPE .EQ. 1 ) THEN
         IC  = ICLAOS
         NLD = 1
-        IT(JIT+IIADM) = JIADM(IC)+IDATOS
-        IADMI = IADM(JIADM(IC)+IDATOS)
+        IT(JIT+IIADM) = JIADM(IC)+2*IDATOS-1
+        IADMI = IADM(JIADM(IC)+2*IDATOS-1)
         IF ( IADMI .EQ. 0 ) THEN
           GOTO 101
         ELSE
@@ -160,7 +158,7 @@ C
 C ----- CAS D'UNE COLLECTION ENTIERE
 C
         IF ( NOML32(25:32) .EQ. '        ' ) THEN
-          IBACOL = IADM ( JIADM(IC) + IDATCO )
+          IBACOL = IADM ( JIADM(IC) + 2*IDATCO-1 )
           IF ( IBACOL .EQ. 0 ) THEN
             GOTO 101
           ELSE
@@ -188,10 +186,10 @@ C
           ITROLD = ITRECH
           ITRECH = 2
           NNN =  NALLOC * NPARM * LOIS
-          CALL JJALLS( NNN    ,'V','I',LOIS,'INIT' , IT , JIT , IADIT)
+          CALL JJALLS( NNN,'V','I',LOIS,'INIT',IT,JIT,IADIT,IADY1)
           ISZON(JISZON+IADIT-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+IADIT-4)-4) = ISTAT(4)
-          CALL JJALLS( NNN    ,'V','I',LOIS,'INIT' , KT , KIT , IASIG)
+          CALL JJALLS( NNN    ,'V','I',LOIS,'INIT',KT,KIT,IASIG,IADY2)
           ISZON(JISZON+IASIG-1) = ISTAT(2)
           ISZON(JISZON+ISZON(JISZON+IASIG-4)-4) = ISTAT(4)
           ITRECH = ITROLD
@@ -199,11 +197,11 @@ C --------OBJETS DE COLLECTION
 C
           IF ( NMAX .NE. 0 ) THEN
             IXLONO = ISZON( JISZON + IBACOL + IDLONO )
-            IBIADM = IADM ( JIADM(IC) + IXIADM )
-            IBMARQ = IADM ( JIADM(IC) + IXMARQ )
-            IBIADD = IADM ( JIADM(IC) + IXIADD )
+            IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
+            IBMARQ = IADM ( JIADM(IC) + 2*IXMARQ-1 )
+            IBIADD = IADM ( JIADM(IC) + 2*IXIADD-1 )
             DO 10 K = 1,NMAX
-              NADM  = JISZON + IBIADM - 1 + K
+              NADM  = JISZON + IBIADM - 1 + 2*K-1
               IF ( ISZON( NADM ) .NE. 0 ) THEN
                 IJIT = JIT + NLD * NPARM
                 IKIT = KIT + NLD * NPARM
@@ -215,7 +213,7 @@ C
                 IT(IJIT + IIADD) =   JISZON + IBIADD - 1 + 2*K-1
                 KT(IKIT + IIADD) = -1
                 IF ( IXLONO .NE. 0 ) THEN
-                   IBLONO = IADM ( JIADM(IC) + IXLONO )
+                   IBLONO = IADM ( JIADM(IC) + 2*IXLONO-1 )
                    IT(IJIT + ILONO) = JISZON + IBLONO - 1 + K
                    KT(IKIT + ILONO) = -1
                 ELSE
@@ -243,11 +241,11 @@ C
 C ----------- UNIQUEMENT LES OBJETS $$ PRESENTS EN MEMOIRE
 C ----------- LES POINTEURS PARTAGES DOIVENT ETRE LIBERES EXPLICITEMENT
 C
-                IF ( IADM ( JIADM(IC) + IX ) .NE. 0 ) THEN
+                IF ( IADM ( JIADM(IC) + 2*IX-1 ) .NE. 0 ) THEN
                   IJIT = JIT + NLD * NPARM
                   IKIT = KIT + NLD * NPARM
                   NLD  = NLD + 1
-                  IT(IJIT + IIADM) = JIADM(IC)+ IX
+                  IT(IJIT + IIADM) = JIADM(IC)+ 2*IX-1
                   IT(IJIT + IIADD) = JIADD(IC)+ 2*IX-1
                   IT(IJIT + IIDOS) = IX
                   IT(IJIT + IIDCO) = 0
@@ -268,7 +266,7 @@ C
           IJIT = JIT + NLD * NPARM
           IKIT = KIT + NLD * NPARM
           NLD  = NLD + 1
-          IT(IJIT + IIADM) = JIADM(IC)+ IDATCO
+          IT(IJIT + IIADM) = JIADM(IC)+ 2*IDATCO-1
           IT(IJIT + IIADD) = JIADD(IC)+ 2*IDATCO-1
           IT(IJIT + IIDOS) = IDATCO
           IT(IJIT + IIDCO) = 0
@@ -284,7 +282,7 @@ C
         ELSE
           ICRE = 0
           CALL JJCROC ( NOML32(25:32) , ICRE )
-          IBACOL = IADM ( JIADM(IC) + IDATCO )
+          IBACOL = IADM ( JIADM(IC) + 2*IDATCO-1 )
           IF ( IBACOL .EQ. 0 ) GOTO 101
           IXIADD = ISZON ( JISZON + IBACOL + IDIADD )
           IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
@@ -296,13 +294,13 @@ C
      &              'REFUSEE '
             CALL U2MESK('F','JEVEUX_01',1,CMESS)
           ELSE
-            IBIADM = IADM ( JIADM(IC) + IXIADM )
-            IBIADD = IADM ( JIADM(IC) + IXIADD )
-            IBMARQ = IADM ( JIADM(IC) + IXMARQ )
+            IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
+            IBIADD = IADM ( JIADM(IC) + 2*IXIADD-1 )
+            IBMARQ = IADM ( JIADM(IC) + 2*IXMARQ-1 )
             NLD = 1
-            IT(JIT+IIADM) = JISZON + IBIADM -1 + IDATOC
+            IT(JIT+IIADM) = JISZON + IBIADM -1 + 2*IDATOC-1
             KT(KIT+IIADM) = -1
-            IADMI = ISZON( JISZON + IBIADM -1 + IDATOC )
+            IADMI = ISZON( JISZON + IBIADM -1 + 2*IDATOC-1 )
             IF ( IADMI .NE. 0 ) THEN
               ISTA1 = ISZON (JISZON + IADMI - 1)
               IS    = JISZON+ISZON(JISZON+IADMI-4)
@@ -320,7 +318,7 @@ C
             IT(JIT+IDATE) = JDATE(IC)+IXDESO
             IT(JIT+IORIG) = JORIG(IC)+IXDESO
             IF ( IXLONO .NE. 0 ) THEN
-               IBLONO = IADM ( JIADM(IC) + IXLONO )
+               IBLONO = IADM ( JIADM(IC) + 2*IXLONO-1 )
                IT(JIT+ILONO) = JISZON + IBLONO - 1 + IDATOC
                KT(KIT+ILONO) = -1
             ELSE
@@ -356,9 +354,11 @@ C
 C ----- PREPARATION AUX DIVERSES OPERATIONS
 C
         IF ( KT(KIT+KK+ IIADM) .EQ. 0 ) THEN
-          IADMI = IADM ( IT(JIT+KK+ IIADM) )
+          IADMI = IADM ( IT(JIT+KK+ IIADM)     )
+          IDYNI = IADM ( IT(JIT+KK+ IIADM) + 1 )
         ELSE
-          IADMI = ISZON ( IT(JIT+KK+ IIADM) )
+          IADMI = ISZON ( IT(JIT+KK+ IIADM)    )
+          IDYNI = ISZON ( IT(JIT+KK+ IIADM) + 1)
         ENDIF
         IF ( KT(KIT+KK+ IIMAR) .EQ. 0 ) THEN
           MARQI = IMARQ ( IT(JIT+KK+ IIMAR) )
@@ -457,35 +457,12 @@ C
             GOTO 100
           ENDIF
 C
-C ----- OPERATION DCHG
-C       ==============
-C ----- LA MARQUE ASSOCIEE EST NECESSAIREMENT = 0
-C ----- ON PROVOQUE LA LIBERATION
-C
-        ELSE IF ( FONC .EQ. 'DCHG' ) THEN
-          IF ( NLDO .GT. 0 ) GOTO 101
-          IF ( MARQI .EQ. 0 ) THEN
-            LLIBP = .TRUE.
-            IF ( ISTA1 .EQ. ISTAT(2) ) THEN
-              LXU = .TRUE.
-              IF ( ISTA2 .EQ. ISTAT(4) ) THEN
-                LSAUV = .TRUE.
-                LDATE = .TRUE.
-              ENDIF
-              LMARQ = .TRUE.
-            ELSE
-              IF ( ISTA2 .EQ. ISTAT(4) ) THEN
-                LSAUV = .TRUE.
-              ENDIF
-            ENDIF
-          ENDIF
-C
 C ----- OPERATIONS LIBF
 C       ===============
 C ----- ON NE S'OCCUPE PAS DE LA MARQUE ASSOCIEE, ON FORCE LA
 C ----- LIBERATION
 C
-        ELSE IF ( FONC .EQ. 'LIBF' ) THEN
+        ELSE IF (FONC .EQ. 'LIBF' .OR. FONC .EQ. 'LIBS') THEN
           LLIBP = .TRUE.
           IF ( ISTA1 .EQ. ISTAT(2) ) THEN
             LXU = .TRUE.
@@ -503,6 +480,7 @@ C
               LLIBP = .TRUE.
             ENDIF
           ENDIF
+          IF (FONC .EQ. 'LIBS') LLIBP = .FALSE.
         ENDIF
 C
 C ----- ACTUALISATION DES ATTRIBUTS
@@ -511,15 +489,15 @@ C
           IF ( KT(KIT+KK+ IIMAR) .EQ. 0 ) THEN
             IMARQ( IT(JIT+KK+ IIMAR)  ) = 0
             IADMAR = IMARQ( IT(JIT+KK+ IIMAR)+1)
-            IF ( IADMAR.GT.0 ) THEN
-              ISZON(JISZON+KDESMA+IADMAR-1) = 0
+            IF ( IADMAR.NE.0 ) THEN
+              ISZON(JISZON+KDESMA(1)+IADMAR-1) = 0
               IMARQ( IT(JIT+KK+IIMAR)+1)   = 0
             ENDIF
           ELSE
             ISZON( IT(JIT+KK+ IIMAR) ) = 0
             IADMAR = ISZON( IT(JIT+KK+ IIMAR)+1 )
-            IF ( IADMAR.GT.0 ) THEN
-              ISZON(JISZON+KDESMA+IADMAR-1) = 0
+            IF ( IADMAR.NE.0 ) THEN
+              ISZON(JISZON+KDESMA(1)+IADMAR-1) = 0
               ISZON( IT(JIT+KK+IIMAR)+1 ) = 0
             ENDIF
           ENDIF
@@ -555,16 +533,30 @@ C
         ENDIF
         IF ( LDATE ) DATE ( IT(JIT+KK+ IDATE) ) = DATEI
         IF ( LLIBP ) THEN
-          CALL JJLIBP ( IADMI )
+          IF ( IDYNI .NE. 0 ) THEN
+            CALL  HPDEALLC ( IDYNI , IBID , IBID )
+          ELSE IF ( IADMI .NE. 0 ) THEN
+            CALL JJLIBP ( IADMI )
+          ENDIF
           IF ( KT(KIT+KK+ IIADM) .EQ. 0 ) THEN
-            IADM ( IT(JIT+KK+ IIADM) ) = 0
+            IADM ( IT(JIT+KK+ IIADM)    ) = 0
+            IADM ( IT(JIT+KK+ IIADM) + 1) = 0
           ELSE
-            ISZON ( IT(JIT+KK+ IIADM) ) = 0
+            ISZON ( IT(JIT+KK+ IIADM)    ) = 0
+            ISZON ( IT(JIT+KK+ IIADM) + 1) = 0
           ENDIF
         ENDIF
   100 CONTINUE
   101 CONTINUE
-      IF ( IADIT .NE. 0 ) CALL JJLIBP ( IADIT )
-      IF ( IASIG .NE. 0 ) CALL JJLIBP ( IASIG )
+      IF ( IADY1 .NE. 0 ) THEN
+        CALL HPDEALLC (IADY1, IBID, IBID)
+      ELSE IF ( IADIT .NE. 0 ) THEN 
+        CALL JJLIBP ( IADIT )
+      ENDIF
+      IF ( IADY2 .NE. 0 ) THEN
+        CALL HPDEALLC (IADY2, IBID, IBID)
+      ELSE IF ( IASIG .NE. 0 ) THEN 
+        CALL JJLIBP ( IASIG )
+      ENDIF
 C FIN ------------------------------------------------------------------
       END

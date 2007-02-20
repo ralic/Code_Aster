@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMTA, PARA, MODE, VK
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C RESPONSABLE DURAND C.DURAND
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,6 +58,7 @@ C ----------------------------------------------------------------------
       CHARACTER*4   TYPE
       CHARACTER*19  NOMTAB
       CHARACTER*24  NOMJV, NOMJVL, INPAR
+      CHARACTER*24 VALK
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -96,9 +97,8 @@ C
       DO 10 J = 1 , NBPARA
          IF ( INPAR .EQ. ZK24(JTBLP+4*(J-1)) ) GOTO 12
  10   CONTINUE
-      CALL UTDEBM('F','TBACCE','ERREUR DANS LES DONNEES')
-      CALL UTIMPK('L','PARAMETRE N''EXISTE PAS: ',1,INPAR)
-      CALL UTFINM( )
+      VALK = INPAR
+      CALL U2MESG('F', 'UTILITAI6_89',1,VALK,0,0,0,0.D0)
  12   CONTINUE
 C
       TYPE   = ZK24(JTBLP+4*(J-1)+1)

@@ -5,7 +5,7 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508
+C TOLE CFT_720 CFT_726 CRP_18 CRP_6 CRS_508 CRS_505
 C     RECOPIE D'UNE BASE DE DONNEES APRES ELIMINATION DES
 C     ENREGISTREMENTS DEVENUS INACCESSIBLES
 C     ------------------------------------------------------------------
@@ -46,15 +46,13 @@ C     ------------------------------------------------------------------
       PARAMETER  ( N = 5 )
 C
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
      &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       INTEGER          IDN    , IEXT    , NBENRG
       COMMON /IEXTJE/  IDN(N) , IEXT(N) , NBENRG(N)
-      COMMON /KINDJE/  INDEF(1)
-      COMMON /JINDJE/  JINDEF(N)
       CHARACTER*2      DN2
       CHARACTER*5      CLASSE
       CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
@@ -90,12 +88,11 @@ C
 C
       LGBL1= 1024*LONGBL(ICI)*LOIS
       LGBL2= 1024*LONGBL(ICO)*LOIS
-      CALL JJALLS(LGBL1,' ','I',LOIS,'INIT',ITP,JITP,IADITP)
+      CALL JJALLS(LGBL1,' ','I',LOIS,'INIT',ITP,JITP,IADITP,IADYN)
       ISZON(JISZON+IADITP-1) = ISTAT(1)
       ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
       DO 50  K=1,(NBLUTI(ICI)-1)/NBENRG(ICI)
-        LINDEF = JINDEF(ICO)+K*(NBENRG(ICO)/512+1)*512
-        CALL JXOUVR(ICO,K+1,INDEF(LINDEF),NBENRG(ICO))
+        CALL JXOUVR(ICO,K+1)
         IEXT(ICO) = IEXT(ICO) + 1
  50   CONTINUE
       DO 100 K=1,NBLUTI(ICI)
@@ -118,7 +115,11 @@ C
       NBEXT = NUMEXT+1
       CALL JXFERM (ICI)
       CALL JXFERM (ICO)
-      CALL JJLIBP (IADITP)
+      IF ( IADYN .NE. 0 ) THEN
+        CALL HPDEALLC (IADYN , IBID , IBID)
+      ELSE IF ( IADITP .NE. 0 ) THEN
+        CALL JJLIBP (IADITP)
+      ENDIF
       CLASSE(ICO:ICO) = ' '
       CLASSE(ICI:ICI) = ' '
       DO 300 K=1,NBEXT

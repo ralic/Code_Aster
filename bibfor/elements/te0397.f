@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IVECTU,K,I,L,IPRES,IER,IADZI,IAZK24,ITEMPS
       REAL*8 VALPAR(4),POIDS,R,FX,FY,F3,NX,NY,COUR,DFDX(3),PR
       CHARACTER*8 NOMPAR(4),NOMAIL,ELREFE
+      CHARACTER*24 VALK
 C DEB ------------------------------------------------------------------
 
       CALL ELREF1(ELREFE)
@@ -110,9 +111,8 @@ C              ------------------------------
           IF (PR.NE.0.D0) THEN
             CALL TECAEL(IADZI,IAZK24)
             NOMAIL = ZK24(IAZK24-1+3) (1:8)
-            CALL UTDEBM('F','TE0397','LA PRESSION DOIT ETRE NULLE')
-            CALL UTIMPK('S',' POUR LA MAILLE ',1,NOMAIL)
-            CALL UTFINM
+            VALK = NOMAIL
+            CALL U2MESG('F', 'ELEMENTS4_94',1,VALK,0,0,0,0.D0)
           END IF
    40   CONTINUE
 

@@ -4,9 +4,10 @@
       INTEGER           NBMODE, NEQ, DDLEXC(*), ISIGN, NUMDDL
       REAL*8            VECPRO(NEQ,*), COEF(*)
       CHARACTER*(*)     NORM
+      CHARACTER*24 VALK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/09/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +38,7 @@ C VAR VECPRO : TABLEAU DES VECTEURS PROPRES
 C OUT COEF   : COEFFICIENTS
 C     ------------------------------------------------------------------
       INTEGER  IBID, IM, IE
+      INTEGER VALI
       REAL*8   XNORM, XX1 
 C DEB ------------------------------------------------------------------
 C
@@ -69,10 +71,8 @@ C
 C
       ELSE
 C
-         CALL UTDEBM('F','VPNOR1','L''OPTION DE NORMALISATION')
-         CALL UTIMPK('S',' ',1,NORM)
-         CALL UTIMPI('S',' N''EST PAS IMPLANTEE.',0,IBID)
-         CALL UTFINM()
+         VALK = NORM
+         CALL U2MESG('F', 'ALGELINE4_77',1,VALK,0,0,0,0.D0)
 C
       ENDIF
 C

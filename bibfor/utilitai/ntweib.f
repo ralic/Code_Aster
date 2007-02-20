@@ -6,7 +6,7 @@
       LOGICAL       CALS,IMPR
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,9 @@ C
 C     ----------------------------------------------------------------
 C
       REAL*8  DF,DX,DXOLD,F,FH,FL,TEMP,XH,XL,DFL,DFH
+      REAL*8 VALR(4)
       INTEGER MAXIT,J
+      INTEGER VALI
       PARAMETER (MAXIT=100)
 C     ----------------------------------------------------------------
 C
@@ -130,13 +132,12 @@ C
       CALL U2MESS('F','UTILITAI2_53')
  9999 CONTINUE
       IF (IMPR) THEN
-        CALL UTDEBM('I','NTWEIB','METHODE DE NEWTON')
-        CALL UTIMPR('L','EXPOSANT DE LA LOI   =',1,RTSAFE)
-        CALL UTIMPI('L','NOMBRE D''ITERATIONS =',1,J)
-        CALL UTIMPR('L','RESIDU FONCTION =',1,F)
-        CALL UTIMPR('L','RESIDU F/DF =',1,DX)
-        CALL UTIMPR('L','PRECISION =',1,XACC)
-        CALL UTFINM
+        VALR (1) = RTSAFE
+        VALR (2) = F
+        VALR (3) = DX
+        VALR (4) = XACC
+        VALI = J
+        CALL U2MESG('I', 'UTILITAI6_48',0,' ',1,VALI,4,VALR)
       END IF
 C
       END

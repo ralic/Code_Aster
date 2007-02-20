@@ -5,7 +5,7 @@
       CHARACTER*16      OPTION
       CHARACTER*24      MATE, COMPOR, PHASIN
       CHARACTER*(*)     MODELZ
-C MODIF ALGORITH  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
      +              VALI(2), IAD, IFM, IUNIFI, JMATE, IBID,NUM0, NUM1,
      +              NUM2, NUM3, IORD, IAINST, NUMPHI
       REAL*8        R8B, TIME(6), INST0,INST1,INST2, DT3, R8PREM,R8VIDE
+      REAL*8        VALR(2)
+      INTEGER       VALII
       COMPLEX*16    CBID
       CHARACTER*2   CODRET, TEST
       CHARACTER*8   K8B, MODELE, NOMCM2(2), MATER, TIMCMP(6), LPAIN(8),
@@ -132,9 +134,8 @@ C ----------------
         NUM0 = ZI(JORDR)
         CALL RSEXCH ( TEMPER, 'TEMP', NUM0, TEMPE, IRET )
         IF (IRET.GT.0) THEN
-          CALL UTDEBM('F','SMEVOL','LE CHAMP DE "TEMP" N''EXISTE PAS')
-          CALL UTIMPI('S',' POUR LE NUMERO D''ORDRE ',1,NUM0)
-          CALL UTFINM
+          VALII = NUM0
+          CALL U2MESG('F', 'ALGORITH14_55',0,' ',1,VALII,0,0.D0)
         END IF
         CALL RSADPA ( TEMPER,'L',1,'INST',NUM0,0,IAINST,K8B)
         INST0 = ZR(IAINST)
@@ -167,9 +168,8 @@ C ----------------
         NUM1 = ZI(JORDR+1)
         CALL RSEXCH ( TEMPER,'TEMP', NUM1,TEMPE,IRET)
         IF (IRET.GT.0) THEN
-          CALL UTDEBM('F','SMEVOL','LE CHAMP DE "TEMP" N''EXISTE PAS')
-          CALL UTIMPI('S',' POUR LE NUMERO D''ORDRE ',1,NUM1)
-          CALL UTFINM
+          VALII = NUM1
+          CALL U2MESG('F', 'ALGORITH14_56',0,' ',1,VALII,0,0.D0)
         END IF
         CALL RSADPA ( TEMPER,'L',1,'INST',NUM1,0,IAINST,K8B)
         INST1 = ZR(IAINST)
@@ -217,28 +217,23 @@ C
 C
         CALL RSEXCH ( TEMPER, 'TEMP', NUM1, TEMPA, IRET )
         IF (IRET.GT.0) THEN
-          CALL UTDEBM('F','SMEVOL','LE CHAMP DE "TEMP" N''EXISTE PAS')
-          CALL UTIMPI('S',' POUR LE NUMERO D''ORDRE ',1,NUM1)
-          CALL UTFINM
+          VALII = NUM1
+          CALL U2MESG('F', 'ALGORITH14_56',0,' ',1,VALII,0,0.D0)
         END IF
         CALL RSEXCH ( TEMPER, 'TEMP', NUM2, TEMPE, IRET )
         IF (IRET.GT.0) THEN
-          CALL UTDEBM('F','SMEVOL','LE CHAMP DE "TEMP" N''EXISTE PAS')
-          CALL UTIMPI('S',' POUR LE NUMERO D''ORDRE ',1,NUM2)
-          CALL UTFINM
+          VALII = NUM2
+          CALL U2MESG('F', 'ALGORITH14_58',0,' ',1,VALII,0,0.D0)
         END IF
         CALL RSEXCH ( TEMPER, 'META_ELNO_TEMP', NUM2, PHASIN, IRET )
         IF (IRET.GT.0) THEN
-          CALL UTDEBM('F','SMEVOL','LE CHAMP DE "META_ELNO_TEMP" '//
-     +                          'N''EXISTE PAS')
-          CALL UTIMPI('S',' POUR LE NUMERO D''ORDRE ',1,NUM2)
-          CALL UTFINM
+          VALII = NUM2
+          CALL U2MESG('F', 'ALGORITH14_59',0,' ',1,VALII,0,0.D0)
         END IF
         CALL RSEXCH ( TEMPER, 'TEMP', NUM3, TEMPI, IRET )
         IF (IRET.GT.0) THEN
-          CALL UTDEBM('F','SMEVOL','LE CHAMP DE "TEMP" N''EXISTE PAS')
-          CALL UTIMPI('S',' POUR LE NUMERO D''ORDRE ',1,NUM3)
-          CALL UTFINM
+          VALII = NUM3
+          CALL U2MESG('F', 'ALGORITH14_60',0,' ',1,VALII,0,0.D0)
         END IF
 
 C --- RECUPERATION DE L'INSTANT DE CALCUL ET DES DELTAT -> CHAMP(INST_R)
@@ -262,13 +257,10 @@ C
           DT3 = ZR(IAD)
           IF (DT3.NE.R8VIDE()) THEN
           IF ( ABS(DT3-TIME(3)) .GT. R8PREM() ) THEN
-            CALL UTDEBM('A','CALC_META','LE PAS DE TEMPS DU CALCUL '//
-     &                'METALLURGIQUE NE CORRESPOND PAS AU PAS '//
-     &                'DE TEMPS DU CALCUL THERMIQUE' )
-            CALL UTIMPI('L',' NUMERO D''ORDRE ',1,NUM3)
-            CALL UTIMPR('L','    PAS DE TEMPS THERMIQUE ',1,DT3)
-            CALL UTIMPR('L','    PAS DE TEMPS METALLURGIQUE ',1,TIME(3))
-            CALL UTFINM
+            VALII = NUM3
+            VALR (1) = DT3
+            VALR (2) = TIME(3)
+            CALL U2MESG('A', 'ALGORITH14_61',0,' ',1,VALII,2,VALR)
           ENDIF
           ENDIF
         ENDIF

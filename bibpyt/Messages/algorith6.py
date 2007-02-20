@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith6 Messages  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -357,7 +357,7 @@ cata_msg={
 """),
 
 83: _("""
- rousselier a gradient sans simo miehe non programmee
+ rousselier à gradient sans simo miehe non programmé : utilisez la modélisation **_INCO 
 """),
 
 84: _("""

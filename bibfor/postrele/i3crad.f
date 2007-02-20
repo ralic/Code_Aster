@@ -2,11 +2,12 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER K,F,NBA,A
+      INTEGER VALI(2)
       REAL*8  R1,R2,T
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,9 +69,8 @@ C
             R1 = -UN
          ENDIF
       ELSE
-         CALL UTDEBM('F','I3CRAD','FACE INCONNUE')
-         CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-         CALL UTIMPI('S',' FACE : ',1,F)
-         CALL UTFINM()
+         VALI (1) = K
+         VALI (2) = F
+         CALL U2MESG('F', 'POSTRELE_79',0,' ',2,VALI,0,0.D0)
       ENDIF
       END

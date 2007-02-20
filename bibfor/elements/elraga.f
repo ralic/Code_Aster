@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C   -------------------------------------------------------------------
       PARAMETER (NBPGMX=1000,NBFAMX=20)
 
       CHARACTER*8 ELREFA,FAPG,NOFPG(NBFAMX)
+      CHARACTER*24 VALK(2)
       INTEGER I,NPAR,NPI,IX,IY,IZ,NPX,NPYZ,N,NPG,J,CPT
       INTEGER NNO,NNOS,NBFPG,NBPG1(NBFAMX),INO,IFAM,INDIK8
       REAL*8 XPG(NBPGMX),YPG(NBPGMX),ZPG(NBPGMX),HPG(NBPGMX),A(4),H(4)
@@ -64,10 +65,9 @@ C     ------------------------------------
       CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,NOFPG,NBPG1,XNO,VOL)
       IFAM = INDIK8(NOFPG,FAPG,1,NBFPG)
       IF ( IFAM .LE. 0 ) THEN
-         CALL UTDEBM('F','ELRAGA','FAMILLE NON DISPONIBLE ')
-         CALL UTIMPK('L','   ELEMENT DE REFERENCE ',1,ELREFA)
-         CALL UTIMPK('L','                FAMILLE ',1,FAPG)
-         CALL UTFINM
+        VALK (1) = ELREFA
+        VALK (2) = FAPG
+         CALL U2MESG('F', 'ELEMENTS4_84',2,VALK,0,0,0,0.D0)
       ENDIF
       NBPG = NBPG1(IFAM)
       CALL ASSERT((NDIM.GE.0).AND.(NDIM.LE.3))
@@ -1010,10 +1010,9 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.EQ.3) ZPG(INO+3) = XNO(NDIM* (INO-1)+3)
  220      CONTINUE
         ELSE
-          CALL UTDEBM('F','ELRAGA','FAMILLE NON DISPONIBLE ')
-          CALL UTIMPK('L','   ELEMENT DE REFERENCE ',1,ELREFA)
-          CALL UTIMPK('L','                FAMILLE ',1,FAPG)
-          CALL UTFINM
+        VALK (1) = ELREFA
+        VALK (2) = FAPG
+          CALL U2MESG('F', 'ELEMENTS4_85',2,VALK,0,0,0,0.D0)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1116,10 +1115,9 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
              IF (NDIM.EQ.3) ZPG(INO+4) = XNO(NDIM* (INO-1)+3)
  200      CONTINUE
         ELSE
-          CALL UTDEBM('F','ELRAGA','FAMILLE NON DISPONIBLE ')
-          CALL UTIMPK('L','   ELEMENT DE REFERENCE ',1,ELREFA)
-          CALL UTIMPK('L','                FAMILLE ',1,FAPG)
-          CALL UTFINM
+        VALK (1) = ELREFA
+        VALK (2) = FAPG
+          CALL U2MESG('F', 'ELEMENTS4_85',2,VALK,0,0,0,0.D0)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1151,10 +1149,9 @@ C     ------------------------------------------------------------------
           HPG(4) = HPG(3)
 
         ELSE
-          CALL UTDEBM('F','ELRAGA','FAMILLE NON DISPONIBLE ')
-          CALL UTIMPK('L','   ELEMENT DE REFERENCE ',1,ELREFA)
-          CALL UTIMPK('L','                FAMILLE ',1,FAPG)
-          CALL UTFINM
+        VALK (1) = ELREFA
+        VALK (2) = FAPG
+          CALL U2MESG('F', 'ELEMENTS4_85',2,VALK,0,0,0,0.D0)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1164,9 +1161,8 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
       ELSE
-        CALL UTDEBM('F','ELRAGA','ELREFE NON DISPONIBLE ')
-        CALL UTIMPK('L','   ELEMENT DE REFERENCE ',1,ELREFA)
-        CALL UTFINM
+        VALK (1) = ELREFA
+        CALL U2MESG('F', 'ELEMENTS4_88',1,VALK,0,0,0,0.D0)
         CALL ASSERT(.FALSE.)
 
       END IF

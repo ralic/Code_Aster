@@ -7,7 +7,7 @@ C     SENSIBILITE - MEMORISATION DES CORRESPONDANCES
 C     **            **               **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,14 +116,12 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'SEMECO' )
-C
       CHARACTER*13 PREFIX
       PARAMETER ( PREFIX = '&NOSENSI.MEMO' )
 C                           1234567890123
 C
       INTEGER LXLGUT
+      INTEGER VALI(2)
 C
       INTEGER ADMOCL, ADVALE, ADMOFA
       INTEGER ADMMEM, ADMEMC, ADMEVA, ADMEMF
@@ -169,9 +167,9 @@ C
           ENDIF
 C
           IF ( LGNOCO.GT.8 ) THEN
-            CALL UTDEBM ( 'A', NOMPRO, 'LA CHAINE '//SAUX06(IAUX) )
-            CALL UTIMPI ( 'S', ' EST DE LONGUEUR : ', 1, LGNOCO )
-            CALL UTFINM
+           VALK(1)  = SAUX06(IAUX)
+           VALI (1) = LGNOCO
+            CALL U2MESG('A', 'UTILITAI6_87',1,VALK,1,VALI,0,0.D0)
             CALL U2MESS('A','UTILITAI3_96')
             CALL U2MESS('F','MODELISA_67')
           ELSE
@@ -355,12 +353,9 @@ C
           IAUX = LXLGUT(SAUX08)
           LGNOCO = LEN(NOCOMP)
           IF ( LGNOCO.LT.IAUX ) THEN
-           CALL UTDEBM ( 'A', NOMPRO, 'PROBLEME DE DECLARATION' )
-            CALL UTIMPI ( 'L',
-     &      'LA CHAINE NOCOMP EST DECLAREE A ', 1, LGNOCO)
-            CALL UTIMPI ( 'L',
-     &'ON VEUT Y METTRE '//SAUX08//' QUI EN CONTIENT ', 1, IAUX)
-            CALL UTFINM
+           VALI (1) = LGNOCO
+           VALI (2) = IAUX
+           CALL U2MESG('A', 'UTILITAI6_88',0,' ',2,VALI,0,0.D0)
             CALL U2MESS('F','MODELISA_67')
           ELSE
             NOCOMP(1:IAUX) = SAUX08(1:IAUX)

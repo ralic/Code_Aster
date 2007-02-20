@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+#@ MODIF compor1 Messages  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,4 +64,9 @@ cata_msg={
 14: _("""
  hujtid :: erreur calcul de la matrice tangente
 """),
+15: _("""
+ nmcomp :: la loi élastique n'est plus disponible directement avec SIMO_MIEHE : utilisez 
+VMIS_ISOT_LINE avec un SY grand
+"""),
+
 }

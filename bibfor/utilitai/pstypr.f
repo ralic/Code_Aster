@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - TYPE DE SENSIBILITE - RECUPERATION
 C     *          *           ***                   *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,10 +69,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'PSTYPR' )
-C
       INTEGER NBPSCO
+      INTEGER VALI(2)
 C
       INTEGER LXLGUT
 C
@@ -176,11 +174,9 @@ C
 C 2.3.1.1. ==> VERIFICATION DE LA TAILLE DE LA CHAINE
 C
         IF ( KAUX.LT.JAUX ) THEN
-          CALL UTDEBM ( 'A', NOMPRO, 'PROBLEME DE DECLARATION' )
-          CALL UTIMPI ( 'L', 'LA CHAINE TYPEPS EST DECLAREE A ', 1,KAUX)
-          CALL UTIMPI ( 'L',
-     &'ON VEUT Y METTRE '//ZK24(ADRAUX+2)//' QUI EN CONTIENT ', 1, JAUX)
-          CALL UTFINM
+          VALI (1) = KAUX
+          VALI (2) = JAUX
+          CALL U2MESG('A', 'UTILITAI6_67',0,' ',2,VALI,0,0.D0)
           CALL U2MESS('F','MODELISA_67')
 C
 C 2.3.1.2. ==> A LA PREMIERE CONTRIBUTION, ON ARCHIVE

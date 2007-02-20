@@ -7,7 +7,7 @@
       CHARACTER*(*)       CHAMZ
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,8 +51,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IDDEEQ, I, IRET, IADMOD ,IBID
+      INTEGER VALI
       CHARACTER*16  CHAMP
       CHARACTER*24  NOMCHA, DEEQ
+      CHARACTER*24 VALK(2)
 C-----------------------------------------------------------------------
 C
 C
@@ -65,11 +67,10 @@ C
       DO 10 I = 1 , NBMODE
          CALL RSEXCH ( BASEMO, CHAMP, I, NOMCHA, IRET )
          IF ( IRET .NE. 0 ) THEN
-            CALL UTDEBM('F','COPMOD','CHAMP INEXISTANT')
-            CALL UTIMPK('L',' CHAMP: '      ,1, CHAMP  )
-            CALL UTIMPI('S',', NUME_ORDRE: ',1, I      )
-            CALL UTIMPK('S',', MODE_MECA: ' ,1, BASEMO )
-            CALL UTFINM()
+            VALK (1) = CHAMP
+            VALK (2) = BASEMO
+            VALI = I
+            CALL U2MESG('F', 'ALGORITH12_66',2,VALK,1,VALI,0,0.D0)
          ENDIF
          CALL JEEXIN (NOMCHA(1:19)//'.VALE' , IBID)
          IF (IBID.GT.0) THEN

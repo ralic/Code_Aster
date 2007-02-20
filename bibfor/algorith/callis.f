@@ -1,6 +1,6 @@
       SUBROUTINE  CALLIS (NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,6 @@ C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*1    K1BID,KB
-      CHARACTER*6    PGC
       CHARACTER*8    NOMRES,OPTION
       CHARACTER*24   FAMLI,FMLIA,PROMLI
       CHARACTER*24   FPLI1O,FPLI2O,FPLI1N,FPLI2N,INT1,INT2
@@ -71,7 +70,6 @@ C
       REAL*8         UN,MOINS1,RBID
 C
 C-----------------------------------------------------------------------
-      DATA PGC /'CALLIS'/
       DATA UN,MOINS1 /1.0D+00,-1.0D+00/
 C-----------------------------------------------------------------------
 C
@@ -231,9 +229,7 @@ C
           IF (IINC.EQ.0) THEN
             CALL VERILI(NOMRES,I,FPLI1O,FPLI2O,IRET)
             IF(IRET.GT.0) THEN
-              CALL UTDEBM('F',PGC,
-     &              'ARRET SUR PROBLEME COHERENCE INTERFACE')
-              CALL UTFINM
+              CALL U2MESG('F', 'ALGORITH12_38',0,' ',0,0,0,0.D0)
             ENDIF
             IAD=LDPMLI+(I-1)*9
             CALL ROTLIS(NOMRES,FMLIA,ZI(IAD),FPLI1N,FPLI1O,I,SST1,

@@ -1,6 +1,6 @@
       SUBROUTINE CANOR3(COOR,A,B,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8 COOR(3,*),A,B,C,X1,X2,X3,Y1,Y2,Y3,Z1,Z2,Z3,X12,Y12,Z12
       REAL*8 X13,Y13,Z13,NORME
+      REAL*8 VALR(10)
       X1=COOR(1,1)
       X2=COOR(1,2)
       X3=COOR(1,3)
@@ -44,17 +45,16 @@ C ======================================================================
          B=B/NORME
          C=C/NORME
       ELSE
-         CALL UTDEBM('F','CANOR3',' NOEUDS N1, N2, N3 COLINEAIRES')
-         CALL UTIMPR('L','COOR(N1):',1,X1)
-         CALL UTIMPR('S',' ',        1,Y1)
-         CALL UTIMPR('S',' ',        1,Z1)
-         CALL UTIMPR('L','COOR(N2):',1,X2)
-         CALL UTIMPR('S',' ',        1,Y2)
-         CALL UTIMPR('S',' ',        1,Z2)
-         CALL UTIMPR('L','COOR(N3):',1,X3)
-         CALL UTIMPR('S',' ',        1,Y3)
-         CALL UTIMPR('S',' ',        1,Z3)
-         CALL UTIMPR('L','NORME   :',1,NORME)
-         CALL UTFINM()
+         VALR (1) = X1
+         VALR (2) = Y1
+         VALR (3) = Z1
+         VALR (4) = X2
+         VALR (5) = Y2
+         VALR (6) = Z2
+         VALR (7) = X3
+         VALR (8) = Y3
+         VALR (9) = Z3
+         VALR (10) = NORME
+         CALL U2MESG('F', 'MODELISA8_53',0,' ',0,0,10,VALR)
       END IF
       END

@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPD ( CUNIT , CLAS , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C ---------------------------------------------------------------------
 C ---------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -60,10 +60,10 @@ C
       CHARACTER*8      NOMBAS
       COMMON /KBASJE/  NOMBAS(N)
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     +                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     +                 KITLEC    , KITECR    ,             KIADM    ,
      +                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     +                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
@@ -72,14 +72,14 @@ C ---------------------------------------------------------------------
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N)
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C ---------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     +               IDMARQ     , IDNOM      ,             IDLONG     ,
      +               IDLONO     , IDLUTI     ,IDNUM
       PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     +               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C ---------------------------------------------------------------------
       CHARACTER*1      KCLAS , CGENR , CTYPE , CLASI , CGEN2
@@ -154,7 +154,7 @@ C DEB -----------------------------------------------------------------
               CTYPE  = TYPE(JTYPE(I)+IXDESO)
               ILTYP  = LTYP(JLTYP(I)+IXDESO)
               DO 50 KOC = 1,NMAX
-                IBIADD = IADM ( JIADM(I) + IXIADD )
+                IBIADD = IADM ( JIADM(I) + 2*IXIADD-1 )
                 KIADD    = ISZON ( JISZON + IBIADD - 1 + 2*KOC-1 )
                 IF ( KIADD .EQ. 0 ) GOTO 50
                 IF ( MOD(KJ,25) .EQ. 1 .AND. LENTE ) THEN
@@ -169,7 +169,7 @@ C DEB -----------------------------------------------------------------
                 IF ( IXLONO .EQ. 0 ) THEN
                  ILONO  = LONO(JLONO(I)+IXDESO)
                 ELSE
-                 IBLONO = IADM ( JIADM(I) + IXLONO )
+                 IBLONO = IADM ( JIADM(I) + 2*IXLONO-1 )
                  ILONO  = ISZON ( JISZON + IBLONO - 1 + KOC )
                 ENDIF
                 KJ = KJ + 1

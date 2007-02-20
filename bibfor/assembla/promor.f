@@ -4,7 +4,7 @@
       CHARACTER*1 BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/02/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
 C-----------------------------------------------------------------------
       INTEGER ZZCONX,ZZNBNE,ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG
       INTEGER ZZNEMA,ZZPRNO
+      INTEGER VALI(2)
 C---- FONCTION D ACCES AU CHAMP CONNEX DE LA S.D. MAILLA DE TYPE
 C     MAILLAGE
 C     ZZCONX(IMAIL,J) = NUMERO DANS LA NUMEROTATION DU MAILLAGE
@@ -344,11 +345,9 @@ C         ---------------------------------------------
   130 CONTINUE
 
       IF (NEQX.NE.NEQU) THEN
-        CALL UTDEBM('F','PROMOR','INCOHERENCE DANS '//
-     &              'LE DENOMBREMENT DES DDLS')
-        CALL UTIMPI('L','NBRE DE DDL A PRIORI    :',1,NEQU)
-        CALL UTIMPI('L','NBRE DE DDL A POSTERIORI:',1,NEQX)
-        CALL UTFINM()
+        VALI (1) = NEQU
+        VALI (2) = NEQX
+        CALL U2MESG('F', 'ASSEMBLA_65',0,' ',2,VALI,0,0.D0)
       END IF
       CALL JEDETR('&&PROMOR.ANCIEN.LM   ')
 

@@ -4,7 +4,7 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C     ------------------------------------------------------------------
       INTEGER IFM,NIV,OCC,NBPART,NBM,IM,IA,I
       INTEGER NBSEG,NBSOR,JNUMA,ILISMA
       INTEGER NUMM1,NUMM2,INDMOT,LONLIS,NDIM
+      INTEGER VALI
       REAL*8 POINT(2),POINA(2),POINB(2),DGRD,R8DGRD,PADIST
       REAL*8 EPSI,XA,XB,XC,YA,YB,YC,R,ALFINF,ALFSUP
       REAL*8 EPSI2,TOLE,DM,XRC1,XRC2,XEX,XOR,YEX,YOR
@@ -63,6 +64,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 NORSGT,NEXSGT,NPAROR,NPAREX,NCNXOR,NCNXEX
       CHARACTER*24 NMAIL1,NMAIL2,NFACOR,NFACEX,NTPCRB
       CHARACTER*24 NPASGT,NPBSGT,NPCARC,NRARC,NSARC,NNOMMA
+      CHARACTER*24 VALK(4)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       DGRD = R8DGRD()
@@ -215,13 +217,10 @@ C      /* CALCUL DE L' INTERSECTION /*
             IF ( ( -180.0D0 .GE. ALFINF   ) .OR.
      &           ( ALFINF   .GE. ALFSUP   ) .OR.
      &           ( ALFSUP   .GT. 180.0D0  ) ) THEN
-                CALL UTDEBM ('F','INTE_MAIL_2D',' ')
-                CALL UTIMPI ('L','DEFI-ARC, OCCURENCE :',1,OCCA)
-                CALL UTIMPK ('L','LE MOT CLE ',1,'SECTEUR')
-                CALL UTIMPK ('S','ADMET POUR ARGUMENT UNE LISTE '//
-     &                             'DE 2 REELS (A1,A2), TELLE QUE :'
-     &                             ,1,'-180. < A1 <= A2 < 180.')
-                CALL UTFINM
+          VALI = OCCA
+          VALK (1) = 'SECTEUR'
+          VALK (2) = '-180. < A1 <= A2 < 180.'
+                CALL U2MESG('F', 'POSTRELE_76',2,VALK,1,VALI,0,0.D0)
              ENDIF
           ELSE
 
@@ -247,11 +246,9 @@ C     ON UTILISE LA MOYENNE ARITHMETIQUE DES RAYONS COMME REFERENCE
               TOLE = EPSI2
             END IF
             IF (ABS(XRC1-XRC2).GT.TOLE) THEN
-              CALL UTDEBM('F','OP0050','MOT CLE FACTEUR ')
-              CALL UTIMPI('S',' "DEFI_ARC", OCCURENCE ',1,OCCA)
-              CALL UTIMPK('L','LE CENTRE N''EST PAS VRAIMENT LE '//
-     &                    'CENTRE DU CERCLE',0,' ')
-              CALL UTFINM()
+          VALI = OCCA
+          VALK (1) = ' '
+              CALL U2MESG('F', 'POSTRELE_77',1,VALK,1,VALI,0,0.D0)
             END IF
             R = XRC1
             ALFINF = ATAN2(POINA(2)-POINT(2),POINA(1)-POINT(1))
@@ -333,13 +330,12 @@ C        /* SAUVEGARDE DE L' INTERSECTION DANS CETTE STRUCTURE /*
    70     CONTINUE
         ELSE
           OCC = OCCA + OCCS - 2
-          CALL UTDEBM('F','INTE_MAIL_2D',' ')
-          CALL UTIMPI('L','LA PARTIE ',1,OCC)
-          CALL UTIMPK('S','DE LA COURBE DE NOM : ',1,NOMCRB)
-          CALL UTIMPK('S','NE COUPE PAS LE DOMAINE MAILLE.',1,' ')
-          CALL UTIMPK('L','NON PRODUCTION DU CONCEPT ',1,' ')
-          CALL UTIMPK('L','POSSIBILITE DE DESASTRE',1,' ')
-          CALL UTFINM
+          VALI = OCC
+          VALK (1) = NOMCRB
+          VALK (2) = ' '
+          VALK (3) = ' '
+          VALK (4) = ' '
+          CALL U2MESG('F', 'POSTRELE_78',4,VALK,1,VALI,0,0.D0)
         END IF
         GO TO 30
       END IF

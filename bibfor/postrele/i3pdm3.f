@@ -5,7 +5,7 @@
       LOGICAL           DEDANS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,6 +54,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER F,I,J,NBF,NBS,ADESTM,DECF,COL,IRET,ISING
+      INTEGER VALI(2)
       REAL*8  ZERO,UN,DEUX,CS(3,4),A(10,10),FK(4,4),B(10),VAL1,VAL2,DET
       LOGICAL FINI,GAUCHE
 C
@@ -190,9 +191,8 @@ C
          GOTO 100
       ENDIF
       IF ( IRET .EQ. -1 ) THEN
-         CALL UTDEBM('F','I3PDM3','FACE DEGENEREE')
-         CALL UTIMPI('L','MAILLE : ',1,K)
-         CALL UTIMPI('S',' FACE : ',1,F)
-         CALL UTFINM()
+         VALI (1) = K
+         VALI (2) = F
+         CALL U2MESG('F', 'POSTRELE_82',0,' ',2,VALI,0,0.D0)
       ENDIF
       END

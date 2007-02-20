@@ -8,7 +8,7 @@
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C                TCOSUP(I) = 3 : COMBINAISON ABSOLUE
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
+      INTEGER VALI(2)
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -98,11 +99,10 @@ C     --- VERIFICATION DES SUPPORTS ---
  12         CONTINUE
             IF (NSUPP(ID).NE.NBBD) THEN
                IER = IER + 1
-               CALL UTDEBM('E','ASMSUP','DONNEES INCOMPATIBLES :')
-               CALL UTIMPK('L','   POUR LA DIRECTION ',1,DIR(ID))
-               CALL UTIMPI('L','   NOMBRE DE BLOCAGE : ',1,NBBD)
-              CALL UTIMPI('L','   NOMBRE D''EXCITATIONS : ',1,NSUPP(ID))
-               CALL UTFINM( )
+         VALK (1) = DIR(ID)
+         VALI (1) = NBBD
+         VALI (2) = NSUPP(ID)
+               CALL U2MESG('E', 'ALGORITH12_6',1,VALK,2,VALI,0,0.D0)
             ENDIF
          ENDIF
  10   CONTINUE
@@ -114,10 +114,9 @@ C     --- VERIFICATION DE L'OPTION "REAC_NODA" ---
       CALL RSUTNC(MECA,NOMSY,0,K8B,IBID,NBTROU)
       IF (NBTROU.EQ.0) THEN
          IER = IER + 1
-         CALL UTDEBM('E','ASMSUP','DONNEES INCOMPATIBLES :')
-         CALL UTIMPK('L','   POUR LES MODES MECANIQUES : ',1,MECA)
-         CALL UTIMPK('L','   IL MANQUE L''OPTION : ',1,NOMSY)
-         CALL UTFINM( )
+         VALK (1) = MECA
+         VALK (2) = NOMSY
+         CALL U2MESG('E', 'ALGORITH12_7',2,VALK,0,0,0,0.D0)
          GOTO 9999
       ENDIF
 C

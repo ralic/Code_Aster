@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              PGL(3,3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,6 +50,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &              JLONGR, JLIGR, JPNT, IPOIN, IANOMA, IMODEL, ILONG
       REAL*8        SG(6), SL(6)
       CHARACTER*8   K8B, NOMCMP, NOMMA
+      CHARACTER*24 VALK(2)
       CHARACTER*16  OPTION
       CHARACTER*19  CHELM, NOLIGR
       LOGICAL       EXISDG
@@ -85,10 +86,9 @@ C         COMPOSANTE:  NXX NYY NXY MXX MYY MXY
       ELSE IF ( OPTION(1:14) .EQ. 'DEGE_ELNO_DEPL' ) THEN
 C         COMPOSANTE:  N  VY VZ MT MFY MFZ
       ELSE
-         CALL UTDEBM('F','RVCHE1','CHANGEMENT DE REPERE')
-         CALL UTIMPK('L','CHAMP NON TRAITE ',1,CHELM)
-         CALL UTIMPK('L','OPTION DE CALCUL ',1,OPTION)
-         CALL UTFINM
+         VALK (1) = CHELM
+         VALK (2) = OPTION
+         CALL U2MESG('F', 'POSTRELE1_50',2,VALK,0,0,0,0.D0)
       ENDIF
 C
       CALL JEDUPO ( CHELM//'.CELV', 'V', NOMJV, .FALSE. )

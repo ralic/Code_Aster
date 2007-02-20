@@ -1,7 +1,7 @@
       SUBROUTINE CMPHII(CK,CM,NDIM,NBMOD,NITER,XCRIT,CEIGEN,CMOD,
      &NDIMAX,CMAT1,CMAT2,CVEC,IFIC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/01/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,14 +51,12 @@ C IFIC     /I/: NUMERO UNITE LOGIQUE POUR MESSAGE
 C
 C-----------------------------------------------------------------------
 C
-      CHARACTER*6   PGC
+      INTEGER VALI
       COMPLEX*16 CK(*),CM(*),CEIGEN(NBMOD)
       COMPLEX*16 CMOD(NDIMAX,NBMOD),CPROD,CMOD0(NDIM)
       COMPLEX*16 CMAT1(*),CMAT2(NDIM,NDIM),CVEC(NDIM),CVEC0(NDIM)
       LOGICAL CONVOK
 C
-C-----------------------------------------------------------------------
-      DATA PGC /'CMPHII'/
 C-----------------------------------------------------------------------
 C
 C
@@ -78,10 +76,8 @@ C    FACTORISATION DE LA MATRICE DE RAIDEUR
       CALL TRLDC(CMAT1,NDIM,IPIVO)
 C    GESTION DU PIVOT NUL
       IF(IPIVO.NE.0) THEN
-        CALL UTDEBM('F',PGC,
-     &'ARRET SUR PIVOT NUL')
-          CALL UTIMPI('L',' LIGNE --> ',1,IPIVO)
-          CALL UTFINM
+        VALI = IPIVO
+        CALL U2MESG('F', 'ALGORITH12_54',0,' ',1,VALI,0,0.D0)
       ENDIF
 C
 C

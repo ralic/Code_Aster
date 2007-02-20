@@ -7,7 +7,7 @@
       LOGICAL           COMDIR,GLOB,PRIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16 NOMS2, CONCEP, NOMCMD,DEF
       CHARACTER*19 MONCHA, CHAMP
       CHARACTER*24 VALE
+      CHARACTER*24 VALK(3)
       COMPLEX*16   C16B
 C     ------------------------------------------------------------------
       DATA  COMP / 'X' , 'Y' , 'Z' , 'QUAD' , 'NEWMARK' /
@@ -104,11 +105,10 @@ C           --- CHAMP RECOMBINE ---
             IF ( IER .EQ. 100 ) THEN
                CALL VTDEFS(CHAMP,MONCHA,'G','R')
             ELSE
-               CALL UTDEBM('F','ASSTOC',' PROBLEME STOCKAGE :')
-               CALL UTIMPK('L','   OPTION DE CALCUL : ',1,NOMSY)
-               CALL UTIMPK('L','   DIRECTION : ',1,COMP(ID))
-               CALL UTIMPK('L','   NOM DU CHAMP : ',1,CHAMP)
-               CALL UTFINM()
+            VALK (1) = NOMSY
+            VALK (2) = COMP(ID)
+            VALK (3) = CHAMP
+               CALL U2MESG('F', 'ALGORITH12_9',3,VALK,0,0,0,0.D0)
             ENDIF
             VALE(1:19) = CHAMP
             CALL JEEXIN(VALE(1:19)//'.VALE',IBID)
@@ -141,11 +141,10 @@ C        --- CHAMP RECOMBINE ---
          IF ( IER .EQ. 100 ) THEN
             CALL VTDEFS(CHAMP,MONCHA,'G','R')
          ELSE
-            CALL UTDEBM('F','ASSTOC',' PROBLEME STOCKAGE :')
-            CALL UTIMPK('L','   OPTION DE CALCUL : ',1,NOMSY)
-            CALL UTIMPK('L','   DIRECTION : ',1,COMP(ID))
-            CALL UTIMPK('L','   NOM DU CHAMP : ',1,CHAMP)
-            CALL UTFINM()
+            VALK (1) = NOMSY
+            VALK (2) = COMP(ID)
+            VALK (3) = CHAMP
+            CALL U2MESG('F', 'ALGORITH12_10',3,VALK,0,0,0,0.D0)
          ENDIF
          VALE(1:19) = CHAMP
          CALL JEEXIN(VALE(1:19)//'.VALE',IBID)

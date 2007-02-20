@@ -5,7 +5,7 @@
       CHARACTER*(*)               VECNOM(NE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C ----------------------------------------------------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32  JEXNUM
       INTEGER       ZI
+      INTEGER VALI
       COMMON/IVARJE/ZI(1)
       REAL*8        ZR
       COMMON/RVARJE/ZR(1)
@@ -51,6 +52,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       REAL*8       X
       CHARACTER*24 C
+      CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 C
 C     --- RANGEMENT EN ORDRE CROISSANT ---
@@ -100,11 +102,10 @@ C     --- SUPPRESSION DES DOUBLONS ---
  20   CONTINUE
       IF ( NE .NE. NS ) THEN
       K = NE - NS
-      CALL UTDEBM('F','FOORDN','IL Y A ')
-      CALL UTIMPI('S',' ',1,K)
-      CALL UTIMPK('S',' PARAMETRE(S) IDENTIQUE(S) DANS LA ',0,' ')
-      CALL UTIMPK('S','DEFINITION DE LA NAPPE.',0,' ')
-      CALL UTFINM()
+      VALI = K
+      VALK (1) = ' '
+      VALK (2) = ' '
+      CALL U2MESG('F', 'UTILITAI6_38',2,VALK,1,VALI,0,0.D0)
       ENDIF
 C
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF postrele Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -302,6 +302,159 @@ cata_msg={
         SYMAX =  %(r3)12.5E
         ON DOIT AVOIR 0.3 < X < 1.                                                                                                   
  
+"""),
+
+69: _("""
+  erreur numero :  %(i1)d   %(k1)s occurence numero :  %(i2)d 
+  maille numero :  %(i3)d 
+"""),
+
+70: _("""
+ defi_cheminerreur numero  %(i1)d occurence numero :  %(i2)d 
+  maille numero :  %(i3)d 
+  maille  %(k1)s 
+"""),
+
+71: _("""
+ defi_cheminerreur numero :  %(i1)d   %(k1)s occurence numero :  %(i2)d 
+  groupe numero :  %(i3)d 
+"""),
+
+72: _("""
+ defi_cheminerreur numero  %(i1)d occurence numero :  %(i2)d 
+  groupe numero :  %(i3)d 
+ presence de maille(s)  %(k1)s 
+"""),
+
+73: _("""
+  
+ les objets precedemment evoques sont  inexistants ou de type incompatible %(k1)s 
+"""),
+
+74: _("""
+ erreur dans les donnees au noeud  %(k1)s  on a  %(i1)d  mailles %(k2)s 
+"""),
+
+75: _("""
+ trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
+"""),
+
+76: _("""
+  defi-arc, occurence : %(i1)d le mot cle  %(k1)s 
+ admet pour argument une liste  de 2 reels (a1,a2), telle que : %(k2)s 
+"""),
+
+77: _("""
+ mot cle facteur  "defi_arc", occurence  %(i1)d 
+ le centre n''est pas vraiment le  centre du cercle %(k1)s 
+"""),
+
+78: _("""
+  la partie  %(i1)d de la courbe de nom :  %(k1)s 
+ ne coupe pas le domaine maille. %(k2)s 
+ non production du concept  %(k3)s 
+ possibilite de desastre %(k4)s 
+"""),
+
+79: _("""
+ face inconnuemaille numero :  %(i1)d  face :  %(i2)d 
+"""),
+
+80: _("""
+ face a nombre de sommets  non traitemaille :  %(i1)d  face :  %(i2)d 
+"""),
+
+81: _("""
+ face degenereemaille numero :  %(i1)d  face :  %(i2)d 
+"""),
+
+82: _("""
+ face degenereemaille :  %(i1)d  face :  %(i2)d 
+"""),
+
+83: _("""
+ face degenreemaille :  %(i1)d  face :  %(i2)d  arete :  %(i3)d 
+"""),
+
+84: _("""
+ face degenreemaille :  %(i1)d  face :  %(i2)d 
+"""),
+
+85: _("""
+ ***************************** post_traitement numero :  %(i1)d 
+ * inexistence des champ-gd %(k1)s 
+ * pas de post-traitement %(k2)s 
+ **************************** %(k3)s 
+"""),
+
+86: _("""
+ ***************************************** post_traitement numero :  %(i1)d 
+ * aucunes mailles ne correspondent  aux criteres demandes %(k1)s 
+ * pas de post-traitement %(k2)s 
+ ******************************************************** %(k3)s 
+"""),
+
+87: _("""
+  defi_segment, occurence  %(i1)d 
+ origine et extremite confondues a la  precision :  %(r1)f 
+"""),
+
+88: _("""
+ intersection  segment  cnum  maillage  nomail  : vide
+       origine   : %(r1)f %(r2)f %(r3)f
+       extremite : %(r4)f %(r5)f %(r6)f
+"""),
+
+89: _("""
+ il y chevauchement entre les mailles  %(k1)s  et  %(k2)s 
+"""),
+
+90: _("""
+ saut d''abscisse entre les mailles  %(k1)s  et  %(k2)s 
+"""),
+
+91: _("""
+ probleme pour recuperer dans la table  %(k1)s  la contrainte  %(k2)s 
+  pour l''absc_curv  %(r1)f 
+  code retour  %(i1)d 
+"""),
+
+92: _("""
+ plusieurs seismes dans le meme groupe   groupe numero:  %(i1)d 
+    occurence situation  %(i2)d 
+  et  %(i3)d 
+"""),
+
+93: _("""
+ probleme pour recuperer dans la table  %(k1)s  les  %(k2)s 
+"""),
+
+94: _("""
+ probleme pour recuperer dans la table  %(k1)s  les  %(k2)s 
+"""),
+
+95: _("""
+ probleme pour recuperer dans la table  %(k1)s  la contrainte  %(k2)s 
+  pour l''absc_curv  %(r1)f 
+"""),
+
+96: _("""
+ erreur donnees " etat "pour la situation numero  %(i1)d 
+ on n''a pas pu recuperer le "resu_meca"  correspondant au "char_etat_ etat "  %(i2)d 
+"""),
+
+97: _("""
+ erreur donnees " etat "pour la situation numero  %(i1)d 
+ on ne peut pas avoir des charges de  type "seisme" et "autre". %(i2)d 
+"""),
+
+98: _("""
+ probleme recuperation pour l''occurrence  %(i1)d  dans le resultat  %(k1)s 
+"""),
+
+99: _("""
+ probleme donnees pour l''occurrence  %(i1)d 
+  un seul numero d''ordre  %(i2)d 
 """),
 
 }

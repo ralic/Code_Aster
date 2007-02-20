@@ -1,6 +1,6 @@
        SUBROUTINE JEIMHD ( FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 30/10/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -67,8 +67,8 @@ C
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
       INTEGER          IFNIVO, NIVO
       COMMON /JVNIVO/  IFNIVO, NIVO
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
 C ----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
@@ -92,11 +92,11 @@ C ----------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C     ------------------------------------------------------------------
-      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
-     &               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
-     &               IDLONO     , IDLUTI     ,IDNUM
-      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
-     &               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+      INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
+     &               IDMARQ     , IDNOM      ,              IDLONG     ,
+     &               IDLONO     , IDLUTI     , IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 , IDIADD = 2 , IDIADM = 3 ,
+     &               IDMARQ = 4 , IDNOM  = 5 ,              IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C DEB ------------------------------------------------------------------
       IPGCEX = IPGC
@@ -149,7 +149,7 @@ C
           LONOI = LONO(JLONO(IC)+J)*LTYPI
           IADDI(1) = IADD(JIADD(IC)+2*J-1)
           IADDI(2) = IADD(JIADD(IC)+2*J  )
-          IADMI = IADM(JIADM(IC)+J)
+          IADMI = IADM(JIADM(IC)+2*J-1)
           IADMX = IADMI
           IF ( GENRI .NE. 'X' ) THEN
 C           ON TRAITE UN OBJET SIMPLE
@@ -167,7 +167,7 @@ C           ON TRAITE UN OBJET SIMPLE
                 GOTO 5
               ENDIF
               CALL JJALTY (TYPEI , LTYPI , 'L' , 1 , JCTAB)
-              IADMI = IADM ( JIADM(IC) + J )
+              IADMI = IADM ( JIADM(IC) + 2*J-1 )
             ENDIF
             WRITE(KATTR(2),'(16X,I8)') J
             CALL JJIMHD (IDFIC,INAT0,CRNOM,NGRP,KATTR,IADMI,GENRI,TYPEI,
@@ -208,7 +208,7 @@ C                TRAITEMENT PARTICULIER DU $$DESO
               TYPEI = TYPE( JTYPE(IC) + IXDESO )
               LTYPI = LTYP( JLTYP(IC) + IXDESO )
               LONOI = LONO( JLONO(IC) + IXDESO ) * LTYPI
-              IADMI    = IADM ( JIADM(IC) + IXDESO )
+              IADMI    = IADM ( JIADM(IC) + 2*IXDESO-1 )
               IADDI(1) = IADD ( JIADD(IC) + 2*IXDESO-1 )
               IADDI(2) = IADD ( JIADD(IC) + 2*IXDESO   )
               IADMX = IADMI
@@ -220,7 +220,7 @@ C                TRAITEMENT PARTICULIER DU $$DESO
                   GOTO 5
                 ENDIF
                 CALL JJALTY (TYPEI , LTYPI , 'L' , 2 , JCTAB)
-                IADMI = IADM ( JIADM(IC) + IXDESO )
+                IADMI = IADM ( JIADM(IC) + 2*IXDESO-1 )
               ENDIF
               CRNOM = RNOM( JRNOM(IC) + IXDESO )
               WRITE(KATTR(2),'(16X,I8)') IXDESO
@@ -231,8 +231,8 @@ C             ON TRAITE UNE COLLECTION DISPERSEE
 C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
               INAT   = 3
               IXIADM = ISZON ( JISZON + IBACOL + IDIADM )
-              IBIADM = IADM ( JIADM(IC) + IXIADM )
-              IBIADD = IADM ( JIADM(IC) + IXIADD )
+              IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
+              IBIADD = IADM ( JIADM(IC) + 2*IXIADD-1 )
               NBMAX= ISZON (JISZON + IBACOL + IVNMAX )
               IF (NBMAX .GT. 0) THEN
                 NOMCOL(25:32) = '__OBJETS'
@@ -246,7 +246,7 @@ C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
                 IRET = HDFWAT(IDGC,NOMATC,5,KATTRC)
               ENDIF
               DO 10 K = 1,NBMAX
-                IADMI = ISZON(JISZON + IBIADM - 1 + K )
+                IADMI = ISZON(JISZON + IBIADM - 1 + 2*K-1 )
                 IDATOC = K
                 IF ( IADMI .EQ. 0 ) THEN
                   IADDI(1) = ISZON(JISZON + IBIADD - 1 + 2*K-1 )
@@ -258,18 +258,18 @@ C                TRAITEMENT PARTICULIER DES OBJETS DE COLLECTION
                     GOTO 10
                   ENDIF
                   CALL JJALTY (TYPEI , LTYPI , 'L' , INAT , JCTAB)
-                  IADMI  = ISZON(JISZON + IBIADM - 1 + K )
+                  IADMI  = ISZON(JISZON + IBIADM - 1 + 2*K-1 )
                 ENDIF
                 IXLONO = ISZON ( JISZON + IBACOL + IDLONO )
                 IF ( IXLONO .EQ. 0 ) THEN
                   LONOI = LONO ( JLONO(IC) + IXDESO ) * LTYPI
                 ELSE
-                  IBLONO = IADM ( JIADM(IC) + IXLONO )
+                  IBLONO = IADM ( JIADM(IC) + 2*IXLONO-1 )
                   LONOI  = ISZON ( JISZON + IBLONO - 1 + K ) * LTYPI
                 ENDIF
                 IXNOM = ISZON ( JISZON + IBACOL + IDNOM )
                 IF ( IXNOM .GT. 0 ) THEN
-                  IBNOM = IADM ( JIADM(IC) + IXNOM )
+                  IBNOM = IADM ( JIADM(IC) + 2*IXNOM-1 )
                   IDENOM = ISZON ( JISZON + IBNOM - 1 + IDENO )
                   LNOM   = ISZON ( JISZON + IBNOM - 1 + ILNOM )
                   IDECO = (IBNOM - 1) * LOIS + IDENOM + LNOM * (K - 1)
@@ -292,7 +292,7 @@ C                TRAITEMENT DES OBJETS SYSTEME DE COLLECTION
             DO 20 K = IDIADD,IDNUM
               IX  = ISZON( JISZON + IBACOL + K )
               IF ( IX .GT. 0 ) THEN
-                IADMI    = IADM (JIADM(IC) + IX)
+                IADMI    = IADM (JIADM(IC) + 2*IX-1)
                 IF ( IADMI .NE. 0 ) THEN
                   GENRI = GENR(JGENR(IC)+IX)
                   TYPEI = TYPE(JTYPE(IC)+IX)

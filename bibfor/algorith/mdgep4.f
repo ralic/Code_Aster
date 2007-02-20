@@ -3,7 +3,7 @@
       REAL*8                        PSIDEL(NEQ,*),TEMPS,     REP
       CHARACTER*8                                NOMFON(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/04/2006   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +34,7 @@ C IN  : IDDL   : NUMERO DU DDL TRAITE
 C OUT : REP    : VALEUR DE PSIDEL*VALE_NOMFOM(TEMPS)
 C .________________.____.______________________________________________.
       CHARACTER*8  NOMPAR, BLANC
+      CHARACTER*24 VALK
       REAL*8       COEF
 C
       BLANC  = '        '
@@ -41,10 +42,8 @@ C
       REP    = 0.D0
       DO 10 IEX = 1,NBEXCI
          IF ( NOMFON(IEX) .EQ. BLANC ) THEN
-            CALL UTDEBM('A','MDGEP4','!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            CALL UTIMPK('L','INCOMPATIBILITE AVEC MULTI APPUI :',
-     +                   1,'CHARGE EN MONO APPUI')
-            CALL UTFINM()
+            VALK = 'CHARGE EN MONO APPUI'
+            CALL U2MESG('A', 'ALGORITH13_45',1,VALK,0,0,0,0.D0)
             GOTO 10
          ENDIF
          CALL FOINTE('F ',NOMFON(IEX),1,NOMPAR,TEMPS,COEF,IER)

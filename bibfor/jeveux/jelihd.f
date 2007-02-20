@@ -1,6 +1,6 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 12/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_20 CRS_508 CRS_512 CRS_513
+C TOLE CRP_18 CRP_20 CRS_508 CRS_512 CRS_513 CRS_505 
       IMPLICIT NONE
       CHARACTER*(*)       NOMF, FICHDF, CLAS
 C ----------------------------------------------------------------------
@@ -45,11 +45,11 @@ C ----------------------------------------------------------------------
       INTEGER          N
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       INTEGER          JLTYP   , JLONG   , JDATE   , JIADD   , JIADM   ,
-     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ
+     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ   
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
@@ -60,19 +60,17 @@ C
       COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
       INTEGER          JGENR   , JTYPE   , JDOCU   , JORIG   , JRNOM
       COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
-      INTEGER          INDEF, JINDEF, IACCE, JIACCE, IUSADI, JUSADI
-      COMMON /KINDJE/  INDEF(1)
-      COMMON /JINDJE/  JINDEF(N)
+      INTEGER          IACCE, JIACCE, IUSADI, JUSADI
       COMMON /IACCED/  IACCE(1)
       COMMON /JIACCE/  JIACCE(N)
       COMMON /KUSADI/  IUSADI(1)
       COMMON /JUSADI/  JUSADI(N)
 C ----------------------------------------------------------------------
       INTEGER          NBLMAX    , NBLUTI    , LONGBL    ,
-     &                 KITLEC    , KITECR    , KINDEF    , KIADM    ,
+     &                 KITLEC    , KITECR    ,             KIADM    ,
      &                 IITLEC    , IITECR    , NITECR    , KMARQ
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
-     &                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
+     &                 KITLEC(N) , KITECR(N) ,             KIADM(N) ,
      &                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
 C
       INTEGER          NRHCOD    , NREMAX    , NREUTI
@@ -92,13 +90,11 @@ C
 C ----------------------------------------------------------------------
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
-      LOGICAL          LCRA
-      COMMON /LENVJE/  LCRA
       INTEGER          LFIC,MFIC
       COMMON /FENVJE/  LFIC,MFIC
 C
-      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
-      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
+      COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
 C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -133,7 +129,7 @@ C ----------------------------------------------------------------------
       PARAMETER      ( NOMATR = 'ATTRIBUTS JEVEUX',
      &                 NOMAT2 = 'BASE GLOBALE JEVEUX' )
       INTEGER          IPGCA,LTYPI,LONOI,NBOBJ,IK32(1),JK32,IK8(1),JK8
-      INTEGER          IDFIC,IDTS,NBEX,LTYPB,LONIND,NBVAL,IADMI
+      INTEGER          IDFIC,IDTS,LTYPB,LONIND,NBVAL,IADMI
       INTEGER          IDOS,KITAB,IDGR,IDT1,IDT2,IDG,JULIST,IUNIFI
       INTEGER          HDFOPF,HDFNBO,HDFOPD,HDFTSD,HDFRSV,HDFRAT
       INTEGER          HDFNOM,HDFTYP,HDFCLD,HDFOPG,HDFCLG,HDFRSI,HDFCLF
@@ -148,18 +144,18 @@ C     ------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C ----------------------------------------------------------------------
-      INTEGER          LIDBAS      , LIDEFF
+      INTEGER          LIDBAS      , LIDEFF, IDYN32, IDYN8 , IBID
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*8      CIDBAS(LIDBAS)
-      CHARACTER*32     NOMSYS,D32
       CHARACTER*24     VALK(3)
-      INTEGER          KAT(LIDBAS) , LSO(LIDBAS) , LGBL
+      CHARACTER*32     NOMSYS,D32
+      INTEGER          KAT(LIDBAS),LSO(LIDBAS),KDY(LIDBAS),LGBL,IADYN
       LOGICAL          LEXP
       DATA CIDBAS  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,
      &               '$$DOCU  ' , '$$ORIG  ' , '$$RNOM  ' , '$$LTYP  ' ,
      &               '$$LONG  ' , '$$LONO  ' , '$$DATE  ' , '$$LUTI  ' ,
      &               '$$HCOD  ' , '$$USADI ' , '$$ACCE  ' , '$$MARQ  ' ,
-     &               '$$INDX  ' , '$$TLEC  ' , '$$TECR  ' , '$$IADM  ' /
+     &               '$$XXXX  ' , '$$TLEC  ' , '$$TECR  ' , '$$IADM  ' /
 C     ------------------------------------------------------------------
       DATA NOMSYS  / '________XXXXXXXX________$$CARA' /
       DATA             NREP / 'T_HCOD' , 'T_NOM' /
@@ -233,7 +229,7 @@ C
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(1)
       IDTS = HDFOPD(IDFIC,NGRP,CRNOM)
       LCARAO = NCAR * LOIS
-      CALL JJALLS ( LCARAO , 'V','I' , LOIS ,Z,CARA, IADRS , KAT( 1))
+      CALL JJALLS (LCARAO,'V','I',LOIS ,Z,CARA, IADRS,KAT(1),IADYN)
       JCARA(IC) = IADRS
       CALL JJHRSV (IDTS,NCAR,KAT(1))
 
@@ -260,66 +256,56 @@ C
       ENDIF
 C
       LMARQ = 2 * NREMAX(IC) * LOIS
-      CALL JJALLS (LMARQ,'V','I',LOIS,Z,IMARQ,IADRS,KMARQ(IC))
+      CALL JJALLS (LMARQ,'V','I',LOIS,Z,IMARQ,IADRS,KMARQ(IC),KDY(16))
       KAT(16) = KMARQ(IC)
       JMARQ(IC) = IADRS - 1
       CALL JJECRS (KAT(16),IC,16,0,'E',IMARQ(JMARQ(IC)+2*16-1))
 C
       IDTS = HDFOPD(IDFIC,NGRP,CRNOM)
       LCARAO = NCAR * LOIS
-      CALL JJALLS ( LCARAO , 'V','I' , LOIS ,Z,CARA, IADRS , KAT(1))
+      CALL JJALLS (LCARAO,'V','I',LOIS ,Z,CARA,IADRS,KAT(1),KDY(1))
       JCARA(IC) = IADRS
       CALL JJECRS (KAT(1),IC,1,0,'E',IMARQ(JMARQ(IC)+2*1-1))
       CALL JJHRSV (IDTS,NCAR,KAT(1))
 C
       NBENRG(IC) = MIN ( LFIC/(LONGBL(IC)*LOIS) , NBLMAX(IC) )
-      NBEX   = NBLMAX(IC)/NBENRG(IC)+1
-      IF ( LCRA ) THEN
-       LONIND = NBEX*(NBENRG(IC)/512+1)*512 * LOIS
-       CALL JJALLS (LONIND,'V','I',LOIS,Z,INDEF,IADRS,KINDEF(IC))
-       KAT(17) = KINDEF(IC)
-       JINDEF(IC) = IADRS
-       CALL JJECRS (KAT(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
-      ELSE
-        JINDEF(IC) = 1
-      ENDIF
 C
 C ----OPEN DU FICHIER BINAIRE ASSOCIE A LA BASE JEVEUX
 C
-      CALL JXOUVR (IC, 1, INDEF(JINDEF(IC)), NBENRG(IC) )
+      CALL JXOUVR (IC, 1)
       IEXT(IC) = 1
 C
 C ----ALLOCATION DES TAMPONS DE LECTURE/ECRITURE, DES ADRESSES MEMOIRE
 C     ET DES MARQUES
 C
       LGBL=1024*LONGBL(IC)*LOIS
-      CALL JJALLS (LGBL,'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC))
+      CALL JJALLS (LGBL,'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC),KDY(18))
       KAT(18) = KITLEC(IC)
       KITLEC(IC) = ( KITLEC(IC) - 1 ) * LOIS
       CALL JJECRS (KAT(18),IC,18,0,'E',IMARQ(JMARQ(IC)+2*18-1))
-      CALL JJALLS (LGBL,'V','I',LOIS,Z,ITECR,IADRS ,KITECR(IC))
+      CALL JJALLS (LGBL,'V','I',LOIS,Z,ITECR,IADRS ,KITECR(IC),KDY(19))
       KAT(19) = KITECR(IC)
       KITECR(IC) = ( KITECR(IC) - 1 ) * LOIS
       LON = NREMAX(IC) * LOIS
       CALL JJECRS (KAT(19),IC,19,0,'E',IMARQ(JMARQ(IC)+2*19-1))
-      CALL JJALLS ( LON, 'V','I',LOIS,Z, IADM  , IADRS , KIADM(IC))
+      CALL JJALLS (2*LON,'V','I',LOIS,Z,IADM,IADRS,KIADM(IC),KDY(20))
       KAT(20) = KIADM(IC)
       JIADM(IC) = IADRS - 1
       CALL JJECRS (KAT(20),IC,20,0,'E',IMARQ(JMARQ(IC)+2*20-1))
 C
 C     CES DEUX OBJETS SYSTEME NE DOIVENT PAS ETRE RELUS SUR FICHIER HDF
 C
-      CALL JJALLS ( 2*LON, 'V','I',LOIS,Z, IADD  , IADRS , KAT( 2))
+      CALL JJALLS (2*LON, 'V','I',LOIS,Z, IADD,IADRS,KAT(2),KDY(2))
       JIADD(IC) = IADRS - 1
       CALL JJECRS (KAT(2),IC,2,0,'E',IMARQ(JMARQ(IC)+2*2-1))
 C
       LON2 = NBLMAX(IC) * LOIS
-      CALL JJALLS ( LON2 ,'V','I',LOIS,Z, IACCE , IADRS , KAT(15))
+      CALL JJALLS (LON2,'V','I',LOIS,Z,IACCE,IADRS,KAT(15),KDY(15))
       JIACCE(IC) = IADRS - 1
       CALL JJECRS (KAT(15),IC,15,0,'E',IMARQ(JMARQ(IC)+2*15-1))
 C
       LON = NREMAX(IC) * LEN(GENR(1))
-      CALL JJALLS (LON,'V','K',LEN(GENR(1)),Z,IGENR, IADRS , KAT(3))
+      CALL JJALLS (LON,'V','K',LEN(GENR(1)),Z,IGENR,IADRS,KAT(3),KDY(3))
       JGENR(IC) = IADRS - 1
       CALL JJECRS (KAT(3),IC,3,0,'E',IMARQ(JMARQ(IC)+2*3-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(3)
@@ -328,7 +314,7 @@ C
       CALL JJHRSV (IDTS,LONOI,KAT(3))
 C
       LON = NREMAX(IC) * LEN(TYPE(1))
-      CALL JJALLS (LON,'V','K',LEN(TYPE(1)),Z,ITYPE, IADRS , KAT(4))
+      CALL JJALLS (LON,'V','K',LEN(TYPE(1)),Z,ITYPE,IADRS,KAT(4),KDY(4))
       JTYPE(IC) = IADRS - 1
       CALL JJECRS (KAT(4),IC,4,0,'E',IMARQ(JMARQ(IC)+2*4-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(4)
@@ -337,7 +323,7 @@ C
       CALL JJHRSV (IDTS,LONOI,KAT(4))
 C
       LON = NREMAX(IC) * LEN(DOCU(1))
-      CALL JJALLS (LON,'V','K',LEN(DOCU(1)),Z,IDOCU, IADRS , KAT(5))
+      CALL JJALLS (LON,'V','K',LEN(DOCU(1)),Z,IDOCU,IADRS,KAT(5),KDY(5))
       JDOCU(IC) = IADRS - 1
       CALL JJECRS (KAT(5),IC,5,0,'E',IMARQ(JMARQ(IC)+2*5-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(5)
@@ -346,7 +332,7 @@ C
       CALL JJHRSV (IDTS,LONOI,KAT(5))
 C
       LON = NREMAX(IC) * LEN(ORIG(1))
-      CALL JJALLS (LON,'V','K',LEN(ORIG(1)),Z,IORIG, IADRS , KAT(6))
+      CALL JJALLS (LON,'V','K',LEN(ORIG(1)),Z,IORIG,IADRS,KAT(6),KDY(6))
       JORIG(IC) = IADRS - 1
       CALL JJECRS (KAT(6),IC,6,0,'E',IMARQ(JMARQ(IC)+2*6-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(6)
@@ -355,7 +341,7 @@ C
       CALL JJHRSV (IDTS,LONOI,KAT(6))
 C
       LON = NREMAX(IC) * LEN(RNOM(1))
-      CALL JJALLS (LON,'V','K',LEN(RNOM(1)),Z,IRNOM, IADRS , KAT(7))
+      CALL JJALLS (LON,'V','K',LEN(RNOM(1)),Z,IRNOM,IADRS,KAT(7),KDY(7))
       JRNOM(IC) = IADRS - 1
       CALL JJECRS (KAT(7),IC,7,0,'E',IMARQ(JMARQ(IC)+2*7-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(7)
@@ -364,7 +350,7 @@ C
       CALL JJHRSV (IDTS,LONOI,KAT(7))
 C
       LON = NREMAX(IC) * LOIS
-      CALL JJALLS ( LON, 'V','I',LOIS        ,Z,LTYP, IADRS , KAT(8))
+      CALL JJALLS (LON, 'V','I',LOIS,Z,LTYP, IADRS,KAT(8),KDY(8))
       JLTYP(IC) = IADRS - 1
       CALL JJECRS (KAT(8),IC,8,0,'E',IMARQ(JMARQ(IC)+2*8-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(8)
@@ -372,7 +358,7 @@ C
       IRET1 = HDFTSD(IDTS,TYPEI,LTYPI,LONOI)
       CALL JJHRSV (IDTS,LONOI,KAT(8))
 C
-      CALL JJALLS ( LON, 'V','I',LOIS        ,Z,LONG, IADRS , KAT(9))
+      CALL JJALLS (LON,'V','I',LOIS,Z,LONG,IADRS,KAT(9),KDY(9))
       JLONG(IC) = IADRS - 1
       CALL JJECRS (KAT(9),IC,9,0,'E',IMARQ(JMARQ(IC)+2*9-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(9)
@@ -380,7 +366,7 @@ C
       IRET1 = HDFTSD(IDTS,TYPEI,LTYPI,LONOI)
       CALL JJHRSV (IDTS,LONOI,KAT(9))
 C
-      CALL JJALLS ( LON, 'V','I',LOIS       ,Z,LONO, IADRS , KAT(10))
+      CALL JJALLS (LON, 'V','I',LOIS,Z,LONO,IADRS,KAT(10),KDY(10))
       JLONO(IC) = IADRS - 1
       CALL JJECRS (KAT(10),IC,10,0,'E',IMARQ(JMARQ(IC)+2*10-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(10)
@@ -388,7 +374,7 @@ C
       IRET1 = HDFTSD(IDTS,TYPEI,LTYPI,LONOI)
       CALL JJHRSV (IDTS,LONOI,KAT(10))
 C
-      CALL JJALLS ( LON, 'V','I',LOIS       ,Z,DATE, IADRS , KAT(11))
+      CALL JJALLS (LON, 'V','I',LOIS,Z,DATE,IADRS,KAT(11),KDY(11))
       JDATE(IC) = IADRS - 1
       CALL JJECRS (KAT(11),IC,11,0,'E',IMARQ(JMARQ(IC)+2*11-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(11)
@@ -396,7 +382,7 @@ C
       IRET1 = HDFTSD(IDTS,TYPEI,LTYPI,LONOI)
       CALL JJHRSV (IDTS,LONOI,KAT(11))
 C
-      CALL JJALLS ( LON, 'V','I',LOIS      ,Z,LUTI, IADRS , KAT(12))
+      CALL JJALLS (LON,'V','I',LOIS,Z,LUTI,IADRS,KAT(12),KDY(12))
       JLUTI(IC) = IADRS - 1
       CALL JJECRS (KAT(12),IC,12,0,'E',IMARQ(JMARQ(IC)+2*12-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(12)
@@ -405,7 +391,7 @@ C
       CALL JJHRSV (IDTS,LONOI,KAT(12))
 C
       LON = NRHCOD(IC) * LOIS
-      CALL JJALLS ( LON, 'V','I',LOIS       ,Z,HCOD, IADRS , KAT(13))
+      CALL JJALLS (LON,'V','I',LOIS,Z,HCOD,IADRS,KAT(13),KDY(13))
       JHCOD(IC) = IADRS - 1
       CALL JJECRS (KAT(13),IC,13,0,'E',IMARQ(JMARQ(IC)+2*13-1))
       CRNOM = NOMSYS(1:8)//KNOM//NOMSYS(17:24)//CIDBAS(13)
@@ -414,7 +400,7 @@ C
       CALL JJHRSV (IDTS,LONOI,KAT(13))
 C
       LON = 3*NBLMAX(IC) * LOIS
-      CALL JJALLS ( LON, 'V','I',LOIS     ,Z,IUSADI,IADRS, KAT(14))
+      CALL JJALLS (LON,'V','I',LOIS,Z,IUSADI,IADRS,KAT(14),KDY(14))
       JUSADI(IC) = IADRS - 1
       CALL JJECRS (KAT(14),IC,14,0,'E',IMARQ(JMARQ(IC)+2*14-1))
 C
@@ -427,7 +413,8 @@ C
         IUSADI( IADRS + (3*I  ) - 1 ) =  0
  14   CONTINUE
       DO 20 I = 1 , LIDBAS
-         IADM(JIADM(IC) + I ) = KAT(I)
+         IADM(JIADM(IC) + 2*I-1 ) = KAT(I)
+         IADM(JIADM(IC) + 2*I   ) = KDY(I)
  20   CONTINUE
       IADD (JIADD(IC)+1) = 0
       IADD (JIADD(IC)+2) = 0
@@ -443,12 +430,12 @@ C
 C
       IPGC = IPGCA
       LON = NBOBJ*32
-      CALL JJALLS (LON,'V','K',32,'INIT',IK32,JK32,KTEMP1)
+      CALL JJALLS (LON,'V','K',32,'INIT',IK32,JK32,KTEMP1,IDYN32)
       ISZON(JISZON+KTEMP1-1) = ISTAT(2)
       ISZON(JISZON+ISZON(JISZON+KTEMP1-4)-4) = ISTAT(4)
       IRET1 = HDFNOM(IDFIC,NGRP,K32(JK32))
       LON = NBOBJ*8
-      CALL JJALLS (LON,'V','K',8,'INIT',IK8,JK8,KTEMP2)
+      CALL JJALLS (LON,'V','K',8,'INIT',IK8,JK8,KTEMP2,IDYN8)
       ISZON(JISZON+KTEMP2-1) = ISTAT(2)
       ISZON(JISZON+ISZON(JISZON+KTEMP2-4)-4) = ISTAT(4)
       IRET2 = HDFTYP(IDFIC,NGRP,NBOBJ,K8(JK8))
@@ -478,7 +465,6 @@ C     ON TRAITE EN PREMIER LES COLLECTIONS AFIN DE POUVOIR LES LIBERER
 C
       CALL JEMARQ()
       DO 101 K=1,NBOBJ
-Cjpl      write(6,*) '>',K32(JK32+K-1),'< >',K8(JK8+K-1),'<'
        IF (K8(JK8+K-1) .EQ. 'dataset') then
           IDTS=HDFOPD(IDFIC,NGRP,K32(JK32+K-1))
           IRET1=HDFRAT(IDTS,NOMATR,5,KATTR)
@@ -493,7 +479,6 @@ C
 C     ON TRAITE MAINTENANT LES OBJETS SIMPLES (OBJETS SYSTEMES EXCLUS)
 C
       DO 201 K=1,NBOBJ
-Cjpl      write(6,*) '>',K32(JK32+K-1),'< >',K8(JK8+K-1),'<'
         IF (K8(JK8+K-1) .EQ. 'dataset') THEN
           IDTS=HDFOPD(IDFIC,NGRP,K32(JK32+K-1))
           IRET1=HDFTSD(IDTS,TYPEB,LTYPB,NBVAL)
@@ -507,9 +492,10 @@ Cjpl      write(6,*) '>',K32(JK32+K-1),'< >',K8(JK8+K-1),'<'
             LONOI = LON  * LTYPI
             IADD (JIADD(IC)+2*IDOS-1) = 0
             IADD (JIADD(IC)+2*IDOS  ) = 0
-            CALL JJLIHD (IDTS,LON,LONOI,GENRI,TYPEI,LTYPI,
-     &                   IC,IDOS,0,IMARQ(JMARQ(IC)+2*IDOS-1),IADMI)
-            IADM(JIADM(IC)+IDOS) = IADMI
+            CALL JJLIHD (IDTS,LON,LONOI,GENRI,TYPEI,LTYPI,IC,IDOS,
+     &                   0,IMARQ(JMARQ(IC)+2*IDOS-1),IADMI,IADYN)
+            IADM(JIADM(IC)+2*IDOS-1) = IADMI
+            IADM(JIADM(IC)+2*IDOS  ) = IADYN
             ICLAS  = IC
             ICLAOS = IC
             IDATOS = IDOS
@@ -538,7 +524,8 @@ C           CORRESPONDANT A UN REPERTOIRE DE NOMS
 C
             IDT1=HDFOPD(IDFIC,NOMO,NREP(1))
             IDT2=HDFOPD(IDFIC,NOMO,NREP(2))
-            CALL JJALLS(LONOI,GENRI,TYPEI,LTYPI,'INIT',ITAB,JTAB,IADMI)
+            CALL JJALLS(LONOI,GENRI,TYPEI,LTYPI,'INIT',ITAB,
+     &                  JTAB,IADMI,IADYN)
             CALL JJECRS (IADMI,IC,IDOS,0,'E',IMARQ(JMARQ(IC)+2*IDOS-1))
             IRET1=HDFTSD(IDT1,TYPEB,LTYPB,NBVAL)
             CALL JJHRSV (IDT1,NBVAL,IADMI)
@@ -551,7 +538,8 @@ C
             KITAB=JK1ZON+(IADMI-1)*LOIS+ISZON(JISZON+IADMI-1+IDENO)+1
             IRET1=HDFRSV(IDT2,NBVAL,K1ZON(KITAB),ICONV)
             IRET1 = HDFCLD(IDT2)
-            IADM(JIADM(IC)+IDOS) = IADMI
+            IADM(JIADM(IC)+2*IDOS-1) = IADMI
+            IADM(JIADM(IC)+2*IDOS  ) = IADYN
             ICLAS  = IC
             ICLAOS = IC
             IDATOS = IDOS
@@ -571,8 +559,16 @@ C
         CMESS = 'FERMETURE DU FICHIER '//NHDF
         CALL U2MESK('I','JEVEUX_01',1,CMESS)
       ENDIF
-      CALL JJLIBP (KTEMP1)
-      CALL JJLIBP (KTEMP2)
+      IF ( IDYN32 .NE. 0 ) THEN
+        CALL HPDEALLC ( IDYN32 , IBID , IBID )
+      ELSE IF (KTEMP1 .NE. 0) THEN
+        CALL JJLIBP (KTEMP1)
+      ENDIF     
+      IF ( IDYN8 .NE. 0 ) THEN
+        CALL HPDEALLC ( IDYN8 , IBID , IBID )
+      ELSE IF (KTEMP2 .NE. 0) THEN
+        CALL JJLIBP (KTEMP2)
+      ENDIF     
       CALL JEDEMA()
 C FIN ------------------------------------------------------------------
       END
