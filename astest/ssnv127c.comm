@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,7 +175,8 @@ U=STAT_NON_LINE(MODELE=MO,
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1),
-                SOLVEUR=_F(METHODE='LDLT'),
+                SOLVEUR=_F(SYME='OUI',
+                           METHODE='LDLT'),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=50),
                 );
 

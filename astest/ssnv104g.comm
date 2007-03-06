@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,8 @@ RESU=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 30,
                 RESI_GLOB_RELA = 1.E-5,
                 RESI_GLOB_MAXI = 1.E-2),
-                           SOLVEUR=_F( 
+                           SOLVEUR=_F(SYME='OUI',
+                                       
                 METHODE = 'LDLT'),
                               INFO=2
               )
@@ -323,7 +324,8 @@ RESUF=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 30,
                 RESI_GLOB_RELA = 1.E-5,
                 RESI_GLOB_MAXI = 1.E-2),
-                           SOLVEUR=_F( 
+                           SOLVEUR=_F(SYME='OUI',
+                                       
                 METHODE = 'LDLT'),
                               INFO=2
               )

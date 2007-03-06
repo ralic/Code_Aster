@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,8 @@ C       ----------------------------------------------------------------
       REAL*8          TOUTMS(5,24,6),HSR(5,24,24),SQ,PR
 C     ALLOCATION DYNAMIQUE
       REAL*8          SIGF(6),DDVIS(3,3),DDVIR(NVI),DRSDPR(NVI)
-      REAL*8          FHOOK(6,6),TEMPF,CRITR,DGAMM2,DP2,EXPBP(24)
+      REAL*8          FHOOK(6,6),TEMPF,CRITR,DGAMM2,DP2,DALPH2
+      REAL*8          EXPBP(24)
       REAL*8          PGL(3,3),MS(6),VIS(3),TAUS,TIMED, TIMEF
       REAL*8          P,DP,YF(*),DY(*),DRDY(NR,NR),SMSMS(6,6),DFDGA
       REAL*8          MATERF(NMAT*2), DT,RP,DADV(3),DFDTAR,DFDALR,DFDRR
@@ -118,6 +119,9 @@ C           CALCUL DE DALPHA
             ALPHAM=VIND(NUVI+1)                                
             GAMMAP=VIND(NUVI+2)+DGAMMS                                
             PM=VIND(NUVI+3)                                
+
+            IF(NECOUL.NE.'KOCKS_RAUCH') THEN
+
             CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
      &       ITMAX,TOLER, ALPHAM,DGAMMS,DALPHA,IRET )
             ALPHAP=ALPHAM+DALPHA 
@@ -128,17 +132,23 @@ C           CALCUL DE R(P) : RP=R0+Q*(1.D0-EXP(-B*P))
        
             CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
      &           IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RP)
-
-            CALL LCMMFE( TAUS,MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECOUL,RP,
-     &           ALPHAP,GAMMAP,DT,DGAMMA,DP,TEMPF,CRIT,SGNS )
+            ENDIF
+            CALL LCMMFE( TAUS,MATERF(NMAT+1),MATERF(1),IFA,NMAT,NBCOMM,
+     &                  NECOUL,IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),RP,
+     &      ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,TEMPF,CRIT,SGNS,HSR,IRET)
             GAMMAP=VIND(NUVI+2)+DGAMMA
+
+            IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+            ALPHAP=ALPHAM+DALPHA
+            ENDIF
      
             IF (CRIT.GT.0.D0) THEN
 C                                                          
 C              CALCUL de dF/dR, dF/dalpha, dF/dtau               
-               CALL LCMMJF( TAUS,MATERF(NMAT+1),IFA,NMAT,NBCOMM,DT,
-     &                 NECOUL,TEMPF,RP,ALPHAP,DALPHA,GAMMAP,DGAMMA,
-     &                 DFDTAU,DFDAL,DFDR)
+               CALL LCMMJF( TAUS,MATERF(NMAT+1),MATERF(1),IFA,NMAT,
+     &               NBCOMM,DT,NECOUL,IS,0,NBSYS,VIND(NSFV+1),
+     &               DY(NSFA+1),HSR,TEMPF,RP,ALPHAP,DALPHA,GAMMAP,
+     &               DGAMMA,SGNR,DFDTAU,DFDAL,DFDR)
      
 C              dR1/dS
                CALL LCPRTE(MS,MS,MSMS)                           
@@ -158,27 +168,43 @@ C                 Calcul de TauR (scission reduite du systeme R)
  91               CONTINUE 
                   NUVR=NSFA+IR 
                   DGAMMR=DY(NUVR)
-                  ALPHMR=VIND(NUVR-6+1)  
+                  ALPHMR=VIND(NUVR-6+1) 
+      
+                  IF(NECOUL.NE.'KOCKS_RAUCH') THEN                 
+
                   CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
      &            ITMAX,TOLER,ALPHAM,DGAMMS,DALPHA,IRET )
                   ALPHAR=ALPHMR+DALPHA
-                                             
+
 C                 CALCUL DE R(P)                                   
                   CALL LCMMFI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
      &             IR,NBSYS,VIND(NSFV+1),DY(NSFA+1),HSR,IEXP,EXPBP,RR)
 
+                  ENDIF                           
+
                   GAMMAR=VIND(NUVR-6+2)+DGAMMR
-                  CALL LCMMFE(TAUS,MATERF(NMAT+1),IFA,NMAT,NBCOMM,
-     &                        NECOUL,RR,ALPHAR,GAMMAR,DT,
-     &                        DGAMM2,DP2,TEMPF,CRITR,SGNR)
+                                  
+                  CALL LCMMFE(TAUS,MATERF(NMAT+1),MATERF(1),IFA,NMAT,
+     &                        NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),
+     &                        DY(NSFA+1),RR,ALPHAR,GAMMAR,DT,
+     &                    DALPH2,DGAMM2,DP2,TEMPF,CRITR,SGNR,HSR,IRET)
                   GAMMAR=VIND(NUVR-6+2)+DGAMM2
+
+                  IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+                  ALPHAR=ALPHMR+DALPH2
+                  ENDIF
+
 C                 CALCUL de dF/dRr, dF/dalphar, dF/dtau               
-                  CALL LCMMJF( TAUR,MATERF(NMAT+1),IFA,NMAT,NBCOMM,DT,
-     &                 NECOUL,TEMPF,RR,ALPHAR,DALPHR,GAMMAR,DGAMM2,
-     &                 DFDTAR,DFDALR,DFDRR)
+                  CALL LCMMJF( TAUR,MATERF(NMAT+1),MATERF(1),IFA,NMAT,
+     &               NBCOMM,DT,NECOUL,IS,IR,NBSYS,VIND(NSFV+1),
+     &               DY(NSFA+1),HSR,TEMPF,RR,ALPHAR,DALPHR,GAMMAR,
+     &               DGAMM2,SGNR,DFDTAR,DFDALR,DFDRR)
      
 C                 CALCUL DE dRr/dps
                   PS=PM+ABSDGA
+
+                  IF(NECOUL.NE.'KOCKS_RAUCH') THEN                 
+
                   CALL LCMMJI( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
      &                HSR,IS,IR,PS,DRRDPS)
 
@@ -188,6 +214,10 @@ C                 CALCUL DE DALPHAr/dGAMMAs
      
 C                 terme dR1/dGammaS
                   DFDGA=DFDALR*DALDGA+DFDRR*DRRDPS*SGNS
+                  ELSE
+                  DFDGA=DFDALR
+                  ENDIF
+
                   DO 191 I=1,6                                      
                      DRDY(I,NUVS)=DRDY(I,NUVS)+TOUTMS(IFA,IR,I)*DFDGA
  191              CONTINUE                                         

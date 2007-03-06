@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,7 +125,8 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LINST,
                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
                                 SUBD_PAS_MINI=9.9999999999999995E-07,),
-                   SOLVEUR=_F(METHODE='LDLT'),
+                   SOLVEUR=_F(SYME='OUI',
+                              METHODE='LDLT'),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,

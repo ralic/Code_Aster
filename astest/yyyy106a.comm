@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAPET 3D, CONTACT, TEMPERATURE MED, METIS, INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -403,7 +403,8 @@ DEP=STAT_NON_LINE(MODELE=MODMECA,
                   NEWTON=_F(REAC_INCR=1,
                             MATRICE='TANGENTE',
                             REAC_ITER=1,),
-                  SOLVEUR=_F(METHODE='MULT_FRONT',
+                  SOLVEUR=_F(SYME='OUI',
+                             METHODE='MULT_FRONT',
                              RENUM='METIS',),);
 
 CHTHER=AFFE_CHAR_MECA(VERI_NORM='OUI',
@@ -440,7 +441,8 @@ DEP=STAT_NON_LINE(reuse =DEP,
                   NEWTON=_F(REAC_INCR=1,
                             MATRICE='TANGENTE',
                             REAC_ITER=1,),
-                  SOLVEUR=_F(METHODE='MULT_FRONT',
+                  SOLVEUR=_F(SYME='OUI',
+                             METHODE='MULT_FRONT',
                              RENUM='METIS',),);
 
 DEP=CALC_ELEM(reuse =DEP,

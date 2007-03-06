@@ -3,7 +3,7 @@
      &                  JEU,JEUVIT,ASPERI,LAMBDC,
      &                  MMCVCA,DECOL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,20 +21,9 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-      INTEGER IPC
-      INTEGER XA
-      INTEGER XS
-      INTEGER NTPC
-      INTEGER JTABF
-      LOGICAL LVITES
-      LOGICAL LGLISS
-      LOGICAL LCOMPL
-      REAL*8  JEU
-      REAL*8  JEUVIT
-      REAL*8  ASPERI
-      REAL*8  LAMBDC
-      LOGICAL MMCVCA
-      LOGICAL DECOL
+      INTEGER IPC,XA,XS,NTPC,JTABF,IGLISS
+      LOGICAL LVITES,LGLISS,LCOMPL,MMCVCA,DECOL
+      REAL*8  JEU,JEUVIT,ASPERI,LAMBDC
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELLEE PAR : MMMBCA
@@ -53,6 +42,7 @@ C IN  XS     : INDICATEUR DE CONTACT (XS=0: PAS DE CONTACT)
 C IN  LVITES : .TRUE. SI FORMULATION EN VITESSE
 C IN  LGLISS : .TRUE. SI CONTACT GLISSIERE
 C IN  LCOMPL : .TRUE. SI COMPLIANCE
+C              .FALSE. => XA = 1
 C IN  JEU    : VALEUR DU JEU
 C IN  JEUVIT : VALEUR DU GAP DES VITESSES NORMALES
 C IN  ASPERI : COEFFICIENT POUR LES ASPERITES (COMPLIANCE)
@@ -88,9 +78,15 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
+
       ZTABF = CFMMVD('ZTABF')
-C
+
+      IF (LGLISS) THEN
+        IGLISS = INT( ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+30) )
+      ELSE
+        IGLISS = 0
+      ENDIF
+          
       IF ((XA.EQ.0) .AND. (XS.EQ.0)) THEN
 C
 C --- LE PC N'EST PAS CONTACTANT          (XS=0)
@@ -105,28 +101,19 @@ C
 C
 C --- CONTACTANT SI GLISSIERE UNIQUEMENT (-> XS = 1)
 C
-            IF (LGLISS) THEN
+            IF (IGLISS.EQ.1) THEN
               ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
+              MMCVCA = .FALSE.
             ELSE
               ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
             ENDIF
-C
-C --- ON REBOUCLE
-C
-            MMCVCA = .FALSE.
+
           ELSE
 C
 C --- CONTACTANT (-> XS = 1)
 C
             ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
-C
-C --- ON NE REBOUCLE PAS SI GLISSIERE
-C
-            IF (LGLISS) THEN
-              MMCVCA = .TRUE.
-            ELSE
-              MMCVCA = .FALSE.
-            ENDIF
+            MMCVCA = .FALSE.
           END IF
         ENDIF
       ELSE IF ((XA.EQ.1) .AND. (XS.EQ.0)) THEN
@@ -134,14 +121,8 @@ C
 C --- LE PC N'EST PAS CONTACTANT          (XS=0)
 C --- LE PC TOUCHE LES ASPERITES          (XA=1)
 C
-        IF (LGLISS) THEN
+C C'EST LE CAS PAR DEFAUT SI COMPLIANCE='NON'
 C
-C --- ON FORCE LE PC CONTACTANT SI GLISSIERE
-C
-          ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
-          MMCVCA = .FALSE.
-        ENDIF
-
         IF (JEU .GT. R8PREM()) THEN
 C
 C --- LE PC EST CONTACTANT
@@ -159,31 +140,40 @@ C
             ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+21) = 1.D0
             MMCVCA = .FALSE.
           END IF
-          IF (LGLISS) THEN
-            MMCVCA = .TRUE.
+
+        ELSE
+
+          IF (JEU.LT.ASPERI .AND. LCOMPL) THEN
+            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
+            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+21) = 0.D0
           ENDIF
-        ELSEIF (JEU.LT.ASPERI .AND. LCOMPL) THEN
-          ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
-          ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+21) = 0.D0
+C
+C --- ON FORCE LE PC CONTACTANT SI GLISSIERE
+C
+          IF (IGLISS.EQ.1) THEN
+            ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 1.D0
+            MMCVCA = .FALSE.
+          ENDIF
+
         ENDIF
 
-C        PC CONTACTANT
       ELSE IF ((XA.EQ.1) .AND. (XS.EQ.1)) THEN
 C
 C --- LE PC EST       CONTACTANT          (XS=1)
 C --- LE PC TOUCHE LES ASPERITES          (XA=1)
 C
         DECOL =.TRUE.
-        IF ((LAMBDC.GT.0) .AND. (.NOT.LGLISS)) THEN
-C --- LE PC SE DECOLLE
+        IF ((LAMBDC.GT.0) .AND. (IGLISS.EQ.0)) THEN
+C --- LE PC SE DECOLLE (TEST UNIQUEMENT SI GLISSIERE='NON')
           MMCVCA = .FALSE.
           ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+13) = 0.D0
         END IF
+
       ELSE
         CALL U2MESS('F','ALGORITH5_83')
       END IF
-C
+
   999 CONTINUE
-C
+
       CALL JEDEMA()
       END

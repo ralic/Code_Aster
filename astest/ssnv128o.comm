@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
 #
 #-----------------------------------------------------------
 #
-U2M=STAT_NON_LINE(MODELE    = MO,
+U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                  MODELE    = MO,
                   CHAM_MATER = CHMAT,
                   EXCIT      =(_F(CHARGE = CHA1,
                                   FONC_MULT = RAMPE,),
@@ -182,7 +183,8 @@ U2L=STAT_NON_LINE(MODELE    = MO,
                                   FONC_MULT = RAMPE,),
                                _F(CHARGE = CHA2,)),
                   COMP_ELAS  = _F(RELATION = 'ELAS',),
-                  SOLVEUR = _F(METHODE = 'LDLT',),
+                  SOLVEUR = _F(SYME='OUI',
+                               METHODE = 'LDLT',),
                   NEWTON = _F(MATRICE = 'ELASTIQUE',),
                   INCREMENT  = _F(LIST_INST = L_INST,
                                   PRECISION = 1.0E-3,

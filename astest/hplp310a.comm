@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE BIBLIO_35  FISSURE RADIALE INTERNE DANS UN CYLINDRE EPAIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -192,6 +192,7 @@ CHAMDEPT=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=(
 
 
 CHAMDEP0=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -222,6 +223,7 @@ CHAMDEP0=CALC_ELEM( reuse=CHAMDEP0,
               )
 
 CHAMDEP1=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -251,6 +253,7 @@ CHAMDEP1=CALC_ELEM( reuse=CHAMDEP1,
               )
 
 CHAMDEP2=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -280,6 +283,7 @@ CHAMDEP2=CALC_ELEM( reuse=CHAMDEP2,
               )
 
 CHAMDEP3=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -307,6 +311,7 @@ CHAMDEP3=CALC_ELEM( reuse=CHAMDEP3,
               )
 
 CHAMDEP4=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -334,6 +339,7 @@ CHAMDEP4=CALC_ELEM( reuse=CHAMDEP4,
               )
 
 CHAMDEP5=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -361,6 +367,7 @@ CHAMDEP5=CALC_ELEM( reuse=CHAMDEP5,
               )
 
 CHAMDEP6=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -388,6 +395,7 @@ CHAMDEP6=CALC_ELEM( reuse=CHAMDEP6,
               )
 
 CHAMDEP7=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -415,6 +423,7 @@ CHAMDEP7=CALC_ELEM( reuse=CHAMDEP7,
               )
 
 CHAMDEP8=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 
@@ -442,6 +451,7 @@ CHAMDEP8=CALC_ELEM( reuse=CHAMDEP8,
               )
 
 CHAMDEP9=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,EXCIT=(
                              _F( 

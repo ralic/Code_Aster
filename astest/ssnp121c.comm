@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT DE DEUX PLAQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,7 +79,8 @@ FONC=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,  0.0,
                          1.0,  1.0,),);
 
-RESU=STAT_NON_LINE(MODELE=MO,
+RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                   MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHA1,
                              FONC_MULT=FONC,),

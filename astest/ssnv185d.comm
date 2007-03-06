@@ -1,4 +1,4 @@
-# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -182,6 +182,35 @@ for i in range(0,nbc) :
               CRITERE='RELATIF',
               PRECISION=prec,
               REFERENCE='ANALYTIQUE',);
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : CALCUL DES SIFS AVEC POST_K1_K2_K3
+#------------------------------------------------------------------------
+
+PK=POST_K1_K2_K3(MODELISATION='3D',
+                     MAILLAGE=MAILLAG1,
+                     MATER=ACIER,
+                     FISSURE = FISS,
+                     DTAN_ORIG = (0,-1,0),
+                     DTAN_EXTR = (0,-1,0),
+                     RESULTAT  = UTOT1,
+                     ABSC_CURV_MAXI = 1.5,
+                     NB_NOEUD_COUPE = 6,
+                     VECT_K1        = ( 0., 0., 1., ),
+                    )
+
+IMPR_TABLE(TABLE = PK)
+
+TEST_TABLE( TABLE=PK,
+            NOM_PARA='K1_MAX',
+            FILTRE=(_F( NOM_PARA = 'PT_FOND',  
+                        VALE_I = 1,  ),
+                    _F( NOM_PARA = 'INST',  
+                        VALE = 1.,  ),
+                    _F( NOM_PARA = 'METHODE',  
+                        VALE_I = 3,  ),),
+            VALE=K1REF,
+            PRECISION=0.02,
+            REFERENCE='ANALYTIQUE' )
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : MAILLAGE FISSURE

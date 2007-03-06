@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,9 +107,12 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                             ),
                    ETAT_INIT=_F(VITE = VIT_0,
                                 ),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                DEFORMATION='SIMO_MIEHE',
-                                TOUT='OUI',),
+                   COMP_INCR=(_F(RELATION='VMIS_ISOT_LINE',
+                                 DEFORMATION='SIMO_MIEHE',
+                                 TOUT='OUI',),
+                              _F(RELATION='ELAS',
+                                 DEFORMATION='PETIT',
+                                 GROUP_MA='VOL_RIG',),),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=2.E-05,
                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
@@ -124,7 +127,8 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                   ITER_GLOB_MAXI=20,
                                   ARRET='OUI',),
-                   SOLVEUR=_F(METHODE='LDLT',SYME='NON',),
+                   SOLVEUR=_F(SYME='OUI',
+                              METHODE='LDLT',),
                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
                                 LIST_INST=L_SAUV),
                    );
@@ -199,7 +203,7 @@ TEST_TABLE(TABLE=TABJEU,
                      VALE_I   = 10),
            NOM_PARA ='JEU',
            CRITERE  = 'RELATIF',
-           PRECISION= 1.E-5,
+           PRECISION= 1.1E-5,
            VALE     = 2.6799840884025E-02,
            REFERENCE= 'NON_REGRESSION',
            VERSION  = '8.2.20' )

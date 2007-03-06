@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 12/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF contact Messages  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,18 @@
 def _(x) : return x
 
 cata_msg={
+
+1: _("""
+ La méthode de résolution du contact utilisée suppose la symétrie de la
+ matrice du système à résoudre.
+ Dans le cas où votre modélisation ferait intervenir une matrice 
+ non-symétrique, on force sa symétrie. On émet une alarme pour vous 
+ en avertir. 
+ 
+ CONSEIL : 
+ Vous pouvez supprimer cette alarme en renseignant SYME='OUI' sous le 
+ mot-clé facteur SOLVEUR.
+"""),
 
 6: _("""
  Contact methode GCP. On ne peut utiliser le solveur gcpc avec le contact 

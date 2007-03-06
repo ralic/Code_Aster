@@ -3,7 +3,7 @@
      &                   SIGF, VINF, IRTET)
         IMPLICIT NONE
 C       ================================================================
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR MICHEL S.MICHEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -353,7 +353,7 @@ C -- CALCUL DE RIELEQ AVEC THETA =1----
       
 C    CALL DE LA DISSIPATION PLASTIQUE  (CF. NOTE HT-26/04/027)    
 C----------------------------------
-       CALL LCPRSV(RHOF,RIGEQ,SIGEQ)
+       SIGEQ= RHOF * RIGEQ
  
        TERME1 =  DP/DT * SIGEQ
        TERME2 =  RIGM * RHOF * DF/(1.D0-F)/ACC/DT

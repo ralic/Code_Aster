@@ -1,0 +1,1166 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR andriambololona ANDRIAMBOLOLONA H.     DATE 05/03/2007 - 14:53:03
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010413 DU 2006-12-22 15:41:11
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   DYNA_LINE_TRAN
+FONCTIONNALITE
+   Constat :
+   Le calcul se plante sur une étude de sensibilité avec un 
+   modèle contenant à la fois des éléments POU_D_E et des 
+   éléments DIS_TR.
+   
+   Cette étude fait apparaître deux anomalies.
+   Première anomalie : on ne récupère pas le champ matériau 
+   dérivé de la poutre lors de la dérivation par rapport aux 
+   caractéristiques des éléments discrets ; on ne récupère 
+   pas non plus, les caractéristiques élémentaires dérivées 
+   des éléments discrets lors de la dérivation par rapport au 
+   champ matériau de la poutre. D'où plantage lors du calcul 
+   des matrices élémentaires.
+   La routine vechde.f a été modifiée pour la résolution de 
+   cette première anomalie.
+   
+   La deuxième anomalie concerne les séquences de commandes 
+   générées par le superviseur en mode PAR_LOT=OUI. Si 
+   l'utilisateur demande une dérivation par rapport au champ 
+   matériau de la poutre, les caractéristiques élémentaires 
+   des éléments discrets ne sont pas dérivées dans 
+   l'opérateur AFFE_CARA_ELEM. D'un autre côté, si 
+   l'utilisateur demande la dérivation par rapport aux 
+   caractéristiques des éléments discrets, on dérive en même 
+   temps les caractéristiques de la poutre, en annulant la 
+   section de la poutre. Cela provoque une erreur fatale lors 
+   de l'affectation des caractéristiques élémentaires.
+   Une solution de contournement consiste à écrire 
+   manuellement le fichier de commandes pour le calcul des 
+   dérivées, et l'exécuter ensuite en mode PAR_LOT=NON. Cela 
+   nécessite néanmoins la vigilance de l'utilisateur.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   les cas tests sensd* et cas test perso
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bodel        BODEL Charles          DATE 06/03/2007 - 15:37:20
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010537 DU 2007-02-15 10:35:38
+TYPE evolution concernant Code_Aster (VERSION 9.1)
+TITRE
+   amxc3xa9lioration du cas-test sdls139a et de MACRO_VISU_MEIDEE
+FONCTIONNALITE
+   Fiche résolue
+   
+   Dans MACRO_VISU_MEIDEE, j'ai corrigé quelques bugs : 
+    - dans meidee_cata.py : correction permettant d'identifier des forces et des moments
+   ponctuels
+    - dans sdls139a.comm : utilisation d'un modèle exprimental avec ddl de rotation pour
+   identifier efforts  et moments ponctuels. Modification de l'emplacement des points
+   d'application.
+   
+   Ces modifs permettent de réduire fortement l'erreur entre les déplacements mesurés en
+   entrée de MEIDEE et ceux resynthétisés après identification. L'erreur relative est en
+   effet divisée par 5.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sdls139a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR devesa       DEVESA G.              DATE 06/03/2007 - 14:04:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010493 DU 2007-02-01 14:53:56
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.0.7, le cas test miss06a termine NOOK (B)
+FONCTIONNALITE
+   La variation des valeurs testées était essentiellement due à une différence 
+   entre les versions de MISS sur Bull et sur Alphaserveur car une modif destinée 
+   à corriger la fiche 9590 avec le raffinement de la discrétisation spectrale par 
+   SPEC AUTO n'avait pas été répercutée dans la version Bull. Il s'ensuivait alors 
+   de légères modifications de l'impédance de sol qui se répercutaient sur la 
+   valeur d'un pic ponctuel de déplacement vertical lors d'un décollement.
+   On restitue donc une nouvelle version de MISS06A avec non seulement des valeurs 
+   de tests réajustées mais aussi une modification du test MISS06A avec une 
+   condition aux limites supplémentaire de liaison solide à la base du radier qui 
+   permet à la fois d'être moins sensible aux variations de pic de décollement et 
+   de permettre une meilleure comparaison par rapport au futur test MISS06B livré 
+   dans la fiche 9851 avec condensation dynamique du bâtiment et de l'impédance de 
+   sol. On testera donc dans les deux modélisations le pic de déplacement vertical 
+   lors d'un décollement et le balancement horizontal correspondant en haut du 
+   bâtiment.
+   En ce qui concerne le test ZZZZ200B en V8, le source actuel en V8 surchargé 
+   donne les bonnes valeurs à tester sans aucun changement. Alors, est-ce qu'il y 
+   aurait décalage entre l'exécutable actuel et ses sources ?
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.10.125
+VALIDATION
+   test MISS06A
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB J.           DATE 05/03/2007 - 14:46:22
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010422 DU 2007-01-08 09:31:38
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   modification test de convergence de la loi Monocristal
+FONCTIONNALITE
+   Cette modification consiste à simplifier la vérification  
+   de la convergence locale de la loi MONOCRISTAL. Pour cela 
+   on enlève le test de monotonite de la convergence dans la 
+   routine lcmmcv.
+   
+   Conséquence pour l'utilisateur :
+   - si le nombre d'itérations maximum qu'il a fourni via le 
+   mot-clé RESI_INTE_RELA est trop faible, il y aura 
+   automatiquement redécoupage du pas de temps,
+   - si RESI_INTE_RELA est grand, et que la convergence 
+   n'est pas monotone, il y a un risque de perte de temps.
+   
+   Mais en pratique, sur la base des études effectuées 
+   (calculs de grande taille) et des calculs comparatifs  
+   avec zmat, on améliore  les performances.
+   
+   Validation : zmat007a : traction sur un agrégat à 10 
+   grains comparaison entre Aster et Zmat
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zmat007a
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010509 DU 2007-02-06 12:03:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Implantation de la loi de comportement KOCKS_RAUCH pour le Monocristal
+FONCTIONNALITE
+   A la demande du projet Perfect, nous souhaitons implanter 
+   le modèle KOCKS_RAUCH dans Code_Aster.
+   Il s'agit d'un comportement viscoplastique du Monocristal.
+   En premier temps il sera fonctionnel en implicite.
+   
+   Ce modèle sera implanté dans le même cadre que celui déjà 
+   existant pour tous les comportements du Monocristal. 
+   Contrairement aux autres types d'écoulement, ce modèle 
+   présente la particularité d'avoir un écrouissage intégré 
+   donc l'utilisation simultanée des deux types 
+   d'écrouissages ECRO_ISOT et ECRO_CINE ne sera pas 
+   nécessaire.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.51.11, U4.43.51, R5.03.11,U4.43.06
+VALIDATION
+   ssnv172a
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010585 DU 2007-02-27 12:08:46
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Correction de bug dans l'opxc3xa9rateur tangent en vitesse de la loi CAM_CLAY
+FONCTIONNALITE
+   Cette correction a pour but de remédier à une faute qui 
+   s'est glissée dans l'approximation d'une sommation des 
+   carrées des composantes du déviateur des contraintes à la 
+   contrainte équivalente. Elle concerne un terme de 
+   l'opérateur tangent en vitesse.
+   
+   Une fois cette correction apportée, on propose d'utiliser 
+   ce même opérateur au temps PLUS, à la place de 
+   l'opérateur cohérent actuel, dans l'attente de son 
+   optimisation.
+   
+   Les vérifications avec l'opérateur en perturbations sont 
+   satisfaisantes.
+   
+   Cette modification a permis de  diviser le temps de 
+   calcul en deux sur une étude de fondation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.01.14
+VALIDATION
+   etude de fondation
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR galenne      GALENNE E.             DATE 05/03/2007 - 15:44:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010431 DU 2007-01-10 10:01:04
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   MACR_LIGN_COUPE : ligne de coupe circulaire et changement de repxc3xa8re
+FONCTIONNALITE
+   A-Objectif
+   ----------
+   - permettre l'extraction de résultats sur une ligne de coupe circulaire,
+   - permettre l'expression de ses résultats dans un repère global ou local.
+   
+   B-Syntaxe
+   ---------
+   La syntaxe de la macro-commande a été modifiée pour permettre la création
+   d'une ligne de coupe circulaire:
+   Le mot-clé TYPE a ete ajouté au mot-clé facteur sous LIGN_COUPE pour définir
+   le type de ligne de coupe: "GROUP_NO","SEGMENT" ou "ARC".
+   Lorsque l'utilisateur souhaite créer une ligne de coupe circulaire, il faut
+   renseigner les mot-clés suivants:
+   - CENTRE : centre de l'arc de cercle support de la ligne de coupe.
+   - COOR_ORIG : coordonnées du point origine de la ligne de coupe.
+   - DNOR   : vecteur normal au plan contenant la ligne de coupe. 
+              en 2D, ce mot-clé est inutile (DNOR = vecteur Z du repere global),
+              en 3D, il est indispensable, il définit le sens de parcours de la 
+              ligne de coupe (sens direct).
+   - ANGLE  : A partir du CENTRE du cercle et du point origine de la ligne de coupe COOR_ORIG,
+              ce mot-clé permet de définir l'extrémité de la ligne de coupe. 
+              Par exemple, pour définir une ligne de coupe représentant
+              un quart de cercle, il suffira de prendre ANGLE = 90.
+   
+   
+   Nouvelle Syntaxe:
+   
+   TB1=MACR_LIGN_COUPE=_F(
+            o  RESULTAT = resu,
+            f  NOM_CHAM = ncham,
+            f  / MAILLE = ma,
+               / GROUP_MA = gma,
+            f  UNITE_MAILLAGE = iunima,
+            f  MODELE = mo,
+            o  LIGN_COUPE = _F(
+                       o  TYPE = /  'GROUP_NO',
+                                 /  'SEGMENT',
+                                 /  'ARC',
+                       f  INTITULE = intitule,
+   
+   #            SI TYPE = 'GROUP_NO':
+                       o  GROUP_NO =gno,
+   
+   #            SI TYPE = 'SEGMENT':      --> mot clé par défaut
+   #                - SI REPERE GLOBAL:
+                       o  NB_POINTS =npt
+                       o  COOR_ORIG =cooor,
+                       o  COOR_EXTR =cooex,
+   #                - SI REPERE LOCAL:
+                       o  NB_POINTS =npt
+                       o  COOR_ORIG =cooor,
+                       o  COOR_EXTR =cooex,
+                       f  VECT_Y=vecty,  
+   
+   #            SI TYPE = 'ARC':
+   #                - SI REPERE GLOBAL:
+                       o  NB_POINTS =npt,
+                       o  COOR_ORIG =cooor,
+                       o  CENTRE = cooce,
+                       o  ANGLE  = angle,
+                       f  DNOR = dnor,
+   #                - SI REPERE LOCAL:
+                       o  NB_POINTS =npt,
+                       o  COOR_ORIG =cooor,
+                       o  CENTRE = cooce,
+                       o  ANGLE  = angle,
+                       f  DNOR = dnor,
+                       f  VECT_Y=vecty,
+            ),
+   )  ;
+   
+   
+   Repère local
+   ------------
+   Définition du repère local(o,x,y,(z)) dans le cas d'une ligne de coupe de type 'ARC':
+   - vecteur x:  tangent à l'arc, dirigé selon le sens de parcours 
+                 de la ligne de coupe établi lors de sa conception.
+                 Ce vecteur appliqué en un point de la ligne de coupe circulaire
+                 est obtenu par la moyenne des vecteurs directeurs des segments adjacents. 
+   - vecteur y:  normal sortant à la ligne de coupe, appartenant au plan de la ligne de coupe.
+   - vecteur z:  vecteur complétant le trièdre direct. 
+   
+   Comme auparavant, l'expression des résultats dans le repère local s'opère dès que le
+   mot-clé VECT_Y est présent.
+   
+   Remarques concernant le mot-clé VECT_Y:
+   En 2D, le contenu de ce mot-clé n'est pas considéré car les vecteurs x et y sont
+   parfaitement définis.
+   En 3D, le contenu de ce mot-clé doit correspondre à celui du mot-clé DNOR (message
+   d'alarme si ce n'est pas le cas). Le changement de repère est effectué par un appel à
+   MODI_REPERE/CYLINDRE.
+   
+   
+   Impact
+   ------
+   python:  macr_lign_coupe_ops.py, post_k1_k2_k3_ops.py
+   catapy: macr_lign_coupe.capy
+   
+   Validation
+   ----------
+   - validation 2D: cas-test fourni par E. Galenne (non restitué)
+   On a relevé les contraintes sur un tore proche du fond de fissure, en global et en
+   local, puis on les a comparées à la solution analytique. Le résultat est très satisfaisant
+   (de 1 à 5% d'erreur selon les composantes du tenseur des contraintes par rapport à une
+   solution analytique)
+   
+   - validation 3D : cas-test sslv134b (restitué) 
+   Dans un premier temps, on impose directement les déplacemnts singuliers sur tous les
+   noeuds du maillage. On vérifie que les déplacements et les contraintes extraites sur
+   plusieurs cercles entourant le fond de fissure, en repère local et en repère global, sont
+   cohérents avec la solution analytique (pas d'écart sur le déplacement ; de l'ordre de 5%
+   d'écart sur les contraintes).
+   Pour la restitution, on ajoute deux appels à MACR_LIGN_COUPE/ARC dans le cas test sslv134b
+   (tests de non régression).
+   
+   - liste restreinte aux cas-tests contenant MACR_LIGN_COUPE.
+   
+   Remarque : On ne peut pas combiner, dans un même appel à MACR_LIGN_COUPE, des lignes de
+   coupes circulaires et des lignes de coupes 'SEGMENT' ou 'GROUP_NO' (--> message d'erreur
+   avec message explicite)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.81.13
+VALIDATION
+   sslv134b
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009338 DU 2006-01-09 15:58:01
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   XFEM dans POST_K1_K2_K3
+FONCTIONNALITE
+   OBJECTIF
+   calculer les K (et G_Irwin) en post-traitement d'un calcul X-FEM par interpolation des
+   sauts de déplacement, avec l'opérateur POST_K1_K2_K3.
+   Cette évolution n'est valable que dans le cas des fissures planes.
+   
+   SYNTAXE
+   
+   Tabl=POST_K1_K2_K3( 
+   .		MODELISATION =	--> '3D', 'D_PLAN' ou 'C_PLAN'
+   .		MAILLAGE = MAILLAG1,	--> maillage linéaire initial
+   .		FISSURE = FISS,		--> fissure définie dans DEFI_FISS_XFEM 
+   .		RESULTAT  = UTOT,	
+   .		MATER = ACIER,
+   .		DTAN_ORIG = (0.,0.,0.),	--> facultatif (à indiquer si fissure non rectiligne)
+   .		DTAN_EXTR = (1.,0.,0.),	--> ""
+   .		ABSC_CURV_MAXI = 1.5,
+   .		NB_NOEUD_COUPE = 5,	--> identique au cas classique / maillage libre
+   .		VECT_K1        = ( 0., 0., 1., ),
+                       )
+   
+   
+   DEVELOPPEMENTS (dans post_k1_k2_k3_ops.py) 
+   Etapes du calcul dans le cas où FISSURE est renseigné :
+   - Projection du résultat sur le maillage initial de départ (PROJ_CHAM). En effet, les
+   déplacements enrichis (DC,H,Ei) ne sont définis que sur les noeuds sommets des éléments
+   XFEM, ce qui ne permet pas l'interpolation directe avec MACR_LIGN_COUPE. Mais comme le
+   maillage initial et le maillage de calcul ont les noeuds sommets exatement confondus,
+   cette première étape permet d'avoir un champ de déplacement défini sur tous les noeuds du
+   maillage.
+   - à partir des coordonnées des points du fond (SD FISSURE), calcul des tangentes puis des
+   normales au fond de fissure en tout point du fond ; aux noeuds extrémités on prend
+   DTAN_ORIG et DTAN_EXTR s'ils sont définis.
+   - pour savoir dans "quel sens" sur la direction normale il faut extrapoler, on fait un
+   premier MACR_LIGN_COUPE à une distance +/- ABSC_CURV_MAXI pour savoir de quel côté sont
+   les éléments avec une discontinuité de déplacement.
+   - ensuite, pour tous les noeuds du fond, MACR_LIGN_COUPE sur une direction normale, sur
+   une distance ABSC_CURV_MAXI avec NB_NOEUD_COUPE.
+   - calcul du saut de déplacement (DX = 2*(H1X + E1X)) et changement de repère à l'aide de
+   VECT_K1 (avec vérification de la cohérence de la normale avec celle de la SD FISSURE).
+   - calcul des K par les 3 méthodes d'interpolation.
+   
+   VALIDATION
+   - en 3D : ajout de POST_K1_K2_K3 dans les tests ssnv185b/c/d/f. L'erreur sur K1 (méthode
+   3) par rapport à la solution analytique varie selon les tests entre 1,5 et 4 % (contre 1 à
+   3% pour le calcul avec l'option CALC_K_G de CALC_G).
+   
+   - en 2D : validation sur des tests perso uniquement. Un nouveau cas test de fissuration en
+   2D sera restitué dans le cadre de la réalisation de la fiche 10384 (développement de
+   l'option CALC_K_G en 2D avec X-FEM).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05
+VALIDATION
+   ssnv185b/c/d/f
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010589 DU 2007-02-28 13:33:37
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+   POST_K1_K2_K3 : affichage et corrections
+FONCTIONNALITE
+   FICHIER MESSAGE
+   On réaménage un peu les paramètres imprimés dans le fichier message de POST_K1_K2_K3 pour
+   éviter la confusion chez les utilisateurs :
+   - DEPL_SUP_DX (resp. DY et DZ) devient DEPL_SUP_1 (resp. 2 et 3) pour souligner qu'on
+   imprime le saut dans le repère local associé à la fissure
+   - SAUT_DX (resp. DY et DZ) devient SAUT_1 (resp. 2 et 3) et change de sens : on décide
+   d'afficher ici vraiment le saut de déplacement (et non le saut de déplacement au carré
+   multiplié par un facteur dépendant des propriétés matériau)
+   
+   On en profite également pour améliorer un peu l'affichage du message.
+   
+   CORRECTIONS
+   - les mots-clés ORDR ou LIST_ORDR n'étaient pas correctement pris en compte
+   
+   - dans le cas SYME_CHAR = 'SYME' :
+   ** on ajoute une vérification sur le saut de déplacement au point du fond de fissure (qui
+   doit être nul), et on émet une alarme le cas échéant :
+    <A> <POST_K1_K2_K3> DEPLACEMENT NORMAL DU NOEUD N396 NON NUL ET SYME_CHAR = SYME :
+    VERIFIER LES CONDITIONS AUX LIMITES ET VECT_K1.
+   
+   ** on ne corrige plus le vecteur VECT_K1 fourni par l'utilisateur (correction pour être
+   exactement normal au plan de la fissure déterminé à partir des coordonnées des noeuds des
+   deux lèvres). En effet, dans le cas d'une entaille cela conduit à prendre un vecteur
+   VECT_K1 qui n'est plus normal au plan de symétrie, et donc à une petite imprécision sur le
+   résultat.
+   On ajuste le test de non régression du cas test sslv134a (écart de 0,2%) suite à cette
+   évolution.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.05
+VALIDATION
+   sslv134a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010581 DU 2007-02-26 12:52:34
+TYPE anomalie concernant Code_Aster (VERSION 8.5)
+TITRE
+   DEFI_FOND_FISS:  message d'erreur peu clair
+FONCTIONNALITE
+   Une évolution de DEFI_FOND_FISS avait été réalisée en 8.3.20, mais les messages d'erreur
+   associés n'avaient pas été restitués ! On rajoute donc les messages dans elements5.py :
+   <ELEMENTS5_12> 
+    Le noeud %(k1)s du fond de fissure n est rattaché à aucune maille surfacique 
+    de la lèvre supérieure : vérifier les groupes de mailles.
+   
+   <ELEMENTS5_13> 
+    Le noeud %(k1)s du fond de fissure n est rattaché à aucune maille surfacique 
+    de la lèvre inférieure : vérifier les groupes de mailles.
+   
+   On en profite également pour créer le message suivant :
+   <ELEMENTS5_14> 
+    Les noeuds %(k1)s de FOND_INF et %(k2)s de FOND_SUP ne sont pas en vis à vis. 
+   
+   et on passe le critère de vérification d'une précision absolue (égale à 1 !!) à une
+   précision relative (distance < 10% de la longueur des arretes du fond).
+   
+   Je fais également le ménage dans le catalogue de la commande : remplacement de
+   GROUP_MA_ORIG par GROUP_NO_EXTR dans les mots clé facteurs FOND_SUP et FOND_INF.
+   Ca m'a permis de voir que le mot clé GROUP_NO_ORIG n'était pas correctement pris en compte
+   (plantage sur erreur jeveux) --> correction dans fonfis.f
+   
+   Validation : sslv134g
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sslv134g
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010582 DU 2007-02-26 13:53:58
+TYPE anomalie concernant Code_Aster (VERSION 8.5)
+TITRE
+   CALC_THETA : mot clxc3xa9 FOND_FISS obligatoire en 3D
+FONCTIONNALITE
+   Modification du catalogue de DEFI_FOND_FISS : dans le cas 3D, le mot clé FOND_FISS est
+   obligatoire.
+   Remarque : la doc indiquait déjà cette obligation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010583 DU 2007-02-26 14:14:37
+TYPE anomalie concernant Code_Aster (VERSION 8.5)
+TITRE
+   CALC_G : blindage de la condition R_INF < R_SUP
+FONCTIONNALITE
+   Samuel a remarqué à juste raison qu'il n'y avait pas de vérification que le rayon RSUP
+   était strictement supérieur à RINF dans la définition des couronnes d'intégration thêta
+   (CALC_G et CALC_THETA), ce qui pouvait conduire à des erreurs numériques (rinf=rsup) voire
+   même à des résultats faux (G<0 si rsup<rinf).
+   On ajoute donc une vérification dans les routines gverig, gveri2, gver2d et gveri3.
+   
+   Le message d'erreur est le suivant :
+   !-----------------------------------------------------------------------------------!
+   ! <F> <ELEMENTS5_11>                                                                !
+   !                                                                                   !
+   !                                                                                   !
+   !  Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement être supérieur au rayon R_INF  !
+   !  (resp. R_INF_FO).                                                                !
+   !                                                                                   !
+   !                                                                                   !
+   ! Cette erreur est fatale. Le code s'arrete.                                        !
+   !-----------------------------------------------------------------------------------!
+   
+   On en profite pour rajouter une valeur par défaut (=1) pour le module dans le cas où
+   R_SUP_FO et R_INF_FO sont définis pour l'option calc_g_glob (jusqu'à présent : erreur avec
+   message peu explicite).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010396 DU 2006-12-18 18:14:34
+TYPE anomalie concernant Code_Aster (VERSION 8.4)
+TITRE
+   CALC_G et les charges cinxc3xa9matiques
+FONCTIONNALITE
+   Problème : erreur dans CALC_G (erreur CALCULEL3_43 : "les charges sont de type different")
+   si il y a une charge cinématique dans la liste des chargements renseignée sous le mot clé
+   EXCIT.
+   
+   Correction : dans medom1, on supprime la vérification sur le type de charge (pour
+   l'opérateur CALC_G). En effet, une charge cinématique sera simplement ignorée dans la
+   suite du calcul et il n'est donc pas nécessaire de lui affecter un traitement spécifique
+   (routine gcharg : traitement uniquement des charges volumiques, surfaciques ou thermiques).
+   
+   Remarque : dans le cas où on ne renseignait pas EXCIT, les éventuelles charges
+   cinématiques étaient déjà ignorées (pas de vérification sur le type des charges).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas test perso
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kham         KHAM MARC              DATE 06/03/2007 - 18:23:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010452 DU 2007-01-17 14:22:15
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Contact glissixc3xa8re
+FONCTIONNALITE
+   $1
+   l'algo relatif à la glissière se trouve dans mmalgo:
+   
+   - pour activer la glissière aux noeuds après contact, 
+     je mets un flag (passant de 0 à 1) dès que ce noeud
+     devient contactant (XS=1), et sous réserve d'avoir pris
+     GLISSIERE='OUI' (sinon le flag est tjs à 0).
+     Ce flag est stocke dans la SD
+     de contact dans la carte TABFIN (qui passe de dimansion
+     29 à 30!)
+   
+   - suite aux remarques de Samuel, j'en profite aussi pour 
+     remettre l'écriture au propre
+   
+   $2
+   fortrans affectés: mmmbca mmalgo mmmres cfmmvd
+   
+   $3
+   cas-test:
+   le cas-test ssnv104e (écrasement de 2 sphères) est modifié 
+   en lui ajoutant une étape de traction après écrasement:
+   on teste que les noeuds progressivement entrés en contact 
+   ne se décollent pas (jeux nuls).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.104-A
+VALIDATION
+   ssnv104e
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010542 DU 2007-02-15 13:34:40
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.10, le cas test ssnv197c s'arrete par manque de temps CPU (B)
+FONCTIONNALITE
+   suite à l'eda, la solution retenue est la suivante:
+   
+   suppression pure et simple des messages d'alarme, en ne 
+   gardant que ceux qui aboutissent à un plantage.
+   
+   le temps cpu demandé pour le cas-test ssnv197c est aussi 
+   légèrement augmenté, de 500s à 600s (bien que normalement
+   ça passe aux alentours de 350s...).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cas-test ssnv197c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009170 DU 2005-11-04 00:00:00
+TYPE aide utilisation concernant Code_Aster (VERSION 8.1)
+TITRE
+   post-traitement du Contact avec methode continue
+FONCTIONNALITE
+   Le problème était bien lié au conditionnement de la matrice 
+   de contact:
+   
+   en effet, du fait de l'identité des coefficients 
+   d'augmentation, de pénalisation et de stabilisation dans la 
+   programmation d'origine, on n'avait pas la lattitude 
+   suffisante pour à la fois pénaliser le contact (avec une 
+   valeur élevée pour diminuer l'interpénétration), 
+   et "stabiliser" les équations de contact (c'est-à-dire les 
+   rendre toutes homogènes à des déplacements, grace à ce 
+   fameux coefficient de stabilisation - d'où le mauvais 
+   conditionnement).
+   
+   avec les valeurs que me propose Mohammed Torkhani:
+   
+   ALGO_CONT='AUGMENTE'
+   COEF_STAB_CONT=5e-8
+   COEF_PENA_CONT=2e8
+   
+   le problème d'interpénétration n'apparait plus.
+   bravo mohammed!
+   
+   c'est vrai que ça a l'air technique pour un profane, mais 
+   c'est la première fois que le problème se pose; dans tous 
+   les autres cas, la méthode par défaut suffit.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   etude
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 006757 DU 2003-01-23 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TITRE
+   mise au propre programmation contact methode continue
+FONCTIONNALITE
+   Corrections effectuées dans les fiches 9951 et 9957 
+    
+   Fiche a classer résolue.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   non
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 007520 DU 2004-02-03 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.2)
+TITRE
+   produire des cas tests contact methode continue  +  dynamique
+FONCTIONNALITE
+   les cas-tests correspondants sont les suivants:
+   
+   - patin frottant en dynamique : SSNV503H,I
+   - chute de sphere plastique : SSNV506E,F
+   - chute et rebond d'une poutre sur un plan : 
+   SDNV100C,D,E,G,H,I
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   non
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR michel       MICHEL-PONNELLE S.     DATE 05/03/2007 - 14:52:21
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010568 DU 2007-02-23 14:34:39
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.0.11, les cas tests ssnp117a et b s'arrxc3xaatent en ERREUR_<F> (LB)
+FONCTIONNALITE
+   Il s'agit d'un appel non approprié à la routine LCPRSV.f dans LCROUS.f. Linux est plus
+   strict sur les dimensions des tableaux.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnp117a et b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010562 DU 2007-02-23 13:51:03
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.11, le cas test cente01a s'arrete en ERREUR_<F> (L)
+FONCTIONNALITE
+   il s'agit de la même erreur que la fiche 10568, à savoir une petite erreur dans lcrous.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   cente01
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010567 DU 2007-02-23 14:26:26
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.11, le cas test ssna113a s'arrxc3xaate par manque de temps CPU (L)
+FONCTIONNALITE
+   Apparemment la nouvelle interface grandes déformations qui a conduit à utiliser les mêmes
+   routines pour le 2D et le 3D est moins performante sur la Bull que sur Linux. Pour éviter
+   de dépasser les 900s pour le cas-test, je préfère diminuer le nombre de pas de temps : la
+   convergence reste bonne, et il n'y a pas besoin de relâcher les TEST_RESU (1% par rapport
+   à un autre calcul Aster)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssna113a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010573 DU 2007-02-23 15:43:07
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.0.11, le cas test ssnv501b s'arrxc3xaate en ERREUR_<F> (BLR)
+FONCTIONNALITE
+   j'ai oublié de changer ELAS en VMIS_ISOT_LINE pour un des groupes de mailles suite à la
+   restitution de la fiche 9975
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv501b
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010602 DU 2007-03-05 08:43:10
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   rajout de TEST_RESU sur les champs EPFP et EPFD pour le test ssnv180a oublixc3xa9 lors de la restitution de la fiche 9070
+FONCTIONNALITE
+   Rajout des TEST_RESU cités dans le cas test
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   analytique
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX J.M.             DATE 05/03/2007 - 14:54:45
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010598 DU 2007-03-02 10:40:23
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   renommer HSNV100H en HSNV131A
+FONCTIONNALITE
+   Suite à la proposition de Jérôme, je renomme donc HSNV100H en HSNV131A, et je lui donne la
+   doc !
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   hsnv131a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU N.             DATE 21/02/2007 - 16:01:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010181 DU 2006-10-25 09:46:04
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   CONTACT (FROTTANT?) et SIMO_MIEHE
+FONCTIONNALITE
+   Quand on utilise les méthodes discrètes de traitement du contact (METHODE = 'CONTRAINTES'
+   ou 'LAGRANGIEN' ou 'PENALISATION'), on est amené à manipuler une matrice A.C-1.AT qui est
+   un complément de Schur (objet '.CM1A'). 
+   Or cette matrice est TOUJOURS stockée symétrique (voir cfcrma.f). On conçoit bien que cela
+   pose un pb quand la matrice tangente est non-symétrique....
+   
+   Les matrices non-symétriques sont essentiellement créées dans les cas             
+   suivants:             
+   * déformation de type SIMO-MIEHE             
+   * chargements suiveurs             
+   * problèmes de THM (les conditions de suintement ont la même             
+   "pathologie" vis-à-vis des matrices non-symétriques que le contact)             
+               
+   Il nous semble trop couteux pour le moment de faire le             
+   développement permettant que les matrices non-symétriques soient            
+   prises en compte dans le traitement du contact (ou du suintement)            
+   compte tenu de la relative stabilité et de la robustesse actuelle de            
+   ces méthodes (ce qui nous a déjà couté en temps et en bugs très            
+   difficiles à débusquer depuis quelques années) et du caractère            
+   intrusif de telles modifications.            
+   
+   On propose donc de forcer automatiquement SYME='OUI' quand :
+   * on détecte l'utilisation de contact ou de suintement avec une méthode discrète
+   * SYME='OUI' n'est pas déjà demandé
+   
+   On émet aussi l'alarme suivante :
+   
+   ---------------------------------------------------------------------------
+   <A> <CONTACT_1>                                                         
+                                                                           
+                                                                           
+     La méthode de résolution du contact utilisée suppose la symétrie de la
+     matrice du système à résoudre.                                        
+     Dans le cas où votre modélisation ferait intervenir une matrice       
+     non-symétrique, on force sa symétrie. On émet une alarme pour vous    
+     en avertir.                                                           
+                                                                           
+     CONSEIL :                                                             
+     Vous pouvez supprimer cette alarme en renseignant SYME='OUI' sous le  
+     mot-clé facteur SOLVEUR.                                              
+                                                                           
+                                                                           
+   Ceci est une alarme. Si vous ne comprenez pas le sens de cette          
+   alarme, vous pouvez obtenir des résultats inattendus !                  
+   ---------------------------------------------------------------------------
+   
+   Au cousr de mon ASREST, le test SSNV193A a planté. Il s'est avéré que cela est dû à
+   SYME='OUI' avec des macro-éléments stratiques. 
+   En effet, pour voir si les matrices élémentaires sont symétriques, on va rechercher un
+   objet NOMOB//'.LISTE_RESU' dans DISMME.F. Or les macro-éléments stratiques ne disposent
+   pas de cet attribut. D'où un vilain plantage.
+   
+   Pour résoudre ce bug, j'ai modifié DISMME.F en testant la présence de macro-éléments :
+   --------------------------------------------------------------------------
+         ELSE IF (QUESTI.EQ.'TYPE_MATRICE') THEN
+              CALL JEVEUO(NOMOB//'.LISTE_RESU','L',IALIRE)
+              CALL JELIRA(NOMOB//'.LISTE_RESU','LONUTI',NBRESU,KBID)
+   --------------------------------------------------------------------------
+   devient 
+   --------------------------------------------------------------------------
+         ELSE IF (QUESTI.EQ.'TYPE_MATRICE') THEN
+   C        Y A-T-IL DES MACRO-ELEMENTS?
+            IF(ZK24(IAREFE-1+3)(1:3).EQ.'OUI') THEN
+              CALL DISMMO(CODMES,'NB_SS_ACTI',MO,REPI,REPK,IERD)
+            ELSE
+               REPI= 0
+            END IF
+            IF (REPI.GT.0) THEN 
+              REPK='SYMETRI'
+              GO TO 9999
+            ELSE 
+              CALL JEVEUO(NOMOB//'.LISTE_RESU','L',IALIRE)
+              CALL JELIRA(NOMOB//'.LISTE_RESU','LONUTI',NBRESU,KBID)
+   --------------------------------------------------------------------------
+   
+   
+   En outre, pour résorber un UTFINM dans OP0070, j'ai créé avec l'aide de J.P.L un routine
+   UTEXCM, qui lève une exception et imprime un message.
+   
+         SUBROUTINE UTEXCM( NUM, IDMESS, NK, VALK, NI, VALI, NR, VALR)
+   C AJOUT UTILIFOR
+   C     ------------------------------------------------------------------
+   C     ROUTINE QUI LEVE UNE EXCEPTION AVEC IMPRESSION DE MESSAGES 
+   C     ------------------------------------------------------------------
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03, R5.03.50
+VALIDATION
+   Passage de test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010420 DU 2007-01-05 09:36:50
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.4, le test ssna102e termine NOOK (BLR)
+FONCTIONNALITE
+   En effet, les TEST_RESU ont un peu bougé. Vu :
+   - la petitesse de la variation
+   - le fait qu'à la restitution, tout est passé
+   je penche pour une petite perturbation liée à l'ensemble des développements de cette version.
+   
+   Je mets à jour les tolérances.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Passage du test
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT hsnv131a                        proix J-M.PROIX          204    204      0
+ CASTEST AJOUT zmat007a                     elgharib J.EL-GHARIB        389    389      0
+ CASTEST MODIF cabri02a                      tardieu N.TARDIEU          488      3      2
+ CASTEST MODIF demo002a                      tardieu N.TARDIEU          513      5      3
+ CASTEST MODIF demo003a                      tardieu N.TARDIEU          203      3      2
+ CASTEST MODIF forma12d                      tardieu N.TARDIEU          226      5      3
+ CASTEST MODIF hpla310a                      tardieu N.TARDIEU          999      4      1
+ CASTEST MODIF hplp310a                      tardieu N.TARDIEU         1953     11      1
+ CASTEST MODIF hsna120a                      tardieu N.TARDIEU          762      3      2
+ CASTEST MODIF miss06a                        devesa G.DEVESA           640     89     32
+ CASTEST MODIF sdls139a                        bodel C.BODEL            782      8      6
+ CASTEST MODIF sdnl111c                      tardieu N.TARDIEU          256      5      3
+ CASTEST MODIF sdnl111d                      tardieu N.TARDIEU          150      3      2
+ CASTEST MODIF sdnv100a                      tardieu N.TARDIEU          383      3      2
+ CASTEST MODIF sdnv100b                      tardieu N.TARDIEU          282      3      2
+ CASTEST MODIF sdnv100h                      tardieu N.TARDIEU          248      3      2
+ CASTEST MODIF sdnv103a                      tardieu N.TARDIEU          209      7      5
+ CASTEST MODIF sdnv103b                      tardieu N.TARDIEU          402      3      2
+ CASTEST MODIF sdnv103c                      tardieu N.TARDIEU          238      8      6
+ CASTEST MODIF sdnv103d                      tardieu N.TARDIEU          245      8      4
+ CASTEST MODIF sdnv104a                      tardieu N.TARDIEU          224      5      3
+ CASTEST MODIF sdnv104b                      tardieu N.TARDIEU          209     82    102
+ CASTEST MODIF sdnv104d                      tardieu N.TARDIEU          227      5      3
+ CASTEST MODIF sdnv104e                      tardieu N.TARDIEU          230      5      3
+ CASTEST MODIF sdnv105a                      tardieu N.TARDIEU         1281     29     15
+ CASTEST MODIF sslv134a                      galenne E.GALENNE          389      3      3
+ CASTEST MODIF sslv134b                      galenne E.GALENNE          844     72      1
+ CASTEST MODIF ssna102a                      tardieu N.TARDIEU          486      3      1
+ CASTEST MODIF ssna102b                      tardieu N.TARDIEU          311      2      1
+ CASTEST MODIF ssna102c                      tardieu N.TARDIEU          314      2      1
+ CASTEST MODIF ssna102e                      tardieu N.TARDIEU          388      9      7
+ CASTEST MODIF ssna105a                      tardieu N.TARDIEU          230      3      2
+ CASTEST MODIF ssna111a                      tardieu N.TARDIEU          216      9      8
+ CASTEST MODIF ssna113a                       michel S.MICHEL           331     16     16
+ CASTEST MODIF ssnl107b                      tardieu N.TARDIEU          162      3      2
+ CASTEST MODIF ssnl107c                      tardieu N.TARDIEU          173      3      2
+ CASTEST MODIF ssnl107d                      tardieu N.TARDIEU          172      3      2
+ CASTEST MODIF ssnl132a                      tardieu N.TARDIEU          909      4      1
+ CASTEST MODIF ssnl132b                      tardieu N.TARDIEU          957      4      1
+ CASTEST MODIF ssnp121b                      tardieu N.TARDIEU          165      3      2
+ CASTEST MODIF ssnp121c                      tardieu N.TARDIEU          166      3      2
+ CASTEST MODIF ssnp121l                      tardieu N.TARDIEU          171      3      2
+ CASTEST MODIF ssnp501a                      tardieu N.TARDIEU          253      3      2
+ CASTEST MODIF ssnp501b                      tardieu N.TARDIEU          249      3      2
+ CASTEST MODIF ssnp501d                      tardieu N.TARDIEU          257      3      2
+ CASTEST MODIF ssnp502a                      tardieu N.TARDIEU          256      3      2
+ CASTEST MODIF ssnp502b                      tardieu N.TARDIEU          257      3      2
+ CASTEST MODIF ssnv104b                      tardieu N.TARDIEU          481      4      1
+ CASTEST MODIF ssnv104d                      tardieu N.TARDIEU          495      5      3
+ CASTEST MODIF ssnv104e                         kham M.KHAM             467    291     74
+ CASTEST MODIF ssnv104f                      tardieu N.TARDIEU          520    455    555
+ CASTEST MODIF ssnv104g                      tardieu N.TARDIEU          501      5      3
+ CASTEST MODIF ssnv104h                      tardieu N.TARDIEU          296      3      2
+ CASTEST MODIF ssnv104i                      tardieu N.TARDIEU          368      3      2
+ CASTEST MODIF ssnv104j                      tardieu N.TARDIEU          371      3      2
+ CASTEST MODIF ssnv127a                      tardieu N.TARDIEU          481      3      2
+ CASTEST MODIF ssnv127b                      tardieu N.TARDIEU          425      3      2
+ CASTEST MODIF ssnv127c                      tardieu N.TARDIEU          433      3      2
+ CASTEST MODIF ssnv127d                      tardieu N.TARDIEU          432      3      2
+ CASTEST MODIF ssnv127e                      tardieu N.TARDIEU          427      3      2
+ CASTEST MODIF ssnv128a                      tardieu N.TARDIEU          467      9      5
+ CASTEST MODIF ssnv128b                      tardieu N.TARDIEU          435      9      5
+ CASTEST MODIF ssnv128c                      tardieu N.TARDIEU          436      9      5
+ CASTEST MODIF ssnv128d                      tardieu N.TARDIEU          442      9      5
+ CASTEST MODIF ssnv128e                      tardieu N.TARDIEU          404      9      5
+ CASTEST MODIF ssnv128f                      tardieu N.TARDIEU          423      9      5
+ CASTEST MODIF ssnv128g                      tardieu N.TARDIEU          283      9      5
+ CASTEST MODIF ssnv128h                      tardieu N.TARDIEU          402      9      5
+ CASTEST MODIF ssnv128i                      tardieu N.TARDIEU          421      9      5
+ CASTEST MODIF ssnv128j                      tardieu N.TARDIEU          401      9      5
+ CASTEST MODIF ssnv128k                      tardieu N.TARDIEU          296      9      5
+ CASTEST MODIF ssnv128l                      tardieu N.TARDIEU          256      5      3
+ CASTEST MODIF ssnv128o                      tardieu N.TARDIEU          266      5      3
+ CASTEST MODIF ssnv129a                      tardieu N.TARDIEU          202      3      2
+ CASTEST MODIF ssnv129b                      tardieu N.TARDIEU          215      3      2
+ CASTEST MODIF ssnv129c                      tardieu N.TARDIEU          221      3      2
+ CASTEST MODIF ssnv129e                      tardieu N.TARDIEU          207      3      2
+ CASTEST MODIF ssnv166a                      tardieu N.TARDIEU          412      5      3
+ CASTEST MODIF ssnv166b                      tardieu N.TARDIEU          433      5      3
+ CASTEST MODIF ssnv166c                      tardieu N.TARDIEU          294      5      3
+ CASTEST MODIF ssnv167a                      tardieu N.TARDIEU          176      3      2
+ CASTEST MODIF ssnv167b                      tardieu N.TARDIEU          459      5      3
+ CASTEST MODIF ssnv167c                      tardieu N.TARDIEU          470      3      2
+ CASTEST MODIF ssnv167d                      tardieu N.TARDIEU          211      3      2
+ CASTEST MODIF ssnv167e                      tardieu N.TARDIEU          192      3      2
+ CASTEST MODIF ssnv172a                     elgharib J.EL-GHARIB        972    115      1
+ CASTEST MODIF ssnv180a                       michel S.MICHEL           336      1      1
+ CASTEST MODIF ssnv185b                      galenne E.GALENNE          307     31      1
+ CASTEST MODIF ssnv185c                      galenne E.GALENNE          375     30      1
+ CASTEST MODIF ssnv185d                      galenne E.GALENNE          305     30      1
+ CASTEST MODIF ssnv185f                      galenne E.GALENNE          236     33      1
+ CASTEST MODIF ssnv193a                      tardieu N.TARDIEU          179      3      2
+ CASTEST MODIF ssnv197c                         kham M.KHAM             530      2      2
+ CASTEST MODIF ssnv501b                      tardieu N.TARDIEU          354      2      2
+ CASTEST MODIF ssnv503a                      tardieu N.TARDIEU          414      7      4
+ CASTEST MODIF ssnv503b                      tardieu N.TARDIEU          428      7      4
+ CASTEST MODIF ssnv503c                      tardieu N.TARDIEU          430      7      4
+ CASTEST MODIF ssnv503d                      tardieu N.TARDIEU          427      7      4
+ CASTEST MODIF ssnv503e                      tardieu N.TARDIEU          564      7      4
+ CASTEST MODIF ssnv503f                      tardieu N.TARDIEU          540      7      4
+ CASTEST MODIF ssnv503g                      tardieu N.TARDIEU          564      7      4
+ CASTEST MODIF ssnv504a                      tardieu N.TARDIEU          288      5      3
+ CASTEST MODIF ssnv504b                      tardieu N.TARDIEU          275      3      2
+ CASTEST MODIF ssnv504c                      tardieu N.TARDIEU          223      3      2
+ CASTEST MODIF ssnv504e                      tardieu N.TARDIEU          246      3      2
+ CASTEST MODIF ssnv504f                      tardieu N.TARDIEU          302      3      2
+ CASTEST MODIF ssnv504g                      tardieu N.TARDIEU          304      3      2
+ CASTEST MODIF ssnv505a                      tardieu N.TARDIEU          226      3      2
+ CASTEST MODIF ssnv505b                      tardieu N.TARDIEU          183      3      2
+ CASTEST MODIF ssnv505c                      tardieu N.TARDIEU          187      3      2
+ CASTEST MODIF ssnv505g                      tardieu N.TARDIEU          244      5      3
+ CASTEST MODIF ssnv506a                      tardieu N.TARDIEU          226      3      2
+ CASTEST MODIF ssnv506b                      tardieu N.TARDIEU          228      3      2
+ CASTEST MODIF ssnv506c                      tardieu N.TARDIEU          230      3      2
+ CASTEST MODIF ssnv506d                      tardieu N.TARDIEU          228      3      2
+ CASTEST MODIF yyyy106a                      tardieu N.TARDIEU          675      5      3
+ CASTEST MODIF yyyy106b                      tardieu N.TARDIEU          654      5      3
+ CASTEST MODIF zzzz107b                      tardieu N.TARDIEU          139      4      3
+ CASTEST MODIF zzzz113b                      tardieu N.TARDIEU         1321   1115    956
+ CASTEST SUPPR hsnv100h.comm                   proix J-M.PROIX          177      0    177
+CATALOPY MODIF commande/calc_theta           galenne E.GALENNE           65      2      2
+CATALOPY MODIF commande/defi_fond_fiss       galenne E.GALENNE          100      5      5
+CATALOPY MODIF commande/defi_materiau       elgharib J.EL-GHARIB       2741     25      1
+CATALOPY MODIF commande/macr_lign_coupe      galenne E.GALENNE           65     18      5
+CATALOPY MODIF commande/post_k1_k2_k3        galenne E.GALENNE           79     15      5
+ FORTRAN AJOUT utilifor/utexcm               tardieu N.TARDIEU           44     44      0
+ FORTRAN MODIF algorith/gveri3               galenne E.GALENNE          179     10      1
+ FORTRAN MODIF algorith/hujci1                  kham M.KHAM             195      2      2
+ FORTRAN MODIF algorith/hujcrd                  kham M.KHAM              84      8      3
+ FORTRAN MODIF algorith/hujddd                  kham M.KHAM             286     11      8
+ FORTRAN MODIF algorith/hujela                  kham M.KHAM             113      1      1
+ FORTRAN MODIF algorith/hujiid                  kham M.KHAM             371      9      3
+ FORTRAN MODIF algorith/hujjid                  kham M.KHAM             642     24     16
+ FORTRAN MODIF algorith/hujksi                  kham M.KHAM              81     11      3
+ FORTRAN MODIF algorith/hujpla                  kham M.KHAM             267     18      8
+ FORTRAN MODIF algorith/lcdpec              elgharib J.EL-GHARIB        106     29      4
+ FORTRAN MODIF algorith/lcmaei              elgharib J.EL-GHARIB        246     13      4
+ FORTRAN MODIF algorith/lcmafl              elgharib J.EL-GHARIB         96     17      1
+ FORTRAN MODIF algorith/lcmmap              elgharib J.EL-GHARIB        448      3      3
+ FORTRAN MODIF algorith/lcmmat              elgharib J.EL-GHARIB        336      3      3
+ FORTRAN MODIF algorith/lcmmcv              elgharib J.EL-GHARIB        105     15     15
+ FORTRAN MODIF algorith/lcmmfe              elgharib J.EL-GHARIB        211     86      7
+ FORTRAN MODIF algorith/lcmmja              elgharib J.EL-GHARIB        250     44     14
+ FORTRAN MODIF algorith/lcmmjf              elgharib J.EL-GHARIB        234     97      7
+ FORTRAN MODIF algorith/lcmmre              elgharib J.EL-GHARIB        187     14      5
+ FORTRAN MODIF algorith/lcmmvx              elgharib J.EL-GHARIB        110      5      4
+ FORTRAN MODIF algorith/lcrous                michel S.MICHEL           397      2      2
+ FORTRAN MODIF algorith/mmalgo                  kham M.KHAM             179     35     45
+ FORTRAN MODIF algorith/mmmbca                  kham M.KHAM             353     30     22
+ FORTRAN MODIF algorith/mmmres                  kham M.KHAM            1053     64     62
+ FORTRAN MODIF algorith/nmccam              elgharib J.EL-GHARIB        888     77     15
+ FORTRAN MODIF algorith/nmfonc               tardieu N.TARDIEU          273     27      7
+ FORTRAN MODIF algorith/nmhuj                   kham M.KHAM             328      9      2
+ FORTRAN MODIF algorith/nminit               tardieu N.TARDIEU          420      2      8
+ FORTRAN MODIF algorith/op0070               tardieu N.TARDIEU          967     12     22
+ FORTRAN MODIF algorith/vechde            andriambololona H.ANDRIAMBOLOLONA    587      6      8
+ FORTRAN MODIF calculel/medom1               galenne E.GALENNE          213     11      7
+ FORTRAN MODIF elements/fonfis               galenne E.GALENNE          470     35     38
+ FORTRAN MODIF elements/gver2d               galenne E.GALENNE          211      4      1
+ FORTRAN MODIF elements/gveri2               galenne E.GALENNE          197     12      3
+ FORTRAN MODIF elements/gverif               galenne E.GALENNE          893     20     13
+ FORTRAN MODIF elements/gverig               galenne E.GALENNE          330     21      4
+ FORTRAN MODIF modelisa/cfmmvd                  kham M.KHAM              91      2      2
+ FORTRAN MODIF utilitai/dismme               tardieu N.TARDIEU          122     12      1
+  PYTHON MODIF Macro/macr_lign_coupe_ops     galenne E.GALENNE          576    278    120
+  PYTHON MODIF Macro/post_k1_k2_k3_ops       galenne E.GALENNE         1122    210     40
+  PYTHON MODIF Meidee/meidee_cata              bodel C.BODEL            767     79     10
+  PYTHON MODIF Meidee/meidee_fludela           bodel C.BODEL           1734      4      9
+  PYTHON MODIF Meidee/meidee_test              bodel C.BODEL            179      9      6
+  PYTHON MODIF Meidee/meidee_turbulent         bodel C.BODEL            885     24     22
+  PYTHON MODIF Messages/compor1                 kham M.KHAM              61      9     20
+  PYTHON MODIF Messages/contact              tardieu N.TARDIEU          239     13      1
+  PYTHON MODIF Messages/elements5            galenne E.GALENNE          118     53      2
+  PYTHON MODIF Messages/mecanonline          tardieu N.TARDIEU          375     17      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    3         637       637              +637
+ MODIF :  170       67692      4430    2669     +1761
+ SUPPR :    1         177               177      -177
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  174       68506      5067    2846     +2221 

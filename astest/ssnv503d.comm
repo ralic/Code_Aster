@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,7 +154,8 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR=_F(METHODE='LDLT',),
+                    SOLVEUR=_F(SYME='OUI',
+                               METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=30,),
                     INFO=1,);
 
@@ -184,7 +185,8 @@ U_99=STAT_NON_LINE(MODELE=MODE,
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1,),
-                   SOLVEUR=_F(METHODE='LDLT',),
+                   SOLVEUR=_F(SYME='OUI',
+                              METHODE='LDLT',),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),);
 
 U_99=CALC_NO(reuse =U_99,
@@ -215,7 +217,8 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                     INCREMENT=_F(LIST_INST=L_INST,),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
-                    SOLVEUR=_F(METHODE='LDLT',),
+                    SOLVEUR=_F(SYME='OUI',
+                               METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),
                     ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
                     );

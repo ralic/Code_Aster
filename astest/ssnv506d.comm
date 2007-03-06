@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,7 +125,8 @@ CONT=AFFE_CHAR_MECA(MODELE=MO,
 #                         RESOLUTION
 #----------------------------------------------------------------------
 
-SSNV506=STAT_NON_LINE(MODELE=MO,
+SSNV506=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                      MODELE=MO,
                        CHAM_MATER=CHMAT,
                        EXCIT=(_F(CHARGE=DPLIMPO,
                                  FONC_MULT=RAMPE,),

@@ -7,7 +7,7 @@
       CHARACTER*(*)       MOTFAC, BASZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8   K8B, NOMMA, TYPM, TYPMP, NDORIG, NDEXTR
       CHARACTER*8   NOEUD, NOEUD1, NOEUD2, NOEUD3, NOEUD4
       CHARACTER*16  K16BID, NOMCMD
-      CHARACTER*24  CONEC, TYPP, NOMMAI, NOMNOE, MESMAI
+      CHARACTER*24  CONEC, TYPP, NOMMAI, NOMNOE, MESMAI,VALK(2)
       INTEGER       NJONC,N,I,K,ARDM,JCOUR1,JCOUR2,JCOUR3,JCOUR4,NBNO
       LOGICAL       GETEXM, BUG
 C DEB-------------------------------------------------------------------
@@ -87,38 +87,24 @@ C
          CALL JEEXIN ( JEXNOM(NOMMAI,NOMMA), EXISTE )
          IF ( EXISTE .EQ. 0 ) THEN
             IER = IER + 1
-            CALL UTDEBM('E','FONFIS',MOTFAC)
-            CALL UTIMPI('S',' OCCURRENCE ', 1, IOCC )
-            CALL UTIMPK('L',' MAILLE INEXISTANTE ',1,NOMMA)
-            CALL UTFINM
+            CALL U2MESG('E', 'ELEMENTS5_19',1,NOMMA,1,IOCC,0,0.D0)
          ELSE
             CALL JENONU ( JEXNOM(NOMMAI,NOMMA), IBID )
             JTYPM = IATYMA-1+IBID
             CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(JTYPM)),TYPM)
             IF ( TYPM(1:3) .NE. 'SEG' ) THEN
                IER = IER + 1
-               CALL UTDEBM('E','FONFIS',MOTFAC)
-               CALL UTIMPI('S',' OCCURRENCE ', 1, IOCC )
-               CALL UTIMPK('L',' MAILLE NON LINEIQUE ',1,NOMMA)
-               CALL UTFINM
+               CALL U2MESG('E', 'ELEMENTS5_20',1,NOMMA,1,IOCC,0,0.D0)
             ENDIF
             IF ((IM.GT.1).AND.(TYPM(1:4).NE.TYPMP(1:4))) THEN
                IER = IER + 1
-               CALL UTDEBM('E','FONFIS',MOTFAC)
-               CALL UTIMPI('S',' OCCURRENCE ', 1, IOCC )
-               CALL UTIMPK('L',' MELANGE SEG2 ET SEG3 ',1,NOMMA)
-               CALL UTFINM
+               CALL U2MESG('E', 'ELEMENTS5_21',1,NOMMA,1,IOCC,0,0.D0)
             ENDIF
             TYPMP(1:4) = TYPM(1:4)
          ENDIF
  10   CONTINUE
       IF ( IER .GT. 0 ) THEN
-         CALL UTDEBM('F','FONFIS',MOTFAC)
-         CALL UTIMPI('S',' OCCURRENCE ', 1, IOCC )
-         CALL UTIMPK('L','LES OBJETS PRECEDEMMENT EVOQUES SONT '//
-     &                   'INEXISTANTS OU DE TYPE INCOMPATIBLE',
-     &                    1,'ARRET EN ERREUR')
-         CALL UTFINM
+         CALL U2MESI('F','ELEMENTS5_15',1,IOCC)
       ENDIF
 C
 C     ------------------------------------------------------------------
@@ -156,12 +142,7 @@ C --- VERIFICATION QUE LA LIGNE EST CONTINUE ET UNIQUE
       IF ( N1 .GT. 2 )  BUG = .TRUE.
       IF ( N2 .NE. 0 )  BUG = .TRUE.
       IF ( BUG ) THEN
-         CALL UTDEBM('F','FONFIS',MOTFAC)
-         CALL UTIMPI('S',' OCCURRENCE ', 1, IOCC )
-         CALL UTIMPK('L','LES MAILLES SPECIFIEES NE PERMETTENT PAS '//
-     &                   'DE DEFINIR UNE LIGNE CONTINUE',
-     &                    1,'ARRET EN ERREUR')
-         CALL UTFINM
+         CALL U2MESI('F','ELEMENTS5_16',1,IOCC)
       ENDIF
 
 C --- LECTURE DU NOM DU NOEUD ORIGINE (S'IL EST FOURNI)
@@ -176,10 +157,9 @@ C --- LECTURE DU NOM DU NOEUD ORIGINE (S'IL EST FOURNI)
         IF ( IRET .EQ. 10 ) THEN
           CALL U2MESK('F','ELEMENTS_67',1,K8B)
         ELSEIF ( IRET .EQ. 1 ) THEN
-          CALL UTDEBM('A','FONFIS',
-     &                           'TROP DE NOEUDS DANS LE GROUP_NO')
-          CALL UTIMPK('L','  NOEUD UTILISE: ',1,NDORIG)
-          CALL UTFINM( )
+          VALK(1) = 'GROUP_NO_ORIG'
+          VALK(2) = NDORIG
+          CALL U2MESK('A','ELEMENTS5_17',2,VALK)
         ENDIF
       ELSE
         NDORIG = ' '
@@ -206,10 +186,9 @@ C --- LECTURE DU NOM DU NOEUD EXTREMITE (S'IL EST FOURNI)
          IF ( IRET .EQ. 10 ) THEN
             CALL U2MESK('F','ELEMENTS_67',1,K8B)
          ELSEIF ( IRET .EQ. 1 ) THEN
-            CALL UTDEBM('A','FONFIS',
-     &                      'TROP DE NOEUDS DANS LE GROUP_NO')
-            CALL UTIMPK('L','  NOEUD UTILISE: ',1,NDEXTR)
-            CALL UTFINM( )
+            VALK(1) = 'GROUP_NO_EXTR'
+            VALK(2) = NDORIG
+            CALL U2MESK('A','ELEMENTS5_17',2,VALK)
          ENDIF
       ELSE
          NDEXTR = ' '
@@ -292,10 +271,7 @@ C
             IF ( IRET .EQ. 10 ) THEN
                CALL U2MESK('F','ELEMENTS_73',1,K8B)
             ELSEIF ( IRET .EQ. 1 ) THEN
-               CALL UTDEBM('A','FONFIS',
-     &                           'TROP DE MAILLES DANS LE GROUP_MA')
-               CALL UTIMPK('L','  MAILLE UTILISEE: ',1,NOEUD)
-               CALL UTFINM( )
+               CALL U2MESK('F','ELEMENTS5_18',1,NOEUD)
             ENDIF
          CALL JENONU ( JEXNOM(NOMMAI,NOMMA), NUMMA )
          ENDIF
@@ -389,8 +365,10 @@ C     ------------------------------------------------------------------
 C     --- ON STOCKE LE TYPE DE MAILLES DEFINISSANT LE FOND DE FISSURE
 C     ------------------------------------------------------------------
 C
-      CALL WKVECT(RESU//'.FOND      .TYPE',BASE//' V K8',1,JTYPM)
-      ZK8(JTYPM) = TYPM
+      IF(MOTFAC(6:8).NE.'SUP') THEN
+        CALL WKVECT(RESU//'.FOND      .TYPE',BASE//' V K8',1,JTYPM)
+        ZK8(JTYPM) = TYPM
+      ENDIF
 C
 C     ------------------------------------------------------------------
 C     --- ON STOCKE LES NOEUDS ORDONNES DANS LA STRUCTURE DE DONNEES
@@ -399,7 +377,14 @@ C     ------------------------------------------------------------------
 C
       IF ( TYPM(1:4) .EQ. 'SEG2' ) THEN
         NBNO=NBTM+1
-        CALL WKVECT(RESU//'.FOND      .NOEU',BASE//' V K8',NBNO,JNOE)
+        
+        IF(MOTFAC(6:8).EQ.'INF') THEN
+           CALL WKVECT(RESU//'.FOND_INF  .NOEU',BASE//' V K8',NBNO,JNOE)
+        ELSEIF(MOTFAC(6:8).EQ.'SUP') THEN
+           CALL WKVECT(RESU//'.FOND_SUP  .NOEU',BASE//' V K8',NBNO,JNOE)
+        ELSE
+           CALL WKVECT(RESU//'.FOND      .NOEU',BASE//' V K8',NBNO,JNOE)
+        ENDIF
         DO 570 I=1,NBTM
           CALL JENUNO(JEXNUM(NOMNOE,ZI(JCOUR1+NBTM+I-1)),NOEUD)
           ZK8(JNOE+I-1) = NOEUD
@@ -409,7 +394,13 @@ C
 C
       ELSEIF ( TYPM(1:4) .EQ. 'SEG3' ) THEN
         NBNO=2*NBTM+1
-        CALL WKVECT(RESU//'.FOND      .NOEU',BASE//' V K8',NBNO,JNOE)
+        IF(MOTFAC(6:8).EQ.'INF') THEN
+           CALL WKVECT(RESU//'.FOND_INF  .NOEU',BASE//' V K8',NBNO,JNOE)
+        ELSEIF(MOTFAC(6:8).EQ.'SUP') THEN
+           CALL WKVECT(RESU//'.FOND_SUP  .NOEU',BASE//' V K8',NBNO,JNOE)
+        ELSE
+           CALL WKVECT(RESU//'.FOND      .NOEU',BASE//' V K8',NBNO,JNOE)
+        ENDIF
         DO 575 I=1,NBTM
           CALL JENUNO(JEXNUM(NOMNOE,ZI(JCOUR1+NBTM+I-1)),NOEUD)
           ZK8(JNOE+2*I-1-1)   = NOEUD
@@ -424,7 +415,13 @@ CJMP
 
       ELSEIF ( TYPM(1:4) .EQ. 'SEG4' ) THEN
         NBNO=3*NBTM+1
-        CALL WKVECT(RESU//'.FOND      .NOEU',BASE//' V K8',NBNO,JNOE)
+        IF(MOTFAC(6:8).EQ.'INF') THEN
+           CALL WKVECT(RESU//'.FOND_INF  .NOEU',BASE//' V K8',NBNO,JNOE)
+        ELSEIF(MOTFAC(6:8).EQ.'SUP') THEN
+           CALL WKVECT(RESU//'.FOND_SUP  .NOEU',BASE//' V K8',NBNO,JNOE)
+        ELSE
+           CALL WKVECT(RESU//'.FOND      .NOEU',BASE//' V K8',NBNO,JNOE)
+        ENDIF
         DO 580 I=1,NBTM
           CALL JENUNO(JEXNUM(NOMNOE,ZI(JCOUR1+NBTM+I-1)),NOEUD)
           ZK8(JNOE+3*I-3)   = NOEUD

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -306,6 +306,7 @@ CH1B=AFFE_CHAR_MECA(           MODELE=MO,
 #
 
 CHDEP1B=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMATB,
                              EXCIT=_F(
@@ -452,6 +453,7 @@ CH2B=AFFE_CHAR_MECA(           MODELE=MO,
 #
 
 CHDEP2B=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMATB,
                              EXCIT=_F(
@@ -595,6 +597,7 @@ CH3B=AFFE_CHAR_MECA(           MODELE=MO,
 #
 
 CHDEP3B=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMATB,
                              EXCIT=_F(

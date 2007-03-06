@@ -1,7 +1,7 @@
       SUBROUTINE HUJKSI (CARAC, MATER, R, KSI)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,43 +31,51 @@ C    R  	:  ECROUISSAGE COURANT (MECANISME DEVIATOIRE)
 C   OUT
 C    KSI (R)	:  VALEUR DE KSI OU DKSIDR
 C     --------------------------------------------------------
-      REAL*8 MATER(20,2), R, KSI, RHYS, RMOB, XM, XM1
-      REAL*8 ZERO, UN
-      CHARACTER*6   CARAC
-      PARAMETER (ZERO = 0.D0)
-      PARAMETER (UN = 1.D0)
+      INTEGER     IFM, NIV
+      REAL*8      MATER(20,2), R, KSI, RHYS, RMOB, XM, XM1
+      REAL*8      ZERO, UN
+      CHARACTER*6 CARAC
+      LOGICAL     DEBUG
+      PARAMETER   (ZERO = 0.D0)
+      PARAMETER   (UN = 1.D0)
 
-       RHYS = MATER(15,2)
-       RMOB = MATER(16,2)
-       XM   = MATER(17,2)
-       
-       IF (CARAC(1:3).EQ.'KSI') THEN
-       
-         IF (R.GT.ZERO .AND. R.LE.RHYS) THEN
-           KSI = ZERO
-         ELSEIF (R.GT.RHYS .AND. R.LE.RMOB) THEN
-           KSI = (R - RHYS)**XM /(RMOB - RHYS)**XM
-         ELSEIF (R.GT.RMOB) THEN
-           KSI = UN
-         ELSE
-           CALL U2MESS('A','COMPOR1_9')
-         ENDIF
-       
-       ELSEIF (CARAC(1:6).EQ.'DKSIDR') THEN
-       
-         IF (R.GT.ZERO .AND. R.LE.RHYS) THEN
-           KSI = ZERO
-         ELSEIF (R.GT.RHYS .AND. R.LE.RMOB) THEN
-           XM1 = XM-UN
-           KSI = XM*(R - RHYS)**XM1 /(RMOB - RHYS)**XM
-         ELSEIF (R.GT.RMOB) THEN
-           KSI = ZERO
-         ELSE
-           CALL U2MESS('A','COMPOR1_9')
-         ENDIF
-         
-       ELSE
-         CALL U2MESS('F','COMPOR1_10')
-       ENDIF
-         
-       END
+      COMMON /MESHUJ/ DEBUG
+
+      CALL INFNIV (IFM, NIV)
+
+      RHYS = MATER(15,2)
+      RMOB = MATER(16,2)
+      XM   = MATER(17,2)
+      
+      IF (CARAC(1:3).EQ.'KSI') THEN
+      
+        IF (R.GT.ZERO .AND. R.LE.RHYS) THEN
+          KSI = ZERO
+        ELSEIF (R.GT.RHYS .AND. R.LE.RMOB) THEN
+          KSI = (R - RHYS)**XM /(RMOB - RHYS)**XM
+        ELSEIF (R.GT.RMOB) THEN
+          KSI = UN
+        ELSE
+          IF (DEBUG)
+     &    WRITE(IFM,'(A)')'HUJKSI :: ECROUISSAGE NEGATIF'
+        ENDIF
+      
+      ELSEIF (CARAC(1:6).EQ.'DKSIDR') THEN
+      
+        IF (R.GT.ZERO .AND. R.LE.RHYS) THEN
+          KSI = ZERO
+        ELSEIF (R.GT.RHYS .AND. R.LE.RMOB) THEN
+          XM1 = XM-UN
+          KSI = XM*(R - RHYS)**XM1 /(RMOB - RHYS)**XM
+        ELSEIF (R.GT.RMOB) THEN
+          KSI = ZERO
+        ELSE
+          IF (DEBUG)
+     &    WRITE(IFM,'(A)')'HUJKSI :: ECROUISSAGE NEGATIF'
+        ENDIF
+        
+      ELSE
+        CALL U2MESS('F','COMPOR1_10')
+      ENDIF
+        
+      END

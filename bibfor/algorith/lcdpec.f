@@ -2,7 +2,7 @@
      &                  ITMAX, TOLER, PGL, TOUTMS,DY, YF, VINF,EPSEQ )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,11 +25,12 @@ C     IN  VIND   :  VARIABLES INTERNES A T
 C     IN  VINF   :  VARIABLES INTERNES A T+DT
 C     ----------------------------------------------------------------
       INTEGER  NMAT,NDT,I,NBCOMM(NMAT,3),NBSYS,IEC,IFA,IS,NBFSYS,ITMAX
-      INTEGER  NUV1,NUVI,MONO1,ITER,NVI,IRET
+      INTEGER  NUV1,NUVI,MONO1,ITER,NVI,IRET,IFL,IU
       REAL*8   VIND(*),VINF(*),DVIN(6),DY(*),YF(*),MATERF(NMAT*2)
       REAL*8   LCNRTE, EPSEQ,PGL(3,3),D,MS(6),DGAMMA,DP,DALPHA
       REAL*8   ALPHAM,DEVI(6),TOUTMS(5,24,6),TOLER
-      CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,NECRCI
+      REAL*8   BSD,GCB,KDCS, RACR,SOM, AUX
+      CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,NECRCI,NECOUL
 C
 
 C      MONO1=NBCOMM(NMAT,1)
@@ -43,6 +44,7 @@ C     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES
       DO 6 IFA=1,NBFSYS                                    
  
          NOMFAM=CPMONO(5*(IFA-1)+1)                        
+         NECOUL=CPMONO(5*(IFA-1)+3)
          NECRCI=CPMONO(5*(IFA-1)+5)
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)                
          DO 7 IS=1,NBSYS                                   
@@ -53,11 +55,34 @@ C     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES
             NUV1=NUV1+1                                           
             DGAMMA=DY(NUV1)                                       
             DP=ABS(DGAMMA)                                        
-            ALPHAM=VIND(NUVI-2)                                   
-C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA            
-
+            ALPHAM=VIND(NUVI-2) 
+            
+            IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+            IFL=NBCOMM(IFA,1)
+            BSD       =MATERF(NMAT+IFL-1+6)
+            GCB       =MATERF(NMAT+IFL-1+7)
+            KDCS      =MATERF(NMAT+IFL-1+8)
+              
+            SOM=0.D0  
+              DO 1 IU = 1, NBSYS
+               IF (IU.NE.IS) THEN
+                 RACR=SQRT(ALPHAM)
+                 ELSE
+                 RACR=0.D0
+                 ENDIF   
+                   SOM   = SOM+RACR         
+  1              CONTINUE
+  
+                 DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
+     &                   (BSD+SOM/KDCS-GCB*ALPHAM)
+            ELSE
+C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA  
             CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,   
      &                ITMAX, TOLER,ALPHAM,DGAMMA,DALPHA, IRET)
+            
+            ENDIF
+
+
             DO 19 I=1,6                                           
                DEVI(I)=DEVI(I)+MS(I)*DGAMMA                       
  19         CONTINUE                                              

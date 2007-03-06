@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +95,8 @@ RESU=DYNA_NON_LINE(MODELE=MODELE,
                                 SUBD_PAS_MINI=1.E-8,),
                    HHT=_F(ALPHA=-0.1,),
                    NEWTON=_F(MATRICE='TANGENTE',),
-                   SOLVEUR=_F(METHODE='MULT_FRONT',),);
+                   SOLVEUR=_F(SYME='OUI',
+                              METHODE='MULT_FRONT',),);
 #
 # TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
 

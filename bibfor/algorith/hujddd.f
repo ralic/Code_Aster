@@ -2,7 +2,7 @@
      &                      VEC, MAT, IRET)
          IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -42,6 +42,7 @@ C   		   = 1   NOOK
 C =====================================================================
         INTEGER       NDT, NDI, I, J, K, MOD, IK
         INTEGER       IND(4), NBMECA, IRET
+        INTEGER       IFM, NIV
         REAL*8        MATER(20,2), COEF
         PARAMETER     (MOD = 15)
         REAL*8        BETA, M, PCO, PC, PREF
@@ -52,7 +53,7 @@ C =====================================================================
         REAL*8        D12, D13, UN, ZERO, DEUX, TROIS
         REAL*8        PSI(3), TOLE, DEGR
         CHARACTER*6   CARAC
-        LOGICAL       CONSOL,TRACT
+        LOGICAL       CONSOL, TRACT, DEBUG
 C =====================================================================
 C        PARAMETER     ( DSQR  = 1.41421356237D0  )
         PARAMETER     ( D12   = 0.5D0  )
@@ -64,7 +65,10 @@ C        PARAMETER     ( DSQR  = 1.41421356237D0  )
         PARAMETER     ( TOLE  = 1.D-6 )
         PARAMETER     ( DEGR  = 0.0174532925199D0 )
 C =====================================================================
-        COMMON /TDIM/ NDT, NDI
+        COMMON /TDIM/   NDT, NDI
+        COMMON /MESHUJ/ DEBUG
+
+        CALL INFNIV (IFM, NIV)
 
 
 C =====================================================================
@@ -158,10 +162,7 @@ C --- CALCUL DE DPSIDS (6X6) POUR LE MECANISME DEVIATOIRE K (<4) ------
 C =====================================================================
 C ON NE CALCULE PAS POUR LE CAS ISOTROPE (K=4) CAR DPSIDS = [ 0 ]
       IF (CARAC(1:6) .EQ. 'DPSIDS') THEN
-        IF (K .EQ. 4) THEN
-          CALL U2MESS('A', 'COMPOR1_2')
-          IRET = 1
-        ENDIF
+        IF (K .EQ. 4) CALL U2MESS('F', 'COMPOR1_2')
         
         CALL LCINMA(ZERO,MAT)
         IF (CONSOL) GOTO 600
@@ -216,7 +217,8 @@ C =====================================================================
         IF (K .LT. 4) THEN
        
           IF (TRACT) THEN
-            CALL U2MESS('F', 'COMPOR1_3')
+            IF (DEBUG) WRITE (IFM,'(A)')
+     &                 'HUJDDD :: LOG(PK/PC) NON DEFINI'
             IRET = 1
           ENDIF
           
@@ -255,7 +257,8 @@ C =====================================================================
         IF (K .LT. 4) THEN
        
           IF (TRACT) THEN
-            CALL U2MESS('A', 'COMPOR1_3')
+            IF (DEBUG) WRITE (IFM,'(A)')
+     &                 'HUJDDD :: LOG(PK/PC) NON DEFINI'
             IRET = 1
           ENDIF
           

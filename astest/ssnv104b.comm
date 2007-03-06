@@ -1,4 +1,4 @@
-# MODIF  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -105,6 +105,7 @@ L_INST=DEFI_LIST_REEL(
 #
 
 RESU2=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                              EXCIT=_F(
@@ -230,6 +231,7 @@ TEST_RESU(
            )
 
 RESU3=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                              EXCIT=_F(
@@ -351,6 +353,7 @@ TEST_RESU(
            )
 
 RESU4=STAT_NON_LINE(
+SOLVEUR=_F(SYME='OUI',),
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                              EXCIT=_F(

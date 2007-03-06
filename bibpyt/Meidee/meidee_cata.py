@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_cata Meidee  DATE 06/03/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,7 +168,6 @@ class Resultat:
         __raid  = RECU_TABLE(CO=self.obj,
                              NOM_PARA='RIGI_GENE',);
         
-
         afreq  = __freq.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
         axsi  = 1.0*zeros(afreq.shape)
         amor  = 1.0*zeros(afreq.shape)
@@ -434,21 +433,61 @@ class InterSpectre:
                               NUME_ORDRE = 1,
                              );
 
-        if self.opt == 0:
-            chano_y  = __CHANO.EXTR_COMP('DX',[],1)
-            DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,)
-            for no in chano_y.noeud:
-                self.nume.append('N'+str(no)+'_DX')
-            return self.nume
-    
-        if self.opt == 1:
-            chano_y  = __CHANO.EXTR_COMP('DX',[],1)
+        # On compte le nombre de composantes du champ cree
+        nbcmp = compt_cmp(__CHANO)
+        
+        if nbcmp == 6:
+            chano_x  = __CHANO.EXTR_COMP('DX',[],1)
             chano_rz = __CHANO.EXTR_COMP('DRZ',[],1)
             DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,) 
-            for no in chano_y.noeud:
+            for no in chano_x.noeud:
                 self.nume.append('N'+str(no)+'_DX')
                 self.nume.append('N'+str(no)+'_DRZ')
             return self.nume
+    
+        if nbcmp == 3:
+            chano_x  = __CHANO.EXTR_COMP('DX',[],1)
+            DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,)
+            for no in chano_x.noeud:
+                self.nume.append('N'+str(no)+'_DX')
+            return self.nume
+
+        
+
+##    def nume_ddl_phy(self, resu):
+##        """
+##        Fabrication d'une numérotation associée au modèle.
+##        Cas particulier : pour l'instant, on se place dans le cas où seuls les
+##        ddl DY (et éventuellement DRZ) sont utilisés.
+##        Retourne un vecteur dont les comp sont de la forme : #noeud + type ddl
+##        var_opt est le type de projection que l'on veut réaliser : efforts discrets
+##        (var_opt = 'Efforts discrets localisés' ou 'Efforts et moments discrets')
+##        """
+##        self.nume = []
+##        __CHANO = CREA_CHAMP( TYPE_CHAM = 'NOEU_DEPL_R',
+##                              OPERATION  = 'EXTR',
+##                              RESULTAT   = resu.obj,
+##                              NOM_CHAM   = 'DEPL',
+##                              NUME_ORDRE = 1,
+##                             );
+##
+##        if self.opt == 0:
+##            chano_y  = __CHANO.EXTR_COMP('DX',[],1)
+##            DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,)
+##            for no in chano_y.noeud:
+##                self.nume.append('N'+str(no)+'_DX')
+##            return self.nume
+##    
+##        if self.opt == 1:
+##            chano_y  = __CHANO.EXTR_COMP('DX',[],1)
+##            chano_rz = __CHANO.EXTR_COMP('DRZ',[],1)
+##            print "chano_y = ", chano_y.valeurs
+##            print "chano_rz =", chano_rz.valeurs 
+##            DETRUIRE(CONCEPT=_F(NOM=(__CHANO,),),INFO=1,) 
+##            for no in chano_y.noeud:
+##                self.nume.append('N'+str(no)+'_DX')
+##                self.nume.append('N'+str(no)+'_DRZ')
+##            return self.nume
 
     def nume_ddl_gene(self, resu):
         """
@@ -607,6 +646,7 @@ class MeideeObjects:
         """!essaye de relier les concepts entre eux"""
 
         # recuperation des maillages associes aux modeles
+        # et association des resultats a un modele
         for m, _mod in self.modeles.items():
             _maillag = aster.getvectjev( m.ljust(8) + '.MODELE    .NOMA        ' )
             maillage = _maillag[0].strip()
@@ -619,6 +659,14 @@ class MeideeObjects:
             self.maillage_modeles[m] = maillage
             assert maillage in self.maillages
 
+        for n, res in self.resultats.items():
+            if not res.modele:
+                # cas ou la methode precedente n'a pas pemris de trouver le modele
+                print "self.resultat = ", n
+                modele_name = aster.getvectjev( n.ljust(19) + '.MODL')
+                print "modele_name  = ", modele_name
+                res.modele_name = modele_name[0].strip()
+                res.modele = self.modeles[res.modele_name]
 
     def get_resu(self, name):
         """!Renvoie un objet resultat identifie par son nom"""
@@ -696,3 +744,24 @@ class MeideeObjects:
             if maya == maillage:
                 l.append(k)
         return l
+
+
+##############################################################################
+#
+#                          PETITS UTILITAIRES
+#
+##############################################################################
+
+def compt_cmp(champ):
+    """! Permet de compter le nombre de composantes d'un champ aux noeuds"""
+
+    nbval = len(aster.getvectjev(champ.nom.ljust(19) + '.VALE'))
+    champy  = champ.EXTR_COMP('DX',[],1)
+    nbno = len(champy.noeud)
+    nbcmp = nbval/nbno
+
+    return nbcmp
+
+
+
+            

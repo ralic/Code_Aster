@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,11 +116,13 @@ L_SAUV=DEFI_LIST_REEL(DEBUT=-1.E-5,
 RESU=DYNA_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CH,),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                DEFORMATION='SIMO_MIEHE',
-                                TOUT='OUI',),
-                   ETAT_INIT=_F(
-                   VITE=VIT_0,),
+                   COMP_INCR=(_F(RELATION='VMIS_ISOT_LINE',
+                                 DEFORMATION='SIMO_MIEHE',
+                                 TOUT='OUI',),
+                              _F(RELATION='ELAS',
+                                 DEFORMATION='PETIT',
+                                 GROUP_MA='VOL_RIG',),),
+                   ETAT_INIT=_F(VITE=VIT_0,),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=2.E-05,
                                 SUBD_METHODE='UNIFORME', SUBD_PAS=4,
@@ -130,8 +132,8 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                               DELTA=0.9,),
                    NEWTON=_F(REAC_INCR=1,
                              REAC_ITER=1,),
-                   SOLVEUR=_F(METHODE='LDLT',
-                              SYME='OUI',),
+                   SOLVEUR=_F(SYME='OUI',
+                              METHODE='LDLT',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
                                   ITER_GLOB_MAXI=10,
                                   ARRET='OUI',),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,8 +67,8 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",op=55,sd_prod=fond_fiss,reentrant='n',
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              NOEUD_ORIG      =SIMP(statut='f',typ=no,),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno,),
-             MAILLE_ORIG     =SIMP(statut='f',typ=ma,),
-             GROUP_MA_ORIG   =SIMP(statut='f',typ=ma,),
+             NOEUD_EXTR      =SIMP(statut='f',typ=no,),
+             GROUP_NO_EXTR   =SIMP(statut='f',typ=grno,),
            ),
            FOND_SUP       =FACT(statut='f',
              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'), 
@@ -77,8 +77,8 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",op=55,sd_prod=fond_fiss,reentrant='n',
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              NOEUD_ORIG      =SIMP(statut='f',typ=no,),
              GROUP_NO_ORIG   =SIMP(statut='f',typ=grno,),
-             MAILLE_ORIG     =SIMP(statut='f',typ=ma,),
-             GROUP_MA_ORIG   =SIMP(statut='f',typ=ma,),
+             NOEUD_EXTR      =SIMP(statut='f',typ=no,),
+             GROUP_NO_EXTR   =SIMP(statut='f',typ=grno,),
            ),
            LEVRE_SUP       =FACT(statut='f',
              regles=(UN_PARMI('GROUP_MA','MAILLE'),),

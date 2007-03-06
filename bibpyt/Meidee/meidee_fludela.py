@@ -1,4 +1,4 @@
-#@ MODIF meidee_fludela Meidee  DATE 06/02/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_fludela Meidee  DATE 06/03/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,9 +299,12 @@ class MeideeFludela:
         """
         RES_et = self.res_longeq
         __tabl = calc_meidee_longeq( self.res_longeq )
+        print "#############################################"
+        print "############################"
         self.long_eq = __tabl.EXTR_TABLE().Array('MODE', 'LONGUEUR')
 ##        self.long_eq = array(ftmp[:,1],copy=True)
         self.calc['longeq'] = self.long_eq
+        print self.long_eq
 
 
     def mat_gene(self, resu):
@@ -1678,15 +1681,10 @@ def calc_meidee_longeq( resultat,
     maya_y   = [maya[ind] for ind in range(1,len(maya),3)]
     maya_z   = [maya[ind] for ind in range(2,len(maya),3)]
     ordo     = Numeric.argsort(maya_y)
-    print "maya_x = ", maya_x
-    print "maya_y = ", maya_y
-    print "ordo = ", ordo
     no1      = aster.getvectjev( nom_maya.ljust(8)+'.NOMNOE         ' )
-    print "no1 = ", no1
     maya     = []
     for ind_may in range(len(maya_y)):
         place = ordo[ind_may]
-        print [int(no1[place][1:]),maya_x[place],maya_y[place],maya_z[place]]
         maya.append([int(no1[place][1:]),maya_x[place],maya_y[place],maya_z[place]])
         # coordonnées du maillage rangées par ordre des y croissants
     maya = Numeric.array(maya)
@@ -1714,9 +1712,6 @@ def calc_meidee_longeq( resultat,
                 UTMESS('A', 'MACRO_VISU_MEIDEE', "Le maillage et les deformees ne sont pas compatibles")
                 pass
         data = Numeric.array(liste)
-        if ind == 1:
-            print "data = "
-            print data
 
         calc = 0
         for ind_no in range(1,data.shape[0]):

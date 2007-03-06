@@ -2,7 +2,7 @@
      &                  TRAV1,TRAV2,TRAV3)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,6 +104,9 @@ C
 C
       CALL GETVR8 ('THETA', 'R_INF', 1, 1, 1,RINF, NR)
       CALL GETVR8 ('THETA', 'R_SUP', 1, 1, 1,RSUP, NR)
+      IF (NR.NE.0 .AND. RSUP .LE. RINF) THEN
+           CALL U2MESS('F','ELEMENTS5_11')
+      ENDIF
       CALL GETVID ('THETA', 'R_INF_FO', 1, 1, 1,RINFF, NRF)
       CALL GETVID ('THETA', 'R_SUP_FO', 1, 1, 1,RSUPF, NRF)
 C
@@ -132,6 +135,9 @@ C
                  ZR(IADRT1 + J - 1) = VALRES
                  CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                  ZR(IADRT2 + J - 1) = VALRES
+                 IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
+                    CALL U2MESS('F','ELEMENTS5_11')
+                 ENDIF
              ELSE
                 CALL U2MESS('F','ELEMENTS2_4')
              ENDIF
@@ -156,6 +162,9 @@ C
                  ZR(IADRT1 + J - 1) = VALRES
                  CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                  ZR(IADRT2 + J - 1) = VALRES
+                 IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
+                    CALL U2MESS('F','ELEMENTS5_11')
+                 ENDIF
              ELSE
                 CALL U2MESS('F','ELEMENTS2_4')
              ENDIF

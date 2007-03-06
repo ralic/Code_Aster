@@ -1,4 +1,5 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,213 +18,192 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
 # - MODELISATION EN D_PLAN ,MAILLES QUA4
 # METHODES DE CONTACT :
 #  PENALISATION
 
-DEBUT( CODE=_F( NOM ='SDNV104B',NIV_PUB_WEB='INTERNET'),)
+DEBUT(CODE=_F(NOM='SDNV104B',
+              NIV_PUB_WEB='INTERNET',),);
 
-MAILL=LIRE_MAILLAGE()
-
+MAILL=LIRE_MAILLAGE();
 
 MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
-                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),)
+                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
 MODE=AFFE_MODELE(MAILLAGE=MAILL,
                  VERIF='MAILLE',
-                 AFFE=(_F(GROUP_MA=('PATIN','LESC','FSUP','FLAT','BATI','LMAI'),
+                 AFFE=(_F(GROUP_MA=('PATIN','LESC','FSUP','FLAT','BATI','LMAI',),
                           PHENOMENE='MECANIQUE',
                           MODELISATION='D_PLAN',),
                        _F(GROUP_MA='RESLAT',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='2D_DIS_T',),
-                        ))
+                          MODELISATION='2D_DIS_T',),),);
 
 MAILL=MODI_MAILLAGE(reuse =MAILL,
                     MAILLAGE=MAILL,
-                    ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC','FSUP','FLAT'),),
-                    )
-
-
+                    ORIE_PEAU_2D=_F(GROUP_MA=('LMAI','LESC','FSUP','FLAT',),),);
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
 
 CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    DISCRET_2D=_F(GROUP_MA='RESLAT',
-                                  CARA='K_T_D_L',
-                                  VALE=(12.E3,0.0),),
-                   )
-
+                    DISCRET_2D=_F(CARA='K_T_D_L',
+                                  GROUP_MA='RESLAT',
+                                  VALE=(12.E3,0.0,),),);
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 
 MPATIN=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                              NU=0.0,
-                             RHO=7.E3))
+                             RHO=7.E3,),);
 
 MBATI=DEFI_MATERIAU(ELAS=_F(E=1.0E11,
                             NU=0.0,
-                            RHO=0.0),)
+                            RHO=0.0,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=MAILL,
                  MODELE=MODE,
                  AFFE=(_F(GROUP_MA='PATIN',
                           MATER=MPATIN,),
                        _F(GROUP_MA='BATI',
-                          MATER=MBATI,),
-                       ),)
-
+                          MATER=MBATI,),),);
 #---------------------------------------------------------------------
 #                         CHARGEMENTS
 #---------------------------------------------------------------------
-
 # CONDITIONS AUX LIMITES
-COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
-                        DDL_IMPO=(
-                                  _F(GROUP_MA='BATI',
-                                     DX=0.0,DY=0.0,),
-                                  _F(GROUP_NO=('R1','R2',),
-                                     DX=0.0,DY=0.0,),),)
 
+COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
+                        DDL_IMPO=(_F(GROUP_MA='BATI',
+                                     DX=0.0,
+                                     DY=0.0,),
+                                  _F(GROUP_NO=('R1','R2',),
+                                     DX=0.0,
+                                     DY=0.0,),),);
 # CHARGEMENT 1 : APPLICATION DE LA GRAVITE
+
 POIDS=AFFE_CHAR_MECA(MODELE=MODE,
                      PRES_REP=_F(GROUP_MA='FSUP',
-                                 PRES=70000.))
-
+                                 PRES=70000.,),);
 # CHARGEMENT 2 : APPLICATION TANGENTIELLE
+
 PTAN=AFFE_CHAR_MECA(MODELE=MODE,
                     PRES_REP=_F(GROUP_MA='FLAT',
-                                    PRES=200000.0))
-
+                                PRES=200000.0,),);
 # DEFINITION DU CONTACT
-CTACP=AFFE_CHAR_MECA(MODELE=MODE,
-                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
-                               RECHERCHE='NOEUD_BOUCLE',
-                               REAC_GEOM='CONTROLE',
-                               NB_REAC_GEOM=2,
-                               METHODE='PENALISATION',
-                               E_N=2.1E8,
-                               E_T=2.1E11,
-                               FROTTEMENT='COULOMB',
-                               COULOMB=0.3,
-                               COEF_MATR_FROT=0.9,
-                               GROUP_MA_MAIT='LMAI',
-                               GROUP_MA_ESCL='LESC',
-                               ),)
 
+CTACP=AFFE_CHAR_MECA(MODELE=MODE,
+                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
+                                RECHERCHE='NOEUD_BOUCLE',
+                                METHODE='PENALISATION',
+                                GROUP_MA_MAIT='LMAI',
+                                GROUP_MA_ESCL='LESC',
+                                E_N=2.1E8,
+                                FROTTEMENT='COULOMB',
+                                REAC_GEOM='CONTROLE',
+                                NB_REAC_GEOM=2,
+                                COULOMB=0.3,
+                                E_T=2.1E11,
+                                COEF_MATR_FROT=0.9,),);
 #---------------------------------------------------------------------
 #                         RESOLUTION
 #--------------INST-------------------------------------------------------
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           0.07,1.0,
-                         10.0,1.0),
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='LINEAIRE',)
+                          10.0,1.0,
+                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',);
 
-                    
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.5,
-                                    NOMBRE=350,),)
-         
-         
-
+                                    NOMBRE=350,),);
 ##############################
 
 
-UPM =  DYNA_NON_LINE(MODELE=MODE,
-                    CHAM_MATER=CM,
-                    CARA_ELEM=CARA,
-                    EXCIT=(_F(CHARGE=POIDS,
-                              FONC_MULT=RAMPE,),
-                           _F(CHARGE=PTAN,
-                              FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTACP,),
-                           _F(CHARGE=COND_LIM,),),
-                    COMP_INCR=_F(RELATION='ELAS',
-                                 TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
-                                 SUBD_PAS_MINI=0.0000001,),
-                    HHT=_F(),
-                    NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    SOLVEUR =_F(METHODE='MULT_FRONT',),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
-                    )
+UPM=DYNA_NON_LINE(MODELE=MODE,
+                  CHAM_MATER=CM,
+                  CARA_ELEM=CARA,
+                  EXCIT=(_F(CHARGE=POIDS,
+                            FONC_MULT=RAMPE,),
+                         _F(CHARGE=PTAN,
+                            FONC_MULT=RAMPE,),
+                         _F(CHARGE=CTACP,),
+                         _F(CHARGE=COND_LIM,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               TOUT='OUI',),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               SUBD_METHODE='UNIFORME',
+                               SUBD_PAS=5,
+                               SUBD_PAS_MINI=0.0000001,),
+                  HHT=_F(),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+                  SOLVEUR=_F(METHODE='MULT_FRONT',
+                             SYME='OUI',),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
+                  ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
-TEST_RESU(RESU=(_F(RESULTAT   = UPM,
-                   INST       = 1.70,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 14.91,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                _F(RESULTAT   = UPM,
-                   INST       = 3.4,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 3.5,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                   ),)
-
+TEST_RESU(RESU=(_F(RESULTAT=UPM,
+                   INST=1.7,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=14.91,
+                   PRECISION=(0.05,0.001,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=UPM,
+                   INST=3.4,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=3.5,
+                   PRECISION=(0.05,0.001,),
+                   REFERENCE='ANALYTIQUE',),),);
 ###################################
 
-UPL =  DYNA_NON_LINE(MODELE=MODE,
-                    CHAM_MATER=CM,
-                    CARA_ELEM=CARA,
-                    EXCIT=(_F(CHARGE=POIDS,
-                              FONC_MULT=RAMPE,),
-                           _F(CHARGE=PTAN,
-                              FONC_MULT=RAMPE,),
-                           _F(CHARGE=CTACP,),
-                           _F(CHARGE=COND_LIM,),),
-                    COMP_INCR=_F(RELATION='ELAS',
-                                 TOUT='OUI',),
-                    INCREMENT=_F(LIST_INST=L_INST,
-                                 SUBD_METHODE='UNIFORME', SUBD_PAS=5,
-                                 SUBD_PAS_MINI=0.0000001,),
-                    HHT=_F(),
-                    NEWTON=_F(MATRICE='TANGENTE',
-                              REAC_ITER=1,),
-                    SOLVEUR =_F(METHODE='LDLT',),
-                    CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
-                     )
 
+UPL=DYNA_NON_LINE(MODELE=MODE,
+                  CHAM_MATER=CM,
+                  CARA_ELEM=CARA,
+                  EXCIT=(_F(CHARGE=POIDS,
+                            FONC_MULT=RAMPE,),
+                         _F(CHARGE=PTAN,
+                            FONC_MULT=RAMPE,),
+                         _F(CHARGE=CTACP,),
+                         _F(CHARGE=COND_LIM,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               TOUT='OUI',),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               SUBD_METHODE='UNIFORME',
+                               SUBD_PAS=5,
+                               SUBD_PAS_MINI=0.0000001,),
+                  HHT=_F(),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            REAC_ITER=1,),
+                  SOLVEUR=_F(METHODE='LDLT',
+                             SYME='OUI',),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
+                  ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
-TEST_RESU(RESU=(_F(RESULTAT   = UPL,
-                   INST       = 1.70,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 14.91,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                _F(RESULTAT   = UPL,
-                   INST       = 3.4,
-                   NOM_CHAM   = 'DEPL',
-                   GROUP_NO   = 'A',
-                   NOM_CMP    = 'DX',
-                   VALE       = 3.5,
-                   PRECISION  = (5.E-2,1.E-3),
-                   REFERENCE  = 'ANALYTIQUE',
-                   ),
-                   ),)         
+TEST_RESU(RESU=(_F(RESULTAT=UPL,
+                   INST=1.7,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=14.91,
+                   PRECISION=(0.05,0.001,),
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=UPL,
+                   INST=3.4,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A',
+                   VALE=3.5,
+                   PRECISION=(0.05,0.001,),
+                   REFERENCE='ANALYTIQUE',),),);
 ##############################
 
 
-FIN()
+FIN();
 #

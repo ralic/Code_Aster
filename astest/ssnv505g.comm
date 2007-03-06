@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,7 +138,8 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
 #  CALCUL DE REFERENCE
 # ------------------------------------------------------------------------
 
-ULAG=STAT_NON_LINE(MODELE=MODE,
+ULAG=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                   MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CHAMPCAR,
                 EXCIT=(_F(CHARGE=COND_LIM,),
@@ -174,7 +175,8 @@ IMPR_TABLE(TABLE=T_REA_LA,);
 #  CALCUL VALIDANT DIST_POUTRE
 # ------------------------------------------------------------------------
 
-ULAG2=STAT_NON_LINE(MODELE=MODE,
+ULAG2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                    MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CHAMPCAR,
                 EXCIT=(_F(CHARGE=COND_LIM,),

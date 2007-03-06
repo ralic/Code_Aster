@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/12/2006   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,7 +139,8 @@ U=DYNA_NON_LINE(MODELE=MODE,
                            DELTA=DEL,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
-                SOLVEUR=_F(METHODE='MULT_FRONT',),
+                SOLVEUR=_F(SYME='OUI',
+                           METHODE='MULT_FRONT',),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),);
 
 #############

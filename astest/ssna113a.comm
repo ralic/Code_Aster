@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 05/03/2007   AUTEUR MICHEL S.MICHEL 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,7 +155,7 @@ FCT_L=DEFI_FONCTION(NOM_PARA='INST',
  
 L_INST_L=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=IFIN,
-                                     NOMBRE=500,),),);
+                                     NOMBRE=400,),),);
 
 L_ARCH_L=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=IFIN,
@@ -210,13 +210,13 @@ EFFORT_R =  POST_RELEVE_T (
                           RESULTANTE = ('DY'),
                           OPERATION= 'EXTRACTION',),);
                           
-IMPR_TABLE ( FORMAT = 'TABLEAU',
-             TABLE = EFFORT_R,
-             NOM_PARA=('INST','DY'));
-
-IMPR_TABLE ( FORMAT = 'TABLEAU',
-             TABLE = CONTR_R,
-             NOM_PARA=('INST','DX'));
+# IMPR_TABLE ( FORMAT = 'TABLEAU',
+#              TABLE = EFFORT_R,
+#              NOM_PARA=('INST','DY'));
+# 
+# IMPR_TABLE ( FORMAT = 'TABLEAU',
+#              TABLE = CONTR_R,
+#              NOM_PARA=('INST','DX'));
 
 TEST_TABLE( TABLE=EFFORT_R,
             NOM_PARA='DY',
@@ -277,13 +277,13 @@ EFFORT_L =  POST_RELEVE_T (
                           RESULTANTE = ('DY'),
                           OPERATION= 'EXTRACTION',),);
                           
-IMPR_TABLE ( FORMAT = 'TABLEAU',
-             TABLE = EFFORT_L,
-             NOM_PARA=('INST','DY'));
-
-IMPR_TABLE ( FORMAT = 'TABLEAU',
-             TABLE = CONTR_L,
-             NOM_PARA=('INST','DX'));
+# IMPR_TABLE ( FORMAT = 'TABLEAU',
+#              TABLE = EFFORT_L,
+#              NOM_PARA=('INST','DY'));
+# 
+# IMPR_TABLE ( FORMAT = 'TABLEAU',
+#              TABLE = CONTR_L,
+#              NOM_PARA=('INST','DX'));
 
 TEST_TABLE( TABLE=EFFORT_L,
             NOM_PARA='DY',

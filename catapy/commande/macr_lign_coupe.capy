@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,20 +32,33 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table
          b_ther        =BLOC(condition = "AsType(RESULTAT) in (evol_ther,)",fr="résultat thermique",
            NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut='TEMP' ),  
          ),
-         UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=25),  
+         UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=25),
+
          MODELE          =SIMP(statut='f',typ=modele_sdaster ),
          GROUP_MA        =SIMP(statut='f',typ=grma),
          MAILLE          =SIMP(statut='f',typ=ma,max='**'),
          regles=(EXCLUS('GROUP_MA','MAILLE'),),
+         
          LIGN_COUPE     =FACT(statut='o',max='**',
-           regles=(UN_PARMI('NB_POINTS','GROUP_NO'),),
+           TYPE            =SIMP(statut='o',typ='TXM',max=1,into=("GROUP_NO","SEGMENT","ARC"),defaut='SEGMENT' ),
            INTITULE        =SIMP(statut='f',typ='TXM',),
-           GROUP_NO        =SIMP(statut='f',typ=grno),
-           NB_POINTS       =SIMP(statut='f',typ='I'),
-           b_nbpts = BLOC(condition = "NB_POINTS != None",
-              COOR_ORIG       =SIMP(statut='o',typ='R',min=2,max=3),  
-              COOR_EXTR       =SIMP(statut='o',typ='R',min=2,max=3),
-              VECT_Y          =SIMP(statut='f',typ='R',min=2,max=3),), 
+
+           b_grno          =BLOC(condition = "TYPE=='GROUP_NO'",    
+             GROUP_NO        =SIMP(statut='f',typ=grno),),
+
+           b_segment       =BLOC(condition = "TYPE=='SEGMENT'",    
+             NB_POINTS       =SIMP(statut='o',typ='I',max=1),
+             COOR_ORIG       =SIMP(statut='o',typ='R',min=2,max=3),  
+             COOR_EXTR       =SIMP(statut='o',typ='R',min=2,max=3),
+             VECT_Y          =SIMP(statut='f',typ='R',min=2,max=3),), 
+
+           b_arc           =BLOC(condition = "TYPE=='ARC'",    
+             NB_POINTS       =SIMP(statut='o',typ='I',max=1),
+             COOR_ORIG       =SIMP(statut='o',typ='R',min=2,max=3),  
+             CENTRE          =SIMP(statut='o',typ='R',min=2,max=3),
+             ANGLE           =SIMP(statut='o',typ='R',max=1),
+             DNOR            =SIMP(statut='f',typ='R',min=2,max=3),
+             VECT_Y          =SIMP(statut='f',typ='R',min=2,max=3),), 
          ),
 )  ;
 

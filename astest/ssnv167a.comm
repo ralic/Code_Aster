@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -69,7 +69,8 @@ LIST=DEFI_LIST_REEL(    DEBUT=0.,
                            INTERVALLE=_F(  JUSQU_A = 1.,  NOMBRE = 1)
                          )
 
-SOL = STAT_NON_LINE( MODELE=MO,
+SOL = STAT_NON_LINE( SOLVEUR=_F(SYME='OUI',),
+                     MODELE=MO,
                      CHAM_MATER=CHMAT,
                      INFO=2,
                     EXCIT=(

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -400,7 +400,8 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 #
 #
 #
-   RESU[num_calc]=STAT_NON_LINE(CHAM_MATER=MATER[num_calc],
+   RESU[num_calc]=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                                CHAM_MATER=MATER[num_calc],
                    MODELE=MOD_G[num_calc],
                    CONVERGENCE=_F(ITER_GLOB_MAXI=30,
                                   RESI_GLOB_RELA=1.E-06,),

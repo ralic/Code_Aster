@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -211,6 +211,7 @@ LINST=DEFI_LIST_REEL(
 #
 
 RESU=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                           MODELE=MOD,
                           CHAM_MATER=CHMAT,EXCIT=(
                           _F(  CHARGE = BLOQ),
@@ -337,6 +338,7 @@ TEST_TABLE(     TABLE=REACENC,
                 CRITERE='RELATIF' )
 
 RESU2=STAT_NON_LINE( 
+SOLVEUR=_F(SYME='OUI',),
                           MODELE=MOD,
                           CHAM_MATER=CHMAT,EXCIT=(
                           _F(  CHARGE = BLOQ),

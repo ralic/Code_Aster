@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,7 +124,8 @@ LARCH=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.,
                                    NOMBRE=25,),);
 
-U=STAT_NON_LINE(MODELE=MODE,
+U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CARA,
                 EXCIT=(_F(CHARGE=COND_LIM,),

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -117,7 +117,8 @@ ALF=0.28
 #
 DEL=0.55
 #
-U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
+U=DYNA_NON_LINE(  SOLVEUR=_F(SYME='OUI',),
+                  MODELE=MODE,  CHAM_MATER=CM,
            EXCIT=(_F( CHARGE = CH,
                       FONC_MULT = RAMPE
                     ),

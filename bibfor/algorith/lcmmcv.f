@@ -3,7 +3,7 @@
 C RESPONSABLE JMBHH01 J.M.PROIX
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,8 +48,8 @@ C       ----------------------------------------------------------------
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
         REAL*8          ERRDY(NR), ERRR(NR)
-        REAL*8          TER(100)
-        SAVE            TER
+C        REAL*8          TER(100)
+C        SAVE            TER
         INTEGER         NBCOMM(NMAT,3)
 C       ----------------------------------------------------------------
 C
@@ -67,7 +67,7 @@ C          ERRDY(1) = MAX(ERRDY(1), ABS(DY(I)))
 C  101  CONTINUE                                   
 
  
-      TER(ITER) = ERRR(1)
+C      TER(ITER) = ERRR(1)
 
 C -         ITER < ITMAX
 C           ------------
@@ -83,19 +83,19 @@ C
 C
 C -     NON CONVERGENCE ITERATION SUIVANTE
 C
-          IF((ITER.GE.4).AND.(ITMAX.GE.4)) THEN
-             IF ((TER(ITER) .LT. TER(ITER-1)).AND.
-     1           (TER(ITER-1) .LT. TER(ITER-2))   ) THEN
-                IRTETI = 1
-                GOTO 9999
-             ELSE 
-                IRTETI = 3
-                GOTO 9999             
-             ENDIF
-          ELSE
+C          IF((ITER.GE.15).AND.(ITMAX.GE.15)) THEN
+C             IF ((TER(ITER) .LT. TER(ITER-1)).AND.
+C     1           (TER(ITER-1) .LT. TER(ITER-2))   ) THEN
+C                IRTETI = 1
+C                GOTO 9999
+C             ELSE 
+C                IRTETI = 3
+C                GOTO 9999             
+C             ENDIF
+C          ELSE
                IRTETI = 1
                GOTO 9999             
-          ENDIF
+C          ENDIF
 C
       ELSE
          IRTETI=3

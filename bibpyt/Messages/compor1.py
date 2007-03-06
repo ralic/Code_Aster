@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+#@ MODIF compor1 Messages  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,43 +23,32 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- hujpla :: NVI > NVIMAX
+ hujpla :: nombre de variables internes incorrect:
+           NVI > NVIMAX
 """),
 2: _("""
- hujddd :: on ne calcule pas DPSIDS pour K=4
-"""),
-3: _("""
- hujeux :: PK devient très petit ou positif. log(PK/PC) non défini
+ hujddd :: on ne calcule pas DPSIDS pour K=4.
+           - vérifiez la programmation -
 """),
 4: _("""
  hujeux :: les modélisations autorisées sont 3D D_PLAN ou AXIS
 """),
 5: _("""
  hujeux :: K différent de NBMECA pour le mécanisme isotrope
+           - vérifiez la programmation -
 """),
 6: _("""
  hujeux :: erreur inversion par pivot de Gauss
 """),
-7: _("""
- hujiid :: on ne fait pas la prédiction
-"""),
 8: _("""
  hujeux :: mécanisme indéterminé
-"""),
-9: _("""
- hujksi :: écrouissage négatif
+           - vérifiez la programmation -
 """),
 10: _("""
- hujeux :: mot-clé inconnu
+ hujksi :: mot-clé inconnu
 """),
 11: _("""
- hujeux :: modélisation inconnue
-"""),
-12: _("""
- hujpla :: redécoupage local du pas de temps
-"""),
-13: _("""
- hujpla :: changement de mécanisme
+ hujnvi :: modélisation inconnue
 """),
 14: _("""
  hujtid :: erreur calcul de la matrice tangente

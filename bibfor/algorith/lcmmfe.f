@@ -1,13 +1,15 @@
-        SUBROUTINE LCMMFE( TAUS,COEFT,IFA,NMAT,NBCOMM,NECOUL,RP,
-     &           ALPHAP,GAMMAP,DT,DGAMMA,DP,TEMPF,CRIT,SGNS )
+        SUBROUTINE LCMMFE( TAUS,COEFT,MATERF,IFA,NMAT,NBCOMM,
+     &      NECOUL,IS,NBSYS,VIND,DY,RP,ALPHAP,GAMMAP,DT,DALPHA,
+     &      DGAMMA,DP,TEMPF,CRIT,SGNS,HSR,IRET)
         IMPLICIT NONE
-        INTEGER IFA,NMAT,NBCOMM(NMAT,3)
+        INTEGER IFA,NMAT,NBCOMM(NMAT,3),IRET
         REAL*8 TAUS,COEFT(NMAT),ALPHAP,DGAMMA,DP,DT,DTIME,TAUMU,TAUV
-        REAL*8 RP,SGNS
+        REAL*8 RP,SGNS,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT)
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,12 +46,15 @@ C           DGAMMA  :  DEF PLAS
 C           DP      :  DEF PLAS CUMULEE
 C           CRIT    :  CRITERE
 C           SGNS    :  SIGNE DE GAMMA
+C           IRET    :  CODE RETOUR
 C ======================================================================
 
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
       REAL*8 TEMPF,TABS,PR,DELTAV,DELTAG,GAMMAP,R8MIEM,PTIT
-      INTEGER IFL,IEI,TNS,NS,IS
+      REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,R,KDCS,SOM,DALPHA
+      REAL*8 AUX,CISA2,RACR
+      INTEGER IFL,IEI,TNS,NS,IS,IU,NBSYS
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
@@ -57,7 +62,7 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
       IFL=NBCOMM(IFA,1)
       PTIT=R8MIEM()
 C-------------------------------------------------------------
-C     POUR UN NOUVEAU TYPE D'ECOULEMENT, AJOUTER UN BLOC IF
+C     POUR UN NOUVEAU TYPE D'ECOULEMENT, CREER UN BLOC IF
 C------------------------------------------------------------
      
       IF (NECOUL.EQ.'ECOU_VISC1') THEN
@@ -128,5 +133,79 @@ C------------------------------------------------------------
              DGAMMA=0.D0
           ENDIF
        ENDIF
-                  
+
+      IF (NECOUL.EQ.'KOCKS_RAUCH') THEN
+          K         =COEFT(IFL-1+1)
+          TAUR      =COEFT(IFL-1+2)
+          TAU0      =COEFT(IFL-1+3)
+          GAMMA0    =COEFT(IFL-1+4)
+          DELTAG    =COEFT(IFL-1+5)
+          BSD       =COEFT(IFL-1+6)
+          GCB       =COEFT(IFL-1+7)
+          KDCS      =COEFT(IFL-1+8)
+          P         =COEFT(IFL-1+9)
+          Q         =COEFT(IFL-1+10)
+                
+          CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
+          
+          TAUV=ABS(TAUS)-TAU0
+
+          IF (ABS(TAUS).LT.PTIT) THEN
+             SGNS=1.D0
+          ELSE
+             SGNS=TAUS/ABS(TAUS)
+          ENDIF
+          
+           IF (TAUV.GT.0.D0) THEN
+
+           TABS=TEMPF+273.5D0
+           SOM=0.D0
+           TAUMU=0.D0                                     
+
+             DO 1 IU = 1, NBSYS
+             R=VIND(3*(IU-1)+1)      
+             TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
+               IF (IU.NE.IS) THEN
+               RACR=SQRT(VIND(3*(IU-1)+1))
+               ELSE
+               RACR=0.D0
+               ENDIF
+             SOM = SOM+RACR
+  1          CONTINUE
+
+             TAUMU = CISA2 * TAUMU/TAUV
+
+             TAUEF = TAUV-TAUMU
+             
+             CRIT=TAUEF
+            
+             IF (TAUEF.GT.0.D0) THEN
+        
+               AUX= (1.D0-((TAUV-TAUMU)/TAUR)**P)
+
+               IF (AUX.LE.0.D0) THEN
+               IRET=1  
+               GOTO 9999
+               ENDIF
+        
+             DGAMMA=GAMMA0*EXP(-DELTAG/K/TABS*
+     &        (1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)*SGNS
+
+             DP=ABS(DGAMMA)
+                     
+             DALPHA=ABS(DGAMMA)/(1.D0+GCB*ABS(DGAMMA))*
+     &               (BSD+SOM/KDCS-GCB*VIND(3*(IS-1)+1))
+          
+             ELSE
+             DGAMMA=0.D0
+             DP=0.D0
+             DALPHA=0.D0
+             ENDIF
+           ELSE
+           DGAMMA=0.D0
+           DP=0.D0
+           DALPHA=0.D0
+           ENDIF
+       ENDIF
+9999   CONTINUE                      
       END

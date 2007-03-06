@@ -1,5 +1,5 @@
-#@ MODIF elements5 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
-
+#@ MODIF elements5 Messages  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,4 +64,55 @@ cata_msg={
  et en définissant C_GONF<>0 sous l'opérande NON_LOCAL de DEFI_MATERIAU
 """), 
 
+11: _("""
+ Le rayon R_SUP (ou R_SUP_FO) doit obligatoirement etre supérieur au rayon R_INF 
+ (resp. R_INF_FO).
+"""), 
+
+12: _("""
+ Le noeud %(k1)s du fond de fissure n est rattaché à aucune maille surfacique 
+ de la lèvre supérieure : vérifier les groupes de mailles.
+"""), 
+
+13: _("""
+ Le noeud %(k1)s du fond de fissure n est rattaché à aucune maille surfacique 
+ de la lèvre inférieure : vérifier les groupes de mailles.
+"""), 
+
+14: _("""
+ Les noeuds %(k1)s de FOND_INF et %(k2)s de FOND_SUP ne sont pas en vis à vis. 
+"""), 
+
+15: _("""
+ FONFIS - occurence %(i1)s : les objets précédemment évoqués sont inexistants
+ ou de type incompatible.
+"""), 
+
+16: _("""
+ FONFIS - occurence %(i1)s : les mailles spécifiées ne permettent pas de définir 
+ une ligne continue.
+ Conseil (si opérateur DEFI_FOND_FISS) : vérifier le groupe de maille du fond de fissure.
+"""), 
+
+17: _("""
+ FONFIS - Trop de noeuds dans le groupe de noeuds %(k1)s.
+ --> Noeud utilisé : %(k2)s
+"""), 
+
+18: _("""
+ FONFIS - Trop de mailles dans le groupe de mailles GROUP_MA_ORIG.
+ --> Maille utilisée : %(k1)s
+"""), 
+
+19: _("""
+ FONFIS - Occurence %(i1)s : maille %(k1)s inexistante.
+"""), 
+
+20: _("""
+ FONFIS - Occurence %(i1)s : maille %(k1)s non linéique.
+"""), 
+
+21: _("""
+ FONFIS - Occurence %(i1)s : mélange de SEG2 et de SEG3 (maille %(k1)s).
+"""), 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -93,7 +93,8 @@ F=DEFI_FONCTION(NOM_PARA='INST',
                       1.0,  0.98),
                       );
 
-RESU=STAT_NON_LINE(MODELE=MO,
+RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                   MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
@@ -177,19 +178,19 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
                    GROUP_NO='GM16',
-                   VALE=2.04363,
-                   PRECISION  = (1.E-2,1.E-3),
+                   VALE=1.8135741352096,
+                   PRECISION  = (1.E-3,1.E-3),
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.0.22',),
+                   VERSION='9.0.10',),
                 _F(RESULTAT=RESU,
                    INST=1.0,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DY',
                    GROUP_NO='GM16',
-                   VALE=-5.51782,
-                   PRECISION  = (1.E-2,1.E-3),
+                   VALE=-4.8966501652687,
+                   PRECISION  = (1.E-3,1.E-3),
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.0.22',),   
+                   VERSION='9.0.10',),   
                    ),);
                    
 FY=RECU_FONCTION(TABLE=TAB_FORC,

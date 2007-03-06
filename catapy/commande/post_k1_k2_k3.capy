@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/05/2006   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,32 +25,42 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
             UIinfo={"groupes":("Post traitements",)},
 
            regles=(UN_PARMI('RESULTAT','TABL_DEPL_SUP'),
-                   PRESENT_PRESENT('RESULTAT','FOND_FISS'),),
+                  EXCLUS('FISSURE','FOND_FISS'),
+                  PRESENT_PRESENT('FISSURE','RESULTAT'),
+                   #PRESENT_PRESENT('RESULTAT','FOND_FISS'),
+                   ),
 
          MODELISATION  =SIMP(statut='o',typ='TXM',
                              into=("3D","AXIS","D_PLAN","C_PLAN"),
                              fr="Modélisation cohérente avec celle utilisée pour le calcul des déplacements"),
          FOND_FISS     =SIMP(statut='f',typ=fond_fiss),
+         FISSURE     =SIMP(statut='f',typ=fiss_xfem),
          b_fond_fiss   =BLOC (condition="(FOND_FISS!= None)",
                          MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),
                          TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
-                         NB_NOEUD_COUPE= SIMP(statut='f',typ='I' ,defaut=5 ),
+                         NB_NOEUD_COUPE= SIMP(statut='f',typ='I'),
                          NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          SANS_NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          SANS_GROUP_NO = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          TOUT          = SIMP(statut='f',typ='TXM',into=("OUI",) )
                          ),
+         b_fissure   =BLOC (condition="(FISSURE!= None)",
+                         MAILLAGE       = SIMP(statut='o',typ=maillage_sdaster),
+                         NB_NOEUD_COUPE = SIMP(statut='f',typ='I' ,defaut=5 ),
+                         DTAN_ORIG      = SIMP(statut='f',typ='R',max='**'),
+                         DTAN_EXTR      = SIMP(statut='f',typ='R',max='**'),
+                         ),
          MATER         =SIMP(statut='o',typ=mater_sdaster,
                              fr="Matériau homogène et isotrope cohérent avec celui utilisé pour le calcul des déplacements"),
          RESULTAT      =SIMP(statut='f',typ=(evol_elas,evol_noli),
-                             fr="Table déplacement des noeuds de la lèvre supérieure et inférieure"),
+                             fr="Déplacement des noeuds de la lèvre supérieure et inférieure"),
          TABL_DEPL_SUP =SIMP(statut='f',typ=table_sdaster,
                              fr="Table issue de post_releve_t sur les noeuds de la lèvre supérieure"),
          TABL_DEPL_INF =SIMP(statut='f',typ=table_sdaster,
                              fr="Table issue de post_releve_t sur les noeuds de la lèvre inférieure"),
          ABSC_CURV_MAXI=SIMP(statut='f',typ='R',
-                             fr="distance maximum à partir du fond de fissure à utiliser pour le calcul"),  
+                             fr="Distance maximum à partir du fond de fissure à utiliser pour le calcul"),  
          PREC_VIS_A_VIS= SIMP(statut='f',typ='R',defaut=0.1),
          TOUT_ORDRE    =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE    =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),

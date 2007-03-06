@@ -1,5 +1,5 @@
 
-# MODIF  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,6 +31,7 @@ TROISD=AFFE_MODELE(MAILLAGE=CUBE,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),);
 TFIN = 0.955;
+TFIN2 = 10.;
 TFIN3=10.
 
 NPAS = 20;
@@ -50,6 +51,12 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=TFIN,
                                     NOMBRE=NPAS,),),);
 
+LINST2=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=2.,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=TFIN2,
+                                    NOMBRE=100,),
+                                    ),);
 LINST3=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.52,
                                     NOMBRE=1,),
@@ -85,6 +92,22 @@ TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                                   _F(NOEUD=('NO1','NO5',),
                                      FX=25.0,),),);
 
+TRAC2=AFFE_CHAR_MECA(MODELE=TROISD,
+                    DDL_IMPO=(_F(NOEUD='NO4',
+                                 DX=0.0,
+                                 DY=0.0,),
+                              _F(NOEUD='NO8',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(NOEUD='NO2',
+                                 DX=0.0,),
+                              _F(NOEUD='NO6',
+                                 DX=0.0,),),
+                    FORCE_NODALE=(_F(NOEUD=('NO3','NO7',),
+                                     FX=35.0,),
+                                  _F(NOEUD=('NO1','NO5',),
+                                     FX=35.0,),),);
 TRAC3=AFFE_CHAR_MECA(MODELE=TROISD,
                     DDL_IMPO=(_F(NOEUD='NO4',
                                  DX=0.0,
@@ -155,6 +178,35 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   GM=0.0,
                                   PM=0.0,
                                   C=0.0,),);
+                                  
+# MATERIAU DEFINI POUR LE COMPORTEMENT  KOCKS_RAUCH
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=275200.,
+                            NU=0.3,),
+                   KOCKS_RAUCH=_F(K      = 8.617E-5,
+                                  TAUR   = 498.,
+                                  TAU0   = 132.,
+                                  GAMMA0 = 1.E6,
+                                  DELTAG0= 0.77,
+                                  BSD    = 2.514E-5,
+                                  GCB    = 31.8,
+                                  KDCS   = 22.9,
+                                  P      = 0.335,
+                                  Q      = 1.12,
+                                  H1      = 1.,
+                                  H2      = 1.,
+                                  H3      = 1.,
+                                  H4      = 1.,
+                                  ),        
+                    ECOU_VISC1=_F(N=10.0,
+                                  K=40.0,
+                                  C=1.0,),
+                    ECRO_ISOT1=_F(R_0=75.5,
+                                  Q=9.77,
+                                  B=19.34,
+                                  H=0.0,),
+                    ECRO_CINE1=_F(D=36.68,),);
+
 
 COEFN=8.
 COEFK=40.
@@ -188,6 +240,9 @@ MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIER,),);
                           
+MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=ACIER2,),);
 MAT3=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIER3,),);
@@ -263,6 +318,21 @@ COMPORTH=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERORT,
                                     ECRO_CINE='ECRO_CINE1',
                                     ELAS='ELAS_ORTH',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
+
+# KOCKS_RAUCH
+COMPORKR=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
+                                    ECOULEMENT='KOCKS_RAUCH',
+                                    ECRO_ISOT='ECRO_ISOT1',
+                                    ECRO_CINE='ECRO_CINE1',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='BCC24',),),);
+
+
+
+# KOCKS_RAUCH
+ORIENKR=AFFE_CARA_ELEM(MODELE=TROISD,
+                     MASSIF=_F(GROUP_MA='TOUT',
+                               ANGL_EULER=(16.94,69.04,244.55),),);
 
 # ORIENTATION QUELCONQUE (PAS DE VALEUR DE REFERENCE)
 ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
@@ -853,6 +923,50 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLTOUT,
                    VALE=-0.000657713498623,
                    REFERENCE='NON_REGRESSION',),),);
 
+# LOI DE COMPORTEMENT KOCKS_RAUCH
+
+IMPLKR=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT2,
+                     CARA_ELEM=ORIENKR,
+                     EXCIT=(_F(CHARGE=TRAC2,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPORKR,
+                                   RESI_INTE_RELA=1e-06,
+                                   ITER_INTE_MAXI=100,
+                                   ITER_INTE_PAS=10,
+                                   RESO_INTE='IMPLICITE',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST2,
+                                   SUBD_METHODE='EXTRAPOLE', 
+                                   SUBD_PAS=4,
+                                   SUBD_NIVEAU=5,),),
+                     NEWTON=(_F(PREDICTION='EXTRAPOL',
+                                REAC_ITER=1,),),
+                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
+                                     ITER_GLOB_MAXI=100,),),);
+
+IMPLKR=CALC_ELEM(reuse =IMPLKR,
+                 RESULTAT=IMPLKR,
+                 OPTION=('EPSI_ELGA_DEPL'),);
+
+TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
+                   INST=TFIN2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-1.3999E+03,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=IMPLKR,
+                   INST=TFIN2,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-9.7506E-03,
+                   REFERENCE='NON_REGRESSION',),),);
 FIN(FORMAT_HDF='OUI',);
                    
 # IMPLICITE : TEST DE ECOU_VISC3, TRES LENT CAR PAS D'ECROUISSAGE

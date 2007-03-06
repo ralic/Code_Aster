@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,14 +94,17 @@ C
       REAL*8      D1G(6,6),D1GHHM(6,6),ID2(6,6),DEVHYD(6,6),DEVHYM(6,6)
       REAL*8      DEUX,DIFF,DIFF1,DIFF2,XAU
       REAL*8      FXI1,FXI2,FXI3,FXI,FXS1,FXS2,FXS3,FXS,ZERO,EPS
+      REAL*8      UN,IDEN6(6,6)
       INTEGER     NDIMSI,SIGNF,SIGNFI,SIGNFS
       INTEGER     I,K,L,ITER, MATR
       CHARACTER*2 BL2, FB2, CODRET(9)
       CHARACTER*8 NOMRES(9)
       CHARACTER*8 NOMPAR(9),TYPE
       REAL*8      VALPAM(3)
+C ======================================================================
+      PARAMETER     ( ZERO   = 0.D0   )
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA        TOL/1.D-10/DEUX/2.D0/ZERO/0.D0/
+      DATA        TOL/1.D-10/DEUX/2.D0/
 C DEB ------------------------------------------------------------------
 C
 C     -- 1 INITIALISATIONS :
@@ -516,12 +519,17 @@ C     -- 7.2 CALCUL DE DSIDEP(6,6)-EN VITESSE :
 C     ---------------------------------------
       IF ( MATR .EQ. 1 ) THEN
 C
+      CALL R8INIR(6*6,0.D0,DSIDEP,1)
 C     -- 7.2.1 CALCUL DU MODULE ELASTOPLASTIQUE H
+
         H = 4.D0*M**4*SIGMMO*(SIGMMO-PCRM(1))*
-     &  (XK0*(SIGMMO-PCRM(1))+XK*PCRM(1))+6.D0*DEUXMU*SIEQM**2
+     &  (XK0*(SIGMMO-PCRM(1))+XK*PCRM(1))+DEUXMU*9.D0*
+     &  (SIGMDV(1)**2+SIGMDV(2)**2+SIGMDV(3)**2+
+     &   SIGMDV(4)**2+SIGMDV(5)**2+SIGMDV(6)**2)
+
 
 C     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
-          DO 160 K=1,NDIMSI
+          DO 160 K=1,3
              A(K) = 0.D0
  160  CONTINUE
           DO 130 K=1,3
@@ -556,12 +564,60 @@ C     -- 7.2.3 CALCUL DES TERMES DE DSIDEP
            DO 138 K=1,NDIMSI
            DSIDEP(K,K) = DEUXMU + DSIDEP(K,K)
  138  CONTINUE
-
+  
         ENDIF
 C
+      IF ( MATR .EQ. 2 ) THEN
+      CALL R8INIR(6*6,0.D0,DSIDEP,1)
+
+C     -- 7.2.1 CALCUL DU MODULE ELASTOPLASTIQUE H
+
+        H = 4.D0*M**4*SIGPMO*(SIGPMO-PCRP(1))*
+     &  (XK0*(SIGPMO-PCRP(1))+XK*PCRP(1))+DEUXMU*9.D0*
+     &  (SIGPDV(1)**2+SIGPDV(2)**2+SIGPDV(3)**2+
+     &   SIGPDV(4)**2+SIGPDV(5)**2+SIGPDV(6)**2)
+     
+C     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
+       CALL R8INIR(3,0.D0,A,1)
+       CALL R8INIR(3,0.D0,AA,1)
+       
+          DO 4130 K=1,3
+             A(K) = -DEUX*XK0*M*M*SIGPMO*(SIGPMO-PCRP(1))*KRON(K)+
+     &                3.D0*DEUXMU*SIGPDV(K)
+4130  CONTINUE
+
+          DO 4131 K=4,NDIMSI
+             AA(K) = 3.D0*DEUXMU*SIGPDV(K)
+4131  CONTINUE
+
+C     -- 7.2.3 CALCUL DES TERMES DE DSIDEP
+       CALL R8INIR(NDIMSI*NDIMSI,0.D0,DSIDEP,1)
+          DO 4132 K=1,3
+           DO 4133 L=1,3
+             DSIDEP(K,L)=XK0*SIGPMO-DEUXMU/3.D0-A(K)*A(L)/H
+4133  CONTINUE
+4132  CONTINUE
+          DO 4134 K=1,3
+          DO 4135 L=4,NDIMSI
+             DSIDEP(K,L) = -A(K)*AA(L)
+             DSIDEP(K,L) = DSIDEP(K,L)/H
+             DSIDEP(L,K) = DSIDEP(K,L)
+4135  CONTINUE
+4134  CONTINUE
+          DO 4136 K=4,NDIMSI
+          DO 4137 L=4,NDIMSI
+             DSIDEP(K,L) = -AA(K)*AA(L)
+             DSIDEP(K,L) = DSIDEP(K,L)/H
+4137  CONTINUE
+4136  CONTINUE
+           DO 4138 K=1,NDIMSI
+           DSIDEP(K,K) = DEUXMU + DSIDEP(K,K)
+4138  CONTINUE
+
+        ENDIF
 C     -- 7.3 CALCUL DE DSIDEP(6,6)-MATRICE COHERENTE :
 C     ----------------------------------------------
-        IF ( MATR .EQ. 2 ) THEN
+        IF ( MATR .EQ. 3 ) THEN
       SIEQP = 0.0D0
       DO 300 K=1,NDIMSI
            SIEQP = SIEQP + SIGPDV(K)**2
@@ -707,17 +763,22 @@ C
 C     -- CALCUL DE LA MATRICE CC-SYMETRISATION DE TPLUS.I
 C
        CALL R8INIR(6*6,0.D0,CC,1)
-          DO 172 K=1,3
-          DO 173 L=1,3
-              CC(K,L)=(TPLUS(K)+TPLUS(L))/2.D0
+          DO 172 K=1,NDIMSI
+          DO 173 L=1,NDIMSI
+              CC(K,L)=(TPLUS(K)*KRON(L)+KRON(K)*TPLUS(L))/2.D0
  173  CONTINUE
  172  CONTINUE
-          DO 174 K=1,3
-          DO 175 L=4,NDIMSI
-              CC(K,L)=TPLUS(L)/2.D0
-              CC(L,K)=CC(K,L)
- 175  CONTINUE
- 174  CONTINUE
+C          DO 172 K=1,3
+C          DO 173 L=1,3
+C              CC(K,L)=(TPLUS(K)+TPLUS(L))/2.D0
+C 173  CONTINUE
+C 172  CONTINUE
+C          DO 174 K=1,3
+C          DO 175 L=4,NDIMSI
+C              CC(K,L)=TPLUS(L)/2.D0
+C              CC(L,K)=CC(K,L)
+C 175  CONTINUE
+C 174  CONTINUE
 
 C     -- CALCUL DES TERMES D'UNE MATRICE INTERMEDIAIRE C
 C
@@ -788,7 +849,8 @@ C     -- PROJECTION DE EE SUR L'ESPACE DES CONTRAINTES
 C     -- DEVIATORIQUES
        CALL R8INIR(6*6,0.D0,S,1)
        CALL PROMAT(EE,6,NDIMSI,NDIMSI,V,6,NDIMSI,NDIMSI,S)
-C
+
+CC
 C     -- COMBINAISON DES DEUX PARTIES DEVIATORIQUE ET
 C     -- HYDROSTATIQUE
        CALL R8INIR(6*6,0.D0,T,1)

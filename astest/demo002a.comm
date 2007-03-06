@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -204,7 +204,8 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_INCR=0,
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=0,),
-                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                   SOLVEUR=_F(SYME='OUI',
+                              METHODE='MULT_FRONT',
                               RENUM='METIS',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-05,
                                   ITER_GLOB_MAXI=20,),
@@ -235,7 +236,8 @@ RESU2=DYNA_NON_LINE(MODELE=MO,
                    NEWTON=_F(REAC_INCR=0,
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=0,),
-                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                   SOLVEUR=_F(SYME='OUI',
+                              METHODE='MULT_FRONT',
                               RENUM='METIS',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-05,
                                   ITER_GLOB_MAXI=20,),

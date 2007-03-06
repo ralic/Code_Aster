@@ -3,7 +3,7 @@
      &   DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -97,6 +97,7 @@ C       PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C       ----------------------------------------------------------------
         INTEGER       IMAT, NDT, NDI, NVI, IRET
+        INTEGER       NITER, I, NDEC, J, K
         REAL*8        CRIT(*), TOLE, VIND(*), VINF(*)
         REAL*8        INSTAM, INSTAP, TEMPM, TEMPF, TREF
         REAL*8        EPSD(6), DEPS(6), EPSF(6)
@@ -106,19 +107,25 @@ C       ----------------------------------------------------------------
         CHARACTER*7   ETATD, ETATF
         CHARACTER*8   MOD, TYPMOD(*)
         CHARACTER*16  COMP(*), OPT
-        INTEGER       NITER, I, NDEC, J, K
         REAL*8        EPSCON
         REAL*8        DEPSTH(6), EPSDTH(6), ALPHAF, ALPHAM
         REAL*8        MATERF(20,2), I1D, D13, DSQR, ZERO
         INTEGER       UMESS, IUNIFI
+        LOGICAL       DEBUG
 C       ----------------------------------------------------------------
-        COMMON /TDIM/ NDT, NDI
+        COMMON /TDIM/   NDT, NDI
+        COMMON /MESHUJ/ DEBUG
 C       ----------------------------------------------------------------
 
         PARAMETER (TOLE = 1.D-6)
         DATA       D13  / 1.33333333334D0 /
         DATA       DSQR / 1.41421356237D0 /
         DATA       ZERO / 0.0D0 /
+
+
+C --- DEBUG = .TRUE. : MODE AFFICHAGE ENRICHI
+        DEBUG = .FALSE.
+
 
 C        UMESS = IUNIFI('MESSAGE')
         MOD   = TYPMOD(1)

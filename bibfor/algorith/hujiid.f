@@ -1,7 +1,7 @@
         SUBROUTINE HUJIID (MOD, MATER, INDI, DEPS, YD, DY)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -38,6 +38,7 @@ C                LES MULTIPLICATEURS PLASTIQUES : DLAMBDA
 C ====================================================================
         INTEGER     NDT, NDI, I, J, K, KK, L, LL
         INTEGER     NBMECA, INDI(4), IRET
+        INTEGER     IFM, NIV
         REAL*8      DEPS(6), DEPSE(6), HOOKNL(6,6)
         REAL*8      DSIG(6), SIGD(3), P(3), Q(3), PE(3), QE(3)
         REAL*8      YD(15), YE(15), DY(15), F2(4)
@@ -50,6 +51,7 @@ C ====================================================================
         REAL*8      DET, TOLE, COEF
         REAL*8      PSI(24), DFDS(6), DPSIDS(6,6)
         CHARACTER*8 MOD
+        LOGICAL     DEBUG
 C ====================================================================
         PARAMETER   ( D12  = .5D0 )
         PARAMETER   ( D13  = .3333333333334D0 )
@@ -60,9 +62,11 @@ C        PARAMETER   ( EPSSIG = 1.D-8 )
         PARAMETER   ( TOLE = 1.D-6 )
         PARAMETER   ( DEGR = 0.0174532925199D0 )
 C ====================================================================
-        COMMON /TDIM/ NDT, NDI
+        COMMON /TDIM/   NDT, NDI
+        COMMON /MESHUJ/ DEBUG
 C ====================================================================
 C        CALL JEMARQ ()
+        CALL INFNIV (IFM, NIV)
 
 
 C ====================================================================
@@ -353,8 +357,10 @@ C ====================================================================
 
  999    CONTINUE
 
-        CALL U2MESS ('A', 'COMPOR1_3')
-        CALL U2MESS ('A', 'COMPOR1_7')
+        IF (DEBUG) THEN
+          WRITE (IFM,'(A)') 'HUJJID :: LOG(PK/PC) NON DEFINI'
+          WRITE (IFM,'(A)') '- ON NE FAIT PAS LA PREDICTION -'
+        ENDIF
 
         DO 300 I = 1, 15
           DY(I) = ZERO

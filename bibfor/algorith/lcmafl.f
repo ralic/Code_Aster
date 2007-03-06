@@ -2,7 +2,7 @@
      &                   VALPAR,VALRES,NMAT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,6 +66,22 @@ C
           NOMRES(3)='GAMMA0'
           NOMRES(4)='DELTAV'
           NOMRES(5)='DELTAG0'
+          CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,NBVAL,
+     1                 NOMRES, VALRES,CODRET,'FM')
+
+      ENDIF
+      IF (NECOUL.EQ.'KOCKS_RAUCH') THEN
+          NBVAL=10
+          NOMRES(1)='K'
+          NOMRES(2)='TAUR'
+          NOMRES(3)='TAU0'
+          NOMRES(4)='GAMMA0'
+          NOMRES(5)='DELTAG0'
+          NOMRES(6)='BSD'
+          NOMRES(7)='GCB'
+          NOMRES(8)='KDCS'
+          NOMRES(9)='P'
+          NOMRES(10)='Q'
           CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,NBVAL,
      1                 NOMRES, VALRES,CODRET,'FM')
 

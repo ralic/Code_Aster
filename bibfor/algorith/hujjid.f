@@ -2,7 +2,7 @@
      &                     YD, YF, R, SIGNE, DRDY, IRET )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,6 +50,7 @@ C  		 	    DANS STAT_NON_LINE, IL Y A SUBDIVISION
 C =====================================================================
         INTEGER       NDT, NDI, NMOD, I, II, J, K, KK, L
         INTEGER       INDI(4), NBMECA, IRET
+        INTEGER       IFM, NIV
         PARAMETER     (NMOD = 15)
         REAL*8        DEPSP(6), DEPSPK(3), DEPSE(6)
         REAL*8        SIGD(3),SIGF(6),P(3),Q(3),SIGNE(4)
@@ -70,8 +71,9 @@ C =====================================================================
         REAL*8        TRACE, EPSVP, DEPS(6)
         REAL*8        LEPV, ACYC, AMON, CMON
         REAL*8        ZERO, UN, D12, D13, DEUX, TRUC
-        REAL*8        TOLE, COEF, MUL
+        REAL*8        TOLE, COEF, MUL, CCOND
         CHARACTER*8   MOD
+        LOGICAL       DEBUG
 C =====================================================================
 C        PARAMETER     ( DSQR   = 1.41421356237D0  )
         PARAMETER     ( D12    = 0.5D0  )
@@ -83,10 +85,12 @@ C        PARAMETER     ( DSQR   = 1.41421356237D0  )
         PARAMETER     ( DEGR = 0.0174532925199D0 )
 C =====================================================================
         COMMON /TDIM/   NDT, NDI
+        COMMON /MESHUJ/ DEBUG
 C =====================================================================
 C        CALL JEMARQ ()
-                
-        
+        CALL INFNIV(IFM,NIV)
+
+
 C =====================================================================
 C --- PROPRIETES HUJEUX MATERIAU --------------------------------------
 C =====================================================================
@@ -118,7 +122,7 @@ C =====================================================================
         
         NBMECA = 0
         DO 4 K = 1, 4
-          IF (INDI(K) .GT. 0) NBMECA=NBMECA+1
+          IF (INDI(K) .GT. 0) NBMECA = NBMECA + 1
  4        CONTINUE
  
          DO 5 K = 1, NBMECA
@@ -146,6 +150,10 @@ C =====================================================================
         CMON = CMON * PC/PREF
         
         COEF = UN
+
+
+C --- CONDITIONNEMENT DE LA MATRICE JACOBIENNE
+        CCOND= MATER(1,1)
 
 
 C =====================================================================
@@ -273,15 +281,15 @@ C                     (6X6)    (6X6)  (6X6)
 C ------------ FIN I.2.
         CALL LCINMA (ZERO, DLEDS)
         DO 63 I = 1, NDT
-          DLEDS(I,I) = UN /PREF
+          DLEDS(I,I) = UN /CCOND
  63       CONTINUE
  
        DO 61 I = 1, NDT
          DO 62 J = 1, NDI
-           DLEDS(I,J) = DLEDS(I,J) - CTILD(I) /PREF + CD2FDS(I,J) /PREF
+           DLEDS(I,J) = DLEDS(I,J) - (CTILD(I) - CD2FDS(I,J)) /CCOND
  62        CONTINUE
           DO 61 J = NDI+1, NDT
-            DLEDS(I,J) = DLEDS(I,J) + CD2FDS(I,J) /PREF
+            DLEDS(I,J) = DLEDS(I,J) + CD2FDS(I,J) /CCOND
   61        CONTINUE
          
          
@@ -312,7 +320,7 @@ C =====================================================================
 
          CALL LCPRMV (HOOKNL, DELTA, DLEDR1)
          DO 71 I = 1, NDT
-           DLEDR(I,K) = DLEDR1(I) /PREF
+           DLEDR(I,K) = DLEDR1(I) /CCOND
  71        CONTINUE
  710  CONTINUE
          
@@ -332,7 +340,7 @@ C =====================================================================
          KK = (K-1)*NDT+1
          CALL LCPRMV (HOOKNL, PSI(KK), DLEK)         
          DO 91 I = 1, NDT
-           DLEDLA(I,K) = DLEK(I) /PREF
+           DLEDLA(I,K) = DLEK(I) /CCOND
  91        CONTINUE
 
        
@@ -463,7 +471,7 @@ C =====================================================================
      &              DFDS, DPSIDS, IRET)
         IF (IRET.EQ.1) GOTO 1000
         DO 171 I = 1, NDT
-          DLFDS(K,I) = DFDS(I) /PREF
+          DLFDS(K,I) = DFDS(I) /CCOND
  171      CONTINUE
  
  
@@ -478,9 +486,9 @@ C =====================================================================
       DO 181 K = 1, NBMECA
         KK = INDI(K)
         IF (KK .LT. 4) THEN
-          DLFDR(K,K) = M*P(K)*( UN-B*LOG(P(K)/PC) ) /PREF
+          DLFDR(K,K) = M*P(K)*( UN-B*LOG(P(K)/PC) ) /CCOND
         ELSEIF (KK .EQ. 4) THEN
-          DLFDR(K,K) = D*PC /PREF
+          DLFDR(K,K) = D*PC /CCOND
         ENDIF
 181     CONTINUE
         
@@ -491,9 +499,9 @@ C =====================================================================
        DO 190 K = 1, NBMECA
          KK = INDI(K)
          IF (KK .LT. 4) THEN
-           DLFDLE(K) = -M*B*P(K)*RC(K)*BETA /PREF
+           DLFDLE(K) = -M*B*P(K)*RC(K)*BETA /CCOND
          ELSEIF (KK .EQ. 4) THEN
-           DLFDLE(K) = -RC(K)*D*PC*BETA /PREF
+           DLFDLE(K) = -RC(K)*D*PC*BETA /CCOND
          ENDIF
  190     CONTINUE
 
@@ -577,12 +585,12 @@ C =====================================================================
 C --- ASSEMBLAGE DE R -------------------------------------------------
 C =====================================================================
         DO 850 I = 1, NDT
-           R(I)  = -LE(I) /PREF
+           R(I)  = -LE(I) /CCOND
  850       CONTINUE
         R(NDT+1) = -LEVP
         DO 950 K = 1, NBMECA
            R(NDT+1+K)        = -LR(K)
-           R(NDT+1+NBMECA+K) = -LF(K) /PREF
+           R(NDT+1+NBMECA+K) = -LF(K) /CCOND
  950       CONTINUE
  
  
@@ -597,7 +605,7 @@ C DLEDDY
      &               NDT+2+NBMECA)
 C DLEVPDDY        
         CALL LCICMA (DLEVDS,1,6,1,NDT,1,1,DRDY,NMOD,NMOD,NDT+1,1)
-                     DRDY(NDT+1,NDT+1) = DLEVDE
+        DRDY(NDT+1,NDT+1) = DLEVDE
         CALL LCICMA (DLEVDR,1,4,1,NBMECA,1,1,DRDY,NMOD,NMOD,
      &               NDT+1,NDT+2)
         CALL LCICMA (DLEVDL,1,4,1,NBMECA,1,1,DRDY,NMOD,NMOD,NDT+1,
@@ -623,7 +631,7 @@ C DLFDDY
         GOTO 1000
 
  999    CONTINUE
-        CALL U2MESS('A', 'COMPOR1_3')
+        IF (DEBUG) WRITE (IFM,'(A)') 'HUJJID :: LOG(PK/PC) NON DEFINI'
         IRET=1
  1000   CONTINUE
 

@@ -4,7 +4,7 @@
       CHARACTER*(*)       MOTFAC
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,17 +63,17 @@ C
       INTEGER       IAA,IAB,IADM,IAGRN,IATYMA,IBID,IGAA,IGAB,K1,K2,K3
       INTEGER       IMA,JEXTR,JNORM,JORIG,JVALE,NCMP,NUMER,J1,J2,J3
       INTEGER       ADRVLC, ACNCIN, NBMA, NBMB, ADRA, ADRB, NUMA, NUMB
-      INTEGER       NUFINF, NUFSUP,JSUP, NBMAS
+      INTEGER       NUFINF, NUFSUP,JSUP, NBMAS,NUINF2
       INTEGER       NN,IAMASE,COMPTA,NBNO
-      REAL*8        XPFI,XPFO,YPFI,YPFO,ZPFI,ZPFO,ZRBID,D,PREC
+      REAL*8        XPFI,XPFO,YPFI,YPFO,ZPFI,ZPFO,ZRBID,D,PREC,PRECR
       CHARACTER*4   TYPMA, TYPMP, TYPM
       CHARACTER*8   K8B, MOTCLE, GROUPE, NOEUD, MAILLE, TYPE, NOMGRP(2)
       CHARACTER*8   NOEUG
       CHARACTER*24  GRPNOE, COOVAL, NCNCIN
-      CHARACTER*24 VALK(3)
+      CHARACTER*24  VALK(3), VK(2)
       CHARACTER*24  OBJ1, OBJ2, OBJ4, OBJ5, TRAV
       LOGICAL       LFON
-      PARAMETER(PREC=1.D0)
+      PARAMETER(PREC=1.D-1)
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -690,6 +690,15 @@ C       ON VERIFIE QUE LES NOEUDS SONT EN VIV A VIS
         IF(IRE1.NE.0 .AND. IRE2.NE.0)THEN
            CALL JEVEUO(RESU//'.FOND_INF  .NOEU','L',JFINF)
            CALL JEVEUO(RESU//'.FOND_SUP  .NOEU','L',JFSUP)
+           CALL JENONU(JEXNOM(OBJ2,ZK8(JFINF)),NUFINF)
+           CALL JENONU(JEXNOM(OBJ2,ZK8(JFINF+1)),NUINF2)
+           D = ABS(ZR(JVALE+3*(NUFINF-1))-
+     &               ZR(JVALE+3*(NUINF2-1)))
+           D = D+ABS(ZR(JVALE+3*(NUFINF-1)+1)-
+     &                 ZR(JVALE+3*(NUINF2-1)+1))
+           D = D+ABS(ZR(JVALE+3*(NUFINF-1)+2)-
+     &                 ZR(JVALE+3*(NUINF2-1)+2))
+           PRECR = PREC*D
            DO 555 IN = 1 , DIM
              CALL JENONU(JEXNOM(OBJ2,ZK8(JFINF+IN-1)),NUFINF)
              CALL JENONU(JEXNOM(OBJ2,ZK8(JFSUP+IN-1)),NUFSUP)
@@ -699,12 +708,10 @@ C       ON VERIFIE QUE LES NOEUDS SONT EN VIV A VIS
      &                 ZR(JVALE+3*(NUFSUP-1)+1))
              D = D+ABS(ZR(JVALE+3*(NUFINF-1)+2)-
      &                 ZR(JVALE+3*(NUFSUP-1)+2))
-             IF ( SQRT(D) .GT.PREC)THEN
-               CALL UTDEBM('F','GVERIF','LES NOEUDS')
-               CALL UTIMPK('S',' ',1,ZK8(JFINF+IN-1))
-               CALL UTIMPK('S','ET',1,ZK8(JFSUP+IN-1))
-               CALL UTIMPK('S','NE SONT PAS EN VIS A VIS.',1,' ')
-               CALL UTFINM()
+             IF ( SQRT(D) .GT.PRECR)THEN
+               VK(1) = ZK8(JFINF+IN-1)
+               VK(2) = ZK8(JFSUP+IN-1)
+               CALL U2MESK('F','ELEMENTS5_14', 2 ,VK)
              ENDIF
  555       CONTINUE
         ENDIF
@@ -776,7 +783,7 @@ C VERIFICATION COHERENCE LEVRE SUP / FOND
 630         CONTINUE
 620       CONTINUE
           IF(COMPTA .EQ. 0)  THEN
-            CALL U2MESK('F','UTILITAI5_92',1,ZK8(MM1+I-1))
+            CALL U2MESK('F','ELEMENTS5_12',1,ZK8(MM1+I-1))
           ENDIF
 610     CONTINUE
         
@@ -858,7 +865,7 @@ C VERIFICATION COHERENCE LEVRE INF / FOND
 730         CONTINUE
 720       CONTINUE
           IF(COMPTA .EQ. 0)  THEN
-            CALL U2MESK('F','UTILITAI5_93',1,ZK8(MM1+I-1))
+            CALL U2MESK('F','ELEMENTS5_13',1,ZK8(MM1+I-1))
           ENDIF
        
 711     CONTINUE

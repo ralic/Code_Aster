@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(DEFICO,DEPDEL,NUMEDD,NOMA,CNSINR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ C ======================================================================
       INTEGER JDEPDE,I,DIM,IZONE,JCMCF,ILONG,JCOOR
       INTEGER NTPC,IMA,NTMAE,JMAESC,JMACO,JEUTEM,JGLIE,JGLIM
       INTEGER JCONTA,JPREMI,JZOCO,NBZONE,INTEGR,JFROL,JCONL,JDEPDL
-      INTEGER NBNOM,IBID
+      INTEGER NBNOM,IBID,CFMMVD,ZTABF
       REAL*8 LICOEF,RN,RNX,RNY,RNZ,GLI1,GLI2,GLI,RTAX,RTAY,RTAZ,RTGX
       REAL*8 RTGY,RTGZ,X(2),FF(9)
       REAL*8 DEPLPM(3),DEPLPE(3),CONT,LAGSF,VECT1(3),VECT2(3)
@@ -114,6 +114,8 @@ C ------ RECUPERATION DES DIVERSES DONNEES RELATIVES AU CONTACT
         CALL JEVEUO(DEFICO(1:16)//'.NOZOCO','L',JZOCO)
 
 C---------RECHERCHE DE LA METHODE D INTEGRATION
+
+        ZTABF = CFMMVD('ZTABF')
 
         NBZONE = INT(ZR(JCMCF))
         DO 10 I = 1,NBZONE
@@ -269,19 +271,19 @@ C ---- INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
             END IF
 
             DO 50 INO = 1,NBNOC
-              NUMAES = ZR(JTABF+29* (NTPC+INO-1)+1)
-              NUMAMA = ZR(JTABF+29* (NTPC+INO-1)+2)
+              NUMAES = ZR(JTABF+ZTABF* (NTPC+INO-1)+1)
+              NUMAMA = ZR(JTABF+ZTABF* (NTPC+INO-1)+2)
 C            NUNOE=ZI(ICONEX+ZI(ILONG-1+NUMAES)+INO-2)
 C            WRITE(6,*)'NUNOE=',NUNOE
 
 C ------ VECTEURS DIRECTEURS DU PLAN DE CONTACT
 
-              VECT1(1) = ZR(JTABF+29* (NTPC+INO-1)+6)
-              VECT1(2) = ZR(JTABF+29* (NTPC+INO-1)+7)
-              VECT1(3) = ZR(JTABF+29* (NTPC+INO-1)+8)
-              VECT2(1) = ZR(JTABF+29* (NTPC+INO-1)+9)
-              VECT2(2) = ZR(JTABF+29* (NTPC+INO-1)+10)
-              VECT2(3) = ZR(JTABF+29* (NTPC+INO-1)+11)
+              VECT1(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+6)
+              VECT1(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+7)
+              VECT1(3) = ZR(JTABF+ZTABF* (NTPC+INO-1)+8)
+              VECT2(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+9)
+              VECT2(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+10)
+              VECT2(3) = ZR(JTABF+ZTABF* (NTPC+INO-1)+11)
 
 C ------ DEPLACEMENT DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
 
@@ -289,36 +291,36 @@ C ------ DEPLACEMENT DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
               IF (NUTYP.EQ.2) THEN
                 ALIAS = 'SG2'
                 NNOM = 2
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
               ELSE IF (NUTYP.EQ.4) THEN
                 ALIAS = 'SG3'
                 NNOM = 3
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
               ELSE IF (NUTYP.EQ.7) THEN
                 ALIAS = 'TR3'
                 NNOM = 3
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+12)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
               ELSE IF (NUTYP.EQ.9) THEN
                 ALIAS = 'TR6'
                 NNOM = 6
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+12)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
               ELSE IF (NUTYP.EQ.12) THEN
                 ALIAS = 'QU4'
                 NNOM = 4
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+12)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
               ELSE IF (NUTYP.EQ.14) THEN
                 ALIAS = 'QU8'
                 NNOM = 8
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+12)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
               ELSE IF (NUTYP.EQ.16) THEN
                 ALIAS = 'QU9'
                 NNOM = 9
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+12)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+12)
               ELSE
                 CALL U2MESS('F','ELEMENTS_16')
               END IF
@@ -353,36 +355,36 @@ C        PROJETE DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
               IF (NUTYP.EQ.2) THEN
                 ALIAS = 'SG2'
                 NNOM = 2
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
               ELSE IF (NUTYP.EQ.4) THEN
                 ALIAS = 'SG3'
                 NNOM = 3
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
               ELSE IF (NUTYP.EQ.7) THEN
                 ALIAS = 'TR3'
                 NNOM = 3
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+5)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
               ELSE IF (NUTYP.EQ.9) THEN
                 ALIAS = 'TR6'
                 NNOM = 6
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+5)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
               ELSE IF (NUTYP.EQ.12) THEN
                 ALIAS = 'QU4'
                 NNOM = 4
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+5)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
               ELSE IF (NUTYP.EQ.14) THEN
                 ALIAS = 'QU8'
                 NNOM = 8
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+5)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
               ELSE IF (NUTYP.EQ.16) THEN
                 ALIAS = 'QU9'
                 NNOM = 9
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
-                X(2) = ZR(JTABF+29* (NTPC+INO-1)+5)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
+                X(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+5)
               ELSE
                 CALL U2MESS('F','ELEMENTS_16')
               END IF
@@ -479,7 +481,7 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DE CONTACT
                 END IF
 
                 DO 80 IN = 1,NBNOC
-                  NUMAES = ZR(JTABF+29* (NTPC+IN-1)+1)
+                  NUMAES = ZR(JTABF+ZTABF* (NTPC+IN-1)+1)
 
 C ------ COORD ABSOLUES DU POINT D INTEGRATION: COORE
 
@@ -488,36 +490,36 @@ C ------ COORD ABSOLUES DU POINT D INTEGRATION: COORE
                   IF (NUTYP.EQ.2) THEN
                     ALIAS = 'SG2'
                     NNOM = 2
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
                   ELSE IF (NUTYP.EQ.4) THEN
                     ALIAS = 'SG3'
                     NNOM = 3
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
                   ELSE IF (NUTYP.EQ.7) THEN
                     ALIAS = 'TR3'
                     NNOM = 3
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
-                    X(2) = ZR(JTABF+29* (NTPC+IN-1)+12)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
+                    X(2) = ZR(JTABF+ZTABF* (NTPC+IN-1)+12)
                   ELSE IF (NUTYP.EQ.9) THEN
                     ALIAS = 'TR6'
                     NNOM = 6
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
-                    X(2) = ZR(JTABF+29* (NTPC+IN-1)+12)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
+                    X(2) = ZR(JTABF+ZTABF* (NTPC+IN-1)+12)
                   ELSE IF (NUTYP.EQ.12) THEN
                     ALIAS = 'QU4'
                     NNOM = 4
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
-                    X(2) = ZR(JTABF+29* (NTPC+IN-1)+12)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
+                    X(2) = ZR(JTABF+ZTABF* (NTPC+IN-1)+12)
                   ELSE IF (NUTYP.EQ.14) THEN
                     ALIAS = 'QU8'
                     NNOM = 8
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
-                    X(2) = ZR(JTABF+29* (NTPC+IN-1)+12)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
+                    X(2) = ZR(JTABF+ZTABF* (NTPC+IN-1)+12)
                   ELSE IF (NUTYP.EQ.16) THEN
                     ALIAS = 'QU9'
                     NNOM = 9
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
-                    X(2) = ZR(JTABF+29* (NTPC+IN-1)+12)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
+                    X(2) = ZR(JTABF+ZTABF* (NTPC+IN-1)+12)
                   ELSE
                     CALL U2MESS('F','ELEMENTS_16')
                   END IF
@@ -583,7 +585,7 @@ C ____ RECUPERATION DES DONNES AUX NOEUDS
                       ZR(JCNSVR-1+20* (NUNOE-1)+2) = ZR(JJEU-1+INOE)
                       ZR(JCNSVR-1+20* (NUNOE-1)+20)= ZR(JUSU-1+INOE)
                       ZR(JCNSVR-1+20* (NUNOE-1)+1) = ZR(JTABF+
-     &                  29* (INOE-1)+13)
+     &                  ZTABF* (INOE-1)+13)
 
 C        WRITE(6,*)'JEU1=',ZR(JCNSVR-1+20*(NUNOE-1)+2)
 C        WRITE(6,*)'CONT1=',ZR(JTABF+20*(INOE-1)+13)
@@ -608,7 +610,7 @@ C        WRITE(6,*)'JEU2=',ZR(JCNSVR-1+20*(NUNOE-1)+2)
 
                       ZR(JCNSVR-1+20* (NUNOE-1)+
      &                  1) = MAX(ZR(JCNSVR-1+20* (NUNOE-1)+1),
-     &                  ZR(JTABF+29* (INOE-1)+13))
+     &                  ZR(JTABF+ZTABF* (INOE-1)+13))
 
                       GLI1 = ZR(JGLIE+2* (INOE-1)) -
      &                       ZR(JGLIM+2* (INOE-1))
@@ -745,25 +747,25 @@ C----INTEGR>2 : INTEGRATION DE SIMPSON OU DE NEWTON COTES
 
             DO 130 INO = 1,NBNOC
 
-              NUMAES = ZR(JTABF+29* (NTPC+INO-1)+1)
-              NUMAMA = ZR(JTABF+29* (NTPC+INO-1)+2)
+              NUMAES = ZR(JTABF+ZTABF* (NTPC+INO-1)+1)
+              NUMAMA = ZR(JTABF+ZTABF* (NTPC+INO-1)+2)
               NUNOE = ZI(ICONEX+ZI(ILONG-1+NUMAES)+INO-2)
 C                WRITE(6,*)'NUNOE =',NUNOE
 
 C ---- VECTEURS DIRECTEURS DU PLAN DE CONTACT
 
-              VECT1(1) = ZR(JTABF+29* (NTPC+INO-1)+6)
-              VECT1(2) = ZR(JTABF+29* (NTPC+INO-1)+7)
+              VECT1(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+6)
+              VECT1(2) = ZR(JTABF+ZTABF* (NTPC+INO-1)+7)
 
               NUTYP = ZI(IATYMA-1+NUMAES)
               IF (NUTYP.EQ.2) THEN
                 ALIAS = 'SG2'
                 NNOE = 2
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
               ELSE IF (NUTYP.EQ.4) THEN
                 ALIAS = 'SG3'
                 NNOE = 3
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+3)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+3)
               ELSE
                 CALL U2MESS('F','ELEMENTS_16')
               END IF
@@ -788,11 +790,11 @@ C ---- DEPLACEMENT TANGENTIEL DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
               IF (NUTYP.EQ.2) THEN
                 ALIAS = 'SG2'
                 NNOM = 2
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
               ELSE IF (NUTYP.EQ.4) THEN
                 ALIAS = 'SG3'
                 NNOM = 3
-                X(1) = ZR(JTABF+29* (NTPC+INO-1)+4)
+                X(1) = ZR(JTABF+ZTABF* (NTPC+INO-1)+4)
               ELSE
                 CALL U2MESS('F','ELEMENTS_16')
               END IF
@@ -878,16 +880,16 @@ C        LEUR COINCIDENCE AVEC LES NOEUDS DU MAILLAGE
                 END IF
 
                 DO 160 IN = 1,NBNOC
-                  NUMAES = ZR(JTABF+29* (NTPC+IN-1)+1)
+                  NUMAES = ZR(JTABF+ZTABF* (NTPC+IN-1)+1)
                   NUTYP = ZI(IATYMA-1+NUMAES)
                   IF (NUTYP.EQ.2) THEN
                     ALIAS = 'SG2'
                     NNOE = 2
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
                   ELSE IF (NUTYP.EQ.4) THEN
                     ALIAS = 'SG3'
                     NNOE = 3
-                    X(1) = ZR(JTABF+29* (NTPC+IN-1)+3)
+                    X(1) = ZR(JTABF+ZTABF* (NTPC+IN-1)+3)
                   ELSE
                     CALL U2MESS('F','ELEMENTS_16')
                   END IF
@@ -924,7 +926,7 @@ C ____ POST-TRAITEMENT DES RESULTATS
                       ZR(JCNSVR-1+20* (NUNOE-1)+2) = ZR(JJEU-1+INOE)
                       ZR(JCNSVR-1+20* (NUNOE-1)+20)= ZR(JUSU-1+INOE)
                       ZR(JCNSVR-1+20* (NUNOE-1)+1) = ZR(JTABF+
-     &                  29* (INOE-1)+13)
+     &                  ZTABF* (INOE-1)+13)
 
 C               WRITE(6,*)'JEU1=',ZR(JJEU-1+INOE)
 C               WRITE(6,*)'CONT1=',ZR(JTABF+20*(INOE-1)+13)
@@ -942,7 +944,7 @@ C               WRITE(6,*)'CONT1=',ZR(JTABF+20*(INOE-1)+13)
      &                  ZR(JJEU-1+INOE))
                       ZR(JCNSVR-1+20* (NUNOE-1)+
      &                  1) = MAX(ZR(JCNSVR-1+20* (NUNOE-1)+1),
-     &                  ZR(JTABF+29* (INOE-1)+13))
+     &                  ZR(JTABF+ZTABF* (INOE-1)+13))
 
 C               WRITE(6,*)'JEU2=',ZR(JJEU-1+INOE)
 C               WRITE(6,*)'CONT2=',ZR(JTABF+20*(INOE-1)+13)

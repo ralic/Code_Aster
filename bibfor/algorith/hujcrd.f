@@ -1,7 +1,7 @@
         SUBROUTINE HUJCRD (K, MATER, SIG ,VIN, SEUILD)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,15 +27,20 @@ C    IN  VIN	:  VARIABLES INTERNES = ( Q, R, X )
 C    OUT SEUILD :  SEUIL  ELASTICITE DU MECANISME DEVIATOIRE
 C    ---------------------------------------------------------------
         INTEGER      K, NDT, NDI
+        INTEGER      IFM, NIV
         REAL*8       MATER(20,2), SIG(6), VIN(*), SEUILD
         REAL*8       UN, RK, EPSVP, PCR, PA, TOLE
         REAL*8       DEGR, BETA, B, M, PHI, PCREF
         REAL*8       SIGD(3), PK, QK
+        LOGICAL      DEBUG
         PARAMETER    (UN = 1.D0)
         PARAMETER    (TOLE = 1.D-6)
         PARAMETER    (DEGR = 0.0174532925199D0)
 C       ------------------------------------------------------------
-        COMMON /TDIM/ NDT, NDI
+        COMMON /TDIM/   NDT, NDI
+        COMMON /MESHUJ/ DEBUG
+
+        CALL INFNIV (IFM, NIV)
         
         
 C ==================================================================
@@ -63,8 +68,8 @@ C ==================================================================
         CALL HUJPRJ (K, SIG, SIGD, PK, QK)
         
         IF ((PK/PA) .LE. TOLE) THEN
-C           CALL UTMESS('A','HUJEUX :: HUJCRD','PK DEVIENT TRES PETIT'//
-C     &    ' OU POSITIF: LOG(PK/PC) NON DEFINI')
+           IF (DEBUG) WRITE (IFM,'(A)')
+     &                'HUJCRD :: LOG(PK/PA) NON DEFINI'
            SEUILD=-1.D0
            GOTO 999
         ENDIF

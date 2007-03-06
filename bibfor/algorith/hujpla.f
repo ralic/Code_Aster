@@ -3,7 +3,7 @@
      &             NITER, NDEC, EPSCON, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,7 +44,7 @@ C   		     IRET=0 => PAS DE PROBLEME
 C   		     IRET=1 => ECHEC 
 C   ------------------------------------------------------------------
         INTEGER       NDT, NDI, NVI, NITER, NDEC, IRET
-        INTEGER       I, K
+        INTEGER       I, K, IFM, NIV
         INTEGER       NVIMAX
         PARAMETER     (NVIMAX=16)
         REAL*8        EPSD(6), DEPS(6)
@@ -60,14 +60,17 @@ C   ------------------------------------------------------------------
         PARAMETER     (TOLE  = 1.D-6)
         PARAMETER     (ZERO  = 0.D0)
         PARAMETER     (UN    = 1.D0)
-        INTEGER       IDEC
-        INTEGER       NITER0
+        INTEGER       IDEC, NITER0
+        LOGICAL       DEBUG
 
-        COMMON /TDIM/ NDT, NDI
+        COMMON /TDIM/   NDT, NDI
+        COMMON /MESHUJ/ DEBUG
 
         IF (NVI.GT.NVIMAX) CALL U2MESS('F', 'COMPOR1_1')
 
         PA = MATER(8,2)
+
+        CALL INFNIV(IFM,NIV)
 
 
 C ----  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
@@ -194,8 +197,12 @@ C ---> TEST SOLUTIONS FINALES (POSITIVITE DES MULTIPLICATEURS)
           DO 40 K = 1, 4
             IF (NEGMUL(K) .AND. (.NOT.AREDEC)) THEN
 
-              WRITE(6,1001)'ALARME :: LAMBDA NEGATIF AU MECANISME NO',K
-              CALL U2MESS('A','COMPOR1_12')
+              IF (DEBUG) THEN
+                WRITE (IFM,1001)
+     &          'HUJPLA :: LAMBDA NEGATIF POUR LE MECANISME NO',K
+                WRITE (IFM,'(A)')
+     &          '          - REDECOUPAGE LOCAL DU PAS DE TEMPS -'
+              ENDIF
               NDEC      = -INT(CRIT(5))
               NEGMUL(K) = .FALSE.
               AREDEC    = .TRUE.
@@ -203,7 +210,9 @@ C ---> TEST SOLUTIONS FINALES (POSITIVITE DES MULTIPLICATEURS)
 
             ELSEIF (NEGMUL(K) .AND. AREDEC) THEN
 
-              WRITE(6,1001)'ALARME :: LAMBDA NEGATIF AU MECANISME NO',K
+              IF (DEBUG)
+     &        WRITE (IFM,1001)
+     &        'HUJPLA :: LAMBDA NEGATIF POUR LE MECANISME NO',K
               NEGMUL(K) = .FALSE.
               CHGMEC    = .TRUE.
 C ---- CONSERVER LA MIS-A-JOUR DE VINF POUR CALCUL DE MATRICE TANGENTE
@@ -227,7 +236,8 @@ C - SI ON ACTIVE UN MECANISME SUPPLEMENTAIRE : RETOUR
 C   ET SI ON AVAIT CONVERGE
         IF (CHGMEC .AND. (.NOT. NOCONV)) THEN
 
-          CALL U2MESS('A', 'COMPOR1_13')
+          IF (DEBUG) WRITE (IFM,'(A)')
+     &               'HUJPLA :: CHANGEMENT DE MECANISME'
           CHGMEC = .FALSE.
 
 

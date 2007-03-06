@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
 # RESPONSABLE ADBHHPM P.MASSIN
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -25,81 +25,69 @@
 #
 ######
 
-DEBUT(   CODE=_F( NOM = 'SSNV104E',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F( NOM = 'SSNV104E',NIV_PUB_WEB='INTERNET'));
 
 MA=LIRE_MAILLAGE();
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_MA='CON1',),
-                             _F(GROUP_MA='CON2',),),);
+                             _F(GROUP_MA='CON2')));
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=(_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
-                        MODELISATION='AXIS',),),);
-#
-#
-
+                        MODELISATION='AXIS')));
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.E4,
                           NU=0.29999999999999999,
-                          ALPHA=1.E-2,),);
-#
-#
-
+                          ALPHA=1.E-2));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
-#
-#
+                            MATER=MAT));
 
-
-CHA2=AFFE_CHAR_MECA(MODELE=MO,
+CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='CONTINUE',
                                GROUP_MA_ESCL='CON1',
                                GROUP_MA_MAIT='CON2',
+                               GLISSIERE='OUI',
                                INTEGRATION='NOEUD',
-                               COEF_REGU_CONT=1.0,
+                               COEF_REGU_CONT=10000.,
                                MODL_AXIS='OUI',
-                               ITER_GEOM_MAXI=1,
-                               ITER_CONT_MAXI=20,),
+                               ITER_GEOM_MAXI=10,
+                               ITER_CONT_MAXI=20),
+                    INFO=1);
+#IMPR_CO ( CO=CHA2)
+
+CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='SPHSUP',
                                  DY=-2.0,),
                               _F(GROUP_NO='SPHINF',
                                  DY=2.0,),
                               _F(GROUP_NO='AXE',
-                                 DX=0.0,),),
-                    INFO=2,);
-#IMPR_CO ( CO=CHA2)
-#
-#
-
+                                 DX=0.0)),
+                    INFO=1);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,1.0,1.0,),
+                    VALE=(0.0,0.0,1.0,1.0,2.,0.),
                     PROL_DROITE='LINEAIRE',
                     PROL_GAUCHE='LINEAIRE',);
-#
-#
-
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=1.0,
-                                    NOMBRE=10,),);
-#
-#
-
+                      INTERVALLE=(_F(JUSQU_A=1.0,
+                                     NOMBRE=10),
+                                  _F(JUSQU_A=2.0,
+                                     NOMBRE=10)));
 
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHA2,
-                            FONC_MULT=RAMPE,),
+                   EXCIT=(_F(CHARGE=CHA1),
+                          _F(CHARGE=CHA2,
+                             FONC_MULT=RAMPE)),
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   OBSERVATION=(
-                                _F(NOM_CHAM='DEPL',
+                   OBSERVATION=(_F(NOM_CHAM='DEPL',
                                    NOM_CMP='DY',PAS_OBSE=1,
                                    NOEUD='N81',
                                    SUIVI_DDL='NON'),
@@ -108,7 +96,6 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                    NOM_CMP='SIYY',
                                    MAILLE='M1',
                                    SUIVI_DDL='NON'),
-
                                 _F(NUME_SUIVI = 1,
                                    NOM_CHAM   = 'DEPL',
                                    NOM_CMP    = 'DX',
@@ -124,61 +111,57 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP='SIXX',
                                    VALE_MAX='OUI',
-                                   SUIVI_DDL='OUI',),      
-                             ),      
+                                   SUIVI_DDL='OUI')),      
                    AFFICHAGE=(_F(NOM_COLONNE='STANDARD',
                                  INFO_RESIDU='OUI'),
-                                ),
-                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.,),);
+                              _F(NOM_COLONNE='RELI_ITER')),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
 
 
 RESU2=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHA2,
-                            FONC_MULT=RAMPE,),
+                   EXCIT=(_F(CHARGE=CHA1),
+                          _F(CHARGE=CHA2,
+                             FONC_MULT=RAMPE)),
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   AFFICHAGE=(_F(
-                              NOM_COLONNE='MINIMUM',),
-                              ),
-                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.,),);
+                   AFFICHAGE=_F(NOM_COLONNE='MINIMUM',),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
 
 RESU3=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
-                   EXCIT=_F(CHARGE=CHA2,
-                            FONC_MULT=RAMPE,),
+                   EXCIT=(_F(CHARGE=CHA1),
+                          _F(CHARGE=CHA2,
+                             FONC_MULT=RAMPE)),
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
-                   AFFICHAGE=(_F( UNITE=37,
-                                NOM_COLONNE='ITER_NEWT',LONG_I = 2),
-                              _F(  
-                                NOM_COLONNE='INCR_TPS',LONG_R = 5,PREC_R=2),
-                              ),
-                   NEWTON=_F(MATRICE='ELASTIQUE',),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.,),);
+                   AFFICHAGE=(_F(UNITE=37,
+                                 NOM_COLONNE='ITER_NEWT',
+                                 LONG_I = 2),
+                              _F(NOM_COLONNE='INCR_TPS',
+                                 LONG_R = 5,PREC_R=2)),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
 
 RESU=CALC_ELEM(reuse =RESU,
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
                RESULTAT=RESU,);
-#
-#
 
+TAB_OBS = RECU_TABLE (CO = RESU,
+                      NOM_TABLE = 'OBSERVATION');
 
-TAB_OBS = RECU_TABLE ( CO = RESU,
-                         NOM_TABLE = 'OBSERVATION'
-                       ) ;
-IMPR_TABLE(TABLE=TAB_OBS,)
+IMPR_TABLE(TABLE=TAB_OBS);
 
 SIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
                   NOM_CHAM='SIEF_ELGA',
                   NUME_ORDRE=10,);
-#
-#
-
 
 SIELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
@@ -192,11 +175,10 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                        NOM_CMP='SIYY',
                        VALE=-2798.3000000000002,
                        CRITERE='RELATIF',
-                       PRECISION=0.070000000000000007,),);
+                       PRECISION=0.070000000000000007));
+
 # TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
 # PRECEDENTS
-#
-
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                        MAILLE='M31',
@@ -244,7 +226,242 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO,
                    NOEUD='N285',
                    VALE=-0.62966599999999995,
                    CRITERE='RELATIF',
-                   PRECISION=3.0000000000000001E-3,),),);
+                   PRECISION=3.0000000000000001E-3)));
+
+# Impression au format GMSH
+# IMPR_RESU(FORMAT='GMSH',
+#           UNITE=37,
+#           RESU=_F(MAILLAGE=MA,
+#                   RESULTAT=RESU,
+#                   NOM_CHAM=('DEPL','VALE_CONT')));
+
+# TEST DE LA FONCTIONNALITE GLISSIERE:
+# On teste que les noeuds restent bien colles apres contact
+# Noeuds concernes : N72, N80, N81
+
+TAB_CONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONTACT',
+                                 GROUP_NO='CON1',
+                                 RESULTAT=RESU,
+                                 NOM_CHAM='VALE_CONT',
+                                 LIST_INST=L_INST,
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION'));
+
+IMPR_TABLE(TABLE=TAB_CONT);
+
+# -- A T=2sec
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N72',
+                  NUME_ORDRE=2,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=0,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N80',
+                  NUME_ORDRE=2,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=0,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N81',
+                  NUME_ORDRE=2,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=0,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+# -- A T=5sec
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N72',
+                  NUME_ORDRE=5,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=0,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N80',
+                  NUME_ORDRE=5,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=0,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N81',
+                  NUME_ORDRE=5,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+# -- A T=10sec
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N72',
+                  NUME_ORDRE=10,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N80',
+                  NUME_ORDRE=10,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N81',
+                  NUME_ORDRE=10,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+# -- A T=15sec
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N72',
+                  NUME_ORDRE=15,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N80',
+                  NUME_ORDRE=15,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N81',
+                  NUME_ORDRE=15,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N72',
+                  NUME_ORDRE=15,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='JEU',
+                  VALE=0.,
+                  PRECISION=1.E-8,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N80',
+                  NUME_ORDRE=15,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='JEU',
+                  VALE=0.,
+                  PRECISION=1.E-8,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N81',
+                  NUME_ORDRE=15,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='JEU',
+                  VALE=0.,
+                  PRECISION=1.E-8,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+# -- A T=20sec
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N72',
+                  NUME_ORDRE=20,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N80',
+                  NUME_ORDRE=20,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N81',
+                  NUME_ORDRE=20,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='CONT',
+                  VALE=1,
+                  PRECISION=0.1,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N72',
+                  NUME_ORDRE=20,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='JEU',
+                  VALE=0.,
+                  PRECISION=1.E-8,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N80',
+                  NUME_ORDRE=20,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='JEU',
+                  VALE=0.,
+                  PRECISION=1.E-8,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NOEUD='N81',
+                  NUME_ORDRE=20,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='JEU',
+                  VALE=0.,
+                  PRECISION=1.E-8,
+                  CRITERE='ABSOLU',
+                  REFERENCE='ANALYTIQUE'));
 
 FIN();
-#

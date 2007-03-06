@@ -1,4 +1,4 @@
-#@ MODIF meidee_turbulent Meidee  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_turbulent Meidee  DATE 06/03/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,6 +34,7 @@ try:
     from Cata.cata import modele_sdaster , mode_meca, matr_asse_depl_r, maillage_sdaster
     from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
     from Cata.cata import CREA_CHAMP, PROJ_CHAMP, DETRUIRE
+    import aster
     
 except ImportError:    
     UTMESS('A',  'MACRO_VISU_MEIDEE',
@@ -278,7 +279,7 @@ class InterfaceTurbulent(Frame):
         Label(opt_box, text="Echelle Ordonnées").grid(row=1, column=0, sticky='w')
         Label(opt_box, text="Amp/Phase").grid(row=2, column=0, sticky='w')
         self.amp_phas = ["Amplitude","Phase"]
-        self.opt_trac = ["Lin","Log","dB"]
+        self.opt_trac = ["LIN","LOG","dB"]
         self.menu_abs = MyMenu( opt_box,self.opt_trac,self.var_abs)
         self.menu_abs.grid(row=0, column=1, columnspan=5, sticky='e')
         self.menu_ord = MyMenu( opt_box,self.opt_trac,self.var_ord)
@@ -287,8 +288,8 @@ class InterfaceTurbulent(Frame):
         self.menu_amp.grid(row=2, column=1,columnspan=5, sticky='e')
         
         self.var_amp.set("Amplitude")
-        self.var_abs.set("Lin")
-        self.var_ord.set("Lin")
+        self.var_abs.set("LIN")
+        self.var_ord.set("LIN")
         opt_box.grid(row=6, column=0, columnspan=2, sticky = 'e''w')
 
         Button(f, text="Afficher courbe", command=self.plot_curve).grid(row=5, column=2)
@@ -304,15 +305,16 @@ class InterfaceTurbulent(Frame):
         caption = []
         values = []
         var_list = []
-        freq = self.Syy.f
-        if self.var_abs.get() == 'Log':
-            freq = log(freq)
+        echelles = [self.var_abs.get(), self.var_ord.get()]
+        freq = self.Syy.f[1:]
+        if echelles[0] == 'LOG':
+            freq = log(freq).tolist()
         for ind_tab in range(2):
             liste = []
             liste = self.menu_list[ind_tab].get_selected()
             var_list = []
             for l in liste:
-                var_list.append(self.var_list[0][int(l)])
+                var_list.append(self.var_list[ind_tab][int(l)])
             for l in var_list:
                 vect = None
                 a = string.split(l[0],',')
@@ -321,47 +323,45 @@ class InterfaceTurbulent(Frame):
                 if option == self.options[0]:
                     i = self.Syy.nume.index(a[0])
                     j = self.Syy.nume.index(a[1])
-                    vect = self.Syy.matr_inte_spec[:,i,j]
+                    vect = self.Syy.matr_inte_spec[1:,i,j]
                 elif option == self.options[1]:
                     i = self.Syy.nume.index(a[0])
                     j = self.Syy.nume.index(a[1])
-                    vect = self.Syy_R.matr_inte_spec[:,i,j]
+                    vect = self.Syy_R.matr_inte_spec[1:,i,j]
                 elif option == self.options[2]:
                     i = self.Syy.modes.index(a[0])
                     j = self.Syy.modes.index(a[1])
-                    vect = self.Sqq.matr_inte_spec[:,i,j]
+                    vect = self.Sqq.matr_inte_spec[1:,i,j]
                 elif option == self.options[3]:
                     i = self.Syy.modes.index(a[0])
                     j = self.Syy.modes.index(a[1])
-                    vect = self.SQQ.matr_inte_spec[:,i,j]
+                    vect = self.SQQ.matr_inte_spec[1:,i,j]
                 elif option == self.options[4]:
                     i = self.Syy.modes.index(a[0])
                     j = self.Syy.modes.index(a[1])
-                    vect = self.SQQ_R.matr_inte_spec[:,i,j]
+                    vect = self.SQQ_R.matr_inte_spec[1:,i,j]
                 elif option == self.options[5]:
                     i = self.Sff.nume.index(a[0])
                     j = self.Sff.nume.index(a[1])
-                    vect = self.Sff.matr_inte_spec[:,i,j]
+                    vect = self.Sff.matr_inte_spec[1:,i,j]
                 if option == self.options[6]:
                     i = self.Syy.nume.index(a[0])
                     j = self.Syy.nume.index(a[1])
-                    vect = self.Syy_S.matr_inte_spec[:,i,j]
+                    vect = self.Syy_S.matr_inte_spec[1:,i,j]
                     
                 # Options de visualisation  
                 if self.var_amp.get() == 'Amplitude':
                     vect = abs(vect)
                 elif self.var_amp.get() == 'Phase':
                     vect = arctan(vect.imag/vect.real)
-                if self.var_ord.get() != "Lin" and  self.var_amp.get() == 'Phase' :
+                if echelles[1] != "Lin" and  self.var_amp.get() == 'Phase' :
                     self.mess.disp_mess("!! Impossible de représenter la phase dans un !!")
                     self.mess.disp_mess("!!           diagramme logarithmique          !!")
-                if self.var_ord.get() == 'Log':
+                if echelles[1] == 'LOG':
                     for ind in range(vect.shape[0]):
                         vect[ind] = log(vect[ind])/log(10)
-##                    vect = log(vect)/log(10)
                 if self.var_ord.get() == 'dB':
                     vect = 20*log(vect)/log(10)
-
                 values.append(vect)           # values = liste dont chaque elmt est une courbe
                 caption.append(option+' '+l[0])
                 
@@ -373,7 +373,7 @@ class InterfaceTurbulent(Frame):
             for k in range(len(values) - len(color)):
                 color.append(',1')
         
-        PlotXMGrace(freq, values, color, caption)
+        PlotXMGrace(freq, values, color, caption, echelles)
         self.values = values
         self.caption = caption
                              
@@ -544,7 +544,7 @@ class CalculTurbulent:
         self.epsilon      = para[1]
         self.var_opt      = para[2]
 
-        # Fabrication de la matrice C_Phi au sens Aster       
+        # Fabrication de la matrice C_Phi au sens Aster
         self.res_red = self.proj_cham(self.modele_fonc, 'res_red')
         # Idem pour PhiT_B, dont la fabrication dépend de la methode de projection
         self.res_act = self.proj_cham(self.modele_act, 'res_act')
@@ -685,7 +685,9 @@ class CalculInverse:
         self.Sqq = zeros((self.nb_freq,self.nb_mod,self.nb_mod),'D')
         self.Syy = Syy
         self.CPhi = CPhi
+        aster.matfpe(-1) # on desactive temporairement les FPE generees parfois, a tort, par blas
         U,S,VH = MLab.svd(self.CPhi)
+        aster.matfpe(1) # FPE reactivees
         Smax = max(S)
         U = Matrix(U)
         V = Matrix(transpose(VH))
@@ -756,7 +758,6 @@ class CalculInverse:
             Sqq_f = Matrix(self.Sqq[ind_freq,:,:])
             SQQ_f = Z*Sqq_f*conjugate(transpose(Z))
             self.SQQ[ind_freq,:,:] = SQQ_f
-
         SQQ = InterSpectre(nom        = 'SQQ',
                            mat        = self.SQQ,
                            frequences = self.f,
@@ -773,7 +774,9 @@ class CalculInverse:
         self.mess.disp_mess(" ")
         self.Sff = zeros((self.nb_freq,self.nb_act,self.nb_act),'D')
         self.PhiT_B = PhiT_B
+        aster.matfpe(-1) # on desactive temporairement les FPE generees parfois, a tort, par blas        
         U,S,VH = MLab.svd(self.PhiT_B)
+        aster.matfpe(-1) #FPE reactivees
         Smax = max(S)
         U = Matrix(U)
         V = Matrix(transpose(VH))
@@ -799,7 +802,6 @@ class CalculInverse:
                            frequences = self.f,
                            var_opt    = self.var_opt,
                            mess       = self.mess)
-
         return Sff
 
 

@@ -1,4 +1,4 @@
-#@ MODIF meidee_test Meidee  DATE 06/02/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_test Meidee  DATE 06/03/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,15 +82,15 @@ def TestMeidee(macro,
     ind_mod_exp = []
 
     # Selection des modes à étendre et des modes de la base d'expansion
-    ind_mod_tmp  = take(resu_num.get_cara_mod(), (0,2,3,4,5,6))[:,0].tolist()
+    ind_mod_tmp  = take(resu_num.get_cara_mod(), (0,1,2,3,4,5,6,7,8,9,10))[:,0].tolist()
     for j in ind_mod_tmp:
         ind_mod_num.append(int(j))
-    freq_mod_num = take(resu_num.get_cara_mod(),(0,2,3,4,5,6))[:,0].tolist()
+    freq_mod_num = take(resu_num.get_cara_mod(),(0,1,2,3,4,5,6,7,8,9,10))[:,0].tolist()
     num_modes = (ind_mod_num,freq_mod_num)
-    ind_mod_tmp  = take(resu_exp1.get_cara_mod(),(0,1,2,3,4,5))[:,0].tolist()
+    ind_mod_tmp  = take(resu_exp1.get_cara_mod(),(0,2,3,5,8))[:,0].tolist()
     for j in ind_mod_tmp:
         ind_mod_exp.append(int(j))
-    freq_mod_exp  = take(resu_exp1.get_cara_mod(),(0,1,2,3,4,5))[:3,1].tolist()
+    freq_mod_exp  = take(resu_exp1.get_cara_mod(),(0,2,3,5,8))[:3,1].tolist()
     exp_modes = (ind_mod_exp,freq_mod_exp)
     
     meidee.calc_proj_resu(num_modes,exp_modes,meidee.resu_num, meidee.resu_exp,
@@ -147,7 +147,8 @@ def TestMeidee(macro,
     ###############################################
     # 3) Test des fonctions de l'onglet turbulent #
     ###############################################
-    para = [0.2, 1E-5,"Efforts discrets localises" ]
+##    para = [0.2, 1E-5,"Efforts discrets localises" ]
+    para = [0.2, 1E-5,"Efforts et moments discrets" ]
 
     calcturb = meidee_turbulent.CalculTurbulent(mess)
     calcturb.calculate_force(inte_spec,
@@ -156,6 +157,8 @@ def TestMeidee(macro,
                              modele_act,
                              para)
 
+
+##    calcturb.Syy.make_inte_spec(titre="Résultat Meidee turbulent", paras_out = out)
     calcturb.Sff.make_inte_spec(titre="Résultat Meidee turbulent", paras_out = out)
     calcturb.Syy_S.make_inte_spec(titre="Résultat Meidee turbulent", paras_out = out)
 

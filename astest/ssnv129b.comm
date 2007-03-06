@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE  CONTACT MAILLE TRIA7, MODELISATION COQUE_3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=1,),);
 
 
-RESU=STAT_NON_LINE(MODELE=MO,
+RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                   MODELE=MO,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CAREL,
                    EXCIT=(_F(CHARGE=CHA1,

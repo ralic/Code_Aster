@@ -1,5 +1,5 @@
 
-# MODIF  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT AVEC MACRO-ELEMENTS STATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,7 +134,8 @@ CHMAT2=AFFE_MATERIAU(MAILLAGE=MAG,
                      AFFE=_F(TOUT='OUI',
                              MATER=ACIER,),);
 
-U=STAT_NON_LINE(MODELE=MO,
+U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                MODELE=MO,
                 CHAM_MATER=CHMAT2,
                 EXCIT=(_F(CHARGE=CHF3_1,),
                        _F(CHARGE=CHF2_1,),),

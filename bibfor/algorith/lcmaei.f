@@ -1,8 +1,8 @@
-      SUBROUTINE LCMAEI (NMATER,IMAT,NECRIS,NBVAL,NBPAR,NOMPAR,
+      SUBROUTINE LCMAEI (NMATER,IMAT,NECRIS, NECOUL,NBVAL,NBPAR,NOMPAR,
      &            IMPEXP,VALPAR,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----------------------------------------------------------------
       REAL*8          HSR(5,24,24),A1(3,3),A2(3,3),A3(3,3),A4(3,3)
       CHARACTER*8     NOMPAR(NBPAR),NOMRES(NMAT)
       CHARACTER*2     CODRET(NMAT)
-      CHARACTER*16    NMATER, NECRIS, NOMFAM
+      CHARACTER*16    NMATER, NECRIS, NOMFAM,NECOUL
 C     ----------------------------------------------------------------
 C
       IF (NECRIS.EQ.'ECRO_ISOT1') THEN
@@ -67,7 +67,11 @@ C     DEFINITION DE LA MATRICE D'INTERACTION
       NBVAL=NBVAL+1
       VALRES(NBVAL)=0.D0 
       CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,1,   
-     &              NOMRES, H,CODRET,' ')                     
+     &              NOMRES, H,CODRET,' ')
+      IF(NECOUL.EQ.'KOCKS_RAUCH') THEN                     
+      CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,1,   
+     &              NOMRES, H,CODRET,' ')
+      ENDIF                     
       IF (CODRET(1).EQ.'OK') THEN                            
           VALRES(NBVAL)=H                                        
 C  DEFINITION DE LA MATRICE D INTERACTION
@@ -89,9 +93,14 @@ C  DEFINITION DE LA MATRICE D INTERACTION
           NOMRES(5)='H5'                                        
           NOMRES(6)='H6'                                        
 
-
-          CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,6,  
+          IF(NECOUL.EQ.'KOCKS_RAUCH') THEN                     
+          CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,6,  
      &               NOMRES, VALH,CODRET,' ')                   
+          ELSE
+          CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,6,  
+     &               NOMRES, VALH,CODRET,' ')
+          ENDIF
+                             
           CALL R8INIR ( 3*3, VALH(1) , A1, 1 )                  
           CALL R8INIR ( 3*3, VALH(2) , A2, 1 )                  
           CALL R8INIR ( 3*3, VALH(3) , A3, 1 )                  

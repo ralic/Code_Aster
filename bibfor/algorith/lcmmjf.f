@@ -1,13 +1,14 @@
-        SUBROUTINE LCMMJF( TAUS,COEFT,IFA,NMAT,NBCOMM,DT,NECOUL,
-     &     TPERD,RP,ALPHAP,DALPHA,GAMMAP,DGAMMA,
-     &     DFDTAU,DFDAL,DFDR)
+        SUBROUTINE LCMMJF( TAUS,COEFT,MATERF,IFA,NMAT,NBCOMM,DT,NECOUL,
+     &    IS,IR,NBSYS,VIND,DY,HSR,TPERD,RP,ALPHAP,DALPHA,GAMMAP,DGAMMA,
+     &    SGNR,DFDTAU,DFDAL,DFDR)
         IMPLICIT NONE
         INTEGER IFA,NMAT,NBCOMM(NMAT,3)
         REAL*8 TAUS,COEFT(NMAT),RP,DT,ALPHAP,DALPHA,GAMMAP,DGAMMA
-        REAL*8 DFDTAU,DFDAL,DFDR
+        REAL*8 DFDTAU,DFDAL,DFDR,HSR(5,24,24),DY(*),VIND(*),MATERF(NMAT)
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C TOLE CRP_21
+C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +47,11 @@ C           DFDR    :  dF/dR
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
       REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,TAUMU,TAUV,GM,PM,CC
-      REAL*8 PR,DRDPR,DELTAV,DELTAG,SGNS,R8MIEM
-      INTEGER IFL,NS, IS
+      REAL*8 SGNR,PR,DRDPR,DELTAV,DELTAG,SGNS,R8MIEM
+      REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS,R,INT1,INT2,INT3,DFDTMU
+      REAL*8 DTMUDR,SOM,DRDGAM,CISA2,RACR
+      
+      INTEGER IFL,NS, IS, NBSYS,IU,IR
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
@@ -139,6 +143,92 @@ C         DFDAL
 C         DFDR
           DFDR=0.D0         
 
-       ENDIF
+
+      ELSEIF (NECOUL.EQ.'KOCKS_RAUCH') THEN
+          K         =COEFT(IFL-1+1)
+          TAUR      =COEFT(IFL-1+2)
+          TAU0      =COEFT(IFL-1+3)
+          GAMMA0    =COEFT(IFL-1+4)
+          DELTAG    =COEFT(IFL-1+5)
+          BSD       =COEFT(IFL-1+6)
+          GCB       =COEFT(IFL-1+7)
+          KDCS      =COEFT(IFL-1+8)
+          P         =COEFT(IFL-1+9)
+          Q         =COEFT(IFL-1+10)
+
+          CISA2 = (MATERF(1)/2.D0/(1.D0+MATERF(2)))**2
+
+          TAUV=ABS(TAUS)-TAU0
+
+          IF (ABS(TAUS).LE.R8MIEM()) THEN
+             SGNS=1.D0
+          ELSE
+             SGNS=(TAUS)/ABS(TAUS)
+          ENDIF       
+          
+          IF (TAUV.GT.0.D0) THEN
+
+          TABS=TPERD+273.5D0
+          SOM    = 0.D0
+          TAUMU  = 0.D0                                         
+          DTMUDR = 0.D0
+          DFDAL  = 0.D0
+
+           DO 1 IU = 1, NBSYS
+           R     = VIND(3*(IU-1)+1)
+           TAUMU = TAUMU +  HSR(IFA,IS,IU)*R
+ 1         CONTINUE
+
+           TAUMU = CISA2 * TAUMU/TAUV 
+
+           TAUEF = TAUV-TAUMU
+          
+           IF (TAUEF.GT.0.D0) THEN
+
+            INT1 = (1.D0-((TAUV-TAUMU)/TAUR)**P)**(Q-1)
+            INT2 = ((TAUV-TAUMU)/TAUR)**(P-1)
+            INT3 = 1.D0+TAUMU/TAUV
+
+            DFDTAU = GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
+     &      EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
+     &      *INT1*INT2*INT3
+     
+             IF(IR.NE.0) THEN
+
+              DO 2 IU = 1, NBSYS
+
+               IF (IU.NE.IR) THEN
+               RACR  = SQRT(VIND(3*(IU-1)+1))
+               ELSE
+               RACR  = 0.D0
+               ENDIF
+               SOM    = SOM  + RACR
+              
+  2          CONTINUE
+C  
+             DTMUDR = CISA2 * HSR(IFA,IS,IR)/TAUV
+
+             DFDTMU = -GAMMA0*DELTAG*Q*P/K/TABS/TAUR*
+     &     EXP(-DELTAG/K/TABS*(1.D0-(((TAUV-TAUMU)/TAUR)**P))**Q)
+     &       *INT1*INT2*SGNS
+        
+             DRDGAM = SGNR/(1.D0+GCB*ABS(DGAMMA))**2*
+     &               (BSD+SOM/KDCS-GCB*VIND(3*(IR-1)+1))
+             
+             DFDAL = DFDTMU*DTMUDR*DRDGAM
+            ENDIF
+           ELSE
+           DFDTAU=0.D0
+           DFDAL=0.D0
+           ENDIF
+          ELSE
+          DFDTAU=0.D0
+          DFDAL=0.D0
+          ENDIF 
+                                                                
+C         DFDR
+          DFDR=0.D0        
+                       
+      ENDIF
 
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -359,7 +359,8 @@ CHMP1=AFFE_CHAR_MECA(VERI_NORM='NON',
 FONCP=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(-2.0,0.0,-1.0,0.0,0.0,1.0,9000.0,1.0,),);
 
-DEP=STAT_NON_LINE(MODELE=MODMECA,
+DEP=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                  MODELE=MODMECA,
                   CHAM_MATER=CHMAT,
                   EXCIT=(_F(CHARGE=CHMLIA1,
                             TYPE_CHARGE='FIXE_CSTE',),
@@ -418,7 +419,8 @@ DEP=STAT_NON_LINE(reuse =DEP,
                   NEWTON=_F(REAC_INCR=1,
                             MATRICE='TANGENTE',
                             REAC_ITER=1,),
-                  SOLVEUR=_F(METHODE='MULT_FRONT',
+                  SOLVEUR=_F(SYME='OUI',
+                             METHODE='MULT_FRONT',
                              RENUM='METIS',),
                   INFO=2,);
 

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
       CHARACTER*6       CHAINE
       CHARACTER*16      MOTFAC,NOMCMD,K16B
 C
-      INTEGER           JJJ,NGRO,NENT,NSOM,IOCC,NOCC,NDIM,LOBJ2
+      INTEGER           JJJ,NGRO,NENT,NSOM,IOCC,NOCC,NDIM,LOBJ2,NBMOF
       INTEGER           IGR,NGR,INO,NNO,IRET,COMPT,NBPAR,ITO,NTO,NOUI
       INTEGER           NBM,NBMF,IADRNO,IADRCO,IADRT0,IADRT1,IADRT2
       INTEGER           CANOEU,NBRE,IADRT3,IADABS,I,IADR,IER,J,L,N1,NUM
@@ -163,7 +163,10 @@ C
          ENDIF
          CALL GETVR8(MOTFAC(1:L),'R_INF',IOCC,1,NDIM,RINF,NBM)
          CALL GETVR8(MOTFAC(1:L),'R_SUP',IOCC,1,NDIM,RSUP,NBM)
-         CALL GETVID(MOTFAC(1:L),'MODULE_FO',IOCC,1,NDIM,THETF,NBMF)
+         IF (NBM.NE.0 .AND. RSUP .LE. RINF) THEN
+           CALL U2MESS('F','ELEMENTS5_11')
+         ENDIF
+         CALL GETVID(MOTFAC(1:L),'MODULE_FO',IOCC,1,NDIM,THETF,NBMOF)
          CALL GETVID(MOTFAC(1:L),'R_INF_FO',IOCC,1,NDIM,RINFF,NBMF)
          CALL GETVID(MOTFAC(1:L),'R_SUP_FO',IOCC,1,NDIM,RSUPF,NBMF)
 
@@ -192,8 +195,16 @@ C
                       ZR(IADRT1 + J - 1) = VALRES
                   CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT2 + J - 1) = VALRES
-                  CALL FOINTE('FM',THETF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
-                      ZR(IADRT3 + J - 1) = VALRES
+                  IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
+                    CALL U2MESS('F','ELEMENTS5_11')
+                  ENDIF
+                  IF (NBMOF .NE. 0 ) THEN
+                    CALL FOINTE('FM',THETF,NBPAR,NOMPAR,VALPAR,
+     &                    VALRES,IER)
+                  ELSE
+                    VALRES = 1.D0
+                  ENDIF
+                  ZR(IADRT3 + J - 1) = VALRES
                    ENDIF
 150         CONTINUE
 100      CONTINUE
@@ -240,6 +251,9 @@ C
                       ZR(IADRT1 + I - 1) = VALRES
                   CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT2 + I - 1) = VALRES
+                  IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
+                    CALL U2MESS('F','ELEMENTS5_11')
+                  ENDIF
                   CALL FOINTE('FM',THETF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT3 + I - 1) = VALRES
                    ENDIF
@@ -283,6 +297,9 @@ C LES NOEUDS DOIVENT APPARTENIR A GAMMO
                       ZR(IADRT1 + J - 1) = VALRES
                   CALL FOINTE('FM',RSUPF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT2 + J - 1) = VALRES
+                  IF (ZR(IADRT2 + J - 1) .LE. ZR(IADRT1 + J - 1)) THEN
+                    CALL U2MESS('F','ELEMENTS5_11')
+                  ENDIF
                   CALL FOINTE('FM',THETF,NBPAR,NOMPAR,VALPAR,VALRES,IER)
                       ZR(IADRT3 + J - 1) = VALRES
                      ENDIF

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -187,7 +187,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=155.0,
                                      PAS=5.0,),),);
 
-U=STAT_NON_LINE(MODELE=MO,
+U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH0,
                           FONC_MULT=DPLY,),
@@ -257,7 +258,8 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
 
 
 
-U2=STAT_NON_LINE(MODELE=MO,
+U2=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                 MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=CH0,
                           FONC_MULT=DPLY,),

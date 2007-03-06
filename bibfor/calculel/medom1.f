@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,8 +29,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     SAISIE ET VERIFICATION DE LA COHERENCE DES DONNEES MECANIQUES
 C     DU PROBLEME
-C     COPIE DE MEDOME POUR LES COMMANDES CALC_ELEM, CALC_CHAM_ELEM
-C                                        ET POST_ZAC
+C     COPIE DE MEDOME POUR LES COMMANDES CALC_ELEM, CALC_CHAM_ELEM,
+C                                        CALC_G ET POST_ZAC
 C ----------------------------------------------------------------------
 C OUT : MODELE : NOM DU MODELE
 C OUT : MATE   : CHAMP MATERIAU
@@ -59,7 +59,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C     ------------------------------------------------------------------
       INTEGER     NBORDR, IRET, NP, NC, JORDR
-      INTEGER     IEXCIT, IERD
+      INTEGER     IEXCIT, IERD,I, IBID, ICHA, IE, IKF, IN 
+      INTEGER     JFCHA, JINFC, JLCHA, N, N1, N2, N3, N5
       REAL*8      PREC
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='MEDOM1')
@@ -164,14 +165,17 @@ C                               EVENTUELEMENT DONNE EN ARGUMENT ---
           ENDIF
 C
 C        --- VERIFICATION DU TYPE DE CHARGEMENT ---
-          CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA),'CHARGE',IBID,CTYP,IE)
-          DO 40 I = 1,NCHA
-            CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA-1+I),'CHARGE',IBID,
-     &                  K8B,IE)
-            IF (K8B(1:4).NE.CTYP) THEN
-               CALL U2MESS('F','CALCULEL3_43')
-            ENDIF
- 40       CONTINUE
+          IF (NOMCMD.NE.'CALC_G') THEN
+            CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA),'CHARGE',IBID,
+     &                 CTYP,IE)
+            DO 40 I = 1,NCHA
+              CALL DISMOI('F','TYPE_CHARGE',ZK8(ICHA-1+I),'CHARGE',
+     &                  IBID,K8B,IE)
+              IF (K8B(1:4).NE.CTYP) THEN
+                 CALL U2MESS('F','CALCULEL3_43')
+              ENDIF
+ 40         CONTINUE
+          ENDIF
         ENDIF
 C
 C   SI IEXCIT=0 ON PREND LE CHARGEMENT PRESENT DANS LA SD ET ON

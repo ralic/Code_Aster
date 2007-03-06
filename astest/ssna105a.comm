@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -172,7 +172,8 @@ RESU = STAT_NON_LINE (MODELE = MO,
                       COMP_ELAS =_F(RELATION ='ELAS',
                                      GROUP_MA = 'MAILP'),
                       INCREMENT =_F(LIST_INST =L_INST,),
-                      SOLVEUR =_F( METHODE='LDLT'),
+                      SOLVEUR =_F(SYME='OUI',
+                                   METHODE='LDLT'),
                       NEWTON    =_F(
                                 MATRICE ='TANGENTE', 
                                 REAC_ITER= 1),

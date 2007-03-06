@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,7 +98,8 @@ L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.,
                                      NOMBRE=25,),),);
 
-U=STAT_NON_LINE(MODELE=MODE,
+U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                MODELE=MODE,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF mecanonline Messages  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -355,5 +355,21 @@ cata_msg={
    On peut ensuite reprendre en poursuite avec un schéma moins dissipatif si besoin est.
 """),
 
+79: _("""
+   Arret par manque de temps CPU au numéro d'instant : %(i1)d
+   lors de l'itération : %(i2)d
+   - Temps moyen par itération : %(r1)f
+   - Temps cpu restant : %(r2)f
+   La base globale est sauvegardée. Elle contient les pas archivés 
+   avant l'arret.
+"""),
+
+80: _("""
+   Arret par manque de temps CPU au numéro d'instant : %(i1)d
+   - Temps moyen par incrément de charge : %(r1)f
+   - Temps cpu restant : %(r2)f
+   La base globale est sauvegardée. Elle contient les pas archivés 
+   avant l'arret.
+"""),
 
 }

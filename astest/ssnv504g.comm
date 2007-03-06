@@ -1,4 +1,4 @@
-# MODIF  DATE 28/11/2006   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,7 +151,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=155.0,
                                      PAS=15.0,),),);
 
-U=STAT_NON_LINE(MODELE=MO,
+U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
+                MODELE=MO,
                 INFO=1,
                 CHAM_MATER=CM,
                 EXCIT=(_F(CHARGE=COND_LIM,),

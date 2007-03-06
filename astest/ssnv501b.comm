@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -314,6 +314,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 DEFOR=STAT_NON_LINE(MODELE=MODEL,
                     CHAM_MATER=CM,
+                    SOLVEUR=_F(SYME='OUI'),
                     EXCIT=(_F(CHARGE=CH1,
                               FONC_MULT=RAMPE,),
                            _F(CHARGE=CH2,),),
@@ -324,7 +325,6 @@ DEFOR=STAT_NON_LINE(MODELE=MODEL,
                                   ITER_INTE_PAS=10,
                                   GROUP_MA='FLAN',),
                                _F(RELATION='ELAS',
-                                  DEFORMATION='SIMO_MIEHE',
                                   GROUP_MA='SOLIDE',),),
                     INCREMENT=_F(LIST_INST=L_INST,NUME_INST_FIN=7,),
                     NEWTON=_F(MATRICE='TANGENTE',
