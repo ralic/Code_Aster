@@ -2,7 +2,7 @@
      &                  NMANO,NNOMA,NMAMA)     
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,7 +77,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX ----------------
 C
       CHARACTER*24 NDIMCO,PSURNO,PZONE,FROTE,PENAL,COMAFO
-      INTEGER      JDIM,JSUNO,JZONE,IFRO,IPENA,ICOMA
+      INTEGER      JDIM,JSUNO,JZONE,JFRO,JPENA,JCOMA
       INTEGER      NESMAX,NESM,NSURF
       INTEGER      IOC,I1,I2
       INTEGER      NBNO1,NBNO2
@@ -115,8 +115,7 @@ C --- CALCUL DU NOMBRE MAXIMAL DE NOEUDS ESCLAVES DANS CHAQUE ZONE -----
 C --- ON COMPTE LES NOEUDS DE LA 2E SURFACE POUR 
 C --- 'NODAL' ET 'MAIT_ESCL' -------------------------------------------
 C --- LE MAX DES NOEUDS DES 1ERE ET 2EME SURFACE POUR 'MAIT_ESCL_SYME'--
-C --- TOUS LES NOEUDS DES DIFFERENTES SURFACES POUR 'TERRITOIRE'--------
-C --- ET 'HIERARCHIQUE'-------------------------------------------------
+C
 C ======================================================================
       NESMAX = 0
       DO 20 IOC = 1,NZOCO
@@ -146,9 +145,9 @@ C ======================================================================
       FROTE  = CHAR(1:8)//'.CONTACT.FROTE'
       PENAL  = CHAR(1:8)//'.CONTACT.PENAL'
       COMAFO = CHAR(1:8)//'.CONTACT.COMAFO'
-      CALL WKVECT(FROTE,'G V R',NESMAX,IFRO)
-      CALL WKVECT(PENAL,'G V R',2*NESMAX,IPENA)
-      CALL WKVECT(COMAFO,'G V R',NESMAX,ICOMA)
+      CALL WKVECT(FROTE,'G V R',NESMAX,JFRO)
+      CALL WKVECT(PENAL,'G V R',2*NESMAX,JPENA)
+      CALL WKVECT(COMAFO,'G V R',NESMAX,JCOMA)
 C
       CALL JEDEMA()
       END

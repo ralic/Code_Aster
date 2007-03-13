@@ -1,5 +1,5 @@
-# MODIF  DATE 13/02/2006   AUTEUR DURAND C.DURAND 
-# TITRE FISSURATION PLANE
+# MODIF  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+# TITRE FISSURATION JOINT 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,9 +34,9 @@ MO=AFFE_MODELE(
                   
                 AFFE= (
                 _F( 
-                        MAILLE = ('CUBE','DROITE'),
-                        PHENOMENE = 'MECANIQUE',
-                        MODELISATION = 'D_PLAN'
+                   MAILLE = ('CUBE','DROITE'),
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = 'D_PLAN'
                      ),
                  _F(
                    MAILLE = 'CUBEDEG',
@@ -53,8 +53,8 @@ ACIER=DEFI_MATERIAU(
               E =  0.5,
               NU = 0.0),
      RUPT_FRAG = _F(
-                     GC = 1,
-                     SIGM_C = 1,
+                     GC = 0.9,
+                     SIGM_C = 1.1,
                      PENA_ADHERENCE = 0.001
                     )
             )
@@ -78,7 +78,7 @@ LIAISON=AFFE_CHAR_MECA(
 TRACTION=AFFE_CHAR_MECA(
   MODELE=MO,
   FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=2.167302, DY=1.251293),
+    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250),
     )
   )
 
@@ -159,30 +159,34 @@ STAT_NON_LINE(reuse = U,
   
 F_DX=RECU_FONCTION( RESULTAT=U,
               NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
-
 T_DX=CREA_TABLE(FONCTION=_F(FONCTION=F_DX))
-
 IMPR_TABLE(TABLE=T_DX)
 
-F_ETAT=RECU_FONCTION( RESULTAT=U,
+
+F_ETA=RECU_FONCTION( RESULTAT=U,
               NOM_PARA_RESU='ETA_PILOTAGE')
+T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA))
+IMPR_TABLE(TABLE=T_ETA)
 
-T_ETAT=CREA_TABLE(FONCTION=_F(FONCTION=F_ETAT))
 
-IMPR_TABLE(TABLE=T_ETAT)
+F_SIGN=RECU_FONCTION( RESULTAT=U, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SIGN',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SIGN=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN))
+IMPR_TABLE(TABLE=T_SIGN)
 
 
 TEST_TABLE(TABLE=T_DX,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.90005,),),
+                      VALE=2.20004,),),
            NOM_PARA='DX',
-           VALE=2.1676,
+           VALE=2.16506,
            PRECISION=0.001,
            REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(TABLE=T_ETAT,
+TEST_TABLE(TABLE=T_ETA,
            FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.90005,),),
+                      VALE=2.20004,),),
            NOM_PARA='ETA_PILO',
            VALE=1.,
            PRECISION=0.001,
@@ -195,7 +199,7 @@ TEST_RESU (
       RESULTAT  = U,
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'DX',
-      VALE      = 2.167302E-8,
+      VALE      = 2.16506E-08,
       GROUP_NO  = 'TOUTSEUL',
       INST      = 0
       ),
@@ -209,13 +213,47 @@ TEST_RESU (
       RESULTAT  = U,
       NOM_CHAM  = 'SIEF_ELGA',
       NOM_CMP   = 'SIXX',
-      VALE      = 0.075,
+      VALE      = 4.49911E-02,
       MAILLE    = 'CUBE',
       POINT     = 1,
-      INST      = 1.9005,
+      INST      = 2.20004,
       ),
     )
   )
+
+  
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIGN',
+      VALE      = 1.56379E-01,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.70006,
+      ),
+    )
+  )
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITX',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',      
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.80005,
+      ),
+    )
+  )
+
 
   
 FIN()

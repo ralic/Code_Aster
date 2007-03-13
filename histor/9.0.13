@@ -1,0 +1,915 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS M.               DATE 13/03/2007 - 13:31:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010465 DU 2007-01-23 08:54:45
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   CONTACT - Mxc3xa9thodes discrxc3xa8tes - Maintenance sur appariement/projection
+FONCTIONNALITE
+   ISTA - MN10 - Unification des méthodes de contact/frottement                                                       
+                                   
+   *** CONTEXTE                                
+                                                        
+   Cette fiche est un pré-requis à deux autres:                                      
+                                                                         
+   9896 : CONTACT - Projection pour les elements quadratiques                                                     
+    Branchement des routines de projection provenant de la méthode                                    
+   continue                                                     
+                                                        
+   10110: CONTACT - Fonctions de forme incorrectes                                                     
+    Correction des fonctions de forme utilisées dans le contact méthodes                                    
+   discrètes                                                   
+                                         
+   *** METHODES DISCRETES ?                                   
+                                                   
+   Le contact "méthodes discrètes" écrit des relations cinématiques entre                                    
+   les DDLS des noeuds de la surface esclave et de la surface maitre.                                                   
+   On procède en deux temps:                                                  
+   - projection des noeuds esclaves sur les mailles (ou noeuds) maitres                                                  
+   - écriture des relations cinématiques                                                  
+   L'ensemble se trouvant sous la routine chapeau CFGEOM. Les algorithmes                                    
+   de résolution proprement dits se trouvant sous la routine chapeau                                   
+   CFALGO.                                       
+                                     
+   *** OBJECTIFS DE LA FICHE                                             
+                                                     
+   Cette fiche vise à améliorer la lisibilité et la maintenabilité des                                    
+   opérations sous CFGEOM car actuellement une grande confusion règne                                 
+   entre la phase de projection géométrique (celle devant évoluer grace à                                 
+   la fiche 9896) et la phase d'écriture  des relations                                                
+   cinématiques (celle devant être corrigée par la fiche 10110).                                                   
+                                                   
+   Une fois ré-écrit les parties s'occupant de la recherche d'appariement                                    
+   (quelle maille maitre avec quel noeud esclave), on a réécrit la partie                                    
+   projection/relations                                   
+                                      
+   * Nouvel enchainement des commandes d'appariement                            
+                                      
+   CFGEOM: routine principale d'appariement                                                          
+    - GEOMCO: Mise à jour de la géométrie (ajout depl. au maillage)                                                         
+    - RECHCO: Appariement           
+       - CFNORM: calcul des normales                                                     
+       - RECHNO: appariement nodal                                                      
+         - RECHP1/RECHP2: noeud maitre + proche nd esclave par force                                                  
+            brute ou par voisinage                                                  
+         - PROJEN: projection noeud esclave sur noeud maitre                                          
+             - CARANO: caract. noeud esclave           
+             - CARANM: caract. noeud maitre                                           
+             - PROJNO: projection sur noeud maitre           
+             - CFCOEF: coefficients relation lineaire + numeros DDL                                                                                   
+         - CFADDM: ajout de la liaison                                                     
+       - RECHME - appariement M/E                                                      
+         - RECHMN - Recherche noeud maitre le + proche noeud esclave                                                  
+           par appel RECHP1/RECHP2                                                     
+         - CHMANO - Recherche maille maitre appariée                                                     
+              - PROJEC: projection noeud sur maille                                                
+                - CARANO: caract. noeud esclave                                               
+                - CARAMA: caract. maille maitre        
+                  - CFLISS: preparation objet pour lissage eventuel normales maitres                                              
+                - PROJMA: projection sur la maille         
+                  - CFNOMA: preparation normales (appel CFNOSE/CFNOTR)         
+                  - PROJSE/TR/QU: projection effective       
+                     PROJQU appelle PROJTT puis PROJTR       
+                     PROJTR appelle PROJT1 ou PROJT2 suivant normale maitre ou maitre/esclave       
+                     PROJSE appelle PROJLI/PROJQU suivant SEG2 ou SEG3       
+                  - CFOLDJ: calcul du jeu suivant PM       
+                  - CFRELI: calcul des fonctions de forme      
+                  - CFLISN: lsisage des normales maitres si necessaire     
+                  - CFMOYN: recalul des normales moyennes si necessaire (apres lissage)     
+                  - CFTANG: calcul des vecteurs tangents locaux   
+                  - CFNEWJ: calcul du jeu suivant normale   
+                  - PRDIMA: diagnostic fin pour projection sur entites geometriques  
+                  - PROJIN: gestion du debordement de projection hors maille TOLE_PROJ_EXT                                                     
+                - CFCOEF: coefficients relation lineaire + numeros DDL                                             
+              - CFADDM: ajout de la liaison                                                
+              - CFSUPM: suppresion de la liaison                                    
+                               
+   * Partie concernant la projection                            
+                               
+   Appel aux routines de recherche de la projection du noeud esclave                                    
+   sur la maille maitre.                                                
+   Il y a autant de routines élémentaires que de types de mailles maitres                                    
+   (SEG, TRIA et QUAD: PROJSE, PROJTR et PROJQU). Il y a parfois DEUX                            
+   routines par type de maille suivant le type d'appariement                            
+   (NORMALE=MAIT ou NORMALE=MAIT_ESCL).                           
+   NB: c'est cet ensemble de routines qui sera remplacé par MMPROJ dans le cas de la fiche                         
+   9896.                                               
+                               
+   * Partie concernant les normales et les tangentes                         
+                            
+   La situation etait particulierement confuse. En effet, il existe deux options:                         
+   - la possiblite d'utiliser la normale a la maille maitre ou la moyenne entre la normale a                         
+   la maille maitre et la normale au noeud esclave                         
+   - la possibilite de lisser les normales                         
+   Ajoutons à ça la gestion de VECT_Y/VECT_ORIE_POU pour orienter les repères locaux et le                         
+   problèmes de la découpe des quadrangle en quatre triangles. Et que l'ensemble se faisait                      
+   au niveau de la projection et non de manière gloable pour tous les types de maille.                        
+                            
+   Pour simplifier, on a essayé d'être cohérent dans les notations:                         
+   - ENORM désigne toujourns la normale au noeud esclave                         
+   - MNORM désigne toujour sla normale à la maille maitre                         
+   - UNORM désigne soit la moyenne maitre/esclave soit la normale maitre                         
+                           
+   On commence par calculer toutes les normales, à tous les noeuds (maitre et escalve). C'est                        
+   le role de la routine CFNORM (appellee par RECHCO)                       
+   On prepare l'objet servant au lissage si necessaire dans la routine CFLISS.                      
+   On ajoute une routine CFTAND qui retourne le repere local (options VECT_Y, VECT_ORIE_POU).                      
+   La routine CFTANG s'occupe toujours de calculer le repere tangent local (à partir de la                      
+   normale et du repere eventuellement indiqué par l'utilisateur).                          
+                    
+   Voici la procédure globale:                      
+   - calcul de toutes les normales sur tous les noeuds par la routine CFNORM appelee au debut                     
+   (RECHCO). Notons que cette routine prend en compte le cas de l'appariement sur normale fxe                     
+   (VECT_NORM_ESCL), les reperes locaux définis par l'utilisateur (VECT_Y) ou l'orientation                     
+   des segments (VECT_ORIE_POU). L'ensemble est stocké dans l'objet RESOCO//".NORINI"                       
+   - avant la projection:                     
+    * preparation de l'objet pour lissage des normales maitres si necessaire                     
+    * récupération de la normale au noeud esclave ENORM dans la routine CARANO                    
+    * calcul de la normale a la maille maitre dans CFNOMA (qui appelle CFNOSE/CFNOTR selon                    
+   nature de la maille). Pour les quadrangles le traitement est posterieur (car découpe en                    
+   triangles). On calcule aussi eventuellement la normale moyenne (UNORM) dans CFMOYN.                   
+   - projection (qui utilise soit UNORM, soit MNORM)                  
+   - apres la projection                  
+    * lissage eventuel des normales maitres CFLISN                  
+    * recalcul des normales moyennes (necessaire si lissage) dans CFMOYN                  
+    * calcul des vecteurs tangents dans CFTANG                     
+                         
+   * Partie concernant les relations lineaires                
+                   
+   L'evaluation des fonctions de forme se fait dans CFRELI. On se base sur la valeur de la                
+   projection M du noeud esclave P sur la maille maitre pour ecrire la relation lineaire.                      
+   NB: c'est cette routine qui sera a traiter dans le cas de la fiche 10110.                
+                            
+   La preparation des coefficients (fonctions de forme sur noeuds esclaves, valeur des                
+   normales/tangentes) sur noeuds maitres) se fait dans CFCOEF.                
+                   
+   * Autres évolutions               
+                  
+   L'ensemble des messages (en INFO=2 ou non), qui passaiit par un WRITE(6,*) ou un U2MESS a               
+   été mutualise dans les routines CFIMPE/CFIMPD pour faciliter la maintenance.               
+   Un nouveau catalogue de messages a ete cree: contactdebg.py pour les affichages en INFO=2.              
+   Le catalogue contacT.py a ete modifie pour etre plus bavard, de nouveaux messages ont été              
+   ajoutées.              
+   NB: les routines d'uimpression evoluees pour DEBUG (INFO=2) CFIMP1/2/3/4) n'ont pas subi           
+   ce lifting en attendant la fin de cette fiche, pour pouvoir faire des DIFF efficaces en           
+   cas de problemes dans les prochaines semaines. On emettra une nouvellefiche.           
+                 
+   Tous les PARAMETER donannt la taille des vecteurs JEVEUX pour le contact ont ete resorbes              
+   au profit de la seule routine CFMMVD.                 
+                 
+   L'objet DEFICO//'.CARACF' stockait a la fois quelques parametres (coef. de penalisation,             
+   coef. de frottement) pour les methodes lagrangiennes et la methode continue. On separe en             
+   creant l'objet DEFICO//'.CARFRO'. Desormais l'objet DEFICO//'.CARACF" est a l'usage             
+   exclusif de la methode continue. Ses quatre premieres valeurs sont donc inutilisees             
+   maintenant.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D4.06.14
+VALIDATION
+   cas-tests contact discret
+NB_JOURS_TRAV  : 12.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010633 DU 2007-03-12 08:08:47
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.12, le cas test tplv07a s'arrete en ARRET_ANORMAL (BR)
+FONCTIONNALITE
+   oubli par Deltacad de modification de la syntaxe de l'appel à macr_lign_coupe dans tplv07a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tplv07a
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR devesa       DEVESA G.              DATE 12/03/2007 - 16:37:24
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009851 DU 2006-06-16 13:57:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Macro elements statiques et dynamiques
+FONCTIONNALITE
+   1) Développements avec action sur opérateurs suivants :
+   -------------------------------------------------------
+   -------------------------------------------------------
+   
+   Sur MACR_ELEM_DYNA (syntaxe jointe):
+   -------------------
+    - générer compatibilité DYNA vers STAT en ajoutant les structures de données 
+     spécifiques à MACR_ELEM_STAT à celles spécifiques à MACR_ELEM_DYNA : 
+     routines COMP81 et REFE81
+    - lecture d?impédance de sol (calculée par exemple par LIRE_IMPE_MISS) pour 
+     transformation en macro-élément dynamique (puis statique) : routine IMPE81
+    - créer les charges sur le macro-élément dynamique à partir de vecteurs 
+     généralisés via le mot clé facteur CAS_CHARGE (cf. MACR_ELEM_STAT): 
+     routines COMP81 et REFE81
+    
+   Sur les opérateurs de calcul non linéaire :
+   -------------------------------------------
+    - fonctions multiplicatrices sur les charges de macro-éléments dans le mot clé 
+     facteur SOUS_STRUC de STAT et DYNA_NON_LINE (ajout mot clé FONC_MULT):  
+     routines NMCHAR et ASSVSS 
+    - changer MAILLE en SUPER_MAILLE dans le mot clé facteur SOUS_STRUC
+     de STAT et DYNA_NON_LINE et de CALC_VECT_ELEM : routine SS2MME
+    - prise en compte de l?amortissement des sous-structures : routine NMMATR
+    - prise en compte des charges et forces internes initiales des 
+      sous-structures : routine ACCEL0
+    - changer MACR_ELEM_STAT en MACR_ELEM dans DEFI_MAILLAGE : routine SSDMDM
+   
+   Sur REST_BASE_PHYS :
+   ---------------------
+    restitution sur macro-élément dynamique via mot clé RESU_PHYS (existe)
+     associé à MACR_ELEM_DYNA (nouveau): routine TRAN75
+   
+   2) Syntaxe de MACR_ELEM_DYNA
+   ----------------------------
+   ----------------------------
+   MACR_ELEM_DYNA=OPER(nom="MACR_ELEM_DYNA",op=81,sd_prod=macr_elem_dyna,
+             PRESENT_ABSENT('MATR_IMPE','MATR_RIGI','MATR_MASS'),
+             PRESENT_ABSENT('MATR_AMOR',AMOR_REDUIT'),
+             BASE_MODALE     =SIMP(statut='o',typ=base_modale ),
+             MATR_RIGI       =SIMP(statut='f',typ=matr_asse_depl_r ),
+             MATR_MASS       =SIMP(statut='f',typ=matr_asse_depl_r ),
+             MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r ),
+             AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
+             OPTION =SIMP(statut='f',into=("CLASSIQUE","RITZ","DIAG_MASS") ),  
+            # LECTURE IMPEDANCE DE SOL 
+             MATR_IMPE =SIMP(statut='f',typ=matr_asse_gene_c ),
+             b_matr_impe     =BLOC(condition = "MATR_IMPE != None",
+                FREQ_EXTR       =SIMP(statut='o',typ='R' ),
+                AMOR_SOL        =SIMP(statut='f',typ='R',defaut=0.E+0 ), ),
+             # DEFINITION DES CAS DE CHARGES DES MACR_ELEM
+             CAS_CHARGE      =FACT(statut='f',max='**',
+               NOM_CAS         =SIMP(statut='o',typ='TXM'),
+               VECT_ASSE_GENE  =SIMP(statut='o',typ=vect_asse_gene ),  ), )  ;
+   
+   3) Validation:
+   --------------
+   --------------
+   - Livraison d'une modélisation MISS06B (V1.10.125) reprenant le modèle du test 
+   MISS06A en condensant la partie bâtiment et en transformant l'impédance de sol en 
+   macro-élément à la place de AFFE_RIGII_MISS pour comparaison avec nouveau MISS06A 
+   ayant aussi une liaison solide au niveau du radier. Ce test passe en moins de 800 
+   s comparé aux 3500 s environ de la modélisation MISS06A. On y teste également 
+   l'enfoncement initial ainsi que le pic vertical de décollement et le balancement 
+   horizontal maximal en haut du bâtiment.
+   - Modification des tests suivants (sans impact sur la doc) suite aux légères 
+   modifs de syntaxe dans SOUS_STRUC et DEFI_MAILLAGE :
+   SDLL137A SDLS01D SSLP100B SSLP100D SSNV193A
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.10.125 U4.65.01 U4.51.03 U4.53.01 U4.61.02 U4.23.01 U4.63.21
+VALIDATION
+   cas test MISS06B
+NB_JOURS_TRAV  : 18.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB J.           DATE 13/03/2007 - 09:20:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010630 DU 2007-03-12 08:01:01
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.12, le cas test ssnv160d s'arrete en ERREUR_<F> (B)
+FONCTIONNALITE
+   Ma restitution de la semaine dernière n'était pas 
+   correcte en axi je fais la correction en bouclant sur les 
+   composantes du tenseur des contraintes déviatoriques car 
+   les deux dernières ne sont pas définies en axisymétriques.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv160d
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT S.             DATE 12/03/2007 - 16:45:31
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010505 DU 2007-02-05 15:42:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   XFEM : DDL_IMPO sur les éléments XFEM
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   Il n'est pour le moment pas possible d'imposer une condition de blocage sur les
+   déplacements des noeuds des éléments X-FEM.
+   Cette limitation est génante, car elle ne permet pas de prendre en compte correctement les
+   conditions de symétrie dans un calcul.
+   
+   Les développements, à réaliser dans le cadre de l'Affaire UTO, se limitent à traiter les
+   conditions de type DDL_IMPO (DX, DY ou DZ).
+   
+   
+   Réponse :
+   ---------
+   
+   Le principe est expliqué dans le document en pièce jointe. Brièvement, on garde la meme
+   syntaxe que pour bloquer un noeud classique.     
+   on modifie la routine afddli.f : si le ddl demandé n'existe pas pour le noeud, on appelle
+   une nouvelle routine xddlim :
+           ICMP = INDIK8(NOMCMP,MOTCLE(J)(1:8),1,NBCMP)
+           IF (.NOT.EXISDG(PRNM,ICMP)) THEN
+             CALL XDDLIM(MOD,MOTCLE(J),NOMCMP,NBCMP,NOMN,INO,VALIMR(J),
+        &                VALIMC(J),VALIMF(J),PRNM,FONREE,ICOMPT(J),LISREL)
+             GOTO 30
+           ENDIF
+   Cette nouvelle routine ne fait rien si le noeud n'est pas un noeud X-FEM, on si le ddl
+   demandé n'est pas DX, DY ou DZ.
+   Dans ce cas, on sort directement.
+   
+   
+   Si le noeud est un noeud X-FEM, et si le ddl demandé est soit DX, DY ou DZ, on va chercher
+   à écrire la relation linéaire entre les ddls enrichis de déplacement (DCX, DCZ, DCZ, H1X,
+   H1Y, H1Z, E1X, E1Y, E1Z ..... E4X, E4Y, E4Z).
+   Une fois les coef de cette relation déterminés, on appelle la routine afrela.
+   
+   on emet un message d'info pour signaler que l'on a imposer un ddl sur un noeud X-FEM
+   
+   Remarque 1 : si le noeud demandé est sur les lèvres, alors on impose la condition de
+   blocage sur les noeuds des lèvres sup et inf.
+   
+   
+   Remarque 2 : si on cherche à bloquer toute une face contenant une extrémité
+   de la fissure, les noeuds de l'élément sain sont effectivement bien bloqués, mais les
+   nouveaux créés pour la visu (par exemple ceux situés sur les lèvres) ne le sont pas. En
+   effet, on bloque les noeuds, mais on ne bloque pas les points des lèvres.
+   Pour plus de clarté, on pourra se référer à la figure en piece jointe.
+   
+   
+   Validation : 
+   modif ssnv173a,d,g + ssnv185h : je remplace les LIAISON_DDL fastidieux par des DDL_IMPO.
+   ajout ssnv198a,b : permet de valider les conditions de Dirichlet sur les noeuds proches du
+   fond de
+   fissure dans deux configurations de fissure (une où le fond est au centre d'un élément, et
+   l'autre où le fond coincide avec un noeud).
+   
+   
+   impact documentaire :
+   doc du cas test modifié : V6.04.173
+   doc du cas test ajouté  : V6.04.198
+   doc U d'AFFE_CHAR_MECA : U4.44.01
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.173, V6.04.198, U4.44.01
+VALIDATION
+   ssnv173a, ssnv173d, ssnv173g, ssnv185h, ssnv198a, ssnv198b
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010571 DU 2007-02-23 14:59:29
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.0.11, les cas tests ssnv173g et ssnv186h s'arrxc3xaatent en ARRET_ANORMAL (BLR)
+FONCTIONNALITE
+   problème : 
+   ----------
+   
+   Avec la version 9.0.11, les cas tests ssnv173g et ssnv186h s'arrêtent en ARRET_ANORMAL sur
+   les machines Bull, Linux Calibre4 et Linux Rocks dans AFFE_MODELE : La valeur : 'C_PLAN_X'
+    ne fait pas partie des choix possibles.
+   
+   
+   Solution :
+   ----------
+   
+   en 9.0.11, les noms des modélisations X-FEM ont changé : C_PLAN_X -> C_PLAN_XFEM
+   et j'ai oublié de modifier ces deux cas tests.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv173g, ssnv186h
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010572 DU 2007-02-23 15:40:01
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+   NEW9.0.11, les cas tests ssnv185l et m s'arrxc3xaatent en ARRET_ANORMAL (R)
+FONCTIONNALITE
+   Problème : 
+   ----------
+   
+   Avec la version 9.0.11, les cas tests ssnv185l et m s'arrêtent brutalement dans la
+   commande POST_CHAM_XFEM sans retour d'erreur sur la machine Linux Rocks.
+   
+   
+   Solution :
+   ----------
+   
+   comme il a été décidé de bientot supprimer les opérateurs POST_MAIL_XFEM et
+   POST_CHAM_XFEM, on ne corrige plus de bugs dans ces opérateurs.
+   
+   la solution est de mettre en commentaires ces opérateurs dans les cas tests, et de
+   rajouter ces cas tests à la fiche 10516
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssnv185l et m
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR laverne      LAVERNE Jérôme         DATE 12/03/2007 - 16:56:27
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009547 DU 2006-03-13 15:56:15
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   propagation de fissures a travers une plaque troue
+FONCTIONNALITE
+   Propagation d'une fissure a travers une plaque trouée en 2D avec
+   des elements de joint et a discontinuité interne avec respectivement
+   les lois cohésives CZM_EXP_REG et CZM_REG. (test de non regression)
+   
+   AJOUT : SSNP133A, SSNP133B
+   DOCUMENTATION IMPACTEE : V6.03.133
+   NB JOURS TRAV : 3
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.03.133
+VALIDATION
+   nouveau test
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009807 DU 2006-05-30 11:02:46
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Evolution 3D des elements de joint
+FONCTIONNALITE
+   ELEMENTS DE JOINT 3D + INTENDANCE ELEMENTS DE JOINT 2D :
+   ********************************************************
+     
+   1) Elements de Joint 3D HEXA8 et PENTA6 (sources NECS dans le cadre d'ASTER libre) : 
+      TE206 TE207 TE208 
+   
+   2) ADAPTATION DE LA LOI CZM_EXP_REG pour le 3D + dépendance des parametres a la température
+   
+   3) MODIFS DANS LE MOT CLE ORIE_FISSURE : les mailles de joint PENTA6 peuvent désormais
+   s'appuyer sur des PENTA6 ou des TETRA4 alors qu'elle ne pouvait que s'appuyer que sur 
+   des PYRAM5 et PYRAM13.
+   
+   4) - AJOUT SSNP118B et C : validation des joints 3D pour les 3 modes d'ouverture et du
+   pilotage pour les HEXA8 et les PENTA6
+      
+      - AJOUT SSNV199A et B : validation analytique (reponse globale) sur une DCB 3D avec HEXA8
+   et PENTA6, + utilisation de ORIE_FISSURE avec HEXA8 et PENTA6.
+   
+   5) INTENDANCE ELEMENTS DE JOINT 2D :
+     * MODIF SSNP118A (validation des joint 2D)
+       - modif des valeurs des paramètres materiau GC et SIGMAC qui etaient a 1 tous les deux
+       - modif de la direction de chargement qui ne donnait pas exactement une
+         contrainte tangentielle nulle.
+       - ajout d'un testresu sur le SIGN de l'élément de joint
+     * MODIF DES VARIABLES INTERNES DE CZM_EXP_REG (passage de 4 à 9) 
+       - V1 variable seuil (inchangé)
+       - V2 indicateur  de dissipation (inchangé)
+       - V3 indicateur d'endommagement (0 : sain, 1 : endom)
+       - V4 pourcentage d'énergie dissipée
+       - V5 valeur de l'énergie dissipée
+       - V6 énergie résiduelle courante
+       - V7 à V9 : valeurs du saut, (V9=0 en 2D)
+   
+   AJOUT : 
+   -------
+   GENER_MF3D_3.CATA : catalogue des joints 3D
+   NMFICI.F : CALCUL  matrice cinematique en un point de gauss (passage du depl au saut_de_depl)
+   TE0206.F : te des joints 3d (OPTION = FULL_MECA, FULL_MECA_ELAS, RAPH_MECA,
+   RIGI_MECA_ELAS, RIGI_MECA_TANG)
+   TE0207.F : te calcul des forces nodales des joints 3D (OPTION = FORC_NODA)
+   TE0208.F : Pilotage , OPTION = PILO_PRED_ELAS
+   NMFI3D.F : Options de méca non linéaires pour les joints 3D, appelée par TE0206
+   NMFIFN.F : Forces nodales, appelée par TE0207
+   PIPEF3.F : Pilotage, appelée par TE0208
+   SSNP118B.COMM : validation des joint 3D HEXA8 + pilotage
+   SSNP118C.COMM : validation des joint 3D PENTA6 + pilotage
+   SSNV199A.COMM et SSNV199B.COMM : test des joints 3D (HEXA8 et PENTA6) sur une DCB.
+   
+   MODIF :
+   -------
+   AFFE_MODELE.CAPY : ajout de la modélisation 3D_JOINT
+   C_COMP_INCR.CAPY : modif du nombre de VI pour la loi CZM_EXP_REG
+   PHENOMENE_MODELISATION.CATA : Ajout de la nouvelle modélisation : '3D_JOINT' (HEXA8 et PENTA6)
+   LCEJEX.F :
+     - adaptation de la ldc CZM_EXP_REG pour le 3D.
+     - modif et ajout de variables internes
+   PIPEBA.F, PIPEFI.F : adaptation du pilotage des joints pour le 3D.
+   NMCOMP.F : modification des parametres d'appel de lcejex.f
+   MODE18.F : mise a jour (routine qui donne le type de modélisation en fonction du type
+   d'elements)
+   CONTACT.F, CONORI.F et CONPEN.F : correction pour la prise en compte d'ORIE_FISSURE avec
+   des PENTA6
+   CONCOM.F  CONHEX.F  CONJAC.F  CONORS.F  CONPER.F CONECH.F  CONINI.F CONQUA.F : maj des
+   commentaires
+   SSNP118A.COMM voir details ci dessus
+   SDNS105A.COMM modif des test_resu suite aux modifs des VI.
+   ELEMENTS5.PY : ajout de deux messages d'erreur.
+   
+   DOCUMENTATION IMPACTEE :
+   -----------------------
+   R3.06.09 : mise à jour de la doc des elements de joint pour le 3D
+   R7.2.11 : loi CZM_EXP_REG adaptation au 3D
+   V6.03.118 : rédaction des modélisations b et c
+   V6.04.199 : rédaction doc test DCB joint 3D
+   V6.05.105 : doc v de sdns105a
+   U4.23.04 : mise à jour doc MODI_MAILLAGE pour ORIE_FISSURE
+   U4.41.01 : mise à jour doc AFFE_MODELE
+   U4.51.11 : mise à jour doc comportements non linéaires
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R3.06.09,R7.02.11,V6.03.118,V6.04.199,V6.05.105,U4.23.04,U4.41.01,U4.51.11
+VALIDATION
+   cas tests : ssnp118abc,ssnv199ab
+NB_JOURS_TRAV  : 13.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR markovic     MARKOVIC D.            DATE 13/03/2007 - 17:15:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010606 DU 2007-03-05 16:16:50
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Correction de l'opxc3xa9rateur tangent pour le modxc3xa8le GLRC_DM
+FONCTIONNALITE
+   Grâce à la lecture attentive de Patrick Massin de la docR du modèle GLRC_DM j'ai découvert
+   une erreur dans le calcul de l'opérateur tangent. L'erreur apparait dans la dérivation des
+   variables d'endommagement par rapport à l'extension  membranaire. Dans la correction il
+   suffit de remplacer deux lignes (436-) dans "lcgldm.f"
+   
+   
+             D1E(K) = 0.5D0 * QDE(K)/SEUIL/(1.0D0 + DA1)  
+             D2E(K) = 0.5D0 * QDE(K)/SEUIL/(1.0D0 + DA2) 
+   par 
+             D1E(K) = (ALF + DA1)*(1.0D0 + DA1)/2.0D0/
+        &             (SEUIL*(1.0D0 + DA1)**3 + (ALF-1.0D0)*QM1) * QDE(K)
+             
+             D2E(K) = (ALF + DA2)*(1.0D0 + DA2)/2.0D0/
+        &             (SEUIL*(1.0D0 + DA2)**3 + (ALF-1.0D0)*QM2) * QDE(K)
+   
+   
+   La correction n'a aucun impact sur des tests existants (ssns106a-d), ni par rapport aux
+   résultats ni par rapport aux nombres d'itérations, pour deux raisons :
+   
+   - L'erreur se voie seulement lorsque le paramètre "alpha" (qui dépend surtout des mots clé
+   SYT et SYF) est très différent de un. Or, il vaut 1.04 dans les tests, la valeur qu'on
+   obtient de l'identification avec la modélisation multi-couches.
+   
+   - Aucun impact lorsque la membrane et la flexion ne sont pas couplées.
+   
+   Pour le valider je propose d'introduire un nouveau test ssns106e, où la plaque est
+   sollicitée en cisaillement dans le plan combinée avec la flexion, les deux en cyclique. Ce
+   test ne converge pas sans la correction mentionnée ci-dessus.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.05.106
+VALIDATION
+   ssns106e
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010621 DU 2007-03-09 08:10:55
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Modification de "NIV_PUB_WEB" des tests validant les modeles GLRC
+FONCTIONNALITE
+   Par négligeance tous les tests GLRC (_DM et _DAMAGE) restitué depuis septembre 2006 ont
+   été mis en INTRANET. Je corrige à NIV_PUB_WEB='INTERNET' dans
+   
+   ssls126a,b
+   ssls127a,b
+   ssns104a,b
+   ssns106a,b,c,d,e
+   sdns106a
+   
+   J'en profite pour enlever une carte de trop dans sdns106a.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   ssls126,ssls127,ssns104,ssns106,sdns106
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX J.M.             DATE 12/03/2007 - 13:30:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010563 DU 2007-02-23 13:56:19
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   NEW9.0.11, le cas test forma09b s'arrete par manque de mxc3xa9moire (B)
+FONCTIONNALITE
+   On passe de 16Mo à 32Mo et tout va bien.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   forma09b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE E.              DATE 13/03/2007 - 08:43:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009683 DU 2006-04-14 12:48:24
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   MODE_ITER_SIMULT avec matrice generalisee complexe
+FONCTIONNALITE
+   Objectif
+   --------
+   Enrichir MODE_ITER_SIMULT pour permettre la prise en compte des matrices
+   généralisées complexes.
+   Auparavant, la matrice (de rigidité) MATR_A de cet opérateur n'acceptait que les matrices
+   assemblées de type depl_r, depl_c, gene_r. 
+   Désormais, elle accepte les matrices assemblées de type gene_c.
+   
+   Développement
+   -------------
+   ajout du type matr_asse_gene_c au mot-clé MATR_A de l'opérateur MODE_ITER_SIMULT dans le
+   fichier mode_iter_simult.capy
+   La modification du source fortran n'a pas été nécessaire.
+   
+   Validation
+   ----------
+   Enrichissement du cas-test zzzz208a par un MODE_ITER_SIMULT supplémentaire dont la matrice
+   de rigidité est de type matr_asse_gene_c. 
+   On y calcule les 5 fréquences centrées autour d'une fréquence cible.
+   Ces fréquences sont ensuite comparées aux fréquences obtenues par Numerical python.
+   
+   Documentation
+   -------------
+   Doc U4.52.03: Mise à jour de la syntaxe de l'opérateur MODE_ITER_SIMULT
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.52.03
+VALIDATION
+   zzzz208a
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT miss06b                        devesa G.DEVESA           755    755      0
+ CASTEST AJOUT ssnp118b                      laverne J.LAVERNE          597    597      0
+ CASTEST AJOUT ssnp118c                      laverne J.LAVERNE          606    606      0
+ CASTEST AJOUT ssnp133a                      laverne J.LAVERNE          410    410      0
+ CASTEST AJOUT ssnp133b                      laverne J.LAVERNE          361    361      0
+ CASTEST AJOUT ssns106e                     markovic D.MARKOVIC         471    471      0
+ CASTEST AJOUT ssnv198a                      geniaut S.GENIAUT          230    230      0
+ CASTEST AJOUT ssnv198b                      geniaut S.GENIAUT          230    230      0
+ CASTEST AJOUT ssnv199a                      laverne J.LAVERNE          340    340      0
+ CASTEST AJOUT ssnv199b                      laverne J.LAVERNE          343    343      0
+ CASTEST MODIF forma09b                        proix J-M.PROIX          371      1      1
+ CASTEST MODIF sdll137a                       devesa G.DEVESA           453      2      2
+ CASTEST MODIF sdls01d                        devesa G.DEVESA           118      2      2
+ CASTEST MODIF sdns105a                      laverne J.LAVERNE          306     11     11
+ CASTEST MODIF sdns106a                     markovic D.MARKOVIC         327      2     20
+ CASTEST MODIF sslp100b                       devesa G.DEVESA           489     17     14
+ CASTEST MODIF sslp100d                       devesa G.DEVESA           426      5      5
+ CASTEST MODIF ssls126a                     markovic D.MARKOVIC         351      2      3
+ CASTEST MODIF ssls126b                     markovic D.MARKOVIC         291      2      3
+ CASTEST MODIF ssls127a                     markovic D.MARKOVIC         317      2      3
+ CASTEST MODIF ssls127b                     markovic D.MARKOVIC         323      2      3
+ CASTEST MODIF ssnp118a                      laverne J.LAVERNE          259     55     17
+ CASTEST MODIF ssns104a                     markovic D.MARKOVIC         400      2      3
+ CASTEST MODIF ssns104b                     markovic D.MARKOVIC         399      2      3
+ CASTEST MODIF ssns106a                     markovic D.MARKOVIC         510      2      2
+ CASTEST MODIF ssns106b                     markovic D.MARKOVIC         503      2      2
+ CASTEST MODIF ssns106c                     markovic D.MARKOVIC         873      2      2
+ CASTEST MODIF ssns106d                     markovic D.MARKOVIC         524      2      2
+ CASTEST MODIF ssnv160d                     elgharib J.EL-GHARIB        340      1      1
+ CASTEST MODIF ssnv173a                      geniaut S.GENIAUT          235      6    115
+ CASTEST MODIF ssnv173d                      geniaut S.GENIAUT          238      8    101
+ CASTEST MODIF ssnv173g                      geniaut S.GENIAUT          196      8     40
+ CASTEST MODIF ssnv185h                      geniaut S.GENIAUT          298      4     87
+ CASTEST MODIF ssnv185l                      geniaut S.GENIAUT          274      8      7
+ CASTEST MODIF ssnv185m                      geniaut S.GENIAUT          275      7      6
+ CASTEST MODIF ssnv186h                      geniaut S.GENIAUT          180      2      2
+ CASTEST MODIF ssnv193a                       devesa G.DEVESA           178      3      4
+ CASTEST MODIF tplv07a                         abbas M.ABBAS            399      3      2
+ CASTEST MODIF zzzz208a                      rezette C.REZETTE          482     57      2
+CATALOGU AJOUT typelem/gener_mf3d_3          laverne J.LAVERNE           99     99      0
+CATALOGU MODIF compelem/phenomene_modelisation__    laverne J.LAVERNE         1057      5      1
+CATALOPY MODIF commande/affe_modele          laverne J.LAVERNE          214      2      1
+CATALOPY MODIF commande/calc_vect_elem        devesa G.DEVESA            76      3      3
+CATALOPY MODIF commande/defi_maillage         devesa G.DEVESA            79      2      2
+CATALOPY MODIF commande/dyna_non_line         devesa G.DEVESA           414      4      3
+CATALOPY MODIF commande/macr_elem_dyna        devesa G.DEVESA            41     12      2
+CATALOPY MODIF commande/mode_iter_simult     rezette C.REZETTE          145      5      2
+CATALOPY MODIF commande/rest_base_phys        devesa G.DEVESA            95      3      2
+CATALOPY MODIF commande/stat_non_line         devesa G.DEVESA           383      4      3
+CATALOPY MODIF commun/c_comp_incr            laverne J.LAVERNE          347      2      2
+ FORTRAN AJOUT algorith/caranm                 abbas M.ABBAS            123    123      0
+ FORTRAN AJOUT algorith/cfchoi                 abbas M.ABBAS            162    162      0
+ FORTRAN AJOUT algorith/cfcoem                 abbas M.ABBAS            167    167      0
+ FORTRAN AJOUT algorith/cfimpa                 abbas M.ABBAS             56     56      0
+ FORTRAN AJOUT algorith/cfimpd                 abbas M.ABBAS            105    105      0
+ FORTRAN AJOUT algorith/cfimpe                 abbas M.ABBAS            124    124      0
+ FORTRAN AJOUT algorith/cflisn                 abbas M.ABBAS            170    170      0
+ FORTRAN AJOUT algorith/cfliss                 abbas M.ABBAS            102    102      0
+ FORTRAN AJOUT algorith/cfmoyn                 abbas M.ABBAS             88     88      0
+ FORTRAN AJOUT algorith/cfnewj                 abbas M.ABBAS             53     53      0
+ FORTRAN AJOUT algorith/cfnoma                 abbas M.ABBAS             93     93      0
+ FORTRAN AJOUT algorith/cfnose                 abbas M.ABBAS             86     86      0
+ FORTRAN AJOUT algorith/cfnotr                 abbas M.ABBAS             63     63      0
+ FORTRAN AJOUT algorith/cfoldj                 abbas M.ABBAS             54     54      0
+ FORTRAN AJOUT algorith/cfparm                 abbas M.ABBAS             92     92      0
+ FORTRAN AJOUT algorith/cfparn                 abbas M.ABBAS             88     88      0
+ FORTRAN AJOUT algorith/cfreli                 abbas M.ABBAS            134    134      0
+ FORTRAN AJOUT algorith/cfsupp                 abbas M.ABBAS            181    181      0
+ FORTRAN AJOUT algorith/cfsyme                 abbas M.ABBAS            137    137      0
+ FORTRAN AJOUT algorith/cftand                 abbas M.ABBAS            116    116      0
+ FORTRAN AJOUT algorith/comp81                devesa G.DEVESA           300    300      0
+ FORTRAN AJOUT algorith/geomco                 abbas M.ABBAS             77     77      0
+ FORTRAN AJOUT algorith/impe81                devesa G.DEVESA           148    148      0
+ FORTRAN AJOUT algorith/nmfi3d               laverne J.LAVERNE          160    160      0
+ FORTRAN AJOUT algorith/nmfici               laverne J.LAVERNE           74     74      0
+ FORTRAN AJOUT algorith/nmfifn               laverne J.LAVERNE           63     63      0
+ FORTRAN AJOUT algorith/pipef3               laverne J.LAVERNE           81     81      0
+ FORTRAN AJOUT algorith/prdima                 abbas M.ABBAS             97     97      0
+ FORTRAN AJOUT algorith/prdiqu                 abbas M.ABBAS            135    135      0
+ FORTRAN AJOUT algorith/projen                 abbas M.ABBAS            145    145      0
+ FORTRAN AJOUT algorith/projl1                 abbas M.ABBAS            107    107      0
+ FORTRAN AJOUT algorith/projl2                 abbas M.ABBAS            169    169      0
+ FORTRAN AJOUT algorith/projqc                 abbas M.ABBAS            147    147      0
+ FORTRAN AJOUT algorith/projqd                 abbas M.ABBAS             74     74      0
+ FORTRAN AJOUT algorith/projt1                 abbas M.ABBAS            151    151      0
+ FORTRAN AJOUT algorith/projt2                 abbas M.ABBAS            235    235      0
+ FORTRAN AJOUT algorith/projtt                 abbas M.ABBAS            103    103      0
+ FORTRAN AJOUT algorith/rechp1                 abbas M.ABBAS            119    119      0
+ FORTRAN AJOUT algorith/rechp2                 abbas M.ABBAS            143    143      0
+ FORTRAN AJOUT algorith/restco                 abbas M.ABBAS            142    142      0
+ FORTRAN AJOUT algorith/sauvco                 abbas M.ABBAS            118    118      0
+ FORTRAN AJOUT assembla/assvss                devesa G.DEVESA           564    564      0
+ FORTRAN AJOUT elements/te0206               laverne J.LAVERNE          102    102      0
+ FORTRAN AJOUT elements/te0207               laverne J.LAVERNE           73     73      0
+ FORTRAN AJOUT elements/te0208               laverne J.LAVERNE           85     85      0
+ FORTRAN AJOUT modelisa/xddlim               geniaut S.GENIAUT          187    187      0
+ FORTRAN AJOUT utilitai/infdbg                 abbas M.ABBAS             54     54      0
+ FORTRAN MODIF algorith/accel0                devesa G.DEVESA           294     62      2
+ FORTRAN MODIF algorith/ajustt                 abbas M.ABBAS            124     13      4
+ FORTRAN MODIF algorith/carama                 abbas M.ABBAS            196     43     44
+ FORTRAN MODIF algorith/carano                 abbas M.ABBAS            111     31     45
+ FORTRAN MODIF algorith/cfaddm                 abbas M.ABBAS            144     44    125
+ FORTRAN MODIF algorith/cfcoef                 abbas M.ABBAS            155     52     59
+ FORTRAN MODIF algorith/cfcrma                 abbas M.ABBAS            245      1      1
+ FORTRAN MODIF algorith/cfcrsd                 abbas M.ABBAS            470      9      9
+ FORTRAN MODIF algorith/cfdisc                 abbas M.ABBAS            218      1      1
+ FORTRAN MODIF algorith/cfdisi                 abbas M.ABBAS            175     54     13
+ FORTRAN MODIF algorith/cfdist                 abbas M.ABBAS            153     56     32
+ FORTRAN MODIF algorith/cfelsn                 abbas M.ABBAS            104     30     31
+ FORTRAN MODIF algorith/cfgeom                 abbas M.ABBAS            126     19     75
+ FORTRAN MODIF algorith/cfimp4                 abbas M.ABBAS            602    161     34
+ FORTRAN MODIF algorith/cfinit                 abbas M.ABBAS            149     24     15
+ FORTRAN MODIF algorith/cfjefi                 abbas M.ABBAS             97      1      1
+ FORTRAN MODIF algorith/cfnorm                 abbas M.ABBAS            208    103    111
+ FORTRAN MODIF algorith/cfsupm                 abbas M.ABBAS            125     49     30
+ FORTRAN MODIF algorith/cftang                 abbas M.ABBAS            137     77     48
+ FORTRAN MODIF algorith/chmano                 abbas M.ABBAS            298    112    351
+ FORTRAN MODIF algorith/concom               laverne J.LAVERNE           55      6      6
+ FORTRAN MODIF algorith/conech               laverne J.LAVERNE           40      3      3
+ FORTRAN MODIF algorith/conhex               laverne J.LAVERNE          140      6      6
+ FORTRAN MODIF algorith/conini               laverne J.LAVERNE          291     18     18
+ FORTRAN MODIF algorith/conori               laverne J.LAVERNE          413     17     17
+ FORTRAN MODIF algorith/conpen               laverne J.LAVERNE          109      6      6
+ FORTRAN MODIF algorith/conper               laverne J.LAVERNE           42      3      3
+ FORTRAN MODIF algorith/conqua               laverne J.LAVERNE          103      7      7
+ FORTRAN MODIF algorith/contac               laverne J.LAVERNE           84      9      8
+ FORTRAN MODIF algorith/lcejex               laverne J.LAVERNE          212     87     42
+ FORTRAN MODIF algorith/nmccam              elgharib J.EL-GHARIB        894     14      8
+ FORTRAN MODIF algorith/nmchar                devesa G.DEVESA           532     18      8
+ FORTRAN MODIF algorith/nmcofr                 abbas M.ABBAS            198     29     33
+ FORTRAN MODIF algorith/nmcomp               laverne J.LAVERNE          706      2      2
+ FORTRAN MODIF algorith/nmmatr                devesa G.DEVESA           438      8      2
+ FORTRAN MODIF algorith/op0081                devesa G.DEVESA           101     26     36
+ FORTRAN MODIF algorith/op0113               geniaut S.GENIAUT          414      3      1
+ FORTRAN MODIF algorith/pipeba               laverne J.LAVERNE          178     17     14
+ FORTRAN MODIF algorith/pipefi               laverne J.LAVERNE           79      3      6
+ FORTRAN MODIF algorith/prdise                 abbas M.ABBAS             56     16     22
+ FORTRAN MODIF algorith/prditr                 abbas M.ABBAS             99     36     24
+ FORTRAN MODIF algorith/projec                 abbas M.ABBAS            194     60     97
+ FORTRAN MODIF algorith/projin                 abbas M.ABBAS            162     16      9
+ FORTRAN MODIF algorith/projli                 abbas M.ABBAS             74     27    205
+ FORTRAN MODIF algorith/projma                 abbas M.ABBAS            187     98     84
+ FORTRAN MODIF algorith/projno                 abbas M.ABBAS             82     48     56
+ FORTRAN MODIF algorith/projqu                 abbas M.ABBAS            344    268     68
+ FORTRAN MODIF algorith/projse                 abbas M.ABBAS             83     28     92
+ FORTRAN MODIF algorith/projsq                 abbas M.ABBAS            160     70    107
+ FORTRAN MODIF algorith/projtr                 abbas M.ABBAS             97     35    405
+ FORTRAN MODIF algorith/reacco                 abbas M.ABBAS             99     44     70
+ FORTRAN MODIF algorith/rechco                 abbas M.ABBAS            319    158    231
+ FORTRAN MODIF algorith/rechme                 abbas M.ABBAS            114     43     71
+ FORTRAN MODIF algorith/rechmn                 abbas M.ABBAS            264    100    184
+ FORTRAN MODIF algorith/rechno                 abbas M.ABBAS            351    156    189
+ FORTRAN MODIF algorith/refe81                devesa G.DEVESA           231      7     39
+ FORTRAN MODIF algorith/tran75                devesa G.DEVESA           630     86     10
+ FORTRAN MODIF algorith/xptfon               geniaut S.GENIAUT          191      6      4
+ FORTRAN MODIF elements/lcgldm              markovic D.MARKOVIC         499     41     35
+ FORTRAN MODIF modelisa/acearm                devesa G.DEVESA           205      4      3
+ FORTRAN MODIF modelisa/acearp                devesa G.DEVESA           413      2      1
+ FORTRAN MODIF modelisa/afddli               geniaut S.GENIAUT          152     10      5
+ FORTRAN MODIF modelisa/caddli               geniaut S.GENIAUT          350      2      2
+ FORTRAN MODIF modelisa/caddlp               geniaut S.GENIAUT          256      2      2
+ FORTRAN MODIF modelisa/cafaci               geniaut S.GENIAUT          474      2      2
+ FORTRAN MODIF modelisa/caraco                 abbas M.ABBAS            174      8      4
+ FORTRAN MODIF modelisa/cazoco                 abbas M.ABBAS            513     47     44
+ FORTRAN MODIF modelisa/cfmmvd                 abbas M.ABBAS             93     10      8
+ FORTRAN MODIF modelisa/conjac               laverne J.LAVERNE          158      8      8
+ FORTRAN MODIF modelisa/conors               laverne J.LAVERNE          170      9      9
+ FORTRAN MODIF modelisa/dimeco                 abbas M.ABBAS            153      6      7
+ FORTRAN MODIF modelisa/mode18               laverne J.LAVERNE          373     14      3
+ FORTRAN MODIF soustruc/ss2mme                devesa G.DEVESA           158      3      3
+ FORTRAN MODIF soustruc/ssdmdm                devesa G.DEVESA           242      3      3
+ FORTRAN SUPPR algorith/cfjeun                 abbas M.ABBAS            226      0    226
+ FORTRAN SUPPR algorith/jeuxse                 abbas M.ABBAS            117      0    117
+ FORTRAN SUPPR algorith/projco                 abbas M.ABBAS            175      0    175
+ FORTRAN SUPPR algorith/projq1                 abbas M.ABBAS            550      0    550
+  PYTHON AJOUT Messages/contactdebg            abbas M.ABBAS            130    130      0
+  PYTHON MODIF Messages/contact                abbas M.ABBAS            240      4      3
+  PYTHON MODIF Messages/elements5            laverne J.LAVERNE          129     12      1
+  PYTHON MODIF Messages/xfem                 geniaut S.GENIAUT           58      5      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   59       10619     10619            +10619
+ MODIF :  116       30893      2982    3854      -872
+ SUPPR :    4        1068              1068     -1068
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  179       42580     13601    4922     +8679 

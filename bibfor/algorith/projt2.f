@@ -1,0 +1,235 @@
+      SUBROUTINE PROJT2(COORDA,COORDB,COORDC,COORDP,MNORM,
+     &                  UNORM ,COORDM,LAMOLD,LAMBDA,DEBORD)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      REAL*8      COORDA(3)
+      REAL*8      COORDB(3)
+      REAL*8      COORDC(3)
+      REAL*8      COORDP(3)
+      REAL*8      UNORM(3),MNORM(3)
+      REAL*8      COORDM(3)
+      REAL*8      DEBORD
+      REAL*8      LAMBDA(3),LAMOLD(3)
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODES DISCRETES - APPARIEMENT - MAIT/ESCL - TRI)
+C
+C PROJECTION D'UN NOEUD ESCLAVE P SUR UN TRIANGLE LINEAIRE ABC
+C UTILISATION DE LA NORMALE MOYENNE MAITRE/ESCLAVE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  COORDA : COORDONNEES DU SOMMET A DU TRIANGLE
+C IN  COORDB : COORDONNEES DU SOMMET B DU TRIANGLE
+C IN  COORDC : COORDONNEES DU SOMMET C DU TRIANGLE
+C IN  COORDP : COORDONNEES DU NOEUD ESCLAVE P
+C IN  UNORM  : NORMALE MOYENNE MAITRE/ESCLAVE
+C IN  MNORM  : NORMALE A LA MAILLE MAITRE
+C OUT COORDM : COORDONNEES DE LA "PROJECTION" M
+C OUT LAMOLD : COORDONNEES PARAMETRIQUES DE LA "PROJECTION" M AVANT
+C                RABATTEMENT DANS LA MAILLE SI ON DEPASSE
+C OUT LAMBDA : COORDONNEES PARAMETRIQUES DE LA "PROJECTION" M APRES
+C                RABATTEMENT DANS LA MAILLE SI ON DEPASSE
+C OUT DEBORD : PROJECTION HORS DE LA MAILLE
+C              >0 : PROJECTION HORS DE LA MAILLE
+C              <0 : PROJECTION SUR LA MAILLE
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER K
+      REAL*8  AB(3),AC(3),BC(3),SIGNE,COEFD
+      REAL*8  KSI1,KSI2,KSI3,COORA2(3)
+      REAL*8  COORB2(3),COORC2(3),COORM2(3),B2A2(3),C2A2(3)
+      REAL*8  LAB,LAC,LBC,ABSAC,ACSAB,ABSBC,ACSBC
+      REAL*8  COEFA,COEFB,COEFC,COEFF
+      REAL*8  RBID,R3BID(3),R6BID(6),R1,ALPHA,BETA,GAMMA
+      REAL*8  R8PI,DDOT
+      REAL*8  OUTSID(3)
+C
+C ----------------------------------------------------------------------
+C    
+      DEBORD    = -1.D0
+      OUTSID(1) = -1.D0
+      OUTSID(2) = -1.D0
+      OUTSID(3) = -1.D0      
+C
+C --- CALCUL DE AP ET DES COTES DU TRIANGLE ABC
+C
+      LAB = 0.D0
+      LAC = 0.D0
+      LBC = 0.D0
+      DO 11 K = 1,3
+         AB(K) = COORDB(K) - COORDA(K)
+         AC(K) = COORDC(K) - COORDA(K)
+         BC(K) = COORDC(K) - COORDB(K)
+         LAB = LAB + AB(K)*AB(K)
+         LAC = LAC + AC(K)*AC(K)
+         LBC = LBC + BC(K)*BC(K)
+ 11   CONTINUE    
+C
+C --- CALCUL DES COEFFICIENTS POUR LA PROJECTION
+C
+      COEFA = MNORM(1)
+      COEFB = MNORM(2)
+      COEFC = MNORM(3)
+      COEFD = -(COEFA*COORDA(1)+COEFB*COORDA(2)+
+     &          COEFC*COORDA(3))
+      COEFF = COEFA*UNORM(1)+COEFB*UNORM(2)+COEFC*UNORM(3)
+C      
+      IF (COEFF.NE.0.D0) THEN
+        COEFF = -(COEFA*COORDP(1)+COEFB*COORDP(2)+
+     &            COEFC*COORDP(3)+COEFD)/COEFF
+      ELSE
+        CALL U2MESS('F','CONTACT_12')
+      ENDIF        
+C
+C --- CALCUL DES COORDONNEES CARTESIENNES DE M ("PROJECTION" DE P)
+C    
+      COORDM(1) = COORDP(1)+COEFF*UNORM(1)
+      COORDM(2) = COORDP(2)+COEFF*UNORM(2)
+      COORDM(3) = COORDP(3)+COEFF*UNORM(3)
+C
+C --- CALCUL DES ANGLES POUR LES MATRICES DE ROTATION
+C
+      IF (UNORM(2).EQ.0.D0) THEN
+        ALPHA = 0.D0
+        IF (UNORM(3).EQ.0.D0) THEN
+          SIGNE = UNORM(1)
+          IF(SIGNE.GT.0) THEN
+            BETA  =  R8PI()/2
+          ELSE
+            BETA  = -R8PI()/2
+          ENDIF
+        ENDIF
+      ELSE
+        IF (UNORM(1).EQ.0.D0) THEN
+          BETA = 0.D0
+          IF (UNORM(3).EQ.0.D0) THEN
+            SIGNE = UNORM(2)
+            IF (SIGNE.GT.0) THEN
+              ALPHA  = -R8PI()/2
+            ELSE
+              ALPHA  =  R8PI()/2
+            ENDIF
+          ENDIF
+        ELSE
+          IF (UNORM(2).NE.0.D0) THEN
+            R1    = SQRT(UNORM(2)*UNORM(2)+UNORM(3)*UNORM(3))
+            SIGNE = UNORM(2)*UNORM(3)
+            IF (SIGNE.GE.0.D0) THEN
+              ALPHA =   ATAN2(UNORM(3),UNORM(2))
+            ELSE
+              ALPHA = - ATAN2(UNORM(3),UNORM(2))
+            ENDIF
+            SIGNE = - UNORM(1)
+            IF (SIGNE.GE.0.D0) THEN
+              BETA =   ATAN2(UNORM(1),R1)
+            ELSE
+              BETA = - ATAN2(UNORM(1),R1)
+            ENDIF
+          ENDIF
+        ENDIF
+      ENDIF  
+C
+C --- CALCUL DES MATRICES DE ROTATION
+C
+      IF (UNORM(1).NE.0.D0.OR.UNORM(2).NE.0.D0) THEN
+        GAMMA = 0.D0
+        CALL ROT3D(COORDA,SIN(GAMMA),COS(GAMMA),SIN(BETA),
+     &             COS(BETA),SIN(ALPHA),COS(ALPHA),COORA2)
+        CALL ROT3D(COORDB,SIN(GAMMA),COS(GAMMA),SIN(BETA),
+     &             COS(BETA),SIN(ALPHA),COS(ALPHA),COORB2)
+        CALL ROT3D(COORDC,SIN(GAMMA),COS(GAMMA),SIN(BETA),
+     &             COS(BETA),SIN(ALPHA),COS(ALPHA),COORC2)
+        CALL ROT3D(COORDM,SIN(GAMMA),COS(GAMMA),SIN(BETA),
+     &             COS(BETA),SIN(ALPHA),COS(ALPHA),COORM2)
+      ENDIF          
+C
+C --- ROTATION DU TRIANGLE
+C
+      IF (UNORM(1).NE.0.D0.OR.UNORM(2).NE.0.D0) THEN
+        C2A2(1) = COORA2(1) - COORC2(1)
+        C2A2(2) = COORA2(2) - COORC2(2)
+        C2A2(3) = 0.D0
+        B2A2(1) = COORA2(1) - COORB2(1)
+        B2A2(2) = COORA2(2) - COORB2(2)
+        B2A2(3) = 0.D0
+      ELSE
+        C2A2(1) = -AC(1)
+        C2A2(2) = -AC(2)
+        C2A2(3) = 0.D0
+        B2A2(1) = -AB(1)
+        B2A2(2) = -AB(2)
+        B2A2(3) = 0.D0
+      ENDIF
+
+      CALL PROJL2(3     ,COORA2,COORB2,COORM2,
+     &            C2A2  ,R6BID ,R3BID ,KSI1  ,RBID)
+      CALL PROJL2(3     ,COORA2,COORC2,COORM2,
+     &            B2A2  ,R6BID ,R3BID ,KSI2  ,RBID)
+      KSI3 = 1.D0 - KSI1 - KSI2   
+C
+C --- SAUVEGARDE DES COORDONNEES PARAMETRIQUES DE M AVANT RABATTEMENT
+C
+      LAMOLD(1) = KSI1
+      LAMOLD(2) = KSI2
+      LAMOLD(3) = KSI3      
+C      
+C --- RABATTEMENT DE LA PROJECTION SUR LA MAILLE (ARETE)
+C
+      IF ((KSI1.LT.0.D0).OR.(KSI2.LT.0.D0).OR.
+     &    (KSI3.LT.0.D0)) THEN
+        ABSAC = DDOT (3,AB,1,AC,1) / LAC
+        ACSAB = DDOT (3,AB,1,AC,1) / LAB
+        ABSBC = DDOT (3,AB,1,BC,1) / LBC
+        ACSBC = DDOT (3,AC,1,BC,1) / LBC
+        IF (KSI1.LT.0.D0) THEN
+          OUTSID(1) = ABS(KSI1)
+        END IF
+        IF (KSI2.LT.0.D0) THEN
+          OUTSID(2) = ABS(KSI2)
+        END IF
+        IF (KSI3.LT.0.D0) THEN
+          OUTSID(3) = ABS(KSI3)
+        END IF
+        CALL AJUSTT (ABSAC,ACSAB,ABSBC,ACSBC,KSI1,KSI2)
+      END IF
+C
+C --- CALCUL DES VALEURS DES FONCTIONS DE FORME DES NOEUDS EN M
+C
+      LAMBDA(1) = KSI1
+      LAMBDA(2) = KSI2
+      LAMBDA(3) = 1.D0 - KSI1 - KSI2
+C
+C --- PROJECTION HORS DE LA MAILLE ?
+C --- SI OUI: DEBORD EST LA VALEUR DE DEBORDEMENT
+C
+      IF ((OUTSID(1).GT.0.D0).OR.(OUTSID(2).GT.0.D0)
+     &                       .OR.(OUTSID(3).GT.0.D0)) THEN
+         DEBORD = MAX(OUTSID(1),OUTSID(2))
+         DEBORD = MAX(DEBORD,OUTSID(3))
+      ENDIF  
+ 
+      END

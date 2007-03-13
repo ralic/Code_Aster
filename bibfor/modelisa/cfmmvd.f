@@ -1,7 +1,7 @@
       INTEGER FUNCTION CFMMVD(VECT) 
 C    
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF MODELISA  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,15 +37,15 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   ZNOES,ZMETH,ZTOLE,ZTABF
-      PARAMETER (ZNOES=10,ZMETH=8,ZTOLE=7,ZTABF=30) 
+      PARAMETER (ZNOES=10,ZMETH=8 ,ZTOLE=7 ,ZTABF=30) 
       INTEGER   ZCMCF,ZECPD,ZTGDE,ZDIRE
-      PARAMETER (ZCMCF=22,ZECPD=6,ZTGDE=6,ZDIRE=3)
+      PARAMETER (ZCMCF=22,ZECPD=6 ,ZTGDE=6 ,ZDIRE=3 )
       INTEGER   ZPOUD,ZDIME,ZMAES
-      PARAMETER (ZPOUD=3,ZDIME=9,ZMAES=3)    
+      PARAMETER (ZPOUD=3 ,ZDIME=9 ,ZMAES=3)    
       INTEGER   ZAPME,ZAPPA,ZREAC
-      PARAMETER (ZAPME=4,ZAPPA=3,ZREAC=4)
-      INTEGER   ZCONV,ZRESU
-      PARAMETER (ZCONV=6,ZRESU=20)                  
+      PARAMETER (ZAPME=4 ,ZAPPA=3 ,ZREAC=4)
+      INTEGER   ZCONV,ZRESU,ZCARF
+      PARAMETER (ZCONV=6 ,ZRESU=20,ZCARF=4)                  
 C
 C ----------------------------------------------------------------------
 C
@@ -82,9 +82,11 @@ C
       ELSE IF (VECT.EQ.'ZCONV') THEN
         CFMMVD = ZCONV   
       ELSE IF (VECT.EQ.'ZRESU') THEN
-        CFMMVD = ZRESU             
+        CFMMVD = ZRESU     
+      ELSE IF (VECT.EQ.'ZCARF') THEN
+        CFMMVD = ZCARF                 
       ELSE
-        CALL ASSERT(.FALSE.)
+        CALL CFIMPA('CFMMVD',1) 
       ENDIF  
 C
       CALL JEDEMA()

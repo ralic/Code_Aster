@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF xfem Messages  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,6 +48,10 @@ Pour l'utilisateur : les fissures X-FEM sont surement trop proches.
 La valeur du parametre %(k1)s (%(i1)d) de la fissure %(k2)s 
 a été changé à 
 %(i2)d (valeur maximale de toutes les fissures du modèle)
+"""),
+
+6: _("""
+DDL_IMPO sur un noeud X-FEM : %(k1)s =  %(r1)f au noeud %(k2)s
 """),
 
 

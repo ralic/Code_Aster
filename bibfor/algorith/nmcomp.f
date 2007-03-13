@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,7 +243,7 @@ C----------------------------------------------------------------------
 
         IF ( COMPOR(1) .EQ. 'CZM_EXP_REG' ) THEN
 
-          CALL LCEJEX(IMATE, OPTION, EPSM, DEPS, TM, TP,
+          CALL LCEJEX(NDIM, IMATE, OPTION, EPSM, DEPS, TM, TP,
      &                SIGP, DSIDEP, VIM, VIP)
           GOTO 9000
 

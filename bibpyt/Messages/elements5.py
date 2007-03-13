@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+#@ MODIF elements5 Messages  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -115,4 +115,15 @@ cata_msg={
 21: _("""
  FONFIS - Occurence %(i1)s : mélange de SEG2 et de SEG3 (maille %(k1)s).
 """), 
+
+22: _("""
+   Erreur, le nombre de noeuds d'un element de joint 3D n'est pas correct   
+"""),
+
+
+23: _("""
+   Erreur, le nombre de points de Gauss d'un element de joint 3D n'est pas correct   
+"""),
+
+
 }

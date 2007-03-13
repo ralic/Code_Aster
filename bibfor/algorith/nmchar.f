@@ -8,7 +8,7 @@
      &                   SECMBR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER      NEQ,    IRET,   JTRA,   NBCHAR, ICH,    JINFC,  JCHAR
       INTEGER      JMASS,  JAMOR,  JVITP,  JACCP,  JCNFS , IREFN
       INTEGER      JCNFE,  JVITKM, IONDP,  TYPESE, ITERAT
-      INTEGER      JPREC,  IRET2
+      INTEGER      JPREC,  IRET2,  JFOMU2, IFO,    IBID
       REAL*8       INSTAP, INSTAM, RBID,   COEFML, COEFM2
       LOGICAL      LGRFL,  LFETI
       CHARACTER*4  TYPCAL
@@ -108,7 +108,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*24 VEFEDO, VEFEPI, VEDIDO, VEDIPI, VEFSDO, VEANEC
       CHARACTER*24 VAFEDO, VAFEPI, VADIDO,         VAFSDO, VAANEC
       CHARACTER*24 K24BLA, STYPSE, CNDIDI, CNCINE, CNLAMP
-      CHARACTER*24 CHARGE, INFOCH, FOMULT, CHGRFL
+      CHARACTER*24 CHARGE, INFOCH, FOMULT, CHGRFL, FOMUL2
       CHARACTER*24 VECCOR, VELAMP, VALAMP, VAPRIN
 C
       INTEGER      JCNST, NBSST, NBSS
@@ -129,6 +129,7 @@ C ----------------------------------------------------------------------
       CHARGE = LISCHA // '.LCHA'
       INFOCH = LISCHA // '.INFC'
       FOMULT = LISCHA // '.FCHA'
+      FOMUL2 = LISCHA // '.FCSS'
       VAFEDO = '&&VAFEDO'
       VAFSDO = '&&VAFSDO'
       VADIDO = '&&VADIDO'
@@ -223,20 +224,29 @@ C -- ALERTE SI FETI
          IF (LFETI) CALL U2MESS('F','ALGORITH6_70')
           CALL GETFAC('SOUS_STRUC',NBSST)
           IF (NBSST.NE.0) THEN
+            CALL JEEXIN(FOMUL2,IRET2)
+            IF (IRET2.EQ.0) THEN
+              CALL WKVECT(FOMUL2,'V V K24',NBSST,JFOMU2)
+              DO 1 IFO = 1,NBSST
+                CALL GETVID('SOUS_STRUC','FONC_MULT',IFO,1,1,
+     &                      ZK24(JFOMU2+IFO-1),IBID)
+                IF (IBID.EQ.0) ZK24(JFOMU2+IFO-1) = '&&CONSTA' 
+    1         CONTINUE
+            ENDIF
             CALL EXISD('CHAMP',CNSSTR(1:19),IRET)
             IF (IRET.EQ.0) THEN
               CALL MEMARE('V',VESSTR,MODELE,MATE,CARELE(1:8),
-     &           'CHAR_MECA')
-              CALL JEEXIN ( VESSTR//'.LISTE_CHAR', IRET2 )
+     &                    'CHAR_MECA')
+              CALL JEEXIN(VESSTR//'.LISTE_CHAR',IRET2)
               IF (IRET2.NE.0) THEN
                 CALL JEDETR(VESSTR//'.LISTE_CHAR')
               ENDIF
               CALL SS2MME(MODELE(1:8),VESSTR,'V')
-              CALL ASSVEC('V',CNSSTR,1,VESSTR,1.0D0,NUMEDD,' ','ZERO',1)
-              CALL JEVEUO(CNSSTR(1:19) // '.VALE','L',JCNST)
-            ELSE
-              CALL JEVEUO(CNSSTR(1:19) // '.VALE','L',JCNST)
+C              CALL UTIMSD(8,2,.TRUE.,.TRUE.,VESSTR,1,' ')
             END IF
+            CALL ASSVSS('V',CNSSTR,VESSTR,NUMEDD,' ','ZERO',1,FOMUL2,
+     &                  INSTAP)
+            CALL JEVEUO(CNSSTR(1:19) // '.VALE','L',JCNST)
             CALL JEVEUO(CNFEDO(1:19) // '.VALE','E',JCNFE)
             CALL JELIRA(CNFEDO(1:19) // '.VALE','LONMAX',NEQ,K8BID)
             CALL DAXPY(NEQ, 1.D0, ZR(JCNST), 1, ZR(JCNFE), 1)

@@ -3,7 +3,7 @@
       INTEGER           IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -386,6 +386,8 @@ C------
       CALL XCONNO(MOD2,'.LNNO      ','G',MOD2//'.LNNO')
       
       CALL XCONNO(MOD2,'.LTNO      ','G',MOD2//'.LTNO')
+
+      CALL XCONNO(MOD2,'.STNO      ','G',MOD2//'.STNO')
 
 C     pour le moment, on zappe la concaténation des champs de contact
 C     si on est en 2D et sans mailles HEAV (seules portant le contact)

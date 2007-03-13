@@ -1,6 +1,7 @@
       SUBROUTINE AJUSTT (ABSAC,ACSAB,ABSBC,ACSBC,KSI1,KSI2)
+C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,16 +18,20 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-C
       REAL*8 ABSAC,ACSAB,ABSBC,ACSBC,KSI1,KSI2
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : PROJTR
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODES DISCRETES - APPARIEMENT - MAIT/ESCL - TRI)
+C
 C LORSQUE LA PROJECTION NE "TOMBE" PAS A L'INTERIEUR DU TRIANGLE, ON
 C LA "RAMENE" SUR LE NOEUD OU L'ARETE LA PLUS PROCHE (ORTHOGONALEMENT).
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  ABSAC : (AB,AC) / (AC,AC)
 C IN  ACSAB : (AB,AC) / (AB,AB)
@@ -62,6 +67,9 @@ C
 C
 C ----------------------------------------------------------------------
 C
+
+
+
       KSI10 = KSI1
       KSI20 = KSI2
       KSI30 = 1.D0 - KSI1 - KSI2
@@ -109,6 +117,7 @@ C
 
 C
  999  CONTINUE
+
 C
 C ----------------------------------------------------------------------
 C

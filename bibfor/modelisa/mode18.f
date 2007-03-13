@@ -3,7 +3,7 @@
       CHARACTER*16        TYPELE, TYPEMO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/05/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -100,6 +100,10 @@ C
      +         TYPELE.EQ.'THM_LISU_FACE8' .OR.
      +         TYPELE.EQ.'SOSU_ARETE3' ) THEN
          TYPEMO = '3D_JOINT_CT'
+
+      ELSEIF ( TYPELE.EQ.'MEFI_HEXA8'   .OR.
+     +         TYPELE.EQ.'MEFI_PENTA6'      ) THEN
+         TYPEMO = '3D_JOINT'
 C
 C --- LES THM ET COMPAGNIE --------------------------------------------
 C
@@ -196,7 +200,11 @@ C
          TYPEMO = 'AXIS_GRAD_VARI'
 
       ELSEIF ( TYPELE.EQ.'MFAXQU4' ) THEN
-         TYPEMO = 'AXIS_FISSURE'
+         TYPEMO = 'AXIS_JOINT'
+      
+      ELSEIF ( TYPELE.EQ.'MDAXQU4' ) THEN
+         TYPEMO = 'AXIS_ELDI'   
+   
 C
 C --- 2D D_PLAN -------------------------------------------------------
 C
@@ -223,7 +231,10 @@ C
          TYPEMO = 'D_PLAN_GRAD_VARI'
 
       ELSEIF ( TYPELE.EQ.'MFPLQU4' ) THEN
-         TYPEMO = 'PLAN_FISSURE'
+         TYPEMO = 'PLAN_JOINT'
+         
+      ELSEIF ( TYPELE.EQ.'MDDPQU4' ) THEN
+         TYPEMO = 'PLAN_ELDI'   
 C
 C --- 2D C_PLAN -------------------------------------------------------
 C

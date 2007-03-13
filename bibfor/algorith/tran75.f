@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,14 +60,14 @@ C ----------------------------------------------------------------------
       CHARACTER*1   COLI, K1BID
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, GRAN, INTERP, BASEM2,
      &              MAILLA, NOMRES, NOMIN, NOMCMP(6), MODE, MONMOT(2),
-     &              MATGEN, NOMGD
+     &              MATGEN, NOMGD, MACREL, LINTF, NOMNOL, NOGDSI, MAYA
       CHARACTER*14  NUMDDL, NUMGEN
       CHARACTER*16  TYPRES, NOMCMD, NOMP(MXPARA), TYPE(8), TYPCHA,
      &              TYPBAS(8), TYPREP, CONCEP, CHAMP(8)
       CHARACTER*19  FONCT, KINST, KNUME, KREFE, PRCHNO, TRANGE,
-     &              TYPREF(8)
+     &              TYPREF(8), CHAM19
       CHARACTER*24  MATRIC, CHAMNO, CREFE(2), NOMCHA, CHAMN2, OBJVE1,
-     &              OBJVE2, OBJVE3, OBJVE4, NOMNOE, NUMEDD
+     &              OBJVE2, OBJVE3, OBJVE4, NOMNOE, NUMEDD, NPRNO
       LOGICAL       TOUSNO, MULTAP, LEFFOR, LRPHYS
 C     ------------------------------------------------------------------
       DATA BLANC    /'        '/
@@ -150,7 +150,7 @@ C
          ELSE
 C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
            MATRIC = ZK24(IADRIF+3)
-           IF(MATRIC(1:8) .EQ. BLANC) THEN
+           IF (MATRIC(1:8) .EQ. BLANC) THEN
              MATRIC=ZK24(IADRIF)
              CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',
      &                              IBID,NUMDDL,IRET)
@@ -168,12 +168,49 @@ C
          BASEM2 = BASEMO
 C
       ELSEIF ( MODE .EQ. BLANC .AND. LRPHYS) THEN
-         CALL JELIRA(TRANGE//'.DGEN','LONMAX',NBSTO,K8B)
-         CALL GETVID(' ','BASE_MODALE',1,1,1,BASEMO,IBID)
+         CALL GETVID (' ','MACR_ELEM_DYNA',1,1,1,MACREL,NMC)
+         IF (NMC.NE.0) THEN
+           CALL JEVEUO(MACREL//'.MAEL_REFE','L',IADREF)
+           BASEMO = ZK24(IADREF)
+         ELSE
+           CALL GETVID(' ','BASE_MODALE',1,1,1,BASEMO,IBID)
+         ENDIF
          CALL RSORAC(BASEMO,'LONUTI',IBID,RBID,K8B,CBID,RBID,
      &               K8B,NBMODE,1,IBID)
          CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
          NUMEDD = ZK24(IADRIF+3)
+         IF (NMC.NE.0) THEN
+           CALL DISMOI('F','NOM_MAILLA',NUMEDD(1:14),'NUME_DDL',IBID,
+     &                 MAILLA,IRET)
+           LINTF = ZK24(IADRIF+4)
+           CALL JELIRA(JEXNUM(LINTF//'.IDC_LINO',1),'LONMAX',
+     &                 NBNOE,K8B)
+           CALL BMNBMD(BASEMO,'DEFORMEE',NBMDEF)
+           NBMDYN = NBMODE-NBMDEF
+           CALL JEVEUO(MACREL//'.DESM','L',IADESM)
+           NBNDYN = ZI(IADESM+1)-NBNOE
+           IF (NBNDYN.NE.0) THEN 
+             NEC = NBMDYN/NBNDYN
+           ELSE
+             NEC = 0
+           ENDIF
+C       CREATION DU TABLEAU NOEUD-COMPOSANTE ASSOCIES AUX MODES 
+           CALL WKVECT('&&TRAN75.NOECMP','V V K8',2*NBMODE,JNOCMP)
+           CALL JEVEUO(MACREL//'.LINO','L',IACONX)
+           DO 21 I=1,NBNDYN
+           CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(IACONX+I-1)),NOMNOL)
+           DO 22 J=1,NEC
+             ZK8(JNOCMP+2*NEC*(I-1)+2*J-2) = NOMNOL
+             ZK8(JNOCMP+2*NEC*(I-1)+2*J-1) = NOMCMP(J)
+  22       CONTINUE
+  21       CONTINUE
+           DO 23 I=NBMDYN+1,NBMODE
+             CALL RSADPA(BASEMO,'L',1,'NOEUD_CMP',I,0,LNOCMP,K8B)
+             ZK8(JNOCMP+2*I-2) = ZK16(LNOCMP)(1:8)
+             ZK8(JNOCMP+2*I-1) = ZK16(LNOCMP)(9:16)
+  23       CONTINUE
+C           WRITE(6,*) 'NOECMP ',(ZK8(JNOCMP+I-1),I=1,2*NBMODE)
+         ENDIF         
          CALL GETVID(' ','NUME_DDL',1,1,1,K8B,IBID)
          IF (IBID.NE.0) THEN
            CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
@@ -199,7 +236,6 @@ C
              GOTO 9999
            ENDIF
          ENDIF
-         NBINS2 = NBSTO/NBMODE
          KNUME = '&&TRAN75.NUM_RANG'
          KINST = '&&TRAN75.INSTANT'
          CALL RSTRAN('NON',TRANGE,' ',1,KINST,KNUME,NBINST,IRETOU)
@@ -208,34 +244,74 @@ C
          ENDIF
          CALL JEEXIN(KINST,IRET )
          IF ( IRET .GT. 0 ) THEN
-           CALL JEVEUO ( KINST, 'L', JINST )
-           CALL JEVEUO ( KNUME, 'L', JNUME )
+           CALL JEVEUO( KINST, 'L', JINST )
+           CALL JEVEUO( KNUME, 'L', JNUME )
          END IF
-C        WRITE(6,*) 'NBINST NBINS2 NBMODE NEQ ',NBINST,NBINS2,NBMODE,NEQ
-         IF (NBINST.GT.NBINS2) NBINST = NBINS2
+C        WRITE(6,*) 'NBINST NBMODE NEQ ',NBINST,NBMODE,NEQ
+         IF (NMC.EQ.0) THEN
+            CALL JELIRA(TRANGE//'.DGEN','LONMAX',NBSTO,K8B)
+            NBINS2 = NBSTO/NBMODE
+            IF (NBINST.GT.NBINS2) NBINST = NBINS2
+         ENDIF
 C         WRITE(6,*) 'KINST ',(ZR(JINST+I-1),I=1,NBINST)
 C         WRITE(6,*) 'KNUME ',(ZI(JNUME+I-1),I=1,NBINST)
 C     --- CREATION DE LA SD RESULTAT ---
          CALL RSCRSD(NOMRES, TYPRES, NBINST)
 C
+         IF (NMC.NE.0) THEN
+           CALL WKVECT('&&TRAN75.RESTR','V V R',NBMODE,JRESTR)
+           CALL RSEXCH (NOMIN,'DEPL',1,CHAM19,IRET )
+           CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,MAYA,IE)
+           CALL DISMOI('F','NOM_GD',CHAM19,'CHAMP',IBID,NOGDSI,IE)
+           CALL DISMOI('F','NB_EC',NOGDSI,'GRANDEUR',NEC,K8B,IERD)
+
+           CALL DISMOI('F','PROF_CHNO',CHAM19,'CHAMP',IBID,NPRNO,IE)
+C           WRITE(6,*) 'MAYA NEC CHAM19 NPRNO ',MAYA,NEC,CHAM19,NPRNO
+           NPRNO = NPRNO(1:19)//'.PRNO'          
+           CALL JEVEUO(JEXNUM(NPRNO,1),'L',IAPRNO)
+         ENDIF
          DO 300 I = 1 , NBCHAM
-           IF ( CHAMP(I) .EQ. 'DEPL' ) THEN
-             CALL JEVEUO(TRANGE//'.DGEN','L',JRESTR)
-           ELSEIF ( CHAMP(I) .EQ. 'VITE' ) THEN
-             CALL JEVEUO(TRANGE//'.VGEN','L',JRESTR)
-           ELSEIF ( CHAMP(I) .EQ. 'ACCE' ) THEN
-             CALL JEVEUO(TRANGE//'.AGEN','L',JRESTR)
-           ELSE
-             CALL U2MESS('A','ALGORITH10_94')
-             GOTO 300
+           IF (NMC.EQ.0) THEN
+             IF ( CHAMP(I) .EQ. 'DEPL' ) THEN
+               CALL JEVEUO(TRANGE//'.DGEN','L',JRESTR)
+             ELSEIF ( CHAMP(I) .EQ. 'VITE' ) THEN
+               CALL JEVEUO(TRANGE//'.VGEN','L',JRESTR)
+             ELSEIF ( CHAMP(I) .EQ. 'ACCE' ) THEN
+               CALL JEVEUO(TRANGE//'.AGEN','L',JRESTR)
+             ELSE
+               CALL U2MESS('A','ALGORITH10_94')
+               GOTO 300
+             ENDIF
            ENDIF
            DO 310 IARCH = 1, NBINST
              INUM = ZI(JNUME+IARCH-1)
+C             WRITE(6,*) 'NBINST INUM IARCH ',NBINST,INUM,IARCH
+             IF (NMC.NE.0) THEN
+               CALL RSEXCH(NOMIN,CHAMP(I)(1:4),INUM,NOMCHA,IRET)
+               NOMCHA = NOMCHA(1:19)//'.VALE'
+               CALL JEVEUO(NOMCHA,'L',IVALE)
+               DO 24 IM=1,NBMODE
+                 NOMNOL = ZK8(JNOCMP+2*IM-2)
+                 CALL JENONU(JEXNOM(MAYA//'.NOMNOE',NOMNOL),INOE)
+                 IF (ZK8(JNOCMP+2*IM-1).EQ.'DX') ICMP = 1
+                 IF (ZK8(JNOCMP+2*IM-1).EQ.'DY') ICMP = 2
+                 IF (ZK8(JNOCMP+2*IM-1).EQ.'DZ') ICMP = 3
+                 IF (ZK8(JNOCMP+2*IM-1).EQ.'DRX') ICMP = 4
+                 IF (ZK8(JNOCMP+2*IM-1).EQ.'DRY') ICMP = 5
+                 IF (ZK8(JNOCMP+2*IM-1).EQ.'DRZ') ICMP = 6
+                 IDDL = ZI(IAPRNO-1+(NEC+2)*(INOE-1)+1)
+                 ZR(JRESTR+IM-1) = ZR(IVALE+IDDL-1+ICMP-1) 
+  24           CONTINUE
+             ENDIF             
              CALL RSEXCH(NOMRES,CHAMP(I)(1:4),IARCH,CHAMNO,IRET)
              CALL VTCREB(CHAMNO,NUMEDD,'G','R',NEQ)
              CALL JEVEUO(CHAMNO(1:19)//'.VALE','E',LDNEW)
-             CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),
-     &                   ZR(JRESTR+(INUM-1)*NBMODE),ZR(LDNEW))
+             IF (NMC.EQ.0) THEN
+               CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),
+     &                     ZR(JRESTR+(INUM-1)*NBMODE),ZR(LDNEW))
+             ELSE
+               CALL MDGEPH(NEQ,NBMODE,ZR(IDBASE),ZR(JRESTR),ZR(LDNEW))
+             ENDIF
              CALL RSNOCH(NOMRES,CHAMP(I)(1:4),IARCH,' ')
              IF (I.EQ.1) THEN
                CALL RSADPA(NOMRES,'E',1,'INST',IARCH,0,LINST,K8B)

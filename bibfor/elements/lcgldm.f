@@ -1,8 +1,7 @@
       SUBROUTINE LCGLDM (EPSM,DEPS,VIM,OPTION,SIG,VIP,DSIDEP,
      &             T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,SEUIL,ALF)
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/11/2006   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 13/03/2007   AUTEUR MARKOVIC D.MARKOVIC 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +46,7 @@ C       DSIDEP  : MATRICE TANGENTE
 C       D2      : ET DE L AUTRE 
 C ----------------------------------------------------------------------
       LOGICAL     RIGI, RESI,ELAS,MTG, COUP,ELAS1,ELAS2
-      INTEGER     NDTOT, K, L, I, J, M, N, P, T(2,2), IRET
+      INTEGER     NDTOT, K, L, I, J, M, N, P, T(2,2),IRET,KDMAX
       REAL*8      EPS(6),TREPS,SIGEL(3)
       REAL*8      RAC2
       REAL*8      FD1, FD2,DA1,DA2, ENER, TROISK, G
@@ -56,8 +55,8 @@ C ----------------------------------------------------------------------
       REAL*8      DEUMUD(3), LAMBDD, SIGP(3),RTEMP,RTEMP3,RTEMP4
       REAL*8      E, NU, ALPHA, KDESS, BENDO, GMT, GMC
       REAL*8      SEUIL,TREPSM,LAMBDA,DEUXMU
-      REAL*8      DDOT,K1,TREPS0
-      REAL*8      TPS(6),HYDRM,HYDRP,MU
+      REAL*8      DDOT,K1,TREPS0,QME33,KSIM,GM
+      REAL*8      TPS(6),HYDRM,HYDRP,MU,A11,A22,A12,A21,B1,B2
       
       REAL*8      TREPS2,TR2,EN0,TR2P,TR2M,ENP,ENM,QEN,COF1,COF2
       REAL*8      FDI1(3),FDI2(3),SD1(3),SD2(3),D1E(3),D2E(3),DR1D
@@ -69,7 +68,6 @@ C ----------------------------------------------------------------------
       REAL*8      D1MUDF(2),D2MUDF(2),SFFT1,SFFT2,SFF1(2),SFF2(2)
       REAL*8      MD1(2),MD2(2),D1K(2),D2K(2),MUF,RTMF2,RTFM2
       REAL*8      RTMF4,RTFM4,ALF,QM1,QM2,DM1,DM2,DF1,DF2
-      INTEGER     KDMAX
 C -- OPTION ET MODELISATION
       RIGI  = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
       RESI  = (OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL')
@@ -292,9 +290,8 @@ C -- CALCUL DES CONTRAINTES
           SIG(5)=SIG(5)+VFP(2,I)*VFP(2,I)*RTEMP
           SIG(6)=SIG(6)+VFP(1,I)*VFP(2,I)*RTEMP          
 1010    CONTINUE
-
-           SIG(3) = RAC2*SIG(3)
-           SIG(6) = RAC2*SIG(6)
+        SIG(3) = RAC2*SIG(3)
+        SIG(6) = RAC2*SIG(6)
       ENDIF
       
 C -- CALCUL DE LA MATRICE TANGENTE
@@ -400,13 +397,20 @@ C -- CONTRIBUTION DISSIPATIVE
  
         IF(TR2D .GT. 0.0D0) THEN
           FD1  = (1.0D0-GMT) / ((1.0D0+DA1)*(1.0D0+DA1)) *0.5D0*LAMBDA 
-          FD2  = (1.0D0-GMT) / ((1.0D0+DA2)*(1.0D0+DA2)) *0.5D0*LAMBDA 
+          FD2  = (1.0D0-GMT) / ((1.0D0+DA2)*(1.0D0+DA2)) *0.5D0*LAMBDA
+          KSIM = 0.5D0*( (1.0D0+GMT*DA1)/(1.0D0+DA1) 
+     &                 + (1.0D0+GMT*DA2)/(1.0D0+DA2)) 
+          GM   = 1.0D0-GMT 
           
           DO 710, K=1,2
             SIGHP(K) = LAMBDA*TREPS
  710      CONTINUE
           
         ELSE
+          KSIM = 0.5D0*( (1.0D0+GMC*DA1)/(1.0D0+DA1) 
+     &                 + (1.0D0+GMC*DA2)/(1.0D0+DA2)) 
+          GM   = 1.0D0-GMC 
+          
           FD1  = (1.0D0-GMC) / ((1.0D0+DA1)*(1.0D0+DA1)) *0.5D0*LAMBDA 
           FD2  = (1.0D0-GMC) / ((1.0D0+DA2)*(1.0D0+DA2)) *0.5D0*LAMBDA 
           
@@ -429,33 +433,46 @@ C -- CONTRIBUTION DISSIPATIVE
             SIGHM(K) = SIGHM(K) + DEUXMU*EMP(K)
           ENDIF
           
+          TREPS  = TR2D + EPS33
+          QM1 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+          QM2 = 0.5D0*COF1 * EPS33*EPS33 + COF2 * EPS33 + Q2D
+          QME33 = 0.5D0*LAMBDA*TREPS*GM + MU*EPS33
           QDE(K) = 0.5D0 * (SIGEL(K) - GMT*SIGHP(K) - GMC*SIGHM(K))
-          D1E(K) = 0.5D0 * QDE(K)/SEUIL/(1.0D0 + DA1)  
-          D2E(K) = 0.5D0 * QDE(K)/SEUIL/(1.0D0 + DA2) 
+
+          A11 = 2.0D0*(QM1/(1.0D0 + DA1)**3 + QFF(1)/(ALF + DA1)**3)
+     &          - QME33*DE33D1/(1.0D0 + DA1)**2
+          A12 = -QME33*DE33D2/(1.0D0 + DA1)**2
           
+          A22 = 2.0D0*(QM2/(1.0D0 + DA2)**3 + QFF(2)/(ALF + DA2)**3)
+     &          - QME33*DE33D2/(1.0D0 + DA2)**2
+          A21 = -QME33*DE33D1/(1.0D0 + DA2)**2
+          
+          B1  = (QDE(K) - QME33* KSIM*LAMBDA/(DEUXMU + KSIM*LAMBDA)) 
+     &          / (1.0D0 + DA1)**2
+          B2  = (QDE(K) - QME33* KSIM*LAMBDA/(DEUXMU + KSIM*LAMBDA)) 
+     &          / (1.0D0 + DA2)**2
+
+          D1E(K) = (B1 - A12*B2/A22)/(A11 - A12*A21/A22)
+          D2E(K) = (B2 - A21*D1E(K))/A22
+
           SD1(K) = -TREPS*FD1 - EMP(K)*FDI1(K)
           SD2(K) = -TREPS*FD2 - EMP(K)*FDI2(K)
           
           MD1(K) = DLMFD1*TROT + D1MUDF(K)*EFP(K)
           MD2(K) = DLMFD2*TROT + D2MUDF(K)*EFP(K)
-          
-          D1K(K) = (SFFT1*TROT + SFF1(K)*EFP(K)) 
-     &             *0.5D0/(ALF + DA1)**2
-     &            /( QM1/(1.0D0 + DA1)**3 + QFF(1)/(ALF + DA1)**3)
-          D2K(K) = (SFFT2*TROT+ SFF2(K)*EFP(K)) 
-     &             *0.5D0/(ALF + DA2)**2
-     &            /( QM2/(1.0D0 + DA2)**3 + QFF(2)/(ALF + DA2)**3)
 
+          B1  = (SFFT1*TROT + SFF1(K)*EFP(K)) / (ALF + DA1)**2
+          B2  = (SFFT2*TROT + SFF2(K)*EFP(K)) / (ALF + DA2)**2
+
+          D1K(K) = (B1 - A12*B2/A22)/(A11 - A12*A21/A22)
+          D2K(K) = (B2 - A21*D1K(K))/A22
  800    CONTINUE
           
         DO 910, K=1,2
           DO 900, L=1,2
 C--------MEMBRANE-----------------          
-           IF(.NOT. ELAS1)
-     &       DSPDEP(L,K) = DSPDEP(L,K) + SD1(L)*D1E(K)
-           IF(.NOT. ELAS2)
-     &       DSPDEP(L,K) = DSPDEP(L,K) + SD2(L)*D2E(K)
-     
+           IF(.NOT. ELAS1) DSPDEP(L,K) = DSPDEP(L,K) + SD1(L)*D1E(K)
+           IF(.NOT. ELAS2) DSPDEP(L,K) = DSPDEP(L,K) + SD2(L)*D2E(K)
            IF(.NOT. ELAS1)
      &        DSPDEP(L,K) = DSPDEP(L,K) + LAMBDA*KSI2D*DE33D1*D1E(K)
            IF(.NOT. ELAS2)
@@ -464,30 +481,19 @@ C--------MEMBRANE-----------------
 C--------FLEXION-----------------          
            IF(.NOT. ELAS1)
      &       DSPDEP(L+3,K+3) = DSPDEP(L+3,K+3) + MD1(L)*D1K(K)
-
            IF(.NOT. ELAS2)
      &       DSPDEP(L+3,K+3) = DSPDEP(L+3,K+3) + MD2(L)*D2K(K)
      
 C--------COUPLAGE M-F -----------------          
-           IF(.NOT. ELAS1)
-     &        DSPDEP(L,K+3) = DSPDEP(L,K+3) + SD1(L)*D1K(K) 
-     
-           IF(.NOT. ELAS2)
-     &        DSPDEP(L,K+3) = DSPDEP(L,K+3) + SD2(L)*D2K(K) 
-      
-           IF(.NOT. ELAS1)
-     &        DSPDEP(L+3,K) = DSPDEP(L+3,K) + MD1(L)*D1E(K) 
-      
-           IF(.NOT. ELAS2)
-     &        DSPDEP(L+3,K) = DSPDEP(L+3,K) + MD2(L)*D2E(K) 
-     
+           IF(.NOT. ELAS1) DSPDEP(L,K+3)=DSPDEP(L,K+3) + SD1(L)*D1K(K) 
+           IF(.NOT. ELAS2) DSPDEP(L,K+3)=DSPDEP(L,K+3) + SD2(L)*D2K(K) 
+           IF(.NOT. ELAS1) DSPDEP(L+3,K)=DSPDEP(L+3,K) + MD1(L)*D1E(K) 
+           IF(.NOT. ELAS2) DSPDEP(L+3,K)=DSPDEP(L+3,K) + MD2(L)*D2E(K) 
  900      CONTINUE
  910    CONTINUE
 
 C   NOT ELAS
-        END IF 
-
+      END IF 
       CALL TANMGL(T,VMP,VFP,DSPDEP,DSIDEP)
-
       ENDIF 
       END

@@ -1,0 +1,107 @@
+      SUBROUTINE PROJL1(NDIM  ,COORDA,COORDB,COORDP,
+     &                  COORDM,LAMBDA,DEBORD)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT   NONE
+      INTEGER NDIM
+      REAL*8  COORDA(3)
+      REAL*8  COORDB(3)
+      REAL*8  COORDP(3)
+      REAL*8  COORDM(3)
+      REAL*8  LAMBDA
+      REAL*8  DEBORD
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODES DISCRETES - APPARIEMENT - MAIT/ESCL - SEG2)
+C
+C PROJECTION D'UN NOEUD ESCLAVE P SUR UN SEGMENT LINEAIRE AB.
+C UTILISATION DE LA NORMALE AU SEGMENT MAITRE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NDIM   : DIMENSION DU PB
+C IN  COORDA : COORDONNEES DU SOMMET A DU SEGMENT
+C IN  COORDB : COORDONNEES DU SOMMET B DU SEGMENT
+C IN  COORDP : COORDONNEES DU NOEUD ESCLAVE P
+C OUT COORDM : COORDONNEES PHYSIQUES DE LA "PROJECTION" M
+C OUT LAMBDA : COORDONNEES PARAMETRIQUES SUR LA MAILLE MAITRE
+C                 DE LA "PROJECTION" M 
+C OUT DEBORD : PROJECTION HORS DE LA MAILLE
+C              >0 : PROJECTION HORS DE LA MAILLE
+C              <0 : PROJECTION SUR LA MAILLE
+C
+C ----------------------------------------------------------------------
+C
+      REAL*8  ABSAP,ABSAB,AP(3),AB(3)
+C
+C ----------------------------------------------------------------------
+C
+      DEBORD = -1.D0
+C
+C --- VECTEURS AB ET AP
+C
+      AP(1) = COORDP(1)-COORDA(1)
+      AP(2) = COORDP(2)-COORDA(2)
+      AB(1) = COORDB(1)-COORDA(1)
+      AB(2) = COORDB(2)-COORDA(2)
+      IF (NDIM.EQ.3) THEN
+        AP(3) = COORDP(3)-COORDA(3)
+        AB(3) = COORDB(3)-COORDA(3)        
+      ELSE
+        AP(3) = 0.D0
+        AB(3) = 0.D0      
+      ENDIF
+C
+C --- CALCUL DE LA COORDONNEE PARAMETRIQUE LAMBDA DE M DANS AB
+C
+      ABSAP = (AB(1)*AP(1)+AB(2)*AP(2)+AB(3)*AP(3))      
+      ABSAB = (AB(1)*AB(1)+AB(2)*AB(2)+AB(3)*AB(3))
+         
+      IF (ABSAB.EQ.0.D0) THEN
+        CALL U2MESS('F','CONTACT_10')
+      ENDIF 
+             
+      LAMBDA = ABSAP/ABSAB
+C      
+C --- RABATTEMENT DE LA PROJECTION SUR LA MAILLE
+C
+      IF (LAMBDA.LT.0.D0) THEN
+        DEBORD = ABS(LAMBDA)
+        LAMBDA = 0.D0
+      ELSE IF (LAMBDA.GT.1.D0) THEN
+        DEBORD = LAMBDA-1.D0
+        LAMBDA = 1.D0
+      ENDIF
+C
+C --- CALCUL DES COORDONNEES CARTESIENNES DE M ("PROJECTION" DE P)
+C
+      COORDM(1) = COORDA(1) + LAMBDA*AB(1)
+      COORDM(2) = COORDA(2) + LAMBDA*AB(2)
+      IF (NDIM.EQ.3) THEN
+        COORDM(3) = COORDA(3) + LAMBDA*AB(3)
+      ELSE
+        COORDM(3) = 0.D0
+      END IF
+C
+      END

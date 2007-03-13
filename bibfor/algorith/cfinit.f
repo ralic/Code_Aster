@@ -3,7 +3,7 @@
      &                  VECONT,LREAC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,13 +33,16 @@ C
       CHARACTER*19 AUTOC2
       INTEGER      VECONT(2)
       LOGICAL      LREAC(2)
+C      
+C ----------------------------------------------------------------------
 C
-C ======================================================================
-C ROUTINE APPELEE PAR : OP0070
-C ======================================================================
+C ROUTINE CONTACT (METHODES DISCRETES)
 C
 C INITIALISATION DES PARAMETRES DE CONTACT POUR LA REACTUALISATION
 C GEOMETRIQUE
+C
+C ----------------------------------------------------------------------
+C
 C
 C IN  NUMINS : NUMERO D'INSTANT
 C IN  NEQ    : NOMBRE D'EQUATIONS
@@ -84,30 +87,30 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      CFDISI
-      INTEGER      II,IBID,JAUTO1,JAUTO2,IZONE,MATTAN
+      INTEGER      II,IBID,JAUTO1,JAUTO2,MATTAN,TYPALC,IZONE
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ ()
 C
+C --- INITIALISATIONS
+C
+      CALL CFDISC(DEFICO,'              ',TYPALC,IBID,IBID,MATTAN)
+      LREAC(1) = .FALSE.
+      LREAC(2) = .FALSE. 
+      IZONE    = 0     
+C
 C --- AUTORISATION DE DESTRUCTION DE LA MATRICE TANGENTE (VOIR NMASFR)
 C
       IF (REINCR.EQ.0) THEN
-        CALL CFDISC(DEFICO,'              ',IBID,IBID,IBID,MATTAN)
-          IF (MATTAN.EQ.1) THEN
-            CALL U2MESS('F','CONTACT_88')
-          ENDIF
+        IF (MATTAN.EQ.1) THEN
+          CALL U2MESS('F','CONTACT_88')
+        ENDIF
       ENDIF
-C
-C --- INITIALISATIONS
-C
-      IZONE    = 1
-      LREAC(1) = .FALSE.
-      LREAC(2) = .FALSE.
-      IF (CTCDIS) THEN
-C ======================================================================
+C 
 C --- PARAMETRES DE REACTUALISATION GEOMETRIQUE
-C ======================================================================
+C       
+      IF (CTCDIS) THEN
          VECONT(1) = CFDISI(DEFICO,'REAC_GEOM',IZONE)
          VECONT(2) = 0
          LREAC(1)  = .TRUE.
@@ -125,13 +128,19 @@ C ======================================================================
            ZR(JAUTO1-1+II) = 0.0D0
            ZR(JAUTO2-1+II) = 0.0D0
 10       CONTINUE
-C ======================================================================
+C
 C --- PAS DE REACTUALISATION GEOMETRIQUE
-C ======================================================================
+C
          IF (VECONT(1).EQ.0) THEN
             IF (NUMINS.NE.1) THEN
                LREAC(1) = .FALSE.
             ENDIF
+         ENDIF
+C
+C --- METHODE VERIF: APPARIEMENT FORCE A CHAQUE ITERATION
+C         
+         IF (TYPALC.EQ.5) THEN
+           LREAC(1) = .TRUE.
          ENDIF
       ENDIF
 C ======================================================================

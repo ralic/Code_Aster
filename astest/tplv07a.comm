@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CUBE ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,7 +160,8 @@ TABTE1=MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
                    LIGN_COUPE  = ( _F( NB_POINTS  = 11,
                                        COOR_ORIG  = (-0.1,-0.1,-0.1),
                                        COOR_EXTR  = ( 0.1, 0.1, 0.1), ),
-                                   _F( GROUP_NO  = 'F_RQKL',) )
+                                   _F( TYPE      = 'GROUP_NO',
+                                       GROUP_NO  = 'F_RQKL',) )
                      )
 
 IMPR_TABLE(TABLE=TABTE1)

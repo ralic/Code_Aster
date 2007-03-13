@@ -1,0 +1,597 @@
+# MODIF  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+# TITRE FISSURATION JOINT 3D : HEXA8
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNP118B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),)
+
+
+MA=LIRE_MAILLAGE( )
+
+
+MO=AFFE_MODELE(
+          
+                MAILLAGE=MA,
+                VERIF='MAILLE',
+                  
+                AFFE= (
+                _F( 
+                        MAILLE = ('CUBE','DROITE'),
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = '3D'
+                     ),
+                 _F(
+                   MAILLE = 'CUBEDEG',
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = '3D_JOINT'
+                   )
+                 )
+              )
+              
+
+ACIER=DEFI_MATERIAU(
+              
+     ELAS=_F( 
+              E =  0.5,
+              NU = 0.0),
+     RUPT_FRAG = _F(
+                     GC = 0.9,
+                     SIGM_C = 1.1,
+                     PENA_ADHERENCE = 0.001
+                    )
+            )
+
+
+CM=AFFE_MATERIAU(
+              
+               MAILLAGE=MA,
+               AFFE=_F( 
+                       TOUT = 'OUI',
+                       MATER = ACIER),
+              )
+
+LIAISON=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0 ),
+    )
+  )
+
+# CHARGEMENT MODE I PUR
+TRAC_1=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(MAILLE='DROITE', DX=2.16506350946110, DY= 1.250, DZ=0 ), 
+    )
+  )
+
+# CHARGEMENT MODE II PUR
+TRAC_2=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+     _F(MAILLE='HAUT', DX=1.250, DY= -2.16506350946110, DZ=0 ),   
+     _F(MAILLE='BAS',  DX=1.250, DY= -2.16506350946110, DZ=0 ),  
+    )
+  )
+
+# CHARGEMENT MODE III PUR
+TRAC_3=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+     _F(MAILLE='AVAN', DX=0.0, DY= 0.0, DZ= -2.5 ),   
+     _F(MAILLE='ARRI', DX=0.0, DY= 0.0, DZ= -2.5 ),   
+    )
+  )
+
+
+
+L_INST=DEFI_LIST_REEL(
+              
+                     DEBUT   = -1.,
+     INTERVALLE=(
+      _F( JUSQU_A = 0,       NOMBRE = 1 ),
+      _F( JUSQU_A = 0.0001,  NOMBRE = 1 ),
+      _F( JUSQU_A = 4.0,     NOMBRE = 40 ),
+      )
+     )
+
+L_INST2=DEFI_LIST_REEL(
+              
+                     DEBUT   = 0.0001,
+     INTERVALLE=(
+      _F( JUSQU_A = 4.0,     NOMBRE = 40 ),
+      )
+     )
+
+                   
+
+FCT = DEFI_FONCTION(
+  NOM_PARA = 'INST',
+  VALE     = (-1, 0, 0, 1.E-8),
+  PROL_DROITE = 'LINEAIRE'
+  )
+
+
+FCT2 = DEFI_FONCTION(
+  NOM_PARA = 'INST',
+  VALE     = (-1, 0, 0, 1.E-8, 4,4),
+  PROL_DROITE = 'LINEAIRE'
+  )
+  
+#----------------------------------------------------------------------------------  
+# CALCUL AVEC CHARGEMENT EN MODE I
+#-----------------------------------------------------------------------------------
+
+U_1=STAT_NON_LINE( 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON),
+    _F(CHARGE = TRAC_1, FONC_MULT = FCT),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_EXP_REG',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             MAILLE = 'CUBE',),
+          ),               
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+STAT_NON_LINE(reuse = U_1,
+  ETAT_INIT  = _F(EVOL_NOLI = U_1), 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON  , ),
+    _F(CHARGE = TRAC_1 , TYPE_CHARGE = 'FIXE_PILO'),
+  ),
+  PILOTAGE   = _F(
+    SELECTION = 'RESIDU',
+    TYPE = 'PRED_ELAS',
+    MAILLE = 'CUBEDEG',
+    COEF_MULT = 1,
+    ETA_PILO_R_MIN = 0.,
+    ETA_PILO_MAX = 1
+    ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_EXP_REG',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             GROUP_MA = 'G_CUBE',),
+          ),               
+  INCREMENT  = _F(LIST_INST = L_INST),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  ARCHIVAGE  = _F(LIST_INST = L_INST2)
+  )
+
+
+#----------------------------------------------------------------------------------  
+# CALCUL AVEC CHARGEMENT EN MODE II
+#-----------------------------------------------------------------------------------
+
+U_2=STAT_NON_LINE( 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = TRAC_2, FONC_MULT = FCT),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_EXP_REG',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             MAILLE = 'CUBE',),
+          ),               
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+STAT_NON_LINE(reuse = U_2,
+  ETAT_INIT  = _F(EVOL_NOLI = U_2), 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON  , ),
+    _F(CHARGE = TRAC_2 , TYPE_CHARGE = 'FIXE_PILO'),
+  ),
+  PILOTAGE   = _F(
+    SELECTION = 'RESIDU',
+    TYPE = 'PRED_ELAS',
+    MAILLE = 'CUBEDEG',
+    COEF_MULT = 1,
+    ETA_PILO_R_MIN = 0.,
+    ETA_PILO_MAX = 1
+    ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_EXP_REG',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             GROUP_MA = 'G_CUBE',),
+          ),               
+  INCREMENT  = _F(LIST_INST = L_INST),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  ARCHIVAGE  = _F(LIST_INST = L_INST2)
+  )
+
+
+#----------------------------------------------------------------------------------  
+# CALCUL AVEC CHARGEMENT EN MODE III
+#-----------------------------------------------------------------------------------
+
+U_3=STAT_NON_LINE( 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = TRAC_3, FONC_MULT = FCT),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_EXP_REG',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             MAILLE = 'CUBE',),
+          ),               
+  INCREMENT  = _F(LIST_INST = L_INST, INST_FIN = 0.),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  )
+
+STAT_NON_LINE(reuse = U_3,
+  ETAT_INIT  = _F(EVOL_NOLI = U_3), 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON  , ),
+    _F(CHARGE = TRAC_3 , TYPE_CHARGE = 'FIXE_PILO'),
+  ),
+  PILOTAGE   = _F(
+    SELECTION = 'RESIDU',
+    TYPE = 'PRED_ELAS',
+    MAILLE = 'CUBEDEG',
+    COEF_MULT = 1,
+    ETA_PILO_R_MIN = 0.,
+    ETA_PILO_MAX = 1
+    ),
+  COMP_INCR  = (
+          _F(RELATION = 'CZM_EXP_REG',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             GROUP_MA = 'G_CUBE',),
+          ),               
+  INCREMENT  = _F(LIST_INST = L_INST),
+  CONVERGENCE= _F(ITER_GLOB_MAXI = 5),
+  NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
+  ARCHIVAGE  = _F(LIST_INST = L_INST2)
+  )
+  
+
+#---------------------------------------------------------------------------------- 
+# TESTS CALCUL MODE I
+#-----------------------------------------------------------------------------------
+
+
+F_DX_1=RECU_FONCTION( RESULTAT=U_1,
+              NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
+T_DX_1=CREA_TABLE(FONCTION=_F(FONCTION=F_DX_1))
+IMPR_TABLE(TABLE=T_DX_1)
+
+
+F_ETA_1=RECU_FONCTION( RESULTAT=U_1,
+              NOM_PARA_RESU='ETA_PILOTAGE')
+T_ETA_1=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA_1))
+IMPR_TABLE(TABLE=T_ETA_1)
+
+
+F_SIGN_1=RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SIGN',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SIGN_1=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_1))
+IMPR_TABLE(TABLE=T_SIGN_1)
+
+
+F_SITX_1=RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SITX',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SITX_1=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_1))
+IMPR_TABLE(TABLE=T_SITX_1)
+
+
+F_SITY_1=RECU_FONCTION( RESULTAT=U_1, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SITY',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SITY_1=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_1))
+IMPR_TABLE(TABLE=T_SITY_1)
+
+
+
+
+TEST_TABLE(TABLE=T_DX_1,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=2.20004,),),
+           NOM_PARA='DX',
+           VALE=2.16506,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=T_ETA_1,
+           FILTRE=(_F(NOM_PARA='INST',
+                      VALE=2.20004,),),
+           NOM_PARA='ETA_PILO',
+           VALE=1.,
+           PRECISION=0.001,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_1,
+      NOM_CHAM  = 'DEPL',
+      NOM_CMP   = 'DX',
+      VALE      = 2.16506E-08,
+      GROUP_NO  = 'TOUTSEUL',
+      INST      = 0
+      ),
+    )
+  )
+  
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_1,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIXX',
+      VALE      = 4.49911E-02,
+      MAILLE    = 'CUBE',
+      POINT     = 1,
+      INST      = 2.20004,
+      ),
+    )
+  )
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_1,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIGN',
+      VALE      = 1.56379E-01,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.70006,
+      ),
+    )
+  )
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_1,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITX',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.80005,
+      ),
+    )
+  )
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_1,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITY',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.80005,
+      ),
+    )
+  )
+
+#---------------------------------------------------------------------------------- 
+# TESTS CALCUL MODE II
+#-----------------------------------------------------------------------------------
+
+F_DY_2=RECU_FONCTION( RESULTAT=U_2,
+              NOM_CHAM='DEPL',NOM_CMP='DY',GROUP_NO='TOUTSEUL')
+T_DY_2=CREA_TABLE(FONCTION=_F(FONCTION=F_DY_2))
+IMPR_TABLE(TABLE=T_DY_2)
+
+
+F_ETA_2=RECU_FONCTION( RESULTAT=U_2,
+              NOM_PARA_RESU='ETA_PILOTAGE')
+T_ETA_2=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA_2))
+IMPR_TABLE(TABLE=T_ETA_2)
+
+
+F_SIGN_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SIGN',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SIGN_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_2))
+IMPR_TABLE(TABLE=T_SIGN_2)
+
+
+F_SITX_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SITX',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SITX_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_2))
+IMPR_TABLE(TABLE=T_SITX_2)
+
+
+F_SITY_2=RECU_FONCTION( RESULTAT=U_2, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SITY',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SITY_2=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_2))
+IMPR_TABLE(TABLE=T_SITY_2)
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_2,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIGN',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.80005,
+      ),
+    )
+  )
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_2,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITX',
+      VALE      = 1.56379E-01,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.70006,
+      ),
+    )
+  )
+
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_2,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITY',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.80005,
+      ),
+    )
+  )
+
+
+#---------------------------------------------------------------------------------- 
+# TESTS CALCUL MODE III
+#-----------------------------------------------------------------------------------
+
+F_DZ_3=RECU_FONCTION( RESULTAT=U_3,
+              NOM_CHAM='DEPL',NOM_CMP='DZ',GROUP_NO='TOUTSEUL')
+T_DZ_3=CREA_TABLE(FONCTION=_F(FONCTION=F_DZ_3))
+IMPR_TABLE(TABLE=T_DZ_3)
+
+
+F_ETA_3=RECU_FONCTION( RESULTAT=U_3,
+              NOM_PARA_RESU='ETA_PILOTAGE')
+T_ETA_3=CREA_TABLE(FONCTION=_F(FONCTION=F_ETA_3))
+IMPR_TABLE(TABLE=T_ETA_3)
+
+
+F_SIGN_3=RECU_FONCTION( RESULTAT=U_3, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SIGN',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SIGN_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN_3))
+IMPR_TABLE(TABLE=T_SIGN_3)
+
+
+F_SITX_3=RECU_FONCTION( RESULTAT=U_3, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SITX',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SITX_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SITX_3))
+IMPR_TABLE(TABLE=T_SITX_3)
+
+
+F_SITY_3=RECU_FONCTION( RESULTAT=U_3, NOM_CHAM = 'SIEF_ELGA', 
+          NOM_CMP = 'SITY',
+          MAILLE  = 'CUBEDEG',POINT=1)
+T_SITY_3=CREA_TABLE(FONCTION=_F(FONCTION=F_SITY_3))
+IMPR_TABLE(TABLE=T_SITY_3)
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_3,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SIGN',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.10007,
+      ),
+    )
+  )
+
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_3,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITX',
+      VALE      = 0.0,
+      CRITERE   = 'ABSOLU',
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.10007,
+      ),
+    )
+  )
+
+TEST_RESU (
+  RESU = (
+    _F(
+      REFERENCE = 'ANALYTIQUE',
+      RESULTAT  = U_3,
+      NOM_CHAM  = 'SIEF_ELGA',
+      NOM_CMP   = 'SITY',
+      VALE      = 1.56379E-01,
+      MAILLE    = 'CUBEDEG',
+      POINT     = 1,
+      INST      = 1.70006,
+      ),
+    )
+  )
+
+  
+FIN()

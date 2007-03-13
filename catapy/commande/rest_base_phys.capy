@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
                 EXCLUS('MULT_APPUI','NOEUD','GROUP_NO'),
                 EXCLUS('CORR_STAT','NOEUD','GROUP_NO'),             
                 EXCLUS('NOEUD','GROUP_NO'),
-                PRESENT_PRESENT('RESU_PHYS','BASE_MODALE'),
+                EXCLUS('MACR_ELEM_DYNA','BASE_MODALE'),
                 PRESENT_PRESENT('RESULTAT','SQUELETTE'),
                 PRESENT_PRESENT('ACCE_MONO_APPUI','DIRECTION'),),
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans,evol_char,
@@ -54,6 +54,7 @@ REST_BASE_PHYS=OPER(nom="REST_BASE_PHYS",op=  75,sd_prod=rest_base_phys_prod,
          RESU_PHYS       =SIMP(statut='f',typ=evol_noli ),
          BASE_MODALE     =SIMP(statut='f',typ=(base_modale,mode_meca) ),
          NUME_DDL        =SIMP(statut='f',typ=nume_ddl_sdaster ),
+         MACR_ELEM_DYNA  =SIMP(statut='f',typ=macr_elem_dyna),
          MODE_MECA       =SIMP(statut='f',typ=mode_meca ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),  

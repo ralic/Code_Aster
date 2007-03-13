@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,18 +81,6 @@ PRECIS = 1.E-6;
 VX     = [    1.  ,   0. ,     0.     ]
 VY     = [    0.  ,   1. ,     0.     ]
 VZ     = [    0.  ,   0. ,     1.     ]
-PTFS0  = [    0.  ,   0. ,  L+LARZ/2. ]
-PTFI0  = [    0.  ,   0. ,  L-LARZ/2. ]
-PTFS1  = [   LARX ,   0. ,  L+LARZ/2. ]
-PTFI1  = [   LARX ,   0. ,  L-LARZ/2. ]
-PTFS2  = [ 2*LARX ,   0. ,  L+LARZ/2. ]
-PTFI2  = [ 2*LARX ,   0. ,  L-LARZ/2. ]
-PTFS3  = [ 3*LARX ,   0. ,  L+LARZ/2. ]
-PTFI3  = [ 3*LARX ,   0. ,  L-LARZ/2. ]
-PTFS4  = [ 4*LARX ,   0. ,  L+LARZ/2. ]
-PTFI4  = [ 4*LARX ,   0. ,  L-LARZ/2. ]
-PTFS5  = [ 5*LARX ,   0. ,  L+LARZ/2. ]
-PTFI5  = [ 5*LARX ,   0. ,  L-LARZ/2. ]
 PT0    = [    0.  ,   0.  ,    0.     ]
 PT1    = [    0.  , 2.*W  , L-LARZ/2. ]
 PT1S   = [    0.  , 2.*W  , L+LARZ/2. ]
@@ -125,66 +113,6 @@ MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
                                         OPTION='PLAN',
                                         POINT=PT0,
                                         VECT_NORMALE=VY,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSSUP0',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFS0,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSINF0',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFI0,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSSUP1',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFS1,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSINF1',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFI1,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSSUP2',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFS2,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSINF2',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFI2,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSSUP3',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFS3,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSINF3',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFI3,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSSUP4',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFS4,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSINF4',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFI4,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSSUP5',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFS5,
-                                        RAYON=PRECIS,
-                                        PRECISION=PRECIS),
-                                     _F(NOM='FISSINF5',
-                                        OPTION='ENV_SPHERE',
-                                        POINT=PTFI5,
-                                        RAYON=PRECIS,
                                         PRECISION=PRECIS),
                                     ),
                       INFO=1, );
@@ -263,18 +191,7 @@ CHRIG1=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_DDL=(_F(GROUP_NO=( 'NOEUD1' , 'NOEUD1S',),DDL=('DX' ,'DX', ),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
                                    _F(GROUP_NO=( 'NOEUD1' , 'NOEUD1S',),DDL=('DZ' ,'DZ', ),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
                                    _F(GROUP_NO=( 'NOEUD2' , 'NOEUD2S',),DDL=('DZ' ,'DZ', ),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSSUP0','FISSSUP0',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSINF0','FISSINF0',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSSUP1','FISSSUP1',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSINF1','FISSINF1',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSSUP2','FISSSUP2',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSINF2','FISSINF2',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSSUP3','FISSSUP3',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSINF3','FISSINF3',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSSUP4','FISSSUP4',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSINF4','FISSINF4',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSSUP5','FISSSUP5',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,1.0), COEF_IMPO=0.0,),
-                                   _F(GROUP_NO=('FISSINF5','FISSINF5',),DDL=('DCY','H1Y',),COEF_MULT=(1.0,-1.0),COEF_IMPO=0.0,),), );
+                                   ), );
 
 CHRIG2=AFFE_CHAR_MECA(MODELE=MODELEK,
                          DDL_IMPO=( _F(GROUP_NO='SURFGAU', DY=0.0,),
@@ -342,7 +259,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MAX',
               VALE=BETAREF,
               CRITERE='RELATIF',
-              PRECISION=0.06,
+              PRECISION=0.061,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
@@ -350,7 +267,7 @@ for i in range(0,nbc) :
               TYPE_TEST='MIN',
               VALE=BETAREF,
               CRITERE='RELATIF',
-              PRECISION=0.06,
+              PRECISION=0.061,
               REFERENCE='ANALYTIQUE',);
 
 

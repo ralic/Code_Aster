@@ -1,7 +1,7 @@
       SUBROUTINE CFIMP4(DEFICO,RESOCO,NOMA,IFM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,6 +18,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C TOLE CRP_20
 C
       IMPLICIT     NONE
       CHARACTER*24 DEFICO
@@ -61,10 +63,10 @@ C
       INTEGER      JAPPAR,JNOCO,JMACO,JAPJEU,JDIM,JREAC,JAPMEM
       CHARACTER*24 NORINI,APPOIN,PDDLCO,NORMCO,TANGCO,APDDL,APCOEF
       INTEGER      JNRINI,JAPPTR,JPDDL,JNORMO,JTANGO,JAPDDL,JAPCOE
-      CHARACTER*24 APCOFR,PNOMA,NOMACO
-      INTEGER      JAPCOF,JPONO,JNOMA
+      CHARACTER*24 APCOFR,PNOMA,NOMACO,COMAFO,FROTE,PENAL
+      INTEGER      JAPCOF,JPONO,JNOMA,JCOMA,JFRO,JPENA
       INTEGER      IBID,TYPALF,FROT3D
-      INTEGER      NZOCO,NESMAX,NESCL,NNOCO
+      INTEGER      NZOCO,NESMAX,NESCL,NNOCO,NDIM
       INTEGER      K,IZONE,INOEUD,IESCL,IDDLE,IMAIT,IDDLM
       INTEGER      NUMNOE,NUMPRM,NUMAPM,NUMESC,NUMMAI,NUMMA2
       INTEGER      POSNOE,POSPRM,POSAPM,POSESC,POSMAI,POSMA2
@@ -74,6 +76,7 @@ C
       CHARACTER*20 CREAC1,TYPNOE
       CHARACTER*13 CREAC2
       CHARACTER*5  CREAC3
+      REAL*8       COEFRO,COEFPN,COEFPT,COEFTE
 C
 C ----------------------------------------------------------------------
 C
@@ -99,6 +102,9 @@ C
       TANGCO = RESOCO(1:14)//'.TANGCO'
       NOMACO = DEFICO(1:16)//'.NOMACO'
       PNOMA  = DEFICO(1:16)//'.PNOMACO'
+      PENAL  = DEFICO(1:16)//'.PENAL' 
+      COMAFO = DEFICO(1:16)//'.COMAFO'
+      FROTE  = DEFICO(1:16)//'.FROTE'           
 C
       CALL JEVEUO(NDIMCO,'L',JDIM)
       CALL JEVEUO(APPARI,'L',JAPPAR)
@@ -116,6 +122,9 @@ C
       CALL JEVEUO(APCOEF,'L',JAPCOE)
       CALL JEVEUO(PNOMA,'L',JPONO)
       CALL JEVEUO(NOMACO,'L',JNOMA)
+      CALL JEVEUO(COMAFO,'L',JCOMA )
+      CALL JEVEUO(FROTE ,'L',JFRO  ) 
+      CALL JEVEUO(PENAL ,'L',JPENA )           
       IF (TYPALF.NE.0) THEN
         APCOFR = RESOCO(1:14)//'.APCOFR'
         CALL JEVEUO(APCOFR,'L',JAPCOF)
@@ -123,7 +132,11 @@ C
 C
       ZAPME = CFMMVD('ZAPME')
       ZAPPA = CFMMVD('ZAPPA')
-      ZREAC = CFMMVD('ZREAC')           
+      ZREAC = CFMMVD('ZREAC') 
+C
+C --- DIMENSION DU PROBLEME
+C
+      NDIM   = ZI(JDIM)                
 C
 C --- NOMBRE DE ZONES DE CONTACT
 C
@@ -156,7 +169,7 @@ C
       DO 20 IZONE = 1,NZOCO
 
         IF (ZI(JREAC+ZREAC*(IZONE-1)).EQ.0) THEN
-          CALL ASSERT(.FALSE.)
+         CALL CFIMPA('CFIMP4',2)
         ELSE IF (ZI(JREAC+ZREAC*(IZONE-1)).EQ.-1) THEN
           CREAC1 = ' REMPLISSAGE DES SD '
         ELSE IF (ZI(JREAC+ZREAC*(IZONE-1)).EQ.1) THEN
@@ -206,6 +219,10 @@ C
            TYPNOE = 'EXCLU (SANS_NOEUD)  '
         ELSE IF (ZI(JAPMEM+ZAPME*(INOEUD-1)).EQ.-2) THEN
            TYPNOE = 'EXCLU (PIVOT NUL)   '
+        ELSE IF (ZI(JAPMEM+ZAPME*(INOEUD-1)).EQ.-3) THEN
+           TYPNOE = 'EXCLU (HORS ZONE)   '           
+        ELSE
+           TYPNOE = 'ETAT INCONNU        '  
         ENDIF
 
         WRITE(IFM,3000) INOEUD,NOMNOE,TYPNOE
@@ -237,7 +254,7 @@ C
 
 3001  FORMAT (' <CONTACT_DVLP>  * NOEUD MAITRE PROCHE   : ',A8)
 3002  FORMAT (' <CONTACT_DVLP>  * MAILLE MAITRE APPARIEE: ',A8)
-3003  FORMAT (' <CONTACT_DVLP>  * NORMALE  : ',3(1E10.3,2X))
+3003  FORMAT (' <CONTACT_DVLP>  * NORMALE  : ',3(1PE15.8,2X))
 3004  FORMAT (' <CONTACT_DVLP>  * MAILLE MAITRE NON APPARIEE')
 
 
@@ -251,6 +268,7 @@ C
       WRITE(IFM,*) '<CONTACT_DVLP> ----- NOEUDS ESCLAVES ----- '
 
       DO 40 IESCL = 1,NESCL
+
         POSESC = ZI(JAPPAR+ZAPPA*(IESCL-1)+1)
 
         IF (POSESC.EQ.0) GOTO 40
@@ -262,7 +280,16 @@ C
         POSAPM = ZI(JAPMEM+ZAPME*(POSESC-1)+2)
 
         POSMAI = ZI(JAPPAR+ZAPPA*(IESCL-1)+2)
-        IF (POSAPM.NE.0) THEN
+        IF (POSAPM.EQ.0) THEN
+          IF (POSMAI.LT.0) THEN   
+            NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
+            WRITE(IFM,4001) NOMMAI
+          ELSE  
+            WRITE(IFM,4009)
+            GOTO 40
+          END IF        
+        ELSE
           IF (POSMAI.GT.0) THEN
             NUMMAI = ZI(JMACO+POSMAI-1)
             CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMMAI)
@@ -272,12 +299,11 @@ C
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
             WRITE(IFM,4001) NOMMAI
           ELSE  
-            CALL ASSERT(.FALSE.)
+            CALL CFIMPA('CFIMP4',1)
           END IF
-        ELSE
-          WRITE(IFM,4009)
-          GOTO 40
         ENDIF
+         
+        
 
 C --- POSITION DU NOEUD ESCLAVE DANS CONTNO: POSESC
 C                         SON NUMERO ABSOLU: NUMESC
@@ -311,34 +337,57 @@ C
         WRITE(IFM,4004) NDDLT,NDDLE
         WRITE(IFM,4006) ZR(JAPJEU+IESCL-1)
         WRITE(IFM,4007) (ZR(JNORMO+3*(IESCL-1)+K-1),K=1,3)
-        WRITE(IFM,4008) (ZR(JTANGO+6*(IESCL-1)+K-1),K=1,6)
+        WRITE(IFM,4008) (ZR(JTANGO+6*(IESCL-1)+K-1),K=1,3)
+        IF (NDIM.EQ.3) THEN
+          WRITE(IFM,5008) (ZR(JTANGO+6*(IESCL-1)+K-1+3),K=1,3)
+        ENDIF
+C ----------------------------------------------------------------------
+C --- PARAMETRES PENALISATION
+C ----------------------------------------------------------------------
 
+        COEFRO = ZR(JFRO-1+IESCL)     
+        COEFPN = ZR(JPENA-1+2*IESCL-1) 
+        COEFPT = ZR(JPENA-1+2*IESCL)  
+        COEFTE = ZR(JCOMA-1+IESCL)         
  
+ 
+        WRITE(IFM,7000) COEFPN
+        WRITE(IFM,7001) COEFPT
+        WRITE(IFM,7002) COEFTE
+        WRITE(IFM,7003) COEFRO
+        
 C
 C ----------------------------------------------------------------------
 C --- DDL ET COEF POUR NOEUD ESCLAVE
 C ----------------------------------------------------------------------
 C
 C
-C --- AFFICHAGE
+C --- COEFFICIENTS POUR CONTACT
 C
-        WRITE (IFM,4015) NOMESC,
-     &    (ZI(JAPDDL+JDECE+IDDLE-1),IDDLE=1,NDDLE),
-     &    (ZR(JAPCOE+JDECE+IDDLE-1),IDDLE=1,NDDLE)
-
-
-
+        IF (NDIM.EQ.3) THEN
+          WRITE (IFM,4015) NOMESC,
+     &      (ZI(JAPDDL+JDECE+IDDLE-1),IDDLE=1,NDDLE),
+     &      (ZR(JAPCOE+JDECE+IDDLE-1),IDDLE=1,NDDLE)
+        ELSE
+          WRITE (IFM,4018) NOMESC,
+     &      (ZI(JAPDDL+JDECE+IDDLE-1),IDDLE=1,NDDLE),
+     &      (ZR(JAPCOE+JDECE+IDDLE-1),IDDLE=1,NDDLE)        
+        ENDIF
 C
 C --- COEFFICIENTS POUR FROTTEMENT 
 C
         IF (TYPALF.NE.0) THEN
-          WRITE (IFM,4016) NOMESC,
-     &      (ZI(JAPDDL+JDECE+IDDLE-1),IDDLE=1,NDDLE),
-     &      (ZR(JAPCOF+JDECE+IDDLE-1),IDDLE=1,NDDLE)
-          IF (FROT3D.EQ.1) THEN
+          IF (NDIM.EQ.3) THEN
+            WRITE (IFM,4016) NOMESC,
+     &        (ZI(JAPDDL+JDECE+IDDLE-1),IDDLE=1,NDDLE),
+     &        (ZR(JAPCOF+JDECE+IDDLE-1),IDDLE=1,NDDLE)
             WRITE (IFM,4017) NOMESC,
      &        (ZI(JAPDDL+JDECE+IDDLE-1),IDDLE=1,NDDLE),
-     &        (ZR(JAPCOF+30*NESMAX+JDECE+IDDLE-1),IDDLE=1,NDDLE)
+     &        (ZR(JAPCOF+30*NESMAX+JDECE+IDDLE-1),IDDLE=1,NDDLE)     
+          ELSE
+            WRITE (IFM,4019) NOMESC,
+     &        (ZI(JAPDDL+JDECE+IDDLE-1),IDDLE=1,NDDLE),
+     &        (ZR(JAPCOF+JDECE+IDDLE-1),IDDLE=1,NDDLE)        
           ENDIF
         ENDIF
 C
@@ -350,25 +399,40 @@ C
 C 
 C --- APPARIEMENT NODAL
 C
-        IF (POSMAI.LT.0) THEN
+        IF (POSMAI.LT.0) THEN  
           NBNOM  = 1
           POSMAI = ABS(POSMAI)
-          WRITE (IFM,5011) NOMMAI,
-     &      (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
-     &      (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
+          IMAIT  = 1
+          NDDLM  = NDDLT - NDDLE
+C
+C --- COEFFICIENTS POUR CONTACT
+C          
+          IF (NDIM.EQ.3) THEN
+            WRITE (IFM,5011) NOMMAI,
+     &        (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
+     &        (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM) 
+          ELSE
+            WRITE (IFM,6011) NOMMAI,
+     &        (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
+     &        (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
+          ENDIF
 C
 C --- COEFFICIENTS POUR FROTTEMENT 
 C
           IF (TYPALF.NE.0) THEN
-            WRITE (IFM,5012) NOMMAI,
-     &       (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
-     &       (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
-            IF (FROT3D.EQ.1) THEN
+            IF (NDIM.EQ.3) THEN
+              WRITE (IFM,5012) NOMMAI,
+     &         (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
+     &         (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
               WRITE (IFM,5013) NOMMAI,
      &          (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),
      &                        IDDLM=1,NDDLM),
      &          (ZR(JAPCOF+30*NESMAX+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),
      &                        IDDLM=1,NDDLM)
+            ELSE
+              WRITE (IFM,6012) NOMMAI,
+     &         (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
+     &         (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
             ENDIF
           ENDIF
 C 
@@ -381,30 +445,41 @@ C
             POSMA2 = ZI(JNOMA+ZI(JPONO+POSMAI-1)+IMAIT-1)
             NUMMA2 = ZI(JNOCO+POSMA2-1)
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMA2),NOMMA2)
-            WRITE (IFM,5001) NOMMAI,NOMMA2,
+C
+C --- COEFFICIENTS POUR CONTACT
+C             
+            IF (NDIM.EQ.3) THEN
+              WRITE (IFM,5001) NOMMAI,NOMMA2,
      &        (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
      &        (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
-
+            ELSE
+              WRITE (IFM,6001) NOMMAI,NOMMA2,
+     &        (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
+     &        (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
+            ENDIF
 C
 C --- COEFFICIENTS POUR FROTTEMENT 
 C
             IF (TYPALF.NE.0) THEN
-              WRITE (IFM,5002) NOMMAI,NOMMA2,
+              IF (NDIM.EQ.3) THEN            
+                WRITE (IFM,5002) NOMMAI,NOMMA2,
      &         (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
      &         (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
-              IF (FROT3D.EQ.1) THEN
                 WRITE (IFM,5003) NOMMAI,NOMMA2,
      &            (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),
      &                        IDDLM=1,NDDLM),
      &            (ZR(JAPCOF+30*NESMAX+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),
      &                        IDDLM=1,NDDLM)
+              ELSE
+                WRITE (IFM,6002) NOMMAI,NOMMA2,
+     &         (ZI(JAPDDL+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM),
+     &         (ZR(JAPCOE+JDECM+(IMAIT-1)*NDDLM+IDDLM-1),IDDLM=1,NDDLM)
               ENDIF
             ENDIF
    50     CONTINUE
 
         ENDIF
-      
-
+     
   40  CONTINUE
 C
 1000  FORMAT (' <CONTACT_DVLP> NOMBRE DE ZONES DE CONTACT: ',I6)
@@ -430,45 +505,97 @@ C
 4004  FORMAT (' <CONTACT_DVLP>  * NOMBRE DE DDLs : ',I6,' DONT ',I6,
      &                        ' POUR NOEUD ESCLAVE',I6)
 
-4006  FORMAT (' <CONTACT_DVLP>  * JEU: ',1E10.3)
+4006  FORMAT (' <CONTACT_DVLP>  * JEU: ',1PE15.8)
 4007  FORMAT (' <CONTACT_DVLP>  * NORMALE LISSEE/MOYENNEE: ',
-     &         3(1E10.3,2X))
-4008  FORMAT (' <CONTACT_DVLP>  * TANGENTES : ',6(1E10.3,2X))
+     &         3(1PE15.8,2X))
+4008  FORMAT (' <CONTACT_DVLP>  * TANGENTE DIRECTION 1   : ',
+     &         3(1PE15.8,2X))
+5008  FORMAT (' <CONTACT_DVLP>  * TANGENTE DIRECTION 2   : ',
+     &         3(1PE15.8,2X))
 
 4009  FORMAT (' <CONTACT_DVLP>  * PREMIER APPARIEMENT ')
 
+C
+C --- 3D - ESCLAVE
+C
 4015  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. CONTACT ( ',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
-
+     &           3(1PE15.8,2X)))
 
 4016  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. FROT1   ( ',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
+     &           3(1PE15.8,2X)))
 4017  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. FROT2   ( ',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
+     &           3(1PE15.8,2X)))
+     
+C
+C --- 2D - ESCLAVE
+C     
+4018  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. CONTACT ( ',A8,'):',
+     &           2(I8,2X),' / ',
+     &           2(1PE15.8,2X)))
+
+4019  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. FROT1   ( ',A8,'):',
+     &           2(I8,2X),' / ',
+     &           2(1PE15.8,2X)))
+   
+C
+C --- 3D MAITRE/ESCL - MAITRE
+C
 5001  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,
      &           '/',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
+     &           3(1PE15.8,2X)))
 5002  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,
      &           '/',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
+     &           3(1PE15.8,2X)))
 5003  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT2   ( ',A8,
      &           '/',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
+     &           3(1PE15.8,2X)))
+C
+C --- 3D NODAL - MAITRE
+C    
 5011  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
+     &           3(1PE15.8,2X)))
 5012  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
+     &           3(1PE15.8,2X)))
 5013  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT2   ( ',A8,'):',
      &           3(I8,2X),' / ',
-     &           3(1E10.3,2X)))
+     &           3(1PE15.8,2X)))  
+C
+C --- 2D MAITRE/ESCL - MAITRE
+C     
+6001  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,
+     &           '/',A8,'):',
+     &           2(I8,2X),' / ',
+     &           2(1PE15.8,2X)))
+6002  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,
+     &           '/',A8,'):',
+     &           2(I8,2X),' / ',
+     &           2(1PE15.8,2X)))
+C
+C --- 2D NODAL - MAITRE
+C
+6011  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,'):',
+     &           2(I8,2X),' / ',
+     &           2(1PE15.8,2X)))
+6012  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,'):',
+     &           2(I8,2X),' / ',
+     &           2(1PE15.8,2X)))
+C
+C --- PENALISATION
+C
+7000  FORMAT (' <CONTACT_DVLP>  * E_N              :',1PE15.8)
+7001  FORMAT (' <CONTACT_DVLP>  * E_T              :',1PE15.8)
+7002  FORMAT (' <CONTACT_DVLP>  * COEF_MATR_FROT   :',1PE15.8)
+7003  FORMAT (' <CONTACT_DVLP>  * COULOMB          :',1PE15.8)
+C
+      
 C
       CALL JEDEMA()
 C

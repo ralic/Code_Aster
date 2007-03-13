@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,10 +34,11 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                                  into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI")),
          ),
          SOUS_STRUC      =FACT(statut='f',min=01,max='**',
-                regles=(UN_PARMI('TOUT','MAILLE'),),
+                regles=(UN_PARMI('TOUT','SUPER_MAILLE'),),
                 CAS_CHARGE  =SIMP(statut='o',typ='TXM' ),
                 TOUT        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-                MAILLE      =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**',),
+                SUPER_MAILLE=SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**',),
+                FONC_MULT   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
               ),
          COMP_INCR       =C_COMP_INCR(),
          COMP_ELAS       =FACT(statut='f',max='**',

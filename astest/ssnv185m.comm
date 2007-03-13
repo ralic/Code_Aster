@@ -1,4 +1,4 @@
-# MODIF  DATE 20/02/2007   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,12 +180,13 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
-                        MODELE=MODELEK,
-                        NOM_CHAM='DEPL',
-                        RESULTAT=UTOT1)
+# mis en commentire suite a la fiche 10572
+#RES_XFEM=POST_CHAM_XFEM(MAILLAGE=MA_XFEM,
+#                        MODELE=MODELEK,
+#                        NOM_CHAM='DEPL',
+#                        RESULTAT=UTOT1)
 
-IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
+#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM

@@ -4,7 +4,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -226,7 +226,7 @@ C
      &                    ZI(JPRNM-1+(INO-1)*NBEC+1), NDDLA,
      &                    FONREE, NOMN, INO, DDLIMP, VALIMR, VALIMF,
      &                    VALIMC, MOTCLE, NBEC, ZR(JDIREC+3*(INO-1)),
-     &                    ZI(JDIMEN+INO-1), LISREL,
+     &                    ZI(JDIMEN+INO-1), MOD,LISREL,
      &                    ZK8(INOM), NBCMP, ZI(JCOMPT))
  110     CONTINUE
          DO 111,K=1,NDDLA

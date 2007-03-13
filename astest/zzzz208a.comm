@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/03/2007   AUTEUR REZETTE C.REZETTE 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEUR GENERALISEES : POUTRE 3D ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,6 +98,8 @@ MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
                   NUME_DDL=NUME,
                   CHAR_CINE=CHARCINE,);
 
+MASSC=COMB_MATR_ASSE(COMB_C=_F(MATR_ASSE=MASS,COEF_C=('RI',0.,1.),),)
+
 FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
                   NUME_DDL=NUME,);
 
@@ -169,11 +171,20 @@ FDIAGC.RECU_VECT_GENE_C(FPYDC2)
 
 # CALCULS ASTER SUR MATRICES & VECTEURS MODIFIES DANS PYTHON
 #-----------------------------------------------------------
-# calcul des modes propres generalises
+# calcul des modes propres generalises(MATR_A= matrice generalisee reelle)
 MODEGD=MODE_ITER_SIMULT(MATR_A=KDIAG,
                        MATR_B=MDIAG,
                        CALC_FREQ=_F(
                        NMAX_FREQ=5,),
+                       VERI_MODE=_F(STOP_ERREUR='NON',
+                                    STURM='NON',),);
+
+# calcul des modes propres generalises (MATR_A= matrice generalisee complexe)
+MODCGD=MODE_ITER_SIMULT(MATR_A=KDIAGC,INFO=2,
+                       MATR_B=MDIAG,
+                       CALC_FREQ=_F(OPTION='CENTRE',
+                                    FREQ=1000.,
+                                    NMAX_FREQ=5,),
                        VERI_MODE=_F(STOP_ERREUR='NON',
                                     STURM='NON',),);
 
@@ -188,10 +199,14 @@ DYNDIAG=DYNA_LINE_HARM(MATR_MASS=MDIAG,
 #----------------------------
 # inversion de la matrice de masse
 MPYDI=LinearAlgebra.inverse(MPYD)
+
 # calcul des valeurs propres generalises par Numerical Python sur K*inv(M)
 frequence=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(KPYD2,MPYDI))
+frequencc=LinearAlgebra.eigenvalues(Numeric.matrixmultiply(KPYDC2,MPYDI))
+
 # tri des valeurs propres
 frequence=Numeric.sort(Numeric.sqrt(frequence)/2/Numeric.pi)
+frequencc=Numeric.sort(Numeric.sqrt(frequencc.real)/2/Numeric.pi)
 
 # resolution du systeme lineaire par Numerical Python
 DYNPYD=LinearAlgebra.solve_linear_equations(KPYDC2-((2*Numeric.pi*500.)**2)*MPYD, FPYDC2)
@@ -218,6 +233,8 @@ TEST_RESU(RESU=(
                   NUME_MODE=3,
                   PARA='FREQ',
                   VALE=frequence[2],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
                   ),
                _F(RESULTAT=MODEGD,
                   NUME_MODE=4,
@@ -230,6 +247,44 @@ TEST_RESU(RESU=(
                   NUME_MODE=5,
                   PARA='FREQ',
                   VALE=frequence[4],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+                  ),);
+
+TEST_RESU(RESU=(
+               _F(RESULTAT=MODCGD,
+                  NUME_MODE=1,
+                  PARA='FREQ',
+                  VALE=frequencc[0],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODCGD,
+                  NUME_MODE=2,
+                  PARA='FREQ',
+                  VALE=frequencc[1],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODCGD,
+                  NUME_MODE=3,
+                  PARA='FREQ',
+                  VALE=frequencc[2],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODCGD,
+                  NUME_MODE=4,
+                  PARA='FREQ',
+                  VALE=frequencc[3],
+                  PRECISION=0.01,
+                  REFERENCE='SOURCE_EXTERNE',
+                  ),
+               _F(RESULTAT=MODCGD,
+                  NUME_MODE=5,
+                  PARA='FREQ',
+                  VALE=frequencc[4],
                   PRECISION=0.01,
                   REFERENCE='SOURCE_EXTERNE',
                   ),

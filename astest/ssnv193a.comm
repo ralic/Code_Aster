@@ -1,5 +1,4 @@
-
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
 # TITRE CONTACT AVEC MACRO-ELEMENTS STATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -95,7 +94,7 @@ MACSS=MACR_ELEM_STAT(DEFINITION=_F(MODELE=MODSS,
                                    SUIV='OUI',
                                    CHARGE=CHF31,),);
 
-MAYSS=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=_F(MACR_ELEM_STAT=MACSS,
+MAYSS=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=_F(MACR_ELEM=MACSS,
                                    SUPER_MAILLE='MAILLE1',),
                     RECO_GLOBAL=_F(TOUT='OUI',),
                     DEFI_NOEUD=_F(TOUT='OUI',
@@ -140,7 +139,7 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                 EXCIT=(_F(CHARGE=CHF3_1,),
                        _F(CHARGE=CHF2_1,),),
                 SOUS_STRUC=_F(CAS_CHARGE='K1',
-                              MAILLE='MAILLE1',),
+                              SUPER_MAILLE='MAILLE1',),
                 COMP_INCR=(_F(RELATION='ELAS',
                               TOUT='OUI',),
                            _F(RELATION='ELAS',

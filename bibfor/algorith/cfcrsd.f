@@ -1,7 +1,7 @@
       SUBROUTINE CFCRSD(NOMA,LISCHA,NUMEDD,NEQ,DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,9 +18,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
 C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_20
+C
       IMPLICIT     NONE
       INTEGER      NEQ
       CHARACTER*8  NOMA
@@ -28,14 +28,16 @@ C TOLE CRP_20
       CHARACTER*24 NUMEDD
       CHARACTER*24 DEFICO
       CHARACTER*24 RESOCO
-C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : NMINIT
+C      
 C ----------------------------------------------------------------------
 C
+C ROUTINE CONTACT (METHODES DISCRETES)
+C
+C CARACTERISTIQUES DE LA MAILLE MAITRE 
 C CREATION DES STRUCTURES DE DONNEES NECESSAIRES AU TRAITEMENT
 C DU CONTACT/FROTTEMENT (MOT-CLE "CONTACT" D'AFFE_CHAR_MECA).
-C ROUTINE APPELEE AU DEBUT DE L'OPERATEUR STAT_NON_LINE.
+C
+C ----------------------------------------------------------------------
 C
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  LISCHA : SD L_CHARGES
@@ -90,8 +92,8 @@ C
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)
+      CALL JEMARQ() 
+      CALL INFDBG('CONTACT',IFM,NIV)
 C
 C --- REPERAGE DE LA CHARGE CONTENANT DU CONTACT
 C --- SI PAS DE CHARGE DE CONTACT: ON SORT
@@ -133,10 +135,8 @@ C
       IF (ABS(TYPALC).EQ.3) THEN
          GOTO 9999
       ENDIF
-
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<CONTACT> CREATION DE LA SD RESULTAT DE CONTACT'
-      END IF
+      
+      CALL CFIMPE(IFM,NIV,'CFCRSD',1)
 
 C ----------------------------------------------------------------------
 C

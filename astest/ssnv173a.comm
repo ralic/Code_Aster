@@ -1,4 +1,4 @@
-# MODIF  DATE 18/12/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE BARREAU FISSURE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,120 +77,11 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',);
 
-ZERO=DEFI_CONSTANTE(VALE=0.)
-DEPHAUT=DEFI_CONSTANTE(VALE=1.E-6)
-# definition de la fonction signe
-def SIGN(x) :
-   if x<0.  :  return -1.
-   if x>0.  :  return  1.
-   if x==0. :  return  0.
-
-# definition de la fonction signe de LN
-SILN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='SIGN(LN(X,Y,Z))');
-
-UN=DEFI_CONSTANTE(VALE=1.);
-
-
-CH=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                       LIAISON_DDL=(
-                                 _F(NOEUD=('N1','N1',),
-                                    DDL=('DCX','H1X',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N1','N1',),
-                                    DDL=('DCY','H1Y',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N1','N1',),
-                                    DDL=('DCZ','H1Z',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N2','N2',),
-                                    DDL=('DCX','H1X',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N2','N2',),
-                                    DDL=('DCY','H1Y',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N2','N2',),
-                                    DDL=('DCZ','H1Z',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                  _F(NOEUD=('N3','N3',),
-                                    DDL=('DCX','H1X',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N3','N3',),
-                                    DDL=('DCY','H1Y',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N3','N3',),
-                                    DDL=('DCZ','H1Z',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N4','N4',),
-                                    DDL=('DCX','H1X',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N4','N4',),
-                                    DDL=('DCY','H1Y',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N4','N4',),
-                                    DDL=('DCZ','H1Z',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N5','N5',),
-                                    DDL=('DCX','H1X',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N5','N5',),
-                                    DDL=('DCY','H1Y',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N5','N5',),
-                                    DDL=('DCZ','H1Z',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=DEPHAUT,),
-                                  _F(NOEUD=('N6','N6',),
-                                    DDL=('DCX','H1X',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N6','N6',),
-                                    DDL=('DCY','H1Y',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N6','N6',),
-                                    DDL=('DCZ','H1Z',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=DEPHAUT,),
-                                 _F(NOEUD=('N7','N7',),
-                                    DDL=('DCX','H1X',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N7','N7',),
-                                    DDL=('DCY','H1Y',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N7','N7',),
-                                    DDL=('DCZ','H1Z',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=DEPHAUT,),
-                                 _F(NOEUD=('N8','N8',),
-                                    DDL=('DCX','H1X',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N8','N8',),
-                                    DDL=('DCY','H1Y',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=ZERO,),
-                                 _F(NOEUD=('N8','N8',),
-                                    DDL=('DCZ','H1Z',),
-                                    COEF_MULT_FONC=(UN,SILN),
-                                    COEF_IMPO=DEPHAUT,),
-                                    ),
-                       INFO=1,);
+CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   DDL_IMPO=(_F(NOEUD=('N1','N2','N3','N4'),
+                                DX=0.,DY=0.,DZ=0.),
+                             _F(NOEUD=('N5','N6','N7','N8'),
+                                DX=0.,DY=0.,DZ=1.E-6),),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.0,

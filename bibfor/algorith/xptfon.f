@@ -8,7 +8,7 @@
       CHARACTER*19  CNSLT,CNSLN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
       INTEGER         JCONX1,JCONX2,JCOOR,JLTSV,JLNSV,JMA,IPT,ADDIM
       REAL*8          LSTA,LSNA,LSTB,LSNB,LSTC,LSNC,L(2,2),DETL,LL(2,2)
       REAL*8          R8PREM,EPS1,EPS2,A(3),B(3),C(3),M(3),P(3),PADIST
-      REAL*8          R8B
+      REAL*8          R8B,EPS3
       COMPLEX*16      C16B
       CHARACTER*8     K8BID,TYPMA
       CHARACTER*19    NOMT19,MAI
@@ -137,6 +137,7 @@ C       BOUCLE SUR LES FACES TRIANGULAIRES
             LL(2,1)=-1*L(2,1)/DETL
             EPS1=-LL(1,1)*LSNA-LL(1,2)*LSTA
             EPS2=-LL(2,1)*LSNA-LL(2,2)*LSTA
+            EPS3=1.D0-(EPS1+EPS2)
             DO 411 I=1,3
               A(I)=ZR(JCOOR-1+3*(NUNOA-1)+I)
               B(I)=ZR(JCOOR-1+3*(NUNOB-1)+I)
@@ -144,8 +145,9 @@ C       BOUCLE SUR LES FACES TRIANGULAIRES
               M(I)=A(I)+EPS1*(B(I)-A(I))+EPS2*(C(I)-A(I))
  411        CONTINUE
 C           ON CONTINUE SSI M EST DANS LE TRIANGLE
-            IF (0.LE.EPS1.AND.EPS1.LE.1.AND.0.LE.EPS2.AND.EPS2.LE.1
-     &            .AND.0.LE.(EPS1+EPS2).AND.(EPS1+EPS2).LE.1) THEN
+            IF (-R8PREM().LE.EPS1.AND.EPS1.LE.1.D0+R8PREM().AND.
+     &          -R8PREM().LE.EPS2.AND.EPS2.LE.1.D0+R8PREM().AND.
+     &          -R8PREM().LE.EPS3.AND.EPS3.LE.1.D0+R8PREM()) THEN
 C             VÉRIFICATION SI CE POINT A DÉJÀ ÉTÉ TROUVÉ
               DEJA=.FALSE.
                DO 412 J=1,IN

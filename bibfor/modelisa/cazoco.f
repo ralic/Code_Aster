@@ -1,7 +1,7 @@
       SUBROUTINE CAZOCO(CHAR,MOTFAC,NOMA,NOMO,NDIM,IREAD,IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+C MODIF MODELISA  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C RESPONSABLE MABBAS M.ABBAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,13 +29,15 @@ C
       INTEGER NDIM
       INTEGER IREAD
       INTEGER IWRITE
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : CARACO
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODES DISCRETES - LECTURE DONNEES)
 C
 C LECTURE DES PRINCIPALES CARACTERISTIQUES DU CONTACT (SURFACE IREAD)
 C REMPLISSAGE DE LA SD 'DEFICO' (SURFACE IWRITE)
+C      
+C ----------------------------------------------------------------------
 C
 C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C IN  MOTFAC : MOT-CLE FACTEUR (VALANT 'CONTACT')
@@ -64,33 +66,29 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER CFMMVD,ZMETH,ZTOLE,ZCONV,ZCMCF,ZTGDE
-C
+      INTEGER      CFMMVD,ZMETH,ZTOLE,ZCONV,ZCARF,ZTGDE,ZPOUD
       CHARACTER*16 NOMCMD,APPAR,PROJ,RECH,TYPM,TYPN,TYPF,GLIS
-      INTEGER NBREAC,LGBLOC,ITER
-C
-      CHARACTER*8 K8BID,REAC
+      INTEGER      NBREAC,LGBLOC,ITER
+      CHARACTER*8  K8BID,REAC
       CHARACTER*16 K16BID
-      INTEGER NOC,NOCN,NOCC,OLDMET,NEWMET
-      CHARACTER*24 METHCO,TOLECO,CARACF,DIRCO,SANSNQ
-      INTEGER JMETH,JTOLE,JCMCF,JDIR,JSANSN
+      INTEGER      NOC,NOCN,NOCC,OLDMET,NEWMET
+      CHARACTER*24 METHCO,TOLECO,CARFRO,DIRCO,SANSNQ
+      INTEGER      JMETH,JTOLE,JCARFR,JDIR,JSANSN
       CHARACTER*24 JEUSUP,JEUFO1,JEUFO2,JEUFO3
-      INTEGER JJSUP,JJFO1,JJFO2,JJFO3
-      CHARACTER*24 NORLIS,TANDEF,CONVCO
-      INTEGER JNORLI,JTGDEF,JCONV,GCPREA
-C
+      INTEGER      JJSUP,JJFO1,JJFO2,JJFO3
+      CHARACTER*24 NORLIS,TANDEF,CONVCO,TANPOU
+      INTEGER      JNORLI,JTGDEF,JCONV,GCPREA,JPOUDI
       CHARACTER*8  JEUF1,JEUF2,ISTO
       CHARACTER*16 PREC
       CHARACTER*16 INTER
       CHARACTER*3  NOQU
       REAL*8       DIST1,DIST2,LAMB,ALJEU
-      REAL*8      DIR(3),PRECIS,RELA
-      REAL*8 COEFRO,COEFPN,COEFPT,COEFTE
-C
+      REAL*8       DIR(3),PRECIS,RELA
+      REAL*8       COEFRO,COEFPN,COEFPT,COEFTE
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ
+      CALL JEMARQ()
 C
 C --- INITIALISATIONS
 C
@@ -103,20 +101,15 @@ C
       LAMB   = 0.D0
       ALJEU  = -1.D0
       PRECIS = 0.D0
-      PREC   = ' '
-      ZMETH  = CFMMVD('ZMETH')
-      ZTOLE  = CFMMVD('ZTOLE')
-      ZCONV  = CFMMVD('ZCONV')
-      ZCMCF  = CFMMVD('ZCMCF')
-      ZTGDE  = CFMMVD('ZTGDE')
+      PREC   = '  '
 C
 C --- NOM DU CONCEPT RESULTAT D'AFFE_CHAR_MECA
 C
       CALL GETRES(K8BID,K16BID,NOMCMD)
-C ======================================================================
+C 
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C ======================================================================
-      CARACF = CHAR(1:8) // '.CONTACT.CARACF'
+C 
+      CARFRO = CHAR(1:8) // '.CONTACT.CARFRO'
       CONVCO = CHAR(1:8) // '.CONTACT.CONVCO'
       DIRCO  = CHAR(1:8) // '.CONTACT.DIRCO'
       JEUFO1 = CHAR(1:8) // '.CONTACT.JFO1CO'
@@ -128,10 +121,11 @@ C ======================================================================
       SANSNQ = CHAR(1:8) // '.CONTACT.SANSNQ'
       TANDEF = CHAR(1:8) // '.CONTACT.TANDEF'
       TOLECO = CHAR(1:8) // '.CONTACT.TOLECO'
-C ======================================================================
-      CALL JEVEUO(CARACF,'E',JCMCF)
+      TANPOU = CHAR(1:8) // '.CONTACT.TANPOU'      
+C 
+      CALL JEVEUO(CARFRO,'E',JCARFR)
       CALL JEVEUO(CONVCO,'E',JCONV)
-      CALL JEVEUO(DIRCO,'E',JDIR)
+      CALL JEVEUO(DIRCO ,'E',JDIR)
       CALL JEVEUO(JEUFO1,'E',JJFO1)
       CALL JEVEUO(JEUFO2,'E',JJFO2)
       CALL JEVEUO(JEUFO3,'E',JJFO3)
@@ -140,7 +134,15 @@ C ======================================================================
       CALL JEVEUO(NORLIS,'E',JNORLI)
       CALL JEVEUO(SANSNQ,'E',JSANSN)
       CALL JEVEUO(TANDEF,'E',JTGDEF)
+      CALL JEVEUO(TANPOU,'E',JPOUDI)      
       CALL JEVEUO(TOLECO,'E',JTOLE)
+C
+      ZMETH  = CFMMVD('ZMETH')
+      ZTOLE  = CFMMVD('ZTOLE')
+      ZCONV  = CFMMVD('ZCONV')
+      ZCARF  = CFMMVD('ZCARF')
+      ZTGDE  = CFMMVD('ZTGDE')
+      ZPOUD  = CFMMVD('ZPOUD')       
 C
 C ----------------------------------------------------------------------
 C
@@ -152,7 +154,7 @@ C
       IF (TYPM(1:8) .EQ. 'PENALISA') THEN
         ZI(JMETH+ZMETH*(IWRITE-1)+6) = -1
         CALL GETVR8(MOTFAC,'E_N',1,1,1,COEFPN,NOCN)
-        ZR(JCMCF+ZCMCF*(IWRITE-1)+2) = COEFPN
+        ZR(JCARFR+ZCARF*(IWRITE-1)+1) = COEFPN
       ELSEIF (TYPM(1:8) .EQ. 'LAGRANGI') THEN
         ZI(JMETH+ZMETH*(IWRITE-1)+6) = 1
       ELSEIF (TYPM(1:8) .EQ. 'CONTRAIN') THEN
@@ -174,12 +176,19 @@ C
           ZR(JTOLE+ZTOLE*(IWRITE-1)+3) = ALJEU
         END IF
       ELSEIF (TYPM(1:3) .EQ. 'GCP') THEN
-          ZI(JMETH+ZMETH*(IWRITE-1)+6) = 9
+        ZI(JMETH+ZMETH*(IWRITE-1)+6) = 9
       ELSEIF (TYPM(1:5) .EQ. 'VERIF') THEN
         ZI(JMETH+ZMETH*(IWRITE-1)+6) = -2
       ELSE
         CALL U2MESS('F','CONTACT_47')
       END IF
+C
+C --- CARACTERISTIQUES POUR LES METHODES AVEC PENALISATION
+C
+      IF (TYPM(1:8) .EQ. 'PENALISA') THEN
+        CALL GETVR8(MOTFAC,'E_N',1,1,1,COEFPN,NOCN)
+        ZR(JCARFR+ZCARF*(IWRITE-1)+1) = COEFPN 
+      ENDIF          
 C
 C --- TEST POUR LES METHODES SANS FROTTEMENT
 C
@@ -205,12 +214,12 @@ C --- RECUPERATION DU TYPE D'APPARIEMENT
 C
       CALL GETVTX(MOTFAC,'APPARIEMENT',IREAD,1,1,APPAR,NOC)
 C
-      IF (APPAR(1:6) .EQ. 'RIGIDE') THEN
-        ZI(JMETH+ZMETH*(IWRITE-1)+1) = 9
-      ELSEIF (APPAR(1:5) .EQ. 'NODAL') THEN
+      IF (APPAR(1:5) .EQ. 'NODAL') THEN
         ZI(JMETH+ZMETH*(IWRITE-1)+1) = 0
       ELSEIF (APPAR(1:9) .EQ. 'MAIT_ESCL') THEN
         ZI(JMETH+ZMETH*(IWRITE-1)+1) = 1
+      ELSEIF (APPAR(1:6) .EQ. 'RIGIDE') THEN
+        ZI(JMETH+ZMETH*(IWRITE-1)+1) = 9        
       ELSE
         CALL U2MESS('F','CONTACT_49')
       END IF
@@ -286,29 +295,24 @@ C
           CALL U2MESS('F','CONTACT_54')
         END IF
         ZI(JMETH+ZMETH*(IWRITE-1)+1) = 4
-        ZR(JDIR+3*(IWRITE-1)) = DIR(1)
+        ZR(JDIR+3*(IWRITE-1))   = DIR(1)
         ZR(JDIR+3*(IWRITE-1)+1) = DIR(2)
-        IF (NDIM .EQ. 3) THEN
-          ZR(JDIR+3*(IWRITE-1)+2) = DIR(3)
-        ELSE
-          ZR(JDIR+3*(IWRITE-1)+2) = 0.D0
-        END IF
+        ZR(JDIR+3*(IWRITE-1)+2) = DIR(3)
       END IF
 C
 C --- MOT-CLE VECT_Y
 C
       CALL GETVTX(MOTFAC,'FROTTEMENT',IREAD,1,1,TYPF,NOCC)
-      ZI(JMETH+ZMETH*(IWRITE-1)+2) = 0
       IF (NOCC .NE. 0) THEN
         CALL GETVR8(MOTFAC,'VECT_Y',IREAD,1,3,DIR,NOC)
         IF (NOC .NE. 0) THEN
           IF (NDIM .EQ. 2) THEN
             CALL U2MESS('A','CONTACT_55')
           ELSE
-            ZI(JMETH+ZMETH*(IWRITE-1)+2) = 1
-            ZR(JTGDEF+(IWRITE-1)*3)   = DIR(1)
-            ZR(JTGDEF+(IWRITE-1)*3+1) = DIR(2)
-            ZR(JTGDEF+(IWRITE-1)*3+2) = DIR(3)
+            ZI(JMETH+ZMETH*(IWRITE-1)+2)  = 1
+            ZR(JTGDEF+ZTGDE*(IWRITE-1))   = DIR(1)
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+1) = DIR(2)
+            ZR(JTGDEF+ZTGDE*(IWRITE-1)+2) = DIR(3)            
           END IF
         END IF
       END IF
@@ -320,17 +324,17 @@ C
         IF (NDIM .EQ. 2) THEN
           CALL U2MESS('A','CONTACT_56')
         ELSE
-          ZI(JMETH+ZMETH*(IWRITE-1)+2) = 1
-          ZR(JTGDEF+ZTGDE*(IWRITE-1))   = DIR(1)
-          ZR(JTGDEF+ZTGDE*(IWRITE-1)+1) = DIR(2)
-          ZR(JTGDEF+ZTGDE*(IWRITE-1)+2) = DIR(3)
+          ZI(JMETH+ZMETH*(IWRITE-1)+2)  = 2
+          ZR(JPOUDI+ZPOUD*(IWRITE-1))   = DIR(1)
+          ZR(JPOUDI+ZPOUD*(IWRITE-1)+1) = DIR(2)
+          ZR(JPOUDI+ZPOUD*(IWRITE-1)+2) = DIR(3)
         END IF
       END IF
 C
 C --- RECUPERATION DU JEU SUPPLEMENTAIRE MECANIQUE POUR LA ZONE IOC
 C --- LE JEU TOTAL SERA JEU - JEUSUP (SOIT : D - DIST1 - DIST2)
 C
-      ZR(JJSUP+IWRITE-1) = 0.D0
+      ZR(JJSUP+IWRITE-1)  = 0.D0
       ZK8(JJFO1+IWRITE-1) = ' '
       ZK8(JJFO2+IWRITE-1) = ' '
 C
@@ -438,13 +442,12 @@ C
       CALL GETVTX(MOTFAC,'FROTTEMENT',IREAD,1,1,TYPF,NOCC)
       IF (NOCC .NE. 0) THEN
         IF (TYPF .EQ. 'COULOMB') THEN
-          ZR(JCMCF+ZCMCF*(IWRITE-1)+5) = 3.D0
           CALL GETVR8(MOTFAC,'COULOMB',IREAD,1,1,COEFRO,NOC)
-          ZR(JCMCF+ZCMCF*(IWRITE-1)+4) = COEFRO
+          ZR(JCARFR+ZCARF*(IWRITE-1)+3) = COEFRO
           CALL GETVR8(MOTFAC,'E_T',IREAD,1,1,COEFPT,NOC)
-          ZR(JCMCF+ZCMCF*(IWRITE-1)+3) = COEFPT
+          ZR(JCARFR+ZCARF*(IWRITE-1)+2) = COEFPT
           CALL GETVR8(MOTFAC,'COEF_MATR_FROT',IREAD,1,1,COEFTE,NOC)
-          ZR(JCMCF+ZCMCF*(IWRITE-1)+6) = COEFTE
+          ZR(JCARFR+ZCARF*(IWRITE-1)+4) = COEFTE
           IF (NDIM .EQ. 2) THEN
             IF (TYPM(1:8) .EQ. 'PENALISA') THEN
               ZI(JMETH+ZMETH*(IWRITE-1)+6) = 3

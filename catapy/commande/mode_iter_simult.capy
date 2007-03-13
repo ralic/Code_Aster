@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 13/03/2007   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,8 @@ def mode_iter_simult_prod(MATR_A,MATR_C,TYPE_RESU,**args ):
   if AsType(MATR_A) == matr_asse_depl_c : return mode_meca_c
   if AsType(MATR_A) == matr_asse_pres_r : return mode_acou
   if AsType(MATR_A) == matr_asse_gene_r : return mode_gene
+  if AsType(MATR_A) == matr_asse_gene_c : return mode_gene
+
   raise AsException("type de concept resultat non prevu")
 
 MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_prod,
@@ -31,7 +33,8 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
                       reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          regles=(CONCEPT_SENSIBLE('ENSEMBLE'),),
-         MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
+         MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,
+                               matr_asse_gene_r,matr_asse_gene_c,matr_asse_pres_r ) ),
          MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
          MATR_C          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
          METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",

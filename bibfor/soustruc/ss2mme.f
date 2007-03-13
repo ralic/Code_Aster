@@ -1,6 +1,6 @@
       SUBROUTINE SS2MME(MO,VECEL,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,10 +108,10 @@ C       ----------------------
 C
 C       -- CAS : MAILLE: L_MAIL
 C       -----------------------
-        CALL GETVID('SOUS_STRUC','MAILLE',
+        CALL GETVID('SOUS_STRUC','SUPER_MAILLE',
      &             IOC,1,0,KBID,N2)
         IF (-N2.GT.NBSMA) CALL U2MESS('F','SOUSTRUC_25')
-        CALL GETVID('SOUS_STRUC','MAILLE',
+        CALL GETVID('SOUS_STRUC','SUPER_MAILLE',
      &             IOC,1,NBSMA,ZK8(IALMAI),N2)
         DO 2, I=1,N2
           NOSMA=ZK8(IALMAI-1+I)

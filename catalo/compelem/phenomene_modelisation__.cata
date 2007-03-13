@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+%& MODIF COMPELEM  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -354,6 +354,10 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'AXIS_JOINT'     DIM__ 2 2   CODE__ 'AFI'
               ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD4     ELEMENT__ MFAXQU4
+
+       MODELISATION__ '3D_JOINT'       DIM__ 3 3   CODE__ '3FI'
+              MAILLE__ HEXA8     ELEMENT__ MEFI_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MEFI_PENTA6
 
        MODELISATION__ 'PLAN_ELDI'     DIM__ 2 2   CODE__ 'PDI'
               MAILLE__ QUAD4     ELEMENT__ MDDPQU4

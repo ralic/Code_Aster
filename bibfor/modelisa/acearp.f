@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -387,6 +387,7 @@ C
       CALL JEDETR('&&TMPRIGNO')
       CALL JEDETR('&&TMPRIGTO')
       CALL JEDETR('&&TMPAMOTO')
+      CALL JEDETR('&&TMPTABMP')
       CALL GETFAC('RIGI_MISS_3D',NBORM)
       IF (NBORM.EQ.0) THEN
          CALL JEDETR(TMPNDK)

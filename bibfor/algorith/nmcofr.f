@@ -2,9 +2,8 @@
      &                  DEFICO,RESOCO,CNCINE,ITERAT,INST,
      &                  CONV,LICCVG,LREAC)
 C
-C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
@@ -36,14 +36,17 @@ C
       REAL*8       CONV(*)
       INTEGER      LICCVG(*)
       LOGICAL      LREAC(2)
+C      
+C ----------------------------------------------------------------------
 C
-C ======================================================================
-C ROUTINE APPELEE PAR : NMDEPL
-C ======================================================================
+C ROUTINE CONTACT (METHODES DISCRETES)
 C
 C TRAITEMENT DU CONTACT AVEC OU SANS FROTTEMENT DANS STAT_NON_LINE.
-C BRANCHEMENT SUR LES ROUTINES DE RESOLUTION.
+C BRANCHEMENT SUR LES ROUTINES DE RESOLUTION
 C
+C ----------------------------------------------------------------------
+C
+C 
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
@@ -91,20 +94,23 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       LOGICAL      PREMIE,GEOM,ALGO
-      INTEGER      ICONTA,JPREM,IBID,INIITE,TYPALC
-      INTEGER      IFM,NIV
+      INTEGER      ICONTA,JPREM,INIITE,TYPALC
       REAL*8       TPS1(4),TPS2(4),TPSGEO,TPSALG,INITPS,R8BID
+      INTEGER      IFM,NIV  
+      CHARACTER*8  K8BID
+      REAL*8       VALR(2)
+      INTEGER      IBID      
 C
 C ----------------------------------------------------------------------
 C
-      CALL INFNIV(IFM,NIV)
-      CALL JEMARQ()
+      CALL JEMARQ()      
+      CALL INFDBG('CONTACT',IFM,NIV)
 C
 C --- TRAITEMENT DU CONTACT ?
 C
       CALL JEEXIN ( RESOCO(1:14)//'.APREAC', ICONTA )
       IF (ICONTA.EQ.0) THEN
-         GOTO 999
+        GOTO 999
       ENDIF
 C
 C --- TYPE DE CONTACT
@@ -122,10 +128,8 @@ C
         CALL CFITER(RESOCO,'E','TIPG',IBID,INITPS)
         CALL CFITER(RESOCO,'E','ITEP',INIITE,R8BID)
       ENDIF
-
-      IF (NIV.GE.2) THEN
-         WRITE (IFM,*) '<CONTACT> *** DEBUT DU TRAITEMENT *** <CONTACT>'
-      ENDIF
+C
+      CALL CFIMPE(IFM,NIV,'NMCOFR',1)
 C
 C --- PREMIERE UTILISATION DU CONTACT OU NON
 C
@@ -136,37 +140,27 @@ C
         ZL(JPREM) = .FALSE.
       ENDIF
 C
-C ======================================================================
-C --- TIMING CONTACT
-C ======================================================================
+C --- TIMING 
 C
       CALL UTTCPU (10,'INIT',4,TPS1)
       CALL UTTCPU (20,'INIT',4,TPS2)
-C
-C ======================================================================
-C --- REACTUALISATION GEOMETRIQUE
-C ======================================================================
+C 
+C --- APPARIEMENT
 C
       CALL UTTCPU (10,'DEBUT',4,TPS1)
-
       CALL CFGEOM(PREMIE,LREAC(1),ITERAT,INST,
      &            NOMA,DEFICO,RESOCO,
      &            DEPPLU,DEPDEL,GEOM)
-
       CALL UTTCPU (10,'FIN',4,TPS1)
+      TPSGEO = TPS1(4)      
 C
 C -- MODE VERIF: PAS D'ALGO DE CONTACT, ON SORT APRES L'APPARIEMENT
 C
       IF (TYPALC.EQ.5) THEN
         GOTO 998
       ENDIF
-
-
-      TPSGEO = TPS1(4)
 C
-C ======================================================================
-C     ALGORITHMES DE CONTACT
-C ======================================================================
+C --- ALGORITHMES DE CONTACT
 C
       CALL UTTCPU (20,'DEBUT',4,TPS2)
       CALL CFALGO(NOMA,ITERAT,CONV,
@@ -174,16 +168,19 @@ C
      &            DEPPLU,DDEPLA,DEPDEL,CNCINE,
      &            LICCVG,LREAC,ALGO)
       CALL UTTCPU (20,'FIN',4,TPS2)
-
       TPSALG = TPS2(4)
 C
       IF (NIV.GE.2) THEN
-         IF (GEOM) THEN
-           WRITE (IFM,*) '<CONTACT> TEMPS CPU POUR GEOMETRIE : ',TPSGEO
-         ENDIF
-         IF (ALGO) THEN
-           WRITE (IFM,*) '<CONTACT> TEMPS CPU POUR ALGORITHME: ',TPSALG
-         ENDIF
+        VALR(1) = TPSGEO
+        VALR(2) = TPSALG        
+        IF (GEOM) THEN
+          CALL CFIMPD(IFM,NIV,'NMCOFR',2, 
+     &                IBID,VALR,K8BID)
+        ENDIF
+        IF (ALGO) THEN
+          CALL CFIMPD(IFM,NIV,'NMCOFR',3, 
+     &                IBID,VALR,K8BID)
+        ENDIF
       ENDIF
 C
 C -- STOCKAGE DU TEMPS
@@ -192,9 +189,8 @@ C
       CALL CFITER(RESOCO,'E','TIMG',IBID,TPSGEO)
 C
   998 CONTINUE
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<CONTACT> *** FIN DU TRAITEMENT *** <CONTACT>'
-      ENDIF             
+C  
+      CALL CFIMPE(IFM,NIV,'NMCOFR',4)            
 C
   999 CONTINUE
 C

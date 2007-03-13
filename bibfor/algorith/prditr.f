@@ -1,9 +1,7 @@
-      SUBROUTINE PRDITR(KSI1P,KSI2P,KSI3P,
-     &                  TOLEIN,ARETE,NOEUD)
-
-
+      SUBROUTINE PRDITR(LAMOLD,TOLEIN,ARETE,NOEUD)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,26 +18,25 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-C
-      REAL*8  KSI1P
-      REAL*8  KSI2P
-      REAL*8  KSI3P
-
+      REAL*8    LAMOLD(3)
       REAL*8    TOLEIN
-      INTEGER   ARETE(3)
-      INTEGER   NOEUD(3)
-
+      INTEGER   ARETE(4)
+      INTEGER   NOEUD(4)
+C      
+C ----------------------------------------------------------------------
 C
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : PROJTR
-C ----------------------------------------------------------------------
+C ROUTINE CONTACT (METHODES DISCRETES - APPARIEMENT - MAIT/ESCL - TRI)
 C
 C DIAGNOSTIC GEOMETRIQUE FIN LORS DE LA PROJECTION SUR UN TRIANGLE
 C
-C IN  KSI1P  : PREMIER PARAMETRE DE PROJECTION SUR LE TRIANGLE
-C IN  KSI2P  : DEUXIEME PARAMETRE DE PROJECTION SUR LE TRIANGLE
-C IN  KSI3P  : TROISIEME PARAMETRE DE PROJECTION SUR LE TRIANGLE
+C ----------------------------------------------------------------------
+C
+C
+C IN  LAMOLD : COORDONNEES PARAMETRIQUES DE LA "PROJECTION" M AVANT
+C                RABATTEMENT DANS LA MAILLE SI ON A DEPASSE
 C IN  TOLEIN : TOLERANCE <IN> POUR LA PROJECTION GEOMETRIQUE
 C              DETERMINE SI PROJECTION SUR ARETE OU NOEUD
 C OUT ARETE  : DETECTION DE PROJECTION SUR ARETE
@@ -55,33 +52,48 @@ C              NOEUD(3) : NOEUD C
 C
 C ----------------------------------------------------------------------
 C
+      REAL*8  KSI1P,KSI2P,KSI3P
+      INTEGER K
+C
+C ----------------------------------------------------------------------
+C
 
-      ARETE(1) = 0
-      ARETE(2) = 0
-      ARETE(3) = 0
-      NOEUD(1) = 0
-      NOEUD(2) = 0
-      NOEUD(3) = 0
+C
+C --- INITIALISATIONS
+C      
+      DO 1 K = 1,3
+        ARETE(K) = 0
+        NOEUD(K) = 0
+1     CONTINUE  
+      KSI1P    = LAMOLD(1)
+      KSI2P    = LAMOLD(2)
+      KSI3P    = LAMOLD(3)
+C
+C --- PROJECTION SUR ARETES
+C      
       IF (ABS(KSI1P).LE.TOLEIN) THEN
-          ARETE(3) = 1    
+        ARETE(3) = 1    
       END IF
       IF (ABS(KSI2P).LE.TOLEIN) THEN
-          ARETE(1) = 1    
+        ARETE(1) = 1    
       END IF
       IF (ABS(KSI3P).LE.TOLEIN) THEN
-          ARETE(2) = 1    
+        ARETE(2) = 1    
       END IF
+C
+C --- PROJECTION SUR NOEUDS
+C        
       IF ((ARETE(1).EQ.1).AND.
      &    (ARETE(2).EQ.1)) THEN
-          NOEUD(1) = 1    
+        NOEUD(1) = 1    
       END IF
       IF ((ARETE(2).EQ.1).AND.
      &    (ARETE(3).EQ.1)) THEN
-          NOEUD(2) = 1    
+        NOEUD(2) = 1    
       END IF
       IF ((ARETE(1).EQ.1).AND.
      &    (ARETE(3).EQ.1)) THEN
-          NOEUD(3) = 1    
+        NOEUD(3) = 1    
       END IF
 
       END

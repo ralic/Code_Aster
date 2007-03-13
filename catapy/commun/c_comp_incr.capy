@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+#& MODIF COMMUN  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -159,7 +159,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           MAZARS          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           JOINT_BA        =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           RUPT_FRAG       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          CZM_EXP_REG      =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
+          CZM_EXP_REG      =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
           CZM_EXP          =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           META_P_IL         =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           META_P_IL_PT       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),

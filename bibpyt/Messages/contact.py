@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF contact Messages  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ====================================================================== 
-
 
 def _(x) : return x
 
@@ -95,7 +94,9 @@ cata_msg={
  Contact methodes discretes. Erreur du nombre de noeuds esclaves sur la zone : contacter les developpeurs
 """),
 
-
+27: _("""
+ Contact methodes discretes. On n'a pas trouve de noeud maitre proche du noeud esclave : contacter les developpeurs
+"""),
 
 29: _("""
  Contact methodes discretes. La recherche nodale par boites n'est pas operationnel

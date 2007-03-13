@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+#& MODIF COMMANDE  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,6 +59,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "3D_GRAD_EPSI",
                                                                       "3D_GRAD_VARI",
                                                                       "3D_XFEM",
+                                                                      "3D_JOINT",
                                                                       "AXIS",
                                                                       "AXIS_FLUI_STRU",
                                                                       "AXIS_FLUIDE",

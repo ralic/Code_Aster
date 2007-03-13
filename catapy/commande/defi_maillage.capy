@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/10/2006   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ DEFI_MAILLAGE=OPER(nom="DEFI_MAILLAGE",op=  88,sd_prod=maillage_sdaster,
                    reentrant='n',
             UIinfo={"groupes":("Maillage",)},
          DEFI_SUPER_MAILLE =FACT(statut='o',max='**',
-           MACR_ELEM_STAT  =SIMP(statut='o',typ=macr_elem_stat,max='**' ),
+           MACR_ELEM       =SIMP(statut='o',typ=(macr_elem_stat,macr_elem_dyna),max='**' ),
            SUPER_MAILLE    =SIMP(statut='f',typ=ma,max='**'),
            TRAN            =SIMP(statut='f',typ='R',max=3),
            ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),

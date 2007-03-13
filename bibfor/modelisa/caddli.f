@@ -1,6 +1,6 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -322,7 +322,7 @@ C         ---------------
             CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
      &                  ZI(JPRNM-1+ (INO-1)*NBEC+1),NDDLA,FONREE,NOMN,
      &                  INO,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,NBEC,
-     &                  ZR(JDIREC+3*(INO-1)),0,LISREL,
+     &                  ZR(JDIREC+3*(INO-1)),0,MOD,LISREL,
      &                  ZK8(INOM),NBCMP,ZI(JCOMPT))
           END IF
    90   CONTINUE
