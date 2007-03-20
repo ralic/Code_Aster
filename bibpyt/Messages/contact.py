@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 20/03/2007   AUTEUR KHAM M.KHAM 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -237,4 +237,11 @@ cata_msg={
 97: _("""
  Contact methode CONTINUE. Pour l'option SANS_GROUP_NO, l'intégration aux noeuds est obligatoire.
 """),
+
+98: _("""
+  le statut du contact a change %(i1)d fois au point de contact no %(i2)d 
+  sur la maille esclave %(k1)s
+  --> presence de flip-flop !!
+"""),
+
 }

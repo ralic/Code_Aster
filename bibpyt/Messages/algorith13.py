@@ -1,5 +1,5 @@
-#@ MODIF algorith13 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
-
+#@ MODIF algorith13 Messages  DATE 20/03/2007   AUTEUR KHAM M.KHAM 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -224,8 +224,8 @@ cata_msg={
 """),
 
 48: _("""
- Nombe de modes propres calculés insiffisant.
- Nombre de modes propres de la base limité a : %(i1)d 
+ Nombe de modes propres calcules insiffisant.
+ Nombre de modes propres de la base limite a : %(i1)d 
 """),
 
 49: _("""
@@ -238,15 +238,9 @@ cata_msg={
  numero sous-structure demandee -->  %(i1)d 
 """),
 
-51: _("""
- le statut du contact a change  %(i1)d  fois au point de contact  %(i2)d 
-  sur la maille esclave  nommai %(i3)d 
-  presence de flip-flop !! %(i4)d 
-"""),
-
 52: _("""
  Nombre de modes propres calcules insuffisant.
- Nombre de modes propres de la base limité a :%(i1)d 
+ Nombre de modes propres de la base limite a :%(i1)d 
 """),
 
 53: _("""

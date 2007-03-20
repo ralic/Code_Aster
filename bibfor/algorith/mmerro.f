@@ -3,7 +3,7 @@
      &                  NMA,NND,NPT,
      &                  IINF,RINF,KINF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 20/03/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,14 +74,14 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER     IRET
-      INTEGER VALI(4)
+      INTEGER VALI(3)
       CHARACTER*8 NOMMAI,NOMNOE
       CHARACTER*24 VALK(2)
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-C
+
       CALL JEEXIN(DEFICO(1:16) // '.CARACF',IRET)
       IF (IRET.EQ.0) THEN
         CALL U2MESS('F','ALGORITH5_94')
@@ -138,14 +138,12 @@ C
         CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NMA),NOMMAI)
         VALI (1) = IINF(1)
         VALI (2) = NND
-        VALI (3) = IINF(1)
-        VALI (4) = IINF(1)
-        CALL U2MESG('TYPERR', 'ALGORITH13_51',0,' ',4,VALI,0,0.D0)
+        VALI (3) = NMA
+        VALK (1) = NOMMAI
+        CALL U2MESG(TYPERR, 'CONTACT_98',1,VALK,2,VALI,0,0.D0)
       ELSE
         CALL U2MESS('F','ALGORITH6_7')
       ENDIF
 
-
-C
       CALL JEDEMA()
       END
