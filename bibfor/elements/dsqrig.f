@@ -7,20 +7,20 @@ C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DSQ (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -117,8 +117,8 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
 
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
-      CALL DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,.FALSE.,
-     +                                         ELASCO,T2EV,T2VE,T1VE)
+      CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
+     +                                    .FALSE.,ELASCO,T2EV,T2VE,T1VE)
 
 C     ---- CALCUL DE LA MATRICE PB -------------------------------------
       IF (EXCE) THEN
@@ -142,7 +142,7 @@ C       ------------------------------------------
         ETA = ZR(ICOOPG-1+NDIM*(INT-1)+2)
 C
 C ---   CALCUL DU JACOBIEN SUR LE QUADRANGLE :
-C       ------------------------------------ 
+C       ------------------------------------
         CALL JQUAD4 ( XYZL, QSI, ETA, JACOB )
 C
 C ---   CALCUL DE LA MATRICE BM :
@@ -228,7 +228,7 @@ C       -------------------------------
    40   CONTINUE
         DO 60 I = 1,4
           DO 70 J = 1,4
-            KFC22(I,J) = KF22(I,J) + KAA(I,J) + KFC21(I,J) + 
+            KFC22(I,J) = KF22(I,J) + KAA(I,J) + KFC21(I,J) +
      +                   KFC21(J,I)
    70     CONTINUE
    60   CONTINUE
@@ -272,7 +272,7 @@ C         -----------------------------------------------
           DO 80 I = 1, 8
             DO 90 J = 1, 8
               DO 100 K = 1, 4
-                 KMPMT(I,J) = KMPMT(I,J) + 
+                 KMPMT(I,J) = KMPMT(I,J) +
      +                        PM(K,I)*(KMA(J,K)+KMF12(J,K))
  100          CONTINUE
   90        CONTINUE
@@ -340,7 +340,7 @@ C
 C============================================================
 C --- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE          =
 C --- K_MEMBRANE =   MEMBI + KMF12*PM + PM_T*KMF12_T        =
-C ---              + PM_T*(KF22+KAA)*PM + BCM_T*DCI*BCM     = 
+C ---              + PM_T*(KF22+KAA)*PM + BCM_T*DCI*BCM     =
 C ---              + KMA*PM + PM_T*KMA_T                    =
 C============================================================
 C
@@ -367,7 +367,7 @@ C DES ANOMALIES TROP IMPORTANTES
 C ---------------------------------------------------------------
         DO 240 I = 1,8
           DO 250 J = 1,8
-          MEMB(I,J) = MEMB(I,J) + 
+          MEMB(I,J) = MEMB(I,J) +
      +         (MEMEXC(I,J)+MEMBI(I,J)+KMPM(I,J)+KMPMT(I,J)
      +         +MEMBCF(I,J))*WGT
 C     +                            MEMBI(I,J)*WGT
@@ -381,7 +381,7 @@ C --- K_MEMBRANE-FLEXION =   KMF11 + KMB + PM_T*(KF22+KAA)*PB       =
 C ---                      +  PM_T*(KF12_T+KBA_T) + KMA*PB          =
 C ---                      +  KMF12*PB                              =
 C====================================================================
-C        
+C
          IF (MULTIC.EQ.2.OR.EXCE) THEN
 C
           DO 260 I = 1,8
@@ -401,7 +401,7 @@ C
      +                              + PM(K,I)*KFC12(J,K)
   300         CONTINUE
               MEFLI(I,J) =   KMF11(I,J)  + KMF(I,J) + KMB(I,J)
-     +                   +   KMAPB(I,J) 
+     +                   +   KMAPB(I,J)
   290       CONTINUE
   280     CONTINUE
 C

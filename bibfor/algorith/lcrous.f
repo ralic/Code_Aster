@@ -1,9 +1,9 @@
-      SUBROUTINE LCROUS (TOLER, ITMAX, IMAT, NMAT, MATERF, NVI,
-     &                   TEMPF, DEPS, SIGD, VIND, THETA, LOI, DT,
+      SUBROUTINE LCROUS (FAMI,KPG,KSP,TOLER, ITMAX, IMAT, NMAT, MATERF,
+     &                   NVI,DEPS, SIGD, VIND, THETA, LOI, DT,
      &                   SIGF, VINF, IRTET)
         IMPLICIT NONE
 C       ================================================================
-C MODIF ALGORITH  DATE 05/03/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,15 @@ C
 C       VIN = (P,F,INDICATEUR DE PLASTICITE)
 C       ----------------------------------------------------------------
 C
-C       IN  TOLER  :  TOLERANCE DE CONVERGENCE LOCALE NEWT
+C       IN  FAMI   :  FAMILLE DU POINT DE GAUSS
+C           KPG    :  POINT DE GAUSS
+C           KSG    :  SOUS-POINT DE GAUSS
+C           TOLER  :  TOLERANCE DE CONVERGENCE LOCALE NEWT
 C           ITMAX  :  NOMBRE MAXI D'ITERATIONS LOCALES
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           NVI    :  NB VARIABLES INTERNES
-C           TEMPF  :  TEMPERATURE A T+DT
 C           DEPS   :  INCREMENT DE DEFORMATION
 C           SIGD   :  CONTRAINTE A T
 C           VIND   :  VARIABLES INTERNES A T
@@ -43,8 +45,8 @@ C       OUT SIGF   :  CONTRAINTE A T+DT
 C           VINF   :  VARIABLES INTERNES A T+DT
 C           IRTET  :  CONTROLE DU REDECOUPAGE INTERNE DU PAS DE TEMPS
 C
-        INTEGER         IMAT, NMAT, IRTET, ITMAX, NCOMPT, NVI
-        INTEGER         NINT, TESTCV, CONVP
+        INTEGER         KPG,KSP,IMAT, NMAT, IRTET, ITMAX, NCOMPT, NVI
+        INTEGER         NINT, TESTCV, CONVP,IRET
 C
         REAL*8          MUN, ZERO, UN, DEUX,TROIS,D13,ANN, DT
         REAL*8          TOLER, DELTA, D, S1, ACC
@@ -76,6 +78,7 @@ C
         PARAMETER       ( D13 = .3333333333D0 )
         PARAMETER       ( TROIS = 3.D0 )
 C
+        CHARACTER*(*)   FAMI
         CHARACTER*16    LOI
         CHARACTER*24    ZK24
 
@@ -108,6 +111,8 @@ C
       PI = VIND(1)
       FI = VIND(2)
       FITOT =FI + ANN*PI
+C --  TEMPERATURE
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
 C
 C -- CAS DU MATERIAU CASSE----------------------------------------
       IF (FITOT .GE. MATERF(6,2)) THEN
@@ -122,7 +127,7 @@ C -- CAS DU MATERIAU CASSE----------------------------------------
         VINF(1)   = PI
         VINF(2)   = UN
         VINF(3)   = 0.D0
-        VINF(4) =  0.D0  
+        VINF(4) =  0.D0
         VINF(NVI) = UN
         IRTET=0
         GOTO 9999
@@ -350,14 +355,14 @@ C -- CALCUL DE RIELEQ AVEC THETA =1----
       CALL LCPRSV(RIGEQ/RIELEQ,RIGEL,RIGFDV)
       CALL LCSOMH(RIGFDV,RIGM,RIGF)
       CALL LCPRSV(RHOF,RIGF,SIGF)
-      
-C    CALL DE LA DISSIPATION PLASTIQUE  (CF. NOTE HT-26/04/027)    
+
+C    CALL DE LA DISSIPATION PLASTIQUE  (CF. NOTE HT-26/04/027)
 C----------------------------------
        SIGEQ= RHOF * RIGEQ
- 
+
        TERME1 =  DP/DT * SIGEQ
        TERME2 =  RIGM * RHOF * DF/(1.D0-F)/ACC/DT
-       TERME3 =  RHOF*S1*LOG(F0/F*RHOF) *DF/DT 
+       TERME3 =  RHOF*S1*LOG(F0/F*RHOF) *DF/DT
        EBLOC =  VIND(4)+((1-BETA)*TERME1+TERME3)*DT
 
        IF (EBLOC.GE.0.D0) THEN
@@ -366,7 +371,7 @@ C----------------------------------
        ELSE
          VINF(3)= TERME1+TERME2
          VINF(4)=0.D0
-       ENDIF  
+       ENDIF
 
       IRTET=0
       GOTO 9999

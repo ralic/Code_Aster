@@ -3,13 +3,13 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NCHAR
       REAL*8 TIME
-      CHARACTER*(*) MODELE,OPTION,MATE,CARA,RIGIEL
+      CHARACTER*(*) MODELE,OPTION,CARA,MATE,RIGIEL
       CHARACTER*8 LCHAR(*)
       CHARACTER*(*) MASSEL,MATEL
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,19 +61,21 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*8 K8B,LPAIN(10),LPAOUT(3)
       CHARACTER*16 OPTIO2
-      CHARACTER*19 LIGRE1
+      CHARACTER*19 LIGRE1,CHVARC
       CHARACTER*24 RIGICH,MASSCH,LIGRMO,LCHIN(10),LCHOUT(3),LIGRCH
-      CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM,ARGU
+      CHARACTER*24 CHGEOM,CHCARA(15),CHHARM,ARGU
+
 C DEB-------------------------------------------------------------------
       CALL JEMARQ()
       IF (MODELE(1:1).EQ.' ') CALL U2MESS('F','CALCULEL2_82')
-
+      CHVARC='&&MEAMME.CHVARC'
       OPTIO2 = OPTION
       NH = 0
+
       CALL MECHAM(OPTIO2,MODELE(1:8),NCHAR,LCHAR,CARA(1:8),NH,CHGEOM,
      &            CHCARA,CHHARM,ICODE)
-      CALL MECHTE(MODELE(1:8),NCHAR,LCHAR,MATE,EXITIM,TIME,CHTREF,
-     &            CHTEMP)
+      CALL VRCINS(MODELE(1:8),MATE(1:8),CARA(1:8),NCHAR,
+     &            LCHAR,TIME,CHVARC)
 
 C     -- ON RECUPERE EVENTUELLEMENT LE NOM DES RESUELEM DE RIGI/MASS:
 C     ---------------------------------------------------------------
@@ -145,8 +147,8 @@ C     ---------------------------------------------------------------
       LCHIN(5) = CHCARA(6)
       LPAIN(6) = 'PCACOQU'
       LCHIN(6) = CHCARA(7)
-      LPAIN(7) = 'PTEMPER'
-      LCHIN(7) = CHTEMP
+      LPAIN(7) = 'PVARCPR'
+      LCHIN(7) = CHVARC
       LPAIN(8) = 'PRIGIEL'
       LCHIN(8) = RIGICH
       LPAIN(9) = 'PMASSEL'
@@ -197,7 +199,7 @@ C     ---------------------
       END IF
 
    60 CONTINUE
-      CALL DETRSD('CHAMP_GD',CHTEMP)
+      CALL DETRSD('CHAMP_GD',CHVARC)
 
       CALL JEDEMA()
       END

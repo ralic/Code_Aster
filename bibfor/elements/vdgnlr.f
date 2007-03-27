@@ -1,7 +1,7 @@
       SUBROUTINE VDGNLR ( OPTION , NOMTE )
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ C
 C
 C---- DECLARATIONS LOCALES
 C
-      INTEGER I  ,  J  ,  K
+      INTEGER I  ,  J  , K
       INTEGER IN
       INTEGER      JD
       INTEGER II , JJ
@@ -316,55 +316,8 @@ C______________________________________________________________________
 C
 C---- RECUPERATION DE LA TEMPERATURE
 C
-      TREF = ZERO
-      CALL TECACH('ONN','PTEREF',1,ITREF,IRET)
-      IF (IRET.EQ.0) THEN
-        TREF = ZR(ITREF)
-      ENDIF
+      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 C
-      CALL TECACH ('ONN','PTEMPER',8,ITAB,IRET)
-      ITEMP=ITAB(1)
-      IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-        TEMPNO = .TRUE.
-        CALL TECACH ('OON','PTEMPMR',8,ITABM,IRET)
-        ITEMPM=ITABM(1)
-        CALL TECACH ('OON','PTEMPPR',8,ITABP,IRET)
-        ITEMPP=ITABP(1)
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        TPG1 = 0.D0
-        DO 30 I = 1,NB2
-          CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(ITAB(8)+3*(I-1)))
-          T = ZR(ITEMP+3* (I-1))
-          TINF = ZR(ITEMP+1+3* (I-1))
-          TSUP = ZR(ITEMP+2+3* (I-1))
-          TPG1 = TPG1 + T + (TSUP+TINF-2*T)/6.D0
-   30   CONTINUE
-        VALPAR = TPG1/NB2
-      ELSE
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-        CALL TECACH('ONN','PTEMPEF',1,ITEMPF,IRET)
-        IF (IRET.EQ.0) THEN
-          TEMPNO = .FALSE.
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-          VALPU(1) = ZR(IINSTP)
-          VALPU(2) = 0.D0
-          CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,VALPAR,IER)
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-        ELSE
-          TEMPNO = .TRUE.
-          CALL TECACH ('OON','PTEMPMR',8,ITABM,IRET)
-          ITEMPM=ITABM(1)
-          CALL TECACH ('OON','PTEMPPR',8,ITABP,IRET)
-          ITEMPP=ITABP(1)
-          NBPAR = 0
-          NOMPAR = ' '
-          VALPAR = 0.D0
-        END IF
-      END IF
 C______________________________________________________________________
 C
 C---- RECUPERATION DE L ADRESSE DES VARIABLES NODALES TOTALES
@@ -651,43 +604,8 @@ C
 C
 C------------- EVALUATION DES DEFORMATIONS THERMIQUES
 C
-               K = 459 + 9*(INTSN-1)
-               IF (TEMPNO) THEN
-                 TMPG1 = ZERO
-                 TMPG2 = ZERO
-                 TMPG3 = ZERO
-                 TPPG1 = ZERO
-                 TPPG2 = ZERO
-                 TPPG3 = ZERO
-C ---            TEMPERATURE AU POINT D'INTEGRATION COURANT
-                 DO 362 I = 1,NB2
-C             TXPG1 = MOY , TXPG2 = INF , TXPG3 = SUP
-
-                  CALL DXTPIF(ZR(ITEMPM+3*(I-1)),ZL(ITABM(8)+3*(I-1)))
-                  TMPG1 = TMPG1 + ZR(ITEMPM+3*I-3)*ZR(LZR-1+K+I)
-                  TMPG2 = TMPG2 + ZR(ITEMPM+3*I-2)*ZR(LZR-1+K+I)
-                  TMPG3 = TMPG3 + ZR(ITEMPM+3*I-1)*ZR(LZR-1+K+I)
-
-                  CALL DXTPIF(ZR(ITEMPP+3*(I-1)),ZL(ITABP(8)+3*(I-1)))
-                  TPPG1 = TPPG1 + ZR(ITEMPP+3*I-3)*ZR(LZR-1+K+I)
-                  TPPG2 = TPPG2 + ZR(ITEMPP+3*I-2)*ZR(LZR-1+K+I)
-                  TPPG3 = TPPG3 + ZR(ITEMPP+3*I-1)*ZR(LZR-1+K+I)
-
-  362           CONTINUE
-C
-                 TMC = 2* (TMPG2+TMPG3-2*TMPG1)* (ZIC/EPTOT)*
-     &              (ZIC/EPTOT) + (TMPG3-TMPG2)* (ZIC/EPTOT) + TMPG1
-                 TPC = 2* (TPPG2+TPPG3-2*TPPG1)* (ZIC/EPTOT)*
-     &              (ZIC/EPTOT) +(TPPG3-TPPG2)* (ZIC/EPTOT) + TPPG1
-               ELSE
-C
-                VALPU(2) = ZIC
-                VALPU(1) = ZR(IINSTM)
-                CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TMC,IER)
-                VALPU(1) = ZR(IINSTP)
-                CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TPC,IER)
-C
-               END IF
+               CALL MOYTPG('RIGI',INTSN,3,'-',TMC)
+               CALL MOYTPG('RIGI',INTSN,3,'+',TPC)
 C
                VALPAR = TPC
                NBV = 1

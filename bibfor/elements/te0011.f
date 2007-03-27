@@ -1,6 +1,6 @@
       SUBROUTINE TE0011(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C.......................................................................
       CHARACTER*16 NOMTE,OPTION,PHENOM
       REAL*8 B(486),BTDB(81,81),D(36),JACGAU
       REAL*8 REPERE(7),XYZGAU(3),INSTAN,NHARM
-      REAL*8 HYDRG,SECHG,BARY(3)
+      REAL*8 BARY(3)
       INTEGER NBSIGM,IGEOM, IPOIDS, IVF, IDFDE,IRET,IDIM
       LOGICAL LSENS
 
@@ -63,19 +63,19 @@ C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
-
+C
 C --- INITIALISATIONS :
 C     -----------------
       INSTAN = 0.D0
       NBINCO = NDIM*NNO
       NHARM = 0.D0
-
+C
       DO 20 I = 1,NBINCO
         DO 10 J = 1,NBINCO
           BTDB(I,J) = 0.D0
    10   CONTINUE
    20 CONTINUE
-
+C
 C ---- FAIT-ON UN CALCUL DE SENSIBILITE ?
 C      ----------------------------------
 CS      IF (OPTION(11:15).EQ.'SENSI') THEN
@@ -84,24 +84,20 @@ CS      IF (OPTION(11:15).EQ.'SENSI') THEN
       ELSE
         LSENS = .FALSE.
       END IF
-
+C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
       NBSIG = NBSIGM(MODELI)
-
+C
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
 C      ----------------------------------------------
       CALL JEVECH('PGEOMER','L',IGEOM)
-
+C
 C ---- RECUPERATION DU MATERIAU
 C      ------------------------
       CALL JEVECH('PMATERC','L',IMATE)
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
-
-C ---- RECUPERATION TEMPERATURES AUX NOEUDS DE L'ELEMENT
-C      -------------------------------------------------
-      CALL JEVECH('PTEMPER','L',ITEMPE)
-
+C
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
 C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
@@ -122,55 +118,49 @@ C      -----------------------------------
 
         IDECPG = NNO* (IGAU-1) - 1
 
-C  --      COORDONNEES ET TEMPERATURE/HYDRATATION/SECHAGE AU POINT
-C  --      D'INTEGRATION COURANT
+C  --      COORDONNEES AU POINT D'INTEGRATION COURANT
 C          -------
         XYZGAU(1) = 0.D0
         XYZGAU(2) = 0.D0
         XYZGAU(3) = 0.D0
-        TEMPG = 0.D0
-        CALL RCVARC(' ','HYDR','+','RIGI',IGAU,1,HYDRG,IRET)
-        IF (IRET.EQ.1) HYDRG=0.D0
-        CALL RCVARC(' ','SECH','+','RIGI',IGAU,1,SECHG,IRET)
-        IF (IRET.EQ.1) SECHG=0.D0
+C
         DO 30 I = 1,NNO
-
+C
           IDECNO = 3* (I-1) - 1
-
+C
           XYZGAU(1) = XYZGAU(1) + ZR(IVF+I+IDECPG)*ZR(IGEOM+1+IDECNO)
           XYZGAU(2) = XYZGAU(2) + ZR(IVF+I+IDECPG)*ZR(IGEOM+2+IDECNO)
           XYZGAU(3) = XYZGAU(3) + ZR(IVF+I+IDECPG)*ZR(IGEOM+3+IDECNO)
-
-          TEMPG = TEMPG + ZR(IVF+I+IDECPG)*ZR(ITEMPE+I-1)
+C
    30   CONTINUE
-
-
+C
+C
 C  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU
 C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 C  --      COURANT : (EPS_1) = (B)*(UN)
 C          ----------------------------
         CALL BMATMC (IGAU,NBSIG,MODELI,ZR(IGEOM),IPOIDS,IVF,IDFDE,
      +                  NNO, NHARM, JACGAU, B)
-
-
-
+C
+C
+C
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
-        CALL DMATMC(MODELI,ZI(IMATE),TEMPG,HYDRG,SECHG,INSTAN,REPERE,
+        CALL DMATMC('RIGI',MODELI,ZI(IMATE),INSTAN,'+',IGAU,1,REPERE,
      &              XYZGAU,NBSIG,D,LSENS)
 C  --      MATRICE DE RIGIDITE ELEMENTAIRE BT*D*B
 C          ---------------------------------------
         CALL BTDBMC(B,D,JACGAU,NDIM,MODELI,NNO,NBSIG,PHENOM,BTDB)
-
+C
    50 CONTINUE
-
+C
 C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
 C      ------------------------------------------------
       IF (.NOT.LSENS) THEN
 C  --  DEMI-MATRICE DE RIGIDITE
         CALL JEVECH('PMATUUR','E',IMATUU)
-
+C
         K = 0
         DO 70 I = 1,NBINCO
           DO 60 J = 1,I

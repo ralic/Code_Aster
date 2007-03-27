@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PRISE EN COMPTE DU RETRAIT DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -152,8 +152,7 @@ TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
 
 CM=AFFE_MATERIAU(  MAILLAGE=M,   
                    AFFE=_F( TOUT = 'OUI',
-                            MATER = BETON,
-                            TEMP_REF = 20.),
+                            MATER = BETON),
                    AFFE_VARC=(_F(TOUT='OUI',
                                 EVOL=HYDR1,
                                 NOM_VARC='HYDR',
@@ -164,7 +163,11 @@ CM=AFFE_MATERIAU(  MAILLAGE=M,
                                 EVOL=SECH1,
                                 NOM_VARC='SECH',
                                 NOM_CHAM='TEMP',
-                                VALE_REF=100),),);
+                                VALE_REF=100),
+                              _F(TOUT='OUI',
+                                CHAMP_GD=TEMP,
+                                NOM_VARC='TEMP',
+                                VALE_REF=20),),);
 FORCE=DEFI_FONCTION( NOM_PARA='INST',
                      PROL_DROITE='LINEAIRE',
                      PROL_GAUCHE='LINEAIRE',
@@ -193,10 +196,6 @@ CH22=AFFE_CHAR_MECA_F( MODELE=MO,
                                    FZ = FORCE),
                     )
 
-CH3=AFFE_CHAR_MECA( MODELE        = MO,
-                    TEMP_CALCULEE = TEMP,
-                  )
-
 L_INST=DEFI_LIST_REEL( DEBUT=-1.0,
                        INTERVALLE=(_F( JUSQU_A = 1.0, NOMBRE = 2),
                                    _F( JUSQU_A = 64800.0, NOMBRE = 20),
@@ -210,7 +209,6 @@ U=STAT_NON_LINE( MODELE=MO,
                                        _F(CHARGE = CH11),
                                        _F(CHARGE = CH12),
                                        _F(CHARGE = CH22),
-                                       _F(CHARGE = CH3),
                                       ),
                  COMP_INCR=_F(RELATION = 'BETON_UMLV_FP',
                                 ITER_INTE_MAXI = 1000),

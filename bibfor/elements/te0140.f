@@ -1,7 +1,7 @@
       SUBROUTINE TE0140(OPTION,NOMTE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,7 +64,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU'/
 C     ------------------------------------------------------------------
-      ZERO = 0.D0
       DEUX = 2.D0
       DERIVE = '  '
 C     ------------------------------------------------------------------
@@ -79,21 +78,9 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         CALL U2MESK('F','ELEMENTS3_27',1,OPTION)
       END IF
 
-      IF (OPTION(1:14).EQ.'RIGI_MECA_TANG') THEN
-        CALL TECACH('ONN','PTEMPPR',1,ITEMPE,IRET)
-      ELSE
-        CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      END IF
-      IF (ITEMPE.EQ.0) THEN
-        NBPAR = 0
-        NOMPAR = ' '
-        VALPAR = ZERO
-      ELSE
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-C
-      END IF
+      CALL MOYTEM('NOEU',2,1,'+',VALPAR)
+      NBPAR = 1
+      NOMPAR = 'TEMP'
 
       IF (OPTION(11:14).EQ.'SENS') THEN
 C ON SE LIMITE POUR L'INSTANT AUX : POU_D_E

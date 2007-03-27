@@ -1,6 +1,6 @@
       SUBROUTINE TUTEMP(OPTION,NOMTE,NBRDDL,F,B,VOUT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,13 +29,13 @@ C ......................................................................
 
       INTEGER NBRDDL,NBSECM,NBCOUM
       PARAMETER (NBSECM=32,NBCOUM=10)
-      REAL*8 H,A,L,TPG1,VALPAR,TMOY1,TINF1,TSUP1,BETA,R
+      REAL*8 H,A,L,TPG1,VALPAR,BETA,R
       REAL*8 POICOU(2*NBCOUM+1),POISEC(2*NBSECM+1)
       REAL*8 F(NBRDDL),B(4,NBRDDL),VOUT(NBRDDL),SIG(4)
       REAL*8 PI,DEUXPI,FI,E,NU,ALPHA,VALRES(3)
       REAL*8 PGL(3,3),PGL1(3,3),PGL2(3,3),PGL3(3,3),OMEGA
-      REAL*8 TMOY(4),TSUP(4),TINF(4),C(2,2),COE1,PGL4(3,3)
-      REAL*8 TEMPGM(4),TEMPGS(4),TEMPGI(4),TREF,VALPU(2)
+      REAL*8 C(2,2),COE1,PGL4(3,3)
+      REAL*8 TREF,VALPU(2),TEMP
       REAL*8 HK,POIDS,R8PI,RAYON,THETA,SINFI,XPG(4)
       REAL*8 VTEMP(NBRDDL),PASS(NBRDDL,NBRDDL)
       CHARACTER*2 CODRES(3),BL2
@@ -133,49 +133,10 @@ C---- RECUPERATION TEMPERATURE
 C===============================================================
 C          -- RECUPERATION DE LA TEMPERATURE :
 C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-      NBPAR = 0
-      NOMPAR = ' '
-      VALPAR = 0.D0
-C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH('ONN','PTEMPER',8,ITAB,IRET)
-      ITEMP = ITAB(1)
-      IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        TPG1 = 0.D0
-        DO 40 I = 1,NNO
-          CALL DXTPIF(ZR(ITEMP+3* (I-1)),ZL(ITAB(8)+3* (I-1)))
-          TMOY(I) = ZR(ITEMP+3* (I-1))
-          TINF(I) = ZR(ITEMP+3* (I-1)+1)
-          TSUP(I) = ZR(ITEMP+3* (I-1)+2)
-          TPG1 = TPG1 + (TSUP(I)+TINF(I)+TMOY(I))/3.D0
-   40   CONTINUE
-        VALPAR = TPG1/NNO
-      END IF
-C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-      CALL TECACH('NNN','PTEMPEF',1,ITEMPF,IRET)
-      IF (IRET.EQ.0) THEN
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        NOMPU(1) = 'INST'
-        NOMPU(2) = 'EPAIS'
-        CALL JEVECH('PTEMPSR','L',IBID)
-        VALPU(1) = ZR(IBID)
-        VALPU(2) = 0.D0
-        CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TMOY1,IER)
-        VALPU(2) = -H/2.D0
-        CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TINF1,IER)
-        VALPU(2) = +H/2.D0
-        CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TSUP1,IER)
-        TPG1 = 0.D0
-        DO 50,I = 1,NNO
-          TMOY(I) = TMOY1
-          TINF(I) = TINF1
-          TSUP(I) = TSUP1
-          TPG1 = TPG1 + (TSUP(I)+TINF(I)+TMOY(I))/3.D0
-   50   CONTINUE
-        VALPAR = TPG1/NNO
-      END IF
+      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+      CALL MOYTEM('RIGI',NPG,3,'+',VALPAR)
+      NBPAR = 1
+      NOMPAR = 'TEMP'
 C===============================================================
 
 C---- RECUPERATION DU COMPORTEMENT
@@ -214,9 +175,6 @@ C POUR LA DILATATION
 
 C     FIN DE LA CONSTRUCTION DE LA MATRICE DE COMPORTEMENT C
 
-      CALL JEVECH('PTEREF','L',JTREF)
-      TREF = ZR(JTREF)
-
       IF (OPTION.EQ.'CHAR_MECA_TEMP_R') THEN
 
 C----- CAS DILATATION THERMIQUE
@@ -224,20 +182,6 @@ C----- CAS DILATATION THERMIQUE
 C===============================================================
 
 
-C  PASSAGE DE LA TEMPERATURE AUX NOEUDS A LA TEMPERATURE AUX
-C  POINT DE GAUSS
-
-        DO 70,IGAU = 1,NPG
-          TEMPGI(IGAU) = 0.D0
-          TEMPGM(IGAU) = 0.D0
-          TEMPGS(IGAU) = 0.D0
-          DO 60,K = 1,NNO
-            HK = ZR(IVF-1+NNO* (IGAU-1)+K)
-            TEMPGI(IGAU) = HK*TINF(K) + TEMPGI(IGAU)
-            TEMPGM(IGAU) = HK*TMOY(K) + TEMPGM(IGAU)
-            TEMPGS(IGAU) = HK*TSUP(K) + TEMPGS(IGAU)
-   60     CONTINUE
-   70   CONTINUE
 
         DO 80,I = 1,NBRDDL
           F(I) = 0.D0
@@ -248,8 +192,8 @@ C     DEBUT CONSTRUCTION DE B
 C BOUCLE SUR LES POINTS DE GAUSS
 
         DO 130 IGAU = 1,NPG
-
-          COE1 = (TEMPGI(IGAU)+TEMPGS(IGAU)+TEMPGM(IGAU))/3.D0 - TREF
+          CALL MOYTPG('RIGI',IGAU,3,'+',TEMP)
+          COE1 = TEMP - TREF
           SIG(1) = (C(1,1)+C(1,2))*COE1
           SIG(2) = (C(2,1)+C(2,2))*COE1
           SIG(3) = 0.D0

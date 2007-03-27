@@ -1,8 +1,8 @@
-      SUBROUTINE CALDBG(OPTION,NIN,LCHIN,NOU,LCHOU)
+      SUBROUTINE CALDBG(OPTION,INOUT,NCHAM,LCHAM,LPARAM)
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,14 +22,18 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
-      INTEGER NIN,NOU,I,IRET
-      CHARACTER*(*) LCHIN(*),LCHOU(*),OPTION
+      INTEGER NCHAM,I,IRET
+      CHARACTER*(*) INOUT
+      CHARACTER*19 LCHAM(*)
+      CHARACTER*8 LPARAM(*)
+      CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C     BUT : IMPRIMER SUR UNE LIGNE LA VALEUR
-C           DES CHAMPS "IN" ET "OUT" AFIN DE COMPARER 2 VERSIONS
+C           D'UNE LISTE DE CHAMPS POUR COMPARER 2 VERSIONS
 C ----------------------------------------------------------------------
       CHARACTER*19 CHAMP
       CHARACTER*24 OJB
+      CHARACTER*4 INOU2
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -45,17 +49,16 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
-
 C DEB-------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL JXVERI(' ',' ')
+      INOU2=INOUT
 
 C     1- POUR FAIRE DU DEBUG PAR COMPARAISON DE 2 VERSIONS:
 C     -----------------------------------------------------
-      WRITE (6,*) 'AJACOT OPTION,LCHIN=',OPTION
-      DO 10,I = 1,NIN
-        CHAMP = LCHIN(I)
+      DO 10,I = 1,NCHAM
+        CHAMP = LCHAM(I)
         CALL EXISD('CARTE',CHAMP,IRET)
         IF (IRET.GT.0) OJB = CHAMP//'.VALE'
         CALL EXISD('CHAM_NO',CHAMP,IRET)
@@ -65,24 +68,8 @@ C     -----------------------------------------------------
         CALL EXISD('RESUELEM',CHAMP,IRET)
         IF (IRET.GT.0) OJB = CHAMP//'.RESL'
 
-        CALL DBGOBJ(OJB,'OUI',6,'&&CALCUL')
+        CALL DBGOBJ(OJB,'OUI',6,'&&CALCUL|'//INOU2//'|'//LPARAM(I))
    10 CONTINUE
-
-
-      WRITE (6,*) 'AJACOT OPTION,LCHOUT=',OPTION
-      DO 20,I = 1,NOU
-        CHAMP = LCHOU(I)
-        CALL EXISD('CARTE',CHAMP,IRET)
-        IF (IRET.GT.0) OJB = CHAMP//'.VALE'
-        CALL EXISD('CHAM_NO',CHAMP,IRET)
-        IF (IRET.GT.0) OJB = CHAMP//'.VALE'
-        CALL EXISD('CHAM_ELEM',CHAMP,IRET)
-        IF (IRET.GT.0) OJB = CHAMP//'.CELV'
-        CALL EXISD('RESUELEM',CHAMP,IRET)
-        IF (IRET.GT.0) OJB = CHAMP//'.RESL'
-
-        CALL DBGOBJ(OJB,'OUI',6,'&&CALCUL')
-   20 CONTINUE
 
       CALL JEDEMA()
 

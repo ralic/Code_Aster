@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,7 @@ C
       INTEGER RETLOI,IRET,IRETP,IRETM
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEFO
       INTEGER IINSTP,IDEPLM,IDEPLP,IDEPLA,ICOMPO,ICARCR,IPESA
-      INTEGER ICONTM,IVARIP,IVARIM,ITREF,IVECTU,ICONTP
+      INTEGER ICONTM,IVARIP,IVARIM,IVECTU,ICONTP
 C =====================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER        ZI
@@ -165,7 +165,6 @@ C =====================================================================
          CALL JEVECH('PCARCRI','L',ICARCR)
          CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PCONTMR','L',ICONTM)
-         CALL JEVECH('PTEREF', 'L',ITREF )
 
 
 
@@ -175,16 +174,13 @@ C        ----------------------------------------------------
 C          CALL JEVECH('PMATERN','L',IMATN )
 C          DO INO=1,6
 C            TEMP=10*INO
-C            WRITE(6,*) 'AJACOT INO,TEMP,=',INO,TEMP
 C            CALL RCVALA(ZI(IMATE-1+1),' ','ELAS',
 C    +             1,'TEMP',TEMP,
 C    +             1,'ALPHA',ALPHA,CODRET,'FM')
-C            WRITE(6,*) 'AJACOT MAILLE,ALPHA,CODRET=',INO,ALPHA,CODRET
-C 
+C
 C            CALL RCVALA(ZI(IMATN-1+INO),' ','ELAS',
 C    +             1,'TEMP',TEMP,
 C    +             1,'ALPHA',ALPHA,CODRET,'FM')
-C            WRITE(6,*) 'AJACOT INO,ALPHA,CODRET=',INO,ALPHA,CODRET
 C          ENDDO
 C          CALL ASSERT(.FALSE.)
 
@@ -230,7 +226,7 @@ C =====================================================================
      +                DRDS,DRDSR,DSDE,B,DFDI, DFDI2,R,SIGBAR,C,CK,CS,
      +                ZR(IMATUU),ZR(IVECTU),
      +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
-     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL, 
+     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
      +                NBVARI,NDDLS,NDDLM,
      +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),
      >                TYPMOD,AXI,PERMAN,MODINT,
@@ -248,7 +244,7 @@ C =====================================================================
      +                DRDS,DRDSR,DSDE,B,DFDI, DFDI2,R,SIGBAR,C,CK,CS,
      +                ZR(IMATUU),ZR(IVECTU),
      +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
-     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL, 
+     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
      +                NBVARI,NDDLS,NDDLM,
      +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),
      >                TYPMOD,AXI,PERMAN,MODINT,
@@ -323,7 +319,7 @@ C =====================================================================
                      ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
      +               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
      +                            POIDS*ZR(IPESA+2)*ZR(IVF+K+I+NNOS-1)
- 95               CONTINUE   
+ 95               CONTINUE
                ELSE
 
                   DO 100 I = 1,NNOS
@@ -416,7 +412,7 @@ C ======================================================================
                ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
      +         ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
      +                            POIDS*ZR(IFORC+L+1)*ZR(IVF+K+I+NNOS-1)
- 171        CONTINUE 
+ 171        CONTINUE
  180     CONTINUE
       END IF
 C ======================================================================
@@ -497,7 +493,7 @@ C ======================================================================
          NCMP = DIMCON
          CALL JEVECH('PCONTRR', 'L',ICHG)
          CALL JEVECH('PSIEFNOR','E',ICHN)
-         
+
          NVIM = MECANI(5)
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       ENDIF
@@ -507,12 +503,12 @@ C ======================================================================
       IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
          CALL JEVECH('PVARIGR','L',ICHG)
          CALL JEVECH('PVARINR','E',ICHN)
-         
+
          CALL JEVECH('PCOMPOR','L',ICOMPO)
          READ (ZK16(ICOMPO+1),'(I16)') NCMP
          READ (ZK16(ICOMPO-1+7+9+4),'(I16)') NVIM
          CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-         
+
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
 C ======================================================================
@@ -520,7 +516,7 @@ C --- 10. OPTION : EPSI_ELGA_DEPL OU EPSI_ELNO_DEPL --------------------
 C ======================================================================
       IF ((OPTION.EQ.'EPSI_ELGA_DEPL') .OR.
      &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
-     
+
          CALL JEVECH('PGEOMER','L',IGEOM)
          CALL JEVECH('PDEPLAR','L',IDEPLA)
          CALL JEVECH('PDEFORR','E',IDEFO)

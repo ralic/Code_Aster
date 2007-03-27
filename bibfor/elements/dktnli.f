@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,7 @@ C            NPG:    NOMBRE DE POINTS DE GAUSS PAR ELEMENT
 C            NC :    NOMBRE DE COTES DE L'ELEMENT
 C            NPGH:   NOMBRE DE POINT D'INTEGRATION PAR COUCHE
       REAL*8 POIDS, HIC, H, ZIC, ZMIN, INSTM, INSTP, VALPU(2),
-     &       TMC, TMINF, TMMOY, TMSUP, TPC, TPINF, TPMOY, TPSUP, COEF
+     &       COEF
 C            POIDS:  POIDS DE GAUSS (Y COMPRIS LE JACOBIEN)
 C            AIRE:   SURFACE DE L'ELEMENT
 C            HIC:    EPAISSEUR D'UNE COUCHE
@@ -104,8 +104,6 @@ C            ZIC:    COTE DU POINT D'INTEGRATION DANS L'EPAISSEUR
 C            ZMIN:   COTE DU POINT D'INTEGRATION LE PLUS "BAS"
 C            INSTM:  INSTANT "-"
 C            INSTP:  INSTANT "+"
-C            TMC:    TEMPERATURE A L'INSTANT INSTM
-C            TPC:    TEMPERATURE A L'INSTANT INSTP
 C            COEF:   POIDS D'INTEGRATION PAR COUCHE
       REAL*8 UM(2,NNO), UF(3,NNO), DUM(2,NNO), DUF(3,NNO)
 C            UM:     DEPLACEMENT (MEMBRANE) "-"
@@ -146,13 +144,13 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
       INTEGER   JTAB(7), COD, I, IADZI, IAZK24, KSP
       INTEGER   ICACOQ, ICARCR, ICOMPO, ICONTM, ICONTP, ICOU, ICPG,
      &          IER, IGAUH, IINSTM, IINSTP, IMATE, INO, IPG, IRET, ISP,
-     &          ITEMP, ITEMPM, ITEMPP, ITREF, IVARIM, IVARIP, IVARIX,
+     &          ITEMP, IVARIM, IVARIP, IVARIX,
      &          IVPG, J, K, NBCON, NBSP, NBVAR, NDIMV
       REAL*8     DEUX, RAC2, QSI, ETA, CARA(25), JACOB(5)
       REAL*8    CTOR
       REAL*8    LC,JACGAU,BMAT(6,18)
       REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
-      LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ
+      LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ,LTEATT
       CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
 C
@@ -171,9 +169,10 @@ C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 C     --------------------------------------------------------
       DKT    = .FALSE.
       DKQ    = .FALSE.
-      GRILLE = .FALSE.
+      GRILLE= LTEATT(' ','GRILLE','OUI')
+
       IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
+        CALL ASSERT(GRILLE)
       ELSEIF (NOMTE(1:8).EQ.'MEDKTR3 ') THEN
         DKT = .TRUE.
       ELSEIF (NOMTE(1:8).EQ.'MEDKQU4 ') THEN
@@ -190,7 +189,6 @@ C     --------------------------------------------------------
       IF (NPG.NE.JTAB(3)) CALL U2MESS('F','CALCULEL_13')
 
       CALL JEVECH('PVARIMR','L',IVARIM)
-      CALL JEVECH('PTEREF' ,'L',ITREF)
       CALL JEVECH('PINSTMR','L',IINSTM)
       CALL JEVECH('PINSTPR','L',IINSTP)
       INSTM = ZR(IINSTM)
@@ -295,55 +293,6 @@ C     NBCOU : NOMBRE DE COUCHES
       END IF
 
 C===============================================================
-C     -- RECUPERATION DE LA TEMPERATURE :
-C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-C        -----------------------------------------
-      CALL TECACH ('ONN','PTEMPMR',8,ITABM,IRET)
-      ITEMPM=ITABM(1)
-      IF (IRET.EQ.0.OR.IRET.EQ.3) THEN
-        TEMPNO = .TRUE.
-        CALL TECACH ('OON','PTEMPPR',8,ITABP,IRET)
-        ITEMPP=ITABP(1)
-C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
-C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
-C          ------------------------------------------------------------
-        TMINF = 0.D0
-        TMMOY = 0.D0
-        TMSUP = 0.D0
-        TPINF = 0.D0
-        TPMOY = 0.D0
-        TPSUP = 0.D0
-        DO 40,INO = 1,NNOEL
-          CALL DXTPIF(ZR(ITEMPM+3*(INO-1)),ZL(ITABM(8)+3*(INO-1)))
-          TMMOY = TMMOY + ZR(ITEMPM-1+3*(INO-1)+1)/DBLE(NNOEL)
-          TMINF = TMINF + ZR(ITEMPM-1+3*(INO-1)+2)/DBLE(NNOEL)
-          TMSUP = TMSUP + ZR(ITEMPM-1+3*(INO-1)+3)/DBLE(NNOEL)
-
-          CALL DXTPIF(ZR(ITEMPP+3*(INO-1)),ZL(ITABP(8)+3*(INO-1)))
-          TPMOY = TPMOY + ZR(ITEMPP-1+3*(INO-1)+1)/DBLE(NNOEL)
-          TPINF = TPINF + ZR(ITEMPP-1+3*(INO-1)+2)/DBLE(NNOEL)
-          TPSUP = TPSUP + ZR(ITEMPP-1+3*(INO-1)+3)/DBLE(NNOEL)
-   40   CONTINUE
-        CM1 = TMMOY
-        CM2 = (TMSUP-TMINF)/H
-        CM3 = DEUX* (TMINF+TMSUP-DEUX*TMMOY)/ (H*H)
-        CP1 = TPMOY
-        CP2 = (TPSUP-TPINF)/H
-        CP3 = DEUX* (TPINF+TPSUP-DEUX*TPMOY)/ (H*H)
-      ELSE
-C     2- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-C        -------------------------------------------------------
-        CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
-        IF (IRET.EQ.0) THEN
-          TEMPNO = .FALSE.
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-        ELSE
-          CALL U2MESS('F','ELEMENTS_37')
-        END IF
-      END IF
-
-C===============================================================
 
 C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     -------------------------------------------------
@@ -415,18 +364,6 @@ C         --------------------------
             DEPS2D(5) = 0.D0
             DEPS2D(6) = 0.D0
 
-C         -- CALCUL DES TEMPERATURES TPC ET TMC SUR LA COUCHE :
-C         ---------------------------------------------------
-            IF (TEMPNO) THEN
-              TMC = CM3*ZIC*ZIC + CM2*ZIC + CM1
-              TPC = CP3*ZIC*ZIC + CP2*ZIC + CP1
-            ELSE
-              VALPU(2) = ZIC
-              VALPU(1) = INSTM
-              CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TMC,IER)
-              VALPU(1) = INSTP
-              CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TPC,IER)
-            END IF
 
 C         -- APPEL A NMCOMP POUR RESOUDRE LE PB SUR LA COUCHE :
 C         -----------------------------------------------------
@@ -438,7 +375,6 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
      &                     ZK16(ICOMPO),OPT,EPS2D,DEPS2D,
      &                     ANGMAS,
      &                     ZR(ICONTM+ICPG),ZR(IVARIM+IVPG),
-     &                     TMC,TPC,ZR(ITREF),
      &               ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
             ELSE
                DO 1 J=1,4
@@ -449,8 +385,7 @@ C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
                CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
                CALL NMCOMP('RIGI',IPG,KSP,2,TYPMOD,ZI(IMATE),
-     &                ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &                  TMC,TPC,ZR(ITREF),
+     &                ZK16(ICOMPO),ZR(ICARCR),INSTM,INSTP,
      &                  EPS2D,DEPS2D,
      &                  SIGM,ZR(IVARIM+IVPG),
      &                  OPT,

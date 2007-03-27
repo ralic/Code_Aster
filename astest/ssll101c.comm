@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 27/06/2000
 # AUTEUR : F. LEBOUVIER (DELATCAD)
@@ -139,19 +139,26 @@ TEMP=CREA_CHAMP(     MAILLAGE=MAILLAGE,
                      OPERATION='AFFE',AFFE=(
                            _F( TOUT = 'OUI',
                                  NOM_CMP = 'TEMP',
-                                 VALE = 472.22),
-                           _F( TOUT = 'OUI',
-                                 NOM_CMP = 'TEMP_INF',
-                                 VALE = 472.22),
-                           _F( TOUT = 'OUI',
-                                 NOM_CMP = 'TEMP_SUP',
-                                 VALE = 472.22))
+                                 VALE = 472.22),),
+ 
                      )
 
 #
-DILATA=AFFE_CHAR_MECA(          MODELE=MODELE,
-                           TEMP_CALCULEE=TEMP
-                         )
+
+TEMPER=CREA_RESU(
+               OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                 AFFE=_F(
+               INST = 0.0,
+               CHAM_GD = TEMP)
+             )
+
+
+
+AFF_MAT1=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,
+                               AFFE=_F( TOUT = 'OUI', MATER = MATER),
+               AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPER,
+               NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.0),)
 
 #
 #---------------------------------------------------------------------
@@ -165,10 +172,12 @@ RESU=MACRO_ELAS_MULT(       MODELE=MODELE,
                           _F( NOM_CAS = 'CHARGE NUMERO 1',
                                       CHAR_MECA = POI_PROP),
                           _F( NOM_CAS = 'CHARGE NUMERO 2',
-                                      CHAR_MECA = F_NODALE),
-                          _F( NOM_CAS = 'CHARGE NUMERO 3',
-                                      CHAR_MECA = DILATA))
+                                      CHAR_MECA = F_NODALE))
                         )
+RESU1=MECA_STATIQUE(       MODELE=MODELE,
+                          CHAM_MATER=AFF_MAT1,
+                           CARA_ELEM=CARELEM,
+                           EXCIT=_F( CHARGE = COND_LIM),)
 
 #
 #---------------------------------------------------------------------
@@ -206,17 +215,17 @@ TEST_RESU(RESU=(
            NOM_CMP = 'DZ',                 VALE = -0.10047E-4,
            PRECISION = 0.01),
 #
-     _F( RESULTAT = RESU,              NOM_CAS = 'CHARGE NUMERO 3',
+     _F( RESULTAT = RESU1,              NUME_ORDRE = 1,
            NOM_CHAM = 'DEPL',           GROUP_NO = 'D',
            NOM_CMP = 'DX',                 VALE = -6.3277E-3,
            PRECISION = 0.02),
 
-     _F( RESULTAT = RESU,              NOM_CAS = 'CHARGE NUMERO 3',
+     _F( RESULTAT = RESU1,              NUME_ORDRE = 1,
            NOM_CHAM = 'DEPL',           GROUP_NO = 'D',
            NOM_CMP = 'DY',                 VALE = -13.092E-3,
            PRECISION = 0.01),
 
-     _F( RESULTAT = RESU,              NOM_CAS = 'CHARGE NUMERO 3',
+     _F( RESULTAT = RESU1,              NUME_ORDRE = 1,
            NOM_CHAM = 'DEPL',           GROUP_NO = 'D',
            NOM_CMP = 'DZ',                 VALE = 16.798E-3,
            PRECISION = 0.01))

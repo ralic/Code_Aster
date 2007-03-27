@@ -1,7 +1,7 @@
-      SUBROUTINE  EPSTMC(MODELI, NDIM, TEMPE, TREF, HYDR, SECH, SREF,
-     &                   INSTAN, XYZGAU,REPERE,MATER,OPTION, EPSTH)
+      SUBROUTINE  EPSTMC(FAMI,MODELI, NDIM, INSTAN, POUM, IGAU,ISGAU,
+     &                   XYZGAU,REPERE,MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,12 @@ C                 ENDOGENE) / DE SECHAGE (RETRAIT DE DESSICCATION)
 C                 POUR LES ELEMENTS ISOPARAMETRIQUES
 C
 C   ARGUMENT        E/S  TYPE         ROLE
+C    FAMI           IN     K4       FAMILLE DU POINT DE GAUSS
 C    MODELI         IN     K8       MODELISATION (AXI, FOURIER,...)
-C    TEMPE          IN     R        TEMPERATURE AU POINT D'INTEGRATION
-C    TREF           IN     R        TEMPERATURE DE REFERENCE
-C    HYDR           IN     R        HYDRATATION AU POINT D'INTEGRATION
-C    SECH           IN     R        SECHAGE AU POINT D'INTEGRATION
-C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
+C    POUM           IN     K1       T+ OU T-
+C    IGAU           IN     I        POINT DE GAUSS
+C    ISGAU          IN     I        SOUS-POINT DE GAUSS
 C    XYZGAU         IN     R        COORDONNEES DU POINT DE GAUSS
 C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 C                                   D'ORTHOTROPIE
@@ -42,22 +41,23 @@ C    EPSTH(6)       IN     R        VECTEUR DES DEFORMATIONS THERMIQUES
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
+           CHARACTER*(*)  FAMI,POUM
            CHARACTER*8  MODELI
            CHARACTER*16 OPTION
-           REAL*8       EPSTH(6), INSTAN, HYDR, SECH,XYZGAU(3)
+           REAL*8       INSTAN,EPSTH(6), XYZGAU(3)
            REAL*8       REPERE(7)
-           INTEGER      NDIM
+           INTEGER      NDIM,IGAU,ISGAU
 C -----  VARIABLES LOCALES
            PARAMETER (NBRES = 3)
 C
            CHARACTER*2  BL2, FB2, CODRET(NBRES)
-           CHARACTER*8  NOMRES(NBRES), NOMPAR(4)
+           CHARACTER*8  NOMRES(NBRES), NOMPAR
            CHARACTER*16 PHENOM
 C
-           REAL*8 VALRES(NBRES),VALPAR(4),BENDOG,KDESSI,ANGL(3)
+           REAL*8 VALRES(NBRES),VALPAR,BENDOG,KDESSI,ANGL(3)
            REAL*8 DIRE(3),ORIG(3),P(3,3),EPSTHL(6)
-           REAL*8 VEPST1(6),VEPST2(6)
-           INTEGER I,J,K
+           REAL*8 VEPST1(6),VEPST2(6),HYDR,SECH,SREF,TEMPE,TREF
+           INTEGER I,J,K,IRET
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -65,19 +65,23 @@ C ---- INITIALISATIONS
 C      ---------------
       ZERO   = 0.0D0
       BL2    = '  '
-C
-      NOMPAR(1) = 'TEMP'
-      NOMPAR(2) = 'INST'
-      VALPAR(1) = TEMPE
-      VALPAR(2) = INSTAN
-      NOMPAR(3) = 'HYDR'
-      NOMPAR(4) = 'SECH'
-      VALPAR(3) = HYDR
-      VALPAR(4) = SECH
+      NOMPAR = 'INST'
+      VALPAR = INSTAN
 C
       DO 10 I = 1, 6
          EPSTH(I)  = ZERO
  10   CONTINUE
+
+      CALL RCVARC(' ','HYDR',POUM,FAMI,IGAU,ISGAU,HYDR,IRET)
+      IF (IRET.EQ.1) HYDR=0.D0
+
+      CALL RCVARC(' ','SECH',POUM,FAMI,IGAU,ISGAU,SECH,IRET)
+      IF (IRET.EQ.1) SECH=0.D0
+      CALL RCVARC(' ','SECH','REF',FAMI,1,1,SREF,IRET)
+      IF (IRET.EQ.1) SREF=0.D0
+
+      CALL RCVARC('F','TEMP',POUM,FAMI,IGAU,ISGAU,TEMPE,IRET)
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
 C
 C ---- ------------------------------------------------------------
 C ---- CALCUL DES DEFORMATIONS HYDRIQUES (OPTION CHAR_MECA_HYDR_R)
@@ -90,11 +94,10 @@ C
             NOMRES(1) = 'B_ENDOGE'
             NBV = 1
 C
-C ----      INTERPOLATION DE B_ENDOGENE EN FONCTION DE LA TEMPERATURE
-C           DE L HYDRATATION OU DU SECHAGE
-C           ----------------------------------------------------------
-            CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
-     &                VALRES,  CODRET, BL2 )
+C ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
+C     ----------------------------------------------------------
+            CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                  VALPAR,NBV,NOMRES,VALRES,  CODRET, BL2 )
 C
             IF (CODRET(1).EQ.'OK') THEN
 C
@@ -123,8 +126,8 @@ C
 C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 C           DE L HYDRATATION OU DU SECHAGE
 C           ----------------------------------------------------------
-            CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
-     &                 VALRES, CODRET, BL2 )
+            CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                  VALPAR,NBV,NOMRES,VALRES, CODRET, BL2 )
 C
             IF (CODRET(1).NE.'OK') VALRES(1)=0.D0
 C
@@ -152,10 +155,10 @@ C
           NOMRES(1) = 'ALPHA'
           NBV = 1
 C
-C ----   INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
-C        ----------------------------------------------------
-          CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
-     &               VALRES, CODRET, BL2 )
+C ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
+C     ----------------------------------------------------
+          CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                VALPAR,NBV,NOMRES,VALRES, CODRET, BL2 )
 C
           IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
 C
@@ -178,11 +181,11 @@ C
          ELSE
             DIRE(1) = REPERE(2)
             DIRE(2) = REPERE(3)
-            DIRE(3) = REPERE(4) 
+            DIRE(3) = REPERE(4)
 C
-            ORIG(1) = REPERE(5)     
-            ORIG(2) = REPERE(6)     
-            ORIG(3) = REPERE(7) 
+            ORIG(1) = REPERE(5)
+            ORIG(2) = REPERE(6)
+            ORIG(3) = REPERE(7)
             CALL UTRCYL(XYZGAU,DIRE,ORIG,P)
           ENDIF
           NOMRES(1)='ALPHA_L'
@@ -190,10 +193,10 @@ C
           NOMRES(3)='ALPHA_N'
           NBV = 3
 C
-C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
-C        ------------------------------------------------------------
-          CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
-     &                VALRES,CODRET, BL2 )
+C ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
+C     ------------------------------------------------------------
+          CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                VALPAR,NBV,NOMRES,VALRES, CODRET, BL2 )
 C
           IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
           IF (CODRET(2).NE.'OK') VALRES(2) = ZERO
@@ -243,11 +246,11 @@ C
           ELSE
             DIRE(1) = REPERE(2)
             DIRE(2) = REPERE(3)
-            DIRE(3) = REPERE(4) 
+            DIRE(3) = REPERE(4)
 C
-            ORIG(1) = REPERE(5)     
-            ORIG(2) = REPERE(6)     
-            ORIG(3) = REPERE(7) 
+            ORIG(1) = REPERE(5)
+            ORIG(2) = REPERE(6)
+            ORIG(3) = REPERE(7)
             CALL UTRCYL(XYZGAU,DIRE,ORIG,P)
           ENDIF
 
@@ -255,10 +258,10 @@ C
           NOMRES(2)='ALPHA_N'
           NBV = 2
 C
-C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
-C        ------------------------------------------------------------
-          CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
-     &              VALRES,  CODRET, BL2 )
+C ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
+C     ------------------------------------------------------------
+          CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                VALPAR,NBV,NOMRES,VALRES, CODRET, BL2 )
 C
           IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
           IF (CODRET(2).NE.'OK') VALRES(2) = ZERO

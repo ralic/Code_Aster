@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*),DEFORM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +113,9 @@ C     --- CALCUL DE L'OPTION ---
       LCHIN(9) = CHCARA(11)
       LPAIN(10) = 'PCAGEPO'
       LCHIN(10) = CHCARA(5)
-      NB = 10
+      LPAIN(11)  = 'PNBSP_I'
+      LCHIN(11)  = CHCARA(1) (1:8)//'.CANBSP'
+      NB = 11
       LPAOUT(1) = 'PMASSINE'
       LCHOUT(1) = CHELEM
 

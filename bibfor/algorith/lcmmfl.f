@@ -1,12 +1,13 @@
-        SUBROUTINE LCMMFL( TAUS,COEFT,IFA,NMAT,NBCOMM,NECOUL,RP,
-     &                     NUMS,VIS,NVI,VINI,DT,DTIME,DGAMMA,DP,TPERD )
+        SUBROUTINE LCMMFL( FAMI,KPG,KSP,TAUS,COEFT,IFA,NMAT,NBCOMM,
+     &               NECOUL,RP,NUMS,VIS,NVI,VINI,DT,DTIME,DGAMMA,DP )
         IMPLICIT NONE
-        INTEGER IFA,NMAT,NBCOMM(NMAT,3),NVI,NUMS
+        INTEGER KPG,KSP,IFA,NMAT,NBCOMM(NMAT,3),NVI,NUMS
         REAL*8 TAUS,COEFT(NMAT),VIS(3),DGAMMA,DP,DT,DTIME,TAUMU,TAUV
         REAL*8 VINI(NVI),RP
+        CHARACTER*(*)  FAMI
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +40,6 @@ C           NVI     :  NOMBRE DE VARIABLES INTERNES
 C           VINI    :  TOUTES lES VARIABLES INTERNES
 C           DT      :  INTERVALLE DE TEMPS EVENTULLEMENT REDECOUPE
 C           DTIME   :  INTERVALLE DE TEMPS INITIAL
-C           TPERD   :  TEMPERATURE
 C     OUT:
 C           DGAMMA    :  DERIVEES DES VARIABLES INTERNES A T
 C           DP
@@ -48,8 +48,11 @@ C ======================================================================
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
       REAL*8 TPERD,TABS,PR,DRDP,DDVIR(NVI),DRDPR,DELTAV,DELTAG
-      INTEGER IFL,IEI,TNS,NS,IS
+      INTEGER IFL,IEI,TNS,NS,IS,IRET
 C     ----------------------------------------------------------------
+
+      CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TPERD,IRET)
+      IF ( IRET.NE.0) TPERD=0.D0
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 

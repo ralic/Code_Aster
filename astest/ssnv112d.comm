@@ -1,4 +1,4 @@
-# MODIF  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM GRANDES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -296,5 +296,4 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
 #                   PRECISION=0.001,
 #                   REFERENCE='NON_REGRESSION',
 #                   VERSION='8.2.15',),);
-STANLEY()
 FIN();

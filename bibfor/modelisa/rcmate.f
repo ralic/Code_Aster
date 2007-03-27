@@ -3,7 +3,7 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C ----------------------------------------------------------------------
 C
       INTEGER IBID, NOCC, I, NM, NT, JNCMP, JVALV, NBMA,JMAIL,IER,NBCMP
-      CHARACTER*4   OUI
+      CHARACTER*4   OUI ,NOCP
       CHARACTER*8   K8B, NOMMAT, TYPMCL(2)
       CHARACTER*16  MOTCLE(2)
       CHARACTER*24  CHAMAT, MESMAI
@@ -55,13 +55,13 @@ C
       CALL ALCART ( 'G', CHAMAT, NOMAIL, 'NEUT_F')
       CALL JEVEUO ( CHAMAT(1:19)//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CHAMAT(1:19)//'.VALV', 'E', JVALV )
-      OUI = 'X'
+      NOCP = 'X'
 C
       CALL DISMOI('F','NB_CMP_MAX','NEUT_F','GRANDEUR',NBCMP,K8B,IER)
 C
       DO 5 I=1,NBCMP
-        CALL CODENT(I,'G',OUI(2:4))
-        ZK8(JNCMP+I-1) = OUI
+        CALL CODENT(I,'G',NOCP(2:4))
+        ZK8(JNCMP+I-1) = NOCP
  5    CONTINUE
 C
       CALL GETFAC ( 'AFFE' , NOCC )
@@ -76,9 +76,7 @@ C
       DO 10 I = 1 , NOCC
          CALL GETVID ( 'AFFE', 'MATER' , I,1,1,  NOMMAT, NM )
          IF (NM .LT. -1) NM = -NM
-         IF (NM .GT. NBCMP) THEN
-           CALL U2MESS('F','MODELISA6_65')
-         ENDIF
+         CALL ASSERT(NM.LE.NBCMP)
          CALL GETVID ( 'AFFE', 'MATER' , I,1,NM, ZK8(JVALV), NM )
          CALL GETVTX ( 'AFFE', 'TOUT'  , I,1,1, OUI   , NT )
          IF ( NT .NE. 0 ) THEN

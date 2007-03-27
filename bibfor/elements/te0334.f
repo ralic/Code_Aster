@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,22 +48,22 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER MXCMEL,NBRES,NBSGM,I,NDIM,NNO,NNOS,NBSIGM,NBSIG,
      &        IDSIG,ICOMPO,NPG,IPOIDS,IVF,IDFDE,
-     &        IGAU,ISIG,INO,IGEOM,IDEPL,IDEFP,ITEMPE,
-     &        ITREF,ITEMPS,IMATE,IDEFA,IDECPG,
-     &        NBVARI,IVARI,K,NVI,NVIF,IBID,JTAB(7),IRET,JGANO
+     &        IGAU,ISIG,INO,IGEOM,IDEPL,IDEFP,
+     &        ITEMPS,IMATE,IDEFA,
+     &        NBVARI,IVARI,K,NVIF,IBID,JTAB(7),IRET,JGANO
       PARAMETER (MXCMEL=54)
       PARAMETER (NBRES=3)
       PARAMETER (NBSGM=4)
       REAL*8 VALRES(NBRES),EPSM(MXCMEL),EPSANE(MXCMEL),EPSPLA(MXCMEL)
-      REAL*8 EPSPLN(MXCMEL),SIGMA(NBSGM), VALPAR(2),C1,C2,TRSIG
+      REAL*8 EPSPLN(MXCMEL),SIGMA(NBSGM), VALPAR,C1,C2,TRSIG
       REAL*8 EPSFL(NBSGM),EPSFLF(NBSGM)
-      REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN,TEMPG
+      REAL*8 REPERE(7),NHARM,E,NU,ZERO,UN
       CHARACTER*2  CODRET(NBRES)
-      CHARACTER*8  NOMRES(NBRES),NOMPAR(2),MODELI,MOD3D
+      CHARACTER*8  NOMRES(NBRES),NOMPAR,MODELI,MOD3D
       CHARACTER*6       EPSA(6)
-      CHARACTER*16 OPTIO2,PHENOM,CMP1,CMP2,CMP3
+      CHARACTER*16 OPTIO2,PHENOM,CMP1,CMP2
       CHARACTER*16 COMPOR
-      LOGICAL      LFLU,LTEMP
+      LOGICAL      LFLU
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
@@ -102,18 +102,10 @@ C --- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
 C     ------------------------------------------------------------
 C     ON FOURNIT UN REPRE BIDON A EPSVMC CAR DE TOUTE FACON ON NE
 C     TRAITE PAS LE CAS ORTHOTROPE
-C     
+C
       DO 200 I=1,7
         REPERE(I)=0.D0
 200   CONTINUE
-
-C --- RECUPERATION DES TEMPERATURES AUX NOEUDS DE L'ELEMENT :
-C     -----------------------------------------------------
-      CALL JEVECH('PTEMPER','L',ITEMPE)
-
-C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
-C     -------------------------------------------
-      CALL JEVECH('PTEREF','L',ITREF)
 
 C --- RECUPERATION DE L'INSTANT COURANT :
 C     ---------------------------------
@@ -177,7 +169,7 @@ C          ----------------------
 
       OPTIO2 = 'EPME_'//OPTION(6:9)//'_DEPL'
       CALL EPSVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     &              ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),ZR(ITREF),
+     &              ZR(IGEOM),ZR(IDEPL),
      &              ZR(ITEMPS),ZI(IMATE),REPERE,NHARM,OPTIO2,EPSM)
 
 C --- RECUPERATION DU COMPORTEMENT  :
@@ -194,7 +186,6 @@ C --- VERIFICATION DU COMPORTEMENT FLUAGE :
 C     -------------------------------------
       CMP1 = ZK16(ICOMPO)
       CMP2 = ZK16(ICOMPO+7)
-      CMP3 = ZK16(ICOMPO+8)
       IF (CMP1(1:10).NE.'GRANGER_FP' .AND.
      &    (CMP1(1:7).NE.'KIT_DDI'.OR.CMP2(1:10).NE.'GRANGER_FP')) THEN
         LFLU = .FALSE.
@@ -209,40 +200,12 @@ C     -------------------------------------
         LFLU = .TRUE.
       END IF
 
-C --- DEPENDANCE DES CARACTERISTIQUES MECANIQUES AVEC LA TEMPERATURE :
-C     ----------------------------------------------------------------
-      LTEMP = .FALSE.
-      IF (CMP1(1:15).EQ.'BETON_DOUBLE_DP') THEN
-        NVI = 3
-        LTEMP = .TRUE.
-      ELSE IF (CMP1(1:7).EQ.'KIT_DDI') THEN
-        IF (CMP3(1:15).EQ.'BETON_DOUBLE_DP') THEN
-          IF (CMP2(1:10).EQ.'GRANGER_FP') THEN
-            NVI = NVIF + 3
-            LTEMP = .TRUE.
-          ELSE
-            CALL U2MESS('F','ELEMENTS3_76')
-          END IF
-        END IF
-      END IF
 
 C --- BOUCLE SUR LES POINTS D'INTEGRATION :
 C     -----------------------------------
       DO 120 IGAU = 1,NPG
 
-        IDECPG = NNO* (IGAU-1) - 1
 
-C  ---   TEMPERATURE AU POINT D'INTEGRATION COURANT :
-C        ------------------------------------------
-        TEMPG = ZERO
-
-        DO 60 I = 1,NNO
-          TEMPG = TEMPG + ZR(IVF+I+IDECPG)*ZR(ITEMPE+I-1)
-   60   CONTINUE
-        IF (LTEMP) THEN
-          IF (TEMPG.LT.ZR(IVARI+ (IGAU-1)*NBVARI+NVI-
-     &        1)) TEMPG = ZR(IVARI+ (IGAU-1)*NBVARI+NVI-1)
-        END IF
 
 C ---    RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
 C        ---------------------------------------------
@@ -250,15 +213,13 @@ C        ---------------------------------------------
         NOMRES(2) = 'NU'
         NOMRES(3) = 'ALPHA'
 
-        NOMPAR(1) = 'TEMP'
-        NOMPAR(2) = 'INST'
-        VALPAR(1) = TEMPG
-        VALPAR(2) = ZR(ITEMPS)
+        NOMPAR = 'INST'
+        VALPAR = ZR(ITEMPS)
 
-        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',2,NOMPAR,
+        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',1,NOMPAR,
      &              VALPAR,2,NOMRES,VALRES,CODRET,'FM')
 
-        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',2,NOMPAR,
+        CALL RCVALB('RIGI',IGAU,1,'+',ZI(IMATE),' ','ELAS',1,NOMPAR,
      &              VALPAR,1,NOMRES(3),VALRES(3),CODRET(3),'  ')
 
         E = VALRES(1)
@@ -270,7 +231,7 @@ C        ---------------------------------------------
 C ---    TENSEUR DE DEFORMATION DE FLUAGE AU PT D'INTEGRATION COURANT :
 C        --------------------------------------------------------------
         IF (LFLU) THEN
-     
+
          CALL CALCGR(IGAU,NBSIG,NBVARI,ZR(IVARI),NU,EPSFLF)
 
         END IF

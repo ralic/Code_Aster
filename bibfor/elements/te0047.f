@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/12/2006   AUTEUR VOLDOIRE F.VOLDOIRE 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,6 +79,7 @@ C *************** DECLARATION DES VARIABLES LOCALES ********************
       INTEGER IRMETG,ITERAT,IVARIP,NDIM,JCRET
       INTEGER IADZI, IAZK24
       CHARACTER*8 NOMAIL
+      CHARACTER*4 FAMI
 
       REAL*8   ZERO,DTEMPS,MOINS1
       INTEGER  II,JTP,JTM
@@ -144,6 +145,9 @@ C *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 
 
 C ********************* DEBUT DE LA SUBROUTINE *************************
+
+      FAMI = 'RIGI'
+
 
 C --- DEFINITIONS DE PARAMETRES : NBT = NOMBRE DE COEFFICIENTS DANS K
 C                                 NEQ = NOMBRE DE DDL EN DEPLACEMENT
@@ -614,26 +618,15 @@ C        MATRICE DE RIGIDITE EN REPERE LOCAL
             CALL JEVECH('PCONTPR','E',ICONTP)
             CALL JEVECH('PVARIPR','E',IVARIP)
 C
-            CALL TECACH('ONN','PTEMPMR',1,ITEMPM,IRETM)
-            CALL TECACH('ONN','PTEMPPR',1,ITEMPP,IRETP)
-            IF ((IRETM.EQ.0).AND.(IRETP.EQ.0)) THEN
-               ITEMP = 1
-               TEMPM = 0.5D0 * ( ZR(ITEMPM) + ZR(ITEMPM+1) )
-               TEMPP = 0.5D0 * ( ZR(ITEMPP) + ZR(ITEMPP+1) )
-            ELSE
-               ITEMP = 0
-               TEMPM = 0.D0
-               TEMPP = 0.D0
-            ENDIF
 C           ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
             CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
             IF (IRET2.GT.0) IRRAP=0.D0
 C           RELATION DE COMPORTEMENT : ELASTIQUE PARTOUT
 C           SAUF SUIVANT Y LOCAL : FROTTEMENT DE COULOMB
-            CALL DICOUL(OPTION,NNO,NBT,NEQ,NC,ZI(IMATE),
+            CALL DICOUL(FAMI,OPTION,NNO,NBT,NEQ,NC,ZI(IMATE),
      &                ULM,DUL,ZR(ICONTM),ZR(JTP),ZR(IVARIM),
      &                PGL,KLV,ZR(IVARIP),ZR(IFONO),ZR(ICONTP),
-     &                ITEMP, TEMPM, TEMPP,IRRAP)
+     &                IRRAP)
          END IF
          IF ( OPTION.EQ.'FULL_MECA' .OR.
      &        OPTION.EQ.'RIGI_MECA_TANG' ) THEN
@@ -657,17 +650,6 @@ C
          CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PINSTPR','L',JTP)
 C
-         CALL TECACH('ONN','PTEMPMR',1,ITEMPM,IRETM)
-         CALL TECACH('ONN','PTEMPPR',1,ITEMPP,IRETP)
-         IF ((IRETM.EQ.0).AND.(IRETP.EQ.0)) THEN
-            ITEMP = 1
-            TEMPM = 0.5D0 * ( ZR(ITEMPM) + ZR(ITEMPM+1) )
-            TEMPP = 0.5D0 * ( ZR(ITEMPP) + ZR(ITEMPP+1) )
-         ELSE
-            ITEMP = 0
-            TEMPM = 0.D0
-            TEMPP = 0.D0
-         ENDIF
 C        ON RECUPERE L'IRRADIATION A T+ SUR LE 1ER PG :
          CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
          IF (IRET2.GT.0) IRRAP=0.D0
@@ -683,10 +665,10 @@ C         ENDIF
             CALL JEVECH('PCONTPR','E',ICONTP)
             CALL JEVECH('PVARIPR','E',IVARIP)
          END IF
-         CALL DICRGR(OPTION,NEQ,NC,ZI(IMATE),
+         CALL DICRGR(FAMI,OPTION,NEQ,NC,ZI(IMATE),
      &              ULM,DUL,ZR(ICONTM),ZR(IVARIM),
      &              PGL,KLV,ZR(IVARIP),ZR(IFONO),ZR(ICONTP),
-     &              ITEMP, TEMPM, TEMPP,IRRAP)
+     &              IRRAP)
 
          IF ( OPTION.EQ.'FULL_MECA' .OR.
      &        OPTION.EQ.'RIGI_MECA_TANG' ) THEN

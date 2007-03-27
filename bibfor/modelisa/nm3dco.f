@@ -1,6 +1,6 @@
-      SUBROUTINE NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,TM,TP,SIGM,
+      SUBROUTINE NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,SIGM,
      &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRILDC,CODRET)
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,8 +30,6 @@ C          LOI DE L'ACIER SOUMIS A LA CORROSION 3D
 C IN  NDIM    : DIMENSION
 C IN  OPTION  : OPTION DE CALCUL
 C IN  IMATE   : POINTEUR MATERIAU
-C IN  TM      : TEMPERATURE MOINS
-C IN  TP      : TEMPERATURE PLUS
 C IN  SIGM    : CONTRAINTE AU TEMPS MOINS
 C IN  EPSM    : DEFORMATION TOTALE AU TEMPS MOINS
 C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION TOTALE MOINS
@@ -45,7 +43,6 @@ C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
-      REAL*8 TP,TM
       REAL*8 SIGM(6),DEPS(6),VIM(*),EPSM(6)
       REAL*8 SIGP(6),VIP(*),DSIDEP(6,6),CRILDC(3)
       CHARACTER*16 OPTION
@@ -53,10 +50,9 @@ C     ------------------------------------------------------------------
       INTEGER NDIM,IMATE,CODRET,KPG,KSP
 
       REAL*8 YOUNG,NU,KCOEF,MCOEF,COEFDC,LIMIT
-      REAL*8 VALPAR
+      REAL*8 VALPAR, VALRES(4)
       CHARACTER*2  FB2,CODRES
-      CHARACTER*8  NOMPAR
-      INTEGER NBPAR
+      CHARACTER*8  NOMPAR, NOMRES(4)
 
       INTEGER ITER,ITEMAX,NDIMSI,I,J,K,L,M,ITD,IBID
 
@@ -74,21 +70,25 @@ C     ------------------------------------------------------------------
 2327  FORMAT(A4,6(2X,D12.6))
 
       NDIMSI=2*NDIM
+      NOMRES(1) = 'D_CORR'
+      NOMRES(2) = 'ECRO_K'
+      NOMRES(3) = 'ECRO_M'
+      NOMRES(4) = 'SY'
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CORR_ACIER',0,' ',
+     &            0.D0,4,NOMRES,VALRES,CODRES,FB2)
 
-      VALPAR = TP
-      CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'D_CORR',
-     &              COEFDC,CODRES,FB2)
-      CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'ECRO_K',
-     &              KCOEF,CODRES,FB2)
-      CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'ECRO_M',
-     &              MCOEF,CODRES,FB2)
-      CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'SY',
-     &              LIMIT,CODRES,FB2)
-      CALL RCVALA(IMATE,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,'NU',
-     &              NU,CODRES,FB2)
-       CALL RCVALA(IMATE,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,'E',
-     &              YOUNG,CODRES,FB2)
+      COEFDC = VALRES(1)
+      KCOEF  = VALRES(2)
+      MCOEF  = VALRES(3)
+      LIMIT  = VALRES(4)
+      NOMRES(1) = 'NU'
+      NOMRES(2) = 'E'
 
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
+     &            0.D0,2,NOMRES,VALRES,   CODRES,FB2)
+
+      NU = VALRES(1)
+      YOUNG = VALRES(2)
 
       ECUMM = VIM(1)
       DCOEF = VIM(2)
@@ -382,7 +382,7 @@ C          PLASTICITE SANS ENDOMMAGEMENT
  230       CONTINUE
 
          ELSE
-C	   PLASTICITE ET ENDOMMAGEMENT
+C          PLASTICITE ET ENDOMMAGEMENT
            HP = (1.D0+((3.D0/2.D0)*COEF1*KCI*DP)/
      &                     ((1.D0-DCOEF)*(RINI+LIMIT)))
            LAMDA = COEF2+((COEF1/3.D0)*(1.D0-(1.D0/HP)))

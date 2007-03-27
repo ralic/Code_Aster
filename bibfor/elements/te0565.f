@@ -1,6 +1,6 @@
       SUBROUTINE TE0565(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +29,7 @@ C          NOMTE  : NOM DU TYPE ELEMENT
 C ----------------------------------------------------------------------
       PARAMETER (NBRES=4,NCMP=6)
       CHARACTER*8 NOMRES(NBRES)
+      CHARACTER*4 FAMI
       CHARACTER*2 CODRET(NBRES)
       REAL*8 VALRES(NBRES)
       REAL*8 DEFOPP(162),DEFORP(162),DEFORE(162),DEFOTH
@@ -36,7 +37,7 @@ C ----------------------------------------------------------------------
       REAL*8 TREF,TRCP
       REAL*8 DFDX(27),DFDY(27),DFDZ(27)
       REAL*8 TPG,POIDS,UP(3,27),UE(3,27)
-      INTEGER JGANO,NNO,KP,I,ITEMPE,IDEPLP,IDEPLE,IALPHA
+      INTEGER JGANO,NNO,KP,I,IRET,IDEPLP,IDEPLE,IALPHA
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER NPG,ICONTP
 
@@ -57,16 +58,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      FAMI = 'RIGI'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL JEVECH('PTEMPER','L',ITEMPE)
-      CALL JEVECH('PTEREF','L',ITEREF)
       CALL TECACH('ONN','PDEPLAP',1,IDEPLP,IRET)
       CALL TECACH('ONN','PCONTRP',1,ICONTP,IRET)
       CALL JEVECH('PDEPLAE','L',IDEPLE)
       CALL JEVECH('PALPHAR','E',IALPHA)
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
 
       IF (IDEPLP.NE.0) THEN
 
@@ -94,22 +95,18 @@ C    ETAT INITIAL NON NUL (DONNEE ELASTOPLASTIQUE)
 
         DO 60 KP = 1,NPG
 
-          IT = (KP-1)*NNO
           IDPG = (KP-1)*NCMP
 
           CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
-          TPG = 0.D0
-          DO 40 I = 1,NNO
-            TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+IT+I-1)
-   40     CONTINUE
-          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,2,NOMRES,
-     &                VALRES,CODRET,'FM')
-          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,1,NOMRES(3),
-     &                VALRES(3),CODRET(3),'  ')
+          CALL RCVARC('F','TEMP','+',FAMI,KP,1,TPG,IRET)
+          CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,2,
+     &                NOMRES,VALRES,CODRET,'FM')
+          CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
+     &                NOMRES(3),VALRES(3),CODRET(3),'  ')
           IF (CODRET(3).NE.'OK') VALRES(3) = 0.D0
-          CALL RCVALA(ZI(IMATE),' ','ECRO_LINE',1,'TEMP',TPG,1,
-     &                NOMRES(4),VALRES(4),CODRET(4),'FM')
+          CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ','ECRO_LINE',0,' ',
+     &                0.D0,1,NOMRES(4),VALRES(4),CODRET(4),'FM')
 
           C = 2.D0/3.D0* (VALRES(1)*VALRES(4))/ (VALRES(1)-VALRES(4))
 
@@ -134,7 +131,6 @@ C    ETAT INITIAL NON NUL (DONNEE ELASTOPLASTIQUE)
      &                       (UP(2,I)*DFDZ(I)+UP(3,I)*DFDY(I))*0.5D0
    50     CONTINUE
 
-          TREF = ZR(ITEREF)
           DEFOTH = VALRES(3)* (TPG-TREF)
           TRCP = ZR(ICONTP+IDPG) + ZR(ICONTP+IDPG+1) + ZR(ICONTP+IDPG+2)
           C1 = (1.D0+VALRES(2))/VALRES(1)

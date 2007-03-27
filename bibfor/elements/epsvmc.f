@@ -1,8 +1,8 @@
       SUBROUTINE EPSVMC (FAMI,MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
-     &                   IDFDE, XYZ,DEPL,TEMPE,TREF,INSTAN,MATER,
+     &                   IDFDE, XYZ,DEPL,INSTAN,MATER,
      &                   REPERE,NHARM,OPTION,EPSM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,9 +44,6 @@ C    IDFDE          IN     I        PT DERIVEES DES FONCTIONS DE FORME
 C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
 C    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR
 C                                   L'ELEMENT
-C    TEMPE(1)       IN     R        TEMPERATURES AUX NOEUDS DE
-C                                   L'ELEMENT
-C    TREF           IN     R        TEMPERATURE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    MATER          IN     I        MATERIAU
 C    NHARM          IN     R        NUMERO D'HARMONIQUE
@@ -75,13 +72,12 @@ C -----  ARGUMENTS
            CHARACTER*8  MODELI
            CHARACTER*16 OPTION
            CHARACTER*4  FAMI
-           REAL*8       XYZ(1),  DEPL(1),  TEMPE(1), EPSM(1), REPERE(7)
+           REAL*8       XYZ(1),  DEPL(1),  EPSM(1), REPERE(7)
            REAL*8       INSTAN,   NHARM
 C -----  VARIABLES LOCALES
            CHARACTER*8  MODEDP,PHENOM
            CHARACTER*2  CODRET
            REAL*8       EPSTH(162), EPS2(162), XYZGAU(3), D(4,4)
-           REAL*8       HYDR(27),SECH(27),SREF
            INTEGER      IER
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -98,26 +94,6 @@ C
          EPSTH(I)= ZERO
  10   CONTINUE
 
-C--- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
-C    -----------------------------------------------------
-
-      IF ((MODELI(1:2).EQ.'CP').OR.
-     &   (OPTION(1:4).EQ.'EPME').OR.(OPTION(1:4).EQ.'EPMG')) THEN
-        DO 20 IGAU = 1,NPG
-          CALL RCVARC(' ','HYDR','+',FAMI,IGAU,1,HYDR(IGAU),IER)
-          IF (IER.EQ.1) HYDR(IGAU)=0.D0
-          CALL RCVARC(' ','SECH','+',FAMI,IGAU,1,SECH(IGAU),IER)
-          IF (IER.EQ.1) SECH(IGAU)=0.D0
-   20   CONTINUE
-          CALL RCVARC(' ','SECH','REF',FAMI,1,1,SREF,IER)
-          IF (IER.EQ.1) SREF=0.D0
-      ELSE
-        DO 25 IGAU =1,NPG
-          HYDR(IGAU)=0.D0
-          SECH(IGAU)=0.D0
- 25     CONTINUE
-          SREF=0.D0
-      ENDIF
 C
 C --- CALCUL DES DEFORMATIONS DU PREMIER ORDRE
 C --- AUX POINTS D'INTEGRATION :
@@ -138,8 +114,8 @@ C --- (AJOUTEES AUX DEFORMATIONS DE RETRAIT ENDOGENE/DESSICCATION)
 C      ----------------------------------------------------------
       CALL RCCOMA(MATER,'ELAS',PHENOM,CODRET)
       IF (PHENOM(1:8).NE.'ELAS_MET') THEN
-        CALL EPTHMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,REPERE,
-     +         TEMPE,TREF,HYDR,SECH,SREF,INSTAN,MATER,OPTION,EPSTH)
+        CALL EPTHMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,REPERE,
+     +         INSTAN,MATER,OPTION,EPSTH)
       ELSE IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG') THEN
         CALL U2MESK('F','ELEMENTS_15',1,PHENOM)
       ENDIF
@@ -165,23 +141,18 @@ C ---   BOUCLE SUR LES POINTS D'INTEGRATION :
 C       -----------------------------------
         DO 50 IGAU = 1, NPG
 C
-C  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
+C  --      COORDONNEES AU POINT D'INTEGRATION
 C  --      COURANT
 C          -------
           XYZGAU(1) = ZERO
           XYZGAU(2) = ZERO
           XYZGAU(3) = ZERO
-          TEMPG     = ZERO
-C
-          DO 60 I = 1, NNO
-             TEMPG = TEMPG + ZR(IVF-1+I+NNO*(IGAU-1))*TEMPE(I)
-  60      CONTINUE
 C
 C  --      CALCUL DE LA MATRICE DE HOOKE (LE MATERIAU POUVANT
 C  --      ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          -------------------------------------------------
-          CALL DMATMC(MODEDP, MATER, TEMPG, HYDR, SECH, INSTAN,
-     &                REPERE, XYZGAU, NBSIG, D, .FALSE.)
+          CALL DMATMC(FAMI,MODEDP, MATER,
+     &                INSTAN,'+',IGAU,1,REPERE,XYZGAU,NBSIG,D,.FALSE.)
 C
           IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG'.OR.
      &        OPTION(1:4).EQ.'EPMH') THEN

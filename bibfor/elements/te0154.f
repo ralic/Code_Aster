@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -58,15 +58,17 @@ C
       REAL*8       PGL(3,3), KLC(6,6), ENERTH,EPSGL(6)
       REAL*8       UGR(6),ULR(6),FLR(6),EPS(6)
       CHARACTER*2  BL2, CODRES
+      CHARACTER*4  FAMI
       CHARACTER*16 CH16
       LOGICAL      LTEIMP
-      REAL*8       A,ALPHAT,E,R8BID,RHO,TEMP,XFL1,XFL4,XL,XMAS,XRIG
+      REAL*8       A,ALPHAT,E,R8BID,RHO,TEMP,XFL1,XFL4,XL,XMAS,XRIG,TREF
       INTEGER      I,IF,ITYPE,J,JDEPL,JEFFO,JENDE,JFREQ,JDEFO,KANL
-      INTEGER      LMATER,LORIEN,LSECT,LTEMP,LTREF,LX,NC,NNO
+      INTEGER      LMATER,LORIEN,LSECT,LTEMP,IRET1,IRET2,LX,NC,NNO
 C     ------------------------------------------------------------------
       LTEIMP = .FALSE.
       NNO = 2
       NC  = 3
+      FAMI = 'RIGI'
 C
       IF ( (NOMTE .NE. 'MECA_BARRE').AND.
      &      (NOMTE .NE. 'MECA_2D_BARRE'))  THEN
@@ -75,6 +77,11 @@ C
       ENDIF
 C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+      TEMP=0.D0
+      CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET1)
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET2)
+      IF ((IRET1.NE.1).AND.(IRET2.NE.1)) TEMP=TEMP-TREF
+
       BL2 = '  '
       CALL JEVECH ('PMATERC', 'L', LMATER)
       CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
@@ -192,14 +199,6 @@ C        --- VECTEUR EFFORT LOCAL  FLR = KLC * ULR
 C
 C        --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
          IF ( LTEIMP ) THEN
-C
-C           TEMPERATURE DE REFERENCE
-            CALL JEVECH('PTEREF','L',LTREF)
-C
-C           TEMPERATURE EFFECTIVE
-            CALL JEVECH('PTEMPER','L',LTEMP)
-C
-            TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
 C
             IF ( TEMP .NE. 0.D0 ) THEN
 C

@@ -1,6 +1,6 @@
       SUBROUTINE TE0083(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
-C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES 
+C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
 C        ELEMENTS 2D
 C                          OPTION : 'CHAR_MECA_TEMP_R'
 
@@ -30,6 +30,7 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
       CHARACTER*8 MODELI
+      CHARACTER*4 FAMI
       REAL*8      BSIGMA(81),SIGTH(162),REPERE(7),INSTAN,NHARM,BARY(3)
       INTEGER     NBSIGM,META,IDIM
 
@@ -59,8 +60,8 @@ C     PRESENCE DE METALLURGIE ?
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
-
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      FAMI = 'RIGI'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 C --- INITIALISATIONS :
 C     -----------------
@@ -104,14 +105,6 @@ C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
  150  CONTINUE
       CALL ORTREP(ZI(IMATE),NDIM,BARY,REPERE)
 
-C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PTEMPER','L',ITEMPE)
-
-C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
-C      -------------------------------------------
-      CALL JEVECH('PTEREF','L',ITREF)
-
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
@@ -120,8 +113,8 @@ C      -------------------------
 C ---- CALCUL DES CONTRAINTES THERMIQUES
 C ---- AUX POINTS D'INTEGRATION DE L'ELEMENT :
 C      --------------------------------------------------------
-      CALL SIGTMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),
-     &            ZR(IGEOM),ZR(ITEMPE),ZR(ITREF),
+      CALL SIGTMC(FAMI,MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),
+     &            ZR(IGEOM),
      &            INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
 
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE

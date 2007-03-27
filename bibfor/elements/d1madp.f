@@ -1,6 +1,6 @@
-      SUBROUTINE  D1MADP(MATER,TEMPE,INSTAN,REPERE,D1)
+      SUBROUTINE  D1MADP(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C                  ET ISOTROPE TRANSVERSE
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    MATER          IN     I        MATERIAU
-C    TEMPE          IN     R        TEMPERATURE AU POINT D'INTEGRATION
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    REPERE(3)      IN     R        VALEURS DEFINISSANT LE REPERE
 C                                   D'ORTHOTROPIE
@@ -38,15 +37,17 @@ C
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
+           CHARACTER*(*) FAMI,POUM
+           INTEGER KPG,KSP
            REAL*8       REPERE(7), D1(4,*), INSTAN
 C -----  VARIABLES LOCALES
            PARAMETER (NBRES = 7)
 C
            CHARACTER*2  CODRET(NBRES)
-           CHARACTER*8  NOMRES(NBRES), NOMPAR(2)
+           CHARACTER*8  NOMRES(NBRES), NOMPAR
            CHARACTER*16 PHENOM
 C
-           REAL*8 VALRES(NBRES), VALPAR(2)
+           REAL*8 VALRES(NBRES), VALPAR
            REAL*8 PASSAG(4,4), D1ORTH(4,4), WORK(4,4)
            REAL*8 NU, NU12, NU13, NU21, NU23
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -57,10 +58,8 @@ C      ---------------
       UN     = 1.0D0
       DEUX   = 2.0D0
 C
-      NOMPAR(1) = 'TEMP'
-      NOMPAR(2) = 'INST'
-      VALPAR(1) = TEMPE
-      VALPAR(2) = INSTAN
+      NOMPAR = 'INST'
+      VALPAR = INSTAN
 C
       DO 10 I = 1, 4
       DO 10 J = 1, 4
@@ -82,10 +81,10 @@ C
           NOMRES(2) = 'NU'
           NBV = 2
 C
-C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
-C ----   ET DU TEMPS
+C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
+          CALL RCVALB(FAMI,KPG,KSP,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &              VALPAR,NBV,NOMRES,
      &              VALRES,  CODRET, 'FM' )
 C
           E  = VALRES(1)
@@ -122,10 +121,10 @@ C
           NOMRES(7)='G_LT'
           NBV = 7
 C
-C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
-C ----   ET DU TEMPS
+C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
+          CALL RCVALB(FAMI,KPG,KSP,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &               VALPAR,NBV,NOMRES,
      &               VALRES, CODRET, 'FM' )
 C
           E1   = VALRES(1)
@@ -182,10 +181,10 @@ C
           NOMRES(4)='NU_LN'
           NBV = 4
 C
-C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
-C ----   ET DU TEMPS
+C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
+          CALL RCVALB(FAMI,KPG,KSP,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &              VALPAR,NBV,NOMRES,
      &              VALRES,  CODRET, 'FM' )
 C
           E1   = VALRES(1)

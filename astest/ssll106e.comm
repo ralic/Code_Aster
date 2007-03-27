@@ -1,5 +1,5 @@
 
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS - ELEMENT TUYAU 4 NOEUDS AVEC MECA_STATIQUE
 #
@@ -780,15 +780,15 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=MA,
                 AFFE=_F(TOUT='OUI',
-                        NOM_CMP=('TEMP','TEMP_INF','TEMP_SUP',),
-                        VALE=(200.0,200.0,200.0,),),);
+                        NOM_CMP='TEMP',
+                        VALE=200.0,),);
 
 TEMP0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=MA,
                  AFFE=_F(TOUT='OUI',
-                         NOM_CMP=('TEMP','TEMP_INF','TEMP_SUP',),
-                         VALE=(0.0,0.0,0.0,),),);
+                         NOM_CMP='TEMP',
+                         VALE=0.0,),);
 
 TEMPV=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
@@ -799,8 +799,6 @@ TEMPV=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=TEMP0,
                    INST=-1.0,),),);
 
-CHARTH=AFFE_CHAR_MECA(MODELE=MO,
-                      TEMP_CALCULEE=TEMPV,);
 
 E_DE_T=DEFI_FONCTION(NOM_PARA='TEMP',
                      VALE=(0.0,200000000000.0,100.0,200000000000.0,),
@@ -819,7 +817,10 @@ MAT2=DEFI_MATERIAU(ELAS_FO=_F(E=E_DE_T,
 
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,
                      AFFE=_F(TOUT='OUI',
-                             MATER=MAT2,),);
+                             MATER=MAT2,),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPV,
+                      NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.0),)
+                             
 
 L_INST=DEFI_LIST_REEL(DEBUT=-1.0,
                       INTERVALLE=_F(JUSQU_A=0.0,
@@ -828,8 +829,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=-1.0,
 REST2=STAT_NON_LINE(MODELE=MO,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CAREL,
-                    EXCIT=(_F(CHARGE=CHAR0,),
-                           _F(CHARGE=CHARTH,),),
+                    EXCIT=(_F(CHARGE=CHAR0,),),
                     COMP_INCR=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,),);
 
@@ -906,8 +906,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
 REST=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT2,
                     CARA_ELEM=CAREL,
-                    EXCIT=(_F(CHARGE=CHAR0,),
-                           _F(CHARGE=CHARTH,),),
+                    EXCIT=(_F(CHARGE=CHAR0,),),
                     );
 
 CALC_ELEM( reuse= REST ,RESULTAT= REST , 

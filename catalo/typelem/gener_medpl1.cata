@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,11 +20,11 @@ GENER_MEDPL1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEPLSE2          MAILLE__ SEG2
-   ELREFE__  SE2        GAUSS__  RIGI=FPG2
+   ELREFE__  SE2        GAUSS__  RIGI=FPG2   FPG_LISTE__ MATER=(RIGI)
    OPTION__   CALC_DG                 -1
    OPTION__   CALC_DG_F               -1
 ENTETE__ ELEMENT__ MEPLSE3          MAILLE__ SEG3
-   ELREFE__  SE3        GAUSS__  RIGI=FPG4
+   ELREFE__  SE3        GAUSS__  RIGI=FPG4   FPG_LISTE__ MATER=(RIGI)
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -39,8 +39,7 @@ MODE_LOCAL__
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -49,6 +48,8 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     CALC_DG             0282  IN__   DDL_MECA PDEPLAR  DDL_MECA PDEPLSE  EFORCNO  PFR1D2D  NGEOMER  PGEOMER
                                      EPRESNO  PPRESSR  DDL_MECA PTHETAR  DDL_MECA PVECTTH
                               OUT__  EGTHETA  PGTHETA
@@ -62,25 +63,25 @@ OPTION__
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
     CALC_DG_E           0282  IN__   DDL_MECA PDEPLAR  EFORCNO  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE  
+                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE
                               OUT__  EGTHETA  PGTHETA
     CALC_DG_E_F         0282  IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
-                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE  
+                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE
                               OUT__  EGTHETA  PGTHETA
     CALC_DG_FORC        0282  IN__   DDL_MECA PDEPLAR  EFORCNO  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE  EFORCNO  PFR12SS  EPRESNO  PPRESSSR 
+                                     DDL_MECA PTHETAR  DDL_MECA PDEPLSE  EFORCNO  PFR12SS  EPRESNO  PPRESSSR
                               OUT__  EGTHETA  PGTHETA
     CALC_DG_FORC_F      0282  IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
-                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE  CFORCEF  PFF12SS  
+                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PDEPLSE  CFORCEF  PFF12SS
                                      CPRESSF  PPRESSSF
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            0300  IN__   DDL_MECA PDEPLAR  CFISSR   PFISSR   EFORCNO  PFR1D2D  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  EPRESNO  PPRESSR  NTEMPER  PTEMPER  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  EPRESNO  PPRESSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      DDL_MECA PTHETAR
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          0300  IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  CFISSR   PFISSR   NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CPRESSF  PPRESSF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF   DDL_MECA PTHETAR
+                                     CMATERC  PMATERC  CPRESSF  PPRESSF  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
+                                     ZVARCPG  PVARCRR   DDL_MECA PTHETAR
                               OUT__  EKTHETA  PGTHETA
     CHAR_DLAG_PRES_F    0579  IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  DDL_MECA PVECTTH
                               OUT__  MVECTUR  PVECTUR

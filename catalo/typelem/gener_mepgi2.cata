@@ -1,37 +1,37 @@
-%& MODIF TYPELEM  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-% (AT YOUR OPTION) ANY LATER VERSION.                                   
-%                                                                       
-% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-%                                                                       
-% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+% (AT YOUR OPTION) ANY LATER VERSION.
+%
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+%
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
 GENER_MEPGI2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ GIPLTR6          MAILLE__ TRIA6
    ELREFE__  TR6     GAUSS__  RIGI=FPG3   FPG_LISTE__  MATER = (RIGI)
-   ELREFE__  TR3     GAUSS__  RIGI=FPG3   
+   ELREFE__  TR3     GAUSS__  RIGI=FPG3
    ELREFE__  TR6     GAUSS__  RIGI=FPG3
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
-ENTETE__ ELEMENT__ GIPLQU8          MAILLE__ QUAD8    
+ENTETE__ ELEMENT__ GIPLQU8          MAILLE__ QUAD8
    ELREFE__  QU8       GAUSS__  RIGI=FPG4   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU4       GAUSS__  RIGI=FPG4
-   ELREFE__  QU8       GAUSS__  RIGI=FPG4  
+   ELREFE__  QU8       GAUSS__  RIGI=FPG4
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
-   
+
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
@@ -57,13 +57,12 @@ MODE_LOCAL__
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
-    EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5       
-                                        V6       T0       T1       T2       T3       T4       
+    EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
+                                        V6       T0       T1       T2       T3       T4
                                         T5       T6       )
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -74,6 +73,8 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     CHAR_MECA_FF2D2D    94    IN__   CFORCEF  PFF2D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                               OUT__  VVECTUR  PVECTUR
     CHAR_MECA_FR2D2D    93    IN__   EFORCER  PFR2D2D  NGEOMER  PGEOMER  NFORCER  PNFORCER
@@ -95,18 +96,18 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  ZVARIPG  PVARIMP
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR  MMATUNS  PMATUNS
     FULL_MECA_ELAS      454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  ZVARIPG  PVARIMP
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR  MMATUNS  PMATUNS
-    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER  
-                              OUT__  EVOISIN  PVOISIN  
+    INIT_MAIL_VOIS      99    IN__   NGEOMER  PGEOMER
+                              OUT__  EVOISIN  PVOISIN
     MASS_INER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
@@ -117,7 +118,7 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     RAPH_MECA           454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR  ZVARIPG  PVARIMP
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      456   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO
@@ -126,14 +127,14 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_ELAS      454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_TANG      454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
-                                     CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     SIEF_ELGA_ELNO      98    IN__   ECONTNO  PCONTRR

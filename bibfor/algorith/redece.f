@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,7 +181,7 @@ C
 C
         IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
         CALL PLASBE ( FAMI, KPG ,KSP, TYPMOD, IMAT, COMP, CRIT,
-     &                TEMPD, TEMPF, TREF, EPSDT, DEPST, SIGD,
+     &                EPSDT, DEPST, SIGD,
      &                VIND,  OPT, ELGEOM, SIGF,  VINF,  DSDE,
      &                ICOMP, NVI,  IRTET)
         ELSE
@@ -255,7 +255,7 @@ C
 C
             IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
               CALL PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
-     &                      CRIT, TEMD, TEMF, TREF, EPS, DEPS,
+     &                      CRIT, EPS, DEPS,
      &                      SD, VIND, OPT, ELGEOM, SIGF, VINF,
      &                      DSDELO, ICOMP, NVI, IRTET)
             ELSE

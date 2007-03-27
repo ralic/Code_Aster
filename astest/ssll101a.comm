@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE TUYAUTERIE (PROBLEME DE HOVGAARD) POU_D_T
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -264,16 +264,28 @@ TEST_RESU(RESU=(
 
 
 CHTEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAILLAGE,
-                       AFFE=_F( TOUT = 'OUI',NOM_CMP = 'TEMP',VALE = 472.22))
+                   MAILLAGE=MAILLAGE,
+                   AFFE=_F( TOUT = 'OUI',NOM_CMP = 'TEMP',VALE = 472.22))
 
-TEMP=AFFE_CHAR_MECA(  MODELE=MODELE,  TEMP_CALCULEE=CHTEMP    )
+TEMPER=CREA_RESU(
+               OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                 AFFE=_F(
+               INST = 0.0,
+               CHAM_GD = CHTEMP)
+             )
+
+
+MATH=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                           AFFE=_F( TOUT = 'OUI', MATER = MAT) ,
+               AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPER,
+               NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.0),)
+
 
 STAT3=MECA_STATIQUE(MODELE=MODELE,
-                   CHAM_MATER=CHAMPMAT,
+                   CHAM_MATER=MATH,
                    CARA_ELEM=CARA_ELE,
                    EXCIT=(_F(CHARGE=BLOCAGE,),
-                          _F(CHARGE=TEMP,),
                           ),
                 );
 

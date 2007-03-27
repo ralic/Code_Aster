@@ -9,7 +9,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,7 +80,7 @@ C     ------------------------------------------------------------------
       OPTION = 'RIGI_MECA'
       CALL MECHAM(OPTION,MODELE,NCHAR,LCHAR,CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,ICODE)
-      CALL MECHTE(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,CHTREF,CHTEMP)
+
       CALL MECHPE(NCHAR,LCHAR,CHCHAR)
 
       IF (.NOT.EXITIM) TIME = 0.D0
@@ -89,8 +89,8 @@ C     ------------------------------------------------------------------
      &            'INST',IBID,TIME,CBID,KBID)
 
 
-      IF (NOMCMD.EQ.'MECA_STATIQUE') THEN
-        CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
+      IF (NOMCMD.EQ.'MECA_STATIQUE'.OR.NOMCMD.EQ.'CALC_MATR_ELEM') THEN
+        CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,LCHAR,TIME,CHVARC)
       END IF
 
 
@@ -128,54 +128,35 @@ C     SI LA RIGIDITE EST CALCULEE SUR LE MODELE, ON ACTIVE LES S_STRUC:
         LCHIN(6) = CHCARA(7)
         LPAIN(7) = 'PCASECT'
         LCHIN(7) = CHCARA(8)
-
-C     -- ON TESTE LA NATURE DU CHAMP DE TEMPERATURE: TEMP_R/TEMP_F
-        CALL EXISD('CHAMP_GD',CHTEMP(1:19),IRET)
-        IF (IRET.GT.0) THEN
-          CALL DISMOI('F','NOM_GD',CHTEMP,'CHAMP',IBID,NOMGD,IERD)
-          IF (NOMGD.EQ.'TEMP_R') THEN
-            LPAIN(8) = 'PTEMPER'
-          ELSE IF (NOMGD.EQ.'TEMP_F') THEN
-            LPAIN(8) = 'PTEMPEF'
-          ELSE
-            CALL U2MESS('F','CALCULEL3_70')
-          END IF
-          LCHIN(8) = CHTEMP
-        ELSE
-          LPAIN(8) = ' '
-          LCHIN(8) = ' '
-        END IF
-
-        LPAIN(9) = 'PCAARPO'
-        LCHIN(9) = CHCARA(9)
-        LPAIN(10) = 'PHARMON'
-        LCHIN(10) = CHHARM
-        LPAIN(11) = 'PPESANR'
-        LCHIN(11) = CHCHAR
-        LPAIN(12) = 'PGEOME2'
-        LCHIN(12) = ' '
-        LPAIN(13) = ' '
-        LCHIN(13) = CHGEOM
-        LPAIN(14) = 'PCAGNBA'
-        LCHIN(14) = CHCARA(11)
-        LPAIN(15) = 'PCAMASS'
-        LCHIN(15) = CHCARA(12)
-        LPAIN(16) = 'PCAPOUF'
-        LCHIN(16) = CHCARA(13)
-        LPAIN(17) = 'PCAGEPO'
-        LCHIN(17) = CHCARA(5)
-        LPAIN(18) = 'PVARCPR'
-        LCHIN(18) = CHVARC
-        LPAIN(20) = 'PTEMPSR'
-        LCHIN(20) = CHTIME
-        LPAIN(21) = 'PNBSP_I'
-        LCHIN(21) = CHCARA(1) (1:8)//'.CANBSP'
-        LPAIN(22) = 'PFIBRES'
-        LCHIN(22) = CHCARA(1) (1:8)//'.CAFIBR'
-        LPAIN(23) = 'PCOMPOR'
-        LCHIN(23) = COMPOR
-
-        CALL CALCUL('S',OPTION,LIGRMO,23,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
+        LPAIN(8) = 'PCAARPO'
+        LCHIN(8) = CHCARA(9)
+        LPAIN(9) = 'PHARMON'
+        LCHIN(9) = CHHARM
+        LPAIN(10) = 'PPESANR'
+        LCHIN(10) = CHCHAR
+        LPAIN(11) = 'PGEOME2'
+        LCHIN(11) = ' '
+        LPAIN(12) = ' '
+        LCHIN(12) = CHGEOM
+        LPAIN(13) = 'PCAGNBA'
+        LCHIN(13) = CHCARA(11)
+        LPAIN(14) = 'PCAMASS'
+        LCHIN(14) = CHCARA(12)
+        LPAIN(15) = 'PCAPOUF'
+        LCHIN(15) = CHCARA(13)
+        LPAIN(16) = 'PCAGEPO'
+        LCHIN(16) = CHCARA(5)
+        LPAIN(17) = 'PVARCPR'
+        LCHIN(17) = CHVARC
+        LPAIN(18) = 'PTEMPSR'
+        LCHIN(18) = CHTIME
+        LPAIN(19) = 'PNBSP_I'
+        LCHIN(19) = CHCARA(1) (1:8)//'.CANBSP'
+        LPAIN(20) = 'PFIBRES'
+        LCHIN(20) = CHCARA(1) (1:8)//'.CAFIBR'
+        LPAIN(21) = 'PCOMPOR'
+        LCHIN(21) = COMPOR
+        CALL CALCUL('S',OPTION,LIGRMO,21,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
      &              BASE)
 
         ZK24(JLIRES-1+1) = LCHOUT(1)

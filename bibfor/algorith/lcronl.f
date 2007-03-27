@@ -1,9 +1,9 @@
-      SUBROUTINE LCRONL (NDIM,MATE,OPTION,TM,TP,TREF,FM,DF,VIM,
+      SUBROUTINE LCRONL (FAMI,KPG,KSP,NDIM,MATE,OPTION,FM,DF,VIM,
      &                   VIP,SIGP,DSIGDF)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,9 +23,10 @@ C ======================================================================
 C RESPONSABLE ADBHHVV V.CANO
 
       IMPLICIT NONE
-      INTEGER       NDIM, MATE
+      INTEGER       NDIM, MATE, KPG, KSP
       CHARACTER*16  OPTION
-      REAL*8        TM,TP,TREF,DF(3,3),FM(3,3)
+      CHARACTER*(*)   FAMI
+      REAL*8        DF(3,3),FM(3,3)
       REAL*8        VIM(12),VIP(12),SIGP(6),DSIGDF(6,3,3)
 
 C.......................................................................
@@ -35,7 +36,6 @@ C.......................................................................
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  MATE    : MATERIAU CODE
 C IN  OPTION  : OPTION DE CALCUL
-C IN  TEMP    : TEMPERATURE A L'INSTANT DU CALCUL
 C IN  FM      : GRADIENT DE LA TRANSFORMATION A L INSTANT PRECEDENT
 C IN  DF      : INCREMENT DU GRADIENT DE LA TRANSFORMATION
 C IN  VIM     : VARIABLES INTERNES A L INSTANT DU CALCUL PRECEDENT
@@ -54,18 +54,19 @@ C          L'ORDRE :  XX,YY,ZZ,XY,XZ,YZ
 C.......................................................................
 
       CHARACTER*2 K2
+      CHARACTER*1 POUM
 
       LOGICAL RESI,RIGI
       INTEGER I1,I2,I3,IJ,K,L,PQ,NDIMSI
-      REAL*8  TEMP,EM(6),EP(6),YOUNG,NU,ALPHA
+      REAL*8  EM(6),EP(6),YOUNG,NU,ALPHA
       REAL*8  DDOT
 C ----------------------------------------------------------------------
 C  COMMON SIMO - MIEHE
 
-      INTEGER IND1(6),IND2(6)
+      INTEGER IND1(6),IND2(6),IRET
       REAL*8  KR(6),RAC2,RC(6)
       REAL*8  LAMBDA,MU,DEUXMU,UNK,TROISK,COTHER
-      REAL*8  JM,DJ,JP,DJDF(3,3)
+      REAL*8  JM,DJ,JP,DJDF(3,3),TEMP
       REAL*8  BEM(6),ETR(6),DVETR(6),EQETR,TRETR,DETRDF(6,3,3)
       REAL*8  SIGMA(6),DSIGDE(6,6),DSIGDJ(6)
       COMMON /LCSMC/
@@ -86,19 +87,25 @@ C    DONNEES DE CONTROLE DE L'ALGORITHME
 
 C    TEMPERATURE
       IF (RESI) THEN
-        TEMP = TP
+        POUM = '+'
       ELSE
-        TEMP = TM
+        POUM = '-'
       END IF
 
 C    PARAMETRES MATERIAU
-      CALL RCVALA(MATE,' ','ELAS',1,'TEMP',TEMP,1,'NU',NU,K2,'F ')
-      CALL RCTRAC(MATE,'TRACTION','SIGM',TEMP,I1,I2,I3,YOUNG)
-      CALL RCVALA(MATE,' ','ELAS',1,'TEMP',TEMP,1,'ALPHA',ALPHA,K2,'  ')
+      CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','ELAS',0,' ',0.D0,
+     &            1,'NU',NU,K2,'F ')
+
+      CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
+
+      CALL RCTRAC(MATE,'TRACTION','SIGM',TEMP,
+     &            I1,I2,I3,YOUNG)
+      CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','ELAS',0,' ',0.D0,
+     &            1,'ALPHA',ALPHA,K2,'  ')
       IF(K2.NE.'OK') ALPHA = 0
 
 C    INITIALISATION DE L'OBJET COMMUN A SIMO-MIEHE
-      CALL LCSMIN(YOUNG,NU,ALPHA,TEMP,TREF)
+      CALL LCSMIN(FAMI,KPG,KSP,POUM,YOUNG,NU,ALPHA)
 
 C    DEFORMATION ELASTIQUE
       CALL R8INIR(6,0.D0,EM,1)

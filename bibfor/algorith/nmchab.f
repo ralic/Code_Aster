@@ -1,8 +1,8 @@
-      SUBROUTINE NMCHAB (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
+      SUBROUTINE NMCHAB (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,10 +77,6 @@ C                                   EST EULER IMPLICITE
 C                                   SI CRIT(5) = 1 , ON FAIT UNE
 C    INSTAM         IN    R       INSTANT DU CALCUL PRECEDENT
 C    INSTAP         IN    R       INSTANT DU CALCUL
-C    TM             IN    R       TEMPERATURE A L'INSTANT DU CALCUL
-C                                 PRECEDENT
-C    TP             IN    R       TEMPERATURE A L'INSTANT DU CALCUL
-C    TREF           IN    R       TEMPERATURE DE REFERENCE
 C    EPSM(6)        IN    R       DEFORMATIONS A 'INSTANT DU CALCUL
 C                                 PRECEDENT
 C    DEPS(6)        IN    R       INCREMENT DE DEFORMATIONS, I.E.
@@ -130,16 +126,17 @@ C                                        LORS DE L'INTEGRATION DE LA
 C                                        LOI VISC_CINX_CHAB
 C
 C -----  ARGUMENTS
-          INTEGER             NDIM,IMATE,NBVAR,IRET
-           REAL*8             CRIT(6),INSTAM,INSTAP,TM,TP,TREF
+          INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET
+           REAL*8             CRIT(6),INSTAM,INSTAP
            REAL*8             DEPS(6),DEUXMU,DILATM,DILATP
            REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
+           CHARACTER*(*)      FAMI
            CHARACTER*8        TYPMOD(*)
            CHARACTER*16       COMPOR(3),OPTION
 C -----  VARIABLES LOCALES
            REAL*8      DEPSTH(6),VALRES(10),PM,C2INF,GAMM20,M2P
            REAL*8      PLAST,DEPSMO,SIGMMO,E,NU,TROISK
-           REAL*8      RP,RPM,SIELEQ,SEUIL,DP
+           REAL*8      RP,RPM,SIELEQ,SEUIL,DP,TM,TP,TREF
            REAL*8      COEF,SIGEDV(6),KRON(6),DEPSDV(6)
            REAL*8      SIGMDV(6),SIGPDV(6),EM,NUM
            REAL*8      TROIKM,DEUMUM,SIGMP(6),SIGEL(6),PP
@@ -204,9 +201,9 @@ C     ============================================
 C
 C ---  CARACTERISTIQUES A L'INSTANT PRECEDENT :
 C      --------------------------------------
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,2,
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,2,
      &              NOMRES(1),VALRES(1),CODRET(1), FB2 )
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,1,
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
      &              NOMRES(3),VALRES(3),CODRET(3), BL2 )
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = ZERO
       EM     = VALRES(1)
@@ -217,10 +214,14 @@ C      --------------------------------------
 C
 C ---  CARACTERISTIQUES A L'INSTANT ACTUEL :
 C      -----------------------------------
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,2,
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
      &              NOMRES(1),VALRES(1),CODRET(1), FB2 )
 C
-       CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,1,
+       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
      &               NOMRES(3),VALRES(3),CODRET(3), BL2 )
        IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = ZERO
        E      = VALRES(1)
@@ -241,16 +242,16 @@ C     ===============================================
        IF (NBVAR.EQ.1) THEN
           NOMRES(4) = 'C_I'
           NOMRES(7) = 'G_0'
-          CALL RCVALA(IMATE,' ','CIN1_CHAB',1,'TEMP',TP,8
-     &             ,NOMRES,VALRES,CODRET,'FM')
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CIN1_CHAB',0,' ',0.D0,
+     &             8,NOMRES,VALRES,CODRET,'FM')
        ELSEIF (NBVAR.EQ.2) THEN
           NOMRES(4) = 'C1_I'
           NOMRES(7) = 'G1_0'
           NOMRES(9) = 'C2_I'
           NOMRES(10) = 'G2_0'
 
-          CALL RCVALA(IMATE,' ','CIN2_CHAB',1,'TEMP',TP,10
-     &             ,NOMRES,VALRES,CODRET,'FM')
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CIN2_CHAB',0,' ',0.D0,
+     &             10,NOMRES,VALRES,CODRET,'FM')
        ENDIF
           R0     = VALRES(1)
           RINF   = VALRES(2)
@@ -289,7 +290,7 @@ C     ============================================
       NOMRES(1) = 'N'
       NOMRES(2) = 'UN_SUR_K'
       NOMRES(3) = 'UN_SUR_M'
-      CALL RCVALA (IMATE,' ','LEMAITRE',1,'TEMP',TP,3
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','LEMAITRE',0,' ',0.D0,3
      &             ,NOMRES,VALRES,CODRET,BL2)
 C
       IF (CODRET(1).EQ.'OK') THEN

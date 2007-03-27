@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       I, ICARA, ICOMPO, ICOU, IER, IMATE, INTE, INTSN, K,
+      INTEGER       I, ICARA, ICOMPO, ICOU, IER, IMATE, INTE, INTSN,
      &              INTSR, ITEMP, ITEMPF, ITREF, JGEOM, LZI, LZR, NB1,
      &              NB2, NBCOU, NBPAR, NBV, NPGE, NPGSN, NPGSR, KWGT,
      &              ITAB(8), IRET
@@ -62,7 +62,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        KSI3S2,KAPPA,MATC(5,5),VALPU(2)
       REAL*8        ALPHA, COEF, DEUX, EPAIS, EPTOT, QUATRE, T, TEMPG3,
      &              TINF, TPG1, TREF, TROIS, TSUP, UN, VALPAR, VALRES,
-     &              ZERO, ZIC, ZMIN, SIX, TEMPG, TEMPG1, TEMPG2
+     &              ZERO, ZIC, ZMIN, TEMPG, TEMPG1, TEMPG2
       LOGICAL       TEMPNO
       CHARACTER*2   CODRET
       CHARACTER*8   NOMPU(2) , NOMRES(2) , NOMPAR
@@ -76,7 +76,6 @@ C     ---------------
       DEUX   = 2.0D0
       TROIS  = 3.0D0
       QUATRE = 4.0D0
-      SIX    = 6.0D0
 C
       INDITH = .FALSE.
 C
@@ -172,49 +171,11 @@ C______________________________________________________________________
 C
 C---- RECUPERATION DE LA TEMPERATURE
 C
-      TREF = ZERO
-      CALL TECACH('ONN','PTEREF',1,ITREF,IRET)
-      IF (ITREF.NE.0) THEN
-        TREF = ZR(ITREF)
-      ENDIF
+      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+      CALL MOYTEM('RIGI',NPGE,3,'+',VALPAR)
+      NBPAR = 1
+      NOMPAR = 'TEMP'
 C
-      CALL TECACH ('OON','PTEMPER',8,ITAB,IRET)
-      ITEMP=ITAB(1)
-      IF (ITEMP.NE.0) THEN
-        TEMPNO = .TRUE.
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        TPG1 = ZERO
-        DO 30 I = 1,NB2
-          IF (IRET.EQ.3)
-     &       CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(ITAB(8)+3*(I-1)))
-          T    = ZR(ITEMP+3* (I-1))
-          TINF = ZR(ITEMP+1+3* (I-1))
-          TSUP = ZR(ITEMP+2+3* (I-1))
-          TPG1 = TPG1 + T + (TSUP+TINF-DEUX*T)/SIX
-   30   CONTINUE
-        VALPAR = TPG1/NB2
-      ELSE
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-        CALL TECACH('ONN','PTEMPEF',1,ITEMPF,IRET)
-        IF (ITEMPF.NE.0) THEN
-          TEMPNO = .FALSE.
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-          VALPU(1) = ZERO
-          VALPU(2) = ZERO
-          CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,VALPAR,IER)
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-        ELSE
-          TEMPNO = .TRUE.
-          NBPAR = 0
-          NOMPAR = ' '
-          VALPAR = ZERO
-        END IF
-      END IF
-      IF (NBPAR.EQ.0) GOTO 9999
       INDITH = .TRUE.
 C______________________________________________________________________
 C
@@ -350,35 +311,11 @@ C           -------------------
 C
 C ---       EVALUATION DES DEFORMATIONS THERMIQUES :
 C           ======================================
-            K = 459 + 9*(INTSN-1)
-            IF (TEMPNO) THEN
-              TEMPG1 = ZERO
-              TEMPG2 = ZERO
-              TEMPG3 = ZERO
+            CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+            CALL MOYTEM('RIGI',INTE,3,'+',TEMPG)
+            NBPAR = 1
+            NOMPAR = 'TEMP'
 C
-C ---         TEMPERATURE AU POINT D'INTEGRATION COURANT :
-C ---         TEMPG1 SERA LA TEMPERATURE DANS LE PLAN MOYEN DE LA COUCHE
-C ---         TEMPG2 SERA LA TEMPERATURE DANS LE PLAN INF   DE LA COUCHE
-C ---         TEMPG3 SERA LA TEMPERATURE DANS LE PLAN SUP   DE LA COUCHE
-C             ----------------------------------------------------------
-              DO 80 I = 1,NB2
-C
-                  TEMPG1 = TEMPG1 + ZR(ITEMP+3*I-3)*ZR(LZR-1+K+I)
-                  TEMPG2 = TEMPG2 + ZR(ITEMP+3*I-2)*ZR(LZR-1+K+I)
-                  TEMPG3 = TEMPG3 + ZR(ITEMP+3*I-1)*ZR(LZR-1+K+I)
-C
-  80          CONTINUE
-C
-              TEMPG = DEUX* (TEMPG2+TEMPG3-DEUX*TEMPG1)* (ZIC/EPTOT)*
-     &              (ZIC/EPTOT) + (TEMPG3-TEMPG2)* (ZIC/EPTOT) + TEMPG1
-C
-            ELSE
-C
-                VALPU(2) = ZIC
-                VALPU(1) = ZERO
-                CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TEMPG,IER)
-C
-            END IF
 C
             VALPAR = TEMPG
             NBV = 1

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE TUYAU 6 MODES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,21 +64,16 @@ MAT=DEFI_MATERIAU(
            ECRO_LINE_FO=_F(  D_SIGM_EPSI = PENTE, SY = SIGY)
                         )
 
-CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-          AFFE=_F( TOUT = 'OUI',MATER = MAT,TEMP_REF = 0.)
-                                                )
-
 TIMPVAR=DEFI_FONCTION(    NOM_PARA='INST',  NOM_RESU='TEMP',
-           VALE=(  0.E0,  0.E0, 100.E0, 100.E0,)
-                                                )
+           VALE=(  0.E0,  0.E0, 100.E0, 100.E0,),);
 
 CHP_TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
 MAILLAGE=MAIL,
                AFFE=_F(  TOUT = 'OUI',
-                      NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                      VALE_F = (TIMPVAR,  TIMPVAR, TIMPVAR,))
+                      NOM_CMP = ('TEMP', ),
+                      VALE_F = (TIMPVAR,))
                         )
-
+#
 L_INST=DEFI_LIST_REEL(       DEBUT=0.,INTERVALLE=(
 
                     _F( JUSQU_A = 66.666E0,   NOMBRE = 1),
@@ -92,11 +87,18 @@ TEMPE=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                      CHAM_GD = CHP_TEMP)
                      )
 
+CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI',MATER = MAT),
+          AFFE_VARC=_F(TOUT='OUI',
+                       EVOL=TEMPE,
+                       NOM_VARC='TEMP',
+                       NOM_CHAM='TEMP',
+                       VALE_REF=0),);
+
+
 CHMECA=AFFE_CHAR_MECA(    MODELE=MOMECA,DDL_IMPO=(
  _F( GROUP_NO = 'GRNO1', DX = 0., DZ = 0., DY = 0., DRX = 0., DRY = 0., DRZ = 0.),
-           _F( GROUP_NO = 'GRNO2',  DY = 0.)),
-          TEMP_CALCULEE=TEMPE
-                                                                )
+           _F( GROUP_NO = 'GRNO2',  DY = 0.)),)
 
 U=STAT_NON_LINE(
                             MODELE=MOMECA,

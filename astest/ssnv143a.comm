@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION BIAXIALE EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,25 +148,30 @@ SECH=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                              _F(  INST = 2.5,  CHAM_GD = CHTEMP2))
                   )
 
-MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
-                                    AFFE=_F(  MAILLE = 'MA1',
-                                           MATER = BETON),
-                                    AFFE_VARC=_F(TOUT='OUI',
-                                                 EVOL=SECH,
-                                                 NOM_VARC="SECH",
-                                                 NOM_CHAM='TEMP',
-                                                 VALE_REF=20),
-                         )
-
 TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                     NOM_CHAM='TEMP',AFFE=(
                      _F(  INST = 0.,   CHAM_GD = CHTEMP2),
                              _F(  INST = 2.5,  CHAM_GD = CHTEMP1))
                   )
 
+MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = BETON),
+                                    AFFE_VARC=(_F(TOUT='OUI',
+                                                 EVOL=SECH,
+                                                 NOM_VARC="SECH",
+                                                 NOM_CHAM='TEMP',
+                                                 VALE_REF=20),
+                                              _F(TOUT='OUI',
+                                                 EVOL=TEMP,
+                                                 NOM_VARC='TEMP',
+                                                 NOM_CHAM='TEMP',
+                                                 VALE_REF=0),),
+                         )
+
 COND_LIM=AFFE_CHAR_MECA(   
                       MODELE=TROISD,
-               TEMP_CALCULEE=TEMP,DDL_IMPO=(
+                      DDL_IMPO=(
                     _F(  GROUP_NO = 'FACEXY',  DZ = 0.),
                     _F(  GROUP_NO = 'FACEYZ',  DX = 0.),
                     _F(  NOEUD = 'N1',         DY = 0.),

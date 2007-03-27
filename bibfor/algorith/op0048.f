@@ -3,7 +3,7 @@
       INTEGER IERR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,11 +81,14 @@ C     -----------------------------------------------------------------
 C     -----------------------------------------------------------------
 C
       CALL JEMARQ()
-C
+
 C               1234567890123456789
       BLAN8  = '        '
-C
+
       BASENO = '&&'//NOMPRO
+      CHARGE = INFCHA//'.LCHA'
+      INFOCH = INFCHA//'.INFC'
+
 C              12345678 90123
       INPSCO = BASENO//'_PSCO'
       TYPSOL = 'R'
@@ -175,8 +178,6 @@ C
             CALL NMDOME ( MODELE, MATE, CARELE, INFCHA,
      &              NBPASE, INPSCO ,BLAN8, IBID)
             FOMULT = INFCHA//'.FCHA'
-            INFOCH = INFCHA//'.INFC'
-            CHARGE = INFCHA//'.LCHA'
           ENDIF
 
         ENDIF
@@ -191,8 +192,6 @@ C
           CALL NMDOME ( MODELE, MATE, CARELE, INFCHA,
      &              NBPASE, INPSCO ,BLAN8, IBID)
           FOMULT = INFCHA//'.FCHA'
-          INFOCH = INFCHA//'.INFC'
-          CHARGE = INFCHA//'.LCHA'
         ENDIF
       ELSE
         NVECT=0

@@ -7,7 +7,7 @@
       CHARACTER*(*) CHAMP,RESUCO
       CHARACTER*19 RESUC1
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 11/09/2006   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C ----------------------------------------------------------------------
 
       INTEGER       IBID
 
-      CHARACTER*8   K8B, CHTEMP
+      CHARACTER*8   K8B
 
       COMPLEX*16    CBID
 
@@ -66,10 +66,7 @@ C ----------------------------------------------------------------------
 
 C    CALCUL DE L'ESTIMATEUR D'ERREUR
 C
-      CHTEMP = '&&TEMP'
-      CALL MECACT('V',CHTEMP,'LIGREL',LIGREL,'TEMP_R',1,'TEMP',
-     &                                        IBID,0.0D0,CBID,K8B)
-      CALL ZZLOCA(MODELE,LIGREL,CHMAT,CHTEMP,SIGMA,SIGNO,CHAMP)
+      CALL ZZLOCA(MODELE,LIGREL,CHMAT,SIGMA,SIGNO,CHAMP)
       CALL ZZGLOB(CHAMP,OPTION,IORDR,TIME,RESUCO,RESUC1)
 C
       END

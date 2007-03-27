@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*(*)     OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,10 +49,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER IGEOM,ICOMPO,IMATE,ISECT,IORIEN,ITEMPM,ITEMPP,ND,NK
-      INTEGER ITREF,IINSTM,IINSTP,ICARCR,ICONTM,IDEPLM,IDEPLP,IMATUU
+      INTEGER IINSTM,IINSTP,ICARCR,ICONTM,IDEPLM,IDEPLP,IMATUU,NPG
       INTEGER IVECTU,ICONTP,ITYPE,NNO,NC,IVARIM,IVARIP,ITEMP,ICAS,I
       INTEGER JTAB(7),JCRET,KK,LGPG,IRET,IRETM,IRETP,IBID,IRET2
       PARAMETER    (NNO=2,NC=6,ND=NC*NNO,NK=ND*(ND+1)/2)
+      PARAMETER    (NPG=3)
       REAL*8       E   ,  NU , G, EM, NUM, ALPHAP, ALPHAM
       REAL*8       A   ,  XIY ,  XIZ ,  ALFAY ,  ALFAZ ,  XJX ,  EZ,  EY
       REAL*8       A2  ,  XIY2,  XIZ2,  ALFAY2,  ALFAZ2,  XJX2,  XL
@@ -71,10 +72,10 @@ C GRANDISSEMENT
       CHARACTER*2 K2B(NBCLGR)
 
       REAL*8       PGL(3,3), FL(ND), KLV(NK), KLS(NK), FLC, EFFNOC
-      REAL*8       EFFNOM, TEMPM, TEMPP, U(ND), DU(ND), SIGP(ND)
+      REAL*8       EFFNOM, TEMPM, TEMPP, TREF, U(ND), DU(ND), SIGP(ND)
       REAL*8       HOEL(7*7),HOTA(7*7),D1B(7*14),WORK(14*7),RG0(14*14)
       REAL*8       XUG(6),UTG(12),XD(3),XL2,TET1,TET2,ALFA1,BETA1,GAMMA
-      REAL*8       GAMMA1,ANG1(3),R8VIDE,IRRAM,IRRAP
+      REAL*8       GAMMA1,ANG1(3),R8VIDE,IRRAM,IRRAP,EPSTHE
       LOGICAL      REACTU
 
       DATA NOMLMA / 'K','N','DE_0','P','P1','P2','M','RM',
@@ -96,14 +97,6 @@ C     ------------------------------------------------------------------
       CALL JEVECH ('PCONTMR','L',ICONTM)
       CALL JEVECH ('PDEPLMR','L',IDEPLM)
       CALL JEVECH ('PDEPLPR','L',IDEPLP)
-      CALL JEVECH ('PTEREF', 'L',ITREF)
-      CALL TECACH('ONN','PTEMPMR',1,ITEMPM,IRETM)
-      CALL TECACH('ONN','PTEMPPR',1,ITEMPP,IRETP)
-      IF ((IRETM.EQ.0).AND.(IRETP.EQ.0)) THEN
-         ITEMP = 1
-      ELSE
-         ITEMP = 0
-      ENDIF
 C
       IF ( ZK16(ICOMPO+3) .EQ. 'COMP_ELAS' ) THEN
          CALL U2MESS('F','ELEMENTS2_90')
@@ -161,12 +154,13 @@ C
 
       IF (ZK16(ICOMPO).EQ.'ELAS') THEN
 C
-         IF (ITEMP.NE.0) THEN
-            TEMPM  = 0.5D0 * ( ZR(ITEMPM) + ZR(ITEMPM+1) )
-            TEMPP  = 0.5D0 * ( ZR(ITEMPP) + ZR(ITEMPP+1) )
-         ENDIF
+         CALL MOYTEM('RIGI',NPG,1,'+',TEMPP)
+         CALL MOYTEM('RIGI',NPG,1,'-',TEMPM)
+         CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+         ITEMP = 1
          CALL MATELA(ZI(IMATE),' ',ITEMP,TEMPP,E,NU,ALPHAP)
          CALL MATELA(ZI(IMATE),' ',ITEMP,TEMPM,EM,NUM,ALPHAM)
+         EPSTHE=ALPHAP * (TEMPP - TREF) - ALPHAM * (TEMPM - TREF)
          G      = E / (2.D0*(1.D0+NU))
 C
 C        --- CALCUL DES MATRICES ELEMENTAIRES ----
@@ -189,11 +183,10 @@ C
          ENDIF
 C
          IF (OPTION.EQ.'RAPH_MECA'.OR.OPTION.EQ.'FULL_MECA') THEN
-            IF ((ITEMP.NE.0).AND.(NU.NE.NUM)) CALL U2MESS('A','ELEMENTS3
-     &_59')
-            CALL NMPOEL(KLV,XL,NNO,NC,PGL,ZR(IDEPLP),ITEMP,TEMPM,
-     &         TEMPP,ZR(ITREF),ALPHAM,ALPHAP,E,EM,ZR(ICONTM),
-     &         FL,ZR(ICONTP))
+            IF ((ITEMP.NE.0).AND.(NU.NE.NUM))
+     &                       CALL U2MESS('A','ELEMENTS3_59')
+            CALL NMPOEL(KLV,XL,NNO,NC,PGL,ZR(IDEPLP),EPSTHE,E,EM,
+     &        ZR(ICONTM),FL,ZR(ICONTP))
          ENDIF
 C
       ELSEIF ((ZK16(ICOMPO).EQ.'LMARC_IRRA').OR.
@@ -204,12 +197,14 @@ C
 C
 C
 C-- RECUPERATION DES CARACTERISTIQUES ELASTIQUES
-         IF (ITEMP.NE.0) THEN
-            TEMPM  = 0.5D0 * ( ZR(ITEMPM) + ZR(ITEMPM+1) )
-            TEMPP  = 0.5D0 * ( ZR(ITEMPP) + ZR(ITEMPP+1) )
-         ENDIF
+         CALL MOYTEM('RIGI',NPG,1,'+',TEMPP)
+         CALL MOYTEM('RIGI',NPG,1,'-',TEMPM)
+         CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+         ITEMP = 1
          CALL MATELA(ZI(IMATE),' ',ITEMP,TEMPP,E,NU,ALPHAP)
          CALL MATELA(ZI(IMATE),' ',ITEMP,TEMPM,EM,NUM,ALPHAM)
+
+         EPSTHE=ALPHAP * TEMPP - TREF - ALPHAM * (TEMPM - TREF)
          G      = E / (2.D0*(1.D0+NU))
 C
 C-- RECUPERATION DES CARACTERISTIQUES DE FLUAGE ET DE GRANDISSEMENT
@@ -243,8 +238,7 @@ C
          IF ((ITEMP.NE.0).AND.(NU.NE.NUM)) CALL U2MESS('A','ELEMENTS3_59
      &')
 C
-         CALL NMPOEL(KLV,XL,NNO,NC,PGL,ZR(IDEPLP),ITEMP,TEMPM,
-     &                  TEMPP,ZR(ITREF),ALPHAM,ALPHAP,E,EM,
+         CALL NMPOEL(KLV,XL,NNO,NC,PGL,ZR(IDEPLP),EPSTHE,E,EM,
      &                  ZR(ICONTM),FL,SIGP)
 C
 C-- CALCUL DE LA MATRICE TANGENTE ET CORRECTION DES TERMES D'ALLONGEMENT
@@ -255,6 +249,7 @@ C
                CALL U2MESS('F','ELEMENTS3_60')
             ENDIF
             EFFNOM = ZR(ICONTM)
+
             IF (ZK16(ICOMPO).EQ.'LMARC_IRRA') THEN
                CALL RCVALA(ZI(IMATE),' ','LMARC_IRRA',0,' ',0.D0,
      &              12,NOMLMA(1),COELMA(1),CODLMA(1), 'FM' )
@@ -267,7 +262,7 @@ C
      &                   XL,E,A,ALPHAP,COELMA,COEFGR,
      &                   IRRAM,IRRAP,
      &                   ZR(IVARIM),ZR(IVARIP), KLS,FLC,
-     &                  EFFNOC,ALPHAM,EM,ZR(ITREF))
+     &                  EFFNOC,ALPHAM,EM,TREF)
               DO 52 KK = 1, 4
                 ZR(IVARIP+LGPG+KK-1)   = ZR(IVARIP+KK-1)
                 ZR(IVARIP+2*LGPG+KK-1) = ZR(IVARIP+KK-1)
@@ -281,6 +276,7 @@ C
                 CALL RCVARC(' ','IRRA','+','RIGI',3,1,IRRAP,IRET2)
                 IF (IRET2.GT.0) IRRAP=0.D0
                 ZR(IVARIP+2*LGPG+5-1)  = IRRAP
+
             ELSEIF (ZK16(ICOMPO).EQ.'LEMAITRE_IRRA') THEN
                CALL RCVALA(ZI(IMATE),' ','LEMAITRE_IRRA',0,' ',0.D0,
      &               7,NOMLEM(1),COELEM(1),CODLEM(1), 'FM' )
@@ -288,11 +284,11 @@ C
              IF (IRET2.GT.0) IRRAM=0.D0
              CALL RCVARC(' ','IRRA','+','RIGI',1,1,IRRAP,IRET2)
              IF (IRET2.GT.0) IRRAP=0.D0
-             CALL NMFGAS(PGL,NNO,NC,ZR(IDEPLP),EFFNOM,ZR(IVARIM),TEMPM,
-     &               TEMPP,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &               ZR(ITREF),XL,E,A,ALPHAP,COELEM,COEFGR,
+             CALL NMFGAS('RIGI',NPG,ZI(IMATE),PGL,NNO,NC,ZR(IDEPLP),
+     &               EFFNOM,ZR(IVARIM),ZR(ICARCR),ZR(IINSTM),
+     &               ZR(IINSTP),XL,A,COELEM,COEFGR,
      &               IRRAM,IRRAP,
-     &               KLS,FLC,EFFNOC,ZR(IVARIP),ALPHAM,EM)
+     &               KLS,FLC,EFFNOC,ZR(IVARIP))
              ZR(IVARIP+1)        = IRRAP
              ZR(IVARIP+LGPG)     = ZR(IVARIP)
              CALL RCVARC(' ','IRRA','+','RIGI',2,1,IRRAP,IRET2)
@@ -328,9 +324,9 @@ C
          CALL UTPVGL ( NNO, NC, PGL, ZR(IDEPLM),  U )
          CALL UTPVGL ( NNO, NC, PGL, ZR(IDEPLP), DU )
 
-         CALL NMVMPO(OPTION,NOMTE,NC,XL,ZI(IMATE),ZR(ISECT),ZR(ICARCR),
-     &               ZK16(ICOMPO),U,DU,ZR(ICONTM),
-     &               ZR(IVARIM),ITEMP,ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+         CALL NMVMPO('RIGI',NPG,OPTION,NOMTE,NC,XL,ZI(IMATE),ZR(ISECT),
+     &               ZR(ICARCR),ZK16(ICOMPO),U,DU,ZR(ICONTM),
+     &               ZR(IVARIM),
      &               HOEL,HOTA,D1B,WORK,RG0,
      &               ZR(IVARIP),ZR(ICONTP),FL,KLV)
        ELSE

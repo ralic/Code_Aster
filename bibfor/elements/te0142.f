@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,16 +68,10 @@ C     --------------------------------------------------
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL JEVECH('PMATERC','L',LMATER)
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      IF (ITEMPE.EQ.0) THEN
-        NBPAR = 0
-        NOMPAR = ' '
-        VALPAR = ZERO
-      ELSE
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-      END IF
+      CALL MOYTEM('RIGI',2,1,'+',VALPAR)
+      NOMPAR = 'TEMP'
+      NBPAR = 1
+
       CALL JEVECH('PSUROPT','L',LOPT)
       SUROPT = ZK24(LOPT)
       IF (SUROPT.EQ.'MASS_FLUI_STRU') THEN

@@ -1,6 +1,6 @@
-      SUBROUTINE DXSIGT(NOMTE,XYZL,PGL,IC,INIV,TSUP,TINF,TMOY,SIGT)
+      SUBROUTINE DXSIGT(NOMTE,XYZL,PGL,IC,INIV,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,9 +20,8 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 NOMTE
       REAL*8 XYZL(3,1),PGL(3,1)
-      REAL*8 TSUP(1),TINF(1),TMOY(1)
       REAL*8 SIGT(1)
-      LOGICAL GRILLE
+      LOGICAL GRILLE,LTEATT
 C     ------------------------------------------------------------------
 C --- CONTRAINTES PLANES D'ORIGINE THERMIQUE AUX NOEUDS
 C --- POUR LES ELEMENTS COQUES A FACETTES PLANES :
@@ -38,12 +37,6 @@ C     IN  PGL(3,3)     : MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE
 C                        LOCAL
 C     IN  IC           : NUMERO DE LA COUCHE
 C     IN  INIV         : NIVEAU DANS LA COUCHE (-1:INF 0:MOY 1:SUP)
-C     IN  TSUP(4)      : TEMPERATURES AUX NOEUDS DU PLAN SUPERIEUR
-C                        DE LA COQUE
-C     IN  TINF(4)      : TEMPERATURES AUX NOEUDS DU PLAN INFERIEUR
-C                        DE LA COQUE
-C     IN  TMOY(4)      : TEMPERATURES AUX NOEUDS DU PLAN MOYEN
-C                        DE LA COQUE
 C     OUT SIGT(1)      : CONTRAINTES PLANES D'ORIGINE THERMIQUE
 C                        AUX NOEUDS (AU NOMBRE DE 3 OU 4)
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -67,20 +60,18 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*24 VALK
       CHARACTER*8 NOMAIL
       CHARACTER*10 PHENOM
-      REAL*8 DF(3,3),DM(3,3),DMF(3,3)
+      REAL*8 DF(3,3),DM(3,3),DMF(3,3),TREF
+      REAL*8  TINF(4),TMOY(4),TSUP(4)
       REAL*8 N(4),T2EV(4),T2VE(4),T1VE(9),CARAT3(21),CARAQ4(25)
       REAL*8 ORDI,EPI,EPAIS
-      INTEGER MULTIC,IAZK24,IADZI
-      INTEGER VALI
+      INTEGER MULTIC,IAZK24,IADZI,INO
+      INTEGER VALI,IER,IMOY,NBCOU,JCOU
 C     ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
 C     -----------------
       CALL R8INIR(24,0.D0,SIGT,1)
-
-      GRILLE = .FALSE.
-      IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
-
+      CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IER)
       IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
      &    NOMTE(1:8).EQ.'MEGRDKT'  .OR.
      &    NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
@@ -96,6 +87,24 @@ C     -----------------
       ELSE
          CALL U2MESK('F','ELEMENTS_14',1,NOMTE(1:8))
       END IF
+
+      GRILLE= LTEATT(' ','GRILLE','OUI')
+      IF (GRILLE) THEN
+        DO 1 INO=1,NNO
+          CALL RCVARC('F','TEMP','+','NOEU',INO,1,TINF(INO),IER)
+          TMOY(INO)=TINF(INO)
+          TSUP(INO)=TINF(INO)
+1       CONTINUE
+      ELSE
+        CALL JEVECH('PNBSP_I','L',JCOU)
+        NBCOU=ZI(JCOU)
+        IMOY=(3*NBCOU+1)/2
+        DO 5 INO=1,NNO
+          CALL RCVARC('F','TEMP','+','NOEU',INO,1,TINF(INO),IER)
+          CALL RCVARC('F','TEMP','+','NOEU',INO,IMOY,TMOY(INO),IER)
+          CALL RCVARC('F','TEMP','+','NOEU',INO,3*NBCOU,TSUP(INO),IER)
+5       CONTINUE
+      ENDIF
 
       CALL JEVECH('PMATERC','L',JMATE)
       CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
@@ -114,9 +123,7 @@ C --- DE L'EPAISSEUR DE LA COQUE
 C     --------------------------
 
         CALL JEVECH('PCACOQU','L',JCARA)
-        CALL JEVECH('PTEREF' ,'L',JTREF)
         EPAIS = ZR(JCARA)
-        TREF  = ZR(JTREF)
 
 C --- CALCUL DES MATRICES DE HOOKE DE FLEXION, MEMBRANE,
 C --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
@@ -136,7 +143,8 @@ C  --      LES COEFFICIENTS THERMOELASTIQUES PROVIENNENT DES
 C  --      MATRICES QUI SONT LES RESULTATS DE LA ROUTINE DXMATH.
 C          ----------------------------------------
           COE1 = (TSUP(INO)+TINF(INO)+4.D0*TMOY(INO))/6.D0 - TREF
-          COE2 = (TSUP(INO)-TINF(INO))* (ORDI+DBLE(INIV)*EPI/2.D0)/EPAIS
+          COE2 = (TSUP(INO)-TINF(INO))*
+     &           (ORDI+DBLE(INIV)*EPI/2.D0)/EPAIS
 
           SIGT(1+6* (INO-1)) = ((DM(1,1)+DM(1,2))/EPI)* (COE1+COE2)
           SIGT(2+6* (INO-1)) = ((DM(2,1)+DM(2,2))/EPI)* (COE1+COE2)

@@ -1,6 +1,6 @@
       SUBROUTINE TE0344(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       CHARACTER*2  CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
+      INTEGER      KP
       REAL*8       NU,ULI(14)
       REAL*8       ULR(14), UGR(14), PGL(14,14), KLC(14,14)
       REAL*8       PGL1(3,3), PGL2(3,3)
@@ -81,16 +82,15 @@ C
           PGL2(I,J) = ZERO
    11 CONTINUE
 C
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      IF ( ITEMPE .EQ. 0 ) THEN
-         NBPAR  = 0
-         NOMPAR = ' '
-         VALPAR = ZERO
-      ELSE
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-         VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-      ENDIF
+      NPG = 3
+      DO 13 KP=1,NPG
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+        VALPAR = VALPAR + TPG
+   13 CONTINUE
+      VALPAR = VALPAR/NPG
+
+      NBPAR  = 1
+      NOMPAR = 'TEMP'
 C
       CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
      &            VALRES, CODRES, 'FM' )
@@ -163,12 +163,16 @@ C     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
    20     CONTINUE
 C         - CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
 C           TEMPERATURE DE REFERENCE
-          CALL JEVECH('PTEREF','L',LTREF)
+          CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 C
 C           TEMPERATURE EFFECTIVE
-          CALL JEVECH('PTEMPER','L',LTEMP)
-C
-          TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
+           NPG = 3
+           DO 5 KP=1,NPG
+             CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+             TEM = TEM + TPG
+    5      CONTINUE
+           TEMP = TEM/NPG - TREF
+
 C
           IF (TEMP.NE.0.D0) THEN
               F = ALPHA*TEMP

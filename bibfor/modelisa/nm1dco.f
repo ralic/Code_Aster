@@ -1,8 +1,8 @@
-      SUBROUTINE NM1DCO(FAMI,KPG,KSP,OPTION,IMATE,MATERI,TM,TP,E,SIGM,
+      SUBROUTINE NM1DCO(FAMI,KPG,KSP,OPTION,IMATE,MATERI,E,SIGM,
      &                  EPSM,DEPS,VIM,SIGP,VIP,DSDE,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,7 +50,7 @@ C OUT DSDE    : DSIG/DEPS
 C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
-      REAL*8 TP,TM,EM,EP,ET,ALPHAM,ALPHAP,TREF
+      REAL*8 EM,EP,ET,ALPHAM,ALPHAP,TREF
       REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU,EPSPM,CORRM
       REAL*8 SIGP,DSDE,RBID,RESI,CRILDC(3)
       CHARACTER*16 OPTION
@@ -59,7 +59,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
-      REAL*8 RPRIM,RM,SIGE,VALPAR,VALRES,DEPSTH,AIRERP,DUM
+      REAL*8 RPRIM,RM,SIGE,VALRES,DEPSTH,AIRERP,DUM
       REAL*8 SIELEQ,RP,DP,NU,EPSM
       INTEGER JPROLM,JVALEM,NBVALM,NBVALP,NBPAR,JPROLP,JVALEP
       CHARACTER*2 FB2,CODRES
@@ -72,25 +72,22 @@ C     ------------------------------------------------------------------
       LOGICAL DCONV,PCONV,MELAS
       INTEGER ITER,ITEMAX,ICHAR,NCHAR,I,J,IBID
       FB2 = 'FM'
-      NBPAR = 1
-      NOMPAR = 'TEMP'
       PM = VIM(1)
       EPSPM = VIM(1)
       D  = VIM(2)
       CODRET=0
 
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
-      VALPAR = TP
-      CALL RCVALA(IMATE,MATERI,'CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,
-     &              'D_CORR',DC,CODRES,FB2)
-      CALL RCVALA(IMATE,MATERI,'CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,
-     &              'ECRO_K',K,CODRES,FB2)
-      CALL RCVALA(IMATE,MATERI,'CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,
-     &              'ECRO_M',M,CODRES,FB2)
-      CALL RCVALA(IMATE,MATERI,'CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,
-     &              'SY',SY,CODRES,FB2)
-      CALL RCVALA(IMATE,MATERI,'ELAS',NBPAR,NOMPAR,VALPAR,1,'NU',
-     &              V,CODRES,FB2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
+     &            0.D0,1,'D_CORR',DC,CODRES,FB2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
+     &            0.D0,1,'ECRO_K',K,CODRES,FB2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
+     &            0.D0,1,'ECRO_M',M,CODRES,FB2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
+     &            0.D0,1,'SY',SY,CODRES,FB2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'ELAS',0,' ',0.D0,
+     &            1,'NU',V,CODRES,FB2)
 
 C --- PARAMETRES DE CONVERGENCE
       RESI = CRILDC(3)

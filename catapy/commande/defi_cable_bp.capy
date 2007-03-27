@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,6 @@ from Macro.defi_cable_bp_ops import defi_cable_bp_ops
 #
 # USAGE :
 # Entrée :
-#  - MAILLAGE
 #  - MODELE
 #  - CABLE
 #  - CHAM_MATER
@@ -47,8 +46,6 @@ from Macro.defi_cable_bp_ops import defi_cable_bp_ops
 DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",op=defi_cable_bp_ops,sd_prod=cabl_precont,
                    fr="Calculer les profils initiaux de tension le long des cables de précontrainte d'une structure en béton",
                    reentrant='n',UIinfo={"groupe":("Modélisation",)},
-         regles=(ENSEMBLE('MAILLAGE','CONE'),),
-         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),

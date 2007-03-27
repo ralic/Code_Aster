@@ -1,21 +1,21 @@
-#@ MODIF algorith8 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith8 Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -59,11 +59,11 @@ cata_msg={
 """),
 
 10: _("""
-  bug 1 
+  bug 1
 """),
 
 11: _("""
-  bug 2 
+  bug 2
 """),
 
 12: _("""
@@ -156,7 +156,7 @@ cata_msg={
 """),
 
 35: _("""
- incompatibilite entre la loi de couplage  %(k1)s  et la modelisation choisi  %(k2)s 
+ incompatibilite entre la loi de couplage  %(k1)s  et la modelisation choisi  %(k2)s
 """),
 
 36: _("""
@@ -244,42 +244,27 @@ cata_msg={
 """),
 
 57: _("""
- loi de mecanique incompatible avec une modelisation thhm
+ Loi de mecanique incompatible avec une modelisation THHM
 """),
 
 58: _("""
- methode non implantee
+ Methode non implantee
 """),
 
 59: _("""
- champ in inexistant
+ Champ 'IN' inexistant
 """),
 
 60: _("""
- temperature : grandeur inconnue
+ Temperature : grandeur inconnue
 """),
 
 61: _("""
- presence d un champ de sechage ou d un champ de sechage de reference mais pas des deux!
+ Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
 """),
 
-62: _("""
-  -> Le matériau dépend de la température mais il n'y a pas de champ de
-     température.
-  -> Risque & Conseil :
-     Vérifier si le problème que vous traitez nécessite bien un champ de
-     température.
-     La présence du champ de température permet de prendre en compte
-     l'évolution des caractéristiques mécaniques en fonction de la température.
-"""),
 
-63: _("""
- le materiau depend de l'hydratation mais il n'y a pas de champ d'hydratation.
-"""),
 
-64: _("""
- le materiau depend du sechage mais il n'y a pas de champ sechage.
-"""),
 
 65: _("""
  echec loi de comp dans zerofo
@@ -298,11 +283,11 @@ cata_msg={
 """),
 
 69: _("""
-  type de matrice demande non disponible 
+  type de matrice demande non disponible
 """),
 
 70: _("""
-  erreur dans nmvecd 
+  erreur dans nmvecd
 """),
 
 71: _("""

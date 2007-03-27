@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE FLUAGE/NADAI_B - TRACTION UNIAXIALE EN C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,17 +150,20 @@ SECH=CREA_RESU(  OPERATION='AFFE',
                     
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                      AFFE=_F( TOUT = 'OUI',
-                           MATER = BETON,
-                           TEMP_REF = 0.),
-                     AFFE_VARC=_F(TOUT='OUI',
+                           MATER = BETON),
+                     AFFE_VARC=(_F(TOUT='OUI',
                                   EVOL=SECH,
-                                  NOM_VARC="SECH",
+                                  NOM_VARC='SECH',
                                   NOM_CHAM='TEMP',
                                   VALE_REF=1),
+                               _F(TOUT='OUI',
+                                  EVOL=TEMP,
+                                  NOM_VARC='TEMP',
+                                  NOM_CHAM='TEMP',
+                                  VALE_REF=0,),),
                     )
 
 COND_LIM=AFFE_CHAR_MECA( MODELE=MO,
-                         TEMP_CALCULEE=TEMP,
                          DDL_IMPO=(_F(  GROUP_NO = 'LA',       DX = 0.),
                                    _F(  GROUP_NO = ('A1', 'B1',),  DY = 0.),
                                    _F(  GROUP_NO = ('F1', 'E1',),  DY = 0.)),
@@ -356,17 +359,20 @@ SECHV=CREA_RESU(  OPERATION='AFFE',
 
 CMV=AFFE_MATERIAU(    MAILLAGE=MAIL,
                      AFFE=_F( TOUT = 'OUI',
-                           MATER = BETON,
-                           TEMP_REF = 0.),
-                     AFFE_VARC=_F(TOUT='OUI',
+                           MATER = BETON),
+                     AFFE_VARC=(_F(TOUT='OUI',
                                   EVOL=SECHV,
-                                  NOM_VARC="SECH",
+                                  NOM_VARC='SECH',
                                   NOM_CHAM='TEMP',
                                   VALE_REF=1),
+                               _F(TOUT='OUI',
+                                  EVOL=TEMPV,
+                                  NOM_VARC='TEMP',
+                                  NOM_CHAM='TEMP',
+                                  VALE_REF=0.),),
                     )
 
 COND_LI2=AFFE_CHAR_MECA( MODELE=MO,
-                         TEMP_CALCULEE=TEMPV,
                          DDL_IMPO=(_F(  GROUP_NO = 'LA',       DX = 0.),
                                    _F(  GROUP_NO = ('A1', 'B1',),  DY = 0.),
                                    _F(  GROUP_NO = ('F1', 'E1',),  DY = 0.)),

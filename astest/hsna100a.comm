@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -367,18 +367,23 @@ CM=AFFE_MATERIAU(    MAILLAGE=MAGE,
                             AFFE=_F( TOUT = 'OUI',      
                                   MATER = MAT,     
                                   TEMP_REF = 15.),
-                            AFFE_VARC=_F(TOUT='OUI',
+                            AFFE_VARC=(_F(TOUT='OUI',
                                          EVOL=RESUSECH,
                                          NOM_VARC="SECH",
                                          NOM_CHAM='TEMP',
-                                         VALE_REF=C_0),);
+                                         VALE_REF=C_0),
+                                      _F(TOUT='OUI',
+                                         EVOL=RESUTHER,
+                                         NOM_VARC="TEMP",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=15.),),
+);
 #
 
 CHMECA=AFFE_CHAR_MECA( 
                             MODELE=MOMECA,
                           DDL_IMPO=_F( GROUP_NO = 'A1',  
                                     DY = 0.,         ),
-                     TEMP_CALCULEE=RESUTHER
                             )
 
 #

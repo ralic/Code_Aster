@@ -1,8 +1,8 @@
-      SUBROUTINE LCDPNL(TYPMOD,NDIM,OPTION,IMATE,SIGM,EPSM,
-     &                  TM,TP,TREF,DEPS,VIM,VIP,SIG,DSIDEP,PROJ,IRET)
+      SUBROUTINE LCDPNL(FAMI,KPG,KSP,TYPMOD,NDIM,OPTION,IMATE,SIGM,
+     &                  EPSM,DEPS,VIM,VIP,SIG,DSIDEP,PROJ,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/05/2006   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,10 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
       IMPLICIT      NONE
-      INTEGER       NDIM, IMATE,IRET
+      INTEGER       NDIM, IMATE,IRET,KSP,KPG
       REAL*8        SIGM(6),DEPS(6,2),VIM(*),VIP(*),SIG(6),PROJ(6,6)
-      REAL*8        DSIDEP(6,6,2),EPSM(6,2),TM,TP,TREF
+      REAL*8        DSIDEP(6,6,2),EPSM(6,2)
+      CHARACTER*(*) FAMI
       CHARACTER*8   TYPMOD(*)
       CHARACTER*16  OPTION
 C =====================================================================
@@ -48,7 +49,7 @@ C OUT IRET    CODE RETOUR (0 = OK)
 C =====================================================================
       LOGICAL      RIGI,RESI,ELAS
       INTEGER      NDIMSI,I,J,K,L,NDT,NDI
-      REAL*8       KRON(6),TRE,TRER,VALRES(2),DSDP2(6,6)
+      REAL*8       KRON(6),TRE,TRER,VALRES(2),DSDP2(6,6),TP,TM,TREF
       REAL*8       DEUXMU,LAMBDA,DSDP1B(6,6),DSDP2B(6,6),YOUNG,NU
       CHARACTER*2  CODRET(2)
       CHARACTER*8  NOMRES(2)
@@ -76,6 +77,12 @@ C =====================================================================
 C =====================================================================
 C --- COMPORTEMENT LOCAL ----------------------------------------------
 C =====================================================================
+
+C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE POUR LE CALCUL THERMIQUE (CALCME)
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
       CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
      &                        DEPS(1,2),VIM,VIP,SIG,DSDP2,IRET)
 C =====================================================================

@@ -1,21 +1,21 @@
-# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES SOUS TROIS SOLLICITATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #=======================================================================
 # TREILLIS DE BARRES ARTICULEES SOUS TROIS SOLLICITATIONS
@@ -31,8 +31,6 @@ MAILLAGE=LIRE_MAILLAGE(  )
 MATERIAU=DEFI_MATERIAU( ELAS=_F(  E = 2.10E+11, ALPHA = 1.E-05,
                                                  NU = 0.3) )
 
-CH_MATER=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
-                             AFFE=_F(  TOUT = 'OUI', MATER = MATERIAU) )
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                            AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
@@ -60,6 +58,22 @@ MAILLAGE=MAILLAGE,
                             AFFE=_F(  TOUT = 'OUI',
                                    NOM_CMP = 'TEMP',  VALE = 30.) )
 
+
+
+###------------------------------------------------------------------###
+###             2 CHAMPS DE MATERIAU : AVEC ET SANS TEMPERATURE      ###
+###------------------------------------------------------------------###
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+               AFFE=_F(  TOUT = 'OUI', MATER = MATERIAU),
+               AFFE_VARC =_F(TOUT='OUI', CHAMP_GD=TEMP_IMP, NOM_VARC='TEMP',),
+                             )
+
+CHMATST=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+               AFFE=_F(  TOUT = 'OUI', MATER = MATERIAU),
+                             )
+
+
 ###------------------------------------------------------------------###
 ###             CHARGEMENT : DILATATION THERMIQUE                    ###
 ###------------------------------------------------------------------###
@@ -69,12 +83,11 @@ CHARGE_1=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
                                  _F(  NOEUD = 'B',           DY = 0.)),
                         LIAISON_OBLIQUE=_F(  NOEUD = 'C',
                                           ANGL_NAUT = ( 30.,  0.,  0., ),
-                                          DY = 0.),
-                         TEMP_CALCULEE=TEMP_IMP                     )
+                                          DY = 0.), )
 
 STATIQU1=MECA_STATIQUE(  MODELE=MODELE,
                               EXCIT=_F(   CHARGE = CHARGE_1),
-                              CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
+                              CHAM_MATER=CHMAT,  CARA_ELEM=CARA_ELE)
 
 STATIQU1=CALC_ELEM(reuse=STATIQU1,    OPTION='EFGE_ELNO_DEPL',
                          EXCIT=_F( CHARGE = CHARGE_1),  RESULTAT=STATIQU1)
@@ -94,12 +107,12 @@ CHARGE_2=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
 
 STATIQU2=MECA_STATIQUE(  MODELE=MODELE,
                               EXCIT=_F(   CHARGE = CHARGE_2),
-                              CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
+                              CHAM_MATER=CHMATST,  CARA_ELEM=CARA_ELE)
 
 STATIQU2=CALC_ELEM(reuse=STATIQU2,    OPTION=('EFGE_ELNO_DEPL','EPSI_ELNO_DEPL'),
                          EXCIT=_F( CHARGE = CHARGE_2),  RESULTAT=STATIQU2)
 
-STATIQU2=CALC_NO(reuse=STATIQU2,  OPTION='FORC_NODA',  
+STATIQU2=CALC_NO(reuse=STATIQU2,  OPTION='FORC_NODA',
                           RESULTAT=STATIQU2)
 
 ###------------------------------------------------------------------###
@@ -115,7 +128,7 @@ CHARGE_3=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
 
 STATIQU3=MECA_STATIQUE(  MODELE=MODELE,
                               EXCIT=_F(   CHARGE = CHARGE_3),
-                              CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
+                              CHAM_MATER=CHMATST,  CARA_ELEM=CARA_ELE)
 
 STATIQU3=CALC_ELEM(reuse=STATIQU3,    OPTION='EFGE_ELNO_DEPL',
                          EXCIT=_F( CHARGE = CHARGE_3),  RESULTAT=STATIQU3)
@@ -131,12 +144,11 @@ CHARGE_4=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
                                           ANGL_NAUT = ( 30.,  0.,  0., ),
                                           DY = -0.015),FORCE_NODALE=(
                         _F(  NOEUD = 'E',  FY = -150.E+03),
-                                     _F(  NOEUD = 'F',  FY = -100.E+03)),
-                         TEMP_CALCULEE=TEMP_IMP                     )
+                                     _F(  NOEUD = 'F',  FY = -100.E+03)), )
 
 STATIQU4=MECA_STATIQUE(  MODELE=MODELE,
                              EXCIT=_F(   CHARGE = CHARGE_4),
-                              CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
+                              CHAM_MATER=CHMAT,  CARA_ELEM=CARA_ELE)
 
 STATIQU4=CALC_ELEM( reuse=STATIQU4,    OPTION='EFGE_ELNO_DEPL',
                           EXCIT=_F( CHARGE = CHARGE_4),  RESULTAT=STATIQU4)
@@ -189,7 +201,7 @@ RESULTAT=STATIQU4, NUME_ORDRE=1,
 #
 # --->> CHARGE : DILATATION THERMIQUE
 
-TEST_RESU(CHAM_ELEM=( 
+TEST_RESU(CHAM_ELEM=(
            _F(  CHAM_GD = EFFOGE1, CRITERE = 'RELATIF',  PRECISION = 0.005,
              MAILLE = 'M01',
              NOEUD = 'N01',      NOM_CMP = 'N',             VALE = -4777.1),
@@ -246,12 +258,12 @@ TEST_RESU(CHAM_ELEM=(
 #
 # --->> CHARGE : FORCE PONCTUELLE
 
-TEST_RESU( 
+TEST_RESU(
            CHAM_NO=_F(  CHAM_GD = VECAS2,  PRECISION = 0.005,
                            NOEUD = 'E',  NOM_CMP = 'DY',  VALE = -1.0566E-02)
            )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
          _F(  RESULTAT=STATIQU2,  PRECISION =0.005,NOM_CHAM='EPSI_ELNO_DEPL',NUME_ORDRE=1,
            REFERENCE='NON_REGRESSION',VERSION='8.1.17',
            MAILLE = 'M01',  NOEUD = 'N01',  NOM_CMP = 'EPXX',  VALE = -1.75437E-4),
@@ -265,7 +277,7 @@ TEST_RESU(RESU=(
            REFERENCE='NON_REGRESSION',VERSION='8.1.17',
            MAILLE = 'M07',  NOEUD = 'N03',  NOM_CMP = 'EPXX',  VALE = -5.29889E-4),),);
 
-TEST_RESU(CHAM_ELEM=( 
+TEST_RESU(CHAM_ELEM=(
          _F(  CHAM_GD = EFFOGE2,  PRECISION = 0.005,
            MAILLE = 'M01',  NOEUD = 'N01',  NOM_CMP = 'N',  VALE = -51947.),
          _F(  CHAM_GD = EFFOGE2,  PRECISION = 0.005,
@@ -307,14 +319,14 @@ TEST_RESU(CHAM_ELEM=(
 
 #
 
-TEST_RESU(CHAM_NO=(  
+TEST_RESU(CHAM_NO=(
          _F(  CHAM_GD = FORCNO2,  PRECISION = 0.005,
            NOEUD = 'E',  NOM_CMP = 'DY',  VALE = -150000.),
          _F(  CHAM_GD = FORCNO2,  PRECISION = 0.005,
            NOEUD = 'F',  NOM_CMP = 'DY',  VALE = -100000.))
            )
 
-TEST_RESU(CHAM_ELEM=( 
+TEST_RESU(CHAM_ELEM=(
          _F(  CHAM_GD = SIEFGA2,  PRECISION = 0.005,
            MAILLE = 'M01',  POINT = 1,  NOM_CMP = 'N',  VALE = -51947.),
          _F(  CHAM_GD = SIEFGA2,  PRECISION = 0.005,
@@ -353,7 +365,7 @@ TEST_RESU(CHAM_ELEM=(
 
 # --->> CHARGE : DEPLACEMENTS IMPOSES
 
-TEST_RESU(CHAM_ELEM=( 
+TEST_RESU(CHAM_ELEM=(
            _F(  CHAM_GD = EFFOGE3, CRITERE = 'RELATIF',  PRECISION = 0.005,
              MAILLE = 'M01',
              NOEUD = 'N01',      NOM_CMP = 'N',             VALE = -24346.3),
@@ -410,7 +422,7 @@ TEST_RESU(CHAM_ELEM=(
 #
 # --->> CHARGE : DILATATION, FORCES, DEPLACEMENTS
 
-TEST_RESU(CHAM_ELEM=( 
+TEST_RESU(CHAM_ELEM=(
            _F(  CHAM_GD = EFFOGE4, CRITERE = 'RELATIF',  PRECISION = 0.005,
              MAILLE = 'M01',
              NOEUD = 'N01',      NOM_CMP = 'N',             VALE = -81070.),

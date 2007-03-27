@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE SECHAGE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -436,15 +436,6 @@ MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
 
 #
 
-CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MATER = MAT,
-                                  TEMP_REF = 0.),
-                            AFFE_VARC=_F(TOUT='OUI',
-                                         EVOL=RESUSECH,
-                                         NOM_VARC="SECH",
-                                         NOM_CHAM='TEMP',
-                                         VALE_REF=C_0),);
 #
 CLMECA =AFFE_CHAR_MECA(  MODELE=MOMECA,
                          FACE_IMPO=(_F( GROUP_MA = ('GM72'),
@@ -472,10 +463,20 @@ CREA_RESU(reuse =RESUTHER,
                  AFFE=_F(CHAM_GD=CHTEMP0,
                          INST=-1.0,),);
 
-CHMECA=AFFE_CHAR_MECA(
-                            MODELE=MOMECA,
-                     TEMP_CALCULEE=RESUTHER,
-                            )
+CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                            AFFE=_F( TOUT = 'OUI',
+                                  MATER = MAT,
+                                  TEMP_REF = 0.),
+                            AFFE_VARC=(_F(TOUT='OUI',
+                                         EVOL=RESUSECH,
+                                         NOM_VARC="SECH",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=C_0),
+                                      _F(TOUT='OUI',
+                                         EVOL=RESUTHER,
+                                         NOM_VARC="TEMP",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=0),),);
 #
 
 CHME=AFFE_CHAR_MECA(
@@ -497,9 +498,6 @@ LISTMECA=DEFI_LIST_REEL(
 RESUMECA=STAT_NON_LINE(
                             MODELE=MOMECA,
                         CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = CHMECA,
-                ),
                              _F(
                 CHARGE = CHME,
                 ),
@@ -540,7 +538,6 @@ RESUSTAT=MECA_STATIQUE(
                           MODELE=MOMECA,
                       CHAM_MATER=CM,EXCIT=(
                            _F(  CHARGE = CLMECA,                   ),
-                           _F(  CHARGE = CHMECA,                   ),
                            _F(  CHARGE = CHME,                     )),
                        LIST_INST=LISTMECA,
                          SOLVEUR=_F(  METHODE = 'LDLT',

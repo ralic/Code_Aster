@@ -1,25 +1,27 @@
-      SUBROUTINE DKQCOL ( XYZL, OPTION, PGL, ICOU, INIV, DEPL, CDL )
+      SUBROUTINE DKQCOL ( FAMI,XYZL, OPTION, PGL, ICOU, INIV, DEPL, CDL,
+     &                     NPG )
       IMPLICIT  NONE
-      INTEGER       ICOU, INIV
+      INTEGER       ICOU, INIV,NPG
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
       CHARACTER*16  OPTION
+      CHARACTER*4   FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     CONTRAINTES ET DEFORMATIONS DE L'ELEMENT DE PLAQUE DKQ
@@ -48,7 +50,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                       ZK80
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER  NDIM,NNO,NNOS,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER       MULTIC,NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG
       REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS
       REAL*8        EPS(3),SIG(3),DCIS(2),CIST(2),DEPF(12),DEPM(8)
@@ -79,8 +81,8 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
       CALL GQUAD4 ( XYZL, CARAQ4 )
 
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
-      CALL DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,.FALSE.,
-     +                                            T2EV,T2VE,T1VE)
+      CALL DMATEL(FAMI,DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,.FALSE.,
+     +                                       T2EV,T2VE,T1VE,NPG)
 
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0) THEN
@@ -147,7 +149,7 @@ C           ------ SF = BF.DEPF ---------------------------------------
 C           ------- CALCUL DU PRODUIT HF.T2 ----------------------------
           CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C           ------ VT = HFT2.TKT.DEPF ----------------------------------
-          CALL DKQTXY ( QSI, ETA, HFT2, DEPF, CARAQ4(13), 
+          CALL DKQTXY ( QSI, ETA, HFT2, DEPF, CARAQ4(13),
      +                                            CARAQ4(9), VT )
 C           ------ DCIS = DCI.VT --------------------------------------
           DCIS(1) = DCI(1,1)*VT(1) + DCI(1,2)*VT(2)
@@ -201,7 +203,7 @@ C           ------ SF = BF.DEPF ---------------------------------------
 C           ------- CALCUL DU PRODUIT HF.T2 ----------------------------
           CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C           ------ VT = HFT2.TKT.DEPF ----------------------------------
-          CALL DKQTXY ( QSI, ETA, HFT2, DEPF, CARAQ4(13), 
+          CALL DKQTXY ( QSI, ETA, HFT2, DEPF, CARAQ4(13),
      +                                            CARAQ4(9), VT )
 C           ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ------
           CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
@@ -210,7 +212,7 @@ C           ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ------
 C              ------- CALCUL DU PRODUIT HL.T2 ------------------------
             CALL DSXHLT ( DF, JACOB(2), HLT2 )
 C              ------ LAMBDA = HLT2.TKT.DEPF ---------------------------
-            CALL DKQLXY(QSI, ETA, HLT2, DEPF, CARAQ4(13), 
+            CALL DKQLXY(QSI, ETA, HLT2, DEPF, CARAQ4(13),
      +                                            CARAQ4(9), LAMBDA )
             DO 270 J = 1,4
               CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
@@ -299,7 +301,7 @@ C             --------------------------------
 C             ------- CALCUL DU PRODUIT HF.T2 -------------------------
               CALL DSXHFT ( DF, JACOB(2), HFT2 )
 C             ------ VT = HFT2.TKT.DEPF -------------------------------
-              CALL DKQTXY ( QSI, ETA, HFT2, DEPF, CARAQ4(13), 
+              CALL DKQTXY ( QSI, ETA, HFT2, DEPF, CARAQ4(13),
      +                                                CARAQ4(9), VT )
 C             ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---
               CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
@@ -308,7 +310,7 @@ C             ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---
 C               ------- CALCUL DU PRODUIT HL.T2 -----------------------
                 CALL DSXHLT ( DF, JACOB(2), HLT2 )
 C               ------ LAMBDA = HLT2.TKT.DEPF -------------------------
-                CALL DKQLXY(QSI, ETA, HLT2, DEPF, CARAQ4(13), 
+                CALL DKQLXY(QSI, ETA, HLT2, DEPF, CARAQ4(13),
      +                                               CARAQ4(9), LAMBDA )
                 DO 368 J = 1,4
                   CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)

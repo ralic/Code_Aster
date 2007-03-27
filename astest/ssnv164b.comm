@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,6 @@ CAB_BP1=DEFI_CABLE_BP(MODELE=MO,
                       DEFI_CABLE=_F(GROUP_MA='CAB1',
                                     GROUP_NO_ANCRAGE=('PC1D','PC1F',),),
                       TYPE_ANCRAGE=('ACTIF','PASSIF',),
-                      MAILLAGE=MAILLAGE,
                       CONE=_F(RAYON=0.20,
                               LONGUEUR=1.5,
                               PRESENT=('NON','OUI',),),

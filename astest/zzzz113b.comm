@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE VALIDATION DE NON REGRESSION DU CHAINAGE 2D CYRANO3-CODE_ASTER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -316,50 +316,6 @@ MATERG=DEFI_MATERIAU(ELAS_FO=_F(E=YG,
                                    TEMP_RECUIT=TFAB,
                                    FLUX_PHI=FLUX,),);
 #
-# --- CREATION DU CHAMP MATERIAU PASTILLE-GAINE
-#     -----------------------------------------
-
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA='PASTILLE',
-                             MATER=MATERP,
-                             TEMP_REF=0.,),
-                          _F(GROUP_MA='GAINE',
-                             MATER=MATERG,
-                             TEMP_REF=0.,),),
-                    AFFE_VARC=_F(TOUT='OUI',
-                                 EVOL=ANEL,
-                                 NOM_VARC='EPSA',
-                                 NOM_CHAM='EPSA_ELNO',
-                                 PROL_DROITE='CONSTANT',),);
-#
-# --- FONCTION PRESSION INTERNE PINT(T) EN MPA
-#     ----------------------------------------
-
-PINT=DEFI_FONCTION(NOM_PARA='INST',VALE=(25.0452800000,8.281498848869195,
-                         25.0564000000,8.301904680271491,
-                         ),);
-#
-# --- FONCTION PRESSION EXTERNE PEXT(T) EN MPA
-#     ----------------------------------------
-
-PEXT=DEFI_FONCTION(NOM_PARA='INST',VALE=(25.0452800000,15.500000000000000,
-                         25.0564000000,15.500000000000000,
-                         ),);
-#
-# --- CONTRAINTE AXIALE PASTILLE
-#     --------------------------
-
-FORCEP=DEFI_FONCTION(NOM_PARA='INST',VALE=(25.0452800000,-8.468295626405192,
-                           25.0564000000,-8.488701457807489,
-                           ),);
-#
-# --- CONTRAINTE AXIALE GAINE
-#     -----------------------
-
-FORCEG=DEFI_FONCTION(NOM_PARA='INST',VALE=(25.0452800000,-40.3961806808399,
-                           25.0564000000,-40.3261351319128,
-                           ),);
-#
 # --- GENERATION DES CHAMPS AUX NOEUDS DE TEMPERATURE
 # --- PROVENANT DE CYRANO3, AFFECTATION PAR GROUPE DE
 # --- MAILLES VERTICALES BPM(I) I=1,NA+NGN+2. LES
@@ -493,6 +449,48 @@ EVOL=CREA_RESU(OPERATION='AFFE',
                   INST=25.0564000000,
                   PRECISION=1.E-6,),),);
 #
+# --- CREATION DU CHAMP MATERIAU PASTILLE-GAINE
+#     -----------------------------------------
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(GROUP_MA='PASTILLE',
+                             MATER=MATERP,
+                             TEMP_REF=0.,),
+                          _F(GROUP_MA='GAINE',
+                             MATER=MATERG,
+                             ),),
+                    AFFE_VARC=(_F(TOUT='OUI', EVOL=ANEL, NOM_VARC='EPSA',
+                                 NOM_CHAM='EPSA_ELNO', PROL_DROITE='CONSTANT',),
+                               _F(TOUT='OUI', EVOL=EVOL,  NOM_VARC='TEMP',  ),),);
+#
+# --- FONCTION PRESSION INTERNE PINT(T) EN MPA
+#     ----------------------------------------
+
+PINT=DEFI_FONCTION(NOM_PARA='INST',VALE=(25.0452800000,8.281498848869195,
+                         25.0564000000,8.301904680271491,
+                         ),);
+#
+# --- FONCTION PRESSION EXTERNE PEXT(T) EN MPA
+#     ----------------------------------------
+
+PEXT=DEFI_FONCTION(NOM_PARA='INST',VALE=(25.0452800000,15.500000000000000,
+                         25.0564000000,15.500000000000000,
+                         ),);
+#
+# --- CONTRAINTE AXIALE PASTILLE
+#     --------------------------
+
+FORCEP=DEFI_FONCTION(NOM_PARA='INST',VALE=(25.0452800000,-8.468295626405192,
+                           25.0564000000,-8.488701457807489,
+                           ),);
+#
+# --- CONTRAINTE AXIALE GAINE
+#     -----------------------
+
+FORCEG=DEFI_FONCTION(NOM_PARA='INST',VALE=(25.0452800000,-40.3961806808399,
+                           25.0564000000,-40.3261351319128,
+                           ),);
+#
 # --- CHARGEMENT MECANIQUE EN PRESSION
 #     --------------------------------
 
@@ -511,7 +509,6 @@ CHMEF=AFFE_CHAR_MECA_F(MODELE=MO,
 #     ------------------------------------------
 
 CHME=AFFE_CHAR_MECA(MODELE=MO,
-                    TEMP_CALCULEE=EVOL,
                     DDL_IMPO=(_F(GROUP_NO=('SEGI10','SEGI16',),
                                  DY=0.,),
                               _F(GROUP_NO='BPD01',

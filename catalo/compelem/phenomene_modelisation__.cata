@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+%& MODIF COMPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -65,6 +65,9 @@ PHENOMENE_MODELISATION__
 %        Un élément de coque "plaqué" sur un élément de volume n'est pas un élément de bord.
 %
 %
+%  TUYAU  =  'OUI' :  l'élément est un élément de "tuyau".
+%  GRILLE =  'OUI' :  l'élément est un élément de "grille".
+%
 %
 %
 % ==========================================================================================
@@ -91,9 +94,11 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEBOCQ3
 
        MODELISATION__ 'GRILLE'           DIM__ 2 3   CODE__ 'GRI'
+              ATTRIBUT__  GRILLE=OUI
               MAILLE__ TRIA3     ELEMENT__ MEGRDKT
 
        MODELISATION__ 'GRILLE_MEMBRANE'  DIM__ 2 3   CODE__ 'GRM'
+              ATTRIBUT__  GRILLE=OUI
               MAILLE__ TRIA3     ELEMENT__ MEGMTR3
               MAILLE__ TRIA6     ELEMENT__ MEGMTR6
               MAILLE__ QUAD4     ELEMENT__ MEGMQU4
@@ -418,10 +423,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MECA_2D_BARRE
 
        MODELISATION__ 'TUYAU_3M'         DIM__ 1 3   CODE__ 'TU3'
+              ATTRIBUT__  TUYAU=OUI
               MAILLE__ SEG3      ELEMENT__ MET3SEG3
               MAILLE__ SEG4      ELEMENT__ MET3SEG4
 
        MODELISATION__ 'TUYAU_6M'         DIM__ 1 3   CODE__ 'TU6'
+              ATTRIBUT__  TUYAU=OUI
               MAILLE__ SEG3      ELEMENT__ MET6SEG3
 
        MODELISATION__ 'DIS_T'            DIM__ 0 3   CODE__ 'DIT'

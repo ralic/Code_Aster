@@ -2,7 +2,7 @@
      &     TR,DEPSM,VIM,VIP,DSPDP1,DSPDP2,SIPM,SIPP,
      &     SIGP,DSIDEP,DSIDP1,DSIDP2,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,8 +144,8 @@ C =====================================================================
 C ======================================================================
 C --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ----------
 C ======================================================================
-      CALL LCDEDI ( NBMAT,  MATERD, MATERF, TD, TF, TR,
-     &             DEPSM, EPSM, DEPS,   EPSP )
+      CALL LCDEDI ( 'RIGI',1,1,NBMAT,  MATERD, MATERF,
+     &             TD,TF,TR,DEPSM, EPSM, DEPS,   EPSP )
 C =====================================================================
 C --- INTEGRATION ELASTIQUE : SIGE = HOOKF EPSP + SIP -----------------
 C =====================================================================

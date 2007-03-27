@@ -1,12 +1,12 @@
         SUBROUTINE LCPLNL ( FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,
-     1                      NMAT, MATERD,MATERF,MATCST,NR, NVI, TEMPD,
-     2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
+     1                      NMAT, MATERD,MATERF,MATCST,NR, NVI,
+     2                      TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
      3                      COMP,NBCOMM, CPMONO, PGL, TOUTMS,HSR,
      3                      SIGF, VINF, ICOMP, IRTETI,DRDY)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,8 +50,6 @@ C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPD  :  TEMPERATURE A T
-C           TEMPF  :  TEMPERATURE A T+DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT T+DT
 C           EPSD   :  DEFORMATION A T
@@ -91,7 +89,7 @@ C      DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
         REAL*8          DRDY1(NR,NR)
         REAL*8          DDY(NDT+NVI),DY(NDT+NVI),YD(NDT+NVI),YF(NDT+NVI)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-        REAL*8          TEMPD, TEMPF,   TIMED, TIMEF
+        REAL*8          TIMED, TIMEF
 C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
@@ -129,10 +127,10 @@ C       DIMENSION DYNAMIQUE DE YD,YF,DY,R,DDY
 C       ----------------------------------------------------------------
 C
 C --    INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
-C        
+C
         CALL LCEQVN ( NDT  ,  SIGD , YD )
         IRTETI = 0
-        
+
         IF (NBCOMM(NMAT,1).EQ.1) THEN
            NS=(NVI-8)/3
            DO 102 I=1,NS
@@ -162,7 +160,7 @@ C
      &                EPSD,  DEPS,   DY ,
      &                COMP,NBCOMM, CPMONO, PGL,TOUTMS,
      &                VIND,SIGD)
-     
+
         ITER = 0
 C
 C
@@ -177,7 +175,7 @@ C --    CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
 C
         CALL LCRESI ( FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
      &                COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
-     &    ITMAX, TOLER,TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R,IRET )
+     &    ITMAX, TOLER,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R,IRET )
         IF (IRET.NE.0) GOTO 3
 
 C     SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
@@ -188,7 +186,7 @@ C
 C --    CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
 C
         CALL LCJACB ( FAMI,KPG,KSP,LOI,MOD,IMAT, NMAT, MATERF,
-     &                TEMPF,TIMED,TIMEF,YF,DEPS,
+     &                TIMED,TIMEF,YF,DEPS,
      3    ITMAX,TOLER, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
      &                  EPSD,  DY,    DRDY, IRET )
         IF (IRET.NE.0) GOTO 3

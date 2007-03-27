@@ -1,7 +1,7 @@
       SUBROUTINE TE0399(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C
       REAL*8   DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4)
       REAL*8   DU1DM(3,4),DU2DM(3,4),DV1DM(7),DV2DM(7)
       REAL*8   RHO,OM,OMO,RBID,E,NU,ALPHA,DRHO
-      REAL*8   THET,TG,TGDM(3),TTRG,K3A,K6A
+      REAL*8   THET,TGDM(3),TTRG,K3A,K6A
       REAL*8   XAG,YAG,XG,YG,XA,YA,RPOL,NORM,A,B
       REAL*8   PHI,CPHI,C2PHI,CPHI2,SPHI2
       REAL*8   C1,C2,C3,CS,PULS
@@ -102,8 +102,6 @@ C
 C RECUPERATION CHARGE, MATER...
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL JEVECH('PTEREF' ,'L',ITREF)
-      CALL JEVECH('PTEMPER','L',ITEMP)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PFISSR' ,'L',IFOND)
       CALL JEVECH('PPULPRO','L',IPULS)
@@ -120,7 +118,6 @@ C ======================================================================
 C
       DO 800 KP=1,NPG1
         L  = (KP-1)*NNO
-        TG = 0.D0
         XG = 0.D0
         YG = 0.D0
         DO 220 I=1,3
@@ -145,7 +142,6 @@ C
           DER(2) = DFDI(I+NNO)
           DER(3) = 0.D0
           DER(4) = ZR(IVF+L+I-1)
-          TG = TG + ZR(ITEMP+I-1)*DER(4)
           XG = XG + ZR(IGEOM+2*(I-1)  )*DER(4)
           YG = YG + ZR(IGEOM+2*(I-1)+1)*DER(4)
           DO 310 J=1,NDIM
@@ -158,7 +154,8 @@ C
 310       CONTINUE
 320     CONTINUE
         TTRG  = 0.D0
-        CALL RCVADA(ZI(IMATE),'ELAS',TG,3,NOMRES,VALRES,DEVRES,CODRET)
+        CALL RCVAD2('RIGI',KP,1,'+',ZI(IMATE),'ELAS',3,
+     &              NOMRES,VALRES,DEVRES,CODRET)
         IF (CODRET(3).NE.'OK') THEN
           VALRES(3)= 0.D0
           DEVRES(3)= 0.D0
@@ -167,8 +164,6 @@ C
         CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',RBID,1,'RHO',RHO,
      &              CODRHO,'FM')
-C
-C        CALL RCVADA(ZI(IMATE),'ELAS',TG,1,'RHO',RHO,DRHO,CODRHO)
 C
         IF (CODRHO.NE.'OK') THEN
           CALL U2MESS('F','ELEMENTS3_88')

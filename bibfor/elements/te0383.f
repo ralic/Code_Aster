@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/05/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,12 +49,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEPL,ITREF
-      INTEGER ITEMPE,IMATE,IFORC,IGTHET,COMPT
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEPL,IRET
+      INTEGER IMATE,IFORC,IGTHET,COMPT
       INTEGER ITHET1,ITHET,IFORF,ITEMPS,ICOMPO,ICODE,IALPH
       INTEGER JGANO,NNO,NDIM,KP,NPG1,I,J,K,L,NNOS
 
-      REAL*8 TPG,VALRES(3),DEVRES(3),VALPAR(4)
+      REAL*8 VALRES(3),DEVRES(3),VALPAR(4)
       REAL*8 C11,C12,C13,C21,C22,C23,C31,C32,C33,C1,C2,C3
       REAL*8 D11,D12,D13,D21,D22,D23,D31,D32,D33,DC2,DC3
       REAL*8 DETFA,DDETFA,COEF,ALPHA,ALPHD
@@ -65,6 +65,7 @@ C                        NDIM*NNO
       REAL*8 FORCN(81)
 
       CHARACTER*2 CODRET(3)
+      CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(3),NOMPAR(4)
 
       LOGICAL FONC
@@ -73,16 +74,14 @@ C.......................................................................
 C.......................................................................
 
       CALL JEMARQ()
-
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
+      FAMI = 'RIGI'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
       CALL JEVECH('PTHETA1','L',ITHET1)
       CALL JEVECH('PTHETAR','L',ITHET)
       CALL JEVECH('PALPHAR','L',IALPH)
-      CALL JEVECH('PTEREF','L',ITREF)
-      CALL JEVECH('PTEMPER','L',ITEMPE)
       IF (OPTION.EQ.'G_LAGR_F') THEN
         FONC = .TRUE.
         CALL JEVECH('PFFVOLU','L',IFORF)
@@ -143,8 +142,6 @@ C ======================================================================
       G = ZERO
 
       DO 120 KP = 1,NPG1
-        L = (KP-1)*NNO
-        TPG = ZERO
         CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
 
@@ -163,7 +160,6 @@ C  -----------------------------------------
           DER(1) = DFDX(I)
           DER(2) = DFDY(I)
           DER(3) = DFDZ(I)
-          TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+L+I-1)
 
           DO 100 J = 1,3
             DO 90 K = 1,3
@@ -174,7 +170,8 @@ C  -----------------------------------------
   100     CONTINUE
   110   CONTINUE
 
-        CALL RCVADA(ZI(IMATE),'ELAS',TPG,3,NOMRES,VALRES,DEVRES,CODRET)
+        CALL RCVAD2(FAMI,KP,1,'+',ZI(IMATE),'ELAS',3,
+     &              NOMRES,VALRES,DEVRES,CODRET)
         IF (CODRET(3).NE.'OK') THEN
           VALRES(3) = ZERO
           DEVRES(3) = ZERO

@@ -1,12 +1,12 @@
-      SUBROUTINE MECALZ(OPTION,CHAMGD,CHGEOM,CHMATE,CHTEMP,CHTREF,
+      SUBROUTINE MECALZ(OPTION,CHAMGD,CHGEOM,CHMATE,CHVARC,CHVREF,
      &                  CHTIME,CHARGE,CHELEM,LIGREL,BASE)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,CHGEOM,CHMATE
-      CHARACTER*(*) CHTEMP,CHTREF,CHTIME,CHAMGD(*)
+      CHARACTER*(*) CHVARC,CHVREF,CHTIME,CHAMGD(*)
       CHARACTER*(*) CHARGE,LIGREL,BASE,CHELEM(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,10 +63,10 @@ C DEB-------------------------------------------------------------------
         LCHIN(4) = CHGEOM
         LPAIN(5) = 'PMATERC'
         LCHIN(5) = CHMATE
-        LPAIN(6) = 'PTEMPER'
-        LCHIN(6) = CHTEMP
-        LPAIN(7) = 'PTEREF'
-        LCHIN(7) = CHTREF
+        LPAIN(6) = 'PVARCPR'
+        LCHIN(6) = CHVARC
+        LPAIN(7) = 'PVARCRR'
+        LCHIN(7) = CHVREF
 
         NBOUT = 1
         NBIN = 7
@@ -95,7 +95,7 @@ C DEB-------------------------------------------------------------------
         LPAIN(5) = 'PMATERC'
         LCHIN(5) = CHMATE
         LPAIN(6) = 'PTEMPER'
-        LCHIN(6) = CHTEMP
+        LCHIN(6) = CHVARC
         LPAIN(7) = 'PTEMPSR'
         LCHIN(7) = CHTIME
 
@@ -109,8 +109,8 @@ C DEB-------------------------------------------------------------------
 
         LPAIN(1) = 'PGEOMER'
         LCHIN(1) = CHGEOM
-        LPAIN(2) = 'PTEMPER'
-        LCHIN(2) = CHTEMP
+        LPAIN(2) = 'PVARCPR'
+        LCHIN(2) = CHVARC
         LPAIN(3) = 'PALPHAR'
         LCHIN(3) = CHAMGD(1)
         LPAIN(4) = 'PMATERC'
@@ -133,7 +133,7 @@ C DEB-------------------------------------------------------------------
         LPAIN(2) = 'PGEOMER'
         LCHIN(2) = CHGEOM
         LPAIN(3) = 'PTEMPER'
-        LCHIN(3) = CHTEMP
+        LCHIN(3) = CHVARC
         LPAIN(4) = 'PALPHAR'
         LCHIN(4) = CHAMGD(2)
         LPAIN(5) = 'PDEPLAR'

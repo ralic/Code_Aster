@@ -1,10 +1,10 @@
-      SUBROUTINE LCPLGR(COMPOR, NDIM  , OPTION, IMATE , CARCRI,
-     &                  TREF  , TM    , TP    , EPSM  , DEPS  ,
+      SUBROUTINE LCPLGR(FAMI,   IGAU,   ISGAU, COMPOR, NDIM  , OPTION,
+     &                  IMATE , CARCRI, EPSM  , DEPS  ,
      &                  SIGM  , VIM   , R     , CHAMP , LAGR  ,
      &                  VIP   , ENER  , DPDA  , PONDER, SIGP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/11/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,24 +25,23 @@ C TOLE CRP_20
 
       IMPLICIT NONE
       INTEGER      NDIM, IMATE
-      REAL*8       CARCRI(*), TREF, TM, TP, EPSM(6), DEPS(6)
+      REAL*8       CARCRI(*), EPSM(6), DEPS(6)
       REAL*8       VIM(*), SIGM(6)
       REAL*8       R, CHAMP(0:3), LAGR(0: NDIM), VIP(*), SIGP(6)
       REAL*8       DPDA(0:3, 0:3)
       REAL*8       ENER, PONDER(0:3)
+      CHARACTER*(*)  FAMI
       CHARACTER*16 OPTION, COMPOR
 
 C ----------------------------------------------------------------------
 C              LOI DE COMPORTEMENT PLASTIQUE A GRADIENT
 C ----------------------------------------------------------------------
+C IN  FAMI    NOM DE LA FAMILLE DU POINT DE GAUSS
 C IN  COMPOR  NOM DU COMPORTEMENT
 C IN  NDIM    DIMENSION DE L'ESPACE
 C IN  OPTION  OPTION DE CALCUL (RAPH_MECA OU DECO_LOCA)
 C IN  IMATE   NATURE DU MATERIAU
 C IN  CARCRI  CRITERE DE CONVERGENCE (1: MAX ITERATIONS,  3: PRECISION)
-C IN  TREF    TEMPERATURE DE REFERENCE
-C IN  TM      TEMPERATURE EN T-
-C IN  TP      TEMPERATURE EN T+
 C IN  EPSM    CHAMP DE DEFORMATION EN T-
 C IN  DEPS    INCREMENT DU CHAMP DE DEFORMATION
 C IN  SIGM    CONTRAINTES EN T-
@@ -63,10 +62,10 @@ C ----------------------------------------------------------------------
       LOGICAL     LINE
       CHARACTER*2 CODRET(6)
       CHARACTER*8 NOMRES(6)
-      INTEGER     NDIMSI, K
-      INTEGER     JPROLP, JVALEP, NBVALP, CAS
+      INTEGER     IGAU,ISGAU,NDIMSI, K
+      INTEGER     JPROLP, JVALEP, NBVALP, CAS, IRET
       REAL*8      VALRES(6), EPSTH, TROISK, DEUXMU, TROIMU, DEUMUM, NU
-      REAL*8      AIRERP, RBID, RP, RPRIM, RPM, EF
+      REAL*8      AIRERP, RBID, RP, RPRIM, RPM, EF, TP, TREF
       REAL*8      H, SY, LC, LC2
       REAL*8      EPM(6), EPMH, EPSDV(6), EPSH, SIGTR(6), STREQ, SIGH
       REAL*8      COEF, SEQ
@@ -102,12 +101,15 @@ C -- COEFFICIENT DE CISAILLEMENT EN T-
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
 
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,2,NOMRES,VALRES,
-     &           CODRET,'F ' )
+      CALL RCVALB(FAMI,IGAU,ISGAU,'-',IMATE,' ','ELAS',0,' ',0.D0,
+     &            2,NOMRES,VALRES,CODRET,'F ' )
       DEUMUM = VALRES(1) / (1+VALRES(2))
 
 
 C -- CARACTERISTIQUES MATERIAU EN T+
+
+      CALL RCVARC('F','TEMP','+',FAMI,IGAU,ISGAU,TP,IRET)
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
 
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
@@ -116,26 +118,27 @@ C -- CARACTERISTIQUES MATERIAU EN T+
       NOMRES(5) = 'SY'
       NOMRES(6) = 'LONG_CARA'
 
-      CALL RCVALA (IMATE, ' ','ELAS', 1,'TEMP',TP,2,NOMRES,
-     &             VALRES,CODRET, 'F ' )
-      CALL RCVALA (IMATE, ' ','ELAS', 1,'TEMP',TP,1,NOMRES(3),
-     &             VALRES(3),CODRET(3), '  ' )
+      CALL RCVALB (FAMI,IGAU,ISGAU,'+',IMATE, ' ','ELAS', 0,' ',0.D0,
+     &              2,NOMRES,VALRES,CODRET, 'F ' )
+      CALL RCVALB (FAMI,IGAU,ISGAU,'+',IMATE, ' ','ELAS', 0,' ',0.D0,
+     &              1,NOMRES(3),VALRES(3),CODRET(3), '  ' )
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-      CALL RCVALA(IMATE,' ', 'NON_LOCAL', 1, 'TEMP',TP,1,NOMRES(6),
-     &            VALRES(6), CODRET(6), 'F ')
+      CALL RCVALB(FAMI,IGAU,ISGAU,'+',IMATE,' ', 'NON_LOCAL', 0,' ',
+     &              0.D0,1,NOMRES(6),VALRES(6), CODRET(6), 'F ')
 
 
       IF (COMPOR .EQ. 'VMIS_ISOT_LINE') THEN
         LINE = .TRUE.
-        CALL RCVALA(IMATE,' ', 'ECRO_LINE', 1,'TEMP',TP,2, NOMRES(4),
-     &            VALRES(4), CODRET(4), 'F ' )
+        CALL RCVALB(FAMI,IGAU,ISGAU,'+',IMATE,' ', 'ECRO_LINE', 0,' ',
+     &              0.D0,2, NOMRES(4),VALRES(4), CODRET(4), 'F ' )
         H      = VALRES(4)*VALRES(1) / (VALRES(1) - VALRES(4))
         SY     = VALRES(5)
 
       ELSE
         LINE = .FALSE.
-        CALL RCTRAC(IMATE,'TRACTION','SIGM',TP,JPROLP,JVALEP,
-     &                NBVALP,VALRES(1))
+
+        CALL RCTRAC(IMATE,'TRACTION','SIGM',TP,JPROLP,
+     &                JVALEP,NBVALP,VALRES(1))
         CALL RCFONC('S','TRACTION',JPROLP,JVALEP,NBVALP,SY,RBID,
      &                RBID,RBID,RBID,RBID,RBID,RBID,RBID)
         CALL RCFONC('V','TRACTION',JPROLP,JVALEP,NBVALP,RBID,RBID,

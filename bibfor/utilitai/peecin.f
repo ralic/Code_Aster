@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 20/11/2006   AUTEUR DEVESA G.DEVESA 
+C MODIF UTILITAI  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &            TYPARR(NBPARR),TYPARD(NBPARD),VALEK(2),NOMGD
       CHARACTER*16 TYPRES,OPTION,OPTIO2,NOPARR(NBPARR),NOPARD(NBPARD),
      &             OPTMAS,TABTYP(3)
-      CHARACTER*19 CHELEM,KNUM,KINS,DEPLA,LIGREL
+      CHARACTER*19 CHELEM,KNUM,KINS,DEPLA,LIGREL,CHVARC,CHVREF
       CHARACTER*24 CHMASD,CHFREQ,CHAMGD,CHNUMC,TYPCHA,CHTIME,CHSIG,
      &             CHEPS,CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM,OPT,
      &             MLGGMA,MLGNMA,K24B
@@ -66,6 +66,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       DATA NOPARD/'LIEU','ENTITE','TOTALE','POUR_CENT'/
       DATA TYPARD/'K8','K8','R','R'/
       DATA TABTYP/'NOEU#DEPL_R','NOEU#TEMP_R','ELEM#ENER_R'/
+      DATA CHVARC,CHVREF /'&&PEECIN.VARC','&&PEECIN.VARC_REF'/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -240,8 +241,9 @@ C           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
            IF (NOMGD(1:4).EQ.'DEPL') THEN
             OPTIO2 = 'ECIN_ELEM_DEPL'
             CHAMGD = DEPLA
-            CALL MECHTE(MODELE,NCHAR,LCHAR,MATE,EXITIM,INST,
-     &                  CHTREF,CHTEMP)
+            CALL VRCINS(MODELE(1:8),MATE(1:8),CARA(1:8),NCHAR,
+     &           LCHAR,INST,CHVARC)
+            CALL VRCREF(MODELE(1:8),MATE(1:8),CARA(1:8),CHVREF(1:19))
            ELSE IF (NOMGD(1:4).EQ.'TEMP') THEN
             OPTIO2 = 'ECIN_ELEM_TEMP'
             CHAMGD = ' '
@@ -265,7 +267,7 @@ C           --- C'EST BIEN OMEGA2 QUE L'ON RECUPERE ----
         CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASD,K24B,K24B,K24B,ALPHA,CALPHA,K24B,K24B,CHELEM,
-     &              LIGREL,BASE,K24B,K24B,K24B,K24B,
+     &              LIGREL,BASE,CHVARC,CHVREF,K24B,K24B,
      &                  K24B, K24B, K8B, IBID, IRET )
    30   CONTINUE
 

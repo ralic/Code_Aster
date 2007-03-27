@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
                fr="Créer ou enrichir une structure de donnees resultat à partir de champs aux noeuds",
 
-         OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ECLA_PG","PERM_CHAM","PROL_RTZ",),
+         OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ECLA_PG","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2",),
                          fr="choix de la fonction a activer",),
 
          b_affe       =BLOC(condition = "OPERATION == 'AFFE'",
@@ -130,4 +130,30 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
            ),
          ),
 
+         b_prep_vrc1      =BLOC(condition = "OPERATION == 'PREP_VRC1'",
+           # calculer la température dans les couches des coques multicouche à partir d'un champ de fonctions
+           # de fonctions du temps et de l'espace (épaisseur)
+
+           TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=( "EVOL_THER",) ),
+
+           PREP_VRC1        =FACT(statut='o',max=1,
+             CHAM_GD       =SIMP(statut='o',typ=(cham_gd_sdaster)), # carte de fonctions du temps et de l'épaisseur
+             MODELE        =SIMP(statut='o',typ=modele_sdaster),    # modèle mécanique contenant les coques multicouche
+             CARA_ELEM     =SIMP(statut='o',typ=cara_elem),         # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
+             INST          =SIMP(statut='o',typ='R',validators=NoRepeat(),max='**'),
+           ),
+         ),
+
+         b_prep_vrc2      =BLOC(condition = "OPERATION == 'PREP_VRC2'",
+           # calculer la température dans les couches des coques multicouche à partir d'un evol_ther "coque"
+           # contenant TEMP/TEMP_INF/TEMP_SUP
+
+           TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',into=( "EVOL_THER",) ),
+
+           PREP_VRC2        =FACT(statut='o',max=1,
+             EVOL_THER     =SIMP(statut='o',typ=(evol_ther)),       # evol_ther de type "coque" (TEMP/TEMP_INF/TEMP_SUP)
+             MODELE        =SIMP(statut='o',typ=modele_sdaster),    # modèle mécanique contenant les coques multicouche
+             CARA_ELEM     =SIMP(statut='o',typ=cara_elem),         # CARA_ELEM pour connaitre EPAIS et COQU_NCOU
+           ),
+         ),
 )  ;

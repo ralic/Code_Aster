@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 20/11/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,7 +77,7 @@ try:
    __salome__ = True
 
 except:
-   txt = _('Le module python "pylotage" semble etre absent, on desactive le mode Salome de Stanley')
+   txt = _('Le module python "pylotage" semble etre absent, ou mal configure, on desactive le mode Salome de Stanley')
    UTMESS('I','STANLEY',txt)
    __salome__ = False
 

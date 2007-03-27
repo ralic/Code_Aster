@@ -7,7 +7,7 @@
       CHARACTER*(*) OPTION,MODELE,MATE,CARA,COMPOR,MATEL,BASEZ
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,9 +58,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C ----------------------------------------------------------------------
       CHARACTER*1 BASE
       CHARACTER*8 K8B,LPAIN(17),LPAOUT(2)
+      CHARACTER*19 CHVARC
       CHARACTER*24 LIGRMO,LCHIN(17),LCHOUT(2)
-      CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM,MATELZ
-
+      CHARACTER*24 CHGEOM,CHCARA(15),CHHARM,MATELZ,CHTREF,CHTEMP
+      DATA CHVARC /'&&MEMAME.VARC'/
       CALL JEMARQ()
       MATELZ = MATEL
       BASE = BASEZ
@@ -69,7 +70,8 @@ C ----------------------------------------------------------------------
       NH = 0
       CALL MECHAM(OPTION,MODELE,NCHAR,LCHAR,CARA,NH,CHGEOM,CHCARA,
      &            CHHARM,ICODE)
-      CALL MECHTE(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,CHTREF,CHTEMP)
+      CALL VRCINS(MODELE(1:8),MATE(1:8),CARA(1:8),NCHAR,LCHAR,
+     &            TIME,CHVARC)
 
       CALL MEMARE(BASE,MATEL,MODELE,MATE,CARA,OPTION)
       CALL JEVEUO(MATELZ(1:8)//'.REFE_RESU','E',IAREFE)
@@ -101,8 +103,8 @@ C ----------------------------------------------------------------------
       LCHIN(6) = CHCARA(7)
       LPAIN(7) = 'PCASECT'
       LCHIN(7) = CHCARA(8)
-      LPAIN(8) = 'PTEMPER'
-      LCHIN(8) = CHTEMP
+      LPAIN(8) = 'PVARCPR'
+      LCHIN(8) = CHVARC
       LPAIN(9) = 'PCAARPO'
       LCHIN(9) = CHCARA(9)
       LPAIN(10) = 'PCACABL'
@@ -150,7 +152,7 @@ C ----------------------------------------------------------------------
       END IF
 
    10 CONTINUE
-      CALL DETRSD('CHAMP_GD',CHTEMP)
+      CALL DETRSD('CHAMP_GD',CHVARC)
 
       CALL JEDEMA()
       END

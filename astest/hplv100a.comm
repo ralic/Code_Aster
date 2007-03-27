@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PARALLELEPIPEDE. MODULE D'YOUNG FONCTION DE LA TEMPERATURE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,9 +40,8 @@ MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
 MA=DEFI_MATERIAU(
           THER=_F( RHO_CP = 2.,  LAMBDA = 1.0,  )    )
 
-CM=AFFE_MATERIAU(
-           MAILLAGE=M,
-          AFFE=_F( TOUT = 'OUI',MATER = MA,  TEMP_REF = 0., )
+CMTH=AFFE_MATERIAU( MAILLAGE=M,
+          AFFE=_F( TOUT = 'OUI',MATER = MA,)
           )
 
 TE=DEFI_CONSTANTE(      VALE=0. )
@@ -81,10 +80,10 @@ CH_2=AFFE_CHAR_THER_F(
           TEMP_IMPO=_F( GROUP_NO = 'A',  TEMP = TE,   )
           )
 
-TEMP1=THER_LINEAIRE(   MODELE=MO,  CHAM_MATER=CM,
+TEMP1=THER_LINEAIRE(   MODELE=MO,  CHAM_MATER=CMTH,
                          EXCIT=_F( CHARGE = CH_1, ) )
 
-TEMP2=THER_LINEAIRE(   MODELE=MO,  CHAM_MATER=CM,
+TEMP2=THER_LINEAIRE(   MODELE=MO,  CHAM_MATER=CMTH,
                          EXCIT=_F( CHARGE = CH_2, ) )
 
 CHT1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
@@ -220,14 +219,10 @@ FAL=DEFI_CONSTANTE(    VALE=0.0  )
 MA2=DEFI_MATERIAU(
            ELAS_FO=_F( E = FE,  NU = FNU,  ALPHA = FAL, TEMP_DEF_ALPHA=20.0,)    )
 
-CM2=AFFE_MATERIAU(
-            MAILLAGE=M,
-           AFFE=_F( TOUT = 'OUI',MATER = MA2, TEMP_REF = 20., ) )
-
-CH2=AFFE_CHAR_MECA(
-            MODELE=MO2,
-            TEMP_CALCULEE=TEMP
-                          )
+CMME=AFFE_MATERIAU(  MAILLAGE=M,
+           AFFE=_F( TOUT = 'OUI',MATER = MA2,),
+           AFFE_VARC =_F(TOUT='OUI', EVOL=TEMP, NOM_VARC='TEMP',),
+           )
 
 # LA CHARGE SUIVANTE (CH4) EST SEPAREE DE CH2 POUR VERIFIER LA
 # CORRECTION DE AL 95-075
@@ -255,19 +250,16 @@ LR=DEFI_LIST_REEL(    DEBUT=1.,
                         )
 
 
-RES=MECA_STATIQUE(   MODELE=MO2,  CHAM_MATER=CM2,
-
-                            LIST_INST=LR,EXCIT=(
-                          _F( CHARGE = CH2, ),
+RES=MECA_STATIQUE(   MODELE=MO2,  CHAM_MATER=CMME, LIST_INST=LR,EXCIT=(
                           _F( CHARGE = CH4, ),
                           _F( CHARGE = CH3, ))  )
 
-CALC_ELEM( reuse= RES ,RESULTAT= RES ,      
+CALC_ELEM( reuse= RES ,RESULTAT= RES ,
                            OPTION='SIGM_ELNO_DEPL',
                             LIST_INST=LR,)
 
-CALC_ELEM(reuse=RES,     
-                    
+CALC_ELEM(reuse=RES,
+
                      OPTION='EPSI_ELNO_DEPL',
                      RESULTAT=RES
                    )

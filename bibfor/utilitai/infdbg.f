@@ -1,7 +1,7 @@
       SUBROUTINE INFDBG(OPTIOZ,IFM,NIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/03/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 26/03/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,6 +27,8 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE POUR AFFICHAGE INFOS DEBUG
 C
+C POUR L'INSTANT, ON DECONNECTE (FICHE 10620 DU REX)
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -45,7 +47,7 @@ C
 C
       IF (OPTION(1:7).EQ.'CONTACT') THEN
         CALL INFNIV(IFM,NIV)
-        NIV = 2
+C        NIV = 2
       ELSE
         CALL INFNIV(IFM,NIV)
       ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE TE0421 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,9 +29,10 @@ C ......................................................................
 C
       PARAMETER        ( NBRES=10 )
       CHARACTER*16       PHENOM
-      CHARACTER*8        NOMRES(NBRES),NOMPAR(2)
+      CHARACTER*8        NOMRES(NBRES),NOMPAR
+      CHARACTER*4        FAMI
       CHARACTER*2        BL2, CODRET(NBRES)
-      REAL*8             VALRES(NBRES),VALPAR(2),ZERO
+      REAL*8             VALRES(NBRES),VALPAR,ZERO
       REAL*8             DFDX(9),DFDY(9),POIDS,R,EXX,EYY,EXY,EZZ
       REAL*8             A11,A22,A33,A12,A13,A23,DELTA,C1
       REAL*8             NU12,NU21,NU13,NU31,NU23,NU32,G12
@@ -57,26 +58,17 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       DATA  ZERO / 0.D0 /
 C
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      FAMI = 'RIGI'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
 C
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
       IF (ITEMPS.EQ.0) THEN
-         NBPAR = 1
-         NOMPAR(1)='TEMP'
-      ELSE IF (ITEMPE.EQ.0) THEN
-         NBPAR = 1
-         NOMPAR(1)='INST'
-         VALPAR(1) = ZR(ITEMPS)
-      ELSE
-         NOMPAR(1)='TEMP'
-         NOMPAR(2)='INST'
-         NBPAR = 2
-         VALPAR(2) = ZR(ITEMPS)
+         NBPAR = 0
+         NOMPAR=' '
       END IF
 C
       BL2 = '  '
@@ -105,11 +97,6 @@ C
         K=(KP-1)*NNO
         CALL DFDM2D ( NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS )
         R = ZERO
-        TPG = ZERO
-        EXX = ZERO
-        EYY = ZERO
-        EZZ = ZERO
-        EXY = ZERO
         CALL RCVARC(' ','EPSAXX','+','RIGI',KP,1,EXX,IRET)
         IF (IRET.EQ.1) EXX=0.D0
         CALL RCVARC(' ','EPSAYY','+','RIGI',KP,1,EYY,IRET)
@@ -118,18 +105,23 @@ C
         IF (IRET.EQ.1) EZZ=0.D0
         CALL RCVARC(' ','EPSAXY','+','RIGI',KP,1,EXY,IRET)
         IF (IRET.EQ.1) EXY=0.D0
+
+        NBPAR = 1
+        NOMPAR = 'INST'
+        VALPAR = ZR(ITEMPS)
+
         DO 102 I=1,NNO
           R    = R    +  ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
-          TPG  = TPG  +  ZR(ITEMPE+I-1) *ZR(IVF+K+I-1)
 102     CONTINUE
 C
-        IF (ITEMPE.NE.0) VALPAR(1) = TPG
 C
         IF (PHENOM.EQ.'ELAS') THEN
 CCC --- CAS ISOTROPE
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,
+           CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,
+     &                   NBPAR,NOMPAR,VALPAR,2,
      &                   NOMRES, VALRES, CODRET, 'FM' )
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+           CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,
+     &                   NBPAR,NOMPAR,VALPAR,1,
      &                   NOMRES(3), VALRES(3), CODRET(3), BL2 )
            IF (CODRET(3).NE.'OK') VALRES(3) = 0.D0
 C
@@ -144,7 +136,8 @@ C
 C
         ELSE IF (PHENOM.EQ.'ELAS_ORTH') THEN
 CCC --- CAS ORTHOTROPE
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,7,
+           CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,
+     &                   NBPAR,NOMPAR,VALPAR,7,
      &                   NOMRES, VALRES, CODRET, 'FM' )
 C
            E1   = VALRES(1)
@@ -168,7 +161,8 @@ C
 C
         ELSE IF (PHENOM.EQ.'ELAS_GITR') THEN
 CCC     CAS ISOTROPE_TRANSVERSE
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,4,
+           CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,
+     &                   NBPAR,NOMPAR,VALPAR,4,
      &                   NOMRES, VALRES, CODRET, 'FM' )
 C
            E1   = VALRES(1)

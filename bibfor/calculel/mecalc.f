@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -273,10 +273,10 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
      &             OPTIO2.EQ.'EPME_ELNO_DEPL' .OR.
      &             OPTIO2.EQ.'EPME_ELGA_DEPL' .OR.
      &             OPTIO2.EQ.'EPMG_ELNO_DEPL' .OR.
-     &             OPTIO2.EQ.'EPMG_ELGA_DEPL' .OR. 
-     &             OPTIO2.EQ.'EPFP_ELGA'      .OR. 
-     &             OPTIO2.EQ.'EPFP_ELNO'      .OR. 
-     &             OPTIO2.EQ.'EPFD_ELGA'      .OR. 
+     &             OPTIO2.EQ.'EPMG_ELGA_DEPL' .OR.
+     &             OPTIO2.EQ.'EPFP_ELGA'      .OR.
+     &             OPTIO2.EQ.'EPFP_ELNO'      .OR.
+     &             OPTIO2.EQ.'EPFD_ELGA'      .OR.
      &             OPTIO2.EQ.'EPFD_ELNO'      ) THEN
             LPAOUT(1) = 'PDEFORR'
           ELSE IF (OPTIO2.EQ.'EPSP_ELNO' .OR.
@@ -422,7 +422,6 @@ C ----------------------------------------------------------------------
         END IF
         CHC = CHGEOM(1:8)//'.ABS_CURV'
         CALL AJCHCA('PABSCUR',CHC,LPAIN,LCHIN,NBIN,MAXIN,'N')
-
         CALL AJCHCA('PNBSP_I',CAREL//'.CANBSP',LPAIN,LCHIN,NBIN,MAXIN,
      &              'N')
         CALL AJCHCA('PFIBRES',CAREL//'.CAFIBR',LPAIN,LCHIN,NBIN,MAXIN,
@@ -464,15 +463,7 @@ C         DE DEPLACEMENT : 'NOMUTILI.C00.000000'
         CALL AJCHCA('PVARIGS',CHVARI,LPAIN,LCHIN,NBIN,MAXIN,'N')
 
         IF (CHTEMP.NE.' ') THEN
-          CALL DISMOI('F','NOM_GD',CHTEMP,'CHAMP',IBID,NOMGD,IERD)
-          IF (NOMGD.EQ.'TEMP_R' .OR. OPTIO2.EQ.'DETE_ELNO_DLTE' .OR.
-     &        OPTIO2.EQ.'DLSI_ELGA_DEPL' .OR.
-     &        OPTIO2.EQ.'DLSI_ELNO_DLDE' .OR. OPTIO2.EQ.'ENEL_ELGA' .OR.
-     &        OPTIO2.EQ.'ENEL_ELNO_ELGA') THEN
             CALL AJCHCA('PTEMPER',CHTEMP,LPAIN,LCHIN,NBIN,MAXIN,'N')
-          ELSE IF (NOMGD.EQ.'TEMP_F') THEN
-            CALL AJCHCA('PTEMPEF',CHTEMP,LPAIN,LCHIN,NBIN,MAXIN,'N')
-          END IF
         END IF
         CALL AJCHCA('PTEMPSR',CHTIME,LPAIN,LCHIN,NBIN,MAXIN,'N')
         CALL AJCHCA('PTEREF',CHTREF,LPAIN,LCHIN,NBIN,MAXIN,'N')

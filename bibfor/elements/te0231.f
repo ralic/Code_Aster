@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,13 +50,13 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       CHARACTER*24 CHMAT
       CHARACTER*8 NOMRES(3),ELREFE
       CHARACTER*2 BL2,CODRET(3)
-      REAL*8 E,NU,TPG,TPG1,TPG2,TPG3
+      REAL*8 E,NU,TPG,TGMOY,TGSUP,TGINF,TREF
       REAL*8 X3,EPS(5),C,H,DILAT,VALRES(3)
       REAL*8 E11,E22,K11,K22,EP11,EP22
       REAL*8 DFDX(3),EFFOPG(24)
       REAL*8 JAC,R,COSA,SINA,COUR
       INTEGER I,K,KP,IGEOM,IMATE,ICACO,IDEPL
-      INTEGER NNO,NPG,IDFDK,ITEMP,IVF,ITREF,NCMP
+      INTEGER NNO,NPG,IDFDK,IVF,IRET,NCMP
       INTEGER JCOOPG,IP,CORREC,ITAB(8),JDFD2
 
       CALL ELREF1(ELREFE)
@@ -69,14 +69,12 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PCACOQU','L',ICACO)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL TECACH('OON','PTEMPER',8,ITAB,IRET)
-      ITEMP = ITAB(1)
-      CALL JEVECH('PTEREF','L',ITREF)
       IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
         CALL JEVECH('PEFFORR','E',IEFFOR)
       ELSE
         CALL JEVECH('PCONTRR','E',IEFFOR)
       END IF
+      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 
       BL2 = '  '
       H = ZR(ICACO)
@@ -93,15 +91,7 @@ CJMP  CORREC = ZR(ICACO+2)
         K = (KP-1)*NNO
         CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDK+K),ZR(IGEOM),DFDX,COUR,
      &              JAC,COSA,SINA)
-        TPG1 = 0.D0
-        TPG2 = 0.D0
-        TPG3 = 0.D0
-        DO 20 I = 1,NNO
-          CALL DXTPIF(ZR(ITEMP+3* (I-1)),ZL(ITAB(8)+3* (I-1)))
-          TPG1 = TPG1 + ZR(ITEMP+3*I-3)*ZR(IVF+K+I-1)
-          TPG2 = TPG2 + ZR(ITEMP+3*I-2)*ZR(IVF+K+I-1)
-          TPG3 = TPG3 + ZR(ITEMP+3*I-1)*ZR(IVF+K+I-1)
-   20   CONTINUE
+
         DO 30 I = 1,5
           EPS(I) = 0.D0
    30   CONTINUE
@@ -125,13 +115,17 @@ CJMP  CORREC = ZR(ICACO+2)
           K22 = 0.D0
         END IF
 
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TGINF,IRET)
+        CALL RCVARC('F','TEMP','+','RIGI',KP,2,TGMOY,IRET)
+        CALL RCVARC('F','TEMP','+','RIGI',KP,3,TGSUP,IRET)
+
 C---- UTILISATION DE 4 POINTS DE GAUSS DANS L'EPAISSEUR
 C---- COMME POUR LA LONGUEUR
 
         DO 50 IP = 1,NPG
           X3 = ZR(JCOOPG-1+IP)
-          TPG = TPG1* (1.D0- (X3)**2) + TPG3*X3* (1.D0+X3)/2.D0 -
-     &          TPG2*X3* (1.D0-X3)/2.D0
+          TPG = TGMOY* (1.D0- (X3)**2) + TGSUP*X3* (1.D0+X3)/2.D0 -
+     &          TGINF*X3* (1.D0-X3)/2.D0
           X3 = X3*H/2.D0
           EP11 = (E11+X3*K11)/ (1.D0+ (CORREC*X3*COUR))
           NOMRES(1) = 'E'
@@ -146,7 +140,7 @@ C---- COMME POUR LA LONGUEUR
           IF (CODRET(3).NE.'OK') THEN
             DILAT = 0.D0
           ELSE
-            TPG = TPG - ZR(ITREF)
+            TPG = TPG - TREF
             DILAT = VALRES(3)*E/ (1.D0-NU)
           END IF
 

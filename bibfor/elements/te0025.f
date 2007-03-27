@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,10 +54,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,NPG,JVAL,IPOIDS,IVF,IDFDE,
-     &        NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,IER,
+     &        NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,IER,
      &        ITEMPS,IDEFO,IMATE,IRET,JTAB(3),ISREF,IDIM
-      REAL*8 EPSM(162),EPSNO(162),REPERE(7),TEMPE(27),BARY(3)
-      REAL*8 NHARM,INSTAN,ZERO,TREF,S
+      REAL*8 EPSM(162),EPSNO(162),REPERE(7),BARY(3)
+      REAL*8 NHARM,INSTAN,ZERO,S
       CHARACTER*8 MODELI
 C DEB ------------------------------------------------------------------
 
@@ -86,15 +86,10 @@ C     -----------------
       ZERO = 0.0D0
       INSTAN = ZERO
       NHARM = ZERO
-      TREF = ZERO
 
       DO 20 I = 1,NBSIG*NPG
         EPSM(I) = ZERO
    20 CONTINUE
-
-      DO 30 I = 1,27
-        TEMPE(I) = ZERO
-   30 CONTINUE
 
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 C      ----------------------------------------------
@@ -104,22 +99,6 @@ C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT :
 C      --------------------------------------------------
       CALL JEVECH('PDEPLAR','L',IDEPL)
 
-C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT :
-C      --------------------------------------------------
-      CALL TECACH('NNN','PTEMPER',1,ITEMPE,IRET)
-      IF (ITEMPE.NE.0) THEN
-        DO 40 I = 1,NNO
-          TEMPE(I) = ZR(ITEMPE+I-1)
-   40   CONTINUE
-      END IF
-
-C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
-C      -------------------------------------------
-      CALL TECACH('NNN','PTEREF',1,ITREF,IRET)
-      IF (ITREF.NE.0) THEN
-        TREF = ZR(ITREF)
-      END IF
-      
 C ---- RECUPERATION DE L'INSTANT DE CALCUL :
 C      -----------------------------------
       CALL TECACH('NNN','PTEMPSR',1,ITEMPS,IRET)
@@ -155,7 +134,7 @@ C     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
 
       CALL EPSVMC('RIGI',MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,
      +            IDFDE,ZR(IGEOM), ZR(IDEPL),
-     +            TEMPE, TREF, INSTAN,
+     +            INSTAN,
      +            ZI(IMATE), REPERE, NHARM, OPTION, EPSM)
 
       IF (OPTION(6:9).EQ.'ELGA') THEN

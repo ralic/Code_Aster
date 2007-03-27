@@ -8,7 +8,7 @@
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IBID,JCOQU,JMATE,ITEMP,INDEP,ITAB(8),IRET,IRETF
-      INTEGER NBV,I,J,K,NBPAR,IER
+      INTEGER NBV,I,J,K,NBPAR,IER,NBCOU,JCOU
       REAL*8 CDF,CDM,CDC,GCIS,VALRES(134),VALPU(2)
       REAL*8 YOUNG,NU,VALPAR
       REAL*8 XAB1(3,3),XAB2(2,2),DH(3,3),ROT(3,3)
@@ -199,43 +199,11 @@ C        ET T2VE INVERSE DE T2EV
 
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
-
-C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH ('ONN','PTEMPER',8,ITAB,IRET)
-      ITEMP=ITAB(1)
-      IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        TPG1 = 0.D0
-        DO 30 I = 1,NNO
-          CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(ITAB(8)+3*(I-1)))
-          T = ZR(ITEMP+3* (I-1))
-          TINF = ZR(ITEMP+1+3* (I-1))
-          TSUP = ZR(ITEMP+2+3* (I-1))
-          TPG1 = TPG1 + T + (TSUP+TINF-2*T)/6.D0
-   30   CONTINUE
-        VALPAR = TPG1/NNO
-      ELSE
-
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-        CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRETF)
-        IF (IRETF.EQ.0) THEN
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-          CALL JEVECH('PTEMPSR','L',IBID)
-          VALPU(1) = ZR(IBID)
-          VALPU(2) = 0.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,VALPAR,IER)
-
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-        ELSE
-          NBPAR = 0
-          NOMPAR = ' '
-          VALPAR = 0.D0
-        END IF
-      END IF
+      CALL JEVECH('PNBSP_I','L',JCOU)
+      NBCOU=ZI(JCOU)
+      CALL MOYTEM('NOEU',NNO,3*NBCOU,'+',VALPAR)
+      NBPAR = 1
+      NOMPAR = 'TEMP'
 C===============================================================
 
       IF (PHENOM.EQ.'ELAS') THEN

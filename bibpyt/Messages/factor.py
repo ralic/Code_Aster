@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF factor Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -207,4 +207,16 @@ Solution :
   Contactez l'assistance.
 """),
 
+#-----------------------------------------------------------------------------------------------
+61: _("""
+Erreur Programmeur lors de la résolution d'un système linéaire :
+ La numérotation des inconnues est incohérente entre la matrice et le second membre.
+ Matrice       : %(k1)s
+ Second membre : %(k2)s
+
+ Si solveur : 'Feti' : numéro du sous-domaine (ou domaine global) : %(i1)d
+"""),
+
+#-----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------
 }

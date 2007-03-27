@@ -1,6 +1,6 @@
       SUBROUTINE VDXNLR ( OPTION, NOMTE, XI, RIG, NB1, CODRET )
       IMPLICIT REAL*8 (A-H,O-Z)
-C MODIF ELEMENTS  DATE 03/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,6 @@ C ----------------------------------------------------------------------
 
       CALL JEVECH('PMATERC','L',IMATE )
       CALL JEVECH('PVARIMR','L',IVARIM)
-      CALL JEVECH('PTEREF' ,'L',ITREF )
       CALL JEVECH('PINSTMR','L',IINSTM)
       CALL JEVECH('PINSTPR','L',IINSTP)
       CALL JEVECH('PDEPLMR','L',IDEPLM)
@@ -149,54 +148,6 @@ C       -- POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP :
       END IF
 
 C===============================================================
-C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
-C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH ('ONN','PTEMPMR',8,ITAB,IRET)
-      ITEMP=ITAB(1)
-      IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-        TEMPNO = .TRUE.
-        CALL TECACH ('OON','PTEMPMR',8,ITABM,IRET)
-        CALL TECACH ('OON','PTEMPPR',8,ITABP,IRET)
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        TPG1 = 0.D0
-        DO 30 I = 1,NB2
-          CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(ITAB(8)+3*(I-1)))
-          T    = ZR(ITEMP+  3* (I-1))
-          TINF = ZR(ITEMP+1+3* (I-1))
-          TSUP = ZR(ITEMP+2+3* (I-1))
-          TPG1 = TPG1 + T + (TSUP+TINF-2*T)/6.D0
-   30   CONTINUE
-        VALPAR = TPG1/NB2
-      ELSE
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-        CALL TECACH('ONN','PTEMPEF',1,ITEMPF,IRET)
-        IF (IRET.EQ.0) THEN
-          TEMPNO = .FALSE.
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-          VALPU(1) = ZR(IINSTP)
-          VALPU(2) = 0.D0
-          CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,VALPAR,IER)
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-        ELSE
-          TEMPNO = .TRUE.
-          CALL TECACH ('OON','PTEMPMR',8,ITABM,IRET)
-          CALL TECACH ('OON','PTEMPPR',8,ITABP,IRET)
-          NBPAR = 0
-          NOMPAR = ' '
-          VALPAR = 0.D0
-        END IF
-      END IF
-C===============================================================
-
-      CALL RCVALA(ZI(IMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
-     &            VALRES,VALRET,'FM')
-
-      CISAIL = VALRES(1)/ (1.D0+VALRES(2))
-
 C     CALCULS DES 2 DDL INTERNES
 
       CALL TRNDGL(NB2,VECTN,VECTPT,ZR(IDEPLM),DEPLM,ROTFCM)
@@ -232,47 +183,6 @@ C     CALCUL DE BTDMR, BTDSR : M=MEMBRANE , S=CISAILLEMENT , R=REDUIT
    60     CONTINUE
 
           DO 120 INTSN = 1,NPGSN
-            K = 459 + 9* (INTSN-1)
-C         -- CALCUL DES TEMPERATURES TPC ET TMC SUR LA COUCHE :
-C         ---------------------------------------------------
-            IF (TEMPNO) THEN
-              TMPG1 = 0.D0
-              TMPG2 = 0.D0
-              TMPG3 = 0.D0
-              TPPG1 = 0.D0
-              TPPG2 = 0.D0
-              TPPG3 = 0.D0
-
-              DO 70 I = 1,NB2
-C             TXPG1 = MOY , TXPG2 = INF , TXPG3 = SUP
-
-                ITEMPM=ITABM(1)
-                IF ( ITEMPM.NE.0 ) THEN
-                  CALL DXTPIF(ZR(ITEMPM+3*(I-1)),ZL(ITABM(8)+3*(I-1)))
-                  TMPG1 = TMPG1 + ZR(ITEMPM+3*I-3)*ZR(LZR-1+K+I)
-                  TMPG2 = TMPG2 + ZR(ITEMPM+3*I-2)*ZR(LZR-1+K+I)
-                  TMPG3 = TMPG3 + ZR(ITEMPM+3*I-1)*ZR(LZR-1+K+I)
-                ENDIF
-
-                ITEMPP=ITABP(1)
-                IF ( ITEMPP.NE.0 ) THEN
-                  CALL DXTPIF(ZR(ITEMPP+3*(I-1)),ZL(ITABP(8)+3*(I-1)))
-                  TPPG1 = TPPG1 + ZR(ITEMPP+3*I-3)*ZR(LZR-1+K+I)
-                  TPPG2 = TPPG2 + ZR(ITEMPP+3*I-2)*ZR(LZR-1+K+I)
-                  TPPG3 = TPPG3 + ZR(ITEMPP+3*I-1)*ZR(LZR-1+K+I)
-                ENDIF
-   70         CONTINUE
-              TMC = 2* (TMPG2+TMPG3-2*TMPG1)* (ZIC/EPAIS)* (ZIC/EPAIS) +
-     &              (TMPG3-TMPG2)* (ZIC/EPAIS) + TMPG1
-              TPC = 2* (TPPG2+TPPG3-2*TPPG1)* (ZIC/EPAIS)* (ZIC/EPAIS) +
-     &              (TPPG3-TPPG2)* (ZIC/EPAIS) + TPPG1
-            ELSE
-              VALPU(2) = ZIC
-              VALPU(1) = ZR(IINSTM)
-              CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TMC,IER)
-              VALPU(1) = ZR(IINSTP)
-              CALL FOINTE('FM',ZK8(ITEMPF),2,NOMPU,VALPU,TPC,IER)
-            END IF
 
 C     CALCUL DE BTDFN : F=FLEXION , N=NORMAL
 C     ET DEFINITION DE WGT=PRODUIT DES POIDS ASSOCIES AUX PTS DE GAUSS
@@ -330,13 +240,25 @@ C -    APPEL A LA LOI DE COMPORTEMENT
             KSP= (ICOU-1)*NPGE + INTE
             CALL NMCOMP('MASS',INTSN,KSP,2,TYPMOD,ZI(IMATE),
      &             ZK16(ICOMPO),ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &                  TMC,TPC,ZR(ITREF),
      &                  EPS2D,DEPS2D,
      &                  SIGN,ZR(IVARIM+K2),
      &                  OPTION,
      &                  ANGMAS,
      &                  LC,
      &                  SIGMA,ZR(IVARIP+K2),DSIDEP,COD)
+
+            IF (PHENOM.EQ.'ELAS') THEN
+              NBV = 2
+              NOMRES(1) = 'E'
+              NOMRES(2) = 'NU'
+            ELSE
+              CALL U2MESS('F','ELEMENTS_42')
+            END IF
+
+              CALL RCVALB('MASS',INTSN,KSP,'+',ZI(IMATE),' ',PHENOM,
+     &                    0,' ',0.D0,NBV,NOMRES,VALRES,VALRET,'FM')
+
+              CISAIL = VALRES(1)/ (1.D0+VALRES(2))
 
 C           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 C           COD=3 : C_PLAN DEBORST SIGZZ NON NUL

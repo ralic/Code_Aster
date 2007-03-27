@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/11/2006   AUTEUR VIVAN L.VIVAN 
+C MODIF UTILITAI  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,41 +59,55 @@ C
       CHARACTER*8   KBID, MATER, CODRET, NOMF
       CHARACTER*10  NOMRC
       CHARACTER*24  QUEST2,NOMOBJ(100)
-      LOGICAL       TROUVE
+      LOGICAL       TROUVE,SAUTE1
 C
       CALL JEMARQ()
       NOMOB  = NOMOBZ
+      SAUTE1=.FALSE.
+
+
       IF (QUESTI.EQ.'EXI_AMOR_ALPHA'.OR.QUESTI.EQ.'EXI_AMOR_NOR'.OR.
      &    QUESTI.EQ.'EXI_AMOR_TAN'.OR.QUESTI.EQ.'EXI_AMOR_HYST'.OR.
      &    QUESTI.EQ.'EXI_AMOR_BETA') THEN
-C     --------------------------------------
+C     ---------------------------------------------------------------
          CALL JEVEUO(NOMOB//'.CHAMP_MAT .VALE','L',IAVALE)
          CALL JELIRA(NOMOB//'.CHAMP_MAT .VALE','LONMAX',NMAT,KBID)
          TROUVE=.FALSE.
          QUEST2=QUESTI
          DO 1, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
-           IF (MATER.NE.' ') THEN
-             CALL JELSTC ( 'G' , MATER , 1 , 100 , NOMOBJ , N )
-             IF (N.LT.0) CALL U2MESS('F','UTILITAI_54')
-             DO 3, II=1,N
-               IF (NOMOBJ(II)(20:24).EQ.'.VALK') THEN
-                 CALL JEVEUO(NOMOBJ(II),'L',IAOBJ)
-                 CALL JELIRA(NOMOBJ(II),'LONMAX',LONOBJ,KBID)
-                 DO 4 ,III=1,LONOBJ
-                   IF (ZK8(IAOBJ-1+III).EQ.QUEST2(5:12)) THEN
-                     TROUVE=.TRUE.
-                     GO TO 2
-                   END IF
- 4               CONTINUE
-               END IF
- 3           CONTINUE
-           END IF
+           IF (MATER.EQ.' ') GOTO 1
+
+           IF (MATER.EQ.'TREF=>') THEN
+C             -- IL FAUT SAUTER 2 VALEURS :
+              SAUTE1=.TRUE.
+              GOTO 1
+           ENDIF
+           IF (SAUTE1) THEN
+              SAUTE1=.FALSE.
+              GOTO 1
+           ENDIF
+
+           CALL JELSTC ( 'G' , MATER , 1 , 100 , NOMOBJ , N )
+           IF (N.LT.0) CALL U2MESS('F','UTILITAI_54')
+           DO 3, II=1,N
+             IF (NOMOBJ(II)(20:24).EQ.'.VALK') THEN
+               CALL JEVEUO(NOMOBJ(II),'L',IAOBJ)
+               CALL JELIRA(NOMOBJ(II),'LONMAX',LONOBJ,KBID)
+               DO 4 ,III=1,LONOBJ
+                 IF (ZK8(IAOBJ-1+III).EQ.QUEST2(5:12)) THEN
+                   TROUVE=.TRUE.
+                   GO TO 2
+                 END IF
+ 4             CONTINUE
+             END IF
+ 3         CONTINUE
  1       CONTINUE
  2       CONTINUE
          REPK='NON'
          IF (TROUVE) REPK='OUI'
-C
+
+
       ELSEIF (QUESTI.EQ.'EXI_ANISO') THEN
 C     -----------------------------------
          REPK='NON'
@@ -102,6 +116,17 @@ C     -----------------------------------
          DO 50, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
            IF (MATER.EQ.' ') GOTO 50
+
+           IF (MATER.EQ.'TREF=>') THEN
+C             -- IL FAUT SAUTER 2 VALEURS :
+              SAUTE1=.TRUE.
+              GOTO 50
+           ENDIF
+           IF (SAUTE1) THEN
+              SAUTE1=.FALSE.
+              GOTO 50
+           ENDIF
+
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 52, IRC=1,NBRC
@@ -128,7 +153,8 @@ C     -----------------------------------
  52        CONTINUE
  50      CONTINUE
  54      CONTINUE
-C
+
+
       ELSE IF (QUESTI.EQ.'ELAS_F_TEMP') THEN
 C     --------------------------------------
          REPK='NON'
@@ -138,6 +164,17 @@ C
          DO 10, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
            IF (MATER.EQ.' ') GOTO 10
+
+           IF (MATER.EQ.'TREF=>') THEN
+C             -- IL FAUT SAUTER 2 VALEURS :
+              SAUTE1=.TRUE.
+              GOTO 10
+           ENDIF
+           IF (SAUTE1) THEN
+              SAUTE1=.FALSE.
+              GOTO 10
+           ENDIF
+
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 11, IRC=1,NBRC
@@ -167,7 +204,9 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
  11        CONTINUE
  13        CONTINUE
  10      CONTINUE
-C
+ 17      CONTINUE
+
+
       ELSE IF (QUESTI.EQ.'THER_F_INST') THEN
 C     --------------------------------------
          REPK='NON'
@@ -177,6 +216,17 @@ C
          DO 20, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
            IF (MATER.EQ.' ') GOTO 20
+
+           IF (MATER.EQ.'TREF=>') THEN
+C             -- IL FAUT SAUTER 2 VALEURS :
+              SAUTE1=.TRUE.
+              GOTO 20
+           ENDIF
+           IF (SAUTE1) THEN
+              SAUTE1=.FALSE.
+              GOTO 20
+           ENDIF
+
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 21, IRC=1,NBRC
@@ -206,7 +256,8 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
  21        CONTINUE
  23        CONTINUE
  20      CONTINUE
-C
+
+
       ELSE IF (QUESTI.EQ.'ELAS_F_HYDR') THEN
 C     --------------------------------------
          REPK='NON'
@@ -216,6 +267,17 @@ C
          DO 30, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
            IF (MATER.EQ.' ') GOTO 30
+
+           IF (MATER.EQ.'TREF=>') THEN
+C             -- IL FAUT SAUTER 2 VALEURS :
+              SAUTE1=.TRUE.
+              GOTO 30
+           ENDIF
+           IF (SAUTE1) THEN
+              SAUTE1=.FALSE.
+              GOTO 30
+           ENDIF
+
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 31, IRC=1,NBRC
@@ -245,7 +307,8 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
  31        CONTINUE
  33        CONTINUE
  30      CONTINUE
-C
+
+
       ELSE IF (QUESTI.EQ.'ELAS_F_SECH') THEN
 C     --------------------------------------
          REPK='NON'
@@ -255,6 +318,17 @@ C
          DO 40, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
            IF (MATER.EQ.' ') GOTO 40
+
+           IF (MATER.EQ.'TREF=>') THEN
+C             -- IL FAUT SAUTER 2 VALEURS :
+              SAUTE1=.TRUE.
+              GOTO 40
+           ENDIF
+           IF (SAUTE1) THEN
+              SAUTE1=.FALSE.
+              GOTO 40
+           ENDIF
+
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 41, IRC=1,NBRC
@@ -284,6 +358,8 @@ C              -- CAS D'UNE FONCTION A 1 VARIABLE :
  41        CONTINUE
  43        CONTINUE
  40      CONTINUE
+
+
       ELSE
 C     --------------------------------------
          REPK = QUESTI

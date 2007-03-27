@@ -1,7 +1,8 @@
-      SUBROUTINE  D1MAMC(MODELI,MATER,TEMPE,INSTAN,REPERE,XYZGAU,
+      SUBROUTINE  D1MAMC(FAMI,MODELI,MATER,INSTAN,POUM,KPG,KSP,
+     &                   REPERE,XYZGAU,
      &                   NBSIG,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +29,6 @@ C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    MODELI         IN     K8       MODELISATION (AXI,FOURIER,...)
 C    MATER          IN     I        MATERIAU
-C    TEMPE          IN     R        TEMPERATURE AU POINT D'INTEGRATION
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 C                                   D'ORTHOTROPIE
@@ -42,6 +42,8 @@ C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            CHARACTER*8  MODELI
+           CHARACTER*(*) FAMI,POUM
+           INTEGER      KPG,KSP
            REAL*8       REPERE(7), XYZGAU(1), D1(NBSIG,1), INSTAN
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -51,21 +53,21 @@ C ----  CAS MASSIF 3D ET FOURIER
 C       ------------------------
       IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'FO') THEN
 C
-          CALL D1MA3D(MATER,TEMPE,INSTAN,REPERE,XYZGAU,D1)
+          CALL D1MA3D(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,XYZGAU,D1)
 C
 C       ----------------------------------------
 C ----  CAS DEFORMATIONS PLANES ET AXISYMETRIQUE
 C       ----------------------------------------
       ELSEIF (MODELI(1:2).EQ.'DP'.OR.MODELI(1:2).EQ.'AX') THEN
 C
-          CALL D1MADP(MATER,TEMPE,INSTAN,REPERE,D1)
+          CALL D1MADP(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,D1)
 C
 C       ----------------------
 C ----  CAS CONTRAINTES PLANES
 C       ----------------------
       ELSEIF (MODELI(1:2).EQ.'CP') THEN
 C
-          CALL D1MACP(MATER,TEMPE,INSTAN,REPERE,D1)
+          CALL D1MACP(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,D1)
 C
       ELSE
          CALL U2MESK('F','ELEMENTS_11',1,MODELI)

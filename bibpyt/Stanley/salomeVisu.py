@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 05/09/2006   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF salomeVisu Stanley  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-import os, commands, string, sys
+debug = False
+
+import os, commands, string, sys, socket
 
 try:
    from Utilitai.Utmess import UTMESS
@@ -26,7 +28,7 @@ except ImportError:
    def UTMESS(code,sprg,texte):
       fmt='\n <%s> <%s> %s\n\n'
       print fmt % (code,sprg,texte)
-      
+
 from pylotage.TOOLS import *
 from graphiqueTk import *
 import cata_champs
@@ -99,15 +101,33 @@ class VISU:
         """
         result = {}
         try:                
+            if param['mode']   == 'LOCAL':
+               lst = ['tmp']
+               try:
+                  amachineName = socket.gethostname()
+               except:
+                  UTMESS('A','STANLEY', _("Impossible de recuperer le nom de la machine locale! Solution alternative : utiliser le mode DISTANT en indiquant l'adresse IP ou le nom de la machine dans la case 'machine de salome'.") )
+                  return {}
+
+               result[ 'machineName']  = amachineName
+            elif param['mode'] == 'DISTANT':
+               lst = ['machine_salome', 'tmp']
+               key = 'machine_salome'
+               amachineName = param[ key ]
+               result[ 'machineName']  = amachineName
+            else:
+                raise _("Erreur MODE non implémenté, choix possible : LOCAL, DISTANT")
+
             # Verifications
-            for var in ['machine_salome', 'tmp']:
+            for var in lst:
                 if not param[var].strip():
                     UTMESS('A','STANLEY', _("Pour visualisation dans Salome, la variable '") + var + _("' est obligatoire. On abandonne.") )
                     return {}
-            key = 'machine_salome'
-            amachineName = param[ key ]
-            result[ 'machineName']  = amachineName
-                            
+
+#            key = 'machine_salome'
+#            amachineName = param[ key ]
+#            result[ 'machineName']  = amachineName
+
             if '-ORBInitRef' not in sys.argv:
                 key = 'machine_salome_port'
                 nsPort = param[ key ]
@@ -116,11 +136,13 @@ class VISU:
                     return {}                    
                 aORBInitRef     = 'NameService=corbaname::%s:%s' %(  amachineName, nsPort  )
                 result[ 'ORBInitRef' ]  = aORBInitRef
-            
+
         except KeyError:            
             UTMESS('A','STANLEY', _("Pour visualisation dans Salome, la variable '") + key + _("' est obligatoire. On abandonne.") )
             return {}
-            
+        except:            
+            return {}
+
         return result
             
     def __studyList( self, salomeParam ):
@@ -306,7 +328,12 @@ class ISOVALEURS( VISU ):
         if not os.path.isfile( medFilePath ):
            raise _("Fichier MED manquant") + medFilePath
 
-        salomeVisu = Visu.Visu( **salomeParam )
+        try:
+          salomeVisu = Visu.Visu( **salomeParam )
+        except:
+          UTMESS('','STANLEY',_("Erreur: il est possible que Stanley ne puisse pas contacter Salome (machine salome definie : %s). Vous pouvez modifier la machine Salome dans les parametres dans Stanley\n" % salomeParam['machineName']) )
+          raise _("Erreur lors de la visualisation.")
+
 
 ##        a3DView = salomeVisu.create3DView( 'Stanley.post')
 ##        if not a3DView:
@@ -388,7 +415,7 @@ class COURBES( VISU ):
         fmdis = self.param['machine_salome_login'] + '@' + self.param['machine_salome'] + ":" + self.param['tmp']
 
         # Protocole de recopie et d'execution distante
-        copie     = param['protocole'].split('/')[0]                                 # rcp ou scp
+        copie     = self.param['protocole'].split('/')[0]                                 # rcp ou scp
 
         # Copie du fichier
         cmd = "rcp " + fichierslocal + " " + fmdis

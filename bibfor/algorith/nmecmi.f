@@ -1,8 +1,8 @@
-      SUBROUTINE NMECMI (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
+      SUBROUTINE NMECMI (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,10 +23,11 @@ C TOLE CRP_7
 C TOLE CRP_20
 C
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            NDIM,IMATE,IRET
+      INTEGER            KPG,KSP,NDIM,IMATE,IRET
+      CHARACTER*(*)      FAMI(*)
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(3),OPTION
-      REAL*8             CRIT(6),INSTAM,INSTAP,TM,TP,TP2,LINE,TREF
+      REAL*8             CRIT(6),INSTAM,INSTAP,TP2,LINE
       REAL*8             DEPS(6),PREC,DX,DEUXMU
       REAL*8             SIGM(6),VIM(8),SIGP(6),VIP(8),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -40,9 +41,6 @@ C IN  COMPOR  : COMPORTEMENT : RELCOM ET DEFORM
 C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
 C IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 C IN  INSTAP  : INSTANT DU CALCUL
-C IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
-C IN  TP      : TEMPERATURE A L'INSTANT DU CALCUL
-C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  DEPS    : INCREMENT DE DEFORMATION
 C               SI C_PLAN DEPS(3) EST EN FAIT INCONNU (ICI:0)
 C                 =>  ATTENTION LA PLACE DE DEPS(3) EST ALORS UTILISEE.
@@ -93,7 +91,7 @@ C
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY,XM(6),SIGEDV(6)
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6),DUM,CC
       REAL*8      EM,NUM,TROIKM,DEUMUM,RBID,SIGMP(6),SIGEL(6)
-      REAL*8      HSG,PP,PRAG,PRAGM,PRECR
+      REAL*8      HSG,PP,PRAG,PRAGM,PRECR,TM,TP,TREF
       INTEGER     NDIMSI,JPROLM,JVALEM,NBVALM,JPROL2,JVALE2,NBVAL2
       INTEGER     JPROLP,JVALEP,NBVALP,K,L,NITER,IMATE2
       CHARACTER*2 BL2, FB2, CODRET(3)
@@ -126,6 +124,11 @@ C
       IF (.NOT.( COMPOR(1)(1:9) .EQ. 'VMIS_ECMI' )) THEN
             CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
       ENDIF
+
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
@@ -134,35 +137,35 @@ C     ---------------------------------------
       NOMRES(3)='ALPHA'
 C
       IF (COMPOR(1)(1:14) .EQ. 'VMIS_ECMI_TRAC' ) THEN
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,1,
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NUM = VALRES(2)
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
+     &                0.D0,1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAM = VALRES(3)
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,1,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
+     &                0.D0,1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
+     &                0.D0,1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAP = VALRES(3)
       ELSE
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,2,
-     &                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
+     &                0.D0,2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
          EM  = VALRES(1)
          NUM = VALRES(2)
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
+     &                0.D0,1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAM = VALRES(3)
          DEUMUM = EM/(1.D0+NUM)
            TROIKM = EM/(1.D0-2.D0*NUM)
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,2,
-     &                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
+     &                0.D0,2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
+     &                0.D0,1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          E      = VALRES(1)
          NU     = VALRES(2)
@@ -174,19 +177,19 @@ C
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
         NOMRES(1)='C'
-        CALL RCVALA(IMATE,' ','PRAGER',1,'TEMP',TP,1
-     &                                 ,NOMRES,VALRES,CODRET,'FM')
+        CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','PRAGER',0,' ',
+     &                0.D0,1,NOMRES,VALRES,CODRET,'FM')
         PRAG=VALRES(1)
-        CALL RCVALA(IMATE,' ','PRAGER',1,'TEMP',TM,1
-     &                                 ,NOMRES,VALRES,CODRET,'FM')
+        CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','PRAGER',0,' ',
+     &                0.D0,1,NOMRES,VALRES,CODRET,'FM')
         PRAGM=VALRES(1)
         LINE=0.D0
         IF (COMPOR(1)(10:14) .EQ. '_LINE') THEN
           LINE=1.D0
           NOMRES(1)='D_SIGM_EPSI'
           NOMRES(2)='SY'
-          CALL RCVALA(IMATE,' ','ECRO_LINE',1,'TEMP',TP,2
-     &                                 ,NOMRES,VALRES,CODRET,'FM')
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_LINE',0,' ',
+     &                0.D0,2,NOMRES,VALRES,CODRET,'FM')
           DSDE=VALRES(1)
           SIGY=VALRES(2)
           RPRIM    = DSDE*E/(E-DSDE)-1.5D0*PRAG

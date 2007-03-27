@@ -1,4 +1,4 @@
-# MODIF  DATE 15/05/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 2D AXI QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -293,12 +293,12 @@ CM=AFFE_MATERIAU(  MAILLAGE=MAILME,
                    AFFE=_F( TOUT = 'OUI',
                             MATER = MAT,
                             TEMP_REF = 20.9),
-                            AFFE_VARC=_F(EVOL=RESUTHY2, NOM_VARC='HYDR'),  )
+                            AFFE_VARC=(_F(EVOL=RESUTHY2, NOM_VARC='HYDR'), 
+                                       _F(EVOL=RESUTHY2,NOM_VARC='TEMP',VALE_REF=20.9,),) )
 
 #
 CHMECA=AFFE_CHAR_MECA(  MODELE=MOMECA,
-                        DDL_IMPO=_F( GROUP_NO = 'A',  DY = 0.),
-                        TEMP_CALCULEE=RESUTHY2,  )
+                        DDL_IMPO=_F( GROUP_NO = 'A',  DY = 0.),  )
 
 #
 LISTMECA=DEFI_LIST_REEL(  DEBUT=0.0,

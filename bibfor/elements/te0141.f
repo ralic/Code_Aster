@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       PARAMETER (NBRES=6)
-      REAL*8 VALRES(NBRES)
+      INTEGER NBPAR
+      REAL*8 VALRES(NBRES),VALPAR
       CHARACTER*2 CODRES(NBRES)
       CHARACTER*8 NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
@@ -61,23 +62,15 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
 C     ------------------------------------------------------------------
-      ZERO = 0.D0
       DEUX = 2.D0
 C     ------------------------------------------------------------------
 
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL JEVECH('PMATERC','L',LMATER)
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      IF (ITEMPE.EQ.0) THEN
-        NBPAR = 0
-        NOMPAR = ' '
-        VALPAR = ZERO
-      ELSE
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-      END IF
+      CALL MOYTEM('RIGI',2,1,'+',VALPAR)
+      NOMPAR = 'TEMP'
+      NBPAR = 1
 
       IF (OPTION.EQ.'MASS_FLUI_STRU') THEN
         CALL JEVECH('PCAGEPO','L',LCAGE)

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,14 +61,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER JGANO,NBSIGM,NDIM,NNO,I,NNOS,JVAL,IPOIDS,IVF,NBNOMX,
-     &        NBCONT,NPG1,NBSIG,IGAU,ISIG,INO,IGEOM,IDIM,ITEMPE,ITEMPS,
+     &        NBCONT,NPG1,NBSIG,IGAU,ISIG,INO,IGEOM,IDIM,ITEMPS,
      &        IMATE,JSIG,IDENER,IDFDE,IDEPL,IDEPLM,IDEPMM,
      &        IDSIG,IDSIGM,MXCMEL,IRET
       PARAMETER (NBNOMX=27)
       PARAMETER (NBCONT=6)
       PARAMETER (MXCMEL=162)
       REAL*8 EPSI(NBCONT),REPERE(7)
-      REAL*8 INSTAN,ZERO,UNDEMI,TEMPG,ENELEM
+      REAL*8 INSTAN,ZERO,UNDEMI,ENELEM
       REAL*8 ENERPG(NBNOMX),ENERNO(NBNOMX)
       REAL*8 D1(NBCONT,NBCONT),XYZGAU(3),XYZ(3)
       REAL*8 NHARM,DEUX,INTEG1,INTEG2,INTEG
@@ -76,6 +76,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EPSSM(MXCMEL),SIGMM(NBCONT),SIGMA(NBCONT)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
       CHARACTER*8 MODELI
+      CHARACTER*4 FAMI
 C DEB ------------------------------------------------------------------
 
       MODELI(1:2) = NOMTE(3:4)
@@ -83,7 +84,8 @@ C DEB ------------------------------------------------------------------
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
 C ---- GEOMETRIE ET INTEGRATION
 C      ------------------------
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
+      FAMI = 'RIGI'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -125,10 +127,6 @@ C       COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
 140       CONTINUE
 150     CONTINUE
         CALL ORTREP(ZI(IMATE),NDIM,XYZ,REPERE)
-
-C ----   RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
-C        --------------------------------------------------
-        CALL JEVECH('PTEMPER','L',ITEMPE)
 
 C ----   RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION
 C        -------------------------------------------------------------
@@ -201,13 +199,12 @@ C        -------------------------------------------------
           EPSI(ISIG) = ZERO
    30   CONTINUE
 
-C  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
+C  --      COORDONNEES AU POINT D'INTEGRATION
 C  --      COURANT
 C          -------
         XYZGAU(1) = ZERO
         XYZGAU(2) = ZERO
         XYZGAU(3) = ZERO
-        TEMPG = ZERO
 
         DO 50 I = 1,NNO
 
@@ -216,10 +213,6 @@ C          -------
      &                     ZR(IVF+I+NNO* (IGAU-1)-1)*ZR(IGEOM+IDIM+
      &                     NDIM* (I-1)-1)
    40     CONTINUE
-
-          IF (OPTION(1:4).EQ.'ENEL') THEN
-            TEMPG = TEMPG + ZR(IVF+I+NNO* (IGAU-1)-1)*ZR(ITEMPE+I-1)
-          END IF
 
    50   CONTINUE
 
@@ -230,8 +223,8 @@ C        ==========================================================
 C  --      CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
 C  --      POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          ---------------------------------------------------------
-          CALL D1MAMC(MODELI,ZI(IMATE),TEMPG,INSTAN,REPERE,XYZGAU,NBSIG,
-     &                D1)
+          CALL D1MAMC(FAMI,MODELI,ZI(IMATE),INSTAN,'+',IGAU,1,
+     &                REPERE,XYZGAU,NBSIG,D1)
 
 C  --      DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
 C  --      D'INTEGRATION COURANT

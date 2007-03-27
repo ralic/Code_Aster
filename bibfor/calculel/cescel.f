@@ -1,6 +1,6 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROL0,NNCP,BASEZ,CELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,8 @@ C             PROLONGE PAR "ZERO" LES MAILLES DE CEL QUI NE SONT
 C             PAS DU TOUT AFFECTEES DANS CES (NOUVELLES MAILLES)
 C             ARRETE EN ERREUR <F> SI DES MAILLES DE CEL PORTENT
 C             DES CMPS INCONNUES DANS CES
+C    /'NAN' : LE CHAM_ELEM CEL EST PROLONGE
+C             PAR DES VALEURS "NOT A NUMBER" LA OU CES N'EST PAS DEFINI.
 C NNCP   OUT       I   : NOMBRE DE VALEURS DE CESZ NON RECOPIEES
 C                        DANS CELZ
 C BASEZ   IN       K1  : BASE DE CREATION POUR CELZ : G/V/L
@@ -94,6 +96,7 @@ C     ------------------------------------------------------------------
       CHARACTER*19 CES,CEL,LIGREL,DCEL
       CHARACTER*32 JEXNOM,JEXNUM,JEXATR
       CHARACTER*24 VALK(3)
+      REAL*8 R8NNEM
 
       NUMAIL(IGR,IEL) = ZI(IALIEL-1+ZI(ILLIEL+IGR-1)+IEL-1)
 C     ------------------------------------------------------------------
@@ -114,6 +117,9 @@ C     ------------------------------------------------------------------
         PROL2= .FALSE.
       ELSE IF (PROL0.EQ.'CHL') THEN
         PROL = .FALSE.
+        PROL2= .TRUE.
+      ELSE IF (PROL0.EQ.'NAN') THEN
+        PROL = .TRUE.
         PROL2= .TRUE.
       ELSE
         CALL U2MESS('F','CALCULEL_51')
@@ -281,6 +287,8 @@ C     ===================================================
 C     3.1 CAS NOMGD /= 'VARI_R' :
 C     ---------------------------------------------------
       IF (NOMGD.NE.'VARI_R') THEN
+C       -- A PROGRAMMER SI NECESSAIRE :
+        CALL ASSERT(PROL0.NE.'NAN')
 
 
 C       3.1.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL :
@@ -296,7 +304,7 @@ C       3.1.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL :
         CALL WKVECT('&&CESCEL.LONG_PT','V V I',NPTMX,JLPT)
         CALL WKVECT('&&CESCEL.LONG_PT_CUMU','V V I',NPTMX,JLCUPT)
 
-C       3.1.2 BOUCLE SUR LES ELEMENTS DU LIGREL
+C       3.1.2 BOUCLE SUR LES GREL DU LIGREL
         DO 150,IGR = 1,NBGR
           IMOLO = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
           IF (IMOLO.EQ.0) GO TO 150
@@ -428,12 +436,36 @@ C     ---------------------------------------------------
 
 
           DO 190,IEL = 1,NBEL
+
+            NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
+            NBSPT = MAX(NBSPT,1)
+            NCDYN = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+2)
+            ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
             NUMA = NUMAIL(IGR,IEL)
 
 C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
             IF (NUMA.LT.0) THEN
               IF (PROL2) THEN
-                GO TO 190
+                IF (PROL0.EQ.'OUI') THEN
+                   GO TO 190
+                ELSEIF (PROL0.EQ.'NAN') THEN
+                   DO 181,IPT = 1,NBPT
+                     DO 171,ISPT = 1,NBSPT
+                       DO 161,ICMP = 1,NCDYN
+                         IEQ = ADIEL - 1 + ((IPT-1)*NBSPT+
+     &                         ISPT-1)*NCDYN + ICMP
+                         IF (TSCA.EQ.'R') THEN
+                           ZR(JCELV-1+IEQ) = R8NNEM()
+                         ELSE
+                           CALL ASSERT(.FALSE.)
+                         ENDIF
+  161                  CONTINUE
+  171                CONTINUE
+  181              CONTINUE
+                   GO TO 190
+                ELSE
+                  CALL ASSERT(.FALSE.)
+                ENDIF
               ELSE
                 CALL U2MESS('F','CALCULEL_56')
               END IF
@@ -450,11 +482,6 @@ C           -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
                  CALL U2MESK('F','CALCULEL_57', 2 ,VALK)
               END IF
             END IF
-
-            NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
-            NBSPT = MAX(NBSPT,1)
-            NCDYN = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+2)
-            ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
 
             DO 180,IPT = 1,NBPT
               DO 170,ISPT = 1,NBSPT

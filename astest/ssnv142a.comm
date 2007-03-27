@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,17 +68,6 @@ SECH1=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                          )
                   )
 
-CM=AFFE_MATERIAU( 
-            MAILLAGE=M,   
-            AFFE=_F( TOUT = 'OUI',
-                     MATER = BETON, 
-                     TEMP_REF = 20.),
-            AFFE_VARC=_F(TOUT='OUI',
-                         EVOL=SECH1,
-                         NOM_VARC="SECH",
-                         NOM_CHAM='TEMP',
-                         VALE_REF=1), )
-
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                          AFFE=_F( 
                                TOUT = 'OUI',
@@ -90,6 +79,23 @@ TEMP1=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                      _F(  INST = 0.,   CHAM_GD = TEMP),
                                          )
                   )
+
+CM=AFFE_MATERIAU( 
+            MAILLAGE=M,   
+            AFFE=_F( TOUT = 'OUI',
+                     MATER = BETON, 
+                     ),
+            AFFE_VARC=(_F(TOUT='OUI',
+                         EVOL=SECH1,
+                         NOM_VARC='SECH',
+                         NOM_CHAM='TEMP',
+                         VALE_REF=1),
+                      _F(TOUT='OUI',
+                         EVOL=TEMP1,
+                         NOM_VARC='TEMP',
+                         NOM_CHAM='TEMP',
+                         VALE_REF=20),),)
+
 
 FORCE=DEFI_FONCTION( 
            NOM_PARA='INST',PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',
@@ -109,11 +115,6 @@ CH2=AFFE_CHAR_MECA_F(
                         PRES = FORCE)
                           )
 
-CH3=AFFE_CHAR_MECA(
-            MODELE=MO,
-            TEMP_CALCULEE=TEMP1
-                          )
-
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
              _F( JUSQU_A = 10.0,       NOMBRE = 1),
              _F( JUSQU_A = 31536010.,     NOMBRE = 73))
@@ -125,8 +126,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
 U=STAT_NON_LINE(  MODELE=MO,
                   CHAM_MATER=CM,
                   EXCIT=( _F(CHARGE = CH1),
-                          _F(CHARGE = CH2),
-                          _F(CHARGE = CH3)),
+                          _F(CHARGE = CH2)),
                   COMP_INCR=_F(RELATION = 'GRANGER_FP_INDT',
                                ITER_INTE_MAXI = 1000),
                   INCREMENT=_F(LIST_INST = L_INST,),

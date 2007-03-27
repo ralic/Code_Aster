@@ -1,21 +1,21 @@
-# MODIF  DATE 17/05/2002   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #       UNITAIRES SUR SON AUTRE EXTREMITE.
 # MODELISATION POU_D_TG    GAUCHISSEMENT NON GENE   IW/=0
@@ -401,8 +401,6 @@ ALPHA_F=DEFI_FONCTION(  NOM_PARA='TEMP',
 MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,   NU = NU_F,
                                        ALPHA = ALPHA_F,TEMP_DEF_ALPHA=0.) )
 
-CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MA,
-                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F)  )
 
 CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI',
@@ -425,106 +423,110 @@ TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                 _F(  INST = 3.,  CHAM_GD = CHT3))
                   )
 
+CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MA,
+             AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F),
+             AFFE_VARC =_F(TOUT='OUI', EVOL=TEMP, NOM_VARC='TEMP',),
+                  )
+
 CHG1=AFFE_CHAR_MECA(   MODELE=MO,
-                           TEMP_CALCULEE=TEMP,
                           DDL_IMPO=_F(  GROUP_NO = 'A',   DX = 0.,   DY = 0.,
                                      DZ = 0.,  DRX = 0.,  DRY = 0.,  DRZ = 0.),
                           FORCE_NODALE=_F(  GROUP_NO = 'B',  FX = 1.)
                         )
 
 U2=MECA_STATIQUE(      MODELE=MO,
-                        CHAM_MATER=CHMAT_F,     CARA_ELEM=CAREL,
-                         LIST_INST=LINST,
-                             EXCIT=_F(   CHARGE = CHG1)        )
+                       CHAM_MATER=CHMAT_F,     CARA_ELEM=CAREL,
+                       LIST_INST=LINST,
+                       EXCIT=_F(   CHARGE = CHG1)        )
 
-TEST_RESU(RESU=( 
+TEST_RESU(RESU=(
             _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N2',  NOM_CMP = 'DX',   VALE = 2.50000E-10,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N3',  NOM_CMP = 'DX',   VALE = 5.00000E-10,
               PRECISION = 1.E-6,        CRITERE = 'RELATIF'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N3',  NOM_CMP = 'DY',   VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N3',  NOM_CMP = 'DZ',   VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N3',  NOM_CMP = 'DRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N3',  NOM_CMP = 'DRY',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N3',  NOM_CMP = 'DRZ',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'M3',  NOM_CMP = 'DX',   VALE = 5.38793E-09,
               PRECISION = 1.E-6,        CRITERE = 'RELATIF'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'M3',  NOM_CMP = 'DY',   VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'M3',  NOM_CMP = 'DZ',   VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'M3',  NOM_CMP = 'DRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'M3',  NOM_CMP = 'DRY',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'M3',  NOM_CMP = 'DRZ',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N1',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'M1',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'N3',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 1,
               NOEUD = 'M3',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
 
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,
               NOEUD = 'N2',  NOM_CMP = 'DX',   VALE = 2.173913E-10,
               PRECISION = 1.E-6,        CRITERE = 'RELATIF'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,
               NOEUD = 'N2',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,
               NOEUD = 'N3',  NOM_CMP = 'DX',   VALE = 4.347826E-10,
               PRECISION = 1.E-6,        CRITERE = 'RELATIF'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,
               NOEUD = 'N3',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,
               NOEUD = 'M3',  NOM_CMP = 'DX',   VALE = 4.685157E-09,
               PRECISION = 1.E-6,        CRITERE = 'RELATIF'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 2,
               NOEUD = 'M3',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
 
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,
               NOEUD = 'N2',  NOM_CMP = 'DX',   VALE = 2.00000E-10,
               PRECISION = 1.E-6,        CRITERE = 'RELATIF'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,
               NOEUD = 'N2',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,
               NOEUD = 'N3',  NOM_CMP = 'DX',   VALE = 4.00000E-10,
               PRECISION = 1.E-6,        CRITERE = 'RELATIF'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,
               NOEUD = 'N3',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,
               NOEUD = 'M3',  NOM_CMP = 'DX',   VALE = 4.310345E-09,
               PRECISION = 1.E-6,        CRITERE = 'RELATIF'),
-            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,  
+            _F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 3,
               NOEUD = 'M3',  NOM_CMP = 'GRX',  VALE = 0.,
               PRECISION = 1.E-13,       CRITERE = 'ABSOLU'))
             )

@@ -1,6 +1,6 @@
-      SUBROUTINE VRCINS(MODELE,CHMAT,CARELE,INST,CHVARC)
+      SUBROUTINE VRCINS(MODELE,CHMAT,CARELE,NCHAR,LCHAR,INST,CHVARC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,16 +20,27 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8 MODELE,CHMAT,CARELE,VARC1,VARC2,NOCMP1,NOCMP2
       CHARACTER*19 CHVARC
+      CHARACTER*(*) LCHAR
       REAL*8 INST
+      INTEGER NCHAR
 C ======================================================================
 C   BUT : FABRIQUER LE CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT A
 C         UN INSTANT DONNE.
 C   ARGUMENTS :
 C   MODELE (K8)  IN/JXIN : SD MODELE
 C   CHMAT  (K8)  IN/JXIN : SD CHAM_MATER
-C   CARELE  (K8)  IN/JXIN : SD CARA_ELEM (SOUS-POINTS)
+C   CARELE (K8)  IN/JXIN : SD CARA_ELEM (SOUS-POINTS)
+C   NCHAR  (I)   IN      : LONGUEUR DE LA LISTE LCHAR
+C   LCHAR  (VK*) IN      : LISTE DES NOMS DES CHARGES MECANIQUES
 C   INST   (R)   IN      : VALEUR DE L'INSTANT
 C   CHVARC (K19) IN/JXOUT: SD CHAM_ELEM/ELGA CONTENANT LES VARC
+C
+C REMARQUE :
+C  LES ARGUMENTS NCHAR ET LCHAR NE SONT UTILISES QU'A TITRE
+C  TRANSITOIRE POUR PEMETTRE L'ANCIEN PASSAGE DE LA TEMPERATURE
+C  COMME VARIABLE DE COMMANDE (AFFE_CHAR_MECA/TEMP_CALCULEE)
+
+
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
@@ -50,19 +61,51 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER IRET,ICHS,NBCHS,JLISSD,JLISCH ,JCESD,JCESV,JCESL
-      INTEGER JCVCMP,JCVNOM,NBCVRC,JCESC,NBCMP,KCMP,KCVRC
+      INTEGER JCVCMP,JCVNOM,NBCVR2,JCESC,NBCMP,KCMP,KCVRC,IRET2
       INTEGER NBMA,IMA,NBPT,NBSP,IPT,ISP,IAD,IAD1
       INTEGER JCVVAR,JCE1D,JCE1L,JCE1V,JCESVI,NNCP
       REAL*8 VALEUR
-      CHARACTER*19 CHVARS ,LIGRMO,CHS
-      CHARACTER*8 KBID
+      CHARACTER*19 CHVARS ,LIGRMO,CHS,CHTEMP
+      CHARACTER*8 KBID ,VALK(4)
+      LOGICAL AVRC, TCALC
+      INTEGER NBCVRC,JVCNOM
+      COMMON /CAII14/NBCVRC,JVCNOM
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
-      CHVARS=CHMAT//'.CHVARS'
-      LIGRMO=MODELE//'.MODELE'
       CALL JEEXIN(CHMAT//'.CVRCVARC',IRET)
-      IF (IRET.EQ.0) GO TO 9999
+C     AVRC : .TRUE. SI AFFE_MATERIAU/AFFE_VARC EST UTILISE
+      AVRC=(IRET.GT.0)
+
+
+C     -- CAS AFFE_CHAR_MECA/TEMP_CALCULEE:
+C     ------------------------------------
+      CHTEMP='&&VRCINS.CHTEMP'
+      CALL VRCIN3(MODELE,NCHAR,LCHAR,INST,CHTEMP,IRET2)
+C     TCALC : .TRUE. SI AFFE_CHAR_MECA/TEMP_CALCULEE EST UTILISE
+      TCALC=(IRET2.EQ.0)
+
+      IF (TCALC) THEN
+         IF (AVRC) CALL U2MESK('F','CALCULEL6_55',1,CHMAT)
+         CALL U2MESS('A','CALCULEL6_54')
+         CALL VRCIN4(MODELE,CARELE,CHTEMP,CHVARC)
+         CALL DETRSD('CHAMP',CHTEMP)
+C        -- COMMON CAII14 :
+         NBCVRC=1
+         CALL JEDETR('&&VRCINS.CVRCNOM')
+         CALL WKVECT('&&VRCINS.CVRCNOM','V V K8',NBCVRC,JCVNOM)
+         CALL JEVEUT('&&VRCINS.CVRCNOM','E',JCVNOM)
+         ZK8(JVCNOM)='TEMP'
+         GOTO 9999
+      ELSE
+         IF (.NOT.AVRC) GO TO 9999
+      ENDIF
+
+
+
+C     -- CAS AFFE_MATERIAU/AFFE_VARC :
+C     ------------------------------------
+9997  CONTINUE
 
 
 C     1. CALCUL DE  CHMAT.LISTE_CH(:) ET CHMAT.LISTE_SD(:)
@@ -71,6 +114,7 @@ C     -----------------------------------------------------
 
 
 C     2. ALLOCATION DU CHAMP_ELEM_S RESULTAT (CHVARS)
+      CHVARS=CHMAT//'.CHVARS'
 C        CALCUL DE CHMAT.CESVI
 C        (CETTE ETAPE EST ECONOMISEE D'UN INSTANT A L'AUTRE)
 C     -------------------------------------------------------------
@@ -86,7 +130,7 @@ C     -----------------------------------------------------
       CALL JEVEUO(CHMAT//'.CVRCVARC','L',JCVVAR)
       CALL JEVEUO(CHMAT//'.CVRCCMP','L',JCVCMP)
       CALL JEVEUO(CHMAT//'.CVRCNOM','L',JCVNOM)
-      CALL JELIRA(CHMAT//'.CVRCCMP','LONMAX',NBCVRC,KBID)
+      CALL JELIRA(CHMAT//'.CVRCCMP','LONMAX',NBCVR2,KBID)
 
       CALL JEVEUO(CHVARS//'.CESD','L',JCE1D)
       CALL JEVEUO(CHVARS//'.CESL','E',JCE1L)
@@ -106,12 +150,15 @@ C     -----------------------------------------------------
           NOCMP1=ZK8(JCESC-1+KCMP)
 
 C         -- CALCUL DE KCVRC :
-          DO 3,KCVRC=1,NBCVRC
+          DO 3,KCVRC=1,NBCVR2
             VARC2=ZK8(JCVVAR-1+KCVRC)
             NOCMP2=ZK8(JCVCMP-1+KCVRC)
             IF ((VARC1.EQ.VARC2).AND.(NOCMP1.EQ.NOCMP2)) GO TO 4
 3         CONTINUE
-          CALL ASSERT(.FALSE.)
+          VALK(1) = CHMAT
+          VALK(2) = VARC1
+          VALK(3) = NOCMP1
+          CALL U2MESK('F','CALCULEL6_59', 3 ,VALK)
 
 4         CONTINUE
 
@@ -122,14 +169,20 @@ C         -- CALCUL DE KCVRC :
             NBPT = ZI(JCESD-1+5+4* (IMA-1)+1)
             CALL ASSERT(NBPT.EQ.ZI(JCE1D-1+5+4* (IMA-1)+1))
             NBSP = MAX(1,ZI(JCESD-1+5+4* (IMA-1)+2))
-            CALL ASSERT(NBSP.EQ.ZI(JCE1D-1+5+4* (IMA-1)+2))
+            if (NBSP.NE.ZI(JCE1D-1+5+4* (IMA-1)+2)) THEN
+              VALK(1) = NOCMP1
+              VALK(2) = CARELE
+              VALK(3) = CHMAT
+              CALL U2MESK('F','CALCULEL6_57', 3 ,VALK)
+            ENDIF
 
             DO 60,IPT = 1,NBPT
               DO 50,ISP = 1,NBSP
-                  CALL CESEXI('S',JCESD,JCESL,IMA,IPT,ISP,KCMP,IAD)
+                  CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,KCMP,IAD)
                   IF (IAD.GT.0) THEN
-                    CALL CESEXI('S',JCE1D,JCE1L,IMA,IPT,ISP,
+                    CALL CESEXI('C',JCE1D,JCE1L,IMA,IPT,ISP,
      &                            KCVRC,IAD1)
+                    IF (IAD1.EQ.0) GOTO 50
                     CALL ASSERT(IAD1.GT.0)
                     IF (ZI(JCESVI-1+IAD1).EQ.ICHS) THEN
                       VALEUR=ZR(JCESV-1+IAD)
@@ -147,9 +200,11 @@ C         -- CALCUL DE KCVRC :
 
 C     4. RECOPIE DU CHAMP SIMPLE DANS LE CHAMP CHVARC
 C     -----------------------------------------------------
+      LIGRMO=MODELE//'.MODELE'
       CALL CESCEL(CHVARS,LIGRMO,'INIT_VARC','PVARCPR','NON',NNCP,
      &            'V',CHVARC)
 
 9999  CONTINUE
       CALL JEDEMA()
+      CALL EXISD('CHAMP_GD',CHVARC,IRET)
       END

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,8 +57,6 @@ MODE_LOCAL__
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI   (VARI     )
     CVENTCX  = VENTCX_F ELEM__         (FCXP     )
 
@@ -76,7 +74,7 @@ OPTION__
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
                               OUT__  EEFGEGA  PEPCON3
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
-                                     CTEREFE  PTEMPER
+                                     ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
     CHAR_MECA_EPSI_R    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -104,13 +102,13 @@ OPTION__
                                      CVENTCX  PVENTCX  NVITER   PVITER
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_SECH_R    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_HYDR_R    155   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
@@ -120,29 +118,29 @@ OPTION__
     EFGE_ELNO_CART      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EFGE_ELNO_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EEFGENO  PEFFORR
                                      EEFGENC  PEFFORC
     EPOT_ELEM_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENEDNO  PENERDR
     EPSI_ELNO_DEPL      154   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
     FORC_NODA           156   IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
@@ -166,8 +164,8 @@ OPTION__
                               OUT__  ECOURAN  PCOURAN
     RAPH_MECA           248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
+                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX
@@ -178,31 +176,29 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_ELAS      248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
+                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_GE        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  CTEREFE  PTEMPER
+    RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_TANG      248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                                     ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
+                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCRR
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EEFGEGA  PCONTRR
                                      EEFGEGC  PCONTRC
     SIEF_ELNO_ELGA      156   IN__   EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PSIEFNOR
                                      EEFGENC  PSIEFNOC
     SIGM_ELNO_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  NTEMPER  PTEMPER  CTEREFE  PTEREF
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  ECONTNO  PCONTRR
                                      ECONTNC  PCONTRC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM

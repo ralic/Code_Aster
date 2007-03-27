@@ -1,9 +1,9 @@
-        SUBROUTINE INSMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,TEMPD,TEMPF,
+        SUBROUTINE INSMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,
      &                      MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C       ----------------------------------------------------------------
-C   NADAI_BETON : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
+C   NADAI_BETON : RECUPERATION DU MATERIAU A T ET T+DT
 C                 NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
 C                 MATER(*,1) = E , NU , ALPHA
 C                 MATER(*,2) = F_C, F_T, CRIT_E_C
@@ -31,8 +31,6 @@ C       ----------------------------------------------------------------
 C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
 C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION  DE MATER
-C           TEMPD  :  TEMPERATURE  A T
-C           TEMPF  :  TEMPERATURE  A T+DT
 C       OUT MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C                     MATER(*,1) = CARACTERISTIQUES   ELASTIQUES
@@ -45,10 +43,9 @@ C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
         INTEGER         NMAT, IMAT, NDT , NDI  , NR , NVI,KPG,KSP
-        REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2) , TEMPD , TEMPF
-        REAL*8          VALPAD, VALPAF
+        REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
         REAL*8          EPSI
-        CHARACTER*8     MOD , NOMC(12) , NOMPAR
+        CHARACTER*8     MOD , NOMC(12)
         CHARACTER*2     BL2, FB2, CERR(12)
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
@@ -77,19 +74,16 @@ C
           NOMC(11)= 'EPSI_R_T'
           NOMC(12)= 'FAC_T_C '
 C
-          NOMPAR = 'TEMP'
-          VALPAD = TEMPD
-          VALPAF = TEMPF
 C
-C -     RECUPERATION MATERIAU A TEMPD (T)
+C -     RECUPERATION MATERIAU A (T)
 C
-          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',1,NOMPAR,
-     &                VALPAD,5,NOMC(1),MATERD(1,1),CERR(1), BL2 )
+          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',0,' ',
+     &                0.D0,5,NOMC(1),MATERD(1,1),CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
-          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','NADAI_B',1,NOMPAR,
-     &                VALPAD, 7,NOMC(6),MATERD(1,2),  CERR(6), FB2 )
+          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','NADAI_B',0,' ',
+     &                0.D0, 7,NOMC(6),MATERD(1,2),  CERR(6), FB2 )
           IF ( MATERD(1,2) .LT. 0.D0 )  THEN
            CALL U2MESS('S','ALGORITH4_36')
           ENDIF
@@ -115,15 +109,15 @@ C
            CALL U2MESS('S','ALGORITH4_43')
           ENDIF
 C
-C -     RECUPERATION MATERIAU A TEMPF (T+DT)
+C -     RECUPERATION MATERIAU A (T+DT)
 C
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1,NOMPAR,
-     &                VALPAF,5,NOMC(1),MATERF(1,1),CERR(1),BL2 )
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',0,' ',
+     &                0.D0,5,NOMC(1),MATERF(1,1),CERR(1),BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','NADAI_B',1,NOMPAR,
-     &                VALPAF,7,NOMC(6),MATERF(1,2),CERR(6), FB2 )
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','NADAI_B',0,' ',
+     &                0.D0,7,NOMC(6),MATERF(1,2),CERR(6), FB2 )
 C
 C -     MATERIAU CONSTANT ?
 C

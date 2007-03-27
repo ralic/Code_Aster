@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,21 +146,22 @@ C -----  VARIABLES LOCALES
       CHARACTER*8 NOMGD
       CHARACTER*16 TYPRES,OPTION,NOPARR(NBPARR),LIGRMO,COMPT
       CHARACTER*19 KNUM,LIGREL,KINS,COMPOR
+      CHARACTER*19 CHVARC,CHVREF
       CHARACTER*24 CHGEOM,CHCARA(15),CHHARM,CHVARI,CHDEPL
       CHARACTER*24 VALK(2)
       CHARACTER*24 CHSIG,LCHIN(10),LCHOUT(2)
-      CHARACTER*24 CHTEMP,CHTREF,MLGGMA,MLGNMA
+      CHARACTER*24 MLGGMA,MLGNMA
       CHARACTER*24 CHSIGM,CHDEPM,CHBID
-      LOGICAL EXITIM,EXISDG
+      LOGICAL EXISDG
 
       DATA TYPARR/'I','R','K8','K8','R'/
+      DATA CHVARC,CHVREF /'&&PEINGL.CHVARC','&&PEINGL.CHVARC.REF'/
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 
       CALL JEMARQ()
 
 C --- INITIALISATIONS :
 C     ---------------
-      EXITIM = .FALSE.
       ZERO = 0.0D0
       OPTION = OPTIOZ
       NOPARR(1) = 'NUME_ORDRE'
@@ -211,7 +212,6 @@ C     -----------------------------------------------------------
       CALL WKVECT(KINS,'V V R',NBORDR,JINS)
       CALL JEEXIN(RESUL//'           .INST',IRET)
       IF (IRET.NE.0) THEN
-        EXITIM = .TRUE.
         DO 10 IORD = 1,NBORDR
           NUMORD = ZI(JORD+IORD-1)
           CALL RSADPA(RESUL,'L',1,'INST',NUMORD,0,IAINST,K8B)
@@ -252,10 +252,13 @@ C      -------------------------
         INST = ZR(JINS+IORD-1)
         VALER(1) = INST
 
-C ---  RECUPERATION OU CONSTITUTION DU CHAMP DE TEMPETATURE
-C ---  ET DE LA TEMPERATURE DE REFERENCE :
-C      ---------------------------------
-        CALL MECHTE(MODELE,NCHAR,LCHAR,MATE,EXITIM,INST,CHTREF,CHTEMP)
+C ---  RECUPERATION OU CONSTITUTION DU CHAMP DE VARIABLE DE COMMANDE
+C ---  ET DE LA VARIABLE DE COMMANDE DE REFERENCE :
+C      --------------------------------------------
+
+        CALL VRCINS(MODELE(1:8),MATE(1:8),CARA(1:8),NCHAR,LCHAR,
+     &              INST,CHVARC)
+        CALL VRCREF(MODELE(1:8),MATE(1:8),CARA(1:8),CHVREF(1:19))
 
 
 C ---  RECUPERATION DE LA RELATION DE COMPORTEMENT ASSOCIEE AU
@@ -421,10 +424,10 @@ C      --------------------------------
         ENDIF
         LPAIN(6) = 'PCOMPOR'
         LCHIN(6) = COMPOR
-        LPAIN(7) = 'PTEMPER'
-        LCHIN(7) = CHTEMP
-        LPAIN(8) = 'PTEREF'
-        LCHIN(8) = CHTREF
+        LPAIN(7) = 'PVARCPR'
+        LCHIN(7) = CHVARC
+        LPAIN(8) = 'PVARCRR'
+        LCHIN(8) = CHVREF
         NBIN = 8
         IF (OPTION.EQ.'ENER_TOTALE') THEN
           IF (IORD.GT.1) THEN
@@ -676,8 +679,8 @@ C          --------------------------------------
           END IF
    50   CONTINUE
         CALL JEDETR('&&MECHTI.CH_INST_R')
-        CALL JEDETR('&&MECHTE.CH_TEMP_R')
-        CALL JEDETR('&&METREF.TEMPE_REFE')
+        CALL JEDETR(CHVARC)
+        CALL JEDETR(CHVREF)
         CALL JEDETC('V',COMPOR//'.PTMA',1)
         CALL JEDEMA()
    60 CONTINUE

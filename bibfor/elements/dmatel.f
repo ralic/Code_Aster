@@ -1,13 +1,14 @@
-      SUBROUTINE DMATEL(DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,GRILLE,
-     &                  T2EV,T2VE,T1VE)
+      SUBROUTINE DMATEL(FAMI,DF,DM,DMF,DC,DCI,NNO,PGL,MULTIC,ICOU,
+     &                  GRILLE,T2EV,T2VE,T1VE,NPG)
       IMPLICIT   NONE
-      INTEGER NNO,MULTIC,ICOU
+      INTEGER NNO,MULTIC,ICOU,NPG
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2)
       REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
       LOGICAL GRILLE
+      CHARACTER*4 FAMI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,8 +53,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IBID,JCOQU,JMATE,ITEMP,INDEP,ELASCO,IADZI,IAZK24
-      INTEGER VALI
-      INTEGER NBV,I,J,K,NBPAR,IER,ITAB(8),IRET,IRETF
+      INTEGER VALI,JCOU
+      INTEGER NBV,I,J,K,NBPAR,IER,ITAB(8),IRET,IRETF,NPGH
       REAL*8 DMC(3,2),DFC(3,2),EXCENT
       REAL*8 KCIS,CDF,CDM,CDC,GCIS,VALRES(134),VALPU(2)
       REAL*8 YOUNG,NU,EPAIS,VALPAR
@@ -259,43 +260,15 @@ CCC          MULTIC     =  2
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
-C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH ('ONN','PTEMPER',8,ITAB,IRET)
-      ITEMP=ITAB(1)
-      IF (IRET.EQ.0.OR.IRET.EQ.3) THEN
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        TPG1 = 0.D0
-        DO 30 I = 1,NNO
-          CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(ITAB(8)+3*(I-1)))
-          T = ZR(ITEMP+3* (I-1))
-          TINF = ZR(ITEMP+1+3* (I-1))
-          TSUP = ZR(ITEMP+2+3* (I-1))
-          TPG1 = TPG1 + T + (TSUP+TINF-2*T)/6.D0
-   30   CONTINUE
-        VALPAR = TPG1/NNO
+      IF (GRILLE) THEN
+        NPGH=1
       ELSE
-
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-      CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRETF)
-        IF (IRETF.EQ.0) THEN
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-          CALL JEVECH('PTEMPSR','L',IBID)
-          VALPU(1) = ZR(IBID)
-          VALPU(2) = 0.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,VALPAR,IER)
-
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-        ELSE
-          NBPAR = 0
-          NOMPAR = ' '
-          VALPAR = 0.D0
-        END IF
-      END IF
-C===============================================================
+        NPGH=3
+      ENDIF
+      CALL JEVECH('PNBSP_I','L',JCOU)
+      CALL MOYTEM(FAMI,NPG,NPGH*ZI(JCOU),'+',VALPAR)
+      NBPAR = 1
+      NOMPAR = 'TEMP'
 
       IF (PHENOM.EQ.'ELAS') THEN
         CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,

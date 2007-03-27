@@ -1,6 +1,6 @@
       SUBROUTINE TE0358(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NBRES=21)
       CHARACTER*16 COMPOR
       CHARACTER*8 NOMRES(NBRES),NOMCLE(5),ACIER(4),ZIRC(2)
+      CHARACTER*4 FAMI
       CHARACTER*2 CODRET(NBRES),TEST
       REAL*8 VALRES(NBRES),E,NU
       REAL*8 ZFBM,SIG(6),KPT(5),SIGDV(6),DEUXMU
@@ -55,17 +56,18 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 KRON(6),R8BID,PHAS(5),RPRIM,COEF,R0(5),TRANS,VI(5)
       REAL*8 PHASM(4),PHASP(4)
 
-      INTEGER JGANO,NNO,KP,K,L,NPG1,I,ITEMPE,IVECTU,NDIM
+      INTEGER JGANO,NNO,KP,L,NPG1,I,IVECTU,NDIM
       INTEGER IPOIDS,IVF,IDFDE,JPROL,JVALE,NBVAL
       INTEGER IGEOM,IMATE,JTAB(7),IRET
 
       DATA KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA ACIER /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
       DATA ZIRC /'ALPHPUR','ALPHBETA'/
-     
+
 C ---------------------------------------------------------------------
 C --- FONCTIONS DE FORMES ET POINTS DE GAUSS
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
+      FAMI = 'RIGI'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 
 C PARAMETRES EN ENTREE
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -74,7 +76,6 @@ C PARAMETRES EN ENTREE
       MATER = ZI(IMATE)
       COMPOR = ZK16(ICOMPO+7)
 
-      CALL JEVECH('PTEMPER','L',ITEMPE)
       CALL JEVECH('PCONTMR','L',ICONTR)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       COMPOR = ZK16(ICOMPO+7)
@@ -153,11 +154,10 @@ C PARAMETRES EN ENTREE
 
       DO 140 KP = 1,NPG1
         ICPG = 6* (KP-1)
-        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE, 
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
-        K = (KP-1)*NNO
-        TPG = 0.D0
- 
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+
         IF (COMPOR(1:5) .EQ. 'ACIER') THEN
           DO 7 L=1,4
              CALL RCVARC(' ',ACIER(L),'-','RIGI',KP,1,
@@ -175,22 +175,19 @@ C PARAMETRES EN ENTREE
              CALL RCVARC(' ',ZIRC(L),'+','RIGI',KP,1,
      &            PHASP(L),IRET)
              IF (IRET.EQ.1) PHASP(L)=0.D0
-    9     CONTINUE   
+    9     CONTINUE
         ENDIF
 
-        DO 20 I = 1,NNO
-          TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
-   20   CONTINUE
-        CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,2,NOMRES,VALRES,
-     &              CODRET,'FM')
+        CALL RCVALB(FAMI,KP,1,'+',MATER,' ','ELAS_META',0,' ',
+     &              0.D0,2,NOMRES,VALRES,CODRET,'FM')
         E = VALRES(1)
         NU = VALRES(2)
         DEUXMU = E/ (1.D0+NU)
 
         IF (COMPOR(1:5).EQ.'ACIER') THEN
 
-          CALL RCVALA(MATER,' ','META_PT',1,'TEMP',TPG,4,NOMRES(3),
-     &                VALRES(3),CODRET(3),' ')
+          CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_PT',0,' ',
+     &                0.D0,4,NOMRES(3),VALRES(3),CODRET(3),' ')
 
           DO 30 I = 3,6
             IF (CODRET(I).NE.'OK') THEN
@@ -220,7 +217,7 @@ C PARAMETRES EN ENTREE
             END IF
    50     CONTINUE
 
-          CALL RCVALA(MATER,' ','META_VISC',1,'TEMP',TPG,
+          CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_VISC',0,' ',0.D0,
      &                5,NOMRES(17),VALRES(17),CODRET(17),' ')
           TEST = 'NO'
           DO 60 I = 17,21
@@ -245,7 +242,8 @@ C PARAMETRES EN ENTREE
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_IL' .OR.
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_IL') THEN
 
-              CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,5,
+              CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_ECRO_LINE',
+     &                    0,' ',0.D0,5,
      &                    NOMRES(12),VALRES(12),CODRET(12),'FM')
               R0(1) = VALRES(12)*E/ (E-VALRES(12))
               R0(2) = VALRES(13)*E/ (E-VALRES(13))
@@ -255,7 +253,8 @@ C PARAMETRES EN ENTREE
             END IF
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_CL' .OR.
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_CL') THEN
-              CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,5,
+              CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_ECRO_LINE',0,
+     &                    ' ',0.D0,5,
      &                    NOMRES(12),VALRES(12),CODRET(12),'FM')
               R0(1) = (2.D0/3.D0)*VALRES(12)*E/ (E-VALRES(12))
               R0(2) = (2.D0/3.D0)*VALRES(13)*E/ (E-VALRES(13))
@@ -295,7 +294,8 @@ C PARAMETRES EN ENTREE
           END IF
 
         ELSE IF (COMPOR(1:4).EQ.'ZIRC') THEN
-          CALL RCVALA(MATER,' ','META_PT',1,'TEMP',TPG,2,NOMRES(3),
+          CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_PT',0,' ',
+     &                0.D0,2,NOMRES(3),
      &                VALRES(3),CODRET(3),' ')
 
           DO 80 I = 3,4
@@ -336,7 +336,7 @@ C PARAMETRES EN ENTREE
           END IF
 
 
-          CALL RCVALA(MATER,' ','META_VISC',1,'TEMP',TPG,
+          CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_VISC',0,' ',0.D0,
      &                3,NOMRES(14),VALRES(14),CODRET(14),' ')
           TEST = 'NO'
           DO 90 I = 14,16
@@ -358,7 +358,8 @@ C PARAMETRES EN ENTREE
 
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_IL' .OR.
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_IL') THEN
-              CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,3,
+              CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_ECRO_LINE',
+     &                    0,' ',0.D0,3,
      &                    NOMRES(8),VALRES(8),CODRET(8),'FM')
               R0(1) = VALRES(8)*E/ (E-VALRES(8))
               R0(2) = VALRES(9)*E/ (E-VALRES(9))
@@ -366,7 +367,8 @@ C PARAMETRES EN ENTREE
             END IF
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_CL' .OR.
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_CL') THEN
-              CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,5,
+              CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_ECRO_LINE',
+     &                    0,' ',0.D0,5,
      &                    NOMRES(8),VALRES(8),CODRET(8),'FM')
               R0(1) = (2.D0/3.D0)*VALRES(8)*E/ (E-VALRES(8))
               R0(2) = (2.D0/3.D0)*VALRES(9)*E/ (E-VALRES(9))

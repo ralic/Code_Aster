@@ -1,21 +1,21 @@
-#@ MODIF calculel Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -174,31 +174,36 @@ cata_msg={
 """),
 
 40: _("""
- erreur pgmeur dans caundf : type_scalaire: %(k1)s  non autorise(i/r ou c),
+ Erreur Programmeur : type_scalaire: %(k1)s  non autorisé (I/R/C),
 """),
 
 41: _("""
- erreur pgmeur dans caundf : type_scalaire: %(k1)s  non autorise(i/r/c/k8/k16/k24),
+ Erreur Programmeur : type_scalaire: %(k1)s  non autorisé (I/R/C/K8/K16/K24),
 """),
 
 42: _("""
- incoherence fortran/catalogue type_element:  %(k1)s  option:  %(k2)s  parametre:  %(k3)s
+ Erreur Programmeur:
+ Incoherence fortran/catalogue type_element:  %(k1)s  option:  %(k2)s
+ La routine texxxx.f correspondant au calcul élémentaire ci-dessus est bugguée :
+ Elle écrit en dehors de la zone allouée au paramètre (OUT) %(k3)s.
+
 """),
 
 43: _("""
- arret du aux erreurs precedentes.
+ Arret du aux erreurs precedentes.
 """),
 
 44: _("""
- code interdit:  %(k1)s
+ Code interdit:  %(k1)s
 """),
 
 45: _("""
- transf. non programmee:
+ Erreur Programmeur :
+ Transformation non programmée : émettre une fiche d'évolution
 """),
 
 46: _("""
- a faire ...
+ a faire ...  : émettre une fiche d'évolution
 """),
 
 47: _("""
@@ -254,11 +259,12 @@ cata_msg={
 """),
 
 60: _("""
- mat no->ga necessaire
+ Matrice noeud->gauss nécessaire
 """),
 
 61: _("""
- cesmod obligatoire
+ Erreur Programmeur :
+ Argument cesmod obligatoire
 """),
 
 62: _("""
@@ -266,7 +272,7 @@ cata_msg={
 """),
 
 63: _("""
- on ne traite que des champs "elno"
+ on ne traite que des champs "ELNO"
 """),
 
 64: _("""
@@ -278,7 +284,7 @@ cata_msg={
 """),
 
 66: _("""
- typces invalide
+ TYPCES invalide
 """),
 
 67: _("""
@@ -310,11 +316,11 @@ cata_msg={
 """),
 
 74: _("""
- grandeurs differents.
+ grandeurs differentes.
 """),
 
 75: _("""
- types differents (cart/elno/elga).
+ types differents (CART/ELNO/ELGA).
 """),
 
 76: _("""

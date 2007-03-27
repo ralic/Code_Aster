@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,33 +20,33 @@ GENER_ME3D_2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MECA_FACE3       MAILLE__ TRIA3
-   ELREFE__  TR3       GAUSS__  RIGI=COT3
+   ELREFE__  TR3       GAUSS__  RIGI=COT3      FPG_LISTE__ MATER=(RIGI)
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ MECA_FACE4       MAILLE__ QUAD4
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4      FPG_LISTE__ MATER=(RIGI)
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ MECA_FACE6       MAILLE__ TRIA6
-   ELREFE__  TR6       GAUSS__  RIGI=FPG4
+   ELREFE__  TR6       GAUSS__  RIGI=FPG4      FPG_LISTE__ MATER=(RIGI)
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 ENTETE__ ELEMENT__ MECA_FACE8       MAILLE__ QUAD8
-   ELREFE__  QU8       GAUSS__  RIGI=FPG9
+   ELREFE__  QU8       GAUSS__  RIGI=FPG9      FPG_LISTE__ MATER=(RIGI)
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
 ENTETE__ ELEMENT__ MECA_FACE9       MAILLE__ QUAD9
-   ELREFE__  QU9       GAUSS__  RIGI=FPG9
+   ELREFE__  QU9       GAUSS__  RIGI=FPG9      FPG_LISTE__ MATER=(RIGI)
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8  9
 
 ENTETE__ ELEMENT__ MECA_X_FACE6     MAILLE__ TRIA6
-   ELREFE__  TR3       GAUSS__  RIGI=COT3
+   ELREFE__  TR3       GAUSS__  RIGI=COT3      FPG_LISTE__ MATER=(RIGI)
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 ENTETE__ ELEMENT__ MECA_X_FACE8     MAILLE__ QUAD8
-   ELREFE__  QU4       GAUSS__  RIGI=FPG4
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4      FPG_LISTE__ MATER=(RIGI)
    ATTRIBUT__  BORD=OUI
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
@@ -83,7 +83,6 @@ MODE_LOCAL__
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       BETA  )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6
@@ -101,6 +100,7 @@ MODE_LOCAL__
                                         X13      X14      X15      X16      X17      X18    )
     E9NEUTR = NEUT_R   ELEM__          (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9        )
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -124,13 +124,13 @@ OPTION__
                                      CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
     CALC_K_G            311   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
-                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   NFORCER  PFRVOLU  CPESANR  PPESANR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  NFORCER  PFRVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
                                      DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   EFORCNO  PFR2D3D
                                      EPRESNO  PPRESSR  N1NEUT_R PLSN     N1NEUT_R PLST
                               OUT__  EKTHETA  PGTHETA
     CALC_K_G_F          311   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
-                                     NTEMPER  PTEMPER  CTEREFE  PTEREF   CFORCEF  PFFVOLU  CPESANR  PPESANR
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR   CFORCEF  PFFVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINF  PEPSINF  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
                                      DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB   CFORCEF  PFF2D3D
                                      CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  N1NEUT_R PLSN     N1NEUT_R PLST
@@ -187,15 +187,17 @@ OPTION__
     CHAR_MECA_PRSU_R    422   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                               OUT__  MVECTUR  PVECTUR
     G_BILI              298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINR  UEPSINR
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  DDL_MECA PTHETAR  CEPSINR  UEPSINR
                                      CEPSINR  VEPSINR  EFORCNO  UPFR23D  EFORCNO  VPFR23D  EPRESNO  UPRESSR
-                                     EPRESNO  VPRESSR  CTEREFE  PTEREF
+                                     EPRESNO  VPRESSR  ZVARCPG  PVARCRR
                               OUT__  EGTHETA  PGTHETA
     G_BILI_F            298   IN__   DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTMPERU  NTEMPER  PTMPERV  DDL_MECA PTHETAR  CEPSINF  UEPSINF
-                                     CEPSINF  VEPSINF  CTEREFE  PTEREF   CFORCEF  UPFF23D  CFORCEF  VPFF23D
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  DDL_MECA PTHETAR  CEPSINF  UEPSINF
+                                     CEPSINF  VEPSINF  ZVARCPG  PVARCRR  CFORCEF  UPFF23D  CFORCEF  VPFF23D
                                      CPRESSF  UPRESSF  CPRESSF  VPRESSF  CTEMPSR  UTEMPSR  CTEMPSR  VTEMPSR
                               OUT__  EGTHETA  PGTHETA
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     RIGI_MECA_PRSU_F    425   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
                                      CTEMPSR  PTEMPSR
                               OUT__  MMATUUR  PMATUUR
@@ -205,5 +207,5 @@ OPTION__
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
-    TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  
-                              OUT__  E18NEUI  PCNSETO  E6NEUTI PHEAVTO  E8NEUTI  PLONCHA  E9NEUTR PPINTTO  
+    TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
+                              OUT__  E18NEUI  PCNSETO  E6NEUTI PHEAVTO  E8NEUTI  PLONCHA  E9NEUTR PPINTTO

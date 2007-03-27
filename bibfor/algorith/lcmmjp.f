@@ -1,11 +1,11 @@
-      SUBROUTINE LCMMJP ( MOD, NMAT, MATER,TEMPF,
+      SUBROUTINE LCMMJP ( FAMI,KPG,KSP,MOD, NMAT, MATER,
      &       TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,
      &      ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
      &                   DSDE , DRDY, OPTION, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,22 +28,24 @@ C     COMPORTEMENT MONOCRISTALLIN
 C                :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT
 C                   COHERENT A T+DT
 C     ----------------------------------------------------------------
-C     IN  MOD    :  TYPE DE MODELISATION
+C     IN  FAMI   :  FAMILLE DES POINTS DE GAUSS
+C         KPG    :  NUMERO DU POINT DE GAUSS
+C         KSP    :  NUMERO DU SOUS POINT DE GAUSS
+C         MOD    :  TYPE DE MODELISATION
 C         NMAT   :  DIMENSION MATER
 C         MATER  :  COEFFICIENTS MATERIAU
-C         TEMPF  :  TEMPERATURE ACTUELLE                               
-C         TIMED  :  ISTANT PRECEDENT                                   
-C         TIMEF  :  INSTANT ACTUEL                                     
-C         COMP   :  NOM COMPORTEMENT                                   
-C         NBCOMM :  INCIDES DES COEF MATERIAU                          
-C         CPMONO :  NOM DES COMPORTEMENTS                              
-C         PGL    :  MATRICE DE PASSAGE                                 
-C         TOUTMS :  TENSEURS D'ORIENTATION                             
-C         HSR    :  MATRICE D'INTERACTION                              
-C         NVI    :  NOMBRE DE VARIABLES INTERNES                       
-C         VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT           
-C         ITMAX  :  ITER_INTE_MAXI                                     
-C         TOLER  :  RESI_INTE_RELA                                     
+C         TIMED  :  ISTANT PRECEDENT
+C         TIMEF  :  INSTANT ACTUEL
+C         COMP   :  NOM COMPORTEMENT
+C         NBCOMM :  INCIDES DES COEF MATERIAU
+C         CPMONO :  NOM DES COMPORTEMENTS
+C         PGL    :  MATRICE DE PASSAGE
+C         TOUTMS :  TENSEURS D'ORIENTATION
+C         HSR    :  MATRICE D'INTERACTION
+C         NVI    :  NOMBRE DE VARIABLES INTERNES
+C         VIND   :  VARIABLES INTERNES A L'INSTANT PRECEDENT
+C         ITMAX  :  ITER_INTE_MAXI
+C         TOLER  :  RESI_INTE_RELA
 C         SIGD   :  CONTRAINTES A T
 C         SIGF   :  CONTRAINTES A T+DT
 C         VIND   :  VARIABLES INTERNES A T
@@ -54,16 +56,17 @@ C
 C     OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
 C     ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT , NVI, ITMAX
+      INTEGER         KPG,KSP,NDT , NDI , NMAT , NVI, ITMAX
       INTEGER         K,J,NR, NVV, IRET,NS
 C DIMENSIONNEMENT DYNAMIQUE
       REAL*8          DRDY(NR,NR),Y0(6,6),Y1(6,(NVI-8)),DSDE(6,6)
       REAL*8          MATER(NMAT*2),Y2((NVI-8),6),KYL(6,6),DET,I6(6,6)
       REAL*8          Y3((NVI-8),(NVI-8)), TOLER
-      REAL*8          YD(NR),YF(NR),DY(NR),UN,ZERO,TEMPF
+      REAL*8          YD(NR),YF(NR),DY(NR),UN,ZERO
       REAL*8 Z0(6,6),Z1(6,(NR-NDT)),Z2((NR-NDT),6),Z3((NR-NDT),(NR-NDT))
         REAL*8 TOUTMS(5,24,6),HSR(5,24,24),MS(6)
       CHARACTER*8     MOD
+      CHARACTER*(*)   FAMI
       PARAMETER       ( UN   =  1.D0   )
       PARAMETER       ( ZERO =  0.D0   )
 
@@ -105,13 +108,13 @@ C - RECUPERER LES SOUS-MATRICES BLOC
   99     CONTINUE
       NUVRF = NUVRF + 3*NBSYS
       NSFA = NSFA + NBSYS
-                 
+
 C     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
       IF (OPTION.EQ. 'RIGI_MECA_TANG') THEN
-          CALL R8INIR(NR,0.D0, DY, 1)         
-          CALL R8INIR(NR,0.D0, YF, 1)         
-          CALL R8INIR(NVI,0.D0, VIND, 1)         
-          CALL LCMMJA ( MOD, NMAT, MATER, TIMED, TIMEF, TEMPF,
+          CALL R8INIR(NR,0.D0, DY, 1)
+          CALL R8INIR(NR,0.D0, YF, 1)
+          CALL R8INIR(NVI,0.D0, VIND, 1)
+          CALL LCMMJA ( FAMI,KPG,KSP,MOD, NMAT, MATER, TIMED, TIMEF,
      &    ITMAX,TOLER,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,NR,NVI,VIND,
      &    YF,DY,DRDY, IRET)
       ENDIF
@@ -136,7 +139,7 @@ C     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE
  401     CONTINUE
 C       Z2=INVERSE(Z3)*Z2
         CALL MGAUSS ('NFWP',Z3, Z2, NS, NS, 6, DET, IRET )
-        
+
 C       KYL=Z1*INVERSE(Z3)*Z2
         CALL PROMAT(Z1,6,6,NS,Z2,NS,NS,6,KYL)
 
@@ -146,10 +149,10 @@ C       Z0=Z0+Z1*INVERSE(Z3)*Z2
            Z0(K,J)=Z0(K,J)-KYL(K,J)
            DSDE(K,J)=I6(K,J)
  501    CONTINUE
- 
+
 C       DSDE = INVERSE(Z0-Z1*INVERSE(Z3)*Z2)
 
 C        CALL MGAUSS ('NFVP',Z0, DSDE, 6, 6, 6, DET, IRET )
         CALL MGAUSS ('NFWP',Z0, DSDE, 6, 6, 6, DET, IRET )
-        
+
       END

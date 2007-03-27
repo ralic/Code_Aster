@@ -1,6 +1,6 @@
-      SUBROUTINE NMTAMA(IMATE,INSTAM,INSTAP,TM,TP,MATM,MAT)
+      SUBROUTINE NMTAMA(FAMI,KPG,KSP,IMATE,INSTAM,INSTAP,MATM,MAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,17 +20,19 @@ C ======================================================================
 
       IMPLICIT NONE
 
-      INTEGER IMATE
-      REAL*8  INSTAM,INSTAP,TM,TP,MATM(3),MAT(14)
+      INTEGER KPG,KSP,IMATE
+      CHARACTER*(*)  FAMI
+      REAL*8  INSTAM,INSTAP,MATM(3),MAT(14)
 
 C ----------------------------------------------------------------------
 C TAHERI :  LECTURE DES CARACTERISTIQUES DU MATERIAU
 C ----------------------------------------------------------------------
+C IN   FAMI  FAMILLE DU POINT DE GAUSS
+C IN  KPG    POINT DE GAUSS
+C IN   KSP   SOUS-POINT DE GAUSS
 C IN  IMATE  ADRESSE DU MATERIAU CODE
 C IN  INSTAM INSTANT -
 C IN  INSTAP INSTANT +
-C IN  TM     TEMPERATURE EN T-
-C IN  TP     TEMPERATURE EN T+
 C OUT MATM   CARACTERISTIQUES (ELASTIQUES) EN T-
 C OUT MAT    CARACTERISTIQUES (ELASTIQUES, PLASTIQUES, VISQUEUSES) EN T+
 C             1 = TROISK            (ELASTICITE)
@@ -63,20 +65,20 @@ C ----------------------------------------------------------------------
 
 C - LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (T- ET T+)
 
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,2,NOM(1),MATM(1),OK(1),
-     &              FB2)
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,1,NOM(3),MATM(3),OK(3),
-     & BL2)
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
+     &            2,NOM(1),MATM(1),OK(1),FB2)
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
+     &            1,NOM(3),MATM(3),OK(3),BL2)
       IF (OK(3).NE.'OK') MATM(3) = 0.D0
       E       = MATM(1)
       NU      = MATM(2)
       MATM(1) = E/(1.D0-2.D0*NU)
       MATM(2) = E/(1.D0+NU)
 
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,2,NOM(1),MAT(1),OK(1),
-     & FB2)
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,1,NOM(3),MAT(3),OK(3),
-     & BL2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
+     &            2,NOM(1),MAT(1),OK(1),FB2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
+     &            1,NOM(3),MAT(3),OK(3),BL2)
       IF (OK(3).NE.'OK') MAT(3) = 0.D0
       E      = MAT(1)
       NU     = MAT(2)
@@ -85,13 +87,13 @@ C - LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (T- ET T+)
 
 
 C - LECTURE DES CARACTERISTIQUES D'ECROUISSAGE (T+)
-      CALL RCVALA(IMATE,' ','TAHERI',1,'TEMP',TP,8,NOM(4),MAT(4),OK(4),
-     & FB2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','TAHERI',0,' ',0.D0,
+     &            8,NOM(4),MAT(4),OK(4),FB2)
       MAT(7) = MAT(7) * (2.D0/3.D0)**MAT(5)
 
 C LECTURE DES CARACTERISTIQUES DE VISCOSITE (TEMPS +)
-      CALL RCVALA(IMATE,' ','LEMAITRE',1,'TEMP',TP,3,NOM(12),
-     &            MAT(12),OK(12),BL2)
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','LEMAITRE',0,' ',0.D0,
+     &            3,NOM(12),MAT(12),OK(12),BL2)
       VISCO = OK(12).EQ.'OK'
 
       IF (VISCO) THEN

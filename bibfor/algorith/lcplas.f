@@ -1,27 +1,27 @@
         SUBROUTINE LCPLAS ( FAMI,KPG,KSP,LOI,TOLER, ITMAX, MOD,IMAT,
-     1                      NMAT, MATERD, MATERF, MATCST,NR, NVI,TEMPD,
-     2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
+     1                      NMAT, MATERD, MATERF, MATCST,NR, NVI,
+     2                      TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
      3                 SIGF, VINF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
      4        ICOMP,IRTETI,THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C       ----------------------------------------------------------------
@@ -36,8 +36,6 @@ C           NMAT   :  DIMENSION MATER
 C           MATERD :  COEFFICIENTS MATERIAU A T
 C           MATERF :  COEFFICIENTS MATERIAU A T+DT
 C           MATCST :  'OUI' SI MATERIAU CONSTANT SUR DT
-C           TEMPD  :  TEMPERATURE A T
-C           TEMPF  :  TEMPERATURE A T+DT
 C           TIMED  :  INSTANT  T
 C           TIMEF  :  INSTANT T+DT
 C           EPSD   :  DEFORMATION A T
@@ -57,7 +55,7 @@ C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT,   NVI,    NR
 
 C
-        REAL*8          TEMPD,          TEMPF, TIMED, TIMEF,DELTAT
+        REAL*8          TIMED, TIMEF,DELTAT
         REAL*8          TOLER,          THETA
         REAL*8          EPSD(6) ,       DEPS(6)
         REAL*8          SIGD(6),        SIGF(6)
@@ -69,7 +67,7 @@ C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
         CHARACTER*3     MATCST
-        
+
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
         REAL*8 TOUTMS(5,24,6),HSR(5,24,24)
@@ -80,23 +78,23 @@ C
       IRTETI = 0
       DELTAT = TIMEF - TIMED
 C
-      IF     ( LOI(1:8).EQ. 'ROUSS_PR' .OR.   
+      IF     ( LOI(1:8).EQ. 'ROUSS_PR' .OR.
      1         LOI(1:10) .EQ. 'ROUSS_VISC'    ) THEN
-         CALL LCROUS ( TOLER, ITMAX, IMAT, NMAT, MATERF, NVI,
-     1                   TEMPF, DEPS, SIGD, VIND, THETA, LOI, DELTAT, 
-     2                   SIGF, VINF, IRTET )
+         CALL LCROUS (FAMI,KPG,KSP, TOLER, ITMAX, IMAT, NMAT,
+     1                MATERF, NVI,   DEPS, SIGD, VIND, THETA,
+     2                LOI, DELTAT,  SIGF, VINF, IRTET )
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
 C
       ELSEIF ( LOI(1:5) .EQ. 'LMARC'       .OR.
      1         LOI(1:9) .EQ. 'VISCOCHAB'   .OR.
-     1         LOI(1:8) .EQ. 'MONOCRIS'    .OR.    
-     1         LOI(1:7) .EQ. 'IRRAD3M '    .OR.    
+     1         LOI(1:8) .EQ. 'MONOCRIS'    .OR.
+     1         LOI(1:7) .EQ. 'IRRAD3M '    .OR.
      1         LOI(1:7) .EQ. 'NADAI_B'     ) THEN
          CALL LCPLNL ( FAMI, KPG, KSP, LOI,  TOLER, ITMAX, MOD,
      1                 IMAT,NMAT, MATERD,MATERF,MATCST,NR, NVI,
-     2                 TEMPD,TEMPF,TIMED,TIMEF,DEPS,EPSD,SIGD,
-     3                 VIND,COMP,NBCOMM, CPMONO,PGL,TOUTMS,HSR,
-     3                 SIGF, VINF, ICOMP, IRTET,DRDY)
+     2                 TIMED,TIMEF,DEPS,EPSD,SIGD,VIND,COMP,
+     3                 NBCOMM, CPMONO,PGL,TOUTMS,HSR,
+     4                 SIGF, VINF, ICOMP, IRTET,DRDY)
          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
 CC
 
@@ -126,7 +124,7 @@ C
 C
 2     CONTINUE
       IRTETI = 2
-      GO TO 9999  
+      GO TO 9999
 C
  9999   CONTINUE
         END

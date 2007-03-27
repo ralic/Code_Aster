@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,10 +140,10 @@ HYDR1=CREA_RESU(OPERATION='AFFE',
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         TEMP_REF=20.0),
-                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC="HYDR",NOM_CHAM='HYDR_NOEU_ELGA'),
-                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC="SECH",NOM_CHAM='TEMP',VALE_REF=100),),);
+                         MATER=BETON,),
+                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC='HYDR',NOM_CHAM='HYDR_NOEU_ELGA'),
+                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
+                            _F(TOUT='OUI',EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),),);
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    FACE_IMPO=(_F(GROUP_MA='FACEXY',
@@ -153,17 +153,13 @@ CH1=AFFE_CHAR_MECA(MODELE=MO,
                              _F(GROUP_MA='FACEXZ',
                                 DY=0.0,),),);
 
-CH2=AFFE_CHAR_MECA(MODELE=MO,
-                   TEMP_CALCULEE=TEMP1);
-
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3600.0,
                                      NOMBRE=20,  ),);
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
-                EXCIT=(_F(CHARGE=CH1,),
-                       _F(CHARGE=CH2,),),
+                EXCIT=_F(CHARGE=CH1,),
                 COMP_INCR=_F(RELATION='MAZARS',
                              ITER_INTE_MAXI=100,),
                 INCREMENT=_F(LIST_INST=L_INST,),
@@ -177,8 +173,7 @@ U=CALC_ELEM(reuse =U,
             CHAM_MATER=CM,
             RESULTAT=U,
             OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO','SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
-            EXCIT=( _F(CHARGE=CH1,),
-                    _F(CHARGE=CH2,),),);
+            EXCIT=_F(CHARGE=CH1,),);
 
 U=CALC_NO(reuse =U,
           RESULTAT=U,

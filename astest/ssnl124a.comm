@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE FLUAGE AXIAL D'UN ELEMENT HEXA8 AVEC COMPORTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -272,22 +272,10 @@ MAT2=DEFI_MATERIAU(    ELAS=_F( E = 1.E5, NU = 0.3, ALPHA = 0.),
                          GRAN_S = 0.396),
                      )
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
-           AFFE=  _F(  MAILLE = 'MA1', MATER = MAT2, TEMP_REF = 299.85),
-           AFFE_VARC=_F(NOM_VARC='IRRA', EVOL =FLUENC1, ),
-                        )
-
-CHART=AFFE_CHAR_MECA(  MODELE=MO,
-              DDL_IMPO=(_F(  NOEUD = 'NO3',DX = 0., DY = 0., DZ = 0.),
-                        _F( NOEUD = 'NO1',DX = 0.,DZ = 0.),
-                        _F(NOEUD = ('NO5','NO7',),DX = 0.)),
-                     FORCE_NODALE=_F(NOEUD = ('NO2','NO4','NO6','NO8',),
-                                     FX = 25.)
-                       )
-
 FON_T=DEFI_FONCTION(   NOM_PARA='X',
                             NOM_RESU='TEMP',
                             VALE=( 0., 299.85, 4000., 299.85,))
+
 
 CHTEM=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',
@@ -303,9 +291,19 @@ CHTH=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                  INST = 32.E6))
                    )
 
-CH_TH=AFFE_CHAR_MECA(   MODELE=MO,
-                             TEMP_CALCULEE=CHTH
-                         )
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
+           AFFE=  _F(  MAILLE = 'MA1', MATER = MAT2, ),
+           AFFE_VARC=(_F(NOM_VARC='IRRA', EVOL =FLUENC1, ),
+                     _F(NOM_VARC='TEMP', EVOL =CHTH,VALE_REF = 299.85 ),),
+                        )
+
+CHART=AFFE_CHAR_MECA(  MODELE=MO,
+              DDL_IMPO=(_F(  NOEUD = 'NO3',DX = 0., DY = 0., DZ = 0.),
+                        _F( NOEUD = 'NO1',DX = 0.,DZ = 0.),
+                        _F(NOEUD = ('NO5','NO7',),DX = 0.)),
+                     FORCE_NODALE=_F(NOEUD = ('NO2','NO4','NO6','NO8',),
+                                     FX = 25.)
+                       )
 
 FONCT=DEFI_FONCTION(   NOM_PARA='INST',
                            VALE=( 0.,     0.,
@@ -330,12 +328,7 @@ REST=STAT_NON_LINE(
                             MODELE=MO,
                         CHAM_MATER=CHMAT,
                         CARA_ELEM = CARA1,
-                         EXCIT=(
-                             _F( 
-                CHARGE = CHART,
-                FONC_MULT = FONCT),
-                             _F( 
-                CHARGE = CH_TH)),
+                         EXCIT=_F(CHARGE = CHART,FONC_MULT = FONCT),
                          COMP_INCR=_F( PARM_THETA = 0.5,
                 RELATION = 'LEMAITRE_IRRA',
                 ITER_INTE_MAXI = 150),

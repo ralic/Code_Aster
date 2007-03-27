@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.1D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,18 +104,6 @@ SECH1=CREA_RESU(OPERATION='AFFE',
                 CHAM_GD=SECH,
                 INST=0.,),);
 
-CM=AFFE_MATERIAU(MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         TEMP_REF=20.),
-                 AFFE_VARC=_F(TOUT='OUI',
-                              EVOL=SECH1,
-                              NOM_VARC="SECH",
-                              NOM_CHAM='TEMP',
-                              VALE_REF=1),
-                 AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF),
-);
-
 TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
@@ -130,6 +118,24 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                 AFFE=_F(
                 CHAM_GD=TEMP,
                 INST=0.,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=BETON,
+                         TEMP_REF=20.),
+                 AFFE_VARC=(_F(TOUT='OUI',
+                              EVOL=SECH1,
+                              NOM_VARC="SECH",
+                              NOM_CHAM='TEMP',
+                              VALE_REF=1),
+                             _F(TOUT='OUI',
+                              EVOL=TEMP1,
+                              NOM_VARC="TEMP",
+                              NOM_CHAM='TEMP',
+                              VALE_REF=20.),) ,
+                 AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF),
+);
+
 
 FORCE=DEFI_FONCTION(NOM_PARA='INST',
                     VALE=(0.0,0.0,

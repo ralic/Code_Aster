@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DSQ  169 N - 147 QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -338,7 +338,7 @@ TSUP1=65.
 
 T1=50.
 
-TR1=T1 + ( ( TSUP1 + TINF1 - ( 2. * T1 ) ) / 6. )
+TR1=(T1 +  TSUP1 + TINF1 ) / 3.
 
 TINF2=70.
 
@@ -346,7 +346,7 @@ TSUP2=90.
 
 T2=75.
 
-TR2=T2 + ( ( TSUP2 + TINF2 - ( 2. * T2 ) ) / 6. )
+TR2=(T2 + TSUP2 + TINF2  ) / 3.
 
 TINF3=95.
 
@@ -354,7 +354,7 @@ TSUP3=115.
 
 T3=100.
 
-TR3=T3 + ( ( TSUP3 + TINF3 - ( 2. * T3 ) ) / 6. )
+TR3=(T3 + TSUP3 + TINF3 ) / 3. 
 
 E1=1.
 
@@ -386,8 +386,6 @@ ALPHA_F=DEFI_FONCTION(  NOM_PARA='TEMP',
 MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,   NU = NU_F,
                                        ALPHA = ALPHA_F,TEMP_DEF_ALPHA=0.) )
 
-CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MAILL,
-                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F)  )
 
 CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
 MAILLAGE=MAILL,
@@ -416,8 +414,15 @@ TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                 _F(  INST = 3.,  CHAM_GD = CHT3))
                   )
 
+TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MODEL, CARA_ELEM=CARELEM, EVOL_THER = TEMP, ),)
+CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MAILL,
+                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F) ,
+                  AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=0.0), )
+
 CHG1=AFFE_CHAR_MECA(  MODELE=MODEL,
-                          TEMP_CALCULEE=TEMP,DDL_IMPO=(
+                          DDL_IMPO=(
               _F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,  DZ = 0.),
                        _F( GROUP_NO = 'GRNO_OA',  DY = 0.,  DRX = 0.,  DRZ = 0.),
                        _F( NOEUD = 'A',                 DRX = 0.,  DRZ = 0.),

@@ -1,6 +1,6 @@
       SUBROUTINE TE0022(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,22 +110,13 @@ C ---- RECUPERATION DU CHAMP DE DEPLACEMENT DERIVE SUR L'ELEMENT
 C      ---------------------------------------------------------
       IF (LSENS) CALL JEVECH('PDEPSEN','L',IDEPS)
 
-C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
-C      --------------------------------------------------
-      CALL JEVECH('PTEMPER','L',ITEMPE)
 
-C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
-C      -------------------------------------------
-      CALL JEVECH('PTEREF','L',ITREF)
-
-
-      
 C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES - SIGMA_RETRAIT)
 C      ------------------------------------
       CALL SIGVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
-     &            IDFDE,ZR(IGEOM),ZR(IDEPL), ZR(ITEMPE),
-     &            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,
+     &            IDFDE,ZR(IGEOM),ZR(IDEPL),
+     &            INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,
      &            .FALSE.)
 
 C ---- CALC DU TERME COMPLEMENTAIRE DE CONTR 'VRAIES' SUR L'ELEMENT
@@ -135,8 +126,8 @@ C ATTENTION!! POUR L'INSTANT(30/9/02) ON DOIT AVOIR SIGMA_THERMIQUE=0
 C      ------------------------------------
       IF (LSENS) THEN
         CALL SIGVMC('RIGI',MODELI,NNO,NDIM,NBSIG,NPG1,IPOIDS,IVF,
-     &              IDFDE,ZR(IGEOM),ZR(IDEPS),ZR(ITEMPE),
-     &              ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,
+     &              IDFDE,ZR(IGEOM),ZR(IDEPS),
+     &              INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,
      &              .TRUE.)
         DO 30 I = 1,NBSIG*NPG1
           SIGMA(I) = SIGMA(I) + SIGM2(I)

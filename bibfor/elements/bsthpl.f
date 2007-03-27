@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       I, JGEOM, NNO
-      REAL*8        PGL(3,3), XYZL(3,4), TSUP(4), TMOY(4), TINF(4),
+      REAL*8        PGL(3,3), XYZL(3,4),
      &              SIGTH(32), ZERO
       CHARACTER*16  TYPELE, OPTION
 C     ------------------------------------------------------------------
@@ -65,12 +65,7 @@ C
         BSIGTH(I) = ZERO
   10  CONTINUE
 C
-C --- RECUPERATION DES TEMPERATURES AUX NOEUDS :
-C     ----------------------------------------
-      CALL DXTEMP(TYPELE, TSUP, TINF, TMOY, INDITH)
-C
-      IF (.NOT.INDITH) GOTO 9999
-C
+
 C --- RECUPERATION DES COORDONNEES DES NOEUDS DE L'ELEMENT :
 C     ----------------------------------------------------
       CALL JEVECH('PGEOMER','L',JGEOM)
@@ -97,7 +92,7 @@ C
 C --- CALCUL DES EFFORTS GENERALISES D'ORIGNIE THERMIQUE AUX POINTS
 C --- D'INTEGRATION :
 C     -------------
-      CALL DXEFGT(TYPELE,XYZL,PGL,TSUP,TINF,TMOY,SIGTH)
+      CALL DXEFGT(TYPELE,XYZL,PGL,SIGTH)
 C
 C --- PRISE EN COMPTE DE L'EXCENTREMENT SI ON CALCULE LES EFFORTS
 C --- GENERALISES THERMIQUES SUR UN FEUILLET DE REFERENCE DIFFERENT
@@ -109,6 +104,5 @@ C --- CALCUL DE BT*SIGTH :
 C     ------------------
       CALL DXBSIG(TYPELE,XYZL,PGL,SIGTH,BSIGTH)
 C
- 9999 CONTINUE
 C
       END

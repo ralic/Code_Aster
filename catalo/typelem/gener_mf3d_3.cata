@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -21,10 +21,10 @@ TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEFI_HEXA8       MAILLE__ HEXA8
    ELREFE__  QU4       GAUSS__  RIGI=FPG4   MASS=FPG4   GANO=FPG4   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
-
+                       FPG_LISTE__  MATER = (RIGI)
 ENTETE__ ELEMENT__ MEFI_PENTA6      MAILLE__ PENTA6
    ELREFE__  TR3       GAUSS__  RIGI=FPG1   MASS=FPG1   GANO=FPG1   NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
-
+                       FPG_LISTE__  MATER = (RIGI)
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
@@ -44,9 +44,9 @@ MODE_LOCAL__
     ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN    SITX     SITY     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIGN    SITX     SITY     )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+    ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
 
@@ -55,16 +55,18 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
+    INIT_VARC           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ZVARCPG  PVARCPR
     FORC_NODA           207   IN__   ECONTPG  PCONTMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           206   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
-                                     CCARCRI  PCARCRI  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CCARCRI  PCARCRI  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      206   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
-                                     CCARCRI  PCARCRI  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CCARCRI  PCARCRI  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
@@ -79,17 +81,17 @@ OPTION__
                               OUT__  ECOPILO  PCOPILO
     RAPH_MECA           206   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
-                                     CCARCRI  PCARCRI  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CCARCRI  PCARCRI  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_ELAS      206   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ZVARIPG  PVARIMR  CCARCRI  PCARCRI  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR
+                                     CMATERC  PMATERC  ZVARIPG  PVARIMR  CCARCRI  PCARCRI  ZVARCPG  PVARCMR
+                                     ZVARCPG  PVARCPR
                               OUT__  MMATUNS  PMATUNS
     RIGI_MECA_TANG      206   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
-                                     CCARCRI  PCARCRI  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CCARCRI  PCARCRI  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                               OUT__  MMATUNS  PMATUNS
     SIEF_ELNO_ELGA      -1    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR

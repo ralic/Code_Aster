@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE TUBE DE BREE (METHODE ZAC)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,6 +77,7 @@ LISTPL=DEFI_LIST_REEL(    DEBUT=0.,INTERVALLE=(
                          )
 
 TEMPE=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',AFFE=(
+                      _F(  CHAM_GD = TP0,   INST = 0.),
                       _F(  CHAM_GD = TP0,   INST = 1.),
                       _F(  CHAM_GD = TP1,   INST = 3.))  )
 
@@ -139,7 +140,7 @@ SOLSTA=MECA_STATIQUE(
 
 CALC_ELEM( reuse= SOLSTA ,RESULTAT= SOLSTA ,
               LIST_INST=LISTEL,
-              
+
              OPTION=(
              'EPSI_ELGA_DEPL',  )
                          )
@@ -177,6 +178,7 @@ TP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
                                  VALE_F = FONC2)   )
 
 TEMPE2=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',AFFE=(
+                      _F(  CHAM_GD = TP0,   INST = 0.),
                       _F(  CHAM_GD = TP0,   INST = 1.),
                       _F(  CHAM_GD = TP2,   INST = 3.))  )
 
@@ -228,7 +230,7 @@ SOLSTA2=MECA_STATIQUE(
 
 CALC_ELEM( reuse= SOLSTA2 ,RESULTAT= SOLSTA2 ,
               LIST_INST=LISTEL,
-              
+
              OPTION=(
               'EPSI_ELGA_DEPL',  )
                          )
@@ -383,7 +385,7 @@ TEST_RESU(RESU=(
 #
 #
 #
-CALC_ELEM( reuse=SOLPL,       
+CALC_ELEM( reuse=SOLPL,
             MAILLE=('M6','M1',),
              NUME_ORDRE=2,
               OPTION=( 'EPSP_ELNO', ),

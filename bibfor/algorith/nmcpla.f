@@ -1,11 +1,11 @@
         SUBROUTINE NMCPLA(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     &                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
+     &                      TIMED,TIMEF,
      &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,SIGF,
      &                      VINF,DSDE,IRET)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,9 +69,6 @@ C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
 C               TIMED   INSTANT T
 C               TIMEF   INSTANT T+DT
-C               TEMPD   TEMPERATURE A T
-C               TEMPF   TEMPERATURE A T+DT
-C               TREF    TEMPERATURE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -206,6 +203,10 @@ C
          CALL U2MESS('F','ALGORITH7_12')
               ENDIF
 C
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IBID)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IBID)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IBID)
+C
 C --- TEMPERATURE MAXIMALE AU COURS DE L'HISTORIQUE DE CHARGEMENT
 C
       TMPDMX = TEMPD
@@ -242,7 +243,7 @@ C --- RESOLUTION LOI DE FLUAGE
 C
       IF ( OPTFLU .EQ. 'RAPH_MECA' ) THEN
          CALL NMGRAN (FAMI, KPG, KSP, NDIM, TYPMOD, IMAT, CMP1,
-     &                CRIT, TIMED, TIMEF, TEMPD, TEMPF, TREF,
+     &                CRIT, TIMED, TIMEF,
      &                TMPDMX,TMPFMX, DEPST2,SIGD,VIND(1),OPT,
      &                SIGF2,  VINF(1),  DSDE )
 C
@@ -260,12 +261,12 @@ C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',1,NOMPAR,
+         CALL RCVALA(IMAT,' ','ELAS',1,NOMPAR,
      &               VALPAD,1,NOMC(2),MATERD(2),CERR(1),FB2 )
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1,NOMPAR,
+         CALL RCVALA(IMAT,' ','ELAS',1,NOMPAR,
      &               VALPAF,1,NOMC(2),MATERF(2),CERR(1),FB2 )
 C
          MATERD(1) = 1.D0
@@ -316,7 +317,7 @@ C
      &    CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE' ) THEN
 C
           CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
-     &                 TIMED, TIMEF,     TEMPD,    TEMPF, TREF,
+     &                 TIMED, TIMEF,
      &                 DEPS , SIGD,      VIND(NN), OPT,
      &                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
 C
@@ -326,7 +327,7 @@ C
      &        CMP2(1)(1:7) .EQ. 'NADAI_B'        ) THEN
 C
               CALL REDECE (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
-     &                     TIMED, TIMEF,    TEMPD,    TEMPF, TREF,
+     &                     TIMED, TIMEF,   TEMPD,    TEMPF, TREF,
      &                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,
      &              ELGEOM, ANGMAS, SIGF,  VINF(NN), DSDE,RETCOM)
       ELSE
@@ -338,8 +339,8 @@ C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',2,NOMPAR,
-     &               VALPAD,5,NOMC(1),MATERD(1),CERR(1), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',0,' ',
+     &               0.D0,5,NOMC(1),MATERD(1),CERR(1), FB2 )
 C
          IF ( CERR(3) .NE. 'OK' ) MATERD(3) = 0.D0
          IF ( CERR(4) .NE. 'OK' ) MATERD(4) = 0.D0
@@ -347,8 +348,8 @@ C
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',2,NOMPAR,
-     &               VALPAF,5,NOMC(1),MATERF(1),CERR(1),FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',0,' ',
+     &               0.D0,5,NOMC(1),MATERF(1),CERR(1),FB2 )
 C
          IF ( CERR(3) .NE. 'OK' ) MATERF(3) = 0.D0
          IF ( CERR(4) .NE. 'OK' ) MATERF(4) = 0.D0

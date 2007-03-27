@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ OPTION__
    IN__
         PMATERC  ADRSJEVE
         PGEOMER  GEOM_R
-        PTEMPER  TEMP_R
+        PVARCPR  VARI_R
         PPESANR  PESA_R
         PCARCRI  CARCRI
         PCOMPOR  COMPOR

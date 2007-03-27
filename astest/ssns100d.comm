@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,24 +57,9 @@ ACIER=DEFI_MATERIAU(   ELAS=_F(  E = 2.E11,
                                     A6_PM = 620.0,
                                     C_PM = 0.5,
                                     A_PM = 0.008,          )
+
                            )
 
-#
-# -------------------------------------------------
-# AFFECTATION DES MATERIAUX
-# -------------------------------------------------
-#
-MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
-                          AFFE=(
-                          _F(  GROUP_MA = 'GEOB',
-                                 MATER = ACIER,
-                                 TEMP_REF = 50.,
-                               ),
-                          _F(  GROUP_MA = 'GEOBB',
-                                 MATER = ACIER,
-                                 TEMP_REF = 50.,
-                               ),), 
-                     )
 
 #
 # -------------------------------------------------
@@ -135,14 +120,39 @@ LATEMP=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_F',
            AFFE=_F(  GROUP_MA = ('GEOB','GEOBB'),   NOM_CMP = 'TEMP',   VALE_F = F1_T,  )
                  )
 
+TEMPER=CREA_RESU(  OPERATION='PREP_VRC1', TYPE_RESU='EVOL_THER',
+    PREP_VRC1= _F(  MODELE=LEMOD, CARA_ELEM=LACAR,INST=(0.,1.,2.,3.,4.,5.,6.),
+    CHAM_GD = LATEMP, ),)
+
+#
+# -------------------------------------------------
+# AFFECTATION DES MATERIAUX
+# -------------------------------------------------
+#
+MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
+                          AFFE=(
+                          _F(  GROUP_MA = 'GEOB',
+                                 MATER = ACIER,
+                               ),
+                          _F(  GROUP_MA = 'GEOBB',
+                                 MATER = ACIER,
+                                 TEMP_REF = 50.,
+                               ),), 
+                          AFFE_VARC=_F(GROUP_MA=('GEOB','GEOBB'),
+                              EVOL=TEMPER,
+                              NOM_VARC='TEMP',
+                              NOM_CHAM='TEMP',
+                              VALE_REF=50),
+                     )
+
+
 # ----------------------------------------------
 # CHARGEMENT
 # ----------------------------------------------
 #
 ZCHM=AFFE_CHAR_MECA(
              MODELE=LEMOD,
-             TEMP_CALCULEE=LATEMP,
-            DDL_IMPO=_F(  TOUT = 'OUI',
+             DDL_IMPO=_F(  TOUT = 'OUI',
                        DX = 0.,   DY = 0.,   DZ = 0.,
                        DRX = 0.,   DRY = 0.,   DRZ = 0.,  )
                        )

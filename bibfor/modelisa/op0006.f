@@ -3,7 +3,7 @@
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER N1,NBOCCV,I,NBMA,K,NCMP
+      INTEGER N1,NBOCCV,I,NBMA,K,NCMP,IFM,NIV
       INTEGER IFAC,NBFAC,NMXFAC,NMXCMP,IBID,NBVARC,NBTOU,JMA
       INTEGER IOCC,JNCMP1,JNCMP2,JVALV1,JVALV2,KVARC,NBCVRC
       INTEGER JCVNOM,JCVVAR,JCVCMP,JCVGD,JCVDEF,ITROU,NBM1,NBGM1
@@ -62,6 +62,7 @@ C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL INFMAJ()
+      CALL INFNIV ( IFM , NIV )
 
       NOMODE = ' '
       CALL GETVID(' ','MODELE',1,1,1,NOMODE,N1)
@@ -74,12 +75,13 @@ C ----------------------------------------------------------------------
       MOTCLE(2) = 'MAILLE'
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
+      CALL GETFAC('AFFE_VARC',NBOCCV)
 
 
 C     1- TRAITEMENT DU MOT CLE AFFE :
 C     -----------------------------------------
       CALL RCMATE(CHMAT,NOMAIL,NOMODE)
-      CALL RCTREF(CHMAT,NOMAIL,NOMODE)
+      IF (NBOCCV.EQ.0) CALL RCTREF(CHMAT,NOMAIL,NOMODE)
 
 
 C     1-bis TRAITEMENT DU MOT CLE AFFE_NOEUD :
@@ -107,7 +109,6 @@ C     -------------------------------------------------
 
       NBVARC = 0
       NBCVRC=0
-      CALL GETFAC('AFFE_VARC',NBOCCV)
       DO 20,IFAC = 1,NBFAC
         MOFAC=MOTFAC(IFAC)
         CALL ASSERT(MOFAC(1:5).EQ.'VARC_')
@@ -200,14 +201,22 @@ C       ------------------------------------------------------------
 
 C         2-3 CALCUL DE  VRCREF(:) :
 C         ---------------------------
-            CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,1,NMXCMP,VRCREF,N1)
+          CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,1,NMXCMP,VRCREF,N1)
           CALL ASSERT(N1.GE.0)
           IF (N1.GT.0) THEN
-            CALL ASSERT(N1.EQ.NCMP)
+            IF(N1.NE.NCMP) THEN
+              VALK(1) = CHMAT
+              VALK(2) = NOVARC
+              CALL U2MESK('F','CALCULEL6_60', 2 ,VALK)
+            ENDIF
             CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,1,NMXCMP,VRCREF,N1)
           ELSE
             DO 60,K = 1,NCMP
-              VRCREF(K) = R8VIDE()
+              IF (NOVAR2.EQ.'TEMP') THEN
+                VRCREF(K) = 0.D0
+              ELSE
+                VRCREF(K) = R8VIDE()
+              ENDIF
    60       CONTINUE
           END IF
 
@@ -281,7 +290,20 @@ C         TOUT='OUI' PAR DEFAUT :
         NBCVRC=NBCVRC+NCMP
    90 CONTINUE
 
+
+C   3- DU FAIT QUE AFFE/TEMP_REF A ETE REMPLACE PAR AFFE_VARC/VALE_REF,
+C   IL FAUT RECONSTRUIRE LA CARTE .CHAMP_MAT POUR GARDER LA LOGIQUE :
+C   1 OCCURENCE DANS LA CARTE => 1 MATERIAU + 1 TEMP_REF
+C   C'EST UNE CONSEQUENCE DE RCMACO/ALFINT
+C   -------------------------------------------------------------------
+      CALL CMTREF(CHMAT,NOMAIL)
+
 9999  CONTINUE
+C     -- IMPRESSION DU CHAMP PRODUIT SI INFO=2 :
+      IF (NIV.GT.1) THEN
+        CALL IMPRSD('CHAMP',CHMAT//'.CHAMP_MAT',IFM,'CHAM_MATER:')
+      ENDIF
+
 
       CALL JEDEMA()
       END

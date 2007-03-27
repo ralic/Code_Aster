@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -329,8 +329,6 @@ A_F=DEFI_CONSTANTE(   NOM_RESU='TEMP',
 MATER_F=DEFI_MATERIAU(  ELAS_FO=_F(  E = E_F,      NU = NU_F,
                                      ALPHA = A_F,  TEMP_DEF_ALPHA=0.) )
 
-CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MAILL,
-                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F)  )
 
 CHT0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                    MAILLAGE=MAILL,
@@ -365,9 +363,15 @@ TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                         _F(  INST = 2.,  CHAM_GD = CHT2),
                         _F(  INST = 3.,  CHAM_GD = CHT3))
                   )
+TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MODEL, CARA_ELEM=CARELEM, EVOL_THER = TEMP, ),)
+CHMAT_F=AFFE_MATERIAU(  MAILLAGE=MAILL,
+                  AFFE=_F(  TOUT = 'OUI',      MATER = MATER_F),
+                  AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=0.0), )
+
 
 CHG1=AFFE_CHAR_MECA(  MODELE=MODEL,
-               TEMP_CALCULEE=TEMP,
                DDL_IMPO=(_F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,  DZ = 0.),
                          _F( GROUP_NO = 'GRNO_OA',  DY = 0.,  DRX = 0.,  DRZ = 0.),
                          _F( NOEUD = 'A',                 DRX = 0.,  DRZ = 0.),

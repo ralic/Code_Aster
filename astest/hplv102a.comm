@@ -1,5 +1,5 @@
 
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,12 +86,14 @@ MA=DEFI_MATERIAU(ELAS=_F(E=200000.0,
                          ALPHA=1e-06,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
-                 AFFE=_F(TOUT='OUI',
-                         MATER=MA,
-                         TEMP_REF=0.0,),);
+                 AFFE=_F(TOUT='OUI',  MATER=MA,),
+                 AFFE_VARC =_F(TOUT='OUI', CHAMP_GD=TEMP, NOM_VARC='TEMP',),
+                 );
+CMST=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',  MATER=MA,),
+                 );
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
-                  TEMP_CALCULEE=TEMP,
                   DDL_IMPO=(_F(GROUP_NO='GRNM1',
                                DX=0.0,),
                             _F(GROUP_NO='GRNM2',
@@ -120,10 +122,10 @@ K=FACT_LDLT(reuse =K,
 DEPLA=RESO_LDLT(MATR_FACT=K,
                 CHAM_NO=F,);
 
-RESU=CREA_RESU(  OPERATION='AFFE', 
+RESU=CREA_RESU(  OPERATION='AFFE',
                  TYPE_RESU='EVOL_ELAS',
                  NOM_CHAM='DEPL',
-                      AFFE=_F(  CHAM_GD = DEPLA, 
+                      AFFE=_F(  CHAM_GD = DEPLA,
                                 INST=0.,
                                 MODELE=MO,
                                 CHAM_MATER = CM)     )

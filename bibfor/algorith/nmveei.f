@@ -1,9 +1,9 @@
       SUBROUTINE NMVEEI (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
+     &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +110,7 @@ C ----------------------------------------------------------------------
 C
       LOGICAL       CPLAN
 C
-      INTEGER       ITMAX, I, IER, ITER
+      INTEGER       ITMAX, I, IER, ITER,IRET2
       INTEGER       NDT, NVI, NRV, NDI, K, L
       INTEGER       NBCOMM(NMAT,3)
 C
@@ -165,7 +165,11 @@ C
 C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
-      CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM, TP,0,
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET2)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET2)
+
+      CALL LCMATE (FAMI,KPG,KSP,COMPOR,MOD, IMATE, NMAT, TM,TP,0,
      &               TYPMA, HSR,MATM,
      &               MATE,MATCST,NBCOMM, CPMONO,  ANGMAS, PGL,ITMAX,
      &               TOLER, NDT, NDI, NRV, NVI, VIND ,TOUTMS)
@@ -229,7 +233,7 @@ C REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
       IF (OPTION(1:9).EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
       IF (ABS(GR-GK).LE.TOLER*GR) THEN
        IF (.NOT.CPLAN) THEN
-         CALL NMVEND(MATM,MATE,NMAT,DT,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
+         CALL NMVEND(FAMI,KPG,KSP,MATM,MATE,NMAT,DT,EPSM,DEPS,SIGM,VIM,
      &               NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,IER)
          IF (IER.GT.0) THEN
          CALL U2MESS('A','ALGORITH8_65')

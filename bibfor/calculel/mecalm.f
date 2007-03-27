@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,7 +111,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN,VALK,KCHAP,KCHAD
       CHARACTER*24 CHAMGD,CHSIG,CHSIGP,CHSIGD,CHSIGN,CHEPSP
       CHARACTER*24 CHEPS,CHDEPL,CHSGPN,CHSGDN
-      CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHTIME,CHMETA
+      CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTIME,CHMETA
       CHARACTER*24 CHNUMC,CHHARM,CHFREQ,CHMASS,CHELEM,SOP
       CHARACTER*24 CHERRG,CHERRN,LIGREL,CHEPSA,K24B
       CHARACTER*24 CHENEG,CHSING,CHERR1,CHERR2,CHERR3
@@ -126,7 +126,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 CHTEM1,CHTRF1,CHTIM1,CHELE1
       CHARACTER*24 CHTEM2,CHTRF2,CHTIM2,CHELE2
       CHARACTER*24 CHEND2,CHS,CHSIGF
-      CHARACTER*19 CHVARC,CHVREF
+      CHARACTER*19 CHVARC,CHVREF,CHVAC2
 
       REAL*8 COEF,VALRES,VALIM,INST,TIME,R8B
       REAL*8 ALPHA,PREC,PHASE,FREQ,OMEGA
@@ -166,7 +166,6 @@ C               12   345678   9012345678901234
       CHAMGD = BLAN24
       CHGEOM = BLAN24
       CHTEMP = BLAN24
-      CHTREF = BLAN24
       CHTIME = BLAN24
       CHNUMC = BLAN24
       CHHARM = BLAN24
@@ -185,6 +184,7 @@ C               12   345678   9012345678901234
       SOP    = BLAN24
       K24B   = BLAN24
       CHVARC = '&&MECALM.CHVARC'
+      CHVAC2 = '&&MECALM.CHVAC2'
       CHVREF = '&&MECALM.CHVREF'
       CHVARI = BLAN24
       BASE = 'G'
@@ -650,9 +650,9 @@ C=======================================================================
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
-              CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
+
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 C -- POUR LES POUTRES MULTIFIBRES ON A BESOIN DE COMPOR ISSU DE MATERIAU
@@ -680,7 +680,7 @@ C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
      &                      CHTESE,LBID)
               END IF
               CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
+     &                    CHTEMP,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,CHAREP,TYPCOE,
      &                    ALPHA,CALPHA,CHDYNR,SOP,CHELEM,LIGREL,BASE,
      &                    CHVARC,CHVREF,K24B,COMPOR,CHTESE,
@@ -723,8 +723,9 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
+              CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL RSEXCH(RESUCO,'DEPL',IORDR,CHAMGD,IRET)
 
 C      A PARTIR DE SIEF_ELGA
@@ -737,9 +738,9 @@ C      A PARTIR DE SIEF_ELGA_DEPL
               END IF
 
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,K24B,K24B,K24B,CHSIG,K24B,K24B,
+     &                    K24B,K24B,K24B,K24B,K24B,CHSIG,K24B,K24B,
      &                    K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,
-     &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
+     &                    CHELEM,LIGREL,BASE,CHVARC,CHVREF,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 92
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -810,14 +811,15 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
+              CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
+     &                    K24B,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),K24B,
-     &                    ZERO,CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,K24B,
-     &                    K24B,K24B,COMPOR,CHTESE,CHDESE,NOPASE,
-     &                    TYPESE,IRET)
+     &                    ZERO,CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,
+     &                    CHVARC,CHVREF,K24B,COMPOR,CHTESE,CHDESE,
+     &                    NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 112
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
               CALL DETRSD('CHAMP_GD',CHFREQ)
@@ -919,14 +921,13 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
-              CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL MECHDA(MODELE,NCHAR,ZK8(JCHA),EXITIM,TIME,CHEPSA)
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
+     &                    K24B,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPSA,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),K24B,
      &                    ZERO,CZERO,CHDYNR,SOP,CHEPSP,LIGREL,BASE,
      &                    CHVARC,CHVREF,CHVARI,COMPOR,CHTESE,
@@ -1268,12 +1269,6 @@ C--- VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
               CALL DISMOI('F','NOM_LIGREL',CHSIG,'CHAM_ELEM',IBID,
      &                                            LIGRCH,IERD)
               IF (LIGRCH.NE.LIGRMO) THEN
-C                 CALL UTDEBM('A',NOMPRO,'LE CHAMP DE CONTRAINTES '//
-C     &                       'N''A PAS ETE CALCULE SUR TOUT LE MODELE')
-C                 CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,
-C     &                           OPTION)
-C                 CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
-C                 CALL UTFINM
                  CALL CODENT(IORDR,'G',KIORD)
                  VALKM(1)=OPTION
                  VALKM(2)=KIORD
@@ -1438,11 +1433,6 @@ C--- VERIFIE SI LE CHAMP EST CALCULE SUR TOUT LE MODELE
      &                                            LIGRCD,IERD)
               IF ((LIGRCP.NE.LIGRMO).OR.
      &            (LIGRCD.NE.LIGRMO)) THEN
-C                 CALL UTDEBM('A',NOMCMD,'LE CHAMP DE CONTRAINTES '//
-C     &                       'N''A PAS ETE CALCULE SUR TOUT LE MODELE')
-C              CALL UTIMPK('L',' ON NE CALCULE PAS L''OPTION ',1,OPTION)
-C                 CALL UTIMPI('S',' POUR LE NUME_ORDRE ',1,IORDR)
-C                 CALL UTFINM
                  CALL CODENT(IORDR,'G',KIORD)
                  VALKM(1)=OPTION
                  VALKM(2)=KIORD
@@ -1822,14 +1812,16 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
+              CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
+
+              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
+     &                    K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),' ',ZERO,
-     &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,K24B,K24B,
-     &                    K24B,COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
-     &                    IRET)
+     &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,CHVARC,
+     &                    CHVREF,K24B,COMPOR,CHTESE,CHDESE,NOPASE,
+     &                    TYPESE,IRET)
               IF (IRET.GT.0) GO TO 252
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   252         CONTINUE
@@ -1881,9 +1873,6 @@ C ---- VERIF SENSIBILITE
             IF(CODSEN.NE.0) GO TO 900
 C ---- VERIF SENSIBILITE FIN
             IF (NBORDR.EQ.1) THEN
-C              CALL UTDEBM('A',NOMPRO,'IL FAUT AU MOINS 2 NUME_ORDRE ')
-C              CALL UTIMPK('S','POUR TRAITER L''OPTION ',1,OPTION)
-C              CALL UTFINM
               CALL U2MESK('A','CALCULEL5_63',1,OPTION)
               GO TO 440
             END IF
@@ -2059,9 +2048,9 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
-              CALL COENDO(OPTION,MODELE,LIGREL,MATE,CHTEMP,CHSIG,CHELEM)
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
+              CALL COENDO(OPTION,MODELE,LIGREL,MATE,CHVARC,CHSIG,CHELEM)
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   342         CONTINUE
               CALL JEDEMA()
@@ -2077,10 +2066,6 @@ C     ------------------------------------------------------------------
      &             OPTION.EQ.'ENDO_ELGA') THEN
 C
             IF (NBORDR.EQ.1) THEN
-C               CALL UTDEBM('A',NOMPRO,
-C     &                                'IL FAUT AU MOINS 2 NUME_ORDRE ')
-C               CALL UTIMPK('S','POUR TRAITER L''OPTION ',1,OPTION)
-C               CALL UTFINM
                CALL U2MESK('A','CALCULEL5_63',1,OPTION)
                GO TO 440
             END IF
@@ -2171,10 +2156,11 @@ C --- A3/ RECUPERATION DU TEMPS CORRESPONDANT AUX ORDRES #IORDR[1,2]
 
 C --- A4/ EVALUATION DES DONNEES MATERIAUX AUX INSTANTS - ET +
 C     --------------------------------------------------------
-                  CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,
-     &                        TIME1,CHTRF1,CHTEM1)
-                  CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,
-     &                        TIME2,CHTRF2,CHTEM2)
+
+                  CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME1,CHVARC)
+                  CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME2,CHVAC2)
 
 C --- A5/ CALCUL DU TAUX DE TRIAXIALITE, DE LA CONTRAINTE
 C ---     D'ENDOMMAGEMENT ET DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE
@@ -2182,8 +2168,8 @@ C     -------------------------------------------------------------
                   CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR1,COMPOR,IRET1)
 
                   CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,
-     &                        CHTEM1,CHSIG1,CHVAR1,
-     &                        CHTEM2,CHSIG2,CHVAR2,
+     &                        CHVARC,CHSIG1,CHVAR1,
+     &                        CHVAC2,CHSIG2,CHVAR2,
      &                        CHEND2,CHELE1,CHELE2)
 
 C --- A6/ ECRITURE DU CHAMP LERES1
@@ -2201,8 +2187,8 @@ C     ----------------------------------------
                   ENDIF
                   CALL RSEXC1(LERES1,OPTION,IORDR2,CHELE2)
                   CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,
-     &                        CHTEM1,CHSIG1,CHVAR1,
-     &                        CHTEM2,CHSIG2,CHVAR2,
+     &                        CHVARC,CHSIG1,CHVAR1,
+     &                        CHVAC2,CHSIG2,CHVAR2,
      &                        CHEND2,CHELE1,CHELE2)
                   CALL RSNOCH(LERES1,OPTION,IORDR2,' ')
                ENDIF
@@ -2242,12 +2228,13 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
-              CALL MECALC(OPTION,MODELE,K24B,CHGEOM,MATE,CHCARA,CHTEMP,
-     &                    CHTREF,K24B,CHNUMC,K24B,CHSIG,CHDEPL,K24B,
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
+              CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
+              CALL MECALC(OPTION,MODELE,K24B,CHGEOM,MATE,CHCARA,K24B,
+     &                    K24B,K24B,CHNUMC,K24B,CHSIG,CHDEPL,K24B,
      &                    K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,
-     &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
+     &                    CHELEM,LIGREL,BASE,CHVARC,CHVREF,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 362
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -2291,12 +2278,13 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
+              CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,K24B,CHNUMC,K24B,CHSIG,K24B,
+     &                    K24B,K24B,K24B,CHNUMC,K24B,CHSIG,K24B,
      &                    K24B,K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,
-     &                    SOP,CHELEM,LIGREL,BASE,K24B,K24B,K24B,
+     &                    SOP,CHELEM,LIGREL,BASE,CHVARC,CHVREF,K24B,
      &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 372
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -2335,9 +2323,9 @@ C ---- VERIF SENSIBILITE FIN
                 TIME = ZERO
               END IF
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,K24B,CHNUMC,K24B,K24B,CHEPS,
+     &                    CHTEMP,K24B,K24B,CHNUMC,K24B,K24B,CHEPS,
      &                    K24B,K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,
-     &                    SOP,CHELEM,LIGREL,BASE,K24B,K24B,K24B,
+     &                    SOP,CHELEM,LIGREL,BASE,CHVARC,CHVREF,K24B,
      &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 382
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -2376,9 +2364,9 @@ C ---- VERIF SENSIBILITE FIN
                 TIME = ZERO
               END IF
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,K24B,CHNUMC,K24B,K24B,K24B,
+     &                    CHTEMP,K24B,K24B,CHNUMC,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,
-     &                    SOP,CHELEM,LIGREL,BASE,K24B,CHEEQ,K24B,
+     &                    SOP,CHELEM,LIGREL,BASE,CHVARC,CHEEQ,K24B,
      &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 392
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -2418,7 +2406,7 @@ C ---- VERIF SENSIBILITE FIN
                 TIME = ZERO
               END IF
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,K24B,CHNUMC,K24B,K24B,K24B,
+     &                    CHTEMP,K24B,K24B,CHNUMC,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,TYPCOE,ALPHA,CALPHA,K24B,
      &                    SOP,CHELEM,LIGREL,BASE,CHSEQ,K24B,K24B,
      &                    COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,IRET)
@@ -2484,10 +2472,10 @@ C ---- VERIF SENSIBILITE FIN
               IF (IRET.GT.0) GO TO 412
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,K24B,
-     &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
-     &                    LIGREL,BASE,K24B,K24B,K24B,COMPOR,
+              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
+     &                    K24B,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
+     &                    K24B,K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,
+     &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 412
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -2520,11 +2508,11 @@ C ---- VERIF SENSIBILITE FIN
 
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,K24B,
-     &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
-     &                    LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,
-     &                    CHDESE,NOPASE,TYPESE,IRET)
+              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
+     &                    K24B,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
+     &                    K24B,K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,
+     &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
+     &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 422
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   422         CONTINUE
@@ -2571,14 +2559,16 @@ C ---- VERIF SENSIBILITE FIN
                 CHTIME = ' '
                 TIME = ZERO
               END IF
-              CALL MECHTE(MODELE,NCHAR,ZK8(JCHA),MATE,EXITIM,TIME,
-     &                    CHTREF,CHTEMP)
+              CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,ZK8(JCHA),
+     &                    TIME,CHVARC)
+              CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
+
               CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
+     &                    CHTEMP,K24B,CHTIME,CHNUMC,CHHARM,CHSIG,
      &                    CHEPS,CHFREQ,CHMASS,CHMETA,ZK8(JCHA),' ',ZERO,
-     &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,K24B,K24B,
-     &                    K24B,COMPOR,CHTESE,CHDESE,NOPASE,TYPESE,
-     &                    IRET)
+     &                    CZERO,CHDYNR,SOP,CHELEM,LIGREL,BASE,CHVARC,
+     &                    CHVREF,K24B,COMPOR,CHTESE,CHDESE,NOPASE,
+     &                    TYPESE,IRET)
               IF (IRET.GT.0) GO TO 432
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
   432         CONTINUE
@@ -2610,9 +2600,9 @@ C ---- VERIF SENSIBILITE FIN
               IF (IRET.GT.0) GO TO 452
               CHDESE = K24B
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,K24B,K24B,K24B,CHTETA,K24B,K24B,
-     &                    K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
+              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
+     &                    K24B,K24B,K24B,K24B,K24B,K24B,CHTETA,K24B,
+     &                    K24B,K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 452
@@ -2644,9 +2634,9 @@ C ---- VERIF SENSIBILITE FIN
      &                    OPTION,IRET)
               IF (IRET.GT.0) GO TO 462
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MECALC(OPTION,MODELE,DLAGSI,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,K24B,K24B,CHSIGM,CHTETA,K24B,K24B,
-     &                    K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
+              CALL MECALC(OPTION,MODELE,DLAGSI,CHGEOM,MATE,CHCARA,
+     &                    K24B,K24B,K24B,K24B,K24B,CHSIGM,CHTETA,K24B,
+     &                    K24B,K24B,ZK8(JCHA),' ',ZERO,CZERO,K24B,K24B,
      &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 462
@@ -2680,10 +2670,10 @@ C ---- VERIF SENSIBILITE FIN
               IF (IRET.GT.0) GO TO 472
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,K24B,
-     &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
-     &                    LIGREL,BASE,K24B,K24B,K24B,COMPOR,
+              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
+     &                    K24B,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
+     &                    K24B,K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,
+     &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 472
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -2716,10 +2706,10 @@ C ---- VERIF SENSIBILITE FIN
               IF (IRET.GT.0) GO TO 482
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                    K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,K24B,
-     &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
-     &                    LIGREL,BASE,K24B,K24B,K24B,COMPOR,
+              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
+     &                    K24B,K24B,K24B,CHNUMC,K24B,K24B,K24B,K24B,
+     &                    K24B,K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,
+     &                    CHELEM,LIGREL,BASE,K24B,K24B,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 482
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')

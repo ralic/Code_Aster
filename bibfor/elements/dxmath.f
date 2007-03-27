@@ -1,13 +1,14 @@
-      SUBROUTINE DXMATH(EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,INDITH,
-     &                  GRILLE,T2EV,T2VE,T1VE)
+      SUBROUTINE DXMATH(FAMI,EPAIS,DF,DM,DMF,NNO,PGL,MULTIC,INDITH,
+     &                  GRILLE,T2EV,T2VE,T1VE,NPG)
       IMPLICIT   NONE
-      INTEGER  NNO,MULTIC,INDITH
+      INTEGER  NNO,MULTIC,INDITH,NPG,NPGH
       REAL*8   DF(3,3),DM(3,3),DMF(3,3),DMC(3,2),DFC(3,2)
       REAL*8   PGL(3,3),CTOR,T2EV(4),T2VE(4),T1VE(9)
       LOGICAL  GRILLE
+      CHARACTER*4  FAMI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +63,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 YOUNG,NU,EPAIS,VALPAR,EXCENT
       REAL*8 XAB1(3,3),DH(3,3),ROT(3,3)
       REAL*8 DX,DY,DZ,S,C,NORM
-      REAL*8 PS,PJDX,PJDY,PJDZ,T,TINF,TSUP,TPG1,ALPHAT
+      REAL*8 PS,PJDX,PJDY,PJDZ,T,TPG1,ALPHAT
       REAL*8 ALPHA,BETA,R8DGRD,R8PREM
       REAL*8 YOUNG1,YOUNG2,DEUX
       CHARACTER*2 BL2,CODRET(56)
@@ -251,61 +252,11 @@ C
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
-C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH ('NNN','PTEMPER',8,ITAB1,IRET)
-      ITEMP1=ITAB1(1)
-      IF (ITEMP1.EQ.0) THEN
-        CALL TECACH ('NNN','PTEMPPR',8,ITAB2,IRET)
-        ITEMP2=ITAB2(1)
-        IF (ITEMP2.EQ.0) THEN
-          ITEMP = 0
-        ELSE
-          ITEMP = ITAB2(1)
-          ITEMP8 = ITAB2(8)
-        ENDIF
-      ELSE
-        ITEMP = ITAB1(1)
-        ITEMP8 = ITAB1(8)
-      ENDIF
-C
-      IF (ITEMP.NE.0) THEN
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        TPG1 = 0.D0
-        DO 20 I = 1,NNO
-          CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(ITEMP8+3*(I-1)))
-          T = ZR(ITEMP+3* (I-1))
-          TINF = ZR(ITEMP+1+3* (I-1))
-          TSUP = ZR(ITEMP+2+3* (I-1))
-          TPG1 = TPG1 + T + (TSUP+TINF-2*T)/6.D0
-   20   CONTINUE
-        VALPAR = TPG1/NNO
-      ELSE
-
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-      CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
-        IF (ITEMP.NE.0) THEN
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-          CALL TECACH('NNN','PTEMPSR',1,INST1,IRET)
-          IF (IRET.NE.0) THEN
-            CALL TECACH('NNN','PINSTPR',1,INST2,IRET)
-            VALPU(1) = ZR(INST2)
-          ELSE
-            VALPU(1) = ZR(INST1)
-          ENDIF
-          VALPU(2) = 0.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,VALPAR,IER)
-
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-        ELSE
-          NBPAR = 0
-          NOMPAR = ' '
-          VALPAR = 0.D0
-        END IF
-      END IF
+      NPGH=3
+      IF (GRILLE) NPGH=1
+      CALL MOYTEM(FAMI,NPG,NPGH,'+',VALPAR)
+      NBPAR = 1
+      NOMPAR = 'TEMP'
 C===============================================================
 
       IF (PHENOM.EQ.'ELAS') THEN

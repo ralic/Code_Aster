@@ -1,6 +1,6 @@
       SUBROUTINE TUSIEF(OPTION,NOMTE,NBRDDL,B,VIN,MAT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ C ......................................................................
       REAL*8 H,A,L,E,NU,BETA,CISAIL,G,OMEGA,DHK
       REAL*8 SINFI,FI,DEUXPI,R,R8PI,AT1,AT2,VPG(4),VNO(4)
       REAL*8 B(4,NBRDDL),C(4,4),ALPHA,TMOY1,TINF1,TSUP1
-      REAL*8 TEMPGM(4),TEMPGS(4),TEMPGI(4),TREF,HK,COE1
+      REAL*8 TREF,HK,COE1,TEMP
       REAL*8 TMOY(4),TINF(4),TSUP(4),SIGTH(2),XPG(4)
       REAL*8 PGL(3,3),VIN(NBRDDL),VOUT(4),MAT(4,NBRDDL)
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA
@@ -112,18 +112,9 @@ C     --- RECUPERATION DES ORIENTATIONS ---
         NOMRES(2) = 'NU'
         NOMRES(3) = 'ALPHA'
 
-        CALL TECACH('NNN','PTEMPER',8,ITAB,IRET)
-        ITEMP = ITAB(1)
-        IF (ITEMP.EQ.0) THEN
-          NBPAR = 0
-          NOMPAR = ' '
-          VALPAR = 0.D0
-        ELSE
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          CALL DXTPIF(ZR(ITEMP),ZL(ITAB(8)))
-          VALPAR = ZR(ITEMP)
-        END IF
+        CALL MOYTEM('RIGI',NPG,3,'+',VALPAR)
+        NBPAR = 1
+        NOMPAR = 'TEMP'
 
         CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
      &              VALRES,CODRET,'FM')
@@ -190,57 +181,6 @@ C        FIN DE LA CONSTRUCTION DE LA MATRICE DE COMPORTEMENT C
 
       ELSE IF (OPTION(1:14).EQ.'SIEF_ELGA_DEPL') THEN
 
-C===============================================================
-C        -- RECUPERATION DE LA TEMPERATURE :
-C        -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-        CALL TECACH('NNN','PTEMPER',8,ITAB,IRET)
-        ITEMP = ITAB(1)
-        IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-          DO 30 I = 1,NNO
-            CALL DXTPIF(ZR(ITEMP+3* (I-1)),ZL(ITAB(8)+3* (I-1)))
-            TMOY(I) = ZR(ITEMP+3* (I-1))
-            TINF(I) = ZR(ITEMP+3* (I-1)+1)
-            TSUP(I) = ZR(ITEMP+3* (I-1)+2)
-   30     CONTINUE
-        END IF
-C        -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-        CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
-        IF (IRET.EQ.0) THEN
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-          CALL JEVECH('PTEMPSR','L',IBID)
-          VALPU(1) = ZR(IBID)
-          VALPU(2) = 0.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TMOY1,IER)
-          VALPU(2) = -H/2.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TINF1,IER)
-          VALPU(2) = +H/2.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TSUP1,IER)
-          DO 40,I = 1,NNO
-            TMOY(I) = TMOY1
-            TINF(I) = TINF1
-            TSUP(I) = TSUP1
-   40     CONTINUE
-        END IF
-
-C         PASSAGE DE LA TEMPERATURE DES NOEUDS AUX POINTS DE GAUSS
-
-        DO 60,IGAU = 1,NPG
-          TEMPGI(IGAU) = 0.D0
-          TEMPGM(IGAU) = 0.D0
-          TEMPGS(IGAU) = 0.D0
-          DO 50,K = 1,NNO
-            HK = ZR(IVF-1+NNO* (IGAU-1)+K)
-            TEMPGI(IGAU) = HK*TINF(K) + TEMPGI(IGAU)
-            TEMPGM(IGAU) = HK*TMOY(K) + TEMPGM(IGAU)
-            TEMPGS(IGAU) = HK*TSUP(K) + TEMPGS(IGAU)
-   50     CONTINUE
-   60   CONTINUE
-
-        CALL JEVECH('PTEREF','L',JTREF)
-        TREF = ZR(JTREF)
-C===============================================================
-
         CALL JEVECH('PCONTRR','E',JOUT)
 
       ELSE
@@ -255,9 +195,12 @@ C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
       KPGS = 0
       SIGTH(1) = 0.D0
       SIGTH(2) = 0.D0
+
+      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
       DO 120 IGAU = 1,NPG
         IF (OPTION(1:14).EQ.'SIEF_ELGA_DEPL') THEN
-          COE1 = (TEMPGI(IGAU)+TEMPGS(IGAU)+TEMPGM(IGAU))/3.D0 - TREF
+          CALL MOYTPG('RIGI',IGAU,3,'+',TEMP)
+          COE1 = TEMP - TREF
           AT1 = (C(1,1)+C(1,2))*COE1*ALPHA
           AT2 = (C(2,1)+C(2,2))*COE1*ALPHA
         END IF

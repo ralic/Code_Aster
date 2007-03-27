@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -54,6 +54,7 @@ C
       PARAMETER    (             NBRES = 4 )
       REAL*8              VALRES(NBRES)
       CHARACTER*2    BL2, CODRES(NBRES)
+      CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
       REAL*8       UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
@@ -72,16 +73,13 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          VALRES(I) = ZERO
  10   CONTINUE
 C
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      IF ( ITEMPE .EQ. 0 ) THEN
-         NBPAR  = 0
-         NOMPAR = ' '
-         VALPAR = ZERO
-      ELSE
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-         VALPAR = 0.5D0*(ZR(ITEMPE)+ZR(ITEMPE+1))
-      ENDIF
+      FAMI = 'RIGI'
+      NPG = 3
+      IF (NOMTE.EQ.'MECA_POU_C_T') NPG = 2
+
+      CALL MOYTEM(FAMI,NPG,1,'+',VALPAR)
+      NBPAR  = 1
+      NOMPAR = 'TEMP'
 C
       BL2 = '  '
       CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,

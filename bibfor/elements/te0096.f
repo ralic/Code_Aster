@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,6 +85,7 @@ C DECLARATION VARIABLES LOCALES
 C
 C
       CHARACTER*2   CODRET
+      CHARACTER*4   FAMI
       CHARACTER*8   NOMPAR(3),TYPMOD(2)
       CHARACTER*16  COMPOR(4),OPRUPT,PHENOM
 
@@ -92,8 +93,8 @@ C
       REAL*8   DFDI(27),F(3,3),SR(3,3),SIGL(6),SIGIN(6),DSIGIN(6,3)
       REAL*8   EPS(6),EPSIN(6),DEPSIN(6,3),EPSP(6),DEPSP(6,3)
       REAL*8   EPSINO(36),EPSIPG(36),FNO(18),EPSNO(36)
-      REAL*8   THET,TREF,TG,TGDM(3),PROD,PROD1,PROD2,DIVT,VALPAR(3)
-      REAL*8   TCLA,TTHE,TFOR,TPLAS,TINI,POIDS,R,RBID
+      REAL*8   THET,TREF,TN(20),TGDM(3),PROD,PROD1,PROD2,DIVT
+      REAL*8   VALPAR(3),TCLA,TTHE,TFOR,TPLAS,TINI,POIDS,R,RBID
       REAL*8   P,PPG,DPDM(3),RP,ENERGI(2),RHO,OM,OMO
       REAL*8   DTDM(3,5),DER(6),DFDM(3,5),DUDM(3,4),DVDM(3,4),VEPSCP
       REAL*8   GRADDU(3,4),GRADTH(3,4),TEMSEG,DTEMSG(3),
@@ -108,7 +109,7 @@ C
      &         ECIN,PROD3,PROD4,NU,ACCELE(3)
 
       INTEGER  IPOIDS,IVF,IDFDE,IPOI1,IVF1,IDFDE1
-      INTEGER  ICOMP,IGEOM,ITEMPS,IDEPL,ITREF,ITEMP,IMATE,JCOOPG
+      INTEGER  ICOMP,IGEOM,ITEMPS,IDEPL,ITEMP,IMATE,JCOOPG
       INTEGER  IEPSR,IEPSF,ISIGI,IDEPI,ISIGM,IEPSP,IVARI
       INTEGER  IFORC,IFORF,ITHET,IGTHET,IROTA,IPESA,IER
       INTEGER  IVITES,IACCEL,J1,J2
@@ -125,6 +126,7 @@ C INITIALISATIONS
 C =====================================================================
       CALL JEMARQ()
 
+      FAMI = 'RIGI'
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
 
       EPSI   = R8PREM()
@@ -133,16 +135,17 @@ C =====================================================================
       AXI    = .FALSE.
       CP     = .FALSE.
       EPSINI = .FALSE.
+      TYPMOD(2) = ' '
 
 
       IF (LTEATT(' ','AXIS','OUI')) THEN
-        TYPMOD(1) = 'AXIS    '
+        TYPMOD(1) = 'AXIS'
         AXI = .TRUE.
       ELSEIF (NOMTE(3:4).EQ.'CP') THEN
-        TYPMOD(1) = 'C_PLAN  '
+        TYPMOD(1) = 'C_PLAN'
         CP  = .TRUE.
       ELSEIF (NOMTE(3:4).EQ.'DP') THEN
-        TYPMOD(1) = 'D_PLAN  '
+        TYPMOD(1) = 'D_PLAN'
       ENDIF
 C
 C NOMBRE DE DERIVEES SECONDES
@@ -196,8 +199,6 @@ C =====================================================================
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL JEVECH('PTEREF' ,'L',ITREF)
-      CALL JEVECH('PTEMPER','L',ITEMP)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PCOMPOR','L',ICOMP)
       MATCOD = ZI(IMATE)
@@ -268,7 +269,6 @@ C LOI DE COMPORTEMENT
       ENDIF
 
 C TREF PAR MAILLE ET DEFORMATION INITIALE PAR NOEUD
-      TREF  = ZR(ITREF)
       DO 20 I=1,NCMP*NNO
         EPSINO(I) = 0.D0
 20    CONTINUE
@@ -391,6 +391,16 @@ C
       ENDIF
 
 C ======================================================================
+C CALCUL DE LA TEMPERATURE AUX NOEUDS ET RECUPERATION DE LA TEMPERATURE
+C DE REFERENCE
+C ======================================================================
+
+      DO 645 KP = 1,NNO
+        CALL RCVARC('F','TEMP','+','NOEU',KP,1,TN(KP),IRET)
+  645 CONTINUE
+      CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IRET)
+
+C ======================================================================
 C BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 C ======================================================================
 
@@ -398,7 +408,6 @@ C ======================================================================
 
 C INITIALISATIONS
         L   = (KP-1)*NNO
-        TG  = 0.D0
         PPG = 0.D0
         TEMSEG = 0.D0
         DO 220 I=1,3
@@ -465,11 +474,10 @@ C   DE LA TEMPERATURE AUX POINTS DE GAUSS (TG) ET SON GRADIENT (TGDM)
           DER(1) = DFDI(I)
           DER(2) = DFDI(I+NNO)
           DER(4) = ZR(IVF+L+I1)
-          TG    = TG + ZR(ITEMP+I1)*DER(4)
           DO 310 J=1,NDIM
             IJ1 = NDIM*I1+J
             IJ = IJ1 - 1
-            TGDM(J)     = TGDM(J)   + ZR(ITEMP+I1)*DER(J)
+            TGDM(J)     = TGDM(J)   + TN(I)*DER(J)
             DO 300 K=1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPL+IJ)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+IJ)*DER(K)
@@ -751,7 +759,7 @@ C =======================================================
         IF (INCR) THEN
 
 C EN PLASTICITE
-          CALL NMPLRU(NDIM,TYPMOD,MATCOD,COMPOR,TG,TREF,PPG,
+          CALL NMPLRU(FAMI,KP,1,'+',NDIM,TYPMOD,MATCOD,COMPOR,PPG,
      &                EPS,EPSP,RP,ENERGI)
           DO 435 I = 1,3
             SIGL(I)= ZR(ISIGM+NCMP*(KP-1)+I-1)
@@ -765,7 +773,7 @@ C ET DE CELLE DE L'ENERGIE LIBRE (DENERG).
           CRIT(1) = 300
           CRIT(2) = 0.D0
           CRIT(3) = 1.D-3
-          CALL NMELNL(NDIM,TYPMOD,MATCOD,COMPOR,CRIT,TG,TREF,
+          CALL NMELNL(FAMI,KP,1,'+',NDIM,TYPMOD,MATCOD,COMPOR,CRIT,
      &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI,DERIVL,
      &                TEMSEG,DEPS,DENERG,DSIGL)
         ENDIF

@@ -1,7 +1,7 @@
       SUBROUTINE NMVCVE(MATE,LISCHA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,75 +25,6 @@ C ======================================================================
       CHARACTER*24 MATE
 
 
-C ----------------------------------------------------------------------
-C     VERIFICATION DE LA DEPENDANCE DES MATERIAUX EN TEMP/HYDR/SECH
-C ----------------------------------------------------------------------
-C  IN/JXIN MATE   SD MATERIAU
-C  IN/JXIN LISCHA SD L_CHARGES
-C ----------------------------------------------------------------------
-C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 
-      CHARACTER*32       JEXNUM
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-
-
-      INTEGER      NCHAR, ICHAR, IERD, IBID, JCHAR, JINF, IRET
-      CHARACTER*8  REPK
-      LOGICAL      EXI,LBID
-
-
-      CALL JEVEUO(LISCHA // '.LCHA','L',JCHAR)
-      CALL JEVEUO(LISCHA // '.INFC','L',JINF)
-      NCHAR = ZI(JINF)
-
-
-C --- ON REGARDE SI LE MATERIAU DEPEND DE LA TEMPERATURE
-
-      CALL DISMOI('F','ELAS_F_TEMP',MATE,'CHAM_MATER',IBID,REPK,IERD)
-      IF ( REPK .EQ. 'OUI' ) THEN
-        DO 11,ICHAR = 1,NCHAR
-          CALL DISMOI('F','EXI_TEMPER',ZK24(JCHAR-1+ICHAR)(1:8),
-     &                'CHARGE',IBID,REPK,IERD)
-          IF(REPK .NE. 'NON') GOTO 12
-   11   CONTINUE
-        CALL U2MESS('A','ALGORITH8_62')
-   12   CONTINUE
-
-        CALL EXISD('CHAMP_GD',MATE(1:8)//'.TEMPE_REF',IRET)
-        IF (IRET.EQ.0) CALL U2MESS('A','ALGORITH_58')
-      ENDIF
-
-
-C --- ON REGARDE SI LE MATERIAU DEPEND DE L HYDRATATION
-
-      CALL DISMOI('F','ELAS_F_HYDR',MATE,'CHAM_MATER',IBID,REPK,IERD)
-      IF ( REPK .EQ. 'OUI' ) THEN
-        CALL NMVCD2('HYDR',MATE,EXI,LBID)
-        IF (.NOT.EXI) CALL U2MESS('A','ALGORITH8_63')
-      ENDIF
-
-
-C --- ON REGARDE SI LE MATERIAU DEPEND DU SECHAGE
-      CALL DISMOI('F','ELAS_F_SECH',MATE,'CHAM_MATER',IBID,REPK,IERD)
-      IF ( REPK .EQ. 'OUI' ) THEN
-        CALL NMVCD2('SECH',MATE,EXI,LBID)
-        IF (.NOT.EXI) CALL U2MESS('A','ALGORITH8_64')
-   32   CONTINUE
-      ENDIF
-
+      CALL ASSERT(.FALSE.)
       END

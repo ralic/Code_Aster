@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -10,7 +10,7 @@
 #
 # THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
 # WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSFE. SEE THE GNU    
 # GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
 #
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
@@ -234,11 +234,16 @@ ACIER2=DEFI_MATERIAU(
 CM2=AFFE_MATERIAU( 
                          MAILLAGE=MAIL,   
                         AFFE=_F( TOUT = 'OUI',MATER = ACIER2,
-                              TEMP_REF = 900.),
-                        AFFE_VARC=_F(TOUT='OUI',
+                              ),
+                        AFFE_VARC=(_F(TOUT='OUI',
                                      EVOL=TEMPE,
                                      NOM_VARC='M_ACIER',
                                      NOM_CHAM='META_ELNO_TEMP'),
+                                  _F(TOUT='OUI',
+                                     EVOL=TEMPE,
+                                     NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',
+                                     VALE_REF=900),),
 
          )
 
@@ -249,7 +254,6 @@ MO=AFFE_MODELE(
 
 CH_FO=AFFE_CHAR_MECA( 
             MODELE=MO,
-            TEMP_CALCULEE=TEMPE,
             FORCE_CONTOUR=_F(  MAILLE = 'M3',  FY = 1.),DDL_IMPO=(
                  _F(  NOEUD = 'N4',  DY = 0.),
                  _F(  NOEUD = 'N2',  DY = 0.),

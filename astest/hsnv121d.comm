@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS COQUES 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,13 +75,6 @@ ACIER_T=DEFI_MATERIAU(
               TRACTION=_F(  SIGM = COU_TRAC)
              )
 
-CHP_MATT=AFFE_MATERIAU(
-               MAILLAGE=MA,
-                   AFFE=_F(
-               TOUT = 'OUI',
-               MATER = ACIER_T,
-               TEMP_REF = 20.)
-             )
 
 L_INST=DEFI_LIST_REEL(
               DEBUT=0.0,INTERVALLE=(
@@ -136,10 +129,19 @@ TEMP=CREA_RESU(
                CHAM_GD = CHP_TEMP)
              )
 
-CHR_TEMP=AFFE_CHAR_MECA(
-                      MODELE=MO,
-               TEMP_CALCULEE=TEMP
-             )
+TEMPER=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARAC, EVOL_THER = TEMP, ),)
+
+
+CHP_MATT=AFFE_MATERIAU(
+               MAILLAGE=MA,
+                   AFFE=_F(
+               TOUT = 'OUI',
+               MATER = ACIER_T,
+               ),
+               AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPER,
+               NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20.0),)
+
 
 CHR_LIAI=AFFE_CHAR_MECA(
               MODELE=MO,DDL_IMPO=(
@@ -160,8 +162,7 @@ VT=STAT_NON_LINE(
                          CARA_ELEM=CARAC,
                         CHAM_MATER=CHP_MATT,EXCIT=(
                              _F(
-                CHARGE = CHR_LIAI), _F(
-                CHARGE = CHR_TEMP)),
+                CHARGE = CHR_LIAI), ),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_ISOT_TRAC',
                 DEFORMATION = 'PETIT_REAC'),
@@ -187,7 +188,6 @@ VT=STAT_NON_LINE( reuse=VT,
                          CARA_ELEM=CARAC,EXCIT=(
                              _F(
                 CHARGE = CHR_LIAI), _F(
-                CHARGE = CHR_TEMP), _F(
                 CHARGE = CHR_TRAC,
                 FONC_MULT = F_CHAR,
                 TYPE_CHARGE = 'DIDI')),

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,13 +52,16 @@ C
       REAL*8       PGL(3,3), FE(14), MAT(105)
       REAL*8       Q(14), QQ(14), BSM(14,14), DE(14)
       CHARACTER*2  CODRET(3)
+      CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR(3), NOMRES(3)
 
       REAL*8       KENDOG,KDESSI,SECH,HYDR,INSTAN
 C     ------------------------------------------------------------------
       ZERO = 0.0D0
       NNO   = 2
+      NPG   = 3
       NC    = 7
+      FAMI = 'RIGI'
 C     ------------------------------------------------------------------
 C
 C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
@@ -91,16 +94,9 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 C
 C     --- LE MATERIAU ---
       CALL JEVECH('PMATERC','L',LMATE)
-      CALL TECACH('NNN','PTEMPER',1,ITEMPE,IRET)
-      IF ( ITEMPE .EQ. 0 ) THEN
-         NBPAR     = 0
-         NOMPAR(1) = ' '
-         VALPAR(1) = ZERO
-      ELSE
-         NBPAR     = 1
-         NOMPAR(1) = 'TEMP'
-         VALPAR(1) = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-      ENDIF
+
+      NBPAR     = 1
+      NOMPAR(1) = 'TEMP'
 C
 C     ------------------------------------------------------------------
 C
@@ -153,8 +149,9 @@ C        FIN CHAR_MECA_PESA_R
          NOMRES(1) = 'E'
          NOMRES(2) = 'NU'
          NOMRES(3) = 'ALPHA'
-         CALL RCVALA(ZI(LMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,NOMRES,
-     &                                     VALRES,CODRET, 'FM' )
+         CALL MOYTEM(FAMI,NPG,1,'+',VALPAR)
+         CALL RCVALA(ZI(LMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,
+     &                                NOMRES,VALRES,CODRET, 'FM' )
          E      = VALRES(1)
          NU     = VALRES(2)
          G      = E / ( 2.0D0 * ( 1.0D0 + NU ) )
@@ -178,16 +175,13 @@ C        --- REMPLISSAGE DE LA MATRICE CARREE ---
 
          IF ( OPTION.EQ.'CHAR_MECA_TEMP_R') THEN
 C           --- TEMPERATURE DE REFERENCE ---
-            CALL JEVECH('PTEREF','L',LTREF)
-C           --- TEMPERATURE EFFECTIVE ---
-            CALL JEVECH('PTEMPER','L',LTEMP)
-            TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
+            CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
+            TEMP = VALPAR(1) - TREF
             F = ALPHA * TEMP
 C
          ELSEIF ( OPTION.EQ.'CHAR_MECA_SECH_R') THEN
 C           --- TEMPERATURE EFFECTIVE ---
-            CALL JEVECH('PTEMPER','L',LTEMP)
-            TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
+            CALL MOYTEM(FAMI,NPG,1,'+',TEMP)
 C           ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
             CALL JEVECH('PSECHER','L',ISECH)
 C           ---- RECUPERATION DU SECHAGE DE REFERENCE
@@ -202,7 +196,6 @@ C           ---- RECUPERATION DE L'INSTANT
                INSTAN = 0.D0
             ENDIF
             NOMPAR(1) = 'TEMP'
-            VALPAR(1) = TEMP
             NOMPAR(2) = 'INST'
             VALPAR(2) = INSTAN
             NOMPAR(3) = 'SECH'
@@ -218,8 +211,6 @@ C           DEPLACEMENT INDUIT PAR LE SECHAGE
 
          ELSEIF ( OPTION.EQ.'CHAR_MECA_HYDR_R') THEN
 C           --- TEMPERATURE EFFECTIVE ---
-            CALL JEVECH('PTEMPER','L',LTEMP)
-            TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
 C           RECUPERATION DU CHAMP D HYDRATATION SUR L'ELEMENT
             CALL JEVECH('PHYDRER','L',IHYDR)
             HYDR = ZR(IHYDR)
@@ -231,7 +222,6 @@ C           RECUPERATION DE L'INSTANT
             INSTAN = 0.D0
             ENDIF
             NOMPAR(1) = 'TEMP'
-            VALPAR(1) = TEMP
             NOMPAR(2) = 'INST'
             VALPAR(2) = INSTAN
             NOMPAR(3) = 'HYDR'

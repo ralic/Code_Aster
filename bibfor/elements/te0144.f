@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
       CHARACTER*16 CH16
       REAL*8       UL(12), UG(12), PGL(3,3), KLC(12,12), KLV(78)
       REAL*8       FL(12), FE(12), PGL1(3,3), PGL2(3,3)
-      REAL*8       XFLY, XFLZ, XSIY, XSIZ,TRIGOM,X
+      REAL*8       XFLY, XFLZ, XSIY, XSIZ,TRIGOM,X,R8VIDE
 C     ------------------------------------------------------------------
       DATA NOMRES / 'E', 'NU', 'ALPHA'/
 C     ------------------------------------------------------------------
@@ -79,19 +79,16 @@ C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 C
       CALL JEVECH ( 'PMATERC', 'L', LMATER )
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      IF ( ITEMPE .EQ. 0 ) THEN
-         NBPAR  = 0
-         NOMPAR = ' '
-         VALPAR = ZERO
-      ELSE
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-         VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-      ENDIF
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,
+C      IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
+        NPG = 2
+C      ELSE
+C        NPG = 3
+C      ENDIF
+      CALL MOYTEM('RIGI',NPG,1,'+',TEMP)
+
+      CALL RCVALA(ZI(LMATER),' ','ELAS',1,'TEMP',TEMP,
      &                                2,NOMRES,VALRES,CODRES,'FM')
-      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,
+      CALL RCVALA(ZI(LMATER),' ','ELAS',1,'TEMP',TEMP,
      &                         1,NOMRES(3),VALRES(3),CODRES(3),'  ')
       IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
       E      = VALRES(1)
@@ -157,14 +154,9 @@ C     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
           DO 40 I = 1 , 12
              UG(I) = ZERO
  40       CONTINUE
-C         - CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
-C           TEMPERATURE DE REFERENCE
-            CALL JEVECH('PTEREF','L',LTREF)
-C
-C           TEMPERATURE EFFECTIVE
-            CALL JEVECH('PTEMPER','L',LTEMP)
-C
-            TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
+          CALL MOYTEM('RIGI',NPG,1,'+',TEMP)
+          CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+          TEMP = TEMP-TREF
 C
             IF ( TEMP .NE. ZERO ) THEN
                F = ALPHAT * TEMP
@@ -186,6 +178,7 @@ C              --- CALCUL DES FORCES INDUITES ---
                      FL(I+6) = FL(I+6) - KLC(I+6,J+6) * UG(J+6)
  22               CONTINUE
  20            CONTINUE
+ 21            CONTINUE
             ENDIF
       ENDIF
 C

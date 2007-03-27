@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 20/03/2002   AUTEUR MJBHHPE J.L.FLEJOU 
+%& MODIF OPTIONS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ OPTION__
         PCONTRR  SIEF_R
         PEFFORR  SIEF_R
         PMATERC  ADRSJEVE
-        PTEMPER  TEMP_R
+        PVARCPR  VARI_R
         PDEPLAR  DEPL_R
         PHARMON  HARMON
         PNBSP_I  NBSP_I

@@ -1,11 +1,11 @@
          SUBROUTINE PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
-     &                       CRIT, TEMPD, TEMPF, TREF, EPSDT,
+     &                       CRIT, EPSDT,
      &                       DEPST, SIGD, VIND, OPT, ELGEOM, SIGF,
      &                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,9 +111,6 @@ C                                 N = NOMBRE DE PALIERS
 C               ELGEOM  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
-C               TEMPD   TEMPERATURE A T
-C               TEMPF   TEMPERATURE A T+DT
-C               TREF    TEMPERATURE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -199,6 +196,7 @@ C
         CHARACTER*8     NOMAIL
         CHARACTER*(*)   FAMI
         REAL*8          PC, PT, FC, FT, DFCDLC, DFTDLT, KUC, KUT, KE
+        REAL*8          R8V,R8VIDE
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
         COMMON /ECRI/   NOMAIL
@@ -206,6 +204,7 @@ C       ----------------------------------------------------------------
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 C
+        R8V=R8VIDE()
         IRTETI = 0
         ITMAX    = INT(CRIT(1))
         TOLER    =     CRIT(3)
@@ -217,6 +216,11 @@ C        LOI      = COMP(1)
         NSEUI3   = 0
         NSEUI4   = 0
         NOMAIL   = ' '
+
+        CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
+        CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
+        CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+
 C
 C --    OPTION SUPPRIMEE CAR TYPMA EST IMPOSE SUIVANT QUE L'ON EST EN
 C --    PLASTCITE OU VISCOPLASTICITE. TYPMA EST DEFINI DANS LCMATE
@@ -245,8 +249,8 @@ C
 C
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C
-        CALL LCDEDI ( NMAT,  MATERD, MATERF, TEMPD, TEMPF, TREF,
-     &                DEPST, EPSDT, DEPS,   EPSD )
+        CALL LCDEDI ( FAMI, KPG, KSP, NMAT,  MATERD, MATERF,R8V,R8V,
+     &                R8V, DEPST, EPSDT, DEPS,   EPSD )
 C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C

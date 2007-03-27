@@ -1,6 +1,6 @@
       SUBROUTINE TE0342(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       CHARACTER*2  CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
-      REAL*8       NU
+      REAL*8       NU, TPG
       REAL*8       B(7,14)
       REAL*8       PGL(14,14), DEPL(14), DEPGLO(14)
       REAL*8       EPSGEN(7), SIGGEN(3,7)
@@ -80,19 +80,17 @@ C
           VALRES(I) = ZERO
    10 CONTINUE
 C
-C --- RECUPERATION (EVENTUELLEMENT) DE LA TEMPERATURE :
+C --- RECUPERATION DE LA TEMPERATURE :
 C     -----------------------------------------------
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-C
-      IF ( ITEMPE .EQ. 0 ) THEN
-         NBPAR  = 0
-         NOMPAR = ' '
-         VALPAR = ZERO
-      ELSE
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-         VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-      ENDIF
+      NPG = 3
+      DO 5 KP=1,NPG
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+        VALPAR = VALPAR + TPG
+    5 CONTINUE
+      VALPAR = VALPAR/NPG
+
+      NBPAR  = 1
+      NOMPAR = 'TEMP'
 C
 C --- RECUPERATION ET INTERPOLATION DES CARACTERISTIQUES MATERIAUX :
 C     ------------------------------------------------------------

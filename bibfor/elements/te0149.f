@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,16 +68,15 @@ C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 C
       CALL JEVECH ( 'PMATERC', 'L', LMATER )
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      IF ( ITEMPE .EQ. 0 ) THEN
-         NBPAR  = 0
-         NOMPAR = ' '
-         VALPAR = ZERO
-      ELSE
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-         VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-      ENDIF
+C      IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
+        NPG = 2
+C      ELSE
+C        NPG = 3
+C      ENDIF
+      CALL MOYTEM('RIGI',NPG,1,'+',VALPAR)
+      NOMPAR = 'TEMP'
+      NBPAR = 1
+
       CALL JEVECH ( 'PSUROPT' , 'L' , LOPT )
       SUROPT = ZK24(LOPT)
       IF ( SUROPT.EQ. 'MASS_FLUI_STRU' ) THEN

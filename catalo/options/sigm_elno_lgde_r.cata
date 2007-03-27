@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 27/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+%& MODIF OPTIONS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,9 +25,9 @@ OPTION__
         PMATERC  ADRSJEVE
         PALPHAR  NEUT_R
         PNUMCOR  NUMC_I
-        PTEMPER  TEMP_R
+        PVARCPR  VARI_R
         PPHASRR  VARI_R
-        PTEREF   TEMP_R
+        PVARCRR  VARI_R
         PCACOQU  CACOQU
         PCAGNPO  CAGNPO
         PCAORIE  CAORIE

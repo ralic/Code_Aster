@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,8 +37,6 @@ DILAT   = 1.E-5
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = YOUNG,  NU = POISSON,  ALPHA = DILAT) )
 
-CHMAT=AFFE_MATERIAU( MAILLAGE=MA, 
-                     AFFE=_F(  GROUP_MA = 'STOT', MATER = MAT, TEMP_REF = 0.))
 
 # ------------------------------------------------------------------
 
@@ -77,10 +75,16 @@ TEMP=CREA_RESU( OPERATION='AFFE',
                       _F( CHAM_GD=T_FIN1,
                           INST=1.0,      ), ), );
 
+TEMPER=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MOD, CARA_ELEM=CARA, EVOL_THER = TEMP, ),)
+
+CHMAT=AFFE_MATERIAU( MAILLAGE=MA, 
+                     AFFE=_F(  GROUP_MA = 'STOT', MATER = MAT, ),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=0.0),)
 # ------------------------------------------------------------------
 
 CH1=AFFE_CHAR_MECA(  MODELE=MOD,
-                  TEMP_CALCULEE=TEMP,
                  DDL_IMPO=_F(  GROUP_NO = ('AB', 'BC', 'CD', 'DA',),
                 DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)
                     )

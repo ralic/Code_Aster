@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF reca_calcul_aster Macro  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -510,7 +510,7 @@ class CALCUL_ASTER:
                 except Exception, err:
                    ier=1
                    message = """Impossible de recuperer les resultats de calcul esclave (lecture des tables)! 
-Le calcul esclave n'a pas du se terminer correctement (ajouter un repertoire en Resultat avec 
+Le calcul esclave n'a pas du se terminer correctement (ajouter un repertoire dans ASTK en Resultat avec 
 le type repe et voir l'output du fichier esclave dans ce repertoire.
 Message:
 """
@@ -685,33 +685,9 @@ Message:
      # Calcul des derivees
      self.A_nodim = self.Simul.sensibilite(self, self.L, self.L_deriv_sensible, val, self.PARA_DIFF_FINI)
 
-#      print 50*'+'
-#      print self.A_nodim
-#      print 50*'+'
-#      print 50*'+'
-#      print 'self.L=', self.L
-#      print 50*'+'
-#      print 'self.reponses=', self.reponses
-#      print 50*'+'
-#      print 'self.resu_exp=', self.Simul.resu_exp
-#      print 50*'+'
-#      print 'self.L_J=', self.L_J
-#      print 50*'+'
-#      print 'self.erreur=', self.erreur
-#      print 50*'+'
-
-#     A_nodim = copy.copy(self.A_nodim)
      self.A = self.Dim.adim_sensi( copy.copy(self.A_nodim) )
 #     self.residu = self.reca_algo.test_convergence(self.gradient_init, self.erreur, self.A, Numeric.zeros(len(self.gradient_init),Numeric.Float) )
      self.residu = 0.
-
-#      print 50*'+'
-#      print self.A_nodim
-#      print 50*'+'
-#      print self.A
-#      print 50*'+'
-#      print "Numeric.sum(self.A_nodim,0)=", Numeric.sum(self.A_nodim,0)
-#      print "Numeric.sum(self.A,0)=", Numeric.sum(self.A,0)
 
      if self.vector_output:
         return self.erreur, self.residu, self.A_nodim, self.A
@@ -729,9 +705,6 @@ Message:
               norme_A       += self.A[l,c] * self.A[l,c]
            self.norme_A_nodim[0,c] = math.sqrt( norme_A_nodim ) 
            self.norme_A[0,c] = math.sqrt( norme_A )
-
-#         print self.norme_A_nodim
-#         print self.norme_A
 
         return self.norme, self.residu, self.norme_A_nodim, self.norme_A
 
@@ -772,13 +745,6 @@ Message:
            UTMESS('I','MACR_RECAL',txt)
         return norme
 
-#         if self.error_output:
-#            print "erreur:", erreur
-#            return erreur
-#         else:
-#            print "norme:", norme
-#            return norme
-
 
 
   # ------------------------------------------------------------------------------
@@ -794,7 +760,6 @@ Message:
      L_J, erreur = self.Simul.multi_interpole(self.L, self.reponses)
      grad = Numeric.dot(Numeric.transpose(A),erreur) 
      if debug: print 'grad=', grad
-     print 'grad=', grad
      return grad
 
 
@@ -804,7 +769,6 @@ Message:
      """
         Creation du repertoire temporaire d'execution du calcul esclace
      """
-
 
      # Creation du repertoire temporaire
      tmp_macr_recal = os.getcwd() + os.sep + 'tmp_macr_recal'
@@ -849,8 +813,6 @@ Message:
 
        for dico in l_tmp:
 
-         print dico
-
          # répertoires
          if dico['isrep']:
 
@@ -894,7 +856,8 @@ Message:
            # Tous les autres fichiers en Donnees
            elif lab == 'data':
               if dico['type'] not in ('exec', 'ele'):
-                 dico['path'] = os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
+                 if dico['ul']   != '0':   # Traite le cas des sources python sourchargees
+                    dico['path'] = os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
 
            # sinon on garde la ligne telle quelle
        setattr(prof, lab, l_fr)
@@ -902,7 +865,7 @@ Message:
      # Ecriture du nouveau fichier export
      prof.WriteExportTo(self.new_export)
 
-#     os.system('cp ' + self.new_export + ' /tmp')
+     os.system('cp ' + self.new_export + ' /tmp')
 
   # --FIN CLASSE  ----------------------------------------------------------------------------
 

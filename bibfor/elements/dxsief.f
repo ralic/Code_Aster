@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,22 +51,24 @@ CCC      PARAMETER (NNO=4)  POUR LES DKQ
 C
 C --------------------------------------------------------------------
       INTEGER  NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG, IRET, ITEMP,
+      INTEGER  I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG, IRET,
      &         IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8), JTREF, NBPAR
       REAL*8   DISTN, ROT(9), DH(9), D(4,4), REPERE(7), INST
       REAL*8   C,S,PI,PHI,EPSL(4),R8PI
-      REAL*8   HIC, H, ZIC, ZMIN, VALPU(2), TINF, TMOY, TSUP
-      REAL*8   ZERO, DEUX, HYDR, SECH, TEMPG, SIG, C1, C2, C3
-      REAL*8   TREF, ALPHA,E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH
+      REAL*8   HIC, H, ZMIN,ZIC, VALPU(2), TINF, TMOY, TSUP,TREF
+      REAL*8   ZERO, DEUX, TEMPG, SIG, C1, C2, C3
+      REAL*8   ALPHA,E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH
       REAL*8   EPS2D(6), KHI(3), DEPF(12), DEPM(8)
       REAL*8   BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
       REAL*8   CARAT3(21),CARAQ4(25),QSI,ETA,JACOB(5)
-      LOGICAL      TEMPNO, GRILLE, DKT, DKQ
+      LOGICAL      TEMPNO, GRILLE, DKT, DKQ ,LTEATT
       CHARACTER*2  CODRET
+      CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR(2)
 C     ------------------------------------------------------------------
 C
-      CALL ELREF5(' ','RIGI',NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
+      FAMI = 'RIGI'
+      CALL ELREF5(' ',FAMI,NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,
      &                                         IVF,IDFDX,IDFD2,JGANO)
 C
       ZERO = 0.0D0
@@ -74,9 +76,9 @@ C
 C
       DKT    = .FALSE.
       DKQ    = .FALSE.
-      GRILLE = .FALSE.
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
+      GRILLE= LTEATT(' ','GRILLE','OUI')
+
+      IF (GRILLE) THEN
       ELSEIF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
      &         NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
         DKT = .TRUE.
@@ -88,18 +90,8 @@ C
         CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
 C
-      CALL TECACH ('ONN','PTEREF',8,ITAB,IRET)
-      JTREF = ITAB(1)
-      IF (IRET.EQ.0) THEN
-         TREF = ZR(JTREF)
-      ELSE
-         TREF = ZERO
-      END IF
 C
-C --- VARIABLE D'HYDRATATION ET DE SECHAGE
-      HYDR = ZERO
-      SECH = ZERO
-C
+
       REPERE(1) = ZERO
       REPERE(2) = ZERO
       REPERE(3) = ZERO
@@ -135,51 +127,6 @@ C
          INST = ZR(IBID)
       ELSE
          INST = ZERO
-      END IF
-
-      NBPAR = 0
-      NOMPAR(1) = ' '
-      NOMPAR(2) = ' '
-      VALPU(1) = ZERO
-      VALPU(2) = ZERO
-
-C --- RECUPERATION DE LA TEMPERATURE :
-C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-C        -----------------------------------------
-      CALL TECACH ('ONN','PTEMPER',8,ITAB,IRET)
-      ITEMP = ITAB(1)
-      IF (IRET.EQ.0.OR.IRET.EQ.3) THEN
-        TEMPNO = .TRUE.
-        NBPAR = 1
-        NOMPAR(1) = 'TEMP'
-C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
-C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
-C          ------------------------------------------------------------
-        TINF = ZERO
-        TMOY = ZERO
-        TSUP = ZERO
-        DO 10 , INO = 1,NNOEL
-          CALL DXTPIF(ZR(ITEMP+3*(INO-1)),ZL(ITAB(8)+3*(INO-1)))
-          TMOY = TMOY + ZR(ITEMP-1+3*(INO-1)+1)/DBLE(NNOEL)
-          TINF = TINF + ZR(ITEMP-1+3*(INO-1)+2)/DBLE(NNOEL)
-          TSUP = TSUP + ZR(ITEMP-1+3*(INO-1)+3)/DBLE(NNOEL)
- 10     CONTINUE
-        C1 = TMOY
-        C2 = (TSUP-TINF) / H
-        C3 = DEUX*(TINF+TSUP-DEUX*TMOY) / (H*H)
-
-C     2- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-C        -------------------------------------------------------
-      ELSE
-        CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
-        IF (IRET.EQ.0) THEN
-          TEMPNO = .FALSE.
-          NBPAR = 2
-          NOMPAR(1) = 'INST'
-          NOMPAR(2) = 'EPAIS'
-        ELSE
-          CALL U2MESS('F','ELEMENTS_37')
-        END IF
       END IF
 
 C     -- PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
@@ -238,7 +185,6 @@ C       --------------------------------
 
             ICPG = NBCON*NPGH*NBCOU*(IPG-1) + NBCON*NPGH*(ICOU-1) +
      &                                        NBCON*(IGAUH-1)
-
 C       -- COTE DES POINTS D'INTEGRATION
 C       --------------------------------
             IF (IGAUH.EQ.1) THEN
@@ -249,19 +195,8 @@ C       --------------------------------
               ZIC = ZMIN + HIC + (ICOU-1)*HIC
             END IF
 
-C         -- CALCUL DE LA TEMPERATURE SUR LA COUCHE :
-C         -------------------------------------------
-            IF ( TEMPNO ) THEN
-              TEMPG = C3*ZIC*ZIC + C2*ZIC + C1
-              VALPU(1) = TEMPG
-            ELSE
-              VALPU(1) = INST
-              VALPU(2) = ZIC
-              CALL FOINTE('FM',ZK8(ITEMP),NBPAR,NOMPAR,VALPU,TEMPG,IRET)
-            END IF
-
-            CALL RCVALA(MATER,' ', 'ELAS', NBPAR,NOMPAR,VALPU,
-     &                                   1,'ALPHA',ALPHA,CODRET, '  ' )
+            CALL RCVALB(FAMI,IPG,IGAUH,'+',MATER,' ', 'ELAS', 0,' ',
+     &                             0.D0,1,'ALPHA',ALPHA,CODRET, '  ' )
             IF ( CODRET.NE.'OK' ) ALPHA = ZERO
 
 C         -- CALCUL DE EPS2D
@@ -276,6 +211,9 @@ C         ------------------
 C
 C         -- INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
 C         ----------------------------------------------------
+            CALL RCVARC('F','TEMP','+','RIGI',IPG,IGAUH,TEMPG,IRET)
+            CALL RCVARC('F','TEMP','REF','RIGI',IPG,IGAUH,TREF,IRET)
+
             EPSTH(1) = ALPHA*(TEMPG-TREF)
             EPSTH(2) = ALPHA*(TEMPG-TREF)
             EPSTH(3) = ZERO
@@ -288,8 +226,8 @@ C
                EPSG(2)=EPS2D(2)-EPSTH(2)
                EPSG(3)=EPS2D(4)
                CALL INSDRF(EPSG,PHI,EPSL)
-               CALL RCVALA(MATER,' ','ELAS',1,'TEMP',TEMPG,
-     &                     1,'E',E,CODRET,'FM')
+               CALL RCVALB(FAMI,IPG,IGAUH,'+',MATER,' ','ELAS',0,' ',
+     &                     0.D0,1,'E',E,CODRET,'FM')
                SIGL(1)=E*EPSL(1)
                SIGL(2)=E*EPSL(2)
                SIGL(3)=0.D0
@@ -306,7 +244,7 @@ C
 
 C              -- CALCUL DE LA MATRICE DE HOOKE
 C              --------------------------------
-               CALL DMATCP ( MATER, TEMPG, HYDR, SECH, INST, REPERE, D )
+               CALL DMATCP ( 'RIGI',MATER, INST,'+',IPG,IGAUH,REPERE,D )
 
 C              -- CALCUL DE LA CONTRAINTE AU POINT D'INTEGRATION COURANT
 C              ---------------------------------------------------------

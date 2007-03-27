@@ -1,4 +1,4 @@
-# MODIF  DATE 07/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,18 +37,6 @@ ACIER=DEFI_MATERIAU(
             ELAS=_F(  E = 2.E11,   NU = 0.0, ALPHA = 1.E-5,   ),
             ECRO_LINE=_F( D_SIGM_EPSI = 2.E10,      SY = 2.E08, )
                           )
-
-#
-# -------------------------------------------------
-# AFFECTATION DES MATERIAUX
-# -------------------------------------------------
-#
-MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
-                          AFFE=_F(  GROUP_MA = 'GEOB',
-                                 MATER = ACIER,
-                                 TEMP_REF = 50.,
-                               )
-                      )
 
 #
 # -------------------------------------------------
@@ -204,13 +192,27 @@ LATEMP=CREA_RESU(
            _F( CHAM_GD = T11,  INST = 11.,))
                  )
 
+TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=LEMOD, CARA_ELEM=LACAR, EVOL_THER = LATEMP, ),)
+#
+# -------------------------------------------------
+# AFFECTATION DES MATERIAUX
+# -------------------------------------------------
+#
+MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
+                          AFFE=_F(  GROUP_MA = 'GEOB',
+                                 MATER = ACIER,
+                                 TEMP_REF = 50.,
+                               ),
+                          AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=50.0), )
+
 # ----------------------------------------------
 # CHARGEMENT
 # ----------------------------------------------
 #
 ZCHM=AFFE_CHAR_MECA(
              MODELE=LEMOD,
-             TEMP_CALCULEE=LATEMP,
             DDL_IMPO=_F(  TOUT = 'OUI',
                        DX = 0.,   DY = 0.,   DZ = 0.,
                        DRX = 0.,   DRY = 0.,   DRZ = 0.,  )

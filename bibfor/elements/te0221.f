@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA      '
@@ -31,13 +31,12 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
       PARAMETER (NBRES=2)
-      CHARACTER*8 NOMRES(NBRES),NOMPAR,NOMPU(NBRES)
+      CHARACTER*8 NOMRES(NBRES),NOMPAR
       CHARACTER*8 ELREFE
       CHARACTER*2 CODRET(NBRES)
-      REAL*8 VALRES(NBRES),VALPU(NBRES),VALPAR
+      REAL*8 VALRES(NBRES),VALPAR
       REAL*8 DFDX(3),ZERO,UN,DEUX,TROIS,DOUZE
-      REAL*8 TEST,TEST2,EPS,NU,H,COSA,SINA,COUR,R,TPG
-      REAL*8 T,TINF,TSUP
+      REAL*8 TEST,TEST2,EPS,NU,H,COSA,SINA,COUR,R
       REAL*8 COEFXX,COEFYY,COEFXY,COEFF1,COEFF2
       REAL*8 CSS,CTT,CTS,DSS,DTS,DTT,BSS,BTT,BTS,VFI,VFJ
       REAL*8 C1,C2,C3,CONS,CONS2,JACP,KAPPA,CORREC
@@ -51,7 +50,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
-      REAL*8 VALR(3)
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -95,50 +93,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
-C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-        CALL TECACH('NNN','PTEMPER',8,ITAB,IRET)
-        ITEMP = ITAB(1)
-        IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          TPG = ZERO
-          DO 20 I = 1,NNO
-            CALL DXTPIF(ZR(ITEMP+3* (I-1)),ZL(ITAB(8)+3* (I-1)))
-            T = ZR(ITEMP+3* (I-1))
-            TINF = ZR(ITEMP+1+3* (I-1))
-            TSUP = ZR(ITEMP+2+3* (I-1))
+C     -- SI LA TEMPERATURE EST CONNUE AUX POINTS DE GAUSS :
 
-            IF ((T.NE.TINF) .OR. (T.NE.TSUP) .OR. (TINF.NE.TSUP)) THEN
-              VALR (1) = TINF
-              VALR (2) = T
-              VALR (3) = TSUP
-              CALL U2MESG('A', 'ELEMENTS4_93',0,' ',0,0,3,VALR)
-            END IF
-            TPG = TPG + (T+ (TSUP+TINF-2*T)/6.D0)*ZR(IVF+K+I-1)
-   20     CONTINUE
-          VALPAR = TPG/NNO
-        ELSE
-
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-          CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
-          IF (IRET.EQ.0) THEN
-            CALL U2MESS('A','ELEMENTS_52')
-            NBPAR = 1
-            NOMPAR = 'TEMP'
-            NOMPU(1) = 'INST'
-            NOMPU(2) = 'EPAIS'
-            CALL JEVECH('PTEMPSR','L',IBID)
-            VALPU(1) = ZR(IBID)
-            VALPU(2) = 0.D0
-            CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,VALPAR,IER)
-
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-          ELSE
-            NBPAR = 0
-            NOMPAR = ' '
-            VALPAR = 0.D0
-          END IF
-        END IF
+        CALL MOYTPG('RIGI',KP,3,'+',VALPAR)
+        NBPAR = 1
+        NOMPAR = 'TEMP'
 C===============================================================
         TEST = ABS(H*COUR/DEUX)
         IF (TEST.GE.UN) CORREC = ZERO

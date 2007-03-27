@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2006   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 27/03/2007   AUTEUR BOYERE E.BOYERE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,7 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=mode_
                    PRESENT_PRESENT('FREQ_MIN','FREQ_MAX'),
                    PRESENT_PRESENT('FREQ_MAX','NB_BLOC_FREQ'),
                    EXCLUS('DIM_SOUS_ESPACE','COEF_DIM_ESPACE'),),
-           FREQ            =SIMP(statut='f',typ='R',min=2,validators=NoRepeat(),max='**',val_min=0.E+0 ),  
+           FREQ            =SIMP(statut='f',typ='R',min=2,validators=NoRepeat(),max='**', ),  
            FREQ_MIN        =SIMP(statut='f',typ='R' ),  
            FREQ_MAX        =SIMP(statut='f',typ='R' ),  
            NB_BLOC_FREQ    =SIMP(statut='f',typ='I' ),  

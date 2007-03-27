@@ -1,7 +1,7 @@
-      SUBROUTINE LCROMA (MATE, TEMP)
+      SUBROUTINE LCROMA (FAMI,KPG,KSP,POUM,MATE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,8 +21,8 @@ C ======================================================================
 C RESPONSABLE ADBHHVV V.CANO
 
       IMPLICIT NONE
-      INTEGER  MATE
-      REAL*8   TEMP
+      INTEGER  KPG,KSP,MATE
+      CHARACTER*(*) FAMI, POUM
 
 C ******************************************************
 C *       INTEGRATION DE LA LOI DE ROUSSELIER LOCAL    *
@@ -35,7 +35,7 @@ C IN COMMON   : PM DOIT DEJA ETRE AFFECTE (PLASTICITE CUMULEE EN T-)
 C ----------------------------------------------------------------------
 C  COMMON LOI DE COMPORTEMENT ROUSSELIER
 
-      INTEGER ITEMAX, JPROLP, JVALEP, NBVALP
+      INTEGER ITEMAX, JPROLP, JVALEP, NBVALP,IRET
       REAL*8  PREC,YOUNG,NU,ALPHA,SIGY,SIG1,ROUSD,F0,FCR,ACCE
       REAL*8  PM,RPM,FONC,FCD,DFCDDJ,DPMAXI
       COMMON /LCROU/ PREC,YOUNG,NU,ALPHA,SIGY,SIG1,ROUSD,F0,FCR,ACCE,
@@ -45,23 +45,24 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       CHARACTER*2 CODRET(6)
       CHARACTER*8 NOMRES(6)
-      REAL*8      R8BID,VALRES(6),PENTE,AIRE
+      REAL*8      R8BID,VALRES(6),PENTE,AIRE,TEMP
 C ----------------------------------------------------------------------
 
 
 
 C 1 - CARACTERISTIQUE ELASTIQUE E ET NU => CALCUL DE MU - K
 
-      CALL RCVALA(MATE,' ','ELAS',1,'TEMP',TEMP,1,'NU',NU,
-     &            CODRET(1),'F ')
+      CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','ELAS',0,' ',0.D0,
+     &            1,'NU',NU,CODRET(1),'F ')
+      CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
       CALL RCTRAC(MATE,'TRACTION','SIGM',TEMP,JPROLP,JVALEP,NBVALP,
      &            YOUNG)
 
 
 C 2 - COEFFICIENT DE DILATATION THERMIQUE
 
-      CALL RCVALA(MATE,' ','ELAS',1,'TEMP',TEMP,1,'ALPHA',
-     &            VALRES(1),CODRET(1),'  ')
+      CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','ELAS',0,' ',0.D0,
+     &            1,'ALPHA',VALRES(1),CODRET(1),'  ')
       IF(CODRET(1).NE.'OK') VALRES(1)=0.D0
       ALPHA  = VALRES(1)
 
@@ -84,8 +85,8 @@ C 4 - PARAMETRES DE CROISSANCE DE CAVITES ET CONTROLE INCR. PLASTIQUE
       NOMRES(5) = 'PORO_ACCE'
       NOMRES(6) = 'DP_MAXI'
 
-      CALL RCVALA(MATE,' ','ROUSSELIER',1,'TEMP',TEMP,6,
-     &            NOMRES,VALRES,CODRET,'F ')
+      CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','ROUSSELIER',0,' ',
+     &            0.D0,6,NOMRES,VALRES,CODRET,'F ')
       ROUSD = VALRES(1)
       SIG1  = VALRES(2)
       F0    = VALRES(3)

@@ -6,7 +6,7 @@
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,13 +68,13 @@ C --------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER      JPARA,N,N1,N2,N3,N4,IEX,JLCHA,JINFC,JFCHA,NCHA
-      INTEGER      ILU,ISD,NCHALU,NCHASD,LCHALU,FCHALU
+      INTEGER      ILU,ISD,NCHALU,NCHASD,LCHALU,FCHALU,VALI(3)
 
       CHARACTER*6  NOMPRO
       CHARACTER*8  BLAN8,NOMSD,NOMLU,FONCLU,K8B,FONCSD
       CHARACTER*16 TYPE,NOMCMD
       CHARACTER*19 KCHA, KFON
-      CHARACTER*24 EXCISD
+      CHARACTER*24 EXCISD,VALK(4)
 
       PARAMETER(NOMPRO='RSLESD')
 
@@ -103,11 +103,10 @@ C      WRITE(6,*)'rslesd01'
 
 C---  RECUPERATION DU NOM DU MODELE
 C
+      N1=0
+      NOMLU=BLAN8
       IF(NOMCMD(1:6).NE.'CALC_G')THEN
-       CALL GETVID(' ','MODELE'    ,0,1,1,NOMLU,N1)
-      ELSE
-       N1=0
-       NOMLU=BLAN8
+        CALL GETVID(' ','MODELE'    ,0,1,1,NOMLU,N1)
       ENDIF
 C
 C      WRITE(6,*)'rslesd01-MODELE=',MODELE
@@ -229,7 +228,7 @@ C
         N3=0
         NOMLU=BLAN8
       ENDIF
-      
+
 C
       CALL RSADPA(RESULT,'L',1,'CHAMPMAT',NUORD,0,JPARA,K8B)
       NOMSD=ZK8(JPARA)
@@ -350,16 +349,9 @@ C    CELLES PRESENTES DANS LA SD RESULTAT ET CELLES FOURNIES
 C    PAR L'UTILISATEUR
 
       IF(NCHALU.NE.NCHASD) THEN
-         CALL UTDEBM('A',NOMPRO,
-     &    ' LE NOMBRE DE CHARGES (MOT CLE: CHARGE) FOURNI PAR'
-     &  //' L''UTILISATEUR EST DIFFERENT DU NOMBRE DE CHARGES'
-     &  //' PRESENT DANS LA SD RESULTAT, ON POURSUIT LES CALCULS'
-     &  //' AVEC LE CHARGEMENT FOURNI PAR L''UTILISATEUR.')
-              CALL UTIMPI('L',' - NOMBRE DE CHARGE FOURNI PAR'
-     &  //                    ' L''UTILISATEUR:   ', 1, NCHALU)
-              CALL UTIMPI('L',' - NOMBRE DE CHARGE PRESENT DANS'
-     &  //                    ' LA SD RESULTAT:   ', 1, NCHASD)
-              CALL UTFINM()
+         VALI(1)=NCHALU
+         VALI(1)=NCHASD
+         CALL U2MESI('A','CALCULEL6_65',2,VALI)
       ENDIF
 C
 C--- VERIFICATIONS DU NOM DES CHARGEMENTS
@@ -396,20 +388,11 @@ C
               FONCSD = ZK24(JFCHA-1+ISD)(1:8)
               IF(FONCSD(1:2).EQ.'&&') FONCSD = BLAN8
               IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 95
-              CALL UTDEBM('A','RSLESD','LE COUPLE (CHARGE-FONCTION) '
-     &    //              'FOURNI PAR L''UTILISATEUR  N''EST PAS '
-     &    //              'PRESENT DANS LA SD RESULTAT, ON POURSUIT '
-     &    //              'LES CALCULS AVEC LE CHARGEMENT '
-     &    //              'FOURNI PAR L''UTILISATEUR.')
-              CALL UTIMPK('L',' - CHARGE (UTILISATEUR):   ',
-     &                     1, ZK8(LCHALU-1+ILU))
-              CALL UTIMPK('L',' - FONCTION (UTILISATEUR): ',
-     &                     1, ZK8(FCHALU-1+ILU))
-              CALL UTIMPK('L',' - CHARGE (SD RESULTAT):   ',
-     &                     1, ZK24(JLCHA-1+ISD)(1:8))
-              CALL UTIMPK('L',' - FONCTION (SD RESULTAT): ',
-     &                     1, FONCSD)
-              CALL UTFINM()
+              VALK(1)=ZK8(LCHALU-1+ILU)
+              VALK(2)=ZK8(FCHALU-1+ILU)
+              VALK(3)=ZK24(JLCHA-1+ISD)(1:8)
+              VALK(4)=FONCSD
+              CALL U2MESK('A','CALCULEL6_66',4,VALK)
            ENDIF
  90       CONTINUE
  95     CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE        D6BHHAR A.RAZAKANAIVO
 # TITRE THERMO_METALLO_MECANIQUE EDGAR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -268,10 +268,14 @@ ZIRC=DEFI_MATERIAU(
 CM2=AFFE_MATERIAU( MAILLAGE=MAIL,   
                    AFFE=_F( TOUT = 'OUI', MATER = ZIRC,
                             TEMP_REF = 800.),
-                   AFFE_VARC=_F(TOUT='OUI',
+                   AFFE_VARC=(_F(TOUT='OUI',
                             EVOL=TEMPE,
                             NOM_VARC='M_ZIRC',
                             NOM_CHAM='META_ELNO_TEMP'),
+                             _F(TOUT='OUI',
+                            EVOL=TEMPE,
+                            NOM_VARC='TEMP',
+                            NOM_CHAM='TEMP'),)
 
            )
 
@@ -279,8 +283,6 @@ MO=AFFE_MODELE(  MAILLAGE=MAIL,    VERIF='MAILLE',
                  AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
                            MODELISATION = 'AXIS'))
 
-TEMPER=AFFE_CHAR_MECA( MODELE=MO,
-                       TEMP_CALCULEE=TEMPE  )
 
 FORCE=DEFI_FONCTION(   NOM_PARA='INST',
            PROL_GAUCHE='CONSTANT',  PROL_DROITE='CONSTANT',
@@ -302,8 +304,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
 U=STAT_NON_LINE(  MODELE=MO,  CHAM_MATER=CM2,EXCIT=(
            _F( CHARGE = CH_FO,
                   FONC_MULT = FORCE),
-           _F( CHARGE = CHARGE),
-           _F( CHARGE = TEMPER)),
+           _F( CHARGE = CHARGE),),
             COMP_INCR=_F( RELATION = 'META_V_IL',
                 RELATION_KIT = ('ZIRC',)),
            INCREMENT=_F( LIST_INST = L_INST),

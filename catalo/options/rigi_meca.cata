@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+%& MODIF OPTIONS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,8 +22,6 @@ OPTION__
         PGEOMER  GEOM_R
         PMATERC  ADRSJEVE
         PPESANR  PESA_R
-        PTEMPER  TEMP_R
-        PTEMPEF  TEMP_F
         PTEMPSR  INST_R
         PVARCPR  VARI_R  <<  PVARCPR : VARIABLES DE COMMANDE  >>
         PCAGNPO  CAGNPO

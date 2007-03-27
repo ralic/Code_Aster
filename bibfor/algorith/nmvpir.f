@@ -1,13 +1,12 @@
       SUBROUTINE NMVPIR (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,
-     &                   TM,TP,TREF,
      &                   DEPS,
      &                   SIGM,VIM,
      &                   OPTION,
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +30,7 @@ C TOLE CRP_21
       INTEGER            NDIM,IMATE,KPG,KSP,IRET
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*),OPTION
-      REAL*8             CRIT(4),INSTAM,INSTAP,TM,TP,TREF,IRRAM,IRRAP
+      REAL*8             CRIT(4),INSTAM,INSTAP,IRRAM,IRRAP
       REAL*8             DEPS(6),ANGMAS(3)
       REAL*8             SIGM(6),VIM(2),SIGP(6),VIP(2),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -85,7 +84,7 @@ C -------------------------------------------------------------
      &                  EPSFAB,TPREC,
      &                  VALDRP,TTAMAX,
      &                  A,B,CTPS,ENER
-      REAL*8            FLUPHI
+      REAL*8            FLUPHI,TM,TP,TREF
       REAL*8            VALDRP,TTAMAX
       REAL*8            EPSFAB,TPREC
       REAL*8            A,B,CTPS,ENER
@@ -143,6 +142,10 @@ C
      &              'EPSAYZ'/
 C DEB ------------------------------------------------------------------
 C
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+
       THETA = CRIT(4)
       T1 = ABS(THETA-0.5D0)
       T2 = ABS(THETA-1.D0)
@@ -172,9 +175,7 @@ C DEFORMATION PLASTIQUE CUMULEE
       DPC = VIM(1)
 C INCREMENT DE TEMPS
       DELTAT = INSTAP - INSTAM
-      IF (DELTAT.EQ.0.D0) THEN
-         CALL U2MESS('F','ALGORITH8_87')
-      ENDIF
+      IF (DELTAT.EQ.0.D0) CALL U2MESS('F','ALGORITH8_87')
 
       DO 10 K=1,6
       DO 10 L=1,6
@@ -216,13 +217,13 @@ C
 C
 C CARACTERISTIQUES ELASTIQUES VARIABLES
 C
-      CALL NMASSE(IMATE,' ',INSTAM,TM,
+      CALL NMASSE(FAMI,KPG,KSP,'-',IMATE,' ',INSTAM,
      &            EM,NUM,ALPHAM,DEUMUM,TROIKM)
 
 C CONNERIE DE COMMON DEBILE
       DEUXMU = DEUMUM
 
-      CALL NMASSE(IMATE,' ',INSTAP,TP,
+      CALL NMASSE(FAMI,KPG,KSP,'+',IMATE,' ',INSTAP,
      &            EP,NUP,ALPHAP,DEUMUP,TROIKP)
 
 C ----------------------------------------------------------------------
@@ -355,10 +356,6 @@ C      RECUPERATION DU REPERE POUR LE GRANDISSEMENT
          IF (NDIM.EQ.2) THEN
             IF (ANGMAS(2) .NE. 0.D0 ) THEN
                CALL U2MESR('F','ALGORITH11_82',2,ANGMAS(2))
-C               CALL UTDEBM('F','NMVPIR_2','ERREUR DIR. GRANDISSEMENT')
-C               CALL UTIMPR('L','   ANGLE ALPHA = ',1,ANGMAS(1))
-C               CALL UTIMPR('L','    ANGLE BETA = ',1,ANGMAS(2))
-C               CALL UTFINM()
             ENDIF
          ENDIF
          ALPHA = ANGMAS(1)

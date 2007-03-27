@@ -1,6 +1,6 @@
       SUBROUTINE TE0376 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,10 +36,10 @@ C
       REAL*8             DDZDZ,DDRXDZ,DDRYDZ,VX,VY,MT,S,JJ,EPS(5),C1
       REAL*8             DFDX(9),DFDY(9),TPG,POIDS,X,Y
       REAL*8             A11,A12,A22,A33,G12,E1,E2,E3,DELTA
-      REAL*8             NU12,NU21,NU23,NU32,NU13,NU31
-      INTEGER            NNO,KP,I,K,ITEMPE,ITREF,IDEPL,ICONT
+      REAL*8             NU12,NU21,NU23,NU32,NU13,NU31,TREF
+      INTEGER            NNO,KP,I,K,IDEPL,ICONT
       INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      INTEGER            NPG1,NNOS,NCMP,NBV,NDIM,JGANO
+      INTEGER            NPG1,NNOS,NCMP,NBV,NDIM,JGANO,IRET
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -65,10 +65,10 @@ C
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL JEVECH('PTEMPER','L',ITEMPE)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL JEVECH('PTEREF' ,'L',ITREF)
       CALL JEVECH('PCONTRR','E',ICONT)
+      CALL RCVARC('F','TEMP','REF','NOEU',1,1,TREF,IRET)
+
 C
       BL2 = '  '
       CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
@@ -104,17 +104,16 @@ C
 C
       DO 101 KP=1,NNO
         K=(KP-1)*NNO
+        CALL RCVARC('F','TEMP','+','NOEU',KP,1,TPG,IRET)
         CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         X   = 0.D0
         Y   = 0.D0
-        TPG = 0.D0
         DO 103 I=1,5
            EPS(I) = 0.0D0
 103     CONTINUE
         DO 102 I=1,NNO
            X   = X   + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
            Y   = Y   + ZR(IGEOM+2*I-1)*ZR(IVF+K+I-1)
-           TPG = TPG + ZR(ITEMPE+I-1) *ZR(IVF+K+I-1)
            EPS(1) = EPS(1) + DFDX(I)       * ZR(IDEPL+2*(I-1)  )
            EPS(3) = EPS(3) + ZR(IVF+K+I-1) * ZR(IDEPL+2*(I-1))
            EPS(2) = EPS(2) + DFDY(I)       * ZR(IDEPL+2*(I-1)+1)
@@ -124,13 +123,13 @@ C
 C
         IF (PHENOM.EQ.'ELAS') THEN
 CCC --- CAS ISOTROPE
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,2,NOMRES,
-     &                   VALRES, CODRET, 'FM' )
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,1,NOMRES(3),
-     &                   VALRES(3), CODRET(3), BL2 )
+           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,0,' ',
+     &                   0.D0,2,NOMRES,VALRES, CODRET, 'FM' )
+           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,1,' ',
+     &                   0.D0,1,NOMRES(3),VALRES(3), CODRET(3), BL2 )
            IF ( CODRET(3) .NE. 'OK' )  VALRES(3) = 0.D0
 C
-           TPG = TPG - ZR(ITREF)
+           TPG = TPG - TREF
            C1  = VALRES(1)/(1.D0 + VALRES(2))
            A11 = C1*(1.D0 - VALRES(2))/(1.D0 - 2.D0*VALRES(2))
            A12 = A11 - C1
@@ -145,15 +144,15 @@ C
 C
         ELSE IF (PHENOM.EQ.'ELAS_ORTH') THEN
 CCC --- CAS ORTHOTROPE
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,7,NOMRES,
-     &                   VALRES, CODRET, 'FM' )
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,3,NOMRES(8),
-     &                   VALRES(8), CODRET(8), BL2 )
+           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,0,' ',
+     &                   0.D0,7,NOMRES,VALRES, CODRET, 'FM' )
+           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,1,' ',
+     &                   0.D0,3,NOMRES(8),VALRES(8), CODRET(8), BL2 )
            IF (CODRET(8).NE.'OK')  VALRES(8) =0.D0
            IF (CODRET(9).NE.'OK')  VALRES(9) =0.D0
            IF (CODRET(10).NE.'OK') VALRES(10)=0.D0
 C
-           TPG = TPG - ZR(ITREF)
+           TPG = TPG - TREF
            E1   = VALRES(1)
            E2   = VALRES(2)
            E3   = VALRES(3)
@@ -177,14 +176,15 @@ C
 C
         ELSE IF (PHENOM.EQ.'ELAS_ISTR') THEN
 CCC     CAS ISOTROPE_TRANSVERSE
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,4,NOMRES,
-     &                   VALRES, CODRET, 'FM' )
-           CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,2,NOMRES(5),
-     &                   VALRES(5), CODRET(5), BL2 )
+           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,0,' ',
+     &                   0.D0,4,NOMRES,VALRES, CODRET, 'FM' )
+           CALL RCVALB ('NOEU',KP,1,'+', ZI(IMATE),' ',PHENOM,1,' ',
+     &                   0.D0,2,NOMRES(5),VALRES(5), CODRET(5), BL2 )
+
            IF (CODRET(5).NE.'OK') VALRES(5)=0.D0
            IF (CODRET(6).NE.'OK') VALRES(6)=0.D0
 C
-           TPG = TPG - ZR(ITREF)
+           TPG = TPG - TREF
            E1   = VALRES(1)
            E3   = VALRES(2)
            NU12 = VALRES(3)
@@ -209,6 +209,7 @@ C
            ELSE
               EPS(3) = EPS(1)
            ENDIF
+
         ELSE IF (NOMTE(3:4) .EQ. 'CP' ) THEN
            EPS(3) = AL3-(A13*(EPS(1)-AL1)+A23*(EPS(2)-AL2))/A33
         ELSE

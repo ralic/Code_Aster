@@ -4,7 +4,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
         INTEGER         NMAT, NDT , NDI  , NR , NVI,KPG,KSP
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
-        REAL*8          VALPAD, VALPAF
+        REAL*8           VALPAF
         REAL*8          EPSI , THETA
         CHARACTER*8     MOD, NOM , NOMC(14) , NOMPAR
         CHARACTER*2     BL2, FB2, CERR(14)
@@ -92,21 +92,20 @@ C
         IF ( TEMPD .GT. TEMPF ) THETA = TEMPD
 C
         NOMPAR = 'TEMP'
-        VALPAD = TEMPD
         VALPAF = THETA
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-        CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','ELAS', 1,NOMPAR,
-     &               VALPAD,5,NOMC(1),MATERD(1,1),CERR(1),BL2 )
+        CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','ELAS', 0,' ',
+     &               0.D0,5,NOMC(1),MATERD(1,1),CERR(1),BL2 )
         IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
         IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
         IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
-        CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','BETON_DOUBLE_DP',1,
-     &               NOMPAR,VALPAD, 8,NOMC(6),  MATERD(1,2),  CERR(6),
+        CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','BETON_DOUBLE_DP',0,
+     &               ' ',0.D0, 8,NOMC(6),  MATERD(1,2),  CERR(6),
      &               FB2 )
-        CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','BETON_DOUBLE_DP',1,
-     &               NOMPAR,VALPAD,1,NOMC(14),MATERD(9,2),CERR(14),
+        CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','BETON_DOUBLE_DP',0,
+     &               ' ',0.D0,1,NOMC(14),MATERD(9,2),CERR(14),
      &               BL2 )
         IF ( CERR(14).NE. 'OK' ) MATERD(9,2) = -1.D0
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/08/2005   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
 
-DEFI_PART_PA_OPS=OPER(nom="DEFI_PART_PA_OPS",op=29,sd_prod=sd_feti_sdaster,
+DEFI_PART_PA_OPS=PROC(nom="DEFI_PART_PA_OPS",op=29,
                     fr="Creation partitionnement en sous-domaines pour FETI",
-                    docu="U4.00.00",reentrant='n',
+                    docu="U4.00.00",
                     UIinfo={"groupes":("Résolution",)},
          MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster,squelette) ),
          MODELE          =SIMP(statut='f',typ=(modele_sdaster)),

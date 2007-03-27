@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE  THERMO_METALLO_MECANIQUE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -233,12 +233,16 @@ ACIERM=DEFI_MATERIAU(
 CHP_MATL=AFFE_MATERIAU(
             MAILLAGE=MAIL,
                 AFFE=_F( TOUT = 'OUI',
-                      MATER = ACIERM,
-                      TEMP_REF = 20.),
-                AFFE_VARC=_F(TOUT='OUI',
-                EVOL=TEMPE,
-                NOM_VARC='M_ACIER',
-                NOM_CHAM='META_ELNO_TEMP'),)
+                      MATER = ACIERM),
+                AFFE_VARC=(_F(TOUT='OUI',
+                             EVOL=TEMPE,
+                             NOM_VARC='M_ACIER',
+                             NOM_CHAM='META_ELNO_TEMP'),
+                          _F(TOUT='OUI',
+                             EVOL=TEMPE,
+                             NOM_VARC='TEMP',
+                             NOM_CHAM='TEMP',
+                             VALE_REF=20),),);
 
 INST_M=DEFI_LIST_REEL(
                 DEBUT=0.0,INTERVALLE=(
@@ -252,10 +256,6 @@ F_CHAR=DEFI_FONCTION(
                       1.,  0.,
                       2.,  30.,))
 
-CHR_TEMP=AFFE_CHAR_MECA(
-                   MODELE=MOMECA,
-            TEMP_CALCULEE=TEMPE)
-
 CHR_LIAI=AFFE_CHAR_MECA(
               MODELE=MOMECA,DDL_IMPO=(
             _F( NOEUD = 'NO1',  DY = 0.),
@@ -267,9 +267,7 @@ CHR_TRAC=AFFE_CHAR_MECA(
 
 U=STAT_NON_LINE(
             MODELE=MOMECA,
-        CHAM_MATER=CHP_MATL,EXCIT=(
-             _F( CHARGE = CHR_LIAI),
-                   _F( CHARGE = CHR_TEMP)),
+        CHAM_MATER=CHP_MATL,EXCIT=_F( CHARGE = CHR_LIAI),
          COMP_INCR=_F( RELATION = 'META_P_INL',
                       RELATION_KIT = ('ACIER',),
                     DEFORMATION = 'SIMO_MIEHE'),
@@ -287,7 +285,6 @@ U=STAT_NON_LINE(reuse=U,
            MODELE=MOMECA,
        CHAM_MATER=CHP_MATL,EXCIT=(
             _F( CHARGE = CHR_LIAI),
-                  _F( CHARGE = CHR_TEMP),
                   _F( CHARGE = CHR_TRAC,
                    FONC_MULT = F_CHAR,
                    TYPE_CHARGE = 'DIDI')),

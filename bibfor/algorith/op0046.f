@@ -1,7 +1,7 @@
       SUBROUTINE OP0046 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,13 +69,13 @@ C
       CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT
       CHARACTER*24 CHTIME, CHAMGD, CHFREQ, CHMASS
       CHARACTER*24 CHAMEL, CHSIG,  CHEPS
-      CHARACTER*24 CHGEOM, CHCARA(15), CHTEMP, CHTREF, CHHARM
-      CHARACTER*24 CHVARC, CHSECH, CHVREF
+      CHARACTER*24 CHGEOM, CHCARA(15), CHHARM
+      CHARACTER*24 CHVARC, CHVREF
       CHARACTER*24 INFOCH, MATE
       CHARACTER*24 K24B, NOOBJ
       CHARACTER*24 COMPOR, CARCRI
 C
-      LOGICAL EXITIM, EXIPOU, LSIEF
+      LOGICAL EXIPOU, LSIEF
 C
       COMPLEX*16    CALPHA, C16B
 C DEB ------------------------------------------------------------------
@@ -211,7 +211,6 @@ C
 C     BOUCLE SUR LES OPTIONS DE MECANIQUE : SIEF_ELGA_DEPL OU SANS
 C     ------------------------------------------------------------
       CALL JEVEUO(LISTPS//'           .VALE','L',IAINST)
-      EXITIM = .TRUE.
       DO 13 IORDR = 1,NBMAX
 C
          CALL RSEXCH(RESULT,'DEPL',IORDR,CHAMGD,IRET)
@@ -223,10 +222,8 @@ C
          IF (IRET.NE.0) GOTO 13
          TIME = ZR(IAINST-1+IORDR)
          CALL MECHTI(CHGEOM(1:8),TIME,CHTIME)
-         CALL MECHTE(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
-     &                                              CHTREF,CHTEMP )
-         CALL VRCINS(MODELE(1:8),MATE(1:8),CARELE(1:8),TIME,
-     &                                       CHVARC(1:19))
+         CALL VRCINS(MODELE(1:8),MATE(1:8),CARELE(1:8),NCHAR,
+     &               ZK24(JCHAR),TIME,CHVARC(1:19))
          CALL VRCREF(MODELE(1:8),MATE(1:8),CARELE(1:8),
      &                                       CHVREF(1:19))
 
@@ -235,8 +232,8 @@ C
          ENDIF
 C
          IBID = 0
-         CALL MECALC(NOSY,NOMODE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
-     &               CHTREF,CHTIME,K24B,CHHARM,CHSIG,CHEPS,
+         CALL MECALC(NOSY,NOMODE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,K24B,
+     &               CHTIME,K24B,CHHARM,CHSIG,CHEPS,
      &               CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
      &               K24B,K24B,CHAMEL,LIGREL,BASE,
      &               CHVARC,CHVREF,K24B,COMPOR,

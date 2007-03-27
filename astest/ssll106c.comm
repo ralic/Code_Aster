@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_6M MACRO_ELAS_MULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -677,19 +677,28 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 # DILATATION THERMIQUE
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
               AFFE=_F(  TOUT = 'OUI',
-                     NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                     VALE = ( 200.,     200.,     200.,)))
+                     NOM_CMP = 'TEMP',
+                     VALE =  200.,))
+TEMPER=CREA_RESU(
+               OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                 AFFE=_F(
+               INST = 0.0,
+               CHAM_GD = TEMP)
+             )
 
-CHARTH=AFFE_CHAR_MECA(   MODELE=MO,
-          TEMP_CALCULEE=TEMP
-            )
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
+                           AFFE=_F( TOUT = 'OUI', MATER = MAT),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,
+                      NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.0),)
+                     
+
 
 
 REST=MECA_STATIQUE(             MODELE=MO,
-                                 CHAM_MATER=CHMAT,
+                                 CHAM_MATER=CHMAT1,
                                   CARA_ELEM=CAREL,EXCIT=(
-                           _F(  CHARGE = CHAR0),
-                           _F(  CHARGE = CHARTH)),
+                           _F(  CHARGE = CHAR0),),
 
                         )
 

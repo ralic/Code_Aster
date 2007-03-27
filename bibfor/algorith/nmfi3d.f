@@ -1,10 +1,10 @@
       SUBROUTINE NMFI3D(NNO,NDDL,NPG,LGPG,WREF,VFF,DFDE,
      &                  MATE,OPTION,GEOM,DEPLM,DDEPL,
      &                  SIGMA,FINT,KTAN,VIM,VIP,CRIT,
-     &                  COMPOR,TM,TP,CODRET)
+     &                  COMPOR,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -27,7 +27,7 @@ C TOLE CRP_21
       IMPLICIT NONE
       INTEGER NNO,NDDL,NPG,LGPG,MATE,CODRET
       REAL*8  WREF(NPG),VFF(NNO,NPG),DFDE(2,NNO,NPG),CRIT(*)
-      REAL*8  GEOM(NDDL),DEPLM(NDDL),DDEPL(NDDL),TM(NDDL/3),TP(NDDL/3)
+      REAL*8  GEOM(NDDL),DEPLM(NDDL),DDEPL(NDDL)
       REAL*8  FINT(NDDL),KTAN(*)
       REAL*8  SIGMA(3,NPG),VIM(LGPG,NPG),VIP(LGPG,NPG)
       CHARACTER*16 OPTION, COMPOR(*)
@@ -36,7 +36,7 @@ C  OPTIONS DE MECANIQUE NON LINEAIRE POUR LES JOINTS 3D (TE0206)
 C-----------------------------------------------------------------------
 C IN  NNO    NOMBRE DE NOEUDS DE LA FACE (*2 POUR TOUT L'ELEMENT)
 C IN  NDDL   NOMBRE DE DEGRES DE LIBERTE EN DEPL TOTAL (3 PAR NOEUDS)
-C IN  NPG    NOMBRE DE POINTS DE GAUSS 
+C IN  NPG    NOMBRE DE POINTS DE GAUSS
 C IN  LGPG   NOMBRE DE VARIABLES INTERNES
 C IN  WREF   POIDS DE REFERENCE DES POINTS DE GAUSS
 C IN  VFF    VALEUR DES FONCTIONS DE FORME (DE LA FACE)
@@ -60,13 +60,12 @@ C-----------------------------------------------------------------------
       REAL*8  B(3,60),SUM(3),DSU(3),DSIDEP(3,3),POIDS
       REAL*8  RBID,R8VIDE,DDOT
       REAL*8  ANGMAS(3)
-      REAL*8  TEMPM(NPG),TEMPP(NPG),TREF
 
       CHARACTER*8  TYPMOD(2)
       DATA TYPMOD /'3D','ELEMJOIN'/
 C-----------------------------------------------------------------------
-     
-      
+
+
       RESI = OPTION.EQ.'RAPH_MECA'      .OR. OPTION(1:9).EQ.'FULL_MECA'
       RIGI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA'
       CALL R8INIR(3,0.D0,DSU,1)
@@ -80,56 +79,45 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
 
       DO 10 KPG=1,NPG
 
-C - CALCUL DE LA TEMPERATURE AUX POINT DE GAUSS
-C
-        TEMPM(KPG) = 0.D0
-        TEMPP(KPG) = 0.D0
-        DO 12 N=1,NNO
-          TEMPM(KPG) = TEMPM(KPG) + (TM(N)+ TM(NNO+N))*VFF(N,KPG)/2.D0
-          TEMPP(KPG) = TEMPP(KPG) + (TP(N)+ TP(NNO+N))*VFF(N,KPG)/2.D0
- 12     CONTINUE
-
-
 C CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES
 C DEPLACEMENTS AUX NOEUDS , AINSI QUE LE POIDS DES PG :
 
         CALL NMFICI(NNO,NDDL,WREF(KPG),VFF(1,KPG),
      &              DFDE(1,1,KPG),GEOM,POIDS,B)
 
-C CALCUL DU SAUT DE DEPLACEMENT - : SUM, ET DE L'INCREMENT : DSU 
+C CALCUL DU SAUT DE DEPLACEMENT - : SUM, ET DE L'INCREMENT : DSU
 C AU POINT DE GAUSS KPG
-        
+
         SUM(1) = DDOT(NDDL,B(1,1),3,DEPLM,1)
         SUM(2) = DDOT(NDDL,B(2,1),3,DEPLM,1)
         SUM(3) = DDOT(NDDL,B(3,1),3,DEPLM,1)
-        
+
         IF (RESI) THEN
           DSU(1) = DDOT(NDDL,B(1,1),3,DDEPL,1)
           DSU(2) = DDOT(NDDL,B(2,1),3,DDEPL,1)
           DSU(3) = DDOT(NDDL,B(3,1),3,DDEPL,1)
-        ENDIF 
+        ENDIF
 
 C -   APPEL A LA LOI DE COMPORTEMENT
 
         RBID = R8VIDE()
         CODE(KPG) = 0
-        
+
         CALL NMCOMP('RIGI',KPG,1,3,TYPMOD,MATE,COMPOR,CRIT,
      &                RBID,RBID,
-     &                TEMPM(KPG),TEMPP(KPG),RBID,
      &                SUM,DSU,
      &                RBID,VIM(1,KPG),
      &                OPTION,ANGMAS,RBID,
      &                SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
-             
+
 
 C FORCES INTERIEURES
 
         IF (RESI) THEN
           DO 20 NI=1,NDDL
-          
+
             FINT(NI) = FINT(NI) + POIDS*DDOT(3,B(1,NI),1,SIGMA(1,KPG),1)
-            
+
  20       CONTINUE
         ENDIF
 
@@ -137,21 +125,21 @@ C FORCES INTERIEURES
 C MATRICE TANGENTE (STOCKAGE SYMETRIQUE LIGNE INFERIEUR)
 
         IF (RIGI) THEN
-        
+
           KK = 0
           DO 50 NI=1,NDDL
           DO 52 MJ=1,NDDL
             KK = KK+1
             DO 60 P=1,3
             DO 62 Q=1,3
-            
+
               KTAN(KK) = KTAN(KK) + POIDS*B(P,NI)*DSIDEP(P,Q)*B(Q,MJ)
-              
+
  62         CONTINUE
  60         CONTINUE
  52       CONTINUE
  50       CONTINUE
- 
+
         ENDIF
 
  10   CONTINUE

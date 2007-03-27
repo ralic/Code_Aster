@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION ET D'HYDRATATION 
 #       SUR UN CYLINDRE - LOI DE MAZARS LOCALE
 # -----------------------------------------------------------------
@@ -115,6 +115,7 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                    INST=0.0,),
                 _F(CHAM_GD=TEMPF,
                    INST=3600.0,  ),),);
+
 HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
@@ -140,19 +141,16 @@ HYDR1=CREA_RESU(OPERATION='AFFE',
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
-                         MATER=BETON,
-                         TEMP_REF=20.0),
-                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC="HYDR",NOM_CHAM='HYDR_NOEU_ELGA'),
-                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC="SECH",NOM_CHAM='TEMP',VALE_REF=100),),);
+                         MATER=BETON,),
+                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC='HYDR',NOM_CHAM='HYDR_NOEU_ELGA'),
+                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
+                            _F(TOUT='OUI',EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),),);
 
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    FACE_IMPO=_F(GROUP_MA='D1',
                                 DY=0.0,),);
                                 
-CH2=AFFE_CHAR_MECA(MODELE=MO,
-                   TEMP_CALCULEE=TEMP1);
-
 #  ATTENTION :METTRE  SUFFISAMMENT DE PAS DE TEMPS QUAND E VARIE AVEC LE
 #  SECHAGE SINON RESULTATS APPROXIMATIFS OU PROBLEME DE CONVERGENCE
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -161,8 +159,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 U=STAT_NON_LINE( MODELE=MO,
                 CHAM_MATER=CM,
-                EXCIT=(_F(CHARGE=CH1,),
-                       _F(CHARGE=CH2,),),
+                EXCIT=_F(CHARGE=CH1,),
                 COMP_INCR=_F(RELATION='MAZARS',
                              ITER_INTE_MAXI=100),
                 INCREMENT=_F(LIST_INST=L_INST,),
@@ -173,8 +170,7 @@ U=STAT_NON_LINE( MODELE=MO,
 U=CALC_ELEM(reuse =U,
              RESULTAT = U,
              CHAM_MATER=CM,
-             EXCIT=(_F(CHARGE=CH1,),
-                    _F(CHARGE=CH2,),),
+             EXCIT=_F(CHARGE=CH1,),
              MODELE=MO,
              OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO','SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),         )
 

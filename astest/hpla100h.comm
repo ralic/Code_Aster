@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,8 +56,8 @@ CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
                         AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
 
 CARE=AFFE_CARA_ELEM( MODELE=MO,
-                     COQUE=_F( GROUP_MA = 'TOUT',
-                               EPAIS = 0.) )
+                     COQUE=_F( GROUP_MA = 'TOUT',COQUE_NCOU=2, 
+                               EPAIS = 1.0) )
 
 CARETHE=AFFE_CARA_ELEM( MODELE=MOTHER,
                         COQUE=_F( GROUP_MA = 'TOUT',
@@ -111,6 +111,18 @@ CREA_RESU(reuse=TEMPLI2,  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                  INST = -1.)
                                  )
 
+TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARE, EVOL_THER = TEMPLIN, ),)
+TEMPER2=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARE, EVOL_THER = TEMPLI2, ),)
+CHMAT1=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.),
+                        AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=0.0),)
+CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.),
+                        AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER2,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=0.0),)
 # ------------------------------------------------------------------
 
 CHPES=AFFE_CHAR_MECA(  MODELE=MO,
@@ -122,7 +134,7 @@ CHPES=AFFE_CHAR_MECA(  MODELE=MO,
                                                             )
 
 CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLIN,DDL_IMPO=(
+           DDL_IMPO=(
            _F(  GROUP_NO = 'KNSANSKN',     DZ = 0.,  DRX = 0., DRY = 0.),
                     _F(  GROUP_NO = 'LMSANSLM',     DZ = 0.,  DRX = 0., DRY = 0.),
                     _F(  GROUP_NO = 'KL',   DY = 0.,          DRX = 0., DRZ = 0.),
@@ -130,17 +142,6 @@ CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
                     _F(  GROUP_NO = 'KETL',         DZ = 0.,  DRY = 0.),
                     _F(  GROUP_NO = 'METN',         DZ = 0.,  DRX = 0.))
                                                             )
-
-CHDI2=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLI2,DDL_IMPO=(
-           _F(  GROUP_NO = 'KNSANSKN',     DZ = 0.,  DRX = 0., DRY = 0.),
-                    _F(  GROUP_NO = 'LMSANSLM',     DZ = 0.,  DRX = 0., DRY = 0.),
-                    _F(  GROUP_NO = 'KL',   DY = 0.,          DRX = 0., DRZ = 0.),
-                    _F(  GROUP_NO = 'MN',   DX = 0.,          DRY = 0., DRZ = 0.),
-                    _F(  GROUP_NO = 'KETL',         DZ = 0.,  DRY = 0.),
-                    _F(  GROUP_NO = 'METN',         DZ = 0.,  DRX = 0.))
-                                                            )
-
 # ------------------------------------------------------------------
 
 DEPLPES=MECA_STATIQUE(
@@ -159,7 +160,7 @@ CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
 
 DEPLDIL=MECA_STATIQUE(
                   MODELE=MO,
-              CHAM_MATER=CHMAT,
+              CHAM_MATER=CHMAT1,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDIL),
                          )
@@ -173,7 +174,7 @@ CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
 
 DEPLDIL2=MECA_STATIQUE(
                   MODELE=MO,
-              CHAM_MATER=CHMAT,
+              CHAM_MATER=CHMAT1,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDIL),
                          )
@@ -187,9 +188,9 @@ CALC_ELEM( reuse= DEPLDIL2 ,RESULTAT= DEPLDIL2 ,
 
 DEPLDI2=MECA_STATIQUE(
                   MODELE=MO,
-              CHAM_MATER=CHMAT,
+              CHAM_MATER=CHMAT2,
                CARA_ELEM=CARE,
-                   EXCIT=_F( CHARGE = CHDI2),
+                   EXCIT=_F( CHARGE = CHDIL),
                          )
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,

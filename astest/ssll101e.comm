@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 25/09/2000
 # AUTEUR : F. LEBOUVIER
@@ -212,20 +212,25 @@ TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 MAILLAGE=MAILLAGE,
                 AFFE=(_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=472.22000000000003,),
-                      _F(TOUT='OUI',
-                         NOM_CMP='TEMP_INF',
-                         VALE=472.22000000000003,),
-                      _F(TOUT='OUI',
-                         NOM_CMP='TEMP_SUP',
                          VALE=472.22000000000003,),),);
 #
+TEMPER=CREA_RESU(
+               OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                 AFFE=_F(
+               INST = 0.0,
+               CHAM_GD = TEMP)
+             )
 #
 #
+AFF_MAT1=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,
+                              TEMP_REF=0.0,),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,
+                      NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.0),)
 
 
-DILATA=AFFE_CHAR_MECA(MODELE=MODELE,
-                      TEMP_CALCULEE=TEMP,);
 #
 #---------------------------------------------------------------------
 #                        RESOLUTION
@@ -242,9 +247,13 @@ RESU=MACRO_ELAS_MULT(MODELE=MODELE,
                      CAS_CHARGE=(_F(NOM_CAS='CHARGE NUMERO 1',
                                     CHAR_MECA=POI_PROP,),
                                  _F(NOM_CAS='CHARGE NUMERO 2',
-                                    CHAR_MECA=F_NODALE,),
-                                 _F(NOM_CAS='CHARGE NUMERO 3',
-                                    CHAR_MECA=DILATA,),),);
+                                    CHAR_MECA=F_NODALE,),),);
+
+RESU1=MECA_STATIQUE(       MODELE=MODELE,
+                          CHAM_MATER=AFF_MAT1,
+                           CARA_ELEM=CARELEM,
+                           EXCIT=_F( CHARGE = COND_LIM),)
+
 #
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS
@@ -296,22 +305,22 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    GROUP_NO='D',
                    VALE=-1.0047000000000001E-05,
                    REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
-                _F(RESULTAT=RESU,
-                   NOM_CAS='CHARGE NUMERO 3',
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE = 1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='D',
                    VALE=-6.3277000000000003E-3,
                    REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
-                _F(RESULTAT=RESU,
-                   NOM_CAS='CHARGE NUMERO 3',
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE = 1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='D',
                    VALE=-0.013091999999999999,
                    REFERENCE='SOURCE_EXTERNE',PRECISION=1.E-2,),
-                _F(RESULTAT=RESU,
-                   NOM_CAS='CHARGE NUMERO 3',
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE = 1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='D',
@@ -325,15 +334,9 @@ LR=DEFI_LIST_REEL(DEBUT=0.0,
 TEMP0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=MAILLAGE,
-                 AFFE=(_F(TOUT='OUI',
+                 AFFE=_F(TOUT='OUI',
                           NOM_CMP='TEMP',
-                          VALE=0.0,),
-                       _F(TOUT='OUI',
-                          NOM_CMP='TEMP_INF',
-                          VALE=0.0,),
-                       _F(TOUT='OUI',
-                          NOM_CMP='TEMP_SUP',
-                          VALE=0.0,),),);
+                          VALE=0.0,),);
 
 TEMP2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
@@ -344,14 +347,17 @@ TEMP2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                         ),
                         );
 
-DILAT2=AFFE_CHAR_MECA(MODELE=MODELE,
-                      TEMP_CALCULEE=TEMP2,);
+AFF_MAT2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,
+                              TEMP_REF=0.0,),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMP2,
+                      NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.0),)
 
 RESUNL=STAT_NON_LINE(MODELE=MODELE,
-                     CHAM_MATER=AFF_MAT,
+                     CHAM_MATER=AFF_MAT2,
                      CARA_ELEM=CARELEM,
-                     EXCIT=(_F(CHARGE=COND_LIM,),
-                            _F(CHARGE=DILAT2,),),
+                     EXCIT=(_F(CHARGE=COND_LIM,),),
                      COMP_INCR=_F(RELATION='ELAS',),
                      INCREMENT=_F(LIST_INST=LR,),);
 #

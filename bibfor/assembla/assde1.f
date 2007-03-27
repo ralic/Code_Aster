@@ -1,6 +1,6 @@
       SUBROUTINE ASSDE1(CHAMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C       NOMU   : NOM D'UN CONCEPT DE TYPE
 C                    CHAMP_GD(K19)
 
 C     RESULTAT:
-C     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CE CONCEPT. 
+C     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CE CONCEPT.
 C ----------------------------------------------------------------------
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -53,13 +53,17 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*19 K19B
       CHARACTER*24 K24B
       CHARACTER*19 CHAMP2
+      LOGICAL DBG
 C -DEB------------------------------------------------------------------
       CHAMP2 = CHAMP
+
+      DBG=.FALSE.
+      DBG=.TRUE.
+      IF (DBG) CALL CHLICI(CHAMP2,19)
 
 
 
 C        POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
-
       CALL JEDETR(CHAMP2//'.CELD')
       CALL JEDETR(CHAMP2//'.CELV')
       CALL JEDETR(CHAMP2//'.CELK')
@@ -74,18 +78,18 @@ C        POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
       CALL JEDETR(CHAMP2//'.NCMP')
       CALL JEDETR(CHAMP2//'.PTMA')
       CALL JEDETR(CHAMP2//'.PTMS')
-      
+
 C DESTRUCTION DE LA LISTE DE CHAM_NO LOCAUX SI FETI
       K24B=CHAMP2//'.FETC'
       CALL JEEXIN(K24B,IRET)
-C FETI OR NOT ?      
-      IF (IRET.GT.0) THEN             
+C FETI OR NOT ?
+      IF (IRET.GT.0) THEN
         DESC='.DESC'
         REFE='.REFE'
         VALE='.VALE'
         CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
         CALL JEVEUO(K24B,'L',IFETC)
-        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
 C========================================
 C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================
@@ -95,12 +99,12 @@ C========================================
             CALL JEDETR(K19B//DESC)
             CALL JEDETR(K19B//REFE)
             CALL JEDETR(K19B//VALE)
-          ENDIF         
+          ENDIF
    5    CONTINUE
 C========================================
 C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
 C========================================
-        CALL JEDETR(K24B)   
-      ENDIF                     
-   
+        CALL JEDETR(K24B)
+      ENDIF
+
       END

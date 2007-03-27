@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_recal_ops Macro  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,7 +79,7 @@ def Ecriture_Derivees(output_file, derivees):
 
 # --------------------------------------------------------------------------------------------------
 def Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess):
-   """Sortie de la macro, on renvoit les parametres obtenus"""
+   """ Sortie de la macro, on renvoie les parametres obtenus """
 
    import Cata, aster, Macro
    from Cata.cata import DEFI_LIST_REEL
@@ -111,6 +111,9 @@ def Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess):
 def macr_recal_externe( RESU_EXP, LIST_PARA, RESU_CALC, UNITE_ESCL=3, POIDS=None, LIST_DERIV=None, 
                ITER_MAXI=10, ITER_FONC_MAXI=100, RESI_GLOB_RELA=1.e-6, UNITE_RESU=91, PARA_DIFF_FINI=0.001,
                GRAPHIQUE=None, SUIVI_ESCLAVE='NON', METHODE='EXTERNE', INFO=1, **args ):
+   """
+   Entree du mode EXTERNE (ici macr_recal_ops.py est traite comme un fichier Python et non pas par le superviseur Aster)
+   """
 
    METHODE='EXTERNE'
 
@@ -313,9 +316,11 @@ def macr_recal(UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, LIST_DERIV, RESU_CALC,
    #
    # GESTION DES ERREURS DE SYNTAXE
    #_____________________________________________
-   texte_erreur = gestion(UNITE_ESCL,LIST_PARA,RESU_CALC,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE)
+   texte_erreur, texte_alarme = gestion(UNITE_ESCL,LIST_PARA,RESU_CALC,RESU_EXP,POIDS,GRAPHIQUE,UNITE_RESU,METHODE)
    if (texte_erreur != ""):
       UTMESS('F', "MACR_RECAL", texte_erreur)
+   if (texte_alarme != ""):
+      UTMESS('A', "MACR_RECAL", texte_alarme)
 
 
    #_____________________________________________

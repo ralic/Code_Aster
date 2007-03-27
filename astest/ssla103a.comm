@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # -----------------------------------------------------------------
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #        ET D'HYDRATATION - LOI ELASTIQUE  - AXIS
@@ -120,24 +120,21 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=BETON,
                          TEMP_REF=20.0),
-                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC="HYDR",NOM_CHAM='HYDR_NOEU_ELGA'),
-                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC="SECH",NOM_CHAM='TEMP',VALE_REF=100),),);
+                 AFFE_VARC=(_F(TOUT='OUI',EVOL=HYDR1,NOM_VARC='HYDR',NOM_CHAM='HYDR_NOEU_ELGA'),
+                            _F(TOUT='OUI',EVOL=SECH1,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=100),
+                            _F(TOUT='OUI',EVOL=TEMP1,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=20),),);
 
 CH1=AFFE_CHAR_MECA(MODELE=MO,
                    FACE_IMPO=_F(GROUP_MA='D1',
                                 DY=0.0,),);
                                 
-CH2=AFFE_CHAR_MECA(MODELE=MO,
-                   TEMP_CALCULEE=TEMP1);
-
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3600.0,
                                      NOMBRE=2,  ),);
 
 U=STAT_NON_LINE( MODELE=MO,
                 CHAM_MATER=CM,
-                EXCIT=(_F(CHARGE=CH1,),
-                       _F(CHARGE=CH2,),),
+                EXCIT=_F(CHARGE=CH1,),
                 COMP_INCR=_F(RELATION='ELAS',),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
@@ -182,8 +179,7 @@ TEST_RESU(RESU=(
 # CALCUL AVEC MECA_STATIQUE
 U2=MECA_STATIQUE( MODELE=MO,
                   CHAM_MATER=CM,
-                  EXCIT=(_F(CHARGE=CH1,),
-                         _F(CHARGE=CH2,),),
+                  EXCIT=_F(CHARGE=CH1,),
                  INST = 3600.)
 U2=CALC_ELEM(reuse =U2,
              RESULTAT = U2,

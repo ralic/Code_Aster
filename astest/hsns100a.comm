@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE SOUMISE A UN GRADIENT DE TEMPERATURE DANS L'EPAISSEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,13 +36,6 @@ M=DEFI_GROUP(reuse =M,
              MAILLAGE=M,
              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
-TEMPER=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                  OPERATION='AFFE',
-                  MAILLAGE=M,
-                  AFFE=_F(TOUT='OUI',
-                          NOM_CMP=('TEMP','TEMP_INF','TEMP_SUP',),
-                          VALE=(0.0,-50.0,50.0,),),);
-
 MO=AFFE_MODELE(MAILLAGE=M,
                AFFE=(_F(MAILLE=('M1','M2',),
                         PHENOMENE='MECANIQUE',
@@ -64,6 +57,25 @@ CARAC=AFFE_CARA_ELEM(MODELE=MO,
                               COQUE_NCOU=5,
                               MODI_METRIQUE='OUI',),);
 
+TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=M,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP=('TEMP','TEMP_INF','TEMP_SUP',),
+                          VALE=(0.0,-50.0,50.0,),),);
+
+TEMPLI=CREA_RESU( OPERATION='AFFE',
+                   TYPE_RESU='EVOL_THER',
+                   NOM_CHAM='TEMP',
+                   AFFE=(_F( CHAM_GD=TEMP,
+                             INST=0.0,      ), ), );
+
+TEMPER=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARAC, EVOL_THER = TEMPLI, ),)
+
+
+
+
 ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0,
                             NU=0.3,
                             ALPHA=0.01,),
@@ -73,10 +85,11 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=2.0,
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=ACIER,
-                         TEMP_REF=20.0,),);
+                         TEMP_REF=20.0,),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=20.0), )
 
 CH_LA=AFFE_CHAR_MECA(MODELE=MO,
-                     TEMP_CALCULEE=TEMPER,
                      DDL_IMPO=(_F(TOUT='OUI',
                                   DRZ=0.0,),
                                _F(GROUP_NO='BOUT1',

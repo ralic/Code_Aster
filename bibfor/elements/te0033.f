@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,24 +48,30 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
-      INTEGER       I, IBID, IC, IER, INIV, IRET, ITEMP, JCARA,
+      INTEGER       I, IBID, IC, IER, INIV, IRET, JCARA, KPG,
      &              JDEPG, JEFFG, JGEOM, JMATE, JNUMCO, JSIGM,
      &              NP, MULTIC, JTAB(8), IPG,ICONTP,
      &              JNBSPI, NBCOU, NBSP,ISP, IEFF, ICOU
-      REAL*8        TINF1, TMOY1, TSUP1, ZERO, EPAIS,X3I,EPI,EPTOT
+      REAL*8        ZERO, X3I,EPI,EPTOT
       REAL*8        PGL(3,3), XYZL(3,4), VALPU(2),R8BID
       REAL*8        DEPL(24), DEPLR(24), DEPLI(24), SIGMR(32),SIGMI(32)
       REAL*8        DEPGR(24), DEPGI(24), SIGMRL(32), SIGMIL(32)
-      REAL*8        TMOY(4), TSUP(4), TINF(4), EFFGT(32), SIGTOT(24)
+      REAL*8        EFFGT(32), SIGTOT(24)
       REAL*8        T2EV(4), T2VE(4), T1VE(9)
-      LOGICAL       GRILLE
+      LOGICAL       GRILLE,LTEATT
       CHARACTER*2   CODRET,VAL
+      CHARACTER*4   FAMI
       CHARACTER*8   NOMPU(2),NOMRES
       CHARACTER*16  PHENOM
       CHARACTER*3 NUM
 C     ------------------------------------------------------------------
 C
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+      IF (OPTION(6:9).EQ.'ELNO') THEN
+        FAMI = 'NOEU'
+      ELSE
+        FAMI = 'RIGI'
+      ENDIF
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
 C
       IF (OPTION.NE.'SIEF_ELGA_DEPL  ' .AND.
      &    OPTION.NE.'EFGE_ELNO_DEPL  ' .AND.
@@ -76,11 +82,7 @@ C
       END IF
       ZERO   = 0.0D0
 
-      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
-        GRILLE = .TRUE.
-      ELSE
-        GRILLE = .FALSE.
-      END IF
+      GRILLE= LTEATT(' ','GRILLE','OUI')
 
       DO 10 I = 1,32
         EFFGT(I) = ZERO
@@ -90,16 +92,10 @@ C
         SIGTOT(I) = ZERO
    20 CONTINUE
 
-      DO 30 I = 1,4
-        TINF(I) = ZERO
-        TMOY(I) = ZERO
-        TSUP(I) = ZERO
-   30 CONTINUE
-
       CALL JEVECH('PGEOMER','L',JGEOM)
       CALL JEVECH('PMATERC','L',JMATE)
       CALL JEVECH('PCACOQU','L',JCARA)
-      EPAIS  = ZR(JCARA)
+C      EPAIS  = ZR(JCARA)
 
       IF (OPTION(8:9).EQ.'GA') THEN
         NP = NPG
@@ -119,42 +115,6 @@ C
       CALL JEVECH('PDEPLAR','L',JDEPG)
       CALL UTPVGL(NNO,6,PGL,ZR(JDEPG),DEPL)
 
-      IF (OPTION(1:9).EQ.'EFGE_ELNO' .OR.
-     &    OPTION(1:9).EQ.'SIGM_ELNO') THEN
-C===============================================================
-C          -- RECUPERATION DE LA TEMPERATURE :
-C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH ('NNN','PTEMPER',8,JTAB,IRET)
-      ITEMP=JTAB(1)
-        IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-          DO 50 I = 1,NNO
-            CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(JTAB(8)+3*(I-1)))
-            TMOY(I) = ZR(ITEMP+3* (I-1))
-            TINF(I) = ZR(ITEMP+3* (I-1)+1)
-            TSUP(I) = ZR(ITEMP+3* (I-1)+2)
-   50     CONTINUE
-        END IF
-C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
-        CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
-        IF (IRET.EQ.0) THEN
-          NOMPU(1) = 'INST'
-          NOMPU(2) = 'EPAIS'
-          CALL JEVECH('PTEMPSR','L',IBID)
-          VALPU(1) = ZR(IBID)
-          VALPU(2) = 0.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TMOY1,IER)
-          VALPU(2) = -EPAIS/2.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TINF1,IER)
-          VALPU(2) = +EPAIS/2.D0
-          CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TSUP1,IER)
-          DO 60,I = 1,NNO
-            TMOY(I) = TMOY1
-            TINF(I) = TINF1
-            TSUP(I) = TSUP1
-   60     CONTINUE
-        END IF
-C===============================================================
-      END IF
 
 C     ---------- CONTRAINTES ET DEFORMATIONS --------------------------
 
@@ -169,8 +129,8 @@ C          ----------------------------
 C ---   CALCUL DES CONTRAINTES VRAIES (I.E. SIG_MECA - SIG_THERM)
 C ---   AUX POINTS DE CALCUL
 C       --------------------
-        CALL DXSIGV(NOMTE,OPTION,XYZL,PGL,IC,INIV,DEPL,TSUP,TINF,TMOY,
-     &              SIGTOT)
+        CALL DXSIGV(FAMI,NOMTE,OPTION,XYZL,PGL,IC,
+     &              INIV,DEPL,SIGTOT)
 
 C ---   PASSAGE DES CONTRAINTES DU REPERE INTRINSEQUE
 C ---   A L'ELEMENT AU REPERE LOCAL DE LA COQUE
@@ -226,20 +186,24 @@ C
 
            IF ( NOMTE(1:8).EQ.'MEDKTR3 ' .OR.
      &          NOMTE(1:8).EQ.'MEDKTG3 ' ) THEN
-              CALL DKTCOL(XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM),
+              CALL DKTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM),
      &                    MULTIC,GRILLE)
            ELSE IF (NOMTE(1:8).EQ.'MEGRDKT ' ) THEN
-              CALL DKTCOL(XYZL,OPTION,PGL,NBCOU,1,DEPL,ZR(JSIGM),
+              CALL DKTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,1,DEPL,ZR(JSIGM),
      &                    MULTIC,GRILLE)
            ELSE IF (NOMTE(1:8).EQ.'MEDSTR3 ' ) THEN
-              CALL DSTCOL(XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM))
+              CALL DSTCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
+     &                    ZR(JSIGM),NPG)
            ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
      &              NOMTE(1:8).EQ.'MEDKQG4 ' ) THEN
-              CALL DKQCOL(XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM))
+              CALL DKQCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
+     &                    ZR(JSIGM),NPG)
            ELSE IF (NOMTE(1:8).EQ.'MEDSQU4 ' ) THEN
-              CALL DSQCOL(XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM))
+              CALL DSQCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
+     &                    ZR(JSIGM),NPG)
            ELSE IF (NOMTE(1:8).EQ.'MEQ4QU4 ' ) THEN
-              CALL Q4GCOL(XYZL,OPTION,PGL,NBCOU,3,DEPL,ZR(JSIGM))
+              CALL Q4GCOL(FAMI,XYZL,OPTION,PGL,NBCOU,3,DEPL,
+     &                    ZR(JSIGM),NPG)
            END IF
            CALL DXSIR2 ( NP, NBCOU, 3, T2EV, ZR(JSIGM), ZR(JSIGM) )
         ELSEIF ( PHENOM.EQ.'ELAS_COQMU' ) THEN
@@ -251,7 +215,7 @@ C
             NBCOU = ZI(JNBSPI)
             IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
 
-            CALL DXEFGV(NOMTE,OPTION,XYZL,PGL,DEPL,TSUP,TINF,TMOY,EFFGT)
+            CALL DXEFGV(NOMTE,OPTION,XYZL,PGL,DEPL,EFFGT)
             CALL EXCENT(OPTION,NOMTE,NNO,EFFGT)
             CALL TECACH('OON','PCONTRR',7,JTAB,IRET)
             NPG=JTAB(3)
@@ -309,7 +273,7 @@ C               ----------------------------
 C ---     CALCUL DES EFFORTS GENERALISES VRAIS
 C ---     AUX POINTS DE CALCUL
 C         --------------------
-        CALL DXEFGV(NOMTE,OPTION,XYZL,PGL,DEPL,TSUP,TINF,TMOY,EFFGT)
+        CALL DXEFGV(NOMTE,OPTION,XYZL,PGL,DEPL,EFFGT)
 C
 C ---    PRISE EN COMPTE DE L'EXCENTREMENT SI ON CALCULE LES
 C ---    EFFORTS GENERALISES SUR UN FEUILLET DE REFERENCE DIFFERENT

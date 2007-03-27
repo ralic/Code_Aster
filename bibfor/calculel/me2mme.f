@@ -1,6 +1,6 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,16 +93,17 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER (NBIN=17)
       CHARACTER*8 ZK8,LPAIN(NBIN),LPAOUT(1),TEMPE,NOMA,EXIELE,REPK
       CHARACTER*16 ZK16,OPTION
-      CHARACTER*24 CHGEOM,CHTEMP,LCHIN(NBIN),LCHOUT(1),KCMP(5)
-      CHARACTER*24 LIGRMO,LIGRCH,CHTREF,CHTIME,CHLAPL,CHCARA(15),ZK24
+      CHARACTER*24 CHGEOM,LCHIN(NBIN),LCHOUT(1),KCMP(5)
+      CHARACTER*24 LIGRMO,LIGRCH,CHTIME,CHLAPL,CHCARA(15),ZK24
       CHARACTER*24 CHHARM,CH24
-      CHARACTER*19 CHVARC
+      CHARACTER*19 CHVARC,CHVREF
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 
       CHARACTER*19  RESUFV(3)
       CHARACTER*24 CHARGE
       INTEGER JAD,I
+      LOGICAL LTEMP,LTREF
 
 
       CALL JEMARQ()
@@ -116,6 +117,8 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
         LPAIN(I) = ' '
    10 CONTINUE
 
+      CHVARC='&&ME2MME.VARC'
+      CHVREF='&&ME2MME.VARC.REF'
 
 
 C     -- CALCUL DE .REFE_RESU:
@@ -130,27 +133,9 @@ C        ET CHAM_MATER :
 
       CALL MEGEOM(MODELE,LCHAR(1),EXIGEO,CHGEOM)
       CALL MECARA(CARA,EXICAR,CHCARA)
-      TEMPE = ' '
-      DO 20 ICHA = 1,NCHAR
-        LCHARZ = LCHAR(ICHA)
-        CALL JEEXIN(LCHARZ//'.CHME.TEMPE.TEMP',IRET)
-        IF (IRET.NE.0) THEN
-          CALL JEVEUO(LCHARZ//'.CHME.TEMPE.TEMP','L',JTEMP)
-          TEMPE = ZK8(JTEMP)
-        END IF
-   20 CONTINUE
-      CHTEMP = '&&ME2MME.CH_TEMP_R       '
       NOMA = CHGEOM(1:8)
-      CALL METREF(MATE,NOMA,EXITRF,CHTREF)
-      CALL METEMP(NOMA,TEMPE,EXITIM,TIME,CHTREF,EXITHE,CHTEMP(1:19))
-      IF (MATE(1:8).NE.' ') THEN
-        CALL DISMOI('F','ELAS_F_TEMP',MATE,'CHAM_MATER',IBID,REPK,IERD)
-      END IF
-      IF (REPK.EQ.'OUI') THEN
-        IF (.NOT.EXITHE) THEN
-          CALL U2MESS('F','ALGORITH_57')
-        END IF
-      END IF
+      CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,LCHAR,TIME,CHVARC)
+      CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
 
       IF (NCHAR.EQ.0) GO TO 60
       LONLIS = 10*NCHAR
@@ -161,13 +146,12 @@ C        ET CHAM_MATER :
       LPAOUT(1) = 'PVECTUR'
       LCHOUT(1) = MATEL//'.VEXXX'
       ILIRES = 0
-      IF (NCHAR.NE.0) THEN
         LPAIN(1) = 'PGEOMER'
         LCHIN(1) = CHGEOM
         LPAIN(2) = 'PMATERC'
         LCHIN(2) = MATE
-        LPAIN(3) = 'PTEMPER'
-        LCHIN(3) = CHTEMP
+        LPAIN(3) = 'PVARCPR'
+        LCHIN(3) = CHVARC
 
         IFLA = 0
 
@@ -581,22 +565,15 @@ C         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
    40     CONTINUE
 C ====================================================================
           CALL JEEXIN(LIGRCH(1:13)//'.TEMPE.TEMP',IRET)
-          IF (IRET.NE.0) THEN
-            CALL DISMOI('F','ELAS_F_TEMP',MATE,'CHAM_MATER',IBID,REPK,
-     &                  IERD)
-            IF (REPK.EQ.'OUI') THEN
-              IF (.NOT.EXITRF) THEN
-                CALL U2MESS('A','ALGORITH_58')
-              END IF
-            END IF
-
-            CHVARC='&&ME2MME.CHVARC'
-            CALL VRCINS(MODELE,MATE(1:8),CARA,TIME,CHVARC)
-           OPTION = 'CHAR_MECA_TEMP_R'
+          CALL NMVCD2('TEMP',MATE,LTEMP,LTREF)
+          LTEMP=LTEMP.OR.(IRET.GT.0)
+          IF (LTEMP) THEN
+            CALL VRCINS(MODELE,MATE(1:8),CARA,NCHAR,LCHAR,TIME,CHVARC)
+            OPTION = 'CHAR_MECA_TEMP_R'
             LPAIN(2) = 'PMATERC'
             LCHIN(2) = MATE
-            LPAIN(4) = 'PTEREF'
-            LCHIN(4) = CHTREF
+            LPAIN(4) = 'PVARCRR'
+            LCHIN(4) = CHVREF
             LPAIN(12) = 'PCAMASS'
             LCHIN(12) = CHCARA(12)
             CALL MEHARM(MODELE,NH,CHHARM)
@@ -606,8 +583,8 @@ C ====================================================================
             LCHIN(14) = CHCARA(5)
             LPAIN(15) = 'PCAGNBA'
             LCHIN(15) = CHCARA(11)
-            LPAIN(16) = 'PVARCPR'
-            LCHIN(16) = CHVARC
+            LPAIN(16) = ' '
+            LCHIN(16) = ' '
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
@@ -718,18 +695,17 @@ C CHARGE DE TYPE EVOL_CHAR
             ZK24(JLIRES-1+ILIRES) = LCHOUT(1)
             CALL COPISD('CHAMP_GD',BASE,RESUFV(I),LCHOUT(1))
             CALL DETRSD('CHAMP_GD',RESUFV(I))
-      END IF
+          END IF
  200    CONTINUE
         CALL JEECRA(MATEL//'.LISTE_RESU','LONUTI',ILIRES,' ')
         CALL JEDETR(CHARGE)
 
 C ====================================================================
    50   CONTINUE
-      END IF
 
    60 CONTINUE
-      CALL DETRSD('CHAMP_GD',CHTEMP)
+      CALL DETRSD('CHAMP_GD',CHVARC)
+      CALL DETRSD('CHAMP_GD',CHVREF)
 
-   70 CONTINUE
       CALL JEDEMA()
       END

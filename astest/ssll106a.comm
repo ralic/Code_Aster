@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 3 NOEUDS) MACRO_ELAS_MULT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,42 +166,37 @@ F3=DEFI_FONCTION(  NOM_PARA='X',  VALE=(-0.1, 3.E2,  10.1, 3.E2,),
 
 
 CHAR9B=AFFE_CHAR_MECA_F(   MODELE=MO,
-           FORCE_POUTRE=_F(
-       GROUP_MA = 'TOUT',
- FZ = F1),
-          FORCE_NODALE=_F( GROUP_NO = 'B', FX = F2, FY = F3)
+                           FORCE_POUTRE=_F(GROUP_MA = 'TOUT', FZ = F1),
+                           FORCE_NODALE=_F( GROUP_NO = 'B', FX = F2, FY = F3)
             )
 
-RESU=MACRO_ELAS_MULT(            MODELE=MO,
-                                CHAM_MATER=CHMAT,
-                                      CARA_ELEM=CAREL,
-                               CHAR_MECA_GLOBAL=CHAR0,CAS_CHARGE=(
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 1 ',
-            CHAR_MECA = CHAR1,
-            SOUS_TITRE = 'FX LOCAL',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL',
-                         'EFGE_ELNO_DEPL','DEGE_ELNO_DEPL'
-                         )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 2',
-            CHAR_MECA = CHAR2,
-            SOUS_TITRE = 'FY LOCAL ',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
-                         )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 3',
-            CHAR_MECA = CHAR3,
-            SOUS_TITRE = 'FZ LOCAL ',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
-                         )),
-                   _F(
-            NOM_CAS = 'CHARGE NUMERO 4 ',
-            CHAR_MECA = CHAR4,
-            SOUS_TITRE = 'MX LOCAL',
-            OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
-                         'EFGE_ELNO_DEPL',
-                         )),
+RESU=MACRO_ELAS_MULT(      MODELE=MO,
+                           CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,
+                           CHAR_MECA_GLOBAL=CHAR0,
+                           CAS_CHARGE=(
+                                       _F(NOM_CAS = 'CHARGE NUMERO 1 ',
+                                          CHAR_MECA = CHAR1,
+                                          SOUS_TITRE = 'FX LOCAL',
+                                          OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL',
+                                                    'EFGE_ELNO_DEPL','DEGE_ELNO_DEPL'
+                                          )),
+                                      _F(NOM_CAS = 'CHARGE NUMERO 2',
+                                         CHAR_MECA = CHAR2,
+                                         SOUS_TITRE = 'FY LOCAL ',
+                                         OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
+                                          )),
+                                     _F(NOM_CAS = 'CHARGE NUMERO 3',
+                                        CHAR_MECA = CHAR3,
+                                        SOUS_TITRE = 'FZ LOCAL ',
+                                        OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
+                                         )),
+                                    _F(NOM_CAS = 'CHARGE NUMERO 4 ',
+                                       CHAR_MECA = CHAR4,
+                                       SOUS_TITRE = 'MX LOCAL',
+                                       OPTION = ('EPSI_ELGA_DEPL', 'SIEF_ELGA_DEPL','DEGE_ELNO_DEPL',
+                                                 'EFGE_ELNO_DEPL',
+                                        )),
                    _F(
             NOM_CAS = 'CHARGE NUMERO 5',
             CHAR_MECA = CHAR5,
@@ -632,19 +627,28 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 # DILATATION THERMIQUE
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
               AFFE=_F(  TOUT = 'OUI',
-                     NOM_CMP = ('TEMP', 'TEMP_INF', 'TEMP_SUP',),
-                     VALE = ( 200.,     200.,     200.,)))
+                     NOM_CMP = 'TEMP',
+                     VALE = 200.,))
 
-CHARTH=AFFE_CHAR_MECA(   MODELE=MO,
-          TEMP_CALCULEE=TEMP
-            )
+TEMPER=CREA_RESU(
+               OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                 AFFE=_F(
+               INST = 0.0,
+               CHAM_GD = TEMP)
+             )
+
+
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
+                           AFFE=_F( TOUT = 'OUI', MATER = MAT),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER,
+                      NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.0),)
 
 
 REST=MECA_STATIQUE(             MODELE=MO,
-                                 CHAM_MATER=CHMAT,
+                                 CHAM_MATER=CHMAT1,
                                   CARA_ELEM=CAREL,EXCIT=(
-                           _F(  CHARGE = CHAR0),
-                           _F(  CHARGE = CHARTH)),
+                           _F(  CHARGE = CHAR0),),
 
                         )
 

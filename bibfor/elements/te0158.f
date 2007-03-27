@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,16 +43,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      JEFFG, LMATER, ITREF, ITEMP, LSECT, LX,IRET,
-     &             LORIEN, JDEPL, I, J, KP, NBPAR, NNO, NC, NBRES
+      INTEGER      JEFFG, LMATER, LSECT, LX,IRET,
+     &             LORIEN, JDEPL, I, J, KP, NBPAR, NNO, NC, NBRES,
+     &             NPG
+
       PARAMETER   (        NBRES = 3 )
       REAL*8        VALRES(NBRES)
       CHARACTER*2   CODRES(NBRES)
+      CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
       REAL*8       UL(12), PGL(3,3), D1B(6,12), DEGE(3,6)
       REAL*8       ZERO, UN, DEUX, TEMP, TREF, E, XNU, ALPHA, G, XL
-      REAL*8       A, XIY, XIZ, ALFAY, ALFAZ, PHIY, PHIZ
+      REAL*8       A, XIY, XIZ, ALFAY, ALFAZ, PHIY, PHIZ,TEMPG,TEMPP
       REAL*8       KSI1, D1B3(2,3)
 C     ------------------------------------------------------------------
       DATA NOMRES / 'E' , 'NU' , 'ALPHA'  /
@@ -68,6 +71,9 @@ C
          CH16 = OPTION
          CALL U2MESK('F','ELEMENTS2_47',1,CH16)
       ENDIF
+C NOMBRE DE POINTS DE GAUSS
+      NPG = 3
+      FAMI = 'RIGI'
 C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       CALL JEVECH ('PMATERC', 'L', LMATER)
@@ -75,19 +81,10 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          VALRES(I) = ZERO
  10   CONTINUE
 C
-      CALL JEVECH ('PTEREF', 'L', ITREF )
-      TREF = ZR(ITREF)
-C
-      CALL TECACH ('ONN', 'PTEMPER', 1, ITEMP,IRET )
-      IF ( ITEMP .EQ. 0 ) THEN
-         NBPAR  = 0
-         NOMPAR = ' '
-         TEMP   = ZERO
-      ELSE
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-         TEMP   = 0.5D0*(ZR(ITEMP)+ZR(ITEMP+1))
-      ENDIF
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
+      CALL MOYTEM(FAMI,NPG,1,'+',TEMP)
+      NBPAR  = 1
+      NOMPAR = 'TEMP'
 C
       CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,TEMP,2,
      &              NOMRES,VALRES,CODRES,'FM')
@@ -156,7 +153,7 @@ C
                DEGE(KP,I) = DEGE(KP,I) + D1B(I,J)*UL(J)
  34         CONTINUE
  32      CONTINUE
-         IF ( (ALPHA.NE.ZERO).AND.(ITEMP.NE.0) ) THEN
+         IF (ALPHA.NE.ZERO) THEN
             DEGE(KP,1) = DEGE(KP,1) - ALPHA*(TEMP-TREF)
          ENDIF
 C

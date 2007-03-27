@@ -1,6 +1,6 @@
-      SUBROUTINE MATRTH(NNO,YOUNG,NU,ALPHA,INDITH)
+      SUBROUTINE MATRTH(FAMI,NPG,YOUNG,NU,ALPHA,INDITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,10 @@ C
       CHARACTER*8   NOMRES(26), NOMPAR,NOMPU(2)
       CHARACTER*10  PHENOM
       REAL*8 YOUNG, NU, ALPHA
+      INTEGER NPG
+      CHARACTER*4 FAMI
 C
+
       INDITH=0
       BL2='  '
 C
@@ -79,42 +82,13 @@ C
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
-C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-      CALL TECACH ('ONN','PTEMPER',8,ITAB,IRET)
-      ITEMP=ITAB(1)
-      IF ( ITEMP .NE. 0 ) THEN
-         NBPAR  = 1
-         NOMPAR = 'TEMP'
-         TPG1 = 0.D0
-         DO 10 I = 1,NNO
-            CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(ITAB(8)+3*(I-1)))
-            T    = ZR(ITEMP  +3*(I-1))
-            TINF = ZR(ITEMP+1+3*(I-1))
-            TSUP = ZR(ITEMP+2+3*(I-1))
-            TPG1 = TPG1 + T + ( TSUP + TINF - 2*T ) / 6.D0
- 10      CONTINUE
-         VALPAR = TPG1 / NNO
-      ELSE
+C
+        CALL JEVECH('PNBSP_I','L',JCOU)
+        CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
+        CALL MOYTEM(FAMI,NPG,3*ZI(JCOU),'+',VALPAR)
+        NBPAR = 1
+        NOMPAR = 'TEMP'
 
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-      CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
-         IF (IRET.EQ.0) THEN
-            NBPAR  = 1
-            NOMPAR = 'TEMP'
-            NOMPU(1)='INST'
-            NOMPU(2)='EPAIS'
-            CALL JEVECH ( 'PTEMPSR' ,'L', IBID )
-            VALPU(1)= ZR(IBID)
-            VALPU(2)= 0.D0
-            CALL  FOINTE ('FM', ZK8(ITEMP), 2, NOMPU, VALPU, VALPAR,IER)
-
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-         ELSE
-            NBPAR  = 0
-            NOMPAR = ' '
-            VALPAR = 0.D0
-         ENDIF
-      ENDIF
 C===============================================================
 C
       IF ( PHENOM .EQ. 'ELAS' )  THEN

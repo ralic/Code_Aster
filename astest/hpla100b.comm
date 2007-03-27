@@ -1,4 +1,4 @@
-# MODIF  DATE 07/11/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,25 +71,10 @@ MATTH=DEFI_MATERIAU(ELAS_FO=_F( E = E_TEMP, NU = NU_FO, RHO = 8.E-6,
 
 MATHER=DEFI_MATERIAU(THER=_F( LAMBDA = 1.0, RHO_CP = 0.0) )
 
-
-CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
-                      AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.))
-
-CHMATF=AFFE_MATERIAU(  MAILLAGE=MA,
-                       AFFE=_F(  TOUT = 'OUI', MATER = MATTH, TEMP_REF = 0.))
-
-CHMATHE=AFFE_MATERIAU(  MAILLAGE=MA,
-                        AFFE=_F(  TOUT = 'OUI', MATER = MATHER))
-
 CARE=AFFE_CARA_ELEM(   MODELE=MO,
                        COQUE=_F( GROUP_MA = 'TOUT',
                                  EPAIS = 1.00,
                                  A_CIS = 1.E3,    MODI_METRIQUE = 'NON'))
-
-CARETHE=AFFE_CARA_ELEM(   MODELE=MOTHER,
-                          COQUE=_F( GROUP_MA = 'TOUT',
-                                    EPAIS = 1.00)       )
-
 # ------------------------------------------------------------------
 
 T_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
@@ -107,6 +92,7 @@ T_FIN2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
                             NOM_CMP=('TEMP_INF','TEMP','TEMP_SUP'),
                             VALE=   (    0.1   ,  0.1 ,    0.1   ), ), )
 
+
 TEMPLI1=CREA_RESU( OPERATION='AFFE',
                    TYPE_RESU='EVOL_THER',
                    NOM_CHAM='TEMP',
@@ -121,6 +107,33 @@ TEMPLI2=CREA_RESU( OPERATION='AFFE',
                    AFFE=(_F( CHAM_GD=T_FIN2,
                              INST=0.0,      ), ), );
 
+TEMPER1=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARE, EVOL_THER = TEMPLI1, ),)
+TEMPER2=CREA_RESU(  OPERATION='PREP_VRC2', TYPE_RESU='EVOL_THER',
+    PREP_VRC2= _F(  MODELE=MO, CARA_ELEM=CARE, EVOL_THER = TEMPLI2, ),)
+# ------------------------------------------------------------------
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', MATER = MAT))
+CHMAT1=AFFE_MATERIAU(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=0.0), )
+
+CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.),
+                      AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER2,NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',VALE_REF=0.0), )
+
+CHMATH2=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI', MATER = MATTH, TEMP_REF = 0.),
+                       AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER2,NOM_VARC='TEMP',
+                                      NOM_CHAM='TEMP',VALE_REF=0.0), );
+CHMATH1=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI', MATER = MATTH, TEMP_REF = 0.),
+                       AFFE_VARC=  _F(TOUT='OUI',EVOL=TEMPER1,NOM_VARC='TEMP',
+                                      NOM_CHAM='TEMP',VALE_REF=0.0), );
+
 # ------------------------------------------------------------------
 
 CHPES=AFFE_CHAR_MECA(  MODELE=MO,
@@ -134,11 +147,9 @@ CHROT=AFFE_CHAR_MECA(  MODELE=MO,
                     _F(  GROUP_NO = 'GRNO13',   DY = 0., DRZ = 0.)) )
 
 CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLI1,
            DDL_IMPO= _F(  GROUP_NO = 'GRNO15',   DY = 0., DRZ = 0.) )
 
 CHDI2=AFFE_CHAR_MECA(  MODELE=MO,
-           TEMP_CALCULEE=TEMPLI2,
            DDL_IMPO=(_F(  GROUP_NO = 'GRNO6',    DY = 0., DRZ = 0.),
                      _F(  GROUP_NO = 'GRNO13',   DY = 0., DRZ = 0.)) )
 
@@ -176,7 +187,7 @@ LISTIME=DEFI_LIST_REEL(VALE=( 0.0, 1.0, ), )
 
 STATNL1=STAT_NON_LINE(
                   MODELE=MO,
-              CHAM_MATER=CHMAT,
+              CHAM_MATER=CHMAT1,
                CARA_ELEM=CARE,
                COMP_INCR=_F(RELATION='ELAS'),
                    EXCIT=_F( CHARGE = CHDIL),
@@ -188,7 +199,7 @@ DEP1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 
 DEPLDIL=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
                     AFFE=_F(  INST = 1.,  CHAM_GD = DEP1,
-                              MODELE=MO, CHAM_MATER=CHMAT, CARA_ELEM=CARE, )     )
+                              MODELE=MO, CHAM_MATER=CHMAT1, CARA_ELEM=CARE, )     )
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
@@ -199,7 +210,7 @@ CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
 
 STATNL2=STAT_NON_LINE(
                   MODELE=MO,
-              CHAM_MATER=CHMATF,
+              CHAM_MATER=CHMATH1,
                CARA_ELEM=CARE,
                COMP_INCR=_F(RELATION='ELAS'),
                    EXCIT=_F( CHARGE = CHDIL),
@@ -211,7 +222,7 @@ DEP2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 
 DEPLDILT=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
                      AFFE=_F(  INST = 1.,  CHAM_GD = DEP2,
-                               MODELE=MO, CHAM_MATER=CHMATF, CARA_ELEM=CARE, )     )
+                               MODELE=MO, CHAM_MATER=CHMATH1, CARA_ELEM=CARE, )     )
 
 CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
            OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
@@ -222,7 +233,7 @@ CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
 
 DEPLDI2=MECA_STATIQUE(
                   MODELE=MO,
-              CHAM_MATER=CHMAT,
+              CHAM_MATER=CHMAT2,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDI2),
                          )
@@ -235,7 +246,7 @@ CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
 
 DEPLDI2T=MECA_STATIQUE(
                   MODELE=MO,
-              CHAM_MATER=CHMATF,
+              CHAM_MATER=CHMATH2,
                CARA_ELEM=CARE,
                    EXCIT=_F( CHARGE = CHDI2),
                          )

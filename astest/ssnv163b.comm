@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,19 +91,20 @@ SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                               VALE = 1.)
                        )
 
-CM=AFFE_MATERIAU(  MAILLAGE=M,   
-                   AFFE=_F( TOUT = 'OUI',
-                            MATER = BETON,
-                            TEMP_REF = 20.),
-                   AFFE_VARC=_F(TOUT='OUI',CHAMP_GD=SECH,NOM_VARC='SECH',VALE_REF=1), )
-
-
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                          AFFE=_F( 
                                TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
                                VALE = 20.)
                        )
+
+CM=AFFE_MATERIAU(  MAILLAGE=M,   
+                   AFFE=_F( TOUT = 'OUI',
+                            MATER = BETON),
+                   AFFE_VARC=(_F(TOUT='OUI',CHAMP_GD=SECH,NOM_VARC='SECH',VALE_REF=1), 
+                              _F(TOUT='OUI',CHAMP_GD=TEMP,NOM_VARC='TEMP',VALE_REF=20),),);
+
+
 
 FORCE=DEFI_FONCTION( NOM_PARA='INST',
                      PROL_DROITE='LINEAIRE',
@@ -130,10 +131,6 @@ CH2=AFFE_CHAR_MECA_F( MODELE=MO,
                                 )
                     )
 
-CH3=AFFE_CHAR_MECA( MODELE        = MO,
-                    TEMP_CALCULEE = TEMP
-                  )
-
 L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,INTERVALLE=(
              _F( JUSQU_A = 0.0,       NOMBRE = 1),
              _F( JUSQU_A = 1.0,       NOMBRE = 1),
@@ -150,7 +147,6 @@ U=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CH10),
                    _F(CHARGE = CH12),
                    _F(CHARGE = CH2),
-                   _F(CHARGE = CH3)
                  ),
        COMP_INCR=_F(RELATION = 'BETON_UMLV_FP',
                     ITER_INTE_MAXI = 1000),

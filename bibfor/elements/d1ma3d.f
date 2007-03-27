@@ -1,6 +1,7 @@
-      SUBROUTINE  D1MA3D(MATER,TEMPE,INSTAN,REPERE,XYZGAU,D1)
+      SUBROUTINE  D1MA3D(FAMI,MATER,INSTAN,POUM,KPG,KSP,
+     &                   REPERE,XYZGAU,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,9 +27,12 @@ C                  FOURIER POUR DES MATERIAUX ISOTROPE, ORTHOTROPE
 C                  ET ISOTROPE TRANSVERSE
 C
 C   ARGUMENT        E/S  TYPE         ROLE
+C    FAMI           IN     K*       FAMILLE DU POINT DE GAUSS
 C    MATER          IN     I        MATERIAU
-C    TEMPE          IN     R        TEMPERATURE AU POINT D'INTEGRATION
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
+C    POUM           IN     K1       T ou T+DT
+C    KPG            IN     I        POINT DE GAUSS
+C    KSP            IN     I        SOUS-POINT DE GAUSS
 C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 C                                   D'ORTHOTROPIE
 C    XYZGAU(3)      IN     R        COORDONNEES DU POINT D'INTEGRATION
@@ -38,7 +42,9 @@ C
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
+           CHARACTER*(*)  POUM, FAMI
            CHARACTER*8  MODELI
+           INTEGER      KPG, KSP
            REAL*8       REPERE(7), XYZGAU(3), D1(6,6), INSTAN
 C -----  VARIABLES LOCALES
            PARAMETER (NBRES = 9)
@@ -47,7 +53,7 @@ C
            CHARACTER*8  NOMRES(NBRES), NOMPAR(2)
            CHARACTER*16 PHENOM
 C
-           REAL*8 VALRES(NBRES), VALPAR(2)
+           REAL*8 VALRES(NBRES), VALPAR(1)
            REAL*8 PASSAG(6,6), D1ORTH(6,6), WORK(6,6)
            REAL*8 NU, NU12, NU21, NU13, NU23, NU31, NU32
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -58,10 +64,8 @@ C      ---------------
       UN     = 1.0D0
       DEUX   = 2.0D0
 C
-      NOMPAR(1) = 'TEMP'
-      NOMPAR(2) = 'INST'
-      VALPAR(1) = TEMPE
-      VALPAR(2) = INSTAN
+      NOMPAR(1) = 'INST'
+      VALPAR(1) = INSTAN
 C
       DO 10 I = 1, 6
       DO 10 J = 1, 6
@@ -86,8 +90,8 @@ C
 C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 C ----   ET DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
-     &               VALRES, CODRET, 'FM' )
+          CALL RCVALB(FAMI,KPG,KSP,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                VALPAR,NBV,NOMRES,VALRES, CODRET, 'FM' )
 C
           E  = VALRES(1)
           NU = VALRES(2)
@@ -131,8 +135,8 @@ C
 C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 C ----   ET DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
-     &                VALRES,CODRET, 'FM' )
+          CALL RCVALB(FAMI,KPG,KSP,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                VALPAR,NBV,NOMRES,VALRES,CODRET, 'FM' )
 C
           E1   = VALRES(1)
           E2   = VALRES(2)
@@ -194,8 +198,8 @@ C
 C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 C ----   ET DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
-     &              VALRES,  CODRET, 'FM' )
+          CALL RCVALB(FAMI,KPG,KSP,POUM,MATER,' ',PHENOM,1,NOMPAR,
+     &                VALPAR,NBV,NOMRES,VALRES,  CODRET, 'FM' )
 C
           E1   = VALRES(1)
           E3   = VALRES(2)

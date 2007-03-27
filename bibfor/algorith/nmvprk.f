@@ -1,11 +1,11 @@
          SUBROUTINE NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     &                       TIMED, TIMEF, TEMPD, TEMPF, TREF,
+     &                       TIMED, TIMEF,
      &                       EPSDT, DEPST, SIGD,  VIND,  OPT,
      &                       ANGMAS, SIGF,  VINF,  DSDE)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2006   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,9 +65,6 @@ C                                0 = IMPLICITE
 C                                1 = RUNGE_KUTTA_2
 C               TIMED   INSTANT T
 C               TIMEF   INSTANT T+DT
-C               TEMPD   TEMPERATURE A T
-C               TEMPF   TEMPERATURE A T+DT
-C               TREF    TEMPERATURE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -147,8 +144,8 @@ C
         REAL*8          COTHE(NMAT),DCOTHE(NMAT),PGL(3,3),PASSAG(6,6)
         REAL*8          COEFF(NMAT),DCOEFF(NMAT),COEL(NMAT),XYZ(3)
         REAL*8          SIGI(6),EPSD(6),DETOT(6)
-        REAL*8          NU,TPERD,DTPER,TPEREF,DTIME,E,ALPHA,X
-        REAL*8          EPSEQ
+        REAL*8          NU,DTIME,E,ALPHA,X
+        REAL*8          EPSEQ,RBID
         REAL*8          HSR(5,24,24),TOUTMS(5,24,6)
 C
         COMMON /TDIM/   NDT,    NDI
@@ -193,7 +190,7 @@ C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-      CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,1,
+      CALL LCMATE (FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,RBID,RBID,1,
      &             TYPMA,HSR,MATERD,MATERF,MATCST,
      &    NBCOMM,CPMONO,ANGMAS,PGL,0,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
 C
@@ -215,9 +212,6 @@ C --      FIN   TRAITEMENT DE VENDOCHAB --
           GOTO 9999
       END IF
 C
-      TPERD=TEMPD
-      DTPER=TEMPF-TEMPD
-      TPEREF=TREF
 C
       DO 1 ICP=1,6
         DETOT(ICP)=DEPST(ICP)
@@ -290,10 +284,11 @@ C      POUR POLYCRISTAL
 
       IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI-2
 
-      CALL GERPAS(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
+      CALL GERPAS(  FAMI,KPG,KSP,
+     &              COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
      &              NVI,NMAT,VINF,DTIME,TOLER,YMFS,COTHE,
      &              COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,ANGMAS,
-     &              SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,X)
+     &              SIGI,EPSD,DETOT,X)
       IF (LOI(1:8).EQ.'MONOCRIS')  NVI = NVI +2
 
 
@@ -305,8 +300,8 @@ C --    ENDOMMAGE OU PAS
 
 C --  CALCUL DES CONTRAINTES
 C
-      CALL CALSIG(VINF,MOD,E,NU,ALPHA,X,DTIME,EPSD,DETOT,
-     &              TPERD,DTPER,TPEREF,NMAT, COEL, SIGI)
+      CALL CALSIG(FAMI,KPG,KSP,VINF,MOD,E,NU,ALPHA,X,DTIME,EPSD,
+     &             DETOT,NMAT, COEL, SIGI)
 
       DO 14 ICP=1,2*NDIM
         SIGF(ICP)=SIGI(ICP)

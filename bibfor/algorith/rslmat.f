@@ -1,9 +1,9 @@
-        SUBROUTINE RSLMAT( FAMI,KPG,KSP,MOD,IMAT,NMAT,TEMPD,TEMPF,
+        SUBROUTINE RSLMAT( FAMI,KPG,KSP,MOD,IMAT,NMAT,
      &                     MATERD,MATERF,MATCST,NDT,NDI,NR,NVI,VIND)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,13 +46,13 @@ C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
         INTEGER         I, IMAT, NMAT, NDT , NDI  , NR , NVI,KPG,KSP
-        INTEGER         JPROL, JVALE, NBVALE
+        INTEGER         JPROL, JVALE, NBVALE,IRET
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8          EPSI, VIND(*), F0
         REAL*8          VALPAD, VALPAF
 C
-        CHARACTER*8     MOD, NOMC(14) , NOMPAR
+        CHARACTER*8     MOD, NOMC(14)
         CHARACTER*2     BL2, FB2, CERR(14)
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
@@ -84,41 +84,40 @@ C
           NOMC(13)= 'AN'
           NOMC(14)= 'BETA'
 C
-          NOMPAR = 'TEMP'
-          VALPAD = TEMPD
-          VALPAF = TEMPF
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',1,NOMPAR,
-     &                VALPAD,5,NOMC(1),MATERD(1,1),CERR(1),BL2 )
+          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',0,' ',
+     &                0.D0,5,NOMC(1),MATERD(1,1),CERR(1),BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
-          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPD, 9,
-     &                   NOMC(6),  MATERD(1,2),  CERR(6), FB2 )
+          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ',  'ROUSSELIER',0,' ',
+     &                0.D0,9,NOMC(6),  MATERD(1,2),  CERR(6), FB2 )
 C
 C         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 C         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 C
+          CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
           CALL RCTRAC (IMAT,'TRACTION','SIGM',TEMPD,
      &                 JPROL,JVALE,NBVALE,MATERD(1,1))
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1, NOMPAR,
-     &                VALPAF,5,NOMC(1),MATERF(1,1),CERR(1), BL2 )
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',0,' ',
+     &                0.D0,5,NOMC(1),MATERF(1,1),CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
-          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPF, 9,
-     &                   NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ',  'ROUSSELIER',0,' ',
+     &                0.D0, 9,NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
 C
 C         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
 C         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 C
+          CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
           CALL RCTRAC (IMAT,'TRACTION','SIGM',TEMPF,
      &                 JPROL,JVALE,NBVALE,MATERF(1,1))
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -217,12 +217,16 @@ CM=AFFE_MATERIAU(
                   
                 AFFE=_F( 
                 TOUT = 'OUI',
-                MATER = ACIER2,
-                TEMP_REF = 700.),
-                AFFE_VARC=_F(TOUT='OUI',
-                EVOL=TEMPE,
-                NOM_VARC='M_ACIER',
-                NOM_CHAM='META_ELNO_TEMP'),
+                MATER = ACIER2,),
+                AFFE_VARC=(_F(TOUT='OUI',
+                             EVOL=TEMPE,
+                             NOM_VARC='M_ACIER',
+                             NOM_CHAM='META_ELNO_TEMP'),
+                           _F(TOUT='OUI',
+                             EVOL=TEMPE,
+                             NOM_VARC='TEMP',
+                             NOM_CHAM='TEMP',
+                             VALE_REF=700),),
 
               )
 
@@ -251,10 +255,6 @@ TAU_F=DEFI_FONCTION(
                 60.,    93.1,
                 )
               )
-
-TEMPER=AFFE_CHAR_MECA( 
-             MODELE=MO,
-             TEMP_CALCULEE=TEMPE  )
 
 TRACTION=AFFE_CHAR_MECA(
               
@@ -294,8 +294,7 @@ L_INST=DEFI_LIST_REEL(
 U=STAT_NON_LINE( 
                             MODELE=MO,
                         CHAM_MATER=CM,EXCIT=(
-                             _F( 
-                CHARGE = TEMPER), _F( 
+                              _F( 
                 CHARGE = LIAISON), _F( 
                 CHARGE = TRACTION,
                 FONC_MULT = SIGMA_F), _F( 

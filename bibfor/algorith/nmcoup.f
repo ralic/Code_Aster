@@ -1,9 +1,9 @@
         SUBROUTINE NMCOUP(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
-     &                      TIMED,TIMEF, TEMPD,TEMPF,TREF,EPSDT,DEPST,
+     &                      TIMED,TIMEF, EPSDT,DEPST,
      &                      SIGD,VIND,OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C       ----------------------------------------------------------------
         INTEGER         IMAT , NDIM,KPG,KSP,IRET
 C
         REAL*8          CRIT(*)
-        REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
+        REAL*8          TIMED,     TIMEF
         REAL*8          ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
@@ -67,7 +67,7 @@ C                                 1 = EN INCREMENTAL > NON-SYMETRIQUE
 C                       CRIT(3) = VALEUR DE LA TOLERANCE DE CONVERGENCE
 C                                 (RESI_INTE_RELA == RESCREL)
 C                       CRIT(5) = NOMBRE D'INCREMENTS POUR LE
-C                                 REDECOUPAGE LOCAL DU PAS DE TEMPS
+C                                 REDECOUPAGE LOCAL DU PAS DES
 C                                 (ITER_INTE_PAS == ITEDEC)
 C                                 0 = PAS DE REDECOUPAGE
 C                                 N = NOMBRE DE PALIERS
@@ -76,9 +76,6 @@ C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
 C               TIMED   INSTANT T
 C               TIMEF   INSTANT T+DT
-C               TEMPD   TEMPERATURE A T
-C               TEMPF   TEMPERATURE A T+DT
-C               TREF    TEMPERATURE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -129,7 +126,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &       CMP2(1:7) .EQ. 'NADAI_B'              ) THEN
 
            CALL NMCPLA (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
-     &                      TIMED,TIMEF, TEMPD,TEMPF,TREF,
+     &                      TIMED,TIMEF,
      &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,
      &                      SIGF,VINF,DSDE,IRET)
            IF(IRET.EQ.1) GOTO 9999
@@ -160,7 +157,7 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
               CALL U2MESS('F','ALGORITH7_5')
             ENDIF
             CALL LCUMFP ( FAMI,KPG,KSP,NDIM, TYPMOD, IMAT, COMP,
-     &                      TIMED,TIMEF,TEMPD,TEMPF,TREF,
+     &                      TIMED,TIMEF,
      &                      EPSDT,DEPST,SIGD, VIND, OPTION,SIGF,
      &                      VINF,DSDE)
           ENDIF

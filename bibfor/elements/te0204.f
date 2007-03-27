@@ -2,7 +2,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,8 +85,8 @@ C
       REAL*8   EPSI,RAC2,R8PREM,CRIT(3),DSRDE(3,3),DUDPDE(3,3)
       REAL*8   DFDI(27),F(3,3),SR(3,3),SIGL(6),SIGIN(6),DSIGIN(6,3)
       REAL*8   EPS(6),EPSIN(6),DEPSIN(6,3)
-      REAL*8   EPSINO(36),EPSIPG(36),FNO(18),DFNO(18),DUDMDE(3)
-      REAL*8   THET,TREF,TG,TGDM(3),FLAG(3),DEVRES(3),EPSNO(36)
+      REAL*8   EPSINO(36),EPSIPG(36),FNO(18),DFNO(18),DUDMDE(3),THET
+      REAL*8   TREF,TG(27),TGD(20),TGDM(3),FLAG(3),DEVRES(3),EPSNO(36)
       REAL*8   TCLA,TTHE,TFOR,TINI,POIDS,R,RBID,DE,DNU,DALPHA,DDPSI
       REAL*8   PROD,PROD1,PROD2,DIVT,VALPAR(4),VALRES(3)
       REAL*8   P,RP,ENERGI(2),RHO,OM,OMO,EPSEPS,EPSDEP
@@ -98,7 +98,7 @@ C
       REAL*8   RPIPO,T1PIPO(6),T2PIPO(2),T3PIPO(6),TERMT1,TERMT2
 
       INTEGER  IPOIDS,IVF,IDFDE,IPOI1,IVF1,IDFDE1,JGANO
-      INTEGER  ICOMP,IGEOM,ITEMPS,IDEPL,ITREF,ITEMP,IMATE,IFOSSF
+      INTEGER  ICOMP,IGEOM,ITEMPS,IDEPL,ITEMP,IMATE,IFOSSF
       INTEGER  IEPSR,IEPSF,ISIGI,IDEPI,ISIGM,IEPSP,IVARI,IFOSSR
       INTEGER  IFORC,IFORF,ITHET,IGTHET,IROTA,IPESA,IER
       INTEGER  NNO,NNOS,NPG,NPG1,NCMP
@@ -167,8 +167,6 @@ C =====================================================================
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL JEVECH('PTEREF' ,'L',ITREF)
-      CALL JEVECH('PTEMPER','L',ITEMP)
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PCOMPOR','L',ICOMP)
       MATCOD = ZI(IMATE)
@@ -224,8 +222,6 @@ C LOI DE COMPORTEMENT
       CALL TECACH('ONN','PSIGINR',1,ISIGI,IRET)
       CALL TECACH('ONN','PDEPINR',1,IDEPI,IRET)
 
-C TREF PAR MAILLE ET DEFORMATION INITIALE PAR NOEUD
-      TREF  = ZR(ITREF)
       DO 20 I=1,NCMP*NNO
         EPSINO(I) = 0.D0
 20    CONTINUE
@@ -360,11 +356,20 @@ C ======================================================================
 C BOUCLE PRINCIPALE SUR LES POINTS DE GAUSS
 C ======================================================================
 
+      DO 645 KP = 1,NPG1
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TG(KP),IRET)
+  645 CONTINUE
+
+      DO 646 KP = 1,NNO
+        CALL RCVARC('F','TEMP','+','NOEU',KP,1,TGD(KP),IRET)
+  646 CONTINUE
+
+      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
+
       DO 800 KP=1,NPG1
 
 C INITIALISATIONS
         L   = (KP-1)*NNO
-        TG  = 0.D0
         TEMSEG = 0.D0
         DO 220 I=1,3
           FLAG(I) = 0.D0
@@ -417,11 +422,10 @@ C   DE LA TEMPERATURE AUX POINTS DE GAUSS (TG) ET SON GRADIENT (TGDM)
           DER(1) = DFDI(I)
           DER(2) = DFDI(I+NNO)
           DER(4) = ZR(IVF+L+I1)
-          TG    = TG + ZR(ITEMP+I1)*DER(4)
           DO 310 J=1,NDIM
             IJ1 = NDIM*I1+J
             IJ = IJ1 - 1
-            TGDM(J)     = TGDM(J)   + ZR(ITEMP+I1)*DER(J)
+            TGDM(J)     = TGDM(J)   + TGD(I)*DER(J)
             DO 300 K=1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPL+IJ)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+IJ)*DER(K)
@@ -473,7 +477,7 @@ C CALCUL DE SIGMA (SIGL)
           CRIT(1) = 300
           CRIT(2) = 0.D0
           CRIT(3) = 1.D-3
-          CALL NMELNL(NDIM,TYPMOD,MATCOD,COMPOR,CRIT,TG,TREF,
+          CALL NMELNL('RIGI',KP,1,'+',NDIM,TYPMOD,MATCOD,COMPOR,CRIT,
      &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI,.FALSE.,
      &                TEMSEG,DEPS,DENERG,DSIGL)
 
@@ -580,8 +584,8 @@ C =======================================================
   550     CONTINUE
           PROD=PROD1+PROD2
 C - CALCUL DE DPSI/DE
-          CALL RCVADA (ZI(IMATE),'ELAS',TG,3,NOMRES,VALRES,DEVRES,
-     &                 CODRES)
+          CALL RCVAD2 ('RIGI',KP,1,'+',ZI(IMATE),'ELAS',3,
+     &                 NOMRES,VALRES,DEVRES,CODRES)
 C
           IF (CODRES(3).NE.'OK') THEN
             VALRES(3)= 0.D0
@@ -616,8 +620,8 @@ C
             EPSDEP = EPSDEP + 2.D0*EPS(4)*DEPSDE(4)
             TERM3 = EPSEPS*MU/E
             TERM4 = EPSDEP*MU*2.D0
-            TERM5 = -ALPHA*(TG-TREF)*E*TRADE/(1.D0-2.D0*NU)
-            TERM6 = -ALPHA*(TG-TREF)*(TRA-1.5D0*ALPHA*(TG-TREF))
+            TERM5 = -ALPHA*(TG(KP)-TREF)*E*TRADE/(1.D0-2.D0*NU)
+            TERM6 = -ALPHA*(TG(KP)-TREF)*(TRA-1.5D0*ALPHA*(TG(KP)-TREF))
      &              /(1.D0-2.D0*NU)
             IF(DERIVE) DPSIDE = TERM1 + TERM2 + TERM3 + TERM4 + TERM5
      &                         +TERM6
@@ -637,14 +641,14 @@ C
              DPSIDE = COE2*(EPS(1)*DEPSDE(2)+EPS(2)*DEPSDE(1))
      &               +2.D0*COE1*(EPS(1)*DEPSDE(1)+EPS(2)*DEPSDE(2))
      &               +2.D0*COE3*EPS(4)*DEPSDE(4)
-     &               -ALPHA*(TG-TREF)*E*TRADE/(1.D0-2.D0*NU)
+     &               -ALPHA*(TG(KP)-TREF)*E*TRADE/(1.D0-2.D0*NU)
              IF(DERIVE) THEN
                DPSIDE =  DPSIDE +(COE1/E)*(EPS(1)*EPS(1)+EPS(2)*EPS(2))
      &                  +(COE2/E)*EPS(1)*EPS(2)+(COE3/E)*EPS(4)*EPS(4)
-     &                  -ALPHA*(TG-TREF)*(TRA-1.5D0*ALPHA*(TG-TREF))
-     &                  /(1.D0-2.D0*NU)
+     &                  -ALPHA*(TG(KP)-TREF)*
+     &                   (TRA-1.5D0*ALPHA*(TG(KP)-TREF))/(1.D0-2.D0*NU)
              ENDIF
-C	
+C
            TCLA = TCLA + POIDS* (PROD-DPSIDE*DIVT)
         ENDIF
 C =======================================================
@@ -653,11 +657,11 @@ C =======================================================
         NU1 = 1.D0+NU
         NU1M = 1.D0-2.D0*NU
         NU12 = NU1*NU1
-        TERMT1 = -(ALPHA + DALPHA*(TG-TREF))*(TRA+E*TRADE)/NU1M
-     &           -(ALPHA*(TG-TREF)/NU1M)*(2.D0*DNU*TRA/NU1M
+        TERMT1 = -(ALPHA + DALPHA*(TG(KP)-TREF))*(TRA+E*TRADE)/NU1M
+     &           -(ALPHA*(TG(KP)-TREF)/NU1M)*(2.D0*DNU*TRA/NU1M
      &           +(DE+2.D0*E*DNU/NU1M)*TRADE)
-        TERMT2 = ((3.D0*ALPHA*(TG-TREF))/NU1M)*
-     &         (ALPHA + DALPHA*(TG-TREF) + ALPHA*(TG-TREF)*DNU
+        TERMT2 = ((3.D0*ALPHA*(TG(KP)-TREF))/NU1M)*
+     &         (ALPHA + DALPHA*(TG(KP)-TREF) + ALPHA*(TG(KP)-TREF)*DNU
      &         /NU1M)
         IF(AXI) THEN
           COEF = NU1*NU1M

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/06/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE DURAND C.DURAND
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,6 +52,8 @@ THERDEP=LIRE_RESU(
                    INFO      = 2,
                    TYPE_RESU = 'EVOL_THER' )
 
+
+
 #
 # -------------------------------------------------------------------
 #    CALCUL THERMOMECANIQUE
@@ -100,13 +102,15 @@ ACIER=DEFI_MATERIAU(   ELAS_FO=_F( E = EDET,
                        )
 
 MATMECA=AFFE_MATERIAU(  MAILLAGE=MA,
-                       AFFE=_F( TOUT = 'OUI', MATER = ACIER,
-                             TEMP_REF = 20.0))
+                       AFFE=_F( TOUT = 'OUI', MATER = ACIER,),
+                       AFFE_VARC= 
+_F(TOUT='OUI',EVOL=THERDEP,NOM_VARC='TEMP',PROL_GAUCHE='CONSTANT',
+                                     NOM_CHAM='TEMP',VALE_REF=20.0,),)
 
 #
 
 MECATERM=AFFE_CHAR_MECA(    MODELE=MODEMECA,
-                      TEMP_CALCULEE=THERDEP,DDL_IMPO=(
+                      DDL_IMPO=(
                       _F( GROUP_NO = 'GNP1',  DX = 0.0),
                       _F( NOEUD = 'N1',    DY = 0.0))
                          )

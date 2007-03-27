@@ -1,4 +1,4 @@
-#@ MODIF defi_cable_bp_ops Macro  DATE 14/11/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF defi_cable_bp_ops Macro  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,6 @@
 #           -------------------------------------
 # USAGE :
 # Entrée :
-#  - MAILLAGE
 #  - MODELE
 #  - CABLE
 #  - CHAM_MATER
@@ -46,7 +45,7 @@
 
 
 
-def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
+def defi_cable_bp_ops(self,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
                            DEFI_CABLE,TYPE_ANCRAGE,TENSION_INIT,RECUL_ANCRAGE,
                            RELAXATION,CONE,TITRE,INFO,**args):
 
@@ -92,25 +91,13 @@ def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
     motscles['CONE']=[]
     motscles['CONE'].append( dCONE )
 
-
-  # VERIFICATION QUE LE MAILLAGE EST COHERENT AVEC LE MODELE
-
+    # RECUPERATION DU MAILLAGE A PARTIR DU MODELE
     __MAIL = aster.getvectjev( string.ljust(MODELE.nom,8) + '.MODELE    .NOMA        ' )
-    if string.ljust(MAILLAGE.nom,8) != __MAIL[0] :
-      echo_mess=[]
-      echo_mess.append( ' \n' )
-      echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
-      echo_mess.append( ' # DEFI_CABLE_BP - Erreur : LE CONCEPT MAILLAGE RENSEIGNE NE CORRESPOND       \n' )
-      echo_mess.append( ' #                          PAS A CELUI UTILISE DANS LE MODELE !              \n' )
-      echo_mess.append( ' # '+MAILLAGE.nom+' - '+__MAIL[0]+'\n' )
-      echo_mess.append( ' # ---------------------------------------------------------------------------\n' )
-      message=string.join(echo_mess)
-      UTMESS('F',message)
+    __MAIL= __MAIL[0].strip()
+    MAILLAGE = self.get_sd_avant_etape(__MAIL,self)
 
-
-  # DEFINITION DU NOM DES GROUP_NO
-
-    __NOM = '_AN_'
+    # DEFINITION DU NOM DES GROUP_NO
+    __NOM = 'AN__'
     __LGNO = MAILLAGE.LIST_GROUP_NO()
     __LGN1 = []
     for i in __LGNO : 

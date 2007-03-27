@@ -1,8 +1,8 @@
-      SUBROUTINE LCMAEI (NMATER,IMAT,NECRIS, NECOUL,NBVAL,NBPAR,NOMPAR,
-     &            IMPEXP,VALPAR,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
+      SUBROUTINE LCMAEI (FAMI,KPG,KSP,POUM,NMATER,IMAT,NECRIS,NECOUL,
+     &            NBVAL,IMPEXP,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ----------------------------------------------------------------
 C     MONOCRISTAL : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
-C                  MATER(*,2) = COEF ECRO ISOT ET CALCUL DE LA 
+C                  MATER(*,2) = COEF ECRO ISOT ET CALCUL DE LA
 C                  MATRICE D'INTERACTION HSR
 C     ----------------------------------------------------------------
 C     IN  IMAT   :  ADRESSE DU MATERIAU CODE
@@ -30,17 +30,17 @@ C         NMAT   :  DIMENSION  DE MATER
 C         NECRIS :  NOM DE LA LOI D'ECOULEMENT
 C         IFA    :  NUMERO DE LA FAMILLE DE GLISSEMENT
 C         NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
-C         VALPAR :  VALEUR DES PARAMETRES (TEMPERATURE)
-C         NOMPAR :  NOM DES PARAMETRES (TEMPARATURE)
 C     OUT VALRES :  COEFFICIENTS MATERIAU
 C     OUT NBVAL  :  NB DE COEFFICIENTS MATERIAU
 C     OUT HSR    :  MATRICE D'INTERACTION
 C     ----------------------------------------------------------------
-      INTEGER         NMAT,NBPAR,NBVAL,IMAT,I,NBSYS,IS,IR,IFA,J,IMPEXP
+      INTEGER         KPG,KSP
+      INTEGER         NMAT,NBVAL,IMAT,I,NBSYS,IS,IR,IFA,J,IMPEXP
       REAL*8          MATER(NMAT,2),VALH(6)
-      REAL*8          VALPAR(NMAT),VALRES(NMAT),HSRI(24,24),H
+      REAL*8          VALRES(NMAT),HSRI(24,24),H
       REAL*8          HSR(5,24,24),A1(3,3),A2(3,3),A3(3,3),A4(3,3)
-      CHARACTER*8     NOMPAR(NBPAR),NOMRES(NMAT)
+      CHARACTER*(*)   FAMI,POUM
+      CHARACTER*8     NOMRES(NMAT)
       CHARACTER*2     CODRET(NMAT)
       CHARACTER*16    NMATER, NECRIS, NOMFAM,NECOUL
 C     ----------------------------------------------------------------
@@ -50,8 +50,8 @@ C
           NOMRES(1)='R_0'
           NOMRES(2)='Q'
           NOMRES(3)='B'
-          CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,3,
-     &                 NOMRES, VALRES,CODRET,'FM')
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
+     &                 3,NOMRES, VALRES,CODRET,'FM')
       ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
           NBVAL=5
           NOMRES(1)='R_0'
@@ -59,53 +59,53 @@ C
           NOMRES(3)='B1'
           NOMRES(4)='Q2'
           NOMRES(5)='B2'
-          CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,NBVAL,
-     &                 NOMRES, VALRES,CODRET,'FM')
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
+     &                 NBVAL,NOMRES, VALRES,CODRET,'FM')
       ENDIF
-C     DEFINITION DE LA MATRICE D'INTERACTION      
-      NOMRES(1)='H' 
+C     DEFINITION DE LA MATRICE D'INTERACTION
+      NOMRES(1)='H'
       NBVAL=NBVAL+1
-      VALRES(NBVAL)=0.D0 
-      CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,1,   
-     &              NOMRES, H,CODRET,' ')
-      IF(NECOUL.EQ.'KOCKS_RAUCH') THEN                     
-      CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,1,   
-     &              NOMRES, H,CODRET,' ')
-      ENDIF                     
-      IF (CODRET(1).EQ.'OK') THEN                            
-          VALRES(NBVAL)=H                                        
+      VALRES(NBVAL)=0.D0
+      CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
+     &             1, NOMRES, H,CODRET,' ')
+      IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+      CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
+     &             1, NOMRES, H,CODRET,' ')
+      ENDIF
+      IF (CODRET(1).EQ.'OK') THEN
+          VALRES(NBVAL)=H
 C  DEFINITION DE LA MATRICE D INTERACTION
-          DO 507 IS = 1, NBSYS             
-             DO 508 IR = 1, NBSYS          
-                IF (IS.EQ.IR) THEN         
-                   HSR(IFA,IS,IR) = 1.D0   
-                ELSE                       
-                   HSR(IFA,IS,IR) = H      
-                ENDIF                      
-  508        CONTINUE                      
-  507     CONTINUE                         
+          DO 507 IS = 1, NBSYS
+             DO 508 IR = 1, NBSYS
+                IF (IS.EQ.IR) THEN
+                   HSR(IFA,IS,IR) = 1.D0
+                ELSE
+                   HSR(IFA,IS,IR) = H
+                ENDIF
+  508        CONTINUE
+  507     CONTINUE
       ELSE
           IF (IMPEXP.NE.0) CALL U2MESS('F','ALGORITH4_64')
-          NOMRES(1)='H1'                                        
-          NOMRES(2)='H2'                                        
-          NOMRES(3)='H3'                                        
-          NOMRES(4)='H4'                                        
-          NOMRES(5)='H5'                                        
-          NOMRES(6)='H6'                                        
+          NOMRES(1)='H1'
+          NOMRES(2)='H2'
+          NOMRES(3)='H3'
+          NOMRES(4)='H4'
+          NOMRES(5)='H5'
+          NOMRES(6)='H6'
 
-          IF(NECOUL.EQ.'KOCKS_RAUCH') THEN                     
-          CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,6,  
-     &               NOMRES, VALH,CODRET,' ')                   
+          IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
+     &               6,NOMRES, VALH,CODRET,' ')
           ELSE
-          CALL RCVALA (IMAT,NMATER, NECRIS,1, NOMPAR,VALPAR,6,  
-     &               NOMRES, VALH,CODRET,' ')
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
+     &               6,NOMRES, VALH,CODRET,' ')
           ENDIF
-                             
-          CALL R8INIR ( 3*3, VALH(1) , A1, 1 )                  
-          CALL R8INIR ( 3*3, VALH(2) , A2, 1 )                  
-          CALL R8INIR ( 3*3, VALH(3) , A3, 1 )                  
-          CALL R8INIR ( 3*3, VALH(4) , A4, 1 )                  
-          CALL R8INIR ( 24*24, 0.D0 , HSRI, 1 )                 
+
+          CALL R8INIR ( 3*3, VALH(1) , A1, 1 )
+          CALL R8INIR ( 3*3, VALH(2) , A2, 1 )
+          CALL R8INIR ( 3*3, VALH(3) , A3, 1 )
+          CALL R8INIR ( 3*3, VALH(4) , A4, 1 )
+          CALL R8INIR ( 24*24, 0.D0 , HSRI, 1 )
 
 C         DEFINITION DE LA MATRICE D INTERACTION BCC24
           IF (NOMFAM.EQ.'BCC24') THEN
@@ -158,8 +158,8 @@ C         DEFINITION DE LA MATRICE D INTERACTION BCC24
             HSRI(11,9)=VALH(2)
 
          ELSEIF((NOMFAM.EQ.'OCTAEDRIQUE').OR.
-     &          (NOMFAM.EQ.'CUBIQUE1').OR.   
-     &          (NOMFAM.EQ.'CUBIQUE2'))   
+     &          (NOMFAM.EQ.'CUBIQUE1').OR.
+     &          (NOMFAM.EQ.'CUBIQUE2'))
      &                      THEN
             DO 10 I=1,12
                HSRI(I,I)=VALH(1)
@@ -233,14 +233,14 @@ C         DEFINITION DE LA MATRICE D INTERACTION BCC24
          ELSE
             CALL U2MESS('F','ALGORITH4_64')
          ENDIF
-         DO 1 I=1,24                 
-         DO 1 J=1,I                  
-            HSRI(J,I)=HSRI(I,J)      
- 1       CONTINUE                    
-         DO 2 I=1,24                 
-         DO 2 J=1,24                 
-            HSR(IFA,I,J)=HSRI(I,J)   
- 2       CONTINUE                    
+         DO 1 I=1,24
+         DO 1 J=1,I
+            HSRI(J,I)=HSRI(I,J)
+ 1       CONTINUE
+         DO 2 I=1,24
+         DO 2 J=1,24
+            HSR(IFA,I,J)=HSRI(I,J)
+ 2       CONTINUE
       ENDIF
 
       END

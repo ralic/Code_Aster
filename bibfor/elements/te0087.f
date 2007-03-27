@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,9 +56,9 @@ C
       INTEGER          NBSIG, NBSIG1, NBSIG2, NDIM, NNO, I,
      &                 NNOS, NPG, IPOIDS, IVF, IDFDE,IDIM,
      &                 IGAU, ISIG, IGEOM, IDEPL,IRET,
-     &                 ITEMPE, ITREF, ITEMPS, IDEFO, IMATE
+     &                 ITEMPS, IDEFO, IMATE
       REAL*8           EPSM(54), REPERE(7),BARY(3)
-      REAL*8           NHARM, INSTAN, TEMPE(27)
+      REAL*8           NHARM, INSTAN
       CHARACTER*4      FAMI
       CHARACTER*8      MODELI
       CHARACTER*16     COMPOR
@@ -67,12 +67,11 @@ C
       MODELI(1:2) = NOMTE(3:4)
 C
       IF ( OPTION(6:9) .EQ.'ELNO' ) THEN
-        CALL ELREF4(' ','GANO',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
         FAMI='GANO'
       ELSE
-        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
         FAMI='RIGI'
       ENDIF
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 C      -----------------------------------------
@@ -85,16 +84,12 @@ C     -----------------
       ZERO     = 0.0D0
       INSTAN   = ZERO
       NHARM    = ZERO
-      TREF     = ZERO
       COMPOR   = '                '
 C
       DO 10 I = 1, NBSIG2*NPG
          EPSM(I)   = ZERO
  10   CONTINUE
 C
-      DO 20 I = 1, 27
-         TEMPE(I)   = ZERO
- 20   CONTINUE
 C
 C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 C      ----------------------------------------------
@@ -121,22 +116,6 @@ C
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT :
 C      --------------------------------------------------
       CALL JEVECH('PDEPLAR','L',IDEPL)
-C
-C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT :
-C      --------------------------------------------------
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      IF (ITEMPE.NE.0) THEN
-        DO 30 I = 1, NNO
-          TEMPE(I) = ZR(ITEMPE+I-1)
- 30     CONTINUE
-      ENDIF
-C
-C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
-C      -------------------------------------------
-      CALL TECACH('ONN','PTEREF',1,ITREF,IRET)
-      IF (ITREF.NE.0) THEN
-          TREF = ZR(ITREF)
-      ENDIF
 
 C ---- RECUPERATION DE L'INSTANT DE CALCUL :
 C      -----------------------------------
@@ -168,7 +147,7 @@ C ----                    ET EPSI_MECA - EPSI_THERMIQUES POUR LES
 C ----                    OPTIONS EPME ET EPMG :
 C      ---------------------------------------
       CALL EPSVMC(FAMI,MODELI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
-     &            ZR(IGEOM),ZR(IDEPL),TEMPE,TREF,INSTAN,
+     &            ZR(IGEOM),ZR(IDEPL),INSTAN,
      &            ZI(IMATE),REPERE,NHARM,OPTION,EPSM)
 C
       IF (OPTION(6:9).EQ.'ELGA') THEN

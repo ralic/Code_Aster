@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE  SUIVI PERFORMANCE : FLUAGE SAS FLAMANVILLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,19 +77,8 @@ TEMP=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                                               'COLLER1','COLLER2',),
                                NOM_CMP = 'TEMP',
                                VALE = 20.),
-                         _F(
-                               GROUP_NO = ('COCSAS','COCINT',
-                                              'COLLER1','COLLER2',),
-                               NOM_CMP = 'TEMP_INF',
-                               VALE = 20.),
-                         _F(
-                               GROUP_NO = ('COCSAS','COCINT',
-                                              'COLLER1','COLLER2',),
-                               NOM_CMP = 'TEMP_SUP',
-                               VALE = 20.))
+                       ),);
 
-
-                       )
 
 # FONCTION DE SORPTION-DESORPTION POUR PASSER DE LA VARIABLE SECHAGE
 # A L HYGROMETRIE
@@ -182,7 +171,8 @@ CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,AFFE=(
                          _F( GROUP_MA = ('COCSAS','COCINT','COLLER1',
                                 'COLLER2','BRIDEINT','CPTOT',),
                                MATER = ACIER)),
-                        AFFE_VARC=_F(NOM_VARC='SECH', CHAMP_GD=SECH,VALE_REF=1),
+                        AFFE_VARC=(_F(NOM_VARC='SECH', CHAMP_GD=SECH,VALE_REF=1),
+                                   _F(NOM_VARC='TEMP', CHAMP_GD=TEMP,VALE_REF=0),),
                       )
 
 CARAELEM=AFFE_CARA_ELEM(    MODELE=MODELE,
@@ -605,20 +595,13 @@ CHARGE3=AFFE_CHAR_MECA(   MODELE=MODELE,RELA_CINE_BP=(
                                RELA_CINE = 'OUI'))
                          )
 
-CHARGE4=AFFE_CHAR_MECA(
-            MODELE=MODELE,
-            TEMP_CALCULEE=TEMP,
-                          )
-
-
 RESU1=STAT_NON_LINE(   MODELE=MODELE,
                        CHAM_MATER=CHMAT,
                         CARA_ELEM=CARAELEM,EXCIT=(
                         _F( CHARGE = CHARGE0),
                               _F( CHARGE = CHARGE1),
                               _F( CHARGE = CHARGE2),
-                              _F( CHARGE = CHARGE3),
-                              _F( CHARGE = CHARGE4)),COMP_INCR=(
+                              _F( CHARGE = CHARGE3)),COMP_INCR=(
                         _F( RELATION = 'ELAS',
                                    GROUP_MA = (
                                                    'BRIDEINT',)),

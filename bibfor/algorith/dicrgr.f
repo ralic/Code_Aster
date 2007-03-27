@@ -1,17 +1,18 @@
-      SUBROUTINE DICRGR(OPTION,NEQ,NC,ICODMA,ULM,
-     &                  DUL,SIM,VARIM,PGL,KLV,VARIP,FONO,SIP,ITEMP,
-     &                  TEMPM,TEMPP,IRRAP)
+      SUBROUTINE DICRGR(FAMI,OPTION,NEQ,NC,ICODMA,ULM,
+     &                  DUL,SIM,VARIM,PGL,KLV,VARIP,FONO,SIP,
+     &                  IRRAP)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER NEQ,ICODMA,NC,ITEMP
-      REAL*8 ULM(NEQ),DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(5),TEMPM,TEMPP
+      INTEGER NEQ,ICODMA,NC
+      REAL*8 ULM(NEQ),DUL(NEQ),SIM(NEQ),SIP(NEQ),VARIM(5)
       REAL*8 PGL(3,3),VARIP(5),FONO(NEQ)
       REAL*8 IRRAP,KLV(78)
+      CHARACTER*(*) FAMI
       CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,8 +80,8 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       CHARACTER*8 NOMRE1(4),NOMRE2(2),NOMRE3,NOMRE4(5),NOMRE5(5)
       CHARACTER*8 NOMPAR(2)
 
-      INTEGER     NNO,I,NBPAR,J,K,L,P,Q
-      INTEGER     ICOD,ICOD2
+      INTEGER     NPG,NNO,I,NBPAR,J,K,L,P,Q
+      INTEGER     ICOD,ICOD2,KP,IRETP,IRETM
       REAL*8      VALRE1(4),VALRE2(2),VALRE3,VALRE4(5),VALRE5(5)
       REAL*8      VALPAR(2)
       REAL*8      FNO,H1
@@ -88,7 +89,7 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       REAL*8      UXM,PHM,THM
       REAL*8      KXX,KYY,KZZ,KPP,KTT
       REAL*8      FL(12)
-      REAL*8      TEMP,FTEMP
+      REAL*8      TEMP,TEMM,FTEMP
       REAL*8      KTAX,MUAX,ETAX,KNAX
       REAL*8      KTRIG,DP,PM,RTM,RTP,RTE
       REAL*8      SIELEQ,BETA,SEUIL,RM
@@ -96,6 +97,7 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       REAL*8      PHITAN,THETAN,KKK,ECRO
       REAL*8      PHIC,KPHI,THETAC,KTHETA,EPHI
       REAL*8      DPP,DPHIPL,SEUROT,KTHET2
+      REAL*8      TEMPP,TEMPM
 
       DATA NOMRE1/'KN_AX','KT_AX','ET_AX','ET_ROT'/
       DATA NOMRE2/'F_SER','COUL_AX'/
@@ -104,6 +106,9 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       DATA NOMRE5/'ANG1_FO','ANG2_FO','PEN1_FO','PEN2_FO','PEN3_FO'/
 
 
+
+C TYPE D'ELEMENT: SEG2
+      NPG = 1
 C
 C---procedure pour la liaison grille crayon
 C
@@ -130,23 +135,20 @@ C recuperation des donnees materiau pour le discret
         FNO=VALRE2(1)/4.D0
         MUAX=VALRE2(2)
       ELSE
-        IF (ITEMP.NE.0) THEN
-          NBPAR=2
-          TEMP = 0.5D0* (TEMPM+TEMPP)
-          NOMPAR(2)='IRRA'
-          NOMPAR(1)='TEMP'
-          VALPAR(2)=IRRAP
-          VALPAR(1)=TEMP
-          CALL RCVALA(ICODMA,' ','DIS_GRICRA',NBPAR,NOMPAR,VALPAR,1,
+        CALL MOYTEM(FAMI,NPG,1,'+',TEMPP)
+        CALL MOYTEM(FAMI,NPG,1,'-',TEMPM)
+        TEMP = (TEMPP+TEMPM)/2.D0
+
+        NBPAR=2
+        NOMPAR(2)='IRRA'
+        NOMPAR(1)='TEMP'
+        VALPAR(2)=IRRAP
+        VALPAR(1)=TEMP
+        CALL RCVALA(ICODMA,' ','DIS_GRICRA',NBPAR,NOMPAR,VALPAR,1,
      &              NOMRE3,VALRE3,CODRE3,' ')
-          IF (CODRE3.EQ.'OK') THEN
+        IF (CODRE3.EQ.'OK') THEN
             FNO=VALRE3/4.D0
             MUAX=VALRE2(2)
-          ENDIF
-        ELSE
-          IF (CODRE2(1).NE.'OK') THEN
-            CALL U2MESS('F','ALGORITH2_80')
-          ENDIF
         ENDIF
       ENDIF
 
@@ -160,25 +162,24 @@ C recuperation des donnees materiau pour le discret
         KPHI=VALRE4(3)/2.D0-KTHETA
         KTHET2=VALRE4(5)/2.D0
       ELSE
-        IF (ITEMP.NE.0) THEN
-          NBPAR=2
-          TEMP = 0.5D0* (TEMPM+TEMPP)
-          NOMPAR(2)='IRRA'
-          NOMPAR(1)='TEMP'
-          VALPAR(2)=IRRAP
-          VALPAR(1)=TEMP
-          CALL RCVALA(ICODMA,' ','DIS_GRICRA',NBPAR,NOMPAR,VALPAR,5,
+        CALL MOYTEM(FAMI,NPG,1,'+',TEMP)
+        CALL MOYTEM(FAMI,NPG,1,'-',TEMM)
+        TEMP = (TEMP + TEMM)/2.D0
+
+        NBPAR=2
+        NOMPAR(2)='IRRA'
+        NOMPAR(1)='TEMP'
+        VALPAR(2)=IRRAP
+        VALPAR(1)=TEMP
+        CALL RCVALA(ICODMA,' ','DIS_GRICRA',NBPAR,NOMPAR,VALPAR,5,
      &              NOMRE5,VALRE5,CODRE5,' ')
-          PHIC=VALRE5(1)
-          THETAC=VALRE5(2)
-          KTHETA=VALRE5(4)/2.D0
-          KPHI=VALRE5(3)/2.D0-KTHETA
-          KTHET2=VALRE5(5)/2.D0
-        ELSE
-          CALL U2MESS('F','ALGORITH2_81')
-        ENDIF
-       ENDIF
-       EPHI=VALRE1(4)*KPHI
+        PHIC=VALRE5(1)
+        THETAC=VALRE5(2)
+        KTHETA=VALRE5(4)/2.D0
+        KPHI=VALRE5(3)/2.D0-KTHETA
+        KTHET2=VALRE5(5)/2.D0
+      ENDIF
+      EPHI=VALRE1(4)*KPHI
 
 C
 C Variables internes de contact au temps moins

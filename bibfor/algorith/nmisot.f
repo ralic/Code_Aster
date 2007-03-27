@@ -1,9 +1,9 @@
       SUBROUTINE NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,
+     &                   INSTAM,INSTAP,
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C
       CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(3),OPTION
-      REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TP2,LINE,TREF
+      REAL*8             CRIT(3),INSTAM,INSTAP,TP2,LINE
       REAL*8             DEPS(6),PREC,DX,DEUXMU,DEMU,CINCO
       REAL*8             SIGM(6),VIM(2),SIGP(6),VIP(2),DSIDEP(6,6)
 C ----------------------------------------------------------------------
@@ -44,9 +44,6 @@ C IN  COMPOR  : COMPORTEMENT : RELCOM ET DEFORM
 C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
 C IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 C IN  INSTAP  : INSTANT DU CALCUL
-C IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
-C IN  TP      : TEMPERATURE A L'INSTANT DU CALCUL
-C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  DEPS    : INCREMENT DE DEFORMATION
 C               SI C_PLAN DEPS(3) EST EN FAIT INCONNU (ICI:0)
 C                 =>  ATTENTION LA PLACE DE DEPS(3) EST ALORS UTILISEE.
@@ -102,9 +99,9 @@ C
       REAL*8      SIELEQ,SIGEPS,SEUIL,DP,COEF,DSDE,SIGY,HYDRM,HYDRP
       REAL*8      KRON(6),DEPSDV(6),SIGMDV(6),SIGPDV(6),SIGDV(6),DUM
       REAL*8      EM,NUM,TROIKM,DEUMUM,RBID,SIGMP(6),SIGEL(6),A,RBID2
-      REAL*8      SECHM,SECHP,SREF
+      REAL*8      SECHM,SECHP,SREF,TREF,TM,TP
       INTEGER     NDIMSI,JPROLM,JVALEM,NBVALM,JPROL2,JVALE2,NBVAL2
-      INTEGER     IMATE2,JPROLP,JVALEP,NBVALP,K,L,NITER,IRET2
+      INTEGER     IMATE2,JPROLP,JVALEP,NBVALP,K,L,NITER,IRET2,IRET1
       CHARACTER*2 BL2, FB2, CODRET(3)
       CHARACTER*8 NOMRES(3)
       CHARACTER*8 NOMPAR(3),TYPE
@@ -142,8 +139,12 @@ C     ---------------------------------------
       NOMRES(3)='ALPHA'
 C
       NOMPAR(1) = 'TEMP'
+      CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET1)
+      CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET1)
       VALPAM(1) = TM
       VALPAP(1) = TP
+
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET1)
       CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET2)
       IF (IRET2.NE.0) HYDRM=0.D0
       CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRP,IRET2)
@@ -156,26 +157,26 @@ C
       IF (IRET2.NE.0) SREF=0.D0
 C
       IF (COMPOR(1)(1:14) .EQ. 'VMIS_ISOT_TRAC' ) THEN
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NUM = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAM = VALRES(3)
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAP = VALRES(3)
       ELSE
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      +                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
          EM  = VALRES(1)
          NUM = VALRES(2)
-         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
+         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAM = VALRES(3)
@@ -185,9 +186,9 @@ C
          ELSE
            TROIKM = EM/(1.D0-2.D0*NUM)
          ENDIF
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
      +                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
-         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
+         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
      +                 1,NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          E      = VALRES(1)
@@ -206,22 +207,22 @@ C --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 C
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
-      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
      +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
       IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
       BENDOM = VALRES(1)
 C
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,1,
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
      +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
       IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
       BENDOP = VALRES(1)
 C
-      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
+      CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
      +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
       KDESSM = VALRES(2)
 C
-      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,1,
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
      +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
       KDESSP = VALRES(2)
@@ -235,8 +236,8 @@ C     ---------------------------------------
           LINE=1.D0
           NOMRES(1)='D_SIGM_EPSI'
           NOMRES(2)='SY'
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_LINE',1,NOMPAR,
-     &                          VALPAP,2,NOMRES,VALRES,CODRET, FB2 )
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_LINE',0,' ',0.D0,
+     &                          2,NOMRES,VALRES,CODRET, FB2 )
           DSDE=VALRES(1)
           SIGY=VALRES(2)
           RPRIM    = DSDE*E/(E-DSDE)
@@ -245,8 +246,8 @@ C     ---------------------------------------
           NOMRES(1)='SY'
           NOMRES(2)='A_PUIS'
           NOMRES(3)='N_PUIS'
-          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_PUIS',3,NOMPAR,
-     &                          VALPAP,3,NOMRES,VALRES,CODRET, FB2 )
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_PUIS',0,' ',0.D0,
+     &                          3,NOMRES,VALRES,CODRET, FB2 )
           SIGY   = VALRES(1)
           ALFAFA = VALRES(2)
           COCO   = E/ALFAFA/SIGY
@@ -255,9 +256,9 @@ C     ---------------------------------------
           IF (VIM(1).GT.R8PREM()) THEN
              RPRIM    = UNSURN * SIGY * COCO * (COCO*VIM(1))**(UNSURN-1)
           ELSE
-             RPRIM    = SIGY * COCO 
+             RPRIM    = SIGY * COCO
           ENDIF
-        ELSE 
+        ELSE
           NOMPAR(2)='SECH'
           VALPAM(2)=SECHM
           NOMPAR(3)='HYDR'

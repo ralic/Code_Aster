@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/02/2006   AUTEUR FLANDI L.FLANDI 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,8 +59,10 @@ C
       REAL*8      XD(3),RESIDU(14),XL,XL2,XLS2,A,XIY,XIZ
       REAL*8      PGL(3,3),VALRES(2),ANG1(3),FS(14),D1B6(6,12)
       REAL*8      ALFAY,ALFAZ,PHIY,PHIZ,EY,EZ
-      REAL*8      XUG(6),UTG(14),CO(3)
+      REAL*8      XUG(6),UTG(14),CO(3),TPP,TPM
+      INTEGER     KP,NPG,IRET
       CHARACTER*8 NOMRES(2), NOMPAR
+      CHARACTER*4 FAMI
       CHARACTER*2 CODRES(2)
       LOGICAL     REAGEO
       CHARACTER*16 COMPOR
@@ -74,6 +76,8 @@ C
       CO(2) = 8.D0/9.D0
       CO(3) = 5.D0/9.D0
       NNO = 2
+      FAMI = 'RIGI'
+      NPG = 3
       IF (NOMTE .EQ. 'MECA_POU_D_TG') THEN
          NC  = 7
       ELSE
@@ -139,17 +143,10 @@ C
               CALL JEVECH ( 'PMATERC', 'L', IMATE  )
               CALL JEVECH ( 'PCAGNPO', 'L', LSECT  )
               CALL JEVECH ( 'PCAORIE', 'L', LORIEN )
-              CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
 C
-              IF ( IRET .NE. 0 ) THEN
-                 NBPAR  = 0
-                 NOMPAR = ' '
-                 VALPAR = 0.D0
-              ELSE
-                 NBPAR  = 1
-                 NOMPAR = 'TEMP'
-                 VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
-              ENDIF
+              CALL MOYTEM(FAMI,NPG,1,'+',VALPAR)
+              NBPAR  = 1
+              NOMPAR = 'TEMP'
               CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
      +                              NOMRES, VALRES, CODRES, ' ' )
 

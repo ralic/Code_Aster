@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE SECHAGE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -426,11 +426,16 @@ CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = MAT,
                                   TEMP_REF = 15. ),
-                            AFFE_VARC=_F(TOUT='OUI',
+                            AFFE_VARC=(_F(TOUT='OUI',
                                          EVOL=RESUSECH,
                                          NOM_VARC="SECH",
                                          NOM_CHAM='TEMP',
-                                         VALE_REF=C_0),);
+                                         VALE_REF=C_0),
+                                       _F(TOUT='OUI',
+                                         EVOL=RESUTHER,
+                                         NOM_VARC="TEMP",
+                                         NOM_CHAM='TEMP',
+                                         VALE_REF=15),),);
 #
 CLMECA =AFFE_CHAR_MECA(  MODELE=MOMECA,
                          FACE_IMPO=(_F( GROUP_MA = ('GM72'),
@@ -442,11 +447,6 @@ CLMECA =AFFE_CHAR_MECA(  MODELE=MOMECA,
                                     INFO = 2);
 
 NUM=NUME_DDL(MODELE=MOMECA,METHODE='LDLT',RENUM='RCMK',)
-
-CHMECA=AFFE_CHAR_MECA(
-                            MODELE=MOMECA,
-                     TEMP_CALCULEE=RESUTHER,
-                            )
 
 #
 
@@ -469,9 +469,6 @@ LISTMECA=DEFI_LIST_REEL(
 RESUMECA=STAT_NON_LINE(
                             MODELE=MOMECA,
                         CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = CHMECA,
-                ),
                              _F(
                 CHARGE = CHME,
                 ),
@@ -512,7 +509,6 @@ RESUSTAT=MECA_STATIQUE(
                           MODELE=MOMECA,
                       CHAM_MATER=CM,EXCIT=(
                            _F(  CHARGE = CLMECA,                   ),
-                           _F(  CHARGE = CHMECA,                   ),
                            _F(  CHARGE = CHME,                     )),
                        LIST_INST=LISTMECA,
                          SOLVEUR=_F(  METHODE = 'LDLT',

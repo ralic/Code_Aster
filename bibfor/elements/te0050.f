@@ -1,6 +1,6 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,11 +31,11 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
       PARAMETER         ( NBRES=2 )
-      PARAMETER         ( NBPAR=4 )
+      PARAMETER         ( NBPAR=3 )
       CHARACTER*8        NOMRES(NBRES),NOMPAR(NBPAR)
       CHARACTER*2        BL2, CODRET(NBRES)
       REAL*8             VALRES(NBRES),VALPAR(NBPAR),VXYZ
-      INTEGER            IRESU,ITEMPE,IRIGEL,IMASEL,IMATE
+      INTEGER            IRESU,IRIGEL,IMASEL,IMATE
       INTEGER            IDRESU(5),IDRIGI(2),IDMASS(2),IDGEO(5)
       INTEGER            IPOIDS,IVF,IDFDX,IGEOM
       INTEGER            NDIM,NNO,NNOS,NPG1,INO
@@ -72,24 +72,20 @@ C     ------------------------------------------------------------
       NBVAL= IDRESU(2)
 C
       BL2 = '  '
-      NOMPAR(1)='TEMP'
-      NOMPAR(2)='X'
-      NOMPAR(3)='Y'
-      NOMPAR(4)='Z'
-C
-      CALL JEVECH('PTEMPER','L',ITEMPE)
-      VALPAR(1)=ZR(ITEMPE)
+      NOMPAR(1)='X'
+      NOMPAR(2)='Y'
+      NOMPAR(3)='Z'
 C
       CALL TECACH('ONN','PGEOMER',5,IDGEO,IRET)
       IGEOM=IDGEO(1)
       IDIMGE=IDGEO(2)/NNO
       DO 5, K=1,IDIMGE
-C         VALPAR(1+K)=ZR(IDGEO(1)-1+K)
+C         VALPAR(K)=ZR(IDGEO(1)-1+K)
          VXYZ=0.D0
          DO 50 INO=1,NNO
             VXYZ=VXYZ+ZR(IGEOM + IDIMGE*(INO-1) +K -1)
  50      CONTINUE
-         VALPAR(1+K)=VXYZ/NNO
+         VALPAR(K)=VXYZ/NNO
  5    CONTINUE
       NPARA=1+IDIMGE
 C
@@ -101,8 +97,7 @@ C
      & CALL U2MESS('F','ELEMENTS2_93')
 C
 C
-C     -- RECUPERATION DES COEFFICIENTS FONCTIONS DE LA TEMPERATURE
-C        ET DE LA GEOMETRIE :
+C     -- RECUPERATION DES COEFFICIENTS FONCTIONS DE LA GEOMETRIE :
 C     -------------------------------------------------------------
 C
       IF (OPTION.EQ.'AMOR_MECA') THEN
@@ -114,7 +109,7 @@ C     --------------------------------
         NOMRES(2)='AMOR_BETA'
         VALRES(1) = 0.D0
         VALRES(2) = 0.D0
-        CALL RCVALA(MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
+        CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
      &                2,NOMRES,VALRES,CODRET, BL2 )
 C FIN TEST CABLE
         IF ( CODRET(1) .NE. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
@@ -129,11 +124,11 @@ C
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
 C     ------------------------------------------
         NOMRES(1)='AMOR_HYST'
-        CALL RCVALA(MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
+        CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
      &                1,NOMRES,VALRES,CODRET, BL2 )
         IF (CODRET(1) .NE. 'OK') THEN
-          CALL RCVALA(MATER,' ','ELAS_ORTH',NPARA,NOMPAR,VALPAR,
-     &                1,NOMRES,VALRES,CODRET, BL2 )
+          CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_ORTH',NPARA,
+     &                NOMPAR,VALPAR,1,NOMRES,VALRES,CODRET, BL2 )
         ENDIF
       ELSE
         CALL U2MESS('F','ASSEMBLA_17')

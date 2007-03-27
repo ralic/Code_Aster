@@ -1,6 +1,5 @@
       SUBROUTINE NMCOMP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,
-     &                   TM,TP,TREF,
      &                   EPSM,DEPS,
      &                   SIGM,VIM,
      &                   OPTION,ANGMAS,TAMPON,
@@ -8,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +32,7 @@ C TOLE CRP_21
       CHARACTER*8        TYPMOD(*)
       CHARACTER*(*) FAMI
       CHARACTER*16       COMPOR(*), OPTION,PHENOM
-      REAL*8             CRIT(*), INSTAM, INSTAP, TM, TP, TREF
+      REAL*8             CRIT(*), INSTAM, INSTAP
       REAL*8             EPSM(*), DEPS(*), DSIDEP(*)
       REAL*8             SIGM(*), VIM(*), SIGP(*), VIP(*)
       REAL*8             TAMPON(*)
@@ -106,10 +105,10 @@ C
 C OUTPUT SI RESI (RAPH_MECA, FULL_MECA_*)
 C   VIP      VARIABLES INTERNES EN T+
 C   SIGP(6)  CONTRAINTE DE KIRCHHOFF EN T+ RANGES DANS L'ORDRE
-C         XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ 
+C         XX YY ZZ SQRT(2)*XY SQRT(2)*XZ SQRT(2)*YZ
 C
 C OUTPUT SI RIGI (RIGI_MECA_*, FULL_MECA_*)
-C   DSIDEP(6,3,3) MATRICE TANGENTE D(TAU)/D(FD) * (FD)T  
+C   DSIDEP(6,3,3) MATRICE TANGENTE D(TAU)/D(FD) * (FD)T
 C                 (AVEC LES RACINES DE 2)
 C ----------------------------------------------------------------------
 C
@@ -117,11 +116,11 @@ C    POUR LES UTILITAIRES DE CALCUL TENSORIEL
       INTEGER NDT,NDI
       COMMON /TDIM/ NDT,NDI
 
-      REAL*8 R8BID,R8VIDE
+      REAL*8 R8BID,R8VIDE,TP,TM,TREF
       CHARACTER*16 OPTIO2
       CHARACTER*2 K2BID
       LOGICAL CP
-      INTEGER CPL,NVV
+      INTEGER CPL,NVV,IRET
 
       CODRET = 0
       R8BID=R8VIDE()
@@ -156,7 +155,7 @@ C -- ENDOMMAGEMENT FRAGILE (COURBE DE TRACTION BI-LINEAIRE)
 C -- RUPTURE FRAGILE : LOI DE GRIFFITH
 
         IF (COMPOR(1) .EQ. 'RUPT_FRAG') THEN
-          CALL LCRUPT (NDIM, TYPMOD, IMATE, TP, TREF, EPSM, DEPS,
+          CALL LCRUPT(FAMI,KPG,KSP,NDIM, TYPMOD, IMATE,EPSM, DEPS,
      &                 VIM, OPTION, SIGP, VIP, DSIDEP)
           GOTO 9000
         END IF
@@ -165,9 +164,9 @@ C -- PLASTICITE ISOTROPE A GRADIENT
 
         IF ( COMPOR(1) .EQ. 'VMIS_ISOT_LINE'
      & .OR. COMPOR(1) .EQ. 'VMIS_ISOT_TRAC') THEN
-          CALL LCPLGR (COMPOR, NDIM, OPTION, IMATE, CRIT,TREF, TM, TP,
-     &                 EPSM, DEPS,SIGM, VIM, 1.D0, R8BID, R8BID,
-     &                 VIP, R8BID, R8BID, R8BID, SIGP)
+          CALL LCPLGR (FAMI,KPG,KSP,COMPOR, NDIM, OPTION, IMATE,
+     &                 CRIT,EPSM, DEPS,SIGM, VIM, 1.D0, R8BID,
+     &                 R8BID,VIP, R8BID, R8BID, R8BID, SIGP)
           GOTO 9000
         END IF
 
@@ -175,7 +174,7 @@ C -- RUPTURE DUCTILE : LOI DE ROUSSELIER
 
         IF (COMPOR(1) .EQ. 'ROUSSELIER') THEN
           IF (COMPOR(3).NE.'SIMO_MIEHE') CALL U2MESS('F','ALGORITH6_83')
-          CALL LCRONL (NDIM,IMATE,OPTION,TM,TP,TREF,EPSM,DEPS,
+          CALL LCRONL(FAMI,KPG,KSP,NDIM,IMATE,OPTION,EPSM,DEPS,
      &                 VIM,VIP,SIGP,DSIDEP)
           GOTO 9000
         END IF
@@ -217,8 +216,8 @@ C -- RUPTURE BETON
 C -- DRUCKER - PRAGER
 
         IF (COMPOR(1) .EQ. 'DRUCKER_PRAGER') THEN
-          CALL LCDPNL(TYPMOD,NDIM,OPTION,IMATE,SIGM,EPSM,
-     &                TM,TP,TREF,DEPS,VIM,VIP,SIGP,DSIDEP,TAMPON,
+          CALL LCDPNL(FAMI,KPG,KSP,TYPMOD,NDIM,OPTION,IMATE,SIGM,
+     &                EPSM,DEPS,VIM,VIP,SIGP,DSIDEP,TAMPON,
      &                CODRET)
           GOTO 9000
         END IF
@@ -227,7 +226,7 @@ C -- MAZARS
 
         IF (COMPOR(1) .EQ. 'MAZARS') THEN
           CALL LCMZGE(FAMI,KPG,KSP,NDIM, TYPMOD, IMATE, EPSM,
-     &                DEPS,VIM,TM,TP,TREF,OPTION, SIGP, VIP,
+     &                DEPS,VIM,OPTION, SIGP, VIP,
      &                DSIDEP, TAMPON)
           GOTO 9000
         END IF
@@ -243,7 +242,7 @@ C----------------------------------------------------------------------
 
         IF ( COMPOR(1) .EQ. 'CZM_EXP_REG' ) THEN
 
-          CALL LCEJEX(NDIM, IMATE, OPTION, EPSM, DEPS, TM, TP,
+          CALL LCEJEX(FAMI,KPG,KSP,NDIM,IMATE,OPTION,EPSM,DEPS,
      &                SIGP, DSIDEP, VIM, VIP)
           GOTO 9000
 
@@ -270,12 +269,12 @@ C----------------------------------------------------------------------
      &       COMPOR(1) .EQ. 'VMIS_ISOT_TRAC  ' .OR.
      &       COMPOR(1) .EQ. 'VISC_ISOT_LINE  ' .OR.
      &       COMPOR(1) .EQ. 'VISC_ISOT_TRAC  ' ) THEN
-          CALL LCPIVM(IMATE,COMPOR,CRIT,INSTAM,INSTAP,TM,TP,TREF,
+          CALL LCPIVM(FAMI,KPG,KSP,IMATE,COMPOR,CRIT,INSTAM,INSTAP,
      &               EPSM,DEPS,VIM,OPTION,SIGP,VIP,DSIDEP,CODRET)
         ELSE IF (COMPOR(1).EQ.'ELAS            ') THEN
            CALL U2MESS('F','COMPOR1_15')
         ELSE IF (COMPOR(1) .EQ. 'ROUSSELIER') THEN
-          CALL LCROLO (IMATE,OPTION,CRIT,TM,TP,TREF,
+          CALL LCROLO (FAMI,KPG,KSP,IMATE,OPTION,CRIT,
      &                 EPSM,DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
         ELSE IF (COMPOR(1).EQ. 'META_P_IL       '.OR.
      &           COMPOR(1).EQ. 'META_P_IL_PT    '.OR.
@@ -295,12 +294,12 @@ C----------------------------------------------------------------------
      &           COMPOR(1).EQ. 'META_V_INL_PT_RE'  ) THEN
           IF (COMPOR(8)(1:5) .EQ. 'ACIER') THEN
              CALL LCGDPM(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,
+     &                   INSTAM,INSTAP,
      &                   EPSM,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
      &                   DSIDEP,CODRET)
            ELSEIF (COMPOR(8)(1:4) .EQ. 'ZIRC') THEN
              CALL NZGDZI(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,
+     &                   INSTAM,INSTAP,
      &                   EPSM,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
      &                   DSIDEP,CODRET)
            ELSE
@@ -322,12 +321,12 @@ C PETITES DEFORMATIONS
             CALL RCCOMA(IMATE,'ELAS',PHENOM,K2BID)
             IF (PHENOM.EQ.'ELAS') THEN
               CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                      INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
+     &                      INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                      OPTION,SIGP,VIP,DSIDEP,R8BID,R8BID,CODRET)
             ELSE IF (PHENOM(1:8).EQ.'ELAS_ORT'.OR.
      &              PHENOM(1:8).EQ.'ELAS_IST') THEN
-              CALL NMORTH(FAMI,KPG,KSP,NDIM,PHENOM,TYPMOD,IMATE,TM,TP,
-     &                    TREF,EPSM,DEPS,SIGM,OPTION,ANGMAS,SIGP,VIP,
+              CALL NMORTH(FAMI,KPG,KSP,1,NDIM,PHENOM,TYPMOD,IMATE,
+     &                    EPSM,DEPS,SIGM,OPTION,ANGMAS,SIGP,VIP,
      &                    DSIDEP)
             ELSE
               CALL U2MESS('F','ALGORITH6_88')
@@ -342,6 +341,11 @@ C PETITES DEFORMATIONS
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
             ELSE
+C APPEL DE RCVARC POUR LA RECUPERATION DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+              CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+              CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+              CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
               CALL LCLDSB(FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
      &                   DEPS,VIM,TM,TP,TREF,OPTION,SIGP,VIP,DSIDEP)
             ENDIF
@@ -356,6 +360,11 @@ C PETITES DEFORMATIONS
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
           ELSE
+C APPEL DE RCVARC POUR LA RECUPERATION DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+            CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+            CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+            CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
             CALL LCMAZA(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,EPSM,
      &                  DEPS,VIM,TM,TP,TREF,OPTION,SIGP,VIP,DSIDEP)
           ENDIF
@@ -363,10 +372,15 @@ C PETITES DEFORMATIONS
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
             ELSE
-              CALL LCLBR1(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
-     &                   VIM,TM,TP,TREF,OPTION, SIGP, VIP,  DSIDEP)
+              CALL LCLBR1(FAMI,KPG,KSP,NDIM, TYPMOD, IMATE, COMPOR,
+     &                   EPSM,DEPS,VIM,OPTION, SIGP, VIP,  DSIDEP)
             ENDIF
         ELSE IF ( COMPOR(1) .EQ. 'DRUCKER_PRAGER' ) THEN
+C APPEL DE RCVARC POUR LA RECUPERATION DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+          CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+          CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+          CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
           CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
      &                            DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
         ELSE IF (COMPOR(1).EQ. 'META_P_IL       '.OR.
@@ -387,12 +401,12 @@ C PETITES DEFORMATIONS
      &           COMPOR(1).EQ. 'META_V_INL_PT_RE'  ) THEN
             IF (COMPOR(8)(1:5) .EQ. 'ACIER') THEN
              CALL NZISFW ( FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
-     &                     INSTAM,INSTAP, TM,TP, TREF, EPSM,
+     &                     INSTAM,INSTAP, EPSM,
      &                     DEPS,SIGM,VIM,OPTION,SIGP,
      &                     VIP,DSIDEP,CODRET)
             ELSEIF (COMPOR(8)(1:4) .EQ. 'ZIRC') THEN
              CALL NZEDGA ( FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
-     &                     INSTAM,INSTAP, TM,TP, TREF, EPSM,
+     &                     INSTAM,INSTAP, EPSM,
      &                     DEPS,SIGM,VIM,OPTION,SIGP,
      &                     VIP,DSIDEP,CODRET)
             ELSE
@@ -408,13 +422,13 @@ C PETITES DEFORMATIONS
      &           COMPOR(1).EQ. 'META_V_CL_PT_RE ' ) THEN
             IF (COMPOR(8)(1:5) .EQ. 'ACIER') THEN
              CALL NZCIFW ( FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
-     &                     INSTAM,INSTAP, TM,TP, TREF, EPSM,
+     &                     INSTAM,INSTAP, EPSM,
      &                     DEPS,  SIGM,   VIM,OPTION,SIGP,
      &                     VIP,DSIDEP,CODRET)
 
             ELSEIF (COMPOR(8)(1:4) .EQ. 'ZIRC') THEN
              CALL NZCIZI ( FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
-     &                     INSTAM,INSTAP, TM,TP, TREF, EPSM,
+     &                     INSTAM,INSTAP, EPSM,
      &                     DEPS,SIGM,VIM,OPTION,SIGP,
      &                     VIP,DSIDEP,CODRET)
             ELSE
@@ -425,8 +439,8 @@ C PETITES DEFORMATIONS
 
         ELSEIF ( COMPOR(1)(1:9) .EQ. 'VMIS_ECMI') THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL NMECMI ( NDIM,  TYPMOD, IMATE, COMPOR,CRIT,
-     &                    INSTAM,INSTAP,TM,TP,TREF,
+            CALL NMECMI (FAMI,KPG,KSP, NDIM,  TYPMOD, IMATE, COMPOR,
+     &                   CRIT, INSTAM,INSTAP,
      &                   DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP,
      &                   CODRET)
           ELSE
@@ -437,8 +451,8 @@ C PETITES DEFORMATIONS
             IF (TYPMOD(1).EQ.'C_PLAN') THEN
                CALL U2MESS('F','ALGORITH6_90')
             ELSE
-              CALL NMCINE ( NDIM,  IMATE, COMPOR,CRIT,
-     &                    INSTAM,INSTAP,TM,    TP,    TREF, EPSM,
+              CALL NMCINE (FAMI,KPG,KSP, NDIM,  IMATE, COMPOR,CRIT,
+     &                    INSTAM,INSTAP,EPSM,
      &                    DEPS,  SIGM,  VIM,   OPTION,SIGP, VIP, DSIDEP)
             ENDIF
           ELSE
@@ -452,8 +466,8 @@ C PETITES DEFORMATIONS
             IF (TYPMOD(1).EQ.'C_PLAN') THEN
                CALL U2MESS('F','ALGORITH6_91')
             ELSE
-               CALL NMCHAB ( NDIM,  TYPMOD, IMATE, COMPOR, CRIT,
-     &                    INSTAM, INSTAP, TM,    TP,    TREF,
+               CALL NMCHAB (FAMI,KPG,KSP, NDIM,  TYPMOD, IMATE, COMPOR,
+     &                    CRIT,INSTAM, INSTAP,
      &                    DEPS,  SIGM,  VIM,  OPTION, SIGP, VIP, DSIDEP,
      &                    CODRET)
             ENDIF
@@ -467,8 +481,8 @@ C
           ELSE IF ((TYPMOD(1).EQ.'C_PLAN').AND.(.NOT.CP)) THEN
             CALL U2MESS('F','ALGORITH6_92')
           ELSE
-            CALL NMTAHE(NDIM,IMATE,COMPOR,CRIT,
-     &                     INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
+            CALL NMTAHE(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,
+     &                     INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                     OPTION,SIGP,VIP,DSIDEP,CODRET)
           END IF
         ELSE IF ( COMPOR(1)(1:8) .EQ. 'ROUSS_PR'   .OR.
@@ -479,20 +493,19 @@ C
      &            COMPOR(1)(1:7) .EQ. 'NADAI_B'        ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &           INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,OPTION,
-     &           TAMPON,ANGMAS,SIGP,VIP,DSIDEP,CODRET)
+     &           INSTAM,INSTAP,R8BID,R8BID,R8BID,EPSM,DEPS,
+     &           SIGM,VIM,OPTION,TAMPON,ANGMAS,SIGP,VIP,DSIDEP,CODRET)
           ELSE
             CALL U2MESS('F','ALGORITH6_82')
           ENDIF
         ELSE IF ( COMPOR(1)(1:9) .EQ. 'VISCOCHAB'  ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,
-     &                  VIM,OPTION,TAMPON,ANGMAS, SIGP, VIP, DSIDEP,
-     &                  CODRET)
+     &           INSTAM,INSTAP,R8BID,R8BID,R8BID,EPSM,DEPS,
+     &           SIGM,VIM,OPTION,TAMPON,ANGMAS,SIGP,VIP,DSIDEP,CODRET)
           ELSE
             CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
+     &                  INSTAM,INSTAP, EPSM,
      &          DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
         ELSE IF ( COMPOR(1)(1:8) .EQ. 'POLY_CFC' ) THEN
@@ -500,7 +513,7 @@ C
             CALL U2MESS('F','ALGORITH6_93')
           ELSE
             CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                    INSTAM,INSTAP, TM,    TP,     TREF,
+     &                    INSTAM,INSTAP,
      &                    EPSM,  DEPS,   SIGM,  VIM,    OPTION,
      &                    ANGMAS, SIGP,  VIP,    DSIDEP)
           ENDIF
@@ -508,12 +521,12 @@ C
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
 C-- INTEGRATION IMPLICITE: METHODE D'EULER
             CALL NMVEEI (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                  INSTAM, INSTAP, TM, TP, TREF, EPSM,
+     &                  INSTAM, INSTAP, EPSM,
      &                  DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP,
      &                  CODRET)
           ELSE
             CALL NMVPRK (FAMI,KPG,KSP, NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
+     &                  INSTAM,INSTAP, EPSM,
      &         DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
         ELSEIF ( COMPOR(1)(1:13) .EQ. 'LEMAITRE_IRRA' .OR.
@@ -525,7 +538,6 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL NMVPIR (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP,
-     &                  TM,TP,TREF,
      &                  DEPS,
      &                  SIGM,VIM,
      &                  OPTION,
@@ -537,7 +549,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
         ELSEIF ( COMPOR(1)(1:8)  .EQ. 'LEMAITRE') THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL NMVPLE (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,TYPMOD,
-     &                  INSTAM,INSTAP,TM,TP,TREF,
+     &                  INSTAM,INSTAP,
      &                  DEPS,SIGM,VIM,OPTION,
      &                  SIGP, VIP, DSIDEP , CODRET)
           ELSE
@@ -546,7 +558,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
         ELSEIF ( COMPOR(1)(1:12)  .EQ. 'GATT_MONERIE') THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL NMVPGM ( FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,TYPMOD,
-     &                  INSTAM,INSTAP,TM,TP,TREF,
+     &                  INSTAM,INSTAP,
      &                  DEPS,SIGM,VIM,OPTION,
      &                  SIGP, VIP, DSIDEP, CODRET )
           ELSE
@@ -558,6 +570,12 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
           ELSE IF ((TYPMOD(1).EQ.'C_PLAN').AND.(.NOT.CP)) THEN
               CALL U2MESS('F','ALGORITH6_92')
             ELSE
+C APPEL DE RCVARC POUR LA RECUPERATION DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+              CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+              CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+              CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+
               CALL NMCJS(  TYPMOD,  IMATE, COMPOR, CRIT,
      &                     INSTAM, INSTAP, TM, TP, TREF, EPSM,
      &                     DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP,
@@ -568,8 +586,13 @@ C --- hujeux
             IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
             ELSE
+C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+              CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+              CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+              CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
               CALL NMHUJ (TYPMOD,  IMATE, COMPOR, CRIT,
-     &                    INSTAM, INSTAP, TM, TP, TREF, EPSM,
+     &                    INSTAM, INSTAP, TM,TP,TREF,EPSM,
      &                    DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP,
      &                    CODRET)
             ENDIF
@@ -578,14 +601,25 @@ C --- hujeux
         IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
           ELSE
-            CALL NMCCAM (NDIM,  TYPMOD, IMATE, COMPOR,CRIT,INSTAM,
-     &                   INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
+C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+            CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+            CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+            CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+
+            CALL NMCCAM (NDIM,  TYPMOD, IMATE, COMPOR,
+     &                   CRIT,INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,CODRET)
           ENDIF
         ELSEIF ( COMPOR(1)(1:6) .EQ. 'LAIGLE' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
           ELSE
+C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+            CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+            CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+            CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                    INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
      &                    OPTION, TAMPON,ANGMAS,SIGP,VIP,DSIDEP,CODRET)
@@ -594,6 +628,11 @@ C --- hujeux
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
           ELSE
+C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE EN THM AUSSI... (CALCME)
+            CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+            CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+            CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                    INSTAM,INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,
      &                    OPTION,TAMPON,ANGMAS,SIGP,VIP,DSIDEP,CODRET)
@@ -602,8 +641,15 @@ C --- hujeux
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
           ELSE
+C APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
+C RAISON: CETTE ROUTINE EST APPELEE PAR NMCPLA AVEC COMME
+C TEMPERATURE LES VALEURS MIN ET MAX... IL FAUT DONC LAISSER
+C L ARGUMENT
+            CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
+            CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
+            CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
             CALL NMGRAN (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,TM,TP,DEPS,SIGM,VIM,
+     &                   INSTAM,INSTAP,TM,TP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP)
           ENDIF
 C -- FLUAGE PROPRE UMLV
@@ -612,7 +658,7 @@ C -- FLUAGE PROPRE UMLV
               CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL LCUMFP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,INSTAM,
-     &                   INSTAP,TM,TP,TREF,EPSM,DEPS,SIGM,VIM,OPTION,
+     &                   INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,
      &                   SIGP,VIP,DSIDEP)
           END IF
 C----LOI D'ACIER CORRODE
@@ -620,7 +666,7 @@ C----LOI D'ACIER CORRODE
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
           ELSE
-          CALL NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,TM,TP,SIGM,
+          CALL NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,SIGM,
      &           EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRIT,CODRET)
         END IF
 C -- COMPORTEMENT VIDE
@@ -634,15 +680,15 @@ C
            CALL U2MESS('F','ALGORITH6_94')
             ELSE
               CALL  NMGDES (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,
-     &                   COMPOR,CRIT,INSTAM,INSTAP,TM,TP,TREF,
-     &                   TM,TP,DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
+     &                   COMPOR,CRIT,INSTAM,INSTAP,
+     &                   DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
           ENDIF
         ELSEIF ( COMPOR(1)(1:7) .EQ. 'KIT_DDI' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL U2MESS('F','ALGORITH6_82')
           ELSE
             CALL NMCOUP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CP,CRIT,
-     &           INSTAM, INSTAP, TM,TP,TREF,EPSM, DEPS,SIGM, VIM,OPTION,
+     &           INSTAM, INSTAP, EPSM, DEPS,SIGM, VIM,OPTION,
      &           TAMPON,SIGP, VIP, DSIDEP,CODRET)
           ENDIF
 
@@ -650,12 +696,12 @@ CCC    MONOCRISTAL
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'MONOCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF,
+     &                  INSTAM,INSTAP,R8BID, R8BID, R8BID,
      &                  EPSM, DEPS,SIGM, VIM,OPTION,TAMPON,ANGMAS,
      &                  SIGP, VIP, DSIDEP,CODRET)
           ELSE
             CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
+     &                  INSTAM,INSTAP, EPSM,
      &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
 CCC    FIN MONOCRISTAL
@@ -666,7 +712,7 @@ CCC    POLYCRISTAL
               CALL U2MESS('F','ALGORITH6_95')
           ELSE
             CALL NMVPRK (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
+     &                  INSTAM,INSTAP, EPSM,
      &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
 CCC    FIN POLYCRISTAL
@@ -674,7 +720,7 @@ CCC    FIN POLYCRISTAL
 CCC    ZMAT
         ELSEIF ( COMPOR(1)(1:4) .EQ. 'ZMAT' ) THEN
             CALL NMZMAT( FAMI, KPG, KSP, NDIM, TYPMOD, COMPOR, CRIT,
-     &                   INSTAM, INSTAP, TM, TP, TREF, EPSM, DEPS, SIGM,
+     &                   INSTAM, INSTAP, EPSM, DEPS, SIGM,
      &                   VIM, OPTION, ANGMAS, SIGP, VIP, DSIDEP, CODRET)
 CCC    FIN ZMAT
 
@@ -685,8 +731,8 @@ CCC    LOI HYPERELASTIQUE POUR METHODE SIGNORINI
             IF (COMPOR(3).NE.'GREEN') THEN
               CALL U2MESS('F','ALGORITH6_96')
             ENDIF
-            CALL HYPINC(NDIM,TYPMOD,IMATE,COMPOR,CRIT,OPTION,
-     &                  TM,EPSM,DEPS,SIGM,
+            CALL HYPINC(FAMI,KPG,KSP,'-',NDIM,TYPMOD,IMATE,COMPOR,
+     &                  CRIT,OPTION,EPSM,DEPS,SIGM,
      &                  SIGP,DSIDEP,CODRET)
 
 CCC    FIN LOI HYPERELASTIQUE POUR METHODE SIGNORINI
@@ -697,10 +743,16 @@ CCC    FIN LOI HYPERELASTIQUE POUR METHODE SIGNORINI
       END IF
 
 
-C      CONTRAINTES PLANES METHODE DE BORST
  9000 CONTINUE
-      IF (CODRET.NE.1) THEN
-         IF (CP) CALL NMCPL2(COMPOR,TYPMOD,OPTION,OPTIO2,CPL,NVV,CRIT,
+
+C      CONTRAINTES PLANES METHODE DE BORST
+      IF (CP) THEN
+         IF (CODRET.NE.1) THEN
+            CALL NMCPL2(COMPOR,TYPMOD,OPTION,OPTIO2,CPL,NVV,CRIT,
      &                    DEPS,DSIDEP,NDIM,SIGP,VIP,CODRET)
+         ELSE
+            OPTION=OPTIO2
+         ENDIF
       ENDIF
+
       END

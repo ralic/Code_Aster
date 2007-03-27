@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,12 +98,13 @@ C
       REAL*8             TRIAX(NBPGMX),TRIAXN(NBPGMX)
       REAL*8             VALRES(NBRES),VALRE2(NBRES2)
       REAL*8             ZERO,UN,DEUX,TROIS,UNDEMI,UNTIER,DETIER,TRDEMI
-      REAL*8             VALPR2,XNU,COE1,COE2,R8VIDE
-      REAL*8             PETITS,EXPO,IEXPO,RESU1,RESU2,XTEMP
-      REAL*8             KMOISS,KPLUSS,KSOMM,PDIFF,PSEUIL,PPLUS,VALE
+      REAL*8             XNU,COE1,COE2,R8VIDE
+      REAL*8             PETITS(27),EXPO(27),IEXPO(27),RESU1,RESU2,XTEMP
+      REAL*8             KMOISS,KPLUSS,KSOMM,PDIFF,PSEUIL(27),PPLUS,VALE
       REAL*8             DOMMOI(NBPGMX)
       REAL*8             XVARI1(MXCVAR),XVARI2(MXCVAR)
       REAL*8             XES,TS
+      CHARACTER*4        FAMI
       CHARACTER*2        CODRES(NBRES),CODRE2(NBRES2)
       CHARACTER*24 VALK
       CHARACTER*8        MODELI,NOMPR2,NOMRES(NBRES),NOMAIL
@@ -137,7 +138,8 @@ C     ---------------------------------------------------
       NDIM = NBDIM(NOMTE)
 C      ELREFA = (NDIM.EQ.3) .AND. (NOMTE(3:4).NE.'FO')
 C      IF (ELREFA) THEN
-        CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+        FAMI = 'RIGI'
+        CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C      ELSE
 C        NNO = NBNOEU(' ')
 C        NNOS = NBNOSO(NOMTE)
@@ -174,51 +176,20 @@ C
 C ---    RECUPERATION DES CARACTERISTIQUES MATERIAUX
 C        ----------------------------------------------
          CALL JEVECH('PMATERC','L',IMATE)
-C
-C ---    RECUPERATION DU CHAMP DE TEMPERATURE
-C        ---------------------------------------
-         CALL TECACH('NNN','PTEMPER',1,ITEMP2,IRET)
-         IF (ITEMP2.EQ.0) THEN
-            NBPAR2  = 0
-            NOMPR2 = ' '
-            VALPR2 = ZERO
-         ELSE
-            NBPAR2  = 1
-            NOMPR2 = 'TEMP'
-            VALPR2 = ZERO
-            DO 21 I = 1, NNO
-               VALPR2 = VALPR2 + ZR(ITEMP2 - 1 + I)
-  21        CONTINUE
-            VALPR2 = VALPR2 / NNO              
-         ENDIF
-C
+
 C ---    EVALUATION DES DONNEES MATERIAUX POUR LA TEMPERATURE ITEMP2
 C        -----------------------------------------------------------
          PHENO = 'ELAS'
          CALL RCCOMA (ZI(IMATE),PHENO,PHENOM,CODRES(1))
          IF (CODRES(1).EQ.'NO') CALL U2MESS('F','PREPOST_42')
-         CALL RCVALA(ZI(IMATE),' ',PHENOM,NBPAR2,NOMPR2,VALPR2,NBRES,
-     &               NOMRES,VALRES,CODRES,'FM')
 
          PHENO2 = 'DOMMA_LEMAITRE'
          CALL RCCOMA (ZI(IMATE),PHENO2,PHENM2,CODRES(1))
          IF (CODRES(1).EQ.'NO') CALL U2MESS('F','PREPOST_41')
-         CALL RCVALA(ZI(IMATE),' ',PHENM2,NBPAR2,NOMPR2,VALPR2,NBRES2,
-     &               NOMRE2,VALRE2,CODRE2,'FM')
 C
 C ---    ASSIGNATION DES VALEURS DES PARAMETRES DE LA LOI DE
 C        LEMAITRE-SERMAGE EVALUEES A LA TEMPERATURE ACTUELLE ITEMP2
 C        ----------------------------------------------------------
-         TS    =VALRE2(1)
-         PSEUIL=VALRE2(2)
-         PETITS=VALRE2(3)
-
-         EXPO   = DEUX*PETITS+UN
-         IEXPO  = UN/EXPO
-         XES   = VALRES(1)*TS*DEUX
-         XNU   = VALRES(2)
-         COE1  = DETIER * (UN + XNU)
-         COE2  = TROIS * (UN - DEUX * XNU)
 
 C
 C --- RECHERCHE DU TYPE DU CHAMP D'ENTREE DEFINI AUX POINTS DE GAUSS
@@ -324,6 +295,21 @@ C ---    ET DU CARRE DE LA CONTRAINTES EQUIVALENTE D'ENDOMMAGEMENT
 C ---    NORMALISEE (CENDO) - NORMALISATION PAR XES = 2ES
 C        ---------------------------------------------------------
          DO 80 IGAU = 1, NPG
+            CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ',PHENOM,0,' ',
+     &                  0.D0,NBRES,NOMRES,VALRES,CODRES,'FM')
+            CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ',PHENM2,0,' ',
+     &                  0.D0,NBRES2,NOMRE2,VALRE2,CODRE2,'FM')
+
+            TS    =VALRE2(1)
+            PSEUIL(IGAU)=VALRE2(2)
+            PETITS(IGAU)=VALRE2(3)
+
+            EXPO(IGAU)   = DEUX*PETITS(IGAU)+UN
+            IEXPO(IGAU)  = UN/EXPO(IGAU)
+            XES   = VALRES(1)*TS*DEUX
+            XNU   = VALRES(2)
+            COE1  = DETIER * (UN + XNU)
+            COE2  = TROIS * (UN - DEUX * XNU)
             SENDO(IGAU) = (COE1*SIGEQ(IGAU)**DEUX
      &                     +COE2*TRSIG(IGAU)*TRSIG(IGAU))**UNDEMI
             CENDO(IGAU) = (COE1*SIGEQ(IGAU)**DEUX
@@ -364,23 +350,23 @@ C première composante de VARI_[1,2] (IEPSP = 1)
          DO 81 IGAU = 1, NPG
 
             PPLUS = XVARI2(IEPSP+(IGAU-1)*NBSIG)
-            IF (PPLUS.GT.PSEUIL-ZERO) THEN
+            IF (PPLUS.GT.PSEUIL(IGAU)-ZERO) THEN
                IF (DOMMOI(IGAU).GE.UN) THEN
                   RESU1 = ZERO
                ELSE
-                  RESU1  = (UN-DOMMOI(IGAU))**EXPO
+                  RESU1  = (UN-DOMMOI(IGAU))**EXPO(IGAU)
                ENDIF
-               KMOISS = CENDOM(IGAU)**PETITS
-               KPLUSS = CENDO(IGAU)**PETITS
+               KMOISS = CENDOM(IGAU)**PETITS(IGAU)
+               KPLUSS = CENDO(IGAU)**PETITS(IGAU)
                KSOMM  = KMOISS + KPLUSS
                PDIFF  =   XVARI2(IEPSP+(IGAU-1)*NBSIG)
      &                  - XVARI1(IEPSP+(IGAU-1)*NBSIG)
-               RESU2  = (EXPO/DEUX)*KSOMM*PDIFF
+               RESU2  = (EXPO(IGAU)/DEUX)*KSOMM*PDIFF
                VALE = RESU1 - RESU2
                IF (VALE.GT.ZERO) THEN
-                  DOMLE(IGAU) = UN-(VALE)**IEXPO
+                  DOMLE(IGAU) = UN-(VALE)**IEXPO(IGAU)
                ELSE
-                  DOMLE(IGAU) = UN+(-UN*VALE)**IEXPO
+                  DOMLE(IGAU) = UN+(-UN*VALE)**IEXPO(IGAU)
                ENDIF
             ELSE
                DOMLE(IGAU) = ZERO

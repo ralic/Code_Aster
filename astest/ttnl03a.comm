@@ -1,4 +1,4 @@
-# MODIF  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 3D - HEXA8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -331,13 +331,12 @@ MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
 CM=AFFE_MATERIAU( MAILLAGE=MAIL,
                   AFFE = _F( MAILLE = 'M1',
                              MATER = MAT,
-                           #  TEMP_REF = 0.
-                             TEMP_REF = 20.9
                              ),
-                  AFFE_VARC=_F(EVOL=RESUTHYD,NOM_VARC='HYDR'),);
+                  AFFE_VARC=(_F(EVOL=RESUTHYD,NOM_VARC='HYDR'),
+                             _F(EVOL=RESUTHYD,NOM_VARC='TEMP',VALE_REF=20.9,),)
+                                  );
 
 CHMECA=AFFE_CHAR_MECA( MODELE = MOMECA,
-                       TEMP_CALCULEE = RESUTHYD,
                        DDL_IMPO= ( _F( GROUP_NO = 'FACEINF',
                                        DZ = 0.),
                                    _F( GROUP_NO = 'A',

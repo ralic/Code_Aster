@@ -1,4 +1,4 @@
-#@ MODIF defi_part_feti_ops Macro  DATE 30/08/2005   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF defi_part_feti_ops Macro  DATE 26/03/2007   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ def defi_part_feti_ops(self,NB_PART,METHODE,TRAITER_BORDS,NOM_GROUP_MA,CORRECTIO
       motscle1['MODELE']=args['MODELE']
 
   # Partitionnement
-  _SDFETI=DEFI_PART_PA_OPS(
+  DEFI_PART_PA_OPS(
                    MAILLAGE=MAILLAGE,
                    INFO=INFO,
                    METHODE=METHODE,

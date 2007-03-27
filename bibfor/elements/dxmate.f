@@ -1,10 +1,11 @@
-      SUBROUTINE DXMATE(DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
+      SUBROUTINE DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
      &                  GRILLE,ELASCQ,T2EV,T2VE,T1VE)
       IMPLICIT   NONE
       INTEGER NNO,MULTIC
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
       LOGICAL GRILLE,ELASCQ
+      CHARACTER*4 FAMI
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -56,7 +57,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      JCOQU,JMATE,NBV,I,J,K,NBPAR,ELASCO
-      INTEGER      ICACOQ,IAZI,IAZK24
+      INTEGER      ICACOQ,IAZI,IAZK24,NPG,JCOU,NCOU,IRET,NPGH
+      INTEGER      NDIM,NNOS,IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO
       REAL*8       KCIS,CDF,CDM,CDC,GCIS,VALRES(33)
       REAL*8       YOUNG,NU,EPAIS,VALPAR,EXCENT,CTOR
       REAL*8       XAB1(3,3),XAB2(2,2),XAB3(3,2),DH(3,3),ROT(3,3)
@@ -83,6 +85,9 @@ C     ------------------------------------------------------------------
 C
       CALL ELREF1(ELREFE)
 
+
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,
+     &                  IDFDE,JGANO)
       CALL TECAEL(IAZI,IAZK24)
       OPTION = ZK24(IAZK24-1+3+NNO+2)
 C
@@ -91,7 +96,19 @@ C
       ALPHA = ZR(JCOQU+1)*R8DGRD()
       BETA  = ZR(JCOQU+2)*R8DGRD()
       EXCENT= ZR(JCOQU+4)
-
+      IF (GRILLE) THEN
+        NCOU=1
+        NPGH=1
+      ELSE
+        CALL TECACH('NNN','PNBSP_I',1,JCOU,IRET)
+        IF (IRET.EQ.0 ) THEN
+          NCOU=ZI(JCOU)
+          NPGH=3
+        ELSE
+          NPGH=1
+          NCOU=1
+        ENDIF
+      ENDIF
       DX = COS(BETA)*COS(ALPHA)
       DY = COS(BETA)*SIN(ALPHA)
       DZ = SIN(BETA)
@@ -250,7 +267,10 @@ C        ET T2VE INVERSE DE T2EV
         CALL U2MESS('F','ELEMENTS_42')
       END IF
 C
-      CALL DXTEMA ( NNO, NBPAR, NOMPAR, VALPAR )
+      CALL MOYTEM(FAMI,NPG,NPGH*NCOU,'+',VALPAR)
+      NBPAR = 1
+      NOMPAR = 'TEMP'
+
 C
       IF (PHENOM.EQ.'ELAS') THEN
 

@@ -1,21 +1,22 @@
-#@ MODIF arlequin Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF arlequin Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+# -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 def _(x) : return x
 
@@ -31,7 +32,7 @@ cata_msg={
 """),
 
 2: _("""
- Le groupe de maille <%(k1)s> n'existe pas dans le maillage  
+ Le groupe de maille <%(k1)s> n'existe pas dans le maillage
 """),
 
 3: _("""
@@ -52,12 +53,12 @@ cata_msg={
 """),
 
 6: _("""
- La normale au noeud <%(k1)s> de la maille <%(k2)s> est nulle. 
+ La normale au noeud <%(k1)s> de la maille <%(k2)s> est nulle.
  Verifiez votre maillage (pas de mailles aplaties par exemple)
 """),
 
 7: _("""
- La normale moyenne sur la maille <%(k1)s> est nulle. 
+ La normale moyenne sur la maille <%(k1)s> est nulle.
  Verifiez votre maillage (orientations des mailles par exemple)
 """),
 
@@ -68,7 +69,7 @@ cata_msg={
 9: _("""
  Les deux domaines ne se recouvrent pas. Verifiez vos groupes.
  """),
- 
+
 10: _("""
  Le groupe de mailles de collage (GROUP_MA_COLL) doit etre un sous ensemble d'un des deux
  sous domaines GROUP_MA_1 ou GROUP_MA_2
@@ -76,7 +77,7 @@ cata_msg={
 
 11: _("""
  La maille <%(k1)s> est de type %(k2)s: elle ne peut etre mise en boite.
- Ce type de maille n'est pas pris en compte.  
+ Ce type de maille n'est pas pris en compte.
 """),
 
 12: _("""

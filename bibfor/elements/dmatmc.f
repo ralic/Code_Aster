@@ -1,7 +1,7 @@
-      SUBROUTINE  DMATMC(MODELI,MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,
-     &                   XYZGAU,NBSIG,D,LSENS)
+      SUBROUTINE  DMATMC(FAMI,MODELI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &                   REPERE,XYZGAU,NBSIG,D,LSENS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,12 +26,13 @@ C                 ISOPARAMETRIQUES POUR DES MATERIAUX ISOTROPE,
 C                 ORTHOTROPE ET ISOTROPE TRANSVERSE
 C
 C   ARGUMENT        E/S  TYPE         ROLE
+C    FAMI           IN     K4       FAMILLE DU POINT DE GAUSS
 C    MODELI         IN     K8       MODELISATION (AXI,FOURIER,...)
 C    MATER          IN     I        MATERIAU
-C    TEMPE          IN     R        TEMPERATURE AU POINT D'INTEGRATION
-C    HYDR           IN     R        HYDRATATION AU POINT D'INTEGRATION
-C    SECH           IN     R        SECHAGE AU POINT D'INTEGRATION
+C    IGAU           IN     I        POINT DE GAUSS
+C    ISGAU          IN     I        SOUS-POINT DE GAUSS
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
+C    POUM           IN     K1       + OU -
 C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 C                                   D'ORTHOTROPIE
 C    XYZGAU(3)      IN     R        COORDONNEES DU POINT D'INTEGRATION
@@ -45,9 +46,9 @@ C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            CHARACTER*8  MODELI
-           INTEGER      MATER,NBSIG
+           CHARACTER*(*)  FAMI, POUM
+           INTEGER      MATER,NBSIG,IGAU,ISGAU
            REAL*8       REPERE(7), XYZGAU(1), D(NBSIG,1), INSTAN
-           REAL*8       HYDR,SECH,TEMPE
            LOGICAL      LSENS
 C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -58,9 +59,11 @@ C       ------------------------
       IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'FO') THEN
 C
          IF ( LSENS ) THEN
-            CALL DM3DSE(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,XYZGAU,D)
+            CALL DM3DSE(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &                  REPERE,XYZGAU,D)
          ELSE
-            CALL DMAT3D(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,XYZGAU,D)
+            CALL DMAT3D(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &                  REPERE,XYZGAU,D)
          ENDIF
 C
 C       ----------------------------------------
@@ -69,9 +72,11 @@ C       ----------------------------------------
       ELSEIF (MODELI(1:2).EQ.'DP'.OR.MODELI(1:2).EQ.'AX') THEN
 C
          IF ( LSENS ) THEN
-            CALL DMDPSE(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,D)
+            CALL DMDPSE(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &                  REPERE,D)
          ELSE
-            CALL DMATDP(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,D)
+            CALL DMATDP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &                  REPERE,D)
          ENDIF
 C
 C       ----------------------
@@ -80,9 +85,11 @@ C       ----------------------
       ELSEIF (MODELI(1:2).EQ.'CP') THEN
 C
          IF ( LSENS ) THEN
-            CALL DMCPSE(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,D)
+            CALL DMCPSE(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &                  REPERE,D)
          ELSE
-            CALL DMATCP(MATER,TEMPE,HYDR,SECH,INSTAN,REPERE,D)
+            CALL DMATCP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,
+     &                  REPERE,D)
          ENDIF
 C
       ELSE

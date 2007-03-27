@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,13 +48,13 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       CHARACTER*8 ELREFE
       CHARACTER*8 NOMRES(3),NOMPAR,NOMPU(2)
       CHARACTER*2 BL2,CODRET(3)
-      REAL*8 E,NU,TPG,TPG1,TPG2,TPG3,VALPAR
+      REAL*8 E,NU,TPG,TPGMOY,TPGINF,TPGSUP,VALPAR,TREF
       REAL*8 ORD,X3,EPS(5),C1,C2,H,DILAT,KI
       REAL*8 E11,E22,K11,K22,EP11,EP22,EP12,ESX3
       REAL*8 DFDX(3),CONTPG(24),VALRES(3),VALPU(2)
       REAL*8 JAC,R,COSA,SINA,COUR,CORREC
       INTEGER I,K,KP,IGEOM,IMATE,ICACO,IDEPL,ICONT,INUMCO,NBPAR,IER
-      INTEGER NNO,NPG,IDFDK,ITEMP,IVF,ITREF,IRET
+      INTEGER NNO,NPG,IDFDK,IVF,IRET,IRET1,IRET2,IRET3
       INTEGER ITAB(8)
 
       CALL ELREF1(ELREFE)
@@ -65,9 +65,10 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       CALL JEVECH('PMATERC','L',IMATE)
       CALL JEVECH('PCACOQU','L',ICACO)
       CALL JEVECH('PDEPLAR','L',IDEPL)
-      CALL JEVECH('PTEREF','L',ITREF)
       CALL JEVECH('PNUMCOR','L',INUMCO)
       CALL JEVECH('PCONTRR','E',ICONT)
+
+      CALL RCVARC('F','TEMP','REF','RIGI',1,1,TREF,IRET)
 
       BL2 = '  '
       H = ZR(ICACO)
@@ -92,46 +93,16 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 C===============================================================
 C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 
-C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
-        CALL TECACH('OON','PTEMPER',8,ITAB,IRET)
-        ITEMP = ITAB(1)
-        IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-          NBPAR = 1
-          NOMPAR = 'TEMP'
-          TPG1 = 0.D0
-          TPG2 = 0.D0
-          TPG3 = 0.D0
-          DO 10 I = 1,NNO
-            CALL DXTPIF(ZR(ITEMP+3* (I-1)),ZL(ITAB(8)+3* (I-1)))
-            TPG1 = TPG1 + ZR(ITEMP+3*I-3)*ZR(IVF+K+I-1)
-            TPG2 = TPG2 + ZR(ITEMP+3*I-2)*ZR(IVF+K+I-1)
-            TPG3 = TPG3 + ZR(ITEMP+3*I-1)*ZR(IVF+K+I-1)
-   10     CONTINUE
-          TPG = TPG3*KI* (1.D0+KI)/2.D0 + TPG1* (1.D0- (KI)**2) -
-     &          TPG2*KI* (1.D0-KI)/2.D0
+C     -- SI LA TEMPERATURE EST CONNUE AUX POINTS DE GAUSS :
 
-          VALPAR = TPG
-        ELSE
-
-C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
-          CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
-          IF (IRET.EQ.0) THEN
-            NBPAR = 1
-            NOMPAR = 'TEMP'
-            NOMPU(1) = 'INST'
-            NOMPU(2) = 'EPAIS'
-            CALL JEVECH('PTEMPSR','L',IBID)
-            VALPU(1) = ZR(IBID)
-            VALPU(2) = X3
-            CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,VALPAR,IER)
-
-C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
-          ELSE
-            NBPAR = 0
-            NOMPAR = ' '
-            VALPAR = 0.D0
-          END IF
-        END IF
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPGINF,IRET1)
+        CALL RCVARC('F','TEMP','+','RIGI',KP,2,TPGMOY,IRET2)
+        CALL RCVARC('F','TEMP','+','RIGI',KP,3,TPGSUP,IRET3)
+        TPG = TPGSUP*KI* (1.D0+KI)/2.D0 + TPGMOY* (1.D0- (KI)**2)
+     &          - TPGINF*KI* (1.D0-KI)/2.D0
+        VALPAR = TPG
+        NBPAR = 1
+        NOMPAR = 'TEMP'
 C===============================================================
 
         NOMRES(1) = 'E'
@@ -147,7 +118,7 @@ C===============================================================
           DILAT = 0.D0
         ELSE
           DILAT = VALRES(3)*E/ (1.D0-NU)
-          TPG = TPG - ZR(ITREF)
+          TPG = TPG - TREF
         END IF
 
         DO 20 I = 1,5

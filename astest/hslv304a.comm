@@ -1,4 +1,4 @@
-# MODIF  DATE 12/09/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE G8BHHXD X.DESROCHES
 # TITRE CYLINDRE SOUS CHARGEMENT THERMIQUE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,17 +6,17 @@
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 DEBUT( CODE=_F(  NOM = 'HSLV304A',NIV_PUB_WEB='INTERNET') )
 
@@ -42,11 +42,6 @@ ACIER=DEFI_MATERIAU(    ELAS=_F(  E = 2.1E11,  NU = 0.3,
                                  ALPHA = 0.12E-4,  RHO = 7800.)
                       )
 
-#
-# ATTRIBUTION DU MATERIAU
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                          AFFE=_F(  TOUT = 'OUI',
-                                 MATER = ACIER)  )
 
 #
 # DEFINITION DES CONDITIONS AUX LIMITES
@@ -56,31 +51,34 @@ CLIM=AFFE_CHAR_MECA(    MODELE=MODELE,
                         )
 
 #
-# DEFINITION DU CHARGEMENT
+# DEFINITION DU CHARGEMENT THERMIQUE :
 CHAR_NO=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
                          MAILLAGE=MAIL,
-                           AFFE=_F(  TOUT = 'OUI',
+                         AFFE=_F( TOUT = 'OUI',
                                   NOM_CMP = 'TEMP',
                                   VALE = 1.)
                          )
 
-CHARGE=AFFE_CHAR_MECA(    MODELE=MODELE,
-                            TEMP_CALCULEE=CHAR_NO )
+#
+# ATTRIBUTION DU MATERIAU
+
+# Materiau avec prise en compte de la temperature :
+CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL,
+                  AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+                  AFFE_VARC =_F(TOUT='OUI', CHAMP_GD=CHAR_NO, NOM_VARC='TEMP',),
+                          )
+
+# Materiau sans prise en compte de la temperature :
+CHMATST=AFFE_MATERIAU( MAILLAGE=MAIL,
+                  AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
+                          )
 
 # RESOLUTION
-DEF=MACRO_ELAS_MULT(        MODELE=MODELE,
-                              CHAM_MATER=CHMAT,
-                              CHAR_MECA_GLOBAL=CLIM,CAS_CHARGE=(
-                              _F( 
-                                           MODE_FOURIER = 1,
-                                             
-                                           TYPE_MODE = 'SYME',
-                                           CHAR_MECA = CHARGE),
-                             _F( 
-                                           MODE_FOURIER = 2,
-                                               
-                                            TYPE_MODE = 'ANTI',
-                                            CHAR_MECA = CHARGE)
+
+CHNUL=AFFE_CHAR_MECA(MODELE=MODELE,  FORCE_NODALE=_F(GROUP_NO = 'ENCAST', FX = 0.) )
+DEF=MACRO_ELAS_MULT( MODELE=MODELE, CHAM_MATER=CHMAT, CHAR_MECA_GLOBAL=CLIM,
+                     CAS_CHARGE=( _F( MODE_FOURIER = 1, TYPE_MODE = 'SYME', CHAR_MECA=CHNUL ),
+                                  _F( MODE_FOURIER = 2, TYPE_MODE = 'ANTI', CHAR_MECA=CHNUL ),
                               )
                            )
 
@@ -99,10 +97,10 @@ U0_S=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 
 
 # CALCUL DES CONTRAINTES
-    
+
 DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
                            MODELE=MODELE,
-                           CHAM_MATER=CHMAT,
+                           CHAM_MATER=CHMATST,
                            TOUT_ORDRE='OUI',
                            OPTION=('SIGM_ELNO_DEPL',)
                 )
@@ -110,7 +108,7 @@ DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
 SIG0_C=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 RESULTAT=DEF, NUME_ORDRE=1,
                          NOM_CHAM='SIGM_ELNO_DEPL' )
-                                                     
+
 SIG0_S=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
 RESULTAT=DEF, NUME_ORDRE=2,
                          NOM_CHAM='SIGM_ELNO_DEPL' )
@@ -147,7 +145,7 @@ U1=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
 
 U2=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
              RESULTAT=CO_FOUR2,ANGL=45.,NOM_CHAM='DEPL')
-                       
+
 
 U=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
              RESULTAT=CO_FOUR3,ANGL=45.,NOM_CHAM='DEPL')
@@ -193,7 +191,7 @@ TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = U,
           )
 
 #
-T1=POST_RELEVE_T(    ACTION=_F( 
+T1=POST_RELEVE_T(    ACTION=_F(
                         INTITULE = 'SIG',
                         GROUP_NO = 'ENCAST',
                         CHAM_GD = SIG,

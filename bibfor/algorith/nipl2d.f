@@ -1,8 +1,7 @@
-       SUBROUTINE  NIPL2D ( NNO1 , NNO2 , NPG1 , IPOIDS, IVF1 , IVF2,
-     &                      IDFDE1,DFDI, GEOM  , TYPMOD, OPTION,
+       SUBROUTINE  NIPL2D ( FAMI, NNO1 , NNO2 , NPG1 , IPOIDS, IVF1 ,
+     &                      IVF2,IDFDE1,DFDI, GEOM  , TYPMOD, OPTION,
      &                      IMATE , COMPOR ,LGPG, CRIT ,
      &                      INSTAM, INSTAP,
-     &                      TM ,TP , TREF ,
      &                      DEPLM , DDEPL ,
      &                      ANGMAS,
      &                      GONFLM , DGONFL ,
@@ -10,7 +9,7 @@
      &                      FINTU, FINTA ,KUU , KUA , KAA , CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +39,7 @@ C TOLE CRP_21
        REAL*8 KUU(2,9,2,9), KUA(2,9,2,4),KAA(2,4,2,4)
        REAL*8 FINTU(2,9), FINTA(2,4)
        REAL*8        ANGMAS(3)
+       CHARACTER*(*) FAMI
        CHARACTER*8   TYPMOD(*)
        CHARACTER*16  COMPOR(*), OPTION
 
@@ -132,17 +132,6 @@ C - CALCUL POUR CHAQUE POINT DE GAUSS
 
       DO 800 KPG = 1,NPG1
 
-C - CALCUL DE LA TEMPERATURE AU POINT DE GAUSS
-
-        TEMPM = 0.D0
-        TEMPP = 0.D0
-C
-        DO 10 N=1,NNO1
-          VFF1 = ZR(IVF1-1+N+(KPG-1)*NNO1)
-          TEMPM = TEMPM + TM(N)*VFF1
-          TEMPP = TEMPP + TP(N)*VFF1
- 10     CONTINUE
-
 C      CALCUL DE LA PRESSION ET DU GONFLEMENT
 
         GM = 0.D0
@@ -225,9 +214,8 @@ C -    APPEL A LA LOI DE COMPORTEMENT
       IF (.NOT.AXI)  TYPMOD(1) = 'AXIS    '
 
 C -    APPEL A LA LOI DE COMPORTEMENT
-      CALL NMCOMP('RIGI',KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
+      CALL NMCOMP(FAMI,KPG,1,2,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
-     &            TEMPM,TEMPP,TREF,
      &            EPSLDC,DEPLDC,
      &            SIGMAM,VIM(1,KPG),
      &            OPTION,

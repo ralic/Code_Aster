@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,13 +53,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*2  CODRES
+      CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR(4)
       CHARACTER*16 CH16
       REAL*8       A, E, RHO, ALPHAT, XL, TEMP, XDEP, XRIG, W(6),W2(3)
       REAL*8       PGL(3,3), FL(6), QG(6), QL(6), VALPA1(4), VALPA2(4)
-      REAL*8       R8MIN,S,S2,S3,S4,S5,XXX,R8BID,VECT(6)
+      REAL*8       R8MIN,S,S2,S3,S4,S5,XXX,R8BID,VECT(6),TREF
       INTEGER      NNO,NC,LX,LORIEN,IDEPLA,IDEPLP,I,LVECT,LSECT
-      INTEGER      LMATER,LPESA,LFORC,ITEMPS,NBPAR,IRET,LTREF,LTEMP
+      INTEGER      LMATER,LPESA,LFORC,ITEMPS,NBPAR,IRET
       INTEGER      IFCX
       CHARACTER*8  NOMPAV(1)
       REAL*8       VALPAV(1),FCX,VITE2,VP(3),ANG1(3),U(3),V(3),INSTAN
@@ -74,6 +75,7 @@ C     ------------------------------------------------------------------
 C
       NNO = 2
       NC  = 3
+      FAMI = 'RIGI'
 C
 C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
       CALL JEVECH ('PGEOMER','L',LX)
@@ -439,13 +441,14 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
      &                                      ALPHAT,CODRES,'FM')
 C
+         TEMP=0.D0
 C        TEMPERATURE DE REFERENCE
-         CALL JEVECH('PTEREF','L',LTREF)
+         CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET1)
 C
 C        TEMPERATURE EFFETIVE
-         CALL JEVECH('PTEMPER','L',LTEMP)
+         CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET2)
 C
-         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1)) - ZR(LTREF)
+        IF ((IRET1.NE.1).AND.(IRET2.NE.1)) TEMP=TEMP-TREF
 C
 C        TERME DE LA MATRICE ELEMENTAIRE
          XRIG = E * A / XL
@@ -491,9 +494,8 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       ENDIF
 C
 C        TEMPERATURE EFFETIVE
-         CALL JEVECH('PTEMPER','L',LTEMP)
+         CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET)
 C
-         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
          CALL RCVARC(' ','SECH','+','RIGI',1,1,SECH,IRET)
          IF (IRET.NE.0) SECH=0.D0
          CALL RCVARC(' ','SECH','REF','RIGI',1,1,SREF,IRET)
@@ -552,17 +554,15 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
-      CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
-      IF (ITEMPS.NE.0) THEN
-      INSTAN = ZR(ITEMPS)
-      ELSE
-      INSTAN = 0.D0
-      ENDIF
+         CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
+         IF (ITEMPS.NE.0) THEN
+         INSTAN = ZR(ITEMPS)
+         ELSE
+         INSTAN = 0.D0
+         ENDIF
 C
 C        TEMPERATURE EFFETIVE
-         CALL JEVECH('PTEMPER','L',LTEMP)
-C
-         TEMP = 0.5D0*(ZR(LTEMP)+ZR(LTEMP+1))
+         CALL RCVARC('F','TEMP','+',FAMI,1,1,TEMP,IRET)
 
 C        HYDRATATION EFFECTIVE
          CALL RCVARC(' ','HYDR','+','RIGI',1,1,HYDR,IRET)

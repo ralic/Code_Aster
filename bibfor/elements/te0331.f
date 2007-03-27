@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION II
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,12 +51,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*2        CODRET(4), CODRES
+      CHARACTER*4        FAMI
       CHARACTER*8        NOMRES(4)
       CHARACTER*16       OPTCAL(12), PHENOM
       REAL*8             SIG(6),SIGI,DSIGWB,VALRES(4),EPSGI,R8BID
       REAL*8             POIDS,R,VOLUME,VOLACT,DVOL,SEUIL,M,V0
       REAL*8             CONG(4),EPSQ(4),DFDX(9),DFDY(9),PP,PPT
-      REAL*8             TC(6),TDP(6),SIGOLD,SIGNEW,SREF,TPG,TMOY
+      REAL*8             TC(6),TDP(6),SIGOLD,SIGNEW,SREF,TG,TMOY
 
       INTEGER            NNO,KP,NPG,K,II,IWEIB,JTAB(7),NNOS,JGANO,NDIM
       INTEGER            IDEFG,ISSOPT,INO,IPOPP,IPOPPT
@@ -66,7 +67,8 @@ C
       LOGICAL            LTEATT, LAXI
 C     ------------------------------------------------------------------
 C
-      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+      FAMI = 'RIGI'
+      CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
       POIDS=0.D0
       DSIGWB=0.D0
@@ -115,10 +117,6 @@ C     SI OUI ET QU IL N Y A PAS DE CHAMP DE TEMPERATURE
 C     ARRET
 C
       CALL RCCOMA(ZI(IMATE),'WEIBULL',PHENOM,CODRES)
-      CALL TECACH('NON','PTEMPER',1,ITEMPE,IRET)
-      IF (ITEMPE.EQ.0) THEN
-         CALL U2MESS('F','ELEMENTS3_72')
-      ENDIF
 
       IF (OPTCAL(1).EQ.'SIGM_ELMOY') THEN
             TMOY = 0.D0
@@ -161,17 +159,15 @@ C VOLUME PLASTIFIE
                   CONG(II)=CONG(II)+DVOL*ZR(ICONG+4*KP+II-5)
  165           CONTINUE
 C           --- TEMPERATURE MOYENNE
-               DO 168 INO = 1,NNO
-                    TMOY = TMOY + ZR(ITEMPE+INO-1)
-     &                     *ZR(IVF+K+INO-1)*DVOL
- 168           CONTINUE
+               CALL RCVARC('F','TEMP','+','RIGI',KP,1,TG,IRET)
+               TMOY = TMOY + TG*DVOL
             ENDIF
 C VOLUME PLASTIQUE ACTIF
-          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
-             PPT = 1.D0
-          ELSE
-             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
-          END IF
+            IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+              PPT = 1.D0
+            ELSE
+              PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+            END IF
             IF (PPT.EQ.(1.0D0)) THEN
                DVOL=POIDS
                VOLACT=VOLACT+DVOL
@@ -248,13 +244,8 @@ C
               TDP(5) = 0.D0
               TDP(6) = 0.D0
               CALL EPDCP(TC,TDP,SIGI,EPSGI)
-C           --- TEMPERATURE AU PG SI 'WEIBULL_FO'
-              TPG = 0.D0
-              DO 190 INO = 1,NNO
-                    TPG = TPG + ZR(ITEMPE+INO-1)*ZR(IVF+K+INO-1)
- 190          CONTINUE
-              CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,1,
-     &              NOMRES(4),VALRES(4), CODRET(4), 'FM' )
+              CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',
+     &                    0.D0,1,NOMRES(4),VALRES(4), CODRET(4), 'FM' )
               SREF = VALRES(4)
 
               SIGNEW=EXP((-EPSGI/2.D0))*SIGI/SREF
@@ -296,10 +287,8 @@ C VOL PLASTIFIE
                   EPSQ(II)=EPSQ(II)+DVOL*ZR(IDEFG+4*KP+II-5)
 220            CONTINUE
 C           --- TEMPERATURE MOYENNE
-               DO 225 INO = 1,NNO
-                    TMOY = TMOY + ZR(ITEMPE+INO-1)*ZR(IVF+K+INO-1)
-     &                            *DVOL
-225            CONTINUE
+               CALL RCVARC('F','TEMP','+','RIGI',KP,1,TG,IRET)
+               TMOY = TMOY + TG*DVOL
             ENDIF
 C VOL PLASTIQUE ACTIF
           IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
@@ -373,13 +362,8 @@ C
             IF (PPT.EQ.(1.D0)) THEN
 C CALCUL DE SIGI
                CALL VPRI2D(CONG,SIGI)
-C TEMPERATURE AU PG
-               TPG = 0.D0
-               DO 250 INO = 1,NNO
-                    TPG = TPG + ZR(ITEMPE+INO-1)*ZR(IVF+K+INO-1)
-250            CONTINUE
-               CALL RCVALA ( ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,1,
-     &              NOMRES(4),VALRES(4), CODRET(4), 'FM' )
+               CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',
+     &                  0.D0,1, NOMRES(4),VALRES(4), CODRET(4), 'FM' )
                SREF = VALRES(4)
                SIGI = SIGI/SREF
            ENDIF

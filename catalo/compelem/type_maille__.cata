@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 09/01/2006   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF COMPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,12 +31,16 @@ TYPE_MAILLE__
 
 MAILLE__ POI1       1       DIM__  0   CODE__  'POI'
    ELREFE__ PO1
+         FAMILLE__ NOEU        1
+         FAMILLE__ NOEU_S      1
          FAMILLE__ FPG1        1
    ELREFE__ V_POI1
          FAMILLE__ FPG1        1
 
 MAILLE__ SEG2       2       DIM__  1   CODE__  'SE2'
    ELREFE__ SE2
+         FAMILLE__ NOEU        2
+         FAMILLE__ NOEU_S      2
          FAMILLE__ FPG1        1
          FAMILLE__ FPG2        2
          FAMILLE__ FPG3        3
@@ -56,6 +60,8 @@ MAILLE__ SEG22      4       DIM__  1   CODE__  'S22'
 
 MAILLE__ SEG3       3       DIM__  1   CODE__  'SE3'
    ELREFE__ SE3
+         FAMILLE__ NOEU        3
+         FAMILLE__ NOEU_S      2
          FAMILLE__ FPG1        1
          FAMILLE__ FPG2        2
          FAMILLE__ FPG3        3
@@ -71,6 +77,8 @@ MAILLE__ SEG33      6       DIM__  1   CODE__  'S33'
 
 MAILLE__ SEG4       4       DIM__  1   CODE__  'SE4'
    ELREFE__ SE4
+         FAMILLE__ NOEU        4
+         FAMILLE__ NOEU_S      2
          FAMILLE__ FPG1        1
          FAMILLE__ FPG2        2
          FAMILLE__ FPG3        3
@@ -98,7 +106,7 @@ MAILLE__ TRIA33     6       DIM__  2   CODE__  'T33'
 
 MAILLE__ TRIA6      6       DIM__  2   CODE__  'TR6'
    ELREFE__ TR6
-         FAMILLE__ NOEU        3
+         FAMILLE__ NOEU        6
          FAMILLE__ NOEU_S      3
          FAMILLE__ FPG1        1
          FAMILLE__ FPG3        3

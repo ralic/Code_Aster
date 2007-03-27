@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,10 +38,10 @@ C
       REAL*8             A,W(9),NX,L1(3),L2(3),L10(3),L20(3)
       REAL*8             VALRES(2),E,ALPHA,DDOT
       REAL*8             NORML1,NORML2,NORL10,NORL20,L0,ALLONG
-      REAL*8             PRETEN, R8BID, TEMP, TROIS, ZERO
+      REAL*8             PRETEN, R8BID, TEMP, ZERO
       INTEGER            IMATUU,JEFINT,LSIGMA
       INTEGER            ICOMPO,LSECT,IGEOM,IMATE,IDEPLA,IDEPLP
-      INTEGER            I, ITEMPR, JCRET, KC
+      INTEGER            I, ITEMPR, JCRET, KC, IRET
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -62,7 +62,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       ZERO  = 0.D0
-      TROIS = 3.D0
+
 C***  ESSAI DE PRETENSION
 C     PRETEN = 1000.D0
 C***  FIN DE L'ESSAI DE PRETENSION
@@ -90,7 +90,6 @@ C
       A = ZR(LSECT)
       PRETEN = ZR(LSECT+1)
 C
-      CALL JEVECH('PTEMPPR','L',ITEMPR)
       CALL JEVECH('PDEPLMR','L',IDEPLA)
       CALL JEVECH('PDEPLPR','L',IDEPLP)
 C
@@ -104,11 +103,8 @@ C
         CALL JEVECH('PCONTPR','E',LSIGMA)
       ENDIF
 C
-      TEMP = ZERO
-      DO 9 I=1,3
-        TEMP = TEMP + ZR(ITEMPR-1+I)
- 9    CONTINUE
-      TEMP = TEMP / TROIS
+
+      CALL RCVARC('F','TEMP','+','RIGI',1,1,TEMP,IRET)
       DO 10 I=1,9
         W(I)=ZR(IDEPLA-1+I)+ZR(IDEPLP-1+I)
 10    CONTINUE

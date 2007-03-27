@@ -1,9 +1,9 @@
-      SUBROUTINE NMELNL (NDIM, TYPMOD, IMATE, COMPOR, CRIT, TEMP, TREF,
-     &                   OPTION, EPS, SIG, VI, DSIDEP, ENERGI, DERIVL,
-     &                   DLAGTG, DEPS, DENERG, DSIG)
+      SUBROUTINE NMELNL (FAMI,KPG,KSP,POUM,NDIM, TYPMOD, IMATE, COMPOR,
+     &                   CRIT,OPTION, EPS, SIG, VI, DSIDEP, ENERGI,
+     &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,8 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NDIM,IMATE,IRET
+      INTEGER      KPG,KSP,NDIM,IMATE,IRET
+      CHARACTER*(*) FAMI,POUM
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 COMPOR(*),OPTION
       REAL*8      CRIT(3),TEMP,TREF,DLAGTG,DEPS(6),DSIG(6)
@@ -118,6 +119,8 @@ C====================================================================
       BL2 = '  '
       FB2 = 'F '
 
+      CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
+      CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
 
 C====================================================================
 C INITIALISATIONS LIEES AU CALCUL DE DERIVEES LAGRANGIENNE
@@ -148,17 +151,17 @@ C====================================================================
       NOMRES(3)='ALPHA'
 
       IF (ELAS .OR. LINE) THEN
-         CALL RCVALA ( IMATE,' ','ELAS',1,'TEMP',TEMP,2,
+         CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,2,
      &                 NOMRES,VALRES,CODRET, FB2 )
-         CALL RCVALA ( IMATE,' ','ELAS',1,'TEMP',TEMP,1,
+         CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       ELSE
          CALL RCTRAC(IMATE,'TRACTION','SIGM',TEMP,JPROL,
      &               JVALE,NBVALE,VALRES(1))
-         CALL RCVALA ( IMATE,' ','ELAS',1,'TEMP',TEMP,1,
+         CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
-         CALL RCVALA ( IMATE,' ','ELAS',1,'TEMP',TEMP,1,
+         CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       ENDIF
@@ -181,8 +184,8 @@ C====================================================================
       IF (LINE) THEN
         NOMRES(1)='D_SIGM_EPSI'
         NOMRES(2)='SY'
-        CALL RCVALA(IMATE,' ','ECRO_LINE',1,'TEMP',TEMP,2,NOMRES,VALRES,
-     &              CODRET , FB2 )
+        CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ECRO_LINE',0,' ',0.D0,
+     &               2,NOMRES,VALRES,CODRET , FB2 )
         DSDE  = VALRES(1)
         SIGY  = VALRES(2)
 
@@ -438,7 +441,8 @@ C (ENERGI(2)) ET DE LEURS DERIVEES LAGRANGIENNES (DENER)
 C CALCUL INTERMEDIAIRE POUR LA DERIVEE LAGRANGIENNE
         IF (DERIVL) DDIVU = 3.D0*DEPSMO
 
-        CALL NMELRU(IMATE,COMPOR,TEMP,TREF,EPSEQ,DIVU,NONLIN,ENERGI,
+        CALL NMELRU(FAMI,KPG,KSP,POUM,IMATE,COMPOR,EPSEQ,DIVU,
+     &              NONLIN,ENERGI,
      &              DERIVL,DDIVU,DEPSEQ,DENERG,DLAGTG)
       ENDIF
 

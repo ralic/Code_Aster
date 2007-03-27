@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE SECHAGE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -440,25 +440,6 @@ CREA_RESU(reuse =RESUSECH,
                  AFFE=_F(CHAM_GD=CHSECH0,
                          INST=-1.0,),);
 
-CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                            AFFE=_F( TOUT = 'OUI',
-                                  MATER = MAT,
-                                  TEMP_REF = 0.),
-                            AFFE_VARC=_F(TOUT='OUI',EVOL=RESUSECH,NOM_VARC="SECH",NOM_CHAM='TEMP',VALE_REF=C_0),);
-
-#
-CLMECA =AFFE_CHAR_MECA(  MODELE=MOMECA,
-                         FACE_IMPO=(_F( GROUP_MA = ('GM72'),
-                                    DNOR = 0.,),
-                                   _F( GROUP_MA = ('GM71'),
-                                    DNOR = 0.,         ),
-                                   _F( GROUP_MA = ('GM73'),
-                                    DNOR = 0.,),),
-                                    INFO = 2);
-
-NUM=NUME_DDL(MODELE=MOMECA,METHODE='LDLT',RENUM='RCMK',)
-
-
 CHTEMP0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                    OPERATION='AFFE',
                    MODELE=MOTH,
@@ -473,11 +454,31 @@ CREA_RESU(reuse =RESUTHER,
                  AFFE=_F(CHAM_GD=CHTEMP0,
                          INST=-1.0,),);
 
-CHMECA=AFFE_CHAR_MECA(
-                            MODELE=MOMECA,
-                     TEMP_CALCULEE=RESUTHER,
-                            )
+CREA_RESU(reuse =RESUTHER,
+                 OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=CHTEMP0,
+                         INST=-1.0,),);
+
+CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                            AFFE=_F( TOUT = 'OUI',
+                                  MATER = MAT,
+                                  TEMP_REF = 0.),
+                            AFFE_VARC=(_F(TOUT='OUI',EVOL=RESUSECH,NOM_VARC='SECH',NOM_CHAM='TEMP',VALE_REF=C_0),
+                                       _F(TOUT='OUI',EVOL=RESUTHER,NOM_VARC='TEMP',NOM_CHAM='TEMP',VALE_REF=0.),),);
 #
+CLMECA =AFFE_CHAR_MECA(  MODELE=MOMECA,
+                         FACE_IMPO=(_F( GROUP_MA = ('GM72'),
+                                    DNOR = 0.,),
+                                   _F( GROUP_MA = ('GM71'),
+                                    DNOR = 0.,         ),
+                                   _F( GROUP_MA = ('GM73'),
+                                    DNOR = 0.,),),
+                                    INFO = 2);
+
+NUM=NUME_DDL(MODELE=MOMECA,METHODE='LDLT',RENUM='RCMK',)
+
 
 CHME=AFFE_CHAR_MECA(
                             MODELE=MOMECA,
@@ -498,9 +499,6 @@ LISTMECA=DEFI_LIST_REEL(
 RESUMECA=STAT_NON_LINE(
                             MODELE=MOMECA,
                         CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = CHMECA,
-                ),
                              _F(
                 CHARGE = CHME,
                 ),
@@ -541,7 +539,6 @@ RESUSTAT=MECA_STATIQUE(
                           MODELE=MOMECA,
                       CHAM_MATER=CM,EXCIT=(
                            _F(  CHARGE = CLMECA,                   ),
-                           _F(  CHARGE = CHMECA,                   ),
                            _F(  CHARGE = CHME,                     )),
                        LIST_INST=LISTMECA,
                          SOLVEUR=_F(  METHODE = 'LDLT',

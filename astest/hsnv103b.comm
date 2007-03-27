@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE EN DEFORMATIONS PLANES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -234,10 +234,15 @@ CM2=AFFE_MATERIAU(
                          MAILLAGE=MAIL,   
                         AFFE=_F( TOUT = 'OUI',MATER = ACIER2,
                               TEMP_REF = 900.),
-                        AFFE_VARC=_F(TOUT='OUI',
+                        AFFE_VARC=(_F(TOUT='OUI',
                                      EVOL=TEMPE,
                                      NOM_VARC='M_ACIER',
                                      NOM_CHAM='META_ELNO_TEMP'),
+                                   _F(TOUT='OUI',
+                                     EVOL=TEMPE,
+                                     NOM_VARC='TEMP',
+                                     NOM_CHAM='TEMP',
+                                     VALE_REF=900),),
 
          )
 
@@ -248,7 +253,7 @@ MO=AFFE_MODELE(
 
 CH_FO=AFFE_CHAR_MECA( 
             MODELE=MO,
-            TEMP_CALCULEE=TEMPE,DDL_IMPO=(
+            DDL_IMPO=(
                  _F(  NOEUD = 'N4',  DY = 0., DX = 0.),
                  _F(  NOEUD = 'N2',  DY = 0.),
                  _F(  NOEUD = 'N5',  DY = 0.))

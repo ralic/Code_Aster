@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF OPTIONS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,5 +25,7 @@ OPTION__
         PMATERC  ADRSJEVE
         PGEOMER  GEOM_R
         PCACOQU  CACOQU
+        PNBSP_I  NBSP_I
+       <<  PNBSP_I :  NOMBRE DE SOUS_POINTS >>
    OUT__
         PCOURAN  NEUT_R ELEM__

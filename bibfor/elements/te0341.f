@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       CHARACTER*8  NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16
       REAL*8       ZERO,UN,DEUX,E,G, PGL(3,3), MAT(105), MATP(78)
-      REAL*8       A,XIY,XIZ,ALFAY,ALFAZ,EZ,EY,XL
+      REAL*8       A,XIY,XIZ,ALFAY,ALFAZ,EZ,EY,XL,TPG
       REAL*8       MATGV(105), MATG(14,14)
 C     ------------------------------------------------------------------
       DATA NOMRES / 'E' , 'NU' , 'RHO' /
@@ -71,15 +71,19 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
           VALRES(I) = ZERO
    10 CONTINUE
 C
-      CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
-      IF ( ITEMPE .EQ. 0 ) THEN
+      NPG = 3
+      DO 5 KP=1,NPG
+        CALL RCVARC('F','TEMP','+','RIGI',KP,1,TPG,IRET)
+        VALPAR = VALPAR + TPG
+    5 CONTINUE
+      VALPAR = VALPAR/NPG
+      IF (IRET.NE.0) THEN
          NBPAR  = 0
          NOMPAR = ' '
-         VALPAR = ZERO
+         VALPAR=ZERO
       ELSE
          NBPAR  = 1
          NOMPAR = 'TEMP'
-         VALPAR = 0.5D0*(ZR(ITEMPE) + ZR(ITEMPE+1))
       ENDIF
 C
       CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,NBRES,NOMRES,

@@ -3,7 +3,7 @@
       CHARACTER*(*)       CHMAT , MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,6 +99,7 @@ C     -----------------------------------------------
       CALL JEVEUO ( CHEMAT//'.DESC', 'L', JDESC )
       CALL JENUNO(JEXNUM('&CATA.GD.NOMCMP',ZI(JDESC)),NOMGD)
       CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NBCMP,K8B,IER)
+      CALL ASSERT(NBCMP.GE.30)
       CALL ASSERT((NBVAL/NBCMP)*NBCMP.EQ.NBVAL)
 
       CALL COPISD ( 'CHAMP_GD', 'V', CHEMAT, MATE(1:19) )
@@ -126,14 +127,17 @@ C     -------------------------------------------------
       ICOMPT=0
       INBMAT=0
       DO 11 I=1,NBGRP
-         DO 12 J=1,NBCMP
+C        -- IL NE PEUT PAS Y AVOIR PLUS DE 28 MATERIAUX
+         DO 12 J=1,28
             K=(I-1)*NBCMP+J
+            IF (ZK8(JCHEV-1+K).EQ.'TREF=>') GO TO 13
             IF (ZK8(JCHEV-1+K).NE.' ') THEN
                ZK8(IGRP+ICOMPT)=ZK8(JCHEV-1+K)
                ICOMPT=ICOMPT+1
                INBMAT=INBMAT+1
             ENDIF
   12     CONTINUE
+  13     CONTINUE
          ZI(INGRP-1+I)=INBMAT
          INBMAT=0
   11  CONTINUE

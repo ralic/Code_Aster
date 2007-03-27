@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/12/2006   AUTEUR VOLDOIRE F.VOLDOIRE 
+%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,6 @@ MODE_LOCAL__
     EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
 
@@ -89,14 +88,14 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
                                      DDL_MECA PVITPLU  CINSTPR  PINSTMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
                                      DDL_MECA PVITPLU  CINSTPR  PINSTMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
@@ -125,7 +124,7 @@ OPTION__
                               OUT__  ECOURAN  PCOURAN
     RAPH_MECA           47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
                                      DDL_MECA PVITPLU  CINSTPR  PINSTMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
@@ -137,7 +136,7 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_ELAS      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
                                      DDL_MECA PVITPLU  CINSTPR  PINSTMR
                               OUT__  MMATUUR  PMATUUR
@@ -151,7 +150,7 @@ OPTION__
                               OUT__  MVECTUC  PVECTUC
     RIGI_MECA_TANG      47    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR
                                      DDL_MECA PDEPENT  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CINSTPR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
+                                     CINSTPR  PINSTPR  CMATERC  PMATERC  
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  DDL_MECA PVITENT
                                      DDL_MECA PVITPLU  CINSTPR  PINSTMR
                               OUT__  MMATUUR  PMATUUR

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/01/2007   AUTEUR SALMONA L.SALMONA 
+%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,7 +102,7 @@ OPTION__
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
-                                     CTEREFE  PTEMPER
+                                     ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
     CHAR_MECA_EPSI_R    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -111,7 +111,7 @@ OPTION__
     CHAR_MECA_FRCO3D    403   IN__   EFORCNO  PFRCO3D  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PESA_R    403   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
-                                     NTEMPER  PTEMPER
+                                     ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F    403   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
@@ -130,51 +130,49 @@ OPTION__
     CHAR_MECA_SRCO3D    486   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  EFORCNO  PFRCO3D
                                      NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_TEMP_R    419   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPEF  PTEMPEF
-                                     NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+    CHAR_MECA_TEMP_R    419   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                               OUT__  MVECTUR  PVECTUR
     DEGE_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ECIN_ELEM_DEPL      406   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  CFREQR   PFREQR   NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  NTEMPER  PTEMPER
+                                     CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  EENECNO  PENERCR
     EFGE_ELNO_DEPL      410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                               OUT__  EEFGENOR PEFFORR
                                      EEFGENOC PEFFORC
     EPOT_ELEM_DEPL      401   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTEMPER  CTEREFE  PTEREF
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                               OUT__  EENEDNO  PENERDR
     EPSI_ELNO_DEPL      410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CNUMCOR  PNUMCOR  CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF
+                                     CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                                     ENBSP_I  PNBSP_I
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
     EQUI_ELNO_SIGM      588   IN__   ESIGMNOR PCONCOR
                               OUT__  ECOEQNO  PCONTEQ
     FORC_NODA           416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           414   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLA  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
-                                     CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR  CCACO3D  PCACO3D
     FULL_MECA_ELAS      414   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLA  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
-                                     CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR  CCACO3D  PCACO3D
-    MASS_INER           417   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
+    MASS_INER           417   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  EMASSINE PMASSINE
     MASS_MECA           406   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTEMPER
+                                     ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
     MASS_MECA_DIAG      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     MASS_MECA_EXPLI     -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
@@ -183,45 +181,44 @@ OPTION__
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     M_GAMMA             406   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     NTEMPER  PTEMPER
+                                     ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR  ENBSP_I  PNBSP_I
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         405   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
+    PREP_VRC           408    IN__   CCACOQU  PCACOQU  NTEMPER  PTEMPER  CTEMPSR  PINST_R
+                                     ENBSP_I  PNBSP_I  CTEMPEF  PTEMPEF
+                              OUT__  CTEREFE  PTEMPCR
     RAPH_MECA           414   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLA  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
-                                     CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR  CCACO3D  PCACO3D
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      416   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ENBSP_I  PNBSP_I  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
-    RIGI_MECA           401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPEF  PTEMPEF
-                                     NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
+    RIGI_MECA           401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
                               OUT__  MMATUUR  PMATUUR  CCACO3D  PCACO3D
     RIGI_MECA_ELAS      414   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLA  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
-                                     CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR  CCACO3D  PCACO3D
     RIGI_MECA_GE        402   IN__   CCACOQU  PCACOQU  ECONTPG  PCONTRR  NGEOMER  PGEOMER
                               OUT__  MMATUUR  PMATUUR
-    RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  CTEREFE  PTEMPER
+    RIGI_MECA_HYST      50    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                               OUT__  MMATUUC  PMATUUC
     RIGI_MECA_RO        -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    RIGI_MECA_SENSI     401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPEF  PTEMPEF
-                                     NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     DDL_MECA PVAPRIN  CMATERC  PMATSEN
+    RIGI_MECA_SENSI     401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  DDL_MECA PVAPRIN  CMATERC  PMATSEN  ENBSP_I  PNBSP_I
                               OUT__  MVECTUR  PVECTUR
-    RIGI_MECA_SENS_C    401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPEF  PTEMPEF
-                                     NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     NDEPLAC  PVAPRIN  CMATERC  PMATSEN
+    RIGI_MECA_SENS_C    401   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
+                                     CTEMPSR  PTEMPSR  NDEPLAC  PVAPRIN  CMATERC  PMATSEN  ENBSP_I  PNBSP_I
                               OUT__  MVECTUC  PVECTUC
     RIGI_MECA_SFCO3D    486   IN__   DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFFCO3D  NGEOMER  PGEOMER
                                      CTEMPSR  PTEMPSR
@@ -231,27 +228,26 @@ OPTION__
     RIGI_MECA_TANG      414   IN__   CCACOQU  PCACOQU  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLA  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ENBSP_I  PNBSP_I
-                                     CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR
-                                     CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMP
+                                     ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMP
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS  MMATUUR  PMATUUR  CCACO3D  PCACO3D
     SIEF_ELGA_DEPL      410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR  CTEREFE  PTEREF
+                                     ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR  ENBSP_I  PNBSP_I
                               OUT__  ECONTPG  PCONTRR
                                      ECONTPC  PCONTRC
     SIEF_ELNO_ELGA      415   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  NTEMPER  PTEMPER
+                                     CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                               OUT__  EEFGENOR PSIEFNOR
                                      EEFGENOC PSIEFNOC
     SIGM_ELNO_CART      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_COQU      415   IN__   CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  CNUMCOR  PNUMCOR
-                                     NTEMPER  PTEMPER
+                                     ZVARCPG  PVARCPR
                               OUT__  ESIGMNOR PSIGNOD
     SIGM_ELNO_DEPL      410   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
-                                     CNUMCOR  PNUMCOR  CTEMPEF  PTEMPEF  NTEMPER  PTEMPER  CTEMPSR  PTEMPSR
-                                     CTEREFE  PTEREF
+                                     CNUMCOR  PNUMCOR  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
+                                     ENBSP_I  PNBSP_I
                               OUT__  ESIGMNOR PCONTRR
                                      ESIGMNOC PCONTRC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM

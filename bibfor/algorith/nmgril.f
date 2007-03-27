@@ -1,11 +1,10 @@
       SUBROUTINE NMGRIL (FAMI,KPG,KSP,IMATE, TYPMOD, COMPOR, OPTION,
      &                   EPSM, DEPS, ANGMAS, SIGM, VIM,
-     &                   TM, TP, TREF,
      &                   SIGP, VIP, DSIDEP,CODRET )
 C TOLE CRP_6
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +89,7 @@ C
       CHARACTER*(*) FAMI
       CHARACTER*16  COMPOR(*),OPTION
       REAL*8        EPSM(6),DEPS(6),SIGM(6),VIM(*)
-      REAL*8        TM,TP,TREF,ANGMAS(3)
+      REAL*8        ANGMAS(3)
       REAL*8        SIGP(6),VIP(*),DSIDEP(6,6)
 C
 C     VARIABLES LOCALES
@@ -203,7 +202,6 @@ C
 
       CALL NMCO1D(FAMI,KPG,KSP,IMATE,COMPOR,OPTION,
      &            EPSML(1), DEPSL(1), ANGMAS, SIGML(1),VIM(1),
-     &            TM,TP,TREF,
      &            SIGL(1),VIP(1),DSDE1,CODRET)
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/08/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 # ( SANS PLASTICITE DE TRANSFORMATION)
 # CAS_TEST__: HSNV101C
 # HSNV101C                COMMANDES            11/12/92
-# BARREAU CYLINDRIQUE COUPLE EN TRCTION SIMPLE
+# BARREAU CYLINDRIQUE COUPLE EN TRACTION SIMPLE
 # MODELISATION AXIS  (ELEMENTS AXISYMETRIQUES METALLURGIQUES)
 #             15 NOEUDS  4 MAILLES TRI6
 #======================================================================
@@ -222,11 +222,16 @@ ACIER2=DEFI_MATERIAU(
 CM2=AFFE_MATERIAU( 
                            MAILLAGE=MAIL,   
                           AFFE=_F( TOUT = 'OUI',MATER = ACIER2,
-                                TEMP_REF = 900.),
-                          AFFE_VARC=_F(TOUT='OUI',
+                                ),
+                          AFFE_VARC=(_F(TOUT='OUI',
                                        EVOL=TEMPE,
                                        NOM_VARC='M_ACIER',
                                        NOM_CHAM='META_ELNO_TEMP'),
+                                    _F(TOUT='OUI',
+                                       EVOL=TEMPE,
+                                       NOM_VARC='TEMP',
+                                       NOM_CHAM='TEMP',
+                                       VALE_REF=900),),
 
            )
 
@@ -237,7 +242,6 @@ MO=AFFE_MODELE(
 
 CH_FO=AFFE_CHAR_MECA( 
             MODELE=MO,
-            TEMP_CALCULEE=TEMPE,
             FORCE_CONTOUR=_F(  MAILLE = 'M8',  FY = 1.),DDL_IMPO=(
                  _F(  NOEUD = 'N14',  DY = 0.),
                  _F(  NOEUD = 'N13',  DY = 0.),

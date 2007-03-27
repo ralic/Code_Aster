@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,11 +46,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 
-      INTEGER I,IP,K,KP,IGEOM,ICACO,IVECTT,ITREF,ITEMP,IMATE
+      INTEGER I,IP,K,KP,IGEOM,ICACO,IVECTT,ITEMP,IMATE
       INTEGER IVF,IDFDK,NNO,NPG,NPGS,JCOOPG,J,NBRES,JDFD2
       PARAMETER (NBRES=3)
       CHARACTER*16 PHENOM
       CHARACTER*8 NOMRES(NBRES)
+      CHARACTER*4 FAMI
       CHARACTER*2 BL2,CODRET(NBRES)
       REAL*8 VALRES(NBRES),DFDX(3),R,COUR,JAC,COSA,SINA
       REAL*8 TPG1,TPG2,TPG3,TPG,ZERO,UN,DEUX,X3
@@ -59,16 +60,16 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       DATA ZERO,UN,DEUX/0.D0,1.D0,2.D0/
 C     ------------------------------------------------------------------
 
-
-      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,JCOOPG,IVF,IDFDK,
+      FAMI = 'RIGI'
+      CALL ELREF5(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,JCOOPG,IVF,IDFDK,
      &            JDFD2,JGANO)
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PCACOQU','L',ICACO)
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL JEVECH('PTEMPER','L',ITEMP)
-      CALL JEVECH('PTEREF','L',ITREF)
       CALL JEVECH('PVECTUR','E',IVECTT)
+C     TEMPERATURE DE REFERENCE
+      CALL RCVARC('F','TEMP','REF',FAMI,1,1,TREF,IRET)
 
 C --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 C     -------------------------------------------------
@@ -94,14 +95,11 @@ C     ** BOUCLE CONCERNANT LES POINTS DE GAUSS **************
      &                COUR,JAC,COSA,SINA)
           R = ZERO
           TPG = ZERO
-          TPG1 = ZERO
-          TPG2 = ZERO
-          TPG3 = ZERO
+          CALL RCVARC('F','TEMP','+',FAMI,KP,1,TPG2,IRET)
+          CALL RCVARC('F','TEMP','+',FAMI,KP,2,TPG1,IRET)
+          CALL RCVARC('F','TEMP','+',FAMI,KP,3,TPG3,IRET)
           DO 10 I = 1,NNO
             R = R + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
-            TPG1 = TPG1 + ZR(ITEMP+3*I-3)*ZR(IVF+K+I-1)
-            TPG2 = TPG2 + ZR(ITEMP+3*I-2)*ZR(IVF+K+I-1)
-            TPG3 = TPG3 + ZR(ITEMP+3*I-1)*ZR(IVF+K+I-1)
    10     CONTINUE
           IF (NOMTE(1:8).EQ.'MECXSE3 ') JAC = JAC*R
 
@@ -119,7 +117,7 @@ C---- COMME POUR LA LONGUEUR
      &                  VALRES(3),CODRET(3),BL2)
             IF (CODRET(3).EQ.'OK') ALPHAE = VALRES(3)*VALRES(1)
             NU = VALRES(2)
-            COEF = (TPG-ZR(ITREF))*JAC*ALPHAE*ZR(IPOIDS+IP-1)* (H/DEUX)
+            COEF = (TPG-TREF)*JAC*ALPHAE*ZR(IPOIDS+IP-1)* (H/DEUX)
             IF (NOMTE(1:8).NE.'METCSE3 ') COEF = COEF/ (UN-NU)
 
             DO 20 I = 1,NNO

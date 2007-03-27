@@ -1,8 +1,8 @@
-        SUBROUTINE LCMMAP (COMP, MOD,  IMAT,   NMAT,   TEMPD,   TEMPF,
+        SUBROUTINE LCMMAP (FAMI,KPG,KSP,COMP, MOD,  IMAT,   NMAT,
      &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,12 +87,13 @@ C                        ou s désigne le SYSTEME DE GLISSEMENT
 C                        ou g désigne le "grain" ou la phase
 C
 C       ----------------------------------------------------------------
-C       IN  COMP   :  GRANDEUR COMPOR
+C       IN  FAMI   : FAMILLE DES POINTS DE GAUSS
+C           KPG    : POINT DE GAUSS
+C           KSP    : SOUS-POINT DE GAUSS
+C           COMP   :  GRANDEUR COMPOR
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION  MAXIMUM DE MATER
-C           TEMPD  :  TEMPERATURE  A T
-C           TEMPF  :  TEMPERATURE  A T+DT
 C      ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C       OUT MATERD :  COEFFICIENTS MATERIAU A T
 C           PGL    : MATRICE DE PASSAGE GLOBAL LOCAL
@@ -127,15 +128,16 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ----------------------------------------------------------------
-      INTEGER         NMAT, NDT , NDI  , NR , NVI,NBCOMM(NMAT,3)
-      REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
+      INTEGER         KPG,KSP,NMAT, NDT , NDI  , NR , NVI,NBCOMM(NMAT,3)
+      REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
       REAL*8          HYDRD , HYDRF , SECHD , SECHF,R8DGRD,HOOK(6,6)
-      REAL*8          VALPAD(3), VALPAF(3),REPERE(7),XYZ(3),KOOH(6,6)
+      REAL*8          REPERE(7),XYZ(3),KOOH(6,6)
       REAL*8          EPSI,R8PREM,ANGMAS(3),PGL(3,3),R8VIDE,HOOKF(6,6)
       REAL*8          VALRES(NMAT),HSR(5,24,24),MS(6)
-      CHARACTER*8     MOD, NOM , NOMC(14) , NOMPAR(3)
+      CHARACTER*8     MOD, NOM , NOMC(14)
       CHARACTER*2     BL2, CERR(14)
       CHARACTER*3     MATCST
+      CHARACTER*(*)   FAMI
       CHARACTER*16    COMP(*),NMATER,NECOUL,NECRIS,NECRCI,NOMFAM
       CHARACTER*16    CPMONO(5*NMAT+1),PHENOM,COMPK,COMPI,COMPR
       INTEGER I, IMAT, NBFSYS, IFA,J,ICAMAS,ITAB(8),NBMONO,NBSYS
@@ -164,9 +166,6 @@ C
       ENDIF
       CALL R8INIR(2*NMAT, 0.D0, MATERD, 1)
       CALL R8INIR(2*NMAT, 0.D0, MATERF, 1)
-      NOMPAR(1) = 'TEMP'
-      VALPAD(1) = TEMPD
-      VALPAF(1) = TEMPF
 C
       READ (COMP(2),'(I16)') NVI
       READ (COMP(7),'(I16)') NBPHAS
@@ -225,32 +224,32 @@ C     Boucle sur le nombre de monocristaux
             NECRCI=CPMONO(INDCP+5*(IFA-1)+5)
 
 C           COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
-            CALL LCMAFL(NMATER,IMAT,NECOUL,NBVAL,1,NOMPAR,VALPAD,VALRES,
-     &            NMAT)
+            CALL LCMAFL(FAMI,KPG,KSP,'-',NMATER,IMAT,NECOUL,NBVAL,
+     &            VALRES,NMAT)
             MATERD(INDMAT+1,2)=NBVAL
             MATERF(INDMAT+1,2)=NBVAL
             INDMAT=INDMAT+1
             DO 501 I=1,NBVAL
                MATERD(INDMAT+I,2)=VALRES(I)
  501        CONTINUE
-            CALL LCMAFL(NMATER,IMAT,NECOUL,NBVAL,1,NOMPAR,VALPAF,VALRES,
-     &            NMAT)
+            CALL LCMAFL(FAMI,KPG,KSP,'+',NMATER,IMAT,NECOUL,NBVAL,
+     &            VALRES,NMAT)
             DO 502 I=1,NBVAL
                MATERF(INDMAT+I,2)=VALRES(I)
  502        CONTINUE
             INDMAT=INDMAT+NBVAL
 
 C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE CINEMATIQUE
-            CALL LCMAEC(NMATER,IMAT,NECRCI,NBVAL,1,NOMPAR,VALPAD,VALRES,
-     &            NMAT)
+            CALL LCMAEC(FAMI,KPG,KSP,'-',NMATER,IMAT,NECRCI,NBVAL,
+     &            VALRES,NMAT)
             MATERD(INDMAT+1,2)=NBVAL
             MATERF(INDMAT+1,2)=NBVAL
             INDMAT=INDMAT+1
             DO 503 I=1,NBVAL
                MATERD(INDMAT+I,2)=VALRES(I)
  503        CONTINUE
-            CALL LCMAEC(NMATER,IMAT,NECRCI,NBVAL,1,NOMPAR,VALPAF,VALRES,
-     &            NMAT)
+            CALL LCMAEC(FAMI,KPG,KSP,'+',NMATER,IMAT,NECRCI,NBVAL,
+     &            VALRES,NMAT)
             DO 504 I=1,NBVAL
                MATERF(INDMAT+I,2)=VALRES(I)
  504        CONTINUE
@@ -259,16 +258,16 @@ C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE CINEMATIQUE
 C           COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
             NOMFAM=CPMONO(INDCP+5*(IFA-1)+1)
             CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
-            CALL LCMAEI(NMATER,IMAT,NECRIS,NECOUL,NBVAL,1,NOMPAR,0,
-     &            VALPAD,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
+            CALL LCMAEI(FAMI,KPG,KSP,'-',NMATER,IMAT,NECRIS,NECOUL,
+     &            NBVAL,0,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
             MATERD(INDMAT+1,2)=NBVAL
             MATERF(INDMAT+1,2)=NBVAL
             INDMAT=INDMAT+1
             DO 505 I=1,NBVAL
                MATERD(INDMAT+I,2)=VALRES(I)
  505        CONTINUE
-            CALL LCMAEI(NMATER,IMAT,NECRIS,NECOUL,NBVAL,1,NOMPAR,0,
-     &            VALPAF,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
+            CALL LCMAEI(FAMI,KPG,KSP,'+',NMATER,IMAT,NECRIS,NECOUL,
+     &            NBVAL,0,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS)
             DO 506 I=1,NBVAL
                MATERF(INDMAT+I,2)=VALRES(I)
  506        CONTINUE
@@ -304,18 +303,22 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-          CALL RCVALA (  IMAT,  ' ',  'ELAS', 1,  NOMPAR,VALPAD, 2,
+          CALL RCVALB (  FAMI,  KPG,     KSP, '-',
+     &                   IMAT,  ' ',  'ELAS', 0,  ' ',0.D0, 2,
      &                   NOMC(1),  MATERD(1,1),  CERR(1), 'FM' )
-          CALL RCVALA (  IMAT,  ' ',  'ELAS', 1,  NOMPAR,VALPAD, 1,
+          CALL RCVALB (  FAMI,  KPG,     KSP, '-',
+     &                   IMAT,  ' ',  'ELAS', 0,  ' ',0.D0, 1,
      &                   NOMC(3),  MATERD(3,1),  CERR(3), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           MATERD(NMAT,1)=0
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-          CALL RCVALA (  IMAT, ' ',   'ELAS',  1, NOMPAR,VALPAF, 2,
+          CALL RCVALB (  FAMI,  KPG,     KSP, '+',
+     &                   IMAT, ' ',   'ELAS',  0, ' ',0.D0, 2,
      &                   NOMC(1),  MATERF(1,1),  CERR(1), 'FM' )
-          CALL RCVALA (  IMAT, ' ',   'ELAS',  1, NOMPAR,VALPAF, 1,
+          CALL RCVALB (  FAMI,  KPG,     KSP, '+',
+     &                   IMAT, ' ',   'ELAS',  0, ' ',0.D0, 1,
      &                   NOMC(3),  MATERF(3,1),  CERR(3), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           MATERF(NMAT,1)=0
@@ -329,9 +332,9 @@ C
 C -    ELASTICITE ORTHOTROPE
 C -     MATRICE D'ELASTICITE ET SON INVERSE A TEMPD(T)
 C
-        CALL DMAT3D(IMAT,VALPAD,R8VIDE(),R8VIDE(),R8VIDE(),REPERE,XYZ,
+        CALL DMAT3D(FAMI,IMAT,R8VIDE(),'-',KPG,KSP,REPERE,XYZ,
      &              HOOK)
-        CALL D1MA3D(IMAT,VALPAD,R8VIDE(),REPERE,XYZ,KOOH)
+        CALL D1MA3D(FAMI,IMAT,R8VIDE(),'-',KPG,KSP,REPERE,XYZ,KOOH)
         DO 101 I=1,6
            DO 102 J=1,6
               MATERD(6*(J-1)+I,1)=HOOK(I,J)
@@ -342,7 +345,8 @@ C
         NOMC(1) = 'ALPHA_L'
         NOMC(2) = 'ALPHA_T'
         NOMC(3) = 'ALPHA_N'
-        CALL RCVALA(IMAT,' ',PHENOM,1,NOMPAR,VALPAD,3,NOMC,MATERD(73,1),
+        CALL RCVALB(FAMI,KPG,KSP,'-',
+     &              IMAT,' ',PHENOM,0,' ',0.D0,3,NOMC,MATERD(73,1),
      &              CERR,' ')
         IF (CERR(1).NE.'OK') MATERD(73,1) = 0.D0
         IF (CERR(2).NE.'OK') MATERD(74,1) = 0.D0
@@ -350,9 +354,9 @@ C
 C
 C -     MATRICE D'ELASTICITE ET SON INVERSE A A TEMPF (T+DT)
 C
-        CALL DMAT3D(IMAT,VALPAF,R8VIDE(),R8VIDE(),R8VIDE(),REPERE,XYZ,
+        CALL DMAT3D(FAMI,IMAT,R8VIDE(),'+',KPG,KSP,REPERE,XYZ,
      &              HOOKF)
-        CALL D1MA3D(IMAT,VALPAF,R8VIDE(),REPERE,XYZ,KOOH)
+        CALL D1MA3D(FAMI,IMAT,R8VIDE(),'+',KPG,KSP,REPERE,XYZ,KOOH)
         DO 103 I=1,6
            DO 104 J=1,6
               MATERF(6*(J-1)+I,1)=HOOKF(I,J)
@@ -360,7 +364,8 @@ C
  104       CONTINUE
  103    CONTINUE
         MATERF(NMAT,1)=1
-        CALL RCVALA(IMAT,' ',PHENOM,1,NOMPAR,VALPAF,3,NOMC,MATERF(73,1),
+        CALL RCVALB(FAMI,KPG,KSP,'+',
+     &              IMAT,' ',PHENOM,0,' ',0.D0,3,NOMC,MATERF(73,1),
      &              CERR,' ')
         IF (CERR(1).NE.'OK') MATERF(73,1) = 0.D0
         IF (CERR(2).NE.'OK') MATERF(74,1) = 0.D0

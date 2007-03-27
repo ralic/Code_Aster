@@ -1,6 +1,6 @@
       SUBROUTINE TUMASS(NOMTE,NBRDDL,MASS)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,26 +134,9 @@ C     --- RECUPERATION DES ORIENTATIONS ---
 C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
 C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
 C          ------------------------------------------------------------
-      CALL TECACH('NNN','PTEMPER',8,ITAB,IRET)
-      ITEMP = ITAB(1)
-      IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
-        NBPAR = 1
-        NOMPAR = 'TEMP'
-        TMINF = 0.D0
-        TMMOY = 0.D0
-        TMSUP = 0.D0
-        DO 40,INO = 1,NNO
-          CALL DXTPIF(ZR(ITEMP+3* (INO-1)),ZL(ITAB(8)+3* (INO-1)))
-          TMMOY = TMMOY + ZR(ITEMP-1+3* (INO-1)+1)/DBLE(NNO)
-          TMINF = TMINF + ZR(ITEMP-1+3* (INO-1)+2)/DBLE(NNO)
-          TMSUP = TMSUP + ZR(ITEMP-1+3* (INO-1)+3)/DBLE(NNO)
-   40   CONTINUE
-        VALPAR = TMMOY
-      ELSE
-        NBPAR = 0
-        NOMPAR = ' '
-        VALPAR = 0.D0
-      END IF
+      CALL MOYTEM('RIGI',NPG,3,'+',VALPAR)
+      NBPAR = 1
+      NOMPAR = 'TEMP'
 
 C ======   OPTION MASS_MECA    =======
 

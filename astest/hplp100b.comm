@@ -1,4 +1,4 @@
-# MODIF  DATE 06/11/2006   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -338,54 +338,54 @@ G4=CALC_G(         RESULTAT = OUTMES1,
 
 TEST_TABLE(       TABLE=G1,
                 NOM_PARA='G',
-                    VALE=-1.748581514E+2,
+                     VALE=-1.7485816491625E+02,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
-                 VERSION='6.0.19')
+                 )
 
 
 TEST_TABLE(       TABLE=G1,
              SENSIBILITE=(THETAS,),
                 NOM_PARA='G',
-                    VALE=-4.422828409E-1,
+                     VALE=-4.4228284023143E-01,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
-                 VERSION='6.0.19')
+                 )
 
 # SECOND CHARGEMENT
 
 TEST_TABLE(       TABLE=G2,
                 NOM_PARA='G',
-                     VALE=3.672692719E-1,
+                     VALE= 3.6726929469888E-01,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
-                 VERSION='6.0.19')
+                 )
 
 TEST_TABLE(       TABLE=G2,
              SENSIBILITE=(THETAS,),
                 NOM_PARA='G',
-                     VALE=1.102553167E-2,
+                     VALE= 1.1025532359262E-02,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
-                 VERSION='6.0.19')
+                 )
 
 # PREMIER CHARGEMENT AVEC LE MAILLAGE DECALE
 
 TEST_TABLE(       TABLE=G3,
                 NOM_PARA='G',
-                    VALE=-1.748585937E+2,
+                     VALE=-1.7485860046472E+02,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
-                 VERSION='6.0.19')
+                 )
 
 # SECOND CHARGEMENT AVEC LE MAILLAGE DECALE
 
 TEST_TABLE(       TABLE=G4,
                 NOM_PARA='G',
-                     VALE=3.672802982E-1,
+                     VALE= 3.6728031672481E-01,
                PRECISION=1.E-9,
                REFERENCE='NON_REGRESSION',
-                 VERSION='6.0.19')
+                 )
 
 FIN()
 #

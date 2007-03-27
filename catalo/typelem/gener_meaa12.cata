@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/04/2006   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -77,7 +77,6 @@ MODE_LOCAL__
                                         FH12Y    ENT12    M21      FH21X    FH21Y    ENT21    
                                         M22      FH22X    FH22Y    ENT22    QPRIM    FHTX     
                                         FHTY     )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
 
@@ -104,7 +103,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR  
     FULL_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  
-                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
+                                     CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR  
                                      MVECTUR  PVECTUR  
@@ -116,14 +115,14 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I  
     RAPH_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  
-                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
+                                     CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
     REFE_FORC_NODA      600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO   
                               OUT__  MVECTUR  PVECTUR  
     RIGI_MECA_TANG      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  
-                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
+                                     CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  
                                      ZVARIPG  PVARIMR  
                               OUT__  MMATUNS  PMATUNS  
     SIEF_ELNO_ELGA      600   IN__   ECONTPG  PCONTRR  

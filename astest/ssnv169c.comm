@@ -1,4 +1,4 @@
-# MODIF  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PBADEL P.BADEL
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,16 +82,18 @@ SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                               VALE = 1.)
                        )
 
-CM=AFFE_MATERIAU(  MAILLAGE=M,
-                   AFFE=_F( TOUT = 'OUI',MATER = BETON, TEMP_REF = 20.),
-                   AFFE_VARC=_F(TOUT='OUI',CHAMP_GD=SECH,NOM_VARC='SECH',VALE_REF=1),);
-
 TEMP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                          AFFE=_F(
                                TOUT = 'OUI',
                                NOM_CMP = 'TEMP',
                                VALE = 20.)
                        )
+
+CM=AFFE_MATERIAU(  MAILLAGE=M,
+                   AFFE=_F( TOUT = 'OUI',MATER = BETON,),
+                   AFFE_VARC=(_F(TOUT='OUI',CHAMP_GD=SECH,NOM_VARC='SECH',VALE_REF=1),
+                              _F(TOUT='OUI',CHAMP_GD=TEMP,NOM_VARC='TEMP',VALE_REF=20),),);
+
 
 # rap_pic : pourcentage de la force au pic
 rap_pic=.6
@@ -125,10 +127,6 @@ CH2=AFFE_CHAR_MECA_F( MODELE=MO,
                                 )
                     )
 
-CH3=AFFE_CHAR_MECA( MODELE        = MO,
-                    TEMP_CALCULEE = TEMP
-                  )
-
 heure=3600.
 jour=24.*heure
 annee=365.25*jour
@@ -144,8 +142,7 @@ U=STAT_NON_LINE( MODELE=MO,
                  CHAM_MATER=CM,EXCIT=( _F(CHARGE = CH10),
                              _F(CHARGE = CH11),
                    _F(CHARGE = CH12),
-                   _F(CHARGE = CH2),
-                   _F(CHARGE = CH3)
+                   _F(CHARGE = CH2)
                  ),
        COMP_INCR=_F(
                  RELATION = 'KIT_DDI',
