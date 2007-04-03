@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ C     -----------------------------------------------------------------
       CHARACTER*4 TYCHR
       CHARACTER*8 KBID,MO,MA,CHOU,NOMGD,CHIN,NOMGD2,NOMPAR,MA2,NOPAR2,TA
       CHARACTER*16 TYCHR1,OPERA,OPTIO2,TYPCO,OPTION
-      CHARACTER*19 LIGREL,CARTEM,CELMOD,PRCHN1,CNS1,CH1
+      CHARACTER*19 LIGREL,CARTEM,CELMOD,PRCHN1,CNS1,CH1,PRCHN2
       CHARACTER*8 NU1
 C     -----------------------------------------------------------------
 C---- COMMUNS NORMALISES  JEVEUX
@@ -188,9 +188,12 @@ C     -----------------------------------------
         CALL GETVID(' ','CHAM_GD',0,1,1,CHIN,IB)
         CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD2,IB)
         IF (NOMGD.NE.NOMGD2) THEN
-           VALK(1) = CHIN
-           VALK(2) = TYCHR1
-           CALL U2MESK('F','UTILITAI3_27', 2 ,VALK)
+C          -- EXCEPTION : NOMGD='VARI_R' ET NOMGD2='VAR2_R'
+           IF (.NOT.(NOMGD.EQ.'VARI_R' .AND. NOMGD2.EQ.'VAR2_R')) THEN
+             VALK(1) = CHIN
+             VALK(2) = TYCHR1
+             CALL U2MESK('F','UTILITAI3_27', 2 ,VALK)
+           ENDIF
         ENDIF
         CALL CHPCHD(CHIN,TYCHR,CELMOD,PROL0,'G',CHOU)
 
@@ -207,7 +210,7 @@ C     -----------------------------------------
 
 
 
-C 4.  SI ON A CREE UN CHAM_NO, ON PEUT CHANGER SA NUMEROTATION :
+C 4.  SI ON A CREE UN CHAM_NO, ON PEUT IMPOSER SA NUMEROTATION :
 C --------------------------------------------------------------
       IF (TYCHR.EQ.'NOEU') THEN
         CALL GETVID(' ','CHAM_NO',0,1,1,CH1,I11)
@@ -219,10 +222,14 @@ C --------------------------------------------------------------
           IF (I12.GT.0) CALL DISMOI('F','PROF_CHNO',NU1,'NUME_DDL',IB,
      &                              PRCHN1,IB)
 
-          CNS1 = '&&OP0195.CNS1'
-          CALL CNOCNS(CHOU,'V',CNS1)
-          CALL CNSCNO(CNS1,PRCHN1,'NON','G',CHOU)
-          CALL DETRSD('CHAM_NO_S',CNS1)
+          CALL DISMOI('F','PROF_CHNO',CHOU,'CHAM_NO',IB,PRCHN2,IB)
+          IF (PRCHN1.NE.PRCHN2) THEN
+             CNS1 = '&&OP0195.CNS1'
+             CALL CNOCNS(CHOU,'V',CNS1)
+             CALL DETRSD('PROF_CHNO',PRCHN2)
+             CALL CNSCNO(CNS1,PRCHN1,'NON','G',CHOU)
+             CALL DETRSD('CHAM_NO_S',CNS1)
+          END IF
         END IF
       END IF
 

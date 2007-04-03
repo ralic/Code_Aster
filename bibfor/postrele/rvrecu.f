@@ -5,7 +5,7 @@
       CHARACTER*(*)       MCF,       CHAMP, CHAMPN, NOMVEC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/11/2006   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,9 +61,7 @@ C
       NCH19 = CHAMP
       VECTEU = NOMVEC
       CALL JELIRA ( NCH19//'.VALE', 'TYPE', IBID, TYPE )
-      IF ( TYPE .NE. 'C' ) THEN
-         CALL U2MESS('F','POSTRELE_63')
-      ENDIF
+      IF ( TYPE .NE. 'C' ) CALL U2MESS('F','POSTRELE_11')
       CALL JELIRA ( NCH19//'.VALE', 'LONMAX', NEQ, K8B )
       CALL JEVEUO (NCH19//'.VALE', 'L', JVAL )
       CALL WKVECT ( VECTEU, 'V V R', NEQ, KVAL)
@@ -110,7 +108,7 @@ C
  30     CONTINUE
 C
       ELSE
-         CALL U2MESS('F','PREPOST_37')
+         CALL U2MESK('F','POSTRELE_52',1,FORM)
       ENDIF
 C
       CALL JEDEMA()

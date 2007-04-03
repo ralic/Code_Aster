@@ -4,7 +4,7 @@
       REAL*8 T(*),SN(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,9 +30,7 @@ C     ------------------------------------------------------------------
       REAL*8    VALE(6,4), EQUI(2)
 C     -----------------------------------------------------------------
 
-      IF (NBCO.GT.1) THEN
-        CALL U2MESS('F','POSTRELE_27')
-      END IF
+      IF (NBCO.GT.1) CALL U2MESS('F','POSTRELE_4')
 
       NBVP = 3
       L = 6*NBSP

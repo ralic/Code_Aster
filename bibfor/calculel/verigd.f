@@ -1,6 +1,6 @@
       SUBROUTINE VERIGD(NOMGDZ,LCMP,NCMP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C     1. NOMGD EST BIEN LE NOM D'UNE GRANDEUR :
 C     -----------------------------------------
       CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMGD),GD)
       IF (GD.EQ.0) THEN
-        CALL U2MESK('A','CALCULEL_67',1,NOMGD)
+        CALL U2MESK('A','POSTRELE_57',1,NOMGD)
         IRET = 1
         GO TO 30
       END IF
@@ -78,7 +78,7 @@ C     -----------------------------------------
 
 C     2. ON RECOPIE LCMP DANS LCMP2 (K8) :
 C     -------------------------------------------
-      IF (NCMP.GT.3000) CALL U2MESS('F','POSTRELE_65')
+      IF (NCMP.GT.3000) CALL U2MESS('F','POSTRELE_13')
       DO 10,K = 1,NCMP
         LCMP2(K) = LCMP(K)
    10 CONTINUE
@@ -88,7 +88,7 @@ C     3. LCMP2 N'A PAS DE DOUBLONS :
 C     -----------------------------
       CALL KNDOUB(8,LCMP2,NCMP,I1)
       IF (I1.GT.0) THEN
-        CALL U2MESK('A','CALCULEL5_35',1,LCMP2(I1))
+        CALL U2MESK('A','POSTRELE_55',1,LCMP2(I1))
         IRET = 2
         GO TO 30
       END IF
@@ -101,7 +101,7 @@ C     -----------------------------------------------------------
         IF (I1.GT.0) THEN
            VALK(1) = LCMP2(I1)
            VALK(2) = NOMGD
-           CALL U2MESK('A','CALCULEL5_36', 2 ,VALK)
+           CALL U2MESK('A','POSTRELE_56', 2 ,VALK)
           IRET = 3
           GO TO 30
         END IF
@@ -112,7 +112,7 @@ C       -- POUR NOMGD=VARI_* : CMP='V1','V2',..,'V999'
           IF ((LCMP2(K) (1:1).NE.'V') .OR. (I1.GT.0)) THEN
              VALK(1) = LCMP2(K)
              VALK(2) = NOMGD
-             CALL U2MESK('A','CALCULEL5_36', 2 ,VALK)
+             CALL U2MESK('A','POSTRELE_56', 2 ,VALK)
             IRET = 3
             GO TO 30
           END IF

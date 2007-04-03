@@ -13,7 +13,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      &        NSCY,NS,JMSN,JNSITU,NSITUP,NSITUQ,INDI,JIST,I, ICAS, ICSS
       REAL*8 PPI,PPJ,PQI,PQJ,SALTIJ,SALIJS,UG,SN,SP,SMM,SNS,SPS,MPI(12),
      &       MPJ(12),MQI(12),MQJ(12),MSE(12),MATPI(8),MATPJ(8),MATQI(8),
-     &       MATQJ(8),SALTSE, SNET,SNETS, R8VIDE
+     &       MATQJ(8),SALTSE, SNET,SNETS, R8VIDE,VALE(2)
       REAL*8 TYPEKE,SPMECA,SPTHER,SPMECS,SPTHES,SPTHEM,SPMECM,SIMPIJ
       REAL*8 KEMECA,KETHER,KEMECS,KETHES,PM,PB,PMPB,PMS,PBS,PMPBS
       CHARACTER*8 K8B
@@ -127,7 +127,7 @@ C
            IOC1 = ZI(JNSG+IS1-1)
            IF (IOC1.EQ.IOCS) GO TO 18
  16     CONTINUE
-        CALL U2MESS('F','POSTRELE_30')
+        CALL U2MESS('F','POSTRCCM_30')
  18     CONTINUE
         NS = ZI(JNBOCC+2*IOCS-2)
         NSCY = ZI(JNBOCC+2*IOCS-1)
@@ -361,11 +361,9 @@ C
           CALL RCVALE ( MATER, 'FATIGUE', 1, 'SIGM    ', SALTIJ, 1,
      +                  'WOHLER  ', NADM, CODRET, 'F ' )
           IF ( NADM .LT. 0 ) THEN
-            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
-     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
-            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTIJ)
-            CALL UTIMPR ('L','   NADM = ',1,NADM)
-            CALL UTFINM ()
+            VALE(1) = SALTIJ
+            VALE(2) = NADM
+            CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
           ENDIF
           UG = DBLE( NOCC ) / NADM
         ENDIF

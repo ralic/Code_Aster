@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF N_ASSD Noyau  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,6 +71,14 @@ class ASSD(object):
       meth = getattr(super(ASSD, self), 'set_name', None)
       if meth:
          meth(nom)
+   
+   def reparent_sd(self):
+      """Repositionne le parent des attributs de la SD associée.
+      """
+      # test car FORMULE n'a pas de SD associée
+      meth = getattr(super(ASSD, self), 'reparent', None)
+      if meth:
+         meth(None, None)
    
    def get_name(self):
       """

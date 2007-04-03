@@ -7,7 +7,7 @@
      &           MI(*), PJ, MJ(*), MSE(*), SPIJ,TYPEKE, SPMECA, SPTHER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,6 @@ C
       REAL*8     PIJ, D0, EP, INERT, NU, E, ALPHA, MIJ, EAB, XX,
      &           ALPHAA, ALPHAB, SP1, SP2, SP3, SP4, SP5, SP6, SPP, SPQ
 C DEB ------------------------------------------------------------------
-      CALL JEMARQ()
 C
 C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 C
@@ -87,77 +86,67 @@ C
 C CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
 
       IF (TYPEKE.LT.0.D0) THEN
-
-
 C
-C --- CALCUL DU SP:
-C     -------------
-      SP1 = K(1)*C(1)*PIJ*D0 / 2 / EP
-      SP2 = K(2)*C(2)*D0*MIJ / 2 / INERT
-      SP3 = K(3)*E*ALPHA / 2 / (1.D0-NU)
+C ------ CALCUL DU SP:
+C        -------------
+         SP1 = K(1)*C(1)*PIJ*D0 / 2 / EP
+         SP2 = K(2)*C(2)*D0*MIJ / 2 / INERT
+         SP3 = K(3)*E*ALPHA / 2 / (1.D0-NU)
 C
-      SP4 = K(3)*C(3)*EAB
-      SP5 = E*ALPHA / (1.D0-NU)
+         SP4 = K(3)*C(3)*EAB
+         SP5 = E*ALPHA / (1.D0-NU)
 C
-C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
+C ------ ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 C
-      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
-     &              NBTHP, IOC1, SP6 )
+         CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
+     &                 NBTHP, IOC1, SP6 )
 C
-      SPP = SP1 + SP2 + SP6
+         SPP = SP1 + SP2 + SP6
 C
 C
-C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
+C ------ ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
 C
-      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
-     &              NBTHQ, IOC2, SP6 )
+         CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
+     &                 NBTHQ, IOC2, SP6 )
+C 
+         SPQ = SP1 + SP2 + SP6
 C
-      SPQ = SP1 + SP2 + SP6
+         SPIJ = MAX ( SPP, SPQ )
 C
-      SPIJ = MAX ( SPP, SPQ )
-C
-
-
-C CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
-
-
+C --- CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
 
       ELSEIF (TYPEKE.GT.0.D0) THEN
+C
+C ------ CALCUL DU SP:
+C        -------------
+         SP1 = K(1)*C(1)*PIJ*D0 / 2 / EP
+         SP2 = K(2)*C(2)*D0*MIJ / 2 / INERT
 
+         SPMECA=SP1+SP2
 
+         SP3 = K(3)*E*ALPHA / 2 / (1.D0-NU)
+         SP4 = K(3)*C(3)*EAB
+         SP5 = E*ALPHA / (1.D0-NU)
 C
-C --- CALCUL DU SP:
-C     -------------
-      SP1 = K(1)*C(1)*PIJ*D0 / 2 / EP
-      SP2 = K(2)*C(2)*D0*MIJ / 2 / INERT
-
-      SPMECA=SP1+SP2
-
-      SP3 = K(3)*E*ALPHA / 2 / (1.D0-NU)
-      SP4 = K(3)*C(3)*EAB
-      SP5 = E*ALPHA / (1.D0-NU)
+C ------ ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
 C
-C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
+         CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
+     &                 NBTHP, IOC1, SP6 )
 C
-      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
-     &              NBTHP, IOC1, SP6 )
+         SPP = SP6
+         SPTHER = MAX(SPTHER,SPP)
 C
-      SPP = SP6
-      SPTHER=MAX(SPTHER,SPP)
+C ------ ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
 C
+         CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
+     &                 NBTHQ, IOC2, SP6 )
 C
-C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
-C
-      CALL RCSP01 ( NBM, IMA, IPT, SP3, SP4, SP5, ALPHAA, ALPHAB,
-     &              NBTHQ, IOC2, SP6 )
-C
-      SPQ = SP6
-      SPTHER=MAX(SPTHER,SPQ)
+         SPQ = SP6
+         SPTHER = MAX(SPTHER,SPQ)
 
       ELSE
-      CALL U2MESS('F','POSTRELE_40')
+         CALL U2MESS('F','POSTRCCM_31')
 
       END IF
 
-      CALL JEDEMA( )
       END

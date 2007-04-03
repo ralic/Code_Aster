@@ -1,6 +1,6 @@
-      SUBROUTINE VRCINS(MODELE,CHMAT,CARELE,NCHAR,LCHAR,INST,CHVARC)
+      SUBROUTINE VRCINS(MODELE,CHMATZ,CARELZ,NCHAR,LCHAR,INST,CHVARC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8 MODELE,CHMAT,CARELE,VARC1,VARC2,NOCMP1,NOCMP2
       CHARACTER*19 CHVARC
-      CHARACTER*(*) LCHAR
+      CHARACTER*(*) LCHAR,CHMATZ,CARELZ
       REAL*8 INST
       INTEGER NCHAR
 C ======================================================================
@@ -73,6 +73,11 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
+
+      CHMAT=CHMATZ
+      CARELE=CARELZ
+
+
       CALL JEEXIN(CHMAT//'.CVRCVARC',IRET)
 C     AVRC : .TRUE. SI AFFE_MATERIAU/AFFE_VARC EST UTILISE
       AVRC=(IRET.GT.0)
@@ -155,10 +160,12 @@ C         -- CALCUL DE KCVRC :
             NOCMP2=ZK8(JCVCMP-1+KCVRC)
             IF ((VARC1.EQ.VARC2).AND.(NOCMP1.EQ.NOCMP2)) GO TO 4
 3         CONTINUE
-          VALK(1) = CHMAT
-          VALK(2) = VARC1
-          VALK(3) = NOCMP1
-          CALL U2MESK('F','CALCULEL6_59', 3 ,VALK)
+          IF (NOCMP1.EQ.'TEMP_INF') THEN
+             VALK(1) = CHMAT
+             VALK(2) = VARC1
+             VALK(3) = NOCMP1
+             CALL U2MESK('F','CALCULEL6_59', 3 ,VALK)
+          ENDIF
 
 4         CONTINUE
 

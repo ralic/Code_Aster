@@ -13,7 +13,7 @@ C
       LOGICAL TRIDIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -919,7 +919,7 @@ C         -- VECTEUR TANGENT
                      ZR(AVALEQ+IL-1) = ZR(AVALEE+IL-1)
   362             CONTINUE
                 ELSE
-                  CALL U2MESK('F','POSTRELE_46',1,K4)
+                  CALL U2MESK('F','POSTRELE_14',1,K4)
                 END IF
   370         CONTINUE
   380       CONTINUE

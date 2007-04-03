@@ -3,7 +3,7 @@
       REAL*8              SYMAX, SIGM, STLIN, STPAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,7 +57,7 @@ C
          VALER(1) = X
          VALER(2) = SIGM
          VALER(3) = SYMAX
-         CALL U2MESR ( 'I', 'POSTRELE_67', 3, VALER )
+         CALL U2MESR ( 'I', 'POSTRCCM_5', 3, VALER )
          GOTO 9998
       ENDIF
       STLIN = YPRIM * SYMAX
@@ -87,7 +87,7 @@ C
          VALER(1) = X
          VALER(2) = SIGM
          VALER(3) = SYMAX
-         CALL U2MESR ( 'I', 'POSTRELE_68', 3, VALER )
+         CALL U2MESR ( 'I', 'POSTRCCM_6', 3, VALER )
          GOTO 9999
       ENDIF
       STPAR = YPRIM * SYMAX

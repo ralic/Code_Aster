@@ -9,7 +9,7 @@
       CHARACTER*8         NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,7 +34,7 @@ C     ------------------------------------------------------------------
       INTEGER      IS1, IS2, IS3, I, I1, I2, IND1, IND2, IFM, L,  
      +             NIV, NS2, ICMP, ICOMP
       REAL*8       SALT, SALTM, NADM, U1KL, U2KL, SP, SNKL, SALTKL,
-     +             MIJ, SM
+     +             MIJ, SM, VALE(2)
       LOGICAL      TROUVE,ENDUR
       REAL*8              TYPEKE, SPMECA, SPTHER
       CHARACTER*2  CODRET, K2C, K2L
@@ -98,19 +98,17 @@ C
 C
       IF ( TROUVE ) THEN
 C
-         CALL LIMEND( NOMMAT,SALTM,'WOHLER',ENDUR)
-         IF (ENDUR) THEN
+         CALL LIMEND ( NOMMAT, SALTM, 'WOHLER', ENDUR )
+         IF ( ENDUR ) THEN
             U1KL=0.D0
          ELSE
             CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM    ', SALTM, 1,
      +                         'WOHLER  ', NADM, CODRET, 'F ' )
-         IF ( NADM .LT. 0 ) THEN
-            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
-     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
-            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTM)
-            CALL UTIMPR ('L','   NADM = ',1,NADM)
-            CALL UTFINM ()
-         ENDIF
+            IF ( NADM .LT. 0 ) THEN
+               VALE(1) = SALTM
+               VALE(2) = NADM
+               CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
+            ENDIF
             U1KL = 1.D0 / NADM
          ENDIF
 C
@@ -120,19 +118,17 @@ C
          SPTHER=0.D0
          CALL RC36SA ( NOMMAT, MATSE, MATSE, SNKL, SP, 
      +                TYPEKE, SPMECA, SPTHER, SALTKL, SM )
-         CALL LIMEND( NOMMAT,SALTKL,'WOHLER',ENDUR)
-         IF (ENDUR) THEN
+         CALL LIMEND ( NOMMAT, SALTKL, 'WOHLER', ENDUR )
+         IF ( ENDUR ) THEN
             U2KL=0.D0
          ELSE
             CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM    ', SALTKL, 1,
      +                         'WOHLER  ', NADM, CODRET, 'F ' )
-         IF ( NADM .LT. 0 ) THEN
-            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
-     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
-            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTKL)
-            CALL UTIMPR ('L','   NADM = ',1,NADM)
-            CALL UTFINM ()
-         ENDIF
+            IF ( NADM .LT. 0 ) THEN
+               VALE(1) = SALTKL
+               VALE(2) = NADM
+               CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
+            ENDIF
             U2KL = DBLE( 2*NSCY-1 ) / NADM
          ENDIF
 C

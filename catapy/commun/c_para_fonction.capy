@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 27/06/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#& MODIF COMMUN  DATE 29/03/2007   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,5 +21,5 @@ def C_PARA_FONCTION() : return  ( #COMMUN#
                    "DX","DY","DZ","DRX","DRY","DRZ","TEMP","TSEC",
                    "INST","X","Y","Z","EPSI","META","FREQ","PULS","DSP",
                    "AMOR","ABSC","SIGM","HYDR","SECH","PORO","SAT",
-                   "PGAZ","PCAP","VITE","ENDO","NORM","EPAIS",
-                   "NEUT1","NEUT2",)
+                   "PGAZ","PCAP","PLIQ","PVAP","PAD","VITE","ENDO",
+                   "NORM","EPAIS","NEUT1","NEUT2",)

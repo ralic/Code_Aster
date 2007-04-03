@@ -4,7 +4,7 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 NORSGT,NEXSGT,NPAROR,NPAREX,NCNXOR,NCNXEX
       CHARACTER*24 NMAIL1,NMAIL2,NFACOR,NFACEX,NTPCRB
       CHARACTER*24 NPASGT,NPBSGT,NPCARC,NRARC,NSARC,NNOMMA
-      CHARACTER*24 VALK(4)
+      CHARACTER*24 VALK(7)
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       DGRD = R8DGRD()
@@ -210,17 +210,16 @@ C      /* CALCUL DE L' INTERSECTION /*
           IF (N1.NE.0) THEN
             CALL GETVR8('DEFI_ARC','RAYON',OCCA,1,1,POINT,N1)
             R = POINT(1)
-            IF (R.LE.0.D0) CALL U2MESS('F','POSTRELE_17')
+            IF (R.LE.0.D0) CALL U2MESS('F','INTEMAIL_5')
             CALL GETVR8('DEFI_ARC','SECTEUR',OCCA,1,2,POINT,N1)
             ALFINF = POINT(1)*DGRD
             ALFSUP = POINT(2)*DGRD
             IF ( ( -180.0D0 .GE. ALFINF   ) .OR.
      &           ( ALFINF   .GE. ALFSUP   ) .OR.
      &           ( ALFSUP   .GT. 180.0D0  ) ) THEN
-          VALI = OCCA
-          VALK (1) = 'SECTEUR'
-          VALK (2) = '-180. < A1 <= A2 < 180.'
-                CALL U2MESG('F', 'POSTRELE_76',2,VALK,1,VALI,0,0.D0)
+               VALK (1) = 'DEFI_ARC'
+               VALK (2) = 'SECTEUR'
+               CALL U2MESG('F', 'INTEMAIL_19',2,VALK,1,OCCA,0,0.D0)
              ENDIF
           ELSE
 
@@ -246,9 +245,8 @@ C     ON UTILISE LA MOYENNE ARITHMETIQUE DES RAYONS COMME REFERENCE
               TOLE = EPSI2
             END IF
             IF (ABS(XRC1-XRC2).GT.TOLE) THEN
-          VALI = OCCA
-          VALK (1) = ' '
-              CALL U2MESG('F', 'POSTRELE_77',1,VALK,1,VALI,0,0.D0)
+              VALK (1) = 'DEFI_ARC'
+              CALL U2MESG('F', 'INTEMAIL_20',1,VALK,1,OCCA,0,0.D0)
             END IF
             R = XRC1
             ALFINF = ATAN2(POINA(2)-POINT(2),POINA(1)-POINT(1))
@@ -330,12 +328,8 @@ C        /* SAUVEGARDE DE L' INTERSECTION DANS CETTE STRUCTURE /*
    70     CONTINUE
         ELSE
           OCC = OCCA + OCCS - 2
-          VALI = OCC
           VALK (1) = NOMCRB
-          VALK (2) = ' '
-          VALK (3) = ' '
-          VALK (4) = ' '
-          CALL U2MESG('F', 'POSTRELE_78',4,VALK,1,VALI,0,0.D0)
+          CALL U2MESG('F', 'INTEMAIL_21',1,VALK,1,OCC,0,0.D0)
         END IF
         GO TO 30
       END IF

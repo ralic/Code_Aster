@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -204,6 +204,4 @@ OPTION__
                               OUT__  ZVARINO  PVARINR
     VARI_ELNO_ELGA      31    IN__   CCOMPOR  PCOMPOR  ENBSP_I  PNBSP_I  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
-    VNOR_ELEM_DEPL      238   IN__   NDEPLAC  PDEPLAC  NGEOMER  PGEOMER
-                              OUT__  EVITNOR  PVITNOR
 

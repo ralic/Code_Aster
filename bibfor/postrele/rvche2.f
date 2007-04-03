@@ -5,7 +5,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              ORIG(3), AXEZ(3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL JEVEUO (JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',ILONG)
 C
       NEC  = NBEC( GD )
-      IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')
+      IF ( NEC .GT. 10 ) CALL U2MESS('F','POSTRELE_53')
 C
       CALL DISMOI('F','NOM_OPTION', CHELEZ, 'CHAM_ELEM',IBID,OPTION,IER)
       IF  ( OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL'  .OR.
@@ -91,9 +91,9 @@ C         COMPOSANTE:  NXX NYY NXY MXX MYY MXY
       ELSE IF ( OPTION(1:14) .EQ. 'DEGE_ELNO_DEPL' ) THEN
 C         COMPOSANTE:  N  VY VZ MT MFY MFZ
       ELSE
-                  VALK (1) = CHELM
-                  VALK (2) = OPTION
-         CALL U2MESG('F', 'POSTRELE1_51',2,VALK,0,0,0,0.D0)
+         VALK (1) = CHELM
+         VALK (2) = OPTION
+         CALL U2MESK('F', 'POSTRELE_26',2,VALK)
       ENDIF
 C
       CALL JEDUPO ( CHELM//'.CELV', 'V', NOMJV, .FALSE. )
@@ -122,7 +122,7 @@ C
          CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
          NSCAL = DIGDEL( MODE )
          ICOEF=MAX(1,ZI(JCELD-1+4))
-         IF (ICOEF.GT.1) CALL U2MESS('F','POSTRELE_47')
+         IF (ICOEF.GT.1) CALL U2MESS('F','POSTRELE_15')
          NSCA  = NSCAL*ICOEF
          IPOIN = ZI(JLONGR-1+IGREL)
          IEL   = ZI(JLIGR-1+IPOIN+IELG-1)
@@ -170,7 +170,7 @@ C
                   VALK (1) = NOMAIL
                   VALK (2) = NONOEU
                   VALR = ZR(AXYZM+3*(NUNOE-1))
-                  CALL U2MESG('F', 'POSTRELE1_52',2,VALK,0,0,1,VALR)
+                  CALL U2MESG('F', 'POSTRELE_27',2,VALK,0,0,1,VALR)
                ENDIF
                XNORMR =  1.0D0 / SQRT( XNORMR )
                DO 42 I = 1,3
@@ -189,7 +189,7 @@ C
                   VALK (1) = NOMAIL
                   VALK (2) = NONOEU
                   VALR = ZR(AXYZM+3*(NUNOE-1))
-                  CALL U2MESG('F', 'POSTRELE1_52',2,VALK,0,0,1,VALR)
+                  CALL U2MESG('F', 'POSTRELE_27',2,VALK,0,0,1,VALR)
                ENDIF
                DO 46 I = 1,3
                   PGL(1,I) = AXER(I)

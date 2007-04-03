@@ -11,7 +11,7 @@
       CHARACTER*24      XNOVAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C
       ELSE
          NBCMP2 = NBVARI
       ENDIF
-      IF ( NBCMP2.GT.3000) CALL U2MESS('F','POSTRELE_65')
+      IF ( NBCMP2.GT.3000) CALL U2MESS('F','POSTRELE_13')
 C
       CALL GETVTX ( 'ACTION', 'INTITULE', IOCC,1,1, INTITU, N1 )
       CALL GETVID ( 'ACTION', 'CHEMIN'  , IOCC,1,1, COURBE, NC )

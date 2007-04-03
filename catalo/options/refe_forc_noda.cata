@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2007   AUTEUR SALMONA L.SALMONA 
+%& MODIF OPTIONS  DATE 03/04/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,20 @@ OPTION__
        <<  PCOMPOR : COMPORTEMENT >>
         PDEPLMR  DEPL_R
        <<  PDEPLMR : DEPLACEMENTS INSTANT PRECEDENT >>
+        PPINTTO  NEUT_R
+        PCNSETO  NEUT_I
+        PHEAVTO  NEUT_I
+        PLONCHA  NEUT_I
+        PBASLOR  NEUT_R
+        PLSN     NEUT_R
+        PLST     NEUT_R
+       <<  CADRE X-FEM : PPINTTO : COORDONNEES DES POINTS D INTERSECTION
+                         PCNSETO : CONNECTIVITE DES SOUS-ELEMENTS
+                         PHEAVTO : VALEURS DE L HEAVISIDE SUR LES SS-ELTS
+                         PLONCHA : LONGUEURS DES CHAMPS UTILISEES   
+                         PBASLOR : BASE LOCALE AU FOND DE FISSURE
+                         PLSN    : LEVEL SET NORMALE
+                         PLST    : LEVEL SET TANGENTE    >>
   OUT__
 PVECTUR VDEP_R RESL__
 

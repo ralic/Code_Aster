@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE VERSION ALLEGEE DU YYYY106A SANS METIS NI INCLUDE_MATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -385,14 +385,28 @@ DEP=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                             MATRICE='TANGENTE',
                             REAC_ITER=1,),);
 
-CHTHER=AFFE_CHAR_MECA(VERI_NORM='OUI',
-                      MODELE=MODMECA,
-                      TEMP_CALCULEE=TEMP2,
-                      INFO=1,);
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MA1,
+                    AFFE=(_F(GROUP_MA=('E_COR','E_PLA',),
+                             MATER=ACIE_32,),
+                          _F(GROUP_MA='E_GOU',
+                             MATER=ACIE_22,),
+                          _F(GROUP_MA=('E_ECR','E_RON',),
+                             MATER=ACIE_22,
+                             TEMP_REF=20.0,),
+                          _F(GROUP_MA='E_CHA',
+                             MATER=ACIE_11,),
+                          _F(GROUP_MA='E_STE',
+                             MATER=ACIE_32,),
+                          _F(GROUP_MA='E_JOI',
+                             MATER=GRAP,),),
+                    AFFE_VARC=_F(TOUT='OUI',
+                             EVOL=TEMP2,PROL_GAUCHE='CONSTANT',
+                             NOM_VARC='TEMP',VALE_REF=20,
+                             NOM_CHAM='TEMP'),);
 
 DEP=STAT_NON_LINE(reuse =DEP,
                   MODELE=MODMECA,
-                  CHAM_MATER=CHMAT,
+                  CHAM_MATER=CHMAT2,
                   EXCIT=(_F(CHARGE=CHMLIA1,
                             TYPE_CHARGE='FIXE_CSTE',),
                          _F(CHARGE=CHMC1,
@@ -402,8 +416,6 @@ DEP=STAT_NON_LINE(reuse =DEP,
                             TYPE_CHARGE='FIXE_CSTE',),
                          _F(CHARGE=CHMP1,
                             FONC_MULT=FONCP,
-                            TYPE_CHARGE='FIXE_CSTE',),
-                         _F(CHARGE=CHTHER,
                             TYPE_CHARGE='FIXE_CSTE',),),
                   COMP_INCR=_F(RELATION='ELAS',
                                DEFORMATION='PETIT',
@@ -443,8 +455,6 @@ DEP=CALC_ELEM(reuse =DEP,
                      _F(CHARGE=CHMS1,
                         TYPE_CHARGE='FIXE',),
                      _F(CHARGE=CHMP1,
-                        TYPE_CHARGE='FIXE',),
-                     _F(CHARGE=CHTHER,
                         TYPE_CHARGE='FIXE',),),);
 
 SIG0=POST_RELEVE_T(ACTION=_F(INTITULE='CONTRAINTE SYY DANS LE GOUJON 0',

@@ -5,7 +5,7 @@
       CHARACTER*24        CHMOME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -73,7 +73,7 @@ C
             VALI (1) = IMA
             VALI (2) = IPT
             VALK = 'MOMENT'
-            CALL U2MESG('F', 'POSTRELE1_35',1,VALK,2,VALI,0,0.D0)
+            CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
          ENDIF
          VALE(ICMP) = ZR(JCESV-1+IAD)
  10   CONTINUE

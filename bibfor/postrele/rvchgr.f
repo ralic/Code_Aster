@@ -7,7 +7,7 @@
 C
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,8 +97,7 @@ C
          CALL DISMOI('A','Z_CST',MAILLA,'MAILLAGE',IBID,K8B,IERD)
          IF ( K8B(1:3) .EQ. 'NON' ) THEN
             IRET = 0
-            VALK (1) = ' '
-            CALL U2MESG('A', 'POSTRELE1_54',1,VALK,0,0,0,0.D0)
+            CALL U2MESS('A', 'POSTRELE_28')
             GOTO 9999
          ENDIF
       ENDIF
@@ -110,7 +109,7 @@ C
             IRET = 0
             VALK (1) = COURBE
             VALK (2) = REPERE
-            CALL U2MESG('A', 'POSTRELE1_55',2,VALK,0,0,0,0.D0)
+            CALL U2MESK('A', 'POSTRELE_29',2,VALK)
             GOTO 9999
          ENDIF
 C
@@ -164,8 +163,7 @@ C
 C
          ELSE
 C
-            VALK (1) = ' '
-            CALL U2MESG('A', 'POSTRELE1_56',1,VALK,0,0,0,0.D0)
+            CALL U2MESS('A', 'POSTRELE_28')
 C
          ENDIF
 C

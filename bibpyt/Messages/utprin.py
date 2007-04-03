@@ -1,4 +1,4 @@
-#@ MODIF utprin Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF utprin Messages  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 
 import os
 import sys
@@ -38,7 +39,7 @@ def utprin(typmess,unite,idmess,valk,vali,valr):
       Cette methode permet d'imprimer un message venu d'U2MESG
    """
    import aster
-   from Utilitai.Utmess import UTMESS
+   from Utilitai.Utmess import U2MESS
 
    # en cas d'erreur, si on lève une exception au lieu de s'arreter
    # on n'affiche pas le type de l'erreur pour ne pas fausser le diagnostic
@@ -62,19 +63,13 @@ def utprin(typmess,unite,idmess,valk,vali,valr):
    assert numess > 0 and numess < 100, idmess
 
    # on importe catamess => cata_msg :
-   pkg = 'Messages'
    try:
-      argp = imp.find_module(pkg)
-      pack = imp.load_module(pkg, *argp)
-      args = imp.find_module(catamess, pack.__path__)
-      mod  = imp.load_module(catamess, *args)
-      cata_msg = mod.cata_msg
-   except ImportError, msg:
-      UTMESS('F', 'utprin', """Impossible d'importer %(catamess)s dans Messages.
-Le fichier %(catamess)s.py n'existe pas dans le répertoire 'Messages'.""" \
-            % { 'catamess' : catamess })
-   else:
-      args[0].close()
+      mod = __import__('Messages.%s' % catamess, globals(), locals(), [catamess])
+      # si le dictionnaire n'existe pas, on alertera au moment du formatage.
+      cata_msg = getattr(mod, 'cata_msg', {})
+   except Exception, msg:
+      U2MESS('A', 'SUPERVIS_57', valk=(catamess, str(msg)))
+      cata_msg = {}
 
    # on prépare le dictionnaire des arguments (dicarg) :
    dicarg = {}
@@ -107,7 +102,7 @@ Le fichier %(catamess)s.py n'existe pas dans le répertoire 'Messages'.""" \
          'type_message'  : typmess,
          'id_message'    : '',
          'corps_message' : """Erreur de programmation.
-Le message %s n'a pas pu etre formatté correctement.
+Le message %s n'a pas pu etre formaté correctement.
 --------------------------------------------------------------------------
 %s
 --------------------------------------------------------------------------

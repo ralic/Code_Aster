@@ -5,7 +5,7 @@
       CHARACTER*8         NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,9 +62,9 @@ C
       PARA(3) = R8VIDE()
       IF ( FATIZH ) THEN
          CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, CODRET )
-         IF ( CODRET(1) .EQ. 'NO' )  CALL U2MESS('F','POSTRELE_32')
+        IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'FATIGUE')
          CALL RCCOME ( NOMMAT, 'ELAS', PHENOM, CODRET )
-         IF ( CODRET(1) .EQ. 'NO' )  CALL U2MESS('F','POSTRELE_31')
+         IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'ELAS')
 C
          NOMVAL(1) = 'M_KE'
          NOMVAL(2) = 'N_KE'

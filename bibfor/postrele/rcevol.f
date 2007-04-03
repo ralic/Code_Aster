@@ -5,7 +5,7 @@
       CHARACTER*8         NOMMAT
       CHARACTER*16        TYPTAB, OPTION(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      I, J, N1, NBINTI, JINTI, NBTRAN
       REAL*8       RBID, PARA(3), SM, R8VIDE
-      LOGICAL      LPMPB, LSN, LFATIG, FLEXIO, LROCHT
+      LOGICAL      LPMPB, LSN, LFATIG, FLEXIO, LROCHT, LAMORC
       CHARACTER*8  K8B
       CHARACTER*16 KINTI
       CHARACTER*24 CINST, CSILI, CSIEX, CSNO, CSNE, CSNEO, CSNEE, 
@@ -94,6 +94,7 @@ C     ------------------------------------------------------------------
       LPMPB  = .FALSE.
       FLEXIO = .FALSE.
       LROCHT = .FALSE.
+      LAMORC = .FALSE.
 C
       DO 10 I = 1 , NBOPT
          IF ( OPTION(I) .EQ. 'PM_PB' ) THEN
@@ -103,8 +104,29 @@ C
          ELSEIF ( OPTION(I) .EQ. 'FATIGUE_ZH210' ) THEN
             LFATIG = .TRUE.
             LSN    = .TRUE.
+         ELSEIF ( OPTION(I) .EQ. 'AMORCAGE' ) THEN
+            LAMORC = .TRUE.
          ENDIF
  10   CONTINUE
+C
+      IF ( LAMORC .AND. (LPMPB .OR. LSN .OR. LFATIG) ) THEN
+         CALL U2MESG('F', 'POSTRCCM_3',0,K8B,0,0,0,0.D0)
+      ENDIF
+C
+C     ------------------------------------------------------------------
+C                      TRAITEMENT DE L'AMORCAGE
+C     ------------------------------------------------------------------
+C
+      IF ( LAMORC ) THEN
+         CALL RCEVOA ( TYPTAB, NOMMAT )
+         GOTO 9999
+      ENDIF
+C
+C     ------------------------------------------------------------------
+C                            LE MATERIAU
+C     ------------------------------------------------------------------
+C
+      CALL RCEVO1 ( NOMMAT, LFATIG, SM, PARA, SYMAX )
 C
 C     ------------------------------------------------------------------
 C                     NOMBRE DE LIGNE A "POST_RCCM"
@@ -113,12 +135,6 @@ C
       INTITU = '&&RCEVOL.INTITULE'
       CALL RCEVO0 ( INTITU, NBINTI, LSN, LFATIG, NBTRAN )
       CALL JEVEUO ( INTITU, 'L', JINTI )
-C
-C     ------------------------------------------------------------------
-C                            LE MATERIAU
-C     ------------------------------------------------------------------
-C
-      CALL RCEVO1 ( NOMMAT, LFATIG, SM, PARA, SYMAX )
 C
 C     ------------------------------------------------------------------
 C
@@ -141,7 +157,7 @@ C
            ENDIF
 C
            IF ( LROCHT .AND. SYMAX.EQ.R8VIDE() ) THEN
-              CALL U2MESS('A','POSTRELE_66')
+              CALL U2MESS('A','POSTRCCM_4')
               LROCHT = .FALSE.
            ENDIF
 C
@@ -199,5 +215,7 @@ C
  100  CONTINUE
 C
       CALL JEDETR ( INTITU )
+C
+ 9999 CONTINUE
 C
       END

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -268,7 +268,7 @@ OPTION__
                               OUT__  EERREUR  PERREUR
     ERRE_ELNO_ELEM      379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
-    FORC_NODA           9     IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
+    FORC_NODA           8     IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           546   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
@@ -368,7 +368,7 @@ OPTION__
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                               OUT__  MMATUNS PMATUNS MMATUUR  PMATUUR
-    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM 
+    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     SIEF_ELGA_DEPL      22    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR  CMATERC  PMATERC

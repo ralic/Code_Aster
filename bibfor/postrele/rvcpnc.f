@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,6 @@ C
       INTEGER      ACPGD,NTC,NIN,NTN1,NTN2,NEP,NNC,AVK8,I,NBCPGD,NSO
       INTEGER      ALSI,N1,N2,N3,NTD1,PT,AVICP,AVINEW,ALSCPC,PTNC
       INTEGER      ANCPU,NBC, IADT1, IADT2, IBID, NTD2, IER, NC,IEXI
-      INTEGER VALI
       LOGICAL      DIRX,DIRY,DIRZ
       CHARACTER*1  K1BID
 C
@@ -131,11 +130,7 @@ C           --- REPERE TRAITE DANS "EXTCHE" OU "EXTCHN" ---
       ELSE IF ( (NTN1 .NE. 0) .OR. (NTN2 .NE. 0) ) THEN
          CALL DISMOI('F','NOM_MAILLA',NCH19,'CHAMP',IBID,MAILLA,IER)
          CALL DISMOI('F','Z_CST',MAILLA,'MAILLAGE',IBID,K8B,IER)
-         IF ( K8B(1:3) .EQ. 'NON' ) THEN
-              VALK (1) = ' '
-              VALK (2) = 'TRAC_DIR'
-            CALL U2MESG('F', 'POSTRELE1_59',2,VALK,0,0,0,0.D0)
-         ENDIF
+         IF ( K8B(1:3) .EQ. 'NON' ) CALL U2MESS('F', 'POSTRELE_32')
          QUANT  = 'TRACE_NORMALE'
          REPERE = 'LOCAL'
       ELSE IF ( (NTD1 .NE. 0) .OR. (NTD2 .NE. 0) ) THEN
@@ -154,22 +149,15 @@ C
       CALL RVOPTI ( MCF, IOCC, NCH19, NOMGD, TYPEGD, OPTION )
 C
       IF ( NTC .NE. 0 ) THEN
-C        IF ( REPERE(1:6) .NE. 'GLOBAL') THEN
-C           IRET = 0
-C           CALL UTDEBM('F','RVCPNC','TOUT_CMP NE FONCTIONNE'//
-C    +                  ' QUE POUR LE REPERE GLOBAL')
-C           CALL UTFINM
-C        ELSE
             NOMOB1 = '&&OP0051.NOMCMP.USER'
             CALL UTNCMP ( NCH19, NBC, NOMOB1 )
-            IF (NBC.EQ.0) CALL U2MESS('F','CHAMPS_1')
+            IF (NBC.EQ.0) CALL U2MESI('F','POSTRELE_54',1,IOCC)
             CALL JEVEUO ( NOMOB1, 'L', ANCPU )
             CALL WKVECT(NOMOJB,'V V K8',NBC,AVK8)
             DO 10, I = 1, NBC, 1
                ZK8(AVK8 + I-1) = ZK8(ANCPU + I-1)
 10          CONTINUE
             CALL JEDETR ( NOMOB1 )
-C        ENDIF
       ELSE IF ( (NIN .NE. 0) .OR. (NEP .NE. 0) ) THEN
          IF  ((OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL') .OR.
      &        (OPTION(1:14) .EQ. 'SIEF_ELNO_ELGA') .OR.
@@ -223,8 +211,7 @@ C        ENDIF
               VALK (18) = 'EPSI_NOEU_ELGA'
               VALK (19) = 'DEGE_NOEU_DEPL'
               VALK (20) = 'EFGE_NOEU_DEPL'
-              VALI = IOCC
-            CALL U2MESG('F', 'POSTRELE1_60',20,VALK,1,VALI,0,0.D0)
+            CALL U2MESG('F', 'POSTRELE_33',20,VALK,1,IOCC,0,0.D0)
          ENDIF
 C
       ELSE IF ( (NTN1 .NE. 0) .OR. (NTN2 .NE. 0) ) THEN
@@ -291,8 +278,7 @@ C
               VALK (18) = 'EFGE_NOEU_DEPL'
               VALK (19) = ' '
               VALK (20) = 'FLUX_R'
-              VALI = IOCC
-            CALL U2MESG('F', 'POSTRELE1_61',20,VALK,1,VALI,0,0.D0)
+            CALL U2MESG('F', 'POSTRELE_34',20,VALK,1,IOCC,0,0.D0)
          ENDIF
 C
       ELSE IF ( (NTD1 .NE. 0) .OR. (NTD2 .NE. 0) ) THEN
@@ -450,8 +436,7 @@ C
               VALK (21) = ' '
               VALK (22) = 'DEPL_R'
               VALK (23) = 'FORC_R'
-              VALI = IOCC
-            CALL U2MESG('F', 'POSTRELE1_62',23,VALK,1,VALI,0,0.D0)
+            CALL U2MESG('F', 'POSTRELE_35',23,VALK,1,IOCC,0,0.D0)
          ENDIF
          IF ( IRET .NE. 0 ) THEN
             PT = PT - 1
@@ -462,9 +447,7 @@ C
 50             CONTINUE
             ELSE IF ( IRET .NE. 0 ) THEN
                IRET = 0
-              VALI = IOCC
-              VALK (1) = 'PAS DE CALCUL'
-               CALL U2MESG('F', 'POSTRELE1_63',1,VALK,1,VALI,0,0.D0)
+               CALL U2MESI('F', 'POSTRELE_36',1,IOCC)
             ELSE
             ENDIF
          ENDIF
@@ -549,9 +532,7 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
 48               CONTINUE
                  CALL JEDETR('&&RVCPNC.TABIS.1')
                  CALL JEDETR('&&RVCPNC.TABIS.2')
-              VALI = IOCC
-              VALK (1) = ' '
-                 CALL U2MESG('I', 'POSTRELE1_64',1,VALK,1,VALI,0,0.D0)
+                 CALL U2MESI('I', 'POSTRELE_37',1,IOCC)
               ELSE
                  IF ( (N2 + N3) .NE. 0 ) THEN
                     IF ( NOMGD .EQ. 'SIEF_R' ) THEN
@@ -575,8 +556,7 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
 100                 CONTINUE
                  ELSE
                     IRET = 0
-              VALI = IOCC
-      CALL U2MESG('F', 'POSTRELE1_65',0,' ',1,VALI,0,0.D0)
+                    CALL U2MESG('F', 'POSTRELE_38',0,' ',1,IOCC,0,0.D0)
                  ENDIF
               ENDIF
            ELSE IF ( (NOMGD(1:6) .EQ. 'DEPL_R') .OR.
@@ -639,8 +619,7 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
                  ENDIF
               ELSE
                  IRET = 0
-              VALI = IOCC
-                 CALL U2MESG('F', 'POSTRELE1_66',0,' ',1,VALI,0,0.D0)
+                 CALL U2MESI('F', 'POSTRELE_38',1,IOCC)
               ENDIF
            ELSE IF ( NOMGD(1:6) .EQ. 'FLUX_R' ) THEN
               CALL NUMEK8(ZK8(ALSCPC),ZK8(ACPGD),NBCPC,NBCPGD,ZI(ALSI))
@@ -684,8 +663,7 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
                  ENDIF
               ELSE
                  IRET = 0
-              VALI = IOCC
-                 CALL U2MESG('F', 'POSTRELE1_66',0,' ',1,VALI,0,0.D0)
+                 CALL U2MESI('F', 'POSTRELE_38',1,IOCC)
               ENDIF
            ELSE IF ( NOMGD(1:6) .EQ. 'TEMP_R' ) THEN
                  CALL WKVECT(NOMOJB,'V V K8',1,AVK8)
@@ -693,17 +671,15 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
                  REPERE = 'GLOBAL'
            ELSE
               IRET = 0
-              VALI = IOCC
-              VALK (1) = ' '
+              VALK (1) = NOMGD
               VALK (2) = 'SIEF_R '
               VALK (3) = 'SIGM_ELNO_DEPL'
               VALK (4) = 'EPSI_R '
               VALK (5) = 'EP.._ELNO_DEPL'
               VALK (6) = 'DEGE_ELNO_DEPL'
-              VALK (7) = ' '
-              VALK (8) = 'DEPL_R'
-              VALK (9) = 'FORC_R'
-              CALL U2MESG('F', 'POSTRELE1_68',9,VALK,1,VALI,0,0.D0)
+              VALK (7) = 'DEPL_R'
+              VALK (8) = 'FORC_R'
+              CALL U2MESG('F', 'POSTRELE_39',8,VALK,1,IOCC,0,0.D0)
            ENDIF
            CALL JEDETR('&&RVCPNC.LISTE.IS')
          ENDIF

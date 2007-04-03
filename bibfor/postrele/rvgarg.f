@@ -5,7 +5,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -198,7 +198,7 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
      &                        NBCMP,ZK8(ANCPU1),N1)
                ELSE
                   IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN
-                    CALL U2MESS('F','POSTRELE_52')
+                    CALL U2MESS('F','POSTRELE_20')
                   ENDIF
                   CALL GETVTX('ACTION','RESULTANTE',IOCC,1,0,K8B,N1)
                   CALL GETVTX('ACTION','MOMENT'    ,IOCC,1,0,K8B,N2)
@@ -241,7 +241,7 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
 C
                NOMOBJ = '&&OP0051.NOMCMP.USER'
                CALL UTNCMP ( NCHP19, NBC, NOMOBJ )
-               IF (NBC.EQ.0) CALL U2MESS('F','CHAMPS_1')
+               IF (NBC.EQ.0) CALL U2MESI('F','POSTRELE_54',1,IOCC)
                CALL JEVEUO ( NOMOBJ, 'L', ANCPU2 )
                CALL JEECRA(JEXNUM(NXDNOM,IOCC),'LONMAX',NBC,' ')
                CALL JEVEUO(JEXNUM(NXDNOM,IOCC),'E',ANOMCP)

@@ -1,4 +1,4 @@
-#@ MODIF meidee_fludela Meidee  DATE 06/03/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_fludela Meidee  DATE 02/04/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -299,12 +299,13 @@ class MeideeFludela:
         """
         RES_et = self.res_longeq
         __tabl = calc_meidee_longeq( self.res_longeq )
-        print "#############################################"
-        print "############################"
         self.long_eq = __tabl.EXTR_TABLE().Array('MODE', 'LONGUEUR')
 ##        self.long_eq = array(ftmp[:,1],copy=True)
         self.calc['longeq'] = self.long_eq
-        print self.long_eq
+        self.mess.disp_mess("Longueurs equivalentes pour les modes de" + RES_et.nom)
+        for line in self.long_eq.tolist():
+            self.mess.disp_mess("%2d   %13.5E" %(line[0], line[1]))
+        
 
 
     def mat_gene(self, resu):

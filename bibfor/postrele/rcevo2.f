@@ -7,7 +7,7 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,7 +63,7 @@ C
      +             TABPRE, TABPR0
       CHARACTER*19 NOMF
       CHARACTER*24 INSTAN, ABSCUR
-      CHARACTER*24 VALK(3)
+      CHARACTER*24 VALK(7)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -128,10 +128,11 @@ C
               ENDIF
               CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
               IF ( .NOT. EXIST ) THEN
-                  VALK (1) = TABLE
-                  VALK (2) = KINTI
-                  VALK (3) = VALEK(1)
-                 CALL U2MESG('F', 'POSTRELE1_15',3,VALK,0,0,0,0.D0)
+                VALK (1) = TABLE
+                VALK (2) = 'INTITULE'
+                VALK (3) = KINTI
+                VALK (4) = VALEK(1)
+                CALL U2MESG('F', 'POSTRCCM_17',4,VALK,0,0,0,0.D0)
               ENDIF
               CALL TBEXV1 ( TABLE, VALEK(1), INSTAN, 'V', NBINS0, K8B)
               CALL JEDETR ( INSTAN )
@@ -166,27 +167,30 @@ C
         DO 12 I = 1, 4
           CALL TBEXIP ( TABLE, NOCMP(I), EXIST, K8B )
           IF ( .NOT. EXIST ) THEN
-                  VALK (1) = TABLE
-                  VALK (2) = KINTI
-                  VALK (3) = NOCMP(1)
-            CALL U2MESG('F', 'POSTRELE1_16',3,VALK,0,0,0,0.D0)
+            VALK (1) = TABLE
+            VALK (2) = 'INTITULE'
+            VALK (3) = KINTI
+            VALK (4) = NOCMP(I)
+            CALL U2MESG('F', 'POSTRCCM_17',4,VALK,0,0,0,0.D0)
           ENDIF
           IF ( FLEXIO ) THEN
             CALL TBEXIP ( TABFLE, NOCMP(I), EXIST, K8B )
             IF ( .NOT. EXIST ) THEN
-                  VALK (1) = TABFLE
-                  VALK (2) = KINTI
-                  VALK (3) = NOCMP(1)
-            CALL U2MESG('F', 'POSTRELE1_17',3,VALK,0,0,0,0.D0)
+              VALK (1) = TABFLE
+              VALK (2) = 'INTITULE'
+              VALK (3) = KINTI
+              VALK (4) = NOCMP(I)
+              CALL U2MESG('F', 'POSTRCCM_17',4,VALK,0,0,0,0.D0)
             ENDIF
           ENDIF
           IF ( LROCHT ) THEN
             CALL TBEXIP ( TABPRE, NOCMP(I), EXIST, K8B )
             IF ( .NOT. EXIST ) THEN
-                  VALK (1) = TABPRE
-                  VALK (2) = KINTI
-                  VALK (3) = NOCMP(1)
-            CALL U2MESG('F', 'POSTRELE1_18',3,VALK,0,0,0,0.D0)
+              VALK (1) = TABPRE
+              VALK (2) = 'INTITULE'
+              VALK (3) = KINTI
+              VALK (4) = NOCMP(I)
+              CALL U2MESG('F', 'POSTRCCM_17',4,VALK,0,0,0,0.D0)
             ENDIF
           ENDIF
  12     CONTINUE
@@ -197,10 +201,11 @@ C ----- ON RECUPERE L'ABSC_CURV DANS LA TABLE
 C
         CALL TBEXIP ( TABLE, VALEK(2), EXIST, K8B )
         IF ( .NOT. EXIST ) THEN
-                  VALK (1) = TABLE
-                  VALK (2) = KINTI
-                  VALK (3) = VALEK(2)
-          CALL U2MESG('F', 'POSTRELE1_19',3,VALK,0,0,0,0.D0)
+          VALK (1) = TABLE
+          VALK (2) = 'INTITULE'
+          VALK (3) = KINTI
+          VALK (4) = VALEK(2)
+          CALL U2MESG('F', 'POSTRCCM_17',4,VALK,0,0,0,0.D0)
         ENDIF
         CALL TBEXV1 ( TABLE, VALEK(2), ABSCUR, 'V', NBABSC, K8B)
 C
@@ -288,10 +293,11 @@ C
             CRIT(1) = 'RELATIF'
             CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
             IF ( .NOT. EXIST ) THEN
-                  VALK (1) = TABL0
-                  VALK (2) = KINTI
-                  VALK (3) = VALEK(1)
-              CALL U2MESG('F', 'POSTRELE1_20',3,VALK,0,0,0,0.D0)
+               VALK (1) = TABLE
+               VALK (2) = 'INTITULE'
+               VALK (3) = KINTI
+               VALK (4) = VALEK(1)
+               CALL U2MESG('F', 'POSTRCCM_17',4,VALK,0,0,0,0.D0)
             ENDIF
             CALL TBEXV1 ( TABLE, VALEK(1), INSTAN, 'V', NBINS0, K8B)
             CALL JEVEUO ( INSTAN, 'L', KINST )
@@ -316,11 +322,11 @@ C
      +                      CBID, K8B, CRIT, PREC, NOCMP(J), 
      +                      K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
               IF (IRET.NE.0) THEN
-                  VALK (1) = TABL0
-                  VALK (2) = KINTI
-                  VALK (3) = NOCMP(J)
-                  VALR = ZR(JABSC+K-1)
-                CALL U2MESG('F', 'POSTRELE1_21',3,VALK,0,0,1,VALR)
+                VALK (1) = TABLE
+                VALK (2) = NOCMP(J)
+                VALK (3) = VALEK(1)
+                VALK (4) = VALEK(2)
+                CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
               ENDIF
 C
               IF ( FLEXIO ) THEN
@@ -328,11 +334,11 @@ C
      +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
      +                        IBID, ZR(JCOFL+K-1), CBID, K8B, IRET)
                 IF (IRET.NE.0) THEN
-                  VALK (1) = TABFL0
-                  VALK (2) = KINTI
-                  VALK (3) = NOCMP(J)
-                  VALR = ZR(JABSC+K-1)
-                  CALL U2MESG('F', 'POSTRELE1_22',3,VALK,0,0,1,VALR)
+                  VALK (1) = TABFLE
+                  VALK (2) = NOCMP(J)
+                  VALK (3) = VALEK(1)
+                  VALK (4) = VALEK(2)
+                  CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
                 ENDIF
               ENDIF
 C
@@ -341,11 +347,11 @@ C
      +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
      +                        IBID, ZR(JCOPR+K-1), CBID, K8B, IRET)
                 IF (IRET.NE.0) THEN
-                  VALK (1) = TABPR0
-                  VALK (2) = KINTI
-                  VALK (3) = NOCMP(J)
-                  VALR = ZR(JABSC+K-1)
-                  CALL U2MESG('F', 'POSTRELE1_23',3,VALK,0,0,1,VALR)
+                  VALK (1) = TABPRE
+                  VALK (2) = NOCMP(J)
+                  VALK (3) = VALEK(1)
+                  VALK (4) = VALEK(2)
+                  CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
                 ENDIF
               ENDIF
 C

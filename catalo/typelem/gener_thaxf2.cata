@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,11 +71,10 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     CHAR_DLAG_SOUR_R    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    CHAR_SENS_EVOL      262   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN  DDL_THER PTEMPER
-                                     CTEMPSR  PTEMPSR  DDL_THER PVAPRIN  DDL_THER PVAPRMO
-                              OUT__  MVECTTR  PVECTTR
-    CHAR_THER_EVOL      262   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
-                              OUT__  MVECTTR  PVECTTR
+    CHAR_SENS_EVOL      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    CHAR_THER_EVOL      -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     CHAR_THER_SOUR_F    264   IN__   NGEOMER  PGEOMER  CSOURCF  PSOURCF  CTEMPSR  PTEMPSR
                               OUT__  MVECTTR  PVECTTR
     CHAR_THER_SOUR_R    263   IN__   NGEOMER  PGEOMER  ESOURCR  PSOURCR
@@ -106,8 +105,8 @@ OPTION__
                               OUT__  EFLUXNO  PFLUX_R
     INIT_MAIL_VOIS      -2    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    MASS_THER           261   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
-                              OUT__  MMATTTR  PMATTTR
+    MASS_THER           -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
                               OUT__  EPHASNO_ PPHASNOU

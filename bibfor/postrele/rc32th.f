@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,7 +53,7 @@ C
       CHARACTER*8  K8B, CRIT(2), NOCMP(NCMP), TABLE, TABFLE, KNUME
       CHARACTER*16 MOTCLF, VALEK(2)
       CHARACTER*24 INSTAN, ABSCUR, JVORIG, JVEXTR
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(7)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -93,9 +93,9 @@ C ------ ON RECUPERE LES INSTANTS DANS LA TABLE
 C
          CALL TBEXIP ( TABLE, VALEK(1), EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
-                  VALK (1) = TABLE
-                  VALK (2) = VALEK(1)
-            CALL U2MESG('F', 'POSTRELE_93',2,VALK,0,0,0,0.D0)
+            VALK (1) = TABLE
+            VALK (2) = VALEK(1)
+            CALL U2MESG('F', 'POSTRCCM_1',2,VALK,0,0,0,0.D0)
          ENDIF
          INSTAN = '&&RC32TH.INSTANT'
          CALL TBEXV1 ( TABLE, VALEK(1), INSTAN, 'V', NBINST, K8B)
@@ -105,9 +105,9 @@ C ------ ON RECUPERE L'ABSC_CURV DANS LA TABLE
 C
          CALL TBEXIP ( TABLE, VALEK(2), EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
-                  VALK (1) = TABLE
-                  VALK (2) = VALEK(2)
-            CALL U2MESG('F', 'POSTRELE_94',2,VALK,0,0,0,0.D0)
+            VALK (1) = TABLE
+            VALK (2) = VALEK(2)
+            CALL U2MESG('F', 'POSTRCCM_1',2,VALK,0,0,0,0.D0)
          ENDIF
          ABSCUR = '&&RC32TH.ABSC_CURV'
          CALL TBEXV1 ( TABLE, VALEK(2), ABSCUR, 'V', NBABSC, K8B)
@@ -140,8 +140,9 @@ C
                IF (IRET.NE.0) THEN
                   VALK (1) = TABLE
                   VALK (2) = NOCMP(J)
-                  VALR = ZR(JABSC+K-1)
-                  CALL U2MESG('F', 'POSTRELE_95',2,VALK,0,0,1,VALR)
+                  VALK (3) = VALEK(1)
+                  VALK (4) = VALEK(2)
+                  CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
                ENDIF
 C
  16          CONTINUE

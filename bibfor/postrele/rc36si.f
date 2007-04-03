@@ -4,7 +4,7 @@
       CHARACTER*8         NOMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C
          CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME', IOCC,1,1, NSCY, N1)
          IF ( N1 .NE. 0 ) THEN
             IF ( LSEISM ) THEN
-               CALL U2MESS('F','POSTRELE_39')
+               CALL U2MESS('F','POSTRCCM_11')
             ELSE
                LSEISM = .TRUE.
             ENDIF
@@ -126,9 +126,8 @@ C        --------------------
 C
          CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, NUMGR, N1)
 C
-         IF ( NUMGR .LE. 0 ) THEN
-           CALL U2MESS('F','POSTRELE_36')
-         ENDIF
+         IF ( NUMGR .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
+C
          DO 20 IG = 1 , NBGR
             IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 22
  20      CONTINUE

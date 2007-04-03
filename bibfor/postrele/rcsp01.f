@@ -5,7 +5,7 @@
       REAL*8              SP3, SP4, SP5, ALPHAA, ALPHAB, SP6
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
       CHARACTER*8  K8B, TBTHER(2), TBMOYE(2), CRIT(2)
       CHARACTER*16 NOPARA(2)
       CHARACTER*24 NOMOBJ, ABSCUR, CHTEMP
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(7)
 C
 C DEB ------------------------------------------------------------------
 C
@@ -85,19 +85,18 @@ C
       ICMP = 1
       IAD = DECAL + (IPT-1)*NBCMP + ICMP
       IF (.NOT.ZL(JCESL-1+IAD)) THEN
-            VALI (1) = IOCS
-            VALI (2) = ADRM(1)
-            VALI (3) = 0
-         CALL U2MESG('F', 'POSTRELE1_41',0,' ',3,VALI,0,0.D0)
+         VALI (1) = IOCS
+         VALI (2) = ADRM(1)
+         CALL U2MESG('F','POSTRCCM_15',1,'RESU_THER',2,VALI,0,0.D0)
       ENDIF
       TBTHER(1) = ZK8(JCESV-1+IAD)
       ICMP = 2
       IAD = DECAL + (IPT-1)*NBCMP + ICMP
       IF (.NOT.ZL(JCESL-1+IAD)) THEN
-            VALI (1) = IOCS
-            VALI (2) = ADRM(1)
-            VALI (3) = 0
-         CALL U2MESG('F', 'POSTRELE1_42',0,' ',3,VALI,0,0.D0)
+         VALI (1) = IOCS
+         VALI (2) = ADRM(1)
+         CALL U2MESG('F','POSTRCCM_15',1,'RESU_THER_MOYE',2,VALI,
+     +                                                    0,0.D0)
       ENDIF
       TBMOYE(1) = ZK8(JCESV-1+IAD)
 C
@@ -108,8 +107,7 @@ C
          IF (.NOT.ZL(JCESL-1+IAD)) THEN
             VALI (1) = IOCS
             VALI (2) = ADRM(2)
-            VALI (3) = 0
-            CALL U2MESG('F', 'POSTRELE1_43',0,' ',3,VALI,0,0.D0)
+            CALL U2MESG('F','POSTRCCM_15',1,'RESU_THER',2,VALI,0,0.D0)
          ENDIF
          TBTHER(2) = ZK8(JCESV-1+IAD)
          ICMP = 2
@@ -117,8 +115,8 @@ C
          IF (.NOT.ZL(JCESL-1+IAD)) THEN
             VALI (1) = IOCS
             VALI (2) = ADRM(2)
-            VALI (3) = 0
-            CALL U2MESG('F', 'POSTRELE1_44',0,' ',3,VALI,0,0.D0)
+            CALL U2MESG('F','POSTRCCM_15',1,'RESU_THER_MOYE',2,VALI,
+     +                                                       0,0.D0)
          ENDIF
          TBMOYE(2) = ZK8(JCESV-1+IAD)
       ENDIF
@@ -127,11 +125,15 @@ C --- ON RECUPERE LES INSTANTS DANS UNE TABLE
 C
       CALL TBEXIP ( TBTHER(1), 'INST', EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
-         CALL U2MESS('F','POSTRELE_44')
+         VALK(1) = TBTHER(1)
+         VALK(2) = 'INST'
+         CALL U2MESG('F', 'POSTRCCM_1',2,VALK,0,0,0,0.D0)
       ENDIF
       CALL TBEXIP ( TBMOYE(1), 'INST', EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
-         CALL U2MESS('F','POSTRELE_43')
+         VALK(1) = TBMOYE(1)
+         VALK(2) = 'INST'
+         CALL U2MESG('F', 'POSTRCCM_1',2,VALK,0,0,0,0.D0)
       ENDIF
       NOMOBJ = '&&RCSP01.INSTANT'
       CALL TBEXV1 ( TBMOYE(1), 'INST', NOMOBJ, 'V', NBINST, K8B )
@@ -141,7 +143,9 @@ C --- ON RECUPERE L'ABSC_CURV DANS LA TABLE TABL_RESU_THER
 C
       CALL TBEXIP ( TBTHER(1), 'ABSC_CURV', EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
-         CALL U2MESS('F','POSTRELE_45')
+         VALK(1) = TBTHER(1)
+         VALK(2) = 'ABSC_CURV'
+         CALL U2MESG('F', 'POSTRCCM_1',2,VALK,0,0,0,0.D0)
       ENDIF
       ABSCUR = '&&RCSP01.ABSC_CURV'
       CALL TBEXV1 ( TBTHER(1), 'ABSC_CURV', ABSCUR, 'V', NBABSC, K8B)
@@ -169,9 +173,12 @@ C
      &                 K8B, IBID, TINT, CBID, K8B, IRET )
          IF (IRET.NE.0) THEN
             VALK (1) = TBTHER(1)
+            VALK (2) = 'TEMP'
+            VALK (3) = NOPARA(1)
+            VALK (4) = NOPARA(2)
             VALR (1) = INST
             VALR (2) = VALE(2)
-            CALL U2MESG('F', 'POSTRELE1_45',1,VALK,0,0,2,VALR)
+            CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALR)
          ENDIF
 C
          VALE(2) = ZR(JABSC+NBABSC-1)
@@ -181,9 +188,12 @@ C
      &                 K8B, IBID, TEXT, CBID, K8B, IRET )
          IF (IRET.NE.0) THEN
             VALK (1) = TBTHER(1)
+            VALK (2) = 'TEMP'
+            VALK (3) = NOPARA(1)
+            VALK (4) = NOPARA(2)
             VALR (1) = INST
             VALR (2) = VALE(2)
-            CALL U2MESG('F', 'POSTRELE1_45',1,VALK,0,0,2,VALR)
+            CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALR)
          ENDIF
 C
 C ------ ON RECUPERE LES MOYENNES
@@ -196,19 +206,23 @@ C
      &              K8B, IBID, TMOY(1), CBID, K8B, IRET )
          IF (IRET.NE.0) THEN
             VALK (1) = TBMOYE(1)
-            VALK (2) = 'MOMENT_0'
-            VALR (1) = INST
-            CALL U2MESG('F', 'POSTRELE1_47',2,VALK,0,0,1,VALR)
+            VALK (2) = 'TEMP'
+            VALK (3) = NOPARA(1)
+            VALK (4) = NOPARA(2)
+            VALK (5) = 'MOMENT_0'
+            CALL U2MESG('F', 'POSTRCCM_16',5,VALK,0,0,1,INST)
          ENDIF
          IF ( NBM .GT. 1 ) THEN
             CALL TBLIVA ( TBMOYE(2), 2, NOPARA, IBID, INST, CBID,
      &                 'MOMENT_0', CRIT, PREC, 'TEMP',
      &                 K8B, IBID, TMOY(2), CBID, K8B, IRET )
             IF (IRET.NE.0) THEN
-            VALK (1) = TBMOYE(2)
-            VALK (2) = 'MOMENT_0'
-            VALR (1) = INST
-            CALL U2MESG('F', 'POSTRELE1_48',2,VALK,0,0,1,VALR)
+               VALK (1) = TBMOYE(2)
+               VALK (2) = 'TEMP'
+               VALK (3) = NOPARA(1)
+               VALK (4) = NOPARA(2)
+               VALK (5) = 'MOMENT_0'
+               CALL U2MESG('F', 'POSTRCCM_16',5,VALK,0,0,1,INST)
             ENDIF
          ENDIF
          CALL TBLIVA ( TBMOYE(1), 2, NOPARA, IBID, INST, CBID,
@@ -216,10 +230,11 @@ C
      &              K8B, IBID, VMOY, CBID, K8B, IRET )
          IF (IRET.NE.0) THEN
             VALK (1) = TBMOYE(1)
-            VALK (2) = 'MOMENT_1'
-            VALR (1) = INST
-            VALI (1) = IOCS
-            CALL U2MESG('F', 'POSTRELE1_49',2,VALK,1,VALI,1,VALR)
+            VALK (2) = 'TEMP'
+            VALK (3) = NOPARA(1)
+            VALK (4) = NOPARA(2)
+            VALK (5) = 'MOMENT_1'
+            CALL U2MESG('F', 'POSTRCCM_16',5,VALK,0,0,1,INST)
          ENDIF
 C
 C ------ DT1: AMPLITUDE DE LA VARIATION ENTRE LES 2 ETATS STABILISES

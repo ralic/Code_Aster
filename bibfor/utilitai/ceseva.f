@@ -1,6 +1,6 @@
       SUBROUTINE CESEVA(CESF,NPARA,LPARA,CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,16 +60,21 @@ C     ------------------------------------------------------------------
       INTEGER JRD,JRC,JRV,JRL,JRK
       INTEGER NBMA,IB,K,IMA,NCMP,NBPU,IER,NBPUMX
       INTEGER NCMP2,IPARA,KK,JAD1,NCMPMX,NSPMX,NPTMX
-      INTEGER K2,IADF,IADR,IADP,NBPT,NBSP,IPT,ISP
-      PARAMETER (NBPUMX=50)
+      INTEGER K2,IADF,IADR,IADP,NBPT,NBSP,IPT,ISP,JNOMPU,JVALPU
       CHARACTER*1 KBID
-      CHARACTER*8 MA,NOMGDF,NOMGDR,FO,NOMPU(NBPUMX)
+      CHARACTER*8 MA,NOMGDF,NOMGDR,FO
       CHARACTER*8 MA2,NOMGD2,TYPCES
       CHARACTER*3 TSCA
       CHARACTER*19 F,P,R
-      REAL*8 X,VALPU(NBPUMX)
+      REAL*8 X
 C     ------------------------------------------------------------------
       CALL JEMARQ()
+
+C     -- 2 VECTEURS POUR STOCKER LE NOM ET LES VALEURS DES PARAMETRES
+C        DES FONCTIONS :
+      NBPUMX=10
+      CALL WKVECT('&&CESEVA.NOMPU','V V K8',NBPUMX,JNOMPU)
+      CALL WKVECT('&&CESEVA.VALPU','V V R',NBPUMX,JVALPU)
 
 C     1- RECUPERATIONS D'INFOS DANS LE CHAMP DE FONCTIONS :
 C     ------------------------------------------------------------
@@ -162,17 +167,25 @@ C           -------------------------------------------------------
                 DO 20,K2 = 1,NCMP2
                   CALL CESEXI('C',JPD,JPL,IMA,IPT,ISP,K2,IADP)
                   IF (IADP.LE.0) GO TO 20
+
                   NBPU = NBPU + 1
-                  IF (NBPU.GT.NBPUMX) CALL U2MESS('F','UTILITAI_19')
-                  NOMPU(NBPU) = ZK8(JPC-1+K2)
-                  VALPU(NBPU) = ZR(JPV-1+IADP)
+                  IF (NBPU.GT.NBPUMX) THEN
+C                    -- ON AGRANDIT .NOMPU ET .VALPU :
+                     NBPUMX=2*NBPUMX
+                     CALL JUVECA('&&CESEVA.NOMPU',NBPUMX)
+                     CALL JUVECA('&&CESEVA.VALPU',NBPUMX)
+                     CALL JEVEUO('&&CESEVA.NOMPU','E',JNOMPU)
+                     CALL JEVEUO('&&CESEVA.VALPU','E',JVALPU)
+                  ENDIF
+                  ZK8(JNOMPU-1+NBPU) = ZK8(JPC-1+K2)
+                  ZR(JVALPU-1+NBPU) = ZR(JPV-1+IADP)
    20           CONTINUE
    30         CONTINUE
 
 
 C           4.2 APPEL A FOINTE :
 C           --------------------
-              CALL FOINTE('F',FO,NBPU,NOMPU,VALPU,X,IER)
+              CALL FOINTE('F',FO,NBPU,ZK8(JNOMPU),ZR(JVALPU),X,IER)
               IF (IER.NE.0) CALL U2MESS('F','CALCULEL_2')
 
 C           4.3 STOCKAGE DU RESULTAT :
@@ -189,6 +202,8 @@ C           --------------------------
 C     5- MENAGE :
 C     ---------------------------------------
       CALL JEDETR('&&CESEVA.JAD1')
+      CALL JEDETR('&&CESEVA.NOMPU')
+      CALL JEDETR('&&CESEVA.VALPU')
 
       CALL JEDEMA()
       END

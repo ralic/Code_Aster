@@ -5,7 +5,7 @@
       REAL*8              ORIG(3), AXEZ(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C
       CALL DISMOI('F','NUM_GD'    , DEPLAZ, 'CHAM_NO',GD  ,K8B   ,IER)
       CALL DISMOI('F','NOM_GD'    , DEPLAZ, 'CHAM_NO',IBID,K8B   ,IER)
       CALL DISMOI('F','NOM_MAILLA', DEPLAZ, 'CHAM_NO',IBID,NOMAIL,IER)
-      IF (K8B(1:6).NE.'DEPL_R') CALL U2MESS('F','POSTRELE_49')
+      IF (K8B(1:6).NE.'DEPL_R') CALL U2MESS('F','POSTRELE_17')
       CALL JEVEUO ( NOMAIL//'.COORDO    .VALE', 'L', AXYZM )
 C
       CALL JENONU(JEXNOM(PRNO//'.LILI','&MAILLA'),IBID)
@@ -70,7 +70,7 @@ C
       CALL JEVEUO ( PRNO//'.NUEQ', 'L', JNUEQ )
 C
       NEC = NBEC( GD )
-      IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')
+      IF ( NEC .GT. 10 ) CALL U2MESS('F','POSTRELE_53')
       CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IAD)
       CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K8B)
 C
@@ -94,8 +94,7 @@ C
  36      CONTINUE
          IF ( XNORMR .LT. EPSI ) THEN
             CALL JENUNO(JEXNUM(NOMAIL//'.NOMNOE',NUNOE),K8B)
-            VALK = K8B
-            CALL U2MESG('F', 'POSTRELE1_57',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('F', 'POSTRELE_30',1,K8B)
          ENDIF
          XNORMR =  SQRT( XNORMR )
          DO 38 I = 1,3
@@ -110,8 +109,7 @@ C
          XNORMR =  SQRT( XNORMR )
          IF ( XNORMR .LT. EPSI ) THEN
             CALL JENUNO(JEXNUM(NOMAIL//'.NOMNOE',NUNOE),K8B)
-            VALK = K8B
-            CALL U2MESG('F', 'POSTRELE1_58',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('F', 'POSTRELE_31',1,K8B)
          ENDIF
          DO 34 I = 1,3
             PGL(1,I) = AXER(I)

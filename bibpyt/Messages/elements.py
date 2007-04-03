@@ -1,21 +1,21 @@
-#@ MODIF elements Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements Messages  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 def _(x) : return x
@@ -51,7 +51,7 @@ cata_msg={
 """),
 
 8: _("""
-  mailler plus fin 
+  mailler plus fin
 """),
 
 9: _("""
@@ -59,7 +59,10 @@ cata_msg={
 """),
 
 10: _("""
- condition non respectee
+ Subroutine chpver :
+ le champ  %(k1)s n'a pas le bon type :
+   type autorisé  :%(k2)s
+   type du champ  :%(k3)s
 """),
 
 11: _("""
@@ -67,11 +70,11 @@ cata_msg={
 """),
 
 12: _("""
- nombre de couches obligatoirement superieur a 0 
+ nombre de couches obligatoirement superieur a 0
 """),
 
 13: _("""
- nombre de couches limite a 10 pour les coques 3d 
+ nombre de couches limite a 10 pour les coques 3d
 """),
 
 14: _("""
@@ -107,7 +110,7 @@ cata_msg={
 """),
 
 22: _("""
- irep (indicateur de changement de repere) doit etre egal a 0 ou 1 
+ irep (indicateur de changement de repere) doit etre egal a 0 ou 1
 """),
 
 23: _("""
@@ -143,7 +146,7 @@ cata_msg={
 """),
 
 31: _("""
- type element  %(k1)s  incompatible avec  %(k2)s 
+ type element  %(k1)s  incompatible avec  %(k2)s
 """),
 
 32: _("""
@@ -155,19 +158,22 @@ cata_msg={
 """),
 
 34: _("""
- element non traite  %(k1)s 
+ element non traite  %(k1)s
 """),
 
 35: _("""
- pas d excentrement avec stat_non_line maille  %(k1)s 
+ pas d excentrement avec stat_non_line maille  %(k1)s
 """),
 
 36: _("""
- nombre de couches  negatif ou nul :  %(k1)s 
+ nombre de couches  negatif ou nul :  %(k1)s
 """),
 
 37: _("""
- temperature non trouvee.
+ Subroutine chpver :
+ le champ  %(k1)s n'a pas la bonne grandeur :
+   grandeur autorisée  :%(k2)s
+   grandeur du champ   :%(k3)s
 """),
 
 38: _("""
@@ -212,11 +218,11 @@ cata_msg={
 """),
 
 47: _("""
- pas d excentrement avec forc_noda maille  %(k1)s 
+ pas d excentrement avec forc_noda maille  %(k1)s
 """),
 
 48: _("""
- impossibilite, la surface de l'element est nulle. 
+ impossibilite, la surface de l'element est nulle.
 """),
 
 49: _("""
@@ -249,7 +255,7 @@ cata_msg={
 """),
 
 55: _("""
- elrefa inconnu:  %(k1)s 
+ elrefa inconnu:  %(k1)s
 """),
 
 56: _("""
@@ -265,11 +271,11 @@ cata_msg={
 """),
 
 59: _("""
- bizarre :  %(k1)s 
+ bizarre :  %(k1)s
 """),
 
 60: _("""
- on ne sait pas traiter :  %(k1)s 
+ on ne sait pas traiter :  %(k1)s
 """),
 
 61: _("""
@@ -293,7 +299,7 @@ cata_msg={
 """),
 
 66: _("""
- si noeud_orig : donner un group_ma ou une liste de mailles. on ne reordonne pas les group_no et les listes de noeuds. 
+ si noeud_orig : donner un group_ma ou une liste de mailles. on ne reordonne pas les group_no et les listes de noeuds.
 """),
 
 67: _("""
@@ -317,7 +323,7 @@ cata_msg={
 """),
 
 72: _("""
- group_no oriente : noeud origine =  %(k1)s 
+ group_no oriente : noeud origine =  %(k1)s
 """),
 
 73: _("""
@@ -341,7 +347,7 @@ cata_msg={
 """),
 
 78: _("""
- group_no oriente : noeud extremite =  %(k1)s 
+ group_no oriente : noeud extremite =  %(k1)s
 """),
 
 79: _("""
@@ -389,7 +395,7 @@ cata_msg={
 """),
 
 90: _("""
- le noeud  %(k1)s  n appartient pas au maillage :  %(k2)s 
+ le noeud  %(k1)s  n appartient pas au maillage :  %(k2)s
 """),
 
 91: _("""

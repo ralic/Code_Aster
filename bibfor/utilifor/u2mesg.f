@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILIFOR  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C     COMPTEUR D'ALARMES POUR LIMITER LE NOMBRE D'IMPRESSION
       INTEGER          ICOMAL
       COMMON /COMSAV / ICOMAL
 C     ------------------------------------------------------------------
-      INTEGER          MXUNIT     , MXNUML     , PREM
+      INTEGER          MXUNIT     , MXNUML     , PREM, RECURS
       PARAMETER      ( MXUNIT = 8 , MXNUML = 4 )
       INTEGER          NBUNIT(MXUNIT)
       CHARACTER*132    K132B
@@ -42,12 +42,8 @@ C     ------------------------------------------------------------------
       LOGICAL          LEXC
       INTEGER          LOUT,IDF,I,K,LL,LC,ICMD,IMAAP,LXLGUT
 C     ------------------------------------------------------------------
-      SAVE             KUNIT, NBUNIT, PREM
+      SAVE             KUNIT, NBUNIT, PREM, RECURS
 C     ------------------------------------------------------------------
-      CALL JEVEMA(IMAAP)
-      IF (IMAAP.GE.200) CALL JEFINI('ERREUR')
-      CALL JEMARQ()
-
       IF ( PREM .NE. 16092006 ) THEN
          PREM = 16092006
          NBERRF=0
@@ -96,8 +92,24 @@ C
          KUNIT(8,3) = 'RESULTAT'
 
       ENDIF
+
 C     --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
       IDF  = INDEX('EFIDASXZ',CH1(1:1))
+C
+C --- SE PROTEGER DES APPELS RECURSIFS
+      IF ( RECURS .EQ. 1234567890 ) THEN
+C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
+         DO 123 K=1,NBUNIT(IDF)
+            CALL UTPRIN ('F',KUNIT(IDF,K),'SUPERVIS_55',
+     +                   0,VALK,0,VALI,0,VALR)
+123      CONTINUE
+         CALL JEFINI('ERREUR')
+      ENDIF
+      RECURS = 1234567890
+      
+      CALL JEVEMA(IMAAP)
+      IF (IMAAP.GE.200) CALL JEFINI('ERREUR')
+      CALL JEMARQ()
 
 C     --- COMPORTEMENT EN CAS D'ERREUR <F>
       CALL ONERRF(' ', COMPEX, LOUT)
@@ -174,6 +186,7 @@ C        REMONTER LES N JEDEMA COURT-CIRCUITES
 C
 C        ON REMONTE UNE EXCEPTION AU LIEU DE FERMER LES BASES
          K132B= ' <EXCEPTION LEVEE> '//IDMESS(1:LL)
+         RECURS = 0
          CALL UEXCEP(NEXCEP,K132B)
       ELSEIF ( IDF .EQ. 2 ) THEN
 C     -- ABORT SUR ERREUR <F> "ORDINAIRE"
@@ -181,6 +194,7 @@ C        CALL JXVERI('ERREUR',' ')
          CALL JEFINI('ERREUR')
       ENDIF
 
+      RECURS = 0
       CALL JEDEMA()
 
       END

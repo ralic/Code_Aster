@@ -1,7 +1,7 @@
       SUBROUTINE RVPARA ( NOMTAB, LATAB1, NOPASE, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,12 +93,12 @@ C
 C
       IF ( NIV.GE.2 ) THEN
         IF ( NOPASE.EQ.' ' ) THEN
-          CALL U2MESK('I','POSTRELE_58',1,NOMTAB)
+          CALL U2MESK('I','POSTRELE_8',1,NOMTAB)
         ELSE
            VALK(1) = NOMTAB
            VALK(2) = NOPASE
            VALK(3) = LATAB1
-           CALL U2MESK('I','POSTRELE_59', 3 ,VALK)
+           CALL U2MESK('I','SENSIBILITE_10', 3 ,VALK)
         ENDIF
       ENDIF
 C               12   345678   9012345678901234
@@ -248,14 +248,12 @@ C
                   CALL RSEXCH ( RESU, NOMSY, NUME, CHEXTR, IRET )
                   IF ( IRET .EQ. 0 ) GOTO 16
  14            CONTINUE
-               CALL U2MESS('F','POSTRELE_60')
-               CALL UTIMPK('S','POUR L''OPTION ',1,NOMSY)
-               CALL UTFINM()
+               CALL U2MESK('F','POSTRELE_9',1,NOMSY)
  16            CONTINUE
                CALL JEDETR ( KNUME )
                CALL UTNCMP ( CHEXTR, NBC, NOMOBJ )
             ENDIF
-            IF (NBC.EQ.0) CALL U2MESS('F','MODELISA2_89')
+            IF (NBC.EQ.0) CALL U2MESS('F','POSTRELE_59')
             CALL JEVEUO ( NOMOBJ, 'L', JCMP1 )
             DO 10 I = 1 , NBC
                DO 12 J = 1 , NCMP
@@ -609,7 +607,7 @@ C
         DO 1789 , N1 = 1 , NBP
            VALK(1) = NOPARA(N1)
            VALK(2) = TYPARA(N1)
-           CALL U2MESK('I','POSTRELE_61', 2 ,VALK)
+           CALL U2MESK('I','POSTRELE_10', 2 ,VALK)
  1789   CONTINUE
       ENDIF
 C

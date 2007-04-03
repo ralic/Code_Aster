@@ -12,7 +12,7 @@
       CHARACTER*24        SDM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -252,13 +252,11 @@ C
  40   CONTINUE
 C
       ERREUR = .FALSE.
-      IF ( NBPAR .GT. 50 )   ERREUR = .TRUE.
-      IF ( II+2  .GT. 50 )   ERREUR = .TRUE.
-      IF ( IR+4+NBCMP .GT. 50 )   ERREUR = .TRUE.
-      IF ( IK    .GT. 50 )   ERREUR = .TRUE.
-      IF ( ERREUR ) THEN
-         CALL U2MESS('F','POSTRELE_64')
-      ENDIF
+      IF ( NBPAR .GT. 50 )       ERREUR = .TRUE.
+      IF ( II+2  .GT. 50 )       ERREUR = .TRUE.
+      IF ( IR+4+NBCMP .GT. 50 )  ERREUR = .TRUE.
+      IF ( IK    .GT. 50 )       ERREUR = .TRUE.
+      IF ( ERREUR ) CALL U2MESS('F','POSTRELE_12')
 C
       ILIGN = 0
 C

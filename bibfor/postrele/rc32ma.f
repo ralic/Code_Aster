@@ -3,7 +3,7 @@
       CHARACTER*8       MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,19 +68,13 @@ C    RECUP TYPE KE
       CALL GETFAC ( MOTCLF, NBSITU )
 C
       CALL RCCOME ( MATER, 'ELAS', PHENOM, CODRET )
-      IF ( CODRET(1) .EQ. 'NO' ) THEN
-         CALL U2MESS('F','POSTRELE_31')
-      ENDIF
+      IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'ELAS')
 C
       CALL RCCOME ( MATER, 'FATIGUE', PHENOM, CODRET )
-      IF ( CODRET(1) .EQ. 'NO' ) THEN
-         CALL U2MESS('F','POSTRELE_32')
-      ENDIF
+      IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'FATIGUE')
 C
       CALL RCCOME ( MATER, 'RCCM', PHENOM, CODRET )
-      IF ( CODRET(1) .EQ. 'NO' ) THEN
-         CALL U2MESS('F','POSTRELE_33')
-      ENDIF
+      IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'RCCM')
 C
       NOCMP(1) = 'E'
       NOCMP(2) = 'NU'

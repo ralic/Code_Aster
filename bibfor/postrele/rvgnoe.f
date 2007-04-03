@@ -6,7 +6,7 @@
       CHARACTER*24                           NLSTND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -178,10 +178,10 @@ C        VERIFICATIONS PRELIMINAIRES
           IF(NBRGPN.EQ.1) THEN
             NOMGRN = ZK8(AGRPN + 1-1)
             CALL JELIRA(JEXNOM(NREPGN,NOMGRN),'LONMAX',NBN,K1B)
-            IF(NBN.LT.2)  CALL U2MESS('F','POSTRELE_53')
+            IF(NBN.LT.2)  CALL U2MESS('F','POSTRELE_21')
           ENDIF
         ELSE
-          CALL U2MESS('F','POSTRELE_54')
+          CALL U2MESS('F','POSTRELE_22')
         ENDIF
         CALL JEEXIN('&&YAPAS '//'S1   '//'.DESC',N1)
         IF ( N1 .NE. 0 ) CALL JEDETR('&&YAPAS '//'S1   '//'.DESC')
@@ -198,7 +198,7 @@ C       TOLERANCE
 C       VERIFICATION QUE LES POINTS SONT ALIGNES
         CALL OREINO(NMAILA,ZI(ALSTND),LIBRE-1,I1,I2,ZR(JVALE),CRIT,
      &              TOLE,IERA,IRET)
-        IF (IRET.NE.0) CALL U2MESS('F','MODELISA4_1')
+        IF (IRET.NE.0) CALL U2MESS('F','POSTRELE_60')
         ZR(ASGTU-1+1)=ZR(JVALE-1+3*(I1-1)+1)
         ZR(ASGTU-1+2)=ZR(JVALE-1+3*(I1-1)+2)
         ZR(ASGTU-1+3)=ZR(JVALE-1+3*(I1-1)+3)

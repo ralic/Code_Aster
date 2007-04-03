@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 29/03/2007   AUTEUR GRANET S.GRANET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,12 +118,13 @@ DSATBO=DEFI_CONSTANTE(VALE=0.,);
 FICK=DEFI_CONSTANTE(VALE=6.E-10,);
 # COEF. DE FICK
 #
-# Fick variant enPAD - n a pour but que de tester cette fonction puisque c est egal a un
+# Fick variant enPAD PLIQU PVAP - n a pour but que de tester cette fonction puisque c est egal a un
 #************************************                                                                      
+
 LIPA=DEFI_LIST_REEL(DEBUT=0.1,
                    INTERVALLE=_F(JUSQU_A=1.000001E5,
                                  PAS=1.E3,),);
-FA_PA = FORMULE(NOM_PARA='PAD',VALE='1.+PAD-PAD');  
+FA_PA = FORMULE(NOM_PARA='PAD',VALE='1.+PAD-PAD');
 
 FAPA  = CALC_FONC_INTERP ( FONCTION    =  FA_PA     ,
                             LIST_PARA   =  LIPA    ,
@@ -132,6 +133,17 @@ FAPA  = CALC_FONC_INTERP ( FONCTION    =  FA_PA     ,
                             PROL_DROITE = 'CONSTANT' ,
                             INFO        = 2          ,);
 
+FAPL=DEFI_FONCTION(NOM_PARA='PLIQ',
+                   VALE=(0.1 ,1.,
+                         1.E5 ,1.,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
+
+FVPV=DEFI_FONCTION(NOM_PARA='PVAP',
+                   VALE=(0.1 ,0.,
+                         1.E5 ,0.,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
 KINTBO=DEFI_CONSTANTE(VALE=1.E-19,);
 
 HENRY=DEFI_FONCTION(NOM_PARA='TEMP',
@@ -190,8 +202,10 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                                    D_PERM_SATU_GAZ=ZERO,
                                    D_PERM_PRES_GAZ=ZERO,
                                    FICKV_T=ZERO,
+                                   FICKV_PV=FVPV,
                                    FICKA_T=FICK,
                                    FICKA_PA=FAPA,
+                                   FICKA_PL=FAPL,
                                    LAMB_T=ZERO,
                                    ),);
 

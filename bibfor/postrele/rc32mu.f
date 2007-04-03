@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       CHARACTER*8  K8B, CRIT, NOCMP(NCMP), TBSIG(13)
       CHARACTER*16 MOTCLF, VALEK
       CHARACTER*24 ABSCUR
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(7)
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -94,7 +94,9 @@ C
       VALEK = 'ABSC_CURV       '
       CALL TBEXIP ( TBSIG(4), VALEK, EXIST, K8B )
       IF ( .NOT. EXIST ) THEN
-         CALL U2MESS('F','POSTRELE_34')
+         VALK (1) = TBSIG(4)
+         VALK (2) = VALEK
+         CALL U2MESK('F', 'POSTRCCM_1',2,VALK)
       ENDIF
       ABSCUR = '&&RC32MU.ABSC_CURV'
       CALL TBEXV1 ( TBSIG(4), VALEK, ABSCUR, 'V', NBABSC, K8B)
@@ -122,7 +124,9 @@ C
 C
          CALL TBEXIP ( TBSIG(I), VALEK, EXIST, K8B )
          IF ( .NOT. EXIST ) THEN
-            CALL U2MESK('F','POSTRELE_35',1,TBSIG(I))
+            VALK (1) = TBSIG(I)
+            VALK (2) = VALEK
+            CALL U2MESK('F', 'POSTRCCM_1',2,VALK)
          ENDIF
          DO 12 J = 1 , NCMP
 C
@@ -133,9 +137,9 @@ C
                IF (IRET.NE.0) THEN
                   VALK (1) = TBSIG(I)
                   VALK (2) = NOCMP(J)
-                  VALR = ZR(JABSC+K-1)
-                  VALI = IRET
-                  CALL U2MESG('F', 'POSTRELE_91',2,VALK,1,VALI,1,VALR)
+                  VALK (3) = VALEK
+                  CALL U2MESG('F','POSTRCCM_2',3,VALK,0,0,
+     &                                         1,ZR(JABSC+K-1))
                ENDIF
  14         CONTINUE
 C

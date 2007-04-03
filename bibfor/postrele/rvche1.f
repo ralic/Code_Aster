@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              PGL(3,3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,7 @@ C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL JEVEUO (JEXATR('&CATA.TE.MODELOC','LONCUM'),'L',ILONG)
 C
       NEC  = NBEC( GD )
-      IF ( NEC .GT. 10 ) CALL U2MESS('F','PREPOST_78')
+      IF ( NEC .GT. 10 ) CALL U2MESS('F','POSTRELE_53')
 C
       CALL DISMOI('F','NOM_OPTION', CHELEZ, 'CHAM_ELEM',IBID,OPTION,IER)
       IF  ( OPTION(1:14) .EQ. 'SIGM_ELNO_DEPL'  .OR.
@@ -88,7 +88,7 @@ C         COMPOSANTE:  N  VY VZ MT MFY MFZ
       ELSE
          VALK (1) = CHELM
          VALK (2) = OPTION
-         CALL U2MESG('F', 'POSTRELE1_50',2,VALK,0,0,0,0.D0)
+         CALL U2MESK('F', 'POSTRELE_26',2,VALK)
       ENDIF
 C
       CALL JEDUPO ( CHELM//'.CELV', 'V', NOMJV, .FALSE. )
@@ -114,7 +114,7 @@ C
          CALL DGMODE ( MODE, IMODEL, ILONG, NEC, TABEC )
          NSCAL = DIGDEL( MODE )
          ICOEF=MAX(1,ZI(JCELD-1+4))
-         IF (ICOEF.GT.1) CALL U2MESS('F','POSTRELE_47')
+         IF (ICOEF.GT.1) CALL U2MESS('F','POSTRELE_15')
          NSCA  = NSCAL*ICOEF
          IPOIN = ZI(JLONGR-1+IGREL)
          IEL   = ZI(JLIGR-1+IPOIN+IELG-1)

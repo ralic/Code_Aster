@@ -5,7 +5,7 @@
       CHARACTER*24        CHMATE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'E CALCUL'
-         CALL U2MESG('F', 'POSTRELE1_24',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       EC = ZR(JCESV-1+IAD)
 C
@@ -99,7 +99,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'E AMBIANT'
-         CALL U2MESG('F', 'POSTRELE1_25',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       E = ZR(JCESV-1+IAD)
 C
@@ -111,7 +111,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'NU'
-         CALL U2MESG('F', 'POSTRELE1_26',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       NU = ZR(JCESV-1+IAD)
 C
@@ -123,7 +123,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'ALPHA'
-         CALL U2MESG('F', 'POSTRELE1_27',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       ALPHA = ZR(JCESV-1+IAD)
 C
@@ -148,25 +148,25 @@ C
                GOTO 106
             ENDIF
  104     CONTINUE
-         CALL U2MESS('F','POSTRELE_42')
+         CALL U2MESS('F','POSTRCCM_19')
  106     CONTINUE
          DECMB = ZI(JCESD-1+5+4*(IMB-1)+4)
          ICMP = 2
          IAD = DECMB + (IPT-1)*NBCMP + ICMP
          IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         VALI (1) = IMB
-         VALI (2) = IPT
-         VALK = 'E_B'
-            CALL U2MESG('F', 'POSTRELE1_28',1,VALK,2,VALI,0,0.D0)
+            VALI (1) = IMB
+            VALI (2) = IPT
+            VALK = 'E_B'
+            CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
          ENDIF
          EB = ZR(JCESV-1+IAD)
          ICMP = 4
          IAD = DECMB + (IPT-1)*NBCMP + ICMP
          IF ( .NOT. ZL(JCESL-1+IAD) ) THEN
-         VALI (1) = IMB
-         VALI (2) = IPT
-         VALK = 'ALPHA_B'
-            CALL U2MESG('F', 'POSTRELE1_29',1,VALK,2,VALI,0,0.D0)
+            VALI (1) = IMB
+            VALI (2) = IPT
+            VALK = 'ALPHA_B'
+            CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
          ENDIF
          ALPHAB = ZR(JCESV-1+IAD)
       ENDIF
@@ -189,7 +189,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'E_REFE'
-         CALL U2MESG('F', 'POSTRELE1_30',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(10) = ZR(JCESV-1+IAD)
 C
@@ -201,7 +201,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'SM'
-         CALL U2MESG('F', 'POSTRELE1_31',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(11) = ZR(JCESV-1+IAD)
 C
@@ -213,7 +213,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'M'
-         CALL U2MESG('F', 'POSTRELE1_32',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(12) = ZR(JCESV-1+IAD)
 C
@@ -225,7 +225,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'N'
-         CALL U2MESG('F', 'POSTRELE1_33',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(13) = ZR(JCESV-1+IAD)
 C
@@ -238,7 +238,7 @@ C
          VALI (1) = IMA
          VALI (2) = IPT
          VALK = 'TYPEKE'
-         CALL U2MESG('F', 'POSTRELE1_34',1,VALK,2,VALI,0,0.D0)
+         CALL U2MESG('F', 'POSTRCCM_18',1,VALK,2,VALI,0,0.D0)
       ENDIF
       VALE(14) = ZR(JCESV-1+IAD)
 C

@@ -6,7 +6,7 @@
       LOGICAL FINK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*4 TYPSL
-      INTEGER     I,J,DS1,DECF,ADESCM,ARETE,NBS,IRET,IPOS
+      INTEGER     I,J,DS1,DECF,ADESCM,ARETE,NBS,IRET,IPOS,VALI(3)
       REAL*8      A(3,3),B(3),X(3),C,ZERO,UN,R,S,T,NORMAB
       REAL*8      E1(3),E2(3),E3(3),CS(3,4),LCARA,TOLE
       REAL*8      E1I(3),E2I(3)
@@ -122,10 +122,9 @@ C
       C = SQRT(C)
       T = SQRT(T)
       IF ( (C.LE.EPSI) .OR. (T.LE.EPSI) ) THEN
-         CALL UTDEBM('F','I3IQPS','FACE DEGENEREE')
-         CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-         CALL UTIMPI('S',' FACE : ',1,F)
-         CALL UTFINM()
+         VALI(1) = K
+         VALI(2) = F
+         CALL U2MESI('F','INTEMAIL_24',2,VALI)
       ENDIF
       DO 16, I = 1, 3, 1
          E1(I) = E1(I)/C
@@ -140,10 +139,9 @@ C
 17    CONTINUE
       C = SQRT(C)
       IF ( C .LE. EPSI ) THEN
-         CALL UTDEBM('F','I3IQPS','FACE DEGENEREE')
-         CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-         CALL UTIMPI('S',' FACE : ',1,F)
-         CALL UTFINM()
+         VALI(1) = K
+         VALI(2) = F
+         CALL U2MESI('F','INTEMAIL_24',2,VALI)
       ENDIF
       E3(1) =  E3(1)/C
       E3(2) =  E3(2)/C
@@ -326,11 +324,9 @@ C              -----------------
                CALL I3RPQP ( X, E1, E2, E3, CS(1,2), NBS-1 )
                CALL I3CRQP ( EPSI, EPSI, CS, R, S, X, IRET )
                IF ( IRET .EQ. -1 ) THEN
-                  CALL UTDEBM('F','I3IQPS',
-     &                              'UNE FACE DEGENEREE EST DETECTEE')
-                  CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-                  CALL UTIMPI('S',' FACE NUMERO : ',1,F)
-                  CALL UTFINM()
+                  VALI(1) = K
+                  VALI(2) = F
+                  CALL U2MESI('F','INTEMAIL_24',2,VALI)
                ELSE
                   R = X(1)
                   S = X(2)
@@ -382,11 +378,9 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                S = A(2,1)
                CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)),IRET)
                IF ( IRET .EQ. -1 ) THEN
-                  CALL UTDEBM('F','I3IQPS',
-     &                              'UNE FACE DEGENEREE EST DETECTEE')
-                  CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-                  CALL UTIMPI('S',' FACE NUMERO : ',1,F)
-                  CALL UTFINM()
+                  VALI(1) = K
+                  VALI(2) = F
+                  CALL U2MESI('F','INTEMAIL_24',2,VALI)
                ENDIF
                ZR(LSTPT(1)) = ZERO
                ZI(LSTPT(2)) = F
@@ -397,11 +391,9 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                S = A(2,2)
                CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)+2),IRET)
                IF ( IRET .EQ. -1 ) THEN
-                  CALL UTDEBM('F','I3IFTS',
-     &                              'UNE FACE DEGENEREE EST DETECTEE')
-                  CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-                  CALL UTIMPI('S',' FACE NUMERO : ',1,F)
-                  CALL UTFINM()
+                  VALI(1) = K
+                  VALI(2) = F
+                  CALL U2MESI('F','INTEMAIL_24',2,VALI)
                ENDIF
                ZR(LSTPT(1)+1) = UN
                ZI(LSTPT(2)+1) = F
@@ -436,21 +428,17 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                   S = A(2,1)
                   CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)+2),IRET)
                   IF ( IRET .EQ. -1 ) THEN
-                     CALL UTDEBM('F','I3IQPS',
-     &                  'UNE FACE DEGENEREE EST DETECTEE')
-                     CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-                     CALL UTIMPI('S','  FACE NUMERO : ',1,F)
-                     CALL UTFINM()
+                     VALI(1) = K
+                     VALI(2) = F
+                     CALL U2MESI('F','INTEMAIL_24',2,VALI)
                   ENDIF
                   R = A(1,2)
                   S = A(2,2)
                   CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)),IRET)
                   IF ( IRET .EQ. -1 ) THEN
-                     CALL UTDEBM('F','I3IQPS',
-     &                  'UNE FACE DEGENEREE EST DETECTEE')
-                     CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-                     CALL UTIMPI('S',' FACE NUMERO : ',1,F)
-                     CALL UTFINM()
+                     VALI(1) = K
+                     VALI(2) = F
+                     CALL U2MESI('F','INTEMAIL_24',2,VALI)
                   ENDIF
                   ZR(LSTPT(1)+1) =  T
                   ZI(LSTPT(2)+1) =  F
@@ -473,11 +461,9 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                   S = A(2,1)
                   CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)+2),IRET)
                   IF ( IRET .EQ. -1 ) THEN
-                     CALL UTDEBM('F','I3IQPS',
-     &                  'UNE FACE DEGENEREE EST DETECTEE')
-                     CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-                     CALL UTIMPI('S',' FACE NUMERO : ',1,F)
-                     CALL UTFINM()
+                     VALI(1) = K
+                     VALI(2) = F
+                     CALL U2MESI('F','INTEMAIL_24',2,VALI)
                   ENDIF
                   ZR(LSTPT(1)+1) =  ZERO
                   ZI(LSTPT(2)+1) =  F
@@ -500,11 +486,9 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
                      CALL I3CRQP(EPSI,EPSI,CS,R,S,ZR(LSTPT(5)+2),
      &                     IRET)
                      IF ( IRET .EQ. -1 ) THEN
-                  CALL UTDEBM('F','I3IQPS',
-     &                   'UNE FACE DEGENEREE EST DETECTEE')
-                  CALL UTIMPI('L','MAILLE NUMERO : ',1,K)
-                  CALL UTIMPI('S',' FACE NUMERO : ',1,F)
-                  CALL UTFINM()
+                        VALI(1) = K
+                        VALI(2) = F
+                        CALL U2MESI('F','INTEMAIL_24',2,VALI)
                      ENDIF
                      ZR(LSTPT(1)+1) =  UN
                      ZI(LSTPT(2)+1) =  F
@@ -521,16 +505,14 @@ C        ---> NIVEAU DIRECTEMENT INFERRIEUR
          ELSE IF ( NBPT .EQ. 2) THEN
             NBPT = -2
          ELSE IF ( NBPT .GT. 2 ) THEN
-            CALL UTDEBM('F','I3IQPS','SEGMENT ET FACE COPLANAIRE, '//
-     &                               'INTERSECTION : TROP DE POINT')
-            CALL UTIMPI('L','MAILLE : ',1,K)
-            CALL UTIMPI('S','  FACE : ',1,F)
-            CALL UTIMPI('S',' NOMBRE DE POINT : ',1,NBPT)
-            CALL UTFINM()
+            VALI(1) = K
+            VALI(2) = F
+            VALI(3) = NBPT
+            CALL U2MESI('F','INTEMAIL_26',3,VALI)
          ENDIF
 C
       ELSE
-         CALL U2MESS('F','POSTRELE_20')
+         CALL U2MESK('F','INTEMAIL_8',1,TYPSL)
       ENDIF
 C
       END

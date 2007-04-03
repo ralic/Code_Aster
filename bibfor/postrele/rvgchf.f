@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,9 +122,9 @@ C     /* ACCES A TOUS LES NUMEROS D' ORDRES */
             CALL JEVEUO(JEXNUM(NLSCHP,I),'E',ALSCHP)
             CALL RSEXCH(NOMSD,CHPSYM,IORDR,ZK24(ALSCHP + 1-1),N1)
             IF ( N1 .NE. 0 ) THEN
-                        VALK = CHPSYM
-                        VALI = IORDR
-               CALL U2MESG('I', 'POSTRELE1_71',1,VALK,1,VALI,0,0.D0)
+               VALK = CHPSYM
+               VALI = IORDR
+               CALL U2MESG('I', 'POSTRELE_41',1,VALK,1,VALI,0,0.D0)
                ZK24(ALSCHP + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
             ENDIF
 100      CONTINUE
@@ -159,9 +159,9 @@ C        /* CAS D' UNE LISTE DE NUMERO ORDRE */
                CALL RSEXCH(NOMSD,CHPSYM,ZI(AVALAC + J-1),
      >                           ZK24(ALSCHP + 1-1),N2)
                IF ( N2 .NE. 0 ) THEN
-                        VALK = CHPSYM
-                        VALI = ZI(AVALAC + J-1)
-                  CALL U2MESG('I', 'POSTRELE1_72',1,VALK,1,VALI,0,0.D0)
+                  VALK = CHPSYM
+                  VALI = ZI(AVALAC + J-1)
+                  CALL U2MESG('I', 'POSTRELE_41',1,VALK,1,VALI,0,0.D0)
                   ZK24(ALSCHP + 1-1) = '&&CHAMP_EFF_NON_EXISTANT'
                ENDIF
 410         CONTINUE
@@ -196,7 +196,7 @@ C        /* CAS D' UNE LISTE DE NUMERO DE MODE */
                      IF ( N2 .NE. 0 ) THEN
                         VALK = CHPSYM
                         VALI = ZI(ALISTE+J-1)
-      CALL U2MESG('I', 'POSTRELE1_73',1,VALK,1,VALI,0,0.D0)
+                     CALL U2MESG('I','POSTRELE_41',1,VALK,1,VALI,0,0.D0)
                         ZK24(ALSCHP + J-1) = '&&CHAMP_EFF_NON_EXISTANT'
                      ENDIF
 810               CONTINUE
@@ -240,7 +240,7 @@ C        /* CAS D' UNE LISTE DE REELS */
                      IF ( N2 .NE. 0 ) THEN
                         VALK = CHPSYM
                         VALI = ZI(ALISTE+J-1)
-      CALL U2MESG('I', 'POSTRELE1_73',1,VALK,1,VALI,0,0.D0)
+                     CALL U2MESG('I','POSTRELE_41',1,VALK,1,VALI,0,0.D0)
                         ZK24(ALSCHP + J-1) = '&&CHAMP_EFF_NON_EXISTANT'
                      ENDIF
 610               CONTINUE

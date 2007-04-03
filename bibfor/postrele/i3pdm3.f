@@ -5,7 +5,7 @@
       LOGICAL           DEDANS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -193,6 +193,6 @@ C
       IF ( IRET .EQ. -1 ) THEN
          VALI (1) = K
          VALI (2) = F
-         CALL U2MESG('F', 'POSTRELE_82',0,' ',2,VALI,0,0.D0)
+         CALL U2MESI('F', 'INTEMAIL_24',2,VALI)
       ENDIF
       END

@@ -10,7 +10,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,9 +91,7 @@ C
             DO 101, I = 1, NBNF, 1
                DEC1 = DEC1 + MAX(0,MIN(1,NDLOC(I)))
 101         CONTINUE
-            IF ( DEC1 .LT. 2 ) THEN
-               CALL U2MESS('F','POSTRELE_48')
-            ENDIF
+            IF ( DEC1 .LT. 2 ) CALL U2MESS('F','POSTRELE_16')
             DO 110, I = 1, NBNF, 1
                NLOC = NDLOC(I)
                IF ( NLOC .GT. 0 ) THEN

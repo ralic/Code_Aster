@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/09/2006   AUTEUR PABHHHH N.TARDIEU 
+%& MODIF TYPELEM  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -211,12 +211,6 @@ OPTION__
                               OUT__  EHYDRNO  PHYDRPP  MVECTTR  PRESIDU
     RIGI_THER           51    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
-    RIGI_THER_CONV      314   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  CTEMPSR  PTEMPSR
-                                     NVITESR  PVITESR
-                              OUT__  MMATTSR  PMATTTR
-    RIGI_THER_CONV_D    314   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  CTEMPSR  PTEMPSR
-                                     NVITESR  PVITESR
-                              OUT__  MMATTSR  PMATTTR
     RIGI_THER_CONV_T    522   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CDECENT  PNEUK24  DDL_THER PTEMPEI
                                      CTEMPSR  PTEMPSR  NVITESR  PVITESR
                               OUT__  MMATTSR  PMATTTR

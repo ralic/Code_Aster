@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,9 +108,7 @@ C        --------------------
 C
          CALL GETVIS ( MOTCLF, 'NUME_GROUPE', IOCC,1,1, NUMGR, N1)
 C
-         IF ( NUMGR .LE. 0 ) THEN
-           CALL U2MESS('F','POSTRELE_36')
-         ENDIF
+         IF ( NUMGR .LE. 0 ) CALL U2MESS('F','POSTRCCM_12')
          DO 20 IG = 1 , NBGR
             IF ( ZI(JNBGR+IG-1) .EQ. NUMGR ) GOTO 22
  20      CONTINUE
@@ -236,7 +234,7 @@ C ------------ A-T-ON UN SEISME DANS CE GROUPE ?
                      VALI(1) = NUMGR
                      VALI(2) = IOCC
                      VALI(3) = ZI(JSEIGR+IG-1)
-                     CALL U2MESI('F','POSTRELE1_79',3,VALI)
+                     CALL U2MESI('F','POSTRCCM_26',3,VALI)
                   ENDIF
                   ZI(JSEIGR+IG-1) = IOCC
                ENDIF

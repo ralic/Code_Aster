@@ -6,7 +6,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,10 +96,10 @@ C
          B1    = XA -XD
          B2    = YA -YD
          IF ( NDF .LE. EPSI*T ) THEN
-         VALI (1) = K
-         VALI (2) = F
-         VALI (3) = ARETE
-            CALL U2MESG('F', 'POSTRELE_83',0,' ',3,VALI,0,0.D0)
+            VALI (1) = K
+            VALI (2) = F
+            VALI (3) = ARETE
+            CALL U2MESI('F', 'INTEMAIL_26',3,VALI)
          ELSE
             R1  = MAX(ABS(A11),ABS(A12))
             IF ( ABS(R1) .GT. EPSI ) THEN
@@ -300,6 +300,6 @@ C
       IF ( PB ) THEN
          VALI (1) = K
          VALI (2) = F
-         CALL U2MESG('F', 'POSTRELE_84',0,' ',2,VALI,0,0.D0)
+         CALL U2MESI('F', 'INTEMAIL_24',2,VALI)
       ENDIF
       END

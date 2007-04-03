@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 03/04/2007   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -154,6 +154,7 @@ MODE_LOCAL__
                                         X11 X12 X13 X14 X15 X16 X17 X18 X19 X20
                                         X21 X22 X23 X24 X25 X26 X27 X28 X29 X30)
     EKTHETA  = G        ELEM__         (GTHETA   K1       K2       K3       BETA     )
+    EREFCO   = PREC     ELEM__         (SIGM     )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18
@@ -166,7 +167,7 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
-    ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -237,8 +238,10 @@ OPTION__
                                      E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
                                      N1NEUT_R PLST 
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    REFE_FORC_NODA      -1    IN__   XXXXXXX  XXXXXXX
-                              OUT__  XXXXXXX  XXXXXXX
+    REFE_FORC_NODA      542   IN__   NGEOMER  PGEOMER  EREFCO   PREFCO   E33NEUTR PPINTTO  E128NEUI PCNSETO  
+                                     E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  N1NEUT_R PLSN
+                                     N1NEUT_R PLST 
+                              OUT__  MVECTUR  PVECTUR
     RIGI_CONT           533   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  E1NEUTI  PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E18NEUTR PPINTER
                                      E24NEUTR PAINTER  E15NEUTI PCFACE   E2NEUTI  PLONCHA  E54NEUTR PBASECO

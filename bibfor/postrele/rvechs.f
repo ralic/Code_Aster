@@ -8,7 +8,7 @@ C
       REAL*8      RSOR(*),RSEX(*),VAL(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C
             ELSE IF ( KTYPM(1:4) .EQ. 'HEXA' ) THEN
                ITYPM = 3
             ELSE
-               CALL U2MESS('F','POSTRELE_50')
+               CALL U2MESK('F','POSTRELE_18',1,KTYPM)
             ENDIF
             CALL RVCHN3(ZR(AVALE),ZI(APADR),MA(VLC(I)),ITYPM,NBPT,
      &                  NBCP,FACE,CREF,NBNDF,CLOCF,ZI(ACONEC),
@@ -134,7 +134,7 @@ C
          ELSE IF ( KTYPM(1:4) .EQ. 'HEXA' ) THEN
             ITYPM = 3
          ELSE
-            CALL U2MESS('F','POSTRELE_50')
+            CALL U2MESK('F','POSTRELE_18',1,KTYPM)
          ENDIF
          CALL RVCHN3(ZR(AVALE),ZI(APADR),MA(VLC(N)),ITYPM,NBPT,NBCP,
      &               FACE,CREF,NBNDF,CLOCF,ZI(ACONEC),
@@ -160,7 +160,7 @@ C
             ELSE IF ( KTYPM(1:4) .EQ. 'HEXA' ) THEN
                ITYPM = 3
             ELSE
-               CALL U2MESS('F','POSTRELE_50')
+               CALL U2MESK('F','POSTRELE_18',1,KTYPM)
             ENDIF
             CALL RVCHL3(ZR(AVALE),ZI(APADR),ZI(APNSP),
      &                   ZI(APNBN),MA(VLC(I)),NBMA,ITYPM,NBCO,NBSP,NBPT,

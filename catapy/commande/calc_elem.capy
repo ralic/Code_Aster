@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+#& MODIF COMMANDE  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,7 +121,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  derivees    
                                  "DEUL_ELGA_DEPL","DEDE_ELNO_DLDE","DESI_ELNO_DLSI",
                               #  autres      
-                                 "VNOR_ELEM_DEPL","VALE_NCOU_MAXI","PRES_DBEL_DEPL"),),
+                                 "VALE_NCOU_MAXI","PRES_DBEL_DEPL"),),
 
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="nom du champ pour VALE_NCOU_MAXI", ),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="nom de la composante pour VALE_NCOU_MAXI",  ),
@@ -249,7 +249,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 
           b_autres         =BLOC( condition = "TYPE_OPTION=='AUTRES'",
                   OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=("VALE_NCOU_MAXI","PRES_DBEL_DEPL","VNOR_ELEM_DEPL",
+                           into=("VALE_NCOU_MAXI","PRES_DBEL_DEPL",
                                  ) ),
                b_maxi    =BLOC( condition = "OPTION=='VALE_NCOU_MAXI' or \
                                 (type(OPTION)==type(()) and 'VALE_NCOU_MAXI' in OPTION)",

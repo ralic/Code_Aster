@@ -1,4 +1,4 @@
-#@ MODIF as_timer Utilitai  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF as_timer Utilitai  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,8 @@
 """
    Definition of ASTER_TIMER class.
 """
+
+__revision__ = "$Id: as_timer.py 2860 2007-02-12 08:37:17Z courtois $"
 
 # ----- differ messages translation
 def _(mesg):
@@ -180,7 +182,6 @@ class ASTER_TIMER:
          self.timers[timer]['tot_dt'] = self.timers[timer]['tot_dt'] + \
                dico['tot'] - self.timers[timer]['tot_t0']
          self.timers[timer]['tot_t0'] = dico['tot']
-         self.timers[timer]['hide'] = hide
 
 #-------------------------------------------------------------------------------
    def StopAndGet(self, timer, *args, **kwargs):

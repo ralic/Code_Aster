@@ -8,7 +8,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,9 +100,9 @@ C
                CALL I3IFQS(EPSI,K,FACE,DESC,DESCTM,CONEXK,COORDO,SGT,
      +                     ATRV,BTRV,NBPT,LSTPT,FINK,FIND)
             ELSE
-               VALI (1) = K
-               VALI (2) = FACE
-               CALL U2MESG('F', 'POSTRELE_80',0,' ',2,VALI,0,0.D0)
+               VALI (1) = FACE
+               VALI (2) = K
+               CALL U2MESI('F', 'INTEMAIL_23',2,VALI)
             ENDIF
          ENDIF
          FINK = ( FINK .OR. (FACE .EQ. NBF) )

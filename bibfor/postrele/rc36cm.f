@@ -6,7 +6,7 @@
       CHARACTER*24        CHMOME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,11 +56,11 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      JNUME, JCHAM, NBRESU, NBCMP, ICHA, IR, JTYPE, 
      +             JLICH, JLICM, JLICR
-      INTEGER VALI(2)
+      INTEGER      VALI(2)
       LOGICAL      SEISME, AUTRE
       CHARACTER*8  K8B, NOCMP(3), TYPE
       CHARACTER*24 CHAMS0
-      COMPLEX*16 CBID
+      COMPLEX*16   CBID
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -87,7 +87,7 @@ C
  112     CONTINUE
          VALI (1) = IOCC
          VALI (2) = LICHAR(ICHA)
-         CALL U2MESG('F', 'POSTRELE_96',0,' ',2,VALI,0,0.D0)
+         CALL U2MESI ('F', 'POSTRCCM_28', 2, VALI )
  114     CONTINUE
          TYPE = ZK8(JTYPE+IR-1)
          IF ( TYPE(1:6) .EQ. 'SEISME' ) THEN
@@ -101,9 +101,7 @@ C
  110  CONTINUE
 C
       IF ( SEISME .AND. AUTRE ) THEN
-         VALI (1) = IOCC
-         VALI (2) = IOCC
-         CALL U2MESG('F', 'POSTRELE_97',0,' ',2,VALI,0,0.D0)
+         CALL U2MESI ('F', 'POSTRCCM_29', 1, IOCC )
       ENDIF
 C
       IF ( NBCHAR .EQ. 1 ) THEN

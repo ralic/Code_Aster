@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/04/2007   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,6 +243,12 @@ C----------------------------------------------------------------------
         IF ( COMPOR(1) .EQ. 'CZM_EXP_REG' ) THEN
 
           CALL LCEJEX(FAMI,KPG,KSP,NDIM,IMATE,OPTION,EPSM,DEPS,
+     &                SIGP, DSIDEP, VIM, VIP)
+          GOTO 9000
+
+        ELSE IF ( COMPOR(1) .EQ. 'CZM_LIN_REG' ) THEN
+
+          CALL LCEJLI(FAMI,KPG,KSP,NDIM,IMATE,OPTION,EPSM,DEPS,
      &                SIGP, DSIDEP, VIM, VIP)
           GOTO 9000
 

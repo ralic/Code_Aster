@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 20/02/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF modelisa5 Messages  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -252,9 +252,7 @@ cata_msg={
  erreur(s) rencontree(s) lors de la verification des affectations.
 """),
 
-58: _("""
-  %(k1)s occurence  %(k2)s  : le  %(k3)s  " %(k4)s " ne fait pas partie du maillage " %(k5)s "
-"""),
+#_VIDE 58
 
 59: _("""
  une erreur d affectation a ete detectee : certaines mailles demandees possedent un type element incompatible avec les donnees a affecter

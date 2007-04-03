@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    from Accas               import _F
    from Cata.cata           import nappe_sdaster, fonction_c
    from Utilitai            import Graph
-   from Utilitai.Utmess     import UTMESS
+   from Utilitai.Utmess     import U2MESS
    from Utilitai.UniteAster import UniteAster
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
@@ -64,8 +64,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          niv='A'
       else:
          niv='I'
-      UTMESS(niv,macro,'Le fichier '+nomfich+' existe déjà, on écrit ' \
-             'à la suite.')
+      U2MESS(niv, 'FONCT0_1', valk=nomfich)
 
    # 0.2. Récupération des valeurs sous COURBE
    unparmi=('FONCTION','LIST_RESU','FONC_X','ABSCISSE')
@@ -101,7 +100,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                obj=dCi[typi]
                break
          if obj==None:
-            UTMESS('S',macro,'incohérence entre le catalogue et la macro.')
+            U2MESS('S', 'SUPERVIS_56')
          if typi=='FONCTION':
             if isinstance(obj, nappe_sdaster):
                lpar,lval=obj.Valeurs()
@@ -136,7 +135,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       if not dCi.has_key('LEGENDE') and hasattr(obj,'get_name'):
             dCi['LEGENDE']=obj.get_name()
       if obj==None:
-         UTMESS('S',macro,'incohérence entre le catalogue et la macro.')
+         U2MESS('S', 'SUPERVIS_56')
 
       # 1.2. Extraction des valeurs
 
@@ -222,13 +221,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       # 1.2.2. Mot-clé LIST_RESU
       elif typi=='LIST_RESU':
          if interp and iocc>0:
-            UTMESS('S',macro,"""Il n'y a pas de règles d'interpolation pour LIST_PARA/LIST_RESU,
-     LIST_PARA/LIST_RESU ne peut donc apparaitre qu'une seule fois
-     et à la première occurence de COURBE""")
+            U2MESS('S', 'FONCT0_2')
          lx=dCi['LIST_PARA'].Valeurs()
          lr=obj.Valeurs()
          if len(lx)!=len(lr):
-            UTMESS('S',macro,"LIST_PARA et LIST_RESU n'ont pas la meme taille")
+            U2MESS('S', 'FONCT0_3')
          # on stocke les données dans le Graph
          dicC={
             'Val' : [lx,lr],
@@ -244,10 +241,9 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          ob2=dCi['FONC_Y']
          # peut-on blinder au niveau du catalogue
          if isinstance(obj, nappe_sdaster) or isinstance(ob2, nappe_sdaster):
-            UTMESS('S',macro,"FONC_X/FONC_Y ne peuvent pas etre des nappes !")
+            U2MESS('S', 'FONCT0_4')
          if interp and iocc>0:
-            UTMESS('S',macro,"""Au format 'TABLEAU' ,FONC_X/FONC_Y ne peut apparaitre qu'une seule fois
-     et à la première occurence de COURBE""")
+            U2MESS('S', 'FONCT0_5')
          ftmp__=obj
          dpar=ftmp__.Parametres()
          ftm2__=ob2
@@ -304,13 +300,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       # 1.2.4. Mot-clé ABSCISSE / ORDONNEE
       elif typi=='ABSCISSE':
          if interp and iocc>0:
-            UTMESS('S',macro,"""Il n'y a pas de règles d'interpolation pour ABSCISSE/ORDONNEE,
-     ABSCISSE/ORDONNEE ne peut donc apparaitre qu'une seule fois
-     et à la première occurence de COURBE""")
+            U2MESS('S', 'FONCT0_6')
          lx=obj
          lr=dCi['ORDONNEE']
          if len(lx)!=len(lr):
-            UTMESS('S',macro,"ABSCISSE et ORDONNEE n'ont pas la meme taille")
+            U2MESS('S', 'FONCT0_7')
          # on stocke les données dans le Graph
          dicC={
             'Val' : [lx,lr],
@@ -384,7 +378,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
    # 2.39. Format inconnu
    else:
-      UTMESS('S',macro,'Format inconnu : '+FORMAT)
+      U2MESS('S', 'FONCT0_8', valk=FORMAT)
 
    # Traiter le cas des UL réservées
    if args['UNITE'] and args['UNITE'] in ul_reserve:

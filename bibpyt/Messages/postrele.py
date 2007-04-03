@@ -1,4 +1,4 @@
-#@ MODIF postrele Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF postrele Messages  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,438 +23,355 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- la courbe krd(lrd) coupee a plus de 100 points
+ création/extension de la table %(k1)s 
 """),
 
 2: _("""
- le niveau de contrainte depasse le niveau max autorise.
-"""),
+ ***************************************** 
+ *   post_traitement numéro :  %(i1)d 
+ *   inexistence de champ-gd 
+ *   pas de post-traitement 
+ *****************************************
+ """),
 
 3: _("""
- on ne peut garantir la tenue du ligament.
+ **********************************************************
+ *   post_traitement numéro :  %(i1)d 
+ *   aucunes mailles ne correspondent aux criteres demandés
+ *   pas de post-traitement
+ **********************************************************
 """),
 
 4: _("""
- le defaut debouchant equivalent est donne dans le fichier resultat dans la meme unite de longueur que les donnees geometriques.
-"""),
-
-5: _("""
- la longueur du ligament plus la demi longueur de la fissure est superieure a la demi epaisseur : llig+(lfis/2)>(epai/2).
-"""),
-
-6: _("""
- la courbe lr_etoile a plus de 100 points
-"""),
-
-7: _("""
- le defaut debouchant maximal est trop long pour que l'on puisse calculer le facteur de forme correspondant.
-"""),
-
-8: _("""
- la courbe krd_etoil(lrd_etoil) a plus de 100 points
-"""),
-
-9: _("""
- lriet est inferieur ou egal a zero
-"""),
-
-10: _("""
- lriet est superieur a lrdmax-rho
-"""),
-
-11: _("""
- lrdet est inferieur ou egal a zero
-"""),
-
-12: _("""
- lrdet est superieur a lrdmax
-"""),
-
-13: _("""
- on a un arc ouvert et le "noeud_orig" n'est pas une extremite
-"""),
-
-14: _("""
- le "noeud_orig" ne fait pas parti du chemin
-"""),
-
-15: _("""
- il faut que les angles soient croissants
-"""),
-
-16: _("""
- il faut que les angles soient dans l'intervalle [-180,180]
-"""),
-
-17: _("""
- il faut un rayon strictement positif !
-"""),
-
-18: _("""
- face illegale
-"""),
-
-19: _("""
- maille illegale
-"""),
-
-20: _("""
- intersection de type inconnu
-"""),
-
-21: _("""
- detection de deux sommets confondus dans une meme face
-"""),
-
-22: _("""
- la commande "inte_mail_2d" suppose que le maillage est plan (z=cste) ce qui n'est pas le cas ici, utilisez "inte_mail_3d".
-"""),
-
-23: _("""
- creation/extension de la table  %(k1)s 
-"""),
-
-24: _("""
- aucun segment ne coupe le maillage
-"""),
-
-25: _("""
- il faut definir le comportement "RCCM" dans "DEFI_MATERIAU"
-"""),
-
-26: _("""
- manque le vecteur "nocp".
-"""),
-
-27: _("""
  on ne traite pas les multicouches
 """),
 
-28: _("""
- chemin nul ou defini en un noeud
+5: _("""
+ il manque le vecteur des composantes "NOCP".
+ Contactez l'assistance téléphonique.
 """),
 
-29: _("""
- le chemin est defini par plusieurs segments, modifier la tolerance dans inte_mail.
+6: _("""
+ chemin nul ou défini en un noeud
 """),
 
-30: _("""
- pb pour recuperer ioc seisme
+7: _("""
+ le nombre de composantes à traiter est limité à 6 pour operation "MOYENNE".
+ utiliser "NOM_CMP" avec au plus 6 composantes.
 """),
 
-31: _("""
- il faut definir le comportement "ELAS" dans "DEFI_MATERIAU"
+8: _("""
+ initialisation de la table %(k1)s
 """),
 
-32: _("""
- il faut definir le comportement "FATIGUE" dans "DEFI_MATERIAU"
+9: _("""
+ pas de champ trouvé pour l'option %(k1)s
 """),
 
-33: _("""
- il faut definir le comportement "RCCM" dans "DEFI_MATERIAU"
+10: _("""
+ parametre %(k1)s de type %(k2)s 
 """),
 
-34: _("""
- absence du parametre absc_curv pour la table "tabl_mx"
+11: _("""
+ on ne traite que les champs complexes
 """),
 
-35: _("""
- absence du parametre absc_curv pour la table  %(k1)s 
+12: _("""
+ tableau de travail limité, reduire le nombre de composantes à traiter
 """),
 
-36: _("""
- "NUME_GROUPE" doit etre strictement positif
+13: _("""
+ + de 3000 cmps!
+ Contactez l'assistance téléphonique.
 """),
 
-37: _("""
- pb 2
+14: _("""
+ en repere local, on ne traite pas le champ %(k1)s 
 """),
 
-38: _("""
- materiau non defini, maille %(k1)s 
-"""),
-
-39: _("""
- un seul "NB_CYCL_SEISME"
-"""),
-
-40: _("""
- pb avec typeke
-"""),
-
-41: _("""
- on ne doit pas passer la
-"""),
-
-42: _("""
- si on est la, y a un bug
-"""),
-
-43: _("""
- absence du parametre INST pour la table tabl_moye_ther
-"""),
-
-44: _("""
- absence du parametre INST pour la table tabl_resu_ther
-"""),
-
-45: _("""
- absence du parametre ABSC_CURV pour la table tabl_resu_ther
-"""),
-
-46: _("""
- en repere local, on ne traite pas le champ  %(k1)s 
-"""),
-
-47: _("""
+15: _("""
  icoef trop grand
+ Contactez l'assistance téléphonique.
 """),
 
-48: _("""
+16: _("""
  probleme maillage
+ Contactez l'assistance téléphonique.
 """),
 
-49: _("""
- on ne traite que des champs de type "depl_r" pour un changement de repere
+17: _("""
+ on ne traite que des champs de type "DEPL_R" pour un changement de repere
 """),
 
-50: _("""
- maille de type non attendu
+18: _("""
+ le type de maille %(k1)s n'est pas traité
 """),
 
-51: _("""
- mauvaise definition du chemin, probleme de continuite du chemin sur une maille, diminuer la precision dans l'operateur inte_mail
+19: _("""
+ mauvaise définition du chemin, probleme de continuité du chemin sur une maille
+ diminuer la précision dans l'opérateur INTE_MAIL_(2D/3D)
 """),
 
-52: _("""
+20: _("""
  on ne traite pas ce cas
+ Contactez l'assistance téléphonique.
 """),
 
-53: _("""
- avec vect_y le groupe de noeuds doit contenir plusieurs noeuds
+21: _("""
+ avec VECT_Y, le groupe de noeuds doit contenir au moins 2 noeuds
 """),
 
-54: _("""
- avec VECT_Y il faut preciser soit un seul groupe de noeuds soit plusieurs noeuds
+22: _("""
+ avec VECT_Y, il faut préciser 
+   soit un seul groupe de noeuds
+   soit plusieurs noeuds
 """),
 
-55: _("""
- on ne peut pas melanger des arcs et des segments.
+23: _("""
+ on ne peut pas mélanger des arcs et des segments.
 """),
 
-56: _("""
+24: _("""
  chemin de maille vide
 """),
 
-57: _("""
+25: _("""
  contradiction avec INTE_MAIL_2D
 """),
 
+26: _("""
+ changement de repere:
+ champ non traité %(k1)s option de calcul %(k2)s 
+"""),
+
+27: _("""
+ noeud sur l'AXE_Z
+ maille: %(k1)s, noeud: %(k2)s, coordonnées: %(r1)f 
+"""),
+
+28: _("""
+ les noeuds du maillage ne sont pas tous dans un meme plan z = cst
+ changement de repere non traité
+"""),
+
+29: _("""
+ on ne sait pas faire ce post-traitement pour le chemin %(k1)s en repere %(k2)s 
+"""),
+
+30: _("""
+ le noeud %(k1)s est confondu avec l'origine
+"""),
+
+31: _("""
+ le noeud %(k1)s est sur l'AXE_Z
+"""),
+
+32: _("""
+ les noeuds du maillage ne sont pas tous dans un meme plan z = cst
+ option TRAC_NOR non traitée
+ utiliser l'option TRAC_DIR
+"""),
+
+33: _("""
+ option non traitée: %(k1)s, post-traitement: %(i1)d 
+ les invariants tensoriels sont calculés
+   pour les options :  %(k2)s 
+                       %(k3)s 
+                       %(k4)s 
+                       %(k5)s 
+                       %(k6)s 
+                       %(k7)s 
+                       %(k8)s 
+                       %(k9)s 
+                       %(k10)s 
+                       %(k11)s 
+                       %(k12)s 
+                       %(k13)s 
+                       %(k14)s 
+                       %(k15)s 
+                       %(k16)s 
+                       %(k17)s 
+                       %(k18)s 
+                       %(k19)s 
+                       %(k20)s 
+"""),
+
+34: _("""
+ option non traitée: %(k1)s, post-traitement: %(i1)d 
+ les traces normales sont calculées 
+   pour les options :  %(k2)s 
+                       %(k3)s 
+                       %(k4)s 
+                       %(k5)s 
+                       %(k6)s 
+                       %(k7)s 
+                       %(k8)s 
+                       %(k9)s 
+                       %(k10)s 
+                       %(k11)s 
+                       %(k12)s 
+                       %(k13)s 
+                       %(k14)s 
+                       %(k15)s 
+                       %(k16)s 
+                       %(k17)s 
+                       %(k18)s 
+   ou pour les grandeurs %(k19)s 
+                         %(k20)s 
+"""),
+
+35: _("""
+ option non traitée: %(k1)s, post-traitement: %(i1)d 
+ les traces directionnelles sont calculées
+   pour les options :  %(k2)s 
+                       %(k3)s 
+                       %(k4)s 
+                       %(k5)s 
+                       %(k6)s 
+                       %(k7)s 
+                       %(k8)s 
+                       %(k9)s 
+                       %(k10)s 
+                       %(k11)s 
+                       %(k12)s 
+                       %(k13)s 
+                       %(k14)s 
+                       %(k15)s 
+                       %(k16)s 
+                       %(k17)s 
+                       %(k18)s 
+                       %(k19)s 
+                       %(k20)s 
+   ou pour les grandeurs %(k21)s 
+                         %(k22)s 
+                         %(k23)s 
+"""),
+
+36: _("""
+ trace directionnelle, post-traitement: %(i1)d 
+ direction nulle, pas de calul
+"""),
+
+37: _("""
+ attention post-traitement %(i1)d 
+ seules les composantes du tenseur des contraintes sont traitées
+"""),
+
+38: _("""
+ post-traitement %(i1)d 
+ composante non traitée dans un changement de repere
+ Contactez l'assistance téléphonique.
+"""),
+
+39: _("""
+ post-traitement %(i1)d 
+ grandeur %(k1)s non traitée dans un changement de repere
+ les changements de repere sont possibles
+   pour la grandeur %(k2)s  option: %(k3)s
+   pour la grandeur %(k4)s  options: %(k5)s %(k6)s 
+   pour les grandeurs %(k7)s  %(k8)s
+"""),
+
+40: _("""
+ le noeud numéro %(i1)d n'est pas connecté à la maille de nom %(k1)s 
+"""),
+
+41: _("""
+ champ inexistant nom_cham: %(k1)s  nume_ordre: %(i1)d 
+"""),
+
+42: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ les listes arguments des mots clés RESULTANTE et MOMENT doivent etre de meme longueur
+ cette longueur doit etre de 2 ou 3
+"""),
+
+43: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ la liste arguments du mot clé POINT doit etre de longueur 2 ou 3
+"""),
+
+44: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ on ne peut accéder au RESULTAT de nom %(k1)s et de type %(k2)s par %(k3)s ou par %(k4)s 
+"""),
+
+45: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ on ne peut accéder au RESULTAT de nom %(k1)s et de type %(k2)s par %(k3)s
+"""),
+
+46: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ le NOM_CHAM %(k1)s n'est pas autorisé pour le RESULTAT %(k2)s de type %(k3)s
+ ou le NOM_CHAM est autorisé mais aucun champ effectif n'existe.
+"""),
+
+47: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ le ou les champs élémentaires mis en jeu est ou sont donnés aux pointe de gauss
+ ce ou ces champs ne sont pas traités.
+"""),
+
+48: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ la composante %(k1)s n'est pas présente au catalogue des grandeurs.
+"""),
+
+49: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ le maillage de la courbe %(k1)s est différent du maillage du champ à traiter %(k2)s
+"""),
+
+50: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ le groupe de noeuds %(k1)s ne fait pas parti du maillage sous jacent au champ à traiter.
+"""),
+
+51: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ le noeud %(k1)s ne fait pas parti du maillage sous jacent au champ à traiter.
+"""),
+
+52: _("""
+ on ne traite pas le FORMAT_C %(k1)s
+"""),
+
+53: _("""
+ NEC trop grand
+ Contactez l'assistance téléphonique.
+"""),
+
+54: _("""
+ occurence %(i1)d du mot clé facteur ACTION
+ Impossible de récupérer les composantes du champ. 
+"""),
+
+55: _("""
+ la composante %(k1)s est en double.
+"""),
+
+56: _("""
+ la composante %(k1)s n'est pas une composante de %(k2)s
+"""),
+
+57: _("""
+ la grandeur %(k1)s est inconnue au catalogue.
+"""),
+
 58: _("""
- initialisation de la table  %(k1)s 
+ erreur de programmation
+ Contactez l'assistance téléphonique.
 """),
 
 59: _("""
- initialisation de la table associee  a la table  %(k1)s  et au parametre sensible  %(k2)s connue sous le nom de concept  %(k3)s 
+ Le contenu de la table n'est pas celui attendu !
+ Contactez l'assistance téléphonique.
 """),
 
 60: _("""
- pas de champ trouve 
-"""),
-
-61: _("""
- parametre  %(k1)s de type  %(k2)s 
-"""),
-
-62: _("""
- le nombre de composantes a traiter est limite a 6 pour operation "MOYENNE". utiliser "NOM_CMP" avec au plus 6 composantes
-"""),
-
-63: _("""
- on ne traite que les complexes
-"""),
-
-64: _("""
- tableau de travail limite, reduire le nombre de composantes a traiter
-"""),
-
-65: _("""
- + de 3000 cmps!
-"""),
-
-66: _("""
- il manque la donnee de la limite d'elasticite (SY_02 ou SY_MAX) pour le calcul du rochet thermique
-"""),
-
-67: _("""
- le calcul du critere du rochet thermique pour une variation de temperature lineaire est impossible
-        X = SIGM / SYMAX =  %(r1)12.5E
-         SIGM =  %(r2)12.5E
-        SYMAX =  %(r3)12.5E
-        ON DOIT AVOIR 0. < X < 1.                                                                                                   
- 
-"""),
-
-68: _("""
- le calcul du critere du rochet thermique pour une variation de temperature parabolique est impossible
-        X = SIGM / SYMAX =  %(r1)12.5E
-         SIGM =  %(r2)12.5E
-        SYMAX =  %(r3)12.5E
-        ON DOIT AVOIR 0.3 < X < 1.                                                                                                   
- 
-"""),
-
-69: _("""
-  erreur numero :  %(i1)d   %(k1)s occurence numero :  %(i2)d 
-  maille numero :  %(i3)d 
-"""),
-
-70: _("""
- defi_cheminerreur numero  %(i1)d occurence numero :  %(i2)d 
-  maille numero :  %(i3)d 
-  maille  %(k1)s 
-"""),
-
-71: _("""
- defi_cheminerreur numero :  %(i1)d   %(k1)s occurence numero :  %(i2)d 
-  groupe numero :  %(i3)d 
-"""),
-
-72: _("""
- defi_cheminerreur numero  %(i1)d occurence numero :  %(i2)d 
-  groupe numero :  %(i3)d 
- presence de maille(s)  %(k1)s 
-"""),
-
-73: _("""
-  
- les objets precedemment evoques sont  inexistants ou de type incompatible %(k1)s 
-"""),
-
-74: _("""
- erreur dans les donnees au noeud  %(k1)s  on a  %(i1)d  mailles %(k2)s 
-"""),
-
-75: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
-"""),
-
-76: _("""
-  defi-arc, occurence : %(i1)d le mot cle  %(k1)s 
- admet pour argument une liste  de 2 reels (a1,a2), telle que : %(k2)s 
-"""),
-
-77: _("""
- mot cle facteur  "defi_arc", occurence  %(i1)d 
- le centre n''est pas vraiment le  centre du cercle %(k1)s 
-"""),
-
-78: _("""
-  la partie  %(i1)d de la courbe de nom :  %(k1)s 
- ne coupe pas le domaine maille. %(k2)s 
- non production du concept  %(k3)s 
- possibilite de desastre %(k4)s 
-"""),
-
-79: _("""
- face inconnuemaille numero :  %(i1)d  face :  %(i2)d 
-"""),
-
-80: _("""
- face a nombre de sommets  non traitemaille :  %(i1)d  face :  %(i2)d 
-"""),
-
-81: _("""
- face degenereemaille numero :  %(i1)d  face :  %(i2)d 
-"""),
-
-82: _("""
- face degenereemaille :  %(i1)d  face :  %(i2)d 
-"""),
-
-83: _("""
- face degenreemaille :  %(i1)d  face :  %(i2)d  arete :  %(i3)d 
-"""),
-
-84: _("""
- face degenreemaille :  %(i1)d  face :  %(i2)d 
-"""),
-
-85: _("""
- ***************************** post_traitement numero :  %(i1)d 
- * inexistence des champ-gd %(k1)s 
- * pas de post-traitement %(k2)s 
- **************************** %(k3)s 
-"""),
-
-86: _("""
- ***************************************** post_traitement numero :  %(i1)d 
- * aucunes mailles ne correspondent  aux criteres demandes %(k1)s 
- * pas de post-traitement %(k2)s 
- ******************************************************** %(k3)s 
-"""),
-
-87: _("""
-  defi_segment, occurence  %(i1)d 
- origine et extremite confondues a la  precision :  %(r1)f 
-"""),
-
-88: _("""
- intersection  segment  cnum  maillage  nomail  : vide
-       origine   : %(r1)f %(r2)f %(r3)f
-       extremite : %(r4)f %(r5)f %(r6)f
-"""),
-
-89: _("""
- il y chevauchement entre les mailles  %(k1)s  et  %(k2)s 
-"""),
-
-90: _("""
- saut d''abscisse entre les mailles  %(k1)s  et  %(k2)s 
-"""),
-
-91: _("""
- probleme pour recuperer dans la table  %(k1)s  la contrainte  %(k2)s 
-  pour l''absc_curv  %(r1)f 
-  code retour  %(i1)d 
-"""),
-
-92: _("""
- plusieurs seismes dans le meme groupe   groupe numero:  %(i1)d 
-    occurence situation  %(i2)d 
-  et  %(i3)d 
-"""),
-
-93: _("""
- probleme pour recuperer dans la table  %(k1)s  les  %(k2)s 
-"""),
-
-94: _("""
- probleme pour recuperer dans la table  %(k1)s  les  %(k2)s 
-"""),
-
-95: _("""
- probleme pour recuperer dans la table  %(k1)s  la contrainte  %(k2)s 
-  pour l''absc_curv  %(r1)f 
-"""),
-
-96: _("""
- erreur donnees " etat "pour la situation numero  %(i1)d 
- on n''a pas pu recuperer le "resu_meca"  correspondant au "char_etat_ etat "  %(i2)d 
-"""),
-
-97: _("""
- erreur donnees " etat "pour la situation numero  %(i1)d 
- on ne peut pas avoir des charges de  type "seisme" et "autre". %(i2)d 
-"""),
-
-98: _("""
- probleme recuperation pour l''occurrence  %(i1)d  dans le resultat  %(k1)s 
-"""),
-
-99: _("""
- probleme donnees pour l''occurrence  %(i1)d 
-  un seul numero d''ordre  %(i2)d 
+ arret sur erreurs
+ Contactez l'assistance téléphonique.
 """),
 
 }

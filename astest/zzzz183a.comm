@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL D UNE EOLIENNE, MODELISATION 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -172,8 +172,6 @@ test1 = POST_RELEVE_T(
                         CHAM_GD=FATI,
                         NOM_CMP=('ENDO1','VNM1X','VNM1Y','VNM1Z'),
                         OPERATION='EXTRACTION',),)
-
-IMPR_TABLE(TABLE = test1,FORMAT_R='1PE24.12')
 
 TEST_TABLE(
              TABLE = test1,

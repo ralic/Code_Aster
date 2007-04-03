@@ -4,7 +4,7 @@
       INTEGER                                     I, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNOM,JEXNUM
 C
-      CHARACTER*24 NCHEFF,NDESC
+      CHARACTER*24 NCHEFF,NDESC,VALK(7)
       CHARACTER*19 NCHP19
       CHARACTER*16 NCHSYM,TRESU
       CHARACTER*15 NREPND
@@ -81,15 +81,10 @@ C
          CALL GETVTX ('ACTION','NOM_CHAM',I,1,1,NCHSYM,N1)
          CALL GETTCO(NRESU,TRESU)
 C
-         CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
-         CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
-         CALL UTIMPK('L','   LE CHAMPS SYMBOLIQUE: ',1,NCHSYM)
-         CALL UTIMPK('L','   N''EST PAS AUTORISE POUR LE RESULTAT: ',
-     +                                                        1,NRESU)
-         CALL UTIMPK('L','   LE TYPE DE CE RESULTAT EST: ',1,TRESU)
-         CALL UTIMPK('L','   OU LE CHAMP SYMBOLIQUE EST AUTORISE '//
-     +                   'MAIS AUCUN CHAMP EFFECTIF N''EXISTE',0,K1BID)
-         CALL UTFINM
+         VALK(1) = NCHSYM
+         VALK(2) = NRESU
+         VALK(3) = TRESU
+         CALL U2MESG('F','POSTRELE_46',3,VALK,1,I,0,0.D0)
 C
       ELSE
 C
@@ -122,15 +117,7 @@ C
                ENDIF
                GOTO 10
             ENDIF
-            IF ( .NOT. CHELOK ) THEN
-               CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
-               CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
-               CALL UTIMPK('L','   LE OU LES CHAMP(S) ELEMENTAIRE(S)'//
-     +                         ' MIS EN JEU EST OU SONT DONNES AUX '//
-     +                         'POINTS DE GAUSS',0,K1BID)
-               CALL UTIMPK('L','   C''EST INTERDIT',0,K1BID)
-               CALL UTFINM
-            ENDIF
+            IF ( .NOT. CHELOK ) CALL U2MESI('F','POSTRELE_47',1,I)
          ENDIF
 C
 C        --- VERIFICATION SUR LES CMPS ---
@@ -140,17 +127,9 @@ C        --- VERIFICATION SUR LES CMPS ---
             IF ( ZI(ANUMCP + J-1) .EQ. 0 ) THEN
                CALL JEVEUO(JEXNUM(XDNCMP,I),'L',ANOMCP)
                NOMCMP = ZK8(ANOMCP + J-1)
-               IF ( IER .EQ. 1 ) THEN
-                  CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
-                  CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
-               ENDIF
-               CALL UTIMPK('L','   LA COMPOSANTE DE NOM: ',1,NOMCMP)
-               CALL UTIMPK('L','   N''EST PAS PRESENTE AU CATALO'//
-     +                                     'GUE DES GRANDEURS',0,K1BID)
-               IER = 0
+               CALL U2MESG('F','POSTRELE_48',1,NOMCMP,1,I,0,0.D0)
             ENDIF
  110     CONTINUE
-         IF ( IER .EQ. 0 ) CALL UTFINM
 C
 C        --- VERIFICATION DE CONCORDANCE DES MAILLAGES ---
          CALL DISMOI('F','NOM_MAILLA',NCHEFF,'CHAMP',N1,NMAICH,IERD)
@@ -167,13 +146,9 @@ C           /* LE LIEU DU POST TRAITEMENT EST UNE COURBE */
             ENDIF
             NMAILI = ZK8(AMAICB)
             IF ( NMAICH .NE. NMAILI ) THEN
-               IER = 0
-               CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
-               CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
-               CALL UTIMPK('L','   LE MAILLAGE DE LA COURBE: ',1,NMAILI)
-               CALL UTIMPK('S','EST DIFFERENT DU MAILLAGE DU '//
-     +                                     'CHAMP A TRAITE: ',1,NMAICH)
-               CALL UTFINM
+               VALK(1) = NMAILI
+               VALK(2) = NMAICH
+               CALL U2MESG('F','POSTRELE_49',2,VALK,1,I,0,0.D0)
             ENDIF
          ELSE
 C           /* LE LIEU DU POST TRAITEMENT EST UN ENSMBLE DE NOEUDS */
@@ -191,18 +166,9 @@ C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
                   NOMGRN = ZK8(AGRPND + K-1)
                   CALL JENONU(JEXNOM(NMAICH//'.GROUPENO',NOMGRN),N1)
                   IF ( N1 .EQ. 0 ) THEN
-                     IF ( IER .EQ. 1 ) THEN
-                     CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
-                        CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
-                     ENDIF
-                    CALL UTIMPK('L','   LE GROUPE DE NOEUDS: ',1,NOMGRN)
-                     CALL UTIMPK('S','NE FAIT PAS PARTI DU MAILLAGE '//
-     +                  'SOUS-JACENT AU RESULTAT OU CHAMP_GD A TRAITE',
-     +                                                         0,K1BID)
-                     IER = 0
+                     CALL U2MESG('F','POSTRELE_50',1,NOMGRN,1,I,0,0.D0)
                   ENDIF
 120            CONTINUE
-               IF ( IER .EQ. 0 ) CALL UTFINM
                CALL JEDETR('&&OP0051.NOM.GRPN')
             ENDIF
             IF ( NBNEUD .NE. 0 ) THEN
@@ -213,18 +179,9 @@ C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
                   NOMND = ZK8(ALNEUD + K-1)
                   CALL JENONU(JEXNOM(NREPND,NOMND),N1)
                   IF ( N1 .EQ. 0 ) THEN
-                     IF ( IER .EQ. 1 ) THEN
-                     CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
-                        CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
-                     ENDIF
-                     CALL UTIMPK('L','   LE NOEUD: ',1,NOMND)
-                     CALL UTIMPK('S','NE FAIT PAS PARTI DU MAILLAGE '//
-     +                  'SOUS-JACENT AU RESULTAT OU CHAMP_GD A TRAITE',
-     +                                                         0,K1BID)
-                     IER = 0
+                     CALL U2MESG('F','POSTRELE_51',1,NOMND,1,I,0,0.D0)
                   ENDIF
 130            CONTINUE
-               IF ( IER .EQ. 0 ) CALL UTFINM
                CALL JEDETR('&&OP0051.NOM.NEUD')
             ENDIF
          ENDIF

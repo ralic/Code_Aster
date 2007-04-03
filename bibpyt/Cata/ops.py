@@ -1,21 +1,21 @@
-#@ MODIF ops Cata  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF ops Cata  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 
 
@@ -27,8 +27,9 @@ import pickle
 # Modules Eficas
 import Accas
 from Accas import ASSD
-from Utilitai.Utmess import UTMESS
+from Utilitai.Utmess   import UTMESS
 from Utilitai.as_timer import ASTER_TIMER
+from SD.ascheckers     import CheckLog
 
 try:
    import aster
@@ -39,7 +40,6 @@ try:
 except:
    pass
 
-from SD.ascheckers import CheckLog
 
 def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG):
    """Fonction sdprod partie commune à DEBUT et POURSUITE.
@@ -96,7 +96,7 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
    commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG)
-
+   
    if (self.codex and os.path.isfile("glob.1") or os.path.isfile("bhdf.1")):
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
@@ -140,7 +140,7 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
      # presents sous le meme nom et du meme type dans pick.1
      # Le contexte est ensuite updaté (surcharge) et donc enrichi des
      # variables qui ne sont pas des concepts.
-     # On supprime du pickle_context les concepts valant None, ca peut
+     # On supprime du pickle_context les concepts valant None, ca peut 
      # etre le cas des concepts non executés, placés après FIN.
      pickle_context=get_pickled_context()
      if pickle_context==None :
@@ -155,14 +155,13 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
             pickle_context[elem].jdc=self.jdc
             pickle_context[elem].parent=self.jdc
             # rétablir le parent pour les attributs de la SD
-            if hasattr(pickle_context[elem],'reparent') :
-               pickle_context[elem].reparent(None, None)
+            pickle_context[elem].reparent_sd()
             if elem in self.g_context.keys():
                poursu_class=self.g_context[elem].__class__
                if poursu_class!=pickle_class :
                   UTMESS('F','Poursuite',"Types incompatibles entre glob.1 et pick.1 pour concept de nom "+elem)
                   return
-            elif isinstance(pickle_context[elem],ASSD) and pickle_class not in (CO,entier) :
+            elif isinstance(pickle_context[elem],ASSD) and pickle_class not in (CO,entier) : 
             # on n'a pas trouvé le concept dans la base et sa classe est ASSD : ce n'est pas normal
             # sauf dans le cas de CO : il n'a alors pas été typé et c'est normal qu'il soit absent de la base
             # meme situation pour le type 'entier' produit uniquement par DEFI_FICHIER
@@ -173,7 +172,7 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
      return
 
    else:
-     # Si le module d'execution n est pas accessible ou glob.1 absent on
+     # Si le module d'execution n est pas accessible ou glob.1 absent on 
      # demande un fichier (EFICAS)
      # Il faut éviter de réinterpréter le fichier à chaque appel de
      # POURSUITE
@@ -184,13 +183,13 @@ def POURSUITE(self,PAR_LOT,IMPR_MACRO,CODE,DEBUG,**args):
 def get_pickled_context():
     """
        Cette fonction permet de réimporter dans le contexte courant du jdc (jdc.g_context)
-       les objets python qui auraient été sauvegardés, sous forme pickled, lors d'une
+       les objets python qui auraient été sauvegardés, sous forme pickled, lors d'une 
        précédente étude. Un fichier pick.1 doit etre présent dans le répertoire de travail
     """
     if os.path.isfile("pick.1"):
        file="pick.1"
     else: return None
-
+   
     # Le fichier pick.1 est présent. On essaie de récupérer les objets python sauvegardés
     context={}
     try:
@@ -231,7 +230,7 @@ def build_poursuite(self,**args):
    return 0
 
 def INCLUDE(self,UNITE,**args):
-   """
+   """ 
        Fonction sd_prod pour la macro INCLUDE
    """
    if not UNITE : return
@@ -245,7 +244,7 @@ def INCLUDE(self,UNITE,**args):
    self.make_include(unite=UNITE)
 
 def INCLUDE_context(self,d):
-   """
+   """ 
        Fonction op_init pour macro INCLUDE
    """
    for k,v in self.g_context.items():
@@ -310,13 +309,13 @@ def detruire(self,d):
          if d.has_key(mcs):del d[mcs]
          if self.jdc.sds_dict.has_key(mcs):del self.jdc.sds_dict[mcs]
      for s in sd:
-       # On signale au parent que le concept s n'existe plus apres l'étape self
+       # On signale au parent que le concept s n'existe plus apres l'étape self 
        self.parent.delete_concept_after_etape(self,s)
 
 def subst_materiau(text,NOM_MATER,EXTRACTION,UNITE_LONGUEUR):
    """
        Cette fonction retourne un texte obtenu à partir du texte passé en argument (text)
-       en substituant le nom du materiau par NOM_MATER
+       en substituant le nom du materiau par NOM_MATER 
        et en réalisant les extractions spéciifées dans EXTRACTION
    """
    lines=string.split(text,'\n')
@@ -397,12 +396,12 @@ def post_INCLUDE(self):
 
 def INCLUDE_MATERIAU(self,NOM_AFNOR,TYPE_MODELE,VARIANTE,TYPE_VALE,NOM_MATER,
                     EXTRACTION,UNITE_LONGUEUR,INFO,**args):
-  """
+  """ 
       Fonction sd_prod pour la macro INCLUDE_MATERIAU
   """
   mat=string.join((NOM_AFNOR,'_',TYPE_MODELE,'_',VARIANTE,'.',TYPE_VALE),'')
   if not hasattr(self,'mat') or self.mat != mat or self.nom_mater != NOM_MATER :
-    # On récupère le répertoire des matériaux dans les arguments
+    # On récupère le répertoire des matériaux dans les arguments 
     # supplémentaires du JDC
     rep_mat=self.jdc.args.get("rep_mat","NOrep_mat")
     f=os.path.join(rep_mat,mat)

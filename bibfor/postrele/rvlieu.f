@@ -4,7 +4,7 @@
       CHARACTER*8         TYPCO, COURBE, MAILLA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C
                NBARC = (NBARC/2) - 1
                NBSD  =  NBARC + NBSGT
                IF ( NBARC.NE.0 .AND. NBSGT.NE.0 ) THEN
-                  CALL U2MESS('F','POSTRELE_55')
+                  CALL U2MESS('F','POSTRELE_23')
                ENDIF
             ELSE
                CALL JELIRA(COURBE//'.CHEMIN','NMAXOC',NBSD,K1BID)

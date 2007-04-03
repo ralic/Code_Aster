@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C----------------------------------------------------------------------
       CALL GETVID ( ' ', 'MAILLAGE' , 0,1,1, NOMAIL, N1 )
       CALL DISMOI ('F', 'Z_CST', NOMAIL,'MAILLAGE', IBID, K8B, IBID )
       IF ( K8B(1:3) .EQ. 'NON' ) THEN
-         CALL U2MESS('F','POSTRELE_22')
+         CALL U2MESS('F','INTEMAIL_10')
       ENDIF
 C----------------------------------------------------------------------
 C

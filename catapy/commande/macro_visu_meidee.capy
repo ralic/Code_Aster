@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#& MODIF COMMANDE  DATE 02/04/2007   AUTEUR BODEL C.BODEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,29 +30,52 @@ def macro_visu_meidee_prod(self,RESULTATS,**args):
 
     return None
 
-MACRO_VISU_MEIDEE=MACRO(nom="MACRO_VISU_MEIDEE",
-                        op=macro_visu_meidee_ops,
-                        sd_prod=macro_visu_meidee_prod,
-                        reentrant='n',
-                        UIinfo={"groupes":("Outils métier",)},
-                                fr="Outil de post-traitement interactif pour Meidee ",
-                        UNITE_FIMEN= SIMP( statut='f',typ='I',max='**' ),
-                        INTERACTIF = SIMP( statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI' ),
-                        RESULTATS  = FACT( statut='f',max='**',
-                                           TABLE  = SIMP(statut='o',typ=(table_sdaster,table_fonction,CO)),
-                                           TYPE_TABLE = SIMP(statut='f',typ='TXM',defaut='TABLE', into=('TABLE','TABLE_FONCTION')),
+MACRO_VISU_MEIDEE=MACRO(nom       = 'MACRO_VISU_MEIDEE',
+                        op        = macro_visu_meidee_ops,
+                        sd_prod   = macro_visu_meidee_prod,
+                        reentrant = 'n',
+                        UIinfo    = {"groupes":("Outils métier",)},
+                        fr        = "Outil de post-traitement interactif pour Meidee ",
+                        UNITE_FIMEN = SIMP( statut='f',typ='I',max='**' ),
+                        INTERACTIF  = SIMP( statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI' ),
+                        RESULTATS   = FACT( statut='f',max='**',
+                                            TABLE  = SIMP(statut='o',typ=(table_sdaster,table_fonction,CO)),
+                                            TYPE_TABLE = SIMP(statut='f',typ='TXM',defaut='TABLE', into=('TABLE','TABLE_FONCTION')),
                                           ),
-                        UNITE_RESU = SIMP(statut='f',typ='I',defaut=6),
+                        UNITE_RESU = SIMP( statut='f',typ='I',defaut=6),
 
-                        b_inter    = BLOC(condition="INTERACTIF=='NON'",
-                                          MODELE_CALCUL   = SIMP(statut='o',typ=modele_sdaster),
-                                          MODELE_MESURE   = SIMP(statut='o',typ=mode_meca),
-                                          MODELE_COMMANDE = SIMP(statut='o',typ=mode_meca),
-                                          BASE     = SIMP(statut='o',typ=mode_meca),
-                                          MESURE1  = SIMP(statut='o',typ=mode_meca),
-                                          MESURE2  = SIMP(statut='o',typ=mode_meca),
-                                          MESURE3  = SIMP(statut='o',typ=mode_meca),
-                                          INTE_SPEC  = SIMP(statut='o',typ=table_sdaster),
-                                          )
+                        b_inter    = BLOC( condition="INTERACTIF=='NON'",
+
+                             EXPANSION        = FACT( statut='f',max='**',
+                                                      CALCUL     = SIMP(statut='o',typ=mode_meca),
+                                                      MESURE     = SIMP(statut='o',typ=mode_meca),
+                                                      RESOLUTION = SIMP(statut='f',typ='TXM',defaut='SVD',into=('SVD','LU')),
+                                                      b_reso     = BLOC(condition = "RESOLUTION=='SVD'",
+                                                                        EPS = SIMP(statut='f',typ='R', defaut = 0.)
+                                                                       )
+                                                    ),
+                             FLUIDE_ELASTIQUE = FACT( statut='f', max='**',
+                                                      MESURE1 = SIMP(statut='o',typ=mode_meca),
+                                                      MESURE2 = SIMP(statut='o',typ=mode_meca),
+                                                      MESURE3 = SIMP(statut='o',typ=mode_meca),
+                                                      RESU_EXPANSION = SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
+                                                      b_base   = BLOC(condition = "RESU_EXPANSION=='NON'",
+                                                                      BASE = SIMP(statut='o',typ=mode_meca),
+                                                                     ) 
+                                                    ),
+                             TURBULENT        = FACT( statut='f',max='**',   
+                                                      ALPHA   = SIMP(statut='f',typ='R', defaut = 0.),
+                                                      EPS     = SIMP(statut='f',typ='R', defaut = 0.),
+                                                      IDENTIFICATION_MOMENTS = SIMP(statut='f',typ='TXM',defaut='NON',
+                                                                                    into=('OUI','NON')),
+                                                      OBSERVABILITE  = SIMP(statut='o',typ=mode_meca),
+                                                      COMMANDABILITE = SIMP(statut='o',typ=mode_meca),
+                                                      INTE_SPEC      = SIMP(statut='o',typ=table_sdaster),
+                                                      RESU_EXPANSION = SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
+                                                      b_base         = BLOC(condition = "RESU_EXPANSION=='NON'",
+                                                                            BASE = SIMP(statut='o',typ=mode_meca),
+                                                                           ),
+                                                     )
+                                         )
                         )
 

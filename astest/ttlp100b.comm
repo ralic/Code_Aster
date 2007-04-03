@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
 # TITRE ECHANGE_PAROI EN THERMIQUE NON LINEAIRE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,27 +17,26 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
+
+DEBUT(CODE=_F(NOM='TTLP100B',
+              NIV_PUB_WEB='INTERNET',),);
 #
 
-DEBUT(  CODE=_F(  NOM = 'TTLP100B',NIV_PUB_WEB='INTERNET') )
+PRE_GMSH();
 
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='GM35',),
+                               _F(GROUP_MA='GM36',),
+                               _F(GROUP_MA='GM37',),
+                               _F(GROUP_MA='GM38',),),);
 #
-
-MAIL=LIRE_MAILLAGE( )
-
-MAIL=DEFI_GROUP( reuse=MAIL,
-                       MAILLAGE=MAIL,CREA_GROUP_NO=(
-                       _F(  GROUP_MA = 'BORDG'),
-                       _F(  GROUP_MA = 'BORDD'))
-                    )
-
-#
-
-LONTOT=0.990
+LONTOT = 0.99;
 
 # SOMME DES LONG. DES 2 PLAQUES
-
-LONMAX=1.000
+LONMAX = 1.0;
 
 # ABSCISSE MAXIMALE
 #
@@ -47,170 +46,155 @@ LONMAX=1.000
 #
 # MODELE
 # ------
-#
 
-MODTHER=AFFE_MODELE( 
-                           MAILLAGE=MAIL,
-                           AFFE=_F(  TOUT = 'OUI',
-                                  PHENOMENE = 'THERMIQUE',
-                                  MODELISATION = 'PLAN')
-                        )
-
+MODTHER=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='PLAN_DIAG',),);
 #
 # CHAMP DE MATERIAU
 # -----------------
-#
+CONDUC = 40.0;
 
-CONDUC=40.
-
-ENTHALP=220.E-3
+ENTHALP = 0.22;
 
 #
 
-COND=DEFI_FONCTION( 
-                           NOM_PARA='TEMP',
-                           VALE=(   0.,   CONDUC,
-                                  300.,   CONDUC,   ),
-                           PROL_GAUCHE='LINEAIRE',
-                            PROL_DROITE='LINEAIRE'
-                         )
+COND=DEFI_FONCTION(NOM_PARA='TEMP',
+                   VALE=(0.,CONDUC,300.,CONDUC,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-ENTH=DEFI_FONCTION( 
-                             NOM_PARA='TEMP',
-                             VALE=(   0.,    0.0,
-                                    300.,  220.0E-3, ),
-                             PROL_GAUCHE='LINEAIRE',
-                              PROL_DROITE='LINEAIRE'
-                            )
+ENTH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,0.,
+                         300.,220.0E-3,
+                         ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
 
-MATNL=DEFI_MATERIAU( 
-                           THER_NL=_F(  LAMBDA = COND,
-                                     BETA = ENTH)
-                        )
+MATNL=DEFI_MATERIAU(THER_NL=_F(LAMBDA=COND,
+                               BETA=ENTH,),);
 
-CHMATNL=AFFE_MATERIAU( 
-                             MAILLAGE=MAIL,
-                             AFFE=_F(  TOUT = 'OUI',
-                                    MATER = MATNL,
-                                    TEMP_REF = 20.)
-                          )
-
+CHMATNL=AFFE_MATERIAU(MAILLAGE=MAIL,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATNL,
+                              TEMP_REF=20.,),);
 #
 # CHARGEMENT
 # ----------
+TEMPG = 100.0
+TEMPD = 300.0
+COEFH = 80.0
+COEFH2= DEFI_CONSTANTE(VALE=80.0)
 #
 
-TEMPG=100.
+CHATIMP=AFFE_CHAR_THER(MODELE=MODTHER,
+                       TEMP_IMPO=(_F(GROUP_NO='GM38',
+                                     TEMP=TEMPG,),
+                                  _F(GROUP_NO='GM37',
+                                     TEMP=TEMPD,),),)
 
-TEMPD=300.
-
-COEFH=80.
-
-#
-
-CHATHER=AFFE_CHAR_THER( 
-                              MODELE=MODTHER,TEMP_IMPO=(
-                              _F(  GROUP_NO = 'BORDG',
-                                          TEMP = TEMPG),
-                              _F(  GROUP_NO = 'BORDD',
-                                          TEMP = TEMPD)),
-                                ECHANGE_PAROI=_F(  GROUP_MA_1 = 'INTERG',
-                                                GROUP_MA_2 = 'INTERD',
-                                                COEF_H = COEFH)
-                           )
-
+CHATHER=AFFE_CHAR_THER(MODELE=MODTHER,
+                       ECHANGE_PAROI=_F(GROUP_MA_1='GM34',
+                                        GROUP_MA_2='GM33',
+                                        COEF_H=COEFH,),);
+CHATHE2=AFFE_CHAR_THER_F(MODELE=MODTHER,
+                         ECHANGE_PAROI=_F(GROUP_MA_1='GM34',
+                                          GROUP_MA_2='GM33',
+                                          COEF_H=COEFH2,),);
 #
 # =====================================================================
 #                            LISTE D'INSTANTS
 # =====================================================================
-#
 
-LINST=DEFI_LIST_REEL( 
-                            DEBUT=0.0,INTERVALLE=(
-                            _F(  JUSQU_A = 1.E-9,  NOMBRE = 1),
-                            _F(  JUSQU_A = 1.5E-5, NOMBRE = 30))
-                         )
-
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.E-9,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=1.5E-5,
+                                    NOMBRE=30,),),);
 #
 # =====================================================================
 #   CALCUL TRANSITOIRE NON LINEAIRE TENDANT VERS UN ETAT STATIONNAIRE
 # =====================================================================
+
+TEMPINIT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                    OPERATION='AFFE',
+                    MAILLAGE=MAIL,
+                    AFFE=(
+                    _F(GROUP_NO='GM35',
+                       NOM_CMP='TEMP',
+                       VALE=TEMPG,),
+                    _F(GROUP_NO='GM36',
+                       NOM_CMP='TEMP',
+                       VALE=TEMPD,),),);
 #
 
-TEMPINIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
-MAILLAGE=MAIL,AFFE=(
-                             _F(  GROUP_NO = 'RECTG',
-                                    NOM_CMP = 'TEMP',
-                                    VALE = TEMPG),
-                             _F(  GROUP_NO = 'RECTD',
-                                    NOM_CMP = 'TEMP',
-                                    VALE = TEMPD))
-                          )
+RESUTHER=THER_NON_LINE(MODELE=MODTHER,
+                       CHAM_MATER=CHMATNL,
+                       EXCIT=(_F(CHARGE=CHATHER,),
+                              _F(CHARGE=CHATIMP,),),
+                       INCREMENT=_F(LIST_INST=LINST,
+                                    NUME_FIN=15,),
+                       TEMP_INIT=_F(CHAM_NO=TEMPINIT,),
+                       ARCHIVAGE=_F(PAS_ARCH=10,),);
 
-#
-
-RESUTHER=THER_NON_LINE( 
-                              MODELE=MODTHER,
-                              CHAM_MATER=CHMATNL,
-                              EXCIT=_F(  CHARGE = CHATHER),
-                              TEMP_INIT=_F(  CHAM_NO = TEMPINIT),
-                              PARM_THETA=0.57,
-                              INCREMENT=_F(  LIST_INST = LINST),
-                              ARCHIVAGE=_F(  PAS_ARCH = 10)
-                           )
-
+RESUTHER=THER_NON_LINE(reuse=RESUTHER,
+                       MODELE=MODTHER,
+                       CHAM_MATER=CHMATNL,
+                       EXCIT=(_F(CHARGE=CHATHE2,),
+                              _F(CHARGE=CHATIMP,),),
+                       INCREMENT=_F(LIST_INST=LINST,
+                                    NUME_INIT=15,),
+                       TEMP_INIT=_F(EVOL_THER=RESUTHER,
+                                    NUME_INIT=15,),
+                       ARCHIVAGE=_F(PAS_ARCH=10,),);
 #
 # =====================================================================
 #                VERIFICATION QUE L'ON A BIEN ATTEINT
 #                LA SOLUTION ANALYTIQUE STATIONNAIRE
 # =====================================================================
+
+TSTAT=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='EXTR',
+                 RESULTAT=RESUTHER,
+                 NOM_CHAM='TEMP',
+                 NUME_ORDRE=30,);
 #
 
-TSTAT=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
-                        RESULTAT=RESUTHER,
-                        NOM_CHAM='TEMP',
-                        NUME_ORDRE=30
-                     )
+GRAD = FORMULE(VALE="""
+COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)""",
+               NOM_PARA='BIDON',);
 
+TINTG = FORMULE(VALE="""
+TEMPG + COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*X """,
+                NOM_PARA='X',);
+
+TINTD = FORMULE(VALE="""
+TEMPD - COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*(LONMAX-X)""",
+                NOM_PARA='X',);
 #
 
-GRAD = FORMULE(NOM_PARA='BIDON',VALE='''
-COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)''')
-
-TINTG = FORMULE(NOM_PARA='X',VALE='''
-TEMPG + COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*X ''')
-
-TINTD = FORMULE(NOM_PARA='X',VALE='''
-TEMPD - COEFH*(TEMPD-TEMPG)/(CONDUC+COEFH*LONTOT)*(LONMAX-X)''')
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=TSTAT,
+                      NOEUD='N46',
+                      NOM_CMP='TEMP',
+                      VALE=TINTG(0.2475,),
+                      CRITERE='RELATIF',
+                      PRECISION=1e-06,),
+                   _F(CHAM_GD=TSTAT,
+                      NOEUD='N3',
+                      NOM_CMP='TEMP',
+                      VALE=TINTG(0.495,),
+                      CRITERE='RELATIF',
+                      PRECISION=1e-06,),
+                   _F(CHAM_GD=TSTAT,
+                      NOEUD='N15',
+                      NOM_CMP='TEMP',
+                      VALE=TINTD(0.505,),
+                      CRITERE='RELATIF',
+                      PRECISION=1e-06,),
+                   _F(CHAM_GD=TSTAT,
+                      NOEUD='N92',
+                      NOM_CMP='TEMP',
+                      VALE=TINTD(0.7525,),
+                      CRITERE='RELATIF',
+                      PRECISION=1e-06,),),);
 #
 
-TEST_RESU(CHAM_NO=(  _F(  CHAM_GD = TSTAT,
-                         NOEUD = 'N3',
-                         NOM_CMP = 'TEMP',
-                         VALE = TINTG(0.25),
-                         CRITERE = 'RELATIF',
-                         PRECISION = 1.E-6),
-                       _F(  CHAM_GD = TSTAT,
-                         NOEUD = 'N5',
-                         NOM_CMP = 'TEMP',
-                         VALE = TINTG(0.495),
-                         CRITERE = 'RELATIF',
-                         PRECISION = 1.E-6),
-                       _F(  CHAM_GD = TSTAT,
-                         NOEUD = 'N101',
-                         NOM_CMP = 'TEMP',
-                         VALE = TINTD(0.505),
-                         CRITERE = 'RELATIF',
-                         PRECISION = 1.E-6),
-                       _F(  CHAM_GD = TSTAT,
-                         NOEUD = 'N103',
-                         NOM_CMP = 'TEMP',
-                         VALE = TINTD(0.75),
-                         CRITERE = 'RELATIF',
-                         PRECISION = 1.E-6))
-            )
-
-#
-
-FIN()
+FIN();
 #

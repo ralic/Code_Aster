@@ -7,7 +7,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +30,7 @@ C     CALCUL DU FACTEUR D'USAGE
 C
 C     ------------------------------------------------------------------
       INTEGER      IS1, IS2, I, K, L, NK, NL, N0, I1, I2, I3, IFM, NIV
-      REAL*8       SALT, SALTM, NADM, UKL
+      REAL*8       SALT, SALTM, NADM, UKL, VALE(2)
       LOGICAL      TROUVE, ENDUR, COLONA, COLONB, LIGNEA, LIGNEB
       CHARACTER*2  CODRET, K2C, K2L
 C     ------------------------------------------------------------------
@@ -99,20 +99,17 @@ C
          ELSE
             N0 = MIN ( NK , NL, NPASS )
          ENDIF
-         CALL LIMEND( NOMMAT,SALTM,'WOHLER',ENDUR)
-         IF (ENDUR) THEN
+         CALL LIMEND ( NOMMAT, SALTM, 'WOHLER', ENDUR )
+         IF ( ENDUR ) THEN
             UKL=0.D0
          ELSE
             CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM    ', SALTM, 1,
      +                      'WOHLER  ', NADM, CODRET, 'F ' )
-         IF ( NADM .LT. 0 ) THEN
-            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
-     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
-            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTM)
-            CALL UTIMPR ('L','   NADM = ',1,NADM)
-            CALL UTFINM ()
-         ENDIF
-C
+            IF ( NADM .LT. 0 ) THEN
+               VALE(1) = SALTM
+               VALE(2) = NADM
+               CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
+            ENDIF
             UKL = DBLE( N0 ) / NADM
          ENDIF
 C

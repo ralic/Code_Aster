@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF supervis Messages  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -240,6 +240,25 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
 54: _("""
  la procedure a un numero non appelable dans cette version.
  le numero errone est  %(i1)d 
+"""),
+
+55 : _("""
+ Appels récursifs de messages d'erreur ou d'alarme.
+"""),
+
+56 : _("""
+ Incohérence entre le catalogue et le corps de la macro.
+"""),
+
+57 : _("""
+   Impossible d'importer %(k1)s dans Messages.
+   Le fichier %(k1)s.py n'existe pas dans le répertoire 'Messages'
+   ou bien la syntaxe du fichier est incorrecte.
+   
+   Merci de signaler cette anomalie.
+   
+   Traceback :
+   %(k2)s
 """),
 
 }

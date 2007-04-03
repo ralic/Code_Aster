@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
 # ======================================================================
 # TITRE ETUDE : ESSAI TRIAXIAL 3D AVEC LE MODELE DE HOEK-BROWN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -217,7 +217,6 @@ U2       = CALC_NO( reuse    = U2,
                     RESULTAT = U2,
                     OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
                   )
-IMPR_RESU(RESU=(_F(RESULTAT= U2  ,),),)        ;                
 
 #-------------------------------------
 #    TEST_RESU AU POINT D (NOEUD N8)

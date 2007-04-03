@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,7 +151,7 @@ C
          CALL TBLIVA (NOMT19, NBPAR, ' ', IBID, R8B, C16B, K8B,
      &                K8B, R8B , PARA, K8B, IBID, ARMIN, C16B,
      &                K8B, IRET )
-          IF ( IRET .NE. 0 ) CALL U2MESS('F','MODELISA2_13')
+          IF ( IRET .NE. 0 ) CALL U2MESK('F','INTEMAIL_32',1,PARA)
          PREC = ARMIN*1.D-06
       ELSE
          PREC = 1.D-10
@@ -178,9 +178,8 @@ C
             ENDIF
  10      CONTINUE
          IF ( NORM .LE. EPSI*SGTU(K) ) THEN
-                        VALI = ISGT
-                        VALR (1) = EPSI
-            CALL U2MESG('F', 'POSTRELE_87',0,' ',1,VALI,1,VALR)
+            VALK(1) = 'DEFI_SEGMENT'
+            CALL U2MESG('F', 'INTEMAIL_27',1,VALK,1,ISGT,1,EPSI)
          ENDIF
 C
          DO 110, N = 1, NBNMA, 1
@@ -304,13 +303,15 @@ C
 C
          IF ( N .LE. 0 ) THEN
             CALL CODENT(ISGT,'G',CNUM)
+            VALK(1) = CNUM
+            VALK(2) = NOMAIL
             VALR (1) = SGTU(1)
             VALR (2) = SGTU(2)
             VALR (3) = SGTU(3)
             VALR (4) = SGTU(4)
             VALR (5) = SGTU(5)
             VALR (6) = SGTU(6)
-            CALL U2MESG('A', 'POSTRELE_88',0,' ',0,0,6,VALR)
+            CALL U2MESG('A', 'INTEMAIL_28',2,VALK,0,0,6,VALR)
          ELSE
             CPSGT = CPSGT + 1
             CALL CODENT(CPSGT,'G',CNUM)
@@ -441,11 +442,11 @@ C
                      IF ( ABSCE .GT. ABSCO ) THEN
                         VALK (1) = NOMM2
                         VALK (2) = NOMM1
-      CALL U2MESG('A', 'POSTRELE_89',2,VALK,0,0,0,0.D0)
+                        CALL U2MESK('A', 'INTEMAIL_29',2,VALK)
                      ELSE
                         VALK (1) = NOMM2
                         VALK (2) = NOMM1
-      CALL U2MESG('A', 'POSTRELE_90',2,VALK,0,0,0,0.D0)
+                        CALL U2MESK('A', 'INTEMAIL_30',2,VALK)
                      ENDIF
                   ENDIF
                   ABSCE = ZR(ASDS2+J-1)
@@ -490,7 +491,7 @@ C
  100  CONTINUE
 C
       IF ( CPSGT .LE. 0 ) THEN
-         CALL U2MESS('F','POSTRELE_24')
+         CALL U2MESS('F','INTEMAIL_11')
       ELSE
          CALL WKVECT(SURFAC//'.NSDS','G V K24',CPSGT,ATMP1)
          DO 300, ISGT = 1, CPSGT, 1

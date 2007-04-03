@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       INTEGER            IER
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM
@@ -74,7 +74,7 @@ C
          CALL GETVR8 ( ' ', 'SY_MAX', 1, 1,1,SYMAX,  N1 )
 C
          CALL RCCOME ( NOMMAT, 'RCCM', PHENOM, CODRET )
-         IF ( CODRET .EQ. 'NO' )  CALL U2MESS('F','POSTRELE_25')
+         IF (CODRET.EQ.'NO')  CALL U2MESK('F','POSTRCCM_7',1,'RCCM')
 C
          CALL RCEVOL ( TYPTAB, NOMMAT, SYMAX, NBOPT, KOPT )
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/04/2007   AUTEUR GENIAUT S.GENIAUT 
 # TITRE  FISSURE DE BORD EN ELASTOPLASTICITE DANS UNE PLAQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,16 +38,20 @@ MAT=DEFI_MATERIAU(ELAS=_F(E = 2.0601E5, NU = 0.3, ALPHA = 0.),
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
 
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
-                     CREA_GROUP_NO=_F( 
-                        GROUP_MA = ( 'LPOP11',  'LPOP8', 'LP9P10', ))
-                 )
+                     CREA_GROUP_NO=(_F(GROUP_MA = ( 'LPOP11',  'LPOP8', 'LP9P10', )),
+                                    _F(NOM = 'NTEST',
+                                       OPTION='ENV_SPHERE',
+                                       POINT=(-6., 0.),
+                                       PRECISION=0.0001,
+                                       RAYON=0.0001),),
+                )
 
 CL=AFFE_CHAR_MECA(  MODELE=MO, 
             DDL_IMPO=(_F(  GROUP_NO = 'LPOP11', DY = 0.,),
-                      _F(  GROUP_NO = 'PB', DX = 0.),),);
+                      _F(  GROUP_NO = 'PB', DX = 0.),),)
 
 CH=AFFE_CHAR_MECA(  MODELE=MO, 
-            DDL_IMPO=_F(  GROUP_NO = 'LP9P10', DY = 1.),);
+            DDL_IMPO=_F(  GROUP_NO = 'LP9P10', DY = 1.),)
             
 RAMPE=DEFI_FONCTION(  NOM_PARA='INST',
                         VALE=(0.,0.,1.,1.,),
@@ -74,7 +78,30 @@ CHAMDEP=STAT_NON_LINE( MODELE=MO,
                        CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-5),
                        SOLVEUR=_F(METHODE = 'MULT_FRONT'),
                        ARCHIVAGE = _F(LIST_INST=L_INST,),
+    
                      );
+
+TABDEP= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT_FISSURE',
+                                   GROUP_NO   = 'NTEST',
+                                   RESULTAT   = CHAMDEP,
+                                   NOM_CHAM   = 'DEPL',
+                                   NOM_CMP    = ( 'DX','DY',),
+                                   OPERATION  = 'EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABDEP,);
+
+# CETTE VALEUR A ETE OBTENUE PAR LA VERSION 9.0.11
+DEPREF=9.8756898959655e-02;
+
+TEST_TABLE(TABLE=TABDEP,
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 150),
+           NOM_PARA='DY',
+           VALE=DEPREF,
+           CRITERE='RELATIF',
+           PRECISION=2.e-10,
+           REFERENCE='NON_REGRESSION',
+           VERSION='9.0.11');
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
                            FOND_FISS=_F( GROUP_NO = ('P0',)),

@@ -1,4 +1,4 @@
-#@ MODIF meidee_correlation Meidee  DATE 22/12/2006   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee_correlation Meidee  DATE 02/04/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -252,14 +252,14 @@ class MeideeCorrelation:
 
     def calc_proj_resu(self, num_modes, exp_modes,
                        resu_num, resu_exp,
-                       basename=None):
-        """!Projection des modes experimentaux sur la base modale numérique"""
-
+                       basename=None,
+                       reso=None):
+        """!Projection des modes experimentaux sur la base modale numérique
+            reso est different de None en mode non interactif. En mode
+            interactif, on va chercher les parametres de resolution dans
+            l'IHM                                                          """
         self.mess.disp_mess( "Début de MACRO_EXPANS")
         if not basename:
-            # WARNING!!!
-            # on ne peut pas utiliser un concept autodestructible (ie nommé _XXX)
-            # car le renommage a l'air de ne pas se faire correctement?
             basename = "_tmp"
             DETRUIRE(CONCEPT=_F(NOM=('_tmp_NX','_tmp_EX',
                                      '_tmp_ET','_tmp_RD')),
@@ -273,11 +273,12 @@ class MeideeCorrelation:
         res_et = CO(name_et)
         res_rd = CO(name_rd)
 
-        reso = []
-        if self.proj_meth == "SVD":
-            reso.append({"METHODE":"SVD", "EPS":self.proj_param[0] })
-        else:
-            reso.append({"METHODE":"LU"})
+        if reso == None:
+            reso = []
+            if self.proj_meth == "SVD":
+                reso.append({"METHODE":"SVD", "EPS":self.proj_param[0] })
+            else:
+                reso.append({"METHODE":"LU"})
         self.mess.disp_mess( ('Donnees num             : '+ resu_num.nom))
         self.mess.disp_mess( ('nume_ordre selectionnes : '+ str(tuple(num_modes[0]))))        
         self.mess.disp_mess( ('Donnees exp             : '+ resu_exp.nom))

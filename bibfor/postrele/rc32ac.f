@@ -4,7 +4,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,7 +84,7 @@ C
      +             MATPI(8), MATPJ(8), MSE(12),TYPEKE,SPMECA,SPTHER,
      +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB,
      +             SIPMAX, SIMPIJ, SNEMAX, KEMAX, R8VIDE, PMMAX, PBMAX,
-     +             PMBMAX
+     +             PMBMAX, VALE(2)
       LOGICAL      SEISME, ENDUR, CFAIT
       CHARACTER*2  CODRET
       CHARACTER*4  LIEU(2)
@@ -385,19 +385,16 @@ C
 C ----------- CALCUL DU FACTEUR D'USAGE
 C
               CALL LIMEND( MATER,SALTIJ,'WOHLER',ENDUR)
-              IF (ENDUR) THEN
-                  UG=0.D0
+              IF ( ENDUR ) THEN
+                 UG=0.D0
               ELSE
                  CALL RCVALE(MATER, 'FATIGUE', 1, 'SIGM    ', SALTIJ, 1,
      +                                   'WOHLER  ', NADM, CODRET, 'F ')
-         IF ( NADM .LT. 0 ) THEN
-            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
-     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
-            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTIJ)
-            CALL UTIMPR ('L','   NADM = ',1,NADM)
-            CALL UTFINM ()
-         ENDIF
-C
+                 IF ( NADM .LT. 0 ) THEN
+                    VALE(1) = SALTIJ
+                    VALE(2) = NADM
+                    CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
+                 ENDIF
                  UG = DBLE( NOCC ) / NADM
               ENDIF
               ZR(JRESS-1+10*(IS1-1)+10) = UG

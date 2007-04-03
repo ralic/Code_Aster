@@ -1,4 +1,4 @@
-#@ MODIF macro_visu_meidee_ops Macro  DATE 06/02/2007   AUTEUR BODEL C.BODEL 
+#@ MODIF macro_visu_meidee_ops Macro  DATE 02/04/2007   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,20 +26,17 @@
 # on utilise aussi une librairie de support
 # pour la gestion de l'interface graphique dans meidee_iface
 
+
+
 def macro_visu_meidee_ops( self,
-                           BASE            = None,
-                           MODELE_MESURE   = None,
-                           MODELE_COMMANDE = None,
-                           MESURE1  = None,
-                           MESURE2  = None,
-                           MESURE3  = None, 
-                           INTE_SPEC   = None,                            
-                           INTERACTIF  = None,
-                           UNITE_FIMEN = None,
-                           INTESPEC    = None,
-                           UNITE_RESU  = None, 
-                           RESULTATS   = None,
-                           **args ):
+                           INTERACTIF       = None,
+                           RESULTATS        = None,
+                           UNITE_FIMEN      = None,
+                           UNITE_RESU       = None,
+                           EXPANSION        = None,
+                           FLUIDE_ELASTIQUE = None,
+                           TURBULENT        = None,
+                           **args):
     ier = 0
 
     from Utilitai.UniteAster import UniteAster
@@ -130,13 +127,9 @@ def macro_visu_meidee_ops( self,
                    mess,
                    out,
                    objects,
-                   BASE = BASE,                    # resultat (mode_meca) associe. Base d'expansion
-                   MODELE_MESURE = MODELE_MESURE,  # modele exp, les noeuds correspondent aux capteurs
-                   MODELE_COMMANDE = MODELE_COMMANDE,  # les points d'application des forces
-                   MESURE1  = MESURE1,   # base modale exp en air
-                   MESURE2  = MESURE2,   # base modale exp en eau au repos
-                   MESURE3  = MESURE3,   # base modale exp en ecoulement
-                   INTE_SPEC  = INTE_SPEC,   # inter-spectre mesure pour onglet "turbulent"
+                   EXPANSION,
+                   FLUIDE_ELASTIQUE,
+                   TURBULENT
                    )
 
         mess.close_file()

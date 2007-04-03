@@ -5,7 +5,7 @@
       CHARACTER*24        CHTH(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,6 @@ C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
-      INTEGER VALI(4)
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
       COMMON  /RVARJE/ ZR(1)
@@ -50,7 +49,7 @@ C
       INTEGER      NBRETH, NBCMP, ITHS, ITH, IRET, N1, N2, IOCC, IERD,
      &             INO, IAD, IN, IMA, IM, JMAIL, JNOEU, NBMAIL, NBMAT,
      &             NBTOU, NBNOEU, JCESD, JCESL, JCESV, NBPT, DECAL,
-     &             IPT, JCONX1, JCONX2, ICMP, IT1
+     &             IPT, JCONX1, JCONX2, ICMP, IT1, VALI(4)
       PARAMETER   ( NBCMP = 2 )
       CHARACTER*8  K8B, NOMGD, LICMP(NBCMP), TBTHER, TBMOYE
       CHARACTER*16 MOTCLF, MOTCLS(2), TYPMCS(2), MOTCLN(2), TYPMCN(2)
@@ -89,7 +88,7 @@ C
      &         -1, -1, -NBCMP )
          CHTH(IOCS) = CHAMS0
       ELSE
-         CALL U2MESS('F','POSTRELE_41')
+         CALL U2MESS('F','POSTRCCM_19')
       ENDIF
 C
       CALL JEVEUO (CHAMS0//'.CESD', 'L', JCESD )
@@ -109,9 +108,9 @@ C
             ITHS = LITHS(IT1)
             IF (ITH.EQ.ITHS) GOTO 6
 10       CONTINUE
-                  VALI (1) = IOCS
-                  VALI (2) = ITHS
-         CALL U2MESG('F', 'POSTRELE1_2',0,' ',2,VALI,0,0.D0)
+         VALI (1) = IOCC
+         VALI (2) = ITHS
+         CALL U2MESG('F', 'POSTRCCM_23',0,' ',2,VALI,0,0.D0)
 6        CONTINUE
 
          CALL GETVID ( MOTCLF,'TABL_RESU_THER' ,IOCC,1,1,TBTHER,N1)
@@ -154,10 +153,9 @@ C
                      ZL (JCESL-1+IAD) = .TRUE.
                      ZK8(JCESV-1+IAD) = TBTHER
                   ELSE
-                  VALI (1) = IOCS
-                  VALI (2) = IMA
-                  VALI (3) = 0
-      CALL U2MESG('F', 'POSTRELE1_3',0,' ',3,VALI,0,0.D0)
+                    VALI (1) = IOCS
+                    VALI (2) = IMA
+                    CALL U2MESG('F','POSTRCCM_24',0,' ',2,VALI,0,0.D0)
                   ENDIF
                   ICMP = 2
                   IAD = DECAL + (IPT-1)*NBCMP + ICMP
@@ -180,11 +178,11 @@ C
                            ZL (JCESL-1+IAD) = .TRUE.
                            ZK8(JCESV-1+IAD) = TBTHER
                         ELSE
-                  VALI (1) = IOCS
-                  VALI (2) = IMA
-                  VALI (3) = INO
-                  VALI (4) = 0
-      CALL U2MESG('F', 'POSTRELE1_4',0,' ',4,VALI,0,0.D0)
+                           VALI (1) = IOCS
+                           VALI (2) = IMA
+                           VALI (3) = INO
+                           CALL U2MESG('F','POSTRCCM_25',0,' ',3,VALI,
+     +                                                         0,0.D0)
                         ENDIF
                         ICMP = 2
                         IAD = DECAL + (IPT-1)*NBCMP + ICMP
@@ -203,16 +201,9 @@ C
          CALL JEDETR ( MESNOE )
 C
  5    CONTINUE
-
-C      CALL INFNIV ( IFM, NIV )
-C      IF ( NIV .GE. 2 ) THEN
-C         WRITE(IFM,*)' SITUATION NUMERO ', IOCS
-C         WRITE(IFM,*)' CHAMP THERMIQUE ',CHTH(IOCS)
-C         CALL CESIMP ( CHTH(IOCS), IFM, 0, IBID )
-C      ENDIF
-
+C
 C    VERIF QUE TOUTES LES MAILLES ANALYSEES SONT AFFECTEES
-
+C
       DO 7 IM = 1 , NBMA
          IMA = LISTMA(IM)
          NBPT = ZI(JCESD-1+5+4*(IMA-1)+1)
@@ -223,8 +214,7 @@ C    VERIF QUE TOUTES LES MAILLES ANALYSEES SONT AFFECTEES
                IF (.NOT.ZL(JCESL-1+IAD)) THEN
                   VALI (1) = IOCS
                   VALI (2) = IMA
-                  VALI (3) = 0
-                  CALL U2MESG('F', 'POSTRELE1_5',0,' ',3,VALI,0,0.D0)
+                  CALL U2MESG('F', 'POSTRCCM_24',0,' ',2,VALI,0,0.D0)
                ENDIF
  9          CONTINUE
  8       CONTINUE

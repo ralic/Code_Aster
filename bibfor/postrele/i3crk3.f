@@ -6,7 +6,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
             CRK(2) = R1
             CRK(1) = UN - R1 -R2
          ELSE
-            CALL U2MESS('F','POSTRELE_18')
+            CALL U2MESK('F','INTEMAIL_6',1,'TETRA')
          ENDIF
       ELSE IF ( TYPK .EQ. 2 ) THEN
          IF ( FACE . EQ. 0 ) THEN
@@ -93,7 +93,7 @@ C
             CRK(2) = (UN + R1)*UNSUR2
             CRK(3) =  R2
          ELSE
-            CALL U2MESS('F','POSTRELE_18')
+            CALL U2MESK('F','INTEMAIL_6',1,'PENTA')
          ENDIF
       ELSE IF ( TYPK .EQ. 3 ) THEN
          IF ( FACE .EQ. 0 ) THEN
@@ -125,9 +125,9 @@ C
             CRK(3) =  R2
             CRK(2) =  UN
          ELSE
-            CALL U2MESS('F','POSTRELE_18')
+            CALL U2MESK('F','INTEMAIL_6',1,'HEXA')
          ENDIF
       ELSE
-         CALL U2MESS('F','POSTRELE_19')
+         CALL U2MESS('F','INTEMAIL_7')
       ENDIF
       END

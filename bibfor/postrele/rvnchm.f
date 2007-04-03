@@ -7,7 +7,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C
       CALL WKVECT(NOMND,'V V K8',NBPT,ANOMND)
       CALL JEVEUO(JEXNUM(CONNEX,TM(1)),'L',ACONEC)
       IF ( NBM .LE. 0 ) THEN
-         CALL U2MESS('F','POSTRELE_56')
+         CALL U2MESS('F','POSTRELE_24')
       ELSE IF ( NBM .EQ. 1 ) THEN
          NDER = ZI(ACONEC + 1-1)
       ELSE
@@ -95,7 +95,7 @@ C
          ELSE IF ( (N2.EQ.ZI(ACONEC)).OR.(N2.EQ.ZI(ACONEC+1))) THEN
             NDER = N1
          ELSE
-            CALL U2MESS('F','POSTRELE_57')
+            CALL U2MESS('F','POSTRELE_25')
          ENDIF
       ENDIF
       ZI(ANUMND + PT-1) = NDER

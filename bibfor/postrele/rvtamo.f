@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMCMP(*), NOMTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 31/10/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
          ELSE
             NBCMP2 = NBVARI
          ENDIF
-         IF ( NBCMP2.GT.3000) CALL U2MESS('F','POSTRELE_65')
+         IF ( NBCMP2.GT.3000) CALL U2MESS('F','POSTRELE_13')
       ENDIF
 C
       NOMVAL = NCHEFF//'.VALACCE'

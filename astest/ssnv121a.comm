@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
 # TITRE ROTATION ET TRACTION 3D GRANDES DEFORMATIONS (LOI LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,7 +176,7 @@ V=CALC_NO( reuse=V,
 
 V=CALC_ELEM( reuse=V,
                 RESULTAT=V,
-                 OPTION='EPSG_ELNO_DEPL'
+                 OPTION=('EPSG_ELNO_DEPL','EPMG_ELNO_DEPL','EPMG_ELGA_DEPL')
            )
 
 TEST_RESU(RESU=(
@@ -296,6 +296,11 @@ TEST_RESU(RESU=(
 #
               _F( 
                RESULTAT = V,   NOM_CHAM = 'EPSG_ELNO_DEPL',  INST = 2.,
+               MAILLE = 'MA1',  NOEUD = 'NO8',   NOM_CMP = 'EPXX',
+               PRECISION = 1.E-3,
+               VALE = 0.105),
+              _F( 
+               RESULTAT = V,   NOM_CHAM = 'EPMG_ELNO_DEPL',  INST = 2.,
                MAILLE = 'MA1',  NOEUD = 'NO8',   NOM_CMP = 'EPXX',
                PRECISION = 1.E-3,
                VALE = 0.105),

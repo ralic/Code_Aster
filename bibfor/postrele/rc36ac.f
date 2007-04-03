@@ -6,7 +6,7 @@
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 02/05/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -95,10 +95,10 @@ C
      +             IOCS, JSEIGR, IOC2, JCINL, JCCAL
       REAL*8       R8B, PPI, PPJ, SNMAX, SAMAX, UTOT, SALTIJ, UG, NADM,
      +             MPI(3), MPJ(3), SM, SN, SP, C(3), K(3), CARA(3),
-     +             MATPI(14), MATPJ(14), MSE(3), SNB, SAB, SMM
+     +             MATPI(14), MATPJ(14), MSE(3), SNB, SAB, SMM, VALE(2)
       LOGICAL      SEISME,ENDUR
       CHARACTER*2  CODRET
-      CHARACTER*8  K8B, NOMMAT, NOEUD
+      CHARACTER*8  K8B, NOMMAT, NOEUD, VALK(7)
       CHARACTER*24 MOMEPI, MOMEPJ, NOMMAI, NOMNOE, CONNEX, 
      +             MATEPI, MATEPJ
       REAL*8       TYPEKE,SPMECA,SPTHER
@@ -181,36 +181,30 @@ C
           DO 202 ICMP = 1 , 3
             IAD = DECIN + (IPT-1)*NBCIN + ICMP
             IF ( .NOT. ZL(JCINL-1+IAD) ) THEN
-               CALL JENUNO ( JEXNUM(NOMMAI,IMA), K8B )
-               CALL JENUNO ( JEXNUM(NOMNOE,INO), NOEUD )
-               CALL UTDEBM('F','RC36AC','ERREUR DONNEES ')
-               CALL UTIMPK('L','POUR LA MAILLE ',1,K8B)
-               CALL UTIMPK('S',' ET LE NOEUD ',1,NOEUD)
+               CALL JENUNO ( JEXNUM(NOMNOE,INO), VALK(1) )
+               CALL JENUNO ( JEXNUM(NOMMAI,IMA), VALK(2) )
                IF ( ICMP .EQ. 1) THEN
-            CALL UTIMPK('L','IL MANQUE L''INDICE DE CONTRAINTES',1,'C1')
+                   VALK(3) = 'C1'
                ELSEIF ( ICMP .EQ. 2) THEN
-            CALL UTIMPK('L','IL MANQUE L''INDICE DE CONTRAINTES',1,'C2')
+                   VALK(3) = 'C2'
                ELSE
-            CALL UTIMPK('L','IL MANQUE L''INDICE DE CONTRAINTES',1,'C3')
+                   VALK(3) = 'C3'
                ENDIF
-               CALL UTFINM
+               CALL U2MESK ( 'F','POSTRCCM_9',3,VALK )
             ENDIF
             C(ICMP) = ZR(JCINV-1+IAD)
             IAD = DECIN + (IPT-1)*NBCIN + ICMP + 3
             IF ( .NOT. ZL(JCINL-1+IAD) ) THEN
-               CALL JENUNO ( JEXNUM(NOMMAI,IMA), K8B )
-               CALL JENUNO ( JEXNUM(NOMNOE,INO), NOEUD )
-               CALL UTDEBM('F','RC36AC','ERREUR DONNEES ')
-               CALL UTIMPK('L','POUR LA MAILLE ',1,K8B)
-               CALL UTIMPK('S',' ET LE NOEUD ',1,NOEUD)
+               CALL JENUNO ( JEXNUM(NOMNOE,INO), VALK(1) )
+               CALL JENUNO ( JEXNUM(NOMMAI,IMA), VALK(2) )
                IF ( ICMP .EQ. 1) THEN
-            CALL UTIMPK('L','IL MANQUE L''INDICE DE CONTRAINTES',1,'K1')
+                   VALK(3) = 'K1'
                ELSEIF ( ICMP .EQ. 2) THEN
-            CALL UTIMPK('L','IL MANQUE L''INDICE DE CONTRAINTES',1,'K2')
+                   VALK(3) = 'K2'
                ELSE
-            CALL UTIMPK('L','IL MANQUE L''INDICE DE CONTRAINTES',1,'K3')
+                   VALK(3) = 'K3'
                ENDIF
-               CALL UTFINM
+               CALL U2MESK ( 'F','POSTRCCM_9',3,VALK )
             ENDIF
             K(ICMP) = ZR(JCINV-1+IAD)
  202      CONTINUE
@@ -220,13 +214,9 @@ C
           DO 204 ICMP = 2 , 4
             IAD = DECCA + (IPT-1)*NBCCA + ICMP
             IF ( .NOT. ZL(JCCAL-1+IAD) ) THEN
-               CALL JENUNO ( JEXNUM(NOMMAI,IMA), K8B )
-               CALL JENUNO ( JEXNUM(NOMNOE,INO), NOEUD )
-               CALL UTDEBM('F','RC36AC','ERREUR DONNEES ')
-               CALL UTIMPK('L','POUR LA MAILLE ',1,K8B)
-               CALL UTIMPK('S',' ET LE NOEUD ',1,NOEUD)
-         CALL UTIMPK('L','IL MANQUE DES CARATERISTIQUES ',1,'CARA_ELEM')
-               CALL UTFINM
+               CALL JENUNO ( JEXNUM(NOMNOE,INO), VALK(1) )
+               CALL JENUNO ( JEXNUM(NOMMAI,IMA), VALK(2) )
+               CALL U2MESK('F','POSTRCCM_8',2,VALK)
             ENDIF
             CARA(ICMP-1) = ZR(JCCAV-1+IAD)
  204      CONTINUE
@@ -336,8 +326,8 @@ C ----------- CALCUL DU SP
 C
               TYPEKE=MATPI(14)
               SP = 0.D0
-        SPMECA = 0.D0
-        SPTHER = 0.D0
+              SPMECA = 0.D0
+              SPTHER = 0.D0
               CALL RC36SP ( NBM, ZI(ADRM), IPT, C, K, CARA, MATPI, PPI,
      +                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1,
      +                      NBTH2, IOC1,IOC2, SP,TYPEKE,SPMECA,SPTHER )
@@ -354,20 +344,17 @@ C
 C
 C ----------- CALCUL DU FACTEUR D'USAGE
 C
-              CALL LIMEND( NOMMAT,SALTIJ,'WOHLER',ENDUR)
-              IF (ENDUR) THEN
+              CALL LIMEND ( NOMMAT, SALTIJ, 'WOHLER', ENDUR )
+              IF ( ENDUR ) THEN
                   UG=0.D0
               ELSE
                  CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',SALTIJ,1,
      +                       'WOHLER  ',NADM,CODRET,'F ')
-         IF ( NADM .LT. 0 ) THEN
-            CALL UTDEBM ('A','WOHLER','NOMBRE DE CYCLES ADMISSIBLES'//
-     +                       ' NEGATIF, VERIFIER LA COURBE DE WOHLER')
-            CALL UTIMPR ('L','   CONTRAINTE CALCULEE = ',1,SALTIJ)
-            CALL UTIMPR ('L','   NADM = ',1,NADM)
-            CALL UTFINM ()
-         ENDIF
-C
+                 IF ( NADM .LT. 0 ) THEN
+                    VALE(1) = SALTIJ
+                    VALE(2) = NADM
+                    CALL U2MESG('A', 'POSTRCCM_32',0,' ',0,0,2,VALE)
+                 ENDIF
                  UG = DBLE( NOCC ) / NADM
               ENDIF
               UTOT = UTOT + UG

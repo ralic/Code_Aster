@@ -1,7 +1,7 @@
       SUBROUTINE OP0051 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,7 @@ C
 C 2.2. ==> LE CONCEPT DE SORTIE, SON TYPE, LA COMMANDE
 C
       CALL GETRES ( TABLE1, CONCEP, NOMCMD )
-      IF ( NIV.GE.2 )  CALL U2MESK('I','POSTRELE_23',1,TABLE1)
+      IF ( NIV.GE.2 )  CALL U2MESK('I','POSTRELE_1',1,TABLE1)
 C
 C 2.3. ==> PHASE DE VERIFICATIONS SUPPLEMENTAIRES
 C
@@ -214,7 +214,7 @@ C
               IF ( IRET.NE.0 ) THEN
                 VALK(1) = RESUCO
                 VALK(2) = NOPASE
-                CALL U2MESK('F','CALCULEL2_96', 2 ,VALK)
+                CALL U2MESK('F','SENSIBILITE_3', 2 ,VALK)
               ENDIF
             ENDIF
 C
@@ -335,12 +335,7 @@ C
          ENDIF
 C
          IF ( .NOT. TROUVE ) THEN
-C
-               VALI = IOCC
-               VALK (1) = ' '
-               VALK (2) = ' '
-               VALK (3) = ' '
-            CALL U2MESG('F', 'POSTRELE_85',3,VALK,1,VALI,0,0.D0)
+            CALL U2MESI('F','POSTRELE_2',1,IOCC)
          ELSE
 C
 C           --- SAISIE DU LIEU DU POST-TRAITEMENT DE L' OCCURENCE ---
@@ -348,12 +343,7 @@ C
             CALL RVOUEX ( MCF, IOCC, NCH24, XNOMCP,NLSMAC,NLSNAC,IRET)
 C
             IF ( IRET .EQ. 0 ) THEN
-C
-               VALI = IOCC
-               VALK (1) = DIM
-               VALK (2) = ' '
-               VALK (3) = ' '
-               CALL U2MESG('F', 'POSTRELE_86',3,VALK,1,VALI,0,0.D0)
+               CALL U2MESI('F', 'POSTRELE_3',1,IOCC)
 C
             ELSE
 C

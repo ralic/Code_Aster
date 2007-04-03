@@ -1,7 +1,7 @@
       SUBROUTINE RVPAR0 ( NOMTAB, MCF, NBPOST )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,9 +81,7 @@ C
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
 C
-      IF ( NIV.GE.2 ) THEN
-       CALL U2MESK('I','POSTRELE_58',1,NOMTAB)
-      ENDIF
+      IF ( NIV.GE.2 ) CALL U2MESK('I','POSTRELE_8',1,NOMTAB)
 C               12   345678   9012345678901234
       NOMSTR = '&&'//NOMPRO//'.NOMPARAMS'
       NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
@@ -179,7 +177,7 @@ C
 C============= FIN DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ==============
           CALL JEDETR ( NORECG )
         ELSE
-          CALL U2MESS('F','MODELISA_67')
+          CALL U2MESS('F','POSTRELE_58')
         ENDIF
 C
    22 CONTINUE

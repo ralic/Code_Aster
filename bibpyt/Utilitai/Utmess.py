@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 17/10/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,45 @@
 
 import sys
 import aster
+from Messages.utprin import utprin
 
+
+# -----------------------------------------------------------------------------
+def U2MESS(code, idmess, valk=(), vali=(), valre=()):
+   """Utilitaire analogue à la routine fortran U2MESS/U2MESG avec les arguments
+   optionnels.
+      code   : 'A', 'E', 'S', 'F', 'I'
+      idmess : identificateur du message
+      valk, vali, valre : liste des chaines, entiers ou réels.
+   
+   Appel sans valeurs :                avec valeurs :
+      U2MESS('A', 'SUPERVIS_55')          U2MESS('A', 'SUPERVIS_55', vali=[1, 2])
+   
+   Remarque : nommer les arguments permet de ne pas tous les passer.
+   """
+   if type(valk) not in (list, tuple):
+      valk = tuple([valk])
+   if type(vali) not in (list, tuple):
+      vali = tuple([vali])
+   if type(valre) not in (list, tuple):
+      valre = tuple([valre])
+   
+   fmt = '\n <%s> <%s> %s\n\n'
+   sanscode = '\n <%s> %s\n\n'
+   for nom in ('MESSAGE', 'RESULTAT'):
+      utprin(code, nom, idmess, valk, vali, valre)
+   
+   reason = ' <EXCEPTION LEVEE> %s' % idmess
+   if code == 'S':
+      raise aster.error, reason
+   elif code == 'F':
+      raise aster.FatalError, reason
+
+# -----------------------------------------------------------------------------
+#
+#       !!! UTMESS sera remplacé par U2MESS !!!
+#       !!!     Ne plus utilisé UTMESS      !!!
+#
 def UTMESS(code, sprg, texte):
    """Utilitaire analogue à la routine fortran UTMESS.
       code  : 'A', 'E', 'S', 'F', 'I'
