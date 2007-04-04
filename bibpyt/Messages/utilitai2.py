@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai2 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -319,11 +319,7 @@ cata_msg={
 """),
 
 76: _("""
- les noms des parametres doivent etre differents
-"""),
-
-77: _("""
- impossible de trouver le resultat derive associe a la fonction  %(k1)s  et au parametre sensible  %(k2)s 
+ les noms des paramètres doivent etre différents
 """),
 
 78: _("""

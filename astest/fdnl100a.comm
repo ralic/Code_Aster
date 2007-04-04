@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL DES FORCE_FLUIDE LORS D'UNE CHUTTE DE GRAPPE
 # RESPONSABLE LONGATTE E.LONGATTE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -285,7 +285,8 @@ RESU=DYNA_NON_LINE( MODELE=MODELE,
 #                            INST_FIN = TFIN,
                              NUME_INST_FIN   = 3 ,
                             ),
-                 NEWMARK=_F(),
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
                  ARCHIVAGE=_F( INST=( 0.700, 1.400, 1.787 ), ),
             );
 
@@ -304,7 +305,8 @@ RESU=DYNA_NON_LINE( reuse=RESU, MODELE=MODELE,
 #                            NUME_INST_FIN   = 6 ,
                              INST_FIN = 1.78500000,
                             ),
-                 NEWMARK=_F(),
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
                  ARCHIVAGE=_F( INST=( 0.700, 1.400, 1.785 ), ),
             );
 

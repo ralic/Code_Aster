@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/12/2006   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE TP DYNAMIQUE TRANSITOIRE NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,7 +173,7 @@ DYNAEL=DYNA_NON_LINE(MODELE=MO,
                      COMP_INCR=_F(RELATION='ELAS',
                                   TOUT='OUI',),
                      INCREMENT=_F(LIST_INST=LINST,),
-                     NEWMARK=_F(),
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=1,),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
@@ -213,7 +213,7 @@ DYNANL=DYNA_NON_LINE(MODELE=MO,
                                   SUBD_COEF_PAS_1=1.0,
                                   SUBD_PAS=5,
                                   SUBD_PAS_MINI=1e-05,),
-                     NEWMARK=_F(),
+                     SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                      NEWTON=_F(
                                MATRICE='TANGENTE',
                                REAC_ITER=1,),

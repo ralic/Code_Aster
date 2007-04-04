@@ -1,4 +1,4 @@
-# MODIF  DATE 12/12/2006   AUTEUR VIVAN L.VIVAN 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (PENTA15 HEXA20)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -374,8 +374,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='M1',    
                NOM_CMP = 'NUEST',      
-               VALE = 9.3654566379776, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 9.3646517567771, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
              ),
             );
 
@@ -388,8 +388,8 @@ TEST_RESU(RESU=(
                GROUP_NO= 'A',
                MAILLE='M1',    
                NOM_CMP = 'ERREST',      
-               VALE = 6.0248108070092E-03, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 6.0242884446932E-03, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
              ),
             );
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,6 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                METHODE        = 'CONTINUE',
                                EXCLUSION_PIV_NUL= 'OUI',
                                INTEGRATION    = 'NOEUD',
-                               MODL_AXIS      = 'NON',
                                CONTACT_INIT   = 'OUI',
                                SEUIL_INIT     = 1.0E-1,
                                COEF_REGU_FROT = 1.0,

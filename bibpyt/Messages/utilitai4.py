@@ -1,4 +1,4 @@
-#@ MODIF utilitai4 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai4 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,26 +21,6 @@
 def _(x) : return x
 
 cata_msg={
-
-1: _("""
- on a  %(k1)s  et  %(k2)s 
-"""),
-
-2: _("""
- erreur de donnees
-"""),
-
-3: _("""
- son type est :  %(k1)s 
-"""),
-
-4: _("""
- les sous-types de sensibilite pour l'influence de  %(k1)s  sont incoherents.
-"""),
-
-5: _("""
- impossible de trouver un sous-type de sensibilite pour l'influence de  %(k1)s 
-"""),
 
 6: _("""
  incompatibilite de nombre equations
@@ -239,42 +219,6 @@ cata_msg={
 
 53: _("""
  aucun numero d'ordre trouve. stop.
-"""),
-
-54: _("""
- la chaine pref passe en argument est trop courte pour mettre la chaine prefix =  %(k1)s 
-"""),
-
-55: _("""
- la derivee de  %(k1)s  par rapport a  %(k2)s  est deja nommee.
-"""),
-
-56: _("""
- structure simple   :  %(k1)s 
-"""),
-
-57: _("""
- parametre sensible :  %(k1)s 
-"""),
-
-58: _("""
- la structure composee a supprimer est :  %(k1)s 
-"""),
-
-59: _("""
- mais la structure composee enregistree est :  %(k1)s 
-"""),
-
-60: _("""
- suppression impossible !
-"""),
-
-61: _("""
- choix=/prefixe/e/renc/remc/s svp.
-"""),
-
-62: _("""
- la structure nosimp est introuvable dans la memorisation inpsco
 """),
 
 63: _("""

@@ -1,4 +1,4 @@
-#@ MODIF E_Global Execution  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF E_Global Execution  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,9 +48,11 @@ def checksd(nomsd, typesd):
       1 : erreurs lors du checksd
       4 : on n'a meme pas pu tester
    """
+   from Utilitai.Utmess     import UTMESS
+
    nomsd  = nomsd.strip()
    typesd = typesd.lower().strip()
-   
+
    # import
    iret = 4
    try:
@@ -69,6 +71,6 @@ def checksd(nomsd, typesd):
          iret = 1
       else:
          iret = 0
-   
+
    return iret
 

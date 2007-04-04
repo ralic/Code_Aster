@@ -1,11 +1,11 @@
-      SUBROUTINE NMPRDC(MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                  COMPOR, LISCHA, MEDIRI, RIGID, MATASS,
-     &                  METHOD, SOLVEU,PARMET, CARCRI, PILOTE,
-     &                  PARTPS, NUMINS,VALMOI, POUGD , VALPLU,
-     &                  SECMBR, DEPDEL, LICCVG)
-
+      SUBROUTINE NMPRDC(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
+     &                  COMPOR,LISCHA,MEDIRI,RIGID, MATASS,
+     &                  METHOD,SOLVEU,PARMET,CARCRI,PILOTE,
+     &                  PARTPS,NUMINS,VALMOI,POUGD ,VALPLU,
+     &                  SECMBR,DEPDEL,LICCVG,SDDYNA)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,20 +24,26 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_21
-
+C
       IMPLICIT      NONE
       INTEGER       NUMINS, LICCVG(*)
       REAL*8        PARMET(*)
-      CHARACTER*14 PILOTE
-      CHARACTER*16 METHOD(*)
-      CHARACTER*19 LISCHA, PARTPS, SOLVEU, MATASS
-      CHARACTER*24 MODELE, NUMEDD, MATE,   CARELE, COMREF, COMPOR
-      CHARACTER*24 MEDIRI, VALMOI, DEPOLD, DEPDEL(2), CARCRI, SECMBR
-      CHARACTER*24 POUGD , VALPLU, RIGID
-
-C ======================================================================
-C   STAT_NON_LINE :  PREDICTION PAR DEPLACEMENT CALCULE
-C ======================================================================
+      CHARACTER*14  PILOTE
+      CHARACTER*16  METHOD(*)
+      CHARACTER*19  LISCHA, PARTPS, SOLVEU, MATASS, SDDYNA
+      CHARACTER*24  MODELE, NUMEDD, MATE,   CARELE, COMREF, COMPOR
+      CHARACTER*24  MEDIRI, VALMOI, DEPDEL(2), CARCRI, SECMBR
+      CHARACTER*24  POUGD , VALPLU, RIGID
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME - PREDICTION)
+C
+C PREDICTION PAR DEPLACEMENT CALCULE
+C      
+C ----------------------------------------------------------------------
+C
+C
 C IN       MODELE K24  MODELE
 C IN       NUMEDD K24  NUME_DDL
 C IN       MATE   K24  CHAMP MATERIAU
@@ -68,7 +74,6 @@ C                      (5) - MATASS SINGULIERE
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -85,12 +90,11 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-
+C
       INTEGER      JEST, JDEPM, JDEPDE, JDDEPL, NEQ, JNUM, I, NBDIRI
       INTEGER      IRET
       LOGICAL      LBID
-      REAL*8       INSTAP, X(2), R8BID
+      REAL*8       INSTAP, X(2)
       REAL*8       CODONN(2), COPILO(1), DIINST
       CHARACTER*8  VEDIRI(2), K8BID
       CHARACTER*16 K16BID
@@ -100,11 +104,13 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       DATA VEDIRI /'&&VEBUDI', '&&VEDIRI'/
       DATA BUEST  /'&&NMPREX.BUEST'/
+C
 C ----------------------------------------------------------------------
-
-
+C
       CALL JEMARQ()
-
+C
+C --- INITIALISATIONS
+C
       CALL DESAGG (VALMOI, DEPMOI, K24BID, K24BID, K24BID,
      &                     K24BID, K24BID, K24BID, K24BID)
       CALL DESAGG (SECMBR, K24BID, K24BID, CNDIDO, CNDIPI,
@@ -161,14 +167,13 @@ C -- EN L'ABSENCE DE CHARGE DIRIRCHLET : FIN
 C -- REASSEMBLAGE EVENTUEL DE LA MATRICE DE PROJECTION
 
       MATRIX(1)=MATASS
-      CALL NMMATR('PREDICTION', MODELE, NUMEDD, MATE  , CARELE,
-     &                  COMREF, COMPOR, LISCHA, MEDIRI, ' '   ,
-     &                  METHOD, SOLVEU, PARMET, CARCRI, PARTPS,
-     &                  NUMINS, 0     , VALMOI, POUGD , ' '   ,
-     &                  VALPLU, MATRIX, K16BID, K24BID, K24BID,
-     &                  LBID,   K16BID, K24BID, K24BID, RIGID,
-     &                  LBID,   K24BID, K24BID, K24BID, 1.D0,
-     &                  0.D0,   0.D0, LICCVG(5))
+      CALL NMMATR('PREDICTION',MODELE,NUMEDD,MATE  ,CARELE,
+     &                  COMREF,COMPOR,LISCHA,MEDIRI,' '   ,
+     &                  METHOD,SOLVEU,PARMET,CARCRI,PARTPS,
+     &                  NUMINS,0     ,VALMOI,POUGD ,' '   ,
+     &                  VALPLU,MATRIX,K16BID,K24BID,K24BID,
+     &                  LBID,         K24BID,K24BID,RIGID,
+     &                  K24BID,K24BID,K24BID,LICCVG(5),SDDYNA)
 
       IF ((LICCVG(5).EQ.1).OR.(LICCVG(5).EQ.2)) GOTO 9999
 

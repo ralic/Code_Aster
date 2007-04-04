@@ -1,4 +1,4 @@
-# MODIF  DATE 28/11/2006   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN CONTACT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,7 +131,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                             _F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_VOISIN',
                                METHODE='CONTINUE',
-                               MODL_AXIS='OUI',
                                CONTACT_INIT='OUI',
                                ITER_GEOM_MAXI=3,
                                ITER_CONT_MAXI=50,

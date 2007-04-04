@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,7 +80,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
                               RECHERCHE='NOEUD_BOUCLE',
                               METHODE='CONTINUE',
-                              MODL_AXIS='NON',
                               GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
 #                              SANS_GROUP_NO=('B3','A'),

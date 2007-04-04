@@ -1,7 +1,7 @@
       SUBROUTINE VEMSME(MODELE,MATE,COMPOR,INPSCO,NRPASE,TYPESE,
      &                   NOPASE,VEMASE,STYPSE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 
       INTEGER IBID,IAUX,JAUX,IFM,NIV,JDUTMP,JDEPMO,NEQ,JVEMSM
       INTEGER IRET
-      REAL*8       RBID
+      REAL*8       R8BID
       COMPLEX*16  CBID
       CHARACTER*8 MA,LPAIN(NCHINX),LPAOU(NCHOUX),K8BID,MATERS
       CHARACTER*24 DEPPLU,DEPMOI,SIGMOI,VARMOI,OPTION
@@ -98,8 +98,8 @@ C ----------------------------------------------------------------------
 C -- INITIALISATION DE LA CHARGE
 C    ----------------------------
 
-      VEMASE='&&VEMSME'
-      CHDERI = '&&VEMSME.PARSENS'
+      VEMASE='&&'//NOMPRO
+      CHDERI = VEMASE//'.PARSENS'
       CALL DETRSD('VECT_ELEM',VEMASE)
       CALL MEMARE('V',VEMASE,MODELE,MATE,K8BID,'CHAR_MECA')
 
@@ -109,7 +109,8 @@ C    ----------------------------
 
 
       IF((TYPESE.NE.2).AND.(TYPESE.NE.3).AND.(TYPESE.NE.5))THEN
-        CALL U2MESS('F','ALGORITH11_23')
+        CALL U2MESI('A','SENSIBILITE_1', 1 , TYPESE)
+        CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
       ENDIF
 
 
@@ -187,47 +188,47 @@ C    -----------------------------------------------------
       LCHIN(1) = CHGEOM
 
       LPAIN(2) = 'PMATERC'
-      LCHIN(2) = MATE
+      LCHIN(2) = MATE(1:19)
 
       LPAIN(3) = 'PCOMPOR'
-      LCHIN(3) = COMPOR
+      LCHIN(3) = COMPOR(1:19)
 
       LPAIN(4) = 'PCONTMR'
-      LCHIN(4) = SIGMOI
+      LCHIN(4) = SIGMOI(1:19)
 
       LPAIN(5) = 'PCONTMS'
-      LCHIN(5) = SIGMOS
+      LCHIN(5) = SIGMOS(1:19)
 
       LPAIN(6) = 'PVARIMS'
-      LCHIN(6) = VARMOS
+      LCHIN(6) = VARMOS(1:19)
 
       LPAIN(7) = 'PDEPLMR'
-      LCHIN(7) = DEPMOI
+      LCHIN(7) = DEPMOI(1:19)
 
       LPAIN(8) = 'PDEPLPR'
-      LCHIN(8) = DUTMP
+      LCHIN(8) = DUTMP(1:19)
 
       LPAIN(9) =  'PVARIMR'
-      LCHIN(9) =  VARMOI
+      LCHIN(9) =  VARMOI(1:19)
 
       LPAIN(10) = 'PARSENS'
       LCHIN(10) = CHDERI
 
       LPAIN(11) =  'PVARIPR'
-      LCHIN(11) =  VARPLU
+      LCHIN(11) =  VARPLU(1:19)
 
       LPAIN(12) = 'PCONTPR'
-      LCHIN(12) = SIGPLU
+      LCHIN(12) = SIGPLU(1:19)
 
       LPAIN(13) = 'PMATSEN'
-      LCHIN(13) = MATSEN
+      LCHIN(13) = MATSEN(1:19)
 
 
       LPAOU(1) = 'PVECTUR'
       LCHOU(1) = VEMASE//'.SECOND'
 
       LPAOU(2) = 'PCONTPS'
-      LCHOU(2) = SIGPLS
+      LCHOU(2) = SIGPLS(1:19)
 
       IF ((TYPESE.EQ.2).OR.(TYPESE.EQ.5)) THEN
         OPTION='MECA_SENS_CHAR'
@@ -241,7 +242,7 @@ C    -----------------------------------------------------
 C -- CREATION D'UNE CARTE UNIFORME CONTENANT STYPSE
 C    ------------------------------------------------
       CALL MECACT('V',CHDERI,'MAILLAGE',MA,'NEUT_K24',1,'Z1',IBID,
-     &              RBID,CBID,STYPSE)
+     &              R8BID,CBID,STYPSE)
 
 
 C  -- CALCUL DU PSEUDO-CHARGEMENT

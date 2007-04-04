@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,7 +91,6 @@ CHA2=AFFE_CHAR_MECA(
                                   APPARIEMENT    = 'MAIT_ESCL',
                                   RECHERCHE      = 'NOEUD_BOUCLE',
                                   METHODE        = 'CONTINUE',
-                                  MODL_AXIS      = 'NON',
                                   GROUP_MA_MAIT     = 'Q1',
                                   GROUP_MA_ESCL     = 'Q21',
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE SENSIBILITE EN DYNAMIQUE NON LINEAIRE (3D-VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,7 +181,9 @@ DYT=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8,
                                   RESI_GLOB_MAXI = 2.E-7,
                                   ITER_GLOB_MAXI=1000,),
-                   NEWMARK=_F(),)                              
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),)
+                            
 
 DYT=DYNA_NON_LINE(reuse=DYT,
                    ETAT_INIT=_F(EVOL_NOLI=DYT),
@@ -196,7 +198,9 @@ DYT=DYNA_NON_LINE(reuse=DYT,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8,
                                   RESI_GLOB_MAXI = 2.E-7,
                                   ITER_GLOB_MAXI=1000,),
-                   NEWMARK=_F(),)                              
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),)
+                              
 
 T_REF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                       GROUP_NO=('OPPOSE'),
@@ -265,7 +269,9 @@ for i in range(n):
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-8,
                                   RESI_GLOB_MAXI = 2.E-7,
                                   ITER_GLOB_MAXI=1000,),
-                   NEWMARK=_F(),)                              
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                   FORMULATION='DEPLACEMENT',),)
+                            
 
   T_DIF[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                   GROUP_NO=('OPPOSE'),
@@ -462,7 +468,9 @@ DYL=DYNA_NON_LINE(MODELE=MO,CHAM_MATER=CHMAT2,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                   RESI_GLOB_MAXI = 2.E-7,
                                   ITER_GLOB_MAXI=1000,),
-                   NEWMARK=_F(),)                              
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),)
+                             
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=DYL,NUME_ORDRE=10,

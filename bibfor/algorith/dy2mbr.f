@@ -1,7 +1,7 @@
       SUBROUTINE DY2MBR( NBPASE, NRPASE, INPSCO, BASENO, INFCHA, NUMDDL,
      &    FREQ, FOMULT, MODELE, MATE, CARELE, VADIRI, VACHAM, NEQ, J2ND)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,29 +79,25 @@ C     ----- FIN DES COMMUNS JEVEUX -------------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'DY2MBR' )
 
       INTEGER      IBID
       REAL*8       R8BID
-      CHARACTER*8  K8BID
-      CHARACTER*19 K19BID
-      CHARACTER*16 K16BID
       CHARACTER*24 K24BID, BLAN24
 
       INTEGER       IEQ, NCHAR, IRET,JDVEM,JDVEK
       INTEGER       TYPESE, IAUX, JAUX, TYPCUM
-      INTEGER       J2ND1, J2ND2, J2ND3, JVEC, JINF, JCHAR
-      INTEGER VALI
+      INTEGER       J2ND1, J2ND2, JINF, JCHAR
       CHARACTER*1   TYPRES
       CHARACTER*4   TYPCAL
       CHARACTER*8   NOPASE, PARA
-      CHARACTER*19  LIGRMO
+      CHARACTER*19  LIGRMO, K19BID
       CHARACTER*24  CHDIRI, CHCHAM, VEDIRI, VECHAM,CNCHMP
       CHARACTER*24  VECOMP, VACOMP, CHCOMK, VAPRIN,CNCHKM,VACOM2
       CHARACTER*24 CHARGE, INFOCH, LCHAR
       CHARACTER*24 STYPSE
-      CHARACTER*24 VALK
 
-C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 
 C===============
@@ -203,10 +199,10 @@ C
           NCHAR = 0
           LCHAR = BLAN24
         ENDIF
-        CALL VECHDE ( TYPCAL, MODELE(1:8),NCHAR,LCHAR, MATE,
-     &              CARELE(1:8), R8BID,
-     &              VAPRIN, K24BID, K24BID, K24BID, LIGRMO,
-     &              NOPASE, VECOMP )
+        CALL VECHDE ( TYPCAL, MODELE(1:8), NCHAR, LCHAR, MATE,
+     &                CARELE(1:8), R8BID,
+     &                VAPRIN, K24BID, K19BID, K24BID, LIGRMO,
+     &                NOPASE, VECOMP )
 C
         VACOMP = BLAN24
         CALL ASASVE ( VECOMP, NUMDDL,'C',VACOMP)
@@ -239,9 +235,10 @@ C VAPRIN : CHAMP DE DEPL (IAUX = 0 ET JAUX = 4)
             NCHAR = 0
             LCHAR = BLAN24
           END IF
-          CALL VECHDE(TYPCAL,MODELE(1:8),NCHAR,LCHAR,MATE,CARELE(1:8),
-     &                R8BID,VAPRIN,K24BID,K24BID,K24BID,LIGRMO,NOPASE,
-     &                VECOMP)
+          CALL VECHDE ( TYPCAL, MODELE(1:8), NCHAR, LCHAR, MATE,
+     &                  CARELE(1:8), R8BID,
+     &                  VAPRIN, K24BID, K19BID, K24BID, LIGRMO,
+     &                  NOPASE, VECOMP )
 
           VACOMP = BLAN24
           CNCHMP = 'CHARGEMENT_KM'
@@ -260,10 +257,10 @@ C VACOM2 : CHAMP ACCE (IAUX = 0 ET JAUX = 16)
           IAUX = 0
           JAUX = 16
           CALL PSNSLE(INPSCO,IAUX,JAUX,VACOM2)
-          CALL VECHDE(TYPCAL,MODELE(1:8),NCHAR,LCHAR,MATE,
-     &                  CARELE(1:8),R8BID,VACOM2,K24BID,
-     &                  K24BID,K24BID,LIGRMO,
-     &                  NOPASE,VECOMP)
+          CALL VECHDE ( TYPCAL, MODELE(1:8), NCHAR, LCHAR, MATE,
+     &                  CARELE(1:8), R8BID,
+     &                  VACOM2, K24BID, K19BID, K24BID, LIGRMO,
+     &                  NOPASE, VECOMP )
           VACOMP = BLAN24
           CALL ASASVE(VECOMP,NUMDDL,'C',VACOMP)
           CALL ASCOVA('D',VACOMP,FOMULT,PARA,FREQ,TYPRES,CNCHMP)
@@ -274,11 +271,10 @@ C VACOM2 : CHAMP ACCE (IAUX = 0 ET JAUX = 16)
    51     CONTINUE
 
         END IF
-
-
+C
       IF ( TYPESE.EQ.-1 ) THEN
-        TYPCAL = 'DLAG'
-        CALL U2MESS('F','ALGORITH3_38')
+        CALL U2MESI('A','SENSIBILITE_1', 1 , TYPESE)
+        CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
       ENDIF
 C===============
 C  3. CUMUL DES DIFFERENTS TERMES DU SECOND MEMBRE DEFINITIF
@@ -308,9 +304,8 @@ C
         TYPCUM = 1
         CALL JEVEUO(CHCHAM(1:19)//'.VALE','L',J2ND1)
       ELSE
-        VALK = NOPASE
-        CALL U2MESG('A', 'ALGORITH12_95',1,VALK,0,0,0,0.D0)
-        CALL U2MESS('F','ALGORITH3_39')
+        CALL U2MESI('A','SENSIBILITE_1', 1 , TYPESE)
+        CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
       ENDIF
 
 C====
@@ -334,8 +329,8 @@ CR        DO 303 , IEQ = 0, NEQ-1
 CR          ZC(J2ND+IEQ) = ZC(J2ND1+IEQ) + ZC(J2ND2+IEQ) + ZC(J2ND3+IEQ)
 CR303   CONTINUE
       ELSE
-        VALI = TYPCUM
-        CALL U2MESG('A', 'ALGORITH12_96',0,' ',1,VALI,0,0.D0)
+        IBID = TYPCUM
+        CALL U2MESG('A', 'ALGORITH12_96',0,' ',1,IBID,0,R8BID)
         CALL U2MESS('F','MODELISA_67')
       ENDIF
 

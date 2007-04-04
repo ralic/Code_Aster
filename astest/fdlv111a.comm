@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE ABSORPTION D'UNE ONDE DE PRESSION DANS UNE COLONNE FLUIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -203,7 +203,8 @@ DYNA=DYNA_NON_LINE(     MODELE=MODELE,   CHAM_MATER=CHAMPMAT,
                                  REAC_ITER = 0),
                          INCREMENT=_F( LIST_INST = TEMLI),
 ###CDURAND###            ARCHIVAGE=_F(  LIST_ARCH = INLI),
-                          NEWMARK=_F() 
+                         SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
                         )
 
 PNA16=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,

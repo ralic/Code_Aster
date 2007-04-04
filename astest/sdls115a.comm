@@ -1,4 +1,4 @@
-# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,8 +160,8 @@ VIT_INI = CREA_CHAMP(MAILLAGE=MAIL,
                           )
                      )        
                              
-                 
-RESU1 = DYNA_TRAN_EXPLI( 
+
+RESU1 = DYNA_NON_LINE( 
                        MODELE=MOD1,
                        CHAM_MATER= CHMAT,
                        CARA_ELEM = CELE1,
@@ -173,13 +173,14 @@ RESU1 = DYNA_TRAN_EXPLI(
                        EXCIT=(   _F( CHARGE = COND_L1, 
                                      FONC_MULT = chf1,),
                              ),
-                       DIFF_CENT = _F(), 
+                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                       FORMULATION='ACCELERATION',),
                        ETAT_INIT = _F(
                                        VITE = VIT_INI,
                                       ),              
                      );
-                    
-                 
+
+        
                  
 
 IMPR_RESU(MODELE = MOD1,

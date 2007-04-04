@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,8 +62,6 @@ CH=AFFE_CHAR_MECA(
             CONTACT=
             _F(APPARIEMENT  = 'MAIT_ESCL',
                RECHERCHE = 'NOEUD_BOUCLE',
-#               REAC_GEOM    = 'CONTROLE',
-#               NB_REAC_GEOM = 2,
 
                GROUP_MA_MAIT='RIGID',
                GROUP_MA_ESCL='SZZ',
@@ -71,7 +69,6 @@ CH=AFFE_CHAR_MECA(
                FROTTEMENT = 'COULOMB',
                COULOMB = 0.25,
                METHODE = 'CONTINUE',
-               MODL_AXIS='OUI', 
                ),
                );
 
@@ -118,7 +115,9 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                 SUBD_PAS_MINI=1.E-30,
                                 SUBD_COEF_PAS_1=1.,
                                 ),
-                  NEWMARK=_F(  ALPHA = 0.49,   # Beta
+                  SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',
+                                ALPHA = 0.49,   # Beta
                                 DELTA = 0.9  ), # Gamma
                   NEWTON=_F(   REAC_INCR=1,
                                 MATRICE='TANGENTE',

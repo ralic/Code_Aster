@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,7 +173,6 @@ CHCON=AFFE_CHAR_MECA(MODELE=MODE,
                               GROUP_MA_ESCL='POU2',
                                   
                               METHODE='CONTINUE',
-                                 MODL_AXIS='NON',
                                  ITER_GEOM_MAXI = 3,
                                  ITER_CONT_MAXI = 10,
                                  VECT_ORIE_POU=(0.0,0.0,-1.0,),

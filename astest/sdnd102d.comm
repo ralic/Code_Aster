@@ -1,4 +1,4 @@
-# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,7 +106,8 @@ CHAM_NO=AFFE_CHAR_MECA(  MODELE=MODELE,
 
 # CALCUL DIRECT
 # -------------
-TRAN_DY=DYNA_TRAN_EXPLI(  MODELE=MODELE,
+#
+TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                 CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
                 MASS_DIAG='NON',
                EXCIT=(_F(  CHARGE = CON_LIM),            
@@ -117,8 +118,9 @@ TRAN_DY=DYNA_TRAN_EXPLI(  MODELE=MODELE,
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
-               DIFF_CENT=_F(),
-               STOP_CFL='NON',
+               SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                               FORMULATION='ACCELERATION',
+                               STOP_CFL='NON',),
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
@@ -172,7 +174,7 @@ TEST_FONCTION(VALEUR=(
 
 # CALCUL DIRECT AVEC DISSIPATION NUMERIQUE
 # ----------------------------------------
-TRAN_DYT=DYNA_TRAN_EXPLI(  MODELE=MODELE,
+TRAN_DYT=DYNA_NON_LINE(  MODELE=MODELE,
                 CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
                 MASS_DIAG='NON',
                EXCIT=(_F(  CHARGE = CON_LIM),            
@@ -183,8 +185,9 @@ TRAN_DYT=DYNA_TRAN_EXPLI(  MODELE=MODELE,
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
-               TCHAMWA=_F(PHI=1.05),
-               STOP_CFL='NON',
+               SCHEMA_TEMPS=_F(SCHEMA='TCHAMWA',
+                               FORMULATION='ACCELERATION',
+                               PHI=1.05,STOP_CFL='NON',),
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),

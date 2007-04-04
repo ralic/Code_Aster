@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -165,6 +165,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
          ),
          RECH_LINEAIRE   =FACT(statut='f',
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="CORDE",into=("CORDE","MIXTE") ),         
            RESI_LINE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-1 ),
            ITER_LINE_MAXI  =SIMP(statut='f',typ='I',defaut= 3),
            ITER_LINE_CRIT  =SIMP(statut='f',typ='I',defaut= 20),
@@ -237,6 +238,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,val_min=0.),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut=0,val_min=0),
+             REAC_RESI       =SIMP(statut='f',typ='I',defaut=0,val_min=0),
              TYPE_REORTHO_DD =SIMP(statut='f',typ='TXM',defaut="GSM",into=("SANS","GS","GSM","IGSM") ),
              NB_REORTHO_DD   =SIMP(statut='f',typ='I',defaut=0,val_min=0),
              NB_REORTHO_INST =SIMP(statut='f',typ='I',defaut=0,val_min=0),

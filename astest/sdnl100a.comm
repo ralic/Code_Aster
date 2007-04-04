@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE PENDULE SIMPLE EN GRANDE OSCILLATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,7 @@ RESU=DYNA_NON_LINE(  MODELE=MO, CHAM_MATER=CHMAT,  CARA_ELEM=CARA,
                            _F(  CHARGE = CHA2)),
                     INCREMENT=_F( INST_INIT = 0., LIST_INST = L_INST1),
                     ARCHIVAGE=_F( LIST_INST = L_INST2),
-                    NEWMARK=_F(),
+                    SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                     COMP_ELAS=_F( RELATION = 'CABLE',DEFORMATION = 'GREEN'),
 #                  CONVERGENCE:(RESI_GLOB_MAXI:1.E-3 ITER_GLOB_MAXI:100)
                    CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, ITER_GLOB_MAXI = 100),

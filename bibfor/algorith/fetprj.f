@@ -3,7 +3,7 @@
      &                  INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,18 +87,21 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C DECLARATION VARIABLES LOCALES
       INTEGER      JGITVI,JGITV1,I,J,IDECAI,K,IDECAO,L,M,IFM,NIVMPI,
      &             GII,GII1,NBDDL,NBMC,IFETR,IMC,IDD,INFOL8,IBID,IBCAST,
-     &             JGI,JGITGI
+     &             JGI,JGITGI,VALI(2)
       INTEGER*4    INFOLA
-      INTEGER VALI(2)
       REAL*8       RAUX,DDOT
       CHARACTER*8  NOMSD
       CHARACTER*24 NOMSDR,SDFETG,K24B
       CHARACTER*32 JEXNUM,JEXNOM
       LOGICAL      LPARA
+      INTEGER*4    DIMGI4,NBI4
+
 C
       CALL MATFPE(-1)
 
 C INITS DIVERSES
+      DIMGI4=DIMGI
+      NBI4=NBI
       IF (NBPROC.EQ.1) THEN
         LPARA=.FALSE.
       ELSE
@@ -129,7 +132,7 @@ C---------------------------------------------------------------------
 
           IF (OPTION.NE.1)
      &      CALL U2MESS('F','ALGORITH3_66')
-          CALL DCOPY(NBI,VI,1,VO,1)
+          CALL DCOPY(NBI4,VI,1,VO,1)
 
         ELSE
 C---------------------------------------------------------------------
@@ -149,7 +152,7 @@ C --------------------------------------------------------------------
           JGITV1=JGITVI-1
 
           IF (LSTOGI) THEN
-            CALL DGEMV('T',NBI,DIMGI,1.D0,ZR(JGI),NBI,VI,1,0.D0,
+            CALL DGEMV('T',NBI4,DIMGI4,1.D0,ZR(JGI),NBI4,VI,1,0.D0,
      &                 ZR(JGITVI),1)
           ELSE
 C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
@@ -187,8 +190,8 @@ C --------------------------------------------------------------------
           INFOL8=0
 C DESCENTE-REMONTEE MATRICE SYMETRIQUE INDEFINIE (STOCKEE PAR PAQUET)
 C VIA LAPACK
-          CALL DSPTRS('L',DIMGI,1,ZR(JGITGI),ZI4(IPIV),ZR(JGITVI),DIMGI,
-     &    INFOLA)
+          CALL DSPTRS('L',DIMGI4,1,ZR(JGITGI),ZI4(IPIV),ZR(JGITVI),
+     &                DIMGI4,INFOLA)
           INFOL8=INFOLA
           IF (INFOL8.NE.0) THEN
             VALI (1) = I
@@ -200,11 +203,11 @@ C VIA LAPACK
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=VI-GI*((GI)T*GI)-1*(GI)T*VI (OPTION=1)
 C --------------------------------------------------------------------
-            CALL DCOPY(NBI,VI,1,VO,1)
+            CALL DCOPY(NBI4,VI,1,VO,1)
 
             IF (LSTOGI) THEN
-              CALL DGEMV('N',NBI,DIMGI,-1.D0,ZR(JGI),NBI,ZR(JGITVI),1,
-     &                   1.D0,VO,1)
+              CALL DGEMV('N',NBI4,DIMGI4,-1.D0,ZR(JGI),NBI4,
+     &                   ZR(JGITVI),1,1.D0,VO,1)
             ELSE
 C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
               DO 200 IDD=1,NBSD
@@ -219,7 +222,7 @@ C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
                     RAUX=-ZR(JGITV1)
                     CALL FETREX(1,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
      &                          ZR(GII),IREX)
-                    CALL DAXPY(NBI,RAUX,ZR(GII),1,VO,1)
+                    CALL DAXPY(NBI4,RAUX,ZR(GII),1,VO,1)
   190             CONTINUE
                   CALL JELIBE(JEXNOM(NOMSDR,NOMSD))
                 ENDIF
@@ -235,7 +238,7 @@ C MONITORING
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=((GI)T*GI)-1*(GI)T*VI (OPTION=2)
 C --------------------------------------------------------------------
-            CALL DCOPY(DIMGI,ZR(JGITVI),1,VO,1)
+            CALL DCOPY(DIMGI4,ZR(JGITVI),1,VO,1)
 
 C MONITORING
             IF (INFOFE(1:1).EQ.'T')

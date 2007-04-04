@@ -16,7 +16,7 @@
       CHARACTER*16  OPMASS
       CHARACTER*14  PILOTE
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,8 +74,11 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'NDDOET' )
+C
       INTEGER      IBID,IRETVI,IRETAC,IERR,IAUX,JAUX
-      INTEGER VALI
       INTEGER      JINFC,NBCHAR,N2,NUME,NRPASE
       INTEGER      JCHAR,IACHA2,I,JINST,NCHOUT,IACHAR
       INTEGER      IRET,NOCC,REENTR,N1,NBR
@@ -232,11 +235,11 @@ C ======================================================================
             CALL PSNSLE ( INPSCO, IAUX, JAUX, NOPASE )
             CALL PSRENC ( EVOL, NOPASE, RESUID, IRET )
             IF ( IRET.NE.0 ) THEN
-              VALI = IRET
-              CALL U2MESG('A', 'ALGORITH13_55',0,' ',1,VALI,0,0.D0)
-               VALK(1) = EVOL
-               VALK(2) = NOPASE
-               CALL U2MESK('F','ALGORITH6_40', 2 ,VALK)
+              VALK(1) = EVOL
+C                               '1234567890123456'
+              VALK(2) = NOPASE//'                '
+              CALL U2MESK('A','SENSIBILITE_3', 2 ,VALK)
+              CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
             ENDIF
             STRUCT = RESUID
           ELSE
@@ -385,7 +388,9 @@ C -- LECTURE DES VARIABLES INTERNES
           CALL GETVID('ETAT_INIT','VARI',1,1,1,CHAMP,NOCC)
           LNOCC=(LNOCC.OR.(NOCC.NE.0))
 
-          IF (LNOCC .AND. NBPASE.GT.0) CALL U2MESS('F','ALGORITH6_51')
+          IF (LNOCC .AND. NBPASE.GT.0) THEN
+            CALL U2MESS('F','SENSIBILITE_21')
+          ENDIF
 
 C      PREPARATION POUR CREER UN CHAMP NUL
           IF (NOCC.EQ.0) THEN

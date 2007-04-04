@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -220,7 +220,8 @@ TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                             NOM_CMP='DX',
                             NOEUD='NO1',SUIVI_DDL='OUI'),
                             ),
-               NEWMARK=_F(), 
+               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='DEPLACEMENT',),
                CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-8,
                              ITER_GLOB_MAXI = 20),   
                NEWTON=_F(  REAC_ITER = 1)
@@ -356,7 +357,8 @@ TRAN_DY2=DYNA_NON_LINE(  MODELE=BICHOC,
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
-               NEWMARK=_F(), 
+               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
                CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-8,
                              ITER_GLOB_MAXI = 20),   
                NEWTON=_F(  REAC_ITER = 1)

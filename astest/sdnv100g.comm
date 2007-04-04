@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,7 +82,6 @@ CH2=AFFE_CHAR_MECA(
                               E_N            =1.E12,
                               E_V            =2.E4,
                               FORMULATION='DEPL',
-                              MODL_AXIS      = 'NON',
                               GROUP_MA_ESCL  = 'FACEINF',
                               GROUP_MA_MAIT  = 'SSOL',
                              )
@@ -136,7 +135,10 @@ U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
            ETAT_INIT   =_F(DEPL = CHAMP2,VITE = CHAMP1),
            COMP_ELAS   =_F( RELATION = 'ELAS',),
            INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),
-           NEWMARK     =_F(  ALPHA = ALF, DELTA = DEL),
+           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                           FORMULATION='DEPLACEMENT',
+                           ALPHA = ALF, DELTA = DEL),
+
            NEWTON      =_F( MATRICE = 'TANGENTE',  REAC_ITER = 1),
            CONVERGENCE =_F(  
                          ITER_GLOB_MAXI = 20),

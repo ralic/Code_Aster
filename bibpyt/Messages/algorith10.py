@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith10 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -232,11 +232,7 @@ cata_msg={
 """),
 
 58: _("""
- choix incorrect de l'algorithme de restriction de l'espace des mulitplicateurs
-"""),
-
-59: _("""
- forte probabilite presence modes propres multiples. calcul sensibilite limite actuellement aux modes propres simples
+ choix incorrect de l'algorithme de restriction de l'espace des multiplicateurs
 """),
 
 60: _("""

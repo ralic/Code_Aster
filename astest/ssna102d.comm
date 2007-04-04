@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,16 +142,13 @@ CONT=AFFE_CHAR_MECA(
                            MODELE=MOD,CONTACT=(
                                _F(  GROUP_MA_MAIT = 'LAB1S',
                                          GROUP_MA_ESCL = 'CEP2S',
-                                         METHODE = 'CONTINUE',
-                                         MODL_AXIS = 'OUI'),
+                                         METHODE = 'CONTINUE',),
                                _F(  GROUP_MA_MAIT = 'CME2S',
                                          GROUP_MA_ESCL = 'CEP3S',
-                                         METHODE = 'CONTINUE',
-                                         MODL_AXIS = 'OUI'),
+                                         METHODE = 'CONTINUE',),
                                _F(  GROUP_MA_MAIT = 'CME3S',
                                          GROUP_MA_ESCL = 'LCD4S',
-                                         METHODE = 'CONTINUE',
-                                         MODL_AXIS = 'OUI'),
+                                         METHODE = 'CONTINUE',),
                                ),
                            INFO=1
                        )

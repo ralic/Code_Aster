@@ -3,7 +3,7 @@
      &                  IREX,IFM,SDFETI,NBPROC,RANG,K24LAI,ITPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,12 +77,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER      I,JVE,IDD,IFETR,NBMC,IMC,NBMC1,IDECAI,NB,IBID,
+      INTEGER      I,JVE,IDD,IFETR,NBMC,IMC,NBMC1,IDECAI,IBID,
      &             IVALE,IDECAO,NBDDL,IFETC,J,JVE1,K,GII,INFOL8,ILIMPI,
      &             DIMGI1,NIVMPI,IDISPL,JGI,JGITGI
-      INTEGER*4    INFOLA
+      INTEGER*4    INFOLA,DIMGI4,NBI4
       INTEGER VALI(2)
-      REAL*8       DDOT,RAUX,RBID
+      REAL*8       DDOT,RAUX,RBID,DNRM2
       CHARACTER*8  NOMSD
       CHARACTER*19 CHSMDD
       CHARACTER*24 NOMSDR,SDFETG,K24ER,K24BID      
@@ -95,6 +95,8 @@ C
       CALL MATFPE(-1)
 
 C INITS.
+      DIMGI4=DIMGI
+      NBI4=NBI
       IF (INFOFE(10:10).EQ.'T') THEN
         NIVMPI=2
       ELSE
@@ -117,7 +119,7 @@ C SI MODES DE CORPS RIGIDES CALCUL DE LANDA0=GI*(GITGI)-1*E
 C EN PARALLELE, GI ET GIT*GI NE SONT STOCKES QUE PAR LE PROC 0
         IF (RANG.EQ.0) THEN
           IF (LSTOGI) CALL JEVEUO(NOMGI,'L',JGI)
-          CALL JEVEUO(NOMGGT,'L',JGITGI)
+          CALL JEVEUO(NOMGGT,'E',JGITGI)
         ENDIF
 
 C ADRESSE JEVEUX OBJET FETI & MPI
@@ -193,22 +195,25 @@ C MONITORING
         IF (INFOFE(1:1).EQ.'T')
      &    WRITE(IFM,*)'<FETI/FETINL', RANG,'> CONSTRUCTION DE E'
         IF ((INFOFE(4:4).EQ.'T').AND.(RANG.EQ.0)) THEN
-          DO 105 I=1,DIMGI
-            WRITE(IFM,*)'E(I)',I,ZR(JVE+I-1)
-  105     CONTINUE      
+          IF (DIMGI.LE.5) THEN
+            DO 105 I=1,DIMGI
+              WRITE(IFM,*)'E(I)',I,ZR(JVE+I-1)
+  105       CONTINUE
+          ENDIF
+          RAUX=DNRM2(DIMGI4,ZR(JVE),1)
+          WRITE(IFM,*)'NORME DE E ',RAUX      
         ENDIF
 C -------------------------------------------------------------------- 
 C CONSTITUTION DE ((GI)T*GI)-1*E STOCKE DANS '&&FETINL.E.R'
 C --------------------------------------------------------------------
 C EN PARALLELE SEUL LE PROCESSUS MAITRE CONSTRUIT CET OBJET
         IF (RANG.EQ.0) THEN
-          NB=1
           IF (ITPS.EQ.1) THEN
             INFOLA=0
             INFOL8=0
 C FACTORISATION/DESCENTE-REMONTEE SYMETRIQUE INDEFINIE (STOCKEE PAR
 C PAQUET) VIA LAPACK. A NE FAIRE Qu'AU PREMIER PAS DE TEMPS         
-            CALL DSPTRF('L',DIMGI,ZR(JGITGI),ZI4(IPIV),INFOLA)
+            CALL DSPTRF('L',DIMGI4,ZR(JGITGI),ZI4(IPIV),INFOLA)
             INFOL8=INFOLA
             IF (INFOL8.NE.0) THEN
             VALI (1) = I
@@ -218,7 +223,7 @@ C PAQUET) VIA LAPACK. A NE FAIRE Qu'AU PREMIER PAS DE TEMPS
           ENDIF
           INFOL8=0
           INFOLA=0        
-          CALL DSPTRS('L',DIMGI,NB,ZR(JGITGI),ZI4(IPIV),ZR(JVE),DIMGI,
+          CALL DSPTRS('L',DIMGI4,1,ZR(JGITGI),ZI4(IPIV),ZR(JVE),DIMGI4,
      &                INFOLA)
           INFOL8=INFOLA          
           IF (INFOL8.NE.0) THEN
@@ -230,9 +235,13 @@ C MONITORING
           IF (INFOFE(1:1).EQ.'T')
      &      WRITE(IFM,*)'<FETI/FETINL', RANG,'> INVERSION (GITGI)-1*E'
           IF (INFOFE(4:4).EQ.'T') THEN
-            DO 115 I=1,DIMGI
-              WRITE(IFM,*)'(GIT*GI)-1*E(I)',I,ZR(JVE+I-1)
-  115       CONTINUE
+            IF (DIMGI.LE.5) THEN
+              DO 115 I=1,DIMGI
+                WRITE(IFM,*)'(GIT*GI)-1*E(I)',I,ZR(JVE+I-1)
+  115         CONTINUE
+            ENDIF
+            RAUX=DNRM2(DIMGI4,ZR(JVE),1)
+            WRITE(IFM,*)'NORME DE (GIT*GI)-1*E ',RAUX
           ENDIF
 
 C -------------------------------------------------------------------- 
@@ -240,7 +249,7 @@ C CONSTITUTION DE LANDA0=GI*(((GI)T*GI)-1*E) STOCKE DANS VLAGI
 C --------------------------------------------------------------------
 
           IF (LSTOGI) THEN
-            CALL DGEMV('N',NBI,DIMGI,1.D0,ZR(JGI),NBI,ZR(JVE),1,1.D0,
+            CALL DGEMV('N',NBI4,DIMGI4,1.D0,ZR(JGI),NBI4,ZR(JVE),1,1.D0,
      &                 VLAGI,1)
           ELSE
 C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL        
@@ -263,7 +272,7 @@ C ----  BOUCLES SUR LES MODES DE CORPS RIGIDES DE IDD
                   RAUX=ZR(JVE1)         
                   CALL FETREX(1,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
      &                        ZR(GII),IREX)
-                  CALL DAXPY(NBI,RAUX,ZR(GII),1,VLAGI,1)     
+                  CALL DAXPY(NBI4,RAUX,ZR(GII),1,VLAGI,1)     
   190           CONTINUE
                 CALL JELIBE(JEXNOM(NOMSDR,NOMSD))
               ENDIF
@@ -276,9 +285,13 @@ C MONITORING
           IF (INFOFE(1:1).EQ.'T')
      &      WRITE(IFM,*)'<FETI/FETINL', RANG,'> CONSTRUCTION DE LANDA0'
           IF (INFOFE(4:4).EQ.'T') THEN
-            DO 205 I=1,NBI
-              WRITE(IFM,*)'LANDA0(I)',I,VLAGI(I)
-  205       CONTINUE      
+            IF (DIMGI.LE.5) THEN
+              DO 205 I=1,NBI
+                WRITE(IFM,*)'LANDA0(I)',I,VLAGI(I)
+  205         CONTINUE
+            ENDIF
+            RAUX=DNRM2(NBI4,VLAGI,1)
+            WRITE(IFM,*)'NORME DE LANDA0 ',RAUX      
           ENDIF
 
 C FIN DU IF RANG

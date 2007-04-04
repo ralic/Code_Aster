@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa9 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,6 +77,10 @@ cata_msg={
 
 11: _("""
  mocle facteur non traite :mclf %(k1)s
+"""),
+
+12: _("""
+ Une zone de contact contient à la fois des éléments axisymétriques et non axisymétriques ! 
 """),
 
 }

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -346,8 +346,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='MA4',    
                NOM_CMP = 'NUEST',      
-               VALE = 1.2195236161247, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.3.26'),
+               VALE = 1.2089635297301, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
              ),
             );
 
@@ -360,8 +360,8 @@ TEST_RESU(RESU=(
                GROUP_NO= 'A',
                MAILLE='MA4',    
                NOM_CMP = 'ERREST',      
-               VALE = 6.9144510239137E-04, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.3.26'),
+               VALE = 6.8545701343028E-04, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
              ),
             );
 

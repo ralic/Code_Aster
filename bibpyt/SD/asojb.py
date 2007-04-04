@@ -1,4 +1,4 @@
-#@ MODIF asojb SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF asojb SD  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -273,6 +273,10 @@ class AsVR(OJBVect):
 # -----------------------------------------------------------------------------
 class AsVC(OJBVect):
     _type = "C"
+
+# -----------------------------------------------------------------------------
+class AsVL(OJBVect):
+    _type = "L"
 
 # -----------------------------------------------------------------------------
 class AsVK8(OJBVect):

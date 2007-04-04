@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,7 +128,9 @@ REPONSE=STAT_NON_LINE(MODELE=MO,
                 CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),),
              );
 #
-REPONSE=DYNA_NON_LINE( reuse=REPONSE,NEWMARK=_F(),
+REPONSE=DYNA_NON_LINE( reuse=REPONSE,
+               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='DEPLACEMENT',),
                 ETAT_INIT=_F(EVOL_NOLI = REPONSE),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,EXCIT=(
@@ -144,7 +146,9 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,NEWMARK=_F(),
                 MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='TANGENTE',),
              );
 #
-REPONSE=DYNA_NON_LINE( reuse=REPONSE,NEWMARK=_F(),
+REPONSE=DYNA_NON_LINE( reuse=REPONSE,
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
                 ETAT_INIT=_F(EVOL_NOLI = REPONSE),
                 MODELE=MO,
                 CHAM_MATER=CHMAT,EXCIT=(

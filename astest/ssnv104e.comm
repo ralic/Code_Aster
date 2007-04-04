@@ -1,4 +1,4 @@
-# MODIF  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -54,7 +54,6 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                GLISSIERE='OUI',
                                INTEGRATION='NOEUD',
                                COEF_REGU_CONT=10000.,
-                               MODL_AXIS='OUI',
                                ITER_GEOM_MAXI=10,
                                ITER_CONT_MAXI=20),
                     INFO=1);

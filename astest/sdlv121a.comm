@@ -1,4 +1,4 @@
-# MODIF  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE ONDE DE CISAILLEMENT DANS UNE COLONNE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -225,7 +225,8 @@ DYNB=DYNA_NON_LINE(     MODELE=MODELE,
                                     REAC_ITER = 0),
                         INCREMENT=_F( LIST_INST = TEMLI),
 ###CDURAND              ARCHIVAGE=_F( LIST_ARCH = INLI),
-                        NEWMARK=_F()
+                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',),
                         )
 
 DXNB22=RECU_FONCTION(   LIST_INST=TEMLI2,   PRECISION=1.E-4,

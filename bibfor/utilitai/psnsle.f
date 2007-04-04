@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - NOM DES STRUCTURES - LECTURE
 C     *          *           *       *            **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,12 +65,13 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
       INTEGER LXLGUT
-      INTEGER VALI(2)
+      INTEGER VALI(3)
 C
       INTEGER ADPSCO, NBPSCO
       INTEGER LGNOST
       INTEGER IAUX, JAUX
 C
+      CHARACTER*06 VALK(2)
       CHARACTER*08 SAUX08
       CHARACTER*24 SAUX24
 C
@@ -99,9 +100,11 @@ C
 C
         IF ( LGNOST.GT.IAUX ) THEN
 C
-        VALI (1) = IAUX
-        VALI (2) = LGNOST
-          CALL U2MESG('A', 'UTILITAI6_64',0,' ',2,VALI,0,0.D0)
+          VALK (1) = 'NOMSTR'
+          VALK (2) = 'SAUX24'
+          VALI (1) = IAUX
+          VALI (2) = LGNOST
+          CALL U2MESG('A', 'SENSIBILITE_85', 2, VALK, 2, VALI, 0, 0.D0 )
           CALL U2MESS('F','MODELISA_67')
 C
         ENDIF
@@ -115,9 +118,10 @@ C 1.3. ==> PROBLEME
 C
       ELSE
 C
-        VALI (1) = NBPSCO
-        VALI (2) = TYPEST
-        CALL U2MESG('A', 'UTILITAI6_65',0,' ',2,VALI,0,0.D0)
+        VALI (1) = 0
+        VALI (2) = NBPSCO
+        VALI (3) = TYPEST
+        CALL U2MESG('A', 'SENSIBILITE_84',1,'TYPEST',3,VALI,0,0.D0)
         CALL U2MESS('F','MODELISA_67')
 C
       ENDIF

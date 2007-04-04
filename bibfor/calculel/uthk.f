@@ -1,7 +1,7 @@
       SUBROUTINE UTHK(NOMTE,IGEOM,HK,NDIM,NOE,NSOMM,ITYP,INO,NIV,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,8 @@ C RESPONSABLE BOITEAU O.BOITEAU
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  UTILITAIRE DE CALCUL DU DIAMETRE D'UN
 C                          ELEMENT FINI K.
+C      PAR DEFINITION, LE DIAMETRE D'UN ELEMENT EST LA LONGUEUR DU PLUS
+C      GRAND SEGMENT QUE L'ON PEUT INSERER DANS LA MAILLE ASSOCIEE.
 C
 C IN NOMTE  : NOM DU TYPE D'ELEMENT DE K
 C IN IGEOM  : ADRESSE JEVEUX DE LA GEOMETRIE
@@ -33,15 +35,9 @@ C IN ITYP   : TYPE DE FACE
 C IN NIV/IFM : PARAMETRES D'IMPRESSION
 C OUT HK    : DIAMETRE DE L'ELEMENT K
 C   -------------------------------------------------------------------
-C     SUBROUTINES APPELLEES:
-C       ENVIMA: R8MIEM.
-C       RESOLUTION SYSTEME PAR GAUSS: MGAUSS.
-C
-C     FONCTIONS INTRINSEQUES:
-C       ABS,MAX,SQRT.
-C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       03/07/01 (OB): CREATION POUR SIMPLIFIER TE0003.F.
+C       12/03/07 (SM): CORRECTION CAR CALCUL FAUX DU DIAMETRE
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -49,7 +45,7 @@ C CORPS DU PROGRAMME
 C DECLARATION PARAMETRES D'APPELS
       INTEGER IGEOM,NDIM,NOE(9,6,3),NSOMM,INO,ITYP,NIV,IFM
       CHARACTER*16 NOMTE
-      REAL*8 HK,DET
+      REAL*8 HK
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -69,35 +65,39 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
-
 C
-      REAL*8 A,B,C,D,E,F,X1,Y1,X2,Y2,X3,Y3,H1,H2,
-     &       X4,Y4,Z1,Z2,Z3,Z4,A1(3,3),B1(3),H3,X5,Y5,Z5,X6,Y6,Z6,X7,Y7,
-     &       Z7,X8,Y8,Z8,H4,HKK,H11,H22,H33,U(3),V(3),W(3)
-      INTEGER IN,I,IINO,IRET
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'UTHK  ' )
+C
+      INTEGER     DIMTAB
+      PARAMETER ( DIMTAB = 28 )
+      REAL*8      TABAUX(DIMTAB)
+C
+      REAL*8 X1,Y1,Z1,X2,Y2,Z2,X3,Y3,Z3,X4,Y4,Z4,X5,Y5,Z5,X6,Y6,Z6
+      REAL*8 X7,Y7,Z7,X8,Y8,Z8
+      INTEGER IN,I,IINO
       CHARACTER*2 NOMTE2
-
+      CHARACTER*6 VALK(2)
 C
 C====
-C 1. COORDONNEES DES SOMMETS DE L'ELEMENT
+C 1. COORDONNEES DES SOMMETS ET TYPE GEOMETRIQUE DE L'ELEMENT
 C====
+C
+C 1.1. ==> QUADRANGLE/TRIANGLE EN 2D
 C
       IF (NDIM.EQ.2) THEN
-C QUADRANGLE/TRIANGLE EN 2D
         X1 = ZR(IGEOM)
         Y1 = ZR(IGEOM+1)
         X2 = ZR(IGEOM+2)
         Y2 = ZR(IGEOM+3)
         X3 = ZR(IGEOM+4)
         Y3 = ZR(IGEOM+5)
-        NOMTE2 = NOMTE(5:6)
-        IF ( NOMTE.EQ.'HM_DPTR6_P' ) THEN
-          NOMTE2 = 'TR'
-        ELSEIF ( NOMTE.EQ.'HM_DPQ8_P' ) THEN
-          NOMTE2 = 'QU'
-        ENDIF
-      ELSE IF (NDIM.EQ.3) THEN
-C HEXA/TETRA/PENTA
+        CALL UTTGEL ( NOMTE, NDIM, NOMTE2 )
+C
+      ELSEIF (NDIM.EQ.3) THEN
+C
+C 1.2. ==> HEXA/TETRA/PENTA/PYRA
+C
         X1 = ZR(IGEOM)
         Y1 = ZR(IGEOM+1)
         Z1 = ZR(IGEOM+2)
@@ -110,9 +110,12 @@ C HEXA/TETRA/PENTA
         X4 = ZR(IGEOM+9)
         Y4 = ZR(IGEOM+10)
         Z4 = ZR(IGEOM+11)
-        NOMTE2 = NOMTE(6:7)
-      ELSE IF (NDIM.EQ.0) THEN
-C FACE3/4/6/8
+        CALL UTTGEL ( NOMTE, NDIM, NOMTE2 )
+C
+      ELSEIF (NDIM.EQ.0) THEN
+C
+C 1.3. ==> FACE3/4/6/8
+C
         DO 10 IN = 1,NSOMM
           IINO = NOE(IN,INO,ITYP)
           I = IGEOM + 3*(IINO-1)
@@ -120,15 +123,15 @@ C FACE3/4/6/8
             X1 = ZR(I)
             Y1 = ZR(I+1)
             Z1 = ZR(I+2)
-          ELSE IF (IN.EQ.2) THEN
+          ELSEIF (IN.EQ.2) THEN
             X2 = ZR(I)
             Y2 = ZR(I+1)
             Z2 = ZR(I+2)
-          ELSE IF (IN.EQ.3) THEN
+          ELSEIF (IN.EQ.3) THEN
             X3 = ZR(I)
             Y3 = ZR(I+1)
             Z3 = ZR(I+2)
-          ELSE IF (IN.EQ.4) THEN
+          ELSEIF (IN.EQ.4) THEN
             X4 = ZR(I)
             Y4 = ZR(I+1)
             Z4 = ZR(I+2)
@@ -144,89 +147,66 @@ C FACE_4 OU FACE_8
       ENDIF
 C
 C====
-C 2. TRIANGLE : DIAMETRE DU CERCLE CIRCONSCRIT
-C    LE RAYON DU CERCLE CIRCONSCRIT EST LE QUOTIENT : (A*B*C)/(4*S)
-C    AVEC A, B, C VALANT LES LONGUEURS DES 3 COTES ET S SA SURFACE.
-C    REFERENCE : CRC HANDBOOK OF MATHEMATICAL SCIENCES, BEYER,
-C                UNIVERSITY OF AKRON, 1987. NUMERO GALAXIE E1987B209173
-C    LE DIAMETRE EST DONC (A*B*C)/(2*S), SOIT (A*B*C)/K OU K EST LA
-C    NORME DU PRODUIT VECTORIEL DE DEUX COTES
+C 2. TRIANGLE : PLUS GRANDE ARETE
 C====
 C
-      IF ((NOMTE2.EQ.'TR').OR.
-     &    (NOMTE2.EQ.'TS').OR.
-     &    (NOMTE2.EQ.'TL')) THEN
+      IF ( (NOMTE2.EQ.'TR') .OR.
+     &     (NOMTE2.EQ.'TS') .OR.
+     &     (NOMTE2.EQ.'TL') ) THEN
 C
-        A = X2 - X1
-        B = X3 - X2
-        C = X1 - X3
-        D = Y2 - Y1
-        E = Y3 - Y2
-        F = Y1 - Y3
-        HK = SQRT( ( A**2 + D**2 ) *
-     &             ( B**2 + E**2 ) *
-     &             ( C**2 + F**2 ) )
-        HK = HK / ABS( A*F - D*C )
-        IF (NIV.EQ.2) THEN
-          WRITE(IFM,*)'TRIANGLE : NOEUD1 (',X1,',',Y1,')'
-          WRITE(IFM,*)'           NOEUD2 (',X2,',',Y2,')'
-          WRITE(IFM,*)'           NOEUD3 (',X3,',',Y3,')'
-          WRITE(IFM,*)'==> DIAMETRE = ', HK
-        ENDIF
+        TABAUX(1) = (X2-X1)**2 + (Y2-Y1)**2
+        TABAUX(2) = (X3-X2)**2 + (Y3-Y2)**2
+        TABAUX(3) = (X1-X3)**2 + (Y1-Y3)**2
+C
+        HK = MAX(TABAUX(1),TABAUX(2),TABAUX(3))
 C
 C====
-C 3. QUADRANGLE : PLUS GRANDE DIAGONALE
+C 3. QUADRANGLE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 C====
 C
-      ELSE IF ((NOMTE2.EQ.'QU').OR.
-     &         (NOMTE2.EQ.'QS').OR.
-     &         (NOMTE2.EQ.'QL')) THEN
+      ELSEIF ( (NOMTE2.EQ.'QU') .OR.
+     &         (NOMTE2.EQ.'QS') .OR.
+     &         (NOMTE2.EQ.'QL') ) THEN
 C
         X4 = ZR(IGEOM+6)
         Y4 = ZR(IGEOM+7)
-        H1 = (X1-X3)**2 + (Y1-Y3)**2
-        H2 = (X2-X4)**2 + (Y2-Y4)**2
-        HK = MAX(H1,H2)
-        HK = SQRT(HK)
-        IF (NIV.EQ.2) THEN
-          WRITE(IFM,*)'QU: PLUS GRANDE DIAGONALE = ',HK
-        ENDIF
+C
+C       LES DIAGONALES
+C
+        TABAUX(1) = (X1-X3)**2 + (Y1-Y3)**2
+        TABAUX(2) = (X2-X4)**2 + (Y2-Y4)**2
+C
+C       LES ARETES
+C
+        TABAUX(3) = (X1-X2)**2 + (Y1-Y2)**2
+        TABAUX(4) = (X1-X4)**2 + (Y1-Y4)**2
+        TABAUX(5) = (X2-X3)**2 + (Y2-Y3)**2
+        TABAUX(6) = (X3-X4)**2 + (Y3-Y4)**2
+C
+        HK = MAX(TABAUX(1),TABAUX(2),TABAUX(3),TABAUX(4),TABAUX(5),
+     &           TABAUX(6))
 C
 C====
-C 4. TETRAEDRE : DIAMETRE DE LA SPHERE CIRCONSCRITE
+C 4. TETRAEDRE : PLUS GRANDE ARETE
 C====
 C
-      ELSE IF (NOMTE2.EQ.'TE') THEN
+      ELSEIF ( NOMTE2.EQ.'TE' ) THEN
 C
-        A1(1,1) = X2 - X1
-        A1(2,1) = X3 - X1
-        A1(3,1) = X4 - X1
-        A1(1,2) = Y2 - Y1
-        A1(2,2) = Y3 - Y1
-        A1(3,2) = Y4 - Y1
-        A1(1,3) = Z2 - Z1
-        A1(2,3) = Z3 - Z1
-        A1(3,3) = Z4 - Z1
-        B1(1)=0.5D0*(A1(1,1)*(X2+X1)+A1(1,2)*(Y2+Y1)+A1(1,3)*(Z2+Z1))
-        B1(2)=0.5D0*(A1(2,1)*(X3+X1)+A1(2,2)*(Y3+Y1)+A1(2,3)*(Z3+Z1))
-        B1(3)=0.5D0*(A1(3,1)*(X4+X1)+A1(3,2)*(Y4+Y1)+A1(3,3)*(Z4+Z1))
-C INVERSION PAR GAUSS DU SYSTEME LINEAIRE A*X=B
-        CALL MGAUSS('NFVP',A1,B1,3,3,1,DET,IRET)
-        HK = 2.D0 * SQRT((X1-B1(1))**2+(Y1-B1(2))**2+(Z1-B1(3))**2)
-        IF (NIV.EQ.2) THEN
-          WRITE(IFM,*)'TE: CENTRE SPHERE CIRCONSCRITE ',
-     &                (B1(I),I=1,3)
-          H1=2.D0*SQRT((X2-B1(1))**2+(Y2-B1(2))**2+(Z2-B1(3))**2)
-          H2=2.D0*SQRT((X3-B1(1))**2+(Y3-B1(2))**2+(Z3-B1(3))**2)
-          H3=2.D0*SQRT((X4-B1(1))**2+(Y4-B1(2))**2+(Z4-B1(3))**2)
-          WRITE(IFM,*)'DIAMETRES ',HK,H1,H2,H3
-        ENDIF
+        TABAUX(1) = (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2
+        TABAUX(2) = (X3-X1)**2 + (Y3-Y1)**2 + (Z3-Z1)**2
+        TABAUX(3) = (X4-X1)**2 + (Y4-Y1)**2 + (Z4-Z1)**2
+        TABAUX(4) = (X3-X2)**2 + (Y3-Y2)**2 + (Z3-Z2)**2
+        TABAUX(5) = (X4-X2)**2 + (Y4-Y2)**2 + (Z4-Z2)**2
+        TABAUX(6) = (X4-X3)**2 + (Y4-Y3)**2 + (Z4-Z3)**2
+C
+        HK = MAX(TABAUX(1),TABAUX(2),TABAUX(3),TABAUX(4),TABAUX(5),
+     &           TABAUX(6))
 C
 C====
-C 5. HEXAEDRE : PLUS GRANDE DIAGONALE
+C 5. HEXAEDRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 C====
 C
-      ELSE IF (NOMTE2.EQ.'HE') THEN
+      ELSEIF ( NOMTE2.EQ.'HE' ) THEN
 C
         X5 = ZR(IGEOM+12)
         Y5 = ZR(IGEOM+13)
@@ -240,25 +220,57 @@ C
         X8 = ZR(IGEOM+21)
         Y8 = ZR(IGEOM+22)
         Z8 = ZR(IGEOM+23)
-        H1 = SQRT((X1 - X7)**2+(Y1 - Y7)**2+(Z1 - Z7)**2)
-        H2 = SQRT((X2 - X8)**2+(Y2 - Y8)**2+(Z2 - Z8)**2)
-        IF (H1.GT.H2) THEN
-          HK = H1
-        ELSE
-          HK = H2
-        ENDIF
-        H3 = SQRT((X3 - X5)**2+(Y3 - Y5)**2+(Z3 - Z5)**2)
-        IF (H3.GT.HK) HK = H3
-        H4 = SQRT((X4 - X6)**2+(Y4 - Y6)**2+(Z4 - Z6)**2)
-        IF (H4.GT.HK) HK = H4
-        IF (NIV.EQ.2)
-     &    WRITE(IFM,*)'HE: LONG. DIAGONALES 3D ',H1,H2,H3,H4
+C
+C DIAGONALES VOLUMIQUES
+C
+        TABAUX(1)  = (X1-X7)**2 + (Y1-Y7)**2 + (Z1-Z7)**2
+        TABAUX(2)  = (X2-X8)**2 + (Y2-Y8)**2 + (Z2-Z8)**2
+        TABAUX(3)  = (X3-X5)**2 + (Y3-Y5)**2 + (Z3-Z5)**2
+        TABAUX(4)  = (X4-X6)**2 + (Y4-Y6)**2 + (Z4-Z6)**2
+C
+C DIAGONALES SURFACIQUES
+C
+        TABAUX(5)  = (X1-X3)**2 + (Y1-Y3)**2 + (Z1-Z3)**2
+        TABAUX(6)  = (X2-X4)**2 + (Y2-Y4)**2 + (Z2-Z4)**2
+        TABAUX(7)  = (X3-X8)**2 + (Y3-Y8)**2 + (Z3-Z8)**2
+        TABAUX(8)  = (X7-X4)**2 + (Y7-Y4)**2 + (Z7-Z4)**2
+        TABAUX(9)  = (X5-X7)**2 + (Y5-Y7)**2 + (Z5-Z7)**2
+        TABAUX(10) = (X6-X8)**2 + (Y6-Y8)**2 + (Z6-Z8)**2
+        TABAUX(11) = (X5-X2)**2 + (Y5-Y2)**2 + (Z5-Z2)**2
+        TABAUX(12) = (X6-X1)**2 + (Y6-Y1)**2 + (Z6-Z1)**2
+        TABAUX(13) = (X6-X3)**2 + (Y6-Y3)**2 + (Z6-Z3)**2
+        TABAUX(14) = (X7-X2)**2 + (Y7-Y2)**2 + (Z7-Z2)**2
+        TABAUX(15) = (X5-X4)**2 + (Y5-Y4)**2 + (Z5-Z4)**2
+        TABAUX(16) = (X1-X8)**2 + (Y1-Y8)**2 + (Z1-Z8)**2
+C
+C ARETES
+C
+        TABAUX(17) = (X2-X3)**2 + (Y2-Y3)**2 + (Z2-Z3)**2
+        TABAUX(18) = (X2-X6)**2 + (Y2-Y6)**2 + (Z2-Z6)**2
+        TABAUX(19) = (X3-X7)**2 + (Y3-Y7)**2 + (Z3-Z7)**2
+        TABAUX(20) = (X6-X7)**2 + (Y6-Y7)**2 + (Z6-Z7)**2
+        TABAUX(21) = (X5-X6)**2 + (Y5-Y6)**2 + (Z5-Z6)**2
+        TABAUX(22) = (X7-X8)**2 + (Y7-Y8)**2 + (Z7-Z8)**2
+        TABAUX(23) = (X4-X3)**2 + (Y4-Y3)**2 + (Z4-Z3)**2
+        TABAUX(24) = (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2
+        TABAUX(25) = (X1-X4)**2 + (Y1-Y4)**2 + (Z1-Z4)**2
+        TABAUX(26) = (X4-X8)**2 + (Y4-Y8)**2 + (Z4-Z8)**2
+        TABAUX(27) = (X1-X5)**2 + (Y1-Y5)**2 + (Z1-Z5)**2
+        TABAUX(28) = (X5-X8)**2 + (Y5-Y8)**2 + (Z5-Z8)**2
+C
+        HK = MAX( TABAUX(1) ,TABAUX(2) ,TABAUX(3) ,TABAUX(4) ,
+     &            TABAUX(5) ,TABAUX(6) ,TABAUX(7) ,TABAUX(8) ,
+     &            TABAUX(9) ,TABAUX(10),TABAUX(11),TABAUX(12),
+     &            TABAUX(13),TABAUX(14),TABAUX(15),TABAUX(16),
+     &            TABAUX(17),TABAUX(18),TABAUX(19),TABAUX(20),
+     &            TABAUX(21),TABAUX(22),TABAUX(23),TABAUX(24),
+     &            TABAUX(25),TABAUX(26),TABAUX(27),TABAUX(28) )
 C
 C====
-C 5. PENTAEDRE : PLUS GRANDE DIAGONALE
+C 5. PENTAEDRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 C====
 C
-      ELSE IF (NOMTE2.EQ.'PE') THEN
+      ELSEIF ( NOMTE2.EQ.'PE' ) THEN
 C
         X5 = ZR(IGEOM+12)
         Y5 = ZR(IGEOM+13)
@@ -266,92 +278,83 @@ C
         X6 = ZR(IGEOM+15)
         Y6 = ZR(IGEOM+16)
         Z6 = ZR(IGEOM+17)
-        H1 = SQRT((X1 - X5)**2+(Y1 - Y5)**2+(Z1 - Z5)**2)
-        H2 = SQRT((X2 - X6)**2+(Y2 - Y6)**2+(Z2 - Z6)**2)
-        IF (H1.GT.H2) THEN
-          HK = H1
-        ELSE
-          HK = H2
-        ENDIF
-        H3 = SQRT((X3 - X4)**2+(Y3 - Y4)**2+(Z3 - Z4)**2)
-        IF (H3.GT.HK) HK = H3
-        H11 = SQRT((X1 - X6)**2+(Y1 - Y6)**2+(Z1 - Z6)**2)
-        H22 = SQRT((X2 - X4)**2+(Y2 - Y4)**2+(Z2 - Z4)**2)
-        IF (H11.GT.H22) THEN
-          HKK = H11
-        ELSE
-          HKK = H22
-        ENDIF
-        H33 = SQRT((X3 - X5)**2+(Y3 - Y5)**2+(Z3 - Z5)**2)
-        IF (H33.GT.HKK) HKK = H33
-        IF (HKK.GT.HK) HK = HKK
-        IF (NIV.EQ.2)
-     &    WRITE(IFM,*)'PE: LONG. DIAGONALES 3D',
-     &    H1,H2,H3,H11,H22,H33
+C
+C DIAGONALES SURFACIQUES
+C
+        TABAUX(1)  = (X1-X6)**2 + (Y1-Y6)**2 + (Z1-Z6)**2
+        TABAUX(2)  = (X3-X4)**2 + (Y3-Y4)**2 + (Z3-Z4)**2
+        TABAUX(3)  = (X2-X4)**2 + (Y2-Y4)**2 + (Z2-Z4)**2
+        TABAUX(4)  = (X1-X5)**2 + (Y1-Y5)**2 + (Z1-Z5)**2
+        TABAUX(5)  = (X2-X6)**2 + (Y2-Y6)**2 + (Z2-Z6)**2
+        TABAUX(6)  = (X3-X5)**2 + (Y3-Y5)**2 + (Z3-Z5)**2
+C
+C ARETES
+C
+        TABAUX(7)  = (X4-X5)**2 + (Y4-Y5)**2 + (Z4-Z5)**2
+        TABAUX(8)  = (X5-X6)**2 + (Y5-Y6)**2 + (Z5-Z6)**2
+        TABAUX(9)  = (X6-X4)**2 + (Y6-Y4)**2 + (Z6-Z4)**2
+        TABAUX(10) = (X6-X3)**2 + (Y6-Y3)**2 + (Z6-Z3)**2
+        TABAUX(11) = (X4-X1)**2 + (Y4-Y1)**2 + (Z4-Z1)**2
+        TABAUX(12) = (X5-X2)**2 + (Y5-Y2)**2 + (Z5-Z2)**2
+        TABAUX(13) = (X1-X3)**2 + (Y1-Y3)**2 + (Z1-Z3)**2
+        TABAUX(14) = (X3-X2)**2 + (Y3-Y2)**2 + (Z3-Z2)**2
+        TABAUX(15) = (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2
+C
+        HK = MAX( TABAUX(1) ,TABAUX(2) ,TABAUX(3) ,TABAUX(4) ,
+     &            TABAUX(5) ,TABAUX(6) ,TABAUX(7) ,TABAUX(8) ,
+     &            TABAUX(9) ,TABAUX(10),TABAUX(11),TABAUX(12),
+     &            TABAUX(13),TABAUX(14),TABAUX(15) )
 C
 C====
-C 6. FACE QUADRANGULAIRE : PLUS GRANDE DIAGONALE
+C 6. FACE QUADRANGULAIRE : PLUS GRANDE DIAGONALE OU PLUS GRANDE ARETE
 C====
 C
-      ELSE IF (NOMTE2.EQ.'FQ') THEN
+      ELSEIF ( NOMTE2.EQ.'FQ' ) THEN
 C
-        H1 = (X1-X3)**2 + (Y1-Y3)**2 + (Z1-Z3)**2
-        H2 = (X2-X4)**2 + (Y2-Y4)**2 + (Z2-Z4)**2
-        HK = MAX(H1,H2)
-        HK = SQRT(HK)
-        IF (NIV.EQ.2) THEN
-          WRITE(IFM,*)'FQ :PLUS GRANDE DIAGONALE ',HK
-        ENDIF
+        TABAUX(1) = (X1-X3)**2 + (Y1-Y3)**2 + (Z1-Z3)**2
+        TABAUX(2) = (X2-X4)**2 + (Y2-Y4)**2 + (Z2-Z4)**2
+C
+        TABAUX(3) = (X1-X2)**2 + (Y1-Y2)**2 + (Z1-Z2)**2
+        TABAUX(4) = (X1-X4)**2 + (Y1-Y4)**2 + (Z1-Z4)**2
+        TABAUX(5) = (X2-X3)**2 + (Y2-Y3)**2 + (Z2-Z3)**2
+        TABAUX(6) = (X3-X4)**2 + (Y3-Y4)**2 + (Z3-Z4)**2
+C
+        HK = MAX( TABAUX(1) ,TABAUX(2) ,TABAUX(3) ,TABAUX(4) ,
+     &            TABAUX(5) ,TABAUX(6) )
 C
 C====
-C 7. FACE TRIANGULAIRE : DIAMETRE DU CERCLE CIRCONSCRIT
-C    LE RAYON DU CERCLE CIRCONSCRIT EST LE QUOTIENT : (A*B*C)/(4*S)
-C    AVEC A, B, C VALANT LES LONGUEURS DES 3 COTES ET S SA SURFACE.
-C    REFERENCE : CRC HANDBOOK OF MATHEMATICAL SCIENCES, BEYER,
-C                UNIVERSITY OF AKRON, 1987. NUMERO GALAXIE E1987B209173
-C    LE DIAMETRE EST DONC (A*B*C)/(2*S), SOIT (A*B*C)/K OU K EST LA
-C    NORME DU PRODUIT VECTORIEL DE DEUX COTES
+C 7. FACE TRIANGULAIRE : PLUS GRANDE ARETE
 C====
 C
-      ELSE IF (NOMTE2.EQ.'FT') THEN
-C VECTEURS DIRECTEURS U=M1M2, V=M2M3, W=M3M1
-        U(1) = X2 - X1
-        U(2) = Y2 - Y1
-        U(3) = Z2 - Z1
+      ELSEIF ( NOMTE2.EQ.'FT' ) THEN
 C
-        V(1) = X3 - X2
-        V(2) = Y3 - Y2
-        V(3) = Z3 - Z2
+        TABAUX(1) = (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2
+        TABAUX(2) = (X3-X2)**2 + (Y3-Y2)**2 + (Z3-Z2)**2
+        TABAUX(3) = (X1-X3)**2 + (Y1-Y3)**2 + (Z1-Z3)**2
 C
-        W(1) = X1 - X3
-        W(2) = Y1 - Y3
-        W(3) = Z1 - Z3
-C
-        HK = SQRT( ( U(1)**2 + U(2)**2 + U(3)**2 ) *
-     &             ( V(1)**2 + V(2)**2 + V(3)**2 ) *
-     &             ( W(1)**2 + W(2)**2 + W(3)**2 ) )
-C PRODUIT VECTORIEL (M1M2,M2M3)
-C SA NORME EST LE DOUBLE DE LA SURFACE DU TRIANGLE
-C DONC EN DIVISANT PAR LA NORME ON A BIEN LE DIAMETRE
-        A = U(2)*V(3) - U(3)*V(2)
-        B = U(3)*V(1) - U(1)*V(3)
-        C = U(1)*V(2) - U(2)*V(1)
-        HK = HK / SQRT( A**2 + B**2 + C**2 )
-
-C POST-TRAITEMENT
-        IF (NIV.EQ.2) THEN
-          WRITE(IFM,*)'TRIANGLE : NOEUD1 (',X1,',',Y1,',',Z1,')'
-          WRITE(IFM,*)'           NOEUD2 (',X2,',',Y2,',',Z2,')'
-          WRITE(IFM,*)'           NOEUD3 (',X3,',',Y3,',',Z3,')'
-          WRITE(IFM,*)'==> DIAMETRE = ', HK
-        ENDIF
+        HK = MAX(TABAUX(1),TABAUX(2),TABAUX(3))
 C
 C====
 C 8. INCONNU
 C====
 C
       ELSE
-        CALL U2MESK('F','CALCULEL5_15',1,NOMTE2)
+        VALK(1) = NOMPRO
+        VALK(2) = NOMTE2
+        CALL U2MESK('F','INDICERREUR_2', 2, VALK)
       ENDIF
-               NIV=1
+C
+C====
+C 9. LA FIN
+C    ON NE MET LA RACINE CARRE QU'A CE MOMENT POUR GAGNER DU TEMPS
+C====
+C
+      HK = SQRT(HK)
+C
+      IF ( NIV.EQ.2 ) THEN
+        CALL U2MESG('I', 'INDICERREUR_1', 1, NOMTE2, 0, 0, 1, HK )
+      ENDIF
+C
+      NIV=1
+C
       END

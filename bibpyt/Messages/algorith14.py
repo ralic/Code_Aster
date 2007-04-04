@@ -1,5 +1,5 @@
-#@ MODIF algorith14 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
-
+#@ MODIF algorith14 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -265,13 +265,6 @@ cata_msg={
  il faut au moins 1 mode !
 """),
 
-53: _("""
- type de sensibilite non traite typese :  %(i1)d 
-"""),
-
-54: _("""
- type de sensibilite non traite typese :  %(i1)d 
-"""),
 
 55: _("""
  le champ de "temp" n'existe pas pour le numero d'ordre  %(i1)d 
@@ -386,6 +379,10 @@ cata_msg={
 
 75: _("""
   Erreur développement : code retour 1 dans nmcomp en calculant la matrice tangente
+ """),
+
+76: _("""
+  Objet &FETI.MONITORING.MPI inexistant !
  """),
 
 }

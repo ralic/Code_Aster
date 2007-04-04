@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR KHAM M.KHAM 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,7 +80,6 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                NORMALE        = 'MAIT',
                                METHODE        = 'CONTINUE',
                                INTEGRATION    = 'NOEUD',
-                               MODL_AXIS      = 'NON',
                                CONTACT_INIT   = 'OUI',
                                SEUIL_INIT     = 0.,
                                SANS_GROUP_NO  = 'PP',

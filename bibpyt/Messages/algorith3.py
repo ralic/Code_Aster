@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith3 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,7 +55,8 @@ cata_msg={
 """),
 
 9: _("""
- utiliser la formulation en deplacement avec newmark (ou hht) ou la formulation en vitesse avec teta_methode
+ utiliser la formulation en deplacement avec un schema newmark, hht ou theta_methode,
+ ou la formulation en acceleration avec un schema diff_cent ou tchamwa.
 """),
 
 10: _("""
@@ -106,14 +107,6 @@ cata_msg={
 
 20: _("""
  le chargement de type dirichlet necessite la resolution par le schema de newmark
-"""),
-
-21: _("""
- le pas de temps adaptatif n est pas approprie pour le calcul de sensibilite par rapport au parametre materiau 
-"""),
-
-22: _("""
- cas sensibilite non prevu
 """),
 
 23: _("""
@@ -176,14 +169,6 @@ cata_msg={
  incoherence sur h, alpha, elas
 """),
 
-38: _("""
- derivee lagrangienne non progrmmeepour l instant pour la dynamique harmon.
-"""),
-
-39: _("""
- erreur de programmation.
-"""),
-
 40: _("""
  le nom_cham  %(k1)s n'appartient pas a la sd
 """),
@@ -194,14 +179,6 @@ cata_msg={
 
 42: _("""
  critere inconnu :  %(k1)s 
-"""),
-
-43: _("""
- on ne peut pas deriver avec une charge complexe en entree de dyna_line_harm.
-"""),
-
-44: _("""
- derivee lagrangienne non progrmmee pour l instant pour la dynamique
 """),
 
 45: _("""

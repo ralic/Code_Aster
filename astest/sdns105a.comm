@@ -1,4 +1,4 @@
-# MODIF  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -170,8 +170,9 @@ evol=DYNA_NON_LINE(MODELE=MODELE,
                                  RESI_INTE_RELA=1e-06,
                                  GROUP_MA=('JOINT',),),),
                    INCREMENT=_F(LIST_INST=TEMPLI,),
-                   NEWMARK=_F(ALPHA=0.25,
-                              DELTA=0.5,),
+                   SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',
+                                ALPHA=0.25,DELTA=0.5,),
                    NEWTON=_F(PREDICTION='TANGENTE',
                              MATRICE='TANGENTE',REAC_ITER=1),
                            RECH_LINEAIRE=_F(),

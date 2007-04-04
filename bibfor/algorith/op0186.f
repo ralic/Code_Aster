@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,16 +60,19 @@ C 0.3. ==> VARIABLES LOCALES
      &        NUMFIN,IFM,NIV,NOPT,JARCH,IARCH,LONCH,JVAL,ITERAT,TYPESE,
      &        JTEMPP,JTEMPM,JTEMP,NBPASE,NRORES,JTEMPI,I,JCRR
       INTEGER NCHAR,JLCHA,IALICH,JFCHA,JINFC,JINF,IALIFC
+      INTEGER ITAB(2)
       REAL*8 PARMER(2),TPSTHE(6),DELTAT,TPSNP1,TIMET,TIMTDT,TPS1(4),
      &       TPS2(4),TPS3(4),TPEX,PARCRR(2),THETA,KHI,RHO,TESTR,TESTM,
      &       PARA(2),R8VIDE
+      REAL*8 RTAB(2)
       CHARACTER*1 CREAS,BASE
       CHARACTER*3 KREAS
       CHARACTER*4 TYPCAL
       CHARACTER*8 EVOLSC,SAUX08,NOPASE
+      CHARACTER*12 K12BID
       CHARACTER*13 INPSCO
       CHARACTER*16 TYSD
-      CHARACTER*19 INFCHA,SOLVEU,MAPREC,K19BID,LISCHA
+      CHARACTER*19 INFCHA,SOLVEU,MAPREC, LISCHA
       CHARACTER*24 MODELE,MATE,CARELE,FOMULT,CHARGE,INFOCH,RESULT,TIME,
      &             TMPCHI,TMPCHF,COMPOR,NOMCH,VTEMP,VTEMPM,VTEMPP,
      &             VTEMPR,VEC2ND,VEC2NI,LIEVOL,LISOPT,LISARC,EXCARC,
@@ -78,7 +81,6 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*24 STYPSE, NOOBJ
       CHARACTER*76 FMT,FMT2,FMT3,FMT4
       CHARACTER*85 FMT1
-      CHARACTER*132 RAISON
       CHARACTER*8  K8B,K8B2
 
 C ----------------------------------------------------------------------
@@ -147,7 +149,7 @@ C EST-ON DANS UN CALCUL DE SECHAGE ?
       IF (EVOLSC(1:1).NE.' ') THEN
         LSECHA = .TRUE.
         IF (NBPASE.GT.0) THEN
-          CALL U2MESS('F','ALGORITH9_67')
+          CALL U2MESS('F','SENSIBILITE_31')
         END IF
       ELSE
         LSECHA = .FALSE.
@@ -297,13 +299,13 @@ C SOLUTION EST NULLE. ON CREER DONC UN CHAMP SOLUTION NUL VTEMPM/VHYDRP
                   ZR(JTEMPI+I-1) = 0.D0
    10           CONTINUE
 C POUR DECLENCHER L'ASSEMBLAGE MATRICE POUR LA PROCHAINE SENSIBILITE
-                IF (NRORES.EQ.1) LASSEM = .FALSE.
-                CALL UTDEBM('A',NOMPRO,'CALCUL INSENSIBLE')
-                CALL UTIMPK('L','VARIABLE SENSIBLE:',1,NOPASE)
-                CALL UTFINM()
+                IF (NRORES.EQ.1) THEN
+                  LASSEM = .FALSE.
+                ENDIF
+                CALL U2MESK('A','SENSIBILITE_72', 1, NOPASE)
                 GO TO 40
               ELSE IF (TYPESE.EQ.-1) THEN
-                CALL U2MESS('F','ALGORITH9_68')
+                CALL U2MESS('F','SENSIBILITE_22')
               END IF
             ELSE IF (NRORES.EQ.0) THEN
 C CALCUL STD
@@ -325,20 +327,16 @@ C     LOIS SECH_GRANGER ET SECH_NAPPE
                   CALL RSINCH(EVOLSC,'TEMP','INST',TIMET,TMPCHI,
      &                        'CONSTANT','CONSTANT',1,BASE,ICORET)
                   IF (ICORET.GE.10) THEN
-                    CALL UTDEBM('F',NOMPRO,'INTERPOLATION TEMPERATURE:')
-                    CALL UTIMPK('L','EVOL_THER:',1,EVOLSC)
-                    CALL UTIMPR('S','INSTANT:',1,TIMET)
-                    CALL UTIMPI('L','ICORET:',1,ICORET)
-                    CALL UTFINM()
+                    CALL U2MESG('A', 'ALGORITH8_94', 1, EVOLSC,
+     &                           1, ICORET, 1, TIMET)
+                    CALL U2MESK('F', 'UTILITAI7_99', 1, NOMPRO)
                   END IF
                   CALL RSINCH(EVOLSC,'TEMP','INST',TIMTDT,TMPCHF,
      &                        'CONSTANT','CONSTANT',1,BASE,ICORET)
                   IF (ICORET.GE.10) THEN
-                    CALL UTDEBM('F',NOMPRO,'INTERPOLATION TEMPERATURE:')
-                    CALL UTIMPK('L','EVOL_THER:',1,EVOLSC)
-                    CALL UTIMPR('S','INSTANT:',1,TIMTDT)
-                    CALL UTIMPI('L','ICORET:',1,ICORET)
-                    CALL UTFINM()
+                    CALL U2MESG('A', 'ALGORITH8_94', 1, EVOLSC,
+     &                           1, ICORET, 1, TIMTDT)
+                    CALL U2MESK('F', 'UTILITAI7_99', 1, NOMPRO)
                   END IF
                 ELSE
                   CALL U2MESK('F','ALGORITH8_99',1,EVOLSC)
@@ -481,18 +479,11 @@ C SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
             IF ((.NOT.CONVER) .AND. (.NOT.ITEMAX)) THEN
               IF (2.D0*TPS2(4).GT.0.95D0*TPS2(1)-TPS3(4)) THEN
                 WRITE (IFM,FMT1)
-                CALL UTDEXC(28,NOMPRO,'ARRET PAR MANQUE DE TEMPS CPU')
-                CALL UTIMPI('S',' AU NUMERO D''ORDRE : ',1,NUMORD)
-                CALL UTIMPI('S',' LORS DE L''ITERATION : ',1,ITERAT)
-                CALL UTIMPR('L',' TEMPS MOYEN PAR ITERATION : ',1,
-     &                      TPS2(4))
-                CALL UTIMPR('L',' TEMPS CPU RESTANT: ',1,TPS2(1))
-                CALL UTIMPI('L',' LA BASE GLOBALE EST SAUVEGARDEE,',
-     &                        0,NUMORD)
-                CALL UTIMPI('S',' ELLE CONTIENT LES PAS ARCHIVES',
-     &                       0,NUMORD)
-                CALL UTIMPI('S',' AVANT L''ARRET' ,0,NUMORD)
-                CALL UTFINM()
+                ITAB(1) = NUMORD
+                ITAB(2) = ITERAT
+                RTAB(1) = TPS2(4)
+                RTAB(2) = TPS2(1)
+                CALL UTEXCM(28,'MECANONLINE_79',0,K8B,2,ITAB,2,RTAB)
               ELSE
                 GO TO 20
               END IF
@@ -572,15 +563,11 @@ C --- TEMPS DISPONIBLE POUR CONTINUER ?
           WRITE (IFM,'(/)')
           TPEX = TPS1(3)
           IF (TPS1(4).GT.0.48D0*TPS1(1)) THEN
-            CALL UTDEXC(28,NOMPRO,'ARRET PAR MANQUE DE TEMPS CPU')
-            CALL UTIMPI('S',' AU NUMERO D''ORDRE: ',1,NUMORD)
-            CALL UTIMPR('L',' TEMPS MOYEN PAR PAS DE TEMPS: ',1,TPS1(4))
-            CALL UTIMPR('L',' TEMPS CPU RESTANT: ',1,TPS1(1))
-            CALL UTIMPI ('L',' LA BASE GLOBALE EST SAUVEGARDEE,',0,
-     &                    NUMORD)
-            CALL UTIMPI ('S',' ELLE CONTIENT LES PAS ARCHIVES',0,NUMORD)
-            CALL UTIMPI ('S',' AVANT L''ARRET' ,0,NUMORD)
-            CALL UTFINM()
+            K12BID = 'pas de temps'
+            ITAB(1) = NUMORD
+            RTAB(1) = TPS2(4)
+            RTAB(2) = TPS2(1)
+            CALL UTEXCM(28,'MECANONLINE_80',1,K12BID,1,ITAB,2,RTAB)
           END IF
 
 C --- ON VA REFAIRE UN "PETIT" PAS DE TEMPS

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,7 +77,6 @@ CH2=AFFE_CHAR_MECA(
                    CONTACT=_F(
                               METHODE        = 'CONTINUE',
                               FORMULATION    = 'VITE',
-                              MODL_AXIS      = 'NON',
                               ALGO_CONT      = 'STABILISE',
                               COEF_REGU_CONT  = 1.E-2,
                               COEF_STAB_CONT  = 100,
@@ -135,7 +134,9 @@ U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
          ETAT_INIT   =_F(DEPL = CHAMP2,VITE = CHAMP1),
          COMP_ELAS   =_F( RELATION = 'ELAS',),
          INCREMENT   =_F( INST_INIT = 0.,LIST_INST = L_INST),
-         TETA_METHODE =_F(  TETA=1.0),
+         SCHEMA_TEMPS=_F(SCHEMA='THETA_METHODE',
+                         FORMULATION='DEPLACEMENT',
+                          THETA=1.0,),
          NEWTON      =_F( MATRICE = 'TANGENTE',  REAC_ITER = 1),
          CONVERGENCE =_F(ITER_GLOB_MAXI = 20),
          INFO = 1,

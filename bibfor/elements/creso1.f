@@ -2,10 +2,10 @@
      &                  RESIRE,TBLOC,NPREC,NMAXIT,ISTOP,NIREMP,IFM,
      &                  NUMSD,NBMA,VERIF,TESTCO,NBREOR,TYREOR,SCALIN,
      &                  INUMSD,IMAIL,NOMSD,INFOFE,STOGI,TESTOK,NBREOI,
-     &                  ACMA,ACSM)
+     &                  ACMA,ACSM,REACRE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C IN TESTOK  : FLAG SUR LA MISE EN OEUVRE DE TESTS DE COHERENCE
 C IN NBREOI  : NBRE DE PAS DE TEMPS UTLILISES POUR REORTHO SI LIST_INST
 C IN ACMA/ACSM : ACCELERATION POUR PB A MULTIPLES MATRICES ET
 C               SECONDS MEMBRES
+C IN REACRE  : FREQUENCE DE REACTUALISATION DU RESIDU
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -55,7 +56,7 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER NPREC,NMAXIT,ISTOP,NIREMP,IFM,NUMSD,NBMA,NBREOR,INUMSD,
-     &        IMAIL,NBREOI
+     &        IMAIL,NBREOI,REACRE
       REAL*8 EPS,RESIRE,TBLOC,TESTCO
       CHARACTER*3 SYME
       CHARACTER*8 METHOD,PRECO,RENUM,VERIF,TYREOR,SCALIN,NOMSD,STOGI,
@@ -97,7 +98,7 @@ C CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SOLVEUR
 C --------------------------------------------------------------
       CALL WKVECT(SOLVEU(1:19)//'.SLVK','V V K24',11,ISLVK)
       CALL WKVECT(SOLVEU(1:19)//'.SLVR','V V R',4,ISLVR)
-      CALL WKVECT(SOLVEU(1:19)//'.SLVI','V V I',6,ISLVI)
+      CALL WKVECT(SOLVEU(1:19)//'.SLVI','V V I',7,ISLVI)
 
 C --------------------------------------------------------------
 C REMPLISSAGE DE LA SD SOLVEUR
@@ -125,6 +126,7 @@ C --------------------------------------------------------------
       ZI(ISLVI+3) = NIREMP
       ZI(ISLVI+4) = NBREOR
       ZI(ISLVI+5) = NBREOI
+      ZI(ISLVI+6) = REACRE
 
 
 C --------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT/FROTTEMENT POULIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,6 @@ CHA2=AFFE_CHAR_MECA(
                      INTEGRATION = 'NOEUD',    
                      COEF_REGU_CONT = 10.,  
                      LISSAGE ='OUI',  
-                     MODL_AXIS = 'NON',       
                      ITER_CONT_MAXI = 20,        
                      ITER_GEOM_MAXI = 0, 
                      METHODE = 'CONTINUE',)                     

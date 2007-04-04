@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -325,8 +325,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='M1',    
                NOM_CMP = 'NUEST',      
-               VALE = 1.6503017831402E-01, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '8.2.15'),
+               VALE = 1.6283363234735E-01, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
              ),
             );
 
@@ -339,8 +339,8 @@ TEST_RESU(RESU=(
                GROUP_NO= 'A',
                MAILLE='M1',    
                NOM_CMP = 'ERREST',      
-               VALE = 8.1160305543209E-04, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '8.2.15'),
+               VALE = 8.0080061799083E-04, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '9.00.13'),
              ),
             );
                 

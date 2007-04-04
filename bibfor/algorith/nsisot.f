@@ -2,7 +2,7 @@
      & SIGMS,VARMS,VARM,SIGM,VARP,SIPAS,SIGP,SIGPS,VARPS,STYPSE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/10/2006   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C     --------------------
       FB2 = 'F '
 
       IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_TRAC') THEN
-        CALL U2MESS('F','ALGORITH8_95')
+        CALL U2MESK('F','SENSIBILITE_15',1,COMPOR(1))
       ENDIF
 
       IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
@@ -122,7 +122,8 @@ C     ---------------------------------------
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
       IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_LINE') THEN
-        NOMRES(1) = 'D_SIGM_EPSI'
+CCC        NOMRES(1) = 'D_SIGM_EPSI'
+        NOMRES(1) = 'D_SIGM_E'
         NOMRES(2) = 'SY'
         CALL RCVALA(IMATE,' ','ECRO_LINE',3,NOMPAR,VALPAP,2,NOMRES,
      &             VALRES, CODRET,FB2)
@@ -170,7 +171,8 @@ C     ------------------------------------
         NUS = VALRES(2)
 
         IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_LINE') THEN
-          NOMRES(1) = 'D_SIGM_EPSI'
+CCC          NOMRES(1) = 'D_SIGM_EPSI'
+          NOMRES(1) = 'D_SIGM_E'
           NOMRES(2) = 'SY'
           CALL RCVALA(IMATSE,' ','ECRO_LINE',3,NOMPAR,VALPAP,2,
      &             NOMRES,VALRES, CODRET,FB2)

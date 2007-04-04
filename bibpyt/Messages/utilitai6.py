@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai6 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -251,11 +251,6 @@ cata_msg={
     nombre de modes :  %(i2)d
 """),
 
-45: _("""
- sensibilite demandee par rapport au concept : %(k1)s
- son type est inconnu :  %(k2)s
-"""),
-
 46: _("""
  acces impossible  champ :  %(k1)s , nume_ordre :  %(i1)d
 """),
@@ -351,28 +346,6 @@ cata_msg={
  contrainte de reference = %(r3)f
 """),
 
-63: _("""
- la chaine nomsd est de longueur :  %(i1)d
-"""),
-
-64: _("""
- probleme de declarationla chaine nomstr est de longueur  %(i1)d
- on veut y mettre  saux24  de longueur  %(i2)d
-"""),
-
-65: _("""
- mauvaise valeur pour typestil faut entre 0 et  %(i1)d mais on a donne  %(i2)d
-"""),
-
-66: _("""
- mais on a donne  %(i1)d
-"""),
-
-67: _("""
- probleme de declarationla chaine typeps est declaree a  %(i1)d
- &on veut y mettre  zk24(adraux+2)  qui en contient  %(i2)d
-"""),
-
 68: _("""
  type de numerotation non connue numerotation: %(k1)s
 """),
@@ -441,24 +414,6 @@ cata_msg={
 
 84: _("""
  le "nom_para_resu"  %(k1)s n''est pas un parametre du resultat  %(k2)s
-"""),
-
-85: _("""
- code retour de psrenc :  %(i1)d la derivee de :  %(k1)s par rapport a :  %(k2)s
- est introuvable. %(k3)s
-"""),
-
-86: _("""
- mauvaise valeur pour choixil faut 1,2 ou 3, mais pas  %(i1)d
-"""),
-
-87: _("""
- la chaine  %(k1)s est de longueur :  %(i1)d
-"""),
-
-88: _("""
- probleme de declarationla chaine nocomp est declaree a  %(i1)d
- &on veut y mettre  saux08  qui en contient  %(i2)d
 """),
 
 89: _("""

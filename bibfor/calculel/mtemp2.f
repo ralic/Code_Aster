@@ -2,7 +2,7 @@
      &                    THVRAI, CHTEMP )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,10 @@ C
           K8BID = TEMPE
           CALL PSRENC ( K8BID, NOPASE, TEMPE, IRET )
           IF ( IRET.NE.0 ) THEN
-            CALL U2MESK('F','CALCULEL3_80',1,K8BID)
+            VALK(1) = TEMPE
+C                     12345678   9012345678901234
+            VALK(2) = NOPASE  //'                '
+            CALL U2MESK('F','SENSIBILITE_3', 2 ,VALK)
           ENDIF
         ENDIF
 

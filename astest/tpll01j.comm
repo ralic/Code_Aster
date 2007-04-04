@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,15 +96,15 @@ TEST_RESU(RESU=(
                 NOM_CHAM = 'ERRE_ELEM_TEMP', MAILLE = 'MA1', 
                 POINT =1,                    PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.1591876225226E-05,
-                VERSION='V6.6',              CRITERE='RELATIF')))
+                VALE = 4.2644155582454E-05,
+                VERSION='9.00.13',              CRITERE='RELATIF')))
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0, 
                 NOM_CHAM = 'ERRE_ELNO_ELEM', MAILLE = 'MA1',
                 NOEUD = 'NO4',               PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.1591876225226E-05,
-                VERSION='V6.6',              CRITERE='RELATIF')))
+                VALE = 4.2644155582454E-05,
+                VERSION='9.00.13',              CRITERE='RELATIF')))
 
 # LE CODAGE DES NOMS DE NOEUDS ET DE MAILLES DANS LES FICHIERS MED EST EN BASE 36
 # La maille M25 ==> MP
@@ -113,7 +113,7 @@ TEST_RESU(RESU=(
                 NOM_CHAM = 'ERRE_ELEM_TEMP', MAILLE = 'MP', 
                 POINT =1,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
-                VALE = 4.3627678192699E-05,  PRECISION = 1.E-5,
-                VERSION='ASTER V7.1.9/HOMARD V6.6', CRITERE='RELATIF')))
+                VALE = 4.4751085026497E-05,  PRECISION = 1.E-5,
+                VERSION='ASTER 9.00.13/HOMARD V8.5', CRITERE='RELATIF')))
 
 FIN()

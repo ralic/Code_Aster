@@ -7,7 +7,7 @@ C     SENSIBILITE - MEMORISATION DES CORRESPONDANCES
 C     **            **               **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,6 +116,9 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'SEMECO' )
+C
       CHARACTER*13 PREFIX
       PARAMETER ( PREFIX = '&NOSENSI.MEMO' )
 C                           1234567890123
@@ -133,7 +136,7 @@ C
       CHARACTER*8 NOSIM8, NOPAS8, NOCOM8, SAUX08
       CHARACTER*18 NOMMEM
       CHARACTER*24 NOMMCL, NOMVAL, NOMMFA
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(5)
 C
       DATA SAUX06 / 'NOSIMP', 'NOPASE', 'NOCOMP' /
 C     ------------------------------------------------------------------
@@ -167,10 +170,9 @@ C
           ENDIF
 C
           IF ( LGNOCO.GT.8 ) THEN
-           VALK(1)  = SAUX06(IAUX)
-           VALI (1) = LGNOCO
-            CALL U2MESG('A', 'UTILITAI6_87',1,VALK,1,VALI,0,0.D0)
-            CALL U2MESS('A','UTILITAI3_96')
+            VALK(1)  = SAUX06(IAUX)
+            VALI(1) = LGNOCO
+            CALL U2MESG('F', 'SENSIBILITE_88',1,VALK,1,VALI,0,0.D0)
             CALL U2MESS('F','MODELISA_67')
           ELSE
             IF ( IAUX.EQ.1 ) THEN
@@ -201,7 +203,7 @@ C
    21   CONTINUE
         JAUX = LEN(PREFIX)
         IF ( IAUX.LT.JAUX ) THEN
-          CALL U2MESK('A','UTILITAI4_54',1,PREFIX)
+          CALL U2MESK('A','SENSIBILITE_83',1,PREFIX)
           CALL U2MESS('F','MODELISA_67')
         ENDIF
         PREF(1:JAUX) = PREFIX
@@ -237,9 +239,9 @@ C
         DO 32 , IAUX = 1 , NUTI - 1
           IF ( (ZK80(ADMMEM+2*IAUX-2) (1: 8).EQ.NOSIM8 ) .AND.
      &         (ZK80(ADMMEM+2*IAUX-2) (9:16).EQ.NOPAS8) ) THEN
-             VALK(1) = NOSIM8(1:8)
-             VALK(2) = NOPAS8(1:8)
-             CALL U2MESK('F','UTILITAI4_55', 2 ,VALK)
+            VALK(1) = NOSIM8(1:8)
+            VALK(2) = NOPAS8(1:8)
+            CALL U2MESK('F','SENSIBILITE_90', 2 ,VALK)
           ENDIF
    32   CONTINUE
 C
@@ -353,9 +355,11 @@ C
           IAUX = LXLGUT(SAUX08)
           LGNOCO = LEN(NOCOMP)
           IF ( LGNOCO.LT.IAUX ) THEN
-           VALI (1) = LGNOCO
-           VALI (2) = IAUX
-           CALL U2MESG('A', 'UTILITAI6_88',0,' ',2,VALI,0,0.D0)
+            VALK (1) = 'NOCOMP'
+            VALK (2) = 'SAUX08'
+            VALI (1) = LGNOCO
+            VALI (2) = IAUX
+            CALL U2MESG('A', 'SENSIBILITE_85', 2, VALK, 2, VALI, 0,0.D0)
             CALL U2MESS('F','MODELISA_67')
           ELSE
             NOCOMP(1:IAUX) = SAUX08(1:IAUX)
@@ -429,11 +433,12 @@ C
 C
           ELSE
 C
-            CALL U2MESK('A','UTILITAI4_56',1,NOSIM8)
-            CALL U2MESK('A','UTILITAI4_57',1,NOPAS8)
-            CALL U2MESK('A','UTILITAI4_58',1,NOCOM8)
-            CALL U2MESK('A','UTILITAI4_59',1,SAUX08)
-            CALL U2MESS('A','UTILITAI4_60')
+            VALK(1) = NOMPRO
+            VALK(2) = NOSIM8
+            VALK(3) = NOPASE
+            VALK(4) = NOCOM8
+            VALK(5) = SAUX08
+            CALL U2MESK('A','SENSIBILITE_98', 5, VALK)
 C
           ENDIF
 C
@@ -444,7 +449,7 @@ C 5. MAUVAIX CHOIX
 C====
 C
       ELSE
-        CALL U2MESS('A','UTILITAI4_61')
+        CALL U2MESK('A','SENSIBILITE_82', 1, CHOIX)
         CALL U2MESS('F','MODELISA_67')
       ENDIF
 C

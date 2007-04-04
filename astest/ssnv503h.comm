@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,7 +121,6 @@ CTAC=AFFE_CHAR_MECA(MODELE=MODE,
                                GROUP_MA_ESCL='LESC',
                                GROUP_MA_MAIT='LMAI',
                                INTEGRATION='NOEUD',
-                               MODL_AXIS='NON',
                                ITER_GEOM_MAXI = 1,
                                COEF_REGU_CONT = 100.,
                                ),);

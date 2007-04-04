@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -261,7 +261,7 @@ RESU0=STAT_NON_LINE(
                 RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
                 RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
                                   RHO_MIN = 0.1,
-                                  RHO_MAX = 0.2,
+                                  RHO_MAX = 0.2,METHODE='MIXTE',
                                   ITER_LINE_MAXI = 3,),
                 INCREMENT=_F(  LIST_INST = LI,
                              INST_FIN = 473040000.,),
@@ -323,7 +323,7 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                               SUBD_PAS_MINI   = 10000.  ,
                               ),
                 RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
-                                  RHO_MIN = 0.1,
+                                  RHO_MIN = 0.1,METHODE='MIXTE',
                                   RHO_MAX = 0.2,
                                   ITER_LINE_MAXI = 3,),
                 ETAT_INIT = _F (SIGM=SIG1,

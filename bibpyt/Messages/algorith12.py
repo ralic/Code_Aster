@@ -1,6 +1,5 @@
-#@ MODIF algorith12 Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith12 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -428,14 +427,6 @@ cata_msg={
  , acces "inst":  %(r1)f
 """),
 
-85: _("""
- deplacements initiaux imposes nuls pour les  calculs de sensibilite
-"""),
-
-86: _("""
- vitesses initiales imposees nulles pour les  calculs de sensibilite
-"""),
-
 87: _("""
  plusieurs champs  correspondant a l'acces demande.resultat  %(k1)s
  , acces "inst":  %(r1)f
@@ -480,10 +471,6 @@ cata_msg={
 94: _("""
  pas de champ  correspondant a un acces demande.resultat  %(k1)s
  , acces "inst":  %(r1)f
-"""),
-
-95: _("""
- on ne sait pas deriver par rapport au concept  %(k1)s
 """),
 
 96: _("""

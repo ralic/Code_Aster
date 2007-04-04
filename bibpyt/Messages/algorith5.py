@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith5 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,11 +23,11 @@ def _(x) : return x
 cata_msg={
 
 1: _("""
- le type de resultat dyna_transne supporte pas les donnees complexes
+ le type de resultat dyna_trans ne supporte pas les donnees complexes
 """),
 
 2: _("""
- le type de resultat dyna_harmone supporte pas les donnees reelles
+ le type de resultat dyna_harmo ne supporte pas les donnees reelles
 """),
 
 3: _("""
@@ -332,10 +332,6 @@ cata_msg={
 
 79: _("""
  ksib non inversible
-"""),
-
-80: _("""
- la sensibilite en meca ne fonctionne pas encore avec un chargement thermique
 """),
 
 81: _("""

@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 20/03/2007   AUTEUR KHAM M.KHAM 
+#@ MODIF algorith13 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -224,7 +224,7 @@ cata_msg={
 """),
 
 48: _("""
- Nombe de modes propres calcules insiffisant.
+ Nombre de modes propres calcules insuffisant.
  Nombre de modes propres de la base limite a : %(i1)d 
 """),
 
@@ -333,10 +333,6 @@ cata_msg={
 
 72: _("""
  code de retour de psrenc:  %(i1)d 
-"""),
-
-73: _("""
- sensibilite demandee par rapport au concept : %(k1)s 
 """),
 
 74: _("""

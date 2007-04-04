@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE LACHER D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -107,7 +107,9 @@ TRAN_DI=DYNA_NON_LINE(
                 COMP_INCR=_F(  RELATION = 'DIS_CHOC',
                            MAILLE = 'EL1'),
                 INCREMENT=_F(  LIST_INST = L_INST),
-                HHT=_F( ALPHA = -0.02),  #0.01
+                SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                                FORMULATION='DEPLACEMENT',
+                                ALPHA = -0.02),  #0.01
                 CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-4,
                              ITER_GLOB_MAXI = 7),
                 SOLVEUR=_F( METHODE = 'LDLT', RENUM = 'RCMK'),

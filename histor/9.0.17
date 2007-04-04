@@ -1,0 +1,1095 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 04/04/2007 - 17:33:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009988 DU 2006-09-04 11:11:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   STAT_NON_LINE - Recherche linxc3xa9aire
+FONCTIONNALITE
+   Nouvelle méthode plus robuste pour la recherche linéaire     
+    
+   Recherche lineaire mixte        
+   Elle est dite mixte parce qu'elle melange plusieurs techniques de         
+   resolution afin de renforcer sa robustesse. Plus precisement, on        
+   cherche a resoudre f(X)=0.         
+   a) Premiere operation, on considere que f(0)>0. Dans le cas contraire,        
+   on change de sens pour la direction de descente (i.e. on examine des 
+   rho <   0),         
+   ce qui revient a faire f := -f.        
+   b) On cherche un xmax tq f(Xmax)<0. Pour cela, on examine des X de plus        
+   en plus grands en faisant Xn+1 = 3 Xn, avec X0=1. On voit que le 
+   succes de l'operation suppose qu'il existe des X tq f(X)<0 sinon c'est 
+   mal parti pour la resolution.        
+   c) On a maintenant des bornes sur lesquelles la fonction a un signe         
+   different. En supposant la continuite de f, il existe donc une        
+   solution entre ces bornes. Pour ce qui concerne la continuite, elle 
+   est imperative de maniere generale (continuite de la reponse 
+   contrainte - deformation).         
+   Il faut quand meme noter que les QUAD4-SI ne verifient pas cette        
+   propriete pour des comportements non lineaires. J'en ai fait part a 
+   Nicolas qui confirme. Il faudrait sans doute leur apporter des 
+   modifications  substantielles.        
+   d) Entre les bornes, on procede par une methode de secante. Mais        
+   lorsque la solution proposee est en dehors des bornes, on fait plutot 
+   une dichotomie. Et a chaque iteration, on resserre les bornes. Ca 
+   converge forcement (eventuellement lentement pour des fonctions tres 
+   non lineaires, sauf a introduire systematiquement un coup de 
+   dichotomie tous les N iterations).
+   
+   Impact:
+   
+   Catalogue meca_non_line
+   RECH_LINEAIRE   =FACT(
+    
+   METHODE  =SIMP(statut='f',typ='TXM',defaut="CORDE",into=("CORDE","MIXTE") ),         
+   )
+   
+   La méthode par défaut est toujours "CORDE". 
+   
+   Fortran:
+   nmdomt : lecture mot-clef RECH_LINE (on stocke la méthode dans METHOD(7))
+   nmdepl : appelle nmreli pour la recherche linéaire
+   nmrepl : appelle nmreli pour la recherche linéaire avec pilotage
+   nmreli : routine générale pour la recherche linéaire. La méthode de résolution (corde 
+   ou mixte) est appelée par NMRECH (corde) ou NMREBO (mixte).
+   La méthode mixte appelle diverses routines:
+    zbarch.f  zbborn.f  zbinit.f  zbiter.f  zbopti.f  zbproj.f  zbroot.f
+   
+   Validation:
+   cas-tests utilisant la recherche linéaire (164 hors aspic/ascouf)
+   
+   Performances:
+   La méthode mixte est toujours moins bonne que la méthode corde (temps calcul, absence 
+   de convergence) mais ne provoque pas de tests NOOK (sauf ceux testant le nombre 
+   d'itérations de recherche linéaire). Sauf pour deux tests:
+   wtnp113a  1700 -> 1016.27     
+   wtnp113b  2639 -> 1411.36   
+   
+   On met METHODE = MIXTE dans ces deux cas-tests
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+   wtnp113ab
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010459 DU 2007-01-18 14:02:09
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Convergence en version 7 et non convergence en version 8
+FONCTIONNALITE
+   Pour des raisons de performance (matrice pleine, utilisation des propriétés des 
+   factorisations 
+   incomplètes de LDLT), la méthode pour calculer le complément de Schur dans le contact 
+   (méthodes 
+   non continues) est de type LDLT pure quelque soit le solveur choisi par 
+   l'utilisateur.   
+     
+   Le contact ne peut donc pas s'appliquer aux problèmes qui utilisent une matrice 
+   non-symétrique.  
+   C'est le cas des comportements avec déformations type SIMO_MIEHE et des calculs avec 
+   chargement  
+   suiveur.   
+   
+   Problème tracé aussi dans la fiche 10181  
+    
+   http://clpwdev.der.edf.fr:8080/REX/issue10181
+   
+   Seolution: il faut utiliser SYME='OUI' dans le solveur ou laisser le code faire (il 
+   émettra une alarme et passera en mode symétrique tout seul)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   nxc3xa9ant
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009985 DU 2006-09-04 09:24:34
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   DYNA_NON_LINE - Fusion implicite/explicite
+FONCTIONNALITE
+   Objectif
+   --------
+   Fusionner les opérateurs DYNA_NON_LINE et DYNA_TRAN_EXPLI:
+   On a reporte les fonctionnalités de DYNA_TRAN_EXPLI dans DYNA_NON_LINE pour
+   résorber l'opérateur DYNA_TRAN_EXPLI.
+   
+   Développement
+   -------------
+   1) catapy : dyna_non_line.capy
+   
+   - Les mots-clés facteurs EXCIT_GENE et PROJ_MODAL de DYNA_TRAN_EXPLI ont été introduits
+   dans DYNA_NON_LINE
+   
+   - On a regroupé dans le fichier de commande de DYNA_NON_LINE les mots clés
+   relatifs au schéma temporel sous un nouveau mot-clé facteur, SCHEMA_TEMPS :
+      SCHEMA_TEMPS     = _F(
+   
+               SCHEMA          = / "DIFF_CENT",
+                                 / "TCHAMWA",
+                                 / "NEWMARK",
+                                 / "HHT",
+                                 / "THETA_METHODE",
+   
+   #            Si "SCHEMA=='TCHAMWA'" :
+   #            ----------------------
+                  PHI          = / 1.05,[defaut]
+                                 / phi , 
+   
+   #            Si "SCHEMA=='NEWMARK'" :
+   #            ----------------------
+                  ALPHA        = / 0.25,[defaut]
+                                 / alpha,
+                  DELTA        = / 0.5,[defaut]
+                                 / delta,
+   
+   #            Si "SCHEMA=='HHT'" :
+   #            ----------------------
+                  ALPHA        = / -0.3,[defaut]
+                                 / alpha,
+                  MODI_EQUI    = / "NON",[defaut]
+                                 / "OUI",
+   
+   #            Si "SCHEMA=='THETA_METHODE'" :
+   #            --------------------------
+                  THETA         = / 1.,[defaut]
+                                  / theta ( 0.5<=theta<=1)
+   
+   #            Si "SCHEMA=='TCHAMWA'ou SCHEMA=='DIFF_CENT'" :
+   #            --------------------------------------------
+                  STOP_CFL     = / "NON",
+                                 / "OUI",[defaut]
+                  FORMULATION  = "ACCELERATION",
+   
+   #            Si "SCHEMA!='TCHAMWA'ou SCHEMA!='DIFF_CENT'" :
+   #            --------------------------------------------
+                  FORMULATION  = / "DEPLACEMENT",
+                                 / "VITESSE"
+   
+   Remarque:
+   Pour un schema implicite, la formulation en VITESSE n'est pas (encore) disponible.
+   Aster aboutit en erreur fatale si la formulation en VITESSE est renseignée.
+   
+   2) bibfor :
+   
+   a) Conception d'une SD spécifique à la dynamique :
+   Nom de cette structure de données: DYNACO= resu//'.DYNACO'
+   Cette nouvelle SD est construite dans la routine ndlect, elle regroupe les objets suivants:
+   
+   Type du schéma:
+   '.TYPE_SCH': S V K16 long=8
+      V(1)='STATIQUE',
+      V(2)='NEWMARK',
+      V(3)='HHT',
+      V(4)='THETA_METHODE',
+      V(5)='HHT_COMPLET',
+      V(6)= ' ',
+      V(7)='DIFF_CENT',
+      V(8)='TCHAMWA',
+   
+   Paramètre du schéma:
+   '.PARA_SCH': S V R8 long=4
+      V(1)= ALPHA,
+      V(2)= DELTA,
+      V(3)= PHI,
+      V(4)= THETA,
+   
+   Données initiales pour le contact méthode continue
+   '.INI_CONT': S V R8 long=4
+      V(1)= V0VIT,
+      V(2)= VOACC,
+      V(3)= A0VIT,
+      V(4)= A0ACC,
+   
+   Information sur la SD
+   '.INFO_SD': S V L long=5
+      V(1)= true si amortissement au niveau du matériau (implicite et explicite)
+      V(2)= true si multi appuis(implicite et explicite)
+      V(3)= true si amortissement modal(implicite et explicite)
+      V(4)= true si matrice de masse diagonale(uniquement explicite)
+      V(5)= true si projection modale(uniquement explicite)
+   
+   Noms des SD pour le multi appuis, l'amortissement modal, la projection modale
+   '.NOM_SD': S V K19 long=3
+      V(1)= nom SD pour le multi appuis
+      V(2)= nom SD pour l'amortissement modal
+      V(3)= nom SD pour la projection modal
+   
+   Type de formulation
+   '.TYPE_FOR': S V I long=2
+      V(1): type de la formulation en dynamique
+           = 1 en déplacement
+           = 2 en vitesse
+           = 3 en accélération 
+      V(2): type de la formulation pour le contact méthode continue
+           = 1 en déplacement
+           = 2 en vitesse
+   
+   Coefficients pour la méthode d'intégration dépendant du pas de temps et du schéma:
+   'COEF_SCH': S V R8 long=4
+      V(1)= COEDEP (=1-delta si alpha méthode, =1 sinon)
+      V(2)= COEVIT (=delta/(alpha*pas) si newmark, =1/(theta*pas) si hht, =0 sinon)
+      V(3)= COEACC (=delta/(alpha*pas*pas) si newmark, =1/(theta*pas*pas) si hht, =0 sinon)
+   
+   b) Allégement de l'op0070:
+   On fait passer la sd dynaco à la place d'une multitude de variables dans la liste
+   d'arguments des routines appelées dans cette op.
+   
+   c) Enrichissement des routines nmmuap, nmmoam, mxmoam d'une SD respectivement relative
+    au multi-appui, à l'amortissement modal, et à la projection modale.
+   - pour le mult_appui: nom de la SD :resu//'MULT_APPUI':
+                         objets: '.FDEP','.FVIT','.FACC','.MULA','.PSID'
+   - pour l'amortissement modal: nom de la SD :resu//'AMOR_MODAL':
+                         objets: '.VALM','.BASM'
+   - pour la projection modale: nom de la SD :resu//'PROJ_MODAL':
+                         objets: '.MASG','.AGEM','.AGEP','.VGEM','.VGEP',
+                                 '.DGEM','.DGEP','.RIGG','.AMOG','.BASM','.FONG','.FORG',
+   
+   
+   d) conception de 4 utilitaires pour interroger la SD dynaco: 
+     fonctions ndynlo,ndynkk,ndynre,ndynin 
+   
+   e) conception des fichiers python sd_dynaco, sd_multi_appui, sd_amor_modal, sd_proj_modal
+    pour permettre à la routine CHEKSD de vérifier le contenu de chaque SD.
+   
+   3) astest
+   Modification de la syntaxe de DYNA_NON_LINE (61 cas-tests, 127 appels) 
+   Remplacement des commandes DYNA_TRAN_EXPLI par DYNA_NON_LINE (7 cas-tests, 15 appels)
+   
+   4) unigest:
+   suppression des fichiers inutiles dédiés à DYNA_TRAN_EXPLI.
+   
+   Validation
+   ----------
+   Liste des cas-tests contenant l'opérateur DYNA_NON_LINE et DYNA_TRAN_EXPLI.
+   
+   Documentation (liste fournie grâce à l'aide précieuse de Jacques Pellet !)
+   ------------
+   D4.06.11        structure de données solveur
+   D5.04.01        introduire une nouvelle loi de comportement
+   D6.00.01        liste des routines utilitaires du Code_Aster
+   
+   R5.06.01        réduction de modèle en dynamique linéaire et non-linéaire : méthode de ritz
+   R6.01.02        solveur linéaire de type gradient conjugué : étude théorique et implantation 
+   dans code_aster
+   
+   U3.11.01        modélisations pou_d_t, pou_d_e, pou_c_t, barre
+   U3.11.02        modélisations dis_t et dis_tr
+   U3.11.04        modélisations pou_d_tg, pou_d_tgm
+   U3.13.09        modélisations 2d_dis_t et 2d_dis_tr
+   U4.32.03        opérateur recu_fonction
+   U4.32.03        opérateur recu_fonction
+   U4.51.11        comportements non linéaires
+   U4.53.01        DYNA_NON_LINE
+   U4.53.03        opérateur dyna_tran_expli
+   U4.81.01        opérateur calc_elem
+   
+   V2.03.114       sdls114 - calcul des facteurs d'intensité de contrainte d'une plaque fissurée 
+   par recombinaison modale
+   V4.04.100       tplv100 - cylindre soumis à des conditions aux limites non axisymétriques 
+   V5.01.102       sdnd102 - réponse sismique d'un système masse-ressort non linéaire multi-
+   supporté
+   V5.03.107       sdnv107 - poutre plastique en traction condensée dynamiquement
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Tous les cas-tests DYNA_NON_LINE et DYNA_TRAN_EXPLI
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009837 DU 2006-06-13 12:18:23
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+   CONTACT - Modxc3xa8le axisymxc3xa9trique
+FONCTIONNALITE
+   - OBJECTIF
+   -----------
+   Supprimer le mot clé MODL_AXIS dans la méthode CONTINUE de CONTACT en utilisant l'ATTRIBUT
+   AXIS='OUI' présent pour les éléments axisymétriques dans le catalogue
+   phenomene_modelisation__.cata.
+   
+   Compléments:
+   
+   "Vérifier que tous les éléments d'une même zone de contact sont soit AXIS soit NON AXIS,
+   et si l'on trouve dans une même zone des éléments AXIS et des éléments NON AXIS s'arrêter
+   en erreur fatale."
+   
+   Les fichiers se trouvent dans le répertoire /home/lebouvier/EL_9834/src et capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.44.01
+VALIDATION
+   cas tests de contact utilisant la mxc3xa9thode continue
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR andriam      ANDRIAMBOLOLONA Hari   DATE 04/04/2007 - 17:33:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009624 DU 2006-03-30 09:39:17
+TYPE anomalie concernant Code_Aster (VERSION 8.2)
+TITRE
+   Sensibilite en dynamique
+FONCTIONNALITE
+   Un risque potentiel d'erreur a été signalé par M. Abbas, 
+   concernant l'archivage de variables complémentaires 
+   nécessaires pour le calcul de sensibilité en dynamique non 
+   linéaire. Cette erreur a été corrigée.
+   Une analyse plus approfondie montre que cette erreur ne 
+   conduisait pas à un résultat faux. En effet, les données 
+   en question ont déjà été archivées en amont.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sensd07a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 04/04/2007 - 17:33:32
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010319 DU 2006-11-28 12:31:45
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   VALE_CONT et ARCH_ETAT_INIT
+FONCTIONNALITE
+   Il s'agit d'un bug dans la routine NMNOLI qui se charge de la sauvegarde des champs
+   initiaux. La SD de contact VALE_CONT n'était ni créée ni prise en compte. On crée donc une
+   nouvelle routine CFMXR0 qui se charge d'initialiser VALE_CONT.
+   
+   ATTENTION : les valeurs intiales des champs de VALE_CONT ne sont jamais utilisées. Dans
+   cette mesure, on intialise tous ces champs à 0.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   test perso
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010639 DU 2007-03-13 13:04:26
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   Corriger le DISMOI sur la symxc3xa9trie des matrices xc3xa9lxc3xa9mentaires
+FONCTIONNALITE
+   On effectue la correction suivante dans la routine DISMME.F pour la question 'TYPMAT' qui
+   doit dire si la matrice assemblée sera symétrique ou non : 
+      - si il existe LISTE_RESU => on regarde les matr_elem
+      - sinon : il ne peut y avoir que des macro-elements => c'est "symétrique" car les
+   macro-elements sont (pour l'instant)  toujours symériques
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Asrest
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR fournier     FOURNIER Isabelle      DATE 04/04/2007 - 17:33:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010481 DU 2007-01-30 15:09:51
+TYPE evolution concernant Salome (VERSION )
+TITRE
+   Module Aster de Salomxc3xa9 : Implanter la fonctionnalitxc3xa9 de "Preferences"
+FONCTIONNALITE
+   Jusqu'à la version 3.2.4 de Salomé, il était impossible à un module écrit en Python de
+   gérer un menu de Preferences. C'est maintenant possible.
+   Il faudrait le réaliser pour le module Aster de Salomé. Je joins une specification technique.
+   Les champs de préférences à renseigner sont : 
+       * définir un éditeur de texte
+       * "Save database" coché ou non par défaut
+       * "Interactive follow-up" coché ou non par défaut
+   
+   Il faut que le champ de préférences soit géré de telle manière qu'il soit simple d'en
+   ajouter une.
+   
+   Enfin, l'éditeur de texte doit être accessible depuis le menu contextuel sur les fichiers
+   de commandes Aster "Edit file" ou "Editer fichier" (attention au bilinguisme!).
+   
+   PS : réalisation CS
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   Test IHM
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR andriam      ANDRIAMBOLOLONA Hari   DATE 04/04/2007 - 17:33:33
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 008176 DU 2004-10-19 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 7.3)
+TITRE
+   derivation par rapport aux Dirichlet dans DYNA_NON_LINE
+FONCTIONNALITE
+   Suite à l'intégration de la dérivation par rapport aux 
+   dirichlets dans STAT_NON_LINE, S. Cambier a tenté 
+   d'intégrer la dérivation du même type dans DYNA_NON_LINE.
+   Cette tentative de dérivation conduisait à un résultat 
+   faux, dont on ne connaît pas encore la cause. La 
+   localisation de cette erreur risque de prendre beaucoup de 
+   temps. Comme il n'y a pas de demande particulière 
+   concernant ce type de dérivation, et en accord avec le 
+   chef du projet "Qualité et sensibilité", je propose de 
+   clore cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   sans pertinence
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 04/04/2007 - 17:33:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010729 DU 2007-03-30 14:37:32
+TYPE express concernant Code_Aster (VERSION 2.x)
+TITRE
+   FETI: ecrasement mémoire, second membre nul et outils de diagnostics complémentaires
+FONCTIONNALITE
+   Maintenance corrective
+   ----------------------
+   Il s'agit de corriger des écrasements mémoires et/ou des 
+   overflows activables suivant la plate-forme, les paramètres 
+   mémoires et compil, de la configuration du calcul et de la 
+   surcharge éventuelle de sources. Ils semblaient dus:
+      - à l'écriture dans l'objet JEVEUX NOMGGT ouvert en 'L' dans 
+        FETINL.F, (==> on l'a mis en 'E')
+      - au traitement d'un second membre rigoureusement nul (==> 
+   dans ALFETI on détecte cette situation et on sort avec U=0)
+      - a des bugs dans la routine de traduction du partitionnement 
+   METIS ou SCOTCH en SD_FETI au sens ASTER (==> réécriture 
+   partielle de FETCRF pour corriger ces bugs, simplifier la 
+   description de la SD_FETI et gagner un peu en performance; 
+   L'option de diagnostic décrite plus bas doit compléter ce 
+   travail en vérifiant certaines règles de cohérence auxquelles 
+   doit répondre cette SD et en testant la description de 
+   l'interface dans différentes situations canoniques).
+   
+   Maintenance préventive & MAJ
+   -----------------------------
+    - on en profite pour rebalayer les JEVEUO(...'L' susceptibles 
+   de poser les mêmes pbs et on les corrige:  K24PAS, KFVAL et 
+   K24IPI dans ALFETI,
+    - on passe en INTEGER*4 au cas où les inputs des routines BLAS, 
+   LAPACK du périmètres FETI (une 30 aine). Cela avait été fait à 
+   l'origine que pour les outputs,
+    - mise a jour des fichiers messages en python, notamment ceux 
+   de from_c.py qui n'était pas branché au FORTRAN,
+    - rajout du diagnostic MPI via MPI_ERRHANDLER_SET et 
+   MPI_ERROR_STRING (dans FETAM, FETMER).
+   
+   Evolutions mineures
+   ------------------
+    - Rajout du mot-clé SOLVEUR/REAC_RESI si METHODE='FETI', qui 
+   donne la fréquence de réactualisation du calcul du résidu du 
+   GCPPC de FETI (on enrichi d'un entier la SD SOLVEUR).
+   
+    - Tests de la cohérence de la SD_FETI si INFO_FETI(12:12)='T':
+   
+   affichage dans le .mess
+        <== test indirect via ops de restriction/extrapolation
+    TEST SD_FETI 1 (IL DOIT ETRE EGAL A 0 !)   0.0E+000
+        <== test direct de la coherence d'objets SD_FETI
+    TEST SD_FETI 2  
+    LES ECARTS SUIVANTS DOIVENT ETRE NULS !
+    !! ATTENTION LE TROISIEME NE TIENT PAS COMPTE 
+    D'EVENTUELS LAGRANGES SUR L'INTERFACE,
+     DE LIAISON_* DES FORCES NODALES !!
+    --> CHAM_NOS LOCAUX + .FETI                 0
+    --> .FETH           + .FETI                 0
+    --> .FETB + .FLII   + .FETI                 0
+       <== test indirect de l'interface via la résolution du système
+   canonique DIAG(1 2... N) * U = (1 2 ... N) sur le vrai profil
+   de la matrice et du second membre; On bluffe le processus 
+   d'assemblage (via FETTSD) pour faire un test d'ensemble sur 
+   quelques itérations FETI. On doit trouver la valeur 1.D0 sur tous
+   les noeuds physiques.
+   TESTDIAG ERREUR U        1501  =    1.00000907236818     
+    INO/ICMP =          501           1
+    TESTDIAG ERREUR U        1502  =    1.00000907236818     
+    INO/ICMP =          501           2
+   ....
+     !! AFFICHAGE LIMITE A      5   VALEURS !!
+    
+    TEST SD_FETI + ALGORITHME 3
+    ECART MIN A LA SOLUTION  0.000000000000000E+000
+    ECART MOYEN A LA SOLUTION  1.491348119381835E-007
+    ECART MAX A LA SOLUTION  3.866615564751541E-005
+    NOMBRE D'ERREUR A TOLERANCE   1.00000E-006  =          120
+   
+   Lorsqu'on veut faire un calcul FETI il est conseillé de valider 
+   son découpage en sous-domaines en utilisant ce test avec 
+   MECA_STATIQUE. Mettre un RESI_RELA assez dur (10-12 par ex.) 
+   pour obliger l'algo à faire quelques itérations. Mettre de 
+   préférence qu'un seul chargement dans EXCIT et ne comportant pas
+   de Lagrange (une pression par exemple).
+   
+    - Rajout des profiling des communications MPI si INFO_FETI
+   (10:10)='T' (estimé via UTTCPU).
+   
+    - Sorties de données pour les développeurs (pour ONERA/CERFACS)
+     si INFO_FETI(13:13)='T' courbe d'évolution du résidu projeté 
+   absolu et relatif dans fort.17
+     si INFO_FETI(14:14)='T' sortie des matrices, seconds membres, 
+   nume_ddl et solutions locales, pour les sous-domaines affectés 
+   au processeur, dans le fort.18 du proc.
+   Le format de sortie est:
+   MATRICE DU SOUS-DOMAINE 1 I/J/KIJ     <---- matrice K1 du SD 1
+   NOMBRE DE TERMES           69    <---- nbre de termes non nuls
+    1           1   102115.384615385   <---- i, j, K1(i,j)
+   ....................
+   
+    SECOND MEMBRE  1 <---- second membre F1 du sd 1 (ATTENTION IL 
+   PEUT Y'AVOIR PLUSIEURS SECOND MENBRE A ADDITIONNER)
+   I/NUM_NOEUD (<0 SI LAGR)/NUM_COMPOSANTE (<0 SI LAGR)/FI
+   NOMBRE DE TERMES           14  <---- F1 a 14 composantes
+              1           1           1  0.000000000000000E+000    
+   <---- indice i/numéro du noeud associé (<0 si c'est un 
+   Lagrange)/numéro de composante (<0 si c'est un Lagrange)/ F1(i)
+    .................
+   
+    SOLUTION LOCALE            4  <---- sol locale U4 du sd 4 a cv
+     I/NUM_NOEUD (<0 SI LAGR)/NUM_COMPOSANTE (<0 SI LAGR)/ULOCI
+    NOMBRE DE TERMES           14 <---- U4 a 14 composantes
+              1           3           1  6.573036012154370E-003     
+   <---- indice i/numéro du noeud associé (<0 si c'est un 
+   Lag)/numéro de composante (<0 si c'est un Lagrange)/ U4_loc(i)
+              2           3           2  5.724560217648936E-003
+   ....................
+   SOLUTION GLOBALE  I/NUM_NOEUD (<0 SI LAGR)/NUM_COMPOSANTE (<0 SI 
+   LAGR)/UGLOI    <----- solution globale recherchée U
+    NOMBRE DE TERMES           38  <--- U a 38 composantes
+              1           1           1  4.063484054452803E-003    
+   <---- indice i/numéro du noeud associé (<0 si c'est un 
+   Lagrange)/numéro de composante (<0 si c'est un Lagrange)/Uglob(i)
+   
+   Périmètre des routines impactées  <N> si nouveau
+   --------------------------------
+   FETI:alfeti, fetacc, fetam, fetarp, fetcpu, fetcrf, fetfiv, 
+   fetggt, fetinl, fetmer <N>, fetmon, fetprc, fetprj, fetreo, 
+   fetrin, fetsca, fettor, fettsd <N>.
+   GENERAL: assmam, assvec, creso1, cresol1, fetccn, mestat, 
+   preres, op0070, tldlg2.
+   PYTHON: meca_statique, stat_non_line, algorith14, elements5, 
+   from_c.
+   
+   Validation
+   ----------
+   cas tests de la base et du bench sur clpaster et bull en NEW9
+   
+   Suite EDA du lundi 02/04/07
+   ----------------------------
+   
+   * Rajout d'un msg d'alarme (UTMESS('E')) si INFO_FETI(12:12)='T'
+   (=> modif d'ALGELINE5.py)
+   * Renommage de from_c.py en appelmpi.py (=> destruction de 
+   from_c. py et création de appelmpi.py)
+   * Restit de op0070.f et stat_non_line.capy à M.ABBAS car 
+   conflits de notation.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.0.1
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.50.01,D4.06.21,D9.03.01,D4.06.11
+VALIDATION
+   non régréssion, informatique
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR gnicolas     NICOLAS Gérald         DATE 04/04/2007 - 17:33:34
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009220 DU 2005-11-18 00:00:00
+TYPE evolution concernant Code_Aster (VERSION 8.1)
+TITRE
+   MACR_ADAP_MAIL et taille de rxc3xa9pertoire temporaire
+FONCTIONNALITE
+   Par défaut, le répertoire de travail propre à HOMARD est totalement nettoyé, à l'exception
+   du fichier qui mémorise les parentés pour l'adaptation suivante. En mode d'information >=
+   2, on garde les fichiers pour du débogage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   zzzz175a
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010107 DU 2006-10-04 14:01:34
+TYPE anomalie concernant Code_Aster (VERSION 8.3)
+TITRE
+   DETRUIRE
+FONCTIONNALITE
+   C'est un problème de syntaxe de la part de l'utilisateur.
+   Les commandes sont : 
+     DX_SEN[i] = POST_RELEVE_T(ACTION = _F(INTITULE = 'ff',
+                                             SENSIBILITE=PS[i],
+                                             NOEUD = 'N1000',
+                                             RESULTAT = RES,
+                                             NOM_CHAM = 'DEPL',
+                                             NUME_ORDRE = 1,
+                                             NOM_CMP = 'DX',
+                                             OPERATION = 'EXTRACTION'));
+     IMPR_TABLE(TABLE=DX_SEN[i],SENSIBILITE=PS[i])
+     DETRUIRE(CONCEPT=_F(NOM=DX_SEN,SENSIBILITE=PS[i]))
+   Cela signifie que dans la boucle on a créé n tables dont les noms stockés dans DX-SEN[i].
+   Pour détruire ces tables, il faut appliquer la même désignation des concepts :
+     DETRUIRE(CONCEPT=_F(NOM=DX_SEN[i],SENSIBILITE=PS[i]))
+   Tout se passe alors normalement.
+   Je propose de déclarer cette fiche "sans suite".
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   l'xc3xa9tude associxc3xa9e
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010478 DU 2007-01-26 16:22:51
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   homard / performance
+FONCTIONNALITE
+   Le temps passé est très grand car l'utilisateur a sélectionné toutes les options de
+   contrôle du maillage, en particulier l'interpénétration des mailles, opérations très
+   couteuse comme on peut l'imaginer ! Si on laisse les options par défaut, c'est-à-dire pas
+   de contrôle, le temps total nécessaire à homard chute à moins de 10s.
+   Je rappelle que nous conseillons d'effectuer le contrôle via MACR_INFO_MAIL sur le tout
+   premier maillage. Ensuite, on ne devrait l'utiliser au cours de l'adaptation que si on
+   suspecte un problème. Ou pour bétonner, mais alors on en paie le prix.
+   Je propose de classer "sans suite" cette fiche.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   l'xc3xa9tude associxc3xa9e
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010476 DU 2007-01-26 15:01:05
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   homard + suivi_frontiere
+FONCTIONNALITE
+   Tout se passait bien quand on donnait au moins 2 groupes. En revanche, pour un seul groupe
+   le décodage par le python était mal fait. Au lieu de prendre, le nom complet, il y avait
+   transmission d'autant de groupes que de caractères !
+   La correction porte sur le décodage des GROUP_MA dans creation_donnees_homard.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   l'étude associée
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010613 DU 2007-03-06 16:53:23
+TYPE anomalie concernant Code_Aster (VERSION 2.x)
+TITRE
+   Calcul du diamètre d'une maille
+FONCTIONNALITE
+   Le diamètre d'un élément est la longueur du plus grand segment que l'on peut insérer dans
+   la maille. Pour un simplexe (triangle ou tétraèdre), cela correspond au plus grand côté.
+   Pour les autres mailles, il faut prendre le max des côtés et des diagonales.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   option ERRE_ELEM_SIGM
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010635 DU 2007-03-12 10:01:14
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Messages des calculs de sensbilité
+FONCTIONNALITE
+   Un fichier de messages dénommé "sensibilite.py" est créé. Il contient les 64 messages
+   actuels inhérents aux calculs de sensibilité. Ces messages pont été extraits des fichiers
+   où ils se trouvaient :
+   algorith3.py  algorith5.py  algorith6.py  algorith8.py  algorith9.py  algorith10.py 
+   algorith11.py  algorith12.py  algorith13.py  algorith14.py
+   calculel2.py  calculel3.py  calculel4.py  calculel5.py  calculel6.py
+   elements3.py elements4.py
+   postrele.py
+   utilitai2.py  utilitai3.py  utilitai4.py  utilitai6.py  utilitai7.py
+   
+   Les numéros retirés sont désormais disponibles.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   tests de la sensibilité
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF demo002a                        abbas M.ABBAS            517      7      3
+ CASTEST MODIF elsa01a                         abbas M.ABBAS            221      2      2
+ CASTEST MODIF elsa01c                         abbas M.ABBAS            253      3      2
+ CASTEST MODIF elsa01d                         abbas M.ABBAS            265      3      2
+ CASTEST MODIF fdlv111a                        abbas M.ABBAS            268      3      2
+ CASTEST MODIF fdlv111b                        abbas M.ABBAS            244      3      2
+ CASTEST MODIF fdnl100a                        abbas M.ABBAS            456      5      3
+ CASTEST MODIF fdnv100a                        abbas M.ABBAS            331      3      2
+ CASTEST MODIF forma04c                        abbas M.ABBAS            312      3      3
+ CASTEST MODIF forma05b                        abbas M.ABBAS            358      5      3
+ CASTEST MODIF forma12b                        abbas M.ABBAS            244      3      3
+ CASTEST MODIF forma12d                        abbas M.ABBAS            226      3      3
+ CASTEST MODIF sdls115a                        abbas M.ABBAS            211      4      3
+ CASTEST MODIF sdls116a                        abbas M.ABBAS            163      3      4
+ CASTEST MODIF sdlv120a                        abbas M.ABBAS            348      3      2
+ CASTEST MODIF sdlv120b                        abbas M.ABBAS            233      3      2
+ CASTEST MODIF sdlv121a                        abbas M.ABBAS            284      3      2
+ CASTEST MODIF sdlv121b                        abbas M.ABBAS            284      3      2
+ CASTEST MODIF sdnd100c                        abbas M.ABBAS            135      4      2
+ CASTEST MODIF sdnd102b                        abbas M.ABBAS            467      5      3
+ CASTEST MODIF sdnd102c                        abbas M.ABBAS            245      8      6
+ CASTEST MODIF sdnd102d                        abbas M.ABBAS            240     10      7
+ CASTEST MODIF sdnl100a                        abbas M.ABBAS            167      2      2
+ CASTEST MODIF sdnl101a                        abbas M.ABBAS           1058      9      9
+ CASTEST MODIF sdnl102a                        abbas M.ABBAS            195      2      2
+ CASTEST MODIF sdnl111c                        abbas M.ABBAS            260      7      3
+ CASTEST MODIF sdnl111d                        abbas M.ABBAS            151      4      3
+ CASTEST MODIF sdnl111e                        abbas M.ABBAS            179      5      4
+ CASTEST MODIF sdnl111f                        abbas M.ABBAS            211      5      5
+ CASTEST MODIF sdnl113a                        abbas M.ABBAS            281      3      2
+ CASTEST MODIF sdnl130a                        abbas M.ABBAS            151      3      2
+ CASTEST MODIF sdnl131a                        abbas M.ABBAS            983      4      2
+ CASTEST MODIF sdns105a                        abbas M.ABBAS            307      4      3
+ CASTEST MODIF sdns106a                        abbas M.ABBAS            328      4      3
+ CASTEST MODIF sdnv100a                        abbas M.ABBAS            384      3      2
+ CASTEST MODIF sdnv100b                        abbas M.ABBAS            283      3      2
+ CASTEST MODIF sdnv100c                        abbas M.ABBAS            277      3      3
+ CASTEST MODIF sdnv100d                        abbas M.ABBAS            368      2      3
+ CASTEST MODIF sdnv100e                        abbas M.ABBAS            370      2      3
+ CASTEST MODIF sdnv100f                        abbas M.ABBAS            397     13      7
+ CASTEST MODIF sdnv100g                        abbas M.ABBAS            256      5      3
+ CASTEST MODIF sdnv100h                        abbas M.ABBAS            249      4      3
+ CASTEST MODIF sdnv100i                        abbas M.ABBAS            372      4      3
+ CASTEST MODIF sdnv103a                        abbas M.ABBAS            210      4      3
+ CASTEST MODIF sdnv103b                        abbas M.ABBAS            404      4      2
+ CASTEST MODIF sdnv103c                        abbas M.ABBAS            239      4      3
+ CASTEST MODIF sdnv103d                        abbas M.ABBAS            248      5      2
+ CASTEST MODIF sdnv103f                        abbas M.ABBAS            268      4      5
+ CASTEST MODIF sdnv104a                        abbas M.ABBAS            224      3      3
+ CASTEST MODIF sdnv104b                        abbas M.ABBAS            209      3      3
+ CASTEST MODIF sdnv104c                        abbas M.ABBAS            248      3      4
+ CASTEST MODIF sdnv104d                        abbas M.ABBAS            227      3      3
+ CASTEST MODIF sdnv104e                        abbas M.ABBAS            230      3      3
+ CASTEST MODIF sdnv105b                        abbas M.ABBAS           1273     43     16
+ CASTEST MODIF sdnv105c                        abbas M.ABBAS            970     22      9
+ CASTEST MODIF sdnv106a                        abbas M.ABBAS            261      7      3
+ CASTEST MODIF sdnv107a                        abbas M.ABBAS            620      5      3
+ CASTEST MODIF sensd07a                        abbas M.ABBAS            512     13      5
+ CASTEST MODIF sslp100c                        abbas M.ABBAS            222      3      2
+ CASTEST MODIF sslp100d                        abbas M.ABBAS            427      3      2
+ CASTEST MODIF sslv130a                        abbas M.ABBAS            399      5      5
+ CASTEST MODIF sslv130b                        abbas M.ABBAS            370      5      5
+ CASTEST MODIF sslv130c                        abbas M.ABBAS            348      5      5
+ CASTEST MODIF ssna102d                        abbas M.ABBAS            311      4      7
+ CASTEST MODIF ssna105b                        abbas M.ABBAS            230      1      2
+ CASTEST MODIF ssna111b                        abbas M.ABBAS            222      1      2
+ CASTEST MODIF ssnl106i                        abbas M.ABBAS            178      3      2
+ CASTEST MODIF ssnp121a                        abbas M.ABBAS            200      1      2
+ CASTEST MODIF ssnp121d                        abbas M.ABBAS            244      1      2
+ CASTEST MODIF ssnp121e                        abbas M.ABBAS            239      1      2
+ CASTEST MODIF ssnp121f                        abbas M.ABBAS            238      1      2
+ CASTEST MODIF ssnp121g                        abbas M.ABBAS            213      1      2
+ CASTEST MODIF ssnp121h                        abbas M.ABBAS            203      1      2
+ CASTEST MODIF ssnp121i                        abbas M.ABBAS            250      1      2
+ CASTEST MODIF ssnp121j                        abbas M.ABBAS            239      1      2
+ CASTEST MODIF ssnp121k                        abbas M.ABBAS            238      1      2
+ CASTEST MODIF ssnp121m                        abbas M.ABBAS            285      1      3
+ CASTEST MODIF ssnp121n                        abbas M.ABBAS            307      1      2
+ CASTEST MODIF ssnp121o                        abbas M.ABBAS            335      1      2
+ CASTEST MODIF ssnp501c                        abbas M.ABBAS            242      2      3
+ CASTEST MODIF ssnp502c                        abbas M.ABBAS            249      2      3
+ CASTEST MODIF ssnv104e                        abbas M.ABBAS            466      1      2
+ CASTEST MODIF ssnv127f                        abbas M.ABBAS            426      1      2
+ CASTEST MODIF ssnv127h                        abbas M.ABBAS            450      1      2
+ CASTEST MODIF ssnv128m                        abbas M.ABBAS            310      1      2
+ CASTEST MODIF ssnv128p                        abbas M.ABBAS            199      1      2
+ CASTEST MODIF ssnv128q                        abbas M.ABBAS            236      1      2
+ CASTEST MODIF ssnv128r                        abbas M.ABBAS            182      1      2
+ CASTEST MODIF ssnv128s                        abbas M.ABBAS            216      1      2
+ CASTEST MODIF ssnv128t                        abbas M.ABBAS            203      1      2
+ CASTEST MODIF ssnv128u                        abbas M.ABBAS            227      1      2
+ CASTEST MODIF ssnv128v                        abbas M.ABBAS            204      1      2
+ CASTEST MODIF ssnv129d                        abbas M.ABBAS            200      1      2
+ CASTEST MODIF ssnv153a                        abbas M.ABBAS            186      1      2
+ CASTEST MODIF ssnv501c                        abbas M.ABBAS            411      1      3
+ CASTEST MODIF ssnv503h                        abbas M.ABBAS            402      1      2
+ CASTEST MODIF ssnv503i                        abbas M.ABBAS            561      1      2
+ CASTEST MODIF ssnv504d                        abbas M.ABBAS            260      1      3
+ CASTEST MODIF ssnv504h                        abbas M.ABBAS            232      1      2
+ CASTEST MODIF ssnv505d                        abbas M.ABBAS            182      1      2
+ CASTEST MODIF ssnv505e                        abbas M.ABBAS            186      1      2
+ CASTEST MODIF ssnv505f                        abbas M.ABBAS            274      1      2
+ CASTEST MODIF ssnv505h                        abbas M.ABBAS            453      1      3
+ CASTEST MODIF ssnv506e                        abbas M.ABBAS            212      2      2
+ CASTEST MODIF ssnv506f                        abbas M.ABBAS            228      1      2
+ CASTEST MODIF tpll01j                         abbas M.ABBAS            119      7      7
+ CASTEST MODIF wtnp113a                        abbas M.ABBAS            467      3      3
+ CASTEST MODIF wtnp113b                        abbas M.ABBAS            485      5      3
+ CASTEST MODIF wtnp116a                        abbas M.ABBAS            444      5      5
+ CASTEST MODIF wtnp116b                        abbas M.ABBAS            508      5      5
+ CASTEST MODIF yyyy103a                        abbas M.ABBAS            333      2      2
+ CASTEST MODIF yyyy103c                        abbas M.ABBAS            284      2      2
+ CASTEST MODIF zzzz137a                        abbas M.ABBAS            151      2      2
+ CASTEST MODIF zzzz175a                        abbas M.ABBAS            622      5      5
+CATALOGU SUPPR commande/dyna_tran_expli        abbas M.ABBAS            345      0    345
+CATALOPY MODIF commande/affe_char_meca         abbas M.ABBAS           1056      1      2
+CATALOPY MODIF commande/affe_char_meca_f       abbas M.ABBAS            683      1      2
+CATALOPY MODIF commande/dyna_non_line          abbas M.ABBAS            434     31     11
+CATALOPY MODIF commande/meca_statique          abbas M.ABBAS            103      2      1
+CATALOPY MODIF commande/stat_non_line          abbas M.ABBAS            385      3      1
+ FORTRAN AJOUT algeline/fettsd                 abbas M.ABBAS            497    497      0
+ FORTRAN AJOUT algorith/cfmxr0                 abbas M.ABBAS            135    135      0
+ FORTRAN AJOUT algorith/nmmeng                 abbas M.ABBAS             66     66      0
+ FORTRAN AJOUT algorith/nmrebo                 abbas M.ABBAS             66     66      0
+ FORTRAN AJOUT algorith/nmreli                 abbas M.ABBAS            278    278      0
+ FORTRAN AJOUT algorith/zbarch                 abbas M.ABBAS             63     63      0
+ FORTRAN AJOUT algorith/zbborn                 abbas M.ABBAS             65     65      0
+ FORTRAN AJOUT algorith/zbinit                 abbas M.ABBAS             72     72      0
+ FORTRAN AJOUT algorith/zbiter                 abbas M.ABBAS             82     82      0
+ FORTRAN AJOUT algorith/zbopti                 abbas M.ABBAS             59     59      0
+ FORTRAN AJOUT algorith/zbproj                 abbas M.ABBAS             69     69      0
+ FORTRAN AJOUT algorith/zbroot                 abbas M.ABBAS             92     92      0
+ FORTRAN AJOUT from_c/fetmer                   abbas M.ABBAS             58     58      0
+ FORTRAN AJOUT modelisa/mmmaxi                 abbas M.ABBAS            124    124      0
+ FORTRAN AJOUT utilitai/ndcoef                 abbas M.ABBAS            112    112      0
+ FORTRAN AJOUT utilitai/ndynin                 abbas M.ABBAS             85     85      0
+ FORTRAN AJOUT utilitai/ndynkk                 abbas M.ABBAS             88     88      0
+ FORTRAN AJOUT utilitai/ndynlo                 abbas M.ABBAS            139    139      0
+ FORTRAN AJOUT utilitai/ndynre                 abbas M.ABBAS            121    121      0
+ FORTRAN AJOUT utilitai/uttgel                 abbas M.ABBAS            131    131      0
+ FORTRAN MODIF algeline/alfeti                 abbas M.ABBAS           1072    212    127
+ FORTRAN MODIF algeline/fetcpu                 abbas M.ABBAS             93      5      8
+ FORTRAN MODIF algeline/fettor                 abbas M.ABBAS             83     18     22
+ FORTRAN MODIF algeline/preres                 abbas M.ABBAS            225      2      2
+ FORTRAN MODIF algeline/resfet                 abbas M.ABBAS            112      5      4
+ FORTRAN MODIF algeline/resoud                 abbas M.ABBAS            242      4      3
+ FORTRAN MODIF algeline/tldlg2                 abbas M.ABBAS            486     48     39
+ FORTRAN MODIF algorith/conlig                 abbas M.ABBAS            134     29     17
+ FORTRAN MODIF algorith/cresol                 abbas M.ABBAS            383      7      4
+ FORTRAN MODIF algorith/diinit                 abbas M.ABBAS            581     70     65
+ FORTRAN MODIF algorith/dinit                  abbas M.ABBAS            338    136     86
+ FORTRAN MODIF algorith/dlfext                 abbas M.ABBAS            380     15     12
+ FORTRAN MODIF algorith/dlnewi                 abbas M.ABBAS            793      6      3
+ FORTRAN MODIF algorith/dltini                 abbas M.ABBAS            210     15      9
+ FORTRAN MODIF algorith/dy2mbr                 abbas M.ABBAS            343     22     27
+ FORTRAN MODIF algorith/dylach                 abbas M.ABBAS            290      7      8
+ FORTRAN MODIF algorith/dyobar                 abbas M.ABBAS            561     41     40
+ FORTRAN MODIF algorith/fetacc                 abbas M.ABBAS            208     20     15
+ FORTRAN MODIF algorith/fetarp                 abbas M.ABBAS            160      6      2
+ FORTRAN MODIF algorith/fetccn                 abbas M.ABBAS            194      2      3
+ FORTRAN MODIF algorith/fetfiv                 abbas M.ABBAS            195      5      2
+ FORTRAN MODIF algorith/fetggt                 abbas M.ABBAS            358     10      1
+ FORTRAN MODIF algorith/fetinl                 abbas M.ABBAS            311     23     10
+ FORTRAN MODIF algorith/fetmon                 abbas M.ABBAS            188     60     10
+ FORTRAN MODIF algorith/fetprc                 abbas M.ABBAS            153      7      3
+ FORTRAN MODIF algorith/fetprj                 abbas M.ABBAS            265     15     12
+ FORTRAN MODIF algorith/fetreo                 abbas M.ABBAS            296     14     11
+ FORTRAN MODIF algorith/fetrin                 abbas M.ABBAS            604     31     12
+ FORTRAN MODIF algorith/fetsca                 abbas M.ABBAS            137      7      4
+ FORTRAN MODIF algorith/majdva                 abbas M.ABBAS            189     54     43
+ FORTRAN MODIF algorith/meacmv                 abbas M.ABBAS            463      3      3
+ FORTRAN MODIF algorith/mereso                 abbas M.ABBAS            275      2      5
+ FORTRAN MODIF algorith/mestat                 abbas M.ABBAS            278      2      2
+ FORTRAN MODIF algorith/mminit                 abbas M.ABBAS            125     20     12
+ FORTRAN MODIF algorith/mxcacc                 abbas M.ABBAS            209     65     69
+ FORTRAN MODIF algorith/mxmajd                 abbas M.ABBAS            136     59     55
+ FORTRAN MODIF algorith/mxmass                 abbas M.ABBAS            187     71     87
+ FORTRAN MODIF algorith/mxmoam                 abbas M.ABBAS            258     79     57
+ FORTRAN MODIF algorith/nddoet                 abbas M.ABBAS            489     12      7
+ FORTRAN MODIF algorith/ndiner                 abbas M.ABBAS             84     32     28
+ FORTRAN MODIF algorith/ndlect                 abbas M.ABBAS            267    138    115
+ FORTRAN MODIF algorith/nmarch                 abbas M.ABBAS            373     47     34
+ FORTRAN MODIF algorith/nmchar                 abbas M.ABBAS            564     80     51
+ FORTRAN MODIF algorith/nmcrch                 abbas M.ABBAS            158     48     41
+ FORTRAN MODIF algorith/nmdepl                 abbas M.ABBAS            331     77     65
+ FORTRAN MODIF algorith/nmdesc                 abbas M.ABBAS            167     34     35
+ FORTRAN MODIF algorith/nmdoet                 abbas M.ABBAS            416     19     15
+ FORTRAN MODIF algorith/nmdomt                 abbas M.ABBAS            138     20      8
+ FORTRAN MODIF algorith/nmflam                 abbas M.ABBAS            226     64     43
+ FORTRAN MODIF algorith/nmible                 abbas M.ABBAS            220     12     11
+ FORTRAN MODIF algorith/nmimpm                 abbas M.ABBAS            539     14      6
+ FORTRAN MODIF algorith/nmimpr                 abbas M.ABBAS            161     13      4
+ FORTRAN MODIF algorith/nmini0                 abbas M.ABBAS            174     66     45
+ FORTRAN MODIF algorith/nminit                 abbas M.ABBAS            432     71     59
+ FORTRAN MODIF algorith/nmlect                 abbas M.ABBAS            160      2      2
+ FORTRAN MODIF algorith/nmmatr                 abbas M.ABBAS            450     48     36
+ FORTRAN MODIF algorith/nmmoam                 abbas M.ABBAS            163     48     33
+ FORTRAN MODIF algorith/nmmuap                 abbas M.ABBAS             97     43     34
+ FORTRAN MODIF algorith/nmnoli                 abbas M.ABBAS            163     71     46
+ FORTRAN MODIF algorith/nmprdc                 abbas M.ABBAS            223     34     29
+ FORTRAN MODIF algorith/nmpred                 abbas M.ABBAS            132     66     70
+ FORTRAN MODIF algorith/nmprex                 abbas M.ABBAS            215     33     28
+ FORTRAN MODIF algorith/nmprta                 abbas M.ABBAS            312     94    104
+ FORTRAN MODIF algorith/nmrech                 abbas M.ABBAS             85     24    216
+ FORTRAN MODIF algorith/nmrepl                 abbas M.ABBAS            353     35     36
+ FORTRAN MODIF algorith/nmsens                 abbas M.ABBAS            256     66     53
+ FORTRAN MODIF algorith/nscomp                 abbas M.ABBAS             82      2      2
+ FORTRAN MODIF algorith/nsisot                 abbas M.ABBAS            433      6      4
+ FORTRAN MODIF algorith/ntinit                 abbas M.ABBAS            246      6      6
+ FORTRAN MODIF algorith/nttyse                 abbas M.ABBAS            172      3     12
+ FORTRAN MODIF algorith/nxacmv                 abbas M.ABBAS            578      6      4
+ FORTRAN MODIF algorith/op0060                 abbas M.ABBAS            634     26     43
+ FORTRAN MODIF algorith/op0070                 abbas M.ABBAS            931    186    221
+ FORTRAN MODIF algorith/op0166                 abbas M.ABBAS            259      2      2
+ FORTRAN MODIF algorith/op0186                 abbas M.ABBAS            622     27     40
+ FORTRAN MODIF algorith/pascom                 abbas M.ABBAS            128     36     28
+ FORTRAN MODIF algorith/pascou                 abbas M.ABBAS            198     30     20
+ FORTRAN MODIF algorith/semoco                 abbas M.ABBAS            406      5      7
+ FORTRAN MODIF algorith/semore                 abbas M.ABBAS            460      5      7
+ FORTRAN MODIF algorith/vechde                 abbas M.ABBAS            547      8     13
+ FORTRAN MODIF algorith/vechth                 abbas M.ABBAS            708      4      2
+ FORTRAN MODIF algorith/vemsme                 abbas M.ABBAS            267     19     18
+ FORTRAN MODIF assembla/assmam                 abbas M.ABBAS           1151     24      7
+ FORTRAN MODIF assembla/assvec                 abbas M.ABBAS            984     16      2
+ FORTRAN MODIF calculel/mecalg                 abbas M.ABBAS            450     10      7
+ FORTRAN MODIF calculel/mecalm                 abbas M.ABBAS           2787     14     14
+ FORTRAN MODIF calculel/meficg                 abbas M.ABBAS            347     17     18
+ FORTRAN MODIF calculel/mtemp2                 abbas M.ABBAS            178      5      2
+ FORTRAN MODIF calculel/op0100                 abbas M.ABBAS            988     29     24
+ FORTRAN MODIF calculel/thaclm                 abbas M.ABBAS            867     15     16
+ FORTRAN MODIF calculel/uthk                   abbas M.ABBAS            360    189    186
+ FORTRAN MODIF calculel/vesecn                 abbas M.ABBAS            105      2      2
+ FORTRAN MODIF elements/creso1                 abbas M.ABBAS            192      6      4
+ FORTRAN MODIF elements/fetcrf                 abbas M.ABBAS           1240    492    773
+ FORTRAN MODIF elements/te0060                 abbas M.ABBAS            460      6      7
+ FORTRAN MODIF elements/te0073                 abbas M.ABBAS            446      2      2
+ FORTRAN MODIF elements/te0140                 abbas M.ABBAS            206     10      4
+ FORTRAN MODIF elements/te0204                 abbas M.ABBAS            756     15     19
+ FORTRAN MODIF elements/te0205                 abbas M.ABBAS            606     10     10
+ FORTRAN MODIF elements/te0235                 abbas M.ABBAS            366      4      4
+ FORTRAN MODIF elements/te0236                 abbas M.ABBAS            378      4      4
+ FORTRAN MODIF elements/te0244                 abbas M.ABBAS            485      3      3
+ FORTRAN MODIF elements/te0281                 abbas M.ABBAS            398      3      3
+ FORTRAN MODIF elements/te0516                 abbas M.ABBAS            607      7      5
+ FORTRAN MODIF elements/te0517                 abbas M.ABBAS            283      6      4
+ FORTRAN MODIF elements/te0540                 abbas M.ABBAS            177      9     10
+ FORTRAN MODIF elements/te0541                 abbas M.ABBAS            167      6      8
+ FORTRAN MODIF from_c/fetam                    abbas M.ABBAS            430    121     44
+ FORTRAN MODIF modelisa/cazocc                 abbas M.ABBAS            443     83     34
+ FORTRAN MODIF prepost/op0176                  abbas M.ABBAS            208      2      2
+ FORTRAN MODIF utilitai/dismme                 abbas M.ABBAS            115      5     12
+ FORTRAN MODIF utilitai/metyse                 abbas M.ABBAS            208      3     13
+ FORTRAN MODIF utilitai/op0036                 abbas M.ABBAS            293      7      9
+ FORTRAN MODIF utilitai/pslect                 abbas M.ABBAS            109      2      2
+ FORTRAN MODIF utilitai/psmenf                 abbas M.ABBAS            167      6     12
+ FORTRAN MODIF utilitai/psnoco                 abbas M.ABBAS            116      1      1
+ FORTRAN MODIF utilitai/psnosd                 abbas M.ABBAS            195      3      6
+ FORTRAN MODIF utilitai/psnsle                 abbas M.ABBAS            129     10      6
+ FORTRAN MODIF utilitai/psremc                 abbas M.ABBAS             83      1      1
+ FORTRAN MODIF utilitai/psrenc                 abbas M.ABBAS             66      1      1
+ FORTRAN MODIF utilitai/psrese                 abbas M.ABBAS            136      6      4
+ FORTRAN MODIF utilitai/pstypa                 abbas M.ABBAS            258      5      2
+ FORTRAN MODIF utilitai/pstypr                 abbas M.ABBAS            274     16     11
+ FORTRAN MODIF utilitai/pstyse                 abbas M.ABBAS            144      8      8
+ FORTRAN MODIF utilitai/pstyss                 abbas M.ABBAS            115      1      1
+ FORTRAN MODIF utilitai/pstyst                 abbas M.ABBAS            176     11      8
+ FORTRAN MODIF utilitai/rfresu                 abbas M.ABBAS            170      5      6
+ FORTRAN MODIF utilitai/segico                 abbas M.ABBAS            319      3      5
+ FORTRAN MODIF utilitai/semeco                 abbas M.ABBAS            458     19     14
+ FORTRAN MODIF utilitai/sensnc                 abbas M.ABBAS            133      2      2
+  PYTHON AJOUT Messages/appelmpi               abbas M.ABBAS             44     44      0
+  PYTHON AJOUT Messages/contact2               abbas M.ABBAS             30     30      0
+  PYTHON AJOUT Messages/indicateur             abbas M.ABBAS             35     35      0
+  PYTHON AJOUT Messages/sensibilite            abbas M.ABBAS            305    305      0
+  PYTHON AJOUT SD/sd_amor_modal                abbas M.ABBAS             28     28      0
+  PYTHON AJOUT SD/sd_multi_appui               abbas M.ABBAS             30     30      0
+  PYTHON AJOUT SD/sd_proj_modal                abbas M.ABBAS             39     39      0
+  PYTHON AJOUT SD/sd_sddyna                    abbas M.ABBAS             33     33      0
+  PYTHON MODIF Execution/E_Global              abbas M.ABBAS             76      3      1
+  PYTHON MODIF Macro/creation_donnees_homard      abbas M.ABBAS            541     10      4
+  PYTHON MODIF Macro/macr_adap_mail_ops        abbas M.ABBAS            848     16      7
+  PYTHON MODIF Messages/algeline5              abbas M.ABBAS             66     11      1
+  PYTHON MODIF Messages/algorith10             abbas M.ABBAS            397      2      6
+  PYTHON MODIF Messages/algorith11             abbas M.ABBAS            426      1     16
+  PYTHON MODIF Messages/algorith12             abbas M.ABBAS            494      1     14
+  PYTHON MODIF Messages/algorith13             abbas M.ABBAS            449      2      6
+  PYTHON MODIF Messages/algorith14             abbas M.ABBAS            388      6      9
+  PYTHON MODIF Messages/algorith3              abbas M.ABBAS            403      3     26
+  PYTHON MODIF Messages/algorith5              abbas M.ABBAS            429      3      7
+  PYTHON MODIF Messages/algorith6              abbas M.ABBAS            425      4     12
+  PYTHON MODIF Messages/algorith8              abbas M.ABBAS            400      1      9
+  PYTHON MODIF Messages/algorith9              abbas M.ABBAS            386      4     31
+  PYTHON MODIF Messages/calculel2              abbas M.ABBAS            418      1     17
+  PYTHON MODIF Messages/calculel3              abbas M.ABBAS            416      1     13
+  PYTHON MODIF Messages/calculel4              abbas M.ABBAS            409      1     13
+  PYTHON MODIF Messages/calculel5              abbas M.ABBAS            464      2      6
+  PYTHON MODIF Messages/calculel6              abbas M.ABBAS            359     10     38
+  PYTHON MODIF Messages/elements3              abbas M.ABBAS            407      1     41
+  PYTHON MODIF Messages/elements4              abbas M.ABBAS            409      1     29
+  PYTHON MODIF Messages/elements5              abbas M.ABBAS            146     19      2
+  PYTHON MODIF Messages/jeveux                 abbas M.ABBAS            251      2      2
+  PYTHON MODIF Messages/mecanonline            abbas M.ABBAS            381      8      2
+  PYTHON MODIF Messages/modelisa9              abbas M.ABBAS             86      5      1
+  PYTHON MODIF Messages/utilitai2              abbas M.ABBAS            419      2      6
+  PYTHON MODIF Messages/utilitai3              abbas M.ABBAS            397      1     24
+  PYTHON MODIF Messages/utilitai4              abbas M.ABBAS            371      1     57
+  PYTHON MODIF Messages/utilitai6              abbas M.ABBAS            467      1     46
+  PYTHON MODIF Messages/utilitai7              abbas M.ABBAS             58     14      2
+  PYTHON MODIF SD/asojb                        abbas M.ABBAS            308      5      1
+  PYTHON MODIF SD/__init__                     abbas M.ABBAS             32      2      2
+  PYTHON SUPPR Messages/from_c                 abbas M.ABBAS              0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   28        2946      2946             +2946
+ MODIF :  281       95633      4699    4734       -35
+ SUPPR :    2         345               345      -345
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  311       98924      7645    5079     +2566 

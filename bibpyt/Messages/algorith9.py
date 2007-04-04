@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 13/02/2007   AUTEUR GREFFET N.GREFFET 
+#@ MODIF algorith9 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,10 +60,6 @@ cata_msg={
 
 10: _("""
  nombre de vecteurs demande trop grand on prend tous les modes du concept mode_meca 
-"""),
-
-11: _("""
- sensibilitite incompatible en lineaire
 """),
 
 12: _("""
@@ -143,15 +139,9 @@ cata_msg={
 """),
 
 31: _("""
- pour l'instant, on ne peut pas deriver sur base modale dans dyna_line_harm 
-"""),
-
-32: _("""
- les concepts d'entree et  sortie ne doivent pas etre de type gene si sensi.
-"""),
-
-33: _("""
- pour l'instant, on ne peut pas deriver avec un vect_asse en entree de dyna_line_harm.
+ La fréquence propre vaut %(r1)f.
+ C'est une fréquence propre du système.
+ La matrice est singulière.
 """),
 
 34: _("""
@@ -286,14 +276,6 @@ cata_msg={
  methode: nuage_deg__* autorisee seulement pour les champs.
 """),
 
-67: _("""
- option sensibilite non developpee en sechage
-"""),
-
-68: _("""
- option sensibilite lagrangienne non developpee en non lineaire
-"""),
-
 69: _("""
  on ne sait pas traiter le champ de type:  %(k1)s  champ :  %(k2)s 
 """),
@@ -321,15 +303,6 @@ cata_msg={
 75: _("""
  attention, mode instable
 """),
-
-
-
-
-
-
-
-
-
 
 80: _("""
  pour utiliser le comportement "hydr" il faut surcharger le code en "mode developpement" avec les routines "permea" et "satura".

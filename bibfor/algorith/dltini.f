@@ -1,14 +1,8 @@
       SUBROUTINE DLTINI (NEQ,DEPINI,VITINI,ACCINI,LCREA,NUME,
      &                   NUMEDD,INCHAC,NRPASE,INPSCO)
-      IMPLICIT  REAL*8  (A-H,O-Z)
-      REAL*8             DEPINI(*), VITINI(*), ACCINI(*)
-      CHARACTER*13  INPSCO
-      CHARACTER*24       NUMEDD
-      LOGICAL            LCREA
-      INTEGER NRPASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +33,15 @@ C VAR : INCHAC : CALCUL OU NON DE L'ACCELERATION INITIALE
 C IN  : NRPASE : NUMERO DU CHARGEMENT (STANDARD OU SENSIBILITE)
 C IN  : INPSCO : STRUCTURE CONTENANT LA LISTE DES NOMS (CF. PSNSIN)
 C     ------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      REAL*8             DEPINI(*), VITINI(*), ACCINI(*)
+      CHARACTER*13  INPSCO
+      CHARACTER*24       NUMEDD
+      LOGICAL            LCREA
+      INTEGER NRPASE
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
       COMMON / IVARJE / ZI(1)
@@ -57,6 +60,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32      JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+      INTEGER IBID, IEQ, INCHAC, IRE, IRET, JVALE
+      INTEGER NAI, NBTROU, NC, NDI, NDY, NEQ, NNI, NP, NT, NUME, NVI
+      REAL*8 PREC, TEMPS
       INTEGER JAUX,IERR
       INTEGER VALI
       CHARACTER*8   K8B, NOMRES, DYNA, CRIT, DYNA1
@@ -159,7 +165,7 @@ C
               DO 10 IEQ=1,NEQ
                 ZR(JVALE-1+IEQ)=0.D0
 10            CONTINUE
-              CALL U2MESG('A', 'ALGORITH12_85',0,' ',0,0,0,0.D0)
+              CALL U2MESK('A', 'SENSIBILITE_41',0,' ')
             ENDIF
             CALL DCOPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ELSE
@@ -180,7 +186,7 @@ C
               DO 20 IEQ=1,NEQ
                 ZR(JVALE-1+IEQ)=0.D0
 20            CONTINUE
-              CALL U2MESG('A', 'ALGORITH12_86',0,' ',0,0,0,0.D0)
+              CALL U2MESK('A', 'SENSIBILITE_42',0,' ')
             ENDIF
             CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ELSE

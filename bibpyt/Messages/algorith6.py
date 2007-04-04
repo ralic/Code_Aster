@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+#@ MODIF algorith6 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -184,12 +184,8 @@ cata_msg={
  plusieurs instants correspondent a celui specifie sous 'etat_init'
 """),
 
-40: _("""
- la derivee de  %(k1)s  par rapport a  %(k2)s  est introuvable.
-"""),
-
 41: _("""
- le champ de depl_r (ou derive)n'est pas trouve dans le concept  %(k1)s 
+ le champ de depl_r (ou derive) n'est pas trouve dans le concept  %(k1)s 
 """),
 
 42: _("""
@@ -226,10 +222,6 @@ cata_msg={
 
 50: _("""
  l'etat initial n'appartient pas a un evol_noli : on suppose qu'on part d'un etat a vitesses nulles
-"""),
-
-51: _("""
- pour faire une reprise avecun calcul de sensibilite, il faut renseigner "evol_noli" dans "etat_init"
 """),
 
 52: _("""
@@ -357,7 +349,7 @@ cata_msg={
 """),
 
 83: _("""
- rousselier à gradient sans simo miehe non programmé : utilisez la modélisation **_INCO 
+ rousselier à gradient sans simo miehe non programmé : utilisez la modélisation **_INCO
 """),
 
 84: _("""
@@ -369,7 +361,7 @@ cata_msg={
 """),
 
 86: _("""
- erreur deprogrammation 1
+ erreur de programmation 1
 """),
 
 87: _("""
@@ -381,7 +373,7 @@ cata_msg={
 """),
 
 89: _("""
- erreur deprogrammation 2
+ erreur de programmation 2
 """),
 
 90: _("""

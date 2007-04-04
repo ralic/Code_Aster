@@ -1,4 +1,4 @@
-# MODIF  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,13 +206,13 @@ TEST_RESU(RESU=(
        _F(  RESULTAT = resu_3,    INST=T_final,  
             NOM_CHAM = 'DEPL',    GROUP_NO = 'GNP19',  
             CRITERE = 'RELATIF',  PRECISION = 1.E-6,  
-            NOM_CMP = 'DX',       VALE = -1.1447958E-02, 
-            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09' ),
+            NOM_CMP = 'DX',       VALE = -1.1467335E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '9.00.13' ),
        _F(  RESULTAT = resu_3,    INST=T_final,  
             NOM_CHAM = 'DEPL',    GROUP_NO = 'GNP19',  
             CRITERE = 'RELATIF',  PRECISION = 1.E-6,  
-            NOM_CMP = 'DY',       VALE = -1.0021072E-01, 
-            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09' ))
+            NOM_CMP = 'DY',       VALE = -1.0034067E-01, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '9.00.13' ))
           )
 #
 ####      program homard

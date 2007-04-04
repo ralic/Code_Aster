@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,30 +148,6 @@ cata_msg={
  acces impossible  champ :  %(k1)s , nume_ordre :  %(i1)d
 """),
 
-30: _("""
- la derivee lagrangienne du deplacement d'occurrence n  %(i1)d
- est inexistant dans la sd  %(k1)s
- derivee par rapport a  %(k2)s
-"""),
-
-31: _("""
- la derivee du deplacement d'occurrence n  %(i1)d
- est inexistante dans la sd  %(k1)s
- derivee par rapport a  %(k2)s
-"""),
-
-32: _("""
- la derivee de la deformation d'occurrence n  %(i1)d
- est inexistante dans la sd  %(k1)s
- derivee par rapport a  %(k2)s
-"""),
-
-33: _("""
- la derivee de la contrainte d'occurrence n  %(i1)d
- est inexistante dans la sd  %(k1)s
- derivee par rapport a  %(k2)s
-"""),
-
 34: _("""
  famille non disponible    type de maille  %(k1)s
     famille d'integration  %(i1)d
@@ -238,10 +214,6 @@ cata_msg={
 
 47: _("""
  ! champ flux_elno_temp !! vide pour numero ordre ! %(i1)d
-"""),
-
-48: _("""
- calcul insensible variable sensible: %(k1)s
 """),
 
 49: _("""
@@ -363,23 +335,23 @@ cata_msg={
 """),
 
 64: _("""
- Variables internes en nombre différent aux instants '+' et '-' pour la maille (%k1)s
- Instant '-' : (%i1)d
- Instant '+' : (%i2)d
+ Variables internes en nombre différent aux instants '+' et '-' pour la maille %(k1)s
+ Instant '-' : %(i1)d
+ Instant '+' : %(i2)d
 """),
 
 65: _("""
- Le nombre de charges fourni par l'utilisateur (%i1)d est différent du
- nombre de charges trouvées dans la SD_resultat (%i2)d
+ Le nombre de charges fourni par l'utilisateur %(i1)d est différent du
+ nombre de charges trouvées dans la SD_resultat %(i2)d
 """),
 
 66: _("""
  Le couple (charge-fonction) fourni par l'utilisateur n'est pas présent dans la SD_resultat.
  On poursuit le calcul avec le chargement fourni par l'utilisateur.
-   Charge   (utilisateur) : (%k1)s
-   Fonction (utilisateur) : (%k2)s
-   Charge   (SD_resultat) : (%k3)s
-   Fonction (SD_resultat) : (%k4)s
+   Charge   (utilisateur) : %(k1)s
+   Fonction (utilisateur) : %(k2)s
+   Charge   (SD_resultat) : %(k3)s
+   Fonction (SD_resultat) : %(k4)s
 
 """),
 

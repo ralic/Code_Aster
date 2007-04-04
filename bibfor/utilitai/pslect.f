@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - LECTURES
 C     *          *           ****
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C====
 C
       IF ( CODRET.NE.0 ) THEN
         IF ( TYPERR.NE.0 ) THEN
-          CALL U2MESS('F','ALGORITH6_34')
+          CALL U2MESK('F','UTILITAI7_99', 1, NOMPRO)
         ENDIF
       ENDIF
 C

@@ -1,7 +1,7 @@
       SUBROUTINE OP0176 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -160,7 +160,7 @@ C
           IF ( IRET.NE.0 ) THEN
              VALK(1) = RESUIN
              VALK(2) = NOPASE
-             CALL U2MESK('A','CALCULEL2_96', 2 ,VALK)
+             CALL U2MESK('A','SENSIBILITE_3', 2 ,VALK)
             GOTO 30
           ENDIF
 C

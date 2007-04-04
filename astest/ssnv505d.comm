@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
                               METHODE='CONTINUE',
-                              MODL_AXIS='NON',
                               ),);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',

@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 14/11/2006   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF calculel4 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,18 +148,6 @@ cata_msg={
 
 32: _("""
  fond obligatoire avec option calc_k_g
-"""),
-
-33: _("""
- derivation de g : un seul parametre sensible par appel a calc_g 
-"""),
-
-34: _("""
- on ne sait pas traiter le type de sensibilite associe au parametre sensible  %(k1)s 
-"""),
-
-35: _("""
- sensibilite au parametre  %(k1)s 
 """),
 
 36: _("""

@@ -1,15 +1,14 @@
-      SUBROUTINE NMDESC(MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                  COMPOR, LISCHA, MEDIRI, RESOCO, METHOD,
-     &                  SOLVEU, PARMET, CARCRI, PILOTE, PARTPS,
-     &                  NUMINS, ITERAT, VALMOI, POUGD , DEPDEL,
-     &                  VALPLU, SECMBR, CNRESI, DDEPLA, ETA   ,
-     &                  LICCVG, DEFICO, STADYN, PREMIE, CMD   ,
-     &                  DEPENT, VITENT, LAMORT, MEMASS, MASSE ,
-     &                  RIGID,  MATASS, AMORT,  COEDEP, COEVIT,
-     &                  COEACC)
-
+      SUBROUTINE NMDESC(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
+     &                  COMPOR,LISCHA,MEDIRI,RESOCO,METHOD,
+     &                  SOLVEU,PARMET,CARCRI,PILOTE,PARTPS,
+     &                  NUMINS,ITERAT,VALMOI,POUGD ,DEPDEL,
+     &                  VALPLU,SECMBR,CNRESI,DDEPLA,ETA   ,
+     &                  LICCVG,DEFICO,STADYN,PREMIE,DEPENT,
+     &                  VITENT,MEMASS,MASSE ,RIGID, MATASS,
+     &                  AMORT ,SDDYNA)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,24 +27,28 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_21
-
+C
       IMPLICIT NONE
       INTEGER      NUMINS, ITERAT, LICCVG(*)
-      REAL*8       PARMET(*), ETA, COEDEP, COEVIT, COEACC
+      REAL*8       PARMET(*), ETA
       CHARACTER*14 PILOTE
-      CHARACTER*16 METHOD(*),CMD
-      CHARACTER*19 LISCHA, SOLVEU, PARTPS, CNRESI, MATASS
+      CHARACTER*16 METHOD(*)
+      CHARACTER*19 LISCHA, SOLVEU, PARTPS, CNRESI, MATASS, SDDYNA
       CHARACTER*24 MODELE, NUMEDD, MATE, CARELE, COMREF, COMPOR
       CHARACTER*24 CARCRI, VALMOI, VALPLU, POUGD, SECMBR,DEFICO
       CHARACTER*24 DEPDEL, MEDIRI, RESOCO, DDEPLA, STADYN
       CHARACTER*24 DEPENT, VITENT, MEMASS
       CHARACTER*24 MASSE, AMORT, RIGID
-      LOGICAL       LAMORT, PREMIE
-
-
+      LOGICAL      PREMIE
+C 
 C ----------------------------------------------------------------------
-C     STAT_NON_LINE :  CALCUL DE LA DIRECTION DE DESCENTE
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME)
+C
+C CALCUL DE LA DIRECTION DE DESCENTE
+C      
 C ----------------------------------------------------------------------
+C
 C
 C IN       MODELE K24  MODELE
 C IN       NUMEDD K24  NUME_DDL
@@ -77,10 +80,8 @@ C IN      ETA     R8  REACTUALISATION DE ETA_PILOTAGE
 C OUT      LICCVG  I   CODES RETOURS
 C                      (4) - MATRICE SINGULIERE
 C
-C ----------------------------------------------------------------------
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -96,35 +97,33 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
-
-
-      REAL*8       CODONN(4), COPILO(3), DIINST
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      REAL*8       CODONN(4), COPILO(3)
       CHARACTER*16 K16BID
       CHARACTER*19 MATRIX(2), CNDONN(4), CNPILO(3)
       CHARACTER*24 CNFEDO, CNFEPI, CNFSDO, CNFSPI, CNDIDO, CNDIPI
       CHARACTER*24 CNCINE, K24BID, K24CIN
+C
 C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
-
-C -- INITIALISATION
-
+C
+C --- INITIALISATIONS
+C
       CALL DESAGG (SECMBR, CNFEDO, CNFEPI, CNDIDO, CNDIPI,
      &                     CNFSDO, CNFSPI, K24BID, CNCINE)
 
-
 C -- LECTURE DE LA MATRICE ASSEMBLEE (ET ASSEMBLAGE SI BESOIN)
-
       MATRIX(1)=MATASS
       CALL NMMATR('CORRECTION', MODELE, NUMEDD, MATE  , CARELE,
      &                  COMREF, COMPOR, LISCHA, MEDIRI, RESOCO,
      &                  METHOD, SOLVEU, PARMET, CARCRI, PARTPS,
      &                  NUMINS, ITERAT, VALMOI, POUGD , DEPDEL,
      &                  VALPLU, MATRIX, K16BID, DEFICO, STADYN,
-     &                  PREMIE, CMD,    DEPENT, VITENT, RIGID,
-     &                  LAMORT, MEMASS, MASSE,  AMORT,  COEDEP,
-     &                  COEVIT, COEACC, LICCVG(5))
+     &                  PREMIE,         DEPENT, VITENT, RIGID,
+     &                  MEMASS, MASSE,  AMORT,
+     &                  LICCVG(5),SDDYNA)
       IF ((LICCVG(5).EQ.1).OR.(LICCVG(5).EQ.2)) GOTO 9999
 
 

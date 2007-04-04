@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline5 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,6 +51,16 @@ cata_msg={
  erreur lapack (ou blas) au niveau de la routine  %(k1)s
   le parametre numero  %(i1)d
   n'a pas une valeur coherente %(i2)d
+"""),
+
+5: _("""
+ !! Attention, vous utilisez l'option de test FETI de l'interface.
+ On va donc simuler la résolution d'un système diagonal canonique,
+ pour provoquer un test d'ensemble de l'algorithme qui doit trouver
+ la solution U=1 sur tous les noeuds. 
+ Vos résultats sont donc articiellement faussés pour les besoins de
+ ce test. Pour réaliser effectivement votre calcul, désactiver cette
+ option (INFO_FETI(12:12)='F' au lieu de 'T') !!
 """),
 
 }

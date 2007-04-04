@@ -1,4 +1,4 @@
-# MODIF  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE VALIDATION DE POU_D_TGM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -245,7 +245,6 @@ CHCON=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='POU1',
                               GROUP_MA_ESCL='POU2',                                  
                               METHODE='CONTINUE',
-                                 MODL_AXIS='NON',
                                  ITER_GEOM_MAXI = 3,
                                  ITER_CONT_MAXI = 10,
                                  VECT_ORIE_POU=(0.0,0.0,-1.0,),
@@ -354,7 +353,6 @@ CHSIG=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='POU1',
                               GROUP_MA_ESCL='POU2',                                  
                               METHODE='CONTINUE',
-                              MODL_AXIS='NON',
                                  VECT_ORIE_POU=(0.0,0.0,-1.0,),
                                  DIST_MAIT=31.75,
                                  DIST_ESCL=31.75,

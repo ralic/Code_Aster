@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -265,8 +265,8 @@ TEST_RESU(RESU=(
        _F(  RESULTAT = RESU_00,   NUME_ORDRE = 2,
             NOM_CHAM = 'ERRE_NOEU_ELEM',    GROUP_NO = 'POURTEST',
             CRITERE = 'RELATIF',  PRECISION = 5.E-5,
-            NOM_CMP = 'ERREST',       VALE = 0.002092096,
-            REFERENCE = 'NON_REGRESSION',VERSION='8.03.01' ),
+            NOM_CMP = 'ERREST',       VALE = 0.002050676,
+            REFERENCE = 'NON_REGRESSION',VERSION='9.00.13' ),
                )
          )
 #
@@ -456,8 +456,8 @@ TEST_RESU(RESU=(
        _F(  RESULTAT = RESU_01,   NUME_ORDRE = 2,
             NOM_CHAM = 'ERRE_NOEU_ELEM',    GROUP_NO = 'POURTEST',
             CRITERE = 'RELATIF',  PRECISION = 5.E-4,
-            NOM_CMP = 'ERREST',       VALE = 0.0002957440,
-            REFERENCE = 'NON_REGRESSION',VERSION='8.03.01' ),
+            NOM_CMP = 'ERREST',       VALE = 0.0002897796,
+            REFERENCE = 'NON_REGRESSION',VERSION='9.00.13' ),
                )
          )
 #

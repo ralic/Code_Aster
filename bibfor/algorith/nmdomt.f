@@ -1,7 +1,7 @@
-      SUBROUTINE NMDOMT (METHOD, PARMET)
-
+      SUBROUTINE NMDOMT(METHOD,PARMET)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,13 +19,19 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
-
+C
       IMPLICIT NONE
-      CHARACTER*16 METHOD(6)
-      REAL*8       PARMET(22)
-
+      CHARACTER*16 METHOD(*)
+      REAL*8       PARMET(*)
+C 
 C ----------------------------------------------------------------------
-C     SAISIE DES DONNEES DE LA METHODE DE RESOLUTION
+C
+C ROUTINE MECA_NON_LINE (DYNAMIQUE - INITIALISATIONS)
+C
+C SAISIE DES DONNEES DE LA METHODE DE RESOLUTION
+C      
+C ----------------------------------------------------------------------
+C
 C
 C OUT METHOD  : DESCRIPTION DE LA METHODE DE RESOLUTION
 C                 1 : NOM DE LA METHODE NON LINEAIRE : NEWTON
@@ -34,6 +40,7 @@ C                 3 : (DECHARGE OU RIEN)       --> PAS UTILISE
 C                 4 : (NON , BGFGS OU BROYDEN) --> PAS UTILISE
 C                 5 : METHODE D'INITIALISATION
 C                 6 : NOM CONCEPT EVOL_NOLI SI PREDICTION 'DEPL_CALCULE'
+C                 7 : METHODE DE RECHERCHE LINEAIRE
 C OUT PARMET  : PARAMETRES DE LA METHODE
 C                 1 : REAC_INCR
 C                 2 : REAC_ITER
@@ -49,14 +56,18 @@ C                16 : RHO_EXCL
 C                20 : RHO (LAGRANGIEN)
 C                21 : ITER_GLOB_MAXI (LAGRANGIEN)
 C                22 : ITER_INTE_MAXI (LAGRANGIEN)
+C
 C ----------------------------------------------------------------------
-      INTEGER            IRET, ITMP,REINCR, REITER, NOCC
-      REAL*8             PASMIN
+C
+      INTEGER  IRET, ITMP,REINCR, REITER, NOCC
+      REAL*8   PASMIN
+C
 C ----------------------------------------------------------------------
-
+C
       METHOD(1) = 'NEWTON'
       METHOD(3) = 'RIEN'
       METHOD(4) = 'NON'
+      METHOD(7) = 'CORDE'
 
       CALL GETVTX('NEWTON','MATRICE',1,1,1,METHOD(2),IRET)
 
@@ -98,6 +109,7 @@ C ----------------------------------------------------------------------
 
       CALL GETFAC('RECH_LINEAIRE',NOCC)
       IF (NOCC.NE.0) THEN
+        CALL GETVTX('RECH_LINEAIRE','METHODE',1,1,1,METHOD(7),IRET)
         CALL GETVR8('RECH_LINEAIRE','RESI_LINE_RELA',1,1,1,PARMET(11),
      &             IRET)
         CALL GETVIS('RECH_LINEAIRE','ITER_LINE_MAXI',1,1,1,ITMP,IRET)

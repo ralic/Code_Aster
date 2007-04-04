@@ -4,7 +4,7 @@ C     PARAMETRES SENSIBLES - MEMORISATION DES NOMS DES FONCTIONS
 C     *          *           **               *        *
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,9 +67,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*6 NOMPRO
-      PARAMETER ( NOMPRO = 'PSMENF' )
-C
       CHARACTER*13 PREFIX
 C
       INTEGER IAUX
@@ -107,9 +104,8 @@ C
       IF ( CHOIX.EQ.'E' ) THEN
 C
         IF ( TYPFON.LT.0 ) THEN
-          CALL UTDEBM ( 'A', NOMPRO, 'TYPFON DOIT ETRE POSITIF OU NUL.')
-          CALL UTIMPI ( 'L', 'MAIS IL VAUT ', 1, TYPFON )
-          CALL UTFINM
+          CALL U2MESG('A', 'SENSIBILITE_80', 1, 'TYPFON',
+     >                 1, TYPFON, 0, 0.D0)
           CALL U2MESS('F','MODELISA_67')
         ENDIF
 C
@@ -125,10 +121,8 @@ C
         ENDIF
 C
         IF ( ZK8(ADMEMO+TYPFON).NE.'        ' ) THEN
-          CALL UTDEBM ( 'A', NOMPRO, 'LA FONCTION')
-          CALL UTIMPI ( 'L', 'NUMERO ', 1, TYPFON )
-          CALL UTFINM
-          CALL U2MESK('F','UTILITAI3_94',1,ZK8(ADMEMO+TYPFON))
+          CALL U2MESG('F','SENSIBILITE_87',1,ZK8(ADMEMO+TYPFON),
+     >                 1, TYPFON, 0, 0.D0)
         ENDIF
         ZK8(ADMEMO+TYPFON) = NOMFON
 C
@@ -164,7 +158,7 @@ C 4. MAUVAIX CHOIX
 C====
 C
       ELSE
-        CALL U2MESS('A','UTILITAI3_95')
+        CALL U2MESK('A','SENSIBILITE_86', 1, CHOIX)
         CALL U2MESS('F','MODELISA_67')
       ENDIF
 C

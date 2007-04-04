@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2007   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,7 +93,6 @@ CHA4=AFFE_CHAR_MECA(MODELE=MO,
                                NORMALE        = 'MAIT',
                                METHODE        = 'CONTINUE',
                                INTEGRATION    = 'NOEUD',
-                               MODL_AXIS      = 'NON',
                                SEUIL_INIT     = 0.0,
                                COEF_REGU_FROT = 1.0,
                                COEF_REGU_CONT = 1.0,

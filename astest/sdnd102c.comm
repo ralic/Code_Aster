@@ -1,4 +1,4 @@
-# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,7 +123,8 @@ MODE=NORM_MODE(reuse=MODE,  MODE=MODE,   NORME='MASS_GENE' )
 
 # CALCUL DIRECT
 # -------------
-TRAN_DY=DYNA_TRAN_EXPLI(  MODELE=MODELE,
+
+TRAN_DY=DYNA_NON_LINE(  MODELE=MODELE,
                 CHAM_MATER=CH_MAT,   CARA_ELEM=CARA_ELE,
                 MASS_DIAG='NON',
                AMOR_MODAL=_F(  MODE_MECA = MODE,  REAC_VITE = 'NON',
@@ -137,13 +138,13 @@ TRAN_DY=DYNA_TRAN_EXPLI(  MODELE=MODELE,
                            GROUP_MA = 'RESSORT1'),
                _F(  RELATION = 'DIS_CHOC',
                            GROUP_MA = 'MASSES1')),
-               DIFF_CENT=_F(),
-               STOP_CFL='NON',
+               SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                               FORMULATION='ACCELERATION',
+                               STOP_CFL='NON',),
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
                       )
-
                      
 NOA_DXDR = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      NOM_CHAM='DEPL',
@@ -180,7 +181,8 @@ TRAN_DY2=DYNA_NON_LINE(  MODELE=MODELE,
                SOLVEUR=_F(  METHODE = 'LDLT',  RENUM = 'RCMK'),  
                INCREMENT=_F(  LIST_INST = L_INST),
                ARCHIVAGE=_F(  LIST_INST = L_INST2),
-               NEWMARK=_F(), 
+               SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                               FORMULATION='DEPLACEMENT',),
                CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-8,
                              ITER_GLOB_MAXI = 20),   
                NEWTON=_F(  REAC_ITER = 1)

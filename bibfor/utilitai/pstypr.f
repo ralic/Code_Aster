@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - TYPE DE SENSIBILITE - RECUPERATION
 C     *          *           ***                   *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,9 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'PSTYPR' )
+C
       INTEGER NBPSCO
       INTEGER VALI(2)
 C
@@ -84,9 +87,8 @@ C
 C
       CHARACTER*8 SAUX08
       CHARACTER*24 SAUX24
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(3)
       CHARACTER*24 STTSEK, STTSEI
-      CHARACTER*80 SAUX80
 C
 C====
 C 1. RECUPERATION AU BON ENDROIT ...
@@ -117,7 +119,9 @@ C
 C
    12 CONTINUE
 C
-      CALL U2MESK('A','UTILITAI3_98',1,NOPASE(1:8))
+      VALK(1) = NOMPRO
+      VALK(2) = NOPASE
+      CALL U2MESK('A','SENSIBILITE_98', 2, VALK)
       CALL U2MESS('F','MODELISA_67')
 C
 C====
@@ -174,9 +178,11 @@ C
 C 2.3.1.1. ==> VERIFICATION DE LA TAILLE DE LA CHAINE
 C
         IF ( KAUX.LT.JAUX ) THEN
+          VALK (1) = 'TYPEPS'
+          VALK (2) = 'ZK24(ADRAUX+2)'
           VALI (1) = KAUX
           VALI (2) = JAUX
-          CALL U2MESG('A', 'UTILITAI6_67',0,' ',2,VALI,0,0.D0)
+          CALL U2MESG('A', 'SENSIBILITE_85', 2, VALK, 2, VALI, 0, 0.D0 )
           CALL U2MESS('F','MODELISA_67')
 C
 C 2.3.1.2. ==> A LA PREMIERE CONTRIBUTION, ON ARCHIVE
@@ -184,7 +190,6 @@ C
         ELSEIF ( IAUX.EQ.1 ) THEN
           LGTYPS = JAUX
           TYPEPS(1:LGTYPS) = ZK80(ADTSKK)(1:LGTYPS)
-          SAUX80 = ZK80(ADTSKK)
 C
 C 2.3.1.3. ==> AUX CONTRIBUTIONS SUIVANTES, ON VERIFIE QUE C'EST
 C              TOUJOURS LE MEME TYPE SI LA SENSIBILITE EST ISSUE DE
@@ -195,11 +200,11 @@ C
         ELSE
           IF ( ( LGTYPS.NE.JAUX ) .OR.
      &         ( TYPEPS(1:LGTYPS).NE.ZK80(ADTSKK)(1:LGTYPS) ) ) THEN
-            CALL U2MESK('A','UTILITAI3_99',1,NOPASE(1:8))
-             VALK(1) = SAUX80(1:LGTYPS)
-             VALK(2) = ZK80(ADTSKK)(1:JAUX)
-             CALL U2MESK('A','UTILITAI4_1', 2 ,VALK)
-            CALL U2MESS('F','UTILITAI4_2')
+            VALK(1) = ' '
+            VALK(2) = TYPEPS(1:LGTYPS)
+            VALK(3) = ZK80(ADTSKK)(1:LGTYPS)
+            CALL U2MESK('A','SENSIBILITE_96',3 ,VALK)
+            CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
           ENDIF
         ENDIF
 C

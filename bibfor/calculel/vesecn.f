@@ -4,7 +4,7 @@ C     VERIFICATION DE LA SENSIBILITE POUR CALC_NO
 C     **                 **               *    *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
 C
       CALL U2MESK('A','CALCULEL3_23',1,OPTION)
       IF ( NOPASE.NE.' ' ) THEN
-        CALL U2MESK('A','CALCULEL3_24',1,NOPASE)
+        CALL U2MESK('A','SENSIBILITE_71',1,NOPASE)
       ENDIF
 C
       IF ( CODRET.EQ.1 ) THEN

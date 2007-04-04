@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT DE DEUX POUTRES ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,12 +86,10 @@ VITINI=CREA_CHAMP(   OPERATION='AFFE',
 
 
 CONTACT=AFFE_CHAR_MECA(MODELE=MODELE,
-                       CONTACT=_F(MODL_AXIS='NON',
-                                    METHODE='CONTINUE',
+                       CONTACT=_F(METHODE='CONTINUE',
                                     FORMULATION='VITE',
                                     NORMALE='MAIT_ESCL',
                                     COEF_REGU_CONT=1.0E-6,
-#                                    INTEGRATION='SIMPSON',
                                     GROUP_MA_MAIT='CNT_POU1',
                                     GROUP_MA_ESCL='CNT_POU2',),)
 
@@ -116,7 +114,9 @@ U=DYNA_NON_LINE(MODELE=MODELE,
                 INCREMENT=_F(LIST_INST=L_INST,
                              SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                              SUBD_PAS_MINI=1.E-8,),
-                TETA_METHODE =_F(  TETA=0.7),
+                SCHEMA_TEMPS=_F(SCHEMA='THETA_METHODE',
+                                FORMULATION='DEPLACEMENT',
+                                THETA=0.7,),
 #                NEWTON=_F(MATRICE='ELASTIQUE',),
                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
 

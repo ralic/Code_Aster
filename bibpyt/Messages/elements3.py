@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements3 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,10 +44,6 @@ cata_msg={
 
 6: _("""
  erreur calcul de tpfn
-"""),
-
-7: _("""
- pb determination sensibilite de rayonnement
 """),
 
 8: _("""
@@ -124,10 +120,6 @@ cata_msg={
  matns mal dimensionnee
 """),
 
-25: _("""
- calcul de sensibilite :  actuellement, on ne derive que les : pou_d_e
-"""),
-
 26: _("""
  mauvaise definition des caracteristiques de la section
 """),
@@ -184,30 +176,6 @@ cata_msg={
  un champ de vitesse de vent est impose sans donner un cx dependant de la vitesse sur un des cables.
 """),
 
-40: _("""
- seule une loi de  comportement elastique isotrope est valide pour le calcul de la derivee de g par rapport a e !
-"""),
-
-41: _("""
- seule une loi de  comportement elastique isotrope est valide pour le calcul de la derivee de g par rapport au chargement !
-"""),
-
-42: _("""
- en thermoelasticite le calcul des derivees de g est pour le moment incorrect
-"""),
-
-43: _("""
- avec un chargement en  deformations (ou contraintes) initiales ,le calcul des derivees de g est pour le moment incorrect
-"""),
-
-44: _("""
- seule une loi de  comportement elastique isotrope est valide pour le calcul de la derivee de g par rapport a e
-"""),
-
-45: _("""
- le calcul de derivee n'a pas ete etendu a la plasticite !
-"""),
-
 46: _("""
  le parametre "pnosym" n'existe pas dans le catalogue de l'element  %(k1)s  .
 """),
@@ -226,14 +194,6 @@ cata_msg={
 
 50: _("""
  nombre de couches limite a 30 pour les coques 1d
-"""),
-
-51: _("""
- option sensibilite non developpee en hydratation
-"""),
-
-52: _("""
- pb determination sensibilite materiau ther_nl
 """),
 
 53: _("""

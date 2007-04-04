@@ -1,4 +1,4 @@
-# MODIF  DATE 05/09/2006   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX BLOCS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,6 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                COEF_REGU_CONT = 1000.,
                                FOND_FISSURE = 'OUI',
                                LISSAGE='NON',
-                               MODL_AXIS = 'NON',
                                ITER_CONT_MAXI = 30,
                                ITER_GEOM_MAXI = 4,
                                METHODE = 'CONTINUE',

@@ -5,7 +5,7 @@
      &                    ASSMAT, SOLVEU, MATASS, MAPREC,
      &                    BASE, TPS1, TPS2, TPS3, COMPOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,9 +130,9 @@ C 1.2.1. ==> FIXES
 C               12   345678   9012345678901234
       CHSOL  = '&&'//NOMPRO//'_SOLUTION  '
       IF (ZK24(ISLVK).EQ.'FETI') THEN
-        CRITER = '&&'//NOMPRO//'_RESFET_FETI     '
+        CRITER = '&&'//NOMPRO//'_RESFET_FETI    '
       ELSE
-        CRITER = '&&'//NOMPRO//'_RESGRA_GCPC     '
+        CRITER = '&&'//NOMPRO//'_RESGRA_GCPC    '
       ENDIF
 
 C 1.2.2. ==> ASSOCIEES AUX DERIVATIONS
@@ -181,8 +181,7 @@ C====
         NUMCHT = ZI(JINF-1+2+2*NCHAR)
 
         IF (NUMCHT.GT.0) THEN
-           CALL U2MESS('A','ALGORITH5_80')
-           GO TO 99
+           CALL U2MESS('F','SENSIBILITE_14')
         ENDIF
 
       ENDIF
@@ -272,7 +271,5 @@ C*** LES CRITERES
 
  1000 FORMAT(1P,3X,'CHAMP STOCKE : ',A16,' INSTANT : ',1PE12.5,
      &         '  NUMERO D''ORDRE : ',I5)
-
-   99 CONTINUE
 
       END

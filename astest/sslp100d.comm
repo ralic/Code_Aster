@@ -1,4 +1,4 @@
-# MODIF  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -341,7 +341,8 @@ U=DYNA_NON_LINE( reuse=U,
             COMP_INCR=(_F( RELATION='ELAS', TOUT='OUI'),
                        _F( RELATION='VMIS_ISOT_LINE', GROUP_MA='GRSD1'),
                         ),
-            NEWMARK =_F(),
+            SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                             FORMULATION='DEPLACEMENT',),
             INCREMENT=_F( LIST_INST = LISTIN2),
             NEWTON=_F(  MATRICE = 'TANGENTE',
                         REAC_ITER=1

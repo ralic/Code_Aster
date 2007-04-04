@@ -1,0 +1,112 @@
+      SUBROUTINE NDCOEF(PHASE ,METHOD,SDDYNA,
+     &                  COEDEP,COEVIT,COEACC)
+C      
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*10  PHASE
+      CHARACTER*19  SDDYNA
+      CHARACTER*16  METHOD(*)
+      REAL*8        COEDEP,COEVIT,COEACC
+C 
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (SDDYNA - UTILITAIRE)
+C
+C DETERMINE LES COEFFICIENTS COEDEP,COEVIT,COEACC
+C      
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDDYNA : SD DEDIEE A LA DYNAMIQUE
+C IN  PHASE  : PHASE DE CALCUL
+C                  'PREDICTION'
+C                  'CORRECTION'
+C                  'FLAMBEMENT'
+C                  'FORCES_INT'
+C IN  METHOD : OPTION DE LA MATRICE
+C OUT COEDEP : COEF. MULT. DEVANT LES DEPLACEMENTS
+C OUT COEVIT : COEF. MULT. DEVANT LES VITESSES
+C OUT COEACC : COEF. MULT. DEVANT LES ACCELERATIONS
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      LOGICAL    NDYNLO
+      INTEGER    JCFSC
+      REAL*8     ZERO,UN
+      PARAMETER (UN=1.D0,ZERO=0.D0)
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      COEDEP = UN
+      COEVIT = ZERO
+      COEACC = ZERO
+
+      IF(NDYNLO(SDDYNA,'STATIQUE'))  GOTO 9999
+      IF(NDYNLO(SDDYNA,'EXPLICITE')) GOTO 9999
+
+      IF(PHASE.EQ.'PREDICTION')THEN
+        IF(METHOD(5).EQ.'ELASTIQUE' .OR.  METHOD(5).EQ.'TANGENTE')THEN
+           CALL JEVEUO(SDDYNA(1:15)//'.COEF_SCH','L',JCFSC)
+           COEDEP=ZR(JCFSC+1-1)
+           COEVIT=ZR(JCFSC+2-1)
+           COEACC=ZR(JCFSC+3-1)
+        ENDIF
+      ELSEIF(  PHASE.EQ.'CORRECTION'  .OR.
+     &         PHASE.EQ.'FORCES_INT'  )THEN
+        CALL JEVEUO(SDDYNA(1:15)//'.COEF_SCH','L',JCFSC)
+        COEDEP=ZR(JCFSC+1-1)
+        COEVIT=ZR(JCFSC+2-1)
+        COEACC=ZR(JCFSC+3-1)
+      ELSEIF (PHASE.EQ.'FLAMBEMENT') THEN 
+        COEDEP = UN
+        COEVIT = ZERO
+        COEACC = ZERO             
+      ELSE  
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+ 9999 CONTINUE
+
+      CALL JEDEMA()
+
+      END

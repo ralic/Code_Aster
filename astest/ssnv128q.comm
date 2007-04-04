@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D UNE PLAQUE SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -77,7 +77,6 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                NORMALE        = 'MAIT',
                                METHODE        = 'CONTINUE',
                                INTEGRATION    = 'NOEUD',
-                               MODL_AXIS      = 'NON',
                                CONTACT_INIT   = 'OUI',
                                SEUIL_INIT     = 1.0E-1,
                                SANS_GROUP_NO  = 'PPS',

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE PORTEE DE CABLES TRI-RENUM / AFFE_CHAR_MECA / DYNOLI(LDLT)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -254,7 +254,7 @@ RESU=DYNA_NON_LINE( reuse=RESU,
                            _F(  CHARGE = CHA6, FONC_MULT = F3)),
                     INCREMENT=  _F( LIST_INST = L_INSTA),
 ###CDURAND###                    ARCHIVAGE=  _F( LIST_ARCH = L_ARCHI),
-                    HHT=        _F(),
+                    SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     ETAT_INIT=  _F( INST = 0.,
                                     EVOL_NOLI = RESU),
                     COMP_ELAS=  _F( GROUP_MA = ('CABLE',),

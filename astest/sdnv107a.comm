@@ -1,4 +1,4 @@
-# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -525,8 +525,8 @@ EVOL_FY = FORMULE(NOM_PARA='INST',VALE='sin(OMEGA*INST) ')
 EVINT=CALC_FONC_INTERP(FONCTION=EVOL_FY, NOM_PARA = 'INST',
                           NOM_RESU='EVOL_FY',
                           LIST_PARA=LINSDY2);
-                          
-DYTREX=DYNA_TRAN_EXPLI(MODELE=MODELE3,
+
+DYTREX=DYNA_NON_LINE(MODELE=MODELE3,
                      CARA_ELEM=PARAM3,
                      CHAM_MATER=CHAMAT,
                      MASS_DIAG='NON',
@@ -543,7 +543,8 @@ DYTREX=DYNA_TRAN_EXPLI(MODELE=MODELE3,
                                   GROUP_MA='VOLU3',
                                   ),
                                ),
-                     DIFF_CENT=_F( ),
+                     SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                FORMULATION='ACCELERATION',),
                      INCREMENT=_F(LIST_INST=LINSDY2,),
                      ARCHIVAGE=_F(LIST_INST=LINSDYN,),
                      PROJ_MODAL=_F(MODE_MECA = RESMO2,
@@ -552,6 +553,7 @@ DYTREX=DYNA_TRAN_EXPLI(MODELE=MODELE3,
                                    AMOR_GENE = AMOGENT,
                                    ),
                      );
+
                                                   
 RESUGLO=REST_BASE_PHYS(   RESU_PHYS=DYTREX,
                           BASE_MODALE=MODGLO,

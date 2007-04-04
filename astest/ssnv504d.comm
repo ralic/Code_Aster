@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,7 +121,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                    CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_BOUCLE',
                                METHODE='CONTINUE',
-                               MODL_AXIS='OUI',
                                ITER_GEOM_MAXI=1,
                                GROUP_MA_MAIT='SMAI1',
                                GROUP_MA_ESCL='SESC1',
@@ -130,7 +129,6 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                             _F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_BOUCLE',
                                METHODE='CONTINUE',
-                               MODL_AXIS='OUI',
                                ITER_GEOM_MAXI=1,
                                GROUP_MA_ESCL='SMAI2',
                                GROUP_MA_MAIT='SESC2',),),);

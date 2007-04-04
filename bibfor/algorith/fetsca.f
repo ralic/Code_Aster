@@ -1,7 +1,7 @@
       SUBROUTINE FETSCA(NBI,VI,VO,SCALIN,INFOFE,NBI2,IFETI,IFM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       28/01/04 (OB): CREATION.
 C----------------------------------------------------------------------
+C TOLE CRP_4
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -43,14 +44,14 @@ C DECLARATION PARAMETRES D'APPELS
       CHARACTER*24 SCALIN,INFOFE
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER*4          ZI4
+      COMMON  / I4VAJE / ZI4(1)
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
@@ -61,11 +62,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES
       INTEGER      I,IAUX,IMULT,NBDDL,NBDDLC,IAUXJ,J
+      INTEGER*4    NBI4
       REAL*8       RMULT
 
 C ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT
 
 C MONITORING
+      NBI4=NBI
       IF (INFOFE(1:1).EQ.'T') THEN
         IF (SCALIN(1:4).EQ.'SANS') THEN
           WRITE(IFM,*)'<FETI/FETSCA> SANS SCALING'
@@ -78,7 +81,7 @@ C MONITORING
 C ----------------------------------------------------------------------
 C ----  PAS DE SCALING
 C ----------------------------------------------------------------------
-        CALL DCOPY(NBI,VI,1,VO,1)
+        CALL DCOPY(NBI4,VI,1,VO,1)
 
       ELSE IF (SCALIN(1:4).EQ.'MULT') THEN
 C ----------------------------------------------------------------------

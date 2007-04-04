@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith8 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -380,14 +380,6 @@ cata_msg={
 
 93: _("""
  une maille maitre est de longueur nulle
-"""),
-
-94: _("""
- comportement < %(k1)s > non supporte en sensibilite
-"""),
-
-95: _("""
- comportement                               vmis_isot_trac non supporte en sensibilite
 """),
 
 96: _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/09/2006   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES SANS FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,7 +53,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=20700000,
 #-----   MODELE ----------------
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(GROUP_MA=('ANNEAU','PLAQUE'),
+               AFFE=_F(GROUP_MA=('ANNEAU','PLAQUE','LMAI','LESC'),
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
 
@@ -96,7 +96,6 @@ CON=AFFE_CHAR_MECA(MODELE=MO,
                                 GROUP_MA_ESCL='LESC',
                                 GROUP_MA_MAIT='LMAI',
                                 INTEGRATION='NOEUD',
-                                MODL_AXIS='NON',
                                 ITER_GEOM_MAXI = 1,
                                 COEF_REGU_CONT = 100.,
                               ),);

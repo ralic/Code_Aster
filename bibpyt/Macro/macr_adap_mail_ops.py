@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_adap_mail_ops Macro  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -692,7 +692,7 @@ def macr_adap_mail_ops ( self,
   donnees_homard = creation_donnees_homard.creation_donnees_homard ( self.nom, args, dico_configuration )
   if ( INFO > 1 ) :
     donnees_homard.quel_mode ( )
-  fic_homard_niter = donnees_homard.creation_configuration ( )
+  fic_homard_niter, fic_homard_niterp1 = donnees_homard.creation_configuration ( )
   donnees_homard.ecrire_fichier_configuration ( )
   if ( mode_homard == "INFO" ) :
     Nom_Fichier_Donnees = donnees_homard.ecrire_fichier_donnees ( )
@@ -805,29 +805,38 @@ def macr_adap_mail_ops ( self,
                                  INFO = INFO, **motscsi )
 #
 #====================================================================
-# 8. Menage des fichiers MED et HOMARD devenus inutiles
+# 8. Menage des fichiers devenus inutiles
+#    On doit imperativement garder le dernier fichier homard produit
+#    En mode d'information, on garde également les fichiers textes
 #====================================================================
 #
-  liste_aux = [ fichier_aster_vers_homard ]
+  liste_aux = [fichier_aster_vers_homard]
+  liste_aux_bis = os.listdir(Rep_Calc_HOMARD_global)
+  for fic in liste_aux_bis :
+    fic_total = os.path.join(Rep_Calc_HOMARD_global, fic)
+    liste_aux.append(fic_total)
+  liste_aux_bis = []
   if ( mode_homard == "ADAP" ) :
     liste_aux.append(fichier_homard_vers_aster)
-    fic = os.path.join(Rep_Calc_HOMARD_global, fic_homard_niter)
-    liste_aux.append(fic)
-#gn  print "liste_aux = ",liste_aux
+    fic = os.path.join(Rep_Calc_HOMARD_global, fic_homard_niterp1)
+    liste_aux_bis.append(fic)
 #
   for fic in liste_aux :
-    if ( INFO > 1 ) :
-      print "Destruction du fichier ", fic
-    if os.path.isfile(fic) :
-      try :
-        os.remove(fic)
-      except os.error,codret_partiel :
-        self.cr.warn("Code d'erreur de remove : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
-        UTMESS("F", self.nom, "Impossible de détruire le fichier : "+fic)
+    if fic not in liste_aux_bis :
+      if ( INFO > 1 ) :
+        print "Destruction du fichier ", fic
+      if os.path.isfile(fic) :
+        try :
+          os.remove(fic)
+        except os.error,codret_partiel :
+          self.cr.warn("Code d'erreur de remove : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
+          UTMESS("F", self.nom, "Impossible de détruire le fichier : "+fic)
 #gn  print "Répertoire ",Rep_Calc_HOMARD_global
 #gn  os.system("ls -la "+Rep_Calc_HOMARD_global)
 #gn  print "Répertoire ",Rep_Calc_ASTER
 #gn  os.system("ls -la "+Rep_Calc_ASTER)
+#gn  print os.listdir(Rep_Calc_HOMARD_global)
+#gn  print "glop :", Rep_Calc_HOMARD_global
 #
 #====================================================================
 #  C'est fini !

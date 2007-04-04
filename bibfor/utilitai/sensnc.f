@@ -4,7 +4,7 @@ C     SENSIBILITE - NOM DES STRUCTURES - NOMS COMPOSES
 C     **            *       *            *    *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C
 C
       IF ( TYPEST.LT.0 ) THEN
 C
-        CALL U2MESS('F','UTILITAI4_62')
+        CALL U2MESS('F','SENSIBILITE_81')
 C
       ENDIF
 C

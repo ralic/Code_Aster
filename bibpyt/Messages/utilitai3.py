@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF utilitai3 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -394,27 +394,4 @@ cata_msg={
  seuls les types "reel" et "complexe" sont autorises.
 """),
 
-94: _("""
- est deja memorisee :  %(k1)s 
-"""),
-
-95: _("""
- choix=/e/l svp.
-"""),
-
-96: _("""
- pour un concept, pas plus de 8 svp.
-"""),
-
-97: _("""
- la structure  %(k1)s  apparait plusieurs fois en tant que derivee ?
-"""),
-
-98: _("""
- ce parametre de sensibilite est introuvable :  %(k1)s 
-"""),
-
-99: _("""
- les types de sensibilite pour l'influence de  %(k1)s  sont incoherents.
-"""),
 }

@@ -1,4 +1,4 @@
-#@ MODIF __init__ SD  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF __init__ SD  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,4 +29,4 @@ except:
 from asnom      import SDNom
 from ascheckers import Parmi
 from asojb      import AsBase, AsVK8, AsVK16, AsVK24, AsVK32, AsVK80, \
-                       AsVI, AsVR, AsVC, AsColl, AsObject, Facultatif, OJBVect
+                       AsVI, AsVR, AsVC, AsVL, AsColl, AsObject, Facultatif, OJBVect

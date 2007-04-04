@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF algorith11 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -100,18 +100,6 @@ cata_msg={
 
 20: _("""
  typcal invalide :  %(k1)s 
-"""),
-
-21: _("""
- calcul de sensibilite pas encore disponible pour les chargements de type epsi_init
-"""),
-
-22: _("""
- typcal invalide
-"""),
-
-23: _("""
- type de derivation non implante (dvlp)
 """),
 
 24: _("""
@@ -366,9 +354,6 @@ cata_msg={
 """),
 83: _("""
  Arret par manque de temps CPU.
-"""),
-84: _("""
- on ne sait pas deriver par rapport au concept %(k1)s
 """),
 85: _("""
  On veut affecter un comportement %(k1)s avec la relation %(k2)s sur une maille deja affectee par un autre comportement %(k3)s %(k4)s

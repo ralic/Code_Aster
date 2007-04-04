@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,6 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='CONTINUE',
-                               MODL_AXIS='NON',
                                FROTTEMENT='COULOMB',
                                COULOMB=0.40000000000000002,
                                GROUP_MA_MAIT='BCC1',

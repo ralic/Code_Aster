@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE AFFE_CHAR_MECA/EVOL_CHAR (DE TYPE PRESSION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,7 +114,7 @@ U3=DYNA_NON_LINE(       MODELE=MO,   CHAM_MATER=CHMAT,
               _F( CHARGE = CH1, FONC_MULT = F1),
               _F( CHARGE = CH2, FONC_MULT = F2)),
            COMP_INCR=_F( TOUT = 'OUI', RELATION = 'ELAS'),
-             NEWMARK=_F()
+           SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',FORMULATION='DEPLACEMENT'),
                         )
 
 TEST_RESU(  RESU=_F(  RESULTAT = U3,   NOM_CHAM = 'DEPL',   INST = 1.E0,

@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF elements4 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,30 +112,6 @@ cata_msg={
 
 23: _("""
  comp_incr non disponible pour les elements enrichis avec x-fem.
-"""),
-
-24: _("""
- modelisation inco non supportee en sensibilite
-"""),
-
-25: _("""
- modelisation c_plan non supportee en sensibilite pour un calcul avec stat_non_line
-"""),
-
-26: _("""
- comp_elas non supporte en sensibilite
-"""),
-
-27: _("""
- petit_reac non supporte en sensibilite
-"""),
-
-28: _("""
- simo_miehe non supporte en sensibilite
-"""),
-
-29: _("""
- green non supporte en sensibilite
 """),
 
 30: _("""
@@ -302,10 +278,6 @@ cata_msg={
 
 70: _("""
  Erreur de programmation : condition non respectée !
-"""),
-
-71: _("""
-  te0140, calcul de sensibilite : actuellement on ne derive que les pou_d_e
 """),
 
 72: _("""

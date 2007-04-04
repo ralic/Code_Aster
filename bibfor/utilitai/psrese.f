@@ -5,7 +5,7 @@ C     PARAMETRES SENSIBLES - RESULTAT - SENSIBILITE
 C     *          *           **         **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
       INTEGER LXLGUT
-      INTEGER VALI
+      INTEGER VALI(3)
 C
       INTEGER NBPASE
       INTEGER ADRECG, IAUX
@@ -100,8 +100,10 @@ C
 C
       ELSE
 C
-        VALI = TYPRES
-        CALL U2MESG('A', 'UTILITAI6_66',0,' ',1,VALI,0,0.D0)
+        VALI (1) = 1
+        VALI (2) = 2
+        VALI (3) = TYPRES
+        CALL U2MESG('A', 'SENSIBILITE_84',1,'TYPRES',3,VALI,0,0.D0)
         CALL U2MESS('F','MODELISA_67')
 C
       ENDIF

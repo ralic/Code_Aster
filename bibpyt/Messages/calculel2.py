@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel2 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -388,14 +388,6 @@ cata_msg={
  le materiau depend de la temperature l'option calc_dg ne prend pas en compte cette possibilite
 """),
 
-90: _("""
- le champ de theta sensibilite est inexistant dans la sd  %(k1)s  !
-"""),
-
-91: _("""
- exicha different de 0 et 1
-"""),
-
 92: _("""
  votre chargement contient plus d'une charge repartie. le calcul n'est pas possible pour les modeles de poutre.
 """),
@@ -410,14 +402,6 @@ cata_msg={
 
 94: _("""
  pour un modele comportant des elements de plaque ou de coque, il faut le "cara_elem"
-"""),
-
-95: _("""
- impossible de calculer un resultat derive pour le type  %(k1)s
-"""),
-
-96: _("""
- impossible de trouver le resultat derive associe au resultat  %(k1)s  et au parametre sensible  %(k2)s
 """),
 
 97: _("""

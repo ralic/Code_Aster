@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF calculel5 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,12 +30,8 @@ cata_msg={
  pour les options de thermique, il y a encore a travailler !!
 """),
 
-3: _("""
- !! option indisponible ensensibilite lagrangienne !!
-"""),
-
 4: _("""
- !! problemecreation cham_elem nul dans alchml !!
+ !! probleme creation cham_elem nul dans alchml !!
 """),
 
 5: _("""

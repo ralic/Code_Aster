@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,7 +148,7 @@ ULM =  DYNA_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                                  SUBD_METHODE='UNIFORME', SUBD_PAS=5,
                                  SUBD_PAS_MINI=0.0000001,
                                  ),
-                    HHT=_F(),
+                    SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
@@ -192,7 +192,7 @@ ULL =  DYNA_NON_LINE(MODELE=MODE,
                     INCREMENT=_F(LIST_INST=L_INST,
                                  SUBD_METHODE='UNIFORME', SUBD_PAS=5,
                                  SUBD_PAS_MINI=0.0000001,),
-                    HHT=_F(),
+                    SCHEMA_TEMPS=_F(SCHEMA='HHT',FORMULATION='DEPLACEMENT'),
                     NEWTON=_F(MATRICE='TANGENTE',
                               REAC_ITER=1,),
                     SOLVEUR =_F(SYME='OUI',

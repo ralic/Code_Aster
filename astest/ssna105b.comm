@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,7 +155,6 @@ PRES = AFFE_CHAR_MECA_F (MODELE = MO,
 CONT = AFFE_CHAR_MECA (MODELE = MO,
                           CONTACT =_F( 
                                        METHODE='CONTINUE',
-                                       MODL_AXIS='OUI',
                                        GROUP_MA_MAIT = 'DDAG',
                                        GROUP_MA_ESCL = 'DBCP',
                       ))

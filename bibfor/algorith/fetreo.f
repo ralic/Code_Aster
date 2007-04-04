@@ -3,7 +3,7 @@
      &                  NBPROC,RANG,K24IRP,ITPS,NBREOI,OPTION,LACSM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C                         TEMPS PRECEDENTS SI LACSM=TRUE,
 C                         2-> IDEM + REORTHO AU SEIN DU MEME PAS
 C     IN  LACSM : LOG : TRUE SI ACCELERATION_SM='OUI'
 C----------------------------------------------------------------------
+C TOLE CRP_4
 C TOLE CRP_21
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -78,13 +79,15 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C DECLARATION VARIABLES LOCALES
       REAL*8       DDOT,RAUX,NORMAV,NORMAP,RGSKP2,BETAN,BETAD,BETA,RMIN,
      &             RBID
-      INTEGER      IAUX1,IAUX2,IAUX3,I,J,ITER1,NBI1,IAD,IFM,NIV,IBID,K,
+      INTEGER      IAUX1,IAUX2,IAUX3,I,J,NBI1,IAD,IFM,NIV,IBID,K,
      &             NIVMPI,IDDFRO,IDDRO,IMSMI,IMSMK,NBREOA,IPSRO,NBDDSM
       CHARACTER*8  K8BID
       CHARACTER*24 K24B
       LOGICAL      LPARA
+      INTEGER*4    NBI4
 
 C INITS DIVERSES
+      NBI4=NBI
       IF (NBPROC.EQ.1) THEN
         LPARA=.FALSE.
       ELSE
@@ -96,7 +99,6 @@ C INITS DIVERSES
         NIVMPI=1
       ENDIF
       NBI1=NBI-1
-      ITER1=ITER+1
 
       IF (RANG.EQ.0) THEN
 
@@ -121,7 +123,7 @@ C -----------------------------
 C CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 1)
 C (ZR(IRP)) PK+1 = HK+1 (EQUIVAUT A GK+1 SI SANS PRECOND)
 C -----------------------------
-          CALL DCOPY(NBI,ZR(IRH),1,ZR(IRP),1)
+          CALL DCOPY(NBI4,ZR(IRH),1,ZR(IRP),1)
 
 C -----------------------------
 C -----------------------------
@@ -132,9 +134,9 @@ C -----------------------------
             CALL JEVEUO(K24PSR,'L',IPSRO)
             CALL JEVEUO(K24DDR,'L',IDDRO)
             CALL JEVEUO(K24FIR,'L',IDDFRO)
-            IF (ITER.LT.NBREOR) THEN
+            IF (ITER.LE.NBREOR) THEN
               IAUX2=1
-              IAUX3=ITER1
+              IAUX3=ITER
              ELSE
               IAUX2=0
               IAUX3=NBREOR
@@ -161,7 +163,7 @@ C --------------
 C CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 2.2)
 C (ZR(IRP)) PK+1_PRIM = PK+1 + BETAKI * PI
 C --------------
-              CALL DAXPY(NBI,RAUX,ZR(IAUX1),1,ZR(IRP),1)
+              CALL DAXPY(NBI4,RAUX,ZR(IAUX1),1,ZR(IRP),1)
 
 C --------------
 C PREMIER TEST (ETAPE 2.3) SI IGSM DE TYPE KAHN-PARLETT
@@ -179,7 +181,7 @@ C --------------
 C CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 3.2)
 C (ZR(IRP)) PK+1_SEC = PK+1_PRIM + BETAKI_PRIM * PI
 C --------------
-                  CALL DAXPY(NBI,RAUX,ZR(IAUX1),1,ZR(IRP),1)
+                  CALL DAXPY(NBI4,RAUX,ZR(IAUX1),1,ZR(IRP),1)
 C --------------
 C SECOND TEST (ETAPE 3.3)
 C --------------
@@ -226,14 +228,14 @@ C BOUCLE SUR LES VECTEURS DE DESCENTE RETENUS D'UN PAS DE TEMPS DONNE
                   ENDIF
                   IAUX1=IDDRO+J*NBI
                   IF (IGSMKP) NORMAV=DDOT(NBI,ZR(IRP),1,ZR(IRP),1)
-                  CALL DAXPY(NBI,RAUX,ZR(IAUX1),1,ZR(IRP),1)
+                  CALL DAXPY(NBI4,RAUX,ZR(IAUX1),1,ZR(IRP),1)
                   IF (IGSMKP) THEN
                     NORMAP=DDOT(NBI,ZR(IRP),1,ZR(IRP),1)
                     IF (NORMAP.LT.(RGSKP2 * NORMAV)) THEN
                       IAUX1=IDDFRO+J*NBI
                       RAUX=-DDOT(NBI,ZR(IRP),1,ZR(IAUX1),1)/ZR(IPSRO+J)
                       IAUX1=IDDRO+J*NBI
-                      CALL DAXPY(NBI,RAUX,ZR(IAUX1),1,ZR(IRP),1)
+                      CALL DAXPY(NBI4,RAUX,ZR(IAUX1),1,ZR(IRP),1)
                       NORMAV=DDOT(NBI,ZR(IRP),1,ZR(IRP),1)
                       IF (NORMAV.LT.(RGSKP2 * NORMAP)) THEN
                         DO 25 K=0,NBI1
@@ -255,7 +257,8 @@ C SORTIE PREVUE POUR LE TEST 3.3
    61     CONTINUE
 C CALCUL DE ALPHAN = GK+1.PK+1
           ALPHAN=DDOT(NBI,ZR(IRG),1,ZR(IRP),1)
-
+C VARIANTE CONFORME A CERTAINS PAPIERS.
+C          ALPHAN=DDOT(NBI,ZR(IRG),1,ZR(IRH),1)
         ELSE
 
 C MONITORING

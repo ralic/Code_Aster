@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,8 +135,9 @@ U=DYNA_NON_LINE(MODELE=MODE,
                              VITE=CHAMP1,),
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_INIT=0.0,),
-                NEWMARK=_F(ALPHA=ALF,
-                           DELTA=DEL,),
+                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                FORMULATION='DEPLACEMENT',
+                                ALPHA=ALF,DELTA=DEL,),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 SOLVEUR=_F(SYME='OUI',

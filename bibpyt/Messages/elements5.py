@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 12/03/2007   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF elements5 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,5 +125,22 @@ cata_msg={
    Erreur, le nombre de points de Gauss d'un element de joint 3D n'est pas correct   
 """),
 
-
+24: _("""
+  le nombre de mailles du modele %(i1)d est différent de la somme des mailles des sous-domaines %(i2)d 
+"""),
+25: _("""
+  le sous-domaine n %(i1)d n'est pas renseigné ou vide dans DEFI_PART_OPS
+"""),
+26: _("""
+  le LIAISON_** du chargement %(k1)s impliquant les noeuds %(k2)s et %(k3)s traverse l'interface 
+"""),
+27: _("""
+  le LIAISON_** du chargement %(k1)s impliquant le noeud %(k2)s touche l'interface 
+"""),
+28: _("""
+  le modele comporte %(i1)d mailles de plus que l'ensemble des sous-domaines 
+"""),
+29: _("""
+  le modele comporte %(i1)d mailles de moins que l'ensemble des sous-domaines 
+"""),
 }

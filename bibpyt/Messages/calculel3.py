@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel3 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -114,16 +114,8 @@ cata_msg={
  option :  %(k1)s 
 """),
 
-24: _("""
- parametre sensible  %(k1)s 
-"""),
-
 25: _("""
  calcul non disponible
-"""),
-
-26: _("""
- le parametre de sensibilite doit etre un champ theta
 """),
 
 27: _("""
@@ -344,10 +336,6 @@ cata_msg={
 
 79: _("""
  la matrice a est singuliere
-"""),
-
-80: _("""
-  on ne trouve pas le resultat derive associe a  %(k1)s 
 """),
 
 81: _("""

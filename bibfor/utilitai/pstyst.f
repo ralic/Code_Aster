@@ -6,7 +6,7 @@ C     PARAMETRE SENSIBLE - TYPE DE SENSIBILITE - SOUS-TYPE
 C     *         *          **                    *    *
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,10 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*24 VALK(2)
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'PSTYST' )
+C
+      CHARACTER*80 VALK(3)
 C
       INTEGER IAUX, JAUX, KAUX
       INTEGER NUMERO
@@ -148,11 +151,11 @@ C
                   ELSE
                     CALL JEVEUO ( LIVALE, 'L', ADVALE )
                     CALL JEVEUO ( LIMOFA, 'L', ADMOFA )
-                    CALL U2MESK('A','UTILITAI4_4',1,ZK80(ADVALE+IAUX-1))
-                     VALK(1) = STYPSE(1:LG1)
-                     VALK(2) = COREFE(JAUX)
-                     CALL U2MESK('A','UTILITAI4_1', 2 ,VALK)
-                    CALL U2MESS('F','UTILITAI4_2')
+                    VALK(1) = ZK80(ADVALE+IAUX-1)
+                    VALK(2) = STYPSE(1:LG1)
+                    VALK(3) = COREFE(JAUX)
+                    CALL U2MESK('A','SENSIBILITE_96',3 ,VALK)
+                    CALL U2MESK('F','UTILITAI7_99', 1 ,NOMPRO)
                   ENDIF
                 ENDIF
               ENDIF
@@ -165,7 +168,7 @@ C
 C       SI ON ARRIVE ICI, IL Y A ERREUR : AUCUN TYPE N'A PU ETRE TROUVE
 C
         CALL JEVEUO ( LIVALE, 'L', ADVALE )
-        CALL U2MESK('A','UTILITAI4_5',1,ZK80(ADVALE+IAUX-1))
+        CALL U2MESK('A','SENSIBILITE_99',1,ZK80(ADVALE+IAUX-1))
         CALL U2MESS('F','MODELISA_67')
 C
    11 CONTINUE

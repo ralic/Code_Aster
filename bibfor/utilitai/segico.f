@@ -6,7 +6,7 @@ C     SENSIBILITE - GESTION DES INFORMATIONS POUR UNE COMMANDE
 C     **            *           *                     **
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -207,11 +207,9 @@ C
           IF ( IRET.NE.0 ) THEN
             SAUX24 = BLAN24
             SAUX24(1:LGNORE) = RESULT(1:LGNORE)
-        VALI = IRET
-        VALK (1) = SAUX24
-        VALK (2) = NOPASE
-        VALK (3) = SAUX08
-            CALL U2MESG('A', 'UTILITAI6_85',3,VALK,1,VALI,0,0.D0)
+            VALK (1) = SAUX24
+            VALK (2) = NOPASE
+            CALL U2MESK('A', 'SENSIBILITE_3', 2, VALK)
             CODRET = 1
           ENDIF
           JAUX = LXLGUT(SAUX08)
@@ -313,7 +311,7 @@ C
       ELSE
 C
         VALI = CHOIX
-        CALL U2MESG('A', 'UTILITAI6_86',0,' ',1,VALI,0,0.D0)
+        CALL U2MESI('A', 'SENSIBILITE_89',1,VALI)
         CALL U2MESS('F','MODELISA_67')
 C
       ENDIF

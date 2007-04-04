@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/11/2006   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -356,7 +356,6 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                                                                                                 "NCOTES","NCOTES1","NCOTES2")),
                 COEF_REGU_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),
                 FORMULATION     =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","VITE")),
-                MODL_AXIS       =SIMP(statut='o',typ='TXM',into=("OUI","NON")),
                 DIRE_APPA       =SIMP(statut='f',typ='R',max=3),
                 ITER_GEOM_MAXI  =SIMP(statut='f',typ='I',defaut=2),
                 ITER_CONT_MAXI  =SIMP(statut='f',typ='I',defaut=30),

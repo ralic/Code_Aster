@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 19/02/2007   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -234,7 +234,7 @@ cata_msg={
 
 
 43: _("""
-     Erreur d'ouverture du fichier %(k1)s , code retour OPENDR = (%i1)d 
+     Erreur d'ouverture du fichier %(k1)s , code retour OPENDR = %(i1)d 
 
       
 """),

@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,16 +28,21 @@ C
       CHARACTER*(*) ARGZ(*)
       REAL*8        ARGR(*)
       INTEGER       ARGI(*)
-
+C 
 C ----------------------------------------------------------------------
-C  GESTION DES IMPRESSIONS DE LA COMMANDE STAT_NON_LINE
-C  DERIVEE DE L'ANCIENNE ROUTINE NMIMPR
+C
+C ROUTINE MECA_NON_LINE (AFFICHAGE)
+C
+C GESTION DES IMPRESSIONS DE LA COMMANDE MECA_NON_LINE
+C      
 C ----------------------------------------------------------------------
+C      
+C
 C IN  PHASE  : 'INIT' INITIALISATION
 C              'TITR' AFFICHAGE DE L'EN TETE DES PAS DE TEMPS
 C              'IMPR' IMPRESSION
 C IN  NATURE : NATURE DE L'IMPRESSION POUR PHASE 'INIT'
-C              'DYNA_TRAN' -> CAS DE DYNA_TRAN_EXPLI (PAS DE TABLEAU
+C              'DYNA_TRAN' -> CAS SCHEMA EXPLICITE (PAS DE TABLEAU
 C                             DE CONVERGENCE)
 C              ' '         -> AUTRES CAS
 C IN  NATURE : NATURE DE L'IMPRESSION
@@ -105,7 +110,6 @@ C
       CHARACTER*24     IMPRCO
       CHARACTER*16     ARG16,K16BID,OPTASS
       CHARACTER*9      NATURE
-      CHARACTER*2      ARG2
       CHARACTER*1      MARQ
       CHARACTER*4      ARG4
       INTEGER          LONGR,PRECR,LONGI,LONGK,FORCOL
@@ -123,6 +127,8 @@ C
 C
 C ----------------------------------------------------------------------
 C
+      CALL JEMARQ()
+
       MESS   = IUNIFI ('MESSAGE')
       NATURE = NATURZ
 C
@@ -528,4 +534,6 @@ C
       END IF
 
  9999 CONTINUE
+
+      CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE ABSORPTION D'UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,7 +176,8 @@ DYNA=DYNA_NON_LINE(    MODELE=MODELE,
                        INCREMENT=_F( LIST_INST = TEMLI),
 ####CDURAND            ARCHIVAGE=_F(  LIST_ARCH = INLI),
                        NEWTON=_F(  MATRICE = 'ELASTIQUE'),
-                       NEWMARK=_F() 
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
+                                     FORMULATION='DEPLACEMENT',),
                         )
 
 DXNA3=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,

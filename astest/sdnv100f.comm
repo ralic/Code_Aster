@@ -1,5 +1,5 @@
 
-# MODIF  DATE 27/11/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,8 +127,7 @@ L_CONT=DEFI_LIST_REEL(DEBUT=2.E-5,
                       INTERVALLE=_F(JUSQU_A=10.E-5,
                                     PAS=DT,),);
 
-
-U=DYNA_TRAN_EXPLI(MODELE=MODE,
+U=DYNA_NON_LINE(MODELE=MODE,
                   CHAM_MATER=CM,
                   CARA_ELEM=CARA,
                   MASS_DIAG='NON',
@@ -142,8 +141,11 @@ U=DYNA_TRAN_EXPLI(MODELE=MODE,
                                VITE=CHAMP1,),
                   INCREMENT=_F(LIST_INST=L_INST,
                                INST_INIT=0.,),
-                  DIFF_CENT=_F(),
-);
+                  SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                  FORMULATION='ACCELERATION',),)
+
+
+
 
 VITECONT=RECU_FONCTION(RESULTAT=U,
                        NOM_CHAM='VITE',
@@ -260,7 +262,7 @@ TEST_TABLE(TABLE=tpost,
 
 # TEST DE LA MASSE DIAGONALE
 
-UDIAG=DYNA_TRAN_EXPLI(MODELE=MODE,
+UDIAG=DYNA_NON_LINE(MODELE=MODE,
                       CHAM_MATER=CM,
                       CARA_ELEM=CARA,
                       MASS_DIAG='OUI',
@@ -274,7 +276,11 @@ UDIAG=DYNA_TRAN_EXPLI(MODELE=MODE,
                                    VITE=CHAMP1,),
                       INCREMENT=_F(LIST_INST=L_COURA,
                                    INST_INIT=0.,),
-                      DIFF_CENT=_F(),)
+                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                       FORMULATION='ACCELERATION',),)
+
+
+
 
 VITEDIAG=RECU_FONCTION(RESULTAT=UDIAG,
                        NOM_CHAM='VITE',

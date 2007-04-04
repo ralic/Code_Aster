@@ -1,8 +1,8 @@
-#@ MODIF from_c Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF sd_multi_appui SD  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,21 +17,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+from SD import *
 
-def _(x) : return x
-
-cata_msg={
-
-1: _("""
- &feti.liste.sd.mpi existe deja !
-"""),
-
-2: _("""
- &feti.liste.sd.mpib existe deja !
-"""),
-
-3: _("""
- En parallèle, il faut au moins un sous-domaine par processeur !
-"""),
-
-}
+class sd_multi_appui(AsBase):
+#------------------------------------  
+    nomj = SDNom(fin=19)
+    
+    FDEP=AsVK8()
+    FVIT=AsVK8()
+    FACC=AsVK8()
+    MULA=AsVI()
+    PSID=AsVR()

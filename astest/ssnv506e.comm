@@ -1,4 +1,4 @@
-# MODIF  DATE 14/11/2006   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='CONTINUE',
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
-                               MODL_AXIS='OUI'),);
+                               ),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='NDPL',

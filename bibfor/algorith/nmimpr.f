@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPR(PHASE,NATURZ,ARGZ,ARGR,ARGI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/11/2006   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,21 +20,28 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_20
+C
       IMPLICIT      NONE
       CHARACTER*4   PHASE
       CHARACTER*(*) NATURZ
       CHARACTER*(*) ARGZ(*)
       REAL*8        ARGR(*)
       INTEGER       ARGI(*)
-
+C 
 C ----------------------------------------------------------------------
-C  GESTION DES IMPRESSIONS DE LA COMMANDE STAT_NON_LINE
+C
+C ROUTINE MECA_NON_LINE (AFFICHAGE)
+C
+C GESTION DES IMPRESSIONS DE LA COMMANDE MECA_NON_LINE
+C      
 C ----------------------------------------------------------------------
+C      
+C
 C IN  PHASE  : 'INIT' INITIALISATION
 C              'TITR' AFFICHAGE DE L'EN TETE DES PAS DE TEMPS
 C              'IMPR' IMPRESSION
 C IN  NATURE : NATURE DE L'IMPRESSION POUR PHASE 'INIT' 
-C              'DYNA_TRAN' -> CAS DE DYNA_TRAN_EXPLI (PAS DE TABLEAU
+C              'DYNA_TRAN' -> CAS SCHEMA EXPLICITE (PAS DE TABLEAU
 C                             DE CONVERGENCE)
 C              ' '         -> AUTRES CAS
 C IN  NATURE : NATURE DE L'IMPRESSION POUR PHASE 'IMPR'          
@@ -100,6 +107,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
+      CALL JEMARQ()
       MESS   = IUNIFI ('MESSAGE')
 
 C FETI PARALLE OR NOT ?
@@ -149,4 +157,5 @@ C
 
       ENDIF
 
+      CALL JEDEMA()
       END

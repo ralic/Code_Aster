@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2007   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
@@ -200,7 +200,9 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LINST,
                                 SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                                 SUBD_PAS_MINI=1.E-3,),
-                   HHT=_F(ALPHA=0.0,),
+                   SCHEMA_TEMPS=_F(FORMULATION='DEPLACEMENT',
+                                   SCHEMA='HHT',
+                                   ALPHA=0.0,),
                    NEWTON=_F(REAC_INCR=0,
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=0,),
@@ -232,7 +234,9 @@ RESU2=DYNA_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LINST,
                                 SUBD_METHODE='UNIFORME', SUBD_PAS=3,
                                 SUBD_PAS_MINI=1.E-3,),
-                   HHT=_F(ALPHA=0.0,),
+                   SCHEMA_TEMPS=_F(FORMULATION='DEPLACEMENT',
+                                   SCHEMA='HHT',
+                                   ALPHA=0.0,),
                    NEWTON=_F(REAC_INCR=0,
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=0,),

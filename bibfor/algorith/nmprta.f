@@ -1,22 +1,17 @@
-      SUBROUTINE NMPRTA(MODELE, NUMEDD, MATE  , CARELE, COMREF,
-     &                   COMPOR, LISCHA, MEDIRI, METHOD, SOLVEU,
-     &                   PARMET, CARCRI, PILOTE, PARTPS, NUMINS,
-     &                   INST  , VALMOI, POUGD , VALPLU,
-     &                   SECMBR, DEPPIL, LICCVG, STADYN,
-     &                   LAMORT, VITPLU, ACCPLU, MASSE,  AMORT,
-     &                   RIGID,  MATASS, CMD,    PREMIE, MEMASS,
-     &                   DEPENT, VITENT, COEDEP, COEVIT, COEACC,
-     &                   VITKM1, NMODAM, VALMOD, BASMOD, NREAVI,
-     &                   LIMPED, LONDE,  NONDP,  CHONDP, MODEDE,
-     &                   NUMEDE, SOLVDE, PARCRI,RESOCO, CONV, CNRESI,
-     &                   CNDIRI, MASGEN, BASMOI, LMODAL, DEPDEL, LSSTRU,
-     &                   ACCGEM, ACCGEP,VITGEM, VITGEP, DEPGEM, DEPGEP,
-     &                   RIGGEN, AMOGEN,FONGEN, FORGEN, IALGO,  SECOLD,
-     &                   CNFOLD, FOPREC)
-
-
+      SUBROUTINE NMPRTA(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
+     &                  COMPOR,LISCHA,MEDIRI,METHOD,SOLVEU,
+     &                  PARMET,CARCRI,PILOTE,PARTPS,NUMINS,
+     &                  INST  ,VALMOI,POUGD ,VALPLU,SECMBR,
+     &                  DEPPIL,LICCVG,STADYN,VITPLU,ACCPLU,
+     &                  MASSE, AMORT ,RIGID, MATASS,PREMIE,
+     &                  MEMASS,DEPENT,VITENT,VITKM1,NREAVI,
+     &                  LIMPED,LONDE, NONDP, CHONDP,MODEDE,
+     &                  NUMEDE,SOLVDE,PARCRI,RESOCO,CONV  , 
+     &                  CNRESI,CNDIRI,DEPDEL,LSSTRU,SECOLD,
+     &                  CNFOLD,FOPREC,SDDYNA)
+C
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,35 +30,35 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MABBAS M.ABBAS
 C TOLE CRP_21
-
-C      IMPLICIT NONE
-      IMPLICIT REAL*8 (A-H,O-Z)
-      LOGICAL      LAMORT, PREMIE, LBID, LIMPED, LONDE, LMODAL, FOPREC
+C
+      IMPLICIT NONE
+      LOGICAL      PREMIE, LBID, LIMPED, LONDE, FOPREC
       INTEGER      NUMINS, LICCVG(*)
-      INTEGER      NMODAM, NREAVI, NONDP, IALGO
-      REAL*8       PARMET(*), INST(3), COEVIT, COEACC, COEDEP
-      REAL*8       PARCRI(11), CONV(21)
+      INTEGER      NONDP , NREAVI
+      REAL*8       PARMET(*), INST(*)
+      REAL*8       PARCRI(*), CONV(*)
       CHARACTER*8  MODEDE
-      CHARACTER*13 SCHEMA
       CHARACTER*14 PILOTE
-      CHARACTER*16 METHOD(*), CMD
-      CHARACTER*19 LISCHA, SOLVEU, PARTPS, MATASS
+      CHARACTER*16 METHOD(*)
+      CHARACTER*19 LISCHA, SOLVEU, PARTPS, MATASS, SDDYNA
       CHARACTER*19 SOLVDE, CNRESI, CNDIRI,CNFOLD
       CHARACTER*24 MODELE, NUMEDD, MATE, CARELE, COMREF, COMPOR
       CHARACTER*24 CARCRI, VALMOI, VALPLU, POUGD, SECMBR,SECOLD(8)
       CHARACTER*24 DEPPIL(2), MEDIRI, RIGID
       CHARACTER*24 VITPLU, ACCPLU, MASSE, AMORT, MEMASS
       CHARACTER*24 DEPENT, VITENT, STADYN
-      CHARACTER*24 VITKM1, VALMOD, BASMOD, CHONDP
-      CHARACTER*24 NUMEDE, RESOCO, MASGEN, BASMOI, DEPDEL
-      CHARACTER*24 ACCGEM, ACCGEP, VITGEM, VITGEP
-      CHARACTER*24 DEPGEM, DEPGEP, RIGGEN, AMOGEN
-      CHARACTER*24 FONGEN, FORGEN
+      CHARACTER*24 VITKM1, CHONDP
+      CHARACTER*24 NUMEDE, RESOCO, DEPDEL
       LOGICAL      LSSTRU
-
+C 
 C ----------------------------------------------------------------------
-C COMMANDE STAT_NON_LINE : PREDICTION PAR METHODE DE NEWTON
+C
+C ROUTINE MECA_NON_LINE (ALGORITHME - PREDICTION)
+C
+C PREDICTION PAR METHODE DE NEWTON-EULER
+C      
 C ----------------------------------------------------------------------
+C
 C
 C IN       MODELE K24  MODELE
 C IN       NUMEDD K24  NUME_DDL
@@ -88,10 +83,10 @@ C IN       POUGD  K24  DONNES POUR POUTRES GRANDES DEFORMATIONS
 C IN       VALPLU K24  ETAT EN T+
 C IN       SECMBR K24  VECTEURS ASSEMBLES DES CHARGEMENTS FIXES
 C IN/JXOUT DEPPIL K24  PREDICTION DE DEPLACEMENT
+C IN       SDDYNA K19  SD DEDIEE A LA DYNAMIQUE (CF NDLECT)
 C OUT      LICCVG  I   CODES RETOURS
 C                      (5) - MATASS SINGULIERE
 C
-C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       INTEGER            ZI
@@ -110,7 +105,8 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      LOGICAL      FNOEVO
+C
+      LOGICAL      FNOEVO,NDYNLO
 C
 C IN  FNOEVO  : VRAI SI FORCES NODALES EVOLUTIVES I E INSTANT PLUS ET
 C               MOINS NECESSAIRES 5 STAT NON LINE TRAITANT DES PROBLEMES
@@ -137,10 +133,13 @@ C               ICI VRAI
       DATA CNFINT, CNBUDI /'&&NMPRTA.FINT', '&&NMPRTA.BUDI'/
       DATA CNVCPR         /'&&NMPRTA.VCPR'/
       DATA VRCMOI         /'&&NMPRTA.VARC.MOINS'/
+C
 C ----------------------------------------------------------------------
-
-C -- INITIALISATION
-
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
       CALL DESAGG (VALMOI, DEPMOI, SIGMOI, K24BID, COMMOI,
      &                     K24BID, K24BID, K24BID, K24BID)
       CALL DESAGG (SECMBR, CNFEDO, CNFEPI, CNDIDO, CNDIPI,
@@ -155,25 +154,22 @@ C -- INITIALISATION
 C ======================================================================
 C                   REASSEMBLAGE EVENTUEL DES MATRICES
 C ======================================================================
-      IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
-        CALL MXMASS( MODELE, NUMEDD, MATE  , CARELE,
-     &                  COMREF, COMPOR, LISCHA, MEDIRI,
-     &                  METHOD, SOLVEU, CARCRI,
-     &                  0     , VALMOI, POUGD , DEPDEL,
-     &                  VALPLU, MATRIX, K16BID, STADYN,
-     &                  PREMIE,    DEPENT, VITENT, LAMORT,
-     &                  MEMASS, MASSE,  AMORT,  COEVIT, COEACC,
-     &                  LICCVG(5))
+      IF (NDYNLO(SDDYNA,'EXPLICITE')) THEN
+        CALL MXMASS(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
+     &              COMPOR,LISCHA,MEDIRI,METHOD,SOLVEU,
+     &              CARCRI,0     ,VALMOI,POUGD ,DEPDEL,  
+     &              VALPLU,MATRIX,K16BID,STADYN,PREMIE,
+     &              DEPENT,VITENT,MEMASS,MASSE ,AMORT ,
+     &              LICCVG(5),SDDYNA)
       ELSE
         MATRIX(1)=MATASS
-        CALL NMMATR('PREDICTION', MODELE, NUMEDD, MATE  , CARELE,
-     &                  COMREF, COMPOR, LISCHA, MEDIRI, ' '   ,
-     &                  METHOD, SOLVEU, PARMET, CARCRI, PARTPS,
-     &                  NUMINS, 0     , VALMOI, POUGD ,  ' '  ,
-     &                  VALPLU, MATRIX, K16BID, K24BID, STADYN,
-     &                  PREMIE, CMD,    DEPENT, VITENT, RIGID,
-     &                  LAMORT, MEMASS, MASSE,  AMORT,  COEDEP,
-     &                  COEVIT, COEACC,  LICCVG(5))
+        CALL NMMATR('PREDICTION',MODELE,NUMEDD,MATE  ,CARELE,
+     &                    COMREF,COMPOR,LISCHA,MEDIRI,' '   ,
+     &                    METHOD,SOLVEU,PARMET,CARCRI,PARTPS,
+     &                    NUMINS,0     ,VALMOI,POUGD , ' '  ,
+     &                    VALPLU,MATRIX,K16BID,K24BID,STADYN,
+     &                    PREMIE,       DEPENT,VITENT,RIGID,
+     &                    MEMASS,MASSE, AMORT,LICCVG(5),SDDYNA)
       ENDIF
       IF ((LICCVG(5).EQ.1).OR.(LICCVG(5).EQ.2)) GOTO 9999
 
@@ -207,34 +203,33 @@ C -- DIRICHLET : BT.LAMBDA ET B.U
 
 C -- CALCUL DES FORCES EXTERIEURES SUIVEUSES (EN U- ET T+)
 
-      CALL NMCHAR ('SUIV', MODELE, NUMEDD, MATE  , CARELE,
-     &             COMPOR, LISCHA, CARCRI, INST  , DEPMOI,
-     &             DEPDE0,
-     &             LAMORT, VITPLU, ACCPLU, K24BID, K24BID,
-     &             K24BID, K24BID, IBID, K24BID, K24BID, IBID,
-     &             LBID, LBID, IBID, K24BID,
-     &             COMPLU, IBID, IBID, K13BID, K8BID, IALGO,
-     &             SECOLD, CNFOLD, FOPREC, SECMBR)
+      CALL NMCHAR('SUIV',MODELE,NUMEDD,MATE  ,CARELE,
+     &            COMPOR,LISCHA,CARCRI,INST  ,DEPMOI,
+     &            DEPDE0,VITPLU,ACCPLU,K24BID, 
+     &            K24BID,K24BID,K24BID,IBID  ,
+     &            LBID  ,LBID  ,IBID  , 
+     &            K24BID,COMPLU,IBID  ,IBID  ,K13BID,
+     &            K8BID ,SECOLD,CNFOLD,FOPREC, 
+     &            SECMBR,SDDYNA)
 
-      IF (CMD.EQ.'DYNA_NON_LINE') THEN
-        CALL NMCHAR ('INER', MODELE, NUMEDD, MATE  , CARELE,
-     &               COMPOR, LISCHA, CARCRI, INST  , DEPMOI,
-     &               DEPDE0,
-     &               LAMORT, VITPLU, ACCPLU, MASSE, AMORT,
-     &               VITKM1,VITENT,NMODAM,VALMOD,BASMOD,NREAVI,
-     &               LIMPED,LONDE,NONDP,CHONDP,
-     &               COMPLU,IBID,IBID,K13BID,K8BID,IALGO,
-     &               SECOLD,CNFOLD,FOPREC,SECMBR)
-      ELSE IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
-        CALL NMCHAR ('EXPL', MODELE, NUMEDD, MATE  , CARELE,
-     &             COMPOR, LISCHA, CARCRI, INST  , DEPMOI,
-     &             DEPDE0,
-     &             LAMORT, VITPLU, ACCPLU, MASSE, AMORT,
-     &             VITKM1,VITENT,NMODAM,VALMOD,BASMOD,NREAVI,
-     &             LIMPED,LONDE,NONDP,CHONDP,
-     &             COMPLU, 0, 0, K13BID, K8BID,IALGO,
-     &             SECOLD,CNFOLD,FOPREC,SECMBR)
-
+      IF (NDYNLO(SDDYNA,'IMPLICITE')) THEN
+        CALL NMCHAR('INER',MODELE,NUMEDD,MATE  ,CARELE,
+     &              COMPOR,LISCHA,CARCRI,INST  ,DEPMOI,
+     &              DEPDE0,VITPLU,ACCPLU,MASSE ,
+     &              AMORT ,VITKM1,VITENT,NREAVI,  
+     &              LIMPED,LONDE ,NONDP,
+     &              CHONDP,COMPLU,IBID  ,IBID  ,K13BID,
+     &              K8BID ,SECOLD,CNFOLD,FOPREC,
+     &              SECMBR, SDDYNA)
+      ELSE IF (NDYNLO(SDDYNA,'EXPLICITE')) THEN
+        CALL NMCHAR('EXPL',MODELE,NUMEDD,MATE  ,CARELE,
+     &              COMPOR,LISCHA,CARCRI,INST  ,DEPMOI,
+     &              DEPDE0,VITPLU,ACCPLU,MASSE,
+     &              AMORT ,VITKM1,VITENT,NREAVI,
+     &              LIMPED,LONDE ,NONDP,
+     &              CHONDP,COMPLU,0    , 0     , K13BID,
+     &              K8BID ,SECOLD,CNFOLD,FOPREC,
+     &              SECMBR,SDDYNA)
       ENDIF
 
 C -- CALCUL DU SECOND MEMBRE DE VARIABLES DE COMMANDE
@@ -246,7 +241,7 @@ C -- CALCUL DU SECOND MEMBRE DE VARIABLES DE COMMANDE
 C -- SI DYNAMIQUE EXPLICITE ON RESOUT EN ACCELERATION
 C    ET ON A BESOIN DE CALCULER LES FORCES INTERIEURES ICI
 
-      IF (CMD.EQ.'DYNA_TRAN_EXPLI') THEN
+      IF (NDYNLO(SDDYNA,'EXPLICITE')) THEN
 
         CALL NMFINT (MODELE, NUMEDD, MATE  , CARELE, COMREF,
      &                 COMPOR, LISCHA, CARCRI, POUGD , 0,
@@ -256,13 +251,13 @@ C    ET ON A BESOIN DE CALCULER LES FORCES INTERIEURES ICI
      &                 DEPENT, VITENT)
 C ------------> CALCUL DES ACCELERATIONS :
 C               {An+1}=[M-1]*({Fext}-{Fint})
-        CALL MXCACC(SOLVEU, SECMBR, CNRESI, ACCPLU, MATRIX, CNVCPR,
-     &              LMODAL, MASGEN, BASMOI, LSSTRU, ACCGEM, ACCGEP,
-     &              VITGEM, VITGEP, DEPGEM, DEPGEP, RIGGEN, AMOGEN,
-     &              FONGEN, FORGEN, INSTAP)
+        CALL MXCACC(SOLVEU,SECMBR,CNRESI,ACCPLU,MATRIX, 
+     &              CNVCPR,LSSTRU,INSTAP,SDDYNA)
 
       ELSE
-C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
+C
+C --- PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
+C
         CALL DISMOI('F','NB_SS_ACTI',MODELE,'MODELE',NBSS,K8BID,IRET)
         IF (NBSS.NE.0) THEN
           CALL JEVEUO(CNFINT(1:19) // '.VALE','E',JCNFI)
@@ -281,9 +276,9 @@ C   NECESSAIRE POUR LA PRISE EN COMPTE DE MACRO-ELEMENT STATIQUE
             CALL DAXPY(NEQ, 1.D0, ZR(JTRA), 1, ZR(JCNFI), 1)
           ENDIF
         ENDIF
-C   FIN MACRO-ELEMENT STATIQUE
-
-C -- PREPARATION DU SECOND MEMBRE
+C
+C --- PREPARATION DU SECOND MEMBRE
+C
         CNDONN(1) = CNFEDO
         CNDONN(2) = CNFSDO
         CNDONN(3) = CNDIDO
@@ -303,20 +298,15 @@ C -- PREPARATION DU SECOND MEMBRE
         COPILO(1) = 1
         COPILO(2) = 1
         COPILO(3) = 1
-
-
-
-C ======================================================================
-C             CALCUL DE L'INCREMENT DE DEPLACEMENT
-C ======================================================================
-
-C -- RESOLUTION EN TENANT COMPTE DU PILOTAGE
-        CALL NMRESO (PILOTE, 6     , CODONN, CNDONN, 3     ,
-     &             COPILO, CNPILO, CNCINE, SOLVEU, MATRIX,
-     &             DEPPIL)
+C
+C  --- CALCUL DE L'INCREMENT DE DEPLACEMENT EN TENANT COMPTE DU PILOTAGE
+C
+        CALL NMRESO(PILOTE, 6     , CODONN, CNDONN, 3     ,
+     &              COPILO, CNPILO, CNCINE, SOLVEU, MATRIX,
+     &              DEPPIL)
 
       ENDIF
 
 9999  CONTINUE
-
+      CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 30/10/2006   AUTEUR DURAND C.DURAND 
+#@ MODIF creation_donnees_homard Macro  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,15 +17,17 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE MCOURTOI M.COURTOIS
+# RESPONSABLE ABBAS M.ABBAS
 """
 Cette classe crée le fichier de configuration permettant de lancer HOMARD depuis Code_Aster.
 """
-__revision__ = "V1.1"
+__revision__ = "V1.2"
 __all__ = [ ]
  
 import os
 import os.path
+from types import ListType, TupleType
+EnumTypes = (ListType, TupleType)
 
 try:
   from Utilitai.Utmess import UTMESS
@@ -183,6 +185,7 @@ class creation_donnees_homard:
         self.fic_homard_niterp1 = "M_" + self.str_niterp1 + ".hom"
       else :
         self.fic_homard_niter = None
+        self.fic_homard_niterp1 = None
 #
 #     6.1. Le pilotage de l'adaptation
 #
@@ -284,7 +287,7 @@ class creation_donnees_homard:
     if message_erreur is not None :
       UTMESS("F", self.nom_macro, message_erreur)
 #
-    return self.fic_homard_niter
+    return self.fic_homard_niter, self.fic_homard_niterp1
 # ------------------------------------------------------------------------------
   def ouvre_fichier (self, nomfic_local) :
     """Ouvre en écriture un fichier après l'avoir éventuellement détruit
@@ -467,8 +470,11 @@ class creation_donnees_homard:
         self.ecrire_ligne_configuration_2("CCNoMFro", self.dico_configuration["NOM_MED_MAILLAGE_FRONTIERE"])
         if self.mots_cles.has_key("GROUP_MA") :
           if self.mots_cles["GROUP_MA"] is not None :
-            for group_ma in self.mots_cles["GROUP_MA"] :
-              self.ecrire_ligne_configuration_2("CCGroFro", group_ma)
+            if not type(self.mots_cles["GROUP_MA"]) in EnumTypes :
+              self.ecrire_ligne_configuration_2("CCGroFro", self.mots_cles["GROUP_MA"])
+            else :
+              for group_ma in self.mots_cles["GROUP_MA"] :
+                self.ecrire_ligne_configuration_2("CCGroFro", group_ma)
 #
 #     8. L'éventuel maillage annexe
 #

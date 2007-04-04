@@ -1,8 +1,8 @@
       SUBROUTINE FETMON(INFOFE,NBI2,NBI,NBTOT,NBSD,DIMGI,IFM,MAMOY,
-     &                  LSTOGI,IFET1,RANG,ITPS)
+     &                  LSTOGI,IFET1,RANG,ITPS,LPARA,OPTION)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/04/2006   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,16 +21,15 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  MONITORING DE ALFETI
-C   IN RANG: IN : RANG DU PROCESSUS
-C   IN ITPS: IN : NUMERO DU PAS DE TEMPS
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBI2,NBTOT,NBSD,DIMGI,IFM,MAMOY,NBI,IFET1,RANG,ITPS
-      LOGICAL      LSTOGI
+      INTEGER      NBI2,NBTOT,NBSD,DIMGI,IFM,MAMOY,NBI,IFET1,RANG,ITPS,
+     &             OPTION
+      LOGICAL      LSTOGI,LPARA
       CHARACTER*24 INFOFE
       
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -51,13 +50,18 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER     IFET2,IFET3,IFET4,IFET5,IFET6,IFET7,I,NBPROC
-      CHARACTER*8 K8BID
-      REAL*8      R1,R2,R3,R1M,R2M,R3M,RAUX2
-      
-      IF ((INFOFE(11:11).EQ.'T').AND.(RANG.EQ.0)) THEN
+      INTEGER      IFET2,IFET3,IFET4,IFET5,IFET6,IFET7,I,NBPROC,IEXIST,
+     &             IMON
+      CHARACTER*8  K8BID
+      CHARACTER*20 NOMOPT(11)
+      CHARACTER*24 NOMMON
+      REAL*8       R1,R2,R3,R1M,R2M,R3M,RAUX2
+
+      CALL JEMARQ()      
+      IF ((INFOFE(11:11).EQ.'T').AND.(RANG.EQ.0).AND.(OPTION.EQ.1)) THEN
+C MONITORING INITIAL DE FETI
         WRITE(IFM,*)
-        WRITE(IFM,*)'*****************************************'
+        WRITE(IFM,*)'**************************************************'
         WRITE(IFM,'(A13,I4,A1)')'<FETI/ALFETI ',RANG,'>'
         WRITE(IFM,'(A20,I4)')'NUMERO D''INCREMENT  ',ITPS
         WRITE(IFM,'(A20,I4)')'NB SOUS-DOMAINES    ',NBSD
@@ -122,8 +126,50 @@ C DECLARATION VARIABLES LOCALES
         WRITE(IFM,*)'-----------------------------------'
         WRITE(IFM,1088)R1
         WRITE(IFM,1089)R1M
-        WRITE(IFM,*)'******************************************'
-      ENDIF            
+        WRITE(IFM,*)'**************************************************'
+      ELSE IF ((INFOFE(10:10).EQ.'T').AND.(RANG.EQ.0).AND.LPARA.AND.
+     &         (OPTION.EQ.2)) THEN
+C PROFILING MPI
+        WRITE(IFM,*)
+        WRITE(IFM,*)'**************************************************'
+        WRITE(IFM,*)' PROFILING MPI'
+        NOMMON='&FETI.MONITORING.MPI'
+        CALL JEEXIN(NOMMON,IEXIST)
+        IF (IEXIST.EQ.0) THEN
+          CALL U2MESS('F','ALGORITH14_76')
+        ELSE
+          CALL JEVEUO(NOMMON,'L',IMON)
+        ENDIF
+C NBRE D'OPTION DE FETAM
+        NOMOPT(1)='REPARTITION SD'
+        NOMOPT(2)='MPI_COMM_RANK'
+        NOMOPT(3)='MPI_COMM_SIZE'
+        NOMOPT(4)='MPI_REDUCE ENTIER'
+        NOMOPT(5)='MPI_REDUCE REEL'
+        NOMOPT(6)='MPI_ALLREDUCE ENTIER'
+        NOMOPT(7)='MPI_REDUCE 2 REEL'
+        NOMOPT(8)='MPI_GATHERV'
+        NOMOPT(9)='MPI_BCAST VECTEUR'
+        NOMOPT(10)='MPI_BCAST SCALAIRE'
+        NOMOPT(11)='MPI_ALLREDUCE REEL'
+        
+        R1M=0.D0
+        WRITE(IFM,*)'APPELS MPI     /  TEMPS CPU / TEMPS SYS /   TOTAL'
+        DO 30 I=1,11
+          R1=ZR(IMON+2*(I-1))
+          R2=ZR(IMON+2*(I-1))
+          R3=R1+R2
+          R1M=R1M+R3
+          WRITE(IFM,1090)NOMOPT(I),R1,R2,R3
+   30   CONTINUE
+        WRITE(IFM,*)'--------------------------------------------------'
+        WRITE(IFM,1091)R1M
+        WRITE(IFM,*)'**************************************************'
+        WRITE(IFM,*)
+        CALL JEDETR(NOMMON)           
+      ENDIF
+
+C FORMAT            
  1075 FORMAT(' N ',I4,'     :',I12,' ',I12,' ',I12)
  1080 FORMAT('TOTAL       :',I15,' ',I15,' ',I15)
  1081 FORMAT(I12,' ',I12,'        ',D8.2,' %')
@@ -134,5 +180,9 @@ C DECLARATION VARIABLES LOCALES
  1086 FORMAT('CPU + SYS LE PIRE:',D11.4,' ',D11.4,' ',D11.4)
  1087 FORMAT(' N ',I4,'     :     ',D11.4)
  1088 FORMAT('CPU + SYS TOTAL  :',D11.4) 
- 1089 FORMAT('CPU + SYS LE PIRE:',D11.4)       
+ 1089 FORMAT('CPU + SYS LE PIRE:',D11.4)
+ 1090 FORMAT(A20,' ',D10.2,' ',D10.2,' ',D10.2)
+ 1091 FORMAT('TOTAL                :',D11.2)
+
+      CALL JEDEMA()      
       END 

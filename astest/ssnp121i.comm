@@ -1,4 +1,4 @@
-# MODIF  DATE 10/07/2006   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX BLOCS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,6 @@ CHA2=AFFE_CHAR_MECA(MODELE=MO,
                                INTEGRATION = 'NCOTES2',
                             COEF_REGU_CONT = 1000.,
                                     LISSAGE='NON',
-                                 MODL_AXIS = 'NON',
                               CONTACT_INIT = 'OUI',
                             ITER_CONT_MAXI = 30,
                             ITER_GEOM_MAXI = 4,

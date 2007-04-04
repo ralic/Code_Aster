@@ -3,7 +3,7 @@
      &                  SDFETI,NBPROC,RANG,ITPS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -207,6 +207,7 @@ C PREPARATION DU TERRAIN POUR LE PARALLELISME SI NECESSAIRE
    15         CONTINUE
             ENDIF
    16     CONTINUE
+          
         ENDIF
 C========================================
 C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
@@ -243,12 +244,16 @@ C MONITORING
      &    WRITE(IFM,*)'<FETI/FETGGT', RANG,'> CONSTRUCTION GI'
         IF ((INFOFE(4:4).EQ.'T').AND.(RANG.EQ.0)) THEN
           IDECAO=JGI
-          DO 32 J=1,DIMGI
-            DO 31 I=1,NBI
-              WRITE(IFM,*)'G(I,J)',I,J,ZR(IDECAO)
-              IDECAO=IDECAO+1
-   31       CONTINUE
-   32     CONTINUE
+          IF (DIMGI.LE.5) THEN
+            DO 32 J=1,DIMGI
+              DO 31 I=1,NBI
+                WRITE(IFM,*)'G(I,J)',I,J,ZR(IDECAO)
+                IDECAO=IDECAO+1
+   31         CONTINUE
+   32       CONTINUE
+            RAUX=DDOT(DIMGI*NBI,ZR(JGI),1,ZR(JGI),1)
+            WRITE(IFM,*)'NORME DE G ',ABS(RAUX)
+          ENDIF
         ENDIF
 
 C DESTRUCTION DES OBJETS AUXILIAIRES ENCOMBRANTS EN PARALLELISME
@@ -335,12 +340,16 @@ C MONITORING
      &  WRITE(IFM,*)'<FETI/FETGGT', RANG,'> CONSTRUCTION (GI)T*GI'
       IF ((INFOFE(4:4).EQ.'T').AND.(RANG.EQ.0)) THEN
         IDECAO=JGITGI
-        DO 151 J=1,DIMGI
-          DO 150 I=J,DIMGI
-            WRITE(IFM,*)'GTG(I,J)',I,J,ZR(IDECAO)
-            IDECAO=IDECAO+1
-  150     CONTINUE
-  151   CONTINUE
+        IF (DIMGI.LE.5) THEN
+          DO 151 J=1,DIMGI
+            DO 150 I=J,DIMGI
+              WRITE(IFM,*)'GTG(I,J)',I,J,ZR(IDECAO)
+              IDECAO=IDECAO+1
+  150       CONTINUE
+  151     CONTINUE
+        ENDIF
+        RAUX=DDOT(DIMGI*DIMGI,ZR(JGITGI),1,ZR(JGITGI),1)
+        WRITE(IFM,*)'NORME DE GTG ',ABS(RAUX)
       ENDIF
 
   999 CONTINUE
