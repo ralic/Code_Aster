@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,9 +86,12 @@ cata_msg={
  on ne connait pas ce type d'interpolation:  %(k1)s 
 """),
 
-18: _("""
- type inconnu  %(k1)s 
-"""),
+
+
+
+
+
+
 
 19: _("""
  interpolation sur parametres non permise.
@@ -118,9 +121,10 @@ cata_msg={
  interpolation-extrapolation reservee a des fonctions de type "fonction" ou de type "constant" ou de type "interpre".
 """),
 
-26: _("""
- type fontion non traitee  %(k1)s 
-"""),
+
+
+
+
 
 27: _("""
   la fonction a moins de 1 point 
@@ -142,9 +146,12 @@ cata_msg={
  on ne trouve pas l'equation  %(k1)s  dans le "prof_chno"
 """),
 
-32: _("""
-  le mot cle : %(k1)s n'est pas autorise.
-"""),
+
+
+
+
+
+
 
 33: _("""
  le champ nuro cree par nurota comporte d'autres valeurs que 0 ou 1

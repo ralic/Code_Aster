@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -172,7 +172,7 @@ C        ------- LISTE TARDIVE DE MAILLES ASSOCIEE A LA CARTE:
                 VALI (1) = IENT
                 VALI (2) = I
                 VALI (3) = II
-                CALL U2MESG('F', 'CALCULEL5_86',1,VALK,3,VALI,0,0.D0)
+                CALL U2MESG('F', 'CALCULEL5_85',1,VALK,3,VALI,0,0.D0)
               END IF
               ZI(PTMA-1+II) = IGD
    40       CONTINUE

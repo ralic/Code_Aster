@@ -7,7 +7,7 @@
       CHARACTER*(*)       MATE, SOLVEZ
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -189,7 +189,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                   IER = IER + 1
                   VALK (1) = ACCES(1:8)
                   VALK (2) = ACCES(9:16)
-                  CALL U2MESG('E', 'ALGORITH13_88',2,VALK,0,0,0,0.D0)
+                  CALL U2MESG('E', 'ALGELINE4_61',2,VALK,0,0,0,0.D0)
                   GOTO 26
                ENDIF
                CALL RSVPAR(MODSTA,IORDR,'TYPE_DEFO',IBID,RBID,
@@ -199,7 +199,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                   VALK (1) = 'DDL_IMPO'
                   VALK (2) = ACCES(1:8)
                   VALK (3) = ACCES(9:16)
-                  CALL U2MESG('E', 'ALGORITH13_89',3,VALK,0,0,0,0.D0)
+                  CALL U2MESG('E', 'ALGELINE4_62',3,VALK,0,0,0,0.D0)
                   GOTO 26
                ENDIF
                CALL RSEXCH(MODSTA,'DEPL',IORDR,CHAMNO,IRET)
@@ -208,7 +208,7 @@ C              --- ON RECUPERE LE MODE STATIQUE ASSOCIE AU NOEUD ---
                   VALK (1) = CHAMNO
                   VALK (2) = ACCES(1:8)
                   VALK (3) = ACCES(9:16)
-                  CALL U2MESG('E', 'ALGORITH13_90',3,VALK,0,0,0,0.D0)
+                  CALL U2MESG('E', 'ALGELINE4_63',3,VALK,0,0,0,0.D0)
                   GOTO 26
                ELSE
                   CALL JEVEUO(CHAMNO//'.VALE','L',IDMST)

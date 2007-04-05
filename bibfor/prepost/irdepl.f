@@ -15,7 +15,7 @@ C
       REAL*8            BORSUP,     BORINF
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C
           ITYPE = 2
       ELSE
           CALL GETRES(CBID,CBID,NOMCMD)
-          CALL U2MESK('A','PREPOST2_34',1,TYPE(1:1))
+          CALL U2MESK('A','PREPOST_97',1,TYPE(1:1))
           GOTO 9999
       END IF
 C

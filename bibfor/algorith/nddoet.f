@@ -16,7 +16,7 @@
       CHARACTER*16  OPMASS
       CHARACTER*14  PILOTE
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -143,7 +143,7 @@ C ======================================================================
 
 C      CONTROLE DU TYPE DE EVOL
         CALL DISMOI('F','TYPE_RESU',EVOL,'RESULTAT',IBID,TYPE,IRET)
-        IF (TYPE.NE.'EVOL_NOLI') CALL U2MESS('F','ALGORITH6_36')
+        IF (TYPE.NE.'EVOL_NOLI') CALL U2MESS('F','MECANONLINE_10')
 
 C -- NUMERO D'ACCES ET INSTANT CORRESPONDANT
         CALL GETVR8('ETAT_INIT','INST',1,1,1,INST,N1)
@@ -162,8 +162,8 @@ C      ACCES PAR INSTANT
           CALL GETVTX('ETAT_INIT','CRITERE',1,1,1,CRITER,IBID)
           CALL RSORAC(EVOL,'INST',IBID,INST,K8BID,CBID,PREC,CRITER,NUME,
      &                1,NBR)
-          IF (NBR.EQ.0) CALL U2MESS('F','ALGORITH6_38')
-          IF (NBR.LT.0) CALL U2MESS('F','ALGORITH6_39')
+          IF (NBR.EQ.0) CALL U2MESS('F','MECANONLINE_12')
+          IF (NBR.LT.0) CALL U2MESS('F','MECANONLINE_13')
         END IF
 
 C      ACCES PAR NUMERO D'ORDRE
@@ -341,7 +341,7 @@ C -- LECTURE DES DEPLACEMENTS
             CALL CHPVER('F',CHAMP(1:19),'NOEU','DEPL_R',IERR)
             CALL VTCOPY(CHAMP,DEPMOI,IRET)
           ELSE
-            IF (NRPASE.EQ.0) CALL U2MESS('I','ALGORITH6_49')
+            IF (NRPASE.EQ.0) CALL U2MESS('I','MECANONLINE_76')
             CALL NULVEC(DEPMOI)
           END IF
 
@@ -352,7 +352,7 @@ C -- LECTURE DES VITESSES
             CALL CHPVER('F',CHAMP(1:19),'NOEU','DEPL_R',IERR)
             CALL VTCOPY(CHAMP,VITPLU,IERR)
           ELSE
-            CALL U2MESS('I','ALGORITH6_50')
+            CALL U2MESS('I','MECANONLINE_22')
             CALL NULVEC(VITPLU)
           END IF
 

@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel6 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,62 +22,82 @@
 def _(x) : return x
 
 cata_msg={
-1: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
 
-2: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
 
-3: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
 
-4: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
 
-5: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
 
-6: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
 
-7: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
 
-8: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
 
-9: _("""
- famille non disponible    maille de reference  %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 10: _("""
   option inconnue %(k1)s
 """),
 
-11: _("""
-  option inconnue %(k1)s
-"""),
 
-12: _("""
-  option inconnue %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 13: _("""
  interpolation deformations  anelastiques : evol_noli: %(k1)s instant: %(r1)f
  icoret: %(i1)d
 """),
 
-14: _("""
- interpolation temperature:evol_ther: %(k1)s instant: %(r1)f icoret: %(i1)d
-"""),
+
+
+
+
+
+
 
 15: _("""
   l'element diagonal u( %(i1)d , %(i2)d ) de la factorisation est nul. %(k1)s
@@ -94,13 +114,17 @@ cata_msg={
  recherche nbre de cmp: erreur:  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
 """),
 
-18: _("""
- recherche nbre de cmp: erreur:  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
-"""),
 
-19: _("""
- recherche nbre de cmp: erreur:  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
-"""),
+
+
+
+
+
+
+
+
+
+
 
 20: _("""
  recherche nbre de cmp: erreur: grandeur ligne numero  %(i1)d  de nom  %(k1)s
@@ -118,13 +142,17 @@ cata_msg={
  recherche nbre d entiers codes  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
 """),
 
-23: _("""
- recherche nbre d entiers codes  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
-"""),
 
-24: _("""
- recherche nbre d entiers codes  %(k1)s grandeur numero  %(i1)d  de nom  %(k2)s
-"""),
+
+
+
+
+
+
+
+
+
+
 
 25: _("""
  recherche nbre d entiers codes grandeur ligne numero  %(i1)d  de nom  %(k1)s
@@ -144,44 +172,47 @@ cata_msg={
  acces impossible au mode propre champ :  %(k1)s , nume_ordre :  %(i1)d
 """),
 
-29: _("""
- acces impossible  champ :  %(k1)s , nume_ordre :  %(i1)d
-"""),
+
+
+
+
+
+
 
 34: _("""
  famille non disponible    type de maille  %(k1)s
     famille d'integration  %(i1)d
 """),
 
-35: _("""
- famille non disponible    type de maille  %(k1)s
-    famille d'integration  %(i1)d
-"""),
 
-36: _("""
- famille non disponible    type de maille  %(k1)s
-    famille d'integration  %(i1)d
-"""),
 
-37: _("""
- famille non disponible    type de maille  %(k1)s
-    famille d'integration  %(i1)d
-"""),
 
-38: _("""
- famille non disponible    type de maille  %(k1)s
-    famille d'integration  %(i1)d
-"""),
 
-39: _("""
- famille non disponible    type de maille  %(k1)s
-    famille d'integration  %(i1)d
-"""),
 
-40: _("""
- famille non disponible    type de maille  %(k1)s
-    famille d'integration  %(i1)d
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 41: _("""
  famille non disponible    type de maille  %(k1)s
@@ -220,9 +251,12 @@ cata_msg={
  erreurs donnees composante inconnue  %(k1)s  pour la grandeur  %(k2)s
 """),
 
-50: _("""
- erreurs donneescomposante inconnue  %(k1)s  pour la grandeur  %(k2)s
-"""),
+
+
+
+
+
+
 
 51: _("""
  erreurs donnees composante inconnue  %(k1)s

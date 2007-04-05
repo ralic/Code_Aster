@@ -5,7 +5,7 @@
       REAL*8        CENTRE(3), THETA(3), T(3)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -173,7 +173,7 @@ C
            VALK (1) = NOMNO2
            VALK (2) = NOMNO1
            VALK (3) = ZK8(IDLINV+J2-1)
-            CALL U2MESG('E', 'MODELISA8_85',3,VALK,0,0,0,0.D0)
+            CALL U2MESG('E', 'MODELISA8_77',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 10    CONTINUE
@@ -227,7 +227,7 @@ C
            VALK (1) = NOMNO1
            VALK (2) = NOMNO2
            VALK (3) = ZK8(IDLINV+J1-1)
-            CALL U2MESG('E', 'MODELISA8_86',3,VALK,0,0,0,0.D0)
+            CALL U2MESG('E', 'MODELISA8_77',3,VALK,0,0,0,0.D0)
         ENDIF
 C
 40    CONTINUE

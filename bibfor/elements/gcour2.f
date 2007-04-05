@@ -4,7 +4,7 @@
        IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -302,7 +302,7 @@ C
            CALL JEDETR(CHAMNO(1:19)//'.REFE')
            CALL JEDETR(CHAMNO(1:19)//'.VALE')
         ELSE IF(IRET.GT.100) THEN
-           CALL U2MESS('A','ALGORITH3_16')
+           CALL U2MESS('A','ALGORITH13_36')
         ENDIF
 C  .DESC
         CHAMNO(20:24) = '.DESC'

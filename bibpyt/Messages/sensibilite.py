@@ -1,4 +1,4 @@
-#@ MODIF sensibilite Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF sensibilite Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,49 +157,45 @@ cata_msg={
  Le calcul de derivée n'a pas été étendu à la plasticité.
 """),
 
-61: _("""
- Vous demandez la sensibilité en mécanique par rapport au paramètre matériau <%(k1)s> et
- vous ne donnez pas de champ de température
-"""),
 
-62: _("""
- Vous demandez la sensibilité en mécanique par rapport au paramètre matériau <%(k1)s> et
- vous donnez le champ de température <%(k2)s> dont il n'existe pas de sensibilité par rapport à <%(k1)s>
- Faites d'abord le calcul de sensibilité de <%(k2)s> par rapport à <%(k1)s>
-"""),
 
-63: _("""
- Vous demandez la sensibilité en mécanique par rapport au paramètre matériau <%(k1)s> et
- vous donnez le champ de température <%(k2)s> dont il n'existe pas de sensibilité par rapport à <%(k1)s>
- Vous avez sans doute oublié l'option SENSIBILITE dans la commande de calcul thermique pour <%(k1)s>
- Faites d'abord le calcul de sensibilité de <%(k2)s> par rapport à <%(k1)s>
-"""),
 
-64: _("""
- Vous demandez la sensibilité en mécanique par rapport au paramètre matériau <%(k1)s> et
- vous donnez le champ de température <%(k2)s> dont il n'existe pas de sensibilité par
- rapport à <%(k1)s>. Aucun numero d'ordre n'est accessible dans <%(k2)s>.
- Faites d'abord le calcul de sensibilité de <%(k2)s> par rapport à <%(k1)s>
-"""),
 
-65: _("""
- Vous demandez le calcul de l'option <%(k1)s> pour la sensibilité en mécanique par
- rapport au paramètre matériau <%(k2)s>.
- Vous devez d'abord calculer l'option <%(k3)s>.
-"""),
 
-66: _("""
-Procedure <%(k1)s> sensibilité demandée par rapport au concept <%(k2)s> de type <%(k3)s>
-"""),
 
-67: _("""
-On ne connait que les types suivants : <%(ktout)s>
-C'est une erreur de programmation.
-"""),
 
-68: _("""
-Procedure <%(k1)s> sensibilité demandee par rapport au concept <%(k2)s> sont type <%(k3)s> est inconnu
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 71: _("""
  Dérivation par rapport au paramètre sensible : %(k1)s 
@@ -285,14 +281,10 @@ Procedure <%(k1)s> sensibilité demandee par rapport au concept <%(k2)s> sont typ
  C'est incohérent.
 """),
 
-97: _("""
- Dans le programme %(k1)s :
- . structure simple   : %(k2)s 
- . paramètre sensible : %(k3)s 
- la structure composée a supprimer est      : %(k4)s 
- mais la structure composée enregistrée est : %(k5)s 
- La suppression est impossible !
-"""),
+
+
+
+
 
 98: _("""
  Dans le programme %(k1)s, le paramètre de sensibilité %(k2)s est introuvable.   

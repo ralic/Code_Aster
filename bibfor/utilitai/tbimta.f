@@ -20,7 +20,7 @@ C ======================================================================
       INTEGER             IFR, NPARIM
       CHARACTER*(*)       TABLE, FORMAR, LIPAIM(*)
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRS_602
 C      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
 C ----------------------------------------------------------------------
@@ -116,7 +116,7 @@ C
  12      CONTINUE
          ERREUR = .TRUE.
          VALKK (1) = INPAR
-         CALL U2MESG('A', 'UTILITAI6_98',1,VALKK,0,0,0,0.D0)
+         CALL U2MESG('A', 'UTILITAI6_89',1,VALKK,0,0,0,0.D0)
  10   CONTINUE
       IF ( ERREUR ) THEN
          CALL U2MESS('F','PREPOST_60')

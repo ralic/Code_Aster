@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -357,7 +357,7 @@ C
           VALK (1) = BASEMO
           VALK (2) = NOMCHP
           VALI = ZI (LORD-1+IMODE)
-          CALL U2MESG('F', 'ALGORITH13_54',2,VALK,1,VALI,0,0.D0)
+          CALL U2MESG('F', 'SOUSTRUC_84',2,VALK,1,VALI,0,0.D0)
         END IF
 C
 C       2-1 : TRANSFORMATION DE CHAMNO EN CHAM_NO_S : CH1S

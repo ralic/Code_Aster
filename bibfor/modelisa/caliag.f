@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 
 C     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_GROUP
@@ -240,7 +240,7 @@ C --- NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR ---
       IF (NDDLA.GT.NMOCL) THEN
         VALI (1) = NMOCL
         VALI (2) = NDDLA
-        CALL U2MESG('F', 'MODELISA8_45',0,' ',2,VALI,0,0.D0)
+        CALL U2MESG('F', 'MODELISA8_29',0,' ',2,VALI,0,0.D0)
       END IF
       DO 40 I = 1,NDDLA
         NOMCMP(I) = ZK8(INOM-1+I)
@@ -341,7 +341,7 @@ C ---  AFFECTATION DE CE VECTEUR ---
      &                     ' IMPOSSIBLE'
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO1),NOMNO1)
             WRITE (TEXTE(10:17),'(A)') NOMNO1
-            CALL U2MESK('F','MODELISA_96',1,TEXTE)
+            CALL U2MESK('F','JEVEUX_1',1,TEXTE)
           END IF
           ZI(IDNBN-1+2* (J-1)+1) = 3
           IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG1),ICMPZ))) THEN
@@ -354,7 +354,7 @@ C ---  AFFECTATION DE CE VECTEUR ---
      &                     ' IMPOSSIBLE'
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO2),NOMNO2)
             WRITE (TEXTE(10:17),'(A)') NOMNO2
-            CALL U2MESK('F','MODELISA_96',1,TEXTE)
+            CALL U2MESK('F','JEVEUX_1',1,TEXTE)
           END IF
           ZI(IDNBN-1+2* (J-1)+2) = 3
           IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG2),ICMPZ))) THEN

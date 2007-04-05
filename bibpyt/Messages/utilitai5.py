@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF utilitai5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,9 +150,12 @@ cata_msg={
  le champ: %(k1)s n'est pas un champ par elements aux noeuds.
 """),
 
-33: _("""
- le noeud: %(k1)s n'appartient pas au maillage: %(k2)s
-"""),
+
+
+
+
+
+
 
 34: _("""
  la maille: %(k1)s n'est pas affectee dans le ligrel: %(k2)s
@@ -218,9 +221,12 @@ cata_msg={
  type de champ non traite:  %(k1)s
 """),
 
-50: _("""
- type inconnu:  %(k1)s
-"""),
+
+
+
+
+
+
 
 52: _("""
  mauvaise valeur pour fonree
@@ -259,10 +265,10 @@ cata_msg={
 """),
 
 
-87: _("""
- Erreur de programmation :
- Le mot clé : %(k1)s  n'est pas encore programmé.
-"""),
+
+
+
+
 
 88: _("""
  L'option " %(k1)s " est à recalculer
@@ -309,12 +315,14 @@ cata_msg={
  doc u correspondante %(k4)s 
 """),
 
-98: _("""
- le champ  %(k1)s n''est pas de type  %(k2)s 
-"""),
 
-99: _("""
- le champ  %(k1)s n''a pas la grandeur  %(k2)s 
-"""),
+
+
+
+
+
+
+
+
 
 }

@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -776,7 +776,7 @@ C               --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
               CALL JEDEMA()
   230       CONTINUE
           ELSE
-            CALL U2MESK('F','PREPOST3_82',1,OPTION)
+            CALL U2MESK('F','CALCULEL6_10',1,OPTION)
           END IF
   240   CONTINUE
 C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============

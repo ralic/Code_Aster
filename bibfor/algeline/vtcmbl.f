@@ -3,7 +3,7 @@ C     ------------------------------------------------------------------
 C     COMBINAISON LINEAIRE DE CHAM_NO OU DE CHAM_ELEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -299,7 +299,7 @@ C SOUS-DOMAINE N°IDD
   130            CONTINUE
                ELSE
                  TYPE = TYPCST(ICMB)(1:1)
-                 CALL U2MESK('F','UTILITAI5_50',1,TYPE)
+                 CALL U2MESK('F','PREPOST3_6',1,TYPE)
                ENDIF
              ENDIF
            ELSE

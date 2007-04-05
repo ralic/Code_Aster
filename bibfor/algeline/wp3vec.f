@@ -11,7 +11,7 @@
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -153,14 +153,14 @@ C
          VALI (1) = NBREEL
          VALI (2) = NBCMPC
          VALI (3) = NBCMPP
-         CALL U2MESG('A', 'ALGELINE4_89',0,' ',3,VALI,0,0.D0)
+         CALL U2MESG('A', 'ALGELINE4_87',0,' ',3,VALI,0,0.D0)
       ENDIF
 C
       IF ( NBREEL .GT. 0 ) THEN
          VALI (1) = NBREEL
          VALI (2) = NBCMPC
          VALI (3) = NBCMPP
-         CALL U2MESG('I', 'ALGELINE4_90',0,' ',3,VALI,0,0.D0)
+         CALL U2MESG('I', 'ALGELINE4_88',0,' ',3,VALI,0,0.D0)
       ENDIF
 C
 C --- 1.2. DETERMINATION DE NB FREQUENCES GARDEES

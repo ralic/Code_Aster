@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
               CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
             ELSE IF (IRET.EQ.1) THEN
               VALK(1) = NOEUD
-              CALL U2MESG('A', 'UTILITAI6_74',1,VALK,0,0,0,0.D0)
+              CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
             END IF
           END IF
           IF (NGM.NE.0) THEN
@@ -141,7 +141,7 @@ C============ DEBUT DE LA BOUCLE SUR LE NOMBRE DE PASSAGES ============
               CALL U2MESK('F','ELEMENTS_73',1,NOGMA)
             ELSE IF (IRET.EQ.1) THEN
               VALK(1) = MAILLE
-              CALL U2MESG('A', 'UTILITAI6_75',1,VALK,0,0,0,0.D0)
+              CALL U2MESG('A', 'UTILITAI6_72',1,VALK,0,0,0,0.D0)
             END IF
           END IF
           CALL UTCMP1(NOMGD,' ',1,CMP,IVARI)

@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,7 +151,7 @@ C     ------------------------------------------
         IF (INO.LE.0) THEN
            VALK(1) = NONOEZ
            VALK(2) = NOMMAZ
-           CALL U2MESK(AOF,'UTILITAI5_33', 2 ,VALK)
+           CALL U2MESK(AOF,'ALGORITH_21', 2 ,VALK)
         END IF
 C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         CALL JEVEUO(JEXNUM(NOMMAZ//'.CONNEX',IMA),'L',IACONX)

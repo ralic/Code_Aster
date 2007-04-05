@@ -1,4 +1,4 @@
-#@ MODIF algorith5 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -334,9 +334,12 @@ cata_msg={
  ksib non inversible
 """),
 
-81: _("""
- option non prevue
-"""),
+
+
+
+
+
+
 
 82: _("""
  projection nulle sur la boule unite (dvlp)

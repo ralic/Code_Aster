@@ -1,4 +1,4 @@
-#@ MODIF modelisa4 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,9 +80,10 @@ cata_msg={
  - chckma phase de verification du maillage - mailles degenerees
 """),
 
-11: _("""
- probleme dans les entiers codes
-"""),
+
+
+
+
 
 12: _("""
  type de chgt de repere non prevu.

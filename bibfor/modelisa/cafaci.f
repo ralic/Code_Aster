@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C ---------------------------------------------------
         IF (NMCL.GT.NMOCL) THEN
           VALI (1) = NMOCL
           VALI (2) = NMCL
-          CALL U2MESG('F', 'MODELISA8_32',0,' ',2,VALI,0,0.D0)
+          CALL U2MESG('F', 'MODELISA8_31',0,' ',2,VALI,0,0.D0)
         END IF
         CALL GETMJM('FACE_IMPO',I,NMCL,MOTCLE,TYMOCL,N)
         NDDLA = 1
@@ -352,7 +352,7 @@ C ---------------------------------------------------
         IF (NMCL.GT.NMOCL) THEN
           VALI (1) = NMOCL
           VALI (2) = NMCL
-          CALL U2MESG('F', 'MODELISA8_32',0,' ',2,VALI,0,0.D0)
+          CALL U2MESG('F', 'MODELISA8_31',0,' ',2,VALI,0,0.D0)
         END IF
         CALL GETMJM('FACE_IMPO',I,NMCL,MOTCLE,TYMOCL,N)
         NDDLA = 1

@@ -1,4 +1,4 @@
-#@ MODIF utilitai7 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai7 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,17 +21,23 @@
 def _(x) : return x
 
 cata_msg={
-1: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s 
-"""),
+
+
+
+
+
+
 
 2: _("""
  erreur dans les donneespas de tri sur les complexes,  parametre:  %(k1)s 
 """),
 
-3: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s 
-"""),
+
+
+
+
+
+
 
 4: _("""
   numero d''occurrence invalide   %(i1)d pour le mot cle facteur %(k1)s 

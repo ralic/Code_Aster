@@ -1,4 +1,4 @@
-#@ MODIF algeline Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algeline Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,9 +130,10 @@ cata_msg={
      Les resultats du calcul seront a prendre avec circonspection.
 """),
 
-28: _("""
- type de pas inconnu
-"""),
+
+
+
+
 
 29: _("""
  type inconnu

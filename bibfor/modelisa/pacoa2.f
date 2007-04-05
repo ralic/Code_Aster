@@ -4,7 +4,7 @@
       CHARACTER*(*) LISI1Z, LISI2Z, NOMA1Z, NOMA2Z, LISO1Z, LISO2Z
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,7 +154,7 @@ C
                VALK (1) = NOMNO2
                VALK (2) = NOMNO1
                VALK (3) = ZK8(IDLINV+J2-1)
-               CALL U2MESG('F', 'MODELISA8_81',3,VALK,0,0,0,0.D0)
+               CALL U2MESG('F', 'MODELISA8_77',3,VALK,0,0,0,0.D0)
            ENDIF
 10       CONTINUE
       ELSE
@@ -188,7 +188,7 @@ C
                VALK (1) = NOMNO2
                VALK (2) = NOMNO1
                VALK (3) = ZK8(IDLINV+J1-1)
-               CALL U2MESG('F', 'MODELISA8_82',3,VALK,0,0,0,0.D0)
+               CALL U2MESG('F', 'MODELISA8_77',3,VALK,0,0,0,0.D0)
            ENDIF
 30       CONTINUE
       ENDIF

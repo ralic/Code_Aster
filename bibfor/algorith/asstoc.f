@@ -7,7 +7,7 @@
       LOGICAL           COMDIR,GLOB,PRIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C        --- CHAMP RECOMBINE ---
             VALK (1) = NOMSY
             VALK (2) = COMP(ID)
             VALK (3) = CHAMP
-            CALL U2MESG('F', 'ALGORITH12_10',3,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'ALGORITH12_9',3,VALK,0,0,0,0.D0)
          ENDIF
          VALE(1:19) = CHAMP
          CALL JEEXIN(VALE(1:19)//'.VALE',IBID)

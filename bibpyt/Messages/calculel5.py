@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,9 +70,10 @@ cata_msg={
  le champ  %(k1)s  est de type inconnu.
 """),
 
-15: _("""
- ! type d'element  %(k1)s inconnu !
-"""),
+
+
+
+
 
 16: _("""
  ! nbnv: typelem inconnu !
@@ -82,13 +83,19 @@ cata_msg={
  ! jac(ipg): div par zero !
 """),
 
-18: _("""
- le group_no  %(k1)s  n'existe pas.
-"""),
 
-19: _("""
- le group_ma  %(k1)s  n'existe pas.
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 20: _("""
  le group_no  %(k1)s  contient  %(k2)s  noeuds
@@ -150,13 +157,15 @@ cata_msg={
  ! p2 obligeatoire avec terme source non nul !
 """),
 
-35: _("""
- la cmp:  %(k1)s  est en double.
-"""),
 
-36: _("""
- la cmp:  %(k1)s  n'est pas une cmp de  %(k2)s
-"""),
+
+
+
+
+
+
+
+
 
 37: _("""
  programme  %(k1)s
@@ -198,9 +207,12 @@ cata_msg={
  ! terme normalisation global nul !
 """),
 
-47: _("""
- le champ doit etre un cham_elem
-"""),
+
+
+
+
+
+
 
 48: _("""
  PROJ_CHAMP (ou LAISON_MAIL) :
@@ -343,10 +355,12 @@ cata_msg={
   pour le nume_ordre  %(i1)d 
 """),
 
-75: _("""
- manque le champ  %(k1)s  dans la sd resultat  %(k2)s 
-  pour le nume_ordre  %(i1)d 
-"""),
+
+
+
+
+
+
 
 76: _("""
  on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
@@ -354,39 +368,39 @@ cata_msg={
     famille :  %(k4)s 
 """),
 
-77: _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
-    elrefa  :  %(k3)s 
-    famille :  %(k4)s 
-"""),
+
+
+
+
 
 78: _("""
  on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
     elrefa :  %(k3)s 
 """),
 
-79: _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
-    elrefa  :  %(k3)s 
-    famille :  %(k4)s 
-"""),
 
-80: _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
-    elrefa  :  %(k3)s 
-    famille :  %(k4)s 
-"""),
 
-81: _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
-    elrefa  :  %(k3)s 
-    famille :  %(k4)s 
-"""),
 
-82: _("""
- on ne sait pas encore decouper le type_element :  %(k1)s  en sous-elements %(k2)s 
-    elrefa :  %(k3)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 83: _("""
  ecla_pg : champ vide nom_cham:  %(k1)s  nume_ordre :  %(i1)d 
@@ -403,62 +417,77 @@ cata_msg={
   numero de maille  : %(i3)d 
 """),
 
-86: _("""
- pb liste de mailles carte : %(k1)s  numero entite : %(i1)d 
-  position ds liste : %(i2)d 
-  numero de maille  : %(i3)d 
-"""),
+
+
+
+
+
+
 
 87: _("""
  famille non disponible    maille de reference  %(k1)s 
 """),
 
-88: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-89: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-90: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-91: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-92: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-93: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-94: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-95: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-96: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-97: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-98: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
 
-99: _("""
- famille non disponible    maille de reference  %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

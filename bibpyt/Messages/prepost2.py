@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF prepost2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,9 +150,12 @@ cata_msg={
  probleme a l'ouverture du fichier de valeurs ensight  %(k1)s  : ce fichier existe deja !! l'impression du meme champ ouconcept resultat est demandee deux fois ou une meme composante est selectionnee 2 fois sous le mot-cle nom_cmp
 """),
 
-34: _("""
- on ne sait pas imprimer les champs de type  %(k1)s    on est vraiment desole.
-"""),
+
+
+
+
+
+
 
 35: _("""
    desole on ne sait pas ecrire les champs aux noeuds de representation constante et a valeurs complexes au format  %(k1)s 

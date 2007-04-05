@@ -1,0 +1,336 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 06/04/2007 - 10:41:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010600 DU 2007-03-02 12:37:20
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+   Messages multiples dans Messages/*.py
+FONCTIONNALITE
+   1) On supprime des catalogues Python : Messages/*.py tous les messages qui ne
+    sont utilisés ni dans le fortran, ni dans le python.
+    (Sauf les messages de mecanonline.py)
+                                                                                            
+                           
+    2) On retire 245 messages "en double".
+    => 224 routines modifiées
+    =>  60 catalogues de message modifiés
+                                                                                            
+                           
+    NB_JOURS_TRAV : 1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+   rien de particulier
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ FORTRAN MODIF algeline/cmcovo                pellet J.PELLET           599      2      2
+ FORTRAN MODIF algeline/cmcrea                pellet J.PELLET           328      3      3
+ FORTRAN MODIF algeline/cmqutr                pellet J.PELLET           380      4      4
+ FORTRAN MODIF algeline/gcpc                  pellet J.PELLET           233      2      2
+ FORTRAN MODIF algeline/jacobi                pellet J.PELLET           290      2      2
+ FORTRAN MODIF algeline/mltblc                pellet J.PELLET            75      2      2
+ FORTRAN MODIF algeline/op0037                pellet J.PELLET           652      2      2
+ FORTRAN MODIF algeline/op0161                pellet J.PELLET           111      2      2
+ FORTRAN MODIF algeline/op0167                pellet J.PELLET           888     12     12
+ FORTRAN MODIF algeline/preml1                pellet J.PELLET           379      2      2
+ FORTRAN MODIF algeline/vpbosc                pellet J.PELLET           257      3      3
+ FORTRAN MODIF algeline/vpbost                pellet J.PELLET           254      5      5
+ FORTRAN MODIF algeline/vpnorm                pellet J.PELLET           213      2      2
+ FORTRAN MODIF algeline/vpsorc                pellet J.PELLET           346      2      2
+ FORTRAN MODIF algeline/vtcmbl                pellet J.PELLET           372      2      2
+ FORTRAN MODIF algeline/wp3vec                pellet J.PELLET           313      3      3
+ FORTRAN MODIF algeline/wp4vec                pellet J.PELLET           252      3      3
+ FORTRAN MODIF algeline/wpermo                pellet J.PELLET           139      2      2
+ FORTRAN MODIF algeline/wpnorm                pellet J.PELLET           176      2      2
+ FORTRAN MODIF algeline/wpsorc                pellet J.PELLET           394      3      3
+ FORTRAN MODIF algeline/wpsorn                pellet J.PELLET           423      4      4
+ FORTRAN MODIF algorith/asstoc                pellet J.PELLET           213      2      2
+ FORTRAN MODIF algorith/asveri                pellet J.PELLET           290      4      4
+ FORTRAN MODIF algorith/bmnbmd                pellet J.PELLET           138      3      3
+ FORTRAN MODIF algorith/bmradi                pellet J.PELLET           175      4      4
+ FORTRAN MODIF algorith/bmrdda                pellet J.PELLET           179      3      3
+ FORTRAN MODIF algorith/cmphii                pellet J.PELLET           161      2      2
+ FORTRAN MODIF algorith/conpen                pellet J.PELLET           109      2      2
+ FORTRAN MODIF algorith/conqua                pellet J.PELLET           103      2      2
+ FORTRAN MODIF algorith/copmo2                pellet J.PELLET           113      2      2
+ FORTRAN MODIF algorith/dladap                pellet J.PELLET           592      5      5
+ FORTRAN MODIF algorith/dlarch                pellet J.PELLET           114      2      2
+ FORTRAN MODIF algorith/dldiff                pellet J.PELLET           477      5      5
+ FORTRAN MODIF algorith/dlnewi                pellet J.PELLET           793      5      5
+ FORTRAN MODIF algorith/dltins                pellet J.PELLET           339      3      3
+ FORTRAN MODIF algorith/dltp0                 pellet J.PELLET           130      3      3
+ FORTRAN MODIF algorith/dyobs1                pellet J.PELLET           324      2      2
+ FORTRAN MODIF algorith/facmtr                pellet J.PELLET           118      2      2
+ FORTRAN MODIF algorith/fetccn                pellet J.PELLET           194      2      2
+ FORTRAN MODIF algorith/fetprj                pellet J.PELLET           265      2      2
+ FORTRAN MODIF algorith/gcour3                pellet J.PELLET           298      2      2
+ FORTRAN MODIF algorith/gfguid                pellet J.PELLET           245      2      2
+ FORTRAN MODIF algorith/harm75                pellet J.PELLET           249      2      2
+ FORTRAN MODIF algorith/mdchge                pellet J.PELLET           237      3      3
+ FORTRAN MODIF algorith/mdchst                pellet J.PELLET           373      4      4
+ FORTRAN MODIF algorith/mdgep4                pellet J.PELLET            52      2      2
+ FORTRAN MODIF algorith/merim2                pellet J.PELLET           440      2      2
+ FORTRAN MODIF algorith/merimo                pellet J.PELLET           435      2      2
+ FORTRAN MODIF algorith/moco99                pellet J.PELLET           183      2      2
+ FORTRAN MODIF algorith/mpmod2                pellet J.PELLET           481      2      2
+ FORTRAN MODIF algorith/nddoet                pellet J.PELLET           489      6      6
+ FORTRAN MODIF algorith/nmdoet                pellet J.PELLET           416      4      4
+ FORTRAN MODIF algorith/nmfend                pellet J.PELLET            74      3      3
+ FORTRAN MODIF algorith/nmfonc                pellet J.PELLET           273      2      2
+ FORTRAN MODIF algorith/nmvmpi                pellet J.PELLET           193      2      2
+ FORTRAN MODIF algorith/nxacmv                pellet J.PELLET           578      2      2
+ FORTRAN MODIF algorith/ortpro                pellet J.PELLET           201      2      2
+ FORTRAN MODIF algorith/pewext                pellet J.PELLET           143      4      4
+ FORTRAN MODIF algorith/phi199                pellet J.PELLET           275      4      4
+ FORTRAN MODIF algorith/pmppr                 pellet J.PELLET           126      2      2
+ FORTRAN MODIF algorith/posvar                pellet J.PELLET           365      2      2
+ FORTRAN MODIF algorith/prcycb                pellet J.PELLET           819      3      3
+ FORTRAN MODIF algorith/recbec                pellet J.PELLET           337      2      2
+ FORTRAN MODIF algorith/recbgl                pellet J.PELLET           410      3      3
+ FORTRAN MODIF algorith/recygl                pellet J.PELLET           165      2      2
+ FORTRAN MODIF algorith/regene                pellet J.PELLET           312      2      2
+ FORTRAN MODIF algorith/rehaec                pellet J.PELLET           284      3      3
+ FORTRAN MODIF algorith/rehagl                pellet J.PELLET           333      4      4
+ FORTRAN MODIF algorith/remnec                pellet J.PELLET           344      3      3
+ FORTRAN MODIF algorith/remngl                pellet J.PELLET           418      3      3
+ FORTRAN MODIF algorith/retrec                pellet J.PELLET           316      5      5
+ FORTRAN MODIF algorith/retrgl                pellet J.PELLET           408      5      5
+ FORTRAN MODIF algorith/ritz99                pellet J.PELLET           255      2      2
+ FORTRAN MODIF algorith/smevol                pellet J.PELLET           315      5      5
+ FORTRAN MODIF algorith/speph0                pellet J.PELLET           373      4      4
+ FORTRAN MODIF algorith/tran75                pellet J.PELLET           630      3      3
+ FORTRAN MODIF assembla/assvec                pellet J.PELLET           984     10     10
+ FORTRAN MODIF calculel/cnsfus                pellet J.PELLET           250      2      2
+ FORTRAN MODIF calculel/crperm                pellet J.PELLET           237      2      2
+ FORTRAN MODIF calculel/ecla3d                pellet J.PELLET           932      5      5
+ FORTRAN MODIF calculel/eclpgm                pellet J.PELLET           393      2      2
+ FORTRAN MODIF calculel/etenca                pellet J.PELLET           195      2      2
+ FORTRAN MODIF calculel/forme1                pellet J.PELLET           161     11     11
+ FORTRAN MODIF calculel/forme2                pellet J.PELLET            89      3      3
+ FORTRAN MODIF calculel/mecalz                pellet J.PELLET           160      2      2
+ FORTRAN MODIF calculel/menoga                pellet J.PELLET            95      2      2
+ FORTRAN MODIF calculel/merila                pellet J.PELLET           237      2      2
+ FORTRAN MODIF calculel/metemp                pellet J.PELLET           156      2      2
+ FORTRAN MODIF calculel/nbcmp                 pellet J.PELLET           113      2      2
+ FORTRAN MODIF calculel/nbec                  pellet J.PELLET           111      2      2
+ FORTRAN MODIF calculel/op0100                pellet J.PELLET           988      2      2
+ FORTRAN MODIF calculel/pj2dtr                pellet J.PELLET           212      2      2
+ FORTRAN MODIF calculel/pj3dtr                pellet J.PELLET           281      2      2
+ FORTRAN MODIF calculel/resth2                pellet J.PELLET           243      2      2
+ FORTRAN MODIF calculel/utcmp2                pellet J.PELLET           123      2      2
+ FORTRAN MODIF calculel/utnono                pellet J.PELLET           115      3      3
+ FORTRAN MODIF calculel/zzglob                pellet J.PELLET           291      2      2
+ FORTRAN MODIF elements/dxsigt                pellet J.PELLET           163      2      2
+ FORTRAN MODIF elements/elraga                pellet J.PELLET          1180      4      4
+ FORTRAN MODIF elements/gcour2                pellet J.PELLET           616      2      2
+ FORTRAN MODIF elements/gver2d                pellet J.PELLET           211      2      2
+ FORTRAN MODIF elements/gverig                pellet J.PELLET           330      3      3
+ FORTRAN MODIF elements/iner81                pellet J.PELLET           147      2      2
+ FORTRAN MODIF elements/te0051                pellet J.PELLET           163      2      2
+ FORTRAN MODIF elements/te0054                pellet J.PELLET            92      2      2
+ FORTRAN MODIF elements/te0061                pellet J.PELLET           546      2      2
+ FORTRAN MODIF elements/te0062                pellet J.PELLET           282      2      2
+ FORTRAN MODIF elements/te0063                pellet J.PELLET           286      2      2
+ FORTRAN MODIF elements/te0069                pellet J.PELLET           303      2      2
+ FORTRAN MODIF elements/te0076                pellet J.PELLET           188      2      2
+ FORTRAN MODIF elements/te0077                pellet J.PELLET           157      2      2
+ FORTRAN MODIF elements/te0078                pellet J.PELLET           527      2      2
+ FORTRAN MODIF elements/te0097                pellet J.PELLET            93      2      2
+ FORTRAN MODIF elements/te0137                pellet J.PELLET           146      2      2
+ FORTRAN MODIF elements/te0250                pellet J.PELLET           185      2      2
+ FORTRAN MODIF elements/te0277                pellet J.PELLET           115      2      2
+ FORTRAN MODIF elements/te0318                pellet J.PELLET           163      2      2
+ FORTRAN MODIF elements/te0319                pellet J.PELLET           172      2      2
+ FORTRAN MODIF elements/te0387                pellet J.PELLET           150      2      2
+ FORTRAN MODIF elements/te0397                pellet J.PELLET           121      2      2
+ FORTRAN MODIF elements/te0403                pellet J.PELLET           116      2      2
+ FORTRAN MODIF elements/te0411                pellet J.PELLET           179      2      2
+ FORTRAN MODIF elements/te0438                pellet J.PELLET           127      2      2
+ FORTRAN MODIF elements/te0439                pellet J.PELLET           139      2      2
+ FORTRAN MODIF elements/te0486                pellet J.PELLET           282      2      2
+ FORTRAN MODIF elements/te0487                pellet J.PELLET            95      2      2
+ FORTRAN MODIF elements/te0512                pellet J.PELLET           445      2      2
+ FORTRAN MODIF elements/te0597                pellet J.PELLET           385      3      3
+ FORTRAN MODIF elements/te0598                pellet J.PELLET           769      2      2
+ FORTRAN MODIF elements/tufull                pellet J.PELLET           413      3      3
+ FORTRAN MODIF modelisa/aflrch                pellet J.PELLET           398      3      3
+ FORTRAN MODIF modelisa/cafaci                pellet J.PELLET           474      3      3
+ FORTRAN MODIF modelisa/caliag                pellet J.PELLET           479      4      4
+ FORTRAN MODIF modelisa/caliai                pellet J.PELLET           295      2      2
+ FORTRAN MODIF modelisa/calinn                pellet J.PELLET           222      2      2
+ FORTRAN MODIF modelisa/caliso                pellet J.PELLET           253      2      2
+ FORTRAN MODIF modelisa/calyrc                pellet J.PELLET           612      2      2
+ FORTRAN MODIF modelisa/caprec                pellet J.PELLET           509      2      2
+ FORTRAN MODIF modelisa/creaun                pellet J.PELLET           285      2      2
+ FORTRAN MODIF modelisa/drz02d                pellet J.PELLET           355      2      2
+ FORTRAN MODIF modelisa/drz03d                pellet J.PELLET           804      2      2
+ FORTRAN MODIF modelisa/drz12d                pellet J.PELLET           285      2      2
+ FORTRAN MODIF modelisa/drz13d                pellet J.PELLET           353      2      2
+ FORTRAN MODIF modelisa/immeca                pellet J.PELLET           510      3      3
+ FORTRAN MODIF modelisa/ntfcma                pellet J.PELLET           124      2      2
+ FORTRAN MODIF modelisa/ordlrl                pellet J.PELLET           383      3      3
+ FORTRAN MODIF modelisa/orilgm                pellet J.PELLET           246      2      2
+ FORTRAN MODIF modelisa/pacoa1                pellet J.PELLET           315      2      2
+ FORTRAN MODIF modelisa/pacoa2                pellet J.PELLET           201      3      3
+ FORTRAN MODIF modelisa/pacoa3                pellet J.PELLET           213      3      3
+ FORTRAN MODIF modelisa/pacoap                pellet J.PELLET           285      3      3
+ FORTRAN MODIF modelisa/rapo3d                pellet J.PELLET           757      2      2
+ FORTRAN MODIF modelisa/rapoco                pellet J.PELLET           785      2      2
+ FORTRAN MODIF modelisa/rccome                pellet J.PELLET            73      2      2
+ FORTRAN MODIF modelisa/rctype                pellet J.PELLET           126      2      2
+ FORTRAN MODIF modelisa/rcvad2                pellet J.PELLET           126      2      2
+ FORTRAN MODIF modelisa/rcvada                pellet J.PELLET           126      2      2
+ FORTRAN MODIF modelisa/rcvalc                pellet J.PELLET           123      2      2
+ FORTRAN MODIF modelisa/topoca                pellet J.PELLET           487      3      3
+ FORTRAN MODIF modelisa/verima                pellet J.PELLET           131      2      2
+ FORTRAN MODIF prepost/avgrno                 pellet J.PELLET           828      2      2
+ FORTRAN MODIF prepost/cmlqnd                 pellet J.PELLET           103      2      2
+ FORTRAN MODIF prepost/deltau                 pellet J.PELLET           669      2      2
+ FORTRAN MODIF prepost/dtauno                 pellet J.PELLET           675      3      3
+ FORTRAN MODIF prepost/extrs1                 pellet J.PELLET           183      2      2
+ FORTRAN MODIF prepost/extrs2                 pellet J.PELLET           135      2      2
+ FORTRAN MODIF prepost/fgtahe                 pellet J.PELLET           113      3      3
+ FORTRAN MODIF prepost/irceca                 pellet J.PELLET           477      2      2
+ FORTRAN MODIF prepost/irdeca                 pellet J.PELLET           264      2      2
+ FORTRAN MODIF prepost/irdepl                 pellet J.PELLET           411      2      2
+ FORTRAN MODIF prepost/irdrca                 pellet J.PELLET           231      2      2
+ FORTRAN MODIF prepost/irmad0                 pellet J.PELLET           135      2      2
+ FORTRAN MODIF prepost/irmhdf                 pellet J.PELLET           295      2      2
+ FORTRAN MODIF prepost/irnono                 pellet J.PELLET           141      2      2
+ FORTRAN MODIF prepost/mdchin                 pellet J.PELLET           103      3      3
+ FORTRAN MODIF prepost/mdexcv                 pellet J.PELLET           123      2      2
+ FORTRAN MODIF prepost/mdexpm                 pellet J.PELLET           152      2      2
+ FORTRAN MODIF prepost/morevu                 pellet J.PELLET           142      3      3
+ FORTRAN MODIF prepost/op0039                 pellet J.PELLET           892      2      2
+ FORTRAN MODIF prepost/op0106                 pellet J.PELLET           795      2      2
+ FORTRAN MODIF prepost/op0151                 pellet J.PELLET           370      5      5
+ FORTRAN MODIF prepost/op0163                 pellet J.PELLET           236      2      2
+ FORTRAN MODIF prepost/op0196                 pellet J.PELLET           590      2      2
+ FORTRAN MODIF prepost/paqnoe                 pellet J.PELLET           424      2      2
+ FORTRAN MODIF prepost/pdadom                 pellet J.PELLET           241      2      2
+ FORTRAN MODIF prepost/prcoch                 pellet J.PELLET           331      3      3
+ FORTRAN MODIF prepost/usenco                 pellet J.PELLET            53      2      2
+ FORTRAN MODIF prepost/usobce                 pellet J.PELLET           115      2      2
+ FORTRAN MODIF prepost/ustuen                 pellet J.PELLET           115      2      2
+ FORTRAN MODIF prepost/usvect                 pellet J.PELLET            80      2      2
+ FORTRAN MODIF prepost/utcmp3                 pellet J.PELLET            44      2      2
+ FORTRAN MODIF soustruc/crmeri                pellet J.PELLET           497      2      2
+ FORTRAN MODIF soustruc/sscgno                pellet J.PELLET           520      2      2
+ FORTRAN MODIF supervis/ex0100                pellet J.PELLET           347      2      2
+ FORTRAN MODIF supervis/op0137                pellet J.PELLET            90      2      2
+ FORTRAN MODIF utilifor/utexcp                pellet J.PELLET            35      2      2
+ FORTRAN MODIF utilitai/cnonor                pellet J.PELLET           189      2      2
+ FORTRAN MODIF utilitai/focrr2                pellet J.PELLET           399      4      4
+ FORTRAN MODIF utilitai/fointc                pellet J.PELLET           210      2      2
+ FORTRAN MODIF utilitai/foverf                pellet J.PELLET           111      2      2
+ FORTRAN MODIF utilitai/imprsd                pellet J.PELLET           125      2      2
+ FORTRAN MODIF utilitai/iredca                pellet J.PELLET           538      3      3
+ FORTRAN MODIF utilitai/mmaxkl                pellet J.PELLET           297      2      2
+ FORTRAN MODIF utilitai/peair1                pellet J.PELLET           280      2      2
+ FORTRAN MODIF utilitai/pechli                pellet J.PELLET           194      4      4
+ FORTRAN MODIF utilitai/peecin                pellet J.PELLET           378      2      2
+ FORTRAN MODIF utilitai/peepot                pellet J.PELLET           329      2      2
+ FORTRAN MODIF utilitai/peingl                pellet J.PELLET           701      2      2
+ FORTRAN MODIF utilitai/peritr                pellet J.PELLET           405      2      2
+ FORTRAN MODIF utilitai/peweib                pellet J.PELLET           441      2      2
+ FORTRAN MODIF utilitai/rfnoch                pellet J.PELLET           101      2      2
+ FORTRAN MODIF utilitai/rfrcha                pellet J.PELLET           172      3      3
+ FORTRAN MODIF utilitai/rfresu                pellet J.PELLET           170      3      3
+ FORTRAN MODIF utilitai/rgndas                pellet J.PELLET           211      2      2
+ FORTRAN MODIF utilitai/tbexfo                pellet J.PELLET           221      3      3
+ FORTRAN MODIF utilitai/tbexv1                pellet J.PELLET           213      2      2
+ FORTRAN MODIF utilitai/tbexve                pellet J.PELLET           188      2      2
+ FORTRAN MODIF utilitai/tbimex                pellet J.PELLET           368      2      2
+ FORTRAN MODIF utilitai/tbimmc                pellet J.PELLET           254      2      2
+ FORTRAN MODIF utilitai/tbimta                pellet J.PELLET           492      2      2
+ FORTRAN MODIF utilitai/tbnuli                pellet J.PELLET           238      2      2
+ FORTRAN MODIF utilitai/tbtrtb                pellet J.PELLET           301      2      2
+ FORTRAN MODIF utilitai/utchdl                pellet J.PELLET           309      2      2
+ FORTRAN MODIF utilitai/utmach                pellet J.PELLET           212      2      2
+  PYTHON MODIF Messages/algeline2             pellet J.PELLET           419      7      4
+  PYTHON MODIF Messages/algeline4             pellet J.PELLET           585    257    163
+  PYTHON MODIF Messages/algeline5             pellet J.PELLET            62     19     23
+  PYTHON MODIF Messages/algeline              pellet J.PELLET           421      5      4
+  PYTHON MODIF Messages/algorith10            pellet J.PELLET           416     65     46
+  PYTHON MODIF Messages/algorith11            pellet J.PELLET           429     13     10
+  PYTHON MODIF Messages/algorith12            pellet J.PELLET           535    147    106
+  PYTHON MODIF Messages/algorith13            pellet J.PELLET           510    145     84
+  PYTHON MODIF Messages/algorith14            pellet J.PELLET           456    189    121
+  PYTHON MODIF Messages/algorith2             pellet J.PELLET           431     13     10
+  PYTHON MODIF Messages/algorith3             pellet J.PELLET           409     13      7
+  PYTHON MODIF Messages/algorith4             pellet J.PELLET           424     17     13
+  PYTHON MODIF Messages/algorith5             pellet J.PELLET           432      7      4
+  PYTHON MODIF Messages/algorith6             pellet J.PELLET           440     31     16
+  PYTHON MODIF Messages/algorith7             pellet J.PELLET           446     17     10
+  PYTHON MODIF Messages/algorith8             pellet J.PELLET           404     11      7
+  PYTHON MODIF Messages/algorith9             pellet J.PELLET           393     23     16
+  PYTHON MODIF Messages/algorith              pellet J.PELLET           385     25     22
+  PYTHON MODIF Messages/assembla              pellet J.PELLET           332     59     45
+  PYTHON MODIF Messages/calculel2             pellet J.PELLET           432     45     31
+  PYTHON MODIF Messages/calculel3             pellet J.PELLET           419     18     15
+  PYTHON MODIF Messages/calculel4             pellet J.PELLET           419     35     25
+  PYTHON MODIF Messages/calculel5             pellet J.PELLET           493    117     88
+  PYTHON MODIF Messages/calculel6             pellet J.PELLET           393    113     79
+  PYTHON MODIF Messages/calculel              pellet J.PELLET           422      5      4
+  PYTHON MODIF Messages/champs                pellet J.PELLET            38      5      4
+  PYTHON MODIF Messages/contact               pellet J.PELLET           249      9      7
+  PYTHON MODIF Messages/elements2             pellet J.PELLET           431     11      7
+  PYTHON MODIF Messages/elements3             pellet J.PELLET           417     29     19
+  PYTHON MODIF Messages/elements4             pellet J.PELLET           434     77     52
+  PYTHON MODIF Messages/elements5             pellet J.PELLET           163     39     22
+  PYTHON MODIF Messages/elements              pellet J.PELLET           439      7      4
+  PYTHON MODIF Messages/factor                pellet J.PELLET           183     23     62
+  PYTHON MODIF Messages/indicateur            pellet J.PELLET            36     10      9
+  PYTHON MODIF Messages/jeveux                pellet J.PELLET           259     33     25
+  PYTHON MODIF Messages/modelisa2             pellet J.PELLET           430     45     34
+  PYTHON MODIF Messages/modelisa3             pellet J.PELLET           375     11      7
+  PYTHON MODIF Messages/modelisa4             pellet J.PELLET           444      5      4
+  PYTHON MODIF Messages/modelisa5             pellet J.PELLET           425     11      7
+  PYTHON MODIF Messages/modelisa6             pellet J.PELLET           425     21     16
+  PYTHON MODIF Messages/modelisa7             pellet J.PELLET           422     11      7
+  PYTHON MODIF Messages/modelisa8             pellet J.PELLET           585    203    141
+  PYTHON MODIF Messages/modelisa9             pellet J.PELLET            91     15     10
+  PYTHON MODIF Messages/modelisa              pellet J.PELLET           423      7      4
+  PYTHON MODIF Messages/postrccm              pellet J.PELLET           196      5      5
+  PYTHON MODIF Messages/prepost2              pellet J.PELLET           419      7      4
+  PYTHON MODIF Messages/prepost3              pellet J.PELLET           426     19     13
+  PYTHON MODIF Messages/prepost4              pellet J.PELLET           438     15     10
+  PYTHON MODIF Messages/prepost5              pellet J.PELLET           453    155    107
+  PYTHON MODIF Messages/prepost               pellet J.PELLET           425      7      4
+  PYTHON MODIF Messages/sdveri                pellet J.PELLET           220    105    102
+  PYTHON MODIF Messages/sensibilite           pellet J.PELLET           297     37     45
+  PYTHON MODIF Messages/soustruc              pellet J.PELLET           382      7      4
+  PYTHON MODIF Messages/supervis              pellet J.PELLET           271     29     22
+  PYTHON MODIF Messages/utilitai2             pellet J.PELLET           426     17     10
+  PYTHON MODIF Messages/utilitai3             pellet J.PELLET           403     13      7
+  PYTHON MODIF Messages/utilitai5             pellet J.PELLET           328     25     17
+  PYTHON MODIF Messages/utilitai6             pellet J.PELLET           512    129     84
+  PYTHON MODIF Messages/utilitai7             pellet J.PELLET            64     13      7
+  PYTHON MODIF Messages/xfem                  pellet J.PELLET            59      5      4
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :  284       90830      3129    2412      +717
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  284       90830      3129    2412      +717 

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/03/2007   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -225,7 +225,7 @@ C
             IF(IRET.EQ.0) THEN
                 VALK(1) = ZK8(JJJ+IGR-1)
                 VALK(2) = NOMA
-                CALL U2MESK('F','ELEMENTS2_23', 2 ,VALK)
+                CALL U2MESK('F','ALGORITH_22', 2 ,VALK)
             ELSE
 C LES NOEUDS DE CE GROUP_NO DOIVENT APPARTENIR A GAMMO
 C
@@ -276,7 +276,7 @@ C
             IF(IRET.EQ.0) THEN
                  VALK(1) = ZK8(JJJ+I-1)
                  VALK(2) = NOMA
-                 CALL U2MESK('F','ELEMENTS_90', 2 ,VALK)
+                 CALL U2MESK('F','ALGORITH_21', 2 ,VALK)
             ELSE
 C LES NOEUDS DOIVENT APPARTENIR A GAMMO
               CALL JENUNO(JEXNUM(NOMNO,IRET),NOEUD1)

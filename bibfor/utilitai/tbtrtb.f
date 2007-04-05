@@ -7,7 +7,7 @@
       CHARACTER*(*)       TABIN, BASOUT, TABOUT, LIPARA(*), LCRIT(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C
             ENDIF
  12      CONTINUE
          VALK = INPAR
-         CALL U2MESG('F', 'UTILITAI7_3',1,VALK,0,0,0,0.D0)
+         CALL U2MESG('F', 'UTILITAI6_89',1,VALK,0,0,0,0.D0)
  10   CONTINUE
 C
       CALL WKVECT ( '&&TBTRTB.TRI' , 'V V I', NBLIGN, JNUME )

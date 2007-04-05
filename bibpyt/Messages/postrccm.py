@@ -1,4 +1,4 @@
-#@ MODIF postrccm Messages  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+#@ MODIF postrccm Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,10 +155,10 @@ cata_msg={
    occurence situation %(i2)d et %(i3)d 
 """),
 
-27: _("""
- probleme pour récupérer dans la table %(k1)s la valeur du parametre %(k2)s
-   pour le parametre %(k3)s de valeur %(r1)12.5E
-"""),
+
+
+
+
 
 28: _("""
  erreur données, pour la situation numero %(i1)d 

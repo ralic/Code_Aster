@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C
          IF ( IRET .NE. 0 ) THEN
            VALK (1) = NOM
            VALK (2) = 'VARI_R'
-           CALL U2MESG('F', 'PREPOST5_80',2,VALK,0,0,0,0.D0)
+           CALL U2MESG('F', 'CALCULEL6_49',2,VALK,0,0,0,0.D0)
          ENDIF
  10   CONTINUE
 C

@@ -4,7 +4,7 @@
       CHARACTER*(*)    NOMZ, LIMANZ(LONLIM), TYPZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,7 +121,7 @@ C        -------------------------------------------------------
               IF (IRET .EQ. 0) THEN
                  VALK(1) = LIMANO
                  VALK(2) = NOMA
-                 CALL U2MESK('S','MODELISA7_78', 2 ,VALK)
+                 CALL U2MESK('S','MODELISA6_10', 2 ,VALK)
               ENDIF
  40        CONTINUE
 C

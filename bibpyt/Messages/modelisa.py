@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF modelisa Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -402,9 +402,12 @@ cata_msg={
  la carte :  %(k1)s  n'existe pas
 """),
 
-96: _("""
-  %(k1)s 
-"""),
+
+
+
+
+
+
 
 97: _("""
  tous les coef. sont nuls

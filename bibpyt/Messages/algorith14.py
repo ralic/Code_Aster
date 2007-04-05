@@ -1,4 +1,4 @@
-#@ MODIF algorith14 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith14 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,13 +21,19 @@
 def _(x) : return x
 
 cata_msg={
-1: _("""
- arret sur matrice inexistante matrice %(k1)s 
-"""),
 
-2: _("""
- arret sur matrice inexistante matrice %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 3: _("""
  &type interface non supportee en cyclique type interface -->  %(k1)s 
@@ -38,31 +44,35 @@ cata_msg={
   types supportes -->  %(k2)s %(k3)s
 """),
 
-5: _("""
- arret sur matrice inexistante matrice: %(k1)s 
-"""),
 
-6: _("""
- arret sur type de resultat non supporte type donne -->  %(k1)s 
-  types supportes -->  %(k2)s %(k3)s
-"""),
 
-7: _("""
- arret sur matrice inexistante matrice: %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 8: _("""
  manque la deformee modale pour le mode  %(i1)d 
 """),
 
-9: _("""
-  -------------------------------- %(k1)s nombre de points pas periode:  %(i1)d 
- coefficient de remontee du pas de temps:  %(r1)f 
- coefficient de division du pas de temps:  %(r2)f 
- coeff determinant dt min (=dt init*coeff):  %(r3)f 
- nombre maximal de reductions du pas:  %(i2)d 
- vitesse minimale variable:  %(k2)s 
-"""),
+
+
+
+
 
 10: _("""
  le maille noe n'existe pas dans le maillage mail mail= %(k1)s noe= %(k2)s 
@@ -72,9 +82,12 @@ cata_msg={
  le noeud n'existe pas dans le maillage maillage= %(k1)s noeud= %(k2)s 
 """),
 
-12: _("""
- arret sur maillage non skelette
-"""),
+
+
+
+
+
+
 
 13: _("""
  & arret sur base modale de type illicitebase modale -->  %(k1)s type -->  %(k2)s 
@@ -93,26 +106,25 @@ cata_msg={
  arret sur matrice amortissement non unique en argument
 """),
 
-17: _("""
- &donnee de matrice masse et option classique incompatibles matrice masse: %(k1)s 
- option automatiquement mise a %(k2)s 
-"""),
 
-18: _("""
- &donnee de matrice raideur et option classique incompatibles matrice raideur: %(k1)s 
- option automatiquement mise a %(k2)s 
-"""),
 
-19: _("""
- &base modale ritz et option classique incompatibles
- option automatiquement mise a %(k1)s 
-"""),
 
-20: _("""
- &base modale ritz: il faut donner les matrice a projeter
- matrice masse donnee: %(k1)s 
- matrice raideur donnee: %(k2)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 21: _("""
  les matrices assemblees n'ont pas la meme numerotation masse= %(k1)s 
@@ -158,17 +170,21 @@ cata_msg={
   pas de mode rigide d'interface  le calcul de masses effectives risque d'etre  imprecis %(i2)d 
 """),
 
-29: _("""
- le maillage n'est pas un maillage squelette maillage %(k1)s 
-"""),
+
+
+
+
+
+
 
 30: _("""
  incoherence detectee dans squelette objet non trouve :  %(k1)s 
 """),
 
-31: _("""
- incoherence detectee dans squelette objet non trouve :  %(k1)s 
-"""),
+
+
+
+
 
 32: _("""
  sd resultat  resultle champ n'existe pas  %(k1)s 
@@ -180,9 +196,10 @@ cata_msg={
  pour le nume_ordre  %(i1)d 
 """),
 
-34: _("""
- incoherence detectee dans squelette objet non trouve :  %(k1)s 
-"""),
+
+
+
+
 
 35: _("""
  aucun champ n'est calculedans la structure de donnees  %(k1)s 
@@ -194,64 +211,96 @@ cata_msg={
   est :  %(k4)s 
 """),
 
-37: _("""
- sous-structure inexistante dans le modele generalise modele generalisee %(k1)s 
- sous-structure %(k2)s 
-"""),
 
-38: _("""
- probleme coherence nombre de champs base modale base modale %(k1)s 
- nombre de champs de la base %(i1)d 
- nombre de dgres generalises %(i2)d 
-"""),
 
-39: _("""
- le maillage n'est pas un maillage squelette maillage %(k1)s 
-"""),
 
-40: _("""
- aucun champ n'est calculedans la structure de donnees  %(k1)s 
-"""),
 
-41: _("""
- les numerotations des champs ne coincident pas celui de  %(k1)s  est :  %(k2)s 
- et celui de  %(k3)s est :  %(k4)s 
-"""),
 
-42: _("""
- arret sur type de resultat non supporte type donne -->  %(k1)s 
-  types supportes -->  %(k2)s %(k3)s
-"""),
 
-43: _("""
- arret sur matrice inexistante matrice: %(k1)s 
-"""),
 
-44: _("""
- arret sur type de resultat non supporte type donne -->  %(k1)s 
-  types supportes -->  %(k2)s %(k3)s
-"""),
 
-45: _("""
- arret sur matrice inexistante matrice: %(k1)s 
-"""),
 
-46: _("""
- aucun champ n'est calcule dans la structure de donnees  %(k1)s 
-"""),
 
-47: _("""
- sous-structure inexistante dans le  modele generalise modele generalisee %(k1)s 
- sous-structure %(k2)s 
-"""),
 
-48: _("""
- le maillage n'est pas un maillage  squelette maillage %(k1)s 
-"""),
 
-49: _("""
- aucun champ n'est calcule dans la structure de donnees  %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 50: _("""
  il faut au moins 1 mode !
@@ -261,35 +310,48 @@ cata_msg={
  il faut un mode_meca a la 1ere occurence de ritz
 """),
 
-52: _("""
- il faut au moins 1 mode !
-"""),
+
+
+
+
+
+
 
 
 55: _("""
  le champ de "temp" n'existe pas pour le numero d'ordre  %(i1)d 
 """),
 
-56: _("""
- le champ de "temp" n'existe pas pour le numero d'ordre  %(i1)d 
-"""),
 
-57: _("""
- le champ de "temp" n'existe pas pour le numero d'ordre  %(i1)d 
-"""),
 
-58: _("""
- le champ de "temp" n'existe pas pour le numero d'ordre  %(i1)d 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 59: _("""
  le champ de "meta_elno_temp"  n'existe pas
   pour le numero d'ordre  %(i1)d 
 """),
 
-60: _("""
- le champ de "temp" n'existe pas pour le numero d'ordre  %(i1)d 
-"""),
+
+
+
+
+
+
 
 61: _("""
  
@@ -312,18 +374,24 @@ cata_msg={
  manque le mode statique nom_cham  %(k1)s  pour le mode  %(i1)d 
 """),
 
-65: _("""
- manque la deformee modale nom_cham  %(k1)s  pour le mode  %(i1)d 
-"""),
+
+
+
+
+
+
 
 66: _("""
  &taille de bloc insuffisante taille de bloc demandee (kr8): %(r1)f 
  taille de bloc utilisee (kr8): %(r2)f 
 """),
 
-67: _("""
- champ inexistant champ:  %(k1)s , nume_ordre:  %(i1)d , mode_meca:  %(k2)s 
-"""),
+
+
+
+
+
+
 
 68: _("""
   valeur minimale conseillee :  %(r1)f 

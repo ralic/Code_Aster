@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,9 +22,10 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- Impressions depuis python : nom de fichier incorrect
-"""),
+
+
+
+
 
 2: _("""
  Arret sur erreur(s) utilisateur
@@ -166,9 +167,10 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
  Le concept de nom '%(k1)s' n'existe pas
 """),
 
-37: _("""
- Le nom de matériau '%(k1)s' doit etre au plus de 6 caractères.
-"""),
+
+
+
+
 
 38: _("""
  Il n'y a plus de temps pour continuer
@@ -178,10 +180,10 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
  Arret de l'exécution et fermeture des bases jeveux
 """),
 
-40: _("""
- Vous utilisez une version dont les routines suivantes ont été surchargées :
-   %(ktout)s
-"""),
+
+
+
+
 
 41 : _("Plus de 5 fois le meme message d'alarme."),
 
@@ -202,9 +204,12 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
  Debug JEVEUX suspendu
 """),
 
-46: _("""
- Debug JXVERI demandé
-"""),
+
+
+
+
+
+
 
 47: _("""
  Debug JXVERI suspendu
@@ -223,10 +228,12 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
  le numero errone est  %(i1)d 
 """),
 
-51: _("""
- la commande a un numero non appelable dans cette version.
- le numero errone est  %(i1)d 
-"""),
+
+
+
+
+
+
 
 52: _("""
  fin de lecture (duree  %(r1)f  s.) %(k1)s 
@@ -237,10 +244,10 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
  niveaux de profondeur pour des appels par la  procedure %(k1)s 
 """),
 
-54: _("""
- la procedure a un numero non appelable dans cette version.
- le numero errone est  %(i1)d 
-"""),
+
+
+
+
 
 55 : _("""
  Appels récursifs de messages d'erreur ou d'alarme.

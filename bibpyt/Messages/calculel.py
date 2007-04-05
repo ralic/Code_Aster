@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,9 +75,10 @@ cata_msg={
   incompatibilite des type_champ ("elga"/"elno")  pour l option :  %(k1)s  entre les 2 type_elem :  %(k2)s  et  %(k3)s
 """),
 
-15: _("""
- type de face non prevu
-"""),
+
+
+
+
 
 16: _("""
  type de maille indisponible

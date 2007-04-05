@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,9 +76,12 @@ cata_msg={
  le calcul de dg n'a pas ete etendu a la plasticite !
 """),
 
-14: _("""
- option invalide
-"""),
+
+
+
+
+
+
 
 15: _("""
  nom d'element illicite
@@ -112,9 +115,12 @@ cata_msg={
  erreur dans le calcul de coef_f
 """),
 
-23: _("""
- erreur lors de l'appel a fointe
-"""),
+
+
+
+
+
+
 
 24: _("""
  matns mal dimensionnee
@@ -196,9 +202,10 @@ cata_msg={
  nombre de couches limite a 30 pour les coques 1d
 """),
 
-53: _("""
- ce calcul est dedie au tria3
-"""),
+
+
+
+
 
 54: _("""
   la reactualisation de la geometrie (deformation : petit_reac sous le mot cle comp_incr) est deconseillee pour les elements de coque_1d.
@@ -275,13 +282,15 @@ cata_msg={
  il faut affecter les elements de  bord (e et nu) pour le calcul des fic
 """),
 
-71: _("""
- la vitesse de convection ne doit pas etre nulle.
-"""),
 
-72: _("""
- erreur: weibull pas de champ thermique
-"""),
+
+
+
+
+
+
+
+
 
 73: _("""
  option de calcul non valide
@@ -393,9 +402,10 @@ cata_msg={
  l'option est incompatible avec                                  les comportements incrementaux ainsi que la deformation           green
 """),
 
-97: _("""
- type element inconnu
-"""),
+
+
+
+
 
 98: _("""
  comportement coeur homogeneise inexistant

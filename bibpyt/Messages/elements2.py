@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,9 +106,12 @@ cata_msg={
  les mailles du fond_inf                           et du fond_sup sont de type different
 """),
 
-23: _("""
- le groupe  %(k1)s  n appartient pas au maillage :  %(k2)s 
-"""),
+
+
+
+
+
+
 
 24: _("""
  le noeud  %(k1)s  n appartient pas au fond de fissure 
@@ -134,9 +137,10 @@ cata_msg={
  element faisceau homogeneise non prevu
 """),
 
-30: _("""
- elrefe non prevu  %(k1)s 
-"""),
+
+
+
+
 
 31: _("""
   elrefe non prevu

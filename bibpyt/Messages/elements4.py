@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -264,21 +264,26 @@ cata_msg={
   La normale à l'élément et le vecteur obtenu à partir du mot-clé ANGL_REP sont colinéaires.
 """),
 
-67: _("""
- stop
-"""),
+
+
+
+
+
+
 
 68: _("""
  Nombre d'itérations internes insuffisant.
 """),
 
-69: _("""
- La vitesse de convection ne doit pas etre nulle.
-"""),
 
-70: _("""
- Erreur de programmation : condition non respectée !
-"""),
+
+
+
+
+
+
+
+
 
 72: _("""
    rcvala ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8  
@@ -306,10 +311,10 @@ cata_msg={
   trop grand par rapport au nombre  de couches autorise pour la maille  %(k1)s 
 """),
 
-78: _("""
- numero de couche  %(i1)d 
-  trop grand par rapport au nombre  de couches autorise pour la maille  %(k1)s 
-"""),
+
+
+
+
 
 79: _("""
  la loi de comportement n'existe pas pour la  modelisation dktg :  %(k1)s 
@@ -325,10 +330,12 @@ cata_msg={
  manque le parametre  %(k1)s pour la maille  %(k2)s 
 """),
 
-82: _("""
- numero de couche  %(i1)d 
-  trop grand par rapport au nombre  de couches autorise pour la maille  %(k1)s 
-"""),
+
+
+
+
+
+
 
 83: _("""
  utiliser "stat_non_line"  temperature inf:  %(r1)f   temperature moy:  %(r2)f 
@@ -340,28 +347,33 @@ cata_msg={
                  famille  %(k2)s 
 """),
 
-85: _("""
- famille non disponible    element de reference  %(k1)s 
-                 famille  %(k2)s 
-"""),
 
-86: _("""
- famille non disponible    element de reference  %(k1)s 
-                 famille  %(k2)s 
-"""),
 
-87: _("""
- famille non disponible    element de reference  %(k1)s 
-                 famille  %(k2)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 88: _("""
  elrefe non disponible    element de reference  %(k1)s 
 """),
 
-89: _("""
- arret sur matrice inexistantematrice %(k1)s 
-"""),
+
+
+
+
+
+
 
 90: _("""
  elrefe mal programme maille  %(k1)s  type  %(k2)s  nb noeuds  %(i1)d 
@@ -377,33 +389,46 @@ cata_msg={
  la pression doit etre nulle pour la maille  %(k1)s 
 """),
 
-93: _("""
- utiliser "stat_non_line"  temperature inf:  %(r1)f   temperature moy:  %(r2)f 
-   temperature sup:  %(r3)f 
-"""),
 
-94: _("""
- la pression doit etre nulle pour la maille  %(k1)s 
-"""),
 
-95: _("""
- la pression doit etre nulle pour la maille  %(k1)s 
-"""),
 
-96: _("""
- la pression doit etre nulle pour la maille  %(k1)s 
-"""),
 
-97: _("""
- la pression doit etre nulle pour la maille  %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 98: _("""
  la contrainte equivalente est nulle pour la maille  %(k1)s 
 """),
 
-99: _("""
- la contrainte equivalente est nulle pour la maille  %(k1)s 
-"""),
+
+
+
+
 
 }

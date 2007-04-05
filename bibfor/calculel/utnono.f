@@ -5,7 +5,7 @@
       INTEGER                                                IRET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,9 +81,9 @@ C
       IF ( IRET1 .EQ. 0 ) THEN
          IF ( TYPM .EQ. ' ' ) GOTO 9999
          IF ( TYPE(1:5) .EQ. 'NOEUD' ) THEN
-            CALL U2MESK(TYPM,'CALCULEL5_18',1,NOMGRP)
+            CALL U2MESK(TYPM,'ELEMENTS_67',1,NOMGRP)
          ELSE
-            CALL U2MESK(TYPM,'CALCULEL5_19',1,NOMGRP)
+            CALL U2MESK(TYPM,'ELEMENTS_73',1,NOMGRP)
          ENDIF
          GOTO 9999
       ENDIF

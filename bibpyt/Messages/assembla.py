@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF assembla Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -236,9 +236,10 @@ cata_msg={
  11  nddl :  %(i1)d  > nddl_max : %(i2)d 
 """),
 
-51: _("""
- 11  nddl :  %(i1)d  > nddl_max : %(i2)d 
-"""),
+
+
+
+
 
 52: _("""
  12  nddl :  %(i1)d  > nddl_max : %(i2)d 
@@ -248,55 +249,68 @@ cata_msg={
  13- nddl :  %(i1)d  > nddl_max : %(i2)d 
 """),
 
-54: _("""
- 1--- le noeud  : %(i1)d  du resuel    : %(k1)s    du vect_elem  : %(k2)s 
-    n''a pas d''adresse dans  : %(k3)s 
-"""),
 
-55: _("""
- 2--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
-   a 1 adresse  : %(i2)d 
-  > nequa : %(i3)d 
-"""),
 
-56: _("""
- 3--- nddl :  %(i1)d  > nddl_max : %(i2)d 
-"""),
 
-57: _("""
- 4--- vect_elem     : %(k1)s --- resu        : %(k2)s --- nomli       : %(k3)s 
- --- grel numero   : %(i1)d 
- --- maille numero : %(i2)d 
- --- nnoe par nema : %(i3)d 
- --- nnoe par node : %(i4)d 
-"""),
 
-58: _("""
- 5--- le ligrel : %(k1)s  ref. par le noeud supl.  : %(i1)d 
- --- de la maille : %(i2)d 
-  du resuelem  : %(k2)s 
-  du vect_elem   : %(k3)s 
- --- n"est pas present  dans la numerotation : %(k4)s 
-"""),
 
-59: _("""
- 6--- nddl :  %(i1)d  > nddl_max : %(i2)d 
-"""),
 
-60: _("""
- 7--- nddl :  %(i1)d  > nddl_max : %(i2)d 
-"""),
 
-61: _("""
- 8--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
- --- n''a pas d''adresse  dans la numerotation : %(k3)s 
-"""),
 
-62: _("""
- 9--- le noeud  : %(i1)d  du resuel    : %(k1)s  du vect_elem   : %(k2)s 
- --- a une adresse : %(i2)d 
-  > nequa : %(i3)d 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 63: _("""
  erreur sur le   premier lagrange d"une liaison_ddl

@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*(*)  MOTFAZ,PREFIZ,NOMAZ,LISI1Z,LISI2Z,MODZ
       INTEGER        IOCC
 C ---------------------------------------------------------------------
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C
 C     BUT : CREER LA STRUCTURE INTERMEDIAIRE PRFEIXEE PAR PREFIX
 C           DESCRIVANT LES COUPLES DE NOEUDS EN REGARD AVEC
@@ -126,7 +126,7 @@ C
       ENDIF
 C
       IF (IOCC.LE.0) THEN
-        CALL U2MESS('F','MODELISA3_8')
+        CALL U2MESS('F','MODELISA2_62')
       ENDIF
 C
       CALL GETFAC ( MOTFAC, NLINO )

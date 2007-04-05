@@ -1,4 +1,4 @@
-#@ MODIF modelisa6 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF modelisa6 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,17 +110,20 @@ cata_msg={
  les 2 listes %(k1)s  et  %(k2)s  ne sont pas de meme longueur
 """),
 
-23: _("""
- mauvaise intersection
-"""),
 
-24: _("""
- nombre de composantes connexes maximal prevu insuffisant
-"""),
 
-25: _("""
- polyedre non etoile au centre de gravite
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 26: _("""
  affe_fibre pour " %(k1)s ": il y a  %(k2)s  valeurs pour "vale", ce devrait etre un multiple de 3
@@ -142,9 +145,10 @@ cata_msg={
  l'indicateur :  %(k1)s de position des multiplicateurs de lagrange associes a une relation lineaire n'est pas correct.
 """),
 
-31: _("""
- routine detruite
-"""),
+
+
+
+
 
 32: _("""
  methode de contact inconnue (dvlp)
@@ -278,9 +282,10 @@ cata_msg={
  type sd non traite:  %(k1)s 
 """),
 
-65: _("""
- le nombre de materiau est superieur au nombre de composantes de la grandeur neut_f
-"""),
+
+
+
+
 
 66: _("""
  fonction constante interdite pour la courbe mz=f(drz)

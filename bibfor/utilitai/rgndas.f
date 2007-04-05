@@ -4,7 +4,7 @@
       CHARACTER*(*)     TYPE,NU,NOMNO,NOMCMP,TARDIF,LIGREL,INFOBL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,7 +204,7 @@ C
 C
       ELSE
         VALK = NUME
-        CALL U2MESG('F', 'UTILITAI6_76',1,VALK,0,0,0,0.D0)
+        CALL U2MESG('F', 'UTILITAI6_68',1,VALK,0,0,0,0.D0)
       ENDIF
 C
       CALL JEDEMA()

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C       ----------------------------------
               CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
             ELSE IF (IRET.EQ.1) THEN
               VALK (1) = NOEUD
-              CALL U2MESG('A', 'UTILITAI6_70',1,VALK,0,0,0,0.D0)
+              CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
             END IF
           END IF
           CALL GETVTX(' ','NOM_CMP',0,1,1,CMP,NC)
@@ -137,7 +137,7 @@ C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
               CALL U2MESK('F','ELEMENTS_67',1,NOGNO)
             ELSE IF (IRET.EQ.1) THEN
               VALK (1) = NOEUD
-              CALL U2MESG('A', 'UTILITAI6_70',1,VALK,0,0,0,0.D0)
+              CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
             END IF
           END IF
           CALL DISMOI('F','NOM_GD',CHAM19,'CHAM_ELEM',IBID,NOMGD,IE)

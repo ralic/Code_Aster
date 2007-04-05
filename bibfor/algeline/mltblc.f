@@ -1,7 +1,7 @@
       SUBROUTINE MLTBLC(NBSN,DEBFSN,MXBLOC,SEQ,NBLOC,DECAL,LGBLOC,
      +                  NCBLOC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ C      DO WHILE (LONG.LE.MXBLOC)
               VALI (1) = MXBLOC
               VALI (2) = I
               VALI (3) = L
-              CALL U2MESG('F', 'ALGELINE4_22',0,' ',3,VALI,0,0.D0)
+              CALL U2MESG('F', 'ALGELINE4_21',0,' ',3,VALI,0,0.D0)
           END IF
           LONG = LONG + L
           GO TO 120

@@ -4,7 +4,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,7 +159,7 @@ C
                 IF (TOLE .LT. PRECDC) THEN
                   CALL U2MESS('A','ALGELINE3_58')
                    VALR = FREQOM(VPINF2)
-                 CALL U2MESG('A', 'ALGELINE4_67',0,' ',0,0,1,VALR)
+                 CALL U2MESG('A', 'ALGELINE4_66',0,' ',0,0,1,VALR)
                  VPINF = VPINF * (1.D0 - SIGN(PRECDC,VPINF))
                 ENDIF
              ENDIF
@@ -188,7 +188,7 @@ C
                IF (TOLE .LT. PRECDC) THEN
                    CALL U2MESS('A','ALGELINE3_59')
                    VALR = FREQOM(VPMAX2)
-                   CALL U2MESG('A', 'ALGELINE4_69',0,' ',0,0,1,VALR)
+                   CALL U2MESG('A', 'ALGELINE4_68',0,' ',0,0,1,VALR)
                    VPMAX = VPMAX * (1.D0 + SIGN(PRECDC,VPMAX))
                ENDIF
             ENDIF

@@ -1,4 +1,4 @@
-#@ MODIF algorith3 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,9 +89,12 @@ cata_msg={
  champ " %(k1)s " deja existant
 """),
 
-16: _("""
- appel errone
-"""),
+
+
+
+
+
+
 
 17: _("""
  methode adapt pas de temps minimal atteint
@@ -185,9 +188,12 @@ cata_msg={
  le champ absolu n'est accessible qu'en presence de modes statiques
 """),
 
-46: _("""
- melange de champs de nature differente dans le meme mot-clef facteur observation
-"""),
+
+
+
+
+
+
 
 47: _("""
  debordement tableau

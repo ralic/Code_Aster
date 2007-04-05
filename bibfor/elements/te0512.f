@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -281,7 +281,7 @@ C        -----------------------------------------------------
                CALL TECAEL ( IADZI, IAZK24 )
                NOMAIL = ZK24(IAZK24-1+3)(1:8)
                VALK = NOMAIL
-               CALL U2MESG('A', 'ELEMENTS5_1',1,VALK,0,0,0,0.D0)
+               CALL U2MESG('A', 'ELEMENTS4_98',1,VALK,0,0,0,0.D0)
                DO 72 INO = 1, NNO
                   TRIAXN(INO) = R8VIDE()
   72           CONTINUE

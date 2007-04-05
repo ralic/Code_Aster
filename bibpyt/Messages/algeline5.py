@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algeline5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,30 +22,26 @@
 def _(x) : return x
 
 cata_msg={
-1: _("""
- incoherence de certains parametres modaux propres a arpack
-  numero d'erreur  %(i1)d
-"""),
 
-2: _("""
- nombre de valeurs propres convergees  %(i1)d
- < nombre de frequences demandees  %(i2)d
- erreur arpack numero :  %(i3)d
- --> le calcul continue, la prochaine fois %(i4)d
- -->   augmenter dim_sous_espace =  %(i5)d
- -->   ou nmax_iter_soren =  %(i6)d
- -->   ou prec_soren =  %(r1)f
- si votre probleme est fortement amorti  %(i7)d
- il est possible que des modes propres  %(i8)d
- non calcules soient sur-amortis  %(i9)d
- --> diminuez le nombre de frequences  %(i10)d
- demandees %(i11)d
-"""),
 
-3: _("""
- incoherence de certains parametres modaux propres a arpack
-  numero d'erreur  %(i1)d
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 4: _("""
  erreur lapack (ou blas) au niveau de la routine  %(k1)s

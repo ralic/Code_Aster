@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/03/2007   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -485,7 +485,7 @@ C
                   VALK (1) = TYPCHA
                   VALK (2) = BASEMO
                   VALI = J
-      CALL U2MESG('F', 'ALGORITH14_67',2,VALK,1,VALI,0,0.D0)
+      CALL U2MESG('F', 'ALGORITH12_66',2,VALK,1,VALI,0,0.D0)
                ENDIF
                CALL JEEXIN ( NOMCHA(1:19)//'.VALE', IBID )
                IF (IBID.GT.0) THEN
@@ -533,7 +533,7 @@ C
      &                 NCMP, ZK8(INOCMP), ZI(INOECP), 'G', CHAMNO )
                ENDIF
              ELSE
-                CALL U2MESS('F','ALGORITH3_16')
+                CALL U2MESS('F','ALGORITH13_36')
              ENDIF
              CHAMNO(20:24) = '.VALE'
              IF (INTERP(1:3).EQ.'NON') THEN

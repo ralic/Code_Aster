@@ -6,7 +6,7 @@
      +         VALAUX(NBVEC),TOL, TOLDYN
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,7 +204,7 @@ C
       II = 1
       DO 60 I = 1, NBVEC
          IF (BR(II) .EQ. 0.0D0) THEN
-            CALL U2MESS('F', 'ALGELINE4_20')
+            CALL U2MESS('F', 'ALGELINE4_19')
          ENDIF
          VALPRO(I) = AR(II) / BR(II)
          II = II + NBVEC + 1 - I

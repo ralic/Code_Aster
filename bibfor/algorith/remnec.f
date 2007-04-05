@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C
 C  BUT:      < RESTITUTI0N MAC-NEAL ECLATEE >
 C
@@ -76,7 +76,7 @@ C
         VALK (1) = TYPESD
         VALK (2) = TYPSUP(1)
         VALK (3) = TYPSUP(2)
-        CALL U2MESG('F', 'ALGORITH14_42',3,VALK,0,0,0,0.D0)
+        CALL U2MESG('F', 'ALGORITH14_4',3,VALK,0,0,0,0.D0)
       ENDIF
 C
 C--------------------------RECUPERATION DU .DESC------------------------
@@ -116,7 +116,7 @@ C      CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
       CALL MTEXIS ( MASS, IER )
       IF(IER.EQ.0) THEN
         VALK (1) = MASS(1:8)
-        CALL U2MESG('F', 'ALGORITH14_43',1,VALK,0,0,0,0.D0)
+        CALL U2MESG('F', 'ALGORITH12_39',1,VALK,0,0,0,0.D0)
       ENDIF
       CALL MTDSCR(MASS)
       CALL JEVEUO(MASS(1:19)//'.&INT','E',LMASS)

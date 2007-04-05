@@ -1,4 +1,4 @@
-#@ MODIF algorith4 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algorith4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -142,21 +142,25 @@ cata_msg={
  ne correspond a aucune colonne
 """),
 
-31: _("""
- erreur sur largeur colonne (dvlp)
-"""),
 
-32: _("""
- numero suivi incorrect (dvlp)
-"""),
 
-33: _("""
- colonne de suivi activee sans suivi associe (dvlp)
-"""),
 
-34: _("""
- type de composante suivi incorrecte (dvlp)
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 35: _("""
  rang superieur a dimension vecteur

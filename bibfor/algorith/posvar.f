@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,7 +86,7 @@ C   NUME   OUT    I  : ADRESSE DE LA VARIABLE INTERNE
             NUME=0
             GOTO 9999
          ELSE IF (VARI(1:6).EQ.'SATLIQ') THEN
-            CALL U2MESK('A','ALGORITH9_98',1,THMC)
+            CALL U2MESK('A','ALGORITH9_96',1,THMC)
             NUME=0
             GOTO 9999
          ENDIF

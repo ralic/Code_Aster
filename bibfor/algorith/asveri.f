@@ -7,7 +7,7 @@
       LOGICAL           TRONC,MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
                      IER = IER + 1
                VALK (1) = PSMO
                VALK (2) = MONACC
-                   CALL U2MESG('E', 'ALGORITH12_16',2,VALK,0,0,0,0.D0)
+                   CALL U2MESG('E', 'ALGORITH12_12',2,VALK,0,0,0,0.D0)
                      GOTO 14
                   ENDIF
                   MONPAR = 'ACCE_DDL_IMPO'
@@ -125,7 +125,7 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
                VALK (1) = PSMO
                VALK (2) = MONACC
                VALK (3) = MONPAR
-                   CALL U2MESG('E', 'ALGORITH12_17',3,VALK,0,0,0,0.D0)
+                   CALL U2MESG('E', 'ALGORITH12_13',3,VALK,0,0,0,0.D0)
                   ENDIF
                   ENDIF
  14            CONTINUE
@@ -148,7 +148,7 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
             IER = IER + 1
                VALK (1) = MECA
                VALK (2) = NOMSY
-            CALL U2MESG('E', 'ALGORITH12_19',2,VALK,0,0,0,0.D0)
+            CALL U2MESG('E', 'ALGORITH12_7',2,VALK,0,0,0,0.D0)
             GOTO 20
          ENDIF
          DO 22 IM = 1,NBMODE

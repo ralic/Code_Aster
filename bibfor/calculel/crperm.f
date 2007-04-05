@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,7 @@ C
             VALK (1) = CHAM(IC)
             VALK (2) = RESU2
             VALI = IORD2
-            CALL U2MESG('F', 'CALCULEL5_75',2,VALK,1,VALI,0,0.D0)
+            CALL U2MESG('F', 'CALCULEL5_74',2,VALK,1,VALI,0,0.D0)
          ENDIF
 C
          IF ( CHAM(IC) .EQ. 'DEPL' ) THEN

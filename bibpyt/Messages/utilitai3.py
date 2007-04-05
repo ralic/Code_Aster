@@ -1,4 +1,4 @@
-#@ MODIF utilitai3 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,9 +190,12 @@ cata_msg={
  le contour n est pas ferme
 """),
 
-43: _("""
- le contour n'est pas ferme
-"""),
+
+
+
+
+
+
 
 44: _("""
  nbma different de nbe
@@ -314,9 +317,12 @@ cata_msg={
  type de champ inconnu.
 """),
 
-74: _("""
- le groupe " %(k1)s " ne contient aucune maille.
-"""),
+
+
+
+
+
+
 
 75: _("""
  on attend un concept "mode_meca" ou "evol_elas" ou "mult_elas" ou "evol_ther" ou "dyna_trans" ou "evol_noli"

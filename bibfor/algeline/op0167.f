@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -495,7 +495,7 @@ C ----------------------------------------------------------------------
             CALL JECROC(JEXNOM(NOMNOE,NOMG))
           ELSE
                 VALK (1) = NOMG
-            CALL U2MESG('F', 'ALGELINE4_44',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'ALGELINE4_5',1,VALK,0,0,0,0.D0)
           END IF
    70   CONTINUE
         DO 80 INO = NBNOEV + 1,NBNOT
@@ -518,7 +518,7 @@ C
             CALL JECROC(JEXNOM(NOMNOE,NOMG))
           ELSE
                 VALK (1) = NOMG
-            CALL U2MESG('F', 'ALGELINE4_44',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'ALGELINE4_5',1,VALK,0,0,0,0.D0)
           END IF
  80     CONTINUE
 
@@ -602,7 +602,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
           CALL JECROC(JEXNOM(NOMMAI,NOMG))
         ELSE
                 VALK (1) = NOMG
-          CALL U2MESG('F', 'ALGELINE4_46',1,VALK,0,0,0,0.D0)
+          CALL U2MESG('F', 'ALGELINE4_7',1,VALK,0,0,0,0.D0)
         END IF
 
         CALL JENONU(JEXNOM(NOMMAV,NOMG),IBID)
@@ -637,7 +637,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
           CALL JECROC(JEXNOM(NOMMAI,NEWMAI))
         ELSE
                 VALK (1) = NEWMAI
-          CALL U2MESG('F', 'ALGELINE4_47',1,VALK,0,0,0,0.D0)
+          CALL U2MESG('F', 'ALGELINE4_7',1,VALK,0,0,0,0.D0)
         END IF
 
         JTOM = JTYPMV - 1 + INUMOL
@@ -664,7 +664,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
           CALL JECROC(JEXNOM(NOMMAI,NEWMAI))
         ELSE
                 VALK (1) = NEWMAI
-          CALL U2MESG('F', 'ALGELINE4_47',1,VALK,0,0,0,0.D0)
+          CALL U2MESG('F', 'ALGELINE4_7',1,VALK,0,0,0,0.D0)
         END IF
 
         JTOM = JTYPMV - 1 + INUMOL
@@ -692,7 +692,7 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
           CALL JECROC(JEXNOM(NOMMAI,NEWMAI))
         ELSE
                 VALK (1) = NEWMAI
-          CALL U2MESG('F', 'ALGELINE4_47',1,VALK,0,0,0,0.D0)
+          CALL U2MESG('F', 'ALGELINE4_7',1,VALK,0,0,0,0.D0)
         END IF
 
         CALL JENONU(JEXNOM(NOMMAI,NEWMAI),IBID)
@@ -724,7 +724,7 @@ C ----------------------------------------------------------------------
             CALL JECROC(JEXNOM(GRPMAI,NOMG))
           ELSE
                 VALK (1) = NOMG
-            CALL U2MESG('F', 'ALGELINE4_50',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'ALGELINE4_9',1,VALK,0,0,0,0.D0)
           END IF
           CALL JEVEUO(JEXNUM(GRPMAV,I),'L',JVG)
           CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMA,K1B)
@@ -741,7 +741,7 @@ C ----------------------------------------------------------------------
             CALL JECROC(JEXNOM(GRPMAI,NOMG))
           ELSE
                 VALK (1) = NOMG
-            CALL U2MESG('F', 'ALGELINE4_50',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'ALGELINE4_9',1,VALK,0,0,0,0.D0)
           END IF
           NBMAJ2 = 0
           CALL PALIM3('CREA_GROUP_MA',I,NOMAIN,CRGRNU,CRGRNO,NBMAJ2)
@@ -771,7 +771,7 @@ C ----------------------------------------------------------------------
             CALL JECROC(JEXNOM(GRPNOE,NOMG))
           ELSE
                 VALK (1) = NOMG
-            CALL U2MESG('F', 'ALGELINE4_52',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'ALGELINE4_11',1,VALK,0,0,0,0.D0)
           END IF
           CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO,' ')
           CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)
@@ -814,7 +814,7 @@ C ----------------------------------------------------------------------
                 CALL JECROC(JEXNOM(GRPMAI,NOMG))
               ELSE
                 VALK (1) = NOMG
-                CALL U2MESG('F', 'ALGELINE4_53',1,VALK,0,0,0,0.D0)
+                CALL U2MESG('F', 'ALGELINE4_9',1,VALK,0,0,0,0.D0)
               END IF
               CALL JEVEUO(JEXNUM(GRPMAV,I),'L',JVG)
               CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMA,K8B)
@@ -840,7 +840,7 @@ C ----------------------------------------------------------------------
                 CALL JECROC(JEXNOM(GRPMAI,NOGMA))
               ELSE
                 VALK (1) = NOGMA
-                CALL U2MESG('F', 'ALGELINE4_54',1,VALK,0,0,0,0.D0)
+                CALL U2MESG('F', 'ALGELINE4_9',1,VALK,0,0,0,0.D0)
               END IF
               CALL JEECRA(JEXNOM(GRPMAI,NOGMA),'LONMAX',NBMA,K8B)
               CALL JEVEUO(JEXNOM(GRPMAI,NOGMA),'E',IAGMA)

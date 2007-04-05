@@ -3,7 +3,7 @@
       INTEGER            NUOPER, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF SUPERVIS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C
 C     ------------------------------------------------------------------
         IER = 1
         VALI = NUOPER
-        CALL U2MESG('E', 'SUPERVIS_51',0,' ',1,VALI,0,0.D0)
+        CALL U2MESG('E', 'SUPERVIS_50',0,' ',1,VALI,0,0.D0)
       GOTO 9999
 C     ------------------------------------------------------------------
   01       CONTINUE

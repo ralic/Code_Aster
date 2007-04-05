@@ -1,4 +1,4 @@
-#@ MODIF algorith8 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith8 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -255,9 +255,10 @@ cata_msg={
  Champ 'IN' inexistant
 """),
 
-60: _("""
- Temperature : grandeur inconnue
-"""),
+
+
+
+
 
 61: _("""
  Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
@@ -322,9 +323,12 @@ cata_msg={
  f(0)=0
 """),
 
-79: _("""
- f(0)>0
-"""),
+
+
+
+
+
+
 
 80: _("""
  sy >= su. impossible.

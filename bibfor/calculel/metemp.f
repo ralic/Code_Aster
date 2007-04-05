@@ -1,6 +1,6 @@
       SUBROUTINE METEMP(MAILLA,TEMPE,EXITIM,TIME,CHTREF,THVRAI,CHTEMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C              ------------------------------------------------
                   VALK = TEMPE(1:8)
                   VALR = TIME2
                   VALI = ICORET
-                  CALL U2MESG('F', 'CALCULEL6_14',1,VALK,1,VALI,1,VALR)
+                  CALL U2MESG('F', 'ALGORITH13_64',1,VALK,1,VALI,1,VALR)
                END IF
             ELSE
                CALL U2MESK('F','CALCULEL3_76',1,TEMPE(1:8))

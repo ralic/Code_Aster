@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith9 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,9 +50,10 @@ cata_msg={
  la charge  %(k1)s  n'est pas compatible avec fonc_mult
 """),
 
-8: _("""
- son type est inconnu :  %(k1)s 
-"""),
+
+
+
+
 
 9: _("""
  composante non trouvee dans la numerotation
@@ -216,17 +217,20 @@ cata_msg={
  aucune maille enrichie
 """),
 
-52: _("""
- nombre de fonctions errone pour une matrice hermitienne
-"""),
 
-53: _("""
- freq_min < freq_max
-"""),
 
-54: _("""
- erreur sur les indices
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 55: _("""
  mauvaise definition de l'interspectre.
@@ -376,9 +380,12 @@ cata_msg={
  la pression de vapeur n est pas une variable interne pour la loi de couplage  %(k1)s 
 """),
 
-98: _("""
- la saturation n est pas une variable interne pour la loi de couplage  %(k1)s 
-"""),
+
+
+
+
+
+
 
 99: _("""
  la variable  %(k1)s  n existe pas dans la loi cjs en 2d

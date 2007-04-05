@@ -8,7 +8,7 @@
       CHARACTER*16 TYPCON
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ C
             VALI (1) = NUORDR(J)
             VALI (2) = IRE2
             VALK = CHAMOU
-            CALL U2MESG('F', 'PREPOST5_18',1,VALK,2,VALI,0,0.D0)
+            CALL U2MESG('F', 'PREPOST5_16',1,VALK,2,VALI,0,0.D0)
           END IF
           CALL COPISD('CHAMP_GD','G',CHAMIN,CHAMOU)
           CALL RSNOCH(RESUOU,NOMSYM,NUORDR(J),' ')

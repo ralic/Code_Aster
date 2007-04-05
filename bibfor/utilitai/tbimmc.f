@@ -4,7 +4,7 @@
       CHARACTER*(*)       TABLE, LIPAIM(*), FORMAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C
  12      CONTINUE
          ERREUR = .TRUE.
          VALK = INPAR
-         CALL U2MESG('A', 'UTILITAI6_97',1,VALK,0,0,0,0.D0)
+         CALL U2MESG('A', 'UTILITAI6_89',1,VALK,0,0,0,0.D0)
  10   CONTINUE
       IF ( ERREUR ) THEN
          CALL U2MESS('F','PREPOST_60')

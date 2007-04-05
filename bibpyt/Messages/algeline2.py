@@ -1,4 +1,4 @@
-#@ MODIF algeline2 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF algeline2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -366,9 +366,12 @@ cata_msg={
   pas de produit car le cham_no  %(k1)s  existe deja.
 """),
 
-88: _("""
- vraiment desole !
-"""),
+
+
+
+
+
+
 
 89: _("""
  le mot-cle maillage est obligatoire avec le mot-cle crea_fiss. 

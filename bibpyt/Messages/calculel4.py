@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,29 +58,34 @@ cata_msg={
  creation de la table  %(k1)s 
 """),
 
-10: _("""
- si le mot-cle depl est present alors le mot-cle modele est obligatoire.
-"""),
 
-11: _("""
- si le mot cle depl est present alors le mot-cle cham_mater est obligatoire.
-"""),
 
-12: _("""
- la liste d'instants ne doitcomporter qu'un seul instant avec le mot-cle depl
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 13: _("""
  probleme a la recuperation d'un champ
 """),
 
-14: _("""
- dans le cas d'une sd resultat de type dyna_trans, le mot-cle modele est obligatoire.
-"""),
 
-15: _("""
- dans le cas d'une sd resultat de type dyna_trans, le mot-cle cham_mater est obligatoire.
-"""),
+
+
+
+
+
+
+
+
 
 16: _("""
  dans le cas d'une sd resultat de type dyna_trans, le mot-cle excit est obligatoire.
@@ -90,9 +95,10 @@ cata_msg={
  pour un resultat de type mode_meca l option de calcul doit etre k_g_moda.
 """),
 
-18: _("""
- les charges ne s'appuient pas sur le modele donne en argument
-"""),
+
+
+
+
 
 19: _("""
  le mot cle 'fissure' est obligatoire avec l'option  %(k1)s 
@@ -214,9 +220,10 @@ cata_msg={
  methode zac : accommodation et chargement non radial --> methode non appliquable
 """),
 
-52: _("""
- composante non definie dans la grandeur.
-"""),
+
+
+
+
 
 53: _("""
  longueurs des modes locaux incompatibles entre eux.
@@ -302,9 +309,12 @@ cata_msg={
  ! ligrel incompatible avec modele !
 """),
 
-74: _("""
- ! pas de chgeom !
-"""),
+
+
+
+
+
+
 
 75: _("""
  ! pb acces simultane carth/t !

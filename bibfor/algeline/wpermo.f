@@ -6,7 +6,7 @@
       REAL*8            FR(*),AM(*),OMECOR,ERNORM(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C
           VALK (1) = ' '
           VALK (2) = ' '
           VALR = 1.0D70
-          CALL U2MESG('A', 'ALGELINE4_93',2,VALK,0,0,1,VALR)
+          CALL U2MESG('A', 'ALGELINE4_74',2,VALK,0,0,1,VALR)
         ELSE
           FRI = FREQOM(FR(I))*DEPI
           AMI = -ABS(AMI*FRI)/SQRT(1.D0-AMI*AMI)

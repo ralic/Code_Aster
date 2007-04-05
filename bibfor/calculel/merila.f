@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C         -- BOUCLE SUR LES (SUPER)MAILLES
               CALL JEEXIN(NOMACR//'.KP_EE',IRET)
               IF (IRET.EQ.0) THEN
                 IER = IER + 1
-                CALL U2MESK('E','CALCULEL3_68',1,NOMACR)
+                CALL U2MESK('E','CALCULEL3_33',1,NOMACR)
               END IF
             END IF
    10     CONTINUE

@@ -2,7 +2,7 @@
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,7 +127,7 @@ C
             IF(LSUIVI(IOCC))THEN
                CALL U2MESS('F','ALGORITH10_86')
             ELSE 
-               CALL U2MESS('F','ALGORITH3_46')
+               CALL U2MESS('F','MECANONLINE_2')
            ENDIF
          ENDIF
 C

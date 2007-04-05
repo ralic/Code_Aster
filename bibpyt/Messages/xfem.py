@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 12/03/2007   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,9 +34,10 @@ Pour l'utilisateur : les fissures X-FEM sont surement trop proches.
  Le nombre de fissures autorisées avec X-FEM est limité à (i1)i
 """),
 
-3: _("""
- Echec de copier le champ de %(i1)d éléments du CHAM_ELEM_S au CHAM_ELEM 
-"""),
+
+
+
+
 
 4: _("""
  Il est interdit de melanger dans un modèle les fissures X-FEM avec et sans

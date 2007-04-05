@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ASSEMBLA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -687,7 +687,7 @@ C--------------------
                           VALK (1) = RESU
                           VALK (2) = VECEL
                           VALK (3) = NUDEV
-      CALL U2MESG('F', 'ASSEMBLA_54',3,VALK,1,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_41',3,VALK,1,VALI,0,0.D0)
                         ENDIF
 
                         IF (IAD1.GT.NEQUA) THEN
@@ -696,13 +696,13 @@ C--------------------
                           VALI (3) = NEQUA
                           VALK (1) = RESU
                           VALK (2) = VECEL
-      CALL U2MESG('F', 'ASSEMBLA_55',2,VALK,3,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_42',2,VALK,3,VALI,0,0.D0)
                         ENDIF
 
                         IF (NDDL1.GT.100) THEN
                           VALI (1) = NDDL1
                           VALI (2) = 100
-      CALL U2MESG('F', 'ASSEMBLA_56',0,' ',2,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_43',0,' ',2,VALI,0,0.D0)
                         ENDIF
 
                         IF (TYPE.EQ.1) THEN
@@ -787,7 +787,7 @@ C N1 : NBRE DE NOEUDS DE LA MAILLE NUMA
                           VALI (2) = NUMA
                           VALI (3) = N1
                           VALI (4) = NNOE
-      CALL U2MESG('F', 'ASSEMBLA_57',3,VALK,4,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_44',3,VALK,4,VALI,0,0.D0)
                       END IF
                       IL = 0
                       DO 150 K1 = 1,NNOE
@@ -830,7 +830,7 @@ C--------- POUR FETI & LIGREL TARDIF: FIN
                           VALK (4) = NUDEV
                           VALI (1) = N1
                           VALI (2) = NUMA
-      CALL U2MESG('F', 'ASSEMBLA_58',4,VALK,2,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_45',4,VALK,2,VALI,0,0.D0)
                           END IF
 
 C NUMERO D'EQUATION DU PREMIER DDL DE N1
@@ -841,7 +841,7 @@ C NUMERO D'EQUATION DU PREMIER DDL DE N1
                           IF (NDDL1.GT.100) THEN
                           VALI (1) = NDDL1
                           VALI (2) = 100
-      CALL U2MESG('F', 'ASSEMBLA_59',0,' ',2,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_46',0,' ',2,VALI,0,0.D0)
                           END IF
                         ELSE
 C NOEUD PHYSIQUE
@@ -853,7 +853,7 @@ C NOEUD PHYSIQUE
                           IF (NDDL1.GT.100) THEN
                           VALI (1) = NDDL1
                           VALI (2) = 100
-      CALL U2MESG('F', 'ASSEMBLA_60',0,' ',2,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_47',0,' ',2,VALI,0,0.D0)
                           END IF
                         END IF
                         IF (IAD1.EQ.0) THEN
@@ -861,7 +861,7 @@ C NOEUD PHYSIQUE
                           VALK (1) = RESU
                           VALK (2) = VECEL
                           VALK (3) = NUDEV
-      CALL U2MESG('F', 'ASSEMBLA_61',3,VALK,1,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_48',3,VALK,1,VALI,0,0.D0)
                         END IF
                         IF (IAD1.GT.NEQUA) THEN
                           VALI (1) = N1
@@ -869,7 +869,7 @@ C NOEUD PHYSIQUE
                           VALI (3) = NEQUA
                           VALK (1) = RESU
                           VALK (2) = VECEL
-      CALL U2MESG('F', 'ASSEMBLA_62',2,VALK,3,VALI,0,0.D0)
+      CALL U2MESG('F', 'ASSEMBLA_49',2,VALK,3,VALI,0,0.D0)
                         END IF
                         IF (TYPE.EQ.1) THEN
                           DO 130 I1 = 1,NDDL1

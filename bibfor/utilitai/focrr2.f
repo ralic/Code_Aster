@@ -6,7 +6,7 @@
       CHARACTER*16  NOMCHA
       CHARACTER*19  NOMFON,RESU
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -227,7 +227,7 @@ C           -------------------------
             VALK (2) = RESU
             VALI = IP2
             VALR (1) = RVAL
-            CALL U2MESG('F', 'UTILITAI6_20',2,VALK,1,VALI,1,VALR)
+            CALL U2MESG('F', 'UTILITAI6_19',2,VALK,1,VALI,1,VALR)
           END IF
 
           CALL DISMOI('F','PROF_CHNO',CH1,'CHAM_NO',IBID,PROFC2,IE)
@@ -295,7 +295,7 @@ C        -------------------------------------------------------------
         IF (NVERI1 .OR. (NVERI2.AND.NVERI3)) THEN
             VALK (1) = K8B
             VALK (2) = K8B
-        CALL U2MESG('F', 'UTILITAI6_21',2,VALK,0,0,0,0.D0)
+        CALL U2MESG('F', 'UTILITAI6_15',2,VALK,0,0,0,0.D0)
         END IF
         CALL DISMOI('F','NOM_MAILLA',CH1,'CHAM_ELEM',IBID,NOMA,IE)
         CALL DISMOI('F','NOM_GD',CH1,'CHAM_ELEM',IBID,NOGD,IE)
@@ -349,7 +349,7 @@ C           -------------------------
             VALK (2) = RESU
             VALI = IP2
             VALR (1) = RVAL
-            CALL U2MESG('F', 'UTILITAI6_26',2,VALK,1,VALI,1,VALR)
+            CALL U2MESG('F', 'UTILITAI6_25',2,VALK,1,VALI,1,VALR)
           END IF
 
           IF (RBASE.EQ.0.0D0) THEN

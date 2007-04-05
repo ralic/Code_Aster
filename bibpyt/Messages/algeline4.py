@@ -1,4 +1,4 @@
-#@ MODIF algeline4 Messages  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline4 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,67 +41,91 @@ cata_msg={
  erreur donnees noeud deja existant :  %(k1)s
 """),
 
-6: _("""
- erreur donnees noeud deja existant :  %(k1)s
-"""),
+
+
+
+
 
 7: _("""
  erreur donnees maille deja existante :  %(k1)s
 """),
 
-8: _("""
- erreur donnees maille deja existante :  %(k1)s
-"""),
+
+
+
+
 
 9: _("""
  erreur donnees group_ma deja existant :  %(k1)s
 """),
 
-10: _("""
- erreur donnees group_ma deja existant :  %(k1)s
-"""),
+
+
+
+
+
+
 
 11: _("""
  erreur donnees group_no deja existant :  %(k1)s
 """),
 
-12: _("""
- erreur donnees maille deja existante :  %(k1)s
-"""),
 
-13: _("""
- erreur donnees group_ma deja existant :  %(k1)s
-"""),
 
-14: _("""
- erreur donnees maille deja existante :  %(k1)s
-"""),
 
-15: _("""
- erreur donnees maille deja existante :  %(k1)s
-"""),
 
-16: _("""
- erreur donnees group_no deja existant :  %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 17: _("""
   inigpc %(i1)d
 """),
 
-18: _("""
- non convergence  nombre d'iterations:  %(i1)d
-   norme du residu abs:  %(r1)f
-   norme du residu rel:  %(r2)f
-"""),
+
+
+
+
+
+
 
 19: _("""
  Matrice masse non définie, il faudrait essayer l'autre algorithme de résolution.
 """),
 
-20: _("""
- Matrice masse non définie, il faudrait essayer l'autre algorithme de résolution.
-"""),
+
+
+
+
+
+
 
 21: _("""
  manque de place memoire longueur de bloc insuffisante:  %(i1)d
@@ -109,10 +133,12 @@ cata_msg={
   neccessite un bloc de  %(i3)d
 """),
 
-22: _("""
- manque de place memoire longueur de bloc insuffisante:  %(i1)d
- le super-noeud  %(i2)d neccessite un bloc de  %(i3)d
-"""),
+
+
+
+
+
+
 
 23: _("""
  par nueq n'est pas l'identite.indice %(i1)d nueq  %(i2)d
@@ -127,28 +153,29 @@ cata_msg={
     type constante:  %(k3)s
 """),
 
-26: _("""
- combinaison non prevue   type resultat :  %(k1)s    type matrice  :  %(k2)s
-    type constante:  %(k3)s
-"""),
+
+
+
+
 
 27: _("""
  combinaison non prevue   type resultat :  %(k1)s    type matrice  :  %(k2)s
 """),
 
-28: _("""
- combinaison non prevue   type resultat :  %(k1)s    type matrice  :  %(k2)s
-    type constante:  %(k3)s
-"""),
 
-29: _("""
- combinaison non prevue   type resultat :  %(k1)s    type matrice  :  %(k2)s
-    type constante:  %(k3)s
-"""),
 
-30: _("""
- combinaison non prevue   type resultat :  %(k1)s    type matrice  :  %(k2)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 31: _("""
  combinaison non prevue   type resultat :  %(k1)s
@@ -169,9 +196,12 @@ cata_msg={
  erreur dans les donnees la masse n existe pas dans la table  %(k1)s
 """),
 
-35: _("""
- erreur dans les donnees la masse n existe pas dans la table  %(k1)s
-"""),
+
+
+
+
+
+
 
 36: _("""
  l'option de normalisation  %(k1)s  n'est pas implantee. %(i1)d
@@ -185,17 +215,20 @@ cata_msg={
  appel errone :   code retour de rsexch : %(i1)d    pb cham_no %(k1)s
 """),
 
-39: _("""
- appel errone :   code retour de rsexch : %(i1)d    pb cham_no %(k1)s
-"""),
 
-40: _("""
- appel errone :   code retour de rsexch : %(i1)d    pb cham_no %(k1)s
-"""),
 
-41: _("""
- appel errone :   code retour de rsexch : %(i1)d    pb cham_no %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 42: _("""
  pas de produit car les valeurs de la matrice sont  %(k1)s
@@ -206,49 +239,74 @@ cata_msg={
  la maille de nom  %(k1)s  existe deja %(k2)s
 """),
 
-44: _("""
- erreur donnees noeud deja existant :  %(k1)s
-"""),
 
-45: _("""
- erreur donnees noeud deja existant :  %(k1)s
-"""),
 
-46: _("""
- erreur donnees maille deja existante :  %(k1)s
-"""),
 
-47: _("""
- erreur donnees maille deja existante :  %(k1)s
-"""),
 
-48: _("""
- erreur donnees maille deja existante :  %(k1)s
-"""),
 
-49: _("""
- erreur donnees maille deja existante :  %(k1)s
-"""),
 
-50: _("""
- erreur donnees group_ma deja existant :  %(k1)s
-"""),
 
-51: _("""
- erreur donnees group_ma deja existant :  %(k1)s
-"""),
 
-52: _("""
- erreur donnees group_no deja existant :  %(k1)s
-"""),
 
-53: _("""
- erreur donnees group_ma deja existant :  %(k1)s
-"""),
 
-54: _("""
- erreur donnees group_ma deja existant :  %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 55: _("""
  ***** alarme *****pas d'extraction pour  %(k1)s
@@ -270,9 +328,12 @@ cata_msg={
   pivot nul a la ligne :  %(i1)d
 """),
 
-59: _("""
-  manque de memoire memoire disponible %(i1)d et memoire necessaire %(i2)d
-"""),
+
+
+
+
+
+
 
 60: _("""
   incoherence n2 nbddl sans lagranges %(i1)d nbddl reconstitues %(i2)d
@@ -305,33 +366,51 @@ cata_msg={
  la val. pro. est:   %(r1)f
 """),
 
-67: _("""
- la val. pro. est:   %(r1)f
-"""),
+
+
+
+
+
+
 
 68: _("""
  la vp est:   %(r1)f
 """),
 
-69: _("""
- la vp est:   %(r1)f
-"""),
 
-70: _("""
- la val. pro. est:   %(r1)f
-"""),
 
-71: _("""
- la val. pro. est:   %(r1)f
-"""),
 
-72: _("""
- la vp est:   %(r1)f
-"""),
 
-73: _("""
- la vp est:   %(r1)f
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 74: _("""
  calcul d' erreur modale une valeur propre reelle est detectee %(k1)s
@@ -353,9 +432,12 @@ cata_msg={
  l'option de normalisation  %(k1)s  n'est pas implantee.
 """),
 
-78: _("""
- l'option de normalisation  %(k1)s  n'est pas implantee.
-"""),
+
+
+
+
+
+
 
 79: _("""
  champ inexistant  %(k1)s impossible de recuperer neq %(k2)s
@@ -384,10 +466,12 @@ cata_msg={
  -->   ou prec_soren =  %(r1)f
 """),
 
-84: _("""
- incoherence de certains parametres modaux propres a arpack
-  numero d'erreur  %(i1)d
-"""),
+
+
+
+
+
+
 
 85: _("""
  appel errone mode numero %(i1)d position modale %(i2)d
@@ -415,37 +499,40 @@ cata_msg={
  valeur(s) propre(s) complexe(s) sans  conjuguee :  %(i3)d
 """),
 
-89: _("""
- pour le probleme reduitvaleur(s) propre(s) reelle(s)                   :  %(i1)d
- valeur(s) propre(s) complexe(s) avec  conjuguee :  %(i2)d
- valeur(s) propre(s) complexe(s) sans  conjuguee :  %(i3)d
-"""),
 
-90: _("""
- votre probleme est fortement amorti.
- valeur(s) propre(s) reelle(s)                   :  %(i1)d
- valeur(s) propre(s) complexe(s) avec  conjuguee :  %(i2)d
- valeur(s) propre(s) complexe(s) sans  conjuguee :  %(i3)d
-"""),
 
-91: _("""
- pour le probleme reduitvaleur(s) propre(s) reelle(s)                   :  %(i1)d
- valeur(s) propre(s) complexe(s) avec  conjuguee :  %(i2)d
- valeur(s) propre(s) complexe(s) sans  conjuguee :  %(i3)d
-"""),
 
-92: _("""
- votre probleme est fortement amorti.
- valeur(s) propre(s) reelle(s)                   :  %(i1)d
- valeur(s) propre(s) complexe(s) avec  conjuguee :  %(i2)d
- valeur(s) propre(s) complexe(s) sans  conjuguee :  %(i3)d
-"""),
 
-93: _("""
- calcul d' erreur modale une valeur propre reelle est detectee %(k1)s
- a partir du couple (frequence, amortissement reduit) on ne peut plus  l'a reconstruire %(k2)s
- par convention l'erreur modale est  fixee a :  %(r1)f
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 94: _("""
  probleme quadratique complexe
@@ -459,14 +546,19 @@ cata_msg={
  on le ramene a la valeur :  %(r2)f
 """),
 
-96: _("""
- l'option de normalisation  %(k1)s  n'est pas implantee.
-"""),
 
-97: _("""
- incoherence de certains parametres modaux propres a arpack
-  numero d'erreur  %(i1)d
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 98: _("""
  nombre de valeurs propres convergees  %(i1)d
@@ -483,9 +575,11 @@ cata_msg={
  demandees %(i11)d
 """),
 
-99: _("""
- incoherence de certains parametres modaux propres a arpack
-  numero d'erreur  %(i1)d
-"""),
+
+
+
+
+
+
 
 }

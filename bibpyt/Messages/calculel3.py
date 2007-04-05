@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -154,16 +154,15 @@ cata_msg={
  le modele doit contenir des elements finis ou des sous-structures.
 """),
 
-36: _("""
-  -> Le matériau dépend de la température or aucun champ de température
-     n'a été défini. Les calculs seront donc impossibles sauf si vous utilisez
-     une modélisation THM.
 
-"""),
 
-37: _("""
- le materiau depend de la temperature et il n'y a pas de temperature de reference,on prendra donc la valeur 0.
-"""),
+
+
+
+
+
+
+
 
 38: _("""
  on ne traite pas le type_scalaire: %(k1)s 
@@ -290,17 +289,21 @@ cata_msg={
  pour calculer l'option  %(k1)s  les parametres suivants sont obligatoires: "pgeomer" et "pcontrr".
 """),
 
-68: _("""
- la rigidite du macr_elem : %(k1)s  n a pas encore ete calculee.
-"""),
+
+
+
+
+
+
 
 69: _("""
  il n y a ni elements ni sous-struc
 """),
 
-70: _("""
- grandeur inconnue.
-"""),
+
+
+
+
 
 71: _("""
  il faut 1 chargement de rotation et un seul. 

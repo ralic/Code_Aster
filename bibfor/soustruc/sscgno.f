@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -342,7 +342,7 @@ C         ----------------------------------------
             CALL JEDETR ( PREFIX//'.FOND      .TYPE' )
 
           ELSE
-            CALL U2MESK('F','PREPOST3_82',1,OPTION)
+            CALL U2MESK('F','CALCULEL6_10',1,OPTION)
           END IF
 
 C         -- CREATION ET AFFECTATION DU GROUP_NO :

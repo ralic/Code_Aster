@@ -1,4 +1,4 @@
-#@ MODIF algorith7 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith7 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,9 +74,10 @@ cata_msg={
  f(0)=  %(k1)s  > 0 
 """),
 
-14: _("""
-  le concept vari_comm :  %(k1)s  ne contient aucun champ d irradiation
-"""),
+
+
+
+
 
 15: _("""
   le concept evol_char :  %(k1)s  n'en est pas un !
@@ -340,9 +341,12 @@ cata_msg={
  dvp : non implante
 """),
 
-77: _("""
- n=0
-"""),
+
+
+
+
+
+
 
 78: _("""
  feti et frottement incompatibles !
@@ -389,9 +393,12 @@ cata_msg={
      "PIVOT NUL" avec le solveur MULT_FRONT ou LDLT.
 """),
 
-88: _("""
- contact et pilotage sont des fonctionnalites incompatibles
-"""),
+
+
+
+
+
+
 
 89: _("""
  contact et rech. lin. peuvent poser des problemes de convergence

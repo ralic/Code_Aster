@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith10 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,33 +30,40 @@ cata_msg={
  tailles matrices incompatibles
 """),
 
-3: _("""
- le vecteur normal est colineaire au plan de projection
-"""),
 
-4: _("""
- on ne sait pas traiter ce type de maille
-"""),
 
-5: _("""
- le noeud esclave n a pas pu s apparier
-"""),
 
-6: _("""
- seule la methode quatre triangles est disponible pour quadrangle
-"""),
 
-7: _("""
- il faut reactualiser la projection
-"""),
 
-8: _("""
- une maille maitre a une surface nulle
-"""),
 
-9: _("""
- la projection quadratique pour les triangles n'est pas disponible
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 10: _("""
  taille produit matrice-vecteur incompatible
@@ -90,13 +97,15 @@ cata_msg={
  l'option  %(k1)s  s'aplique sur toute la structure
 """),
 
-18: _("""
- le groupe de noeuds  %(k1)s  ne fait pas partie du maillage  %(k2)s 
-"""),
 
-19: _("""
- le noeud  %(k1)s  ne fait pas partie du maillage  %(k2)s 
-"""),
+
+
+
+
+
+
+
+
 
 20: _("""
   le comportement :  %(k1)s  n'a pas etet defini
@@ -109,17 +118,20 @@ cata_msg={
 
 
 
-26: _("""
- la recherche directe de la maille la plus proche n'est pas operationnelle
-"""),
 
-27: _("""
- la recherche par voisinage du passe n'est pas operationnelle
-"""),
 
-28: _("""
- la recherche par boites n'est pas operationnelle
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -275,13 +287,19 @@ cata_msg={
  il faut autant de "maille"  que de "noeud"
 """),
 
-70: _("""
- le noeud  %(k1)s  n'existe pas.
-"""),
 
-71: _("""
- la composante  %(k1)s  du noeud  %(k2)s  n'existe pas.
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 72: _("""
  il faut definir une liste de mailles pour post-traiter un cham_elem
@@ -307,9 +325,10 @@ cata_msg={
  element degenere
 """),
 
-78: _("""
- nume_suivi incorrect dans suivi_ddl
-"""),
+
+
+
+
 
 79: _("""
  ddl inconnu sur le noeud ou  la maille specifiee pour le suivi

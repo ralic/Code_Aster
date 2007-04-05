@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,9 +22,10 @@ def _(x) : return x
 
 cata_msg={
 
-2: _("""
- operation d'appariement inconnue
-"""),
+
+
+
+
 
 3: _("""
  la liste des cham_no n'existe pas
@@ -339,13 +340,15 @@ cata_msg={
  pas de valeurs propres trouvees
 """),
 
-80: _("""
- les champs de temperatureet d irradiation doivent etre specifiespour utiliser la force de serragesous forme de fonction
-"""),
 
-81: _("""
- les champs de temperatureet d irradiation doivent etre specifiespour utiliser les angles et les pentessous forme de fonctions
-"""),
+
+
+
+
+
+
+
+
 
 82: _("""
  nombre maximal de niveau de subdivision atteint

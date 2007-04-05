@@ -5,7 +5,7 @@
       CHARACTER*(*)       TABPUS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C                   ----------------
             VALR = DINST
             VALK = 'V_USUR_OBST_CUMU'
             VALI = I
-            CALL U2MESG('F', 'PREPOST5_55',1,VALK,1,VALI,1,VALR)
+            CALL U2MESG('F', 'PREPOST5_54',1,VALK,1,VALI,1,VALR)
          ENDIF
 C
          CALL TBLIVA ( NOMTA, 2,VALEK, I,DINST,C16B,K8B, CRIT,PREC,
@@ -116,7 +116,7 @@ C                          -----------
             VALR = DINST
             VALK = 'ANGLE_DEBUT'
             VALI = I
-            CALL U2MESG('F', 'PREPOST5_56',1,VALK,1,VALI,1,VALR)
+            CALL U2MESG('F', 'PREPOST5_54',1,VALK,1,VALI,1,VALR)
          ENDIF
 C
  10   CONTINUE

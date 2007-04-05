@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
       IF ( CODRET.NE.0 ) THEN
         VALK (1) = NOFIMD
         VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_47',1,VALK,1,VALI,0,0.D0)
+        CALL U2MESG('A', 'PREPOST5_36',1,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_69')
       ENDIF
 C
@@ -96,7 +96,7 @@ C
         VALK (1) = NOFIMD
         VALK (2) = NOCHMD
         VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_48',2,VALK,1,VALI,0,0.D0)
+        CALL U2MESG('A', 'PREPOST5_23',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_70')
       ENDIF
 C

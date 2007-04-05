@@ -1,5 +1,5 @@
       SUBROUTINE BMNBMD(BASMDZ,OPTINZ,NBOUT)
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ C
         ELSE
            VALK (1) = 'CYCLIQUE'
            VALK (2) = OPTION
-           CALL U2MESG('F', 'ALGORITH12_24',2,VALK,0,0,0,0.D0)
+           CALL U2MESG('F', 'ALGORITH12_23',2,VALK,0,0,0,0.D0)
         ENDIF
       ENDIF
 C
@@ -129,7 +129,7 @@ C           NBOUT=NBMOD
         ELSE
            VALK (1) = 'RITZ'
            VALK (2) = OPTION
-           CALL U2MESG('F', 'ALGORITH12_25',2,VALK,0,0,0,0.D0)
+           CALL U2MESG('F', 'ALGORITH12_23',2,VALK,0,0,0,0.D0)
         ENDIF
       ENDIF
 C

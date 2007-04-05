@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF prepost5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,12 +58,12 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  taille necessaire :  %(i2)d 
 """),
 
-9: _("""
- 
- la taille memoire   necessaire au vecteur de travail dans   lequel nous stockons les composantes   u et v du vecteur tau est trop importante   par rapport a la place disponible.
- taille disponible :  %(i1)d 
- taille necessaire :  %(i2)d 
-"""),
+
+
+
+
+
+
 
 10: _("""
  le noeud traite  n'est associe a aucune maille volumique.
@@ -71,49 +71,57 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  nombre de mailles attachees au noeud =  %(i2)d 
 """),
 
-11: _("""
- erreur donneesnoeud deja existant :  %(k1)s 
-"""),
+
+
+
+
+
+
 
 12: _("""
  le noeud milieu : %(k1)s 
  n'est pas supprime car il appartient  a une maille qui reste quadratique. 
 """),
 
-13: _("""
- 
- la taille memoire   necessaire au vecteur de travail dans   lequel nous stockons les composantes   u et v du vecteur tau est trop importante   par rapport a la place disponible.
- taille disponible :  %(i1)d 
- taille necessaire :  %(i2)d 
-"""),
 
-14: _("""
- 
- la taille memoire   necessaire au vecteur de travail dans   lequel nous stockons les composantes   u et v du vecteur tau est trop importante   par rapport a la place disponible.
- taille disponible :  %(i1)d 
- taille necessaire :  %(i2)d 
-"""),
 
-15: _("""
- le noeud traite  n'est associe a aucune maille volumique.
- numero du noeud =  %(i1)d 
- nombre de mailles attachees au noeud =  %(i2)d 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 16: _("""
  appel erronenumero d'ordre %(i1)d code retour de rsexch : %(i2)d 
  pb cham_no %(k1)s 
 """),
 
-17: _("""
- appel erronenumero d'ordre %(i1)d code retour de rsexch : %(i2)d 
- pb cham_no %(k1)s 
-"""),
 
-18: _("""
- appel erronenumero d'ordre %(i1)d code retour de rsexch : %(i2)d 
- pb cham_no %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 19: _("""
  nombre de noeud(s) elimine(s) du maillage  %(i1)d 
@@ -144,21 +152,30 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
   on ne trouve pas la composante  %(k1)s  dans la grandeur  %(k2)s 
 """),
 
-26: _("""
- on ne trouve pas la composante  %(k1)s  dans la grandeur  %(k2)s 
-"""),
+
+
+
+
+
+
 
 27: _("""
  l objet  %(k1)s  n existe pas. %(k2)s veuillez renseigner le modele. %(k3)s 
 """),
 
-28: _("""
-  on ne trouve pas la composante  %(k1)s  dans la grandeur  %(k2)s 
-"""),
 
-29: _("""
-  on ne trouve pas la composante  %(k1)s  dans la grandeur  %(k2)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 30: _("""
   on ne trouve pas la maille  %(k1)s 
@@ -176,9 +193,12 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  fichier med :  %(k1)s maillage :  %(k2)s 
 """),
 
-34: _("""
- fichier med :  %(k1)s maillage :  %(k2)s erreur efouvr numero  %(i1)d 
-"""),
+
+
+
+
+
+
 
 35: _("""
  fichier med :  %(k1)s maillage :  %(k2)s erreur efferm numero  %(i1)d 
@@ -196,9 +216,12 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
   on ne trouve pas le noeud : %(k1)s 
 """),
 
-39: _("""
-  on ne trouve pas le groupe : %(k1)s 
-"""),
+
+
+
+
+
+
 
 40: _("""
   le groupe  %(k1)s ne contient aucun noeud  %(k2)s 
@@ -229,17 +252,26 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  element inconnu dans le fichier ideas element numero :  %(i1)d 
 """),
 
-47: _("""
- fichier med :  %(k1)s erreur efouvr numero  %(i1)d 
-"""),
 
-48: _("""
- fichier med :  %(k1)s champ :  %(k2)s erreur efferm numero  %(i1)d 
-"""),
 
-49: _("""
- fichier med :  %(k1)s erreur efferm numero  %(i1)d 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 50: _("""
  fichier med :  %(k1)s erreur efnmaa numero  %(i1)d 
@@ -255,9 +287,12 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  de longueur  %(i3)d 
 """),
 
-53: _("""
- fichier med :  %(k1)s erreur efferm numero  %(i1)d 
-"""),
+
+
+
+
+
+
 
 54: _("""
  probleme dans  nomta traitement de l'instant  %(r1)f 
@@ -265,17 +300,19 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
   pour le secteur  %(i1)d 
 """),
 
-55: _("""
- probleme dans  nomta traitement de l'instant  %(r1)f 
-  recuperation de  %(k1)s 
-  pour le secteur  %(i1)d 
-"""),
 
-56: _("""
- probleme dans  nomta traitement de l'instant  %(r1)f 
-  recuperation de  %(k1)s 
-  pour le secteur  %(i1)d 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 57: _("""
  probleme dans  nomta traitement de l'instant  %(r1)f 
@@ -292,23 +329,26 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
   recuperation "numeli" pour le secteur  %(i1)d 
 """),
 
-60: _("""
- champ inexistant nom_cham  %(k1)s  nume_ordre  %(i1)d 
-"""),
+
+
+
+
+
+
 
 61: _("""
  la composante  %(k1)s  n'existe dans aucun des champs %(k2)s 
 """),
 
-62: _("""
- trop d'amortissements modaux   nombre d'amortissement :  %(i1)d 
-    nombre de mode :  %(i2)d 
-"""),
 
-63: _("""
- il manque des amortissements modaux   nombre d'amortissement :  %(i1)d 
-    nombre de mode :  %(i2)d 
-"""),
+
+
+
+
+
+
+
+
 
 64: _("""
  la valeur d'amortissement reduit est trop grande
@@ -321,9 +361,12 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  le modele  %(k1)s  est incompatible avec la methode xfem %(k2)s 
 """),
 
-66: _("""
- le modele  %(k1)s  est incompatible avec la methode xfem %(k2)s 
-"""),
+
+
+
+
+
+
 
 67: _("""
  
@@ -339,12 +382,12 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  nb de paquets reels:  %(i2)d 
 """),
 
-69: _("""
- 
- la taille memoire   necessaire au vecteur de travail   est trop importante   par rapport a la place disponible.
- taille disponible :  %(i1)d 
- taille necessaire :  %(i2)d 
-"""),
+
+
+
+
+
+
 
 70: _("""
  
@@ -353,13 +396,17 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  nb de paquets reels:  %(i2)d 
 """),
 
-71: _("""
-  on ne trouve pas le groupe  %(k1)s 
-"""),
 
-72: _("""
-  on ne trouve pas le groupe  %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
 
 73: _("""
  appel errone  resultat :  %(k1)s   archivage numero :  %(i1)d 
@@ -386,20 +433,21 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
   ne se trouve pas dans la banque. %(k3)s 
 """),
 
-78: _("""
- *** banque de donnees *** pour le type de geometrie  %(k1)s 
-  le couple de materiaux  %(k2)s 
-  ne se trouve pas dans la banque. %(k3)s 
-"""),
 
-79: _("""
- *** banque de donnees *** pour le type de geometrie  %(k1)s 
-  le couple de materiaux  %(k2)s 
-  ne se trouve pas dans la banque. %(k3)s 
-"""),
 
-80: _("""
- erreurs donnees composante inconnue  %(k1)s  pour la grandeur  %(k2)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

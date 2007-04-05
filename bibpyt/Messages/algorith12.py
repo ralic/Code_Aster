@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith12 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,10 +21,10 @@
 def _(x) : return x
 
 cata_msg={
-1: _("""
- nombre de mot-cle invalide numero liaison: %(i1)d mot-cle: %(k1)s
- vous en avez defini: %(i2)d il en faut exactement: %(i3)d
-"""),
+
+
+
+
 
 2: _("""
  interface inexistante numero liaison: %(i1)d nom sous-structure: %(k1)s
@@ -56,19 +56,22 @@ cata_msg={
     il manque l'option :  %(k2)s
 """),
 
-8: _("""
- &coefficient de conditionnement des lagranges:  %(r1)f
-"""),
+
+
+
+
 
 9: _("""
   probleme stockage :   option de calcul :  %(k1)s    direction :  %(k2)s
     nom du champ :  %(k3)s
 """),
 
-10: _("""
-  probleme stockage :   option de calcul :  %(k1)s    direction :  %(k2)s
-    nom du champ :  %(k3)s
-"""),
+
+
+
+
+
+
 
 11: _("""
  correction statique non prise en compte   pour l'option :  %(k1)s
@@ -94,24 +97,30 @@ cata_msg={
     le type n'est pas  %(k3)s
 """),
 
-16: _("""
- donnees incompatibles :   pour les mode_corr :  %(k1)s
-    il manque le champ :  %(k2)s
-"""),
 
-17: _("""
- donnees incompatibles :   pour les mode_corr :  %(k1)s    pour le champ :  %(k2)s
-    le type n'est pas  %(k3)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 18: _("""
  on ne sait pas bien traiter l'option de calcul demandee :  %(k1)s
 """),
 
-19: _("""
- donnees incompatibles :   pour les modes mecaniques :  %(k1)s
-    il manque l'option :  %(k2)s
-"""),
+
+
+
+
+
+
 
 20: _("""
  donnees incompatibles :   pour les modes mecaniques :  %(k1)s
@@ -134,15 +143,19 @@ cata_msg={
   question -->  %(k2)s
 """),
 
-24: _("""
- arret sur question illicite pour le type de base type de base -->  %(k1)s
-  question -->  %(k2)s
-"""),
 
-25: _("""
- arret sur question illicite pour le type de base type de base -->  %(k1)s
-  question -->  %(k2)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 26: _("""
  arret sur manque argument base modale donnee -->  %(k1)s
@@ -175,34 +188,45 @@ cata_msg={
   interf_dyna  donnee -->  %(k2)s
 """),
 
-32: _("""
- arret sur base modale sans interf_dyna base modale  donnee -->  %(k1)s
-"""),
 
-33: _("""
- arret sur manque arguments base modale  donnee -->  %(k1)s
-  interf_dyna  donnee -->  %(k2)s
-"""),
 
-34: _("""
- probleme arguments de definition interface nom interface donne %(k1)s
-  numero interface donne %(i1)d
-"""),
 
-35: _("""
- arret sur base modale sans interf_dyna base modale  donnee -->  %(k1)s
-"""),
 
-36: _("""
- arret sur manque arguments base modale  donnee -->  %(k1)s
-  interf_dyna  donnee -->  %(k2)s
-"""),
 
-37: _("""
- affichage des coeff d'amortissement:
- premier coefficient d'amortissement %(r1)f
- second coefficient d'amortissement %(r2)f
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 38: _("""
  arret sur probleme coherence interface
@@ -236,21 +260,25 @@ cata_msg={
  noeud sur l axe_z noeud :  %(k1)s
 """),
 
-45: _("""
- noeud sur l axe_z noeud :  %(k1)s
-"""),
 
-46: _("""
- etude 2d angle nautique unique :  %(r1)f
-"""),
 
-47: _("""
- noeud sur l'axe_z noeud :  %(k1)s
-"""),
 
-48: _("""
- noeud sur l'axe_z noeud :  %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 49: _("""
  probleme: sous-structure inconnue sous-structure -->  %(k1)s
@@ -264,19 +292,21 @@ cata_msg={
  nom de sous-structure non trouve la sous-structure :  %(k1)s n existe pas  %(k2)s
 """),
 
-52: _("""
- Nombre de modes propres calculés isuffisant.
- MODE_MECA :  %(k1)s
- Nombre de modes propres calculés limité a %(i1)d
-"""),
+
+
+
+
 
 53: _("""
  arret sur pivot nul ligne -->  %(i1)d
 """),
 
-54: _("""
- arret sur pivot nul ligne -->  %(i1)d
-"""),
+
+
+
+
+
+
 
 55: _("""
  le maillage mail ne contient pas de group_ma mail=  %(k1)s
@@ -299,13 +329,19 @@ cata_msg={
  nombre noeuds communs nbnoco =  %(i1)d
 """),
 
-60: _("""
- nombre noeuds communs nbnoco =  %(i1)d
-"""),
 
-61: _("""
- nombre noeuds communs nbnoco =  %(i1)d
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 62: _("""
  les deux numerotations n'ont pas meme maillage d'origine
@@ -325,13 +361,12 @@ cata_msg={
  arret sur perte information ddl physique
 """),
 
-65: _("""
- les deux numerotations n'ont  pas meme maillage d'origine
-  numerotation 1:  %(k1)s
-  maillage 1:  %(k2)s
-  numerotation 2:  %(k3)s
-  maillage 2:  %(k4)s
-"""),
+
+
+
+
+
+
 
 66: _("""
  champ inexistant champ:  %(k1)s , nume_ordre:  %(i1)d , mode_meca:  %(k2)s
@@ -427,16 +462,19 @@ cata_msg={
  , acces "inst":  %(r1)f
 """),
 
-87: _("""
- plusieurs champs  correspondant a l'acces demande.resultat  %(k1)s
- , acces "inst":  %(r1)f
- , nombre : %(i1)d
-"""),
 
-88: _("""
- pas de champ  correspondant a un acces demande.resultat  %(k1)s
- , acces "inst":  %(r1)f
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 89: _("""
  instant de reprise superieur a la liste des instants   instant de reprise:  %(r1)f
@@ -462,16 +500,19 @@ cata_msg={
     borne max:  %(r4)f
 """),
 
-93: _("""
- plusieurs champs  correspondant a l'acces demande.resultat  %(k1)s
- , acces "inst":  %(r1)f
- , nombre : %(i1)d
-"""),
 
-94: _("""
- pas de champ  correspondant a un acces demande.resultat  %(k1)s
- , acces "inst":  %(r1)f
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 96: _("""
  mauvaise valeur de typcum:  %(i1)d

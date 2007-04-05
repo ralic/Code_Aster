@@ -1,4 +1,4 @@
-#@ MODIF modelisa7 Messages  DATE 13/02/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa7 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -330,9 +330,12 @@ cata_msg={
  le group_ma  %(k1)s  ne fait pas partie du maillage :  %(k2)s
 """),
 
-78: _("""
- la maille  %(k1)s  ne fait pas partie du maillage :  %(k2)s
-"""),
+
+
+
+
+
+
 
 79: _("""
  le type  %(k1)s d'objets a verifier n'est pas correct : il ne peut etre egal qu'a group_no ou noeud ou group_ma ou maille
@@ -403,9 +406,10 @@ cata_msg={
  pb de groupe mailles enrichies
 """),
 
-96: _("""
- seules les chargement mecaniques peuvent etre des fonctions
-"""),
+
+
+
+
 
 98: _("""
  Erreur lors de la vérification des noms de groupes.

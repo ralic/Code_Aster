@@ -6,7 +6,7 @@
      &         RUGOSI(8), Z, DZ, X(5), Z0
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -188,7 +188,7 @@ C
       IF ( IRET .NE. 1) THEN
          VALI (1) = IRET
          VALI (2) = IT
-         CALL U2MESG('A', 'ALGORITH13_24',0,' ',2,VALI,0,0.D0)
+         CALL U2MESG('A', 'ALGORITH13_22',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
       X(1) = XX(1)

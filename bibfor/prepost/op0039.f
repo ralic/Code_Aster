@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -455,7 +455,7 @@ C
                IF ( IRET .NE. 0 ) THEN
                VALK (1) = ZK16(JNOSY+I)
                VALI = ZI(JORDR+J)
-                  CALL U2MESG('A', 'PREPOST5_60',1,VALK,1,VALI,0,0.D0)
+                  CALL U2MESG('A', 'POSTRELE_41',1,VALK,1,VALI,0,0.D0)
                ENDIF
  14          CONTINUE
  16        CONTINUE

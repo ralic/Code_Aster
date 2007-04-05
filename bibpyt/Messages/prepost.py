@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF prepost Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -202,9 +202,12 @@ cata_msg={
  une nappe doit etre introduite sous le mot cle taheri_nappe
 """),
 
-46: _("""
- pour calculer le dommage il faut definir le comportement fatigue dans defi_materiau
-"""),
+
+
+
+
+
+
 
 47: _("""
  la courbe de manson_coffin est necessaire pour le calcul du dommage taheri_manson_coffin

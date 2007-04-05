@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C
          CALL JEEXIN ( MAILSK//'.INV.SKELETON',IRET)
          IF (IRET.EQ.0) THEN
             VALK = MAILSK
-            CALL U2MESG('F', 'ALGORITH14_29',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'ALGORITH14_27',1,VALK,0,0,0,0.D0)
          ENDIF
          CALL JEVEUO ( MAILSK//'.INV.SKELETON','L',LLINSK)
 C

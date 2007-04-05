@@ -1,4 +1,4 @@
-#@ MODIF indicateur Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF indicateur Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,13 +23,14 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- Le diamètre de l'élément de type %(k1)s vaut : %(r1)f
-"""),
 
-2: _("""
- Dans le programme %(k1)s, impossible de trouver le diamètre
- pour un élément de type %(k2)s
-"""),
+
+
+
+
+
+
+
+
 
 }

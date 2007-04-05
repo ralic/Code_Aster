@@ -11,7 +11,7 @@
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -425,7 +425,7 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
         VALK (2) = NOMTE
         VALK (3) = ELREFA
         VALK (4) = FAPG
-         CALL U2MESG('I', 'CALCULEL5_79',4,VALK,0,0,0,0.D0)
+         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
 
        ENDIF
 
@@ -645,7 +645,7 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
         VALK (2) = NOMTE
         VALK (3) = ELREFA
         VALK (4) = FAPG
-         CALL U2MESG('I', 'CALCULEL5_79',4,VALK,0,0,0,0.D0)
+         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
 
        ENDIF
 
@@ -915,7 +915,7 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
         VALK (2) = NOMTE
         VALK (3) = ELREFA
         VALK (4) = FAPG
-         CALL U2MESG('I', 'CALCULEL5_79',4,VALK,0,0,0,0.D0)
+         CALL U2MESG('I', 'CALCULEL5_76',4,VALK,0,0,0,0.D0)
 
        ENDIF
 
@@ -923,7 +923,7 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
         VALK (1) = NOMTE
         VALK (2) = NOMTE
         VALK (3) = ELREFA
-        CALL U2MESG('I', 'CALCULEL5_82',3,VALK,0,0,0,0.D0)
+        CALL U2MESG('I', 'CALCULEL5_78',3,VALK,0,0,0,0.D0)
 
       ENDIF
 

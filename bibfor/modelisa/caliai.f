@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -265,7 +265,7 @@ C              ------------------------------------------------
           IF (N1.NE.NBNO) THEN
             VALI (1) = ABS(N1)
             VALI (2) = NBNO
-            CALL U2MESG('F', 'MODELISA8_48',0,' ',2,VALI,0,0.D0)
+            CALL U2MESG('F', 'MODELISA8_47',0,' ',2,VALI,0,0.D0)
           END IF
           CALL AFRELA(ZR(JCMUR),ZC(JCMUC),ZK8(JDDL),ZK8(JLIST1),
      &                ZI(JDIME),ZR(JDIREC),NBNO,BETA,BETAC,BETAF,TYPCOE,

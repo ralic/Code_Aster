@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF calculel2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,9 +74,12 @@ cata_msg={
  ncmp doit etre >0
 """),
 
-15: _("""
- grandeurs differentes.
-"""),
+
+
+
+
+
+
 
 16: _("""
  reel ou k8 svp
@@ -90,13 +93,15 @@ cata_msg={
  arret suite a l'erreur precedente.
 """),
 
-19: _("""
- maille non disponible
-"""),
 
-20: _("""
- maille indisponible
-"""),
+
+
+
+
+
+
+
+
 
 21: _("""
  grandeur :  %(k1)s  inexistante au catalogue
@@ -150,9 +155,12 @@ cata_msg={
  pour le modele  %(k1)s  on ne peut pas visualiser les champs ensemble  %(k2)s  ... car les familles de pg sont differentes
 """),
 
-34: _("""
- bug
-"""),
+
+
+
+
+
+
 
 35: _("""
  aucun element du modele n'est visualisable avec ecla_pg.
@@ -190,9 +198,10 @@ cata_msg={
  nombre de noeuds > 27
 """),
 
-44: _("""
- l impression des cham_no a  representation constante reste a faire!
-"""),
+
+
+
+
 
 45: _("""
  famille de pg "liste" interdite: %(k1)s
@@ -254,9 +263,10 @@ cata_msg={
  sa23
 """),
 
-60: _("""
- ******* erreur donnees *******
-"""),
+
+
+
+
 
 61: _("""
  Erreur développeur :
@@ -336,13 +346,15 @@ cata_msg={
  erreur pgmeur: lk3 pas assez grand.
 """),
 
-77: _("""
- il manque .carcoque dans la sd cara_elem
-"""),
 
-78: _("""
- normale moyenne nulle : attention a l'orientation des mailles
-"""),
+
+
+
+
+
+
+
+
 
 79: _("""
  ce chargement n est pas prevu en lagrange
@@ -384,9 +396,10 @@ cata_msg={
  option  %(k1)s  non disponible sur les elements du modele- pas de champ cree
 """),
 
-89: _("""
- le materiau depend de la temperature l'option calc_dg ne prend pas en compte cette possibilite
-"""),
+
+
+
+
 
 92: _("""
  votre chargement contient plus d'une charge repartie. le calcul n'est pas possible pour les modeles de poutre.
@@ -404,9 +417,10 @@ cata_msg={
  pour un modele comportant des elements de plaque ou de coque, il faut le "cara_elem"
 """),
 
-97: _("""
-  option  %(k1)s non licite pour un calcul hors plan du maillage
-"""),
+
+
+
+
 
 98: _("""
  erreur: la charge doit etre une charge mecanique !

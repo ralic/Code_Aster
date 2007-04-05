@@ -1,6 +1,6 @@
       SUBROUTINE UTEXCP( NUM, SPGLU, TEXTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILIFOR  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,5 +31,5 @@ C     ------------------------------------------------------------------
       COMMON /UTEXC /  NEXCEP
 C
       NEXCEP = NUM
-      CALL U2MESK('Z','MODELISA_96',1,TEXTE)
+      CALL U2MESK('Z','JEVEUX_1',1,TEXTE)
       END

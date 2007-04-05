@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -207,11 +207,11 @@ C     --- RECUPERATION DU NUMERO DU DDL ---
           CMP = ZK8(ICMPN+I-1)
           CALL POSDDL('CHAM_NO',CHAM19,NOEUD,CMP,INOEUD,IDDL)
           IF (INOEUD.EQ.0) THEN
-            CALL U2MESK('F','ALGORITH10_70',1,NOEUD)
+            CALL U2MESK('F','UTILITAI_92',1,NOEUD)
           ELSE IF (IDDL.EQ.0) THEN
              VALK(1) = CMP
              VALK(2) = NOEUD
-             CALL U2MESK('F','ALGORITH10_71', 2 ,VALK)
+             CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
           END IF
           ZI(INDDL+I-1) = IDDL
    30   CONTINUE
@@ -298,7 +298,7 @@ C     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
         IF (IRET.NE.0) THEN
           VALK (1) = OPTCH1
           VALI = NUMOD
-          CALL U2MESG('F', 'ALGORITH14_65',1,VALK,1,VALI,0,0.D0)
+          CALL U2MESG('F', 'ALGORITH14_62',1,VALK,1,VALI,0,0.D0)
         END IF
         CALL JEVEUO(CHAM19(1:19)//'.VALE','L',ISIP)
         IF (TYPMEC.EQ.'MODE_MECA_C') THEN

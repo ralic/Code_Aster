@@ -3,7 +3,7 @@
       CHARACTER*8         MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -358,7 +358,7 @@ C
          IF ( IER .NE. 0 ) THEN
             VALK (1) = BAMO(1:8)
             VALI = IM
-            CALL U2MESG('F', 'UTILITAI6_42',1,VALK,1,VALI,0,0.D0)
+            CALL U2MESG('F', 'ALGORITH12_76',1,VALK,1,VALI,0,0.D0)
          ENDIF
          CALL JEVEUO ( CHAMNO//'.VALE' , 'L' , JVALE )
          DO 122 J = 1 , NEQF
@@ -467,7 +467,7 @@ C
          IF ( IER .NE. 0 ) THEN
             VALK (1) = BAMO(1:8)
             VALI = IM
-            CALL U2MESG('F', 'UTILITAI6_42',1,VALK,1,VALI,0,0.D0)
+            CALL U2MESG('F', 'ALGORITH12_76',1,VALK,1,VALI,0,0.D0)
          ENDIF
          CALL JEVEUO ( CHAMNO//'.VALE' , 'L' , JVALE )
          DO 214 J = 1 , NEQF

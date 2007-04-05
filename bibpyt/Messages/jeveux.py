@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF jeveux Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,37 +26,44 @@ cata_msg={
   %(k1)s
 """),
 
-2: _("""
- pointeur de longueur externe interdit maintenant.
-"""),
 
-3: _("""
- pointeur de nom externe interdit maintenant.
-"""),
 
-4: _("""
- le nombre de bases a gerer est negatif ou nul
-"""),
 
-5: _("""
- taille memoire demandee negative ou nulle
-"""),
 
-6: _("""
- appel invalide, la marque devient negative
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 7: _("""
  destruction de  %(k1)s
 """),
 
-8: _("""
-  la base  %(k1)s  a ete constituee avec la version  %(k2)s  et vous utilisez la version  %(k3)s
-"""),
 
-9: _("""
- suppression de la partition memoire
-"""),
+
+
+
+
+
+
+
+
 
 10: _("""
  le nom demande existe deja  dans la base  %(k1)s
@@ -90,9 +97,10 @@ cata_msg={
   Chainage casse apres l'objet :  %(k1)s
 """),
 
-18: _("""
-  Erreur detectee code retour hpcheck non nul
-"""),
+
+
+
+
 
 19: _("""
  Le nom d'un objet JEVEUX ne doit pas commencer par un blanc.

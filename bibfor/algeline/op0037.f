@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -247,7 +247,7 @@ C     --- RECUPERATION DE LA MASSE ---
      &           K8B, R8B, 'MASSE', K8B, IBID, XMASTR, C16B, K8B, IRET )
             IF ( IRET .NE. 0 ) THEN
             VALK (1) = MASINE
-               CALL U2MESG('F', 'ALGELINE4_35',1,VALK,0,0,0,0.D0)
+               CALL U2MESG('F', 'ALGELINE4_34',1,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
          LMASIN = .TRUE.

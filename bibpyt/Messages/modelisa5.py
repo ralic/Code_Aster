@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF modelisa5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -194,9 +194,12 @@ cata_msg={
  parametre lambda non trouve
 """),
 
-46: _("""
- comportement non trouve
-"""),
+
+
+
+
+
+
 
 47: _("""
  parametre affinite non trouve
@@ -390,9 +393,10 @@ cata_msg={
  probleme sur une relation : les coefficients sont trop petits
 """),
 
-93: _("""
- type de maille  %(k1)s  non prevu
-"""),
+
+
+
+
 
 94: _("""
  impossibilite, la maille  %(k1)s  doit etre une maille de peau, i.e. de type "quad" ou "tria" en 3d ou de type "seg" en 2d, et elle est de type :  %(k2)s 

@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMGD, MCFAC, NOMCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
             ELSE
                VALK (1) = ZK8(JNOCP+I-1)
                VALK (2) = 'VARI_R'
-               CALL U2MESG('F', 'CALCULEL6_50',2,VALK,0,0,0,0.D0)
+               CALL U2MESG('F', 'CALCULEL6_49',2,VALK,0,0,0,0.D0)
             ENDIF
             CALL LXLIIS ( K8B, IVAL, IRET )
             IF ( IRET .NE. 0 ) THEN

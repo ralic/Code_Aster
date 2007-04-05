@@ -1,4 +1,4 @@
-#@ MODIF algorith11 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith11 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -342,9 +342,10 @@ cata_msg={
  pas d'interpolation possible.
 """),
 
-80: _("""
- le solveur GCPC n'est pas compatible avec du contact. Changez de solveur
-"""),
+
+
+
+
 
 81: _("""
  STOP_SINGULIER=DECOUPE nécessite la subdivision automatique du pas de temps (SUBD_PAS).
@@ -370,17 +371,19 @@ cata_msg={
  &arret debordement assemblage:ligne 
 """),
 
-89: _("""
- &arret debordement assemblage:ligne 
-"""),
+
+
+
+
 
 90: _("""
  &arret debordement assemblage:colonne 
 """),
 
-91: _("""
- &arret debordement assemblage:ligne 
-"""),
+
+
+
+
 
 92: _("""
  arret nombre de sous-structure invalide il en faut au minimum: %(i1)d 

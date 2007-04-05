@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMTA, PARA, NOMOBJ, BASOBJ, TYPVAL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C
          IF ( INPAR .EQ. JNPAR ) GOTO 12
  10      CONTINUE
          VALK = INPAR
-         CALL U2MESG('F', 'UTILITAI6_95',1,VALK,0,0,0,0.D0)
+         CALL U2MESG('F', 'UTILITAI6_89',1,VALK,0,0,0,0.D0)
  12   CONTINUE
 C
       TYPE   = ZK24(JTBLP+4*(IPAR-1)+1)

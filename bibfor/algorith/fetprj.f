@@ -3,7 +3,7 @@
      &                  INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -196,7 +196,7 @@ C VIA LAPACK
           IF (INFOL8.NE.0) THEN
             VALI (1) = I
             VALI (2) = INFOL8
-            CALL U2MESG('F', 'ALGORITH13_16',0,' ',2,VALI,0,0.D0)
+            CALL U2MESG('F', 'ALGORITH13_15',0,' ',2,VALI,0,0.D0)
           ENDIF
 
           IF (OPTION.EQ.1) THEN

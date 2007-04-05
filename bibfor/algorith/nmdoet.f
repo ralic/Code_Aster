@@ -2,7 +2,7 @@
      &                  DEPMOI,SIGMOI,VARMOI,VARDEM,LAGDEM,NBPASE,
      &                  INPSCO,DEPOLD,NUMEDD,NEQ,PILOTE)
 
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -140,7 +140,7 @@ C ======================================================================
 
 C       CONTROLE DU TYPE DE EVOL
           CALL DISMOI('F','TYPE_RESU',EVOL,'RESULTAT',IBID,TYPE,IRET)
-          IF (TYPE.NE.'EVOL_NOLI') CALL U2MESS('F','ALGORITH6_36')
+          IF (TYPE.NE.'EVOL_NOLI') CALL U2MESS('F','MECANONLINE_10')
 
 
 C -- NUMERO D'ACCES ET INSTANT CORRESPONDANT
@@ -161,8 +161,8 @@ C      ACCES PAR INSTANT
             CALL GETVTX('ETAT_INIT','CRITERE',1,1,1,CRITER,IBID)
             CALL RSORAC(EVOL,'INST',IBID,INST,K8BID,CBID,PREC,CRITER,
      &                  NUME,1,NBR)
-            IF (NBR.EQ.0) CALL U2MESS('F','ALGORITH6_38')
-            IF (NBR.LT.0) CALL U2MESS('F','ALGORITH6_39')
+            IF (NBR.EQ.0) CALL U2MESS('F','MECANONLINE_12')
+            IF (NBR.LT.0) CALL U2MESS('F','MECANONLINE_13')
           END IF
 
 C      ACCES PAR NUMERO D'ORDRE

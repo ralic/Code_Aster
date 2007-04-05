@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF soustruc Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -364,9 +364,12 @@ cata_msg={
   champ inexistant  base  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d 
 """),
 
-85: _("""
-  champ inexistant  base  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d 
-"""),
+
+
+
+
+
+
 
 86: _("""
  noeud   %(k1)s   en dehors du segment %(k2)s   abscisse curviligne %(r1)f 

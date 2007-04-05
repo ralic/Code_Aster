@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF elements5 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,9 +21,12 @@
 def _(x) : return x
 
 cata_msg={
-1: _("""
- la contrainte equivalente est nulle pour la maille  %(k1)s 
-"""),
+
+
+
+
+
+
 
 2: _("""
  tuyau : le nombre de couches est limite a  %(i1)d 
@@ -33,21 +36,33 @@ cata_msg={
  tuyau : le nombre de secteurs est limite a  %(i1)d 
 """),
 
-4: _("""
- tuyau : le nombre de couches est limite a  %(i1)d 
-"""),
 
-5: _("""
- tuyau : le nombre de secteurs est limite a  %(i1)d 
-"""),
 
-6: _("""
- tuyau : le nombre de couches est limite a  %(i1)d 
-"""),
 
-7: _("""
- tuyau : le nombre de secteurs est limite a  %(i1)d 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 8: _("""
  Vous voulez utiliser l'indicateur de convergence RESI_REFE_RELA mais vous n'avez pas
@@ -131,12 +146,14 @@ cata_msg={
 25: _("""
   le sous-domaine n %(i1)d n'est pas renseigné ou vide dans DEFI_PART_OPS
 """),
-26: _("""
-  le LIAISON_** du chargement %(k1)s impliquant les noeuds %(k2)s et %(k3)s traverse l'interface 
-"""),
-27: _("""
-  le LIAISON_** du chargement %(k1)s impliquant le noeud %(k2)s touche l'interface 
-"""),
+
+
+
+
+
+
+
+
 28: _("""
   le modele comporte %(i1)d mailles de plus que l'ensemble des sous-domaines 
 """),

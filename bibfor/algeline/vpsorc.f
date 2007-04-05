@@ -6,7 +6,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -317,7 +317,7 @@ C GESTION DES FLAGS D'ERREURS
           CALL U2MESS('F','ALGELINE3_78')
         ELSE IF (INFO.LT.0) THEN
           VALI (1) = INFO
-          CALL U2MESG('F', 'ALGELINE4_84',0,' ',1,VALI,0,0.D0)
+          CALL U2MESG('F', 'ALGELINE4_82',0,' ',1,VALI,0,0.D0)
         ENDIF
 C--------------------------------------------------------------------
 C TESTS ET POST-TRAITEMENTS

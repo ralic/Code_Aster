@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith6 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -168,21 +168,30 @@ cata_msg={
  surcharge d'un resultat sans definir d'etat initial : on prend un etat initial nul
 """),
 
-36: _("""
- le concept dans etat_init n'est du type evol_noli
-"""),
+
+
+
+
+
+
 
 37: _("""
  pas de numero d'ordre pour le concept  %(k1)s 
 """),
 
-38: _("""
- l'instant specifie sous 'etat_init' n'est pas trouve
-"""),
 
-39: _("""
- plusieurs instants correspondent a celui specifie sous 'etat_init'
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 41: _("""
  le champ de depl_r (ou derive) n'est pas trouve dans le concept  %(k1)s 
@@ -216,13 +225,19 @@ cata_msg={
  le champ de lanl_elga n'est pas trouve dans le concept  %(k1)s 
 """),
 
-49: _("""
- l'etat initial n'appartient pas a un evol_noli : on suppose qu'on part d'un etat a deplacements nuls
-"""),
 
-50: _("""
- l'etat initial n'appartient pas a un evol_noli : on suppose qu'on part d'un etat a vitesses nulles
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 52: _("""
  iterations cycliques : changement de configuration ou variation trop importante du deplacement physique a l'issue de la derniere iteration

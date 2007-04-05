@@ -3,7 +3,7 @@
       CHARACTER*24  LISPAS, LIBINT, LINBPA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,11 +78,11 @@ C
          VALK = DYNA
          VALR (1) = TEMPS
          VALI = -NBTROU
-      CALL U2MESG('F', 'ALGORITH12_87',1,VALK,1,VALI,1,VALR)
+      CALL U2MESG('F', 'ALGORITH12_83',1,VALK,1,VALI,1,VALR)
                ELSEIF (NBTROU.EQ.0) THEN
          VALK = DYNA
          VALR (1) = TEMPS
-                  CALL U2MESG('F', 'ALGORITH12_88',1,VALK,0,0,1,VALR)
+                  CALL U2MESG('F', 'ALGORITH12_84',1,VALK,0,0,1,VALR)
                ENDIF
             ENDIF
          ELSE

@@ -1,4 +1,4 @@
-#@ MODIF modelisa2 Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF modelisa2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,37 +34,44 @@ cata_msg={
  calcul de la tension le long du cable no %(k1)s  : la longueur sur laquelle on doit prendre en compte les pertes de tension par recul de l ancrage est egale a la longueur du cable
 """),
 
-5: _("""
- nombre de couples apparies sous-estime
-"""),
 
-6: _("""
- aucune maille de la zone de collage n'est appariee
-"""),
 
-7: _("""
- maille non conforme
-"""),
 
-8: _("""
- modeles incorrects
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 9: _("""
   %(k1)s  n'existe pas
 """),
 
-10: _("""
- plusieurs modelisations pour un meme groupe de mailles
-"""),
 
-11: _("""
- plusieurs cinematiques pour un meme groupe de mailles
-"""),
 
-12: _("""
- modelisation indisponible
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 13: _("""
  probleme pour recuperer une grandeur dans la table "cara_geom"
@@ -152,21 +159,25 @@ cata_msg={
  la structure etudiee n'est pas une poutre droite.
 """),
 
-33: _("""
- les modelisations de group_ma_1 et group_ma_2 doivent etre les memes
-"""),
 
-34: _("""
- il faut le mot-clef cara_elem lorsqu'on utilise des elements coques
-"""),
 
-35: _("""
- les domaines ne se recouvrent pas
-"""),
 
-36: _("""
- group_ma_coll doit etre un sous-ensemble de group_ma_1 ou group_ma_2
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 37: _("""
  valeur inattendue:  %(k1)s 

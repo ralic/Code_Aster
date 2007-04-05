@@ -6,7 +6,7 @@
       CHARACTER*(*)       BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -263,7 +263,7 @@ C
                CALL JECROC(JEXNOM(NOMMAI,NIMA))
             ELSE
                VALK = NIMA
-               CALL U2MESG('F', 'ALGELINE4_14',1,VALK,0,0,0,0.D0)
+               CALL U2MESG('F', 'ALGELINE4_7',1,VALK,0,0,0,0.D0)
             END IF
 C
 C 5.2.1. ==> TYPE DE MAILLE ET CONNECTIVITE
@@ -309,7 +309,7 @@ C
                    CALL JECROC(JEXNOM(NOMMAI,NOMG))
                ELSE
                VALK = NOMG
-                  CALL U2MESG('F', 'ALGELINE4_15',1,VALK,0,0,0,0.D0)
+                  CALL U2MESG('F', 'ALGELINE4_7',1,VALK,0,0,0,0.D0)
                ENDIF
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
@@ -361,7 +361,7 @@ C
             ELSE
 C           --- NE DEVRAIT PAS ARRIVER !
                VALK = NOMG
-               CALL U2MESG('F', 'ALGELINE4_16',1,VALK,0,0,0,0.D0)
+               CALL U2MESG('F', 'ALGELINE4_11',1,VALK,0,0,0,0.D0)
             END IF
             CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO,' ')
             CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)

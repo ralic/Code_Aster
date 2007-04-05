@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,7 +199,7 @@ C
                    CALL VTCREA(CHAMNO,CREFE,'G','C',NEQ)
                  ENDIF
                ELSE
-                  CALL U2MESS('F','ALGORITH3_16')
+                  CALL U2MESS('F','ALGORITH13_36')
                ENDIF
                CHAMNO(20:24) = '.VALE'
                CALL JEVEUO(CHAMNO,'E',LVALE)

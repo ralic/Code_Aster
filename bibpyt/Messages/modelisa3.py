@@ -1,4 +1,4 @@
-#@ MODIF modelisa3 Messages  DATE 29/01/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,9 +50,12 @@ cata_msg={
  impossibilite de faire le vis a vis des 2 listes de noeuds, elles n'ont pas le meme nombre de noeuds apres elimination des doublons.
 """),
 
-8: _("""
-  numero d'occurence negatif 
-"""),
+
+
+
+
+
+
 
 9: _("""
  le mot cle "tran" sous le mot cle facteur %(k1)s  n"admet que 3 valeurs
@@ -229,9 +232,10 @@ Suggestion :
  nombre d occurence du mot cle "sour_calculee"  superieur a 1
 """),
 
-65: _("""
- vecteur de sd contact inconnu(dvlp)
-"""),
+
+
+
+
 
 66: _("""
  la dimension du maillage ne correspond pas a la dimension des elements

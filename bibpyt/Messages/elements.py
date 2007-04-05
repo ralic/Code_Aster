@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF elements Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -394,9 +394,12 @@ cata_msg={
  le fond de fissure ne                             doit etre defini que par un noeud
 """),
 
-90: _("""
- le noeud  %(k1)s  n appartient pas au maillage :  %(k2)s
-"""),
+
+
+
+
+
+
 
 91: _("""
  mot cle fond_fiss obligatoire

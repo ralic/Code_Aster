@@ -7,7 +7,7 @@
       CHARACTER*(*) RESU0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C
                VALI (1) = NUORDR(J)
                VALI (2) = IRE1
                VALK = CHAMIN
-               CALL U2MESG('F', 'PREPOST5_17',1,VALK,2,VALI,0,0.D0)
+               CALL U2MESG('F', 'PREPOST5_16',1,VALK,2,VALI,0,0.D0)
             ENDIF
             IF ( NUARCH(J) .EQ. 0 ) THEN
                CALL DETRSD ( 'CHAMP_GD', CHAMIN )

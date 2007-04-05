@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1012,7 +1012,7 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
         ELSE
         VALK (1) = ELREFA
         VALK (2) = FAPG
-          CALL U2MESG('F', 'ELEMENTS4_85',2,VALK,0,0,0,0.D0)
+          CALL U2MESG('F', 'ELEMENTS4_84',2,VALK,0,0,0,0.D0)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1117,7 +1117,7 @@ C ---------- NUMEROTES EN PREMIER --------------------------------------
         ELSE
         VALK (1) = ELREFA
         VALK (2) = FAPG
-          CALL U2MESG('F', 'ELEMENTS4_85',2,VALK,0,0,0,0.D0)
+          CALL U2MESG('F', 'ELEMENTS4_84',2,VALK,0,0,0,0.D0)
         END IF
 
 C     ------------------------------------------------------------------
@@ -1151,7 +1151,7 @@ C     ------------------------------------------------------------------
         ELSE
         VALK (1) = ELREFA
         VALK (2) = FAPG
-          CALL U2MESG('F', 'ELEMENTS4_85',2,VALK,0,0,0,0.D0)
+          CALL U2MESG('F', 'ELEMENTS4_84',2,VALK,0,0,0,0.D0)
         END IF
 
 C     ------------------------------------------------------------------

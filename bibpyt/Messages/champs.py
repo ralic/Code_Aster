@@ -1,4 +1,4 @@
-#@ MODIF champs Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF champs Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,9 +22,10 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- Impossible de récupérer les composantes du champ.
-"""),
+
+
+
+
 
 2: _("""
  Impossible de récupérer le nom du champ.

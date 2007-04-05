@@ -1,4 +1,4 @@
-#@ MODIF algorith13 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith13 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,9 +53,12 @@ cata_msg={
  arret sur maillage non skelette
 """),
 
-9: _("""
- arret sur matrice inexistante matrice %(k1)s 
-"""),
+
+
+
+
+
+
 
 10: _("""
  probleme de duplication de matrice matrice:  %(k1)s 
@@ -65,9 +68,12 @@ cata_msg={
   arret probleme de factorisation: presence de modes de corps rigide
 """),
 
-12: _("""
- mauvaise valeur de typcum:  %(i1)d 
-"""),
+
+
+
+
+
+
 
 13: _("""
  icmp dans le desordre pour noeud=  %(i1)d  et sous-domaine=  %(i2)d 
@@ -81,9 +87,12 @@ cata_msg={
  systeme (gi)t*gi probablement  non inversible:  %(i1)d pb lapack dgetrs:  %(i2)d 
 """),
 
-16: _("""
- systeme (gi)t*gi probablement  non inversible:  %(i1)d pb lapack dgetrs:  %(i2)d 
-"""),
+
+
+
+
+
+
 
 17: _("""
  arret sur probleme base modale sans interf_dyna base modale -->  %(k1)s 
@@ -118,9 +127,12 @@ cata_msg={
   f =  %(r2)f %(r3)f %(r4)f %(r5)f %(r6)f %(r7)f
 """),
 
-24: _("""
- resolution mal terminee code retour  %(i1)d    pour l'iteration  %(i2)d 
-"""),
+
+
+
+
+
+
 
 25: _("""
  
@@ -179,41 +191,59 @@ cata_msg={
  appel errone
 """),
 
-37: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
-"""),
 
-38: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 39: _("""
  choc mal definila maille definissant le choc  %(k1)s  doit etre de type  %(k2)s 
 """),
 
-40: _("""
- choc mal definila maille definissant le choc  %(k1)s  doit etre de type  %(k2)s 
-"""),
+
+
+
+
+
+
 
 41: _("""
  trop de noeuds dans le group_no  %(k1)s   noeud utilise:  %(k2)s 
 """),
 
-42: _("""
- trop de noeuds dans le group_no  %(k1)s  noeud utilise:  %(k2)s 
-"""),
 
-43: _("""
- trop de noeuds dans le group_no  %(k1)s  noeud utilise:  %(k2)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 44: _("""
  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!incompatibilite avec multi appui : %(k1)s 
 """),
 
-45: _("""
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!incompatibilite avec multi appui : %(k1)s 
-"""),
+
+
+
+
+
+
 
 46: _("""
  il manque les modes statiques
@@ -238,22 +268,28 @@ cata_msg={
  numero sous-structure demandee -->  %(i1)d 
 """),
 
-52: _("""
- Nombre de modes propres calcules insuffisant.
- Nombre de modes propres de la base limite a :%(i1)d 
-"""),
+
+
+
+
+
+
 
 53: _("""
   champ inexistant  mesure  %(k1)s  nom_cham  %(k2)s 
 """),
 
-54: _("""
-  champ inexistant  base  %(k1)s  nom_cham  %(k2)s  nume_ordre  %(i1)d 
-"""),
 
-55: _("""
- code de retour de psrenc:  %(i1)d 
-"""),
+
+
+
+
+
+
+
+
+
+
 
 56: _("""
  pb.interpolation volumique 3d:evol_char  : %(k1)s instant    : %(r1)f 
@@ -300,9 +336,10 @@ cata_msg={
  interpolation temperature:evol_ther: %(k1)s instant: %(r1)f icoret: %(i1)d 
 """),
 
-65: _("""
- code de retour de psrenc:  %(i1)d 
-"""),
+
+
+
+
 
 66: _("""
  Force fluide, grappe bloquee   
@@ -331,9 +368,10 @@ cata_msg={
  choix impossiblepour initpr :  %(i1)d 
 """),
 
-72: _("""
- code de retour de psrenc:  %(i1)d 
-"""),
+
+
+
+
 
 74: _("""
  composante non definie  dans la numerotation :  %(k1)s 
@@ -347,9 +385,12 @@ cata_msg={
  & arret sur probleme de connexion sous-structure
 """),
 
-77: _("""
- mauvaise valeur de typcum:  %(i1)d 
-"""),
+
+
+
+
+
+
 
 78: _("""
  les intervalles doivent etre croissants.   valeur de la borne precedente :  %(i1)d 
@@ -377,9 +418,10 @@ cata_msg={
  , pour l'intervalle  %(i1)d 
 """),
 
-83: _("""
- arret sur option de calcul inconnue   option :  %(k1)s 
-"""),
+
+
+
+
 
 84: _("""
  modele amont non defini
@@ -393,22 +435,33 @@ cata_msg={
  type de matrice inconnuetype: %(k1)s 
 """),
 
-87: _("""
- arret sur matrice inexistante matrice %(k1)s 
-"""),
 
-88: _("""
- pas de mode statique pour         le noeud :  %(k1)s  et sa composante :  %(k2)s 
-"""),
 
-89: _("""
- pour les modes statiques.on attend un :  %(k1)s    noeud :  %(k2)s 
-      cmp :  %(k3)s 
-"""),
 
-90: _("""
- champ inexistant.pb champ :  %(k1)s    noeud :  %(k2)s      cmp :  %(k3)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 91: _("""
  &probleme de dimension matrice a mutiplier
@@ -418,29 +471,37 @@ cata_msg={
  &probleme de dimension matrice resultat
 """),
 
-93: _("""
- &probleme de dimension matrice a mutiplier
-"""),
 
-94: _("""
- &probleme de dimension matrice resultat
-"""),
 
-95: _("""
- &probleme de dimension matrice a mutiplier
-"""),
 
-96: _("""
- &probleme de dimension matrice resultat
-"""),
 
-97: _("""
- &probleme de dimension matrice a mutiplier
-"""),
 
-98: _("""
- &probleme de dimension matrice resultat
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 99: _("""
  matrice d'amortissement non creeedans le macro-element :  %(k1)s 

@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF prepost3 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -314,9 +314,10 @@ cata_msg={
  l'impression avec selection sur des entites topologiques n'a pas de sens au format castem  : toutes les valeurs sur tout le maillage seront donc imprimees.
 """),
 
-74: _("""
- le noeud mentionne est invalide
-"""),
+
+
+
+
 
 75: _("""
  fichier gibi cree par sort format non supporte dans cette version
@@ -346,13 +347,17 @@ cata_msg={
  lmat =0
 """),
 
-82: _("""
- option inconnue :  %(k1)s 
-"""),
 
-83: _("""
- noeud  %(k1)s ne fait pas partie du maillage :  %(k2)s 
-"""),
+
+
+
+
+
+
+
+
+
+
 
 84: _("""
  il faut autant de cmp en i et j
@@ -362,9 +367,10 @@ cata_msg={
  il faut autant de cmp que de noeud
 """),
 
-86: _("""
- il faut autant d indices en i et j
-"""),
+
+
+
+
 
 87: _("""
  y a un bug 5

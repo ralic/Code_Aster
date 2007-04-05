@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,7 +163,7 @@ C
                   CALL JENUNO(JEXNUM(MAILLA//'.NOMMAI',NUMAI),KBID)
                   VALK (1) = KBID
                   VALK (2) = 'SEG2'
-      CALL U2MESG('F', 'ALGORITH13_40',2,VALK,0,0,0,0.D0)
+      CALL U2MESG('F', 'ALGORITH13_39',2,VALK,0,0,0,0.D0)
                      ENDIF
                      ILIAI = ILIAI + 1
                      CALL JENUNO(JEXNUM(MAILLA//'.NOMNOE',ZI(JMAMA)),
@@ -217,7 +217,7 @@ C
          ELSEIF (IRET.EQ.1) THEN
                   VALK (1) = NOMGR1
                   VALK (2) = NOMNO1
-            CALL U2MESG('A', 'ALGORITH13_42',2,VALK,0,0,0,0.D0)
+            CALL U2MESG('A', 'ALGORITH13_41',2,VALK,0,0,0,0.D0)
          ENDIF
          ILIAI = ILIAI + 1
          NOECHO(ILIAI,1) = NOMNO1
@@ -235,7 +235,7 @@ C
                ELSEIF (IRET.EQ.1) THEN
                   VALK (1) = NOMGR2
                   VALK (2) = NOMNO2
-                  CALL U2MESG('A', 'ALGORITH13_43',2,VALK,0,0,0,0.D0)
+                  CALL U2MESG('A', 'ALGORITH13_41',2,VALK,0,0,0,0.D0)
                ENDIF
                NOECHO(ILIAI,5) = NOMNO2
                LNOUE2 = .TRUE.

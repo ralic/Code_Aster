@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,7 +141,7 @@ C --- D'ELEMENTS DE LAGRANGE ASSOCIES
         IF (NDDLA.GT.NMOCL) THEN
           VALI (1) = NMOCL
           VALI (2) = NDDLA
-          CALL U2MESG('F', 'MODELISA8_54',0,' ',2,VALI,0,0.D0)
+          CALL U2MESG('F', 'MODELISA8_29',0,' ',2,VALI,0,0.D0)
         END IF
         DO 10 I = 1,NDDLA
           NOMCMP(I) = ZK8(INOM-1+I)

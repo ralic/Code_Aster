@@ -5,7 +5,7 @@
       CHARACTER*(*)       NOMF,       NOMPU(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,7 +202,7 @@ C
 C
       ELSE
         IER = 240
-        CALL U2MESK('A','UTILITAI2_18',1,COLI)
+        CALL U2MESK('A','PREPOST3_6',1,COLI)
       ENDIF
 C
 9999  CONTINUE

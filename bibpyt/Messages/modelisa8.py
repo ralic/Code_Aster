@@ -1,4 +1,4 @@
-#@ MODIF modelisa8 Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF modelisa8 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,10 +79,10 @@ cata_msg={
  le centre n'est pas vraiment  le centre du cercle %(k2)s 
 """),
 
-12: _("""
- mot cle facteur  "defi_arc", occurence  %(i1)d , group_ma :  %(k1)s 
- le point de tangence n est pas equidistant des points extremites %(k2)s 
-"""),
+
+
+
+
 
 13: _("""
   , maille :  %(i1)d la maille n'est pas situee  sur le cercle %(k1)s 
@@ -93,50 +93,54 @@ cata_msg={
  la maille n'est pas orientee  dans le meme sens que les autres sur le cercle %(k1)s 
 """),
 
-15: _("""
-  , maille :  %(i1)d 
- la maille n'est pas orientee  dans le meme sens que les autres sur le cercle %(k1)s 
-"""),
+
+
+
+
 
 16: _("""
   , maille :  %(i1)d pb produit scalaire %(k1)s 
 """),
 
-17: _("""
-  , maille :  %(i1)d la maille n'est pas situee  sur le cercle %(k1)s 
-"""),
 
-18: _("""
-  , maille :  %(i1)d 
- la maille n'est pas orientee  dans le meme sens que les autres sur le cercle %(k1)s 
-"""),
 
-19: _("""
-  , maille :  %(i1)d 
- la maille n'est pas orientee  dans le meme sens que les autres sur le cercle %(k1)s 
-"""),
 
-20: _("""
-  , maille :  %(i1)d pb produit scalaire %(k1)s 
-"""),
 
-21: _("""
-  , maille :  %(i1)d la maille n'est pas situee  sur le cercle %(k1)s 
-"""),
 
-22: _("""
-  , maille :  %(i1)d 
- la maille n'est pas orientee  dans le meme sens que les autres sur le cercle %(k1)s 
-"""),
 
-23: _("""
-  , maille :  %(i1)d 
- la maille n'est pas orientee  dans le meme sens que les autres sur le cercle %(k1)s 
-"""),
 
-24: _("""
-  , maille :  %(i1)d pb produit scalaire %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 25: _("""
    l'ensemble des mailles comporte plus de 2 extremites %(k1)s 
@@ -166,13 +170,17 @@ cata_msg={
  nombre de motcles superieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d 
 """),
 
-32: _("""
- nombre de motcles superieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d 
-"""),
 
-33: _("""
- nombre de motcles superieur au max nmaxocl=  %(i1)d nmocl  =  %(i2)d 
-"""),
+
+
+
+
+
+
+
+
+
+
 
 34: _("""
  erreur dans les donneesle parametre  %(k1)s n existe pas dans la table  %(k2)s 
@@ -186,17 +194,20 @@ cata_msg={
  erreur dans les donneesplusieurs valeurs pour le group_ma  %(k1)s 
 """),
 
-37: _("""
- erreur dans les donneesle parametre  %(k1)s n existe pas dans la table  %(k2)s 
-"""),
 
-38: _("""
- erreur dans les donneespas de valeur pour le parametre  %(k1)s 
-"""),
 
-39: _("""
- erreur dans les donneesplusieurs valeurs pour le group_ma  %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 40: _("""
  la maille de nom :  %(k1)s n'est pas de type  %(k2)s  ou  %(k3)s 
@@ -228,9 +239,12 @@ cata_msg={
    %(i2)d 
 """),
 
-45: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
+
+
+
+
+
+
 
 46: _("""
  
@@ -246,12 +260,12 @@ cata_msg={
    %(i2)d 
 """),
 
-48: _("""
- 
- le nombre de ddls figurant dans  la liaison n'est pas egal au nombre de noeuds :
-   %(i1)d 
-   %(i2)d 
-"""),
+
+
+
+
+
+
 
 49: _("""
  
@@ -259,15 +273,19 @@ cata_msg={
   de facettes, mots cles :  %(k1)s %(k2)s
 """),
 
-50: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
 
-51: _("""
- 
- la direction normale est calculee sur la face esclave. il faut donner des mailles
-  de facettes, mots cles :  %(k1)s %(k2)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 52: _("""
  les noeuds n1 et n2 sont confondus coor(n1): %(r1)f   %(r2)f coor(n2): %(r3)f 
@@ -284,9 +302,12 @@ cata_msg={
  norme   : %(r10)f 
 """),
 
-54: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
+
+
+
+
+
+
 
 55: _("""
  interpolation interditepour un resultat de type :  %(k1)s 
@@ -304,33 +325,52 @@ cata_msg={
   composante existante sur  le noeud:  %(k1)s  composante:  %(k2)s 
 """),
 
-59: _("""
-  composante inexistante sur  le noeud:  %(k1)s  composante:  %(k2)s 
-"""),
 
-60: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
 
-61: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
 
-62: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
 
-63: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
 
-64: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
-"""),
 
-65: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 66: _("""
  le nom de groupe numero  %(i1)d  est en double. %(k1)s 
@@ -369,21 +409,30 @@ cata_msg={
  materiaux non valideson ne peut avoir a la fois  %(k1)s  et  %(k2)s 
 """),
 
-73: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
 
-74: _("""
- le ddlcmp %(k1)s nomnoe %(k2)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 75: _("""
  erreur donneesle group_no n'existe pas  %(k1)s 
 """),
 
-76: _("""
- trop de noeuds  dans le group_no  noeud utilise:  %(k1)s 
-"""),
+
+
+
+
+
+
 
 77: _("""
  conflit dans les vis_a_vis  des noeuds le noeud  %(k1)s 
@@ -391,11 +440,12 @@ cata_msg={
   et  %(k3)s 
 """),
 
-78: _("""
- conflit dans les vis_a_vis  des noeuds le noeud  %(k1)s 
- est le vis-a-vis des noeuds  %(k2)s 
- et  %(k3)s 
-"""),
+
+
+
+
+
+
 
 79: _("""
  conflit dans les vis-a-vis  generes successivement le noeud  %(k1)s 
@@ -410,41 +460,47 @@ cata_msg={
  noeud par la correspondance inverse %(k3)s 
 """),
 
-81: _("""
- conflit dans les vis_a_vis  des noeuds le noeud  %(k1)s 
- est le vis-a-vis des noeuds  %(k2)s 
- et  %(k3)s 
-"""),
 
-82: _("""
- conflit dans les vis_a_vis  des noeuds le noeud  %(k1)s 
- est le vis-a-vis des noeuds  %(k2)s 
- et  %(k3)s 
-"""),
 
-83: _("""
- conflit dans les  vis_a_vis des noeuds le noeud  %(k1)s 
- est le vis-a-vis des noeuds  %(k2)s 
- et  %(k3)s 
-"""),
 
-84: _("""
- conflit dans les  vis_a_vis des noeuds le noeud  %(k1)s 
- est le vis-a-vis des noeuds  %(k2)s 
- et  %(k3)s 
-"""),
 
-85: _("""
- conflit dans les vis_a_vis  des noeuds le noeud  %(k1)s 
- est le vis-a-vis des noeuds  %(k2)s 
- et  %(k3)s 
-"""),
 
-86: _("""
- conflit dans les vis_a_vis  des noeuds le noeud  %(k1)s 
- est le vis-a-vis des noeuds  %(k2)s 
- et  %(k3)s 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 87: _("""
  conflit dans les vis-a-vis  generes successivement a partir des listes  %(k1)s 
@@ -471,13 +527,19 @@ cata_msg={
   ont toutes les 2 comme vis_a_vis la maille %(k3)s 
 """),
 
-91: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
 
-92: _("""
- nombre de cmps superieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d 
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 93: _("""
  

@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,7 +155,7 @@ C
  20           CONTINUE
               VALK (1) = NCMPUT(ICM)
               VALK (2) = NOMGD
-              CALL U2MESG('A', 'PREPOST5_26',2,VALK,0,0,0,0.D0)
+              CALL U2MESG('A', 'PREPOST5_25',2,VALK,0,0,0,0.D0)
  18         CONTINUE
           ELSE
             DO 22 I=1,NCMPMX

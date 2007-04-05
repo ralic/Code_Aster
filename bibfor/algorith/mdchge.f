@@ -11,7 +11,7 @@
       CHARACTER*16        TYPNUM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C
                CALL U2MESK('F','ELEMENTS_67',1,NOMGR1)
             ELSEIF (IRET.EQ.1) THEN
                   VALK = NOMNO1
-               CALL U2MESG('A', 'ALGORITH13_37',1,VALK,0,0,0,0.D0)
+               CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
             ENDIF
             NOECHO(I,1) = NOMNO1
          ENDIF
@@ -143,7 +143,7 @@ C
                   CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
                ELSEIF (IRET.EQ.1) THEN
                   VALK = NOMNO2
-                  CALL U2MESG('A', 'ALGORITH13_38',1,VALK,0,0,0,0.D0)
+                  CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
                ENDIF
                NOECHO(I,5) = NOMNO2
             ENDIF

@@ -4,7 +4,7 @@
       CHARACTER*8  NOMO, GRAN, CNO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C
       CALL JENONU ( JEXNOM('&CATA.GD.NOMGD',GRAN), NUMGD )
       IF (NUMGD.EQ.0) THEN
             VALK (1) = GRAN
-        CALL U2MESG('F', 'UTILITAI6_10',1,VALK,0,0,0,0.D0)
+        CALL U2MESG('F', 'UTILITAI6_1',1,VALK,0,0,0,0.D0)
       END IF
       CALL DISMOI ( 'F', 'NB_EC', GRAN, 'GRANDEUR', NEC , K8B, IER )
       CALL JEVEUO ( JEXNOM('&CATA.GD.NOMCMP',GRAN), 'L', IACMP )

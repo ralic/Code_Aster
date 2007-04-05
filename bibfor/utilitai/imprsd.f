@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD,TITRE
       INTEGER IFIC
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,7 +117,7 @@ C     --------------------------------------
 
       ELSE
 C     --------------------------------------
-        CALL U2MESK('F','UTILITAI2_32',1,TYP2SD)
+        CALL U2MESK('F','UTILITAI_47',1,TYP2SD)
       END IF
 
    10 CONTINUE

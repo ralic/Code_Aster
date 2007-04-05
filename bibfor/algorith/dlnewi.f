@@ -12,7 +12,7 @@
       LOGICAL LAMORT,LIMPED,LCREA,LMODST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -381,7 +381,7 @@ C     --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT ---
           ELSE IF (IER.EQ.100) THEN
             CALL VTCREM(CHAMNO,MASSE,'G','R')
           ELSE
-            CALL U2MESS('F','ALGORITH3_16')
+            CALL U2MESS('F','ALGORITH13_36')
           END IF
           CHAMNO(20:24) = '.VALE'
           CALL JEVEUO(CHAMNO,'E',LVALE1)
@@ -727,7 +727,7 @@ C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
         ELSE IF (IER.EQ.0) THEN
           GO TO 250
         ELSE
-          CALL U2MESS('F','ALGORITH3_16')
+          CALL U2MESS('F','ALGORITH13_36')
         END IF
         WRITE (IFM,1000) 'DEPL',' ',' ',IARCHI,TEMPS
         CHAMNO(20:24) = '.VALE'
@@ -744,7 +744,7 @@ C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
         ELSE IF (IER.EQ.0) THEN
           GO TO 270
         ELSE
-          CALL U2MESS('F','ALGORITH3_16')
+          CALL U2MESS('F','ALGORITH13_36')
         END IF
         WRITE (IFM,1000) ' ','VITE',' ',IARCHI,TEMPS
         CHAMNO(20:24) = '.VALE'
@@ -761,7 +761,7 @@ C         NOM DES STRUCTURES,  JAUX=3 => LE NOM DU RESULTAT
         ELSE IF (IER.EQ.0) THEN
           GO TO 290
         ELSE
-          CALL U2MESS('F','ALGORITH3_16')
+          CALL U2MESS('F','ALGORITH13_36')
         END IF
         WRITE (IFM,1000) ' ',' ','ACCE',IARCHI,TEMPS
         CHAMNO(20:24) = '.VALE'

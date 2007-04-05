@@ -5,7 +5,7 @@
       CHARACTER*(*)       CHAMPZ, TYPEMZ, LITROZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -201,7 +201,7 @@ C              ---------------
  120     CONTINUE
 C
       ELSE
-         CALL U2MESK('F','UTILITAI5_50',1,TYPEM)
+         CALL U2MESK('F','PREPOST3_6',1,TYPEM)
       ENDIF
 C
       CALL JEDETR ( '&&UTMACH.LIST_ENT' )

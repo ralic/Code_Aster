@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C
             CALL TECAEL ( IADZI, IAZK24 )
             NOMAIL = ZK24(IAZK24-1+3)(1:8)
             VALK = NOMAIL
-            CALL U2MESG('F', 'ELEMENTS4_97',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('F', 'ELEMENTS4_92',1,VALK,0,0,0,0.D0)
          ENDIF
  10   CONTINUE
 C

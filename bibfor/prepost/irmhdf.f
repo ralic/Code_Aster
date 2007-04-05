@@ -4,7 +4,7 @@
      &                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -188,7 +188,7 @@ C
         VALK (1) = NOFIMD
         VALK (2) = NOMAMD
         VALI = CODRET
-        CALL U2MESG('A', 'PREPOST5_34',2,VALK,1,VALI,0,0.D0)
+        CALL U2MESG('A', 'PREPOST5_22',2,VALK,1,VALI,0,0.D0)
         CALL U2MESS('F','PREPOST_69')
       ENDIF
 C

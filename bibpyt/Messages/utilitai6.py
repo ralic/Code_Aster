@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF utilitai6 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -69,18 +69,17 @@ cata_msg={
  composante : %(k2)s
 """),
 
-9: _("""
 
- on cherche a affecter sur un noeud une  composante qui n''est pas dans le profil  noeud d''entree
- noeud : %(k1)s
- composante : %(k2)s
-"""),
 
-10: _("""
 
- la grandeur introduite en operande  ne figure pas dans le catalogue des grandeurs
- grandeur:  %(k1)s
-"""),
+
+
+
+
+
+
+
+
 
 11: _("""
  une composante n''appartient pas a la grandeurgrandeur   :  %(k1)s
@@ -127,29 +126,34 @@ cata_msg={
  instant a interpoler %(r1)f
 """),
 
-20: _("""
- cham_no inexistant pour l''acces %(k1)s sur le resultat %(k2)s
- pour le nume_ordre %(i1)d
- instant a interpoler %(r1)f
-"""),
 
-21: _("""
- il faut donner :   - une maille ou un group_ma %(k1)s
-    - un noeud ou un group_no ou un point. %(k2)s
-"""),
 
-22: _("""
- interpolation impossible instant a interpoler:  %(r1)f
-"""),
 
-23: _("""
- interpolation impossible  instant a interpoler:  %(r1)f
-  borne inferieure:  %(r2)f
-"""),
 
-24: _("""
- interpolation impossible  instant a interpoler:  %(r1)f  borne superieure: %(r2)f
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 25: _("""
  cham_elem inexistant pour l''acces %(k1)s sur le resultat %(k2)s
@@ -157,11 +161,12 @@ cata_msg={
  instant a interpoler %(r1)f
 """),
 
-26: _("""
- cham_elem inexistant pour l''acces %(k1)s sur le resultat %(k2)s
- pour le nume_ordre %(i1)d
- instant a interpoler %(r1)f
-"""),
+
+
+
+
+
+
 
 27: _("""
  il sera tronque:  %(k1)s
@@ -236,24 +241,29 @@ cata_msg={
   n''appartient pas au maillage  %(k2)s
 """),
 
-42: _("""
-  probleme recuperation chamno   concept resultat:  %(k1)s
-    numero ordre:  %(i1)d
-"""),
 
-43: _("""
-  probleme recuperation chamno   concept resultat:  %(k1)s
-    numero ordre:  %(i1)d
-"""),
+
+
+
+
+
+
+
+
+
+
 
 44: _("""
  trop d''amortissements modaux   nombre d''amortissements :  %(i1)d
     nombre de modes :  %(i2)d
 """),
 
-46: _("""
- acces impossible  champ :  %(k1)s , nume_ordre :  %(i1)d
-"""),
+
+
+
+
+
+
 
 47: _("""
  erreur dans la recherche du noeud      nom du noeud :  %(k1)s
@@ -350,13 +360,19 @@ cata_msg={
  type de numerotation non connue numerotation: %(k1)s
 """),
 
-69: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s
-"""),
 
-70: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
 
 71: _("""
  il faut donner :   - une maille ou un group_ma %(k1)s
@@ -367,21 +383,31 @@ cata_msg={
  trop de mailles dans le group_ma  maille utilisee:  %(k1)s
 """),
 
-73: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s
-"""),
 
-74: _("""
- trop de noeuds dans le group_no  noeud utilise:  %(k1)s
-"""),
 
-75: _("""
- trop de mailles dans le group_ma  maille utilisee:  %(k1)s
-"""),
 
-76: _("""
- type de numerotation non connue numerotation: %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 77: _("""
  le numero d''ordre n''existe pas    numero :  %(i1)d
@@ -424,13 +450,17 @@ cata_msg={
  erreur dans les donneesparametre non trouve:  %(k1)s
 """),
 
-91: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s
-"""),
 
-92: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
 
 93: _("""
  le parametre  %(k1)s n''existe pas dans la table %(k2)s
@@ -438,25 +468,40 @@ cata_msg={
  veuillez consulter la documentaion  de la commande. %(k4)s
 """),
 
-94: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s
-"""),
 
-95: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s
-"""),
 
-96: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s
-"""),
 
-97: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s
-"""),
 
-98: _("""
- erreur dans les donneesparametre n''existe pas:  %(k1)s
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 99: _("""
  erreur dans les donneesparametre :  %(k1)s   plusieurs valeurs trouvees %(k2)s

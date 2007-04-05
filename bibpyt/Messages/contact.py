@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 20/03/2007   AUTEUR KHAM M.KHAM 
+#@ MODIF contact Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,17 +90,19 @@ cata_msg={
  Contact methodes discretes. Erreur de dimensionnement des tableaux apcoef et apddl : contacter les developpeurs
 """),
 
-26: _("""
- Contact methodes discretes. Erreur du nombre de noeuds esclaves sur la zone : contacter les developpeurs
-"""),
+
+
+
+
 
 27: _("""
  Contact methodes discretes. On n'a pas trouve de noeud maitre proche du noeud esclave : contacter les developpeurs
 """),
 
-29: _("""
- Contact methodes discretes. La recherche nodale par boites n'est pas operationnel
-"""),
+
+
+
+
 
 30: _("""
  Contact methodes discretes. On ne sait pas traiter ce type de maille

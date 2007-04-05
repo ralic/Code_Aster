@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,12 +23,10 @@ def _(x) : return x
 cata_msg={
 
 
-2: _("""
-  -> La matrice de masse est non inversible.
-     On suppose alors que l'accélération initiale est nulle.
-  -> Risque & Conseil :
-     Verifiez qu'une masse a bien été affectée à tous les éléments.
-"""),
+
+
+
+
 
 3: _("""
  type de matrice inconnu.
@@ -238,9 +236,10 @@ cata_msg={
  le materiau depend de la temperature! il n'y a pas de champ de temperature ! le calcul est impossible
 """),
 
-58: _("""
- le materiau depend de la temperature il n'y a pas de temperature de reference on prendra donc la valeur 0
-"""),
+
+
+
+
 
 59: _("""
  thlag-gleg pas possible
@@ -319,9 +318,10 @@ cata_msg={
  liaison de frottement incongrue
 """),
 
-80: _("""
- valeur de  %(k1)s  a la temperature  %(k2)s  non trouvee
-"""),
+
+
+
+
 
 81: _("""
  erreur contact - trop de reac. geom.
@@ -360,9 +360,10 @@ cata_msg={
  pas possible
 """),
 
-95: _("""
- le vecteur tangent defini est colineaire au vecteur normal
-"""),
+
+
+
+
 
 96: _("""
  ce mot cle de modi_maillage attend un vecteur de norme non nulle.
@@ -372,11 +373,13 @@ cata_msg={
  le mot cle repere de modi_maillage attend deux vecteurs non nuls orthogonaux.
 """),
 
-98: _("""
- contact - noeud maitre  introuvable
-"""),
 
-99: _("""
- numero noeud maitre incorrect
-"""),
+
+
+
+
+
+
+
+
 }

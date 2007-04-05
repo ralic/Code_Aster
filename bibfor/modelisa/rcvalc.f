@@ -1,7 +1,7 @@
       SUBROUTINE RCVALC( JMAT,PHENOM,NBPAR,NOMPAR,VALPAR,
      &                   NBRES,NOMRES,VALRES,CODRET, STOP )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C DEB ------------------------------------------------------------------
           GOTO 11
         ENDIF
  10   CONTINUE
-      CALL U2MESS('A','MODELISA5_46')
+      CALL U2MESS('A','ELEMENTS2_63')
       GOTO 9999
  11   CONTINUE
 C

@@ -1,7 +1,7 @@
       SUBROUTINE ORDLRL (LIGRCZ, LISREZ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C
       IF (NDDLA.GT.NMOCL) THEN
                  VALI (1) = NMOCL
                  VALI (2) = NDDLA
-        CALL U2MESG('F', 'MODELISA8_73',0,' ',2,VALI,0,0.D0)
+        CALL U2MESG('F', 'MODELISA8_29',0,' ',2,VALI,0,0.D0)
       ENDIF
 C
       DO 1 I=1,NBCMP
@@ -217,7 +217,7 @@ C
                IF (.NOT.EXISDG(ZI(JPRNM-1+(IN-1)*NBEC+1),ICMP)) THEN
                  VALK (1) = 'EST INTERDIT POUR LE NOEUD'
                  VALK (2) = ' '
-                 CALL U2MESG('F', 'MODELISA8_74',2,VALK,0,0,0,0.D0)
+                 CALL U2MESG('F', 'MODELISA8_30',2,VALK,0,0,0,0.D0)
                ENDIF
  50      CONTINUE
 C

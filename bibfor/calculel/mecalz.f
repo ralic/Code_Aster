@@ -6,7 +6,7 @@
       CHARACTER*(*) CHARGE,LIGREL,BASE,CHELEM(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,7 +150,7 @@ C DEB-------------------------------------------------------------------
 
       ELSE
         VALK = OPTIO2
-        CALL U2MESG('F', 'CALCULEL6_11',1,VALK,0,0,0,0.D0)
+        CALL U2MESG('F', 'CALCULEL6_10',1,VALK,0,0,0,0.D0)
       END IF
 
       CALL CALCUL('S',OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,NBOUT,LCHOUT,

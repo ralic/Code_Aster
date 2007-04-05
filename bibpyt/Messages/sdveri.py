@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+#@ MODIF sdveri Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,69 +22,85 @@ def _(x) : return x
 
 cata_msg={
 
-1: _("""
- composante 1 de    l objet mael_mass_desc non valide
-"""),
 
-2: _("""
- composante 2 de    l objet mael_mass_desc non valide
-"""),
 
-3: _("""
- composante 3 de    l objet mael_mass_desc non valide
-"""),
 
-4: _("""
- composante 1 de    l objet mael_desc non valide
-"""),
 
-5: _("""
- composante 2 de    l objet mael_desc non valide
-"""),
 
-6: _("""
- composante 3 de    l objet mael_desc non valide
-"""),
 
-7: _("""
- composante 1 de    l objet mael_raid_desc non valide
-"""),
 
-8: _("""
- composante 2 de    l objet mael_raid_desc non valide
-"""),
 
-9: _("""
- composante 3 de    l objet mael_raid_desc non valide
-"""),
 
-10: _("""
-  erreur modg.desc comp 1
-"""),
 
-11: _("""
-  erreur modg.desc comp 2
-"""),
 
-12: _("""
-  erreur MODG.DESC comp 3
-"""),
 
-13: _("""
- composante 5 de  l'objet MODG.LIDF non valide
-"""),
 
-14: _("""
- matrice de liaison 1 de   l'objet MODG.LIMA non valide
-"""),
 
-15: _("""
- matrice de liaison 2 de   l'objet MODG.LIMA non valide
-"""),
 
-16: _("""
- matrice de liaison 3 de   l'objet MODG.LIMA non valide
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 17: _("""
  Erreur de programmation :
@@ -124,11 +140,10 @@ cata_msg={
  L'objet JEVEUX '%(k1)s' devrait etre de type complexe
 """),
 
-23: _("""
- Erreur de programmation :
- L'objet JEVEUX '%(k1)s' est interdit dans les structures de données de type '%(k2)s'
- On le détruit.
-"""),
+
+
+
+
 
 24: _("""
  Erreur de programmation :
@@ -156,62 +171,50 @@ cata_msg={
  Le champ DOCU trouvé  est : '%(k3)s'
 """),
 
-28: _("""
- Erreur de programmation :
- Vérification d'une structure de donnée :
- Le type de SD '%(k1)s' n'est pas encore programmé
-"""),
 
-29: _("""
- Erreur de programmation :
- Vérification d'une structure de donnée :
- L'objet JEVEUX '%(k1)s' a un type incorrect.
- Le type attendu est : '%(k2)s'
- Le type trouvé  est : '%(k3)s'
-"""),
 
-30: _("""
- Erreur de programmation :
- Vérification d'une structure de donnée :
- La Structure de donnée '%(k1)s' de type %(k2)s est obligatoire mais elle est vide
-"""),
 
-31: _("""
- Erreur de programmation :
- Vérification d'une structure de donnée :
- L'objet JEVEUX '%(k1)s' a un GENR incorrect.
- GENR attendu est : '%(k2)s'
- GENR trouvé  est : '%(k3)s'
-"""),
 
-32: _("""
- Erreur de programmation :
- Vérification d'une structure de donnée :
- L'objet JEVEUX '%(k1)s' a un XOUS incorrect.
- XOUS attendu est : '%(k2)s'
- XOUS trouvé  est : '%(k3)s'
-"""),
 
-31: _("""
- Erreur de programmation :
- Concept de type inconnu %(k1)s
-"""),
 
-32: _("""
- Erreur de programmation :
- Type de configuration inconnu pour le mot clé FAISCEAU_AXIAL
-"""),
 
-33: _("""
- Erreur de programmation :
- Type de spectre incorrect
-"""),
 
-34: _("""
- Erreur de programmation :
- Il ne faut plus utiliser la routine VERISD.
- Il faut maintenant utiliser CHEKSD.
-"""),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

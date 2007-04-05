@@ -4,7 +4,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,11 +114,11 @@ C=====RECUPERATION NOMBRE DE COUCHES ET DE SECTEURS ANGULAIRES
       END IF
       IF (NBCOU.GT.NBCOUM) THEN
         VALI = NBCOUM
-        CALL U2MESG('F', 'ELEMENTS5_6',0,' ',1,VALI,0,0.D0)
+        CALL U2MESG('F', 'ELEMENTS5_2',0,' ',1,VALI,0,0.D0)
       END IF
       IF (NBSEC.GT.NBSECM) THEN
         VALI = NBSECM
-        CALL U2MESG('F', 'ELEMENTS5_7',0,' ',1,VALI,0,0.D0)
+        CALL U2MESG('F', 'ELEMENTS5_3',0,' ',1,VALI,0,0.D0)
       END IF
 
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI

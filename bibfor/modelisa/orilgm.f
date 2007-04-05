@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -197,7 +197,7 @@ C
                   CALL U2MESG('F', 'MODELISA8_75',1,VALK,0,0,0,0.D0)
                ELSEIF ( IER .EQ. 1 ) THEN
                   VALK = K8B
-                  CALL U2MESG('A', 'MODELISA8_76',1,VALK,0,0,0,0.D0)
+                  CALL U2MESG('A', 'SOUSTRUC_87',1,VALK,0,0,0,0.D0)
                ENDIF
                CALL JENONU ( JEXNOM(NOMNOE,K8B), NOEUD )
             ENDIF

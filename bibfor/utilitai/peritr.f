@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -283,7 +283,7 @@ C        --- IMPRESSION DU CHAMELEM ---
               END IF
               CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONMAX',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_74',1,NOMMAI)
+                CALL U2MESK('A','UTILITAI3_47',1,NOMMAI)
                 GO TO 50
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)

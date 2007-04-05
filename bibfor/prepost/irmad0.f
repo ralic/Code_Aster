@@ -4,7 +4,7 @@
       CHARACTER*(*)                       CHAMNO(*) , NOMSYM
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C
           ITYPE = 2
       ELSE
           CALL GETRES(K8B,K8B,NOMCMD)
-          CALL U2MESK('A','PREPOST2_34',1,TYPE(1:1))
+          CALL U2MESK('A','PREPOST_97',1,TYPE(1:1))
           GOTO 9999
       ENDIF
 C

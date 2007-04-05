@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -263,7 +263,7 @@ C        --- ON CALCULE L'ENERGIE TOTALE ---
               END IF
               CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONMAX',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
-                CALL U2MESK('A','UTILITAI3_74',1,NOMMAI)
+                CALL U2MESK('A','UTILITAI3_47',1,NOMMAI)
                 GO TO 40
               END IF
               CALL JEVEUO(JEXNOM(MLGGMA,NOMMAI),'L',JAD)
