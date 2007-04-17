@@ -6,7 +6,7 @@
       REAL*8                         VAR(*),FON(*),VARRES(*),FONRES(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,9 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       IER  = 0
       NOMF = NOMFON
-      IF (CHPROL(1) .NE.'FONCTION' ) GOTO 1000
+C
+      IF (CHPROL(1) .EQ.'FONCTION' ) THEN
+C     ------------------------------------------------------------------
 C
 C     INITIALISATION
 C
@@ -98,7 +100,7 @@ C     --- TRAITEMENT PARTICULIER POUR 1 POINT ---
 C
       IF ( NBVAR .EQ. 1 ) THEN
          IF ( NBRES .NE. 1  .AND.  CHPROL(5)(1:2) .NE. 'CC' ) THEN
-            CALL U2MESS('F','UTILITAI2_22')
+            CALL U2MESS('F','FONCT0_22')
          ENDIF
          IF ( CHPROL(5)(1:2) .EQ. 'CC' ) THEN
             DO 10 I = 1 , NBRES
@@ -108,7 +110,7 @@ C
             IF ( VARRES(IRES) .EQ. VAR(IVAR) ) THEN
                FONRES(IRES) = FON(IVAR)
             ELSE
-               CALL U2MESS('F','UTILITAI2_23')
+               CALL U2MESS('F','FONCT0_23')
             ENDIF
          ENDIF
          GOTO 9999
@@ -149,13 +151,12 @@ C
          ELSEIF ( CHPROL(5)(1:1) .EQ. 'E' ) THEN
 C           --- EXTRAPOLATION EXCLUE ---
             IER = IER + 1
-            VALK (1) = ' '
-            VALK (2) = NOMF
-            VALK (3) = ' '
-            CALL U2MESG('F', 'UTILITAI6_28',3,VALK,0,0,0,0.D0)
+            VALR(1)=VARRES(1)
+            VALR(2)=VAR(1)
+            CALL U2MESK('F+', 'FONCT0_9',1,NOMF)
+            CALL U2MESR('F',  'FONCT0_19',2,VALR)
          ELSE
-            VALK (1) = CHPROL(5)(1:1)
-            CALL U2MESG('F', 'UTILITAI6_29',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('F', 'FONCT0_21',1,CHPROL(5)(1:1))
          ENDIF
       ENDIF
 C
@@ -193,17 +194,16 @@ C              --- INTERPOLATION LOG-LIN ---
                      FONRES(IRES) = FON(IVAR+1)
                   ELSE
                      IER = IER + 1
-            VALK (1) = ' '
-            VALR (1) = VARRES(IRES)
-            VALR (2) = VAR(IVAR)
-            VALR (3) = VAR(IVAR+1)
-                     CALL U2MESG('F', 'UTILITAI6_30',1,VALK,0,0,3,VALR)
+                     VALR (1) = VARRES(IRES)
+                     VALR (2) = VAR(IVAR)
+                     VALR (3) = VAR(IVAR+1)
+                     CALL U2MESK('F+', 'FONCT0_11',1,NOMF)
+                     CALL U2MESR('F',  'FONCT0_26',3,VALR)
                   ENDIF
                ENDIF
             ELSE
                IER = IER + 1
-            VALK (1) = CHPROL(2)
-               CALL U2MESG('F', 'UTILITAI6_31',1,VALK,0,0,0,0.D0)
+               CALL U2MESK('F', 'FONCT0_21',1,CHPROL(2))
             ENDIF
             IRES = IRES + 1
             GOTO 200
@@ -239,26 +239,24 @@ C
          ELSEIF ( CHPROL(5)(2:2) .EQ. 'E' ) THEN
 C           --- EXTRAPOLATION EXCLUE ---
             IER = IER + 2
-            VALK (1) = ' '
-            VALK (2) = NOMF
-            VALK (3) = ' '
-            CALL U2MESG('F', 'UTILITAI6_32',3,VALK,0,0,0,0.D0)
+            VALR(1)=VARRES(NBRES)
+            VALR(2)=VAR(NBVAR)
+            CALL U2MESK('F+', 'FONCT0_9',1,NOMF)
+            CALL U2MESR('F',  'FONCT0_20',2,VALR)
          ELSE
-            VALK (1) = CHPROL(5)(2:2)
-            CALL U2MESG('F', 'UTILITAI6_33',1,VALK,0,0,0,0.D0)
+            CALL U2MESK('F', 'FONCT0_21',1,CHPROL(5)(2:2))
          ENDIF
       ENDIF
       GOTO 9999
 C     ------------------------------------------------------------------
- 1000 CONTINUE
-      IF (CHPROL(1) .EQ.'CONSTANT' ) THEN
+      ELSEIF (CHPROL(1) .EQ.'CONSTANT' ) THEN
          DO 1100  JRES= 1,NBRES
             FONRES(JRES) = FON(1)
  1100    CONTINUE
       ELSEIF (CHPROL(1) .EQ.'INTERPRE' ) THEN
          CALL JELIRA(NOMF//'.NOVA','LONUTI',LONUTI,K8BID)
          IF ( LONUTI .NE. 1 ) THEN
-            CALL U2MESS('F','UTILITAI2_24')
+            CALL U2MESG('F','FONCT0_24', 1,NOMF, 1,LONUTI, 0,0.D0)
          ENDIF
          CALL JEVEUO(NOMF//'.NOVA','L',LNOVA)
          DO 1200  JRES= 1,NBRES
@@ -266,8 +264,9 @@ C     ------------------------------------------------------------------
      &                                   VARRES(JRES),FONRES(JRES),IER)
  1200    CONTINUE
       ELSE
- 2000    CONTINUE
-         CALL U2MESS('F','UTILITAI2_25')
+         VALK(1)=NOMF
+         VALK(2)=CHPROL(1)
+         CALL U2MESK('F','FONCT0_25',2,VALK)
       ENDIF
  9999 CONTINUE
       CALL JEDEMA()

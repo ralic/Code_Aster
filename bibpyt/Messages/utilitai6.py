@@ -1,4 +1,4 @@
-#@ MODIF utilitai6 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai6 Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,30 +131,6 @@ cata_msg={
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 25: _("""
  cham_elem inexistant pour l''acces %(k1)s sur le resultat %(k2)s
  pour le nume_ordre %(i1)d
@@ -172,46 +148,6 @@ cata_msg={
  il sera tronque:  %(k1)s
 """),
 
-28: _("""
- erreur extrapolationl''extrapolation a gauche de  %(k1)s
- la fonction  %(k2)s
-  est exclue %(k3)s
-"""),
-
-29: _("""
- erreur extrapolationextrapolation a gauche inconnue %(k1)s
-"""),
-
-30: _("""
- erreur interpolation.interpolation non permise %(k1)s
-   valeur a interpoler: %(r1)f
-   borne inferieure: %(r2)f
-   borne superieure: %(r3)f
-"""),
-
-31: _("""
- erreur interpolation.interpolation inconnue %(k1)s
-"""),
-
-32: _("""
- erreur extrapolationl''extrapolation a droite de  %(k1)s
- la fonction  %(k2)s
-  est exclue %(k3)s
-"""),
-
-33: _("""
- erreur extrapolationextrapolation a droite inconnue %(k1)s
-"""),
-
-34: _("""
- on deborde a gauche   valeur a interpolee:  %(r1)f
-       borne inferieure:  %(r2)f
-"""),
-
-35: _("""
- on deborde a droite   valeur a interpolee:  %(r1)f
-       borne superieure:  %(r2)f
-"""),
 
 36: _("""
  erreur de programmationtype de fonction inconnu  %(k1)s

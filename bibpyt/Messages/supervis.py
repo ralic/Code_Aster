@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF supervis Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,10 +180,10 @@ L'argument du mot cle "NOM" sous le mot clé facteur "CODE" est tronqué à 8 carac
  Arret de l'exécution et fermeture des bases jeveux
 """),
 
-
-
-
-
+40: _("""
+ Vous utilisez une version dont les routines suivantes ont été surchargées :
+   %(ktout)s
+"""),
 
 41 : _("Plus de 5 fois le meme message d'alarme."),
 

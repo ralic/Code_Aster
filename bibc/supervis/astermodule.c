@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 13/02/2007   AUTEUR PELLET J.PELLET */
+/* MODIF astermodule supervis  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -1043,8 +1043,12 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN int lfac,_IN char *motcle,_IN
 
 
 /* ------------------------------------------------------------------ */
-void DEFSSSPSPPPP(UTPRIN,utprin,_IN char *typmess,_IN int ltype,_IN char *unite,_IN int lunite,_IN char *idmess,_IN int lidmess,_IN INTEGER *nbk,
-                                _IN char *valk,_IN int lvk,_IN INTEGER *nbi,_IN INTEGER *vali,_IN INTEGER *nbr,_IN double *valr)
+void DEFSSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN int ltype,
+                                _IN char *unite, _IN int lunite,
+                                _IN char *idmess, _IN int lidmess,
+                                _IN INTEGER *nbk, _IN char *valk, _IN int lvk,
+                                _IN INTEGER *nbi, _IN INTEGER *vali,
+                                _IN INTEGER *nbr, _IN double *valr)
 {
         PyObject *tup_valk,*tup_vali,*tup_valr,*res;
         char *kvar;
@@ -1066,9 +1070,9 @@ void DEFSSSPSPPPP(UTPRIN,utprin,_IN char *typmess,_IN int ltype,_IN char *unite,
            PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
         }
 
-        res=PyObject_CallMethod(static_module,"utprin","s#s#s#OOO",typmess,ltype,unite,lunite,idmess,lidmess,tup_valk,tup_vali,tup_valr);
+        res=PyObject_CallMethod(static_module,"MessageLog","s#s#OOO",typmess,ltype,idmess,lidmess,tup_valk,tup_vali,tup_valr);
         if (!res) {
-           MYABORT("erreur lors de l'appel à UTPRIN");
+           MYABORT("erreur lors de l'appel à MessageLog");
         }
 
         Py_DECREF(tup_valk);
@@ -3429,9 +3433,9 @@ static PyMethodDef aster_methods[] = {
                 {"putcolljev",   aster_putcolljev,   METH_VARARGS, putcolljev_doc},
                 {"getcolljev",   aster_getcolljev,   METH_VARARGS, getcolljev_doc},
                 {"GetResu",      aster_GetResu,      METH_VARARGS},
-                {"jeveux_getobjects", jeveux_getobjects,    METH_VARARGS},
-                {"jeveux_getattr", jeveux_getattr,    METH_VARARGS},
-                {"jeveux_exists", jeveux_exists, METH_VARARGS},
+                {"jeveux_getobjects", jeveux_getobjects, METH_VARARGS},
+                {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
+                {"jeveux_exists", jeveux_exists,     METH_VARARGS},
                 {NULL,                NULL}/* sentinel */
 };
 

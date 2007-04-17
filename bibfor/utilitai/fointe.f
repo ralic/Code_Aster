@@ -5,7 +5,7 @@
       REAL*8              VALPU(*), RESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,15 +72,18 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      NUPAR, I, I1, NBVN, IZERO, ISAVE, LPROL, LVAR, NBPT,
-     &             LPARA, NBPF, IBID, IRET, LFON, IADZI, IAZK24
-      CHARACTER*1  COLI, CBID,K1BID, BL,XOUS
+      INTEGER      NUPAR, I, NBVN, IZERO, ISAVE, LPROL, LVAR, NBPT,
+     &             LPARA, IBID, IRET, LFON, IADZI, IAZK24
+      CHARACTER*1  COLI, CBID,K1BID, XOUS
       CHARACTER*2  CODME2
       CHARACTER*8  NOMAIL
       CHARACTER*19 NOMFON
       CHARACTER*24 CHPROL, CHVALE, CHPARA
       REAL*8       LINLIN, LINLOG, LOGLOG, LOGLIN, X, X1, Y1, X2, Y2
       REAL*8       RVAR, RPAR, TAB(4), EPSI, R8PREM, R8VIDE
+C     ------------------------------------------------------------------
+      CHARACTER*24 VALK(2)
+      INTEGER      VALI(2)
 C     ------------------------------------------------------------------
       INTEGER      MXSAVE, MXPARA, SVNBPA, SVPAR, ISVNXT, ISVIND, NEXTSV
       INTEGER      IAPROL, IAVALE, IAPARA, LUVALE, LUPARA
@@ -98,10 +101,6 @@ C     ------------------------------------------------------------------
      &                SVTYPF(4) , SVPRGD(4) , SVINTE(4)
 
 C     ------------------------------------------------------------------
-      INTEGER      IPAR(10)
-      CHARACTER*16 NOMP(10)
-      CHARACTER*16 TYPFON
-C     ------------------------------------------------------------------
 C     FONCTION EN LIGNE
 C
       LINLIN(X,X1,Y1,X2,Y2)= Y1+(X-X1)*(Y2-Y1)/(X2-X1)
@@ -116,7 +115,6 @@ C     ------------------------------------------------------------------
 C
       CODME2 = CODMES
       EPSI   = SQRT ( R8PREM() )
-      BL     = ' '
       IER    = 0
       IZERO  = 0
       NOMFON = NOMF
@@ -210,11 +208,10 @@ C     --- SI ECHEC PRECEDENT ALORS ON VERIFIE ---
      &                                   SVNBPA(ISAVE),SVNOMP(1,ISAVE))
       IF (NBPU.LT.SVNBPA(ISAVE)) THEN
          IER = 160
-         CALL UTDEBM('A','FOINT2','ERREUR A L''INTERPOLATION')
-         CALL UTIMPK('S',' FONCTION',1,NOMFON)
-         CALL UTIMPI('L',' PAS ASSEZ DE PARAMETRES : ',1,NBPU)
-         CALL UTIMPI('S',' AU LIEU DE',1,SVNBPA(ISAVE))
-         CALL UTFINM()
+         VALI(1)=NBPU
+         VALI(2)=SVNBPA(ISAVE)
+         CALL U2MESK('A+', 'FONCT0_9', 1, NOMFON)
+         CALL U2MESI('A',  'FONCT0_14', 2, VALI)
          GOTO 9998
       ENDIF
       DO 20 I=1,SVNBPA(ISAVE)
@@ -225,23 +222,17 @@ C     --- SI ECHEC PRECEDENT ALORS ON VERIFIE ---
                   SVPAR(I,ISAVE)=NUPAR
                ELSE
                   IER = 120
-                  CALL UTDEBM('A','FOINT2','ERREUR A L''INTERPOLATION')
-                  CALL UTIMPK('S',' FONCTION',1,NOMFON)
-                  CALL UTIMPK('L',' PARAMETRE',NBPU,NOMPU)
-                  CALL UTIMPK('S',' EN DOUBLE',0,BL)
-                  CALL UTFINM()
+                  CALL U2MESK('A+', 'FONCT0_9', 1, NOMFON)
+                  CALL U2MESK('A',  'FONCT0_15', NBPU, NOMPU)
                   GOTO 9998
                ENDIF
             ENDIF
    21    CONTINUE
          IF (SVPAR(I,ISAVE).EQ.0) THEN
             IER = 130
-            CALL UTDEBM('A','FOINT2','ERREUR A L''INTERPOLATION')
-            CALL UTIMPK('S',' FONCTION',1,NOMFON)
-            CALL UTIMPK('L',' PARAMETRES ATTENDUS',SVNBPA(ISAVE),
-     &                                            SVNOMP(1,ISAVE))
-            CALL UTIMPK('L',' PARAMETRES RECUS   ',NBPU,NOMPU)
-            CALL UTFINM()
+            CALL U2MESK('A+', 'FONCT0_9', 1, NOMFON)
+            CALL U2MESK('A+', 'FONCT0_16',SVNBPA(ISAVE),SVNOMP(1,ISAVE))
+            CALL U2MESK('A',  'FONCT0_17', NBPU, NOMPU)
             GOTO 9998
          ENDIF
    20 CONTINUE
@@ -281,7 +272,7 @@ C
             IF (IER.NE.0) GOTO 9998
          ELSEIF (COLI.EQ.'I') THEN
             IF (SVINTE(ISAVE)(1:3).EQ.'NON') THEN
-               CALL U2MESS('A','UTILITAI2_19')
+               CALL U2MESK('A','FONCT0_11', 1,NOMFON)
                IER = 170
                GOTO 9998
             ENDIF
@@ -311,13 +302,16 @@ C           --- INTERPOLATION FINALE SUR LES PARAMETRES ---
             TAB(2) = ZR(LPARA+I  )
             RESU = LINLIN(RPAR,TAB(1),TAB(3),TAB(2),TAB(4))
          ELSE
-            CALL U2MESK('A','UTILITAI2_20',1,COLI)
+            CALL U2MESK('A+','FONCT0_9', 1,NOMFON)
+            CALL U2MESR('A','FONCT0_12', 1,RVAR)
             IER = 140
             GOTO 9998
          ENDIF
 C
       ELSE
-         CALL U2MESK('A','UTILITAI2_21',1,SVTYPF(ISAVE))
+         VALK(1)=NOMFON
+         VALK(2)=SVTYPF(ISAVE)
+         CALL U2MESK('A','FONCT0_13', 2,VALK)
          IER = 150
          GOTO 9998
       ENDIF
@@ -328,14 +322,18 @@ C
 C
       IF ( IER .NE. 0 ) THEN
         IF ( CODME2(1:1) .NE. ' ' ) THEN
-           CALL UTDEBM ( CODME2(1:1), 'FOINTE', 'ERREUR RENCONTREE ' )
-           CALL UTIMPK ( 'S', 'POUR LA FONCTION ', 1, NOMFON )
            IF ( CODME2(2:2) .EQ. 'M' ) THEN
               CALL TECAEL ( IADZI, IAZK24 )
               NOMAIL = ZK24(IAZK24-1+3)(1:8)
-              CALL UTIMPK ( 'L', '  POUR LA MAILLE ', 1, NOMAIL )
+C             SI ON A L'INFO, ON AFFICHERA LA MAILLE CONCERNEE
+              CODME2(2:2) = '+'
+           ELSE
+              CODME2(2:2) = ' '
            ENDIF
-           CALL UTFINM
+           CALL U2MESK(CODME2, 'FONCT0_9', 1, NOMFON)
+           IF ( CODME2(2:2) .EQ. '+' ) THEN
+              CALL U2MESK ( CODME2(1:1), 'FONCT0_10', 1, NOMAIL )
+           ENDIF
         ENDIF
       ENDIF
 C

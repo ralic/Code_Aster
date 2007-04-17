@@ -2,7 +2,7 @@
      &                      VEC, MAT, IRET)
          IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/03/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C =====================================================================
         REAL*8        YF(MOD), R, SIGF(6), SIGD(6)
         REAL*8        VEC(6), MAT(6,6), KSI
         REAL*8        D12, D13, UN, ZERO, DEUX, TROIS
-        REAL*8        PSI(3), TOLE, DEGR
+        REAL*8        PSI(3), TOLE, DEGR, AEXP, EXPTOL, R8MAEM
         CHARACTER*6   CARAC
         LOGICAL       CONSOL, TRACT, DEBUG
 C =====================================================================
@@ -62,7 +62,7 @@ C        PARAMETER     ( DSQR  = 1.41421356237D0  )
         PARAMETER     ( ZERO  = 0.D0   )
         PARAMETER     ( DEUX  = 2.D0   )
         PARAMETER     ( TROIS = 3.D0   )
-        PARAMETER     ( TOLE  = 1.D-6 )
+        PARAMETER     ( TOLE  = 1.D-6  )
         PARAMETER     ( DEGR  = 0.0174532925199D0 )
 C =====================================================================
         COMMON /TDIM/   NDT, NDI
@@ -96,6 +96,16 @@ C =====================================================================
  5        CONTINUE
  
         EPSVPD = YF(NDT+1)
+        
+        EXPTOL = LOG(R8MAEM())
+        EXPTOL = MIN(EXPTOL, 40.D0)
+        AEXP   = -BETA*EPSVPD
+        
+        IF (AEXP .GE. EXPTOL) THEN
+          IRET = 1
+          GOTO 999
+        ENDIF
+        
         PC = PCO*EXP(-BETA*EPSVPD)
 
         DO 25 I = 1, NDI
@@ -220,6 +230,7 @@ C =====================================================================
             IF (DEBUG) WRITE (IFM,'(A)')
      &                 'HUJDDD :: LOG(PK/PC) NON DEFINI'
             IRET = 1
+            GOTO 999
           ENDIF
           
           DO 71 I = 1, NDI
@@ -260,6 +271,7 @@ C =====================================================================
             IF (DEBUG) WRITE (IFM,'(A)')
      &                 'HUJDDD :: LOG(PK/PC) NON DEFINI'
             IRET = 1
+            GOTO 999
           ENDIF
           
           CALL HUJKSI ('KSI   ', MATER, R, KSI)
@@ -282,5 +294,6 @@ C =====================================================================
         ENDIF
                 
       ENDIF
+ 999  CONTINUE
 
       END

@@ -1,4 +1,4 @@
-#@ MODIF sdveri Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF sdveri Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,85 +21,9 @@
 def _(x) : return x
 
 cata_msg={
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 1: _("""
+ Impossible d'importer le catalogue de la structure de données '%(k1)s'
+"""),
 
 
 17: _("""

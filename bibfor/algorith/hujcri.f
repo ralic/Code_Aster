@@ -1,7 +1,7 @@
         SUBROUTINE HUJCRI (MATER, SIG , VIN, SEUILI)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/02/2007   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,17 +28,23 @@ C       ---------------------------------------------------------------
         INTEGER NDT, NDI, I
         REAL*8  MATER(20,2), R4, I1, SIG(6), VIN(*)
         REAL*8  D, PCO, BETA, SEUILI, PC, EPSVPM
-        REAL*8  D13, ZERO
+        REAL*8  D13, ZERO, AEXP, EXPTOL, R8MAEM
 
         COMMON /TDIM/   NDT , NDI
 
-        DATA D13, ZERO  /0.333333333334D0, 0.D0/
+        DATA      D13, ZERO  /0.333333333334D0, 0.D0/
 
         D      = MATER(3,2)
         PCO    = MATER(7,2)
         BETA   = MATER(2,2)
         R4     = VIN(4)
         EPSVPM = VIN(5)
+        
+        EXPTOL = LOG(R8MAEM())
+        EXPTOL = MIN(EXPTOL, 40.D0)
+        AEXP   = -BETA*EPSVPM
+        IF (AEXP .GE. EXPTOL) CALL U2MESS('F', 'COMPOR1_7')
+        
         PC     = PCO*EXP(-BETA*EPSVPM)
                 
         I1 = ZERO

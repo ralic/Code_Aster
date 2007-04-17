@@ -1,6 +1,6 @@
       SUBROUTINE U2MESG (CH1, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILIFOR  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,76 +33,32 @@ C     COMPTEUR D'ALARMES POUR LIMITER LE NOMBRE D'IMPRESSION
       INTEGER          ICOMAL
       COMMON /COMSAV / ICOMAL
 C     ------------------------------------------------------------------
-      INTEGER          MXUNIT     , MXNUML     , PREM, RECURS
-      PARAMETER      ( MXUNIT = 8 , MXNUML = 4 )
-      INTEGER          NBUNIT(MXUNIT)
+      INTEGER          PREM, RECURS
       CHARACTER*132    K132B
-      CHARACTER *16    KUNIT(MXUNIT,MXNUML),COMPEX
+      CHARACTER *16    COMPEX
       CHARACTER *8     NOMRES, K8B
       LOGICAL          LEXC
-      INTEGER          LOUT,IDF,I,K,LL,LC,ICMD,IMAAP,LXLGUT
+      INTEGER          LOUT,IDF,I,LL,LC,ICMD,IMAAP,LXLGUT
 C     ------------------------------------------------------------------
-      SAVE             KUNIT, NBUNIT, PREM, RECURS
+      SAVE             PREM, RECURS
 C     ------------------------------------------------------------------
+C     POUR CONTOURNER LE PB CRP
+      CHARACTER*16     BID
+      BID = ' '
+
       IF ( PREM .NE. 16092006 ) THEN
          PREM = 16092006
          NBERRF=0
          NBERRE=0
-C
-C        REDIRECTION DES MESSAGES D'ERREUR E
-C
-         NBUNIT(1) = 3
-         KUNIT(1,1) = 'ERREUR'
-         KUNIT(1,2) = 'MESSAGE'
-         KUNIT(1,3) = 'RESULTAT'
-C
-C        REDIRECTION DES MESSAGES D'ERREUR F
-C
-         NBUNIT(2) = 3
-         KUNIT(2,1) = 'ERREUR'
-         KUNIT(2,2) = 'MESSAGE'
-         KUNIT(2,3) = 'RESULTAT'
-C
-C        REDIRECTION DES MESSAGES D'INFORMATION I
-C
-         NBUNIT(3) = 1
-         KUNIT(3,1) = 'MESSAGE'
-C
-C        REDIRECTION DES MESSAGES DE DEBUG D
-C
-         NBUNIT(4) = 1
-         KUNIT(4,1) = 'VIGILE'
-C
-C        REDIRECTION DES MESSAGES D'ALARME A
-C
-         NBUNIT(5) = 2
-         KUNIT(5,1) = 'MESSAGE'
-         KUNIT(5,2) = 'RESULTAT'
-C
-C        REDIRECTION DES MESSAGES D'ERREUR S ET EXCEPTIONS
-C
-         NBUNIT(6) = 3
-         KUNIT(6,1) = 'ERREUR'
-         KUNIT(6,2) = 'MESSAGE'
-         KUNIT(6,3) = 'RESULTAT'
-C
-         NBUNIT(8) = 3
-         KUNIT(8,1) = 'ERREUR'
-         KUNIT(8,2) = 'MESSAGE'
-         KUNIT(8,3) = 'RESULTAT'
-
       ENDIF
-
+C
 C     --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
       IDF  = INDEX('EFIDASXZ',CH1(1:1))
 C
 C --- SE PROTEGER DES APPELS RECURSIFS
       IF ( RECURS .EQ. 1234567890 ) THEN
 C        ON EST DEJA PASSE PAR U2MESG... SANS EN ETRE SORTI
-         DO 123 K=1,NBUNIT(IDF)
-            CALL UTPRIN ('F',KUNIT(IDF,K),'SUPERVIS_55',
-     +                   0,VALK,0,VALI,0,VALR)
-123      CONTINUE
+         CALL UTPRIN('F', BID, 'SUPERVIS_55', 0, VALK, 0, VALI, 0, VALR)
          CALL JEFINI('ERREUR')
       ENDIF
       RECURS = 1234567890
@@ -128,10 +84,7 @@ C     --- SI ALARME, ON COMPTE LE NOMBRE D'OCCURENCE
           ICOMAL=ICOMAL+1
           IF(ICOMAL.EQ.5) THEN
 C     --- ON A ATTEINT LE NOMBRE MAXIMAL D'OCCURENCE POUR L'ALARME
-            DO 90 K=1,NBUNIT(IDF)
-               CALL UTPRIN('A',KUNIT(IDF,K),'SUPERVIS_41',
-     +                     0,VALK,0,VALI,0,VALR)
- 90         CONTINUE
+            CALL UTPRIN('A',BID,'SUPERVIS_41',0, VALK, 0, VALI, 0, VALR)
             IDF=7
             GOTO 100
           ELSE IF(ICOMAL.GT.5) THEN
@@ -150,9 +103,7 @@ C
       IF (IDF.EQ.2 .AND. LEXC) NBERRF=NBERRF+1
 C
 100   CONTINUE
-      DO 300 K=1,NBUNIT(IDF)
-         CALL UTPRIN (CH1,KUNIT(IDF,K),IDMESS,NK,VALK,NI,VALI,NR,VALR)
-300   CONTINUE
+      CALL UTPRIN(CH1, BID, IDMESS, NK, VALK, NI, VALI, NR, VALR)
 C
 200   CONTINUE
 

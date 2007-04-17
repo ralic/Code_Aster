@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 23/05/2006   AUTEUR VABHHTS J.PELLET 
+#@ MODIF cata_champs Stanley  DATE 17/04/2007   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -164,10 +164,14 @@ class CATA_CHAMPS :
     self('EQUI_ELGA_EPSI', 'ELGA',['EPSI_ELGA_DEPL'],            "Invariants des deformations aux points de Gauss")
     self('EQUI_ELNO_EPSI', 'ELNO',['EPSI_ELNO_DEPL'],            "Invariants des deformations aux noeuds par element")
     self('EQUI_NOEU_EPSI', 'NOEU',['EQUI_ELNO_EPSI'],            "Invariants des deformations aux noeuds")
-    self('ERRE_ELEM_SIGM', 'ELEM',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en residu aux points de Gauss")
-    self('ERRE_ELNO_ELEM', 'ELNO',['ERRE_ELEM_SIGM'],            "Indicateurs d'erreur en residu aux noeuds par element")
-
-#    self('ERRE_ELNO_ELEM', 'ELNO',[],                            "Indicateurs d'erreur en thermique")
+    
+# indicateurs d erreur    
+    self('ERRE_ELEM_SIGM', 'ELEM',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en résidu par élément")
+    self('ERRE_ELNO_ELEM', 'ELNO',['ERRE_ELEM_SIGM'],            "Indicateurs d'erreur en résidu aux noeuds par élément")
+    self('QIRE_ELEM_SIGM', 'ELEM',[],                            "Indicateurs d'erreur en résidu par élément")
+    self('QIRE_ELNO_ELEM', 'ELNO',['QIRE_ELEM_SIGM'],            "Indicateurs d'erreur en résidu aux noeuds par élément")
+    self('ERZ1_ELEM_SIGM', 'ELEM',['DEPL'],                      "Indicateurs d'erreur Zhu-Zienkiewicz 1 par élément")
+    self('ERZ2_ELEM_SIGM', 'ELEM',['DEPL'],                      "Indicateurs d'erreur Zhu-Zienkiewicz 2 par élément")
 
     self('FORC_NODA'     , 'NOEU',['SIEF_ELGA'],                 "Forces nodales")
     self('VALE_CONT'     , 'NOEU',[],                            "Informations sur l'etat de contact")

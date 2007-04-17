@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai2 Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,50 +89,6 @@ cata_msg={
 
 
 
-
-
-
-
-19: _("""
- interpolation sur parametres non permise.
-"""),
-
-20: _("""
- interpolation " %(k1)s " inconnue.
-"""),
-
-21: _("""
- " %(k1)s " type de fonction inconnu.
-"""),
-
-22: _("""
- erreur_1 fonction
-"""),
-
-23: _("""
- erreur_2 fonction.
-"""),
-
-24: _("""
-  on attend une fonction d'un seul parametre.
-"""),
-
-25: _("""
- interpolation-extrapolation reservee a des fonctions de type "fonction" ou de type "constant" ou de type "interpre".
-"""),
-
-
-
-
-
-
-27: _("""
-  la fonction a moins de 1 point 
-"""),
-
-28: _("""
- extrapolation inconnue:  %(k1)s 
-"""),
 
 29: _("""
  a faire 1 ...

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 02/04/2007   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMUN  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ======================================================================
@@ -225,7 +225,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           PINTO_MENEGOTTO =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           CJS             =SIMP(statut='c',typ='I',defaut=16,into=(16,)),
           HUJEUX       =SIMP(statut='c',typ='I',defaut=9,into=(9,)),
-          CAM_CLAY        =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
+          CAM_CLAY        =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
           BARCELONE       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           LAIGLE          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           DRUCKER_PRAGER  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),

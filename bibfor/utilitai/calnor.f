@@ -4,7 +4,7 @@
      &                    JAC, NX, NY, NZ, TX, TY )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 17/04/2007   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     BUT:
-C         CALCUL DE LA NORMALE SORTANTE D'UN SEGMENT LINEAIRE
+C         CALCUL DE LA NORMALE SORTANTE D'UN ELEMENT LINEAIRE
 C         OU QUADRATIQUE.
 C
 C
@@ -97,16 +97,38 @@ C DECLARATION VARIABLES LOCALES
 C
 
       INTEGER I, J, JNO, MNO, IPG,IDEC, JDEC, KDEC
-      INTEGER LENOEU
+      INTEGER LENOEU, NUMNO, NNOS2
 
-      REAL*8 X1, Y1, X2, Y2, X3, Y3
-      REAL*8 X(3), Y(3), SX(9,9), SY(9,9), SZ(9,9)
+      REAL*8 X1, Y1, X2, Y2, X3, Y3, NORME
+      REAL*8 X(9), Y(9), Z(9),SX(9,9), SY(9,9), SZ(9,9)
       LOGICAL  LTEATT, LAXI
 
 C ----------------------------------------------------------------------
 C
+C ----- METHODE :
+C       
+C       M(U,V) SURFACE PARAMETREE
+C       NORMALE A LA SURFACE DONNE PAR 
+C       N(U,V)=DM(U,V)/DU (VECTORIEL) DM(U,V)/DV
+C
+C       EN 2D LE PRODUIT VECTORIEL ET LA DERIVEE DES FONCTIONS DE FORME
+C       EST CALCULE DE MANIERE IMPLICITE.
+C       EN 3D LE PRODUIT VECTORIEL EST CALCULE EXPLICITEMENT ET LA
+C       DERIVEE DES FONCTIONS DE FORME EST RECUPERE DANS LA ROUTINE
+C       CHAPEAU.
+C       LES ELEMENTS DE BARSOUM SUBISSENT UN TRAITÉMENT CAR LE JACOBIEN
+C       EST NUL EN POINTE DE FISSURE.
+C
+C              X1          X3          X2
+C               O-----------O-----------O
+C              INO         MNO         JNO
+C
+C         POINTS  1 --> INO PREMIER POINT DE L'ARETE COURANTE
+C                 2 --> JNO DEUXIEME POINT  DE L'ARETE COURANTE
+C                 3 --> MNO NOEUD MILIEU S'IL EXISTE
+C
 C====
-C 1. --- CAS DU 2D ----------------------------------------------------
+C 1. --- CAS DU 2D -----------------------------------------------------
 C====
 C
       IF ( DIM.EQ.'2D' ) THEN
@@ -121,15 +143,7 @@ C
 C
 C 1.2. ==> COORDONNEES DES 3 NOEUDS
 C
-C              X1          X2          X3
-C               O-----------O-----------O
-C              INO         MNO         JNO
-C
-C         POINTS  1 --> INO PREMIER POINT DE L'ARETE COURANTE
-C                 2 --> JNO DEUXIEME POINT  DE L'ARETE COURANTE
-C                 3 --> MNO NOEUD MILIEU S'IL EXISTE (NBNA=3)
-C
-      IF (INO.EQ.NBS) THEN
+      IF ( INO.EQ.NBS ) THEN
         JNO=1
       ELSE
         JNO=INO+1
@@ -144,6 +158,22 @@ C
         MNO = NBS + INO
         X3 = ZR(IGEOM+2*MNO-2)
         Y3 = ZR(IGEOM+2*MNO-1)
+C
+C
+C 1.2.1. ==> TRAITEMENT ELEMENTS DE BARSOUM
+C
+C ----- LA NORMALE EST CALCULEE EN UTILISANT LE POINT MILIEU
+        NORME=SQRT((X3-X1)**2+(Y3-Y1)**2)/SQRT((X2-X1)**2+(Y2-Y1)**2)
+C
+        IF ( (NORME.LT.0.4D0) .OR. (NORME.GT.0.6D0) ) THEN
+C
+          X3 = (X1+X2)*0.5D0
+          Y3 = (Y1+Y2)*0.5D0
+C
+        ENDIF
+C
+C 1.2.2. ==> TRAITEMENT AUTRES ELEMENTS
+C
       ELSE
         X3 = (X1+X2)*0.5D0
         Y3 = (Y1+Y2)*0.5D0
@@ -205,28 +235,70 @@ C====
 C
       ELSE IF ( DIM.EQ.'3D' ) THEN
 C
+C 2.1. ==> PREALABLE
+C
       CALL R8INIR(27,0.D0,NX,1)
       CALL R8INIR(27,0.D0,NY,1)
       CALL R8INIR(27,0.D0,NZ,1)
 C
+C 2.2. ==> COORDONNEES DES NOEUDS
+C
+      DO 10 NUMNO=1,NNO
+        LENOEU=NOE(NUMNO,IFA,ITYP)
+        X(NUMNO)=ZR(IGEOM-1+3*(LENOEU-1)+1)
+        Y(NUMNO)=ZR(IGEOM-1+3*(LENOEU-1)+2)
+        Z(NUMNO)=ZR(IGEOM-1+3*(LENOEU-1)+3)
+  10  CONTINUE
+C
+C 2.3. ==> TRAITEMENT ELEMENTS DE BARSOUM
+C
+C ----- LA NORMALE EST CALCULEE EN UTILISANT LE POINT MILIEU
+      IF ((NNO.EQ.6).OR.(NNO.EQ.8)) THEN
+C
+        NNOS2=NNO/2
+
+        DO 11 INO=1,NNOS2
+C
+          IF (INO.EQ.NNOS2) THEN
+            JNO=1
+          ELSE
+           JNO=INO+1
+          ENDIF
+          MNO=NNOS2+INO
+C         
+          NORME=SQRT( (X(MNO) - X(INO) )**2
+     &              + (Y(MNO) - Y(INO) )**2
+     &              + (Z(MNO) - Z(INO) )**2 )
+     &         /SQRT( (X(JNO) - X(INO) )**2
+     &              + (Y(JNO) - Y(INO) )**2
+     &              + (Z(JNO) - Z(INO) )**2 )
+C	  
+          IF ((NORME.LT.0.4D0).OR.(NORME.GT.0.6D0)) THEN
+            X(MNO)=(X(INO)+X(JNO))*0.5D0
+            Y(MNO)=(Y(INO)+Y(JNO))*0.5D0
+            Z(MNO)=(Z(INO)+Z(JNO))*0.5D0
+          ENDIF
+C
+  11    CONTINUE
+      ENDIF
+C
+C 2.4. ==> CALCUL DU PRODUIT VECTORIEL OMI OMJ
+C
       DO 20 IPG=1,NPG
 C
         DO 210 I=1,NNO
-          LENOEU=NOE(I,IFA,ITYP)
-          IDEC=IGEOM-1+3*(LENOEU-1)
 C
           DO 220 J=1,NNO
-            JNO=NOE(J,IFA,ITYP)
-            JDEC=IGEOM-1+3*(JNO-1)
-            SX(I,J)=ZR(IDEC+2)*ZR(JDEC+3)-ZR(IDEC+3)*ZR(JDEC+2)
-            SY(I,J)=ZR(IDEC+3)*ZR(JDEC+1)-ZR(IDEC+1)*ZR(JDEC+3)
-            SZ(I,J)=ZR(IDEC+1)*ZR(JDEC+2)-ZR(IDEC+2)*ZR(JDEC+1)
+C
+            SX(I,J)=Y(I)*Z(J)-Z(I)*Y(J)
+            SY(I,J)=Z(I)*X(J)-X(I)*Z(J)
+            SZ(I,J)=X(I)*Y(J)-Y(I)*X(J)
 C
   220     CONTINUE
 C
   210   CONTINUE
 C
-C --- CALCUL DE LA NORMALE AU POINT IPG  -----------------
+C 2.5. ==> SOMMATION DES DERIVEES
 C
         KDEC=2*(IPG-1)*NNO
 C
@@ -244,9 +316,9 @@ C
   240     CONTINUE
 C
   230   CONTINUE
-
 C
-C   JACOBIEN
+C 2.5. ==> CALCUL DU JACOBIEN
+C
         JAC(IPG)=SQRT(NX(IPG)**2+NY(IPG)**2+NZ(IPG)**2)
         NX(IPG)=NX(IPG)/JAC(IPG)
         NY(IPG)=NY(IPG)/JAC(IPG)
@@ -254,7 +326,7 @@ C   JACOBIEN
 C
   20  CONTINUE
 C
-C ----- PROBLEME ------------------------------------------------------
+C ----- PROBLEME -------------------------------------------------------
 C
       ELSE
 C

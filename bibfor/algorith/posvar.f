@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,12 +96,32 @@ C-----LA LOI MECANIQUE EST CAM_CLAY
 
       IF (MECA(1:8).EQ.'CAM_CLAY') THEN
 C----- DEFORMATION VOLUMIQUE PLASTIQUE CUMULEE
-         IF (VARI(1:3).EQ.'EVP') THEN
+         IF (VARI(1:3).EQ.'PCR') THEN
             NUME=ADVIME
 C----- INDICATEUR D ETAT
             GOTO 9999
          ELSE IF (VARI(1:7).EQ.'IND_ETA') THEN
             NUME=ADVIME+1
+            GOTO 9999
+C----- contrainte volumique
+         ELSE IF (VARI(1:5).EQ.'SIGMO') THEN
+            NUME=ADVIME+2
+            GOTO 9999
+C----- contrainte deviatorique
+         ELSE IF (VARI(1:5).EQ.'SIGDV') THEN
+            NUME=ADVIME+3
+            GOTO 9999
+C----- deformation plastique volumique
+         ELSE IF (VARI(1:5).EQ.'EPSVO') THEN
+            NUME=ADVIME+4
+            GOTO 9999
+C----- deformation plastique equivalente
+         ELSE IF (VARI(1:5).EQ.'EPSEQ') THEN
+            NUME=ADVIME+5
+            GOTO 9999
+C----- indice des vides
+         ELSE IF (VARI(1:7).EQ.'IND_VID') THEN
+            NUME=ADVIME+6
             GOTO 9999
          ELSE
             NUME=-1

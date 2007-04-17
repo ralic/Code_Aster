@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/03/2007   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C  TOLE CRP_20
       CHARACTER*16       COMPOR(*),OPTION
       REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TP2,LINE,TREF
       REAL*8             DEPS(6),PREC,DX,DEUXMU
-      REAL*8             SIGM(6),PCRM(2),SIGP(6),PCRP(2),DSIDEP(6,6)
+      REAL*8             SIGM(6),PCRM(7),SIGP(6),PCRP(7),DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE CAM CLAY ELASTOPLASTIQUE POUR LES
 C     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -75,10 +75,10 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       LOGICAL     CPLAN,PLASTI
-      INTEGER       IADZI,IAZK24,UMESS,IUNIFI,IRET
-      REAL*8        EPXMAX
-      PARAMETER    (EPXMAX = 5.D0)
-      CHARACTER*8   NOMAIL
+      INTEGER     IADZI,IAZK24,UMESS,IUNIFI,IRET
+      REAL*8      EPXMAX
+      PARAMETER   (EPXMAX = 5.D0)
+      CHARACTER*8 NOMAIL
       REAL*8      DEPSTH(6),VALRES(10),ALPHA
       REAL*8      LAMBDA,KAPA,PORO,PRESCR,M,PA
       REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,FONC
@@ -98,11 +98,10 @@ C
       INTEGER     NDIMSI,SIGNF,SIGNFI,SIGNFS
       INTEGER     I,K,L,ITER, MATR
       CHARACTER*2 BL2, FB2, CODRET(9)
-      CHARACTER*8 NOMRES(9)
-      CHARACTER*8 NOMPAR(9),TYPE
-      REAL*8      VALPAM(3)
+      CHARACTER*8 NOMRES(9),NOMPAR(9),TYPE
+      REAL*8      VALPAM(3),EMAX,DEPSEQ
 C ======================================================================
-      PARAMETER     ( ZERO   = 0.D0   )
+      PARAMETER   ( ZERO   = 0.D0   )
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA        TOL/1.D-10/DEUX/2.D0/
 C DEB ------------------------------------------------------------------
@@ -260,7 +259,28 @@ C     -------------------------------------------------------------
          GO TO 30
       ENDIF
       SIMOEL    = SIGMMO*EXP(XK0*DEPSMO)
-      IF (PCRM(1).EQ.0.D0)  PCRM(1) = PRESCR
+      
+C ---- INITIALISATION A T=0
+      IF (PCRM(1).EQ.0.D0)  THEN
+
+        PCRM(1) = PRESCR
+        PCRM(3) = SIMOEL
+        PCRM(4) = SIELEQ
+        PCRM(5) = 0.D0
+        PCRM(6) = 0.D0
+        PCRM(7) = E0
+
+
+C ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
+        EMAX = 3.D0*XK0*SIGMMO
+        IF (E.GE.EMAX) THEN
+          CALL TECAEL(IADZI,IAZK24)
+          NOMAIL = ZK24(IAZK24-1+3) (1:8)
+          CALL U2MESK('A','COMPOR1_3',1,NOMAIL)
+        ENDIF
+        
+      ENDIF
+
 C
 C     -- 5 CALCUL DU CRITERE :
 C     ----------------------
@@ -277,6 +297,23 @@ C      -- TRAITEMENT DE L'ELASTICITE
               SIGPDV(K) = SIGEL(K)
               SIGP(K)   = SIGEL(K)-SIMOEL*KRON(K)
  118  CONTINUE
+
+           PCRP(3) = SIMOEL
+           PCRP(4) = SIELEQ
+           PCRP(5) = 0.D0
+           PCRP(6) = 0.D0
+           
+           IF ( (PCRP(3)/PA) .GT. 1.D-6 .AND.
+     &          (PCRM(3)/PA) .GT. 1.D-6 ) THEN
+     
+             PCRP(7) = PCRM(7) - KAPA*LOG(PCRP(3)/PCRM(3))
+             
+           ELSE
+           
+             PCRP(7) = PCRM(7)
+             
+           ENDIF
+
         ELSE
 C     -- PLASTIFICATION : CALCUL DE LA DEFORMATION
 C     -- VOLUMIQUE PLASTIQUE : DEPPMO
@@ -470,9 +507,45 @@ C     -- REACTUALISATION DES CONTRAINTES
      &                (M*M*(SIGPMO-PCRP(1))))
            SIGP(K) = SIGPDV(K)-SIGPMO*KRON(K)
  119  CONTINUE
-C
+ 
+ 
+C ---- V(3) :: CONTRAINTE VOLUMIQUE
+      PCRP(3) = SIGPMO
+      
+C ---- V(5) :: DEFORMATION PLASTIQUE VOLUMIQUE      
+      PCRP(5) = PCRM(5) + DEPPMO
+
+C ---- V(4) :: CONTRAINTE EQUIVALENTE
+      SIEQP = 0.0D0
+      DO 440 K = 1, NDIMSI
+        SIEQP = SIEQP + SIGPDV(K)**2.D0
+ 440    CONTINUE
+      PCRP(4) = SQRT(1.5D0*SIEQP)
+
+C ---- V(6) :: DEFORMATION PLASTIQUE EQUIVALENTE
+      DEPSEQ = 0.0D0
+      DO 450 K = 1, NDIMSI
+        DEPSEQ = DEPSEQ + DEPSDV(K)*DEPSDV(K)
+ 450    CONTINUE
+      DEPSEQ = SQRT(2.D0/3.D0*DEPSEQ)
+      PCRP(6) = PCRM(6) + DEPSEQ
+
+C ---- V(7) :: INDICE DES VIDES
+      IF ( (PCRP(3)/PA) .GT. 1.D-6 .AND. (PCRP(1)/PA) .GT. 1.D-6 .AND.
+     &     (PCRM(3)/PA) .GT. 1.D-6 .AND. (PCRM(1)/PA) .GT. 1.D-6 ) THEN
+     
+        PCRP(7) = PCRM(7) - KAPA * LOG(PCRP(3)/PCRM(3))
+     &  - (LAMBDA-KAPA) * LOG(PCRP(1)/PCRM(1))
+     
+      ELSE
+      
+        PCRP(7) = PCRM(7)
+        
+      ENDIF
+       
       ENDIF
       ENDIF
+
 C
 C     -- 7 CALCUL DE L'OPERATEUR TANGENT :
 C     --------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/01/2007   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 17/04/2007   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE FISSURE 2D EN MODE 1 AVEC METHODE ARLEQUIN - MODELE DE REFERENCE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,9 +18,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(  CODE=_F(  NOM = 'SSLP108A',NIV_PUB_WEB='INTERNET') );
+DEBUT(CODE=_F(NOM='SSLP108A',
+              NIV_PUB_WEB='INTERNET',),);
 
-PRE_GIBI()
+PRE_GIBI();
 
 MA=LIRE_MAILLAGE();
 
@@ -49,13 +50,14 @@ BL=AFFE_CHAR_MECA(MODELE=MO,
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   FORCE_CONTOUR=(_F(GROUP_MA='L1',
-                                    FY=1.E8,
-                                    FX=1.E8,),
+                                    FX=1.E8,
+                                    FY=1.E8,),
                                  _F(GROUP_MA='L3',
-                                    FY=-1.E8,
-                                    FX=-1.E8),),);
+                                    FX=-1.E8,
+                                    FY=-1.E8,),),);
 
 ### CALCUL STATIQUE
+
 
 RESU=MECA_STATIQUE(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -64,9 +66,10 @@ RESU=MECA_STATIQUE(MODELE=MO,
 
 ### POST-TRAITEMENT GENERAL
 
+
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('EQUI_ELNO_SIGM','SIGM_ELNO_DEPL',),);
+               OPTION=('EQUI_ELNO_SIGM','SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
@@ -77,23 +80,24 @@ LIGAM=INTE_MAIL_2D(MAILLAGE=MA,
 
 BHAUT=INTE_MAIL_2D(MAILLAGE=MA,
                    DEFI_CHEMIN=_F(GROUP_MA='L1',),);
-                   
-SIYY_LIG=POST_RELEVE_T(ACTION=_F(INTITULE='SIYY_LIG',
-                                 CHEMIN=LIGAM,
+
+SIYY_LIG=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='SIYY_LIG',
                                  RESULTAT=RESU,
                                  NOM_CHAM='SIGM_NOEU_DEPL',
+                                 CHEMIN=LIGAM,
                                  NOM_CMP='SIYY',
-                                 MOYE_NOEUD='NON',
-                                 OPERATION='EXTRACTION',),);
+                                 MOYE_NOEUD='NON',),);
 
-DEPL_H=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL_H',
-                               CHEMIN=BHAUT,
+DEPL_H=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='DEPL_H',
                                RESULTAT=RESU,
                                NOM_CHAM='DEPL',
-                               NOM_CMP='DY',
-                               OPERATION='EXTRACTION',),);
+                               CHEMIN=BHAUT,
+                               NOM_CMP='DY',),);
 
 ### POST-TRAITEMENT MECA. RUPTURE
+
 
 DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -112,20 +116,20 @@ THETA01=CALC_THETA(MODELE=MO,
                                R_INF=2e-05,
                                R_SUP=0.00014,),);
 
-GK01=CALC_G(RESULTAT=RESU,
-            THETA=_F(THETA=THETA01,),
-            EXCIT=(_F(CHARGE=BL,),
-                   _F(CHARGE=CH,),
-                   ),
-            SYME_CHAR='SANS',
-            OPTION='CALC_G');
-
-GK02=CALC_G(RESULTAT=RESU,
-            THETA=_F(THETA=THETA01,FOND_FISS=FOND1,),
+GK01=CALC_G(THETA=_F(THETA=THETA01,),
+            RESULTAT=RESU,
             EXCIT=(_F(CHARGE=BL,),
                    _F(CHARGE=CH,),),
             SYME_CHAR='SANS',
-            OPTION='CALC_K_G');
+            OPTION='CALC_G',);
+
+GK02=CALC_G(THETA=_F(THETA=THETA01,
+                     FOND_FISS=FOND1,),
+            RESULTAT=RESU,
+            EXCIT=(_F(CHARGE=BL,),
+                   _F(CHARGE=CH,),),
+            SYME_CHAR='SANS',
+            OPTION='CALC_K_G',);
 
 #IMPR_TABLE(TABLE=DEPL_H);
 #IMPR_TABLE(TABLE=SIYY_LIG);
@@ -133,79 +137,95 @@ GK02=CALC_G(RESULTAT=RESU,
 #IMPR_TABLE(TABLE=GK02);
 
 ### TESTS VALEURS DEPLACEMENTS
-## NON REGRESSION
+##NON REGRESSION
 
 TEST_TABLE(TABLE=DEPL_H,
-           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=2.29000E-03),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.00229,),
            NOM_PARA='DY',
-           VALE = -8.6620168273920E-07,
-           PRECISION=1E-10,
+           VALE=-8.66201682739e-07,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',); 
-                             
+           VERSION='9.0.4',);
+
 ### TESTS VALEURS CONTRAINTES
-## NON REGRESSION
+##NON REGRESSION
 
 TEST_TABLE(TABLE=SIYY_LIG,
-           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0,),
            NOM_PARA='SIYY',
-           VALE = 2.3323694256527E+09,
-           PRECISION=1E-10,
+           VALE=2332369425.65,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',);                         
- 
+           VERSION='9.0.4',);
+
 TEST_TABLE(TABLE=SIYY_LIG,
-           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=4.00000E-04),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0004,),
            NOM_PARA='SIYY',
-           VALE = 1.7080323018584E+08,
-           PRECISION=1E-10,
+           VALE=170803230.186,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',);            
-           
+           VERSION='9.0.4',);
+
 TEST_TABLE(TABLE=SIYY_LIG,
-           FILTRE = _F(NOM_PARA='ABSC_CURV',VALE=8.00000E-04),
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.0008,),
            NOM_PARA='SIYY',
-           VALE = 1.2403223557972E+08,
-           PRECISION=1E-10,
+           VALE=124032235.58,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',);  
+           VERSION='9.0.4',);
+
+### TEST VALEUR ESTIMATEUR D'ERREUR EN RESIDU
+## VALIDATION ELEMENTS DE BARSOUM
+# NON REGRESSION
+
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  PARA='ERREUR_ABSOLUE',
+                  VALE=6.2749743481852E+04,
+                  PRECISION=1E-10,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='9.0.4',),);
 
 ### TESTS VALEURS MECA. RUPTURE
-## NON-REGRESSION
-            
+##NON-REGRESSION
+
 TEST_TABLE(TABLE=GK01,
            NOM_PARA='G',
-           VALE=3.6368893124329E+02,
-           PRECISION=1E-10,
+           VALE=363.688931243,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',);    
-           
+           VERSION='9.0.4',);
+
 TEST_TABLE(TABLE=GK02,
            NOM_PARA='G',
-           VALE=3.6368893124329E+02,
-           PRECISION=1E-10,
+           VALE=363.688931243,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',);    
-    
+           VERSION='9.0.4',);
+
 TEST_TABLE(TABLE=GK02,
            NOM_PARA='K1',
-           VALE=8.1612080595607E+06,
-           PRECISION=1E-10,
+           VALE=8161208.05956,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',);             
-            
+           VERSION='9.0.4',);
+
 TEST_TABLE(TABLE=GK02,
            NOM_PARA='K2',
-           VALE=-2.4773868786652E+06,
-           PRECISION=1E-10,
+           VALE=-2477386.87867,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',);  
-           
+           VERSION='9.0.4',);
+
 TEST_TABLE(TABLE=GK02,
            NOM_PARA='G_IRWIN',
-           VALE=3.6371381369010E+02,
-           PRECISION=1E-10,
+           VALE=363.71381369,
+           PRECISION=1e-10,
            REFERENCE='NON_REGRESSION',
-           VERSION='9.0.4',);   
+           VERSION='9.0.4',);
 
 FIN();

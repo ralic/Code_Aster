@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 02/04/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,40 +23,163 @@ def _(x) : return x
 cata_msg={
 
 1 : _("""
-   Le fichier %(k1)s existe déjà, on écrit à la suite.
+Le fichier %(k1)s existe déjà, on écrit à la suite.
 """),
 
 2 : _("""
-   Il n'y a pas de règles d'interpolation pour LIST_PARA/LIST_RESU,
-   LIST_PARA/LIST_RESU ne peut donc apparaitre qu'une seule fois
-   et à la première occurence de COURBE.
+Il n'y a pas de règles d'interpolation pour LIST_PARA/LIST_RESU,
+LIST_PARA/LIST_RESU ne peut donc apparaitre qu'une seule fois
+et à la première occurence de COURBE.
 """),
 
 3 : _("""
-   LIST_PARA et LIST_RESU n'ont pas la meme taille.
+LIST_PARA et LIST_RESU n'ont pas la meme taille.
 """),
 
 4 : _("""
-   FONC_X/FONC_Y ne peuvent pas etre des nappes !
+FONC_X/FONC_Y ne peuvent pas etre des nappes !
 """),
 
 5 : _("""
-   Au format 'TABLEAU', FONC_X/FONC_Y ne peut apparaitre qu'une seule fois
-   et à la première occurence de COURBE
+Au format 'TABLEAU', FONC_X/FONC_Y ne peut apparaitre qu'une seule fois
+et à la première occurence de COURBE
 """),
 
 6 : _("""
-   Il n'y a pas de règles d'interpolation pour ABSCISSE/ORDONNEE,
-   ABSCISSE/ORDONNEE ne peut donc apparaitre qu'une seule fois
-   et à la première occurence de COURBE.
+Il n'y a pas de règles d'interpolation pour ABSCISSE/ORDONNEE,
+ABSCISSE/ORDONNEE ne peut donc apparaitre qu'une seule fois
+et à la première occurence de COURBE.
 """),
 
 7 : _("""
-   ABSCISSE et ORDONNEE n'ont pas la meme taille.
+ABSCISSE et ORDONNEE n'ont pas la meme taille.
 """),
 
 8 : _("""
-   Format inconnu : %(k1)s
+Format inconnu : %(k1)s
 """),
+
+# le message 9 est parfois suivi du message 10
+9 : {
+   'message' : _("""
+Erreur lors de l'interpolation de la fonction '%(k1)s'.
+"""),
+   'context' : { 'CONCEPT' : 'k1' },
+},
+
+10: _("""
+ sur la maille '%(k1)s'
+"""),
+
+11: _("""
+L'interpolation de la fonction '%(k1)s' n'est pas autorisée.
+Le type d'interpolation de la fonction vaut 'NON'
+  
+  -> Risque & Conseil :
+    Voir le mot-clé INTERPOL des commandes qui créent des fonctions.
+"""),
+
+12: _("""
+Une erreur s'est produite dans la recherche de l'intervalle des abscisses contenant la valeur %(r1)s.
+  
+  -> Risque & Conseil :
+    Vérifiez que le type d'interpolation de la fonction ne vaut pas 'NON'
+    (mot-clé INTERPOL des commandes qui créent des fonctions).
+"""),
+
+13: _("""
+Le type de la fonction '%(k1)s' est inconnu.
+Seules les fonctions, nappes, fonctions constantes peuvent etre traitées par FOINTE.
+
+  -> Debug :
+      le type est '%(k2)s'
+"""),
+
+14: _("""
+Il n'y a pas assez de paramètres pour évaluer la fonction.
+Seulement %(i1)d paramètre(s) sont fourni(s) alors que la fonction en réclame %(i2)d.
+"""),
+
+15: _("""
+Il y a des doublons dans la liste des paramètres fournis :
+   %(ktout)s
+"""),
+
+16: _("""
+Les paramètres nécessaires sont :
+   %(ktout)s
+"""),
+
+17: _("""
+Les paramètres fournis sont :
+   %(ktout)s
+"""),
+
+18: _("""
+La fonction n'a meme pas un point !
+"""),
+
+19: _("""
+On est hors du domaine de définition de la fonction.
+On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à gauche est exclus.
+   abscisse demandée              : %(r1)f
+   borne inférieure des abscisses : %(r2)f
+  
+  -> Risque & Conseil :
+    Voir le mot-clé PROL_GAUCHE des commandes qui créent des fonctions.
+"""),
+
+20: _("""
+On est hors du domaine de définition de la fonction.
+On ne peut pas interpoler la fonction pour cette abscisse car le prolongement à droite est exclus.
+   abscisse demandée              : %(r1)f
+   borne supérieure des abscisses : %(r2)f
+  
+  -> Risque & Conseil :
+    Voir le mot-clé PROL_DROITE des commandes qui créent des fonctions.
+"""),
+
+21: _("""
+Erreur de programmation : type d'extrapolation inconnu.
+
+  -> Debug :
+      le type d'extrapolation est '%(k1)s'
+"""),
+
+22: _("""
+La fonction n'est définie qu'en un point. On ne peut pas l'interpoler en
+plus d'un point si le prolongement n'est pas constant des deux cotés.
+  
+  -> Risque & Conseil :
+    Voir les mot-clés PROL_GAUCHE/PROL_DROITE des commandes qui créent des fonctions.
+"""),
+
+23: _("""
+La fonction n'est définie qu'en un point. On ne peut pas l'interpoler ailleurs
+qu'en ce point si le prolongement n'est pas constant des deux cotés.
+  
+  -> Risque & Conseil :
+    Voir les mot-clés PROL_GAUCHE/PROL_DROITE des commandes qui créent des fonctions.
+"""),
+
+24: _("""
+On attend une fonction d'un seul paramètre.
+La fonction '%(k1)s' est une fonction de %(i1)d paramètres.
+"""),
+
+25: _("""
+Le type de la fonction '%(k1)s' est inconnu.
+Seules les fonctions, nappes, fonctions constantes et formules sont traitées par FOINTR.
+
+  -> Debug :
+      le type est '%(k2)s'
+"""),
+
+26: _("""
+   abscisse demandée : %(r1)f
+   intervalle trouvé : [%(r2)f, %(r3)f]
+"""),
+
+
 
 }

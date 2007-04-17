@@ -6,7 +6,7 @@
       CHARACTER*1                                      COLI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ------------------------------------------------------------------
       COLI = '?'
       IF (N.LT.1) THEN
          IER = 10
-         CALL U2MESS('E','UTILITAI2_27')
+         CALL U2MESS('E','FONCT0_18')
          GOTO 9999
       ELSEIF (N.EQ.1) THEN
          IF ( X .EQ. 0.D0 ) THEN
@@ -78,7 +78,7 @@ C     --- PROLONGEMENT A GAUCHE ---
             IER = 30
             VALR (1) = X
             VALR (2) = VALE(1)
-            CALL U2MESG('E', 'UTILITAI6_34',0,' ',0,0,2,VALR)
+            CALL U2MESR('E', 'FONCT0_19',2,VALR)
             GOTO 9999
          ELSEIF ( PROLGD(1:1) .EQ. 'L') THEN
             COLI = 'E'
@@ -88,7 +88,7 @@ C     --- PROLONGEMENT A GAUCHE ---
             COLI = 'T'
          ELSE
             IER = 20
-       CALL U2MESK('E','UTILITAI2_28',1,PROLGD(1:1))
+            CALL U2MESK('E','FONCT0_21',1,PROLGD(1:1))
             GOTO 9999
          ENDIF
 C
@@ -104,7 +104,7 @@ C     --- PROLONGEMENT A DROITE ---
             IER = 40
             VALR (1) = X
             VALR (2) = VALE(N)
-            CALL U2MESG('E', 'UTILITAI6_35',0,' ',0,0,2,VALR)
+            CALL U2MESR('E', 'FONCT0_20',2,VALR)
             GOTO 9999
          ELSEIF ( PROLGD(2:2) .EQ. 'C' ) THEN
             COLI = 'C'
@@ -115,7 +115,7 @@ C     --- PROLONGEMENT A DROITE ---
             COLI = 'E'
          ELSE
             IER = 20
-       CALL U2MESK('E','UTILITAI2_28',1,PROLGD(2:2))
+       CALL U2MESK('E','FONCT0_21',1,PROLGD(2:2))
             GOTO 9999
          ENDIF
 C

@@ -1,4 +1,4 @@
-#@ MODIF E_Global Execution  DATE 04/04/2007   AUTEUR ABBAS M.ABBAS 
+#@ MODIF E_Global Execution  DATE 17/04/2007   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,13 +30,9 @@
    de astermodule.c.
 """
 
-# ------------------------------------------------------------------------
-def utprin(typmess, unite, idmess, valk, vali, valr):
-   """
-      Cette methode permet d'imprimer un message venu d'U2MESG
-   """
-   from Messages import utprin
-   utprin.utprin(typmess,unite,idmess,valk,vali,valr)
+# MessageLog est l'objet qui gère l'impression des messages
+# (appelé par astermodule.c)
+from Utilitai.Utmess import MessageLog
 
 # ------------------------------------------------------------------------
 def checksd(nomsd, typesd):
@@ -48,17 +44,16 @@ def checksd(nomsd, typesd):
       1 : erreurs lors du checksd
       4 : on n'a meme pas pu tester
    """
-   from Utilitai.Utmess     import UTMESS
-
+   from Utilitai.Utmess import U2MESS as UTMESS
    nomsd  = nomsd.strip()
    typesd = typesd.lower().strip()
-
+   
    # import
    iret = 4
    try:
       sd_module = __import__('SD.%s' % typesd, globals(), locals(), [typesd])
    except ImportError, msg:
-      UTMESS('F', 'checksd', "Impossible d'importer le catalogue de la SD '%s'" % typesd)
+      UTMESS('F', 'SDVERI_1', valk=typesd)
       return iret
    
    # on récupère la classe typesd
@@ -71,6 +66,6 @@ def checksd(nomsd, typesd):
          iret = 1
       else:
          iret = 0
-
+   
    return iret
 

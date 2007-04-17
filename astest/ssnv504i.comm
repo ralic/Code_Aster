@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/04/2007   AUTEUR KHAM M.KHAM 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,21 +131,19 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                    CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_VOISIN',
                                METHODE='CONTINUE',
-                               MODL_AXIS='OUI',
                                GLISSIERE = 'OUI',
                                ALARME_JEU=0.1,
                                CONTACT_INIT='OUI',
                                ITER_GEOM_MAXI=3,
-                               ITER_CONT_MAXI=20,
+                               ITER_CONT_MAXI=40,
                                GROUP_MA_MAIT='SMAI1',
                                GROUP_MA_ESCL='SESC1',
                                  ),
                             _F(APPARIEMENT='MAIT_ESCL',
                                RECHERCHE='NOEUD_VOISIN',
                                METHODE='CONTINUE',
-                               MODL_AXIS='OUI',
                                ITER_GEOM_MAXI=3,
-                               ITER_CONT_MAXI=20,
+                               ITER_CONT_MAXI=40,
                                GROUP_MA_MAIT='SMAI2',
                                GROUP_MA_ESCL='SESC2',
                                  ),),
